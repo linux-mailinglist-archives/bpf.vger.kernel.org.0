@@ -2,91 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8CB39A1DD
-	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 15:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B03939A2AF
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 16:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhFCNLj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Jun 2021 09:11:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:41196 "EHLO foss.arm.com"
+        id S231499AbhFCOBs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Jun 2021 10:01:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229958AbhFCNLj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:11:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C91721063;
-        Thu,  3 Jun 2021 06:09:54 -0700 (PDT)
-Received: from [10.57.73.64] (unknown [10.57.73.64])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14F733F774;
-        Thu,  3 Jun 2021 06:09:52 -0700 (PDT)
-Subject: Re: Regression 5.12.0-rc4 net: ice: significant throughput drop
-To:     Jussi Maki <joamaki@gmail.com>
-Cc:     jroedel@suse.de, Daniel Borkmann <daniel@iogearbox.net>,
-        netdev@vger.kernel.org, jesse.brandeburg@intel.com, hch@lst.de,
-        iommu@lists.linux-foundation.org, intel-wired-lan@lists.osuosl.org,
-        gregkh@linuxfoundation.org, anthony.l.nguyen@intel.com,
-        bpf <bpf@vger.kernel.org>, davem@davemloft.net
-References: <CAHn8xckNXci+X_Eb2WMv4uVYjO2331UWB2JLtXr_58z0Av8+8A@mail.gmail.com>
- <cc58c09e-bbb5-354a-2030-bf8ebb2adc86@iogearbox.net>
- <7f048c57-423b-68ba-eede-7e194c1fea4e@arm.com>
- <CAHn8xckNt3smeQPi3dgq5i_3vP7KwU45pnP5OCF8nOV_QEdyMA@mail.gmail.com>
- <7c04eeea-22d3-c265-8e1e-b3f173f2179f@iogearbox.net>
- <705f90c3-b933-8863-2124-3fea7fdbd81a@arm.com>
- <CAHn8xc=1g8bzV-uxaJAYpJ114rR7MLzth=4jyDG329ZwEG+kpg@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <c434b9b4-5a8c-a7a9-4e01-b6d8bd40b918@arm.com>
-Date:   Thu, 3 Jun 2021 14:09:46 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231202AbhFCOBs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Jun 2021 10:01:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B5F2461407;
+        Thu,  3 Jun 2021 14:00:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622728803;
+        bh=MdK4OlgBeSSHPp6pdWTpVt6fMjNhhl5wYGtwrdQ0mEM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Hd8fVFK14U3LNL0JOz76b72z5+fE8PWlE3mvAgVgKNIlpnDCUXVsCe/Z/UePIlVOX
+         ZGCXeEKStpNNb9ynux9Ewhs3Qp1ZBpw1YF+vzCn28th3AJzJaHMJ4UcKz6ARMWABf2
+         aCdysbs1SkRVmVosRn7bzBycdmCTMyx7IVsrQ49VjRzujrKSPQTKpcyi69C2grzHXO
+         nRhiXTcfD/DDObHlCSGdtow6G86EjGFR9AwFwKNzITKT+R2mPEg0Z1DIA++qnRAvmB
+         alX9+9CO7Y+xC7cy19Kh9/TO11x90LTVXrpc2t8iPaXK5kbFfc7dT5zedFVY2XAlvd
+         zRQzjcHDEBmOA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id ADC2E60A5C;
+        Thu,  3 Jun 2021 14:00:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAHn8xc=1g8bzV-uxaJAYpJ114rR7MLzth=4jyDG329ZwEG+kpg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/4] Few small libbpf and selftests/bpf fixes
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162272880370.29426.2025785721691622375.git-patchwork-notify@kernel.org>
+Date:   Thu, 03 Jun 2021 14:00:03 +0000
+References: <20210603004026.2698513-1-andrii@kernel.org>
+In-Reply-To: <20210603004026.2698513-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-06-03 13:32, Jussi Maki wrote:
-> On Wed, Jun 2, 2021 at 2:49 PM Robin Murphy <robin.murphy@arm.com> wrote:
->>>> Thanks for the quick response & patch. I tried it out and indeed it
->>>> does solve the issue:
->>
->> Cool, thanks Jussi. May I infer a Tested-by tag from that?
+Hello:
+
+This series was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Wed, 2 Jun 2021 17:40:22 -0700 you wrote:
+> Fix few small issues in libbpf and selftests/bpf:
+>   - fix up libbpf.map and move few APIs that didn't make it into final 0.4
+>     release;
+>   - install skel_internal.h which is used by light skeleton;
+>   - fix .gitignore for xdp_redirect_multi.
 > 
-> Of course!
+> Andrii Nakryiko (4):
+>   libbpf: move few APIs from 0.4 to 0.5 version
+>   libbpf: refactor header installation portions of Makefile
+>   libbpf: install skel_internal.h header used from light skeletons
+>   selftests/bpf: add xdp_redirect_multi into .gitignore
 > 
->> Given that the race looks to have been pretty theoretical until now, I'm
->> not convinced it's worth the bother of digging through the long history
->> of default domain and DMA ops movement to figure where it started, much
->> less attempt invasive backports. The flush queue change which made it
->> apparent only landed in 5.13-rc1, so as long as we can get this in as a
->> fix in the current cycle we should be golden - in the meantime, note
->> that booting with "iommu.strict=0" should also restore the expected
->> behaviour.
->>
->> FWIW I do still plan to resend the patch "properly" soon (in all honesty
->> it wasn't even compile-tested!)
-> 
-> BTW, even with the patch there's quite a bit of spin lock contention
-> coming from ice_xmit_xdp_ring->dma_map_page_attrs->...->alloc_iova.
-> CPU load drops from 85% to 20% (~80Mpps, 64b UDP) when iommu is
-> disabled. Is this type of overhead to be expected?
+> [...]
 
-Yes, IOVA allocation can still be a bottleneck - the percpu caching 
-system mostly alleviates it, but certain workloads can still defeat 
-that, and if you're spending significant time in alloc_iova() rather 
-than alloc_iova_fast() then it sounds like yours is one of them.
+Here is the summary with links:
+  - [bpf-next,1/4] libbpf: move few APIs from 0.4 to 0.5 version
+    https://git.kernel.org/bpf/bpf-next/c/16cac0060680
+  - [bpf-next,2/4] libbpf: refactor header installation portions of Makefile
+    https://git.kernel.org/bpf/bpf-next/c/232c9e8bd5eb
+  - [bpf-next,3/4] libbpf: install skel_internal.h header used from light skeletons
+    https://git.kernel.org/bpf/bpf-next/c/7d8a819dd316
+  - [bpf-next,4/4] selftests/bpf: add xdp_redirect_multi into .gitignore
+    https://git.kernel.org/bpf/bpf-next/c/56b8b7f9533b
 
-If you're using small IOVA sizes which *should* be cached, then you 
-might be running into a pathological case of thrashing the global depot. 
-I've ranted before about the fixed MAX_GLOBAL_MAGS probably being too 
-small for systems with more than 16 CPUs, which on a modern AMD system I 
-imagine you may well have.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-If on the other hand your workload is making larger mappings above the 
-IOVA caching threshold, then please take a look at John's series for 
-making that tuneable:
 
-https://lore.kernel.org/linux-iommu/1622557781-211697-1-git-send-email-john.garry@huawei.com/
-
-Cheers,
-Robin.
