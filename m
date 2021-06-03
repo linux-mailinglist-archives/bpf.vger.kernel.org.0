@@ -2,196 +2,225 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0934399F5F
-	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 12:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9B3399FCB
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 13:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhFCLBO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Jun 2021 07:01:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51606 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229840AbhFCLBL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 3 Jun 2021 07:01:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622717966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u2TaQuoIhZrPBRfmHby+sF4oKD6qihDcCy7za/Xxrrg=;
-        b=VlOrdzo8Ht1KxsCenvk5QeXViz3pA58mbPuKrKPsHjrRSFsy3M7XYXN8fT2tu7z5OwWaS/
-        eAnWTgHpFrkhatUacFmQmyBWo/WjrXIWmrZ0PAPXtgy0d6Nx8Y57x0v8AQCLYzspEuAsjq
-        u5qlVq6aWoarL6DHKswi5rd5Nq3/PEY=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-HH4WxDqoPtqFETzzoE8-iA-1; Thu, 03 Jun 2021 06:59:25 -0400
-X-MC-Unique: HH4WxDqoPtqFETzzoE8-iA-1
-Received: by mail-ed1-f72.google.com with SMTP id c21-20020a0564021015b029038c3f08ce5aso3072866edu.18
-        for <bpf@vger.kernel.org>; Thu, 03 Jun 2021 03:59:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=u2TaQuoIhZrPBRfmHby+sF4oKD6qihDcCy7za/Xxrrg=;
-        b=uAhXlEE9ptxHgmT5YbDrPU+o7o+my2cxj1lFa5KZLoo+QiZ7bmBvCQH/6xJWn7phtA
-         e6ho835Ew5k6pAjl8n1bfN4m7Q4UyZvW1TS9flcWTAjI74mXkPSw5ZKjxcQ38SVRwO7A
-         YPPCUk+FiLNnVKplnIJ5yZZsurcsu0KdWhgOWAewXSNq0pZXljWc8FMZ+srlfsxF8FMH
-         UYgd3s7RAjTt4XsTsaant70UvHTY9glSnjNLJSxm2lp2fmS5noviqK9pbW6R0evnDUP9
-         TKD0RPANUx5fmcgj5TZrkpJFMsT3sAnIXAFA0Zqrjz69lwG8mjIffmmFL0NBzW7v+qb+
-         ICWg==
-X-Gm-Message-State: AOAM532N6/pfV3KP962wun9XNRD+IkMD/mMCEqt7BzYJF7qRGA0ZSWHS
-        HKUuFRaNxqZZwYiqcx/BbtnlbNfShzsdN43CX80uK04ZeRwxrCC4wMpVz3pYlW0i7PWRe3s1FZR
-        l9eSsxeSjDPBy
-X-Received: by 2002:a17:906:7f07:: with SMTP id d7mr4551126ejr.240.1622717964208;
-        Thu, 03 Jun 2021 03:59:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw8o64PVj7ozjTvVNJYZ2Wc+z0I8VFEZoidK/PpIuRD64hx7kkUZrQYTSN1UBLi5qhQnyGwGQ==
-X-Received: by 2002:a17:906:7f07:: with SMTP id d7mr4551106ejr.240.1622717963835;
-        Thu, 03 Jun 2021 03:59:23 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id k21sm1374270ejp.23.2021.06.03.03.59.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 03:59:23 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 576771802AA; Thu,  3 Jun 2021 12:59:22 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 1/3] bpf: Introduce bpf_timer
-In-Reply-To: <20210603015809.l2dez754vzxjueew@ast-mbp.dhcp.thefacebook.com>
-References: <20210527040259.77823-1-alexei.starovoitov@gmail.com>
- <20210527040259.77823-2-alexei.starovoitov@gmail.com>
- <87r1hsgln6.fsf@toke.dk>
- <20210602014608.wxzfsgzuq7rut4ra@ast-mbp.dhcp.thefacebook.com>
- <87a6o7aoxa.fsf@toke.dk>
- <20210603015809.l2dez754vzxjueew@ast-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 03 Jun 2021 12:59:22 +0200
-Message-ID: <874kef9pth.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S229727AbhFCLck (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Jun 2021 07:32:40 -0400
+Received: from mga09.intel.com ([134.134.136.24]:13976 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229629AbhFCLcj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Jun 2021 07:32:39 -0400
+IronPort-SDR: CpAYgq3sk+S23GpKPdrkorlr3OhL4gCjANLs6tgWEo2RSnbMAVssvL7gXubPJQvWK4WYk8y7Zs
+ /LnZY9dRBE5Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="204011066"
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="204011066"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 04:30:48 -0700
+IronPort-SDR: ASpbvUq28VHoG4bshPhtU49cGKs1K+EWohQvXrWGKpyP/1vGc51QszqrOevtIHW9sAUNl5KuuX
+ gOoT0H194xzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="633665540"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga006.fm.intel.com with ESMTP; 03 Jun 2021 04:30:47 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 3 Jun 2021 04:30:46 -0700
+Received: from fmsmsx604.amr.corp.intel.com (10.18.126.84) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 3 Jun 2021 04:30:46 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Thu, 3 Jun 2021 04:30:46 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Thu, 3 Jun 2021 04:30:46 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XjDetrCqOOsvpvtesQVjIQddT7B/Ho00aX/fPRAJ0xK8f0An55DOIWZ21bNNmnyN1x++NHXDuwC3kmAAGajtvI4a7cVaVMGfyQ+NpEuoLoY4Sa20kVwVdwf3JZHb4Ty6LuJNJ59Rq9opFmJ8wjHYmVLuEhyytB1RjmnSSUTC+8Q7O7RH8bzbpu57I37k3e1AzW+4N13r9NjrQmonzQ688rIv0VZn2c6uM9toSqIAEQXTZIPCmkZO9eaPLG7qEk+GBdDKJYkK0ElARMSygTyM584tor7J1w3KE2xZMLJmWrilIhoz+IGM7jATGf4HOfvc3nwu98IPB7q8Mcfyj0PQFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DYmbNuYze8neaXYnOyRE7p9RQx3TRycXZh+jfORisi4=;
+ b=bBarHl/aW8UgEePJqlsXL8HgzCocWggq2uL+1qUnm2dMsnIhJWhFuxrHYuoOwLluHGPxsUc5nnb+M99H03dnsE2xQGApsnxBWsbVP7rdd/2MhGR1BpXiKK7sPEyjBLygQyHt1f9meRAQblkkWjHMkMA30td1rNX8v+++XtCS47F6tMroxVTPri50aRPGwvnEQ856qUm2lJThA1iiPE2Siag/XqyGySjGYRIg8xTURqt5Viyin4VsqQygtWprd4O42LyPjBCCo7ge3GNj9iLp1zYc68ySOnZJoZfsUh25KwcMLhjcUP2QUD5EqoN/nNBmldulw7Ijcl/NsCY6qzFgmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DYmbNuYze8neaXYnOyRE7p9RQx3TRycXZh+jfORisi4=;
+ b=PaPcp61ATkEj1XVIOgJLrukYslyeSy6ym7EWnoz0BA5jBmG1TUheHWE5Y6gd2eqnRm/4XsfCdeZQ/tLPADkF3Wy2d3cV3u9XD69r5beeDaZIX8UpLkvW9bPPWtTPJCU/U5vC8gq1Dog/AMVDFQPlx+IP8zTCwkns7JG06ppDd2w=
+Received: from MW3PR11MB4554.namprd11.prod.outlook.com (2603:10b6:303:5d::7)
+ by MW3PR11MB4683.namprd11.prod.outlook.com (2603:10b6:303:5c::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Thu, 3 Jun
+ 2021 11:30:45 +0000
+Received: from MW3PR11MB4554.namprd11.prod.outlook.com
+ ([fe80::4cf6:2087:5bb6:3518]) by MW3PR11MB4554.namprd11.prod.outlook.com
+ ([fe80::4cf6:2087:5bb6:3518%7]) with mapi id 15.20.4173.030; Thu, 3 Jun 2021
+ 11:30:45 +0000
+From:   "Penigalapati, Sandeep" <sandeep.penigalapati@intel.com>
+To:     Kurt Kanzenbach <kurt@linutronix.de>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Tyler S <tylerjstachecki@gmail.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
+Subject: RE: [PATCH net v4] igb: Fix XDP with PTP enabled
+Thread-Topic: [PATCH net v4] igb: Fix XDP with PTP enabled
+Thread-Index: AQHXWGvk5WHQhefeNEGUtzjHPvJYDw==
+Date:   Thu, 3 Jun 2021 11:30:44 +0000
+Message-ID: <MW3PR11MB4554208E081D4DD08EADD7669C3C9@MW3PR11MB4554.namprd11.prod.outlook.com>
+References: <20210503072800.79936-1-kurt@linutronix.de>
+In-Reply-To: <20210503072800.79936-1-kurt@linutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+authentication-results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [203.192.251.142]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c8e8dcec-f93b-4c1e-5052-08d92683071f
+x-ms-traffictypediagnostic: MW3PR11MB4683:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR11MB4683B4B85F33F4B3F9C7362F9C3C9@MW3PR11MB4683.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2582;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Uv8RpoY6ZDRW/qjRTBzRSmDx4Kp/ePzfdVS77YMWL3oBUatH5e9BJqzJ3l8By09z1TyXKfGVZG7q8aXA8rl9UX/2pfqrBVhgXxw8BSwnVLPJgGSEgHjuDYkWE9fuSw+UiWlFWHfpsCZvPsMdyHkELmOcSQWA4XAEEydb6ceZSGApxUBVRFMuE8Jka5JB7XdlOdTxkRsxOvI81m3L10RkuHl4/f69piepfK/54NN0QeYwd6kbD41jXHlF/j2SsLVrE/Evtcbk4/KNvuHSlP9O0/2Zo0diY5JzHB+5dTVefm0Vhs9iqqMc7KZOo+pWMdcEFMDWo9LTcMbb13m1KjynoKHXC2un6AGjHztAnMDZDBQh4vbi4qOpm10nhWGxluI8tReV3PBC+JcdFVMq0P9mAKr1Xk/EEvlRt4+31pSz8xhZRAg9EStr6dxEIQYK8MxEpKDU4C9iiHuq+jGZolcOOJa1eqrvXS90MboYXj/+lcezxljQ1SnvJ6AMT59d/qEquerSCf1RNxcn/ZVv3iQQJDLEh+l780dD87DLfxQgwQxkQN/wz0kCfWPuoUobe0BXIhap6AdOQvCLf8zmPJ03sOJ+nk4OcFo03zN+Nj7Ve3NpBw9cXOtUb9d1uNn1lWxVwJ7AJFImPygYYRKvlaFM2PiIPd0Shq3AwPHgahEsPpEasO2TiugGuR43tGtH8m8lr7miuzOj4WJkE5LsYy8zINqAYZzJA29O++0q9iYfcGqTj5IXJg4IWmiU7F8cW4Aw2DwjzGcIw94UxVE1/TsX5w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4554.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(136003)(396003)(39860400002)(83380400001)(86362001)(7416002)(122000001)(38100700002)(966005)(316002)(54906003)(110136005)(52536014)(2906002)(8936002)(66446008)(66556008)(5660300002)(8676002)(66946007)(76116006)(66476007)(478600001)(64756008)(6506007)(9686003)(4326008)(26005)(33656002)(55016002)(71200400001)(107886003)(7696005)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?vHKYPiaW+HFBsow1MQzN11Mmf1Hi4j6dpTkv+urMKL8xeCNOdcC+kwLHONgo?=
+ =?us-ascii?Q?5InlwjfxNEWfxfp8cQP3y8xTrnBB+UvoLjpaR+EAk8nejhv0N0DbCJJWJOU1?=
+ =?us-ascii?Q?rPHoO9PezVFr0A3rfT6PmiIggN+WxHROpDXhHIVAfYQ/v1jl/qMQoz3lhyFt?=
+ =?us-ascii?Q?nZRHQxlbkPPmNhpUhIHCLO2X0zxIHXqmCsR9UTlg+TtU2naUdpskVabTB2kx?=
+ =?us-ascii?Q?lvKk5minaYN7s/cg6RUVSS3ss1T1juxub/QbVmgqImvQXEEZ4EaLPO2ehQJL?=
+ =?us-ascii?Q?PyFAjUIf+P9QoYlmjuM1nw/9rd6uW40k/foaonS6XfOuy9YdW7Iud1q5RtbO?=
+ =?us-ascii?Q?WbxvDS35lpFj3OZ1CTRWzeQrf6yZUHIkclmdjueeZ97Wm1mKfDKX6yd/f+p3?=
+ =?us-ascii?Q?M/Lqe2C2cHPT7kbDgiukf2hO9e4E42N9MKKzGmTkRKrXnjoINvwH9zagulNI?=
+ =?us-ascii?Q?R9xr1wNJt4FGG/GAKJwO0LvySXeavujNdvoY7+aBhG8HtnDCrWuodoIlPurQ?=
+ =?us-ascii?Q?fmYMzNRAwzJpzpDmAXe7nqMR4mEQvdlyQcHEQXYubYAtMqGoJgsHemLNNonX?=
+ =?us-ascii?Q?RJa1KLG4UrBGyF6e7dsUhp6ihhu8gcnPRbY2gNwU7WHxQ9A/Z761QSaNDUIn?=
+ =?us-ascii?Q?4rzNxQyOK8TOSG06CmugR49h/fDzE1zU6nOIiSSpdFkbhLWf8d+C/gc0hIug?=
+ =?us-ascii?Q?Nu699deOH8aO+CRSUApL6YdbvbOvuHxe+/b2Mpfo8UUB3qISDSLGfuwTSnsM?=
+ =?us-ascii?Q?JoT/WETnh3YPg8sqFMJjp+Ce+Cu7Bf/aWRzvh4Iy6b3+eF+1jAxB2SsIUE2F?=
+ =?us-ascii?Q?WrNlvpgMpWV0xGDTg8JJHCWX3F9ol1aZNVrz67qfFq1JVDG9AIY8G9zihaPr?=
+ =?us-ascii?Q?FmvrWht/9c0fFsD7kj7tk47GcNf/6MJE+xIHdpp+spwZ55r9v1qSFT1oAFDQ?=
+ =?us-ascii?Q?bTZaayA64vXBS4AJrPqnCmtjoY9xi6ODEbOlEkdlgh2MTTY/3QFO5VF2Ld6P?=
+ =?us-ascii?Q?Xre6nPGDIrlHW9xjOtVSYDpBaacEPXBlq0cPxfkMtWDGyz+0c5RgNkCYHYED?=
+ =?us-ascii?Q?eC3cZvcbRpfprisd36ihO/iQOAZ3UBUHcrgGzOlnzmim0utqemK471TTfytA?=
+ =?us-ascii?Q?nzWARlawvkiSLv00NAgF2wfk/pv3NsDVVgIMFno6YL2vfzi1b1R5yuHYW/KB?=
+ =?us-ascii?Q?LwJR3UUVqcipwDFPSDTlsVPj3g5nJbuRW52VmdZNWoSV+z2EnBFHkus9rQXf?=
+ =?us-ascii?Q?QWGTMXmgwp0CpAza3DuZ3fLKeqE+D1ODVkqX55bYbOXplR0RbAXqZ3kCFHof?=
+ =?us-ascii?Q?wJ590Br1tcDD2vg4yB9xJ5iN?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4554.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8e8dcec-f93b-4c1e-5052-08d92683071f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 11:30:45.0783
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6YJuGsAVaxJVlKhxilk4Ycid2H/wtIBS41DfU6nR5+Yy0LgC68p4HI/cUVjUzpo+v8x8MGSQsagSwdM0HJKxcLkqIMsrbHZJdfSk5xv4Gl0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4683
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-
-> On Thu, Jun 03, 2021 at 12:21:05AM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->>=20
->> > On Thu, May 27, 2021 at 06:57:17PM +0200, Toke H=C3=B8iland-J=C3=B8rge=
-nsen wrote:
->> >> >     if (val) {
->> >> >         bpf_timer_init(&val->timer, timer_cb2, 0);
->> >> >         bpf_timer_start(&val->timer, 1000 /* call timer_cb2 in 1 ms=
-ec */);
->> >>=20
->> >> nit: there are 1M nanoseconds in a millisecond :)
->> >
->> > oops :)
->> >
->> >> >     }
->> >> > }
->> >> >
->> >> > This patch adds helper implementations that rely on hrtimers
->> >> > to call bpf functions as timers expire.
->> >> > The following patch adds necessary safety checks.
->> >> >
->> >> > Only programs with CAP_BPF are allowed to use bpf_timer.
->> >> >
->> >> > The amount of timers used by the program is constrained by
->> >> > the memcg recorded at map creation time.
->> >> >
->> >> > The bpf_timer_init() helper is receiving hidden 'map' and 'prog' ar=
-guments
->> >> > supplied by the verifier. The prog pointer is needed to do refcntin=
-g of bpf
->> >> > program to make sure that program doesn't get freed while timer is =
-armed.
->> >> >
->> >> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->> >>=20
->> >> Overall this LGTM, and I believe it will be usable for my intended use
->> >> case. One question:
->> >>=20
->> >> With this, it will basically be possible to create a BPF daemon, won't
->> >> it? I.e., if a program includes a timer and the callback keeps re-arm=
-ing
->> >> itself this will continue indefinitely even if userspace closes all r=
-efs
->> >> to maps and programs? Not saying this is a problem, just wanted to ch=
-eck
->> >> my understanding (i.e., that there's not some hidden requirement on
->> >> userspace keeping a ref open that I'm missing)...
->> >
->> > That is correct.
->> > Another option would be to auto-cancel the timer when the last referen=
-ce
->> > to the prog drops. That may feel safer, since forever
->> > running bpf daemon is a certainly new concept.
->> > The main benefits of doing prog_refcnt++ from bpf_timer_start are ease
->> > of use and no surprises.
->> > Disappearing timer callback when prog unloads is outside of bpf prog c=
-ontrol.
->> > For example the tracing bpf prog might collect some data and periodica=
-lly
->> > flush it to user space. The prog would arm the timer and when callback
->> > is invoked it would send the data via ring buffer and start another
->> > data collection cycle.
->> > When the user space part of the service exits it doesn't have
->> > an ability to enforce the flush of the last chunk of data.
->> > It could do prog_run cmd that will call the timer callback,
->> > but it's racy.
->> > The solution to this problem could be __init and __fini
->> > sections that will be invoked when the prog is loaded
->> > and when the last refcnt drops.
->> > It's a complementary feature though.
->> > The prog_refcnt++ from bpf_timer_start combined with a prog
->> > explicitly doing bpf_timer_cancel from __fini
->> > would be the most flexible combination.
->> > This way the prog can choose to be a daemon or it can choose
->> > to cancel its timers and do data flushing when the last prog
->> > reference drops.
->> > The prog refcnt would be split (similar to uref). The __fini callback
->> > will be invoked when refcnt reaches zero, but all increments
->> > done by bpf_timer_start will be counted separately.
->> > The user space wouldn't need to do the prog_run command.
->> > It would detach the prog and close(prog_fd).
->> > That will trigger __fini callback that will cancel the timers
->> > and the prog will be fully unloaded.
->> > That would make bpf progs resemble kernel modules even more.
->>=20
->> I like the idea of a "destructor" that will trigger on refcnt drop to
->> zero. And I do think a "bpf daemon" is potentially a useful, if novel,
->> concept.
+>-----Original Message-----
+>From: Kurt Kanzenbach <kurt@linutronix.de>
+>Sent: Monday, May 3, 2021 12:58 PM
+>To: Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L
+><anthony.l.nguyen@intel.com>; David S. Miller <davem@davemloft.net>;
+>Jakub Kicinski <kuba@kernel.org>
+>Cc: Alexei Starovoitov <ast@kernel.org>; Daniel Borkmann
+><daniel@iogearbox.net>; Jesper Dangaard Brouer <hawk@kernel.org>; John
+>Fastabend <john.fastabend@gmail.com>; Sven Auhagen
+><sven.auhagen@voleatech.de>; intel-wired-lan@lists.osuosl.org;
+>netdev@vger.kernel.org; bpf@vger.kernel.org; Ilias Apalodimas
+><ilias.apalodimas@linaro.org>; Lorenzo Bianconi <lorenzo@kernel.org>;
+>Sebastian Andrzej Siewior <bigeasy@linutronix.de>; Richard Cochran
+><richardcochran@gmail.com>; Alexander Duyck
+><alexander.duyck@gmail.com>; Tyler S <tylerjstachecki@gmail.com>;
+>Fijalkowski, Maciej <maciej.fijalkowski@intel.com>; Kurt Kanzenbach
+><kurt@linutronix.de>
+>Subject: [PATCH net v4] igb: Fix XDP with PTP enabled
 >
-> I think so too. Long ago folks requested periodic bpf progs to
-> do sampling in tracing. All these years attaching bpf prog
-> to a perf_event was a workaround for such feature request.
-> perf_event bpf prog can be pinned in perf_event array,
-> so "bpf daemon" kinda exist today. Just more convoluted.
-
-Right, agreed - triggering periodic sampling directly from BPF does seem
-like the right direction.
-
->> The __fini thing kinda supposes a well-behaved program, though, right?
->> I.e., it would be fairly trivial to write a program that spins forever
->> by repeatedly scheduling the timer with a very short interval (whether
->> by malice or bugginess).
+>When using native XDP with the igb driver, the XDP frame data doesn't poin=
+t
+>to the beginning of the packet. It's off by 16 bytes. Everything works as
+>expected with XDP skb mode.
 >
-> It's already possible without bpf_timer.
-
-Hmm, fair point.
-
->> So do we need a 'bpfkill' type utility to nuke
->> buggy programs, or how would resource constraints be enforced?
+>Actually these 16 bytes are used to store the packet timestamps. Therefore=
+,
+>pull the timestamp before executing any XDP operations and adjust all othe=
+r
+>code accordingly. The igc driver does it like that as well.
 >
-> That is possible without 'bpfkill'.
-> bpftool can delete map element that contains bpf_timer and
-> that will cancel it. I'll add tests to make sure it's the case.
-
-Ah, right, of course! Thanks, LGTM then :)
-
--Toke
-
+>Tested with Intel i210 card and AF_XDP sockets.
+>
+>Fixes: 9cbc948b5a20 ("igb: add XDP support")
+>Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
+>---
+>
+>Changes since v3:
+>
+> * Get rid of timestamp check in hot path (Maciej Fijalkowski)
+>
+>Changes since v2:
+>
+> * Check timestamp for validity (Nguyen, Anthony L)
+>
+>Changes since v1:
+>
+> * Use xdp_prepare_buff() (Lorenzo Bianconi)
+>
+>Changes since RFC:
+>
+> * Removed unused return value definitions (Alexander Duyck)
+>
+>Previous versions:
+>
+> * https://lkml.kernel.org/netdev/20210422052617.17267-1-
+>kurt@linutronix.de/
+> * https://lkml.kernel.org/netdev/20210419072332.7246-1-
+>kurt@linutronix.de/
+> * https://lkml.kernel.org/netdev/20210415092145.27322-1-
+>kurt@linutronix.de/
+> * https://lkml.kernel.org/netdev/20210412101713.15161-1-
+>kurt@linutronix.de/
+>
+> drivers/net/ethernet/intel/igb/igb.h      |  2 +-
+> drivers/net/ethernet/intel/igb/igb_main.c | 45 +++++++++++++----------
+>drivers/net/ethernet/intel/igb/igb_ptp.c  | 23 +++++-------
+> 3 files changed, 37 insertions(+), 33 deletions(-)
+>
+Tested-by: Sandeep Penigalapati <sandeep.penigalapati@intel.com>
