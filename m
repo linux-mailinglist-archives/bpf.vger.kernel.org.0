@@ -2,182 +2,261 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5263E399CD9
-	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 10:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C118399E98
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 12:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhFCIoB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Jun 2021 04:44:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54641 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230010AbhFCIoB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 3 Jun 2021 04:44:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622709736;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RazYg4sxUKSuMnMkuH34M/Jxx/6c8sX3nrN1kGiEDfU=;
-        b=F3Nji9dRTginCVCTV0ZyJ0A0ZCRVqTjIhQ2NtSdqI9hEEgRMXaH5KsqT92S0cOIgmOkO1w
-        W2ew5QtCNVs3+OaTzGxdIiLj/BrgBp0fXBvDmZn3J707YMTu7VecnGyQsPzZWulLvC74zb
-        n3KLs0WLija1/x1LZl3tM86ajf3ihIk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-F6M_x3ElOEeITykbVz9UyQ-1; Thu, 03 Jun 2021 04:42:12 -0400
-X-MC-Unique: F6M_x3ElOEeITykbVz9UyQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 052AA6414C;
-        Thu,  3 Jun 2021 08:42:11 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 66FAB610B0;
-        Thu,  3 Jun 2021 08:42:04 +0000 (UTC)
-Date:   Thu, 3 Jun 2021 10:42:03 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     brouer@redhat.com, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        anthony.l.nguyen@intel.com, kuba@kernel.org, bjorn@kernel.org,
-        magnus.karlsson@intel.com
-Subject: Re: [PATCH intel-next 2/2] ice: introduce XDP Tx fallback path
-Message-ID: <20210603104203.26e5fee4@carbon>
-In-Reply-To: <20210601113236.42651-3-maciej.fijalkowski@intel.com>
-References: <20210601113236.42651-1-maciej.fijalkowski@intel.com>
-        <20210601113236.42651-3-maciej.fijalkowski@intel.com>
+        id S229755AbhFCKQ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Jun 2021 06:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229661AbhFCKQ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Jun 2021 06:16:28 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EADC061756
+        for <bpf@vger.kernel.org>; Thu,  3 Jun 2021 03:14:42 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id z8so5229249wrp.12
+        for <bpf@vger.kernel.org>; Thu, 03 Jun 2021 03:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r6wujZEx4w3Wb9eZZ+VBAhoM8LZYydULFabamzp2QUI=;
+        b=YhsEKkbmyHNpmmSO98nNtBGUlS85W1ixzrSEeuSq+SMUHoFD7PunUmSDaApSt5nQZj
+         1SgxFC8EtTfM4morLPh2mWTbJA0yJCYDgBFksyKcZ3hCJKMlG2+CGtk9pwaSYpRvo0Ip
+         XGDa1QG8pqL6wa909huzCnQ8Wjk4ulys2YhnHaY8IELkRZ6OBtIhHjFJFG/+tCN5ELHW
+         vXyjX5Jt9hm3r5dWDf9/D8l+A3u4RZhg6DT9AIJg8D8mbPcLdj6hBNOv4f/mCP7QXyIG
+         J8R3QJRqJXjo0cGSq5r6Jq7Mh4okXIyRv3wuO+7if05Qs1QvzpFQpw9I+jwUNOZruCKP
+         +gcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r6wujZEx4w3Wb9eZZ+VBAhoM8LZYydULFabamzp2QUI=;
+        b=D4syHz+3jG/MqeMloPKds4/rKWBjkVazubsINrs1EcTnmr6cNRvBkrCB4p4CAXLjMc
+         y8zidpC1p0DHchuV2zRp/31PTGG+c9a2KC7kkVYBEzMWcRwuj+TYzN/n5f4ENlSheUrC
+         dCDS8FxHL0QMbwVANFNJ0LNYcdV2OSguA+YoFOAOno9y2YhAnO0KCFKtczOsy9JLrGeR
+         j9ZRSKLCSA9tVw+3OC81Vv1qEOL+RRKXai3ZwJtewq+w7GgegZ1kYWLmi7feyy9MdRX8
+         R0C40WtYQZgGA+rbIzov1vFgsPLB2B01YgiyA7+v2EseyXJ5P31bU5sYWUtEzSl6dI2R
+         RaPQ==
+X-Gm-Message-State: AOAM532sdY2UntW+40L+HGEFWUD5z2Y9tHD31oaaJYr67oULD5sZg1QB
+        ZErV3yYB49702vWWcFGWbGL/IlFqJEm0duQ+WHk=
+X-Google-Smtp-Source: ABdhPJyphhboD4vU1BbfeFdodj1tWM0gh7FOhZ081teffSyvKKio440OZl8evPsQh5/Qb6O0KBVpLw==
+X-Received: by 2002:adf:bc02:: with SMTP id s2mr12116547wrg.87.1622715280642;
+        Thu, 03 Jun 2021 03:14:40 -0700 (PDT)
+Received: from localhost ([154.21.15.43])
+        by smtp.gmail.com with ESMTPSA id p20sm5091044wmq.10.2021.06.03.03.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 03:14:40 -0700 (PDT)
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     bpf@vger.kernel.org
+Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, ast@kernel.org,
+        davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, rdna@fb.com
+Subject: [PATCH bpf-next v1 00/10] bpfilter
+Date:   Thu,  3 Jun 2021 14:14:15 +0400
+Message-Id: <20210603101425.560384-1-me@ubique.spb.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue,  1 Jun 2021 13:32:36 +0200
-Maciej Fijalkowski <maciej.fijalkowski@intel.com> wrote:
+The patchset is based on the patches from David S. Miller [1] and
+Daniel Borkmann [2].
 
-> Under rare circumstances there might be a situation where a requirement
-> of having a XDP Tx queue per core could not be fulfilled and some of the
-> Tx resources would have to be shared between cores. This yields a need
-> for placing accesses to xdp_rings array onto critical section protected
-> by spinlock.
-> 
-> Design of handling such scenario is to at first find out how many queues
-> are there that XDP could use. Any number that is not less than the half
-> of a count of cores of platform is allowed. XDP queue count < cpu count
-> is signalled via new VSI state ICE_VSI_XDP_FALLBACK which carries the
-> information further down to Rx rings where new ICE_TX_XDP_LOCKED is set
-> based on the mentioned VSI state. This ring flag indicates that locking
-> variants for getting/putting xdp_ring need to be used in fast path.
-> 
-> For XDP_REDIRECT the impact on standard case (one XDP ring per CPU) can
-> be reduced a bit by providing a separate ndo_xdp_xmit and swap it at
-> configuration time. However, due to the fact that net_device_ops struct
-> is a const, it is not possible to replace a single ndo, so for the
-> locking variant of ndo_xdp_xmit, whole net_device_ops needs to be
-> replayed.
+The main goal of the patchset is to prepare bpfilter for
+iptables' configuration blob parsing and code generation.
 
-I like this approach of having a separate ndo_xdp_xmit.  Slightly
-unfortunately that we have setup an entire net_device_ops struct for
-the purpose.
+The patchset introduces data structures and code for matches,
+targets, rules and tables.
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+The current version misses handling of counters. Postpone its
+implementation until the code generation phase as it's not clear
+yet how to better handle them.
 
-> 
-> It has an impact on performance (1-2 %) of a non-fallback path as
-> branches are introduced.
+Beside that there is no support of net namespaces at all.
 
-The XDP_TX path are slightly affected by this, but the XDP_REDIRECT
-should not see any slowdown (I hope).
+In the next iteration basic code generation shall be introduced.
 
+The rough plan for the code generation.
 
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice.h          | 37 +++++++++
->  drivers/net/ethernet/intel/ice/ice_base.c     |  5 ++
->  drivers/net/ethernet/intel/ice/ice_lib.c      |  4 +-
->  drivers/net/ethernet/intel/ice/ice_main.c     | 76 ++++++++++++++++++-
->  drivers/net/ethernet/intel/ice/ice_txrx.c     | 62 ++++++++++++++-
->  drivers/net/ethernet/intel/ice/ice_txrx.h     |  2 +
->  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 13 +++-
->  7 files changed, 191 insertions(+), 8 deletions(-)
-> 
-[...]
-> diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-> index 1915b6a734e2..6473134b492f 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_main.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_main.c
-[...]
-> @@ -2355,6 +2357,12 @@ int ice_prepare_xdp_rings(struct ice_vsi *vsi, struct bpf_prog *prog)
->  	if (__ice_vsi_get_qs(&xdp_qs_cfg))
->  		goto err_map_xdp;
->  
-> +	if (test_bit(ICE_VSI_XDP_FALLBACK, vsi->state)) {
-> +		vsi->netdev->netdev_ops = &ice_netdev_ops_xdp_locked;
-> +		netdev_warn(vsi->netdev,
-> +			    "Could not allocate one XDP Tx ring per CPU, XDP_TX/XDP_REDIRECT actions will be slower\n");
-> +	}
-> +
->  	if (ice_xdp_alloc_setup_rings(vsi))
->  		goto clear_xdp_rings;
->  
-> @@ -2470,6 +2478,10 @@ int ice_destroy_xdp_rings(struct ice_vsi *vsi)
->  
->  	devm_kfree(ice_pf_to_dev(pf), vsi->xdp_rings);
->  	vsi->xdp_rings = NULL;
-> +	if (test_bit(ICE_VSI_XDP_FALLBACK, vsi->state)) {
-> +		clear_bit(ICE_VSI_XDP_FALLBACK, vsi->state);
-> +		vsi->netdev->netdev_ops = &ice_netdev_ops;
-> +	}
->  
->  	if (ice_is_reset_in_progress(pf->state) || !vsi->q_vectors[0])
->  		return 0;
-[...]
-> @@ -6987,3 +7025,37 @@ static const struct net_device_ops ice_netdev_ops = {
->  	.ndo_xdp_xmit = ice_xdp_xmit,
->  	.ndo_xsk_wakeup = ice_xsk_wakeup,
->  };
-> +
-> +static const struct net_device_ops ice_netdev_ops_xdp_locked = {
-> +	.ndo_open = ice_open,
-> +	.ndo_stop = ice_stop,
-> +	.ndo_start_xmit = ice_start_xmit,
-> +	.ndo_features_check = ice_features_check,
-> +	.ndo_set_rx_mode = ice_set_rx_mode,
-> +	.ndo_set_mac_address = ice_set_mac_address,
-> +	.ndo_validate_addr = eth_validate_addr,
-> +	.ndo_change_mtu = ice_change_mtu,
-> +	.ndo_get_stats64 = ice_get_stats64,
-> +	.ndo_set_tx_maxrate = ice_set_tx_maxrate,
-> +	.ndo_set_vf_spoofchk = ice_set_vf_spoofchk,
-> +	.ndo_set_vf_mac = ice_set_vf_mac,
-> +	.ndo_get_vf_config = ice_get_vf_cfg,
-> +	.ndo_set_vf_trust = ice_set_vf_trust,
-> +	.ndo_set_vf_vlan = ice_set_vf_port_vlan,
-> +	.ndo_set_vf_link_state = ice_set_vf_link_state,
-> +	.ndo_get_vf_stats = ice_get_vf_stats,
-> +	.ndo_vlan_rx_add_vid = ice_vlan_rx_add_vid,
-> +	.ndo_vlan_rx_kill_vid = ice_vlan_rx_kill_vid,
-> +	.ndo_set_features = ice_set_features,
-> +	.ndo_bridge_getlink = ice_bridge_getlink,
-> +	.ndo_bridge_setlink = ice_bridge_setlink,
-> +	.ndo_fdb_add = ice_fdb_add,
-> +	.ndo_fdb_del = ice_fdb_del,
-> +#ifdef CONFIG_RFS_ACCEL
-> +	.ndo_rx_flow_steer = ice_rx_flow_steer,
-> +#endif
-> +	.ndo_tx_timeout = ice_tx_timeout,
-> +	.ndo_bpf = ice_xdp,
-> +	.ndo_xdp_xmit = ice_xdp_xmit_locked,
-> +	.ndo_xsk_wakeup = ice_xsk_wakeup,
-> +};
+It seems reasonable to assume that the first rules should cover
+most of the packet flow.  This is why they are critical from the
+performance point of view.  At the same time number of user
+defined rules might be pretty large. Also there is a limit on
+size and complexity of a BPF program introduced by the verifier.
 
-LGTM. Kept above code to ease review review of ndo_xdp_xmit /
-net_device_ops swap for others.
+There are two approaches how to handle iptables' rules in
+generated BPF programs.
+
+The first approach is to generate a BPF program that is an
+equivalent to a set of rules on a rule by rule basis. This
+approach should give the best performance. The drawback is the
+limitation from the verifier on size and complexity of BPF
+program.
+
+The second approach is to use an internal representation of rules
+stored in a BPF map and use bpf_for_each_map_elem() helper to
+iterate over them. In this case the helper's callback is a BPF
+function that is able to process any valid rule.
+
+Combination of the two approaches should give most of the
+benefits - a heuristic should help to select a small subset of
+the rules for code generation on a rule by rule basis. All other
+rules are cold and it should be possible to store them in an
+internal form in a BPF map. The rules will be handled by
+bpf_for_each_map_elem().  This should remove the limit on the
+number of supported rules.
+
+During development it was useful to use statically linked
+sanitizers in bpfilter usermode helper. Also it is possible to
+use fuzzers but it's not clear if it is worth adding them to the
+test infrastructure - because there are no other fuzzers under
+tools/testing/selftests currently.
+
+Patch 1 adds definitions of the used types.
+Patch 2 adds logging to bpfilter.
+Patch 3 adds bpfilter header to tools
+Patch 4 adds an associative map.
+Patches 5/6/7/8 add code for matches, targets, rules and table.
+Patch 9 handles hooked setsockopt(2) calls.
+Patch 10 uses prepared code in main().
+
+Here is an example:
+% dmesg  | tail -n 2
+[   23.636102] bpfilter: Loaded bpfilter_umh pid 181
+[   23.658529] bpfilter: started
+% /usr/sbin/iptables-legacy -L -n
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+% /usr/sbin/iptables-legacy -A INPUT -p udp --dport 23 -j DROP
+% /usr/sbin/iptables-legacy -L -n
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+DROP       udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:23
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+% /usr/sbin/iptables-legacy -F
+% /usr/sbin/iptables-legacy -L -n
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+%
+
+v0 -> v1
+IO:
+  * Use ssize_t in pvm_read, pvm_write for total_bytes
+  * Move IO functions into sockopt.c and main.c
+Logging:
+  * Use LOGLEVEL_EMERG, LOGLEVEL_NOTICE, LOGLEVE_DEBUG
+    while logging to /dev/kmsg
+  * Prepend log message with <n> where n is log level
+  * Conditionally enable BFLOG_DEBUG messages
+  * Merge bflog.{h,c} into context.h
+Matches:
+  * Reorder fields in struct match_ops for tight packing
+  * Get rid of struct match_ops_map
+  * Rename udp_match_ops to xt_udp
+  * Use XT_ALIGN macro
+  * Store payload size in match size
+  * Move udp match routines into a separate file
+Targets:
+  * Reorder fields in struct target_ops for tight packing
+  * Get rid of struct target_ops_map
+  * Add comments for convert_verdict function
+Rules:
+  * Add validation
+Tables:
+  * Combine table_map and table_list into table_index
+  * Add validation
+Sockopts:
+  * Handle IPT_SO_GET_REVISION_TARGET
+
+1. https://lore.kernel.org/patchwork/patch/902785/
+2. https://lore.kernel.org/patchwork/patch/902783/
+
+Dmitrii Banshchikov (10):
+  bpfilter: Add types for usermode helper
+  bpfilter: Add logging facility
+  tools: Add bpfilter usermode helper header
+  bpfilter: Add map container
+  bpfilter: Add struct match
+  bpfilter: Add struct target
+  bpfilter: Add struct rule
+  bpfilter: Add struct table
+  bpfilter: Add handling of setsockopt() calls
+  bpfilter: Handle setsockopts
+
+ .clang-format                                 |   2 +-
+ include/uapi/linux/bpfilter.h                 | 155 +++++++
+ net/bpfilter/Makefile                         |   3 +-
+ net/bpfilter/context.c                        | 181 ++++++++
+ net/bpfilter/context.h                        |  46 ++
+ net/bpfilter/main.c                           | 123 ++++--
+ net/bpfilter/map-common.c                     |  64 +++
+ net/bpfilter/map-common.h                     |  19 +
+ net/bpfilter/match.c                          |  49 +++
+ net/bpfilter/match.h                          |  33 ++
+ net/bpfilter/rule.c                           | 163 +++++++
+ net/bpfilter/rule.h                           |  32 ++
+ net/bpfilter/sockopt.c                        | 409 ++++++++++++++++++
+ net/bpfilter/sockopt.h                        |  14 +
+ net/bpfilter/table.c                          | 339 +++++++++++++++
+ net/bpfilter/table.h                          |  39 ++
+ net/bpfilter/target.c                         | 118 +++++
+ net/bpfilter/target.h                         |  49 +++
+ net/bpfilter/xt_udp.c                         |  33 ++
+ tools/include/uapi/linux/bpfilter.h           | 179 ++++++++
+ .../testing/selftests/bpf/bpfilter/.gitignore |   5 +
+ tools/testing/selftests/bpf/bpfilter/Makefile |  30 ++
+ .../selftests/bpf/bpfilter/bpfilter_util.h    |  39 ++
+ .../testing/selftests/bpf/bpfilter/test_map.c |  63 +++
+ .../selftests/bpf/bpfilter/test_match.c       |  63 +++
+ .../selftests/bpf/bpfilter/test_rule.c        |  55 +++
+ .../selftests/bpf/bpfilter/test_target.c      |  85 ++++
+ 27 files changed, 2346 insertions(+), 44 deletions(-)
+ create mode 100644 net/bpfilter/context.c
+ create mode 100644 net/bpfilter/context.h
+ create mode 100644 net/bpfilter/map-common.c
+ create mode 100644 net/bpfilter/map-common.h
+ create mode 100644 net/bpfilter/match.c
+ create mode 100644 net/bpfilter/match.h
+ create mode 100644 net/bpfilter/rule.c
+ create mode 100644 net/bpfilter/rule.h
+ create mode 100644 net/bpfilter/sockopt.c
+ create mode 100644 net/bpfilter/sockopt.h
+ create mode 100644 net/bpfilter/table.c
+ create mode 100644 net/bpfilter/table.h
+ create mode 100644 net/bpfilter/target.c
+ create mode 100644 net/bpfilter/target.h
+ create mode 100644 net/bpfilter/xt_udp.c
+ create mode 100644 tools/include/uapi/linux/bpfilter.h
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/.gitignore
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/Makefile
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/bpfilter_util.h
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/test_map.c
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/test_match.c
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/test_rule.c
+ create mode 100644 tools/testing/selftests/bpf/bpfilter/test_target.c
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.25.1
 
