@@ -2,137 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F142B3997DC
-	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 04:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3C93998E7
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 06:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhFCCHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Jun 2021 22:07:20 -0400
-Received: from mail-pj1-f43.google.com ([209.85.216.43]:50972 "EHLO
-        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFCCHU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Jun 2021 22:07:20 -0400
-Received: by mail-pj1-f43.google.com with SMTP id i22so2768789pju.0;
-        Wed, 02 Jun 2021 19:05:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i/BK32Jzp3cqNvlgCq2WAqJU4RvyCZu+/H57kXLblOY=;
-        b=ZTT3h/n+q9NvXPA/E/YCXeQN7USNJVdcbtJo8VF9v00y60FczF0OvKQGwaeSg7l5uV
-         TnKhDv/DkmKIcz6WgMk0vBfMS7wF9+mDxlriCz7uzzFCNFz0SUHjN87KHYjC8Rp7SmPP
-         6Byx240lccEY99EQIDLBGR8BKuETEsti+JSqSm4g046sWyPLPC6SOajt69Gu5ZA59xba
-         NVHE7NUTZ4/VqnQTJeo8qFonlo2jSutKtWBVJWuQM6nzyJRq0yNqYl2Ast3SPmg/wwL8
-         EoKqXrsheFXfSrArHNBlMM3LZ9UbLV9ixJL/mOfxRAXGuehVVdiL6GiXvm0tLnq59UTx
-         E06w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i/BK32Jzp3cqNvlgCq2WAqJU4RvyCZu+/H57kXLblOY=;
-        b=QJ7JTas//yvN93vKHdZP1y0stzBE+pkVfqfOM7XDMGLiMeW65KnvXaYX21po3X9rT5
-         c22/N+imUJOx0H0SRfX8mQJx6OzkZhr0yW0yuUtg6oFEDPQW5qop0O1CVDLZnGSONF/T
-         np+ynoUKHToynAEvNR2X9DaD5dSHb/lDRKiLfZijt95Xn+u6mvqo8GzSUBs3qgIg27RG
-         rqKwHxKIsfZFvk9oN6bGqDtV9JGWPgO9DjqWKfZmOd6AovuG6ERFcs29zOf+3vN+2MEr
-         p7zm9aESs7PZm7QBzgUR5gt/v4b/sTgs1XkA/M53DENNloO5PWccxtiJCFB8nne3oXup
-         NKyQ==
-X-Gm-Message-State: AOAM531pnyQydhJ/hw+WrcPQkMIqRNY4PUBqoUe7Fii9zx+ZmJmSWElT
-        9N5LnpzonnF4mgrfDDHhvBk=
-X-Google-Smtp-Source: ABdhPJx0B3/Ggp+NBS94vmugYcVvag7lAAaSfuX1YaOs1IFjt/eT9JXabIJ4Lo2OWw74XqEKLunaEg==
-X-Received: by 2002:a17:90b:e04:: with SMTP id ge4mr21320131pjb.230.1622685862090;
-        Wed, 02 Jun 2021 19:04:22 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:27da])
-        by smtp.gmail.com with ESMTPSA id n2sm909234pgl.59.2021.06.02.19.04.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 19:04:21 -0700 (PDT)
-Date:   Wed, 2 Jun 2021 19:04:19 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add verifier checks for bpf_timer.
-Message-ID: <20210603020419.mhnueugljj5cs3ie@ast-mbp.dhcp.thefacebook.com>
-References: <20210527040259.77823-1-alexei.starovoitov@gmail.com>
- <20210527040259.77823-3-alexei.starovoitov@gmail.com>
- <CAEf4BzbPkUdsY8XD5n2yMB8CDvakz4jxshjF8xrzqHXQS0ct9g@mail.gmail.com>
+        id S229727AbhFCEQ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Jun 2021 00:16:57 -0400
+Received: from mga03.intel.com ([134.134.136.65]:62210 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229723AbhFCEQ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Jun 2021 00:16:56 -0400
+IronPort-SDR: DkcpFuEzzxihcTXTcK5hCFCHpek2M1QyOhWN/O18Ym1MxTijnkw8QnO1dNpkU932ElVQ2EMo+n
+ QDNu8oUNXLYQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10003"; a="203990118"
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="203990118"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2021 21:15:12 -0700
+IronPort-SDR: tTjodBf2m2WL543pYjL9EvoVUN0MmdaCH50jYAAa5bsuWmY17t4zV9hFLFnoGt+aLaF0ehUP3J
+ ++1HM+Pzc5bg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,244,1616482800"; 
+   d="scan'208";a="417191603"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by orsmga002.jf.intel.com with ESMTP; 02 Jun 2021 21:15:12 -0700
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 2 Jun 2021 21:15:11 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 2 Jun 2021 21:15:11 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Wed, 2 Jun 2021 21:15:11 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.47) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Wed, 2 Jun 2021 21:15:11 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DlRt16d0jQ9dcrIkk9VNsZpeN8M9NAeM1zONfKzCsT0vkcQabOwQk7iaUF2N66BfFcU1k+DA73VNRhtr7gwexXMyfsC95fwlZPcYl4+vXPdKIBQQ0LIW2Ij3/HKQApTbulIPDNeRKtWoFFSsy2U40DuCoN9aQGSgv/VvsWGNs3MWQCFvXgC0ICKNuBlZaORkjSiNoV+fJhdjwqfXiD2kjbYEy00XQ1n4Jvzn1zIdPujCJYfzaxSGlFYITQHj/J7bcOj3KF72dWLwu71hnhzpJIJszYO1jfS4eZ9wq6GquariWd9F7AMNdKmAnJwtWyoKSvxtNtX1/90JngK4BwE+Tw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FbIydgj9LQYyFo0rEwdxDUbtzTuonJfm5d/TAaZEbaQ=;
+ b=i6Kiz91A3Yh6+JEXeFAbbRDxCGHo87UHqJDlM9cS44RQkL0FFVzgFVAPoUqee/PhKGQMh194lo3s41dLDzXqpTZ1o7ik9F2ojo7CcJd0lY8TBcQ8Rp/7P7aPlTDbw8+aDN83Dg/wy76Cke2rjeJqob2EqP8xE+73I/jPT4DSuc5CnujxKCiKeuh1orh0cFegjTAbX4Ovl65aZ1NrMtytUCaGXuHRyK3DDnIudtHanuQQ2OyxyeeekdI9eUKLP1sl27qfwaHaz2QkVB7HtgSmclIC+hu/xhBNLx8NY4HKJW1HidjGcgqN+s89MorK5BsNLl1t7hf9zCcMgUn3ZUs1MA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FbIydgj9LQYyFo0rEwdxDUbtzTuonJfm5d/TAaZEbaQ=;
+ b=gswMfiSXTbJPJS7yFocCMXJe/lBGxQyJOW+/k4kfXBlkWXKG74iDSHOXbmpCybkwpQno2BbgPHnunNdPp+3RoSyno36YiDh1xAlv01dAAqqVFEsj0hXn674WO6//g+pyFGJqvVWX76ZDQTZ2zoRObYUa0+DH4J1CdeStjfunSUE=
+Received: from DM6PR11MB3292.namprd11.prod.outlook.com (2603:10b6:5:5a::21) by
+ DM6PR11MB3515.namprd11.prod.outlook.com (2603:10b6:5:6c::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4173.24; Thu, 3 Jun 2021 04:15:08 +0000
+Received: from DM6PR11MB3292.namprd11.prod.outlook.com
+ ([fe80::ac71:f532:33f7:a9d7]) by DM6PR11MB3292.namprd11.prod.outlook.com
+ ([fe80::ac71:f532:33f7:a9d7%3]) with mapi id 15.20.4195.020; Thu, 3 Jun 2021
+ 04:15:08 +0000
+From:   "Bhandare, KiranX" <kiranx.bhandare@intel.com>
+To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        "bjorn@kernel.org" <bjorn@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: RE: [Intel-wired-lan] [PATCH v2 intel-net 1/2] ice: add ndo_bpf
+ callback for safe mode netdev ops
+Thread-Topic: [Intel-wired-lan] [PATCH v2 intel-net 1/2] ice: add ndo_bpf
+ callback for safe mode netdev ops
+Thread-Index: AQHXTUQCKCum9GkL/UCCn2uSiqT6BKsBwztg
+Date:   Thu, 3 Jun 2021 04:15:08 +0000
+Message-ID: <DM6PR11MB3292CA01DB8F9EF78A704DFEF13C9@DM6PR11MB3292.namprd11.prod.outlook.com>
+References: <20210520063500.62037-1-maciej.fijalkowski@intel.com>
+ <20210520063500.62037-2-maciej.fijalkowski@intel.com>
+In-Reply-To: <20210520063500.62037-2-maciej.fijalkowski@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [2401:4900:502a:ef07:d47b:7870:98e1:edeb]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6fcf7b45-ab05-47ba-7631-08d926462c4f
+x-ms-traffictypediagnostic: DM6PR11MB3515:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB35159082E5DC8DA82BAEE4D3F13C9@DM6PR11MB3515.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TsqdjDdyTwYMoDR3IM0kF1yW12AOJaPEXtFSpzMCcweHQwdt0o/YeR7LUzLuGl0kHRYgssLVVq5jt6Hhiv7VymVaYUSpm3QnFXI6SEliY5CZYZYDW2kvc9aT3vr7PQ17YxW8oZSQfqHjNuHX5Bl5CGwr3UcbK096r/syrBRtfgFib/wyXMj7U/KJvEYJWrwfK9bLKR8ONTL6GIo94s3okm1RzF31BATN039wepBkl+EQYNjDafc6ei5Xjf6jWFtP1FhOeeJLB/hr5cwmJZoOhtkWe530N4s5eBIfBnmq7Nbqowd/QScVn7KOOJ7H5a0PsYauNaR9Uwy7/qCqMreWVi8JT5IePFInq0YgHc7sm23H+B/xYceI1ml7M18XhzaNTbpRFSOm59k/jH1FcV0zj/0EIfkbfpu3hTYg+Tw1fTBv58qSi0JGm/mrZiDvb7DTfvW3mdX6N1Pe9RaUtajBFh9t9IOH3D7ma5sQnD957576pWiww1Y3gqQSveNtiCTP6x0gnJ98/S2s9YrANIMSZ427s4mte4munIXRhD8Oi5CU4RBYl/7QlL71+nf8EoPycRFxGeE/2BQl2hEmnwuqNxI+MxGrI7pSPPBrgl/YtP4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3292.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(376002)(346002)(39860400002)(136003)(86362001)(2906002)(186003)(83380400001)(4326008)(8936002)(33656002)(64756008)(66476007)(66556008)(76116006)(5660300002)(9686003)(66446008)(107886003)(7696005)(66946007)(122000001)(316002)(6506007)(110136005)(55016002)(54906003)(38100700002)(71200400001)(52536014)(53546011)(478600001)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?HOKLYvq1rIyjH1NG6dXfZ7Z0Pcx/+BxhKmyfHnha6TWzp8wyIc7JaIi7VjtT?=
+ =?us-ascii?Q?FWUy/KFJyYjFn1Cx0x4mT1q6c8iEVMjZ81r+e5z7VivJ2ZTZKj9wpoDg1DG3?=
+ =?us-ascii?Q?XoVU95a7pdvKjGDPvxhF51mNJohtbGrfx+aSskb5Zu3QRTTMyDuTDNEdEaVo?=
+ =?us-ascii?Q?swR6axZMuOrn1Ocvcf/YohQxksUYd6mSRySECnvNLNY30d81jtIosU+jpDXX?=
+ =?us-ascii?Q?CSI7Oz8nrm1ZNlvS0Ce7+HYbnT7HQwRw0JojYX1WYLc4R6uzuOOQJ4wWxD4X?=
+ =?us-ascii?Q?OtrHVY7DnFpin4WvHRj//cpkkZ7IyS5IFZVjVvOI9tlIBZ24YZ/ZLINiBu8S?=
+ =?us-ascii?Q?4+JBFj5xP/MadwhG1M7FsiPecRihQZ63jF9Y1U9QaFO+bt/86Srs9KUIaDCo?=
+ =?us-ascii?Q?eovmBtC5lnKhBTm/W48ZMDwaGGKvRq69sE38NMWQljdPLZ8gIVqXO/g2Ds58?=
+ =?us-ascii?Q?kKNTeRsBXln9sw1MjmsI2ejRkGz26Dwy6i65Xp4t1i5g+woFDcCsB+2Rlzdu?=
+ =?us-ascii?Q?52Q7M4zeVVpN8q2NXJfvC7Pt5nZyVZXmf4F0w1gyi/3t1KZvw3h4ZftOhvoo?=
+ =?us-ascii?Q?B4MNV1A8RI4Pu6WtXa/ztveNaWqsA3lHNGatlSQv0QxHaqvqDbjToa5MEuTF?=
+ =?us-ascii?Q?SIv5gY1JqfIKIUiqCUtWzy+I7i+fGpVbfPLdZqATZ0ZdvgI6+NvoAkcWS/oY?=
+ =?us-ascii?Q?LkFAvCFYzCmhZqeR2q5FyFPXivVANv5Y8HGkDBJ3K0HadkrRbqKXM76kprr+?=
+ =?us-ascii?Q?KZ2Rd1sl3kPvVru6A96uIHUnaXIl3ps8VhgLYUtHJ4N6aUj7T1WplsM8YlYa?=
+ =?us-ascii?Q?hb88XTuCxy2wFkKArTRPd+djc82y1YNtB0TrLY3GebPc4yAn6XGSPy3bNuXS?=
+ =?us-ascii?Q?I2IgkUaEZiQhfX30X+70H9SgvJRuq+Mc+aMeQe1MLhmGJ5Ce0brw3smbmFpe?=
+ =?us-ascii?Q?VM2P+boVefN2d3Y9jB+z1pNK+hrt+GmUHho7KwKAtKcYRI8pwInXRUWs8ey3?=
+ =?us-ascii?Q?dCm4RktlLJ3n1tAnJU/cSaUvXu/GFUUTQ9NX3HKcZ1lwIOgo1lOZOZ62meGd?=
+ =?us-ascii?Q?3ohUys2rysgTScIGZ8b2D4h/miKDgucfrSfDJ8i8Sfzku6R/C9LLG23sORSX?=
+ =?us-ascii?Q?6toEVZQll4P45rNJwIBwhc4Tq09DgpRkI4ZPV7ecocjGki5Nq3Q+mi6KgxYY?=
+ =?us-ascii?Q?LQ2odNs2zZhOHUUGQc61vR4R5KmosnajRfkBDN6XeIsjd53KP5Bzj6Z0mmJr?=
+ =?us-ascii?Q?g9V51o+IhlgAbChDzY3xT67qaeoM5wpobPAlmtW/tt4Rsc9Gi6AU+YQHSPYT?=
+ =?us-ascii?Q?gCC7k2kUGXvB+th5NprJXaysJwoVqZsREcYjyTS1ikuag7LgTdK7YxlmWYU1?=
+ =?us-ascii?Q?SRyHfonjH88zHdfibZdRa2x1GEqX?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbPkUdsY8XD5n2yMB8CDvakz4jxshjF8xrzqHXQS0ct9g@mail.gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3292.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6fcf7b45-ab05-47ba-7631-08d926462c4f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2021 04:15:08.1883
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZV6c6jxe1WpNEzzx6Cx91H3rkkhM1Z0cdpvIdh6f2nU+zrxgDfzrLNDHvTb87vZ7BaoPmZlAo/xcFQNas35sdlLuqAJQTHOFSRxdqYVHB/8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3515
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 03:34:29PM -0700, Andrii Nakryiko wrote:
-> 
-> >  /* copy everything but bpf_spin_lock */
-> >  static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
-> >  {
-> > +       u32 off = 0, size = 0;
-> > +
-> >         if (unlikely(map_value_has_spin_lock(map))) {
-> > -               u32 off = map->spin_lock_off;
-> > +               off = map->spin_lock_off;
-> > +               size = sizeof(struct bpf_spin_lock);
-> > +       } else if (unlikely(map_value_has_timer(map))) {
-> > +               off = map->timer_off;
-> > +               size = sizeof(struct bpf_timer);
-> > +       }
-> 
-> so the need to handle 0, 1, or 2 gaps seems to be the only reason to
-> disallow both bpf_spinlock and bpf_timer in one map element, right?
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+> Maciej Fijalkowski
+> Sent: Thursday, May 20, 2021 12:05 PM
+> To: intel-wired-lan@lists.osuosl.org
+> Cc: netdev@vger.kernel.org; Jamal Hadi Salim <jhs@mojatatu.com>;
+> bjorn@kernel.org; kuba@kernel.org; bpf@vger.kernel.org;
+> davem@davemloft.net; Karlsson, Magnus <magnus.karlsson@intel.com>
+> Subject: [Intel-wired-lan] [PATCH v2 intel-net 1/2] ice: add ndo_bpf call=
+back
+> for safe mode netdev ops
+>=20
+> ice driver requires a programmable pipeline firmware package in order to
+> have a support for advanced features. Otherwise, driver falls back to so
+> called 'safe mode'. For that mode, ndo_bpf callback is not exposed and wh=
+en
+> user tries to load XDP program, the following happens:
+>=20
+> $ sudo ./xdp1 enp179s0f1
+> libbpf: Kernel error message: Underlying driver does not support XDP in
+> native mode link set xdp fd failed
+>=20
+> which is sort of confusing, as there is a native XDP support, but not in =
+the
+> current mode. Improve the user experience by providing the specific
+> ndo_bpf callback dedicated for safe mode which will make use of extack to
+> explicitly let the user know that the DDP package is missing and that's t=
+he
+> reason that the XDP can't be loaded onto interface currently.
+>=20
+> Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+> Fixes: efc2214b6047 ("ice: Add support for XDP")
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  drivers/net/ethernet/intel/ice/ice_main.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>=20
 
-exactly.
-
-> Isn't it worth addressing it from the very beginning to lift the
-> artificial restriction? E.g., for speed, you'd do:
-> 
-> if (likely(neither spinlock nor timer)) {
->  /* fastest pass */
-> } else if (only one of spinlock or timer) {
->   /* do what you do here */
-> } else {
->   int off1, off2, sz1, sz2;
-> 
->   if (spinlock_off < timer_off) {
->     off1 = spinlock_off;
->     sz1 = spinlock_sz;
->     off2 = timer_off;
->     sz2 = timer_sz;
->   } else {
->     ... you get the idea
-
-Not really :)
-Are you suggesting to support one bpf_spin_lock and one
-bpf_timer inside single map element, but not two spin_locks
-and/or not two bpf_timers?
-Two me it's either one or support any.
-Anything in-between doesn't seem worth extra code.
-
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index f386f85aee5c..0a828dc4968e 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -3241,6 +3241,15 @@ static int check_map_access(struct bpf_verifier_env *env, u32 regno,
-> >                         return -EACCES;
-> >                 }
-> >         }
-> > +       if (map_value_has_timer(map)) {
-> > +               u32 t = map->timer_off;
-> > +
-> > +               if (reg->smin_value + off < t + sizeof(struct bpf_timer) &&
-> 
-> <= ? Otherwise we allow accessing the first byte, unless I'm mistaken.
-
-I don't think so. See the comment above in if (map_value_has_spin_lock(map))
-I didn't copy-paste it, because it's the same logic.
-
-> > -       if (val) {
-> > -               /* todo: relax this requirement */
-> > -               verbose(env, "bpf_timer field can only be first in the map value element\n");
-> 
-> ok, this was confusing, but now I see why you did that...
-
-I'll clarify the comment to say that the next patch fixes it.
+Tested-by: Kiran Bhandare <kiranx.bhandare@intel.com>  A Contingent Worker =
+at Intel
