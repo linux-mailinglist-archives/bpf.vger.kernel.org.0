@@ -2,40 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E717639A716
-	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 19:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A0639A730
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 19:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhFCRKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Jun 2021 13:10:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41470 "EHLO mail.kernel.org"
+        id S231579AbhFCRKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Jun 2021 13:10:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231622AbhFCRKG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:10:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D663B613F8;
-        Thu,  3 Jun 2021 17:08:19 +0000 (UTC)
+        id S231783AbhFCRKV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:10:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E61D4613F6;
+        Thu,  3 Jun 2021 17:08:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622740100;
-        bh=S0arLeFgiygFNv2SwSBpMgnp3DpjxMX41fEk6gYS1c0=;
+        s=k20201202; t=1622740116;
+        bh=P2NiAcDDakW4b0/dW1SMWHEB1xRgaqQX6RaVY4jIeQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P/1pJ0KxqcE9dXvk/tpi6EHKJqBfIyHIwccKIyFUD8aGCCCWjhue+PiWiXkOkfhKy
-         D9DUCMrurzbOYrSe5OJ6HnHL7BPX+Ly/Ex7ykLnMRmJxVyABLXOVC9MHnZosjSsgAJ
-         wmFlD2KQDFkKY/f2MpGuusZ58YLQunMjiOj9xevGHO3imfiaKF22xqwnv1/wJzIqjY
-         Kw/WuUcOvBgx7aRBEBloIImkzegfkDGnzZStWn9RB3yxyCaDAWrjU2TYL3OqqqboYy
-         BeErLc8JGf8QVcw2kgIe3ESoZp+9stD4tej858S+Qwf4VKE9WjpDn2gW1dpp+trPZi
-         P9jos9AfnEjJA==
+        b=KbfDNx3efZpNMXFSgpCYdKavCkmj7zxQqun4s6ffOToqbicYFpPWfJoLsXN4JCb15
+         aCwn3nKbwOe3ICCN3FKeIqQlyhcq/wNhyFCELzWJXGFsTK0v9cecW6E56WF1F1xHyn
+         frqDinJyQicWNCgIb9utB7Vf+Dc1h63mH0VclVXVkIk7VW38z5md4lIACAqpAj6gCz
+         GjFTIFS8IBhpLRp0rWkRBtWZgnxrQ0EgVe/wisjpDBTN2iFzXYLe7ZiCjJoWiYH+uV
+         r/EjbbPMMSbngwkXcChZrQHMgYB+PM/Y5hYvFBom5qSZ71VsoIaoARzNnfbc66i7a/
+         Gw0YVU9Zpc/4A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 37/43] bpf, selftests: Adjust few selftest result_unpriv outcomes
-Date:   Thu,  3 Jun 2021 13:07:27 -0400
-Message-Id: <20210603170734.3168284-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 05/39] bpf: Forbid trampoline attach for functions with variable arguments
+Date:   Thu,  3 Jun 2021 13:07:55 -0400
+Message-Id: <20210603170829.3168708-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210603170734.3168284-1-sashal@kernel.org>
-References: <20210603170734.3168284-1-sashal@kernel.org>
+In-Reply-To: <20210603170829.3168708-1-sashal@kernel.org>
+References: <20210603170829.3168708-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,75 +44,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Jiri Olsa <jolsa@kernel.org>
 
-[ Upstream commit 1bad6fd52be4ce12d207e2820ceb0f29ab31fc53 ]
+[ Upstream commit 31379397dcc364a59ce764fabb131b645c43e340 ]
 
-Given we don't need to simulate the speculative domain for registers with
-immediates anymore since the verifier uses direct imm-based rewrites instead
-of having to mask, we can also lift a few cases that were previously rejected.
+We can't currently allow to attach functions with variable arguments.
+The problem is that we should save all the registers for arguments,
+which is probably doable, but if caller uses more than 6 arguments,
+we need stack data, which will be wrong, because of the extra stack
+frame we do in bpf trampoline, so we could crash.
 
+Also currently there's malformed trampoline code generated for such
+functions at the moment as described in:
+
+  https://lore.kernel.org/bpf/20210429212834.82621-1-jolsa@kernel.org/
+
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210505132529.401047-1-jolsa@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/verifier/stack_ptr.c       | 2 --
- tools/testing/selftests/bpf/verifier/value_ptr_arith.c | 8 --------
- 2 files changed, 10 deletions(-)
+ kernel/bpf/btf.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/verifier/stack_ptr.c b/tools/testing/selftests/bpf/verifier/stack_ptr.c
-index 07eaa04412ae..8ab94d65f3d5 100644
---- a/tools/testing/selftests/bpf/verifier/stack_ptr.c
-+++ b/tools/testing/selftests/bpf/verifier/stack_ptr.c
-@@ -295,8 +295,6 @@
- 	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_1, 0),
- 	BPF_EXIT_INSN(),
- 	},
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "invalid write to stack R1 off=0 size=1",
- 	.result = ACCEPT,
- 	.retval = 42,
- },
-diff --git a/tools/testing/selftests/bpf/verifier/value_ptr_arith.c b/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
-index e5913fd3b903..7ae2859d495c 100644
---- a/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
-+++ b/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
-@@ -300,8 +300,6 @@
- 	},
- 	.fixup_map_array_48b = { 3 },
- 	.result = ACCEPT,
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "R0 pointer arithmetic of map value goes out of range",
- 	.retval = 1,
- },
- {
-@@ -371,8 +369,6 @@
- 	},
- 	.fixup_map_array_48b = { 3 },
- 	.result = ACCEPT,
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "R0 pointer arithmetic of map value goes out of range",
- 	.retval = 1,
- },
- {
-@@ -472,8 +468,6 @@
- 	},
- 	.fixup_map_array_48b = { 3 },
- 	.result = ACCEPT,
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "R0 pointer arithmetic of map value goes out of range",
- 	.retval = 1,
- },
- {
-@@ -766,8 +760,6 @@
- 	},
- 	.fixup_map_array_48b = { 3 },
- 	.result = ACCEPT,
--	.result_unpriv = REJECT,
--	.errstr_unpriv = "R0 pointer arithmetic of map value goes out of range",
- 	.retval = 1,
- },
- {
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index ed7d02e8bc93..aaf2fbaa0cc7 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -4960,6 +4960,12 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 	m->ret_size = ret;
+ 
+ 	for (i = 0; i < nargs; i++) {
++		if (i == nargs - 1 && args[i].type == 0) {
++			bpf_log(log,
++				"The function %s with variable args is unsupported.\n",
++				tname);
++			return -EINVAL;
++		}
+ 		ret = __get_type_size(btf, args[i].type, &t);
+ 		if (ret < 0) {
+ 			bpf_log(log,
+@@ -4967,6 +4973,12 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 				tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
+ 			return -EINVAL;
+ 		}
++		if (ret == 0) {
++			bpf_log(log,
++				"The function %s has malformed void argument.\n",
++				tname);
++			return -EINVAL;
++		}
+ 		m->arg_size[i] = ret;
+ 	}
+ 	m->nr_args = nargs;
 -- 
 2.30.2
 
