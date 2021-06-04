@@ -2,97 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414AC39C0A2
-	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 21:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E6839C194
+	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 22:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhFDTuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Jun 2021 15:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhFDTuI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Jun 2021 15:50:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8D7C061766;
-        Fri,  4 Jun 2021 12:48:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eiQrNqdISPy8DYhhvO2OscxdNKhEOxSE8gN4mRiagEk=; b=O2upqpo6o6nhEWDpsc9Hs9Z3c9
-        faGUrFI+9BTj6l6tBDhH1UeU8hlXS/n/boLKdmkumKnrRFA/sduZ4gJBPM/CSHeENVstyMcZ6VVkX
-        3SO5Z49XSHCW/fDktp58ABTAD6S8TrZ4gL99DkyjHkI2SbZ6erV75nVvwlKZxoNWLjxIk8R04MUW4
-        kScJh+ZpTG97XID+HsY3rznGAdmWNSdAdebBr0wx6Gecr80F3JUrH2wqCk8kgVug0fKARVsicWTMi
-        KPI+pzJHvglr9vrZcT65UproKpAB6kQ72iRNwymhjN6BFeJAYjXpsICthEk73CcsRewjHbMltPieE
-        2iqI0vMw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lpFnV-00DWt8-Va; Fri, 04 Jun 2021 19:48:11 +0000
-Date:   Fri, 4 Jun 2021 20:48:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v7 4/5] mvpp2: recycle buffers
-Message-ID: <YLqDcVGPomZRLJYd@casper.infradead.org>
-References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
- <20210604183349.30040-5-mcroce@linux.microsoft.com>
+        id S231211AbhFDUup (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Jun 2021 16:50:45 -0400
+Received: from mail-lj1-f174.google.com ([209.85.208.174]:37748 "EHLO
+        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhFDUuo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Jun 2021 16:50:44 -0400
+Received: by mail-lj1-f174.google.com with SMTP id e2so13221468ljk.4
+        for <bpf@vger.kernel.org>; Fri, 04 Jun 2021 13:48:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PJoBFivS9/0L7b0TyZ5GMRGBdgGvt/mvxhidNZqt9mI=;
+        b=onVGtoT7NpNRKABSYMZk7zDCWBe91qf/hrR3u+ADQfJr4t1DmPpVjI4SW4ztG2zEkA
+         GrzzZqpRZ0PLTN8/m/xiAZhec4kS3faRbG2LNGCu6n214IBAz6ylr//loNqA6UC6n1NN
+         fj1gKOiisC+bSA00hvUDgg+5KPTlyrPlk2dr3M79iwlv2KaNkQMtiPYi7UfGavWF/6ei
+         RJu2DoDq3dM5IuYsyptU9AzFGwptZfUTIoztNG6cY7Un1znUQvzRWvSnb/oWHyHxsu60
+         /qhSprpf5EMCLsjCrrilDOIj+KaBGNpgSiZb3PgnUWHq13gzCNOYHAdl4gaxsoKNZyLu
+         0Apg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PJoBFivS9/0L7b0TyZ5GMRGBdgGvt/mvxhidNZqt9mI=;
+        b=P3iBII7vMve4gRQj/1CEI8vOyAVcjRsORrVBQeN/mMwOF5D+jPsX8scOh2ilYGgPZ6
+         HzoeKPQa0H4mmve7Z4qZdQ0NAErGjqKPl/lHxJ3xan509UCwmeA822pKD2QmAE5FSud5
+         qwbQRzpjtYA3qbXJ9tIAMifpcssh+IcYxSW8yjp1EION1+qtjDX9G9X4jIrxmj8+Tu7m
+         qx+Zg3jlvCQdUItQr1ndDNP7dD48kQjCcIiXVNsKQP9+kRb1G/UwLuqEVOCu9b9JnG9S
+         4aKcm4AZKZdzvDdbA9dPV10elcK1n73TFR+FHok0/378vS3WhP5VPlTF9FLs+pWR9HCy
+         uJkQ==
+X-Gm-Message-State: AOAM530oLR4AH4/JJSsC/JLNoHYCU2R2iUlCmJJbi8VxN28okoHm9uvx
+        U+hjAeT/Yj+jLpnGP+H2rHb8JF2R1oYDTnZDYn4=
+X-Google-Smtp-Source: ABdhPJyLmOMO1B+x+PztMUWY/NupwMXvnnnfSySBh433HwyrKufIyff4JmZqsRBXUwswUfx3flo24fm9qlMWoUjrI0U=
+X-Received: by 2002:a05:651c:2049:: with SMTP id t9mr4590088ljo.180.1622839660690;
+ Fri, 04 Jun 2021 13:47:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604183349.30040-5-mcroce@linux.microsoft.com>
+References: <CAOWid-drUQKifjPgzQ3MQiKUUrHp5eKOydgSToadW1fNkUME7g@mail.gmail.com>
+ <20210604061303.v22is6a7qmlbvkmq@kafai-mbp> <f08f6a20-2cd6-7bf0-c680-52869917d0c7@fb.com>
+In-Reply-To: <f08f6a20-2cd6-7bf0-c680-52869917d0c7@fb.com>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Fri, 4 Jun 2021 16:47:29 -0400
+Message-ID: <CAOWid-f_UivcZ1zW5qjPJ=0wD1NM+s+S9qT6nZuvtpv0o+NMxw@mail.gmail.com>
+Subject: Re: Headers for whitelisted kernel functions available to BPF programs
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 08:33:48PM +0200, Matteo Croce wrote:
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -3997,7 +3997,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
->  		}
->  
->  		if (pp)
-> -			page_pool_release_page(pp, virt_to_page(data));
-> +			skb_mark_for_recycle(skb, virt_to_page(data), pp);
+On Fri, Jun 4, 2021 at 12:11 PM Yonghong Song <yhs@fb.com> wrote:
+> On 6/3/21 11:13 PM, Martin KaFai Lau wrote:
+> >
+> > Making the kfunc call whitelist more accessible is useful in general.
+> > The bpf tcp-cc struct_ops is the only prog type supporting kfunc call.
+> > What is your use case to introspect this whitelist?
+>
+> Agree. It would be good if you can share your use case.
 
-Does this driver only use order-0 pages?  Should it be using
-virt_to_head_page() here?  or should skb_mark_for_recycle() call
-compound_head() internally?
+At the high level, I am trying to see if we can use bpf in the drm
+subsystem and gpu drivers which are kernel modules.  My initial
+motivation was to use bpf for dynamic/run-time reconfiguration of the
+drm/gpu driver (for experimentation.)  But now that I learned more
+about bpf, I think there are quite a few more things I can do with it.
+(Debugging during GPU hw bring-ups, profiling driver performance in
+live system, etc.)  I have been looking into bpf with kprobe and
+struct_ops.
+
+In terms of kernel module support for bpf/btf, Andrii told me about it
+last year and I see that his feature is in (I was able to do a btf
+dump file for /sys/kernel/btf/amdgpu, /sys/kernel/btf/drm_ttm_helper,
+for example.)  The next thing I thought about was having helper
+functions from kernel modules and Toke pointed me to Martin's patch
+around "unstable helpers"/calling whitelisted kernel functions and
+this is where we are at.
