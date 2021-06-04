@@ -2,238 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7850839B148
-	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 06:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79E939B1A6
+	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 06:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbhFDEUk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Jun 2021 00:20:40 -0400
-Received: from mail-yb1-f181.google.com ([209.85.219.181]:44837 "EHLO
-        mail-yb1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhFDEUk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Jun 2021 00:20:40 -0400
-Received: by mail-yb1-f181.google.com with SMTP id p184so11864533yba.11;
-        Thu, 03 Jun 2021 21:18:43 -0700 (PDT)
+        id S229812AbhFDEx6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Jun 2021 00:53:58 -0400
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:39435 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhFDEx5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Jun 2021 00:53:57 -0400
+Received: by mail-ed1-f49.google.com with SMTP id dj8so9635232edb.6
+        for <bpf@vger.kernel.org>; Thu, 03 Jun 2021 21:51:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4I7wNEx3l8IQ8cV8UlCXwWnxhFTI9WVBzDzbE/lAmWU=;
-        b=XZaJh1/pFYfZL/nNbYgIPJoT1tlGD56MAmBkEq/CNWfzV6l7yBWCYlQhZ5PA1bMvoZ
-         Xq7FjnBjRWbOsZpQKWqhw/dmGalEWx+hSRdqqKD7yQWAVMc982Rz6TkJJJZ3gl0IqM3q
-         yjbfKkufifnnkHZLpMoRDz8FgluM1ZYPiWQC+pfOEhHZMNxDJBgU4j35Pzb9nfUgwnxE
-         bkDEdzR9RETwXKeDuOyY1cNOhNagCnDWL2A5yRI1k8ayYnIN1tff9ucKX9+JbmT/XBD2
-         VqMRuHxFnnpC9ikSidYQizAG7S7Wc5ycxlhKhhMw4VvE1zoDpwWlYi+BiK1IEk4F789E
-         YSPA==
+        bh=x90Q7KLzxGnQdvlJBnm7rr4DDCt1grcPV3Uowt83bVg=;
+        b=xFkKJy1g/Dq99+LDthlyeOkxVL0vc3sgm7407xja7T/KunaG3jM6iEPHGGEd/seTuT
+         hk5+z84vISRo0CRUrakYh6Eqm8bub7dGlU1MbMHJ/9JpVMF+7TiPvML8pXyUWtwXF7+G
+         6XVruZ0XWO1KBzlMWAOH3F6vu+ZYyEOUIDvJny9CD1tSyHNiTGH3b/srW66LpZWAiv9l
+         AXA5AZPFKznr+B/8A0lLT1wraOWm3b4psmw7tSK+CZQGElAFURuG0V+x6RR4UqKzP0dp
+         ZlOSu05H3mFpWi8uuwiea2soWtThhHqWy/mWoaks8qSxbQRQo+bn+sKsL/QBymZEh2hz
+         JI3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4I7wNEx3l8IQ8cV8UlCXwWnxhFTI9WVBzDzbE/lAmWU=;
-        b=JTlcIDtNBIEOy1ClptPJS4UBovIpRCkodFvj80NW+JJwX39HC68luuc3CwbwR44X99
-         pTcbLtdz8OPMA6tGkzwNiCNquZS49uCGJz0PN9YTPjQxFNUJ/5qfIuCCwBLSAxFlUxkK
-         W2kRp+p5rSH+yw6ZcV7OGVLvPutIpmEam48jjW6FEA20ch8ZUAzeFREYj7pxeWyAYo8B
-         bobsPdWus2GjG4j4ce2vrm4lkdp1sk5qWxcOP14bjDE6bt5McBNzAavPUllo/iHYppCg
-         B4sXaJU3zPuu/nsgY+1a1yPwBfPoowu4SSbuRr7o+AsbO4IZ36jOlrrODvcFfJBmkLRx
-         XTpg==
-X-Gm-Message-State: AOAM531aKQMbW5GJO8lvZP0RooaWuiHmhpFMlDcY7XPjYMzYSfhHlryB
-        5BE2rB79aTNF7YHy2xv6V1IdIdf0YrUKbVMY5FoaxrWwOafosQ==
-X-Google-Smtp-Source: ABdhPJxQYjlWICVFXqyr7jgjd3ngVPCywTO7P3H6EcRYQWsVPi1qO3LwarCvZMTRAu3+Ao3Ow7mkDO/tTAzRapDeZf0=
-X-Received: by 2002:a25:4182:: with SMTP id o124mr2413579yba.27.1622780263282;
- Thu, 03 Jun 2021 21:17:43 -0700 (PDT)
+        bh=x90Q7KLzxGnQdvlJBnm7rr4DDCt1grcPV3Uowt83bVg=;
+        b=Z9yWb3X/7k7ZwsZhpgHLQPklYH/qruuMK47OvY3WhW6339krABFeGFrnlIvk+4F751
+         f4WVcnKnd5+JVAM2dta2CeL9lNm+elXhHSDnefmUddbMF/rUZD2jOOr9YiThXYw58bQD
+         7lOyJrJOb5CfYhNEqCkL47yLOOgqTmSMDCgo64cCdMr2G1cpwX7oZLM+Uj1J3tpixONy
+         W5Fo4Ia8uzsc3DjH3M8R5DDAs6263GSwG9PSgdm1lrm2GXN5zBhX8lHnRKFdQqTcOKAD
+         0/RkBnn/XwZjZKB1xy4hnuIExgaWKGTrw6r0/CTfd13vKtrkSRGBaksveIPv32IpyR32
+         3ojw==
+X-Gm-Message-State: AOAM533gXzXKV6matMXVLg/LYbal+P9Zp29H5a3AmowYKdXwNvgpnktQ
+        Ke7JHFdJQOuu+kIV7X/M00AnkMRpn4Yoy4SwGrfIrFhjnA==
+X-Google-Smtp-Source: ABdhPJxwUDF114o2gy5sFNpwgCfnJzhmnQ0CQLzlaPBqPhlrHJJdrTOWrANK8cv+0mYFczDmrkFW0Ydud/Lrf7jJCok=
+X-Received: by 2002:a05:6402:158e:: with SMTP id c14mr2758605edv.128.1622782259021;
+ Thu, 03 Jun 2021 21:50:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210527040259.77823-1-alexei.starovoitov@gmail.com>
- <20210527040259.77823-2-alexei.starovoitov@gmail.com> <CAEf4BzbyikY1b4vAzb+t88odbqWOR7K4TpwjM1zGF4Nmqu6ysg@mail.gmail.com>
- <20210603015330.vd4zgr5rdishemgi@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzafEP_b7vXT9pTB4mDWWP7N5ACe82V3yq-1doH=awNbUg@mail.gmail.com> <20210604011231.p24eb6py7hjhskn3@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210604011231.p24eb6py7hjhskn3@ast-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Jun 2021 21:17:32 -0700
-Message-ID: <CAEf4BzY1oL76pMsNW6f8J=MZuM1mroyAFhMxR0OpYdQNaZT13Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Introduce bpf_timer
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+ <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net> <CAHC9VhR-kYmMA8gsqkiL5=poN9FoL-uCyx1YOLCoG2hRiUBYug@mail.gmail.com>
+ <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net> <CAHC9VhS1XRZjKcTFgH1+n5uA-CeT+9BeSP5jvT2+RE5ougLpUg@mail.gmail.com>
+ <2e541bdc-ae21-9a07-7ac7-6c6a4dda09e8@iogearbox.net> <CAHC9VhT464vr9sWxqY3PRB4DAccz=LvRMLgWBsSViWMR0JJvOQ@mail.gmail.com>
+ <3ca181e3-df32-9ae0-12c6-efb899b7ce7a@iogearbox.net> <CAHC9VhTuPnPs1wMTmoGUZ4fvyy-es9QJpE7O_yTs2JKos4fgbw@mail.gmail.com>
+ <f4373013-88fb-b839-aaaa-3826548ebd0c@iogearbox.net>
+In-Reply-To: <f4373013-88fb-b839-aaaa-3826548ebd0c@iogearbox.net>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 4 Jun 2021 00:50:47 -0400
+Message-ID: <CAHC9VhS=BeGdaAi8Ae5Fx42Fzy_ybkcXwMNcPwK=uuA6=+SRcg@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>, jolsa@redhat.com,
+        ast@kernel.org, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 6:12 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, Jun 3, 2021 at 2:53 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> On 6/2/21 5:13 PM, Paul Moore wrote:
+> [...]
+> > Help me out here, is your answer that the access check can only be
+> > done at BPF program load time?  That isn't really a solution from a
+> > SELinux perspective as far as I'm concerned.
 >
-> On Thu, Jun 03, 2021 at 10:10:38AM -0700, Andrii Nakryiko wrote:
-> > >
-> > > I think going too much into implementation details in the helper
-> > > description is unnecessary.
-> > > " Start the timer and set its expiration N nanoseconds from
-> > >   the current time. "
-> > > is probably about right amount of details.
-> > > I can add that the time clock is monotonic
-> > > and callback is called in softirq.
-> >
-> > I think mentioning whether it's going to be run on the same CPU or
-> > another CPU is the most important part. I'm honestly still not sure
-> > which one is the case, because I don't completely understand all the
-> > implications of what "called in softirq" implies.
->
-> "called in softirq" means that timer callback will be executing
-> in softirq context on some cpu. That's all.
-> The proposed API doesn't provide a way to call a timer on a given cpu
-> or to pin it to a cpu.
-> There are few places in the kernel that use ABS_PINNED and REL_PINNED
-> variants of hrtimer.
-> One such example is napi timer.
-> The initial cpu is picked during hrtimer_init and it's always
-> current cpu. napi is bound to a cpu. So when it calls hrtimer_init(.., _PINNED);
-> it wants the callback to stay on the same cpu.
-> The hrtimer doc says that _PINNED is ignored during hrtimer_init :)
-> It is ignored, kinda, since initial target cpu is picked as current.
-> Then during hrtimer_start the actual cpu will be selected.
-> If it's called as hrtimer_start(,_PINNED); then the cpu will stay
-> as it was during hrtimer_init.
-> If hrtimer_start() is called without _PINNED the hrtimer algorithm can
-> migrate the timer to a more appropriate cpu depending on idle and no_hz.
-> See get_nohz_timer_target.
-> In case of napi it's necessary to stay on the same cpu,
-> so it's using _PINNED in hrtimer_init and in hrtimer_start.
-> TCP is using pinned timers for compressed acks and pacing.
-> I'm guessing it's done to improve performance. I suspect TCP doesn't
-> need the timers pinned.
-> All other _PINNED cases of hrtimer are similar to napi.
->
-> In bpf world we don't have a way to deterministically
-> execute on a given cpu and the hrtimer infra won't give us such
-> possibility.
->
-> We can potentailly hack it on top of it. Like
-> bpf_timer_init(..., int cpu, ...)
-> {
->   smp_call_function_single(cpu, rest_of_bpf_timer_init)
-> }
->
-> rest_of_bpf_timer_init()
-> {
->   hrtimer_init
-> }
->
-> But there are lots of things to consider with such api.
-> It feels like two building blocks collapsed into one already.
-> If we do anything like this we should expose smp_call_function_single()
-> directly as bpf helper instead of side effect of bpf_timer.
+> That is the current answer. The unfortunate irony is that 59438b46471a
+> ("security,lockdown,selinux: implement SELinux lockdown") broke this in
+> the first place. W/o the SELinux hook implementation it would have been
+> working just fine at runtime, but given it's UAPI since quite a while
+> now, that ship has sailed.
 
-Yeah, all makes sense. And I agree that an orthogonal API is better.
-Never mind then.
+Explaining the other side of the "unfortunate irony ..." comment is
+going to take us in a direction that isn't very constructive so I'm
+going to skip past that now and simply say that if there was better
+cooperation across subsystems, especially with the LSM folks, a lot of
+this pain could be mitigated.
 
+... and yes I said "mitigated", I'm not foolish to think the pain
+could be avoided entirely ;)
+
+> > I understand the ideas I've tossed out aren't practical from a BPF
+> > perspective, but it would be nice if we could find something that does
+> > work.  Surely you BPF folks can think of some way to provide a
+> > runtime, not load time, check?
 >
-> > > > Also is there a chance for timer callback to be a sleepable BPF (sub-)program?
-> > >
-> > > Eventually yes. The whole bpf program can be sleepable, but the
-> > > timer callback cannot be. So the verifier would need to
-> > > treat different functions of the bpf prog as sleepable and non-sleepable.
-> > > Easy enough to implement. Eventually.
-> >
-> > Ok, so non-sleepable callback is hrtimer's implementation restriction
-> > due to softirq, right? Too bad, of course, I can imagine sleepable
-> > callbacks being useful, but it's not a deal breaker.
+> I did run this entire discussion by both of the other BPF co-maintainers
+> (Alexei, Andrii, CC'ed) and together we did further brainstorming on the
+> matter on how we could solve this, but couldn't find a sensible & clean
+> solution so far.
+
+Before I jump into the patch below I just want to say that I
+appreciate you looking into solutions on the BPF side of things.
+However, I voted "no" on this patch previously and since you haven't
+really changed it, my "no"/NACK vote remains, at least until we
+exhaust a few more options.
+
+> [PATCH] bpf, lockdown, audit: Fix buggy SELinux lockdown permission checks
 >
-> Sleeping in softirq is no-go. The timer callback will be always
-> non-sleepable. If it would need to do extra work that requires sleeping
-> we'd need to create bpf kthreads similar to io_uring worker threads.
-> bpf program would have to ask for such things explicitly.
-
-yep
-
+> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
+> added an implementation of the locked_down LSM hook to SELinux, with the aim
+> to restrict which domains are allowed to perform operations that would breach
+> lockdown. This is indirectly also getting audit subsystem involved to report
+> events. The latter is problematic, as reported by Ondrej and Serhei, since it
+> can bring down the whole system via audit:
 >
-> > > The flags argument in bpf_timer_init() will eventually
-> > > be able to specify monotonic vs boottime and
-> > > relative vs absolute expiry.
-> >
-> > Yeah, I was thinking about relative vs absolute expiry case, but we
-> > never know what kind of extensibility we'll need, so there might be
-> > something that we don't see as a possibility yet. Seems simple enough
-> > to reserve flags argument here (we usually do not regret adding flags
-> > argument for extensibility), but I'm fine either way.
+>    1) The audit events that are triggered due to calls to security_locked_down()
+>       can OOM kill a machine, see below details [0].
 >
-> We cannot predict the future of bpf_timer, but the way it's going
-> so far there is a certainty that bpf_timer_start will be limited by
-> what hrtimer_start can do.
-> If we ever decide to use jiffy based timer as well they most likely
-> going to be represented as new set of helpers.
-> May be both hidden in the same 'struct bpf_timer',
-> but helper names would have to be different not to confuse users.
+>    2) It also seems to be causing a deadlock via avc_has_perm()/slow_avc_audit()
+>       when trying to wake up kauditd, for example, when using trace_sched_switch()
+>       tracepoint, see details in [1]. Triggering this was not via some hypothetical
+>       corner case, but with existing tools like runqlat & runqslower from bcc, for
+>       example, which make use of this tracepoint. Rough call sequence goes like:
 >
+>       rq_lock(rq) -> -------------------------+
+>         trace_sched_switch() ->               |
+>           bpf_prog_xyz() ->                   +-> deadlock
+>             selinux_lockdown() ->             |
+>               audit_log_end() ->              |
+>                 wake_up_interruptible() ->    |
+>                   try_to_wake_up() ->         |
+>                     rq_lock(rq) --------------+
 
-ok
+Since BPF is a bit of chaotic nightmare in the sense that it basically
+out-of-tree kernel code that can be called from anywhere and do pretty
+much anything; it presents quite the challenge for those of us worried
+about LSM access controls.
 
-> > > Currently thinking to do cmpxchg in bpf_timer_start() and
-> > > bpf_timer_cancel*() similar to bpf_timer_init() to address it.
-> > > Kinda sucks to use atomic ops to address a race by deliberately
-> > > malicious prog. bpf prog writers cannot just stumble on such race.
-> >
-> > Why deliberately malicious? Just sufficiently sloppy or even just a
-> > clever concurrent BPF program.
->
-> because hrtimers internals don't have protection for concurrent access.
-> It's assumed by kernel apis that the same hrtimer is not concurrently
-> accessed on multiple cpus.
-> Like doing hrtimer_init in parallel will certainly crash the kernel.
-> That's why bpf_timer_init() has extra cmpxchg safety builtin.
-> bpf_timer_start and bpf_timer_cancel don't have extra safety,
-> because the first thing hrtimer_start and hrtimer_cancel do
-> is they grab the lock, so everything will be safe even in bpf
-> programs try to access the same timer in parallel.
->
-> The malicicous part comes when bpf prog does bpf_timer_start
-> on the pointer from a deleted map element. It's clearly a bug.
-> Concurrent bpf_timer_start and bpf_timer_cancel is ok to do
-> and it's safe.
-> The malicious situation is concurrent lookup+bpf_timer_start
-> with parallel delete of that element.
-> It's wrong thing to do with map element regardless of timers.
+You and the other BPF folks have investigated ways in which BPF might
+be able to disable helper functions allowing us to do proper runtime
+access checks but haven't been able to make it work, which brings this
+patch up yet again.  I'm not a fan of this patch as it basically
+allows BPF programs to side-step any changes to the security policy
+once the BPF programs have been loaded; this is Not Good.
 
-I don't know if I agree with calling a buggy BPF program "malicious",
-but I think that won't matter if we embed spinlock as suggested below,
-right? Because then we can free the pointer, but spinlock is always
-there and is always "usable", so can be taken first thing before doing
-anything with that extra pointer.
+So let's look at this from a different angle.  Let's look at the two
+problems you mention above.
 
->
-> > So your idea is to cmpxchg() to NULL while bpf_timer_start() or
-> > bpf_timer_cancel() works with the timer? Wouldn't that cause
-> > bpf_timer_init() believe that that timer is not yet initialized and
-> > not return -EBUSY. Granted that's a corner-case race, but still.
->
-> Not following.
-> bpf prog should do bpf_timer_init only once.
-> bpf_timer_init after bpf_timer_cancel is a wrong usage.
-> hrtimer api doesn't have any protection for such use.
-> while bpf_timer_init returns EBUSY.
-> 2nd bpf_timer_init is just a misuse of bpf_timer api.
+If we start with the runqueue deadlock we see the main problem is that
+audit_log_end() pokes the kauditd_wait waitqueue to ensure the
+kauditd_thread thread wakes up and processes the audit queue.  The
+audit_log_start() function does something similar, but it is
+conditional on a number of factors and isn't as likely to be hit.  If
+we relocate these kauditd wakeup calls we can remove the deadlock in
+trace_sched_switch().  In the case of CONFIG_AUDITSYSCALL=y we can
+probably just move the wakeup to __audit_syscall_exit() and in the
+case of CONFIG_AUDITSYSCALL=n we can likely just change the
+wait_event_freezable() call in kauditd_thread to a
+wait_event_freezable_timeout() call with a HZ timeout (the audit
+stream will be much less on these systems anyway so a queue overflow
+is much less likely).  I'm building a kernel with these changes now, I
+should have something to test when I wake up tomorrow morning.  It
+might even provide a bit of a performance boost as we would only be
+calling a wakeup function once for each syscall.
 
-Yes, clearly a bad use of API, but it's not prevented by verifier. So
-maybe I misunderstood what you meant by
+The other issue is related to security_locked_down() and using the
+right subject for the access control check.  As has been pointed out
+several times in this thread, the current code uses the current() task
+as the subject, which is arguably incorrect for many of the BPF helper
+functions.  In the case of BPF, we have talked about using the
+credentials of the task which loaded the BPF program instead of
+current(), and that does make a certain amount of sense.  Such an
+approach should make the security policy easier to develop and
+rationalize, leading to a significant decrease in audit records coming
+from LSM access denials.  The question is how to implement such a
+change.  The current SELinux security_bpf_prog_alloc() hook causes the
+newly loaded BPF program to inherit the subject context from the task
+which loads the BPF program; if it is possible to reference the
+bpf_prog struct, or really just the associated bpf_prog_aux->security
+blob, from inside a security_bpf_locked_down() function we use that
+subject information to perform the access check.  BPF folks, is there
+a way to get that information from within a BPF kernel helper
+function?  If it isn't currently possible, could it be made possible
+(or something similar)?
 
-> > > Currently thinking to do cmpxchg in bpf_timer_start() and
-> > > bpf_timer_cancel*() similar to bpf_timer_init() to address it.
+If it turns out we can do both of these things (relocated audit
+wakeup, bpf_prog reference inside kernel helpers) I think we can
+arrive at a fix which both groups can accept.
 
-because that seemed like you were going to exchange (temporarily) a
-pointer to NULL while doing bpf_timer_start() or bpf_timer_cancel(),
-and then setting NULL -> valid ptr back again (this sequence would
-open up a window when bpf_timer_init() can be used twice on the same
-element). But again, with spinlock embedded doesn't matter anymore.
-
->
-> > What if the spinlock was moved out of struct bpf_hrtimer into struct
-> > bpf_timer instead? Then all that cmpxchg and READ_ONCE/WRITE_ONCE
-> > could go away and be more "obviously correct" and race-free? We'd just
-> > need to make sure that the size of that spinlock struct doesn't change
-> > depending on kernel config (so no diagnostics should be embedded).
->
-> We already tackled that concern with bpf_spin_lock.
-> So moving the lock into 'struct bpf_timer' is easy and it's a great idea.
-> I suspect it should simplify the code. Thanks!
-
-sure, glad it helped
+-- 
+paul moore
+www.paul-moore.com
