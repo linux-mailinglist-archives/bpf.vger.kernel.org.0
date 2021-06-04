@@ -2,104 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F75239BF72
-	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 20:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A4139BFA5
+	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 20:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhFDSTa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Jun 2021 14:19:30 -0400
-Received: from mail-lf1-f42.google.com ([209.85.167.42]:34690 "EHLO
-        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhFDSTa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Jun 2021 14:19:30 -0400
-Received: by mail-lf1-f42.google.com with SMTP id f30so15439965lfj.1;
-        Fri, 04 Jun 2021 11:17:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NAjaWyTYv+x+pi7Y0FNiv4m5t12ORw+rlZaX/3xoVHI=;
-        b=VXrQpFQs333sknQ4y1ynnjGaglaFfk7vD+QiTUsXQy75BuW9SVH3ES9JUAB/UqZxKy
-         q+Qdg5OVZg0laG7vfasY2xIB+PleqtIyBy7awXgvJgQ974XqXBwGLvHvS0TtQ3klz3sX
-         T4ed+cgwVO7tysLzk4RrZkn0l7FeCY6PoW8t0kVXasnLojeyQ6ekU5dEqOvuGhBDjEWm
-         YG8M6P/DU8UbjRioimtfXFW5iEFat1Wny3pj7Mrk65dT3kgyUAcx8fHSASzXMaM3pVm8
-         si2ECitvJyvcHKGZ1qft9lZG6iBonJpw5j2Je8CiMBS8Hc9qMwFBAsM5SVBkaxjbS1ut
-         aoUw==
+        id S229810AbhFDSfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Jun 2021 14:35:46 -0400
+Received: from mail-ej1-f43.google.com ([209.85.218.43]:38842 "EHLO
+        mail-ej1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhFDSfp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Jun 2021 14:35:45 -0400
+Received: by mail-ej1-f43.google.com with SMTP id og14so10615933ejc.5;
+        Fri, 04 Jun 2021 11:33:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NAjaWyTYv+x+pi7Y0FNiv4m5t12ORw+rlZaX/3xoVHI=;
-        b=nyiBIRdWFzjJOvZy12F59iVwz7Pcsb/aaYDS82dJIAsR9pQKvdh1jgOuIHlgJr17N3
-         ZZIhUuOGT+DTQhs9j06lzswtpaEfW4IQgEg4mP226PSSdksm0x39ppNbA4VpDO+Dny5Y
-         I1OYu8LwwXjHntuVRAS8UQdyV3aGQUJtVV90JiBEuzApM16mHUq8IgwlhqWe72cDVWJp
-         ROcq7KG89tdu9LVhItvCFybb0wT8BlytmcnFH93jtCpSYZIZLDvjoCypAaYeJVGSBAbw
-         LVgQu+tuG8uqZtpb0HsrumOzMgRmOw8yaTceVw5VYymF/FobChup7opOD8ueYMlvw3sD
-         22qQ==
-X-Gm-Message-State: AOAM5314n/qEeL9YF53pVu17VPMIdm2cAynHD7HZ5Wb826zrXiSG7Rss
-        n6f/6hzWV2UvebjKj6CXXekOseJmeV3VYKXWzec=
-X-Google-Smtp-Source: ABdhPJwM39dxxct3M9lVxSMN+/O4alLYLK/kBjyoPrXshMR12vUClBrhgfzZ6yS6H7BZN+gqYGDmLD6jZ9Cw0SJbt0U=
-X-Received: by 2002:a05:6512:2010:: with SMTP id a16mr933043lfb.38.1622830602810;
- Fri, 04 Jun 2021 11:16:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210527040259.77823-1-alexei.starovoitov@gmail.com>
- <20210527040259.77823-2-alexei.starovoitov@gmail.com> <CAEf4BzbyikY1b4vAzb+t88odbqWOR7K4TpwjM1zGF4Nmqu6ysg@mail.gmail.com>
- <20210603015330.vd4zgr5rdishemgi@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzafEP_b7vXT9pTB4mDWWP7N5ACe82V3yq-1doH=awNbUg@mail.gmail.com>
- <20210604011231.p24eb6py7hjhskn3@ast-mbp.dhcp.thefacebook.com> <CAEf4BzY1oL76pMsNW6f8J=MZuM1mroyAFhMxR0OpYdQNaZT13Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzY1oL76pMsNW6f8J=MZuM1mroyAFhMxR0OpYdQNaZT13Q@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 4 Jun 2021 11:16:31 -0700
-Message-ID: <CAADnVQJiXNU7O=56U-5RP0MycY4knzi556rzdoBHKp_dZrzZ4A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Introduce bpf_timer
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tg06CwoioL2IXkOzwaIni0fjWWraDQZke8DSnvYGbVE=;
+        b=cODeUmLZyDhVPcaNHl+/7zHTeYQ3alQ+upnymRyZs6No9dqcKW+kky1tPS/zwKw/P1
+         AlQNjWVxbP2EiCuLiEGoutn7NM3qSBsrDQdcdoouOboPC7cE9uRtZHopesXfiIsLQ1Gd
+         w5WwBMikUA3XtNHH+xb3vw2sZy+FxjudEZFzwuBMUrlUyAnQNlWDTw4BY8rTGgDNJ2YQ
+         i7qsZylsdZhzaT9UMrOsZErH+tEHBkotj4yLKEvxUBNOjzIK2Dl6Fbom4Q5eckruHlLH
+         m3YgbOiGNx/8xnZ2LolZzRaYhGcX/kFSNbpE8xHsCUce+LjR065f9xRO62MkbvMO4oGM
+         HI+g==
+X-Gm-Message-State: AOAM531+GAfOsItmNR3CAhdAAm9ZjFAMfQO09FQiNAGTG7KnjQgD+fH4
+        VXWlMoaMjXF8Ve23c4/wcurpCNYFRVTuiA==
+X-Google-Smtp-Source: ABdhPJzEcKp5P1+5WBctql3q4YPUpHSmM2JDVHBDSdy70vk5Xgfje7Xx4fpRIWJpjJC4WRq0E4DJhg==
+X-Received: by 2002:a17:907:9801:: with SMTP id ji1mr5701196ejc.523.1622831637122;
+        Fri, 04 Jun 2021 11:33:57 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
+        by smtp.gmail.com with ESMTPSA id k12sm3732039edi.87.2021.06.04.11.33.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 11:33:56 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: [PATCH net-next v7 0/5] page_pool: recycle buffers
+Date:   Fri,  4 Jun 2021 20:33:44 +0200
+Message-Id: <20210604183349.30040-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 9:17 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> >
-> > > So your idea is to cmpxchg() to NULL while bpf_timer_start() or
-> > > bpf_timer_cancel() works with the timer? Wouldn't that cause
-> > > bpf_timer_init() believe that that timer is not yet initialized and
-> > > not return -EBUSY. Granted that's a corner-case race, but still.
-> >
-> > Not following.
-> > bpf prog should do bpf_timer_init only once.
-> > bpf_timer_init after bpf_timer_cancel is a wrong usage.
-> > hrtimer api doesn't have any protection for such use.
-> > while bpf_timer_init returns EBUSY.
-> > 2nd bpf_timer_init is just a misuse of bpf_timer api.
->
-> Yes, clearly a bad use of API, but it's not prevented by verifier.
+From: Matteo Croce <mcroce@microsoft.com>
 
-not prevented only because it's hard to do in the verifier.
+This is a respin of [1]
 
-> > > > Currently thinking to do cmpxchg in bpf_timer_start() and
-> > > > bpf_timer_cancel*() similar to bpf_timer_init() to address it.
->
-> because that seemed like you were going to exchange (temporarily) a
-> pointer to NULL while doing bpf_timer_start() or bpf_timer_cancel(),
-> and then setting NULL -> valid ptr back again (this sequence would
-> open up a window when bpf_timer_init() can be used twice on the same
-> element). But again, with spinlock embedded doesn't matter anymore.
+This patchset shows the plans for allowing page_pool to handle and
+maintain DMA map/unmap of the pages it serves to the driver. For this
+to work a return hook in the network core is introduced.
 
-Right, except bpf_timer_start and bpf_timer_cancel would xchg with -1 or similar
-and bpf_timer_init won't get confused.
-If two bpf_timer_start()s race on the same timer one would receive
--EMISUSEOFAPI right away.
-Whereas with spin_lock inside bpf_timer both will be serialized and
-both will succeed.
-One can argue that bpf_timer_start and bpf_timer_cancel on different cpus
-is a realistic scenario. So xchg approach would need two special
-pointers -1 and -2
-to distinguish start/start bad race vs start/cancel good race.
-And everything gets too clever. spin_lock is "obviously correct",
-though it doesn't have an advantage of informing users of api misuse.
-I coded it up and it's surviving the tests so far :)
+The overall purpose is to simplify drivers, by providing a page
+allocation API that does recycling, such that each driver doesn't have
+to reinvent its own recycling scheme. Using page_pool in a driver
+does not require implementing XDP support, but it makes it trivially
+easy to do so. Instead of allocating buffers specifically for SKBs
+we now allocate a generic buffer and either wrap it on an SKB
+(via build_skb) or create an XDP frame.
+The recycling code leverages the XDP recycle APIs.
+
+The Marvell mvpp2 and mvneta drivers are used in this patchset to
+demonstrate how to use the API, and tested on a MacchiatoBIN
+and EspressoBIN boards respectively.
+
+Please let this going in on a future -rc1 so to allow enough time
+to have wider tests.
+
+Note that this series depends on the change "mm: fix struct page layout
+on 32-bit systems"[2] which is not yet in master.
+
+v6 -> v7:
+- refresh patches against net-next
+- remove a redundant call to virt_to_head_page()
+- update mvneta benchmarks
+
+v5 -> v6
+- preserve pfmemalloc bit when setting signature
+- fix typo in mvneta
+- rebase on next-next with the new cache
+- don't clear the skb->pp_recycle in pskb_expand_head()
+
+v4 -> v5:
+- move the signature so it doesn't alias with page->mapping
+- use an invalid pointer as magic
+- incorporate Matthew Wilcox's changes for pfmemalloc pages
+- move the __skb_frag_unref() changes to a preliminary patch
+- refactor some cpp directives
+- only attempt recycling if skb->head_frag
+- clear skb->pp_recycle in pskb_expand_head()
+
+v3 -> v4:
+- store a pointer to page_pool instead of xdp_mem_info
+- drop a patch which reduces xdp_mem_info size
+- do the recycling in the page_pool code instead of xdp_return
+- remove some unused headers include
+- remove some useless forward declaration
+
+v2 -> v3:
+- added missing SOBs
+- CCed the MM people
+
+v1 -> v2:
+- fix a commit message
+- avoid setting pp_recycle multiple times on mvneta
+- squash two patches to avoid breaking bisect
+
+[1] https://lore.kernel.org/netdev/154413868810.21735.572808840657728172.stgit@firesoul/
+[2] https://lore.kernel.org/linux-mm/20210510153211.1504886-1-willy@infradead.org/
+
+Ilias Apalodimas (1):
+  page_pool: Allow drivers to hint on SKB recycling
+
+Matteo Croce (4):
+  mm: add a signature in struct page
+  skbuff: add a parameter to __skb_frag_unref
+  mvpp2: recycle buffers
+  mvneta: recycle buffers
+
+ drivers/net/ethernet/marvell/mvneta.c         | 11 +++---
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  2 +-
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ include/linux/mm.h                            | 12 ++++---
+ include/linux/mm_types.h                      | 12 ++++++-
+ include/linux/poison.h                        |  3 ++
+ include/linux/skbuff.h                        | 34 ++++++++++++++++---
+ include/net/page_pool.h                       |  9 +++++
+ net/core/page_pool.c                          | 29 ++++++++++++++++
+ net/core/skbuff.c                             | 24 ++++++++++---
+ net/tls/tls_device.c                          |  2 +-
+ 12 files changed, 119 insertions(+), 23 deletions(-)
+
+-- 
+2.31.1
+
