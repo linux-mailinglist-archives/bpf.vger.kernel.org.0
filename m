@@ -2,154 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3718739BDF0
-	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 19:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CCC39BF25
+	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 19:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhFDREq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Jun 2021 13:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53356 "EHLO
+        id S230309AbhFDR4T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Jun 2021 13:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhFDREp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Jun 2021 13:04:45 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78B6C061766
-        for <bpf@vger.kernel.org>; Fri,  4 Jun 2021 10:02:49 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id f84so14719380ybg.0
-        for <bpf@vger.kernel.org>; Fri, 04 Jun 2021 10:02:49 -0700 (PDT)
+        with ESMTP id S229690AbhFDR4T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Jun 2021 13:56:19 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E603FC061767;
+        Fri,  4 Jun 2021 10:54:32 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id l23-20020a17090a0717b029016ae774f973so5669939pjl.1;
+        Fri, 04 Jun 2021 10:54:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N0Ces95DChkuTY000b6T4B0zBaDBXKJduclduHnTD+Q=;
-        b=rO+2lf8IUh2g6VZP3zDmasza+1h+65d0vaf3rlTB9GMPJM1FpCf62W+3gO1NhDSc17
-         /V1o4RdVfQhE1wQe1urxN3ZfhgLEMNP4TyTuQ/+CqWAQ4OqJ+nWH4L9eYq9/goq9wDJy
-         Xl+0Ej5fzjzIM6NnXUCPICPgaogJBku/xkT7DsHA6YQ0Ao4VF7m5tiy3Wwbh6Blgj5l5
-         KJuOiE3MX/yEBxb2SD40LwEzPh3yHZSorS6vwasaEuYcKo8gS3IVbPztYVQQOhziGwQH
-         znpUxYRXg0JjvaQOqZxPp8gph7nwJmYfxu43FCaIJAxTmQ+o47o28rHGvRXpW/lC15p3
-         ED2g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=01y5NneuXQw40lmFbAzFmDqnYxSeLx36MZRmrGk1JLI=;
+        b=cxt2Dks5H/GR9EVFvdhJx2a6Ft/DwAb6bkMdUXu4qPaZUKOi/9+PSwG6VmT1JLP9gS
+         PWplWjjX7gkOJLoCXdpVZ3GzKp3RpWKksDodwJTH//7rnqwXC+M3md6jXof46Ad1KPN0
+         lljPi/lN3UpmdaCvRkQsu9YgvOaH+fAmWU/NhfnQRgFH8LK73y1I5etjGZAG6tPt/wmY
+         jdG23fL+t9S5dFmHY3b578L3wS+cxN4FkF4KmEFEnIZWsOjyQwFJvGOQHXCLdRJk1yJE
+         ZeGhJHONGmhNhqLRKDwH5Rgo7U2Oi+9CaQRyk2ob+D5srCA+P2ZJ3f5KQGoq2zGWQCa7
+         zu4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N0Ces95DChkuTY000b6T4B0zBaDBXKJduclduHnTD+Q=;
-        b=cAB53QAJStN6OiFgp+OaevzWsz46rZDF4OB/RFeDYgha9Tkxs0hrKRSLS8M37HGWbn
-         3MwujjW1of5/hYykLZqhMUZMA7R0wvDPPCOOXuCz33b1w9XPRsTDeu52WjglYHWINSfK
-         AQDvoM4tc32y8TBwOqFy8bY1Zd5Q+U+lcsNqfbxhJ+wdGEu05O6RoCWEnzXWJNIf2X9P
-         WWABzDhyyHMRtaKuXcpqeoypgqNzdSl0kmH2fHigGVhqnPXz3jxLZetRUO9a/M8i3jnq
-         mZqhGECSrq0c4x6ZhS7ZGhmWPSWSEQQSbIOh0wjbKh+0Jfknoyh7TQ3H8pBPSouxn8s8
-         BYRA==
-X-Gm-Message-State: AOAM53012Z7kqc59xHP9tdLmcqylbP3MnVvQOo548e6QercupMmSfJgy
-        7tjb3J+hvpviIPgypyhCBvqoK2sYG55trUzGGY4=
-X-Google-Smtp-Source: ABdhPJxSqZJbBuqM15uMKe9TphEHxUNYq542+SIw26yN9OA/MkthWRfrv72e2nGiRBYuroapW7dMGAoHmxJsWgoInZk=
-X-Received: by 2002:a25:6612:: with SMTP id a18mr6478142ybc.347.1622826164291;
- Fri, 04 Jun 2021 10:02:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210603170515.1854642-1-jean-philippe@linaro.org>
- <CAEf4BzZqNjBhMVk7T_XZt2NTtDsajECGmHX-n71GBRjK6TmSWA@mail.gmail.com> <YLnbXzlEGuyAYh/0@myrica>
-In-Reply-To: <YLnbXzlEGuyAYh/0@myrica>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Jun 2021 10:02:33 -0700
-Message-ID: <CAEf4BzbqqxEDQSmd5oF7NuE2OGtvF1_cJVAUxviFGi8FbZSPXQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] tools/bpftool: Fix cross-build
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=01y5NneuXQw40lmFbAzFmDqnYxSeLx36MZRmrGk1JLI=;
+        b=j8rQf150a2MJeT09MvmQKe+1mLhDY2J1nWVeyDqSniTs9iZHet1o37lg2s1LQyyEkB
+         J51jta+BZp8f/rvNtx5BwxCshKPafFviptzeXsslVjLC6Y8cFKe3OMBHAdFmHUTO8g6f
+         8oVtaiawxv3PVhY7frkid5bw4C5zQZaP4GUEZZjJ7COqaFe0KLaUn4k8T78hL0SawNxx
+         4cy/z+2th7GHQuu0bB4EXuydkTUeJEfRUgpFyljmOyDTW3GW+yWgtf3aNZZeOadZs2AM
+         2zjmeocPWIPCeuEXKBspVuCNPM5nSoukCBKP3D2wpuRqliR4TBhbJQJ0YiUUquv31+VI
+         L+jg==
+X-Gm-Message-State: AOAM532SpUYwvEHYn1Qht37Dd/p0MayTSX+/TJrMeFV4G6AzQ3PhsQO/
+        Oq6rXH83VtAFHQ2OLcFlnT0U7s/gzSI=
+X-Google-Smtp-Source: ABdhPJwaPCpcYRfMqrFvQQcEcoDHBujHWQs1Tk96C6pX5anR3fM3wbWGCz9yWfnzfRptw0yW8HxeKQ==
+X-Received: by 2002:a17:902:b58a:b029:fe:735f:ddbf with SMTP id a10-20020a170902b58ab02900fe735fddbfmr5319876pls.68.1622829272301;
+        Fri, 04 Jun 2021 10:54:32 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:862d])
+        by smtp.gmail.com with ESMTPSA id u7sm2691656pgl.39.2021.06.04.10.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 10:54:31 -0700 (PDT)
+Date:   Fri, 4 Jun 2021 10:54:28 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 4/7] net: sched: add lightweight update path
+ for cls_bpf
+Message-ID: <20210604175428.f77zeagqavjvdndn@ast-mbp.dhcp.thefacebook.com>
+References: <20210604063116.234316-1-memxor@gmail.com>
+ <20210604063116.234316-5-memxor@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210604063116.234316-5-memxor@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 12:51 AM Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
->
-> On Thu, Jun 03, 2021 at 10:50:08AM -0700, Andrii Nakryiko wrote:
-> > On Thu, Jun 3, 2021 at 10:06 AM Jean-Philippe Brucker
-> > <jean-philippe@linaro.org> wrote:
-> > >
-> > > When the bootstrap and final bpftool have different architectures, we
-> > > need to build two distinct disasm.o objects. Add a recipe for the
-> > > bootstrap disasm.o
-> > >
-> > > Fixes: d510296d331a ("bpftool: Use syscall/loader program in "prog load" and "gen skeleton" command.")
-> >
-> > Did this commit break something specifically?
->
-> Yes, cross-building bpftool doesn't work anymore, because the bootstrap
-> bpftool is linked using objects from different architectures:
->
-> $ make O=/tmp/bpftool ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -C tools/bpf/bpftool/ V=1
->
->   aarch64-linux-gnu-gcc ... -c -MMD -o /tmp/bpftool/disasm.o /home/z/src/linux/kernel/bpf/disasm.c
->   gcc ... -c -MMD -o /tmp/bpftool//bootstrap/main.o main.c
->   gcc ... -o /tmp/bpftool//bootstrap/bpftool /tmp/bpftool//bootstrap/main.o ... /tmp/bpftool/disasm.o
-> /usr/bin/ld: /tmp/bpftool/disasm.o: Relocations in generic ELF (EM: 183)
-> /usr/bin/ld: /tmp/bpftool/disasm.o: Relocations in generic ELF (EM: 183)
-> /usr/bin/ld: /tmp/bpftool/disasm.o: Relocations in generic ELF (EM: 183)
-> /usr/bin/ld: /tmp/bpftool/disasm.o: error adding symbols: file in wrong format
-> collect2: error: ld returned 1 exit status
->
-> The final bpftool is built for arm64, while the bootstrap bpftool,
-> executed on the host, is built for x86. The problem here is that disasm.o
-> linked into the bootstrap bpftool is arm64 rather than x86. With my fix we
-> build two disasm.o, one for the target bpftool in arm64, and one for the
-> bootstrap bpftool in x86.
+On Fri, Jun 04, 2021 at 12:01:13PM +0530, Kumar Kartikeya Dwivedi wrote:
+> This is used by BPF_LINK_UPDATE to replace the attach SCHED_CLS bpf prog
+> effectively changing the classifier implementation for a given filter
+> owned by a bpf_link.
+> 
+> Note that READ_ONCE suffices in this case as the ordering for loads from
+> the filter are implicitly provided by the data dependency on BPF prog
+> pointer.
+> 
+> On the writer side we can just use a relaxed WRITE_ONCE store to make
+> sure one or the other value is visible to a reader in cls_bpf_classify.
+> Lifetime is managed using RCU so bpf_prog_put path should wait until
+> readers are done for old_prog.
 
-Oh, ok, that commit added disasm.o into bootstrap version of bpftool, thanks.
+Should those be rcu_deref and rcu_assign_pointer ?
+Typically the pointer would be __rcu annotated which would be
+another small change in struct cls_bpf_prog.
+That would make the life time easier to follow?
 
->
-> > > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> > > ---
-> > >  tools/bpf/bpftool/Makefile | 5 ++++-
-> > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> > > index d16d289ade7a..d73232be1e99 100644
-> > > --- a/tools/bpf/bpftool/Makefile
-> > > +++ b/tools/bpf/bpftool/Makefile
-> > > @@ -136,7 +136,7 @@ endif
-> > >
-> > >  BPFTOOL_BOOTSTRAP := $(BOOTSTRAP_OUTPUT)bpftool
-> > >
-> > > -BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o xlated_dumper.o btf_dumper.o) $(OUTPUT)disasm.o
-> > > +BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o xlated_dumper.o btf_dumper.o disasm.o)
-> > >  OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
-> > >
-> > >  VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                           \
-> > > @@ -180,6 +180,9 @@ endif
-> > >
-> > >  CFLAGS += $(if $(BUILD_BPF_SKELS),,-DBPFTOOL_WITHOUT_SKELETONS)
-> > >
-> > > +$(BOOTSTRAP_OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
-> > > +       $(QUIET_CC)$(HOSTCC) $(CFLAGS) -c -MMD -o $@ $<
-> > > +
-> > >  $(OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
-> >
-> > maybe just do
-> >
-> > $(BOOTSTRAP_OUTPUT)disasm.o $(OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
->
-> They need two different recipes. The bootstrap disasm.o needs to be built
-> with $(HOSTCC) rather than $(CC) (CC=aarch64-linux-gnu-gcc and HOSTCC=gcc)
->
+> All other parties accessing the BPF prog are under RTNL protection, so
+> need no changes.
+> 
+> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>.
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  net/sched/cls_bpf.c | 55 +++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 53 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+> index bf61ffbb7fd0..f23304685c48 100644
+> --- a/net/sched/cls_bpf.c
+> +++ b/net/sched/cls_bpf.c
+> @@ -9,6 +9,7 @@
+>   * (C) 2013 Daniel Borkmann <dborkman@redhat.com>
+>   */
+>  
+> +#include <linux/atomic.h>
+>  #include <linux/module.h>
+>  #include <linux/types.h>
+>  #include <linux/skbuff.h>
+> @@ -104,11 +105,11 @@ static int cls_bpf_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+>  			/* It is safe to push/pull even if skb_shared() */
+>  			__skb_push(skb, skb->mac_len);
+>  			bpf_compute_data_pointers(skb);
+> -			filter_res = BPF_PROG_RUN(prog->filter, skb);
+> +			filter_res = BPF_PROG_RUN(READ_ONCE(prog->filter), skb);
+>  			__skb_pull(skb, skb->mac_len);
+>  		} else {
+>  			bpf_compute_data_pointers(skb);
+> -			filter_res = BPF_PROG_RUN(prog->filter, skb);
+> +			filter_res = BPF_PROG_RUN(READ_ONCE(prog->filter), skb);
+>  		}
+>  
+>  		if (prog->exts_integrated) {
+> @@ -775,6 +776,55 @@ static int cls_bpf_link_detach(struct bpf_link *link)
+>  	return 0;
+>  }
+>  
+> +static int cls_bpf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
+> +			       struct bpf_prog *old_prog)
+> +{
+> +	struct cls_bpf_link *cls_link;
+> +	struct cls_bpf_prog cls_prog;
+> +	struct cls_bpf_prog *prog;
+> +	int ret;
+> +
+> +	rtnl_lock();
+> +
+> +	cls_link = container_of(link, struct cls_bpf_link, link);
+> +	if (!cls_link->prog) {
+> +		ret = -ENOLINK;
+> +		goto out;
+> +	}
+> +
+> +	prog = cls_link->prog;
+> +
+> +	/* BPF_F_REPLACEing? */
+> +	if (old_prog && prog->filter != old_prog) {
+> +		ret = -EINVAL;
 
-My bad, missed HOSTCC vs CC in the rule. At a first glance they
-appeared to be identical.
+Other places like cgroup_bpf_replace and bpf_iter_link_replace
+return -EPERM in such case.
 
-Your patch makes sense:
+> +		goto out;
+> +	}
+> +
+> +	old_prog = prog->filter;
+> +
+> +	if (new_prog == old_prog) {
+> +		ret = 0;
+> +		goto out;
+> +	}
+> +
+> +	cls_prog = *prog;
+> +	cls_prog.filter = new_prog;
+> +
+> +	ret = cls_bpf_offload(prog->tp, &cls_prog, prog, NULL);
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	WRITE_ONCE(prog->filter, new_prog);
+> +
+> +	bpf_prog_inc(new_prog);
+> +	/* release our reference */
+> +	bpf_prog_put(old_prog);
+> +
+> +out:
+> +	rtnl_unlock();
+> +	return ret;
+> +}
+> +
+>  static void __bpf_fill_link_info(struct cls_bpf_link *link,
+>  				 struct bpf_link_info *info)
+>  {
+> @@ -859,6 +909,7 @@ static const struct bpf_link_ops cls_bpf_link_ops = {
+>  	.show_fdinfo = cls_bpf_link_show_fdinfo,
+>  #endif
+>  	.fill_link_info = cls_bpf_link_fill_link_info,
+> +	.update_prog = cls_bpf_link_update,
+>  };
+>  
+>  static inline char *cls_bpf_link_name(u32 prog_id, const char *name)
+> -- 
+> 2.31.1
+> 
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> Thanks,
-> Jean
->
-> > ?
-> >
-> > >         $(QUIET_CC)$(CC) $(CFLAGS) -c -MMD -o $@ $<
-> > >
-> > > --
-> > > 2.31.1
-> > >
+-- 
