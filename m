@@ -2,110 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68F339B2CB
-	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 08:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9B039B469
+	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 09:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhFDGqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Jun 2021 02:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbhFDGqL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Jun 2021 02:46:11 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5F8C061760;
-        Thu,  3 Jun 2021 23:44:09 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so6880222pjp.4;
-        Thu, 03 Jun 2021 23:44:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3lY7p/u7GioL1Vux+6QXVoEdXdtGYLzRSaAk61G4V5c=;
-        b=GVR481rCMQMyr5bI0UEuhgjcXsuiBRScn1t8jpe5n4y37B8mUFmLeAr41O29osxJfu
-         Le+xTXVDOM8GLp9qZD36Euhhqaf5jkk6o9NSXGdOtaEz/hBgdLwUyE4gXLiSsXnnujEu
-         1Vz78YrV5QD7RrMA6T2eCur9FqQJqC52kY8gj9A9mlqc11B1DPXJiwNmho2WwrNlOyEn
-         20GDuMTy23KcJdSNY+Z6J542YBJivUbhkarzFGkj5xaD/oQs2BJP6WLbwF9eN9oAqLET
-         gZMwkG24jS6Se9ooFkm8txhBPcrvBOFmyRigwGKWQ7naOC+yNQ82N9HLOnXyA0MNbNHb
-         +YTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3lY7p/u7GioL1Vux+6QXVoEdXdtGYLzRSaAk61G4V5c=;
-        b=g3aWEJ+hHTG9l+2Xkndu+7YvUAG0vF+Lt+FQZ4ULq6Pcw0fSfewSxAcKm66xOgXEmy
-         HI/uVnuvxPZTIvLLqC+AdTv0fSBQ0RPPRwxH0qqghFW6hnh/LwmQ6vKxLe8EZA0Gdpk9
-         Co3333H4zoGiMCO9/gi4JArl130/ExEvg0QKmexUCj324mU68qqADekZb7aMEIw3RRsd
-         dCvgtPEP+T2Gd+YlMDjWO3jwPUu46dy9vRCACUEj8cNmltCKyZkzCoW3nsMtPGTgr1Y7
-         KOX8gDfTga1WlzHqnmWeeoGZblEVQ9r2TVpEQrEgYb84PTnt19gvcG5+nsvVQmPSkiLX
-         yxIQ==
-X-Gm-Message-State: AOAM530rsSe0tWpZD8+xWr2/pORQZ/21ieSZ7VT+LBlEVXWVKWIoGgsT
-        Nl+EOIuFzr3vQv+5W2qeoJk=
-X-Google-Smtp-Source: ABdhPJyUu+3m01oYdHZruJCA+TOkEcavRSZi/MPypBU6Qm7Q2/MzPrA7rvvO6c79G1pe69KNX8NQDw==
-X-Received: by 2002:a17:902:db06:b029:102:6e01:cecb with SMTP id m6-20020a170902db06b02901026e01cecbmr2935902plx.9.1622789048826;
-        Thu, 03 Jun 2021 23:44:08 -0700 (PDT)
-Received: from localhost ([2402:3a80:11cb:b599:c759:2079:3ef5:1764])
-        by smtp.gmail.com with ESMTPSA id s6sm3785564pjr.29.2021.06.03.23.44.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 23:44:08 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 12:13:03 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
-Message-ID: <20210604064303.bfso3oml2ouazwia@apollo>
-References: <20210528195946.2375109-1-memxor@gmail.com>
- <CAEf4BzZt5nRsfCiqGkJxW2b-==AYEVCiz6jHC-FrXKkPF=Qj7w@mail.gmail.com>
- <20210602214513.eprgwxqgqruliqeu@apollo>
- <20210602235058.njuz2gzsd5wqxwes@ast-mbp.dhcp.thefacebook.com>
+        id S229925AbhFDH6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Jun 2021 03:58:11 -0400
+Received: from out3.mail.ruhr-uni-bochum.de ([134.147.53.155]:61682 "EHLO
+        out3.mail.ruhr-uni-bochum.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229996AbhFDH6L (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Jun 2021 03:58:11 -0400
+X-Greylist: delayed 346 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Jun 2021 03:58:10 EDT
+Received: from mx3.mail.ruhr-uni-bochum.de (localhost [127.0.0.1])
+        by out3.mail.ruhr-uni-bochum.de (Postfix mo-ext) with ESMTP id 4FxFLP1nN0z8SPl
+        for <bpf@vger.kernel.org>; Fri,  4 Jun 2021 09:50:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rub.de; s=mail-2017;
+        t=1622793037; bh=t6trAepAD7Ae8M0DpYq4nMPjqFxF9W/MZyI2E8j/PdQ=;
+        h=From:Subject:To:Date:From;
+        b=O55UaW+Llj0UWLhpHSy4FrbKWQf2qex/7hc7sA4L4X2INWUJgty2s0DtFbYAgK7hL
+         Z25Zkw0+iDyKTi/uJ++heGMLZgEe6GAAipu9L3uPDs9BcM2IpttJAo1G47VljpzkB/
+         HBdP9b9LLNsJa41u6pPTZjEC2RMFQ9CdPz/HgMgY=
+Received: from out3.mail.ruhr-uni-bochum.de (localhost [127.0.0.1])
+        by mx3.mail.ruhr-uni-bochum.de (Postfix idis) with ESMTP id 4FxFLP1BBNz8SPh
+        for <bpf@vger.kernel.org>; Fri,  4 Jun 2021 09:50:37 +0200 (CEST)
+X-Envelope-Sender: <Benedict.Schlueter@rub.de>
+X-RUB-Notes: Internal origin=IPv6:2a05:3e00:c:1001::8693:2aec
+Received: from mail2.mail.ruhr-uni-bochum.de (mail2.mail.ruhr-uni-bochum.de [IPv6:2a05:3e00:c:1001::8693:2aec])
+        by out3.mail.ruhr-uni-bochum.de (Postfix mi-int) with ESMTP id 4FxFLP02x3z8SPd
+        for <bpf@vger.kernel.org>; Fri,  4 Jun 2021 09:50:36 +0200 (CEST)
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.1 at mx3.mail.ruhr-uni-bochum.de
+Received: from [IPv6:2003:de:70d:ea35:d250:99ff:fe8d:a1e1] (p200300de070dea35d25099fffe8da1e1.dip0.t-ipconnect.de [IPv6:2003:de:70d:ea35:d250:99ff:fe8d:a1e1])
+        by mail2.mail.ruhr-uni-bochum.de (Postfix) with ESMTPSA id 4FxFLN4fkFzDgyg
+        for <bpf@vger.kernel.org>; Fri,  4 Jun 2021 09:50:36 +0200 (CEST)
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.0 at mail2.mail.ruhr-uni-bochum.de
+From:   Benedict Schlueter <Benedict.Schlueter@rub.de>
+Subject: [PATCH bpf-next] use correct format string specifier for unsigned 32
+ bounds
+To:     bpf@vger.kernel.org
+Message-ID: <92abb6ec-84d9-6210-df13-ea563e0d1fa1@rub.de>
+Date:   Fri, 4 Jun 2021 09:50:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602235058.njuz2gzsd5wqxwes@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 05:20:58AM IST, Alexei Starovoitov wrote:
-> On Thu, Jun 03, 2021 at 03:15:13AM +0530, Kumar Kartikeya Dwivedi wrote:
-> >
-> > > The problem is that your patch set was marked as spam by Google, so I
-> > > suspect a bunch of folks haven't gotten it. I suggest re-sending it
-> > > again but trimming down the CC list, leaving only bpf@vger,
-> > > netdev@vger, and BPF maintainers CC'ed directly.
-> > >
-> >
-> > Thanks for the heads up, I'll resend tomorrow.
->
-> fyi I see this thread in my inbox, but, sadly, not the patches.
-> So guessing based on cover letter and hoping that the following is true:
-> link_fd is returned by BPF_LINK_CREATE command.
-> If anything is missing in struct link_create the patches are adding it there.
-> target_ifindex, flags are reused. attach_type indicates ingress vs egress.
+ From fd076dc5f2bd5ec4e9cb49530e77cf2d3e4f42c2 Mon Sep 17 00:00:00 2001
+From: Benedict Schlueter <benedict.schlueter@rub.de>
+Date: Wed, 2 Jun 2021 21:42:39 +0200
+Subject: [PATCH bpf-next]
+  use correct format string specifier for unsigned 32 bounds
 
-Everything is true except the attach_type part. I don't hook directly into
-sch_handle_{ingress,egress}. It's a normal TC filter, and if one wants to hook
-into ingress, egress, they attach it to clsact qdisc. The lifetime however is
-decided by the link fd.
+when printing an unsigned value, it should be a positive number
 
-The new version is here:
-https://lore.kernel.org/bpf/20210604063116.234316-1-memxor@gmail.com
+verifier log before the patch
+([...],s32_max_value=-2,u32_min_value=-16,u32_max_value=-2)
 
---
-Kartikeya
+verifier log after the patch
+([...],s32_max_value=-2,u32_min_value=4294967280,u32_max_value=4294967294)
+
+
+Fixes: 3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking")
+Signed-off-by: Benedict Schlueter <benedict.schlueter@rub.de>
+---
+  kernel/bpf/verifier.c | 8 ++++----
+  1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1de4b8c6ee42..ea482ebaeb26 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -690,12 +690,12 @@ static void print_verifier_state(struct 
+bpf_verifier_env *env,
+                          (int)(reg->s32_max_value));
+                  if (reg->u32_min_value != reg->umin_value &&
+                      reg->u32_min_value != U32_MIN)
+-                    verbose(env, ",u32_min_value=%d",
+-                        (int)(reg->u32_min_value));
++                    verbose(env, ",u32_min_value=%u",
++                        (unsigned int)(reg->u32_min_value));
+                  if (reg->u32_max_value != reg->umax_value &&
+                      reg->u32_max_value != U32_MAX)
+-                    verbose(env, ",u32_max_value=%d",
+-                        (int)(reg->u32_max_value));
++                    verbose(env, ",u32_max_value=%u",
++                        (unsigned int)(reg->u32_max_value));
+              }
+              verbose(env, ")");
+          }
+-- 
+2.31.1
+
+
