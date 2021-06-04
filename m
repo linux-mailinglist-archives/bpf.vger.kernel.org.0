@@ -2,196 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79E939B1A6
-	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 06:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5320D39B268
+	for <lists+bpf@lfdr.de>; Fri,  4 Jun 2021 08:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhFDEx6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Jun 2021 00:53:58 -0400
-Received: from mail-ed1-f49.google.com ([209.85.208.49]:39435 "EHLO
-        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhFDEx5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Jun 2021 00:53:57 -0400
-Received: by mail-ed1-f49.google.com with SMTP id dj8so9635232edb.6
-        for <bpf@vger.kernel.org>; Thu, 03 Jun 2021 21:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x90Q7KLzxGnQdvlJBnm7rr4DDCt1grcPV3Uowt83bVg=;
-        b=xFkKJy1g/Dq99+LDthlyeOkxVL0vc3sgm7407xja7T/KunaG3jM6iEPHGGEd/seTuT
-         hk5+z84vISRo0CRUrakYh6Eqm8bub7dGlU1MbMHJ/9JpVMF+7TiPvML8pXyUWtwXF7+G
-         6XVruZ0XWO1KBzlMWAOH3F6vu+ZYyEOUIDvJny9CD1tSyHNiTGH3b/srW66LpZWAiv9l
-         AXA5AZPFKznr+B/8A0lLT1wraOWm3b4psmw7tSK+CZQGElAFURuG0V+x6RR4UqKzP0dp
-         ZlOSu05H3mFpWi8uuwiea2soWtThhHqWy/mWoaks8qSxbQRQo+bn+sKsL/QBymZEh2hz
-         JI3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x90Q7KLzxGnQdvlJBnm7rr4DDCt1grcPV3Uowt83bVg=;
-        b=Z9yWb3X/7k7ZwsZhpgHLQPklYH/qruuMK47OvY3WhW6339krABFeGFrnlIvk+4F751
-         f4WVcnKnd5+JVAM2dta2CeL9lNm+elXhHSDnefmUddbMF/rUZD2jOOr9YiThXYw58bQD
-         7lOyJrJOb5CfYhNEqCkL47yLOOgqTmSMDCgo64cCdMr2G1cpwX7oZLM+Uj1J3tpixONy
-         W5Fo4Ia8uzsc3DjH3M8R5DDAs6263GSwG9PSgdm1lrm2GXN5zBhX8lHnRKFdQqTcOKAD
-         0/RkBnn/XwZjZKB1xy4hnuIExgaWKGTrw6r0/CTfd13vKtrkSRGBaksveIPv32IpyR32
-         3ojw==
-X-Gm-Message-State: AOAM533gXzXKV6matMXVLg/LYbal+P9Zp29H5a3AmowYKdXwNvgpnktQ
-        Ke7JHFdJQOuu+kIV7X/M00AnkMRpn4Yoy4SwGrfIrFhjnA==
-X-Google-Smtp-Source: ABdhPJxwUDF114o2gy5sFNpwgCfnJzhmnQ0CQLzlaPBqPhlrHJJdrTOWrANK8cv+0mYFczDmrkFW0Ydud/Lrf7jJCok=
-X-Received: by 2002:a05:6402:158e:: with SMTP id c14mr2758605edv.128.1622782259021;
- Thu, 03 Jun 2021 21:50:59 -0700 (PDT)
+        id S229854AbhFDGOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Jun 2021 02:14:55 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21938 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229833AbhFDGOz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Jun 2021 02:14:55 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 1546ALfv026344;
+        Thu, 3 Jun 2021 23:13:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=vU1zMI0gj/kGZgKXo48OTg/2i5IbFjbB3tvUUCxdoLo=;
+ b=MWy4l52RH3S9RfjrvYsuEANeMbyulvXyRIqG4uhVGAhm6sDTWHP5ydx05KFLZJuI7e9r
+ hhn+xmfS+ew9/wkiQADZixHcaaReKAFHN+0C2BFcTp15OIo4zs1fn/b1ftIUuvRCOQb0
+ Gxf6/Ec6lxKYx6Lyn9TM0a6tR/E+LIQuDZI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 38y9kq9bbj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 03 Jun 2021 23:13:08 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 23:13:07 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VZ4yRpDYxIR79cxvnBNho2GVPBW9HfWDlVBWQLvblh/jN1sTX+OmgwX2xQoNsEG1eV5F7APBmIBB9wKprIM5bhs6IXgG5XmG0q9w0MoPVu4xSU6fTxnUwCbJEepQs7GFApbPNQsDrZfn1UCM6gQKdn+CTCnAbxA19+BJyVwJXFIGvpFqoZUlu+tF/H76+4VXO0MoRj45U5hmmmIfDlraciQqPnKOx8bBnwYBi1PQRpDoie3Qf/tmCAw6UDYW1VXwt4Clh7Ig8Ds4314kxC46tcb8m4SjiGbezj5uQJZzDKA7oZFYOYP/+N5P1+wGMUCaiEvl3Koc56cIBvecVLdg6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vU1zMI0gj/kGZgKXo48OTg/2i5IbFjbB3tvUUCxdoLo=;
+ b=i+UZbWQFTdA7vwKRaoVWy1XQC1odK2+pTecrd255SnJlzQ3+d75aL0wmNj64n59Up+VGNSx8rnawbquMkm9snwMxrlzZod/sFa9MbaZy2PleSM2uJqcjCT5JgFSbk+5JpI1tQBafTjinxcC1kgSVP33ovHIYn80H4b1+Mx0xticbyRrQsNHFiBXyZSfacFDfXJwP/RzPyJHW6DLPXIrDeJvFJ5OonPOfWvXhUFN2Sh4oQhlvcQWVtgAFUjHmq0o2gNMtaI1T5susA+kVsac1VhXw1QRa4Gezw5s55j4DLNFqV2kkAIkFFIkc3VLv16ifXLi/5R7o+pJaclwwXG9c2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from CH2PR15MB3573.namprd15.prod.outlook.com (52.132.230.156) by
+ CH2PR15MB3576.namprd15.prod.outlook.com (52.132.229.150) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4173.20; Fri, 4 Jun 2021 06:13:07 +0000
+Received: from CH2PR15MB3573.namprd15.prod.outlook.com
+ ([fe80::3577:a44a:dfd:fe49]) by CH2PR15MB3573.namprd15.prod.outlook.com
+ ([fe80::3577:a44a:dfd:fe49%7]) with mapi id 15.20.4173.030; Fri, 4 Jun 2021
+ 06:13:07 +0000
+Date:   Thu, 3 Jun 2021 23:13:03 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Kenny Ho <y2kenny@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: Re: Headers for whitelisted kernel functions available to BPF
+ programs
+Message-ID: <20210604061303.v22is6a7qmlbvkmq@kafai-mbp>
+References: <CAOWid-drUQKifjPgzQ3MQiKUUrHp5eKOydgSToadW1fNkUME7g@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAOWid-drUQKifjPgzQ3MQiKUUrHp5eKOydgSToadW1fNkUME7g@mail.gmail.com>
+X-Originating-IP: [2620:10d:c090:400::5:a867]
+X-ClientProxiedBy: SJ0PR05CA0113.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::28) To CH2PR15MB3573.namprd15.prod.outlook.com
+ (2603:10b6:610:e::28)
 MIME-Version: 1.0
-References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
- <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net> <CAHC9VhR-kYmMA8gsqkiL5=poN9FoL-uCyx1YOLCoG2hRiUBYug@mail.gmail.com>
- <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net> <CAHC9VhS1XRZjKcTFgH1+n5uA-CeT+9BeSP5jvT2+RE5ougLpUg@mail.gmail.com>
- <2e541bdc-ae21-9a07-7ac7-6c6a4dda09e8@iogearbox.net> <CAHC9VhT464vr9sWxqY3PRB4DAccz=LvRMLgWBsSViWMR0JJvOQ@mail.gmail.com>
- <3ca181e3-df32-9ae0-12c6-efb899b7ce7a@iogearbox.net> <CAHC9VhTuPnPs1wMTmoGUZ4fvyy-es9QJpE7O_yTs2JKos4fgbw@mail.gmail.com>
- <f4373013-88fb-b839-aaaa-3826548ebd0c@iogearbox.net>
-In-Reply-To: <f4373013-88fb-b839-aaaa-3826548ebd0c@iogearbox.net>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 4 Jun 2021 00:50:47 -0400
-Message-ID: <CAHC9VhS=BeGdaAi8Ae5Fx42Fzy_ybkcXwMNcPwK=uuA6=+SRcg@mail.gmail.com>
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>, jolsa@redhat.com,
-        ast@kernel.org, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:a867) by SJ0PR05CA0113.namprd05.prod.outlook.com (2603:10b6:a03:334::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Fri, 4 Jun 2021 06:13:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4391bcd1-0e93-40ad-e8f2-08d9271fd1bd
+X-MS-TrafficTypeDiagnostic: CH2PR15MB3576:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CH2PR15MB357664505A4FA318E2AD989FD53B9@CH2PR15MB3576.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EorFLa/YWjgTaYzQ9K0e9mjPpOfiPxkf+uyI8lIq2nZVZI3SHDe9DlRSGdSebOIZi5BCk7uH+9gegY+wxX1Rh4K0zyb8MhqhWuagmtBKhGWbUWQqZrpMWl6p0f2hp+Y0Tm0azKCiypTQ8jLxznv9VV2zEMBSE5vUiaOmuH2O1ZSqVTVhwBr/pViYU236k5eBPOE9P8Ov8YvDlhoQd3gp8Sey/Wa5jbTb93TjOWmLVts2csp0f6GFqGDlVpgUgnUc0gOqm/B1eZ21AovjQchZ4AJmjkue+7K3GZRKOcmQ/0tF9wDcSrWmf2iXvu7kTbpDc0GfaIBU9AtkEAPw3xLMJ3hr0JpV201GowNgAytq+f5yUyFhreG1nM9FiW/IDM5+jXCee4k2RaCwb7vVHYCxMpOygK27RhrgSqWZ9nL8wvQe31oW86fi4P7x0zwi4RrmzEImfFLh66e7ZwZCmA0cc6obiKE0BUQRpfp8hHyVcyCQLUt2uYvcUje9oqIPu3WWP4mAU6ZmoA/bSOZC8+dxyZdMthdPvOE2H0RBcYWDkBVjet2ZtuoVDb9aZgVQzlmeXRSL5EwOERU7+ByLHtZ+D7ZGBHyHtI+1gO14M9kf1Sc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR15MB3573.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(39860400002)(346002)(366004)(8676002)(6496006)(66556008)(8936002)(86362001)(6916009)(4326008)(52116002)(6666004)(316002)(55016002)(38100700002)(54906003)(478600001)(4744005)(66476007)(186003)(16526019)(66946007)(9686003)(2906002)(1076003)(33716001)(5660300002)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?GVdXgGm+soGKeDyFmYxff7QnFQ+AIhyEwJjxwad2QxSl/wmoR1ntVF0faEyD?=
+ =?us-ascii?Q?Z7znGdjVfJPfqiSVqxxwm5VvPhE0PROJ0MONzQQMKZIdD/T0Ga3BytRh2P03?=
+ =?us-ascii?Q?yJpIYHHkSbLq8r2sly/abj0T/aAjxD9SB/m7ViiInqtGvW0ph06FJh1c8a2j?=
+ =?us-ascii?Q?+rM4kL4JbdXGwYcRKKK/KeA5z1vb3wdY8VtYNkGp29DBzsE0SadZe5CfOQKV?=
+ =?us-ascii?Q?3HrpDTXNsOXbCwazxGKWBOoxQmlBViqXrKMxABFEjQJ9cBzC+a5hsG6wHMKE?=
+ =?us-ascii?Q?I2J6bJ1OjCjKsRejKC54+irDAZAY6d1mR9kbr1Bg+RGce4GCYTKIPbJrdrlF?=
+ =?us-ascii?Q?QI5+DV/z8RfE+rI2TBBDOM4411rQ/gyHa3+9cTNqo3LJ5v9vks7RsBRcOsds?=
+ =?us-ascii?Q?I3mLzsrcq67VtNEwJPa00jelqYUWwVmyWx2rCZZ/2urrb2qdECrSc6zSlb3T?=
+ =?us-ascii?Q?xRDnPb+fS43CzL/lXmcoeA/aifhYDsOXptQ3WJDEmc0htYFN8JDSyMcUSGIO?=
+ =?us-ascii?Q?jSya2uIG2r4QXz0JU08CFRyuLOVPfYm4Wlt9L3tAgX2xThU2zgMIi+vnkI3/?=
+ =?us-ascii?Q?kAReU2Po8H6Gl8knvwGm98QN+7CQvE0aT0++ZfrUisS3Odi8sbGgIrdpQCAo?=
+ =?us-ascii?Q?tksoZWflg6zw9MNphkKgAPvqfsR4bIamx84FGTLUpfkcLGCot0Rx/McPCXYr?=
+ =?us-ascii?Q?8wxG5sfMzfAamwqlUSC0Q+1+UY8FtTl+ml6uzLce3FUwp/OU518tIQhKOTlo?=
+ =?us-ascii?Q?DKl+KbjsbBe8+feVMzfd2uQ4aitqI976VAJesqOfbsq9V+vfPvQL7I76zeQF?=
+ =?us-ascii?Q?N2jH0tLEFX75WiwNoY/8C5/RbKNycUix3KZQrhbdlINP41yzybaKYjS+fFGI?=
+ =?us-ascii?Q?IC8WHJY1A1K3NICkArqUW+7N/xYj7mwB26r2mZ8BOpQDT4f1E+zSC0omzhQu?=
+ =?us-ascii?Q?4Ln3+PIIWW4PsmAzZ1e9rdu1e0lm41HcKnVuIaYfeLWa/RUpx0B5vpO5kSZC?=
+ =?us-ascii?Q?T64RmU/rlpDxX7RQbFVFr8B0U4cDfHfBXWbIJEO1MGebo72R+aheNWO5DeiV?=
+ =?us-ascii?Q?+o+tliPSf1tWvMXy0XQU2K4JIv1iYkc7lcRTLVIVd1pY2utRlIThFQHRUmr6?=
+ =?us-ascii?Q?wlROUqVL5m0hhiB6xIzd/UXXBNWYYnJPAeHVpzGYQhDuWofh+z/IES69s+Bq?=
+ =?us-ascii?Q?q5t+xz/QJMce2hew1FTOqrbDQohBO4O6xztix6XePjDByZgoTzcmOdSdN1VU?=
+ =?us-ascii?Q?cy/5H5I8eiB+lpZzDpIk9UfWLCmiEFXHfe54aPqQ4RD2nuwMiJwaeFhajkTF?=
+ =?us-ascii?Q?PvQgWUtgeMQj2RtxkP0LKl8/J9qjTiMyCIKoxtp/hreZVQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4391bcd1-0e93-40ad-e8f2-08d9271fd1bd
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR15MB3573.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 06:13:06.7788
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8aJ6UVyRUBuNIvUzkHpSQ3o386maygvXMyg2UjnlDBgkqm18/u8/8Z5nUp8UZEyk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR15MB3576
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: bhnkMPdpYA3B1Z1BV-MxLKqBiPhIYnTf
+X-Proofpoint-GUID: bhnkMPdpYA3B1Z1BV-MxLKqBiPhIYnTf
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-04_04:2021-06-04,2021-06-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ adultscore=0 phishscore=0 mlxlogscore=961 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 suspectscore=0 mlxscore=0 bulkscore=0
+ clxscore=1011 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106040048
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 2:53 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> On 6/2/21 5:13 PM, Paul Moore wrote:
-> [...]
-> > Help me out here, is your answer that the access check can only be
-> > done at BPF program load time?  That isn't really a solution from a
-> > SELinux perspective as far as I'm concerned.
->
-> That is the current answer. The unfortunate irony is that 59438b46471a
-> ("security,lockdown,selinux: implement SELinux lockdown") broke this in
-> the first place. W/o the SELinux hook implementation it would have been
-> working just fine at runtime, but given it's UAPI since quite a while
-> now, that ship has sailed.
+On Thu, Jun 03, 2021 at 02:01:13PM -0400, Kenny Ho wrote:
+> Hi,
+> 
+> I understand that helper functions available to bpf programs are
+> listed in include/uapi/linux/bpf.h and kernel headers can be made
+> available at /sys/kernel/kheaders.tar.xz with CONFIG_IKHEADERS.  But
+> with the support of calling kernel functions from bpf programs, how
+> would one know which functions are whitelisted?  Are the headers for
+> these whitelisted functions available via something like "bpftool btf
+> dump file /sys/kernel/btf/vmlinux format c"?
+Like other whitelisted functions in BPF, the list is not in the vmlinux btf
+now but could be a BTF extension in the future (Cc: Yonghong).
 
-Explaining the other side of the "unfortunate irony ..." comment is
-going to take us in a direction that isn't very constructive so I'm
-going to skip past that now and simply say that if there was better
-cooperation across subsystems, especially with the LSM folks, a lot of
-this pain could be mitigated.
-
-... and yes I said "mitigated", I'm not foolish to think the pain
-could be avoided entirely ;)
-
-> > I understand the ideas I've tossed out aren't practical from a BPF
-> > perspective, but it would be nice if we could find something that does
-> > work.  Surely you BPF folks can think of some way to provide a
-> > runtime, not load time, check?
->
-> I did run this entire discussion by both of the other BPF co-maintainers
-> (Alexei, Andrii, CC'ed) and together we did further brainstorming on the
-> matter on how we could solve this, but couldn't find a sensible & clean
-> solution so far.
-
-Before I jump into the patch below I just want to say that I
-appreciate you looking into solutions on the BPF side of things.
-However, I voted "no" on this patch previously and since you haven't
-really changed it, my "no"/NACK vote remains, at least until we
-exhaust a few more options.
-
-> [PATCH] bpf, lockdown, audit: Fix buggy SELinux lockdown permission checks
->
-> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> added an implementation of the locked_down LSM hook to SELinux, with the aim
-> to restrict which domains are allowed to perform operations that would breach
-> lockdown. This is indirectly also getting audit subsystem involved to report
-> events. The latter is problematic, as reported by Ondrej and Serhei, since it
-> can bring down the whole system via audit:
->
->    1) The audit events that are triggered due to calls to security_locked_down()
->       can OOM kill a machine, see below details [0].
->
->    2) It also seems to be causing a deadlock via avc_has_perm()/slow_avc_audit()
->       when trying to wake up kauditd, for example, when using trace_sched_switch()
->       tracepoint, see details in [1]. Triggering this was not via some hypothetical
->       corner case, but with existing tools like runqlat & runqslower from bcc, for
->       example, which make use of this tracepoint. Rough call sequence goes like:
->
->       rq_lock(rq) -> -------------------------+
->         trace_sched_switch() ->               |
->           bpf_prog_xyz() ->                   +-> deadlock
->             selinux_lockdown() ->             |
->               audit_log_end() ->              |
->                 wake_up_interruptible() ->    |
->                   try_to_wake_up() ->         |
->                     rq_lock(rq) --------------+
-
-Since BPF is a bit of chaotic nightmare in the sense that it basically
-out-of-tree kernel code that can be called from anywhere and do pretty
-much anything; it presents quite the challenge for those of us worried
-about LSM access controls.
-
-You and the other BPF folks have investigated ways in which BPF might
-be able to disable helper functions allowing us to do proper runtime
-access checks but haven't been able to make it work, which brings this
-patch up yet again.  I'm not a fan of this patch as it basically
-allows BPF programs to side-step any changes to the security policy
-once the BPF programs have been loaded; this is Not Good.
-
-So let's look at this from a different angle.  Let's look at the two
-problems you mention above.
-
-If we start with the runqueue deadlock we see the main problem is that
-audit_log_end() pokes the kauditd_wait waitqueue to ensure the
-kauditd_thread thread wakes up and processes the audit queue.  The
-audit_log_start() function does something similar, but it is
-conditional on a number of factors and isn't as likely to be hit.  If
-we relocate these kauditd wakeup calls we can remove the deadlock in
-trace_sched_switch().  In the case of CONFIG_AUDITSYSCALL=y we can
-probably just move the wakeup to __audit_syscall_exit() and in the
-case of CONFIG_AUDITSYSCALL=n we can likely just change the
-wait_event_freezable() call in kauditd_thread to a
-wait_event_freezable_timeout() call with a HZ timeout (the audit
-stream will be much less on these systems anyway so a queue overflow
-is much less likely).  I'm building a kernel with these changes now, I
-should have something to test when I wake up tomorrow morning.  It
-might even provide a bit of a performance boost as we would only be
-calling a wakeup function once for each syscall.
-
-The other issue is related to security_locked_down() and using the
-right subject for the access control check.  As has been pointed out
-several times in this thread, the current code uses the current() task
-as the subject, which is arguably incorrect for many of the BPF helper
-functions.  In the case of BPF, we have talked about using the
-credentials of the task which loaded the BPF program instead of
-current(), and that does make a certain amount of sense.  Such an
-approach should make the security policy easier to develop and
-rationalize, leading to a significant decrease in audit records coming
-from LSM access denials.  The question is how to implement such a
-change.  The current SELinux security_bpf_prog_alloc() hook causes the
-newly loaded BPF program to inherit the subject context from the task
-which loads the BPF program; if it is possible to reference the
-bpf_prog struct, or really just the associated bpf_prog_aux->security
-blob, from inside a security_bpf_locked_down() function we use that
-subject information to perform the access check.  BPF folks, is there
-a way to get that information from within a BPF kernel helper
-function?  If it isn't currently possible, could it be made possible
-(or something similar)?
-
-If it turns out we can do both of these things (relocated audit
-wakeup, bpf_prog reference inside kernel helpers) I think we can
-arrive at a fix which both groups can accept.
-
--- 
-paul moore
-www.paul-moore.com
+Making the kfunc call whitelist more accessible is useful in general.
+The bpf tcp-cc struct_ops is the only prog type supporting kfunc call.
+What is your use case to introspect this whitelist?
