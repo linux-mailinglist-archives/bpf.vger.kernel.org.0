@@ -2,175 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4816739C5EE
-	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 06:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14F039C691
+	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 09:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhFEEzY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Jun 2021 00:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFEEzX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Jun 2021 00:55:23 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1EFC061766;
-        Fri,  4 Jun 2021 21:53:19 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id v13so5679613ple.9;
-        Fri, 04 Jun 2021 21:53:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=l+lXlvrsv83VF0gxX53slvH7CUd5rQmw/jVrSjJzDD0=;
-        b=aotu0vPjcEw+9KTTksA+JquKDdJlAP1vGFX8qcLOC03dYZ/kxE5VmiQJmOiHrvzfma
-         Od1xb790ljDRW1YZKwRcAgnLScLjNK+nQy7V6s9PMqSZDCPAQszqIvV+AhtCgv1I9C40
-         VkZZZkJPUsH0AHzbo2xiwUL109oQl+RlDKzOWApoKDAJqQyVSfV7iO/PymZeknYdZK8F
-         MFD/pIO3pi4G4qIMxzmDP3x5XQOWU84k7eM3CvVjan4IHJ4PJiQDwtHg2AJ+5CaxyFOP
-         j28MdJi9HiyKGy6Uw6Nmd8PESXoiPZDDe2Tq1Qhmm1RMYKXNnO99FzfmCe0UYgXq8x6n
-         nugQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=l+lXlvrsv83VF0gxX53slvH7CUd5rQmw/jVrSjJzDD0=;
-        b=Rs9uzi/7wTJnHx35ekwMlt8sD1yJUAWRmRaNR4iBQtlKFXjx0IlyClscUuOL2TzNEO
-         Xp0th+XmzgaORSd6iRfYohuQfyo7la1Y2FLAjI+Qbi3auPCs7QaCKeupHUHcaQl0sXcY
-         A6vRVsghLXUdLwHxmCeUlja5FAhA7uzXywnHmnvUTsif5+kzE0+Yz3CE349dhYRjPua5
-         RkOEq3aRJ4LMvt5txJGARWGXfL+jY0J1G9AZg4c40ScZJTTMDYVzsk1XNvdQrFQSnb3b
-         eI0m6XihqxZhCVxhLDgMzse6oHTYPIdqJtR0BqsPAS6X0dKjhKaW5Ik0rvrCGPQ0Tgh5
-         QF3Q==
-X-Gm-Message-State: AOAM530uCfjrBSX2pDNFluehDjwr0+30Idns/INYfACTrFcgMCwPyYMJ
-        B5dqURLWqPJCK6Ht/xs0PtY=
-X-Google-Smtp-Source: ABdhPJzedfeenmDkGe+9sWcFJWrayIt7vhLxld8tLBp9fWovDpv1ML50FqRCIrSI5o1LAZlkih/tJA==
-X-Received: by 2002:a17:90a:b007:: with SMTP id x7mr20041879pjq.202.1622868799486;
-        Fri, 04 Jun 2021 21:53:19 -0700 (PDT)
-Received: from localhost ([2402:3a80:11c3:3c31:71d1:71f6:fb2:d008])
-        by smtp.gmail.com with ESMTPSA id a65sm3041429pfb.177.2021.06.04.21.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 21:53:19 -0700 (PDT)
-Date:   Sat, 5 Jun 2021 10:22:18 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 3/7] net: sched: add bpf_link API for bpf
- classifier
-Message-ID: <20210605045218.jnkfhu7iys7zbt64@apollo>
-References: <20210604063116.234316-1-memxor@gmail.com>
- <20210604063116.234316-4-memxor@gmail.com>
- <3fca958b-dcf3-6363-5f23-a2e7c4d16f87@fb.com>
+        id S229881AbhFEHSo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Jun 2021 03:18:44 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:45960 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229850AbhFEHSn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Jun 2021 03:18:43 -0400
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv0PcJLtgBoMKAA--.12002S3;
+        Sat, 05 Jun 2021 15:16:44 +0800 (CST)
+Subject: Re: [PATCH 4.19 0/9] bpf: fix verifier selftests on inefficient
+ unaligned access architectures
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+References: <1622604473-781-1-git-send-email-yangtiezhu@loongson.cn>
+Cc:     stable@vger.kernel.org, bpf@vger.kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <70c92574-ab22-1a04-067e-4c933ef75a9a@loongson.cn>
+Date:   Sat, 5 Jun 2021 15:16:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <1622604473-781-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3fca958b-dcf3-6363-5f23-a2e7c4d16f87@fb.com>
+X-CM-TRANSID: AQAAf9Dxv0PcJLtgBoMKAA--.12002S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJryrWry3JFW8ArWxJw1fWFg_yoW8Zry5pa
+        y0gFZ8tr4kt3Wxua47AF4UuFWrZ3sYgw4UC3Wftr98AF18AryxJr4Iga4YyF9xKrZ3Wr1F
+        v34aqFn5Gw1fXFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvqb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
+        8wCY02Avz4vE14v_GF4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
+        ZFpf9x07bo-BiUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 08:38:17AM IST, Yonghong Song wrote:
+On 06/02/2021 11:27 AM, Tiezhu Yang wrote:
+> With the following patch series, all verifier selftests pass on the archs which
+> select HAVE_EFFICIENT_UNALIGNED_ACCESS.
 >
+> [v2,4.19,00/19] bpf: fix verifier selftests, add CVE-2021-29155, CVE-2021-33200 fixes
+> https://patchwork.kernel.org/project/netdevbpf/cover/20210528103810.22025-1-ovidiu.panait@windriver.com/
 >
-> On 6/3/21 11:31 PM, Kumar Kartikeya Dwivedi wrote:
-> > This commit introduces a bpf_link based kernel API for creating tc
-> > filters and using the cls_bpf classifier. Only a subset of what netlink
-> > API offers is supported, things like TCA_BPF_POLICE, TCA_RATE and
-> > embedded actions are unsupported.
-> >
-> > The kernel API and the libbpf wrapper added in a subsequent patch are
-> > more opinionated and mirror the semantics of low level netlink based
-> > TC-BPF API, i.e. always setting direct action mode, always setting
-> > protocol to ETH_P_ALL, and only exposing handle and priority as the
-> > variables the user can control. We add an additional gen_flags parameter
-> > though to allow for offloading use cases. It would be trivial to extend
-> > the current API to support specifying other attributes in the future,
-> > but for now I'm sticking how we want to push usage.
-> >
-> > The semantics around bpf_link support are as follows:
-> >
-> > A user can create a classifier attached to a filter using the bpf_link
-> > API, after which changing it and deleting it only happens through the
-> > bpf_link API. It is not possible to bind the bpf_link to existing
-> > filter, and any such attempt will fail with EEXIST. Hence EEXIST can be
-> > returned in two cases, when existing bpf_link owned filter exists, or
-> > existing netlink owned filter exists.
-> >
-> > Removing bpf_link owned filter from netlink returns EPERM, denoting that
-> > netlink is locked out from filter manipulation when bpf_link is
-> > involved.
-> >
-> > Whenever a filter is detached due to chain removal, or qdisc tear down,
-> > or net_device shutdown, the bpf_link becomes automatically detached.
-> >
-> > In this way, the netlink API and bpf_link creation path are exclusive
-> > and don't stomp over one another. Filters created using bpf_link API
-> > cannot be replaced by netlink API, and filters created by netlink API are
-> > never replaced by bpf_link. Netfilter also cannot detach bpf_link filters.
-> >
-> > We serialize all changes dover rtnl_lock as cls_bpf API doesn't support the
+> But on inefficient unaligned access architectures, there still exist many failures,
+> so some patches about F_NEEDS_EFFICIENT_UNALIGNED_ACCESS are also needed, backport
+> to 4.19 with a minor context difference.
 >
-> dover => over?
+> This patch series is based on the series (all now queued up by greg k-h):
+> "bpf: fix verifier selftests, add CVE-2021-29155, CVE-2021-33200 fixes".
 >
-
-Thanks, will fix.
-
-> > unlocked classifier API.
-> >
-> > Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>.
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >   include/linux/bpf_types.h |   3 +
-> >   include/net/pkt_cls.h     |  13 ++
-> >   include/net/sch_generic.h |   6 +-
-> >   include/uapi/linux/bpf.h  |  15 +++
-> >   kernel/bpf/syscall.c      |  10 +-
-> >   net/sched/cls_api.c       | 139 ++++++++++++++++++++-
-> >   net/sched/cls_bpf.c       | 250 +++++++++++++++++++++++++++++++++++++-
-> >   7 files changed, 430 insertions(+), 6 deletions(-)
-> >
-> [...]
-> >   subsys_initcall(tc_filter_init);
-> > +
-> > +#if IS_ENABLED(CONFIG_NET_CLS_BPF)
-> > +
-> > +int bpf_tc_link_attach(union bpf_attr *attr, struct bpf_prog *prog)
-> > +{
-> > +	struct net *net = current->nsproxy->net_ns;
-> > +	struct tcf_chain_info chain_info;
-> > +	u32 chain_index, prio, parent;
-> > +	struct tcf_block *block;
-> > +	struct tcf_chain *chain;
-> > +	struct tcf_proto *tp;
-> > +	int err, tp_created;
-> > +	unsigned long cl;
-> > +	struct Qdisc *q;
-> > +	__be16 protocol;
-> > +	void *fh;
-> > +
-> > +	/* Caller already checks bpf_capable */
-> > +	if (!ns_capable(current->nsproxy->net_ns->user_ns, CAP_NET_ADMIN))
+> BjÃ¶rn TÃ¶pel (2):
+>    selftests/bpf: add "any alignment" annotation for some tests
+>    selftests/bpf: Avoid running unprivileged tests with alignment
+>      requirements
 >
-> net->user_ns?
+> Daniel Borkmann (2):
+>    bpf: fix test suite to enable all unpriv program types
+>    bpf: test make sure to run unpriv test cases in test_verifier
+>
+> David S. Miller (4):
+>    bpf: Add BPF_F_ANY_ALIGNMENT.
+>    bpf: Adjust F_NEEDS_EFFICIENT_UNALIGNED_ACCESS handling in
+>      test_verifier.c
+>    bpf: Make more use of 'any' alignment in test_verifier.c
+>    bpf: Apply F_NEEDS_EFFICIENT_UNALIGNED_ACCESS to more ACCEPT test
+>      cases.
+>
+> Joe Stringer (1):
+>    selftests/bpf: Generalize dummy program types
+>
+>   include/uapi/linux/bpf.h                    |  14 ++
+>   kernel/bpf/syscall.c                        |   7 +-
+>   kernel/bpf/verifier.c                       |   3 +
+>   tools/include/uapi/linux/bpf.h              |  14 ++
+>   tools/lib/bpf/bpf.c                         |   8 +-
+>   tools/lib/bpf/bpf.h                         |   2 +-
+>   tools/testing/selftests/bpf/test_align.c    |   4 +-
+>   tools/testing/selftests/bpf/test_verifier.c | 224 ++++++++++++++++++++--------
+>   8 files changed, 206 insertions(+), 70 deletions(-)
 >
 
-True, will fix.
+Hi Greg and Sasha,
 
-> > +		return -EPERM;
-> > +
-> > +	if (attr->link_create.flags ||
-> > +	    !attr->link_create.target_ifindex ||
-> > +	    !tc_flags_valid(attr->link_create.tc.gen_flags))
-> > +		return -EINVAL;
-> > +
-> [...]
+Could you please apply this series to 4.19?
+Any comments will be much appreciated.
 
---
-Kartikeya
+Thanks,
+Tiezhu
+
