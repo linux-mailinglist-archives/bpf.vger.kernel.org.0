@@ -2,214 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E2239C8D7
-	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 15:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F197A39C90D
+	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 16:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhFENi5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Jun 2021 09:38:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhFENi5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Jun 2021 09:38:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C23286135F;
-        Sat,  5 Jun 2021 13:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622900229;
-        bh=vVFuxJcc2zxGSbB7UdD22Ei/qbdSpSclZeHlTn/3YhU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YvYT6g2uMiGoR+6sy8adxF2RKOKdLfZwZM1lQ2XSeGEmVRPfj+lL9GfMuDZZyN5sW
-         owde4vG3yj7p7pLXeq7cT8Quzu5K2oje+SVTkxIFZzcqSZ8hnMEW22eBk76FE287fo
-         4UO5rHWF2ckQlxw3LXeqP9dl2lb4h/WYP8nTAjJYJK6XJoYk/G411kYe/F/2iQJhoD
-         xXRTDbDCKLXwoKXPmi6Vr+WyuZ3ew8qcXU3FezEQ7yPGxTwls2XhX7YcBJMW4KIq4h
-         iQEMQ7FEZy5AfH5qZZbVs3RolIS66jPxDTIm3nQXafdQE5dr92NhDgnKsUXTMjPJ2E
-         9HOoolYpwluWw==
-Date:   Sat, 5 Jun 2021 15:37:01 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Jonathan Corbet" <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        coresight@lists.linaro.org, devicetree@vger.kernel.org,
-        kunit-dev@googlegroups.com, kvm@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-security-module@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 00/34] docs: avoid using ReST :doc:`foo` tag
-Message-ID: <20210605153701.56a8e2d8@coco.lan>
-In-Reply-To: <cover.1622898327.git.mchehab+huawei@kernel.org>
-References: <cover.1622898327.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229963AbhFEOe3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Jun 2021 10:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhFEOe3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Jun 2021 10:34:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45187C061766;
+        Sat,  5 Jun 2021 07:32:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6ysSoi5gpx3YeFtFoqCR9odJnpVrSzapVJNhGgAq3Zo=; b=Zh95QZ+oAmIGkHWHQAEFl6vDTO
+        GmvBEgb4eLNge3M/1YZWLQSUlr3gr6cZIATaXD6kJjhc0l9JRxx+XGMlKyGnYHX7XdUbOmZ+0bQxM
+        xnfQFPtWmEkTjgNAOXyn43QONLJt6HaOnASbfUu/UIQTsHNpDR4jaQTOHi+RR3kr8vbfVUmf2ptSh
+        bVmZJOnROEtX7cZlHgNDUk07U9pA40FzDKCXEOXn3pDIHzqz9+9xSTGc0NoHcRLgIrRKh0JHVCOiD
+        idtvZvVVbSllHCR8Mx+3Pdtug5xMAXlRJIJiDHozuLGZZlf4gFMz5ziEFQKnxHZsE8twc0ZRTl1S5
+        1Itzs3yQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lpXLY-00E9xR-Ev; Sat, 05 Jun 2021 14:32:21 +0000
+Date:   Sat, 5 Jun 2021 15:32:20 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v7 1/5] mm: add a signature in struct page
+Message-ID: <YLuK9P+loeKwUUK3@casper.infradead.org>
+References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
+ <20210604183349.30040-2-mcroce@linux.microsoft.com>
+ <YLp6D7mEh85vL+pY@casper.infradead.org>
+ <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sat,  5 Jun 2021 15:17:59 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+On Sat, Jun 05, 2021 at 12:59:50AM +0200, Matteo Croce wrote:
+> On Fri, Jun 4, 2021 at 9:08 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Fri, Jun 04, 2021 at 08:33:45PM +0200, Matteo Croce wrote:
+> > > @@ -130,7 +137,10 @@ struct page {
+> > >                       };
+> > >               };
+> > >               struct {        /* Tail pages of compound page */
+> > > -                     unsigned long compound_head;    /* Bit zero is set */
+> > > +                     /* Bit zero is set
+> > > +                      * Bit one if pfmemalloc page
+> > > +                      */
+> > > +                     unsigned long compound_head;
+> >
+> > I would drop this hunk.  Bit 1 is not used for this purpose in tail
+> > pages; it's used for that purpose in head and base pages.
+> >
+> > I suppose we could do something like ...
+> >
+> >  static inline void set_page_pfmemalloc(struct page *page)
+> >  {
+> > -       page->index = -1UL;
+> > +       page->lru.next = (void *)2;
+> >  }
+> >
+> > if it's causing confusion.
+> >
+> 
+> If you prefer, ok for me.
+> Why not "(void *)BIT(1)"? Just to remark that it's a single bit and
+> not a magic like value?
 
-> As discussed at:
-> 	https://lore.kernel.org/linux-doc/871r9k6rmy.fsf@meer.lwn.net/
-> 
-> It is better to avoid using :doc:`foo` to refer to Documentation/foo.rst, as the
-> automarkup.py extension should handle it automatically, on most cases.
-
-Forgot to mention:
-
-1. this series is against docs-next branch;
-2. maintainers bcc, as otherwise the e-mail would be rejected,
-   due to the number of c/c. I opted to keep c/c the mailing
-   lists.
-
-Regards,
-Mauro
-
-> 
-> There are a couple of exceptions to this rule:
-> 
-> 1. when :doc:  tag is used to point to a kernel-doc DOC: markup;
-> 2. when it is used with a named tag, e. g. :doc:`some name <foo>`;
-> 
-> It should also be noticed that automarkup.py has currently an issue:
-> if one use a markup like:
-> 
-> 	Documentation/dev-tools/kunit/api/test.rst
-> 	  - documents all of the standard testing API excluding mocking
-> 	    or mocking related features.
-> 
-> or, even:
-> 
-> 	Documentation/dev-tools/kunit/api/test.rst
-> 	    documents all of the standard testing API excluding mocking
-> 	    or mocking related features.
-> 	
-> The automarkup.py will simply ignore it. Not sure why. This patch series
-> avoid the above patterns (which is present only on 4 files), but it would be
-> nice to have a followup patch fixing the issue at automarkup.py.
-> 
-> On this series:
-> 
-> Patch 1 manually adjust the references inside driver-api/pm/devices.rst,
-> as there it uses :file:`foo` to refer to some Documentation/ files;
-> 
-> Patch 2 converts a table at Documentation/dev-tools/kunit/api/index.rst
-> into a list, carefully avoiding the 
-> 
-> Patch 3 converts the cross-references at the media documentation, also
-> avoiding the automarkup.py bug;
-> 
-> Patches 4-34 convert the other occurrences via a replace script. They were
-> manually edited, in order to honour 80-columns where possible.
-> 
-> I did a diff between the Sphinx 2.4.4 output before and after this patch
-> series in order to double-check that all converted Documentation/ 
-> references will produce <a href=<foo>.rst>foo title</a> tags.
-> 
-> Mauro Carvalho Chehab (34):
->   docs: devices.rst: better reference documentation docs
->   docs: dev-tools: kunit: don't use a table for docs name
->   media: docs: */media/index.rst: don't use ReST doc:`foo`
->   media: userspace-api: avoid using ReST :doc:`foo` markup
->   media: driver-api: drivers: avoid using ReST :doc:`foo` markup
->   media: admin-guide: avoid using ReST :doc:`foo` markup
->   docs: admin-guide: pm: avoid using ReSt :doc:`foo` markup
->   docs: admin-guide: hw-vuln: avoid using ReST :doc:`foo` markup
->   docs: admin-guide: sysctl: avoid using ReST :doc:`foo` markup
->   docs: block: biodoc.rst: avoid using ReSt :doc:`foo` markup
->   docs: bpf: bpf_lsm.rst: avoid using ReSt :doc:`foo` markup
->   docs: core-api: avoid using ReSt :doc:`foo` markup
->   docs: dev-tools: testing-overview.rst: avoid using ReSt :doc:`foo`
->     markup
->   docs: dev-tools: kunit: avoid using ReST :doc:`foo` markup
->   docs: devicetree: bindings: submitting-patches.rst: avoid using ReSt
->     :doc:`foo` markup
->   docs: doc-guide: avoid using ReSt :doc:`foo` markup
->   docs: driver-api: avoid using ReSt :doc:`foo` markup
->   docs: driver-api: gpio: using-gpio.rst: avoid using ReSt :doc:`foo`
->     markup
->   docs: driver-api: surface_aggregator: avoid using ReSt :doc:`foo`
->     markup
->   docs: driver-api: usb: avoid using ReSt :doc:`foo` markup
->   docs: firmware-guide: acpi: avoid using ReSt :doc:`foo` markup
->   docs: hwmon: adm1177.rst: avoid using ReSt :doc:`foo` markup
->   docs: i2c: avoid using ReSt :doc:`foo` markup
->   docs: kernel-hacking: hacking.rst: avoid using ReSt :doc:`foo` markup
->   docs: networking: devlink: avoid using ReSt :doc:`foo` markup
->   docs: PCI: endpoint: pci-endpoint-cfs.rst: avoid using ReSt :doc:`foo`
->     markup
->   docs: PCI: pci.rst: avoid using ReSt :doc:`foo` markup
->   docs: process: submitting-patches.rst: avoid using ReSt :doc:`foo`
->     markup
->   docs: security: landlock.rst: avoid using ReSt :doc:`foo` markup
->   docs: trace: coresight: coresight.rst: avoid using ReSt :doc:`foo`
->     markup
->   docs: trace: ftrace.rst: avoid using ReSt :doc:`foo` markup
->   docs: userspace-api: landlock.rst: avoid using ReSt :doc:`foo` markup
->   docs: virt: kvm: s390-pv-boot.rst: avoid using ReSt :doc:`foo` markup
->   docs: x86: avoid using ReSt :doc:`foo` markup
-> 
->  .../PCI/endpoint/pci-endpoint-cfs.rst         |  2 +-
->  Documentation/PCI/pci.rst                     |  6 +--
->  .../special-register-buffer-data-sampling.rst |  3 +-
->  Documentation/admin-guide/media/bt8xx.rst     | 15 ++++----
->  Documentation/admin-guide/media/bttv.rst      | 21 ++++++-----
->  Documentation/admin-guide/media/index.rst     | 12 +++---
->  Documentation/admin-guide/media/saa7134.rst   |  3 +-
->  Documentation/admin-guide/pm/intel_idle.rst   | 16 +++++---
->  Documentation/admin-guide/pm/intel_pstate.rst |  9 +++--
->  Documentation/admin-guide/sysctl/abi.rst      |  2 +-
->  Documentation/admin-guide/sysctl/kernel.rst   | 37 ++++++++++---------
->  Documentation/block/biodoc.rst                |  2 +-
->  Documentation/bpf/bpf_lsm.rst                 | 13 ++++---
->  .../core-api/bus-virt-phys-mapping.rst        |  2 +-
->  Documentation/core-api/dma-api.rst            |  5 ++-
->  Documentation/core-api/dma-isa-lpc.rst        |  2 +-
->  Documentation/core-api/index.rst              |  4 +-
->  Documentation/dev-tools/kunit/api/index.rst   |  8 ++--
->  Documentation/dev-tools/kunit/faq.rst         |  2 +-
->  Documentation/dev-tools/kunit/index.rst       | 14 +++----
->  Documentation/dev-tools/kunit/start.rst       |  6 +--
->  Documentation/dev-tools/kunit/tips.rst        |  5 ++-
->  Documentation/dev-tools/kunit/usage.rst       |  8 ++--
->  Documentation/dev-tools/testing-overview.rst  | 16 ++++----
->  .../bindings/submitting-patches.rst           | 11 +++---
->  Documentation/doc-guide/contributing.rst      |  8 ++--
->  Documentation/driver-api/gpio/using-gpio.rst  |  4 +-
->  Documentation/driver-api/ioctl.rst            |  2 +-
->  .../driver-api/media/drivers/bttv-devel.rst   |  2 +-
->  Documentation/driver-api/media/index.rst      | 10 +++--
->  Documentation/driver-api/pm/devices.rst       |  8 ++--
->  .../surface_aggregator/clients/index.rst      |  3 +-
->  .../surface_aggregator/internal.rst           | 15 ++++----
->  .../surface_aggregator/overview.rst           |  6 ++-
->  Documentation/driver-api/usb/dma.rst          |  6 +--
->  .../acpi/dsd/data-node-references.rst         |  3 +-
->  .../firmware-guide/acpi/dsd/graph.rst         |  2 +-
->  .../firmware-guide/acpi/enumeration.rst       |  7 ++--
->  Documentation/hwmon/adm1177.rst               |  3 +-
->  Documentation/i2c/instantiating-devices.rst   |  2 +-
->  Documentation/i2c/old-module-parameters.rst   |  3 +-
->  Documentation/i2c/smbus-protocol.rst          |  4 +-
->  Documentation/kernel-hacking/hacking.rst      |  4 +-
->  .../networking/devlink/devlink-region.rst     |  2 +-
->  .../networking/devlink/devlink-trap.rst       |  4 +-
->  Documentation/process/submitting-patches.rst  | 32 ++++++++--------
->  Documentation/security/landlock.rst           |  3 +-
->  Documentation/trace/coresight/coresight.rst   |  8 ++--
->  Documentation/trace/ftrace.rst                |  2 +-
->  Documentation/userspace-api/landlock.rst      | 11 +++---
->  .../userspace-api/media/glossary.rst          |  2 +-
->  Documentation/userspace-api/media/index.rst   | 12 +++---
->  Documentation/virt/kvm/s390-pv-boot.rst       |  2 +-
->  Documentation/x86/boot.rst                    |  4 +-
->  Documentation/x86/mtrr.rst                    |  2 +-
->  55 files changed, 217 insertions(+), 183 deletions(-)
-> 
-
-
-
-Thanks,
-Mauro
+I don't have a strong preference.  I'd use '2', but I wouldn't ask
+BIT(1) to be changed.
