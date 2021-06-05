@@ -2,169 +2,401 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3299939CAAD
-	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 21:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27C339CB1D
+	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 23:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhFETNk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Jun 2021 15:13:40 -0400
-Received: from mail-lf1-f43.google.com ([209.85.167.43]:33658 "EHLO
-        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhFETNk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Jun 2021 15:13:40 -0400
-Received: by mail-lf1-f43.google.com with SMTP id t7so12070071lff.0;
-        Sat, 05 Jun 2021 12:11:39 -0700 (PDT)
+        id S230010AbhFEVF4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Jun 2021 17:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhFEVF4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Jun 2021 17:05:56 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3548AC061766
+        for <bpf@vger.kernel.org>; Sat,  5 Jun 2021 14:04:08 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id g38so18926837ybi.12
+        for <bpf@vger.kernel.org>; Sat, 05 Jun 2021 14:04:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bi0pwEi0pQ/oYx7SVz3LT6qWBi6qRoYFdBg0PjjtkiU=;
-        b=LuXg4DkraiESutoTGMgFWtNaz/vXvFOcBH/rRyEA8MkW6FvWC7kW37LoUs75OFaVGk
-         y//mqBrjlcZ/SmtFqs6n2tgyMGvdNczJlR586At142OeIxXINk2wnuAjo5flaxHqe2oN
-         V+ROfCEaSuOUCKOtjF5iFK0SW+RPFMswCGkddaiXBvImx3VMDNhT8O5JJ/oq2UA9adQb
-         EsHaTJvHNyycot71/VHlUzNR893T2H9nSUO85iph/BXbeiUjcSkZH4hA0A4oKUvz+di3
-         zUvvwB35QRYUqcxy1vtZaHY2zS9Joe5MvEfCo1B6qVZVa5/t5fRqBErEro5W10YYZJ6L
-         Ewng==
+        bh=RaJa+u/roqtfMP3WK1Fxgxq0e90jcjT54tSueChe+hQ=;
+        b=PJb2xWsh2pNsZ2eX6a9wHXk4P8Dlsv/jwWR/PiCi8QYQ+88YzikDRL6d5vVI9akEV8
+         9snW82wYIMzrQBV/PHHXRCHB0NUokKOoJxKzTX4YMFqSV1yV8KQ3qQkxOSvn3xDP7gxD
+         YduJMhd0x5IJ1+Eq6qbaAsVGqS/anLQBP6XhDAH3X6gYiqImlE96D1dEVwUrM5vPRj9y
+         6y8ZnHPC5Cjw9XFuAUg+mtgFfiwswg+K7R1ANL5+2amQUeLfffmZGSQpdbGgxFM1lCAr
+         OgLZQX6ioCPAYJk/JYlVETYpbZX1aJAvIRu90XOoWeFzG9Gwn3p8IOjAgnafSKhWHYrO
+         qdLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bi0pwEi0pQ/oYx7SVz3LT6qWBi6qRoYFdBg0PjjtkiU=;
-        b=B+LhKU8T1x+9CCf5nR6U+km0/aGdm5BRPOpHxT3hB03CX4xsptomW9xHr3C0WCJyG0
-         Hox6FT/A7+y4IN7sXWsbz0ibl/Wdcr4e2XSTc2NQOFJkEmj2jJLOdnsTaCEq8veOby3m
-         SYo1Z2MU+wEqo3i5nBS76vyia10dlacNx/0S+YUL8jaw8Z0jZSvp8KoVCiollEriHL64
-         aEATcX67/E7dMJsfcnlCknRxVi+vOp2mhwnaCC/0ulUUDeJ3GVEY379xSMRJtH9Ikh4C
-         FkOIc1cbrXPfHIVJgi+vrwcjRFCfiPX1zriZPZz5xOOK2FvBJwZBQLys3+s2yIXoZi8L
-         dPrg==
-X-Gm-Message-State: AOAM532cC0jrCf8ILhGdaS2+UrOKceckNxCWSYKcp/LM+fTWU74zAmop
-        gd2z8FitRyQ8LlO5KmKNLAl1JDTLA2RresICmx4=
-X-Google-Smtp-Source: ABdhPJxkGuWFy365VSP1rud7bkI+QSPlqLX2IOttcHb7321Z43JZOgQDYk9TcAqdmKPMWykGTZgGvbVJNE4GoJz1uJM=
-X-Received: by 2002:a05:6512:2010:: with SMTP id a16mr4002379lfb.38.1622920238423;
- Sat, 05 Jun 2021 12:10:38 -0700 (PDT)
+        bh=RaJa+u/roqtfMP3WK1Fxgxq0e90jcjT54tSueChe+hQ=;
+        b=UuK6+iuf56uNJ6prhu/K5Otn+ldawnIckJ3ObgfHtmNBDtitPROro3/6xOVSQJmyTD
+         NHDUCzGaY3MbKzWrXoM74St0q+7P5kPwKtguxg1DaNvqUq5DEPb6OjB+jdWkfhJag/B5
+         VZFUm4uOumuMhB9DeWfipEPvGV2isJDH5O9CYhFarNNVq7itjexYPopNHXKkgAdNeu4B
+         VsGLi7DL+WvoFYamlPLTWxUGhUjIk26Xd62loFaMyg0R/iFJg4X2/7Pyvue0NRNrU6+C
+         wL8Gf+A18YQ6LDcj0LA/GHvmYWLegxThjvsOSZD/h9sfn3lzv0bXQvWdg1M7wu2cLlNW
+         wXTQ==
+X-Gm-Message-State: AOAM531l461sMWOQIw8UcvZ4m/Iqa0kWmH6lKtcC0m7q9g9LUtYY3MbO
+        +GSgy5CujOt6JyBCu1xsJDtgbrY8Ngd10SqAzdKhgg==
+X-Google-Smtp-Source: ABdhPJwLYub34ZkndsEuzIbvO5GHUz7pcfJ4f6w61TpO326GxLgoWoCn9HU95cNa+Ic660EQFWDkFVD4STGNe2mcNck=
+X-Received: by 2002:a25:11c5:: with SMTP id 188mr13850442ybr.322.1622927045766;
+ Sat, 05 Jun 2021 14:04:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000c2987605be907e41@google.com> <20210602212726.7-1-fuzzybritches0@gmail.com>
- <YLhd8BL3HGItbXmx@kroah.com> <87609-531187-curtm@phaethon> <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com>
-In-Reply-To: <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 5 Jun 2021 12:10:26 -0700
-Message-ID: <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
-Subject: Re: [PATCH v4] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+References: <20210525033314.3008878-1-yhs@fb.com> <20210525182948.4wk3kd7vrvgdr2lu@google.com>
+ <dd95b896-3b37-a398-68cd-549fb249f2e0@fb.com>
+In-Reply-To: <dd95b896-3b37-a398-68cd-549fb249f2e0@fb.com>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Sat, 5 Jun 2021 14:03:54 -0700
+Message-ID: <CAFP8O3JM3SrKXYA2SF-zRJZCiipHdcyF1usPOykm6Yqb6xs6dQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] docs/bpf: add llvm_reloc.rst to explain llvm
+ bpf relocations
 To:     Yonghong Song <yhs@fb.com>
-Cc:     Kurt Manucredo <fuzzybritches0@gmail.com>,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        nathan@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        Lorenz Bauer <lmb@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 10:55 AM Yonghong Song <yhs@fb.com> wrote:
+On Tue, May 25, 2021 at 11:52 AM Yonghong Song <yhs@fb.com> wrote:
 >
 >
 >
-> On 6/5/21 8:01 AM, Kurt Manucredo wrote:
-> > Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
-> > kernel/bpf/core.c:1414:2.
+> On 5/25/21 11:29 AM, Fangrui Song wrote:
+> > I have a review queue with a huge pile of LLVM patches and have only
+> > skimmed through this.
+> >
+> > First, if the size benefit of REL over RELA isn't deem that necessary,
+> > I will highly recommend RELA for simplicity and robustness.
+> > REL is error-prone.
 >
-> This is not enough. We need more information on why this happens
-> so we can judge whether the patch indeed fixed the issue.
->
-> >
-> > I propose: In adjust_scalar_min_max_vals() move boundary check up to avoid
-> > missing them and return with error when detected.
-> >
-> > Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-> > Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
-> > ---
-> >
-> > https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
-> >
-> > Changelog:
-> > ----------
-> > v4 - Fix shift-out-of-bounds in adjust_scalar_min_max_vals.
-> >       Fix commit message.
-> > v3 - Make it clearer what the fix is for.
-> > v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-> >       check in check_alu_op() in verifier.c.
-> > v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-> >       check in ___bpf_prog_run().
-> >
-> > thanks
-> >
-> > kind regards
-> >
-> > Kurt
-> >
-> >   kernel/bpf/verifier.c | 30 +++++++++---------------------
-> >   1 file changed, 9 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 94ba5163d4c5..ed0eecf20de5 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -7510,6 +7510,15 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> >       u32_min_val = src_reg.u32_min_value;
-> >       u32_max_val = src_reg.u32_max_value;
-> >
-> > +     if ((opcode == BPF_LSH || opcode == BPF_RSH || opcode == BPF_ARSH) &&
-> > +                     umax_val >= insn_bitness) {
-> > +             /* Shifts greater than 31 or 63 are undefined.
-> > +              * This includes shifts by a negative number.
-> > +              */
-> > +             verbose(env, "invalid shift %lld\n", umax_val);
-> > +             return -EINVAL;
-> > +     }
->
-> I think your fix is good. I would like to move after
+> The worry is backward compatibility. Because of BPF ELF format
+> is so intervened with bpf eco system (loading, bpf map, etc.),
+> a lot of tools in the wild already implemented to parse REL...
+> It will be difficult to change...
 
-I suspect such change will break valid programs that do shift by register.
+It seems that the design did not get enough initial scrutiny...
+(On https://reviews.llvm.org/D101336 , a reviewer who has apparently
+never contributed to lld/ELF clicked LGTM without actual reviewing the
+patch and that was why I have to click "Request Changes").
 
-> the following code though:
->
->          if (!src_known &&
->              opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
->                  __mark_reg_unknown(env, dst_reg);
->                  return 0;
->          }
->
-> > +
-> >       if (alu32) {
-> >               src_known = tnum_subreg_is_const(src_reg.var_off);
-> >               if ((src_known &&
-> > @@ -7592,39 +7601,18 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> >               scalar_min_max_xor(dst_reg, &src_reg);
-> >               break;
-> >       case BPF_LSH:
-> > -             if (umax_val >= insn_bitness) {
-> > -                     /* Shifts greater than 31 or 63 are undefined.
-> > -                      * This includes shifts by a negative number.
-> > -                      */
-> > -                     mark_reg_unknown(env, regs, insn->dst_reg);
-> > -                     break;
-> > -             }
->
-> I think this is what happens. For the above case, we simply
-> marks the dst reg as unknown and didn't fail verification.
-> So later on at runtime, the shift optimization will have wrong
-> shift value (> 31/64). Please correct me if this is not right
-> analysis. As I mentioned in the early please write detailed
-> analysis in commit log.
+I worry that keeping the current state as-is can cause much
+maintenance burden in the LLVM MC layer, linker, and other binary
+utilities.
+Some things can be improved without breaking backward compatibility.
 
-The large shift is not wrong. It's just undefined.
-syzbot has to ignore such cases.
+> >
+> > On 2021-05-24, Yonghong Song wrote:
+> >> LLVM upstream commit
+> >> https://reviews.llvm.org/D102712
+> >> made some changes to bpf relocations to make them
+> >> llvm linker lld friendly. The scope of
+> >> existing relocations R_BPF_64_{64,32} is narrowed
+> >> and new relocations R_BPF_64_{ABS32,ABS64,NODYLD32}
+> >> are introduced.
+> >>
+> >> Let us add some documentation about llvm bpf
+> >> relocations so people can understand how to resolve
+> >> them properly in their respective tools.
+> >>
+> >> Cc: John Fastabend <john.fastabend@gmail.com>
+> >> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> >> Signed-off-by: Yonghong Song <yhs@fb.com>
+> >> ---
+> >> Documentation/bpf/index.rst            |   1 +
+> >> Documentation/bpf/llvm_reloc.rst       | 240 +++++++++++++++++++++++++
+> >> tools/testing/selftests/bpf/README.rst |  19 ++
+> >> 3 files changed, 260 insertions(+)
+> >> create mode 100644 Documentation/bpf/llvm_reloc.rst
+> >>
+> >> Changelogs:
+> >>  v1 -> v2:
+> >>    - add an example to illustrate how relocations related to base
+> >>      section and symbol table and what is "Implicit Addend"
+> >>    - clarify why we use 32bit read/write for R_BPF_64_64 (ld_imm64)
+> >>      relocations.
+> >>
+> >> diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+> >> index a702f67dd45f..93e8cf12a6d4 100644
+> >> --- a/Documentation/bpf/index.rst
+> >> +++ b/Documentation/bpf/index.rst
+> >> @@ -84,6 +84,7 @@ Other
+> >>    :maxdepth: 1
+> >>
+> >>    ringbuf
+> >> +   llvm_reloc
+> >>
+> >> .. Links:
+> >> .. _networking-filter: ../networking/filter.rst
+> >> diff --git a/Documentation/bpf/llvm_reloc.rst
+> >> b/Documentation/bpf/llvm_reloc.rst
+> >> new file mode 100644
+> >> index 000000000000..5ade0244958f
+> >> --- /dev/null
+> >> +++ b/Documentation/bpf/llvm_reloc.rst
+> >> @@ -0,0 +1,240 @@
+> >> +.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> >> +
+> >> +====================
+> >> +BPF LLVM Relocations
+> >> +====================
+> >> +
+> >> +This document describes LLVM BPF backend relocation types.
+> >> +
+> >> +Relocation Record
+> >> +=================
+> >> +
+> >> +LLVM BPF backend records each relocation with the following 16-byte
+> >> +ELF structure::
+> >> +
+> >> +  typedef struct
+> >> +  {
+> >> +    Elf64_Addr    r_offset;  // Offset from the beginning of section.
+> >> +    Elf64_Xword   r_info;    // Relocation type and symbol index.
+> >> +  } Elf64_Rel;
+> >> +
+> >> +For example, for the following code::
+> >> +
+> >> +  int g1 __attribute__((section("sec")));
+> >> +  int g2 __attribute__((section("sec")));
+> >> +  static volatile int l1 __attribute__((section("sec")));
+> >> +  static volatile int l2 __attribute__((section("sec")));
+> >> +  int test() {
+> >> +    return g1 + g2 + l1 + l2;
+> >> +  }
+> >> +
+> >> +Compiled with ``clang -target bpf -O2 -c test.c``, the following is
+> >> +the code with ``llvm-objdump -dr test.o``::
+> >> +
+> >> +       0:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 =
+> >> 0 ll
+> >> +                0000000000000000:  R_BPF_64_64  g1
+> >> +       2:       61 11 00 00 00 00 00 00 r1 = *(u32 *)(r1 + 0)
+> >> +       3:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 =
+> >> 0 ll
+> >> +                0000000000000018:  R_BPF_64_64  g2
+> >> +       5:       61 20 00 00 00 00 00 00 r0 = *(u32 *)(r2 + 0)
+> >> +       6:       0f 10 00 00 00 00 00 00 r0 += r1
+> >> +       7:       18 01 00 00 08 00 00 00 00 00 00 00 00 00 00 00 r1 =
+> >> 8 ll
+> >> +                0000000000000038:  R_BPF_64_64  sec
+> >> +       9:       61 11 00 00 00 00 00 00 r1 = *(u32 *)(r1 + 0)
+> >> +      10:       0f 10 00 00 00 00 00 00 r0 += r1
+> >> +      11:       18 01 00 00 0c 00 00 00 00 00 00 00 00 00 00 00 r1 =
+> >> 12 ll
+> >> +                0000000000000058:  R_BPF_64_64  sec
+> >> +      13:       61 11 00 00 00 00 00 00 r1 = *(u32 *)(r1 + 0)
+> >> +      14:       0f 10 00 00 00 00 00 00 r0 += r1
+> >> +      15:       95 00 00 00 00 00 00 00 exit
+> >> +
+> >> +There are four relations in the above for four ``LD_imm64``
+> >> instructions.
+> >> +The following ``llvm-readelf -r test.o`` shows the binary values of
+> >> the four
+> >> +relocations::
+> >> +
+> >> +  Relocation section '.rel.text' at offset 0x190 contains 4 entries:
+> >> +      Offset             Info             Type               Symbol's
+> >> Value  Symbol's Name
+> >> +  0000000000000000  0000000600000001 R_BPF_64_64
+> >> 0000000000000000 g1
+> >> +  0000000000000018  0000000700000001 R_BPF_64_64
+> >> 0000000000000004 g2
+> >> +  0000000000000038  0000000400000001 R_BPF_64_64
+> >> 0000000000000000 sec
+> >> +  0000000000000058  0000000400000001 R_BPF_64_64
+> >> 0000000000000000 sec
+> >> +
+> >> +Each relocation is represented by ``Offset`` (8 bytes) and ``Info``
+> >> (8 bytes).
+> >> +For example, the first relocation corresponds to the first instruction
+> >> +(Offset 0x0) and the corresponding ``Info`` indicates the relocation
+> >> type
+> >> +of ``R_BPF_64_64`` (type 1) and the entry in the symbol table (entry 6).
+> >> +The following is the symbol table with ``llvm-readelf -s test.o``::
+> >> +
+> >> +  Symbol table '.symtab' contains 8 entries:
+> >> +     Num:    Value          Size Type    Bind   Vis       Ndx Name
+> >> +       0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT   UND
+> >> +       1: 0000000000000000     0 FILE    LOCAL  DEFAULT   ABS test.c
+> >> +       2: 0000000000000008     4 OBJECT  LOCAL  DEFAULT     4 l1
+> >> +       3: 000000000000000c     4 OBJECT  LOCAL  DEFAULT     4 l2
+> >> +       4: 0000000000000000     0 SECTION LOCAL  DEFAULT     4 sec
+> >> +       5: 0000000000000000   128 FUNC    GLOBAL DEFAULT     2 test
+> >> +       6: 0000000000000000     4 OBJECT  GLOBAL DEFAULT     4 g1
+> >> +       7: 0000000000000004     4 OBJECT  GLOBAL DEFAULT     4 g2
+> >> +
+> >> +The 6th entry is global variable ``g1`` with value 0.
+> >> +
+> >> +Similarly, the second relocation is at ``.text`` offset ``0x18``,
+> >> instruction 3,
+> >> +for global variable ``g2`` which has a symbol value 4, the offset
+> >> +from the start of ``.data`` section.
+> >> +
+> >> +The third and fourth relocations refers to static variables ``l1``
+> >> +and ``l2``. From ``.rel.text`` section above, it is not clear
+> >> +which symbols they really refers to as they both refers to
+> >> +symbol table entry 4, symbol ``sec``, which has ``SECTION`` type
+> >
+> > STT_SECTION. `SECTION` is just an abbreviated form used by some binary
+> > tools.
+>
+> This is just to match llvm-readelf output. I can add a reference
+> to STT_SECTION for the right macro name.
+>
+> >
+> >> +and represents a section. So for static variable or function,
+> >> +the section offset is written to the original insn
+> >> +buffer, which is called ``IA`` (implicit addend). Looking at
+> >> +above insn ``7`` and ``11``, they have section offset ``8`` and ``12``.
+> >> +From symbol table, we can find that they correspond to entries ``2``
+> >> +and ``3`` for ``l1`` and ``l2``.
+> >
+> > The other REL based psABIs all use `A` for addend.
+>
+> I can use `A` as well. The reason I am using `IA` since it is not
+> shown in the relocation record and lld used API 'getImplicitAddend()`
+> get this value. But I can certainly use `A`.
+
+An ABI document should stick with standard terms.
+The variable names used in an implementation are just informative
+(plus I don't see any `IA` in lld's source code).
+
+> >
+> >> +In general, the ``IA`` is 0 for global variables and functions,
+> >> +and is the section offset or some computation result based on
+> >> +section offset for static variables/functions. The non-section-offset
+> >> +case refers to function calls. See below for more details.
+> >> +
+> >> +Different Relocation Types
+> >> +==========================
+> >> +
+> >> +Six relocation types are supported. The following is an overview and
+> >> +``S`` represents the value of the symbol in the symbol table::
+> >> +
+> >> +  Enum  ELF Reloc Type     Description      BitSize  Offset
+> >> Calculation
+> >> +  0     R_BPF_NONE         None
+> >> +  1     R_BPF_64_64        ld_imm64 insn    32       r_offset + 4  S
+> >> + IA
+> >> +  2     R_BPF_64_ABS64     normal data      64       r_offset      S
+> >> + IA
+> >> +  3     R_BPF_64_ABS32     normal data      32       r_offset      S
+> >> + IA
+> >> +  4     R_BPF_64_NODYLD32  .BTF[.ext] data  32       r_offset      S
+> >> + IA
+> >> +  10    R_BPF_64_32        call insn        32       r_offset + 4  (S
+> >> + IA) / 8 - 1
+> >
+> > Shifting the offset by 4 looks weird. R_386_32 applies at r_offset.
+> > The call instruction  R_BPF_64_32 is strange. Such special calculation
+> > should not be named R_BPF_64_32.
+>
+> Again, we have a backward compatibility issue here. I would like to
+> provide an alias for it in llvm relocation header file, but I don't
+> know how to do it.
+
+It is very confusing that R_BPF_64_64 has a 32-bit value.
+Since its computation is the same as R_BPF_64_ABS32, can R_BPF_64_64
+be deprecated in favor of R_BPF_64_ABS32?
+
+There is nothing preventing a relocation type from being used as data
+in some cases while code in other cases.
+R_BPF_64_64 can be renamed to indicate that it is deprecated.
+R_BPF_64_32 can be confused with R_BPF_64_ABS32. You may rename
+R_BPF_64_32 to say, R_BPF_64_CALL32.
+
+For compatibility, only the values matter, not the names.
+E.g. on x86, some unused GNU_PROPERTY values were renamed to
+GNU_PROPERTY_X86_COMPAT_ISA_1_USED ("COMPAT" for compatibility) while
+their values were kept.
+Two aarch64 relocation types have been renamed.
+
+> >
+> >> +For example, ``R_BPF_64_64`` relocation type is used for ``ld_imm64``
+> >> instruction.
+> >> +The actual to-be-relocated data (0 or section offset)
+> >> +is stored at ``r_offset + 4`` and the read/write
+> >> +data bitsize is 32 (4 bytes). The relocation can be resolved with
+> >> +the symbol value plus implicit addend. Note that the ``BitSize`` is
+> >> 32 which
+> >> +means the section offset must be less than or equal to ``UINT32_MAX``
+> >> and this
+> >> +is enforced by LLVM BPF backend.
+> >> +
+> >> +In another case, ``R_BPF_64_ABS64`` relocation type is used for
+> >> normal 64-bit data.
+> >> +The actual to-be-relocated data is stored at ``r_offset`` and the
+> >> read/write data
+> >> +bitsize is 64 (8 bytes). The relocation can be resolved with
+> >> +the symbol value plus implicit addend.
+> >> +
+> >> +Both ``R_BPF_64_ABS32`` and ``R_BPF_64_NODYLD32`` types are for
+> >> 32-bit data.
+> >> +But ``R_BPF_64_NODYLD32`` specifically refers to relocations in
+> >> ``.BTF`` and
+> >> +``.BTF.ext`` sections. For cases like bcc where llvm
+> >> ``ExecutionEngine RuntimeDyld``
+> >> +is involved, ``R_BPF_64_NODYLD32`` types of relocations should not be
+> >> resolved
+> >> +to actual function/variable address. Otherwise, ``.BTF`` and
+> >> ``.BTF.ext``
+> >> +become unusable by bcc and kernel.
+> >
+> > Why cannot R_BPF_64_ABS32 cover the use cases of R_BPF_64_NODYLD32?
+> > I haven't seen any relocation type which hard coding knowledge on data
+> > sections.
+>
+> This is due to how .BTF relocation is done. Relocation is against
+> loadable symbols but it does not want dynamic linker to resolve them.
+> Instead it wants libbpf and kernel to resolve them in a different
+> way.
+
+How is R_BPF_64_NODYLD32 different?
+I don't see it is different on https://reviews.llvm.org/D101336 .
+I cannot find R_BPF_64_NODYLD32 in the kernel code as well.
+
+There may be a misconception that different sections need different
+relocation types,
+even if the semantics are the same. Such understanding is incorrect.
+
+> >
+> >> +Type ``R_BPF_64_32`` is used for call instruction. The call target
+> >> section
+> >> +offset is stored at ``r_offset + 4`` (32bit) and calculated as
+> >> +``(S + IA) / 8 - 1``.
+> >
+> > In other ABIs, names like 32/ABS32/ABS64 refer to absolute relocation types
+> > without such complex operation.
+>
+> Again, this is a historical artifact to handle call instruction. I am
+> aware that this might be different from other architectures. But we have
+> to keep backward compatibility...
+>
+> >
+> >> +Examples
+> >> +========
+> >> +
+> >> +Types ``R_BPF_64_64`` and ``R_BPF_64_32`` are used to resolve
+> >> ``ld_imm64``
+> >> +and ``call`` instructions. For example::
+> >> +
+> >> +  __attribute__((noinline)) __attribute__((section("sec1")))
+> >> +  int gfunc(int a, int b) {
+> >> +    return a * b;
+> >> +  }
+> >> +  static __attribute__((noinline)) __attribute__((section("sec1")))
+> >> +  int lfunc(int a, int b) {
+> >> +    return a + b;
+> >> +  }
+> >> +  int global __attribute__((section("sec2")));
+> >> +  int test(int a, int b) {
+> >> +    return gfunc(a, b) +  lfunc(a, b) + global;
+> >> +  }
+> >> +
+> [...]
