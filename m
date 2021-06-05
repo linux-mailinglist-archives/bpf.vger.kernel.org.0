@@ -2,144 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFB439C700
-	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 11:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579DA39C7B3
+	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 13:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhFEJTu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Jun 2021 05:19:50 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:35481 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhFEJTt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Jun 2021 05:19:49 -0400
-Received: by mail-wm1-f54.google.com with SMTP id h5-20020a05600c3505b029019f0654f6f1so8727251wmq.0;
-        Sat, 05 Jun 2021 02:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:references:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QDZG/MbQsYaBSqUoq3kmvKlvV7WuorolHxO8v0QfRKo=;
-        b=awncJhwrtENOXkl7EyLB2Qd9xZCXI34A5jV8yJHi7ZjYrmraeD1DSIHWDE42+nBXus
-         pIxDd0CpG4N+WRwdQRrYcA7AVOD7tNOl6b9CuKn0BCSwxcpt4/lDoXkByacnsdysHvJ8
-         kmqzeY6meziH3RuKF9JCHtl4B87tG+5ynFYnQekju+fg8qXuUdDCkwsLJEKJAgG6dFk6
-         1wk/9w4wCvCad83KGd1MoVoDINczb+k7rloYR6VqHypvp6xkOtah9pyk0eZvmKrQf4Yp
-         s3/edU6RclqRZUgGBeyirr+Mrz3M2y32A26HsanROZFfNnQKhkw2MaC0jj+3Brc86STU
-         cz+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QDZG/MbQsYaBSqUoq3kmvKlvV7WuorolHxO8v0QfRKo=;
-        b=PZtKWgszSSezgPRx+o5BRamG6o8sEOXYOX5iBASELPpw8kx6ia6Ge8QJdzQFBoVBPH
-         5dfm7DBvOl3iDIldXiQ9gWtibHY36ZMt4JfraVQpPoVuCwKVj6zLbor3brBDvLJa9zTS
-         BJgMYt85eGIkH8P7h8omJ2wEYRInkLboFx+xJQjlpGZ8gX6fp5TM0+BiUY93yMJJqHPU
-         zzBh3U+l7BzW1JNn51S9P+4rT3SzO++2ddPk7i7YX8vaNDGMlZGYPZUz/uXZi2nyYUWT
-         5Vx/+SdfSJ9rmnCeqn2pGMwdrjzn4BjPqkeEHucRp2RO9E/3KoHuQh2+f8Arc2yCiOsB
-         Q5VA==
-X-Gm-Message-State: AOAM530EuRjNu3T6KvcGHVw/6XVv/d6mhaPMhEaeqJHbQKVxAyukFZJS
-        Ba+yg/660/MjghVOJopbaLw=
-X-Google-Smtp-Source: ABdhPJz0y+2vUWdxaNHruUOvaQmtyvXtB+II7EOQDcWc3W155betasOc89F2DqRpHJEiWldK4GB3Rg==
-X-Received: by 2002:a7b:c106:: with SMTP id w6mr7324124wmi.75.1622884605537;
-        Sat, 05 Jun 2021 02:16:45 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.233.230])
-        by smtp.gmail.com with ESMTPSA id y22sm12938584wma.36.2021.06.05.02.16.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Jun 2021 02:16:45 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     io-uring <io-uring@vger.kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lsf-pc@lists.linux-foundation.org
-References: <23168ac0-0f05-3cd7-90dc-08855dd275b2@gmail.com>
-Subject: Re: [LSF/MM/BPF TOPIC] io_uring: BPF controlled I/O
-Message-ID: <77b2c502-f8a3-2ec3-0373-6a34f991ab19@gmail.com>
-Date:   Sat, 5 Jun 2021 10:16:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230029AbhFELMe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 5 Jun 2021 07:12:34 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:47480 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229892AbhFELMc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 5 Jun 2021 07:12:32 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-KyvyrXyPNyKsUF9eqffobQ-1; Sat, 05 Jun 2021 07:10:40 -0400
+X-MC-Unique: KyvyrXyPNyKsUF9eqffobQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 508E7801817;
+        Sat,  5 Jun 2021 11:10:38 +0000 (UTC)
+Received: from krava.cust.in.nbox.cz (unknown [10.40.192.14])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 32DCA614FD;
+        Sat,  5 Jun 2021 11:10:35 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: [RFCv3 00/19] x86/ftrace/bpf: Add batch support for direct/tracing attach
+Date:   Sat,  5 Jun 2021 13:10:15 +0200
+Message-Id: <20210605111034.1810858-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <23168ac0-0f05-3cd7-90dc-08855dd275b2@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I botched subject tags, should be [LSF/MM/BPF TOPIC].
+hi,
+saga continues.. ;-) previous post is in here [1]
 
-On 6/5/21 10:08 AM, Pavel Begunkov wrote:
-> One of the core ideas behind io_uring is passing requests via memory
-> shared b/w the userspace and the kernel, a.k.a. queues or rings. That
-> serves a purpose of reducing number of context switches or bypassing
-> them, but the userspace is responsible for controlling the flow,
-> reaping and processing completions (a.k.a. Completion Queue Entry, CQE),
-> and submitting new requests, adding extra context switches even if there
-> is not much work to do. A simple illustration is read(open()), where
-> io_uring is unable to propagate the returned fd to the read, with more
-> cases piling up.
-> 
-> The big picture idea stays the same since last year, to give out some
-> of this control to BPF, allow it to check results of completed requests,
-> manipulate memory if needed and submit new requests. Apart from being
-> just a glue between two requests, it might even offer more flexibility
-> like keeping a QD, doing reduce/broadcast and so on.
-> 
-> The prototype [1,2] is in a good shape but some work need to be done.
-> However, the main concern is getting an understanding what features and
-> functionality have to be added to be flexible enough. Various toy
-> examples can be found at [3] ([1] includes an overview of cases).
-> 
-> Discussion points:
-> - Use cases, feature requests, benchmarking
-> - Userspace programming model, code reuse (e.g. liburing)
-> - BPF-BPF and userspace-BPF synchronisation. There is
->   CQE based notification approach and plans (see design
->   notes), however need to discuss what else might be
->   needed.
-> - Do we need more contexts passed apart from user_data?
->   e.g. specifying a BPF map/array/etc fd io_uring requests?
-> - Userspace atomics and efficiency of userspace reads/writes. If
->   proved to be not performant enough there are potential ways to take
->   on it, e.g. inlining, having it in BPF ISA, and pre-verifying
->   userspace pointers.
-> 
-> [1] https://lore.kernel.org/io-uring/a83f147b-ea9d-e693-a2e9-c6ce16659749@gmail.com/T/#m31d0a2ac6e2213f912a200f5e8d88bd74f81406b
-> [2] https://github.com/isilence/linux/tree/ebpf_v2
-> [3] https://github.com/isilence/liburing/tree/ebpf_v2/examples/bpf
-> 
-> 
-> -----------------------------------------------------------------------
-> Design notes:
-> 
-> Instead of basing it on hooks it adds support of a new type of io_uring
-> requests as it gives a better control and let's to reuse internal
-> infrastructure. These requests run a new type of io_uring BPF programs
-> wired with a bunch of new helpers for submitting requests and dealing
-> with CQEs, are allowed to read/write userspace memory in virtue of a
-> recently added sleepable BPF feature. and also provided with a token
-> (generic io_uring token, aka user_data, specified at submission and
-> returned in an CQE), which may be used to pass a userspace pointer used
-> as a context.
-> 
-> Besides running BPF programs, they are able to request waiting.
-> Currently it supports CQ waiting for a number of completions, but others
-> might be added and/or needed, e.g. futex and/or requeueing the current
-> BPF request onto an io_uring request/link being submitted. That hides
-> the overhead of creating BPF requests by keeping them alive and
-> invoking multiple times.
-> 
-> Another big chunk solved is figuring out a good way of feeding CQEs
-> (potentially many) to a BPF program. The current approach
-> is to enable multiple completion queues (CQ), and specify for each
-> request to which one steer its CQE, so all the synchronisation
-> is in control of the userspace. For instance, there may be a separate
-> CQ per each in-flight BPF request, and they can work with their own
-> queues and send an CQE to the main CQ so notifying the userspace.
-> It also opens up a notification-like sync through CQE posting to
-> neighbours' CQs.
-> 
-> 
+After another discussion with Steven, he mentioned that if we fix
+the ftrace graph problem with direct functions, he'd be open to
+add batch interface for direct ftrace functions.
 
--- 
-Pavel Begunkov
+He already had prove of concept fix for that, which I took and broke
+up into several changes. I added the ftrace direct batch interface
+and bpf new interface on top of that.
+
+It's not so many patches after all, so I thought having them all
+together will help the review, because they are all connected.
+However I can break this up into separate patchsets if necessary.
+
+This patchset contains:
+
+  1) patches (1-4) that fix the ftrace graph tracing over the function
+     with direct trampolines attached
+  2) patches (5-8) that add batch interface for ftrace direct function
+     register/unregister/modify
+  3) patches (9-19) that add support to attach BPF program to multiple
+     functions
+
+In nutshell:
+
+Ad 1) moves the graph tracing setup before the direct trampoline
+prepares the stack, so they don't clash
+
+Ad 2) uses ftrace_ops interface to register direct function with
+all functions in ftrace_ops filter.
+
+Ad 3) creates special program and trampoline type to allow attachment
+of multiple functions to single program.
+
+There're more detailed desriptions in related changelogs.
+
+I have working bpftrace multi attachment code on top this. I briefly
+checked retsnoop and I think it could use the new API as well.
+
+
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  bpf/batch
+
+thanks,
+jirka
+
+
+[1] https://lore.kernel.org/bpf/20210413121516.1467989-1-jolsa@kernel.org/
+
+---
+Jiri Olsa (17):
+      x86/ftrace: Remove extra orig rax move
+      tracing: Add trampoline/graph selftest
+      ftrace: Add ftrace_add_rec_direct function
+      ftrace: Add multi direct register/unregister interface
+      ftrace: Add multi direct modify interface
+      ftrace/samples: Add multi direct interface test module
+      bpf, x64: Allow to use caller address from stack
+      bpf: Allow to store caller's ip as argument
+      bpf: Add support to load multi func tracing program
+      bpf: Add bpf_trampoline_alloc function
+      bpf: Add support to link multi func tracing program
+      libbpf: Add btf__find_by_pattern_kind function
+      libbpf: Add support to link multi func tracing program
+      selftests/bpf: Add fentry multi func test
+      selftests/bpf: Add fexit multi func test
+      selftests/bpf: Add fentry/fexit multi func test
+      selftests/bpf: Temporary fix for fentry_fexit_multi_test
+
+Steven Rostedt (VMware) (2):
+      x86/ftrace: Remove fault protection code in prepare_ftrace_return
+      x86/ftrace: Make function graph use ftrace directly
+
+ arch/x86/include/asm/ftrace.h                                    |   9 ++++--
+ arch/x86/kernel/ftrace.c                                         |  71 ++++++++++++++++++++++-----------------------
+ arch/x86/kernel/ftrace_64.S                                      |  30 +------------------
+ arch/x86/net/bpf_jit_comp.c                                      |  31 ++++++++++++++------
+ include/linux/bpf.h                                              |  14 +++++++++
+ include/linux/ftrace.h                                           |  22 ++++++++++++++
+ include/uapi/linux/bpf.h                                         |  12 ++++++++
+ kernel/bpf/btf.c                                                 |   5 ++++
+ kernel/bpf/syscall.c                                             | 220 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ kernel/bpf/trampoline.c                                          |  83 ++++++++++++++++++++++++++++++++++++++---------------
+ kernel/bpf/verifier.c                                            |   3 +-
+ kernel/trace/fgraph.c                                            |   8 ++++--
+ kernel/trace/ftrace.c                                            | 211 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------------
+ kernel/trace/trace_selftest.c                                    |  49 ++++++++++++++++++++++++++++++-
+ samples/ftrace/Makefile                                          |   1 +
+ samples/ftrace/ftrace-direct-multi.c                             |  52 +++++++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h                                   |  12 ++++++++
+ tools/lib/bpf/bpf.c                                              |  11 ++++++-
+ tools/lib/bpf/bpf.h                                              |   4 ++-
+ tools/lib/bpf/btf.c                                              |  68 +++++++++++++++++++++++++++++++++++++++++++
+ tools/lib/bpf/btf.h                                              |   3 ++
+ tools/lib/bpf/libbpf.c                                           |  72 ++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/multi_check.h                        |  53 ++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/fentry_fexit_multi_test.c |  52 +++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/fentry_multi_test.c       |  43 +++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/fexit_multi_test.c        |  44 ++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/fentry_fexit_multi_test.c      |  31 ++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/fentry_multi_test.c            |  20 +++++++++++++
+ tools/testing/selftests/bpf/progs/fexit_multi_test.c             |  22 ++++++++++++++
+ 29 files changed, 1121 insertions(+), 135 deletions(-)
+ create mode 100644 samples/ftrace/ftrace-direct-multi.c
+ create mode 100644 tools/testing/selftests/bpf/multi_check.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fentry_fexit_multi_test.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fentry_multi_test.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_multi_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fentry_fexit_multi_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fentry_multi_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fexit_multi_test.c
+
