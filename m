@@ -2,58 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA3539C55F
-	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 05:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C90C39C5E7
+	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 06:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhFEDKb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Jun 2021 23:10:31 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:19750 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230414AbhFEDKb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Jun 2021 23:10:31 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15535Zdf003965;
-        Fri, 4 Jun 2021 20:08:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=VXbecStRg8+ye1aGHhWtdKme9RQggxBhU1L4OsCc4+E=;
- b=dTk3eFRCx5De+Yn44h8wHVf7K5rU3VeQ1GiWe5IHz4rrHEFWI3rvi8aE1Fy1P5j9RKHU
- Lb3EFamztWPGkLWNZg2u53yTJq8YQnhfwyrF5buq7yP+V0CIC+TKVZ2SGrZRoWCyZ+yo
- yY3X3SqIZCyfYqpYlFrQhbIWDBoZO6lo30M= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 38xtex4nxx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 04 Jun 2021 20:08:26 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 4 Jun 2021 20:08:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iyiIE3n+xCFUlX2VwugQE+ZDNCgzDvG+mzQoGJ7pIPkS3NzD4SF86rO6tXXWUSDTsWUCD6Moz1wW5cMHs88hmOZJeSSZkHI+jtV0eDFS8LTfHBdFlsa9YuLCeTdvVoztsyBYIsc0t5+D1SFGE4fn4bUHCHvN7nMmkM8rPwT0hLk/OVrcB/ka67YoY6sv9Q4GPTHdWLSNgFH2TJJVNoXp7UM8ilT8gDTQwNQWE7MWxmqMzaoRp1NvWE2KO+oP5xooWzfCBj91zcEZXP/9wfYhhI4586vLPKxE3I9ESYRPjhbg13gl6r8OwVyBHOf7XWkk6QiTMPiM2m5ql72c1nWi1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VXbecStRg8+ye1aGHhWtdKme9RQggxBhU1L4OsCc4+E=;
- b=gWSnDyXJKTLMsaatuDdDiPSlTIE4ZDle2izvjWu+3Hl2K3mQNF+2W8KHRMMzwwkMzucuIGmsD5TbxHKUXWDmYEFb4JQbm3YFzx3wtslP49QqGdp3P9Tk7d9oj8db/4NBhBbkg5byEABx2da5CtKK/H2XjyhnVI+MrOCWkFd4W3k0SeDCz/A0o1MRKputz7Q1Vl4gViTEZBBL//4wCM5Dyrm/3fOnciXuoftHK6p5R77n9fK/UZoPEnc5KijGQYuadelAmY3oC09F6W6IqoGWpHYuDhtbBa7Eyfxa51Wjt0CKfhLiLLNe37mA5o6vCOT62glqbCvSRE4sspcL4GUu9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR1501MB2127.namprd15.prod.outlook.com (2603:10b6:805:2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Sat, 5 Jun
- 2021 03:08:23 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4195.026; Sat, 5 Jun 2021
- 03:08:22 +0000
-Subject: Re: [PATCH bpf-next v2 3/7] net: sched: add bpf_link API for bpf
- classifier
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, <bpf@vger.kernel.org>
-CC:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        id S229726AbhFEEpM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Jun 2021 00:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFEEpM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Jun 2021 00:45:12 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F6CC061766;
+        Fri,  4 Jun 2021 21:43:09 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x73so8907125pfc.8;
+        Fri, 04 Jun 2021 21:43:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=2qg5afdx9qgBvuogmdH1ggvFD09I666BgcRW8giyByo=;
+        b=COrGCB3ZNEHgqmZPTtcU5G0r4SdnVImzqGAMDlJOO+KSKMf1Z5G2YDsY1R2lpQQaM4
+         g5L37k46Q0oktcSn8GgNbqGa8dQlM71/jDApAGsDHQatgdd+79FkBEmonsTmdd2eK5WW
+         7T5BMO1LamI2whUQg1vrX9Qr6gOf2NNUWl56lhJ/HU7EuCA5Ln7hJfL3Vm6uNfc/qTt3
+         igXhY0RDO4oPDzth5TeI8loMtnzheLGC7cbjckfmljpOdAPgohotwhppb0SmjLkZQk6h
+         8swYckfuNgfsx6COV74jC0dESvbmZNzuIX/6EJCn8ywLLPs+isSCF1Ne7be/k6adpBBK
+         +8iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=2qg5afdx9qgBvuogmdH1ggvFD09I666BgcRW8giyByo=;
+        b=o5nmxiyvdMapQhsMJRxtuN47x6K5Erw1ioBdQCA7gPgW9cYsnuBOE6lw6eoHLhQeGw
+         ZFiQy2SZOCWjYibweqCYSrAJCz5V+qejsEMlmW6NEOBbPQsNljMq7X+mikY/3SluEEfc
+         vb/onEF/b1S94x4PoMFn/95nk6xa817YpfNQ7abPISgPsY56Wx3AbdtIJWTa1MXvY49D
+         SJln69gxhoUDRj03PZcT2ePhyxgImnEPS8H+bCLZ7eGkGYP0DM1jhz7f89OMPZLqspOz
+         5If6Jik1eiZEY8JHofEcBDINjqBzchBmjyWkhoajSHHXB9CvGVPXLq+LorHiR3EECX9q
+         oQbA==
+X-Gm-Message-State: AOAM530htSu8yxwC/xPZl2PftMk+OJfRUmO1LjrX+UqcPQW1d3+kgo64
+        vCRH6qT4qhaRX9NgflDgIGE=
+X-Google-Smtp-Source: ABdhPJxpYdEqeSYNb7PG+Cy41HDMCKdR5XTDebeU2+G0u+8Q1a9IXmZMUtC4Nif6MOrnYDMHfdyFnQ==
+X-Received: by 2002:a62:5e04:0:b029:2ea:a8dc:25d3 with SMTP id s4-20020a625e040000b02902eaa8dc25d3mr7794286pfb.6.1622868189239;
+        Fri, 04 Jun 2021 21:43:09 -0700 (PDT)
+Received: from localhost ([2402:3a80:11c3:3c31:71d1:71f6:fb2:d008])
+        by smtp.gmail.com with ESMTPSA id w125sm2893336pfw.214.2021.06.04.21.43.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 21:43:08 -0700 (PDT)
+Date:   Sat, 5 Jun 2021 10:12:04 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -61,176 +60,156 @@ CC:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
         Vlad Buslov <vladbu@nvidia.com>,
         Cong Wang <xiyou.wangcong@gmail.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        <netdev@vger.kernel.org>
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 4/7] net: sched: add lightweight update path
+ for cls_bpf
+Message-ID: <20210605044204.j3zbrxhdtlf7lziz@apollo>
 References: <20210604063116.234316-1-memxor@gmail.com>
- <20210604063116.234316-4-memxor@gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <3fca958b-dcf3-6363-5f23-a2e7c4d16f87@fb.com>
-Date:   Fri, 4 Jun 2021 20:08:17 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <20210604063116.234316-4-memxor@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [2620:10d:c090:400::5:7ab8]
-X-ClientProxiedBy: MW4PR03CA0196.namprd03.prod.outlook.com
- (2603:10b6:303:b8::21) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+ <20210604063116.234316-5-memxor@gmail.com>
+ <20210604175428.f77zeagqavjvdndn@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::1a79] (2620:10d:c090:400::5:7ab8) by MW4PR03CA0196.namprd03.prod.outlook.com (2603:10b6:303:b8::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Sat, 5 Jun 2021 03:08:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8da9e145-bfc9-4e62-3a97-08d927cf2d62
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2127:
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB2127A97CBD2BE65117B03C01D33A9@SN6PR1501MB2127.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TgkJuWytRZGgHT6auZuiVpZGEciFtx9oCS0JFJqhuQmP/+iS9QhvxeCWfBi3oy4wB9TD0CmZSfESZaS6jC81VqLnmj2Ef9tUiFc6D4IT+XBMMTCTeJykR6pRPikaB7gEl6FaNCN8JXU2kuFB/KPLsMFsrldz/ez6F2SffGpl3yy6+EBzgL6JMVy8KR7U6ewYFBrI/0GYmzlJhvLFMT/U2GiCRFgP6pSAexfM1g1LIZUQ7EHA7awiyarI5/i3qBbWmFARIrIX+JtpIWBUrycAYDpe6Zo3UzMzRYwuS4xOUsjn/pQo5EwVsuIaoUW5ZcrFqzoDgoDgRY2PBd5a6jZlIbuvM1StO6mslKE93zTeLolhHZMJsHhb/cXKKCLSFHJc//RLehWm90X9Z/Pamexur7yD749n1wBhrFebiFPCX8++CG4jCAMcAMF9sV+wklurD1DGplduTReeitzJDDX9/vbLrMelsD9rVSQ+rkiqWJoBgtM3LfyX6spZVIhe1vISwR35cKjWdh1ltfAiojbYZefBq+KKNgI6NbqpoD2wC9Cy7pxGIPK5rqrsKEd6dnLDLaXsJcNYOOGctgluZkJat5Sy6H1yucHZ5gGejp+McXaJxIWkorZnS3+zG6s5JkebJHpEQAb9bnfp4dh4vg1ETPMGh1+NDcucPiJQYBwqdaWIumFZaQAXZOq/+LyYeNoL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39860400002)(376002)(136003)(346002)(316002)(36756003)(2616005)(7416002)(6486002)(31696002)(8936002)(86362001)(6666004)(5660300002)(52116002)(66476007)(8676002)(38100700002)(66946007)(53546011)(83380400001)(66574015)(478600001)(66556008)(54906003)(31686004)(186003)(16526019)(4326008)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c0xVUU9tK0huYWhTQjhJM1ZqRTd6RjdLN0ZEcEVnZVJOWmNxbkNqbkpXd09j?=
- =?utf-8?B?azJybzY4YXNjYjJ6UU5ZQTdaSURvNGJSNXFTeEhQQ3V5c3FUSVpXSjVHZkNW?=
- =?utf-8?B?TlA2a25Qa2ZuVE5zK25kWVFJNmF3azRrbXgrWHp5K1lzS2k3eXlYUmhiVE9L?=
- =?utf-8?B?ZC85RGVETFJyc2ptbVFHcUNvV3ozZzNmd0dWODhJRDNUZGliM0UwTGZwd3Bp?=
- =?utf-8?B?OTQyb201THorckJtOFNGRXNyQnd5SFJ5Y2V3UDN2eWtPVjJLWUNEN0V6OUhH?=
- =?utf-8?B?OU1WcWxDeGxnYTBWaUE2Z01MT1I2eGFFeklvVENKOTRvcmxub2EyVmx3VWdP?=
- =?utf-8?B?ZFA1TkkyNUlVMTlWN1paT1YwZmQrOGtiMFByamhNU3hkdnA5TmlGUFhhRndw?=
- =?utf-8?B?Sm9MeDZuWklqZUp4UVplckpYV245QStVZm84MEJrYnpsVTFRRVFVSi96c3lj?=
- =?utf-8?B?MGhTZ2Fla3FWRDIrQnJMUjJ1c1FxbG80ZDB4SFo0TDBCYTJURDBuMDZmTmNa?=
- =?utf-8?B?TUhsZWhFaFNrbmZWVWJaTVpjMnozeUt4WXF5dGFjUG85bGMzei9RT0xFQUV4?=
- =?utf-8?B?UFIzZ1NDOSszem83QUZjVTB2aWROY0ZvVHVmeFIyM0h2SS9NeDN0ZWtmSURz?=
- =?utf-8?B?SHN0a2hJWHdsbjJNSlZab3BuOHF3cEkzV1NrelVqZXNGOS9YZ1dtVFQvUU00?=
- =?utf-8?B?bEsrRDlBMTdXOS9qdmYrakVtNUw2WXBzcGJDZkk3NUxGNUpIT1hSOC82WVVS?=
- =?utf-8?B?a05WOXc2ZUUyb2NYTkNEUEh1dXVqMVc0QXZKVWF3ekZxdE11UlNBOXlWT25u?=
- =?utf-8?B?YXlYWWh0bUxJV2lqWlUrbCs3aitHOS9GdnlDNDh3WlRCaFRFQVBlSWtpWWdo?=
- =?utf-8?B?akZiM1NwMDkyNmJEQlpjenJPaHZ6YVM0dkFySE90cFJodnRyeFdRMjNqZTlY?=
- =?utf-8?B?QlFKRkRzN282L3lVcW00YmVtYVpva3dHM1BTZTNoaHQvTnJ3WjJrSUdJYXcy?=
- =?utf-8?B?YmJkejR0aXlReCs3cTUzQWlBZjFKTlh5T2tyT201bi8zQWQ2ZjVGYWpSbUgr?=
- =?utf-8?B?ZXl0UVUzNkcxempHKzFUdHI1OXEyZ256SmEzZWpkYmRHaUtlVFJMSEFJUFp4?=
- =?utf-8?B?eVBBQnEzbmtUc1Q4L3V6Ly9SbVlYVVZsYk5NVGxMTjhuRjgvQnk5b0NzQU85?=
- =?utf-8?B?TU1GVXB0NXBkeVZmc3k3TGt5SUlnYllDTjlZTTY3UmY3VlU4WUVxYWVEZ0d3?=
- =?utf-8?B?Zzl5dDlkUVU5Ylp3dUorSEQvNUtsTHZnTXdOWkxIUTJSY3BsektzdFpNMXhU?=
- =?utf-8?B?djVGaDdIcXNGa0FQZXFuRTZSVTNwamVBZFJNd1BraUw3Nnd3UjQwQmFHMzZ4?=
- =?utf-8?B?WVJxa2I2clREMFlWdzJQanZmMkN5UHQvYThMRi8vVXB6Rlh0dFZFM2U4Q1or?=
- =?utf-8?B?d2ovRFM3ZnhJVXN0U3JLcG9NZ2RtRllNQ2hYb3pOaVA1NkIrNk9vaUw4SkdI?=
- =?utf-8?B?RGlZS3Z1MkFyQjZMZFBmaFBEaXJyN0VrM0h5L2N2b28xbUJ5RS9ldEVRRWlZ?=
- =?utf-8?B?aCtDS01ONkQ3V2dselcySm9JSExIRE9yWm5SejVJcjJDRE1YTURHRW1FdnpQ?=
- =?utf-8?B?Uk9PNS9rbVE5VTd3d2ZFdU5QVERyVHN6MmorcFBneXdiNkVORnNvZC9ZSTJT?=
- =?utf-8?B?NmxOZnlqTmtiMExvY0FwTkh4b2dlV1ZJZERWbExPSi9oK0NDZ1NPVDJiQ3d4?=
- =?utf-8?B?aFRIY3cwbmVsWkpDeTZUcjZBcVNSamc3bVVPTW9sVmQ3TkdGSXlobFN5SU9x?=
- =?utf-8?Q?zGR89zB8ZuWwM462j5JaJXy4MPLj9xpFLI5Ec=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8da9e145-bfc9-4e62-3a97-08d927cf2d62
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2021 03:08:22.5070
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kzkJCzX/fJO1vBkj3P4g0z+0b2RzXsXLJNy3RovfYiodcpkqJHroiSEEIX7ZAlRq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2127
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: sJy7HeYqm28ZsTe8IGIjv-qtZNRKzMpo
-X-Proofpoint-GUID: sJy7HeYqm28ZsTe8IGIjv-qtZNRKzMpo
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-05_01:2021-06-04,2021-06-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- adultscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0 phishscore=0
- mlxscore=0 bulkscore=0 clxscore=1011 lowpriorityscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106050020
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210604175428.f77zeagqavjvdndn@ast-mbp.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Jun 04, 2021 at 11:24:28PM IST, Alexei Starovoitov wrote:
+> On Fri, Jun 04, 2021 at 12:01:13PM +0530, Kumar Kartikeya Dwivedi wrote:
+> > This is used by BPF_LINK_UPDATE to replace the attach SCHED_CLS bpf prog
+> > effectively changing the classifier implementation for a given filter
+> > owned by a bpf_link.
+> >
+> > Note that READ_ONCE suffices in this case as the ordering for loads from
+> > the filter are implicitly provided by the data dependency on BPF prog
+> > pointer.
+> >
+> > On the writer side we can just use a relaxed WRITE_ONCE store to make
+> > sure one or the other value is visible to a reader in cls_bpf_classify.
+> > Lifetime is managed using RCU so bpf_prog_put path should wait until
+> > readers are done for old_prog.
+>
+> Should those be rcu_deref and rcu_assign_pointer ?
+> Typically the pointer would be __rcu annotated which would be
+> another small change in struct cls_bpf_prog.
+> That would make the life time easier to follow?
+>
 
+True, I'll make that change.
 
-On 6/3/21 11:31 PM, Kumar Kartikeya Dwivedi wrote:
-> This commit introduces a bpf_link based kernel API for creating tc
-> filters and using the cls_bpf classifier. Only a subset of what netlink
-> API offers is supported, things like TCA_BPF_POLICE, TCA_RATE and
-> embedded actions are unsupported.
-> 
-> The kernel API and the libbpf wrapper added in a subsequent patch are
-> more opinionated and mirror the semantics of low level netlink based
-> TC-BPF API, i.e. always setting direct action mode, always setting
-> protocol to ETH_P_ALL, and only exposing handle and priority as the
-> variables the user can control. We add an additional gen_flags parameter
-> though to allow for offloading use cases. It would be trivial to extend
-> the current API to support specifying other attributes in the future,
-> but for now I'm sticking how we want to push usage.
-> 
-> The semantics around bpf_link support are as follows:
-> 
-> A user can create a classifier attached to a filter using the bpf_link
-> API, after which changing it and deleting it only happens through the
-> bpf_link API. It is not possible to bind the bpf_link to existing
-> filter, and any such attempt will fail with EEXIST. Hence EEXIST can be
-> returned in two cases, when existing bpf_link owned filter exists, or
-> existing netlink owned filter exists.
-> 
-> Removing bpf_link owned filter from netlink returns EPERM, denoting that
-> netlink is locked out from filter manipulation when bpf_link is
-> involved.
-> 
-> Whenever a filter is detached due to chain removal, or qdisc tear down,
-> or net_device shutdown, the bpf_link becomes automatically detached.
-> 
-> In this way, the netlink API and bpf_link creation path are exclusive
-> and don't stomp over one another. Filters created using bpf_link API
-> cannot be replaced by netlink API, and filters created by netlink API are
-> never replaced by bpf_link. Netfilter also cannot detach bpf_link filters.
-> 
-> We serialize all changes dover rtnl_lock as cls_bpf API doesn't support the
+> > All other parties accessing the BPF prog are under RTNL protection, so
+> > need no changes.
+> >
+> > Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>.
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  net/sched/cls_bpf.c | 55 +++++++++++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 53 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+> > index bf61ffbb7fd0..f23304685c48 100644
+> > --- a/net/sched/cls_bpf.c
+> > +++ b/net/sched/cls_bpf.c
+> > @@ -9,6 +9,7 @@
+> >   * (C) 2013 Daniel Borkmann <dborkman@redhat.com>
+> >   */
+> >
+> > +#include <linux/atomic.h>
+> >  #include <linux/module.h>
+> >  #include <linux/types.h>
+> >  #include <linux/skbuff.h>
+> > @@ -104,11 +105,11 @@ static int cls_bpf_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+> >  			/* It is safe to push/pull even if skb_shared() */
+> >  			__skb_push(skb, skb->mac_len);
+> >  			bpf_compute_data_pointers(skb);
+> > -			filter_res = BPF_PROG_RUN(prog->filter, skb);
+> > +			filter_res = BPF_PROG_RUN(READ_ONCE(prog->filter), skb);
+> >  			__skb_pull(skb, skb->mac_len);
+> >  		} else {
+> >  			bpf_compute_data_pointers(skb);
+> > -			filter_res = BPF_PROG_RUN(prog->filter, skb);
+> > +			filter_res = BPF_PROG_RUN(READ_ONCE(prog->filter), skb);
+> >  		}
+> >
+> >  		if (prog->exts_integrated) {
+> > @@ -775,6 +776,55 @@ static int cls_bpf_link_detach(struct bpf_link *link)
+> >  	return 0;
+> >  }
+> >
+> > +static int cls_bpf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
+> > +			       struct bpf_prog *old_prog)
+> > +{
+> > +	struct cls_bpf_link *cls_link;
+> > +	struct cls_bpf_prog cls_prog;
+> > +	struct cls_bpf_prog *prog;
+> > +	int ret;
+> > +
+> > +	rtnl_lock();
+> > +
+> > +	cls_link = container_of(link, struct cls_bpf_link, link);
+> > +	if (!cls_link->prog) {
+> > +		ret = -ENOLINK;
+> > +		goto out;
+> > +	}
+> > +
+> > +	prog = cls_link->prog;
+> > +
+> > +	/* BPF_F_REPLACEing? */
+> > +	if (old_prog && prog->filter != old_prog) {
+> > +		ret = -EINVAL;
+>
+> Other places like cgroup_bpf_replace and bpf_iter_link_replace
+> return -EPERM in such case.
+>
 
-dover => over?
+Ok, will change.
 
-> unlocked classifier API.
-> 
-> Reviewed-by: Toke HÃ¸iland-JÃ¸rgensen <toke@redhat.com>.
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->   include/linux/bpf_types.h |   3 +
->   include/net/pkt_cls.h     |  13 ++
->   include/net/sch_generic.h |   6 +-
->   include/uapi/linux/bpf.h  |  15 +++
->   kernel/bpf/syscall.c      |  10 +-
->   net/sched/cls_api.c       | 139 ++++++++++++++++++++-
->   net/sched/cls_bpf.c       | 250 +++++++++++++++++++++++++++++++++++++-
->   7 files changed, 430 insertions(+), 6 deletions(-)
-> 
-[...]
->   subsys_initcall(tc_filter_init);
-> +
-> +#if IS_ENABLED(CONFIG_NET_CLS_BPF)
-> +
-> +int bpf_tc_link_attach(union bpf_attr *attr, struct bpf_prog *prog)
-> +{
-> +	struct net *net = current->nsproxy->net_ns;
-> +	struct tcf_chain_info chain_info;
-> +	u32 chain_index, prio, parent;
-> +	struct tcf_block *block;
-> +	struct tcf_chain *chain;
-> +	struct tcf_proto *tp;
-> +	int err, tp_created;
-> +	unsigned long cl;
-> +	struct Qdisc *q;
-> +	__be16 protocol;
-> +	void *fh;
-> +
-> +	/* Caller already checks bpf_capable */
-> +	if (!ns_capable(current->nsproxy->net_ns->user_ns, CAP_NET_ADMIN))
+> > +		goto out;
+> > +	}
+> > +
+> > +	old_prog = prog->filter;
+> > +
+> > +	if (new_prog == old_prog) {
+> > +		ret = 0;
+> > +		goto out;
+> > +	}
+> > +
+> > +	cls_prog = *prog;
+> > +	cls_prog.filter = new_prog;
+> > +
+> > +	ret = cls_bpf_offload(prog->tp, &cls_prog, prog, NULL);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	WRITE_ONCE(prog->filter, new_prog);
+> > +
+> > +	bpf_prog_inc(new_prog);
+> > +	/* release our reference */
+> > +	bpf_prog_put(old_prog);
+> > +
+> > +out:
+> > +	rtnl_unlock();
+> > +	return ret;
+> > +}
+> > +
+> >  static void __bpf_fill_link_info(struct cls_bpf_link *link,
+> >  				 struct bpf_link_info *info)
+> >  {
+> > @@ -859,6 +909,7 @@ static const struct bpf_link_ops cls_bpf_link_ops = {
+> >  	.show_fdinfo = cls_bpf_link_show_fdinfo,
+> >  #endif
+> >  	.fill_link_info = cls_bpf_link_fill_link_info,
+> > +	.update_prog = cls_bpf_link_update,
+> >  };
+> >
+> >  static inline char *cls_bpf_link_name(u32 prog_id, const char *name)
+> > --
+> > 2.31.1
+> >
+>
+> --
 
-net->user_ns?
-
-> +		return -EPERM;
-> +
-> +	if (attr->link_create.flags ||
-> +	    !attr->link_create.target_ifindex ||
-> +	    !tc_flags_valid(attr->link_create.tc.gen_flags))
-> +		return -EINVAL;
-> +
-[...]
+--
+Kartikeya
