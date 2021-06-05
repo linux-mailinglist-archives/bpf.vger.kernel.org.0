@@ -2,145 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA02639CA32
-	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 19:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A4A39CA52
+	for <lists+bpf@lfdr.de>; Sat,  5 Jun 2021 19:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhFER2x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Jun 2021 13:28:53 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28392 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229964AbhFER2x (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 5 Jun 2021 13:28:53 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 155HL1Ai010928;
-        Sat, 5 Jun 2021 10:26:50 -0700
+        id S229996AbhFER5s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Jun 2021 13:57:48 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46140 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229964AbhFER5s (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 5 Jun 2021 13:57:48 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 155HtaNo029541;
+        Sat, 5 Jun 2021 10:55:38 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=sRGez9ra1htpsIm+tYDGu7bzkgWLnglvZUZw54gPVJg=;
- b=jICgBLJWJc6GrVBsqIx93XUe8ybDBW1Z9upgIp6Xm5t2heIse1JT7hmUzCj3pGoSbg8E
- bkjJxRb3LayXfmQDwUEZo84cqNiz+O0ApQjX+lDNZ7/uXlv+5gNu/w2X0NsAAfsBq8EE
- IUxnlmuNa/0vj/zsw8f/N9gZhwZc0ulvwvY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 3904sb9v66-1
+ bh=lpXnB1mdaG6Kps54uMygNTIYT+mQ5e/DowpE6oFhjeQ=;
+ b=UjhsI8fDVaCpwHcZGDsuV89S9SQsJ/FbwHQY4m7cPo7XaDn1hereJEJyv5rHsvCL4WDn
+ kW12HWd3A3I5sVMxjjDdwGkV8Pve0ORriWiFEUeYTc+7J7r+hlbw1XT+xFtEm4S6ALYt
+ XpkCoFbb9DRdeihYgzqst0zhe9gRs2O7aIo= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3906ym1g59-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 05 Jun 2021 10:26:49 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+        Sat, 05 Jun 2021 10:55:38 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 10:26:48 -0700
+ 15.1.2176.2; Sat, 5 Jun 2021 10:55:29 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mOKOEw7KyDX+Oliwc+XbRJCA/W+QmU5Gq+Q/9maQ+TfKfRzMXfYR3yOFfvJlQJ8r2YwIWgBfE6A5BT2VrijNto6+vEJWs1ynG41zqDUx1mHsDFW4ptIAuIW+NUi3FsdSdpSoQFoueKTLl6bIatHeFemRghYT6VTJhWHPaqfEcf1r1W75RwoUN5abtmri6jPyZ0deY7CUgi5jO5C3vIoa8hv6oYqoFqsWCTqjwcERdd32+FsNjaX3HST8rCWooDfjPLlpbGf4w3rw64TsqLtW5MG7mTiDnaTYOSYxAtx0e/STR+AH0qdLEDRChA4vwI6XJC6wLdgaFkhcQgYx6HOb8A==
+ b=jeMILDwF8BTadNmrcDYsl/5IDibQhuu9ih/Sw462BnQs2iChvsTlTWY4mwi0LHHRoObovXqV2Fjx7paXZ3KNaWv9LsDR5ZCpLTEIJ23NmxShHYGTUWiXq9iTbKWAakH8aZ41ISQToKXGeegQuiA/fN37fXOOHSuGvh0t0tc0Qy6coTFLuwlCwIQn/i/g0DVNRPxKkrsYcgpWTqyDRDpZ017XnVcrdWIxHbgdfsAXn/i0cMSWmNkxWBUKpWzs+Qg+unzmpvxIxEGl2rNwzFF8e8TZTLkHt0XJoubr3yZ/Kd0Y3qbKkiFmJgLwZHc/qyWQylddf2uiQnUwyT9kt1MkDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sRGez9ra1htpsIm+tYDGu7bzkgWLnglvZUZw54gPVJg=;
- b=SKixFTQ9qe6HQB5nkNSiBpG4rgzs2eNCogn1deIF04SyTj93MIWDacT26UJY3XC9fwrSjFUHrSWdjSm9S43e60hUv9Z1WxspxmEt0MIuVicaBAm5enpkR4hI7j3Jps6lv7QGBYC82OdknkmsyoD+YIQHrqnzzbvw8Cuejm0JSxRodcEURuWNb9faikcVuGHKpGT3Gcz4w4zzjW8H/2BzJR0kuOlWfNS2Q1y+CSfe/nTFSgmdVFcK18EJ2Oe6NHtl3Bu5eQCYqAUDrxfQTcWnfkMKddfGWP+GaJi5Hlnkp7UjpBLA9OfLiq6c3Uo1S0ZSqzdAbBC6AKBJst1cjEkd5g==
+ bh=/yESyUHqextMhjf13phnhUwzuU3SOWj8kyeX3a3SAhk=;
+ b=oRIHp3YjhFFvsArWEVQeHkM13TGjOoD7Mpw+ga6CjDoJI2rUVm00L8Kn8lLvg+IFETQrh4aLmvHigp5F3rn+Qh33+vMDSGeCqhErY+91vMuDy/Wk/j0UVmlq1wxincstPjjfUKeVisky50lopSql9vALTHuhIio7tH49fjbqHPKVFbhrvcJDTb/z/t2c4ypOoO8R1r3iMyasqpoQfD7ZXlI1Rx0QLQY4D0yZoQpFu53eG6l4jvB603tVU1BGy5INBSJz8EPh7K3rjvItA/0jS20adpG2qhAEmA5mL/JhU/hJ3lgRzssnuGQb4D0wQzxCoUq8lzMZwLkp5IFIIHWxzg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4434.namprd15.prod.outlook.com (2603:10b6:806:195::11) with
+ by SN6PR15MB2336.namprd15.prod.outlook.com (2603:10b6:805:26::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Sat, 5 Jun
- 2021 17:26:45 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Sat, 5 Jun
+ 2021 17:55:28 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4195.026; Sat, 5 Jun 2021
- 17:26:45 +0000
-Subject: Re: [PATCH bpf-next v2 7/7] libbpf: add selftest for bpf_link based
- TC-BPF management API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, <bpf@vger.kernel.org>
-CC:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        <netdev@vger.kernel.org>
-References: <20210604063116.234316-1-memxor@gmail.com>
- <20210604063116.234316-8-memxor@gmail.com>
+ 17:55:28 +0000
+Subject: Re: [PATCH v4] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+To:     Kurt Manucredo <fuzzybritches0@gmail.com>,
+        <syzbot+bed360704c521841c85d@syzkaller.appspotmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <davem@davemloft.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <kafai@fb.com>, <kpsingh@kernel.org>,
+        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <songliubraving@fb.com>,
+        <syzkaller-bugs@googlegroups.com>, <nathan@kernel.org>,
+        <ndesaulniers@google.com>, <clang-built-linux@googlegroups.com>,
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        <skhan@linuxfoundation.org>, <gregkh@linuxfoundation.org>
+References: <000000000000c2987605be907e41@google.com>
+ <20210602212726.7-1-fuzzybritches0@gmail.com> <YLhd8BL3HGItbXmx@kroah.com>
+ <87609-531187-curtm@phaethon>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <a2e9d489-7fe1-f185-3443-565601624269@fb.com>
-Date:   Sat, 5 Jun 2021 10:26:43 -0700
+Message-ID: <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com>
+Date:   Sat, 5 Jun 2021 10:55:25 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <20210604063116.234316-8-memxor@gmail.com>
+In-Reply-To: <87609-531187-curtm@phaethon>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 X-Originating-IP: [2620:10d:c090:400::5:80b3]
-X-ClientProxiedBy: BY5PR03CA0022.namprd03.prod.outlook.com
- (2603:10b6:a03:1e0::32) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR13CA0077.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c4::22) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
-MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::1a79] (2620:10d:c090:400::5:80b3) by BY5PR03CA0022.namprd03.prod.outlook.com (2603:10b6:a03:1e0::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22 via Frontend Transport; Sat, 5 Jun 2021 17:26:44 +0000
+Received: from [IPv6:2620:10d:c085:21c1::1a79] (2620:10d:c090:400::5:80b3) by SJ0PR13CA0077.namprd13.prod.outlook.com (2603:10b6:a03:2c4::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Sat, 5 Jun 2021 17:55:27 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ea3042c1-961a-4237-207c-08d928471768
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4434:
-X-Microsoft-Antispam-PRVS: <SA1PR15MB443410DC924826267F1B2D45D33A9@SA1PR15MB4434.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 3c308d3f-51d7-4cc4-1a39-08d9284b1aa3
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2336:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR15MB233634E970F8DEE1A933681CD33A9@SN6PR15MB2336.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:67;
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: N5nllknXEKPZESq0p2rJq7Cib12EyucEYbIjRhUTcWbyOzrXJj2W03gCMVroU0iBuAmZtntGkykPwkutOanw/5u4nwzxEKzQXtvpQZPrtWFQ6EFRTNjmGXU74NPKj/fd+BYYSaYel0Cnj5nu73OLUCYtYHdXSLo5avdCqHFAkwhWurTqBU2oHeYDJ4H+Y+ZglPe5wgIKYslGpmATZtBVw9kAPdXs9PL64/KgDDNlycn/Y2kVwKHo0ucmc1XeGYBzTNqK6PItr/mn36QbXR1pwR2h5yCS1gzu4aAopl1CrwK0hEmEppAgLMKH6ll2b1tHg99tYG75ILCy8/mXHhXa7n8K/miKNQobrU6Gi/n4NvqsdUz6jTUWE7fcMX8cpcL2D13rQajnCqJ8lg97QGWKQeks8DFCs49mx7XJ4fo0xZ1JWVYHyfVNwp/w02pLq/JFHffZJ6ZPOTGmVUyIBrbZ0XqBzG3o263UL5/Yij5Wrw3gzfgCl+6dw3ocmBmWtk5eFgz3owKec3bBoPJHIOYVzbPIUoqDrp4affjpmElMeNhYlO/D0/GoPzOAYePzDUjTP7f7Ja5xulBAdx2gICNUkKRd3PhTnIi6UOkyG3IeDRlgwy7WyO1Urn6Wt7F5bcQN3KqwroX9l0qSWO7WY9tWTIjpuQTjPPHbZaatdQhORsF3SpXpV3YNOMTlBjSEc3Nn
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(31696002)(36756003)(6486002)(66946007)(4326008)(66556008)(66476007)(16526019)(38100700002)(5660300002)(52116002)(8936002)(8676002)(2616005)(66574015)(83380400001)(53546011)(7416002)(316002)(54906003)(478600001)(186003)(86362001)(31686004)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?L2xSZUJNS3pPYnRYbnZySHQrRURDNG5peXlaVnRTZDU5eVgzTE1ja0hlMklX?=
- =?utf-8?B?NEhLeWRoU0tuQXQra01VRFc5QXlSQ2hvNHRpdWtUYm9UckFQYVNlbW1KQ1Bz?=
- =?utf-8?B?bC9YOVk2ZVVEWnYrdmpKaVpvbDIyemZwS3ZIQkZRMjkxTjRyV0s3c2hvOERl?=
- =?utf-8?B?alMyZXMzTFlKODNlYTlmZTNOVnl0QTUvR1k3Tmkvc0NzQng2RlR5OHEvTCs1?=
- =?utf-8?B?ZW00dlNSRjlleEhscXRGa1lVbVRLT0ZUWEg4VnQ2ZTVJbVJIOHJYMmFvTXdB?=
- =?utf-8?B?MERyTFhHeHp6bmxVbXpHc0E0Qnlsdm52Q09FT1gwVDlUekdRQmZkKzlUY2p4?=
- =?utf-8?B?d0FGTW1HRzFaeGVhNk8wbWVxL0xUZXBmRmQ0WDVwbXVDOFVaRXU5c2ZaMXVP?=
- =?utf-8?B?dkNyRkwvOXl2UzJwaGRpSTJjTllQakR5am15dGlsVW9pK0FsaHFKYnhzQXNB?=
- =?utf-8?B?b1UwOGt2TUNzT1V2djdmT0Vma1lLcFovV1dlV2tPcSt0SWpURC9USmlMTmJq?=
- =?utf-8?B?OTFkVi80dDJORGJmaUdYNWhDMW01YnQwRDFpMFVkM21PeGMrWlJQcmhEaFhF?=
- =?utf-8?B?TGE0a25ra1pIVjlibEwzNUFsQjEyd1FxcUhhQkdNNlg5RFlJdUUyQU0xMm1Z?=
- =?utf-8?B?N2l1QnE1YW95VllZNFFmbC9nci8ydW1HUEd6emR6QWY0S0NScU5ySm9HSDlF?=
- =?utf-8?B?dy8vSU9UeUtUTFM4R1pEYTExVGhNZW02VzVleW9UelBTM1RKUlEwNEZNSVl3?=
- =?utf-8?B?L0tSa0ZjYXNWbmorQ2JSVWJTL1BFNnliQzR0WnJSbGw3OXJRaVVSYVhBR2c0?=
- =?utf-8?B?YzNPbUpHQWxPaUtlTnk0N1hFTXYyMVVhcXRzQUhqTDA5eUQ4SkVTZ2tyaVVV?=
- =?utf-8?B?NHE4dkc5ZWI0b3U2WERCU285YTdJTU1TTjJPRzY0a05kOWs1bHRRdXloeXlk?=
- =?utf-8?B?RVR1SStXdERhSi8rS0toKzdPYnZKSDE0aDB2S0MvZnplNW1yaFcvM0tyRGlp?=
- =?utf-8?B?VkF6NXRBUlZYb3hzSlNVbVhNdDNMVU1OWkhsMEd6MFdzRTNkRi9SNDBreStM?=
- =?utf-8?B?NEhsR0grTnZ6ckVlTGh5VFNKTC9yd0NBNDJIVXFFUHJRbytMbWpHc1VoWkhM?=
- =?utf-8?B?eDJ6MTJVc1p1TGJhVDBMOWN3M2ljSUM3bmE5TmFyOGZwc1hFT3BtZUU3bU9J?=
- =?utf-8?B?ZFl0SGZGc1pHN3d2M2lSMGdNRmtDWEcyQ0YrS05pdTV0MmxkV1hDOG1aOXh3?=
- =?utf-8?B?cW5MMlZEVVllMGlsa3BXUXRzdDZ1djdjamlJSmNpUjlBZWZTalJ4akJXeXZx?=
- =?utf-8?B?VWNDY0xwZnhBMG1zaUFxbGxwTEdYbHZiQlFlZGV1Y3E2NkhMRkFqb2NmOHcz?=
- =?utf-8?B?R2w4czhtMnU1ZHEzRkt0enBsV25YNlExMjNyMkJKbW51VlNZSHRmU01GYSs0?=
- =?utf-8?B?cGxVVityQnpJdkxkL3VWY2dwMWR5OStwenVxWU1RSkRRWFQ4WUdDTXhFQWFJ?=
- =?utf-8?B?ZzBXb2Zoa3plYXJyQ0tSd2ZFYzRLRlZKazgzcXlPNmJEKzJJeHBlNWt5Tm5j?=
- =?utf-8?B?NzdFVXpIeVRYaXhaeitMaXFGb3VwUUhHam5FLzB1MlVPeGdqUHYvcTRNRmNT?=
- =?utf-8?B?NXJVYnFYc1V5UE1yUjdFdm90T0ZKejlIZmwzNEFTOWc4OTFsTGZ6NW0vcGVp?=
- =?utf-8?B?ZkZ3OXBoTmF4S3RPdWYyMEtJVElZYXpDTmxRRjZTWTFRTjU5dmgrUGN2Uys2?=
- =?utf-8?B?RGRuSC9Jbm1ILzYwWXRDbjd3S01kNHM1R09temp6YzdNNFo5cjVCbUVCYkNB?=
- =?utf-8?Q?EQrWMPZXTovKQK8jFnAYMqXMTvYv3JxhYF/mk=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea3042c1-961a-4237-207c-08d928471768
+X-Microsoft-Antispam-Message-Info: uLHoAxorF9+anzhzuSowV2GWbtOGKUvMSrU9dr0QQVEzG2PvaHXxI/jov5AyUo+AJMa86etCj/9dbcbFQh8lewOK5blfp4RsNpRf2pMrEOzLk2PHqMGrXl5iEcEpVFFoWAgv3PY9QNGadzyEULYWqd5c6ZNq3Gd4nMVogDJ6XFPcAEAbrJh1hIwlvb9K1/Pei9PE2iugHBLSNc9kH0QYsmqtvlbtk8Hgl0OAq15TI2QUdfAT6qfaqRZYSaCFzuHbJibQMOlZqkAFdphnhmpc6X5ZOxgqyF12sUuFqLKDDeEPlR0+kYToxiaoVsXtyFZ1CJ47LbqN5XtaLp76zM31f6HOahCJXkM9h2dLjbajMnXbs6GSVQOPNSFRan/agr/YHzBNjynFMc8et0OYMRFdJGShLLwYT/Gxu3NL7v1L5iKgOJrt8aZrqCWc0ngWDT9uJ1cyhoufdoR4raMGO053UvWPWuKS9+KWAkle+l9SJBLhJZsR5LyB3HFbzSe79pslprDUH5BYKpzeJ191U4BrJEpaNnMByZu1t1FYtRU/Pg6Qbj2SVM2XUDfvk44e267QDC3zsuDqIzvWwHdYgg1G717hdwFaqFTbUaB0xHeJ+n7nB/Iv4Jw/D4LTffOKIF3RRo7mdRwCd6MqrgJjkp2S7nPYXWCPlnwMEJP2liGDG9DUoTs0KfGy8dp9Uz8pUGriHIxpWQmw+YejJTlXZJ75aAjkc9HKLf5Spo21yhHhITUKqWzcX5vegMEWdSfG4dULhwz0zLvwLbdUZTmBDxF1zDpawbfsSmA2KrJMfHClQhNsAn61Dbw1Jxb2+RQJ/5WBumQu5Kzw02VjTQzdXEIl5iSFxzlpFyfb5803my3NvXs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(39860400002)(376002)(346002)(966005)(478600001)(38100700002)(36756003)(316002)(8676002)(7416002)(186003)(4326008)(86362001)(53546011)(8936002)(2906002)(2616005)(31696002)(83380400001)(66556008)(66946007)(66476007)(52116002)(5660300002)(16526019)(6486002)(31686004)(101420200003)(99710200001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c0F3akZRaSszZUhyUkU1MjVzaEVRMXMxNFJvakZZODI3OXhRMlBjQndiRjFt?=
+ =?utf-8?B?WmRPWFhJbHRJSzBpTmQrTk9PeTkzZU05NVZCdEg5MnFZN1NjbkdCeXFDZlNX?=
+ =?utf-8?B?d2dBRFlLeE5NcWVtN3dpU0hhN0M2cDhBd0w5ZG9DTEkwOW5mNzhJbTZ1QWxV?=
+ =?utf-8?B?OGJHTkNLT1k2ekFGNzkxay80Vkk4ZDhqNXlmZXJ3VWl6dlhQMGU3Z0hoRUhB?=
+ =?utf-8?B?emhKUTRjRThVay9TV0Z4cUQ3MUZnUStvZkljVStzbFBXSWVEc0VtRTdnaTNQ?=
+ =?utf-8?B?QnZxdzdRQ3JQY3Q1UTRDMk5pSUh4N0FoS3NodmdHeXlURDlHRVkrUGRISGZw?=
+ =?utf-8?B?Y1pXN0FwTEtFNmcxR2c1d2Y2UnZneUFENUovNi9TMTJCZWJUWUJnQ1F5cDQx?=
+ =?utf-8?B?Q3hvZk85bU5nNTRMYkpDN1RHa3FBKzNJYlZtc09VUmZnOXpSUHVqVjJDR09X?=
+ =?utf-8?B?WkFTYWlPdHJZODhyTVRuaGljbm9JWS9EbVpEbFN3c0R4RGp4L2EwVGJENm8r?=
+ =?utf-8?B?SzQ1WXgrRTlJRkZvY3RuMW5IOXo0U01BL3RCYVh0YVluUFV2bTl5d3Vza1Vu?=
+ =?utf-8?B?WVM4RTZmaVB5UXpkSTlPVzFhKy9aZ1ZMdXFLQjB0ZUYwT2poemlMMThIMHUw?=
+ =?utf-8?B?T0ZlQWlVQ0t1UzRxRXNVN0dKMUdmS2hrUkxPYWVMQk01OWxQNE1MUXFMS0ZM?=
+ =?utf-8?B?aU1WSnNhaTBYMnBqT09Nc1lTY2ZsY28vU2hadUVWZmdEOVdPNkhYT3NSNkQ4?=
+ =?utf-8?B?d2lMSXliNmtGVHNUb3Z0Z2NObGlmNXh5V1A0ZW9lK1N0NjlucDU1aVVHR3oy?=
+ =?utf-8?B?b3dtQnJMV1Zzc0h6aHByTCtqM3FmQWN5MTMvTTM5bDV6YUVycjB0aC9vdDdN?=
+ =?utf-8?B?Vzh1ME1Uc2s0cE9NaVJyMTB4VGV6ckVwaVpjbW9tdEs5ZTFBTEtqWGszT1dw?=
+ =?utf-8?B?Rmp6ZHhnUWI3VE5jL0YrU3ROZmo3cStrU0l2a25QMEFlUTllYzhhcDRGcU5n?=
+ =?utf-8?B?dDdmMEdVZGZQWDJpcE1OeFZmSk5QYlZlQXlEOWI5V0lNMk95QXVBQ2xZZXN6?=
+ =?utf-8?B?eUVVUkdTcmJscVRHZTVQYU8yY2NTaTV0WllDQndkR1U1aWNIdXc2bDdUbDk2?=
+ =?utf-8?B?ODBCK2NJVGo2RUpXbUhxUEZZS2l3RVRDYmZsaElvN1JRcHF6RFBNN0ViYklj?=
+ =?utf-8?B?V3duTDgwVVZaTEdBeHVzMUptSTkrT2laVHhLZEFrL3VodVA5ZXBEdU94WTlp?=
+ =?utf-8?B?MFVDU21idmF4VlBqQktUeVFiTjlIL2pBdXpVbGhHRWFRMHBSS0E2TnRoYTc0?=
+ =?utf-8?B?QWs0dXBQK2ZKQ25xOVZNNHN3Y3VHOWFLcmQxamhGR1NHWVpTQlNVVWxqTjY0?=
+ =?utf-8?B?eWVCaWoyak9XeHdrbFpjdm9qV3Q0VWhJMlNTbTl0ZmNrQWtUVjVDbnppNXEx?=
+ =?utf-8?B?cFVjTnZCalZESTdRZ25LVVcvQXFKNkxGNk5qQmV5aC9HTGkvYXN1YU40bEQ1?=
+ =?utf-8?B?cm1hZkNNTWF6VndOOU1vUDFYWGNIeW9XVE5UZzVzY0gyQzJmYjZpUURXSFZy?=
+ =?utf-8?B?L0tZY0Fka0M5cXlseWl3eUdoc1VKRTZOZHBSalN4SU1IdTdCR3IzdmIvSDdI?=
+ =?utf-8?B?VnNyckxhQ1lka0licm80QmxZNkRPSnU3SHFPeExRWmtQNHBRTWloQ29MNWRO?=
+ =?utf-8?B?TEtLY1VhRkRUZitjcStHV1o4MzAvUzFyeHhVbzdYb0pSVjRxb0hxYWYwOGMy?=
+ =?utf-8?B?WGJRbjN5bk5RWkRXeVQ4VjFic1JyU3pNZVVwQWMwdi9lZi9qVHJOb2Ezd3Fh?=
+ =?utf-8?Q?IFOAii9v5A35ODIiO+C988HKvhD4daVakCzEU=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c308d3f-51d7-4cc4-1a39-08d9284b1aa3
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2021 17:26:45.1454
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2021 17:55:28.5839
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iHPurlm2qax0w+/hjozs+W5IpxB/F3LoqTSXd0ZRx5syKEIMrA0AtzsOjS3w14sk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4434
+X-MS-Exchange-CrossTenant-UserPrincipalName: y8FjyzWEki3XuoRbLmQqTGZD3AT895mzmST/jHKvMPddvsx0Aq/VJL6H1clHNxYy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2336
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: eWvQ2QooZVFjEz1fxi7cqrg33wl4febz
-X-Proofpoint-GUID: eWvQ2QooZVFjEz1fxi7cqrg33wl4febz
+X-Proofpoint-ORIG-GUID: ZT7ZsTvVozpnJ51ooHPU1tr5PAuuPRNX
+X-Proofpoint-GUID: ZT7ZsTvVozpnJ51ooHPU1tr5PAuuPRNX
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-06-05_11:2021-06-04,2021-06-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
- mlxscore=0 priorityscore=1501 lowpriorityscore=0 impostorscore=0
- bulkscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106050126
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1011 impostorscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 phishscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106050131
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -148,154 +151,121 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 6/3/21 11:31 PM, Kumar Kartikeya Dwivedi wrote:
-> This covers basic attach/detach/update, and tests interaction with the
-> netlink API. It also exercises the bpf_link_info and fdinfo codepaths.
+On 6/5/21 8:01 AM, Kurt Manucredo wrote:
+> Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
+> kernel/bpf/core.c:1414:2.
+
+This is not enough. We need more information on why this happens
+so we can judge whether the patch indeed fixed the issue.
+
 > 
-> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>.
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> I propose: In adjust_scalar_min_max_vals() move boundary check up to avoid
+> missing them and return with error when detected.
+> 
+> Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
+> Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
 > ---
->   .../selftests/bpf/prog_tests/tc_bpf_link.c    | 285 ++++++++++++++++++
->   1 file changed, 285 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_bpf_link.c
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tc_bpf_link.c b/tools/testing/selftests/bpf/prog_tests/tc_bpf_link.c
-> new file mode 100644
-> index 000000000000..beaf06e0557c
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/tc_bpf_link.c
-> @@ -0,0 +1,285 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <test_progs.h>
-> +#include <linux/pkt_cls.h>
-> +
-> +#include "test_tc_bpf.skel.h"
-> +
-> +#define LO_IFINDEX 1
-> +
-> +static int test_tc_bpf_link_basic(struct bpf_tc_hook *hook,
-> +				  struct bpf_program *prog)
-> +{
-> +	DECLARE_LIBBPF_OPTS(bpf_tc_link_opts, opts, .handle = 1, .priority = 1);
-> +	DECLARE_LIBBPF_OPTS(bpf_tc_opts, qopts, .handle = 1, .priority = 1);
-> +	struct bpf_prog_info info = {};
-> +	__u32 info_len = sizeof(info);
-> +	struct bpf_link *link, *invl;
-> +	int ret;
-> +
-> +	link = bpf_program__attach_tc(prog, hook, &opts);
-> +	if (!ASSERT_OK_PTR(link, "bpf_program__attach_tc"))
-> +		return PTR_ERR(link);
-
-If we changed the bpf_program__attach_tc return semantics such that
-the return "link" value can only be NULL or a valid pointer, you can do
-	if (!ASSERT_OK_PTR(link, "bpf_program__attach_tc"))
-		return -EINVAL;
-
-The true error code should have been printed inside ASSERT_OK_PTR.
-
-The same for a few other cases below.
-
-> +
-> +	ret = bpf_obj_get_info_by_fd(bpf_program__fd(prog), &info, &info_len);
-> +	if (!ASSERT_OK(ret, "bpf_obj_get_info_by_fd"))
-> +		goto end;
-> +
-> +	ret = bpf_tc_query(hook, &qopts);
-> +	if (!ASSERT_OK(ret, "bpf_tc_query"))
-> +		goto end;
-> +
-> +	if (!ASSERT_EQ(qopts.prog_id, info.id, "prog_id match"))
-> +		goto end;
-> +
-> +	opts.gen_flags = ~0u;
-> +	invl = bpf_program__attach_tc(prog, hook, &opts);
-> +	if (!ASSERT_ERR_PTR(invl, "bpf_program__attach_tc with invalid flags")) {
-> +		bpf_link__destroy(invl);
-> +		ret = -EINVAL;
+> https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
+> 
+> Changelog:
+> ----------
+> v4 - Fix shift-out-of-bounds in adjust_scalar_min_max_vals.
+>       Fix commit message.
+> v3 - Make it clearer what the fix is for.
+> v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
+>       check in check_alu_op() in verifier.c.
+> v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
+>       check in ___bpf_prog_run().
+> 
+> thanks
+> 
+> kind regards
+> 
+> Kurt
+> 
+>   kernel/bpf/verifier.c | 30 +++++++++---------------------
+>   1 file changed, 9 insertions(+), 21 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 94ba5163d4c5..ed0eecf20de5 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -7510,6 +7510,15 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+>   	u32_min_val = src_reg.u32_min_value;
+>   	u32_max_val = src_reg.u32_max_value;
+>   
+> +	if ((opcode == BPF_LSH || opcode == BPF_RSH || opcode == BPF_ARSH) &&
+> +			umax_val >= insn_bitness) {
+> +		/* Shifts greater than 31 or 63 are undefined.
+> +		 * This includes shifts by a negative number.
+> +		 */
+> +		verbose(env, "invalid shift %lld\n", umax_val);
+> +		return -EINVAL;
 > +	}
-> +
-> +end:
-> +	bpf_link__destroy(link);
-> +	return ret;
-> +}
-> +
-[...]
-> +
-> +static int test_tc_bpf_link_info_api(struct bpf_tc_hook *hook,
-> +				     struct bpf_program *prog)
-> +{
-> +	DECLARE_LIBBPF_OPTS(bpf_tc_link_opts, opts, .handle = 1, .priority = 1);
-> +	__u32 ifindex, parent, handle, gen_flags, priority;
-> +	char buf[4096], path[256], *begin;
-> +	struct bpf_link_info info = {};
-> +	__u32 info_len = sizeof(info);
-> +	struct bpf_link *link;
-> +	int ret, fdinfo;
-> +
-> +	link = bpf_program__attach_tc(prog, hook, &opts);
-> +	if (!ASSERT_OK_PTR(link, "bpf_program__attach_tc"))
-> +		return PTR_ERR(link);
-> +
-> +	ret = bpf_obj_get_info_by_fd(bpf_link__fd(link), &info, &info_len);
-> +	if (!ASSERT_OK(ret, "bpf_obj_get_info_by_fd"))
-> +		goto end;
-> +
-> +	ret = snprintf(path, sizeof(path), "/proc/self/fdinfo/%d",
-> +		       bpf_link__fd(link));
-> +	if (!ASSERT_TRUE(!ret || ret < sizeof(path), "snprintf pathname"))
-> +		goto end;
-> +
-> +	fdinfo = open(path, O_RDONLY);
-> +	if (!ASSERT_GT(fdinfo, -1, "open fdinfo"))
-> +		goto end;
-> +
-> +	ret = read(fdinfo, buf, sizeof(buf));
-> +	if (!ASSERT_GT(ret, 0, "read fdinfo")) {
-> +		ret = -EINVAL;
-> +		goto end_file;
-> +	}
-> +
-> +	begin = strstr(buf, "ifindex");
-> +	if (!ASSERT_OK_PTR(begin, "find beginning of fdinfo info")) {
-> +		ret = -EINVAL;
-> +		goto end_file;
-> +	}
-> +
-> +	ret = sscanf(begin, "ifindex:\t%u\n"
-> +			    "parent:\t%u\n"
-> +			    "handle:\t%u\n"
-> +			    "priority:\t%u\n"
-> +			    "gen_flags:\t%u\n",
-> +			    &ifindex, &parent, &handle, &priority, &gen_flags);
-> +	if (!ASSERT_EQ(ret, 5, "sscanf fdinfo")) {
-> +		ret = -EINVAL;
-> +		goto end_file;
-> +	}
-> +
-> +	ret = -EINVAL;
-> +
-> +#define X(a, b, c) (!ASSERT_EQ(a, b, #a " == " #b) || !ASSERT_EQ(b, c, #b " == " #c))
-> +	if (X(info.tc.ifindex, ifindex, 1) ||
-> +	    X(info.tc.parent, parent,
-> +	      TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_EGRESS)) ||
-> +	    X(info.tc.handle, handle, 1) ||
-> +	    X(info.tc.gen_flags, gen_flags, TCA_CLS_FLAGS_NOT_IN_HW) ||
-> +	    X(info.tc.priority, priority, 1))
-> +#undef X
-> +		goto end_file;
 
-Maybe put "#undef X" after "goto end_file" is a little bit better?
+I think your fix is good. I would like to move after
+the following code though:
+
+         if (!src_known &&
+             opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
+                 __mark_reg_unknown(env, dst_reg);
+                 return 0;
+         }
 
 > +
-> +	ret = 0;
-> +
-> +end_file:
-> +	close(fdinfo);
-> +end:
-> +	bpf_link__destroy(link);
-> +	return ret;
-> +}
-> +
-[...]
+>   	if (alu32) {
+>   		src_known = tnum_subreg_is_const(src_reg.var_off);
+>   		if ((src_known &&
+> @@ -7592,39 +7601,18 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+>   		scalar_min_max_xor(dst_reg, &src_reg);
+>   		break;
+>   	case BPF_LSH:
+> -		if (umax_val >= insn_bitness) {
+> -			/* Shifts greater than 31 or 63 are undefined.
+> -			 * This includes shifts by a negative number.
+> -			 */
+> -			mark_reg_unknown(env, regs, insn->dst_reg);
+> -			break;
+> -		}
+
+I think this is what happens. For the above case, we simply
+marks the dst reg as unknown and didn't fail verification.
+So later on at runtime, the shift optimization will have wrong
+shift value (> 31/64). Please correct me if this is not right
+analysis. As I mentioned in the early please write detailed
+analysis in commit log.
+
+Please also add a test at tools/testing/selftests/bpf/verifier/.
+
+
+>   		if (alu32)
+>   			scalar32_min_max_lsh(dst_reg, &src_reg);
+>   		else
+>   			scalar_min_max_lsh(dst_reg, &src_reg);
+>   		break;
+>   	case BPF_RSH:
+> -		if (umax_val >= insn_bitness) {
+> -			/* Shifts greater than 31 or 63 are undefined.
+> -			 * This includes shifts by a negative number.
+> -			 */
+> -			mark_reg_unknown(env, regs, insn->dst_reg);
+> -			break;
+> -		}
+>   		if (alu32)
+>   			scalar32_min_max_rsh(dst_reg, &src_reg);
+>   		else
+>   			scalar_min_max_rsh(dst_reg, &src_reg);
+>   		break;
+>   	case BPF_ARSH:
+> -		if (umax_val >= insn_bitness) {
+> -			/* Shifts greater than 31 or 63 are undefined.
+> -			 * This includes shifts by a negative number.
+> -			 */
+> -			mark_reg_unknown(env, regs, insn->dst_reg);
+> -			break;
+> -		}
+>   		if (alu32)
+>   			scalar32_min_max_arsh(dst_reg, &src_reg);
+>   		else
+> 
