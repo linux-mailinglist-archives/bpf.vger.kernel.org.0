@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D376239CC8A
-	for <lists+bpf@lfdr.de>; Sun,  6 Jun 2021 05:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23C339CCBC
+	for <lists+bpf@lfdr.de>; Sun,  6 Jun 2021 06:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhFFDin (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Jun 2021 23:38:43 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53478 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230060AbhFFDim (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 5 Jun 2021 23:38:42 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1563XvNF008813;
-        Sat, 5 Jun 2021 20:36:36 -0700
+        id S229454AbhFFEVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Jun 2021 00:21:03 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15496 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229437AbhFFEVC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 6 Jun 2021 00:21:02 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1564Is7A006040;
+        Sat, 5 Jun 2021 21:18:54 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=NM1/6Y9lLRX897pptWYfxqzXMKWbAGyH9ATQOHz2PWE=;
- b=oTIP9uQ9VKDsLgkpZw8zsaSTCd2WwNfTvmgT8JGL4fP+DX0USvlXraqTeUdJ1y7xCIlP
- 6t5iwqbS93t6opmBHdSCTBDvpLqErY11a1KAb7Tuni8MSmC0h8nc0Ftt7HeQMEQkpO9q
- PIeHv4fPslfNC+7DHZivM/B0kjrcg0VQM5A= 
+ bh=n5kK6XUf2XrTDEDUIVM3H6vPH5o+5eUQ3DEiQCbulgY=;
+ b=eH/Swo04m16eVntYKS0Vv2oReIr4j5Ac2BqeC+3XfNOJRyNnO4JGF8l2x1y7BUh50x/c
+ 4xONhOvIAsETEFp7EpluknLD4uqvbu8BM6BXjdML2SSvvcjzOG8A81I2wSMI88Gz62Sb
+ bH0Z0mUXrIUH9VHNOAFFly4rqA6DuzbMbYI= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3906cx33rp-1
+        by mx0a-00082601.pphosted.com with ESMTP id 3907132x2v-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 05 Jun 2021 20:36:36 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+        Sat, 05 Jun 2021 21:18:54 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 5 Jun 2021 20:36:35 -0700
+ 15.1.2176.2; Sat, 5 Jun 2021 21:18:53 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VQGQy97IxdYGyFhbq4bVJoZTDMLO5zsGPONU7Z7aqswAuZo0L7/YH5+pJt7fG2znKl4mGoM/OBweG5zicCRvIC/Xhszh0TMo9n1dwV130L+KnccqBAO6c3Ghy3pFN9RncvWjIXd6uKaeXc4xTVqdXPPpYgsmgVhiXq0XQbHjcg9gD22lTZ0fCrZCad61zJZX9iiD3ps+inlrecBUsEWft8eDVT8FQN08wxqK5GijQ3wSVMkU1UFTKbx9Ln7RhU1yqABTm8lRTYub43lMSylgxujggZCMN9ZdRHdqDMFXBGpydz/eLPUj26F+WKNHTYR3QSBdWWmNPZB1LVXXgs1Rwg==
+ b=InDwzG3O7lE4e485OE3ABAX+Xwafh37r3Y8w5/KcdCWoA+O51Fcm9/vHIzjti4kRRABVTvaZZLVUeQo6g0frL3aAKdvM7l+jET09Atvs458BgrdYRT+kZgj7vytCdrs58s6m0TKNTYx6bYttAGSAr7YHdnxutLHDfYn1T5vf2hjZTo7hJteiW47tfxmGOL4sjvv6JLDaem18X+h2aQLLotr1DtaeI0XDVzwhgSJ8g1jEw8bCMz5voKB+4TQYd8RjNfofwZll5jeAlAEyuPUeGR1z7UfYNNodtunPW0b/Rwd/BSw5JqDJkxhuw89kFVPlYkY2sXbsukygZnTT5dCz7A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NM1/6Y9lLRX897pptWYfxqzXMKWbAGyH9ATQOHz2PWE=;
- b=P0Ykc23Sfa4bE95N4dxdLqaso+qpgfUFiW3eeP/JwCXcATkt2V7SGDPVVxmeovlKSq1xJYo/LXaMqjpEcz9S3qHxXA+yxcyqHWLRh3m6imvz7ZpUo104sdAAjr+AzA8QqRu0bi1s6avmWPPx5VgEepiqre3UzhAy/+VkWGiYDgHp0/UKBRoKnZ3yJW1UGNBBqgDA/Bsl1gFu6/iKf5JXCoPcvcMCuZ/7XLqEUT4OSfIpaY3weECjR1UtSRElTZfbap6P5RiEhmPLVwqXI8Sbqe3VsdswwAZpfxj5M6DJL841e7yAdQvDNE+opQUnTsBk3s4LFTLHQgg94JECFmDsRQ==
+ bh=n5kK6XUf2XrTDEDUIVM3H6vPH5o+5eUQ3DEiQCbulgY=;
+ b=CzdAZyje373SFJnRr0/YVfvf/UJ/ziyq7MO2hnCQfXW7g1kbArsAK0A9yiwFc1Wt0Vv9mj6oPesv7hdfojbWYpMlGpr4EMZwg3KZIQMbhBBbR1KkbepInT/hvpYV5DUYz7mMjQk4MAHLFLG0aaccql1jJFBrDCz37ffRQyNGJdU9xVJsVVOJjLeChdeukyFVeCYy4h4bOax7Wu2cKO1cCBQyG46LwOybuTYugyMSBdbFCp8Z/1jvRXyvhwZD6jCpaAr8g3eVT5K0QH8u3OjtNdPC+nMkdepJd4lH+BD7uQSSnm9GefaiFgPXkBQw66NY2qNI23OcnyhpCxgzbFvQyA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: riotgames.com; dkim=none (message not signed)
  header.d=none;riotgames.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (52.132.118.155) by
- SN6PR15MB2416.namprd15.prod.outlook.com (52.135.64.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4195.20; Sun, 6 Jun 2021 03:36:34 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR15MB2480.namprd15.prod.outlook.com (2603:10b6:805:25::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Sun, 6 Jun
+ 2021 04:18:52 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4195.026; Sun, 6 Jun 2021
- 03:36:34 +0000
-Subject: Re: [PATCH bpf-next v4 2/3] bpf: support specifying ingress via
- xdp_md context in BPF_PROG_TEST_RUN
+ 04:18:51 +0000
+Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: Add test for xdp_md
+ context in BPF_PROG_TEST_RUN
 To:     Zvi Effron <zeffron@riotgames.com>, <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
@@ -62,85 +63,86 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Cody Haas <chaas@riotgames.com>,
         Lisa Watanabe <lwatanabe@riotgames.com>
 References: <20210604220235.6758-1-zeffron@riotgames.com>
- <20210604220235.6758-3-zeffron@riotgames.com>
+ <20210604220235.6758-4-zeffron@riotgames.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <7f3a4c3d-83b7-22c0-c64b-918e2976ef57@fb.com>
-Date:   Sat, 5 Jun 2021 20:36:30 -0700
+Message-ID: <960ba904-9e5a-9345-4ff3-73c3eb8a82bd@fb.com>
+Date:   Sat, 5 Jun 2021 21:18:49 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <20210604220235.6758-3-zeffron@riotgames.com>
+In-Reply-To: <20210604220235.6758-4-zeffron@riotgames.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:f8c6]
-X-ClientProxiedBy: MW4PR03CA0180.namprd03.prod.outlook.com
- (2603:10b6:303:8d::35) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: BYAPR11CA0097.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::38) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::1a79] (2620:10d:c090:400::5:f8c6) by MW4PR03CA0180.namprd03.prod.outlook.com (2603:10b6:303:8d::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend Transport; Sun, 6 Jun 2021 03:36:32 +0000
+Received: from [IPv6:2620:10d:c085:21c1::1a79] (2620:10d:c090:400::5:f8c6) by BYAPR11CA0097.namprd11.prod.outlook.com (2603:10b6:a03:f4::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22 via Frontend Transport; Sun, 6 Jun 2021 04:18:51 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 56db04bf-551e-4085-f87e-08d9289c4816
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2416:
+X-MS-Office365-Filtering-Correlation-Id: 201f12b5-378d-4661-8da7-08d928a230be
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2480:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR15MB2416DADC5BCAA37250C3617DD3399@SN6PR15MB2416.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SN6PR15MB24806D3EE6BF9495B908E839D3399@SN6PR15MB2480.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CSJAgpWW6FY+MDSPsQzC/7Z48nns1ytIxp2wnWMJPV9UHWRs6Xq026LY9mgHn+siQw8h1iyehQgrFJjAZLPAyx1FJGMM7TsAc8JwxMr9PipcEwOzDqzC2RYGodI//2c8TK0Trry5aK8YufxprevMqlh1wbjmngrA56B/TDFWS+2EaXHJEk/Z75UlNbOi1QZ/DLguCX03mOJUtsZVTXJy5w19+v/q0W1qVK2KHluvNnaLE27iTY5lFI4P8b4WpZ6Mmgn7hZrTOq8P4EQO4a3pPsFVZHN+PqCh9X+49Iaz+dx32ZIZLY8cfJOkLC6aigwP+mo1HLSHPkbLhV0ijqGnFXGE7ti8RMJMyroypzA9VidJqHkqkJ5zU6HQ7Rr6VI9fC0DwRgyEbhCUd+HU92UNVyZ9RdeZLJ7vfWGZ6oThIBt+UcQT0om/ldi86QfKTa04XtXG7IjvEYzIjsDOpfVB0/TMgz6+wbhTo4XW/c5gg/vVZeYRa94MS6r+sm2M2fB6lYV6mIZoVp8oaCBqYSYBgSuZM8h7myblMz0O2d0de9bTaWM97G6sEYmCEovylHZU86oOvmZeHP0zbDXMp4KFK0yy3WwCXHoQNQXdTVoXcq/cp4aowtpV9mWhnbyrsVPZG/5Q55Yi5cLD5X+fTFO2J+5/tQa043FsLWbmildCdauGTvqliGvewLnEvlzEbknB
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(186003)(16526019)(7416002)(31696002)(6486002)(316002)(2616005)(54906003)(36756003)(2906002)(4326008)(478600001)(53546011)(38100700002)(83380400001)(66556008)(66946007)(66476007)(8676002)(5660300002)(52116002)(86362001)(31686004)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aitqa1JWL2FvL1R5SjNydlg1alAzZ2NGNXArSXVRelRYeURNeW9vZ0FDSXpr?=
- =?utf-8?B?K0pUVUc5dVhWbXFBRk5ITmJ3UUV1RDJFR0FUNzRHVXRWUEZqdHlSaGZLVTRi?=
- =?utf-8?B?TDFBWTlLQktYZVB4T3BBdWcxQ0M2ZEdBOTFYZDVJYTgzZS9ZMXo4dnpHQTd5?=
- =?utf-8?B?QmFMaWwxTWZscjRWMHd4OCtRRFlqTEJNN2V3bE4xUEt5QW5sL0ltNUxtb2R4?=
- =?utf-8?B?MDF3UG14YzdmZkxxQTJldEpoQVZrQ2hTUHhYd0I3RmhhelVBUFkxNUtSQ3hS?=
- =?utf-8?B?NVVmeWJtUVlMSC9DOGRaQlQyWGY4ckhhZGRZQU01SzRReTFmNHV2Y3l4NjBw?=
- =?utf-8?B?NERsajF4ZVpCS09FTjJ3c1k3WnBHUWE5YWo0RHhDLzlyN3JGbDRSOWlvcU0v?=
- =?utf-8?B?TitqZEYzN1NaMnJscnJwWkp3aDBMT05MSjYyaHp2b0NOcTRZeFNRdmM2MXhq?=
- =?utf-8?B?QXRLaURYd25UTUR0bEJmT3YxbnJkTGlsOUZjcmErbXZEREgyeWQ4T3M0ZFFO?=
- =?utf-8?B?MjBxTm1lVkFhRUFkUzNTclpjSFN0Z1dJRHhCTUEybGdBbHdXWGl2TEkrdHor?=
- =?utf-8?B?RUJ5SE9KaDNKYXMyZ21xak8yWEZRVFhTb0JDUExIRzZ1N01Hd2NLTmFoTGV0?=
- =?utf-8?B?RkZqaTVDUkpTdkY0WDk3Y1dLWFN0UU9pN1BlRWVObk9EeXh0NDQ1cnlZcith?=
- =?utf-8?B?eG1nbWcxK3pUc1lpTTlDNGtMc3VhSUEvWS84SHNFWU93VVpJNTlGRWhra1lu?=
- =?utf-8?B?OTNDcU5wdkk5MW1uV0U3SmlIbm5OSWRsUjEyWkF2R2VYS0V4ME1FTUhSN2lJ?=
- =?utf-8?B?MjVZRTBYbmkrYkxzZWQyZjYxbzdjUDhESTMvU0hVSWhMMWpEdUwzNUtMaGNZ?=
- =?utf-8?B?NUhrbG9YMHFheW96WGVsMlRQeFFBSmR4WnZEVnVhQkg1cGxOaHFxalAveU54?=
- =?utf-8?B?azRNdXU1QUpnOTFJWW9RLzEwano2N3RiMlplMEhPc2hhRUR2eDFLOEV6cmRt?=
- =?utf-8?B?dS9McEM0eXJLMDB5V0FpQ0F5dEhMK1NScjJzM1RtR3FzK0ppVWRNam4rcTFY?=
- =?utf-8?B?cGxHY2dXN0g0aGlHUUI2UkVleGQzOXVrWjJDcUgzZklML3FUTEpNU09pUDgw?=
- =?utf-8?B?TnBVcmp4bGZWaEZFU25QbitmUm5aOUl3UkFibXhRTFlRZElYNTQxcEk0UUVL?=
- =?utf-8?B?c3E4cWRNY2hYc0wrb1o5R1l0ZlAzbnh4Z0k4dlhxVjdtQ2xXMFNTL1VPaWdv?=
- =?utf-8?B?bzJpM0pqY0QwSUhZNkV2WnJyK2xSYk5JOTRpWE1yZU9rbzd5OGF2V2xaUVJO?=
- =?utf-8?B?NER4Mmt4YTFya0ZIcmxKck8yWU5PQXpyNzdnMVUxRlYzVXUreXpuZlNhSVJa?=
- =?utf-8?B?aFZBN1hKUjRjSVExZ1pXNkU1REJYOFlScm85NkdVdWV5U3dKK2U4NVFYU1pm?=
- =?utf-8?B?WG9FMis4RE0wSm5RbUtxVGxUTVFIMDJwdGh1d0dZUHZmS2tHbnRSS09TSEU2?=
- =?utf-8?B?cUZwNEFFRS90YWlCOTdOVFBJTERzSUNyQUpoWTA5Z3RyblhscjRUSGlWUWhx?=
- =?utf-8?B?S3RlazlsajJLSlhRMFlRRlcyditXb21uYW53RXg5VEpVWGY3Z281Wkt2U1Rx?=
- =?utf-8?B?Z1YwVWhtK2lRSXpxRGNmcWEwSFNGekkwYm0yRkpMV3RkUVVMNm01d01FMUcy?=
- =?utf-8?B?RlgwdDQ1M09xYnUxallvUUUwL1F4WGtBWVhNdUtxNjBTeHpsYnVjejdYL3Y0?=
- =?utf-8?B?WEF4MGNuRy9OMnBTQUpVODgydERqRFh6S0hFUk5UYjQzK3hJTVVBalNOVnFF?=
- =?utf-8?Q?ODeCcT/GUOslLM9x6x402ZDFXgtSSzd+RG2VA=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56db04bf-551e-4085-f87e-08d9289c4816
+X-Microsoft-Antispam-Message-Info: SChKBLKeK8E8gpavl6m1Y/MNNzENtVz4vZ6rGQzxDeCwUjKjh9A4QxO6hYGT9w8yHEQLekmLODGChll/jZwbUNy4Ig8dMg+sVpLxuWCSo6503gj3bIoFLLYKqMOVhFPGP533adW/2CXPEG4r9IZIQzJHFhfAcWuPuJzIlO0DioCe9ohXcuNyHvg8wXJ+hrWaY8cldmXRqmRDHmDpN+tl1bZDsXmhSbCyBq8bzHE/ZeN2X7i6f7bBqjL6bsWsyLpI2M7lE9sWTxa2Q3k1kJZgRpPHlzJeLs2R2OaVCdCOunDBLSMlXQ4rjY8BcpAFRo+/Y01Gt5MvQtplqywtRcyeMzv0IkO8rr/+6wSHqiIOsDSlpsSkXSLEq5uCCW3yXAnloSukYBabMwDkRKGNrGxpvptiGbOO2A941AH6BLW+Taz4cr7FAJ/aaYZDuTOwbuu2KLxgOK39lvqxZQ4//h7GQkRIoY/bUmzdMpKwb6KgqfTTEdFXP0+HQ7PW1jBkVNoiTbwbUpNXYgn7/M5GnKZLIOY9vnDYhWU+7T9xsNW/ef8Br/hmS6Bts5d0SNEsxS48ugG/sQTfp0Ab3fZEcWxZGyWG8JXWQNJT32DRurFZ7NCH5Sd7mvoPeBlGYhcKG02FMSViVJabPGpuZ4nBd6ZpwU2jUCEBxua4DA2zxs9+Zl4Qa62k7bw84dIT3u5oTTWY
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(366004)(39860400002)(136003)(8676002)(36756003)(186003)(86362001)(16526019)(53546011)(478600001)(2616005)(66946007)(8936002)(38100700002)(66556008)(66476007)(6486002)(54906003)(316002)(5660300002)(52116002)(4326008)(83380400001)(7416002)(31696002)(2906002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bVFpVWY4SFZia0VKYlZYV0lNVCtGVWxNTzNvMlRsUi91dXRYbmU4TFJwTXkw?=
+ =?utf-8?B?V3J4YTVxaE00RGJPU0duQ29KM2g0NWtsYmVlVG9na21SOWhrQzgxK0tRNEx6?=
+ =?utf-8?B?bjVmMnEySFBBTG50a1JqdU5zRWkzZ1NiQ1NGeGxhOGF0akk4UklCUDg1OUJZ?=
+ =?utf-8?B?aDQvTG1MQVpVc2VPOUJXZldiaVZUODFIT3o3dllpbXlaZERGYVQ4K0lFMlFF?=
+ =?utf-8?B?QTd6UXBxSFQ4clZOeDZpMlBmZHIvbUJ5RXppK0d1OXZ4WVNSeVFnU1Y2Yk9n?=
+ =?utf-8?B?MWxQdGQ1M1ZUSXZiUEFDRXJVeWlCRGpFSTZ0Qm9zalNPNnVUNHdnbkVxR0VS?=
+ =?utf-8?B?SkY3UUg1cHVmRzlBYXR0enRsWTUrazIyY205dTF1TGFLaUZYMWVZUm1mbmVI?=
+ =?utf-8?B?YlJ5OVd6elMrcTNKSkJjT245T21LK2grbDJzSFNuQ0F4MnVML25UUWFJaXJo?=
+ =?utf-8?B?ZFI3T1c4dG40a3IxUE1EbllZenc0RXovRHFUZ0U2eXJ5U2hzTEtCR3BMWFVL?=
+ =?utf-8?B?MlZhdWszNnhpOFZqTnJkU0Irc0drUTBrOUtKVXVicENnYkN6K1dLNjdMWGNK?=
+ =?utf-8?B?Rlk0OS9CYm9zOStFRW9hRDQ2WTZvUjlkQmNWaE1WcWZuV0dIUGdJNWRzbjEy?=
+ =?utf-8?B?ZmlNbi9yTlhOWGNuM0t3aHdja0MzbThLWGJySlU4dEZQeTR4UXZqQUVnbFR5?=
+ =?utf-8?B?MFQ1TFVMbklpOTFaVERNTkxCNHBUamhxZGlNYUF4VVNFQ2xPbHlwODM0UDds?=
+ =?utf-8?B?UmthUTVLR3l5Q0Y1L1N4L1QwbTR3TGg1L0x2eUlPbTFzRlNmTlNYMXRleGZC?=
+ =?utf-8?B?Nk0rWEQzRXMxdDdwUDdFbTg2S1lreUFWemcrb2I2QldiWUQ5aWt3aFNnM2dB?=
+ =?utf-8?B?SWtzUWNQN2UrTGZYNGI0RG43ZFF5dEZUc2VjSkJzWWFOWGk1c0Y4NGQ1dXE2?=
+ =?utf-8?B?ZFRjeHVUSVE1L2ZFa0RRZlNmdWFQRDEvS3c4U3BOOVZFaUxibEpwbWxjcWg1?=
+ =?utf-8?B?bk9oRXo1V3Q0MkZ0OVppTEdhcThIZ0ZZM1A3RzZXdTNwSHZNa3VFVHY0bHN3?=
+ =?utf-8?B?aVhib1BVcGE1cE42SWFXWFlhQmdEQjhyVXlNdGZzeGtDSlU4RzFSdHBiTTNa?=
+ =?utf-8?B?UjFyTU96S3BHU1hpSGV0bExmYy9SMGdLbUlQZDcwcTJlTjJ1SkdUckplRVUr?=
+ =?utf-8?B?cjdvdjdlL1RSSmZMRGYydEh0bUZxK2VZemp6anJEbmxLTVVjYXhucm9UMlZY?=
+ =?utf-8?B?YWw5ZTVBNWd3SXpvTWU2dExFVjJTTzBYd0hBL0lTNURxWUl0aGY2aUlkSkRV?=
+ =?utf-8?B?RDUrOG41bXVMQ3h6a3lnRW9PY3Jnc0xJWVpBM1Q0dTdybi9NNlVRM3pFMW5p?=
+ =?utf-8?B?MmhUZk9rNXRNU0V3ME0vQWlKWk9IeUJFbkJBUFpZRVkweitOSkgzRWhFUGtS?=
+ =?utf-8?B?eGlpVTBlWkwwM0tVcnZuSDV1TklhdHh6VmZOd0h1dEk0UFIybCtSTEZUTHBi?=
+ =?utf-8?B?cFBmZ1EwTmM2dUw2Rk1FT09xMUlRQmlHdUhFZ1VhcUhtenVnUHBBd0FnSlNB?=
+ =?utf-8?B?Zk0vUTdpSDFmcjRpL3IwVTd1Ky9YSTVwZmlHY2toSUFnL1I3UVJvRm1vN054?=
+ =?utf-8?B?SVpuNHdpMC9hTlNlYUk2QWY2MkFRYWNyVFhCTFR0bml4YnhwbDVvWENHSFMr?=
+ =?utf-8?B?SzBqdVVuOEwyQjBqL2JDeHVuVzNMVUc4bHA5dS9VUS9pR2JwQytta3NrZHFT?=
+ =?utf-8?B?WnhwVEZVdnJVZXhEMGtxQ0d2R2x2TVZGSS9yYzRRdmpneUhsWm5ZcHFVb09I?=
+ =?utf-8?Q?Nvu0giv7+InCpgwsikxXhWTVS5xQe5EacXs/g=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 201f12b5-378d-4661-8da7-08d928a230be
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2021 03:36:34.0279
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2021 04:18:51.8802
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CuUQNu5UdgSuI0ctAp+QgyuokaTvxe+zo2u/fX60sF0q8n08uzMOLXXD1R+5FAEP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2416
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8FZ7xCaG29vMj4YikPky6DivxYEyDtLx3qr1ASr5AXZmwIQbUO0KG7Ln1HQ4eB8C
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2480
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: 2GchTDR0CbpcJWs2bYP15h9IbL1S7fuO
-X-Proofpoint-ORIG-GUID: 2GchTDR0CbpcJWs2bYP15h9IbL1S7fuO
+X-Proofpoint-ORIG-GUID: gMH3DwUPwYT23bBCg0l-Iy72MS5LWcHV
+X-Proofpoint-GUID: gMH3DwUPwYT23bBCg0l-Iy72MS5LWcHV
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-06-06_01:2021-06-04,2021-06-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 phishscore=0
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106060027
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ lowpriorityscore=0 adultscore=0 spamscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 mlxscore=0 malwarescore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106060034
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -149,16 +151,15 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 6/4/21 3:02 PM, Zvi Effron wrote:
-> Support specifying the ingress_ifindex and rx_queue_index of xdp_md
-> contexts for BPF_PROG_TEST_RUN.
+> Add a test for using xdp_md as a context to BPF_PROG_TEST_RUN for XDP
+> programs.
 > 
-> The intended use case is to allow testing XDP programs that make decisions
-> based on the ingress interface or RX queue.
+> The test uses a BPF program that takes in a return value from XDP
+> metadata, then reduces the size of the XDP metadata by 4 bytes.
 > 
-> If ingress_ifindex is specified, look up the device by the provided index
-> in the current namespace and use its xdp_rxq for the xdp_buff. If the
-> rx_queue_index is out of range, or is non-zero when the ingress_ifindex is
-> 0, return EINVAL.
+> Test cases validate the possible failure cases for passing in invalid
+> xdp_md contexts, that the return value is successfully passed
+> in, and that the adjusted metadata is successfully copied out.
 > 
 > Co-developed-by: Cody Haas <chaas@riotgames.com>
 > Signed-off-by: Cody Haas <chaas@riotgames.com>
@@ -166,51 +167,198 @@ On 6/4/21 3:02 PM, Zvi Effron wrote:
 > Signed-off-by: Lisa Watanabe <lwatanabe@riotgames.com>
 > Signed-off-by: Zvi Effron <zeffron@riotgames.com>
 > ---
->   net/bpf/test_run.c | 16 +++++++++++++++-
->   1 file changed, 15 insertions(+), 1 deletion(-)
+>   .../bpf/prog_tests/xdp_context_test_run.c     | 114 ++++++++++++++++++
+>   .../bpf/progs/test_xdp_context_test_run.c     |  20 +++
+>   2 files changed, 134 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
 > 
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index 698618f2b27e..3916205fc3d4 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -690,6 +690,8 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->   static int xdp_convert_md_to_buff(struct xdp_buff *xdp, struct xdp_md *xdp_md)
->   {
->   	void *data;
-> +	struct net_device *device;
-> +	struct netdev_rx_queue *rxqueue;
-
-reverse christmas tree?
-
->   
->   	if (!xdp_md)
->   		return 0;
-> @@ -702,9 +704,21 @@ static int xdp_convert_md_to_buff(struct xdp_buff *xdp, struct xdp_md *xdp_md)
->   
->   	xdp->data = xdp->data_meta + xdp_md->data;
->   
-> -	if (xdp_md->ingress_ifindex != 0 || xdp_md->rx_queue_index != 0)
-> +	if (!xdp_md->ingress_ifindex && xdp_md->rx_queue_index)
->   		return -EINVAL;
-
-xdp_md->ingress_ifindex and xdp_md->rx_queue_index are used three times 
-each in this function here. Maybe worthwhile to assign them to
-temporary variables?
-
->   
-> +	if (xdp_md->ingress_ifindex) {
-> +		device = dev_get_by_index(current->nsproxy->net_ns, xdp_md->ingress_ifindex);
-> +		if (!device)
-> +			return -EINVAL;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+> new file mode 100644
+> index 000000000000..0dbdebbc66ce
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+> @@ -0,0 +1,114 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include <network_helpers.h>
+> +#include "test_xdp_context_test_run.skel.h"
 > +
-> +		if (xdp_md->rx_queue_index >= device->real_num_rx_queues)
-> +			return -EINVAL;
+> +void test_xdp_context_test_run(void)
+> +{
+> +	struct test_xdp_context_test_run *skel = NULL;
+> +	char data[sizeof(pkt_v4) + sizeof(__u32)];
+> +	char buf[128];
+> +	char bad_ctx[sizeof(struct xdp_md)];
+> +	struct xdp_md ctx_in, ctx_out;
+> +	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
+> +			    .data_in = &data,
+> +			    .data_out = buf,
+> +				.data_size_in = sizeof(data),
+> +			    .data_size_out = sizeof(buf),
+> +			    .ctx_out = &ctx_out,
+> +			    .ctx_size_out = sizeof(ctx_out),
+> +			    .repeat = 1,
+> +		);
+> +	int err, prog_fd;
 > +
-> +		rxqueue = __netif_get_rx_queue(device, xdp_md->rx_queue_index);
-> +		xdp->rxq = &rxqueue->xdp_rxq;
-> +	}
+> +	skel = test_xdp_context_test_run__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel"))
+> +		return;
+> +	prog_fd = bpf_program__fd(skel->progs._xdp_context);
 > +
->   	return 0;
->   }
->   
+> +	*(__u32 *)data = XDP_PASS;
+> +	*(struct ipv4_packet *)(data + sizeof(__u32)) = pkt_v4;
+> +
+> +	memset(&ctx_in, 0, sizeof(ctx_in));
+> +	opts.ctx_in = &ctx_in;
+> +	opts.ctx_size_in = sizeof(ctx_in);
+> +
+> +	opts.ctx_in = &ctx_in;
+> +	opts.ctx_size_in = sizeof(ctx_in);
+
+The above two assignments are redundant.
+
+> +	ctx_in.data_meta = 0;
+> +	ctx_in.data = sizeof(__u32);
+> +	ctx_in.data_end = ctx_in.data + sizeof(pkt_v4);
+> +	err = bpf_prog_test_run_opts(prog_fd, &opts);
+> +	ASSERT_OK(err, "bpf_prog_test_run(test1)");
+> +	ASSERT_EQ(opts.retval, XDP_PASS, "test1-retval");
+> +	ASSERT_EQ(opts.data_size_out, sizeof(pkt_v4), "test1-datasize");
+> +	ASSERT_EQ(opts.ctx_size_out, opts.ctx_size_in, "test1-ctxsize");
+> +	ASSERT_EQ(ctx_out.data_meta, 0, "test1-datameta");
+> +	ASSERT_EQ(ctx_out.data, ctx_out.data_meta, "test1-data");
+
+I suggest just to test ctx_out.data == 0. It just happens
+the input data - meta = 4 and bpf program adjuested by 4.
+If they are not the same, the result won't be equal to data_meta.
+
+> +	ASSERT_EQ(ctx_out.data_end, sizeof(pkt_v4), "test1-dataend");
+> +
+> +	/* Data past the end of the kernel's struct xdp_md must be 0 */
+> +	bad_ctx[sizeof(bad_ctx) - 1] = 1;
+> +	opts.ctx_in = bad_ctx;
+> +	opts.ctx_size_in = sizeof(bad_ctx);
+> +	err = bpf_prog_test_run_opts(prog_fd, &opts);
+> +	ASSERT_EQ(errno, 22, "test2-errno");
+> +	ASSERT_ERR(err, "bpf_prog_test_run(test2)");
+
+I suggest to drop this test. Basically you did here
+is to have non-zero egress_ifindex which is not allowed.
+You have a test below.
+
+> +
+> +	/* The egress cannot be specified */
+> +	ctx_in.egress_ifindex = 1;
+> +	err = bpf_prog_test_run_opts(prog_fd, &opts);
+> +	ASSERT_EQ(errno, 22, "test3-errno");
+
+Use EINVAL explicitly? The same for below a few other cases.
+
+> +	ASSERT_ERR(err, "bpf_prog_test_run(test3)");
+> +
+> +	/* data_meta must reference the start of data */
+> +	ctx_in.data_meta = sizeof(__u32);
+> +	ctx_in.data = ctx_in.data_meta;
+> +	ctx_in.data_end = ctx_in.data + sizeof(pkt_v4);
+> +	ctx_in.egress_ifindex = 0;
+> +	err = bpf_prog_test_run_opts(prog_fd, &opts);
+> +	ASSERT_EQ(errno, 22, "test4-errno");
+> +	ASSERT_ERR(err, "bpf_prog_test_run(test4)");
+> +
+> +	/* Metadata must be 32 bytes or smaller */
+> +	ctx_in.data_meta = 0;
+> +	ctx_in.data = sizeof(__u32)*9;
+> +	ctx_in.data_end = ctx_in.data + sizeof(pkt_v4);
+> +	err = bpf_prog_test_run_opts(prog_fd, &opts);
+> +	ASSERT_EQ(errno, 22, "test5-errno");
+> +	ASSERT_ERR(err, "bpf_prog_test_run(test5)");
+
+This test is not necessary if ctx size should be
+<= sizeof(struct xdp_md). So far, I think we can
+require it must be sizeof(struct xdp_md). If
+in the future, kernel struct xdp_md is extended,
+it may be changed to accept both old and new
+xdp_md's similar to other uapi data strcture
+like struct bpf_prog_info if there is a desire.
+In my opinion, the kernel should just stick
+to sizeof(struct xdp_md) size since the functionality
+is implemented as a *testing* mechanism.
+
+> +
+> +	/* Metadata's size must be a multiple of 4 */
+> +	ctx_in.data = 3;
+> +	err = bpf_prog_test_run_opts(prog_fd, &opts);
+> +	ASSERT_EQ(errno, 22, "test6-errno");
+> +	ASSERT_ERR(err, "bpf_prog_test_run(test6)");
+> +
+> +	/* Total size of data must match data_end - data_meta */
+> +	ctx_in.data = 0;
+> +	ctx_in.data_end = sizeof(pkt_v4) - 4;
+> +	err = bpf_prog_test_run_opts(prog_fd, &opts);
+> +	ASSERT_EQ(errno, 22, "test7-errno");
+> +	ASSERT_ERR(err, "bpf_prog_test_run(test7)");
+> +
+> +	ctx_in.data_end = sizeof(pkt_v4) + 4;
+> +	err = bpf_prog_test_run_opts(prog_fd, &opts);
+> +	ASSERT_EQ(errno, 22, "test8-errno");
+> +	ASSERT_ERR(err, "bpf_prog_test_run(test8)");
+> +
+> +	/* RX queue cannot be specified without specifying an ingress */
+> +	ctx_in.data_end = sizeof(pkt_v4);
+> +	ctx_in.ingress_ifindex = 0;
+> +	ctx_in.rx_queue_index = 1;
+> +	err = bpf_prog_test_run_opts(prog_fd, &opts);
+> +	ASSERT_EQ(errno, 22, "test9-errno");
+> +	ASSERT_ERR(err, "bpf_prog_test_run(test9)");
+> +
+> +	ctx_in.ingress_ifindex = 1;
+> +	ctx_in.rx_queue_index = 1;
+> +	err = bpf_prog_test_run_opts(prog_fd, &opts);
+> +	ASSERT_EQ(errno, 22, "test10-errno");
+> +	ASSERT_ERR(err, "bpf_prog_test_run(test10)");
+
+Why this failure? I guess it is due to device search failure, right?
+So this test MAY succeed if the underlying host happens with
+a proper configuration with ingress_ifindex = 1 and rx_queue_index = 1,
+right?
+
+> +
+> +	test_xdp_context_test_run__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c b/tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
+> new file mode 100644
+> index 000000000000..56fd0995b67c
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +SEC("xdp")
+> +int _xdp_context(struct xdp_md *xdp)
+
+Maybe drop prefix "_" from the function name?
+
+> +{
+> +	void *data = (void *)(unsigned long)xdp->data;
+> +	__u32 *metadata = (void *)(unsigned long)xdp->data_meta;
+
+The above code is okay as verifier will rewrite correctly with actual 
+address. But I still suggest to use "long" instead of "unsigned long"
+to be consistent with other bpf programs.
+
+> +	__u32 ret;
+> +
+> +	if (metadata + 1 > data)
+> +		return XDP_ABORTED;
+> +	ret = *metadata;
+> +	if (bpf_xdp_adjust_meta(xdp, 4))
+> +		return XDP_ABORTED;
+> +	return ret;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
 > 
