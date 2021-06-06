@@ -2,158 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D7939D211
-	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 00:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDACA39D23E
+	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 01:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhFFWzK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 6 Jun 2021 18:55:10 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:53791 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhFFWzK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 6 Jun 2021 18:55:10 -0400
-Received: (Authenticated sender: n@nfraprado.net)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 861051BF203;
-        Sun,  6 Jun 2021 22:53:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nfraprado.net;
-        s=gm1; t=1623019997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LEITmbgA+ypfFiT6sDRv13/uCob4oKC9Sq9src0AzZE=;
-        b=chA+i0RmfXwj/WF8vUQcsG8LWn2bONkphlI9FxGByy3xXZzQ3/zHKFPGJxmKXuKUW335J7
-        jYK4CRJ9+UN7xZA7RoqojnjXZW+0cqiNSJEER76idFul1Hmyyid+LU7eBwqw4Yf6VUnAAy
-        EO/oCOnOkrJSrla2lWMUer63YFPTS6rPVGC6R5VJrg9wTSN5B9e0Ariq05tQnFO7ePJjQo
-        bl4pkIEG3/A5X1Ubh0QT5mRcrGJQ8WehYjr1NfQyPqrYiwulB4ynbpB9vRe3MCb4L15B0r
-        jLNt083VPjq8mnz5SK6VyymWvFVmHAPrKBJPANhNFdLyuGqe1sYaP2/+H+QnUQ==
-Date:   Sun, 6 Jun 2021 19:52:25 -0300
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <n@nfraprado.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        coresight@lists.linaro.org, devicetree@vger.kernel.org,
-        kunit-dev@googlegroups.com, kvm@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-security-module@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 00/34] docs: avoid using ReST :doc:`foo` tag
-Message-ID: <20210606225225.fz4dsyz6im4bqena@notapiano>
-References: <cover.1622898327.git.mchehab+huawei@kernel.org>
- <20210605151109.axm3wzbcstsyxczp@notapiano>
- <20210605210836.540577d4@coco.lan>
+        id S229932AbhFFXko (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Jun 2021 19:40:44 -0400
+Received: from mail-pl1-f175.google.com ([209.85.214.175]:37748 "EHLO
+        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229885AbhFFXkn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Jun 2021 19:40:43 -0400
+Received: by mail-pl1-f175.google.com with SMTP id u7so7646421plq.4;
+        Sun, 06 Jun 2021 16:38:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=46M8XUzBewi0sCNBK0KRAjsw23b8WmSZifhRY13uplo=;
+        b=IxSTG/9CxihA3FV+Rvyh7+Pw9UIF9J+HU19uvBIYgLRTotVYxKT8wuLI0/+gdSRlHP
+         Y8SIi4NDt4bJSZV+is7Nj76KEAVBwnubFHujrgDbXh670MlA2vz632qk7C2CqynKnz0w
+         apmy7lM5sIpu7OENQXUq+dG0+Xsh4qB+RxEuUJAa8eGxSruX9bli2Two4Abpa6OLA8C8
+         g/jtYjxk+5oa0Hr5e4Ykr/QfaxGGmdv8zlx1RbwBhvK4QQ4sdrha4SVnwdGttAe3L199
+         Gonj4aj3jQ+EVMFvRPHDVbu3V1EhNzuCXT1TZEUtC80ijG0O4Xky9ZjSmKTJ5RtzfCmJ
+         1LSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=46M8XUzBewi0sCNBK0KRAjsw23b8WmSZifhRY13uplo=;
+        b=YCTuI71caBUkqcQ2CQyku0GemQ9GL8fvV3zNFnVLTIdmBtW+g6PQDvOKMFocn02GH9
+         ISdZAufHw56G/ZoMGfPHQpfz6LM1o1ql0cHgut2YrnpT1k/bZByJoRMvs/2z6gIry2mv
+         LKK/8kFIZHwQedLe95Lh2MgxHuVki5WEief4hmpgi0jD1CDSCnVvyNs+PFgukkVxaBfk
+         0hnC46vDq6Y8xx5pasIPLDsecvFzRbQWdXeopM9VVcBOuSY5PHZhFJrv2UpiK2GS8T6d
+         SNbw90mEQ4TyXwqYhsBQhrP0hCX0H/G2WMdL58BfML1p75l/gBYTaTybhEhqsiNfEGpu
+         cnSw==
+X-Gm-Message-State: AOAM532a+1TtwIgl+LvWxYYfqTCHb/5paDuqidB5COCdMP08ebahb0Dj
+        LZzNWMS8ysFXavQa8JfMbDrdeEnuz2zB+4tmIOE=
+X-Google-Smtp-Source: ABdhPJxG6A/lquocSRhAAjKeIItcxd+ESbK3kN1pvz6Jns+jdGKGqexan1uoPCDrG5Rbg++j7Y3CZYbui3f3HdgSY8U=
+X-Received: by 2002:a17:90a:8816:: with SMTP id s22mr3022962pjn.231.1623022660101;
+ Sun, 06 Jun 2021 16:37:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210605210836.540577d4@coco.lan>
+References: <20210528195946.2375109-1-memxor@gmail.com>
+In-Reply-To: <20210528195946.2375109-1-memxor@gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sun, 6 Jun 2021 16:37:28 -0700
+Message-ID: <CAM_iQpVqVKhK+09Sj_At226mdWpVXfVbhy89As2dai7ip8Nmtw@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Vlad Buslov <vladbu@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 09:08:36PM +0200, Mauro Carvalho Chehab wrote:
-> Em Sat, 5 Jun 2021 12:11:09 -0300
-> Nícolas F. R. A. Prado <n@nfraprado.net> escreveu:
-> 
-> > Hi Mauro,
-> > 
-> > On Sat, Jun 05, 2021 at 03:17:59PM +0200, Mauro Carvalho Chehab wrote:
-> > > As discussed at:
-> > > 	https://lore.kernel.org/linux-doc/871r9k6rmy.fsf@meer.lwn.net/
-> > > 
-> > > It is better to avoid using :doc:`foo` to refer to Documentation/foo.rst, as the
-> > > automarkup.py extension should handle it automatically, on most cases.
-> > > 
-> > > There are a couple of exceptions to this rule:
-> > > 
-> > > 1. when :doc:  tag is used to point to a kernel-doc DOC: markup;
-> > > 2. when it is used with a named tag, e. g. :doc:`some name <foo>`;
-> > > 
-> > > It should also be noticed that automarkup.py has currently an issue:
-> > > if one use a markup like:
-> > > 
-> > > 	Documentation/dev-tools/kunit/api/test.rst
-> > > 	  - documents all of the standard testing API excluding mocking
-> > > 	    or mocking related features.
-> > > 
-> > > or, even:
-> > > 
-> > > 	Documentation/dev-tools/kunit/api/test.rst
-> > > 	    documents all of the standard testing API excluding mocking
-> > > 	    or mocking related features.
-> > > 	
-> > > The automarkup.py will simply ignore it. Not sure why. This patch series
-> > > avoid the above patterns (which is present only on 4 files), but it would be
-> > > nice to have a followup patch fixing the issue at automarkup.py.  
-> > 
-> > What I think is happening here is that we're using rST's syntax for definition
-> > lists [1]. automarkup.py ignores literal nodes, and perhaps a definition is
-> > considered a literal by Sphinx. Adding a blank line after the Documentation/...
-> > or removing the additional indentation makes it work, like you did in your
-> > 2nd and 3rd patch, since then it's not a definition anymore, although then the
-> > visual output is different as well.
-> 
-> A literal has a different output. I think that this is not the case, but I 
-> didn't check the python code from docutils/Sphinx.
+On Fri, May 28, 2021 at 1:00 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> This is the first RFC version.
+>
+> This adds a bpf_link path to create TC filters tied to cls_bpf classifier, and
+> introduces fd based ownership for such TC filters. Netlink cannot delete or
+> replace such filters, but the bpf_link is severed on indirect destruction of the
+> filter (backing qdisc being deleted, or chain being flushed, etc.). To ensure
+> that filters remain attached beyond process lifetime, the usual bpf_link fd
+> pinning approach can be used.
 
-Okay, I went in deeper to understand the issue and indeed it wasn't what I
-thought. The reason definitions are ignored by automarkup.py is because the main
-loop iterates only over nodes that are of type paragraph:
+I have some troubles understanding this. So... why TC filter is so special
+here that it deserves such a special treatment?
 
-    for para in doctree.traverse(nodes.paragraph):
-        for node in para.traverse(nodes.Text):
-            if not isinstance(node.parent, nodes.literal):
-                node.parent.replace(node, markup_refs(name, app, node))
+The reason why I ask is that none of other bpf links actually create any
+object, they merely attach bpf program to an existing object. For example,
+netns bpf_link does not create an netns, cgroup bpf_link does not create
+a cgroup either. So, why TC filter is so lucky to be the first one requires
+creating an object?
 
-And inspecting the HTML output from your example, the definition name is inside
-a <dt> tag, and it doesn't have a <p> inside. So in summary, automarkup.py will
-only work on elements which are inside a <p> in the output.
+Is it because there is no fd associated with any TC object?  Or what?
+TC object, like all other netlink stuffs, is not fs based, hence does not
+have an fd. Or maybe you don't need an fd at all? Since at least xdp
+bpf_link is associated with a netdev which does not have an fd either.
 
-Only applying the automarkup inside paragraphs seems like a good decision (which
-covers text in lists and tables as well), so unless there are other types of
-elements without paragraphs where automarkup should work, I think we should just
-avoid using definition lists pointing to documents like that.
+>
+> The individual patches contain more details and comments, but the overall kernel
+> API and libbpf helper mirrors the semantics of the netlink based TC-BPF API
+> merged recently. This means that we start by always setting direct action mode,
+> protocol to ETH_P_ALL, chain_index as 0, etc. If there is a need for more
+> options in the future, they can be easily exposed through the bpf_link API in
+> the future.
 
->  
-> > I'm not sure this is something we need to fix. Does it make sense to use
-> > definition lists for links like that? If it does, I guess one option would be to
-> > whitelist definition lists so they aren't ignored by automarkup, but I feel
-> > this could get ugly really quickly.
-> 
-> Yes, we should avoid handling literal blocks, as this can be a nightmare.
-> 
-> > FWIW note that it's also possible to use relative paths to docs with automarkup.
-> 
-> Not sure if you meant to say using something like ../driver-api/foo.rst.
-> If so, relative paths are a problem, as it will pass unnoticed by this script:
-> 
-> 	./scripts/documentation-file-ref-check
-> 
-> which is meant to warn when a file is moved to be elsewhere. Ok, it
-> could be taught to use "../" to identify paths, but I suspect that this
-> could lead to false positives, like here:
-> 
-> 	Documentation/usb/gadget-testing.rst:  # ln -s ../../uncompressed/u
-> 	Documentation/usb/gadget-testing.rst:  # cd ../../class/fs
-> 	Documentation/usb/gadget-testing.rst:  # ln -s ../../header/h
+As you already see, this fits really oddly into TC infrastructure, because
+TC qdisc/filter/action are a whole subsystem, here you are trying to punch
+a hole in the middle. ;) This usually indicates that we are going in a wrong
+direction, maybe your case is an exception, but I can't find anything to justify
+it in your cover letter.
 
-Yes, that's what I meant. 
+Even if you really want to go down this path (I still double), you probably
+want to explore whether there is any generic way to associate a TC object
+with an fd, because we have TC bpf action and we will have TC bpf qdisc
+too, I don't see any bpf_cls is more special than them.
 
-Ok, that makes sense. Although after automarkup.py starts printing warnings on
-missing references to files (which is a patch I still need to resend), it would
-work out-of-the-box with relative paths. automarkup wouldn't face that false
-positives issue since it ignores literal blocks, which isn't as easy for a
-standalone script. But that's still in the future, we can discuss what to do
-then after it is implemented, so full paths seem better for now.
-
-Thanks,
-Nícolas
-
-> 
-> If you meant, instead, :doc:`../foo`, this series address those too.
-> 
-> Regards,
-> Mauro
+Thanks.
