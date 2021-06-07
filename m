@@ -2,219 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E18139D4A8
-	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 08:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C73E39D616
+	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 09:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbhFGGKi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Jun 2021 02:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhFGGKh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Jun 2021 02:10:37 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23F0C061787;
-        Sun,  6 Jun 2021 23:08:33 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id v13so8041027ple.9;
-        Sun, 06 Jun 2021 23:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XX/Cz/jPDNz70lBll3Fz6hXSYN53/2SVvORBvn52j8w=;
-        b=Ok01GTXNXChMjjWwhILN0OzaB1n0MrOoA6DbgesNwxDIjJh2y3dbudNy++f190NYvv
-         GXmPO6Jz6Ei9my2Mb6g+/X71w1aVSkh6YCm9ELcfzuZsDGoCG+dpHJpcBShAwwHmQHPR
-         u5Eii06UzApu0VrDkYhE/nXF1D7AFVKQCjzZNwp5AI7C4x948R2hWW7M2laoaZeByq/+
-         nUe5DL6K9lM5bgJwhW5dg+5Y7FXz8q1Pe4Ly3vE2KJwpki9ZPDvbmasa9Mx4BmFzmZr8
-         HSz1RdU8Edb309FaX4FqXyzoHCzwLraO0gtLVnysA31iHGWN6mNqcHk5JcmjlnSoZACD
-         vpDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XX/Cz/jPDNz70lBll3Fz6hXSYN53/2SVvORBvn52j8w=;
-        b=ky7j7kAyItn3VPJWiQCeThqisjWUGXdCLFKNCg1UA07pDtcQYnIXzjquYmBH41LKJS
-         vbdry5Qu3m2Ht6KRQ9iGOgjW5ePmC8PblFAHpVn46trCHOCkfWfXAtl0L611Y9ix4+X8
-         qWXKs2tIGtear4rZuAT8uu/FCFVr9+8fWJQK4kWrApyhe5ZSmjkjSu/g+s/f9vVd47ko
-         H0GJNHaWKVjI65vazD+lFnDYi0G8DB8eLAvmInBAQ5PSEtfnTMiZ5C3apeYSIBcFMp5n
-         HrVGtKcMhxme0g8OAR8VfC6F/SIiQyd1IEnFMIxg3C0+lJYSdOQCAOy2NrB/k4R+npNf
-         JxQw==
-X-Gm-Message-State: AOAM530NZVZ6iVJ3iuLGCOFRccr/A9pD559m9M+RbR348B/QPJPO2Jb7
-        TclrEvr7MkoRkLVxyfUyXPE=
-X-Google-Smtp-Source: ABdhPJz1busZjVB3pJZ2+lpCj29b2eeKI5qFJ2YSYy+/c+x9mNzAdCGyjCuP7fEiGjV1O3VIk7j9sg==
-X-Received: by 2002:a17:902:9f83:b029:f6:5c3c:db03 with SMTP id g3-20020a1709029f83b02900f65c3cdb03mr16632393plq.2.1623046113059;
-        Sun, 06 Jun 2021 23:08:33 -0700 (PDT)
-Received: from localhost ([2402:3a80:11c3:8bc4:aa5:8732:af1e:76c3])
-        by smtp.gmail.com with ESMTPSA id o17sm10980510pjp.33.2021.06.06.23.08.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Jun 2021 23:08:32 -0700 (PDT)
-Date:   Mon, 7 Jun 2021 11:37:24 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Vlad Buslov <vladbu@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
-Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
-Message-ID: <20210607060724.4nidap5eywb23l3d@apollo>
-References: <20210528195946.2375109-1-memxor@gmail.com>
- <CAM_iQpVqVKhK+09Sj_At226mdWpVXfVbhy89As2dai7ip8Nmtw@mail.gmail.com>
- <20210607033724.wn6qn4v42dlm4j4o@apollo>
- <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
+        id S230219AbhFGHgW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Jun 2021 03:36:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230231AbhFGHgU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Jun 2021 03:36:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29FEA60720;
+        Mon,  7 Jun 2021 07:34:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623051269;
+        bh=0ypPpkJHDs3edXD5bDeKaiim7X/xfBueG4AuE8+Qj+U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MCZa/wfgoJSof9wCVVOv/LrdFcXdwY1vCJuTly8zaeAIwTuRDtC8rzfgyHA9r6/+g
+         NW2tP3feh93C/5Dxty7jg+vScZHZGMhUEyWQ5FgxO8vpWG7sfVd2/FVm9kFVWmNyKF
+         EQBYWqrXHDSSXIu/AIkm5+Ioyl/4Y8qqVlITSp7EP1AHAdF2gq6+t5N/EukG8nlrD5
+         /Z/7kCrp6V3McL/0xD3Opj9oSYMVR4OQwEiMuDlxNhhxICUhrFF3xy6Xf7sAtNEHPC
+         UZ6EjZnr6psnuld6cX9JYfcpHnFwEGAKkBcwq4fn3pJEE/OA/DfL7AgTqkUjjnfOU7
+         t/jaztuq+MVCA==
+Date:   Mon, 7 Jun 2021 09:34:22 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <n@nfraprado.net>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        coresight@lists.linaro.org, devicetree@vger.kernel.org,
+        kunit-dev@googlegroups.com, kvm@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-security-module@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 00/34] docs: avoid using ReST :doc:`foo` tag
+Message-ID: <20210607093422.0a369909@coco.lan>
+In-Reply-To: <20210606225225.fz4dsyz6im4bqena@notapiano>
+References: <cover.1622898327.git.mchehab+huawei@kernel.org>
+        <20210605151109.axm3wzbcstsyxczp@notapiano>
+        <20210605210836.540577d4@coco.lan>
+        <20210606225225.fz4dsyz6im4bqena@notapiano>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 10:48:04AM IST, Cong Wang wrote:
-> On Sun, Jun 6, 2021 at 8:38 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> >
-> > On Mon, Jun 07, 2021 at 05:07:28AM IST, Cong Wang wrote:
-> > > On Fri, May 28, 2021 at 1:00 PM Kumar Kartikeya Dwivedi
-> > > <memxor@gmail.com> wrote:
-> > > >
-> > > > This is the first RFC version.
-> > > >
-> > > > This adds a bpf_link path to create TC filters tied to cls_bpf classifier, and
-> > > > introduces fd based ownership for such TC filters. Netlink cannot delete or
-> > > > replace such filters, but the bpf_link is severed on indirect destruction of the
-> > > > filter (backing qdisc being deleted, or chain being flushed, etc.). To ensure
-> > > > that filters remain attached beyond process lifetime, the usual bpf_link fd
-> > > > pinning approach can be used.
-> > >
-> > > I have some troubles understanding this. So... why TC filter is so special
-> > > here that it deserves such a special treatment?
-> > >
-> >
-> > So the motivation behind this was automatic cleanup of filters installed by some
-> > program. Usually from the userspace side you need a bunch of things (handle,
-> > priority, protocol, chain_index, etc.) to be able to delete a filter without
-> > stepping on others' toes. Also, there is no gurantee that filter hasn't been
-> > replaced, so you need to check some other way (either tag or prog_id, but these
-> > are also not perfect).
-> >
-> > bpf_link provides isolation from netlink and fd-based lifetime management. As
-> > for why it needs special treatment (by which I guess you mean why it _creates_
-> > an object instead of simply attaching to one, see below):
->
-> Are you saying TC filter is not independent? IOW, it has to rely on TC qdisc
-> to exist. This is true, and is of course different with netns/cgroup.
-> This is perhaps
-> not hard to solve, because TC actions are already independent, we can perhaps
-> convert TC filters too (the biggest blocker is compatibility).
->
+Em Sun, 6 Jun 2021 19:52:25 -0300
+N=C3=ADcolas F. R. A. Prado <n@nfraprado.net> escreveu:
 
-True, but that would mean you need some way to create a detached TC filter, correct?
-Can you give some ideas on how the setup would look like from userspace side?
+> On Sat, Jun 05, 2021 at 09:08:36PM +0200, Mauro Carvalho Chehab wrote:
+> > Em Sat, 5 Jun 2021 12:11:09 -0300
+> > N=C3=ADcolas F. R. A. Prado <n@nfraprado.net> escreveu:
+> >  =20
+> > > Hi Mauro,
+> > >=20
+> > > On Sat, Jun 05, 2021 at 03:17:59PM +0200, Mauro Carvalho Chehab wrote=
+: =20
+> > > > As discussed at:
+> > > > 	https://lore.kernel.org/linux-doc/871r9k6rmy.fsf@meer.lwn.net/
+> > > >=20
+> > > > It is better to avoid using :doc:`foo` to refer to Documentation/fo=
+o.rst, as the
+> > > > automarkup.py extension should handle it automatically, on most cas=
+es.
+> > > >=20
+> > > > There are a couple of exceptions to this rule:
+> > > >=20
+> > > > 1. when :doc:  tag is used to point to a kernel-doc DOC: markup;
+> > > > 2. when it is used with a named tag, e. g. :doc:`some name <foo>`;
+> > > >=20
+> > > > It should also be noticed that automarkup.py has currently an issue:
+> > > > if one use a markup like:
+> > > >=20
+> > > > 	Documentation/dev-tools/kunit/api/test.rst
+> > > > 	  - documents all of the standard testing API excluding mocking
+> > > > 	    or mocking related features.
+> > > >=20
+> > > > or, even:
+> > > >=20
+> > > > 	Documentation/dev-tools/kunit/api/test.rst
+> > > > 	    documents all of the standard testing API excluding mocking
+> > > > 	    or mocking related features.
+> > > > =09
+> > > > The automarkup.py will simply ignore it. Not sure why. This patch s=
+eries
+> > > > avoid the above patterns (which is present only on 4 files), but it=
+ would be
+> > > > nice to have a followup patch fixing the issue at automarkup.py.   =
+=20
+> > >=20
+> > > What I think is happening here is that we're using rST's syntax for d=
+efinition
+> > > lists [1]. automarkup.py ignores literal nodes, and perhaps a definit=
+ion is
+> > > considered a literal by Sphinx. Adding a blank line after the Documen=
+tation/...
+> > > or removing the additional indentation makes it work, like you did in=
+ your
+> > > 2nd and 3rd patch, since then it's not a definition anymore, although=
+ then the
+> > > visual output is different as well. =20
+> >=20
+> > A literal has a different output. I think that this is not the case, bu=
+t I=20
+> > didn't check the python code from docutils/Sphinx. =20
+>=20
+> Okay, I went in deeper to understand the issue and indeed it wasn't what I
+> thought. The reason definitions are ignored by automarkup.py is because t=
+he main
+> loop iterates only over nodes that are of type paragraph:
+>=20
+>     for para in doctree.traverse(nodes.paragraph):
+>         for node in para.traverse(nodes.Text):
+>             if not isinstance(node.parent, nodes.literal):
+>                 node.parent.replace(node, markup_refs(name, app, node))
+>=20
+> And inspecting the HTML output from your example, the definition name is =
+inside
+> a <dt> tag, and it doesn't have a <p> inside. So in summary, automarkup.p=
+y will
+> only work on elements which are inside a <p> in the output.
 
-IIUC you mean
 
-RTM_NEWTFILTER (with kind == bpf) parent == SOME_MAGIC_DETACHED ifindex == INVALID
+Yeah, that's what I was suspecting, based on the comments.
 
-then bpf_link comes in and creates the binding to the qdisc, parent, prio,
-chain, handle ... ?
+Maybe something similar to the above could be done also for some
+non-paragraph data. By looking at:
 
-> Or do you just need an ephemeral representation of a TC filter which only exists
-> for a process? If so, see below.
->
-> >
-> > > The reason why I ask is that none of other bpf links actually create any
-> > > object, they merely attach bpf program to an existing object. For example,
-> > > netns bpf_link does not create an netns, cgroup bpf_link does not create
-> > > a cgroup either. So, why TC filter is so lucky to be the first one requires
-> > > creating an object?
-> > >
-> >
-> > They are created behind the scenes, but are also fairly isolated from netlink
-> > (i.e.  can only be introspected, so not hidden in that sense, but are
-> > effectively locked for replace/delete).
-> >
-> > The problem would be (of not creating a filter during attach) is that a typical
-> > 'attach point' for TC exists in form of tcf_proto. If we take priority (protocol
-> > is fixed) out of the equation, it becomes possible to attach just a single BPF
-> > prog, but that seems like a needless limitation when TC already supports list of
-> > filters at each 'attach point'.
-> >
-> > My point is that the created object (the tcf_proto under the 'chain' object) is
-> > the attach point, and since there can be so many, keeping them around at all
-> > times doesn't make sense, so the refcounted attach locations are created as
-> > needed.  Both netlink and bpf_link owned filters can be attached under the same
-> > location, with different ownership story in userspace.
->
-> I do not understand "created behind the scenes". These are all created
-> independent of bpf_link, right? For example, we create a cgroup with
-> mkdir, then open it and pass the fd to bpf_link. Clearly, cgroup is not
-> created by bpf_link or any bpf syscall.
+	https://docutils.sourceforge.io/docs/ref/doctree.html
 
-Sorry, that must be confusing. I was only referring to what this patch does.
-Indeed, as far as implementation is concerned this has no precedence.
+It says that the body elements are:
 
->
-> The only thing different is fd, or more accurately, an identifier to locate
-> these objects. For example, ifindex can also be used to locate a netdev.
-> We can certainly locate a TC filter with (prio,proto,handle) but this has to
-> be passed via netlink. So if you need some locator, I think we can
-> introduce a kernel API which takes all necessary parameters to locate
-> a TC filter and return it to you. For a quick example, like this:
->
-> struct tcf_proto *tcf_get_proto(struct net *net, int ifindex,
->                                 int parent, char* kind, int handle...);
->
+	admonition, attention, block_quote, bullet_list, caution, citation,=20
+	comment, compound, container, danger, definition_list, doctest_block,=20
+	enumerated_list, error, field_list, figure, footnote, hint, image,=20
+	important, line_block, literal_block, note, option_list, paragraph,=20
+	pending, raw, rubric, substitution_definition, system_message,=20
+	table, target, tip, warning
 
-I think this already exists in some way, i.e. you can just ignore if filter
-handle from tp->ops->get doesn't exist (reusing the exsiting code) that walks
-from qdisc/block -> chain -> tcf_proto during creation.
+So, perhaps a similar loop for definition_list would do the trick,
+but maybe automarkup should also look at other types, like enum lists,
+notes (and their variants, like error/warning) and footnotes.
 
-> (Note, it can grab a refcnt in case of being deleted by others.)
->
-> With this, you can simply call it in bpf_link, and attach bpf prog to tcf_proto
-> (of course, only cls_bpf succeeds here).
->
+No idea how this would affect the docs build time, though.
 
-So IIUC, you are proposing to first create a filter normally using netlink, then
-attach it using bpf_link to the proper parent? I.e. your main contention point
-is to not create filter from bpf_link, instead take a filter and attach it to a
-parent with bpf_link representing this attachment?
+> Only applying the automarkup inside paragraphs seems like a good decision=
+ (which
+> covers text in lists and tables as well), so unless there are other types=
+ of
+> elements without paragraphs where automarkup should work, I think we shou=
+ld just
+> avoid using definition lists pointing to documents like that.
 
-But then the created filter stays with refcount of 1 until RTM_DELTFILTER, i.e.
-the lifetime of the attachment may be managed by bpf_link (in that we can detach
-the filter from parent) but the filter itself will not be cleaned up. One of the
-goals of tying TC filter to fd was to bind lifetime of filter itself, along with
-attachment. Separating both doesn't seem to buy anything here. You always create
-a filter to attach somewhere.
+Checking the code or doing some tests are needed for us to be sure about wh=
+at
+of the above types docutils don't consider a paragraph.
 
-With actions, things are different, you may create one action but bind it to
-multiple filters, so actions existing as their own thing makes sense. A single
-action can serve multiple filters, and save on memory.
-
-You could argue that even with filters this is true, as you may want to attach
-the same filter to multiple qdiscs, but we already have a facility to do that
-(shared tcf_block with block->q == NULL). However that is not as flexible as
-what you are proposing.
-
-It may be odd from the kernel side but to userspace a parent, prio, handle (we
-don't let user choose anything else for now) is itself the attach point, how
-bpf_link manages the attachment internally isn't really that interesting. It
-does so now by way of creating an object that represents a certain hook, then
-binding the BPF prog to it. I consider this mostly an implementation detail.
-What you are really attaching to is the qdisc/block, which is the resource
-analogous to cgroup fd, netns fd, and ifindex, and 'where' is described by other
-attributes.
-
-> Thanks.
-
---
-Kartikeya
+Thanks,
+Mauro
