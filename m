@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9645539EA13
-	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 01:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBE139EA2C
+	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 01:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhFGXZu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Jun 2021 19:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
+        id S230436AbhFGXeI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Jun 2021 19:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhFGXZu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Jun 2021 19:25:50 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D39C061574;
-        Mon,  7 Jun 2021 16:23:49 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id s107so27459510ybi.3;
-        Mon, 07 Jun 2021 16:23:49 -0700 (PDT)
+        with ESMTP id S230377AbhFGXeI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Jun 2021 19:34:08 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58141C061574;
+        Mon,  7 Jun 2021 16:32:16 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id i4so27511058ybe.2;
+        Mon, 07 Jun 2021 16:32:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Jxr0vjKn7qfPZb3yaeP6MX3qvKr/mzAbi08IaFkQSyw=;
-        b=My7PwKaTCZI3MfWNLMJN3k5lB8IRQO/jtEbX1Lxw+mDC0C03o209wD27VgUnjUC0T0
-         BjDT/OLZVaRUCVAbaxrnEilEy3cagvYSEkMaGQ96WJT3wGE/LQyJK77iWYr+jyfigJgs
-         w9KVvjBRlSdNdDLiMjHN/jJ+icodvA7P+i/vAfigH0Hncka09H8H4Mm08ncH1YzjVpG2
-         6ICyT9dyGI2aVcjJhTtHUyvPgeAWahHQ2INhsabQ8CrXS4kZ3/PLAfVUUsktnTnjrJ4d
-         hmuqIwZLR/wNLzsK92PKVS5FmJZHkJMfelIRLMkSAfKFQ6cOMawjxcl2+BRK0GVusoCB
-         o2Rg==
+        bh=Jx6UDh/W4FGG1jjm7Zd5A5fUohmAi0ctiRZxHA7aUhM=;
+        b=UVaOavK9dfvUmvhiCGd6NsrRgn4LMFFK7F6rCjrJpWZCZ5LzDVz2xcqY1t4CA15Wc0
+         m6VKU3mFPtwOxyqsr90hZoRlQ1b15qlXMvgjtRQYRurWmWaSePx3sn9vjI2hKPs/v0mL
+         srSlWDHc9nL6UkGYcTOknsp3vW5oMHET0wsMnFisgx+kBROUdfsYp7MCP8Y9inkE+EnF
+         haHgwL5FN3za5uo/ZCHmcKUM+ujwAHZSkuEl01Phxp8K3O+AmYZgd+BP0AUDd9XkmqIq
+         p+WyPQfQS8CuzUPR7435zsSREABke+6BHQZg+GWXuks+hFBWVgr3jB4atpJeEDpPQbu8
+         5tkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Jxr0vjKn7qfPZb3yaeP6MX3qvKr/mzAbi08IaFkQSyw=;
-        b=eDHm0WLCVXBbkur+840vGVujG3W+9JN+y2ND23/82ZF0Bh8VifDoOLbUA1/z3vcpDv
-         djUneVmJCfT+jcshvv6fj2IhMUHtEHuL9dO65kTrJAsCllZkiAMU5sEse8ghTMdyPoRp
-         x2j0QBlCD6I2KyVigNTSh8/7jkQgh3BhwXnC4gns/wmkiLTwlb6VgKYZBwOt6dAMZZc/
-         IXgcng1UK+iZrYSPTKcyn69BBjQBl37kRyLOaur006BuZDNpogI3J0HANXdpoQNIwz51
-         u6iaSJQtR5tqAtDIc2Zva5iGFPfp3bsPdf65w4CagQQtKEtwlpEi7OaWKuaA75fO9TBm
-         ZZ+w==
-X-Gm-Message-State: AOAM53302W/FnQxLDY6iKSD8M4QBwzukma65x7XGRSUJOpzz4/VcOlzu
-        cKvFrDWzuQEuUREoaQMXyb7p7TWx9elfRRguoNE=
-X-Google-Smtp-Source: ABdhPJysDNkozHrwDFHCQqH/vwUAhNnBcizmvUj0yeehOV0GSz41nP9yJtegEDjr17CXcKvqSzSTDrbRiSiC32S42jU=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr27308496ybu.403.1623108228782;
- Mon, 07 Jun 2021 16:23:48 -0700 (PDT)
+        bh=Jx6UDh/W4FGG1jjm7Zd5A5fUohmAi0ctiRZxHA7aUhM=;
+        b=YYLpkHZfsGqvWbHbI/Hl3g5gXYxRrvk1+6jEFwyX4KZDYuuTiXPhq3/VgxjIscDWHt
+         7nZBPRj5cKa1879Skw/jfFXveajVg3IIiYu1iEWrzru7rloB4pvm+iMKlKCrrOJC1Fni
+         qgs4RaMqav/W+4/HgZPTurTybdzPAziNqeDj77W+DE7oAvWapjOoMICfdlOfp8i2BpPo
+         MS0117eIVCdyBKQCwsjEQC+aVLwA07/KTW7GHtuOiki3oG0ISlA1upIpNv1AZZE893QH
+         r+IPrdFBLwWOgE9fnjg8XbeuHs5mhXh045xkTI0YUcgZ3CGBOS6RX/xN18wg2jwZOGEu
+         FhKw==
+X-Gm-Message-State: AOAM532s7M0DnUkTE7o6K0U6MOQB8ejrXZNuWch9gdSdJ5FWDdx3V78I
+        4Ao5oMa2SdG//HajgmyAB/V89sNW59axrMeSzxTh59IO3VI=
+X-Google-Smtp-Source: ABdhPJxEfpqXYmctgpDfRKQanRCnDtVyDowM+Cz9BJ3x28J/xpidvIJ219Rpf7RjGy8CS/KjB5rsiDAbnuiDswyN+EM=
+X-Received: by 2002:a25:ba06:: with SMTP id t6mr25712548ybg.459.1623108735577;
+ Mon, 07 Jun 2021 16:32:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210604063116.234316-1-memxor@gmail.com> <20210604063116.234316-4-memxor@gmail.com>
-In-Reply-To: <20210604063116.234316-4-memxor@gmail.com>
+References: <20210604063116.234316-1-memxor@gmail.com> <20210604063116.234316-5-memxor@gmail.com>
+In-Reply-To: <20210604063116.234316-5-memxor@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Jun 2021 16:23:37 -0700
-Message-ID: <CAEf4Bza2X7+begzQVkKoURSx7v+RHTxrAFaoNUSRc-Kyr5DWfQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/7] net: sched: add bpf_link API for bpf classifier
+Date:   Mon, 7 Jun 2021 16:32:04 -0700
+Message-ID: <CAEf4BzaLdLgwnjajPu=ZtzH+HB=eKKCWMrs3P+uUmQKBuANPew@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/7] net: sched: add lightweight update path
+ for cls_bpf
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>,
         =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
@@ -70,100 +71,137 @@ X-Mailing-List: bpf@vger.kernel.org
 On Thu, Jun 3, 2021 at 11:32 PM Kumar Kartikeya Dwivedi
 <memxor@gmail.com> wrote:
 >
-> This commit introduces a bpf_link based kernel API for creating tc
-> filters and using the cls_bpf classifier. Only a subset of what netlink
-> API offers is supported, things like TCA_BPF_POLICE, TCA_RATE and
-> embedded actions are unsupported.
+> This is used by BPF_LINK_UPDATE to replace the attach SCHED_CLS bpf prog
+> effectively changing the classifier implementation for a given filter
+> owned by a bpf_link.
 >
-> The kernel API and the libbpf wrapper added in a subsequent patch are
-> more opinionated and mirror the semantics of low level netlink based
-> TC-BPF API, i.e. always setting direct action mode, always setting
-> protocol to ETH_P_ALL, and only exposing handle and priority as the
-> variables the user can control. We add an additional gen_flags parameter
-> though to allow for offloading use cases. It would be trivial to extend
-> the current API to support specifying other attributes in the future,
-> but for now I'm sticking how we want to push usage.
+> Note that READ_ONCE suffices in this case as the ordering for loads from
+> the filter are implicitly provided by the data dependency on BPF prog
+> pointer.
 >
-> The semantics around bpf_link support are as follows:
+> On the writer side we can just use a relaxed WRITE_ONCE store to make
+> sure one or the other value is visible to a reader in cls_bpf_classify.
+> Lifetime is managed using RCU so bpf_prog_put path should wait until
+> readers are done for old_prog.
 >
-> A user can create a classifier attached to a filter using the bpf_link
-> API, after which changing it and deleting it only happens through the
-> bpf_link API. It is not possible to bind the bpf_link to existing
-> filter, and any such attempt will fail with EEXIST. Hence EEXIST can be
-> returned in two cases, when existing bpf_link owned filter exists, or
-> existing netlink owned filter exists.
->
-> Removing bpf_link owned filter from netlink returns EPERM, denoting that
-> netlink is locked out from filter manipulation when bpf_link is
-> involved.
->
-> Whenever a filter is detached due to chain removal, or qdisc tear down,
-> or net_device shutdown, the bpf_link becomes automatically detached.
->
-> In this way, the netlink API and bpf_link creation path are exclusive
-> and don't stomp over one another. Filters created using bpf_link API
-> cannot be replaced by netlink API, and filters created by netlink API are
-> never replaced by bpf_link. Netfilter also cannot detach bpf_link filters=
-.
->
-> We serialize all changes dover rtnl_lock as cls_bpf API doesn't support t=
-he
-> unlocked classifier API.
+> All other parties accessing the BPF prog are under RTNL protection, so
+> need no changes.
 >
 > Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>.
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  include/linux/bpf_types.h |   3 +
->  include/net/pkt_cls.h     |  13 ++
->  include/net/sch_generic.h |   6 +-
->  include/uapi/linux/bpf.h  |  15 +++
->  kernel/bpf/syscall.c      |  10 +-
->  net/sched/cls_api.c       | 139 ++++++++++++++++++++-
->  net/sched/cls_bpf.c       | 250 +++++++++++++++++++++++++++++++++++++-
->  7 files changed, 430 insertions(+), 6 deletions(-)
+>  net/sched/cls_bpf.c | 55 +++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 53 insertions(+), 2 deletions(-)
 >
-
-[...]
-
-> @@ -1447,6 +1449,12 @@ union bpf_attr {
->                                 __aligned_u64   iter_info;      /* extra =
-bpf_iter_link_info */
->                                 __u32           iter_info_len;  /* iter_i=
-nfo length */
->                         };
-> +                       struct { /* used by BPF_TC */
-> +                               __u32 parent;
-> +                               __u32 handle;
-> +                               __u32 gen_flags;
-
-There is already link_create.flags that's totally up to a specific
-type of bpf_link. E.g., cgroup bpf_link doesn't accept any flags,
-while xdp bpf_link uses it for passing XDP-specific flags. Is there a
-need to have both gen_flags and flags for TC link?
-
-> +                               __u16 priority;
-
-No strong preference, but we typically try to not have unnecessary
-padding in UAPI bpf_attr, so I wonder if using __u32 for this would
-make sense?
-
-> +                       } tc;
->                 };
->         } link_create;
+> diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+> index bf61ffbb7fd0..f23304685c48 100644
+> --- a/net/sched/cls_bpf.c
+> +++ b/net/sched/cls_bpf.c
+> @@ -9,6 +9,7 @@
+>   * (C) 2013 Daniel Borkmann <dborkman@redhat.com>
+>   */
 >
-> @@ -5519,6 +5527,13 @@ struct bpf_link_info {
->                 struct {
->                         __u32 ifindex;
->                 } xdp;
-> +               struct {
-> +                       __u32 ifindex;
-> +                       __u32 parent;
-> +                       __u32 handle;
-> +                       __u32 gen_flags;
-> +                       __u16 priority;
-> +               } tc;
->         };
->  } __attribute__((aligned(8)));
+> +#include <linux/atomic.h>
+>  #include <linux/module.h>
+>  #include <linux/types.h>
+>  #include <linux/skbuff.h>
+> @@ -104,11 +105,11 @@ static int cls_bpf_classify(struct sk_buff *skb, co=
+nst struct tcf_proto *tp,
+>                         /* It is safe to push/pull even if skb_shared() *=
+/
+>                         __skb_push(skb, skb->mac_len);
+>                         bpf_compute_data_pointers(skb);
+> -                       filter_res =3D BPF_PROG_RUN(prog->filter, skb);
+> +                       filter_res =3D BPF_PROG_RUN(READ_ONCE(prog->filte=
+r), skb);
+>                         __skb_pull(skb, skb->mac_len);
+>                 } else {
+>                         bpf_compute_data_pointers(skb);
+> -                       filter_res =3D BPF_PROG_RUN(prog->filter, skb);
+> +                       filter_res =3D BPF_PROG_RUN(READ_ONCE(prog->filte=
+r), skb);
+>                 }
 >
+>                 if (prog->exts_integrated) {
+> @@ -775,6 +776,55 @@ static int cls_bpf_link_detach(struct bpf_link *link=
+)
+>         return 0;
+>  }
+>
+> +static int cls_bpf_link_update(struct bpf_link *link, struct bpf_prog *n=
+ew_prog,
+> +                              struct bpf_prog *old_prog)
+> +{
+> +       struct cls_bpf_link *cls_link;
+> +       struct cls_bpf_prog cls_prog;
+> +       struct cls_bpf_prog *prog;
+> +       int ret;
+> +
+> +       rtnl_lock();
+> +
+> +       cls_link =3D container_of(link, struct cls_bpf_link, link);
+> +       if (!cls_link->prog) {
+> +               ret =3D -ENOLINK;
+> +               goto out;
+> +       }
+> +
+> +       prog =3D cls_link->prog;
+> +
+> +       /* BPF_F_REPLACEing? */
+> +       if (old_prog && prog->filter !=3D old_prog) {
+> +               ret =3D -EINVAL;
+> +               goto out;
+> +       }
+> +
+> +       old_prog =3D prog->filter;
+> +
+> +       if (new_prog =3D=3D old_prog) {
+> +               ret =3D 0;
 
-[...]
+So the contract is that if update is successful, new_prog's refcount
+taken by link_update() in kernel/bpf/syscall.c is transferred here. On
+error, it will be bpf_prog_put() by link_update(). So here you don't
+need extra refcnt, but it's also not an error, so you need to
+bpf_prog_put(new_prog) explicitly to balance out refcnt. See how it's
+done for XDP, for example.
+
+
+> +               goto out;
+> +       }
+> +
+> +       cls_prog =3D *prog;
+> +       cls_prog.filter =3D new_prog;
+> +
+> +       ret =3D cls_bpf_offload(prog->tp, &cls_prog, prog, NULL);
+> +       if (ret < 0)
+> +               goto out;
+> +
+> +       WRITE_ONCE(prog->filter, new_prog);
+> +
+> +       bpf_prog_inc(new_prog);
+
+and you don't need this, you already got the reference from link_update()
+
+> +       /* release our reference */
+> +       bpf_prog_put(old_prog);
+> +
+> +out:
+> +       rtnl_unlock();
+> +       return ret;
+> +}
+> +
+>  static void __bpf_fill_link_info(struct cls_bpf_link *link,
+>                                  struct bpf_link_info *info)
+>  {
+> @@ -859,6 +909,7 @@ static const struct bpf_link_ops cls_bpf_link_ops =3D=
+ {
+>         .show_fdinfo =3D cls_bpf_link_show_fdinfo,
+>  #endif
+>         .fill_link_info =3D cls_bpf_link_fill_link_info,
+> +       .update_prog =3D cls_bpf_link_update,
+>  };
+>
+>  static inline char *cls_bpf_link_name(u32 prog_id, const char *name)
+> --
+> 2.31.1
+>
