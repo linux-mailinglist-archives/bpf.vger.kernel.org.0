@@ -2,183 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7995C39D62B
-	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 09:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCC139D78D
+	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 10:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhFGHkr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Jun 2021 03:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
+        id S229436AbhFGIlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Jun 2021 04:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhFGHkr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Jun 2021 03:40:47 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E85C061787
-        for <bpf@vger.kernel.org>; Mon,  7 Jun 2021 00:38:56 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id t20so11948640qtx.8
-        for <bpf@vger.kernel.org>; Mon, 07 Jun 2021 00:38:56 -0700 (PDT)
+        with ESMTP id S229545AbhFGIlb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Jun 2021 04:41:31 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC1AC061766;
+        Mon,  7 Jun 2021 01:39:40 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id e20so1339081pgg.0;
+        Mon, 07 Jun 2021 01:39:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FkDnZkLm7S26Fub+7GJQrbQgH8zlz9fkqHVVt8EUVII=;
-        b=nHm4WK6cYXy60WGLih3X49PfQoCmkrbdxEffYKfbL3/RwZaUJn+ZpFlw1f4qhBKOsh
-         ahRqwNfz/pELzJOgvhEH7fSmrENCdPGqiDPPnxASXGD5q9sd6Dk5WUdbdBbPUArWSpgz
-         YhjtWV0vG8EhX7zQlQ+lNbW/aFKCucpeFKWsmDvBb4gvT3urI0A7KLePEk+N9605Vxec
-         pkm2nZH26PbCFEe3Rt8MWK2GYZWEhX1zJkTawVJymWS9/t+exzEZtixnPBaQ3CKp7qxO
-         KJPc74KVXSeqk4iHCZH7tGPVflFVx/UFdpy6RZ1xAkh+rjGRzUNDiP+yZ5nLQUld/tUh
-         Nh2Q==
+        bh=seI9VhZLWITb73hRF+sNSy2Lz+CzoknsjVZsKb1Ga38=;
+        b=O7E3S+vRu7hn5GJjj0pCWPL5dnKpVmdC5ZbapPxuVWuxllsv+b8MPNqcKt1vdIqN5f
+         aHLz//DdSsQIxt72pZvlIzpComYRDfSCPJ8/97bedGxdoFosI2EXaZFc6448fHr4cMVF
+         Ex1hQoUFRQpQfNxBBFtXfZN5Ly42u5VHo/OYzqJNdvOXnTqYeWQK77M/WSyL8DNdR/B3
+         Z2M1k8F4h4AMJ2SEX1G7P36b0g2t19/yMDMZB9zfzCAbFUPqEO6RlWYilDdGE1Z+4f4X
+         HiVzMg9ZUfjkWzta3Q3A9LB7eQoGbQcS+IFRA+jgUSKvxS6aYaPJPKX5RTSLsMctsNgA
+         vpxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FkDnZkLm7S26Fub+7GJQrbQgH8zlz9fkqHVVt8EUVII=;
-        b=fuAwEO/SXLANKUtvE5RW2uSufgPFrvFFnGe8H1QFe1EwDrrrQsSsTEnuUyrPYmh45B
-         qXn3ps0iFwSS/lpmsfW9eTugHWRctoZfcJ8TK/h+JPF8FRZVNNN2n0ijkYg/FVrZ09e1
-         fhxTkqJVq4BG0YjdtWfzClsIpN1GKJZFGx7yA/AQr7vgz0mabVKeM4dJL0FwC3mJsIhm
-         /by8i+O6FlwjwYTmWlNaYm5SwBvSVuAiNNCclhDnng0uhrTtdB/Qsh/7YcQ/IbrpMFxI
-         76/5aO8kbHBwXu/+tLyF32e7XSueIFhyNXruZoro3EU2QSPMjSPthlnc7fDCX2ZNiH0M
-         F7VA==
-X-Gm-Message-State: AOAM532TtVBgYC13t6pkB0Tcas3WDxS26B2NUD1W8qohljFk8UXZ5gYB
-        4PwKcqo/8CttRwr1YuSMOU+somZlfci9Tn8RPwpGchoco36ENg==
-X-Google-Smtp-Source: ABdhPJw+kgwDX9eCqL8hOPDdudAvKTGNSsQ1Stvnfjs7IZaa/qdT3iEe5T8MNwE87hz52U2sn3g3U6qP7w8/LoXc35w=
-X-Received: by 2002:ac8:7c4e:: with SMTP id o14mr14825948qtv.290.1623051534847;
- Mon, 07 Jun 2021 00:38:54 -0700 (PDT)
+        bh=seI9VhZLWITb73hRF+sNSy2Lz+CzoknsjVZsKb1Ga38=;
+        b=eTwe7VC+2Zf66MFE2bheUK6y6k23kWBBCD3JqW3t1NAQHyWCtGTBV8tz6KkukfcNnt
+         rlPVzRouTXEdhne0d78i4wZA93RyNEhwIeF2IEANloU4STldXCIc8Z7n+JIBa32rXx24
+         Piy+gXf4xurz4H05aRpi+w4U3hu39PhUmuwSUG/18Wpnmh+0zxDllLtZQ90etrmoeOLB
+         RpmdJL5VgUZTD0XzhjaeJxtkUJs55uIV9gDdsoEPq7NzpQXhNgv0XLPL9Yd7frt6pzc+
+         svrJTahsZExlfM/Q9Olw+1kbvKoEEguqR+e4JrrPZsvCZSLxdyoA3K28kWxiQ6FZw4xX
+         V7aA==
+X-Gm-Message-State: AOAM532tSjMznDLEzVM5oM9IXFGcNdytYtuZUbc0HDZKS/mr+G9f8Uwa
+        E+hJIG2j7+0AAPQyk5xLpOfvNbvPkp7qIs7l/cw=
+X-Google-Smtp-Source: ABdhPJzq/O0oFw/CaGu48C6AIP65OYI0zjliR7a85XZXOvUqZMcIi7bo7MjHM0TYHjm2HJ9qM6vgKqKL+z4656ZLNwo=
+X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id
+ p30-20020a056a000a1eb02902e289d85c87mr16205964pfh.73.1623055179249; Mon, 07
+ Jun 2021 01:39:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000c2987605be907e41@google.com> <20210602212726.7-1-fuzzybritches0@gmail.com>
- <YLhd8BL3HGItbXmx@kroah.com> <87609-531187-curtm@phaethon>
- <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com> <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
-In-Reply-To: <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 7 Jun 2021 09:38:43 +0200
-Message-ID: <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
-Subject: Re: [PATCH v4] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Kurt Manucredo <fuzzybritches0@gmail.com>,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+References: <20210607031537.12366-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20210607031537.12366-1-thunder.leizhen@huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 7 Jun 2021 11:39:23 +0300
+Message-ID: <CAHp75VdcCQ_ZxBg8Ot+9k2kPFSTwxG+x0x1C+PBRgA3p8MsbBw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] lib/test: Fix spelling mistakes
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        nathan@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 9:10 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> On Sat, Jun 5, 2021 at 10:55 AM Yonghong Song <yhs@fb.com> wrote:
-> > On 6/5/21 8:01 AM, Kurt Manucredo wrote:
-> > > Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
-> > > kernel/bpf/core.c:1414:2.
-> >
-> > This is not enough. We need more information on why this happens
-> > so we can judge whether the patch indeed fixed the issue.
-> >
-> > >
-> > > I propose: In adjust_scalar_min_max_vals() move boundary check up to avoid
-> > > missing them and return with error when detected.
-> > >
-> > > Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-> > > Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
-> > > ---
-> > >
-> > > https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
-> > >
-> > > Changelog:
-> > > ----------
-> > > v4 - Fix shift-out-of-bounds in adjust_scalar_min_max_vals.
-> > >       Fix commit message.
-> > > v3 - Make it clearer what the fix is for.
-> > > v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-> > >       check in check_alu_op() in verifier.c.
-> > > v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-> > >       check in ___bpf_prog_run().
-> > >
-> > > thanks
-> > >
-> > > kind regards
-> > >
-> > > Kurt
-> > >
-> > >   kernel/bpf/verifier.c | 30 +++++++++---------------------
-> > >   1 file changed, 9 insertions(+), 21 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 94ba5163d4c5..ed0eecf20de5 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -7510,6 +7510,15 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> > >       u32_min_val = src_reg.u32_min_value;
-> > >       u32_max_val = src_reg.u32_max_value;
-> > >
-> > > +     if ((opcode == BPF_LSH || opcode == BPF_RSH || opcode == BPF_ARSH) &&
-> > > +                     umax_val >= insn_bitness) {
-> > > +             /* Shifts greater than 31 or 63 are undefined.
-> > > +              * This includes shifts by a negative number.
-> > > +              */
-> > > +             verbose(env, "invalid shift %lld\n", umax_val);
-> > > +             return -EINVAL;
-> > > +     }
-> >
-> > I think your fix is good. I would like to move after
->
-> I suspect such change will break valid programs that do shift by register.
->
-> > the following code though:
-> >
-> >          if (!src_known &&
-> >              opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
-> >                  __mark_reg_unknown(env, dst_reg);
-> >                  return 0;
-> >          }
-> >
-> > > +
-> > >       if (alu32) {
-> > >               src_known = tnum_subreg_is_const(src_reg.var_off);
-> > >               if ((src_known &&
-> > > @@ -7592,39 +7601,18 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> > >               scalar_min_max_xor(dst_reg, &src_reg);
-> > >               break;
-> > >       case BPF_LSH:
-> > > -             if (umax_val >= insn_bitness) {
-> > > -                     /* Shifts greater than 31 or 63 are undefined.
-> > > -                      * This includes shifts by a negative number.
-> > > -                      */
-> > > -                     mark_reg_unknown(env, regs, insn->dst_reg);
-> > > -                     break;
-> > > -             }
-> >
-> > I think this is what happens. For the above case, we simply
-> > marks the dst reg as unknown and didn't fail verification.
-> > So later on at runtime, the shift optimization will have wrong
-> > shift value (> 31/64). Please correct me if this is not right
-> > analysis. As I mentioned in the early please write detailed
-> > analysis in commit log.
->
-> The large shift is not wrong. It's just undefined.
-> syzbot has to ignore such cases.
+On Mon, Jun 7, 2021 at 6:21 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
 
-Hi Alexei,
+> Fix some spelling mistakes in comments:
+> thats ==> that's
+> unitialized ==> uninitialized
+> panicing ==> panicking
+> sucess ==> success
+> possitive ==> positive
+> intepreted ==> interpreted
 
-The report is produced by KUBSAN. I thought there was an agreement on
-cleaning up KUBSAN reports from the kernel (the subset enabled on
-syzbot at least).
-What exactly cases should KUBSAN ignore?
-+linux-hardening/kasan-dev for KUBSAN false positive
+Thanks for the fix! Is it done with the help of the codespell tool? If
+not, can you run it and check if it suggests more fixes?
+
+-- 
+With Best Regards,
+Andy Shevchenko
