@@ -2,46 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938F739DE33
-	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 15:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D30F39DFC1
+	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 16:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhFGOAv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Jun 2021 10:00:51 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:42230 "EHLO
+        id S230436AbhFGO5w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Jun 2021 10:57:52 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:49640 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhFGOAv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Jun 2021 10:00:51 -0400
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E2F5620B83E2;
-        Mon,  7 Jun 2021 06:58:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E2F5620B83E2
+        with ESMTP id S230414AbhFGO5w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:57:52 -0400
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D288720B83FF;
+        Mon,  7 Jun 2021 07:56:00 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D288720B83FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623074339;
-        bh=RJbR6n7tHj/RCUL2D5DbLcr8QLAchc6CH5JQTYC4VdU=;
+        s=default; t=1623077760;
+        bh=7JuTbhx/Kh/bQrai/4SqRrV1wNQVH9yAlGwG5nPTCgM=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LQbkQMdP+nmBliT3UwZstLqlQwOPVfdPgbreKMa1weAEhwkoovfn7EdWQ14mVYrMi
-         Ryz5slXCdq3r55mkT2FqK6bIbGYqZ/84qXLieDUnWoDdFsXM3x6okJuOJKNUxAw4oY
-         gMeyoLL9ns5WqboirBnyKATj+9vxTL4gOHn1etjk=
-Received: by mail-pf1-f169.google.com with SMTP id s14so12243255pfd.9;
-        Mon, 07 Jun 2021 06:58:59 -0700 (PDT)
-X-Gm-Message-State: AOAM531bBCjQcvxNlLB8bB31ROVhxu0d5w9vJqDCkRXC4upLNoOdonjU
-        Wua/VQ/aRvQCyVcsi3nlhKkSZW24ftJ9QmF7Q7M=
-X-Google-Smtp-Source: ABdhPJzrHLqPChd08nP1N0FnCsUSWppo+7N/IfO51VOEQxz8ChUp/9waJhKWDPkGBpNi/mUbAds+1gb+BPlL1TqNxko=
-X-Received: by 2002:aa7:900f:0:b029:2ec:82d2:d23 with SMTP id
- m15-20020aa7900f0000b02902ec82d20d23mr15780817pfo.16.1623074339484; Mon, 07
- Jun 2021 06:58:59 -0700 (PDT)
+        b=Hg3o5/vSoRN866fxPXwYMkAf6ljLgPKDAZ6ifymfbClUTp8muoYhBWBfWlcAdngqr
+         WzCW7UaPqgr/I54gKErIYGqyThQjUDuROUTIChE3webn5vgk84l8vA2hzqzBh164qT
+         BUf6GeJSgu55KhPJO/y7byLw7ilIzEM1ZInH30bE=
+Received: by mail-pl1-f181.google.com with SMTP id 11so8807113plk.12;
+        Mon, 07 Jun 2021 07:56:00 -0700 (PDT)
+X-Gm-Message-State: AOAM5322rYv7vsF5L/3lgNQ2z35nD3iD/+toMw0fW3+egi49Vu4MMPTx
+        udOBHxEJ8twRXfHV9rYuDip2WnGDlAe6gHoLFG4=
+X-Google-Smtp-Source: ABdhPJxYCk+sV0G1xaZLiKtiFuK4OXmOKmoSz2ZP6WYIZKWTGjfVdncVEdQ8kmQ6scffIEX/OBBIlr3wgyj9DWLnio8=
+X-Received: by 2002:a17:90b:4b49:: with SMTP id mi9mr20410846pjb.187.1623077760263;
+ Mon, 07 Jun 2021 07:56:00 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
- <20210604183349.30040-2-mcroce@linux.microsoft.com> <YLp6D7mEh85vL+pY@casper.infradead.org>
- <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
- <YLuK9P+loeKwUUK3@casper.infradead.org> <CAFnufp1e893Yz+KTjDvX4tyA8ngqmnMVudf1v0cBPdi9d_2zLw@mail.gmail.com>
- <YL4kpntfzMBXGSfV@casper.infradead.org>
-In-Reply-To: <YL4kpntfzMBXGSfV@casper.infradead.org>
+ <20210604183349.30040-4-mcroce@linux.microsoft.com> <YLqCAEVG+aLNGlIi@casper.infradead.org>
+In-Reply-To: <YLqCAEVG+aLNGlIi@casper.infradead.org>
 From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Mon, 7 Jun 2021 15:58:23 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1fF5NtM_NzhVG6MmRwkvDot+usPdAOhHdfQUVCHhV75w@mail.gmail.com>
-Message-ID: <CAFnufp1fF5NtM_NzhVG6MmRwkvDot+usPdAOhHdfQUVCHhV75w@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 1/5] mm: add a signature in struct page
+Date:   Mon, 7 Jun 2021 16:55:24 +0200
+X-Gmail-Original-Message-ID: <CAFnufp0Ko56+EkLiZ_7qScBp5+d+7XqLkzU-3j3bSyH4wzt5qg@mail.gmail.com>
+Message-ID: <CAFnufp0Ko56+EkLiZ_7qScBp5+d+7XqLkzU-3j3bSyH4wzt5qg@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 3/5] page_pool: Allow drivers to hint on SKB recycling
 To:     Matthew Wilcox <willy@infradead.org>
 Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
         Ayush Sawal <ayush.sawal@chelsio.com>,
@@ -91,33 +87,153 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 3:53 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Fri, Jun 4, 2021 at 9:42 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> On Sun, Jun 06, 2021 at 03:50:54AM +0200, Matteo Croce wrote:
-> > And change all the *_pfmemalloc functions to use page->lru.next like this?
-> >
-> > @@ -1668,10 +1668,12 @@ struct address_space *page_mapping(struct page *page);
-> > static inline bool page_is_pfmemalloc(const struct page *page)
-> > {
-> >        /*
-> > -        * Page index cannot be this large so this must be
-> > -        * a pfmemalloc page.
-> > +        * This is not a tail page; compound_head of a head page is unused
-> > +        * at return from the page allocator, and will be overwritten
-> > +        * by callers who do not care whether the page came from the
-> > +        * reserves.
-> >         */
+> On Fri, Jun 04, 2021 at 08:33:47PM +0200, Matteo Croce wrote:
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index 7fcfea7e7b21..057b40ad29bd 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -40,6 +40,9 @@
+> >  #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+> >  #include <linux/netfilter/nf_conntrack_common.h>
+> >  #endif
+> > +#ifdef CONFIG_PAGE_POOL
+> > +#include <net/page_pool.h>
+> > +#endif
 >
-> The comment doesn't make a lot of sense if we're switching to use
-> lru.next.  How about:
+> I'm not a huge fan of conditional includes ... any reason to not include
+> it always?
 >
->         /*
->          * lru.next has bit 1 set if the page is allocated from the
->          * pfmemalloc reserves.  Callers may simply overwrite it if
->          * they do not need to preserve that information.
->          */
 
-Sounds good!
+Nope, I tried without the conditional on a system without
+CONFIG_PAGE_POOL and it compiles fine
+
+> > @@ -3088,7 +3095,13 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
+> >   */
+> >  static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+> >  {
+> > -     put_page(skb_frag_page(frag));
+> > +     struct page *page = skb_frag_page(frag);
+> > +
+> > +#ifdef CONFIG_PAGE_POOL
+> > +     if (recycle && page_pool_return_skb_page(page_address(page)))
+> > +             return;
+>
+> It feels weird to have a page here, convert it back to an address,
+> then convert it back to a head page in page_pool_return_skb_page().
+> How about passing 'page' here, calling compound_head() in
+> page_pool_return_skb_page() and calling virt_to_page() in skb_free_head()?
+>
+
+I like it.
+
+> > @@ -251,4 +253,11 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
+> >               spin_unlock_bh(&pool->ring.producer_lock);
+> >  }
+> >
+> > +/* Store mem_info on struct page and use it while recycling skb frags */
+> > +static inline
+> > +void page_pool_store_mem_info(struct page *page, struct page_pool *pp)
+> > +{
+> > +     page->pp = pp;
+>
+> I'm not sure this wrapper needs to exist.
+>
+
+I admit that this wrapper was bigger in the previous versions, but
+it's used by drivers which handle skb fragments (e.g. mvneta) to set
+the pointer for each frag.
+We can open code it, but it will be less straightforward.
+
+> > +}
+> > +
+> >  #endif /* _NET_PAGE_POOL_H */
+> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> > index e1321bc9d316..a03f48f45696 100644
+> > --- a/net/core/page_pool.c
+> > +++ b/net/core/page_pool.c
+> > @@ -628,3 +628,26 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
+> >       }
+> >  }
+> >  EXPORT_SYMBOL(page_pool_update_nid);
+> > +
+> > +bool page_pool_return_skb_page(void *data)
+> > +{
+> > +     struct page_pool *pp;
+> > +     struct page *page;
+> > +
+> > +     page = virt_to_head_page(data);
+> > +     if (unlikely(page->pp_magic != PP_SIGNATURE))
+> > +             return false;
+> > +
+> > +     pp = (struct page_pool *)page->pp;
+>
+> You don't need the cast any more.
+>
+
+Right.
+
+> > +     /* Driver set this to memory recycling info. Reset it on recycle.
+> > +      * This will *not* work for NIC using a split-page memory model.
+> > +      * The page will be returned to the pool here regardless of the
+> > +      * 'flipped' fragment being in use or not.
+> > +      */
+> > +     page->pp = NULL;
+> > +     page_pool_put_full_page(pp, page, false);
+> > +
+> > +     return true;
+> > +}
+> > +EXPORT_SYMBOL(page_pool_return_skb_page);
+> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > index 12b7e90dd2b5..f769f08e7b32 100644
+> > --- a/net/core/skbuff.c
+> > +++ b/net/core/skbuff.c
+> > @@ -70,6 +70,9 @@
+> >  #include <net/xfrm.h>
+> >  #include <net/mpls.h>
+> >  #include <net/mptcp.h>
+> > +#ifdef CONFIG_PAGE_POOL
+> > +#include <net/page_pool.h>
+> > +#endif
+> >
+> >  #include <linux/uaccess.h>
+> >  #include <trace/events/skb.h>
+> > @@ -645,10 +648,15 @@ static void skb_free_head(struct sk_buff *skb)
+> >  {
+> >       unsigned char *head = skb->head;
+> >
+> > -     if (skb->head_frag)
+> > +     if (skb->head_frag) {
+> > +#ifdef CONFIG_PAGE_POOL
+> > +             if (skb->pp_recycle && page_pool_return_skb_page(head))
+> > +                     return;
+> > +#endif
+>
+> put this in a header file:
+>
+> static inline bool skb_pp_recycle(struct sk_buff *skb, void *data)
+> {
+>         if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
+>                 return false;
+>         return page_pool_return_skb_page(virt_to_page(data));
+> }
+>
+> then this becomes:
+>
+>         if (skb->head_frag) {
+>                 if (skb_pp_recycle(skb, head))
+>                         return;
+> >               skb_free_frag(head);
+> > -     else
+> > +     } else {
+> >               kfree(head);
+> > +     }
+> >  }
+> >
+> >  static void skb_release_data(struct sk_buff *skb)
+
+Done. I'll send a v8 soon.
 
 -- 
 per aspera ad upstream
