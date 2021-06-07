@@ -2,182 +2,316 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABC939E088
-	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 17:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B3E39E10D
+	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 17:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbhFGPeO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Jun 2021 11:34:14 -0400
-Received: from mga18.intel.com ([134.134.136.126]:37747 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230197AbhFGPeM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:34:12 -0400
-IronPort-SDR: j/TkjKoybiiUQMGzNG2Hp1IwumGfR+KPwKXeiyKzjHg7Nhs9idgau4kT0DsiajT65mIWkIaQli
- DKmf8dcesPrQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="191971623"
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="191971623"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 08:32:16 -0700
-IronPort-SDR: 83+55YP48jKDSvIPo9GevfU/3jxIycAmRGHECHA+9xnz8jHoyk2Ohcujr6Q0LTcgCf+NSlf+c3
- sLKxR4ltiZtg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
-   d="scan'208";a="440090670"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga007.jf.intel.com with ESMTP; 07 Jun 2021 08:32:15 -0700
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+        id S231502AbhFGPou (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Jun 2021 11:44:50 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34194 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231163AbhFGPos (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 7 Jun 2021 11:44:48 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 157Fe8SX005052;
+        Mon, 7 Jun 2021 08:42:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=CNqh8ovP+q+4ZM4AHiSak37KrrH8GH1iR2uNRi0to/U=;
+ b=Iw6pOt/AXYnUQH0XsQiz8aiYafrcck6P6MVt3DkAaSzyv1zHjoFYqfY6bemGMqk3hLur
+ w8HDC1bf3y4jtrir63D1//OWxHVOoEUtcBsTsFOiB7+yqJvkQbX7YS2QyAd18Jap/1AZ
+ aDYuOETGnL3elnQBs67bnMu+hDI3ipRgxR8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 391m0t0wj7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 07 Jun 2021 08:42:54 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Mon, 7 Jun 2021 08:32:15 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Mon, 7 Jun 2021 08:32:14 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Mon, 7 Jun 2021 08:32:14 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Mon, 7 Jun 2021 08:32:13 -0700
+ 15.1.2176.2; Mon, 7 Jun 2021 08:42:53 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ecvwh4heagMoHTEb6QWOqiqHXjVASrpw8YPTw0RGKTdGj8vpkyHrugMfR3v8P/YNkberoT03ebmDYHsWXb01XtmPtPdWna1RRIoVROxnmShb1NoUMltbaoAOIEp9E9infcTDkgpaa0xP1U53FP8UBpuYTtxcbQKGQhsh4p87GPbW5qyOSHvjd0Ngt+dM/m4EwzKSuHdeIbrAIoVpnrsEJTx1ZsS5ORgQHZnqo5xA7ZkOnpj+efk5kpoU7/qfp42XlKv+Xuq1S7OTtpbxr1ZPzUztV6JS9MYcR2KMSkwrfFYsc0Q1Kq2jETEz0zo7XJ62Epaim1l3/v1Wz7njfBg8+A==
+ b=hVyz+GQdp3xNHTwuC9h22fUMDl8vKt3pNjm0DPMPztFkPZliTLgG1jJya3OB/ljq/xZExD7GU5tlj4kDgO3BqUPigEH1PeAtdv/2UvPaBTADd4zQLa7Qa+K1wXSazbemzea9tiBf/dRdRvn+Gi99rkwC6bUUitGg/pkiN8TqqjMlDj/mTal3J568xkL5XkIBIu0sFzZKRwGEk6NMlecOBjwPce+BADTNBV5DJR1GUAmVk79DDEAAWk0Q2jP/IXSl/AtFPuQjdVAX8LtYWRho2yS+8f8Fxt4IFTCDvo+TQALcxOJv7vW2n1IEWlT634z+RO1xlJkugFesIu+TQuMcfA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=THD/WKQVINWY/J4/kCwisjNlDrK4bq4Po/xF1vTF35c=;
- b=CypRorhfkpq5WUzJ9hWKC9xdVZ8LuflmmPrPasnWJrrACIUa2ZbjcLQnoFP3BDk7hwyuTbxgi+dBEsomzl/rW6HGh4gFRxIUjxtSKK+mNaIYRUT2CE604bzdpyNX3f8pTHXNhRtF9wxnMB2kUYOx2Ny7vEmDhWGZL0nMYRyN3ilEgtisT7n3GPeK7G/bHEV+mIGmlijvl70XHVWVQxhZvoWGxJSwC64LSAk5Ld27aj8NFtay9Thmvjw9LNzosZp4ninNOKDf7zjjcCbXMNHo+AFJZfJpuP52mSPS1hplDY8x+8tXPwxAa8ef/msT3/R6kvKU0rkUh4glJY8ErhWtTg==
+ bh=CNqh8ovP+q+4ZM4AHiSak37KrrH8GH1iR2uNRi0to/U=;
+ b=G6EiYBiyqxhmX4TUOyl4HHF+SjwldSNjm6xv1IFjEHECGzrIw2KrTg8zdoXWyj0MCh40NNbP3eePRHyeHL7K9/Cwkzi//afht6rmWONuFGLb8M8Vru8o+GKJFfOGfEPyIdojMd/1S+jxCtQbuLrIN86OYcBlrwnf5c6EGbB6CeC99ctbBKsRwU2Hsb1Mta2c9U1S/gKMRqefvahCT/9ZTHkA+crJnWP80oMHDSdYBAT3LScBXgeChBvHmGVs0MyqmIr/z6P7YQ5hV/LJPCqNnA+nMOZzNvS8GAe3UkR8g1viezmw6egzkxBKYbiMpoiHXMr4zy73faaFkjP2IWy7Nw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=THD/WKQVINWY/J4/kCwisjNlDrK4bq4Po/xF1vTF35c=;
- b=JBnBaNvS7SFk1Q8UDkN6nl8FLOifZ9SBD6uBzpsMZ2x8hISvJGkA5FXt88QNd7DwXRpG2TJH+n+ufvEZXJPFcNxgEws++Uus3PX/V5L78tgOoFRoCsGSUnkcW0+32NIJRvCtj0SJNiU7Zdn02sCigg7KzXRiHNeBkIZ4I+y+D4c=
-Received: from DM6PR11MB3292.namprd11.prod.outlook.com (2603:10b6:5:5a::21) by
- DM6PR11MB4723.namprd11.prod.outlook.com (2603:10b6:5:2a0::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4195.20; Mon, 7 Jun 2021 15:32:10 +0000
-Received: from DM6PR11MB3292.namprd11.prod.outlook.com
- ([fe80::ac71:f532:33f7:a9d7]) by DM6PR11MB3292.namprd11.prod.outlook.com
- ([fe80::ac71:f532:33f7:a9d7%3]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
- 15:32:10 +0000
-From:   "Bhandare, KiranX" <kiranx.bhandare@intel.com>
-To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: RE: [Intel-wired-lan] [PATCH v2 intel-net 2/2] ice: parametrize
- functions responsible for Tx ring management
-Thread-Topic: [Intel-wired-lan] [PATCH v2 intel-net 2/2] ice: parametrize
- functions responsible for Tx ring management
-Thread-Index: AQHXTUQC2ZaCXc4NikWDjO7/8JOhqqsIycSg
-Date:   Mon, 7 Jun 2021 15:32:09 +0000
-Message-ID: <DM6PR11MB329297990325F28CCF5CD35DF1389@DM6PR11MB3292.namprd11.prod.outlook.com>
-References: <20210520063500.62037-1-maciej.fijalkowski@intel.com>
- <20210520063500.62037-3-maciej.fijalkowski@intel.com>
-In-Reply-To: <20210520063500.62037-3-maciej.fijalkowski@intel.com>
-Accept-Language: en-US
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB4062.namprd15.prod.outlook.com (2603:10b6:806:82::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Mon, 7 Jun
+ 2021 15:42:52 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
+ 15:42:52 +0000
+Subject: Re: Parallelizing vmlinux BTF encoding. was Re: [RFT] Testing 1.22
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        <dwarves@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <YK+41f972j25Z1QQ@kernel.org>
+ <CAEf4BzaTP_jULKMN_hx6ZOqwESOmsR6_HxWW-LnrA5xwRNtSWg@mail.gmail.com>
+ <4615C288-2CFD-483E-AB98-B14A33631E2F@gmail.com>
+ <CAEf4BzaQmv1+1bPF=1aO3dcmNu2Mx0EFhK+ZU6UFsMjv3v6EZA@mail.gmail.com>
+ <4901AF88-0354-428B-9305-2EDC6F75C073@gmail.com>
+ <CAEf4BzZk8bcSZ9hmFAmgjbrQt0Yj1usCHmuQTfU-pwZkYQgztA@mail.gmail.com>
+ <YLFIW9fd9ZqbR3B9@kernel.org>
+ <CAEf4BzYCCWM0WBz0w+vL1rVBjGvLZ7wVtgJCUVr3D-NmVK0MEg@mail.gmail.com>
+ <YLjtwB+nGYvcCfgC@kernel.org>
+ <CAEf4BzbQ9w2smTMK5uwGGjyZ_mjDy-TGxd6m8tiDd3T_nJ7khQ@mail.gmail.com>
+ <YL4dGFsfb0ZzgxlR@kernel.org>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <c5a2c9fc-e541-7a0d-daa8-5af802f8336d@fb.com>
+Date:   Mon, 7 Jun 2021 08:42:46 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <YL4dGFsfb0ZzgxlR@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [198.175.68.48]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9a816aff-3a4b-43ba-df0d-08d929c96a88
-x-ms-traffictypediagnostic: DM6PR11MB4723:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB472324729C1068C53F87D5D4F1389@DM6PR11MB4723.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iAmzjPbF3gEyWut5n15Yc3M5SwIfuFTEGJWpfZme0SA0ILI0cgWDgr7s/xOdlAtLZIT3JjqS7Bg2Hxgl6AjNQPfIDhi1Fwq8xi44YDq6N3kU9+sG7RXSQhod68f+eilUX6xG++Pabv6XOJeFoM6L0dDNZzAsLDz3Dhf3MNc9NGlXQvAgVQcRCFh8l/ITJaYTHHBdTuVoLMG730j/fraPlzXn4Dig/wHRjaf7x4sv6iVEbva9hsfylNwyAo+2mvLGSbXJrqP+PeDBhEQo+X8A4RocjF7XP+NwyR0AcnCszBnhZHAKEuLT4PJEO+k+ZWTfs7VTZnapV2htBz1MP0pKSC8CnV69JtlqZjgqtW2qT6tTCphAEoLDblo6GMJ254KFoxw7z9MDCQ3DmfBVL0urToFnl18CDatr0WJ9FwsvuqUN6TWALY9cdrodVaVofjQ/Nr1vHW62fV0wKUYeGi55KTZ2xlvuan/IQGjouF236tp+j+t9Rk6B58mv4Ji8xl9uX4f7gcZ7xPbbbH8te8bp1ZIhHhqO2juLCDiqQSvSFx+ipfp3wRglXcvvA5baF5J4264ZnT+gm+gt5pNphCMBN7tfT2ARsHX21JBaVUi9Ppc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3292.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(39860400002)(346002)(396003)(478600001)(55016002)(83380400001)(4326008)(9686003)(53546011)(6506007)(52536014)(66946007)(66476007)(64756008)(66556008)(5660300002)(66446008)(26005)(122000001)(38100700002)(33656002)(8936002)(2906002)(76116006)(316002)(8676002)(86362001)(107886003)(54906003)(110136005)(7696005)(71200400001)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?yVjq7fhrD20T5wgdKbqJ03Gm5TKAI+me9YopmL77R70GcnCsn3bpF30pAl2T?=
- =?us-ascii?Q?jDG2FDr3nDuncWPGcWsnEeV9H3eXgnuq30bqcNQIKo61TFu7/cQVazSZX04p?=
- =?us-ascii?Q?IpCQhEVmk2ySqWsSMXBa8iKVWdLj4pC1kXbvhPbPpNQbIeF24XVoavvnBN9v?=
- =?us-ascii?Q?5vqTvIzIyFXv9r0xYSudFUk653Q2VUPeyEdqWrSazRGw+QcDo0YAkrvyWEfU?=
- =?us-ascii?Q?6NHRycGX20IjmVaF1h/o495WMyyW/2jaGNRJwdrLJMUeQNOX5BkQpGgLzkF7?=
- =?us-ascii?Q?QmDIzM0aqe3uVrZwey1ehxBZfdHGBqmIi2cfPG7/venTJhF+aoXDVQvHs8RF?=
- =?us-ascii?Q?AIsHB4F0QncHZ+ZKNvdjSu78PHH4/bsC9gOR2yRV2QzqdoroiHPcQR0/+4UK?=
- =?us-ascii?Q?ijG25maObdyB0+V5jbBGNBGhS+kiRcOznR/imhdiDZPh7gN/TcQBsz55N9x4?=
- =?us-ascii?Q?b1wV7fw5rUA/8YJ9FwTmajiBL1P6zMX9/gzDARYEjjB25V1RTUMh3ecu93GA?=
- =?us-ascii?Q?MfpkR6a5GFIaT0yQNP6XixEgNySG0I5sy4UTzWR5yN8eCYWTG1LGqNqKbsC+?=
- =?us-ascii?Q?yoKD1U0I/T4cxfmGgpvcgF8m3ijtyUqNHhIXFWZ+XEDgK4Y0cxuo+c51M7sn?=
- =?us-ascii?Q?KRYikAiagAKcLLOy/taTrZg/lOJ6GJ6H7zMfzJa0kWkw/VTN08etb27ESVJj?=
- =?us-ascii?Q?gMEpD/f0hF4i7j8b23bSYkok0q3bXC30kf4zwvvj8Y/wBGdS4bQeSOQapt72?=
- =?us-ascii?Q?C2I1qxrB11NEF8W57mZBFq2M4PjytvoQFnmlHPR9TMxG9q8Ry+EjLNN5yblU?=
- =?us-ascii?Q?/MOw3iDXqJ8wevXFd5IhCpiqGyz9+geO0kenqYcjPi9cmxiBRpXErw2urzZz?=
- =?us-ascii?Q?1LuVoLJQDbi/HRI/y/LuT5h1OhGsCIJwVpZLR7gYTvxtth2dCnbQEKunngPM?=
- =?us-ascii?Q?32GrmBVYGo0X5rmD6F6OGVLlsdL2ZpzBCZAiu1H8a74wB5XqJkymrZ7RGmnn?=
- =?us-ascii?Q?HNukZgCOLnLGatFAsN5b/EzlX7eNs8dhin9u16w6A+FXJ7t6H/JmeJJAzFQ3?=
- =?us-ascii?Q?+lnuAH4rvAy18ZfCixpYfW765lm6OWojli7poYdrMzHZwds7D36rY4GuYZ1g?=
- =?us-ascii?Q?nrUjOhkM0lHgnh0oeH3qwLU9myj1THetjfbfqWAPi/DMP46VJK32yOV7MR2S?=
- =?us-ascii?Q?wZbZoRfnP5VP8tN3NGWrkwShFteCOFJ9vO8r0Tuc+AQg5kQCKsWhR7J52agZ?=
- =?us-ascii?Q?hKyRwe47F2IIvHCxPKK5WRPPLHu5S8zY+vuZFOhdrGMrCHRW2lMET5rsAKXD?=
- =?us-ascii?Q?v9+czwjzRNytqTF9wLAuT4ZI?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+X-Originating-IP: [2620:10d:c090:400::5:db22]
+X-ClientProxiedBy: SJ0PR13CA0136.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c6::21) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::1097] (2620:10d:c090:400::5:db22) by SJ0PR13CA0136.namprd13.prod.outlook.com (2603:10b6:a03:2c6::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Mon, 7 Jun 2021 15:42:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ee683968-73d6-406e-f677-08d929cae91f
+X-MS-TrafficTypeDiagnostic: SA0PR15MB4062:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR15MB4062BA4A0361D1A2C5A302F8D3389@SA0PR15MB4062.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UgMzg7m0bE/cXvnw2OB8PAYq/IwA3ysLohyYEFDDhlqDJQR/SFTfd9jxCruwLtd9EP9OpG6S+KbpS6YKINSw5HeeKFI94gtHiNJtKlueuQ20LWjAHyhmpb6G0C97piPmBgMkrr8VFMpg95/rknZkOzTyrxNoW6NrXB0k5C/p3lzXlOO1Y1AeCXjvfeuoKtJKZP6WiONRIezFyaJuKOWIas7XEPlcPndOIai579EKG4P+hIRhDGbdZTnv475EpXy9g3cusHUQKN6Fdkw8S8LIGoUqjBPcKhQCTgRjyAqoTtK0qB+ZG90KdeVy4Rl+xLGqiHkxXqYRQEMlmbcNtDGKwQwR57OaOhS70KIZ7LTi5pCQErCAp5aseaulFwxdnMh9oAQpt4QHZlB2BcCZQ4ACQI5MQAt8NDsthVvq6ExNVX/HJPnuIpFw/eKCHFJRurXAZK4rw/58wj0ePNjQL4GoBcGmi4T9+esNGr6MBMW2kbmm7fX3DDLMaM7rF9BmHw15rlyYNKFCsf/NQa3XGvYr0rtHEe2CQG8r7EkXSIAmw7X0XB6OhCna3dZ9uD9BMuIyxlRyhVm0D7o8/1sNYpXFWMkiWAqEdGnZvW9OO/kE+6JvifK51R+y/t//YJXRuuJ9XrYyEYtcgWc27pIt5C9zLxCul4BCmePiJAgq4d3sFWkIbHi9EK0AI4ZAEXywZPY+h7LiHI9qlXkcE8DXon4+02X9riJOp4bUihQXKE4KTnIlUPg5px+3MOuCohJUCoHUAVex4wlcgNstb9fAda/K7hNzSPCazsu5n57fY9mNL0XYvat/7UieaAsHM+HVIJ8n
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(366004)(376002)(396003)(8676002)(8936002)(966005)(478600001)(6486002)(38100700002)(5660300002)(2616005)(186003)(31686004)(316002)(66476007)(86362001)(36756003)(31696002)(52116002)(110136005)(53546011)(66946007)(54906003)(6666004)(66556008)(16526019)(4326008)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TDQvcnJBRTFtdWdUeDVQVzB6RnBkeUdJVjlOYVdoeDN3bDNJQi9KWThnUG9T?=
+ =?utf-8?B?Mys5QTNwVEd1dnBVYlJZbCs1SytKNDI1TGxVWnQvSHZRWDNxRWMvK3RTTEJS?=
+ =?utf-8?B?Z1BwWnlTbDNOajZUZnJBRzNTc3gzdFlSQ1pYSnJ4YWJwS05rdmRkY1lNdjJK?=
+ =?utf-8?B?NU5xaElzWHhkaHRnMVhhbnNlSUZWMmNXS3huTU8zOWdEWU0wR3cwcXpPT0xF?=
+ =?utf-8?B?ZUl4eTRsV2hOVnFCdldBbEdiYytzZEtjaUhLV0dTTHVRYUVDeGVCNDVRMVVy?=
+ =?utf-8?B?UGhSZ3FLdlR3Q25KZFBlZC85bUZXVFUzUmZWVkhaMkZGQ21CaU1Jcis4Vmsx?=
+ =?utf-8?B?cWJ1V3ppOFBhRnl5MXE0SlNsenoxbEtWbTRRWGtCYlNBMHNJYUxzTGQ0Y0V5?=
+ =?utf-8?B?c2xZdCswd3Y2SjZCemdVL1pkN3FtY0h5WFplR08zUk1zbUJZTFJ1akpObjRO?=
+ =?utf-8?B?Q0FxUkhrTUZtUDBoSzlmLzc5VGtYY0JSaThPSGtZRmVCdVdPSmRZREJyTC9y?=
+ =?utf-8?B?d2IrNHA1eHMrKy9iLzltaEtXMVBlUkxITHoxVmVheVVyVkdlalUvNmdRN3hS?=
+ =?utf-8?B?WTd2ZUUwRVBKWXJQekhlRE1QUzlkcnArRXY3N0JTU3MvOW9NWE82cDgyRkM3?=
+ =?utf-8?B?cWRGeVZ0bGF3ZG9keUl5WFJ4K3lZMWZuZkdOcDh1WlhpMkNZeUVpcmJvOWdW?=
+ =?utf-8?B?RWZNWUh2YkxoZ01EalR2aGhRZ1Bvcm5qZmhuZmNlbGVYWncwUUsxMFJBemhP?=
+ =?utf-8?B?WGlOU3NuUDVsVHJ6S05DS1QzUU9JQk1Sc2ZremFmZXFJYjBZaWJWd3FFcXhE?=
+ =?utf-8?B?emVoejIxVmdqTmxPVVVVdFRVOEJra0pWbWlEbGRUNmo2WlFCbFBFMW4wQ29W?=
+ =?utf-8?B?MnFMWUs4eEJNZGxadTI0Z2czYnpDakNYWFNIMk0vby9ZRjdIVTJKTlpVck9j?=
+ =?utf-8?B?NHNUY0dERlY0UWo2TUlxdmNyREIzWU1VSlN2b2JDMDQ3MUNqOUVkbEI5N2JD?=
+ =?utf-8?B?c2tndHJRN3ozL0hwMHl5U3JTcHczaGhQa05GWmJaNURFdDZOSUtqc0JKdTBN?=
+ =?utf-8?B?c21aK2x3azQ1RjhOU0JlL0E1RU9MTHlxL1pIbXNOVGhTbHk5Vk5ZcnYyOGFt?=
+ =?utf-8?B?TkUvaFdWV1VZYWQ4TElrL1dYYU9tdVJ5WHdIS0NBMlBUUXRRWmYrcUdjTG4w?=
+ =?utf-8?B?ejZOUGVuZDcvc25qUnlvRHd4VmlkMFhWckg3VTErZnpIYUZxM3dDU3lJVEtp?=
+ =?utf-8?B?RW5ZNDFPaE80U3JyamR2WWsxTWNxL1MzNUljU0t3T1dEcDlsaDMybEZnQmk0?=
+ =?utf-8?B?aDUwVHNYMldzdTl3VHlaNjJUMlZnaGppeStSUnhRUmpaUkRnSXhyY1JTN0tr?=
+ =?utf-8?B?cERZcnErcEd3SDlZeTczWC9xOW5mYTYySW1TVWhzam9BR1JGM1F0WkliYlZy?=
+ =?utf-8?B?b1c1Q0FPNS82b1ZhVjh3WlV0MnBZaXYyWnR1bjh2Y05HUUxUSUkxTXhzK3ls?=
+ =?utf-8?B?cVdlSmVaUStKNXBrdENTV2xyVmk1NlNrZE1NUEhsaEpPUzBiaFhXOXBsdE95?=
+ =?utf-8?B?NUcxZjRmZE8zKzk2TnpDcnZiUndSY0J4Rm9BZGovMU1XZWdxQkhOQWcxS1FQ?=
+ =?utf-8?B?alBUR01YM29YWExFY3AvMW0ySXpuTHM3TmwwVjAvekl0VEsyUyttS0dDYk9I?=
+ =?utf-8?B?MTUzTjBxYUlWTVlHdXp6c1E5N21LTTZZM0VWeTU1bzdZdGlvWVFYSXloM0pu?=
+ =?utf-8?B?TDJVMzRXKy9jOGl1S05mUlVRelhPeWQxcTlwRGt6Y1dLUU9EenJwZXorQUlV?=
+ =?utf-8?Q?HndWGxrdrETRHcRGFcGWhdiQYYxIQZN00ykrI=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee683968-73d6-406e-f677-08d929cae91f
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3292.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a816aff-3a4b-43ba-df0d-08d929c96a88
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2021 15:32:10.0429
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 15:42:52.1973
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: z0IW3z8klcThaHi4HMJXG8yW0wTz1Ekompk9LT3W4pDiNCs1nCkK+koJeT0t5YANDjbWXqsi/eDhGFU8U1tFPfy6bEDskYOLcCuTZ5sHAZU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4723
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IOiIiHisMZ9STaTAEvxuRv2S7R3WvskSho8JCzIKWtMD9RaFQ8nSwno4huENwnWR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB4062
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: 85P7_kdIpVRw9AsvV7T8lA-zAFYwQeEK
+X-Proofpoint-ORIG-GUID: 85P7_kdIpVRw9AsvV7T8lA-zAFYwQeEK
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-07_11:2021-06-04,2021-06-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ impostorscore=0 mlxscore=0 suspectscore=0 phishscore=0 priorityscore=1501
+ bulkscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1011
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106070112
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> -----Original Message-----
-> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
-> Maciej Fijalkowski
-> Sent: Thursday, May 20, 2021 12:05 PM
-> To: intel-wired-lan@lists.osuosl.org
-> Cc: netdev@vger.kernel.org; bjorn@kernel.org; kuba@kernel.org;
-> bpf@vger.kernel.org; davem@davemloft.net; Karlsson, Magnus
-> <magnus.karlsson@intel.com>
-> Subject: [Intel-wired-lan] [PATCH v2 intel-net 2/2] ice: parametrize func=
-tions
-> responsible for Tx ring management
->=20
-> Commit ae15e0ba1b33 ("ice: Change number of XDP Tx queues to match
-> number of Rx queues") tried to address the incorrect setting of XDP queue
-> count that was based on the Tx queue count, whereas in theory we should
-> provide the XDP queue per Rx queue. However, the routines that setup and
-> destroy the set of Tx resources are still based on the
-> vsi->num_txq.
->=20
-> Ice supports the asynchronous Tx/Rx queue count, so for a setup where
-> vsi->num_txq > vsi->num_rxq, ice_vsi_stop_tx_rings and ice_vsi_cfg_txqs
-> will be accessing the vsi->xdp_rings out of the bounds.
->=20
-> Parametrize two mentioned functions so they get the size of Tx resources
-> array as the input.
->=20
-> Fixes: ae15e0ba1b33 ("ice: Change number of XDP Tx queues to match
-> number of Rx queues")
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_lib.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
->=20
 
-Tested-by: Kiran Bhandare <kiranx.bhandare@intel.com>  A Contingent Worker =
-at Intel
+
+On 6/7/21 6:20 AM, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Jun 04, 2021 at 07:55:17PM -0700, Andrii Nakryiko escreveu:
+>> On Thu, Jun 3, 2021 at 7:57 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>>> Em Sat, May 29, 2021 at 05:40:17PM -0700, Andrii Nakryiko escreveu:
+> 
+>>>> At some point it probably would make sense to formalize
+>>>> "btf_encoder" as a struct with its own state instead of passing in
+>>>> multiple variables. It would probably also
+> 
+>>> Take a look at the tmp.master branch at:
+> 
+>>> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/log/?h=tmp.master
+>   
+>> Oh wow, that's a lot of commits! :) Great that you decided to do this
+>> refactoring, thanks!
+>   
+>>> that btf_elf class isn't used anymore by btf_loader, that uses only
+>>> libbpf's APIs, and now we have a btf_encoder class with all the globals,
+>>> etc, more baby steps are needed to finally ditch btf_elf altogether and
+>>> move on to the parallelization.
+>   
+>> So do you plan to try to parallelize as a next step? I'm pretty
+> 
+> So, I haven't looked at details but what I thought would be interesting
+> to investigate is to see if we can piggyback DWARF generation with BTF
+> one, i.e. when we generate a .o file with -g we encode the DWARF info,
+> so, right after this, we could call pahole as-is and encode BTF, then,
+> when vmlinux is linked, we would do the dedup.
+> 
+> I.e. when generating ../build/v5.13.0-rc4+/kernel/fork.o, that comes
+> with:
+> 
+> ⬢[acme@toolbox perf]$ readelf -SW ../build/v5.13.0-rc4+/kernel/fork.o | grep debug
+>    [78] .debug_info       PROGBITS        0000000000000000 00daec 032968 00      0   0  1
+>    [79] .rela.debug_info  RELA            0000000000000000 040458 053b68 18   I 95  78  8
+>    [80] .debug_abbrev     PROGBITS        0000000000000000 093fc0 0012e9 00      0   0  1
+>    [81] .debug_loclists   PROGBITS        0000000000000000 0952a9 00aa43 00      0   0  1
+>    [82] .rela.debug_loclists RELA         0000000000000000 09fcf0 009d98 18   I 95  81  8
+>    [83] .debug_aranges    PROGBITS        0000000000000000 0a9a88 000080 00      0   0  1
+>    [84] .rela.debug_aranges RELA          0000000000000000 0a9b08 0000a8 18   I 95  83  8
+>    [85] .debug_rnglists   PROGBITS        0000000000000000 0a9bb0 001509 00      0   0  1
+>    [86] .rela.debug_rnglists RELA         0000000000000000 0ab0c0 001bc0 18   I 95  85  8
+>    [87] .debug_line       PROGBITS        0000000000000000 0acc80 0086b7 00      0   0  1
+>    [88] .rela.debug_line  RELA            0000000000000000 0b5338 002550 18   I 95  87  8
+>    [89] .debug_str        PROGBITS        0000000000000000 0b7888 0177ad 01  MS  0   0  1
+>    [90] .debug_line_str   PROGBITS        0000000000000000 0cf035 001308 01  MS  0   0  1
+>    [93] .debug_frame      PROGBITS        0000000000000000 0d0370 000e38 00      0   0  8
+>    [94] .rela.debug_frame RELA            0000000000000000 0d11a8 000e70 18   I 95  93  8
+> ⬢[acme@toolbox perf]$
+> 
+> We would do:
+> 
+> ⬢[acme@toolbox perf]$ pahole -J ../build/v5.13.0-rc4+/kernel/fork.o
+> ⬢[acme@toolbox perf]$
+> 
+> Which would get us to have:
+> 
+> ⬢[acme@toolbox perf]$ readelf -SW ../build/v5.13.0-rc4+/kernel/fork.o | grep BTF
+>    [103] .BTF              PROGBITS        0000000000000000 0db658 030550 00      0   0  1
+> ⬢[acme@toolbox perf]
+> 
+> ⬢[acme@toolbox perf]$ pahole -F btf -C hlist_node ../build/v5.13.0-rc4+/kernel/fork.o
+> struct hlist_node {
+> 	struct hlist_node *        next;                 /*     0     8 */
+> 	struct hlist_node * *      pprev;                /*     8     8 */
+> 
+> 	/* size: 16, cachelines: 1, members: 2 */
+> 	/* last cacheline: 16 bytes */
+> };
+> ⬢[acme@toolbox perf]$
+> 
+> So, a 'pahole --dedup_btf vmlinux' would just go on looking at:
+> 
+> ⬢[acme@toolbox perf]$ readelf -wi ../build/v5.13.0-rc4+/vmlinux | grep -A10 DW_TAG_compile_unit | grep -w DW_AT_name | grep fork
+>      <f220eb>   DW_AT_name        : (indirect line string, offset: 0x62e7): /var/home/acme/git/linux/kernel/fork.c
+> 
+> To go there and go on extracting those ELF sections to combine and
+> dedup.
+> 
+> This combine thing could be done even by the linker, I think, when all
+> the DWARF data in the .o file are combined into vmlinux, we could do it
+> for the .BTF sections as well, that way would be even more elegant, I
+
+The linker will do the combine. It should just concatenate
+all .BTF sections together like
+    .BTF section
+       .BTF data from file 1
+       .BTF data from file 2
+       ...
+
+> think. Then, the combined vmlinux .BTF section would be read and fed in
+> one go to libbtf's dedup arg.
+
+I think this should work based on today's implementation but we do have
+a caveat here.
+
+The issue is related to DATASEC's. In DATASEC, we tried to encode
+section offset for variables. These section offset should be
+relocated during linking stage. But currently pahole does not
+generate reloations for such variables so linker will ignore
+them.
+
+This shouldn't be an issue for global variables as we can find its
+name in VAR and look up final symbol table for its section offset.
+
+But this might be an issue for static variables with the same
+name and just matching names in VAR is not enough as their
+may be multiple ones in the symbol table. We could have a
+workaround though, e.g., rename all static variables with a unique name
+like <file_name>.[<func_name>.]<var_name> and went to dwarf
+to find this static variable offset. dwarf should have
+static variable section offset properly relocated.
+
+Another solution is for pahole to generate .rel.BTF which
+encodes relocations.
+
+Currently, we don't emit static variables in vmlinux BTF (only
+percpu globals), but not sure whether in the future we still
+won't.
+
+> 
+> This way the encoding of BTF would be as paralellized as the kernel build
+> process, following the same logic (-j NR_PROCESSORS).
+> 
+> wdyt?
+> 
+> If this isn't the case, we can process vmlinux as is today and go on
+> creating N threads and feeding each with a DW_TAG_compile_unit
+> "container", i.e. each thread would consume all the tags below each
+> DW_TAG_compile_unit and produce a foo.BTF file that in the end would be
+> combined and deduped by libbpf.
+> 
+> Doing it as my first sketch above would take advantage of locality of
+> reference, i.e. the DWARF data would be freshly produced and in the
+> cache hierarchy when we first encode BTF, later, when doing the
+> combine+dedup we wouldn't be touching the more voluminous DWARF data.
+> 
+> - Arnaldo
+> 
+>> confident about BTF encoding part: dump each CU into its own BTF, use
+>> btf__add_type() to merge multiple BTFs together. Just need to re-map
+>> IDs (libbpf internally has API to visit each field that contains
+>> type_id, it's well-defined enough to expose that as a public API, if
+>> necessary). Then final btf_dedup().
+>   
+>> But the DWARF loading and parsing part is almost a black box to me, so
+>> I'm not sure how much work it would involve.
+> 
+>>> I'm doing 'pahole -J vmlinux && btfdiff' after each cset and doing it
+>>> very piecemeal as I'm doing will help bisecting any subtle bug this may
+>>> introduce.
+> 
+>>>> allow to parallelize BTF generation, where each CU would proceed in
+>>>> parallel generating local BTF, and then the final pass would merge and
+>>>> dedup BTFs. Currently reading and processing DWARF is the slowest part
+>>>> of the DWARF-to-BTF conversion, parallelization and maybe some other
+>>>> optimization seems like the only way to speed the process up.
+> 
+>>>> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+>>> Thanks!
