@@ -2,143 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995C739E122
-	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 17:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB1039E5D3
+	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 19:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhFGPsc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Jun 2021 11:48:32 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:49802 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbhFGPsb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Jun 2021 11:48:31 -0400
-Received: by mail-io1-f69.google.com with SMTP id t17-20020a5e99110000b02904b3e60c561aso6308972ioj.16
-        for <bpf@vger.kernel.org>; Mon, 07 Jun 2021 08:46:26 -0700 (PDT)
+        id S230215AbhFGRsi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Jun 2021 13:48:38 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:46795 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230197AbhFGRsi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Jun 2021 13:48:38 -0400
+Received: by mail-lj1-f181.google.com with SMTP id e11so23321794ljn.13;
+        Mon, 07 Jun 2021 10:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xcejzj+YKCRY4WWuFJkzpsXTL8zoFh/y/Gxu0KunwGY=;
+        b=BD0Sy4xO4H2zwT5TYjrhUUPywmTKCGM5YrFg1ccipSS3OfqaBZ3gl3YhsoIBPviEsM
+         VmPYmaBP25cx0UsWT/ApQw5EAX4XUaysHUNK9zXOns95YPyaU8clEZTzDDy/LIrQXJj4
+         StGE4Z0Wprts1sY2GOk9KPRf+CaYSxapaZnWjrQZl8Pd8fAnQjjSm+Ap/V9VOsZD9R4E
+         7TuS1gVfa79cOLW9VM0yncWKGTf8g0Y8cO4Waj9ac9wsSRYSiRECYryjI8jnxyyUqT/t
+         ti/kZlHRyM6+Kh9LHooRnn2OGj+EutQE4UxK5R/BayAh2048X/1PV3EmdAbnQkxZBTOR
+         FtPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=INHA8ZEnrl18BkANOT7Nn30hsnu7iHrn0GE/AclKKVs=;
-        b=ofk0XR2nPYq6z49Fs8ekAK8MJed/OdIRJqxh6liIR138Ky/sRemdGkTRFcdsa8Ho/H
-         VIG1vP0pORGbWzXQkFqH7cmxfT8aS7H8VeB5Jnx4wmqDkeHE7x0sOWp/m+A7BhnrV02g
-         rTj4Pdv678SNEF6R7BstyTWxHyXpaGrdM2Y+oiChM1oeeY60dX8P1b789hUU8nRxuG+z
-         Zjx9t3z7GLjr9B43J3JNgDwZZ6TTvOIb/M5rM5K2Q6pbvaiLJIn488aYrXpQQilP/bqm
-         Iks15GJzaKIC1gqoDXNTo6ZKBerakHYgqQHOQcKlwneQlCdHWmKnk8pZDwrV/xUoE1qk
-         PvPw==
-X-Gm-Message-State: AOAM532jo9lyLfCwbZGskRDnQgrmmej1Cy0BqwFOz36SOvpoe3xttICY
-        tIqZoX2pXdGg1y7BEmIga/Jxvd8Vk5b5p0g5wxXw+8ggy/cf
-X-Google-Smtp-Source: ABdhPJzwA6WXEXD9nC5toM6mIdr2yQ3UPrc/70NhvH7vkSC/ePqYEsb0kgPJ3EgBWwxp+fNe3Cra+mT5CMCWo4cI0YEQUyB76KHe
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1809:: with SMTP id a9mr4996983ilv.221.1623080786195;
- Mon, 07 Jun 2021 08:46:26 -0700 (PDT)
-Date:   Mon, 07 Jun 2021 08:46:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b3f96105c42ef146@google.com>
-Subject: [syzbot] general protection fault in kcm_sendmsg
-From:   syzbot <syzbot+65badd5e74ec62cb67dc@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xcejzj+YKCRY4WWuFJkzpsXTL8zoFh/y/Gxu0KunwGY=;
+        b=cmf1sgb3HZ2N1XpBmKgb+N6W8pAQ11nY47ccnotiQ7wP4eiaEFjs+GWs3PO1dyqxnq
+         iqGKv3jo0IzfCEx4O+sQSBTQI2i6AGEOjLMBNhG3M06qGFk7dMJeNZBboa3B3P2L7Eab
+         sx5sYTaW1c7hhIQTQoZAECnz4bRoJFQaHsL2aYptcNVc8Dz6k5jJfOHmdPD41bV1fxgX
+         DGFkCq3A/THvVMRyKsUYOTEc22pcANsz/1nwOt3DmyB+d9l+N3sF4ru5jrj4eUbhNuz1
+         rvvZPQJJamVou9I26P4R1znb3eXuqcuDS+PohJZ4EbohSwDRxraLv4LJu2zIap+l5u5T
+         q4eQ==
+X-Gm-Message-State: AOAM530oU7s9RPYa3AiqLVDkokgd/FJcIgNB044cl9jex8CO7Oc3QzMu
+        XDjyG85AhCOS66W8N/XnbQU=
+X-Google-Smtp-Source: ABdhPJx8tZlIvp5fV59VWUsQzJhqZdEODeudvhf5bmmqzPkbMapfJnHsD4MnIvEL71LD+pDbiZx53w==
+X-Received: by 2002:a2e:91c8:: with SMTP id u8mr15030387ljg.309.1623087945375;
+        Mon, 07 Jun 2021 10:45:45 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.224.40])
+        by smtp.gmail.com with ESMTPSA id q16sm1574059lfu.103.2021.06.07.10.45.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 10:45:45 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 20:45:42 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     syzbot <syzbot+65badd5e74ec62cb67dc@syzkaller.appspotmail.com>
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
         coreteam@netfilter.org, daniel@iogearbox.net, davem@davemloft.net,
         dsahern@kernel.org, fw@strlen.de, john.fastabend@gmail.com,
         jonathan.lemon@gmail.com, kadlec@netfilter.org, kafai@fb.com,
         kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
         matthieu.baerts@tessares.net, netdev@vger.kernel.org,
         netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        paskripkin@gmail.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, unixbhaskar@gmail.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org, zhengyongjun3@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        unixbhaskar@gmail.com, yhs@fb.com, yoshfuji@linux-ipv6.org,
+        zhengyongjun3@huawei.com
+Subject: Re: [syzbot] general protection fault in kcm_sendmsg
+Message-ID: <20210607204542.4ad0b33e@gmail.com>
+In-Reply-To: <000000000000b3f96105c42ef146@google.com>
+References: <000000000000b3f96105c42ef146@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Mon, 07 Jun 2021 08:46:26 -0700
+syzbot <syzbot+65badd5e74ec62cb67dc@syzkaller.appspotmail.com> wrote:
 
-syzbot found the following issue on:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    1a802423 virtio-net: fix for skb_over_panic inside
+> big mode git tree:       bpf
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=159b08afd00000 kernel
+> config:  https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=65badd5e74ec62cb67dc syz
+> repro:
+> https://syzkaller.appspot.com/x/repro.syz?x=104624afd00000 C
+> reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e36197d00000
+> 
+> The issue was bisected to:
+> 
+> commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
+> Author: Florian Westphal <fw@strlen.de>
+> Date:   Wed Apr 21 07:51:08 2021 +0000
+> 
+>     netfilter: arp_tables: pass table pointer via nf_hook_ops
+> 
 
-HEAD commit:    1a802423 virtio-net: fix for skb_over_panic inside big mode
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=159b08afd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=770708ea7cfd4916
-dashboard link: https://syzkaller.appspot.com/bug?extid=65badd5e74ec62cb67dc
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104624afd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e36197d00000
+It's c47cc304990a ("net: kcm: fix memory leak in kcm_sendmsg") where
+the bug was introduced by me :(
 
-The issue was bisected to:
-
-commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
-Author: Florian Westphal <fw@strlen.de>
-Date:   Wed Apr 21 07:51:08 2021 +0000
-
-    netfilter: arp_tables: pass table pointer via nf_hook_ops
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11739740300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13739740300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15739740300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+65badd5e74ec62cb67dc@syzkaller.appspotmail.com
-Fixes: f9006acc8dfe ("netfilter: arp_tables: pass table pointer via nf_hook_ops")
-
-general protection fault, probably for non-canonical address 0xdffffc0000000019: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000000c8-0x00000000000000cf]
-CPU: 1 PID: 8423 Comm: syz-executor788 Not tainted 5.13.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:skb_end_pointer include/linux/skbuff.h:1419 [inline]
-RIP: 0010:skb_has_frag_list include/linux/skbuff.h:3566 [inline]
-RIP: 0010:kcm_sendmsg+0xdd7/0x2240 net/kcm/kcmsock.c:1069
-Code: fb 05 0f 84 25 0b 00 00 e8 b6 f3 48 f9 48 8b 44 24 18 4c 8d a8 c8 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 5d 11 00 00 48 8b 44 24 18 48 8d a8 c4 00 00 00
-RSP: 0018:ffffc900017ef9b8 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000019 RSI: ffffffff882be8ca RDI: 0000000000000003
-RBP: ffff8880361685aa R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff882bec2b R11: 0000000000000000 R12: 00000000fffffe00
-R13: 00000000000000c8 R14: ffff88802ab74540 R15: ffff888036168000
-FS:  0000000000c0e300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055c4467bb930 CR3: 0000000023a8c000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43fcb9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff00f21778 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043fcb9
-RDX: 0000000000000000 RSI: 0000000020001c80 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 00007fff00f21918 R09: 00007fff00f21918
-R10: 00007fff00f21918 R11: 0000000000000246 R12: 0000000000403540
-R13: 431bde82d7b634db R14: 00000000004ae018 R15: 0000000000400488
-Modules linked in:
----[ end trace 458d0f6d0de61f61 ]---
-RIP: 0010:skb_end_pointer include/linux/skbuff.h:1419 [inline]
-RIP: 0010:skb_has_frag_list include/linux/skbuff.h:3566 [inline]
-RIP: 0010:kcm_sendmsg+0xdd7/0x2240 net/kcm/kcmsock.c:1069
-Code: fb 05 0f 84 25 0b 00 00 e8 b6 f3 48 f9 48 8b 44 24 18 4c 8d a8 c8 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 5d 11 00 00 48 8b 44 24 18 48 8d a8 c4 00 00 00
-RSP: 0018:ffffc900017ef9b8 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000019 RSI: ffffffff882be8ca RDI: 0000000000000003
-RBP: ffff8880361685aa R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff882bec2b R11: 0000000000000000 R12: 00000000fffffe00
-R13: 00000000000000c8 R14: ffff88802ab74540 R15: ffff888036168000
-FS:  0000000000c0e300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000c0e2c0 CR3: 0000000023a8c000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+I've already sent a revert
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+
+With regards,
+Pavel Skripkin
