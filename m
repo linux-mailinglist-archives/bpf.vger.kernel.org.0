@@ -2,70 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C19239E9F1
-	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 01:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9645539EA13
+	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 01:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFGXN6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Jun 2021 19:13:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54700 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230183AbhFGXN4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 7 Jun 2021 19:13:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623107524;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P38DCbZ2zirScmfD4aQLmvp8eq+ZG0trhFlH2uXjuyw=;
-        b=bI2VF/KksbI13qZ5Iy21IL3mRC/4+v3AVSNE3yWE44TKh68vmo5VuV2KU78X1cvI7PkO3x
-        rcbJ4KCLvMX8nTTpS4AipcRL9lRhrbF8Qn9eYE8Z/97cxfCZ6V9hC6SVcD/hKN2dgcysMa
-        a+p62bHdkjKQQzW6LYk6WZaWneYsz5w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-JQYaIiNKNGqSDW1ZN8by4Q-1; Mon, 07 Jun 2021 19:12:03 -0400
-X-MC-Unique: JQYaIiNKNGqSDW1ZN8by4Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D2919107ACCA;
-        Mon,  7 Jun 2021 23:11:50 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-114-245.phx2.redhat.com [10.3.114.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E16295C1D1;
-        Mon,  7 Jun 2021 23:11:49 +0000 (UTC)
-From:   Tom Stellard <tstellar@redhat.com>
-To:     andrii@kernel.org
-Cc:     ast@fb.com, bpf@vger.kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, netdev@vger.kernel.org,
-        Tom Stellard <tstellar@redhat.com>
-Subject: Re: [PATCH v2 bpf-next 06/11] libbpf: add BPF static linker APIs
-Date:   Mon,  7 Jun 2021 23:11:46 +0000
-Message-Id: <20210607231146.1077-1-tstellar@redhat.com>
-In-Reply-To: <20210313193537.1548766-7-andrii@kernel.org>
-References: <20210313193537.1548766-7-andrii@kernel.org>
+        id S230254AbhFGXZu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Jun 2021 19:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhFGXZu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Jun 2021 19:25:50 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D39C061574;
+        Mon,  7 Jun 2021 16:23:49 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id s107so27459510ybi.3;
+        Mon, 07 Jun 2021 16:23:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Jxr0vjKn7qfPZb3yaeP6MX3qvKr/mzAbi08IaFkQSyw=;
+        b=My7PwKaTCZI3MfWNLMJN3k5lB8IRQO/jtEbX1Lxw+mDC0C03o209wD27VgUnjUC0T0
+         BjDT/OLZVaRUCVAbaxrnEilEy3cagvYSEkMaGQ96WJT3wGE/LQyJK77iWYr+jyfigJgs
+         w9KVvjBRlSdNdDLiMjHN/jJ+icodvA7P+i/vAfigH0Hncka09H8H4Mm08ncH1YzjVpG2
+         6ICyT9dyGI2aVcjJhTtHUyvPgeAWahHQ2INhsabQ8CrXS4kZ3/PLAfVUUsktnTnjrJ4d
+         hmuqIwZLR/wNLzsK92PKVS5FmJZHkJMfelIRLMkSAfKFQ6cOMawjxcl2+BRK0GVusoCB
+         o2Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Jxr0vjKn7qfPZb3yaeP6MX3qvKr/mzAbi08IaFkQSyw=;
+        b=eDHm0WLCVXBbkur+840vGVujG3W+9JN+y2ND23/82ZF0Bh8VifDoOLbUA1/z3vcpDv
+         djUneVmJCfT+jcshvv6fj2IhMUHtEHuL9dO65kTrJAsCllZkiAMU5sEse8ghTMdyPoRp
+         x2j0QBlCD6I2KyVigNTSh8/7jkQgh3BhwXnC4gns/wmkiLTwlb6VgKYZBwOt6dAMZZc/
+         IXgcng1UK+iZrYSPTKcyn69BBjQBl37kRyLOaur006BuZDNpogI3J0HANXdpoQNIwz51
+         u6iaSJQtR5tqAtDIc2Zva5iGFPfp3bsPdf65w4CagQQtKEtwlpEi7OaWKuaA75fO9TBm
+         ZZ+w==
+X-Gm-Message-State: AOAM53302W/FnQxLDY6iKSD8M4QBwzukma65x7XGRSUJOpzz4/VcOlzu
+        cKvFrDWzuQEuUREoaQMXyb7p7TWx9elfRRguoNE=
+X-Google-Smtp-Source: ABdhPJysDNkozHrwDFHCQqH/vwUAhNnBcizmvUj0yeehOV0GSz41nP9yJtegEDjr17CXcKvqSzSTDrbRiSiC32S42jU=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr27308496ybu.403.1623108228782;
+ Mon, 07 Jun 2021 16:23:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210604063116.234316-1-memxor@gmail.com> <20210604063116.234316-4-memxor@gmail.com>
+In-Reply-To: <20210604063116.234316-4-memxor@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 7 Jun 2021 16:23:37 -0700
+Message-ID: <CAEf4Bza2X7+begzQVkKoURSx7v+RHTxrAFaoNUSRc-Kyr5DWfQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/7] net: sched: add bpf_link API for bpf classifier
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Jun 3, 2021 at 11:32 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> This commit introduces a bpf_link based kernel API for creating tc
+> filters and using the cls_bpf classifier. Only a subset of what netlink
+> API offers is supported, things like TCA_BPF_POLICE, TCA_RATE and
+> embedded actions are unsupported.
+>
+> The kernel API and the libbpf wrapper added in a subsequent patch are
+> more opinionated and mirror the semantics of low level netlink based
+> TC-BPF API, i.e. always setting direct action mode, always setting
+> protocol to ETH_P_ALL, and only exposing handle and priority as the
+> variables the user can control. We add an additional gen_flags parameter
+> though to allow for offloading use cases. It would be trivial to extend
+> the current API to support specifying other attributes in the future,
+> but for now I'm sticking how we want to push usage.
+>
+> The semantics around bpf_link support are as follows:
+>
+> A user can create a classifier attached to a filter using the bpf_link
+> API, after which changing it and deleting it only happens through the
+> bpf_link API. It is not possible to bind the bpf_link to existing
+> filter, and any such attempt will fail with EEXIST. Hence EEXIST can be
+> returned in two cases, when existing bpf_link owned filter exists, or
+> existing netlink owned filter exists.
+>
+> Removing bpf_link owned filter from netlink returns EPERM, denoting that
+> netlink is locked out from filter manipulation when bpf_link is
+> involved.
+>
+> Whenever a filter is detached due to chain removal, or qdisc tear down,
+> or net_device shutdown, the bpf_link becomes automatically detached.
+>
+> In this way, the netlink API and bpf_link creation path are exclusive
+> and don't stomp over one another. Filters created using bpf_link API
+> cannot be replaced by netlink API, and filters created by netlink API are
+> never replaced by bpf_link. Netfilter also cannot detach bpf_link filters=
+.
+>
+> We serialize all changes dover rtnl_lock as cls_bpf API doesn't support t=
+he
+> unlocked classifier API.
+>
+> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>.
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf_types.h |   3 +
+>  include/net/pkt_cls.h     |  13 ++
+>  include/net/sch_generic.h |   6 +-
+>  include/uapi/linux/bpf.h  |  15 +++
+>  kernel/bpf/syscall.c      |  10 +-
+>  net/sched/cls_api.c       | 139 ++++++++++++++++++++-
+>  net/sched/cls_bpf.c       | 250 +++++++++++++++++++++++++++++++++++++-
+>  7 files changed, 430 insertions(+), 6 deletions(-)
+>
 
-Hi,
+[...]
 
->+                               } else {
->+                                       pr_warn("relocation against STT_SECTION in non-exec section is not supported!\n");
->+                                       return -EINVAL;
->+                               }
+> @@ -1447,6 +1449,12 @@ union bpf_attr {
+>                                 __aligned_u64   iter_info;      /* extra =
+bpf_iter_link_info */
+>                                 __u32           iter_info_len;  /* iter_i=
+nfo length */
+>                         };
+> +                       struct { /* used by BPF_TC */
+> +                               __u32 parent;
+> +                               __u32 handle;
+> +                               __u32 gen_flags;
 
-Kernel build of commit 324c92e5e0ee are failing for me with this error
-message:
+There is already link_create.flags that's totally up to a specific
+type of bpf_link. E.g., cgroup bpf_link doesn't accept any flags,
+while xdp bpf_link uses it for passing XDP-specific flags. Is there a
+need to have both gen_flags and flags for TC link?
 
-/builddir/build/BUILD/kernel-5.13-rc4-61-g324c92e5e0ee/linux-5.13.0-0.rc4.20210603git324c92e5e0ee.35.fc35.x86_64/tools/bpf/bpftool/bpftool gen object /builddir/build/BUILD/kernel-5.13-rc4-61-g324c92e5e0ee/linux-5.13.0-0.rc4.20210603git324c92e5e0ee.35.fc35.x86_64/tools/testing/selftests/bpf/bind_perm.linked1.o /builddir/build/BUILD/kernel-5.13-rc4-61-g324c92e5e0ee/linux-5.13.0-0.rc4.20210603git324c92e5e0ee.35.fc35.x86_64/tools/testing/selftests/bpf/bind_perm.o
-libbpf: relocation against STT_SECTION in non-exec section is not supported!
+> +                               __u16 priority;
 
-What information can I provide to help debug this failure?
+No strong preference, but we typically try to not have unnecessary
+padding in UAPI bpf_attr, so I wonder if using __u32 for this would
+make sense?
 
-Thanks,
-Tom
+> +                       } tc;
+>                 };
+>         } link_create;
+>
+> @@ -5519,6 +5527,13 @@ struct bpf_link_info {
+>                 struct {
+>                         __u32 ifindex;
+>                 } xdp;
+> +               struct {
+> +                       __u32 ifindex;
+> +                       __u32 parent;
+> +                       __u32 handle;
+> +                       __u32 gen_flags;
+> +                       __u16 priority;
+> +               } tc;
+>         };
+>  } __attribute__((aligned(8)));
+>
 
+[...]
