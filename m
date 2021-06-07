@@ -2,73 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0483039DC11
-	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 14:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA58C39DD4A
+	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 15:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhFGMSc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Jun 2021 08:18:32 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7127 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhFGMSc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:18:32 -0400
-Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FzC2k5bF6zYspX;
-        Mon,  7 Jun 2021 20:13:50 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by dggeme766-chm.china.huawei.com
- (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 7 Jun
- 2021 20:16:38 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>,
-        <davem@davemloft.net>, <ast@kernel.org>, <kuba@kernel.org>,
-        <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <jeffrey.t.kirsher@intel.com>,
-        <jan.sokolowski@intel.com>, <magnus.karlsson@intel.com>
-CC:     <intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] ixgbe, xsk: clean up the resources in ixgbe_xsk_pool_enable error path
-Date:   Mon, 7 Jun 2021 20:26:44 +0800
-Message-ID: <20210607122644.59021-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S230215AbhFGNKd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Jun 2021 09:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230194AbhFGNKc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:10:32 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95FDAC061766;
+        Mon,  7 Jun 2021 06:08:40 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id k5-20020a05600c1c85b02901affeec3ef8so2304222wms.0;
+        Mon, 07 Jun 2021 06:08:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=Blqm8HDtxq2DCywo/otFV5fX8E6HMxdWztbHqtnhcQ4=;
+        b=cYn0h2r3Og5Kv2IB6Ch8Nef2WtD0NS5tR8Qkw7JnR14mhvVUZDuDHssVmMhj9L7cYM
+         ux8F7ZiQjdEfpB7ImquMEGAMOO65OGLlqggEBz9eRIDUfv5FNxNMNFtq7SMVxcdrn+eB
+         UPaGR6Izbcnzx9JvyoY7OKihWxzQBIlrk04+lXeF+HdpjaWOStxVMBmr5lDj5NjTfwbA
+         R1YoRphDY+m5urDxK7QGmBpLHuLinklwEgs5sLY/xvZgexrKqWIW14C0db3nI6Mkdmme
+         Oesv6G8v+nLJ4gK5h2fSBchW3xDqbEt5dwAdi80/koq05EzZR2Q8Nfxvj2LG69YHoWwZ
+         rCSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Blqm8HDtxq2DCywo/otFV5fX8E6HMxdWztbHqtnhcQ4=;
+        b=eNJZbj5GgLVxTGDxJIb3XvbVRGaWbnyOgFcZyn/aj/VkGm3irJFe8eX/l9kamANwev
+         3RKbcZBKWWA9sEazQYMuZDATI6H0jDHrdy8j4ZzXe9QLMLgPyzM83pDsw6hFwYvVDCVa
+         CK2buQixwtZOqgozbSQ3QE4vAdwG+munxeQfLxV+Dt8SKSh2CrBFgd32kA2SXvoLRHpT
+         LAO9ZguOJh2nm9w82cyW5IDgQnW27MmXfEzz1srBN0aCWVjZ3YzaeYdzY9bG+U8YINBF
+         IRH7EtxiLgKPlUdxsW62vFPREXLIrfY9ppwuMfSQXR8B2CbhBvYr0nJ8HWl++zLLU0Kf
+         C40Q==
+X-Gm-Message-State: AOAM5314P+jntL59w+UWd3XpPdniiECRAMQOwa9bFUJ0MO+VncLNvcyV
+        V8d8VD3aBmm069O9x8RKwPo=
+X-Google-Smtp-Source: ABdhPJxeGzMQVek2rzeTsU89oXk+OB6CMX7fRQTS8ECgarjAh0DmuwMBrb4/CptbA5tB8XsMg8do3Q==
+X-Received: by 2002:a05:600c:204:: with SMTP id 4mr13651408wmi.95.1623071317518;
+        Mon, 07 Jun 2021 06:08:37 -0700 (PDT)
+Received: from linux-dev (host81-153-178-248.range81-153.btcentralplus.com. [81.153.178.248])
+        by smtp.gmail.com with ESMTPSA id p187sm14802839wmp.28.2021.06.07.06.08.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 06:08:37 -0700 (PDT)
+Date:   Mon, 7 Jun 2021 14:08:35 +0100
+From:   Kev Jackson <foamdino@gmail.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] libbpf: Fixes incorrect rx_ring_setup_done
+Message-ID: <YL4aU4f3Aaik7CN0@linux-dev>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme766-chm.china.huawei.com (10.3.19.112)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In ixgbe_xsk_pool_enable(), if ixgbe_xsk_wakeup() fails,
-We should restore the previous state and clean up the
-resources. Add the missing clear af_xdp_zc_qps and unmap dma
-to fix this bug.
+When calling xsk_socket__create_shared(), the logic at line 1097 marks a
+boolean flag true within the xsk_umem structure to track setup progress
+in order to support multiple calls to the function.  However, instead of
+marking umem->tx_ring_setup_done, the code incorrectly sets
+umem->rx_ring_setup_done.  This leads to improper behaviour when
+creating and destroying xsk and umem structures.
 
-Fixes: d49e286d354e ("ixgbe: add tracking of AF_XDP zero-copy state for each queue pair")
-Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for AF_XDP")
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Multiple calls to this function is documented as supported.
+
+Signed-off-by: Kev Jackson <foamdino@gmail.com>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/lib/bpf/xsk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-index 91ad5b902673..d912f14d2ba4 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-@@ -52,8 +52,11 @@ static int ixgbe_xsk_pool_enable(struct ixgbe_adapter *adapter,
- 
- 		/* Kick start the NAPI context so that receiving will start */
- 		err = ixgbe_xsk_wakeup(adapter->netdev, qid, XDP_WAKEUP_RX);
--		if (err)
-+		if (err) {
-+			clear_bit(qid, adapter->af_xdp_zc_qps);
-+			xsk_pool_dma_unmap(pool, IXGBE_RX_DMA_ATTR);
- 			return err;
-+		}
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index 6061431ee04c..e9b619aa0cdf 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -1094,7 +1094,7 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+ 			goto out_put_ctx;
+ 		}
+ 		if (xsk->fd == umem->fd)
+-			umem->rx_ring_setup_done = true;
++			umem->tx_ring_setup_done = true;
  	}
  
- 	return 0;
+ 	err = xsk_get_mmap_offsets(xsk->fd, &off);
 -- 
-2.17.1
+2.30.2
 
