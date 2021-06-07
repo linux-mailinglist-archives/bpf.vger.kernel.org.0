@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282CB39D465
-	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 07:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0740A39D478
+	for <lists+bpf@lfdr.de>; Mon,  7 Jun 2021 07:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbhFGFjo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Jun 2021 01:39:44 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62804 "EHLO
+        id S229923AbhFGFwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Jun 2021 01:52:14 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36816 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229436AbhFGFjn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 7 Jun 2021 01:39:43 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1575SCLI010355;
-        Sun, 6 Jun 2021 22:37:07 -0700
+        by vger.kernel.org with ESMTP id S229436AbhFGFwO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 7 Jun 2021 01:52:14 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1575nb1e023436;
+        Sun, 6 Jun 2021 22:49:37 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=ZCvZiuBOaMYtfgz4FIXVUK5XT4jYQT1sQEQOAnOqFMw=;
- b=Lx8z8Lw2kBqBGKPrLaSrEPTytYHpIg9AiQ7WYg6njSfgH81FeTpts7ugeYi40q+vHejQ
- 38RFJKmuspE8P0QZZ+aBgIB6SWNPdkMyXKhnn7VugwbkCmZlPa2YEdmSvkn1dlIbj93n
- /4wi65iNFrK57Dc3ExgTEVcTWvOx1HPtGFY= 
+ bh=1XkYk0P49ndeuPZjWp1iakhb3EhYvR3tTAGfTlQ/+f0=;
+ b=S4sSIdOXhRiithIVEOCoa2G+xmkDCY+KHnnCcGLMMJyxzW7pVh4fW5rV/eJdEV/pWBCr
+ Zbv3/33UgicZsOxnY1FHLEc5F3yv4hkCGRWG8C7VVpcIDCbaLPpNTI/3FHj7T82sP1ws
+ FqR3gMHdAvNG1PhB2wb6w+76cc7asK250OU= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3908k7ehu2-2
+        by mx0a-00082601.pphosted.com with ESMTP id 390sbwbmn5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 06 Jun 2021 22:37:07 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+        Sun, 06 Jun 2021 22:49:37 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 6 Jun 2021 22:37:04 -0700
+ 15.1.2176.2; Sun, 6 Jun 2021 22:49:27 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d6lg+sALXsQwli0X6wHF6BIqC+8ZliQzmTTwHvDmKIaFiQ2jTZRPpkEtUmcVCkbK69bgpb9l5VTOc59jeItjONGNF8au4MSYoSaV03mRiWbYhh30pDB9684TWb7ohs7kBRmXMENaskGVLnru8QIxPzjYKTmiXeACVOCtV8OrN3JuzU22gxzWEKpF8bf7qOsmtTTfIEq+51E8NlvaPd9SthFbU7/yDkdY07Q4G4CfW4lp8Xooq2SFeDJLxepVSsOLuobCWByFnT3tXbYrB0brEGAzAMz3BCxZ8GaV4WI1MPXM5i6yUvkZ+AaRNqqje20LZ+T24fcMZ7928OSJ0OjY4w==
+ b=R8Z2ro3Zw6lwBVVi9EEKt78NtFjr4cX/rsVL0GglpyuiJ338J4IHX5FioGlI8gDRvJ3KQ9OEeT8ZteMX8/97d+qqfhHPf2LZbVxLK/FVyECkKewz5UEWBxypFytFvDsW8d4oXfuJl1Tu7KhanZZXNb8jwehMwOeTPunNRoex5dlyW9yMi+qaGCih6mj4dQzQUdSD+UiLwf7yrgcEBeF08jnOvZeWUHZq8pJqeEfwJEtNdV9R4djwuD22C+BCnoRXtV5f0vYr3fjoN2188yNrWdULjjflin8Rzloiycr58nUbsNkhd3lYIhOcODN8mTFLrhJmVAQA/heSM86T9qMIVA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZCvZiuBOaMYtfgz4FIXVUK5XT4jYQT1sQEQOAnOqFMw=;
- b=hoPg8zmZ+WWEFjr3oVMFuyZ5ZqSX6I2iH1Mv4EuyLzYQRg2/mRsDt/pWyksG4/TGlQjGluHSuFK1JBmyuXGfzVlsPb/KErNE4weDq8LL2fvfw3VebbPoVCWGFZvCpVYDg6mEUH/6RJUN2lvbnDu5jDZDVYzAK97u9SIzTHy7GldRx/t7r69Sxi7JhmDvGhenLqSF1Aog/qlGRPFlIXSDg9krfENZ+l3WZo6x9atet2/hEraYFIE21XDFSL9AnbACC1CgwJghpR0qEzjMxQuE9oLygcB9VEErZ08gMzaUvscjpUAbzIIuVoi6FK0ssHslhm0ITTNNkfUJhRtwyHhAIA==
+ bh=1XkYk0P49ndeuPZjWp1iakhb3EhYvR3tTAGfTlQ/+f0=;
+ b=g9iuoTlWRha5isxup4+T4Ru4LhDIEerojTm5hyEsCWk4o3yUx4hN2MRWRxbK1g5a4vaW92K4MrDJqo1cAu4QmiIYYUKIQaRd6jX/zif4x1641BSsaQTbYBwS781ghKkGfEndqiIxb7aB4/NNxe/H8ANocHvUPJyFBpVplBF7hPsppuI0/QqyhenwPBytLvKvFGW1EC7ojEpqNIyLfRj1t4sa/JPG4xBFl31gdD01QcRZegHJFxzuu5iZP6uoctNNQbXJ2iDaN0aZvwE95RSj8RchY6ZM40TWoF3zKG+TpG9L3J0azKRIcSPp4h+K11LvbN+XV0XATUOhs3sjsUeDLw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: redhat.com; dkim=none (message not signed)
  header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4705.namprd15.prod.outlook.com (2603:10b6:806:19c::12) with
+ by SA1PR15MB5030.namprd15.prod.outlook.com (2603:10b6:806:1d9::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Mon, 7 Jun
- 2021 05:37:03 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Mon, 7 Jun
+ 2021 05:49:25 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
- 05:37:01 +0000
-Subject: Re: [PATCH 13/19] bpf: Add support to link multi func tracing program
+ 05:49:25 +0000
+Subject: Re: [PATCH 15/19] libbpf: Add support to link multi func tracing
+ program
 To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
@@ -62,79 +63,79 @@ CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
         KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
         Viktor Malik <vmalik@redhat.com>
 References: <20210605111034.1810858-1-jolsa@kernel.org>
- <20210605111034.1810858-14-jolsa@kernel.org>
+ <20210605111034.1810858-16-jolsa@kernel.org>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <de10c18b-5861-911e-ace8-eb599b72b0a8@fb.com>
-Date:   Sun, 6 Jun 2021 22:36:57 -0700
+Message-ID: <50f92d1e-1138-656c-4318-8fecf61f2025@fb.com>
+Date:   Sun, 6 Jun 2021 22:49:16 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <20210605111034.1810858-14-jolsa@kernel.org>
+In-Reply-To: <20210605111034.1810858-16-jolsa@kernel.org>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:9a26]
-X-ClientProxiedBy: BY5PR17CA0011.namprd17.prod.outlook.com
- (2603:10b6:a03:1b8::24) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+X-ClientProxiedBy: BYAPR01CA0044.prod.exchangelabs.com (2603:10b6:a03:94::21)
+ To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::1097] (2620:10d:c090:400::5:9a26) by BY5PR17CA0011.namprd17.prod.outlook.com (2603:10b6:a03:1b8::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Mon, 7 Jun 2021 05:36:59 +0000
+Received: from [IPv6:2620:10d:c085:21cf::1097] (2620:10d:c090:400::5:9a26) by BYAPR01CA0044.prod.exchangelabs.com (2603:10b6:a03:94::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.15 via Frontend Transport; Mon, 7 Jun 2021 05:49:24 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ba7da48d-6dc0-4ef2-86fc-08d929764674
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4705:
+X-MS-Office365-Filtering-Correlation-Id: 4f3dea80-be53-4eb2-8252-08d929780192
+X-MS-TrafficTypeDiagnostic: SA1PR15MB5030:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA1PR15MB4705D7E1B8C9FE1033EDCB24D3389@SA1PR15MB4705.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SA1PR15MB5030DEF4CC424DBC513E47CDD3389@SA1PR15MB5030.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4tnYILYFDoT0tV3/rd9cTisGgNYz8dpF2bCcx/MQZkY+bOJijV4wMk/eyLx0YzDjc0sku7FjCOhKFc2D9Th4HuZNnK3phjuDyhaPid9k2kpIhbb2WLWUlZ60pG5fCReQo/5ecQqcuOkK+vC1PwrrIKhCuei0DfTYld8qZNTWZVxtxFv2lT8nCfTmaxLgthDxRqPTcn0OuHQ3U7IhVbrGO2wg1hDzrLMBMivGLcKz+YtmTOibc0AVyE2yHtq+PifSIzRzbpxrOxtsg96ZsPB/axf4v483jny5v0FYx2nweRRFt7kYrTHFsoOXfcwevKkgBCxEoAJmen8ZnwnyL8cSMngoy5Yzrf5TxG/ls64hvteL5sFTdg7CV+0LQLnpzSDw1WRIgBPXvQG1cxAFY8puQ3ldqPWmlxG/mCsHBDeQBxhLN/3xY58rqWPVLeSHvps+1f+/RrR3jCY94Q0HHqEteP6E9tPc60DEWEmMLCXvjCDkr+y9AmG2le23s8DVkGmCPlsHSxm3ih+k8K2bV9upqX8c4UjgTVpvxJf9S7eg7jBC1C7WbTeZU9QQiFx3FxcRuvZQsOQCdDR8lm5WwkUY4EloDSWx6Q/2Un+xsWXoybacMVk45sXw7hBj+aKYYe2FTV97aY41+myF5qESJFtZqjM65styyybUpAMAESl1KyCprMRWydKogNC0UhMRYds0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(346002)(39860400002)(366004)(86362001)(316002)(16526019)(54906003)(186003)(110136005)(2906002)(31686004)(6486002)(478600001)(83380400001)(4326008)(38100700002)(31696002)(66476007)(66556008)(5660300002)(8936002)(36756003)(66946007)(7416002)(2616005)(8676002)(52116002)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?QVSlZe03joOa+SJmo5HRf/lHqy/ZT3bJXaMo7eJfD5dKNxjfl1+OVu8R?=
- =?Windows-1252?Q?1d8Jtpz18zn9CElqSUsU9aKy/vWLRe1hHJu/+9ZcWPjq0kuLZU6tnXXw?=
- =?Windows-1252?Q?qaeJsZL7ynL+Ba6pXTjphRSiwZHOQ1/yQzyR5fuaxBAn9+NWgj+UXYBo?=
- =?Windows-1252?Q?o0SzvetsZNrhEUlm8f5lMlFIE/B/e9pBD5OKczmiCLadj0KNG9/XKirJ?=
- =?Windows-1252?Q?jMBxmucAqUuKvKeAW74Zbt119Sita8/OAwrRQIlK4Vwtxoaet1qyzxYe?=
- =?Windows-1252?Q?tJdKiRDJ83Cf4V7G3+U/b/7tanYtKTqUk38ox2VRDGDlNtRktyqDq102?=
- =?Windows-1252?Q?vqboKUFqUbkpOPTckddFs9/DxIIh05HtTzQ9gdSA7kK2WXxyl3PB9lga?=
- =?Windows-1252?Q?k5AD6sC6fpFnzfaAYlKiGTkljBvFf6DoCmPG/3JjfA2MClJRH82eRYfI?=
- =?Windows-1252?Q?t6U36MZ7mHmvjrihXnHuackuck+Nt10N+GZdZ8TpDoGi08a2G43s8kDh?=
- =?Windows-1252?Q?NH++MeuJp0aX8JZC4vPZu3Pa65huq6/r7wBJrG2r1Xq+A2TIA8EpwXYU?=
- =?Windows-1252?Q?5xBrWeLboipqE9UyKL/SIo2opuw8QzN1PCcPjwxKXgsNwaq9f/KlBupV?=
- =?Windows-1252?Q?Ad+Sjw3Q7zWM5OCm8KITq6Z64zPRH9abgCvd7mYtKNQAA2b09QUwQ+n4?=
- =?Windows-1252?Q?yasVDQzZYGewhaHhVo4kWCWtQD0eZrYpZbVksEnbxY1yboC/bwpz5xb5?=
- =?Windows-1252?Q?NP7hrHs8fxue027F3q+zB9GMpfbDoB0cxz6ZQgjda5mPv7mC6CK1nrX1?=
- =?Windows-1252?Q?OAHlvxwfPt1Z3slap4VFJtJbPryHXeSG3ITiMtopqY/QRAwzkCx6YI98?=
- =?Windows-1252?Q?418rHqgcuTJ7cRZMR+t1M13JCzy2cnSFb55LvFYnnqXA04eyjyIgfDKW?=
- =?Windows-1252?Q?zst7uX1eY4vNBtsSQk4UwuIPjO68nsqmtpLdFxvDQhr1jnbADQ9ogSYA?=
- =?Windows-1252?Q?I0osCmQ6+opPPMv75yjNjTw5PYw0E1CC52I7CNkw8KnA5UppiuL18hy6?=
- =?Windows-1252?Q?ZlxoHCfkjisvDtX7xkryOkwJ9K1rwrjENG6Ixw9PswkYbmosN/Sli2r0?=
- =?Windows-1252?Q?GOJBoPT61lguRjIZLmQbjbyufb9gT4yyjj49j1Yy1nWW3CbZVZkHTouB?=
- =?Windows-1252?Q?jgiao+8Xxk2+gaShwV2v1Bq6oq7hfpSdc8RdRWORmi9rNuUr7uhkkhaa?=
- =?Windows-1252?Q?M/8bK2tRjWZ02cFrWu+0Xur/HMV1o3sJ1VfdDMmAtunnFQRUZYHXsNlo?=
- =?Windows-1252?Q?GAYGvY2DhUBmXJrH4pCYMeVCDUVn5xL/KRGXYyZTnd8fFZXsrsKuQnSs?=
- =?Windows-1252?Q?GO8TlV1lSZQaTmwc4NI7jqrEy9TAjBkhUWKhriqoK7B7qkNkKfm8NxNk?=
- =?Windows-1252?Q?ImpUZQy/cPo04n/zbQso0pazv4avP29t0HinL602/eE=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba7da48d-6dc0-4ef2-86fc-08d929764674
+X-Microsoft-Antispam-Message-Info: 2+Pbof3vdrirKw4FvBbBKxPhyJp2CZULCypoNAxnKqX+2OveY+8fbJSZdRrIBfc1hCMSbWIuDsex3fOnUS2NyGfM489HaUDaTM+dFYvHvRaI9FC5zsBWkO5AujmLRzsmlkY6sIHO+HFP//sH1NJG/8NSOIEhi5gpzeLn8EcsRAmq3816D/HC0XaCdYgaV3eC3LHb5+71f4pk20VU5h8D96OVSUnMWJ8cJs5AqAUmlU6q8a7eJRMpr/IUayqY7jHcfZ4uBGQa9TnEsFxwu9LR893FyiOWyymGitVRmSB9HL+3a+ZEcO6CcZ/zy0KmLgnn8yn+V4pdagbakY+wwvDFMqDFjBybkQwcQRO8Zmw3OUGSSIVDasmH743+wjYB0qIinglkyouxiAk3KdAO5hXwF18Y+CB9C/kvewSocN10ikLE+5KVZAxq4hiZArX7ldEj8v6rDaQh4losb2wEtDBvByqTLygWHL19dDaQQ+qXie8IIJMXhgNPDR0hN0rCK8NaeOVQ0G+7Ad7k4nqYxqBfhQ59F3z2tX/wO9xyXIjtU/gXbArz1d5/7D9hJOP8xHheuaAq696BJHD6W+Llj0NiQWpi9tP0B3R0Kd8fTBqZhGp1uipzzXmp1fHRjwxBnJS1LxP03/XfzceQqyx2nvWQ4O+sRPKliBctFBPNrQc8QwM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(136003)(366004)(54906003)(110136005)(86362001)(2616005)(2906002)(52116002)(6486002)(36756003)(186003)(4326008)(478600001)(31696002)(66476007)(83380400001)(53546011)(8936002)(66946007)(8676002)(316002)(5660300002)(38100700002)(7416002)(6666004)(66556008)(31686004)(16526019)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?7oV4KfjetsXsqugfBXfC6MPiOtum0U62vFMwdnk0YgXDKJ67SB0e0Dye?=
+ =?Windows-1252?Q?m0gJqEJBSCqbALBi+Kxkz3eUrE0xrotCtp5XmWCvI3Y/Z5O6icMzP02J?=
+ =?Windows-1252?Q?s1jJ7zMK1Qc/iHgOlO1Xa5DZsWsR7oIkJC3SZESrhswGSiTPQLVVgKNN?=
+ =?Windows-1252?Q?xJVl0fY8rQPzi0F7OTMdONRoCOrR4So6rdrhL2ibnUpg/nFC4JbfLZ0V?=
+ =?Windows-1252?Q?Q519QWWoDojmS1gr2stoJmyHiXOxZSikwETFMKYAhll+QSDGz9J0Pih2?=
+ =?Windows-1252?Q?UqMefM8vIwKkbENGSGoc5kNlyFkFBi8N8kF5lAkw5BBCoyj/SUN2T0tQ?=
+ =?Windows-1252?Q?G2mWVRC1PPPguRI3XhwlDo5JcFHEIskz+hexOHy7bQqIB0N4b+wna7FR?=
+ =?Windows-1252?Q?nhzbBM3HIWZPXLI9ge+CuVEgchNKSjkJV5ICzn3TwHFAGOftHr06v2T6?=
+ =?Windows-1252?Q?GXSbSsx9KZIKsIxT5cJMMeN+n0JHT1V1cwGEhNXE7NyvDey8ffvOJj7R?=
+ =?Windows-1252?Q?DUCGjEsGP/jdWF58Rfimr87H054DN1IyGYwkU1XoHvUnqL97/3T0Prxx?=
+ =?Windows-1252?Q?gvh0FVHcY1VnqGuDngs+RspyhXaqp979dOZnz3atYlE9mAZi8x7MY7dC?=
+ =?Windows-1252?Q?70PknGh+4vhLrdzCpKEWg5EeXLEDxjRJmc8uWdJ46+H0pVuull4JihNz?=
+ =?Windows-1252?Q?wqk1Z0O/VwqcKKYV1VJh5+fr2uaqk8k4wFVuj24z0WLfpTk1mW4kVH4M?=
+ =?Windows-1252?Q?E6WcGsyGlIcIBN+KtzBk0KAfPoFbkuCHTAZd3J/1ymgr18v3DwCFaIx0?=
+ =?Windows-1252?Q?i+oJ9rba50iXWOZXxvrNhRS/j6i6x8pq/IU2CKt29gn1wTQXB5E7/omI?=
+ =?Windows-1252?Q?N39w31rp4mFsFXi5wqr0yblUU/L9IlLWSqcTdnpYyt26I9VUSrzRY3iz?=
+ =?Windows-1252?Q?87n/r5DF5RiKkHGvK/pq1Hz59iQQqcP9suM7dnpdH6E60DTbqnWsFVF2?=
+ =?Windows-1252?Q?ICWFKumRuNsGXefNYH4RN9A1qsQNE9175BlPHaAY373znAE7Uy0sR5fF?=
+ =?Windows-1252?Q?PJBCnTlI30QG1jehOtKkUHyNX3mQqdMcexVT98Mi1G/LVm+ikm6tqIg/?=
+ =?Windows-1252?Q?vB7Fu1T85z2C1Upr9i0wKWSLg0SEC83/Uif9siyv5BfKaatka5wHxUN7?=
+ =?Windows-1252?Q?kKUId7gqUVJfZ1G0JHIvzdyUKTcEY/8zy7JEwyuP7aQrs6abMz5kuPr7?=
+ =?Windows-1252?Q?JiFHIcMMyVp4vqE0vk943PVa0nxJS+/1PIDaQ1QNy9LzaEIok/+iDET2?=
+ =?Windows-1252?Q?Lll+Vv9QmkDp+3IfgmDT9BIeYncSK0y4xyelBeupOfI4atakCn7UpYOO?=
+ =?Windows-1252?Q?xowzYCeG7WDo6H22sMGKURbzNLtsxCSBQjxJyUDMCwaok+zHwJfmTJWd?=
+ =?Windows-1252?Q?o+GHM511EZJg+dy+En1M40NlBbbSX53n7KZTN1fidYI=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f3dea80-be53-4eb2-8252-08d929780192
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 05:37:01.6655
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 05:49:25.0817
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B6VEysnJHkuLrf96eapirTBnYC6MDKwycslsKTmtPGuzi1yAzPiaQo33xknCK4Zc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4705
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2fI1yjS3tMQL8/3kVmC1HNYAmAyCutTsWTmH2bL2JVqh2jnlA78ZGuYWo0t3nMlK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5030
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: 6620qrahAWszCasvyRhYnyFOE78uYuyB
-X-Proofpoint-ORIG-GUID: 6620qrahAWszCasvyRhYnyFOE78uYuyB
+X-Proofpoint-GUID: Jdn7l4Y0Y3lAFTUQ0kfOiuk69eyqNoit
+X-Proofpoint-ORIG-GUID: Jdn7l4Y0Y3lAFTUQ0kfOiuk69eyqNoit
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-07_03:2021-06-04,2021-06-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- clxscore=1015 impostorscore=0 suspectscore=0 bulkscore=0 phishscore=0
- malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106070042
+ definitions=2021-06-07_06:2021-06-04,2021-06-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 adultscore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106070045
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -143,290 +144,116 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 6/5/21 4:10 AM, Jiri Olsa wrote:
-> Adding support to attach multiple functions to tracing program
-> by using the link_create/link_update interface.
+> Adding support to link multi func tracing program
+> through link_create interface.
 > 
-> Adding multi_btf_ids/multi_btf_ids_cnt pair to link_create struct
-> API, that define array of functions btf ids that will be attached
-> to prog_fd.
+> Adding special types for multi func programs:
 > 
-> The prog_fd needs to be multi prog tracing program (BPF_F_MULTI_FUNC).
+>    fentry.multi
+>    fexit.multi
 > 
-> The new link_create interface creates new BPF_LINK_TYPE_TRACING_MULTI
-> link type, which creates separate bpf_trampoline and registers it
-> as direct function for all specified btf ids.
+> so you can define multi func programs like:
 > 
-> The new bpf_trampoline is out of scope (bpf_trampoline_lookup) of
-> standard trampolines, so all registered functions need to be free
-> of direct functions, otherwise the link fails.
-
-I am not sure how severe such a limitation could be in practice.
-It is possible in production some non-multi fentry/fexit program
-may run continuously. Does kprobe program impact this as well?
-
+>    SEC("fentry.multi/bpf_fentry_test*")
+>    int BPF_PROG(test1, unsigned long ip, __u64 a, __u64 b, __u64 c, __u64 d, __u64 e, __u64 f)
 > 
-> The new bpf_trampoline will store and pass to bpf program the highest
-> number of arguments from all given functions.
+> that defines test1 to be attached to bpf_fentry_test* functions,
+> and able to attach ip and 6 arguments.
 > 
-> New programs (fentry or fexit) can be added to the existing trampoline
-> through the link_update interface via new_prog_fd descriptor.
-
-Looks we do not support replacing old programs. Do we support
-removing old programs?
-
+> If functions are not specified the program needs to be attached
+> manually.
+> 
+> Adding new btf id related fields to bpf_link_create_opts and
+> bpf_link_create to use them.
 > 
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->   include/linux/bpf.h            |   3 +
->   include/uapi/linux/bpf.h       |   5 +
->   kernel/bpf/syscall.c           | 185 ++++++++++++++++++++++++++++++++-
->   kernel/bpf/trampoline.c        |  53 +++++++---
->   tools/include/uapi/linux/bpf.h |   5 +
->   5 files changed, 237 insertions(+), 14 deletions(-)
+>   tools/lib/bpf/bpf.c    | 11 ++++++-
+>   tools/lib/bpf/bpf.h    |  4 ++-
+>   tools/lib/bpf/libbpf.c | 72 ++++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 85 insertions(+), 2 deletions(-)
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 23221e0e8d3c..99a81c6c22e6 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -661,6 +661,7 @@ struct bpf_trampoline {
->   	struct bpf_tramp_image *cur_image;
->   	u64 selector;
->   	struct module *mod;
-> +	bool multi;
->   };
->   
->   struct bpf_attach_target_info {
-> @@ -746,6 +747,8 @@ void bpf_ksym_add(struct bpf_ksym *ksym);
->   void bpf_ksym_del(struct bpf_ksym *ksym);
->   int bpf_jit_charge_modmem(u32 pages);
->   void bpf_jit_uncharge_modmem(u32 pages);
-> +struct bpf_trampoline *bpf_trampoline_multi_alloc(void);
-> +void bpf_trampoline_multi_free(struct bpf_trampoline *tr);
->   #else
->   static inline int bpf_trampoline_link_prog(struct bpf_prog *prog,
->   					   struct bpf_trampoline *tr)
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index ad9340fb14d4..5fd6ff64e8dc 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1007,6 +1007,7 @@ enum bpf_link_type {
->   	BPF_LINK_TYPE_ITER = 4,
->   	BPF_LINK_TYPE_NETNS = 5,
->   	BPF_LINK_TYPE_XDP = 6,
-> +	BPF_LINK_TYPE_TRACING_MULTI = 7,
->   
->   	MAX_BPF_LINK_TYPE,
->   };
-> @@ -1454,6 +1455,10 @@ union bpf_attr {
->   				__aligned_u64	iter_info;	/* extra bpf_iter_link_info */
->   				__u32		iter_info_len;	/* iter_info length */
->   			};
-> +			struct {
-> +				__aligned_u64	multi_btf_ids;		/* addresses to attach */
-> +				__u32		multi_btf_ids_cnt;	/* addresses count */
-> +			};
->   		};
->   	} link_create;
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index 86dcac44f32f..da892737b522 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -674,7 +674,8 @@ int bpf_link_create(int prog_fd, int target_fd,
+>   		    enum bpf_attach_type attach_type,
+>   		    const struct bpf_link_create_opts *opts)
+>   {
+> -	__u32 target_btf_id, iter_info_len;
+> +	__u32 target_btf_id, iter_info_len, multi_btf_ids_cnt;
+> +	__s32 *multi_btf_ids;
+>   	union bpf_attr attr;
+>   	int fd;
 >   
 [...]
-> +static int bpf_tracing_multi_link_fill_link_info(const struct bpf_link *link,
-> +						 struct bpf_link_info *info)
+> @@ -9584,6 +9597,9 @@ static int libbpf_find_attach_btf_id(struct bpf_program *prog, int *btf_obj_fd,
+>   	if (!name)
+>   		return -EINVAL;
+>   
+> +	if (prog->prog_flags & BPF_F_MULTI_FUNC)
+> +		return 0;
+> +
+>   	for (i = 0; i < ARRAY_SIZE(section_defs); i++) {
+>   		if (!section_defs[i].is_attach_btf)
+>   			continue;
+> @@ -10537,6 +10553,62 @@ static struct bpf_link *bpf_program__attach_btf_id(struct bpf_program *prog)
+>   	return (struct bpf_link *)link;
+>   }
+>   
+> +static struct bpf_link *bpf_program__attach_multi(struct bpf_program *prog)
 > +{
-> +	struct bpf_tracing_multi_link *tr_link =
-> +		container_of(link, struct bpf_tracing_multi_link, link);
+> +	char *pattern = prog->sec_name + prog->sec_def->len;
+> +	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
+> +	enum bpf_attach_type attach_type;
+> +	int prog_fd, link_fd, cnt, err;
+> +	struct bpf_link *link = NULL;
+> +	__s32 *ids = NULL;
 > +
-> +	info->tracing.attach_type = tr_link->attach_type;
-> +	return 0;
-> +}
+> +	prog_fd = bpf_program__fd(prog);
+> +	if (prog_fd < 0) {
+> +		pr_warn("prog '%s': can't attach before loaded\n", prog->name);
+> +		return ERR_PTR(-EINVAL);
+> +	}
 > +
-> +static int check_multi_prog_type(struct bpf_prog *prog)
-> +{
-> +	if (!prog->aux->multi_func &&
-> +	    prog->type != BPF_PROG_TYPE_TRACING)
-
-I think prog->type != BPF_PROG_TYPE_TRACING is not needed, it should 
-have been checked during program load time?
-
-> +		return -EINVAL;
-> +	if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
-> +	    prog->expected_attach_type != BPF_TRACE_FEXIT)
-> +		return -EINVAL;
-> +	return 0;
-> +}
-> +
-> +static int bpf_tracing_multi_link_update(struct bpf_link *link,
-> +					 struct bpf_prog *new_prog,
-> +					 struct bpf_prog *old_prog __maybe_unused)
-> +{
-> +	struct bpf_tracing_multi_link *tr_link =
-> +		container_of(link, struct bpf_tracing_multi_link, link);
-> +	int err;
-> +
-> +	if (check_multi_prog_type(new_prog))
-> +		return -EINVAL;
-> +
-> +	err = bpf_trampoline_link_prog(new_prog, tr_link->tr);
+> +	err = bpf_object__load_vmlinux_btf(prog->obj, true);
 > +	if (err)
-> +		return err;
+> +		return ERR_PTR(err);
 > +
-> +	err = modify_ftrace_direct_multi(&tr_link->ops,
-> +					 (unsigned long) tr_link->tr->cur_image->image);
-> +	return WARN_ON(err);
+> +	cnt = btf__find_by_pattern_kind(prog->obj->btf_vmlinux, pattern,
+> +					BTF_KIND_FUNC, &ids);
+> +	if (cnt <= 0)
+> +		return ERR_PTR(-EINVAL);
 
-Why WARN_ON here? Some comments will be good.
+In kernel, looks like we support cnt = 0, here we error out.
+Should we also error out in the kernel if cnt == 0?
 
+> +
+> +	link = calloc(1, sizeof(*link));
+> +	if (!link) {
+> +		err = -ENOMEM;
+> +		goto out_err;
+> +	}
+> +	link->detach = &bpf_link__detach_fd;
+> +
+> +	opts.multi_btf_ids = ids;
+> +	opts.multi_btf_ids_cnt = cnt;
+> +
+> +	attach_type = bpf_program__get_expected_attach_type(prog);
+> +	link_fd = bpf_link_create(prog_fd, 0, attach_type, &opts);
+> +	if (link_fd < 0) {
+> +		err = -errno;
+> +		goto out_err;
+> +	}
+> +	link->fd = link_fd;
+> +	free(ids);
+> +	return link;
+> +
+> +out_err:
+> +	free(link);
+> +	free(ids);
+> +	return ERR_PTR(err);
 > +}
 > +
-> +static const struct bpf_link_ops bpf_tracing_multi_link_lops = {
-> +	.release = bpf_tracing_multi_link_release,
-> +	.dealloc = bpf_tracing_multi_link_dealloc,
-> +	.show_fdinfo = bpf_tracing_multi_link_show_fdinfo,
-> +	.fill_link_info = bpf_tracing_multi_link_fill_link_info,
-> +	.update_prog = bpf_tracing_multi_link_update,
-> +};
-> +
-[...]
-> +
->   struct bpf_raw_tp_link {
->   	struct bpf_link link;
->   	struct bpf_raw_event_map *btp;
-> @@ -3043,6 +3222,8 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
->   	case BPF_CGROUP_SETSOCKOPT:
->   		return BPF_PROG_TYPE_CGROUP_SOCKOPT;
->   	case BPF_TRACE_ITER:
-> +	case BPF_TRACE_FENTRY:
-> +	case BPF_TRACE_FEXIT:
->   		return BPF_PROG_TYPE_TRACING;
->   	case BPF_SK_LOOKUP:
->   		return BPF_PROG_TYPE_SK_LOOKUP;
-> @@ -4099,6 +4280,8 @@ static int tracing_bpf_link_attach(const union bpf_attr *attr, bpfptr_t uattr,
->   
->   	if (prog->expected_attach_type == BPF_TRACE_ITER)
->   		return bpf_iter_link_attach(attr, uattr, prog);
-> +	else if (prog->aux->multi_func)
-> +		return bpf_tracing_multi_attach(prog, attr);
->   	else if (prog->type == BPF_PROG_TYPE_EXT)
->   		return bpf_tracing_prog_attach(prog,
->   					       attr->link_create.target_fd,
-> @@ -4106,7 +4289,7 @@ static int tracing_bpf_link_attach(const union bpf_attr *attr, bpfptr_t uattr,
->   	return -EINVAL;
->   }
->   
-> -#define BPF_LINK_CREATE_LAST_FIELD link_create.iter_info_len
-> +#define BPF_LINK_CREATE_LAST_FIELD link_create.multi_btf_ids_cnt
-
-It is okay that we don't change this. link_create.iter_info_len
-has the same effect since it is a union.
-
->   static int link_create(union bpf_attr *attr, bpfptr_t uattr)
->   {
->   	enum bpf_prog_type ptype;
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 2755fdcf9fbf..660b8197c27f 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -58,7 +58,7 @@ void bpf_image_ksym_del(struct bpf_ksym *ksym)
->   			   PAGE_SIZE, true, ksym->name);
->   }
->   
-> -static struct bpf_trampoline *bpf_trampoline_alloc(void)
-> +static struct bpf_trampoline *bpf_trampoline_alloc(bool multi)
->   {
->   	struct bpf_trampoline *tr;
->   	int i;
-> @@ -72,6 +72,7 @@ static struct bpf_trampoline *bpf_trampoline_alloc(void)
->   	mutex_init(&tr->mutex);
->   	for (i = 0; i < BPF_TRAMP_MAX; i++)
->   		INIT_HLIST_HEAD(&tr->progs_hlist[i]);
-> +	tr->multi = multi;
->   	return tr;
->   }
->   
-> @@ -88,7 +89,7 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
->   			goto out;
->   		}
->   	}
-> -	tr = bpf_trampoline_alloc();
-> +	tr = bpf_trampoline_alloc(false);
->   	if (tr) {
->   		tr->key = key;
->   		hlist_add_head(&tr->hlist, head);
-> @@ -343,14 +344,16 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
->   	struct bpf_tramp_image *im;
->   	struct bpf_tramp_progs *tprogs;
->   	u32 flags = BPF_TRAMP_F_RESTORE_REGS;
-> -	int err, total;
-> +	bool update = !tr->multi;
-> +	int err = 0, total;
->   
->   	tprogs = bpf_trampoline_get_progs(tr, &total);
->   	if (IS_ERR(tprogs))
->   		return PTR_ERR(tprogs);
->   
->   	if (total == 0) {
-> -		err = unregister_fentry(tr, tr->cur_image->image);
-> +		if (update)
-> +			err = unregister_fentry(tr, tr->cur_image->image);
->   		bpf_tramp_image_put(tr->cur_image);
->   		tr->cur_image = NULL;
->   		tr->selector = 0;
-> @@ -363,9 +366,15 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
->   		goto out;
->   	}
->   
-> +	if (tr->multi)
-> +		flags |= BPF_TRAMP_F_IP_ARG;
-> +
->   	if (tprogs[BPF_TRAMP_FEXIT].nr_progs ||
-> -	    tprogs[BPF_TRAMP_MODIFY_RETURN].nr_progs)
-> +	    tprogs[BPF_TRAMP_MODIFY_RETURN].nr_progs) {
->   		flags = BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_SKIP_FRAME;
-> +		if (tr->multi)
-> +			flags |= BPF_TRAMP_F_ORIG_STACK | BPF_TRAMP_F_IP_ARG;
-
-BPF_TRAMP_F_IP_ARG is not needed. It has been added before.
-
-> +	}
->   
->   	err = arch_prepare_bpf_trampoline(im, im->image, im->image + PAGE_SIZE,
->   					  &tr->func.model, flags, tprogs,
-> @@ -373,16 +382,19 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
->   	if (err < 0)
->   		goto out;
->   
-> +	err = 0;
->   	WARN_ON(tr->cur_image && tr->selector == 0);
->   	WARN_ON(!tr->cur_image && tr->selector);
-> -	if (tr->cur_image)
-> -		/* progs already running at this address */
-> -		err = modify_fentry(tr, tr->cur_image->image, im->image);
-> -	else
-> -		/* first time registering */
-> -		err = register_fentry(tr, im->image);
-> -	if (err)
-> -		goto out;
-> +	if (update) {
-> +		if (tr->cur_image)
-> +			/* progs already running at this address */
-> +			err = modify_fentry(tr, tr->cur_image->image, im->image);
-> +		else
-> +			/* first time registering */
-> +			err = register_fentry(tr, im->image);
-> +		if (err)
-> +			goto out;
-> +	}
->   	if (tr->cur_image)
->   		bpf_tramp_image_put(tr->cur_image);
->   	tr->cur_image = im;
-> @@ -436,6 +448,10 @@ int bpf_trampoline_link_prog(struct bpf_prog *prog, struct bpf_trampoline *tr)
->   			err = -EBUSY;
->   			goto out;
->   		}
-> +		if (tr->multi) {
-> +			err = -EINVAL;
-> +			goto out;
-> +		}
->   		tr->extension_prog = prog;
->   		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP, NULL,
->   					 prog->bpf_func);
 [...]
