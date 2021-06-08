@@ -2,325 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C763A001B
-	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 20:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5543A01C3
+	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 21:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234817AbhFHSkL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Jun 2021 14:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
+        id S236985AbhFHS4L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Jun 2021 14:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234799AbhFHSit (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Jun 2021 14:38:49 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EA5C061787;
-        Tue,  8 Jun 2021 11:36:10 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id g38so31587042ybi.12;
-        Tue, 08 Jun 2021 11:36:10 -0700 (PDT)
+        with ESMTP id S236419AbhFHSyL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Jun 2021 14:54:11 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C5AC061145;
+        Tue,  8 Jun 2021 11:49:08 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id u7so11178516plq.4;
+        Tue, 08 Jun 2021 11:49:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nEbFbKoLutEn8LPv4kWiYSYfRvwWro+B0p6xeT8GQko=;
-        b=gHwxAJsOtg3gePVeCFOJQ/TsUr6xM9Il3WMFQoab/M52pIZsbOAfeb7ZN2t/8R+r16
-         tH8IAUmdm/VhiuvMg/GnoJ+iuxPyc34JAHKv0rgnxgDIo9DU9u/S1nY+QuzD3CxSyx/v
-         N5clK40euQH+KqXz7TvsAQ3tUzDoj7d2mjJ0r0Zlg1B2mO1l5gkrcu3+lPF/s3Tox1O7
-         Jze3aDfchX+BnNf4VIUq5g6HI/imsxl9rVWkM1BYp9pisRTd+R6hWzd+N0ovKU55DDfh
-         lMSaIQC1ImeAiHAU5lyrLHBa6FnZxvJkF3qaYT4rqrn0dG0N2H/pNfYuk3m4K2eBSQlP
-         OckA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wL6KSwo0TwWeM3oDNEJHVYbpsiCDr8Co8+WhySeHKfg=;
+        b=FDEmou5ruDlz3H9qbrSR+MWOOgzpv/UHNnV9es24BzpMrVdIqoiYXItjNM+9eHqNBJ
+         OSJCOxJiSKy4lvxauFwNDbNYEyHA+PmzN4ebrjOfTJOOEci3hjhL2bDQTv7EC4oHbDyF
+         ESBXnombma1DAfc3MO+2K0vXaE8lcdjaZlv8YwDzGbXFKO2idY5x0GPkA5rO7G3vJniy
+         2cWnK7SJNMeQpovLVVGh2VpcxAq88CRoOLuAsGJN8EBzvVr/7Y5yz7x/LL9aOuY3LRjX
+         XDM5LPAUh/AGblSMghYCmaeq2Zngw8qyHJsi1ehZuedB6cGrpfIxAcYLGHe8k7jO+Q87
+         y0rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nEbFbKoLutEn8LPv4kWiYSYfRvwWro+B0p6xeT8GQko=;
-        b=K/cTM+QBE28jiAelIbf11ZGOSEzuI4TN/pjzuqwO/NtAVkIQ5pVpXPGY+K/V3nOzTK
-         lzsZsoa3hMe5hNt3vyF9+BpPF6R/FR6wyStn7wnpOMerfVDS1x+BQvnep+0Xxu6pP7cL
-         439ovXrvr/nJRbOL99Qe5LtQ23O8G7wwI9m+WoLwTydsFPrkGDiYTjHYSl44lH7pDpNF
-         fV4FXUnOueoulSBYOt6DHGju0qNXsvK9ghQz69CUqOzsMBLlnZ6gxdNx77yZtne2hHjk
-         4amsfH9R7tpR7MpY/lYWINMoLb4cBUqv+SFnTg6LKtC6eXCNN3OssCGlzpz7W+mFfN7Y
-         iWgg==
-X-Gm-Message-State: AOAM532XNUsmQdTSE7aYyffqBqa8Dgx6/ZpG+bO3HPx0eSJm98wFFEzK
-        pzdQ8A49NZvL8L7rea01AfMSo+ou95yXRyrUIUkSmPQDmrJPlA==
-X-Google-Smtp-Source: ABdhPJygS9vn63UFJsAIyrL29SplfcaIPdp4fehiUVOzrVqtF3WOOB07K9ZcCC7iJT3IKsEc2KckIMJe4jr8SoYHyEw=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr33506361ybu.403.1623177369441;
- Tue, 08 Jun 2021 11:36:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210605111034.1810858-1-jolsa@kernel.org> <20210605111034.1810858-4-jolsa@kernel.org>
-In-Reply-To: <20210605111034.1810858-4-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 8 Jun 2021 11:35:58 -0700
-Message-ID: <CAEf4BzY5ngJz_=e2wnqG7yB996xdQAPCBfz3_4mB9P2N-1RoCw@mail.gmail.com>
-Subject: Re: [PATCH 03/19] x86/ftrace: Make function graph use ftrace directly
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wL6KSwo0TwWeM3oDNEJHVYbpsiCDr8Co8+WhySeHKfg=;
+        b=M6kHBJtK+aR0ElEgEOG8TrgfUQN/wp6a5abKZ0y/o4zV1025HNNyKQH+P8spJ/9tGB
+         HiYFHCz/vJcNAdgBqZsOtxbMH2hHlhKbSZLdxp6HmskVDMGaMkjnPFUyPJ6fmoURXU0Y
+         DNebK+xWlfjiP95dx0OUeaxLeE4Z3PWGTwqrz6n91YE2NvB1Tf9Iol4lrGJhzguEPhJO
+         nP8u/6XbpNoA6hw6Hh7iOiT2H1sNrX4GMZ7uIBRCHGqSjzL7Zf9zAFlIAl2SrYWs8VrZ
+         VEX1HRSbTrF4L9dfVlxqDd0kwU5lw1SSrg5tdIDdkobBSO06sJ8l6kVYSpLvsMkAw5M4
+         v+1w==
+X-Gm-Message-State: AOAM531pYQ13bQEDumbc1uG3DqnC6gGl9NWleZSKnskHjv6LkVI5/Pfz
+        erFJ/1l9ElLjxj1Wi1lIq3o=
+X-Google-Smtp-Source: ABdhPJwokHQva/lAebPiaJ11reZnpju3tMKp4zSxvTaq2jLbUBIoB/bMWyY+a9ICly8AxWULCjIU6w==
+X-Received: by 2002:a17:902:6501:b029:ef:8518:a25a with SMTP id b1-20020a1709026501b02900ef8518a25amr1108048plk.64.1623178148174;
+        Tue, 08 Jun 2021 11:49:08 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:336e])
+        by smtp.gmail.com with ESMTPSA id y6sm15776988pjf.40.2021.06.08.11.49.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 11:49:07 -0700 (PDT)
+Date:   Tue, 8 Jun 2021 11:49:03 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
         Viktor Malik <vmalik@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 13/19] bpf: Add support to link multi func tracing program
+Message-ID: <20210608184903.rgnv65jimekqugol@ast-mbp.dhcp.thefacebook.com>
+References: <20210605111034.1810858-1-jolsa@kernel.org>
+ <20210605111034.1810858-14-jolsa@kernel.org>
+ <CAADnVQJV+0SjqUrTw+3Y02tFedcAaPKJS-W8sQHw5YT4XUW0hQ@mail.gmail.com>
+ <YL+0HLQ9oSrNM7ip@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YL+0HLQ9oSrNM7ip@krava>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 4:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
->
-> We don't need special hook for graph tracer entry point,
-> but instead we can use graph_ops::func function to install
-> the return_hooker.
->
-> This moves the graph tracing setup _before_ the direct
-> trampoline prepares the stack, so the return_hooker will
-> be called when the direct trampoline is finished.
->
-> This simplifies the code, because we don't need to take into
-> account the direct trampoline setup when preparing the graph
-> tracer hooker and we can allow function graph tracer on entries
-> registered with direct trampoline.
->
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  arch/x86/include/asm/ftrace.h |  9 +++++++--
->  arch/x86/kernel/ftrace.c      | 37 ++++++++++++++++++++++++++++++++---
->  arch/x86/kernel/ftrace_64.S   | 29 +--------------------------
->  include/linux/ftrace.h        |  6 ++++++
->  kernel/trace/fgraph.c         |  8 +++++---
->  5 files changed, 53 insertions(+), 36 deletions(-)
->
-> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-> index 9f3130f40807..024d9797646e 100644
-> --- a/arch/x86/include/asm/ftrace.h
-> +++ b/arch/x86/include/asm/ftrace.h
-> @@ -57,6 +57,13 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
->
->  #define ftrace_instruction_pointer_set(fregs, _ip)     \
->         do { (fregs)->regs.ip = (_ip); } while (0)
-> +
-> +struct ftrace_ops;
-> +#define ftrace_graph_func ftrace_graph_func
-> +void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
-> +                      struct ftrace_ops *op, struct ftrace_regs *fregs);
-> +#else
-> +#define FTRACE_GRAPH_TRAMP_ADDR FTRACE_GRAPH_ADDR
->  #endif
->
->  #ifdef CONFIG_DYNAMIC_FTRACE
-> @@ -65,8 +72,6 @@ struct dyn_arch_ftrace {
->         /* No extra data needed for x86 */
->  };
->
-> -#define FTRACE_GRAPH_TRAMP_ADDR FTRACE_GRAPH_ADDR
-> -
->  #endif /*  CONFIG_DYNAMIC_FTRACE */
->  #endif /* __ASSEMBLY__ */
->  #endif /* CONFIG_FUNCTION_TRACER */
-> diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-> index c555624da989..804fcc6ef2c7 100644
-> --- a/arch/x86/kernel/ftrace.c
-> +++ b/arch/x86/kernel/ftrace.c
-> @@ -527,7 +527,7 @@ static void *addr_from_call(void *ptr)
->         return ptr + CALL_INSN_SIZE + call.disp;
->  }
->
-> -void prepare_ftrace_return(unsigned long self_addr, unsigned long *parent,
-> +void prepare_ftrace_return(unsigned long ip, unsigned long *parent,
->                            unsigned long frame_pointer);
->
->  /*
-> @@ -541,7 +541,8 @@ static void *static_tramp_func(struct ftrace_ops *ops, struct dyn_ftrace *rec)
->         void *ptr;
->
->         if (ops && ops->trampoline) {
-> -#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> +#if !defined(CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS) && \
-> +       defined(CONFIG_FUNCTION_GRAPH_TRACER)
->                 /*
->                  * We only know about function graph tracer setting as static
->                  * trampoline.
-> @@ -589,8 +590,9 @@ void arch_ftrace_trampoline_free(struct ftrace_ops *ops)
->  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->
->  #ifdef CONFIG_DYNAMIC_FTRACE
-> -extern void ftrace_graph_call(void);
->
-> +#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> +extern void ftrace_graph_call(void);
->  static const char *ftrace_jmp_replace(unsigned long ip, unsigned long addr)
->  {
->         return text_gen_insn(JMP32_INSN_OPCODE, (void *)ip, (void *)addr);
-> @@ -618,7 +620,17 @@ int ftrace_disable_ftrace_graph_caller(void)
->
->         return ftrace_mod_jmp(ip, &ftrace_stub);
->  }
-> +#else /* !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
-> +int ftrace_enable_ftrace_graph_caller(void)
-> +{
-> +       return 0;
-> +}
->
-> +int ftrace_disable_ftrace_graph_caller(void)
-> +{
-> +       return 0;
-> +}
-> +#endif /* CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
->  #endif /* !CONFIG_DYNAMIC_FTRACE */
->
->  /*
-> @@ -629,6 +641,7 @@ void prepare_ftrace_return(unsigned long ip, unsigned long *parent,
->                            unsigned long frame_pointer)
->  {
->         unsigned long return_hooker = (unsigned long)&return_to_handler;
-> +       int bit;
->
->         /*
->          * When resuming from suspend-to-ram, this function can be indirectly
-> @@ -648,7 +661,25 @@ void prepare_ftrace_return(unsigned long ip, unsigned long *parent,
->         if (unlikely(atomic_read(&current->tracing_graph_pause)))
->                 return;
->
-> +       bit = ftrace_test_recursion_trylock(ip, *parent);
-> +       if (bit < 0)
-> +               return;
-> +
->         if (!function_graph_enter(*parent, ip, frame_pointer, parent))
->                 *parent = return_hooker;
-> +
-> +       ftrace_test_recursion_unlock(bit);
-> +}
-> +
-> +#ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> +void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
-> +                      struct ftrace_ops *op, struct ftrace_regs *fregs)
-> +{
-> +       struct pt_regs *regs = &fregs->regs;
-> +       unsigned long *stack = (unsigned long *)kernel_stack_pointer(regs);
-> +
-> +       prepare_ftrace_return(ip, (unsigned long *)stack, 0);
->  }
-> +#endif
-> +
->  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
-> diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-> index a8eb084a7a9a..7a879901f103 100644
-> --- a/arch/x86/kernel/ftrace_64.S
-> +++ b/arch/x86/kernel/ftrace_64.S
-> @@ -174,11 +174,6 @@ SYM_INNER_LABEL(ftrace_caller_end, SYM_L_GLOBAL)
->  SYM_FUNC_END(ftrace_caller);
->
->  SYM_FUNC_START(ftrace_epilogue)
-> -#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> -SYM_INNER_LABEL(ftrace_graph_call, SYM_L_GLOBAL)
-> -       jmp ftrace_stub
-> -#endif
-> -
->  /*
->   * This is weak to keep gas from relaxing the jumps.
->   * It is also used to copy the retq for trampolines.
-> @@ -288,15 +283,6 @@ SYM_FUNC_START(__fentry__)
->         cmpq $ftrace_stub, ftrace_trace_function
->         jnz trace
->
-> -fgraph_trace:
-> -#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> -       cmpq $ftrace_stub, ftrace_graph_return
-> -       jnz ftrace_graph_caller
-> -
-> -       cmpq $ftrace_graph_entry_stub, ftrace_graph_entry
-> -       jnz ftrace_graph_caller
-> -#endif
-> -
->  SYM_INNER_LABEL(ftrace_stub, SYM_L_GLOBAL)
->         retq
->
-> @@ -314,25 +300,12 @@ trace:
->         CALL_NOSPEC r8
->         restore_mcount_regs
->
-> -       jmp fgraph_trace
-> +       jmp ftrace_stub
->  SYM_FUNC_END(__fentry__)
->  EXPORT_SYMBOL(__fentry__)
->  #endif /* CONFIG_DYNAMIC_FTRACE */
->
->  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> -SYM_FUNC_START(ftrace_graph_caller)
-> -       /* Saves rbp into %rdx and fills first parameter  */
-> -       save_mcount_regs
-> -
-> -       leaq MCOUNT_REG_SIZE+8(%rsp), %rsi
-> -       movq $0, %rdx   /* No framepointers needed */
-> -       call    prepare_ftrace_return
-> -
-> -       restore_mcount_regs
-> -
-> -       retq
-> -SYM_FUNC_END(ftrace_graph_caller)
-> -
->  SYM_FUNC_START(return_to_handler)
->         subq  $24, %rsp
->
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index a69f363b61bf..40b493908f09 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -614,6 +614,12 @@ void ftrace_modify_all_code(int command);
->  extern void ftrace_graph_caller(void);
->  extern int ftrace_enable_ftrace_graph_caller(void);
->  extern int ftrace_disable_ftrace_graph_caller(void);
-> +#ifndef ftrace_graph_func
-> +#define ftrace_graph_func ftrace_stub
-> +#define FTRACE_OPS_GRAPH_STUB | FTRACE_OPS_FL_STUB
-> +#else
-> +#define FTRACE_OPS_GRAPH_STUB
-> +#endif
->  #else
->  static inline int ftrace_enable_ftrace_graph_caller(void) { return 0; }
->  static inline int ftrace_disable_ftrace_graph_caller(void) { return 0; }
-> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-> index b8a0d1d564fb..58e96b45e9da 100644
-> --- a/kernel/trace/fgraph.c
-> +++ b/kernel/trace/fgraph.c
-> @@ -115,6 +115,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
->  {
->         struct ftrace_graph_ent trace;
->
-> +#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
->         /*
->          * Skip graph tracing if the return location is served by direct trampoline,
->          * since call sequence and return addresses are unpredictable anyway.
-> @@ -124,6 +125,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
->         if (ftrace_direct_func_count &&
->             ftrace_find_rec_direct(ret - MCOUNT_INSN_SIZE))
->                 return -EBUSY;
-> +#endif
->         trace.func = func;
->         trace.depth = ++current->curr_ret_depth;
->
-> @@ -333,10 +335,10 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
->  #endif /* HAVE_FUNCTION_GRAPH_RET_ADDR_PTR */
->
->  static struct ftrace_ops graph_ops = {
-> -       .func                   = ftrace_stub,
-> +       .func                   = ftrace_graph_func,
->         .flags                  = FTRACE_OPS_FL_INITIALIZED |
-> -                                  FTRACE_OPS_FL_PID |
-> -                                  FTRACE_OPS_FL_STUB,
-> +                                  FTRACE_OPS_FL_PID
-> +                                  FTRACE_OPS_GRAPH_STUB,
+On Tue, Jun 08, 2021 at 08:17:00PM +0200, Jiri Olsa wrote:
+> On Tue, Jun 08, 2021 at 08:42:32AM -0700, Alexei Starovoitov wrote:
+> > On Sat, Jun 5, 2021 at 4:11 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Adding support to attach multiple functions to tracing program
+> > > by using the link_create/link_update interface.
+> > >
+> > > Adding multi_btf_ids/multi_btf_ids_cnt pair to link_create struct
+> > > API, that define array of functions btf ids that will be attached
+> > > to prog_fd.
+> > >
+> > > The prog_fd needs to be multi prog tracing program (BPF_F_MULTI_FUNC).
+> > >
+> > > The new link_create interface creates new BPF_LINK_TYPE_TRACING_MULTI
+> > > link type, which creates separate bpf_trampoline and registers it
+> > > as direct function for all specified btf ids.
+> > >
+> > > The new bpf_trampoline is out of scope (bpf_trampoline_lookup) of
+> > > standard trampolines, so all registered functions need to be free
+> > > of direct functions, otherwise the link fails.
+> > 
+> > Overall the api makes sense to me.
+> > The restriction of multi vs non-multi is too severe though.
+> > The multi trampoline can serve normal fentry/fexit too.
+> 
+> so multi trampoline gets called from all the registered functions,
+> so there would need to be filter for specific ip before calling the
+> standard program.. single cmp/jnz might not be that bad, I'll check
 
-nit: this looks so weird... Why not define FTRACE_OPS_GRAPH_STUB as
-zero in case of #ifdef ftrace_graph_func? Then it will be natural and
-correctly looking | FTRACE_OPS_GRAPH_STUB?
-
->  #ifdef FTRACE_GRAPH_TRAMP_ADDR
->         .trampoline             = FTRACE_GRAPH_TRAMP_ADDR,
->         /* trampoline_size is only needed for dynamically allocated tramps */
-> --
-> 2.31.1
->
+You mean reusing the same multi trampoline for all IPs and regenerating
+it with a bunch of cmp/jnz checks? There should be a better way to scale.
+Maybe clone multi trampoline instead?
+IPs[1-10] will point to multi.
+IP[11] will point to a clone of multi that serves multi prog and
+fentry/fexit progs specific for that IP.
