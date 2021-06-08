@@ -2,52 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C9C39F979
-	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 16:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D1939F98A
+	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 16:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhFHOr2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Jun 2021 10:47:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233336AbhFHOr2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Jun 2021 10:47:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14EBA610A2;
-        Tue,  8 Jun 2021 14:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623163519;
-        bh=mcoAg7wVNKOXs1ZSynfjU8N0VfhE2JmPZwOp1/v6YuE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2INPShTeR52kZaOQ6CLaXvppjhcg+zRAD6fMi753WmT0hwQ8wvtfBmA+TBPoqGPMV
-         FURj+ZaffLIp3l9FjpgTlXfMIcFznc9tnWKaRAgq/2CiTSEKMB8fVYo+kW0b8q1Gl/
-         R6oLs27iA+Uc80Dkva/Y6dNptkZZM4Ii2Htx7QDc=
-Date:   Tue, 8 Jun 2021 16:45:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 4.19 0/9] bpf: fix verifier selftests on inefficient
- unaligned access architectures
-Message-ID: <YL+CfFu0JuLC5zwd@kroah.com>
-References: <1622604473-781-1-git-send-email-yangtiezhu@loongson.cn>
+        id S233591AbhFHOvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Jun 2021 10:51:15 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:34351 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233538AbhFHOvP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 8 Jun 2021 10:51:15 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 037901B6E;
+        Tue,  8 Jun 2021 10:49:21 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 08 Jun 2021 10:49:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=6zu8Yy0uwISQNd3KeZQAasi1XJA
+        nn4MoA7LK+JIJ4+Q=; b=WBmHxpXSNYvlRNPCeToHIGjUE+I8xCY1Bm6uN7pDuNb
+        Xq5z2jOElQgo04/Lmqr2v53s6NgcEpC7Frj/7A50B9VfybYOAkG8DPXhldHBstIY
+        D9LmmZmbFrVaL5nhZ1mPjdW5AawBN1W6vjjxWVKwyMHHVgYKWsN4NqPSO6KdnF9G
+        ArfgS9cc838kUPplGioyiOxyVrv+sX+rk+9H7EpHieYYhUgZU01WEs5UPmmQ59xL
+        QpN5fyV2jnnWGKo/Oymn2JTabm5YAfmllJH1wLEfNnqyF6os0CgzQnPC28Ybr8FH
+        YC791QJQnB4hSAtcBJA36TcphDfSMye4I/B07970NLQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=6zu8Yy
+        0uwISQNd3KeZQAasi1XJAnn4MoA7LK+JIJ4+Q=; b=CSxmnUHdcLcmTIxufNdUHM
+        yjALEa8wpDN2G46MKIfSB/OSFXJNdua6CB04jKq2C8MLjWTgi/sx5ydy4argWdYp
+        F2BZhhnF2Uej8NR2rY2Pty8q7E8MvQAVIMn8S7ytRJKWAGYkeD0yaPcm1A3a8ZEa
+        uaBnU6xeOwbLjrGRQficnU/iBNOcPgs3LgHLyZfQOWS+dM012SrAzlT8A0/P6bGH
+        AwLkd6Mf5G8AkhKLt36rIU6ZletcoHRFxGFUq+oiN+SOiOh4GcZe9t7sMMGm6WMG
+        xqltGAP+NQgOtnCN5XiTErCwD3D3HRE5Orcaop3IhySax8YTqrZHHoxXP2idA0iw
+        ==
+X-ME-Sender: <xms:cYO_YKJe58B2ZiA_1AhhzoGioF41rGoY_zHaGF69qMDpMHcsry0y4A>
+    <xme:cYO_YCLz1gKqi-AHKJ5wz8d_QTv9x-tKhjkP4kx8hB6afV3crbyD5ato4SgAtTD1A
+    XHQkvCswEfQuA>
+X-ME-Received: <xmr:cYO_YKtpruokpq-sJ7_c-Pobh9ua197eWm8vvE2oi5EhB79eSkEXFv7R7WthJk6DXOqfiVPBSxqGuhzEJiQlxOKv89bHM_ux>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtledgieehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
+    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:cYO_YPYLupfj_1kSOqNbHy1gCFKuFL0aTl26mhGU1hqeg7YSWQ5FCg>
+    <xmx:cYO_YBbgAVgmrKFK6yQboFwujL28NqyxvqG89L8vgDaRAiivxR5cUQ>
+    <xmx:cYO_YLDJTlGy7pETaPo4K6qRWKBqbpCKkfOpV3epj0UOG6OB2aTlww>
+    <xmx:cYO_YGOwURb59Lwpm5P1mbTaK8SiS6wVqReXC6lQ135I0XkplZ2uIg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Jun 2021 10:49:20 -0400 (EDT)
+Date:   Tue, 8 Jun 2021 16:48:54 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Frank van der Linden <fllinden@amazon.com>
+Cc:     stable@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net
+Subject: Re: [PATCH v2 4.14 00/16] CVE fixes and selftests cleanup
+Message-ID: <YL+DVkqdVjKWfbA8@kroah.com>
+References: <20210531182556.25277-1-fllinden@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1622604473-781-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <20210531182556.25277-1-fllinden@amazon.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:27:44AM +0800, Tiezhu Yang wrote:
-> With the following patch series, all verifier selftests pass on the archs which
-> select HAVE_EFFICIENT_UNALIGNED_ACCESS.
+On Mon, May 31, 2021 at 06:25:39PM +0000, Frank van der Linden wrote:
+> Now that these are being included in 4.19, I am resending this
+> 4.14 series. It was originally sent here:
 > 
-> [v2,4.19,00/19] bpf: fix verifier selftests, add CVE-2021-29155, CVE-2021-33200 fixes
-> https://patchwork.kernel.org/project/netdevbpf/cover/20210528103810.22025-1-ovidiu.panait@windriver.com/
+> https://lore.kernel.org/bpf/20210501043014.33300-5-fllinden@amazon.com/T/
 > 
-> But on inefficient unaligned access architectures, there still exist many failures,
-> so some patches about F_NEEDS_EFFICIENT_UNALIGNED_ACCESS are also needed, backport
-> to 4.19 with a minor context difference.
+> v2:
+>   * The backport repairs in that original series were already included in
+>     4.14, so they are no longer needed.
+> 
+>   * Add additional commit for CVE-2021-31829.
+> 
+>   * Added cherry-picks for CVE-2021-33200.
 
-Looks good, now queued up, thanks.
+All now qeueud up, thanks.
 
 greg k-h
