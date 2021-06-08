@@ -2,769 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B90539EE6B
-	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 07:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5729039EEF0
+	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 08:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhFHFxZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Jun 2021 01:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhFHFxZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Jun 2021 01:53:25 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0288CC061574
-        for <bpf@vger.kernel.org>; Mon,  7 Jun 2021 22:51:33 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id g38so28461271ybi.12
-        for <bpf@vger.kernel.org>; Mon, 07 Jun 2021 22:51:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cEiANPDECM8pAz3H1MOgwALDTz6IvbrC6CM3p4nGz9o=;
-        b=tWowXqYeAcSKVK0jACiwyvnQIF0YgjnJG7Fky1Xk68lGZgEe9k8Dsf1HJiBBL+zUv6
-         Fgx7xf23yT6Kphuc8/hmGqx86ooQTPDovqk/mmyjTFvsctC6Jmy3dhuLXD71J2cpDrdP
-         anSen4VhOMhAn4N7KIHxO17YsZkkHTW5D8F7YBfrrlcSlS4qeT1jDlNVUeHj6IiYlyZF
-         TCyMw1vP+1sGUf0l3zzCNiXUrtBPQP+XBOnVZUw3VCxbWligUorUQfg0d87B6/ggrw0y
-         2tVYpX7wren79UN5N+RizsvJU2BAVJxPFDVqQviMWoNEWARvSp98jYWaC6uHsrTsB3l4
-         dGEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cEiANPDECM8pAz3H1MOgwALDTz6IvbrC6CM3p4nGz9o=;
-        b=nRJ0JXlxUSg8kr1R0bavRvXXF9mnHqT6MHW0+9hL+taP+omR5Z/YoS3DNKLTE21wla
-         LBcJFErep0XsbYY7FUz83UhyVaiVbMMyOgXoxs3hRZQw94zjVggvY+a4wfG7antMYTQp
-         BX0cenzLOER/9wkjdHfc5e96R2/nZeGsiYPxD40FJoEwPBpkjL6jCY9Pl2NP1QCBI9et
-         aFzUUOFEg3JBshYMrbzfFjPxI+RhGMfS8+pRjTV2+UECZqANeWMXUK81HuBMdFy6b2Dz
-         Zw0MxVWKIevNzyhEF60vYWyJZpVGXCNPrPgk0oeKp+9ac6QTxhCAvref/MidM7w27Vum
-         LErA==
-X-Gm-Message-State: AOAM532l2UydajyYu8cNLCm6w76yZTus6hxX0QfeUSnfHes4ewNGqBoH
-        5dS9aFy7FTi5VyWrXzOq12dE3CfM6Lso9Um4csErhw==
-X-Google-Smtp-Source: ABdhPJyzWA1fWgWLakndhqmFmHTo9N+E6z1NmT83WWOXKdzJLb1asZa4spShgABDSEviMA0HZF6L6wxfT3H2Xw/sB8I=
-X-Received: by 2002:a25:e741:: with SMTP id e62mr30270780ybh.484.1623131491770;
- Mon, 07 Jun 2021 22:51:31 -0700 (PDT)
+        id S230385AbhFHGtX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Jun 2021 02:49:23 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34196 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229937AbhFHGtW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 8 Jun 2021 02:49:22 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1586hh9H023487;
+        Mon, 7 Jun 2021 23:47:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=jpfO9wA49iGPNcZYzi36c+0hr4BVIdcQmnE7/UF8l7I=;
+ b=L6HvXV1hKxpdx6hLkAm/9FlLdB87fabnyMAWHHx/Yqsq/b5scaQqGkbqKB8d/OVvtP0e
+ 4VcfC5JUBDY8y4pwq+M+DLdCFRwB8NjEI/eKvKVFxB4KP5c5QzZ5c/tqlvFw4+I1YO7m
+ voJdxFIvawIywqHDxv0yuHLeNjYmCd/BCTQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 391rhyk777-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 07 Jun 2021 23:47:14 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 7 Jun 2021 23:47:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=idh0YBwc7fgtfiANH0PDl5gxmhkk3BEBx+wd9vmc8TD3EdG8gjbSJqk3MU4fhXIIcUYJZrl5UT5fA6LZquZxlNmwDwvg3sbeqRe/aHp60HYLz/aMIqb1YokR20JBsQjpEYd+3JiP/UG0PaMI8Eb/tGd81/RPyoyBLGg67GKzggaSV1u+UhDnK70ZhZoFqCewyh7WD/ArwzXZ7LFJk9TlaTRbRDKChu6JyR3gPoILlajVyPQ4zOMoeCMECHesED506Ydy62OIyMthhJvJPWRHI0Lk0ONA8JgT7NdIrEWp55yaXEhs4ZB2kGTPmS43CpzCk69cRICmJ+J9BtC/O1fi5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UNLJwOY6Y18wb1L1FP4XhlEnqwwauGA+luEqjTqfuLg=;
+ b=LYbUtSPmfl9nnsUQNkdWahfnHyJFttA1qY6Z7UAke9HxVwGWrf575gVewfu31Bo+tsHgsbze4RyZq9ZNIC+AaSMsoq0iozn762EIsEYX8gRNLuEjUklkRZUfALDbmslFeju57/DvAYu3SHPEBD3qpGiCmbgeSv4Bcn77fhgKzdBm2bNy7VZwb1OSLK/3oaU5UisMbsqxmZLS32uBTOGgycaPnTzzkVcaDOsl5JK7zceyvGqHQYU6NPrWzEZ/fY8jV0Oj38PKpVziGg9GrkpG8n9M3y5TqmJ6nqi9N1bptyNAZ8P2/azPV3dfTVtrIHEEhxFBgmtWuXE3ey8lZXHHtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4904.namprd15.prod.outlook.com (2603:10b6:806:1d3::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Tue, 8 Jun
+ 2021 06:47:11 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
+ 06:47:11 +0000
+Subject: Re: [PATCH v2 bpf-next 06/11] libbpf: add BPF static linker APIs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>
+CC:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+References: <20210313193537.1548766-7-andrii@kernel.org>
+ <20210607231146.1077-1-tstellar@redhat.com>
+ <CAEf4Bzad7OQj9JS7GVmBjAXyxKcc-nd77gxPQfFB8_hy_Xo+_g@mail.gmail.com>
+ <b1bdf1df-e3a8-1ce8-fc33-4ab40b39fb06@redhat.com>
+ <84b3cb2c-2dff-4cd8-724c-a1b56316816b@redhat.com>
+ <CAEf4BzbCiMkQazSe2hky=Jx6QXZiZ2jyf+AuzMJEyAv+_B7vug@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <43d9bd1c-fba6-f653-7374-cc593f01bc72@fb.com>
+Date:   Mon, 7 Jun 2021 23:47:08 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <CAEf4BzbCiMkQazSe2hky=Jx6QXZiZ2jyf+AuzMJEyAv+_B7vug@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:b270]
+X-ClientProxiedBy: SJ0PR05CA0002.namprd05.prod.outlook.com
+ (2603:10b6:a03:33b::7) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::108b] (2620:10d:c090:400::5:b270) by SJ0PR05CA0002.namprd05.prod.outlook.com (2603:10b6:a03:33b::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Tue, 8 Jun 2021 06:47:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 309bad1c-7dd5-4c44-4b72-08d92a493e1d
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4904:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA1PR15MB49040032DB99510838F38B98D3379@SA1PR15MB4904.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3RVHv05esIE6KkAVdze6ijUfdA8jyDtixrgpyKQJ7NhXkw//oOFmOI4fQBhEuooNc5F91YA8KIQWPvotE51M9fAZdwy9dacEWp00DWWRpZZ8FuiB8xCjeEwY2O1r1cuzLoamqNfnf/tG/2pl88sF1gdFjTh6Y7OJ0aJfATn+I4A3KtMjMENbkxQU8YdkPaXewtto7Wk+7uYwD+dcuSrKEnKKcNtdM8A0NoCNg2bfNMkY3qQc364lf4NciiSurjnOkhRj300GwLO9xvIEBo86TlE6L3U4/cv2XDpJAsSymDP3HtvbNH1gYZ0tLfrOUu4exaqzu/knXgHNcneTFIkVWUASa6wEOyEh/eKUC7xDRs8HoR5QdxEKXI8/ig6+HbnpDsd5bw8JRWsJvoP070z1YhumCEdXDvl5QcEqonUVO6bJnaxClo8G63pvnFCLJ2/e7/QDiC1ekqc1Cs4JM/7ymvOIHtveTwLOPoAvEmEhuqyeiSwQt1lRzNLgnP3BoitHX9LA3mHduJP7NqInaKeonM6wuM/4CMUYaMBPt7Ptn640U36kF4Tj9aTPFjq9CE53wbHPCqxHkRs89QQvHNLk+TBILDYnzm1y31jIzgkI6yB3AM0Pcexlm8E2azt0tgs3A9WYUW0zG4Df+lOf1oQBdOSIWYwR+QGZCVK+z0FMicdLDCT7Gab3hhBXkyjc5gCzNl/RcIaAkU6aKfx00vy5mcTzp7k+kTZ1rzBAjZ3Wi+4eKjMue/jIo1D+XFqYf9VcNsQcVa9MA4g+NtpzsxLWgO0DIzRCJWY944jo/9ohCnTqNMNWnhoGdzn6BkLikT4j
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(2616005)(31696002)(316002)(110136005)(5660300002)(6486002)(2906002)(66556008)(86362001)(53546011)(8936002)(186003)(16526019)(66476007)(54906003)(4326008)(66946007)(38100700002)(478600001)(83380400001)(31686004)(966005)(52116002)(36756003)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: B8Icoh2EpIodmhI6NyBcnbN8e25YLi2fhtgA0d1eTHIdeg/c9kt74y3gVyWiwZVzM5bfojstsvqyC4f78jgJEjWKOGbIaDfxjVWW9z/s9p7gzklNajgM/08v8RWmmPiRWWYjgCTcwzM8cHa93MiV1l7NbmvR/w8C3UQM+nJhibPKEwl8xqvejC8XmYbjEkH6c36Tb6x+tuvUcq3y7bnYJvDmsEJGY4xzUEnfn3JnswxZNW0DA9yy8hbHa23Cilhmv4wwRAB8sFDKR5OPYissp6guvGjbw9UtTvUjZHKSXXXwCzPCLkorE3wceBpRUQ8uQ2y3vscc9mAFGbD11mPb5NarAX/dNUrbF8KEtuL10XaitKoFYV6XfPwnhw6OXSbo7KsAHtwp4ceK8ES3Mjk6qHoz7Z8N3EvUNDZrtsAJSaZqK1McJHC+a1IPQXg63TpVcIhU27i+M1FuOUKH1ejEjxyBHdzWy6PVDS6xQHW7DKTFzmN6l4rB2f1+O6nYD2epgiGwO4Ax68/XRKwgBbQW+6Xs6iWoG/JXc+g4WU96lCP3TQSGyfHfICI/AWj28aYRWYV/1tYOPg0ByMU/NdZAAWbcCF5+DppThFWxpl1lzy991xIJkUkGy5X/lYpYpSYXGlTUxSIdI6VFp5z8bDlANsjV8vb50bTXEVQUyLwPoJtR6+UWiGD21+xjHJ8Ok5ppj9lF9KkeN92olBMRG8HMAypZrMOqIID/Am2IAGapHA7SLMYVp1i5T64RnkOiDHC8+RkbhmBRucCwm9B2LTKOAg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 309bad1c-7dd5-4c44-4b72-08d92a493e1d
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 06:47:11.4171
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: U58bd2HwQytHdMZoTx+g9xKE40DTEKiNvRVYykNsgauSyY6MCUM4QRyayvarrEl1
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4904
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: kipMEtcmrlNfYlkoDSE4SyAw2n2bFhli
+X-Proofpoint-ORIG-GUID: kipMEtcmrlNfYlkoDSE4SyAw2n2bFhli
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210525033314.3008878-1-yhs@fb.com> <20210525182948.4wk3kd7vrvgdr2lu@google.com>
- <dd95b896-3b37-a398-68cd-549fb249f2e0@fb.com> <CAFP8O3JM3SrKXYA2SF-zRJZCiipHdcyF1usPOykm6Yqb6xs6dQ@mail.gmail.com>
- <4410f328-58ae-24e4-5e63-cfde6e891bf4@fb.com> <CAFP8O3J4_aaT+POmB6H6mihuP1-VQ4ww1nVrHxEvd70S5ODEUw@mail.gmail.com>
- <8abe01cb-da8f-514c-6b52-b92686a16662@fb.com>
-In-Reply-To: <8abe01cb-da8f-514c-6b52-b92686a16662@fb.com>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Mon, 7 Jun 2021 22:51:20 -0700
-Message-ID: <CAFP8O3JeGtDMATPsnjhRO3Ru+Lap2uJSG_jYzWcK4AWeBtXquw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] docs/bpf: add llvm_reloc.rst to explain llvm
- bpf relocations
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-08_05:2021-06-04,2021-06-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ priorityscore=1501 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 adultscore=0 phishscore=0 mlxscore=0 malwarescore=0
+ impostorscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106080046
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 9:32 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 6/7/21 3:08 PM, F=C4=81ng-ru=C3=AC S=C3=B2ng wrote:
-> > On Mon, Jun 7, 2021 at 2:06 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 6/5/21 2:03 PM, F=C4=81ng-ru=C3=AC S=C3=B2ng wrote:
-> >>> On Tue, May 25, 2021 at 11:52 AM Yonghong Song <yhs@fb.com> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 5/25/21 11:29 AM, Fangrui Song wrote:
-> >>>>> I have a review queue with a huge pile of LLVM patches and have onl=
-y
-> >>>>> skimmed through this.
-> >>>>>
-> >>>>> First, if the size benefit of REL over RELA isn't deem that necessa=
-ry,
-> >>>>> I will highly recommend RELA for simplicity and robustness.
-> >>>>> REL is error-prone.
-> >>>>
-> >>>> The worry is backward compatibility. Because of BPF ELF format
-> >>>> is so intervened with bpf eco system (loading, bpf map, etc.),
-> >>>> a lot of tools in the wild already implemented to parse REL...
-> >>>> It will be difficult to change...
-> >>>
-> >>> It seems that the design did not get enough initial scrutiny...
-> >>> (On https://reviews.llvm.org/D101336   , a reviewer who has apparentl=
-y
-> >>> never contributed to lld/ELF clicked LGTM without actual reviewing th=
-e
-> >>> patch and that was why I have to click "Request Changes").
-> >>>
-> >>> I worry that keeping the current state as-is can cause much
-> >>> maintenance burden in the LLVM MC layer, linker, and other binary
-> >>> utilities.
-> >>> Some things can be improved without breaking backward compatibility.
-> >>>
-> >>>>>
-> >>>>> On 2021-05-24, Yonghong Song wrote:
-> >>>>>> LLVM upstream commit
-> >>>>>> https://reviews.llvm.org/D102712
-> >>>>>> made some changes to bpf relocations to make them
-> >>>>>> llvm linker lld friendly. The scope of
-> >>>>>> existing relocations R_BPF_64_{64,32} is narrowed
-> >>>>>> and new relocations R_BPF_64_{ABS32,ABS64,NODYLD32}
-> >>>>>> are introduced.
-> >>>>>>
-> >>>>>> Let us add some documentation about llvm bpf
-> >>>>>> relocations so people can understand how to resolve
-> >>>>>> them properly in their respective tools.
-> >>>>>>
-> >>>>>> Cc: John Fastabend <john.fastabend@gmail.com>
-> >>>>>> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> >>>>>> Signed-off-by: Yonghong Song <yhs@fb.com>
-> >>>>>> ---
-> >>>>>> Documentation/bpf/index.rst            |   1 +
-> >>>>>> Documentation/bpf/llvm_reloc.rst       | 240 +++++++++++++++++++++=
-++++
-> >>>>>> tools/testing/selftests/bpf/README.rst |  19 ++
-> >>>>>> 3 files changed, 260 insertions(+)
-> >>>>>> create mode 100644 Documentation/bpf/llvm_reloc.rst
-> >>>>>>
-> >>>>>> Changelogs:
-> >>>>>>    v1 -> v2:
-> >>>>>>      - add an example to illustrate how relocations related to bas=
-e
-> >>>>>>        section and symbol table and what is "Implicit Addend"
-> >>>>>>      - clarify why we use 32bit read/write for R_BPF_64_64 (ld_imm=
-64)
-> >>>>>>        relocations.
-> >>>>>>
-> >>>>>> diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index=
-.rst
-> >>>>>> index a702f67dd45f..93e8cf12a6d4 100644
-> >>>>>> --- a/Documentation/bpf/index.rst
-> >>>>>> +++ b/Documentation/bpf/index.rst
-> >>>>>> @@ -84,6 +84,7 @@ Other
-> >>>>>>      :maxdepth: 1
-> >>>>>>
-> >>>>>>      ringbuf
-> >>>>>> +   llvm_reloc
-> >>>>>>
-> >>>>>> .. Links:
-> >>>>>> .. _networking-filter: ../networking/filter.rst
-> >>>>>> diff --git a/Documentation/bpf/llvm_reloc.rst
-> >>>>>> b/Documentation/bpf/llvm_reloc.rst
-> >>>>>> new file mode 100644
-> >>>>>> index 000000000000..5ade0244958f
-> >>>>>> --- /dev/null
-> >>>>>> +++ b/Documentation/bpf/llvm_reloc.rst
-> >>>>>> @@ -0,0 +1,240 @@
-> >>>>>> +.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-> >>>>>> +
-> >>>>>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>>>> +BPF LLVM Relocations
-> >>>>>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>>>> +
-> >>>>>> +This document describes LLVM BPF backend relocation types.
-> >>>>>> +
-> >>>>>> +Relocation Record
-> >>>>>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>>>> +
-> >>>>>> +LLVM BPF backend records each relocation with the following 16-by=
-te
-> >>>>>> +ELF structure::
-> >>>>>> +
-> >>>>>> +  typedef struct
-> >>>>>> +  {
-> >>>>>> +    Elf64_Addr    r_offset;  // Offset from the beginning of sect=
-ion.
-> >>>>>> +    Elf64_Xword   r_info;    // Relocation type and symbol index.
-> >>>>>> +  } Elf64_Rel;
-> >>>>>> +
-> >>>>>> +For example, for the following code::
-> >>>>>> +
-> >>>>>> +  int g1 __attribute__((section("sec")));
-> >>>>>> +  int g2 __attribute__((section("sec")));
-> >>>>>> +  static volatile int l1 __attribute__((section("sec")));
-> >>>>>> +  static volatile int l2 __attribute__((section("sec")));
-> >>>>>> +  int test() {
-> >>>>>> +    return g1 + g2 + l1 + l2;
-> >>>>>> +  }
-> >>>>>> +
-> >>>>>> +Compiled with ``clang -target bpf -O2 -c test.c``, the following =
-is
-> >>>>>> +the code with ``llvm-objdump -dr test.o``::
-> >>>>>> +
-> >>>>>> +       0:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r=
-1 =3D
-> >>>>>> 0 ll
-> >>>>>> +                0000000000000000:  R_BPF_64_64  g1
-> >>>>>> +       2:       61 11 00 00 00 00 00 00 r1 =3D *(u32 *)(r1 + 0)
-> >>>>>> +       3:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r=
-2 =3D
-> >>>>>> 0 ll
-> >>>>>> +                0000000000000018:  R_BPF_64_64  g2
-> >>>>>> +       5:       61 20 00 00 00 00 00 00 r0 =3D *(u32 *)(r2 + 0)
-> >>>>>> +       6:       0f 10 00 00 00 00 00 00 r0 +=3D r1
-> >>>>>> +       7:       18 01 00 00 08 00 00 00 00 00 00 00 00 00 00 00 r=
-1 =3D
-> >>>>>> 8 ll
-> >>>>>> +                0000000000000038:  R_BPF_64_64  sec
-> >>>>>> +       9:       61 11 00 00 00 00 00 00 r1 =3D *(u32 *)(r1 + 0)
-> >>>>>> +      10:       0f 10 00 00 00 00 00 00 r0 +=3D r1
-> >>>>>> +      11:       18 01 00 00 0c 00 00 00 00 00 00 00 00 00 00 00 r=
-1 =3D
-> >>>>>> 12 ll
-> >>>>>> +                0000000000000058:  R_BPF_64_64  sec
-> >>>>>> +      13:       61 11 00 00 00 00 00 00 r1 =3D *(u32 *)(r1 + 0)
-> >>>>>> +      14:       0f 10 00 00 00 00 00 00 r0 +=3D r1
-> >>>>>> +      15:       95 00 00 00 00 00 00 00 exit
-> >>>>>> +
-> >>>>>> +There are four relations in the above for four ``LD_imm64``
-> >>>>>> instructions.
-> >>>>>> +The following ``llvm-readelf -r test.o`` shows the binary values =
-of
-> >>>>>> the four
-> >>>>>> +relocations::
-> >>>>>> +
-> >>>>>> +  Relocation section '.rel.text' at offset 0x190 contains 4 entri=
-es:
-> >>>>>> +      Offset             Info             Type               Symb=
-ol's
-> >>>>>> Value  Symbol's Name
-> >>>>>> +  0000000000000000  0000000600000001 R_BPF_64_64
-> >>>>>> 0000000000000000 g1
-> >>>>>> +  0000000000000018  0000000700000001 R_BPF_64_64
-> >>>>>> 0000000000000004 g2
-> >>>>>> +  0000000000000038  0000000400000001 R_BPF_64_64
-> >>>>>> 0000000000000000 sec
-> >>>>>> +  0000000000000058  0000000400000001 R_BPF_64_64
-> >>>>>> 0000000000000000 sec
-> >>>>>> +
-> >>>>>> +Each relocation is represented by ``Offset`` (8 bytes) and ``Info=
-``
-> >>>>>> (8 bytes).
-> >>>>>> +For example, the first relocation corresponds to the first instru=
-ction
-> >>>>>> +(Offset 0x0) and the corresponding ``Info`` indicates the relocat=
-ion
-> >>>>>> type
-> >>>>>> +of ``R_BPF_64_64`` (type 1) and the entry in the symbol table (en=
-try 6).
-> >>>>>> +The following is the symbol table with ``llvm-readelf -s test.o``=
-::
-> >>>>>> +
-> >>>>>> +  Symbol table '.symtab' contains 8 entries:
-> >>>>>> +     Num:    Value          Size Type    Bind   Vis       Ndx Nam=
-e
-> >>>>>> +       0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT   UND
-> >>>>>> +       1: 0000000000000000     0 FILE    LOCAL  DEFAULT   ABS tes=
-t.c
-> >>>>>> +       2: 0000000000000008     4 OBJECT  LOCAL  DEFAULT     4 l1
-> >>>>>> +       3: 000000000000000c     4 OBJECT  LOCAL  DEFAULT     4 l2
-> >>>>>> +       4: 0000000000000000     0 SECTION LOCAL  DEFAULT     4 sec
-> >>>>>> +       5: 0000000000000000   128 FUNC    GLOBAL DEFAULT     2 tes=
-t
-> >>>>>> +       6: 0000000000000000     4 OBJECT  GLOBAL DEFAULT     4 g1
-> >>>>>> +       7: 0000000000000004     4 OBJECT  GLOBAL DEFAULT     4 g2
-> >>>>>> +
-> >>>>>> +The 6th entry is global variable ``g1`` with value 0.
-> >>>>>> +
-> >>>>>> +Similarly, the second relocation is at ``.text`` offset ``0x18``,
-> >>>>>> instruction 3,
-> >>>>>> +for global variable ``g2`` which has a symbol value 4, the offset
-> >>>>>> +from the start of ``.data`` section.
-> >>>>>> +
-> >>>>>> +The third and fourth relocations refers to static variables ``l1`=
-`
-> >>>>>> +and ``l2``. From ``.rel.text`` section above, it is not clear
-> >>>>>> +which symbols they really refers to as they both refers to
-> >>>>>> +symbol table entry 4, symbol ``sec``, which has ``SECTION`` type
-> >>>>>
-> >>>>> STT_SECTION. `SECTION` is just an abbreviated form used by some bin=
-ary
-> >>>>> tools.
-> >>>>
-> >>>> This is just to match llvm-readelf output. I can add a reference
-> >>>> to STT_SECTION for the right macro name.
-> >>>>
-> >>>>>
-> >>>>>> +and represents a section. So for static variable or function,
-> >>>>>> +the section offset is written to the original insn
-> >>>>>> +buffer, which is called ``IA`` (implicit addend). Looking at
-> >>>>>> +above insn ``7`` and ``11``, they have section offset ``8`` and `=
-`12``.
-> >>>>>> +From symbol table, we can find that they correspond to entries ``=
-2``
-> >>>>>> +and ``3`` for ``l1`` and ``l2``.
-> >>>>>
-> >>>>> The other REL based psABIs all use `A` for addend.
-> >>>>
-> >>>> I can use `A` as well. The reason I am using `IA` since it is not
-> >>>> shown in the relocation record and lld used API 'getImplicitAddend()=
-`
-> >>>> get this value. But I can certainly use `A`.
-> >>>
-> >>> An ABI document should stick with standard terms.
-> >>> The variable names used in an implementation are just informative
-> >>> (plus I don't see any `IA` in lld's source code).
-> >>>
-> >>>>>
-> >>>>>> +In general, the ``IA`` is 0 for global variables and functions,
-> >>>>>> +and is the section offset or some computation result based on
-> >>>>>> +section offset for static variables/functions. The non-section-of=
-fset
-> >>>>>> +case refers to function calls. See below for more details.
-> >>>>>> +
-> >>>>>> +Different Relocation Types
-> >>>>>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> >>>>>> +
-> >>>>>> +Six relocation types are supported. The following is an overview =
-and
-> >>>>>> +``S`` represents the value of the symbol in the symbol table::
-> >>>>>> +
-> >>>>>> +  Enum  ELF Reloc Type     Description      BitSize  Offset
-> >>>>>> Calculation
-> >>>>>> +  0     R_BPF_NONE         None
-> >>>>>> +  1     R_BPF_64_64        ld_imm64 insn    32       r_offset + 4=
-  S
-> >>>>>> + IA
-> >>>>>> +  2     R_BPF_64_ABS64     normal data      64       r_offset    =
-  S
-> >>>>>> + IA
-> >>>>>> +  3     R_BPF_64_ABS32     normal data      32       r_offset    =
-  S
-> >>>>>> + IA
-> >>>>>> +  4     R_BPF_64_NODYLD32  .BTF[.ext] data  32       r_offset    =
-  S
-> >>>>>> + IA
-> >>>>>> +  10    R_BPF_64_32        call insn        32       r_offset + 4=
-  (S
-> >>>>>> + IA) / 8 - 1
-> >>>>>
-> >>>>> Shifting the offset by 4 looks weird. R_386_32 applies at r_offset.
-> >>>>> The call instruction  R_BPF_64_32 is strange. Such special calculat=
-ion
-> >>>>> should not be named R_BPF_64_32.
-> >>>>
-> >>>> Again, we have a backward compatibility issue here. I would like to
-> >>>> provide an alias for it in llvm relocation header file, but I don't
-> >>>> know how to do it.
-> >>>
-> >>> It is very confusing that R_BPF_64_64 has a 32-bit value.
-> >>
-> >> If you like, we can make it as 64bit value.
-> >> R_BPF_64_64 is for ld_imm64 insn which is a 16byte insn.
-> >> The bytes 4-7 and 12-15 forms a 64bit value for the instruction.
-> >> We can do
-> >>        write32/read32 for bytes 4-7
-> >>        write32/read32 for bytes 12-15
-> >> for the relocation. Currently, we limit to bytes 4-7 since
-> >> in BPF it is really unlikely we have section offset > 4G.
-> >> But we could extend to full 64bit section offset.
 
-I think I am fine with a relocation type applying to bytes 4-7,12-15
-of some 16-byte entity.
-It's just odd that R_BPF_64_64 exists (with completely different
-semantics from R_X86_64_64/R_AARCH64_ABS64/etc)
-while R_BPF_64_ABS64 also exists.
 
-You can rename R_BPF_64_64 to something more meaningful, e.g. R_BPF_64_LDIM=
-M64.
-Then I am fine that such a relocation type applies inconsecutive bytes.
+On 6/7/21 9:08 PM, Andrii Nakryiko wrote:
+> On Mon, Jun 7, 2021 at 7:41 PM Tom Stellard <tstellar@redhat.com> wrote:
+>>
+>> On 6/7/21 5:25 PM, Andrii Nakryiko wrote:
+>>> On Mon, Jun 7, 2021 at 4:12 PM Tom Stellard <tstellar@redhat.com> wrote:
+>>>>
+>>>>
+>>>> Hi,
+>>>>
+>>>>> +                               } else {
+>>>>> +                                       pr_warn("relocation against STT_SECTION in non-exec section is not supported!\n");
+>>>>> +                                       return -EINVAL;
+>>>>> +                               }
+>>>>
+>>>> Kernel build of commit 324c92e5e0ee are failing for me with this error
+>>>> message:
+>>>>
+>>>> /builddir/build/BUILD/kernel-5.13-rc4-61-g324c92e5e0ee/linux-5.13.0-0.rc4.20210603git324c92e5e0ee.35.fc35.x86_64/tools/bpf/bpftool/bpftool gen object /builddir/build/BUILD/kernel-5.13-rc4-61-g324c92e5e0ee/linux-5.13.0-0.rc4.20210603git324c92e5e0ee.35.fc35.x86_64/tools/testing/selftests/bpf/bind_perm.linked1.o /builddir/build/BUILD/kernel-5.13-rc4-61-g324c92e5e0ee/linux-5.13.0-0.rc4.20210603git324c92e5e0ee.35.fc35.x86_64/tools/testing/selftests/bpf/bind_perm.o
+>>>> libbpf: relocation against STT_SECTION in non-exec section is not supported!
+>>>>
+>>>> What information can I provide to help debug this failure?
+>>>
+>>> Can you please send that bind_perm.o file? Also what's your `clang
+>>> --version` output?
+>>>
+>>
+>> clang version 12.0.0 (Fedora 12.0.0-2.fc35)
+>>
+>>>> I suspect this might be due to Clang commit 6a2ea84600ba ("BPF: Add
+>>>> more relocation kinds"), but I get a different error on 324c92e5e0ee.
+>>>> So meanwhile you might try applying 9f0c317f6aa1 ("libbpf: Add support
+>>>> for new llvm bpf relocations") from bpf-next/master and check if that
+>>>> helps. But please do share bind_perm.o, just to double-check what's
+>>>> going on.
+>>>>
+>>
+>> Here is bind_perm.o: https://fedorapeople.org/~tstellar/bind_perm.o
+>>
+> 
+> So somehow you end up with .eh_frame section in BPF object file, which
+> shouldn't ever happen. So there must be something that you are doing
+> differently (compiler flags or something else) that makes Clang
+> produce .eh_frame. So we need to figure out why .eh_frame gets
+> generated. Not sure how, but maybe you have some ideas of what might
+> be different about your build.
 
-See below. Just change every occurrence of the old name in llvm-project.
+Tom,
 
-> > Such semantics have precedents, e.g. R_AARCH64_ADD_ABS_LO12_NC.
-> >
-> > For BPF, the name can be ABS_LO32: absolute, the low 32-bit value,
-> > with relocation overflow checking.
-> > There will be an out-of-range relocation if the value is outside
-> > [-2**31, 2**32).
-> >
-> > If the value is byte aligned, it will be more natural if you shift r_of=
-fset
-> > so that the linker just relocates some bytes starting at r_offset, inst=
-ead of
-> > r_offset+4 or r_offset+12.
-> >
-> > ABS_LO32_NC (no-checking) + ABS_HI32 (absolute, the high 32-bit value) =
-can be
-> > introduced in the fugure.
-> >
-> >>> Since its computation is the same as R_BPF_64_ABS32, can R_BPF_64_64
-> >>> be deprecated in favor of R_BPF_64_ABS32?
-> >>
-> >> Its computation is the same but R_BPF_64_ABS32 starts from offset
-> >> and R_BPF_64_64 starts from offset + 4.
-> >>
-> >> For R_BPF_64_64, the relocation offset is the *start* of the instructi=
-on
-> >> hence +4 is needed to actually read/write addend.
-> >>
-> >> To deprecate R_BPF_64_64 to be the same as R_BPF_64_ABS32, we will
-> >> need to change relocation offset. This will break existing libbpf
-> >> and cilium and likely many other tools, so I would prefer not
-> >> to do this.
-> >
-> > You can add a new relocation type. Backward compatibility is good.
-> > There can only be forward compatibility issues.
-> >
-> > I see some relocation types which are deemed fundamental on other archi=
-tectures
-> > are just being introduced. How could they work without these new reloca=
-tion
-> > types anyway?
-> >
-> >>>
-> >>> There is nothing preventing a relocation type from being used as data
-> >>> in some cases while code in other cases.
-> >>> R_BPF_64_64 can be renamed to indicate that it is deprecated.
-> >>> R_BPF_64_32 can be confused with R_BPF_64_ABS32. You may rename
-> >>> R_BPF_64_32 to say, R_BPF_64_CALL32.
-> >>>
-> >>> For compatibility, only the values matter, not the names.
-> >>> E.g. on x86, some unused GNU_PROPERTY values were renamed to
-> >>> GNU_PROPERTY_X86_COMPAT_ISA_1_USED ("COMPAT" for compatibility) while
-> >>> their values were kept.
-> >>> Two aarch64 relocation types have been renamed.
-> >>
-> >> Renaming sounds a more attractive choice. But a lot of other tools
-> >> have already used the name and it will be odd and not user friendly
-> >> to display a different name from llvm.
-> >>
-> >> For example elfutils, we have
-> >>     backends/bpf_symbol.c:    case R_BPF_64_64:
-> >>     libelf/elf.h:#define R_BPF_64_64
-> >>
-> >> My /usr/include/elf.h (from glibc-headers-2.28-149.el8.x86_64) has:
-> >>     /* BPF specific declarations.  */
-> >>
-> >>     #define R_BPF_NONE              0       /* No reloc */
-> >>     #define R_BPF_64_64             1
-> >>     #define R_BPF_64_32             10
-> >>
-> >> I agree the name is a little misleading, but renaming may cause
-> >> some confusion in bpf ecosystem. So we prefer to stay as is, but
-> >> with documentation to explain what each relocation intends to do.
-> >
-> > There are only 3 relocation types. R_BPF_NONE is good.
-> > There is still time figuring out proper naming and fixing them today.
-> > Otherwise I foresee that the naming problem will cause continuous confu=
-sion to
-> > other toolchain folks.
-> >
-> > Assuming R_BPF_64_ABS_LO32 convey the correct semantics, you can do
-> >
-> >      #define R_BPF_64_ABS_LO32       1
-> >      #define R_BPF_64_64             1 /* deprecated alias */
-> >
-> > Similarly, for BPF_64_32:
-> >
-> >      #define R_BPF_64_CALL32         10
-> >      #define R_BPF_64_32             10 /* deprecated alias */
->
-> Do you mean in LLVM ELF relocations, we map both R_BPF_64_CALL32
-> and R_BPF_64_32 to 10?
+I tried with latest release/12.x branch with top commit
+   0826268d59c6 [PowerPC] Fix x86 vector intrinsics wrapper
+                compilation under C++
+and I cannot reproduce the issue.
 
-No. If renaming, in llvm-project, just replace every occurrence of
-R_BPF_64_32 with the new name.
-LLVM doesn't need to know there was an old macro named "R_BPF_64_32".
-The output of llvm-readelf -r will change, but that should not matter
-(users parsing the output should be aware it is unstable).
+$ clang --version
+clang version 12.0.1 (https://github.com/llvm/llvm-project.git 
+0826268d59c6e1bb3530dffd9dc5f6038774486d)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /home/yhs/work/llvm-project/llvm/build/install/bin
 
-glibc elf.h can keep defining R_BPF_64_32, assuming some packages may
-use the macro.
+The following is my compilation flag, captured with
+   make -C tools/testing/selftests/bpf -j60 V=1
+$ cat log.sh
+clang  -g -D__TARGET_ARCH_x86 -mlittle-endian 
+-I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include 
+-I/home/yhs/work/bpf-next/tools/testing/selftests/bpf 
+-I/home/yhs/work/bpf-next/tools/include/uapi 
+-I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include -idirafter 
+/home/yhs/work/llvm-project/llvm/build.cur/install/lib/clang/13.0.0/include 
+-idirafter /usr/local/include -idirafter /usr/include 
+-Wno-compare-distinct-pointer-types -DENABLE_ATOMICS_TESTS -O2 -target 
+bpf -c progs/bind_perm.c -o 
+/home/yhs/work/bpf-next/tools/testing/selftests/bpf/bind_perm.o -mcpu=v3
 
-> --- a/llvm/include/llvm/BinaryFormat/ELFRelocs/BPF.def
-> +++ b/llvm/include/llvm/BinaryFormat/ELFRelocs/BPF.def
-> @@ -9,3 +9,4 @@ ELF_RELOC(R_BPF_64_ABS64,    2)
->   ELF_RELOC(R_BPF_64_ABS32,    3)
->   ELF_RELOC(R_BPF_64_NODYLD32, 4)
->   ELF_RELOC(R_BPF_64_32,      10)
-> +ELF_RELOC(R_BPF_64_CALL32,  10)
->
-> This actually won't work because now we have
-> value 10 mapping to two names and some part of
-> llvm won't happy.
+Looking at progs/bind_perm.c, I can see
+#include <linux/stddef.h>
+#include <linux/bpf.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <bpf/bpf_helpers.h>
+#include <bpf/bpf_endian.h>
 
-[...]
+So it included some system header files. Maybe some of these
+header files changed some function attributes which triggered
+.cfi_startproc/.cfi_endproc generation which enabled .eh_frame section
+generation.
 
-> >
-> >>>>>
-> >>>>>> +For example, ``R_BPF_64_64`` relocation type is used for ``ld_imm=
-64``
-> >>>>>> instruction.
-> >>>>>> +The actual to-be-relocated data (0 or section offset)
-> >>>>>> +is stored at ``r_offset + 4`` and the read/write
-> >>>>>> +data bitsize is 32 (4 bytes). The relocation can be resolved with
-> >>>>>> +the symbol value plus implicit addend. Note that the ``BitSize`` =
-is
-> >>>>>> 32 which
-> >>>>>> +means the section offset must be less than or equal to ``UINT32_M=
-AX``
-> >>>>>> and this
-> >>>>>> +is enforced by LLVM BPF backend.
-> >>>>>> +
-> >>>>>> +In another case, ``R_BPF_64_ABS64`` relocation type is used for
-> >>>>>> normal 64-bit data.
-> >>>>>> +The actual to-be-relocated data is stored at ``r_offset`` and the
-> >>>>>> read/write data
-> >>>>>> +bitsize is 64 (8 bytes). The relocation can be resolved with
-> >>>>>> +the symbol value plus implicit addend.
-> >>>>>> +
-> >>>>>> +Both ``R_BPF_64_ABS32`` and ``R_BPF_64_NODYLD32`` types are for
-> >>>>>> 32-bit data.
-> >>>>>> +But ``R_BPF_64_NODYLD32`` specifically refers to relocations in
-> >>>>>> ``.BTF`` and
-> >>>>>> +``.BTF.ext`` sections. For cases like bcc where llvm
-> >>>>>> ``ExecutionEngine RuntimeDyld``
-> >>>>>> +is involved, ``R_BPF_64_NODYLD32`` types of relocations should no=
-t be
-> >>>>>> resolved
-> >>>>>> +to actual function/variable address. Otherwise, ``.BTF`` and
-> >>>>>> ``.BTF.ext``
-> >>>>>> +become unusable by bcc and kernel.
-> >>>>>
-> >>>>> Why cannot R_BPF_64_ABS32 cover the use cases of R_BPF_64_NODYLD32?
-> >>>>> I haven't seen any relocation type which hard coding knowledge on d=
-ata
-> >>>>> sections.
-> >>>>
-> >>>> This is due to how .BTF relocation is done. Relocation is against
-> >>>> loadable symbols but it does not want dynamic linker to resolve them=
-.
-> >>>> Instead it wants libbpf and kernel to resolve them in a different
-> >>>> way.
-> >>>
-> >>> How is R_BPF_64_NODYLD32 different?
-> >>> I don't see it is different on https://reviews.llvm.org/D101336   .
-> >>> I cannot find R_BPF_64_NODYLD32 in the kernel code as well.
-> >>
-> >> As I mentioned in the above this is to deal with a case related to
-> >> runtime dynamic linking relocation (DYLD), JIT style of compilation.
-> >> kernel won't use this paradigm so you won't find it in the kenrel.
-> >>
-> >>>
-> >>> There may be a misconception that different sections need different
-> >>> relocation types,
-> >>> even if the semantics are the same. Such understanding is incorrect.
-> >>
-> >> We know this and we don't have this perception such .BTF/.BTF.ext
-> >> relocation types must be different due to it is a different relocation=
-.
-> >> It needs a different relocation because its relocation resolution
-> >> is different from ABS32.
-> >>
-> >> I guess I didn't give enough details on why we need this new relocatio=
-n
-> >> kind and let me try again.
-> >>
-> >> First, the use case is for bcc/bpftrace style LLVM JIT (ExecutionEngin=
-e)
-> >> based compilation. The related bcc code is here:
-> >>
-> >> https://github.com/iovisor/bcc/blob/master/src/cc/bpf_module.cc#L453-L=
-498
-> >> Basically, we will invoke clang CompilerInvocation to generate IR and
-> >> do a bpf target IR optimization and call
-> >>      ExecutionEngine->finalizeObject()
-> >> to generate code.
-> >>
-> >> In this particular setting, we set ExecutionEngine to process
-> >> all sections (including dwarf and BTF sections). And among others,
-> >> ExecutionEngine will try to *resolve* all relocations for dwarf and
-> >> BTF sections.
-> >>
-> >> The core loop for relocation resolution,
-> >>
-> >> void RuntimeDyldImpl::resolveLocalRelocations() {
-> >>     // Iterate over all outstanding relocations
-> >>     for (auto it =3D Relocations.begin(), e =3D Relocations.end(); it =
-!=3D e;
-> >> ++it) {
-> >>       // The Section here (Sections[i]) refers to the section in which=
- the
-> >>       // symbol for the relocation is located.  The SectionID in the
-> >> relocation
-> >>       // entry provides the section to which the relocation will be ap=
-plied.
-> >>       unsigned Idx =3D it->first;
-> >>       uint64_t Addr =3D getSectionLoadAddress(Idx);
-> >>       LLVM_DEBUG(dbgs() << "Resolving relocations Section #" << Idx <<=
- "\t"
-> >>                         << format("%p", (uintptr_t)Addr) << "\n");
-> >>       resolveRelocationList(it->second, Addr);
-> >>     }
-> >>     Relocations.clear();
-> >> }
-> >>
-> >> For example, for the following code,
-> >> $ cat t.c
-> >> int g;
-> >> int test() { return g; }
-> >> $ clang -target bpf -O2 -g -c t.c
-> >> $ llvm-readelf -r t.o
-> >> ...
-> >>
-> >> Relocation section '.rel.debug_info' at offset 0x3e0 contains 11
-> >> entries:
-> >>       Offset             Info             Type               Symbol's
-> >> Value  Symbol's Name
-> >> 0000000000000006  0000000300000003 R_BPF_64_ABS32
-> >> 0000000000000000 .debug_abbrev
-> >> 000000000000000c  0000000400000003 R_BPF_64_ABS32
-> >> 0000000000000000 .debug_str
-> >> 0000000000000012  0000000400000003 R_BPF_64_ABS32
-> >> 0000000000000000 .debug_str
-> >> 0000000000000016  0000000600000003 R_BPF_64_ABS32
-> >> 0000000000000000 .debug_line
-> >> 000000000000001a  0000000400000003 R_BPF_64_ABS32
-> >> 0000000000000000 .debug_str
-> >> 000000000000001e  0000000200000002 R_BPF_64_ABS64
-> >> 0000000000000000 .text
-> >> 000000000000002b  0000000400000003 R_BPF_64_ABS32
-> >> 0000000000000000 .debug_str
-> >> 0000000000000037  0000000800000002 R_BPF_64_ABS64         000000000000=
-0000 g
-> >> 0000000000000040  0000000400000003 R_BPF_64_ABS32
-> >> 0000000000000000 .debug_str
-> >> 0000000000000047  0000000200000002 R_BPF_64_ABS64
-> >> 0000000000000000 .text
-> >> 0000000000000055  0000000400000003 R_BPF_64_ABS32
-> >> 0000000000000000 .debug_str
-> >>
-> >> Relocation section '.rel.BTF' at offset 0x490 contains 1 entries:
-> >>       Offset             Info             Type               Symbol's
-> >> Value  Symbol's Name
-> >> 0000000000000060  0000000800000004 R_BPF_64_NODYLD32      000000000000=
-0000 g
-> >>
-> >> Relocation section '.rel.BTF.ext' at offset 0x4a0 contains 3 entries:
-> >>       Offset             Info             Type               Symbol's
-> >> Value  Symbol's Name
-> >> 000000000000002c  0000000200000004 R_BPF_64_NODYLD32
-> >> 0000000000000000 .text
-> >> 0000000000000040  0000000200000004 R_BPF_64_NODYLD32
-> >> 0000000000000000 .text
-> >> 0000000000000050  0000000200000004 R_BPF_64_NODYLD32
-> >> 0000000000000000 .text
-> >>
-> >> During JIT relocation resolution, it is OKAY to resolve 'g' to
-> >> be actual address and actually it is a good thing since tools
-> >> like bcc actually go through dwarf interface to dump instructions
-> >> interleaved with source codes.
-> >>
-> >> Note that dwarf won't be loaded into the kernel.
-> >>
-> >> But we don't want relocations in .BTF/.BTF.ext to be resolved with
-> >> actually addresses. They will be processed by bpf libraries and the
-> >> kernel. The reason not to have relocation resolution
-> >> is not due to their names, but due
-> >> to their functionality. If we intend to load dwarf to kernel, we
-> >> will issue R_BPF_64_NODYLD32 to dwarf as well.
-> >
-> > Is the problem due to REL relocations not being idempotent?
->
-> No, it is not. This purely depends on how the data will be used
-> in what situations. BPF is kind of special here. For most JIT
-> program, after JIT, the program will be executed on host.
-> But for BPF programs and some other BPF related objects,
-> after JIT, the program actually will need
-> to do some other processing and executed in kernel.
->
-> >
-> >> One can argue we should have fine control in RuntimeDyld so
-> >> that which section to have runtime relocation resolution
-> >> and which section does not. I don't know whether
-> >> ExecutionEngine/RuntimeDyld agree with that or not. But
-> >> BPF backend perspective, R_BPF_64_ABS32 and R_BPF_64_NODYLD32
-> >> are two different relocations, they may do something common
-> >> in some places like lld, but they may do different things
-> >> in other places like dyld.
-> >
-> > If RELA is used, will the tool be happy if you just unconditionally
-> > apply relocations?
->
-> No. RELA will not fix the issue because the issue is not due to
-> REL or RELA.
+Maybe you can produce an .i file in your environment
+so we can do some further analysis.
 
-OK.
-
-> >
-> > You are introducing new relocation types anyway, so migrating to RELA m=
-ay
-> > simplify a bunch of things. The issue is only about forward compatibili=
-ty
-> > for some tools.
->
-> This R_BPF_64_NODYLD32 covers 32bit data relocation which we don't want
-> dynamic linker to change. The section data in object code contains
-> all the needed information for BPF programs to run and verify, so
-> R_BPF_64_NODYLD32 is not really used by outside tools. This is evident
-> because previously we actually have R_BPF_NONE, and we changed
-> to R_BPF_64_NODYLD32 to make it lld friendly to adjust when merging
-> multiple sections.
->
-> >
-> >> Is the above reasonable or you have some further suggestions
-> >> on how to resolve this? I guess I do need to add some of above
-> >> discussion in the documentation so it will be clear why we added
-> >> this relocation.
-> >
-> > Yes, the DYLD part needs clarification.
->
-> I explained above. DYLD is really a special use case for BPF
-> and JITed BPF codes cannot run on the host, it needs to be processed
-> by bpf loader and run on the kernel. So it puts some constraints on
-> what dynamic linker should do for the JITed code and sections.
-
-OK, I still don't understand it but I will trust you that
-the relocation type (R_BPF_64_NODYLD32) is needed and ld.lld does need
-to handle it,
-even if its linker semantic is exactly the same as another relocation type.
-
-> >>>
-> >>>>>
-> >>>>>> +Type ``R_BPF_64_32`` is used for call instruction. The call targe=
-t
-> >>>>>> section
-> >>>>>> +offset is stored at ``r_offset + 4`` (32bit) and calculated as
-> >>>>>> +``(S + IA) / 8 - 1``.
-> >>>>>
-> >>>>> In other ABIs, names like 32/ABS32/ABS64 refer to absolute relocati=
-on types
-> >>>>> without such complex operation.
-> >>>>
-> >>>> Again, this is a historical artifact to handle call instruction. I a=
-m
-> >>>> aware that this might be different from other architectures. But we =
-have
-> >>>> to keep backward compatibility...
-> >>>>
-> >>>>>
-> >>>>>> +Examples
-> >>>>>> +=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>>>> +
-> >>>>>> +Types ``R_BPF_64_64`` and ``R_BPF_64_32`` are used to resolve
-> >>>>>> ``ld_imm64``
-> >>>>>> +and ``call`` instructions. For example::
-> >>>>>> +
-> >>>>>> +  __attribute__((noinline)) __attribute__((section("sec1")))
-> >>>>>> +  int gfunc(int a, int b) {
-> >>>>>> +    return a * b;
-> >>>>>> +  }
-> >>>>>> +  static __attribute__((noinline)) __attribute__((section("sec1")=
-))
-> >>>>>> +  int lfunc(int a, int b) {
-> >>>>>> +    return a + b;
-> >>>>>> +  }
-> >>>>>> +  int global __attribute__((section("sec2")));
-> >>>>>> +  int test(int a, int b) {
-> >>>>>> +    return gfunc(a, b) +  lfunc(a, b) + global;
-> >>>>>> +  }
-> >>>>>> +
-> >>>> [...]
+> 
+>> Thanks,
+>> Tom
+>>
+>>>>
+>>>>>
+>>>>> Thanks,
+>>>>> Tom
+>>>>>
+>>>>
+>>>
+>>
