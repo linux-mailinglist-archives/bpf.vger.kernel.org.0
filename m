@@ -2,91 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4013C3A075A
-	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 01:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C4F3A075E
+	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 01:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhFHXCw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Jun 2021 19:02:52 -0400
-Received: from mail-qk1-f225.google.com ([209.85.222.225]:45720 "EHLO
-        mail-qk1-f225.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhFHXCw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Jun 2021 19:02:52 -0400
-Received: by mail-qk1-f225.google.com with SMTP id d196so16824336qkg.12
-        for <bpf@vger.kernel.org>; Tue, 08 Jun 2021 16:00:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:dkim-signature:mime-version:from:date:message-id
-         :subject:to;
-        bh=rQsS/+0X53LEEP70QVyIkN/HKVhtBIJuAicCKzCwY60=;
-        b=Zh+KyOX8W8kCLj2yS8xfa7iW6J0G8qSAq6SDkkH9RYTFCdIh2vXs2JgQxFD4lUvske
-         fsrMkyPKD+oD5BDMhf+Mi3Cbu1gDF6Xi2EKOCK3Q5CgkWZ5yMJW6ELslyu/t5yqqL3RI
-         H12QbitypdjWYW3qZvp7Hdrqo0wdNHnpXqRFXJR1u6JOxMymB1cXNEWz9gqxMVKnKtDK
-         aPN8+6FWKfzx16KF8dtuzTtwCEaK3J2epRkG0PglWmBIglOjX65oMwSO8evgiyxoUCiE
-         k9eQDC/2gjhZJUl5L8ENe4KeKwAyrbAbbgM2uXSRv8ihgbsNyhzr+jpllIk0W6ykMoCO
-         y+Uw==
-X-Gm-Message-State: AOAM530eEsZA2xDjye+ro37Rq6Ca+SQFGYaQwh4ger+gtAne3tKfxBbQ
-        lEtrCk5xEG+X2kiZzkBAbOCp4qgGR3HeNIkXQTizEnxRUUtzqw==
-X-Google-Smtp-Source: ABdhPJyLX1S2kWzDqufcLw+8kV7d9u20qQAGQvwUTj1ycRSolfO5MmcfKusgTe5oVx2ipnnJ+Q8kuKCD8xRM
-X-Received: by 2002:a05:620a:1368:: with SMTP id d8mr24531087qkl.283.1623193189765;
-        Tue, 08 Jun 2021 15:59:49 -0700 (PDT)
-Received: from restore.menlosecurity.com ([13.56.32.44])
-        by smtp-relay.gmail.com with ESMTPS id x1sm7109938qkn.6.2021.06.08.15.59.49
-        for <bpf@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Jun 2021 15:59:49 -0700 (PDT)
-X-Relaying-Domain: menlosecurity.com
-Received: from safemail-prod-02780031cr-re.menlosecurity.com (13.56.32.45)
-    by restore.menlosecurity.com (13.56.32.44)
-    with SMTP id 3939f890-c8ad-11eb-bd31-53b93506b29b;
-    Tue, 08 Jun 2021 22:59:49 GMT
-Received: from mail-ed1-f69.google.com (209.85.208.69)
-    by safemail-prod-02780031cr-re.menlosecurity.com (13.56.32.45)
-    with SMTP id 3939f890-c8ad-11eb-bd31-53b93506b29b;
-    Tue, 08 Jun 2021 22:59:49 GMT
-Received: by mail-ed1-f69.google.com with SMTP id y18-20020a0564022712b029038ffac1995eso11584736edd.12
-        for <bpf@vger.kernel.org>; Tue, 08 Jun 2021 15:59:47 -0700 (PDT)
+        id S232208AbhFHXGD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Jun 2021 19:06:03 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:52727 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhFHXGC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Jun 2021 19:06:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=menlosecurity.com; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=rQsS/+0X53LEEP70QVyIkN/HKVhtBIJuAicCKzCwY60=;
-        b=gMsQ7n/vUIXm3yPpVRQcloVv0hN6BoQikr+/C9hZD5SuDu3u/3YAdxdgX97ItUrrJC
-         7dDqbCXtgLoc5f4vPT0VRaV9ZZLTu4j29aFCQMOIt4K36aQfRzedVypHl7vW7glXjOys
-         P+lV6apUMZnV5IDAoG9FzR7UjScaeBNdqk7vo=
-X-Received: by 2002:a17:906:1815:: with SMTP id v21mr25738574eje.376.1623193186096;
-        Tue, 08 Jun 2021 15:59:46 -0700 (PDT)
-X-Received: by 2002:a17:906:1815:: with SMTP id v21mr25738567eje.376.1623193185987;
- Tue, 08 Jun 2021 15:59:45 -0700 (PDT)
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1623193449; x=1654729449;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=SJ53jugNHBiYCQmrDRJq3GwEPY+tvvQA2foE3RigJbA=;
+  b=GcLMcsgHzRLb3cZ5JaNCsPVEMOuq/8VP8l8x26w6b1rQCc+7sw30Aj6B
+   NIcXEhjtg8uRjN5kqoHc4qU/+AkD7R2wZrvi4mCLmdsvls6mGknkfv/ny
+   6JTljDOySGIXvzpiFiuqz7W66bWvLvbUxerbltg8iYbAc/yDXGnhchMzp
+   w=;
+X-IronPort-AV: E=Sophos;i="5.83,259,1616457600"; 
+   d="scan'208";a="114579637"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 08 Jun 2021 23:04:07 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id A3F57A1E39;
+        Tue,  8 Jun 2021 23:04:06 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Tue, 8 Jun 2021 23:04:06 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.161.153) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Tue, 8 Jun 2021 23:04:01 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <ycheng@google.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
+        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <ncardwell@google.com>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH v7 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Wed, 9 Jun 2021 08:03:57 +0900
+Message-ID: <20210608230357.39528-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAK6E8=dtFmPYpK71XJc=HFDUL9mYO1i36Q8BemwSGcCq+3BEmw@mail.gmail.com>
+References: <CAK6E8=dtFmPYpK71XJc=HFDUL9mYO1i36Q8BemwSGcCq+3BEmw@mail.gmail.com>
 MIME-Version: 1.0
-From:   Rumen Telbizov <rumen.telbizov@menlosecurity.com>
-Date:   Tue, 8 Jun 2021 15:59:35 -0700
-Message-ID: <CA+FoirDxh7AhApwWVG_19j5RWT1dp23ab1h0P1nTjhhWpRC5Ow@mail.gmail.com>
-Subject: bpf_fib_lookup support for firewall mark
-To:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.153]
+X-ClientProxiedBy: EX13P01UWB002.ant.amazon.com (10.43.161.191) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear BPF list,
+From:   Yuchung Cheng <ycheng@google.com>
+Date:   Tue, 8 Jun 2021 10:48:06 -0700
+> On Tue, May 25, 2021 at 11:42 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >
+> > On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
+> > > The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > > accept connections evenly. However, there is a defect in the current
+> > > implementation [1]. When a SYN packet is received, the connection is tied
+> > > to a listening socket. Accordingly, when the listener is closed, in-flight
+> > > requests during the three-way handshake and child sockets in the accept
+> > > queue are dropped even if other listeners on the same port could accept
+> > > such connections.
+> > >
+> > > This situation can happen when various server management tools restart
+> > > server (such as nginx) processes. For instance, when we change nginx
+> > > configurations and restart it, it spins up new workers that respect the new
+> > > configuration and closes all listeners on the old workers, resulting in the
+> > > in-flight ACK of 3WHS is responded by RST.
+> > >
+> > > To avoid such a situation, users have to know deeply how the kernel handles
+> > > SYN packets and implement connection draining by eBPF [2]:
+> > >
+> > >    1. Stop routing SYN packets to the listener by eBPF.
+> > >    2. Wait for all timers to expire to complete requests
+> > >    3. Accept connections until EAGAIN, then close the listener.
+> > >
+> > >    or
+> > >
+> > >    1. Start counting SYN packets and accept syscalls using the eBPF map.
+> > >    2. Stop routing SYN packets.
+> > >    3. Accept connections up to the count, then close the listener.
+> > >
+> > > In either way, we cannot close a listener immediately. However, ideally,
+> > > the application need not drain the not yet accepted sockets because 3WHS
+> > > and tying a connection to a listener are just the kernel behaviour. The
+> > > root cause is within the kernel, so the issue should be addressed in kernel
+> > > space and should not be visible to user space. This patchset fixes it so
+> > > that users need not take care of kernel implementation and connection
+> > > draining. With this patchset, the kernel redistributes requests and
+> > > connections from a listener to the others in the same reuseport group
+> > > at/after close or shutdown syscalls.
+> > >
+> > > Although some software does connection draining, there are still merits in
+> > > migration. For some security reasons, such as replacing TLS certificates,
+> > > we may want to apply new settings as soon as possible and/or we may not be
+> > > able to wait for connection draining. The sockets in the accept queue have
+> > > not started application sessions yet. So, if we do not drain such sockets,
+> > > they can be handled by the newer listeners and could have a longer
+> > > lifetime. It is difficult to drain all connections in every case, but we
+> > > can decrease such aborted connections by migration. In that sense,
+> > > migration is always better than draining.
+> > >
+> > > Moreover, auto-migration simplifies user space logic and also works well in
+> > > a case where we cannot modify and build a server program to implement the
+> > > workaround.
+> > >
+> > > Note that the source and destination listeners MUST have the same settings
+> > > at the socket API level; otherwise, applications may face inconsistency and
+> > > cause errors. In such a case, we have to use the eBPF program to select a
+> > > specific listener or to cancel migration.
+> This looks to be a useful feature. What happens to migrating a
+> passively fast-opened socket in the old listener but it has not yet
+> been accepted (TFO is both a mini-socket and a full-socket)?
+> It gets tricky when the old and new listener have different TFO key
 
-I am new to eBPF so go easy on me.
-It seems to me that currently eBPF has no support for route table
-lookups including firewall marks. The bpf_fib_lookup structure itself
-has no mark field as per
-https://elixir.bootlin.com/linux/v5.10.28/source/include/uapi/linux/bpf.h#L4864
+The tricky situation can happen without this patch set. We can change
+the listener's TFO key when TCP_SYN_RECV sockets are still in the accept
+queue. The change is already handled properly, so it does not crash
+applications.
 
-Additionally bpf_fib_lookup() function does not incorporate the
-firewall mark in its route lookup. It explicitly sets it to 0 as per
-https://elixir.bootlin.com/linux/v5.10.28/source/net/core/filter.c#L5329
-along with other fields which are used during the regular routing
-policy database lookup.
+In the normal 3WHS case, a full-socket is created after 3WHS. In the TFO
+case, a full-socket is created after validating the TFO cookie in the
+initial SYN packet.
 
-Thus lookups from within eBPF and outside of it result in different
-outcomes if there are rules directing traffic based on fwmark.
-Can you please advise what the rationale for this is or if there
-anything that I might be missing.
-
-Let me know if I can provide any further information.
-
-Cheers,
-Rumen Telbizov
+After that, the connection is basically handled via the full-socket, except
+for accept() syscall. So in the both cases, the mini-socket is poped out of
+old listener's queue, cloned, and put into the new listner's queue. Then we
+can accept() its full-socket via the cloned mini-socket.
