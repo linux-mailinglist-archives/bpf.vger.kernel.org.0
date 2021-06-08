@@ -2,91 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E663639FB0F
-	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 17:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9027539FB2C
+	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 17:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhFHPoy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Jun 2021 11:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
+        id S231165AbhFHPv7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Jun 2021 11:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhFHPox (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Jun 2021 11:44:53 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE48C061574;
-        Tue,  8 Jun 2021 08:42:46 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id j20so3475305lfe.8;
-        Tue, 08 Jun 2021 08:42:46 -0700 (PDT)
+        with ESMTP id S230425AbhFHPv6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Jun 2021 11:51:58 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF927C061574
+        for <bpf@vger.kernel.org>; Tue,  8 Jun 2021 08:49:54 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id e2so27661187ljk.4
+        for <bpf@vger.kernel.org>; Tue, 08 Jun 2021 08:49:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eW7GIA410dvb9VGfgYzY3deYI5SVjwkRlVr8V/8j8VY=;
-        b=H2PQ/HSWNcqYwwBN41hPBoncXvZyj2M1tGvG+fYBCHHhZErSL2vXbDyONO8BHzCZLP
-         65/ZYqCY2dC984Ei1qmZ4kHEx+9g8yHoHZbylOWoDd+ixgycvlRdnVSO8Ba1GpAjEBur
-         0hIjErUJwKFoCBm2TfuFV5nFAchvfOZcsnY4UHPbzJ+eFG5FaFLX8mYStf9xcB0H9lzJ
-         JnqCd5NUAfuYxcCrovYlK5kg3A0tussKJlrp5LjSIJBmcj1aHbRH6/uX4JsGV9n58pAy
-         6Lu156aTlmcpUyyPTolJPTtxNbDfaQmjw6I2JgfwJquVRIOC9KkHKea9I2TvAm5IlRom
-         BciA==
+         :cc:content-transfer-encoding;
+        bh=5j/M5QZNZfhQkLP/CuNBeP/vLcyCK1JxVCvewsMpIwM=;
+        b=lj4zCUN3gXcO8kdh54u7nfPGRj2dXq92fwYLPSCyLt+ZiHvCSCXxF5m2U/q4yKxrDf
+         Dh+Iw5EqHer5/cnV+ss0LT1l2gwBsUuUfmV5IanKuExnL0/I5iJ43q2MFKWiAxkooYFz
+         17P7KoV8ap82rrWq7rBAXCy8UViuDeL4JQrOHEai+uOv/Zju2UlDLhD0mJr/rJwXOig8
+         P8VeV/zKq0zCbDiagRVQA1t740ikxaHT3hHW4/1GLbaKNSRqNzUVs3jl5iSVk97RFL25
+         5oM/GjfQZtjFWAjeSZG73HbkJGCyElem7Jq6q8kxneFK4EkoW/e3V45pZtxUYt+pX2wf
+         ImuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eW7GIA410dvb9VGfgYzY3deYI5SVjwkRlVr8V/8j8VY=;
-        b=ipmhBs4ZdVp80MNv8CwGTSIhq9qRdSUyqvE8DKavhtkcWRDE23IZZxK++qyutAKVYj
-         Xp2Dpq1Mnj4Y2QIZnYcGR026CZRnjK4d/ImIOdBf5ydTfeAET073nMKqsnyHLCtBm8vk
-         HqjQ67o1Nivq2yUpj+aNc09lNmvVCav/C0Ukl7ERHh8OIYzOVwdoG/IB1rn34Czp3/1d
-         yTxwl9UHUWiHlUYzjof5nOB0ABdGTcWKyGe8Yhu99pXbEutNjyFvSzMzRHnW+fLHhxKu
-         W3uVhff9BPcuzoDuDcJ3DptXlD4ZTGbg5cLnQxlkvFT6G3hDvABbu6VWKxL8tKneFBAf
-         2OIA==
-X-Gm-Message-State: AOAM531VS8NEnX2g04q6C7/GZnoV+E7kpHUwaRP0IFFsKF6bV/oZyPdt
-        2p+vh+ES67i8MwN2mmJl90IajL4ouCS86PIssrc=
-X-Google-Smtp-Source: ABdhPJxso7UHau01k1Ql2fwRgRR60HACufqnhqXsT/Fo5aqd6aP4uZYPrrkO8ZDwhuDkhguyj/VPFYtpE3f0QeKv0KQ=
-X-Received: by 2002:a05:6512:3c91:: with SMTP id h17mr16282576lfv.214.1623166964418;
- Tue, 08 Jun 2021 08:42:44 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5j/M5QZNZfhQkLP/CuNBeP/vLcyCK1JxVCvewsMpIwM=;
+        b=e6RvCHuKfbnGt1uIF3Pg+hDGN8kMm6L3oYIQJvnlmuvHOF+QspwmytEaihdopyDbUq
+         4Eafao74EsX+xlJJfTO9gQHQeU5vFvnnaxIwThnaeADar+AmAylAcqth+avOzBE5F7AW
+         9VAbCZDWQH14fk8FKYpPGmAZaBbo7j0VjhbFNURr7GkJMxGMk9OsgeJDrhXXinDJvd7O
+         4Ag2BAyW3P3qVUmQ8eponePH8bIVfpWhov1WTqLuWZBt3WpGIUA6imb6YkcCwD8H+qKm
+         pns1bQ0Hkw/+jf5yNImBXo07+Le0Epbt32k7VNNFeeV49RoBL2DZTyMaj7kA1g6PF2LQ
+         JNmA==
+X-Gm-Message-State: AOAM532Gn51nKJLr3tHASrhzk+LBcY8Epvu+nzr7prGJ7TbXe6uJqYoS
+        rdByAb7B603tlgLw4Mk8z0u2NpaTSxMCckXQH28=
+X-Google-Smtp-Source: ABdhPJyxQVF7BusirVG8cdpw1tjQDMO9htU2ezi+jR60u9xuNX3a9iN8RlYt20Q7X+aEiAEJe/SZDeVIJk5PxMAe/aY=
+X-Received: by 2002:a2e:a4a5:: with SMTP id g5mr18454498ljm.32.1623167393104;
+ Tue, 08 Jun 2021 08:49:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210605111034.1810858-1-jolsa@kernel.org> <20210605111034.1810858-14-jolsa@kernel.org>
-In-Reply-To: <20210605111034.1810858-14-jolsa@kernel.org>
+References: <20210525033314.3008878-1-yhs@fb.com> <20210525182948.4wk3kd7vrvgdr2lu@google.com>
+ <dd95b896-3b37-a398-68cd-549fb249f2e0@fb.com> <CAFP8O3JM3SrKXYA2SF-zRJZCiipHdcyF1usPOykm6Yqb6xs6dQ@mail.gmail.com>
+ <4410f328-58ae-24e4-5e63-cfde6e891bf4@fb.com> <CAFP8O3J4_aaT+POmB6H6mihuP1-VQ4ww1nVrHxEvd70S5ODEUw@mail.gmail.com>
+ <8abe01cb-da8f-514c-6b52-b92686a16662@fb.com> <CAFP8O3JeGtDMATPsnjhRO3Ru+Lap2uJSG_jYzWcK4AWeBtXquw@mail.gmail.com>
+In-Reply-To: <CAFP8O3JeGtDMATPsnjhRO3Ru+Lap2uJSG_jYzWcK4AWeBtXquw@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 8 Jun 2021 08:42:32 -0700
-Message-ID: <CAADnVQJV+0SjqUrTw+3Y02tFedcAaPKJS-W8sQHw5YT4XUW0hQ@mail.gmail.com>
-Subject: Re: [PATCH 13/19] bpf: Add support to link multi func tracing program
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 8 Jun 2021 08:49:41 -0700
+Message-ID: <CAADnVQ+sD7ELvEwKf5Ui1dVkXPYEyjkwFxogxP5_4vrH3nMhPA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] docs/bpf: add llvm_reloc.rst to explain llvm
+ bpf relocations
+To:     =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Kernel Team <kernel-team@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>
+        Lorenz Bauer <lmb@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 4:11 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Mon, Jun 7, 2021 at 10:51 PM F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray@googl=
+e.com> wrote:
 >
-> Adding support to attach multiple functions to tracing program
-> by using the link_create/link_update interface.
+> You can rename R_BPF_64_64 to something more meaningful, e.g. R_BPF_64_LD=
+IMM64.
+> Then I am fine that such a relocation type applies inconsecutive bytes.
 >
-> Adding multi_btf_ids/multi_btf_ids_cnt pair to link_create struct
-> API, that define array of functions btf ids that will be attached
-> to prog_fd.
->
-> The prog_fd needs to be multi prog tracing program (BPF_F_MULTI_FUNC).
->
-> The new link_create interface creates new BPF_LINK_TYPE_TRACING_MULTI
-> link type, which creates separate bpf_trampoline and registers it
-> as direct function for all specified btf ids.
->
-> The new bpf_trampoline is out of scope (bpf_trampoline_lookup) of
-> standard trampolines, so all registered functions need to be free
-> of direct functions, otherwise the link fails.
+> See below. Just change every occurrence of the old name in llvm-project.
 
-Overall the api makes sense to me.
-The restriction of multi vs non-multi is too severe though.
-The multi trampoline can serve normal fentry/fexit too.
-If ip is moved to the end (instead of start) the trampoline
-will be able to call into multi and normal fentry/fexit progs. Right?
+No. We cannot rename them, because certain gnu tools resolve relos by name
+and not by number.
+The only thing we can do is to document why such a name was picked in
+the first place.
+Back then 64_64 meant that it applied to 64-bit field in 16-byte insn.
+Whereas 64_32 meant that it applied to 32-bit field in 8-byte insn.
+64_64 used to be called 64_MAPFD relo, but was renamed early enough
+while we still had time to do such rename. Now backward compatibility
+is more important than odd looking names.
