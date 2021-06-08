@@ -2,133 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870983A076E
-	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 01:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A84E3A079A
+	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 01:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhFHXHt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Jun 2021 19:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbhFHXHs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Jun 2021 19:07:48 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1239CC061574;
-        Tue,  8 Jun 2021 16:05:41 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id v27-20020a056830091bb02903cd67d40070so18946929ott.1;
-        Tue, 08 Jun 2021 16:05:41 -0700 (PDT)
+        id S235143AbhFHXNc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Jun 2021 19:13:32 -0400
+Received: from mail-yb1-f175.google.com ([209.85.219.175]:36719 "EHLO
+        mail-yb1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234298AbhFHXNb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Jun 2021 19:13:31 -0400
+Received: by mail-yb1-f175.google.com with SMTP id c14so3595778ybk.3
+        for <bpf@vger.kernel.org>; Tue, 08 Jun 2021 16:11:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rmpqNyoSPpV2gAR13cGS3P/kngTI8mdR9jTSkuOZMTc=;
-        b=Ei2kC/AdViXkFYvtr5auiQGqbZBwAonWCDZEO5hw9M2st6RExu7xbjd/QjA1o0fd0d
-         g/7Epu2dQAqRZI2zlgZLjOP/5EKSuaf8doVyz118IbLINLo2DtC0tv2ICuMqI+eYqIXT
-         8lMeh++DG+EdxeyfqVyo3G5H77Zt0ttg8u7+TFmhqL6tVHPzrotrBbP3h3i7AjFBUm1m
-         fRvSZLRiwnXhwgNFr8gV+94S7vSlkiaeSR4ACVBulB55Sg5vrcc40lVV/pfQcsoGLuJl
-         akx5VTDSpbJfs1PPN3pHnryc2UvPf2+kRo76/5GC0/gozr+mfsBG6aY+IrWDkb0zy+yb
-         RLAw==
+         :cc:content-transfer-encoding;
+        bh=FUD9YIYr3ZqvUfG9O54AzvdECXzZfKyWamdIgRHxwEk=;
+        b=KQvKIFWZp69iNDsNxjuW88hx0wnPbQvAF1qrvoP9F/i+2rZET4vyJcuSCwe7VoRAFN
+         AO4lyTvZAUC/ytuZs9lpdKDy56IJmSKCRhNHR7GKMyea1boQCIMe1zW215eu7+by9nBE
+         eymcEnbAIUpiDSBawmK/qzWBM3/wDGSQB8WXeM9W5nLg4153bvcCKGPtakLfXeqtsmux
+         4/eoVv/0NYjAT83avWTtT+JPUhS6t1QcggCWehdtK/hpCssPj0j0bNrHamVCtRIvm1vk
+         zxzg/A4nfDg9+cTii0M/ZgnLiOLaxPXHia4aarxP0+F4OVspU3a2QplkpTZz95IEn71Z
+         gzkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rmpqNyoSPpV2gAR13cGS3P/kngTI8mdR9jTSkuOZMTc=;
-        b=memfdjQYUpNi26LSViUjsxk+TZoKsrlVYQImgKECqUcRB6JvZua6wRsgOFAstOGT9y
-         gzsnwmYfhUsltiu183PUs0tnol6eA5uXgTeizNcaLuY3sZlw1QgRQdE9K9/p+eAHcWYg
-         ZD5hJ/pbaO7xvHwfEYIhuG2f51d1uEkYDRfe9nUYmBQZLECufRXg+Ba1I0A3J4BHP8RA
-         Cc3lZSFBVsEmgNNMhJoedDHgetwHxpWCLCVgpMxLExPF8M/J9+hwMSIVpXWNlmTzb2Wb
-         okGSpzRirfCFDeDH2lFSMtF5iASj78Bkjg+flfm3Qu1t97SQOyQOWIZUgU1UuTnJRIt6
-         ICkg==
-X-Gm-Message-State: AOAM53320uKXO5tZ1g2M3ctaIflvlQDEusybe/l7z7jEfTPJmxjBjTsJ
-        vTnHTtNJKo6q9UZe8Zjc8JXTeWDJNu9oi9rWHLU=
-X-Google-Smtp-Source: ABdhPJxX61JEX94cF+jruVq6oInUOzZyLFOaNS4woYk689fsz262JuicEn6sUv+Jdx8h1bl/5xMwsgi+o3LzElKwNGU=
-X-Received: by 2002:a9d:5d14:: with SMTP id b20mr20198404oti.307.1623193540441;
- Tue, 08 Jun 2021 16:05:40 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FUD9YIYr3ZqvUfG9O54AzvdECXzZfKyWamdIgRHxwEk=;
+        b=OUJg0c4UCXbZ3s503mmYdw9AmKndIOezl4xXmpV7XTEl72JMAyaQYS6VfHg52g6WQE
+         yRja2xSol9yLZpYN4QxKo8Rs4cyhV71siYL84M11o8NBfDmAnoAifkQX2+exQM/+8lkB
+         v20WarAjXuIwALQlaTOqzP1dAB4ph5i3triNku0G2LSiv9XWNJEGb85afsxKbhwyElTR
+         RTAy7elPYuK0PukhSR/6lr/vrJ1dUcvi4gZAoL08I2vZrzOYyWCO/DzcaUyv4hzM1UZu
+         Su+g7Jc/3IodmEI786e6vm82+91wvUhM4wE4De//+0US9tqZO2c3MGC4FEikmcK4zPZL
+         o0FQ==
+X-Gm-Message-State: AOAM533muSJnTGXsMC2tQmmFehnqV/7kLwd5FDT1cU9NnM4CbR8TfgK0
+        SRuJmBaeL8vRYJlwrXsip0Iu7yY2c/ccgHtZvhBuQA==
+X-Google-Smtp-Source: ABdhPJyGHyjPmNC9b6TrdGe5YUyVumuLZ9vHch2ktSx9c6Ngg+c/AoEbcPNEvcjr3R9t0SETOnhnHxFR6PQQ/vD8J3o=
+X-Received: by 2002:a25:11c5:: with SMTP id 188mr34575738ybr.322.1623193837537;
+ Tue, 08 Jun 2021 16:10:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210605111034.1810858-1-jolsa@kernel.org> <20210605111034.1810858-14-jolsa@kernel.org>
- <CAADnVQJV+0SjqUrTw+3Y02tFedcAaPKJS-W8sQHw5YT4XUW0hQ@mail.gmail.com>
- <YL+0HLQ9oSrNM7ip@krava> <20210608184903.rgnv65jimekqugol@ast-mbp.dhcp.thefacebook.com>
- <YL/cIBArrCjhgyXt@krava>
-In-Reply-To: <YL/cIBArrCjhgyXt@krava>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 8 Jun 2021 16:05:29 -0700
-Message-ID: <CAADnVQ+zEdv8BfNHGYO=xi-ePwfoKQUd_yxmRB3jHByPmYxCWw@mail.gmail.com>
-Subject: Re: [PATCH 13/19] bpf: Add support to link multi func tracing program
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20210525033314.3008878-1-yhs@fb.com> <20210525182948.4wk3kd7vrvgdr2lu@google.com>
+ <dd95b896-3b37-a398-68cd-549fb249f2e0@fb.com> <CAFP8O3JM3SrKXYA2SF-zRJZCiipHdcyF1usPOykm6Yqb6xs6dQ@mail.gmail.com>
+ <4410f328-58ae-24e4-5e63-cfde6e891bf4@fb.com> <CAFP8O3J4_aaT+POmB6H6mihuP1-VQ4ww1nVrHxEvd70S5ODEUw@mail.gmail.com>
+ <8abe01cb-da8f-514c-6b52-b92686a16662@fb.com> <CAFP8O3JeGtDMATPsnjhRO3Ru+Lap2uJSG_jYzWcK4AWeBtXquw@mail.gmail.com>
+ <CAADnVQ+sD7ELvEwKf5Ui1dVkXPYEyjkwFxogxP5_4vrH3nMhPA@mail.gmail.com>
+ <CAFP8O3KayCgP6OqF1Vx8afav==jkL038m0rK66b7jJ0DOO=uJQ@mail.gmail.com> <20210608183205.l22q43hinv6lzb4h@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210608183205.l22q43hinv6lzb4h@ast-mbp.dhcp.thefacebook.com>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Tue, 8 Jun 2021 16:10:26 -0700
+Message-ID: <CAFP8O3LUNWP69fJznwcH6QYvDjK427WZBeS0F-L390Y5=Szkdg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] docs/bpf: add llvm_reloc.rst to explain llvm
+ bpf relocations
+To:     elfutils-devel@sourceware.org
+Cc:     Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Kernel Team <kernel-team@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>
+        Lorenz Bauer <lmb@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 2:07 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Tue, Jun 8, 2021 at 11:32 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Tue, Jun 08, 2021 at 11:49:03AM -0700, Alexei Starovoitov wrote:
-> > On Tue, Jun 08, 2021 at 08:17:00PM +0200, Jiri Olsa wrote:
-> > > On Tue, Jun 08, 2021 at 08:42:32AM -0700, Alexei Starovoitov wrote:
-> > > > On Sat, Jun 5, 2021 at 4:11 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > > >
-> > > > > Adding support to attach multiple functions to tracing program
-> > > > > by using the link_create/link_update interface.
-> > > > >
-> > > > > Adding multi_btf_ids/multi_btf_ids_cnt pair to link_create struct
-> > > > > API, that define array of functions btf ids that will be attached
-> > > > > to prog_fd.
-> > > > >
-> > > > > The prog_fd needs to be multi prog tracing program (BPF_F_MULTI_FUNC).
-> > > > >
-> > > > > The new link_create interface creates new BPF_LINK_TYPE_TRACING_MULTI
-> > > > > link type, which creates separate bpf_trampoline and registers it
-> > > > > as direct function for all specified btf ids.
-> > > > >
-> > > > > The new bpf_trampoline is out of scope (bpf_trampoline_lookup) of
-> > > > > standard trampolines, so all registered functions need to be free
-> > > > > of direct functions, otherwise the link fails.
-> > > >
-> > > > Overall the api makes sense to me.
-> > > > The restriction of multi vs non-multi is too severe though.
-> > > > The multi trampoline can serve normal fentry/fexit too.
+> On Tue, Jun 08, 2021 at 09:33:28AM -0700, F=C4=81ng-ru=C3=AC S=C3=B2ng wr=
+ote:
+> > On Tue, Jun 8, 2021 at 8:49 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
 > > >
-> > > so multi trampoline gets called from all the registered functions,
-> > > so there would need to be filter for specific ip before calling the
-> > > standard program.. single cmp/jnz might not be that bad, I'll check
+> > > On Mon, Jun 7, 2021 at 10:51 PM F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray=
+@google.com> wrote:
+> > > >
+> > > > You can rename R_BPF_64_64 to something more meaningful, e.g. R_BPF=
+_64_LDIMM64.
+> > > > Then I am fine that such a relocation type applies inconsecutive by=
+tes.
+> > > >
+> > > > See below. Just change every occurrence of the old name in llvm-pro=
+ject.
+> > >
+> > > No. We cannot rename them, because certain gnu tools resolve relos by=
+ name
+> > > and not by number.
 > >
-> > You mean reusing the same multi trampoline for all IPs and regenerating
-> > it with a bunch of cmp/jnz checks? There should be a better way to scale.
-> > Maybe clone multi trampoline instead?
-> > IPs[1-10] will point to multi.
-> > IP[11] will point to a clone of multi that serves multi prog and
-> > fentry/fexit progs specific for that IP.
+> > How do the GNU tools resolve relocations by name instead of by
+> > relocation type number?
+> > I don't think this should and can be supported.
+> >
+> > Most tools should do:
+> > if (type =3D=3D R_BPF_64_64) do_something();
+> >
+> > You are free to change them to
+> > if (type =3D=3D R_BPF_64_LDIMM64) do_something();
+> > as long as R_BPF_64_LDIMM64 is defined as the number.
 >
-> ok, so we'd clone multi trampoline if there's request to attach
-> standard trampoline to some IP from multi trampoline
+> If you're going to succeed convincing elfutils maintainers to change
+> their whole design then we can realistically talk about renaming.
+> As a homework try cloning elfutils.git then change the name in backends/x=
+86_64_reloc.def
+> or bpf_reloc.def while keeping the numbers and observe how the standard t=
+ools stop working.
 >
-> .. and transform currently attached standard trampoline for IP
-> into clone of multi trampoline, if there's request to create
-> multi trampoline that covers that IP
+> Also R_BPF_64_64 may not be the best name, but R_BPF_64_LDIMM64 is
+> not a good name either.
 
-yep. For every IP==btf_id there will be only two possible trampolines.
-Should be easy enough to track and transition between them.
-The standard fentry/fexit will only get negligible slowdown from
-going through multi.
-multi+fexit and fmod_ret needs to be thought through as well.
-That's why I thought that 'ip' at the end should simplify things.
-Only multi will have access to it.
-But we can store it first too. fentry/fexit will see ctx=r1 with +8 offset
-and will have normal args in ctx. Like ip isn't even there.
-While multi trampoline is always doing ip, arg1,arg2, .., arg6
-and passes ctx = &ip into multi prog and ctx = &arg1 into fentry/fexit.
-'ret' for fexit is problematic though. hmm.
-Maybe such clone multi trampoline for specific ip with 2 args will do:
-ip, arg1, arg2, ret, 0, 0, 0, ret.
-Then multi will have 6 args, though 3rd is actually ret.
-Then fexit will have ret in the right place and multi prog will have
-it as 7th arg.
+I used R_BPF_64_LDIMM64 as an example. Surely you could name it more
+appropriately.
+
+> Most architectures avoid using instruction mnemonic
+> in relo names. The relo name should describe what it does instead of insn
+> it applies to. TLS, GOT, PLT, ABS are good suffixes to use. LDIMM64 - not=
+ really.
+> Instead of R_BPF_64_32 we could have used R_BPF_64_PC32, but not R_BPF_64=
+_CALL32.
+> Anyway it's too late to change.
+
+R_X86_64_PC32/R_X86_64_PLT32 are different.
+Please see https://sourceware.org/pipermail/binutils/2020-April/000424.html
+for why a dedicated branch relocation
+is preferred for a branch instruction.
+
+
+
+elfutils folks,
+
+BPF is adding new relocation types R_BPF_64_ABS64/R_BPF_64_ABS32 which
+will can cause ongoing confusion with the existing
+R_BPF_64_32/R_BPF_64_64.
+
+Can you comment on why elfutils cannot rename R_BPF_64_32/R_BPF_64_64
+while keep R_BPF_64_32/R_BPF_64_64 as deprecated aliases for the new
+names?
