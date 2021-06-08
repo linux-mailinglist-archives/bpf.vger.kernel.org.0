@@ -2,87 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D1939F98A
-	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 16:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BED39FB00
+	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 17:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233591AbhFHOvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Jun 2021 10:51:15 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:34351 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233538AbhFHOvP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Jun 2021 10:51:15 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 037901B6E;
-        Tue,  8 Jun 2021 10:49:21 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 08 Jun 2021 10:49:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=6zu8Yy0uwISQNd3KeZQAasi1XJA
-        nn4MoA7LK+JIJ4+Q=; b=WBmHxpXSNYvlRNPCeToHIGjUE+I8xCY1Bm6uN7pDuNb
-        Xq5z2jOElQgo04/Lmqr2v53s6NgcEpC7Frj/7A50B9VfybYOAkG8DPXhldHBstIY
-        D9LmmZmbFrVaL5nhZ1mPjdW5AawBN1W6vjjxWVKwyMHHVgYKWsN4NqPSO6KdnF9G
-        ArfgS9cc838kUPplGioyiOxyVrv+sX+rk+9H7EpHieYYhUgZU01WEs5UPmmQ59xL
-        QpN5fyV2jnnWGKo/Oymn2JTabm5YAfmllJH1wLEfNnqyF6os0CgzQnPC28Ybr8FH
-        YC791QJQnB4hSAtcBJA36TcphDfSMye4I/B07970NLQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=6zu8Yy
-        0uwISQNd3KeZQAasi1XJAnn4MoA7LK+JIJ4+Q=; b=CSxmnUHdcLcmTIxufNdUHM
-        yjALEa8wpDN2G46MKIfSB/OSFXJNdua6CB04jKq2C8MLjWTgi/sx5ydy4argWdYp
-        F2BZhhnF2Uej8NR2rY2Pty8q7E8MvQAVIMn8S7ytRJKWAGYkeD0yaPcm1A3a8ZEa
-        uaBnU6xeOwbLjrGRQficnU/iBNOcPgs3LgHLyZfQOWS+dM012SrAzlT8A0/P6bGH
-        AwLkd6Mf5G8AkhKLt36rIU6ZletcoHRFxGFUq+oiN+SOiOh4GcZe9t7sMMGm6WMG
-        xqltGAP+NQgOtnCN5XiTErCwD3D3HRE5Orcaop3IhySax8YTqrZHHoxXP2idA0iw
-        ==
-X-ME-Sender: <xms:cYO_YKJe58B2ZiA_1AhhzoGioF41rGoY_zHaGF69qMDpMHcsry0y4A>
-    <xme:cYO_YCLz1gKqi-AHKJ5wz8d_QTv9x-tKhjkP4kx8hB6afV3crbyD5ato4SgAtTD1A
-    XHQkvCswEfQuA>
-X-ME-Received: <xmr:cYO_YKtpruokpq-sJ7_c-Pobh9ua197eWm8vvE2oi5EhB79eSkEXFv7R7WthJk6DXOqfiVPBSxqGuhzEJiQlxOKv89bHM_ux>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfedtledgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
-    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
-    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:cYO_YPYLupfj_1kSOqNbHy1gCFKuFL0aTl26mhGU1hqeg7YSWQ5FCg>
-    <xmx:cYO_YBbgAVgmrKFK6yQboFwujL28NqyxvqG89L8vgDaRAiivxR5cUQ>
-    <xmx:cYO_YLDJTlGy7pETaPo4K6qRWKBqbpCKkfOpV3epj0UOG6OB2aTlww>
-    <xmx:cYO_YGOwURb59Lwpm5P1mbTaK8SiS6wVqReXC6lQ135I0XkplZ2uIg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Jun 2021 10:49:20 -0400 (EDT)
-Date:   Tue, 8 Jun 2021 16:48:54 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Frank van der Linden <fllinden@amazon.com>
-Cc:     stable@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net
-Subject: Re: [PATCH v2 4.14 00/16] CVE fixes and selftests cleanup
-Message-ID: <YL+DVkqdVjKWfbA8@kroah.com>
-References: <20210531182556.25277-1-fllinden@amazon.com>
+        id S230414AbhFHPlW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Jun 2021 11:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhFHPlU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Jun 2021 11:41:20 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53702C061574;
+        Tue,  8 Jun 2021 08:39:25 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id i10so32786797lfj.2;
+        Tue, 08 Jun 2021 08:39:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Iq8eVNhJhF1BgqV6rgMywl+V3RTaF2wJHyqDAwR07h4=;
+        b=Iw99WPm1KMhY75sqNthZOHqMfd/f3w4A9cgnIYqs1rKNrxhKelf5Lw4wz6VEcDqxDa
+         j4A5yhxQqy3wkKjA09NTqedHr6MBeBnrjgKNdarWfojMAj2arlYCCJ2LTF9fWSTGAQTC
+         0+KN1UBEIyyxcLThQRMpLPJ7XijRtMjbikgF77E4NSCbNRaoIZ7Dz7j4LbTaBAx0/CvB
+         zHqrHVv7eeAXTlqC0syxAK6EZpys8S1FE4Gn8dpWdu0ZkbAGDSi3GKGysgttex0hpiqZ
+         eTts9Nn/g4nIBHcYoJvxvOpi918feVsw5/g3WohqFs3pUq8yiiU/wL2Y890WDCw2sDmZ
+         Qq1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Iq8eVNhJhF1BgqV6rgMywl+V3RTaF2wJHyqDAwR07h4=;
+        b=YZJllNlVuqa+WIvnHV+QwyWYfjKS/yAT0jddWJOejhfha+w1ZeNkJqY8uXMlRiPl/3
+         ugWOQ7ET2Fqu+IvEjKohF1mYVOaubnQXnC/fpbA9B/ZGzOBoSLQjLta7K2THh3OKWcxf
+         MM29G/lTOeEBnyYVVyPq/6++QlT1HNE2QHNEAvEYJf6SNOtKs5RDTasE3wuSuW45Baxi
+         sBTcEFz3EdU1cxztQjLiZWy56gYGGVXtwy0vj1f53ZzH/5EpawcqmHRFDdF8TuITpbMz
+         SHKSejY+H5VYw+9CgRsogMUoDkp2hgXAiQidoI7CtbSN4vQuByabQTxBaJRpbga2O1vd
+         NyIg==
+X-Gm-Message-State: AOAM533I15BrWD9qvbX0i+tfc1dl0fnG+Ia5jrPwNlhIUTr5buHkWOiK
+        BXxS1oue4w7IfLI9hwxwSJhBy4U+XKJoXlz4OgI=
+X-Google-Smtp-Source: ABdhPJwlKc1tWRxGPO1nGw6sTT8IvYSurj4eT70sJKIp1CD56tRe7oKcBCbnocBopBlvGrAVNG4+kotDKh8o6so5Luc=
+X-Received: by 2002:ac2:5551:: with SMTP id l17mr16156795lfk.534.1623166763631;
+ Tue, 08 Jun 2021 08:39:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210531182556.25277-1-fllinden@amazon.com>
+References: <20210528195946.2375109-1-memxor@gmail.com> <CAM_iQpVqVKhK+09Sj_At226mdWpVXfVbhy89As2dai7ip8Nmtw@mail.gmail.com>
+ <20210607033724.wn6qn4v42dlm4j4o@apollo> <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
+ <20210607060724.4nidap5eywb23l3d@apollo> <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
+ <20210608071908.sos275adj3gunewo@apollo>
+In-Reply-To: <20210608071908.sos275adj3gunewo@apollo>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 8 Jun 2021 08:39:12 -0700
+Message-ID: <CAADnVQLRVikjNe-FqYxcSYLSCXGF_bV1UWERWuW8NvL8+4rJ6A@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Vlad Buslov <vladbu@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 31, 2021 at 06:25:39PM +0000, Frank van der Linden wrote:
-> Now that these are being included in 4.19, I am resending this
-> 4.14 series. It was originally sent here:
-> 
-> https://lore.kernel.org/bpf/20210501043014.33300-5-fllinden@amazon.com/T/
-> 
-> v2:
->   * The backport repairs in that original series were already included in
->     4.14, so they are no longer needed.
-> 
->   * Add additional commit for CVE-2021-31829.
-> 
->   * Added cherry-picks for CVE-2021-33200.
+On Tue, Jun 8, 2021 at 12:20 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> > 2) All existing bpf_link targets, except netdev, are fs based, hence an fd makes
+> > sense for them naturally. TC filters, or any other netlink based
 
-All now qeueud up, thanks.
+fs analogy is not applicable.
+bpf_link-s for tracing and xdp have nothing to do with file systems.
 
-greg k-h
+> > things, are not even
+> > related to fs, hence fd does not make sense here, like we never bind a netdev
+> > to a fd.
+> >
+>
+> Yes, none of them create any objects. It is only a side effect of current
+> semantics that you are able to control the filter's lifetime using the bpf_link
+> as filter creation is also accompanied with its attachment to the qdisc.
+
+I think it makes sense to create these objects as part of establishing bpf_link.
+ingress qdisc is a fake qdisc anyway.
+If we could go back in time I would argue that its existence doesn't
+need to be shown in iproute2. It's an object that serves no purpose
+other than attaching filters to it. It doesn't do any queuing unlike
+real qdiscs.
+It's an artifact of old choices. Old doesn't mean good.
+The kernel is full of such quirks and oddities. New api-s shouldn't
+blindly follow them.
+tc qdisc add dev eth0 clsact
+is a useless command with nop effect.
