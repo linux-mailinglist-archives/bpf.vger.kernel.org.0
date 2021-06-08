@@ -2,112 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88D739F4A1
-	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 13:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6AE39F67F
+	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 14:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhFHLKb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Jun 2021 07:10:31 -0400
-Received: from mail-pg1-f169.google.com ([209.85.215.169]:38536 "EHLO
-        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231303AbhFHLKb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Jun 2021 07:10:31 -0400
-Received: by mail-pg1-f169.google.com with SMTP id 6so16221740pgk.5;
-        Tue, 08 Jun 2021 04:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UJVsqI/ei0WczshYuB8pLAQsFgqQWwx9v5zxVqgopwU=;
-        b=B9ab52pbsKXDXa+qRWwLhBk1hn1Q5Y5Epsog2G5yDfhkg5IOo9jKJ2yFIQFwMAzGud
-         AcSRIaZ8KgYDCs+rim+4y/6lRxahUee70hAve0OSKrKrsbZZQij7nBPhyvvDc1HBnS6M
-         ngcCKuustZvvUxVhpJYky5CuYcYU4kUvomXBT9SOle0uV5+XZoXfXEQH4t9GhG2hbRS3
-         Bj3KqAasLfgPV7LJBkffZQB5uBR+wC3S/r/+wrwD79PoJZgN9ov0Q6SlyNIkVznJzrKx
-         VikGD3Fo8rv+94mK8O47KXO6kqFcS+lnDOMXrGGMWVpyB8mztLWH4TukVO7Hh8ZWKPf7
-         eXaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UJVsqI/ei0WczshYuB8pLAQsFgqQWwx9v5zxVqgopwU=;
-        b=HUw/8bMBXZJWaXcNHSSIyXEuYo/qLlqkRjSN8CkC3ubQghE3vC4uUWXyVwGZifr5cm
-         ahaFWnspBd2vVz0f5drpl66DzAHG5/k9b+IMVwHH7DNQiL8cujP82FXIGlpwDEgPOAnz
-         LMP/6R5XN/+kY/uV2I90NZ1qW3atNWCoPm8MonRjavOOEf02cboymmmDEP+IFlQFZLfO
-         xq8Je1PEjPiXKyi8qEuqviWy3gVd0B02vblaz7G42Fx4M1rfX2KYudXykmSlylKCqWtl
-         L4tpJtE5QAzUCa61IehC6CmidqXy6Iu+MZTZvhXMWybSPZ/4UD/afsInNKVFxjRsQpW4
-         o5sA==
-X-Gm-Message-State: AOAM530W1bgvsqoODc/Ux9gqtu7bakhW4b9dM6g6mWokEOqn6cNYcoj9
-        Apr3jDSC3hCUo58fI5Vq1yuX9A1aCqOpkyxjMwU=
-X-Google-Smtp-Source: ABdhPJxjGu8PU0C2DW8HKf2a2BcxewJ3P/4FVJ4FKwCahJzQrzq27XcDUuxYrsnQ3WmcxDTGCfmmKI5172RPm/6SJlM=
-X-Received: by 2002:a63:4e4f:: with SMTP id o15mr22260611pgl.208.1623150442052;
- Tue, 08 Jun 2021 04:07:22 -0700 (PDT)
+        id S232291AbhFHM1S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Jun 2021 08:27:18 -0400
+Received: from mga02.intel.com ([134.134.136.20]:61619 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231993AbhFHM1S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Jun 2021 08:27:18 -0400
+IronPort-SDR: ecQ1f5wKTLy/OtOy5IqUOMZfjAXJu5PshIuyyNXIg1qNjPCgGD+gfuh2qB1cl1CnQyBCgxq+YH
+ ChxPsKnovQIg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="191940764"
+X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
+   d="scan'208";a="191940764"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 05:25:23 -0700
+IronPort-SDR: sbkex1kQN+oipfZ8Fi4p1JpS9pBfCXTA30ARhmKW1+ucTihjRN2D02xeChg8fAN6bZY9piqcWR
+ siasmMqqDa1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
+   d="scan'208";a="402051926"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga003.jf.intel.com with ESMTP; 08 Jun 2021 05:25:19 -0700
+Date:   Tue, 8 Jun 2021 14:12:59 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net,
+        anthony.l.nguyen@intel.com, kuba@kernel.org, bjorn@kernel.org,
+        magnus.karlsson@intel.com
+Subject: Re: [PATCH intel-next 2/2] ice: introduce XDP Tx fallback path
+Message-ID: <20210608121259.GA1971@ranger.igk.intel.com>
+References: <20210601113236.42651-1-maciej.fijalkowski@intel.com>
+ <20210601113236.42651-3-maciej.fijalkowski@intel.com>
+ <87czt5dal0.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20210607122644.59021-1-wanghai38@huawei.com>
-In-Reply-To: <20210607122644.59021-1-wanghai38@huawei.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Tue, 8 Jun 2021 13:07:11 +0200
-Message-ID: <CAJ8uoz2mfCGNmEaAhGZAaSs=Mrer008f3+C7MdoAySsLn=busw@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH net] ixgbe, xsk: clean up the resources
- in ixgbe_xsk_pool_enable error path
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        jan.sokolowski@intel.com,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87czt5dal0.fsf@toke.dk>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 2:17 PM Wang Hai <wanghai38@huawei.com> wrote:
->
-> In ixgbe_xsk_pool_enable(), if ixgbe_xsk_wakeup() fails,
-> We should restore the previous state and clean up the
-> resources. Add the missing clear af_xdp_zc_qps and unmap dma
-> to fix this bug.
->
-> Fixes: d49e286d354e ("ixgbe: add tracking of AF_XDP zero-copy state for each queue pair")
-> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for AF_XDP")
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+On Tue, Jun 01, 2021 at 02:38:03PM +0200, Toke Høiland-Jørgensen wrote:
+> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+> 
+> > Under rare circumstances there might be a situation where a requirement
+> > of having a XDP Tx queue per core could not be fulfilled and some of the
+> > Tx resources would have to be shared between cores. This yields a need
+> > for placing accesses to xdp_rings array onto critical section protected
+> > by spinlock.
+> >
+> > Design of handling such scenario is to at first find out how many queues
+> > are there that XDP could use. Any number that is not less than the half
+> > of a count of cores of platform is allowed. XDP queue count < cpu count
+> > is signalled via new VSI state ICE_VSI_XDP_FALLBACK which carries the
+> > information further down to Rx rings where new ICE_TX_XDP_LOCKED is set
+> > based on the mentioned VSI state. This ring flag indicates that locking
+> > variants for getting/putting xdp_ring need to be used in fast path.
+> >
+> > For XDP_REDIRECT the impact on standard case (one XDP ring per CPU) can
+> > be reduced a bit by providing a separate ndo_xdp_xmit and swap it at
+> > configuration time. However, due to the fact that net_device_ops struct
+> > is a const, it is not possible to replace a single ndo, so for the
+> > locking variant of ndo_xdp_xmit, whole net_device_ops needs to be
+> > replayed.
+> >
+> > It has an impact on performance (1-2 %) of a non-fallback path as
+> > branches are introduced.
+> 
+> I generally feel this is the right approach, although the performance
+> impact is a bit unfortunately, obviously. Maybe it could be avoided by
+> the use of static_branch? I.e., keep a global refcount of how many
+> netdevs are using the locked path and only activate the check in the
+> fast path while that refcount is >0?
 
-Thanks Wang.
+This would be an ideal solution if we would be able to have it PF-scoped,
+which AFAICT is not possible as static key is per module, right?
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+I checked that before the bank holiday here in Poland and indeed I was not
+observing perf drops. Only thing that is questionable is the fact that a
+single PF would affect all the others that ice driver is serving.
 
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> index 91ad5b902673..d912f14d2ba4 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> @@ -52,8 +52,11 @@ static int ixgbe_xsk_pool_enable(struct ixgbe_adapter *adapter,
->
->                 /* Kick start the NAPI context so that receiving will start */
->                 err = ixgbe_xsk_wakeup(adapter->netdev, qid, XDP_WAKEUP_RX);
-> -               if (err)
-> +               if (err) {
-> +                       clear_bit(qid, adapter->af_xdp_zc_qps);
-> +                       xsk_pool_dma_unmap(pool, IXGBE_RX_DMA_ATTR);
->                         return err;
-> +               }
->         }
->
->         return 0;
-> --
-> 2.17.1
->
-> _______________________________________________
-> Intel-wired-lan mailing list
-> Intel-wired-lan@osuosl.org
-> https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
+OTOH I see that Jesper acked that work.
+
+Let me play with this a bit more as I'm in the middle of switching my HW
+lab, but I wanted to break the silence over here. I didn't manage to check
+that one fallback path will affect other PFs.
+
+Thanks Toke for that great idea :) any other opinions are more than
+welcome.
+
+> 
+> -Toke
+> 
