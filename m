@@ -2,135 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62E23A0658
-	for <lists+bpf@lfdr.de>; Tue,  8 Jun 2021 23:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4013C3A075A
+	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 01:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234344AbhFHVpi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Jun 2021 17:45:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47253 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234195AbhFHVpi (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Jun 2021 17:45:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623188624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UO0J5rCgH7Iumd+lPo8k4Dl2OQ9K2Az34Q2U2WC1yms=;
-        b=hdum4UuowKgSdbfhjeKLGKAHVxDijJTXOeOYr4qw6mHIlSbiPJ/WWjXemDveQa1YlSFyuX
-        GN2/Ufqkdho7p8W17rA7fqLmg8FLMAYdnG6DLkxPXjzIN92VTchZPlQSzKCkKAeeDFCIPP
-        K3Wg1agnQYqvngYXTsqyvsfTuna4sJY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-qbsmGJatPz-2KrSxCQI80Q-1; Tue, 08 Jun 2021 17:43:43 -0400
-X-MC-Unique: qbsmGJatPz-2KrSxCQI80Q-1
-Received: by mail-ed1-f69.google.com with SMTP id c21-20020a0564021015b029038c3f08ce5aso11499490edu.18
-        for <bpf@vger.kernel.org>; Tue, 08 Jun 2021 14:43:43 -0700 (PDT)
+        id S230330AbhFHXCw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Jun 2021 19:02:52 -0400
+Received: from mail-qk1-f225.google.com ([209.85.222.225]:45720 "EHLO
+        mail-qk1-f225.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhFHXCw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Jun 2021 19:02:52 -0400
+Received: by mail-qk1-f225.google.com with SMTP id d196so16824336qkg.12
+        for <bpf@vger.kernel.org>; Tue, 08 Jun 2021 16:00:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=UO0J5rCgH7Iumd+lPo8k4Dl2OQ9K2Az34Q2U2WC1yms=;
-        b=Qbx8wXmF/Bw7QGyZdP20Gxlait9AtKf2SH0puzpjbvfSt4HhOEEJot3ZS0P8Z4u00z
-         NB+4WdlVuSC2WsXqbH30NUwWulULp76FZiqAoyUtMwsDuefAUz2uH/8XEe3pSh6SMtHq
-         s3yt7aHO7zRqxKsNCSEnpd13ow8IUa2TGDE9UFWKxALHvo9Enhly5V8pBlQ7Bcmt+Fa4
-         5kxTNEmtqfswMcDVR7iDJHeYmFjzi/fg+r4KNw1AXaRIIkpr5bbJvVgmCU8PZiGs7zWJ
-         KAQGB5duc6eBwNJ6RUBz5pLlTaR9SEd0NQlclNyi2lU/xSjcvsvdiniqOJlSJQ2r/SvC
-         XWrg==
-X-Gm-Message-State: AOAM532Szyz8DVN7a5YUlhLuxC+FahNvOaJ1BSJDO9qW21B3hE1s0O5Q
-        PQ+ydse4iSTtUWM8FublAa6DqRItnCjcwGKADDss7dOlIASfPRzjlSNsI+hHT2+ZhcZ1SaD30Bi
-        ME2jmJ9qKRQxu
-X-Received: by 2002:a17:906:34d6:: with SMTP id h22mr25423362ejb.413.1623188622368;
-        Tue, 08 Jun 2021 14:43:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz74lYJW7U76qPg3eEYhfqRk0CA1pV0lVlikeR1uu2uLrVEB8Lsoz/4glU3lp6X5rLyb8/SWA==
-X-Received: by 2002:a17:906:34d6:: with SMTP id h22mr25423346ejb.413.1623188622228;
-        Tue, 08 Jun 2021 14:43:42 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id bh3sm324394ejb.19.2021.06.08.14.43.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 14:43:41 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C1704180723; Tue,  8 Jun 2021 23:43:40 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net,
-        anthony.l.nguyen@intel.com, kuba@kernel.org, bjorn@kernel.org,
-        magnus.karlsson@intel.com
-Subject: Re: [PATCH intel-next 2/2] ice: introduce XDP Tx fallback path
-In-Reply-To: <20210608121259.GA1971@ranger.igk.intel.com>
-References: <20210601113236.42651-1-maciej.fijalkowski@intel.com>
- <20210601113236.42651-3-maciej.fijalkowski@intel.com>
- <87czt5dal0.fsf@toke.dk> <20210608121259.GA1971@ranger.igk.intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 08 Jun 2021 23:43:40 +0200
-Message-ID: <87o8cgnib7.fsf@toke.dk>
+        h=x-gm-message-state:dkim-signature:mime-version:from:date:message-id
+         :subject:to;
+        bh=rQsS/+0X53LEEP70QVyIkN/HKVhtBIJuAicCKzCwY60=;
+        b=Zh+KyOX8W8kCLj2yS8xfa7iW6J0G8qSAq6SDkkH9RYTFCdIh2vXs2JgQxFD4lUvske
+         fsrMkyPKD+oD5BDMhf+Mi3Cbu1gDF6Xi2EKOCK3Q5CgkWZ5yMJW6ELslyu/t5yqqL3RI
+         H12QbitypdjWYW3qZvp7Hdrqo0wdNHnpXqRFXJR1u6JOxMymB1cXNEWz9gqxMVKnKtDK
+         aPN8+6FWKfzx16KF8dtuzTtwCEaK3J2epRkG0PglWmBIglOjX65oMwSO8evgiyxoUCiE
+         k9eQDC/2gjhZJUl5L8ENe4KeKwAyrbAbbgM2uXSRv8ihgbsNyhzr+jpllIk0W6ykMoCO
+         y+Uw==
+X-Gm-Message-State: AOAM530eEsZA2xDjye+ro37Rq6Ca+SQFGYaQwh4ger+gtAne3tKfxBbQ
+        lEtrCk5xEG+X2kiZzkBAbOCp4qgGR3HeNIkXQTizEnxRUUtzqw==
+X-Google-Smtp-Source: ABdhPJyLX1S2kWzDqufcLw+8kV7d9u20qQAGQvwUTj1ycRSolfO5MmcfKusgTe5oVx2ipnnJ+Q8kuKCD8xRM
+X-Received: by 2002:a05:620a:1368:: with SMTP id d8mr24531087qkl.283.1623193189765;
+        Tue, 08 Jun 2021 15:59:49 -0700 (PDT)
+Received: from restore.menlosecurity.com ([13.56.32.44])
+        by smtp-relay.gmail.com with ESMTPS id x1sm7109938qkn.6.2021.06.08.15.59.49
+        for <bpf@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Jun 2021 15:59:49 -0700 (PDT)
+X-Relaying-Domain: menlosecurity.com
+Received: from safemail-prod-02780031cr-re.menlosecurity.com (13.56.32.45)
+    by restore.menlosecurity.com (13.56.32.44)
+    with SMTP id 3939f890-c8ad-11eb-bd31-53b93506b29b;
+    Tue, 08 Jun 2021 22:59:49 GMT
+Received: from mail-ed1-f69.google.com (209.85.208.69)
+    by safemail-prod-02780031cr-re.menlosecurity.com (13.56.32.45)
+    with SMTP id 3939f890-c8ad-11eb-bd31-53b93506b29b;
+    Tue, 08 Jun 2021 22:59:49 GMT
+Received: by mail-ed1-f69.google.com with SMTP id y18-20020a0564022712b029038ffac1995eso11584736edd.12
+        for <bpf@vger.kernel.org>; Tue, 08 Jun 2021 15:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=menlosecurity.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=rQsS/+0X53LEEP70QVyIkN/HKVhtBIJuAicCKzCwY60=;
+        b=gMsQ7n/vUIXm3yPpVRQcloVv0hN6BoQikr+/C9hZD5SuDu3u/3YAdxdgX97ItUrrJC
+         7dDqbCXtgLoc5f4vPT0VRaV9ZZLTu4j29aFCQMOIt4K36aQfRzedVypHl7vW7glXjOys
+         P+lV6apUMZnV5IDAoG9FzR7UjScaeBNdqk7vo=
+X-Received: by 2002:a17:906:1815:: with SMTP id v21mr25738574eje.376.1623193186096;
+        Tue, 08 Jun 2021 15:59:46 -0700 (PDT)
+X-Received: by 2002:a17:906:1815:: with SMTP id v21mr25738567eje.376.1623193185987;
+ Tue, 08 Jun 2021 15:59:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+From:   Rumen Telbizov <rumen.telbizov@menlosecurity.com>
+Date:   Tue, 8 Jun 2021 15:59:35 -0700
+Message-ID: <CA+FoirDxh7AhApwWVG_19j5RWT1dp23ab1h0P1nTjhhWpRC5Ow@mail.gmail.com>
+Subject: bpf_fib_lookup support for firewall mark
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+Dear BPF list,
 
-> On Tue, Jun 01, 2021 at 02:38:03PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
->>=20
->> > Under rare circumstances there might be a situation where a requirement
->> > of having a XDP Tx queue per core could not be fulfilled and some of t=
-he
->> > Tx resources would have to be shared between cores. This yields a need
->> > for placing accesses to xdp_rings array onto critical section protected
->> > by spinlock.
->> >
->> > Design of handling such scenario is to at first find out how many queu=
-es
->> > are there that XDP could use. Any number that is not less than the half
->> > of a count of cores of platform is allowed. XDP queue count < cpu count
->> > is signalled via new VSI state ICE_VSI_XDP_FALLBACK which carries the
->> > information further down to Rx rings where new ICE_TX_XDP_LOCKED is set
->> > based on the mentioned VSI state. This ring flag indicates that locking
->> > variants for getting/putting xdp_ring need to be used in fast path.
->> >
->> > For XDP_REDIRECT the impact on standard case (one XDP ring per CPU) can
->> > be reduced a bit by providing a separate ndo_xdp_xmit and swap it at
->> > configuration time. However, due to the fact that net_device_ops struct
->> > is a const, it is not possible to replace a single ndo, so for the
->> > locking variant of ndo_xdp_xmit, whole net_device_ops needs to be
->> > replayed.
->> >
->> > It has an impact on performance (1-2 %) of a non-fallback path as
->> > branches are introduced.
->>=20
->> I generally feel this is the right approach, although the performance
->> impact is a bit unfortunately, obviously. Maybe it could be avoided by
->> the use of static_branch? I.e., keep a global refcount of how many
->> netdevs are using the locked path and only activate the check in the
->> fast path while that refcount is >0?
->
-> This would be an ideal solution if we would be able to have it PF-scoped,
-> which AFAICT is not possible as static key is per module, right?
+I am new to eBPF so go easy on me.
+It seems to me that currently eBPF has no support for route table
+lookups including firewall marks. The bpf_fib_lookup structure itself
+has no mark field as per
+https://elixir.bootlin.com/linux/v5.10.28/source/include/uapi/linux/bpf.h#L4864
 
-Yeah, static_branch basically patches the kernel text when activated
-(hence the low overhead), so it's a global switch...
+Additionally bpf_fib_lookup() function does not incorporate the
+firewall mark in its route lookup. It explicitly sets it to 0 as per
+https://elixir.bootlin.com/linux/v5.10.28/source/net/core/filter.c#L5329
+along with other fields which are used during the regular routing
+policy database lookup.
 
-> I checked that before the bank holiday here in Poland and indeed I was not
-> observing perf drops. Only thing that is questionable is the fact that a
-> single PF would affect all the others that ice driver is serving.
->
-> OTOH I see that Jesper acked that work.
->
-> Let me play with this a bit more as I'm in the middle of switching my HW
-> lab, but I wanted to break the silence over here. I didn't manage to check
-> that one fallback path will affect other PFs.
->
-> Thanks Toke for that great idea :) any other opinions are more than
-> welcome.
+Thus lookups from within eBPF and outside of it result in different
+outcomes if there are rules directing traffic based on fwmark.
+Can you please advise what the rationale for this is or if there
+anything that I might be missing.
 
-You're welcome! :)
+Let me know if I can provide any further information.
 
--Toke
-
+Cheers,
+Rumen Telbizov
