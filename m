@@ -2,139 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5483A1062
-	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 12:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF813A10D9
+	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 12:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234437AbhFIJop (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Jun 2021 05:44:45 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:5942 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233898AbhFIJop (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Jun 2021 05:44:45 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G0MbZ04cdzB11B;
-        Wed,  9 Jun 2021 11:42:50 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ZeQI-HI4y8Zp; Wed,  9 Jun 2021 11:42:49 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G0MbX2t47zBF5X;
-        Wed,  9 Jun 2021 11:42:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 49A308B7D7;
-        Wed,  9 Jun 2021 11:42:48 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 0i0ijwN2cyBI; Wed,  9 Jun 2021 11:42:48 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E65438B7C3;
-        Wed,  9 Jun 2021 11:42:47 +0200 (CEST)
-Subject: Re: [PATCH] powerpc/bpf: Use bctrl for making function calls
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, bpf@vger.kernel.org
-References: <20210609090024.1446800-1-naveen.n.rao@linux.vnet.ibm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <4c371bd1-1fcf-54c1-d0a2-836d40887893@csgroup.eu>
-Date:   Wed, 9 Jun 2021 11:42:47 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234562AbhFIKJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Jun 2021 06:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234249AbhFIKJu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Jun 2021 06:09:50 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4FAC061574
+        for <bpf@vger.kernel.org>; Wed,  9 Jun 2021 03:07:35 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id m41-20020a05600c3b29b02901b9e5d74f02so701698wms.3
+        for <bpf@vger.kernel.org>; Wed, 09 Jun 2021 03:07:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=b8u0rX97Dk3flLWGHgE6c+hxtXn+4S8L4WYFaY8AsBg=;
+        b=vssOc5YtJYTHeRdhthPCbYwqfK7uNexQqjWMeTrBTd40usYVAEHdr+kiZUbCrlHiEs
+         XIVu1n1wCTa+YiqkbdN6VpO5XrOb1CqcIV4HLuqLGjCYetkTKi1ohTauGWq9AbAZvUAn
+         NOos3y6x8N6POBHT71y/QTeWczi6ruWS3n+ZGzqeS1gO3Lg8AjZygs1eoF2bl/60pF3k
+         mlTViN2A3dsVUegVc0TGrjKEEgK5ucpDeZyyXprUCxirMQJRtzq/UmCGdHx5I7e9uHzT
+         p9rnkN/3cl7rFsNC0lBjhe4LEMfHITquVsEnxczVGFf7r0wkRg/m0RPoC9ICpI/05u8t
+         LQ5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b8u0rX97Dk3flLWGHgE6c+hxtXn+4S8L4WYFaY8AsBg=;
+        b=SXg9I8Z5NnZAoxzFeqGaQAKbtkik7ns2SiHRo1fPrbh0vQurIC4CsJH35I/i/714TO
+         cSDtRfKTLEdHiHuSj++MofjB+Y5QdUjDHGr8subAB+Lz3ag2k6nxqptXrG2oF2d6BwvI
+         zhOjipDik6kMepJn/Bj5tbRR/zHqqYU8Zv4qdwg71phVkIcQ6OBNRqgzmzyTtMdjzNTP
+         7e8u1q58KK1UDWpUxla4/Wufh8rR6iSok4oMBVUiNUWh9V7xz8XecL91ZKcGyK5WtM2P
+         dA7hD66lngFU5xlkFZ4PjIlCF+K90DAzLk6uyNZILIT2tRZ8IB7Cqcd6p6DHk+6rqLF9
+         gZzA==
+X-Gm-Message-State: AOAM532G25zEb2dzZARy5PefEYFBhcbv2wrOPmy9UgLx+9bU9BSR6p/i
+        uKJpL/7x33EB+HCJ/u8jNRb2tA==
+X-Google-Smtp-Source: ABdhPJxci5LtQsbf5Fv5OYnzv9ecWERntUMRflc0/hs3X0mxwABcseXkCO/wtjKt77STUODGO6GjOA==
+X-Received: by 2002:a7b:c193:: with SMTP id y19mr27303560wmi.172.1623233253922;
+        Wed, 09 Jun 2021 03:07:33 -0700 (PDT)
+Received: from localhost ([154.21.15.43])
+        by smtp.gmail.com with ESMTPSA id v16sm23017717wrr.6.2021.06.09.03.07.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 03:07:33 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 14:07:29 +0400
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, davem@davemloft.net,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, rdna@fb.com
+Subject: Re: [PATCH bpf-next v1 03/10] tools: Add bpfilter usermode helper
+ header
+Message-ID: <20210609100729.2bsn47jvsg4s77z4@amnesia>
+References: <20210603101425.560384-1-me@ubique.spb.ru>
+ <20210603101425.560384-4-me@ubique.spb.ru>
+ <6cced642-6342-4711-9f04-636e6903d60b@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <20210609090024.1446800-1-naveen.n.rao@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6cced642-6342-4711-9f04-636e6903d60b@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Jun 08, 2021 at 09:20:12AM -0700, Yonghong Song wrote:
+> 
+> 
+> On 6/3/21 3:14 AM, Dmitrii Banshchikov wrote:
+> > The header will be used in bpfilter usermode helper test infrastructure.
+> > 
+> > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+> > ---
+> >   tools/include/uapi/linux/bpfilter.h | 179 ++++++++++++++++++++++++++++
+> >   1 file changed, 179 insertions(+)
+> >   create mode 100644 tools/include/uapi/linux/bpfilter.h
+> > 
+> > diff --git a/tools/include/uapi/linux/bpfilter.h b/tools/include/uapi/linux/bpfilter.h
+> > new file mode 100644
+> > index 000000000000..8b49d81f81c8
+> > --- /dev/null
+> > +++ b/tools/include/uapi/linux/bpfilter.h
+> > @@ -0,0 +1,179 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > +#ifndef _UAPI_LINUX_BPFILTER_H
+> > +#define _UAPI_LINUX_BPFILTER_H
+> > +
+> > +#include <linux/if.h>
+> > +#include <linux/const.h>
+> > +
+> > +#define BPFILTER_FUNCTION_MAXNAMELEN    30
+> > +#define BPFILTER_EXTENSION_MAXNAMELEN   29
+> > +
+> > +#define BPFILTER_STANDARD_TARGET        ""
+> > +#define BPFILTER_ERROR_TARGET           "ERROR"
+> > +
+> > +
+> > +#define BPFILTER_ALIGN(__X) __ALIGN_KERNEL(__X, __alignof__(__u64))
+> 
+> The difference between include/uapi/linux/bpfilter.h and
+> tools/include/uapi/linux/bpfilter.h is the above "define".
+> Can we put the above define in include/uapi/linux/bpfilter.h as well
+> so in the commit message we can say tools/include/uapi/linux/bpfilter.h
+> is a copy of include/uapi/linux/bpfilter.h?
 
-
-Le 09/06/2021 à 11:00, Naveen N. Rao a écrit :
-> blrl corrupts the link stack. Instead use bctrl when making function
-> calls from BPF programs.
-
-What's the link stack ? Is it the PPC64 branch predictor stack ?
+Actually it seems that it is possible to drop this define as
+XT_ALIGN is used now instead of BPFILTER_ALIGN.
+I will remove the define and reword the message.
+Thank you.
 
 > 
-> Reported-by: Anton Blanchard <anton@ozlabs.org>
-> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> ---
->   arch/powerpc/include/asm/ppc-opcode.h |  1 +
->   arch/powerpc/net/bpf_jit_comp32.c     |  4 ++--
->   arch/powerpc/net/bpf_jit_comp64.c     | 12 ++++++------
->   3 files changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/ppc-opcode.h b/arch/powerpc/include/asm/ppc-opcode.h
-> index ac41776661e963..1abacb8417d562 100644
-> --- a/arch/powerpc/include/asm/ppc-opcode.h
-> +++ b/arch/powerpc/include/asm/ppc-opcode.h
-> @@ -451,6 +451,7 @@
->   #define PPC_RAW_MTLR(r)			(0x7c0803a6 | ___PPC_RT(r))
->   #define PPC_RAW_MFLR(t)			(PPC_INST_MFLR | ___PPC_RT(t))
->   #define PPC_RAW_BCTR()			(PPC_INST_BCTR)
-> +#define PPC_RAW_BCTRL()			(PPC_INST_BCTRL)
+> > +
+> > +enum {
+> > +	BPFILTER_IPT_SO_SET_REPLACE = 64,
+> > +	BPFILTER_IPT_SO_SET_ADD_COUNTERS = 65,
+> > +	BPFILTER_IPT_SET_MAX,
+> > +};
+> > +
+> [...]
 
-Can you use the numeric value instead of the PPC_INST_BCTRL, to avoid conflict with 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/4ca2bfdca2f47a293d05f61eb3c4e487ee170f1f.1621506159.git.christophe.leroy@csgroup.eu/
+-- 
 
->   #define PPC_RAW_MTCTR(r)		(PPC_INST_MTCTR | ___PPC_RT(r))
->   #define PPC_RAW_ADDI(d, a, i)		(PPC_INST_ADDI | ___PPC_RT(d) | ___PPC_RA(a) | IMM_L(i))
->   #define PPC_RAW_LI(r, i)		PPC_RAW_ADDI(r, 0, i)
-> diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-> index bbb16099e8c7fa..40ab50bea61c02 100644
-> --- a/arch/powerpc/net/bpf_jit_comp32.c
-> +++ b/arch/powerpc/net/bpf_jit_comp32.c
-> @@ -195,8 +195,8 @@ void bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 fun
->   		/* Load function address into r0 */
->   		EMIT(PPC_RAW_LIS(__REG_R0, IMM_H(func)));
->   		EMIT(PPC_RAW_ORI(__REG_R0, __REG_R0, IMM_L(func)));
-> -		EMIT(PPC_RAW_MTLR(__REG_R0));
-> -		EMIT(PPC_RAW_BLRL());
-> +		EMIT(PPC_RAW_MTCTR(__REG_R0));
-> +		EMIT(PPC_RAW_BCTRL());
->   	}
->   }
->   
-> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-> index 57a8c1153851a0..ae9a6532be6ad4 100644
-> --- a/arch/powerpc/net/bpf_jit_comp64.c
-> +++ b/arch/powerpc/net/bpf_jit_comp64.c
-> @@ -153,8 +153,8 @@ static void bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx,
->   	PPC_LI64(b2p[TMP_REG_2], func);
->   	/* Load actual entry point from function descriptor */
->   	PPC_BPF_LL(b2p[TMP_REG_1], b2p[TMP_REG_2], 0);
-> -	/* ... and move it to LR */
-> -	EMIT(PPC_RAW_MTLR(b2p[TMP_REG_1]));
-> +	/* ... and move it to CTR */
-> +	EMIT(PPC_RAW_MTCTR(b2p[TMP_REG_1]));
->   	/*
->   	 * Load TOC from function descriptor at offset 8.
->   	 * We can clobber r2 since we get called through a
-> @@ -165,9 +165,9 @@ static void bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx,
->   #else
->   	/* We can clobber r12 */
->   	PPC_FUNC_ADDR(12, func);
-> -	EMIT(PPC_RAW_MTLR(12));
-> +	EMIT(PPC_RAW_MTCTR(12));
->   #endif
-> -	EMIT(PPC_RAW_BLRL());
-> +	EMIT(PPC_RAW_BCTRL());
->   }
->   
->   void bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func)
-> @@ -202,8 +202,8 @@ void bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 fun
->   	PPC_BPF_LL(12, 12, 0);
->   #endif
->   
-> -	EMIT(PPC_RAW_MTLR(12));
-> -	EMIT(PPC_RAW_BLRL());
-> +	EMIT(PPC_RAW_MTCTR(12));
-> +	EMIT(PPC_RAW_BCTRL());
->   }
->   
->   static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 out)
-> 
-> base-commit: 112f47a1484ddca610b70cbe4a99f0d0f1701daf
-> 
+Dmitrii Banshchikov
