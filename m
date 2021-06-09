@@ -2,99 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B753A090A
-	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 03:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77133A0A21
+	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 04:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbhFIBdh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Jun 2021 21:33:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3804 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFIBdg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Jun 2021 21:33:36 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G08bD5sKqzWtJn;
-        Wed,  9 Jun 2021 09:26:48 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 09:31:40 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 9 Jun 2021
- 09:31:40 +0800
-Subject: Re: Re: [PATCH net-next v2 0/3] Some optimization for lockless qdisc
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-References: <1622684880-39895-1-git-send-email-linyunsheng@huawei.com>
- <20210603113548.2d71b4d3@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <20210608125349.7azp7zeae3oq3izc@skbuf>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
-Date:   Wed, 9 Jun 2021 09:31:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S235418AbhFICni (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Jun 2021 22:43:38 -0400
+Received: from mail-ed1-f47.google.com ([209.85.208.47]:43817 "EHLO
+        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235398AbhFICnh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Jun 2021 22:43:37 -0400
+Received: by mail-ed1-f47.google.com with SMTP id s6so26885778edu.10
+        for <bpf@vger.kernel.org>; Tue, 08 Jun 2021 19:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p+D0KtrR3ySKv9LEuftUeYWRIhXsDsdXtnrq6QYaDHk=;
+        b=syy+MK4mAE5Ta3E44ycW61wKy+jm9LP5Fc8EsQgZPGGAsTggdfkkW77kT5EhJwXDKl
+         I+XPhfw/dXEghiCZs+YwRrNu+QpDXlaSfO/oKAb3I25xjfc8AB1U4a1ug6DK5nq6fYyd
+         z9Ahfz+gjJW/7LpiY87jTM3q+tmyvsVG2oHfqF/LMJWBYmBstCFvwwO3/CP2by6a4IoJ
+         sYhO8Ck/O8z3eqgK6CIN/U8YILwblIfkNFy6M7Q/dd80PdTlxn/YDmRgNboQf0VetYHO
+         CGv/VWscu7/9Z3LqyQEyL2oBD8RrzzNvbEnOuZ+GEyqpWIc0GYBpGEuy4OTtiwh7w7tj
+         FGBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p+D0KtrR3ySKv9LEuftUeYWRIhXsDsdXtnrq6QYaDHk=;
+        b=Jqdsuk26uMKnR8o9C97jqXD+vEvrDAsuCHOO0Q0v6YMhFMSDTSzuFqlkqykLuFAWf0
+         x36f7YIag4IVh+ye3WAlZA6p5VAR3y2KhDVJvFtuNxNXjlwwf3adxmRRRN81Y+f5q7F8
+         W9yS8SIyOYgu9m8HD/dGCEiBWsVV56QCy6oCKFkOV/tD5Noc44O/4syZ8KJLXtLKdW+n
+         zwcSm1wLGnhCWmauo5xkXN6OY6UqT+BVarKdFBHIjxAuQHbZhWxvc2r+fsa/D7pvANyB
+         sAuEN2CY+JMAfZc0yiDGsGzlDGMf1rfuB+natj2E3+LkqIEAToC+PIWbAjEIyTxh6d54
+         IoUw==
+X-Gm-Message-State: AOAM531BnLksuP0B9czvGn/qazJRHWpx6to5jnGoiaR6QaNbRUfZwmBd
+        ACwp/OlPVRaaUB/6TprNGQLGOO/025oLasRKiWYH
+X-Google-Smtp-Source: ABdhPJwft6pcgB0QhLBi7pt1iV0pHMufLyRKQEjEH8t6ci5z3HEcu7wmJlWNIAy6UnuWowq/YZCxYIxjO4ZEPjn7Lg0=
+X-Received: by 2002:a05:6402:348f:: with SMTP id v15mr16610509edc.135.1623206426948;
+ Tue, 08 Jun 2021 19:40:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210608125349.7azp7zeae3oq3izc@skbuf>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+ <CAFqZXNsh9njbFUNBugidbdiNqD3QbKzsw=KgNKSmW5hv-fD6tA@mail.gmail.com>
+ <CAHC9VhQj_FvBqSGE+eZtbzvDoRAEbbo-6t_2E6MVuyiGA9N8Hw@mail.gmail.com> <CAFqZXNsVFv2yh5cXwWYXscYTAuoCKk4H-JbPAYzDbwKUzSDP3A@mail.gmail.com>
+In-Reply-To: <CAFqZXNsVFv2yh5cXwWYXscYTAuoCKk4H-JbPAYzDbwKUzSDP3A@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 8 Jun 2021 22:40:15 -0400
+Message-ID: <CAHC9VhSNWK11f+u8v+MN0VHC3_4u+30jom80rwaat8OsJKo5fQ@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/6/8 20:53, Vladimir Oltean wrote:
-> On Thu, Jun 03, 2021 at 11:35:48AM -0700, Jakub Kicinski wrote:
->> On Thu, 3 Jun 2021 09:47:57 +0800 Yunsheng Lin wrote:
->>> Patch 1: remove unnecessary seqcount operation.
->>> Patch 2: implement TCQ_F_CAN_BYPASS.
->>> Patch 3: remove qdisc->empty.
->>>
->>> Performance data for pktgen in queue_xmit mode + dummy netdev
->>> with pfifo_fast:
->>>
->>>  threads    unpatched           patched             delta
->>>     1       2.60Mpps            3.21Mpps             +23%
->>>     2       3.84Mpps            5.56Mpps             +44%
->>>     4       5.52Mpps            5.58Mpps             +1%
->>>     8       2.77Mpps            2.76Mpps             -0.3%
->>>    16       2.24Mpps            2.23Mpps             +0.4%
->>>
->>> Performance for IP forward testing: 1.05Mpps increases to
->>> 1.16Mpps, about 10% improvement.
->>
->> Acked-by: Jakub Kicinski <kuba@kernel.org>
-> 
-> Any idea why these patches are deferred in patchwork?
-> https://patchwork.kernel.org/project/netdevbpf/cover/1622684880-39895-1-git-send-email-linyunsheng@huawei.com/
+On Tue, Jun 8, 2021 at 7:02 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> On Thu, Jun 3, 2021 at 7:46 PM Paul Moore <paul@paul-moore.com> wrote:
 
-I suppose it is a controversial change, which need more time
-hanging to be reviewed and tested.
+...
 
-By the way, I did not pick up your "Tested-by" from previous
-RFC version because there is some change between those version
-that deserves a retesting. So it would be good to have a
-"Tested-by" from you after confirming no out of order happening
-for this version, thanks.
+> > It sounds an awful lot like the lockdown hook is in the wrong spot.
+> > It sounds like it would be a lot better to relocate the hook than
+> > remove it.
+>
+> I don't see how you would solve this by moving the hook. Where do you
+> want to relocate it?
 
+Wherever it makes sense.  Based on your comments it really sounded
+like the hook was in a bad spot and since your approach in a lot of
+this had been to remove or disable hooks I wanted to make sure that
+relocating the hook was something you had considered.  Thankfully it
+sounds like you have considered moving the hook - that's good.
 
+> The main obstacle is that the message containing
+> the SA dump is sent to consumers via a simple netlink broadcast, which
+> doesn't provide a facility to redact the SA secret on a per-consumer
+> basis. I can't see any way to make the checks meaningful for SELinux
+> without a major overhaul of the broadcast logic.
 
+Fair enough.
+
+-- 
+paul moore
+www.paul-moore.com
