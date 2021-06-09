@@ -2,62 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690D63A0BBD
-	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 07:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1CD3A0BC8
+	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 07:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhFIFLh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Jun 2021 01:11:37 -0400
-Received: from mail-yb1-f173.google.com ([209.85.219.173]:36777 "EHLO
-        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhFIFLh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Jun 2021 01:11:37 -0400
-Received: by mail-yb1-f173.google.com with SMTP id c14so4644475ybk.3;
-        Tue, 08 Jun 2021 22:09:43 -0700 (PDT)
+        id S231329AbhFIFVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Jun 2021 01:21:37 -0400
+Received: from mail-yb1-f181.google.com ([209.85.219.181]:41648 "EHLO
+        mail-yb1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230477AbhFIFVh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Jun 2021 01:21:37 -0400
+Received: by mail-yb1-f181.google.com with SMTP id q21so33666302ybg.8;
+        Tue, 08 Jun 2021 22:19:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7cayuynw3axnZYGZCGIG/avL9L6H8rpp5DbZ9eDadGI=;
-        b=Y4VM4Tf8Z8FHhIkeBPLnupfB9QR+qEBXZCw8KN7RxcbeYNeQtvC2G/n3+dg1NM/VyF
-         3+tflGDhbdSMOwejsquEiqqmJ+lYPRRT3Somk2m7vY7qwnnDFRqql42YNSxVgmnMajHv
-         pzV33be4yFxTFBsKFxMr3vwlIbeGXClG4b54laWGF5OUYWPUxQkt68u3HJTA6cPBbe3w
-         8pk/RImKduXxHCt7eaIMsIAsPhH5uyViu4qj4pQVNmiEBSTE2K6GvYBXdFRfLAdCCAHP
-         wO2Ezq1A5iD/WSvYMhoHp4RTEGiKEsMcILV9MAc6Hsu3kkuSACLg3L0Te2Jl5vtG28bu
-         bIuA==
+        bh=KMFK3fLJKVArAEkHgLhQfQOYv2YHIbnWZrsf6bmNjTI=;
+        b=mMVEy6cRs7DS/P4ImBtQPfs1cb1hc4f68vJac0gwKE3HJXkFrZBKMen/PqEI11IAqM
+         gIJE3jQfHN+2eGlev7zKA23FpaHC9FNG6KhyF5jaQi4XdLTO5TWmh9Zk5/nMdEWmFH3Y
+         1qvENwZuULTVWs6IHZGitf1MTOjQ6qBKvUlKm0LnUS4TthMYAXmpj5hKkr8Ay0LTwDAc
+         4l/VR0Nwfi41UekjE1QTYY2Cv5FzZJ3VJ5ED8G5p6vJ4Puby/rHUG8Yf+gH4bcF2S/9o
+         uBpu9cMgxdIte9Mfj66WKrvSQ3aNm3tDJHtRVXcKfnRmnMj9g6cu6+PV0TsB4iJv6NbY
+         5wPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7cayuynw3axnZYGZCGIG/avL9L6H8rpp5DbZ9eDadGI=;
-        b=ZMn3zYcvSyODaw1AbQJ8BkMRpM0B4Ze2J/50M9wa3LxOEcaKj3A0VMyMSvwYjHV2ct
-         jYDxlyH2ZqpE5adBIKzA1qXsJOiVhSt/5oMGkpDSh50DYyOEczYQGFdD2zoGZJHe0Q/a
-         glwM+eHa+N+Zbpmwpjsa5iKeEYaJswKLlpynDDaMRTFOKVbiXCwP+vjO4CNj1AWe2Vu0
-         eQgvVcDl/1xrrqLXhkut+I831bWiEQ5SXRu9CdwxLafBbgfEzGc7MHg3nvJsXERKGD/s
-         oDiTAlX2/P8RewYTW6CITxesrY52LlfDcC3Xyamgb9VXgnXPAjNEHNU25x1+bAdpFotf
-         i+9g==
-X-Gm-Message-State: AOAM5303U+8mxOl7dU8t3nmZLOpAR9BLskb0rzPDMSr2UfjPDB4Xga2G
-        BC3KPTOszlHqSqlxd/JbRrOhMRFAyvu7BdcXAj0=
-X-Google-Smtp-Source: ABdhPJy4dD5yHmfGUCO0PAO4pHLZMKdqQ46uWPfZbl1WNUEvdddhADj93gyapt/L6X0eOXQKcWV434JCTRsDyqee5B0=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr36963709ybo.230.1623215323295;
- Tue, 08 Jun 2021 22:08:43 -0700 (PDT)
+        bh=KMFK3fLJKVArAEkHgLhQfQOYv2YHIbnWZrsf6bmNjTI=;
+        b=WBgoxFY6XMzjYGwjaMgyApMUCvo9KMGReMIzl12sN87hxV34/TE+bJ8gihc8wTVu5j
+         CCrjXAOzUGfSM3x6eLTMbq4rrhlwZQRAFLZfn/AKhjmZOk1AbrMVqz4mnpCYjhBF3cye
+         BOWh/IW8yRZwKCf4WxI4j6rzspQid6OC5PtRVMCk77sEhxNRCzS8S3m14EQrB7TKYrPT
+         IlwGF6lIGWyMk6B1chMts0ZhRNqxqRr4ynFxzyN9C+D6jcojFE1doSszadK/hW8OGI9y
+         YzH1SNqq2MaZxagr/JJHfUJmMN+N31aRIuCwinO4NaJbMdF5aLIOD15cfq7W71q2anYG
+         nNGA==
+X-Gm-Message-State: AOAM533cd3eNWy/qjtOSdqkYOkmr6uHpRWu3OpKxoxQaW63qnXT5QfIJ
+        wEU1Y0cFx6cBWptueKY+VniKKZUpqiKiB81HrlM=
+X-Google-Smtp-Source: ABdhPJyx5AskNay5Z4MVC+ZVPWiE7c6vefjoY2ajdVwkzIDw3ejW3vnHM0TLo1qJYscvkYKPDlQ5bssubRuwM4opx1Y=
+X-Received: by 2002:a25:aa66:: with SMTP id s93mr25618488ybi.260.1623215912362;
+ Tue, 08 Jun 2021 22:18:32 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210605111034.1810858-1-jolsa@kernel.org> <20210605111034.1810858-14-jolsa@kernel.org>
- <CAADnVQJV+0SjqUrTw+3Y02tFedcAaPKJS-W8sQHw5YT4XUW0hQ@mail.gmail.com>
- <YL+0HLQ9oSrNM7ip@krava> <20210608184903.rgnv65jimekqugol@ast-mbp.dhcp.thefacebook.com>
- <YL/cIBArrCjhgyXt@krava> <CAADnVQ+zEdv8BfNHGYO=xi-ePwfoKQUd_yxmRB3jHByPmYxCWw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+zEdv8BfNHGYO=xi-ePwfoKQUd_yxmRB3jHByPmYxCWw@mail.gmail.com>
+In-Reply-To: <20210605111034.1810858-14-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 8 Jun 2021 22:08:32 -0700
-Message-ID: <CAEf4BzZdpDZTQb4zp3hX1R-7GaPUDyXHL_-sb9TMWqpKFfGV-g@mail.gmail.com>
+Date:   Tue, 8 Jun 2021 22:18:21 -0700
+Message-ID: <CAEf4BzbrwiAJobuU01rd3XEw_b-vbUiL-uqM4_5_FZuAT7rSxA@mail.gmail.com>
 Subject: Re: [PATCH 13/19] bpf: Add support to link multi func tracing program
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
@@ -67,83 +63,131 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 4:07 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Sat, Jun 5, 2021 at 4:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On Tue, Jun 8, 2021 at 2:07 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Tue, Jun 08, 2021 at 11:49:03AM -0700, Alexei Starovoitov wrote:
-> > > On Tue, Jun 08, 2021 at 08:17:00PM +0200, Jiri Olsa wrote:
-> > > > On Tue, Jun 08, 2021 at 08:42:32AM -0700, Alexei Starovoitov wrote:
-> > > > > On Sat, Jun 5, 2021 at 4:11 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > > > >
-> > > > > > Adding support to attach multiple functions to tracing program
-> > > > > > by using the link_create/link_update interface.
-> > > > > >
-> > > > > > Adding multi_btf_ids/multi_btf_ids_cnt pair to link_create struct
-> > > > > > API, that define array of functions btf ids that will be attached
-> > > > > > to prog_fd.
-> > > > > >
-> > > > > > The prog_fd needs to be multi prog tracing program (BPF_F_MULTI_FUNC).
-> > > > > >
-> > > > > > The new link_create interface creates new BPF_LINK_TYPE_TRACING_MULTI
-> > > > > > link type, which creates separate bpf_trampoline and registers it
-> > > > > > as direct function for all specified btf ids.
-> > > > > >
-> > > > > > The new bpf_trampoline is out of scope (bpf_trampoline_lookup) of
-> > > > > > standard trampolines, so all registered functions need to be free
-> > > > > > of direct functions, otherwise the link fails.
-> > > > >
-> > > > > Overall the api makes sense to me.
-> > > > > The restriction of multi vs non-multi is too severe though.
-> > > > > The multi trampoline can serve normal fentry/fexit too.
-> > > >
-> > > > so multi trampoline gets called from all the registered functions,
-> > > > so there would need to be filter for specific ip before calling the
-> > > > standard program.. single cmp/jnz might not be that bad, I'll check
-> > >
-> > > You mean reusing the same multi trampoline for all IPs and regenerating
-> > > it with a bunch of cmp/jnz checks? There should be a better way to scale.
-> > > Maybe clone multi trampoline instead?
-> > > IPs[1-10] will point to multi.
-> > > IP[11] will point to a clone of multi that serves multi prog and
-> > > fentry/fexit progs specific for that IP.
-> >
-> > ok, so we'd clone multi trampoline if there's request to attach
-> > standard trampoline to some IP from multi trampoline
-> >
-> > .. and transform currently attached standard trampoline for IP
-> > into clone of multi trampoline, if there's request to create
-> > multi trampoline that covers that IP
+> Adding support to attach multiple functions to tracing program
+> by using the link_create/link_update interface.
 >
-> yep. For every IP==btf_id there will be only two possible trampolines.
-> Should be easy enough to track and transition between them.
-> The standard fentry/fexit will only get negligible slowdown from
-> going through multi.
-> multi+fexit and fmod_ret needs to be thought through as well.
-> That's why I thought that 'ip' at the end should simplify things.
+> Adding multi_btf_ids/multi_btf_ids_cnt pair to link_create struct
+> API, that define array of functions btf ids that will be attached
+> to prog_fd.
+>
+> The prog_fd needs to be multi prog tracing program (BPF_F_MULTI_FUNC).
 
-Putting ip at the end has downsides. We might support >6 arguments
-eventually, at which point it will be super weird to have 6 args, ip,
-then the rest of arguments?..
+So I'm not sure why we added a new load flag instead of just using a
+new BPF program type or expected attach type?  We have different
+trampolines and different kinds of links for them, so why not be
+consistent and use the new type of BPF program?.. It does change BPF
+verifier's treatment of input arguments, so it's not just a slight
+variation, it's quite different type of program.
 
-Would it be too bad to put IP at -8 offset relative to ctx? That will
-also work for normal fentry/fexit, for which it's useful to have ip
-passed in as well, IMO. So no special casing for multi/non-multi, and
-it's backwards compatible.
+>
+> The new link_create interface creates new BPF_LINK_TYPE_TRACING_MULTI
+> link type, which creates separate bpf_trampoline and registers it
+> as direct function for all specified btf ids.
+>
+> The new bpf_trampoline is out of scope (bpf_trampoline_lookup) of
+> standard trampolines, so all registered functions need to be free
+> of direct functions, otherwise the link fails.
+>
+> The new bpf_trampoline will store and pass to bpf program the highest
+> number of arguments from all given functions.
+>
+> New programs (fentry or fexit) can be added to the existing trampoline
+> through the link_update interface via new_prog_fd descriptor.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/linux/bpf.h            |   3 +
+>  include/uapi/linux/bpf.h       |   5 +
+>  kernel/bpf/syscall.c           | 185 ++++++++++++++++++++++++++++++++-
+>  kernel/bpf/trampoline.c        |  53 +++++++---
+>  tools/include/uapi/linux/bpf.h |   5 +
+>  5 files changed, 237 insertions(+), 14 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 23221e0e8d3c..99a81c6c22e6 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -661,6 +661,7 @@ struct bpf_trampoline {
+>         struct bpf_tramp_image *cur_image;
+>         u64 selector;
+>         struct module *mod;
+> +       bool multi;
+>  };
+>
+>  struct bpf_attach_target_info {
+> @@ -746,6 +747,8 @@ void bpf_ksym_add(struct bpf_ksym *ksym);
+>  void bpf_ksym_del(struct bpf_ksym *ksym);
+>  int bpf_jit_charge_modmem(u32 pages);
+>  void bpf_jit_uncharge_modmem(u32 pages);
+> +struct bpf_trampoline *bpf_trampoline_multi_alloc(void);
+> +void bpf_trampoline_multi_free(struct bpf_trampoline *tr);
+>  #else
+>  static inline int bpf_trampoline_link_prog(struct bpf_prog *prog,
+>                                            struct bpf_trampoline *tr)
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index ad9340fb14d4..5fd6ff64e8dc 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1007,6 +1007,7 @@ enum bpf_link_type {
+>         BPF_LINK_TYPE_ITER = 4,
+>         BPF_LINK_TYPE_NETNS = 5,
+>         BPF_LINK_TYPE_XDP = 6,
+> +       BPF_LINK_TYPE_TRACING_MULTI = 7,
+>
+>         MAX_BPF_LINK_TYPE,
+>  };
+> @@ -1454,6 +1455,10 @@ union bpf_attr {
+>                                 __aligned_u64   iter_info;      /* extra bpf_iter_link_info */
+>                                 __u32           iter_info_len;  /* iter_info length */
+>                         };
+> +                       struct {
+> +                               __aligned_u64   multi_btf_ids;          /* addresses to attach */
+> +                               __u32           multi_btf_ids_cnt;      /* addresses count */
+> +                       };
 
-Ideally, I'd love it to be actually retrievable through a new BPF
-helper, something like bpf_caller_ip(ctx), but I'm not sure if we can
-implement this sanely, so I don't hold high hopes.
+let's do what bpf_link-based TC-BPF API is doing, put it into a named
+field (I'd do the same for iter_info/iter_info_len above as well, I'm
+not sure why we did this flat naming scheme, we now it's inconvenient
+when extending stuff).
 
-> Only multi will have access to it.
-> But we can store it first too. fentry/fexit will see ctx=r1 with +8 offset
-> and will have normal args in ctx. Like ip isn't even there.
-> While multi trampoline is always doing ip, arg1,arg2, .., arg6
-> and passes ctx = &ip into multi prog and ctx = &arg1 into fentry/fexit.
-> 'ret' for fexit is problematic though. hmm.
-> Maybe such clone multi trampoline for specific ip with 2 args will do:
-> ip, arg1, arg2, ret, 0, 0, 0, ret.
-> Then multi will have 6 args, though 3rd is actually ret.
-> Then fexit will have ret in the right place and multi prog will have
-> it as 7th arg.
+struct {
+    __aligned_u64 btf_ids;
+    __u32 btf_ids_cnt;
+} multi;
+
+>                 };
+>         } link_create;
+>
+
+[...]
+
+> +static int bpf_tracing_multi_link_update(struct bpf_link *link,
+> +                                        struct bpf_prog *new_prog,
+> +                                        struct bpf_prog *old_prog __maybe_unused)
+> +{
+
+BPF_LINK_UPDATE command supports passing old_fd and extra flags. We
+can use that to implement both updating existing BPF program in-place
+(by passing BPF_F_REPLACE and old_fd) or adding the program to the
+list of programs, if old_fd == 0. WDYT?
+
+> +       struct bpf_tracing_multi_link *tr_link =
+> +               container_of(link, struct bpf_tracing_multi_link, link);
+> +       int err;
+> +
+> +       if (check_multi_prog_type(new_prog))
+> +               return -EINVAL;
+> +
+> +       err = bpf_trampoline_link_prog(new_prog, tr_link->tr);
+> +       if (err)
+> +               return err;
+> +
+> +       err = modify_ftrace_direct_multi(&tr_link->ops,
+> +                                        (unsigned long) tr_link->tr->cur_image->image);
+> +       return WARN_ON(err);
+> +}
+> +
+
+[...]
