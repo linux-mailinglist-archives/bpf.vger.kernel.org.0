@@ -2,166 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503B83A13BC
-	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 14:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A673A1405
+	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 14:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239081AbhFIMH1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Jun 2021 08:07:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55362 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232146AbhFIMH1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 9 Jun 2021 08:07:27 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 159C33pO177966;
-        Wed, 9 Jun 2021 08:05:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=nznE1WEahBUP5+rjLk/LKNCc7KWzvk749iV9gXyDyN0=;
- b=b8HrzhcUvCROnsKZi8YwlIEvRaIAx+/cYPUbIuZbbPkbasHIGDTu8+HkGOtBlSw5R3Ot
- gYYkVAayW8jAg5iitzv/XT1QKnQTdaWlgBYbJdhAJWOhhTquFPOHj2mto7SaoyqIuB5G
- e6dY1rJWjrNWlGRYFBBqKG7hVyuF96Xg30vHOrzBd2NILiGY9imVG3phG/0dSdjAiyuo
- JXj4dnD40p9zGxxCPx93DowXfKDkhpYurCDB+HuqMM2638/TiAp3JHHUlLzlQY5buPTk
- vdqgmgUsz9XaF3deUZtdl7EcXP2OyT02Z7BE8E8LcCJP49l6zV6GoW7LXQnEG82+lq+w Dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 392vk81cgq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 08:05:08 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 159C35jE178093;
-        Wed, 9 Jun 2021 08:05:08 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 392vk81cfg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 08:05:08 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 159C3mhl021787;
-        Wed, 9 Jun 2021 12:05:06 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma01fra.de.ibm.com with ESMTP id 3900w896du-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Jun 2021 12:05:06 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 159C4GYT36110726
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Jun 2021 12:04:16 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E14FC4C050;
-        Wed,  9 Jun 2021 12:05:03 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 48FA84C044;
-        Wed,  9 Jun 2021 12:04:59 +0000 (GMT)
-Received: from [9.199.46.41] (unknown [9.199.46.41])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Jun 2021 12:04:58 +0000 (GMT)
-Subject: Re: [PATCH bpf-next 0/1] arm64: Add BPF exception tables
-To:     daniel@iogearbox.net, ast@kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, zlim.lnx@gmail.com,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-References: <20200728152122.1292756-1-jean-philippe@linaro.org>
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Message-ID: <daba29d3-46bb-8246-74a7-83184c92435c@linux.ibm.com>
-Date:   Wed, 9 Jun 2021 17:34:57 +0530
+        id S232476AbhFIMSG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Jun 2021 08:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232947AbhFIMSE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Jun 2021 08:18:04 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072BAC061574;
+        Wed,  9 Jun 2021 05:15:58 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id o127so3864767wmo.4;
+        Wed, 09 Jun 2021 05:15:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Z31/vYKGtzhdpeM4FMOlx5cnnD+ujAUw41rs1nOjnbs=;
+        b=R90IEov593+/aMPfPZQRUZxKjelhHwQoHZQWkFBA78ELwhTmPSX+Y+DCHWOM8L1DIN
+         POh9ZP/wY2rAvj4EVddVt8t7xQ23LvFuRnA+3of9Pw+q78hgCoE8NOJf89fdNZUG+hxa
+         wN0fgUK2/snFWT1zqMkY+O5laTsOsgQW5z7n+R9lIdKXWPbhmyBhB6uBPehvnNG0ZJHZ
+         f3Rtj9HOCOdsmp/V9tDLX2R1SKcxQF+WNdZfM4nbSNSElJzGHTowGB/UcCe43lsv2/uX
+         5ycl48DNr+FHuToO3vheE9AqxnbkPTiZxBfVzJkUitt17aGQX8bK1BYR73YlrWdYjmnm
+         AD+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z31/vYKGtzhdpeM4FMOlx5cnnD+ujAUw41rs1nOjnbs=;
+        b=K8ejM9vx/lsjIrulIq2eZVSGnhaH8iAbJBw7+jaO6Qpwdl4BWPvLlXzzwHEZE7T+U9
+         WtRFiAJTcVVNJOJvDIUnq+mGVtYCG43/4asY5LUX0l0qJtPlsPW1MDfWX8NlATtXkWEl
+         qES+T0Y57ABdVTaQNR1fRWWNNtJ0xlcLkmjVN1MNgmTUTCubZVrZSvmNFAqGYbe59mb5
+         QFoIby/BJZK7BU6D8vUrNpw+sxJdSEfs2MQUkFdZQs9NmxtbxbjP+jZHL8EkMUIB0+QJ
+         CE88uqx4pxYK/9xYib5//GkeIzXCGK71SMgIhIRb0qcWeSBb7Nb+OC2y58okYBf4+LHz
+         pLyw==
+X-Gm-Message-State: AOAM530hs2BI1CwIpbep3XHbJU2W+HuNbwiXek9ldInU5BJMuPhQSFUM
+        MYmCxuquC7fV9zRzQq6bsGOm/X5chEgL8w==
+X-Google-Smtp-Source: ABdhPJxxPVUVQ6bTVvTpNtBRk84w+ePs4tIoHGXfWEo3uPX248tcFuEk1rqI78fRzifmf3XefdQQQA==
+X-Received: by 2002:a05:600c:4a29:: with SMTP id c41mr27862889wmp.17.1623240956656;
+        Wed, 09 Jun 2021 05:15:56 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id 6sm21317493wmg.17.2021.06.09.05.15.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Jun 2021 05:15:55 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 14/17] sfc: remove rcu_read_lock() around XDP
+ program invocation
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Martin Habets <habetsm.xilinx@gmail.com>
+References: <20210609103326.278782-1-toke@redhat.com>
+ <20210609103326.278782-15-toke@redhat.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <e439d412-610b-3e2c-b40f-6eb68fde4e49@gmail.com>
+Date:   Wed, 9 Jun 2021 13:15:54 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200728152122.1292756-1-jean-philippe@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: C7QvzXTwf1jA_hb8C5ZQziVfWwiwxYMH
-X-Proofpoint-ORIG-GUID: ODsJlbQ-XEPJFHI732oNsX5bBIo_ho9F
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-09_04:2021-06-04,2021-06-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 adultscore=0 impostorscore=0 lowpriorityscore=0
- bulkscore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- malwarescore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106090059
+In-Reply-To: <20210609103326.278782-15-toke@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Alexei,
+On 09/06/2021 11:33, Toke Høiland-Jørgensen wrote:
+> The sfc driver has rcu_read_lock()/rcu_read_unlock() pairs around XDP
+> program invocations. However, the actual lifetime of the objects referred
+> by the XDP program invocation is longer, all the way through to the call to
+> xdp_do_flush(), making the scope of the rcu_read_lock() too small. This
+> turns out to be harmless because it all happens in a single NAPI poll
+> cycle (and thus under local_bh_disable()), but it makes the rcu_read_lock()
+> misleading.
+> 
+> Rather than extend the scope of the rcu_read_lock(), just get rid of it
+> entirely. With the addition of RCU annotations to the XDP_REDIRECT map
+> types that take bh execution into account, lockdep even understands this to
+> be safe, so there's really no reason to keep it around.
+> 
+> Cc: Edward Cree <ecree.xilinx@gmail.com>
+> Cc: Martin Habets <habetsm.xilinx@gmail.com>
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> ---
+Acked-by: Edward Cree <ecree.xilinx@gmail.com>
 
-On 7/28/20 8:51 PM, Jean-Philippe Brucker wrote:
-> The following patch adds support for BPF_PROBE_MEM on arm64. The
-> implementation is simple but I wanted to give a bit of background first.
-> If you're familiar with recent BPF development you can skip to the patch
-> (or fact-check the following blurb).
+>  drivers/net/ethernet/sfc/rx.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
 > 
-> BPF programs used for tracing can inspect any of the traced function's
-> arguments and follow pointers in struct members. Traditionally the BPF
-> program would get a struct pt_regs as argument and cast the register
-> values to the appropriate struct pointer. The BPF verifier would mandate
-> that any memory access uses the bpf_probe_read() helper, to suppress
-> page faults (see samples/bpf/tracex1_kern.c).
+> diff --git a/drivers/net/ethernet/sfc/rx.c b/drivers/net/ethernet/sfc/rx.c
+> index 17b8119c48e5..606750938b89 100644
+> --- a/drivers/net/ethernet/sfc/rx.c
+> +++ b/drivers/net/ethernet/sfc/rx.c
+> @@ -260,18 +260,14 @@ static bool efx_do_xdp(struct efx_nic *efx, struct efx_channel *channel,
+>  	s16 offset;
+>  	int err;
+>  
+> -	rcu_read_lock();
+> -	xdp_prog = rcu_dereference(efx->xdp_prog);
+> -	if (!xdp_prog) {
+> -		rcu_read_unlock();
+> +	xdp_prog = rcu_dereference_bh(efx->xdp_prog);
+> +	if (!xdp_prog)
+>  		return true;
+> -	}
+>  
+>  	rx_queue = efx_channel_get_rx_queue(channel);
+>  
+>  	if (unlikely(channel->rx_pkt_n_frags > 1)) {
+>  		/* We can't do XDP on fragmented packets - drop. */
+> -		rcu_read_unlock();
+>  		efx_free_rx_buffers(rx_queue, rx_buf,
+>  				    channel->rx_pkt_n_frags);
+>  		if (net_ratelimit())
+> @@ -296,7 +292,6 @@ static bool efx_do_xdp(struct efx_nic *efx, struct efx_channel *channel,
+>  			 rx_buf->len, false);
+>  
+>  	xdp_act = bpf_prog_run_xdp(xdp_prog, &xdp);
+> -	rcu_read_unlock();
+>  
+>  	offset = (u8 *)xdp.data - *ehp;
+>  
 > 
-> With BPF Type Format embedded into the kernel (CONFIG_DEBUG_INFO_BTF),
-> the verifier can now check the type of any access performed by a BPF
-> program. It rejects for example programs that cast to a different
-> structure and perform out-of-bounds accesses, or programs that attempt
-> to dereference something that isn't a pointer, or that hasn't gone
-> through a NULL check.
-> 
-> As this makes tracing programs safer, the verifier now allows loading
-> programs that access struct members without bpf_probe_read(). It is
-> however still possible to trigger page faults. For example in the
-> following example with which I've tested this patch, the verifier does
-> not mandate a NULL check for the second-level pointer:
-> 
-> /*
->   * From tools/testing/selftests/bpf/progs/bpf_iter_task.c
->   * dump_task() is called for each task.
->   */
-> SEC("iter/task")
-> int dump_task(struct bpf_iter__task *ctx)
-> {
-> 	struct seq_file *seq = ctx->meta->seq;
-> 	struct task_struct *task = ctx->task;
-> 
-> 	/* Program would be rejected without this check */
-> 	if (task == NULL)
-> 		return 0;
-> 
-> 	/*
-> 	 * However the verifier does not currently mandate
-> 	 * checking task->mm, and the following faults for kernel
-> 	 * threads.
-> 	 */
-> 	BPF_SEQ_PRINTF(seq, "pid=%d vm=%d", task->pid, task->mm->total_vm);
-> 	return 0;
-> }
-> 
-> Even if it checked this case, the verifier couldn't guarantee that all
-> accesses are safe since kernel structures could in theory contain
-> garbage or error pointers. So to allow fast access without
-> bpf_probe_read(), a JIT implementation must support BPF exception
-> tables. For each access to a BTF pointer, the JIT generates an entry
-> into an exception table appended to the BPF program. If the access
-> faults at runtime, the handler skips the faulting instruction. The
-> example above will display vm=0 for kernel threads.
 
-I'm trying with the example above (task->mm->total_vm) on x86 machine
-with bpf/master (11fc79fc9f2e3) plus commit 4c5de127598e1 ("bpf: Emit
-explicit NULL pointer checks for PROBE_LDX instructions.") *reverted*,
-I'm seeing the app getting killed with error in dmesg.
-
-   $ sudo bpftool iter pin bpf_iter_task.o /sys/fs/bpf/task
-   $ sudo cat /sys/fs/bpf/task
-   Killed
-
-   $ dmesg
-   [  188.810020] BUG: kernel NULL pointer dereference, address: 00000000000000c8
-   [  188.810030] #PF: supervisor read access in kernel mode
-   [  188.810034] #PF: error_code(0x0000) - not-present page
-
-IIUC, this should be handled by bpf exception table rather than killing
-the app. Am I missing anything?
-
-Ravi
