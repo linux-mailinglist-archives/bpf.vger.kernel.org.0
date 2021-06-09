@@ -2,197 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4914B3A1CA0
-	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 20:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470943A1CC4
+	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 20:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbhFISWo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Jun 2021 14:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33762 "EHLO
+        id S229941AbhFISc2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Jun 2021 14:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhFISWo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Jun 2021 14:22:44 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B733C061574
-        for <bpf@vger.kernel.org>; Wed,  9 Jun 2021 11:20:36 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d16so19058041pfn.12
-        for <bpf@vger.kernel.org>; Wed, 09 Jun 2021 11:20:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pMNtPdB4yeaOaJg4oKXM0D8sPt6m955IeGjoIXPrk70=;
-        b=PazdJpi79UQEsNsJQD2CIaSYmwpf00Mw0MCZeW5GC2zdnsa0IB92sYjdiUDujBLmOv
-         3yiW/7qHaVhsPjbZomfBsLbYDeD+/ig/7taYFSIjA7Cs35U9xgJInZA2nA7XIhz+eX/f
-         YAYlYYJX5H3ZqKlrBYtQLFY0ybk6rdc7RljwY=
+        with ESMTP id S229659AbhFISc0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Jun 2021 14:32:26 -0400
+Received: from mail-vs1-xe63.google.com (mail-vs1-xe63.google.com [IPv6:2607:f8b0:4864:20::e63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98610C061574
+        for <bpf@vger.kernel.org>; Wed,  9 Jun 2021 11:30:17 -0700 (PDT)
+Received: by mail-vs1-xe63.google.com with SMTP id c1so464381vsh.8
+        for <bpf@vger.kernel.org>; Wed, 09 Jun 2021 11:30:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pMNtPdB4yeaOaJg4oKXM0D8sPt6m955IeGjoIXPrk70=;
-        b=rL1rS2MPCSMdZevMrPf2eFaXW03x7E7kloVwNsLSpkay7ZAt2cz11eVHkjfjAezGzM
-         +MlWRH0jfepTT2cmy14SafVvr7Nwu1GPnehak55TomiTofv+NEn9PNnr+rYdAiha3Gsu
-         P4y4Q1VBgzL3IdiSCurKr4bYTsnLNDin7PEkEb/gg0pzBSXDnC+XMxsMKzB2XRsf8mIj
-         3tyfdcEFiQnCz/DTloyx+2X/jg1s4Tmq94znGSVoiNu9AO0rY8EyN8nqcw5ARuJGvtNK
-         amIqSPR1AW/aafHFNytxsxbPDF35SxAAsAumNw0uPg3ahXixyHGL047MEMS6t5tat3i/
-         zZaw==
-X-Gm-Message-State: AOAM530mE3Glh9dNg5sdXNoZCedMNqw0YCglWjB1eSS47oyRLxXXvhI/
-        KqjxJppu/GSna7+H7FMxCry4uQ==
-X-Google-Smtp-Source: ABdhPJwLivfhU+7xTPT8sWB9xanESizvLeRBJblRt/PXXDrCMVDmnpcAtkIZk9u/qQeEhmYEwcu4IA==
-X-Received: by 2002:a62:3444:0:b029:2ec:9658:a755 with SMTP id b65-20020a6234440000b02902ec9658a755mr1010418pfa.71.1623262835683;
-        Wed, 09 Jun 2021 11:20:35 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p14sm445214pgk.6.2021.06.09.11.20.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 11:20:34 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 11:20:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Kurt Manucredo <fuzzybritches0@gmail.com>,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        nathan@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [PATCH v4] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
-Message-ID: <202106091119.84A88B6FE7@keescook>
-References: <000000000000c2987605be907e41@google.com>
- <20210602212726.7-1-fuzzybritches0@gmail.com>
- <YLhd8BL3HGItbXmx@kroah.com>
- <87609-531187-curtm@phaethon>
- <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com>
- <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
- <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
+        h=x-gm-message-state:dkim-signature:mime-version:references
+         :in-reply-to:from:date:message-id:subject:to:cc;
+        bh=P8ncQkYfJttnA9Tg9slRy28srWXb/ZWaRC2Lyws5mjo=;
+        b=KkOwrzUI2EgTVKPAo/sVw4WMZOWGW3S0X4yg4JzN2CHi15FTYN66UHvb5QlmgonkRC
+         G2LxyVjIerPZhTbqnyDH1bgrx4jAgXII/1doRnFTkVQ5FnZJjV6/M3iw4O/+lV9evFCu
+         Zentotxntgb1DmDhtCMydFuFcrM3i+gnPH/6KK9EziGy1x47JqMKjkBHA3ELIfL3KqCz
+         CDzZrlwH8jJp+vbS8lGkGOn8p1Rwo1QF5KaNEdgHREwXCFq6hZN3ZitY8ViHMkLRbNaf
+         KIdhNmC0mttUJ2GQRWLf7PNhKdBbhn7OfPF0XpduCK6s3GZq5NunSUdE9tXVZleGIAyw
+         om9Q==
+X-Gm-Message-State: AOAM532baDbLnAT0ReuU88lcvFhU2TJmrl1YA3v/rr44wrY+iyfV5FRS
+        ODFkZMb7jdf0NGFthjIgFA+MbvabCsBGq9lZo5sLOvpB8ejZeg==
+X-Google-Smtp-Source: ABdhPJwMhAJtnELWHC0jWoCBitiBl2aH2/rqZcmkGla3zcUAvlvEhzZgUA9YPtGh9EgPh8QQIOFoew6KW00d
+X-Received: by 2002:a05:6102:1d:: with SMTP id j29mr1934241vsp.38.1623263415230;
+        Wed, 09 Jun 2021 11:30:15 -0700 (PDT)
+Received: from restore.menlosecurity.com ([13.56.32.46])
+        by smtp-relay.gmail.com with ESMTPS id j133sm417139vkc.9.2021.06.09.11.30.14
+        for <bpf@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Jun 2021 11:30:15 -0700 (PDT)
+X-Relaying-Domain: menlosecurity.com
+Received: from safemail-prod-02780031cr-re.menlosecurity.com (13.56.32.47)
+    by restore.menlosecurity.com (13.56.32.46)
+    with SMTP id bb4107e0-c950-11eb-9f82-cd4c43447d88;
+    Wed, 09 Jun 2021 18:30:15 GMT
+Received: from mail-ej1-f71.google.com (209.85.218.71)
+    by safemail-prod-02780031cr-re.menlosecurity.com (13.56.32.47)
+    with SMTP id bb4107e0-c950-11eb-9f82-cd4c43447d88;
+    Wed, 09 Jun 2021 18:30:15 GMT
+Received: by mail-ej1-f71.google.com with SMTP id p20-20020a1709064994b02903cd421d7803so5540631eju.22
+        for <bpf@vger.kernel.org>; Wed, 09 Jun 2021 11:30:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=menlosecurity.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P8ncQkYfJttnA9Tg9slRy28srWXb/ZWaRC2Lyws5mjo=;
+        b=W+Nd1BELLKmOzlbe/rMacIanlv7QjgijShRi2uqgDwwx7tiGLouhp7MIxFg29JKdTp
+         D8GzpTMaC/oMAwdILFtr5+DD8ok29HB/cmSjAZcLMGwsA6kVvzLuIc1LbK26ljBGoYKh
+         R0eAJsJkdw9Efg99Tw/hOJEACYSkpvFtebTxA=
+X-Received: by 2002:a17:906:24d8:: with SMTP id f24mr1169999ejb.188.1623263412402;
+        Wed, 09 Jun 2021 11:30:12 -0700 (PDT)
+X-Received: by 2002:a17:906:24d8:: with SMTP id f24mr1169989ejb.188.1623263412264;
+ Wed, 09 Jun 2021 11:30:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
+References: <CA+FoirDxh7AhApwWVG_19j5RWT1dp23ab1h0P1nTjhhWpRC5Ow@mail.gmail.com>
+ <3e6ba294-12ca-3a2f-d17c-9588ae221dda@gmail.com>
+In-Reply-To: <3e6ba294-12ca-3a2f-d17c-9588ae221dda@gmail.com>
+From:   Rumen Telbizov <rumen.telbizov@menlosecurity.com>
+Date:   Wed, 9 Jun 2021 11:30:01 -0700
+Message-ID: <CA+FoirCt1TXuBpyayTnRXC2MfW-taN9Ob-3mioPojfaWvwjqqg@mail.gmail.com>
+Subject: Re: bpf_fib_lookup support for firewall mark
+To:     David Ahern <dsahern@gmail.com>
+Cc:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 09:38:43AM +0200, 'Dmitry Vyukov' via Clang Built Linux wrote:
-> On Sat, Jun 5, 2021 at 9:10 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> > On Sat, Jun 5, 2021 at 10:55 AM Yonghong Song <yhs@fb.com> wrote:
-> > > On 6/5/21 8:01 AM, Kurt Manucredo wrote:
-> > > > Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
-> > > > kernel/bpf/core.c:1414:2.
-> > >
-> > > This is not enough. We need more information on why this happens
-> > > so we can judge whether the patch indeed fixed the issue.
-> > >
-> > > >
-> > > > I propose: In adjust_scalar_min_max_vals() move boundary check up to avoid
-> > > > missing them and return with error when detected.
-> > > >
-> > > > Reported-and-tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-> > > > Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
-> > > > ---
-> > > >
-> > > > https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
-> > > >
-> > > > Changelog:
-> > > > ----------
-> > > > v4 - Fix shift-out-of-bounds in adjust_scalar_min_max_vals.
-> > > >       Fix commit message.
-> > > > v3 - Make it clearer what the fix is for.
-> > > > v2 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-> > > >       check in check_alu_op() in verifier.c.
-> > > > v1 - Fix shift-out-of-bounds in ___bpf_prog_run() by adding boundary
-> > > >       check in ___bpf_prog_run().
-> > > >
-> > > > thanks
-> > > >
-> > > > kind regards
-> > > >
-> > > > Kurt
-> > > >
-> > > >   kernel/bpf/verifier.c | 30 +++++++++---------------------
-> > > >   1 file changed, 9 insertions(+), 21 deletions(-)
-> > > >
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index 94ba5163d4c5..ed0eecf20de5 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -7510,6 +7510,15 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> > > >       u32_min_val = src_reg.u32_min_value;
-> > > >       u32_max_val = src_reg.u32_max_value;
-> > > >
-> > > > +     if ((opcode == BPF_LSH || opcode == BPF_RSH || opcode == BPF_ARSH) &&
-> > > > +                     umax_val >= insn_bitness) {
-> > > > +             /* Shifts greater than 31 or 63 are undefined.
-> > > > +              * This includes shifts by a negative number.
-> > > > +              */
-> > > > +             verbose(env, "invalid shift %lld\n", umax_val);
-> > > > +             return -EINVAL;
-> > > > +     }
-> > >
-> > > I think your fix is good. I would like to move after
-> >
-> > I suspect such change will break valid programs that do shift by register.
-> >
-> > > the following code though:
-> > >
-> > >          if (!src_known &&
-> > >              opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
-> > >                  __mark_reg_unknown(env, dst_reg);
-> > >                  return 0;
-> > >          }
-> > >
-> > > > +
-> > > >       if (alu32) {
-> > > >               src_known = tnum_subreg_is_const(src_reg.var_off);
-> > > >               if ((src_known &&
-> > > > @@ -7592,39 +7601,18 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
-> > > >               scalar_min_max_xor(dst_reg, &src_reg);
-> > > >               break;
-> > > >       case BPF_LSH:
-> > > > -             if (umax_val >= insn_bitness) {
-> > > > -                     /* Shifts greater than 31 or 63 are undefined.
-> > > > -                      * This includes shifts by a negative number.
-> > > > -                      */
-> > > > -                     mark_reg_unknown(env, regs, insn->dst_reg);
-> > > > -                     break;
-> > > > -             }
-> > >
-> > > I think this is what happens. For the above case, we simply
-> > > marks the dst reg as unknown and didn't fail verification.
-> > > So later on at runtime, the shift optimization will have wrong
-> > > shift value (> 31/64). Please correct me if this is not right
-> > > analysis. As I mentioned in the early please write detailed
-> > > analysis in commit log.
-> >
-> > The large shift is not wrong. It's just undefined.
-> > syzbot has to ignore such cases.
-> 
-> Hi Alexei,
-> 
-> The report is produced by KUBSAN. I thought there was an agreement on
-> cleaning up KUBSAN reports from the kernel (the subset enabled on
-> syzbot at least).
-> What exactly cases should KUBSAN ignore?
-> +linux-hardening/kasan-dev for KUBSAN false positive
+Hi David,
 
-Can check_shl_overflow() be used at all? Best to just make things
-readable and compiler-happy, whatever the implementation. :)
+Thanks for the quick response. I appreciate it.
+A couple of quick follow up questions:
+1. Do you have any performance data that would indicate how much of a
+performance drop adding an extra 4 or 8 bytes to the structure would
+cause?
+2. If I patch locally the structure in libc and the kernel by adding
+an extra _u32 mark member is there anything that such a modification
+would break?
 
--- 
-Kees Cook
+Regards,
+Rumen Telbizov
+
+
+On Tue, Jun 8, 2021 at 6:21 PM David Ahern <dsahern@gmail.com> wrote:
+>
+> On 6/8/21 4:59 PM, Rumen Telbizov wrote:
+> > Dear BPF list,
+> >
+> > I am new to eBPF so go easy on me.
+> > It seems to me that currently eBPF has no support for route table
+> > lookups including firewall marks. The bpf_fib_lookup structure itself
+> > has no mark field as per
+> > https://elixir.bootlin.com/linux/v5.10.28/source/include/uapi/linux/bpf.h#L4864
+> >
+> > Additionally bpf_fib_lookup() function does not incorporate the
+> > firewall mark in its route lookup. It explicitly sets it to 0 as per
+> > https://elixir.bootlin.com/linux/v5.10.28/source/net/core/filter.c#L5329
+> > along with other fields which are used during the regular routing
+> > policy database lookup.
+> >
+> > Thus lookups from within eBPF and outside of it result in different
+> > outcomes if there are rules directing traffic based on fwmark.
+> > Can you please advise what the rationale for this is or if there
+> > anything that I might be missing.
+> >
+> > Let me know if I can provide any further information.
+> >
+>
+> The API (struct bpf_fib_lookup) is constrained to 64B for performance.
+> It is not possible to support all of the policy routing options that
+> Linux has in 64B. Choices had to be made.
