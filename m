@@ -2,122 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791A33A1FD0
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 00:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16D53A2056
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 00:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbhFIWKs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Jun 2021 18:10:48 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57046 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhFIWKs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Jun 2021 18:10:48 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lr6NX-000DK5-8J; Thu, 10 Jun 2021 00:08:51 +0200
-Received: from [85.7.101.30] (helo=linux-3.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lr6NX-000Kaw-4F; Thu, 10 Jun 2021 00:08:51 +0200
-Subject: Re: bpf_fib_lookup support for firewall mark
-To:     Rumen Telbizov <rumen.telbizov@menlosecurity.com>,
-        David Ahern <dsahern@gmail.com>
-Cc:     bpf@vger.kernel.org
-References: <CA+FoirDxh7AhApwWVG_19j5RWT1dp23ab1h0P1nTjhhWpRC5Ow@mail.gmail.com>
- <3e6ba294-12ca-3a2f-d17c-9588ae221dda@gmail.com>
- <CA+FoirCt1TXuBpyayTnRXC2MfW-taN9Ob-3mioPojfaWvwjqqg@mail.gmail.com>
- <CA+FoirALjdwJ0=F6E4w2oNmC+fRkpwHx8AZb7mW1D=nU4_qZUQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c2f77a3d-508f-236c-057c-6233fbc7e5d2@iogearbox.net>
-Date:   Thu, 10 Jun 2021 00:08:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S229548AbhFIWo2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Jun 2021 18:44:28 -0400
+Received: from mga06.intel.com ([134.134.136.31]:8605 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229534AbhFIWo1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Jun 2021 18:44:27 -0400
+IronPort-SDR: jehhj9TcKCxYstg5ySf54G7n7zy8cNm5kP2kTU2paK5AklU+bMJ1+MAWvAkr9b+SpPlo76tehN
+ mQ6AvMoobYKg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="266339107"
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="266339107"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 15:42:31 -0700
+IronPort-SDR: cjahPWS7kAOnONc+xPuTzBMz7/8tIAEV9notWVbFXzN8kcOFbjF/fm2GqrVzfGUMLNKybQeVbw
+ qi2XpqevSUgg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
+   d="scan'208";a="450112114"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Jun 2021 15:42:29 -0700
+Date:   Thu, 10 Jun 2021 00:29:58 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Jussi Maki <joamaki@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        j.vosburgh@gmail.com, andy@greyhouse.net, vfalico@gmail.com,
+        andrii@kernel.org
+Subject: Re: [PATCH bpf-next 1/3] net: bonding: Add XDP support to the
+ bonding driver
+Message-ID: <20210609222958.GA15209@ranger.igk.intel.com>
+References: <20210609135537.1460244-1-joamaki@gmail.com>
+ <20210609135537.1460244-2-joamaki@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+FoirALjdwJ0=F6E4w2oNmC+fRkpwHx8AZb7mW1D=nU4_qZUQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26196/Wed Jun  9 13:11:28 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609135537.1460244-2-joamaki@gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Rumen, hi David,
-
-(please avoid top-posting)
-
-On 6/9/21 11:56 PM, Rumen Telbizov wrote:
-> List,
+On Wed, Jun 09, 2021 at 01:55:35PM +0000, Jussi Maki wrote:
+> XDP is implemented in the bonding driver by transparently delegating
+> the XDP program loading, removal and xmit operations to the bonding
+> slave devices. The overall goal of this work is that XDP programs
+> can be attached to a bond device *without* any further changes (or
+> awareness) necessary to the program itself, meaning the same XDP
+> program can be attached to a native device but also a bonding device.
 > 
-> For what it's worth I patched the structure locally by introducing a
-> new __u32 mark field
-> to the structure and adding the proper assignment of the field in
-> filter.c. Recompiled without any issues.
-> With that patch a bpf lookup matches ip rule that contains fwmark.
+> Semantics of XDP_TX when attached to a bond are equivalent in such
+> setting to the case when a tc/BPF program would be attached to the
+> bond, meaning transmitting the packet out of the bond itself using one
+> of the bond's configured xmit methods to select a slave device (rather
+> than XDP_TX on the slave itself). Handling of XDP_TX to transmit
+> using the configured bonding mechanism is therefore implemented by
+> rewriting the BPF program return value in bpf_prog_run_xdp. To avoid
+> performance impact this check is guarded by a static key, which is
+> incremented when a XDP program is loaded onto a bond device. This
+> approach was chosen to avoid changes to drivers implementing XDP. If
+> the slave device does not match the receive device, then XDP_REDIRECT
+> is transparently used to perform the redirection in order to have
+> the network driver release the packet from its RX ring.  The bonding
+> driver hashing functions have been refactored to allow reuse with
+> xdp_buff's to avoid code duplication.
 > 
-> Still interested to know how much of a performance penalty adding an 4
-> bytes to the
-> structure brings. I'd certainly vote for adding at least the firewall
-> mark to the set of fields used in the lookup.
+> The motivation for this change is to enable use of bonding (and
+> 802.3ad) in hairpinning L4 load-balancers such as [1] implemented with
+> XDP and also to transparently support bond devices for projects that
+> use XDP given most modern NICs have dual port adapters.  An alternative
+> to this approach would be to implement 802.3ad in user-space and
+> implement the bonding load-balancing in the XDP program itself, but
+> is rather a cumbersome endeavor in terms of slave device management
+> (e.g. by watching netlink) and requires separate programs for native
+> vs bond cases for the orchestrator. A native in-kernel implementation
+> overcomes these issues and provides more flexibility.
+> 
+> Below are benchmark results done on two machines with 100Gbit
+> Intel E810 (ice) NIC and with 32-core 3970X on sending machine, and
+> 16-core 3950X on receiving machine. 64 byte packets were sent with
+> pktgen-dpdk at full rate. Two issues [2, 3] were identified with the
+> ice driver, so the tests were performed with iommu=off and patch [2]
+> applied. Additionally the bonding round robin algorithm was modified
+> to use per-cpu tx counters as high CPU load (50% vs 10%) and high rate
+> of cache misses were caused by the shared rr_tx_counter (see patch
+> 2/3). The statistics were collected using "sar -n dev -u 1 10".
+> 
+>  -----------------------|  CPU  |--| rxpck/s |--| txpck/s |----
+>  without patch (1 dev):
+>    XDP_DROP:              3.15%      48.6Mpps
+>    XDP_TX:                3.12%      18.3Mpps     18.3Mpps
+>    XDP_DROP (RSS):        9.47%      116.5Mpps
+>    XDP_TX (RSS):          9.67%      25.3Mpps     24.2Mpps
+>  -----------------------
+>  with patch, bond (1 dev):
+>    XDP_DROP:              3.14%      46.7Mpps
+>    XDP_TX:                3.15%      13.9Mpps     13.9Mpps
+>    XDP_DROP (RSS):        10.33%     117.2Mpps
+>    XDP_TX (RSS):          10.64%     25.1Mpps     24.0Mpps
+>  -----------------------
+>  with patch, bond (2 devs):
+>    XDP_DROP:              6.27%      92.7Mpps
+>    XDP_TX:                6.26%      17.6Mpps     17.5Mpps
+>    XDP_DROP (RSS):       11.38%      117.2Mpps
+>    XDP_TX (RSS):         14.30%      28.7Mpps     27.4Mpps
+>  --------------------------------------------------------------
+> 
+> RSS: Receive Side Scaling, e.g. the packets were sent to a range of
+> destination IPs.
+> 
+> [1]: https://cilium.io/blog/2021/05/20/cilium-110#standalonelb
+> [2]: https://lore.kernel.org/bpf/20210601113236.42651-1-maciej.fijalkowski@intel.com/T/#t
+> [3]: https://lore.kernel.org/bpf/CAHn8xckNXci+X_Eb2WMv4uVYjO2331UWB2JLtXr_58z0Av8+8A@mail.gmail.com/
+> 
+> Signed-off-by: Jussi Maki <joamaki@gmail.com>
+> ---
+>  drivers/net/bonding/bond_main.c | 441 ++++++++++++++++++++++++++++----
+>  include/linux/filter.h          |  13 +-
+>  include/linux/netdevice.h       |   5 +
+>  include/net/bonding.h           |   1 +
+>  kernel/bpf/devmap.c             |  34 ++-
+>  net/core/filter.c               |  37 ++-
+>  6 files changed, 467 insertions(+), 64 deletions(-)
+> 
 
-I agree with David here that performance of the helper is paramount.
-As a side-note, we should probably add a build_bug_on() to ensure that
-the size of struct bpf_fib_lookup will stay at 64b / one cacheline.
-
-That said, given h_vlan_proto/h_vlan_TCI are both output parameters,
-maybe we could just union the two fields with a __u32 mark extension
-that we then transfer into the flowi{4,6}?
-
-Thanks,
-Daniel
-
-> On Wed, Jun 9, 2021 at 11:30 AM Rumen Telbizov
-> <rumen.telbizov@menlosecurity.com> wrote:
->>
->> Hi David,
->>
->> Thanks for the quick response. I appreciate it.
->> A couple of quick follow up questions:
->> 1. Do you have any performance data that would indicate how much of a
->> performance drop adding an extra 4 or 8 bytes to the structure would
->> cause?
->> 2. If I patch locally the structure in libc and the kernel by adding
->> an extra _u32 mark member is there anything that such a modification
->> would break?
->>
->> Regards,
->> Rumen Telbizov
->>
->>
->> On Tue, Jun 8, 2021 at 6:21 PM David Ahern <dsahern@gmail.com> wrote:
->>>
->>> On 6/8/21 4:59 PM, Rumen Telbizov wrote:
->>>> Dear BPF list,
->>>>
->>>> I am new to eBPF so go easy on me.
->>>> It seems to me that currently eBPF has no support for route table
->>>> lookups including firewall marks. The bpf_fib_lookup structure itself
->>>> has no mark field as per
->>>> https://elixir.bootlin.com/linux/v5.10.28/source/include/uapi/linux/bpf.h#L4864
->>>>
->>>> Additionally bpf_fib_lookup() function does not incorporate the
->>>> firewall mark in its route lookup. It explicitly sets it to 0 as per
->>>> https://elixir.bootlin.com/linux/v5.10.28/source/net/core/filter.c#L5329
->>>> along with other fields which are used during the regular routing
->>>> policy database lookup.
->>>>
->>>> Thus lookups from within eBPF and outside of it result in different
->>>> outcomes if there are rules directing traffic based on fwmark.
->>>> Can you please advise what the rationale for this is or if there
->>>> anything that I might be missing.
->>>>
->>>> Let me know if I can provide any further information.
->>>>
->>>
->>> The API (struct bpf_fib_lookup) is constrained to 64B for performance.
->>> It is not possible to support all of the policy routing options that
->>> Linux has in 64B. Choices had to be made.
+Could this patch be broken down onto smaller chunks that would be easier
+to review? Also please apply the Reverse Christmas Tree rule.
 
