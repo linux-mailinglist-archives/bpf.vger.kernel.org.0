@@ -2,107 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4773A1A98
-	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 18:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751943A1A62
+	for <lists+bpf@lfdr.de>; Wed,  9 Jun 2021 18:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhFIQNf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Jun 2021 12:13:35 -0400
-Received: from mga03.intel.com ([134.134.136.65]:38052 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhFIQNf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Jun 2021 12:13:35 -0400
-IronPort-SDR: f7Iukt5eIeccGof+nJ0GmaPQ7EUITZFbNwIfpkAkUGghGjR+HzWKcrKHftnMBgc0Jv0/xkyJRH
- D7ui+1vCD3/g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10010"; a="205132500"
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="205132500"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 09:09:35 -0700
-IronPort-SDR: XdtyxdsuOFh20zhDOs0rEHT5LAV2pN7lHigK2haDDFpNDzsigM8YEbfhzzUQhOzUI5+obBoAOR
- jaRj0FTP6XZA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,261,1616482800"; 
-   d="scan'208";a="419329872"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga002.jf.intel.com with ESMTP; 09 Jun 2021 09:09:33 -0700
-Date:   Wed, 9 Jun 2021 17:57:04 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf 2/2] bpf: selftest to verify mixing bpf2bpf calls and
- tailcalls with insn patch
-Message-ID: <20210609155704.GB12061@ranger.igk.intel.com>
-References: <162318053542.323820.3719766457956848570.stgit@john-XPS-13-9370>
- <162318063321.323820.18256758193426055338.stgit@john-XPS-13-9370>
+        id S232332AbhFIQE5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Jun 2021 12:04:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231704AbhFIQE4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Jun 2021 12:04:56 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC46C061574
+        for <bpf@vger.kernel.org>; Wed,  9 Jun 2021 09:02:44 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id t9so19852102pgn.4
+        for <bpf@vger.kernel.org>; Wed, 09 Jun 2021 09:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=pfZR3kpwu8zmhOyETJJuO4k5VCEwp7kOEODbblBfjU8=;
+        b=J2rWJQarU1Nu6vqDexwj3v2+ODJrk6unUtARNRDsCSYAK7wU67+GeHB8BLx7xWSMlB
+         9ujf3K2W2Dg1NXjTb1qeUU8segeBDr9ON8Zy6Xz+pdc/DdJmqkDFlsGxVXYt40UN9SYZ
+         7E40dhxKqgExIZiN20AsESKDtVq0nAEO3MhJjN2vMME7YR0bWpmUE08k20cYCz+iGvR5
+         1ruGUJa/QKDKb+xZl4auWyfIxlwHp1cBE9tVUe8mqVXFXDNyFZ1QvrgZ8DS9MzM7Yyu9
+         gPea2RXKWl05ke7aDy+3HXxGZHCYlxSByZnkREc3dLNtfg9ux1XfV9KiA+Bp8XdIzbfR
+         p0+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=pfZR3kpwu8zmhOyETJJuO4k5VCEwp7kOEODbblBfjU8=;
+        b=cSDpTYwVBfHYU2158EObDHPI/BqONXN+B5B2kLtfWoQdmNn45N0XQzdxZnhpCOIAKI
+         cJvsqVQQB2urFR9CBBvVFOKwpBXtHsmvFkS5t754MBulv3rd13hrJPnOXh/QscHjl7dH
+         bG6mz7lyyFSXXDN8yC6kjDR6OBsdEvPKH/RaQiVtcKrfgpP2nSg/JpxlwfY8oqOko26N
+         GpNaMQXHUDTG+TbsuDejB39KORqjxQRvcx5uo/ouc/DNEhT38Sj7FTbTYc5f/Y4Pmk+/
+         8pyFvGzhrSK02oDBKQEncTunUbSigixJMmHEGvvpZAgCfx+z812VfUCgcY/Qtm+QqRtL
+         Z3Ig==
+X-Gm-Message-State: AOAM532L3+Ff8o3X9GLql3SL5929ERikKmH6htg1w7h+5XQBrvAgVl+0
+        KM06WCSdg2Typ0I1FScFCtnUSJb7gr7nw3CzJpg=
+X-Google-Smtp-Source: ABdhPJwBl+e1XM2qp5g8o/EoUNetNTJYD9w+xb+XSTzNtUCYKxX7N0xy+ydtBiLP/dT4VKBluAcRlKDnR4Rva0z7Wq4=
+X-Received: by 2002:a62:90:0:b029:2db:90a5:74dc with SMTP id
+ 138-20020a6200900000b02902db90a574dcmr443131pfa.27.1623254564496; Wed, 09 Jun
+ 2021 09:02:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162318063321.323820.18256758193426055338.stgit@john-XPS-13-9370>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Received: by 2002:a05:6a10:2d16:0:0:0:0 with HTTP; Wed, 9 Jun 2021 09:02:43
+ -0700 (PDT)
+From:   james gate <jamesgate3030@gmail.com>
+Date:   Wed, 9 Jun 2021 16:02:43 +0000
+Message-ID: <CABBCwOZVF=RqfxtvpE2EauqZqHodp0KqDH4TWAtLNk4EhGP0cQ@mail.gmail.com>
+Subject: info
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 12:30:33PM -0700, John Fastabend wrote:
-> This adds some extra noise to the tailcall_bpf2bpf4 tests that will cause
-> verifier to patch insns. This then moves around subprog start/end insn
-> index and poke descriptor insn index to ensure that verify and JIT will
-> continue to track these correctly.
+good day,
 
-This test is the most complicated one where I tried to document the scope
-of it on the side of prog_tests/tailcalls.c. I feel that it would make it
-more difficult to debug it if under any circumstances something would have
-been broken with that logic.
+how are you doing today? I hope very well?  I am inviting you for an
+inheritance claim belonging to my client, I will furnish you with
+every piece of information concerning this inheritance
+claim and why you are chosen to feature as my client's only
+surviving relative. contact me through my personal email
+(josepkokou8080@gmail.com} Whatsapp +22892052585
 
-Maybe a separate test scenario? Or is this an overkill? If so, I would
-vote for moving it to tailcall_bpf2bpf1.c and have a little comment that
-testing other bpf helpers mixed in is in scope of that test.
 
-> 
-> Reviewed-by: Daniel Borkmann <daniel@iogearbox.net>
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->  .../selftests/bpf/progs/tailcall_bpf2bpf4.c        |   17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf4.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf4.c
-> index 9a1b166b7fbe..0d70de5f97e2 100644
-> --- a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf4.c
-> +++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf4.c
-> @@ -2,6 +2,13 @@
->  #include <linux/bpf.h>
->  #include <bpf/bpf_helpers.h>
->  
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__uint(key_size, sizeof(__u32));
-> +	__uint(value_size, sizeof(__u32));
-> +} nop_table SEC(".maps");
-> +
->  struct {
->  	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
->  	__uint(max_entries, 3);
-> @@ -11,9 +18,19 @@ struct {
->  
->  static volatile int count;
->  
-> +__noinline
-> +int subprog_noise(struct __sk_buff *skb)
-> +{
-> +	__u32 key = 0;
-> +
-> +	bpf_map_lookup_elem(&nop_table, &key);
-> +	return 0;
-> +}
-> +
->  __noinline
->  int subprog_tail_2(struct __sk_buff *skb)
->  {
-> +	subprog_noise(skb);
->  	bpf_tail_call_static(skb, &jmp_table, 2);
->  	return skb->len * 3;
->  }
-> 
-> 
+I'll be looking forward to your favorable response in that regard.
+
+
+
+
+Yours faithfully,
+barrister joseph koku Esq.
