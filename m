@@ -2,208 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE12F3A22E8
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 05:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F6D3A2402
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 07:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhFJDmz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Jun 2021 23:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhFJDmz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Jun 2021 23:42:55 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A34C061574;
-        Wed,  9 Jun 2021 20:40:59 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id v12so235711plo.10;
-        Wed, 09 Jun 2021 20:40:59 -0700 (PDT)
+        id S229823AbhFJFeK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 01:34:10 -0400
+Received: from mail-yb1-f178.google.com ([209.85.219.178]:42832 "EHLO
+        mail-yb1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229634AbhFJFeI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 01:34:08 -0400
+Received: by mail-yb1-f178.google.com with SMTP id g142so19624355ybf.9
+        for <bpf@vger.kernel.org>; Wed, 09 Jun 2021 22:32:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5Xlibc6hX8kwCcZz0XQ+FE2nBQRDGeD6dPLbec7873k=;
-        b=DVTYq6Mr1yqRlhqT7rDJJzuzmOmfvg9GpbBgcFCCMoS2myqdZzw4QprxJa3JuRM0bT
-         fszOnj6rUU7V7rYDu0HGjJcJy1yQAUdizhaEoGkPQzR15ji4aDgk+aXSrhcsi7gqhe+G
-         FbdtEAWpmeblMOYMUvr2S21hfhKKrlglWsQBqonLnxMmqrsmn/d6e7SiWMqOV3qNwCVt
-         MjkE0KZvqwHcPR1gFvf6SGbPoar3A3hQy1/dss8bOCmgU9bYYqUwRNPllieVX49CDrRs
-         OGKsrv8nYSQYOj9EWI/IpaiVHNGbMB2096LrKggIDabS0tZogPRN014RCOf5EOHysaLH
-         EbNg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lIDUVSk62aGQFCrPWNU4KjW7FrPBH0uImlaY1uF3s70=;
+        b=fiCdlz7jySErXU5K0U8K2zAE3EWQLnmDD2hG+/FP6b3Taq7EFwnPRcgj23aM7wO9bf
+         trPcZ9tjMXkNZ+Xo78hVVc2nheYVO8Hhw2v/vpBZbECHaC4Js5s6UkBdoEgqGaup/Cqi
+         8TsUx3tO/mDeYZXX0CNnaBYCZBdUyxgmNSeF41zMzh7tRQeiI722Gvk6BRpC/C+ErlGh
+         j/1YCHDX8W5p3BPSX91Ti/tXSldmYT/t6ShuUa8XQeHO9IskjhRC2h+vcQdP3fSwBWKj
+         ALew5/h892GGE6wPmsg+4XBJPeA1kGyIJ7aDC3oTT8dH2+VQTIzn0SPOX14cmd3caNll
+         DrIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5Xlibc6hX8kwCcZz0XQ+FE2nBQRDGeD6dPLbec7873k=;
-        b=JikrwUeFQzNm4P/ORdLegpXDihJxiRbU7lFcL/JXZw0t9Uw1RFrQzZ4j5cDLZfgTZH
-         nuxqqnWv1cevyo2jX+rWaHcvNqlQu/Kou6gr+7bcbz7ed2NFt79r7eSEgqf5u3h7KI8s
-         t9rGBDzrHBis16KRKdBi86nyzkEf8fJHHV2xcCntj79VTLqovqC3xO5f/8+tuqLc/mQR
-         Kt1H2aENUlM8nzFF+nOHs97rKHg7pO8JQaWk8fqdDL2oAZpl5ymyWMLjkZvy76EhJ7Qy
-         mWJ7X1qetwjfV0otX/pQjPgK6yEi5HxibxNSXq+sFv4nR3Ejnq1H/syGe5pCnmRBEMM5
-         czOQ==
-X-Gm-Message-State: AOAM530kLORc+RJkQvMiaUzMadOHcK1A69lY1vKuAYyi2gtZyv6TwjLs
-        aD0b4WqYDRfn2gVxmPc6sYClOQlWuFLroQ==
-X-Google-Smtp-Source: ABdhPJxgl9h4/OPyjw92jNQqYTa2w/KubhZ0K6geEeXfvOoqlm7ziFyRkXCKamikxNJH3oslXBnMlQ==
-X-Received: by 2002:a17:90b:881:: with SMTP id bj1mr1103306pjb.119.1623296459278;
-        Wed, 09 Jun 2021 20:40:59 -0700 (PDT)
-Received: from devnote2 (122x208x150x49.ap122.ftth.ucom.ne.jp. [122.208.150.49])
-        by smtp.gmail.com with ESMTPSA id t14sm1059136pgm.9.2021.06.09.20.40.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 20:40:58 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 12:40:52 +0900
-From:   Masami Hiramatsu <masami.hiramatsu@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v7 00/13] kprobes: Fix stacktrace with kretprobes
- on x86
-Message-Id: <20210610124052.486df6a3bcc5337919e21e83@gmail.com>
-In-Reply-To: <162209754288.436794.3904335049560916855.stgit@devnote2>
-References: <162209754288.436794.3904335049560916855.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lIDUVSk62aGQFCrPWNU4KjW7FrPBH0uImlaY1uF3s70=;
+        b=WIjrDNeuBk+0D05gTur3mmpLKNiyQd+Ez/faQ1ifiCvjduPV0d610a4oVK6qkkCrsJ
+         48zbcKjy4Ibk4kMGUxIoD5hKU93RFpWaTEtqKqRS5EqVzCZuBdyKiZ0FD9D2/JoQsX6D
+         7WpfI/pY6nXK9FhOoz8NpluAmOoEQ1/VF03jV9utSNArbuBlYmLveeNTasCN9wAxOeOm
+         okB4gtvfSch3/xLRmDpxRAqA0Oe5tYDoIZMgWzIVh5S34pPCGhhEncQ1hvjaSFFulB+G
+         UUAQsCcvAbZXc0CO5YG+d5OoCLM0nit+qcnmZFAbX8MbtqwuWwBGyNYUMJz22CNF1g95
+         3uLw==
+X-Gm-Message-State: AOAM5322dmilYcju093OE4/GN/6LvWRx71Y1B/O6m8u/aoPfSNnqYZlY
+        bUCQw3SVgO4bczR6ATZqQTo0AnRcZIqDJT8Yx6TpDw==
+X-Google-Smtp-Source: ABdhPJwoZU+p9lvLTCn4AhMkpQVN5yY78JFoOAC/8FFAxBEdJRTL+DhhPeF657CoAcZ3SVa7g5jjqCtX2YO8sCMWZS8=
+X-Received: by 2002:a05:6902:102d:: with SMTP id x13mr5268183ybt.408.1623303061888;
+ Wed, 09 Jun 2021 22:31:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210609103326.278782-1-toke@redhat.com> <20210609103326.278782-16-toke@redhat.com>
+In-Reply-To: <20210609103326.278782-16-toke@redhat.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Thu, 10 Jun 2021 08:30:25 +0300
+Message-ID: <CAC_iWjJ9qyYHKe2QZtmSTQRc4jB4PQM9pT=vmLnd6YYSGd6zBg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 15/17] netsec: remove rcu_read_lock() around XDP
+ program invocation
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Josh,
-
-Would you have any comment on this series?
-
-Thank you,
-
-On Thu, 27 May 2021 15:39:03 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> Hello,
-> 
-> Here is the 7th version of the series to fix the stacktrace with kretprobe on x86.
-> 
-> The previous version is;
-> 
->  https://lore.kernel.org/bpf/162201612941.278331.5293566981784464165.stgit@devnote2/
-> 
-> This version is adding Tested-by from Andrii and do minor cleanups to solve some
-> warnings from kernel test bots.
-> 
-> Changes from v6:
-> For x86 and generic patch:
->   - Add Andrii's Tested-by. (Andrii, I think you have tested only x86, is it OK?)
-> [11/13]:
->   - Remove superfluous #include <linux/kprobes.h>.
-> [13/13]:
->   - Add a prototype for arch_kretprobe_fixup_return().
-> 
-> 
-> With this series, unwinder can unwind stack correctly from ftrace as below;
-> 
->   # cd /sys/kernel/debug/tracing
->   # echo > trace
->   # echo 1 > options/sym-offset
->   # echo r vfs_read >> kprobe_events
->   # echo r full_proxy_read >> kprobe_events
->   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
->   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
->   # echo 1 > events/kprobes/enable
->   # cat /sys/kernel/debug/kprobes/list
-> ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
-> ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
->   # echo 0 > events/kprobes/enable
->   # cat trace
-> # tracer: nop
-> #
-> # entries-in-buffer/entries-written: 3/3   #P:8
-> #
-> #                                _-----=> irqs-off
-> #                               / _----=> need-resched
-> #                              | / _---=> hardirq/softirq
-> #                              || / _--=> preempt-depth
-> #                              ||| /     delay
-> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
-> #              | |         |   ||||      |         |
->            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
->            <...>-134     [007] ...1    16.185901: <stack trace>
->  => kretprobe_trace_func+0x209/0x300
->  => kretprobe_dispatcher+0x4a/0x70
->  => __kretprobe_trampoline_handler+0xd4/0x170
->  => trampoline_handler+0x43/0x60
->  => kretprobe_trampoline+0x2a/0x50
->  => vfs_read+0x98/0x180
->  => ksys_read+0x5f/0xe0
->  => do_syscall_64+0x37/0x90
->  => entry_SYSCALL_64_after_hwframe+0x44/0xae
->            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
-> 
-> This shows the double return probes (vfs_read and full_proxy_read) on the stack
-> correctly unwinded. (vfs_read will return to ksys_read+0x5f and full_proxy_read
-> will return to vfs_read+0x98)
-> 
-> This actually changes the kretprobe behavisor a bit, now the instraction pointer in
-> the pt_regs passed to kretprobe user handler is correctly set the real return
-> address. So user handlers can get it via instruction_pointer() API.
-> 
-> You can also get this series from 
->  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v7
-> 
-> 
-> Thank you,
-> 
+On Wed, 9 Jun 2021 at 13:33, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.=
+com> wrote:
+>
+> The netsec driver has a rcu_read_lock()/rcu_read_unlock() pair around the
+> full RX loop, covering everything up to and including xdp_do_flush(). Thi=
+s
+> is actually the correct behaviour, but because it all happens in a single
+> NAPI poll cycle (and thus under local_bh_disable()), it is also technical=
+ly
+> redundant.
+>
+> With the addition of RCU annotations to the XDP_REDIRECT map types that
+> take bh execution into account, lockdep even understands this to be safe,
+> so there's really no reason to keep the rcu_read_lock() around anymore, s=
+o
+> let's just remove it.
+>
+> Cc: Jassi Brar <jaswinder.singh@linaro.org>
+> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
-> 
-> Josh Poimboeuf (1):
->       x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
-> 
-> Masami Hiramatsu (12):
->       ia64: kprobes: Fix to pass correct trampoline address to the handler
->       kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
->       kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
->       kprobes: Add kretprobe_find_ret_addr() for searching return address
->       ARC: Add instruction_pointer_set() API
->       ia64: Add instruction_pointer_set() API
->       arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
->       kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
->       x86/kprobes: Push a fake return address at kretprobe_trampoline
->       x86/unwind: Recover kretprobe trampoline entry
->       tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
->       x86/kprobes: Fixup return address in generic trampoline handler
-> 
-> 
->  arch/arc/include/asm/ptrace.h       |    5 ++
->  arch/arc/kernel/kprobes.c           |    2 -
->  arch/arm/probes/kprobes/core.c      |    5 +-
->  arch/arm64/kernel/probes/kprobes.c  |    3 -
->  arch/csky/kernel/probes/kprobes.c   |    2 -
->  arch/ia64/include/asm/ptrace.h      |    5 ++
->  arch/ia64/kernel/kprobes.c          |   15 ++---
->  arch/mips/kernel/kprobes.c          |    3 -
->  arch/parisc/kernel/kprobes.c        |    4 +
->  arch/powerpc/kernel/kprobes.c       |   13 ----
->  arch/riscv/kernel/probes/kprobes.c  |    2 -
->  arch/s390/kernel/kprobes.c          |    2 -
->  arch/sh/kernel/kprobes.c            |    2 -
->  arch/sparc/kernel/kprobes.c         |    2 -
->  arch/x86/include/asm/kprobes.h      |    1 
->  arch/x86/include/asm/unwind.h       |   23 +++++++
->  arch/x86/include/asm/unwind_hints.h |    5 ++
->  arch/x86/kernel/kprobes/core.c      |   53 +++++++++++++++--
->  arch/x86/kernel/unwind_frame.c      |    3 -
->  arch/x86/kernel/unwind_guess.c      |    3 -
->  arch/x86/kernel/unwind_orc.c        |   18 +++++-
->  include/linux/kprobes.h             |   44 ++++++++++++--
->  kernel/kprobes.c                    |  108 +++++++++++++++++++++++++----------
->  kernel/trace/trace_output.c         |   17 +-----
->  lib/error-inject.c                  |    3 +
->  25 files changed, 238 insertions(+), 105 deletions(-)
-> 
+>  drivers/net/ethernet/socionext/netsec.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethern=
+et/socionext/netsec.c
+> index dfc85cc68173..20d148c019d8 100644
+> --- a/drivers/net/ethernet/socionext/netsec.c
+> +++ b/drivers/net/ethernet/socionext/netsec.c
+> @@ -958,7 +958,6 @@ static int netsec_process_rx(struct netsec_priv *priv=
+, int budget)
+>
+>         xdp_init_buff(&xdp, PAGE_SIZE, &dring->xdp_rxq);
+>
+> -       rcu_read_lock();
+>         xdp_prog =3D READ_ONCE(priv->xdp_prog);
+>         dma_dir =3D page_pool_get_dma_dir(dring->page_pool);
+>
+> @@ -1069,8 +1068,6 @@ static int netsec_process_rx(struct netsec_priv *pr=
+iv, int budget)
+>         }
+>         netsec_finalize_xdp_rx(priv, xdp_act, xdp_xmit);
+>
+> -       rcu_read_unlock();
+> -
+>         return done;
+>  }
+>
 > --
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+> 2.31.1
+>
 
-
--- 
-Masami Hiramatsu
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
