@@ -2,158 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CCE3A2D92
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 15:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB17C3A2DC1
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 16:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhFJOAM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 10:00:12 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43320 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhFJOAK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:00:10 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lrLCF-000C2N-56; Thu, 10 Jun 2021 15:58:11 +0200
-Received: from [85.7.101.30] (helo=linux-3.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lrLCE-000Ql1-Rf; Thu, 10 Jun 2021 15:58:10 +0200
-Subject: Re: [PATCH bpf-next v1 00/10] bpfilter
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>, Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, davem@davemloft.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, rdna@fb.com
-References: <20210603101425.560384-1-me@ubique.spb.ru>
- <4dd3feeb-8b4a-0bdb-683e-c5c5643b1195@fb.com>
- <20210610133655.d25say2ialzhtdhq@amnesia>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c105ba9d-3081-971e-393c-a8cbe73f35e4@iogearbox.net>
-Date:   Thu, 10 Jun 2021 15:58:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230286AbhFJOMb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 10:12:31 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:44009 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229941AbhFJOMb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 10:12:31 -0400
+Received: by mail-lf1-f46.google.com with SMTP id n12so3460783lft.10
+        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 07:10:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gzmKas184833usYf8v0jhhrF9F4Gbsyk8OwV/MYiGYU=;
+        b=UZLoa4rDrimW7rhq+NqdEVVIbZNv5NbROf+P0xqFYYCA0RFx09I8HuyALR0eqyLADN
+         foYsyZhFemxKzd6tOc2RGrAw8qOEdhVEPD31Ez2YT9UYW5VuvXt4CLDMSs3GiIqbobTo
+         hyOPbzeYBER3sEHtBhY/QEQo+Zy2QGNJr6fR0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gzmKas184833usYf8v0jhhrF9F4Gbsyk8OwV/MYiGYU=;
+        b=h8x1xriP6ywuXjQoHc+prWBAxm5zDDA7JqLGkdhv2loctcHsPOmjRC2ajGTIw2hdgA
+         oIfalCdNUv+20UdaT/LKcSSQGFlTlHh0lfmyJD/38I5fOyndKF0TCV3yc3o1TMZrzNw/
+         RWOR3Sg8UpDF+2pjpHkOqOdw/O+jhlHI5ImFjP+MwyTPBg5PQAKUDKkNLH3SZH4ypF4m
+         Jd36HUklpWJuTc3rmm62RkpF3pPqg5sU4QgzWPcOFXCyNFEkePIgh13L+I7aefKIJ1lr
+         lL5l0HG3aIbVKQi397cd0TsjZr2V9KsIEjFtjqiYIH+dhQlSPnMOXAnAOkvLnXXATXSs
+         H4ZA==
+X-Gm-Message-State: AOAM530KlCTIQ392cBTH7DsXdp4bMZeSQ8ztcBetri4fWO3aGaU0JFto
+        Pu7Sj5wTFc+2yZEbRcqBnm0IDvG2tXpTaGc1cEscdQ==
+X-Google-Smtp-Source: ABdhPJzq6WZNss7mCtlubYmeguvAzkuO2hELiFE9HytwNYQpyECaL0cGO1QkWpauCLVdl6bBvuNFn+6LoJjWnCi1ImU=
+X-Received: by 2002:ac2:4847:: with SMTP id 7mr1995521lfy.97.1623334174497;
+ Thu, 10 Jun 2021 07:09:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210610133655.d25say2ialzhtdhq@amnesia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26197/Thu Jun 10 13:10:09 2021)
+References: <CACAyw9-GQasDdE9m_f3qXCO1UrR49YuF_6K1tjGxyk+ZZGhM-Q@mail.gmail.com>
+ <CAEf4BzYd4GLOQTJOeK_=yAs7+DPC+R7cxynOmd7ZMvcRFG+8SQ@mail.gmail.com>
+ <CACAyw99QydcWBeE3T_4g5QzuDyfb_MEpR1V0EzEwbY=R-s202w@mail.gmail.com>
+ <CAEf4BzZftL2q9qAoeXsO87-Wx9AbF8A1mLnBAtBrGo=XSx996g@mail.gmail.com>
+ <CACAyw9-mHGrvrWozqngJ8X4qzqxB8Yku+AaL_Rv8RZhLXPRwJQ@mail.gmail.com> <CAEf4BzYz19hg6H4jieEzZQR1e3R3OOkLBiQLzCxQM+=cvQTGow@mail.gmail.com>
+In-Reply-To: <CAEf4BzYz19hg6H4jieEzZQR1e3R3OOkLBiQLzCxQM+=cvQTGow@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 10 Jun 2021 15:09:23 +0100
+Message-ID: <CACAyw99m8rbE5L9LAowYwvAkza+twuet2tdas2eotsf3uWgGTQ@mail.gmail.com>
+Subject: Re: Portability of bpf_tracing.h
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/10/21 3:36 PM, Dmitrii Banshchikov wrote:
-> On Wed, Jun 09, 2021 at 05:50:13PM -0700, Yonghong Song wrote:
->> On 6/3/21 3:14 AM, Dmitrii Banshchikov wrote:
->>> The patchset is based on the patches from David S. Miller [1] and
->>> Daniel Borkmann [2].
->>>
->>> The main goal of the patchset is to prepare bpfilter for
->>> iptables' configuration blob parsing and code generation.
->>>
->>> The patchset introduces data structures and code for matches,
->>> targets, rules and tables.
->>>
->>> The current version misses handling of counters. Postpone its
->>> implementation until the code generation phase as it's not clear
->>> yet how to better handle them.
->>>
->>> Beside that there is no support of net namespaces at all.
->>>
->>> In the next iteration basic code generation shall be introduced.
->>>
->>> The rough plan for the code generation.
->>>
->>> It seems reasonable to assume that the first rules should cover
->>> most of the packet flow.  This is why they are critical from the
->>> performance point of view.  At the same time number of user
->>> defined rules might be pretty large. Also there is a limit on
->>> size and complexity of a BPF program introduced by the verifier.
->>>
->>> There are two approaches how to handle iptables' rules in
->>> generated BPF programs.
->>>
->>> The first approach is to generate a BPF program that is an
->>> equivalent to a set of rules on a rule by rule basis. This
->>> approach should give the best performance. The drawback is the
->>> limitation from the verifier on size and complexity of BPF
->>> program.
->>>
->>> The second approach is to use an internal representation of rules
->>> stored in a BPF map and use bpf_for_each_map_elem() helper to
->>> iterate over them. In this case the helper's callback is a BPF
->>> function that is able to process any valid rule.
->>>
->>> Combination of the two approaches should give most of the
->>> benefits - a heuristic should help to select a small subset of
->>> the rules for code generation on a rule by rule basis. All other
->>> rules are cold and it should be possible to store them in an
->>> internal form in a BPF map. The rules will be handled by
->>> bpf_for_each_map_elem().  This should remove the limit on the
->>> number of supported rules.
->>
->> Agree. A bpf program inlines some hot rule handling and put
->> the rest in for_each_map_elem() sounds reasonable to me.
+On Sun, 30 May 2021 at 01:51, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, May 28, 2021 at 1:30 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > On Wed, 26 May 2021 at 19:34, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > So I did a bit of investigation and gathered struct pt_regs
+> > > definitions from all the "supported" architectures in bpf_tracing.h.
+> > > I'll leave it here for further reference.
+> > >
+> > > static unsigned long bpf_pt_regs_parm1(const void *regs)
+> > > {
+> > >     if (___arch_is_x86)
+> > >         return ((struct pt_regs___x86 *)regs)->di;
+> > >     else if (___arch_is_s390)
+> > >         return ((struct pt_regs___s390 *)regs)->gprs[2];
+> > >     else if (___arch_is_powerpc)
+> > >         return ((struct pt_regs___powerpc *)regs)->gpr[3];
+> > >     else
+> > >         while(1); /* need some better way to force BPF verification failure */
+> > > }
+> > >
+> > > And so on for other architectures and other helpers, you should get
+> > > the idea from the above.
+> >
+> > The idea of basing this on unique fields in types is neat, the
+> > downside I see is that we encode the logic in the BPF bitstream. If in
+> > the future struct pt_regs is changed, code breaks and we can't do much
+>
+> If pt_regs fields are renamed all PT_REGS-related stuff, provided by
+> libbpf in bpf_tracing.h will break as well and will require
+> re-compilation of BPF application.
 
-Sounds reasonable. You mentioned in the next iteration that you are
-planning to include basic code generation. Would be good to have that
-as part of an initial merge included, maybe along with some form of
-documentation for users on what is expected to already work with the
-current state of the code (& potentially stating goals/non-goals) of
-this work. Thanks Dmitrii!
+I'm thinking more along the lines of, if a PT_REGS definition changes
+so that the unique field isn't unique anymore. The BPF is still valid,
+but the logic that determines the platform isn't.
 
->>> During development it was useful to use statically linked
->>> sanitizers in bpfilter usermode helper. Also it is possible to
->>> use fuzzers but it's not clear if it is worth adding them to the
->>> test infrastructure - because there are no other fuzzers under
->>> tools/testing/selftests currently.
->>>
->>> Patch 1 adds definitions of the used types.
->>> Patch 2 adds logging to bpfilter.
->>> Patch 3 adds bpfilter header to tools
->>> Patch 4 adds an associative map.
->>> Patches 5/6/7/8 add code for matches, targets, rules and table.
->>> Patch 9 handles hooked setsockopt(2) calls.
->>> Patch 10 uses prepared code in main().
->>>
->>> Here is an example:
->>> % dmesg  | tail -n 2
->>> [   23.636102] bpfilter: Loaded bpfilter_umh pid 181
->>> [   23.658529] bpfilter: started
->>> % /usr/sbin/iptables-legacy -L -n
->>
->> So this /usr/sbin/iptables-legacy is your iptables variant to
->> translate iptable command lines to BPFILTER_IPT_SO_*,
->> right? It could be good to provide a pointer to the source
->> or binary so people can give a try.
->>
->> I am not an expert in iptables. Reading codes, I kind of
->> can grasp the high-level ideas of the patch, but probably
->> Alexei or Daniel can review some details whether the
->> design is sufficient to be an iptable replacement.
-> 
-> The goal of a complete iptables replacement is too ambigious for
-> the moment - because existings hooks and helpers don't cover all
-> required functionality.
-> 
-> A more achievable goal is to have something simple that could
-> replace a significant part of use cases for filter table.
-> 
-> Having something simple that would work as a stateless firewall
-> and provide some performance benefits is a good start. For more
-> complex scenarios there is a safe fallback to the existing
-> implementation.
-> 
->>> Chain INPUT (policy ACCEPT)
->>> target     prot opt source               destination
->>>
->>> Chain FORWARD (policy ACCEPT)
->>> target     prot opt source               destination
->>>
->> [...]
-> 
+> This piece of code is going to be
+> part of the same bpf_tracing.h, so if something changes in newer
+> kernel version, libbpf will accommodate that in the latest version.
+> You'd still need to re-compile your BPF application, but I don't see
+> how that's avoidable even with your proposal.
+>
+> > about it. What if instead we replace ___arch_is_x86, etc. with a
+> > .kconfig style constant load? The platform detection logic can then
+> > live in libbpf or cilium/ebpf and can be evolved if needed. Instead of
+>
+> That might be worthwhile to do (similarly to how we have a special
+> LINUX_KERNEL_VERSION extern) regardless. But again, detection of the
+> architecture is just one part. Once you know the architecture, you are
+> still relying on knowing pt_regs field names to extract the data. So
+> if anything changes about that, you'd need to update bpf_tracing.h and
+> re-compile.
 
+Yes. It'd be nice to fix that, but I don't see how to do that in a
+generic fashion. So I'd deal with it when it happens.
+
+> > > How so? If someone is using PT_REGS_PARM1 without setting target arch
+> > > they should get compilation error about undefined macro. Here it will
+> > > be the same thing, only if someone tries to use PT_REGS_PARM1() will
+> > > they reach that _Pragma.
+> > >
+> > > Or am I missing something?
+> >
+> > Right! Doing this makes sense regardless of the outcome of our discussion above.
+>
+> Cool, feel free to send a patch with _Pragmas and no extra #defines ;)
+
+I'll give it a shot.
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
