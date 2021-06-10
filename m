@@ -2,164 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A3B3A34F2
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 22:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726D53A353B
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 22:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFJUjf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 16:39:35 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:44679 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhFJUjf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 16:39:35 -0400
-Received: by mail-wr1-f48.google.com with SMTP id f2so3666678wri.11;
-        Thu, 10 Jun 2021 13:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oh72w4rgMejUZgAEUa3Dv6nTCHIteYQxK1W67TXLoCg=;
-        b=W2l/B+dZZ+JKr86Rggvtzo0t+WDdiqjim9cF9sPLy6UlaK9Qs3WBvemPQkmtOGkDb4
-         hIWilqUPVgAxu0k0Eiu8jF7TPlz4FNKAc/SAcKrYicR8764mqDikyLsDqNacNXZBWyim
-         SLZxZ6o7kNYxSOoML2+vh+iazp72UcLdc9SSj3x5k7Uyo/SSaITA2e/XBqULE815Bf7K
-         6pVws8f41IA+t8bW9KvP1Vb37J4dk2xEsLu5PwOgj7eGR3SlSCzT2jArTNb6yBN6MNDI
-         zZSbKLohsp9x9fLhqDvthuqWZcx0IGFPRToX+Cu7W/TG9ismJeW+ABwjKUwssIwsv/TC
-         3xqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oh72w4rgMejUZgAEUa3Dv6nTCHIteYQxK1W67TXLoCg=;
-        b=JTSnZwVOy50zWkyatU5T9RRgEkoAny4nRXkJwHjKWaDsZ/5/fHN+qVd8j9yr8irGpy
-         RQ4RIb4Ig3YTTnJtBZqS4eC4NKNzXRXhpFmatap49+juQK8/PG5RguiKXLCcZlGW/qKx
-         jRxt6DfqoglXpHiX60U0/+HSeIXppuOEu6COkCLqZo3u0jLE99C2mfhtVN028ZTsXN2J
-         /gRdpUftxYLhwtUsOzyYz9WJ6xzfU2+KkHUy2kr4TFjZp5qX5qGmsHQOTaCaj6WtUDUO
-         U76T6p/9Y/ZJwArOe7nIQiW+JWyUWIxsPcJU9SEa1m7p8jtLWdIMZCrlrmsScMjW0jKV
-         7KQA==
-X-Gm-Message-State: AOAM5302kq9UHzVqekIp0e5b+xAsTH1UXRE6wn9mu57iv/IOE4ks+G3C
-        hGDV9Pr26GMqpy/mrElHvZHe5gMmMm0yuA==
-X-Google-Smtp-Source: ABdhPJwRXWO43ebTzOT2525REo6y22ydpmDshSWjtM4sS3imkCg8xM4V2cgwOpC68JRvy5i3WnbhKw==
-X-Received: by 2002:adf:e7d0:: with SMTP id e16mr294706wrn.202.1623357390717;
-        Thu, 10 Jun 2021 13:36:30 -0700 (PDT)
-Received: from [192.168.181.98] (228.18.23.93.rev.sfr.net. [93.23.18.228])
-        by smtp.gmail.com with ESMTPSA id q5sm4842057wrm.15.2021.06.10.13.36.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 13:36:29 -0700 (PDT)
-Subject: Re: [PATCH v7 bpf-next 07/11] tcp: Migrate TCP_NEW_SYN_RECV requests
- at receiving the final ACK.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210521182104.18273-1-kuniyu@amazon.co.jp>
- <20210521182104.18273-8-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <89c4ce38-fe2c-1d80-f814-c4b3a5e4781d@gmail.com>
-Date:   Thu, 10 Jun 2021 22:36:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230001AbhFJVAG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 17:00:06 -0400
+Received: from www62.your-server.de ([213.133.104.62]:46502 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229963AbhFJVAG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 17:00:06 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lrRke-000AVh-Os; Thu, 10 Jun 2021 22:58:08 +0200
+Received: from [85.7.101.30] (helo=linux-3.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lrRke-000Ek6-KF; Thu, 10 Jun 2021 22:58:08 +0200
+Subject: Re: bpf_fib_lookup support for firewall mark
+To:     David Ahern <dsahern@gmail.com>,
+        Rumen Telbizov <rumen.telbizov@menlosecurity.com>
+Cc:     bpf@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>
+References: <CA+FoirDxh7AhApwWVG_19j5RWT1dp23ab1h0P1nTjhhWpRC5Ow@mail.gmail.com>
+ <3e6ba294-12ca-3a2f-d17c-9588ae221dda@gmail.com>
+ <CA+FoirCt1TXuBpyayTnRXC2MfW-taN9Ob-3mioPojfaWvwjqqg@mail.gmail.com>
+ <CA+FoirALjdwJ0=F6E4w2oNmC+fRkpwHx8AZb7mW1D=nU4_qZUQ@mail.gmail.com>
+ <c2f77a3d-508f-236c-057c-6233fbc7e5d2@iogearbox.net>
+ <68345713-e679-fe9f-fedd-62f76911b55a@gmail.com>
+ <CA+FoirA28PANkzHE-4uHb7M0vf-V3UZ6NfjKbc_RBJ2=sKSrOQ@mail.gmail.com>
+ <6248c547-ad64-04d6-fcec-374893cc1ef2@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <7742f2a2-11a7-4d8f-d8c1-7787483a3935@iogearbox.net>
+Date:   Thu, 10 Jun 2021 22:58:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210521182104.18273-8-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <6248c547-ad64-04d6-fcec-374893cc1ef2@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26197/Thu Jun 10 13:10:09 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 6/10/21 8:52 PM, David Ahern wrote:
+> On 6/10/21 11:41 AM, Rumen Telbizov wrote:
+>>> that's the key point on performance - crossing a cacheline. I do not
+>>> have performance data at hand, but it is a substantial hit. That is why
+>>> the struct is so overloaded (and complicated for a uapi) with the input
+>>> vs output setting.
+>>
+>> Makes perfect sense now. Thanks for clarifying David and Daniel.
+>>
+>>> Presumably you are parsing the packet to id a flow to find the mark that
+>>> should be used with the FIB lookup. correct?
+>>
+>> Let me briefly present my high-level use case here to give more colour.
+>> What I am building is an overlay network based on geneve. I have multiple
+>> sites, each of which is going to be represented by a separate routing table.
+>> The selection of the destination site (routing table) is based on firewall marks
+> 
+> To show my bias here - VRF is better than firewall marks for selecting
+> routing tables. :-)
+> 
+>> and the original packet is preserved intact, encapsulated in geneve. I have a
+>> TC/eBPF program running on the geneve interface which has to query the
+>> appropriate routing table based on the firewall mark and use the
+>> returned next hop
+>> as the tunnel key in the skb. Also worth mentioning is that those routing tables
+>> contain multiple (default) routes as I use ECMP to balance traffic/provide HA
+>> between sites,
+> 
+> thanks for explaining the use case
 
++1
 
-On 5/21/21 8:21 PM, Kuniyuki Iwashima wrote:
-> This patch also changes the code to call reuseport_migrate_sock() and
-> inet_reqsk_clone(), but unlike the other cases, we do not call
-> inet_reqsk_clone() right after reuseport_migrate_sock().
+>>>> That said, given h_vlan_proto/h_vlan_TCI are both output parameters,
+>>>> maybe we could just union the two fields with a __u32 mark extension
+>>>> that we then transfer into the flowi{4,6}?
+>>>
+>>> That is one option.
+>>>
+>>> I would go for a union on sport and/or dport. It is a fair tradeoff to
+>>> request users to pick one - policy routing based on L4 ports or fwmark.
+>>> A bit harder to do with a straight up union at this point, but we could
+>>> also limit the supported fwmark to 16-bits. Hard choices have to be made.
+>>
+>> A couple of comments on those two options: if the union is between the ports
+>> and the mark then a user of the function would have to choose between
+>> src+dst port or the mark in lookup, correct? If so wouldn't that
+>> result in a loss
+>> of the ability to use multipathing - since the hashing would be static? In my
+>> case that would certainly be another significant drawback.
 > 
-> Currently, in the receive path for TCP_NEW_SYN_RECV sockets, its listener
-> has three kinds of refcnt:
+> yes, good point.
 > 
->   (A) for listener itself
->   (B) carried by reuqest_sock
->   (C) sock_hold() in tcp_v[46]_rcv()
+>> Having said that, what Daniel suggests looks very interesting to me.
+>> If I understand
+>> it correctly there are 32 bits in h_vlan_proto+h_vlan_TCI that are used only for
+>> output today so if they are merged in a union with a 32 bit mark then we'd stay
+>> at 64B structure and we can pass a full 32 bit mark.
+>>
+>> So something like this?
+>> union {
+>>      /* input */
+>>      __u32 mark;
+>>
+>>      /* output */
+>>      __be16 h_vlan_proto;
+>>      __be16 h_vlan_TCI;
+>> }
 > 
-> While processing the req, (A) may disappear by close(listener). Also, (B)
-> can disappear by accept(listener) once we put the req into the accept
-> queue. So, we have to hold another refcnt (C) for the listener to prevent
-> use-after-free.
+> I think more like this:
 > 
-> For socket migration, we call reuseport_migrate_sock() to select a listener
-> with (A) and to increment the new listener's refcnt in tcp_v[46]_rcv().
-> This refcnt corresponds to (C) and is cleaned up later in tcp_v[46]_rcv().
-> Thus we have to take another refcnt (B) for the newly cloned request_sock.
+> 	union {
+> 		/* input: fwmark to use in lookup */
+> 		__u32 fwmark;
 > 
-> In inet_csk_complete_hashdance(), we hold the count (B), clone the req, and
-> try to put the new req into the accept queue. By migrating req after
-> winning the "own_req" race, we can avoid such a worst situation:
-> 
->   CPU 1 looks up req1
->   CPU 2 looks up req1, unhashes it, then CPU 1 loses the race
->   CPU 3 looks up req2, unhashes it, then CPU 2 loses the race
->   ...
-> 
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
-> ---
->  net/ipv4/inet_connection_sock.c | 34 ++++++++++++++++++++++++++++++---
->  net/ipv4/tcp_ipv4.c             | 20 +++++++++++++------
->  net/ipv4/tcp_minisocks.c        |  4 ++--
->  net/ipv6/tcp_ipv6.c             | 14 +++++++++++---
->  4 files changed, 58 insertions(+), 14 deletions(-)
-> 
-> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> index c1f068464363..b795198f919a 100644
-> --- a/net/ipv4/inet_connection_sock.c
-> +++ b/net/ipv4/inet_connection_sock.c
-> @@ -1113,12 +1113,40 @@ struct sock *inet_csk_complete_hashdance(struct sock *sk, struct sock *child,
->  					 struct request_sock *req, bool own_req)
->  {
->  	if (own_req) {
-> -		inet_csk_reqsk_queue_drop(sk, req);
-> -		reqsk_queue_removed(&inet_csk(sk)->icsk_accept_queue, req);
-> -		if (inet_csk_reqsk_queue_add(sk, req, child))
-> +		inet_csk_reqsk_queue_drop(req->rsk_listener, req);
-> +		reqsk_queue_removed(&inet_csk(req->rsk_listener)->icsk_accept_queue, req);
-> +
-> +		if (sk != req->rsk_listener) {
-> +			/* another listening sk has been selected,
-> +			 * migrate the req to it.
-> +			 */
-> +			struct request_sock *nreq;
-> +
-> +			/* hold a refcnt for the nreq->rsk_listener
-> +			 * which is assigned in inet_reqsk_clone()
-> +			 */
-> +			sock_hold(sk);
-> +			nreq = inet_reqsk_clone(req, sk);
-> +			if (!nreq) {
-> +				inet_child_forget(sk, req, child);
+> 		/* output: vlan information if egress is on a vlan */
+> 		struct {
+> 			__be16  h_vlan_proto;
+> 			__be16  h_vlan_TCI;
+> 		};
+> 	};
 
-Don't you need a sock_put(sk) here ?
+Agree.
 
-\
-> +				goto child_put;
-> +			}
-> +
-> +			refcount_set(&nreq->rsk_refcnt, 1);
-> +			if (inet_csk_reqsk_queue_add(sk, nreq, child)) {
-> +				reqsk_migrate_reset(req);
-> +				reqsk_put(req);
-> +				return child;
-> +			}
-> +
-> +			reqsk_migrate_reset(nreq);
-> +			__reqsk_free(nreq);
-> +		} else if (inet_csk_reqsk_queue_add(sk, req, child)) {
->  			return child;
-> +		}
+> But, I do not think the vlan data should be overloaded right now. We
+> still have an open design issue around supporting vlans on ingress
+> (XDP). One option is to allow the lookup to take the vlan as an input,
+> have the the bpf helper lookup the vlan device that goes with the
+> {device index, vlan} pair and use that as the input device. If we
+> overload the vlan_TCI with fwmark that prohibits this option.
+
+I guess it's not overly pretty, but if all things break down and there's no other
+unused space, wouldn't it work if we opt into the vlan as input (instead of mark)
+in future via flag?
+
+>> Moreover, there are 12 extra bytes used only as output for the smac/dmac.
+>> If the above works then maybe this opens up the opportunity to incorporate
+>> even more input parameters that way?
 > 
+> I think that's going to be tricky since the macs are 6-byte arrays.
+
+Thanks,
+Daniel
