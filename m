@@ -2,165 +2,225 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497CD3A31BA
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 19:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDEF3A31DA
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 19:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhFJRJm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 13:09:42 -0400
-Received: from mail-pg1-f180.google.com ([209.85.215.180]:40585 "EHLO
-        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbhFJRJl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:09:41 -0400
-Received: by mail-pg1-f180.google.com with SMTP id j12so276529pgh.7
-        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 10:07:45 -0700 (PDT)
+        id S229935AbhFJRSF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 13:18:05 -0400
+Received: from mail-yb1-f181.google.com ([209.85.219.181]:43976 "EHLO
+        mail-yb1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhFJRSE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:18:04 -0400
+Received: by mail-yb1-f181.google.com with SMTP id b9so326897ybg.10
+        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 10:15:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tf6j48/EA7psoQT0Xa+Ykp/HBTN3iYdEAaBd6YZtNzA=;
-        b=BQ5qUY2276upuseKeH0xi1cEhRtHiQIFJX1GijU6PYyl4Cthzv0BUWu+InvJdo0fyc
-         nG8Pyy9LtiSpoNHDFjrgilIGZVKGi4qnfmsRJ1Ac9bjV3BFqIKua7PDRe5kS9WxvMPHF
-         hGCQOxOSvU3j5mYsPkqMaz++wpX7b6l2jSRXE=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=stfbqOIV89FUH0XCyxeAlJ82MP2mOSsHysgBzljvNgU=;
+        b=tn6tRLdkmYbcPawpw7gZIfSaKaTVNblN69wznBM6tuWb7UwibEJKyAgYfA6TsIuz9X
+         P5q6FWDYPWf2ZGsfX90VYtAxsc353w0CuCbPmjL173Lfs59Um8CSc49sbDQKTDIq5JHL
+         /ZaH7E/4NcKtoLChK8c59EQcxqmHOXe/PPXkz0CRrM5Oh2GmklgADHWpAaKQoOCiv6Vj
+         nosaIT+rtp9+jGGlil5lxFp3J9yf9GtaZZWKKfWmWck9+1eEP1Z2/FxizLJsdo+J7RuN
+         wv3FRtOd4iFwvM0x4e3Ri7lxxpSrfrcmrWfTu4tHhQIoh/egG4SPbJjPcqU9Fu2+PWgV
+         cdLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tf6j48/EA7psoQT0Xa+Ykp/HBTN3iYdEAaBd6YZtNzA=;
-        b=M4chr/6T2oU8oIDBsBmB1aYWAZe5d0uoYQbnmc8AgJUlcWd3u8V4lhVtTdwzBCuJsP
-         LRskdhwwonFnySWaulJrlUq+JjzbKLuxyyqwHwnn5X1YJs/DZK8ppb5E6wXr9CXJxP3t
-         3I0WVNMBX5z+pPL/1vM9CbsOKj2v6DACmU7ZCCfVZsSU0OecRFtlKWUrX9Js+xugBZJ1
-         TJvp64skUCN7b6sfZ2f6di5yTDcLUy+sfX4nV7amnkUwSZ0atvWL2SaWvnqKH/zp/yLZ
-         MHkbTJGbTNoIiPSZk5kdcGA777yyKRxad/yNd9dukI/QUx//uu9U8jUBZxxaiUn22jib
-         gmrg==
-X-Gm-Message-State: AOAM530z0WEoIgMOEHtWeFUNyeaYypQk46d7eT8vVhlk5b4ggbkLkqFS
-        QMTbR2b2KZQnyuqSWHMFTnOkcA==
-X-Google-Smtp-Source: ABdhPJziHTvIoTI9UofEIJVEwXLrrUpuk8JpKcfTDvrABtGPTblS2hWs3BzfsL1cKX8HsFyFIrI8Eg==
-X-Received: by 2002:a63:5d66:: with SMTP id o38mr5923418pgm.444.1623344804696;
-        Thu, 10 Jun 2021 10:06:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k25sm2852989pfk.33.2021.06.10.10.06.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 10:06:43 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 10:06:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kurt Manucredo <fuzzybritches0@gmail.com>,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        nathan@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [PATCH v4] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
-Message-ID: <202106101002.DF8C7EF@keescook>
-References: <20210602212726.7-1-fuzzybritches0@gmail.com>
- <YLhd8BL3HGItbXmx@kroah.com>
- <87609-531187-curtm@phaethon>
- <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com>
- <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
- <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
- <202106091119.84A88B6FE7@keescook>
- <752cb1ad-a0b1-92b7-4c49-bbb42fdecdbe@fb.com>
- <CACT4Y+a592rxFmNgJgk2zwqBE8EqW1ey9SjF_-U3z6gt3Yc=oA@mail.gmail.com>
- <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=stfbqOIV89FUH0XCyxeAlJ82MP2mOSsHysgBzljvNgU=;
+        b=dmMIPbxuCY/dtsAx12Dq8xsQ3mPiSz9aOopLj5VpAwfOkBHzh9chO7IySjK/e0TJnM
+         pv3UlzpNBcZJ5X72iW7u93c5CtIbLWESYZ+ZsIPdsI44dUvXeVnbfCvumbbp1uNmA6C9
+         Cebkj0wLMwa4Hetz8AhRFC6valkLvvKRk9Cdg9Zvh8xbqlsOiDeWm635fskcAHJ+8LO5
+         VlNMJKiiP8HjlfSCo9aJR3WNtvvLUlYzj3CGgUksZ16sDcApQ8zklBLXuTyhqGe9I2W3
+         UpEhV79BhKZ5SAKHI6nG6rWBJyq1+9AZhX5uI8sQQi1WXJV3EdYMxpn8y6HzEo2YsJ7K
+         uJfA==
+X-Gm-Message-State: AOAM531ZD6sH9TCzt70ezhUJ5hl/61h+E7DeizgpWXEi8DwCS8vdQe/J
+        BGIDVGvMuzI22E1Zv4rIVJ5hWCOO0nVUDpLmp+8=
+X-Google-Smtp-Source: ABdhPJy3+9ExJ8UKsAph6fqu3mmMjTDug07oMCZ/xBg4PestylEsr50U5Tt42BpgwXmbPeLBmvQ0sqeeGq0G3PJLxfI=
+X-Received: by 2002:a25:7246:: with SMTP id n67mr9293816ybc.510.1623345296596;
+ Thu, 10 Jun 2021 10:14:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com>
+References: <20210429054734.53264-1-grantseltzer@gmail.com>
+ <877dkkd7gp.fsf@meer.lwn.net> <CAO658oV2vJ0O=D3HWXyCUztsHD5GzDY_5p3jaAicEqqj+2-i+Q@mail.gmail.com>
+ <87tunnc0oj.fsf@meer.lwn.net> <CAO658oUMkxR7VO1i3wCYHp7hMC3exP3ccHqeA-2BGnL4bPwfPA@mail.gmail.com>
+ <CAEf4BzZJUtPiGn+8mkzNd2k+-3EEE85_xezab3RYy9ZW4zqANQ@mail.gmail.com>
+ <CAO658oWPrEDBE8FUBuDUnrBVM91Mgu-svXfXgAXawAUp1MmWZA@mail.gmail.com>
+ <CAEf4BzZJDqR7mRSKbOCWfZV-dqwin+PGYxBTTYMVVYwriD33JQ@mail.gmail.com>
+ <CAO658oUAg02tN4Gr9r5PJvb93HhN_yj3BzpvC2oVc6oaSn0FUw@mail.gmail.com>
+ <CAEf4BzY=JQiHquwoUypU2fD4Xe5rr+DuQA2Xw=n6OXvH7hXbew@mail.gmail.com>
+ <CAO658oUH3u8yWV3Ft-96OCrgkzLacv_saecv4e1u4a_X0nF0eg@mail.gmail.com>
+ <87wnrd9zp8.fsf@meer.lwn.net> <CAO658oW-_-bOX=xZNjzR=S89rY99gzuwh8Ln9MNtgA4zkwEh+g@mail.gmail.com>
+ <875yyx895z.fsf@meer.lwn.net> <CAO658oWwqtZFnhVg3hC8dO=2obOKn5Mp2uqrOYa-3xsNwiRU8Q@mail.gmail.com>
+ <CAO658oXRN=JnP+e=qM2-uBu94BxoWCyHcScOgSwxpoHOw5ByLQ@mail.gmail.com>
+ <CAEf4Bzaupx7dvv8nZAQKqo2UbdRmYgCb=54Uy0x5+96UTD6DTA@mail.gmail.com> <CAO658oW-XiuS_FLVCkj1pTtQS5MPxk=jyA+-LRkiMgt=27e21A@mail.gmail.com>
+In-Reply-To: <CAO658oW-XiuS_FLVCkj1pTtQS5MPxk=jyA+-LRkiMgt=27e21A@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 10 Jun 2021 10:14:43 -0700
+Message-ID: <CAEf4BzbUQ07qzfRDOZWjfz-7P_dZG33xcJaC3TM5PbRpxJC5tw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] Autogenerating API documentation
+To:     Grant Seltzer Richman <grantseltzer@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:06:31PM -0700, Yonghong Song wrote:
-> 
-> 
-> On 6/9/21 10:32 PM, Dmitry Vyukov wrote:
-> > On Thu, Jun 10, 2021 at 1:40 AM Yonghong Song <yhs@fb.com> wrote:
-> > > On 6/9/21 11:20 AM, Kees Cook wrote:
-> > > > On Mon, Jun 07, 2021 at 09:38:43AM +0200, 'Dmitry Vyukov' via Clang Built Linux wrote:
-> > > > > On Sat, Jun 5, 2021 at 9:10 PM Alexei Starovoitov
-> > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > On Sat, Jun 5, 2021 at 10:55 AM Yonghong Song <yhs@fb.com> wrote:
-> > > > > > > On 6/5/21 8:01 AM, Kurt Manucredo wrote:
-> > > > > > > > Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
-> > > > > > > > kernel/bpf/core.c:1414:2.
-> > > > > > > [...]
-> > > > > > > 
-> > > > > > > I think this is what happens. For the above case, we simply
-> > > > > > > marks the dst reg as unknown and didn't fail verification.
-> > > > > > > So later on at runtime, the shift optimization will have wrong
-> > > > > > > shift value (> 31/64). Please correct me if this is not right
-> > > > > > > analysis. As I mentioned in the early please write detailed
-> > > > > > > analysis in commit log.
-> > > > > > 
-> > > > > > The large shift is not wrong. It's just undefined.
-> > > > > > syzbot has to ignore such cases.
-> > > > > 
-> > > > > Hi Alexei,
-> > > > > 
-> > > > > The report is produced by KUBSAN. I thought there was an agreement on
-> > > > > cleaning up KUBSAN reports from the kernel (the subset enabled on
-> > > > > syzbot at least).
-> > > > > What exactly cases should KUBSAN ignore?
-> > > > > +linux-hardening/kasan-dev for KUBSAN false positive
-> > > > 
-> > > > Can check_shl_overflow() be used at all? Best to just make things
-> > > > readable and compiler-happy, whatever the implementation. :)
-> > > 
-> > > This is not a compile issue. If the shift amount is a constant,
-> > > compiler should have warned and user should fix the warning.
-> > > 
-> > > This is because user code has
-> > > something like
-> > >       a << s;
-> > > where s is a unknown variable and
-> > > verifier just marked the result of a << s as unknown value.
-> > > Verifier may not reject the code depending on how a << s result
-> > > is used.
+On Wed, Jun 9, 2021 at 10:04 AM Grant Seltzer Richman
+<grantseltzer@gmail.com> wrote:
+>
+> On Mon, Jun 7, 2021 at 6:45 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>
+> > So I assume you looked at the DOC: block that Jonathan suggested
+> > above? Can you walk us a bit on how that would look like and why you
+> > think it's not going to work?
+>
+> If I understand correctly, the using the  DOC: comment block and
+> extracting it would require you to manually update a comment in code
+> that labels the libbpf version number and then cut a release. The
+> problems are:
+>
+> 1) Having to do that manually
+> 2) The docs on kernel.org would not show previous libbpf releases
+> (just the ones that were released with different kernel versions)
+>
+> > > If you check out libbpf.readthedocs.io you can see what that would
+> > > look like. I made a test release (v21.21.21) to show how easy this is.
+> > > That is being pulled from my PR at github.com/libbpf/libbpf/pull/260.
+> >
+> > It looks pretty nice. Where does v21.21.21 come from, though?
+>
+> libbpf.readthedocs.org currently tracks my libbpf fork at
+> github.com/grantseltzer/libbpf, I cut the 21.21.21 release there.
+>
+> What this demonstrates is that readthedocs pulls in any release or
+> branch I enable in the admin panel and builds a seperate site for each
+> one. You can see the release/branches by toggling them in the bottom
+> left.
+>
+> > also weird that docs are under src/docs, not just under docs/, but I
+> > assume that's a quick hack to demonstrate this?
+>
+> I can move that no problem. All the config files have relative paths
+> that point at each other.
+>
+> > To be entirely honest, I'm already a bit lost on all the
+> > possibilities. It would be great if you can summarize what's possible
+> > and how it would look like.
+>
+> That's my fault, I'm not making this easy to review (2 different patch
+> series, plus github PR). Here is a summary of the 3 different
+> approaches I've presented. At the bottom I have my recommendation.
+>
+> 1) Integrate libbpf docs into the kernel documentation system:
+>
+> - Add libbpf documentation files (e.g. 'naming-convention',
+> 'building-libbpf') under the Linux 'Documentation' directory.
+> - Include a file which has sphinx directives to pull in API
+> documentation from the code under tools/lib/bpf.
+> - This documentation would appear on kernel.org/doc alongside all
+> other kernel documentation
+>
+> Pro: Make use of existing kernel documentation infrastructure
+> Con: In order to have the libbpf documentation be versioned based on
+> github releases it would require manually updating comments in code.
+> To get it how we really want it (i.e. select a libbpf release and see
+> the documentation specific for it), it would likely require
+> rearranging/duplicating code in libbpf under subdirectories.
+> Contributing simple documentation has to go through the mailing list
+> which is daunting for new contributors.
+>
+> 2) Have all libbpf documentation in the kernel repo under
+> tools/lib/bpf/docs, including libbpf's own sphinx configuration files
+>
+> - The github mirror would pull in these documentation files and sphinx
+> configuration files.
+> - readthedocs would be configured to build off of the github libbpf mirror repo.
+> - The documentation would be accessible at libbpf.readthedocs.org.
+> - Users would be able to navigate documentation of different releases
+> of libbpf easily. Maintainers would not need to do any manual work to
+> make that happen.
+>
+> Pro: Documentation all in one place, in the kernel repo, integrates
+> easily with the github mirror, and we easily get to version
+> documentation by libbpf releases.
+> Con: We don't make use of existing kernel documentation
+> infrastructure. Contributing simple documentation has to go through
+> the mailing list which is daunting for new contributors.
+>
+> 3) Host all the documentation on the libbpf github mirror
+>
+> - Documents (e.g. 'naming-convention', 'building-libbpf') would be
+> available at libbpf.readthedocs.org
+> - Sphinx configuration files would live in the libbpf github mirror
+> - Code comment documentation would still go through the mailing list
+>
+> Pro: Documentation is explorable by different versions. Some
+> documentation can be contributed via github which is easier than the
+> mailing list.
+> Con: Documentation would be scattered across different places.
+>
+> My recommendation:
+>
+> I would go with option 2, it feels like the best compromise. However,
+> I'd like to contribute changes to the kernel documentation such that
+> it can support versioning particular documentation files based on
+> specified git hashes. That way we can have libbpf docs on kernel.org
+> but still get to version docs based on libbpf releases, not kernel
+> ones.
+>
+> I'm happy to explore other options, but if one of these sounds like
+> something that we can agree on for now, I can submit a fresh patch for
+> it.
 
-Ah, gotcha: it's the BPF code itself that needs to catch it.
+Honestly, I think option #3 would be best for actually getting more
+docs contributions, because it will reduce the friction of getting
+started. Figuring out the kernel mailing list submission process is
+not a trivial problem.
 
-> > > If bpf program writer uses check_shl_overflow() or some kind
-> > > of checking for shift value and won't do shifting if the
-> > > shifting may cause an undefined result, there should not
-> > > be any kubsan warning.
+But I'm sure some people will have strong feelings about keeping docs
+in the kernel source tree. Assuming we'd get a lot of push back for
+option #3, I think the next best thing would be a hybrid of #1 and #2.
+Host docs in kernel docs under Documentation/bpf/libbpf, so it will
+get into kernel sources automatically. But also copy those docs into
+Github mirror during sync under /docs and have readthedocs pull and
+version it properly. That has a chance of creating a bit of confusion
+for where exactly libbpf docs are (it would be libbpf.readthedocs.org,
+versioned properly), but given docs will have the same source of truth
+(modulo minor versioning differences, potentially), I think this might
+be ok. WDYT? Are there any problems with that?
 
-Right.
+Hosting docs under tools/libbpf/docs in kernel repo is the worst of
+both worlds, IMO. Hard to contribute, but also not integrated with the
+rest of kernel docs.
 
-> > I guess the main question: what should happen if a bpf program writer
-> > does _not_ use compiler nor check_shl_overflow()?
-
-I think the BPF runtime needs to make such actions defined, instead of
-doing a blind shift. It needs to check the size of the shift explicitly
-when handling the shift instruction.
-
-> If kubsan is not enabled, everything should work as expected even with
-> shl overflow may cause undefined result.
-> 
-> if kubsan is enabled, the reported shift-out-of-bounds warning
-> should be ignored. You could disasm the insn to ensure that
-> there indeed exists a potential shl overflow.
-
-Sure, but the point of UBSAN is to find and alert about undefined
-behavior, so we still need to fix this.
-
-
--- 
-Kees Cook
+>
+>
+> >
+> > As a general guidance, I think we should try to keep all the
+> > documentation in one place (which means kernel sources, because that's
+> > where API documentation will have to leave). As for config files,
+> > unless they will "stick out" too much, I'd keep them close to the docs
+> > themselves. If not, putting them in Github mirror is fine by me as
+> > well.
+> >
+> > Pretty much the only important aspect, from my point of view, is that
+> > docs are versioned according to the libbpf version, not kernel
+> > version. Otherwise huge confusion will ensue for all the users of
+> > libbpf, most of not all of which are using Github mirror.
+> >
+> > Does this make sense and is doable?
+> >
+> > > > >
+> > > > > If you're wanting to replace the version code that appears at the top of
+> > > > > the left column in the HTML output, though, it's going to be a bit
+> > > > > harder.  I don't doubt we can do it, but it may require messing around
+> > > > > with template files and such.
+> > > > >
+> > > > > Thanks,
+> > > > >
+> > > > > jon
