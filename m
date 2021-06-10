@@ -2,152 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726D53A353B
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 22:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E21A3A356E
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 23:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhFJVAG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 17:00:06 -0400
-Received: from www62.your-server.de ([213.133.104.62]:46502 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhFJVAG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 17:00:06 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lrRke-000AVh-Os; Thu, 10 Jun 2021 22:58:08 +0200
-Received: from [85.7.101.30] (helo=linux-3.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lrRke-000Ek6-KF; Thu, 10 Jun 2021 22:58:08 +0200
-Subject: Re: bpf_fib_lookup support for firewall mark
-To:     David Ahern <dsahern@gmail.com>,
-        Rumen Telbizov <rumen.telbizov@menlosecurity.com>
-Cc:     bpf@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>
-References: <CA+FoirDxh7AhApwWVG_19j5RWT1dp23ab1h0P1nTjhhWpRC5Ow@mail.gmail.com>
- <3e6ba294-12ca-3a2f-d17c-9588ae221dda@gmail.com>
- <CA+FoirCt1TXuBpyayTnRXC2MfW-taN9Ob-3mioPojfaWvwjqqg@mail.gmail.com>
- <CA+FoirALjdwJ0=F6E4w2oNmC+fRkpwHx8AZb7mW1D=nU4_qZUQ@mail.gmail.com>
- <c2f77a3d-508f-236c-057c-6233fbc7e5d2@iogearbox.net>
- <68345713-e679-fe9f-fedd-62f76911b55a@gmail.com>
- <CA+FoirA28PANkzHE-4uHb7M0vf-V3UZ6NfjKbc_RBJ2=sKSrOQ@mail.gmail.com>
- <6248c547-ad64-04d6-fcec-374893cc1ef2@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7742f2a2-11a7-4d8f-d8c1-7787483a3935@iogearbox.net>
-Date:   Thu, 10 Jun 2021 22:58:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230188AbhFJVLN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 17:11:13 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1542 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229941AbhFJVLM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Jun 2021 17:11:12 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 15AKlA2T023582;
+        Thu, 10 Jun 2021 14:09:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=X1mCAlfVOI/gDehqurmiAF7AAzTihpeXf9Q9bZb0Kpc=;
+ b=b+UDrJPmOLDJberQyPWYBDCfabEzjd46EbrHaa4Kx2VGNVr25PU4BD7mwSLXGr8lTKWb
+ iFeK2bQuiedoZyDpf7jMRL6Cr/mcqfoDjDnRGvuMJWg1DacjmrKU8XB4HTJFkvcvn/3N
+ nY+6Wdkz791mPqg822zXK5mS/gHScdoRpmc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 393skjgf7u-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 10 Jun 2021 14:09:12 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 10 Jun 2021 14:09:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bPpFR9GVCt3CqhK5yEZ2oBXT8eXb/FUNsfNrp3+q10MBZXx7OWA12sKZH6aoM6N4sGpIvQHEhkOz3YUs4jQa3RiEqS8dcK5LukQnTaxCaGJ9c9/e7sQDStHR6zOUtm+RKTJLSZEdHnVf/Ct8yAkWsYHUw52F8Ra94GCR4ydBicJ8+YJU9hR04ezUusUkyLIamGf1rkFbY6T3HN6febmNvsDMOrZD5upP4j/OVxLpzvl7HU0Eq3/5syygmb5yQsEw6x4zRvoiThoI2FCZvH9XgvwTIHz5JOjf82J5viqpWo2Gj2xw7p6I0s3RauOGF80SwLObkduWN9+PcaP/LW9nCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jrDwUvB/S6Bx2yyZY+2ICt8NUyL96xmBr6MrYihg2uw=;
+ b=TnbkMWRYJX758dc7Z+3pNWcvszsE3Yo/JCvswUjuesLak+NPx4nFaWBxk2PXm9EFSW6/UgZOod1JhWTCLgSzKoIJ91mRIAn5ZhdlrIgn+8e8DhIXQXrGnV7PAlwczfDDCzTzzQFroFElnTKHYr9bCngf/zO/8Rw42B6f7/uCTiZvy6/db8gU4CTsJp6ymNMDOVWjDtMzV6sYmJ2sGVQyDxNeeRfsWqFEsiXCoZ2zN34HGRzXxqGWhFxOo6lGommDd77eo1JPIU4QLbmAuM2neFjBv7BE2S4agYTuitwsTgWLdLdniv2VWcKPAcT2QByUTfwMVkzruklOQco22ORyLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by SN6PR15MB2464.namprd15.prod.outlook.com (2603:10b6:805:25::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.21; Thu, 10 Jun
+ 2021 21:09:09 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::f88a:b4cc:fc4f:4034]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::f88a:b4cc:fc4f:4034%3]) with mapi id 15.20.4195.031; Thu, 10 Jun 2021
+ 21:09:09 +0000
+Date:   Thu, 10 Jun 2021 14:09:07 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH bpf-next 04/17] xdp: add proper __rcu annotations to
+ redirect map entries
+Message-ID: <20210610210907.hgfnlja3hbmgeqxx@kafai-mbp>
+References: <20210609103326.278782-1-toke@redhat.com>
+ <20210609103326.278782-5-toke@redhat.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210609103326.278782-5-toke@redhat.com>
+X-Originating-IP: [2620:10d:c090:400::5:7e31]
+X-ClientProxiedBy: BY3PR10CA0005.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::10) To SA1PR15MB5016.namprd15.prod.outlook.com
+ (2603:10b6:806:1db::19)
 MIME-Version: 1.0
-In-Reply-To: <6248c547-ad64-04d6-fcec-374893cc1ef2@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26197/Thu Jun 10 13:10:09 2021)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:7e31) by BY3PR10CA0005.namprd10.prod.outlook.com (2603:10b6:a03:255::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22 via Frontend Transport; Thu, 10 Jun 2021 21:09:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 656ec5d7-893b-478a-7ce5-08d92c53fd5c
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2464:
+X-Microsoft-Antispam-PRVS: <SN6PR15MB24645B958A03199CB1A7BAF4D5359@SN6PR15MB2464.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XMuJhxzFtLme2KWJuAWW07jMUNRL4QFSx9RPNp19hhKCOB4JhpqhKbntv7gj7jekPPImiFgDNA8YDTdW5H9optfo5BP68n1GZ7waqdLAFbu9x3y2Itn7O23hYTiPl3agbvZmUlTKAAHco9n9jEKICAlp9cqizHTuQrKlewrSso1O8+3lED88ChS1SpN7nmEBkZuPy7gJWyBwf3qclsZfqLZU3tMb9bG/OmiCS1dzJYjoh1Cm7dUA4LHG+ysNU7BOZ9P/ySEgxdMPm0h9lMtuzE0SLZ2BLPQ3Zib2aMrBYbuaeIJQ6wRL3SusSvrXJ0PR+VdDiT0StSrYRJXFUekOYlCnBmwjnY1INU6GFq/1sHu3G9CNzslYVv3fcUKxzPpPBCL+85xgB9ieJD1E3eVhvBONYXQHmwmNK+tox1KOepKQxKITuZ3XmrI9acL05+IkAR/6JWmeP82jANyTtAk9CA8X/PIjW6VXNCeI3UXQHT2U9XieTOYR/5kPCKdC2TW8ltHuYZO89MkTjQ4CBhh0V2LpjjeQsaIGrlP+3Kd0qyDW1oX4Qlx+Kn0KTImZe6h7Reb4iZcQ/HRFOdQFRuvTYQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(39840400004)(396003)(136003)(1076003)(316002)(83380400001)(54906003)(66574015)(5660300002)(4326008)(9686003)(55016002)(33716001)(8676002)(16526019)(186003)(8936002)(52116002)(86362001)(478600001)(2906002)(66946007)(6496006)(66476007)(6916009)(66556008)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?wdEfTP8eInqnpQXlsHgyBaptYn8JoeZvdLC6KS0E7tEqu4lpmBNtRaT5v2?=
+ =?iso-8859-1?Q?+N0LeDkVAzhs4LxePeKjCDbnAvKeazP63+G5krQzov2V9dhbw91jCyS0WD?=
+ =?iso-8859-1?Q?yYCRs8VMxwURuWm2WB3wuMnxvw4vBTbTQC60ywizB+uQ96HBDlhJ/KkNvP?=
+ =?iso-8859-1?Q?9Jf4PGcPVCb8aaAdn2pASH6QPMG+qm1nx7+ICQM9Aamv6jBwoi2d5ff+b8?=
+ =?iso-8859-1?Q?lZIybKn4/+ICxlPE/XL19U2b1I3Ov0/Q4D4A68VtfE53l1rTEgMujc9JCG?=
+ =?iso-8859-1?Q?dy5rWnh14l/BsPKSPEJbUYlBM20Q/uYCR8mX/Esw5UCmil7/qpQtKA/CAI?=
+ =?iso-8859-1?Q?Xt96BvUhAE5m9GR0wu4JYalnKkE4leSaPbKnfeOfeGhA28uDsWfPJXJAyR?=
+ =?iso-8859-1?Q?jE4tKTyKovEPcbYPu+Tkw2HJS4WrKVLwUgAih3IVSUJP6O9ab4hlLZed//?=
+ =?iso-8859-1?Q?f2le5lOuXzXQBuYTWc5nVjHbmW+3Cs755EXsQ6uQayR1nlNPLkQk55prSY?=
+ =?iso-8859-1?Q?yCYF0FbfNs+tSvjJh+wkpEoTKmwJv4WUfi+Nx0LDOuRyDG+G/uO9DtrwH9?=
+ =?iso-8859-1?Q?OkL3a0lfrHs79oMkT0l6zN0H577kVpeP4d+mPNrRqF6U1qWGgqLvbYNraU?=
+ =?iso-8859-1?Q?xHczz7oT5eAyXvZMTzLrb+sJn9ILj9tBY7jDLe/13/f2eLv9+v3GLRjDhs?=
+ =?iso-8859-1?Q?my7KUkjgI/4uI5e9mQ615bSonvm2EOqPTHv3J4xhH+FaKsTu+QJlaqIbpF?=
+ =?iso-8859-1?Q?mBfvHlkax4npIwVFar1OX6Z7DnMTUJMGQ5iMzAHXbaKYOgyEdr4QcVh5+4?=
+ =?iso-8859-1?Q?nVN19Womno/uyBGFUBCMxY1X/ba5kJaYL9i2LxebURQP9lQVTNLviXI4Gt?=
+ =?iso-8859-1?Q?VK0DWUGei1LTkQPwqmAPOrhI7szN68aehyR8tPfJPuKLYV0rnq4u6WmqX7?=
+ =?iso-8859-1?Q?IbssGvVdYYxXF+U6JRxRDBYe5W7Y79yGvD+BL705fGSgex2fP7BRjbGPUi?=
+ =?iso-8859-1?Q?O/mYgnVBC4+NZ1JOKEE1RO6p2RxI0AqHax1E1r4I6s1JMWeg3eLB7CuAU8?=
+ =?iso-8859-1?Q?DSh2GuhqwunB24njaD9cCcuhUcdmmvHVRaJvUmKW0f1NoXlkAohV+6udYR?=
+ =?iso-8859-1?Q?fWWv1gnvdORWu3aMMcBeMm6nRmY4tsTePXygQHSVogPPwldaMRtueUVV1Y?=
+ =?iso-8859-1?Q?Q1R8xzjC9SGfsCMSFtLBrrP6UXDApCPxoK7ByHxFqHIzQ7ot6dQwd64mg1?=
+ =?iso-8859-1?Q?lVtWPAEyg11gzxoEB8fcBKlmRbAopkQm8fDKIXZ3Pj2hdo++MkjX6ln61U?=
+ =?iso-8859-1?Q?ibV0gLOQxuns/o7qiAkAzYDWh+l5kCiVhqgfi4Z6pmQI8KzbxwNs79SAhv?=
+ =?iso-8859-1?Q?4iI0yWtv4lMTWbaRpyxGlhXN8dwEuWRQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 656ec5d7-893b-478a-7ce5-08d92c53fd5c
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 21:09:09.5674
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uBiIWKFnQvv1lG7GFTcKxJCAKvCsC63xnRm27bmqAa8/8ijHfHb7tbiOwwhbXXIq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2464
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: jufPU1LqTwr4lCMScZkB5i-yxDfcWx5J
+X-Proofpoint-ORIG-GUID: jufPU1LqTwr4lCMScZkB5i-yxDfcWx5J
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-10_13:2021-06-10,2021-06-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 mlxscore=0
+ adultscore=0 bulkscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ mlxlogscore=772 spamscore=0 suspectscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106100130
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/10/21 8:52 PM, David Ahern wrote:
-> On 6/10/21 11:41 AM, Rumen Telbizov wrote:
->>> that's the key point on performance - crossing a cacheline. I do not
->>> have performance data at hand, but it is a substantial hit. That is why
->>> the struct is so overloaded (and complicated for a uapi) with the input
->>> vs output setting.
->>
->> Makes perfect sense now. Thanks for clarifying David and Daniel.
->>
->>> Presumably you are parsing the packet to id a flow to find the mark that
->>> should be used with the FIB lookup. correct?
->>
->> Let me briefly present my high-level use case here to give more colour.
->> What I am building is an overlay network based on geneve. I have multiple
->> sites, each of which is going to be represented by a separate routing table.
->> The selection of the destination site (routing table) is based on firewall marks
-> 
-> To show my bias here - VRF is better than firewall marks for selecting
-> routing tables. :-)
-> 
->> and the original packet is preserved intact, encapsulated in geneve. I have a
->> TC/eBPF program running on the geneve interface which has to query the
->> appropriate routing table based on the firewall mark and use the
->> returned next hop
->> as the tunnel key in the skb. Also worth mentioning is that those routing tables
->> contain multiple (default) routes as I use ECMP to balance traffic/provide HA
->> between sites,
-> 
-> thanks for explaining the use case
+On Wed, Jun 09, 2021 at 12:33:13PM +0200, Toke Høiland-Jørgensen wrote:
+[ ... ]
 
-+1
+> @@ -551,7 +551,8 @@ static void cpu_map_free(struct bpf_map *map)
+>  	for (i = 0; i < cmap->map.max_entries; i++) {
+>  		struct bpf_cpu_map_entry *rcpu;
+>  
+> -		rcpu = READ_ONCE(cmap->cpu_map[i]);
+> +		rcpu = rcu_dereference_check(cmap->cpu_map[i],
+> +					     rcu_read_lock_bh_held());
+Is rcu_read_lock_bh_held() true during map_free()?
 
->>>> That said, given h_vlan_proto/h_vlan_TCI are both output parameters,
->>>> maybe we could just union the two fields with a __u32 mark extension
->>>> that we then transfer into the flowi{4,6}?
->>>
->>> That is one option.
->>>
->>> I would go for a union on sport and/or dport. It is a fair tradeoff to
->>> request users to pick one - policy routing based on L4 ports or fwmark.
->>> A bit harder to do with a straight up union at this point, but we could
->>> also limit the supported fwmark to 16-bits. Hard choices have to be made.
->>
->> A couple of comments on those two options: if the union is between the ports
->> and the mark then a user of the function would have to choose between
->> src+dst port or the mark in lookup, correct? If so wouldn't that
->> result in a loss
->> of the ability to use multipathing - since the hashing would be static? In my
->> case that would certainly be another significant drawback.
-> 
-> yes, good point.
-> 
->> Having said that, what Daniel suggests looks very interesting to me.
->> If I understand
->> it correctly there are 32 bits in h_vlan_proto+h_vlan_TCI that are used only for
->> output today so if they are merged in a union with a 32 bit mark then we'd stay
->> at 64B structure and we can pass a full 32 bit mark.
->>
->> So something like this?
->> union {
->>      /* input */
->>      __u32 mark;
->>
->>      /* output */
->>      __be16 h_vlan_proto;
->>      __be16 h_vlan_TCI;
->> }
-> 
-> I think more like this:
-> 
-> 	union {
-> 		/* input: fwmark to use in lookup */
-> 		__u32 fwmark;
-> 
-> 		/* output: vlan information if egress is on a vlan */
-> 		struct {
-> 			__be16  h_vlan_proto;
-> 			__be16  h_vlan_TCI;
-> 		};
-> 	};
+[ ... ]
 
-Agree.
+> @@ -149,7 +152,8 @@ static int xsk_map_update_elem(struct bpf_map *map, void *key, void *value,
+>  			       u64 map_flags)
+>  {
+>  	struct xsk_map *m = container_of(map, struct xsk_map, map);
+> -	struct xdp_sock *xs, *old_xs, **map_entry;
+> +	struct xdp_sock __rcu **map_entry;
+> +	struct xdp_sock *xs, *old_xs;
+>  	u32 i = *(u32 *)key, fd = *(u32 *)value;
+>  	struct xsk_map_node *node;
+>  	struct socket *sock;
+> @@ -179,7 +183,7 @@ static int xsk_map_update_elem(struct bpf_map *map, void *key, void *value,
+>  	}
+>  
+>  	spin_lock_bh(&m->lock);
+> -	old_xs = READ_ONCE(*map_entry);
+> +	old_xs = rcu_dereference_check(*map_entry, rcu_read_lock_bh_held());
+Is it actually protected by the m->lock at this point?
 
-> But, I do not think the vlan data should be overloaded right now. We
-> still have an open design issue around supporting vlans on ingress
-> (XDP). One option is to allow the lookup to take the vlan as an input,
-> have the the bpf helper lookup the vlan device that goes with the
-> {device index, vlan} pair and use that as the input device. If we
-> overload the vlan_TCI with fwmark that prohibits this option.
+[ ... ]
 
-I guess it's not overly pretty, but if all things break down and there's no other
-unused space, wouldn't it work if we opt into the vlan as input (instead of mark)
-in future via flag?
+>  void xsk_map_try_sock_delete(struct xsk_map *map, struct xdp_sock *xs,
+> -			     struct xdp_sock **map_entry)
+> +			     struct xdp_sock __rcu **map_entry)
+>  {
+>  	spin_lock_bh(&map->lock);
+> -	if (READ_ONCE(*map_entry) == xs) {
+> -		WRITE_ONCE(*map_entry, NULL);
+> +	if (rcu_dereference(*map_entry) == xs) {
+nit. rcu_access_pointer()?
 
->> Moreover, there are 12 extra bytes used only as output for the smac/dmac.
->> If the above works then maybe this opens up the opportunity to incorporate
->> even more input parameters that way?
+> +		rcu_assign_pointer(*map_entry, NULL);
+>  		xsk_map_sock_delete(xs, map_entry);
+>  	}
+>  	spin_unlock_bh(&map->lock);
+> -- 
+> 2.31.1
 > 
-> I think that's going to be tricky since the macs are 6-byte arrays.
-
-Thanks,
-Daniel
