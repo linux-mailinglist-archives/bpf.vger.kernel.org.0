@@ -2,150 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A4C3A31F9
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 19:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBA83A3247
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 19:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhFJR0m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 13:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhFJR0l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 13:26:41 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E363C061574;
-        Thu, 10 Jun 2021 10:24:45 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id p184so363301yba.11;
-        Thu, 10 Jun 2021 10:24:45 -0700 (PDT)
+        id S229935AbhFJRjs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 13:39:48 -0400
+Received: from mail-il1-f181.google.com ([209.85.166.181]:33741 "EHLO
+        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFJRjs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:39:48 -0400
+Received: by mail-il1-f181.google.com with SMTP id z1so2661967ils.0
+        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 10:37:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eW+5V+zbDfUdAlLcDcRVdOxN1l6x5Hh789VvE9XY038=;
-        b=q+Sze6h033k9a8LBwJXN5cVATMf3X84rcfng3rsxlWmiXFf5SNqxPCXoH7H45vPrTq
-         s5ne4pvnV6QPM0pi1a2Tm8yIMMJJY1AnLLebySuMqoMPPSVdoc/4cMDl0N77pN4A0Mnk
-         A8KTYOoilXhxhyyNoClVBMprF2hWHoJ3C25+vyF+dYb3Ip3C7v6Nc/V4GZMJcWxl0lnM
-         QQXCjQMtXwSXpF/nBfyXyJZn/G1U0o/YX7c1NaXlRfWH+IUQNvQ9qkoRJVdTbZE0Wu0y
-         i5rzrsnD36Bw8Nls6SM9913/mzfquQPNYKlmOJ5z03CVvYt5I7KzOJetk/TAYVA39zLr
-         axFw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=PiIyGMa59aSAcai8qbJPBRBjLwrX66PMpodZF4txmWE=;
+        b=k7bcCqSHDiplS85UtaQUPbqMa2N3FjDuNHNPcw8SUcNiRnZTSmvLgfGkxKlxeh9YAD
+         kHLEob+8H2ml70/dvqSYO8yubE02YNSs4KwRVls/T74GlJt4tYinpG2Q8siE34dFv0Eh
+         MJ2s0Xq5LLgadLG55dZn8v3BD/N0SG7tATcaMMhwxsfx56AczhAxWic4o9ghlu5S+egU
+         s08zTsdE3C6FGygxMB3BGODGUhReil2L4H2bOW9/bVVwt7ysg3TMQ8yqoHW9mGVJCi67
+         bJQiDyDO9pOQ5oE3/bzqXjpH8njENYsdimyvtgGM4zIcDGaphI5DQ+ht8r/9gKCTnda+
+         eq/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eW+5V+zbDfUdAlLcDcRVdOxN1l6x5Hh789VvE9XY038=;
-        b=rxq6CK5WuiIyCTiHDFIRNSixT7+xKJjAGPYwhUcT1YGTFjcNetlyiJQerhJ0C8AsXw
-         ZRoS5WaWK3/QjsiyAOGYoWFHHkZZ//n4qTvMub8byjLQPrCVy80ZWXCbbd0adnrkdxLe
-         KFtm6MLaaYJXt/0OWpS1Diqis8VlWWQP/kfrrnY7mj3h6e5gV3LvGJ51h2DCtfxW8wzL
-         9yc8s6n8C4tc97jOVyssux1dyRwpI4Fmqp+5YRL66nwKFfSjjiBcvAKSqXDHv7UuVWsX
-         PmWr5/tEFBcmrPkhvSPQ46Go7QcsgjkpXDU8AmbGPQZuoaSF78mmte4WzO5v/M2nJUQV
-         +2aA==
-X-Gm-Message-State: AOAM533ViI5xHsb63oNZNEfBmyNFub2zxrWS7YCULSLk5/bzqclupbfy
-        2XR9m4RbWAAkXpzGXRMbdemrwl3cHA81Bvvxtco=
-X-Google-Smtp-Source: ABdhPJwklyvU0Q8rmj0IRZV39jUSVWLBBaCQC+kN6HBez3IDqgr/L8Hiw9N50OCsZ23j7/J37xEQJ9ZIMAK8q6vRn/o=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr9054485ybu.403.1623345884428;
- Thu, 10 Jun 2021 10:24:44 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=PiIyGMa59aSAcai8qbJPBRBjLwrX66PMpodZF4txmWE=;
+        b=FzNvot4Vm6qqVOQ5EKPBLPkMpifGgGvr040FHmlMPKs0YVDuT+7pt7t2uwc23IgWbl
+         EIHq4ptPgPprkhglQoEvwhJrwk/rNrPXoUQWFHSdUJJT/W2TaeHJ5CTOXS720sFkLHhJ
+         tcPIYZSaYKoTzA8+z50aShjb7xLhGzV8Sv1Cj2hhPVJBS1p1twRP3gV2FK7aM1JjVpXm
+         yJKp1HX1E53iuXl0Y6MRTqCKgR96o4ZDEca62yE1IIofdLuU6ecPT8olaGrx6jcZNxwV
+         x1L6QybGMIA7oIGonx48C65mFARI/OqVknQZZFvXTKszCLNrHj6OUjLL8TQaPGLShfGi
+         ujww==
+X-Gm-Message-State: AOAM530khqDTVTOYlialhtRNaSPPI2wfg+3B+dP9NyBLcP4Dv9Tc4Kzo
+        k9wZV4bkqzbRIUGsAC4UX96MUcu9MG3nXZUwMbc=
+X-Google-Smtp-Source: ABdhPJzipT1H0kyJWPZBkpwSScfUf28eTwqy85x3EauSxu1azNT2boHg09frjzFhGZEuOid5hvPPz5EFIdRVcRSm170=
+X-Received: by 2002:a05:6e02:1bc9:: with SMTP id x9mr6395ilv.118.1623346611912;
+ Thu, 10 Jun 2021 10:36:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210609135537.1460244-1-joamaki@gmail.com>
-In-Reply-To: <20210609135537.1460244-1-joamaki@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 10 Jun 2021 10:24:33 -0700
-Message-ID: <CAEf4Bzar4+HQ_0BBGt75_UPG-tVpjqz9YVdeBi2GVY1iam4Y2g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] XDP bonding support
-To:     Jussi Maki <joamaki@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, j.vosburgh@gmail.com,
-        andy@greyhouse.net, vfalico@gmail.com,
-        Andrii Nakryiko <andrii@kernel.org>
+Received: by 2002:a5d:9d42:0:0:0:0:0 with HTTP; Thu, 10 Jun 2021 10:36:51
+ -0700 (PDT)
+Reply-To: josephkoku8080@gmail.com
+From:   joseph koku <johnfreeman2577@gmail.com>
+Date:   Thu, 10 Jun 2021 17:36:51 +0000
+Message-ID: <CAA0ujvU_aE+kDuVcQDq9k89Fgn77KVc0pZ_8vnp3m3SUO1Ouqg@mail.gmail.com>
+Subject: re,info
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 6:55 AM Jussi Maki <joamaki@gmail.com> wrote:
->
-> This patchset introduces XDP support to the bonding driver.
->
-> Patch 1 contains the implementation, including support for
-> the recently introduced EXCLUDE_INGRESS. Patch 2 contains a
-> performance fix to the roundrobin mode which switches rr_tx_counter
-> to be per-cpu. Patch 3 contains the test suite for the implementation
-> using a pair of veth devices.
->
-> The vmtest.sh is modified to enable the bonding module and install
-> modules. The config change should probably be done in the libbpf
-> repository. Andrii: How would you like this done properly?
+good day,
 
-I think vmtest.sh and CI setup doesn't support modules (not easily at
-least). Can we just compile that driver in? Then you can submit a PR
-against libbpf Github repo to adjust the config. We have also kernel
-CI repo where we'll need to make this change.
+how are you doing today? I hope very well?  I am inviting you for an
+inheritance claim of millions of dollars belonging to my client who
+died in a ghastly motor accident with his wife and kids, I will
+furnish you with
+every piece of information concerning this inheritance
+claim and why you are chosen to feature as my client's only
+surviving relative.
 
->
-> The motivation for this change is to enable use of bonding (and
-> 802.3ad) in hairpinning L4 load-balancers such as [1] implemented with
-> XDP and also to transparently support bond devices for projects that
-> use XDP given most modern NICs have dual port adapters.  An alternative
-> to this approach would be to implement 802.3ad in user-space and
-> implement the bonding load-balancing in the XDP program itself, but
-> is rather a cumbersome endeavor in terms of slave device management
-> (e.g. by watching netlink) and requires separate programs for native
-> vs bond cases for the orchestrator. A native in-kernel implementation
-> overcomes these issues and provides more flexibility.
->
-> Below are benchmark results done on two machines with 100Gbit
-> Intel E810 (ice) NIC and with 32-core 3970X on sending machine, and
-> 16-core 3950X on receiving machine. 64 byte packets were sent with
-> pktgen-dpdk at full rate. Two issues [2, 3] were identified with the
-> ice driver, so the tests were performed with iommu=off and patch [2]
-> applied. Additionally the bonding round robin algorithm was modified
-> to use per-cpu tx counters as high CPU load (50% vs 10%) and high rate
-> of cache misses were caused by the shared rr_tx_counter (see patch
-> 2/3). The statistics were collected using "sar -n dev -u 1 10".
->
->  -----------------------|  CPU  |--| rxpck/s |--| txpck/s |----
->  without patch (1 dev):
->    XDP_DROP:              3.15%      48.6Mpps
->    XDP_TX:                3.12%      18.3Mpps     18.3Mpps
->    XDP_DROP (RSS):        9.47%      116.5Mpps
->    XDP_TX (RSS):          9.67%      25.3Mpps     24.2Mpps
->  -----------------------
->  with patch, bond (1 dev):
->    XDP_DROP:              3.14%      46.7Mpps
->    XDP_TX:                3.15%      13.9Mpps     13.9Mpps
->    XDP_DROP (RSS):        10.33%     117.2Mpps
->    XDP_TX (RSS):          10.64%     25.1Mpps     24.0Mpps
->  -----------------------
->  with patch, bond (2 devs):
->    XDP_DROP:              6.27%      92.7Mpps
->    XDP_TX:                6.26%      17.6Mpps     17.5Mpps
->    XDP_DROP (RSS):       11.38%      117.2Mpps
->    XDP_TX (RSS):         14.30%      28.7Mpps     27.4Mpps
->  --------------------------------------------------------------
->
-> RSS: Receive Side Scaling, e.g. the packets were sent to a range of
-> destination IPs.
->
-> [1]: https://cilium.io/blog/2021/05/20/cilium-110#standalonelb
-> [2]: https://lore.kernel.org/bpf/20210601113236.42651-1-maciej.fijalkowski@intel.com/T/#t
-> [3]: https://lore.kernel.org/bpf/CAHn8xckNXci+X_Eb2WMv4uVYjO2331UWB2JLtXr_58z0Av8+8A@mail.gmail.com/
->
-> ---
->
-> Jussi Maki (3):
->   net: bonding: Add XDP support to the bonding driver
->   net: bonding: Use per-cpu rr_tx_counter
->   selftests/bpf: Add tests for XDP bonding
->
->  drivers/net/bonding/bond_main.c               | 459 +++++++++++++++---
->  include/linux/filter.h                        |  13 +-
->  include/linux/netdevice.h                     |   5 +
->  include/net/bonding.h                         |   3 +-
->  kernel/bpf/devmap.c                           |  34 +-
->  net/core/filter.c                             |  37 +-
->  .../selftests/bpf/prog_tests/xdp_bonding.c    | 342 +++++++++++++
->  tools/testing/selftests/bpf/vmtest.sh         |  30 +-
->  8 files changed, 843 insertions(+), 80 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
->
-> --
-> 2.30.2
->
+
+I'll be looking forward to your favorable response in that regard.
+
+
+
+
+Yours faithfully,
+barrister joseph koku Esq
