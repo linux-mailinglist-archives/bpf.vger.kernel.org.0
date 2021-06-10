@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642E43A32A0
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 20:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663F33A32BE
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 20:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFJSCQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 14:02:16 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:44907 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhFJSCQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:02:16 -0400
-Received: by mail-wm1-f48.google.com with SMTP id m41-20020a05600c3b29b02901b9e5d74f02so3861075wms.3;
-        Thu, 10 Jun 2021 11:00:19 -0700 (PDT)
+        id S230255AbhFJSMm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 14:12:42 -0400
+Received: from mail-wr1-f46.google.com ([209.85.221.46]:42987 "EHLO
+        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFJSMm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 14:12:42 -0400
+Received: by mail-wr1-f46.google.com with SMTP id c5so3305622wrq.9;
+        Thu, 10 Jun 2021 11:10:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yuHv6RIBLHggxcOlKYOigl4Pz2f4+BXgIKr78us9l0c=;
-        b=XYLoAuRI4wC3/lTj9rPk8L7qJF6v7KXS6YrFkw4ud0LLJ7FDIvGq2cQqEG7hGU+Cxa
-         uOUUqL83kkn1UnZoLky1chZbHO+r2ob0m2hNfkUVvIQ1k+237n2k7a8uaZKQf3XcikwB
-         0EXPXBZf8EyRAcTlGWR2EF42poWGu2hFUpDEgtwc/4c+Xrp7g1n5uqu8PiRYP4YQ5OUs
-         +Hu5LVeiO7bM9090wiql0ysGJtVF17WtIabIZi2CrPRlIeK35p6LqBp89sMd+YbwoY2r
-         wRwBXQ0Fcifdog89a19s+mvzZkx7diyYtAFvxLlUmRQD9jJ394esHcJntV4cHrxfoVmM
-         bNOA==
+        bh=SapgZjVRdGw+smc0HYc4yIvhWkiTCIxbdpvuRy6CsfM=;
+        b=ONY+z6BD6gIjHkEsWC+RECN5F+JpqL9vWMyXgbul0GXQ7Fq3vwknQPPndI1/ot4k0T
+         wmzXdnqBUrVldOW5vRHL7FT54Sfs6j4THaPIQb/QJWOI89k1gms/ZhHxYzp9+30jFDKw
+         pBp29VUKOXz0PGft4wW7YYe2NFTnJTP1b9vXraTyK6muhOr5kx4vXkbLjZSBWhtW2356
+         +Gren59jHbCwuDi0eVuwUGO1zTHYOcFd8YTi+iQi4V9kzkNnsX7Rxp0wk24ajgIicr2v
+         0A2uvNXlhWdrepLGM1DH5rjkrmZqUOFMJq8xqAQk62Zyl38xFr6WkhQgMAmOGsu5ZG1Z
+         lvWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=yuHv6RIBLHggxcOlKYOigl4Pz2f4+BXgIKr78us9l0c=;
-        b=gix4RYcEjl1Xnx4YA2aduSCMa3hShVq0Ms92LemLhuc5eNJd9R+02KBJ0rw0mumovY
-         UCkwhxkXb+t6JDM37d4UvxepHJ1YfWY35EFRVlAFpqTcmXTH/DWCcybfE9Ls1NZng7bj
-         6RFqEtF1TlG2Ij0i/Tj61c2CriWzD/xQ3ZWCRo6fdYCo6O5nHNE/AYx7Cmeilp9VzDyG
-         k4tACwKeKhTX81sMekruKUOjTs9+tgsWU1uOEEOPI4OOnOsPWgKR+AkD0+BfrHYm/iZx
-         n5pVZyO6kQdILNJLS6g0TR1WBjzpfjcvS+9A2Aq1e4oCcUAVG7y24EgzYe4R2bao3SbH
-         j+fw==
-X-Gm-Message-State: AOAM531Wfj28aISWXQCkrR7pLTud7MGVfQ3HKlu90LU1NZhvN8A//tjL
-        qAwnPcv3DvW7ie9ZvllDYft/8GfbwWISMg==
-X-Google-Smtp-Source: ABdhPJyDjo7Tdxg5kVxwRX8DoqxanBiePRw1F6nh5nQedv93R0/glByw2dbe4920UrV5kg3u7ac9MA==
-X-Received: by 2002:a7b:c3da:: with SMTP id t26mr60961wmj.63.1623347958477;
-        Thu, 10 Jun 2021 10:59:18 -0700 (PDT)
+        bh=SapgZjVRdGw+smc0HYc4yIvhWkiTCIxbdpvuRy6CsfM=;
+        b=hjA/74xwLyIHujXPRajgSl9ooY/zimkOaCBfPOs5f1STTty+gXYgR5jLUXL6Chaa/E
+         glpnXGgN+Rb4zyG1+0BUuhxJ4gN0WWU3d3NcztOwpMhI3qlmXtsQ4XsZ/ZKLcqtG+bFa
+         xP/BvdMHCjmFLhimAGcRaCjHJfSq6PoMWArBhmmJtjzZGfFcRd/HvTlUMJW7eGhZPJUb
+         GLscqUN4tpgeHm3vjUAmeJbllFnx+ImztRwuba8TlNJfXRxZ7Dc1NVBcxPrY4ByNa+fB
+         lj1HeCipoJLguwIlb/UNQeb2chsiXSsYcQMYJP6uUFY3TrREHEO2zOQUCX4UJ9isPOXQ
+         Dbaw==
+X-Gm-Message-State: AOAM532pBVcQIxj2Q1nv4Jn/bhUwLkNch44PUhaOOXOq0B2RVF6GKs5e
+        DQpppf7dbg6B6LDwEeVDEMDPxCYyHgafYw==
+X-Google-Smtp-Source: ABdhPJzIukjrUlRIC3L4KJh0w/VXHgrci+zDDcUSTyTyJETArHmRN71aJp+x/XvZt1ViePdN0uJylA==
+X-Received: by 2002:a5d:47ce:: with SMTP id o14mr6729048wrc.273.1623348575861;
+        Thu, 10 Jun 2021 11:09:35 -0700 (PDT)
 Received: from [192.168.181.98] (228.18.23.93.rev.sfr.net. [93.23.18.228])
-        by smtp.gmail.com with ESMTPSA id p16sm4442505wrs.52.2021.06.10.10.59.16
+        by smtp.gmail.com with ESMTPSA id b62sm3593979wmh.47.2021.06.10.11.09.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 10:59:17 -0700 (PDT)
-Subject: Re: [PATCH v7 bpf-next 03/11] tcp: Keep TCP_CLOSE sockets in the
- reuseport group.
+        Thu, 10 Jun 2021 11:09:35 -0700 (PDT)
+Subject: Re: [PATCH v7 bpf-next 04/11] tcp: Add reuseport_migrate_sock() to
+ select a new listener.
 To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
         "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -59,14 +59,14 @@ Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
         Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20210521182104.18273-1-kuniyu@amazon.co.jp>
- <20210521182104.18273-4-kuniyu@amazon.co.jp>
+ <20210521182104.18273-5-kuniyu@amazon.co.jp>
 From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <c89d2cec-4cf2-1972-354b-5f5ca1330d82@gmail.com>
-Date:   Thu, 10 Jun 2021 19:59:15 +0200
+Message-ID: <fb9a3615-4ce3-f676-abfc-4a5a641a9e58@gmail.com>
+Date:   Thu, 10 Jun 2021 20:09:32 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210521182104.18273-4-kuniyu@amazon.co.jp>
+In-Reply-To: <20210521182104.18273-5-kuniyu@amazon.co.jp>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -77,136 +77,20 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
-> When we close a listening socket, to migrate its connections to another
-> listener in the same reuseport group, we have to handle two kinds of child
-> sockets. One is that a listening socket has a reference to, and the other
-> is not.
+> reuseport_migrate_sock() does the same check done in
+> reuseport_listen_stop_sock(). If the reuseport group is capable of
+> migration, reuseport_migrate_sock() selects a new listener by the child
+> socket hash and increments the listener's sk_refcnt beforehand. Thus, if we
+> fail in the migration, we have to decrement it later.
 > 
-> The former is the TCP_ESTABLISHED/TCP_SYN_RECV sockets, and they are in the
-> accept queue of their listening socket. So we can pop them out and push
-> them into another listener's queue at close() or shutdown() syscalls. On
-> the other hand, the latter, the TCP_NEW_SYN_RECV socket is during the
-> three-way handshake and not in the accept queue. Thus, we cannot access
-> such sockets at close() or shutdown() syscalls. Accordingly, we have to
-> migrate immature sockets after their listening socket has been closed.
-> 
-> Currently, if their listening socket has been closed, TCP_NEW_SYN_RECV
-> sockets are freed at receiving the final ACK or retransmitting SYN+ACKs. At
-> that time, if we could select a new listener from the same reuseport group,
-> no connection would be aborted. However, we cannot do that because
-> reuseport_detach_sock() sets NULL to sk_reuseport_cb and forbids access to
-> the reuseport group from closed sockets.
-> 
-> This patch allows TCP_CLOSE sockets to remain in the reuseport group and
-> access it while any child socket references them. The point is that
-> reuseport_detach_sock() was called twice from inet_unhash() and
-> sk_destruct(). This patch replaces the first reuseport_detach_sock() with
-> reuseport_stop_listen_sock(), which checks if the reuseport group is
-> capable of migration. If capable, it decrements num_socks, moves the socket
-> backwards in socks[] and increments num_closed_socks. When all connections
-> are migrated, sk_destruct() calls reuseport_detach_sock() to remove the
-> socket from socks[], decrement num_closed_socks, and set NULL to
-> sk_reuseport_cb.
-> 
-> By this change, closed or shutdowned sockets can keep sk_reuseport_cb.
-> Consequently, calling listen() after shutdown() can cause EADDRINUSE or
-> EBUSY in inet_csk_bind_conflict() or reuseport_add_sock() which expects
-> such sockets not to have the reuseport group. Therefore, this patch also
-> loosens such validation rules so that a socket can listen again if it has a
-> reuseport group with num_closed_socks more than 0.
-> 
-> When such sockets listen again, we handle them in reuseport_resurrect(). If
-> there is an existing reuseport group (reuseport_add_sock() path), we move
-> the socket from the old group to the new one and free the old one if
-> necessary. If there is no existing group (reuseport_alloc() path), we
-> allocate a new reuseport group, detach sk from the old one, and free it if
-> necessary, not to break the current shutdown behaviour:
-> 
->   - we cannot carry over the eBPF prog of shutdowned sockets
->   - we cannot attach/detach an eBPF prog to/from listening sockets via
->     shutdowned sockets
-> 
-> Note that when the number of sockets gets over U16_MAX, we try to detach a
-> closed socket randomly to make room for the new listening socket in
-> reuseport_grow().
+> We will support migration by eBPF in the later commits.
 > 
 > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
 > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 > ---
->  include/net/sock_reuseport.h    |   1 +
->  net/core/sock_reuseport.c       | 184 ++++++++++++++++++++++++++++++--
->  net/ipv4/inet_connection_sock.c |  12 ++-
->  net/ipv4/inet_hashtables.c      |   2 +-
->  4 files changed, 188 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/net/sock_reuseport.h b/include/net/sock_reuseport.h
-> index 0e558ca7afbf..1333d0cddfbc 100644
-> --- a/include/net/sock_reuseport.h
-> +++ b/include/net/sock_reuseport.h
-> @@ -32,6 +32,7 @@ extern int reuseport_alloc(struct sock *sk, bool bind_inany);
->  extern int reuseport_add_sock(struct sock *sk, struct sock *sk2,
->  			      bool bind_inany);
->  extern void reuseport_detach_sock(struct sock *sk);
-> +void reuseport_stop_listen_sock(struct sock *sk);
->  extern struct sock *reuseport_select_sock(struct sock *sk,
->  					  u32 hash,
->  					  struct sk_buff *skb,
-> diff --git a/net/core/sock_reuseport.c b/net/core/sock_reuseport.c
-> index 079bd1aca0e7..ea0e900d3e97 100644
-> --- a/net/core/sock_reuseport.c
-> +++ b/net/core/sock_reuseport.c
-> @@ -17,6 +17,8 @@
->  DEFINE_SPINLOCK(reuseport_lock);
->  
->  static DEFINE_IDA(reuseport_ida);
-> +static int reuseport_resurrect(struct sock *sk, struct sock_reuseport *old_reuse,
-> +			       struct sock_reuseport *reuse, bool bind_inany);
->  
->  static int reuseport_sock_index(struct sock *sk,
->  				struct sock_reuseport *reuse,
-> @@ -61,6 +63,29 @@ static bool __reuseport_detach_sock(struct sock *sk,
->  	return true;
->  }
->  
-> +static void __reuseport_add_closed_sock(struct sock *sk,
-> +					struct sock_reuseport *reuse)
-> +{
-> +	reuse->socks[reuse->max_socks - reuse->num_closed_socks - 1] = sk;
-> +	/* paired with READ_ONCE() in inet_csk_bind_conflict() */
-> +	WRITE_ONCE(reuse->num_closed_socks, reuse->num_closed_socks + 1);
-> +}
-> +
-> +static bool __reuseport_detach_closed_sock(struct sock *sk,
-> +					   struct sock_reuseport *reuse)
-> +{
-> +	int i = reuseport_sock_index(sk, reuse, true);
-> +
-> +	if (i == -1)
-> +		return false;
-> +
-> +	reuse->socks[i] = reuse->socks[reuse->max_socks - reuse->num_closed_socks];
-> +	/* paired with READ_ONCE() in inet_csk_bind_conflict() */
-> +	WRITE_ONCE(reuse->num_closed_socks, reuse->num_closed_socks - 1);
-> +
-> +	return true;
-> +}
-> +
->  static struct sock_reuseport *__reuseport_alloc(unsigned int max_socks)
->  {
->  	unsigned int size = sizeof(struct sock_reuseport) +
-> @@ -92,6 +117,14 @@ int reuseport_alloc(struct sock *sk, bool bind_inany)
->  	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
->  					  lockdep_is_held(&reuseport_lock));
->  	if (reuse) {
-> +		if (reuse->num_closed_socks) {
-> +			/* sk was shutdown()ed before */
-> +			int err = reuseport_resurrect(sk, reuse, NULL, bind_inany);
-> +
-> +			spin_unlock_bh(&reuseport_lock);
-> +			return err;
+>  include/net/sock_reuseport.h |  3 ++
+>  net/core/sock_reuseport.c    | 78 +++++++++++++++++++++++++++++-------
+>  2 files changed, 67 insertions(+), 14 deletions(-)
 
-It seems coding style in this function would rather do
-			ret = reuseport_resurrect(sk, reuse, NULL, bind_inany);
-			goto out;
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-Overall, changes in this commit are a bit scarry.
