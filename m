@@ -2,173 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFDC3A3047
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 18:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 264AE3A31A1
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 19:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhFJQMr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 12:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhFJQMq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:12:46 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D505BC061760
-        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 09:10:49 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id k5-20020a05600c1c85b02901affeec3ef8so6954420wms.0
-        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 09:10:49 -0700 (PDT)
+        id S230184AbhFJRD6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 13:03:58 -0400
+Received: from mail-yb1-f176.google.com ([209.85.219.176]:42544 "EHLO
+        mail-yb1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhFJRD6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 13:03:58 -0400
+Received: by mail-yb1-f176.google.com with SMTP id g142so272586ybf.9;
+        Thu, 10 Jun 2021 10:01:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wh9HJh5QKRsi8UTmSC2Me4kFshyHJOENONjeXSycPDw=;
-        b=b9NV4T+vIhN/e2rc3KyiR571LK840a4AsvEQcSHP3xSDqggM61GVv2YEUpmb06M4I9
-         eW9l8mW03caMkds5vbmcjWJcyq62lYf9rybxiOniR+yYAoTevONOaHruaKO6lxcCMcJh
-         JybQjt8euQzL7tlpV0+Gy3rVhP6pD2U2lON7M=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lbDIIQpuorivBg9C2L1KHDxnd0sx2nyvGXVcS+PLY3s=;
+        b=hmoYJEs7xTnJzOY3EWVpPTeuicXTTODNrF8f563wrJX9zPFYgStgX++jACVm2D8nUh
+         KjxK91ZfXTX1R9hx3DMdToPp+EyardrX7wkLd1PXcsJ9bxBCY4g0gdd8exrhYoD2MpXB
+         LJ1kdJp70p8Sjs1DrSYq7DsuP/iOVhYp93VOz82s48Z94G2pMphD+1n8wyHK4eDhlqzU
+         J3UXLKgRFu4UNJuVXXi60ZntNXzaGyjEyt23KGr2Z0n5GAqLjvZVDZToFXZs73fowzEh
+         Wol2xkQIZlDjSbY4uLIEfSMp0uBaw+T6F4u88OL5fcwmx8fdNvA7ZNdI0wgSBxS2xqUq
+         vdCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wh9HJh5QKRsi8UTmSC2Me4kFshyHJOENONjeXSycPDw=;
-        b=e+jNVEyAk6RMlxypKbNUPymbChDK+n51QZHSqNj5Gbi6xbT9z1iHLioI6Hsd/8XEle
-         oRamcRvm5UBlRDMYk0+wPVGCrKvnc5madl5byQYjVBC1IB80FBjaO2uT2RYXlZPtZW5g
-         z/aGozo2GHFWtiHj7TuWKEy8mQFAgtgQpJM9P1mRSAiGYq+A7xP16u92aB6Sb8G0bUDd
-         Bub/2xGiheVVnpl+vy+KHxkX6Z+eF5JIO/ihlXGI5QOjzBrKMNdMx4tkm1vf2BSfwXv8
-         lbv7AjTnokc3Jum44Zb8/mFldCrhpK9O1iIXM99REAoMKiPS7D4KBL++lkOIAwz8KF78
-         SQgw==
-X-Gm-Message-State: AOAM531f9d9Jzacd9qEPETMYSEuAY86txYaQ7mgw9si8DaApivuapa8v
-        zSj0P29xyfMZaz7+8ItKsNcDgQ==
-X-Google-Smtp-Source: ABdhPJygr8HzD9hbvgcSImlHFRCrj3b6n6c1wexozkE5SHRflbuDw6j0B2l6pPpD1J9xQGVuJt0sNg==
-X-Received: by 2002:a05:600c:354f:: with SMTP id i15mr14427006wmq.131.1623341448372;
-        Thu, 10 Jun 2021 09:10:48 -0700 (PDT)
-Received: from antares.. (111.253.187.81.in-addr.arpa. [81.187.253.111])
-        by smtp.gmail.com with ESMTPSA id z12sm4212383wmc.5.2021.06.10.09.10.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 09:10:48 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf] lib: bpf: tracing: fail compilation if target arch is missing
-Date:   Thu, 10 Jun 2021 17:10:27 +0100
-Message-Id: <20210610161027.255372-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lbDIIQpuorivBg9C2L1KHDxnd0sx2nyvGXVcS+PLY3s=;
+        b=cShRXUS9jIgTuXqQ2rIkJ9nzsQEJaUK61RYUhbITRNsNZWXBnKqBb6+XKBobxxkQBy
+         MtoWv8Ufm8P001GsANXwH04LCJt1b3zduvGMLj1fxUjnMU5W/Gc8wUAZapwj8qMGYI5r
+         8iER5hcjiwYE8YSZW/phA+s315JKP4TyW1Q/rH5GwuJN9UmKhlL7T2iPJ7la12YsPlau
+         eKPaZpHJC8RHkJAcKJ87hW0QyUNi/szAZeUh+37kTddqrrnDZS8WN2o9ixiatc2m5ZNW
+         +dMTefT3BJbM4o1AuAaJel1YOQQdD686PnTROeXpgpZok5smRaUgTEUKAuwqeJNhkmw2
+         lbbg==
+X-Gm-Message-State: AOAM533FCH8khCfP/O8DWBM8AA9lARnA3xeFYUVlILOGlsqG092ZHQgJ
+        UMCzqH386wW2Rvkpy3cDP8KnVQfA8Eva/TK9Rpw=
+X-Google-Smtp-Source: ABdhPJyk9YRtgpe69crzGu381Z8WtzrpI20TabICjIBQbJzbl31uafwZXvxqt1GrjYMK6rozrVwRYHghVjasU/Cqvzk=
+X-Received: by 2002:a25:ba06:: with SMTP id t6mr8525361ybg.459.1623344445728;
+ Thu, 10 Jun 2021 10:00:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210605111034.1810858-1-jolsa@kernel.org> <20210605111034.1810858-17-jolsa@kernel.org>
+ <CAEf4BzbBGB+hm0LJRUWDi1EXRkbj86FDOt_ZHdQbT=za47p9ZA@mail.gmail.com> <YMDQOIhRh9tDy1Tg@krava>
+In-Reply-To: <YMDQOIhRh9tDy1Tg@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 10 Jun 2021 10:00:34 -0700
+Message-ID: <CAEf4Bzboi7Wsf94Z-0OjyYehjazELqdR-gWgxuS_y3AqzDY=rQ@mail.gmail.com>
+Subject: Re: [PATCH 16/19] selftests/bpf: Add fentry multi func test
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf2go is the Go equivalent of libbpf skeleton. The convention is that
-the compiled BPF is checked into the repository to facilitate distributing
-BPF as part of Go packages. To make this portable, bpf2go by default
-generates both bpfel and bpfeb variants of the C.
+On Wed, Jun 9, 2021 at 7:29 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Tue, Jun 08, 2021 at 10:40:24PM -0700, Andrii Nakryiko wrote:
+> > On Sat, Jun 5, 2021 at 4:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Adding selftest for fentry multi func test that attaches
+> > > to bpf_fentry_test* functions and checks argument values
+> > > based on the processed function.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/testing/selftests/bpf/multi_check.h     | 52 +++++++++++++++++++
+> > >  .../bpf/prog_tests/fentry_multi_test.c        | 43 +++++++++++++++
+> > >  .../selftests/bpf/progs/fentry_multi_test.c   | 18 +++++++
+> > >  3 files changed, 113 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/bpf/multi_check.h
+> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/fentry_multi_test.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/fentry_multi_test.c
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/multi_check.h b/tools/testing/selftests/bpf/multi_check.h
+> > > new file mode 100644
+> > > index 000000000000..36c2a93f9be3
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/multi_check.h
+> >
+> > we have a proper static linking now, we don't have to use header
+> > inclusion hacks, let's do this properly?
+>
+> ok, will change
+>
+> >
+> > > @@ -0,0 +1,52 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +
+> > > +#ifndef __MULTI_CHECK_H
+> > > +#define __MULTI_CHECK_H
+> > > +
+> > > +extern unsigned long long bpf_fentry_test[8];
+> > > +
+> > > +static __attribute__((unused)) inline
+> > > +void multi_arg_check(unsigned long ip, __u64 a, __u64 b, __u64 c, __u64 d, __u64 e, __u64 f, __u64 *test_result)
+> > > +{
+> > > +       if (ip == bpf_fentry_test[0]) {
+> > > +               *test_result += (int) a == 1;
+> > > +       } else if (ip == bpf_fentry_test[1]) {
+> > > +               *test_result += (int) a == 2 && (__u64) b == 3;
+> > > +       } else if (ip == bpf_fentry_test[2]) {
+> > > +               *test_result += (char) a == 4 && (int) b == 5 && (__u64) c == 6;
+> > > +       } else if (ip == bpf_fentry_test[3]) {
+> > > +               *test_result += (void *) a == (void *) 7 && (char) b == 8 && (int) c == 9 && (__u64) d == 10;
+> > > +       } else if (ip == bpf_fentry_test[4]) {
+> > > +               *test_result += (__u64) a == 11 && (void *) b == (void *) 12 && (short) c == 13 && (int) d == 14 && (__u64) e == 15;
+> > > +       } else if (ip == bpf_fentry_test[5]) {
+> > > +               *test_result += (__u64) a == 16 && (void *) b == (void *) 17 && (short) c == 18 && (int) d == 19 && (void *) e == (void *) 20 && (__u64) f == 21;
+> > > +       } else if (ip == bpf_fentry_test[6]) {
+> > > +               *test_result += 1;
+> > > +       } else if (ip == bpf_fentry_test[7]) {
+> > > +               *test_result += 1;
+> > > +       }
+> >
+> > why not use switch? and why the casting?
+>
+> hum, for switch I'd need constants right?
 
-Using bpf_tracing.h is inherently non-portable since the fields of
-struct pt_regs differ between platforms, so CO-RE can't help us here.
-The only way of working around this is to compile for each target
-platform independently. bpf2go can't do this by default since there
-are too many platforms.
+doh, of course :)
 
-Define the various PT_... macros when no target can be determined and
-turn them into compilation failures. This works because bpf2go always
-compiles for bpf targets, so the compiler fallback doesn't kick in.
-Conditionally define __bpf_missing_target so that we can inject a
-more appropriate error message at build time. The user can then
-choose which platform to target explicitly.
+but! you don't need to fill out bpf_fentry_test[] array from
+user-space, just use extern const void variables to get addresses of
+those functions:
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- tools/lib/bpf/bpf_tracing.h | 46 +++++++++++++++++++++++++++++++++----
- 1 file changed, 42 insertions(+), 4 deletions(-)
+extern const void bpf_fentry_test1 __ksym;
+extern const void bpf_fentry_test2 __ksym;
+...
 
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index c0f3a26aa582..438174adb3f8 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -25,26 +25,35 @@
- 	#define bpf_target_sparc
- 	#define bpf_target_defined
- #else
--	#undef bpf_target_defined
--#endif
- 
- /* Fall back to what the compiler says */
--#ifndef bpf_target_defined
- #if defined(__x86_64__)
- 	#define bpf_target_x86
-+	#define bpf_target_defined
- #elif defined(__s390__)
- 	#define bpf_target_s390
-+	#define bpf_target_defined
- #elif defined(__arm__)
- 	#define bpf_target_arm
-+	#define bpf_target_defined
- #elif defined(__aarch64__)
- 	#define bpf_target_arm64
-+	#define bpf_target_defined
- #elif defined(__mips__)
- 	#define bpf_target_mips
-+	#define bpf_target_defined
- #elif defined(__powerpc__)
- 	#define bpf_target_powerpc
-+	#define bpf_target_defined
- #elif defined(__sparc__)
- 	#define bpf_target_sparc
-+	#define bpf_target_defined
-+#endif /* no compiler target */
-+
- #endif
-+
-+#ifndef __bpf_target_missing
-+#define __bpf_target_missing "GCC error \"Must specify a target arch via __TARGET_ARCH_xxx\""
- #endif
- 
- #if defined(bpf_target_x86)
-@@ -287,7 +296,7 @@ struct pt_regs;
- #elif defined(bpf_target_sparc)
- #define BPF_KPROBE_READ_RET_IP(ip, ctx)		({ (ip) = PT_REGS_RET(ctx); })
- #define BPF_KRETPROBE_READ_RET_IP		BPF_KPROBE_READ_RET_IP
--#else
-+#elif defined(bpf_target_defined)
- #define BPF_KPROBE_READ_RET_IP(ip, ctx)					    \
- 	({ bpf_probe_read_kernel(&(ip), sizeof(ip), (void *)PT_REGS_RET(ctx)); })
- #define BPF_KRETPROBE_READ_RET_IP(ip, ctx)				    \
-@@ -295,6 +304,35 @@ struct pt_regs;
- 			  (void *)(PT_REGS_FP(ctx) + sizeof(ip))); })
- #endif
- 
-+#if !defined(bpf_target_defined)
-+
-+#define PT_REGS_PARM1(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_PARM2(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_PARM3(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_PARM4(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_PARM5(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_RET(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_FP(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_RC(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_SP(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_IP(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+
-+#define PT_REGS_PARM1_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_PARM2_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_PARM3_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_PARM4_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_PARM5_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_RET_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_FP_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_RC_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_SP_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define PT_REGS_IP_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
-+
-+#define BPF_KPROBE_READ_RET_IP(ip, ctx) ({ _Pragma(__bpf_target_missing); 0ull; })
-+#define BPF_KRETPROBE_READ_RET_IP(ip, ctx) ({ _Pragma(__bpf_target_missing); 0ull; })
-+
-+#endif /* !defined(bpf_target_defined) */
-+
- #ifndef ___bpf_concat
- #define ___bpf_concat(a, b) a ## b
- #endif
--- 
-2.30.2
+>
+> casting is extra ;-) wanted to check the actual argument types,
+> but probably makes no sense
 
+probably doesn't given you already declared it u64 and use integer
+values for comparison
+
+>
+> will check
+>
+> >
+> > > +}
+> > > +
+> >
+> > [...]
+> >
+> > > diff --git a/tools/testing/selftests/bpf/progs/fentry_multi_test.c b/tools/testing/selftests/bpf/progs/fentry_multi_test.c
+> > > new file mode 100644
+> > > index 000000000000..a443fc958e5a
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/progs/fentry_multi_test.c
+> > > @@ -0,0 +1,18 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +#include <linux/bpf.h>
+> > > +#include <bpf/bpf_helpers.h>
+> > > +#include <bpf/bpf_tracing.h>
+> > > +#include "multi_check.h"
+> > > +
+> > > +char _license[] SEC("license") = "GPL";
+> > > +
+> > > +unsigned long long bpf_fentry_test[8];
+> > > +
+> > > +__u64 test_result = 0;
+> > > +
+> > > +SEC("fentry.multi/bpf_fentry_test*")
+> >
+> > wait, that's a regexp syntax that libc supports?.. Not .*? We should
+> > definitely not provide btf__find_by_pattern_kind() API, I'd like to
+> > avoid explaining what flavors of regexps libbpf supports.
+>
+> ok
+>
+> thanks,
+> jirka
+>
