@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D09E3A34D2
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 22:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D875C3A34EA
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 22:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhFJUbA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 16:31:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42252 "EHLO
+        id S230205AbhFJUh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 16:37:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44915 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229941AbhFJUbA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 10 Jun 2021 16:31:00 -0400
+        by vger.kernel.org with ESMTP id S230083AbhFJUh5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Jun 2021 16:37:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623356942;
+        s=mimecast20190719; t=1623357360;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+liY71qkNc3av4c7FTZuDMakAHUn8vcZt9xyuXI59Mw=;
-        b=NMiHq+xLaG0aS66S0VkgZ4/NjDENvA3DHk27oWqsaDRx+CyD98yxxXsFl9zWHwD4OPwTkx
-        aUUCF3AoQg177b5IBX5y3I5kQkEdo2lYvQjYBgbutR0PeM0QXYSh526S3S1E2fKA6w/AFL
-        7v5dAfDvNiarD8RZt1GATDfGRojVhd8=
+        bh=mUSTArUf0cCNwQyD71eRlKWDfYCC76nXsXa6tP5qMA4=;
+        b=iqY5XLr1c13UCrd8q1wp3Dja8WznWMtKXgvBwf7Y0F8DsfraBwRYXGphf02AXfteBQZiDl
+        EywwU09adEn2sLAU8cUowmna2RAI40RqlFxqfX5vvyZ8L2bfyBYW19oSXhtLuBorT8hclX
+        SkdkRwaKwy2OqXAuxTwoG1M8tVSj8RE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-325-Z0-QMy42MdWm-K9JbDkRkA-1; Thu, 10 Jun 2021 16:28:58 -0400
-X-MC-Unique: Z0-QMy42MdWm-K9JbDkRkA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-360-j2HlkI7LNhqkqvE-op6GAQ-1; Thu, 10 Jun 2021 16:35:57 -0400
+X-MC-Unique: j2HlkI7LNhqkqvE-op6GAQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E16DC801B12;
-        Thu, 10 Jun 2021 20:28:55 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A30098042A3;
+        Thu, 10 Jun 2021 20:35:55 +0000 (UTC)
 Received: from krava (unknown [10.40.195.165])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B372060CC9;
-        Thu, 10 Jun 2021 20:28:52 +0000 (UTC)
-Date:   Thu, 10 Jun 2021 22:28:51 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id C688719D9D;
+        Thu, 10 Jun 2021 20:35:52 +0000 (UTC)
+Date:   Thu, 10 Jun 2021 22:35:51 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -45,98 +45,76 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
         Viktor Malik <vmalik@redhat.com>
-Subject: Re: [PATCH 16/19] selftests/bpf: Add fentry multi func test
-Message-ID: <YMJ2A1hvmnDdFlRt@krava>
+Subject: Re: [PATCH 15/19] libbpf: Add support to link multi func tracing
+ program
+Message-ID: <YMJ3p0A7kJMvMRTi@krava>
 References: <20210605111034.1810858-1-jolsa@kernel.org>
- <20210605111034.1810858-17-jolsa@kernel.org>
- <CAEf4BzbBGB+hm0LJRUWDi1EXRkbj86FDOt_ZHdQbT=za47p9ZA@mail.gmail.com>
- <YMDQOIhRh9tDy1Tg@krava>
- <CAEf4Bzboi7Wsf94Z-0OjyYehjazELqdR-gWgxuS_y3AqzDY=rQ@mail.gmail.com>
+ <20210605111034.1810858-16-jolsa@kernel.org>
+ <CAEf4BzaCWG1WtkQA6gZGvvGUhk3Si9jkZ2s6ToWowKhU4cXMuw@mail.gmail.com>
+ <YMDNeve5/TColRcq@krava>
+ <CAEf4Bzb-_SJpubQ4oiO4chGG8+EMUGbnChAC9tUB3FftRJzceA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4Bzboi7Wsf94Z-0OjyYehjazELqdR-gWgxuS_y3AqzDY=rQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <CAEf4Bzb-_SJpubQ4oiO4chGG8+EMUGbnChAC9tUB3FftRJzceA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 10:00:34AM -0700, Andrii Nakryiko wrote:
-> On Wed, Jun 9, 2021 at 7:29 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Tue, Jun 08, 2021 at 10:40:24PM -0700, Andrii Nakryiko wrote:
-> > > On Sat, Jun 5, 2021 at 4:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > Adding selftest for fentry multi func test that attaches
-> > > > to bpf_fentry_test* functions and checks argument values
-> > > > based on the processed function.
-> > > >
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >  tools/testing/selftests/bpf/multi_check.h     | 52 +++++++++++++++++++
-> > > >  .../bpf/prog_tests/fentry_multi_test.c        | 43 +++++++++++++++
-> > > >  .../selftests/bpf/progs/fentry_multi_test.c   | 18 +++++++
-> > > >  3 files changed, 113 insertions(+)
-> > > >  create mode 100644 tools/testing/selftests/bpf/multi_check.h
-> > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/fentry_multi_test.c
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/fentry_multi_test.c
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/multi_check.h b/tools/testing/selftests/bpf/multi_check.h
-> > > > new file mode 100644
-> > > > index 000000000000..36c2a93f9be3
-> > > > --- /dev/null
-> > > > +++ b/tools/testing/selftests/bpf/multi_check.h
-> > >
-> > > we have a proper static linking now, we don't have to use header
-> > > inclusion hacks, let's do this properly?
-> >
-> > ok, will change
-> >
-> > >
-> > > > @@ -0,0 +1,52 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > > +
-> > > > +#ifndef __MULTI_CHECK_H
-> > > > +#define __MULTI_CHECK_H
-> > > > +
-> > > > +extern unsigned long long bpf_fentry_test[8];
-> > > > +
-> > > > +static __attribute__((unused)) inline
-> > > > +void multi_arg_check(unsigned long ip, __u64 a, __u64 b, __u64 c, __u64 d, __u64 e, __u64 f, __u64 *test_result)
-> > > > +{
-> > > > +       if (ip == bpf_fentry_test[0]) {
-> > > > +               *test_result += (int) a == 1;
-> > > > +       } else if (ip == bpf_fentry_test[1]) {
-> > > > +               *test_result += (int) a == 2 && (__u64) b == 3;
-> > > > +       } else if (ip == bpf_fentry_test[2]) {
-> > > > +               *test_result += (char) a == 4 && (int) b == 5 && (__u64) c == 6;
-> > > > +       } else if (ip == bpf_fentry_test[3]) {
-> > > > +               *test_result += (void *) a == (void *) 7 && (char) b == 8 && (int) c == 9 && (__u64) d == 10;
-> > > > +       } else if (ip == bpf_fentry_test[4]) {
-> > > > +               *test_result += (__u64) a == 11 && (void *) b == (void *) 12 && (short) c == 13 && (int) d == 14 && (__u64) e == 15;
-> > > > +       } else if (ip == bpf_fentry_test[5]) {
-> > > > +               *test_result += (__u64) a == 16 && (void *) b == (void *) 17 && (short) c == 18 && (int) d == 19 && (void *) e == (void *) 20 && (__u64) f == 21;
-> > > > +       } else if (ip == bpf_fentry_test[6]) {
-> > > > +               *test_result += 1;
-> > > > +       } else if (ip == bpf_fentry_test[7]) {
-> > > > +               *test_result += 1;
-> > > > +       }
-> > >
-> > > why not use switch? and why the casting?
-> >
-> > hum, for switch I'd need constants right?
-> 
-> doh, of course :)
-> 
-> but! you don't need to fill out bpf_fentry_test[] array from
-> user-space, just use extern const void variables to get addresses of
-> those functions:
-> 
-> extern const void bpf_fentry_test1 __ksym;
-> extern const void bpf_fentry_test2 __ksym;
-> ...
+On Thu, Jun 10, 2021 at 10:05:39AM -0700, Andrii Nakryiko wrote:
 
-nice, will use that
+SNIP
+
+> > > > +static struct bpf_link *bpf_program__attach_multi(struct bpf_program *prog)
+> > > > +{
+> > > > +       char *pattern = prog->sec_name + prog->sec_def->len;
+> > > > +       DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
+> > > > +       enum bpf_attach_type attach_type;
+> > > > +       int prog_fd, link_fd, cnt, err;
+> > > > +       struct bpf_link *link = NULL;
+> > > > +       __s32 *ids = NULL;
+> > > > +
+> > > > +       prog_fd = bpf_program__fd(prog);
+> > > > +       if (prog_fd < 0) {
+> > > > +               pr_warn("prog '%s': can't attach before loaded\n", prog->name);
+> > > > +               return ERR_PTR(-EINVAL);
+> > > > +       }
+> > > > +
+> > > > +       err = bpf_object__load_vmlinux_btf(prog->obj, true);
+> > > > +       if (err)
+> > > > +               return ERR_PTR(err);
+> > > > +
+> > > > +       cnt = btf__find_by_pattern_kind(prog->obj->btf_vmlinux, pattern,
+> > > > +                                       BTF_KIND_FUNC, &ids);
+> > >
+> > > I wonder if it would be better to just support a simplified glob
+> > > patterns like "prefix*", "*suffix", "exactmatch", and "*substring*"?
+> > > That should be sufficient for majority of cases. For the cases where
+> > > user needs something more nuanced, they can just construct BTF ID list
+> > > with custom code and do manual attach.
+> >
+> > as I wrote earlier the function is just for the purpose of the test,
+> > and we can always do the manual attach
+> >
+> > I don't mind adding that simplified matching you described
+> 
+> I use that in retsnoop and that seems to be simple but flexible enough
+> for all the purposes, so far. It matches typical file globbing rules
+> (with extra limitations, of course), so it's also intuitive.
+> 
+> But I still am not sure about making it a public API, because in a lot
+> of cases you'll want a list of patterns (both allowing and denying
+> different patterns), so it should be generalized to something like
+> 
+> btf__find_by_glob_kind(btf, allow_patterns, deny_patterns, ids)
+> 
+> which gets pretty unwieldy. I'd start with telling users to just
+> iterate BTF on their own and apply whatever custom filtering they
+> need. For simple cases libbpf will just initially support a simple and
+> single glob filter declaratively (e.g, SEC("fentry.multi/bpf_*")).
+
+ok, I'll scan retsnoop and see what I can steal ;-)
 
 jirka
 
