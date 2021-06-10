@@ -2,101 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E8D3A2511
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 09:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879A63A26A2
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 10:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhFJHMz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 03:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbhFJHMz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:12:55 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305AAC061574;
-        Thu, 10 Jun 2021 00:10:59 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id u24so31681319edy.11;
-        Thu, 10 Jun 2021 00:10:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sDMUM5jQ/yZI/9ZRG9sS/s63Em3E6MUmiUZc4pjQWSs=;
-        b=KJWjXejmJrpZIL+F5rsuNh2y2UUEla5nlW/VtxSrCk6LTa7FWtAXuvbAJq7BnY1/om
-         I7bMITQA8UBBefAw3PaC0AElY7Cd57mfHL51IGbndEqMMvs0LNWRBxvOhgkhmkh0wvx5
-         D30XSLTwoezO6G7D5Yk3fsUBXVa2Ruqcwcf9qzXvweGwQoNZOmyv5JeL/2CzPOnLK2E7
-         0mVr4cVPDAfJbFEjs8ixKnBTBqWaki7UqbRZgJYlhH/tOlvDRQzIn84OcIUGMZYLB+5B
-         kunaNlhaomDSh+A+nG03YPxwk6JG+G2k14jTooOQ0NXZY7m446M43Zp/kCwM15qytgG5
-         pdSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sDMUM5jQ/yZI/9ZRG9sS/s63Em3E6MUmiUZc4pjQWSs=;
-        b=qV1aROst7mPxE3AfCyBCAa2fdwPqDxAGxEV3AxjQ1DUQ9Xk8qSDp736vN0a6BZVOeG
-         Q+bgO9riUaSHZxGe2z9RvjLOzEzU1AtKOM/f/f0knrY79w+CMYQyNzBVgPAFJCVrnSkI
-         45p2VKynv89+6SKa+1HvQjNIS2Txdgfsk7c2WAFpV39kdmLky+9lOUWE4GGun3MLLd+n
-         6xKcnaKZIknQDyM7baCj00zkEj0q3/8AT3VwPEkEosNQGc8mMLPwmOUnj3InaupIDFl8
-         vXIpoK9CxM7mPq0hCTH6g62ajPOsjWo+TOmrGiHpU+/0lclQ49DCmqhoiheu3Lybvb4x
-         A90A==
-X-Gm-Message-State: AOAM531ua2xeTAzBNm8R5KO5rRk/+7eSTaP6ybgIoJQmVreLLh+NemXH
-        WlEfToix6T68l40JDNsmYIY=
-X-Google-Smtp-Source: ABdhPJym+3YGFnCHiRuf6ioutxiJqa9JnFyYgudpXDSLJRSG5xQmI83zHDPosKBESiLFUJ8CrdlJqw==
-X-Received: by 2002:a50:eb92:: with SMTP id y18mr3250113edr.249.1623309057799;
-        Thu, 10 Jun 2021 00:10:57 -0700 (PDT)
-Received: from [10.21.182.92] ([212.23.236.67])
-        by smtp.gmail.com with ESMTPSA id cw24sm652463ejb.20.2021.06.10.00.10.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 00:10:57 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 11/17] mlx4: remove rcu_read_lock() around XDP
- program invocation
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>
-References: <20210609103326.278782-1-toke@redhat.com>
- <20210609103326.278782-12-toke@redhat.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <1763e3d2-844c-c2ca-b11d-fcd2af80fcd9@gmail.com>
-Date:   Thu, 10 Jun 2021 10:10:54 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229910AbhFJIYJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 04:24:09 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:42051 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230469AbhFJIYH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Jun 2021 04:24:07 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UbxH88i_1623313329;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UbxH88i_1623313329)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 10 Jun 2021 16:22:09 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        "dust . li" <dust.li@linux.alibaba.com>
+Subject: [PATCH net-next v5 00/15] virtio-net: support xdp socket zero copy
+Date:   Thu, 10 Jun 2021 16:21:54 +0800
+Message-Id: <20210610082209.91487-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <20210609103326.278782-12-toke@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+XDP socket is an excellent by pass kernel network transmission framework. The
+zero copy feature of xsk (XDP socket) needs to be supported by the driver. The
+performance of zero copy is very good. mlx5 and intel ixgbe already support this
+feature, This patch set allows virtio-net to support xsk's zerocopy xmit
+feature.
 
+Compared with other drivers, the trouble with virtio-net is that when we bind
+the channel to xsk, we cannot directly disable/enable the channel. So we have to
+consider the buf that has been placed in the vq after the xsk is released by the
+upper layer.
 
-On 6/9/2021 1:33 PM, Toke Høiland-Jørgensen wrote:
-> The mlx4 driver has rcu_read_lock()/rcu_read_unlock() pairs around XDP
-> program invocations. However, the actual lifetime of the objects referred
-> by the XDP program invocation is longer, all the way through to the call to
-> xdp_do_flush(), making the scope of the rcu_read_lock() too small. This
-> turns out to be harmless because it all happens in a single NAPI poll
-> cycle (and thus under local_bh_disable()), but it makes the rcu_read_lock()
-> misleading.
-> 
-> Rather than extend the scope of the rcu_read_lock(), just get rid of it
-> entirely. With the addition of RCU annotations to the XDP_REDIRECT map
-> types that take bh execution into account, lockdep even understands this to
-> be safe, so there's really no reason to keep it around. Also switch the RCU
-> dereferences in the driver loop itself to the _bh variants.
-> 
-> Cc: Tariq Toukan <tariqt@nvidia.com>
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> ---
+My solution is to add a ctx to each buf placed in vq to record the page used,
+and add a reference to the page. So when the upper xsk is released, these pages
+are still safe in vq. We will process these bufs when we recycle buf or
+receive new data.
 
-Thanks for your patch.
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+In the case of rx, it will be more complicated, because we may encounter the buf
+of xsk, or it may be a normal buf. Especially in the case of merge, we may
+receive multiple bufs, and these bufs may be xsk buf and normal are
+mixed together.
 
-Regards,
-Tariq
+v5:
+   support rx
+
+v4:
+    1. add priv_flags IFF_NOT_USE_DMA_ADDR
+    2. more reasonable patch split
+
+Xuan Zhuo (15):
+  netdevice: priv_flags extend to 64bit
+  netdevice: add priv_flags IFF_NOT_USE_DMA_ADDR
+  virtio-net: add priv_flags IFF_NOT_USE_DMA_ADDR
+  xsk: XDP_SETUP_XSK_POOL support option IFF_NOT_USE_DMA_ADDR
+  virtio: support virtqueue_detach_unused_buf_ctx
+  virtio-net: unify the code for recycling the xmit ptr
+  virtio-net: standalone virtnet_aloc_frag function
+  virtio-net: split the receive_mergeable function
+  virtio-net: virtnet_poll_tx support budget check
+  virtio-net: independent directory
+  virtio-net: move to virtio_net.h
+  virtio-net: support AF_XDP zc tx
+  virtio-net: support AF_XDP zc rx
+  virtio-net: xsk direct xmit inside xsk wakeup
+  virtio-net: xsk zero copy xmit kick by threshold
+
+ MAINTAINERS                           |   2 +-
+ drivers/net/Kconfig                   |   8 +-
+ drivers/net/Makefile                  |   2 +-
+ drivers/net/virtio/Kconfig            |  11 +
+ drivers/net/virtio/Makefile           |   7 +
+ drivers/net/{ => virtio}/virtio_net.c | 670 +++++++++++-----------
+ drivers/net/virtio/virtio_net.h       | 288 ++++++++++
+ drivers/net/virtio/xsk.c              | 766 ++++++++++++++++++++++++++
+ drivers/net/virtio/xsk.h              | 176 ++++++
+ drivers/virtio/virtio_ring.c          |  22 +-
+ include/linux/netdevice.h             | 143 ++---
+ include/linux/virtio.h                |   2 +
+ net/8021q/vlanproc.c                  |   2 +-
+ net/xdp/xsk_buff_pool.c               |   2 +-
+ 14 files changed, 1664 insertions(+), 437 deletions(-)
+ create mode 100644 drivers/net/virtio/Kconfig
+ create mode 100644 drivers/net/virtio/Makefile
+ rename drivers/net/{ => virtio}/virtio_net.c (92%)
+ create mode 100644 drivers/net/virtio/virtio_net.h
+ create mode 100644 drivers/net/virtio/xsk.c
+ create mode 100644 drivers/net/virtio/xsk.h
+
+--
+2.31.0
+
