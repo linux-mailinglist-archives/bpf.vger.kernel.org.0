@@ -2,106 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8968C3A3359
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 20:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6672B3A3391
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 20:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhFJSlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 14:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbhFJSlF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 14:41:05 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585AEC0617A8;
-        Thu, 10 Jun 2021 11:39:08 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id a1so4707955lfr.12;
-        Thu, 10 Jun 2021 11:39:08 -0700 (PDT)
+        id S230312AbhFJSz4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 14:55:56 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:40844 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230166AbhFJSz4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 14:55:56 -0400
+Received: by mail-ot1-f54.google.com with SMTP id l15-20020a05683016cfb02903fca0eacd15so690348otr.7
+        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 11:53:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nE5V0361lJGgCdwlFos44U3eitBmblPsO6nM+FoDnC8=;
-        b=USIhsgIapgtE4uiwFOmNcEABgHo/lqw4uiqARcpo2NCn4Xki2YfXyOzg2SS6yaRuLD
-         qDTpS2jb88LuPHe0UoRIs0iWrmcq8jjorzlHhe2swD7lHGpaWeOnZMHYXiyozj4+cOXY
-         ySEMFBdFGBu9kKz5ppCUuWRsYkp9VIe4/SEVy5aiGQjYa3RLOYYDQYO83cTWZHgFkDrT
-         OXxR5EYjRdsITS3o6m6QS4ixg8DHwu4lpQclIx7kWmKQjWpZku0v7t7cRFvcwGnzT1PC
-         cX5gKpmQBVb6iwLKq2mOOBxO7qixVD7BetJua5t7WITZy4qGuFISiq7lLEmtv9e4Jah+
-         Th1w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Z/y4ezM2Lnp9NTepfzVyGLj9aNGUTw9YHCVVUUGW7t8=;
+        b=cqyWXrahzJdhvSJjlfVQbwA8pusKkdRkdcEv/FSRPvL4FMwSzvPTTq8jQQqPwL8/dB
+         Zw2YWjOnLaSOfNjrTXeZIhX/qcI2x7pvAak/B+LdBZBTicn+MIXTD8tDaf6/m3UMYOZX
+         6NDbJoha4aZTe0GG2G6JesAVmZ8wA/ikSa2v36Z6qQb4qWq2U4lXq/a+eaozcSyFZFkU
+         F/BkfMB/621sER6gDrTTX7MmO7o8w1ilpQNwSKE5PHyO8d77cmxAOR4KUAKXeeZSiYaK
+         4peHyg5qd3cv/uP+nocV7vvdj+gxIJaIN3NZ59c36GvvCrh8GBsNaxs9W3CPHdlOTmFl
+         e+eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nE5V0361lJGgCdwlFos44U3eitBmblPsO6nM+FoDnC8=;
-        b=phR325uc0A/ZQr4R483jYy0g9A3osCmxZ186eHDsdkgrSCuM92lddL8OU9PQ53YIdk
-         85fjcUHF2xWenDDfspkJU6s07qb1djI1e3KAtt3UZGJoRDu1Owuh8IZ01O93ClAJ7F2a
-         eTq8HirKRCV/sdSmB3s4RbMMILb7nape6l5SXQilkGNX0PEKd2eP62TkulpnTSmX/N4k
-         raLAIQ8jdT+n9xDJ/kuItKNumzxpHzlRSS3/fAA2k6RLLp7x5aN+0ICwyZaoVABxqSCJ
-         Gk30j5vB5Y+zaIG1xvJbIPyOoqCTVQ8vrNlBkiVDNhYBCm4T1OeRYXzhHXTcbROc+eAf
-         G+SA==
-X-Gm-Message-State: AOAM5331+LIJzillCBrYSPfTj3lde4b6ocIPKUnDBNgly9qiEBhhh04W
-        82YcAm7EsmJKwUJjoqbGFXF5Zk7XCBi/UDiIFok=
-X-Google-Smtp-Source: ABdhPJzx0sLcryTM/UgXpz0Bq1YgTXvSzvpPqDE9jLakOHemD8iucRorJiHPQAsAG3o092yxlpdfJs6G+OcKPmxuX6c=
-X-Received: by 2002:ac2:5551:: with SMTP id l17mr132123lfk.534.1623350346588;
- Thu, 10 Jun 2021 11:39:06 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z/y4ezM2Lnp9NTepfzVyGLj9aNGUTw9YHCVVUUGW7t8=;
+        b=m7dxin02OD+RDRMkcAYFzIFI2KMbj6fB+3afErqJKDP6zzTk5kzyuF/aoDqH3eN83x
+         olaDdGyHZxIQW1IfNjLOVPLU0RsOyjhtzSiR2G6BilMREmQ0IDdzq82dcb8IwBwV6GzO
+         cttudjgHoRvlyrJeoZVIZOwSt82yLDt3iV3nETp8NY0eYOQpKGk4510JAVTpycrv8bpW
+         D2eU5UTsqdh6sc+ftb5CZbU0T0Ba6XzTCA389Rw3EZlxv4eHHq+ti8v7N7R1r47WZ7gu
+         svSgERMsiTXTKbF+/Zxq8TQhLG0VvSp2sDg7a6u+F2XYmccTGkOfri4hmo22LCs4du+M
+         6fxw==
+X-Gm-Message-State: AOAM533QUETmpcMsJFJ5aEGULJLVfluh20vlN49NxWQiUqGO6zvrQnKl
+        TC8UAI7jdagmyfuGyoyq/n0=
+X-Google-Smtp-Source: ABdhPJzsL7cSAgGPHSbW8iu/dAinpT2Fr/Eeq2j5+F2P8kzt/lT579dqwNOkll10Lq9WCLHZmukuMA==
+X-Received: by 2002:a05:6830:3082:: with SMTP id f2mr3608353ots.300.1623351163586;
+        Thu, 10 Jun 2021 11:52:43 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.22])
+        by smtp.googlemail.com with ESMTPSA id m66sm716351oia.28.2021.06.10.11.52.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Jun 2021 11:52:43 -0700 (PDT)
+Subject: Re: bpf_fib_lookup support for firewall mark
+To:     Rumen Telbizov <rumen.telbizov@menlosecurity.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <CA+FoirDxh7AhApwWVG_19j5RWT1dp23ab1h0P1nTjhhWpRC5Ow@mail.gmail.com>
+ <3e6ba294-12ca-3a2f-d17c-9588ae221dda@gmail.com>
+ <CA+FoirCt1TXuBpyayTnRXC2MfW-taN9Ob-3mioPojfaWvwjqqg@mail.gmail.com>
+ <CA+FoirALjdwJ0=F6E4w2oNmC+fRkpwHx8AZb7mW1D=nU4_qZUQ@mail.gmail.com>
+ <c2f77a3d-508f-236c-057c-6233fbc7e5d2@iogearbox.net>
+ <68345713-e679-fe9f-fedd-62f76911b55a@gmail.com>
+ <CA+FoirA28PANkzHE-4uHb7M0vf-V3UZ6NfjKbc_RBJ2=sKSrOQ@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <6248c547-ad64-04d6-fcec-374893cc1ef2@gmail.com>
+Date:   Thu, 10 Jun 2021 12:52:42 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210609103326.278782-1-toke@redhat.com> <20210609103326.278782-3-toke@redhat.com>
-In-Reply-To: <20210609103326.278782-3-toke@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 10 Jun 2021 11:38:55 -0700
-Message-ID: <CAADnVQJrETg1NsqBv2HE06tra=q5K8f1US8tGuHqc_FDMKR6XQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 02/17] bpf: allow RCU-protected lookups to happen
- from bh context
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CA+FoirA28PANkzHE-4uHb7M0vf-V3UZ6NfjKbc_RBJ2=sKSrOQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 7:24 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
->
-> XDP programs are called from a NAPI poll context, which means the RCU
-> reference liveness is ensured by local_bh_disable(). Add
-> rcu_read_lock_bh_held() as a condition to the RCU checks for map lookups =
-so
-> lockdep understands that the dereferences are safe from inside *either* a=
-n
-> rcu_read_lock() section *or* a local_bh_disable() section. This is done i=
-n
-> preparation for removing the redundant rcu_read_lock()s from the drivers.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  kernel/bpf/hashtab.c  | 21 ++++++++++++++-------
->  kernel/bpf/helpers.c  |  6 +++---
->  kernel/bpf/lpm_trie.c |  6 ++++--
->  3 files changed, 21 insertions(+), 12 deletions(-)
->
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 6f6681b07364..72c58cc516a3 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -596,7 +596,8 @@ static void *__htab_map_lookup_elem(struct bpf_map *m=
-ap, void *key)
->         struct htab_elem *l;
->         u32 hash, key_size;
->
-> -       WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held()=
-);
-> +       WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held()=
- &&
-> +                    !rcu_read_lock_bh_held());
+On 6/10/21 11:41 AM, Rumen Telbizov wrote:
+>> that's the key point on performance - crossing a cacheline. I do not
+>> have performance data at hand, but it is a substantial hit. That is why
+>> the struct is so overloaded (and complicated for a uapi) with the input
+>> vs output setting.
+> 
+> Makes perfect sense now. Thanks for clarifying David and Daniel.
+> 
+>> Presumably you are parsing the packet to id a flow to find the mark that
+>> should be used with the FIB lookup. correct?
+> 
+> Let me briefly present my high-level use case here to give more colour.
+> What I am building is an overlay network based on geneve. I have multiple
+> sites, each of which is going to be represented by a separate routing table.
+> The selection of the destination site (routing table) is based on firewall marks
 
-It's not clear to me whether rcu_read_lock_held() is still needed.
-All comments sound like rcu_read_lock_bh_held() is a superset of rcu
-that includes bh.
-But reading rcu source code it looks like RCU_BH is its own rcu flavor...
-which is confusing.
+To show my bias here - VRF is better than firewall marks for selecting
+routing tables. :-)
+
+
+> and the original packet is preserved intact, encapsulated in geneve. I have a
+> TC/eBPF program running on the geneve interface which has to query the
+> appropriate routing table based on the firewall mark and use the
+> returned next hop
+> as the tunnel key in the skb. Also worth mentioning is that those routing tables
+> contain multiple (default) routes as I use ECMP to balance traffic/provide HA
+> between sites,
+
+thanks for explaining the use case
+
+> 
+>>> That said, given h_vlan_proto/h_vlan_TCI are both output parameters,
+>>> maybe we could just union the two fields with a __u32 mark extension
+>>> that we then transfer into the flowi{4,6}?
+>>
+>> That is one option.
+>>
+>> I would go for a union on sport and/or dport. It is a fair tradeoff to
+>> request users to pick one - policy routing based on L4 ports or fwmark.
+>> A bit harder to do with a straight up union at this point, but we could
+>> also limit the supported fwmark to 16-bits. Hard choices have to be made.
+> 
+> A couple of comments on those two options: if the union is between the ports
+> and the mark then a user of the function would have to choose between
+> src+dst port or the mark in lookup, correct? If so wouldn't that
+> result in a loss
+> of the ability to use multipathing - since the hashing would be static? In my
+> case that would certainly be another significant drawback.
+
+yes, good point.
+
+> 
+> Having said that, what Daniel suggests looks very interesting to me.
+> If I understand
+> it correctly there are 32 bits in h_vlan_proto+h_vlan_TCI that are used only for
+> output today so if they are merged in a union with a 32 bit mark then we'd stay
+> at 64B structure and we can pass a full 32 bit mark.
+> 
+> So something like this?
+> union {
+>     /* input */
+>     __u32 mark;
+> 
+>     /* output */
+>     __be16 h_vlan_proto;
+>     __be16 h_vlan_TCI;
+> }
+
+I think more like this:
+
+	union {
+		/* input: fwmark to use in lookup */
+		__u32 fwmark;
+
+		/* output: vlan information if egress is on a vlan */
+		struct {
+			__be16  h_vlan_proto;
+			__be16  h_vlan_TCI;
+		};
+	};
+
+But, I do not think the vlan data should be overloaded right now. We
+still have an open design issue around supporting vlans on ingress
+(XDP). One option is to allow the lookup to take the vlan as an input,
+have the the bpf helper lookup the vlan device that goes with the
+{device index, vlan} pair and use that as the input device. If we
+overload the vlan_TCI with fwmark that prohibits this option.
+
+> 
+> Moreover, there are 12 extra bytes used only as output for the smac/dmac.
+> If the above works then maybe this opens up the opportunity to incorporate
+> even more input parameters that way?
+> 
+
+I think that's going to be tricky since the macs are 6-byte arrays.
+
