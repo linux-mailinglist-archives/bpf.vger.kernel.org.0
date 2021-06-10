@@ -2,239 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364633A2CB3
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 15:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2E93A2D32
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 15:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhFJNTm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 09:19:42 -0400
-Received: from mail-qk1-f176.google.com ([209.85.222.176]:36770 "EHLO
-        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230387AbhFJNTl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 09:19:41 -0400
-Received: by mail-qk1-f176.google.com with SMTP id i68so23657262qke.3
-        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 06:17:44 -0700 (PDT)
+        id S231276AbhFJNjK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 09:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231222AbhFJNjH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 09:39:07 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678DBC061574
+        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 06:37:02 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id q5so2377145wrm.1
+        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 06:37:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=i/aU52fr2Ejj7ORjSCkaydnx3ewIOqeFi8vx2uwavKQ=;
-        b=Bw5mQiaFfXmUq9jU22+TiMfVl+xBLkGuufthvEsAyEecqkLobHPrXZ7pKLN5pQsHq2
-         HM3gs0HzHGZ0HkyI9y2gkRP1fYfmwr+fQFSE0X4vUgZctPFdnZQmb9iv28UtAtyK5eP4
-         uiSZCxykTOjkI2CcYU72Boj0d4q68iDLtuecqgQQnYFNy74SHsq22bwPoxW08CliglCK
-         H+tg01xMqDkyZcpvAaZavlbevTRJLM7Kct+faR9Cum3PW1CtRiw6zbN6VGdFGjTFPVAF
-         vSYLDxU6C/CmuxMqe3gh7JGrjXL1GKZDRXNUMifb0M9aKqql3++l/VbrJuOUwPXFgMne
-         pr8Q==
+        bh=0sj7tSYkdDY6cg0JGPEaS057smMW6C6/SG3QI1zQncQ=;
+        b=I2cXkmM0iGW8TFdbsdBJvf49KrZW/ecFaWyjKG3wJIFVFqGfX29/LzGf1rAGfXXr9C
+         UoEgUAWaEMwelWi1bJslwkHRdnYQZT9EnOMRQopWHTlTDtQUspw/TULExB3uVjJjz1kX
+         4qMBbmaqpbXzUAnAR0FOr19eGcOLK7L6q2K3qZBwd9hopMVJKhoAKwG2hOuTnS8Mxxys
+         ed5TOyLEW7f5g1aWdw4vYEm7zMoJ9pMfyT0u3qeX+mQGdabfi6G7XlRFxrqNlk//Y0un
+         yPMEzV62srxY0OBalW/+u75Abx6FpsIPOzOZek5MIYHBli04jrbrqZIoe3fnAjxmQjhL
+         yNPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=i/aU52fr2Ejj7ORjSCkaydnx3ewIOqeFi8vx2uwavKQ=;
-        b=iqfpymqqO74v3tfpHbTjEXXvN44vEu/oTTbFzGYELserobpRnloHrxG67dVtcCl6M1
-         OURIFAUwVb0+P0cmuJE7wFo+JwR7npZ1tM9lziZSuUwPtuKG3bXh6FEoJImVzG4vbHb4
-         U4K9vNGJ2wtjVDcm2l5YiWKSqsU7XUScZVCiO5LmmyGvmNmJG396THaaLiKD+QcJToln
-         6+e1FJsCV4fnR7nUpCQ1SsmfuStRJVTC8xG7zY0tbBet1hBZXsEe3hQbWMOHAl45Sc00
-         Z1l2bReYNO/F+PPwP7aUumYeRXC0Y46pzS5hbJQJLd1nktoHFp3nDZUvKT9F48sirhs+
-         YY1w==
-X-Gm-Message-State: AOAM5316Ox3gbhX0MuPdo6jJuWVgPPMwdn7GSa6zUJhDYnBY1fUfCbGc
-        RI7Zb0OAc/jUzgJVZoPvwED8Hg==
-X-Google-Smtp-Source: ABdhPJzKkiywmIVNUVEnJG6zvreg+tX/ksWHJxIMyQckqqasdW3sE0dWLuBtc4hKfFO0peVUfY2xbg==
-X-Received: by 2002:a05:620a:39c:: with SMTP id q28mr4528574qkm.351.1623331004276;
-        Thu, 10 Jun 2021 06:16:44 -0700 (PDT)
+        bh=0sj7tSYkdDY6cg0JGPEaS057smMW6C6/SG3QI1zQncQ=;
+        b=Ml5BZNcaj85Y/4r3vRozvBcc/eTmGwJlaxCnIAN43LAhTGIpgN+ViyrkoluHZwsakA
+         Lrpaf92af8yCX3dwAzPy27Mt2cEzYRnCp4NbjPtK2a5ZvGkT8kZrzRcSRIb5AhreapNi
+         E0RsZPR7cirzpX74yjrXODmFdDe2HvdAzdfvNXTUiJcn4xIwXl13ka1oRS/d0o/8EUm8
+         AKRKSxUgU8GgTLSlAxCU02WGe7Hsf86ctkGKoDahQK8x4mbon8DE9mN4tIkulbCL4LoJ
+         K3fCF+45a6LuXQrtf2EDvLjIPMsHBPcF/gmZKQsUCnZUsCQoim+asWzKRbjr71KEl1c8
+         m/3g==
+X-Gm-Message-State: AOAM533O0Z/N7QjtMFeWdemXHIcv06QwZBpsAW4ItkmOOv6CjzWtZ8t7
+        TwVcivd+6bw/X0vE7FloDULG4w==
+X-Google-Smtp-Source: ABdhPJw2lJ/LhEbUnzzq7jGGuxZ7BJLNMX7N0aLXBpzRnYkJcuMxtv1bvHdKI3tDJhcgwiRI3kWTOA==
+X-Received: by 2002:a5d:6e92:: with SMTP id k18mr5592603wrz.94.1623332220947;
+        Thu, 10 Jun 2021 06:37:00 -0700 (PDT)
 Received: from localhost ([154.21.15.43])
-        by smtp.gmail.com with ESMTPSA id g5sm2125618qth.39.2021.06.10.06.16.43
+        by smtp.gmail.com with ESMTPSA id f184sm2078294wmf.38.2021.06.10.06.37.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Jun 2021 06:16:43 -0700 (PDT)
-Date:   Thu, 10 Jun 2021 17:16:35 +0400
+        Thu, 10 Jun 2021 06:37:00 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 17:36:55 +0400
 From:   Dmitrii Banshchikov <me@ubique.spb.ru>
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, davem@davemloft.net,
         daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
         songliubraving@fb.com, john.fastabend@gmail.com,
         kpsingh@kernel.org, netdev@vger.kernel.org, rdna@fb.com
-Subject: Re: [PATCH bpf-next v1 07/10] bpfilter: Add struct rule
-Message-ID: <20210610131635.w5pshflih4che74s@amnesia>
+Subject: Re: [PATCH bpf-next v1 00/10] bpfilter
+Message-ID: <20210610133655.d25say2ialzhtdhq@amnesia>
 References: <20210603101425.560384-1-me@ubique.spb.ru>
- <20210603101425.560384-8-me@ubique.spb.ru>
- <8040518a-572a-18d8-5a50-fd3e82f13f5c@fb.com>
+ <4dd3feeb-8b4a-0bdb-683e-c5c5643b1195@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8040518a-572a-18d8-5a50-fd3e82f13f5c@fb.com>
+In-Reply-To: <4dd3feeb-8b4a-0bdb-683e-c5c5643b1195@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 05:30:56PM -0700, Yonghong Song wrote:
+On Wed, Jun 09, 2021 at 05:50:13PM -0700, Yonghong Song wrote:
 > 
 > 
 > On 6/3/21 3:14 AM, Dmitrii Banshchikov wrote:
-> > struct rule is an equivalent of struct ipt_entry. A rule consists of
-> > zero or more matches and a target. A rule has a pointer to its ipt_entry
-> > in entries blob.  struct rule should simplify iteration over a blob and
-> > avoid blob's guts in code generation.
+> > The patchset is based on the patches from David S. Miller [1] and
+> > Daniel Borkmann [2].
 > > 
-> > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
-> > ---
-> >   net/bpfilter/Makefile                         |   2 +-
-> >   net/bpfilter/rule.c                           | 163 ++++++++++++++++++
-> >   net/bpfilter/rule.h                           |  32 ++++
-> >   .../testing/selftests/bpf/bpfilter/.gitignore |   1 +
-> >   tools/testing/selftests/bpf/bpfilter/Makefile |   5 +-
-> >   .../selftests/bpf/bpfilter/bpfilter_util.h    |   8 +
-> >   .../selftests/bpf/bpfilter/test_rule.c        |  55 ++++++
-> >   7 files changed, 264 insertions(+), 2 deletions(-)
-> >   create mode 100644 net/bpfilter/rule.c
-> >   create mode 100644 net/bpfilter/rule.h
-> >   create mode 100644 tools/testing/selftests/bpf/bpfilter/test_rule.c
+> > The main goal of the patchset is to prepare bpfilter for
+> > iptables' configuration blob parsing and code generation.
+> > 
+> > The patchset introduces data structures and code for matches,
+> > targets, rules and tables.
+> > 
+> > The current version misses handling of counters. Postpone its
+> > implementation until the code generation phase as it's not clear
+> > yet how to better handle them.
+> > 
+> > Beside that there is no support of net namespaces at all.
+> > 
+> > In the next iteration basic code generation shall be introduced.
+> > 
+> > The rough plan for the code generation.
+> > 
+> > It seems reasonable to assume that the first rules should cover
+> > most of the packet flow.  This is why they are critical from the
+> > performance point of view.  At the same time number of user
+> > defined rules might be pretty large. Also there is a limit on
+> > size and complexity of a BPF program introduced by the verifier.
+> > 
+> > There are two approaches how to handle iptables' rules in
+> > generated BPF programs.
+> > 
+> > The first approach is to generate a BPF program that is an
+> > equivalent to a set of rules on a rule by rule basis. This
+> > approach should give the best performance. The drawback is the
+> > limitation from the verifier on size and complexity of BPF
+> > program.
+> > 
+> > The second approach is to use an internal representation of rules
+> > stored in a BPF map and use bpf_for_each_map_elem() helper to
+> > iterate over them. In this case the helper's callback is a BPF
+> > function that is able to process any valid rule.
+> > 
+> > Combination of the two approaches should give most of the
+> > benefits - a heuristic should help to select a small subset of
+> > the rules for code generation on a rule by rule basis. All other
+> > rules are cold and it should be possible to store them in an
+> > internal form in a BPF map. The rules will be handled by
+> > bpf_for_each_map_elem().  This should remove the limit on the
+> > number of supported rules.
+> 
+> Agree. A bpf program inlines some hot rule handling and put
+> the rest in for_each_map_elem() sounds reasonable to me.
+> 
+> > 
+> > During development it was useful to use statically linked
+> > sanitizers in bpfilter usermode helper. Also it is possible to
+> > use fuzzers but it's not clear if it is worth adding them to the
+> > test infrastructure - because there are no other fuzzers under
+> > tools/testing/selftests currently.
+> > 
+> > Patch 1 adds definitions of the used types.
+> > Patch 2 adds logging to bpfilter.
+> > Patch 3 adds bpfilter header to tools
+> > Patch 4 adds an associative map.
+> > Patches 5/6/7/8 add code for matches, targets, rules and table.
+> > Patch 9 handles hooked setsockopt(2) calls.
+> > Patch 10 uses prepared code in main().
+> > 
+> > Here is an example:
+> > % dmesg  | tail -n 2
+> > [   23.636102] bpfilter: Loaded bpfilter_umh pid 181
+> > [   23.658529] bpfilter: started
+> > % /usr/sbin/iptables-legacy -L -n
+> 
+> So this /usr/sbin/iptables-legacy is your iptables variant to
+> translate iptable command lines to BPFILTER_IPT_SO_*,
+> right? It could be good to provide a pointer to the source
+> or binary so people can give a try.
+> 
+> I am not an expert in iptables. Reading codes, I kind of
+> can grasp the high-level ideas of the patch, but probably
+> Alexei or Daniel can review some details whether the
+> design is sufficient to be an iptable replacement.
+> 
+
+The goal of a complete iptables replacement is too ambigious for
+the moment - because existings hooks and helpers don't cover all
+required functionality.
+
+A more achievable goal is to have something simple that could
+replace a significant part of use cases for filter table.
+
+Having something simple that would work as a stateless firewall
+and provide some performance benefits is a good start. For more
+complex scenarios there is a safe fallback to the existing
+implementation.
+
+
+> 
+> > Chain INPUT (policy ACCEPT)
+> > target     prot opt source               destination
+> > 
+> > Chain FORWARD (policy ACCEPT)
+> > target     prot opt source               destination
 > > 
 > [...]
-> > +
-> > +bool rule_has_standard_target(const struct rule *rule);
-> > +bool is_rule_unconditional(const struct rule *rule);
-> > +int init_rule(struct context *ctx, const struct bpfilter_ipt_entry *ipt_entry, struct rule *rule);
-> > +void free_rule(struct rule *rule);
-> > +
-> > +#endif // NET_BPFILTER_RULE_H
-> > diff --git a/tools/testing/selftests/bpf/bpfilter/.gitignore b/tools/testing/selftests/bpf/bpfilter/.gitignore
-> > index 7e077f506af1..4d7c5083d980 100644
-> > --- a/tools/testing/selftests/bpf/bpfilter/.gitignore
-> > +++ b/tools/testing/selftests/bpf/bpfilter/.gitignore
-> > @@ -2,3 +2,4 @@
-> >   test_map
-> >   test_match
-> >   test_target
-> > +test_rule
-> > diff --git a/tools/testing/selftests/bpf/bpfilter/Makefile b/tools/testing/selftests/bpf/bpfilter/Makefile
-> > index a11775e8b5af..27a1ddcb6dc9 100644
-> > --- a/tools/testing/selftests/bpf/bpfilter/Makefile
-> > +++ b/tools/testing/selftests/bpf/bpfilter/Makefile
-> > @@ -11,6 +11,7 @@ CFLAGS += -Wall -g -pthread -I$(TOOLSINCDIR) -I$(APIDIR) -I$(BPFILTERSRCDIR)
-> >   TEST_GEN_PROGS += test_map
-> >   TEST_GEN_PROGS += test_match
-> >   TEST_GEN_PROGS += test_target
-> > +TEST_GEN_PROGS += test_rule
-> >   KSFT_KHDR_INSTALL := 1
-> > @@ -19,9 +20,11 @@ include ../../lib.mk
-> >   BPFILTER_MATCH_SRCS := $(BPFILTERSRCDIR)/match.c $(BPFILTERSRCDIR)/xt_udp.c
-> >   BPFILTER_TARGET_SRCS := $(BPFILTERSRCDIR)/target.c
-> > -BPFILTER_COMMON_SRCS := $(BPFILTERSRCDIR)/map-common.c $(BPFILTERSRCDIR)/context.c
-> > +BPFILTER_COMMON_SRCS := $(BPFILTERSRCDIR)/map-common.c $(BPFILTERSRCDIR)/context.c \
-> > +	$(BPFILTERSRCDIR)/rule.c
-> >   BPFILTER_COMMON_SRCS += $(BPFILTER_MATCH_SRCS) $(BPFILTER_TARGET_SRCS)
-> >   $(OUTPUT)/test_map: test_map.c $(BPFILTERSRCDIR)/map-common.c
-> >   $(OUTPUT)/test_match: test_match.c $(BPFILTER_COMMON_SRCS)
-> >   $(OUTPUT)/test_target: test_target.c $(BPFILTER_COMMON_SRCS)
-> > +$(OUTPUT)/test_rule: test_rule.c $(BPFILTER_COMMON_SRCS)
-> > diff --git a/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h b/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h
-> > index d82ff86f280e..55fb0e959fca 100644
-> > --- a/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h
-> > +++ b/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h
-> > @@ -7,6 +7,7 @@
-> >   #include <linux/netfilter/x_tables.h>
-> >   #include <stdio.h>
-> > +#include <string.h>
-> >   static inline void init_standard_target(struct xt_standard_target *ipt_target, int revision,
-> >   					int verdict)
-> > @@ -28,4 +29,11 @@ static inline void init_error_target(struct xt_error_target *ipt_target, int rev
-> >   	snprintf(ipt_target->errorname, sizeof(ipt_target->errorname), "%s", error_name);
-> >   }
-> > +static inline void init_standard_entry(struct ipt_entry *entry, __u16 matches_size)
-> > +{
-> > +	memset(entry, 0, sizeof(*entry));
-> > +	entry->target_offset = sizeof(*entry) + matches_size;
-> > +	entry->next_offset = sizeof(*entry) + matches_size + sizeof(struct xt_standard_target);
-> > +}
-> > +
-> >   #endif // BPFILTER_UTIL_H
-> > diff --git a/tools/testing/selftests/bpf/bpfilter/test_rule.c b/tools/testing/selftests/bpf/bpfilter/test_rule.c
-> > new file mode 100644
-> > index 000000000000..fe12adf32fe5
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/bpfilter/test_rule.c
-> > @@ -0,0 +1,55 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#define _GNU_SOURCE
-> > +
-> > +#include "rule.h"
-> > +
-> > +#include <linux/bpfilter.h>
-> > +#include <linux/err.h>
-> > +
-> > +#include <linux/netfilter_ipv4/ip_tables.h>
-> > +
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +
-> > +#include "../../kselftest_harness.h"
-> > +
-> > +#include "context.h"
-> > +#include "rule.h"
-> > +
-> > +#include "bpfilter_util.h"
-> > +
-> > +FIXTURE(test_standard_rule)
-> > +{
-> > +	struct context ctx;
-> > +	struct {
-> > +		struct ipt_entry entry;
-> > +		struct xt_standard_target target;
-> > +	} entry;
-> > +	struct rule rule;
-> > +};
-> > +
-> > +FIXTURE_SETUP(test_standard_rule)
-> > +{
-> > +	const int verdict = BPFILTER_NF_ACCEPT;
-> > +
-> > +	ASSERT_EQ(create_context(&self->ctx), 0);
-> > +	self->ctx.log_file = stderr;
-> > +
-> > +	init_standard_entry(&self->entry.entry, 0);
-> > +	init_standard_target(&self->entry.target, 0, -verdict - 1);
-> > +}
-> > +
-> > +FIXTURE_TEARDOWN(test_standard_rule)
-> > +{
-> > +	free_rule(&self->rule);
-> > +	free_context(&self->ctx);
-> > +}
-> > +
-> > +TEST_F(test_standard_rule, init)
-> > +{
-> > +	ASSERT_EQ(0, init_rule(&self->ctx, (const struct bpfilter_ipt_entry *)&self->entry.entry,
-> > +			       &self->rule));
-> > +}
-> > +
-> > +TEST_HARNESS_MAIN
-> 
-> When compiling selftests/bpf/bpfilter, I got the following compilation
-> warning:
-> 
-> gcc -Wall -g -pthread -I/home/yhs/work/bpf-next/tools/include
-> -I/home/yhs/work/bpf-next/tools/include/uapi -I../../../../../net/bpfilter
-> test_rule.c ../../../../../net/bpfilter/map-common.c
-> ../../../../../net/bpfilter/context.c ../../../../../net/bpfilter/rule.c
-> ../../../../../net/bpfilter/table.c ../../../../../net/bpfilter/match.c
-> ../../../../../net/bpfilter/xt_udp.c ../../../../../net/bpfilter/target.c
-> -o /home/yhs/work/bpf-next/tools/testing/selftests/bpf/bpfilter/test_rule
-> In file included from test_rule.c:15:
-> ../../kselftest_harness.h:674: warning: "ARRAY_SIZE" redefined
->  #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
-> 
-> In file included from /usr/include/linux/netfilter/x_tables.h:4,
->                  from /usr/include/linux/netfilter_ipv4/ip_tables.h:24,
->                  from test_rule.c:10:
-> /home/yhs/work/bpf-next/tools/include/linux/kernel.h:105: note: this is the
-> location of the previous definition
->  #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) +
-> __must_be_array(arr))
-> 
-
-Hmm. I cannot reproduce it locally now though I saw this error and
-fixed it by removing some of the includes from header files.
-I will double check it.
-
 
 -- 
 
