@@ -2,187 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344AC3A27D5
-	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 11:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364633A2CB3
+	for <lists+bpf@lfdr.de>; Thu, 10 Jun 2021 15:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFJJL7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 05:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbhFJJL7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 05:11:59 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A70C061574;
-        Thu, 10 Jun 2021 02:09:47 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id m18so1398255wrv.2;
-        Thu, 10 Jun 2021 02:09:46 -0700 (PDT)
+        id S230392AbhFJNTm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 09:19:42 -0400
+Received: from mail-qk1-f176.google.com ([209.85.222.176]:36770 "EHLO
+        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230387AbhFJNTl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 09:19:41 -0400
+Received: by mail-qk1-f176.google.com with SMTP id i68so23657262qke.3
+        for <bpf@vger.kernel.org>; Thu, 10 Jun 2021 06:17:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aA3qNpdrQMqkukZT9c2cYMIlRMYPN4cXLvEY+pr6FGE=;
-        b=mlnXzW0JDlw/F9ohxso+1nE1ibYnYhrOGRPE1df+XW8avkT5qXymLsKUaTvsrjtKeH
-         KX9KhlnLx0fQ4uRmqGTgkzclsmTyGptiW061DpN8wnA122ySA9u4YRIgyzW22HFI9lLo
-         LIGgICl8bViq0QG4qX5+nV1BpSYtvM0V/Q9u9lUY3FA/61FWI8jIxHLhC6GgyH2vWnfX
-         Rdk7z11eNncrigDnaA0yma7pISLLAiSD/nAnVEhkxmYm9X9xhAA+TotFVjyRSvCvuBWy
-         T0BgaIz2VwmiyUaIJ8kTXBGtMTMrz1448VNUM3nv3E8xYxOscygD0uoYLWLHt5qd4Drj
-         xHDA==
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i/aU52fr2Ejj7ORjSCkaydnx3ewIOqeFi8vx2uwavKQ=;
+        b=Bw5mQiaFfXmUq9jU22+TiMfVl+xBLkGuufthvEsAyEecqkLobHPrXZ7pKLN5pQsHq2
+         HM3gs0HzHGZ0HkyI9y2gkRP1fYfmwr+fQFSE0X4vUgZctPFdnZQmb9iv28UtAtyK5eP4
+         uiSZCxykTOjkI2CcYU72Boj0d4q68iDLtuecqgQQnYFNy74SHsq22bwPoxW08CliglCK
+         H+tg01xMqDkyZcpvAaZavlbevTRJLM7Kct+faR9Cum3PW1CtRiw6zbN6VGdFGjTFPVAF
+         vSYLDxU6C/CmuxMqe3gh7JGrjXL1GKZDRXNUMifb0M9aKqql3++l/VbrJuOUwPXFgMne
+         pr8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aA3qNpdrQMqkukZT9c2cYMIlRMYPN4cXLvEY+pr6FGE=;
-        b=nZOPpWBCpDThWaA8vyLSz2xnSdX1O8NlXjDWogEBrqOw45zgnREx3yOEWgkZuWuurU
-         gZ7L3afomofH6WPEKWoJq5Qclq4jWYovny1A+sMt3TCMRN5JzTmpWrbWv2xhccefg4CM
-         zG28eU7HE6PVNN2jzeLniV/VXLfUc8wk/EV9C9NFIpF+v7tDT+ixXTHbkzJfSIWitmNl
-         9RTbEadzdlXm0I+xfsg4xqmK/pyjrxdXbJO8nEgvxCG465rbtpvxXipUVGH9ZtiWIoAe
-         StYfaa56fH9D+GXldlauzqN7KIp1IB5Gp+DHbLTNIUdR9whPIwE/TcDsnVKa7NsDsWZ4
-         JqpA==
-X-Gm-Message-State: AOAM530bnSHszlgGXjKXpSv8C7RNHfn7nklT37u9M67vuSWN6LFkIX7/
-        tQtfP0PxDwkLlclNP9JbEZA=
-X-Google-Smtp-Source: ABdhPJxqrRuVI+dreFR9Ia4t+/Q60mfSF2kuvuRz1tIIMoka/FZFX+Q52Yl0pQNepm0ykiPHCoLIZQ==
-X-Received: by 2002:adf:fdcd:: with SMTP id i13mr4268863wrs.307.1623316185636;
-        Thu, 10 Jun 2021 02:09:45 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.133.95])
-        by smtp.gmail.com with ESMTPSA id n7sm8151882wmq.37.2021.06.10.02.09.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Jun 2021 02:09:44 -0700 (PDT)
-Subject: Re: io_uring: BPF controlled I/O
-To:     Victor Stewart <v@nametag.social>
-Cc:     io-uring <io-uring@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lsf-pc@lists.linux-foundation.org
-References: <23168ac0-0f05-3cd7-90dc-08855dd275b2@gmail.com>
- <CAM1kxwjHrf74u5OLB=acP2fBy+cPG4NNxa-51O35caY4VKdkkg@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <7a7d32eb-69fb-93ef-4092-c4da926dd416@gmail.com>
-Date:   Thu, 10 Jun 2021 10:09:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i/aU52fr2Ejj7ORjSCkaydnx3ewIOqeFi8vx2uwavKQ=;
+        b=iqfpymqqO74v3tfpHbTjEXXvN44vEu/oTTbFzGYELserobpRnloHrxG67dVtcCl6M1
+         OURIFAUwVb0+P0cmuJE7wFo+JwR7npZ1tM9lziZSuUwPtuKG3bXh6FEoJImVzG4vbHb4
+         U4K9vNGJ2wtjVDcm2l5YiWKSqsU7XUScZVCiO5LmmyGvmNmJG396THaaLiKD+QcJToln
+         6+e1FJsCV4fnR7nUpCQ1SsmfuStRJVTC8xG7zY0tbBet1hBZXsEe3hQbWMOHAl45Sc00
+         Z1l2bReYNO/F+PPwP7aUumYeRXC0Y46pzS5hbJQJLd1nktoHFp3nDZUvKT9F48sirhs+
+         YY1w==
+X-Gm-Message-State: AOAM5316Ox3gbhX0MuPdo6jJuWVgPPMwdn7GSa6zUJhDYnBY1fUfCbGc
+        RI7Zb0OAc/jUzgJVZoPvwED8Hg==
+X-Google-Smtp-Source: ABdhPJzKkiywmIVNUVEnJG6zvreg+tX/ksWHJxIMyQckqqasdW3sE0dWLuBtc4hKfFO0peVUfY2xbg==
+X-Received: by 2002:a05:620a:39c:: with SMTP id q28mr4528574qkm.351.1623331004276;
+        Thu, 10 Jun 2021 06:16:44 -0700 (PDT)
+Received: from localhost ([154.21.15.43])
+        by smtp.gmail.com with ESMTPSA id g5sm2125618qth.39.2021.06.10.06.16.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 06:16:43 -0700 (PDT)
+Date:   Thu, 10 Jun 2021 17:16:35 +0400
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, davem@davemloft.net,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, rdna@fb.com
+Subject: Re: [PATCH bpf-next v1 07/10] bpfilter: Add struct rule
+Message-ID: <20210610131635.w5pshflih4che74s@amnesia>
+References: <20210603101425.560384-1-me@ubique.spb.ru>
+ <20210603101425.560384-8-me@ubique.spb.ru>
+ <8040518a-572a-18d8-5a50-fd3e82f13f5c@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <CAM1kxwjHrf74u5OLB=acP2fBy+cPG4NNxa-51O35caY4VKdkkg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8040518a-572a-18d8-5a50-fd3e82f13f5c@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/7/21 7:51 PM, Victor Stewart wrote:
-> On Sat, Jun 5, 2021 at 5:09 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> One of the core ideas behind io_uring is passing requests via memory
->> shared b/w the userspace and the kernel, a.k.a. queues or rings. That
->> serves a purpose of reducing number of context switches or bypassing
->> them, but the userspace is responsible for controlling the flow,
->> reaping and processing completions (a.k.a. Completion Queue Entry, CQE),
->> and submitting new requests, adding extra context switches even if there
->> is not much work to do. A simple illustration is read(open()), where
->> io_uring is unable to propagate the returned fd to the read, with more
->> cases piling up.
->>
->> The big picture idea stays the same since last year, to give out some
->> of this control to BPF, allow it to check results of completed requests,
->> manipulate memory if needed and submit new requests. Apart from being
->> just a glue between two requests, it might even offer more flexibility
->> like keeping a QD, doing reduce/broadcast and so on.
->>
->> The prototype [1,2] is in a good shape but some work need to be done.
->> However, the main concern is getting an understanding what features and
->> functionality have to be added to be flexible enough. Various toy
->> examples can be found at [3] ([1] includes an overview of cases).
->>
->> Discussion points:
->> - Use cases, feature requests, benchmarking
+On Wed, Jun 09, 2021 at 05:30:56PM -0700, Yonghong Song wrote:
 > 
-> hi Pavel,
 > 
-> coincidentally i'm tossing around in my mind at the moment an idea for
-> offloading
-> the PING/PONG of a QUIC server/client into the kernel via eBPF.
+> On 6/3/21 3:14 AM, Dmitrii Banshchikov wrote:
+> > struct rule is an equivalent of struct ipt_entry. A rule consists of
+> > zero or more matches and a target. A rule has a pointer to its ipt_entry
+> > in entries blob.  struct rule should simplify iteration over a blob and
+> > avoid blob's guts in code generation.
+> > 
+> > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+> > ---
+> >   net/bpfilter/Makefile                         |   2 +-
+> >   net/bpfilter/rule.c                           | 163 ++++++++++++++++++
+> >   net/bpfilter/rule.h                           |  32 ++++
+> >   .../testing/selftests/bpf/bpfilter/.gitignore |   1 +
+> >   tools/testing/selftests/bpf/bpfilter/Makefile |   5 +-
+> >   .../selftests/bpf/bpfilter/bpfilter_util.h    |   8 +
+> >   .../selftests/bpf/bpfilter/test_rule.c        |  55 ++++++
+> >   7 files changed, 264 insertions(+), 2 deletions(-)
+> >   create mode 100644 net/bpfilter/rule.c
+> >   create mode 100644 net/bpfilter/rule.h
+> >   create mode 100644 tools/testing/selftests/bpf/bpfilter/test_rule.c
+> > 
+> [...]
+> > +
+> > +bool rule_has_standard_target(const struct rule *rule);
+> > +bool is_rule_unconditional(const struct rule *rule);
+> > +int init_rule(struct context *ctx, const struct bpfilter_ipt_entry *ipt_entry, struct rule *rule);
+> > +void free_rule(struct rule *rule);
+> > +
+> > +#endif // NET_BPFILTER_RULE_H
+> > diff --git a/tools/testing/selftests/bpf/bpfilter/.gitignore b/tools/testing/selftests/bpf/bpfilter/.gitignore
+> > index 7e077f506af1..4d7c5083d980 100644
+> > --- a/tools/testing/selftests/bpf/bpfilter/.gitignore
+> > +++ b/tools/testing/selftests/bpf/bpfilter/.gitignore
+> > @@ -2,3 +2,4 @@
+> >   test_map
+> >   test_match
+> >   test_target
+> > +test_rule
+> > diff --git a/tools/testing/selftests/bpf/bpfilter/Makefile b/tools/testing/selftests/bpf/bpfilter/Makefile
+> > index a11775e8b5af..27a1ddcb6dc9 100644
+> > --- a/tools/testing/selftests/bpf/bpfilter/Makefile
+> > +++ b/tools/testing/selftests/bpf/bpfilter/Makefile
+> > @@ -11,6 +11,7 @@ CFLAGS += -Wall -g -pthread -I$(TOOLSINCDIR) -I$(APIDIR) -I$(BPFILTERSRCDIR)
+> >   TEST_GEN_PROGS += test_map
+> >   TEST_GEN_PROGS += test_match
+> >   TEST_GEN_PROGS += test_target
+> > +TEST_GEN_PROGS += test_rule
+> >   KSFT_KHDR_INSTALL := 1
+> > @@ -19,9 +20,11 @@ include ../../lib.mk
+> >   BPFILTER_MATCH_SRCS := $(BPFILTERSRCDIR)/match.c $(BPFILTERSRCDIR)/xt_udp.c
+> >   BPFILTER_TARGET_SRCS := $(BPFILTERSRCDIR)/target.c
+> > -BPFILTER_COMMON_SRCS := $(BPFILTERSRCDIR)/map-common.c $(BPFILTERSRCDIR)/context.c
+> > +BPFILTER_COMMON_SRCS := $(BPFILTERSRCDIR)/map-common.c $(BPFILTERSRCDIR)/context.c \
+> > +	$(BPFILTERSRCDIR)/rule.c
+> >   BPFILTER_COMMON_SRCS += $(BPFILTER_MATCH_SRCS) $(BPFILTER_TARGET_SRCS)
+> >   $(OUTPUT)/test_map: test_map.c $(BPFILTERSRCDIR)/map-common.c
+> >   $(OUTPUT)/test_match: test_match.c $(BPFILTER_COMMON_SRCS)
+> >   $(OUTPUT)/test_target: test_target.c $(BPFILTER_COMMON_SRCS)
+> > +$(OUTPUT)/test_rule: test_rule.c $(BPFILTER_COMMON_SRCS)
+> > diff --git a/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h b/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h
+> > index d82ff86f280e..55fb0e959fca 100644
+> > --- a/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h
+> > +++ b/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h
+> > @@ -7,6 +7,7 @@
+> >   #include <linux/netfilter/x_tables.h>
+> >   #include <stdio.h>
+> > +#include <string.h>
+> >   static inline void init_standard_target(struct xt_standard_target *ipt_target, int revision,
+> >   					int verdict)
+> > @@ -28,4 +29,11 @@ static inline void init_error_target(struct xt_error_target *ipt_target, int rev
+> >   	snprintf(ipt_target->errorname, sizeof(ipt_target->errorname), "%s", error_name);
+> >   }
+> > +static inline void init_standard_entry(struct ipt_entry *entry, __u16 matches_size)
+> > +{
+> > +	memset(entry, 0, sizeof(*entry));
+> > +	entry->target_offset = sizeof(*entry) + matches_size;
+> > +	entry->next_offset = sizeof(*entry) + matches_size + sizeof(struct xt_standard_target);
+> > +}
+> > +
+> >   #endif // BPFILTER_UTIL_H
+> > diff --git a/tools/testing/selftests/bpf/bpfilter/test_rule.c b/tools/testing/selftests/bpf/bpfilter/test_rule.c
+> > new file mode 100644
+> > index 000000000000..fe12adf32fe5
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/bpfilter/test_rule.c
+> > @@ -0,0 +1,55 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#define _GNU_SOURCE
+> > +
+> > +#include "rule.h"
+> > +
+> > +#include <linux/bpfilter.h>
+> > +#include <linux/err.h>
+> > +
+> > +#include <linux/netfilter_ipv4/ip_tables.h>
+> > +
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +
+> > +#include "../../kselftest_harness.h"
+> > +
+> > +#include "context.h"
+> > +#include "rule.h"
+> > +
+> > +#include "bpfilter_util.h"
+> > +
+> > +FIXTURE(test_standard_rule)
+> > +{
+> > +	struct context ctx;
+> > +	struct {
+> > +		struct ipt_entry entry;
+> > +		struct xt_standard_target target;
+> > +	} entry;
+> > +	struct rule rule;
+> > +};
+> > +
+> > +FIXTURE_SETUP(test_standard_rule)
+> > +{
+> > +	const int verdict = BPFILTER_NF_ACCEPT;
+> > +
+> > +	ASSERT_EQ(create_context(&self->ctx), 0);
+> > +	self->ctx.log_file = stderr;
+> > +
+> > +	init_standard_entry(&self->entry.entry, 0);
+> > +	init_standard_target(&self->entry.target, 0, -verdict - 1);
+> > +}
+> > +
+> > +FIXTURE_TEARDOWN(test_standard_rule)
+> > +{
+> > +	free_rule(&self->rule);
+> > +	free_context(&self->ctx);
+> > +}
+> > +
+> > +TEST_F(test_standard_rule, init)
+> > +{
+> > +	ASSERT_EQ(0, init_rule(&self->ctx, (const struct bpfilter_ipt_entry *)&self->entry.entry,
+> > +			       &self->rule));
+> > +}
+> > +
+> > +TEST_HARNESS_MAIN
 > 
-> problem being, being that QUIC is userspace run transport and that NAT-ed UDP
-> mappings can't be expected to stay open longer than 30 seconds, QUIC
-> applications
-> bare a large cost of context switching wake-up to conduct connection lifetime
-> maintenance... especially when managing a large number of mostly idle long lived
-> connections. so offloading this maintenance service into the kernel
-> would be a great
-> efficiency boon.
+> When compiling selftests/bpf/bpfilter, I got the following compilation
+> warning:
 > 
-> the main impediment is that access to the kernel crypto libraries
-> isn't currently possible
-> from eBPF. that said, connection wide crypto offload into the NIC is a
-> frequently mentioned
-> subject in QUIC circles, so one could argue better to allocate the
-> time to NIC crypto offload
-> and then simply conduct this PING/PONG offload in plain text.
+> gcc -Wall -g -pthread -I/home/yhs/work/bpf-next/tools/include
+> -I/home/yhs/work/bpf-next/tools/include/uapi -I../../../../../net/bpfilter
+> test_rule.c ../../../../../net/bpfilter/map-common.c
+> ../../../../../net/bpfilter/context.c ../../../../../net/bpfilter/rule.c
+> ../../../../../net/bpfilter/table.c ../../../../../net/bpfilter/match.c
+> ../../../../../net/bpfilter/xt_udp.c ../../../../../net/bpfilter/target.c
+> -o /home/yhs/work/bpf-next/tools/testing/selftests/bpf/bpfilter/test_rule
+> In file included from test_rule.c:15:
+> ../../kselftest_harness.h:674: warning: "ARRAY_SIZE" redefined
+>  #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 > 
-> CQEs would provide a great way for the offloaded service to be able to
-> wake up the
-> application when it's input is required.
+> In file included from /usr/include/linux/netfilter/x_tables.h:4,
+>                  from /usr/include/linux/netfilter_ipv4/ip_tables.h:24,
+>                  from test_rule.c:10:
+> /home/yhs/work/bpf-next/tools/include/linux/kernel.h:105: note: this is the
+> location of the previous definition
+>  #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) +
+> __must_be_array(arr))
+> 
 
-Interesting, want to try out the idea? All pointers are here
-and/or in the patchset's cv, but if anything is not clear,
-inconvenient, lacks needed functionality, etc. let me know
+Hmm. I cannot reproduce it locally now though I saw this error and
+fixed it by removing some of the includes from header files.
+I will double check it.
 
-
-> anyway food for thought.
-> 
-> Victor
-> 
->> - Userspace programming model, code reuse (e.g. liburing)
->> - BPF-BPF and userspace-BPF synchronisation. There is
->>   CQE based notification approach and plans (see design
->>   notes), however need to discuss what else might be
->>   needed.
->> - Do we need more contexts passed apart from user_data?
->>   e.g. specifying a BPF map/array/etc fd io_uring requests?
->> - Userspace atomics and efficiency of userspace reads/writes. If
->>   proved to be not performant enough there are potential ways to take
->>   on it, e.g. inlining, having it in BPF ISA, and pre-verifying
->>   userspace pointers.
->>
->> [1] https://lore.kernel.org/io-uring/a83f147b-ea9d-e693-a2e9-c6ce16659749@gmail.com/T/#m31d0a2ac6e2213f912a200f5e8d88bd74f81406b
->> [2] https://github.com/isilence/linux/tree/ebpf_v2
->> [3] https://github.com/isilence/liburing/tree/ebpf_v2/examples/bpf
->>
->>
->> -----------------------------------------------------------------------
->> Design notes:
->>
->> Instead of basing it on hooks it adds support of a new type of io_uring
->> requests as it gives a better control and let's to reuse internal
->> infrastructure. These requests run a new type of io_uring BPF programs
->> wired with a bunch of new helpers for submitting requests and dealing
->> with CQEs, are allowed to read/write userspace memory in virtue of a
->> recently added sleepable BPF feature. and also provided with a token
->> (generic io_uring token, aka user_data, specified at submission and
->> returned in an CQE), which may be used to pass a userspace pointer used
->> as a context.
->>
->> Besides running BPF programs, they are able to request waiting.
->> Currently it supports CQ waiting for a number of completions, but others
->> might be added and/or needed, e.g. futex and/or requeueing the current
->> BPF request onto an io_uring request/link being submitted. That hides
->> the overhead of creating BPF requests by keeping them alive and
->> invoking multiple times.
->>
->> Another big chunk solved is figuring out a good way of feeding CQEs
->> (potentially many) to a BPF program. The current approach
->> is to enable multiple completion queues (CQ), and specify for each
->> request to which one steer its CQE, so all the synchronisation
->> is in control of the userspace. For instance, there may be a separate
->> CQ per each in-flight BPF request, and they can work with their own
->> queues and send an CQE to the main CQ so notifying the userspace.
->> It also opens up a notification-like sync through CQE posting to
->> neighbours' CQs.
->>
->>
->> --
->> Pavel Begunkov
 
 -- 
-Pavel Begunkov
+
+Dmitrii Banshchikov
