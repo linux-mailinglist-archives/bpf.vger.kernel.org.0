@@ -2,59 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337FA3A397C
-	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 04:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED3B3A398D
+	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 04:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhFKCDM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 22:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbhFKCDL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 22:03:11 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DFBC061574;
-        Thu, 10 Jun 2021 19:01:01 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id ei4so4784561pjb.3;
-        Thu, 10 Jun 2021 19:01:01 -0700 (PDT)
+        id S230450AbhFKCOS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Jun 2021 22:14:18 -0400
+Received: from mail-pj1-f48.google.com ([209.85.216.48]:45902 "EHLO
+        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhFKCOR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Jun 2021 22:14:17 -0400
+Received: by mail-pj1-f48.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso5056118pjb.4;
+        Thu, 10 Jun 2021 19:12:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zmBr2+tx5LxvDo66vLoZA8O8Gldo6LQgWs3Y7QEUUso=;
-        b=KtD/RY/IZ3trP847UBvvuwUnjxG45qim66JouocjFLZTLKq5YCMNdn2Yoc3MM5d9/u
-         PpTCRmNZld1Ew69QqdXNGhLkEq8CTFijEJaLZ0x3zTJoxqG1IZC9Nt2yb4vH8jTyrSj9
-         E2hk1fXATRlEW3D067vrP2SN3z9MPt1jo1kZcgPIg0dosI2iKXk4HDs7ecorbnkJBmWs
-         /25OinKCbvFsu7RGCEhq76/Cq1PYBugg58KBbRZGmVfTUMCVzzp+nveFq6axHKYqHJMa
-         CZiXjEmWXOxfQ5Wxs8Y6DEnaoVYoLSJK/dwtvdKczWnOLcw8o83iCV5EJDPxtx4/r+J9
-         E4WQ==
+        bh=m1nvfkedOhC2O/Z+HXKqfInqZLv5+44mNv+t9W0XDcU=;
+        b=FYQJZt9x7DDitcHxk0wAE0nKmhjgrSe6CN3w/YhNedKFLVgN49HxVqMpaQWpJJpFde
+         RJnc5VLAaTeC+PEdHx8BwOUVHxR2vuPv8ADctPpwytXrHNLRUxDZv6VJp6pnsjF++LBg
+         G9JUaIZgOecP2zZ23P31+XnvQiK05bKOHjKP507+uKYSNvFJhFdGHvCU7s/bJB47mNXN
+         Ax5TGB3qOmeDS80LfYdoUh2AxlsH10/e7214pl6hHjmkYBvXkX2Rq2d3rm7X8HKZGxE3
+         VT2+pz4DTjGVoKlhVfmkcCgz40/EPM9sQDHZ8cPPLR/vL6uz9snZ1unEkXciNbqMKfpF
+         KZyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zmBr2+tx5LxvDo66vLoZA8O8Gldo6LQgWs3Y7QEUUso=;
-        b=tsFKcL8zFeCDmWQdFzqkbgCl+z3hJJdHw0oSl74FYA+OJCsVMCxmLKWkuJVWnFzYt7
-         yzU/LrQi+4oaaOlzB3AZlqjH2P6uxQuZtE/jZkWZw89Yqr5mi/QsADmPM14eOlxbJtre
-         WKDa7ukdjRgtxdeajLXExW08TD7Ycz5izsmnjwEFWyibJU5I59iTfRlK4ukS75cV6NLD
-         j06li8E3iLg4bL59UevkVseauBmBkXgmOVvo5KxCCN76Cakiws5MLoLGL0xpHra13FEx
-         XUOXSLQrYC7hgFNgluRGScWqQNdJLhWqut5f1EZDrUFE0y83zX75pT9oH0YRv/8nYpt0
-         ApFA==
-X-Gm-Message-State: AOAM533XFZ2OtNt7LUjby0SZbHJ077O8wCh+0sjY4PM180UtsSElNlw+
-        biQRyvfxsyR+sKgsioz7zXpksmpb5PXO0jnH+UE=
-X-Google-Smtp-Source: ABdhPJxahos3XQuNRTTjm3cMimGSmSzF1ErwwQLQKvA8a2rYrBsXu4M7JyPES9rQvhKZVgV0I0QNFGbxaEyExlq7MNA=
-X-Received: by 2002:a17:90a:1141:: with SMTP id d1mr1902258pje.56.1623376861252;
- Thu, 10 Jun 2021 19:01:01 -0700 (PDT)
+        bh=m1nvfkedOhC2O/Z+HXKqfInqZLv5+44mNv+t9W0XDcU=;
+        b=ub7Tu+07AL3WvRYuXb5dPz45RwZHifUl1i/yEEOUa6bRDmEw5PwjxHzt/D3TyYE8eR
+         S64nmH5/2v08OFZoHAzx5ZpO5Wg4gVd8HGMCo2zUs2mfSScv0JcA6/YYCNIQz7BBGkb4
+         VFxZqoNh5nd4I9ZOOQ4g0SAl/6gEPoyj4RXHR4sBIzfrOoizlIQJ8b0vDDL93NnfEnQD
+         YzSBgWb4M+tMJbki3ac1j5HAvmy9fng4BFkWMaXfnZIHbbw7qW8QaYJ2eWPdT4dqsdWz
+         TmV16YSVCy8EpHzE2JwIGctbz05LuRIE/AnY6TUeozCe3Yayj31sUj2liqfPt0Bso+TV
+         OJWg==
+X-Gm-Message-State: AOAM532JjmL3t58jxHSveWE8rxZNDwDwVFgcoPHRkzHy5SBs3FqPfKGu
+        NbJqoFJUgb7cRxXamNGp8cqL/NED+7aamQeBlZ1AlypQrDaFKQ==
+X-Google-Smtp-Source: ABdhPJyjUfN9ndUVuBE7eld55wahdYSdMDQhYFCWq+qhpWeAGsrEX35EPSgZI++lz1sK4jevcCvnnu1P3JlljdcgKxo=
+X-Received: by 2002:a17:90b:190a:: with SMTP id mp10mr6610963pjb.145.1623377467527;
+ Thu, 10 Jun 2021 19:11:07 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210528195946.2375109-1-memxor@gmail.com> <CAM_iQpVqVKhK+09Sj_At226mdWpVXfVbhy89As2dai7ip8Nmtw@mail.gmail.com>
  <20210607033724.wn6qn4v42dlm4j4o@apollo> <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
  <20210607060724.4nidap5eywb23l3d@apollo> <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
- <20210608071908.sos275adj3gunewo@apollo>
-In-Reply-To: <20210608071908.sos275adj3gunewo@apollo>
+ <20210608071908.sos275adj3gunewo@apollo> <CAADnVQLRVikjNe-FqYxcSYLSCXGF_bV1UWERWuW8NvL8+4rJ6A@mail.gmail.com>
+In-Reply-To: <CAADnVQLRVikjNe-FqYxcSYLSCXGF_bV1UWERWuW8NvL8+4rJ6A@mail.gmail.com>
 From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 10 Jun 2021 19:00:49 -0700
-Message-ID: <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+Date:   Thu, 10 Jun 2021 19:10:56 -0700
+Message-ID: <CAM_iQpWtBFr+KA=nHT1h1cLspeJ6vDQT6as9Vpd2Vtm98CnxBA@mail.gmail.com>
 Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -74,47 +72,22 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 12:20 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> So we're not really creating a qdisc here, we're just tying the filter (which in
-> the current semantics exists only while attached) to the bpf_link. The filter is
-> the attachment, so tying its lifetime to bpf_link makes sense. When you destroy
-> the bpf_link, the filter goes away too, which means classification at that
-> hook (parent/class) in the qdisc stops working. This is why creating the filter
-> from the bpf_link made sense to me.
+On Tue, Jun 8, 2021 at 8:39 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> I think it makes sense to create these objects as part of establishing bpf_link.
+> ingress qdisc is a fake qdisc anyway.
+> If we could go back in time I would argue that its existence doesn't
+> need to be shown in iproute2. It's an object that serves no purpose
+> other than attaching filters to it. It doesn't do any queuing unlike
+> real qdiscs.
+> It's an artifact of old choices. Old doesn't mean good.
+> The kernel is full of such quirks and oddities. New api-s shouldn't
+> blindly follow them.
+> tc qdisc add dev eth0 clsact
+> is a useless command with nop effect.
 
-I see why you are creating TC filters now, because you are trying to
-force the lifetime of a bpf target to align with the bpf program itself.
-The deeper reason seems to be that a cls_bpf filter looks so small
-that it appears to you that it has nothing but a bpf_prog, right?
-
-I offer two different views here:
-
-1. If you view a TC filter as an instance as a netdev/qdisc/action, they
-are no different from this perspective. Maybe the fact that a TC filter
-resides in a qdisc makes a slight difference here, but like I mentioned, it
-actually makes sense to let TC filters be standalone, qdisc's just have to
-bind with them, like how we bind TC filters with standalone TC actions.
-These are all updated independently, despite some of them residing in
-another. There should not be an exceptional TC filter which can not
-be updated via `tc filter` command.
-
-2. For cls_bpf specifically, it is also an instance, like all other TC filters.
-You can update it in the same way: tc filter change [...] The only difference
-is a bpf program can attach to such an instance. So you can view the bpf
-program attached to cls_bpf as a property of it. From this point of view,
-there is no difference with XDP to netdev, where an XDP program
-attached to a netdev is also a property of netdev. A netdev can still
-function without XDP. Same for cls_bpf, it can be just a nop returns
-TC_ACT_SHOT (or whatever) if no ppf program is attached. Thus,
-the lifetime of a bpf program can be separated from the target it
-attaches too, like all other bpf_link targets. bpf_link is just a
-supplement to `tc filter change cls_bpf`, not to replace it.
-
-This is actually simpler, you do not need to worry about whether
-netdev is destroyed when you detach the XDP bpf_link anyway,
-same for cls_bpf filters. Likewise, TC filters don't need to worry
-about bpf_links associated.
+Sounds like you just need a new bpf attach point outside of TC,
+probably inside __dev_queue_xmit(). You don't need to create
+any object, probably just need to attach it to a netdev.
 
 Thanks.
