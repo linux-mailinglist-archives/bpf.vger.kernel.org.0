@@ -2,91 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A2A3A47EA
-	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 19:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4103A48D2
+	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 20:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhFKRfI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Jun 2021 13:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhFKRfI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Jun 2021 13:35:08 -0400
-Received: from mail-ot1-x362.google.com (mail-ot1-x362.google.com [IPv6:2607:f8b0:4864:20::362])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3ABAC061574
-        for <bpf@vger.kernel.org>; Fri, 11 Jun 2021 10:32:57 -0700 (PDT)
-Received: by mail-ot1-x362.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so3861947oth.9
-        for <bpf@vger.kernel.org>; Fri, 11 Jun 2021 10:32:57 -0700 (PDT)
+        id S229969AbhFKSsS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Jun 2021 14:48:18 -0400
+Received: from mail-pj1-f48.google.com ([209.85.216.48]:33502 "EHLO
+        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229942AbhFKSsS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Jun 2021 14:48:18 -0400
+Received: by mail-pj1-f48.google.com with SMTP id k22-20020a17090aef16b0290163512accedso7701138pjz.0;
+        Fri, 11 Jun 2021 11:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ks2AqW9cDJsFT7c7uP3+IJTIHt4mIVoxcBhjJ2KbT6I=;
+        b=gopHh/zOTYiyhfqVK/dB9u7LEy0YsPawdh8u/sBuMf9iCIBu5PjMKbWyHLi39JbIGu
+         EgEGxA+tdaF69BF4iflulPViRG/+ZvTh6KdsoRNREqZeaCim28yyjkJAzjfMAGj8LHya
+         ES8eusN5bPgzm/gI339bDp0RQFZMRv/ZtaI7fxME+2xHmknpBf/IlLIZnMVEo2sqmG3Q
+         ApRcJnkjmBfVUGoSP+Odaf1YhX0gmFqrmc+TlCPePuhJQo2jcsY4gD5b2jm9DEnTLVBe
+         BgkKVLpBb1s8Kw7PiEp/mETVXnbFyFKPZZt6Uaacwai6s69qouDuLwkjzkGgMJtvvw3e
+         FFqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:dkim-signature:mime-version:references
-         :in-reply-to:from:date:message-id:subject:to:cc;
-        bh=+YgtYrc4k9OXHM3kllnTKgsaikVW0I/iTOVcIfrdEhU=;
-        b=n2koIc/iIFjoH9hfObrBYMyOwxLnDn5lp1CLjDM5DOdFbgFLsbYXIUqXdzTdhwp0/1
-         a6CMyIylOpFKqjWAwT6lYYyiqqqxQjSf5IKrTC6zUhcuAlYJFS8dXFwHbtxX91huxSji
-         tLc/l9BByHZ8IKmMnC2Nuh568hiSmor4Boy3DVyCEXPWsf30truNSY5fUY9Za7PlhwjX
-         HPcitUEK1m0xNehBomvtEajNmK5YERmxjyKZLbWGcyPXklIcJ3ZUEQilPCLTezGgBgGY
-         MesecJHlxNGWyERMXXgjTM+rS8tGqZC9aj1y7yVD9/GuFZVDLJichq99fRQAVAZxo1tR
-         CH9Q==
-X-Gm-Message-State: AOAM533W35G5Dk8RutBssbWJxWAaCvhtpwhxyqOwZq6FfSyICTEOqirN
-        zfX5fmVkeGDus6D51L/lqogHA/Crt4FsNgFzhynjGA9Wgl2wEQ==
-X-Google-Smtp-Source: ABdhPJw7IYMkR7eLrP5ofZPEXbFYmI5dWhvAD/N6LEAShOs4Nv98IlYKl8FYelQYbTxGQ8+Ke7+MKffiw+mc
-X-Received: by 2002:a9d:64a:: with SMTP id 68mr4013625otn.68.1623432777393;
-        Fri, 11 Jun 2021 10:32:57 -0700 (PDT)
-Received: from restore.menlosecurity.com ([13.56.32.44])
-        by smtp-relay.gmail.com with ESMTPS id z21sm226396oor.12.2021.06.11.10.32.56
-        for <bpf@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Jun 2021 10:32:57 -0700 (PDT)
-X-Relaying-Domain: menlosecurity.com
-Received: from safemail-prod-02780031cr-re.menlosecurity.com (13.56.32.45)
-    by restore.menlosecurity.com (13.56.32.44)
-    with SMTP id 0ec40cb0-cadb-11eb-84a4-ddba25018390;
-    Fri, 11 Jun 2021 17:32:57 GMT
-Received: from mail-ej1-f69.google.com (209.85.218.69)
-    by safemail-prod-02780031cr-re.menlosecurity.com (13.56.32.45)
-    with SMTP id 0ec40cb0-cadb-11eb-84a4-ddba25018390;
-    Fri, 11 Jun 2021 17:32:57 GMT
-Received: by mail-ej1-f69.google.com with SMTP id p5-20020a17090653c5b02903db1cfa514dso1412027ejo.13
-        for <bpf@vger.kernel.org>; Fri, 11 Jun 2021 10:32:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=menlosecurity.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+YgtYrc4k9OXHM3kllnTKgsaikVW0I/iTOVcIfrdEhU=;
-        b=DMQDTGSBIYlWQgA5NK3H04Y4eTtjL1zoogF8jI5Tlag2ZehLF4EIvFak37/ydNoBYb
-         p6AJRqNUlsUfV2/KRfegfxWyfaI9qfIdwlj2Lw+f8kQ81KGaPtQSd4au4k00xtu4xexj
-         nII22iR2bxrVbHJBAiEBhZe5HbHakiF1dM3Mo=
-X-Received: by 2002:aa7:d555:: with SMTP id u21mr5070009edr.84.1623432774395;
-        Fri, 11 Jun 2021 10:32:54 -0700 (PDT)
-X-Received: by 2002:aa7:d555:: with SMTP id u21mr5069992edr.84.1623432774245;
- Fri, 11 Jun 2021 10:32:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ks2AqW9cDJsFT7c7uP3+IJTIHt4mIVoxcBhjJ2KbT6I=;
+        b=D3QjPPrwI0GbV2b0OMxw4XgWTBJiyGiXcK6KjyL0v/YVNaVBncV4BlQk8upaGRMIIz
+         +9fHUl5/f0HEKmfGGNuSa3olyNKa3jtzVyQflgzy04sXD4EmLtKyLlOsbzBO8WCcz589
+         CezwvTZP3V1h9MS2qm9KO0bnTGWc9axMFiLZsP6yKEgNSr6idTYtp0OKWD/+LeYndfEf
+         Wm0TxZmP3l4rpHu9Xqcfu8JLmCxP93sYLpkas4IKYlAKuaaHIFMrKPKFLfkokw83Th9B
+         mCSlxLQORKTPvcjP1LVx1Udav253kD7Xn0utgv0mIgfMU9RmtPc6/pFVuu1pYnmPdu2W
+         6TUw==
+X-Gm-Message-State: AOAM533BYJVsRNfcKPBGKND6CE+9wie7dRSOQwBx4XTLER63zv2I8TJF
+        KEn8oKCZiUvxGvT36C7vIU8=
+X-Google-Smtp-Source: ABdhPJzweqY6YbUF1Q5duWsvMgTHsOjDM0sYYZs5CoOKCvx3pSBzKaLydwMK2vsUMk5dlbl2oijf/A==
+X-Received: by 2002:a17:90b:152:: with SMTP id em18mr5820732pjb.96.1623437120301;
+        Fri, 11 Jun 2021 11:45:20 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e168])
+        by smtp.gmail.com with ESMTPSA id t143sm6804025pgb.93.2021.06.11.11.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 11:45:19 -0700 (PDT)
+Date:   Fri, 11 Jun 2021 11:45:16 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: Introduce bpf_timer
+Message-ID: <20210611184516.tpjvlaxjc4zdeqe6@ast-mbp.dhcp.thefacebook.com>
+References: <20210611042442.65444-1-alexei.starovoitov@gmail.com>
+ <20210611042442.65444-2-alexei.starovoitov@gmail.com>
+ <CAM_iQpW=a_ukO574qtZ6m4rqo2FrQifoGC1jcrd7yWK=6WWg1w@mail.gmail.com>
 MIME-Version: 1.0
-References: <CA+FoirDxh7AhApwWVG_19j5RWT1dp23ab1h0P1nTjhhWpRC5Ow@mail.gmail.com>
- <3e6ba294-12ca-3a2f-d17c-9588ae221dda@gmail.com> <CA+FoirCt1TXuBpyayTnRXC2MfW-taN9Ob-3mioPojfaWvwjqqg@mail.gmail.com>
- <CA+FoirALjdwJ0=F6E4w2oNmC+fRkpwHx8AZb7mW1D=nU4_qZUQ@mail.gmail.com>
- <c2f77a3d-508f-236c-057c-6233fbc7e5d2@iogearbox.net> <68345713-e679-fe9f-fedd-62f76911b55a@gmail.com>
- <CA+FoirA28PANkzHE-4uHb7M0vf-V3UZ6NfjKbc_RBJ2=sKSrOQ@mail.gmail.com>
- <6248c547-ad64-04d6-fcec-374893cc1ef2@gmail.com> <7742f2a2-11a7-4d8f-d8c1-7787483a3935@iogearbox.net>
- <64222254-eef3-f1c4-2b75-6ea1668a0ad5@gmail.com>
-In-Reply-To: <64222254-eef3-f1c4-2b75-6ea1668a0ad5@gmail.com>
-From:   Rumen Telbizov <rumen.telbizov@menlosecurity.com>
-Date:   Fri, 11 Jun 2021 10:32:43 -0700
-Message-ID: <CA+FoirARDoWWpif2tw47BG0Rh5+uBpsoVZ7Y05JnZO2UqBDSEw@mail.gmail.com>
-Subject: Re: bpf_fib_lookup support for firewall mark
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM_iQpW=a_ukO574qtZ6m4rqo2FrQifoGC1jcrd7yWK=6WWg1w@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+On Thu, Jun 10, 2021 at 11:42:24PM -0700, Cong Wang wrote:
+> On Thu, Jun 10, 2021 at 9:27 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > From: Alexei Starovoitov <ast@kernel.org>
 
-Thanks a lot for the proposed patch.
-I see you're overloading the mac addresses and thus this leaves us
-with even more space
-I will give it a try and will let you know.
+Please stick to one email thread in the future, ok?
 
-Cheers,
-Rumen Telbizov
+I'll consolidate them here:
+
+> What is your use case to justify your own code? Asking because
+> you deny mine, so clearly my use case is not yours.
+
+I mentioned several use cases in the prior threads.
+tldr: any periodic event in tracing, networking, security.
+Garbage collection falls into this category as well, but please internalize
+that implementing conntrack as it is today in the kernel is an explicit non-goal.
+
+> And more importantly, why not just use BPF_TEST_RUN with
+> a user-space timer? Asking because you offer no API to read or
+> modify timer expiration, so literally the same with BPF_TEST_RUN
+> approach.
+
+a wrapper on top of hrtimer_get_remaining() like bpf_timer_get_remaining()
+is trivial to add, but what is the use case?
+
+> >
+> > Introduce 'struct bpf_timer { __u64 :64; __u64 :64; };' that can be embedded
+> > in hash/array/lru maps as regular field and helpers to operate on it:
+> 
+> Can be or has to be? Huge difference here.
+
+map elements don't have to use timers.
+
+> In the other thread, you said it is global data, which implies that it does
+> not have to be in a map.
+
+global data is a map. That was explained in the prior thread as well.
+
+> 
+> In your test case or your example, all timers are still in a map. So what has
+> changed since then? Looks nothing to me.
+
+look again?
+
+> Hmm, finally you begin refcounting it, which you were strongly against. ;)
+
+That was already answered in the prior thread.
+tldr: there were two options. This is one of them. Another can be added
+in the future as well.
+
+> Three questions:
+> 
+> 1. Can t->prog be freed between bpf_timer_init() and bpf_timer_start()?
+
+yes.
+
+> If the timer subprog is always in the same prog which installs it, then
+
+installs it? I'm not following the quesiton.
+
+> this is fine. But then how do multiple programs share a timer? 
+
+there is only one callback function.
+
+> In the
+> case of conntrack, either ingress or egress could install the timer,
+> it only depends which one gets traffic first. Do they have to copy
+> the same subprog for the same timer?
+
+conntrack is an explicit non-goal.
+
+> 
+> 2. Can t->prog be freed between a timer expiration and bpf_timer_start()
+> again? 
+
+If it's already armed with the first bpf_timer_start() it won't be freed.
+
+> It gets a refcnt when starting a timer and puts it when cancelling
+> or expired, so t->prog can be freed right after cancelling or expired. What
+> if another program which shares this timer wants to restart this timer?
+
+There is only one callback_fn per timer. Another program can share
+the struct bpf_timer and the map. It might have subprog callback_fn code
+that looks exactly the same as callback_fn in the first prog.
+For example when libbpf loads progs/timer.c (after it was compiled into .o)
+it might share a subprog in the future (when kernel has support for
+dynamic linking). From bpf user pov it's a single .c file.
+The split into programs and subprograms is an implemenation detail
+that C programmer doesn't need to worry about.
+
+> 3. Since you offer no API to read the expiration time, why not just use
+> BPF_TEST_RUN with a user-space timer? This is preferred by Andrii.
+
+Andrii point was that there should be no syscall cmds that replicate
+bpf_timer_init/start/cancel helpers. I agree with this.
+
+
+> Thanks.
+>
+> Another unpopular point of view:
+>
+> This init() is not suitable for bpf programs, because unlike kernel modules,
+> there is no init or exit functions for a bpf program. And timer init
+> is typically
+> called during module init.
+
+Already answerd this in the prior thread. There will be __init and __fini like
+subprograms in bpf progs.
+
+Please apply the patches to your local tree and do few experiments based
+on selftests/bpf/progs/timer.c. I think experimenting with the code
+will answer all of your questions.
