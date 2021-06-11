@@ -2,52 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6307D3A3C29
-	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 08:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FC03A3C35
+	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 08:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhFKGps (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Jun 2021 02:45:48 -0400
-Received: from mail-pj1-f47.google.com ([209.85.216.47]:36817 "EHLO
-        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhFKGps (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Jun 2021 02:45:48 -0400
-Received: by mail-pj1-f47.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so102468pjn.1;
-        Thu, 10 Jun 2021 23:43:36 -0700 (PDT)
+        id S229540AbhFKGuB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Jun 2021 02:50:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhFKGuB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Jun 2021 02:50:01 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EC0C061574;
+        Thu, 10 Jun 2021 23:47:48 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id h16so5150834pjv.2;
+        Thu, 10 Jun 2021 23:47:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Pjo7phW2AHZZ8B5JlH88sMLV9txhd3FEwdOrHfgfVAo=;
-        b=cr77dycXfwlqd+e99g9BpfiCQ4clm91T9VhRdbdek1NeGb12o2zE+VypzAVNp0oXgm
-         OuaG5grEk6R9E6SUDMu/HbvjYaNAIwhT6UQwkgMF4gl76/hnE/0oVfN8Vwv9LQ6LPfhC
-         tSeBf+8jUV3EFKkV9zb1820qd88X1VLr5fyWijEZsnknFP7sfKV4B1uPVpNH7CSuBecN
-         PF64UTX1mSMypQ/vDxzvZrcaf29IC/UDmrv6wWUeRvI+VQqTsuoXnOCDlDyJKWyHoub3
-         W69QktspgIeqMWBHbw5Yc73TjoeMpaJ/s8YWkpnVq7C8ohWhZARIVpzTgjLCbELcCu28
-         F8gg==
+        bh=ZY03pMXXYOjF4yQ1kl+6a46AcEo8IDBYUKTzMqVVkg8=;
+        b=OhdZ/ZTCryKdOU+hK+w2+Ew6ptxZ8xvEThONwgLQDnin9ZLPUALexYKVfFd8OhH0Sr
+         H6AbV23HJP3zfHgaKgZObVO58rtzvyjIygDU+Fmbd9OD3OMkD7u2e/zTEVqj1VmLwNdK
+         YqQadp9kMtcJv+aEr39wF7YNdctiY/Sb5njx9ZOfs39uue1hcmKt3DGZcI1qc5lDxYi6
+         w4FNTCOf+VoXJXaReY87xPdOy7TPSdbHV6uFJ2gCWjs2xBT7wp+0GuziLirpV/DSt9ck
+         GTdVz9EPg2gFGMiSy7GGybSUTL80BfeuWhFw7azd14rgKD3MYfqkBsO0cB4HVYDN/9S7
+         FV0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Pjo7phW2AHZZ8B5JlH88sMLV9txhd3FEwdOrHfgfVAo=;
-        b=JnuLXObWqYxSif4hoeVujhoBjwJw2HVNZmGoTmG0bXNnnSAOZg8zhKH3DnCJ0E4uck
-         w9//YjT9FZ3pLK/XGuPbmjFUNdcZv5NrPi+GIMc7gu1httaVzbvBnygiVD8U+MrSyhuE
-         Fxz+sAcNoBAKdU9f6sbtLd0tBXbFocvwdd0eCj7MHH3lkByHaqGy0lBkRBNQzPdETcLV
-         /itk3nsiHIgmXK0kmSRjOWb/2LIixD6cM0JyCtOaBiNtjiFXLsPi3wi+bsR3Ei97H+m6
-         s12wRL+IETNXl/btqCE4Ujm+WwOUkHcbD2qhYdVXEzJvyJP6Z9y8EZUQnegsRYyP8cft
-         9/JQ==
-X-Gm-Message-State: AOAM530ySXyvoASCMNVJFALN7l9Uq0AxbQbaH3lHA83iIOjPhfF5g+MT
-        JqJVYk43l31meoM6KQgRQTQL9LauE8fRLyv1+nU=
-X-Google-Smtp-Source: ABdhPJyG8pB+KRBDHSoCn1KawiWbvPXqoK+nhbtuPO57cIQBRfyMTIj2UYjOblOg3xi/uWkeiBgH9M3fkQm7+Be5N+o=
-X-Received: by 2002:a17:902:694b:b029:118:b8b1:1e23 with SMTP id
- k11-20020a170902694bb0290118b8b11e23mr219478plt.31.1623393755882; Thu, 10 Jun
- 2021 23:42:35 -0700 (PDT)
+        bh=ZY03pMXXYOjF4yQ1kl+6a46AcEo8IDBYUKTzMqVVkg8=;
+        b=Vcvmpt0FyOCk0UCZ27kyQ95BPxvUgEaaHK723Jw4srWsnzmItfCEw/VVAV7K/wHgq4
+         ROxnr9bBFRxUsMUs/ymahwHHmj7UBZO56k8w98a8bKuUeXMYo2ur/6GYCvpN0xWolDw8
+         xNHM+7d+VHp5JU0AAiEqYoBJDwUZJNMJOv8O48dn2fixG46ZNqXdy6MeBBrxO+Z+FuYy
+         Z2wXyBesMtusGCe7rb4vb/x34patlJmZOZ1XGrFFxX5PMecORKqzdX8aSVFme90z4CFq
+         XD7sUb6MF/i45YnnKqpGKLh+fRxqMn/zDRP8v9U+pVi4VDe2VzQpY4uujE/8BUlRADx9
+         Fz2g==
+X-Gm-Message-State: AOAM531R118hNMglV37psNo15FadnRjSKAaPg5YDEQdPP+4zZFwNTNlc
+        GFCCsHHXYXkUXOrGi5rkIcIjHDhVQrDVPBdHZEI=
+X-Google-Smtp-Source: ABdhPJxI5Lganc7aq7tkinhttx8NVFW6lv/6t1sq6hNzHT+GEsUaFydQvgNOUP1ovtG+9g94flv5hQafBpFz6AOop3Y=
+X-Received: by 2002:a17:90b:190a:: with SMTP id mp10mr7745745pjb.145.1623394068465;
+ Thu, 10 Jun 2021 23:47:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210611042442.65444-1-alexei.starovoitov@gmail.com> <20210611042442.65444-2-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210611042442.65444-2-alexei.starovoitov@gmail.com>
+References: <20210611042442.65444-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210611042442.65444-1-alexei.starovoitov@gmail.com>
 From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 10 Jun 2021 23:42:24 -0700
-Message-ID: <CAM_iQpW=a_ukO574qtZ6m4rqo2FrQifoGC1jcrd7yWK=6WWg1w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/3] bpf: Introduce bpf_timer
+Date:   Thu, 10 Jun 2021 23:47:37 -0700
+Message-ID: <CAM_iQpWwGNnVtdUdnMp4P2pazp5te-rHEXMU7h-9KYg27BM1tA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/3] bpf: Introduce BPF timers.
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     David Miller <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -59,67 +61,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 9:27 PM Alexei Starovoitov
+On Thu, Jun 10, 2021 at 9:26 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Introduce 'struct bpf_timer { __u64 :64; __u64 :64; };' that can be embedded
-> in hash/array/lru maps as regular field and helpers to operate on it:
-
-Can be or has to be? Huge difference here.
-
-In the other thread, you said it is global data, which implies that it does
-not have to be in a map.
-
-In your test case or your example, all timers are still in a map. So what has
-changed since then? Looks nothing to me.
-
+> v1->v2:
+> - Addressed great feedback from Andrii and Toke.
+> - Fixed race between parallel bpf_timer_*() ops.
+> - Fixed deadlock between timer callback and LRU eviction or bpf_map_delete/update.
+> - Disallowed mmap and global timers.
+> - Allow bpf_spin_lock and bpf_timer in an element. One of each.
+> - Fixed memory leaks due to map destruction and LRU eviction.
+> - Add support for specifying clockid in bpf_timer_init.
+> - Make bpf_timer helpers gpl_only.
+> - Fix key pointer in callback_fn when bpf_timer is inside array.
+> - A ton more tests.
 >
-> The bpf_timer_init() helper is receiving hidden 'map' and 'prog' arguments
-> supplied by the verifier. The prog pointer is needed to do refcnting of bpf
-> program to make sure that program doesn't get freed while timer is armed.
->
+> The 1st patch implements interaction between bpf programs and bpf core.
+> The 2nd patch implements necessary safety checks.
+> The 3rd patch is the test.
 
-Nice trick but...
+What is your use case to justify your own code? Asking because
+you deny mine, so clearly my use case is not yours.
 
-[...]
-
-> +BPF_CALL_2(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs)
-> +{
-> +       struct bpf_hrtimer *t;
-> +       int ret = 0;
-> +
-> +       ____bpf_spin_lock(&timer->lock);
-> +       t = timer->timer;
-> +       if (!t) {
-> +               ret = -EINVAL;
-> +               goto out;
-> +       }
-> +       if (!hrtimer_active(&t->timer) || hrtimer_callback_running(&t->timer))
-> +               /* If the timer wasn't active or callback already executing
-> +                * bump the prog refcnt to keep it alive until
-> +                * callback is invoked (again).
-> +                */
-> +               bpf_prog_inc(t->prog);
-
-Hmm, finally you begin refcounting it, which you were strongly against. ;)
-
-Three questions:
-
-1. Can t->prog be freed between bpf_timer_init() and bpf_timer_start()?
-If the timer subprog is always in the same prog which installs it, then
-this is fine. But then how do multiple programs share a timer? In the
-case of conntrack, either ingress or egress could install the timer,
-it only depends which one gets traffic first. Do they have to copy
-the same subprog for the same timer?
-
-2. Can t->prog be freed between a timer expiration and bpf_timer_start()
-again? It gets a refcnt when starting a timer and puts it when cancelling
-or expired, so t->prog can be freed right after cancelling or expired. What
-if another program which shares this timer wants to restart this timer?
-
-3. Since you offer no API to read the expiration time, why not just use
-BPF_TEST_RUN with a user-space timer? This is preferred by Andrii.
+And more importantly, why not just use BPF_TEST_RUN with
+a user-space timer? Asking because you offer no API to read or
+modify timer expiration, so literally the same with BPF_TEST_RUN
+approach.
 
 Thanks.
