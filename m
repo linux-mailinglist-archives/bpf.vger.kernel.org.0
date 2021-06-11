@@ -2,184 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821783A4A17
-	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 22:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D8D3A4A4C
+	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 22:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFKU0P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Jun 2021 16:26:15 -0400
-Received: from mail-yb1-f176.google.com ([209.85.219.176]:34550 "EHLO
-        mail-yb1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhFKU0P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Jun 2021 16:26:15 -0400
-Received: by mail-yb1-f176.google.com with SMTP id c8so4300003ybq.1
-        for <bpf@vger.kernel.org>; Fri, 11 Jun 2021 13:24:11 -0700 (PDT)
+        id S229980AbhFKUt1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Jun 2021 16:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhFKUt0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Jun 2021 16:49:26 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9026FC061574;
+        Fri, 11 Jun 2021 13:47:28 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id j12so3394399pgh.7;
+        Fri, 11 Jun 2021 13:47:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RBrd2CWck8wFErZGavdqstErVyMd6Art7pTp/ZI8OkU=;
-        b=nzBAmby1wdmqa8A5yJGjAsks82dMazpeP3hwByVWLriI/GOzEMK+XNxwGZlArR5Oza
-         H8hL+gLjtW/qex7iBzOedspJssaPli2d7JLolK/Dw8mvjJ18tq84bp1jYjJdn+BLE14b
-         Af6EmDnRwkO+v2lN5adqJGJUx+lsiUluqk69XPT3HuDYM5ayBzmy7paMxKNtu3OoiPRf
-         TJbh0/wDpeHXd73GGsr/5NX0kv6iwWl0YLrd4+Wrna8v4ejVVzn80c22BVyknJW3Yb//
-         KGrgs6KQFnOPC4KkrOaKYSXXACUsHPuOXqjrcOjoJFHGNaSPtQ8Od1KZ6uZYQ7dH5CTS
-         s9hg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Y+p+pDw7EG4HJFiJZ0T8k2KWh0wkpqmorfpj2ONLcdg=;
+        b=SE+SGd9OudxYtIn5NEPv3HA382vm2n/x7FgcDa67f7C89H7C1roD3xR7jlMw4AOpzU
+         n8An2NrvnuLQpQYvu1vqqkthyG54fkQzCixuEY8cRbAx0GFVplJ1xfHZjTE8Y0Rkr3NF
+         MklhZdl2AUca7XgWG6nOKAD7+BcWToQkRYjN2N5zIDWG5O9gJG9qzRWsw7OlKVfHDb4S
+         7tH/Qq0OBP0G1l1Kvxv5Cng8z5Rbt1Q2Gt70msiPV0ATmBCOmTfiqcpFJK7OT8kZrIOH
+         kCfGh7CdneFjpQsx95jUt8kCJLGxYf2nGcfLfPNSYBLECAheaqi6GdLbKuwDiD5vgd1w
+         PHbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RBrd2CWck8wFErZGavdqstErVyMd6Art7pTp/ZI8OkU=;
-        b=PqIts4JrKhLtJnw0T+eM9irck09guc5ZJ0Q/gdGUFEkiRhtBLfW+R8tiSmqRJtLD2a
-         ZjjAG43QiW6nvC5QzaTlKN1CsYhCJhkWbmPMppPgvU8qeF/9qxxjOokPUmNjCDxkc7Uz
-         g8XUCfgsSiRR9Iy/pPSsxl0lnxSMWfxLJAiuPYwAQ2oIUy2WMrgZajh/GAnK4gr5Dt/t
-         eRZE8VQiDf370XFT3tuKLr3RLa6I9rrCIINib2U3z3CUixFiW7F7almo0sbAqYUARKwe
-         e6n1EJAVpIQvSFED+ontNZmBwOXOVs01g+Jszx0oHLzpbW86FebgHK6Jq/1H10qRwNXv
-         fsEQ==
-X-Gm-Message-State: AOAM533R2/Vu8ealKB25+9A5zTXkJXSNhKKXKeBZoHaReOTc7H6ci3po
-        /SS5SmISLrdNYas9ZxY976UOCUiJitbczv4DiIE=
-X-Google-Smtp-Source: ABdhPJz5xycyczK51cZbi0rr5G5YaYcmUqJW9AsqR6YLBx7REvHnsLlpwEQGhgN0tcGYseMGDl1o1lzByh+517TCRko=
-X-Received: by 2002:a25:aa66:: with SMTP id s93mr8699491ybi.260.1623442991006;
- Fri, 11 Jun 2021 13:23:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210514003623.28033-1-alexei.starovoitov@gmail.com> <20210514003623.28033-15-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210514003623.28033-15-alexei.starovoitov@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Jun 2021 13:22:59 -0700
-Message-ID: <CAEf4BzZpAVCJm41AiR_CPO7FcVcEbA-XWqq-YNb3dfLBp714ow@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 14/21] libbpf: Generate loader program out of
- BPF ELF file.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y+p+pDw7EG4HJFiJZ0T8k2KWh0wkpqmorfpj2ONLcdg=;
+        b=omscF1jo51b1+FJH6XYdG+NngyJmasaLxd/PQb2mTPl31RoDXCHTNbPQ57kMDSDO5H
+         uRXNGSmvagZpQ5r0T+FfsCNmW8JnKhYcneh+MNZy3AVDLqf2/CvIfE5x+rOes6bly6zu
+         IJjn5c0JDEC8zjGWAI4S2vs3gUhuORfaiSAAilHr01bkcDUYjAzqGaRXYAegguYm+vlh
+         tLg2MSKvT5+Ok+oaPi/Sb0fJZPQg4dASclE9xhDl7ePWQYHXBVTj3xzlTDEWBBgOZQHk
+         1knn5zdx+7dqoSVq5bjN3jLyex/K6eIdZw2Dp0+lIYDkePm2+UmDHx6dMJ+jt1hlFwep
+         2ELA==
+X-Gm-Message-State: AOAM530Y7NWQmY8ok5HNNdhVTrGyU8lT6RaFXPrDRDz0nzs4jlvqQ/W4
+        Pv6E5LcYnfio02k+BhRa3vs=
+X-Google-Smtp-Source: ABdhPJxitQ+i0dWxWyCRm8uL/06YbPjvVYVGyUdoPn/yFFe4umft5DtI3IX5YJZbBrw6uIB7DqBYxQ==
+X-Received: by 2002:a63:1d42:: with SMTP id d2mr5361578pgm.21.1623444447933;
+        Fri, 11 Jun 2021 13:47:27 -0700 (PDT)
+Received: from localhost ([2402:3a80:11fa:b320:6829:855:e322:485])
+        by smtp.gmail.com with ESMTPSA id n17sm5597515pfv.125.2021.06.11.13.47.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 13:47:27 -0700 (PDT)
+Date:   Sat, 12 Jun 2021 02:16:11 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Shaun Crampton <shaun@tigera.io>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v7 0/3] Add TC-BPF API
+Message-ID: <20210611204611.4xdgvqwtcin6ckdc@apollo>
+References: <20210512103451.989420-1-memxor@gmail.com>
+ <CAEf4BzbgFE2qtC8iw7f5m2maKZhiAYngiYU_kpx30FT0Sy9j-w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbgFE2qtC8iw7f5m2maKZhiAYngiYU_kpx30FT0Sy9j-w@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 13, 2021 at 5:36 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Sat, Jun 12, 2021 at 01:31:56AM IST, Andrii Nakryiko wrote:
+> On Wed, May 12, 2021 at 3:35 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > This is the seventh version of the TC-BPF series.
+> >
+> > It adds a simple API that uses netlink to attach the tc filter and its bpf
+> > classifier program. Currently, a user needs to shell out to the tc command line
+> > to be able to create filters and attach SCHED_CLS programs as classifiers. With
+> > the help of this API, it will be possible to use libbpf for doing all parts of
+> > bpf program setup and attach.
+> >
+> > Changelog contains details of patchset evolution.
+> >
+> > In an effort to keep discussion focused, this series doesn't have the high level
+> > TC-BPF API. It was clear that there is a need for a bpf_link API in the kernel,
+> > hence that will be submitted as a separate patchset based on this.
+> >
+> > The individual commit messages contain more details, and also a brief summary of
+> > the API.
+> >
+> > Changelog:
+> > ----------
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> Hey Kartikeya,
 >
-> The BPF program loading process performed by libbpf is quite complex
-> and consists of the following steps:
-> "open" phase:
-> - parse elf file and remember relocations, sections
-> - collect externs and ksyms including their btf_ids in prog's BTF
-> - patch BTF datasec (since llvm couldn't do it)
-> - init maps (old style map_def, BTF based, global data map, kconfig map)
-> - collect relocations against progs and maps
-> "load" phase:
-> - probe kernel features
-> - load vmlinux BTF
-> - resolve externs (kconfig and ksym)
-> - load program BTF
-> - init struct_ops
-> - create maps
-> - apply CO-RE relocations
-> - patch ld_imm64 insns with src_reg=PSEUDO_MAP, PSEUDO_MAP_VALUE, PSEUDO_BTF_ID
-> - reposition subprograms and adjust call insns
-> - sanitize and load progs
+> There were few issues flagged by Coverity after I synced libbpf to
+> Github. A bunch of them are netlink.c-related. Could you please take a
+> look and see if they are false positives or something that we can
+> actually fix? See links to the issues below. Thanks!
 >
-> During this process libbpf does sys_bpf() calls to load BTF, create maps,
-> populate maps and finally load programs.
-> Instead of actually doing the syscalls generate a trace of what libbpf
-> would have done and represent it as the "loader program".
-> The "loader program" consists of single map with:
-> - union bpf_attr(s)
-> - BTF bytes
-> - map value bytes
-> - insns bytes
-> and single bpf program that passes bpf_attr(s) and data into bpf_sys_bpf() helper.
-> Executing such "loader program" via bpf_prog_test_run() command will
-> replay the sequence of syscalls that libbpf would have done which will result
-> the same maps created and programs loaded as specified in the elf file.
-> The "loader program" removes libelf and majority of libbpf dependency from
-> program loading process.
->
-> kconfig, typeless ksym, struct_ops and CO-RE are not supported yet.
->
-> The order of relocate_data and relocate_calls had to change, so that
-> bpf_gen__prog_load() can see all relocations for a given program with
-> correct insn_idx-es.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  tools/lib/bpf/Build              |   2 +-
->  tools/lib/bpf/bpf_gen_internal.h |  40 ++
->  tools/lib/bpf/gen_loader.c       | 689 +++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.c           | 226 ++++++++--
->  tools/lib/bpf/libbpf.h           |  12 +
->  tools/lib/bpf/libbpf.map         |   1 +
->  tools/lib/bpf/libbpf_internal.h  |   2 +
->  tools/lib/bpf/skel_internal.h    | 123 ++++++
->  8 files changed, 1060 insertions(+), 35 deletions(-)
->  create mode 100644 tools/lib/bpf/bpf_gen_internal.h
->  create mode 100644 tools/lib/bpf/gen_loader.c
->  create mode 100644 tools/lib/bpf/skel_internal.h
+>   [0] https://scan3.coverity.com/reports.htm#v40547/p11903/fileInstanceId=53874109&defectInstanceId=10901199&mergedDefectId=141815
+>   [1] https://scan3.coverity.com/reports.htm#v40547/p11903/fileInstanceId=53874109&defectInstanceId=10901193&mergedDefectId=322806
+>   [2] https://scan3.coverity.com/reports.htm#v40547/p11903/fileInstanceId=53874109&defectInstanceId=10901197&mergedDefectId=322807
+>   [3] https://scan3.coverity.com/reports.htm#v40547/p11903/fileInstanceId=53874109&defectInstanceId=10901195&mergedDefectId=322808
 >
 
-[...]
+Hi Andrii,
 
-> +void bpf_gen__prog_load(struct bpf_gen *gen,
-> +                       struct bpf_prog_load_params *load_attr, int prog_idx)
-> +{
-> +       int attr_size = offsetofend(union bpf_attr, fd_array);
-> +       int prog_load_attr, license, insns, func_info, line_info;
-> +       union bpf_attr attr;
-> +
-> +       memset(&attr, 0, attr_size);
-> +       pr_debug("gen: prog_load: type %d insns_cnt %zd\n",
-> +                load_attr->prog_type, load_attr->insn_cnt);
-> +       /* add license string to blob of bytes */
-> +       license = add_data(gen, load_attr->license, strlen(load_attr->license) + 1);
-> +       /* add insns to blob of bytes */
-> +       insns = add_data(gen, load_attr->insns,
-> +                        load_attr->insn_cnt * sizeof(struct bpf_insn));
-> +
-> +       attr.prog_type = load_attr->prog_type;
-> +       attr.expected_attach_type = load_attr->expected_attach_type;
-> +       attr.attach_btf_id = load_attr->attach_btf_id;
-> +       attr.prog_ifindex = load_attr->prog_ifindex;
-> +       attr.kern_version = 0;
-> +       attr.insn_cnt = (__u32)load_attr->insn_cnt;
-> +       attr.prog_flags = load_attr->prog_flags;
-> +
-> +       attr.func_info_rec_size = load_attr->func_info_rec_size;
-> +       attr.func_info_cnt = load_attr->func_info_cnt;
-> +       func_info = add_data(gen, load_attr->func_info,
-> +                            attr.func_info_cnt * attr.func_info_rec_size);
-> +
-> +       attr.line_info_rec_size = load_attr->line_info_rec_size;
-> +       attr.line_info_cnt = load_attr->line_info_cnt;
-> +       line_info = add_data(gen, load_attr->line_info,
-> +                            attr.line_info_cnt * attr.line_info_rec_size);
-> +
+These links don't work for me (I get a timeout). Would you know why? Is there
+some other link where I can look at them?
 
-Hey Alexei,
+> [...]
+>
+> >
+> > Kumar Kartikeya Dwivedi (3):
+> >   libbpf: add netlink helpers
+> >   libbpf: add low level TC-BPF API
+> >   libbpf: add selftests for TC-BPF API
+> >
+> >  tools/lib/bpf/libbpf.h                        |  43 ++
+> >  tools/lib/bpf/libbpf.map                      |   5 +
+> >  tools/lib/bpf/netlink.c                       | 554 ++++++++++++++++--
+> >  tools/lib/bpf/nlattr.h                        |  48 ++
+> >  .../testing/selftests/bpf/prog_tests/tc_bpf.c | 395 +++++++++++++
+> >  .../testing/selftests/bpf/progs/test_tc_bpf.c |  12 +
+> >  6 files changed, 993 insertions(+), 64 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_bpf.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_tc_bpf.c
+> >
+> > --
+> > 2.31.1
+> >
 
-Coverity ([0] and [1]) is complaining that load_attr->func_info and
-load_attr->line_info can be NULL in some cases, which will lead to
-NULL deref. I'm not sure if we restrict gen_loader to be only used
-with BPF applications that have BTF embedded. If not, then it will
-cause a crash, so we need to protect against that. Please take a look.
-
-  [0] https://scan3.coverity.com/reports.htm#v40547/p11903/fileInstanceId=53874059&defectInstanceId=10901198&mergedDefectId=349034
-  [1] https://scan3.coverity.com/reports.htm#v40547/p11903/fileInstanceId=53874059&defectInstanceId=10901191&mergedDefectId=349033
-
-Not sure why we have two issues above, they both look identical, but
-for completeness I included both.
-
-> +       memcpy(attr.prog_name, load_attr->name,
-> +              min((unsigned)strlen(load_attr->name), BPF_OBJ_NAME_LEN - 1));
-> +       prog_load_attr = add_data(gen, &attr, attr_size);
-> +
-> +       /* populate union bpf_attr with a pointer to license */
-> +       emit_rel_store(gen, attr_field(prog_load_attr, license), license);
-> +
-
-[...]
+--
+Kartikeya
