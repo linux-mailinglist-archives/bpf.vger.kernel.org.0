@@ -2,92 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED3B3A398D
-	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 04:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08EFA3A3B04
+	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 06:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhFKCOS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Jun 2021 22:14:18 -0400
-Received: from mail-pj1-f48.google.com ([209.85.216.48]:45902 "EHLO
-        mail-pj1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhFKCOR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Jun 2021 22:14:17 -0400
-Received: by mail-pj1-f48.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso5056118pjb.4;
-        Thu, 10 Jun 2021 19:12:07 -0700 (PDT)
+        id S230168AbhFKE2E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Jun 2021 00:28:04 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:44766 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhFKE16 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Jun 2021 00:27:58 -0400
+Received: by mail-pl1-f169.google.com with SMTP id b12so2178899plg.11;
+        Thu, 10 Jun 2021 21:25:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m1nvfkedOhC2O/Z+HXKqfInqZLv5+44mNv+t9W0XDcU=;
-        b=FYQJZt9x7DDitcHxk0wAE0nKmhjgrSe6CN3w/YhNedKFLVgN49HxVqMpaQWpJJpFde
-         RJnc5VLAaTeC+PEdHx8BwOUVHxR2vuPv8ADctPpwytXrHNLRUxDZv6VJp6pnsjF++LBg
-         G9JUaIZgOecP2zZ23P31+XnvQiK05bKOHjKP507+uKYSNvFJhFdGHvCU7s/bJB47mNXN
-         Ax5TGB3qOmeDS80LfYdoUh2AxlsH10/e7214pl6hHjmkYBvXkX2Rq2d3rm7X8HKZGxE3
-         VT2+pz4DTjGVoKlhVfmkcCgz40/EPM9sQDHZ8cPPLR/vL6uz9snZ1unEkXciNbqMKfpF
-         KZyA==
+        h=from:to:cc:subject:date:message-id;
+        bh=b04ZbZfXNU17yTm9QioThU9dkLDLTFowj6M7pOADCrw=;
+        b=QaAk9PtLjUFJOyOhQx3cUzodKQ5+J2tJZXOfJvwlXZLHiBjk6TcvC2S+9z4sYshqO4
+         atf9aRXAF84IpSGNj5D5JYOp1Ba6Kfr1Ff6eWRkFyqrWNq2IxKQaeGILmCHzAxswKQg6
+         ANoY3jZijkeV+ihETJ91WuwcZ5mLZjZqKu/4jGFaShKGJ63mCOJWc9qH8Zv+B4BwfNFS
+         IgMEQ5F0G+o8JKzGR6tIVGaCw0S4UGxYRQxty/IqWifaWNjtzY/w4U0F7jDvAzdiy2a+
+         lt3zDXQO7hpnsMLkjGl6q+guN5T3IHqq786hsKIziHgug1eb+6hPRaAwLVjItdEGJCF2
+         cDrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m1nvfkedOhC2O/Z+HXKqfInqZLv5+44mNv+t9W0XDcU=;
-        b=ub7Tu+07AL3WvRYuXb5dPz45RwZHifUl1i/yEEOUa6bRDmEw5PwjxHzt/D3TyYE8eR
-         S64nmH5/2v08OFZoHAzx5ZpO5Wg4gVd8HGMCo2zUs2mfSScv0JcA6/YYCNIQz7BBGkb4
-         VFxZqoNh5nd4I9ZOOQ4g0SAl/6gEPoyj4RXHR4sBIzfrOoizlIQJ8b0vDDL93NnfEnQD
-         YzSBgWb4M+tMJbki3ac1j5HAvmy9fng4BFkWMaXfnZIHbbw7qW8QaYJ2eWPdT4dqsdWz
-         TmV16YSVCy8EpHzE2JwIGctbz05LuRIE/AnY6TUeozCe3Yayj31sUj2liqfPt0Bso+TV
-         OJWg==
-X-Gm-Message-State: AOAM532JjmL3t58jxHSveWE8rxZNDwDwVFgcoPHRkzHy5SBs3FqPfKGu
-        NbJqoFJUgb7cRxXamNGp8cqL/NED+7aamQeBlZ1AlypQrDaFKQ==
-X-Google-Smtp-Source: ABdhPJyjUfN9ndUVuBE7eld55wahdYSdMDQhYFCWq+qhpWeAGsrEX35EPSgZI++lz1sK4jevcCvnnu1P3JlljdcgKxo=
-X-Received: by 2002:a17:90b:190a:: with SMTP id mp10mr6610963pjb.145.1623377467527;
- Thu, 10 Jun 2021 19:11:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210528195946.2375109-1-memxor@gmail.com> <CAM_iQpVqVKhK+09Sj_At226mdWpVXfVbhy89As2dai7ip8Nmtw@mail.gmail.com>
- <20210607033724.wn6qn4v42dlm4j4o@apollo> <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
- <20210607060724.4nidap5eywb23l3d@apollo> <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
- <20210608071908.sos275adj3gunewo@apollo> <CAADnVQLRVikjNe-FqYxcSYLSCXGF_bV1UWERWuW8NvL8+4rJ6A@mail.gmail.com>
-In-Reply-To: <CAADnVQLRVikjNe-FqYxcSYLSCXGF_bV1UWERWuW8NvL8+4rJ6A@mail.gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 10 Jun 2021 19:10:56 -0700
-Message-ID: <CAM_iQpWtBFr+KA=nHT1h1cLspeJ6vDQT6as9Vpd2Vtm98CnxBA@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Vlad Buslov <vladbu@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=b04ZbZfXNU17yTm9QioThU9dkLDLTFowj6M7pOADCrw=;
+        b=D/Z9ELv+I5YBhdo5EKug5vUE/Si1HVNPGAIFtvwnjsY892ayTWMByNpxISU0t4+h/e
+         mrGOsZZX7MVzIAl9/92Fm3FpXuCQaE3RIu484A0pg9BCgL2opo2GD51FPxwNxgDd9gIv
+         o3amhBxcKSMnnnbxNoFLxDhcCk1AQrJ0CDp6yQgh1pc8/XSKBWyclYrIl6jCBUwf661x
+         EWGmUEmBUmenRrxxVEu3ux2IEDRWQvS7+wvN7EuCo//uPTdThDvox1KSFOR3T0pa0Hpd
+         S3aqwfdMelAN8gdttwVng7GbYUUG4iEV+v1BTZtAMZ9TMvUHxGI2NgI8mcx/CDAYJOnO
+         DcBg==
+X-Gm-Message-State: AOAM531ufqprhzJS2evC4YwnVdftqqRNaLxlYqvfFU+YpJmo81C6uXXy
+        Cwceyr8VX5uOW4mmzWJkOsg=
+X-Google-Smtp-Source: ABdhPJza/WscDTZpdUnlLk9DeAPModmYUTSdPSpCzbJjoqE3O62jYwSofy+RZ07BmPJRTmx6geF2Fg==
+X-Received: by 2002:a17:902:a50c:b029:fe:c053:4ec5 with SMTP id s12-20020a170902a50cb02900fec0534ec5mr2142640plq.31.1623385485879;
+        Thu, 10 Jun 2021 21:24:45 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:7360])
+        by smtp.gmail.com with ESMTPSA id p11sm3942234pgn.65.2021.06.10.21.24.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Jun 2021 21:24:45 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 bpf-next 0/3] bpf: Introduce BPF timers.
+Date:   Thu, 10 Jun 2021 21:24:39 -0700
+Message-Id: <20210611042442.65444-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 8:39 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> I think it makes sense to create these objects as part of establishing bpf_link.
-> ingress qdisc is a fake qdisc anyway.
-> If we could go back in time I would argue that its existence doesn't
-> need to be shown in iproute2. It's an object that serves no purpose
-> other than attaching filters to it. It doesn't do any queuing unlike
-> real qdiscs.
-> It's an artifact of old choices. Old doesn't mean good.
-> The kernel is full of such quirks and oddities. New api-s shouldn't
-> blindly follow them.
-> tc qdisc add dev eth0 clsact
-> is a useless command with nop effect.
+From: Alexei Starovoitov <ast@kernel.org>
 
-Sounds like you just need a new bpf attach point outside of TC,
-probably inside __dev_queue_xmit(). You don't need to create
-any object, probably just need to attach it to a netdev.
+v1->v2:
+- Addressed great feedback from Andrii and Toke.
+- Fixed race between parallel bpf_timer_*() ops.
+- Fixed deadlock between timer callback and LRU eviction or bpf_map_delete/update.
+- Disallowed mmap and global timers.
+- Allow bpf_spin_lock and bpf_timer in an element. One of each.
+- Fixed memory leaks due to map destruction and LRU eviction.
+- Add support for specifying clockid in bpf_timer_init.
+- Make bpf_timer helpers gpl_only.
+- Fix key pointer in callback_fn when bpf_timer is inside array.
+- A ton more tests.
 
-Thanks.
+The 1st patch implements interaction between bpf programs and bpf core.
+The 2nd patch implements necessary safety checks.
+The 3rd patch is the test.
+
+Alexei Starovoitov (3):
+  bpf: Introduce bpf_timer
+  bpf: Add verifier checks for bpf_timer.
+  selftests/bpf: Add bpf_timer test.
+
+ include/linux/bpf.h                           |  47 ++-
+ include/linux/btf.h                           |   1 +
+ include/uapi/linux/bpf.h                      |  40 +++
+ kernel/bpf/arraymap.c                         |  14 +
+ kernel/bpf/btf.c                              |  77 ++++-
+ kernel/bpf/hashtab.c                          |  56 +++-
+ kernel/bpf/helpers.c                          | 227 ++++++++++++++
+ kernel/bpf/local_storage.c                    |   4 +-
+ kernel/bpf/map_in_map.c                       |   1 +
+ kernel/bpf/syscall.c                          |  21 +-
+ kernel/bpf/verifier.c                         | 133 ++++++++
+ kernel/trace/bpf_trace.c                      |   2 +-
+ scripts/bpf_doc.py                            |   2 +
+ tools/include/uapi/linux/bpf.h                |  40 +++
+ .../testing/selftests/bpf/prog_tests/timer.c  |  55 ++++
+ tools/testing/selftests/bpf/progs/timer.c     | 293 ++++++++++++++++++
+ 16 files changed, 970 insertions(+), 43 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/timer.c
+ create mode 100644 tools/testing/selftests/bpf/progs/timer.c
+
+-- 
+2.30.2
+
