@@ -2,85 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CEB3A43ED
-	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 16:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E9D3A44E8
+	for <lists+bpf@lfdr.de>; Fri, 11 Jun 2021 17:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhFKOVT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Jun 2021 10:21:19 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:51050 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbhFKOVO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Jun 2021 10:21:14 -0400
-X-Greylist: delayed 542 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Jun 2021 10:21:14 EDT
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4G1jR31TRzz1qt3l;
-        Fri, 11 Jun 2021 16:10:07 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4G1jR26D3Sz1r0ws;
-        Fri, 11 Jun 2021 16:10:06 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id blSMxjRTcGUs; Fri, 11 Jun 2021 16:10:04 +0200 (CEST)
-X-Auth-Info: dkbXKa2FuB4b08eUrov5kSul9UpeLtIdhCkDN2zB3p004oJgCtYlXEmO7oD1pnrg
-Received: from igel.home (ppp-46-244-189-84.dynamic.mnet-online.de [46.244.189.84])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri, 11 Jun 2021 16:10:04 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 01ABD2C365F; Fri, 11 Jun 2021 16:10:03 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        =?utf-8?B?IEJqw7ZybiBUw7ZwZWw=?= <bjorn@kernel.org>,
+        id S231698AbhFKP1b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Jun 2021 11:27:31 -0400
+Received: from mga06.intel.com ([134.134.136.31]:48614 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231679AbhFKP1b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Jun 2021 11:27:31 -0400
+IronPort-SDR: sWDJ07TzeUUCoa5rohlIjbOrclK6hObyjWKxfIE4kRRC0epM1JG2s/PcG2tilwjyoIpeqalLhv
+ hbTw9XeLJSXQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10012"; a="266695236"
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="266695236"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2021 08:25:32 -0700
+IronPort-SDR: ZqiQIQQUh0QmOX+Mf8/WNsTGQMXPGbeew8tTM/Y4GTULg5Q7y0eJUahjzJ+U3+MeiEINwhbV92
+ YKcgMROJS5zw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,265,1616482800"; 
+   d="scan'208";a="553436010"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga001.fm.intel.com with ESMTP; 11 Jun 2021 08:25:29 -0700
+Date:   Fri, 11 Jun 2021 17:12:45 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 7/9] riscv: bpf: Avoid breaking W^X
-References: <20210330022144.150edc6e@xhacker>
-        <20210330022521.2a904a8c@xhacker>
-X-Yow:  Look!!  Karl Malden!
-Date:   Fri, 11 Jun 2021 16:10:03 +0200
-In-Reply-To: <20210330022521.2a904a8c@xhacker> (Jisheng Zhang's message of
-        "Tue, 30 Mar 2021 02:25:21 +0800")
-Message-ID: <87o8ccqypw.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net] ixgbe: xsk: fix for metasize when construct skb by
+ xdp_buff
+Message-ID: <20210611151245.GA31289@ranger.igk.intel.com>
+References: <20210609122244.52647-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609122244.52647-1-xuanzhuo@linux.alibaba.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mär 30 2021, Jisheng Zhang wrote:
+On Wed, Jun 09, 2021 at 08:22:44PM +0800, Xuan Zhuo wrote:
+> We should copy data_meta to the skb space.  Then use __skb_pull to
+> correct skb->data
 
-> From: Jisheng Zhang <jszhang@kernel.org>
->
-> We allocate Non-executable pages, then call bpf_jit_binary_lock_ro()
-> to enable executable permission after mapping them read-only. This is
-> to prepare for STRICT_MODULE_RWX in following patch.
+This looks like a bug that has been sitting over here for sometime. Have
+you encountered this during your virtio-net's AF_XDP ZC work? I'm all ears
+how you spotted this.
 
-That breaks booting with
-<https://github.com/openSUSE/kernel-source/blob/master/config/riscv64/default>.
+Anyway, other drivers needs such fixing too. Are you willing to do that or
+should we take it on our side?
 
-Andreas.
+Magnus is OOO today, I'd like to get his final ack on that.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+From me:
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+
+Thanks!
+
+> 
+> Fixes: d0bcacd0a1309 ("ixgbe: add AF_XDP zero-copy Rx support")
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> index f72d2978263b..ee88107fa57a 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> @@ -204,7 +204,7 @@ static struct sk_buff *ixgbe_construct_skb_zc(struct ixgbe_ring *rx_ring,
+>  					      struct ixgbe_rx_buffer *bi)
+>  {
+>  	unsigned int metasize = bi->xdp->data - bi->xdp->data_meta;
+> -	unsigned int datasize = bi->xdp->data_end - bi->xdp->data;
+> +	unsigned int datasize = bi->xdp->data_end - bi->xdp->data_meta;
+>  	struct sk_buff *skb;
+>  
+>  	/* allocate a skb to store the frags */
+> @@ -214,10 +214,12 @@ static struct sk_buff *ixgbe_construct_skb_zc(struct ixgbe_ring *rx_ring,
+>  	if (unlikely(!skb))
+>  		return NULL;
+>  
+> -	skb_reserve(skb, bi->xdp->data - bi->xdp->data_hard_start);
+> -	memcpy(__skb_put(skb, datasize), bi->xdp->data, datasize);
+> -	if (metasize)
+> +	skb_reserve(skb, bi->xdp->data_meta - bi->xdp->data_hard_start);
+> +	memcpy(__skb_put(skb, datasize), bi->xdp->data_meta, datasize);
+> +	if (metasize) {
+> +		__skb_pull(skb, metasize);
+>  		skb_metadata_set(skb, metasize);
+> +	}
+>  
+>  	xsk_buff_free(bi->xdp);
+>  	bi->xdp = NULL;
+> -- 
+> 2.31.0
+> 
