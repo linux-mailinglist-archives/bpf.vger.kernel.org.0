@@ -2,477 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA653A4C44
-	for <lists+bpf@lfdr.de>; Sat, 12 Jun 2021 04:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4053A4EA9
+	for <lists+bpf@lfdr.de>; Sat, 12 Jun 2021 14:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhFLCjp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Jun 2021 22:39:45 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:42948 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFLCjo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Jun 2021 22:39:44 -0400
-Received: by mail-pf1-f194.google.com with SMTP id s14so5912837pfd.9;
-        Fri, 11 Jun 2021 19:37:32 -0700 (PDT)
+        id S230526AbhFLMe4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Jun 2021 08:34:56 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:8435 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhFLMev (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Jun 2021 08:34:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KZhwqlVWb26zxwCCNtqaurUNNLuqzC0/navdJuJBpj4=;
-        b=a/j89gTigdP6TRfSlSikoY2kybjZpZCqz6hBbyThlfxAMy5hGGXsFDtL09tMXYLLsg
-         1vEG3Og7MytuHTJ9ji1R1Nsbxhn5rWlLPdfZ5di+399MpFuhnlSVRVLsiad3YNbm5sYp
-         bGEt3rGHNIuY6mVXWtHjaCiAxYeDepty7b7+T369BEwjt85Z3UntNNY4hdLgm1V2i8or
-         rmwRfkBJ+c+G7fhMeB+iJPRBL5folfFDi2Tchqn4PR1ivI8EAu/LdNfvpXukxXp1MyO/
-         K55xONVxWgkTw3ltAhoD4jjRZK63UrTMBcnNe8TbqiJJ02ctNRNkGdiBiFW3i3qFBzSd
-         at6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KZhwqlVWb26zxwCCNtqaurUNNLuqzC0/navdJuJBpj4=;
-        b=iNRUfAYfXhAcxWHMV7HuiY3RUeKwIjXbVtJq4sxmjpoXk5ObPkFAZqG5dTU2HoTlie
-         4hcYp/MWGpRyfLaxEH5vSyA38/44XeMA8kWFkzUNRExbHLRbuyreNQ6Dp5U/gFgI/53D
-         1XpCHRN9AYe4P8tC8h0NDCeQhsEWZtwEdhx4vQk/oYqmpyimu6NAOaD4gXPOl/2XItj+
-         ugUm/EGQpXSJuHZ2QoClWwp5sYsE36/tdIh8T5bqSUAHtG3X1kMAtOc/Ul8sVCEhaGPR
-         7WcCXFODsZrCrgIdlvURrr7rimDpE/haIRvY/b0JbrNra1Ws9PaKu4QNUOxyQV3yqGe0
-         LM+A==
-X-Gm-Message-State: AOAM5307n1NAl3uzh2San7mg0afK7awRBEKIEeY+H03xKQEBrjUPIBbR
-        fWnbo4QOWwJWmaEBwQstb8mVyFVeXAA=
-X-Google-Smtp-Source: ABdhPJwdV99xdvePCmmuKu6bH+0e8lh4lSN2kYogNPxKBXwO90K3As31S2qQKxlGnm0+jwRHkRtR5Q==
-X-Received: by 2002:a63:fc06:: with SMTP id j6mr6480474pgi.226.1623465392118;
-        Fri, 11 Jun 2021 19:36:32 -0700 (PDT)
-Received: from localhost ([2409:4063:4d05:9fb3:bc63:2dba:460a:d70e])
-        by smtp.gmail.com with ESMTPSA id f12sm6079261pfn.161.2021.06.11.19.36.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 19:36:31 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1623501171; x=1655037171;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jpvwUP8q9X5zwxF28XApwhM5FHi9/s7g+xfvG6V0LP0=;
+  b=Hc9Vps4r7hz04MoIHS+rnHWFo5ld5jmVNmrpn54sxLudFCqBJJg5h7CA
+   XOcQmvxXKFeXX7YACtAjr/fJbn5YkKcn9MiG6Bj2WiwHmK5YoiGZmlLk2
+   0NxdqPeQUg9dPR+4zQzTZk4UrGLOf7siUA6RTjPV7rXpRujF5JKyBupve
+   I=;
+X-IronPort-AV: E=Sophos;i="5.83,268,1616457600"; 
+   d="scan'208";a="113874358"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-28209b7b.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 12 Jun 2021 12:32:50 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-28209b7b.us-east-1.amazon.com (Postfix) with ESMTPS id 16251E10CF;
+        Sat, 12 Jun 2021 12:32:50 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Sat, 12 Jun 2021 12:32:49 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.55) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Sat, 12 Jun 2021 12:32:37 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] libbpf: add request buffer type for netlink messages
-Date:   Sat, 12 Jun 2021 08:05:02 +0530
-Message-Id: <20210612023502.1283837-4-memxor@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210612023502.1283837-1-memxor@gmail.com>
-References: <20210612023502.1283837-1-memxor@gmail.com>
+        Martin KaFai Lau <kafai@fb.com>
+CC:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v8 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Sat, 12 Jun 2021 21:32:13 +0900
+Message-ID: <20210612123224.12525-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.55]
+X-ClientProxiedBy: EX13D04UWB002.ant.amazon.com (10.43.161.133) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Coverity complains about OOB writes to nlmsghdr. There is no OOB as we
-write to the trailing buffer, but static analyzers and compilers may
-rightfully be confused as the nlmsghdr pointer has subobject provenance
-(and hence subobject bounds).
+The SO_REUSEPORT option allows sockets to listen on the same port and to
+accept connections evenly. However, there is a defect in the current
+implementation [1]. When a SYN packet is received, the connection is tied
+to a listening socket. Accordingly, when the listener is closed, in-flight
+requests during the three-way handshake and child sockets in the accept
+queue are dropped even if other listeners on the same port could accept
+such connections.
 
-Remedy this by using an explicit request structure, but we also need to
-start the buffer in case of ifinfomsg without any padding. The alignment
-on netlink wire protocol is 4 byte boundary, so we just insert explicit
-4 byte buffer to avoid compilers throwing off on read and write from/to
-padding.
+This situation can happen when various server management tools restart
+server (such as nginx) processes. For instance, when we change nginx
+configurations and restart it, it spins up new workers that respect the new
+configuration and closes all listeners on the old workers, resulting in the
+in-flight ACK of 3WHS is responded by RST.
 
-Also switch nh_tail (renamed to req_tail) to cast req * to char * so
-that it can be understood as arithmetic on pointer to the representation
-array (hence having same bound as request structure), which should
-further appease analyzers.
+To avoid such a situation, users have to know deeply how the kernel handles
+SYN packets and implement connection draining by eBPF [2]:
 
-As a bonus, callers don't have to pass sizeof(req) all the time now, as
-size is implicitly obtained using the pointer. While at it, also reduce
-the size of attribute buffer to 128 bytes (132 for ifinfomsg using
-functions due to the need to align buffer after it).
+  1. Stop routing SYN packets to the listener by eBPF.
+  2. Wait for all timers to expire to complete requests
+  3. Accept connections until EAGAIN, then close the listener.
 
-More info/discussion on why this was a problem in these links:
-http://www.open-std.org/jtc1/sc22/wg14/www/docs/n2294.htm#provenance-and-subobjects-container-of-casts-1
-https://twitter.com/rep_stosq_void/status/1298581367442333696
+  or
 
-CID: 322807
-CID: 322806
-CID: 141815
-Fixes: 715c5ce454a6 ("libbpf: Add low level TC-BPF management API")
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/lib/bpf/netlink.c | 107 +++++++++++++++-------------------------
- tools/lib/bpf/nlattr.h  |  37 +++++++++-----
- 2 files changed, 65 insertions(+), 79 deletions(-)
+  1. Start counting SYN packets and accept syscalls using the eBPF map.
+  2. Stop routing SYN packets.
+  3. Accept connections up to the count, then close the listener.
 
-diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-index cf9381f03b16..e62b188503fa 100644
---- a/tools/lib/bpf/netlink.c
-+++ b/tools/lib/bpf/netlink.c
-@@ -154,7 +154,7 @@ static int libbpf_netlink_recv(int sock, __u32 nl_pid, int seq,
- 	return ret;
- }
- 
--static int libbpf_netlink_send_recv(struct nlmsghdr *nh,
-+static int libbpf_netlink_send_recv(struct netlink_request *req,
- 				    __dump_nlmsg_t parse_msg,
- 				    libbpf_dump_nlmsg_t parse_attr,
- 				    void *cookie)
-@@ -166,15 +166,15 @@ static int libbpf_netlink_send_recv(struct nlmsghdr *nh,
- 	if (sock < 0)
- 		return sock;
- 
--	nh->nlmsg_pid = 0;
--	nh->nlmsg_seq = time(NULL);
-+	req->nh.nlmsg_pid = 0;
-+	req->nh.nlmsg_seq = time(NULL);
- 
--	if (send(sock, nh, nh->nlmsg_len, 0) < 0) {
-+	if (send(sock, req, req->nh.nlmsg_len, 0) < 0) {
- 		ret = -errno;
- 		goto out;
- 	}
- 
--	ret = libbpf_netlink_recv(sock, nl_pid, nh->nlmsg_seq,
-+	ret = libbpf_netlink_recv(sock, nl_pid, req->nh.nlmsg_seq,
- 				  parse_msg, parse_attr, cookie);
- out:
- 	libbpf_netlink_close(sock);
-@@ -186,11 +186,7 @@ static int __bpf_set_link_xdp_fd_replace(int ifindex, int fd, int old_fd,
- {
- 	struct nlattr *nla;
- 	int ret;
--	struct {
--		struct nlmsghdr  nh;
--		struct ifinfomsg ifinfo;
--		char             attrbuf[64];
--	} req;
-+	struct netlink_request req;
- 
- 	memset(&req, 0, sizeof(req));
- 	req.nh.nlmsg_len      = NLMSG_LENGTH(sizeof(struct ifinfomsg));
-@@ -199,27 +195,26 @@ static int __bpf_set_link_xdp_fd_replace(int ifindex, int fd, int old_fd,
- 	req.ifinfo.ifi_family = AF_UNSPEC;
- 	req.ifinfo.ifi_index  = ifindex;
- 
--	nla = nlattr_begin_nested(&req.nh, sizeof(req), IFLA_XDP);
-+	nla = nlattr_begin_nested(&req, IFLA_XDP);
- 	if (!nla)
- 		return -EMSGSIZE;
--	ret = nlattr_add(&req.nh, sizeof(req), IFLA_XDP_FD, &fd, sizeof(fd));
-+	ret = nlattr_add(&req, IFLA_XDP_FD, &fd, sizeof(fd));
- 	if (ret < 0)
- 		return ret;
- 	if (flags) {
--		ret = nlattr_add(&req.nh, sizeof(req), IFLA_XDP_FLAGS, &flags,
--				 sizeof(flags));
-+		ret = nlattr_add(&req, IFLA_XDP_FLAGS, &flags, sizeof(flags));
- 		if (ret < 0)
- 			return ret;
- 	}
- 	if (flags & XDP_FLAGS_REPLACE) {
--		ret = nlattr_add(&req.nh, sizeof(req), IFLA_XDP_EXPECTED_FD,
--				 &old_fd, sizeof(old_fd));
-+		ret = nlattr_add(&req, IFLA_XDP_EXPECTED_FD, &old_fd,
-+				 sizeof(old_fd));
- 		if (ret < 0)
- 			return ret;
- 	}
--	nlattr_end_nested(&req.nh, nla);
-+	nlattr_end_nested(&req, nla);
- 
--	return libbpf_netlink_send_recv(&req.nh, NULL, NULL, NULL);
-+	return libbpf_netlink_send_recv(&req, NULL, NULL, NULL);
- }
- 
- int bpf_set_link_xdp_fd_opts(int ifindex, int fd, __u32 flags,
-@@ -314,14 +309,11 @@ int bpf_get_link_xdp_info(int ifindex, struct xdp_link_info *info,
- 	struct xdp_id_md xdp_id = {};
- 	__u32 mask;
- 	int ret;
--	struct {
--		struct nlmsghdr  nh;
--		struct ifinfomsg ifm;
--	} req = {
-+	struct netlink_request req = {
- 		.nh.nlmsg_len   = NLMSG_LENGTH(sizeof(struct ifinfomsg)),
- 		.nh.nlmsg_type  = RTM_GETLINK,
- 		.nh.nlmsg_flags = NLM_F_DUMP | NLM_F_REQUEST,
--		.ifm.ifi_family = AF_PACKET,
-+		.ifinfo.ifi_family = AF_PACKET,
- 	};
- 
- 	if (flags & ~XDP_FLAGS_MASK || !info_size)
-@@ -336,7 +328,7 @@ int bpf_get_link_xdp_info(int ifindex, struct xdp_link_info *info,
- 	xdp_id.ifindex = ifindex;
- 	xdp_id.flags = flags;
- 
--	ret = libbpf_netlink_send_recv(&req.nh, __dump_link_nlmsg,
-+	ret = libbpf_netlink_send_recv(&req, __dump_link_nlmsg,
- 				       get_xdp_info, &xdp_id);
- 	if (!ret) {
- 		size_t sz = min(info_size, sizeof(xdp_id.info));
-@@ -376,15 +368,14 @@ int bpf_get_link_xdp_id(int ifindex, __u32 *prog_id, __u32 flags)
- 	return libbpf_err(ret);
- }
- 
--typedef int (*qdisc_config_t)(struct nlmsghdr *nh, struct tcmsg *t,
--			      size_t maxsz);
-+typedef int (*qdisc_config_t)(struct netlink_request *req);
- 
--static int clsact_config(struct nlmsghdr *nh, struct tcmsg *t, size_t maxsz)
-+static int clsact_config(struct netlink_request *req)
- {
--	t->tcm_parent = TC_H_CLSACT;
--	t->tcm_handle = TC_H_MAKE(TC_H_CLSACT, 0);
-+	req->tc.tcm_parent = TC_H_CLSACT;
-+	req->tc.tcm_handle = TC_H_MAKE(TC_H_CLSACT, 0);
- 
--	return nlattr_add(nh, maxsz, TCA_KIND, "clsact", sizeof("clsact"));
-+	return nlattr_add(req, TCA_KIND, "clsact", sizeof("clsact"));
- }
- 
- static int attach_point_to_config(struct bpf_tc_hook *hook,
-@@ -431,11 +422,7 @@ static int tc_qdisc_modify(struct bpf_tc_hook *hook, int cmd, int flags)
- {
- 	qdisc_config_t config;
- 	int ret;
--	struct {
--		struct nlmsghdr nh;
--		struct tcmsg tc;
--		char buf[256];
--	} req;
-+	struct netlink_request req;
- 
- 	ret = attach_point_to_config(hook, &config);
- 	if (ret < 0)
-@@ -448,11 +435,11 @@ static int tc_qdisc_modify(struct bpf_tc_hook *hook, int cmd, int flags)
- 	req.tc.tcm_family  = AF_UNSPEC;
- 	req.tc.tcm_ifindex = OPTS_GET(hook, ifindex, 0);
- 
--	ret = config(&req.nh, &req.tc, sizeof(req));
-+	ret = config(&req);
- 	if (ret < 0)
- 		return ret;
- 
--	return libbpf_netlink_send_recv(&req.nh, NULL, NULL, NULL);
-+	return libbpf_netlink_send_recv(&req, NULL, NULL, NULL);
- }
- 
- static int tc_qdisc_create_excl(struct bpf_tc_hook *hook)
-@@ -544,7 +531,7 @@ static int get_tc_info(struct nlmsghdr *nh, libbpf_dump_nlmsg_t fn,
- 	return __get_tc_info(cookie, tc, tb, nh->nlmsg_flags & NLM_F_ECHO);
- }
- 
--static int tc_add_fd_and_name(struct nlmsghdr *nh, size_t maxsz, int fd)
-+static int tc_add_fd_and_name(struct netlink_request *req, int fd)
- {
- 	struct bpf_prog_info info = {};
- 	__u32 info_len = sizeof(info);
-@@ -555,7 +542,7 @@ static int tc_add_fd_and_name(struct nlmsghdr *nh, size_t maxsz, int fd)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = nlattr_add(nh, maxsz, TCA_BPF_FD, &fd, sizeof(fd));
-+	ret = nlattr_add(req, TCA_BPF_FD, &fd, sizeof(fd));
- 	if (ret < 0)
- 		return ret;
- 	len = snprintf(name, sizeof(name), "%s:[%u]", info.name, info.id);
-@@ -563,7 +550,7 @@ static int tc_add_fd_and_name(struct nlmsghdr *nh, size_t maxsz, int fd)
- 		return -errno;
- 	if (len >= sizeof(name))
- 		return -ENAMETOOLONG;
--	return nlattr_add(nh, maxsz, TCA_BPF_NAME, name, len + 1);
-+	return nlattr_add(req, TCA_BPF_NAME, name, len + 1);
- }
- 
- int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
-@@ -571,12 +558,8 @@ int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
- 	__u32 protocol, bpf_flags, handle, priority, parent, prog_id, flags;
- 	int ret, ifindex, attach_point, prog_fd;
- 	struct bpf_cb_ctx info = {};
-+	struct netlink_request req;
- 	struct nlattr *nla;
--	struct {
--		struct nlmsghdr nh;
--		struct tcmsg tc;
--		char buf[256];
--	} req;
- 
- 	if (!hook || !opts ||
- 	    !OPTS_VALID(hook, bpf_tc_hook) ||
-@@ -618,25 +601,24 @@ int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
- 		return libbpf_err(ret);
- 	req.tc.tcm_parent = parent;
- 
--	ret = nlattr_add(&req.nh, sizeof(req), TCA_KIND, "bpf", sizeof("bpf"));
-+	ret = nlattr_add(&req, TCA_KIND, "bpf", sizeof("bpf"));
- 	if (ret < 0)
- 		return libbpf_err(ret);
--	nla = nlattr_begin_nested(&req.nh, sizeof(req), TCA_OPTIONS);
-+	nla = nlattr_begin_nested(&req, TCA_OPTIONS);
- 	if (!nla)
- 		return libbpf_err(-EMSGSIZE);
--	ret = tc_add_fd_and_name(&req.nh, sizeof(req), prog_fd);
-+	ret = tc_add_fd_and_name(&req, prog_fd);
- 	if (ret < 0)
- 		return libbpf_err(ret);
- 	bpf_flags = TCA_BPF_FLAG_ACT_DIRECT;
--	ret = nlattr_add(&req.nh, sizeof(req), TCA_BPF_FLAGS, &bpf_flags,
--			 sizeof(bpf_flags));
-+	ret = nlattr_add(&req, TCA_BPF_FLAGS, &bpf_flags, sizeof(bpf_flags));
- 	if (ret < 0)
- 		return libbpf_err(ret);
--	nlattr_end_nested(&req.nh, nla);
-+	nlattr_end_nested(&req, nla);
- 
- 	info.opts = opts;
- 
--	ret = libbpf_netlink_send_recv(&req.nh, get_tc_info, NULL, &info);
-+	ret = libbpf_netlink_send_recv(&req, get_tc_info, NULL, &info);
- 	if (ret < 0)
- 		return libbpf_err(ret);
- 	if (!info.processed)
-@@ -650,11 +632,7 @@ static int __bpf_tc_detach(const struct bpf_tc_hook *hook,
- {
- 	__u32 protocol = 0, handle, priority, parent, prog_id, flags;
- 	int ret, ifindex, attach_point, prog_fd;
--	struct {
--		struct nlmsghdr nh;
--		struct tcmsg tc;
--		char buf[256];
--	} req;
-+	struct netlink_request req;
- 
- 	if (!hook ||
- 	    !OPTS_VALID(hook, bpf_tc_hook) ||
-@@ -701,13 +679,12 @@ static int __bpf_tc_detach(const struct bpf_tc_hook *hook,
- 	req.tc.tcm_parent = parent;
- 
- 	if (!flush) {
--		ret = nlattr_add(&req.nh, sizeof(req), TCA_KIND,
--				 "bpf", sizeof("bpf"));
-+		ret = nlattr_add(&req, TCA_KIND, "bpf", sizeof("bpf"));
- 		if (ret < 0)
- 			return ret;
- 	}
- 
--	return libbpf_netlink_send_recv(&req.nh, NULL, NULL, NULL);
-+	return libbpf_netlink_send_recv(&req, NULL, NULL, NULL);
- }
- 
- int bpf_tc_detach(const struct bpf_tc_hook *hook,
-@@ -727,11 +704,7 @@ int bpf_tc_query(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
- 	__u32 protocol, handle, priority, parent, prog_id, flags;
- 	int ret, ifindex, attach_point, prog_fd;
- 	struct bpf_cb_ctx info = {};
--	struct {
--		struct nlmsghdr nh;
--		struct tcmsg tc;
--		char buf[256];
--	} req;
-+	struct netlink_request req;
- 
- 	if (!hook || !opts ||
- 	    !OPTS_VALID(hook, bpf_tc_hook) ||
-@@ -770,13 +743,13 @@ int bpf_tc_query(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
- 		return libbpf_err(ret);
- 	req.tc.tcm_parent = parent;
- 
--	ret = nlattr_add(&req.nh, sizeof(req), TCA_KIND, "bpf", sizeof("bpf"));
-+	ret = nlattr_add(&req, TCA_KIND, "bpf", sizeof("bpf"));
- 	if (ret < 0)
- 		return libbpf_err(ret);
- 
- 	info.opts = opts;
- 
--	ret = libbpf_netlink_send_recv(&req.nh, get_tc_info, NULL, &info);
-+	ret = libbpf_netlink_send_recv(&req, get_tc_info, NULL, &info);
- 	if (ret < 0)
- 		return libbpf_err(ret);
- 	if (!info.processed)
-diff --git a/tools/lib/bpf/nlattr.h b/tools/lib/bpf/nlattr.h
-index 3c780ab6d022..cc59f9c02d88 100644
---- a/tools/lib/bpf/nlattr.h
-+++ b/tools/lib/bpf/nlattr.h
-@@ -13,6 +13,7 @@
- #include <string.h>
- #include <errno.h>
- #include <linux/netlink.h>
-+#include <linux/rtnetlink.h>
- 
- /* avoid multiple definition of netlink features */
- #define __LINUX_NETLINK_H
-@@ -52,6 +53,18 @@ struct libbpf_nla_policy {
- 	uint16_t	maxlen;
- };
- 
-+struct netlink_request {
-+	struct nlmsghdr nh;
-+	union {
-+		struct {
-+			struct ifinfomsg ifinfo;
-+			char _pad[4];
-+		};
-+		struct tcmsg tc;
-+	};
-+	char buf[128];
-+};
-+
- /**
-  * @ingroup attr
-  * Iterate over a stream of attributes
-@@ -111,44 +124,44 @@ static inline struct nlattr *nla_data(struct nlattr *nla)
- 	return (struct nlattr *)((char *)nla + NLA_HDRLEN);
- }
- 
--static inline struct nlattr *nh_tail(struct nlmsghdr *nh)
-+static inline struct nlattr *req_tail(struct netlink_request *req)
- {
--	return (struct nlattr *)((char *)nh + NLMSG_ALIGN(nh->nlmsg_len));
-+	return (struct nlattr *)((char *)req + NLMSG_ALIGN(req->nh.nlmsg_len));
- }
- 
--static inline int nlattr_add(struct nlmsghdr *nh, size_t maxsz, int type,
-+static inline int nlattr_add(struct netlink_request *req, int type,
- 			     const void *data, int len)
- {
- 	struct nlattr *nla;
- 
--	if (NLMSG_ALIGN(nh->nlmsg_len) + NLA_ALIGN(NLA_HDRLEN + len) > maxsz)
-+	if (NLMSG_ALIGN(req->nh.nlmsg_len) + NLA_ALIGN(NLA_HDRLEN + len) > sizeof(*req))
- 		return -EMSGSIZE;
- 	if (!!data != !!len)
- 		return -EINVAL;
- 
--	nla = nh_tail(nh);
-+	nla = req_tail(req);
- 	nla->nla_type = type;
- 	nla->nla_len = NLA_HDRLEN + len;
- 	if (data)
- 		memcpy(nla_data(nla), data, len);
--	nh->nlmsg_len = NLMSG_ALIGN(nh->nlmsg_len) + NLA_ALIGN(nla->nla_len);
-+	req->nh.nlmsg_len = NLMSG_ALIGN(req->nh.nlmsg_len) + NLA_ALIGN(nla->nla_len);
- 	return 0;
- }
- 
--static inline struct nlattr *nlattr_begin_nested(struct nlmsghdr *nh,
--						 size_t maxsz, int type)
-+static inline struct nlattr *nlattr_begin_nested(struct netlink_request *req, int type)
- {
- 	struct nlattr *tail;
- 
--	tail = nh_tail(nh);
--	if (nlattr_add(nh, maxsz, type | NLA_F_NESTED, NULL, 0))
-+	tail = req_tail(req);
-+	if (nlattr_add(req, type | NLA_F_NESTED, NULL, 0))
- 		return NULL;
- 	return tail;
- }
- 
--static inline void nlattr_end_nested(struct nlmsghdr *nh, struct nlattr *tail)
-+static inline void nlattr_end_nested(struct netlink_request *req,
-+				     struct nlattr *tail)
- {
--	tail->nla_len = (char *)nh_tail(nh) - (char *)tail;
-+	tail->nla_len = (char *)req_tail(req) - (char *)tail;
- }
- 
- #endif /* __LIBBPF_NLATTR_H */
+In either way, we cannot close a listener immediately. However, ideally,
+the application need not drain the not yet accepted sockets because 3WHS
+and tying a connection to a listener are just the kernel behaviour. The
+root cause is within the kernel, so the issue should be addressed in kernel
+space and should not be visible to user space. This patchset fixes it so
+that users need not take care of kernel implementation and connection
+draining. With this patchset, the kernel redistributes requests and
+connections from a listener to the others in the same reuseport group
+at/after close or shutdown syscalls.
+
+Although some software does connection draining, there are still merits in
+migration. For some security reasons, such as replacing TLS certificates,
+we may want to apply new settings as soon as possible and/or we may not be
+able to wait for connection draining. The sockets in the accept queue have
+not started application sessions yet. So, if we do not drain such sockets,
+they can be handled by the newer listeners and could have a longer
+lifetime. It is difficult to drain all connections in every case, but we
+can decrease such aborted connections by migration. In that sense,
+migration is always better than draining. 
+
+Moreover, auto-migration simplifies user space logic and also works well in
+a case where we cannot modify and build a server program to implement the
+workaround.
+
+Note that the source and destination listeners MUST have the same settings
+at the socket API level; otherwise, applications may face inconsistency and
+cause errors. In such a case, we have to use the eBPF program to select a
+specific listener or to cancel migration.
+
+Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
+snippets along the way.
+
+
+Link:
+ [1] The SO_REUSEPORT socket option
+ https://lwn.net/Articles/542629/
+
+ [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+ https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+
+
+Changelog:
+ v8:
+  * Make reuse const in reuseport_sock_index()
+  * Don't use __reuseport_add_sock() in reuseport_alloc()
+  * Change the arg of the second memcpy() in reuseport_grow()
+  * Fix coding style to use goto in reuseport_alloc()
+  * Keep sk_refcnt uninitialized in inet_reqsk_clone()
+  * Initialize ireq_opt and ipv6_opt separately in reqsk_migrate_reset()
+
+  [ This series does not include a stats patch suggested by Yuchung Cheng
+    not to drop Acked-by/Reviewed-by tags and save reviewer's time. I will
+    post the patch as a follow up after this series is merged. ]
+
+ v7:
+ https://lore.kernel.org/bpf/20210521182104.18273-1-kuniyu@amazon.co.jp/
+  * Prevent attaching/detaching a bpf prog via shutdowned socket
+  * Fix typo in commit messages
+  * Split selftest into subtests
+
+ v6:
+ https://lore.kernel.org/bpf/20210517002258.75019-1-kuniyu@amazon.co.jp/
+  * Change description in ip-sysctl.rst
+  * Test IPPROTO_TCP before reading tfo_listener
+  * Move reqsk_clone() to inet_connection_sock.c and rename to
+    inet_reqsk_clone()
+  * Pass req->rsk_listener to inet_csk_reqsk_queue_drop() and
+    reqsk_queue_removed() in the migration path of receiving ACK
+  * s/ARG_PTR_TO_SOCKET/PTR_TO_SOCKET/ in sk_reuseport_is_valid_access()
+  * In selftest, use atomic ops to increment global vars, drop ACK by XDP,
+    enable force fastopen, use "skel->bss" instead of "skel->data"
+
+ v5:
+ https://lore.kernel.org/bpf/20210510034433.52818-1-kuniyu@amazon.co.jp/
+  * Move initializtion of sk_node from 6th to 5th patch
+  * Initialize sk_refcnt in reqsk_clone()
+  * Modify some definitions in reqsk_timer_handler()
+  * Validate in which path/state migration happens in selftest
+
+ v4:
+ https://lore.kernel.org/bpf/20210427034623.46528-1-kuniyu@amazon.co.jp/
+  * Make some functions and variables 'static' in selftest
+  * Remove 'scalability' from the cover letter
+
+ v3:
+ https://lore.kernel.org/bpf/20210420154140.80034-1-kuniyu@amazon.co.jp/
+  * Add sysctl back for reuseport_grow()
+  * Add helper functions to manage socks[]
+  * Separate migration related logic into functions: reuseport_resurrect(),
+    reuseport_stop_listen_sock(), reuseport_migrate_sock()
+  * Clone request_sock to be migrated
+  * Migrate request one by one
+  * Pass child socket to eBPF prog
+
+ v2:
+ https://lore.kernel.org/netdev/20201207132456.65472-1-kuniyu@amazon.co.jp/
+  * Do not save closed sockets in socks[]
+  * Revert 607904c357c61adf20b8fd18af765e501d61a385
+  * Extract inet_csk_reqsk_queue_migrate() into a single patch
+  * Change the spin_lock order to avoid lockdep warning
+  * Add static to __reuseport_select_sock
+  * Use refcount_inc_not_zero() in reuseport_select_migrated_sock()
+  * Set the default attach type in bpf_prog_load_check_attach()
+  * Define new proto of BPF_FUNC_get_socket_cookie
+  * Fix test to be compiled successfully
+  * Update commit messages
+
+ v1:
+ https://lore.kernel.org/netdev/20201201144418.35045-1-kuniyu@amazon.co.jp/
+  * Remove the sysctl option
+  * Enable migration if eBPF progam is not attached
+  * Add expected_attach_type to check if eBPF program can migrate sockets
+  * Add a field to tell migration type to eBPF program
+  * Support BPF_FUNC_get_socket_cookie to get the cookie of sk
+  * Allocate an empty skb if skb is NULL
+  * Pass req_to_sk(req)->sk_hash because listener's hash is zero
+  * Update commit messages and coverletter
+
+ RFC:
+ https://lore.kernel.org/netdev/20201117094023.3685-1-kuniyu@amazon.co.jp/
+
+
+Kuniyuki Iwashima (11):
+  net: Introduce net.ipv4.tcp_migrate_req.
+  tcp: Add num_closed_socks to struct sock_reuseport.
+  tcp: Keep TCP_CLOSE sockets in the reuseport group.
+  tcp: Add reuseport_migrate_sock() to select a new listener.
+  tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+  tcp: Migrate TCP_NEW_SYN_RECV requests at retransmitting SYN+ACKs.
+  tcp: Migrate TCP_NEW_SYN_RECV requests at receiving the final ACK.
+  bpf: Support BPF_FUNC_get_socket_cookie() for
+    BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Support socket migration by eBPF.
+  libbpf: Set expected_attach_type for BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
+
+ Documentation/networking/ip-sysctl.rst        |  25 +
+ include/linux/bpf.h                           |   1 +
+ include/linux/filter.h                        |   2 +
+ include/net/netns/ipv4.h                      |   1 +
+ include/net/sock_reuseport.h                  |   9 +-
+ include/uapi/linux/bpf.h                      |  16 +
+ kernel/bpf/syscall.c                          |  13 +
+ net/core/filter.c                             |  23 +-
+ net/core/sock_reuseport.c                     | 359 +++++++++--
+ net/ipv4/inet_connection_sock.c               | 191 +++++-
+ net/ipv4/inet_hashtables.c                    |   2 +-
+ net/ipv4/sysctl_net_ipv4.c                    |   9 +
+ net/ipv4/tcp_ipv4.c                           |  20 +-
+ net/ipv4/tcp_minisocks.c                      |   4 +-
+ net/ipv6/tcp_ipv6.c                           |  14 +-
+ tools/include/uapi/linux/bpf.h                |  16 +
+ tools/lib/bpf/libbpf.c                        |   5 +-
+ tools/testing/selftests/bpf/network_helpers.c |   2 +-
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../bpf/prog_tests/migrate_reuseport.c        | 555 ++++++++++++++++++
+ .../bpf/progs/test_migrate_reuseport.c        | 135 +++++
+ 21 files changed, 1335 insertions(+), 68 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
+
 -- 
-2.31.1
+2.30.2
 
