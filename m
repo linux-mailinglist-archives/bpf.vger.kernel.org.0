@@ -2,809 +2,272 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A7F3A4ECD
-	for <lists+bpf@lfdr.de>; Sat, 12 Jun 2021 14:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762C13A516F
+	for <lists+bpf@lfdr.de>; Sun, 13 Jun 2021 02:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhFLMhb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Jun 2021 08:37:31 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:43585 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231495AbhFLMha (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Jun 2021 08:37:30 -0400
+        id S229777AbhFMAK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Jun 2021 20:10:26 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:42557 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhFMAKZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Jun 2021 20:10:25 -0400
+Received: by mail-io1-f50.google.com with SMTP id s26so6539940ioe.9;
+        Sat, 12 Jun 2021 17:08:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1623501331; x=1655037331;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=A7Al7J9yQoozwAsyo0bEmQvAxMvPfNDvy6TXOrXduRc=;
-  b=a7I9tLWv4llUcatqDd1URHj9b2wdziHpXmegISoLS9f44IKJk0DthFjm
-   4bw1uR/VlR8hV8Nm+thBE8zW5+FSab57EqedfsQzQ1XvA/iPju+SKsGfb
-   igzFvtKQxY11IMtTPKiUkpDuPq5UyKKeGwz70VUk+mtUoHz8AOoldmc0Z
-   4=;
-X-IronPort-AV: E=Sophos;i="5.83,268,1616457600"; 
-   d="scan'208";a="139820357"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2c-76e0922c.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 12 Jun 2021 12:35:31 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-76e0922c.us-west-2.amazon.com (Postfix) with ESMTPS id 071BEAD86A;
-        Sat, 12 Jun 2021 12:35:26 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Sat, 12 Jun 2021 12:35:25 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.160.55) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Sat, 12 Jun 2021 12:35:19 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GSKrcPGu335cHezrGXttTKy9INtNuY4zhBjhpk4ZArA=;
+        b=LQVahZzSxCnwoLa2Zkiljbv0dXpSrxXVuvY3BGQmnqL7Yt0c38UtA4oYjD1tTWGqq2
+         Z21uzb+fEasKtlWs40v9cF25xMQPlvnFiIeDU3g/bY0+L4JvHVlpYdKLhimoO32PVwca
+         l8QP5WlHtYn/Ooxsyv+hDSJP6Kd93ZO8W7EL0RNWZgorApBh+emLWZnLEA64KeFBMUL8
+         J/IYZJmNnS4cLhFgFBF+rRotnJPqtoejmBlWfokLHTVswSUwP1vwA5fvePID07YvDPft
+         QoeY2UA4zWd97rmNxn5WP+A31GvbNZ++BLnjzF0X2fOQoE/JKyF/S51IsM1ZGLCLqbGA
+         NYlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GSKrcPGu335cHezrGXttTKy9INtNuY4zhBjhpk4ZArA=;
+        b=j8DLuwMuX2ovyDYbv/mGhL61A0m8U5vNpQgc8VrcIfMXwr5bExjFtpBjEE0l61M5ie
+         NvVAecEexJNMmzsY2f5BzW4qKrEp6ELGZooWXPPyLpJY+kWg8Wo/u7xarwhHZSTGLNna
+         C0SBXcO9N4OMGfLDPMuGopt2odeQeTVk9ghvh23qUn9VPrRvrlJyW0tFIBQvDYoqtFmh
+         0/bD5Ou0IHuMzKG0MORn6o8IVqRMtL1hZivXaOI7EKltghDDRiaAi9UEELv/p+aPIJq9
+         Qz/HYAQKS65YFGLtyZ9ERi9a/wfKVgXrRevNUibo0pZ1vRODsCrxvNwCgTh+Wu+rnZ8n
+         e8AQ==
+X-Gm-Message-State: AOAM531skNkFhzwoWDOgDx1WwqODJLC6xaBolcNtHIU+Cjb9Ecqeue9u
+        3aU2yqNt1wUKiBviXhEJxbQcvFdbavc4nYh+TGcvSMhJCzSvzQ==
+X-Google-Smtp-Source: ABdhPJzG2N4tnJJXZBoz6y7svGbH6o2af1VFj/WCTdC4GDCqAPBRB90TZN5mQTlPlr85OyLSzr0Q/WZGy7ruMg8rP3Q=
+X-Received: by 2002:a02:a19e:: with SMTP id n30mr10740183jah.109.1623542832263;
+ Sat, 12 Jun 2021 17:07:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAPGftE_eY-Zdi3wBcgDfkz_iOr1KF10n=9mJHm1_a_PykcsoeA@mail.gmail.com>
+ <ce6fd0fd-2fb3-7a66-4910-5fe8c2b4d593@fb.com>
+In-Reply-To: <ce6fd0fd-2fb3-7a66-4910-5fe8c2b4d593@fb.com>
+From:   Tony Ambardar <tony.ambardar@gmail.com>
+Date:   Sat, 12 Jun 2021 17:07:01 -0700
+Message-ID: <CAPGftE9+CVuK7KwExRiqsuKHMEUrPsXraBbC5qw8N2NFrE5MYg@mail.gmail.com>
+Subject: Re: Kernel Oops in test_verifier "#828/p reference tracking: bpf_sk_release(btf_tcp_sock)"
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, linux-mips@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-CC:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 bpf-next 11/11] bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
-Date:   Sat, 12 Jun 2021 21:32:24 +0900
-Message-ID: <20210612123224.12525-12-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210612123224.12525-1-kuniyu@amazon.co.jp>
-References: <20210612123224.12525-1-kuniyu@amazon.co.jp>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.55]
-X-ClientProxiedBy: EX13D04UWB002.ant.amazon.com (10.43.161.133) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds a test for BPF_SK_REUSEPORT_SELECT_OR_MIGRATE and
-removes 'static' from settimeo() in network_helpers.c.
+On Fri, 11 Jun 2021 at 08:57, Yonghong Song <yhs@fb.com> wrote:
+>
+> On 6/10/21 6:02 PM, Tony Ambardar wrote:
+> > Hello,
+> >
+> > I encountered an NPE and kernel Oops [1] while running the
+> > 'test_verifier' selftest on MIPS32 with LTS kernel 5.10.41. This was
+> > observed during development of a MIPS32 JIT but is verifier-related.
+> >
+> > Initial troubleshooting [2] points to an unchecked NULL dereference in
+> > btf_type_by_id(), with an unexpected BTF type ID. The root cause is
+> > unclear, whether source of the ID or a potential underlying BTF
+> > problem.
+>
+> Do you know what is the faulty btf ID number? What is the maximum id
+> for vmlinux BTF?
 
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
----
- tools/testing/selftests/bpf/network_helpers.c |   2 +-
- tools/testing/selftests/bpf/network_helpers.h |   1 +
- .../bpf/prog_tests/migrate_reuseport.c        | 555 ++++++++++++++++++
- .../bpf/progs/test_migrate_reuseport.c        | 135 +++++
- 4 files changed, 692 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
+Thanks for the suggestions, Yonghong.
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 12ee40284da0..2060bc122c53 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -40,7 +40,7 @@ struct ipv6_packet pkt_v6 = {
- 	.tcp.doff = 5,
- };
- 
--static int settimeo(int fd, int timeout_ms)
-+int settimeo(int fd, int timeout_ms)
- {
- 	struct timeval timeout = { .tv_sec = 3 };
- 
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index 7205f8afdba1..5e0d51c07b63 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -33,6 +33,7 @@ struct ipv6_packet {
- } __packed;
- extern struct ipv6_packet pkt_v6;
- 
-+int settimeo(int fd, int timeout_ms);
- int start_server(int family, int type, const char *addr, __u16 port,
- 		 int timeout_ms);
- int connect_to_fd(int server_fd, int timeout_ms);
-diff --git a/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-new file mode 100644
-index 000000000000..0fa3f750567d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-@@ -0,0 +1,555 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Check if we can migrate child sockets.
-+ *
-+ *   1. call listen() for 4 server sockets.
-+ *   2. call connect() for 25 client sockets.
-+ *   3. call listen() for 1 server socket. (migration target)
-+ *   4. update a map to migrate all child sockets
-+ *        to the last server socket (migrate_map[cookie] = 4)
-+ *   5. call shutdown() for first 4 server sockets
-+ *        and migrate the requests in the accept queue
-+ *        to the last server socket.
-+ *   6. call listen() for the second server socket.
-+ *   7. call shutdown() for the last server
-+ *        and migrate the requests in the accept queue
-+ *        to the second server socket.
-+ *   8. call listen() for the last server.
-+ *   9. call shutdown() for the second server
-+ *        and migrate the requests in the accept queue
-+ *        to the last server socket.
-+ *  10. call accept() for the last server socket.
-+ *
-+ * Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-+ */
-+
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include "test_progs.h"
-+#include "test_migrate_reuseport.skel.h"
-+#include "network_helpers.h"
-+
-+#define IFINDEX_LO 1
-+
-+#define NR_SERVERS 5
-+#define NR_CLIENTS (NR_SERVERS * 5)
-+#define MIGRATED_TO (NR_SERVERS - 1)
-+
-+/* fastopenq->max_qlen and sk->sk_max_ack_backlog */
-+#define QLEN (NR_CLIENTS * 5)
-+
-+#define MSG "Hello World\0"
-+#define MSGLEN 12
-+
-+static struct migrate_reuseport_test_case {
-+	const char *name;
-+	__s64 servers[NR_SERVERS];
-+	__s64 clients[NR_CLIENTS];
-+	struct sockaddr_storage addr;
-+	socklen_t addrlen;
-+	int family;
-+	int state;
-+	bool drop_ack;
-+	bool expire_synack_timer;
-+	bool fastopen;
-+	struct bpf_link *link;
-+} test_cases[] = {
-+	{
-+		.name = "IPv4 TCP_ESTABLISHED  inet_csk_listen_stop",
-+		.family = AF_INET,
-+		.state = BPF_TCP_ESTABLISHED,
-+		.drop_ack = false,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv4 TCP_SYN_RECV     inet_csk_listen_stop",
-+		.family = AF_INET,
-+		.state = BPF_TCP_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = true,
-+	},
-+	{
-+		.name = "IPv4 TCP_NEW_SYN_RECV reqsk_timer_handler",
-+		.family = AF_INET,
-+		.state = BPF_TCP_NEW_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = true,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv4 TCP_NEW_SYN_RECV inet_csk_complete_hashdance",
-+		.family = AF_INET,
-+		.state = BPF_TCP_NEW_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv6 TCP_ESTABLISHED  inet_csk_listen_stop",
-+		.family = AF_INET6,
-+		.state = BPF_TCP_ESTABLISHED,
-+		.drop_ack = false,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv6 TCP_SYN_RECV     inet_csk_listen_stop",
-+		.family = AF_INET6,
-+		.state = BPF_TCP_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = true,
-+	},
-+	{
-+		.name = "IPv6 TCP_NEW_SYN_RECV reqsk_timer_handler",
-+		.family = AF_INET6,
-+		.state = BPF_TCP_NEW_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = true,
-+		.fastopen = false,
-+	},
-+	{
-+		.name = "IPv6 TCP_NEW_SYN_RECV inet_csk_complete_hashdance",
-+		.family = AF_INET6,
-+		.state = BPF_TCP_NEW_SYN_RECV,
-+		.drop_ack = true,
-+		.expire_synack_timer = false,
-+		.fastopen = false,
-+	}
-+};
-+
-+static void init_fds(__s64 fds[], int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++)
-+		fds[i] = -1;
-+}
-+
-+static void close_fds(__s64 fds[], int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; i++) {
-+		if (fds[i] != -1) {
-+			close(fds[i]);
-+			fds[i] = -1;
-+		}
-+	}
-+}
-+
-+static int setup_fastopen(char *buf, int size, int *saved_len, bool restore)
-+{
-+	int err = 0, fd, len;
-+
-+	fd = open("/proc/sys/net/ipv4/tcp_fastopen", O_RDWR);
-+	if (!ASSERT_NEQ(fd, -1, "open"))
-+		return -1;
-+
-+	if (restore) {
-+		len = write(fd, buf, *saved_len);
-+		if (!ASSERT_EQ(len, *saved_len, "write - restore"))
-+			err = -1;
-+	} else {
-+		*saved_len = read(fd, buf, size);
-+		if (!ASSERT_GE(*saved_len, 1, "read")) {
-+			err = -1;
-+			goto close;
-+		}
-+
-+		err = lseek(fd, 0, SEEK_SET);
-+		if (!ASSERT_OK(err, "lseek"))
-+			goto close;
-+
-+		/* (TFO_CLIENT_ENABLE | TFO_SERVER_ENABLE |
-+		 *  TFO_CLIENT_NO_COOKIE | TFO_SERVER_COOKIE_NOT_REQD)
-+		 */
-+		len = write(fd, "519", 3);
-+		if (!ASSERT_EQ(len, 3, "write - setup"))
-+			err = -1;
-+	}
-+
-+close:
-+	close(fd);
-+
-+	return err;
-+}
-+
-+static int drop_ack(struct migrate_reuseport_test_case *test_case,
-+		    struct test_migrate_reuseport *skel)
-+{
-+	if (test_case->family == AF_INET)
-+		skel->bss->server_port = ((struct sockaddr_in *)
-+					  &test_case->addr)->sin_port;
-+	else
-+		skel->bss->server_port = ((struct sockaddr_in6 *)
-+					  &test_case->addr)->sin6_port;
-+
-+	test_case->link = bpf_program__attach_xdp(skel->progs.drop_ack,
-+						  IFINDEX_LO);
-+	if (!ASSERT_OK_PTR(test_case->link, "bpf_program__attach_xdp"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int pass_ack(struct migrate_reuseport_test_case *test_case)
-+{
-+	int err;
-+
-+	err = bpf_link__detach(test_case->link);
-+	if (!ASSERT_OK(err, "bpf_link__detach"))
-+		return -1;
-+
-+	test_case->link = NULL;
-+
-+	return 0;
-+}
-+
-+static int start_servers(struct migrate_reuseport_test_case *test_case,
-+			 struct test_migrate_reuseport *skel)
-+{
-+	int i, err, prog_fd, reuseport = 1, qlen = QLEN;
-+
-+	prog_fd = bpf_program__fd(skel->progs.migrate_reuseport);
-+
-+	make_sockaddr(test_case->family,
-+		      test_case->family == AF_INET ? "127.0.0.1" : "::1", 0,
-+		      &test_case->addr, &test_case->addrlen);
-+
-+	for (i = 0; i < NR_SERVERS; i++) {
-+		test_case->servers[i] = socket(test_case->family, SOCK_STREAM,
-+					       IPPROTO_TCP);
-+		if (!ASSERT_NEQ(test_case->servers[i], -1, "socket"))
-+			return -1;
-+
-+		err = setsockopt(test_case->servers[i], SOL_SOCKET,
-+				 SO_REUSEPORT, &reuseport, sizeof(reuseport));
-+		if (!ASSERT_OK(err, "setsockopt - SO_REUSEPORT"))
-+			return -1;
-+
-+		err = bind(test_case->servers[i],
-+			   (struct sockaddr *)&test_case->addr,
-+			   test_case->addrlen);
-+		if (!ASSERT_OK(err, "bind"))
-+			return -1;
-+
-+		if (i == 0) {
-+			err = setsockopt(test_case->servers[i], SOL_SOCKET,
-+					 SO_ATTACH_REUSEPORT_EBPF,
-+					 &prog_fd, sizeof(prog_fd));
-+			if (!ASSERT_OK(err,
-+				       "setsockopt - SO_ATTACH_REUSEPORT_EBPF"))
-+				return -1;
-+
-+			err = getsockname(test_case->servers[i],
-+					  (struct sockaddr *)&test_case->addr,
-+					  &test_case->addrlen);
-+			if (!ASSERT_OK(err, "getsockname"))
-+				return -1;
-+		}
-+
-+		if (test_case->fastopen) {
-+			err = setsockopt(test_case->servers[i],
-+					 SOL_TCP, TCP_FASTOPEN,
-+					 &qlen, sizeof(qlen));
-+			if (!ASSERT_OK(err, "setsockopt - TCP_FASTOPEN"))
-+				return -1;
-+		}
-+
-+		/* All requests will be tied to the first four listeners */
-+		if (i != MIGRATED_TO) {
-+			err = listen(test_case->servers[i], qlen);
-+			if (!ASSERT_OK(err, "listen"))
-+				return -1;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int start_clients(struct migrate_reuseport_test_case *test_case)
-+{
-+	char buf[MSGLEN] = MSG;
-+	int i, err;
-+
-+	for (i = 0; i < NR_CLIENTS; i++) {
-+		test_case->clients[i] = socket(test_case->family, SOCK_STREAM,
-+					       IPPROTO_TCP);
-+		if (!ASSERT_NEQ(test_case->clients[i], -1, "socket"))
-+			return -1;
-+
-+		/* The attached XDP program drops only the final ACK, so
-+		 * clients will transition to TCP_ESTABLISHED immediately.
-+		 */
-+		err = settimeo(test_case->clients[i], 100);
-+		if (!ASSERT_OK(err, "settimeo"))
-+			return -1;
-+
-+		if (test_case->fastopen) {
-+			int fastopen = 1;
-+
-+			err = setsockopt(test_case->clients[i], IPPROTO_TCP,
-+					 TCP_FASTOPEN_CONNECT, &fastopen,
-+					 sizeof(fastopen));
-+			if (!ASSERT_OK(err,
-+				       "setsockopt - TCP_FASTOPEN_CONNECT"))
-+				return -1;
-+		}
-+
-+		err = connect(test_case->clients[i],
-+			      (struct sockaddr *)&test_case->addr,
-+			      test_case->addrlen);
-+		if (!ASSERT_OK(err, "connect"))
-+			return -1;
-+
-+		err = write(test_case->clients[i], buf, MSGLEN);
-+		if (!ASSERT_EQ(err, MSGLEN, "write"))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int update_maps(struct migrate_reuseport_test_case *test_case,
-+		       struct test_migrate_reuseport *skel)
-+{
-+	int i, err, migrated_to = MIGRATED_TO;
-+	int reuseport_map_fd, migrate_map_fd;
-+	__u64 value;
-+
-+	reuseport_map_fd = bpf_map__fd(skel->maps.reuseport_map);
-+	migrate_map_fd = bpf_map__fd(skel->maps.migrate_map);
-+
-+	for (i = 0; i < NR_SERVERS; i++) {
-+		value = (__u64)test_case->servers[i];
-+		err = bpf_map_update_elem(reuseport_map_fd, &i, &value,
-+					  BPF_NOEXIST);
-+		if (!ASSERT_OK(err, "bpf_map_update_elem - reuseport_map"))
-+			return -1;
-+
-+		err = bpf_map_lookup_elem(reuseport_map_fd, &i, &value);
-+		if (!ASSERT_OK(err, "bpf_map_lookup_elem - reuseport_map"))
-+			return -1;
-+
-+		err = bpf_map_update_elem(migrate_map_fd, &value, &migrated_to,
-+					  BPF_NOEXIST);
-+		if (!ASSERT_OK(err, "bpf_map_update_elem - migrate_map"))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int migrate_dance(struct migrate_reuseport_test_case *test_case)
-+{
-+	int i, err;
-+
-+	/* Migrate TCP_ESTABLISHED and TCP_SYN_RECV requests
-+	 * to the last listener based on eBPF.
-+	 */
-+	for (i = 0; i < MIGRATED_TO; i++) {
-+		err = shutdown(test_case->servers[i], SHUT_RDWR);
-+		if (!ASSERT_OK(err, "shutdown"))
-+			return -1;
-+	}
-+
-+	/* No dance for TCP_NEW_SYN_RECV to migrate based on eBPF */
-+	if (test_case->state == BPF_TCP_NEW_SYN_RECV)
-+		return 0;
-+
-+	/* Note that we use the second listener instead of the
-+	 * first one here.
-+	 *
-+	 * The fist listener is bind()ed with port 0 and,
-+	 * SOCK_BINDPORT_LOCK is not set to sk_userlocks, so
-+	 * calling listen() again will bind() the first listener
-+	 * on a new ephemeral port and detach it from the existing
-+	 * reuseport group.  (See: __inet_bind(), tcp_set_state())
-+	 *
-+	 * OTOH, the second one is bind()ed with a specific port,
-+	 * and SOCK_BINDPORT_LOCK is set. Thus, re-listen() will
-+	 * resurrect the listener on the existing reuseport group.
-+	 */
-+	err = listen(test_case->servers[1], QLEN);
-+	if (!ASSERT_OK(err, "listen"))
-+		return -1;
-+
-+	/* Migrate from the last listener to the second one.
-+	 *
-+	 * All listeners were detached out of the reuseport_map,
-+	 * so migration will be done by kernel random pick from here.
-+	 */
-+	err = shutdown(test_case->servers[MIGRATED_TO], SHUT_RDWR);
-+	if (!ASSERT_OK(err, "shutdown"))
-+		return -1;
-+
-+	/* Back to the existing reuseport group */
-+	err = listen(test_case->servers[MIGRATED_TO], QLEN);
-+	if (!ASSERT_OK(err, "listen"))
-+		return -1;
-+
-+	/* Migrate back to the last one from the second one */
-+	err = shutdown(test_case->servers[1], SHUT_RDWR);
-+	if (!ASSERT_OK(err, "shutdown"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static void count_requests(struct migrate_reuseport_test_case *test_case,
-+			   struct test_migrate_reuseport *skel)
-+{
-+	struct sockaddr_storage addr;
-+	socklen_t len = sizeof(addr);
-+	int err, cnt = 0, client;
-+	char buf[MSGLEN];
-+
-+	err = settimeo(test_case->servers[MIGRATED_TO], 4000);
-+	if (!ASSERT_OK(err, "settimeo"))
-+		goto out;
-+
-+	for (; cnt < NR_CLIENTS; cnt++) {
-+		client = accept(test_case->servers[MIGRATED_TO],
-+				(struct sockaddr *)&addr, &len);
-+		if (!ASSERT_NEQ(client, -1, "accept"))
-+			goto out;
-+
-+		memset(buf, 0, MSGLEN);
-+		read(client, &buf, MSGLEN);
-+		close(client);
-+
-+		if (!ASSERT_STREQ(buf, MSG, "read"))
-+			goto out;
-+	}
-+
-+out:
-+	ASSERT_EQ(cnt, NR_CLIENTS, "count in userspace");
-+
-+	switch (test_case->state) {
-+	case BPF_TCP_ESTABLISHED:
-+		cnt = skel->bss->migrated_at_close;
-+		break;
-+	case BPF_TCP_SYN_RECV:
-+		cnt = skel->bss->migrated_at_close_fastopen;
-+		break;
-+	case BPF_TCP_NEW_SYN_RECV:
-+		if (test_case->expire_synack_timer)
-+			cnt = skel->bss->migrated_at_send_synack;
-+		else
-+			cnt = skel->bss->migrated_at_recv_ack;
-+		break;
-+	default:
-+		cnt = 0;
-+	}
-+
-+	ASSERT_EQ(cnt, NR_CLIENTS, "count in BPF prog");
-+}
-+
-+static void run_test(struct migrate_reuseport_test_case *test_case,
-+		     struct test_migrate_reuseport *skel)
-+{
-+	int err, saved_len;
-+	char buf[16];
-+
-+	skel->bss->migrated_at_close = 0;
-+	skel->bss->migrated_at_close_fastopen = 0;
-+	skel->bss->migrated_at_send_synack = 0;
-+	skel->bss->migrated_at_recv_ack = 0;
-+
-+	init_fds(test_case->servers, NR_SERVERS);
-+	init_fds(test_case->clients, NR_CLIENTS);
-+
-+	if (test_case->fastopen) {
-+		memset(buf, 0, sizeof(buf));
-+
-+		err = setup_fastopen(buf, sizeof(buf), &saved_len, false);
-+		if (!ASSERT_OK(err, "setup_fastopen - setup"))
-+			return;
-+	}
-+
-+	err = start_servers(test_case, skel);
-+	if (!ASSERT_OK(err, "start_servers"))
-+		goto close_servers;
-+
-+	if (test_case->drop_ack) {
-+		/* Drop the final ACK of the 3-way handshake and stick the
-+		 * in-flight requests on TCP_SYN_RECV or TCP_NEW_SYN_RECV.
-+		 */
-+		err = drop_ack(test_case, skel);
-+		if (!ASSERT_OK(err, "drop_ack"))
-+			goto close_servers;
-+	}
-+
-+	/* Tie requests to the first four listners */
-+	err = start_clients(test_case);
-+	if (!ASSERT_OK(err, "start_clients"))
-+		goto close_clients;
-+
-+	err = listen(test_case->servers[MIGRATED_TO], QLEN);
-+	if (!ASSERT_OK(err, "listen"))
-+		goto close_clients;
-+
-+	err = update_maps(test_case, skel);
-+	if (!ASSERT_OK(err, "fill_maps"))
-+		goto close_clients;
-+
-+	/* Migrate the requests in the accept queue only.
-+	 * TCP_NEW_SYN_RECV requests are not migrated at this point.
-+	 */
-+	err = migrate_dance(test_case);
-+	if (!ASSERT_OK(err, "migrate_dance"))
-+		goto close_clients;
-+
-+	if (test_case->expire_synack_timer) {
-+		/* Wait for SYN+ACK timers to expire so that
-+		 * reqsk_timer_handler() migrates TCP_NEW_SYN_RECV requests.
-+		 */
-+		sleep(1);
-+	}
-+
-+	if (test_case->link) {
-+		/* Resume 3WHS and migrate TCP_NEW_SYN_RECV requests */
-+		err = pass_ack(test_case);
-+		if (!ASSERT_OK(err, "pass_ack"))
-+			goto close_clients;
-+	}
-+
-+	count_requests(test_case, skel);
-+
-+close_clients:
-+	close_fds(test_case->clients, NR_CLIENTS);
-+
-+	if (test_case->link) {
-+		err = pass_ack(test_case);
-+		ASSERT_OK(err, "pass_ack - clean up");
-+	}
-+
-+close_servers:
-+	close_fds(test_case->servers, NR_SERVERS);
-+
-+	if (test_case->fastopen) {
-+		err = setup_fastopen(buf, sizeof(buf), &saved_len, true);
-+		ASSERT_OK(err, "setup_fastopen - restore");
-+	}
-+}
-+
-+void test_migrate_reuseport(void)
-+{
-+	struct test_migrate_reuseport *skel;
-+	int i;
-+
-+	skel = test_migrate_reuseport__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
-+		test__start_subtest(test_cases[i].name);
-+		run_test(&test_cases[i], skel);
-+	}
-+
-+	test_migrate_reuseport__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c b/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
-new file mode 100644
-index 000000000000..27df571abf5b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
-@@ -0,0 +1,135 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Check if we can migrate child sockets.
-+ *
-+ *   1. If reuse_md->migrating_sk is NULL (SYN packet),
-+ *        return SK_PASS without selecting a listener.
-+ *   2. If reuse_md->migrating_sk is not NULL (socket migration),
-+ *        select a listener (reuseport_map[migrate_map[cookie]])
-+ *
-+ * Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-+ */
-+
-+#include <stddef.h>
-+#include <string.h>
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/tcp.h>
-+#include <linux/in.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_REUSEPORT_SOCKARRAY);
-+	__uint(max_entries, 256);
-+	__type(key, int);
-+	__type(value, __u64);
-+} reuseport_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 256);
-+	__type(key, __u64);
-+	__type(value, int);
-+} migrate_map SEC(".maps");
-+
-+int migrated_at_close = 0;
-+int migrated_at_close_fastopen = 0;
-+int migrated_at_send_synack = 0;
-+int migrated_at_recv_ack = 0;
-+__be16 server_port;
-+
-+SEC("xdp")
-+int drop_ack(struct xdp_md *xdp)
-+{
-+	void *data_end = (void *)(long)xdp->data_end;
-+	void *data = (void *)(long)xdp->data;
-+	struct ethhdr *eth = data;
-+	struct tcphdr *tcp = NULL;
-+
-+	if (eth + 1 > data_end)
-+		goto pass;
-+
-+	switch (bpf_ntohs(eth->h_proto)) {
-+	case ETH_P_IP: {
-+		struct iphdr *ip = (struct iphdr *)(eth + 1);
-+
-+		if (ip + 1 > data_end)
-+			goto pass;
-+
-+		if (ip->protocol != IPPROTO_TCP)
-+			goto pass;
-+
-+		tcp = (struct tcphdr *)((void *)ip + ip->ihl * 4);
-+		break;
-+	}
-+	case ETH_P_IPV6: {
-+		struct ipv6hdr *ipv6 = (struct ipv6hdr *)(eth + 1);
-+
-+		if (ipv6 + 1 > data_end)
-+			goto pass;
-+
-+		if (ipv6->nexthdr != IPPROTO_TCP)
-+			goto pass;
-+
-+		tcp = (struct tcphdr *)(ipv6 + 1);
-+		break;
-+	}
-+	default:
-+		goto pass;
-+	}
-+
-+	if (tcp + 1 > data_end)
-+		goto pass;
-+
-+	if (tcp->dest != server_port)
-+		goto pass;
-+
-+	if (!tcp->syn && tcp->ack)
-+		return XDP_DROP;
-+
-+pass:
-+	return XDP_PASS;
-+}
-+
-+SEC("sk_reuseport/migrate")
-+int migrate_reuseport(struct sk_reuseport_md *reuse_md)
-+{
-+	int *key, flags = 0, state, err;
-+	__u64 cookie;
-+
-+	if (!reuse_md->migrating_sk)
-+		return SK_PASS;
-+
-+	state = reuse_md->migrating_sk->state;
-+	cookie = bpf_get_socket_cookie(reuse_md->sk);
-+
-+	key = bpf_map_lookup_elem(&migrate_map, &cookie);
-+	if (!key)
-+		return SK_DROP;
-+
-+	err = bpf_sk_select_reuseport(reuse_md, &reuseport_map, key, flags);
-+	if (err)
-+		return SK_PASS;
-+
-+	switch (state) {
-+	case BPF_TCP_ESTABLISHED:
-+		__sync_fetch_and_add(&migrated_at_close, 1);
-+		break;
-+	case BPF_TCP_SYN_RECV:
-+		__sync_fetch_and_add(&migrated_at_close_fastopen, 1);
-+		break;
-+	case BPF_TCP_NEW_SYN_RECV:
-+		if (!reuse_md->len)
-+			__sync_fetch_and_add(&migrated_at_send_synack, 1);
-+		else
-+			__sync_fetch_and_add(&migrated_at_recv_ack, 1);
-+		break;
-+	}
-+
-+	return SK_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.2
+I had built/packaged bpftool for the target, which shows the maximum as:
 
+  root@OpenWrt:~# bpftool btf dump file /sys/kernel/btf/vmlinux format
+raw|tail -5
+  [43179] FUNC 'pci_load_of_ranges' type_id=43178 linkage=static
+  [43180] ARRAY '(anon)' type_id=23 index_type_id=23 nr_elems=16
+  [43181] FUNC 'pcibios_plat_dev_init' type_id=29264 linkage=static
+  [43182] FUNC 'pcibios_map_irq' type_id=29815 linkage=static
+  [43183] FUNC 'mips_pcibios_init' type_id=115 linkage=static
+
+After adding NULL handling and debug pr_err() to kernel_type_name(), I next see:
+
+  root@OpenWrt:~# ./test_verifier_eb 828
+  [   87.196692] btf_type_by_id(btf_vmlinux, 3062497280) returns NULL
+  [   87.196958] btf_type_by_id(btf_vmlinux, 2936995840) returns NULL
+  #828/p reference tracking: bpf_sk_release(btf_tcp_sock) FAIL
+
+Those large type ids make me suspect an endianness issue, even though bpftool
+can still properly access the vmlinux BTF. Changing byte order and
+looking up the
+resulting type ids seems to confirm this:
+
+  Check endianness:
+    3062497280 -> 0xB68A0000 --swap endian--> 0x00008AB6 -> 35510
+  bpftool btf dump file /sys/kernel/btf/vmlinux format raw|fgrep "[35510]":
+    [35510] STRUCT 'tcp_sock' size=1752 vlen=136
+
+  Check endianness:
+    2936995840 -> 0xAF0F0000 --swap endian--> 0x00000FAF -> 4015
+  bpftool btf dump file /sys/kernel/btf/vmlinux format raw|fgrep "[4015]":
+    [4015] STRUCT 'sock_common' size=112 vlen=25
+
+As a further test, I repeated "test_verifier 828" across mips{32,64}{be,le}
+systems and confirm seeing the problem only with the big-endian ones.
+
+> The involved helper is bpf_sk_release.
+>
+> static const struct bpf_func_proto bpf_sk_release_proto = {
+>          .func           = bpf_sk_release,
+>          .gpl_only       = false,
+>          .ret_type       = RET_INTEGER,
+>          .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+> };
+>
+> Eventually, the btf_id is taken from btf_sock_ids[6] where
+> btf_sock_ids is a kernel global variable.
+>
+> Could you check btf_sock_ids[6] to see whether the number
+> makes sense?
+
+What I see matches the second btf_type_by_id() NULL call above:
+  [   56.556121] btf_sock_ids[6]: 2936995840
+
+> The id is computed by resolve_btfids in
+> tools/bpf/resolve_btfids, you might add verbose mode to your linux build
+> to get more information.
+
+The verbose build didn't print any details of the btf ids. Was there anything
+special to do in invocation? I manually ran "resolve_btfids -v vmlinux" from
+the build dir and this, strangely, gave slightly different results than bpftool
+but not the huge endian-swapped type ids. Is this expected?
+
+  # ./tools/bpf/resolve_btfids/resolve_btfids -v vmlinux
+  ...
+  patching addr   116: ID   35522 [tcp_sock]
+  ...
+  patching addr   112: ID    4021 [sock_common]
+
+Do any of the details above help narrow down things? What do you suggest
+for next steps?
+
+Thanks,
+Tony
+
+> >
+> > Has this been seen before? How best to debug this further or resolve?
+> > What other details would be useful for BPF kernel developers?
+> >
+> > Thanks for any help,
+> > Tony
+> >
+> > [1]:
+> > (Host details)
+> > kodidev:~/openwrt-project$ ./staging_dir/host/bin/pahole --version
+> > v1.21
+> >
+> > (Target details)
+> > root@OpenWrt:/# uname -a
+> > Linux OpenWrt 5.10.41 #0 SMP Tue Jun 1 00:54:31 2021 mips GNU/Linux
+> >
+> > root@OpenWrt:~# sysctl net.core.bpf_jit_enable=0; ./test_verifier 826 828
+> > net.core.bpf_jit_enable = 0
+> >
+> > #826/p reference tracking: branch tracking valid pointer null comparison OK
+> > #827/p reference tracking: branch tracking valid pointer value comparison OK
+> > CPU 0 Unable to handle kernel paging request at virtual address
+> > 00000000, epc == 80244654, ra == 80244654
+> > Oops[#1]:
+> > CPU: 0 PID: 16274 Comm: test_verifier Not tainted 5.10.41 #0
+> > $ 0   : 00000000 00000001 00000000 0000a8a2
+> > $ 4   : 835ac580 a6280000 00000000 00000001
+> > $ 8   : 835ac580 a6280000 00000000 02020202
+> > $12   : 8348de58 834ba800 00000000 00000000
+> > $16   : 835ac580 8098be2c fffffff3 834bdb38
+> > $20   : 8098be0c 00000001 00000018 00000000
+> > $24   : 00000000 01415415
+> > $28   : 834bc000 834bdac8 00000005 80244654
+> > Hi    : 00000017
+> > Lo    : 0a3d70a2
+> > epc   : 80244654 kernel_type_name+0x20/0x38
+> > ra    : 80244654 kernel_type_name+0x20/0x38
+> > Status: 1000a403 KERNEL EXL IE
+> > Cause : 00800008 (ExcCode 02)
+> > BadVA : 00000000
+> > PrId  : 00019300 (MIPS 24Kc)
+> > Modules linked in: pppoe ppp_async pppox ppp_generic mac80211_hwsim
+> > mac80211 iptable_nat ipt_REJECT cfg80211 xt_time xt_tcpudp xt_tcpmss
+> > xt_statistic xt_state xt_recent xt_nat xt_multiport xt_mark xt_mac
+> > xt_limit xt_length xt_hl xt_helper xt_ecn xt_dscp xt_conntrack
+> > xt_connmark xt_connlimit xt_connbytes xt_comment xt_TCPMSS xt_REDIRECT
+> > xt_MASQUERADE xt_LOG xt_HL xt_FLOWOFFLOAD xt_DSCP xt_CT xt_CLASSIFY
+> > slhc sch_mqprio sch_cake pcnet32 nf_reject_ipv4 nf_nat nf_log_ipv4
+> > nf_flow_table nf_conntrack_netlink nf_conncount iptable_raw
+> > iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt compat
+> > cls_flower act_vlan pktgen sch_teql sch_sfq sch_red sch_prio sch_pie
+> > sch_multiq sch_gred sch_fq sch_dsmark sch_codel em_text em_nbyte
+> > em_meta em_cmp act_simple act_police act_pedit act_ipt act_csum
+> > libcrc32c em_ipset cls_bpf act_bpf act_ctinfo act_connmark
+> > nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 sch_tbf sch_ingress sch_htb
+> > sch_hfsc em_u32 cls_u32 cls_tcindex cls_route cls_matchall cls_fw
+> >   cls_flow cls_basic act_skbedit act_mirred act_gact xt_set
+> > ip_set_list_set ip_set_hash_netportnet ip_set_hash_netport
+> > ip_set_hash_netnet ip_set_hash_netiface ip_set_hash_net
+> > ip_set_hash_mac ip_set_hash_ipportnet ip_set_hash_ipportip
+> > ip_set_hash_ipport ip_set_hash_ipmark ip_set_hash_ip
+> > ip_set_bitmap_port ip_set_bitmap_ipmac ip_set_bitmap_ip ip_set
+> > nfnetlink nf_log_ipv6 nf_log_common ip6table_mangle ip6table_filter
+> > ip6_tables ip6t_REJECT x_tables nf_reject_ipv6 ifb dummy netlink_diag
+> > mii
+> > Process test_verifier (pid: 16274, threadinfo=c1418596, task=05765195,
+> > tls=77e5aec8)
+> > Stack : 83428000 83428000 8098be2c 00000000 83428000 8024af78 834bacdc 834bb000
+> >          a98a0000 834e2580 834e2c00 00000000 834e2c00 8023da9c 834bb070 00000013
+> >          80925164 80924f44 00000000 80925164 00000000 83428140 80bc3864 834bb070
+> >          834e2c00 00000000 00000010 802c441c 00000000 00000000 00000000 00000000
+> >          00000000 00000000 00000000 00000000 00000000 00000056 00000000 00000000
+> >          ...
+> > Call Trace:
+> > [<80244654>] kernel_type_name+0x20/0x38
+> > [<8024af78>] check_helper_call+0x1c9c/0x1dbc
+> > [<8024d008>] do_check_common+0x1f70/0x2a3c
+> > [<8024fb6c>] bpf_check+0x18f8/0x2308
+> > [<802369ec>] bpf_prog_load+0x378/0x860
+> > [<80237e1c>] __do_sys_bpf+0x3e0/0x2100
+> > [<801142d8>] syscall_common+0x34/0x58
+> >
+> > Code: afbf0014  0c099b58  02002025 <8c450000> 8fbf0014  02002025
+> > 8fb00010  08099b4f  27bd0018
+> >
+> > ---[ end trace ab13ac5f89eb825b ]---
+> > Kernel panic - not syncing: Fatal exception
+> > Rebooting in 3 seconds..
+> > QEMU: Terminated
+> >
+> >
+> > [2]:
+> > Function Code:
+> > ==============
+> > const char *kernel_type_name(u32 id)
+> > {
+> >      return btf_name_by_offset(btf_vmlinux,
+> >                    btf_type_by_id(btf_vmlinux, id)->name_off);
+> > }
+> >
+> > const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id)
+> > {
+> >      if (type_id > btf->nr_types)
+> >          return NULL;
+> >
+> >      return btf->types[type_id];
+> > }
+> >
+> > Disassembled Code:
+> > ==================
+> > 0x0000000000000000:  AF BF 00 14    sw    $ra, 0x14($sp)
+> > 0x0000000000000004:  0C 09 9B 58    jal   btf_type_by_id
+> > 0x0000000000000008:  02 00 20 25    move  $a0, $s0
+> > 0x000000000000000c:  8C 45 00 00    lw    $a1, ($v0)         <-- NPE
+> > 0x0000000000000010:  8F BF 00 14    lw    $ra, 0x14($sp)
+> > 0x0000000000000014:  02 00 20 25    move  $a0, $s0
+> > 0x0000000000000018:  8F B0 00 10    lw    $s0, 0x10($sp)
+> > 0x000000000000001c:  08 09 9B 4F    j     btf_name_by_offset
+> > 0x0000000000000020:  27 BD 00 18    addiu $sp, $sp, 0x18
+> >
