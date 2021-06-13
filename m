@@ -2,214 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2220C3A594E
-	for <lists+bpf@lfdr.de>; Sun, 13 Jun 2021 17:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B465F3A59B5
+	for <lists+bpf@lfdr.de>; Sun, 13 Jun 2021 19:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhFMPU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Jun 2021 11:20:27 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:43934 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbhFMPU0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Jun 2021 11:20:26 -0400
-Received: by mail-pg1-f173.google.com with SMTP id e22so6637543pgv.10;
-        Sun, 13 Jun 2021 08:18:12 -0700 (PDT)
+        id S231955AbhFMROB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Jun 2021 13:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231902AbhFMRN7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Jun 2021 13:13:59 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1747DC061574;
+        Sun, 13 Jun 2021 10:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GreLcSF8c3SIuaIbhh3lVX9/1FxEUyEE00mIosKouA8=;
-        b=NBVAcI07Pzqkf1IZAoBMiE71tHuDHKhf3DDeFhEDJ1AqdcABodk4gpdILUG7APg1Sp
-         AUpIjijAdhaGDT7OxGHeFeMt4MpXXQ07wMi46Dl21D+BFhnPQ6+H4ln0s91YGO9TK8Af
-         DJMUYj9AIQZbFaFao7i+nOxbnCIqlCvrjBFve2CTZ26NlgZ5rp+yAjKxvIeyPXuQKNDQ
-         /PwVWcEMS84NP18PECkUIwyMyU/UjkNy2z85qTS4gGd0qmb0HSswCyCWPvbUvFOPiJGb
-         ondPi8YQQPaBGecADh+HUuAgeRJ9B2DIg0pKLCwOGYVr2O4Li4Yb5nUf+FRqxpta6B/S
-         3Hmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GreLcSF8c3SIuaIbhh3lVX9/1FxEUyEE00mIosKouA8=;
-        b=NKLMsMqllTzXWcuVaRtYtUf6oD4Yt3IHVNt+O04IK4HzecLPkh/EV+yjG9wJ7OyX+R
-         /EVfkynpcsz0FTMesk5Uhd8Pn8FB+UeRKPV0Axb/WLDeSzhS55d2IeC44rsfw5F/vAWc
-         qSWGS5ef23XOxAz6cYOQMCSMcKGSRBdmMCrb+BUs3uHG9iw5mV9DMK27PyHVutWg2ky3
-         90DLoS7nLnnPSS2q7UWYfdcu+xXjTIspkHKhB8P5HMWQhygalT/epGLgrpqdDf46hCqa
-         LHQWb5pIKNOVEi7a+7f6Fg0qD8ffbbZ0n7LUvLlCOedBvBf7wOfzmNdh43vxlOm0cksf
-         nt+w==
-X-Gm-Message-State: AOAM532zlvcU9MINdfpiEX+TxfIKlKXq5QOHYYOX0+1BmhKe1RAVs2xB
-        fHqpybOLgju0tZFEhbje7aY=
-X-Google-Smtp-Source: ABdhPJwfLPNVrPy9i9/f0Lwmcf5VCRRttSCGqV3opePrpk9UBMxDFtwgDT697x7JtWG4F/A6N+6XUw==
-X-Received: by 2002:a63:31c2:: with SMTP id x185mr13220187pgx.97.1623597431782;
-        Sun, 13 Jun 2021 08:17:11 -0700 (PDT)
-Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id c62sm10309668pfa.12.2021.06.13.08.17.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Jun 2021 08:17:11 -0700 (PDT)
-Date:   Sun, 13 Jun 2021 08:17:04 -0700
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        syzbot <syzbot+f3694595248708227d35@syzkaller.appspotmail.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=9YrEcNG/N2YFUqtgoD+2CSLrFOJntdnn7M
+        Cq89XsJdc=; b=oZ8DSkyl3+yzFHd/bMM1IVyZR4lHE4DiiDHKsVLWkCHYILS2SF
+        xqU3nsWL92FjLm8qwLrgL7LPMQWfHnVLRWkWOM/qBCEYJtlOiAm75Yseriobp9hY
+        u220xym9G2f7sidk/jOrCjv269pdfSloeqBcTIit4McfRTumFBZkhXhCI=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHj1s2PMZgI9DTAA--.35616S2;
+        Mon, 14 Jun 2021 01:11:19 +0800 (CST)
+Date:   Mon, 14 Jun 2021 01:05:46 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: memory leak in bpf
-Message-ID: <YMYhcMVTxThJYxMo@nuc10>
-References: <000000000000911d3905b459824c@google.com>
- <000000000000e56a2605b616b2d9@google.com>
- <YD0UjWjQmYgY4Qgh@nuc10>
- <CACT4Y+YQzTkk=UPNH5g96e+yPYyaPBemmhqXz5oaWEvW9xb-rQ@mail.gmail.com>
- <YD1RE3O4FBkKK32l@nuc10>
- <CACT4Y+bvWyipjZ6P6gkno0ZHRWPJ-HFGiT3yECqQU37a0E_tgQ@mail.gmail.com>
- <YG4/PEhZ9CnKo1K3@nuc10>
- <CAEf4BzbB3r2pOeKBQe2F08g5ojj0RaEHHeg5L6=MVMYy-J5baA@mail.gmail.com>
- <YG9Rz4R5bx+FnkaF@nuc10>
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 7/9] riscv: bpf: Avoid breaking W^X
+Message-ID: <20210614010546.7a0d5584@xhacker>
+In-Reply-To: <87bl8cqrpv.fsf@igel.home>
+References: <20210330022144.150edc6e@xhacker>
+        <20210330022521.2a904a8c@xhacker>
+        <87o8ccqypw.fsf@igel.home>
+        <20210612002334.6af72545@xhacker>
+        <87bl8cqrpv.fsf@igel.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG9Rz4R5bx+FnkaF@nuc10>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygCHj1s2PMZgI9DTAA--.35616S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw1fKF4UZF1fWF17XFW3Awb_yoW5XF4fpr
+        1UCFWfKryvqr1Ig348Z3sF93Wjvw13J3sxKrsxXFyUAa1IqF1kZw1YgFW3JrnFqF4xK3y0
+        9rW29rsava95Zw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkGb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07b5sjbUUU
+        UU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 11:56:15AM -0700, Rustam Kovhaev wrote:
-> On Wed, Apr 07, 2021 at 04:35:34PM -0700, Andrii Nakryiko wrote:
-> > On Wed, Apr 7, 2021 at 4:24 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> > >
-> > > On Mon, Mar 01, 2021 at 09:43:00PM +0100, Dmitry Vyukov wrote:
-> > > > On Mon, Mar 1, 2021 at 9:39 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Mar 01, 2021 at 08:05:42PM +0100, Dmitry Vyukov wrote:
-> > > > > > On Mon, Mar 1, 2021 at 5:21 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Wed, Dec 09, 2020 at 10:58:10PM -0800, syzbot wrote:
-> > > > > > > > syzbot has found a reproducer for the following issue on:
-> > > > > > > >
-> > > > > > > > HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
-> > > > > > > > git tree:       upstream
-> > > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=11facf17500000
-> > > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
-> > > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=f3694595248708227d35
-> > > > > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159a9613500000
-> > > > > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bf7123500000
-> > > > > > > >
-> > > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > > > > Reported-by: syzbot+f3694595248708227d35@syzkaller.appspotmail.com
-> > > > > > > >
-> > > > > > > > Debian GNU/Linux 9 syzkaller ttyS0
-> > > > > > > > Warning: Permanently added '10.128.0.9' (ECDSA) to the list of known hosts.
-> > > > > > > > executing program
-> > > > > > > > executing program
-> > > > > > > > executing program
-> > > > > > > > BUG: memory leak
-> > > > > > > > unreferenced object 0xffff88810efccc80 (size 64):
-> > > > > > > >   comm "syz-executor334", pid 8460, jiffies 4294945724 (age 13.850s)
-> > > > > > > >   hex dump (first 32 bytes):
-> > > > > > > >     c0 cb 14 04 00 ea ff ff c0 c2 11 04 00 ea ff ff  ................
-> > > > > > > >     c0 56 3f 04 00 ea ff ff 40 18 38 04 00 ea ff ff  .V?.....@.8.....
-> > > > > > > >   backtrace:
-> > > > > > > >     [<0000000036ae98a7>] kmalloc_node include/linux/slab.h:575 [inline]
-> > > > > > > >     [<0000000036ae98a7>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:94 [inline]
-> > > > > > > >     [<0000000036ae98a7>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:135 [inline]
-> > > > > > > >     [<0000000036ae98a7>] ringbuf_map_alloc kernel/bpf/ringbuf.c:183 [inline]
-> > > > > > > >     [<0000000036ae98a7>] ringbuf_map_alloc+0x1be/0x410 kernel/bpf/ringbuf.c:150
-> > > > > > > >     [<00000000d2cb93ae>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
-> > > > > > > >     [<00000000d2cb93ae>] map_create kernel/bpf/syscall.c:825 [inline]
-> > > > > > > >     [<00000000d2cb93ae>] __do_sys_bpf+0x7d0/0x30a0 kernel/bpf/syscall.c:4381
-> > > > > > > >     [<000000008feaf393>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> > > > > > > >     [<00000000e1f53cfd>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > > > > > >
-> > > > > > > >
-> > > > > > >
-> > > > > > > i am pretty sure that this one is a false positive
-> > > > > > > the problem with reproducer is that it does not terminate all of the
-> > > > > > > child processes that it spawns
-> > > > > > >
-> > > > > > > i confirmed that it is a false positive by tracing __fput() and
-> > > > > > > bpf_map_release(), i ran reproducer, got kmemleak report, then i
-> > > > > > > manually killed those running leftover processes from reproducer and
-> > > > > > > then both functions were executed and memory was freed
-> > > > > > >
-> > > > > > > i am marking this one as:
-> > > > > > > #syz invalid
-> > > > > >
-> > > > > > Hi Rustam,
-> > > > > >
-> > > > > > Thanks for looking into this.
-> > > > > >
-> > > > > > I wonder how/where are these objects referenced? If they are not
-> > > > > > leaked and referenced somewhere, KMEMLEAK should not report them as
-> > > > > > leaks.
-> > > > > > So even if this is a false positive for BPF, this is a true positive
-> > > > > > bug and something to fix for KMEMLEAK ;)
-> > > > > > And syzbot will probably re-create this bug report soon as this still
-> > > > > > happens and is not a one-off thing.
-> > > > >
-> > > > > hi Dmitry, i haven't thought of it this way, but i guess you are right,
-> > > > > it is a kmemleak bug, ideally kmemleak should be aware that there are
-> > > > > still running processes holding references to bpf fd/anonymous inodes
-> > > > > which in their turn hold references to allocated bpf maps
-> > > >
-> > > > KMEMLEAK scans whole memory, so if there are pointers to the object
-> > > > anywhere in memory, KMEMLEAK should not report them as leaked. Running
-> > > > processes have no direct effect on KMEMLEAK logic.
-> > > > So the question is: where are these pointers to these objects? If we
-> > > > answer this, we can check how/why KMEMLEAK misses them. Are they
-> > > > mangled in some way?
-> > > thank you for your comments, they make sense, and indeed, the pointer
-> > > gets vmaped.
-> > > i should have looked into this sooner, becaused syzbot did trigger the
-> > > issue again, and Andrii had to look into the same bug, sorry about that.
-> > 
-> > No worries! I actually forgot about this thread :) Let's leave the
-> > link to my today's investigation ([0]) just for completeness.
-> > 
-> >   [0] https://lore.kernel.org/bpf/CAEf4BzYk+dqs+jwu6VKXP-RttcTEGFe+ySTGWT9CRNkagDiJVA@mail.gmail.com/
-> > 
-> > > if i am understanding this correctly here is what the fix should be:
-> > > ---
-> > >  kernel/bpf/ringbuf.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> > > index f25b719ac786..30400e74abe2 100644
-> > > --- a/kernel/bpf/ringbuf.c
-> > > +++ b/kernel/bpf/ringbuf.c
-> > > @@ -8,6 +8,7 @@
-> > >  #include <linux/vmalloc.h>
-> > >  #include <linux/wait.h>
-> > >  #include <linux/poll.h>
-> > > +#include <linux/kmemleak.h>
-> > >  #include <uapi/linux/btf.h>
-> > >
-> > >  #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
-> > > @@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
-> > >         rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
-> > >                   VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
-> > >         if (rb) {
-> > > +               kmemleak_not_leak((void *) pages);
-> > 
-> > If that makes kmemleak happy, I have no problems with this. But maybe
-> > leave some comment explaining why this is needed at all?
-> > 
-> > And for my understanding, how vmap changes anything? Those pages are
-> > still referenced from rb, which is referenced from some struct file in
-> > the system. Sorry if that's a naive question.
-> > 
-> valid question, it does look like kmemleak should be scanning
-> vmalloc()/vmap() memory, i will research this further
+Hi,
 
-a quick update, i see a problem in kmemleak code, and i have simplified
-the reproducer by getting rid of a vmap().
-i will reach out to maintainer and mm and afterwards i will update this
-bug, cheers!
+On Fri, 11 Jun 2021 18:41:16 +0200
+Andreas Schwab <schwab@linux-m68k.org> wrote:
+
+> On Jun 12 2021, Jisheng Zhang wrote:
+> 
+> > I reproduced an kernel panic with the defconfig on qemu, but I'm not sure whether
+> > this is the issue you saw, I will check.
+> >
+> >     0.161959] futex hash table entries: 512 (order: 3, 32768 bytes, linear)
+> > [    0.167028] pinctrl core: initialized pinctrl subsystem
+> > [    0.190727] Unable to handle kernel paging request at virtual address ffffffff81651bd8
+> > [    0.191361] Oops [#1]
+> > [    0.191509] Modules linked in:
+> > [    0.191814] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5-default+ #3
+> > [    0.192179] Hardware name: riscv-virtio,qemu (DT)
+> > [    0.192492] epc : __memset+0xc4/0xfc
+> > [    0.192712]  ra : skb_flow_dissector_init+0x22/0x86  
+> 
+> Yes, that's the same.
+> 
+> Andreas.
+> 
+
+I think I found the root cause: commit 2bfc6cd81bd ("move kernel mapping
+outside of linear mapping") moves BPF JIT region after the kernel:
+
+#define BPF_JIT_REGION_START   PFN_ALIGN((unsigned long)&_end)
+
+The &_end is unlikely aligned with PMD SIZE, so the front bpf jit region
+sits with kernel .data section in one PMD. But kenrel is mapped in PMD SIZE,
+so when bpf_jit_binary_lock_ro() is called to make the first bpf jit prog
+ROX, we will make part of kernel .data section RO too, so when we write, for example
+memset the .data section, MMU will trigger store page fault.
+
+To fix the issue, we need to make the bpf jit region PMD size aligned by either
+patch BPF_JIT_REGION_START to align on PMD size rather than PAGE SIZE, or
+something as below patch to move the BPF region before modules region:
+
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 9469f464e71a..997b894edbc2 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -31,8 +31,8 @@
+ #define BPF_JIT_REGION_SIZE	(SZ_128M)
+ #ifdef CONFIG_64BIT
+ /* KASLR should leave at least 128MB for BPF after the kernel */
+-#define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
+-#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
++#define BPF_JIT_REGION_START	(BPF_JIT_REGION_END - BPF_JIT_REGION_SIZE)
++#define BPF_JIT_REGION_END	(MODULES_VADDR)
+ #else
+ #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+ #define BPF_JIT_REGION_END	(VMALLOC_END)
+@@ -40,8 +40,8 @@
+ 
+ /* Modules always live before the kernel */
+ #ifdef CONFIG_64BIT
+-#define MODULES_VADDR	(PFN_ALIGN((unsigned long)&_end) - SZ_2G)
+ #define MODULES_END	(PFN_ALIGN((unsigned long)&_start))
++#define MODULES_VADDR	(MODULES_END - SZ_128M)
+ #endif
+ 
+ 
+can you please try it? Per my test, the issue is fixed.
+
+Thanks
+
 
