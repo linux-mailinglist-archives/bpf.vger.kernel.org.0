@@ -2,102 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3438D3A561A
-	for <lists+bpf@lfdr.de>; Sun, 13 Jun 2021 05:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2403A5914
+	for <lists+bpf@lfdr.de>; Sun, 13 Jun 2021 16:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbhFMDMS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Jun 2021 23:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFMDMR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Jun 2021 23:12:17 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0393C061574;
-        Sat, 12 Jun 2021 20:10:16 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k5so7824194pjj.1;
-        Sat, 12 Jun 2021 20:10:16 -0700 (PDT)
+        id S231839AbhFMOjV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Jun 2021 10:39:21 -0400
+Received: from mail-pj1-f43.google.com ([209.85.216.43]:37753 "EHLO
+        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231782AbhFMOjV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Jun 2021 10:39:21 -0400
+Received: by mail-pj1-f43.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so8570533pjs.2;
+        Sun, 13 Jun 2021 07:37:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fmYTPm282ZQxShprUAA+JJT8XRWCbpFbyEH4BPI2swk=;
-        b=s2qFcDbbhDIEqoW8GARyLHGrgkzlQYDVB5z5Xm0SfFQze11T5VyUTMtFIRXXES5gQ+
-         8LPgMmDJoJD+EcU7st2hvIi4Qu/BJ9OEndWiL0XGer72X8j6mMxbSHiWhX15cnu7qETv
-         6r2w1h0GsoHuYsL2OeGOMY12BUseQQ0wJppCQdnnv6hHLVvetApJIVRxTSULLml2qm1k
-         tTX9PZi9iH6iqaabuvPCBSbcT9RYxnQb0ughqG+dbhSUUTOvvHWqe+iiMkRnbKgiRZE4
-         D3tIb7L3+9Yqaa5axm/nBI0kEBf8tayUzSAf+JIr3+TxY41RrxSXTqlRoWBJmct0HYUg
-         t3AA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EA4ywZJGJgO/S0GCMMfw5wsW/fmHuUSs+6+pUCTlOuw=;
+        b=VoDm0XhRof9E9YzseYhNh0LHoXNNqDwwyl1kLv7tOXi+Mq8XaMu36G0gQJ/6rBswLa
+         5ISLicU1zrU9vZpLL5u/s8sXH2uXzzTdSsKgMyV5NQ/tghZUpboEhBtRXx1D6s8uhH9l
+         jRXes9J2M8dVYwqxR3dTaz4+2c+wOa0djILU5sq5dK6e/7IY0Q5A4N6nlt9Fh/zpJ+Zy
+         aa67tee7Dk4oYNjLdMZPXBUNiZ6Spf0+mCihx5mK6mUFtjUAHOxK8C2fBFsslHd2T+PO
+         A9jjSJxcstF0LyazwW1zkuGKBT09KIheU0XDCCJkRMXQCXoGNPPvCuasG6V4COIl0jbp
+         p60Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fmYTPm282ZQxShprUAA+JJT8XRWCbpFbyEH4BPI2swk=;
-        b=BTS9woG5ltz3oU5Mn9fRGZYPqxty5pUop7kZI/NcWcRk5acKB9fv4wpgddofuCSFVC
-         FyPFC+KmCCSJDlUCK3ftxiiDEGMVWIxF1cs77WVjMKfzjfIPPSr5D88kzwR8B/gFbsmV
-         pHEAWXJ83/HHbTyhFzLKoK+bHFWRW1SEDHoQMEyxEnhuBqeK7rMgLEcOB8C768FA4Gm/
-         j0Tlr3DJAtpSMDhzO+ZJTvnJlwR12SUv/J87JFVYY45fH2q4KVBAm+AAzxsozCcgAOka
-         nFhQhHLKGG7u58qLSyqf0DkRWNRgkEgH0r9YBlbTpqg/pT3goNF1ecOZNO0iCV269vJV
-         MxgA==
-X-Gm-Message-State: AOAM5303NOGR3cJr1IeQ3pkRSEo1Rv/olI6utEDOd51rJCl2KLJS+ImP
-        QTxeYGOotbR0jf68jqfMeF4=
-X-Google-Smtp-Source: ABdhPJy+g6r5DV3OOAeeiCvQGdBqzLlCQ664xbtZd5kcx1mCkV2PGHHZZdfpS9RFqijgiJT+ZOh14w==
-X-Received: by 2002:a17:90a:e409:: with SMTP id hv9mr16612084pjb.126.1623553816334;
-        Sat, 12 Jun 2021 20:10:16 -0700 (PDT)
-Received: from localhost ([2409:4063:4d05:9fb3:bc63:2dba:460a:d70e])
-        by smtp.gmail.com with ESMTPSA id x2sm8615474pfp.155.2021.06.12.20.10.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EA4ywZJGJgO/S0GCMMfw5wsW/fmHuUSs+6+pUCTlOuw=;
+        b=QU7vFekzYB98f5gsww1SHcV5lZd0MZGXhdAKcRBaKDkhGVV349pgvJXjl8bFNyec1j
+         tINSU5iqEn8z0oCwFolYAfcmJ8E11QnEs4LDriCPXmytWhoncawMorcLl6bqGvX9kflg
+         sizRuGbBzHXOWYmSOs0dgVSIYr2+lEmLOGlhIbWoIDp4L34JTuGTusPOmqLWBtVHWqpU
+         XqSAYcZRiYyym4JxIXezxoEhorMATfbWgnA1ARV/IUgup+0/oIN99oETQa4ck/BL5GGY
+         l5KNbLhLSVr8XIV5QLRz8p3oOAVx/Ty+r/6UtHxhcibRprgGml0PxSuL2xIWlQRGGqqG
+         3Ukw==
+X-Gm-Message-State: AOAM533hX3fUmvo6TvsdAWrym6bFw6Da22FLAby+bVFAaE/27P/xvUbY
+        XsMl5BGwavNRbWs08uKGixI=
+X-Google-Smtp-Source: ABdhPJygLdD8SUpY6TYgvdshITwhWKYR50QBGYOfWAjZh7xkmcVgmLV7ZGyTu5GM66kuTQ0eFU/lrQ==
+X-Received: by 2002:a17:90a:8c14:: with SMTP id a20mr14029790pjo.167.1623594966297;
+        Sun, 13 Jun 2021 07:36:06 -0700 (PDT)
+Received: from localhost.localdomain ([14.169.121.97])
+        by smtp.gmail.com with ESMTPSA id kb14sm8181985pjb.2.2021.06.13.07.36.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Jun 2021 20:10:16 -0700 (PDT)
-Date:   Sun, 13 Jun 2021 08:38:57 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Sun, 13 Jun 2021 07:36:06 -0700 (PDT)
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+Cc:     minhquangbui99@gmail.com, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Vlad Buslov <vladbu@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
-Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
-Message-ID: <20210613030857.72bxw56bv6rwznfk@apollo>
-References: <20210528195946.2375109-1-memxor@gmail.com>
- <CAM_iQpVqVKhK+09Sj_At226mdWpVXfVbhy89As2dai7ip8Nmtw@mail.gmail.com>
- <20210607033724.wn6qn4v42dlm4j4o@apollo>
- <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
- <20210607060724.4nidap5eywb23l3d@apollo>
- <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
- <20210608071908.sos275adj3gunewo@apollo>
- <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Roman Gushchin <guro@fb.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] bpf: Fix integer overflow in argument calculation for bpf_map_area_alloc
+Date:   Sun, 13 Jun 2021 21:34:39 +0700
+Message-Id: <20210613143440.71975-1-minhquangbui99@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 07:30:49AM IST, Cong Wang wrote:
-> I see why you are creating TC filters now, because you are trying to
-> force the lifetime of a bpf target to align with the bpf program itself.
-> The deeper reason seems to be that a cls_bpf filter looks so small
-> that it appears to you that it has nothing but a bpf_prog, right?
->
+In 32-bit architecture, the result of sizeof() is a 32-bit integer so
+the expression becomes the multiplication between 2 32-bit integer which
+can potentially leads to integer overflow. As a result,
+bpf_map_area_alloc() allocates less memory than needed.
 
-Just to clarify on this further, BPF program still has its own lifetime, link
-takes a reference, and the filter still takes a reference on it (since it
-assumes ownership, so it was easier that way).
+Fix this by casting 1 operand to u64.
 
-When releasing the bpf_link if the prog pointer is set, we also detach the TC
-filter (which releases its reference on the prog). The link on destruction
-releases its reference. So the rest of refcount will depend on userspace
-holding/pinning the fd or not.
+Fixes: 0d2c4f964050 ("bpf: Eliminate rlimit-based memory accounting for sockmap
+and sockhash maps")
+Fixes: 99c51064fb06 ("devmap: Use bpf_map_area_alloc() for allocating hash
+buckets")
+Fixes: 546ac1ffb70d ("bpf: add devmap, a map for storing net device references")
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+---
+v2: Add Fixes tag
 
---
-Kartikeya
+ kernel/bpf/devmap.c | 4 ++--
+ net/core/sock_map.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index aa516472ce46..3b45c23286c0 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -92,7 +92,7 @@ static struct hlist_head *dev_map_create_hash(unsigned int entries,
+ 	int i;
+ 	struct hlist_head *hash;
+ 
+-	hash = bpf_map_area_alloc(entries * sizeof(*hash), numa_node);
++	hash = bpf_map_area_alloc((u64) entries * sizeof(*hash), numa_node);
+ 	if (hash != NULL)
+ 		for (i = 0; i < entries; i++)
+ 			INIT_HLIST_HEAD(&hash[i]);
+@@ -143,7 +143,7 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
+ 
+ 		spin_lock_init(&dtab->index_lock);
+ 	} else {
+-		dtab->netdev_map = bpf_map_area_alloc(dtab->map.max_entries *
++		dtab->netdev_map = bpf_map_area_alloc((u64) dtab->map.max_entries *
+ 						      sizeof(struct bpf_dtab_netdev *),
+ 						      dtab->map.numa_node);
+ 		if (!dtab->netdev_map)
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 6f1b82b8ad49..60decd6420ca 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -48,7 +48,7 @@ static struct bpf_map *sock_map_alloc(union bpf_attr *attr)
+ 	bpf_map_init_from_attr(&stab->map, attr);
+ 	raw_spin_lock_init(&stab->lock);
+ 
+-	stab->sks = bpf_map_area_alloc(stab->map.max_entries *
++	stab->sks = bpf_map_area_alloc((u64) stab->map.max_entries *
+ 				       sizeof(struct sock *),
+ 				       stab->map.numa_node);
+ 	if (!stab->sks) {
+-- 
+2.25.1
+
