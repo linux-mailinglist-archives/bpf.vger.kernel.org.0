@@ -2,272 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762C13A516F
-	for <lists+bpf@lfdr.de>; Sun, 13 Jun 2021 02:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117CB3A5610
+	for <lists+bpf@lfdr.de>; Sun, 13 Jun 2021 04:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhFMAK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Jun 2021 20:10:26 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:42557 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhFMAKZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Jun 2021 20:10:25 -0400
-Received: by mail-io1-f50.google.com with SMTP id s26so6539940ioe.9;
-        Sat, 12 Jun 2021 17:08:12 -0700 (PDT)
+        id S230492AbhFMC53 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Jun 2021 22:57:29 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:40604 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhFMC52 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Jun 2021 22:57:28 -0400
+Received: by mail-pj1-f66.google.com with SMTP id mp5-20020a17090b1905b029016dd057935fso8038581pjb.5;
+        Sat, 12 Jun 2021 19:55:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GSKrcPGu335cHezrGXttTKy9INtNuY4zhBjhpk4ZArA=;
-        b=LQVahZzSxCnwoLa2Zkiljbv0dXpSrxXVuvY3BGQmnqL7Yt0c38UtA4oYjD1tTWGqq2
-         Z21uzb+fEasKtlWs40v9cF25xMQPlvnFiIeDU3g/bY0+L4JvHVlpYdKLhimoO32PVwca
-         l8QP5WlHtYn/Ooxsyv+hDSJP6Kd93ZO8W7EL0RNWZgorApBh+emLWZnLEA64KeFBMUL8
-         J/IYZJmNnS4cLhFgFBF+rRotnJPqtoejmBlWfokLHTVswSUwP1vwA5fvePID07YvDPft
-         QoeY2UA4zWd97rmNxn5WP+A31GvbNZ++BLnjzF0X2fOQoE/JKyF/S51IsM1ZGLCLqbGA
-         NYlw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZG20iOccyJA2Tjd2b0pbr2sG0HFtYwH87KiODNSXn+M=;
+        b=RUnt6qwNbghDXyPsmS/bDYILZ6WuCjDIvJl1M0wF4HMga3H1aCyBwBWUOpvEYoXAaj
+         RDlurVRh0lPOVM1nNTaEM5lrPBzUqBV9PVIvUhig7psguZitXwENWBtU34Q+N46gZEPI
+         Vmp9JRVpprO9OA1dGRazopULsucFZUZPIPC+KZOfkQ2wmlgAgYSRFYC7YK8f8sD/gim0
+         +u1eJJLFejcLFuQUBslmEn4XLdlolEw5wCmZzVJQYB8ZRmFeP2AYGA59tBzkSukU5FV1
+         xWHckiNSrPMrX3LcJkNs36cFnBwF/vidlXlxmcb7jP6r0wowReDY/HEdFjI3O6tzM0vw
+         ibKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GSKrcPGu335cHezrGXttTKy9INtNuY4zhBjhpk4ZArA=;
-        b=j8DLuwMuX2ovyDYbv/mGhL61A0m8U5vNpQgc8VrcIfMXwr5bExjFtpBjEE0l61M5ie
-         NvVAecEexJNMmzsY2f5BzW4qKrEp6ELGZooWXPPyLpJY+kWg8Wo/u7xarwhHZSTGLNna
-         C0SBXcO9N4OMGfLDPMuGopt2odeQeTVk9ghvh23qUn9VPrRvrlJyW0tFIBQvDYoqtFmh
-         0/bD5Ou0IHuMzKG0MORn6o8IVqRMtL1hZivXaOI7EKltghDDRiaAi9UEELv/p+aPIJq9
-         Qz/HYAQKS65YFGLtyZ9ERi9a/wfKVgXrRevNUibo0pZ1vRODsCrxvNwCgTh+Wu+rnZ8n
-         e8AQ==
-X-Gm-Message-State: AOAM531skNkFhzwoWDOgDx1WwqODJLC6xaBolcNtHIU+Cjb9Ecqeue9u
-        3aU2yqNt1wUKiBviXhEJxbQcvFdbavc4nYh+TGcvSMhJCzSvzQ==
-X-Google-Smtp-Source: ABdhPJzG2N4tnJJXZBoz6y7svGbH6o2af1VFj/WCTdC4GDCqAPBRB90TZN5mQTlPlr85OyLSzr0Q/WZGy7ruMg8rP3Q=
-X-Received: by 2002:a02:a19e:: with SMTP id n30mr10740183jah.109.1623542832263;
- Sat, 12 Jun 2021 17:07:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAPGftE_eY-Zdi3wBcgDfkz_iOr1KF10n=9mJHm1_a_PykcsoeA@mail.gmail.com>
- <ce6fd0fd-2fb3-7a66-4910-5fe8c2b4d593@fb.com>
-In-Reply-To: <ce6fd0fd-2fb3-7a66-4910-5fe8c2b4d593@fb.com>
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-Date:   Sat, 12 Jun 2021 17:07:01 -0700
-Message-ID: <CAPGftE9+CVuK7KwExRiqsuKHMEUrPsXraBbC5qw8N2NFrE5MYg@mail.gmail.com>
-Subject: Re: Kernel Oops in test_verifier "#828/p reference tracking: bpf_sk_release(btf_tcp_sock)"
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, linux-mips@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZG20iOccyJA2Tjd2b0pbr2sG0HFtYwH87KiODNSXn+M=;
+        b=LUMuRIfuls/TMUGwHKmu8VScS4fGO9XvgRRtHVprwLTHvBiE5OhrxEi/yUScY+7yfd
+         BFZH87bW7QvNiLO7uR0zv7OCGyCZOoCZlWUN1rxYY5cVOxkhE2uwBw/V7ZtznXktge0y
+         ujQbHAikKclp6DTxcp9jQ5Iob5Ko55Fk5IN0oS7mYB97hygRAmA5qUM25GDOk6H+Us+D
+         Rns726Imlth5oAiGAfnkcjYJc1mSjAPWIZY4POMykxZJRInxdX+l6MGbxafV7R2Atd33
+         wrWxtyN4O1jsrPGIRaK8jic1kCVqfGyKxxsgSi2rxVRm96SnW+v0qFU/mmNqf58pkWhN
+         1+0w==
+X-Gm-Message-State: AOAM532SsCaOOCt0CZcOG4JEMjcyL14R8PBULBiXJraQsWF1B0KWwVNi
+        95csv77uMFSjrPiwHNbOhB4=
+X-Google-Smtp-Source: ABdhPJyklnfOcyHa76tRnl1oFIbTsVl6Pvltxsq1x7m0A/e9NMr2j5qsKmoqL+DH4NvENwne0S/WxA==
+X-Received: by 2002:a17:903:182:b029:112:b62f:8852 with SMTP id z2-20020a1709030182b0290112b62f8852mr10866408plg.4.1623552868354;
+        Sat, 12 Jun 2021 19:54:28 -0700 (PDT)
+Received: from localhost ([2409:4063:4d05:9fb3:bc63:2dba:460a:d70e])
+        by smtp.gmail.com with ESMTPSA id gk21sm13107019pjb.20.2021.06.12.19.54.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Jun 2021 19:54:28 -0700 (PDT)
+Date:   Sun, 13 Jun 2021 08:23:08 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Vlad Buslov <vladbu@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+Message-ID: <20210613025308.75uia7rnt4ue2k7q@apollo>
+References: <20210528195946.2375109-1-memxor@gmail.com>
+ <CAM_iQpVqVKhK+09Sj_At226mdWpVXfVbhy89As2dai7ip8Nmtw@mail.gmail.com>
+ <20210607033724.wn6qn4v42dlm4j4o@apollo>
+ <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
+ <20210607060724.4nidap5eywb23l3d@apollo>
+ <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
+ <20210608071908.sos275adj3gunewo@apollo>
+ <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 11 Jun 2021 at 08:57, Yonghong Song <yhs@fb.com> wrote:
+On Fri, Jun 11, 2021 at 07:30:49AM IST, Cong Wang wrote:
+> On Tue, Jun 8, 2021 at 12:20 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > So we're not really creating a qdisc here, we're just tying the filter (which in
+> > the current semantics exists only while attached) to the bpf_link. The filter is
+> > the attachment, so tying its lifetime to bpf_link makes sense. When you destroy
+> > the bpf_link, the filter goes away too, which means classification at that
+> > hook (parent/class) in the qdisc stops working. This is why creating the filter
+> > from the bpf_link made sense to me.
 >
-> On 6/10/21 6:02 PM, Tony Ambardar wrote:
-> > Hello,
-> >
-> > I encountered an NPE and kernel Oops [1] while running the
-> > 'test_verifier' selftest on MIPS32 with LTS kernel 5.10.41. This was
-> > observed during development of a MIPS32 JIT but is verifier-related.
-> >
-> > Initial troubleshooting [2] points to an unchecked NULL dereference in
-> > btf_type_by_id(), with an unexpected BTF type ID. The root cause is
-> > unclear, whether source of the ID or a potential underlying BTF
-> > problem.
+> I see why you are creating TC filters now, because you are trying to
+> force the lifetime of a bpf target to align with the bpf program itself.
+> The deeper reason seems to be that a cls_bpf filter looks so small
+> that it appears to you that it has nothing but a bpf_prog, right?
 >
-> Do you know what is the faulty btf ID number? What is the maximum id
-> for vmlinux BTF?
 
-Thanks for the suggestions, Yonghong.
+Yes, pretty much.
 
-I had built/packaged bpftool for the target, which shows the maximum as:
-
-  root@OpenWrt:~# bpftool btf dump file /sys/kernel/btf/vmlinux format
-raw|tail -5
-  [43179] FUNC 'pci_load_of_ranges' type_id=43178 linkage=static
-  [43180] ARRAY '(anon)' type_id=23 index_type_id=23 nr_elems=16
-  [43181] FUNC 'pcibios_plat_dev_init' type_id=29264 linkage=static
-  [43182] FUNC 'pcibios_map_irq' type_id=29815 linkage=static
-  [43183] FUNC 'mips_pcibios_init' type_id=115 linkage=static
-
-After adding NULL handling and debug pr_err() to kernel_type_name(), I next see:
-
-  root@OpenWrt:~# ./test_verifier_eb 828
-  [   87.196692] btf_type_by_id(btf_vmlinux, 3062497280) returns NULL
-  [   87.196958] btf_type_by_id(btf_vmlinux, 2936995840) returns NULL
-  #828/p reference tracking: bpf_sk_release(btf_tcp_sock) FAIL
-
-Those large type ids make me suspect an endianness issue, even though bpftool
-can still properly access the vmlinux BTF. Changing byte order and
-looking up the
-resulting type ids seems to confirm this:
-
-  Check endianness:
-    3062497280 -> 0xB68A0000 --swap endian--> 0x00008AB6 -> 35510
-  bpftool btf dump file /sys/kernel/btf/vmlinux format raw|fgrep "[35510]":
-    [35510] STRUCT 'tcp_sock' size=1752 vlen=136
-
-  Check endianness:
-    2936995840 -> 0xAF0F0000 --swap endian--> 0x00000FAF -> 4015
-  bpftool btf dump file /sys/kernel/btf/vmlinux format raw|fgrep "[4015]":
-    [4015] STRUCT 'sock_common' size=112 vlen=25
-
-As a further test, I repeated "test_verifier 828" across mips{32,64}{be,le}
-systems and confirm seeing the problem only with the big-endian ones.
-
-> The involved helper is bpf_sk_release.
+> I offer two different views here:
 >
-> static const struct bpf_func_proto bpf_sk_release_proto = {
->          .func           = bpf_sk_release,
->          .gpl_only       = false,
->          .ret_type       = RET_INTEGER,
->          .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
-> };
+> 1. If you view a TC filter as an instance as a netdev/qdisc/action, they
+> are no different from this perspective. Maybe the fact that a TC filter
+> resides in a qdisc makes a slight difference here, but like I mentioned, it
+> actually makes sense to let TC filters be standalone, qdisc's just have to
+> bind with them, like how we bind TC filters with standalone TC actions.
+
+You propose something different below IIUC, but I explained why I'm wary of
+these unbound filters. They seem to add a step to classifier setup for no real
+benefit to the user (except keeping track of one more object and cleaning it
+up with the link when done).
+
+I understand that the filter is very much an object of its own and why keeping
+them unbound makes sense, but for the user there is no real benefit of this
+scheme (some things like classid attribute are contextual in that they make
+sense to be set based on what parent we're attaching to).
+
+> These are all updated independently, despite some of them residing in
+> another. There should not be an exceptional TC filter which can not
+> be updated via `tc filter` command.
+
+I see, but I'm mirroring what was done for XDP bpf_link.
+
+Besides, flush still works, it's only that manipulating a filter managed by
+bpf_link is not allowed, which sounds reasonable to me, given we're bringing
+new ownership semantics here which didn't exist before with netlink, so it
+doesn't make sense to allow netlink to simply invalidate the filter installed by
+some other program.
+
+You wouldn't do something like that for a cooperating setup, we're just
+enforcing that using -EPERM (bpf_link is not allowed to replace netlink
+installed filters either, so it goes both ways).
+
 >
-> Eventually, the btf_id is taken from btf_sock_ids[6] where
-> btf_sock_ids is a kernel global variable.
+> 2. For cls_bpf specifically, it is also an instance, like all other TC filters.
+> You can update it in the same way: tc filter change [...] The only difference
+> is a bpf program can attach to such an instance. So you can view the bpf
+> program attached to cls_bpf as a property of it. From this point of view,
+> there is no difference with XDP to netdev, where an XDP program
+> attached to a netdev is also a property of netdev. A netdev can still
+> function without XDP. Same for cls_bpf, it can be just a nop returns
+> TC_ACT_SHOT (or whatever) if no ppf program is attached. Thus,
+> the lifetime of a bpf program can be separated from the target it
+> attaches too, like all other bpf_link targets. bpf_link is just a
+> supplement to `tc filter change cls_bpf`, not to replace it.
 >
-> Could you check btf_sock_ids[6] to see whether the number
-> makes sense?
 
-What I see matches the second btf_type_by_id() NULL call above:
-  [   56.556121] btf_sock_ids[6]: 2936995840
+So this is different now, as in the filter is attached as usual but bpf_link
+represents attachment of bpf prog to the filter itself, not the filter to the
+qdisc.
 
-> The id is computed by resolve_btfids in
-> tools/bpf/resolve_btfids, you might add verbose mode to your linux build
-> to get more information.
+To me it seems apart from not having to create filter, this would pretty much be
+equivalent to where I hook the bpf_link right now?
 
-The verbose build didn't print any details of the btf ids. Was there anything
-special to do in invocation? I manually ran "resolve_btfids -v vmlinux" from
-the build dir and this, strangely, gave slightly different results than bpftool
-but not the huge endian-swapped type ids. Is this expected?
+TBF, this split doesn't really seem to be bringing anything to the table (except
+maybe preserving netlink as the only way to manipulate filter properties) and
+keeping filters as separate objects. I can understand your position but for the
+user it's just more and more objects to keep track of with no proper
+ownership/cleanup semantics.
 
-  # ./tools/bpf/resolve_btfids/resolve_btfids -v vmlinux
-  ...
-  patching addr   116: ID   35522 [tcp_sock]
-  ...
-  patching addr   112: ID    4021 [sock_common]
+Though considering it for cls_bpf in particular, there are mainly three things
+you would want to tc filter change:
 
-Do any of the details above help narrow down things? What do you suggest
-for next steps?
+* Integrated actions
+  These are not allowed anyway, we force enable direct action mode, and I don't
+  plan on opening up actions for this if its gets accepted. Anything missing
+  we'll try to make it work in eBPF (act_ct etc.)
 
-Thanks,
-Tony
+* classid
+  cls_bpf has a good alternative of instead manipulating __sk_buff::tc_classid
 
-> >
-> > Has this been seen before? How best to debug this further or resolve?
-> > What other details would be useful for BPF kernel developers?
-> >
-> > Thanks for any help,
-> > Tony
-> >
-> > [1]:
-> > (Host details)
-> > kodidev:~/openwrt-project$ ./staging_dir/host/bin/pahole --version
-> > v1.21
-> >
-> > (Target details)
-> > root@OpenWrt:/# uname -a
-> > Linux OpenWrt 5.10.41 #0 SMP Tue Jun 1 00:54:31 2021 mips GNU/Linux
-> >
-> > root@OpenWrt:~# sysctl net.core.bpf_jit_enable=0; ./test_verifier 826 828
-> > net.core.bpf_jit_enable = 0
-> >
-> > #826/p reference tracking: branch tracking valid pointer null comparison OK
-> > #827/p reference tracking: branch tracking valid pointer value comparison OK
-> > CPU 0 Unable to handle kernel paging request at virtual address
-> > 00000000, epc == 80244654, ra == 80244654
-> > Oops[#1]:
-> > CPU: 0 PID: 16274 Comm: test_verifier Not tainted 5.10.41 #0
-> > $ 0   : 00000000 00000001 00000000 0000a8a2
-> > $ 4   : 835ac580 a6280000 00000000 00000001
-> > $ 8   : 835ac580 a6280000 00000000 02020202
-> > $12   : 8348de58 834ba800 00000000 00000000
-> > $16   : 835ac580 8098be2c fffffff3 834bdb38
-> > $20   : 8098be0c 00000001 00000018 00000000
-> > $24   : 00000000 01415415
-> > $28   : 834bc000 834bdac8 00000005 80244654
-> > Hi    : 00000017
-> > Lo    : 0a3d70a2
-> > epc   : 80244654 kernel_type_name+0x20/0x38
-> > ra    : 80244654 kernel_type_name+0x20/0x38
-> > Status: 1000a403 KERNEL EXL IE
-> > Cause : 00800008 (ExcCode 02)
-> > BadVA : 00000000
-> > PrId  : 00019300 (MIPS 24Kc)
-> > Modules linked in: pppoe ppp_async pppox ppp_generic mac80211_hwsim
-> > mac80211 iptable_nat ipt_REJECT cfg80211 xt_time xt_tcpudp xt_tcpmss
-> > xt_statistic xt_state xt_recent xt_nat xt_multiport xt_mark xt_mac
-> > xt_limit xt_length xt_hl xt_helper xt_ecn xt_dscp xt_conntrack
-> > xt_connmark xt_connlimit xt_connbytes xt_comment xt_TCPMSS xt_REDIRECT
-> > xt_MASQUERADE xt_LOG xt_HL xt_FLOWOFFLOAD xt_DSCP xt_CT xt_CLASSIFY
-> > slhc sch_mqprio sch_cake pcnet32 nf_reject_ipv4 nf_nat nf_log_ipv4
-> > nf_flow_table nf_conntrack_netlink nf_conncount iptable_raw
-> > iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt compat
-> > cls_flower act_vlan pktgen sch_teql sch_sfq sch_red sch_prio sch_pie
-> > sch_multiq sch_gred sch_fq sch_dsmark sch_codel em_text em_nbyte
-> > em_meta em_cmp act_simple act_police act_pedit act_ipt act_csum
-> > libcrc32c em_ipset cls_bpf act_bpf act_ctinfo act_connmark
-> > nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 sch_tbf sch_ingress sch_htb
-> > sch_hfsc em_u32 cls_u32 cls_tcindex cls_route cls_matchall cls_fw
-> >   cls_flow cls_basic act_skbedit act_mirred act_gact xt_set
-> > ip_set_list_set ip_set_hash_netportnet ip_set_hash_netport
-> > ip_set_hash_netnet ip_set_hash_netiface ip_set_hash_net
-> > ip_set_hash_mac ip_set_hash_ipportnet ip_set_hash_ipportip
-> > ip_set_hash_ipport ip_set_hash_ipmark ip_set_hash_ip
-> > ip_set_bitmap_port ip_set_bitmap_ipmac ip_set_bitmap_ip ip_set
-> > nfnetlink nf_log_ipv6 nf_log_common ip6table_mangle ip6table_filter
-> > ip6_tables ip6t_REJECT x_tables nf_reject_ipv6 ifb dummy netlink_diag
-> > mii
-> > Process test_verifier (pid: 16274, threadinfo=c1418596, task=05765195,
-> > tls=77e5aec8)
-> > Stack : 83428000 83428000 8098be2c 00000000 83428000 8024af78 834bacdc 834bb000
-> >          a98a0000 834e2580 834e2c00 00000000 834e2c00 8023da9c 834bb070 00000013
-> >          80925164 80924f44 00000000 80925164 00000000 83428140 80bc3864 834bb070
-> >          834e2c00 00000000 00000010 802c441c 00000000 00000000 00000000 00000000
-> >          00000000 00000000 00000000 00000000 00000000 00000056 00000000 00000000
-> >          ...
-> > Call Trace:
-> > [<80244654>] kernel_type_name+0x20/0x38
-> > [<8024af78>] check_helper_call+0x1c9c/0x1dbc
-> > [<8024d008>] do_check_common+0x1f70/0x2a3c
-> > [<8024fb6c>] bpf_check+0x18f8/0x2308
-> > [<802369ec>] bpf_prog_load+0x378/0x860
-> > [<80237e1c>] __do_sys_bpf+0x3e0/0x2100
-> > [<801142d8>] syscall_common+0x34/0x58
-> >
-> > Code: afbf0014  0c099b58  02002025 <8c450000> 8fbf0014  02002025
-> > 8fb00010  08099b4f  27bd0018
-> >
-> > ---[ end trace ab13ac5f89eb825b ]---
-> > Kernel panic - not syncing: Fatal exception
-> > Rebooting in 3 seconds..
-> > QEMU: Terminated
-> >
-> >
-> > [2]:
-> > Function Code:
-> > ==============
-> > const char *kernel_type_name(u32 id)
-> > {
-> >      return btf_name_by_offset(btf_vmlinux,
-> >                    btf_type_by_id(btf_vmlinux, id)->name_off);
-> > }
-> >
-> > const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id)
-> > {
-> >      if (type_id > btf->nr_types)
-> >          return NULL;
-> >
-> >      return btf->types[type_id];
-> > }
-> >
-> > Disassembled Code:
-> > ==================
-> > 0x0000000000000000:  AF BF 00 14    sw    $ra, 0x14($sp)
-> > 0x0000000000000004:  0C 09 9B 58    jal   btf_type_by_id
-> > 0x0000000000000008:  02 00 20 25    move  $a0, $s0
-> > 0x000000000000000c:  8C 45 00 00    lw    $a1, ($v0)         <-- NPE
-> > 0x0000000000000010:  8F BF 00 14    lw    $ra, 0x14($sp)
-> > 0x0000000000000014:  02 00 20 25    move  $a0, $s0
-> > 0x0000000000000018:  8F B0 00 10    lw    $s0, 0x10($sp)
-> > 0x000000000000001c:  08 09 9B 4F    j     btf_name_by_offset
-> > 0x0000000000000020:  27 BD 00 18    addiu $sp, $sp, 0x18
-> >
+* skip_hw/skip_sw
+  Not supported for now, but can be done using flags in BPF_LINK_UPDATE
+
+* BPF program
+  Already works using BPF_LINK_UPDATE
+
+So bpf_link isn't really prohibitive in any way.
+
+Doing it your way also complicates cleanup of the filter (in case we don't want
+to leave it attached), because it is hard to know who closes the link_fd last.
+Closing it earlier would break the link for existing users, not doing it would
+leave around unused object (which can accumulate if we use auto allocation of
+filter priority). Counting existing links is racy.
+
+This is better done in the kernel than worked around in userspace, as part of
+attachment.
+
+> This is actually simpler, you do not need to worry about whether
+> netdev is destroyed when you detach the XDP bpf_link anyway,
+> same for cls_bpf filters. Likewise, TC filters don't need to worry
+> about bpf_links associated.
+>
+> Thanks.
+
+--
+Kartikeya
