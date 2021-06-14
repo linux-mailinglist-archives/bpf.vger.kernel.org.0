@@ -2,90 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE623A6685
-	for <lists+bpf@lfdr.de>; Mon, 14 Jun 2021 14:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FD03A66FB
+	for <lists+bpf@lfdr.de>; Mon, 14 Jun 2021 14:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232775AbhFNM24 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Jun 2021 08:28:56 -0400
-Received: from mail-qv1-f45.google.com ([209.85.219.45]:45653 "EHLO
-        mail-qv1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233076AbhFNM24 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:28:56 -0400
-Received: by mail-qv1-f45.google.com with SMTP id g12so20249398qvx.12;
-        Mon, 14 Jun 2021 05:26:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+rUq2C8cXpVRpNGWqQmdgv7OPp4zEPLjXkkw2wZL/fE=;
-        b=ETpvb8UgHDNdbT9QvIMYBTCKBUC5R76rginqC7eJWRAzbqz6ba7NWLeOyitRJF3N1A
-         IL0DHV1mOK/+tcpNrQqLQv4mpYH6n7JuSlS12vAkqsVLA2FWjeOgs04kyUmOQJmk/x/K
-         OQVUVQK9Wwt42hpp9G2ma+vwvrIm+nx0U2QRLtgGuxzoPrqXHMGhzxeXspe3yqEOIAM+
-         Yrswou7aIT3JHT8hlNJ/XsIYqA5ATXVcr3KF6nKHdoJvmsTy+wUARFfL0zOtyoqNepYx
-         JQ1Bhgb3odSb6d8GNbfauCmOcdXSFGyf3ckabaCHmKwb9Hxvi0l6nx0I44vrY9n8P3w1
-         +f4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+rUq2C8cXpVRpNGWqQmdgv7OPp4zEPLjXkkw2wZL/fE=;
-        b=ReVQ8S9Jw12V7HN0a8DVi/44prQq72/LZmrUbMfNoiHBqGkR837ALK8Hnbs/yV2b4+
-         DysLqn6X6n2EaW4ShWH5f5/gYpggaiiJbux5/vxVfSkH5C/p0wEAby8Q8wlLH15k+n//
-         YfnCYwyYHV18JPTkvgV1b3R2lq9SoSVjNMCICD+s7yIqCgOQA4eCEp/YG9fm77ZVnrUp
-         i6neiVKTfcYWflRPiFprwm+Tvd4zpY2CG72ACMfg5WhNcz0wrOTHIoQaUn4I89RUNcdK
-         AP0vtOr+INXeBMKgNK0eBz634fqR3/sCgRySWnDMOSvxlAgyTb/HYVGjvtXyv9xIrAyT
-         Plnw==
-X-Gm-Message-State: AOAM530gupbdQEEm0g5H3WUVI3GW6mKh6takFAJKfvsjA23QjoCRc7Vo
-        lH+eqLX3Txeiyv6j3DjVDjfQ698XeAsknYaoHw==
-X-Google-Smtp-Source: ABdhPJyImTY3nGnE8gqna+PiuY5Nx2VgJMrdyrg+BMD1VTHQebbCKn/FXm2SiHxbxshgyUuyEfK3IEl0AIs63c4j7d4=
-X-Received: by 2002:a05:6214:2a46:: with SMTP id jf6mr6709403qvb.13.1623673553194;
- Mon, 14 Jun 2021 05:25:53 -0700 (PDT)
+        id S233410AbhFNMwe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Jun 2021 08:52:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232791AbhFNMwb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Jun 2021 08:52:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BF9A60FDA;
+        Mon, 14 Jun 2021 12:50:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623675028;
+        bh=S0nWmNqdZ4w2AEtG4MMHMHQFOTW/XHrfaTCwkGEPXzw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=R/kNBmo4SwUP5TivE4tEaax7d7w/+hous30UyE9Fbuu6v7x/wk+q6YJ/ZOcn4iTLA
+         mxsbFknXWXDjzqh8LSeQzD61X3E1uVhy5DWpwrtZLNcS3tNRmT8EymjvRuIj+genez
+         tHWm3VlHwP4rBqU2yxflWS97OmZuuPzlGMRPrz98f+r4jjRgDRkEl2qV9Wca3Z8eAo
+         FcJqeRafkwvthWpiZkQzh22TFBjbqN1svTPEzZxrUXPYjpS6O8QYfgrzoLrRumw/Gi
+         Skfe8sVPDwvhz1VxdX+W+2ePmhiQx1vt1NpTcI3SBt5re111o92b/7RUdffKSTZ+r6
+         aZl9XEStvyPZw==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        sameehj@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
+        brouer@redhat.com, echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com
+Subject: [PATCH v9 bpf-next 00/14] mvneta: introduce XDP multi-buffer support
+Date:   Mon, 14 Jun 2021 14:49:38 +0200
+Message-Id: <cover.1623674025.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210609135537.1460244-1-joamaki@gmail.com> <CAEf4Bzar4+HQ_0BBGt75_UPG-tVpjqz9YVdeBi2GVY1iam4Y2g@mail.gmail.com>
-In-Reply-To: <CAEf4Bzar4+HQ_0BBGt75_UPG-tVpjqz9YVdeBi2GVY1iam4Y2g@mail.gmail.com>
-From:   Jussi Maki <joamaki@gmail.com>
-Date:   Mon, 14 Jun 2021 14:25:42 +0200
-Message-ID: <CAHn8xckZAwozmRVLDUuPv-gFCy9AaBC-3cKZ4iU4enfkN5my-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] XDP bonding support
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, j.vosburgh@gmail.com,
-        Andy Gospodarek <andy@greyhouse.net>, vfalico@gmail.com,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 7:24 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Jun 9, 2021 at 6:55 AM Jussi Maki <joamaki@gmail.com> wrote:
-> >
-> > This patchset introduces XDP support to the bonding driver.
-> >
-> > Patch 1 contains the implementation, including support for
-> > the recently introduced EXCLUDE_INGRESS. Patch 2 contains a
-> > performance fix to the roundrobin mode which switches rr_tx_counter
-> > to be per-cpu. Patch 3 contains the test suite for the implementation
-> > using a pair of veth devices.
-> >
-> > The vmtest.sh is modified to enable the bonding module and install
-> > modules. The config change should probably be done in the libbpf
-> > repository. Andrii: How would you like this done properly?
->
-> I think vmtest.sh and CI setup doesn't support modules (not easily at
-> least). Can we just compile that driver in? Then you can submit a PR
-> against libbpf Github repo to adjust the config. We have also kernel
-> CI repo where we'll need to make this change.
+This series introduce XDP multi-buffer support. The mvneta driver is
+the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
+please focus on how these new types of xdp_{buff,frame} packets
+traverse the different layers and the layout design. It is on purpose
+that BPF-helpers are kept simple, as we don't want to expose the
+internal layout to allow later changes.
 
-Unfortunately the mode and xmit_policy options of the bonding driver
-are module params, so it'll need to be a module so the different modes
-can be tested. I already modified vmtest.sh [1] to "make
-module_install" into the rootfs and enable the bonding module via
-scripts/config, but a cleaner approach would probably be to, as you
-suggested, update latest.config in libbpf repo and probably get the
-"modules_install" change into vmtest.sh separately (if you're happy
-with this approach). What do you think?
+For now, to keep the design simple and to maintain performance, the XDP
+BPF-prog (still) only have access to the first-buffer. It is left for
+later (another patchset) to add payload access across multiple buffers.
+This patchset should still allow for these future extensions. The goal
+is to lift the XDP MTU restriction that comes with XDP, but maintain
+same performance as before.
 
-[1] https://lore.kernel.org/netdev/20210609135537.1460244-1-joamaki@gmail.com/T/#maaf15ecd6b7c3af764558589118a3c6213e0af81
+The main idea for the new multi-buffer layout is to reuse the same
+layout used for non-linear SKB. This rely on the "skb_shared_info"
+struct at the end of the first buffer to link together subsequent
+buffers. Keeping the layout compatible with SKBs is also done to ease
+and speedup creating an SKB from an xdp_{buff,frame}.
+Converting xdp_frame to SKB and deliver it to the network stack is shown
+in patch 07/14 (e.g. cpumaps).
+
+A multi-buffer bit (mb) has been introduced in the flags field of xdp_{buff,frame}
+structure to notify the bpf/network layer if this is a xdp multi-buffer frame
+(mb = 1) or not (mb = 0).
+The mb bit will be set by a xdp multi-buffer capable driver only for
+non-linear frames maintaining the capability to receive linear frames
+without any extra cost since the skb_shared_info structure at the end
+of the first buffer will be initialized only if mb is set.
+Moreover the flags field in xdp_{buff,frame} will be reused even for
+xdp rx csum offloading in future series.
+
+Typical use cases for this series are:
+- Jumbo-frames
+- Packet header split (please see Google’s use-case @ NetDevConf 0x14, [0])
+- TSO
+
+A new bpf helper (bpf_xdp_get_buff_len) has been introduce in order to notify
+the eBPF layer about the total frame size (linear + paged parts).
+
+bpf_xdp_adjust_tail and bpf_xdp_copy helpers have been modified to take into
+account xdp multi-buff frames.
+
+More info about the main idea behind this approach can be found here [1][2].
+
+Changes since v8:
+- add proper dma unmapping if XDP_TX fails on mvneta for a xdp multi-buff
+- switch back to skb_shared_info implementation from previous xdp_shared_info
+  one
+- avoid using a bietfield in xdp_buff/xdp_frame since it introduces performance
+  regressions. Tested now on 10G NIC (ixgbe) to verify there are no performance
+  penalties for regular codebase
+- add bpf_xdp_get_buff_len helper and remove frame_length field in xdp ctx
+- add data_len field in skb_shared_info struct
+
+Changes since v7:
+- rebase on top of bpf-next
+- fix sparse warnings
+- improve comments for frame_length in include/net/xdp.h
+
+Changes since v6:
+- the main difference respect to previous versions is the new approach proposed
+  by Eelco to pass full length of the packet to eBPF layer in XDP context
+- reintroduce multi-buff support to eBPF kself-tests
+- reintroduce multi-buff support to bpf_xdp_adjust_tail helper
+- introduce multi-buffer support to bpf_xdp_copy helper
+- rebase on top of bpf-next
+
+Changes since v5:
+- rebase on top of bpf-next
+- initialize mb bit in xdp_init_buff() and drop per-driver initialization
+- drop xdp->mb initialization in xdp_convert_zc_to_xdp_frame()
+- postpone introduction of frame_length field in XDP ctx to another series
+- minor changes
+
+Changes since v4:
+- rebase ontop of bpf-next
+- introduce xdp_shared_info to build xdp multi-buff instead of using the
+  skb_shared_info struct
+- introduce frame_length in xdp ctx
+- drop previous bpf helpers
+- fix bpf_xdp_adjust_tail for xdp multi-buff
+- introduce xdp multi-buff self-tests for bpf_xdp_adjust_tail
+- fix xdp_return_frame_bulk for xdp multi-buff
+
+Changes since v3:
+- rebase ontop of bpf-next
+- add patch 10/13 to copy back paged data from a xdp multi-buff frame to
+  userspace buffer for xdp multi-buff selftests
+
+Changes since v2:
+- add throughput measurements
+- drop bpf_xdp_adjust_mb_header bpf helper
+- introduce selftest for xdp multibuffer
+- addressed comments on bpf_xdp_get_frags_count
+- introduce xdp multi-buff support to cpumaps
+
+Changes since v1:
+- Fix use-after-free in xdp_return_{buff/frame}
+- Introduce bpf helpers
+- Introduce xdp_mb sample program
+- access skb_shared_info->nr_frags only on the last fragment
+
+Changes since RFC:
+- squash multi-buffer bit initialization in a single patch
+- add mvneta non-linear XDP buff support for tx side
+
+[0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu-and-rx-zerocopy
+[1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
+[2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-to-a-NIC-driver (XDPmulti-buffers section)
+
+Eelco Chaudron (3):
+  bpf: add multi-buff support to the bpf_xdp_adjust_tail() API
+  bpf: add multi-buffer support to xdp copy helpers
+  bpf: update xdp_adjust_tail selftest to include multi-buffer
+
+Lorenzo Bianconi (11):
+  net: skbuff: add data_len field to skb_shared_info
+  xdp: introduce flags field in xdp_buff/xdp_frame
+  net: mvneta: update mb bit before passing the xdp buffer to eBPF layer
+  xdp: add multi-buff support to xdp_return_{buff/frame}
+  net: mvneta: add multi buffer support to XDP_TX
+  net: mvneta: enable jumbo frames for XDP
+  net: xdp: add multi-buff support to xdp_build_skb_from_frame
+  bpf: introduce bpf_xdp_get_buff_len helper
+  bpf: move user_size out of bpf_test_init
+  bpf: introduce multibuff support to bpf_prog_test_run_xdp()
+  bpf: test_run: add xdp_shared_info pointer in bpf_test_finish
+    signature
+
+ drivers/net/ethernet/marvell/mvneta.c         | 143 ++++++++++------
+ include/linux/skbuff.h                        |   5 +-
+ include/net/xdp.h                             |  56 ++++++-
+ include/uapi/linux/bpf.h                      |   7 +
+ kernel/trace/bpf_trace.c                      |   3 +
+ net/bpf/test_run.c                            | 108 +++++++++---
+ net/core/filter.c                             | 157 +++++++++++++++++-
+ net/core/xdp.c                                |  72 +++++++-
+ tools/include/uapi/linux/bpf.h                |   7 +
+ .../bpf/prog_tests/xdp_adjust_tail.c          | 105 ++++++++++++
+ .../selftests/bpf/prog_tests/xdp_bpf2bpf.c    | 127 +++++++++-----
+ .../bpf/progs/test_xdp_adjust_tail_grow.c     |  10 +-
+ .../bpf/progs/test_xdp_adjust_tail_shrink.c   |  32 +++-
+ .../selftests/bpf/progs/test_xdp_bpf2bpf.c    |   2 +-
+ 14 files changed, 705 insertions(+), 129 deletions(-)
+
+-- 
+2.31.1
+
