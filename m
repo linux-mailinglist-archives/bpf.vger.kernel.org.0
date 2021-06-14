@@ -2,260 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F533A6726
-	for <lists+bpf@lfdr.de>; Mon, 14 Jun 2021 14:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204CB3A6760
+	for <lists+bpf@lfdr.de>; Mon, 14 Jun 2021 15:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233956AbhFNMyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Jun 2021 08:54:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233982AbhFNMxi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Jun 2021 08:53:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A7B8613F5;
-        Mon, 14 Jun 2021 12:51:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623675095;
-        bh=Aot3w0GutNoVd9iy8kuxhO3pM+hZMqgbmdI5I48y4YA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XfvJ4UklYZqQpTZhCWZMOfya1AaZgp+OtPk3G7JZbhlm+K0IuMskhoobDVCXg5kYU
-         Uv6vzHqjQweDe1q1gLo6PNMUhQSpW8GdkQRxuYGyQ2t6YcAmJMC1QSf97BogaDUgxB
-         nQ9RKRpYlrdFaOvYezwusLzkGKg0XSrcalsI7nHPMboKbMfZy1KV7qfKxa7J+B+GPx
-         Sx839VqLx8qihprND6JmqbvrTukxGk9rJ1xbf/AlnqCeRMCRAyZc0RkZyW8st8JwtP
-         MRvprP9R4aSRH0np/F7m1uah2+nRsBHU+WyMNl2NUgonhKWlHUTNPypdIuUWD+7XtC
-         YxaTNRNLTPhcQ==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        sameehj@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
-        brouer@redhat.com, echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com
-Subject: [PATCH v9 bpf-next 14/14] bpf: update xdp_adjust_tail selftest to include multi-buffer
-Date:   Mon, 14 Jun 2021 14:49:52 +0200
-Message-Id: <34f4d322ac5adc13915520349bf8b556982d904e.1623674025.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1623674025.git.lorenzo@kernel.org>
-References: <cover.1623674025.git.lorenzo@kernel.org>
+        id S232966AbhFNNFs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Jun 2021 09:05:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43328 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232894AbhFNNFr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 14 Jun 2021 09:05:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623675824;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C+NdEmHtv+U5FdoShfhVB+Z6EqvzPfegd34Orltzayw=;
+        b=hq7aaiyzTqXZXRr/Y4IHQltVyPZXCkmAXX5V3x+IwsNLd2xeTn39rlm01Kjn6+oUB6qlbu
+        B45tPyjX9Ar44Fsm6FTmE+6VVw1hdXoK+sKFneZcAbhw55XvmpeuHEo45EuxQU1/7qnnav
+        OVyBRL/2dA9hbqP4tvW9JmRC2bvl3cA=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-335-JgqdxIiGNDybooETr5u8pQ-1; Mon, 14 Jun 2021 09:03:43 -0400
+X-MC-Unique: JgqdxIiGNDybooETr5u8pQ-1
+Received: by mail-il1-f198.google.com with SMTP id i14-20020a92c94e0000b02901ed9f897efdso7215534ilq.21
+        for <bpf@vger.kernel.org>; Mon, 14 Jun 2021 06:03:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:references:mime-version:in-reply-to:date
+         :message-id:subject:to:cc;
+        bh=C+NdEmHtv+U5FdoShfhVB+Z6EqvzPfegd34Orltzayw=;
+        b=CkX7UopqFr5mSCx5ZQZcaXDl4OsB3j6fmL+GjvQWh9sd1XT6nzzCm1NVwm9hPyfXbF
+         hORRiJOrlBlKOzHGcK2uPPFy2dpuJQaPA380RiFON8cZXTmrim4v2QL0sbbZl1IUNVWz
+         dRm+tWQ0qOp3/s2RFsJ0LvOaGx+BgZ9xxyRMLXL86+FiHRUdpMWPMsh4I3U4vaNIBrDb
+         qq16UF7ExNVeo1Sm2WZFgbuvNrfdQIPzY5a39qOgbKgSindfcl6hm/xKaGjjqCl8L/X5
+         9lpoFWyabBSPxFrtVCRPmA3vCklHFIHjq/EG5tpJHQ/FRL1L6yuumZ1hxkRE7shctVuH
+         myJQ==
+X-Gm-Message-State: AOAM533GPCeGtpxoJEfDEb8wh03TSNFQrDWIMQOwu4fy7Lqc8N6rn45Y
+        8G+R3FzgOG3oKzGD5jXaSttMyPEFr1BXxQJ4xcUG5nrUwOHjp7TFm3WDV6dbGNca/TXXw0Kt731
+        2OI+blflBcwegZ885U0oQnG1oBwbP
+X-Received: by 2002:a5d:8190:: with SMTP id u16mr14604139ion.158.1623675821985;
+        Mon, 14 Jun 2021 06:03:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrU4LJttwq1ITunciECemINCXpj/qSXAPjpZKx/67YXAmXbHKgB7ohKD7/t/BfeOOkJkDvUnHY/EQIRxefV5k=
+X-Received: by 2002:a5d:8190:: with SMTP id u16mr14604120ion.158.1623675821724;
+ Mon, 14 Jun 2021 06:03:41 -0700 (PDT)
+Received: from 868169051519 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 14 Jun 2021 06:03:41 -0700
+From:   Marcelo Ricardo Leitner <mleitner@redhat.com>
+References: <20210607033724.wn6qn4v42dlm4j4o@apollo> <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
+ <20210607060724.4nidap5eywb23l3d@apollo> <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
+ <20210608071908.sos275adj3gunewo@apollo> <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+ <20210613025308.75uia7rnt4ue2k7q@apollo> <30ab29b9-c8b0-3b0f-af5f-78421b27b49c@mojatatu.com>
+ <20210613203438.d376porvf5zycatn@apollo> <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
+Date:   Mon, 14 Jun 2021 06:03:41 -0700
+Message-ID: <CALnP8ZZGu_H1_gvJNKXnn3HTnPzwoEkUbWfpS4YufYbUrP=H-w@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Vlad Buslov <vladbu@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Eelco Chaudron <echaudro@redhat.com>
+On Sun, Jun 13, 2021 at 05:10:14PM -0400, Jamal Hadi Salim wrote:
+> On 2021-06-13 4:34 p.m., Kumar Kartikeya Dwivedi wrote:
+> > On Mon, Jun 14, 2021 at 01:57:16AM IST, Jamal Hadi Salim wrote:
+> > > We do have this monthly tc meetup every second monday of the month.
+> > > Unfortunately it is short notice since the next one is monday 12pm
+> > > eastern time. Maybe you can show up and a high bandwidth discussion
+> > > (aka voice) would help?
+> > >
+> >
+> > That would be best, please let me know how to join tomorrow. There are a few
+> > other things I was working on that I also want to discuss with this.
+> >
+>
+> That would be great - thanks for your understanding.
+> +Cc Marcelo (who is the keeper of the meetup)
+> in case the link may change..
 
-This change adds test cases for the multi-buffer scenarios when shrinking
-and growing.
+We have 2 URLs for today. The official one [1] and a test one [2].
+We will be testing a new video conferencing system today and depending
+on how it goes, we will be on one or another. I'll try to be always
+present in the official one [1] to point people towards the testing
+one [2] in case we're there.
 
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- .../bpf/prog_tests/xdp_adjust_tail.c          | 105 ++++++++++++++++++
- .../bpf/progs/test_xdp_adjust_tail_grow.c     |  10 +-
- .../bpf/progs/test_xdp_adjust_tail_shrink.c   |  32 +++++-
- 3 files changed, 140 insertions(+), 7 deletions(-)
+Also, we have an agenda doc [3]. I can't openly share it to the public
+but if you send a request for access, I'll grant it.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-index d5c98f2cb12f..b936beaba797 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-@@ -130,6 +130,107 @@ void test_xdp_adjust_tail_grow2(void)
- 	bpf_object__close(obj);
- }
- 
-+void test_xdp_adjust_mb_tail_shrink(void)
-+{
-+	const char *file = "./test_xdp_adjust_tail_shrink.o";
-+	__u32 duration, retval, size, exp_size;
-+	struct bpf_object *obj;
-+	static char buf[9000];
-+	int err, prog_fd;
-+
-+	/* For the individual test cases, the first byte in the packet
-+	 * indicates which test will be run.
-+	 */
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-+	if (CHECK_FAIL(err))
-+		return;
-+
-+	/* Test case removing 10 bytes from last frag, NOT freeing it */
-+	buf[0] = 0;
-+	exp_size = sizeof(buf) - 10;
-+	err = bpf_prog_test_run(prog_fd, 1, buf, sizeof(buf),
-+				buf, &size, &retval, &duration);
-+
-+	CHECK(err || retval != XDP_TX || size != exp_size,
-+	      "9k-10b", "err %d errno %d retval %d[%d] size %d[%u]\n",
-+	      err, errno, retval, XDP_TX, size, exp_size);
-+
-+	/* Test case removing one of two pages, assuming 4K pages */
-+	buf[0] = 1;
-+	exp_size = sizeof(buf) - 4100;
-+	err = bpf_prog_test_run(prog_fd, 1, buf, sizeof(buf),
-+				buf, &size, &retval, &duration);
-+
-+	CHECK(err || retval != XDP_TX || size != exp_size,
-+	      "9k-1p", "err %d errno %d retval %d[%d] size %d[%u]\n",
-+	      err, errno, retval, XDP_TX, size, exp_size);
-+
-+	/* Test case removing two pages resulting in a non mb xdp_buff */
-+	buf[0] = 2;
-+	exp_size = sizeof(buf) - 8200;
-+	err = bpf_prog_test_run(prog_fd, 1, buf, sizeof(buf),
-+				buf, &size, &retval, &duration);
-+
-+	CHECK(err || retval != XDP_TX || size != exp_size,
-+	      "9k-2p", "err %d errno %d retval %d[%d] size %d[%u]\n",
-+	      err, errno, retval, XDP_TX, size, exp_size);
-+
-+	bpf_object__close(obj);
-+}
-+
-+void test_xdp_adjust_mb_tail_grow(void)
-+{
-+	const char *file = "./test_xdp_adjust_tail_grow.o";
-+	__u32 duration, retval, size, exp_size;
-+	static char buf[16384];
-+	struct bpf_object *obj;
-+	int err, i, prog_fd;
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-+	if (CHECK_FAIL(err))
-+		return;
-+
-+	/* Test case add 10 bytes to last frag */
-+	memset(buf, 1, sizeof(buf));
-+	size = 9000;
-+	exp_size = size + 10;
-+	err = bpf_prog_test_run(prog_fd, 1, buf, size,
-+				buf, &size, &retval, &duration);
-+
-+	CHECK(err || retval != XDP_TX || size != exp_size,
-+	      "9k+10b", "err %d retval %d[%d] size %d[%u]\n",
-+	      err, retval, XDP_TX, size, exp_size);
-+
-+	for (i = 0; i < 9000; i++)
-+		CHECK(buf[i] != 1, "9k+10b-old",
-+		      "Old data not all ok, offset %i is failing [%u]!\n",
-+		      i, buf[i]);
-+
-+	for (i = 9000; i < 9010; i++)
-+		CHECK(buf[i] != 0, "9k+10b-new",
-+		      "New data not all ok, offset %i is failing [%u]!\n",
-+		      i, buf[i]);
-+
-+	for (i = 9010; i < sizeof(buf); i++)
-+		CHECK(buf[i] != 1, "9k+10b-untouched",
-+		      "Unused data not all ok, offset %i is failing [%u]!\n",
-+		      i, buf[i]);
-+
-+	/* Test a too large grow */
-+	memset(buf, 1, sizeof(buf));
-+	size = 9001;
-+	exp_size = size;
-+	err = bpf_prog_test_run(prog_fd, 1, buf, size,
-+				buf, &size, &retval, &duration);
-+
-+	CHECK(err || retval != XDP_DROP || size != exp_size,
-+	      "9k+10b", "err %d retval %d[%d] size %d[%u]\n",
-+	      err, retval, XDP_TX, size, exp_size);
-+
-+	bpf_object__close(obj);
-+}
-+
- void test_xdp_adjust_tail(void)
- {
- 	if (test__start_subtest("xdp_adjust_tail_shrink"))
-@@ -138,4 +239,8 @@ void test_xdp_adjust_tail(void)
- 		test_xdp_adjust_tail_grow();
- 	if (test__start_subtest("xdp_adjust_tail_grow2"))
- 		test_xdp_adjust_tail_grow2();
-+	if (test__start_subtest("xdp_adjust_mb_tail_shrink"))
-+		test_xdp_adjust_mb_tail_shrink();
-+	if (test__start_subtest("xdp_adjust_mb_tail_grow"))
-+		test_xdp_adjust_mb_tail_grow();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
-index 3d66599eee2e..3d43defb0e00 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
-@@ -7,11 +7,10 @@ int _xdp_adjust_tail_grow(struct xdp_md *xdp)
- {
- 	void *data_end = (void *)(long)xdp->data_end;
- 	void *data = (void *)(long)xdp->data;
--	unsigned int data_len;
-+	int data_len = bpf_xdp_get_buff_len(xdp);
- 	int offset = 0;
- 
- 	/* Data length determine test case */
--	data_len = data_end - data;
- 
- 	if (data_len == 54) { /* sizeof(pkt_v4) */
- 		offset = 4096; /* test too large offset */
-@@ -20,7 +19,12 @@ int _xdp_adjust_tail_grow(struct xdp_md *xdp)
- 	} else if (data_len == 64) {
- 		offset = 128;
- 	} else if (data_len == 128) {
--		offset = 4096 - 256 - 320 - data_len; /* Max tail grow 3520 */
-+		/* Max tail grow 3520 */
-+		offset = 4096 - 256 - 320 - data_len;
-+	} else if (data_len == 9000) {
-+		offset = 10;
-+	} else if (data_len == 9001) {
-+		offset = 4096;
- 	} else {
- 		return XDP_ABORTED; /* No matching test */
- 	}
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
-index 22065a9cfb25..64177597ac29 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
-@@ -14,14 +14,38 @@ int _version SEC("version") = 1;
- SEC("xdp_adjust_tail_shrink")
- int _xdp_adjust_tail_shrink(struct xdp_md *xdp)
- {
--	void *data_end = (void *)(long)xdp->data_end;
--	void *data = (void *)(long)xdp->data;
-+	__u8 *data_end = (void *)(long)xdp->data_end;
-+	__u8 *data = (void *)(long)xdp->data;
- 	int offset = 0;
- 
--	if (data_end - data == 54) /* sizeof(pkt_v4) */
-+	switch (bpf_xdp_get_buff_len(xdp)) {
-+	case 54:
-+		/* sizeof(pkt_v4) */
- 		offset = 256; /* shrink too much */
--	else
-+		break;
-+	case 9000:
-+		/* Multi-buffer test cases */
-+		if (data + 1 > data_end)
-+			return XDP_DROP;
-+
-+		switch (data[0]) {
-+		case 0:
-+			offset = 10;
-+			break;
-+		case 1:
-+			offset = 4100;
-+			break;
-+		case 2:
-+			offset = 8200;
-+			break;
-+		default:
-+			return XDP_DROP;
-+		}
-+		break;
-+	default:
- 		offset = 20;
-+		break;
-+	}
- 	if (bpf_xdp_adjust_tail(xdp, 0 - offset))
- 		return XDP_DROP;
- 	return XDP_TX;
--- 
-2.31.1
+1.https://meet.kernel.social/tc-meetup
+2.https://www.airmeet.com/e/2494c770-cc8c-11eb-830b-e787c099d9c3
+3.https://docs.google.com/document/d/1uUm_o7lR9jCAH0bqZ1dyscXZbIF4GN3mh1FwwIuePcM/edit#
+
+  Marcelo
 
