@@ -2,97 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2ADD3A5E92
-	for <lists+bpf@lfdr.de>; Mon, 14 Jun 2021 10:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9383A5F0D
+	for <lists+bpf@lfdr.de>; Mon, 14 Jun 2021 11:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbhFNIvW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Jun 2021 04:51:22 -0400
-Received: from mail-pj1-f53.google.com ([209.85.216.53]:38586 "EHLO
-        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232670AbhFNIvV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Jun 2021 04:51:21 -0400
-Received: by mail-pj1-f53.google.com with SMTP id m13-20020a17090b068db02901656cc93a75so9616506pjz.3;
-        Mon, 14 Jun 2021 01:49:18 -0700 (PDT)
+        id S232646AbhFNJYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Jun 2021 05:24:19 -0400
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:40733 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232528AbhFNJYT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Jun 2021 05:24:19 -0400
+Received: by mail-lf1-f52.google.com with SMTP id k40so19984745lfv.7
+        for <bpf@vger.kernel.org>; Mon, 14 Jun 2021 02:22:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fJXJGzo/AzgCmmowETTvaQsC6wM1vEXUdgM3CM2feig=;
-        b=DR8XsVbIMAQmQZl0SDZT64onM6mKvDo1FjbYxpmabg73JiYivmZ2QtqgKinbKLs/As
-         kT5f0WNmUW8J3a99MtlJZXiz6iFc0L9YEXKNtlUrvz3l8Fg3RFrL/3umd4VJSRKYKUgq
-         p+QiVcLukjjwIjYf42Gxeav1ASTrwtdOSbzTT6MiVUc9VZTlSSN9sYY47Viiutixk3l2
-         kwF+RbgvsUXlfQAAQcTUrDW9kN8/Fr3sxCBqecShSRJ5OVlp9TGCFgCkhQx8pp8QA0GA
-         cG4r13wNzQI7SmiM/DcN/vgxmVjbDFOediF8cI5pfF5vD/sk6CgzA/uppfPa+umyvVAY
-         X8nw==
+        bh=5PfJELIBIReaJ9ogCnXjaaMHhML/e2xtA2OdG2dkSm0=;
+        b=UpVZDHjdSQZxaeBcrYMUYuCy2HkiZsiugv5rldSKKv+IK0b2LjBFFjCqxqMb0uQ9a6
+         WjcovZJ6d3oBl3fkJnsGSSmbr8h9QLCCqx5IwESNHNkdK7B36l6MG7BO8cIPiQt4hCPD
+         5oicnkYR9bynWQEN1+x5Ekpv7PW+F3MpVFVI4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fJXJGzo/AzgCmmowETTvaQsC6wM1vEXUdgM3CM2feig=;
-        b=dYuGUkUFH/+NHizS6wJ0oRE8oUEQyeA/+hXWyZqm2UGTPxHSSd0qBCoZxXAe0qpJXK
-         eHr2ccKM96eE77dgYF+7swvHPXh+LfnkNBUkZ8x3lGZAXediSklLy+IatLHE7go3S41L
-         FoaTszMQE/1FxNOTkk52/KFM+F2DIVatzfb/CIY9Q8lZvbVrTbCeliz1WlDQ0l/nU1HL
-         P2M0sSjqdXEXb61EL0QD7XJmhpj5R1Uts7MJL/ojO5feaaEZUe+6GmUKZeplN0j5zhKZ
-         RMsPzSujy0wxgy4sodKB+GXFtEzIk+SY7aOFerHiiqjvJhzdsNIPvsMOzy0dAs1TOP+K
-         ixoA==
-X-Gm-Message-State: AOAM530MeBjkmFJ//dJf3vuusdAjR0uK7ZbZA0yGUZoLKR2Dufzjh/si
-        UdkOCuiZE0li8wJFVinuIRlhH8PAMDZ6bt9QeD8=
-X-Google-Smtp-Source: ABdhPJz4p3NEuzhCq5k17/OP2UCkWvocwhedF3qakqYiwvONLxK+8fohY6wDcDSsL6mkE3e6zGDkVkNuYEqt5SEoBnU=
-X-Received: by 2002:a17:902:dcce:b029:113:ad63:6f64 with SMTP id
- t14-20020a170902dcceb0290113ad636f64mr15676629pll.7.1623660498695; Mon, 14
- Jun 2021 01:48:18 -0700 (PDT)
+        bh=5PfJELIBIReaJ9ogCnXjaaMHhML/e2xtA2OdG2dkSm0=;
+        b=B2uSjv5+0+/CgCJL3xgi8KYp4vqDxWnucO2iEUWVdLFNNWmaYOBzSfgmuu9YnbKzfy
+         y32YZ6o9U13zthXqjZRFp9OuJLUINzDI+yXMk6tiPJAPkxHRThz7TvSZqtmmN6Y4hQa6
+         Ms+K3ncXxD750WICFaJfdSzgRnhMnqgIFq89C7vMvQqnWQb8l/1XfMv/tiOvgcnQkhbi
+         pTDZgGzf2S6+8vRvt4pDpWLEV3lLlBmBiJ73WxZpEL73duy+Wy1XGiEhRfDOCRbhWeDo
+         QFGqqFM7gew06wjH49HMqifDCcxqVgWIp+CMmiFEq7/Hg2+TNpW96m2o28GivQzZ+dEE
+         Itag==
+X-Gm-Message-State: AOAM530PHOgKKyI834CKuxJNjSqkNWDX2FW8BOuwo8OT+5Px33E6p1J9
+        ZNxi+at/mEbo4ixweqm6YJ6vJlvtaSleaEqPvthBDQ==
+X-Google-Smtp-Source: ABdhPJxZtkEyoelN5TiAPYBPeqkQrw2QD4hi14e2B7Qj29SLiBuddsLMT0WtYXfRqkPWJvqVdikPyiED9oKfx2xlhqg=
+X-Received: by 2002:a05:6512:2ea:: with SMTP id m10mr11627075lfq.325.1623662475147;
+ Mon, 14 Jun 2021 02:21:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210609135537.1460244-1-joamaki@gmail.com> <20210609135537.1460244-4-joamaki@gmail.com>
- <20210609220713.GA14929@ranger.igk.intel.com> <CAHn8xcnMX03sX0n5VrTA2kJTSgcUj5s07mUHHc0wqB76QWpqeQ@mail.gmail.com>
-In-Reply-To: <CAHn8xcnMX03sX0n5VrTA2kJTSgcUj5s07mUHHc0wqB76QWpqeQ@mail.gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 14 Jun 2021 10:48:07 +0200
-Message-ID: <CAJ8uoz0i2Y4bUXCGEgqWwP3QzLp2dqUfGZg+rWNt76qBwQezOw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Add tests for XDP bonding
-To:     Jussi Maki <joamaki@gmail.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+References: <20210610161027.255372-1-lmb@cloudflare.com> <CAEf4BzZDDuyybofAjxm8QG9VYFMGAF8gZ9g-rnoD1-8R_9LExw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZDDuyybofAjxm8QG9VYFMGAF8gZ9g-rnoD1-8R_9LExw@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 14 Jun 2021 10:21:04 +0100
+Message-ID: <CACAyw9-UbOD_H5=KfscPHzwOHL13nTUpojhtQnOTNJpTS-DVzQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] lib: bpf: tracing: fail compilation if target arch is missing
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, j.vosburgh@gmail.com,
-        Andy Gospodarek <andy@greyhouse.net>, vfalico@gmail.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 10:09 AM Jussi Maki <joamaki@gmail.com> wrote:
+On Sat, 12 Jun 2021 at 00:33, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
-> On Thu, Jun 10, 2021 at 12:19 AM Maciej Fijalkowski
-> <maciej.fijalkowski@intel.com> wrote:
-> >
-> > On Wed, Jun 09, 2021 at 01:55:37PM +0000, Jussi Maki wrote:
-> > > Add a test suite to test XDP bonding implementation
-> > > over a pair of veth devices.
-> >
-> > Cc: Magnus
-> >
-> > Jussi,
-> > AF_XDP selftests have very similar functionality just like you are trying
-> > to introduce over here, e.g. we setup veth pair and generate traffic.
-> > After a quick look seems that we could have a generic layer that would
-> > be used by both AF_XDP and bonding selftests.
-> >
-> > WDYT?
+> Hm... doesn't this auto-guessing based on host architecture defeats
+> your goal? You don't want bpf_tracing.h to guess the right set of
+> PT_REGS macros, no?
 >
-> Sounds like a good idea to me to have more shared code in the
-> selftests and I don't see a reason not to use the AF_XDP datapath in
-> the bonding selftests. I'll look into it this week and get back to
-> you.
+> I thought you'll do something like
+>
+> #ifndef bpf_target_guess
+> #define bpf_target_guess 1
+> #endif
+>
+> #if !defined(bpf_target_defined) && bpf_target_guess
+>
+> /* then try to use host architecture */
+>
+> But I guess I'm missing something...
 
-Note, that I am currently rewriting a large part of the AF_XDP
-selftests making it more amenable to adding various tests. A test is
-in my patch set is described as a set of packets to send, a set of
-packets that should be received in a certain order with specified
-contents, and configuration/setup information for the sender and
-receiver. The current code is riddled with test specific if-statements
-that make it hard to extend and use generically. So please hold off
-for a week or so and review my patch set when I send it to the list.
-Better use of your time. Hopefully we can make it fit your bill too
-with not too much work.
+I understood that you didn't want new defines :D I'll rework the patch.
+
+>
+> >  #if defined(__x86_64__)
+> >         #define bpf_target_x86
+> > +       #define bpf_target_defined
+> >  #elif defined(__s390__)
+> >         #define bpf_target_s390
+> > +       #define bpf_target_defined
+>
+> btw, instead of having this zoo of bpf_target_<arch> and also
+> bpf_traget_defined, how about simplifying it to a single variable that
+> would contain the actual architecture:
+>
+> #define BPF_TARGET_ARCH "s390"
+>
+> And then do
+>
+> #if BPF_TARGET_ARCH == "s390"
+> #elif BPF_TARGET_ARCH == "arm"
+> ...
+> #else /* unknown bpf_target_arch or not defined */
+> _Pragma(...)
+> #endif
+>
+> WDYT? We can eventually move away from weird-looking __TARGET_ARCH_x86
+> to just -DBPF_TARGET_ARCH=x86. We'll need to support __TARGET_ARCH_xxx
+> for backwards compatibility, but at least new use cases can be cleaner
+> and more meaningful.
+
+Yeah that would be nice. I think the preprocessor doesn't understand
+strings. So we'd have to use special integers (or more macros) or a
+char. That doesn't seem nicer.
+
+> > +#ifndef __bpf_target_missing
+> > +#define __bpf_target_missing "GCC error \"Must specify a target arch via __TARGET_ARCH_xxx\""
+>
+> If you goal is to customize the error message, why not parameterize
+> the error message part only, not the "GCC error \"\"" part?
+
+Because _Pragma is annoying: it doesn't accept strings that get
+concatenated via the preprocessor: _Pragma("GCC error \"" OTHER_DEFINE
+"\"") gives me trouble. It's possible to avoid this via another macro
+expansion though. Up to you.
+
+>
+> >  #endif
+> >
+> >  #if defined(bpf_target_x86)
+> > @@ -287,7 +296,7 @@ struct pt_regs;
+> >  #elif defined(bpf_target_sparc)
+> >  #define BPF_KPROBE_READ_RET_IP(ip, ctx)                ({ (ip) = PT_REGS_RET(ctx); })
+> >  #define BPF_KRETPROBE_READ_RET_IP              BPF_KPROBE_READ_RET_IP
+> > -#else
+> > +#elif defined(bpf_target_defined)
+> >  #define BPF_KPROBE_READ_RET_IP(ip, ctx)                                            \
+> >         ({ bpf_probe_read_kernel(&(ip), sizeof(ip), (void *)PT_REGS_RET(ctx)); })
+> >  #define BPF_KRETPROBE_READ_RET_IP(ip, ctx)                                 \
+> > @@ -295,6 +304,35 @@ struct pt_regs;
+> >                           (void *)(PT_REGS_FP(ctx) + sizeof(ip))); })
+> >  #endif
+> >
+> > +#if !defined(bpf_target_defined)
+> > +
+> > +#define PT_REGS_PARM1(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_PARM2(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_PARM3(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_PARM4(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_PARM5(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_RET(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_FP(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_RC(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_SP(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_IP(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +
+> > +#define PT_REGS_PARM1_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_PARM2_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_PARM3_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_PARM4_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_PARM5_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_RET_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_FP_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_RC_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_SP_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+> > +#define PT_REGS_IP_CORE(x) ({ _Pragma(__bpf_target_missing); 0ull; })
+>
+> nit: why ull suffix?
+
+Without it we sometimes get an integer cast warning, something about
+an int to void* cast I think?
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
