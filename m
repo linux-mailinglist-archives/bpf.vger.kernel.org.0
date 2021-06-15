@@ -2,138 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62703A7DB3
-	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 13:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61C63A7DAA
+	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 13:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbhFOL61 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Jun 2021 07:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhFOL61 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Jun 2021 07:58:27 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EDFC061574
-        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 04:56:22 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id x19so8345970pln.2
-        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 04:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8m3xS1lo1ojJX7DLhpIDzMjZevTvavzMcgebUZUykLw=;
-        b=ZIzbObNKV9kNcaJmHIkN5745PoR/6+ppWRfD9buNNfHCq2fgkIKYDlyUATTp/P6teG
-         K32iombZjPCfUAvwI5qXhjURZfWItl+NhjObXggeeSXxKccptfeqeYquHfoU3QaaODFm
-         aUcBtcuQbXUHUgdLVJCH/cPtb6sKPDWoBiyG6RT1x9ErgUKtnmta+FvBUNvXAKEmRkRl
-         +SHNxVAmR4xW7zRDXgrGAdhXZ1VtnBnnLBDTGWKaI1+saH6r9UXmcXlDp1a5WZ34qXm8
-         r7AeOSAwRgRTdkZiAKq0ugC6R9Q+1kh1NMgxZR62Psrm71I0jOFu8xzx+W+9MvDADsys
-         cs8Q==
+        id S230087AbhFOL46 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Jun 2021 07:56:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50117 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229909AbhFOL46 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 15 Jun 2021 07:56:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623758093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r9ZcD21ZX/ou29BDDRauVXqm9CpSppybq1/8AzdM/BE=;
+        b=gG6V+WFX8+0Hrii7fxCmUn2gb58wWJMswXbgbRlDjF3gh+C4vJh5Ik++7mJyyUTlH4rKSo
+        6MuO7SZXL+lJt4Kww/4BYuFOQk2LfEWhd07NiU+A8v2K3jgTwsmH3G7e3v9u/sTnZ8k41z
+        yKJxSt/hYkwD9FsUtobVGgZUUCurhrw=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-VrhocZjDNxaMNSdZkeEJww-1; Tue, 15 Jun 2021 07:54:52 -0400
+X-MC-Unique: VrhocZjDNxaMNSdZkeEJww-1
+Received: by mail-ed1-f69.google.com with SMTP id v12-20020aa7dbcc0000b029038fc8e57037so3863536edt.0
+        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 04:54:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8m3xS1lo1ojJX7DLhpIDzMjZevTvavzMcgebUZUykLw=;
-        b=hfIeSWuZP0YFqA5R0lqsKKQ5zEhzbKI3u+yDYbuEIV/kbr76jEaultnjazK6zUdB7q
-         tIjYnlN/zIpaVtKqbua2Svlb4zxK0ZPWep4Jyd28RzqFLZCcBNcy3Yk81Sqgngb6fzkN
-         8+XNa+D5TNYvp7KPTSQ5aI8DABINt73+xHu0udfLNtEuDPbt3RetDuv47iJ9zxPLU4N6
-         GS54KI6gMo5g0yBQ72IhgCwnu3D1uBMK6HxuHbZXOYvCbuRMlwY7cs++28l4EgYUjoUB
-         YQwv7mAArPVYRhYKSofJ+b5VqWO9nss8lPLEPSg99OC3seLsoRGYMFypm3PYmKoiF7+z
-         04SQ==
-X-Gm-Message-State: AOAM533KkS8N0NZ7L52tOl1GjUeRxlYrGN4aC0F/YNmHFkPufC5CUarp
-        Ia/ecWlWuVZ8Qa2NmZRzDYjdijOA1qv/HxbZBdI=
-X-Google-Smtp-Source: ABdhPJz1UwNcF5Gyj7r7vmXidW7wAag2hBkt9UQrgBhuDv3xFpT/6GuZbvchbNYLVGFktlt9dPF/+qFiN6Ear/1aaHg=
-X-Received: by 2002:a17:902:8b8a:b029:108:7849:dae0 with SMTP id
- ay10-20020a1709028b8ab02901087849dae0mr3928952plb.36.1623758181869; Tue, 15
- Jun 2021 04:56:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=r9ZcD21ZX/ou29BDDRauVXqm9CpSppybq1/8AzdM/BE=;
+        b=dVA/5QEvjWGhvlL8UdhyGMU3pMH1Kvh4HDkaMAzgsBLEA6wTWg6W0OFQXbfaFBc1kK
+         zVOAzJYAj8pcvFEQEljlJJjo6UVw+TC1r2fNxAxlTyJTbd7lJr0GuP7i3sXt2/nEEyDU
+         dldvfQAL1KJLgLhOG5CVVUJaFUcWkyLZw/97NhL3yev9CF9tFjNQYgVdatEPJDFlaEnO
+         dHW7KYkDXqRo66LGcNPFjwCUaQeh/pfqDkaCo1Dc8BOvHlm/M2JZgvlPBh1B6tIK9Isl
+         HnAetRKlS2yXL8TgcKkODV7idj9mhTYSsPCFAb5Za3TiZf1PXibslybEjX0SJjtfL3MC
+         6dFw==
+X-Gm-Message-State: AOAM531bGjCDunvgmU0NU4ofjewhfyZJpMRDRe66e08xnPfaXDj0srLt
+        /1JE/5PKbV2xsSGLLr+hvrjxk5iedZKqAg6OmZgOoKVcLMEQUroo/rayVWy6OtS18H1XgzYTK5R
+        SM16k3jfWfKUs
+X-Received: by 2002:a05:6402:6c8:: with SMTP id n8mr22504750edy.180.1623758091271;
+        Tue, 15 Jun 2021 04:54:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx6VRfui25Fk7gETjn32Em0zrvcKKVgDXu79Wc1czwESYsDkvGpci2Q171qwd/tpWzV0WpyJA==
+X-Received: by 2002:a05:6402:6c8:: with SMTP id n8mr22504720edy.180.1623758090925;
+        Tue, 15 Jun 2021 04:54:50 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id m18sm9988254ejx.56.2021.06.15.04.54.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 04:54:50 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 6089A180734; Tue, 15 Jun 2021 13:54:49 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Vlad Buslov <vladbu@nvidia.com>, Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+In-Reply-To: <CAM_iQpW7ZAz5rLAanMRg7R52Pn55N=puVkvoHcHF618wq8uA1g@mail.gmail.com>
+References: <20210528195946.2375109-1-memxor@gmail.com>
+ <CAM_iQpVqVKhK+09Sj_At226mdWpVXfVbhy89As2dai7ip8Nmtw@mail.gmail.com>
+ <20210607033724.wn6qn4v42dlm4j4o@apollo>
+ <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
+ <20210607060724.4nidap5eywb23l3d@apollo>
+ <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
+ <20210608071908.sos275adj3gunewo@apollo>
+ <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+ <20210613025308.75uia7rnt4ue2k7q@apollo>
+ <CAM_iQpW7ZAz5rLAanMRg7R52Pn55N=puVkvoHcHF618wq8uA1g@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 15 Jun 2021 13:54:49 +0200
+Message-ID: <877divs5py.fsf@toke.dk>
 MIME-Version: 1.0
-References: <CAGG-pUTpppu-voYuT81LiTMAUA5oAWwnAwYQVAhyPwj3CwnZPA@mail.gmail.com>
- <CAEf4BzZkK9X2RadSYUWV5oh960iwaw3y5EKr7zu8WZ7XnRYz6g@mail.gmail.com>
-In-Reply-To: <CAEf4BzZkK9X2RadSYUWV5oh960iwaw3y5EKr7zu8WZ7XnRYz6g@mail.gmail.com>
-From:   "Geyslan G. Bem" <geyslan@gmail.com>
-Date:   Tue, 15 Jun 2021 08:54:31 -0300
-Message-ID: <CAGG-pUR-7EWOLwLPG_aR1La4Qh+_8zLoo5zuA-D96FOqwX4QZA@mail.gmail.com>
-Subject: Re: kernel bpf test_progs - vm wrong libc version
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 15 Jun 2021 at 03:27, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+Cong Wang <xiyou.wangcong@gmail.com> writes:
+
+>> > I offer two different views here:
+>> >
+>> > 1. If you view a TC filter as an instance as a netdev/qdisc/action, they
+>> > are no different from this perspective. Maybe the fact that a TC filter
+>> > resides in a qdisc makes a slight difference here, but like I mentioned, it
+>> > actually makes sense to let TC filters be standalone, qdisc's just have to
+>> > bind with them, like how we bind TC filters with standalone TC actions.
+>>
+>> You propose something different below IIUC, but I explained why I'm wary of
+>> these unbound filters. They seem to add a step to classifier setup for no real
+>> benefit to the user (except keeping track of one more object and cleaning it
+>> up with the link when done).
 >
-> On Fri, Jun 11, 2021 at 1:23 PM Geyslan G. Bem <geyslan@gmail.com> wrote:
-> >
-> > Trying to run vmtest.sh from the bpf-next linux
-> > tools/testing/selftests/bpf on Arch Linux raises this error:
-> >
-> > ./test_progs
-> > ./test_progs: /usr/lib/libc.so.6: version `GLIBC_2.33' not found
-> > (required by ./test_progs)
-> >
-> > VM:
-> > https://libbpf-vmtest.s3-us-west-1.amazonaws.com/x86_64/libbpf-vmtest-rootfs-2020.09.27.tar.zst
-> >
-> > [root@(none) /]# strings /usr/lib/libc.so.6 | grep '^GLIBC_2.' | tail
-> > GLIBC_2.30
-> > GLIBC_2.5
-> > GLIBC_2.9
-> > GLIBC_2.7
-> > GLIBC_2.6
-> > GLIBC_2.18
-> > GLIBC_2.11
-> > GLIBC_2.16
-> > GLIBC_2.13
-> > GLIBC_2.2.6
-> >
-> > It would be nice to have
-> > https://github.com/libbpf/libbpf/blob/master/travis-ci/vmtest/configs/INDEX
-> > updated to refer to a new image with GLIBC_2.33.
-> >
-> > Host settings:
-> >
-> > $ strings /usr/lib/libc.so.6 | grep GLIBC_2.33
-> > GLIBC_2.33
-> > GLIBC_2.33
-> >
->
-> It seems kind of silly to update our perfectly working image just
-> because a new version of glibc was released. Is there any way for you
-> to down-grade glibc or build it in some compatibility mode, etc?
-> selftests don't really rely on any bleeding-edge features of glibc.
+> I am not even sure if unbound filters help your case at all, making
+> them unbound merely changes their residence, not ownership.
+> You are trying to pass the ownership from TC to bpf_link, which
+> is what I am against.
 
-Yeah. Continuously updating/regenerating the image would be a bit
-silly, indeed. It was just the trigger for a better proposal.
+So what do you propose instead?
 
-I would rely on a self-updating image rather than a static one.
-Probably that would be more operative. I don't know.
+bpf_link is solving a specific problem: ensuring automatic cleanup of
+kernel resources held by a userspace application with a BPF component.
+Not all applications work this way, but for the ones that do it's very
+useful. But if the TC filter stays around after bpf_link detaches, that
+kinda defeats the point of the automatic cleanup.
 
->
-> > $ uname -a
-> > Linux hb 5.12.9-arch1-1 #1 SMP PREEMPT Thu, 03 Jun 2021 11:36:13 +0000
-> > x86_64 GNU/Linux
-> >
-> > $ gcc --version
-> > gcc (GCC) 11.1.0
-> >
-> > $ clang --version
-> > clang version 13.0.0 (/home/uzu/.cache/yay/llvm-git/llvm-project
-> > ad381e39a52604ba07e1e027e7bdec1c287d9089)
-> > Target: x86_64-pc-linux-gnu
-> > Thread model: posix
-> > InstalledDir: /usr/bin
-> >
-> > P.S.: This issue was started in
-> > https://github.com/libbpf/libbpf/issues/321 and brought to here.
-> >
-> > Thank you.
-> >
-> > Regards,
-> >
-> > Geyslan G. Bem
+So I don't really see any way around transferring ownership somehow.
+Unless you have some other idea that I'm missing?
 
+-Toke
 
-
--- 
-Regards,
-
-Geyslan G. Bem
