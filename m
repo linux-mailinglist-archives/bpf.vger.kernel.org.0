@@ -2,111 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9D13A8996
-	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 21:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F4C3A89AB
+	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 21:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhFOTgl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Jun 2021 15:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhFOTgk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Jun 2021 15:36:40 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F173AC061574
-        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 12:34:35 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id r5so96606lfr.5
-        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 12:34:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Njqzng99kcjuB+MO3j3ZJSHd2FVA4YrNOTWJJbAlKPY=;
-        b=aB8s11Q6tDlsckmjIoWh9vftyAS1Mu/Sqs2LHDjQBaaYDhFXsKb1DQRzEAHdc5I2Yo
-         Q13eyfAnDyZpJYzmNTgCP5UCaxB/12+4XVAjcYIIXTaRRrrgBnZJ79f+ghXASNQESJvZ
-         le7akAg8cYP/DrCtPgczgWEhTeaKbmaxFI0GSEp3D54Az9F+gUy/YqhbD48ac5MsyIFG
-         YavrrqoJql+iUzTEFBSrzE+mt0rhvmS7EKgutDdjfwqYfiDaJe8FYMLq7jzhrxAVTTee
-         YdYL1iCVMWKcg+P4j8HlCqqP6p80p8T6tQDht+DBcrRLcRcHHY4PLdueOubOh6d2ZnX3
-         Gz/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Njqzng99kcjuB+MO3j3ZJSHd2FVA4YrNOTWJJbAlKPY=;
-        b=e+TaLJhRLi2Tk3PXekVPdB8iA5awlQVRCiFdcGSFIL4IyxnjmnN/6lelpQItR8RopF
-         YbZp+tPpYZONSqvqCARQD+dfVtT6GgVC6EBPRKOQtUFzZNxDMQTxLkNDmCkovdK0xXt4
-         syC+PelOAFXzGgLygiIpFkHdDE+88PDyR2H7x7YNfRFGQMixmmtNRfxJCKHXrW/3aQoS
-         V33Wy88tch4d/dqU5OXtRRfpG/3SCHNUgNpQHLLOEVWbI6DZv5jSd5ZWiH9mRr/TD+Ud
-         wod0VFv9opoLTaM9enpXQ4ZlOIcHZdEX5UjtAk09+6pkYCFdbsfD5JeicS6YeDmMvz4f
-         IKNg==
-X-Gm-Message-State: AOAM5322D3QtuArsts0rmMA0MYItzrXuKdlNSOhidXDrf+WYN7IAdI4t
-        HIklvY0Yf4fGkkrfl19xaOLd2A9nJdDBW4O4qrA=
-X-Google-Smtp-Source: ABdhPJzFrLuWfK0ZzBkZ1Evhgi5xx34TOsHS6qBWVHJ5ZDbjYmqSr6Qnt8xyLWyAyXcAQwBiJZQotLS3sVVWS7pnUhQ=
-X-Received: by 2002:a05:6512:39ca:: with SMTP id k10mr683974lfu.473.1623785674328;
- Tue, 15 Jun 2021 12:34:34 -0700 (PDT)
+        id S229946AbhFOTkV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Jun 2021 15:40:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229749AbhFOTkV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Jun 2021 15:40:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D82EC6128B;
+        Tue, 15 Jun 2021 19:38:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623785896;
+        bh=5l1ZFT8n68dLKsHaNbbcXWI0cE3aK5mhMAWBOGIyy8U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RyHch98AyjWmixU727i2K4FRDR0ecbNN4d58jY+sqZY4a4Lca14z0NHl3Kttyyvu6
+         wVEcpH/wGXvtFUzzedfxBduKn9TWFhY9QdyiiN+Nxolsztgua7JQTSrZuq4bOoMSJ3
+         Els1szhTI6l66HnAN0dH4+ub4/LagYHKOJfHKiBKnIczFTdLlAOaAK0mFS8P5C5au6
+         vaqvM2ec9R/WjMMWob96ALnlBc6NkcdbXZDBbG8DtUkRHU2GHDwsA4Di9J6coDCxSj
+         bMS1J/f4VGws90YqAXEOy+02zG+JqLsXRsuLv4vA9x8j35YsFpQpIxFTwkEZDk4EYD
+         UHq5ZKi88saxw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 86D5F40B1A; Tue, 15 Jun 2021 16:38:12 -0300 (-03)
+Date:   Tue, 15 Jun 2021 16:38:12 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Parallelizing vmlinux BTF encoding. was Re: [RFT] Testing 1.22
+Message-ID: <YMkBpBfqW+AcpyNN@kernel.org>
+References: <CAEf4BzZk8bcSZ9hmFAmgjbrQt0Yj1usCHmuQTfU-pwZkYQgztA@mail.gmail.com>
+ <YLFIW9fd9ZqbR3B9@kernel.org>
+ <CAEf4BzYCCWM0WBz0w+vL1rVBjGvLZ7wVtgJCUVr3D-NmVK0MEg@mail.gmail.com>
+ <YLjtwB+nGYvcCfgC@kernel.org>
+ <CAEf4BzbQ9w2smTMK5uwGGjyZ_mjDy-TGxd6m8tiDd3T_nJ7khQ@mail.gmail.com>
+ <YL4dGFsfb0ZzgxlR@kernel.org>
+ <CAEf4BzYLXyjkmO6ZySUxFHu1HcctPQK3j3vAPXVWFJ8qvGe8kw@mail.gmail.com>
+ <YL9pxDFIYQEUODM5@kernel.org>
+ <YMj5CzF92pTjcbhO@kernel.org>
+ <CAEf4BzaDNim+kFQx64i9EZogctGZNFigQBsog7eC6DjrfjTbEA@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAOWid-drUQKifjPgzQ3MQiKUUrHp5eKOydgSToadW1fNkUME7g@mail.gmail.com>
- <20210604061303.v22is6a7qmlbvkmq@kafai-mbp> <f08f6a20-2cd6-7bf0-c680-52869917d0c7@fb.com>
- <CAOWid-f_UivcZ1zW5qjPJ=0wD1NM+s+S9qT6nZuvtpv0o+NMxw@mail.gmail.com>
- <CAOWid-eXi36N7-qPHT0Or9v5OBbhYx6J5rX3uVbVQWJs_90LOg@mail.gmail.com> <ad426c37-d810-1d1b-91d8-6d9922ba52f0@fb.com>
-In-Reply-To: <ad426c37-d810-1d1b-91d8-6d9922ba52f0@fb.com>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Tue, 15 Jun 2021 15:34:14 -0400
-Message-ID: <CAOWid-evaph=7b2GW+oj=38Hv1cHgdwya9A8XqL2eS5n3oL6yw@mail.gmail.com>
-Subject: Re: Headers for whitelisted kernel functions available to BPF programs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaDNim+kFQx64i9EZogctGZNFigQBsog7eC6DjrfjTbEA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 9, 2021 at 2:42 AM Yonghong Song <yhs@fb.com> wrote:
-> So your intention is to call functions in
-> drivers/gpu/drm/drm_gem_ttm_helper.c, right? How do you get function
-> parameters? What kinds of programs you intend to call
-> this functions?
-ok... sounds like my use case was not concret enough.  Perhaps I can
-elaborate further with the following examples:
+Em Tue, Jun 15, 2021 at 12:13:55PM -0700, Andrii Nakryiko escreveu:
+> On Tue, Jun 15, 2021 at 12:01 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 
-In the GPU scheduler, there's a trace point
-"trace_drm_run_job(sched_job, entity)":
+> > Em Tue, Jun 08, 2021 at 09:59:48AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Mon, Jun 07, 2021 at 05:53:59PM -0700, Andrii Nakryiko escreveu:
+> > > > I think it's very fragile and it will be easy to get
+> > > > broken/invalid/incomplete BTF. Yonghong already brought up the case
 
-https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/scheduler/sched_main.c#L813
+> > > I thought about that as it would be almost like the compiler generating
+> > > BTF, but you are right, the vmlinux prep process is a complex beast and
+> > > probably it is best to go with the second approach I outlined and you
+> > > agreed to be less fragile, so I'll go with that, thanks for your
+> > > comments.
 
-If I want to analyze the jobs being scheduled, I can potentially
-attach a bpf prog with this tracepoint.  Each driver has its own
-run_job and sched_job implementation so I was thinking the drivers can
-provide a bpf helper function to resolve this.  Alternatively, there
-could be tracepoint in the driver implementation that one can attach
-bpf to, but tracepoints are not universally put in place (have trace:
-https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c#L221;
-not have trace:
-https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/etnaviv/etnaviv_sched.c#L72
-.)  So in cases without tracepoint, I guess I would be using kprobe or
-fentry?
+> > So, just to write some notes here from what I saw so far:
 
-Note that all of these are in kernel modules.  My understanding is
-that BTF will work but having helper functions from the kernel modules
-are not yet available?  So let say I want to whitelist and call "
-amdgpu_device_gpu_recover"
-(https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c#L4521)
-from inside a bpf prog, or whitelist and call
-"drm_sched_increase_karma"
-https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/scheduler/sched_main.c#L362,
-I wouldn't be able to do so?  Are there any criteria in terms of what
-kernel function should or should not be whitelisted (separate from the
-kernel module support question)?  For example, would
-amdgpu_device_gpu_recover be not "whitelist-able" because of the hw
-interaction or complexity or likelihood to crash the kernel while
-drm_sched_increase_karma is ok because it's more or less manipulation
-of some data structure?
+> > 1. In the LTO cases there are inter-CU references, so the current code
+> > combines all CUs into one and we end up not being able to parallelize
+> > much. LTO is expensive, so... I'll leave it for later, but yeah, I don't
+> > think the current algorithm is ideal, can be improved.
+ 
+> Yeah, let's worry about LTO later.
+ 
+> > 2. The case where there's no inter CU refs, which so far is the most
+> > common, seems easier, we create N threads, all sharing the dwarf_loader
+> > state and the btf_encoder, as-is now. we can process one CU per thread,
+> > and as soon as we finish it, just grab a lock and call
+> > btf_encoder__encode_cu() with the just produced CU data structures
+> > (tags, types, functions, variables, etc), consume them and delete the
+> > CU.
+> >
+> > So each thread will consume one CU, push it to the 'struct btf' class
+> > as-is now and then ask for the next CU, using the dwarf_loader state,
+> > still under that lock, then go back to processing dwarf tags, then
+> > lock, btf add types, rinse, repeat.
+> 
+> Hmm... wouldn't keeping a "local" per-thread struct btf and just keep
+> appending to it for each processed CU until we run out of CUs be
+> simpler?
 
-A quick side question, does container_of work inside a bpf prog?
+I thought about this as a logical next step, I would love to have a
+'btf__merge_argv(struct btf *btf[]), is there one?
 
-> kprobe probably won't work as kernel does not capture
-> traced function types. fentry program might be a good
-> choice.
-Thanks for the pointer.  I am not familiar with fentry but I will look
-into it.  By function type, what do you mean by that?
+But from what I've read after this first paragraph of yours, lemme try
+to rephrase:
+
+1. pahole calls btf_encoder__new(...)
+
+   Creates a single struct btf.
+
+2. dwarf_loader will create N threads, each will call a
+dwarf_get_next_cu() that is locked and will return a CU to process, when
+it finishes this CU, calls btf_encoder__encode_cu() under an all-threads
+lock. Rinse repeat.
+
+Until all the threads have consumed all CUs.
+
+then btf_encoder__encode(), which should be probably renamed to
+btf_econder__finish() will call btf__dedup(encoder->btf) and write ELF
+or raw file.
+
+My first reaction to your first paragraph was:
+
+Yeah, we can have multiple 'struct btf' instances, one per thread, that
+will each contain a subset of DWARF CU's encoded as BTF, and then I have
+to merge the per-thread BTF and then dedup. O think my rephrase above is
+better, no?
+
+> So each thread does as much as possible locally without any
+> locks. And only at the very end we merge everything together and then
+> dedup. Or we can even dedup inside each worker before merging final
+> btf, that probably would give quite a lot of speed up and some memory
+> saving. Would be interesting to experiment with that.
+> 
+> So I like the idea of a fixed pool of threads (can be customized, and
+> I'd default to num_workers == num_cpus), but I think we can and should
+> keep them independent for as long as possible.
+
+Sure, this should map the whatever the user passes to -j in the kernel
+make command line, if nothing is passed as an argument, then default to
+getconf(_NPROCESSORS_ONLN).
+
+There is a nice coincidence here where we probably don't care about -J
+anymore and want to deal only with -j (detached btf) that is the same as
+what 'make' expects to state how many "jobs" (thread pool size) the user
+wants 8-)
+ 
+> Another disadvantage of generating small struct btf and then lock +
+> merge is that we don't get as efficient string re-use, we'll churn
+> more on string memory allocation. Keeping bigger local struct btfs
+> allow for more efficient memory re-use (and probably a tiny bit of CPU
+> savings).
+
+I think we're in the same page, the contention for adding the CU to a
+single 'struct btf' (amongst all DWARF loading threads) after we just
+produced it should be minimal, so we grab all the advantages: locality
+of reference, minimal contention as DWARF reading/creating the pahole
+internal, neutral, data structures should be higher than adding
+types/functions/variables via the libbpf BTF API.
+
+I.e. we can leave paralellizing the BTF _encoding_ for later, what we're
+trying to do now is to paralellize the DWARF _loading_, right?
+ 
+> So please consider that, it also seems simpler overall.
+ 
+> > The ordering will be different than what we have now, as some smaller
+> > CUs (object files with debug) will be processed faster so will get its
+> > btf encoding slot faster, but that, at btf__dedup() time shouldn't make
+> > a difference, right?
+ 
+> Right, order doesn't matter.
+ 
+> > I think I'm done with refactoring the btf_encoder code, which should be
+> > by now a thin layer on top of the excellent libbpf BTF API, just getting
+> > what the previous loader (DWARF) produced and feeding libbpf.
+ 
+> Great.
+ 
+> > I thought about fancy thread pools, etc, researching some pre-existing
+> > thing or doing some kthread + workqueue lifting from the kernel but will
+> > instead start with the most spartan code, we can improve later.
+ 
+> Agree, simple is good. Really curious how much faster we can get. I
+> think anything fancy will give a relatively small improvement. The
+> biggest one will come from any parallelization.
+
+And I think that is possible, modulo elfutils libraries saying no, I
+hope that will not be the case.
+
+- Arnaldo
