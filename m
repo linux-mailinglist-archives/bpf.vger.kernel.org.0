@@ -2,120 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE293A88DE
-	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 20:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A27763A88EC
+	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 20:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhFOSxQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Jun 2021 14:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
+        id S230211AbhFOSzb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Jun 2021 14:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhFOSxQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Jun 2021 14:53:16 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E918C061574;
-        Tue, 15 Jun 2021 11:51:11 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id y7so19401513wrh.7;
-        Tue, 15 Jun 2021 11:51:11 -0700 (PDT)
+        with ESMTP id S229749AbhFOSza (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Jun 2021 14:55:30 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CA8C0617AF
+        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 11:53:23 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id i4so22032396ybe.2
+        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 11:53:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QojazdBWoM3SyAlRdVHgqcAEHJPhAD/lO190hYA/8jw=;
-        b=keYPy5Ik8+o66m6E25AGSE/i051lEKyA7J37a24FhFdDO+zv5FEgFaR9O03PJ1iQWC
-         rivCZbjUHnzjLG67BYdOEW9k3DlTpVilMw7prbTimR5sju+pTpc0bqkk9sNNJo0g2NYH
-         +tQqnRDPbUyABwcAqU+H0EY5xFOgIlUVk7N2FY+xmUXHMbnn6FFl3im0LV3xsT6hHSc1
-         j4WroaJNJbp4Jl68hvVssfgRfioRbqQhcsBwHsXHwdqP+GT/9N4E2IHpVjhYRqjRs675
-         kemdVE3OdgzrWMM2DYxy/Hmw9LEbi7Lojr6gze/7EZSGLIy3DZqPN2oAkaTujgKXgnCR
-         /tJw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BmNxKBmhcmIv04npyGlwS8x8LpMH1wmnYFET2WEI0zw=;
+        b=uPJXiwocBvyHRIgOZA1GPNpy7xcrxCbO18a86jT7c6uNn+yGCV69kNn1snR3BpqRxp
+         CvCR+CJ7TOaR26YySU4V/BRzVXHd0z8om3fEPmrlSnDkVmGImecEFnjYhgJT/rFCziof
+         HuhOeD6TIVhSO/NQ7P9OrHQIvwo2RQN8LF/3YesCqhRYk3VI2JttqBSDzSPhcYYSyavM
+         NoNXgOtEhA1caF5MlpvLW+uQ6QQb8qFCEi8GYbXx0RfscyeReZX6rrwm+YtjxkOAZ7j4
+         eZrrxYK065ptYS/IYyZlcpHupZ6gvVwq71g5rILkRTkIr5qfkGECmAShPImpVoi6ppHW
+         icgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QojazdBWoM3SyAlRdVHgqcAEHJPhAD/lO190hYA/8jw=;
-        b=lyfKKkHCJdPQPSOHLVAPTZuIX5S6UdXOU+3yYa8apF2xs7n0/PorkJf4jlNcDhzc9O
-         rKRt+lOs25Bp6FonCs/ry7/lP1LMiCfMVpSDgzy413JmcqEN2kPRMTnvSvqfn+47Yt4v
-         F7uresEuNigGoghN8Mpf7urXOK+1FHSHCy1+UcLuBUt4RwI19R/O3WJmrYhFvJcc539L
-         aUVSNMMcR/l5nXaeEINNGEjDEuNP6K4dyyMDMf0EMGza36DVWq+BN78yRiUn+pKk92Tt
-         cQ2Us97ZxrjVMqmvOjYJf7cUxZVsYQnIkDXRoqLQqMeOwPHE6iL9Tdpr22fZq1ES5nVO
-         fX8A==
-X-Gm-Message-State: AOAM530gmWNXZFzZnyOhLMndNBwaGpTYN6xMd90F04VnNazpZxq0Y542
-        ajm36RYTLtlRpqDywHM0nvM=
-X-Google-Smtp-Source: ABdhPJwB6XJA9CTa5qdtOSQ4XzUu9peP7FYU4f0dbek7wM8P79YQW/nuPW3hilLe77UeROzfim0Hdg==
-X-Received: by 2002:a5d:658a:: with SMTP id q10mr618994wru.258.1623783069593;
-        Tue, 15 Jun 2021 11:51:09 -0700 (PDT)
-Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
-        by smtp.gmail.com with ESMTPSA id v15sm2900252wmj.39.2021.06.15.11.51.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Jun 2021 11:51:09 -0700 (PDT)
-Subject: Re: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
-To:     Kurt Manucredo <fuzzybritches0@gmail.com>, ebiggers@kernel.org,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-Cc:     keescook@chromium.org, yhs@fb.com, dvyukov@google.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, nathan@kernel.org,
-        ndesaulniers@google.com, clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
-References: <87609-531187-curtm@phaethon>
- <6a392b66-6f26-4532-d25f-6b09770ce366@fb.com>
- <CAADnVQKexxZQw0yK_7rmFOdaYabaFpi2EmF6RGs5bXvFHtUQaA@mail.gmail.com>
- <CACT4Y+b=si6NCx=nRHKm_pziXnVMmLo-eSuRajsxmx5+Hy_ycg@mail.gmail.com>
- <202106091119.84A88B6FE7@keescook>
- <752cb1ad-a0b1-92b7-4c49-bbb42fdecdbe@fb.com>
- <CACT4Y+a592rxFmNgJgk2zwqBE8EqW1ey9SjF_-U3z6gt3Yc=oA@mail.gmail.com>
- <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com> <202106101002.DF8C7EF@keescook>
- <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
- <85536-177443-curtm@phaethon>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com>
-Date:   Tue, 15 Jun 2021 19:51:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BmNxKBmhcmIv04npyGlwS8x8LpMH1wmnYFET2WEI0zw=;
+        b=bIlw7lh/E8CnzZTXz3Cfe5ECq0+nPgn0/zPvVe3h2NePSRhYaVVA+dEpI834qfwwJl
+         rJcu+QzD2W3pcrMDe/42Sg08rcJHsHf06n4XZZYzv96EnsgSVcJW3qXw2EmR0YB319Su
+         DMGmzysHJnlzhHkAKz72h+nxuMWVlScVKfpS35KHUxMfk0FfJ2wpq2UcD1bPd9aqpJmO
+         pmc6YGWiWxa2t+NnDx+sFc2znGcTUc2MVhLq4MrpPLxO5F3UUx87GF5WIq1C/QHtsaa8
+         E9rGIEwRgByVctXy07WCbrw2dS4gwwW//V9s36ryLAX+HzqB1f3PiCxjLEI1Bn82jD05
+         wrwg==
+X-Gm-Message-State: AOAM530LaKaX4iBHTodADJwVLkopqM2kAi8488T2WMiPl6PTLRgCNyGz
+        MMTemYSqdYbisffQkizGNmNKArOdQmIZdT4lVTo=
+X-Google-Smtp-Source: ABdhPJxZj5DCL03s/PpKjM6IQqsC/CMgyy3R86C5QU8ppQXRlKjnyidOXohiqflzXH69chTZo9nkkAy9sZ4oyjOzBQ8=
+X-Received: by 2002:a25:7246:: with SMTP id n67mr829269ybc.510.1623783202289;
+ Tue, 15 Jun 2021 11:53:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <85536-177443-curtm@phaethon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210610161027.255372-1-lmb@cloudflare.com> <CAEf4BzZDDuyybofAjxm8QG9VYFMGAF8gZ9g-rnoD1-8R_9LExw@mail.gmail.com>
+ <CACAyw9-UbOD_H5=KfscPHzwOHL13nTUpojhtQnOTNJpTS-DVzQ@mail.gmail.com>
+ <CAEf4BzbFhGkRi0YSa0pB+2SFYtJKXLEVKx=hQpVbBO_D4KUjtQ@mail.gmail.com> <CACAyw9-0qDakujnUBT3uZcgnBZr0dZ8o=GbLx_OEiF1xXvRdzQ@mail.gmail.com>
+In-Reply-To: <CACAyw9-0qDakujnUBT3uZcgnBZr0dZ8o=GbLx_OEiF1xXvRdzQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 15 Jun 2021 11:53:11 -0700
+Message-ID: <CAEf4Bzb8piZg29fTpfSqUPEE69hHEqdnFbYHN-bp3qEossLkww@mail.gmail.com>
+Subject: Re: [PATCH bpf] lib: bpf: tracing: fail compilation if target arch is missing
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 15/06/2021 17:42, Kurt Manucredo wrote:
-> Syzbot detects a shift-out-of-bounds in ___bpf_prog_run()
-> kernel/bpf/core.c:1414:2.
-> 
-> The shift-out-of-bounds happens when we have BPF_X. This means we have
-> to go the same way we go when we want to avoid a divide-by-zero. We do
-> it in do_misc_fixups().
+On Tue, Jun 15, 2021 at 3:11 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Tue, 15 Jun 2021 at 00:27, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > It doesn't seem avoidable. But I'm surprised you are satisfied with
+> > your patch, it doesn't seem to solve your problem, because you'll
+> > never trigger those _Pragmas as you'll just fallback to using your
+> > host architecture. Isn't that right? How did you test your patch?
+>
+> I tested the patch by removing -D__TARGET_ARCH_$(SRCARCH) from
+> BPF_CFLAGS in the Makefile. The pragmas are triggered because the
+> testsuite compiles with -target bpf. This prevents the "host arch"
+> fallback from activating. bpf2go specifies -target bpf(el|eb) as well,
+> so any users will get the _Pragma if they use a new enough
+> bpf_tracing.h.
 
-Shifts by more than insn_bitness are legal in the eBPF ISA; they are
- implementation-defined behaviour, rather than UB, and have been made
- legal for performance reasons.  Each of the JIT backends compiles the
- eBPF shift operations to machine instructions which produce
- implementation-defined results in such a case; the resulting contents
- of the register may be arbitrary but program behaviour as a whole
- remains defined.
-Guard checks in the fast path (i.e. affecting JITted code) will thus
- not be accepted.
-The case of division by zero is not truly analogous, as division
- instructions on many of the JIT-targeted architectures will raise a
- machine exception / fault on division by zero, whereas (to the best of
- my knowledge) none will do so on an out-of-bounds shift.
-(That said, it would be possible to record from the verifier division
- instructions in the program which are known never to be passed zero as
- divisor, and eliding the fixup patch in those cases.  However, the
- extra complexity may not be worthwhile.)
+Oh, I didn't realize  -target bpf will prevent host architecture
+fallback. In that case we don't need a new #define, cool.
 
-As I understand it, the UBSAN report is coming from the eBPF interpreter,
- which is the *slow path* and indeed on many production systems is
- compiled out for hardening reasons (CONFIG_BPF_JIT_ALWAYS_ON).
-Perhaps a better approach to the fix would be to change the interpreter
- to compute "DST = DST << (SRC & 63);" (and similar for other shifts and
- bitnesses), thus matching the behaviour of most chips' shift opcodes.
-This would shut up UBSAN, without affecting JIT code generation.
+>
+> > >
+> > > Without it we sometimes get an integer cast warning, something about
+> > > an int to void* cast I think?
+> >
+> > hmm.. ok
+>
+> This is the error I get:
+>
+> progs/lsm.c:166:14: warning: cast to 'void *' from smaller integer
+> type 'int' [-Wint-to-void-pointer-cast]
+>         void *ptr = (void *)PT_REGS_PARM1(regs);
+>                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--ed
+oh, ok, but then those zeros probably best to mark as longs, not long
+longs (even thought for BPF it's the same), as (unsigned) long is a
+logical equivalent of a pointer, right?
+
+>
+> --
+> Lorenz Bauer  |  Systems Engineer
+> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+>
+> www.cloudflare.com
