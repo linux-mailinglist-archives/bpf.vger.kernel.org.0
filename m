@@ -2,160 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1633A8BFB
-	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 00:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478AF3A8C3C
+	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 01:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhFOWrB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Jun 2021 18:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhFOWrA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Jun 2021 18:47:00 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87437C061574;
-        Tue, 15 Jun 2021 15:44:54 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id a11so298332wrt.13;
-        Tue, 15 Jun 2021 15:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:to:from:message-id:in-reply-to:references:date:subject;
-        bh=yAsKDxu4OsJzll8QC5S0Yfmf14kqjw1ys0j1yn9M9SA=;
-        b=HS0GT+xpHXhIKqjwQv9QddnB8DnaaY421+5pdBr2Y0YekywQ+WjECT1LtO5VxGjLkU
-         FXXVSEnPu2QAu2ACeEoiFOFFkXTmjPkWkhzQjGoBjHxi3h+F+uoLhWigpA2J2Dp0ph24
-         JqSADk1f8oJaQcVtxqRuXmybcTSfflC/NRZVxuVMrEe6y3TTGIYHCZo+0GCtmF7SXzMx
-         o4IEvD5W1C1WONjEUEJLXUm9joNBBb1/0xlKRk4GdCacQPQ+dcNz/5bCsel3BkPzXe1u
-         +MoM0Fum5vjnBFjXNsxQ8pNiOKnRNK2TpMz6fU89cEiJQ31nvqVaeK4ovKedFbTgjnpK
-         NDOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:to:from:message-id:in-reply-to:references
-         :date:subject;
-        bh=yAsKDxu4OsJzll8QC5S0Yfmf14kqjw1ys0j1yn9M9SA=;
-        b=h20UyP8YqGBMvl5s9JdTCsvPoTYfw+HSQFc6n9FtA/WKJxB5h5TAPJBVqZdRW+Ez4k
-         UBKqB4/yzbAwBZWnxlTDPUsKO7jKwefhAXg7glCd55a95zallcy3m+RdqzguWnHimiZd
-         oOF+4zeCSGxWQqUEbN/MV5ZDIaR+K0uvFkGuS6SseQJwrhoQLZ0AeTUAjcsCbnJUBPgZ
-         aKnUhA4IyoNwX1z+8jXarWWWzb1agVKX3PmSBA80SZdLt/u8Kw4DU9KpzoCq1ZpalmHo
-         QE+MhjYheu997Xj7mFV2n86obSZTat/crUHDQorw1MYotPfjL1ttQFdS95gAnrbHDLd2
-         LROg==
-X-Gm-Message-State: AOAM532QoW7QMGxZmthKiEwg/yZkJ4BZsXIxov4FnjHk/W9vz/sFFOXf
-        I6viAvCzIwH8TFlcGdNfd7A=
-X-Google-Smtp-Source: ABdhPJw/LSBqzOKIGod9rqRZwOqq4UUUOiHo8kr0tNW8SdyA1B5cSD8VfYghOxDTxcnfghCL1uiXaQ==
-X-Received: by 2002:a5d:5585:: with SMTP id i5mr1483433wrv.371.1623797093202;
-        Tue, 15 Jun 2021 15:44:53 -0700 (PDT)
-Received: from localhost ([185.199.80.151])
-        by smtp.gmail.com with ESMTPSA id t82sm139726wmf.22.2021.06.15.15.44.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 15:44:52 -0700 (PDT)
-Cc:     ecree.xilinx@gmail.com,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
-        keescook@chromium.org, yhs@fb.com, dvyukov@google.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        nathan@kernel.org, ndesaulniers@google.com,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
-To:     ebiggers@kernel.org, daniel@iogearbox.net
-From:   "Kurt Manucredo" <fuzzybritches0@gmail.com>
-Message-ID: <31138-26823-curtm@phaethon>
-In-Reply-To: <YMkkr5G6E8lcFymG@gmail.com>
-References: <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com>
- <202106101002.DF8C7EF@keescook>
- <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
- <85536-177443-curtm@phaethon>
- <bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com>
- <YMkAbNQiIBbhD7+P@gmail.com>
- <dbcfb2d3-0054-3ee6-6e76-5bd78023a4f2@iogearbox.net>
- <YMkcYn4dyZBY/ze+@gmail.com>
- <YMkdx1VB0i+fhjAY@gmail.com>
- <4713f6e9-2cfb-e2a6-c42d-b2a62f035bf2@iogearbox.net>
- <YMkkr5G6E8lcFymG@gmail.com>
-Date:   Wed, 16 Jun 2021 00:31:49 +0200
-Subject: Re: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+        id S229898AbhFOXJd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Jun 2021 19:09:33 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39142 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhFOXJc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Jun 2021 19:09:32 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ltI9U-000G8g-Sg; Wed, 16 Jun 2021 01:07:24 +0200
+Received: from [85.7.101.30] (helo=linux-3.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ltI9U-000Eeg-Fg; Wed, 16 Jun 2021 01:07:24 +0200
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+To:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Vlad Buslov <vladbu@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>
+References: <20210528195946.2375109-1-memxor@gmail.com>
+ <CAM_iQpVqVKhK+09Sj_At226mdWpVXfVbhy89As2dai7ip8Nmtw@mail.gmail.com>
+ <20210607033724.wn6qn4v42dlm4j4o@apollo>
+ <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
+ <20210607060724.4nidap5eywb23l3d@apollo>
+ <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
+ <20210608071908.sos275adj3gunewo@apollo>
+ <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+ <20210613025308.75uia7rnt4ue2k7q@apollo>
+ <30ab29b9-c8b0-3b0f-af5f-78421b27b49c@mojatatu.com>
+ <20210613203438.d376porvf5zycatn@apollo>
+ <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <bd18943b-8a0e-be8c-6a99-17f7dfdd3bc4@iogearbox.net>
+Date:   Wed, 16 Jun 2021 01:07:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26202/Tue Jun 15 13:21:24 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 15 Jun 2021 15:07:43 -0700, Eric Biggers <ebiggers@kernel.org> wrote:
+On 6/13/21 11:10 PM, Jamal Hadi Salim wrote:
+> On 2021-06-13 4:34 p.m., Kumar Kartikeya Dwivedi wrote:
+>> On Mon, Jun 14, 2021 at 01:57:16AM IST, Jamal Hadi Salim wrote:
+[...]
+>> Right, also I'm just posting so that the use cases I care about are clear, and
+>> why they are not being fulifilled in some other way. How to do it is ofcourse up
+>> to TC and BPF maintainers, which is why I'm still waiting on feedback from you,
+>> Cong and others before posting the next version.
 > 
-> On Tue, Jun 15, 2021 at 11:54:41PM +0200, Daniel Borkmann wrote:
-> > On 6/15/21 11:38 PM, Eric Biggers wrote:
-> > > On Tue, Jun 15, 2021 at 02:32:18PM -0700, Eric Biggers wrote:
-> > > > On Tue, Jun 15, 2021 at 11:08:18PM +0200, Daniel Borkmann wrote:
-> > > > > On 6/15/21 9:33 PM, Eric Biggers wrote:
-> > > > > > On Tue, Jun 15, 2021 at 07:51:07PM +0100, Edward Cree wrote:
-> > > > > > > 
-> > > > > > > As I understand it, the UBSAN report is coming from the eBPF interpreter,
-> > > > > > >    which is the *slow path* and indeed on many production systems is
-> > > > > > >    compiled out for hardening reasons (CONFIG_BPF_JIT_ALWAYS_ON).
-> > > > > > > Perhaps a better approach to the fix would be to change the interpreter
-> > > > > > >    to compute "DST = DST << (SRC & 63);" (and similar for other shifts and
-> > > > > > >    bitnesses), thus matching the behaviour of most chips' shift opcodes.
-> > > > > > > This would shut up UBSAN, without affecting JIT code generation.
-> > > > > > 
-> > > > > > Yes, I suggested that last week
-> > > > > > (https://lkml.kernel.org/netdev/YMJvbGEz0xu9JU9D@gmail.com).  The AND will even
-> > > > > > get optimized out when compiling for most CPUs.
-> > > > > 
-> > > > > Did you check if the generated interpreter code for e.g. x86 is the same
-> > > > > before/after with that?
-> > > > 
-> > > > Yes, on x86_64 with gcc 10.2.1, the disassembly of ___bpf_prog_run() is the same
-> > > > both before and after (with UBSAN disabled).  Here is the patch I used:
-> > > > 
-> > > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > > > index 5e31ee9f7512..996db8a1bbfb 100644
-> > > > --- a/kernel/bpf/core.c
-> > > > +++ b/kernel/bpf/core.c
-> > > > @@ -1407,12 +1407,30 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
-> > > >   		DST = (u32) DST OP (u32) IMM;	> > >   		CONT;
-> > > > +	/*
-> > > > +	 * Explicitly mask the shift amounts with 63 or 31 to avoid undefined
-> > > > +	 * behavior.  Normally this won't affect the generated code.
-> > 
-> > The last one should probably be more specific in terms of 'normally', e.g. that
-> > it is expected that the compiler is optimizing this away for archs like x86. Is
-> > arm64 also covered by this ... do you happen to know on which archs this won't
-> > be the case?
-> > 
-> > Additionally, I think such comment should probably be more clear in that it also
-> > needs to give proper guidance to JIT authors that look at the interpreter code to
-> > see what they need to implement, in other words, that they don't end up copying
-> > an explicit AND instruction emission if not needed there.
-> 
-> Same result on arm64 with gcc 10.2.0.
-> 
-> On arm32 it is different, probably because the 64-bit shifts aren't native in
-> that case.  I don't know about other architectures.  But there aren't many ways
-> to implement shifts, and using just the low bits of the shift amount is the most
-> logical way.
-> 
-> Please feel free to send out a patch with whatever comment you want.  The diff I
-> gave was just an example and I am not an expert in BPF.
-> 
-> > 
-> > > > +	 */
-> > > > +#define ALU_SHIFT(OPCODE, OP)		> > > +	ALU64_##OPCODE##_X:		> > > +		DST = DST OP (SRC & 63);> > > +		CONT;			> > > +	ALU_##OPCODE##_X:		> > > +		DST = (u32) DST OP ((u32)SRC & 31);	> > > +		CONT;			> > > +	ALU64_##OPCODE##_K:		> > > +		DST = DST OP (IMM & 63);	> > > +		CONT;			> > > +	ALU_##OPCODE##_K:		> > > +		DST = (u32) DST OP ((u32)IMM & 31);	> > > +		CONT;
-> > 
-> > For the *_K cases these are explicitly rejected by the verifier already. Is this
-> > required here nevertheless to suppress UBSAN false positive?
-> > 
-> 
-> No, I just didn't know that these constants are never out of range.  Please feel
-> free to send out a patch that does this properly.
-> 
-The shift-out-of-bounds on syzbot happens in ALU_##OPCODE##_X only. To
-pass the syzbot test, only ALU_##OPCODE##_X needs to be guarded.
+> I look at it from the perspective that if i can run something with
+> existing tc loading mechanism then i should be able to do the same
+> with the new (libbpf) scheme.
 
-This old patch I tested on syzbot puts a check in all four.
-https://syzkaller.appspot.com/text?tag=Patch&x=11f8cacbd00000
+The intention is not to provide a full-blown tc library (that could be subject to a
+libtc or such), but rather to only have libbpf abstract the tc related API that is
+most /relevant/ for BPF program development and /efficient/ in terms of execution in
+fast-path while at the same time providing a good user experience from the API itself.
 
-https://syzkaller.appspot.com/bug?id=edb51be4c9a320186328893287bb30d5eed09231
+That is, simple to use and straight forward to explain to folks with otherwise zero
+experience of tc. The current implementation does all that, and from experience with
+large BPF programs managed via cls_bpf that is all that is actually needed from tc
+layer perspective. The ability to have multi programs (incl. priorities) is in the
+existing libbpf API as well.
 
-thanks,
-
-kind regards
-
-Kurt Manucredo
+Best,
+Daniel
