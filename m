@@ -2,88 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585EB3A8C7F
-	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 01:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB08A3A8C84
+	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 01:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbhFOXcA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Jun 2021 19:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
+        id S230331AbhFOXcW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Jun 2021 19:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhFOXb7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:31:59 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD957C061574;
-        Tue, 15 Jun 2021 16:29:53 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id d7so219966edx.0;
-        Tue, 15 Jun 2021 16:29:53 -0700 (PDT)
+        with ESMTP id S229898AbhFOXcU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Jun 2021 19:32:20 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C92CC061574;
+        Tue, 15 Jun 2021 16:30:15 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id t8so246989ybt.10;
+        Tue, 15 Jun 2021 16:30:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dMu6Ebpu3T3ImGY3emMLa/ibwH7Jz5A6ZlvdLonFw94=;
-        b=JQbC59Bt9iZ2ofmMkX7Kl9HL7wZA/xVTJDwwp0xpvuMwo3pba02UrjnNg9d0zCKfaD
-         4JHyjgm+fvkt0QAozm0OGqxqsBPAGJoSnlb0bIQz6uj7Z72RNQMiPbdy4MfmqnmL38Aj
-         Ou986wZdevoaPTBs4B//uhLDseLwl1c6b6gZY3zloQsCd13iAANAM4/dG8lO4whN3fGu
-         NlR4704c85iQ3g17AcdaSdqFJN1NK2k1NI1c3xmTCPPdqhOu44itOnKwBlvaScfLYepe
-         3rhHqQqlMbSbSL+BKlzLolRqG6uTd/1idpXMkHRjbDL9LeQPt4EZXzoz/2vB7Q+IWvf1
-         GSvg==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=lrNuChciOT1m4Cxcoui/LhFfctlKythbyRrQh5z2mbE=;
+        b=bDvq7IfMbWYNuleCjIA4lWoaCodbP/05wErrBm3s0LseDpTY7hVSU3/DOkAmi/xm9f
+         NXPfHBhyilJtzKEVtnnMwUGohAdpGnQwqdYU0HAIOBT2VuTmKp9YcHtLKgv8K7R11Os5
+         MfwfIKJCXeExVNCa3vTlZ1QgIipDY6QKMcyrma/1LhZ1X0VBVcWEYu77RukIa+OogkJ1
+         DUIxeDpBE6H4pn4TYM3+UtgYFTkYDC06re86EPQfSo9OcUhISLQ+LmXVZqePRrbpKt++
+         sMGfT1yYAklt5DuBS0S9d00aVDM5HPeSS3/pHvwJgKnv76OWoTooQHYT5GS7GTadU/nY
+         WXvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dMu6Ebpu3T3ImGY3emMLa/ibwH7Jz5A6ZlvdLonFw94=;
-        b=CQ68oiAatZjpOyxArxpXtU3WGljyxGdn0VN0pSSEdE+s2mJEpc2Hju3RW0JtIaftXh
-         oK1wcdysDTVY0emR9OJAMZjbJ08TMtcvhnT/gACBZTPz2gymyitatimTvF8FnQzpahUj
-         UzmlbHh+WTzmdqBN8Z/P6bTT5ZrmZs5Ca8nfA5kmcfRhf1qc3RcAI17oEP67oH+ME+ls
-         Un7HCliy6Lh34WaNNqf1TDGHuwuGcbqWnMHzXMtkjbiVQdB4gBzfLvLCL05M6qs/tPCv
-         CAfTRUq5d9e3UWCCqFfYSwPhnqzmajlqv8S/t6rRjhA0ml7KzCEA+k/88P9/4o8pZv5k
-         86fg==
-X-Gm-Message-State: AOAM531IKMWEtirigwA2tOYFoiKWZm1RW7I9T7c3yOiYlkT24nHCgiql
-        gU1ALuuywnI8VHF2UtJ62sQ=
-X-Google-Smtp-Source: ABdhPJyr9pJPFLX4drWnvJMzUHLNg4ImgihZ1B8LGDBTk8opezpzsSyrD4Z2oro8ZkFoOcKUrN15wQ==
-X-Received: by 2002:aa7:d344:: with SMTP id m4mr667424edr.281.1623799792558;
-        Tue, 15 Jun 2021 16:29:52 -0700 (PDT)
-Received: from skbuf ([188.26.224.68])
-        by smtp.gmail.com with ESMTPSA id dh18sm313170edb.92.2021.06.15.16.29.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 16:29:52 -0700 (PDT)
-Date:   Wed, 16 Jun 2021 02:29:49 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
-        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
-        ap420073@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        mkl@pengutronix.de, linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
-        a.fatoum@pengutronix.de, atenart@kernel.org,
-        alexander.duyck@gmail.com, hdanton@sina.com, jgross@suse.com,
-        JKosina@suse.com, mkubecek@suse.cz, bjorn@kernel.org,
-        alobakin@pm.me
-Subject: Re: [PATCH net-next v2 0/3] Some optimization for lockless qdisc
-Message-ID: <20210615232949.2ntjv5kh3g7z2ua2@skbuf>
-References: <1622684880-39895-1-git-send-email-linyunsheng@huawei.com>
- <20210603113548.2d71b4d3@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <20210608125349.7azp7zeae3oq3izc@skbuf>
- <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=lrNuChciOT1m4Cxcoui/LhFfctlKythbyRrQh5z2mbE=;
+        b=W0qEnZbr/bdBe8R3QTfKRwRizJx+8fDuDvehuncLiu0gGpSXVFOwjwLnG8/Fas6m78
+         Ve4gDRGFxVV8w2SjENX6XseVXOkf4Ius7VBAJbA99Xx3nJQf1gdGcpgxLV4D8eSBe3Mn
+         3rjTpMh4uCO81jZVTmAOtiOp6OLlLSaXp1UdiM4ghQsiqCg8ukm4wsGIwmtQ/rPffpE4
+         aKi8Bc5XQ8o6gGcF1tp2g22tz9pZg/qK7J/Y5BKLWVsKGYHySw+9rfUPYmt/hGgXQpbN
+         3Gn9/nl+udkgBQl+cqmPrgi+nNPqHsWS14w4QK0JN0AXZMOE2h+IGBpqvEAWCKABh4Gd
+         D+pw==
+X-Gm-Message-State: AOAM530G5MvA1kl9tN88UCuaJQqH3KqXc+mJ4r8EeRj7u6D6/g7N0cWC
+        IizxFLFlHpteU09Sc07/J+n1lBnliDCLTpgAMkc1T2QL+oZIJw==
+X-Google-Smtp-Source: ABdhPJwLRWFpQ86AvbMesovS7NROr/kJQOgojlOcmVZJ6ZwczvXeBBpecT1ZXWz1AD/jMgn5VW6tQECoPyBhb6b1034=
+X-Received: by 2002:a25:7246:: with SMTP id n67mr2242758ybc.510.1623799814611;
+ Tue, 15 Jun 2021 16:30:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 15 Jun 2021 16:30:03 -0700
+Message-ID: <CAEf4BzZnZN2mt4+5F-00ggO9YHWrL3Jru_u3Qt2JJ+SMkHwg+w@mail.gmail.com>
+Subject: latest pahole breaks libbpf CI and let's talk about staging
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org
+Cc:     siudin@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 09:31:39AM +0800, Yunsheng Lin wrote:
-> By the way, I did not pick up your "Tested-by" from previous
-> RFC version because there is some change between those version
-> that deserves a retesting. So it would be good to have a
-> "Tested-by" from you after confirming no out of order happening
-> for this version, thanks.
+Hey Arnaldo,
 
-Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com> # flexcan
+Seems like de3a7f912559 ("btf_encoder: Reduce the size of encode_cu()
+by moving function encoding to separate method") break two selftests
+in libbpf CI (see [0]). Please take a look. I suspect some bad BTF,
+because both tests rely on kernel BTF info.
+
+You've previously asked about staging pahole changes. Did you make up
+your mind about branch names and the process overall? Seems like a
+good chance to bring this up ;-P
+
+  [0] https://travis-ci.com/github/libbpf/libbpf/jobs/514329152
+
+-- Andrii
