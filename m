@@ -2,124 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958653A72CA
-	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 02:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756BD3A73A8
+	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 04:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhFOAIe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Jun 2021 20:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229536AbhFOAIe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Jun 2021 20:08:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A705A60FEA;
-        Tue, 15 Jun 2021 00:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623715590;
-        bh=RMii/VLLTCvCVHMFN18fdNCg3G9EDAUjvrxZCNvuRiU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eM8VGoGxy9VEGIi37hrK9bCogcybs+WFEIp5s1KM+D/nkUtkRhZzJglMixPb2Ywgl
-         PUkeX6o/AR2d8OKT5cHbsUaSosbRVnxWEbVw7yjBukm8OQFPK9ms3ZgrCRvUVPFPlY
-         RuTguB4fu4PaN7A5ks+skd9K49g7t0p1krCpj5F4LJ2n3kAlcocWih3rYL5HIENKbK
-         p1bG0cvT0aycIKs2cLLqKZ5URSmXYcT7Jc9yXbU6bybHqQRBzp9rSvnu/APbQZ1HCG
-         K1+IoIq8qcOPAI4JryPVkPuWVXQO1lvITATzvQVUWfBrxULh+Zq+PmDfkLE/o6H72m
-         OOzw932zSr3fQ==
-Date:   Tue, 15 Jun 2021 09:06:26 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>, ast@kernel.org,
-        bpf@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, kernel-team@fb.com,
-        kuba@kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        Abhishek Sagar <sagar.abhishek@gmail.com>, tglx@linutronix.de,
-        X86 ML <x86@kernel.org>, yhs@fb.com
-Subject: Re: [PATCH -tip v7 03/13] kprobes: treewide: Remove
- trampoline_address from kretprobe_trampoline_handler()
-Message-Id: <20210615090626.f2b536ce7c5cf8b31264451c@kernel.org>
-In-Reply-To: <1623685371.y5qy4nxer2.naveen@linux.ibm.com>
-References: <162209754288.436794.3904335049560916855.stgit@devnote2>
-        <162209757191.436794.12654958417415894884.stgit@devnote2>
-        <1623685371.y5qy4nxer2.naveen@linux.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231691AbhFOCZa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Jun 2021 22:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231532AbhFOCZ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Jun 2021 22:25:27 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACD0C061574;
+        Mon, 14 Jun 2021 19:23:23 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id g12so10165108qtb.2;
+        Mon, 14 Jun 2021 19:23:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eN4jLDO5ZyjqYLbpt/gFWZcY5yGAo59kBcRM9OErJwo=;
+        b=d7YB4179DjPirCANDqeGzyc6MZHJ/65nBoRHl77NvSByKmVk4xerbbil1ajiODX+/j
+         HLWlD30eRLywnGp7u8x2Aq0XESnxAbtBDwO8VUjIozabHJgI5AvqaWxke0tm8Ig6KWUO
+         +3knEQDx88GLh/JhV22exhNJtfpD5virR/c33i5Uwf7sVGl/T3a8zfiS+1pRSk2jC0lE
+         W6t2yBEu8F19IKHxWWLMJiUd/tWxhv9cV1BYz8NDWuZBAomJV+J88C6gY0XT+iUQ3sWg
+         iIlIMB7ARt1CLsn8VPZlKaGEWTryuFWtyw8hzFXmUI0cLQ6XmTzWJdX3nEYBR2azMTDk
+         cu7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eN4jLDO5ZyjqYLbpt/gFWZcY5yGAo59kBcRM9OErJwo=;
+        b=H4Y7yLXHtZ5zFt7uVB/p7SAaMJQNyozgm8IpoVwuWJlWJ/d6T2NTNXLxkXWyqxNqdC
+         slnve2SCuq3Ek6xZMtIWsVOD4XGUBGkKQtMnfU1P3urroHY7pVEeWwsQoVMQHS2b1hlk
+         qoU+GOzZ/UefiMG9qni8RpYCwVzms6+Xuq99KzFKtYYVEv7sw4TP0Vxsbwzv9gll82uQ
+         Th0uNdc8CrPNCm24vsoBuvc4OPgY4gEU2UAJYS8zzTv5JWsj4xvUipP0CoiHpvbqEPYo
+         i5yhbXoDjgLZOsFhSNDTSDhkUhwgz4qGrjrfWcInHjhW2GELz024KYWFgtsWQndwvizm
+         5ElQ==
+X-Gm-Message-State: AOAM532+GlwNQtG5LwN4UDX6mED9tuHnLtwWGluveLzsGPZ9sMRLMOmM
+        p2CXHRZbWuFoLCvrLbwvT4ZnfF3m5PgcGw==
+X-Google-Smtp-Source: ABdhPJzYC0/49AofL9k7eso6yPXhOa80WdN6e6H0bNtvrtxbrI9xhZzOPrHUUXJQFA2jGakqsnhAYQ==
+X-Received: by 2002:a37:a1d5:: with SMTP id k204mr19816231qke.300.1623723235086;
+        Mon, 14 Jun 2021 19:13:55 -0700 (PDT)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:e9a1:5f1d:df88:4f3c])
+        by smtp.gmail.com with ESMTPSA id t15sm10774497qtr.35.2021.06.14.19.13.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 19:13:54 -0700 (PDT)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: [PATCH RESEND bpf v3 0/8] sock_map: some bug fixes and improvements
+Date:   Mon, 14 Jun 2021 19:13:34 -0700
+Message-Id: <20210615021342.7416-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 14 Jun 2021 21:16:26 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.ibm.com> wrote:
+From: Cong Wang <cong.wang@bytedance.com>
 
-> Hi Masami,
-> 
-> Masami Hiramatsu wrote:
-> > Remove trampoline_address from kretprobe_trampoline_handler().
-> > Instead of passing the address, kretprobe_trampoline_handler()
-> > can use new kretprobe_trampoline_addr().
-> > 
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > Tested-by: Andrii Nakryik <andrii@kernel.org>
-> > ---
-> >  Changes in v3:
-> >    - Remove wrong kretprobe_trampoline declaration from
-> >      arch/x86/include/asm/kprobes.h.
-> >  Changes in v2:
-> >    - Remove arch_deref_entry_point() from comment.
-> > ---
-> >  arch/arc/kernel/kprobes.c          |    2 +-
-> >  arch/arm/probes/kprobes/core.c     |    3 +--
-> >  arch/arm64/kernel/probes/kprobes.c |    3 +--
-> >  arch/csky/kernel/probes/kprobes.c  |    2 +-
-> >  arch/ia64/kernel/kprobes.c         |    5 ++---
-> >  arch/mips/kernel/kprobes.c         |    3 +--
-> >  arch/parisc/kernel/kprobes.c       |    4 ++--
-> >  arch/powerpc/kernel/kprobes.c      |    2 +-
-> >  arch/riscv/kernel/probes/kprobes.c |    2 +-
-> >  arch/s390/kernel/kprobes.c         |    2 +-
-> >  arch/sh/kernel/kprobes.c           |    2 +-
-> >  arch/sparc/kernel/kprobes.c        |    2 +-
-> >  arch/x86/include/asm/kprobes.h     |    1 -
-> >  arch/x86/kernel/kprobes/core.c     |    2 +-
-> >  include/linux/kprobes.h            |   18 +++++++++++++-----
-> >  kernel/kprobes.c                   |    3 +--
-> >  16 files changed, 29 insertions(+), 27 deletions(-)
-> > 
-> 
-> <snip>
-> 
-> > diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-> > index d65c041b5c22..65dadd4238a2 100644
-> > --- a/include/linux/kprobes.h
-> > +++ b/include/linux/kprobes.h
-> > @@ -205,15 +205,23 @@ extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
-> >  				   struct pt_regs *regs);
-> >  extern int arch_trampoline_kprobe(struct kprobe *p);
-> >  
-> > +void kretprobe_trampoline(void);
-> > +/*
-> > + * Since some architecture uses structured function pointer,
-> > + * use dereference_function_descriptor() to get real function address.
-> > + */
-> > +static nokprobe_inline void *kretprobe_trampoline_addr(void)
-> > +{
-> > +	return dereference_function_descriptor(kretprobe_trampoline);
-> 
-> I'm afraid this won't work correctly. For kernel functions, please use 
-> dereference_kernel_function_descriptor() which checks if the function 
-> has a descriptor before dereferencing it.
+This patchset contains a few bug fixes and improvements for sock_map.
 
-Oops, there is *kernel_function* version, I didn't notice that.
-Thank you for reviewing! I'll fix that.
+Patch 1 improves recvmsg() accuracy for UDP, patch 2 improves UDP
+non-blocking read() by retrying on EAGAIN. With both of them, the
+failure rate of the UDP test case goes down from 10% to 1%.
 
-> 
-> 
-> Thanks,
-> Naveen
-> 
+Patch 3 is memory leak fix I posted, no change since v1. The rest
+patches address similar memory leaks or improve error handling,
+including one increases sk_drops counter for error cases. Please
+check each patch description for more details.
 
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+---
+Resend this patchset as it is lost after John's review.
+
+v3: add another bug fix as patch 4
+    update patch 5 accordingly
+    address John's review on the last patch
+    fix a few typos in patch descriptions
+
+v2: group all patches together
+    set max for retries of EAGAIN
+
+Cong Wang (8):
+  skmsg: improve udp_bpf_recvmsg() accuracy
+  selftests/bpf: Retry for EAGAIN in udp_redir_to_connected()
+  udp: fix a memory leak in udp_read_sock()
+  skmsg: clear skb redirect pointer before dropping it
+  skmsg: fix a memory leak in sk_psock_verdict_apply()
+  skmsg: teach sk_psock_verdict_apply() to return errors
+  skmsg: pass source psock to sk_psock_skb_redirect()
+  skmsg: increase sk->sk_drops when dropping packets
+
+ include/linux/skmsg.h                         |  2 -
+ net/core/skmsg.c                              | 82 +++++++++----------
+ net/ipv4/tcp_bpf.c                            | 24 +++++-
+ net/ipv4/udp.c                                |  2 +
+ net/ipv4/udp_bpf.c                            | 47 +++++++++--
+ .../selftests/bpf/prog_tests/sockmap_listen.c |  7 +-
+ 6 files changed, 112 insertions(+), 52 deletions(-)
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.25.1
+
