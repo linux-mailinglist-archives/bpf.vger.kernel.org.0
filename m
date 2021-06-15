@@ -2,91 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90DA3A8415
-	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 17:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B483A85D7
+	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 17:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhFOPh3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Jun 2021 11:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbhFOPh2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Jun 2021 11:37:28 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18BFC06175F
-        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 08:35:22 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id f84so21205157ybg.0
-        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 08:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/TW++UaYH676wBlxAmC5epOAFhyC7J56lUkKh39lO7w=;
-        b=i9s9QuGtGYUZIpHX1mDsmvAli3APV1bnEClSUAQuQkTp6lMS5FBJ3rNm6CHo/TmTky
-         cCSQllfsfxI0Otq8jBh0LSthABYKt5wtuPiiV94lS9FfZfv4r1lfLRoVhAb7GhxdccOq
-         G+3zUsMBML7/+CbFx0w6DlyLp7QCEhjfDX9USfwbFNXfrvhhT9Ph6kuW73CclrBFekDG
-         6BI5skkWF91+i2He/zCobWaFuTzJi/4OTiOzg3WVcbBR4RUUJAl3+6IuctcpyAph+NoL
-         xQkAhb5ENwOuhvhLnBxRTUtcEhe9pcpXPudD9XW/yYFi4NZO7+c3CxcpzDQrKKgMYm/k
-         Bscg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/TW++UaYH676wBlxAmC5epOAFhyC7J56lUkKh39lO7w=;
-        b=Ce2lBSNx/w//VBDhWv0ERVxpiR1T/03NULeOScAFnLvqURje2XJiPpz8LckCwo5Jb4
-         o6okyGuNtx6EzoEf78P2tpKx0KH0xQGLbYihwcOVSBBGdWSGyW8QN7qZiPKwj4NYoV2F
-         ypE71+huQaZaMUDfRaPAsdVZS6x4x1trWzDnp6unQ5dQyFssdzWpAZJY2x7FN60v8yfB
-         VcsJKlx6SUWx7ycqYbC5wJ+Uvvz/zwkPfbNvd3QDWIXeY/gMVDq2jwDnDbXDe6cF69t0
-         N6z45nsAA3C7d+0BC9bQsvfOCBYJ+Sbx+9Xm8qAJ4EYzZ60zuZIQR9o+svC6LC7czWso
-         dxdw==
-X-Gm-Message-State: AOAM530s8DKK9sFrTB6DGG4oyQU2LO1VlXp8BlOjBhv1RTX0iOok8USc
-        5i/1cTy+nleQ6/xyTxawuQDeWL9ONV71pqXVV89LJg==
-X-Google-Smtp-Source: ABdhPJyU4VoPOerwCdHdI/jGGLIbnbwrAkYWkiCKScaeblfZCVDF0S0kXo5eZbi0qJoHTNMn0naDL9ROsuN4+BIxc08=
-X-Received: by 2002:a25:1fc6:: with SMTP id f189mr33298185ybf.452.1623771321743;
- Tue, 15 Jun 2021 08:35:21 -0700 (PDT)
+        id S232654AbhFOQBb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Jun 2021 12:01:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232286AbhFOQAs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Jun 2021 12:00:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6768061476
+        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 15:58:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623772723;
+        bh=amEblgIPT1NfY1RZGQzuUahXJIDk2dfbV3nBEFhE7/w=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=R5CyU/i+EEDtR/FXBiCfvebJl/IATdDljHeKhQEF/vBqVBhDXfAvVSitX0HRANXVa
+         ti4xarIX71/mUPG9kdc6Bxz5+mmPWg0g12bZQioNe45qMd6Yx/TgoaHwvggFu0eYQL
+         PgxOMQrmYe0QISCWHUmitfPVwPYnIsMd9dtxHyliGpV075nz+aUOH7dinXQh8pE9+m
+         4aYBeutetDuPMcjH4Hg7dfVD9IJb1ctMILeMGXPBVzrD7IqXGRIwfgO2ZDcBxQRTGH
+         AD3CXMvlb6XxFFzsU5zaZXre8i4Cpr4iOK82UVUfsOhNPiYmhP0dLZTHwByLwsuswo
+         HBoTN2FJP87KQ==
+Received: by mail-lf1-f54.google.com with SMTP id r5so27887236lfr.5
+        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 08:58:43 -0700 (PDT)
+X-Gm-Message-State: AOAM533IJLPjv1vsb4i0L9eea6MsuPD66FEfSgApvmPdltAtofYQyWZ5
+        3UDEZJ5bPNiFp1Zp7Fzqkx5Qin0sHo2+UeEwBfcWXw==
+X-Google-Smtp-Source: ABdhPJy6LjMUXH32Os0U6qRL0T+wcTJANLVivRLfkSFZCyx5prOKf6R6m6+QtJbjxeEJHA0DAPb7UpfU4KYakpWznUE=
+X-Received: by 2002:ac2:44bc:: with SMTP id c28mr72767lfm.9.1623772721707;
+ Tue, 15 Jun 2021 08:58:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210612123224.12525-1-kuniyu@amazon.co.jp>
-In-Reply-To: <20210612123224.12525-1-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 15 Jun 2021 17:35:10 +0200
-Message-ID: <CANn89iLxZxGXaVxLkxTkmNPF7XZdb8DKGMBFuMJLBdtrJRbrsA@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <CAGG-pUTpppu-voYuT81LiTMAUA5oAWwnAwYQVAhyPwj3CwnZPA@mail.gmail.com>
+ <CAEf4BzZkK9X2RadSYUWV5oh960iwaw3y5EKr7zu8WZ7XnRYz6g@mail.gmail.com>
+ <CAHn8xc==x92fXpOM42-FJ_ondhGPdMOrTmgYr3K=w8WvZqXEVQ@mail.gmail.com>
+ <CACYkzJ59tvKKxaG9S+QLVbC=4szbFjouDUDaaTCNUytQBT7nSg@mail.gmail.com>
+ <CAGG-pUQTTBtqJgMo07bFdJS-nKBZDi9UzSYVQ200tsKP6iuTVQ@mail.gmail.com>
+ <CACYkzJ5odOMQzcbfnvJmW52uxs50FY1=kSbADvD4UCF9fh3X5w@mail.gmail.com> <CAGG-pURQ4hxQe8w3zdW4y1hBRn1sGikB_5oodid_NHaw_U=9iw@mail.gmail.com>
+In-Reply-To: <CAGG-pURQ4hxQe8w3zdW4y1hBRn1sGikB_5oodid_NHaw_U=9iw@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 15 Jun 2021 17:58:30 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ5dgxdNJK6vjdfA37PX9zkDpS1QcZgUTdO4ywzkM4-6fQ@mail.gmail.com>
+Message-ID: <CACYkzJ5dgxdNJK6vjdfA37PX9zkDpS1QcZgUTdO4ywzkM4-6fQ@mail.gmail.com>
+Subject: Re: kernel bpf test_progs - vm wrong libc version
+To:     "Geyslan G. Bem" <geyslan@gmail.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 12, 2021 at 2:32 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+On Tue, Jun 15, 2021 at 4:57 PM Geyslan G. Bem <geyslan@gmail.com> wrote:
 >
+> On Tue, 15 Jun 2021 at 11:33, KP Singh <kpsingh@kernel.org> wrote:
+> >
+> > On Tue, Jun 15, 2021 at 2:34 PM Geyslan G. Bem <geyslan@gmail.com> wrote:
+> > >
+> > > On Tue, 15 Jun 2021 at 06:58, KP Singh <kpsingh@kernel.org> wrote:
+> > > >
+> > > > On Tue, Jun 15, 2021 at 10:06 AM Jussi Maki <joamaki@gmail.com> wrote:
+> > > > >
+> > > > > On Tue, Jun 15, 2021 at 8:28 AM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > > It seems kind of silly to update our perfectly working image just
+> > > > > > because a new version of glibc was released. Is there any way for you
+> > > > > > to down-grade glibc or build it in some compatibility mode, etc?
+> > > > > > selftests don't really rely on any bleeding-edge features of glibc.
+> > > > >
+> > > > > I've also hit this issue as Ubuntu 21.04 ships with glibc 2.33. I
+> > > > > ended up solving it the hard way by rebuilding the image (I needed few
+> > > > > other tools at the time anyway). Definitely agree it's a bit silly if
+> > > > > we'd need to bump the image every time there's a new glibc version out
+> > > > > there. I did try and see if there's a way to build against newer
+> > > > > glibc, but target older versions and I didn't find a way to do that.
+> > > > > Would statically linking test-progs be an option to avoid this kind of
+> > > > > breakage in the future?
+> > > >
+> > > > I think static linking tests_progs is the only real way one can solve this.
+> > > > Even if we keep updating the image, there will still be users that will hit
+> > > > glibc version issues.
+> > >
+> > > I agree once the image remains static.
+> > >
+> > > >
+> > > > Andrii, Maybe we can have a mode for vmtest.sh can build test_progs
+> > > > statically?
+> > > >
+> > > > maybe something like:
+> > >
+> > > These changes generates the output:
+> > >
+> > >   BINARY   test_maps
+> > > /usr/bin/ld: cannot find -lcap
+> > > collect2: error: ld returned 1 exit status
+> > > make: *** [Makefile:492:
+> > > /home/uzu/code/bpf-next/tools/testing/selftests/bpf/test_maps] Error 1
+> > >
+> > > libcap and acl are installed
+> >
+> > Are you sure you have libcap-dev installed? I don't see this on my system.
+>
+> As Arch packages maintain headers, I suppose libcap has everything.
+>
+> $ yay -F libcap.so
+> core/libcap 2.49-1 [installed: 2.50-2]
+>     usr/lib/libcap.so
+> multilib/lib32-libcap 2.49-1 [installed: 2.50-1]
+>     usr/lib32/libcap.so
+>
+> $ yay -F cap-ng.h
+> core/libcap-ng 0.8.2-1 [installed]
+>     usr/include/cap-ng.h
+>
+> $ ls -l /usr/include/cap*
+> -rw-r--r-- 1 root root 3402 dez  9  2020 /usr/include/cap-ng.h
+>
+> $ ls -l /usr/lib/libcap*
+> lrwxrwxrwx 1 root root    18 dez  9  2020 /usr/lib/libcap-ng.so ->
+> libcap-ng.so.0.0.0
+> lrwxrwxrwx 1 root root    18 dez  9  2020 /usr/lib/libcap-ng.so.0 ->
+> libcap-ng.so.0.0.0
+> -rwxr-xr-x 1 root root 26424 dez  9  2020 /usr/lib/libcap-ng.so.0.0.0
+> lrwxrwxrwx 1 root root    11 jun  7 14:25 /usr/lib/libcap.so -> libcap.so.2
+> lrwxrwxrwx 1 root root    14 jun  7 14:25 /usr/lib/libcap.so.2 -> libcap.so.2.50
+> -rw-r--r-- 1 root root 38704 jun  7 14:25 /usr/lib/libcap.so.2.50
+>
+> https://archlinux.org/packages/core/x86_64/libcap/
+> https://archlinux.org/packages/core/x86_64/libcap-ng/
+>
+> Anything, please contact me. I want to help.
 
->
->
-> Changelog:
->  v8:
->   * Make reuse const in reuseport_sock_index()
->   * Don't use __reuseport_add_sock() in reuseport_alloc()
->   * Change the arg of the second memcpy() in reuseport_grow()
->   * Fix coding style to use goto in reuseport_alloc()
->   * Keep sk_refcnt uninitialized in inet_reqsk_clone()
->   * Initialize ireq_opt and ipv6_opt separately in reqsk_migrate_reset()
->
->   [ This series does not include a stats patch suggested by Yuchung Cheng
->     not to drop Acked-by/Reviewed-by tags and save reviewer's time. I will
->     post the patch as a follow up after this series is merged. ]
->
+Apologies I missed adding the list in my previous reply.
 
-For the whole series.
+I think your distribution is missing static libcap
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+$ dpkg -L libcap-dev
+
+[...]
+
+/usr/lib/x86_64-linux-gnu
+/usr/lib/x86_64-linux-gnu/libcap.a
+/usr/lib/x86_64-linux-gnu/libpsx.a
+
+[...]
+
+It seems like arch does not have them:
+
+https://bbs.archlinux.org/viewtopic.php?id=245303
+
+and they don't plan to either. So you can either build the library locally
+or possibly move to a distribution that provides static linking.
+
+[incase we decide to use the static linking for vmtest.sh]
