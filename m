@@ -2,94 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478AF3A8C3C
-	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 01:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585EB3A8C7F
+	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 01:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhFOXJd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Jun 2021 19:09:33 -0400
-Received: from www62.your-server.de ([213.133.104.62]:39142 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbhFOXJc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Jun 2021 19:09:32 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ltI9U-000G8g-Sg; Wed, 16 Jun 2021 01:07:24 +0200
-Received: from [85.7.101.30] (helo=linux-3.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ltI9U-000Eeg-Fg; Wed, 16 Jun 2021 01:07:24 +0200
-Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
-To:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Vlad Buslov <vladbu@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        Marcelo Ricardo Leitner <mleitner@redhat.com>
-References: <20210528195946.2375109-1-memxor@gmail.com>
- <CAM_iQpVqVKhK+09Sj_At226mdWpVXfVbhy89As2dai7ip8Nmtw@mail.gmail.com>
- <20210607033724.wn6qn4v42dlm4j4o@apollo>
- <CAM_iQpVCnG8pSci2sMbJ1B5YE-y=reAUp82itgrguecyNBCUVQ@mail.gmail.com>
- <20210607060724.4nidap5eywb23l3d@apollo>
- <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
- <20210608071908.sos275adj3gunewo@apollo>
- <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
- <20210613025308.75uia7rnt4ue2k7q@apollo>
- <30ab29b9-c8b0-3b0f-af5f-78421b27b49c@mojatatu.com>
- <20210613203438.d376porvf5zycatn@apollo>
- <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <bd18943b-8a0e-be8c-6a99-17f7dfdd3bc4@iogearbox.net>
-Date:   Wed, 16 Jun 2021 01:07:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230043AbhFOXcA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Jun 2021 19:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhFOXb7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Jun 2021 19:31:59 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD957C061574;
+        Tue, 15 Jun 2021 16:29:53 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id d7so219966edx.0;
+        Tue, 15 Jun 2021 16:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dMu6Ebpu3T3ImGY3emMLa/ibwH7Jz5A6ZlvdLonFw94=;
+        b=JQbC59Bt9iZ2ofmMkX7Kl9HL7wZA/xVTJDwwp0xpvuMwo3pba02UrjnNg9d0zCKfaD
+         4JHyjgm+fvkt0QAozm0OGqxqsBPAGJoSnlb0bIQz6uj7Z72RNQMiPbdy4MfmqnmL38Aj
+         Ou986wZdevoaPTBs4B//uhLDseLwl1c6b6gZY3zloQsCd13iAANAM4/dG8lO4whN3fGu
+         NlR4704c85iQ3g17AcdaSdqFJN1NK2k1NI1c3xmTCPPdqhOu44itOnKwBlvaScfLYepe
+         3rhHqQqlMbSbSL+BKlzLolRqG6uTd/1idpXMkHRjbDL9LeQPt4EZXzoz/2vB7Q+IWvf1
+         GSvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dMu6Ebpu3T3ImGY3emMLa/ibwH7Jz5A6ZlvdLonFw94=;
+        b=CQ68oiAatZjpOyxArxpXtU3WGljyxGdn0VN0pSSEdE+s2mJEpc2Hju3RW0JtIaftXh
+         oK1wcdysDTVY0emR9OJAMZjbJ08TMtcvhnT/gACBZTPz2gymyitatimTvF8FnQzpahUj
+         UzmlbHh+WTzmdqBN8Z/P6bTT5ZrmZs5Ca8nfA5kmcfRhf1qc3RcAI17oEP67oH+ME+ls
+         Un7HCliy6Lh34WaNNqf1TDGHuwuGcbqWnMHzXMtkjbiVQdB4gBzfLvLCL05M6qs/tPCv
+         CAfTRUq5d9e3UWCCqFfYSwPhnqzmajlqv8S/t6rRjhA0ml7KzCEA+k/88P9/4o8pZv5k
+         86fg==
+X-Gm-Message-State: AOAM531IKMWEtirigwA2tOYFoiKWZm1RW7I9T7c3yOiYlkT24nHCgiql
+        gU1ALuuywnI8VHF2UtJ62sQ=
+X-Google-Smtp-Source: ABdhPJyr9pJPFLX4drWnvJMzUHLNg4ImgihZ1B8LGDBTk8opezpzsSyrD4Z2oro8ZkFoOcKUrN15wQ==
+X-Received: by 2002:aa7:d344:: with SMTP id m4mr667424edr.281.1623799792558;
+        Tue, 15 Jun 2021 16:29:52 -0700 (PDT)
+Received: from skbuf ([188.26.224.68])
+        by smtp.gmail.com with ESMTPSA id dh18sm313170edb.92.2021.06.15.16.29.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jun 2021 16:29:52 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 02:29:49 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
+        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
+        ap420073@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
+        mkl@pengutronix.de, linux-can@vger.kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
+        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
+        a.fatoum@pengutronix.de, atenart@kernel.org,
+        alexander.duyck@gmail.com, hdanton@sina.com, jgross@suse.com,
+        JKosina@suse.com, mkubecek@suse.cz, bjorn@kernel.org,
+        alobakin@pm.me
+Subject: Re: [PATCH net-next v2 0/3] Some optimization for lockless qdisc
+Message-ID: <20210615232949.2ntjv5kh3g7z2ua2@skbuf>
+References: <1622684880-39895-1-git-send-email-linyunsheng@huawei.com>
+ <20210603113548.2d71b4d3@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <20210608125349.7azp7zeae3oq3izc@skbuf>
+ <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26202/Tue Jun 15 13:21:24 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64aaa011-41a3-1e06-af02-909ff329ef7a@huawei.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/13/21 11:10 PM, Jamal Hadi Salim wrote:
-> On 2021-06-13 4:34 p.m., Kumar Kartikeya Dwivedi wrote:
->> On Mon, Jun 14, 2021 at 01:57:16AM IST, Jamal Hadi Salim wrote:
-[...]
->> Right, also I'm just posting so that the use cases I care about are clear, and
->> why they are not being fulifilled in some other way. How to do it is ofcourse up
->> to TC and BPF maintainers, which is why I'm still waiting on feedback from you,
->> Cong and others before posting the next version.
-> 
-> I look at it from the perspective that if i can run something with
-> existing tc loading mechanism then i should be able to do the same
-> with the new (libbpf) scheme.
+On Wed, Jun 09, 2021 at 09:31:39AM +0800, Yunsheng Lin wrote:
+> By the way, I did not pick up your "Tested-by" from previous
+> RFC version because there is some change between those version
+> that deserves a retesting. So it would be good to have a
+> "Tested-by" from you after confirming no out of order happening
+> for this version, thanks.
 
-The intention is not to provide a full-blown tc library (that could be subject to a
-libtc or such), but rather to only have libbpf abstract the tc related API that is
-most /relevant/ for BPF program development and /efficient/ in terms of execution in
-fast-path while at the same time providing a good user experience from the API itself.
-
-That is, simple to use and straight forward to explain to folks with otherwise zero
-experience of tc. The current implementation does all that, and from experience with
-large BPF programs managed via cls_bpf that is all that is actually needed from tc
-layer perspective. The ability to have multi programs (incl. priorities) is in the
-existing libbpf API as well.
-
-Best,
-Daniel
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com> # flexcan
