@@ -2,131 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA25B3A8393
-	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 17:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4493A83DD
+	for <lists+bpf@lfdr.de>; Tue, 15 Jun 2021 17:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhFOPHE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Jun 2021 11:07:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23417 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230438AbhFOPHD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Jun 2021 11:07:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623769498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YfPOjpqs+xPPviaak2ogNv+B986oj5TZMO/NC3oJo44=;
-        b=h3+DttZKcpaUYsQQyVgmb/rg5bsBQHy8XyWMU7rc3orU8RoFf+FNng0TVh4c/o/l8ok3OC
-        Tuux2lLiMl1wy5YWc6yR1+LTrhuiIYr6TknkiycdLd3euz0Ox908J4eeS+CnunmW6wiuXh
-        pp8OJocAOEZO+6CwiByU4vXDhvBNWKA=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-Ox5nhFSGNeuDvEBIWNxQFA-1; Tue, 15 Jun 2021 11:04:26 -0400
-X-MC-Unique: Ox5nhFSGNeuDvEBIWNxQFA-1
-Received: by mail-ed1-f71.google.com with SMTP id f12-20020a056402150cb029038fdcfb6ea2so22376454edw.14
-        for <bpf@vger.kernel.org>; Tue, 15 Jun 2021 08:04:26 -0700 (PDT)
+        id S230431AbhFOP03 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Jun 2021 11:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFOP03 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Jun 2021 11:26:29 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA058C061574;
+        Tue, 15 Jun 2021 08:24:24 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id g142so21058464ybf.9;
+        Tue, 15 Jun 2021 08:24:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=go8etVUSPam/RXp59SVNeV7o5Rn0KajVHY1f4pDfNlk=;
+        b=A0Ncg5Lsp/PS8idHp/dZVKajipn/f3yHSfdDZkoVDOZy8E1vds17Ih3k3B7yDmQaTK
+         z91qaLGVyFByLGla5TDpFXGrYeQndPApJCx5MNBBF5JcIYL05jBY4OfNKwkLVA0Zj6Xz
+         140VjMrVU3ChW+5yZCUfB8sq3CafwIpjncJcQOXgGyQ0vmfK5nr5zGC5oUK39WYg3zed
+         su4xHF8yTsoD9Md8G04o400al4LEHiM8XP5wAON3I1fTAMQxpIDTxgFVMwzh8eMmxGJP
+         t8NF9B0Eqvnjk8XpmNndMwN3ZVmw+HG1Scf7lMEUqqG5LRICJsVoAoZRd9dW8AYC8hzi
+         6viw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YfPOjpqs+xPPviaak2ogNv+B986oj5TZMO/NC3oJo44=;
-        b=GXO+tPvbbNV4CYAHxnLFOqRVP3IWVUIjFinT7+dlFZDAmRgb3ZR7UeBi4jJEHyLuUD
-         3cfG4DC1+zCnOCNapPO0jamgmrKlzGlM6tfw2EB4AD6ZGDOcsQZ68nXMGlTgEvxnCL8S
-         w5XncZ2bphZdchamxCPwdK3mQ/GVadpYsmwGPPJNFoaUHVnj4sQ1L5b8Msj3ruzVfm+A
-         q1orAPAeW5dSVJlqXPHz+KKkq1NBurWfZWGYxQYLOJyANTkNgSRCwYmLS74A3aosM+iE
-         RBO5buQF8lYwgHp8eqlFY1cN6SY4l/V75fWj2UXEJolBa4gaZRBsawAfTiVAeYebEwlp
-         zEmw==
-X-Gm-Message-State: AOAM5335fu4okTFdSGyW4SDS4CsHN08MRCkYHXHf0B3tQLrVTJN6QGx4
-        KzWfQu7yTlhJ3cOlXwc/fg8pzoqxG8IQZbzsXFGyi2lvQfGawq2o41AO1SnV4G3a8/p7xaywGL/
-        FM2aJSJmRGzG6
-X-Received: by 2002:a50:fc9a:: with SMTP id f26mr23484753edq.216.1623769465617;
-        Tue, 15 Jun 2021 08:04:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyy8TVWB3Ab3G+Ed06XwW3QccJKn8HJhXMLG8fARccSuyWGMMDysWF3YtrcYvvSs+y6ZDLVcw==
-X-Received: by 2002:a50:fc9a:: with SMTP id f26mr23484707edq.216.1623769465281;
-        Tue, 15 Jun 2021 08:04:25 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id k21sm12184299edo.41.2021.06.15.08.04.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Jun 2021 08:04:23 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 21558180737; Tue, 15 Jun 2021 16:54:59 +0200 (CEST)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: [PATCH bpf-next v2 14/16] netsec: remove rcu_read_lock() around XDP program invocation
-Date:   Tue, 15 Jun 2021 16:54:53 +0200
-Message-Id: <20210615145455.564037-15-toke@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210615145455.564037-1-toke@redhat.com>
-References: <20210615145455.564037-1-toke@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=go8etVUSPam/RXp59SVNeV7o5Rn0KajVHY1f4pDfNlk=;
+        b=dudPGxtd8qzFWq1UcciLFLWiuqi7dRCAdaWXylZ9BcEqwhHUe7jkvcCX4GdfQxwZxU
+         ivJdhDRDGdN1rXdMe+LViO3XjDZvRgOuI24b+ILr4z4+Ircq06KOfcfUaFw7OMnKW+96
+         gNnvyXH+bVhAYECKIE/CvmkYOtYn99JBr21bWtnVvrCYzy7Ze43ojDlFB6w+oTK4P/+S
+         H/Kr0uarNvifvMcWP9sZelqi2F8KYCCuMEOCMM//Nw+bTFNUP7lFVU+4tUCtGte1gTiB
+         UKrj+9trtG16FyIdZF9FXJuCuaLdUAloVvHvYWu1IP/UtoRJE9dZTrzQc38Hs9DKlxvB
+         pyIQ==
+X-Gm-Message-State: AOAM5305/DXjwhiT+aRJoZiiMO0eGAxwJxQobGSHcghqYZzkwcYqIrcx
+        9eFZncqQnpT5s9RgBJwQFVZPQ2a+SNXcT53VOmA=
+X-Google-Smtp-Source: ABdhPJxIDNod+NIOzr0ojDDE5Pob+v8E1Q4Km6DXzcHWIqgMx17DhKlDE3g/V6gTj0Eye0oO21VFy20vboY4s+YIzsQ=
+X-Received: by 2002:a25:ba06:: with SMTP id t6mr32077463ybg.459.1623770663989;
+ Tue, 15 Jun 2021 08:24:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210611042442.65444-1-alexei.starovoitov@gmail.com>
+ <20210611042442.65444-2-alexei.starovoitov@gmail.com> <9b23b2c6-28b2-3ab3-4e8b-1fa0c926c4d2@fb.com>
+ <CAADnVQLS=Jx9=znx6XAtrRoY08bTQHTipXQwvnPNo0SRSJsK0Q@mail.gmail.com>
+ <CAEf4BzZ159NfuGJo0ig9i=7eGNgvQkq8TnZi09XHSZST17A0zQ@mail.gmail.com> <CAADnVQJ3CQ=WnsantyEy6GB58rdsd7q=aJv93WPsZZJmXdJGzQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJ3CQ=WnsantyEy6GB58rdsd7q=aJv93WPsZZJmXdJGzQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 15 Jun 2021 08:24:13 -0700
+Message-ID: <CAEf4BzZWr7HhKn3opxHeaZqkgo4gsYYhDQ4d4HuNhx-i8XgjCg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: Introduce bpf_timer
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The netsec driver has a rcu_read_lock()/rcu_read_unlock() pair around the
-full RX loop, covering everything up to and including xdp_do_flush(). This
-is actually the correct behaviour, but because it all happens in a single
-NAPI poll cycle (and thus under local_bh_disable()), it is also technically
-redundant.
+On Mon, Jun 14, 2021 at 10:41 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jun 14, 2021 at 10:31 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Jun 14, 2021 at 8:29 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Mon, Jun 14, 2021 at 9:51 AM Yonghong Song <yhs@fb.com> wrote:
+> > > > > +     ret = BPF_CAST_CALL(t->callback_fn)((u64)(long)map,
+> > > > > +                                         (u64)(long)key,
+> > > > > +                                         (u64)(long)t->value, 0, 0);
+> > > > > +     WARN_ON(ret != 0); /* Next patch disallows 1 in the verifier */
+> > > >
+> > > > I didn't find that next patch disallows callback return value 1 in the
+> > > > verifier. If we indeed disallows return value 1 in the verifier. We
+> > > > don't need WARN_ON here. Did I miss anything?
+> > >
+> > > Ohh. I forgot to address this bit in the verifier. Will fix.
+> > >
+> > > > > +     if (!hrtimer_active(&t->timer) || hrtimer_callback_running(&t->timer))
+> > > > > +             /* If the timer wasn't active or callback already executing
+> > > > > +              * bump the prog refcnt to keep it alive until
+> > > > > +              * callback is invoked (again).
+> > > > > +              */
+> > > > > +             bpf_prog_inc(t->prog);
+> > > >
+> > > > I am not 100% sure. But could we have race condition here?
+> > > >     cpu 1: running bpf_timer_start() helper call
+> > > >     cpu 2: doing hrtimer work (calling callback etc.)
+> > > >
+> > > > Is it possible that
+> > > >    !hrtimer_active(&t->timer) || hrtimer_callback_running(&t->timer)
+> > > > may be true and then right before bpf_prog_inc(t->prog), it becomes
+> > > > true? If hrtimer_callback_running() is called, it is possible that
+> > > > callback function could have dropped the reference count for t->prog,
+> > > > so we could already go into the body of the function
+> > > > __bpf_prog_put()?
+> > >
+> > > you're correct. Indeed there is a race.
+> > > Circular dependency is a never ending headache.
+> > > That's the same design mistake as with tail_calls.
+> > > It felt that this case would be simpler than tail_calls and a bpf program
+> > > pinning itself with bpf_prog_inc can be made to work... nope.
+> > > I'll get rid of this and switch to something 'obviously correct'.
+> > > Probably a link list with a lock to keep a set of init-ed timers and
+> > > auto-cancel them on prog refcnt going to zero.
+> > > To do 'bpf daemon' the prog would need to be pinned.
+> >
+> > Hm.. wouldn't this eliminate that race:
+> >
+> > switch (hrtimer_try_to_cancel(&t->timer))
+> > {
+> > case 0:
+> >     /* nothing was queued */
+> >     bpf_prog_inc(t->prog);
+> >     break;
+> > case 1:
+> >     /* already have refcnt and it won't be bpf_prog_put by callback */
+> >     break;
+> > case -1:
+> >     /* callback is running and will bpf_prog_put, so we need to take
+> > another refcnt */
+> >     bpf_prog_inc(t->prog);
+> >     break;
+> > }
+> > hrtimer_start(&t->timer, ns_to_ktime(nsecs), HRTIMER_MODE_REL_SOFT);
+> >
+> > So instead of guessing (racily) whether there is a queued callback or
+> > not, try to cancel just in case there is. Then rely on the nice
+> > guarantees that hrtimer cancellation API provides.
+>
+> I haven't thought it through yet, but the above approach could
+> indeed solve this particular race. Unfortunately there are other races.
+> There is an issue with bpf_timer_init. Since it doesn't take refcnt
+> another program might do lookup and bpf_timer_start
+> while the first prog got to refcnt=0 and got freed.
 
-With the addition of RCU annotations to the XDP_REDIRECT map types that
-take bh execution into account, lockdep even understands this to be safe,
-so there's really no reason to keep the rcu_read_lock() around anymore, so
-let's just remove it.
+I think it's because of an API design. bpf_timer_init() takes a
+callback (i.e., bpf_prog) but doesn't really do anything with it (so
+doesn't take refcnt). It's both problematic, as you point out, and
+unnecessarily restricting because it doesn't allow to change the
+callback (e.g., when map is shared and bpf_program has to be changed).
+If you change API to be:
 
-Cc: Jassi Brar <jaswinder.singh@linaro.org>
-Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- drivers/net/ethernet/socionext/netsec.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+long bpf_timer_init(struct bpf_timer *timer, int flags);
+long bpf_timer_start(struct bpf_timer *timer, void *callback_fn, u64 nsecs);
 
-diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
-index dfc85cc68173..e07b7c870046 100644
---- a/drivers/net/ethernet/socionext/netsec.c
-+++ b/drivers/net/ethernet/socionext/netsec.c
-@@ -958,7 +958,6 @@ static int netsec_process_rx(struct netsec_priv *priv, int budget)
- 
- 	xdp_init_buff(&xdp, PAGE_SIZE, &dring->xdp_rxq);
- 
--	rcu_read_lock();
- 	xdp_prog = READ_ONCE(priv->xdp_prog);
- 	dma_dir = page_pool_get_dma_dir(dring->page_pool);
- 
-@@ -1019,6 +1018,10 @@ static int netsec_process_rx(struct netsec_priv *priv, int budget)
- 				 pkt_len, false);
- 
- 		if (xdp_prog) {
-+			/* This code is invoked within a single NAPI poll cycle
-+			 * and thus under local_bh_disable(), which provides the
-+			 * needed RCU protection.
-+			 */
- 			xdp_result = netsec_run_xdp(priv, xdp_prog, &xdp);
- 			if (xdp_result != NETSEC_XDP_PASS) {
- 				xdp_act |= xdp_result;
-@@ -1069,8 +1072,6 @@ static int netsec_process_rx(struct netsec_priv *priv, int budget)
- 	}
- 	netsec_finalize_xdp_rx(priv, xdp_act, xdp_xmit);
- 
--	rcu_read_unlock();
--
- 	return done;
- }
- 
--- 
-2.31.1
+You'll avoid this problem because bpf_timer_start will take refcnt
+when arming (or re-arming) the timer. bpf_timer_init() will only take
+care of initial memory allocation and hrtimer_init, but will leave
+timer->prog as NULL until bpf_timer_start(). Wouldn't that solve all
+the problems and be more flexible/powerful? If necessary, we can teach
+bpf_timer_cb() to take spinlock briefly to avoid races fetching prog
+pointer, but I haven't thought much about whether that's necessary.
 
+If we wanted to push this to extreme, btw, we don't really need
+bpf_timer_init(), bpf_timer_start() can do bpf_hrtimer allocation the
+very first time (having pre-allocated spinlock makes this non-racy and
+easy). But I don't know how expensive hrtimer_init() is, so it might
+still make sense to split those two operations. Further, merging
+bpf_timer_init() and bpf_timer_start() would require 6 input
+arguments, which is a bit problematic. I have an idea how to get rid
+of the necessity to pass in bpf_prog (so we'll be fine with just 5
+explicit arguments), which simplifies other things (like
+bpf_cgroup_storage implementation) as well, but I don't have patches
+yet.
+
+> Adding refcnt to bpf_timer_init() makes the prog self pinned
+> and no callback might ever be executed (if there were no bpf_timer_start),
+> so that will cause a high chance of bpf prog stuck in the kernel.
+> There could be ref+uref schemes similar to tail_calls to address all that,
+> but it gets ugly quickly.
+> imo all these issues and races is a sign that such self pinning
+> shouldn't be allowed.
+
+I think prog refcounting is actually the saner and less surprising
+approach here and we just need to spend a bit more time thinking how
+to make everything work reliably. hrtimer API seems to be designed to
+handle cases like this, which makes everything much easier.
