@@ -2,600 +2,580 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBC03AA18B
-	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 18:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A723AA1D8
+	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 18:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbhFPQmN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 12:42:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229693AbhFPQmM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 12:42:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 370DD6135C;
-        Wed, 16 Jun 2021 16:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623861606;
-        bh=+RKRMI2AMVJmwWo3deYOMu1QBhy7+9oLoKiiex0J9EE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qwYe3j/eY3ADIwEaY8B/bFEqS3xPeEy9bjoi7E1x/xMETUjDDs//KgznXBAtMMFQB
-         ZF3z6Dcs3RLY24FckZnFi89WdD8nOHN8K8c/7YKgxaFMcETowrYgZUFxiWbnGy3y7a
-         draQfZqk0EagtLRrTBQDAOD6iUY6w6nLbh3MAlOtBHJcj6h6wYpL2iGpn7QTk8K2UG
-         71qdkBo9qevycZnar5/ETo+XzPUn9gmNfx7G8t+aCA8oRkJKjMPl6Qy5rwsv/REXec
-         dzXnxG0PBa/O25rrxr5Wd4kXoUi+Qb3dN0zgxmwAg8uq5UFLs3x3+Pfvnx/Rrc9j5c
-         6adRwwvDzt15g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4782540B1A; Wed, 16 Jun 2021 13:40:03 -0300 (-03)
-Date:   Wed, 16 Jun 2021 13:40:03 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+        id S230188AbhFPQzD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 12:55:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230083AbhFPQzC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Jun 2021 12:55:02 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C181C061574;
+        Wed, 16 Jun 2021 09:52:56 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id mj8-20020a17090b3688b029016ee34fc1b3so2145894pjb.0;
+        Wed, 16 Jun 2021 09:52:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iEVChFbDFCmGN1dMH8S/MzuZpIpTIysMe0k+9GMBk4M=;
+        b=e8MuuvfSQj5GaTDjsgRKpZy9VAUr9BQowvYfyNgAzuNEPJF2bGNf5WfVgngKrDCLi+
+         HlwpPGAt15B8bOKl8gVwgJvYzQgI5VQet0RpmWqimtX3Zpk19OdvNpHm47lTd9oVyqG9
+         97r6HvCbFsFOBo3VIa7yB3ZOFN46foLap4tx8hPtrqm/NyPq5Y5jvhonvXU6sn+6e3Z8
+         K0nvUAkR+05E1gDsejffgHPgxj7uwj7BvLIr9r3RZsHa+5EO8fadh27zaaTTB7qRFw6y
+         JMVooDtGeelj4iiW9Jipm0nBb+MKnwnqn5og3j7K7ZTSS/w2w7g+UMk8Vbp5dPUVDq6W
+         2Ihw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iEVChFbDFCmGN1dMH8S/MzuZpIpTIysMe0k+9GMBk4M=;
+        b=nxnMMvSmdgvWcerXS2twLll875nVM0nd/UPLIKZ1Kc0dgwuj3wodG9Z2LEii8N0K4F
+         KGsW9CY+eo0vPc6eK3RDHrlyq/AbdfW8yhPGvYYn8SWevNl/eon5WkEadCd2DhGedkVV
+         TLvrWHZrXHB9BbQphQM0NySL1Q+S5zUeF1Ef/DuNf0WvLH0lA9zM7DrBdGkWtNThV0Z0
+         RYQeWmN+722ASAJ8QXWE047K42ekK1iUbpiRzI0wZRKPVxjswfc3bQShXk1b/ON+2AlH
+         A/yQDoR46sMlRUpT6Xoo84WLTFkfWBVUrKex0pJHH+D4TPJqbZCvTUG4QlFXclKReGOJ
+         cNIQ==
+X-Gm-Message-State: AOAM532IncnGmHg3AhMiPURWtXSXIp3ikbJue3QY6XeX5fmA/48s1A8Z
+        KgV+Iunt9fNx3V73XuHrNs4=
+X-Google-Smtp-Source: ABdhPJx6N41qAHAo35IzvHNW7n7ocG2jvq1AhGfix8r85Cf50CmIhTU+PLlnSjm4XP69VAuKBnqN4Q==
+X-Received: by 2002:a17:90b:19d4:: with SMTP id nm20mr4133255pjb.134.1623862375898;
+        Wed, 16 Jun 2021 09:52:55 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:b564])
+        by smtp.gmail.com with ESMTPSA id r6sm5791216pjm.12.2021.06.16.09.52.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 09:52:54 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 09:52:50 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org, siudin@fb.com
-Subject: Re: latest pahole breaks libbpf CI and let's talk about staging
-Message-ID: <YMopYxHgmoNVd3Yl@kernel.org>
-References: <CAEf4BzZnZN2mt4+5F-00ggO9YHWrL3Jru_u3Qt2JJ+SMkHwg+w@mail.gmail.com>
- <YMoRBvTdD0qzjYf4@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: Introduce bpf_timer
+Message-ID: <20210616165250.ejtcvgip5q5hbacy@ast-mbp.dhcp.thefacebook.com>
+References: <20210611042442.65444-1-alexei.starovoitov@gmail.com>
+ <20210611042442.65444-2-alexei.starovoitov@gmail.com>
+ <9b23b2c6-28b2-3ab3-4e8b-1fa0c926c4d2@fb.com>
+ <CAADnVQLS=Jx9=znx6XAtrRoY08bTQHTipXQwvnPNo0SRSJsK0Q@mail.gmail.com>
+ <CAEf4BzZ159NfuGJo0ig9i=7eGNgvQkq8TnZi09XHSZST17A0zQ@mail.gmail.com>
+ <CAADnVQJ3CQ=WnsantyEy6GB58rdsd7q=aJv93WPsZZJmXdJGzQ@mail.gmail.com>
+ <CAEf4BzZWr7HhKn3opxHeaZqkgo4gsYYhDQ4d4HuNhx-i8XgjCg@mail.gmail.com>
+ <20210616042622.22nzdrrnlndogn5w@ast-mbp>
+ <CAEf4BzZ_=tJGqGS9FKxxQqGfRqAoF_m9r8FW29n9ZqC_u-10DA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="uw7m3mfu5sptiiin"
 Content-Disposition: inline
-In-Reply-To: <YMoRBvTdD0qzjYf4@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAEf4BzZ_=tJGqGS9FKxxQqGfRqAoF_m9r8FW29n9ZqC_u-10DA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Jun 16, 2021 at 11:56:06AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Jun 15, 2021 at 04:30:03PM -0700, Andrii Nakryiko escreveu:
-> > Hey Arnaldo,
-> > 
-> > Seems like de3a7f912559 ("btf_encoder: Reduce the size of encode_cu()
-> > by moving function encoding to separate method") break two selftests
-> > in libbpf CI (see [0]). Please take a look. I suspect some bad BTF,
-> > because both tests rely on kernel BTF info.
-> > 
-> > You've previously asked about staging pahole changes. Did you make up
-> > your mind about branch names and the process overall? Seems like a
-> > good chance to bring this up ;-P
-> > 
-> >   [0] https://travis-ci.com/github/libbpf/libbpf/jobs/514329152
+
+--uw7m3mfu5sptiiin
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jun 15, 2021 at 10:54:40PM -0700, Andrii Nakryiko wrote:
 > 
-> Ok, please add tmp.master as the staging branch, I'll move things to
-> master only after it passing thru CI.
+> It could be the case, of course. But let's try to think this through
+> to the end before giving up. I think it's mostly because we are trying
+> to be too clever with lockless synchronization.
+
+imo your proposed code fits "too clever" too ;)
+Just a reminder that few emails ago you've argued 
+about "obviously correct" approach, but now...
+
+> I had a feeling that bpf_timer_cb needs to take lock as well. But once
+> we add that, refcounting becomes simpler and more deterministic, IMO.
+> Here's what I have in mind. I keep only important parts of the code,
+> so it's not a complete implementation. Please take a look below, I
+> left a few comments here and there.
 > 
-> Now looking at that code, must be something subtle...
+> 
+> struct bpf_hrtimer {
+>        struct hrtimer timer;
+>        struct bpf_map *map;
+>        void *value;
+> 
+>        struct bpf_prog *prog;
+>        void *callback_fn;
+> 
+>        /* pointer to that lock in struct bpf_timer_kern
+>         * so that we can access it from bpf_timer_cb()
+>         */
+>        struct bpf_spin_lock *lock;
+> };
+> 
+> BPF_CALL_5(bpf_timer_init, struct bpf_timer_kern *, timer, int, flags,
+>            struct bpf_map *, map)
+> {
+>        struct bpf_hrtimer *t;
+>        int ret = 0;
+> 
+>        ____bpf_spin_lock(&timer->lock);
+>        t = timer->timer;
+>        if (t) {
+>                ret = -EBUSY;
+>                goto out;
+>        }
+>        /* allocate hrtimer via map_kmalloc to use memcg accounting */
+>        t = bpf_map_kmalloc_node(map, sizeof(*t), GFP_ATOMIC, NUMA_NO_NODE);
+>        if (!t) {
+>                ret = -ENOMEM;
+>                goto out;
+>        }
+>        t->value = (void *)timer /* - offset of bpf_timer inside elem */;
+>        t->map = map;
+>        t->timer.function = bpf_timer_cb;
+> 
+>        /* we'll init them in bpf_timer_start */
+>        t->prog = NULL;
+>        t->callback_fn = NULL;
+> 
+>        hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
+>        timer->timer = t;
+> out:
+>        ____bpf_spin_unlock(&timer->lock);
+>        return ret;
+> }
+> 
+> 
+> BPF_CALL_2(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs,
+>            void *, cb, struct bpf_prog *, prog)
+> {
+>        struct bpf_hrtimer *t;
+>        int ret = 0;
+> 
+>        ____bpf_spin_lock(&timer->lock);
+>        t = timer->timer;
+>        if (!t) {
+>                ret = -EINVAL;
+>                goto out;
+>        }
+> 
+>        /* doesn't matter what it returns, we just request cancellation */
+>        hrtimer_try_to_cancel(&t->timer);
+> 
+>        /* t->prog might not be the same as prog (!) */
+>        if (prog != t->prog) {
+>             /* callback hasn't yet dropped refcnt */
+>            if (t->prog) /* if it's null bpf_timer_cb() is running and
+> will put it later */
+>                bpf_prog_put(t->prog);
+> 
+>            if (IS_ERR(bpf_prog_inc_not_zero(prog))) {
+>                /* this will only happen if prog is still running (and
+> it's actually us),
+>                 * but it was already put to zero, e.g., by closing last FD,
+>                 * so there is no point in scheduling a new run
+>                 */
 
-Running selftests I'm getting a failure at:
+I have a bit of mind explosion here... everything will be alright.
 
-  GEN-SKEL [test_progs] bpf_cubic.skel.h
-libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-Error: failed to open BPF object file: No such file or directory
-make: *** [Makefile:460: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 255
-make: *** Deleting file '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h'
-make: Leaving directory '/mnt/linux/tools/testing/selftests/bpf'
-[acme@seventh linux]$
+>                t->prog = NULL;
+>                t->callback_fn = NULL;
+>                ret = -E_WE_ARE_SHUTTING_DOWN;
+>                goto out;
+>            }
+>        } /* otherwise we keep existing refcnt on t->prog == prog */
+> 
+>        /* potentially new combination of prog and cb */
+>        t->prog = prog;
+>        t->callback_fn = cb;
+> 
+>        hrtimer_start(&t->timer, ns_to_ktime(nsecs), HRTIMER_MODE_REL_SOFT);
+> out:
+>        ____bpf_spin_unlock(&timer->lock);
+>        return ret;
+> }
+> 
+> BPF_CALL_1(bpf_timer_cancel, struct bpf_timer_kern *, timer)
+> {
+>        struct bpf_hrtimer *t;
+>        int ret = 0;
+> 
+>        ____bpf_spin_lock(&timer->lock);
+>        t = timer->timer;
+>        if (!t) {
+>                ret = -EINVAL;
+>                goto out;
+>        }
+> 
+>        /* this part I still worry about due to possibility of cpu migration,
+>         * we need to think if we should migrate_disable() in bpf_timer_cb()
+>         * and bpf_timer_* helpers(), but that's a separate topic
+>         */
+>        if (this_cpu_read(hrtimer_running) == t) {
+>                ret = -EDEADLK;
+>                goto out;
+>        }
+> 
+>        ret = hrtimer_cancel(&t->timer);
+> 
+>        if (t->prog) {
+>             /* bpf_timer_cb hasn't put it yet (and now won't) */
+>             bpf_prog_put(t->prog);
+>             t->prog = NULL;
+>             t->callback_fn = NULL;
+>        }
+> out:
+>        ____bpf_spin_unlock(&timer->lock);
+>        return ret;
+> }
+> 
+> static enum hrtimer_restart bpf_timer_cb(struct hrtimer *timer)
+> {
+>        struct bpf_hrtimer *t = container_of(timer, struct bpf_hrtimer, timer);
+>        struct bpf_map *map = t->map;
+>        struct bpf_prog *prog;
+>        void *key, *callback_fn;
+>        u32 idx;
+>        int ret;
+> 
+>        /* this is very IMPORTANT  */
+>        ____bpf_spin_lock(t->lock);
+> 
+>        prog = t->prog;
+>        if (!prog) {
+>            /* we were cancelled, prog is put already, exit early */
+>            ____bpf_spin_unlock(&timer->lock);
+>            return HRTIMER_NORESTART;
+>        }
+>        callback_fn = t->callback_fn;
+> 
+>        /* make sure bpf_timer_cancel/bpf_timer_start won't
+> bpf_prog_put our prog */
+>        t->prog = NULL;
+>        t->callback_fn = NULL;
+> 
+>        ____bpf_spin_unlock(t->lock);
+> 
+>        /* at this point we "own" prog's refcnt decrement */
+> 
+>        this_cpu_write(hrtimer_running, t);
+> 
+>        ...
+> 
+>        ret = BPF_CAST_CALL(t->callback_fn)((u64)(long)map,
+>                                            (u64)(long)key,
+>                                            (u64)(long)value, 0, 0);
+>        WARN_ON(ret != 0); /* Next patch disallows 1 in the verifier */
+> 
+>        bpf_prog_put(prog); /* always correct and non-racy */
+> 
+>        this_cpu_write(hrtimer_running, NULL);
+> 
+>        return HRTIMER_NORESTART;
+> }
+> 
+> bpf_timer_cancel_and_free() is mostly the same with t->prog NULL check
+> as everywhere else
 
+I haven't started detailed analysis of above proposal, but looks overly
+complicated on the first glance. Not saying it's bad or good.
+Just complexity and races are striking.
 
-I'll try to reproduce what you reported, i.e. revert that patch, and
-rebuild the kernel.
+> 
+> > There is no need to complicate bpf_timer with crazy refcnting schemes.
+> > The user space can simply pin the program in bpffs. In the future we might
+> > introduce a self-pinning helper that would pin the program and create a file.
+> > Sort-of like syscall prog type would pin self.
+> > That would be explicit and clean api instead of obscure hacks inside bpf_timer*().
+> 
+> Do I understand correctly that the alternative that you are proposing
+> is to keep some linked list of all map_values across all maps in the
+> system that have initialized bpf_hrtimer with that particular bpf_prog
+> in them? And when bpf_prog is put to zero you'll go and destruct them
+> all in a race-free way?
+> 
+> I have a bit of a hard time imagining how that will be implemented
+> exactly, so I might be overcomplicating that in my mind. Will be happy
+> to see the working code.
 
+Here is working code...
+Note how patch 1 is so much simpler without complicated refcnting.
+And how patch 2 removes for_each_map_element that was necessary earlier.
+Also note that link list approach is an optimization.
+Instead of keeping a link list the bpf_free_used_timers() could call
+a map specific op to iterate all elems and free timers with
+timer->prog == prog_going_away.
+That was my initial proposal couple month ago.
+link_list is purely an optimization instead of for_each_map_elem.
 
+--uw7m3mfu5sptiiin
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-bpf-Cancel-and-free-timers-when-prog-is-going-away.patch"
 
-[acme@seventh linux]$ uname -a
-Linux seventh 5.13.0-rc6+ #1 SMP Wed Jun 16 11:59:35 -03 2021 x86_64 x86_64 x86_64 GNU/Linux
+From c11bf0aa23f1df25682056f2c581c9bc9bd8df31 Mon Sep 17 00:00:00 2001
+From: Alexei Starovoitov <ast@kernel.org>
+Date: Wed, 16 Jun 2021 09:19:36 -0700
+Subject: [PATCH bpf-next 1/2] bpf: Cancel and free timers when prog is going
+ away.
 
-[acme@seventh linux]$ sudo make -C tools/testing/selftests/bpf/
-make: Entering directory '/mnt/linux/tools/testing/selftests/bpf'
-  MKDIR    include
-  MKDIR    libbpf
-  HOSTCC  /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/fixdep.o
-  HOSTLD  /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/fixdep-in.o
-  LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/fixdep
-  GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/bpf_helper_defs.h
-  MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/libbpf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/bpf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/nlattr.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/btf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/libbpf_errno.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/str_error.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/netlink.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/bpf_prog_linfo.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/libbpf_probes.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/xsk.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/hashmap.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/btf_dump.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/ringbuf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/strset.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/linker.o
-  LD      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/libbpf-in.o
-  LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a
-Warning: Kernel ABI header at 'tools/include/uapi/linux/netlink.h' differs from latest version at 'include/uapi/linux/netlink.h'
-Warning: Kernel ABI header at 'tools/include/uapi/linux/if_link.h' differs from latest version at 'include/uapi/linux/if_link.h'
-  MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/libbpf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/bpf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/nlattr.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/btf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/libbpf_errno.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/str_error.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/netlink.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/bpf_prog_linfo.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/libbpf_probes.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/xsk.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/hashmap.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/btf_dump.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/ringbuf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/strset.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/linker.o
-  LD      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/libbpf-in.o
-  LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.so.0.4.0
-  GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.pc
-  INSTALL headers
-  CC       test_stub.o
-  BINARY   test_verifier
-  BINARY   test_tag
-  MKDIR    bpftool
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ include/linux/bpf.h  |  3 ++
+ kernel/bpf/core.c    |  3 ++
+ kernel/bpf/helpers.c | 70 +++++++++++++++++++++++++-------------------
+ 3 files changed, 46 insertions(+), 30 deletions(-)
 
-Auto-detecting system features:
-...                        libbfd: [ on  ]
-...        disassembler-four-args: [ on  ]
-...                          zlib: [ on  ]
-...                        libcap: [ on  ]
-...               clang-bpf-co-re: [ on  ]
-
-
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/btf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/btf_dumper.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/cfg.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/cgroup.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/common.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/feature.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/gen.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/iter.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/json_writer.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/link.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/main.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/map.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/map_perf_ring.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/net.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/netlink_dumper.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/perf.o
-  MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/main.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/common.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/json_writer.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/gen.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/btf.o
-  MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/
-  GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/bpf_helper_defs.h
-  MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/libbpf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/bpf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/nlattr.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/btf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/libbpf_errno.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/str_error.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/netlink.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/bpf_prog_linfo.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/libbpf_probes.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/xsk.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/hashmap.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/btf_dump.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/ringbuf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/strset.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/linker.o
-  LD      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/libbpf-in.o
-  LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/libbpf.a
-  LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/bpftool
-  GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/vmlinux.h
-  MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/
-  GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/bpf_helper_defs.h
-  MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/libbpf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/bpf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/nlattr.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/btf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/libbpf_errno.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/str_error.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/netlink.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/bpf_prog_linfo.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/libbpf_probes.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/xsk.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/hashmap.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/btf_dump.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/ringbuf.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/strset.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/linker.o
-  LD      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/libbpf-in.o
-  LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/libbpf.a
-  CLANG   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/pid_iter.bpf.o
-  GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/pid_iter.skel.h
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/pids.o
-  CLANG   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/profiler.bpf.o
-  GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/profiler.skel.h
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/prog.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/struct_ops.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/tracelog.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/xlated_dumper.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/jit_disasm.o
-  CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/disasm.o
-  LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/bpftool
-  INSTALL bpftool
-  GEN      vmlinux.h
-  CLNG-BPF [test_maps] atomic_bounds.o
-  CLNG-BPF [test_maps] atomics.o
-  CLNG-BPF [test_maps] bind4_prog.o
-  CLNG-BPF [test_maps] bind6_prog.o
-  CLNG-BPF [test_maps] bind_perm.o
-  CLNG-BPF [test_maps] bpf_cubic.o
-  CLNG-BPF [test_maps] bpf_dctcp.o
-  CLNG-BPF [test_maps] bpf_flow.o
-  CLNG-BPF [test_maps] bpf_iter_bpf_array_map.o
-  CLNG-BPF [test_maps] bpf_iter_bpf_hash_map.o
-  CLNG-BPF [test_maps] bpf_iter_bpf_map.o
-  CLNG-BPF [test_maps] bpf_iter_bpf_percpu_array_map.o
-  CLNG-BPF [test_maps] bpf_iter_bpf_percpu_hash_map.o
-  CLNG-BPF [test_maps] bpf_iter_bpf_sk_storage_helpers.o
-  CLNG-BPF [test_maps] bpf_iter_bpf_sk_storage_map.o
-  CLNG-BPF [test_maps] bpf_iter_ipv6_route.o
-  CLNG-BPF [test_maps] bpf_iter_netlink.o
-  CLNG-BPF [test_maps] bpf_iter_sockmap.o
-  CLNG-BPF [test_maps] bpf_iter_task_btf.o
-  CLNG-BPF [test_maps] bpf_iter_task.o
-  CLNG-BPF [test_maps] bpf_iter_task_file.o
-  CLNG-BPF [test_maps] bpf_iter_task_stack.o
-  CLNG-BPF [test_maps] bpf_iter_task_vma.o
-  CLNG-BPF [test_maps] bpf_iter_tcp4.o
-  CLNG-BPF [test_maps] bpf_iter_tcp6.o
-  CLNG-BPF [test_maps] bpf_iter_test_kern1.o
-  CLNG-BPF [test_maps] bpf_iter_test_kern2.o
-  CLNG-BPF [test_maps] bpf_iter_test_kern3.o
-  CLNG-BPF [test_maps] bpf_iter_test_kern4.o
-  CLNG-BPF [test_maps] bpf_iter_test_kern5.o
-  CLNG-BPF [test_maps] bpf_iter_test_kern6.o
-  CLNG-BPF [test_maps] bpf_iter_udp4.o
-  CLNG-BPF [test_maps] bpf_iter_udp6.o
-  CLNG-BPF [test_maps] bpf_tcp_nogpl.o
-  CLNG-BPF [test_maps] bprm_opts.o
-  CLNG-BPF [test_maps] btf__core_reloc_arrays.o
-  CLNG-BPF [test_maps] btf__core_reloc_arrays___diff_arr_dim.o
-  CLNG-BPF [test_maps] btf__core_reloc_arrays___diff_arr_val_sz.o
-  CLNG-BPF [test_maps] btf__core_reloc_arrays___equiv_zero_sz_arr.o
-  CLNG-BPF [test_maps] btf__core_reloc_arrays___err_bad_zero_sz_arr.o
-  CLNG-BPF [test_maps] btf__core_reloc_arrays___err_non_array.o
-  CLNG-BPF [test_maps] btf__core_reloc_arrays___err_too_shallow.o
-  CLNG-BPF [test_maps] btf__core_reloc_arrays___err_too_small.o
-  CLNG-BPF [test_maps] btf__core_reloc_arrays___err_wrong_val_type.o
-  CLNG-BPF [test_maps] btf__core_reloc_arrays___fixed_arr.o
-  CLNG-BPF [test_maps] btf__core_reloc_bitfields___bitfield_vs_int.o
-  CLNG-BPF [test_maps] btf__core_reloc_bitfields___bit_sz_change.o
-  CLNG-BPF [test_maps] btf__core_reloc_bitfields.o
-  CLNG-BPF [test_maps] btf__core_reloc_bitfields___err_too_big_bitfield.o
-  CLNG-BPF [test_maps] btf__core_reloc_bitfields___just_big_enough.o
-  CLNG-BPF [test_maps] btf__core_reloc_enumval.o
-  CLNG-BPF [test_maps] btf__core_reloc_enumval___diff.o
-  CLNG-BPF [test_maps] btf__core_reloc_enumval___err_missing.o
-  CLNG-BPF [test_maps] btf__core_reloc_enumval___val3_missing.o
-  CLNG-BPF [test_maps] btf__core_reloc_existence.o
-  CLNG-BPF [test_maps] btf__core_reloc_existence___minimal.o
-  CLNG-BPF [test_maps] btf__core_reloc_existence___wrong_field_defs.o
-  CLNG-BPF [test_maps] btf__core_reloc_flavors.o
-  CLNG-BPF [test_maps] btf__core_reloc_flavors__err_wrong_name.o
-  CLNG-BPF [test_maps] btf__core_reloc_ints___bool.o
-  CLNG-BPF [test_maps] btf__core_reloc_ints.o
-  CLNG-BPF [test_maps] btf__core_reloc_ints___reverse_sign.o
-  CLNG-BPF [test_maps] btf__core_reloc_misc.o
-  CLNG-BPF [test_maps] btf__core_reloc_mods.o
-  CLNG-BPF [test_maps] btf__core_reloc_mods___mod_swap.o
-  CLNG-BPF [test_maps] btf__core_reloc_mods___typedefs.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___anon_embed.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___dup_compat_types.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___err_array_container.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___err_array_field.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___err_dup_incompat_types.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___err_missing_container.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___err_missing_field.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___err_nonstruct_container.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___err_partial_match_dups.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___err_too_deep.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___extra_nesting.o
-  CLNG-BPF [test_maps] btf__core_reloc_nesting___struct_union_mixup.o
-  CLNG-BPF [test_maps] btf__core_reloc_primitives.o
-  CLNG-BPF [test_maps] btf__core_reloc_primitives___diff_enum_def.o
-  CLNG-BPF [test_maps] btf__core_reloc_primitives___diff_func_proto.o
-  CLNG-BPF [test_maps] btf__core_reloc_primitives___diff_ptr_type.o
-  CLNG-BPF [test_maps] btf__core_reloc_primitives___err_non_enum.o
-  CLNG-BPF [test_maps] btf__core_reloc_primitives___err_non_int.o
-  CLNG-BPF [test_maps] btf__core_reloc_primitives___err_non_ptr.o
-  CLNG-BPF [test_maps] btf__core_reloc_ptr_as_arr.o
-  CLNG-BPF [test_maps] btf__core_reloc_ptr_as_arr___diff_sz.o
-  CLNG-BPF [test_maps] btf__core_reloc_size.o
-  CLNG-BPF [test_maps] btf__core_reloc_size___diff_sz.o
-  CLNG-BPF [test_maps] btf__core_reloc_size___err_ambiguous.o
-  CLNG-BPF [test_maps] btf__core_reloc_type_based___all_missing.o
-  CLNG-BPF [test_maps] btf__core_reloc_type_based.o
-  CLNG-BPF [test_maps] btf__core_reloc_type_based___diff_sz.o
-  CLNG-BPF [test_maps] btf__core_reloc_type_based___fn_wrong_args.o
-  CLNG-BPF [test_maps] btf__core_reloc_type_based___incompat.o
-  CLNG-BPF [test_maps] btf__core_reloc_type_id.o
-  CLNG-BPF [test_maps] btf__core_reloc_type_id___missing_targets.o
-  CLNG-BPF [test_maps] btf_data.o
-  CLNG-BPF [test_maps] btf_dump_test_case_bitfields.o
-  CLNG-BPF [test_maps] btf_dump_test_case_multidim.o
-  CLNG-BPF [test_maps] btf_dump_test_case_namespacing.o
-  CLNG-BPF [test_maps] btf_dump_test_case_ordering.o
-  CLNG-BPF [test_maps] btf_dump_test_case_packing.o
-  CLNG-BPF [test_maps] btf_dump_test_case_padding.o
-  CLNG-BPF [test_maps] btf_dump_test_case_syntax.o
-  CLNG-BPF [test_maps] cgroup_skb_sk_lookup_kern.o
-  CLNG-BPF [test_maps] cg_storage_multi_egress_only.o
-  CLNG-BPF [test_maps] cg_storage_multi_isolated.o
-  CLNG-BPF [test_maps] cg_storage_multi_shared.o
-  CLNG-BPF [test_maps] connect4_prog.o
-  CLNG-BPF [test_maps] connect6_prog.o
-  CLNG-BPF [test_maps] connect_force_port4.o
-  CLNG-BPF [test_maps] connect_force_port6.o
-  CLNG-BPF [test_maps] dev_cgroup.o
-  CLNG-BPF [test_maps] fentry_test.o
-  CLNG-BPF [test_maps] fexit_bpf2bpf.o
-  CLNG-BPF [test_maps] fexit_bpf2bpf_simple.o
-  CLNG-BPF [test_maps] fexit_sleep.o
-  CLNG-BPF [test_maps] fexit_test.o
-  CLNG-BPF [test_maps] fmod_ret_freplace.o
-  CLNG-BPF [test_maps] for_each_array_map_elem.o
-  CLNG-BPF [test_maps] for_each_hash_map_elem.o
-  CLNG-BPF [test_maps] freplace_attach_probe.o
-  CLNG-BPF [test_maps] freplace_cls_redirect.o
-  CLNG-BPF [test_maps] freplace_connect4.o
-  CLNG-BPF [test_maps] freplace_connect_v4_prog.o
-  CLNG-BPF [test_maps] freplace_get_constant.o
-  CLNG-BPF [test_maps] get_cgroup_id_kern.o
-  CLNG-BPF [test_maps] ima.o
-  CLNG-BPF [test_maps] kfree_skb.o
-  CLNG-BPF [test_maps] kfunc_call_test.o
-  CLNG-BPF [test_maps] kfunc_call_test_subprog.o
-  CLNG-BPF [test_maps] linked_funcs1.o
-  CLNG-BPF [test_maps] linked_funcs2.o
-  CLNG-BPF [test_maps] linked_maps1.o
-  CLNG-BPF [test_maps] linked_maps2.o
-  CLNG-BPF [test_maps] linked_vars1.o
-  CLNG-BPF [test_maps] linked_vars2.o
-  CLNG-BPF [test_maps] load_bytes_relative.o
-  CLNG-BPF [test_maps] local_storage.o
-  CLNG-BPF [test_maps] loop1.o
-  CLNG-BPF [test_maps] loop2.o
-  CLNG-BPF [test_maps] loop3.o
-  CLNG-BPF [test_maps] loop4.o
-  CLNG-BPF [test_maps] loop5.o
-  CLNG-BPF [test_maps] loop6.o
-  CLNG-BPF [test_maps] lsm.o
-  CLNG-BPF [test_maps] map_ptr_kern.o
-  CLNG-BPF [test_maps] metadata_unused.o
-  CLNG-BPF [test_maps] metadata_used.o
-  CLNG-BPF [test_maps] modify_return.o
-  CLNG-BPF [test_maps] netcnt_prog.o
-  CLNG-BPF [test_maps] netif_receive_skb.o
-  CLNG-BPF [test_maps] perfbuf_bench.o
-  CLNG-BPF [test_maps] perf_event_stackmap.o
-  CLNG-BPF [test_maps] profiler1.o
-  CLNG-BPF [test_maps] profiler2.o
-  CLNG-BPF [test_maps] profiler3.o
-  CLNG-BPF [test_maps] pyperf100.o
-  CLNG-BPF [test_maps] pyperf180.o
-  CLNG-BPF [test_maps] pyperf50.o
-  CLNG-BPF [test_maps] pyperf600.o
-  CLNG-BPF [test_maps] pyperf600_nounroll.o
-  CLNG-BPF [test_maps] pyperf_global.o
-  CLNG-BPF [test_maps] pyperf_subprogs.o
-  CLNG-BPF [test_maps] recursion.o
-  CLNG-BPF [test_maps] recvmsg4_prog.o
-  CLNG-BPF [test_maps] recvmsg6_prog.o
-  CLNG-BPF [test_maps] ringbuf_bench.o
-  CLNG-BPF [test_maps] sample_map_ret0.o
-  CLNG-BPF [test_maps] sample_ret0.o
-  CLNG-BPF [test_maps] sendmsg4_prog.o
-  CLNG-BPF [test_maps] sendmsg6_prog.o
-  CLNG-BPF [test_maps] skb_pkt_end.o
-  CLNG-BPF [test_maps] socket_cookie_prog.o
-  CLNG-BPF [test_maps] sockmap_parse_prog.o
-  CLNG-BPF [test_maps] sockmap_tcp_msg_prog.o
-  CLNG-BPF [test_maps] sockmap_verdict_prog.o
-  CLNG-BPF [test_maps] sockopt_inherit.o
-  CLNG-BPF [test_maps] sockopt_multi.o
-  CLNG-BPF [test_maps] sockopt_sk.o
-  CLNG-BPF [test_maps] strobemeta.o
-  CLNG-BPF [test_maps] strobemeta_nounroll1.o
-  CLNG-BPF [test_maps] strobemeta_nounroll2.o
-  CLNG-BPF [test_maps] strobemeta_subprogs.o
-  CLNG-BPF [test_maps] tailcall1.o
-  CLNG-BPF [test_maps] tailcall2.o
-  CLNG-BPF [test_maps] tailcall3.o
-  CLNG-BPF [test_maps] tailcall4.o
-  CLNG-BPF [test_maps] tailcall5.o
-  CLNG-BPF [test_maps] tailcall_bpf2bpf1.o
-  CLNG-BPF [test_maps] tailcall_bpf2bpf2.o
-  CLNG-BPF [test_maps] tailcall_bpf2bpf3.o
-  CLNG-BPF [test_maps] tailcall_bpf2bpf4.o
-  CLNG-BPF [test_maps] task_local_storage.o
-  CLNG-BPF [test_maps] task_local_storage_exit_creds.o
-  CLNG-BPF [test_maps] task_ls_recursion.o
-  CLNG-BPF [test_maps] tcp_rtt.o
-  CLNG-BPF [test_maps] test_attach_probe.o
-  CLNG-BPF [test_maps] test_autoload.o
-  CLNG-BPF [test_maps] test_btf_haskv.o
-  CLNG-BPF [test_maps] test_btf_map_in_map.o
-  CLNG-BPF [test_maps] test_btf_newkv.o
-  CLNG-BPF [test_maps] test_btf_nokv.o
-  CLNG-BPF [test_maps] test_btf_skc_cls_ingress.o
-  CLNG-BPF [test_maps] test_cgroup_link.o
-  CLNG-BPF [test_maps] test_check_mtu.o
-  CLNG-BPF [test_maps] test_cls_redirect.o
-  CLNG-BPF [test_maps] test_cls_redirect_subprogs.o
-  CLNG-BPF [test_maps] test_core_autosize.o
-  CLNG-BPF [test_maps] test_core_extern.o
-  CLNG-BPF [test_maps] test_core_read_macros.o
-  CLNG-BPF [test_maps] test_core_reloc_arrays.o
-  CLNG-BPF [test_maps] test_core_reloc_bitfields_direct.o
-  CLNG-BPF [test_maps] test_core_reloc_bitfields_probed.o
-  CLNG-BPF [test_maps] test_core_reloc_enumval.o
-  CLNG-BPF [test_maps] test_core_reloc_existence.o
-  CLNG-BPF [test_maps] test_core_reloc_flavors.o
-  CLNG-BPF [test_maps] test_core_reloc_ints.o
-  CLNG-BPF [test_maps] test_core_reloc_kernel.o
-  CLNG-BPF [test_maps] test_core_reloc_misc.o
-  CLNG-BPF [test_maps] test_core_reloc_mods.o
-  CLNG-BPF [test_maps] test_core_reloc_module.o
-  CLNG-BPF [test_maps] test_core_reloc_nesting.o
-  CLNG-BPF [test_maps] test_core_reloc_primitives.o
-  CLNG-BPF [test_maps] test_core_reloc_ptr_as_arr.o
-  CLNG-BPF [test_maps] test_core_reloc_size.o
-  CLNG-BPF [test_maps] test_core_reloc_type_based.o
-  CLNG-BPF [test_maps] test_core_reloc_type_id.o
-  CLNG-BPF [test_maps] test_core_retro.o
-  CLNG-BPF [test_maps] test_d_path.o
-  CLNG-BPF [test_maps] test_enable_stats.o
-  CLNG-BPF [test_maps] test_endian.o
-  CLNG-BPF [test_maps] test_get_stack_rawtp.o
-  CLNG-BPF [test_maps] test_get_stack_rawtp_err.o
-  CLNG-BPF [test_maps] test_global_data.o
-  CLNG-BPF [test_maps] test_global_func10.o
-  CLNG-BPF [test_maps] test_global_func11.o
-  CLNG-BPF [test_maps] test_global_func12.o
-  CLNG-BPF [test_maps] test_global_func13.o
-  CLNG-BPF [test_maps] test_global_func14.o
-  CLNG-BPF [test_maps] test_global_func15.o
-  CLNG-BPF [test_maps] test_global_func16.o
-  CLNG-BPF [test_maps] test_global_func1.o
-  CLNG-BPF [test_maps] test_global_func2.o
-  CLNG-BPF [test_maps] test_global_func3.o
-  CLNG-BPF [test_maps] test_global_func4.o
-  CLNG-BPF [test_maps] test_global_func5.o
-  CLNG-BPF [test_maps] test_global_func6.o
-  CLNG-BPF [test_maps] test_global_func7.o
-  CLNG-BPF [test_maps] test_global_func8.o
-  CLNG-BPF [test_maps] test_global_func9.o
-  CLNG-BPF [test_maps] test_global_func_args.o
-  CLNG-BPF [test_maps] test_hash_large_key.o
-  CLNG-BPF [test_maps] test_ksyms_btf.o
-  CLNG-BPF [test_maps] test_ksyms_btf_null_check.o
-  CLNG-BPF [test_maps] test_ksyms.o
-  CLNG-BPF [test_maps] test_ksyms_module.o
-  CLNG-BPF [test_maps] test_l4lb.o
-  CLNG-BPF [test_maps] test_l4lb_noinline.o
-  CLNG-BPF [test_maps] test_link_pinning.o
-  CLNG-BPF [test_maps] test_lirc_mode2_kern.o
-  CLNG-BPF [test_maps] test_lwt_ip_encap.o
-  CLNG-BPF [test_maps] test_lwt_seg6local.o
-  CLNG-BPF [test_maps] test_map_init.o
-  CLNG-BPF [test_maps] test_map_in_map.o
-  CLNG-BPF [test_maps] test_map_lock.o
-  CLNG-BPF [test_maps] test_misc_tcp_hdr_options.o
-  CLNG-BPF [test_maps] test_mmap.o
-  CLNG-BPF [test_maps] test_module_attach.o
-  CLNG-BPF [test_maps] test_ns_current_pid_tgid.o
-  CLNG-BPF [test_maps] test_obj_id.o
-  CLNG-BPF [test_maps] test_overhead.o
-  CLNG-BPF [test_maps] test_pe_preserve_elems.o
-  CLNG-BPF [test_maps] test_perf_branches.o
-  CLNG-BPF [test_maps] test_perf_buffer.o
-  CLNG-BPF [test_maps] test_pinning.o
-  CLNG-BPF [test_maps] test_pinning_invalid.o
-  CLNG-BPF [test_maps] test_pkt_access.o
-  CLNG-BPF [test_maps] test_pkt_md_access.o
-  CLNG-BPF [test_maps] test_probe_read_user_str.o
-  CLNG-BPF [test_maps] test_probe_user.o
-  CLNG-BPF [test_maps] test_queue_map.o
-  CLNG-BPF [test_maps] test_raw_tp_test_run.o
-  CLNG-BPF [test_maps] test_rdonly_maps.o
-  CLNG-BPF [test_maps] test_ringbuf.o
-  CLNG-BPF [test_maps] test_ringbuf_multi.o
-  CLNG-BPF [test_maps] test_seg6_loop.o
-  CLNG-BPF [test_maps] test_select_reuseport_kern.o
-  CLNG-BPF [test_maps] test_send_signal_kern.o
-  CLNG-BPF [test_maps] test_sk_assign.o
-  CLNG-BPF [test_maps] test_skb_cgroup_id_kern.o
-  CLNG-BPF [test_maps] test_skb_ctx.o
-  CLNG-BPF [test_maps] test_skb_helpers.o
-  CLNG-BPF [test_maps] test_skeleton.o
-  CLNG-BPF [test_maps] test_sk_lookup.o
-  CLNG-BPF [test_maps] test_sk_lookup_kern.o
-  CLNG-BPF [test_maps] test_skmsg_load_helpers.o
-  CLNG-BPF [test_maps] test_sk_storage_trace_itself.o
-  CLNG-BPF [test_maps] test_sk_storage_tracing.o
-  CLNG-BPF [test_maps] test_snprintf.o
-  CLNG-BPF [test_maps] test_snprintf_single.o
-  CLNG-BPF [test_maps] test_sock_fields.o
-  CLNG-BPF [test_maps] test_sockhash_kern.o
-  CLNG-BPF [test_maps] test_sockmap_invalid_update.o
-  CLNG-BPF [test_maps] test_sockmap_kern.o
-  CLNG-BPF [test_maps] test_sockmap_listen.o
-  CLNG-BPF [test_maps] test_sockmap_skb_verdict_attach.o
-  CLNG-BPF [test_maps] test_sockmap_update.o
-  CLNG-BPF [test_maps] test_spin_lock.o
-  CLNG-BPF [test_maps] test_stack_map.o
-  CLNG-BPF [test_maps] test_stacktrace_build_id.o
-  CLNG-BPF [test_maps] test_stacktrace_map.o
-  CLNG-BPF [test_maps] test_stack_var_off.o
-  CLNG-BPF [test_maps] test_static_linked1.o
-  CLNG-BPF [test_maps] test_static_linked2.o
-  CLNG-BPF [test_maps] test_subprogs.o
-  CLNG-BPF [test_maps] test_subprogs_unused.o
-  CLNG-BPF [test_maps] test_sysctl_loop1.o
-  CLNG-BPF [test_maps] test_sysctl_loop2.o
-  CLNG-BPF [test_maps] test_sysctl_prog.o
-  CLNG-BPF [test_maps] test_tc_edt.o
-  CLNG-BPF [test_maps] test_tc_neigh.o
-  CLNG-BPF [test_maps] test_tc_neigh_fib.o
-  CLNG-BPF [test_maps] test_tcpbpf_kern.o
-  CLNG-BPF [test_maps] test_tcp_check_syncookie_kern.o
-  CLNG-BPF [test_maps] test_tc_peer.o
-  CLNG-BPF [test_maps] test_tcp_estats.o
-  CLNG-BPF [test_maps] test_tcp_hdr_options.o
-  CLNG-BPF [test_maps] test_tcpnotify_kern.o
-  CLNG-BPF [test_maps] test_tc_tunnel.o
-  CLNG-BPF [test_maps] test_trace_ext.o
-  CLNG-BPF [test_maps] test_trace_ext_tracing.o
-  CLNG-BPF [test_maps] test_tracepoint.o
-  CLNG-BPF [test_maps] test_trampoline_count.o
-  CLNG-BPF [test_maps] test_tunnel_kern.o
-  CLNG-BPF [test_maps] test_varlen.o
-  CLNG-BPF [test_maps] test_verif_scale1.o
-  CLNG-BPF [test_maps] test_verif_scale2.o
-  CLNG-BPF [test_maps] test_verif_scale3.o
-  CLNG-BPF [test_maps] test_vmlinux.o
-  CLNG-BPF [test_maps] test_xdp_adjust_tail_grow.o
-  CLNG-BPF [test_maps] test_xdp_adjust_tail_shrink.o
-  CLNG-BPF [test_maps] test_xdp_bpf2bpf.o
-  CLNG-BPF [test_maps] test_xdp.o
-  CLNG-BPF [test_maps] test_xdp_devmap_helpers.o
-  CLNG-BPF [test_maps] test_xdp_link.o
-  CLNG-BPF [test_maps] test_xdp_loop.o
-  CLNG-BPF [test_maps] test_xdp_meta.o
-  CLNG-BPF [test_maps] test_xdp_noinline.o
-  CLNG-BPF [test_maps] test_xdp_redirect.o
-  CLNG-BPF [test_maps] test_xdp_vlan.o
-  CLNG-BPF [test_maps] test_xdp_with_cpumap_helpers.o
-  CLNG-BPF [test_maps] test_xdp_with_devmap_helpers.o
-  CLNG-BPF [test_maps] trace_printk.o
-  CLNG-BPF [test_maps] trigger_bench.o
-  CLNG-BPF [test_maps] udp_limit.o
-  CLNG-BPF [test_maps] xdp_dummy.o
-  CLNG-BPF [test_maps] xdping_kern.o
-  CLNG-BPF [test_maps] xdp_redirect_map.o
-  CLNG-BPF [test_maps] xdp_tx.o
-  GEN-SKEL [test_progs] atomic_bounds.skel.h
-  GEN-SKEL [test_progs] atomics.skel.h
-  GEN-SKEL [test_progs] bind4_prog.skel.h
-libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
-  GEN-SKEL [test_progs] bind6_prog.skel.h
-libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
-  GEN-SKEL [test_progs] bind_perm.skel.h
-  GEN-SKEL [test_progs] bpf_cubic.skel.h
-libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-Error: failed to open BPF object file: No such file or directory
-make: *** [Makefile:460: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 255
-make: *** Deleting file '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h'
-make: Leaving directory '/mnt/linux/tools/testing/selftests/bpf'
-[acme@seventh linux]$
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 7c403235c7e8..f67ea2512844 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -245,6 +245,7 @@ static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
+ void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+ 			   bool lock_src);
+ void bpf_timer_cancel_and_free(void *timer);
++void bpf_free_used_timers(struct bpf_prog_aux *aux);
+ int bpf_obj_name_cpy(char *dst, const char *src, unsigned int size);
+ 
+ struct bpf_offload_dev;
+@@ -871,6 +872,8 @@ struct bpf_prog_aux {
+ 	u32 size_poke_tab;
+ 	struct bpf_ksym ksym;
+ 	const struct bpf_prog_ops *ops;
++	spinlock_t timers_lock;
++	struct hlist_head used_timers;
+ 	struct bpf_map **used_maps;
+ 	struct mutex used_maps_mutex; /* mutex for used_maps and used_map_cnt */
+ 	struct btf_mod_pair *used_btfs;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 5e31ee9f7512..aa7960986a75 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -104,6 +104,8 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
+ 	fp->jit_requested = ebpf_jit_enabled();
+ 
+ 	INIT_LIST_HEAD_RCU(&fp->aux->ksym.lnode);
++	INIT_HLIST_HEAD(&fp->aux->used_timers);
++	spin_lock_init(&fp->aux->timers_lock);
+ 	mutex_init(&fp->aux->used_maps_mutex);
+ 	mutex_init(&fp->aux->dst_mutex);
+ 
+@@ -2201,6 +2203,7 @@ static void bpf_prog_free_deferred(struct work_struct *work)
+ 	int i;
+ 
+ 	aux = container_of(work, struct bpf_prog_aux, work);
++	bpf_free_used_timers(aux);
+ 	bpf_free_used_maps(aux);
+ 	bpf_free_used_btfs(aux);
+ 	if (bpf_prog_is_dev_bound(aux))
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index b8df592c33cc..08f5d0f73f68 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -987,6 +987,7 @@ const struct bpf_func_proto bpf_snprintf_proto = {
+ 
+ struct bpf_hrtimer {
+ 	struct hrtimer timer;
++	struct hlist_node hlist;
+ 	struct bpf_map *map;
+ 	struct bpf_prog *prog;
+ 	void *callback_fn;
+@@ -1004,7 +1005,6 @@ static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
+ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *timer)
+ {
+ 	struct bpf_hrtimer *t = container_of(timer, struct bpf_hrtimer, timer);
+-	struct bpf_prog *prog = t->prog;
+ 	struct bpf_map *map = t->map;
+ 	void *key;
+ 	u32 idx;
+@@ -1031,16 +1031,6 @@ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *timer)
+ 					    (u64)(long)t->value, 0, 0);
+ 	WARN_ON(ret != 0); /* Next patch disallows 1 in the verifier */
+ 
+-	/* The bpf function finished executed. Drop the prog refcnt.
+-	 * It could reach zero here and trigger free of bpf_prog
+-	 * and subsequent free of the maps that were holding timers.
+-	 * If callback_fn called bpf_timer_start on this timer
+-	 * the prog refcnt will be > 0.
+-	 *
+-	 * If callback_fn deleted map element the 't' could have been freed,
+-	 * hence t->prog deref is done earlier.
+-	 */
+-	bpf_prog_put(prog);
+ 	this_cpu_write(hrtimer_running, NULL);
+ 	return HRTIMER_NORESTART;
+ }
+@@ -1077,6 +1067,10 @@ BPF_CALL_5(bpf_timer_init, struct bpf_timer_kern *, timer, void *, cb, int, flag
+ 	t->prog = prog;
+ 	hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
+ 	t->timer.function = bpf_timer_cb;
++	INIT_HLIST_NODE(&t->hlist);
++	spin_lock(&prog->aux->timers_lock);
++	hlist_add_head_rcu(&t->hlist, &prog->aux->used_timers);
++	spin_unlock(&prog->aux->timers_lock);
+ 	timer->timer = t;
+ out:
+ 	____bpf_spin_unlock(&timer->lock);
+@@ -1103,12 +1097,6 @@ BPF_CALL_2(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs)
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+-	if (!hrtimer_active(&t->timer) || hrtimer_callback_running(&t->timer))
+-		/* If the timer wasn't active or callback already executing
+-		 * bump the prog refcnt to keep it alive until
+-		 * callback is invoked (again).
+-		 */
+-		bpf_prog_inc(t->prog);
+ 	hrtimer_start(&t->timer, ns_to_ktime(nsecs), HRTIMER_MODE_REL_SOFT);
+ out:
+ 	____bpf_spin_unlock(&timer->lock);
+@@ -1145,13 +1133,7 @@ BPF_CALL_1(bpf_timer_cancel, struct bpf_timer_kern *, timer)
+ 	/* Cancel the timer and wait for associated callback to finish
+ 	 * if it was running.
+ 	 */
+-	if (hrtimer_cancel(&t->timer) == 1) {
+-		/* If the timer was active then drop the prog refcnt,
+-		 * since callback will not be invoked.
+-		 */
+-		bpf_prog_put(t->prog);
+-		ret = 1;
+-	}
++	ret = hrtimer_cancel(&t->timer);
+ out:
+ 	____bpf_spin_unlock(&timer->lock);
+ 	return ret;
+@@ -1164,8 +1146,10 @@ static const struct bpf_func_proto bpf_timer_cancel_proto = {
+ 	.arg1_type	= ARG_PTR_TO_TIMER,
+ };
+ 
+-/* This function is called by delete_element in htab and lru maps
+- * and by map_free for array, lru, htab maps.
++/* This function is called by map_delete/update_elem for individual
++ * element and by bpf_free_used_timers when prog is going away.
++ * When map is destroyed by ops->map_free all bpf_timers in there
++ * are freed.
+  */
+ void bpf_timer_cancel_and_free(void *val)
+ {
+@@ -1177,7 +1161,7 @@ void bpf_timer_cancel_and_free(void *val)
+ 	if (!t)
+ 		goto out;
+ 	/* Cancel the timer and wait for callback to complete if it was
+-	 * running. Only individual delete_element in htab or lru maps can
++	 * running. Only delete/update of individual element can
+ 	 * return 1 from hrtimer_cancel.
+ 	 * The whole map is destroyed when its refcnt reaches zero.
+ 	 * That happens after bpf prog refcnt reaches zero.
+@@ -1197,15 +1181,41 @@ void bpf_timer_cancel_and_free(void *val)
+ 	 * In non-preallocated maps timer->timer = NULL will happen after
+ 	 * callback completes, since prog execution is an RCU critical section.
+ 	 */
+-	if (this_cpu_read(hrtimer_running) != t &&
+-	    hrtimer_cancel(&t->timer) == 1)
+-		bpf_prog_put(t->prog);
++	if (this_cpu_read(hrtimer_running) != t)
++		hrtimer_cancel(&t->timer);
++
++	spin_lock(&t->prog->aux->timers_lock);
++	hlist_del_rcu(&t->hlist);
++	spin_unlock(&t->prog->aux->timers_lock);
++	t->prog = LIST_POISON1;
+ 	kfree(t);
+ 	timer->timer = NULL;
+ out:
+ 	____bpf_spin_unlock(&timer->lock);
+ }
+ 
++/* This function is called after prog->refcnt reaches zero.
++ * It's called before bpf_free_used_maps to clean up timers in maps
++ * if going away prog had callback_fn-s for them.
++ */
++void bpf_free_used_timers(struct bpf_prog_aux *aux)
++{
++	struct bpf_timer_kern *timer;
++	struct bpf_hrtimer *t;
++	struct hlist_node *n;
++
++	rcu_read_lock();
++	hlist_for_each_entry_safe(t, n, &aux->used_timers, hlist) {
++		timer = t->value + t->map->timer_off;
++		/* The map isn't going away. The 'timer' points into map
++		 * element that isn't going away either, but cancel_and_free
++		 * could be racing with parallel map_delete_elem.
++		 */
++		bpf_timer_cancel_and_free(timer);
++	}
++	rcu_read_unlock();
++}
++
+ const struct bpf_func_proto bpf_get_current_task_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
+-- 
+2.30.2
 
 
+--uw7m3mfu5sptiiin
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0002-bpf-Don-t-iterate-all-map-elements-anymore.patch"
+
+From 62d9bd33aac388c34e7fd3b411e0d40084d07f4b Mon Sep 17 00:00:00 2001
+From: Alexei Starovoitov <ast@kernel.org>
+Date: Wed, 16 Jun 2021 09:40:32 -0700
+Subject: [PATCH bpf-next 2/2] bpf: Don't iterate all map elements anymore.
+
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ kernel/bpf/arraymap.c |  7 -------
+ kernel/bpf/hashtab.c  | 11 -----------
+ 2 files changed, 18 deletions(-)
+
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 5c84ab7f8872..d82a6de65273 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -385,17 +385,10 @@ static void *array_map_vmalloc_addr(struct bpf_array *array)
+ static void array_map_free(struct bpf_map *map)
+ {
+ 	struct bpf_array *array = container_of(map, struct bpf_array, map);
+-	int i;
+ 
+ 	if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY)
+ 		bpf_array_free_percpu(array);
+ 
+-	if (unlikely(map_value_has_timer(map)))
+-		for (i = 0; i < array->map.max_entries; i++)
+-			bpf_timer_cancel_and_free(array->value +
+-						  array->elem_size * i +
+-						  map->timer_off);
+-
+ 	if (array->map.map_flags & BPF_F_MMAPABLE)
+ 		bpf_map_area_free(array_map_vmalloc_addr(array));
+ 	else
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index c885492d0a76..5e2736c46185 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -244,17 +244,6 @@ static void htab_free_elems(struct bpf_htab *htab)
+ 		cond_resched();
+ 	}
+ free_elems:
+-	if (unlikely(map_value_has_timer(&htab->map)))
+-		for (i = 0; i < htab->map.max_entries; i++) {
+-			struct htab_elem *elem;
+-
+-			elem = get_htab_elem(htab, i);
+-			bpf_timer_cancel_and_free(elem->key +
+-						  round_up(htab->map.key_size, 8) +
+-						  htab->map.timer_off);
+-			cond_resched();
+-		}
+-
+ 	bpf_map_area_free(htab->elems);
+ }
+ 
+-- 
+2.30.2
+
+
+--uw7m3mfu5sptiiin--
