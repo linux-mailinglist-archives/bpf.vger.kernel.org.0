@@ -2,157 +2,659 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660483AA536
-	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 22:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7617E3AA578
+	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 22:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbhFPUYk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 16:24:40 -0400
-Received: from mail-eopbgr670074.outbound.protection.outlook.com ([40.107.67.74]:17999
-        "EHLO CAN01-TO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233355AbhFPUYj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 16:24:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=InDD3cI4NBT8SW3YdLPqebDH1u1kxiFVeoXk8+CYX5gQTynWCb7VojV/+uP0fCR8UI6vXUQobvfxB1acREXwT7bOczwqFncaK7gJbY4gqhtf5Ku1C40DuiIeZpHWaLs4ZdXU7TKoeFrz0jOSnaOycHnOZNiOTpKxxsTQfK68MvWLMfizhSo5gAFgAi2Yrevft3NyoMe6u7dP5ZqyJRUlMxfnCoxXJ1v2kUOpBEODinTWf56u2KZ+tjnJD4tmkV/iYetN83npXx/my3kS3KkSs6KPi+rSBb/Epxbsl4+Vcl+5OklXkSqWob+n5/e1LkT9mX8RYG7k5uYCLuNY7d3hnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XsdoR0A3MM4UilHIzeQ+ZFEB8waofxmOvFqFJUG9sMw=;
- b=LeHREWajzDqp+kb23fAwiSdok94i2Oi8jvZynpq7jQppti5GYWbt47jtSZtRQONg3750djzAXXw0aeLfoms1o45QVouVaUst0muxxmwZDp0mFmg7y3cjI+CFVtaMHkDgazL0kPnRjjFmTpB0Yp/SlwK15vyUmi8E8LzYvR6VNBlJbjigJkavgZ1BaSEd1X5LzDioH5cBrpY19ZNyUIy73sJ5areOc67DJ3zcbt7NbVNS58SR1GwNMmSUlzykC9AKOCuiptnhEZqus89EFZ0NksNI4ZP2hhEUOyh3wAMxmWo8rF4rf02WzJ2vxaJe803y/Z7VzTedieSBUYr37mh5iA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=165gc.onmicrosoft.com; dmarc=pass action=none
- header.from=165gc.onmicrosoft.com; dkim=pass header.d=165gc.onmicrosoft.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=165gc.onmicrosoft.com;
- s=selector1-165gc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XsdoR0A3MM4UilHIzeQ+ZFEB8waofxmOvFqFJUG9sMw=;
- b=Q1Iz8x/wp3KLZxMFrjlIKOov7VF3ZLo9yv31ZGLWSyXddbsKdw666UJGmoZy05s4l/HHEPJQRDfs5ID8MT8VK4N2myf8TPDRR1+77MeNrtQU8HSzXUAV2U3+uuTBgBSMfLGR60IA9gjO1W5NhnVTaQpISvJUSPyQdSfvsJbBxK0=
-Received: from YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:17::24) by YQXPR01MB3863.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:52::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Wed, 16 Jun
- 2021 20:22:31 +0000
-Received: from YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::c132:2223:87d:9e86]) by YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::c132:2223:87d:9e86%6]) with mapi id 15.20.4242.019; Wed, 16 Jun 2021
- 20:22:31 +0000
-From:   Jonathan Edwards <jonathan.edwards@165gc.onmicrosoft.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: [PATCH] add multiple program checks to bpf_object__probe_loading
-Thread-Topic: [PATCH] add multiple program checks to bpf_object__probe_loading
-Thread-Index: AQHXYuz5AR1ZJMlwh0uuYAkX3/XW3A==
-Date:   Wed, 16 Jun 2021 20:22:31 +0000
-Message-ID: <YQXPR0101MB075902232E6458F07FBB78E39D0F9@YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=165gc.onmicrosoft.com;
-x-originating-ip: [174.91.65.25]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bb71a9f0-b8d5-4dff-2e87-08d931047845
-x-ms-traffictypediagnostic: YQXPR01MB3863:
-x-microsoft-antispam-prvs: <YQXPR01MB3863E09FCCA1AC3BC7A8B1BB9D0F9@YQXPR01MB3863.CANPRD01.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: caFfwudiUr4BVqI9F22L4Ak0Q7oa/aYAlVhJi9Co0OdRVZZQXdszISdZNxMVdxc3ZElJgW5PGxpBom4EJ5Pn8bE01tWvG78fqi8ejhF5Z7eRQuPXk2DwOY4TDkX3kIna/HZ2HVjc4LotLvf557r1rcxq/zoVuPpk3hsyW4/irvzX0Oz7AhI0PUoDhI2Bd+UN6YyIwsG0gCNfpJiRMmQVMVNLQFzD7C4u+Y4kdTPEZUVe4nrlfHlPT77Ut3CvSzusvmbSCEplYMqc2B2xExfI0duMCSJtgAoECrmhPu1H5GHHNGAK2AE5DhXYyeD8mzALlJi4YJ2iBNLShxB1owgxHawMW+T0OdAA46TAiwtts8/5TZdnsQzr6IbFAfjuvLVJhKeuXWkHvEyCf5tN8XEhYl2fgvjItChNtb1+TOWBQSw4wfoydqu9FJQqgPsrxPLd94EIh+tKwJa3/71zlpOZzuQf4P/lVGdBhNjWJ18CvEeQSWphumsB8cDXded9POmyVeK5IDOjpoqGClYVOMRy+Uql2aM5g7An1nOEV484qf45PIW89xD3TyTodT7eVvtTmwfNMzywuHzjmieeEpRk5EBDuGnKGVCe5G6TGAPXqMQR2PtnkoCEQKBmsb0qwrTru+0M0bGzXNL0alYMhlKmgHMWlNr3kqdaCa1GJfrWh8nno6IsxfHDvVLnc5pAC8OgNTX5+PTzYFj/rH23Kgic6AGYUCTTVn5jPLA7Mxc0hwk7fl36v5Vb6NkC7ZzO0M8G3qD38e4pATFi/aVzZDyAlw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(396003)(136003)(39830400003)(122000001)(38100700002)(66446008)(76116006)(64756008)(6916009)(55016002)(966005)(66556008)(66946007)(7696005)(44832011)(316002)(66476007)(33656002)(5660300002)(83380400001)(52536014)(478600001)(86362001)(6506007)(186003)(71200400001)(8936002)(2906002)(26005)(8676002)(9686003)(101420200003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?vJLj1aythin9ysJqzENTNmTENv76nQ1y0L8rd2CecFgQ5xHi5P+IgsruGf?=
- =?iso-8859-1?Q?7+20yOnVgwSvZ0mbDzusGG6dtMu2hMozv5SfRwtZLF8MfIz/uwlbWW74rK?=
- =?iso-8859-1?Q?cCL2Flt560bUFmOtHrKIyuklfw6rZbC+7xer2C4uakmI72EeESPYrWrJTY?=
- =?iso-8859-1?Q?MQCh9/wm03FL12fVoFMfaOFCsAs6XF7im67Q4evibLYUpyyBlvUEn9KiX0?=
- =?iso-8859-1?Q?Im/X05fV7JIsDqS/tGrBFf8VTJxY06djol/JqTtWO5mDOxkzpahVRCmcvs?=
- =?iso-8859-1?Q?wPVw9HKRljwuA9riv81F/G4NoyBjYAV9z6GeKYtOJXABQ+qDp93YHn6Vfg?=
- =?iso-8859-1?Q?1BM+2dVxX0rP2pmn+11T7W/7wECvKAzFGglLgOTGLZxNGz3x5wObjZ1KkC?=
- =?iso-8859-1?Q?IezSOPoD6u3RRBK9+yp569K7pqwj4gsLlLBI0nJb616FwXinvS528Jew4v?=
- =?iso-8859-1?Q?DNQ9RPBVkHMLgbbgSferKa7NRCLWyMIGNIZg5TRDNMUFYuPYIdH9VYu8xH?=
- =?iso-8859-1?Q?JNg/VL7gOtyFjd2CCO63XD4r9UzqYMo8Tn5drwuQsuWrYNxNr3nqJ/gYte?=
- =?iso-8859-1?Q?JK5Cg5BmZeYv4TYhK+mlKvMCakeC1FULD5zguKqZ2Wyo2Zyg4AZ8g0kJUr?=
- =?iso-8859-1?Q?rAIycqRBSzbGOB4mEiyhZHev4kKJ/mb84twjy1r8LkPulqARFqUh1LwbSY?=
- =?iso-8859-1?Q?M2tJVi/aF310Kh6waCP0DCNqk5Vu6SuYQ2cwRUsYCbI2Ac7yDtJT3RD/WE?=
- =?iso-8859-1?Q?QAk7He4TjahsKDAQQ1kY07Xrmlx3aRiBQ8B8i/rGW44p8KFuBQb+jl7Ex3?=
- =?iso-8859-1?Q?qUhYDw45UQK/jfg9ehHzbD28WKOPCDkEo3FJJ/snUx+3b3K5MmgbzBmMAL?=
- =?iso-8859-1?Q?YRCws6Vy6lLHvhn68L+r7vNQHGQpBibEU4//zWkzhXhjIX0kW/O5fhMI58?=
- =?iso-8859-1?Q?GWzc3RRh5RFvf7TSdqy8tyBWugH/4zmlXaO+SCCrCso3W7unILnI5spkh/?=
- =?iso-8859-1?Q?h3Zpn8aeZJ6n42FyAyPyULnifKacISJeUF/E5j0xFY1kS+w0MMNRg061qd?=
- =?iso-8859-1?Q?XgVeq2rrCRTkoDl2Uh90ZqO+Q/UbYIEBcagMGqQV3Hjap8gCDluB6KLDzt?=
- =?iso-8859-1?Q?2InAUKEs6xtIqfAPwsGkl66DBtRg67I6Q/dTQzdA26tvbK001UbycM0/xh?=
- =?iso-8859-1?Q?DR56akV7CIqCmT1rQr2DMZgcnPVrGfztlxoye8WeEh3m3fjv5IhF6b4SoE?=
- =?iso-8859-1?Q?OPC7RfVqJJm7RgrrcMJUMczddLTDRXkvHQpIcO25YDMViC7z8+SVri/kiQ?=
- =?iso-8859-1?Q?mU9Lhuh4TDjr5AzDm9wXSANRLczg5fVrpClm2lXTPh7YXrU=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S233619AbhFPUnL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 16:43:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233560AbhFPUnK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Jun 2021 16:43:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0F9A60E0C;
+        Wed, 16 Jun 2021 20:41:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623876064;
+        bh=KmW42j0lY37frPzLWSsOjgAKagvdJ/9QUMIBxr5v/rM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=meYIYVGxk4/Ji0OtCTGexR+2wh3T8S9yfr9Qh1gnkhnClZ6Fu6ZnaIc53Jhtnss/7
+         +DR8SF8D7Y9OMhqo4153kBfq195FBmLAzSiXTR4GkeCdyQLDLnS4Z4tJ643lEqQAvX
+         8ztAd6jPsAZOUORW97SVAnfBUoPZbUkKrS6OxuteV7FZ/tIbNHeVJtgYtmaQysvhp3
+         TviZD2oTPoU1B9MhbCckWs2BHIyFpWvXar7HlwNYVQebB8NeNzJmarAWb24Vf89PGt
+         a/yp177uZsH8PxJqUJJrKC5M1ziXFc/9JnkLKaY8H7RvX5PRDPMbgLFtn3uyAYczad
+         uFxQvrIBaJ5rg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3881440B1A; Wed, 16 Jun 2021 17:41:01 -0300 (-03)
+Date:   Wed, 16 Jun 2021 17:41:01 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org, siudin@fb.com
+Subject: Re: latest pahole breaks libbpf CI and let's talk about staging
+Message-ID: <YMph3VeKA1Met65X@kernel.org>
+References: <CAEf4BzZnZN2mt4+5F-00ggO9YHWrL3Jru_u3Qt2JJ+SMkHwg+w@mail.gmail.com>
+ <YMoRBvTdD0qzjYf4@kernel.org>
+ <YMopYxHgmoNVd3Yl@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: 165gc.onmicrosoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb71a9f0-b8d5-4dff-2e87-08d931047845
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jun 2021 20:22:31.6036
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: fa9b7bc4-84f2-4ea2-932a-26ca2f5fb014
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dq9e4c+Ake6UUIY05Ov/DR54yEWfiUDMetnrsGk+bM7RWjqw6oNgAR3D3MWcCdEXqWgGBVWRSq7wnydZsMWImrX9WPnPlEuBawiERO4uhUcZVsAWZNHJ+HNFELZbIXle
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YQXPR01MB3863
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YMopYxHgmoNVd3Yl@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-eBPF has been backported for RHEL 7 w/ kernel 3.10-940+ (https://www.redhat=
-.com/en/blog/introduction-ebpf-red-hat-enterprise-linux-7).=0A=
-=0A=
-However only the following program types are supported (https://access.redh=
-at.com/articles/3550581)=0A=
-=0A=
-BPF_PROG_TYPE_KPROBE=0A=
-BPF_PROG_TYPE_TRACEPOINT=0A=
-BPF_PROG_TYPE_PERF_EVENT=0A=
-=0A=
-Source is here: https://access.redhat.com/labs/rhcb/RHEL-7.9/kernel-3.10.0-=
-1160.25.1.el7/sources/raw/kernel/bpf/syscall.c#_code.1177=0A=
-=0A=
-For libbpf 0.4.0 (db9614b6bd69746809d506c2786f914b0f812c37) this causes an =
-EINVAL return during the bpf_object__probe_loading call which only checks t=
-o see if programs of type BPF_PROG_TYPE_SOCKET_FILTER can load as a test.=
-=0A=
-=0A=
-Quick discussion with anakryiko (https://github.com/libbpf/libbpf/issues/32=
-0) indicated a preference for trying to load multiple program types before =
-failing (e.g SOCKET_FILTER, then KPROBE). On older kernels KPROBE requires =
-attr.kern_version =3D=3D LINUX_VERSION_CODE, which may not always be availa=
-ble (out of tree builds). TRACEPOINT will work without needing to know the =
-version. We can use multiple tests.=0A=
-=0A=
-The following suggestion will try multiple program types and return success=
-fully if one passes. TRACEPOINT works for the ebpf backport for RHEL 7, KPR=
-OBE on newer kernels (e.g 5+)=0A=
-=0A=
----=0A=
- src/libbpf.c | 6 ++++++=0A=
- 1 file changed, 6 insertions(+)=0A=
-=0A=
-diff --git a/src/libbpf.c b/src/libbpf.c=0A=
-index 5e13c9d..c33acf1 100644=0A=
---- a/src/libbpf.c=0A=
-+++ b/src/libbpf.c=0A=
-@@ -4002,6 +4002,12 @@ bpf_object__probe_loading(struct bpf_object *obj)=0A=
- 	attr.license =3D "GPL";=0A=
- =0A=
- 	ret =3D bpf_load_program_xattr(&attr, NULL, 0);=0A=
-+=0A=
-+	attr.prog_type =3D BPF_PROG_TYPE_KPROBE;=0A=
-+	ret =3D (ret < 0) ? bpf_load_program_xattr(&attr, NULL, 0) : ret;=0A=
-+	attr.prog_type =3D BPF_PROG_TYPE_TRACEPOINT;=0A=
-+	ret =3D (ret < 0) ? bpf_load_program_xattr(&attr, NULL, 0) : ret;=0A=
-+=0A=
- 	if (ret < 0) {=0A=
- 		ret =3D errno;=0A=
- 		cp =3D libbpf_strerror_r(ret, errmsg, sizeof(errmsg));=0A=
--- =0A=
-2.17.1=0A=
+Em Wed, Jun 16, 2021 at 01:40:03PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Jun 16, 2021 at 11:56:06AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Tue, Jun 15, 2021 at 04:30:03PM -0700, Andrii Nakryiko escreveu:
+> > > Hey Arnaldo,
+
+> > > Seems like de3a7f912559 ("btf_encoder: Reduce the size of encode_cu()
+> > > by moving function encoding to separate method") break two selftests
+> > > in libbpf CI (see [0]). Please take a look. I suspect some bad BTF,
+> > > because both tests rely on kernel BTF info.
+
+> > > You've previously asked about staging pahole changes. Did you make up
+> > > your mind about branch names and the process overall? Seems like a
+> > > good chance to bring this up ;-P
+
+> > >   [0] https://travis-ci.com/github/libbpf/libbpf/jobs/514329152
+
+> > Ok, please add tmp.master as the staging branch, I'll move things to
+> > master only after it passing thru CI.
+
+> > Now looking at that code, must be something subtle...
+
+> Running selftests I'm getting a failure at:
+
+>   GEN-SKEL [test_progs] bpf_cubic.skel.h
+> libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
+> Error: failed to open BPF object file: No such file or directory
+> make: *** [Makefile:460: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 255
+> make: *** Deleting file '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h'
+> make: Leaving directory '/mnt/linux/tools/testing/selftests/bpf'
+> [acme@seventh linux]$
+ 
+> I'll try to reproduce what you reported, i.e. revert that patch, and
+> rebuild the kernel.
+
+I tried with 1.21 plus that ftrace fix but I still get:
+
+[acme@seventh linux]$ uname -a
+Linux seventh 5.13.0-rc6.pahole-58a98f76ac95b1bb+ #1 SMP Wed Jun 16 15:47:50 -03 2021 x86_64 x86_64 x86_64 GNU/Linux
+
+Which is pahole build up to:
+
+⬢[acme@toolbox pahole]$ git log --oneline -4 58a98f76ac95b1bb
+58a98f76ac95b1bb btf: Remove ftrace filter
+7c60b0443cb01795 pahole: Fix error message when --header couldn't be read
+7eea706c14997b4f pahole: Introduce --with_flexible_array option to show just types ending in a flexible array
+25ad41e7b52e3ad6 (tag: v1.21) pahole: Prep 1.21
+⬢[acme@toolbox pahole]$
+
+But selftests is still failing at:
+
+[acme@seventh linux]$ sudo make -C tools/testing/selftests/bpf/ clean > /dev/null 2>&1
+[sudo] password for acme:
+[acme@seventh linux]$ sudo make -C tools/testing/selftests/bpf/ clean > /dev/null 2>&1
+[acme@seventh linux]$ sudo make -C tools/testing/selftests/bpf/ | tail
+Warning: Kernel ABI header at 'tools/include/uapi/linux/netlink.h' differs from latest version at 'include/uapi/linux/netlink.h'
+Warning: Kernel ABI header at 'tools/include/uapi/linux/if_link.h' differs from latest version at 'include/uapi/linux/if_link.h'
+libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
+libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
+libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
+Error: failed to open BPF object file: No such file or directory
+make: *** [Makefile:460: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 255
+make: *** Deleting file '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h'
+  CLNG-BPF [test_maps] xdping_kern.o
+  CLNG-BPF [test_maps] xdp_redirect_map.o
+  CLNG-BPF [test_maps] xdp_tx.o
+  GEN-SKEL [test_progs] atomic_bounds.skel.h
+  GEN-SKEL [test_progs] atomics.skel.h
+  GEN-SKEL [test_progs] bind4_prog.skel.h
+  GEN-SKEL [test_progs] bind6_prog.skel.h
+  GEN-SKEL [test_progs] bind_perm.skel.h
+  GEN-SKEL [test_progs] bpf_cubic.skel.h
+make: Leaving directory '/mnt/linux/tools/testing/selftests/bpf'
+[acme@seventh linux]$
+
+And if I use pahole's BTF loader I find the info about that function:
+
+[acme@seventh linux]$ strace -e openat -o /tmp/bla pfunct -F btf tcp_cong_avoid_ai  ; grep vmlinux /tmp/bla
+void tcp_cong_avoid_ai(struct tcp_sock * tp, u32 w, u32 acked);
+openat(AT_FDCWD, "/sys/kernel/btf/vmlinux", O_RDONLY) = 3
+
+So this should be unrelated to the breakage you noticed in the CI.
+
+I'm trying to to reproduce the CI breakage by building the kernel and
+running selftests after a reboot.
+
+I suspect I'm missing something, can you see what it is?
+
+- Arnaldo
+ 
+> [acme@seventh linux]$ uname -a
+> Linux seventh 5.13.0-rc6+ #1 SMP Wed Jun 16 11:59:35 -03 2021 x86_64 x86_64 x86_64 GNU/Linux
+> 
+> [acme@seventh linux]$ sudo make -C tools/testing/selftests/bpf/
+> make: Entering directory '/mnt/linux/tools/testing/selftests/bpf'
+>   MKDIR    include
+>   MKDIR    libbpf
+>   HOSTCC  /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/fixdep.o
+>   HOSTLD  /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/fixdep-in.o
+>   LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/fixdep
+>   GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/bpf_helper_defs.h
+>   MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/libbpf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/bpf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/nlattr.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/btf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/libbpf_errno.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/str_error.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/netlink.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/bpf_prog_linfo.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/libbpf_probes.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/xsk.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/hashmap.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/btf_dump.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/ringbuf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/strset.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/linker.o
+>   LD      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/staticobjs/libbpf-in.o
+>   LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a
+> Warning: Kernel ABI header at 'tools/include/uapi/linux/netlink.h' differs from latest version at 'include/uapi/linux/netlink.h'
+> Warning: Kernel ABI header at 'tools/include/uapi/linux/if_link.h' differs from latest version at 'include/uapi/linux/if_link.h'
+>   MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/libbpf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/bpf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/nlattr.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/btf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/libbpf_errno.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/str_error.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/netlink.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/bpf_prog_linfo.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/libbpf_probes.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/xsk.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/hashmap.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/btf_dump.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/ringbuf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/strset.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/linker.o
+>   LD      /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/libbpf-in.o
+>   LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.so.0.4.0
+>   GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.pc
+>   INSTALL headers
+>   CC       test_stub.o
+>   BINARY   test_verifier
+>   BINARY   test_tag
+>   MKDIR    bpftool
+> 
+> Auto-detecting system features:
+> ...                        libbfd: [ on  ]
+> ...        disassembler-four-args: [ on  ]
+> ...                          zlib: [ on  ]
+> ...                        libcap: [ on  ]
+> ...               clang-bpf-co-re: [ on  ]
+> 
+> 
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/btf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/btf_dumper.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/cfg.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/cgroup.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/common.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/feature.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/gen.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/iter.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/json_writer.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/link.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/main.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/map.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/map_perf_ring.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/net.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/netlink_dumper.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/perf.o
+>   MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/main.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/common.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/json_writer.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/gen.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/btf.o
+>   MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/
+>   GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/bpf_helper_defs.h
+>   MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/libbpf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/bpf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/nlattr.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/btf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/libbpf_errno.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/str_error.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/netlink.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/bpf_prog_linfo.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/libbpf_probes.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/xsk.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/hashmap.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/btf_dump.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/ringbuf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/strset.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/linker.o
+>   LD      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/staticobjs/libbpf-in.o
+>   LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/libbpf/libbpf.a
+>   LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//bootstrap/bpftool
+>   GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/vmlinux.h
+>   MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/
+>   GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/bpf_helper_defs.h
+>   MKDIR   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/libbpf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/bpf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/nlattr.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/btf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/libbpf_errno.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/str_error.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/netlink.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/bpf_prog_linfo.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/libbpf_probes.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/xsk.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/hashmap.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/btf_dump.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/ringbuf.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/strset.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/linker.o
+>   LD      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/staticobjs/libbpf-in.o
+>   LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool//libbpf/libbpf.a
+>   CLANG   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/pid_iter.bpf.o
+>   GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/pid_iter.skel.h
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/pids.o
+>   CLANG   /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/profiler.bpf.o
+>   GEN     /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/profiler.skel.h
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/prog.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/struct_ops.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/tracelog.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/xlated_dumper.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/jit_disasm.o
+>   CC      /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/disasm.o
+>   LINK    /mnt/linux/tools/testing/selftests/bpf/tools/build/bpftool/bpftool
+>   INSTALL bpftool
+>   GEN      vmlinux.h
+>   CLNG-BPF [test_maps] atomic_bounds.o
+>   CLNG-BPF [test_maps] atomics.o
+>   CLNG-BPF [test_maps] bind4_prog.o
+>   CLNG-BPF [test_maps] bind6_prog.o
+>   CLNG-BPF [test_maps] bind_perm.o
+>   CLNG-BPF [test_maps] bpf_cubic.o
+>   CLNG-BPF [test_maps] bpf_dctcp.o
+>   CLNG-BPF [test_maps] bpf_flow.o
+>   CLNG-BPF [test_maps] bpf_iter_bpf_array_map.o
+>   CLNG-BPF [test_maps] bpf_iter_bpf_hash_map.o
+>   CLNG-BPF [test_maps] bpf_iter_bpf_map.o
+>   CLNG-BPF [test_maps] bpf_iter_bpf_percpu_array_map.o
+>   CLNG-BPF [test_maps] bpf_iter_bpf_percpu_hash_map.o
+>   CLNG-BPF [test_maps] bpf_iter_bpf_sk_storage_helpers.o
+>   CLNG-BPF [test_maps] bpf_iter_bpf_sk_storage_map.o
+>   CLNG-BPF [test_maps] bpf_iter_ipv6_route.o
+>   CLNG-BPF [test_maps] bpf_iter_netlink.o
+>   CLNG-BPF [test_maps] bpf_iter_sockmap.o
+>   CLNG-BPF [test_maps] bpf_iter_task_btf.o
+>   CLNG-BPF [test_maps] bpf_iter_task.o
+>   CLNG-BPF [test_maps] bpf_iter_task_file.o
+>   CLNG-BPF [test_maps] bpf_iter_task_stack.o
+>   CLNG-BPF [test_maps] bpf_iter_task_vma.o
+>   CLNG-BPF [test_maps] bpf_iter_tcp4.o
+>   CLNG-BPF [test_maps] bpf_iter_tcp6.o
+>   CLNG-BPF [test_maps] bpf_iter_test_kern1.o
+>   CLNG-BPF [test_maps] bpf_iter_test_kern2.o
+>   CLNG-BPF [test_maps] bpf_iter_test_kern3.o
+>   CLNG-BPF [test_maps] bpf_iter_test_kern4.o
+>   CLNG-BPF [test_maps] bpf_iter_test_kern5.o
+>   CLNG-BPF [test_maps] bpf_iter_test_kern6.o
+>   CLNG-BPF [test_maps] bpf_iter_udp4.o
+>   CLNG-BPF [test_maps] bpf_iter_udp6.o
+>   CLNG-BPF [test_maps] bpf_tcp_nogpl.o
+>   CLNG-BPF [test_maps] bprm_opts.o
+>   CLNG-BPF [test_maps] btf__core_reloc_arrays.o
+>   CLNG-BPF [test_maps] btf__core_reloc_arrays___diff_arr_dim.o
+>   CLNG-BPF [test_maps] btf__core_reloc_arrays___diff_arr_val_sz.o
+>   CLNG-BPF [test_maps] btf__core_reloc_arrays___equiv_zero_sz_arr.o
+>   CLNG-BPF [test_maps] btf__core_reloc_arrays___err_bad_zero_sz_arr.o
+>   CLNG-BPF [test_maps] btf__core_reloc_arrays___err_non_array.o
+>   CLNG-BPF [test_maps] btf__core_reloc_arrays___err_too_shallow.o
+>   CLNG-BPF [test_maps] btf__core_reloc_arrays___err_too_small.o
+>   CLNG-BPF [test_maps] btf__core_reloc_arrays___err_wrong_val_type.o
+>   CLNG-BPF [test_maps] btf__core_reloc_arrays___fixed_arr.o
+>   CLNG-BPF [test_maps] btf__core_reloc_bitfields___bitfield_vs_int.o
+>   CLNG-BPF [test_maps] btf__core_reloc_bitfields___bit_sz_change.o
+>   CLNG-BPF [test_maps] btf__core_reloc_bitfields.o
+>   CLNG-BPF [test_maps] btf__core_reloc_bitfields___err_too_big_bitfield.o
+>   CLNG-BPF [test_maps] btf__core_reloc_bitfields___just_big_enough.o
+>   CLNG-BPF [test_maps] btf__core_reloc_enumval.o
+>   CLNG-BPF [test_maps] btf__core_reloc_enumval___diff.o
+>   CLNG-BPF [test_maps] btf__core_reloc_enumval___err_missing.o
+>   CLNG-BPF [test_maps] btf__core_reloc_enumval___val3_missing.o
+>   CLNG-BPF [test_maps] btf__core_reloc_existence.o
+>   CLNG-BPF [test_maps] btf__core_reloc_existence___minimal.o
+>   CLNG-BPF [test_maps] btf__core_reloc_existence___wrong_field_defs.o
+>   CLNG-BPF [test_maps] btf__core_reloc_flavors.o
+>   CLNG-BPF [test_maps] btf__core_reloc_flavors__err_wrong_name.o
+>   CLNG-BPF [test_maps] btf__core_reloc_ints___bool.o
+>   CLNG-BPF [test_maps] btf__core_reloc_ints.o
+>   CLNG-BPF [test_maps] btf__core_reloc_ints___reverse_sign.o
+>   CLNG-BPF [test_maps] btf__core_reloc_misc.o
+>   CLNG-BPF [test_maps] btf__core_reloc_mods.o
+>   CLNG-BPF [test_maps] btf__core_reloc_mods___mod_swap.o
+>   CLNG-BPF [test_maps] btf__core_reloc_mods___typedefs.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___anon_embed.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___dup_compat_types.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___err_array_container.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___err_array_field.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___err_dup_incompat_types.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___err_missing_container.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___err_missing_field.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___err_nonstruct_container.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___err_partial_match_dups.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___err_too_deep.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___extra_nesting.o
+>   CLNG-BPF [test_maps] btf__core_reloc_nesting___struct_union_mixup.o
+>   CLNG-BPF [test_maps] btf__core_reloc_primitives.o
+>   CLNG-BPF [test_maps] btf__core_reloc_primitives___diff_enum_def.o
+>   CLNG-BPF [test_maps] btf__core_reloc_primitives___diff_func_proto.o
+>   CLNG-BPF [test_maps] btf__core_reloc_primitives___diff_ptr_type.o
+>   CLNG-BPF [test_maps] btf__core_reloc_primitives___err_non_enum.o
+>   CLNG-BPF [test_maps] btf__core_reloc_primitives___err_non_int.o
+>   CLNG-BPF [test_maps] btf__core_reloc_primitives___err_non_ptr.o
+>   CLNG-BPF [test_maps] btf__core_reloc_ptr_as_arr.o
+>   CLNG-BPF [test_maps] btf__core_reloc_ptr_as_arr___diff_sz.o
+>   CLNG-BPF [test_maps] btf__core_reloc_size.o
+>   CLNG-BPF [test_maps] btf__core_reloc_size___diff_sz.o
+>   CLNG-BPF [test_maps] btf__core_reloc_size___err_ambiguous.o
+>   CLNG-BPF [test_maps] btf__core_reloc_type_based___all_missing.o
+>   CLNG-BPF [test_maps] btf__core_reloc_type_based.o
+>   CLNG-BPF [test_maps] btf__core_reloc_type_based___diff_sz.o
+>   CLNG-BPF [test_maps] btf__core_reloc_type_based___fn_wrong_args.o
+>   CLNG-BPF [test_maps] btf__core_reloc_type_based___incompat.o
+>   CLNG-BPF [test_maps] btf__core_reloc_type_id.o
+>   CLNG-BPF [test_maps] btf__core_reloc_type_id___missing_targets.o
+>   CLNG-BPF [test_maps] btf_data.o
+>   CLNG-BPF [test_maps] btf_dump_test_case_bitfields.o
+>   CLNG-BPF [test_maps] btf_dump_test_case_multidim.o
+>   CLNG-BPF [test_maps] btf_dump_test_case_namespacing.o
+>   CLNG-BPF [test_maps] btf_dump_test_case_ordering.o
+>   CLNG-BPF [test_maps] btf_dump_test_case_packing.o
+>   CLNG-BPF [test_maps] btf_dump_test_case_padding.o
+>   CLNG-BPF [test_maps] btf_dump_test_case_syntax.o
+>   CLNG-BPF [test_maps] cgroup_skb_sk_lookup_kern.o
+>   CLNG-BPF [test_maps] cg_storage_multi_egress_only.o
+>   CLNG-BPF [test_maps] cg_storage_multi_isolated.o
+>   CLNG-BPF [test_maps] cg_storage_multi_shared.o
+>   CLNG-BPF [test_maps] connect4_prog.o
+>   CLNG-BPF [test_maps] connect6_prog.o
+>   CLNG-BPF [test_maps] connect_force_port4.o
+>   CLNG-BPF [test_maps] connect_force_port6.o
+>   CLNG-BPF [test_maps] dev_cgroup.o
+>   CLNG-BPF [test_maps] fentry_test.o
+>   CLNG-BPF [test_maps] fexit_bpf2bpf.o
+>   CLNG-BPF [test_maps] fexit_bpf2bpf_simple.o
+>   CLNG-BPF [test_maps] fexit_sleep.o
+>   CLNG-BPF [test_maps] fexit_test.o
+>   CLNG-BPF [test_maps] fmod_ret_freplace.o
+>   CLNG-BPF [test_maps] for_each_array_map_elem.o
+>   CLNG-BPF [test_maps] for_each_hash_map_elem.o
+>   CLNG-BPF [test_maps] freplace_attach_probe.o
+>   CLNG-BPF [test_maps] freplace_cls_redirect.o
+>   CLNG-BPF [test_maps] freplace_connect4.o
+>   CLNG-BPF [test_maps] freplace_connect_v4_prog.o
+>   CLNG-BPF [test_maps] freplace_get_constant.o
+>   CLNG-BPF [test_maps] get_cgroup_id_kern.o
+>   CLNG-BPF [test_maps] ima.o
+>   CLNG-BPF [test_maps] kfree_skb.o
+>   CLNG-BPF [test_maps] kfunc_call_test.o
+>   CLNG-BPF [test_maps] kfunc_call_test_subprog.o
+>   CLNG-BPF [test_maps] linked_funcs1.o
+>   CLNG-BPF [test_maps] linked_funcs2.o
+>   CLNG-BPF [test_maps] linked_maps1.o
+>   CLNG-BPF [test_maps] linked_maps2.o
+>   CLNG-BPF [test_maps] linked_vars1.o
+>   CLNG-BPF [test_maps] linked_vars2.o
+>   CLNG-BPF [test_maps] load_bytes_relative.o
+>   CLNG-BPF [test_maps] local_storage.o
+>   CLNG-BPF [test_maps] loop1.o
+>   CLNG-BPF [test_maps] loop2.o
+>   CLNG-BPF [test_maps] loop3.o
+>   CLNG-BPF [test_maps] loop4.o
+>   CLNG-BPF [test_maps] loop5.o
+>   CLNG-BPF [test_maps] loop6.o
+>   CLNG-BPF [test_maps] lsm.o
+>   CLNG-BPF [test_maps] map_ptr_kern.o
+>   CLNG-BPF [test_maps] metadata_unused.o
+>   CLNG-BPF [test_maps] metadata_used.o
+>   CLNG-BPF [test_maps] modify_return.o
+>   CLNG-BPF [test_maps] netcnt_prog.o
+>   CLNG-BPF [test_maps] netif_receive_skb.o
+>   CLNG-BPF [test_maps] perfbuf_bench.o
+>   CLNG-BPF [test_maps] perf_event_stackmap.o
+>   CLNG-BPF [test_maps] profiler1.o
+>   CLNG-BPF [test_maps] profiler2.o
+>   CLNG-BPF [test_maps] profiler3.o
+>   CLNG-BPF [test_maps] pyperf100.o
+>   CLNG-BPF [test_maps] pyperf180.o
+>   CLNG-BPF [test_maps] pyperf50.o
+>   CLNG-BPF [test_maps] pyperf600.o
+>   CLNG-BPF [test_maps] pyperf600_nounroll.o
+>   CLNG-BPF [test_maps] pyperf_global.o
+>   CLNG-BPF [test_maps] pyperf_subprogs.o
+>   CLNG-BPF [test_maps] recursion.o
+>   CLNG-BPF [test_maps] recvmsg4_prog.o
+>   CLNG-BPF [test_maps] recvmsg6_prog.o
+>   CLNG-BPF [test_maps] ringbuf_bench.o
+>   CLNG-BPF [test_maps] sample_map_ret0.o
+>   CLNG-BPF [test_maps] sample_ret0.o
+>   CLNG-BPF [test_maps] sendmsg4_prog.o
+>   CLNG-BPF [test_maps] sendmsg6_prog.o
+>   CLNG-BPF [test_maps] skb_pkt_end.o
+>   CLNG-BPF [test_maps] socket_cookie_prog.o
+>   CLNG-BPF [test_maps] sockmap_parse_prog.o
+>   CLNG-BPF [test_maps] sockmap_tcp_msg_prog.o
+>   CLNG-BPF [test_maps] sockmap_verdict_prog.o
+>   CLNG-BPF [test_maps] sockopt_inherit.o
+>   CLNG-BPF [test_maps] sockopt_multi.o
+>   CLNG-BPF [test_maps] sockopt_sk.o
+>   CLNG-BPF [test_maps] strobemeta.o
+>   CLNG-BPF [test_maps] strobemeta_nounroll1.o
+>   CLNG-BPF [test_maps] strobemeta_nounroll2.o
+>   CLNG-BPF [test_maps] strobemeta_subprogs.o
+>   CLNG-BPF [test_maps] tailcall1.o
+>   CLNG-BPF [test_maps] tailcall2.o
+>   CLNG-BPF [test_maps] tailcall3.o
+>   CLNG-BPF [test_maps] tailcall4.o
+>   CLNG-BPF [test_maps] tailcall5.o
+>   CLNG-BPF [test_maps] tailcall_bpf2bpf1.o
+>   CLNG-BPF [test_maps] tailcall_bpf2bpf2.o
+>   CLNG-BPF [test_maps] tailcall_bpf2bpf3.o
+>   CLNG-BPF [test_maps] tailcall_bpf2bpf4.o
+>   CLNG-BPF [test_maps] task_local_storage.o
+>   CLNG-BPF [test_maps] task_local_storage_exit_creds.o
+>   CLNG-BPF [test_maps] task_ls_recursion.o
+>   CLNG-BPF [test_maps] tcp_rtt.o
+>   CLNG-BPF [test_maps] test_attach_probe.o
+>   CLNG-BPF [test_maps] test_autoload.o
+>   CLNG-BPF [test_maps] test_btf_haskv.o
+>   CLNG-BPF [test_maps] test_btf_map_in_map.o
+>   CLNG-BPF [test_maps] test_btf_newkv.o
+>   CLNG-BPF [test_maps] test_btf_nokv.o
+>   CLNG-BPF [test_maps] test_btf_skc_cls_ingress.o
+>   CLNG-BPF [test_maps] test_cgroup_link.o
+>   CLNG-BPF [test_maps] test_check_mtu.o
+>   CLNG-BPF [test_maps] test_cls_redirect.o
+>   CLNG-BPF [test_maps] test_cls_redirect_subprogs.o
+>   CLNG-BPF [test_maps] test_core_autosize.o
+>   CLNG-BPF [test_maps] test_core_extern.o
+>   CLNG-BPF [test_maps] test_core_read_macros.o
+>   CLNG-BPF [test_maps] test_core_reloc_arrays.o
+>   CLNG-BPF [test_maps] test_core_reloc_bitfields_direct.o
+>   CLNG-BPF [test_maps] test_core_reloc_bitfields_probed.o
+>   CLNG-BPF [test_maps] test_core_reloc_enumval.o
+>   CLNG-BPF [test_maps] test_core_reloc_existence.o
+>   CLNG-BPF [test_maps] test_core_reloc_flavors.o
+>   CLNG-BPF [test_maps] test_core_reloc_ints.o
+>   CLNG-BPF [test_maps] test_core_reloc_kernel.o
+>   CLNG-BPF [test_maps] test_core_reloc_misc.o
+>   CLNG-BPF [test_maps] test_core_reloc_mods.o
+>   CLNG-BPF [test_maps] test_core_reloc_module.o
+>   CLNG-BPF [test_maps] test_core_reloc_nesting.o
+>   CLNG-BPF [test_maps] test_core_reloc_primitives.o
+>   CLNG-BPF [test_maps] test_core_reloc_ptr_as_arr.o
+>   CLNG-BPF [test_maps] test_core_reloc_size.o
+>   CLNG-BPF [test_maps] test_core_reloc_type_based.o
+>   CLNG-BPF [test_maps] test_core_reloc_type_id.o
+>   CLNG-BPF [test_maps] test_core_retro.o
+>   CLNG-BPF [test_maps] test_d_path.o
+>   CLNG-BPF [test_maps] test_enable_stats.o
+>   CLNG-BPF [test_maps] test_endian.o
+>   CLNG-BPF [test_maps] test_get_stack_rawtp.o
+>   CLNG-BPF [test_maps] test_get_stack_rawtp_err.o
+>   CLNG-BPF [test_maps] test_global_data.o
+>   CLNG-BPF [test_maps] test_global_func10.o
+>   CLNG-BPF [test_maps] test_global_func11.o
+>   CLNG-BPF [test_maps] test_global_func12.o
+>   CLNG-BPF [test_maps] test_global_func13.o
+>   CLNG-BPF [test_maps] test_global_func14.o
+>   CLNG-BPF [test_maps] test_global_func15.o
+>   CLNG-BPF [test_maps] test_global_func16.o
+>   CLNG-BPF [test_maps] test_global_func1.o
+>   CLNG-BPF [test_maps] test_global_func2.o
+>   CLNG-BPF [test_maps] test_global_func3.o
+>   CLNG-BPF [test_maps] test_global_func4.o
+>   CLNG-BPF [test_maps] test_global_func5.o
+>   CLNG-BPF [test_maps] test_global_func6.o
+>   CLNG-BPF [test_maps] test_global_func7.o
+>   CLNG-BPF [test_maps] test_global_func8.o
+>   CLNG-BPF [test_maps] test_global_func9.o
+>   CLNG-BPF [test_maps] test_global_func_args.o
+>   CLNG-BPF [test_maps] test_hash_large_key.o
+>   CLNG-BPF [test_maps] test_ksyms_btf.o
+>   CLNG-BPF [test_maps] test_ksyms_btf_null_check.o
+>   CLNG-BPF [test_maps] test_ksyms.o
+>   CLNG-BPF [test_maps] test_ksyms_module.o
+>   CLNG-BPF [test_maps] test_l4lb.o
+>   CLNG-BPF [test_maps] test_l4lb_noinline.o
+>   CLNG-BPF [test_maps] test_link_pinning.o
+>   CLNG-BPF [test_maps] test_lirc_mode2_kern.o
+>   CLNG-BPF [test_maps] test_lwt_ip_encap.o
+>   CLNG-BPF [test_maps] test_lwt_seg6local.o
+>   CLNG-BPF [test_maps] test_map_init.o
+>   CLNG-BPF [test_maps] test_map_in_map.o
+>   CLNG-BPF [test_maps] test_map_lock.o
+>   CLNG-BPF [test_maps] test_misc_tcp_hdr_options.o
+>   CLNG-BPF [test_maps] test_mmap.o
+>   CLNG-BPF [test_maps] test_module_attach.o
+>   CLNG-BPF [test_maps] test_ns_current_pid_tgid.o
+>   CLNG-BPF [test_maps] test_obj_id.o
+>   CLNG-BPF [test_maps] test_overhead.o
+>   CLNG-BPF [test_maps] test_pe_preserve_elems.o
+>   CLNG-BPF [test_maps] test_perf_branches.o
+>   CLNG-BPF [test_maps] test_perf_buffer.o
+>   CLNG-BPF [test_maps] test_pinning.o
+>   CLNG-BPF [test_maps] test_pinning_invalid.o
+>   CLNG-BPF [test_maps] test_pkt_access.o
+>   CLNG-BPF [test_maps] test_pkt_md_access.o
+>   CLNG-BPF [test_maps] test_probe_read_user_str.o
+>   CLNG-BPF [test_maps] test_probe_user.o
+>   CLNG-BPF [test_maps] test_queue_map.o
+>   CLNG-BPF [test_maps] test_raw_tp_test_run.o
+>   CLNG-BPF [test_maps] test_rdonly_maps.o
+>   CLNG-BPF [test_maps] test_ringbuf.o
+>   CLNG-BPF [test_maps] test_ringbuf_multi.o
+>   CLNG-BPF [test_maps] test_seg6_loop.o
+>   CLNG-BPF [test_maps] test_select_reuseport_kern.o
+>   CLNG-BPF [test_maps] test_send_signal_kern.o
+>   CLNG-BPF [test_maps] test_sk_assign.o
+>   CLNG-BPF [test_maps] test_skb_cgroup_id_kern.o
+>   CLNG-BPF [test_maps] test_skb_ctx.o
+>   CLNG-BPF [test_maps] test_skb_helpers.o
+>   CLNG-BPF [test_maps] test_skeleton.o
+>   CLNG-BPF [test_maps] test_sk_lookup.o
+>   CLNG-BPF [test_maps] test_sk_lookup_kern.o
+>   CLNG-BPF [test_maps] test_skmsg_load_helpers.o
+>   CLNG-BPF [test_maps] test_sk_storage_trace_itself.o
+>   CLNG-BPF [test_maps] test_sk_storage_tracing.o
+>   CLNG-BPF [test_maps] test_snprintf.o
+>   CLNG-BPF [test_maps] test_snprintf_single.o
+>   CLNG-BPF [test_maps] test_sock_fields.o
+>   CLNG-BPF [test_maps] test_sockhash_kern.o
+>   CLNG-BPF [test_maps] test_sockmap_invalid_update.o
+>   CLNG-BPF [test_maps] test_sockmap_kern.o
+>   CLNG-BPF [test_maps] test_sockmap_listen.o
+>   CLNG-BPF [test_maps] test_sockmap_skb_verdict_attach.o
+>   CLNG-BPF [test_maps] test_sockmap_update.o
+>   CLNG-BPF [test_maps] test_spin_lock.o
+>   CLNG-BPF [test_maps] test_stack_map.o
+>   CLNG-BPF [test_maps] test_stacktrace_build_id.o
+>   CLNG-BPF [test_maps] test_stacktrace_map.o
+>   CLNG-BPF [test_maps] test_stack_var_off.o
+>   CLNG-BPF [test_maps] test_static_linked1.o
+>   CLNG-BPF [test_maps] test_static_linked2.o
+>   CLNG-BPF [test_maps] test_subprogs.o
+>   CLNG-BPF [test_maps] test_subprogs_unused.o
+>   CLNG-BPF [test_maps] test_sysctl_loop1.o
+>   CLNG-BPF [test_maps] test_sysctl_loop2.o
+>   CLNG-BPF [test_maps] test_sysctl_prog.o
+>   CLNG-BPF [test_maps] test_tc_edt.o
+>   CLNG-BPF [test_maps] test_tc_neigh.o
+>   CLNG-BPF [test_maps] test_tc_neigh_fib.o
+>   CLNG-BPF [test_maps] test_tcpbpf_kern.o
+>   CLNG-BPF [test_maps] test_tcp_check_syncookie_kern.o
+>   CLNG-BPF [test_maps] test_tc_peer.o
+>   CLNG-BPF [test_maps] test_tcp_estats.o
+>   CLNG-BPF [test_maps] test_tcp_hdr_options.o
+>   CLNG-BPF [test_maps] test_tcpnotify_kern.o
+>   CLNG-BPF [test_maps] test_tc_tunnel.o
+>   CLNG-BPF [test_maps] test_trace_ext.o
+>   CLNG-BPF [test_maps] test_trace_ext_tracing.o
+>   CLNG-BPF [test_maps] test_tracepoint.o
+>   CLNG-BPF [test_maps] test_trampoline_count.o
+>   CLNG-BPF [test_maps] test_tunnel_kern.o
+>   CLNG-BPF [test_maps] test_varlen.o
+>   CLNG-BPF [test_maps] test_verif_scale1.o
+>   CLNG-BPF [test_maps] test_verif_scale2.o
+>   CLNG-BPF [test_maps] test_verif_scale3.o
+>   CLNG-BPF [test_maps] test_vmlinux.o
+>   CLNG-BPF [test_maps] test_xdp_adjust_tail_grow.o
+>   CLNG-BPF [test_maps] test_xdp_adjust_tail_shrink.o
+>   CLNG-BPF [test_maps] test_xdp_bpf2bpf.o
+>   CLNG-BPF [test_maps] test_xdp.o
+>   CLNG-BPF [test_maps] test_xdp_devmap_helpers.o
+>   CLNG-BPF [test_maps] test_xdp_link.o
+>   CLNG-BPF [test_maps] test_xdp_loop.o
+>   CLNG-BPF [test_maps] test_xdp_meta.o
+>   CLNG-BPF [test_maps] test_xdp_noinline.o
+>   CLNG-BPF [test_maps] test_xdp_redirect.o
+>   CLNG-BPF [test_maps] test_xdp_vlan.o
+>   CLNG-BPF [test_maps] test_xdp_with_cpumap_helpers.o
+>   CLNG-BPF [test_maps] test_xdp_with_devmap_helpers.o
+>   CLNG-BPF [test_maps] trace_printk.o
+>   CLNG-BPF [test_maps] trigger_bench.o
+>   CLNG-BPF [test_maps] udp_limit.o
+>   CLNG-BPF [test_maps] xdp_dummy.o
+>   CLNG-BPF [test_maps] xdping_kern.o
+>   CLNG-BPF [test_maps] xdp_redirect_map.o
+>   CLNG-BPF [test_maps] xdp_tx.o
+>   GEN-SKEL [test_progs] atomic_bounds.skel.h
+>   GEN-SKEL [test_progs] atomics.skel.h
+>   GEN-SKEL [test_progs] bind4_prog.skel.h
+> libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
+>   GEN-SKEL [test_progs] bind6_prog.skel.h
+> libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
+>   GEN-SKEL [test_progs] bind_perm.skel.h
+>   GEN-SKEL [test_progs] bpf_cubic.skel.h
+> libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
+> Error: failed to open BPF object file: No such file or directory
+> make: *** [Makefile:460: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 255
+> make: *** Deleting file '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h'
+> make: Leaving directory '/mnt/linux/tools/testing/selftests/bpf'
+> [acme@seventh linux]$
+> 
+> 
+
+-- 
+
+- Arnaldo
