@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC9B3AA6C2
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 00:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF383AA6C3
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 00:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233885AbhFPWtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 18:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
+        id S234144AbhFPWtr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 18:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233244AbhFPWtj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 18:49:39 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B2BC061574
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 15:47:33 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id g24so2628494pji.4
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 15:47:33 -0700 (PDT)
+        with ESMTP id S233919AbhFPWtr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Jun 2021 18:49:47 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7173C061574
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 15:47:40 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id u18so1924461plc.0
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 15:47:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=riotgames.com; s=riotgames;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2bGViEGJGj2MsZzTuw3aOUQXv4ShMU8TNCZXBiAhmD8=;
-        b=poIUGZnJe3Lt//X/Mkv9S1Ey+fu4CasVm/vbA1vQtPDXG5VfZDg1UwQj+5iLYMwXCx
-         QYJcwie7OZmMTVFirALzT64RFtmrhzC6ZOWOamxf2fIvJzt24PNcaYB8VmZesPbStThY
-         dETDBEztfLH8fUHNyPuO1uslIwoEmEvGLGjOs=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=fkT/h0nuo62m1KMVklUTthfLbE7X2XqIRgu5xra2CTQ=;
+        b=Ajd7j0BP8feN3kJpY/X3pZvzjZgKZqdf3b2SGM1cUnTcfFZ242liBu4ELVIrXy1ACo
+         SCf/9EcWrKsN5mWgUKQVcdpo+KZjDg6wHA0h83BMEsLU4wyUV0PkHwqQYENjruwr9YIA
+         cGmeScG2Vf6tl8dZuC5iCLAfEGp3No1rpmbHo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2bGViEGJGj2MsZzTuw3aOUQXv4ShMU8TNCZXBiAhmD8=;
-        b=kbzkWoIZIIgP1G9bq99DXZntLR5yVyw40npvnGU5j5lcAUGsK+n7UNbBa3laObXGNd
-         IRh8YNn0h8HfbFzDKSRYqpqFtmI7DMMll/pqHZz2y9aktgX8yNSbJeE2wKwiIzMwOTQD
-         k5p1/CFNmW8F3rENjd0iBMNZJ/1Na87K20aPEl7XP7ENiRiTn9rWs4Sd5Jqyd8Ngs6SL
-         UdQQbQTpjJ3ieAk+A5KN/0ItRx5U2wfqIU/XVPCaYWrGgsVoLQMzo8TIYRdwjtVdrPc7
-         3AGQsYbnuJsjHnC6qKFcDAZK5TOlWlyVZj3cCfq4huOMdM/fOVVvXe/lzJbbiqbYnljd
-         98wQ==
-X-Gm-Message-State: AOAM531tPMCclNDLubJJ32zEnE4MUDaOW8xNtuvoe3caYGmymf3dTZ3A
-        ut59uloFi58ntcLjI8rU8Jmc3xI3zxXMjQ==
-X-Google-Smtp-Source: ABdhPJyu9GPWRJ4bILS+PFgYREbIq1KpOr7NQsuSIz7EM47FgVwe5lg7t2EgVfp652dJsUgXOUDiRA==
-X-Received: by 2002:a17:90a:4311:: with SMTP id q17mr12501597pjg.204.1623883652182;
-        Wed, 16 Jun 2021 15:47:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fkT/h0nuo62m1KMVklUTthfLbE7X2XqIRgu5xra2CTQ=;
+        b=nIfFny6LK/IeEzUAPLEV/z09lO3Dje0XGtB13AGr1/HN+xgIulxs9H56KNDNwA4pkp
+         U9RERHog50/Jcs8+3X3VOTYafDsR6KI/yQaSVQo5Xwt8SqMHgLOUBhNeXoQCvreKXCXM
+         TESrNEX03sxA9QpDivuIv53FKR8FRRqDdbPt68j77Pq4pYpzGFW6a1eo2NFfu1bpAE0E
+         bx7bA5+MtOTprevot5RbSp8WBJFwE20+JE30NR6l48Y3ydxZC92shqNKvZ7S0Enkxw7e
+         +AGX+uFSg20lnOLGGYVUQnGSJueXvysuUgo/nM5r3crkK55tMCkH/b3+e16sDeg3pBBk
+         6S9w==
+X-Gm-Message-State: AOAM533cwxjyNjEXaCiz4BIzRmAN2FDIEay6j0WbgqkOxIpKZ9s3xczr
+        yx95UcdWfWwFggEY3mTSIjhlQ8NBnpr3yg==
+X-Google-Smtp-Source: ABdhPJwHQxrkd60kP2fMwWcAm0fN3bD6WWvpgG05AW1bRqBF9vMEawvXp5L9RE8Jgq7LIY70lajx9A==
+X-Received: by 2002:a17:90a:fa04:: with SMTP id cm4mr13112483pjb.111.1623883659973;
+        Wed, 16 Jun 2021 15:47:39 -0700 (PDT)
 Received: from ip-10-184-182-114.us-west-2.compute.internal (ec2-54-191-147-77.us-west-2.compute.amazonaws.com. [54.191.147.77])
-        by smtp.gmail.com with ESMTPSA id p6sm6278672pjk.34.2021.06.16.15.47.31
+        by smtp.gmail.com with ESMTPSA id p6sm6278672pjk.34.2021.06.16.15.47.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 15:47:31 -0700 (PDT)
+        Wed, 16 Jun 2021 15:47:39 -0700 (PDT)
 From:   Zvi Effron <zeffron@riotgames.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -53,101 +53,72 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Zvi Effron <zeffron@riotgames.com>
-Subject: [PATCH bpf-next v5 0/4] bpf: support input xdp_md context in BPF_PROG_TEST_RUN
-Date:   Wed, 16 Jun 2021 22:47:08 +0000
-Message-Id: <20210616224712.3243-1-zeffron@riotgames.com>
+        Zvi Effron <zeffron@riotgames.com>,
+        Cody Haas <chaas@riotgames.com>,
+        Lisa Watanabe <lwatanabe@riotgames.com>
+Subject: [PATCH bpf-next v5 1/4] bpf: add function for XDP meta data length check
+Date:   Wed, 16 Jun 2021 22:47:09 +0000
+Message-Id: <20210616224712.3243-2-zeffron@riotgames.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210616224712.3243-1-zeffron@riotgames.com>
+References: <20210616224712.3243-1-zeffron@riotgames.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patchset adds support for passing an xdp_md via ctx_in/ctx_out in
-bpf_attr for BPF_PROG_TEST_RUN of XDP programs.
+This commit prepares to use the XDP meta data length check in multiple
+places by making it into a defined macro instead of a literal.
 
-Patch 1 adds a function to validate XDP meta data lengths.
+Co-developed-by: Cody Haas <chaas@riotgames.com>
+Signed-off-by: Cody Haas <chaas@riotgames.com>
+Co-developed-by: Lisa Watanabe <lwatanabe@riotgames.com>
+Signed-off-by: Lisa Watanabe <lwatanabe@riotgames.com>
+Signed-off-by: Zvi Effron <zeffron@riotgames.com>
+---
+ include/net/xdp.h | 5 +++++
+ net/core/filter.c | 4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-Patch 2 adds initial support for passing XDP meta data in addition to
-packet data.
-
-Patch 3 adds support for also specifying the ingress interface and
-rx queue.
-
-Patch 4 adds selftests to ensure functionality is correct.
-
-Changelog:
-----------
-v4->v5
-v4: https://lore.kernel.org/bpf/20210604220235.6758-1-zeffron@riotgames.com/
-
- * Add new patch to introduce xdp_metalen_valid inline function to avoid
-  duplicated code from net/core/filter.c
- * Correct size of bad_ctx in selftests
- * Make all declarations reverse Christmas tree
- * Move data check from xdp_convert_md_to_buff to bpf_prog_test_run_xdp
- * Merge xdp_convert_buff_to_md into bpf_prog_test_run_xdp
- * Fix line too long
- * Extracted common checks in selftests to a helper function
- * Removed redundant assignment in selftests
- * Reordered test cases in selftests
- * Check data against 0 instead of data_meta in selftests
- * Made selftests use EINVAL instead of hardcoded 22
- * Dropped "_" from XDP function name
- * Changed casts in XDP program from unsigned long to long
- * Added a comment explaining the use of the loopback interface in selftests
- * Change parameter order in xdp_convert_md_to_buff to be input first
- * Assigned xdp->ingress_ifindex and xdp->rx_queue_index to local variables in
-  xdp_convert_md_to_buff
- * Made use of "meta data" versus "metadata" consistent in comments and commit
-  messages
-
-v3->v4
-v3: https://lore.kernel.org/bpf/20210602190815.8096-1-zeffron@riotgames.com/
-
- * Clean up nits
- * Validate xdp_md->data_end in bpf_prog_test_run_xdp
- * Remove intermediate metalen variables
-
-v2 -> v3
-v2: https://lore.kernel.org/bpf/20210527201341.7128-1-zeffron@riotgames.com/
-
- * Check errno first in selftests
- * Use DECLARE_LIBBPF_OPTS
- * Rename tattr to opts in selftests
- * Remove extra new line
- * Rename convert_xdpmd_to_xdpb to xdp_convert_md_to_buff
- * Rename convert_xdpb_to_xdpmd to xdp_convert_buff_to_md
- * Move declaration of device and rxqueue in xdp_convert_md_to_buff to
-  patch 2
- * Reorder the kfree calls in bpf_prog_test_run_xdp
-
-v1 -> v2
-v1: https://lore.kernel.org/bpf/20210524220555.251473-1-zeffron@riotgames.com
-
- * Fix null pointer dereference with no context
- * Use the BPF skeleton and replace CHECK with ASSERT macros
-
-Zvi Effron (4):
-  bpf: add function for XDP meta data length check
-  bpf: support input xdp_md context in BPF_PROG_TEST_RUN
-  bpf: support specifying ingress via xdp_md context in
-    BPF_PROG_TEST_RUN
-  selftests/bpf: Add test for xdp_md context in BPF_PROG_TEST_RUN
-
- include/net/xdp.h                             |   5 +
- include/uapi/linux/bpf.h                      |   3 -
- net/bpf/test_run.c                            |  89 ++++++++++++++-
- net/core/filter.c                             |   4 +-
- .../bpf/prog_tests/xdp_context_test_run.c     | 105 ++++++++++++++++++
- .../bpf/progs/test_xdp_context_test_run.c     |  20 ++++
- 6 files changed, 215 insertions(+), 11 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
-
-
-base-commit: 1f26622b791b6a1b346d1dfd9d04450e20af0f41
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 5533f0ab2afc..8bfd21bfeddc 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -276,6 +276,11 @@ xdp_data_meta_unsupported(const struct xdp_buff *xdp)
+ 	return unlikely(xdp->data_meta > xdp->data);
+ }
+ 
++static __always_inline int
++xdp_metalen_valid(unsigned long metalen) {
++	return (metalen & (sizeof(__u32) - 1)) || (metalen > 32);
++}
++
+ struct xdp_attachment_info {
+ 	struct bpf_prog *prog;
+ 	u32 flags;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 5b86e47ef079..b4a64a07de88 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -77,6 +77,7 @@
+ #include <net/transp_v6.h>
+ #include <linux/btf_ids.h>
+ #include <net/tls.h>
++#include <net/xdp.h>
+ 
+ static const struct bpf_func_proto *
+ bpf_sk_base_func_proto(enum bpf_func_id func_id);
+@@ -3905,8 +3906,7 @@ BPF_CALL_2(bpf_xdp_adjust_meta, struct xdp_buff *, xdp, int, offset)
+ 	if (unlikely(meta < xdp_frame_end ||
+ 		     meta > xdp->data))
+ 		return -EINVAL;
+-	if (unlikely((metalen & (sizeof(__u32) - 1)) ||
+-		     (metalen > 32)))
++	if (unlikely(xdp_metalen_valid(metalen)))
+ 		return -EACCES;
+ 
+ 	xdp->data_meta = meta;
 -- 
 2.31.1
 
