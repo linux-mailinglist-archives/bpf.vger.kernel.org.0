@@ -2,489 +2,231 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F3B3AA214
-	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 19:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88563AA1FA
+	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 19:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhFPRGU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 13:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbhFPRGJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 13:06:09 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2745CC061768;
-        Wed, 16 Jun 2021 10:04:02 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id x10so1441823plg.3;
-        Wed, 16 Jun 2021 10:04:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EZQBdvi4WvCwhdSByzyu/id5SNc4SjGQzwDalRqCKfw=;
-        b=XeNzbxAqEJczJOLBeEUjaSl6ZKARNMLNNhccmgR6TO6zJmd0D3S2nXfaJZuiX+nsml
-         SqR5oBBB6HWDqcB7cnNcFFsYGwcrM0F3ZFZsFzHAoNo/xJGx1rZ9dc+ibPJumqn1AXZa
-         QpWtAj4G14bZCT1y2izIFdEALvqSGERxIwHs2Nv5IwAD+2UjlwkwttcQMYb1UNH9ZTfe
-         OLMhC69UWolx8WxJNb9562kVmUSt9e/PTksTrdX8viv/h+e6/IozmUwq1U7SPyNKNZyT
-         1vLUkeu/p+uw8IEYCAl8wTrnlBNW8HAWdvhKAjRe/mmc8+4Kiv1vtT8ncX018f5rebPp
-         On4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EZQBdvi4WvCwhdSByzyu/id5SNc4SjGQzwDalRqCKfw=;
-        b=fUm8rX1MiWsz2rSIJ551nc4s4mFtbkbGfxfsu+JMbcsxrgMVz9vAUuF7megiIsqcN7
-         xOXW+uc8cKH2WnyLWen0xdv7v7/zv9qPtZQhycAC2Ew5VXOLfY+nConwOkbN53j8k1If
-         V6uf3K1o2yA98k/JvQtETNnfuuPOOjDgCZyPNPqcLlVGUP0v7pgmUEquB9macd6Remfk
-         Omo+EB2N0mIPAhjlOSmq62NvFBmgG1dodkNTsckhLsNoxzPsXzol0U1aqZv2Pi3wqktH
-         IenXrvowAw+lWtZm9CVqJASNC2p9SXDjXcmN0DN6Q8DjCslhI9DRiomx2TqCzoECJEke
-         JHcA==
-X-Gm-Message-State: AOAM532WO6avJ65Pj48KX7ezGqh4xcNegcEjML9WP7EGlv2Ea5n90KlX
-        pub/mPlAaFG2RJVg50tV3qPNjV5eD/k=
-X-Google-Smtp-Source: ABdhPJw7BaodzL2oj1TC75th1Lx4YBk0Jybtlhf/gEZ9f24kvSsB2lWQA/R2+NPPrT49QNDE1SFAnw==
-X-Received: by 2002:a17:902:b609:b029:118:8a66:6963 with SMTP id b9-20020a170902b609b02901188a666963mr513925pls.65.1623863041361;
-        Wed, 16 Jun 2021 10:04:01 -0700 (PDT)
-Received: from localhost ([2402:3a80:11db:39d5:aefe:1e71:33ef:30fb])
-        by smtp.gmail.com with ESMTPSA id t136sm2890915pfc.70.2021.06.16.10.04.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 10:04:00 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org
-Subject: [PATCH v2] libbpf: add request buffer type for netlink messages
-Date:   Wed, 16 Jun 2021 22:32:31 +0530
-Message-Id: <20210616170231.2194285-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
+        id S229602AbhFPRE7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 13:04:59 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:21434 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229547AbhFPRE6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 16 Jun 2021 13:04:58 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 15GGxnfb030826;
+        Wed, 16 Jun 2021 10:02:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=spaPVe8e5u+7DtfHOIeCuArY3E/ppSLB1KpKryk9zuU=;
+ b=S4prikvs26ptSvJpoyVMe0Fscvx3R+t87AxbOnWqsnjDIDQY16oO1Xj29eAijP/qajt1
+ PviyLTh+r9M7b22+8MOe3kXsqhf4M/d+vb6UvdnaNA8ZHUVKxRWk7YQea2Mh/syubOqv
+ AtBXytk/oJ5XXTPDUWXPeOuJvhDETE5iWto= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 397k8vs7g1-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 16 Jun 2021 10:02:48 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 10:02:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ll8yt3zLowcMJPYFsSSuurTLoNvR2q3BoYE3eIZOQf+TLKCgx9JltdAdH0Me67vloF0IDlsHu668QkUcuIyZlS+gkfWtqhUOK+TjHyPi2CpaQU/gEv56oXGcXgLzUO2robhqxpzNbeP1NNn4w46VzrN6T1++xsLYrOba2xpPiuJSyKK+pqxvrGU3hHS27z6ZoKEZqNC3EF2F527gSnZLZzRubUWWHCTLyqfKqDBiV9C/vpm+aj+jTZ2LNjt7OgfA9vuKE+HCF/tT2G/lK/si1xiciUnF0yem5QV5LeU9IgmSzoYvjyBO6/Hu/NUg1DFbhM19htOjGcNbmn/ah1QMLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=spaPVe8e5u+7DtfHOIeCuArY3E/ppSLB1KpKryk9zuU=;
+ b=RcPeVnvT1fEx1qycNY0BhjUkgGYjtBRh6wZHewfTDx8x2PuhKgoINBN1j6v4uqQD1DNzxec1a1cZC80JiAjspZTfZQ5hl5rluHZ+FMTB5a+NUvgleO8lccKBqFTOCPcqLgBb+kNFOIe8p9yKk5L3C40cQr61hoMz8BVlu36z6tFG0KzET5GjbjNsIpBXPAAC+5ORLrzlC3tsoEXKCnNDjzL7dd2CVhvLwUGZ84S8qJ7m5IzXZn44N7hZhwNKOI5Vw+I/yCs3smYUBzYATxLXfdCowoTLjeIqA2V2do8lKKPhHbrlmMAkKtzUzT6IcjIS8aVUv2+TiCKrcQfTQTE8/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: xmission.com; dkim=none (message not signed)
+ header.d=none;xmission.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB3968.namprd15.prod.outlook.com (2603:10b6:806:8d::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Wed, 16 Jun
+ 2021 17:02:46 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4219.026; Wed, 16 Jun 2021
+ 17:02:46 +0000
+Subject: Re: Extending bpf_get_ns_current_pid_tgid()
+To:     carlos antonio neira bustos <cneirabustos@gmail.com>
+CC:     Blaise Sanouillet <blez@fb.com>, Daniel Xu <dxu@dxuuu.xyz>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>
+References: <C71Q73J0Y8S5.3PXMV3YTPDCL7@maharaja>
+ <13b5b2dd-bec0-cef2-7304-7e5a09bafb6c@fb.com>
+ <MN2PR15MB2991E847DE47A265E71F1BC8A0E60@MN2PR15MB2991.namprd15.prod.outlook.com>
+ <CACiB22i6d2skkJJa7uwVRrYy7dtYOxmLgFwzjtieW4BFn2tzLw@mail.gmail.com>
+ <9067600b-f340-ec3e-2ce8-d299793c123a@fb.com>
+ <CACiB22iU3zk4Row=wAween=rSvHJ7j7M5T2KbyFk38arzEwQpQ@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <c176cb4f-26d9-28b3-3f6e-628c1a5fa800@fb.com>
+Date:   Wed, 16 Jun 2021 10:02:43 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <CACiB22iU3zk4Row=wAween=rSvHJ7j7M5T2KbyFk38arzEwQpQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:b5ff]
+X-ClientProxiedBy: BYAPR11CA0105.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::46) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::11da] (2620:10d:c090:400::5:b5ff) by BYAPR11CA0105.namprd11.prod.outlook.com (2603:10b6:a03:f4::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Wed, 16 Jun 2021 17:02:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f95fdd34-7658-43e0-abe0-08d930e8906d
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3968:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR15MB39685A7B9517420329B50BBDD30F9@SA0PR15MB3968.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Fd0rVjJUC1n0rt/FPwn9VsbdhfSejDlhKeelRkLkIx13IgDv8Jo1DVaFk+8Evp1uvsZWGHPt2Mb74Wq3aJwWEU3TE7f8jjqR1hNiox5ut4QkczrQY2Uvmf5W1kBHgWOfMb9s1+AsREvTSgC7KWaSHql6ZTaPLtdI0kPaiz2cDTF5o58qb7bIxbhkvy42ZJWF6ZUkXgd6dRWpKwgqbzxX7vM1U5Bbu2vMakmN5U/lA2jx1aY+s5krrD/D/mXQiV3GZPan6d877Tslhp+wcbuy795W/xGw14V62FJyRi6ChF1kYOaY3ssZrVJ009/iAmpTfB+gwfden8faN2blRrvpcZc1Go86Ctwncf99FtFT3gLC3B72Jd64jyuj6nwvvivRsL5borC3oW/BLtJBF7dNGFbkGy+OTdE0J1lg62xztjqgIR2pDik8NaQBjFuk5w0hSnQE09KZl/8kwcp4Ej/NO/WWfT7J8lpDGgVcrq0E3eIg+9EVLvT8eKBajaTEz7yTN6N8mxQxoLVaOCGxMIPwxvJ7nf8rx9Bj6e6EO8k6uEx4k/IoYRpvVc3JmgYf6K2DX05+l9vRhSElrgjLnL7cW9P4NhuZ/nYxYCvBZvIfA/n9dQV95PztBDr91fhabgcsZw+totNJQV0AZOAnWfgOHQ0sHB6pAEJvxdjH3qZLDEvZELcaVnfR2u2qW9nl/gWg/9nW+ni7i2hlUKDx4uLGg4nlsDtrugugxybDjrRKghF4bX9w5JE1azzFT5VFsTaTRh5Bq2WdQLWdzvBSs8b/X/fJQwXeJGUd+Y9FIiTbmmiQgNRl6/HDA+6UEYhTFb6S
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(376002)(39860400002)(346002)(54906003)(31696002)(86362001)(31686004)(316002)(2906002)(2616005)(6486002)(966005)(16526019)(53546011)(52116002)(186003)(5660300002)(66556008)(38100700002)(66946007)(6916009)(8936002)(478600001)(36756003)(7116003)(66476007)(8676002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V0dqNVNvbjNkM0Nra2JqQUhJcEZmK1B0TVkwYTl3UjNRQVRGbExRWE94UDRK?=
+ =?utf-8?B?SVlnS1hSM0sva2dyYTJZQVdpL1Noa0dBNk1Hb0JDM0NVYVZVMUd2QXZqU2xM?=
+ =?utf-8?B?U0RDWVdSUThPbGFDcXI2YUNyZ0ZaSFJVY0c4L1lHK09kRndsa3FGRGxDM2Yx?=
+ =?utf-8?B?RXZ4Nk1YZXZ6Rng3clh2N2RlR0dlVzZSQXIzRXpWYVU3TlEvN1cxZXcwcGpY?=
+ =?utf-8?B?czJHWU9JeVpKVGFCZ0dtakRqS09WdEdsbXhZaVVyaWVqVk9sOVF5ZUUwTzVj?=
+ =?utf-8?B?a1ZxZDdUeXZhODlRc3NSSDNyK0pmUncwVHVPNGhRNTRsWWhmdUZPbjVDREE3?=
+ =?utf-8?B?SjF1WkxhZXpjOE1jeWRTOTd4dWY5dGNEdVFScHR0WmpxeC9zdk5VTjhQckZB?=
+ =?utf-8?B?OWI3b2NZcVNYQzJsZk9Ic2RLeXVwQy9WdFI1TmRHTmE5VnZpclpJNjU4Mit3?=
+ =?utf-8?B?aVV2Y1RKVU5MU1cvZ3M0eDhyand0S05aYUc2d1pPRzZTTzliSlRHVDRpYWkv?=
+ =?utf-8?B?WW1aaHo5SkFMcEEwRm95bk9GdUVyR05PS3NMWTNvV1hxbWtIWlVJYTFZL3JG?=
+ =?utf-8?B?SWd3OTEyNmVLQlFMaFArUlVyTXpuY3lKRmlYSmhJZ1FMemNYVXVvby9FY0N1?=
+ =?utf-8?B?eThldzA3MVN0UDhUQ0JGNTNKMjFGaXRXcnUyYnYrU1JwRE9WNFMyUk9Vc3pU?=
+ =?utf-8?B?NXBtNis4NkN5R2IrNy9ZVncwbFBFaks3Ri9YWnU3LytKMEF3eVVYUWNEeEQ5?=
+ =?utf-8?B?Y3l6dFUzdUZzUXVINklPWVhBcndlOXNxYUFkUFFQd1VlUzJGOEZkbnFGcWRW?=
+ =?utf-8?B?eVdJVG9qcy9pZ3gxRVhzcVFOamd3NFJnNHh3TnlaWTJmSW55Q3pTYWdQdnUv?=
+ =?utf-8?B?RHFFQWZBR2VnOGV1dGlNbGpuRXMrRlpJMDU2MnowcjR6WTJPbm1LdWRHWU15?=
+ =?utf-8?B?eElGcHlIVGMrbFlqaHl6UkY1S3JmdU96d2thUUhtaVp0SW5razZGeE4vN1M0?=
+ =?utf-8?B?Tk4wYThTZGd1L2ZZRlV1dUU1WGVBQTN3RTZQeWFEcVIwNG1VTlZ1Y0E2Uks3?=
+ =?utf-8?B?Tkg3NUpXam1QR2N6YjluWGgxbWw3RE1QelBLbWI0RGQ3UEttWTl1LzhGS2Jh?=
+ =?utf-8?B?SkR6d1k5U2FrRVNQRnE0am5VRkFjaTZsZFgwU0dNaXNmWXZCTGJTT1ZXYlVZ?=
+ =?utf-8?B?THZRcDlKckVIeHlRR3M4K2x6WTVUUk5RQ1NZdDlMRlVSNE5mTi82VHM5eCsy?=
+ =?utf-8?B?cnNVeUxHd3hnaEljZmFhYzQ2YjUwblhmWEYvSlFtY3U0ZkdleC85Wmg1Yko3?=
+ =?utf-8?B?UkJSSWxoUkRBS2ZBODZjQUZoMVU4UURid2FoYm5aVjFCQVlRYkhXelZXejR5?=
+ =?utf-8?B?c1pXVzdxaEN5UWVBY2YwYWtiSzJHN2lLYWxwZTJPcFRnU3Z3ZDBuOVJ4M2Fs?=
+ =?utf-8?B?SHFFdTUrbytPNVdmQ043TGlsL3RTV1NtRVY4YkNQemlCTlA3QXZ0N01oc05w?=
+ =?utf-8?B?NG9kSTN1enVRZVhDYzIvcUhwYytmUTdGaGxWMjBtVUR2Zk13NktGUzNNcTB0?=
+ =?utf-8?B?R0xyclcwbkR2QTZqaDlReVIwMjNQcE5ud21LSFZrNmlGUzhHSkgyMmRld0JV?=
+ =?utf-8?B?SmdKb1RrOWFHYm5LVTRrbUVzNDZmL3RBL01LdUFuOWltbUY0eXJhZjJPMlBJ?=
+ =?utf-8?B?YWo2dDVRRlhwN2FaU3dYSE52SWVWUzg4b0JBT2dLZEZXZzAyOTlIWlhwRWxC?=
+ =?utf-8?B?WFZOLy91SXE5MUpaakMzc2F3eDBNckVQZVhWZjBxelA5dFp5OTBmUDhxeXBY?=
+ =?utf-8?B?blA4TllqM1F4MUdKS0hlQT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f95fdd34-7658-43e0-abe0-08d930e8906d
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 17:02:46.4717
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wHDH48UBzepATlteNLl1dQJBvK7PZhLOtxvBxCJRrK8Y26ZYPX2EA8zxILfUbIa9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3968
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: opPQdg_2VO0uBCbxxHFsSbKXgqDvCSOr
+X-Proofpoint-ORIG-GUID: opPQdg_2VO0uBCbxxHFsSbKXgqDvCSOr
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-16_11:2021-06-15,2021-06-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 adultscore=0 clxscore=1011 suspectscore=0 mlxscore=0
+ mlxlogscore=999 spamscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106160098
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Coverity complains about OOB writes to nlmsghdr. There is no OOB as we
-write to the trailing buffer, but static analyzers and compilers may
-rightfully be confused as the nlmsghdr pointer has subobject provenance
-(and hence subobject bounds).
 
-Remedy this by using an explicit request structure, but we also need to
-start the buffer in case of ifinfomsg without any padding. The alignment
-on netlink wire protocol is 4 byte boundary, so we just insert explicit
-4 byte buffer to avoid compilers throwing off on read and write from/to
-padding.
 
-Also switch nh_tail (renamed to req_tail) to cast req * to char * so
-that it can be understood as arithmetic on pointer to the representation
-array (hence having same bound as request structure), which should
-further appease analyzers.
+On 6/15/21 6:08 PM, carlos antonio neira bustos wrote:
+> I'm resuming work on this and would like to know your opinion and 
+> concerns about the following proposal:
+> 
+> - Add  s_dev from  nsfs to ns_common, so now ns_common will have inode 
+> and device to identify the namespace, as in the future namespaces will 
+> need to match against ino and device.
+> 
+> - That will allow us to remove the call to ns_match on because the 
+> values checked are now present in ns_common (ino and dev_t).
 
-As a bonus, callers don't have to pass sizeof(req) all the time now, as
-size is implicitly obtained using the pointer. While at it, also reduce
-the size of attribute buffer to 128 bytes (132 for ifinfomsg using
-functions due to the need to align buffer after it).
+I understand its benefit but I am not 100% sure whether adding s_dev to 
+ns_common will be accepted or not by upstream just because of this.
 
-Summary of problem:
-  Even though C standard allows interconveritility of pointer to first
-  member and pointer to struct, for the purposes of alias analysis it
-  would still consider the first as having pointer value "pointer to T"
-  where T is type of first member hence having subobject bounds,
-  allowing analyzers within reason to complain when object is accessed
-  beyond the size of pointed to object.
+Note that if adding s_dev to ns_common, you then need to ensure s_dev
+contains valid value for all usages of ns_common, practically all
+namespaces, not just nsfs, otherwise people may argument against this
+as existing mechanism works and the change brings little value.
+If you go this route, please ensure other namespaces can also
+take advantage of this field.
 
-  The only exception to this rule may be when a char * is formed to a
-  member subobject. It is not possible for the compiler to be able to
-  tell the intent of the programmer that it is a pointer to member
-  object or the underlying representation array of the containing
-  object, so such diagnosis is supressed.
+> 
+> - Add a new helper named  bpf_get_current_pid_tgid_from_ns that will 
+> return pid/tgid from the current task if pid ns matches ino and dev 
+> supplied by the user as now both values are in ns_common.
 
-Fixes: 715c5ce454a6 ("libbpf: Add low level TC-BPF management API")
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
-Changelog:
-v1 -> v2:
- * Add short summary instead of links about the underlying issue (Daniel)
----
- tools/lib/bpf/netlink.c | 107 +++++++++++++++-------------------------
- tools/lib/bpf/nlattr.h  |  37 +++++++++-----
- 2 files changed, 65 insertions(+), 79 deletions(-)
+I think current helper get_ns_current_pid_tgid() can already do this.
+Did I miss anything?
 
-diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-index cf9381f03b16..a17470045455 100644
---- a/tools/lib/bpf/netlink.c
-+++ b/tools/lib/bpf/netlink.c
-@@ -154,7 +154,7 @@ static int libbpf_netlink_recv(int sock, __u32 nl_pid, int seq,
- 	return ret;
- }
-
--static int libbpf_netlink_send_recv(struct nlmsghdr *nh,
-+static int libbpf_netlink_send_recv(struct libbpf_nla_req *req,
- 				    __dump_nlmsg_t parse_msg,
- 				    libbpf_dump_nlmsg_t parse_attr,
- 				    void *cookie)
-@@ -166,15 +166,15 @@ static int libbpf_netlink_send_recv(struct nlmsghdr *nh,
- 	if (sock < 0)
- 		return sock;
-
--	nh->nlmsg_pid = 0;
--	nh->nlmsg_seq = time(NULL);
-+	req->nh.nlmsg_pid = 0;
-+	req->nh.nlmsg_seq = time(NULL);
-
--	if (send(sock, nh, nh->nlmsg_len, 0) < 0) {
-+	if (send(sock, req, req->nh.nlmsg_len, 0) < 0) {
- 		ret = -errno;
- 		goto out;
- 	}
-
--	ret = libbpf_netlink_recv(sock, nl_pid, nh->nlmsg_seq,
-+	ret = libbpf_netlink_recv(sock, nl_pid, req->nh.nlmsg_seq,
- 				  parse_msg, parse_attr, cookie);
- out:
- 	libbpf_netlink_close(sock);
-@@ -186,11 +186,7 @@ static int __bpf_set_link_xdp_fd_replace(int ifindex, int fd, int old_fd,
- {
- 	struct nlattr *nla;
- 	int ret;
--	struct {
--		struct nlmsghdr  nh;
--		struct ifinfomsg ifinfo;
--		char             attrbuf[64];
--	} req;
-+	struct libbpf_nla_req req;
-
- 	memset(&req, 0, sizeof(req));
- 	req.nh.nlmsg_len      = NLMSG_LENGTH(sizeof(struct ifinfomsg));
-@@ -199,27 +195,26 @@ static int __bpf_set_link_xdp_fd_replace(int ifindex, int fd, int old_fd,
- 	req.ifinfo.ifi_family = AF_UNSPEC;
- 	req.ifinfo.ifi_index  = ifindex;
-
--	nla = nlattr_begin_nested(&req.nh, sizeof(req), IFLA_XDP);
-+	nla = nlattr_begin_nested(&req, IFLA_XDP);
- 	if (!nla)
- 		return -EMSGSIZE;
--	ret = nlattr_add(&req.nh, sizeof(req), IFLA_XDP_FD, &fd, sizeof(fd));
-+	ret = nlattr_add(&req, IFLA_XDP_FD, &fd, sizeof(fd));
- 	if (ret < 0)
- 		return ret;
- 	if (flags) {
--		ret = nlattr_add(&req.nh, sizeof(req), IFLA_XDP_FLAGS, &flags,
--				 sizeof(flags));
-+		ret = nlattr_add(&req, IFLA_XDP_FLAGS, &flags, sizeof(flags));
- 		if (ret < 0)
- 			return ret;
- 	}
- 	if (flags & XDP_FLAGS_REPLACE) {
--		ret = nlattr_add(&req.nh, sizeof(req), IFLA_XDP_EXPECTED_FD,
--				 &old_fd, sizeof(old_fd));
-+		ret = nlattr_add(&req, IFLA_XDP_EXPECTED_FD, &old_fd,
-+				 sizeof(old_fd));
- 		if (ret < 0)
- 			return ret;
- 	}
--	nlattr_end_nested(&req.nh, nla);
-+	nlattr_end_nested(&req, nla);
-
--	return libbpf_netlink_send_recv(&req.nh, NULL, NULL, NULL);
-+	return libbpf_netlink_send_recv(&req, NULL, NULL, NULL);
- }
-
- int bpf_set_link_xdp_fd_opts(int ifindex, int fd, __u32 flags,
-@@ -314,14 +309,11 @@ int bpf_get_link_xdp_info(int ifindex, struct xdp_link_info *info,
- 	struct xdp_id_md xdp_id = {};
- 	__u32 mask;
- 	int ret;
--	struct {
--		struct nlmsghdr  nh;
--		struct ifinfomsg ifm;
--	} req = {
-+	struct libbpf_nla_req req = {
- 		.nh.nlmsg_len   = NLMSG_LENGTH(sizeof(struct ifinfomsg)),
- 		.nh.nlmsg_type  = RTM_GETLINK,
- 		.nh.nlmsg_flags = NLM_F_DUMP | NLM_F_REQUEST,
--		.ifm.ifi_family = AF_PACKET,
-+		.ifinfo.ifi_family = AF_PACKET,
- 	};
-
- 	if (flags & ~XDP_FLAGS_MASK || !info_size)
-@@ -336,7 +328,7 @@ int bpf_get_link_xdp_info(int ifindex, struct xdp_link_info *info,
- 	xdp_id.ifindex = ifindex;
- 	xdp_id.flags = flags;
-
--	ret = libbpf_netlink_send_recv(&req.nh, __dump_link_nlmsg,
-+	ret = libbpf_netlink_send_recv(&req, __dump_link_nlmsg,
- 				       get_xdp_info, &xdp_id);
- 	if (!ret) {
- 		size_t sz = min(info_size, sizeof(xdp_id.info));
-@@ -376,15 +368,14 @@ int bpf_get_link_xdp_id(int ifindex, __u32 *prog_id, __u32 flags)
- 	return libbpf_err(ret);
- }
-
--typedef int (*qdisc_config_t)(struct nlmsghdr *nh, struct tcmsg *t,
--			      size_t maxsz);
-+typedef int (*qdisc_config_t)(struct libbpf_nla_req *req);
-
--static int clsact_config(struct nlmsghdr *nh, struct tcmsg *t, size_t maxsz)
-+static int clsact_config(struct libbpf_nla_req *req)
- {
--	t->tcm_parent = TC_H_CLSACT;
--	t->tcm_handle = TC_H_MAKE(TC_H_CLSACT, 0);
-+	req->tc.tcm_parent = TC_H_CLSACT;
-+	req->tc.tcm_handle = TC_H_MAKE(TC_H_CLSACT, 0);
-
--	return nlattr_add(nh, maxsz, TCA_KIND, "clsact", sizeof("clsact"));
-+	return nlattr_add(req, TCA_KIND, "clsact", sizeof("clsact"));
- }
-
- static int attach_point_to_config(struct bpf_tc_hook *hook,
-@@ -431,11 +422,7 @@ static int tc_qdisc_modify(struct bpf_tc_hook *hook, int cmd, int flags)
- {
- 	qdisc_config_t config;
- 	int ret;
--	struct {
--		struct nlmsghdr nh;
--		struct tcmsg tc;
--		char buf[256];
--	} req;
-+	struct libbpf_nla_req req;
-
- 	ret = attach_point_to_config(hook, &config);
- 	if (ret < 0)
-@@ -448,11 +435,11 @@ static int tc_qdisc_modify(struct bpf_tc_hook *hook, int cmd, int flags)
- 	req.tc.tcm_family  = AF_UNSPEC;
- 	req.tc.tcm_ifindex = OPTS_GET(hook, ifindex, 0);
-
--	ret = config(&req.nh, &req.tc, sizeof(req));
-+	ret = config(&req);
- 	if (ret < 0)
- 		return ret;
-
--	return libbpf_netlink_send_recv(&req.nh, NULL, NULL, NULL);
-+	return libbpf_netlink_send_recv(&req, NULL, NULL, NULL);
- }
-
- static int tc_qdisc_create_excl(struct bpf_tc_hook *hook)
-@@ -544,7 +531,7 @@ static int get_tc_info(struct nlmsghdr *nh, libbpf_dump_nlmsg_t fn,
- 	return __get_tc_info(cookie, tc, tb, nh->nlmsg_flags & NLM_F_ECHO);
- }
-
--static int tc_add_fd_and_name(struct nlmsghdr *nh, size_t maxsz, int fd)
-+static int tc_add_fd_and_name(struct libbpf_nla_req *req, int fd)
- {
- 	struct bpf_prog_info info = {};
- 	__u32 info_len = sizeof(info);
-@@ -555,7 +542,7 @@ static int tc_add_fd_and_name(struct nlmsghdr *nh, size_t maxsz, int fd)
- 	if (ret < 0)
- 		return ret;
-
--	ret = nlattr_add(nh, maxsz, TCA_BPF_FD, &fd, sizeof(fd));
-+	ret = nlattr_add(req, TCA_BPF_FD, &fd, sizeof(fd));
- 	if (ret < 0)
- 		return ret;
- 	len = snprintf(name, sizeof(name), "%s:[%u]", info.name, info.id);
-@@ -563,7 +550,7 @@ static int tc_add_fd_and_name(struct nlmsghdr *nh, size_t maxsz, int fd)
- 		return -errno;
- 	if (len >= sizeof(name))
- 		return -ENAMETOOLONG;
--	return nlattr_add(nh, maxsz, TCA_BPF_NAME, name, len + 1);
-+	return nlattr_add(req, TCA_BPF_NAME, name, len + 1);
- }
-
- int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
-@@ -571,12 +558,8 @@ int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
- 	__u32 protocol, bpf_flags, handle, priority, parent, prog_id, flags;
- 	int ret, ifindex, attach_point, prog_fd;
- 	struct bpf_cb_ctx info = {};
-+	struct libbpf_nla_req req;
- 	struct nlattr *nla;
--	struct {
--		struct nlmsghdr nh;
--		struct tcmsg tc;
--		char buf[256];
--	} req;
-
- 	if (!hook || !opts ||
- 	    !OPTS_VALID(hook, bpf_tc_hook) ||
-@@ -618,25 +601,24 @@ int bpf_tc_attach(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
- 		return libbpf_err(ret);
- 	req.tc.tcm_parent = parent;
-
--	ret = nlattr_add(&req.nh, sizeof(req), TCA_KIND, "bpf", sizeof("bpf"));
-+	ret = nlattr_add(&req, TCA_KIND, "bpf", sizeof("bpf"));
- 	if (ret < 0)
- 		return libbpf_err(ret);
--	nla = nlattr_begin_nested(&req.nh, sizeof(req), TCA_OPTIONS);
-+	nla = nlattr_begin_nested(&req, TCA_OPTIONS);
- 	if (!nla)
- 		return libbpf_err(-EMSGSIZE);
--	ret = tc_add_fd_and_name(&req.nh, sizeof(req), prog_fd);
-+	ret = tc_add_fd_and_name(&req, prog_fd);
- 	if (ret < 0)
- 		return libbpf_err(ret);
- 	bpf_flags = TCA_BPF_FLAG_ACT_DIRECT;
--	ret = nlattr_add(&req.nh, sizeof(req), TCA_BPF_FLAGS, &bpf_flags,
--			 sizeof(bpf_flags));
-+	ret = nlattr_add(&req, TCA_BPF_FLAGS, &bpf_flags, sizeof(bpf_flags));
- 	if (ret < 0)
- 		return libbpf_err(ret);
--	nlattr_end_nested(&req.nh, nla);
-+	nlattr_end_nested(&req, nla);
-
- 	info.opts = opts;
-
--	ret = libbpf_netlink_send_recv(&req.nh, get_tc_info, NULL, &info);
-+	ret = libbpf_netlink_send_recv(&req, get_tc_info, NULL, &info);
- 	if (ret < 0)
- 		return libbpf_err(ret);
- 	if (!info.processed)
-@@ -650,11 +632,7 @@ static int __bpf_tc_detach(const struct bpf_tc_hook *hook,
- {
- 	__u32 protocol = 0, handle, priority, parent, prog_id, flags;
- 	int ret, ifindex, attach_point, prog_fd;
--	struct {
--		struct nlmsghdr nh;
--		struct tcmsg tc;
--		char buf[256];
--	} req;
-+	struct libbpf_nla_req req;
-
- 	if (!hook ||
- 	    !OPTS_VALID(hook, bpf_tc_hook) ||
-@@ -701,13 +679,12 @@ static int __bpf_tc_detach(const struct bpf_tc_hook *hook,
- 	req.tc.tcm_parent = parent;
-
- 	if (!flush) {
--		ret = nlattr_add(&req.nh, sizeof(req), TCA_KIND,
--				 "bpf", sizeof("bpf"));
-+		ret = nlattr_add(&req, TCA_KIND, "bpf", sizeof("bpf"));
- 		if (ret < 0)
- 			return ret;
- 	}
-
--	return libbpf_netlink_send_recv(&req.nh, NULL, NULL, NULL);
-+	return libbpf_netlink_send_recv(&req, NULL, NULL, NULL);
- }
-
- int bpf_tc_detach(const struct bpf_tc_hook *hook,
-@@ -727,11 +704,7 @@ int bpf_tc_query(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
- 	__u32 protocol, handle, priority, parent, prog_id, flags;
- 	int ret, ifindex, attach_point, prog_fd;
- 	struct bpf_cb_ctx info = {};
--	struct {
--		struct nlmsghdr nh;
--		struct tcmsg tc;
--		char buf[256];
--	} req;
-+	struct libbpf_nla_req req;
-
- 	if (!hook || !opts ||
- 	    !OPTS_VALID(hook, bpf_tc_hook) ||
-@@ -770,13 +743,13 @@ int bpf_tc_query(const struct bpf_tc_hook *hook, struct bpf_tc_opts *opts)
- 		return libbpf_err(ret);
- 	req.tc.tcm_parent = parent;
-
--	ret = nlattr_add(&req.nh, sizeof(req), TCA_KIND, "bpf", sizeof("bpf"));
-+	ret = nlattr_add(&req, TCA_KIND, "bpf", sizeof("bpf"));
- 	if (ret < 0)
- 		return libbpf_err(ret);
-
- 	info.opts = opts;
-
--	ret = libbpf_netlink_send_recv(&req.nh, get_tc_info, NULL, &info);
-+	ret = libbpf_netlink_send_recv(&req, get_tc_info, NULL, &info);
- 	if (ret < 0)
- 		return libbpf_err(ret);
- 	if (!info.processed)
-diff --git a/tools/lib/bpf/nlattr.h b/tools/lib/bpf/nlattr.h
-index 3c780ab6d022..219747e135f2 100644
---- a/tools/lib/bpf/nlattr.h
-+++ b/tools/lib/bpf/nlattr.h
-@@ -13,6 +13,7 @@
- #include <string.h>
- #include <errno.h>
- #include <linux/netlink.h>
-+#include <linux/rtnetlink.h>
-
- /* avoid multiple definition of netlink features */
- #define __LINUX_NETLINK_H
-@@ -52,6 +53,18 @@ struct libbpf_nla_policy {
- 	uint16_t	maxlen;
- };
-
-+struct libbpf_nla_req {
-+	struct nlmsghdr nh;
-+	union {
-+		struct {
-+			struct ifinfomsg ifinfo;
-+			char _pad[4];
-+		};
-+		struct tcmsg tc;
-+	};
-+	char buf[128];
-+};
-+
- /**
-  * @ingroup attr
-  * Iterate over a stream of attributes
-@@ -111,44 +124,44 @@ static inline struct nlattr *nla_data(struct nlattr *nla)
- 	return (struct nlattr *)((char *)nla + NLA_HDRLEN);
- }
-
--static inline struct nlattr *nh_tail(struct nlmsghdr *nh)
-+static inline struct nlattr *req_tail(struct libbpf_nla_req *req)
- {
--	return (struct nlattr *)((char *)nh + NLMSG_ALIGN(nh->nlmsg_len));
-+	return (struct nlattr *)((char *)req + NLMSG_ALIGN(req->nh.nlmsg_len));
- }
-
--static inline int nlattr_add(struct nlmsghdr *nh, size_t maxsz, int type,
-+static inline int nlattr_add(struct libbpf_nla_req *req, int type,
- 			     const void *data, int len)
- {
- 	struct nlattr *nla;
-
--	if (NLMSG_ALIGN(nh->nlmsg_len) + NLA_ALIGN(NLA_HDRLEN + len) > maxsz)
-+	if (NLMSG_ALIGN(req->nh.nlmsg_len) + NLA_ALIGN(NLA_HDRLEN + len) > sizeof(*req))
- 		return -EMSGSIZE;
- 	if (!!data != !!len)
- 		return -EINVAL;
-
--	nla = nh_tail(nh);
-+	nla = req_tail(req);
- 	nla->nla_type = type;
- 	nla->nla_len = NLA_HDRLEN + len;
- 	if (data)
- 		memcpy(nla_data(nla), data, len);
--	nh->nlmsg_len = NLMSG_ALIGN(nh->nlmsg_len) + NLA_ALIGN(nla->nla_len);
-+	req->nh.nlmsg_len = NLMSG_ALIGN(req->nh.nlmsg_len) + NLA_ALIGN(nla->nla_len);
- 	return 0;
- }
-
--static inline struct nlattr *nlattr_begin_nested(struct nlmsghdr *nh,
--						 size_t maxsz, int type)
-+static inline struct nlattr *nlattr_begin_nested(struct libbpf_nla_req *req, int type)
- {
- 	struct nlattr *tail;
-
--	tail = nh_tail(nh);
--	if (nlattr_add(nh, maxsz, type | NLA_F_NESTED, NULL, 0))
-+	tail = req_tail(req);
-+	if (nlattr_add(req, type | NLA_F_NESTED, NULL, 0))
- 		return NULL;
- 	return tail;
- }
-
--static inline void nlattr_end_nested(struct nlmsghdr *nh, struct nlattr *tail)
-+static inline void nlattr_end_nested(struct libbpf_nla_req *req,
-+				     struct nlattr *tail)
- {
--	tail->nla_len = (char *)nh_tail(nh) - (char *)tail;
-+	tail->nla_len = (char *)req_tail(req) - (char *)tail;
- }
-
- #endif /* __LIBBPF_NLATTR_H */
---
-2.31.1
-
+> 
+> 
+> 
+> 
+> 
+> On Fri, Nov 13, 2020 at 1:59 PM Yonghong Song <yhs@fb.com 
+> <mailto:yhs@fb.com>> wrote:
+> 
+> 
+> 
+>     On 11/13/20 6:34 AM, carlos antonio neira bustos wrote:
+>      > Hi Blaise and Daniel,
+>      >
+>      >
+>      > I was following a couple of months ago how bpftrace was going to
+>     handle
+>      > this situation. I thought this PR
+>      > https://github.com/iovisor/bpftrace/pull/1602
+>     <https://github.com/iovisor/bpftrace/pull/1602>
+>      > <https://github.com/iovisor/bpftrace/pull/1602
+>     <https://github.com/iovisor/bpftrace/pull/1602>> was going to be merged
+>      > but just found today that is not working.
+>      >
+>      > I agree with Yonghong Song on the approach of using the two helpers
+>      > (bpf_get_pid_tgid() and bpf_get_ns_current_pid_tgid()) to move
+>     forward
+>      > on the short term, bpf_get_ns_current_pid_tgid works as a
+>     replacement
+>      > to bpf_get_pid_tgid when you are instrumenting inside a container.
+>      >
+>      > But the use case described by Blaise is one I would like to use
+>     bpftrace,
+>      >
+>      > If nobody is against it, I could start working on a new helper to
+>      > address that situation as I need to have bpftrace working in that
+>     scenario.
+> 
+>     Yes, please. Thanks!
+> 
+>      >
+>      > For my understanding of the problem the new helper should be able to
+>      > return pid/tgid from a target namespace, is that correct?.
+> 
+>     Yes. This way, the stack trace can correlate to target namespace for
+>     symbolization purpose.
+> 
+>      >
+>      >
+>      > Bests
+>      >
+>      >
+>     [...]
+> 
