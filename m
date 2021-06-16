@@ -2,173 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8083A9524
-	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 10:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BD63A9528
+	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 10:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhFPIjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 04:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
+        id S231334AbhFPIkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 04:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbhFPIi7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:38:59 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15CCC061574
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 01:36:53 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso3502824wmh.4
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 01:36:53 -0700 (PDT)
+        with ESMTP id S231318AbhFPIkS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:40:18 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899CDC061574
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 01:38:12 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id bp38so3071932lfb.0
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 01:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yI33QXO7o5mOboBJqKlcsQIYZrZ+1KjBdF8A0bBLZiE=;
-        b=FngHFoRnto+bBLYvxXTsJKnfqhDGQCtDzyzBKdBBd9lQqhnlKzuZaQaLHk4AoeN+hl
-         AqZx41zAvklAaZ7yw8BE6WDxqSMVyMIYAqwGvumH5URiRYw5Z/GXI0ArXLo39pYrIPR3
-         nRX2e3cBj2GNCSUyhCsHAmTvjZqgKxo46vymw=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WFlnUn032A3seAXpAp6nFnShtPEpjQiw0z6fxXB+pZ4=;
+        b=b3K52WbdGg5tekx45Z37HAb5PSXE3GMizKZxePqRmWm0jQzTsetoH1jlsEuuM/Hmne
+         vpp3LynrMhhaqCRphXEPSN2y6GbjXQiQ7JEHrdxItM99A9JtSZiIXUCgYgjc2emwD6S/
+         nWvjl0bMIpRx4bxtaq3d5eLD4QwAd4URfAoo4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yI33QXO7o5mOboBJqKlcsQIYZrZ+1KjBdF8A0bBLZiE=;
-        b=uIUooWa19i18COQKjhx7u6biJa9o8gR2yfVaYLb8Y/YypgeGWix2LUu33UzYP8bkjp
-         l1AivQx3pOsW7tF1QtHl2DO+VUHKtxxfcLCgpLdSGju/yOzpJkXaaKXJLXgv2MLRzteO
-         NdxK8w1oDFcVOv0cBKgzJwxm665sTOYJ221ZvwrDs7KoxnwA6+9xDUIjd1lOnJLXQsST
-         dHA46IFJakVGZVhFMhiKOelFpw1NJtBsUOI7hF12/pVtNtoBZpyH//Q336DiDn0m+9B0
-         e/5kxYQBbTcqAP92WoASQYNtVZJz351Nry/NYcuUzLzA4hXqWo+2liK4dYCstC6X+fwe
-         WqaQ==
-X-Gm-Message-State: AOAM533H+BW41TlYq5Z83SBmycotxjo3o33k9MCjHCBMszrJChshyBXS
-        i9eQPGVuVkIRfhVKqFBPHrf6U9HYFM9krA==
-X-Google-Smtp-Source: ABdhPJyFK1qIGk6TPzXhd0VQ90Tjzc8qEZvXI0wWPbL9vsc6aywxffK9nCfu06zP5fM9S8eh3O0E0g==
-X-Received: by 2002:a1c:e90d:: with SMTP id q13mr3873982wmc.163.1623832612418;
-        Wed, 16 Jun 2021 01:36:52 -0700 (PDT)
-Received: from antares.. (d.6.5.c.4.5.7.b.b.1.c.a.6.3.c.d.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:dc36:ac1b:b754:c56d])
-        by smtp.gmail.com with ESMTPSA id a1sm1698549wra.63.2021.06.16.01.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 01:36:51 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf v2 1/1] lib: bpf: tracing: fail compilation if target arch is missing
-Date:   Wed, 16 Jun 2021 09:36:35 +0100
-Message-Id: <20210616083635.11434-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WFlnUn032A3seAXpAp6nFnShtPEpjQiw0z6fxXB+pZ4=;
+        b=tuCAKzD2+0kXGuZlqKJaaadnIXZURlX3WDYsWgp1Cxb605y7Wyvn1U23PPdd75Hlhe
+         3CmPqo10QW51h81tBS0/vmV7HWD/GU4ZbOUPGHXOqE7r89wYJEkQ5H55GyhksALjIJmC
+         gwmthuTI645ufwPlmLzmYH5SMzRxuL5FqJL/0jfwCrufEGouHpnOjf7unQr4J3UwBtwT
+         Twoi1Svp21Hfq+1rFkpstn/5m5/jvfuwuBswlsk9swIIKEfy7ee1jMdYkytVoVrXguFQ
+         BtPsbOq+nepShVnxX7pDVSCO9CqNmfARjYhaAyW4Y2LHVuWuTEuDbV6q3c5i3/dVNdgO
+         hTqQ==
+X-Gm-Message-State: AOAM532B5uj4Dwz6NQQSLWDxofqMrbtC0xHPuIEkx0DfedNuxSPyhMEL
+        B2e4i8Nf88OxtkKE3CFDYxBfJdLEtxQpojAEgVtKIg==
+X-Google-Smtp-Source: ABdhPJwRxd6lm+ds5Zj/j54RacqU0f8ihD+i9c3wZFFsgxdb7Zb9po6mq0its+tBeiWwpvvkHDMZgMTUJCJwUZtP3w0=
+X-Received: by 2002:a05:6512:32a5:: with SMTP id q5mr2748291lfe.171.1623832690875;
+ Wed, 16 Jun 2021 01:38:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210610161027.255372-1-lmb@cloudflare.com> <CAEf4BzZDDuyybofAjxm8QG9VYFMGAF8gZ9g-rnoD1-8R_9LExw@mail.gmail.com>
+ <CACAyw9-UbOD_H5=KfscPHzwOHL13nTUpojhtQnOTNJpTS-DVzQ@mail.gmail.com>
+ <CAEf4BzbFhGkRi0YSa0pB+2SFYtJKXLEVKx=hQpVbBO_D4KUjtQ@mail.gmail.com>
+ <CACAyw9-0qDakujnUBT3uZcgnBZr0dZ8o=GbLx_OEiF1xXvRdzQ@mail.gmail.com> <CAEf4Bzb8piZg29fTpfSqUPEE69hHEqdnFbYHN-bp3qEossLkww@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb8piZg29fTpfSqUPEE69hHEqdnFbYHN-bp3qEossLkww@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 16 Jun 2021 09:37:59 +0100
+Message-ID: <CACAyw997Rnnz6xGVu3faHbYMA6Xis_=h6F96i9G+uQY00M2jgQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] lib: bpf: tracing: fail compilation if target arch is missing
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf2go is the Go equivalent of libbpf skeleton. The convention is that
-the compiled BPF is checked into the repository to facilitate distributing
-BPF as part of Go packages. To make this portable, bpf2go by default
-generates both bpfel and bpfeb variants of the C.
+On Tue, 15 Jun 2021 at 19:53, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> >
+> > > >
+> > > > Without it we sometimes get an integer cast warning, something about
+> > > > an int to void* cast I think?
+> > >
+> > > hmm.. ok
+> >
+> > This is the error I get:
+> >
+> > progs/lsm.c:166:14: warning: cast to 'void *' from smaller integer
+> > type 'int' [-Wint-to-void-pointer-cast]
+> >         void *ptr = (void *)PT_REGS_PARM1(regs);
+> >                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> oh, ok, but then those zeros probably best to mark as longs, not long
+> longs (even thought for BPF it's the same), as (unsigned) long is a
+> logical equivalent of a pointer, right?
 
-Using bpf_tracing.h is inherently non-portable since the fields of
-struct pt_regs differ between platforms, so CO-RE can't help us here.
-The only way of working around this is to compile for each target
-platform independently. bpf2go can't do this by default since there
-are too many platforms.
+Ack, that seems to work as well. I sent a v2, also renamed
+__bpf_target_missing to __BPF_TARGET_MISSING.
 
-Define the various PT_... macros when no target can be determined and
-turn them into compilation failures. This works because bpf2go always
-compiles for bpf targets, so the compiler fallback doesn't kick in.
-Conditionally define __BPF_MISSING_TARGET so that we can inject a
-more appropriate error message at build time. The user can then
-choose which platform to target explicitly.
-
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- tools/lib/bpf/bpf_tracing.h | 46 +++++++++++++++++++++++++++++++++----
- 1 file changed, 42 insertions(+), 4 deletions(-)
-
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index c0f3a26aa582..d6bfbe009296 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -25,26 +25,35 @@
- 	#define bpf_target_sparc
- 	#define bpf_target_defined
- #else
--	#undef bpf_target_defined
--#endif
- 
- /* Fall back to what the compiler says */
--#ifndef bpf_target_defined
- #if defined(__x86_64__)
- 	#define bpf_target_x86
-+	#define bpf_target_defined
- #elif defined(__s390__)
- 	#define bpf_target_s390
-+	#define bpf_target_defined
- #elif defined(__arm__)
- 	#define bpf_target_arm
-+	#define bpf_target_defined
- #elif defined(__aarch64__)
- 	#define bpf_target_arm64
-+	#define bpf_target_defined
- #elif defined(__mips__)
- 	#define bpf_target_mips
-+	#define bpf_target_defined
- #elif defined(__powerpc__)
- 	#define bpf_target_powerpc
-+	#define bpf_target_defined
- #elif defined(__sparc__)
- 	#define bpf_target_sparc
-+	#define bpf_target_defined
-+#endif /* no compiler target */
-+
- #endif
-+
-+#ifndef __BPF_TARGET_MISSING
-+#define __BPF_TARGET_MISSING "GCC error \"Must specify a BPF target arch via __TARGET_ARCH_xxx\""
- #endif
- 
- #if defined(bpf_target_x86)
-@@ -287,7 +296,7 @@ struct pt_regs;
- #elif defined(bpf_target_sparc)
- #define BPF_KPROBE_READ_RET_IP(ip, ctx)		({ (ip) = PT_REGS_RET(ctx); })
- #define BPF_KRETPROBE_READ_RET_IP		BPF_KPROBE_READ_RET_IP
--#else
-+#elif defined(bpf_target_defined)
- #define BPF_KPROBE_READ_RET_IP(ip, ctx)					    \
- 	({ bpf_probe_read_kernel(&(ip), sizeof(ip), (void *)PT_REGS_RET(ctx)); })
- #define BPF_KRETPROBE_READ_RET_IP(ip, ctx)				    \
-@@ -295,6 +304,35 @@ struct pt_regs;
- 			  (void *)(PT_REGS_FP(ctx) + sizeof(ip))); })
- #endif
- 
-+#if !defined(bpf_target_defined)
-+
-+#define PT_REGS_PARM1(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM2(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM3(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM4(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM5(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_RET(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_FP(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_RC(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_SP(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_IP(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+
-+#define PT_REGS_PARM1_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM2_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM3_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM4_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM5_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_RET_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_FP_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_RC_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_SP_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_IP_CORE(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+
-+#define BPF_KPROBE_READ_RET_IP(ip, ctx) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define BPF_KRETPROBE_READ_RET_IP(ip, ctx) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+
-+#endif /* !defined(bpf_target_defined) */
-+
- #ifndef ___bpf_concat
- #define ___bpf_concat(a, b) a ## b
- #endif
 -- 
-2.30.2
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
