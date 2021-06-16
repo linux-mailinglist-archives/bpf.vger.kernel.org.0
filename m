@@ -2,443 +2,353 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FDF3A916F
-	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 07:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5056E3A9176
+	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 07:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhFPF5M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 01:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230236AbhFPF5L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 01:57:11 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47271C061574;
-        Tue, 15 Jun 2021 22:54:52 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id b13so1356705ybk.4;
-        Tue, 15 Jun 2021 22:54:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e37uTBOiAthgk6XR/2MHmaquFeMG0KCqR43OSJCrZnk=;
-        b=e3Kcy9la4DPQL0RE0hsLh3+39/zrdIM7Z/BLVB6tIwcn6ijxBCO0A5T0ZxOAwrmFG0
-         dgXxQ1SeEaMVtUFjo7YmUaLKsKjQL7nfc8vE+gnIkZ55MU1CcEa3WW8F8DYSZGppFoUM
-         JT75aJHqtpME31hVoJJ/tu1oMA8LsE19KWVmJQGzSAdUEi9bI8OQVLZAdE0SK+erWsQH
-         9FXvFmLTGsQOplIyjjqJIURwdiKT5qT0JZ/vBX97JE2gitZkvtKN0jlb77neaqUBg6mP
-         sQHX606bJMIbHsknGxkjX2ontQJQC1heD6IQU966JDhsJPuszgbp0NRn8hW+vOjHBmAe
-         /euQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e37uTBOiAthgk6XR/2MHmaquFeMG0KCqR43OSJCrZnk=;
-        b=CsYsPGErfjnBHd9GpOYJDvct60qTxojzGwnWgf3mNkK3N9aIj37pPm8jqvwKIs28Bv
-         YoPMiU+qMinaGJoYt2ruMo/PbTmGEBVVBCmfEmUoVRzjtjTTEDp0qLXFUU8+0eYp6MhZ
-         h/2Lt7DGX9kfFJd+DbpZrZR0Yb7j7zKSUbEUweieyVuCo5etvxZUmx9Lw+WzCoebzRjz
-         YoiOzvYc1fyfoUYpKTunokLzz+YsREpS1y/LdwVIW/bogsHUtN2lGPJji5iJsl6TJ5wn
-         pMpHvQ9FCDYaevxpKXcCnrAIJUaIXyy7H8wimo+m+YUbfNr4MpDL1jiWNLjwFMbILiOm
-         twZQ==
-X-Gm-Message-State: AOAM530FniLF9tVbw+yfjrk7yZyeWe/J5Egy4+ncEM9ndEHwjvlXQVIp
-        z9BQAlDiL+HZeCKcPSLm49ekddx0d156hVgaFJ4=
-X-Google-Smtp-Source: ABdhPJzd0OY8f8eD/3IAgOHCZAT8G1CMhDPBJAgJYkSq3GjCS0t/diURtlkochKumuZjt5ssbGW1QbdGkDrlM1/VqhI=
-X-Received: by 2002:a25:4182:: with SMTP id o124mr3859903yba.27.1623822891303;
- Tue, 15 Jun 2021 22:54:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210611042442.65444-1-alexei.starovoitov@gmail.com>
- <20210611042442.65444-2-alexei.starovoitov@gmail.com> <9b23b2c6-28b2-3ab3-4e8b-1fa0c926c4d2@fb.com>
- <CAADnVQLS=Jx9=znx6XAtrRoY08bTQHTipXQwvnPNo0SRSJsK0Q@mail.gmail.com>
- <CAEf4BzZ159NfuGJo0ig9i=7eGNgvQkq8TnZi09XHSZST17A0zQ@mail.gmail.com>
- <CAADnVQJ3CQ=WnsantyEy6GB58rdsd7q=aJv93WPsZZJmXdJGzQ@mail.gmail.com>
- <CAEf4BzZWr7HhKn3opxHeaZqkgo4gsYYhDQ4d4HuNhx-i8XgjCg@mail.gmail.com> <20210616042622.22nzdrrnlndogn5w@ast-mbp>
-In-Reply-To: <20210616042622.22nzdrrnlndogn5w@ast-mbp>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 15 Jun 2021 22:54:40 -0700
-Message-ID: <CAEf4BzZ_=tJGqGS9FKxxQqGfRqAoF_m9r8FW29n9ZqC_u-10DA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/3] bpf: Introduce bpf_timer
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S231158AbhFPF5c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 01:57:32 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:24242 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231228AbhFPF5b (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 16 Jun 2021 01:57:31 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15G5r4Yv006133;
+        Tue, 15 Jun 2021 22:55:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=htW/IthAwcj4vRrCrz7kK10uQmNh3VeKUmU0MCuqfuo=;
+ b=q63psD80/XZNt0NSIbr3rp8fySOGEeFcHNs0YVL5a+dVp+W6EdtIVgZFfRuXzY3sOWzd
+ eB2O0iHYNd1Ttm5bFCE1IMH+AOksdrHBSaVsmbW31wuudCyIxrIQkGJCmqHJeO1QMF0l
+ 5SkDBop2Izq0k3+HOzB6ssxia2esXbaSFzQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 396g010qv0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 15 Jun 2021 22:55:10 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 15 Jun 2021 22:55:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YXbrctZsjyMamzrOL8M0aEkV2xxqBdRDHrO/ZUHoyQNQKEJTDE5dDLyV0ELdzjAE/bpcCazrUavCdzI0HS4JVVfl5IV7XHaKp45wWC/cobp2zNRciTtEZB3kFKAz7QolQZ7eeDYmq5XtFBxEV/nVMPp4oiOSzDNTvzwQ2plEA1TQmemBCR7JrK0mbaokBUBrsKA4WpO5ZaHE2Ndlazpl77QMalBV5zQgig/btm7e2UXTEBWhBEbBXPTflYw0UtGpTJuqI1blHrKGwCXB0Kwh3ojqFC5xnj73HNpj2GJT1g03axz6IwOWMJH5KujiQr/aK+iFrUC0MQCISy64CKnMUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=htW/IthAwcj4vRrCrz7kK10uQmNh3VeKUmU0MCuqfuo=;
+ b=FuUFMs2KSH5fbkkJdRdE6Qc49125P5TWaNdar/JJGN+Gb73OKASKra6iDGSWqdvT8Ut8bL1ZgNWuA3qat964eRuIFn5G2KR77XD0KC2poamgtoJpKp2Fl0KHxaICoHOmKBoZ11n6VIYuvnmd3De4Zn4p1WpXkTpqb6nZwGA4gROGBLV9+aOOeFJWbUHvoTgYh2buHBhsLJX6wA623pSru71fG1+kzBMLUP1F1p0XR79BezSWEWuGU2jp279QxMPIhUm6R8s06Ye2uzeXeiZMfPZdbf08WsGdoC1EydBV40bWDZXDAtv4fXim9NOeYwXZwEMRuAeytEoxepYgVIBTlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR1501MB2061.namprd15.prod.outlook.com (2603:10b6:805:e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Wed, 16 Jun
+ 2021 05:55:08 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4219.026; Wed, 16 Jun 2021
+ 05:55:08 +0000
+Subject: Re: Kernel Oops in test_verifier "#828/p reference tracking:
+ bpf_sk_release(btf_tcp_sock)"
+To:     Tony Ambardar <tony.ambardar@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>
+References: <CAPGftE_eY-Zdi3wBcgDfkz_iOr1KF10n=9mJHm1_a_PykcsoeA@mail.gmail.com>
+ <ce6fd0fd-2fb3-7a66-4910-5fe8c2b4d593@fb.com>
+ <CAPGftE9+CVuK7KwExRiqsuKHMEUrPsXraBbC5qw8N2NFrE5MYg@mail.gmail.com>
+ <4ec3c676-e219-6aaf-fe5c-76abbb0c9535@fb.com>
+ <CAPGftE8d03K4_S1pTyRVWZL7w67FukES_PV8SR=0_6DXhXzjQw@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <f888e1ef-acef-2b3d-3ac8-06a051f979d7@fb.com>
+Date:   Tue, 15 Jun 2021 22:55:04 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <CAPGftE8d03K4_S1pTyRVWZL7w67FukES_PV8SR=0_6DXhXzjQw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:99ad]
+X-ClientProxiedBy: SJ0PR03CA0240.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::35) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::1441] (2620:10d:c090:400::5:99ad) by SJ0PR03CA0240.namprd03.prod.outlook.com (2603:10b6:a03:39f::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Wed, 16 Jun 2021 05:55:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1ebbac4f-87c5-4af2-9a0c-08d9308b4ba3
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2061:
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB20612167845C255165FA37B9D30F9@SN6PR1501MB2061.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yCJCEYzgPUvWeC/qtJUz7+pjSE46ib2w6pnxaRnqDFHC2jMkz3duWi+hBqsN9jJxBBaVzeEIZ8NO+uiWMSSWLPbl31JB0ABooi8/QXCz4cyCli6GmfDVlozrOI5gR0tkPgNADc2a3VbciCctAyX3Pj1LR86u+FEbriHSrBrnNCzLVLZgyFZc8HT+PLBKvoliMoAio7a1vrDy3shfPhC7TUaJZtpMr0DiLnHRoJrDtjle39Jc/UJDpVbPZ6sfQMYSGTLJ6LeHkg+xf1GHK621rmE+deCQXzzMhb5kRjLX0sUrC2hL88A4O3lho4ZI1e1b+g2qPqh31/gF6XPy7R0BmhPZh8zmjbF4GDQy9ZcTqm1LuOCa+tgQqCl5JH5CUz+zg5V7x81z+MwAl31G7231LT22bNBlZZww926ka4odZz8ssFxPKrfAf3lGzR86pZ7YnAczX4ENSny0wO3qig40FIUtRCjlKcogT+xibZ853Ctx4SW5zMkIj8yZpLLjFHPJbknSFAtYn6OMm9OJWklzHeWLy5TiQvmZJ048wHLKCpbgtpdJFTolt2D42xTGYis+mqjyto7kBjwH2YknOkJbBwnQzAZJDMeGFmbblS5iGC187rzJ/WovUE9YDACuCbxzTGPRhMQ1sRaxE9BPgu2esXQOmSqjBGChnHOPvO1v4b+S6j2pPn7bsYcJI27QeylF
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(366004)(39860400002)(136003)(31686004)(2906002)(6916009)(8936002)(16526019)(83380400001)(316002)(31696002)(54906003)(6666004)(5660300002)(52116002)(66556008)(478600001)(53546011)(186003)(38100700002)(8676002)(2616005)(66946007)(36756003)(86362001)(6486002)(4326008)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZUZ3Zk1zVGpSV2tGTkhRSzlFdHRUajRFVW13NjAvV3dBQjBYd0hiWWR4cCtR?=
+ =?utf-8?B?TlduS081dlRTVjBtWkJQbHpqcUV0ZTNTeE5WbFFiRG9NbFo0NnFIdU5uZHd2?=
+ =?utf-8?B?aGFkZXdaZ1BJR3JqTUR2aWhBZjFHMDdhSlZuY0FJWHA4SCsveHNONkxBcENG?=
+ =?utf-8?B?ZjByV2gzbnJDZ2RpQ05GQjJMOGxYSGRMcXZySVU3dVo1aHpWNzVJRWJEOFRl?=
+ =?utf-8?B?TFRqb2hBcjZINkpoQmlyMjJ6NVpsU29qWW9CK01SMkpxRHpRdXVYa3puMUVp?=
+ =?utf-8?B?cTg1TEpueWwvcEJzb3lIL2R0WGovOWllVStwcmJuQTRES3BEai9XWEd6UDJM?=
+ =?utf-8?B?aGtCVXdKcDA0N3QvZklvcVF5dC9oamEvbkpqL1liM3R3clRYbGJlem9pYTRs?=
+ =?utf-8?B?dG5URGQvVjBsZXZXbXU2eWF2K2IwRGF5WGpHV2N4ZGdua3hVZG5rMWFJWVdw?=
+ =?utf-8?B?YlY4TXQydkVkQXhISW1uNDdhalE2U3RvempTU0JPcElsbUxRaVBzR1d2cnRt?=
+ =?utf-8?B?ajFYWWV5TkdZNS9oUUcxSVBZakZEcDBsQmhwbTdNU0lXdldvUnBKcjhqU3I5?=
+ =?utf-8?B?SHJ3akFmL1E0UGRjMVp2eW1TRkhoSHVmSm4xQTBxMDlKRzhaam5jQ2hhN2hh?=
+ =?utf-8?B?ZUpxcktsNkp2R3hPaFJ3Skw1MENIR2V5QUlKOXI5dXNFcXk3c2I5eVpTV3Bj?=
+ =?utf-8?B?V3Rqc09yZVVvUUpCVmJUT0pnSHZESWpqeVVjRk9vdHBWL2x3eGZML3Ivc2hq?=
+ =?utf-8?B?U1ltUEpjYmR6VWx5bG8rZzFGNHFpeGw3M1NOOTNnWm5iclZ5Tk5HLzRUajBK?=
+ =?utf-8?B?OG5wRmJoWC9Ra2t4VE42bmZBc3N3ZDg3Vy9mYW1RVThZMEZ1NzhSdllPZWp6?=
+ =?utf-8?B?bEl3Zm1MN0dhQnZXTk5kNkQxem9vWktiZHIrSmd3Vk9BTyt5ZDVLMFNNWlVp?=
+ =?utf-8?B?U3RJNDJzU1lvaytLdXVsRWRCU244OUJBRUlJSCs5RHh6UTZ0aDdYQnY2VlA3?=
+ =?utf-8?B?bEMxbEdXUzIyOTVhUkliTFp2ejdOV2tQNzV5ZStsMXZyQ3YwNWVQU3lzUm90?=
+ =?utf-8?B?dUJ3N1g1OFJydE9memlkbzRlaGppQjA5WWMxY3lDcTFqMUxhY1lvWktrWlBY?=
+ =?utf-8?B?T3JCa1RhaUg0STBERHNoZTdrbzFPMlRCZVBMU1l3dmRGS28rYkVHQStkcWkw?=
+ =?utf-8?B?ei9hNkVmZE9Wd1kwbnBvMGwwdUNEZ2k4T041NE1hQU5CQ2VzQllGQ3BMZ3JY?=
+ =?utf-8?B?S0lxSXV6SWFTK3gwdHNZUHRQcTZBSWkwYk5CdnVWRDFwamJjek5oVXJhU2h5?=
+ =?utf-8?B?Q3pJalJTMExYeTAzUE1NbWVoL3JBdmFEVXNEV2JLNVNySGdacEpOQUJKeU9P?=
+ =?utf-8?B?T21nSWlwdlFNbVRRaUtVcmR0UExEVnM4cHUzTCtQV2U0ZksyS0JVY015STVR?=
+ =?utf-8?B?K1dLNVA5QlZGeDlyV1FCQXNtc2s5WktGbmRKSE5ka1FUSHptaVhiQ2ZMa2RO?=
+ =?utf-8?B?dW16bXZYVGNKK0xPK3lwQkMycDhtbEthRHg1ekRYVXc2VTlIaWJoOEFPYUMw?=
+ =?utf-8?B?MWtwazJCOGVZZUFwRjlvcEI0RXFrYXZSK3czSnpCNVlOblZmRjIwdjVNa21D?=
+ =?utf-8?B?VVFHamNTYm9pYXFMaVcrSExRNzVCYzFzdTVnUHJrcGhHRlZTR2E4MXdhc3V0?=
+ =?utf-8?B?MUppZ2ZRcCtSc09MRVU0eEZQUnk1cHdtUDNhbU1JdWFjRnFjSFpRY3VIV1NL?=
+ =?utf-8?B?UXVMcTRYK2ZMb1loQnBOODcvVVJ3Z1I2djMxOVpleldkRjhlZmR2VWxRVnFQ?=
+ =?utf-8?B?RS8vL1hibDkxdDdhcjFRUT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ebbac4f-87c5-4af2-9a0c-08d9308b4ba3
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 05:55:07.9494
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gy5rekFSAisLblAANaB65fM7kvFYXHxqUwT7qOJ1Qh+XjfaQF5EYOKU/E9qYCpti
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2061
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: SVwKmkrBlmj79r-GYzTuQEACKsO0CQlm
+X-Proofpoint-GUID: SVwKmkrBlmj79r-GYzTuQEACKsO0CQlm
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-15_09:2021-06-15,2021-06-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
+ clxscore=1015 bulkscore=0 malwarescore=0 impostorscore=0 adultscore=0
+ mlxscore=0 priorityscore=1501 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106160036
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 9:26 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jun 15, 2021 at 08:24:13AM -0700, Andrii Nakryiko wrote:
-> > On Mon, Jun 14, 2021 at 10:41 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Jun 14, 2021 at 10:31 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Mon, Jun 14, 2021 at 8:29 PM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Jun 14, 2021 at 9:51 AM Yonghong Song <yhs@fb.com> wrote:
-> > > > > > > +     ret = BPF_CAST_CALL(t->callback_fn)((u64)(long)map,
-> > > > > > > +                                         (u64)(long)key,
-> > > > > > > +                                         (u64)(long)t->value, 0, 0);
-> > > > > > > +     WARN_ON(ret != 0); /* Next patch disallows 1 in the verifier */
-> > > > > >
-> > > > > > I didn't find that next patch disallows callback return value 1 in the
-> > > > > > verifier. If we indeed disallows return value 1 in the verifier. We
-> > > > > > don't need WARN_ON here. Did I miss anything?
-> > > > >
-> > > > > Ohh. I forgot to address this bit in the verifier. Will fix.
-> > > > >
-> > > > > > > +     if (!hrtimer_active(&t->timer) || hrtimer_callback_running(&t->timer))
-> > > > > > > +             /* If the timer wasn't active or callback already executing
-> > > > > > > +              * bump the prog refcnt to keep it alive until
-> > > > > > > +              * callback is invoked (again).
-> > > > > > > +              */
-> > > > > > > +             bpf_prog_inc(t->prog);
-> > > > > >
-> > > > > > I am not 100% sure. But could we have race condition here?
-> > > > > >     cpu 1: running bpf_timer_start() helper call
-> > > > > >     cpu 2: doing hrtimer work (calling callback etc.)
-> > > > > >
-> > > > > > Is it possible that
-> > > > > >    !hrtimer_active(&t->timer) || hrtimer_callback_running(&t->timer)
-> > > > > > may be true and then right before bpf_prog_inc(t->prog), it becomes
-> > > > > > true? If hrtimer_callback_running() is called, it is possible that
-> > > > > > callback function could have dropped the reference count for t->prog,
-> > > > > > so we could already go into the body of the function
-> > > > > > __bpf_prog_put()?
-> > > > >
-> > > > > you're correct. Indeed there is a race.
-> > > > > Circular dependency is a never ending headache.
-> > > > > That's the same design mistake as with tail_calls.
-> > > > > It felt that this case would be simpler than tail_calls and a bpf program
-> > > > > pinning itself with bpf_prog_inc can be made to work... nope.
-> > > > > I'll get rid of this and switch to something 'obviously correct'.
-> > > > > Probably a link list with a lock to keep a set of init-ed timers and
-> > > > > auto-cancel them on prog refcnt going to zero.
-> > > > > To do 'bpf daemon' the prog would need to be pinned.
-> > > >
-> > > > Hm.. wouldn't this eliminate that race:
-> > > >
-> > > > switch (hrtimer_try_to_cancel(&t->timer))
-> > > > {
-> > > > case 0:
-> > > >     /* nothing was queued */
-> > > >     bpf_prog_inc(t->prog);
-> > > >     break;
-> > > > case 1:
-> > > >     /* already have refcnt and it won't be bpf_prog_put by callback */
-> > > >     break;
-> > > > case -1:
-> > > >     /* callback is running and will bpf_prog_put, so we need to take
-> > > > another refcnt */
-> > > >     bpf_prog_inc(t->prog);
-> > > >     break;
-> > > > }
-> > > > hrtimer_start(&t->timer, ns_to_ktime(nsecs), HRTIMER_MODE_REL_SOFT);
->
-> Turned out that this approach has the same race as Yonghong mentioned.
-> Calling hrtimer_callback_running() directly or through hrtimer_try_to_cancel()
-> with extra cpu_base->lock as in above doesn't prevent the race.
-> bpf_prog_put could have already happened and above case:
->  case -1:
->      /* callback is running and will bpf_prog_put, so we need to take
->  another refcnt */
->      bpf_prog_inc(t->prog);
->
-> would be incrementing refcnt from zero.
->
-> > > >
-> > > > So instead of guessing (racily) whether there is a queued callback or
-> > > > not, try to cancel just in case there is. Then rely on the nice
-> > > > guarantees that hrtimer cancellation API provides.
-> > >
-> > > I haven't thought it through yet, but the above approach could
-> > > indeed solve this particular race. Unfortunately there are other races.
-> > > There is an issue with bpf_timer_init. Since it doesn't take refcnt
-> > > another program might do lookup and bpf_timer_start
-> > > while the first prog got to refcnt=0 and got freed.
-> >
-> > I think it's because of an API design. bpf_timer_init() takes a
-> > callback (i.e., bpf_prog) but doesn't really do anything with it (so
-> > doesn't take refcnt). It's both problematic, as you point out, and
-> > unnecessarily restricting because it doesn't allow to change the
-> > callback (e.g., when map is shared and bpf_program has to be changed).
-> > If you change API to be:
-> >
-> > long bpf_timer_init(struct bpf_timer *timer, int flags);
-> > long bpf_timer_start(struct bpf_timer *timer, void *callback_fn, u64 nsecs);
-> >
-> > You'll avoid this problem because bpf_timer_start will take refcnt
-> > when arming (or re-arming) the timer. bpf_timer_init() will only take
-> > care of initial memory allocation and hrtimer_init, but will leave
-> > timer->prog as NULL until bpf_timer_start(). Wouldn't that solve all
-> > the problems and be more flexible/powerful?
->
-> Unfortunately no. The race would still be present and I don't see
-> a clean way of solving.
->
-> > If necessary, we can teach
-> > bpf_timer_cb() to take spinlock briefly to avoid races fetching prog
-> > pointer, but I haven't thought much about whether that's necessary.
->
-> That doesn't help either.
-> hrtimer_try_to_cancel() returning -1 (or checking it via
-> hrtimer_callback_running) doesn't mean that refcnt > 0.
-> It could have reached zero in bpf_timer_cb.
-> I thought whether introducing bpf_prog_inc_if_not_zero()
-> and using it in bpf_timer_start() could solve it...
-> Nope. The prog pointer could be already be freed if processing
-> of bpf_timer_cb is slow enough.
-> Then I thought whether we can move refcnt from prog into
-> 'struct bpf_timer_kern'...
-> Then considered ref/uref counting...
-> It's slippery slop of wrong turns.
->
-> > If we wanted to push this to extreme, btw, we don't really need
-> > bpf_timer_init(), bpf_timer_start() can do bpf_hrtimer allocation the
-> > very first time (having pre-allocated spinlock makes this non-racy and
-> > easy). But I don't know how expensive hrtimer_init() is, so it might
-> > still make sense to split those two operations.
->
-> hrtimer_init is cheap, but bpf_timer_init() is expensive due
-> to memory allocation.
-> It's done once, so arguably should be ok,
-> but I'd like to avoid reinventing the wheel and stick
-> to api-s similar to hrtimer.
->
-> > Further, merging
-> > bpf_timer_init() and bpf_timer_start() would require 6 input
-> > arguments, which is a bit problematic. I have an idea how to get rid
-> > of the necessity to pass in bpf_prog (so we'll be fine with just 5
-> > explicit arguments), which simplifies other things (like
-> > bpf_cgroup_storage implementation) as well, but I don't have patches
-> > yet.
-> >
-> > > Adding refcnt to bpf_timer_init() makes the prog self pinned
-> > > and no callback might ever be executed (if there were no bpf_timer_start),
-> > > so that will cause a high chance of bpf prog stuck in the kernel.
-> > > There could be ref+uref schemes similar to tail_calls to address all that,
-> > > but it gets ugly quickly.
-> > > imo all these issues and races is a sign that such self pinning
-> > > shouldn't be allowed.
-> >
-> > I think prog refcounting is actually the saner and less surprising
-> > approach here and we just need to spend a bit more time thinking how
-> > to make everything work reliably. hrtimer API seems to be designed to
-> > handle cases like this, which makes everything much easier.
->
-> I made two 180 degree turns already. In the beginning I was strongly
-> against circular dependencies since old history of tail_call taught us
-> a valuable lesson. Then somehow convinced myself that this time around it will
-> be different and went with this crazy refcnting scheme. The last couple
-> weeks you, me, Yonghong, Toke and others invested countless hours thinking
-> through the race conditions. It's a sign that design took the wrong turn.
-> Circular dependencies must be avoided if possible. Here it's such case.
-
-It could be the case, of course. But let's try to think this through
-to the end before giving up. I think it's mostly because we are trying
-to be too clever with lockless synchronization. I'm still not
-convinced that it's a bad design.
-
-I had a feeling that bpf_timer_cb needs to take lock as well. But once
-we add that, refcounting becomes simpler and more deterministic, IMO.
-Here's what I have in mind. I keep only important parts of the code,
-so it's not a complete implementation. Please take a look below, I
-left a few comments here and there.
 
 
-struct bpf_hrtimer {
-       struct hrtimer timer;
-       struct bpf_map *map;
-       void *value;
+On 6/15/21 7:21 PM, Tony Ambardar wrote:
+> On Sun, 13 Jun 2021 at 23:14, Yonghong Song <yhs@fb.com> wrote:
+>>
+>> On 6/12/21 5:07 PM, Tony Ambardar wrote:
+>>> On Fri, 11 Jun 2021 at 08:57, Yonghong Song <yhs@fb.com> wrote:
+>>>>
+>>>> On 6/10/21 6:02 PM, Tony Ambardar wrote:
+>>>>> Hello,
+>>>>>
+>>>>> I encountered an NPE and kernel Oops [1] while running the
+>>>>> 'test_verifier' selftest on MIPS32 with LTS kernel 5.10.41. This was
+>>>>> observed during development of a MIPS32 JIT but is verifier-related.
+>>>>>
+>>>>> Initial troubleshooting [2] points to an unchecked NULL dereference in
+>>>>> btf_type_by_id(), with an unexpected BTF type ID. The root cause is
+>>>>> unclear, whether source of the ID or a potential underlying BTF
+>>>>> problem.
+>>>>
+>>>> Do you know what is the faulty btf ID number? What is the maximum id
+>>>> for vmlinux BTF?
+>>>
+>>> Thanks for the suggestions, Yonghong.
+>>>
+>>> I had built/packaged bpftool for the target, which shows the maximum as:
+>>>
+>>>     root@OpenWrt:~# bpftool btf dump file /sys/kernel/btf/vmlinux format
+>>> raw|tail -5
+>>>     [43179] FUNC 'pci_load_of_ranges' type_id=43178 linkage=static
+>>>     [43180] ARRAY '(anon)' type_id=23 index_type_id=23 nr_elems=16
+>>>     [43181] FUNC 'pcibios_plat_dev_init' type_id=29264 linkage=static
+>>>     [43182] FUNC 'pcibios_map_irq' type_id=29815 linkage=static
+>>>     [43183] FUNC 'mips_pcibios_init' type_id=115 linkage=static
+>>>
+>>> After adding NULL handling and debug pr_err() to kernel_type_name(), I next see:
+>>>
+>>>     root@OpenWrt:~# ./test_verifier_eb 828
+>>>     [   87.196692] btf_type_by_id(btf_vmlinux, 3062497280) returns NULL
+>>>     [   87.196958] btf_type_by_id(btf_vmlinux, 2936995840) returns NULL
+>>>     #828/p reference tracking: bpf_sk_release(btf_tcp_sock) FAIL
+>>>
+>>> Those large type ids make me suspect an endianness issue, even though bpftool
+>>> can still properly access the vmlinux BTF. Changing byte order and
+>>> looking up the
+>>> resulting type ids seems to confirm this:
+>>>
+>>>     Check endianness:
+>>>       3062497280 -> 0xB68A0000 --swap endian--> 0x00008AB6 -> 35510
+>>>     bpftool btf dump file /sys/kernel/btf/vmlinux format raw|fgrep "[35510]":
+>>>       [35510] STRUCT 'tcp_sock' size=1752 vlen=136
+>>>
+>>>     Check endianness:
+>>>       2936995840 -> 0xAF0F0000 --swap endian--> 0x00000FAF -> 4015
+>>>     bpftool btf dump file /sys/kernel/btf/vmlinux format raw|fgrep "[4015]":
+>>>       [4015] STRUCT 'sock_common' size=112 vlen=25
+>>>
+>>> As a further test, I repeated "test_verifier 828" across mips{32,64}{be,le}
+>>> systems and confirm seeing the problem only with the big-endian ones.
+>>
+>>   From the above information, looks like vmlinux BTF is correct.
+>> Below resolve_btfids command output seems indicating the btf_id list
+>> is also correct.
+>>
+>> The kernel_type_name is used in a few places for verifier verbose output.
+>>
+>> $ grep kernel_type_name kernel/bpf/verifier.c
+>> static const char *kernel_type_name(const struct btf* btf, u32 id)
+>>                                   verbose(env, "%s",
+>> kernel_type_name(reg->btf, reg->btf_id));
+>>                                   regno, kernel_type_name(reg->btf,
+>> reg->btf_id),
+>>                                   kernel_type_name(btf_vmlinux,
+>> *arg_btf_id));
+>>
+>> The most suspicous target is reg->btf_id, which is propagated from
+>> the result of bpf_sk_lookup_tcp() helper.
+>>
+>>>
+>>>> The involved helper is bpf_sk_release.
+>>>>
+>>>> static const struct bpf_func_proto bpf_sk_release_proto = {
+>>>>            .func           = bpf_sk_release,
+>>>>            .gpl_only       = false,
+>>>>            .ret_type       = RET_INTEGER,
+>>>>            .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+>>>> };
+>>>>
+>>>> Eventually, the btf_id is taken from btf_sock_ids[6] where
+>>>> btf_sock_ids is a kernel global variable.
+>>>>
+>>>> Could you check btf_sock_ids[6] to see whether the number
+>>>> makes sense?
+>>>
+>>> What I see matches the second btf_type_by_id() NULL call above:
+>>>     [   56.556121] btf_sock_ids[6]: 2936995840
+>>>
+>>>> The id is computed by resolve_btfids in
+>>>> tools/bpf/resolve_btfids, you might add verbose mode to your linux build
+>>>> to get more information.
+>>>
+>>> The verbose build didn't print any details of the btf ids. Was there anything
+>>> special to do in invocation? I manually ran "resolve_btfids -v vmlinux" from
+>>> the build dir and this, strangely, gave slightly different results than bpftool
+>>> but not the huge endian-swapped type ids. Is this expected?
+>>>
+>>>     # ./tools/bpf/resolve_btfids/resolve_btfids -v vmlinux
+>>>     ...
+>>>     patching addr   116: ID   35522 [tcp_sock]
+>>>     ...
+>>>     patching addr   112: ID    4021 [sock_common]
+>>>
+>>> Do any of the details above help narrow down things? What do you suggest
+>>> for next steps?
+>>
+>> We need to identify issues by dumping detailed verifier logs.
+>> Could you apply the following change?
+>>
+>> --- a/tools/testing/selftests/bpf/test_verifier.c
+>> +++ b/tools/testing/selftests/bpf/test_verifier.c
+>> @@ -1088,7 +1088,7 @@ static void do_test_single(struct bpf_test *test,
+>> bool unpriv,
+>>           attr.insns_cnt = prog_len;
+>>           attr.license = "GPL";
+>>           if (verbose)
+>> -               attr.log_level = 1;
+>> +               attr.log_level = 3;
+>>           else if (expected_ret == VERBOSE_ACCEPT)
+>>                   attr.log_level = 2;
+>>           else
+>>
+>> Run command like `./test_verifier -v 828 828`?
+>>
+>> I attached the verifier output for x86_64.
+>> Maybe by comparing x86 output vs. mips32 output, you can
+>> find which insn starts to have *wrong* verifier state
+>> and then we can go from there.
+> 
+> I realized too late your test output must be for a different kernel version as
+> well as arch, as the test numbering is different and doesn't match my test:
+> "reference tracking: bpf_sk_release(btf_tcp_sock)".
+> 
+> Given the problem is seen on big-endian and not little-systems, I applied
+> your patch for both mips32 variant systems and recaptured log output,
+> which should make for a stricter A/B comparison. I also kept my earlier
+> patches to catch the NULLs and print debug info.
+> 
+> The logs are identical until insn #18, where the failing MIPS32BE shows:
+> 
+> 18: R0_w=ptr_or_null_(null)(id=3,off=0,imm=0)
+> R6_w=sock(id=0,ref_obj_id=2,off=0,imm=0) R10=fp0 fp-8=????0000
+> fp-16=0000mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm
+> fp-48=mmmmmmmm refs=2
+> 
+> while the succeed MIPS32LE test shows:
+> 
+> 18: R0_w=ptr_or_null_tcp_sock(id=3,off=0,imm=0)
+> R6_w=sock(id=0,ref_obj_id=2,off=0,imm=0) R10=fp0 fp-8=????0000
+> fp-16=0000mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm
+> fp-48=mmmmmmmm refs=2
+> 
+> There are then further differences you can see in the attached logs. It's
+> not clear to me what these differences mean however. Any ideas?
 
-       struct bpf_prog *prog;
-       void *callback_fn;
+The above R0_w is to capture the return value for bpf_skc_to_tcp_sock()
 
-       /* pointer to that lock in struct bpf_timer_kern
-        * so that we can access it from bpf_timer_cb()
-        */
-       struct bpf_spin_lock *lock;
+const struct bpf_func_proto bpf_skc_to_tcp_sock_proto = {
+         .func                   = bpf_skc_to_tcp_sock,
+         .gpl_only               = false,
+         .ret_type               = RET_PTR_TO_BTF_ID_OR_NULL,
+         .arg1_type              = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+         .ret_btf_id             = &btf_sock_ids[BTF_SOCK_TYPE_TCP],
 };
 
-BPF_CALL_5(bpf_timer_init, struct bpf_timer_kern *, timer, int, flags,
-           struct bpf_map *, map)
-{
-       struct bpf_hrtimer *t;
-       int ret = 0;
+ From the above func_proto, it should return the btf_id for
+btf_sock_ids[BTF_SOCK_TYPE_TCP].
 
-       ____bpf_spin_lock(&timer->lock);
-       t = timer->timer;
-       if (t) {
-               ret = -EBUSY;
-               goto out;
-       }
-       /* allocate hrtimer via map_kmalloc to use memcg accounting */
-       t = bpf_map_kmalloc_node(map, sizeof(*t), GFP_ATOMIC, NUMA_NO_NODE);
-       if (!t) {
-               ret = -ENOMEM;
-               goto out;
-       }
-       t->value = (void *)timer /* - offset of bpf_timer inside elem */;
-       t->map = map;
-       t->timer.function = bpf_timer_cb;
+It does like the root cause is still endianness of btf_sock_ids
+written by resolve_btfids.
 
-       /* we'll init them in bpf_timer_start */
-       t->prog = NULL;
-       t->callback_fn = NULL;
-
-       hrtimer_init(&t->timer, clockid, HRTIMER_MODE_REL_SOFT);
-       timer->timer = t;
-out:
-       ____bpf_spin_unlock(&timer->lock);
-       return ret;
-}
-
-
-BPF_CALL_2(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs,
-           void *, cb, struct bpf_prog *, prog)
-{
-       struct bpf_hrtimer *t;
-       int ret = 0;
-
-       ____bpf_spin_lock(&timer->lock);
-       t = timer->timer;
-       if (!t) {
-               ret = -EINVAL;
-               goto out;
-       }
-
-       /* doesn't matter what it returns, we just request cancellation */
-       hrtimer_try_to_cancel(&t->timer);
-
-       /* t->prog might not be the same as prog (!) */
-       if (prog != t->prog) {
-            /* callback hasn't yet dropped refcnt */
-           if (t->prog) /* if it's null bpf_timer_cb() is running and
-will put it later */
-               bpf_prog_put(t->prog);
-
-           if (IS_ERR(bpf_prog_inc_not_zero(prog))) {
-               /* this will only happen if prog is still running (and
-it's actually us),
-                * but it was already put to zero, e.g., by closing last FD,
-                * so there is no point in scheduling a new run
-                */
-               t->prog = NULL;
-               t->callback_fn = NULL;
-               ret = -E_WE_ARE_SHUTTING_DOWN;
-               goto out;
-           }
-       } /* otherwise we keep existing refcnt on t->prog == prog */
-
-       /* potentially new combination of prog and cb */
-       t->prog = prog;
-       t->callback_fn = cb;
-
-       hrtimer_start(&t->timer, ns_to_ktime(nsecs), HRTIMER_MODE_REL_SOFT);
-out:
-       ____bpf_spin_unlock(&timer->lock);
-       return ret;
-}
-
-BPF_CALL_1(bpf_timer_cancel, struct bpf_timer_kern *, timer)
-{
-       struct bpf_hrtimer *t;
-       int ret = 0;
-
-       ____bpf_spin_lock(&timer->lock);
-       t = timer->timer;
-       if (!t) {
-               ret = -EINVAL;
-               goto out;
-       }
-
-       /* this part I still worry about due to possibility of cpu migration,
-        * we need to think if we should migrate_disable() in bpf_timer_cb()
-        * and bpf_timer_* helpers(), but that's a separate topic
-        */
-       if (this_cpu_read(hrtimer_running) == t) {
-               ret = -EDEADLK;
-               goto out;
-       }
-
-       ret = hrtimer_cancel(&t->timer);
-
-       if (t->prog) {
-            /* bpf_timer_cb hasn't put it yet (and now won't) */
-            bpf_prog_put(t->prog);
-            t->prog = NULL;
-            t->callback_fn = NULL;
-       }
-out:
-       ____bpf_spin_unlock(&timer->lock);
-       return ret;
-}
-
-static enum hrtimer_restart bpf_timer_cb(struct hrtimer *timer)
-{
-       struct bpf_hrtimer *t = container_of(timer, struct bpf_hrtimer, timer);
-       struct bpf_map *map = t->map;
-       struct bpf_prog *prog;
-       void *key, *callback_fn;
-       u32 idx;
-       int ret;
-
-       /* this is very IMPORTANT  */
-       ____bpf_spin_lock(t->lock);
-
-       prog = t->prog;
-       if (!prog) {
-           /* we were cancelled, prog is put already, exit early */
-           ____bpf_spin_unlock(&timer->lock);
-           return HRTIMER_NORESTART;
-       }
-       callback_fn = t->callback_fn;
-
-       /* make sure bpf_timer_cancel/bpf_timer_start won't
-bpf_prog_put our prog */
-       t->prog = NULL;
-       t->callback_fn = NULL;
-
-       ____bpf_spin_unlock(t->lock);
-
-       /* at this point we "own" prog's refcnt decrement */
-
-       this_cpu_write(hrtimer_running, t);
-
-       ...
-
-       ret = BPF_CAST_CALL(t->callback_fn)((u64)(long)map,
-                                           (u64)(long)key,
-                                           (u64)(long)value, 0, 0);
-       WARN_ON(ret != 0); /* Next patch disallows 1 in the verifier */
-
-       bpf_prog_put(prog); /* always correct and non-racy */
-
-       this_cpu_write(hrtimer_running, NULL);
-
-       return HRTIMER_NORESTART;
-}
-
-bpf_timer_cancel_and_free() is mostly the same with t->prog NULL check
-as everywhere else
-
-> There is no need to complicate bpf_timer with crazy refcnting schemes.
-> The user space can simply pin the program in bpffs. In the future we might
-> introduce a self-pinning helper that would pin the program and create a file.
-> Sort-of like syscall prog type would pin self.
-> That would be explicit and clean api instead of obscure hacks inside bpf_timer*().
-
-Do I understand correctly that the alternative that you are proposing
-is to keep some linked list of all map_values across all maps in the
-system that have initialized bpf_hrtimer with that particular bpf_prog
-in them? And when bpf_prog is put to zero you'll go and destruct them
-all in a race-free way?
-
-I have a bit of a hard time imagining how that will be implemented
-exactly, so I might be overcomplicating that in my mind. Will be happy
-to see the working code.
+> 
+> Following your earlier comments on the large, endian-swapped values
+> in btf_sock_ids[6], I noticed this is true of all btf_sock_ids[]
+> elements, based on debug output:
+> 
+>      btf_sock_ids[0] = 2139684864
+>      btf_sock_ids[1] = 2794061824
+>      btf_sock_ids[2] = 2844459008
+>      btf_sock_ids[3] = 1234305024
+>      btf_sock_ids[4] = 3809411072
+>      btf_sock_ids[5] = 1946812416
+>      btf_sock_ids[6] = 2936995840
+>      btf_sock_ids[7] = 3062497280
+>      btf_sock_ids[8] = 2861236224
+>      btf_sock_ids[9] = 1251082240
+>      btf_sock_ids[10] = 1334968320
+>      btf_sock_ids[11] = 1267859456
+>      btf_sock_ids[12] = 1318191104
+> 
+> If these are populated by resolve_btfids, how could we re-verify that
+> it's being done properly?
+> 
+>>>
+>>> Thanks,
+>>> Tony
+>>>
+[...]
