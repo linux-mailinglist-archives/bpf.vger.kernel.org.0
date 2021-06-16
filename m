@@ -2,132 +2,313 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB463A9B14
-	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 14:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF363A9C0E
+	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 15:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhFPMyC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 08:54:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55375 "EHLO
+        id S232731AbhFPNgK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 09:36:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20227 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232789AbhFPMyB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 16 Jun 2021 08:54:01 -0400
+        by vger.kernel.org with ESMTP id S232628AbhFPNgK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 16 Jun 2021 09:36:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623847915;
+        s=mimecast20190719; t=1623850444;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/RFxE6z1dzCcFZAdTltB4JFa0p4EHIH2iYLpgasa9Ms=;
-        b=UXB+XGEblsBxQAE7v893bAKnD9pDT9EATswjxV8Eenie6hFdaayPeFa0bteOtjwzuQVCSB
-        0kViPpHb0ygaGkG/I4Ezzhwoe9p52gecnqlWBS1Y43Ka3FUfK13ZS+Zzzki22gJCvg4YDh
-        ju9Ho2XhmhUwotgdlLJz7aQwi+7bTTU=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-VyjxDBo5NkymuRZg_FHr6A-1; Wed, 16 Jun 2021 08:51:54 -0400
-X-MC-Unique: VyjxDBo5NkymuRZg_FHr6A-1
-Received: by mail-pj1-f71.google.com with SMTP id nl8-20020a17090b3848b029016df4a00da9so1797698pjb.6
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 05:51:53 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wYyH6y3KnqWy8HsjlCX5FvTHwB0hvgiy3z6sOMMrSuk=;
+        b=SGLDK7S6qNS0go5hV12XJ2iNTaEovytHoF69oRU3+vCrq8SSp1fmNmbEcf2iejOXFLy5QB
+        45thVcnueXPp8jIZF0//UW0jP6okY2+CZmSTtR3CkFsIlEEwkoqgn9u1C36EcdxopJ6B5t
+        L1pcoHeVnmbpcWmlSvOiU8se2j9C6Og=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-493-1thtcSo1OzC0XfflExue1g-1; Wed, 16 Jun 2021 09:34:03 -0400
+X-MC-Unique: 1thtcSo1OzC0XfflExue1g-1
+Received: by mail-ed1-f70.google.com with SMTP id h23-20020aa7c5d70000b029038fed7b27d5so1017139eds.21
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 06:34:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/RFxE6z1dzCcFZAdTltB4JFa0p4EHIH2iYLpgasa9Ms=;
-        b=sHcD/pus6YbmcAR6QG5jFMYrNd4kTyQV/JtVPIy9G294X5jRwFIX/miEJvUETQ9Egs
-         F6ZwxlzW38W+7y/qm7HMDKy1Xxq6AjL7WgxuNl0T6Tr3dfOXWst9SsnHH4rdxcvhABp2
-         n03rwjlekPR6E4z6dTSl5KUDBkk0/D3ym/pJvLoGZR/L0hzKh3SCmYZsJo3l4Sfr66f+
-         youYfcXVmMQyhURYo+PFsTAY+1R5eeKXYzDZUYwBIJEYc9sxvLF5sU2dx+MQRTzt5KMm
-         7EV+a9SRgJBUgZ5nVf/w20RS9IXUYm/q6WFFDpWnDV+KcIxwxP04KFYyL/h+Vyh7nqDl
-         KX6w==
-X-Gm-Message-State: AOAM530Nvk2ft+0arEz7yC93546Y1MBWNc+NQK4jQFzX7Y26uf3hjHto
-        5vcsjUxVOvJMgBB3ViuYjufQgkaACFnDuYAxAHWGCOZtaLGLqEkNpNHeeYxPOYjGf2XY5TxyHlC
-        hn46Ng8lEn1Ek
-X-Received: by 2002:a17:90a:a43:: with SMTP id o61mr4841177pjo.233.1623847913071;
-        Wed, 16 Jun 2021 05:51:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxEtQw3VHh/1raIr4efqQ1l6TQ6mc8FlgoD9W6nl440ZvzySLwZ0gwqXUUn2hGSN0wmzQnz5Q==
-X-Received: by 2002:a17:90a:a43:: with SMTP id o61mr4841149pjo.233.1623847912829;
-        Wed, 16 Jun 2021 05:51:52 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id ca6sm2345017pjb.21.2021.06.16.05.51.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Jun 2021 05:51:52 -0700 (PDT)
-Subject: Re: [PATCH net-next v5 12/15] virtio-net: support AF_XDP zc tx
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wYyH6y3KnqWy8HsjlCX5FvTHwB0hvgiy3z6sOMMrSuk=;
+        b=IrRU2mK0X2G4zK6ClYfHWFiUqiaEA48C7jK/uBZRUPNxnA1R4hZGCloXtFoOHOdmw8
+         Vb/rWQvhZkHtV6FE0YA5mxQsN4Zx0Q7DtWRc1uefck/2zmHsXFGHcdABiZRItBHYoz3M
+         dovDRX3DdPnKAIS3wDPa4PATvGA1UE4NFuhtyOJkwjz7O7nnt6nyUzw1fReQpwIMYtCn
+         u6qckAdwE4FSnx+AJoPuApd5XpfIfkKMOPAj4wZqX/ANeAGq8hcUwMnxYPP28I3K4dgm
+         c2XTnLSxaZ1IP/rwKJ1vAnJ+is7vpAQjiU3UFAlUTp63g5jOiJE0N2gf/HGr/grwqIAY
+         fJvQ==
+X-Gm-Message-State: AOAM533V32UGOcayEihz12pDK+r6BnG3eBajYRH6ca2XvPap/XgHdAdd
+        fxq17k4IO8C8Q7rBCtttjxam21JIDPmlSsElq6LkkaiPivo7rEyls0AkojCakoCysGOI4Q8TrHE
+        NXfZEhbNmXNVi
+X-Received: by 2002:a17:907:a92:: with SMTP id by18mr4345755ejc.224.1623850441768;
+        Wed, 16 Jun 2021 06:34:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwc0/WxYw/13W0Y0GulydwIxjlhxiJAunvQdxDz6j35EB0j1sYj2wudpMU/saeifprv2DTjAA==
+X-Received: by 2002:a17:907:a92:: with SMTP id by18mr4345741ejc.224.1623850441610;
+        Wed, 16 Jun 2021 06:34:01 -0700 (PDT)
+Received: from krava.redhat.com ([83.240.60.126])
+        by smtp.gmail.com with ESMTPSA id d24sm1861909edr.95.2021.06.16.06.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 06:34:01 -0700 (PDT)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        "dust.li" <dust.li@linux.alibaba.com>, netdev@vger.kernel.org
-References: <1623838784.446967-1-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <f81775f8-7df9-5ca0-0bd2-99c86786fe78@redhat.com>
-Date:   Wed, 16 Jun 2021 20:51:41 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCH bpf-next] bpf, x86: Remove unused cnt increase from EMIT macro
+Date:   Wed, 16 Jun 2021 15:34:00 +0200
+Message-Id: <20210616133400.315039-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <1623838784.446967-1-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Removing unused cnt increase from EMIT macro together
+with cnt declarations. This was introduced in commit [1]
+to ensure proper code generation. But that code was
+removed in commit [2] and this extra code was left in.
 
-在 2021/6/16 下午6:19, Xuan Zhuo 写道:
->>> + * In this way, even if xsk has been unbundled with rq/sq, or a new xsk and
->>> + * rq/sq  are bound, and a new virtnet_xsk_ctx_head is created. It will not
->>> + * affect the old virtnet_xsk_ctx to be recycled. And free all head and ctx when
->>> + * ref is 0.
->> This looks complicated and it will increase the footprint. Consider the
->> performance penalty and the complexity, I would suggest to use reset
->> instead.
->>
->> Then we don't need to introduce such context.
-> I don't like this either. It is best if we can reset the queue, but then,
-> according to my understanding, the backend should also be supported
-> synchronously, so if you don't update the backend synchronously, you can't use
-> xsk.
+[1] b52f00e6a715 ("x86: bpf_jit: implement bpf_tail_call() helper")
+[2] ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
 
+Signed-off-by: Jiri Olsa <jolsa@redhat.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 39 ++++++++++---------------------------
+ 1 file changed, 10 insertions(+), 29 deletions(-)
 
-Yes, actually, vhost-net support per vq suspending. The problem is that 
-we're lacking a proper API at virtio level.
-
-Virtio-pci has queue_enable but it forbids writing zero to that.
-
-
->
-> I don’t think resetting the entire dev is a good solution. If you want to bind
-> xsk to 10 queues, you may have to reset the entire device 10 times. I don’t
-> think this is a good way. But the current spec does not support reset single
-> queue, so I chose the current solution.
->
-> Jason, what do you think we are going to do? Realize the reset function of a
-> single queue?
-
-
-Yes, it's the best way. Do you want to work on that?
-
-We can start from the spec patch, and introduce it as basic facility and 
-implement it in the PCI transport first.
-
-Thanks
-
-
->
-> Looking forward to your reply!!!
->
-> Thanks
->
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 2a2e290fa5d8..19715542cd9c 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -31,7 +31,7 @@ static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
+ }
+ 
+ #define EMIT(bytes, len) \
+-	do { prog = emit_code(prog, bytes, len); cnt += len; } while (0)
++	do { prog = emit_code(prog, bytes, len); } while (0)
+ 
+ #define EMIT1(b1)		EMIT(b1, 1)
+ #define EMIT2(b1, b2)		EMIT((b1) + ((b2) << 8), 2)
+@@ -239,7 +239,6 @@ struct jit_context {
+ static void push_callee_regs(u8 **pprog, bool *callee_regs_used)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (callee_regs_used[0])
+ 		EMIT1(0x53);         /* push rbx */
+@@ -255,7 +254,6 @@ static void push_callee_regs(u8 **pprog, bool *callee_regs_used)
+ static void pop_callee_regs(u8 **pprog, bool *callee_regs_used)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (callee_regs_used[3])
+ 		EMIT2(0x41, 0x5F);   /* pop r15 */
+@@ -303,7 +301,6 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+ static int emit_patch(u8 **pprog, void *func, void *ip, u8 opcode)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 	s64 offset;
+ 
+ 	offset = func - (ip + X86_PATCH_SIZE);
+@@ -423,7 +420,6 @@ static void emit_bpf_tail_call_indirect(u8 **pprog, bool *callee_regs_used,
+ 	int off1 = 42;
+ 	int off2 = 31;
+ 	int off3 = 9;
+-	int cnt = 0;
+ 
+ 	/* count the additional bytes used for popping callee regs from stack
+ 	 * that need to be taken into account for each of the offsets that
+@@ -513,7 +509,6 @@ static void emit_bpf_tail_call_direct(struct bpf_jit_poke_descriptor *poke,
+ 	int pop_bytes = 0;
+ 	int off1 = 20;
+ 	int poke_off;
+-	int cnt = 0;
+ 
+ 	/* count the additional bytes used for popping callee regs to stack
+ 	 * that need to be taken into account for jump offset that is used for
+@@ -615,7 +610,6 @@ static void emit_mov_imm32(u8 **pprog, bool sign_propagate,
+ {
+ 	u8 *prog = *pprog;
+ 	u8 b1, b2, b3;
+-	int cnt = 0;
+ 
+ 	/*
+ 	 * Optimization: if imm32 is positive, use 'mov %eax, imm32'
+@@ -655,7 +649,6 @@ static void emit_mov_imm64(u8 **pprog, u32 dst_reg,
+ 			   const u32 imm32_hi, const u32 imm32_lo)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (is_uimm32(((u64)imm32_hi << 32) | (u32)imm32_lo)) {
+ 		/*
+@@ -678,7 +671,6 @@ static void emit_mov_imm64(u8 **pprog, u32 dst_reg,
+ static void emit_mov_reg(u8 **pprog, bool is64, u32 dst_reg, u32 src_reg)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (is64) {
+ 		/* mov dst, src */
+@@ -697,7 +689,6 @@ static void emit_mov_reg(u8 **pprog, bool is64, u32 dst_reg, u32 src_reg)
+ static void emit_insn_suffix(u8 **pprog, u32 ptr_reg, u32 val_reg, int off)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (is_imm8(off)) {
+ 		/* 1-byte signed displacement.
+@@ -720,7 +711,6 @@ static void emit_insn_suffix(u8 **pprog, u32 ptr_reg, u32 val_reg, int off)
+ static void maybe_emit_mod(u8 **pprog, u32 dst_reg, u32 src_reg, bool is64)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (is64)
+ 		EMIT1(add_2mod(0x48, dst_reg, src_reg));
+@@ -733,7 +723,6 @@ static void maybe_emit_mod(u8 **pprog, u32 dst_reg, u32 src_reg, bool is64)
+ static void emit_ldx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	switch (size) {
+ 	case BPF_B:
+@@ -764,7 +753,6 @@ static void emit_ldx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+ static void emit_stx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	switch (size) {
+ 	case BPF_B:
+@@ -799,7 +787,6 @@ static int emit_atomic(u8 **pprog, u8 atomic_op,
+ 		       u32 dst_reg, u32 src_reg, s16 off, u8 bpf_size)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	EMIT1(0xF0); /* lock prefix */
+ 
+@@ -869,10 +856,10 @@ static void detect_reg_usage(struct bpf_insn *insn, int insn_cnt,
+ 	}
+ }
+ 
+-static int emit_nops(u8 **pprog, int len)
++static void emit_nops(u8 **pprog, int len)
+ {
+ 	u8 *prog = *pprog;
+-	int i, noplen, cnt = 0;
++	int i, noplen;
+ 
+ 	while (len > 0) {
+ 		noplen = len;
+@@ -886,8 +873,6 @@ static int emit_nops(u8 **pprog, int len)
+ 	}
+ 
+ 	*pprog = prog;
+-
+-	return cnt;
+ }
+ 
+ #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+@@ -902,7 +887,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+ 	bool tail_call_seen = false;
+ 	bool seen_exit = false;
+ 	u8 temp[BPF_MAX_INSN_SIZE + BPF_INSN_SAFETY];
+-	int i, cnt = 0, excnt = 0;
++	int i, excnt = 0;
+ 	int ilen, proglen = 0;
+ 	u8 *prog = temp;
+ 	int err;
+@@ -1576,7 +1561,7 @@ st:			if (is_imm8(insn->off))
+ 						       nops);
+ 						return -EFAULT;
+ 					}
+-					cnt += emit_nops(&prog, nops);
++					emit_nops(&prog, nops);
+ 				}
+ 				EMIT2(jmp_cond, jmp_offset);
+ 			} else if (is_simm32(jmp_offset)) {
+@@ -1622,7 +1607,7 @@ st:			if (is_imm8(insn->off))
+ 						       nops);
+ 						return -EFAULT;
+ 					}
+-					cnt += emit_nops(&prog, nops);
++					emit_nops(&prog, nops);
+ 				}
+ 				break;
+ 			}
+@@ -1647,7 +1632,7 @@ st:			if (is_imm8(insn->off))
+ 						       nops);
+ 						return -EFAULT;
+ 					}
+-					cnt += emit_nops(&prog, INSN_SZ_DIFF - 2);
++					emit_nops(&prog, INSN_SZ_DIFF - 2);
+ 				}
+ 				EMIT2(0xEB, jmp_offset);
+ 			} else if (is_simm32(jmp_offset)) {
+@@ -1754,7 +1739,6 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+ {
+ 	u8 *prog = *pprog;
+ 	u8 *jmp_insn;
+-	int cnt = 0;
+ 
+ 	/* arg1: mov rdi, progs[i] */
+ 	emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
+@@ -1822,7 +1806,6 @@ static void emit_align(u8 **pprog, u32 align)
+ static int emit_cond_near_jump(u8 **pprog, void *func, void *ip, u8 jmp_cond)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 	s64 offset;
+ 
+ 	offset = func - (ip + 2 + 4);
+@@ -1854,7 +1837,7 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
+ 			      u8 **branches)
+ {
+ 	u8 *prog = *pprog;
+-	int i, cnt = 0;
++	int i;
+ 
+ 	/* The first fmod_ret program will receive a garbage return value.
+ 	 * Set this to 0 to avoid confusing the program.
+@@ -1950,7 +1933,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 				struct bpf_tramp_progs *tprogs,
+ 				void *orig_call)
+ {
+-	int ret, i, cnt = 0, nr_args = m->nr_args;
++	int ret, i, nr_args = m->nr_args;
+ 	int stack_size = nr_args * 8;
+ 	struct bpf_tramp_progs *fentry = &tprogs[BPF_TRAMP_FENTRY];
+ 	struct bpf_tramp_progs *fexit = &tprogs[BPF_TRAMP_FEXIT];
+@@ -2095,8 +2078,6 @@ static int emit_fallback_jump(u8 **pprog)
+ 	 */
+ 	err = emit_jump(&prog, __x86_indirect_thunk_rdx, prog);
+ #else
+-	int cnt = 0;
+-
+ 	EMIT2(0xFF, 0xE2);	/* jmp rdx */
+ #endif
+ 	*pprog = prog;
+@@ -2106,7 +2087,7 @@ static int emit_fallback_jump(u8 **pprog)
+ static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs)
+ {
+ 	u8 *jg_reloc, *prog = *pprog;
+-	int pivot, err, jg_bytes = 1, cnt = 0;
++	int pivot, err, jg_bytes = 1;
+ 	s64 jg_offset;
+ 
+ 	if (a == b) {
+-- 
+2.31.1
 
