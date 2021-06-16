@@ -2,126 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB30B3AA6AD
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 00:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC9B3AA6C2
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 00:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbhFPWk6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 18:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
+        id S233885AbhFPWtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 18:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbhFPWk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 18:40:58 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB250C061574;
-        Wed, 16 Jun 2021 15:38:50 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id g38so5270510ybi.12;
-        Wed, 16 Jun 2021 15:38:50 -0700 (PDT)
+        with ESMTP id S233244AbhFPWtj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Jun 2021 18:49:39 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B2BC061574
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 15:47:33 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id g24so2628494pji.4
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 15:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=12VmBMfkyKDL623at/Z3A+VtlIGF3I18xQla4TOQBt4=;
-        b=r0OZnUdoIo/SCtMgO4C8V95xK7rd8JP3s9IUiJ5o1oTGiyEBvimp5oDb4yFTqnUPIQ
-         sDDo1+/s5uNOmhkxkJdKJY7k4DUShAd9uKf4wPatp2rYzZ05ZBO5Wy0H6AfXnKohwrM2
-         Lyz2xCyDts20Mj+cHoY0UvRO16AWmsduGHqtj0M9upTBoaS4qXyzCIxBVIzVwGMaElib
-         nBdxN+ynpUiFyv38zPvoiA2F53MHX6+sfRnmvha3YUiy65arpJ0TTOsYto8IKlEzrwTe
-         UlKOAcw8ohIi+4V4b0qJNqquG+hoAqWBjwH3tJRKvFk5CZIsJkACFj8kAlrPySXXwAY6
-         sQ5A==
+        d=riotgames.com; s=riotgames;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2bGViEGJGj2MsZzTuw3aOUQXv4ShMU8TNCZXBiAhmD8=;
+        b=poIUGZnJe3Lt//X/Mkv9S1Ey+fu4CasVm/vbA1vQtPDXG5VfZDg1UwQj+5iLYMwXCx
+         QYJcwie7OZmMTVFirALzT64RFtmrhzC6ZOWOamxf2fIvJzt24PNcaYB8VmZesPbStThY
+         dETDBEztfLH8fUHNyPuO1uslIwoEmEvGLGjOs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=12VmBMfkyKDL623at/Z3A+VtlIGF3I18xQla4TOQBt4=;
-        b=pcWLW/PSqns0yHTrKODDQrxe/1JAD3AN94SV4PE8nG30OJD4b13vYK1tcRKhm/MIXI
-         FWLDV+8s32dfsB4Ip5h9+ITL8tZQf3i4txQ6WEB3HSdeFMw9AJVx9oS2FxyFJomY0XvK
-         PNT/kpgYjjeBbW5o24w1z9ZQMHvkcVA4qxYJouXl3erTFd+2KRSiGegkrGrlusGcVmKo
-         lsyOzO6x1dg7JIK/lk+zOcP6/IdIelIRuuwH5P9JP0IHW1sPLl9E0LdMAbb1POmsI68d
-         nWc52bCzWEXkykijKb8xpb69Q6yiNOwVZCgk7fZimFt/C/w9pCDtfKWZCAbO8amLiYEH
-         0Zvg==
-X-Gm-Message-State: AOAM533JvrIoHjE9ttiqpuCBDVRF8VMmwZCCdVDAOBpuzh7tttEmfDQ9
-        siGCKCiT/dAuSJy7rg0QKXKpMqsTeviXGpmKXdc=
-X-Google-Smtp-Source: ABdhPJxFfry9DwwISlvpPslaM7hki0Rjn46T1wYneXtQCzMb1SS+Na2MuQSVcrZy0K0RRlRqMNJBMvAFd7tZN67sEVY=
-X-Received: by 2002:a25:4182:: with SMTP id o124mr1888512yba.27.1623883129966;
- Wed, 16 Jun 2021 15:38:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2bGViEGJGj2MsZzTuw3aOUQXv4ShMU8TNCZXBiAhmD8=;
+        b=kbzkWoIZIIgP1G9bq99DXZntLR5yVyw40npvnGU5j5lcAUGsK+n7UNbBa3laObXGNd
+         IRh8YNn0h8HfbFzDKSRYqpqFtmI7DMMll/pqHZz2y9aktgX8yNSbJeE2wKwiIzMwOTQD
+         k5p1/CFNmW8F3rENjd0iBMNZJ/1Na87K20aPEl7XP7ENiRiTn9rWs4Sd5Jqyd8Ngs6SL
+         UdQQbQTpjJ3ieAk+A5KN/0ItRx5U2wfqIU/XVPCaYWrGgsVoLQMzo8TIYRdwjtVdrPc7
+         3AGQsYbnuJsjHnC6qKFcDAZK5TOlWlyVZj3cCfq4huOMdM/fOVVvXe/lzJbbiqbYnljd
+         98wQ==
+X-Gm-Message-State: AOAM531tPMCclNDLubJJ32zEnE4MUDaOW8xNtuvoe3caYGmymf3dTZ3A
+        ut59uloFi58ntcLjI8rU8Jmc3xI3zxXMjQ==
+X-Google-Smtp-Source: ABdhPJyu9GPWRJ4bILS+PFgYREbIq1KpOr7NQsuSIz7EM47FgVwe5lg7t2EgVfp652dJsUgXOUDiRA==
+X-Received: by 2002:a17:90a:4311:: with SMTP id q17mr12501597pjg.204.1623883652182;
+        Wed, 16 Jun 2021 15:47:32 -0700 (PDT)
+Received: from ip-10-184-182-114.us-west-2.compute.internal (ec2-54-191-147-77.us-west-2.compute.amazonaws.com. [54.191.147.77])
+        by smtp.gmail.com with ESMTPSA id p6sm6278672pjk.34.2021.06.16.15.47.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 15:47:31 -0700 (PDT)
+From:   Zvi Effron <zeffron@riotgames.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Zvi Effron <zeffron@riotgames.com>
+Subject: [PATCH bpf-next v5 0/4] bpf: support input xdp_md context in BPF_PROG_TEST_RUN
+Date:   Wed, 16 Jun 2021 22:47:08 +0000
+Message-Id: <20210616224712.3243-1-zeffron@riotgames.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <CAEf4BzZnZN2mt4+5F-00ggO9YHWrL3Jru_u3Qt2JJ+SMkHwg+w@mail.gmail.com>
- <YMoRBvTdD0qzjYf4@kernel.org> <CAEf4BzZ7KDcsViCY8MbUZuWu2BdkjymkgJtyVUMBrCaiimUCxQ@mail.gmail.com>
- <YMpCDuEO/mItxdR7@kernel.org>
-In-Reply-To: <YMpCDuEO/mItxdR7@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 16 Jun 2021 15:38:38 -0700
-Message-ID: <CAEf4BzYn31_93G_f924HR8dSW=oGqyFaneRa0fo5Btcg-Y2xJg@mail.gmail.com>
-Subject: Re: latest pahole breaks libbpf CI and let's talk about staging
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org, siudin@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 11:25 AM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Em Wed, Jun 16, 2021 at 10:40:45AM -0700, Andrii Nakryiko escreveu:
-> > On Wed, Jun 16, 2021 at 7:56 AM Arnaldo Carvalho de Melo
-> > <arnaldo.melo@gmail.com> wrote:
-> > >
-> > > Em Tue, Jun 15, 2021 at 04:30:03PM -0700, Andrii Nakryiko escreveu:
-> > > > Hey Arnaldo,
-> > > >
-> > > > Seems like de3a7f912559 ("btf_encoder: Reduce the size of encode_cu()
-> > > > by moving function encoding to separate method") break two selftests
-> > > > in libbpf CI (see [0]). Please take a look. I suspect some bad BTF,
-> > > > because both tests rely on kernel BTF info.
-> > > >
-> > > > You've previously asked about staging pahole changes. Did you make up
-> > > > your mind about branch names and the process overall? Seems like a
-> > > > good chance to bring this up ;-P
-> > > >
-> > > >   [0] https://travis-ci.com/github/libbpf/libbpf/jobs/514329152
-> > >
-> > > Ok, please add tmp.master as the staging branch, I'll move things to
-> > > master only after it passing thru CI.
-> > >
-> >
-> > So I'm thinking about what's the best setup to catch pahole staging
-> > problems, but not break main libbpf CI and kernel-patches CI flows.
->
-> > How about we keep all the existing CI jobs to use pahole's master.
->
-> Agreed.
->
-> > Then add a separate job to do full kernel build with pahole built from
-> > staging branch. And mark it as non-critical (or whatever the
-> > terminology), so it doesn't mark the build red. I'd do that as a cron
-> > job that runs every day. That way if you don't have anything urgent,
-> > next day you'll get staging tested automatically. If you need to test
-> > right now, there is a way to re-trigger previous build and it will
-> > re-fetch latest staging (so there is a way for you to proactively
-> > test).
-> >
-> > Basically, I want broken staging pahole to not interrupt anything we
-> > are doing. WDYT?
->
-> Sounds like a plan, please hand hold me on this, I'm not versed on
-> github.
+This patchset adds support for passing an xdp_md via ctx_in/ctx_out in
+bpf_attr for BPF_PROG_TEST_RUN of XDP programs.
 
-I'll set up everything from my side, and then we'll just setup proper
-access rights for you to be able to trigger builds. We are migrating
-everything from Travis CI to Github Actions, and I'm not yet too
-familiar with Github Actions, so I might need a few iterations.
+Patch 1 adds a function to validate XDP meta data lengths.
 
-BTW, while you are investigating pahole regression, can you please
-revert the offending commit and push it to master to make out CIs
-green again?
+Patch 2 adds initial support for passing XDP meta data in addition to
+packet data.
 
->
-> - Arnaldo
->
-> > > Now looking at that code, must be something subtle...
-> > >
-> > > - Arnaldo
->
-> --
->
-> - Arnaldo
+Patch 3 adds support for also specifying the ingress interface and
+rx queue.
+
+Patch 4 adds selftests to ensure functionality is correct.
+
+Changelog:
+----------
+v4->v5
+v4: https://lore.kernel.org/bpf/20210604220235.6758-1-zeffron@riotgames.com/
+
+ * Add new patch to introduce xdp_metalen_valid inline function to avoid
+  duplicated code from net/core/filter.c
+ * Correct size of bad_ctx in selftests
+ * Make all declarations reverse Christmas tree
+ * Move data check from xdp_convert_md_to_buff to bpf_prog_test_run_xdp
+ * Merge xdp_convert_buff_to_md into bpf_prog_test_run_xdp
+ * Fix line too long
+ * Extracted common checks in selftests to a helper function
+ * Removed redundant assignment in selftests
+ * Reordered test cases in selftests
+ * Check data against 0 instead of data_meta in selftests
+ * Made selftests use EINVAL instead of hardcoded 22
+ * Dropped "_" from XDP function name
+ * Changed casts in XDP program from unsigned long to long
+ * Added a comment explaining the use of the loopback interface in selftests
+ * Change parameter order in xdp_convert_md_to_buff to be input first
+ * Assigned xdp->ingress_ifindex and xdp->rx_queue_index to local variables in
+  xdp_convert_md_to_buff
+ * Made use of "meta data" versus "metadata" consistent in comments and commit
+  messages
+
+v3->v4
+v3: https://lore.kernel.org/bpf/20210602190815.8096-1-zeffron@riotgames.com/
+
+ * Clean up nits
+ * Validate xdp_md->data_end in bpf_prog_test_run_xdp
+ * Remove intermediate metalen variables
+
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20210527201341.7128-1-zeffron@riotgames.com/
+
+ * Check errno first in selftests
+ * Use DECLARE_LIBBPF_OPTS
+ * Rename tattr to opts in selftests
+ * Remove extra new line
+ * Rename convert_xdpmd_to_xdpb to xdp_convert_md_to_buff
+ * Rename convert_xdpb_to_xdpmd to xdp_convert_buff_to_md
+ * Move declaration of device and rxqueue in xdp_convert_md_to_buff to
+  patch 2
+ * Reorder the kfree calls in bpf_prog_test_run_xdp
+
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20210524220555.251473-1-zeffron@riotgames.com
+
+ * Fix null pointer dereference with no context
+ * Use the BPF skeleton and replace CHECK with ASSERT macros
+
+Zvi Effron (4):
+  bpf: add function for XDP meta data length check
+  bpf: support input xdp_md context in BPF_PROG_TEST_RUN
+  bpf: support specifying ingress via xdp_md context in
+    BPF_PROG_TEST_RUN
+  selftests/bpf: Add test for xdp_md context in BPF_PROG_TEST_RUN
+
+ include/net/xdp.h                             |   5 +
+ include/uapi/linux/bpf.h                      |   3 -
+ net/bpf/test_run.c                            |  89 ++++++++++++++-
+ net/core/filter.c                             |   4 +-
+ .../bpf/prog_tests/xdp_context_test_run.c     | 105 ++++++++++++++++++
+ .../bpf/progs/test_xdp_context_test_run.c     |  20 ++++
+ 6 files changed, 215 insertions(+), 11 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
+
+
+base-commit: 1f26622b791b6a1b346d1dfd9d04450e20af0f41
+-- 
+2.31.1
+
