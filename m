@@ -2,174 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559E43A9E6E
-	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 17:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327743A9F23
+	for <lists+bpf@lfdr.de>; Wed, 16 Jun 2021 17:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234376AbhFPPEO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 11:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60962 "EHLO
+        id S234603AbhFPPfn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 11:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234370AbhFPPEN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 11:04:13 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C305C061760
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 08:02:06 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id k9so1668109qvu.13
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 08:02:06 -0700 (PDT)
+        with ESMTP id S234332AbhFPPfn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Jun 2021 11:35:43 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A5BC061574;
+        Wed, 16 Jun 2021 08:33:36 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g22so2297916pgk.1;
+        Wed, 16 Jun 2021 08:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:from:to:cc:subject;
-        bh=VCvQSABjEdEuwxE7dUwxvVJle5680VQCMhFOlxSQ0RU=;
-        b=1JHFKXXWxomTbkugVQMZnpalACfTC8IlhOqgFvXblCYSIV7KNdgtakEsiLHcEej6RT
-         JMoGmH/y0ghKIyrRakbnD9xBFw8SxlZryrGCRT8fl0oiHQetebcqzmfoUogSF9v0kAIW
-         eDJreJOM1uKAxARBQLgDGsmB8eZZl1YTybntm+qGmc+RuZMpi4gM4BhV1qDurg6d0kDD
-         2T97LEdmKUz4vZZ3ssL+4B2CMbb4CCvfPD40tcjIGGkpP0vlqoEis5WjiBG1xhdz25EG
-         n0B94JW6T5shp64W3FCHZibHWYySzxnd9yvc4aK2zyBH0mnbxKxxYVV79CGpyznCfnJq
-         RY3g==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YMTC6qfJsU9J/ZI5NR0czdPYf8hfDFPK4/N33WdOmEY=;
+        b=hb8FnuvXZOVPttyVj+V38RIHHudyvGte5KA9Hqdyf+fvG8KCoH69N0lVXdSquJvoJv
+         4J5+wfSDQF4kH4/0ZYdIQJmGXd9GNHHGUW0FF9UvYyxGJCySdD9TbJAZEUW7jJDd5858
+         DEeCUOUwGfiMMayBk8htaOq76V53Kg7G9mHvQB8Ie06iAqu1NRVZciLwxTamd7mQo96D
+         OXH1zjpJVv8GRbZmo2J2/6lUgwqOvWchHK05dvzR7N8sIbunONFIdMPcifRlHYXnaGUf
+         NbpPptT6DSnPikzW1bjyn4pK6cRRLQMD3PCg3/p8ziKjesQ0VZgDGvBq0QrOVBm6HR2D
+         jC/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:to:cc:subject;
-        bh=VCvQSABjEdEuwxE7dUwxvVJle5680VQCMhFOlxSQ0RU=;
-        b=MoMlmCojaekq8xWcx+x0JDpLS8AeAYbVzkOtPbXBGrTI6Qc1Yh58DRighSewO5YybB
-         CyZFO6acrgZ+z7axu9JH5Yuug4cOwjotfEtF/4VKjoxZhYp77V2ST6aHJyvK8q18s+aU
-         g+m2aYwxdFYI7XYNcz0zB114rVr5WhL7nCm2JGSgGKnju5XTM2OhZPYEsxZeHDMzis2u
-         77qv5Q3SunX6GyfkuKHwecGAgATJnPvJWDlB+oHwffTOvkCthq3l89KtahkSjLuouUPz
-         cwm23q1iKg4GjIxRrl2Sy70wQPRBOpHL9yY0pA+pQuRoQfGuFKsyxKEzV1NuEFj0T6dP
-         yZTA==
-X-Gm-Message-State: AOAM530Olpkj3oXMLzSoTWkzCnRUrJauWii9xABrreNg3dbdo4An3XDs
-        8UZAgrpRxbEmgzRF0gQzrTDLrw==
-X-Google-Smtp-Source: ABdhPJytC9l/wfvfg7sP8rjAGewkfuTAUH85RNI3r+SM2Ul/Q9EdT8cKP9pkjx6l7tAtOlLX0/G9Rw==
-X-Received: by 2002:a0c:ed46:: with SMTP id v6mr465673qvq.46.1623855724103;
-        Wed, 16 Jun 2021 08:02:04 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y20sm1390690qtv.64.2021.06.16.08.02.03
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YMTC6qfJsU9J/ZI5NR0czdPYf8hfDFPK4/N33WdOmEY=;
+        b=EYN3KwR702Pjt6Hch1xnqHlxjVyqSn3bgqspIZNrgxsnpnZt/2JfRB/8U2YvjoHd5I
+         HSItSVHVxKwTxEjkVCdn+ltifg6BUnEJhj1igeiS4yo+qe0cUbRI8p7LOpgz2a8fyrbw
+         k9QSzb98ZAR3Hc46Ih0nIqQVEEukPYZib9mu90FWt4OBkT8tXy14wOjMl+sK8sVwH2UZ
+         xAf6WV6Bqyh6oy6hV5YbeI3TReQf/2dwKyUwqXE+M9yo3HpfusnRlgUBV/ZwYByRD2oM
+         Em91fcEgj7lzpDWMltbX2dAKRN2exzykVB6qz8Dz47Ck1qg6HkYyRPnQwIUe9nKN26gq
+         TLbA==
+X-Gm-Message-State: AOAM531QQI81VgMieNZYE3JMRYS/THeTCRJITbenSdaKuv6n1MhYaPQc
+        Ktbn/OZ4/v4YJUDk/vIM0iI=
+X-Google-Smtp-Source: ABdhPJwB35hwi1oqdI38OeQsmibCzw2Syaszj0ulaMn2/BFM0tNQ7WslDxlT6ur/LlNLJ19dpkHKfw==
+X-Received: by 2002:a63:e90e:: with SMTP id i14mr149123pgh.89.1623857616052;
+        Wed, 16 Jun 2021 08:33:36 -0700 (PDT)
+Received: from localhost ([2402:3a80:11db:39d5:aefe:1e71:33ef:30fb])
+        by smtp.gmail.com with ESMTPSA id ga23sm6126709pjb.0.2021.06.16.08.33.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 08:02:03 -0700 (PDT)
-Message-ID: <60ca126b.1c69fb81.90af4.93a7@mx.google.com>
-Date:   Wed, 16 Jun 2021 11:02:02 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     lsf-pc@lists.linuxfoundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [REMINDER] LSF/MM/BPF: 2021: Call for Proposals
+        Wed, 16 Jun 2021 08:33:35 -0700 (PDT)
+Date:   Wed, 16 Jun 2021 21:02:09 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Vlad Buslov <vladbu@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+Message-ID: <20210616153209.pejkgb3iieu6idqq@apollo>
+References: <20210607060724.4nidap5eywb23l3d@apollo>
+ <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
+ <20210608071908.sos275adj3gunewo@apollo>
+ <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+ <20210613025308.75uia7rnt4ue2k7q@apollo>
+ <30ab29b9-c8b0-3b0f-af5f-78421b27b49c@mojatatu.com>
+ <20210613203438.d376porvf5zycatn@apollo>
+ <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
+ <bd18943b-8a0e-be8c-6a99-17f7dfdd3bc4@iogearbox.net>
+ <7248dc4e-8c07-a25d-5ac3-c4c106b7a266@mojatatu.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7248dc4e-8c07-a25d-5ac3-c4c106b7a266@mojatatu.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thisi is just a reminder that we're still going ahead with an in person
-LSF/MM/BPF this year.  The Linux Foundation is working out the safety
-guidelines and will update the landing page when that is nailed down.
-In the meantime there is plenty of time to register your interest in
-attending.  Thanks,
+On Wed, Jun 16, 2021 at 08:10:55PM IST, Jamal Hadi Salim wrote:
+> On 2021-06-15 7:07 p.m., Daniel Borkmann wrote:
+> > On 6/13/21 11:10 PM, Jamal Hadi Salim wrote:
+>
+> [..]
+>
+> > >
+> > > I look at it from the perspective that if i can run something with
+> > > existing tc loading mechanism then i should be able to do the same
+> > > with the new (libbpf) scheme.
+> >
+> > The intention is not to provide a full-blown tc library (that could be
+> > subject to a
+> > libtc or such), but rather to only have libbpf abstract the tc related
+> > API that is
+> > most /relevant/ for BPF program development and /efficient/ in terms of
+> > execution in
+> > fast-path while at the same time providing a good user experience from
+> > the API itself.
+> >
+> > That is, simple to use and straight forward to explain to folks with
+> > otherwise zero
+> > experience of tc. The current implementation does all that, and from
+> > experience with
+> > large BPF programs managed via cls_bpf that is all that is actually
+> > needed from tc
+> > layer perspective. The ability to have multi programs (incl. priorities)
+> > is in the
+> > existing libbpf API as well.
+> >
+>
+> Which is a fair statement, but if you take away things that work fine
+> with current iproute2 loading I have no motivation to migrate at all.
+> Its like that saying of "throwing out the baby with the bathwater".
+> I want my baby.
+>
+> In particular, here's a list from Kartikeya's implementation:
+>
+> 1) Direct action mode only
+> 2) Protocol ETH_P_ALL only
+> 3) Only at chain 0
+> 4) No block support
+>
 
-Josef
+Block is supported, you just need to set TCM_IFINDEX_MAGIC_BLOCK as ifindex and
+parent as the block index. There isn't anything more to it than that from libbpf
+side (just specify BPF_TC_CUSTOM enum).
 
----- Original CFP ----
+What I meant was that hook_create doesn't support specifying the ingress/egress
+block when creating clsact, but that typically isn't a problem because qdiscs
+for shared blocks would be set up together prior to the attachment anyway.
 
-The annual Linux Storage, Filesystem, Memory Management, and BPF
-(LSF/MM/BPF) Summit for 2021 will be held from December 6 to December 8
-at The Margaritaville Resort Palm Springs in Palm Springs, California.
-LSF/MM/BPF is an invitation-only technical workshop to map out
-improvements to the Linux storage, filesystem, BPF, and memory
-management subsystems that will make their way into the mainline kernel
-within the coming years.
+> I think he said priority is supported but was also originally on that
+> list.
+> When we discussed at the meetup it didnt seem these cost anything
+> in terms of code complexity or usability of the API.
+>
+> 1) We use non-DA mode, so i cant live without that (and frankly ebpf
+> has challenges adding complex code blocks).
+>
+> 2) We also use different protocols when i need to
+> (yes, you can do the filtering in the bpf code - but why impose that
+> if the cost of adding it is simple? and of course it is cheaper to do
+> the check outside of ebpf)
+> 3) We use chains outside of zero
+>
+> 4) So far we dont use block support but certainly my recent experiences
+> in a deployment shows that we need to group netdevices more often than
+> i thought was necessary. So if i could express one map shared by
+> multiple netdevices it should cut down the user space complexity.
+>
+> cheers,
+> jamal
 
-COVID is at the front of our minds as we attempt to put together the
-best and safest conference we can arrange.  The logistics of how to hold
-an in person event will change and evolve as we get closer to the actual
-date, but rest assured we will do everything recommended by public
-health officials.
-
-LSF/MM/BPF 2021 will be a three day, stand-alone conference with four
-subsystem-specific tracks, cross-track discussions, as well as BoF and
-hacking sessions.
-
-On behalf of the committee I am issuing a call for agenda proposals
-that are suitable for cross-track discussion as well as technical
-subjects for the breakout sessions.
-
-If advance notice is required for visa applications then please point
-that out in your proposal or request to attend, and submit the topic as
-soon as possible.
-
-This years instructions are similar to our 2020 attempt.  We're asking
-that you please let us know you want to be invited by June 15th, 2021.
-We realize that travel is an ever changing target, but it helps us get
-an idea of possible attendance numbers.  Clearly things can and will, so
-consider the request to attend deadline more about planning and less
-about concrete plans.
-
-1) Fill out the following Google form to request attendance and
-suggest any topics
-
-	https://forms.gle/Dms7xYPXLrriFkcXA
-
-In previous years we have accidentally missed people's attendance
-requests because they either didn't cc lsf-pc@ or we simply missed them
-in the flurry of emails we get.  Our community is large and our
-volunteers are busy, filling this out will help us make sure we don't
-miss anybody.
-
-2) Proposals for agenda topics should still be sent to the following
-lists to allow for discussion among your peers.  This will help us
-figure out which topics are important for the agenda.
-
-        lsf-pc@lists.linux-foundation.org
-
-and CC the mailing lists that are relevant for the topic in question:
-
-        FS:     linux-fsdevel@vger.kernel.org
-        MM:     linux-mm@kvack.org
-        Block:  linux-block@vger.kernel.org
-        ATA:    linux-ide@vger.kernel.org
-        SCSI:   linux-scsi@vger.kernel.org
-        NVMe:   linux-nvme@lists.infradead.org
-        BPF:    bpf@vger.kernel.org
-
-Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
-track. In addition, please make sure to start a new thread for each
-topic rather than following up to an existing one. Agenda topics and
-attendees will be selected by the program committee, but the final
-agenda will be formed by consensus of the attendees on the day.
-
-We will try to cap attendance at around 25-30 per track to facilitate
-discussions although the final numbers will depend on the room sizes
-at the venue.
-
-For discussion leaders, slides and visualizations are encouraged to
-outline the subject matter and focus the discussions. Please refrain
-from lengthy presentations and talks; the sessions are supposed to be
-interactive, inclusive discussions.
-
-There will be no recording or audio bridge. However, we expect that
-written minutes will be published as we did in previous years:
-
-2019: https://lwn.net/Articles/lsfmm2019/
-
-2018: https://lwn.net/Articles/lsfmm2018/
-
-2017: https://lwn.net/Articles/lsfmm2017/
-
-2016: https://lwn.net/Articles/lsfmm2016/
-
-2015: https://lwn.net/Articles/lsfmm2015/
-
-2014: http://lwn.net/Articles/LSFMM2014/
-
-3) If you have feedback on last year's meeting that we can use to
-improve this year's, please also send that to:
-
-        lsf-pc@lists.linux-foundation.org
-
-Thank you on behalf of the program committee:
-
-        Josef Bacik (Filesystems)
-        Amir Goldstein (Filesystems)
-        Martin K. Petersen (Storage)
-        Omar Sandoval (Storage)
-        Michal Hocko (MM)
-        Dan Williams (MM)
-        Alexei Starovoitov (BPF)
-        Daniel Borkmann (BPF)
+--
+Kartikeya
