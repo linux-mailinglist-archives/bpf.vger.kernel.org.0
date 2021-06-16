@@ -2,135 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1661C3AA756
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 01:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4F83AA762
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 01:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234483AbhFPXU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 19:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
+        id S234534AbhFPXXY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 19:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234476AbhFPXU1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:20:27 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9457C061574;
-        Wed, 16 Jun 2021 16:18:20 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id c14so5444092ybk.3;
-        Wed, 16 Jun 2021 16:18:20 -0700 (PDT)
+        with ESMTP id S234533AbhFPXXY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Jun 2021 19:23:24 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1783DC06175F
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 16:21:16 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id f84so5510978ybg.0
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 16:21:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IjPZycaBxgq5vO65AfgtqkV7cRF6YSSfceLCcOugeoI=;
-        b=SDT98NwoiapsXDfIB3M3AxGQWpJjhvzOjlyp61uazOimeZXpOZfc/0p8HUjLKMqZxS
-         RjzUuvza847L0LdU9Gvz3ocjHVVUZdtZHEc3t219I+ey0G4fzlqgqx3ChUuZ5CgWr7Ck
-         tAsDnOnOp6CLwZykDgneC2OsXdWbPiUthJ6/GhN1+ELQO5l35CxuvFT9hcdcY7KPJCi8
-         GGf5zsLKsNNolGkUVoitcJFgE/PMETosMDqLSjwwDKautQxW3vKlKeCBNy68J8XDa0lf
-         ljtKhpUDVmKUWq+0bFuLcnM4KScmV3Cemsu7DOEayTbDgBIVx5LMhWxBy/zykSKtWv5V
-         D3Hg==
+        bh=UxzRVJ5JpRy9PwxWROqxZPf0O4ovf8/yF3n60iNyHdw=;
+        b=NvHztaFVirAfsZbkp0OT7Uc18l8HrC95j9x0XYUihr4vBwyBhNcM6h4vn/JCee/XLi
+         SkcX5iXTNaXkwThpy8jMUpr/DHIyDioG7r9/pCVsLHZ2DrWR7Phc9qirE6NgvVmS8Qbw
+         ST87UQtWvwe1ATbg9V6JiNpqYzCBqEXJbq3p/cDZpzbufOmkzZXq0BwXKCMG03cyCpK1
+         7MyF/5fbS5xTn9rFY5+12ZTyPx3F+SwP02wz0XDLn/pLweA23Fg5UJAmDf3W24B/gJpL
+         X649ih3la9h0iRzEJM77i4nezISv2Bny73oUiFUeIicLo3EXp/B5pcajV6yR0rOiCfrI
+         fgsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IjPZycaBxgq5vO65AfgtqkV7cRF6YSSfceLCcOugeoI=;
-        b=gen7aVb3fY/RIXZ0JwHFd+taO/xVO9tDipmGQ7hEvO0mHOLILEVoCGsiBjp5QRyA5P
-         jMoyQxXOMXba7tZ66KXe/DiD/QkFeuXv2NUqVeh2bz1XFEvwdh454C/HmwzwfK8l6Ebu
-         /2qcgweyWGqcxYpdQg2TubEiEwxZq/mQNsaWQauZc3J52baTAhkflrbFPXGW6+V/3Xw6
-         zAwzpEGBx6cqMAdEq0qHs0bZ28CE0eu0s0c92LQmqWND+ak3dbNMDc2crKtxwIfw1V9O
-         31mMw9Wdc7Mvn1YMPJ4Npa7NG5E/FSIxhe5Uj1KgddE2OEaAXHd7XlxO3oYpFDj+Oq5X
-         3RuA==
-X-Gm-Message-State: AOAM532V2OKynMJlBGIC1IKSzSchq4eRzAMZSiqmpdHu9W/LfIPYtVeJ
-        +UqR+dobapSx4DJ65DfJv9msTj8UBH/c5NEqNQo=
-X-Google-Smtp-Source: ABdhPJxV17d2g8AIQQA990WRsq5Z1Q9r9vlrTSjfMQajjqtmD4QX/YLZ+3SRgIbY89taO47Xkqmmf/VT7AkID2A15cU=
-X-Received: by 2002:a25:df82:: with SMTP id w124mr1970165ybg.425.1623885499929;
- Wed, 16 Jun 2021 16:18:19 -0700 (PDT)
+        bh=UxzRVJ5JpRy9PwxWROqxZPf0O4ovf8/yF3n60iNyHdw=;
+        b=O6wEAWc3F5xHdUs/uQVlbl5tVnQQwCKcG/Rym2DZUhbtPTn/LDaTCyH5XxBDE/aH5o
+         ktNL8XyUegxZD965mfeL80RCoFOrp+u2RAmvcCJpSYK9c4pItblvnQTmHHv0YzqTxRpm
+         Jq9bIBy8MYXX3kvoDvhfMR2u85IjkkkAJb7WM1mR76ew5g2iqp433okbE9V/gzCxafwX
+         Wi9m6wp9oF2IzUuX5DwzQvMQaiOD3h4J+Wj/BW0yId2kDkA5N9LIkRMFW1Jvr3agysEp
+         dBIM3e+KawY0kxOfqBVe5ip1PVjdYYKUzcyBACwYjPoTAi3ErNkGcehtLI9fHVezLTfz
+         5qeg==
+X-Gm-Message-State: AOAM5331XnjBUqjbMwY8E3pSzSmtFnABm4T0SghrGuROMSA+Dfqkp/z7
+        6oG6W5bqslFL1NqOWAf3RDyyvgADN5WXNfl9RwM=
+X-Google-Smtp-Source: ABdhPJwsnzcsqf5LrVaFpEcXOqphNNrIkcTaGg6D5njlpP/Sfk3lqgd909Gl3ilopIBAfMvGLSKGWrLpB2NPjIVhzgs=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr2134969ybo.230.1623885675387;
+ Wed, 16 Jun 2021 16:21:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210616170231.2194285-1-memxor@gmail.com>
-In-Reply-To: <20210616170231.2194285-1-memxor@gmail.com>
+References: <a46f64944bf678bc652410ca6028d3450f4f7f4b.1623880296.git.dxu@dxuuu.xyz>
+In-Reply-To: <a46f64944bf678bc652410ca6028d3450f4f7f4b.1623880296.git.dxu@dxuuu.xyz>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 16 Jun 2021 16:18:08 -0700
-Message-ID: <CAEf4BzZTgMHVd2kEQ5vakgNSJYFB7uiY0j_NBGdG_xzmjKQTAA@mail.gmail.com>
-Subject: Re: [PATCH v2] libbpf: add request buffer type for netlink messages
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
+Date:   Wed, 16 Jun 2021 16:21:04 -0700
+Message-ID: <CAEf4BzYZCMQuRMWbUKEnE6p0DNY9x6jZypr3SARFQfM3kuKfJg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: selftests: Whitelist test_progs.h from .gitignore
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 10:04 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Wed, Jun 16, 2021 at 2:52 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> Coverity complains about OOB writes to nlmsghdr. There is no OOB as we
-> write to the trailing buffer, but static analyzers and compilers may
-> rightfully be confused as the nlmsghdr pointer has subobject provenance
-> (and hence subobject bounds).
+> Somehow test_progs.h was being included by the existing rule:
 >
-> Remedy this by using an explicit request structure, but we also need to
-> start the buffer in case of ifinfomsg without any padding. The alignment
-> on netlink wire protocol is 4 byte boundary, so we just insert explicit
-
-struct ifinfomsg has unsigned field in it, which makes it
-automatically 4-byte aligned because the struct is not packed. Do we
-really need that _pad[4] thing?.. Even if we do, I'm still not sure
-how it helps with alignment... If anything, explicit
-__attribute__((aligned(4))) would be better.
-
-> 4 byte buffer to avoid compilers throwing off on read and write from/to
-> padding.
+>     /test_progs*
 >
-> Also switch nh_tail (renamed to req_tail) to cast req * to char * so
-
-it probably should use (void *) everywhere, instead of (char *), but I
-see that existing code is using char * exclusively, so it's probably
-for another patch
-
-> that it can be understood as arithmetic on pointer to the representation
-> array (hence having same bound as request structure), which should
-> further appease analyzers.
+> This is bad because:
 >
-> As a bonus, callers don't have to pass sizeof(req) all the time now, as
-> size is implicitly obtained using the pointer. While at it, also reduce
-> the size of attribute buffer to 128 bytes (132 for ifinfomsg using
-> functions due to the need to align buffer after it).
-
-Sorry if it's a stupid question, but why it's safe to reduce the
-buffer size from 128 to 256?
-
+>     1) test_progs.h is a checked in file
+>     2) grep-like tools like ripgrep[0] respect gitignore and
+>        test_progs.h was being hidden from searches
 >
-> Summary of problem:
->   Even though C standard allows interconveritility of pointer to first
 
-s/interconveritility/interconvertibility/ ?
+Nice find, thanks! That bothered me before, but not enough to investigate :)
 
->   member and pointer to struct, for the purposes of alias analysis it
->   would still consider the first as having pointer value "pointer to T"
->   where T is type of first member hence having subobject bounds,
->   allowing analyzers within reason to complain when object is accessed
->   beyond the size of pointed to object.
+> [0]: https://github.com/BurntSushi/ripgrep
 >
->   The only exception to this rule may be when a char * is formed to a
->   member subobject. It is not possible for the compiler to be able to
->   tell the intent of the programmer that it is a pointer to member
->   object or the underlying representation array of the containing
->   object, so such diagnosis is supressed.
-
-typo: suppressed
-
+> Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and test_maps w/
+> general rule")
 >
-> Fixes: 715c5ce454a6 ("libbpf: Add low level TC-BPF management API")
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+
+Commit references in Fixes: tag shouldn't be wrapped. And there is no
+need for an empty line. I can fix it up when applying, but just for
+the future. And bpf-next is probably the right destination, I don't
+think it needs to go through the bpf tree.
+
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 > ---
-> Changelog:
-> v1 -> v2:
->  * Add short summary instead of links about the underlying issue (Daniel)
-> ---
->  tools/lib/bpf/netlink.c | 107 +++++++++++++++-------------------------
->  tools/lib/bpf/nlattr.h  |  37 +++++++++-----
->  2 files changed, 65 insertions(+), 79 deletions(-)
+>  tools/testing/selftests/bpf/.gitignore | 1 +
+>  1 file changed, 1 insertion(+)
 >
-
-[...]
+> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+> index 4866f6a21901..d89efd9785d8 100644
+> --- a/tools/testing/selftests/bpf/.gitignore
+> +++ b/tools/testing/selftests/bpf/.gitignore
+> @@ -10,6 +10,7 @@ FEATURE-DUMP.libbpf
+>  fixdep
+>  test_dev_cgroup
+>  /test_progs*
+> +!test_progs.h
+>  test_verifier_log
+>  feature
+>  test_sock
+> --
+> 2.31.1
+>
