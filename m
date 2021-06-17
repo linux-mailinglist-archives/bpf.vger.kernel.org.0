@@ -2,206 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE653ABD67
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 22:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E170A3ABD89
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 22:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbhFQUcH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 16:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
+        id S232021AbhFQUih (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 16:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231282AbhFQUcG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 16:32:06 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBE4C061574;
-        Thu, 17 Jun 2021 13:29:57 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id u30so5388458qke.7;
-        Thu, 17 Jun 2021 13:29:57 -0700 (PDT)
+        with ESMTP id S231289AbhFQUih (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 16:38:37 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77F5C061574;
+        Thu, 17 Jun 2021 13:36:27 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id bj15so3845646qkb.11;
+        Thu, 17 Jun 2021 13:36:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hmo9PgbBFNXuJWyk3PR5KBaafEgXO9bsKC9QDalJJ0Y=;
-        b=YQzqHXRHbIsbTBPQFnTQMly0B2oPHdb9TiAoM73Sr85swieKb7NT8l6/U1mzDDB3y7
-         ASU0a7uWtzqDl4uBmsFVgu45m/93qvmiEdGwTEngy+5FBdRcmNp4Bl6j2G9ICqj8Ar7l
-         X5ZVvP4ICtu8+voFnVwmf02BjGnRGBvMIZVIhP1wkllFJJnQ19Rt3IMer7WRMjfGi5yK
-         cbhkmWhKsLCPfs4r32aX4kdTulh89G1fZ0+83+IPRGYp3sfCg3xYJaLgjgR/7H/GIfzf
-         3PLW6XCu5R9WgLOKKGKDRS1j36KxJ3vhKiHliL6f0Mhrk2sZeDK2KYKxXa97imWW5iwm
-         LOPQ==
+        bh=GDVXVk3I2rfDZGq72YGMlss6FWWN6DWRrgMI317m85w=;
+        b=Mv22Vt7LUDhtsumcHt5Y26h7SkqnTfCgdJRuDiYMQaRB+J5LHjnuIKKO74HTp2ODEk
+         NABwpe0U+O7t1P/8F47pi8S5z2HtItY5nTNrBIQ490O0qHO/Fm6CqhBY+OFfWpGFwVPV
+         CbTjlUaISQYrvHRjsPPZmtnllcVZrS4xNwE4Nt4h2zps/LJNAqVaG+dSRIyncITbiPBg
+         2Gv+1Ekm9wewDhRBlpswQbzkjNusYLWPwHB5Bcf9auTWkRZn/wddxRcuBd74pfsrguc0
+         y4hYdw+UReQMSo2afmepG4EFefOeHipSIWNUstHRb3aN9MmgUaODs6fJrFkdAhgHnJX2
+         gAWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hmo9PgbBFNXuJWyk3PR5KBaafEgXO9bsKC9QDalJJ0Y=;
-        b=Gxh2jQlph1LPsg/I9JbjUUs8Vf5gOuFdEK+NZ+qMLMo6+DZpqjswgwkexMVIiJjDxC
-         Q+my9XE0sdfagHc1+fxkXATS1OP/AYxr1Qypy1e8y8EUCO3d8c7mA1X24Z9pNzYd8Fcm
-         i32oBiIDvvas+y2mrLr0W3Yg1jn3Ip3qmLS1XTp/A5aduZ6S9HiEOHrcdxLRBuG/Goet
-         scc5UZz22N3uAxiILXFUtC27EY5lP8/VNnmeQx7jpp7Ki2Dw+9vxj8Vv/SzdRJnDgztY
-         hRh3c5skz7y77Ibqs2n8UM9cuYIZjwBpAqOpw83k4AjhQCwdJxfXlGRUi+fi6SXLI/VL
-         ufsw==
-X-Gm-Message-State: AOAM531G5ICiV6YbbkGGcWQ2OEpOVq0MtQxtff+DaktXt67ZrL2j/drt
-        u9EHKvQgCUKBuTK0pGzzWNKj+vrFnWrcqIe97bk=
-X-Google-Smtp-Source: ABdhPJynZAmzBTKjbo1zrnPn1G9CM2FxudMBLjzvD+LzIjiMDlRzxe5j44Dj3I4vZ2/e8pVrLU5x4pFaJWZilXf91CQ=
-X-Received: by 2002:a25:870b:: with SMTP id a11mr1055705ybl.260.1623961796141;
- Thu, 17 Jun 2021 13:29:56 -0700 (PDT)
+        bh=GDVXVk3I2rfDZGq72YGMlss6FWWN6DWRrgMI317m85w=;
+        b=GcS0zedNGq/3RYBqe2NJb2o3vK/BspgR8VYTPsoPJP3D2hIHcJsrafGc6+jR+cKqrK
+         g1k9arGaot/WEM3ssaPAlD370+SO9p8Dm77abD4zpPDLIO9QZhqMd1LGSAEws84C3sha
+         RV2EyFvrWZe9DOKdaRQr5ZX4vKhqS+CxLO9AGcSMbYTPc5CmLbI0Ma0B++NxeJDa/qy2
+         9kGk1PVI9FEmZHJy+hWuhc0lSeewiaUF4ncecY8GN/a4ISADBjpXiBMSKJtGTHElhW8n
+         oltq9X37LWpaEz0qqBxhbdeGhTBFGNgs6nl4/nBay4pqOZOR7/i9crfmci5jgtBbgXXW
+         7YnQ==
+X-Gm-Message-State: AOAM530k5OYsMACg2KP124OVMOY22ZUX836H73xjyr5UmTdSTdizkRrz
+        uFEj90utdsXX7bXmhMZYiiCswNiKLELIhaAgX8M=
+X-Google-Smtp-Source: ABdhPJwbimy2MZD9Ae7ayigWyBvayOX46/hs9s8m0jpHC9F7aNAl602LheK2N04NE4+8/4gkWT+3dvG5x8Qt6DcXKR4=
+X-Received: by 2002:a25:6612:: with SMTP id a18mr9045907ybc.347.1623962186492;
+ Thu, 17 Jun 2021 13:36:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210605111034.1810858-1-jolsa@kernel.org>
-In-Reply-To: <20210605111034.1810858-1-jolsa@kernel.org>
+References: <20210617182023.8137-1-grantseltzer@gmail.com> <20210617182023.8137-2-grantseltzer@gmail.com>
+In-Reply-To: <20210617182023.8137-2-grantseltzer@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 17 Jun 2021 13:29:45 -0700
-Message-ID: <CAEf4BzaK+t7zom6JHWf6XSPGDxjwhG4Wj3+CHKVshdmP3=FgnA@mail.gmail.com>
-Subject: Re: [RFCv3 00/19] x86/ftrace/bpf: Add batch support for
- direct/tracing attach
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 17 Jun 2021 13:36:15 -0700
+Message-ID: <CAEf4Bzar3CVJCkKHo5RKcCXLAwEVW5y_JUTo7_cVuBOwjRaiJg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/1] Add documentation for libbpf including
+ API autogen
+To:     grantseltzer <grantseltzer@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 4:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Jun 17, 2021 at 11:20 AM grantseltzer <grantseltzer@gmail.com> wrote:
 >
-> hi,
-> saga continues.. ;-) previous post is in here [1]
+> This adds rst files containing documentation for libbpf. This includes
+> the addition of libbpf_api.rst which pulls comment documentation from
+> header files in libbpf under tools/lib/bpf/. The comment docs would be
+> of the standard kernel doc format.
 >
-> After another discussion with Steven, he mentioned that if we fix
-> the ftrace graph problem with direct functions, he'd be open to
-> add batch interface for direct ftrace functions.
->
-> He already had prove of concept fix for that, which I took and broke
-> up into several changes. I added the ftrace direct batch interface
-> and bpf new interface on top of that.
->
-> It's not so many patches after all, so I thought having them all
-> together will help the review, because they are all connected.
-> However I can break this up into separate patchsets if necessary.
->
-> This patchset contains:
->
->   1) patches (1-4) that fix the ftrace graph tracing over the function
->      with direct trampolines attached
->   2) patches (5-8) that add batch interface for ftrace direct function
->      register/unregister/modify
->   3) patches (9-19) that add support to attach BPF program to multiple
->      functions
->
-> In nutshell:
->
-> Ad 1) moves the graph tracing setup before the direct trampoline
-> prepares the stack, so they don't clash
->
-> Ad 2) uses ftrace_ops interface to register direct function with
-> all functions in ftrace_ops filter.
->
-> Ad 3) creates special program and trampoline type to allow attachment
-> of multiple functions to single program.
->
-> There're more detailed desriptions in related changelogs.
->
-> I have working bpftrace multi attachment code on top this. I briefly
-> checked retsnoop and I think it could use the new API as well.
-
-Ok, so I had a bit of time and enthusiasm to try that with retsnoop.
-The ugly code is at [0] if you'd like to see what kind of changes I
-needed to make to use this (it won't work if you check it out because
-it needs your libbpf changes synced into submodule, which I only did
-locally). But here are some learnings from that experiment both to
-emphasize how important it is to make this work and how restrictive
-are some of the current limitations.
-
-First, good news. Using this mass-attach API to attach to almost 1000
-kernel functions goes from
-
-Plain fentry/fexit:
-===================
-real    0m27.321s
-user    0m0.352s
-sys     0m20.919s
-
-to
-
-Mass-attach fentry/fexit:
-=========================
-real    0m2.728s
-user    0m0.329s
-sys     0m2.380s
-
-It's a 10x speed up. And a good chunk of those 2.7 seconds is in some
-preparatory steps not related to fentry/fexit stuff.
-
-It's not exactly apples-to-apples, though, because the limitations you
-have right now prevents attaching both fentry and fexit programs to
-the same set of kernel functions. This makes it pretty useless for a
-lot of cases, in particular for retsnoop. So I haven't really tested
-retsnoop end-to-end, I only verified that I do see fentries triggered,
-but can't have matching fexits. So the speed-up might be smaller due
-to additional fexit mass-attach (once that is allowed), but it's still
-a massive difference. So we absolutely need to get this optimization
-in.
-
-Few more thoughts, if you'd like to plan some more work ahead ;)
-
-1. We need similar mass-attach functionality for kprobe/kretprobe, as
-there are use cases where kprobe are more useful than fentry (e.g., >6
-args funcs, or funcs with input arguments that are not supported by
-BPF verifier, like struct-by-value). It's not clear how to best
-represent this, given currently we attach kprobe through perf_event,
-but we'll need to think about this for sure.
-
-2. To make mass-attach fentry/fexit useful for practical purposes, it
-would be really great to have an ability to fetch traced function's
-IP. I.e., if we fentry/fexit func kern_func_abc, bpf_get_func_ip()
-would return IP of that functions that matches the one in
-/proc/kallsyms. Right now I do very brittle hacks to do that.
-
-So all-in-all, super excited about this, but I hope all those issues
-are addressed to make retsnoop possible and fast.
-
-  [0] https://github.com/anakryiko/retsnoop/commit/8a07bc4d8c47d025f755c108f92f0583e3fda6d8
-
->
->
-> Also available at:
->   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->   bpf/batch
->
-> thanks,
-> jirka
->
->
-> [1] https://lore.kernel.org/bpf/20210413121516.1467989-1-jolsa@kernel.org/
->
+> Signed-off-by: grantseltzer <grantseltzer@gmail.com>
 > ---
-> Jiri Olsa (17):
->       x86/ftrace: Remove extra orig rax move
->       tracing: Add trampoline/graph selftest
->       ftrace: Add ftrace_add_rec_direct function
->       ftrace: Add multi direct register/unregister interface
->       ftrace: Add multi direct modify interface
->       ftrace/samples: Add multi direct interface test module
->       bpf, x64: Allow to use caller address from stack
->       bpf: Allow to store caller's ip as argument
->       bpf: Add support to load multi func tracing program
->       bpf: Add bpf_trampoline_alloc function
->       bpf: Add support to link multi func tracing program
->       libbpf: Add btf__find_by_pattern_kind function
->       libbpf: Add support to link multi func tracing program
->       selftests/bpf: Add fentry multi func test
->       selftests/bpf: Add fexit multi func test
->       selftests/bpf: Add fentry/fexit multi func test
->       selftests/bpf: Temporary fix for fentry_fexit_multi_test
+>  Documentation/bpf/index.rst                   | 13 +++++++
+>  Documentation/bpf/libbpf.rst                  | 14 +++++++
+>  Documentation/bpf/libbpf_api.rst              | 27 ++++++++++++++
+>  Documentation/bpf/libbpf_build.rst            | 37 +++++++++++++++++++
+
+Didn't we agree to have docs under Documentation/bpf/libbpf? That
+should make it clear that each is libbpf-specific and probably would
+make copying/syncing easier. Plus it will be a libbpf sub-section in
+the docs, no?
+
+>  .../bpf/libbpf_naming_convention.rst          | 32 +++++++---------
+>  5 files changed, 104 insertions(+), 19 deletions(-)
+>  create mode 100644 Documentation/bpf/libbpf.rst
+>  create mode 100644 Documentation/bpf/libbpf_api.rst
+>  create mode 100644 Documentation/bpf/libbpf_build.rst
+>  rename tools/lib/bpf/README.rst => Documentation/bpf/libbpf_naming_convention.rst (89%)
 >
-> Steven Rostedt (VMware) (2):
->       x86/ftrace: Remove fault protection code in prepare_ftrace_return
->       x86/ftrace: Make function graph use ftrace directly
+> diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+> index a702f67dd..44f646735 100644
+> --- a/Documentation/bpf/index.rst
+> +++ b/Documentation/bpf/index.rst
+> @@ -12,6 +12,19 @@ BPF instruction-set.
+>  The Cilium project also maintains a `BPF and XDP Reference Guide`_
+>  that goes into great technical depth about the BPF Architecture.
 >
+> +libbpf
+> +======
+> +
+> +Libbpf is a userspace library for loading and interacting with bpf programs.
+> +
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+> +   libbpf
+> +   libbpf_api
+> +   libbpf_build
+> +   libbpf_naming_convention
+> +
+>  BPF Type Format (BTF)
+>  =====================
+>
+> diff --git a/Documentation/bpf/libbpf.rst b/Documentation/bpf/libbpf.rst
+> new file mode 100644
+> index 000000000..2e62cadee
+> --- /dev/null
+> +++ b/Documentation/bpf/libbpf.rst
+> @@ -0,0 +1,14 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+
+Should we use dual-license LGPL-2.1 OR BSD-2-Clause like the rest of libbpf?
+
+> +
+> +libbpf
+> +======
+> +
+> +This is documentation for libbpf, a userspace library for loading and
+> +interacting with bpf programs.
+> +
+
+[...]
+
+> +    $ cd src
+> +    $ PKG_CONFIG_PATH=/build/root/lib64/pkgconfig DESTDIR=/build/root make
+> \ No newline at end of file
+> diff --git a/tools/lib/bpf/README.rst b/Documentation/bpf/libbpf_naming_convention.rst
+> similarity index 89%
+> rename from tools/lib/bpf/README.rst
+> rename to Documentation/bpf/libbpf_naming_convention.rst
+> index 8928f7787..b6dc5c592 100644
+> --- a/tools/lib/bpf/README.rst
+> +++ b/Documentation/bpf/libbpf_naming_convention.rst
+> @@ -1,7 +1,7 @@
+> -.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> +.. SPDX-License-Identifier: GPL-2.0
+
+I don't think we can just easily re-license without asking original
+contributor. But see above, I think we should stick to the
+dual-license to stay consistent with libbpf sources?
+
 
 [...]
