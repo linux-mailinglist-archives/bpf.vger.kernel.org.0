@@ -2,227 +2,275 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C863AACC6
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 08:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B80F63AACD9
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 08:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhFQG5U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 02:57:20 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60348 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229515AbhFQG5U (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 17 Jun 2021 02:57:20 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 15H6risM008495;
-        Wed, 16 Jun 2021 23:54:58 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=r/GeExurHj91g6+QqSd5Q4wy1NhGPHHZGcnLx5azB5s=;
- b=riqQzJ+HJUSAnds2A2L4JWunT510sxxSA9F6jS3XQ3ZKM7VUL4PnVq8V8Cl+u+Bdvj9h
- xloXr4Uz8cP6W1sY8oaitUSa/NEbWCM/J6tA5DUM/Tudy1UqfGM+78gMBPKK+Qoa8jRx
- SGK26J8x8E17GxFSrBfu7haJJgEAjROEiZ0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 397tf69y7a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 16 Jun 2021 23:54:57 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 23:54:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MC1z97aXQk4/VVRPpyFhIEjuKr2m5IWW7S2j3qQGYHwhFgOls/aJzcjAk2fuES0sfnu+LQu60+uhg+oG2eMAOONRs9gn1d5T2ylQ6Z2x6ngLJ4iMSHDXQ2BRHrUVmVU+5jyZYqdv1JCbJzRnShuGQw0BDOKcu4MeFNMbV0YlbYb4RmSHlYFPyqyjPeE3Z/25cWThlT1c013hkbqHi78W6vTi1U56/3rybyrGuG0bS7JBBhpmMXWzz/vpHIdPFC7uIRNJ3yb61TfUo9NNMUmRPy8XJ8XjErIBIrcNOLrLaZlgx6/pyWiinXU5tJqJ5YpomLoxMGASnjt1Zd61sJ6aRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r/GeExurHj91g6+QqSd5Q4wy1NhGPHHZGcnLx5azB5s=;
- b=TgFJUdCsLKGT4Kef9cOLUxvOYvLxyHjypSHCu8gLxxWK65+Z/edO+GqK+DesWIg0GdE1OJ5LPJLXEy+Z+mAfIPEo2G9+7Y3Wh1RfDukeWXQf06Wc4JAbZvp+pAn84kaqbFj5oLj9yJZrcnYzHeHik8nHsBDDQYn4uNws6T9p0mQ1RwuZmFt+yb8NFnyVqd/VcbKoBf8trE382ewsNPrvbB84MaDbM2IQoNZjDTKJC618iyrwyRDKWVz/Zvgs36kdB6YYwnwmKs7Zc5Ak5Bz8Ep5exix9/+DLgojLGRP+8vghF27gPyxw8XOaN9/euH3d7e8hjlYsfjCoQFEe4MQCJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: riotgames.com; dkim=none (message not signed)
- header.d=none;riotgames.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR1501MB2031.namprd15.prod.outlook.com (2603:10b6:805:8::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.24; Thu, 17 Jun
- 2021 06:54:55 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4219.026; Thu, 17 Jun 2021
- 06:54:55 +0000
-Subject: Re: [PATCH bpf-next v5 3/4] bpf: support specifying ingress via
- xdp_md context in BPF_PROG_TEST_RUN
-To:     Zvi Effron <zeffron@riotgames.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        id S229846AbhFQHBP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 03:01:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38942 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229845AbhFQHBO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 17 Jun 2021 03:01:14 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15H6X100052374;
+        Thu, 17 Jun 2021 02:58:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
+ : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=MOSoqprioi3J3jNEOxKjrY+bjTUAw6ikDWLjHlpTfQs=;
+ b=lrlALBvDH90+yQCIe/UE6PGSZPGOiZyLkh0C8LCylOwZI8MBKW3PjQSrTPPE23PoRD3y
+ dBavN/kyxWZ2u0jJACmR3btGcEeybWFteWl0G5F54OlSL6pqjvTMBuG0TchWeIry1aN9
+ 8M3RPvYvpZ3Nwq+rJRluRyTqIxD2dyOIc2VLeTRnJhUWpUuwiBrSgx7XQ96UdHZqBNQZ
+ ChdDGEWgthdc333uFwz2m57MdX+JSXxRtizL8JwFdl/suQeKf7tEDsXDFrfShMvf8s87
+ W5HePsWrwVEm27o7Ti6b7DBu0ilRF41ReJ99Ky9ARAgtbgsk1uuiej+fUR/QdDT223Xb +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 397yshay5c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 02:58:45 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15H6XehQ054156;
+        Thu, 17 Jun 2021 02:58:45 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 397yshay4j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 02:58:44 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15H6qsi3023133;
+        Thu, 17 Jun 2021 06:58:42 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 394mj8tgsr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Jun 2021 06:58:42 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15H6vVWs38011214
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Jun 2021 06:57:31 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 296C8AE053;
+        Thu, 17 Jun 2021 06:58:40 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C1B8DAE055;
+        Thu, 17 Jun 2021 06:58:34 +0000 (GMT)
+Received: from [9.199.38.219] (unknown [9.199.38.219])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Jun 2021 06:58:34 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 0/1] arm64: Add BPF exception tables
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Cody Haas <chaas@riotgames.com>,
-        Lisa Watanabe <lwatanabe@riotgames.com>
-References: <20210616224712.3243-1-zeffron@riotgames.com>
- <20210616224712.3243-4-zeffron@riotgames.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <039ecbf0-c08b-8c18-b030-e902a1ded9f0@fb.com>
-Date:   Wed, 16 Jun 2021 23:54:50 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <20210616224712.3243-4-zeffron@riotgames.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        bpf <bpf@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+References: <20200728152122.1292756-1-jean-philippe@linaro.org>
+ <daba29d3-46bb-8246-74a7-83184c92435c@linux.ibm.com>
+ <CAADnVQJsCkSdqCaQt2hretdqamWJmWRQvh+=RvwHmHAOW2kL6g@mail.gmail.com>
+Message-ID: <fedff32f-e511-a191-22b0-bf421bdcce2a@linux.ibm.com>
+Date:   Thu, 17 Jun 2021 12:28:33 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <CAADnVQJsCkSdqCaQt2hretdqamWJmWRQvh+=RvwHmHAOW2kL6g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:6d3c]
-X-ClientProxiedBy: CO2PR04CA0159.namprd04.prod.outlook.com
- (2603:10b6:104:4::13) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::12bc] (2620:10d:c090:400::5:6d3c) by CO2PR04CA0159.namprd04.prod.outlook.com (2603:10b6:104:4::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Thu, 17 Jun 2021 06:54:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6d04f146-96b2-4ef5-e981-08d9315cd043
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2031:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB2031A0D1C4F25C4D3215BAB0D30E9@SN6PR1501MB2031.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LPMTpFfQr/cgMF2g94wnrMx9JzdNtkv4GymyINQihm2KYwYk1Lk9Wzr1jZURKGYNCy7pYhmGUxUq4Lf/y5xivzGscop84DmozWjXvazAJk8OV8xKm02IzjaJEp2C45tirtdfgHeaNqxOPJkQuCkRp8w/TweQu0+ljOSTTGtW7evc3Rj4gFBHuPK/P+dI156csY2gpjlEhPME0OP1MdYv3n/i9xd/8h+PuKHbFwsxGbCeOg/+nBcaH+wjT+RHV6LEAVdh08tJGJq8eUWcbsC6dCWgURa6981fnuNROpenF1M47Y4Q+hsLuMKEzgSjl7Bk1FNV1c9agIsdc2B6hdzgU30IuDMg8sZ1A5pJ1/jC4gJ0lZENr7Gn2/29rPCZrRgiCxtZT0FjY2h9iZ7Yz/7EQgWs8D+K5YuoMaWQEYUp8J2euylF9wXSGqh/p4i7hnBJk1gP6HzVE79YSgYIdj2yDaDqQo5q3GxRpBuBOoLC4lFAuTBKcVCs4exTDvwZHJfT2+UyUiaRfoDqnEXooLxboCFW43w4mh1x44mHCm9B/ycQ+MBlI4bfAC4yR0IOOcVtldINHAA7/eRjdR4dJS+R/jfGuyfDEFRMggN5TLTmkwnmlhzto/vIxhCdtZ00JVBMRSTYVt18MNTXIoIedAZyYxA5+yAzd9QJjYcieihyUdUqxe1Av+RLRRMDLp6jCAGi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(346002)(136003)(376002)(4326008)(8936002)(54906003)(66556008)(36756003)(66946007)(186003)(16526019)(7416002)(6486002)(2906002)(478600001)(66476007)(5660300002)(31696002)(2616005)(31686004)(8676002)(38100700002)(6666004)(53546011)(52116002)(316002)(86362001)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QUp0Y0N6UEd4a0ZCOXpRdGRSVk9sZWRma0FuZ0d5TUI3VFp2Y0hqbCtmdmFP?=
- =?utf-8?B?OGU2SEV0eVJWbkRwamhuYlNWWWN4Y2hsZlVWN2hoeWZhYjFmSTh6MzZYOHNa?=
- =?utf-8?B?OW1uWHRWdHB3eGNOZGdjVkhlOVhLNk8raDQzSkhDL09QY0l3MFRxeWhPN01x?=
- =?utf-8?B?VTl0ZmJqKzhuK3BBTlVxbjRKUVVodm1Rd2Y5U3QxWGZmTGRpSkJDbEt1WGZJ?=
- =?utf-8?B?djZ2a1h5aXlMVGVoWmEyT0QwSUdXMVA3Y0J4ejNFM0U1eG9mOG1sRmtxWUFn?=
- =?utf-8?B?YmgxemNFMTBPTGZ2WWIzdUJBQStNSm91d0NPWjlaWVo2d1J6MlJYNzgrZno2?=
- =?utf-8?B?d3ZzU2U2UzYzNDBNZXVPTXlUVy9oVnMzYk0wVllERERXQVI5WlZNS1RmaFUy?=
- =?utf-8?B?R25XMXFuUUtONmdkbXhDZVVxc1NlenVhT3pXSzZSazFnSmY4Q2M2VTVvNTFG?=
- =?utf-8?B?N0EwaUMwaVdtNU1OZS9yVFBmd3lFdkJ6cjZTWmNxNnFYRGVwamdTY3Y3U2lE?=
- =?utf-8?B?bThZd2Y0b0FEakpYS08ycEJweUdIMGFIS0hNR09CUnF4ZVJOUkpNaklySXhF?=
- =?utf-8?B?aTVjWXVIZVZENXhKSnQ4YUNyeFpkL2I3ZDNDU0pmYWtmdWtwSDA1VHgzeXNp?=
- =?utf-8?B?U243MkdESmlDT212azhUUmNKbUJPdVhzKzR4bXVFZmJBNTJ2SE9TaXU1NGI4?=
- =?utf-8?B?SVZDRTUzQ01OdmxOaFd5VVhicVhrRmZXQ2VySnpMWllNaS9CK2ozZWI2VVFH?=
- =?utf-8?B?VXVWY2F3TURzend4cWpIL1AzTUdNYUd4UU50dEhQWHBLSXdMZEtuREV5Mjh3?=
- =?utf-8?B?K25RSWg2QUtKSHl6d0RLTCtGazVuOUdTcU42NW5oWCtIMlR0MU55NWZkcDN2?=
- =?utf-8?B?N3Z0dU9NV3dnZEtDYkdiZlZwWHZJRndsRmhrSzFWQlFKV2QyazFrVE1hZG1T?=
- =?utf-8?B?YTAyVWdya084R2hRSjMvOGJvR3YvRXlFeG9DR3M1VGJOWWtxdUZLc0Mzc29C?=
- =?utf-8?B?TjFzRngvZ0c2bEVRZ29sS0FrTTRqNHhOTzdMQ25BQnZ0VDI5TWR1OHZBWkp1?=
- =?utf-8?B?S3BkTFI3NEdIdjNZQlRRcXFPWE5YVWsrY1lMNzJIaW05OW1SUkM5S2ZudEU1?=
- =?utf-8?B?Ylk0bTZta2pXcHB2ZWJ6d3NNeU5PSnlzc2JXcVhhUnZNWkZZNGFLSWJneVNr?=
- =?utf-8?B?SWR5Q2FQdmgrUUE1OXBBZ2xpeHhrQjdwRjhvazd3ZDByWFNFamRWcGxVSnQx?=
- =?utf-8?B?OS9rNzk2ZVFOKzVBcDNIcHdyYmxZQTVMdHpIaVVJQ3ljV2M2b0Z1d0w3dzNY?=
- =?utf-8?B?MkFWSWRXWmE2SGp2dzgvdkdqR1BYbTVUeTF3dGtWZFdRR0ZQMzc0OUR1SkNI?=
- =?utf-8?B?S0dmRkpwbmwwTXVCQ1N0bjVKM05PZDhNOTJHc05ZUUphMTNKbW1teDJ3OGtm?=
- =?utf-8?B?bHZCejlodHppWndDWVIvbTBzeERTNE1Ea29xVXNudFFyZjI5cExxaEFtekZO?=
- =?utf-8?B?c2kxZVpTMFdxeUFzUE9RaXc1NlBad0dMd0tjNmtSMGt6amVqSmtQdy85N0tK?=
- =?utf-8?B?UlZITWlUeHpzMnpFdTloZ3JiWFZZMTNtSGxBVERWT1U0WEdYc0NLU3BKci94?=
- =?utf-8?B?cWthMlBvZTRXZGx1MlVya0tFNG05cklmN3ZhdlNITE5CcFlsTCszYTVyYnQ5?=
- =?utf-8?B?ek9lME83Qm5sYUNrS2M0MENLVG9wQlBVNm8rby9JN2R6Tnp4S3BrWThMd3hv?=
- =?utf-8?B?akNiT2pWa3g5bW9ZOHpJTW1FMkZNSlltRWw2MGhpRllXRTZpamJCVlRYSTRZ?=
- =?utf-8?B?Tjdjb2xRa2JTTjF1MUJwQT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d04f146-96b2-4ef5-e981-08d9315cd043
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 06:54:55.2098
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ug454nMFpqWxdjETIfQ/z+3jO7DtDAxXCHyFZq+Gp2xpX5fONZoIMDooWUf8wmoF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2031
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: fcRvVGdhEDq_7DNrPj_oJRbntdEK7kDI
-X-Proofpoint-GUID: fcRvVGdhEDq_7DNrPj_oJRbntdEK7kDI
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: vgoqyBQVSOuUmOiILep6vhm-7KE95vnP
+X-Proofpoint-ORIG-GUID: 1FfKNZDdzK1yBybhSOaMqKtWYyJ-p89b
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-06-17_02:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 suspectscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 mlxscore=0 impostorscore=0
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106170048
-X-FB-Internal: deliver
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 priorityscore=1501 impostorscore=0 bulkscore=0
+ phishscore=0 mlxscore=0 spamscore=0 adultscore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106170045
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Alexei,
 
+Sorry to bother you again!
 
-On 6/16/21 3:47 PM, Zvi Effron wrote:
-> Support specifying the ingress_ifindex and rx_queue_index of xdp_md
-> contexts for BPF_PROG_TEST_RUN.
+On 6/11/21 5:42 AM, Alexei Starovoitov wrote:
+> On Wed, Jun 9, 2021 at 5:05 AM Ravi Bangoria
+> <ravi.bangoria@linux.ibm.com> wrote:
+>>
+>> Hi Alexei,
+>>
+>> On 7/28/20 8:51 PM, Jean-Philippe Brucker wrote:
+>>> The following patch adds support for BPF_PROBE_MEM on arm64. The
+>>> implementation is simple but I wanted to give a bit of background first.
+>>> If you're familiar with recent BPF development you can skip to the patch
+>>> (or fact-check the following blurb).
+>>>
+>>> BPF programs used for tracing can inspect any of the traced function's
+>>> arguments and follow pointers in struct members. Traditionally the BPF
+>>> program would get a struct pt_regs as argument and cast the register
+>>> values to the appropriate struct pointer. The BPF verifier would mandate
+>>> that any memory access uses the bpf_probe_read() helper, to suppress
+>>> page faults (see samples/bpf/tracex1_kern.c).
+>>>
+>>> With BPF Type Format embedded into the kernel (CONFIG_DEBUG_INFO_BTF),
+>>> the verifier can now check the type of any access performed by a BPF
+>>> program. It rejects for example programs that cast to a different
+>>> structure and perform out-of-bounds accesses, or programs that attempt
+>>> to dereference something that isn't a pointer, or that hasn't gone
+>>> through a NULL check.
+>>>
+>>> As this makes tracing programs safer, the verifier now allows loading
+>>> programs that access struct members without bpf_probe_read(). It is
+>>> however still possible to trigger page faults. For example in the
+>>> following example with which I've tested this patch, the verifier does
+>>> not mandate a NULL check for the second-level pointer:
+>>>
+>>> /*
+>>>    * From tools/testing/selftests/bpf/progs/bpf_iter_task.c
+>>>    * dump_task() is called for each task.
+>>>    */
+>>> SEC("iter/task")
+>>> int dump_task(struct bpf_iter__task *ctx)
+>>> {
+>>>        struct seq_file *seq = ctx->meta->seq;
+>>>        struct task_struct *task = ctx->task;
+>>>
+>>>        /* Program would be rejected without this check */
+>>>        if (task == NULL)
+>>>                return 0;
+>>>
+>>>        /*
+>>>         * However the verifier does not currently mandate
+>>>         * checking task->mm, and the following faults for kernel
+>>>         * threads.
+>>>         */
+>>>        BPF_SEQ_PRINTF(seq, "pid=%d vm=%d", task->pid, task->mm->total_vm);
+>>>        return 0;
+>>> }
+>>>
+>>> Even if it checked this case, the verifier couldn't guarantee that all
+>>> accesses are safe since kernel structures could in theory contain
+>>> garbage or error pointers. So to allow fast access without
+>>> bpf_probe_read(), a JIT implementation must support BPF exception
+>>> tables. For each access to a BTF pointer, the JIT generates an entry
+>>> into an exception table appended to the BPF program. If the access
+>>> faults at runtime, the handler skips the faulting instruction. The
+>>> example above will display vm=0 for kernel threads.
+>>
+>> I'm trying with the example above (task->mm->total_vm) on x86 machine
+>> with bpf/master (11fc79fc9f2e3) plus commit 4c5de127598e1 ("bpf: Emit
+>> explicit NULL pointer checks for PROBE_LDX instructions.") *reverted*,
+>> I'm seeing the app getting killed with error in dmesg.
+>>
+>>     $ sudo bpftool iter pin bpf_iter_task.o /sys/fs/bpf/task
+>>     $ sudo cat /sys/fs/bpf/task
+>>     Killed
+>>
+>>     $ dmesg
+>>     [  188.810020] BUG: kernel NULL pointer dereference, address: 00000000000000c8
+>>     [  188.810030] #PF: supervisor read access in kernel mode
+>>     [  188.810034] #PF: error_code(0x0000) - not-present page
+>>
+>> IIUC, this should be handled by bpf exception table rather than killing
+>> the app. Am I missing anything?
 > 
-> The intended use case is to allow testing XDP programs that make decisions
-> based on the ingress interface or RX queue.
-> 
-> If ingress_ifindex is specified, look up the device by the provided index
-> in the current namespace and use its xdp_rxq for the xdp_buff. If the
-> rx_queue_index is out of range, or is non-zero when the ingress_ifindex is
-> 0, return EINVAL.
+> For PROBE_LDX the verifier guarantees that the address is either
+> a very likely valid kernel address or NULL. On x86 the user and kernel
+> address spaces are shared and NULL is a user address, so there cannot be
+> an exception table for NULL. Hence x86-64 JIT inserts NULL check when
+> it converts PROBE_LDX into load insn.
 
-Let us match actual implementation.
-    EINVAL => -EINVAL
+IIUC, there could be 3 types of addresses a BPF prog can have:
 
-> 
-> Co-developed-by: Cody Haas <chaas@riotgames.com>
-> Signed-off-by: Cody Haas <chaas@riotgames.com>
-> Co-developed-by: Lisa Watanabe <lwatanabe@riotgames.com>
-> Signed-off-by: Lisa Watanabe <lwatanabe@riotgames.com>
-> Signed-off-by: Zvi Effron <zeffron@riotgames.com>
-> ---
->   net/bpf/test_run.c | 23 ++++++++++++++++++++++-
->   1 file changed, 22 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index f3054f25409c..0183fefd165c 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -690,15 +690,36 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->   
->   static int xdp_convert_md_to_buff(struct xdp_md *xdp_md, struct xdp_buff *xdp)
->   {
-> +	unsigned int ingress_ifindex;
-> +	unsigned int rx_queue_index;
+1. NULL ptr. Which is handled by adding additional check in BPF program.
+    So this won't cause a fault.
+2. Valid kernel address. This will never cause a fault.
+3. Bad address. This is very unlikely but possible. IIUC, BPF extable
+    is introduced to handle such scenarios. Unfortunately, with any type
+    of bad address (user or kernel), extable on x86 never gets involved.
+    Kernel always kills the application with error in dmesg.
 
-nit: the above two definitions have the same type, let us merge them 
-into one line.
+Please let me know if I understood it incorrectly.
 
-> +	struct netdev_rx_queue *rxqueue;
-> +	struct net_device *device;
-> +
->   	if (!xdp_md)
->   		return 0;
->   
->   	if (xdp_md->egress_ifindex != 0)
->   		return -EINVAL;
->   
-> -	if (xdp_md->ingress_ifindex != 0 || xdp_md->rx_queue_index != 0)
-> +	ingress_ifindex = xdp_md->ingress_ifindex;
-> +	rx_queue_index = xdp_md->rx_queue_index;
-> +
-> +	if (!ingress_ifindex && rx_queue_index)
->   		return -EINVAL;
->   
-> +	if (ingress_ifindex) {
-> +		device = dev_get_by_index(current->nsproxy->net_ns,
-> +					  ingress_ifindex);
-> +		if (!device)
-> +			return -EINVAL;
-> +
-> +		if (rx_queue_index >= device->real_num_rx_queues)
-> +			return -EINVAL;
+TLDR;
+To check the case 3 further, I tried with bpf/master, this time without
+reverting your patch. I added a dummy structure and a bad pointer to it
+in task_struct.
 
-Does rx_queue_index = 0 is valid? I don't know whether it is valid
-or not, just asking.
+   diff --git a/include/linux/sched.h b/include/linux/sched.h
+   index d2c881384517..4698188bcf45 100644
+   --- a/include/linux/sched.h
+   +++ b/include/linux/sched.h
+   @@ -646,6 +646,10 @@ struct kmap_ctrl {
+    #endif
+    };
+   +struct dummy_task_ele {
+   +       int dummy;
+   +};
+   +
+    struct task_struct {
+    #ifdef CONFIG_THREAD_INFO_IN_TASK
+           /*
+   @@ -771,6 +775,8 @@ struct task_struct {
+           struct mm_struct                *mm;
+           struct mm_struct                *active_mm;
+   +       struct dummy_task_ele           *dte;
+   +
+           /* Per-thread vma caching: */
+           struct vmacache                 vmacache;
+   diff --git a/kernel/fork.c b/kernel/fork.c
+   index dc06afd725cb..ed01f25edd8e 100644
+   --- a/kernel/fork.c
+   +++ b/kernel/fork.c
+   @@ -2116,6 +2116,9 @@ static __latent_entropy struct task_struct *copy_process(
+           retval = copy_mm(clone_flags, p);
+           if (retval)
+                   goto bad_fork_cleanup_signal;
+   +
+   +       p->dte = (void *)0xd12345;
+   +
+           retval = copy_namespaces(clone_flags, p);
+           if (retval)
+                   goto bad_fork_cleanup_mm;
 
-> +
-> +		rxqueue = __netif_get_rx_queue(device, rx_queue_index);
-> +		xdp->rxq = &rxqueue->xdp_rxq;
-> +	}
-> +
->   	xdp->data = xdp->data_meta + xdp_md->data;
->   
->   	return 0;
-> 
+And with below change in testcase:
+
+   diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
+   index b7f32c160f4e..391c1b3da638 100644
+   --- a/tools/testing/selftests/bpf/progs/bpf_iter_task.c
+   +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
+   @@ -21,6 +21,6 @@ int dump_task(struct bpf_iter__task *ctx)
+           if (ctx->meta->seq_num == 0)
+                   BPF_SEQ_PRINTF(seq, "    tgid      gid\n");
+   -       BPF_SEQ_PRINTF(seq, "%8d %8d\n", task->tgid, task->pid);
+   +       BPF_SEQ_PRINTF(seq, "%8d %8d %d\n", task->tgid, task->pid, task->dte->dummy);
+           return 0;
+    }
+
+I see the same issue:
+
+   $ sudo bpftool iter pin bpf_iter_task.o /sys/fs/bpf/task
+   $ sudo cat /sys/fs/bpf/task
+   Killed
+
+   $ dmesg
+   [  166.864325] BUG: unable to handle page fault for address: 0000000000d12345
+   [  166.864336] #PF: supervisor read access in kernel mode
+   [  166.864338] #PF: error_code(0x0000) - not-present page
+
+0xd12345 is unallocated userspace address. Similarly, I also tried with
+p->dte = (void *)0xffffffffc1234567 after confirming it's not allocated
+to kernel or any module address. I see the same failure with it too.
+
+Though, the same test with bpf_probe_read(task->dte->dummy) works fine.
+
+Ravi
