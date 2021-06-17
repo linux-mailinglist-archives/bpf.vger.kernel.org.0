@@ -2,270 +2,362 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB883AB49E
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 15:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EFB3AB4DB
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 15:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbhFQNZc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 09:25:32 -0400
-Received: from mga17.intel.com ([192.55.52.151]:53893 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhFQNZc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 09:25:32 -0400
-IronPort-SDR: aRFrMTI64fq9/z9WynmYNulEN4FEOzEF/etirDe5geWwAb7SpRwVpH3EcgWS5w4TS2KnlMDAbq
- hPXFjn300ibw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="186744123"
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
-   d="scan'208";a="186744123"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 06:23:24 -0700
-IronPort-SDR: cGjORf0vy6UXUnvDarnwkqjtxzUqMxH10FkxwNyZtvPzojWIkpZMFp+WSjB+M1HVCYqdT4mnEH
- UUD3XQSTSJuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
-   d="scan'208";a="421874926"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga002.jf.intel.com with ESMTP; 17 Jun 2021 06:23:18 -0700
-Date:   Thu, 17 Jun 2021 15:09:48 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Krzysztof Kazimierczak <krzysztof.kazimierczak@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, maximmi@nvidia.com
-Subject: Re: [PATCH net] xdp, net: fix for construct skb by xdp inside xsk zc
- rx
-Message-ID: <20210617130948.GA20486@ranger.igk.intel.com>
-References: <20210615033719.72294-1-xuanzhuo@linux.alibaba.com>
+        id S232229AbhFQNiA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 09:38:00 -0400
+Received: from www62.your-server.de ([213.133.104.62]:46862 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231451AbhFQNiA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:38:00 -0400
+Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ltsBR-000CN5-QE; Thu, 17 Jun 2021 15:35:50 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf-next 2021-06-17
+Date:   Thu, 17 Jun 2021 15:35:49 +0200
+Message-Id: <20210617133549.26128-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615033719.72294-1-xuanzhuo@linux.alibaba.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26204/Thu Jun 17 13:19:00 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 11:37:19AM +0800, Xuan Zhuo wrote:
-> When each driver supports xsk rx, if the received buff returns XDP_PASS
-> after run xdp prog, it must construct skb based on xdp. This patch
-> extracts this logic into a public function xdp_construct_skb().
-> 
-> There is a bug in the original logic. When constructing skb, we should
-> copy the meta information to skb and then use __skb_pull() to correct
-> the data.
-> 
-> Fixes: 0a714186d3c0f ("i40e: add AF_XDP zero-copy Rx support")
-> Fixes: 2d4238f556972 ("ice: Add support for AF_XDP")
-> Fixes: bba2556efad66 ("net: stmmac: Enable RX via AF_XDP zero-copy")
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
-> 
-> This patch depends on the previous patch:
->     [PATCH net] ixgbe: xsk: fix for metasize when construct skb by xdp_buff
+Hi David, hi Jakub,
 
-That doesn't make much sense if you ask me, I'd rather squash the patch
-mentioned above to this one.
+The following pull-request contains BPF updates for your *net-next* tree.
 
-Also, I wanted to introduce such function to the kernel for a long time
-but I always head in the back of my head mlx5's AF_XDP ZC implementation
-which I'm not sure if it can adjust to something like Intel drivers are
-doing.
+We've added 50 non-merge commits during the last 25 day(s) which contain
+a total of 148 files changed, 4779 insertions(+), 1248 deletions(-).
 
-Maxim? :)
+The main changes are:
 
-> 
->  drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 16 +---------
->  drivers/net/ethernet/intel/ice/ice_xsk.c      | 12 +-------
->  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 14 +--------
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 23 +-------------
->  include/net/xdp.h                             | 30 +++++++++++++++++++
->  5 files changed, 34 insertions(+), 61 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> index 68f177a86403..81b0f44eedda 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> @@ -246,23 +246,9 @@ bool i40e_alloc_rx_buffers_zc(struct i40e_ring *rx_ring, u16 count)
->  static struct sk_buff *i40e_construct_skb_zc(struct i40e_ring *rx_ring,
->  					     struct xdp_buff *xdp)
->  {
-> -	unsigned int metasize = xdp->data - xdp->data_meta;
-> -	unsigned int datasize = xdp->data_end - xdp->data;
->  	struct sk_buff *skb;
-> 
-> -	/* allocate a skb to store the frags */
-> -	skb = __napi_alloc_skb(&rx_ring->q_vector->napi,
-> -			       xdp->data_end - xdp->data_hard_start,
-> -			       GFP_ATOMIC | __GFP_NOWARN);
-> -	if (unlikely(!skb))
-> -		goto out;
-> -
-> -	skb_reserve(skb, xdp->data - xdp->data_hard_start);
-> -	memcpy(__skb_put(skb, datasize), xdp->data, datasize);
-> -	if (metasize)
-> -		skb_metadata_set(skb, metasize);
-> -
-> -out:
-> +	skb = xdp_construct_skb(xdp, &rx_ring->q_vector->napi);
->  	xsk_buff_free(xdp);
->  	return skb;
->  }
-> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> index a1f89ea3c2bd..f95e1adcebda 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> @@ -430,22 +430,12 @@ static void ice_bump_ntc(struct ice_ring *rx_ring)
->  static struct sk_buff *
->  ice_construct_skb_zc(struct ice_ring *rx_ring, struct ice_rx_buf *rx_buf)
->  {
-> -	unsigned int metasize = rx_buf->xdp->data - rx_buf->xdp->data_meta;
-> -	unsigned int datasize = rx_buf->xdp->data_end - rx_buf->xdp->data;
-> -	unsigned int datasize_hard = rx_buf->xdp->data_end -
-> -				     rx_buf->xdp->data_hard_start;
->  	struct sk_buff *skb;
-> 
-> -	skb = __napi_alloc_skb(&rx_ring->q_vector->napi, datasize_hard,
-> -			       GFP_ATOMIC | __GFP_NOWARN);
-> +	skb = xdp_construct_skb(rx_buf->xdp, &rx_ring->q_vector->napi);
->  	if (unlikely(!skb))
->  		return NULL;
-> 
-> -	skb_reserve(skb, rx_buf->xdp->data - rx_buf->xdp->data_hard_start);
-> -	memcpy(__skb_put(skb, datasize), rx_buf->xdp->data, datasize);
-> -	if (metasize)
-> -		skb_metadata_set(skb, metasize);
-> -
->  	xsk_buff_free(rx_buf->xdp);
->  	rx_buf->xdp = NULL;
->  	return skb;
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> index ee88107fa57a..123945832c96 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> @@ -203,24 +203,12 @@ bool ixgbe_alloc_rx_buffers_zc(struct ixgbe_ring *rx_ring, u16 count)
->  static struct sk_buff *ixgbe_construct_skb_zc(struct ixgbe_ring *rx_ring,
->  					      struct ixgbe_rx_buffer *bi)
->  {
-> -	unsigned int metasize = bi->xdp->data - bi->xdp->data_meta;
-> -	unsigned int datasize = bi->xdp->data_end - bi->xdp->data_meta;
->  	struct sk_buff *skb;
-> 
-> -	/* allocate a skb to store the frags */
-> -	skb = __napi_alloc_skb(&rx_ring->q_vector->napi,
-> -			       bi->xdp->data_end - bi->xdp->data_hard_start,
-> -			       GFP_ATOMIC | __GFP_NOWARN);
-> +	skb = xdp_construct_skb(bi->xdp, &rx_ring->q_vector->napi);
->  	if (unlikely(!skb))
->  		return NULL;
-> 
-> -	skb_reserve(skb, bi->xdp->data_meta - bi->xdp->data_hard_start);
-> -	memcpy(__skb_put(skb, datasize), bi->xdp->data_meta, datasize);
-> -	if (metasize) {
-> -		__skb_pull(skb, metasize);
-> -		skb_metadata_set(skb, metasize);
-> -	}
-> -
->  	xsk_buff_free(bi->xdp);
->  	bi->xdp = NULL;
->  	return skb;
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index c87202cbd3d6..143ac1edb876 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -4729,27 +4729,6 @@ static void stmmac_finalize_xdp_rx(struct stmmac_priv *priv,
->  		xdp_do_flush();
->  }
-> 
-> -static struct sk_buff *stmmac_construct_skb_zc(struct stmmac_channel *ch,
-> -					       struct xdp_buff *xdp)
-> -{
-> -	unsigned int metasize = xdp->data - xdp->data_meta;
-> -	unsigned int datasize = xdp->data_end - xdp->data;
-> -	struct sk_buff *skb;
-> -
-> -	skb = __napi_alloc_skb(&ch->rxtx_napi,
-> -			       xdp->data_end - xdp->data_hard_start,
-> -			       GFP_ATOMIC | __GFP_NOWARN);
-> -	if (unlikely(!skb))
-> -		return NULL;
-> -
-> -	skb_reserve(skb, xdp->data - xdp->data_hard_start);
-> -	memcpy(__skb_put(skb, datasize), xdp->data, datasize);
-> -	if (metasize)
-> -		skb_metadata_set(skb, metasize);
-> -
-> -	return skb;
-> -}
-> -
->  static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
->  				   struct dma_desc *p, struct dma_desc *np,
->  				   struct xdp_buff *xdp)
-> @@ -4761,7 +4740,7 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
->  	struct sk_buff *skb;
->  	u32 hash;
-> 
-> -	skb = stmmac_construct_skb_zc(ch, xdp);
-> +	skb = xdp_construct_skb(xdp, &ch->rxtx_napi);
->  	if (!skb) {
->  		priv->dev->stats.rx_dropped++;
->  		return;
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index a5bc214a49d9..561e21eaf718 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -95,6 +95,36 @@ xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
->  	xdp->data_meta = meta_valid ? data : data + 1;
->  }
-> 
-> +static __always_inline struct sk_buff *
-> +xdp_construct_skb(struct xdp_buff *xdp, struct napi_struct *napi)
-> +{
-> +	unsigned int metasize;
-> +	unsigned int datasize;
-> +	unsigned int headroom;
-> +	struct sk_buff *skb;
-> +	unsigned int len;
-> +
-> +	/* this include metasize */
-> +	datasize = xdp->data_end  - xdp->data_meta;
-> +	metasize = xdp->data      - xdp->data_meta;
-> +	headroom = xdp->data_meta - xdp->data_hard_start;
-> +	len      = xdp->data_end  - xdp->data_hard_start;
-> +
-> +	/* allocate a skb to store the frags */
-> +	skb = __napi_alloc_skb(napi, len, GFP_ATOMIC | __GFP_NOWARN);
-> +	if (unlikely(!skb))
-> +		return NULL;
-> +
-> +	skb_reserve(skb, headroom);
-> +	memcpy(__skb_put(skb, datasize), xdp->data_meta, datasize);
-> +	if (metasize) {
-> +		__skb_pull(skb, metasize);
-> +		skb_metadata_set(skb, metasize);
-> +	}
-> +
-> +	return skb;
-> +}
-> +
->  /* Reserve memory area at end-of data area.
->   *
->   * This macro reserves tailroom in the XDP buffer by limiting the
-> --
-> 2.31.0
-> 
+1) BPF infrastructure to migrate TCP child sockets from a listener to another
+   in the same reuseport group/map, from Kuniyuki Iwashima.
+
+2) Add a provably sound, faster and more precise algorithm for tnum_mul() as
+   noted in https://arxiv.org/abs/2105.05398, from Harishankar Vishwanathan.
+
+3) Streamline error reporting changes in libbpf as planned out in the
+   'libbpf: the road to v1.0' effort, from Andrii Nakryiko.
+
+4) Add broadcast support to xdp_redirect_map(), from Hangbin Liu.
+
+5) Extends bpf_map_lookup_and_delete_elem() functionality to 4 more map
+   types, that is, {LRU_,PERCPU_,LRU_PERCPU_,}HASH, from Denis Salopek.
+
+6) Support new LLVM relocations in libbpf to make them more linker friendly,
+   also add a doc to describe the BPF backend relocations, from Yonghong Song.
+
+7) Silence long standing KUBSAN complaints on register-based shifts in
+   interpreter, from Daniel Borkmann and Eric Biggers.
+
+8) Add dummy PT_REGS macros in libbpf to fail BPF program compilation when
+   target arch cannot be determined, from Lorenz Bauer.
+
+9) Extend AF_XDP to support large umems with 1M+ pages, from Magnus Karlsson.
+
+10) Fix two minor libbpf tc BPF API issues, from Kumar Kartikeya Dwivedi.
+
+11) Move libbpf BPF_SEQ_PRINTF/BPF_SNPRINTF macros that can be used by BPF
+    programs to bpf_helpers.h header, from Florent Revest.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexei Starovoitov, Andrii Nakryiko, Benjamin Herrenschmidt, Björn 
+Töpel, Colin Ian King, Dan Siemon, Edward Cree, Eric Dumazet, Hulk 
+Robot, Jesper Dangaard Brouer, John Fastabend, Kuniyuki Iwashima, Kurt 
+Manucredo, Martin KaFai Lau, Quentin Monnet, Randy Dunlap, Toke 
+Høiland-Jørgensen, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit ec7d6dd870d421a853ffa692d4bce5783a519342:
+
+  ethernet: ucc_geth: Use kmemdup() rather than kmalloc+memcpy (2021-05-23 18:51:42 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to f20792d425d2efd2680f2855c1e3fec01c2e569e:
+
+  selftests/bpf: Fix selftests build with old system-wide headers (2021-06-17 13:05:10 +0200)
+
+----------------------------------------------------------------
+Aditya Srivastava (1):
+      samples: bpf: Ix kernel-doc syntax in file header
+
+Alexei Starovoitov (1):
+      Merge branch 'libbpf: error reporting changes for v1.0'
+
+Andrii Nakryiko (11):
+      Merge branch 'Add lookup_and_delete_elem support to BPF hash map types'
+      libbpf: Add libbpf_set_strict_mode() API to turn on libbpf 1.0 behaviors
+      selftests/bpf: Turn on libbpf 1.0 mode and fix all IS_ERR checks
+      libbpf: Streamline error reporting for low-level APIs
+      libbpf: Streamline error reporting for high-level APIs
+      bpftool: Set errno on skeleton failures and propagate errors
+      libbpf: Move few APIs from 0.4 to 0.5 version
+      libbpf: Refactor header installation portions of Makefile
+      libbpf: Install skel_internal.h header used from light skeletons
+      selftests/bpf: Add xdp_redirect_multi into .gitignore
+      selftests/bpf: Fix selftests build with old system-wide headers
+
+Daniel Borkmann (3):
+      Merge branch 'bpf-xdp-bcast'
+      Merge branch 'bpf-sock-migration'
+      bpf: Fix up register-based shifts in interpreter to silence KUBSAN
+
+Daniel Xu (1):
+      selftests/bpf: Whitelist test_progs.h from .gitignore
+
+Denis Salopek (3):
+      bpf: Add lookup_and_delete_elem support to hashtab
+      bpf: Extend libbpf with bpf_map_lookup_and_delete_elem_flags
+      selftests/bpf: Add bpf_lookup_and_delete_elem tests
+
+Florent Revest (1):
+      libbpf: Move BPF_SEQ_PRINTF and BPF_SNPRINTF to bpf_helpers.h
+
+Hangbin Liu (4):
+      xdp: Extend xdp_redirect_map with broadcast support
+      sample/bpf: Add xdp_redirect_map_multi for redirect_map broadcast test
+      selftests/bpf: Add xdp_redirect_multi test
+      bpf, devmap: Remove drops variable from bq_xmit_all()
+
+Harishankar Vishwanathan (1):
+      bpf, tnums: Provably sound, faster, and more precise algorithm for tnum_mul
+
+Jean-Philippe Brucker (1):
+      tools/bpftool: Fix cross-build
+
+Jesper Dangaard Brouer (1):
+      bpf: Run devmap xdp_prog on flush instead of bulk enqueue
+
+Joe Stringer (1):
+      selftests, bpf: Make docs tests fail more reliably
+
+Kumar Kartikeya Dwivedi (2):
+      libbpf: Remove unneeded check for flags during tc detach
+      libbpf: Set NLM_F_EXCL when creating qdisc
+
+Kuniyuki Iwashima (11):
+      net: Introduce net.ipv4.tcp_migrate_req.
+      tcp: Add num_closed_socks to struct sock_reuseport.
+      tcp: Keep TCP_CLOSE sockets in the reuseport group.
+      tcp: Add reuseport_migrate_sock() to select a new listener.
+      tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+      tcp: Migrate TCP_NEW_SYN_RECV requests at retransmitting SYN+ACKs.
+      tcp: Migrate TCP_NEW_SYN_RECV requests at receiving the final ACK.
+      bpf: Support BPF_FUNC_get_socket_cookie() for BPF_PROG_TYPE_SK_REUSEPORT.
+      bpf: Support socket migration by eBPF.
+      libbpf: Set expected_attach_type for BPF_PROG_TYPE_SK_REUSEPORT.
+      bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
+
+Lorenz Bauer (1):
+      libbpf: Fail compilation if target arch is missing
+
+Magnus Karlsson (1):
+      xsk: Use kvcalloc to support large umems
+
+Michal Suchanek (1):
+      libbpf: Fix pr_warn type warnings on 32bit
+
+Shuyi Cheng (1):
+      bpf: Fix typo in kernel/bpf/bpf_lsm.c
+
+Stanislav Fomichev (1):
+      libbpf: Skip bpf_object__probe_loading for light skeleton
+
+Wang Hai (3):
+      libbpf: Simplify the return expression of bpf_object__init_maps function
+      samples/bpf: Add missing option to xdp_fwd usage
+      samples/bpf: Add missing option to xdp_sample_pkts usage
+
+Yonghong Song (2):
+      libbpf: Add support for new llvm bpf relocations
+      bpf, docs: Add llvm_reloc.rst to explain llvm bpf relocations
+
+Zhen Lei (1):
+      bpf: Fix spelling mistakes
+
+Zhihao Cheng (1):
+      tools/bpftool: Fix error return code in do_batch()
+
+ Documentation/bpf/index.rst                        |   1 +
+ Documentation/bpf/llvm_reloc.rst                   | 240 +++++++++
+ Documentation/networking/ip-sysctl.rst             |  25 +
+ include/linux/bpf.h                                |  23 +
+ include/linux/bpf_local_storage.h                  |   4 +-
+ include/linux/filter.h                             |  21 +-
+ include/net/netns/ipv4.h                           |   1 +
+ include/net/sock_reuseport.h                       |   9 +-
+ include/net/xdp.h                                  |   1 +
+ include/trace/events/xdp.h                         |   6 +-
+ include/uapi/linux/bpf.h                           |  43 +-
+ kernel/bpf/bpf_inode_storage.c                     |   2 +-
+ kernel/bpf/bpf_lsm.c                               |   2 +-
+ kernel/bpf/btf.c                                   |   6 +-
+ kernel/bpf/core.c                                  |  61 ++-
+ kernel/bpf/cpumap.c                                |   3 +-
+ kernel/bpf/devmap.c                                | 305 +++++++++--
+ kernel/bpf/hashtab.c                               | 102 +++-
+ kernel/bpf/preload/iterators/iterators.bpf.c       |   1 -
+ kernel/bpf/reuseport_array.c                       |   2 +-
+ kernel/bpf/syscall.c                               |  47 +-
+ kernel/bpf/tnum.c                                  |  41 +-
+ kernel/bpf/trampoline.c                            |   2 +-
+ kernel/bpf/verifier.c                              |  12 +-
+ net/core/filter.c                                  |  60 ++-
+ net/core/sock_reuseport.c                          | 359 +++++++++++--
+ net/core/xdp.c                                     |  28 ++
+ net/ipv4/inet_connection_sock.c                    | 191 ++++++-
+ net/ipv4/inet_hashtables.c                         |   2 +-
+ net/ipv4/sysctl_net_ipv4.c                         |   9 +
+ net/ipv4/tcp_ipv4.c                                |  20 +-
+ net/ipv4/tcp_minisocks.c                           |   4 +-
+ net/ipv6/tcp_ipv6.c                                |  14 +-
+ net/xdp/xdp_umem.c                                 |   7 +-
+ net/xdp/xskmap.c                                   |   3 +-
+ samples/bpf/Makefile                               |   3 +
+ samples/bpf/ibumad_kern.c                          |   2 +-
+ samples/bpf/ibumad_user.c                          |   2 +-
+ samples/bpf/xdp_fwd_user.c                         |   2 +
+ samples/bpf/xdp_redirect_map_multi_kern.c          |  88 ++++
+ samples/bpf/xdp_redirect_map_multi_user.c          | 302 +++++++++++
+ samples/bpf/xdp_sample_pkts_user.c                 |   3 +-
+ tools/bpf/bpftool/Makefile                         |   5 +-
+ tools/bpf/bpftool/gen.c                            |  27 +-
+ tools/bpf/bpftool/main.c                           |   4 +-
+ tools/include/uapi/linux/bpf.h                     |  43 +-
+ tools/lib/bpf/Makefile                             |  18 +-
+ tools/lib/bpf/bpf.c                                | 179 +++++--
+ tools/lib/bpf/bpf.h                                |   2 +
+ tools/lib/bpf/bpf_helpers.h                        |  66 +++
+ tools/lib/bpf/bpf_prog_linfo.c                     |  18 +-
+ tools/lib/bpf/bpf_tracing.h                        | 108 ++--
+ tools/lib/bpf/btf.c                                | 302 +++++------
+ tools/lib/bpf/btf_dump.c                           |  14 +-
+ tools/lib/bpf/libbpf.c                             | 535 +++++++++++---------
+ tools/lib/bpf/libbpf.h                             |   1 +
+ tools/lib/bpf/libbpf.map                           |  10 +-
+ tools/lib/bpf/libbpf_errno.c                       |   7 +-
+ tools/lib/bpf/libbpf_internal.h                    |  59 +++
+ tools/lib/bpf/libbpf_legacy.h                      |  59 +++
+ tools/lib/bpf/linker.c                             |  25 +-
+ tools/lib/bpf/netlink.c                            |  85 ++--
+ tools/lib/bpf/ringbuf.c                            |  26 +-
+ tools/testing/selftests/bpf/.gitignore             |   3 +
+ tools/testing/selftests/bpf/Makefile               |   3 +-
+ tools/testing/selftests/bpf/Makefile.docs          |   3 +-
+ tools/testing/selftests/bpf/README.rst             |  19 +
+ tools/testing/selftests/bpf/bench.c                |   1 +
+ tools/testing/selftests/bpf/benchs/bench_rename.c  |   2 +-
+ .../testing/selftests/bpf/benchs/bench_ringbufs.c  |   6 +-
+ tools/testing/selftests/bpf/benchs/bench_trigger.c |   2 +-
+ tools/testing/selftests/bpf/network_helpers.c      |   2 +-
+ tools/testing/selftests/bpf/network_helpers.h      |   1 +
+ .../selftests/bpf/prog_tests/attach_probe.c        |  12 +-
+ tools/testing/selftests/bpf/prog_tests/bpf_iter.c  |  31 +-
+ .../testing/selftests/bpf/prog_tests/bpf_tcp_ca.c  |   8 +-
+ tools/testing/selftests/bpf/prog_tests/btf.c       |  93 ++--
+ tools/testing/selftests/bpf/prog_tests/btf_dump.c  |   8 +-
+ tools/testing/selftests/bpf/prog_tests/btf_write.c |   4 +-
+ .../selftests/bpf/prog_tests/cg_storage_multi.c    |  84 ++--
+ .../selftests/bpf/prog_tests/cgroup_attach_multi.c |   2 +-
+ .../testing/selftests/bpf/prog_tests/cgroup_link.c |  14 +-
+ .../bpf/prog_tests/cgroup_skb_sk_lookup.c          |   2 +-
+ tools/testing/selftests/bpf/prog_tests/check_mtu.c |   2 +-
+ .../testing/selftests/bpf/prog_tests/core_reloc.c  |  15 +-
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       |  25 +-
+ .../selftests/bpf/prog_tests/flow_dissector.c      |   2 +-
+ .../bpf/prog_tests/flow_dissector_reattach.c       |  10 +-
+ .../selftests/bpf/prog_tests/get_stack_raw_tp.c    |  10 +-
+ .../bpf/prog_tests/get_stackid_cannot_attach.c     |   9 +-
+ tools/testing/selftests/bpf/prog_tests/hashmap.c   |   9 +-
+ tools/testing/selftests/bpf/prog_tests/kfree_skb.c |  19 +-
+ tools/testing/selftests/bpf/prog_tests/ksyms_btf.c |   3 +-
+ .../selftests/bpf/prog_tests/link_pinning.c        |   7 +-
+ .../selftests/bpf/prog_tests/lookup_and_delete.c   | 288 +++++++++++
+ .../selftests/bpf/prog_tests/migrate_reuseport.c   | 559 +++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/obj_name.c  |   8 +-
+ .../selftests/bpf/prog_tests/perf_branches.c       |   4 +-
+ .../testing/selftests/bpf/prog_tests/perf_buffer.c |   2 +-
+ .../selftests/bpf/prog_tests/perf_event_stackmap.c |   3 +-
+ .../testing/selftests/bpf/prog_tests/probe_user.c  |   7 +-
+ .../selftests/bpf/prog_tests/prog_run_xattr.c      |   4 +-
+ .../selftests/bpf/prog_tests/raw_tp_test_run.c     |   4 +-
+ .../testing/selftests/bpf/prog_tests/rdonly_maps.c |   7 +-
+ .../selftests/bpf/prog_tests/reference_tracking.c  |   2 +-
+ .../selftests/bpf/prog_tests/resolve_btfids.c      |   2 +-
+ .../selftests/bpf/prog_tests/ringbuf_multi.c       |   2 +-
+ .../selftests/bpf/prog_tests/select_reuseport.c    |  53 +-
+ .../testing/selftests/bpf/prog_tests/send_signal.c |   3 +-
+ tools/testing/selftests/bpf/prog_tests/sk_lookup.c |   2 +-
+ .../testing/selftests/bpf/prog_tests/sock_fields.c |  14 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c       |   8 +-
+ .../selftests/bpf/prog_tests/sockmap_ktls.c        |   2 +-
+ .../selftests/bpf/prog_tests/sockmap_listen.c      |  10 +-
+ .../bpf/prog_tests/stacktrace_build_id_nmi.c       |   3 +-
+ .../selftests/bpf/prog_tests/stacktrace_map.c      |   2 +-
+ .../bpf/prog_tests/stacktrace_map_raw_tp.c         |   5 +-
+ .../selftests/bpf/prog_tests/tcp_hdr_options.c     |  15 +-
+ .../selftests/bpf/prog_tests/test_overhead.c       |  12 +-
+ .../selftests/bpf/prog_tests/trampoline_count.c    |  14 +-
+ tools/testing/selftests/bpf/prog_tests/udp_limit.c |   7 +-
+ .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   2 +-
+ tools/testing/selftests/bpf/prog_tests/xdp_link.c  |   8 +-
+ .../selftests/bpf/progs/bpf_iter_bpf_hash_map.c    |   1 -
+ .../testing/selftests/bpf/progs/bpf_iter_bpf_map.c |   1 -
+ .../selftests/bpf/progs/bpf_iter_ipv6_route.c      |   1 -
+ .../testing/selftests/bpf/progs/bpf_iter_netlink.c |   1 -
+ tools/testing/selftests/bpf/progs/bpf_iter_task.c  |   1 -
+ .../selftests/bpf/progs/bpf_iter_task_btf.c        |   1 -
+ .../selftests/bpf/progs/bpf_iter_task_file.c       |   1 -
+ .../selftests/bpf/progs/bpf_iter_task_stack.c      |   1 -
+ .../selftests/bpf/progs/bpf_iter_task_vma.c        |   1 -
+ tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c  |   1 -
+ tools/testing/selftests/bpf/progs/bpf_iter_tcp6.c  |   1 -
+ tools/testing/selftests/bpf/progs/bpf_iter_udp4.c  |   1 -
+ tools/testing/selftests/bpf/progs/bpf_iter_udp6.c  |   1 -
+ .../selftests/bpf/progs/test_lookup_and_delete.c   |  26 +
+ .../selftests/bpf/progs/test_migrate_reuseport.c   | 135 +++++
+ tools/testing/selftests/bpf/progs/test_snprintf.c  |   1 -
+ .../selftests/bpf/progs/xdp_redirect_multi_kern.c  |  94 ++++
+ tools/testing/selftests/bpf/test_doc_build.sh      |   1 +
+ tools/testing/selftests/bpf/test_lru_map.c         |   8 +
+ tools/testing/selftests/bpf/test_maps.c            | 185 ++++---
+ tools/testing/selftests/bpf/test_progs.c           |   3 +
+ tools/testing/selftests/bpf/test_progs.h           |   9 +-
+ tools/testing/selftests/bpf/test_tcpnotify_user.c  |   7 +-
+ .../selftests/bpf/test_xdp_redirect_multi.sh       | 204 ++++++++
+ tools/testing/selftests/bpf/xdp_redirect_multi.c   | 226 +++++++++
+ 148 files changed, 4779 insertions(+), 1248 deletions(-)
+ create mode 100644 Documentation/bpf/llvm_reloc.rst
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_kern.c
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
+ create mode 100644 tools/lib/bpf/libbpf_legacy.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
+ create mode 100644 tools/testing/selftests/bpf/xdp_redirect_multi.c
