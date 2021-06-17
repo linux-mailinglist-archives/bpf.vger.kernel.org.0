@@ -2,183 +2,418 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4223ABE7B
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 23:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BADD73ABEBB
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 00:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhFQV6e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 17:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
+        id S231216AbhFQWVq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 18:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbhFQV6e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 17:58:34 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CA4C061574;
-        Thu, 17 Jun 2021 14:56:25 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id j184so5962929qkd.6;
-        Thu, 17 Jun 2021 14:56:24 -0700 (PDT)
+        with ESMTP id S229915AbhFQWVp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 18:21:45 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C934C061574
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 15:19:36 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so6954136pjn.1
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 15:19:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pIotqpF97rFU+a3KQY/swaNTPZAaGEl+4hGajF23LSo=;
-        b=GlJANo/T9i/0g9F8i/5H+SHY7yc6Lbk47Xz443GPQfZVjBb2yHGd6489VOLr3qokED
-         B3yIWhVQaW6hKzbBiGvaU1zAu4cFLZHX8+tHf9DklGR5kItsrAc8jq1ZPV6PYZA0sDZq
-         /eZHETGMt6FqT6Cy/K5O761goQZewNAgix6ayrNMsgSjQZ8qibc1xVdGvsEqSoTEjCdd
-         h1zZZ65PhDmj02uWZyuDeTKDNmvPApDD5v90UKPpaXXdPnYUiX6FmvfuHkmaCJd3qBJu
-         l2/D44sjLKsQqN0ikJrJ94EJRVr8O58nAjlhu2NgEZZaXjXhw78GoBVkKfYuaxaA+OwZ
-         VKPQ==
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=3vjEZwUmipniK97loCeRcx3SEjImR8IrakjRNXrOlhI=;
+        b=uTZgzpoZ/k1gpKuM4MrAE22Pgrxi4BFXuHc9he9SJeEtht6Jq04q79pYJGUUFqV8k9
+         Ci0M/wwxU+j2nBF5gLqVNbNF7begPttMlr+MuDn75xef8mjBkXDqB6iYq1FN2cemjeNF
+         il4j9Um1HkIrKwanZ9oxEZ9UDbTYdDyadIu4OxzaN5ktp8y8Lw3scWnFAVJoCn7OT93X
+         xmo65vqgmgUJfixRFYMEq+3PrcWcqqf3n6ep+uOXhzdPMH5HDNWPt5XHvXh/oMedaWBh
+         QjJnJGfEWEKYxpHHcB4PefgLkORUMi9GKyCaoULuVrWOgzFzJ6SFvMTFANdxxEZW7lJN
+         QEqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pIotqpF97rFU+a3KQY/swaNTPZAaGEl+4hGajF23LSo=;
-        b=AwhYTJ6XNj/2Y5CYyVSniaZ/9r4O5wmmQc/XdC1ukn42ETE4yT5gc7sLwtJFQPTuzM
-         97M4GXbjowjBiFXE2dT9+4osfOFIL6vayzpDBSJS3WdzL84nnv2+ipjrRsnIWMhkX0oz
-         T6K9AZX/+eUfuj5l5YbvJHQY2V2cxHL1OGrlifwcNVeqOtmxENM08JM6pNJkKlvRWIHV
-         OglptTYdkG1B5/WeG6Xse9iDC4U+DDC+2XQinwKl4wgfNKHdmYntdf6TwgLAuoWkeWxl
-         fO1oRVRLlFYQZYgEJvZBJY0+AZZkkqZ9uBq5IXIGURn3fnzLpQ0qEWOxz6SdumljIqHu
-         HpUg==
-X-Gm-Message-State: AOAM533n5KMJ63nwDWQIbrJ+fZnRxlshpR1KpL5iocvFFWuOc73X1tk2
-        1/kFahhXCcU00Ef9VOGfD9tt4zj9cqZ02EVnfIE=
-X-Google-Smtp-Source: ABdhPJw2W+aGr/Iez8CTCsozua2cvQ+nh2eE5RdnHaNH7x9rOndy/YxtA/8KHi2vXTW0pDmMxl5bM9u0/vRYwrAlrmE=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr9161421ybo.230.1623966984179;
- Thu, 17 Jun 2021 14:56:24 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=3vjEZwUmipniK97loCeRcx3SEjImR8IrakjRNXrOlhI=;
+        b=ImaxltRtWO5AsnPBajIu4XX7iY3Psp40hD/GhNk3fdXxr7CbfTMhRh0sintRgykseS
+         Lvv2uKVSVuZmqnKjGln6+BQR869x2zLQqNxSal6tEm4MrRWgoef3onYRHtMZ40HOAJX/
+         mQ4Grcmqbh91zQiGDn63ykKqDo1L9CHFVp5qyJev82h9LIPwlDRWjzJxqK3LK/UYe2Pu
+         sDVoG3IHofB0UNeEbULbRdKUO111Ar6ZC/8QxMgIreSzoBIIiwTPc6jrQS4WHiEOz6TN
+         530zRvKhDzayQGLtAOFnWYfgmhh7NJ9u9dvjcyidnyQ00p6/+eDd+fMm6/dV7mu65POM
+         Q/Iw==
+X-Gm-Message-State: AOAM532JQFpea1skhbD93j6uXwpwCC5d3/dLJUtjAF/NQJ2i9Iv+ygxp
+        Cf/60n8lpqYi7tk0Z+mosNE=
+X-Google-Smtp-Source: ABdhPJyZWhKG1whTghElfWftTZS4HnNoFPPbPqDVogtM2+1bGwKwFRBQh2dSGXTjyuyxp4FQebfQ2g==
+X-Received: by 2002:a17:902:6a84:b029:f3:f285:7d8 with SMTP id n4-20020a1709026a84b02900f3f28507d8mr1808147plk.57.1623968376076;
+        Thu, 17 Jun 2021 15:19:36 -0700 (PDT)
+Received: from sea-l-00029082.olympus.f5net.com (d66-183-43-174.bchsia.telus.net. [66.183.43.174])
+        by smtp.gmail.com with ESMTPSA id p20sm6734474pgi.94.2021.06.17.15.19.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 15:19:35 -0700 (PDT)
+From:   Vincent Li <vincent.mc.li@gmail.com>
+X-Google-Original-From: Vincent Li <vli@gmail.com>
+Date:   Thu, 17 Jun 2021 15:19:33 -0700 (PDT)
+To:     Yonghong Song <yhs@fb.com>
+cc:     Vincent Li <vincent.mc.li@gmail.com>, bpf@vger.kernel.org
+Subject: Re: R1 invalid mem access 'inv'
+In-Reply-To: <6c6b765d-1d8e-671c-c0a9-97b44c04862c@fb.com>
+Message-ID: <85caf3b3-868-7085-f4df-89df7930ad9b@gmail.com>
+References: <c43bc0a9-9eca-44df-d0c7-7865f448cc24@gmail.com> <92121d33-4a45-b27a-e3cd-e54232924583@fb.com> <79e4924c-e581-47dd-875c-6fd72e85dfac@gmail.com> <6c6b765d-1d8e-671c-c0a9-97b44c04862c@fb.com>
 MIME-Version: 1.0
-References: <CAEf4BzZnZN2mt4+5F-00ggO9YHWrL3Jru_u3Qt2JJ+SMkHwg+w@mail.gmail.com>
- <YMoRBvTdD0qzjYf4@kernel.org> <YMopYxHgmoNVd3Yl@kernel.org>
- <YMph3VeKA1Met65X@kernel.org> <CAEf4BzZmBbkU1WWLEsZG1yVMdt7CDcuHhRF8uoLqeamhef3bVQ@mail.gmail.com>
- <YMtgz+hcE/7iO7Ux@kernel.org> <YMuoQntxW1zOujHU@kernel.org>
- <CAEf4BzaA2XwjeVNWTa2eyMvzkwp9eUHSXqMVJukMf0_mzh8CnQ@mail.gmail.com> <YMuzbVZoCbiq0CAz@kernel.org>
-In-Reply-To: <YMuzbVZoCbiq0CAz@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 17 Jun 2021 14:56:13 -0700
-Message-ID: <CAEf4BzZjqFZ4i0Utez2r67CSPCdDhHuOMiuePpKidjtTaogF0g@mail.gmail.com>
-Subject: Re: latest pahole breaks libbpf CI and let's talk about staging
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        dwarves@vger.kernel.org, siudin@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 1:41 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Em Thu, Jun 17, 2021 at 01:03:17PM -0700, Andrii Nakryiko escreveu:
-> > On Thu, Jun 17, 2021 at 12:53 PM Arnaldo Carvalho de Melo
-> > <arnaldo.melo@gmail.com> wrote:
-> > >
-> > > Em Thu, Jun 17, 2021 at 11:48:47AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > > Em Wed, Jun 16, 2021 at 03:36:54PM -0700, Andrii Nakryiko escreveu:
-> > > > > On Wed, Jun 16, 2021 at 1:41 PM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
-> > > > > > And if I use pahole's BTF loader I find the info about that function:
-> > >
-> > > > > > [acme@seventh linux]$ strace -e openat -o /tmp/bla pfunct -F btf tcp_cong_avoid_ai  ; grep vmlinux /tmp/bla
-> > > > > > void tcp_cong_avoid_ai(struct tcp_sock * tp, u32 w, u32 acked);
-> > > > > > openat(AT_FDCWD, "/sys/kernel/btf/vmlinux", O_RDONLY) = 3
-> > >
-> > > > > > So this should be unrelated to the breakage you noticed in the CI.
-> > >
-> > > > > > I'm trying to to reproduce the CI breakage by building the kernel and
-> > > > > > running selftests after a reboot.
-> > >
-> > > > > > I suspect I'm missing something, can you see what it is?
-> > >
-> > > > > Oh, I didn't realize initially what it is. This is not kernel-related,
-> > > > > you are right. You just need newer Clang. Can you please use nightly
-> > > > > version or build from sources? Basically, your Clang is too old and it
-> > > > > doesn't generate BTF information for extern functions in BPF code.
-> > >
-> > > > Oh well, I thought that that clang was new enough, the system being
-> > > > Fedora rawhide:
-> > >
-> > > > [acme@seventh ~]$ clang -v |& head -1
-> > > > clang version 12.0.0 (https://github.com/llvm/llvm-project 87369c626114ae17f4c637635c119e6de0856a9a)
-> > >
-> > > > I'm now building the single-repo main...
-> > >
-> > > So I updated clang and now I'm stumbling on another one, again using
-> > > pahole 1.21 + fixes, without any of my changes, is this a known issue?
-> > >
-> > > [root@seventh bpf]# pwd
-> > > /mnt/linux/tools/testing/selftests/bpf
-> > > [root@seventh bpf]# git log --oneline -5
-> > > 94f0b2d4a1d0 (HEAD -> master, torvalds/master) proc: only require mm_struct for writing
-> >
-> > Please use bpf-next tree. Bleeding edge clang started generating new
-> > ELF relocation types, so you need bleeding edge libbpfs in selftests
-> > to handle that during static linking.
->
-> Yeah, bleeding edge indeed, will use that then
->
-> > > a33d62662d27 afs: Fix an IS_ERR() vs NULL check
-> > > 009c9aa5be65 (tag: v5.13-rc6) Linux 5.13-rc6
-> > > e4e453434a19 Merge tag 'perf-tools-fixes-for-v5.13-2021-06-13' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
-> > > 960f0716d80f Merge tag 'nfs-for-5.13-3' of git://git.linux-nfs.org/projects/trondmy/linux-nfs
-> > > [root@seventh bpf]#
-> > > [root@seventh bpf]# make run_tests
-> >
-> > I never use make run_tests.
->
-> One more thing to put into my BTF development cheat sheet, thanks.
->
-> I looked at git log tools/testing/selftests/bpf and looked for the first
-> commit, which I thought would have instructions on how to use it, and
-> there I found about 'make run_tests'.
->
-
-There is probably nothing wrong with running make run_tests, it's just
-not something that I regularly do. Our CIs also run only test_progs,
-test_verifier and test_maps, so that's what is tested all the time.
-
-Speaking of CIs, please see [0]. Please look around and see if you can
-subscribe to notifications about failures for that pahole staging
-test. That way you'll get notification that something in tmp.master
-breaks libbpf CI. Thanks!
-
-  [0] https://github.com/libbpf/libbpf/actions/runs/947856692
 
 
-> > Try `make clean && make -j60 && sudo ./test_progs`.
-> >
-> > > <SNIP>
-> > >   GEN-SKEL [test_progs] atomic_bounds.skel.h
-> > >   GEN-SKEL [test_progs] atomics.skel.h
-> > >   GEN-SKEL [test_progs] bind4_prog.skel.h
-> > > libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
-> > >   GEN-SKEL [test_progs] bind6_prog.skel.h
-> > > libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
-> > >   GEN-SKEL [test_progs] bind_perm.skel.h
-> > >   GEN-SKEL [test_progs] bpf_cubic.skel.h
-> > > libbpf: ELF relo #0 in section #15 has unexpected type 2 in /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.o
-> > > Error: failed to link '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.o': Unknown error -22 (-22)
-> > > make: *** [Makefile:456: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 234
-> > > [root@seventh bpf]# clang -v |& head -2
-> > > clang version 13.0.0 (https://github.com/llvm/llvm-project dee2c76b4c46e71903e3d86ab7555a80d51d1288)
-> > > Target: x86_64-unknown-linux-gnu
-> > > [root@seventh bpf]#
-> > >
-> > > - Arnaldo
-> > >
-> > > > Would you consider a patch for libbpf that would turn this:
-> > > >
-> > > > > > > libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-> > > > > > > Error: failed to open BPF object file: No such file or directory
-> > > > > > > make: *** [Makefile:460: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 255
-> > > > > > > make: *** Deleting file '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h'
-> > > > > > > make: Leaving directory '/mnt/linux/tools/testing/selftests/bpf'
-> > > >
-> > > > Into:
-> > > >
-> > > > libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-> > > > HINT: Please update your clang/llvm toolchain to at least cset abcdef123456
-> > > > HINT: That is where clang started generating BTF information for extern functions in BPF code.
-> > > >
-> > > > ?
-> > > >
-> > > > :-)
->
-> --
->
-> - Arnaldo
+On Thu, 17 Jun 2021, Yonghong Song wrote:
+
+> 
+> 
+> On 6/17/21 7:19 AM, Vincent Li wrote:
+> > 
+> > Hi Song,
+> > 
+> > Thank you for your response!
+> > 
+> > 
+> > On Wed, 16 Jun 2021, Yonghong Song wrote:
+> > 
+> > > 
+> > > 
+> > > On 6/16/21 5:05 PM, Vincent Li wrote:
+> > > > Hi BPF Experts,
+> > > > 
+> > > > I had a problem that verifier report "R1 invalid mem access 'inv'" when
+> > > > I attempted to rewrite packet destination ethernet MAC address in Cilium
+> > > > tunnel mode, I opened an issue
+> > > > with detail here https://github.com/cilium/cilium/issues/16571:
+> > > > 
+> > > > I have couple of questions in general to try to understand the compiler,
+> > > > BPF byte code, and the verifier.
+> > > > 
+> > > > 1 Why the BPF byte code changes so much with my simple C code change
+> > > > 
+> > > > a: BPF byte code  before C code change:
+> > > > 
+> > > > 0000000000006068 <LBB12_410>:
+> > > >       3085:       bf a2 00 00 00 00 00 00 r2 = r10
+> > > > ;       tunnel = map_lookup_elem(&TUNNEL_MAP, key);
+> > > >       3086:       07 02 00 00 78 ff ff ff r2 += -136
+> > > >       3087:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0
+> > > > ll
+> > > >       3089:       85 00 00 00 01 00 00 00 call 1
+> > > > ;       if (!tunnel)
+> > > >       3090:       15 00 06 01 00 00 00 00 if r0 == 0 goto +262
+> > > > <LBB12_441>
+> > > > ;       key.tunnel_id = seclabel;
+> > > >       3091:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 = 0
+> > > > ll
+> > > >       3093:       67 02 00 00 20 00 00 00 r2 <<= 32
+> > > >       3094:       77 02 00 00 20 00 00 00 r2 >>= 32
+> > > >       3095:       b7 01 00 00 06 00 00 00 r1 = 6
+> > > >       3096:       15 02 02 00 01 00 00 00 if r2 == 1 goto +2 <LBB12_413>
+> > > >       3097:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0
+> > > > ll
+> > > > 
+> > > > 00000000000060d8 <LBB12_413>:
+> > > > ;       return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4,
+> > > > seclabel, monitor);
+> > > > 
+> > > > 
+> > > > b: BPF byte code  after C code change:
+> > > > 
+> > > > the C code diff change:
+> > > > 
+> > > > diff --git a/bpf/lib/encap.h b/bpf/lib/encap.h
+> > > > index dfd87bd82..19199429d 100644
+> > > > --- a/bpf/lib/encap.h
+> > > > +++ b/bpf/lib/encap.h
+> > > > @@ -187,6 +187,8 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32
+> > > > tunnel_endpoint,
+> > > >                          struct endpoint_key *key, __u32 seclabel, __u32
+> > > > monitor)
+> > > >    {
+> > > >           struct endpoint_key *tunnel;
+> > > > +#define VTEP_MAC  { .addr = { 0xce, 0x72, 0xa7, 0x03, 0x88, 0x58 } }
+> > > > +       union macaddr vtep_mac = VTEP_MAC;
+> > > >             if (tunnel_endpoint) {
+> > > >    #ifdef ENABLE_IPSEC
+> > > > @@ -221,6 +223,8 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32
+> > > > tunnel_endpoint,
+> > > >                                                   seclabel);
+> > > >           }
+> > > >    #endif
+> > > > +       if (eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0)
+> > > > +               return DROP_WRITE_ERROR;
+> > > >           return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4,
+> > > > seclabel, monitor);
+> > > >    }
+> > > > 
+> > > > the result BPF byte code
+> > > > 
+> > > > 0000000000004468 <LBB3_274>:
+> > > >       2189:       bf a2 00 00 00 00 00 00 r2 = r10
+> > > > ;       tunnel = map_lookup_elem(&TUNNEL_MAP, key);
+> > > >       2190:       07 02 00 00 50 ff ff ff r2 += -176
+> > > >       2191:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0
+> > > > ll
+> > > >       2193:       85 00 00 00 01 00 00 00 call 1
+> > > >       2194:       bf 07 00 00 00 00 00 00 r7 = r0
+> > > >       2195:       79 a6 48 ff 00 00 00 00 r6 = *(u64 *)(r10 - 184)
+> > > > ;       if (!tunnel)
+> > > >       2196:       55 07 94 00 00 00 00 00 if r7 != 0 goto +148
+> > > > <LBB3_289>
+> > > > 
+> > > > 00000000000044a8 <LBB3_275>:
+> > > > ;       __u8 new_ttl, ttl = ip4->ttl;
+> > > >       2197:       79 a1 38 ff 00 00 00 00 r1 = *(u64 *)(r10 - 200)
+> > > >       2198:       71 13 16 00 00 00 00 00 r3 = *(u8 *)(r1 + 22)
+> > > > ;       if (ttl <= 1)
+> > > >       2199:       25 03 01 00 01 00 00 00 if r3 > 1 goto +1 <LBB3_277>
+> > > >       2200:       05 00 20 ff 00 00 00 00 goto -224 <LBB3_253>
+> > > > 
+> > > > 
+> > > > You can see that:
+> > > > 
+> > > > before change:  <LBB12_410>
+> > > > after change    <LBB3_274>
+> > > > 
+> > > > is different that <LBB12_410> has instructions 3091, 3092... but
+> > > > <LBB3_274> end with instruction 2196
+> > > > 
+> > > > before change: <LBB12_413> follows <LBB12_410>
+> > > > after change: <LBB3_275> follows <LBB3_274>
+> > > > 
+> > > > <LBB12_413> and <LBB3_275> is very much different
+> > > > 
+> > > > and  <LBB3_275> instruction 2198 is the one with "R1 invalid mem access
+> > > > 'inv'"
+> > > > 
+> > > > Why <LBB3_275> follows <LBB3_274> ? from C code, <LBB3_275> is not close
+> > > > to <LBB3_274>.
+> > > 
+> > > The cilium code has a lot of functions inlined and after inlining, clang
+> > > may
+> > > do reordering based on its internal heuristics. It is totally possible
+> > > slight
+> > > code change may cause generated codes quite different.
+> > > 
+> > > Regarding to
+> > > > and  <LBB3_275> instruction 2198 is the one with "R1 invalid mem access
+> > > > 'inv'"
+> > > 
+> > > 
+> > > > 00000000000044a8 <LBB3_275>:
+> > > > ;       __u8 new_ttl, ttl = ip4->ttl;
+> > > >       2197:       79 a1 38 ff 00 00 00 00 r1 = *(u64 *)(r10 - 200)
+> > > >       2198:       71 13 16 00 00 00 00 00 r3 = *(u8 *)(r1 + 22)
+> > > > ;       if (ttl <= 1)
+> > > >       2199:       25 03 01 00 01 00 00 00 if r3 > 1 goto +1 <LBB3_277>
+> > > >       2200:       05 00 20 ff 00 00 00 00 goto -224 <LBB3_253>
+> > > 
+> > > Looks like "ip4" is spilled on the stack. and maybe the stack save/restore
+> > > for
+> > > "ip4" does not preserve its original type.
+> > > This mostly happens to old kernels, I think.
+> > > 
+> > 
+> > the kernel 4.18 on Centos8, I also custom build most recent mainline git
+> > kernel 5.13 on Centos8, I recall I got same invaid memory access
+> > 
+> > > If you have verifier log, it may help identify issues easily.
+> > 
+> > Here is the complete verifer log, I skipped the BTF part
+> > 
+> > level=warning msg="Prog section '2/7' rejected: Permission denied (13)!"
+> > subsys=datapath-loader
+> > level=warning msg=" - Type:         3" subsys=datapath-loader
+> > level=warning msg=" - Attach Type:  0" subsys=datapath-loader
+> > level=warning msg=" - Instructions: 2488 (0 over limit)"
+> > subsys=datapath-loader
+> > level=warning msg=" - License:      GPL" subsys=datapath-loader
+> > level=warning subsys=datapath-loader
+> > level=warning msg="Verifier analysis:" subsys=datapath-loader
+> > level=warning subsys=datapath-loader
+> > level=warning msg="Skipped 158566 bytes, use 'verb' option for the full
+> > verbose log." subsys=datapath-loader
+> > level=warning msg="[...]" subsys=datapath-loader
+> > level=warning msg="-136=????00mm fp-144=00000000 fp-152=0000mmmm
+> > fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm
+> > fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
+> > fp-240=inv128" subsys=datapath-loader
+> > level=warning msg="2437: (0f) r1 += r8" subsys=datapath-loader
+> > level=warning msg="2438: (7b) *(u64 *)(r0 +8) = r1" subsys=datapath-loader
+> > level=warning msg=" R0_w=map_value(id=0,off=0,ks=8,vs=16,imm=0)
+> > R1_w=inv(id=0) R6=ctx(id=0,off=0,imm=0)
+> > R7=inv(id=0,umax_value=128,var_off=(0x0; 0xff))
+> > R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9=invP0 R10=fp0
+> > fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm
+> > fp-48=mmmmmmmm fp-88=mmmmmmmm fp-96=00000000 fp-104=00000000
+> > fp-112=??mmmmmm fp-120=mmmmmmmm fp-128=??mmmmmm fp-136=????00mm
+> > fp-144=00000000 fp-152=0000mmmm fp-160=????mmmm fp-168=mmmmmmmm
+> > fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm fp-200=inv fp-208=mmmmmmmm
+> > fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm fp-240=inv128"
+> > subsys=datapath-loader
+> > level=warning msg="2439: (05) goto pc+41" subsys=datapath-loader
+> > level=warning msg="2481: (18) r2 = 0x5c7" subsys=datapath-loader
+> > level=warning msg="2483: (67) r2 <<= 32" subsys=datapath-loader
+> > level=warning msg="2484: (77) r2 >>= 32" subsys=datapath-loader
+> > level=warning msg="2485: (b7) r1 = 6" subsys=datapath-loader
+> > level=warning msg="2486: (15) if r2 == 0x1 goto pc-341"
+> > subsys=datapath-loader
+> > level=warning msg="last_idx 2486 first_idx 2481" subsys=datapath-loader
+> > level=warning msg="regs=4 stack=0 before 2485: (b7) r1 = 6"
+> > subsys=datapath-loader
+> > level=warning msg="regs=4 stack=0 before 2484: (77) r2 >>= 32"
+> > subsys=datapath-loader
+> > level=warning msg="regs=4 stack=0 before 2483: (67) r2 <<= 32"
+> > subsys=datapath-loader
+> > level=warning msg="regs=4 stack=0 before 2481: (18) r2 = 0x5c7"
+> > subsys=datapath-loader
+> > level=warning msg="2487: (05) goto pc-344" subsys=datapath-loader
+> > level=warning msg="2144: (18) r1 = 0x5c7" subsys=datapath-loader
+> > level=warning msg="2146: (61) r2 = *(u32 *)(r6 +68)"
+> > subsys=datapath-loader
+> > level=warning msg="2147: (b7) r3 = 39" subsys=datapath-loader
+> > level=warning msg="2148: (63) *(u32 *)(r10 -76) = r3"
+> > subsys=datapath-loader
+> > level=warning msg="2149: (b7) r3 = 1" subsys=datapath-loader
+> > level=warning msg="2150: (6b) *(u16 *)(r10 -90) = r3"
+> > subsys=datapath-loader
+> > level=warning msg="2151: (63) *(u32 *)(r10 -96) = r8"
+> > subsys=datapath-loader
+> > level=warning msg="2152: (63) *(u32 *)(r10 -100) = r2"
+> > subsys=datapath-loader
+> > level=warning msg="2153: (18) r2 = 0x1d3" subsys=datapath-loader
+> > level=warning msg="2155: (6b) *(u16 *)(r10 -102) = r2"
+> > subsys=datapath-loader
+> > level=warning msg="2156: (b7) r2 = 1028" subsys=datapath-loader
+> > level=warning msg="2157: (6b) *(u16 *)(r10 -104) = r2"
+> > subsys=datapath-loader
+> > level=warning msg="2158: (b7) r2 = 0" subsys=datapath-loader
+> > level=warning msg="2159: (63) *(u32 *)(r10 -80) = r2"
+> > subsys=datapath-loader
+> > level=warning msg="last_idx 2159 first_idx 2481" subsys=datapath-loader
+> > level=warning msg="regs=4 stack=0 before 2158: (b7) r2 = 0"
+> > subsys=datapath-loader
+> > level=warning msg="2160: (63) *(u32 *)(r10 -84) = r2"
+> > subsys=datapath-loader
+> > level=warning msg="2161: (7b) *(u64 *)(r10 -72) = r2"
+> > subsys=datapath-loader
+> > level=warning msg="2162: (7b) *(u64 *)(r10 -64) = r2"
+> > subsys=datapath-loader
+> > level=warning msg="2163: (63) *(u32 *)(r10 -88) = r1"
+> > subsys=datapath-loader
+> > level=warning msg="2164: (6b) *(u16 *)(r10 -92) = r7"
+> > subsys=datapath-loader
+> > level=warning msg="2165: (67) r7 <<= 32" subsys=datapath-loader
+> > level=warning msg="2166: (18) r1 = 0xffffffff" subsys=datapath-loader
+> > level=warning msg="2168: (4f) r7 |= r1" subsys=datapath-loader
+> > level=warning msg="2169: (bf) r4 = r10" subsys=datapath-loader
+> > level=warning msg="2170: (07) r4 += -104" subsys=datapath-loader
+> > level=warning msg="2171: (bf) r1 = r6" subsys=datapath-loader
+> > level=warning msg="2172: (18) r2 = 0xffffa0c68cae1600"
+> > subsys=datapath-loader
+> > level=warning msg="2174: (bf) r3 = r7" subsys=datapath-loader
+> > level=warning msg="2175: (b7) r5 = 48" subsys=datapath-loader
+> > level=warning msg="2176: (85) call bpf_perf_event_output#25"
+> > subsys=datapath-loader
+> > level=warning msg="last_idx 2176 first_idx 2481" subsys=datapath-loader
+> > level=warning msg="regs=20 stack=0 before 2175: (b7) r5 = 48"
+> > subsys=datapath-loader
+> > level=warning msg="2177: (b7) r1 = 39" subsys=datapath-loader
+> > level=warning msg="2178: (b7) r2 = 0" subsys=datapath-loader
+> > level=warning msg="2179: (85) call bpf_redirect#23" subsys=datapath-loader
+> > level=warning msg="2180: (bf) r9 = r0" subsys=datapath-loader
+> > level=warning msg="2181: (bf) r1 = r9" subsys=datapath-loader
+> > level=warning msg="2182: (67) r1 <<= 32" subsys=datapath-loader
+> > level=warning msg="2183: (77) r1 >>= 32" subsys=datapath-loader
+> > level=warning msg="2184: (15) if r1 == 0x0 goto pc+57"
+> > subsys=datapath-loader
+> > level=warning msg=" R0_w=inv(id=0)
+> > R1_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0x7fffffff))
+> > R6=ctx(id=0,off=0,imm=0)
+> > R7=inv(id=0,umin_value=4294967295,umax_value=1099511627775,var_off=(0xffffffff;
+> > 0xff00000000),s32_min_value=-1,s32_max_value=0,u32_max_value=0)
+> > R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9_w=inv(id=0) R10=fp0
+> > fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm
+> > fp-48=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm fp-80=mmmmmmmm fp-88=mmmmmmmm
+> > fp-96=mmmmmmmm fp-104=mmmmmmmm fp-112=??mmmmmm fp-120=mmmmmmmm
+> > fp-128=??mmmmmm fp-136=????00mm fp-144=00000000 fp-152=0000mmmm
+> > fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm
+> > fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
+> > fp-240=inv128" subsys=datapath-loader
+> > level=warning msg="2185: (18) r2 = 0xffffff60" subsys=datapath-loader
+> > level=warning msg="2187: (1d) if r1 == r2 goto pc+9"
+> > subsys=datapath-loader
+> > level=warning subsys=datapath-loader
+> > level=warning msg="from 2187 to 2197: R0=inv(id=0) R1=inv4294967136
+> > R2=inv4294967136 R6=ctx(id=0,off=0,imm=0)
+> > R7=inv(id=0,umin_value=4294967295,umax_value=1099511627775,var_off=(0xffffffff;
+> > 0xff00000000),s32_min_value=-1,s32_max_value=0,u32_max_value=0)
+> > R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9=inv(id=0) R10=fp0
+> > fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm
+> > fp-48=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm fp-80=mmmmmmmm fp-88=mmmmmmmm
+> > fp-96=mmmmmmmm fp-104=mmmmmmmm fp-112=??mmmmmm fp-120=mmmmmmmm
+> > fp-128=??mmmmmm fp-136=????00mm fp-144=00000000 fp-152=0000mmmm
+> > fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm
+> > fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
+> 
+> This is the problem. Here, we have "fp-200=inv" and
+> later on we have
+>    r1 = *(u64 *)(r10 -200)  // r1 is a unknown scalar
+> 
+> We cannot do the following operation
+>    r3 = *(u8 *)(r1 +22)
+> since r1 is a unknown scalar and the verifier rightfully rejected
+> the program.
+> 
+> You need to examine complete log to find out why fp-200 stores
+> an "inv" (a unknown scalar).
+
+I guess you mean the complete log starting from the prog section 2/7 from 
+verifier, if so, it seems fp-200 started with "inv"
+
+level=warning msg="Prog section '2/7' rejected: Permission denied (13)!" 
+subsys=datapath-loader
+
+level=warning msg="-136=????00mm fp-144=00000000 fp-152=0000mmmm 
+fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm 
+fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm 
+fp-240=inv128" subsys=datapath-loader
+
+and I don't see fp-200 ever changed to something else after, maybe I am 
+reading it wrong
+
+> 
+> > fp-240=inv128" subsys=datapath-loader
+> > level=warning msg="2197: (79) r1 = *(u64 *)(r10 -200)"
+> > subsys=datapath-loader
+> > level=warning msg="2198: (71) r3 = *(u8 *)(r1 +22)" subsys=datapath-loader
+> > level=warning msg="R1 invalid mem access 'inv'" subsys=datapath-loader
+> > level=warning msg="processed 1802 insns (limit 1000000)
+> > max_states_per_insn 4 total_states 103 peak_states 103 mark_read 49"
+> > subsys=datapath-loader
+> > level=warning subsys=datapath-loader
+> > level=warning msg="Error filling program arrays!" subsys=datapath-loader
+> > level=warning msg="Unable to load program" subsys=datapath-loader
+> >   
+> > 
+> > 
+> > > > 
+> > > > 
+> > > > 2, Can I assume the verifier is to simulate the order of BPF byte
+> > > > code execution in run time, like if without any jump or goto in
+> > > > <LBB3_274>, <LBB3_275> will be executed after <LBB3_274>?
+> > > 
+> > > The verifier will try to verify both paths, jumping to LBB3_289
+> > > or fall back to LBB3_275.
+> > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > Enterprise Network Engineer
+> > > > F5 Networks Inc
+> > > > https://www.youtube.com/c/VincentLi
+> > > > 
+> > > 
+> 
