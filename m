@@ -2,121 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794023AAF9C
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 11:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9689E3AB0FC
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 12:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbhFQJZV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 05:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbhFQJZV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:25:21 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06C9C061574;
-        Thu, 17 Jun 2021 02:23:12 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id m3so2946167wms.4;
-        Thu, 17 Jun 2021 02:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jh2akKGSh7LAIPi3C0DLkYCaURaKcZYFmLApSTkQ1F8=;
-        b=WPdd6kMOfCu+NLkJSgNBB/n4X4u4ZCfG1/IMkwYQbwEd3lDufWM5Bn/X4a6j1lrbmR
-         yTsRALciGZy148WDSJfMNAaPo1RT41X+KFtq5qGYnaVO1RYtLF0Zrbiq8REIgZnbbuUM
-         bg6/07QbUxWcq96gckBOHnPxike6H/g1vAg0W8w5Qc7jkXEhPoGCwtMYy0krJv5obQSl
-         M3sJqEx12r3DuCCmB81sgbje7d9WN+4M2XlxHAYWx+N0Rey3EnZ9ZbTHxCJA1JIXhoDL
-         mTR01qlpPZX5FMJs0zyKGHCGgObUZNu1oIPO++rRkLaVMDyefnTkVPJtnl1q0r4GRlwv
-         diwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jh2akKGSh7LAIPi3C0DLkYCaURaKcZYFmLApSTkQ1F8=;
-        b=aC9pXwKTNMaKTYvqQmlWLYM7SmrYJ3tk1c7Ke5lE3a+aAItFMfyEfI0l31XDgrIdUp
-         BaVK2Khn3hx4zkTTCKD7wCFc/EM1FtgdEtzrAweeu9ifrp9PgRaygATDWuAIprH2i2+O
-         3hzFnANd+vhBHKMUgx+e8kIfhlavPWnaXAS793TxtfsHTgyqAUQ8wZBU/pc0cUdEQnAd
-         7M9MQrcqeeI7rO6uCr/ceBXhAUc8/65mquItdHrHw1ScLxdDgmyN8egcyk3vsQk92amh
-         wb0iCx9G+BSjKWwEvVHdkk6YMcqcxCUvHZnsT669jkc6LQdWWlVO73zq44Vvf4zWQmZc
-         BbKw==
-X-Gm-Message-State: AOAM5321PLZxLQU5ztQ5tIt070f/3xCpLITZ7rsgU6wDKgtw1DDu/vIm
-        alUVz46ahJgd/4Szb76wfCY=
-X-Google-Smtp-Source: ABdhPJy3ocaQ6c5SvqBD+t15FkdUZS44XNiGdGbN0Kj/kLJL94sNf6ZeRMxXhcOtHAEfDFn8p08wfg==
-X-Received: by 2002:a05:600c:4f4e:: with SMTP id m14mr3875175wmq.157.1623921789968;
-        Thu, 17 Jun 2021 02:23:09 -0700 (PDT)
-Received: from localhost.localdomain (h-46-59-47-246.A165.priv.bahnhof.se. [46.59.47.246])
-        by smtp.gmail.com with ESMTPSA id r2sm5021770wrv.39.2021.06.17.02.23.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Jun 2021 02:23:09 -0700 (PDT)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com
-Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org
-Subject: [PATCH bpf] xsk: fix missing validation for skb and unaligned mode
-Date:   Thu, 17 Jun 2021 11:22:55 +0200
-Message-Id: <20210617092255.3487-1-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        id S232059AbhFQKLw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 06:11:52 -0400
+Received: from www62.your-server.de ([213.133.104.62]:41760 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231346AbhFQKLv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 06:11:51 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ltoxu-000BTK-0B; Thu, 17 Jun 2021 12:09:38 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ltoxt-000DB3-IW; Thu, 17 Jun 2021 12:09:37 +0200
+Subject: Re: [PATCH v5] bpf: core: fix shift-out-of-bounds in ___bpf_prog_run
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Edward Cree <ecree.xilinx@gmail.com>,
+        Kurt Manucredo <fuzzybritches0@gmail.com>,
+        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
+        keescook@chromium.org, yhs@fb.com, dvyukov@google.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        nathan@kernel.org, ndesaulniers@google.com,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, kasan-dev@googlegroups.com
+References: <1aaa2408-94b9-a1e6-beff-7523b66fe73d@fb.com>
+ <202106101002.DF8C7EF@keescook>
+ <CAADnVQKMwKYgthoQV4RmGpZm9Hm-=wH3DoaNqs=UZRmJKefwGw@mail.gmail.com>
+ <85536-177443-curtm@phaethon>
+ <bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com> <YMkAbNQiIBbhD7+P@gmail.com>
+ <dbcfb2d3-0054-3ee6-6e76-5bd78023a4f2@iogearbox.net>
+ <YMkcYn4dyZBY/ze+@gmail.com> <YMkdx1VB0i+fhjAY@gmail.com>
+ <4713f6e9-2cfb-e2a6-c42d-b2a62f035bf2@iogearbox.net>
+ <YMkkr5G6E8lcFymG@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <845ad31f-ca3f-0326-e64b-423a09ea4bea@iogearbox.net>
+Date:   Thu, 17 Jun 2021 12:09:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YMkkr5G6E8lcFymG@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26203/Wed Jun 16 13:07:58 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+On 6/16/21 12:07 AM, Eric Biggers wrote:
+> On Tue, Jun 15, 2021 at 11:54:41PM +0200, Daniel Borkmann wrote:
+>> On 6/15/21 11:38 PM, Eric Biggers wrote:
+>>> On Tue, Jun 15, 2021 at 02:32:18PM -0700, Eric Biggers wrote:
+>>>> On Tue, Jun 15, 2021 at 11:08:18PM +0200, Daniel Borkmann wrote:
+>>>>> On 6/15/21 9:33 PM, Eric Biggers wrote:
+>>>>>> On Tue, Jun 15, 2021 at 07:51:07PM +0100, Edward Cree wrote:
+>>>>>>>
+>>>>>>> As I understand it, the UBSAN report is coming from the eBPF interpreter,
+>>>>>>>     which is the *slow path* and indeed on many production systems is
+>>>>>>>     compiled out for hardening reasons (CONFIG_BPF_JIT_ALWAYS_ON).
+>>>>>>> Perhaps a better approach to the fix would be to change the interpreter
+>>>>>>>     to compute "DST = DST << (SRC & 63);" (and similar for other shifts and
+>>>>>>>     bitnesses), thus matching the behaviour of most chips' shift opcodes.
+>>>>>>> This would shut up UBSAN, without affecting JIT code generation.
+>>>>>>
+>>>>>> Yes, I suggested that last week
+>>>>>> (https://lkml.kernel.org/netdev/YMJvbGEz0xu9JU9D@gmail.com).  The AND will even
+>>>>>> get optimized out when compiling for most CPUs.
+>>>>>
+>>>>> Did you check if the generated interpreter code for e.g. x86 is the same
+>>>>> before/after with that?
+>>>>
+>>>> Yes, on x86_64 with gcc 10.2.1, the disassembly of ___bpf_prog_run() is the same
+>>>> both before and after (with UBSAN disabled).  Here is the patch I used:
+>>>>
+>>>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>>>> index 5e31ee9f7512..996db8a1bbfb 100644
+>>>> --- a/kernel/bpf/core.c
+>>>> +++ b/kernel/bpf/core.c
+>>>> @@ -1407,12 +1407,30 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+>>>>    		DST = (u32) DST OP (u32) IMM;	\
+>>>>    		CONT;
+>>>> +	/*
+>>>> +	 * Explicitly mask the shift amounts with 63 or 31 to avoid undefined
+>>>> +	 * behavior.  Normally this won't affect the generated code.
+>>
+>> The last one should probably be more specific in terms of 'normally', e.g. that
+>> it is expected that the compiler is optimizing this away for archs like x86. Is
+>> arm64 also covered by this ... do you happen to know on which archs this won't
+>> be the case?
+>>
+>> Additionally, I think such comment should probably be more clear in that it also
+>> needs to give proper guidance to JIT authors that look at the interpreter code to
+>> see what they need to implement, in other words, that they don't end up copying
+>> an explicit AND instruction emission if not needed there.
+> 
+> Same result on arm64 with gcc 10.2.0.
+> 
+> On arm32 it is different, probably because the 64-bit shifts aren't native in
+> that case.  I don't know about other architectures.  But there aren't many ways
+> to implement shifts, and using just the low bits of the shift amount is the most
+> logical way.
+> 
+> Please feel free to send out a patch with whatever comment you want.  The diff I
+> gave was just an example and I am not an expert in BPF.
+> 
+>>
+>>>> +	 */
+>>>> +#define ALU_SHIFT(OPCODE, OP)		\
+>>>> +	ALU64_##OPCODE##_X:		\
+>>>> +		DST = DST OP (SRC & 63);\
+>>>> +		CONT;			\
+>>>> +	ALU_##OPCODE##_X:		\
+>>>> +		DST = (u32) DST OP ((u32)SRC & 31);	\
+>>>> +		CONT;			\
+>>>> +	ALU64_##OPCODE##_K:		\
+>>>> +		DST = DST OP (IMM & 63);	\
+>>>> +		CONT;			\
+>>>> +	ALU_##OPCODE##_K:		\
+>>>> +		DST = (u32) DST OP ((u32)IMM & 31);	\
+>>>> +		CONT;
+>>
+>> For the *_K cases these are explicitly rejected by the verifier already. Is this
+>> required here nevertheless to suppress UBSAN false positive?
+> 
+> No, I just didn't know that these constants are never out of range.  Please feel
+> free to send out a patch that does this properly.
 
-Fix a missing validation of a Tx descriptor when executing in skb mode
-and the umem is in unaligned mode. A descriptor could point to a
-buffer straddling the end of the umem, thus effectively tricking the
-kernel to read outside the allowed umem region. This could lead to a
-kernel crash if that part of memory is not mapped.
+Summarized and fixed via:
 
-In zero-copy mode, the descriptor validation code rejects such
-descriptors by checking a bit in the DMA address that tells us if the
-next page is physically contiguous or not. For the last page in the
-umem, this bit is not set, therefore any descriptor pointing to a
-packet straddling this last page boundary will be rejected. However,
-the skb path does not use this bit since it copies out data and can do
-so to two different pages. (It also does not have the array of DMA
-address, so it cannot even store this bit.) The code just returned
-that the packet is always physically contiguous. But this is
-unfortunately also returned for the last page in the umem, which means
-that packets that cross the end of the umem are being allowed, which
-they should not be.
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=28131e9d933339a92f78e7ab6429f4aaaa07061c
 
-Fix this by introducing a check for this in the SKB path only, not
-penalizing the zero-copy path.
-
-Fixes: 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- include/net/xsk_buff_pool.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index eaa8386dbc63..7a9a23e7a604 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -147,11 +147,16 @@ static inline bool xp_desc_crosses_non_contig_pg(struct xsk_buff_pool *pool,
- {
- 	bool cross_pg = (addr & (PAGE_SIZE - 1)) + len > PAGE_SIZE;
- 
--	if (pool->dma_pages_cnt && cross_pg) {
-+	if (likely(!cross_pg))
-+		return false;
-+
-+	if (pool->dma_pages_cnt) {
- 		return !(pool->dma_pages[addr >> PAGE_SHIFT] &
- 			 XSK_NEXT_PG_CONTIG_MASK);
- 	}
--	return false;
-+
-+	/* skb path */
-+	return addr + len > pool->addrs_cnt;
- }
- 
- static inline u64 xp_aligned_extract_addr(struct xsk_buff_pool *pool, u64 addr)
-
-base-commit: da5ac772cfe2a03058b0accfac03fad60c46c24d
--- 
-2.29.0
-
+Thanks everyone,
+Daniel
