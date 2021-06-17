@@ -2,124 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853973ABBE3
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 20:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A8D3ABBF7
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 20:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhFQSdX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 14:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
+        id S231750AbhFQSoh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 14:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbhFQSdX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:33:23 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D702C061574;
-        Thu, 17 Jun 2021 11:31:15 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id j184so4543657qkd.6;
-        Thu, 17 Jun 2021 11:31:15 -0700 (PDT)
+        with ESMTP id S231454AbhFQSoh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 14:44:37 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7653CC061760
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 11:42:29 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id g4-20020ac80ac40000b029024ead0ebb62so31572qti.13
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 11:42:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mdN3+P74lXshSmLwmq8jXVTzzottgAs9RSBNmB7e3EA=;
-        b=u2I9VloRjp4sirTz6YED7fjPAlghS++A6VFWyEPCzv+f84jWGjOASSFHQ0bMqZdiOK
-         0cqNeehvUaMB8xr59Lx30f256fE6+pEPcvRco2ZO6bffKwFc0QICXscXhrx30D/zZS1e
-         s4HpekyBUj4K+pXvm1M4FopfZUF4/I5NyQUw9ak2XwW4eqGHNs+CI7vm0RNiCUxA6Jba
-         uJ7TloSlxBB4zIAIjeXORVNBfOQ6/TmzooZFvRlWjxsVDZtUPfjjZI/xrEZrnAON+6n/
-         41vBO9htiyFGuENRGm9xeAPN2AHtdzIMGd3/hai66A8/rovi0coXMrqFAyOffDt04HTq
-         g9eA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ZlXcWG52LpPBNrp8iFYVpN63n0II1sNMyDIazVtXK6g=;
+        b=WqCCDit+fwpG7RHerB83fx97SNuOWrBI92BhNuoDyIQiJqzVSqTV3pt0kQ07mP3Rwz
+         NtGndorgHcF1qcgrnbzf/QK1bKl9karIOVU/Zpy1FCTNSiBk6gbbCdkmzGi07JpQVMHO
+         xR0Lwf6XbXHCWulBVj1WCmH05CoTvHL8gNdpBya6SByiF6jAr4Omvo/G5rYeUBENj7Pz
+         ifageJWCezrnSGf1aQbUhaIiWhfJRkqG74iYxj5RMBTzgg0oAMkONhYU1ZrK+7XMUokT
+         91x2i3fCwAnPnu7rHCH8ypV3QPfvtOfntuzcsFg83jcg5PgGPocbCq1XakU6Tm6tUskA
+         eszw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mdN3+P74lXshSmLwmq8jXVTzzottgAs9RSBNmB7e3EA=;
-        b=eJ7i9ywtwwyBpY+rH9rL9Qcbbocqstz7rOT5huwcv0lA2GMZJmD2UaOwri5CnD0CjS
-         15jmDQHvfz6n9MhMLh/a3pTMiPQeOksGZrYZmAii9zh3WtvC10F/ZtFO7qmbkk91kTqQ
-         SCbRg22bGsf39pjmmjc6mpqflZFj2+2EhRAkrTBWxgqddUI/riFiUMSM5+sOgRNqJohn
-         vY08xvHfxPllc1TevsGlwyJlI2mseQeTezbNWAJ4/0VvkZXE8jsvHteVbIoPDRy4ne3q
-         Ssx3v+1W2HzLqpPZJlIXGn9c7KG0LxxYz1DEghwK+SWyzpzHd34IEqwQIy7o8t+Wan7D
-         W84A==
-X-Gm-Message-State: AOAM532QSuq0kedwSxzt+TW468vvEGNbIm3hP/EGLsuxZ2IwmGipmWT+
-        EtxDPqSn35+sPNJqMabx9jsZoP3a7+4t5MGqA+o=
-X-Google-Smtp-Source: ABdhPJwwdYD1acgsEBpF8ndRSZL+cl6G14jBl7NUiLnOvL8eBeV1bd6q2pHNfc2xJVywwFx2Gxuk7hniv4F5CQbsl9c=
-X-Received: by 2002:a25:6612:: with SMTP id a18mr8397287ybc.347.1623954674508;
- Thu, 17 Jun 2021 11:31:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <162209754288.436794.3904335049560916855.stgit@devnote2>
- <162209762943.436794.874947392889792501.stgit@devnote2> <20210617043909.fgu2lhnkxflmy5mk@treble>
- <20210617044032.txng4enhiduacvt6@treble> <20210617234001.54cd2ff60410ff82a39a2020@kernel.org>
- <20210618000239.f95de17418beae6d84ce783d@kernel.org> <CAEf4Bzbob_M0aS-GUY5XaqePZr_prxUag3RLHtp=HY8Uu__10g@mail.gmail.com>
- <20210617182159.ka227nkmhe4yu2de@treble>
-In-Reply-To: <20210617182159.ka227nkmhe4yu2de@treble>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 17 Jun 2021 11:31:03 -0700
-Message-ID: <CAEf4BzbQxxAWEvE7BfrBPCPzBjrAEVL9cg-duwbFNzEmbPPW2w@mail.gmail.com>
-Subject: Re: [PATCH -tip v7 09/13] kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ZlXcWG52LpPBNrp8iFYVpN63n0II1sNMyDIazVtXK6g=;
+        b=ipnJgv0+9Nxr1kFxSizyWO0TcUlS5oMGy2ruRSW7MaMFPVmQpj3oFVJmlY89OFOB6c
+         sbChWro/mrmskQqxJThtc53zH7eg3MzgbHTt/swwIR+DmV0ZVZXe0afDAxbb50fevW2J
+         yEvzeMrAB0AygaAoEpIO9Tln9b+698GYNezAXokgY/NFJR21n4tU7f5lCm4LDa9A4fbp
+         V3KGnCt83GU1BBUZh8jnqWAk/LcXSqtktozydXelZZYNMHLpZPPP0AXmUkt8NHuN/orY
+         QFs8/DjqKRYy5RQgiGFsIwmrUR0aTfANi2GYX/62Za76oq6WTmNfh2kz6UdwwLC41cR8
+         MNCg==
+X-Gm-Message-State: AOAM530Pe0a1qtKfJ/etUx0epGF+pgBlb7PJjQfJIhg4X5MmibQSjdAF
+        NknqMi8u/jGQ1hnnxRZ0ur4WCZsbPdGw
+X-Google-Smtp-Source: ABdhPJwew74OmEVaWxaFf7DCKZvVPSy8SzWjiBZiMsqU3WWiBEam74KB2f3Je5RJeGnqbDXadOITpsveRIHJ
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:ef90:beff:e92f:7ce0])
+ (user=irogers job=sendgmr) by 2002:a25:ca45:: with SMTP id
+ a66mr7969252ybg.10.1623955348375; Thu, 17 Jun 2021 11:42:28 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 11:42:13 -0700
+Message-Id: <20210617184216.2075588-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+Subject: [PATCH 1/4] perf test: Fix non-bash issue with stat bpf counters
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 11:22 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Thu, Jun 17, 2021 at 10:45:41AM -0700, Andrii Nakryiko wrote:
-> > > > > > I know I suggested this patch, but I believe it would only be useful in
-> > > > > > combination with the use of UNWIND_HINT_REGS in SAVE_REGS_STRING.  But I
-> > > > > > think that would be tricky to pull off correctly.  Instead, we have
-> > > > > > UNWIND_HINT_FUNC, which is working fine.
-> > > > > >
-> > > > > > So I'd suggest dropping this patch, as the unwinder isn't actually
-> > > > > > reading regs->ip after all.
-> > > > >
-> > > > > ... and I guess this means patches 6-8 are no longer necessary.
-> > > >
-> > > > OK, I also confirmed that dropping those patche does not make any change
-> > > > on the stacktrace.
-> > > > Let me update the series without those.
-> > >
-> > > Oops, Andrii, can you also test the kernel without this patch?
-> > > (you don't need to drop patch 6-8)
-> >
-> > Hi Masami,
-> >
-> > Dropping this patch and leaving all the other in place breaks stack
-> > traces from kretprobes for BPF. I double checked with and without this
-> > patch. Without this patch we are back to having broken stack traces. I
-> > see either
-> >
-> >   kretprobe_trampoline+0x0
-> >
-> > or
-> >
-> >   ftrace_trampoline+0xc8
-> >   kretprobe_trampoline+0x0
-> >
-> > Is there any problem if you leave this patch as is?
->
-> Hm, I must be missing something then.  The patch is probably fine to
-> keep, we just may need to improve the commit log so that it makes sense
-> to me.
->
-> Which unwinder are you using (CONFIG_UNWINDER_*)?
->
+$(( .. )) is a bash feature but the test's interpreter is !/bin/sh,
+switch the code to use expr.
 
-$ rg UNWINDER ~/linux-build/default/.config
-5585:CONFIG_UNWINDER_ORC=y
-5586:# CONFIG_UNWINDER_FRAME_POINTER is not set
-5587:# CONFIG_UNWINDER_GUESS is not set
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/tests/shell/stat_bpf_counters.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> --
-> Josh
->
+diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
+index 22eb31e48ca7..2f9948b3d943 100755
+--- a/tools/perf/tests/shell/stat_bpf_counters.sh
++++ b/tools/perf/tests/shell/stat_bpf_counters.sh
+@@ -11,9 +11,9 @@ compare_number()
+        second_num=$2
+ 
+        # upper bound is first_num * 110%
+-       upper=$(( $first_num + $first_num / 10 ))
++       upper=$(expr $first_num + $first_num / 10 )
+        # lower bound is first_num * 90%
+-       lower=$(( $first_num - $first_num / 10 ))
++       lower=$(expr $first_num - $first_num / 10 )
+ 
+        if [ $second_num -gt $upper ] || [ $second_num -lt $lower ]; then
+                echo "The difference between $first_num and $second_num are greater than 10%."
+-- 
+2.32.0.288.g62a8d224e6-goog
+
