@@ -2,104 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419BA3AB1DE
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 13:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465FF3AB1FF
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 13:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhFQLGV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 07:06:21 -0400
-Received: from www62.your-server.de ([213.133.104.62]:50258 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231704AbhFQLGU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:06:20 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ltpof-000GAa-G9; Thu, 17 Jun 2021 13:04:09 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ltpof-0003GQ-7d; Thu, 17 Jun 2021 13:04:09 +0200
-Subject: Re: [PATCH bpf-next] bpf, x86: Remove unused cnt increase from EMIT
- macro
-To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-References: <20210616133400.315039-1-jolsa@kernel.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <08876866-c004-ede7-6657-10a15f51f6d8@iogearbox.net>
-Date:   Thu, 17 Jun 2021 13:04:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230076AbhFQLMK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 07:12:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229901AbhFQLMK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 07:12:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1935C61369;
+        Thu, 17 Jun 2021 11:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623928203;
+        bh=gQvg9Q1AM9aT0v+HsBwsJ17VmOZXq4MeM7IYi1cTqxo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=OH1LVyDZefgQzGSCRgALmaf0L4zt2RdAFOpbxJWBjQS1nfHLaI+fFl2N/bAb1MRlC
+         iFrtu3W27lkTUVm7+dELc9jOiqW4QlKiK/ff/X0bXiVOTKGJhA7TVFwEkGFONOsxTI
+         5oOLMjhmCqdVIHDCnt/h3lc/GAOuu3UFdWzMr4qAIRRsFc1iZTKQRjaMo2cBUg/+9C
+         ihXa5LZq8wawT3r9URo35itZ0L/sbKIT2eK/pSQ0FwagTAU2+dJCnj+ASN8CHcbJ7C
+         LG1lsNg3bhnkZwhCospblmj09/0OZVWlb/rlE63jDFeJYyO3Nklu7a4d/LKoU+e2gN
+         VRH1KJ4GQQ/iQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0766C609EA;
+        Thu, 17 Jun 2021 11:10:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210616133400.315039-1-jolsa@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26203/Wed Jun 16 13:07:58 2021)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix selftests build with old
+ system-wide headers
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162392820302.26848.12293984613133603033.git-patchwork-notify@kernel.org>
+Date:   Thu, 17 Jun 2021 11:10:03 +0000
+References: <20210617041446.425283-1-andrii@kernel.org>
+In-Reply-To: <20210617041446.425283-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, kernel-team@fb.com, kuniyu@amazon.co.jp
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/16/21 3:34 PM, Jiri Olsa wrote:
-> Removing unused cnt increase from EMIT macro together
-> with cnt declarations. This was introduced in commit [1]
-> to ensure proper code generation. But that code was
-> removed in commit [2] and this extra code was left in.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Wed, 16 Jun 2021 21:14:46 -0700 you wrote:
+> migrate_reuseport.c selftest relies on having TCP_FASTOPEN_CONNECT defined in
+> system-wide netinet/tcp.h. Selftests can use up-to-date uapi/linux/tcp.h, but
+> that one doesn't have SOL_TCP. So instead of switching everything to uapi
+> header, add #define for TCP_FASTOPEN_CONNECT to fix the build.
 > 
-> [1] b52f00e6a715 ("x86: bpf_jit: implement bpf_tail_call() helper")
-> [2] ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
+> Cc: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> Fixes: c9d0bdef89a6 ("bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > 
-> Signed-off-by: Jiri Olsa <jolsa@redhat.com>
-> ---
->   arch/x86/net/bpf_jit_comp.c | 39 ++++++++++---------------------------
->   1 file changed, 10 insertions(+), 29 deletions(-)
-> 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 2a2e290fa5d8..19715542cd9c 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -31,7 +31,7 @@ static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
->   }
->   
->   #define EMIT(bytes, len) \
-> -	do { prog = emit_code(prog, bytes, len); cnt += len; } while (0)
-> +	do { prog = emit_code(prog, bytes, len); } while (0)
->   
->   #define EMIT1(b1)		EMIT(b1, 1)
->   #define EMIT2(b1, b2)		EMIT((b1) + ((b2) << 8), 2)
-> @@ -239,7 +239,6 @@ struct jit_context {
->   static void push_callee_regs(u8 **pprog, bool *callee_regs_used)
->   {
->   	u8 *prog = *pprog;
-> -	int cnt = 0;
->   
->   	if (callee_regs_used[0])
->   		EMIT1(0x53);         /* push rbx */
-> @@ -255,7 +254,6 @@ static void push_callee_regs(u8 **pprog, bool *callee_regs_used)
->   static void pop_callee_regs(u8 **pprog, bool *callee_regs_used)
->   {
->   	u8 *prog = *pprog;
-> -	int cnt = 0;
->   
->   	if (callee_regs_used[3])
->   		EMIT2(0x41, 0x5F);   /* pop r15 */
-> @@ -303,7 +301,6 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+> [...]
 
-nit: In emit_prologue() we also have cnt that we could just replace with X86_PATCH_SIZE
-directly as well.
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: fix selftests build with old system-wide headers
+    https://git.kernel.org/bpf/bpf-next/c/f20792d425d2
 
->   static int emit_patch(u8 **pprog, void *func, void *ip, u8 opcode)
->   {
->   	u8 *prog = *pprog;
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Otherwise, lgtm.
 
-Thanks,
-Daniel
