@@ -2,126 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81463AA7ED
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 02:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69173AA7FD
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 02:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbhFQAMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 20:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234905AbhFQAMT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 20:12:19 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FF7C06175F;
-        Wed, 16 Jun 2021 17:10:11 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id e7so1990278plj.7;
-        Wed, 16 Jun 2021 17:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2EVe6yWId4rmhH7SxvVNrCWJZunis2SdOr3XkJ2G69A=;
-        b=foX74GqvdnCt/QsbrX2s6sJE/O6n8eGQ/zCW0eXZX4e2RmlMHmPXbWU//EXUnt9MbI
-         U3jqGNyGv7bj7AdqK6jS78S5KfOI3GkGPLK1FikXKnDlq5an/s4bZgKPnMpo2c7YBnE3
-         4scItAkG/6WKsbOUPb5XwceEOgilSIQQfHpMCj5DQHjn8afEeEe/Ick8m9rSPNJ7aaRZ
-         YpQ9CGyhpife+LqMCZtqd7XhXM57MhxpJDm3ekD4oBkSuGgvejvX8kDw6Zl77SSDQ8FA
-         zOq6mIXhTCbaqY9DSANRycRRPJBKY6R0RnpoHpgJhnlCqChZfLCaw78DbTykio0+2sH1
-         un0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2EVe6yWId4rmhH7SxvVNrCWJZunis2SdOr3XkJ2G69A=;
-        b=U+A5JxrhNrwtL/RNuQYlJdabkSLwHDbE9goZnRx/cMn9vLPqAUMp/GNGDwuITXnN96
-         zmQTnR7DkttKXIFW5gIxoPiNFDF2tfDShKc2ykVpnRC+aS7QMdVQQCW4ik+FHIWdztd4
-         0NK9awRt0BaIoAqeP24AH6FfhdDD8LJWe2HdI/9Dd+XI0f7Nyp1Oqx7Qr1N+/ODjMC1W
-         4KEko/P0Sx9XUAH8GjLGSFD32K5vyDQO7yJquC2SENXPLirKJ2OE6oc9HGVs9l+/tLg/
-         IVDpx7YjML19TxLbCH5KJuIGdnp+j+jSBY1Ivcq9FE2yvUoyFOYqY96zRjPlDzbL0LYC
-         HUUw==
-X-Gm-Message-State: AOAM530QrOPahmEPm7cVcZM8ktBnmFQ0xBSYB/UMxG/LjDn9wQqYaR8y
-        js8T44OA0+Nt0KLY8I6fwdU=
-X-Google-Smtp-Source: ABdhPJwtMFezZ2ja2Z+GrWh+C8/6DGBa3R1dsFmSpZ02TVPG5lzSFdH5/ESoJ/7klenA0M0gpEgf+A==
-X-Received: by 2002:a17:90b:3004:: with SMTP id hg4mr13712647pjb.12.1623888610716;
-        Wed, 16 Jun 2021 17:10:10 -0700 (PDT)
-Received: from athina.mtv.corp.google.com ([2620:15c:211:200:926a:e8dd:9095:3ddd])
-        by smtp.gmail.com with ESMTPSA id r92sm6599633pja.6.2021.06.16.17.10.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 17:10:10 -0700 (PDT)
-From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
-To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Willem de Bruijn <willemb@google.com>
-Subject: [PATCH bpf-next v2 4/4] bpf: more lenient bpf_skb_net_shrink() with BPF_F_ADJ_ROOM_FIXED_GSO
-Date:   Wed, 16 Jun 2021 17:09:53 -0700
-Message-Id: <20210617000953.2787453-4-zenczykowski@gmail.com>
-X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
-In-Reply-To: <20210617000953.2787453-1-zenczykowski@gmail.com>
-References: <CANP3RGfjLikQ6dg=YpBU0OeHvyv7JOki7CyOUS9modaXAi-9vQ@mail.gmail.com>
- <20210617000953.2787453-1-zenczykowski@gmail.com>
+        id S234939AbhFQASO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 20:18:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234929AbhFQASO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Jun 2021 20:18:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6599D613BD;
+        Thu, 17 Jun 2021 00:16:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623888967;
+        bh=GYiYmhAjYaqpOXq8CVYNrtIQUSYlwsfAjPsR+AJY/W8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j8k5KpOvPRglb8virzZ36m3bbTOrEaTC2+pgQOzt7o655ai7p4pEG+ikTVhVEmK6Q
+         OfmRBwLo+xPc9yLjdyfbL2zCp1wvYmu1IYgZ5vQ4WQ1hP3ygOWm+LW7fYSrDcmzhSl
+         cj+vQ4uCl0cBHMyykAB6I7SpJ1MOZMOSLEnmkN6cf61k3KpRSDBSkOaOmvQce6TT3i
+         pYBIF758OihlpGTyV5NNpchhcX0u+zz0vSej+55XtAlw9I9MkLcSgcc5pFzaH0Ruh3
+         TFQt5VRW1H3L2CY9yFWAkfr99sjHicOVjM1aPefU6gJOA+pbfBf+Gp3spKaVHVBA8b
+         EdDFJaWjHec/g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EC33240B1A; Wed, 16 Jun 2021 21:16:04 -0300 (-03)
+Date:   Wed, 16 Jun 2021 21:16:04 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org, siudin@fb.com
+Subject: Re: latest pahole breaks libbpf CI and let's talk about staging
+Message-ID: <YMqURLBNxKgNpjTN@kernel.org>
+References: <CAEf4BzZnZN2mt4+5F-00ggO9YHWrL3Jru_u3Qt2JJ+SMkHwg+w@mail.gmail.com>
+ <YMoRBvTdD0qzjYf4@kernel.org>
+ <CAEf4BzZ7KDcsViCY8MbUZuWu2BdkjymkgJtyVUMBrCaiimUCxQ@mail.gmail.com>
+ <YMpCDuEO/mItxdR7@kernel.org>
+ <CAEf4BzYn31_93G_f924HR8dSW=oGqyFaneRa0fo5Btcg-Y2xJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYn31_93G_f924HR8dSW=oGqyFaneRa0fo5Btcg-Y2xJg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+Em Wed, Jun 16, 2021 at 03:38:38PM -0700, Andrii Nakryiko escreveu:
+> On Wed, Jun 16, 2021 at 11:25 AM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
+> > Em Wed, Jun 16, 2021 at 10:40:45AM -0700, Andrii Nakryiko escreveu:
+> > > On Wed, Jun 16, 2021 at 7:56 AM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
+> > > > Em Tue, Jun 15, 2021 at 04:30:03PM -0700, Andrii Nakryiko escreveu:
+> > > > > Hey Arnaldo,
 
-This is to more closely match behaviour of bpf_skb_change_proto()
-which now does not adjust gso_size, and thus thoretically supports
-all gso types, and does not need to set SKB_GSO_DODGY nor reset
-gso_segs to zero.
+> > > > > Seems like de3a7f912559 ("btf_encoder: Reduce the size of encode_cu()
+> > > > > by moving function encoding to separate method") break two selftests
+> > > > > in libbpf CI (see [0]). Please take a look. I suspect some bad BTF,
+> > > > > because both tests rely on kernel BTF info.
 
-Something similar should probably be done with bpf_skb_net_grow(),
-but that code scares me.
+> > > > > You've previously asked about staging pahole changes. Did you make up
+> > > > > your mind about branch names and the process overall? Seems like a
+> > > > > good chance to bring this up ;-P
 
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
----
- net/core/filter.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+> > > > >   [0] https://travis-ci.com/github/libbpf/libbpf/jobs/514329152
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 8f05498f497e..faf2bae0309b 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3506,11 +3506,10 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
- 			       BPF_F_ADJ_ROOM_NO_CSUM_RESET)))
- 		return -EINVAL;
- 
--	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) {
--		/* udp gso_size delineates datagrams, only allow if fixed */
--		if (!(skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) ||
--		    !(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
--			return -ENOTSUPP;
-+	if (skb_is_gso(skb) &&
-+	    !skb_is_gso_tcp(skb) &&
-+	    !(flags & BPF_F_ADJ_ROOM_FIXED_GSO)) {
-+		return -ENOTSUPP;
- 	}
- 
- 	ret = skb_unclone(skb, GFP_ATOMIC);
-@@ -3521,12 +3520,11 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
- 	if (unlikely(ret < 0))
- 		return ret;
- 
--	if (skb_is_gso(skb)) {
-+	if (skb_is_gso(skb) && !(flags & BPF_F_ADJ_ROOM_FIXED_GSO)) {
- 		struct skb_shared_info *shinfo = skb_shinfo(skb);
- 
- 		/* Due to header shrink, MSS can be upgraded. */
--		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
--			skb_increase_gso_size(shinfo, len_diff);
-+		skb_increase_gso_size(shinfo, len_diff);
- 
- 		/* Header must be checked, and gso_segs recomputed. */
- 		shinfo->gso_type |= SKB_GSO_DODGY;
--- 
-2.32.0.272.g935e593368-goog
+> > > > Ok, please add tmp.master as the staging branch, I'll move things to
+> > > > master only after it passing thru CI.
+> > >
+> > > So I'm thinking about what's the best setup to catch pahole staging
+> > > problems, but not break main libbpf CI and kernel-patches CI flows.
 
+> > > How about we keep all the existing CI jobs to use pahole's master.
+
+> > Agreed.
+
+> > > Then add a separate job to do full kernel build with pahole built from
+> > > staging branch. And mark it as non-critical (or whatever the
+> > > terminology), so it doesn't mark the build red. I'd do that as a cron
+> > > job that runs every day. That way if you don't have anything urgent,
+> > > next day you'll get staging tested automatically. If you need to test
+> > > right now, there is a way to re-trigger previous build and it will
+> > > re-fetch latest staging (so there is a way for you to proactively
+> > > test).
+
+> > > Basically, I want broken staging pahole to not interrupt anything we
+> > > are doing. WDYT?
+
+> > Sounds like a plan, please hand hold me on this, I'm not versed on
+> > github.
+
+> I'll set up everything from my side, and then we'll just setup proper
+> access rights for you to be able to trigger builds. We are migrating
+> everything from Travis CI to Github Actions, and I'm not yet too
+> familiar with Github Actions, so I might need a few iterations.
+
+Ok dokey
+ 
+> BTW, while you are investigating pahole regression, can you please
+> revert the offending commit and push it to master to make out CIs
+> green again?
+
+Sure, just did it. Lets see if makes things green again.
+
+- Arnaldo
