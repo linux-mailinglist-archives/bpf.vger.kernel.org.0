@@ -2,418 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADD73ABEBB
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 00:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114513ABF15
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 00:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhFQWVq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 18:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        id S232716AbhFQWtY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 18:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhFQWVp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 18:21:45 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C934C061574
-        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 15:19:36 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so6954136pjn.1
-        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 15:19:36 -0700 (PDT)
+        with ESMTP id S231911AbhFQWtY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 18:49:24 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11172C061574
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 15:47:15 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id t7so5930670edd.5
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 15:47:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=3vjEZwUmipniK97loCeRcx3SEjImR8IrakjRNXrOlhI=;
-        b=uTZgzpoZ/k1gpKuM4MrAE22Pgrxi4BFXuHc9he9SJeEtht6Jq04q79pYJGUUFqV8k9
-         Ci0M/wwxU+j2nBF5gLqVNbNF7begPttMlr+MuDn75xef8mjBkXDqB6iYq1FN2cemjeNF
-         il4j9Um1HkIrKwanZ9oxEZ9UDbTYdDyadIu4OxzaN5ktp8y8Lw3scWnFAVJoCn7OT93X
-         xmo65vqgmgUJfixRFYMEq+3PrcWcqqf3n6ep+uOXhzdPMH5HDNWPt5XHvXh/oMedaWBh
-         QjJnJGfEWEKYxpHHcB4PefgLkORUMi9GKyCaoULuVrWOgzFzJ6SFvMTFANdxxEZW7lJN
-         QEqw==
+        d=riotgames.com; s=riotgames;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B3CtJA0JJwzBHXRKT3dNWYUHX1OMryHt5sBiflFXW2Y=;
+        b=NSH69NFh7jBz/94/lSe0hkBmsiDBv+zdS62EwcdbbYibZBleN2v/UdJXSzJq+C/8ky
+         yAGsUS6f08Zz5WxthFQehZ8DWsRtNlAi6YrIouF15i30hEsfJqGdMkREiTxD2xW4BIZl
+         BLl+rShyU+s/eVMRweX+Gf88es0xH0UjTg0ms=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=3vjEZwUmipniK97loCeRcx3SEjImR8IrakjRNXrOlhI=;
-        b=ImaxltRtWO5AsnPBajIu4XX7iY3Psp40hD/GhNk3fdXxr7CbfTMhRh0sintRgykseS
-         Lvv2uKVSVuZmqnKjGln6+BQR869x2zLQqNxSal6tEm4MrRWgoef3onYRHtMZ40HOAJX/
-         mQ4Grcmqbh91zQiGDn63ykKqDo1L9CHFVp5qyJev82h9LIPwlDRWjzJxqK3LK/UYe2Pu
-         sDVoG3IHofB0UNeEbULbRdKUO111Ar6ZC/8QxMgIreSzoBIIiwTPc6jrQS4WHiEOz6TN
-         530zRvKhDzayQGLtAOFnWYfgmhh7NJ9u9dvjcyidnyQ00p6/+eDd+fMm6/dV7mu65POM
-         Q/Iw==
-X-Gm-Message-State: AOAM532JQFpea1skhbD93j6uXwpwCC5d3/dLJUtjAF/NQJ2i9Iv+ygxp
-        Cf/60n8lpqYi7tk0Z+mosNE=
-X-Google-Smtp-Source: ABdhPJyZWhKG1whTghElfWftTZS4HnNoFPPbPqDVogtM2+1bGwKwFRBQh2dSGXTjyuyxp4FQebfQ2g==
-X-Received: by 2002:a17:902:6a84:b029:f3:f285:7d8 with SMTP id n4-20020a1709026a84b02900f3f28507d8mr1808147plk.57.1623968376076;
-        Thu, 17 Jun 2021 15:19:36 -0700 (PDT)
-Received: from sea-l-00029082.olympus.f5net.com (d66-183-43-174.bchsia.telus.net. [66.183.43.174])
-        by smtp.gmail.com with ESMTPSA id p20sm6734474pgi.94.2021.06.17.15.19.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 15:19:35 -0700 (PDT)
-From:   Vincent Li <vincent.mc.li@gmail.com>
-X-Google-Original-From: Vincent Li <vli@gmail.com>
-Date:   Thu, 17 Jun 2021 15:19:33 -0700 (PDT)
-To:     Yonghong Song <yhs@fb.com>
-cc:     Vincent Li <vincent.mc.li@gmail.com>, bpf@vger.kernel.org
-Subject: Re: R1 invalid mem access 'inv'
-In-Reply-To: <6c6b765d-1d8e-671c-c0a9-97b44c04862c@fb.com>
-Message-ID: <85caf3b3-868-7085-f4df-89df7930ad9b@gmail.com>
-References: <c43bc0a9-9eca-44df-d0c7-7865f448cc24@gmail.com> <92121d33-4a45-b27a-e3cd-e54232924583@fb.com> <79e4924c-e581-47dd-875c-6fd72e85dfac@gmail.com> <6c6b765d-1d8e-671c-c0a9-97b44c04862c@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B3CtJA0JJwzBHXRKT3dNWYUHX1OMryHt5sBiflFXW2Y=;
+        b=qB61PJGcDZQMIliI5NUga6i2AeRY3VZo72QvhoWCKs96mQj0JETZOM2W7GC/YhZncC
+         miS+kfdVc98vpFXzOngFSmmgfCVBYBpsND4pX9akofEqwsYH+WYCyHKzK5Gk2mij+596
+         FzTV/hu6rbPiApxrWi3AXxgMTzCI8teDPT5aP82APMs0CHlcV3EW4Nc5wyNiauDVQvoY
+         UEZyt/tzRjDB6iNHho6YYoVPNZ1TFXFFIZcpLz8XzLKrIfjuVP56nTCSIrcvTsj/Hqrl
+         yHIdINSvmvJ2k39SrPVtpTZ24RChGFN+A2OnYOZI3je6RBvsd7LheOXphFCXj2Z/PfnS
+         d4+g==
+X-Gm-Message-State: AOAM531OFSaEkXde3mXI8FsK561A/qP00c32/ouYFR8kwCPNLTtwagi4
+        pAVGeT1dZxqYdV0e6GirYmSxwvLfQn+OCFD7NBytdA==
+X-Google-Smtp-Source: ABdhPJyH14dwVANgXw1VTnE9ziEnPes/V+VMitHGdavpdSSOYlQzjJKeGLOJO5cFMDQ23vyCg+Yc80rM5tP4+HNJVw0=
+X-Received: by 2002:a50:ee18:: with SMTP id g24mr862501eds.11.1623970033431;
+ Thu, 17 Jun 2021 15:47:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210616224712.3243-1-zeffron@riotgames.com> <20210616224712.3243-4-zeffron@riotgames.com>
+ <039ecbf0-c08b-8c18-b030-e902a1ded9f0@fb.com>
+In-Reply-To: <039ecbf0-c08b-8c18-b030-e902a1ded9f0@fb.com>
+From:   Zvi Effron <zeffron@riotgames.com>
+Date:   Thu, 17 Jun 2021 17:47:02 -0500
+Message-ID: <CAC1LvL2K+8UNxARLsrhDC0dFtSigQkkKjrGp7kxJBJTeHnFBZw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 3/4] bpf: support specifying ingress via
+ xdp_md context in BPF_PROG_TEST_RUN
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Cody Haas <chaas@riotgames.com>,
+        Lisa Watanabe <lwatanabe@riotgames.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Jun 17, 2021 at 1:55 AM Yonghong Song <yhs@fb.com> wrote:
+>
+> On 6/16/21 3:47 PM, Zvi Effron wrote:
+> > Support specifying the ingress_ifindex and rx_queue_index of xdp_md
+> > contexts for BPF_PROG_TEST_RUN.
+> >
+> > The intended use case is to allow testing XDP programs that make decisions
+> > based on the ingress interface or RX queue.
+> >
+> > If ingress_ifindex is specified, look up the device by the provided index
+> > in the current namespace and use its xdp_rxq for the xdp_buff. If the
+> > rx_queue_index is out of range, or is non-zero when the ingress_ifindex is
+> > 0, return EINVAL.
+>
+> Let us match actual implementation.
+>     EINVAL => -EINVAL
+>
+> >
+> > Co-developed-by: Cody Haas <chaas@riotgames.com>
+> > Signed-off-by: Cody Haas <chaas@riotgames.com>
+> > Co-developed-by: Lisa Watanabe <lwatanabe@riotgames.com>
+> > Signed-off-by: Lisa Watanabe <lwatanabe@riotgames.com>
+> > Signed-off-by: Zvi Effron <zeffron@riotgames.com>
+> > ---
+> >   net/bpf/test_run.c | 23 ++++++++++++++++++++++-
+> >   1 file changed, 22 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> > index f3054f25409c..0183fefd165c 100644
+> > --- a/net/bpf/test_run.c
+> > +++ b/net/bpf/test_run.c
+> > @@ -690,15 +690,36 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+> >
+> >   static int xdp_convert_md_to_buff(struct xdp_md *xdp_md, struct xdp_buff *xdp)
+> >   {
+> > +     unsigned int ingress_ifindex;
+> > +     unsigned int rx_queue_index;
+>
+> nit: the above two definitions have the same type, let us merge them
+> into one line.
+>
+> > +     struct netdev_rx_queue *rxqueue;
+> > +     struct net_device *device;
+> > +
+> >       if (!xdp_md)
+> >               return 0;
+> >
+> >       if (xdp_md->egress_ifindex != 0)
+> >               return -EINVAL;
+> >
+> > -     if (xdp_md->ingress_ifindex != 0 || xdp_md->rx_queue_index != 0)
+> > +     ingress_ifindex = xdp_md->ingress_ifindex;
+> > +     rx_queue_index = xdp_md->rx_queue_index;
+> > +
+> > +     if (!ingress_ifindex && rx_queue_index)
+> >               return -EINVAL;
+> >
+> > +     if (ingress_ifindex) {
+> > +             device = dev_get_by_index(current->nsproxy->net_ns,
+> > +                                       ingress_ifindex);
+> > +             if (!device)
+> > +                     return -EINVAL;
+> > +
+> > +             if (rx_queue_index >= device->real_num_rx_queues)
+> > +                     return -EINVAL;
+>
+> Does rx_queue_index = 0 is valid? I don't know whether it is valid
+> or not, just asking.
 
+Yes. RX queues are 0 indexed.
 
-On Thu, 17 Jun 2021, Yonghong Song wrote:
-
-> 
-> 
-> On 6/17/21 7:19 AM, Vincent Li wrote:
-> > 
-> > Hi Song,
-> > 
-> > Thank you for your response!
-> > 
-> > 
-> > On Wed, 16 Jun 2021, Yonghong Song wrote:
-> > 
-> > > 
-> > > 
-> > > On 6/16/21 5:05 PM, Vincent Li wrote:
-> > > > Hi BPF Experts,
-> > > > 
-> > > > I had a problem that verifier report "R1 invalid mem access 'inv'" when
-> > > > I attempted to rewrite packet destination ethernet MAC address in Cilium
-> > > > tunnel mode, I opened an issue
-> > > > with detail here https://github.com/cilium/cilium/issues/16571:
-> > > > 
-> > > > I have couple of questions in general to try to understand the compiler,
-> > > > BPF byte code, and the verifier.
-> > > > 
-> > > > 1 Why the BPF byte code changes so much with my simple C code change
-> > > > 
-> > > > a: BPF byte code  before C code change:
-> > > > 
-> > > > 0000000000006068 <LBB12_410>:
-> > > >       3085:       bf a2 00 00 00 00 00 00 r2 = r10
-> > > > ;       tunnel = map_lookup_elem(&TUNNEL_MAP, key);
-> > > >       3086:       07 02 00 00 78 ff ff ff r2 += -136
-> > > >       3087:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0
-> > > > ll
-> > > >       3089:       85 00 00 00 01 00 00 00 call 1
-> > > > ;       if (!tunnel)
-> > > >       3090:       15 00 06 01 00 00 00 00 if r0 == 0 goto +262
-> > > > <LBB12_441>
-> > > > ;       key.tunnel_id = seclabel;
-> > > >       3091:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 = 0
-> > > > ll
-> > > >       3093:       67 02 00 00 20 00 00 00 r2 <<= 32
-> > > >       3094:       77 02 00 00 20 00 00 00 r2 >>= 32
-> > > >       3095:       b7 01 00 00 06 00 00 00 r1 = 6
-> > > >       3096:       15 02 02 00 01 00 00 00 if r2 == 1 goto +2 <LBB12_413>
-> > > >       3097:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0
-> > > > ll
-> > > > 
-> > > > 00000000000060d8 <LBB12_413>:
-> > > > ;       return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4,
-> > > > seclabel, monitor);
-> > > > 
-> > > > 
-> > > > b: BPF byte code  after C code change:
-> > > > 
-> > > > the C code diff change:
-> > > > 
-> > > > diff --git a/bpf/lib/encap.h b/bpf/lib/encap.h
-> > > > index dfd87bd82..19199429d 100644
-> > > > --- a/bpf/lib/encap.h
-> > > > +++ b/bpf/lib/encap.h
-> > > > @@ -187,6 +187,8 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32
-> > > > tunnel_endpoint,
-> > > >                          struct endpoint_key *key, __u32 seclabel, __u32
-> > > > monitor)
-> > > >    {
-> > > >           struct endpoint_key *tunnel;
-> > > > +#define VTEP_MAC  { .addr = { 0xce, 0x72, 0xa7, 0x03, 0x88, 0x58 } }
-> > > > +       union macaddr vtep_mac = VTEP_MAC;
-> > > >             if (tunnel_endpoint) {
-> > > >    #ifdef ENABLE_IPSEC
-> > > > @@ -221,6 +223,8 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32
-> > > > tunnel_endpoint,
-> > > >                                                   seclabel);
-> > > >           }
-> > > >    #endif
-> > > > +       if (eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0)
-> > > > +               return DROP_WRITE_ERROR;
-> > > >           return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4,
-> > > > seclabel, monitor);
-> > > >    }
-> > > > 
-> > > > the result BPF byte code
-> > > > 
-> > > > 0000000000004468 <LBB3_274>:
-> > > >       2189:       bf a2 00 00 00 00 00 00 r2 = r10
-> > > > ;       tunnel = map_lookup_elem(&TUNNEL_MAP, key);
-> > > >       2190:       07 02 00 00 50 ff ff ff r2 += -176
-> > > >       2191:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0
-> > > > ll
-> > > >       2193:       85 00 00 00 01 00 00 00 call 1
-> > > >       2194:       bf 07 00 00 00 00 00 00 r7 = r0
-> > > >       2195:       79 a6 48 ff 00 00 00 00 r6 = *(u64 *)(r10 - 184)
-> > > > ;       if (!tunnel)
-> > > >       2196:       55 07 94 00 00 00 00 00 if r7 != 0 goto +148
-> > > > <LBB3_289>
-> > > > 
-> > > > 00000000000044a8 <LBB3_275>:
-> > > > ;       __u8 new_ttl, ttl = ip4->ttl;
-> > > >       2197:       79 a1 38 ff 00 00 00 00 r1 = *(u64 *)(r10 - 200)
-> > > >       2198:       71 13 16 00 00 00 00 00 r3 = *(u8 *)(r1 + 22)
-> > > > ;       if (ttl <= 1)
-> > > >       2199:       25 03 01 00 01 00 00 00 if r3 > 1 goto +1 <LBB3_277>
-> > > >       2200:       05 00 20 ff 00 00 00 00 goto -224 <LBB3_253>
-> > > > 
-> > > > 
-> > > > You can see that:
-> > > > 
-> > > > before change:  <LBB12_410>
-> > > > after change    <LBB3_274>
-> > > > 
-> > > > is different that <LBB12_410> has instructions 3091, 3092... but
-> > > > <LBB3_274> end with instruction 2196
-> > > > 
-> > > > before change: <LBB12_413> follows <LBB12_410>
-> > > > after change: <LBB3_275> follows <LBB3_274>
-> > > > 
-> > > > <LBB12_413> and <LBB3_275> is very much different
-> > > > 
-> > > > and  <LBB3_275> instruction 2198 is the one with "R1 invalid mem access
-> > > > 'inv'"
-> > > > 
-> > > > Why <LBB3_275> follows <LBB3_274> ? from C code, <LBB3_275> is not close
-> > > > to <LBB3_274>.
-> > > 
-> > > The cilium code has a lot of functions inlined and after inlining, clang
-> > > may
-> > > do reordering based on its internal heuristics. It is totally possible
-> > > slight
-> > > code change may cause generated codes quite different.
-> > > 
-> > > Regarding to
-> > > > and  <LBB3_275> instruction 2198 is the one with "R1 invalid mem access
-> > > > 'inv'"
-> > > 
-> > > 
-> > > > 00000000000044a8 <LBB3_275>:
-> > > > ;       __u8 new_ttl, ttl = ip4->ttl;
-> > > >       2197:       79 a1 38 ff 00 00 00 00 r1 = *(u64 *)(r10 - 200)
-> > > >       2198:       71 13 16 00 00 00 00 00 r3 = *(u8 *)(r1 + 22)
-> > > > ;       if (ttl <= 1)
-> > > >       2199:       25 03 01 00 01 00 00 00 if r3 > 1 goto +1 <LBB3_277>
-> > > >       2200:       05 00 20 ff 00 00 00 00 goto -224 <LBB3_253>
-> > > 
-> > > Looks like "ip4" is spilled on the stack. and maybe the stack save/restore
-> > > for
-> > > "ip4" does not preserve its original type.
-> > > This mostly happens to old kernels, I think.
-> > > 
-> > 
-> > the kernel 4.18 on Centos8, I also custom build most recent mainline git
-> > kernel 5.13 on Centos8, I recall I got same invaid memory access
-> > 
-> > > If you have verifier log, it may help identify issues easily.
-> > 
-> > Here is the complete verifer log, I skipped the BTF part
-> > 
-> > level=warning msg="Prog section '2/7' rejected: Permission denied (13)!"
-> > subsys=datapath-loader
-> > level=warning msg=" - Type:         3" subsys=datapath-loader
-> > level=warning msg=" - Attach Type:  0" subsys=datapath-loader
-> > level=warning msg=" - Instructions: 2488 (0 over limit)"
-> > subsys=datapath-loader
-> > level=warning msg=" - License:      GPL" subsys=datapath-loader
-> > level=warning subsys=datapath-loader
-> > level=warning msg="Verifier analysis:" subsys=datapath-loader
-> > level=warning subsys=datapath-loader
-> > level=warning msg="Skipped 158566 bytes, use 'verb' option for the full
-> > verbose log." subsys=datapath-loader
-> > level=warning msg="[...]" subsys=datapath-loader
-> > level=warning msg="-136=????00mm fp-144=00000000 fp-152=0000mmmm
-> > fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm
-> > fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
-> > fp-240=inv128" subsys=datapath-loader
-> > level=warning msg="2437: (0f) r1 += r8" subsys=datapath-loader
-> > level=warning msg="2438: (7b) *(u64 *)(r0 +8) = r1" subsys=datapath-loader
-> > level=warning msg=" R0_w=map_value(id=0,off=0,ks=8,vs=16,imm=0)
-> > R1_w=inv(id=0) R6=ctx(id=0,off=0,imm=0)
-> > R7=inv(id=0,umax_value=128,var_off=(0x0; 0xff))
-> > R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9=invP0 R10=fp0
-> > fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm
-> > fp-48=mmmmmmmm fp-88=mmmmmmmm fp-96=00000000 fp-104=00000000
-> > fp-112=??mmmmmm fp-120=mmmmmmmm fp-128=??mmmmmm fp-136=????00mm
-> > fp-144=00000000 fp-152=0000mmmm fp-160=????mmmm fp-168=mmmmmmmm
-> > fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm fp-200=inv fp-208=mmmmmmmm
-> > fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm fp-240=inv128"
-> > subsys=datapath-loader
-> > level=warning msg="2439: (05) goto pc+41" subsys=datapath-loader
-> > level=warning msg="2481: (18) r2 = 0x5c7" subsys=datapath-loader
-> > level=warning msg="2483: (67) r2 <<= 32" subsys=datapath-loader
-> > level=warning msg="2484: (77) r2 >>= 32" subsys=datapath-loader
-> > level=warning msg="2485: (b7) r1 = 6" subsys=datapath-loader
-> > level=warning msg="2486: (15) if r2 == 0x1 goto pc-341"
-> > subsys=datapath-loader
-> > level=warning msg="last_idx 2486 first_idx 2481" subsys=datapath-loader
-> > level=warning msg="regs=4 stack=0 before 2485: (b7) r1 = 6"
-> > subsys=datapath-loader
-> > level=warning msg="regs=4 stack=0 before 2484: (77) r2 >>= 32"
-> > subsys=datapath-loader
-> > level=warning msg="regs=4 stack=0 before 2483: (67) r2 <<= 32"
-> > subsys=datapath-loader
-> > level=warning msg="regs=4 stack=0 before 2481: (18) r2 = 0x5c7"
-> > subsys=datapath-loader
-> > level=warning msg="2487: (05) goto pc-344" subsys=datapath-loader
-> > level=warning msg="2144: (18) r1 = 0x5c7" subsys=datapath-loader
-> > level=warning msg="2146: (61) r2 = *(u32 *)(r6 +68)"
-> > subsys=datapath-loader
-> > level=warning msg="2147: (b7) r3 = 39" subsys=datapath-loader
-> > level=warning msg="2148: (63) *(u32 *)(r10 -76) = r3"
-> > subsys=datapath-loader
-> > level=warning msg="2149: (b7) r3 = 1" subsys=datapath-loader
-> > level=warning msg="2150: (6b) *(u16 *)(r10 -90) = r3"
-> > subsys=datapath-loader
-> > level=warning msg="2151: (63) *(u32 *)(r10 -96) = r8"
-> > subsys=datapath-loader
-> > level=warning msg="2152: (63) *(u32 *)(r10 -100) = r2"
-> > subsys=datapath-loader
-> > level=warning msg="2153: (18) r2 = 0x1d3" subsys=datapath-loader
-> > level=warning msg="2155: (6b) *(u16 *)(r10 -102) = r2"
-> > subsys=datapath-loader
-> > level=warning msg="2156: (b7) r2 = 1028" subsys=datapath-loader
-> > level=warning msg="2157: (6b) *(u16 *)(r10 -104) = r2"
-> > subsys=datapath-loader
-> > level=warning msg="2158: (b7) r2 = 0" subsys=datapath-loader
-> > level=warning msg="2159: (63) *(u32 *)(r10 -80) = r2"
-> > subsys=datapath-loader
-> > level=warning msg="last_idx 2159 first_idx 2481" subsys=datapath-loader
-> > level=warning msg="regs=4 stack=0 before 2158: (b7) r2 = 0"
-> > subsys=datapath-loader
-> > level=warning msg="2160: (63) *(u32 *)(r10 -84) = r2"
-> > subsys=datapath-loader
-> > level=warning msg="2161: (7b) *(u64 *)(r10 -72) = r2"
-> > subsys=datapath-loader
-> > level=warning msg="2162: (7b) *(u64 *)(r10 -64) = r2"
-> > subsys=datapath-loader
-> > level=warning msg="2163: (63) *(u32 *)(r10 -88) = r1"
-> > subsys=datapath-loader
-> > level=warning msg="2164: (6b) *(u16 *)(r10 -92) = r7"
-> > subsys=datapath-loader
-> > level=warning msg="2165: (67) r7 <<= 32" subsys=datapath-loader
-> > level=warning msg="2166: (18) r1 = 0xffffffff" subsys=datapath-loader
-> > level=warning msg="2168: (4f) r7 |= r1" subsys=datapath-loader
-> > level=warning msg="2169: (bf) r4 = r10" subsys=datapath-loader
-> > level=warning msg="2170: (07) r4 += -104" subsys=datapath-loader
-> > level=warning msg="2171: (bf) r1 = r6" subsys=datapath-loader
-> > level=warning msg="2172: (18) r2 = 0xffffa0c68cae1600"
-> > subsys=datapath-loader
-> > level=warning msg="2174: (bf) r3 = r7" subsys=datapath-loader
-> > level=warning msg="2175: (b7) r5 = 48" subsys=datapath-loader
-> > level=warning msg="2176: (85) call bpf_perf_event_output#25"
-> > subsys=datapath-loader
-> > level=warning msg="last_idx 2176 first_idx 2481" subsys=datapath-loader
-> > level=warning msg="regs=20 stack=0 before 2175: (b7) r5 = 48"
-> > subsys=datapath-loader
-> > level=warning msg="2177: (b7) r1 = 39" subsys=datapath-loader
-> > level=warning msg="2178: (b7) r2 = 0" subsys=datapath-loader
-> > level=warning msg="2179: (85) call bpf_redirect#23" subsys=datapath-loader
-> > level=warning msg="2180: (bf) r9 = r0" subsys=datapath-loader
-> > level=warning msg="2181: (bf) r1 = r9" subsys=datapath-loader
-> > level=warning msg="2182: (67) r1 <<= 32" subsys=datapath-loader
-> > level=warning msg="2183: (77) r1 >>= 32" subsys=datapath-loader
-> > level=warning msg="2184: (15) if r1 == 0x0 goto pc+57"
-> > subsys=datapath-loader
-> > level=warning msg=" R0_w=inv(id=0)
-> > R1_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0x7fffffff))
-> > R6=ctx(id=0,off=0,imm=0)
-> > R7=inv(id=0,umin_value=4294967295,umax_value=1099511627775,var_off=(0xffffffff;
-> > 0xff00000000),s32_min_value=-1,s32_max_value=0,u32_max_value=0)
-> > R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9_w=inv(id=0) R10=fp0
-> > fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm
-> > fp-48=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm fp-80=mmmmmmmm fp-88=mmmmmmmm
-> > fp-96=mmmmmmmm fp-104=mmmmmmmm fp-112=??mmmmmm fp-120=mmmmmmmm
-> > fp-128=??mmmmmm fp-136=????00mm fp-144=00000000 fp-152=0000mmmm
-> > fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm
-> > fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
-> > fp-240=inv128" subsys=datapath-loader
-> > level=warning msg="2185: (18) r2 = 0xffffff60" subsys=datapath-loader
-> > level=warning msg="2187: (1d) if r1 == r2 goto pc+9"
-> > subsys=datapath-loader
-> > level=warning subsys=datapath-loader
-> > level=warning msg="from 2187 to 2197: R0=inv(id=0) R1=inv4294967136
-> > R2=inv4294967136 R6=ctx(id=0,off=0,imm=0)
-> > R7=inv(id=0,umin_value=4294967295,umax_value=1099511627775,var_off=(0xffffffff;
-> > 0xff00000000),s32_min_value=-1,s32_max_value=0,u32_max_value=0)
-> > R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9=inv(id=0) R10=fp0
-> > fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm
-> > fp-48=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm fp-80=mmmmmmmm fp-88=mmmmmmmm
-> > fp-96=mmmmmmmm fp-104=mmmmmmmm fp-112=??mmmmmm fp-120=mmmmmmmm
-> > fp-128=??mmmmmm fp-136=????00mm fp-144=00000000 fp-152=0000mmmm
-> > fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm
-> > fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
-> 
-> This is the problem. Here, we have "fp-200=inv" and
-> later on we have
->    r1 = *(u64 *)(r10 -200)  // r1 is a unknown scalar
-> 
-> We cannot do the following operation
->    r3 = *(u8 *)(r1 +22)
-> since r1 is a unknown scalar and the verifier rightfully rejected
-> the program.
-> 
-> You need to examine complete log to find out why fp-200 stores
-> an "inv" (a unknown scalar).
-
-I guess you mean the complete log starting from the prog section 2/7 from 
-verifier, if so, it seems fp-200 started with "inv"
-
-level=warning msg="Prog section '2/7' rejected: Permission denied (13)!" 
-subsys=datapath-loader
-
-level=warning msg="-136=????00mm fp-144=00000000 fp-152=0000mmmm 
-fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm 
-fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm 
-fp-240=inv128" subsys=datapath-loader
-
-and I don't see fp-200 ever changed to something else after, maybe I am 
-reading it wrong
-
-> 
-> > fp-240=inv128" subsys=datapath-loader
-> > level=warning msg="2197: (79) r1 = *(u64 *)(r10 -200)"
-> > subsys=datapath-loader
-> > level=warning msg="2198: (71) r3 = *(u8 *)(r1 +22)" subsys=datapath-loader
-> > level=warning msg="R1 invalid mem access 'inv'" subsys=datapath-loader
-> > level=warning msg="processed 1802 insns (limit 1000000)
-> > max_states_per_insn 4 total_states 103 peak_states 103 mark_read 49"
-> > subsys=datapath-loader
-> > level=warning subsys=datapath-loader
-> > level=warning msg="Error filling program arrays!" subsys=datapath-loader
-> > level=warning msg="Unable to load program" subsys=datapath-loader
-> >   
-> > 
-> > 
-> > > > 
-> > > > 
-> > > > 2, Can I assume the verifier is to simulate the order of BPF byte
-> > > > code execution in run time, like if without any jump or goto in
-> > > > <LBB3_274>, <LBB3_275> will be executed after <LBB3_274>?
-> > > 
-> > > The verifier will try to verify both paths, jumping to LBB3_289
-> > > or fall back to LBB3_275.
-> > > 
-> > > > 
-> > > > 
-> > > > 
-> > > > Enterprise Network Engineer
-> > > > F5 Networks Inc
-> > > > https://www.youtube.com/c/VincentLi
-> > > > 
-> > > 
-> 
+>
+> > +
+> > +             rxqueue = __netif_get_rx_queue(device, rx_queue_index);
+> > +             xdp->rxq = &rxqueue->xdp_rxq;
+> > +     }
+> > +
+> >       xdp->data = xdp->data_meta + xdp_md->data;
+> >
+> >       return 0;
+> >
