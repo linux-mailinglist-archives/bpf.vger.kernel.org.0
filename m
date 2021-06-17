@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F523ABF61
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 01:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83203ABF64
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 01:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbhFQXbb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 19:31:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
+        id S232951AbhFQXbd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 19:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232148AbhFQXba (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 19:31:30 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EB0C061760
-        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 16:29:21 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id v7so6246892pgl.2
-        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 16:29:21 -0700 (PDT)
+        with ESMTP id S231690AbhFQXbb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 19:31:31 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFECC061574
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 16:29:22 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id h16so4691788pjv.2
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 16:29:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=riotgames.com; s=riotgames;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=W7Usuqd/qVCG+v+T1wtul7Op66b92HNR5x5cFUS3vEg=;
-        b=i4ZySBMXHuJSFlGROT6JYLt/Ldcs//W0sXle1DrZEj++tO4pVS1Rzl6AsPYxR/z4Cp
-         2DcRB5xIK94LrxNzsw9ZmTDpaKJpBiGuG7v9Np6P1f2AQ9EsEmkYLmCSMXgOvxbGT4zX
-         yg/ls2xhgPcWtvC9/JhXrFgnXndWfNBWwbqLU=
+        bh=7g3i1IqAr0/dMa5B6qI4JmB64MJpjUEjJxft3fhpn/k=;
+        b=QfGdwmjJAc3faWLUF0uPu/kZP9gNnCXEwC+/pp2PFV0BWBHPhH262MOe2pgMz9GuzN
+         gKb7mii8DvxuMoK4NFmyjHohhkg8xXH8yd7C8jNKGHnPiXgGRwEs+0yTIIuylXEB3bPh
+         1ccNnVMC4hXNaA2glmrvp/zm09Xuz7BWytQFw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=W7Usuqd/qVCG+v+T1wtul7Op66b92HNR5x5cFUS3vEg=;
-        b=F4JTJZihoDUv/znvUvjVzcJIQIHgI9/FcgYhVi0UrPMIctTejvpGN81cV6cYotH4yb
-         uSxtQm3byHFDiY8TB5lFundoeDRS2a6jRAPIFG8xZGtbc36GGTL3JBTVBJ5fhtqGnoyW
-         CJQ1iXJuRiakKAOSEWcFbGIlhgr5MAVxs+lY5lWctvSHRVSmOYDMqTt6oaVJv710FVao
-         ioxX18jtrpNzy3e778h0NhC2HAwJjCr1dyiK7gjbhCgd/obasxUQjmynB9I4PfczYyBT
-         HFXsk2nwHNwMILfTUht0S8FyJRGJJJylOBKfzkFYa42OHCi2BIm/cXJx7MHtDwkGRTdZ
-         ESDw==
-X-Gm-Message-State: AOAM533dUIXKoELn60999F394p4NqEC+Uq/BueuLfOvgGuDih53y/eRd
-        UW/J7ywmBNo2psTLaTFrHrusCTCGz5uCvg==
-X-Google-Smtp-Source: ABdhPJyoK+Kuet+tH7oNgy3zhNfuLBHenwAA0qn79DvaAUdI3Wjm9Zcwfs2wgavqEDRM/uBqF+Lp2A==
-X-Received: by 2002:a63:1a4f:: with SMTP id a15mr7031189pgm.313.1623972560903;
-        Thu, 17 Jun 2021 16:29:20 -0700 (PDT)
+        bh=7g3i1IqAr0/dMa5B6qI4JmB64MJpjUEjJxft3fhpn/k=;
+        b=t8B/UhXlmPPr5h78Tc+W5+aMK4ysDZMRpRK0uFgTm2kh43QQYe/k5S8LKu+MmldQy4
+         g7XduXQZGMHyyF3xDdlEBlpYjDoW0QeTCrWAa5FSNUhM3oIZQb5NKtHinQyVBHeEZqQq
+         ea1QwBn6UjVdq1F359YdQVFHAgn1S4DRnEeEzJZ9lCvG7OTG0ZmKSuhrtS6CEm8B2lJc
+         7OTx0mQ27D/n/dK1nJDugRQwTjxpVLmSrLjEJUMW42CzfNf5qttgURSGuAYlG1f6ORs0
+         PBTUvT63pc8cyM8tmBIAI3nJ8bx5GEKxHaEiGJ0hFlj6Yl9Abxlc5Cuj3VQAAloWuHA7
+         jdSw==
+X-Gm-Message-State: AOAM530Z8k6g7pqTi5hePjkZTfZ5+6+YCb1E3+qwZHtaDHSXTmm60tMc
+        uiPWBKKYGJgAuXKd10mZkLJukBQfJdlAyQ==
+X-Google-Smtp-Source: ABdhPJzWsHT0MUBk0ooDYK54n1sp48IDhMX5GYZ1i5qFkorqJ948mhifY3wJ387DyZUnCNbCibpHiw==
+X-Received: by 2002:a17:902:e546:b029:114:6677:ec2d with SMTP id n6-20020a170902e546b02901146677ec2dmr1989199plf.72.1623972561919;
+        Thu, 17 Jun 2021 16:29:21 -0700 (PDT)
 Received: from ip-10-184-182-114.us-west-2.compute.internal (ec2-54-191-147-77.us-west-2.compute.amazonaws.com. [54.191.147.77])
-        by smtp.gmail.com with ESMTPSA id a21sm6217241pfg.188.2021.06.17.16.29.19
+        by smtp.gmail.com with ESMTPSA id a21sm6217241pfg.188.2021.06.17.16.29.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 16:29:20 -0700 (PDT)
+        Thu, 17 Jun 2021 16:29:21 -0700 (PDT)
 From:   Zvi Effron <zeffron@riotgames.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -56,9 +56,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Zvi Effron <zeffron@riotgames.com>,
         Cody Haas <chaas@riotgames.com>,
         Lisa Watanabe <lwatanabe@riotgames.com>
-Subject: [PATCH bpf-next v6 2/4] bpf: support input xdp_md context in BPF_PROG_TEST_RUN
-Date:   Thu, 17 Jun 2021 23:29:02 +0000
-Message-Id: <20210617232904.1899-3-zeffron@riotgames.com>
+Subject: [PATCH bpf-next v6 3/4] bpf: support specifying ingress via xdp_md context in BPF_PROG_TEST_RUN
+Date:   Thu, 17 Jun 2021 23:29:03 +0000
+Message-Id: <20210617232904.1899-4-zeffron@riotgames.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210617232904.1899-1-zeffron@riotgames.com>
 References: <20210617232904.1899-1-zeffron@riotgames.com>
@@ -68,24 +68,16 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Support passing a xdp_md via ctx_in/ctx_out in bpf_attr for
-BPF_PROG_TEST_RUN.
+Support specifying the ingress_ifindex and rx_queue_index of xdp_md
+contexts for BPF_PROG_TEST_RUN.
 
-The intended use case is to pass some XDP meta data to the test runs of
-XDP programs that are used as tail calls.
+The intended use case is to allow testing XDP programs that make decisions
+based on the ingress interface or RX queue.
 
-For programs that use bpf_prog_test_run_xdp, support xdp_md input and
-output. Unlike with an actual xdp_md during a non-test run, data_meta must
-be 0 because it must point to the start of the provided user data. From
-the initial xdp_md, use data and data_end to adjust the pointers in the
-generated xdp_buff. All other non-zero fields are prohibited (with
-EINVAL). If the user has set ctx_out/ctx_size_out, copy the (potentially
-different) xdp_md back to the userspace.
-
-We require all fields of input xdp_md except the ones we explicitly
-support to be set to zero. The expectation is that in the future we might
-add support for more fields and we want to fail explicitly if the user
-runs the program on the kernel where we don't yet support them.
+If ingress_ifindex is specified, look up the device by the provided index
+in the current namespace and use its xdp_rxq for the xdp_buff. If the
+rx_queue_index is out of range, or is non-zero when the ingress_ifindex is
+0, return -EINVAL.
 
 Co-developed-by: Cody Haas <chaas@riotgames.com>
 Signed-off-by: Cody Haas <chaas@riotgames.com>
@@ -93,137 +85,50 @@ Co-developed-by: Lisa Watanabe <lwatanabe@riotgames.com>
 Signed-off-by: Lisa Watanabe <lwatanabe@riotgames.com>
 Signed-off-by: Zvi Effron <zeffron@riotgames.com>
 ---
- include/uapi/linux/bpf.h |  3 --
- net/bpf/test_run.c       | 67 +++++++++++++++++++++++++++++++++++-----
- 2 files changed, 59 insertions(+), 11 deletions(-)
+ net/bpf/test_run.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index bf9252c7381e..b46a383e8db7 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -324,9 +324,6 @@ union bpf_iter_link_info {
-  *		**BPF_PROG_TYPE_SK_LOOKUP**
-  *			*data_in* and *data_out* must be NULL.
-  *
-- *		**BPF_PROG_TYPE_XDP**
-- *			*ctx_in* and *ctx_out* must be NULL.
-- *
-  *		**BPF_PROG_TYPE_RAW_TRACEPOINT**,
-  *		**BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE**
-  *
 diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index aa47af349ba8..229c5deb813c 100644
+index 229c5deb813c..1ba15c741517 100644
 --- a/net/bpf/test_run.c
 +++ b/net/bpf/test_run.c
-@@ -15,6 +15,7 @@
- #include <linux/error-injection.h>
- #include <linux/smp.h>
- #include <linux/sock_diag.h>
-+#include <net/xdp.h>
+@@ -690,15 +690,35 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
  
- #define CREATE_TRACE_POINTS
- #include <trace/events/bpf_test_run.h>
-@@ -687,6 +688,22 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	return ret;
- }
- 
-+static int xdp_convert_md_to_buff(struct xdp_md *xdp_md, struct xdp_buff *xdp)
-+{
-+	if (!xdp_md)
-+		return 0;
-+
-+	if (xdp_md->egress_ifindex != 0)
-+		return -EINVAL;
-+
-+	if (xdp_md->ingress_ifindex != 0 || xdp_md->rx_queue_index != 0)
-+		return -EINVAL;
-+
-+	xdp->data = xdp->data_meta + xdp_md->data;
-+
-+	return 0;
-+}
-+
- int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			  union bpf_attr __user *uattr)
+ static int xdp_convert_md_to_buff(struct xdp_md *xdp_md, struct xdp_buff *xdp)
  {
-@@ -697,35 +714,69 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	struct netdev_rx_queue *rxqueue;
- 	struct xdp_buff xdp = {};
- 	u32 retval, duration;
-+	struct xdp_md *ctx;
- 	u32 max_data_sz;
- 	void *data;
--	int ret;
-+	int ret = -EINVAL;
- 
--	if (kattr->test.ctx_in || kattr->test.ctx_out)
--		return -EINVAL;
-+	ctx = bpf_ctx_init(kattr, sizeof(struct xdp_md));
-+	if (IS_ERR(ctx))
-+		return PTR_ERR(ctx);
++	unsigned int ingress_ifindex, rx_queue_index;
++	struct netdev_rx_queue *rxqueue;
++	struct net_device *device;
 +
-+	if (ctx) {
-+		/* There can't be user provided data before the meta data */
-+		if (ctx->data_meta || ctx->data_end != size ||
-+		    ctx->data > ctx->data_end ||
-+		    unlikely(xdp_metalen_invalid(ctx->data)))
-+			goto free_ctx;
-+		/* Meta data is allocated from the headroom */
-+		headroom -= ctx->data;
-+	}
+ 	if (!xdp_md)
+ 		return 0;
  
- 	/* XDP have extra tailroom as (most) drivers use full page */
- 	max_data_sz = 4096 - headroom - tailroom;
+ 	if (xdp_md->egress_ifindex != 0)
+ 		return -EINVAL;
  
- 	data = bpf_test_init(kattr, max_data_sz, headroom, tailroom);
--	if (IS_ERR(data))
--		return PTR_ERR(data);
-+	if (IS_ERR(data)) {
-+		ret = PTR_ERR(data);
-+		goto free_ctx;
-+	}
- 
- 	rxqueue = __netif_get_rx_queue(current->nsproxy->net_ns->loopback_dev, 0);
- 	xdp_init_buff(&xdp, headroom + max_data_sz + tailroom,
- 		      &rxqueue->xdp_rxq);
- 	xdp_prepare_buff(&xdp, data, headroom, size, true);
- 
-+	ret = xdp_convert_md_to_buff(ctx, &xdp);
-+	if (ret)
-+		goto free_data;
+-	if (xdp_md->ingress_ifindex != 0 || xdp_md->rx_queue_index != 0)
++	ingress_ifindex = xdp_md->ingress_ifindex;
++	rx_queue_index = xdp_md->rx_queue_index;
 +
- 	bpf_prog_change_xdp(NULL, prog);
- 	ret = bpf_test_run(prog, &xdp, repeat, &retval, &duration, true);
- 	if (ret)
- 		goto out;
--	if (xdp.data != data + headroom || xdp.data_end != xdp.data + size)
--		size = xdp.data_end - xdp.data;
--	ret = bpf_test_finish(kattr, uattr, xdp.data, size, retval, duration);
++	if (!ingress_ifindex && rx_queue_index)
+ 		return -EINVAL;
+ 
++	if (ingress_ifindex) {
++		device = dev_get_by_index(current->nsproxy->net_ns,
++					  ingress_ifindex);
++		if (!device)
++			return -EINVAL;
 +
-+	if (xdp.data_meta != data + headroom ||
-+	    xdp.data_end != xdp.data_meta + size)
-+		size = xdp.data_end - xdp.data_meta;
++		if (rx_queue_index >= device->real_num_rx_queues)
++			return -EINVAL;
 +
-+	if (ctx) {
-+		ctx->data = xdp.data - xdp.data_meta;
-+		ctx->data_end = xdp.data_end - xdp.data_meta;
++		rxqueue = __netif_get_rx_queue(device, rx_queue_index);
++		xdp->rxq = &rxqueue->xdp_rxq;
 +	}
 +
-+	ret = bpf_test_finish(kattr, uattr, xdp.data_meta, size, retval,
-+			      duration);
-+	if (!ret)
-+		ret = bpf_ctx_finish(kattr, uattr, ctx,
-+				     sizeof(struct xdp_md));
-+
- out:
- 	bpf_prog_change_xdp(prog, NULL);
-+free_data:
- 	kfree(data);
-+free_ctx:
-+	kfree(ctx);
- 	return ret;
- }
+ 	xdp->data = xdp->data_meta + xdp_md->data;
  
+ 	return 0;
 -- 
 2.31.1
 
