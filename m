@@ -2,94 +2,239 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904173AB678
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 16:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F17523AB692
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 16:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbhFQOu7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 10:50:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231759AbhFQOu6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:50:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7BED613E9;
-        Thu, 17 Jun 2021 14:48:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623941330;
-        bh=diSD2DV+ZMSbg7QBx9qRA4lRHgK0oR6VJQGUEUYjj4A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=opkK5Rty+mv8NbdpPEsQjyN1t2JTj02HtkNefuZ+uC7DScdpkGrr5n/rpVvBj4A6J
-         7ms+c9cBkuL/gkovXTfd4q32/TIWyLrXi74Kni3OiJcgWybEgut/QS74Kupa3QUjfU
-         WnbesIrb7O3zuhJKssszI2bJzb4BrGQN5di3JBxTe3M3jsNJOQ4M9u9fXyAOEbDML3
-         Nv+OVALG83VMOIOy2nHXwQamP7oE0326KB0XGcQu71SBf+RIShcxfuhQBEUEHp1IVz
-         M43v4ofF8KRvLsXEM+7/WMThsAVvqxmSJlTyNjsrPhaiEIW2IXdzZ+kXfgtwkyy2ue
-         e4GthMF48EH/A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DDE7140B1A; Thu, 17 Jun 2021 11:48:47 -0300 (-03)
-Date:   Thu, 17 Jun 2021 11:48:47 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        dwarves@vger.kernel.org, siudin@fb.com
-Subject: Re: latest pahole breaks libbpf CI and let's talk about staging
-Message-ID: <YMtgz+hcE/7iO7Ux@kernel.org>
-References: <CAEf4BzZnZN2mt4+5F-00ggO9YHWrL3Jru_u3Qt2JJ+SMkHwg+w@mail.gmail.com>
- <YMoRBvTdD0qzjYf4@kernel.org>
- <YMopYxHgmoNVd3Yl@kernel.org>
- <YMph3VeKA1Met65X@kernel.org>
- <CAEf4BzZmBbkU1WWLEsZG1yVMdt7CDcuHhRF8uoLqeamhef3bVQ@mail.gmail.com>
+        id S231224AbhFQO5q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 10:57:46 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:47117 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230299AbhFQO5q (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 17 Jun 2021 10:57:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UcjwG.G_1623941735;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UcjwG.G_1623941735)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 17 Jun 2021 22:55:35 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Krzysztof Kazimierczak <krzysztof.kazimierczak@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH net v2] xdp, net: fix for construct skb by xdp inside xsk zc rx
+Date:   Thu, 17 Jun 2021 22:55:34 +0800
+Message-Id: <20210617145534.101458-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZmBbkU1WWLEsZG1yVMdt7CDcuHhRF8uoLqeamhef3bVQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Jun 16, 2021 at 03:36:54PM -0700, Andrii Nakryiko escreveu:
-> On Wed, Jun 16, 2021 at 1:41 PM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
-> > And if I use pahole's BTF loader I find the info about that function:
-> >
-> > [acme@seventh linux]$ strace -e openat -o /tmp/bla pfunct -F btf tcp_cong_avoid_ai  ; grep vmlinux /tmp/bla
-> > void tcp_cong_avoid_ai(struct tcp_sock * tp, u32 w, u32 acked);
-> > openat(AT_FDCWD, "/sys/kernel/btf/vmlinux", O_RDONLY) = 3
-> >
-> > So this should be unrelated to the breakage you noticed in the CI.
-> >
-> > I'm trying to to reproduce the CI breakage by building the kernel and
-> > running selftests after a reboot.
-> >
-> > I suspect I'm missing something, can you see what it is?
-> 
-> Oh, I didn't realize initially what it is. This is not kernel-related,
-> you are right. You just need newer Clang. Can you please use nightly
-> version or build from sources? Basically, your Clang is too old and it
-> doesn't generate BTF information for extern functions in BPF code.
+When each driver supports xsk rx, if the received buff returns XDP_PASS
+after run xdp prog, it must construct skb based on xdp. This patch
+extracts this logic into a public function xdp_construct_skb().
 
-Oh well, I thought that that clang was new enough, the system being
-Fedora rawhide:
+There is a bug in the original logic. When constructing skb, we should
+copy the meta information to skb and then use __skb_pull() to correct
+the data.
 
-[acme@seventh ~]$ clang -v |& head -1
-clang version 12.0.0 (https://github.com/llvm/llvm-project 87369c626114ae17f4c637635c119e6de0856a9a)
+Fixes: 0a714186d3c0f ("i40e: add AF_XDP zero-copy Rx support")
+Fixes: 2d4238f556972 ("ice: Add support for AF_XDP")
+Fixes: bba2556efad66 ("net: stmmac: Enable RX via AF_XDP zero-copy")
+Fixes: d0bcacd0a1309 ("ixgbe: add AF_XDP zero-copy Rx support")
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 16 +---------
+ drivers/net/ethernet/intel/ice/ice_xsk.c      | 12 +-------
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 12 +-------
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 23 +-------------
+ include/net/xdp.h                             | 30 +++++++++++++++++++
+ 5 files changed, 34 insertions(+), 59 deletions(-)
 
-I'm now building the single-repo main...
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+index 68f177a86403..81b0f44eedda 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -246,23 +246,9 @@ bool i40e_alloc_rx_buffers_zc(struct i40e_ring *rx_ring, u16 count)
+ static struct sk_buff *i40e_construct_skb_zc(struct i40e_ring *rx_ring,
+ 					     struct xdp_buff *xdp)
+ {
+-	unsigned int metasize = xdp->data - xdp->data_meta;
+-	unsigned int datasize = xdp->data_end - xdp->data;
+ 	struct sk_buff *skb;
+ 
+-	/* allocate a skb to store the frags */
+-	skb = __napi_alloc_skb(&rx_ring->q_vector->napi,
+-			       xdp->data_end - xdp->data_hard_start,
+-			       GFP_ATOMIC | __GFP_NOWARN);
+-	if (unlikely(!skb))
+-		goto out;
+-
+-	skb_reserve(skb, xdp->data - xdp->data_hard_start);
+-	memcpy(__skb_put(skb, datasize), xdp->data, datasize);
+-	if (metasize)
+-		skb_metadata_set(skb, metasize);
+-
+-out:
++	skb = xdp_construct_skb(xdp, &rx_ring->q_vector->napi);
+ 	xsk_buff_free(xdp);
+ 	return skb;
+ }
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index a1f89ea3c2bd..f95e1adcebda 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -430,22 +430,12 @@ static void ice_bump_ntc(struct ice_ring *rx_ring)
+ static struct sk_buff *
+ ice_construct_skb_zc(struct ice_ring *rx_ring, struct ice_rx_buf *rx_buf)
+ {
+-	unsigned int metasize = rx_buf->xdp->data - rx_buf->xdp->data_meta;
+-	unsigned int datasize = rx_buf->xdp->data_end - rx_buf->xdp->data;
+-	unsigned int datasize_hard = rx_buf->xdp->data_end -
+-				     rx_buf->xdp->data_hard_start;
+ 	struct sk_buff *skb;
+ 
+-	skb = __napi_alloc_skb(&rx_ring->q_vector->napi, datasize_hard,
+-			       GFP_ATOMIC | __GFP_NOWARN);
++	skb = xdp_construct_skb(rx_buf->xdp, &rx_ring->q_vector->napi);
+ 	if (unlikely(!skb))
+ 		return NULL;
+ 
+-	skb_reserve(skb, rx_buf->xdp->data - rx_buf->xdp->data_hard_start);
+-	memcpy(__skb_put(skb, datasize), rx_buf->xdp->data, datasize);
+-	if (metasize)
+-		skb_metadata_set(skb, metasize);
+-
+ 	xsk_buff_free(rx_buf->xdp);
+ 	rx_buf->xdp = NULL;
+ 	return skb;
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+index f72d2978263b..123945832c96 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+@@ -203,22 +203,12 @@ bool ixgbe_alloc_rx_buffers_zc(struct ixgbe_ring *rx_ring, u16 count)
+ static struct sk_buff *ixgbe_construct_skb_zc(struct ixgbe_ring *rx_ring,
+ 					      struct ixgbe_rx_buffer *bi)
+ {
+-	unsigned int metasize = bi->xdp->data - bi->xdp->data_meta;
+-	unsigned int datasize = bi->xdp->data_end - bi->xdp->data;
+ 	struct sk_buff *skb;
+ 
+-	/* allocate a skb to store the frags */
+-	skb = __napi_alloc_skb(&rx_ring->q_vector->napi,
+-			       bi->xdp->data_end - bi->xdp->data_hard_start,
+-			       GFP_ATOMIC | __GFP_NOWARN);
++	skb = xdp_construct_skb(bi->xdp, &rx_ring->q_vector->napi);
+ 	if (unlikely(!skb))
+ 		return NULL;
+ 
+-	skb_reserve(skb, bi->xdp->data - bi->xdp->data_hard_start);
+-	memcpy(__skb_put(skb, datasize), bi->xdp->data, datasize);
+-	if (metasize)
+-		skb_metadata_set(skb, metasize);
+-
+ 	xsk_buff_free(bi->xdp);
+ 	bi->xdp = NULL;
+ 	return skb;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index c87202cbd3d6..143ac1edb876 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -4729,27 +4729,6 @@ static void stmmac_finalize_xdp_rx(struct stmmac_priv *priv,
+ 		xdp_do_flush();
+ }
+ 
+-static struct sk_buff *stmmac_construct_skb_zc(struct stmmac_channel *ch,
+-					       struct xdp_buff *xdp)
+-{
+-	unsigned int metasize = xdp->data - xdp->data_meta;
+-	unsigned int datasize = xdp->data_end - xdp->data;
+-	struct sk_buff *skb;
+-
+-	skb = __napi_alloc_skb(&ch->rxtx_napi,
+-			       xdp->data_end - xdp->data_hard_start,
+-			       GFP_ATOMIC | __GFP_NOWARN);
+-	if (unlikely(!skb))
+-		return NULL;
+-
+-	skb_reserve(skb, xdp->data - xdp->data_hard_start);
+-	memcpy(__skb_put(skb, datasize), xdp->data, datasize);
+-	if (metasize)
+-		skb_metadata_set(skb, metasize);
+-
+-	return skb;
+-}
+-
+ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
+ 				   struct dma_desc *p, struct dma_desc *np,
+ 				   struct xdp_buff *xdp)
+@@ -4761,7 +4740,7 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
+ 	struct sk_buff *skb;
+ 	u32 hash;
+ 
+-	skb = stmmac_construct_skb_zc(ch, xdp);
++	skb = xdp_construct_skb(xdp, &ch->rxtx_napi);
+ 	if (!skb) {
+ 		priv->dev->stats.rx_dropped++;
+ 		return;
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index a5bc214a49d9..561e21eaf718 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -95,6 +95,36 @@ xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
+ 	xdp->data_meta = meta_valid ? data : data + 1;
+ }
+ 
++static __always_inline struct sk_buff *
++xdp_construct_skb(struct xdp_buff *xdp, struct napi_struct *napi)
++{
++	unsigned int metasize;
++	unsigned int datasize;
++	unsigned int headroom;
++	struct sk_buff *skb;
++	unsigned int len;
++
++	/* this include metasize */
++	datasize = xdp->data_end  - xdp->data_meta;
++	metasize = xdp->data      - xdp->data_meta;
++	headroom = xdp->data_meta - xdp->data_hard_start;
++	len      = xdp->data_end  - xdp->data_hard_start;
++
++	/* allocate a skb to store the frags */
++	skb = __napi_alloc_skb(napi, len, GFP_ATOMIC | __GFP_NOWARN);
++	if (unlikely(!skb))
++		return NULL;
++
++	skb_reserve(skb, headroom);
++	memcpy(__skb_put(skb, datasize), xdp->data_meta, datasize);
++	if (metasize) {
++		__skb_pull(skb, metasize);
++		skb_metadata_set(skb, metasize);
++	}
++
++	return skb;
++}
++
+ /* Reserve memory area at end-of data area.
+  *
+  * This macro reserves tailroom in the XDP buffer by limiting the
+-- 
+2.31.0
 
-Would you consider a patch for libbpf that would turn this:
-
-> > > libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-> > > Error: failed to open BPF object file: No such file or directory
-> > > make: *** [Makefile:460: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 255
-> > > make: *** Deleting file '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h'
-> > > make: Leaving directory '/mnt/linux/tools/testing/selftests/bpf'
-
-Into:
-
-libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-HINT: Please update your clang/llvm toolchain to at least cset abcdef123456
-HINT: That is where clang started generating BTF information for extern functions in BPF code.
-
-?
-
-:-)
-
-- Arnaldo
