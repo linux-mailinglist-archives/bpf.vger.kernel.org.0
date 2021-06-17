@@ -2,153 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8325E3ABD43
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 22:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE653ABD67
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 22:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhFQUFi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 16:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
+        id S231674AbhFQUcH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 16:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbhFQUFi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 16:05:38 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF9CC061574;
-        Thu, 17 Jun 2021 13:03:29 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id q16so5190281qkm.9;
-        Thu, 17 Jun 2021 13:03:29 -0700 (PDT)
+        with ESMTP id S231282AbhFQUcG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 16:32:06 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBE4C061574;
+        Thu, 17 Jun 2021 13:29:57 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id u30so5388458qke.7;
+        Thu, 17 Jun 2021 13:29:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=StOKYIiM/dV/OSQpwU3+g7HtlFaLeIW/pcen05uYEvc=;
-        b=pyl6qARipAL1WPg+pB/N8hfrcQyY4KLD6kG8Ks0IkAcKPsvvmkawFCV0rDT1YErwIA
-         KwDJ4Jbivh0BGTpKh0jt2ok4P02/ozjrqA8/4yFNQTS6VXem5Wt9SarI5VvIeyHW8+ru
-         95Q9lK4J5/pw8EkgnytdL6P68f0PBhyGfpRARped9cNS8Pjsd+MfenDbUh6PYVvl3ImT
-         u0V4r2u2dSu1t4Hs00oNv0LHPshl7bh1w4Dxfdj7oIlGuCDJAhDW1WstEX8aXvoM83v0
-         IUjYGrr0oJ/y3mYOKTMN0tc4roBr3Xqxj73q1MGgEQuH9UeEgMNHZe0VfXXbCJS9Ljoz
-         FuXw==
+        bh=hmo9PgbBFNXuJWyk3PR5KBaafEgXO9bsKC9QDalJJ0Y=;
+        b=YQzqHXRHbIsbTBPQFnTQMly0B2oPHdb9TiAoM73Sr85swieKb7NT8l6/U1mzDDB3y7
+         ASU0a7uWtzqDl4uBmsFVgu45m/93qvmiEdGwTEngy+5FBdRcmNp4Bl6j2G9ICqj8Ar7l
+         X5ZVvP4ICtu8+voFnVwmf02BjGnRGBvMIZVIhP1wkllFJJnQ19Rt3IMer7WRMjfGi5yK
+         cbhkmWhKsLCPfs4r32aX4kdTulh89G1fZ0+83+IPRGYp3sfCg3xYJaLgjgR/7H/GIfzf
+         3PLW6XCu5R9WgLOKKGKDRS1j36KxJ3vhKiHliL6f0Mhrk2sZeDK2KYKxXa97imWW5iwm
+         LOPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=StOKYIiM/dV/OSQpwU3+g7HtlFaLeIW/pcen05uYEvc=;
-        b=aHWOPCbfmlGGGrfyABjNxFOofUPugWoXDRBWspas5xAGVpnxpeTc7YqnioarOe/TfH
-         9yohgZHjFuTiinaaxKnW8nqiYZCI1VMJxmR1FtfRt2yK221cdm6+OTLf1echl/xl47OO
-         gJ2v7olTf7EuhWb7ATzK8L/s5m7stO88rNwblBdaHSnMDY7dh5Ah08OnBxwCwZzwXOpT
-         U2n5imn+2L7513xT3ft3lAGHyyW8L44YpJo7p6ft60AG+Hwu4h/xw+rJu9WwirF7wiIZ
-         vScfzKGfK7SE8YiQTmW9bRauIonmEhD5nLHYDumgZvWr1WDpR9h1SBsmf9kdenuMgrnK
-         t33A==
-X-Gm-Message-State: AOAM532XhTjEAOO3UAkkht6Uc6oe2w1tTp9Wp8d93/kGc9c5WnZN7/ZP
-        ulsAd/izvvtGFWG6MMxSubQ4QQ6lp4iFDz1h7qs=
-X-Google-Smtp-Source: ABdhPJxEoWVxpMLcTa0ub8BWld426Y6pKJn0kgsdzHFEhSR8o06KA6Qx9jUhRXs+h8H4/f+ZqIwmaNUr11p9lA0XN1o=
-X-Received: by 2002:a25:870b:: with SMTP id a11mr916888ybl.260.1623960208827;
- Thu, 17 Jun 2021 13:03:28 -0700 (PDT)
+        bh=hmo9PgbBFNXuJWyk3PR5KBaafEgXO9bsKC9QDalJJ0Y=;
+        b=Gxh2jQlph1LPsg/I9JbjUUs8Vf5gOuFdEK+NZ+qMLMo6+DZpqjswgwkexMVIiJjDxC
+         Q+my9XE0sdfagHc1+fxkXATS1OP/AYxr1Qypy1e8y8EUCO3d8c7mA1X24Z9pNzYd8Fcm
+         i32oBiIDvvas+y2mrLr0W3Yg1jn3Ip3qmLS1XTp/A5aduZ6S9HiEOHrcdxLRBuG/Goet
+         scc5UZz22N3uAxiILXFUtC27EY5lP8/VNnmeQx7jpp7Ki2Dw+9vxj8Vv/SzdRJnDgztY
+         hRh3c5skz7y77Ibqs2n8UM9cuYIZjwBpAqOpw83k4AjhQCwdJxfXlGRUi+fi6SXLI/VL
+         ufsw==
+X-Gm-Message-State: AOAM531G5ICiV6YbbkGGcWQ2OEpOVq0MtQxtff+DaktXt67ZrL2j/drt
+        u9EHKvQgCUKBuTK0pGzzWNKj+vrFnWrcqIe97bk=
+X-Google-Smtp-Source: ABdhPJynZAmzBTKjbo1zrnPn1G9CM2FxudMBLjzvD+LzIjiMDlRzxe5j44Dj3I4vZ2/e8pVrLU5x4pFaJWZilXf91CQ=
+X-Received: by 2002:a25:870b:: with SMTP id a11mr1055705ybl.260.1623961796141;
+ Thu, 17 Jun 2021 13:29:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4BzZnZN2mt4+5F-00ggO9YHWrL3Jru_u3Qt2JJ+SMkHwg+w@mail.gmail.com>
- <YMoRBvTdD0qzjYf4@kernel.org> <YMopYxHgmoNVd3Yl@kernel.org>
- <YMph3VeKA1Met65X@kernel.org> <CAEf4BzZmBbkU1WWLEsZG1yVMdt7CDcuHhRF8uoLqeamhef3bVQ@mail.gmail.com>
- <YMtgz+hcE/7iO7Ux@kernel.org> <YMuoQntxW1zOujHU@kernel.org>
-In-Reply-To: <YMuoQntxW1zOujHU@kernel.org>
+References: <20210605111034.1810858-1-jolsa@kernel.org>
+In-Reply-To: <20210605111034.1810858-1-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 17 Jun 2021 13:03:17 -0700
-Message-ID: <CAEf4BzaA2XwjeVNWTa2eyMvzkwp9eUHSXqMVJukMf0_mzh8CnQ@mail.gmail.com>
-Subject: Re: latest pahole breaks libbpf CI and let's talk about staging
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        dwarves@vger.kernel.org, siudin@fb.com
+Date:   Thu, 17 Jun 2021 13:29:45 -0700
+Message-ID: <CAEf4BzaK+t7zom6JHWf6XSPGDxjwhG4Wj3+CHKVshdmP3=FgnA@mail.gmail.com>
+Subject: Re: [RFCv3 00/19] x86/ftrace/bpf: Add batch support for
+ direct/tracing attach
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 12:53 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
+On Sat, Jun 5, 2021 at 4:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Em Thu, Jun 17, 2021 at 11:48:47AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Wed, Jun 16, 2021 at 03:36:54PM -0700, Andrii Nakryiko escreveu:
-> > > On Wed, Jun 16, 2021 at 1:41 PM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
-> > > > And if I use pahole's BTF loader I find the info about that function:
+> hi,
+> saga continues.. ;-) previous post is in here [1]
 >
-> > > > [acme@seventh linux]$ strace -e openat -o /tmp/bla pfunct -F btf tcp_cong_avoid_ai  ; grep vmlinux /tmp/bla
-> > > > void tcp_cong_avoid_ai(struct tcp_sock * tp, u32 w, u32 acked);
-> > > > openat(AT_FDCWD, "/sys/kernel/btf/vmlinux", O_RDONLY) = 3
+> After another discussion with Steven, he mentioned that if we fix
+> the ftrace graph problem with direct functions, he'd be open to
+> add batch interface for direct ftrace functions.
 >
-> > > > So this should be unrelated to the breakage you noticed in the CI.
+> He already had prove of concept fix for that, which I took and broke
+> up into several changes. I added the ftrace direct batch interface
+> and bpf new interface on top of that.
 >
-> > > > I'm trying to to reproduce the CI breakage by building the kernel and
-> > > > running selftests after a reboot.
+> It's not so many patches after all, so I thought having them all
+> together will help the review, because they are all connected.
+> However I can break this up into separate patchsets if necessary.
 >
-> > > > I suspect I'm missing something, can you see what it is?
+> This patchset contains:
 >
-> > > Oh, I didn't realize initially what it is. This is not kernel-related,
-> > > you are right. You just need newer Clang. Can you please use nightly
-> > > version or build from sources? Basically, your Clang is too old and it
-> > > doesn't generate BTF information for extern functions in BPF code.
+>   1) patches (1-4) that fix the ftrace graph tracing over the function
+>      with direct trampolines attached
+>   2) patches (5-8) that add batch interface for ftrace direct function
+>      register/unregister/modify
+>   3) patches (9-19) that add support to attach BPF program to multiple
+>      functions
 >
-> > Oh well, I thought that that clang was new enough, the system being
-> > Fedora rawhide:
+> In nutshell:
 >
-> > [acme@seventh ~]$ clang -v |& head -1
-> > clang version 12.0.0 (https://github.com/llvm/llvm-project 87369c626114ae17f4c637635c119e6de0856a9a)
+> Ad 1) moves the graph tracing setup before the direct trampoline
+> prepares the stack, so they don't clash
 >
-> > I'm now building the single-repo main...
+> Ad 2) uses ftrace_ops interface to register direct function with
+> all functions in ftrace_ops filter.
 >
-> So I updated clang and now I'm stumbling on another one, again using
-> pahole 1.21 + fixes, without any of my changes, is this a known issue?
+> Ad 3) creates special program and trampoline type to allow attachment
+> of multiple functions to single program.
 >
-> [root@seventh bpf]# pwd
-> /mnt/linux/tools/testing/selftests/bpf
-> [root@seventh bpf]# git log --oneline -5
-> 94f0b2d4a1d0 (HEAD -> master, torvalds/master) proc: only require mm_struct for writing
+> There're more detailed desriptions in related changelogs.
+>
+> I have working bpftrace multi attachment code on top this. I briefly
+> checked retsnoop and I think it could use the new API as well.
 
-Please use bpf-next tree. Bleeding edge clang started generating new
-ELF relocation types, so you need bleeding edge libbpfs in selftests
-to handle that during static linking.
+Ok, so I had a bit of time and enthusiasm to try that with retsnoop.
+The ugly code is at [0] if you'd like to see what kind of changes I
+needed to make to use this (it won't work if you check it out because
+it needs your libbpf changes synced into submodule, which I only did
+locally). But here are some learnings from that experiment both to
+emphasize how important it is to make this work and how restrictive
+are some of the current limitations.
 
-> a33d62662d27 afs: Fix an IS_ERR() vs NULL check
-> 009c9aa5be65 (tag: v5.13-rc6) Linux 5.13-rc6
-> e4e453434a19 Merge tag 'perf-tools-fixes-for-v5.13-2021-06-13' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
-> 960f0716d80f Merge tag 'nfs-for-5.13-3' of git://git.linux-nfs.org/projects/trondmy/linux-nfs
-> [root@seventh bpf]#
-> [root@seventh bpf]# make run_tests
+First, good news. Using this mass-attach API to attach to almost 1000
+kernel functions goes from
 
-I never use make run_tests.
+Plain fentry/fexit:
+===================
+real    0m27.321s
+user    0m0.352s
+sys     0m20.919s
 
-Try `make clean && make -j60 && sudo ./test_progs`.
+to
 
-> <SNIP>
->   GEN-SKEL [test_progs] atomic_bounds.skel.h
->   GEN-SKEL [test_progs] atomics.skel.h
->   GEN-SKEL [test_progs] bind4_prog.skel.h
-> libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
->   GEN-SKEL [test_progs] bind6_prog.skel.h
-> libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
->   GEN-SKEL [test_progs] bind_perm.skel.h
->   GEN-SKEL [test_progs] bpf_cubic.skel.h
-> libbpf: ELF relo #0 in section #15 has unexpected type 2 in /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.o
-> Error: failed to link '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.o': Unknown error -22 (-22)
-> make: *** [Makefile:456: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 234
-> [root@seventh bpf]# clang -v |& head -2
-> clang version 13.0.0 (https://github.com/llvm/llvm-project dee2c76b4c46e71903e3d86ab7555a80d51d1288)
-> Target: x86_64-unknown-linux-gnu
-> [root@seventh bpf]#
+Mass-attach fentry/fexit:
+=========================
+real    0m2.728s
+user    0m0.329s
+sys     0m2.380s
+
+It's a 10x speed up. And a good chunk of those 2.7 seconds is in some
+preparatory steps not related to fentry/fexit stuff.
+
+It's not exactly apples-to-apples, though, because the limitations you
+have right now prevents attaching both fentry and fexit programs to
+the same set of kernel functions. This makes it pretty useless for a
+lot of cases, in particular for retsnoop. So I haven't really tested
+retsnoop end-to-end, I only verified that I do see fentries triggered,
+but can't have matching fexits. So the speed-up might be smaller due
+to additional fexit mass-attach (once that is allowed), but it's still
+a massive difference. So we absolutely need to get this optimization
+in.
+
+Few more thoughts, if you'd like to plan some more work ahead ;)
+
+1. We need similar mass-attach functionality for kprobe/kretprobe, as
+there are use cases where kprobe are more useful than fentry (e.g., >6
+args funcs, or funcs with input arguments that are not supported by
+BPF verifier, like struct-by-value). It's not clear how to best
+represent this, given currently we attach kprobe through perf_event,
+but we'll need to think about this for sure.
+
+2. To make mass-attach fentry/fexit useful for practical purposes, it
+would be really great to have an ability to fetch traced function's
+IP. I.e., if we fentry/fexit func kern_func_abc, bpf_get_func_ip()
+would return IP of that functions that matches the one in
+/proc/kallsyms. Right now I do very brittle hacks to do that.
+
+So all-in-all, super excited about this, but I hope all those issues
+are addressed to make retsnoop possible and fast.
+
+  [0] https://github.com/anakryiko/retsnoop/commit/8a07bc4d8c47d025f755c108f92f0583e3fda6d8
+
 >
-> - Arnaldo
 >
-> > Would you consider a patch for libbpf that would turn this:
-> >
-> > > > > libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-> > > > > Error: failed to open BPF object file: No such file or directory
-> > > > > make: *** [Makefile:460: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 255
-> > > > > make: *** Deleting file '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h'
-> > > > > make: Leaving directory '/mnt/linux/tools/testing/selftests/bpf'
-> >
-> > Into:
-> >
-> > libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-> > HINT: Please update your clang/llvm toolchain to at least cset abcdef123456
-> > HINT: That is where clang started generating BTF information for extern functions in BPF code.
-> >
-> > ?
-> >
-> > :-)
+> Also available at:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>   bpf/batch
+>
+> thanks,
+> jirka
+>
+>
+> [1] https://lore.kernel.org/bpf/20210413121516.1467989-1-jolsa@kernel.org/
+>
+> ---
+> Jiri Olsa (17):
+>       x86/ftrace: Remove extra orig rax move
+>       tracing: Add trampoline/graph selftest
+>       ftrace: Add ftrace_add_rec_direct function
+>       ftrace: Add multi direct register/unregister interface
+>       ftrace: Add multi direct modify interface
+>       ftrace/samples: Add multi direct interface test module
+>       bpf, x64: Allow to use caller address from stack
+>       bpf: Allow to store caller's ip as argument
+>       bpf: Add support to load multi func tracing program
+>       bpf: Add bpf_trampoline_alloc function
+>       bpf: Add support to link multi func tracing program
+>       libbpf: Add btf__find_by_pattern_kind function
+>       libbpf: Add support to link multi func tracing program
+>       selftests/bpf: Add fentry multi func test
+>       selftests/bpf: Add fexit multi func test
+>       selftests/bpf: Add fentry/fexit multi func test
+>       selftests/bpf: Temporary fix for fentry_fexit_multi_test
+>
+> Steven Rostedt (VMware) (2):
+>       x86/ftrace: Remove fault protection code in prepare_ftrace_return
+>       x86/ftrace: Make function graph use ftrace directly
+>
+
+[...]
