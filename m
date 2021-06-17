@@ -2,82 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2E83AA9D1
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 06:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3602D3AA9D9
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 06:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhFQERQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 17 Jun 2021 00:17:16 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:31562 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229495AbhFQERP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 17 Jun 2021 00:17:15 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 15H4CrLF021772
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 21:15:08 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 397a8204pu-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 21:15:08 -0700
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 16 Jun 2021 21:15:06 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 5C3943D808A8; Wed, 16 Jun 2021 21:14:47 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Subject: [PATCH bpf-next] selftests/bpf: fix selftests build with old system-wide headers
-Date:   Wed, 16 Jun 2021 21:14:46 -0700
-Message-ID: <20210617041446.425283-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S229599AbhFQEWL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 00:22:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229447AbhFQEWK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 00:22:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D28AA613CE;
+        Thu, 17 Jun 2021 04:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623903603;
+        bh=9pAC13zSyUale0AW2dVXWJ4wQJJfwltO3XUY0oGmE4Y=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DlYf+YG2frhvdtFAbc9/krduP4wj8biCejkryWCfcGsqdj8whPBz11NW8elftUa0z
+         uzhh1NBLeh5fuFTh2U+o87oKJmiDUmkmrzBHgKnaBxvYJgPtbZ481MhibmeuDECRoj
+         pZwd7S8egclshCPF4s0ULPTNDB4ywe1Fd6YlCBcJt6T8HyetSyD6hypgqAMa+FfBDK
+         Syc1V4uUSCGQOG/Ta+gFBbOz6uZoqBwq1zvUNpGTP7X87rNImN6kN7mq8m+j9B+X7C
+         z98g66o3ryOSBCQQu6zJIhZLzhYPeJNQqOEPdR1s2w269SdF+yxG5RFJwLkni5vvkj
+         wMbj6COm4zeZA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C610B60CD0;
+        Thu, 17 Jun 2021 04:20:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: yo6IW-_UBk8ZhL3he7Pni3_za0kC00Hy
-X-Proofpoint-ORIG-GUID: yo6IW-_UBk8ZhL3he7Pni3_za0kC00Hy
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-17_01:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- mlxlogscore=714 impostorscore=0 adultscore=0 priorityscore=1501
- spamscore=0 phishscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
- bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106170026
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2 1/1] lib: bpf: tracing: fail compilation if target arch
+ is missing
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162390360380.962.14577274135893714325.git-patchwork-notify@kernel.org>
+Date:   Thu, 17 Jun 2021 04:20:03 +0000
+References: <20210616083635.11434-1-lmb@cloudflare.com>
+In-Reply-To: <20210616083635.11434-1-lmb@cloudflare.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-migrate_reuseport.c selftest relies on having TCP_FASTOPEN_CONNECT defined in
-system-wide netinet/tcp.h. Selftests can use up-to-date uapi/linux/tcp.h, but
-that one doesn't have SOL_TCP. So instead of switching everything to uapi
-header, add #define for TCP_FASTOPEN_CONNECT to fix the build.
+Hello:
 
-Cc: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Fixes: c9d0bdef89a6 ("bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c | 4 ++++
- 1 file changed, 4 insertions(+)
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-index 0fa3f750567d..59adb4715394 100644
---- a/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-+++ b/tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
-@@ -30,6 +30,10 @@
- #include "test_migrate_reuseport.skel.h"
- #include "network_helpers.h"
- 
-+#ifndef TCP_FASTOPEN_CONNECT
-+#define TCP_FASTOPEN_CONNECT 30
-+#endif
-+
- #define IFINDEX_LO 1
- 
- #define NR_SERVERS 5
--- 
-2.30.2
+On Wed, 16 Jun 2021 09:36:35 +0100 you wrote:
+> bpf2go is the Go equivalent of libbpf skeleton. The convention is that
+> the compiled BPF is checked into the repository to facilitate distributing
+> BPF as part of Go packages. To make this portable, bpf2go by default
+> generates both bpfel and bpfeb variants of the C.
+> 
+> Using bpf_tracing.h is inherently non-portable since the fields of
+> struct pt_regs differ between platforms, so CO-RE can't help us here.
+> The only way of working around this is to compile for each target
+> platform independently. bpf2go can't do this by default since there
+> are too many platforms.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf,v2,1/1] lib: bpf: tracing: fail compilation if target arch is missing
+    https://git.kernel.org/bpf/bpf-next/c/4a638d581a7a
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
