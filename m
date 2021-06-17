@@ -2,106 +2,270 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3E93AB269
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 13:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB883AB49E
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 15:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbhFQLYw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 07:24:52 -0400
-Received: from www62.your-server.de ([213.133.104.62]:53624 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbhFQLYv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:24:51 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ltq6U-0001yQ-U2; Thu, 17 Jun 2021 13:22:34 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ltq6U-000Wjz-M3; Thu, 17 Jun 2021 13:22:34 +0200
-Subject: Re: [PATCH bpf v1] bpf: fix libelf endian handling in resolv_btfids
-To:     Jiri Olsa <jolsa@redhat.com>, Mark Wielaard <mark@klomp.org>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Tony Ambardar <tony.ambardar@gmail.com>,
+        id S232582AbhFQNZc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 09:25:32 -0400
+Received: from mga17.intel.com ([192.55.52.151]:53893 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229931AbhFQNZc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 09:25:32 -0400
+IronPort-SDR: aRFrMTI64fq9/z9WynmYNulEN4FEOzEF/etirDe5geWwAb7SpRwVpH3EcgWS5w4TS2KnlMDAbq
+ hPXFjn300ibw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10017"; a="186744123"
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="186744123"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 06:23:24 -0700
+IronPort-SDR: cGjORf0vy6UXUnvDarnwkqjtxzUqMxH10FkxwNyZtvPzojWIkpZMFp+WSjB+M1HVCYqdT4mnEH
+ UUD3XQSTSJuA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,280,1616482800"; 
+   d="scan'208";a="421874926"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga002.jf.intel.com with ESMTP; 17 Jun 2021 06:23:18 -0700
+Date:   Thu, 17 Jun 2021 15:09:48 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, stable@vger.kernel.org,
-        Jiri Olsa <jolsa@kernel.org>, Frank Eigler <fche@redhat.com>
-References: <20210616092521.800788-1-Tony.Ambardar@gmail.com>
- <caf1dcbd-7a07-993c-e940-1b2689985c5a@fb.com> <YMopCb5CqOYsl6HR@krava>
- <YMp68Dlqwu+wuHV9@wildebeest.org> <YMsPnaV798ICuMbv@krava>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <37f69a50-5b83-22e5-d54b-bea79ad3adec@iogearbox.net>
-Date:   Thu, 17 Jun 2021 13:22:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Krzysztof Kazimierczak <krzysztof.kazimierczak@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, maximmi@nvidia.com
+Subject: Re: [PATCH net] xdp, net: fix for construct skb by xdp inside xsk zc
+ rx
+Message-ID: <20210617130948.GA20486@ranger.igk.intel.com>
+References: <20210615033719.72294-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <YMsPnaV798ICuMbv@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26203/Wed Jun 16 13:07:58 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615033719.72294-1-xuanzhuo@linux.alibaba.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/17/21 11:02 AM, Jiri Olsa wrote:
-> On Thu, Jun 17, 2021 at 12:28:00AM +0200, Mark Wielaard wrote:
->> On Wed, Jun 16, 2021 at 06:38:33PM +0200, Jiri Olsa wrote:
->>>>> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
->>>>> index d636643ddd35..f32c059fbfb4 100644
->>>>> --- a/tools/bpf/resolve_btfids/main.c
->>>>> +++ b/tools/bpf/resolve_btfids/main.c
->>>>> @@ -649,6 +649,9 @@ static int symbols_patch(struct object *obj)
->>>>>    	if (sets_patch(obj))
->>>>>    		return -1;
->>>>> +	/* Set type to ensure endian translation occurs. */
->>>>> +	obj->efile.idlist->d_type = ELF_T_WORD;
->>>>
->>>> The change makes sense to me as .BTF_ids contains just a list of
->>>> u32's.
->>>>
->>>> Jiri, could you double check on this?
->>>
->>> the comment in ELF_T_WORD declaration suggests the size depends on
->>> elf's class?
->>>
->>>    ELF_T_WORD,                   /* Elf32_Word, Elf64_Word, ... */
->>>
->>> data in .BTF_ids section are allways u32
->>>
->>> I have no idea how is this handled in libelf (perhaps it's ok),
->>> but just that comment above suggests it could be also 64 bits,
->>> cc-ing Frank and Mark for more insight
->>
->> It is correct to use ELF_T_WORD, which means a 32bit unsigned word.
->>
->> The comment is meant to explain that, but is really confusing if you
->> don't know that Elf32_Word and Elf64_Word are the same thing (a 32bit
->> unsigned word). This comes from being "too consistent" in defining all
->> data types for both 32bit and 64bit ELF, even if those types are the
->> same in both formats...
->>
->> Only Elf32_Addr/Elf64_Addr and Elf32_Off/Elf64_Off are different
->> sizes. But Elf32/Elf_64_Half (16 bit), Elf32/Elf64_Word (32 bit),
->> Elf32/Elf64_Xword (64 bit) and their Sword/Sxword (signed) variants
->> are all identical data types in both the Elf32 and Elf64 formats.
->>
->> I don't really know why. It seems the original ELF spec was 32bit only
->> and when introducing the ELF64 format "they" simply duplicated all
->> data types whether or not those data type were actually different
->> between the 32 and 64 bit format.
+On Tue, Jun 15, 2021 at 11:37:19AM +0800, Xuan Zhuo wrote:
+> When each driver supports xsk rx, if the received buff returns XDP_PASS
+> after run xdp prog, it must construct skb based on xdp. This patch
+> extracts this logic into a public function xdp_construct_skb().
 > 
-> nice, thanks for details
+> There is a bug in the original logic. When constructing skb, we should
+> copy the meta information to skb and then use __skb_pull() to correct
+> the data.
 > 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> Fixes: 0a714186d3c0f ("i40e: add AF_XDP zero-copy Rx support")
+> Fixes: 2d4238f556972 ("ice: Add support for AF_XDP")
+> Fixes: bba2556efad66 ("net: stmmac: Enable RX via AF_XDP zero-copy")
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+> 
+> This patch depends on the previous patch:
+>     [PATCH net] ixgbe: xsk: fix for metasize when construct skb by xdp_buff
 
-Tony, could you do a v2 and summarize the remainder of the discussion in
-here for the commit message? Would be good to explicitly document the
-assumptions made and why they work.
+That doesn't make much sense if you ask me, I'd rather squash the patch
+mentioned above to this one.
 
-Thanks everyone,
-Daniel
+Also, I wanted to introduce such function to the kernel for a long time
+but I always head in the back of my head mlx5's AF_XDP ZC implementation
+which I'm not sure if it can adjust to something like Intel drivers are
+doing.
+
+Maxim? :)
+
+> 
+>  drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 16 +---------
+>  drivers/net/ethernet/intel/ice/ice_xsk.c      | 12 +-------
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 14 +--------
+>  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 23 +-------------
+>  include/net/xdp.h                             | 30 +++++++++++++++++++
+>  5 files changed, 34 insertions(+), 61 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> index 68f177a86403..81b0f44eedda 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> @@ -246,23 +246,9 @@ bool i40e_alloc_rx_buffers_zc(struct i40e_ring *rx_ring, u16 count)
+>  static struct sk_buff *i40e_construct_skb_zc(struct i40e_ring *rx_ring,
+>  					     struct xdp_buff *xdp)
+>  {
+> -	unsigned int metasize = xdp->data - xdp->data_meta;
+> -	unsigned int datasize = xdp->data_end - xdp->data;
+>  	struct sk_buff *skb;
+> 
+> -	/* allocate a skb to store the frags */
+> -	skb = __napi_alloc_skb(&rx_ring->q_vector->napi,
+> -			       xdp->data_end - xdp->data_hard_start,
+> -			       GFP_ATOMIC | __GFP_NOWARN);
+> -	if (unlikely(!skb))
+> -		goto out;
+> -
+> -	skb_reserve(skb, xdp->data - xdp->data_hard_start);
+> -	memcpy(__skb_put(skb, datasize), xdp->data, datasize);
+> -	if (metasize)
+> -		skb_metadata_set(skb, metasize);
+> -
+> -out:
+> +	skb = xdp_construct_skb(xdp, &rx_ring->q_vector->napi);
+>  	xsk_buff_free(xdp);
+>  	return skb;
+>  }
+> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> index a1f89ea3c2bd..f95e1adcebda 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> @@ -430,22 +430,12 @@ static void ice_bump_ntc(struct ice_ring *rx_ring)
+>  static struct sk_buff *
+>  ice_construct_skb_zc(struct ice_ring *rx_ring, struct ice_rx_buf *rx_buf)
+>  {
+> -	unsigned int metasize = rx_buf->xdp->data - rx_buf->xdp->data_meta;
+> -	unsigned int datasize = rx_buf->xdp->data_end - rx_buf->xdp->data;
+> -	unsigned int datasize_hard = rx_buf->xdp->data_end -
+> -				     rx_buf->xdp->data_hard_start;
+>  	struct sk_buff *skb;
+> 
+> -	skb = __napi_alloc_skb(&rx_ring->q_vector->napi, datasize_hard,
+> -			       GFP_ATOMIC | __GFP_NOWARN);
+> +	skb = xdp_construct_skb(rx_buf->xdp, &rx_ring->q_vector->napi);
+>  	if (unlikely(!skb))
+>  		return NULL;
+> 
+> -	skb_reserve(skb, rx_buf->xdp->data - rx_buf->xdp->data_hard_start);
+> -	memcpy(__skb_put(skb, datasize), rx_buf->xdp->data, datasize);
+> -	if (metasize)
+> -		skb_metadata_set(skb, metasize);
+> -
+>  	xsk_buff_free(rx_buf->xdp);
+>  	rx_buf->xdp = NULL;
+>  	return skb;
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> index ee88107fa57a..123945832c96 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> @@ -203,24 +203,12 @@ bool ixgbe_alloc_rx_buffers_zc(struct ixgbe_ring *rx_ring, u16 count)
+>  static struct sk_buff *ixgbe_construct_skb_zc(struct ixgbe_ring *rx_ring,
+>  					      struct ixgbe_rx_buffer *bi)
+>  {
+> -	unsigned int metasize = bi->xdp->data - bi->xdp->data_meta;
+> -	unsigned int datasize = bi->xdp->data_end - bi->xdp->data_meta;
+>  	struct sk_buff *skb;
+> 
+> -	/* allocate a skb to store the frags */
+> -	skb = __napi_alloc_skb(&rx_ring->q_vector->napi,
+> -			       bi->xdp->data_end - bi->xdp->data_hard_start,
+> -			       GFP_ATOMIC | __GFP_NOWARN);
+> +	skb = xdp_construct_skb(bi->xdp, &rx_ring->q_vector->napi);
+>  	if (unlikely(!skb))
+>  		return NULL;
+> 
+> -	skb_reserve(skb, bi->xdp->data_meta - bi->xdp->data_hard_start);
+> -	memcpy(__skb_put(skb, datasize), bi->xdp->data_meta, datasize);
+> -	if (metasize) {
+> -		__skb_pull(skb, metasize);
+> -		skb_metadata_set(skb, metasize);
+> -	}
+> -
+>  	xsk_buff_free(bi->xdp);
+>  	bi->xdp = NULL;
+>  	return skb;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index c87202cbd3d6..143ac1edb876 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -4729,27 +4729,6 @@ static void stmmac_finalize_xdp_rx(struct stmmac_priv *priv,
+>  		xdp_do_flush();
+>  }
+> 
+> -static struct sk_buff *stmmac_construct_skb_zc(struct stmmac_channel *ch,
+> -					       struct xdp_buff *xdp)
+> -{
+> -	unsigned int metasize = xdp->data - xdp->data_meta;
+> -	unsigned int datasize = xdp->data_end - xdp->data;
+> -	struct sk_buff *skb;
+> -
+> -	skb = __napi_alloc_skb(&ch->rxtx_napi,
+> -			       xdp->data_end - xdp->data_hard_start,
+> -			       GFP_ATOMIC | __GFP_NOWARN);
+> -	if (unlikely(!skb))
+> -		return NULL;
+> -
+> -	skb_reserve(skb, xdp->data - xdp->data_hard_start);
+> -	memcpy(__skb_put(skb, datasize), xdp->data, datasize);
+> -	if (metasize)
+> -		skb_metadata_set(skb, metasize);
+> -
+> -	return skb;
+> -}
+> -
+>  static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
+>  				   struct dma_desc *p, struct dma_desc *np,
+>  				   struct xdp_buff *xdp)
+> @@ -4761,7 +4740,7 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
+>  	struct sk_buff *skb;
+>  	u32 hash;
+> 
+> -	skb = stmmac_construct_skb_zc(ch, xdp);
+> +	skb = xdp_construct_skb(xdp, &ch->rxtx_napi);
+>  	if (!skb) {
+>  		priv->dev->stats.rx_dropped++;
+>  		return;
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index a5bc214a49d9..561e21eaf718 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -95,6 +95,36 @@ xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
+>  	xdp->data_meta = meta_valid ? data : data + 1;
+>  }
+> 
+> +static __always_inline struct sk_buff *
+> +xdp_construct_skb(struct xdp_buff *xdp, struct napi_struct *napi)
+> +{
+> +	unsigned int metasize;
+> +	unsigned int datasize;
+> +	unsigned int headroom;
+> +	struct sk_buff *skb;
+> +	unsigned int len;
+> +
+> +	/* this include metasize */
+> +	datasize = xdp->data_end  - xdp->data_meta;
+> +	metasize = xdp->data      - xdp->data_meta;
+> +	headroom = xdp->data_meta - xdp->data_hard_start;
+> +	len      = xdp->data_end  - xdp->data_hard_start;
+> +
+> +	/* allocate a skb to store the frags */
+> +	skb = __napi_alloc_skb(napi, len, GFP_ATOMIC | __GFP_NOWARN);
+> +	if (unlikely(!skb))
+> +		return NULL;
+> +
+> +	skb_reserve(skb, headroom);
+> +	memcpy(__skb_put(skb, datasize), xdp->data_meta, datasize);
+> +	if (metasize) {
+> +		__skb_pull(skb, metasize);
+> +		skb_metadata_set(skb, metasize);
+> +	}
+> +
+> +	return skb;
+> +}
+> +
+>  /* Reserve memory area at end-of data area.
+>   *
+>   * This macro reserves tailroom in the XDP buffer by limiting the
+> --
+> 2.31.0
+> 
