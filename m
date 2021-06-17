@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BE73ABBF9
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 20:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20413ABBFB
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 20:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232734AbhFQSok (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 14:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
+        id S233086AbhFQSor (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 14:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232483AbhFQSoj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 14:44:39 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80FCC061760
-        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 11:42:31 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id eb2-20020ad44e420000b029025a58adfc6bso1866754qvb.9
-        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 11:42:31 -0700 (PDT)
+        with ESMTP id S233284AbhFQSop (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 14:44:45 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65956C061574
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 11:42:34 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id x4-20020a3763040000b02903ab95237c25so2912574qkb.0
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 11:42:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=PFZQwytkaiwWlIlKohYqf6fjHhndSooLEMwUFHht7ds=;
-        b=iyJ1e2QDwkO2dM31gs2gGxDqbXMTnBTPHawrQ46ZYkK1iL09n0hHmRo50WUvVWMF1o
-         j4i74zlkPXYgC9ZQTxakKY2nVhpaODFg8TpjOWOjtPqCOSjpleV/gByQbmj98wgYlYsO
-         yWmn4LHLY1bbJw87u3Y4/6hUVR4xVy8fkz8WCUCHuASES/yhxsr8BMhA0szo/Xs9XKX+
-         vGHQTsCVj812n/TeIQeuWwu6R9kwVQ3IhDNEhmh2BIDjD7NbVboT9QT1adqLGA1y9njG
-         E1SeuhymSiP6QdRYN7r8f4l9i6lTW/sGCCX2kV26XDTKmfDO3coo19/4fKOaodfvO02T
-         ckzQ==
+        bh=P2HhH8guhta86S5605kqN5Fpf4VPJ3qSwUq040gmRik=;
+        b=RnWQmXgJd+ZC16mQntBSthlxeSP5ca9Ii4s+Yhqyatut7+iaz9MqeF+t2ipQxypPwj
+         wHNg1IIfJUC/s69tD3+GRzAEtY21jdDJTBi/HG4C4Ey3c1zSHdb0ZJjzeL88Gs8GZboY
+         QDx8rO81Ic2V+Bql6lvvtpqXPZ2GzZsZ5tiyPu05NDejj5P8dBzcOTTAq918VWdV8XpG
+         sjkwP5F1atnfmddHdtQ82gedkNMTCnQQMA32vPRmsEPfJmVONsb3Tnno+BPuyu+DeljG
+         hiiz/9TJdzR4fpMhOfk75uA6oppsI4MQy8PCf0yzeM7hoq8RfXzehYUuOE/mMzgLAzU5
+         l/3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=PFZQwytkaiwWlIlKohYqf6fjHhndSooLEMwUFHht7ds=;
-        b=NP1qfOaS9fsEoBmRihCXwtufF/8W/MXpwBKEfTO29ZHpSJXDJWvV4XmavvkLFInexo
-         6czJFXSpPyr2buOtkk6lKb1udAGXUdmzCDGSdd1OYg1E5XhOINrk//BNC07FTahb6teb
-         uuro7elKEd7UboBwfjG3AxO7yEmfGAXzJsHhlwqr9NS9yc1Lbh//Aghl8HQRYrjo5NQG
-         kXak4WxA2TAuNxnqGSG18o1qnrzDBQO/k7hXQCENOksVCnQhbTgTCCVyflunVHqWUMyu
-         TsyBzyw61fPZXcVssIr2hZHbWtK3PaD+ku2ExKMJ7aA1+tYARv8mpqF0Uusp39Zs1dsa
-         ZzKQ==
-X-Gm-Message-State: AOAM533uJeKrkiFGfHjGfQpIDWSvlqMn6iqan4c74o0yKBhtQgiwHMw1
-        oh45rtMdP/Lv2eUF9TSTeFYpGBdw8FRP
-X-Google-Smtp-Source: ABdhPJxCHi9VcrdwhllY0LhoGwLekF7I6iEiE23gPOhHNruIdT2wgVP0bd5Vr4d54ca3YYS+iZblTXZdWg4a
+        bh=P2HhH8guhta86S5605kqN5Fpf4VPJ3qSwUq040gmRik=;
+        b=OL9l1lvLIx+G+hcEdSMXvJONKRs42gkMqv4JeTOE+dF89ymnzsVTk6SK+ESLr9a3eS
+         vd2JRef6WNFssw1mHzUO+nJRSwNPvyv/sq+62mrjc8w6pxk/C3XZYGGQ6ywt6w1bCIGH
+         O4EGHwoYHTfjG843KK/p7DOcrh/ttzu4gFytFe71B5/IkV+jmncNkmOxhzfuqhP5dohk
+         jPD67quV6awId9LZEXVF+C07QOFi+IxxDthAqYQ88qja5dGL+ceiMk/eI/+gJKEjTeuy
+         7O4d+JAEa+muC4KO+LpTn8fK+AsNB+6OhjcltEnR+th6ypX7Z/EWXhAphwdyAlOeOtYZ
+         9yEQ==
+X-Gm-Message-State: AOAM531EKYTUyEDo6+k6jDo+bw5BRrrilvcXQLO/mEWo/kb/lNJwLjGB
+        yctG9dg4iWz+eplHso74zMIZc/rWOpDc
+X-Google-Smtp-Source: ABdhPJzpOiTvkOQp/eLCOVbVooNjGST6jvV4yRj+qNFTjDSTcCx78tUUwFs1zh4lcm2s9a1yti7ljdeVtC/I
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:ef90:beff:e92f:7ce0])
- (user=irogers job=sendgmr) by 2002:a25:c243:: with SMTP id
- s64mr8032005ybf.171.1623955350902; Thu, 17 Jun 2021 11:42:30 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 11:42:14 -0700
+ (user=irogers job=sendgmr) by 2002:a25:be44:: with SMTP id
+ d4mr8061096ybm.497.1623955353529; Thu, 17 Jun 2021 11:42:33 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 11:42:15 -0700
 In-Reply-To: <20210617184216.2075588-1-irogers@google.com>
-Message-Id: <20210617184216.2075588-2-irogers@google.com>
+Message-Id: <20210617184216.2075588-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20210617184216.2075588-1-irogers@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 2/4] perf test: Pass the verbose option to shell tests
+Subject: [PATCH 3/4] perf test: Add verbose skip output for bpf counters
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -68,34 +68,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Having a verbose option will allow shell tests to provide extra failure
-details when the fail or skip.
+Provide additional context for when the stat bpf counters test skips.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/builtin-test.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/perf/tests/shell/stat_bpf_counters.sh | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index cbbfe48ab802..a8160b1684de 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -577,11 +577,14 @@ struct shell_test {
- static int shell_test__run(struct test *test, int subdir __maybe_unused)
- {
- 	int err;
--	char script[PATH_MAX];
-+	char script[PATH_MAX + 3];
- 	struct shell_test *st = test->priv;
+diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
+index 2f9948b3d943..81d61b6e1208 100755
+--- a/tools/perf/tests/shell/stat_bpf_counters.sh
++++ b/tools/perf/tests/shell/stat_bpf_counters.sh
+@@ -22,7 +22,13 @@ compare_number()
+ }
  
- 	path__join(script, sizeof(script), st->dir, st->file);
+ # skip if --bpf-counters is not supported
+-perf stat --bpf-counters true > /dev/null 2>&1 || exit 2
++if ! perf stat --bpf-counters true > /dev/null 2>&1; then
++	if [ "$1" == "-v" ]; then
++		echo "Skipping: --bpf-counters not supported"
++		perf --no-pager stat --bpf-counters true || true
++	fi
++	exit 2
++fi
  
-+	if (verbose)
-+		strncat(script, " -v", sizeof(script));
-+
- 	err = system(script);
- 	if (!err)
- 		return TEST_OK;
+ base_cycles=$(perf stat --no-big-num -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
+ bpf_cycles=$(perf stat --no-big-num --bpf-counters -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
 -- 
 2.32.0.288.g62a8d224e6-goog
 
