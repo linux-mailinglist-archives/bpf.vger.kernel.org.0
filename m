@@ -2,169 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464883AAD28
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 09:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320CD3AAD6A
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 09:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbhFQHOI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 03:14:08 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:13952 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229599AbhFQHOH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 17 Jun 2021 03:14:07 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15H74w7b032129;
-        Thu, 17 Jun 2021 00:11:39 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=e6qg7GLkSAOxlCxOPp5OKSWVY1+Yiy6W2iYZt1Ej6LQ=;
- b=KQyOaZIDWb5UQQHYvXxx+I8bNSaKPIVCGITW1yx1x4HkW/kabaRSTCpnrF8rilNETYNy
- ubuw5QM4Amj+FmHl3bfexvU1QNtj7grz9Mjn3n8CQb0hLVfWWUL+kNRflfAgbieaQ0OF
- 46YRl0YsNiya9XOiAQcoxh8tSxrLuYI375w= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 396t1be5yd-12
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Jun 2021 00:11:39 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 00:11:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F2B/TVjmVFerYYAOyudtvDZurpHErbARPdOy8kIdfaw5sQwHH5t+lyVkojHS1eHzNjB+0nSn8KjudA280vOQLVDELHzciXTEbTzYkK3Ik33XDrk8Dd4HhI/BeUjxu4ZWdL/SBhs2pEOdg/xMHYu41O3RqbsfCCNUBikoJWW+JFot2PsS50DZ1Ju5+xgaVfVEQWwmKSXJ1TeBXcT03JT/DjTSwGIMg/7VqQolLZXelT5qyPtzKI+8fgywuoQceYlUHgug+ovohktO28m5rZqjjpimkHeLPzDzighkizga6f0pdMUdITnGX+qmAb/v3lbSmk6tm/s5WNAZl1Jbq0dJgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e6qg7GLkSAOxlCxOPp5OKSWVY1+Yiy6W2iYZt1Ej6LQ=;
- b=dlJAOLm9luAvPdJXZGFxkGMKcQcDWfBiNRxJfTjXVryU7l71CmeV/w8/cwCCNdbjJKR6KE6YS+SxVZlDQYU5vRdBNw+fmvHPIyWOL/uFl9YcfmCU4ctvfjJCaf2k219zyks84zK6j9ofK0U1/fjHFgPskpHYCPrXWUjf2MRBgKQIA3UgK9o1cqFiizXIQdp1WpTLTA2ICA86fdQrwzv5xxKqVZxut5QG7oBRWKxoQ8jQKMJBhWonwravzHH7RR6F00J42jZajssFEZ0J6iO6PltfdFs2qXGuVnxJgGWY8+aDDdW2xkmHP6lCRTDnR7Dor1o+CCOXcRZ1vyGsGC/ZCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: riotgames.com; dkim=none (message not signed)
- header.d=none;riotgames.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR15MB2256.namprd15.prod.outlook.com (2603:10b6:805:1b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Thu, 17 Jun
- 2021 07:11:35 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4219.026; Thu, 17 Jun 2021
- 07:11:35 +0000
-Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: Add test for xdp_md
- context in BPF_PROG_TEST_RUN
-To:     Zvi Effron <zeffron@riotgames.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S229683AbhFQHZZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 03:25:25 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:36209 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhFQHZX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 03:25:23 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id E10C7240008;
+        Thu, 17 Jun 2021 07:23:04 +0000 (UTC)
+Subject: Re: [PATCH] riscv: Ensure BPF_JIT_REGION_START aligned with PMD size
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Cody Haas <chaas@riotgames.com>,
-        Lisa Watanabe <lwatanabe@riotgames.com>
-References: <20210616224712.3243-1-zeffron@riotgames.com>
- <20210616224712.3243-5-zeffron@riotgames.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <5ff53b96-775e-c0af-8b83-d1e366fb2d3c@fb.com>
-Date:   Thu, 17 Jun 2021 00:11:33 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <20210616224712.3243-5-zeffron@riotgames.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:6d3c]
-X-ClientProxiedBy: BYAPR05CA0098.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::39) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20210330022144.150edc6e@xhacker>
+ <20210330022521.2a904a8c@xhacker> <87o8ccqypw.fsf@igel.home>
+ <20210612002334.6af72545@xhacker> <87bl8cqrpv.fsf@igel.home>
+ <20210614010546.7a0d5584@xhacker> <87im2hsfvm.fsf@igel.home>
+ <20210615004928.2d27d2ac@xhacker>
+ <ab536c78-ba1c-c65c-325a-8f9fba6e9d46@ghiti.fr>
+ <20210616080328.6548e762@xhacker>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <4cdb1261-6474-8ae6-7a92-a3be81ce8cb5@ghiti.fr>
+Date:   Thu, 17 Jun 2021 09:23:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::12bc] (2620:10d:c090:400::5:6d3c) by BYAPR05CA0098.namprd05.prod.outlook.com (2603:10b6:a03:e0::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Thu, 17 Jun 2021 07:11:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 58d064e6-8d05-46ce-f023-08d9315f2498
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2256:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR15MB2256E39B8874FAE4C4340315D30E9@SN6PR15MB2256.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DxvnophMBDHBxiUSUgL/HYOb0Rk7RVFKCYD1yOO5iI/vAh47alMCkXPT5W45qtjFysFATKumLy+XHQG9vmgz/CH5QFWmc0m8MeHL6+nCiL9lt5Bs84WA5cnbneFER4wKJJnNj7AkGjYctyJ4WoDqKARa7B6pHJI/SLzUt2SKIDfHHt1/TkMylBhcQ1pPH2sEV4peX5BfRcog+F8dR2yBUlDOSVfLrRAUpcj4kgODSa5uJgH9eVa2DNANYXLlpTJ6DiotlJg34p15T5/Tos4jKg7MdOgU8LBJPDj/wKY/nZSMTGEx0vZbpmtc8PgCarxMQ4nNats0uHkOMT39wpGHRGEiYc4tTqed/yR0jfDWUcGyVd5v4Xmty1xDgKFIyHrxmFvtPCelXewl3fieCdT61CkQ5B1IAU7wbYRhJHSgXsZdLcPrOFgWLFZg8E5Y8h28sUnprhyQPZvX/90ziK178iPu860Ye05Ys5a6W9IfOhak8hwTCNdFxiGYk9Uhd4Tx68Lug7Bymz/XDKD/OhAwu29xPYftxEnHQKGpLop+WfxMlcx9xbsWaU0+ZXeaEuRQ58CrxBSCyCjSVnXv19bMzlVEMGk3teUK1lgwl5o2+evnTUx+f9XaclgrzD4MTqjqUuWeomMB+ontRe5XcTP6U7MfgFTRQ9JF5PP8qpadCziM2RgNCThw+0clFRkD8lrm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(186003)(53546011)(478600001)(16526019)(54906003)(86362001)(8676002)(83380400001)(31686004)(8936002)(5660300002)(31696002)(2906002)(52116002)(2616005)(7416002)(6486002)(36756003)(38100700002)(4326008)(4744005)(66476007)(66556008)(66946007)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V1BHNGZLKzBDM0pjN3VDU08rSTU5MXQ5L0lsdjA5OEpiTk1lRzV3cmVKOE4r?=
- =?utf-8?B?L1RiZExnU01rRjNTUzJxdTArbFRlS2p4NDJub25jbUdwZ2ZEVGx5YnROVER1?=
- =?utf-8?B?SE5pb0trNHAya2NXeE05Q1NjOEdpNEIrSnNXRk50Z0N3dG9SK2JiV3NYUnd4?=
- =?utf-8?B?R3I5cmVERk1kcklxOXZHbk9LK05FYlJReHRISEZuZFBJeXVuMmIxQXRNbGlE?=
- =?utf-8?B?aHZjdS9sQlFlK1B5dTh1RnQrdHNIbjVWS2p5R2dhZ3RpRVU0UW9qemIxUi9E?=
- =?utf-8?B?SnhJUndaS0V4UUloT2tlTUlxcWRDblpJbkhWaDNRUE40bFVrYUhOazhzTHkz?=
- =?utf-8?B?bFcrcVk4NmZYN1J6cUM2cVRpN2FpcnplSjV0eDdZbzAycmJ1N2VvNG1lS055?=
- =?utf-8?B?Rm53emZJOVlRZlFUK05QWGVmbVpnclluaTZ0aHQvbTZWRzdxWEp0cjFRUndt?=
- =?utf-8?B?ZmFra2hPTWdtZ1B2Zk1mc0pVOGd3MVcrZUZJd3ZUNTh0TTgvUytIS29PaVE1?=
- =?utf-8?B?bUp6dXJOWDJyb1haQTk0eUtKWTNlVExoWVAyRGNYcHpIdkNzYmw5aFNpR0Qr?=
- =?utf-8?B?amFwcnhTcUlPajhLaWFaUzRYeEFCQjVSaDF6NElQVG5HSWUyK2ZyaHhXZVVi?=
- =?utf-8?B?NnlVM052RHVFZlRkT1B1eVZQcnpSaU1FUERlSXlBYVhCNGtEWkk3c0VYSGNS?=
- =?utf-8?B?aDFQcmJTeHZHMEFqbGhMSWhlaVNmUTViemg1SnU4SnRJQWFrKzdxcTRsMUNS?=
- =?utf-8?B?Q2dLQkxmRWRYYjlKb1N4NkIvdTF5UVpTOFlzYlYxVzFOYnoxUDdDUHBFWjE0?=
- =?utf-8?B?a0xGeDBPTzVUL05mMkJRc20raWtnVS9XL1FVNUNCSFIrNG10NDlVQXVJdGdM?=
- =?utf-8?B?TExSSXlzTWRJUGNNL3UvVUdPekR5cE1JZ0RjMGVYdmJGNUswVFRQWFpEYmhJ?=
- =?utf-8?B?aXJ0aHg3c3UrdmNXNjhVZ2VKZEdqY2FnamU4cXZCcGJqNVJwZnZiN1kza1hN?=
- =?utf-8?B?U01keHJyMkJOSjNRcWhkZG44Zys4cFJTVGlXRGUrZmlHK3R0QUN0bWViUzE3?=
- =?utf-8?B?Z3hYN1NRUTF6M3FwcUt3cEtUUEk1WEdVaEtrOXZ6eWJPZjJZSEh4a2xJRjRa?=
- =?utf-8?B?S3JFY0tXU09yTWE3b0FoM0J2c1Y1STl3VFJMc1FmSHYwZm1rdEZkQlhmdm5D?=
- =?utf-8?B?WCt5WndTd01qa1lTWlVtVkpVYzNKRng5R0VxZzJkUzBWVytSUkY4MzFYeUlK?=
- =?utf-8?B?VHFFdk5SRFBrbjlTY21MUmpBVjMrRVRLSzByUjM1VGZOZkcxYk9sRHBvOTNG?=
- =?utf-8?B?NXUxZ2d3OGpCUnFBbjFFVVpOREJoZCtjajRvNy9ZT0t2YXVzYXRvRkliOVRy?=
- =?utf-8?B?RWJKZTF2WHQwSVJPN1FVYmJyZEVYNGRQeDRMZUtwZFREYTlKOVUzM3VnZWE2?=
- =?utf-8?B?QzBXS2pTdFNEeGJNRFZJckN3NmJkZDZEeVo3OWZwMTlLYVVYVkZLVGVVa1Iz?=
- =?utf-8?B?ZExPRytxNjdUSzhJRjlxMUxSMmpnRXNFcmdFNnBjNHFDVE9URml5QmhwbGVs?=
- =?utf-8?B?ZmRkdzFkTi9WUzI4aWJFQTFpZDZuL1Y1UDg4bjhkdUFlOVRQWVl3emlYU3ht?=
- =?utf-8?B?K1VTV1NUcCs2OGJaRlNLK3E4VURQVVdEZllROW9CWjBGQU5MMU9uekJZK2kv?=
- =?utf-8?B?ZzhDMGVEV2t4dlZEejI3dUQ0OXVHV1daZFVhOVRsaVRRR2Fpend0OUI4NFVX?=
- =?utf-8?B?NnE3c3JWOGxkOGs0bjhPdTk1b1VWVFkvVGdOMW03NllHMTFYbzE1SUczYVVu?=
- =?utf-8?Q?Cz8QKZdfjZSNhBp9C8hJXAW4NQ70XRv+MaP7c=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58d064e6-8d05-46ce-f023-08d9315f2498
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 07:11:35.6611
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W3HOeK0/sazipPH84eQRNDoGd1JR5PnCxFzrVqV8XxAfnSOIcmWyhADUndJN6gxc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2256
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: QUv2Z7G3XclriUPcA3mct65W-PYBGQKk
-X-Proofpoint-GUID: QUv2Z7G3XclriUPcA3mct65W-PYBGQKk
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-17_02:2021-06-15,2021-06-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=999 suspectscore=0 phishscore=0
- adultscore=0 clxscore=1015 spamscore=0 bulkscore=0 priorityscore=1501
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106170050
-X-FB-Internal: deliver
+In-Reply-To: <20210616080328.6548e762@xhacker>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 6/16/21 3:47 PM, Zvi Effron wrote:
-> Add a test for using xdp_md as a context to BPF_PROG_TEST_RUN for XDP
-> programs.
+Le 16/06/2021 à 02:03, Jisheng Zhang a écrit :
+> On Tue, 15 Jun 2021 20:54:19 +0200
+> Alex Ghiti <alex@ghiti.fr> wrote:
 > 
-> The test uses a BPF program that takes in a return value from XDP
-> meta data, then reduces the size of the XDP meta data by 4 bytes.
+>> Hi Jisheng,
 > 
-> Test cases validate the possible failure cases for passing in invalid
-> xdp_md contexts, that the return value is successfully passed
-> in, and that the adjusted meta data is successfully copied out.
+> Hi Alex,
 > 
-> Co-developed-by: Cody Haas <chaas@riotgames.com>
-> Signed-off-by: Cody Haas <chaas@riotgames.com>
-> Co-developed-by: Lisa Watanabe <lwatanabe@riotgames.com>
-> Signed-off-by: Lisa Watanabe <lwatanabe@riotgames.com>
-> Signed-off-by: Zvi Effron <zeffron@riotgames.com>
+>>
+>> Le 14/06/2021 à 18:49, Jisheng Zhang a écrit :
+>>> From: Jisheng Zhang <jszhang@kernel.org>
+>>>
+>>> Andreas reported commit fc8504765ec5 ("riscv: bpf: Avoid breaking W^X")
+>>> breaks booting with one kind of config file, I reproduced a kernel panic
+>>> with the config:
+>>>
+>>> [    0.138553] Unable to handle kernel paging request at virtual address ffffffff81201220
+>>> [    0.139159] Oops [#1]
+>>> [    0.139303] Modules linked in:
+>>> [    0.139601] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5-default+ #1
+>>> [    0.139934] Hardware name: riscv-virtio,qemu (DT)
+>>> [    0.140193] epc : __memset+0xc4/0xfc
+>>> [    0.140416]  ra : skb_flow_dissector_init+0x1e/0x82
+>>> [    0.140609] epc : ffffffff8029806c ra : ffffffff8033be78 sp : ffffffe001647da0
+>>> [    0.140878]  gp : ffffffff81134b08 tp : ffffffe001654380 t0 : ffffffff81201158
+>>> [    0.141156]  t1 : 0000000000000002 t2 : 0000000000000154 s0 : ffffffe001647dd0
+>>> [    0.141424]  s1 : ffffffff80a43250 a0 : ffffffff81201220 a1 : 0000000000000000
+>>> [    0.141654]  a2 : 000000000000003c a3 : ffffffff81201258 a4 : 0000000000000064
+>>> [    0.141893]  a5 : ffffffff8029806c a6 : 0000000000000040 a7 : ffffffffffffffff
+>>> [    0.142126]  s2 : ffffffff81201220 s3 : 0000000000000009 s4 : ffffffff81135088
+>>> [    0.142353]  s5 : ffffffff81135038 s6 : ffffffff8080ce80 s7 : ffffffff80800438
+>>> [    0.142584]  s8 : ffffffff80bc6578 s9 : 0000000000000008 s10: ffffffff806000ac
+>>> [    0.142810]  s11: 0000000000000000 t3 : fffffffffffffffc t4 : 0000000000000000
+>>> [    0.143042]  t5 : 0000000000000155 t6 : 00000000000003ff
+>>> [    0.143220] status: 0000000000000120 badaddr: ffffffff81201220 cause: 000000000000000f
+>>> [    0.143560] [<ffffffff8029806c>] __memset+0xc4/0xfc
+>>> [    0.143859] [<ffffffff8061e984>] init_default_flow_dissectors+0x22/0x60
+>>> [    0.144092] [<ffffffff800010fc>] do_one_initcall+0x3e/0x168
+>>> [    0.144278] [<ffffffff80600df0>] kernel_init_freeable+0x1c8/0x224
+>>> [    0.144479] [<ffffffff804868a8>] kernel_init+0x12/0x110
+>>> [    0.144658] [<ffffffff800022de>] ret_from_exception+0x0/0xc
+>>> [    0.145124] ---[ end trace f1e9643daa46d591 ]---
+>>>
+>>> After some investigation, I think I found the root cause: commit
+>>> 2bfc6cd81bd ("move kernel mapping outside of linear mapping") moves
+>>> BPF JIT region after the kernel:
+>>>
+>>> The &_end is unlikely aligned with PMD size, so the front bpf jit
+>>> region sits with part of kernel .data section in one PMD size mapping.
+>>> But kernel is mapped in PMD SIZE, when bpf_jit_binary_lock_ro() is
+>>> called to make the first bpf jit prog ROX, we will make part of kernel
+>>> .data section RO too, so when we write to, for example memset the
+>>> .data section, MMU will trigger a store page fault.
+>>
+>> Good catch, we make sure no physical allocation happens between _end and
+>> the next PMD aligned address, but I missed this one.
+>>
+>>>
+>>> To fix the issue, we need to ensure the BPF JIT region is PMD size
+>>> aligned. This patch acchieve this goal by restoring the BPF JIT region
+>>> to original position, I.E the 128MB before kernel .text section.
+>>
+>> But I disagree with your solution: I made sure modules and BPF programs
+>> get their own virtual regions to avoid worst case scenario where one
+>> could allocate all the space and leave nothing to the other (we are
+>> limited to +- 2GB offset). Why don't just align BPF_JIT_REGION_START to
+>> the next PMD aligned address?
+> 
+> Originally, I planed to fix the issue by aligning BPF_JIT_REGION_START, but
+> IIRC, BPF experts are adding (or have added) "Calling kernel functions from BPF"
+> feature, there's a risk that BPF JIT region is beyond the 2GB of module region:
+> 
+> ------
+> module
+> ------
+> kernel
+> ------
+> BPF_JIT
+> 
+> So I made this patch finally. In this patch, we let BPF JIT region sit
+> between module and kernel.
+> 
 
-Acked-by: Yonghong Song <yhs@fb.com>
+ From what I read in the lwn article, I'm not sure BPF programs can call 
+module functions, can someone tell us if it is possible? Or planned?
+
+> To address "make sure modules and BPF programs get their own virtual regions",
+> what about something as below (applied against this patch)?
+> 
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 380cd3a7e548..da1158f10b09 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -31,7 +31,7 @@
+>   #define BPF_JIT_REGION_SIZE	(SZ_128M)
+>   #ifdef CONFIG_64BIT
+>   #define BPF_JIT_REGION_START	(BPF_JIT_REGION_END - BPF_JIT_REGION_SIZE)
+> -#define BPF_JIT_REGION_END	(MODULES_END)
+> +#define BPF_JIT_REGION_END	(PFN_ALIGN((unsigned long)&_start))
+>   #else
+>   #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+>   #define BPF_JIT_REGION_END	(VMALLOC_END)
+> @@ -40,7 +40,7 @@
+>   /* Modules always live before the kernel */
+>   #ifdef CONFIG_64BIT
+>   #define MODULES_VADDR	(PFN_ALIGN((unsigned long)&_end) - SZ_2G)
+> -#define MODULES_END	(PFN_ALIGN((unsigned long)&_start))
+> +#define MODULES_END	(BPF_JIT_REGION_END)
+>   #endif
+>   
+> 
+
+In case it is possible, I would let the vmalloc allocator handle the 
+case where modules steal room from BPF: I would then not implement the 
+above but rather your first patch.
+
+And do not forget to modify Documentation/riscv/vm-layout.rst 
+accordingly and remove the comment "/* KASLR should leave at least 128MB 
+for BPF after the kernel */"
+
+Thanks,
+
+Alex
+
+> 
+>>
+>> Again, good catch, thanks,
+>>
+>> Alex
+>>
+>>>
+>>> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+>>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>>> ---
+>>>    arch/riscv/include/asm/pgtable.h | 5 ++---
+>>>    1 file changed, 2 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>>> index 9469f464e71a..380cd3a7e548 100644
+>>> --- a/arch/riscv/include/asm/pgtable.h
+>>> +++ b/arch/riscv/include/asm/pgtable.h
+>>> @@ -30,9 +30,8 @@
+>>>    
+>>>    #define BPF_JIT_REGION_SIZE	(SZ_128M)
+>>>    #ifdef CONFIG_64BIT
+>>> -/* KASLR should leave at least 128MB for BPF after the kernel */
+>>> -#define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
+>>> -#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
+>>> +#define BPF_JIT_REGION_START	(BPF_JIT_REGION_END - BPF_JIT_REGION_SIZE)
+>>> +#define BPF_JIT_REGION_END	(MODULES_END)
+>>>    #else
+>>>    #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+>>>    #define BPF_JIT_REGION_END	(VMALLOC_END)
+>>>    
+> 
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
