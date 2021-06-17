@@ -2,262 +2,374 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5240F3AB5DE
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 16:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648223AB5B6
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 16:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhFQO1U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 10:27:20 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:45001 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbhFQO1T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 10:27:19 -0400
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id C22EBD5AB0;
-        Thu, 17 Jun 2021 14:19:28 +0000 (UTC)
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 09F16C0007;
-        Thu, 17 Jun 2021 14:18:54 +0000 (UTC)
-Subject: Re: [PATCH] riscv: Ensure BPF_JIT_REGION_START aligned with PMD size
-From:   Alex Ghiti <alex@ghiti.fr>
-To:     Palmer Dabbelt <palmer@dabbelt.com>, jszhang3@mail.ustc.edu.cn
-Cc:     schwab@linux-m68k.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, ryabinin.a.a@gmail.com, glider@google.com,
-        andreyknvl@gmail.com, dvyukov@google.com, bjorn@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        luke.r.nels@gmail.com, xi.wang@gmail.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <mhng-042979fe-75f0-4873-8afd-f8c07942f792@palmerdabbelt-glaptop>
- <ae256a5d-70ac-3a5f-ca55-5e4210a0624c@ghiti.fr>
-Message-ID: <50ebc99c-f0a2-b4ea-fc9b-cd93a8324697@ghiti.fr>
-Date:   Thu, 17 Jun 2021 16:18:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231955AbhFQOVT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 10:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231666AbhFQOVT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Jun 2021 10:21:19 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCABC061574
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 07:19:11 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id g4so3890348pjk.0
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 07:19:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=/1UczQSLpDCUUWa43iLedI3l8nkc2dHNA+5NemDu+Z4=;
+        b=BIffTftdHAl31gIE2xi6S5mMLN+ejIimeAI0usFQoYefeFxWmPWQUn7DZYCyBbf69I
+         TbdDcv6t3EFzvjjwXsPGoERvZZSFLLKCjErM+vcppNG0uj+ptWbWbsCwdMej89CFx9Tc
+         uPHKPrj9C9nCIuPQTHfLhJ6PAAMHwjVAIGy97gWnYB+9AWZwG+p9DHiisC2nv7yupILq
+         z9+MWFg56yfje2Y2k3wLL+3EbTP8T763oltp0fOdVOw0rqU3DynfxbdbCkb/2HkUkm/D
+         TiYUYD/1Ll4zoGnutFWmOWfWlA2EjFm4Xkc2svOLV6ZMcb3YoNseTBG7qkhQ4P5O1n1/
+         sX/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=/1UczQSLpDCUUWa43iLedI3l8nkc2dHNA+5NemDu+Z4=;
+        b=hh/t/b6wEbImQVFjQIY6OZa62ZDYvxL9s/8q8Y6ejd3FtbUxgQLkkZZ2npXd2Xmkek
+         pBmr9EWrcdPr0ZjAzcdnFhypjv9gT9cY70XG2tj5AL6lfUYjdS1R/G/GYbRj2+D5B+Kz
+         hznNe5LJNEkbdPfMlPm9M2S0vJbP3VLxpuJTdf7BFXxcsa1Zk75G58B1rU17JsvPiHNv
+         oEFPMyjrfWzpQ8f/n3ccj/ut+r0kASp9QdLSVYy6sicth3sDuH8aixCWs6IBbPX9Mrxf
+         w4EwvhRIFpK9nwxHkXyA2RGKpKrEjybd3rIJvXM5CiLfyERei+wScTvQLF10VPYw0v2i
+         HwQg==
+X-Gm-Message-State: AOAM53197zSnEDPrs138QyRL869ErHdQNn17Zvc0nagkF6wOsz7WyUCc
+        ijRfMMFCxrOwbN19VdYG3AlY3emR1AA=
+X-Google-Smtp-Source: ABdhPJz5UDENJPv7NyAoZFjrpJXoGyRKcwUvIBP+K5tuHqQL3+mXZVF+KFjHg5/6bYr00TK+FQIzeQ==
+X-Received: by 2002:a17:90a:10c8:: with SMTP id b8mr16838830pje.147.1623939551047;
+        Thu, 17 Jun 2021 07:19:11 -0700 (PDT)
+Received: from sea-l-00029082.olympus.f5net.com (d66-183-43-174.bchsia.telus.net. [66.183.43.174])
+        by smtp.gmail.com with ESMTPSA id g8sm5482613pfu.177.2021.06.17.07.19.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 07:19:10 -0700 (PDT)
+From:   Vincent Li <vincent.mc.li@gmail.com>
+X-Google-Original-From: Vincent Li <vli@gmail.com>
+Date:   Thu, 17 Jun 2021 07:19:08 -0700 (PDT)
+To:     Yonghong Song <yhs@fb.com>
+cc:     Vincent Li <vincent.mc.li@gmail.com>, bpf@vger.kernel.org
+Subject: Re: R1 invalid mem access 'inv'
+In-Reply-To: <92121d33-4a45-b27a-e3cd-e54232924583@fb.com>
+Message-ID: <79e4924c-e581-47dd-875c-6fd72e85dfac@gmail.com>
+References: <c43bc0a9-9eca-44df-d0c7-7865f448cc24@gmail.com> <92121d33-4a45-b27a-e3cd-e54232924583@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <ae256a5d-70ac-3a5f-ca55-5e4210a0624c@ghiti.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Le 17/06/2021 à 10:09, Alex Ghiti a écrit :
-> Le 17/06/2021 à 09:30, Palmer Dabbelt a écrit :
->> On Tue, 15 Jun 2021 17:03:28 PDT (-0700), jszhang3@mail.ustc.edu.cn 
->> wrote:
->>> On Tue, 15 Jun 2021 20:54:19 +0200
->>> Alex Ghiti <alex@ghiti.fr> wrote:
->>>
->>>> Hi Jisheng,
->>>
->>> Hi Alex,
->>>
->>>>
->>>> Le 14/06/2021 à 18:49, Jisheng Zhang a écrit :
->>>> > From: Jisheng Zhang <jszhang@kernel.org>
->>>> > > Andreas reported commit fc8504765ec5 ("riscv: bpf: Avoid 
->>>> breaking W^X")
->>>> > breaks booting with one kind of config file, I reproduced a kernel 
->>>> panic
->>>> > with the config:
->>>> > > [    0.138553] Unable to handle kernel paging request at virtual 
->>>> address ffffffff81201220
->>>> > [    0.139159] Oops [#1]
->>>> > [    0.139303] Modules linked in:
->>>> > [    0.139601] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 
->>>> 5.13.0-rc5-default+ #1
->>>> > [    0.139934] Hardware name: riscv-virtio,qemu (DT)
->>>> > [    0.140193] epc : __memset+0xc4/0xfc
->>>> > [    0.140416]  ra : skb_flow_dissector_init+0x1e/0x82
->>>> > [    0.140609] epc : ffffffff8029806c ra : ffffffff8033be78 sp : 
->>>> ffffffe001647da0
->>>> > [    0.140878]  gp : ffffffff81134b08 tp : ffffffe001654380 t0 : 
->>>> ffffffff81201158
->>>> > [    0.141156]  t1 : 0000000000000002 t2 : 0000000000000154 s0 : 
->>>> ffffffe001647dd0
->>>> > [    0.141424]  s1 : ffffffff80a43250 a0 : ffffffff81201220 a1 : 
->>>> 0000000000000000
->>>> > [    0.141654]  a2 : 000000000000003c a3 : ffffffff81201258 a4 : 
->>>> 0000000000000064
->>>> > [    0.141893]  a5 : ffffffff8029806c a6 : 0000000000000040 a7 : 
->>>> ffffffffffffffff
->>>> > [    0.142126]  s2 : ffffffff81201220 s3 : 0000000000000009 s4 : 
->>>> ffffffff81135088
->>>> > [    0.142353]  s5 : ffffffff81135038 s6 : ffffffff8080ce80 s7 : 
->>>> ffffffff80800438
->>>> > [    0.142584]  s8 : ffffffff80bc6578 s9 : 0000000000000008 s10: 
->>>> ffffffff806000ac
->>>> > [    0.142810]  s11: 0000000000000000 t3 : fffffffffffffffc t4 : 
->>>> 0000000000000000
->>>> > [    0.143042]  t5 : 0000000000000155 t6 : 00000000000003ff
->>>> > [    0.143220] status: 0000000000000120 badaddr: ffffffff81201220 
->>>> cause: 000000000000000f
->>>> > [    0.143560] [<ffffffff8029806c>] __memset+0xc4/0xfc
->>>> > [    0.143859] [<ffffffff8061e984>] 
->>>> init_default_flow_dissectors+0x22/0x60
->>>> > [    0.144092] [<ffffffff800010fc>] do_one_initcall+0x3e/0x168
->>>> > [    0.144278] [<ffffffff80600df0>] kernel_init_freeable+0x1c8/0x224
->>>> > [    0.144479] [<ffffffff804868a8>] kernel_init+0x12/0x110
->>>> > [    0.144658] [<ffffffff800022de>] ret_from_exception+0x0/0xc
->>>> > [    0.145124] ---[ end trace f1e9643daa46d591 ]---
->>>> > > After some investigation, I think I found the root cause: commit
->>>> > 2bfc6cd81bd ("move kernel mapping outside of linear mapping") moves
->>>> > BPF JIT region after the kernel:
->>>> > > The &_end is unlikely aligned with PMD size, so the front bpf jit
->>>> > region sits with part of kernel .data section in one PMD size 
->>>> mapping.
->>>> > But kernel is mapped in PMD SIZE, when bpf_jit_binary_lock_ro() is
->>>> > called to make the first bpf jit prog ROX, we will make part of 
->>>> kernel
->>>> > .data section RO too, so when we write to, for example memset the
->>>> > .data section, MMU will trigger a store page fault.
->>>> Good catch, we make sure no physical allocation happens between _end 
->>>> and the next PMD aligned address, but I missed this one.
->>>>
->>>> > > To fix the issue, we need to ensure the BPF JIT region is PMD size
->>>> > aligned. This patch acchieve this goal by restoring the BPF JIT 
->>>> region
->>>> > to original position, I.E the 128MB before kernel .text section.
->>>> But I disagree with your solution: I made sure modules and BPF 
->>>> programs get their own virtual regions to avoid worst case scenario 
->>>> where one could allocate all the space and leave nothing to the 
->>>> other (we are limited to +- 2GB offset). Why don't just align 
->>>> BPF_JIT_REGION_START to the next PMD aligned address?
->>>
->>> Originally, I planed to fix the issue by aligning 
->>> BPF_JIT_REGION_START, but
->>> IIRC, BPF experts are adding (or have added) "Calling kernel 
->>> functions from BPF"
->>> feature, there's a risk that BPF JIT region is beyond the 2GB of 
->>> module region:
->>>
->>> ------
->>> module
->>> ------
->>> kernel
->>> ------
->>> BPF_JIT
->>>
->>> So I made this patch finally. In this patch, we let BPF JIT region sit
->>> between module and kernel.
->>>
->>> To address "make sure modules and BPF programs get their own virtual 
->>> regions",
->>> what about something as below (applied against this patch)?
->>>
->>> diff --git a/arch/riscv/include/asm/pgtable.h 
->>> b/arch/riscv/include/asm/pgtable.h
->>> index 380cd3a7e548..da1158f10b09 100644
->>> --- a/arch/riscv/include/asm/pgtable.h
->>> +++ b/arch/riscv/include/asm/pgtable.h
->>> @@ -31,7 +31,7 @@
->>>  #define BPF_JIT_REGION_SIZE    (SZ_128M)
->>>  #ifdef CONFIG_64BIT
->>>  #define BPF_JIT_REGION_START    (BPF_JIT_REGION_END - 
->>> BPF_JIT_REGION_SIZE)
->>> -#define BPF_JIT_REGION_END    (MODULES_END)
->>> +#define BPF_JIT_REGION_END    (PFN_ALIGN((unsigned long)&_start))
->>>  #else
->>>  #define BPF_JIT_REGION_START    (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
->>>  #define BPF_JIT_REGION_END    (VMALLOC_END)
->>> @@ -40,7 +40,7 @@
->>>  /* Modules always live before the kernel */
->>>  #ifdef CONFIG_64BIT
->>>  #define MODULES_VADDR    (PFN_ALIGN((unsigned long)&_end) - SZ_2G)
->>> -#define MODULES_END    (PFN_ALIGN((unsigned long)&_start))
->>> +#define MODULES_END    (BPF_JIT_REGION_END)
->>>  #endif
->>>
->>>
->>>
->>>>
->>>> Again, good catch, thanks,
->>>>
->>>> Alex
->>>>
->>>> > > Reported-by: Andreas Schwab <schwab@linux-m68k.org>
->>>> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->>>> > ---
->>>> >   arch/riscv/include/asm/pgtable.h | 5 ++---
->>>> >   1 file changed, 2 insertions(+), 3 deletions(-)
->>>> > > diff --git a/arch/riscv/include/asm/pgtable.h 
->>>> b/arch/riscv/include/asm/pgtable.h
->>>> > index 9469f464e71a..380cd3a7e548 100644
->>>> > --- a/arch/riscv/include/asm/pgtable.h
->>>> > +++ b/arch/riscv/include/asm/pgtable.h
->>>> > @@ -30,9 +30,8 @@
->>>> > >   #define BPF_JIT_REGION_SIZE    (SZ_128M)
->>>> >   #ifdef CONFIG_64BIT
->>>> > -/* KASLR should leave at least 128MB for BPF after the kernel */
->>>> > -#define BPF_JIT_REGION_START    PFN_ALIGN((unsigned long)&_end)
->>>> > -#define BPF_JIT_REGION_END    (BPF_JIT_REGION_START + 
->>>> BPF_JIT_REGION_SIZE)
->>>> > +#define BPF_JIT_REGION_START    (BPF_JIT_REGION_END - 
->>>> BPF_JIT_REGION_SIZE)
->>>> > +#define BPF_JIT_REGION_END    (MODULES_END)
->>>> >   #else
->>>> >   #define BPF_JIT_REGION_START    (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
->>>> >   #define BPF_JIT_REGION_END    (VMALLOC_END)
->>>> > 
->>
->> This, when applied onto fixes, is breaking early boot on KASAN 
->> configurations for me.
+
+Hi Song,
+
+Thank you for your response!
+
+
+On Wed, 16 Jun 2021, Yonghong Song wrote:
+
 > 
-> Not surprising, I took a shortcut when initializing KASAN for modules, 
-> kernel and BPF:
 > 
->          kasan_populate(kasan_mem_to_shadow((const void *)MODULES_VADDR),
->                         kasan_mem_to_shadow((const void 
-> *)BPF_JIT_REGION_END));
+> On 6/16/21 5:05 PM, Vincent Li wrote:
+> > Hi BPF Experts,
+> > 
+> > I had a problem that verifier report "R1 invalid mem access 'inv'" when
+> > I attempted to rewrite packet destination ethernet MAC address in Cilium
+> > tunnel mode, I opened an issue
+> > with detail here https://github.com/cilium/cilium/issues/16571:
+> > 
+> > I have couple of questions in general to try to understand the compiler,
+> > BPF byte code, and the verifier.
+> > 
+> > 1 Why the BPF byte code changes so much with my simple C code change
+> > 
+> > a: BPF byte code  before C code change:
+> > 
+> > 0000000000006068 <LBB12_410>:
+> >      3085:       bf a2 00 00 00 00 00 00 r2 = r10
+> > ;       tunnel = map_lookup_elem(&TUNNEL_MAP, key);
+> >      3086:       07 02 00 00 78 ff ff ff r2 += -136
+> >      3087:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+> >      3089:       85 00 00 00 01 00 00 00 call 1
+> > ;       if (!tunnel)
+> >      3090:       15 00 06 01 00 00 00 00 if r0 == 0 goto +262 <LBB12_441>
+> > ;       key.tunnel_id = seclabel;
+> >      3091:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 = 0 ll
+> >      3093:       67 02 00 00 20 00 00 00 r2 <<= 32
+> >      3094:       77 02 00 00 20 00 00 00 r2 >>= 32
+> >      3095:       b7 01 00 00 06 00 00 00 r1 = 6
+> >      3096:       15 02 02 00 01 00 00 00 if r2 == 1 goto +2 <LBB12_413>
+> >      3097:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+> > 
+> > 00000000000060d8 <LBB12_413>:
+> > ;       return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4,
+> > seclabel, monitor);
+> > 
+> > 
+> > b: BPF byte code  after C code change:
+> > 
+> > the C code diff change:
+> > 
+> > diff --git a/bpf/lib/encap.h b/bpf/lib/encap.h
+> > index dfd87bd82..19199429d 100644
+> > --- a/bpf/lib/encap.h
+> > +++ b/bpf/lib/encap.h
+> > @@ -187,6 +187,8 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32
+> > tunnel_endpoint,
+> >                         struct endpoint_key *key, __u32 seclabel, __u32
+> > monitor)
+> >   {
+> >          struct endpoint_key *tunnel;
+> > +#define VTEP_MAC  { .addr = { 0xce, 0x72, 0xa7, 0x03, 0x88, 0x58 } }
+> > +       union macaddr vtep_mac = VTEP_MAC;
+> >            if (tunnel_endpoint) {
+> >   #ifdef ENABLE_IPSEC
+> > @@ -221,6 +223,8 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32
+> > tunnel_endpoint,
+> >                                                  seclabel);
+> >          }
+> >   #endif
+> > +       if (eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0)
+> > +               return DROP_WRITE_ERROR;
+> >          return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4,
+> > seclabel, monitor);
+> >   }
+> > 
+> > the result BPF byte code
+> > 
+> > 0000000000004468 <LBB3_274>:
+> >      2189:       bf a2 00 00 00 00 00 00 r2 = r10
+> > ;       tunnel = map_lookup_elem(&TUNNEL_MAP, key);
+> >      2190:       07 02 00 00 50 ff ff ff r2 += -176
+> >      2191:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+> >      2193:       85 00 00 00 01 00 00 00 call 1
+> >      2194:       bf 07 00 00 00 00 00 00 r7 = r0
+> >      2195:       79 a6 48 ff 00 00 00 00 r6 = *(u64 *)(r10 - 184)
+> > ;       if (!tunnel)
+> >      2196:       55 07 94 00 00 00 00 00 if r7 != 0 goto +148 <LBB3_289>
+> > 
+> > 00000000000044a8 <LBB3_275>:
+> > ;       __u8 new_ttl, ttl = ip4->ttl;
+> >      2197:       79 a1 38 ff 00 00 00 00 r1 = *(u64 *)(r10 - 200)
+> >      2198:       71 13 16 00 00 00 00 00 r3 = *(u8 *)(r1 + 22)
+> > ;       if (ttl <= 1)
+> >      2199:       25 03 01 00 01 00 00 00 if r3 > 1 goto +1 <LBB3_277>
+> >      2200:       05 00 20 ff 00 00 00 00 goto -224 <LBB3_253>
+> > 
+> > 
+> > You can see that:
+> > 
+> > before change:  <LBB12_410>
+> > after change    <LBB3_274>
+> > 
+> > is different that <LBB12_410> has instructions 3091, 3092... but
+> > <LBB3_274> end with instruction 2196
+> > 
+> > before change: <LBB12_413> follows <LBB12_410>
+> > after change: <LBB3_275> follows <LBB3_274>
+> > 
+> > <LBB12_413> and <LBB3_275> is very much different
+> > 
+> > and  <LBB3_275> instruction 2198 is the one with "R1 invalid mem access
+> > 'inv'"
+> > 
+> > Why <LBB3_275> follows <LBB3_274> ? from C code, <LBB3_275> is not close
+> > to <LBB3_274>.
 > 
-> The kernel is then not covered, I'm taking a look at how to fix that 
-> properly.
->
-
-The following based on "riscv: Introduce structure that group all 
-variables regarding kernel mapping" fixes the issue:
-
-diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-index 9daacae93e33..2a45ea909e7f 100644
---- a/arch/riscv/mm/kasan_init.c
-+++ b/arch/riscv/mm/kasan_init.c
-@@ -199,9 +199,12 @@ void __init kasan_init(void)
-                 kasan_populate(kasan_mem_to_shadow(start), 
-kasan_mem_to_shadow(end));
-         }
-
--       /* Populate kernel, BPF, modules mapping */
-+       /* Populate BPF and modules mapping: modules mapping encompasses 
-BPF mapping */
-         kasan_populate(kasan_mem_to_shadow((const void *)MODULES_VADDR),
--                      kasan_mem_to_shadow((const void 
-*)BPF_JIT_REGION_END));
-+                      kasan_mem_to_shadow((const void *)MODULES_END));
-+       /* Populate kernel mapping */
-+       kasan_populate(kasan_mem_to_shadow((const void 
-*)kernel_map.virt_addr),
-+                      kasan_mem_to_shadow((const void 
-*)kernel_map.virt_addr + kernel_map.size));
-
-
-Without the mentioned patch, replace kernel_map.virt_addr with 
-kernel_virt_addr and kernel_map.size with load_sz. Note that load_sz was 
-re-exposed in v6 of the patchset "Map the kernel with correct 
-permissions the first time".
-
-Alex
-
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> The cilium code has a lot of functions inlined and after inlining, clang may
+> do reordering based on its internal heuristics. It is totally possible slight
+> code change may cause generated codes quite different.
 > 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> Regarding to
+> > and  <LBB3_275> instruction 2198 is the one with "R1 invalid mem access
+> > 'inv'"
+> 
+> 
+> > 00000000000044a8 <LBB3_275>:
+> > ;       __u8 new_ttl, ttl = ip4->ttl;
+> >      2197:       79 a1 38 ff 00 00 00 00 r1 = *(u64 *)(r10 - 200)
+> >      2198:       71 13 16 00 00 00 00 00 r3 = *(u8 *)(r1 + 22)
+> > ;       if (ttl <= 1)
+> >      2199:       25 03 01 00 01 00 00 00 if r3 > 1 goto +1 <LBB3_277>
+> >      2200:       05 00 20 ff 00 00 00 00 goto -224 <LBB3_253>
+> 
+> Looks like "ip4" is spilled on the stack. and maybe the stack save/restore for
+> "ip4" does not preserve its original type.
+> This mostly happens to old kernels, I think.
+> 
+
+the kernel 4.18 on Centos8, I also custom build most recent mainline git 
+kernel 5.13 on Centos8, I recall I got same invaid memory access 
+
+> If you have verifier log, it may help identify issues easily.
+
+Here is the complete verifer log, I skipped the BTF part
+
+level=warning msg="Prog section '2/7' rejected: Permission denied (13)!" 
+subsys=datapath-loader
+level=warning msg=" - Type:         3" subsys=datapath-loader
+level=warning msg=" - Attach Type:  0" subsys=datapath-loader
+level=warning msg=" - Instructions: 2488 (0 over limit)" 
+subsys=datapath-loader
+level=warning msg=" - License:      GPL" subsys=datapath-loader
+level=warning subsys=datapath-loader
+level=warning msg="Verifier analysis:" subsys=datapath-loader
+level=warning subsys=datapath-loader
+level=warning msg="Skipped 158566 bytes, use 'verb' option for the full 
+verbose log." subsys=datapath-loader
+level=warning msg="[...]" subsys=datapath-loader
+level=warning msg="-136=????00mm fp-144=00000000 fp-152=0000mmmm 
+fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm 
+fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm 
+fp-240=inv128" subsys=datapath-loader
+level=warning msg="2437: (0f) r1 += r8" subsys=datapath-loader
+level=warning msg="2438: (7b) *(u64 *)(r0 +8) = r1" subsys=datapath-loader
+level=warning msg=" R0_w=map_value(id=0,off=0,ks=8,vs=16,imm=0) 
+R1_w=inv(id=0) R6=ctx(id=0,off=0,imm=0) 
+R7=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) 
+R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9=invP0 R10=fp0 
+fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm 
+fp-48=mmmmmmmm fp-88=mmmmmmmm fp-96=00000000 fp-104=00000000 
+fp-112=??mmmmmm fp-120=mmmmmmmm fp-128=??mmmmmm fp-136=????00mm 
+fp-144=00000000 fp-152=0000mmmm fp-160=????mmmm fp-168=mmmmmmmm 
+fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm fp-200=inv fp-208=mmmmmmmm 
+fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm fp-240=inv128" 
+subsys=datapath-loader
+level=warning msg="2439: (05) goto pc+41" subsys=datapath-loader
+level=warning msg="2481: (18) r2 = 0x5c7" subsys=datapath-loader
+level=warning msg="2483: (67) r2 <<= 32" subsys=datapath-loader
+level=warning msg="2484: (77) r2 >>= 32" subsys=datapath-loader
+level=warning msg="2485: (b7) r1 = 6" subsys=datapath-loader
+level=warning msg="2486: (15) if r2 == 0x1 goto pc-341" 
+subsys=datapath-loader
+level=warning msg="last_idx 2486 first_idx 2481" subsys=datapath-loader
+level=warning msg="regs=4 stack=0 before 2485: (b7) r1 = 6" 
+subsys=datapath-loader
+level=warning msg="regs=4 stack=0 before 2484: (77) r2 >>= 32" 
+subsys=datapath-loader
+level=warning msg="regs=4 stack=0 before 2483: (67) r2 <<= 32" 
+subsys=datapath-loader
+level=warning msg="regs=4 stack=0 before 2481: (18) r2 = 0x5c7" 
+subsys=datapath-loader
+level=warning msg="2487: (05) goto pc-344" subsys=datapath-loader
+level=warning msg="2144: (18) r1 = 0x5c7" subsys=datapath-loader
+level=warning msg="2146: (61) r2 = *(u32 *)(r6 +68)" 
+subsys=datapath-loader
+level=warning msg="2147: (b7) r3 = 39" subsys=datapath-loader
+level=warning msg="2148: (63) *(u32 *)(r10 -76) = r3" 
+subsys=datapath-loader
+level=warning msg="2149: (b7) r3 = 1" subsys=datapath-loader
+level=warning msg="2150: (6b) *(u16 *)(r10 -90) = r3" 
+subsys=datapath-loader
+level=warning msg="2151: (63) *(u32 *)(r10 -96) = r8" 
+subsys=datapath-loader
+level=warning msg="2152: (63) *(u32 *)(r10 -100) = r2" 
+subsys=datapath-loader
+level=warning msg="2153: (18) r2 = 0x1d3" subsys=datapath-loader
+level=warning msg="2155: (6b) *(u16 *)(r10 -102) = r2" 
+subsys=datapath-loader
+level=warning msg="2156: (b7) r2 = 1028" subsys=datapath-loader
+level=warning msg="2157: (6b) *(u16 *)(r10 -104) = r2" 
+subsys=datapath-loader
+level=warning msg="2158: (b7) r2 = 0" subsys=datapath-loader
+level=warning msg="2159: (63) *(u32 *)(r10 -80) = r2" 
+subsys=datapath-loader
+level=warning msg="last_idx 2159 first_idx 2481" subsys=datapath-loader
+level=warning msg="regs=4 stack=0 before 2158: (b7) r2 = 0" 
+subsys=datapath-loader
+level=warning msg="2160: (63) *(u32 *)(r10 -84) = r2" 
+subsys=datapath-loader
+level=warning msg="2161: (7b) *(u64 *)(r10 -72) = r2" 
+subsys=datapath-loader
+level=warning msg="2162: (7b) *(u64 *)(r10 -64) = r2" 
+subsys=datapath-loader
+level=warning msg="2163: (63) *(u32 *)(r10 -88) = r1" 
+subsys=datapath-loader
+level=warning msg="2164: (6b) *(u16 *)(r10 -92) = r7" 
+subsys=datapath-loader
+level=warning msg="2165: (67) r7 <<= 32" subsys=datapath-loader
+level=warning msg="2166: (18) r1 = 0xffffffff" subsys=datapath-loader
+level=warning msg="2168: (4f) r7 |= r1" subsys=datapath-loader
+level=warning msg="2169: (bf) r4 = r10" subsys=datapath-loader
+level=warning msg="2170: (07) r4 += -104" subsys=datapath-loader
+level=warning msg="2171: (bf) r1 = r6" subsys=datapath-loader
+level=warning msg="2172: (18) r2 = 0xffffa0c68cae1600" 
+subsys=datapath-loader
+level=warning msg="2174: (bf) r3 = r7" subsys=datapath-loader
+level=warning msg="2175: (b7) r5 = 48" subsys=datapath-loader
+level=warning msg="2176: (85) call bpf_perf_event_output#25" 
+subsys=datapath-loader
+level=warning msg="last_idx 2176 first_idx 2481" subsys=datapath-loader
+level=warning msg="regs=20 stack=0 before 2175: (b7) r5 = 48" 
+subsys=datapath-loader
+level=warning msg="2177: (b7) r1 = 39" subsys=datapath-loader
+level=warning msg="2178: (b7) r2 = 0" subsys=datapath-loader
+level=warning msg="2179: (85) call bpf_redirect#23" subsys=datapath-loader
+level=warning msg="2180: (bf) r9 = r0" subsys=datapath-loader
+level=warning msg="2181: (bf) r1 = r9" subsys=datapath-loader
+level=warning msg="2182: (67) r1 <<= 32" subsys=datapath-loader
+level=warning msg="2183: (77) r1 >>= 32" subsys=datapath-loader
+level=warning msg="2184: (15) if r1 == 0x0 goto pc+57" 
+subsys=datapath-loader
+level=warning msg=" R0_w=inv(id=0) 
+R1_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0x7fffffff)) 
+R6=ctx(id=0,off=0,imm=0) 
+R7=inv(id=0,umin_value=4294967295,umax_value=1099511627775,var_off=(0xffffffff; 
+0xff00000000),s32_min_value=-1,s32_max_value=0,u32_max_value=0) 
+R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9_w=inv(id=0) R10=fp0 
+fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm 
+fp-48=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm fp-80=mmmmmmmm fp-88=mmmmmmmm 
+fp-96=mmmmmmmm fp-104=mmmmmmmm fp-112=??mmmmmm fp-120=mmmmmmmm 
+fp-128=??mmmmmm fp-136=????00mm fp-144=00000000 fp-152=0000mmmm 
+fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm 
+fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm 
+fp-240=inv128" subsys=datapath-loader
+level=warning msg="2185: (18) r2 = 0xffffff60" subsys=datapath-loader
+level=warning msg="2187: (1d) if r1 == r2 goto pc+9" 
+subsys=datapath-loader
+level=warning subsys=datapath-loader
+level=warning msg="from 2187 to 2197: R0=inv(id=0) R1=inv4294967136 
+R2=inv4294967136 R6=ctx(id=0,off=0,imm=0) 
+R7=inv(id=0,umin_value=4294967295,umax_value=1099511627775,var_off=(0xffffffff; 
+0xff00000000),s32_min_value=-1,s32_max_value=0,u32_max_value=0) 
+R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9=inv(id=0) R10=fp0 
+fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm fp-40=mmmmmmmm 
+fp-48=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm fp-80=mmmmmmmm fp-88=mmmmmmmm 
+fp-96=mmmmmmmm fp-104=mmmmmmmm fp-112=??mmmmmm fp-120=mmmmmmmm 
+fp-128=??mmmmmm fp-136=????00mm fp-144=00000000 fp-152=0000mmmm 
+fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm 
+fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm 
+fp-240=inv128" subsys=datapath-loader
+level=warning msg="2197: (79) r1 = *(u64 *)(r10 -200)" 
+subsys=datapath-loader
+level=warning msg="2198: (71) r3 = *(u8 *)(r1 +22)" subsys=datapath-loader
+level=warning msg="R1 invalid mem access 'inv'" subsys=datapath-loader
+level=warning msg="processed 1802 insns (limit 1000000) 
+max_states_per_insn 4 total_states 103 peak_states 103 mark_read 49" 
+subsys=datapath-loader
+level=warning subsys=datapath-loader
+level=warning msg="Error filling program arrays!" subsys=datapath-loader
+level=warning msg="Unable to load program" subsys=datapath-loader
+ 
+
+
+
+> > 
+> > 
+> > 2, Can I assume the verifier is to simulate the order of BPF byte
+> > code execution in run time, like if without any jump or goto in
+> > <LBB3_274>, <LBB3_275> will be executed after <LBB3_274>?
+> 
+> The verifier will try to verify both paths, jumping to LBB3_289
+> or fall back to LBB3_275.
+> 
+> > 
+> > 
+> > 
+> > Enterprise Network Engineer
+> > F5 Networks Inc
+> > https://www.youtube.com/c/VincentLi
+> > 
+> 
