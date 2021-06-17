@@ -2,165 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672C33AA7C3
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 01:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5923AA7DD
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 02:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhFPX53 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Jun 2021 19:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38756 "EHLO
+        id S231279AbhFQAH7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Jun 2021 20:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhFPX53 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Jun 2021 19:57:29 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21A1C061574;
-        Wed, 16 Jun 2021 16:55:21 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d62so1533519pfd.3;
-        Wed, 16 Jun 2021 16:55:21 -0700 (PDT)
+        with ESMTP id S230481AbhFQAH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Jun 2021 20:07:59 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F3FC061574
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 17:05:51 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id k5so2752148pjj.1
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 17:05:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BYLH5NSOEjhPQlUl+Vzmbtv2wlt8Io26g6BkI1Bxjrg=;
-        b=Z/B+UzO/k3PiRqkIA2uet62yovpTStsRh1v96aKuGVT5S49r2J341TUFtPNm+iJ89U
-         664fJILeQ3r4A43KQEbAylRWF0JVY4ZT7v9CT+VRUt8y8xlUyQ6EIwZ/SGYXXAQrGyLg
-         y4BBR506NRZUvXarm7fm7nFdxmnodXsPXxb9pc4qzv6YNFbDcnrzrw4PXJx+y7ooi1oZ
-         XQnJmSLfeX5N/NyY+4sRbxO8BTfH/UNLCfxb95ku0+3OglMrR91mEtP5oRhsrAstnh8t
-         QFDKVnzSabHSUXA17XH5S94roudFv5gsYx/O3CUKFMdhyhYIFnDZie4n3FG5q9brtdvs
-         ELQA==
+        h=from:date:to:subject:message-id:mime-version;
+        bh=ZY38JLz5NvfHo/rKD6yp8DD86Bwb0MJBw/QbSYQ2W0g=;
+        b=A1MlBu+0ZZ3Ck/UYbg5G0FXSlyuhJ+iMyGwpxXVkpgDHpEupdJK/3eTCOxgvizYYSL
+         xI4qeVEReXmOkEGf5Uch6IbThJo1oKYTe5ajtih+zsQ60SJPImuQxjPQuoOb6u3OBYGN
+         cmS5gQ5wHCKtQVaxN9azQpxmy1kd9V8phtF9gdW+SlNeLvJMd8KusiKzka+Sk5TWA5Wb
+         H6w+qYoTpZcmWlH2hrCW/Hz2vy4uMy4a4U7+c3hVBblkVVK0McNIVNjsWv+6kPU6ooyK
+         MEyie4ESdSvX3rNM5EPGLd//5cZAMgSPiNe34fz78R6mxHFGZJQ4slWsboGa1bhyEY2I
+         lQCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BYLH5NSOEjhPQlUl+Vzmbtv2wlt8Io26g6BkI1Bxjrg=;
-        b=hytcU7ufKPK3E6NIm4GpKAvy0eYplHgpLbw4jj17eKxIWd4X03qaLuigIbteNcrAbi
-         hyOq8SsgKjfYS8a7iWcq5V068UX9BxZXiFtivmL9sYKv/4Dt3W0r+aq6IhJuwmHhgCV1
-         +nA++QNPdw5dEMWVfPa/gR2chofFOUSZsgNILLznU/I8NODcGfpi8KFIGy1jQXJJCh7p
-         pG9zl5qor0KMHkcS7Joz/kdfd0Vavarvq6U2Vn2aDEaP4A4eO+KVW0uVhSldYwrRDfUf
-         JairIi/DVIv+OFNQmVEBUSkAeSrhC7gHqftfjYj6TinSknEnVCvZuCCoN9GeatiwPYyQ
-         2Xfw==
-X-Gm-Message-State: AOAM5307Y2odNBb5XGrY46jXwycvEg37bvg1EgWsAc6WXXdcQQ09JME/
-        9rMv7ykRVw31eRyjByvbUMw=
-X-Google-Smtp-Source: ABdhPJyxYdMF/Rlw54j7sHL8H7vQQTDXQ0icZQzsdQKSQS+65woevZGx/SkICyzb2t+mnNq4pOfIYw==
-X-Received: by 2002:a63:db01:: with SMTP id e1mr2213081pgg.38.1623887721254;
-        Wed, 16 Jun 2021 16:55:21 -0700 (PDT)
-Received: from localhost ([2402:3a80:11db:39d5:aefe:1e71:33ef:30fb])
-        by smtp.gmail.com with ESMTPSA id j9sm3003773pjy.25.2021.06.16.16.55.20
+        h=x-gm-message-state:from:date:to:subject:message-id:mime-version;
+        bh=ZY38JLz5NvfHo/rKD6yp8DD86Bwb0MJBw/QbSYQ2W0g=;
+        b=K4XsICxdf/6TBDY9qJeG4ga/AJut58ufhaEXSYNee7utLcID0NgnkIyhvzwnKSeU1d
+         +mkVyPO9TJypdbScuVP+SQoKK9HMbeIClXErGv5OKjNeaHN6EJzkqAYDEmYiptIt9l3N
+         VmiK+Hb075pARKGsRhfaUj/KfxPT4OUjpPKnHMfjgOmKeqTVgu8E2hhGvzODMQm3IqaC
+         DkicIqVSdpc17cKmUjNlNSHlVqqis4OMtEP5ePAdMYZs5RsQg9AuXqPy5uJ8VZDfvH7J
+         3khbsIwhbtZhYx3PjCkdet9dtiyf21kzo7Tgv1bBKGMC23+t36TXTNF9D9y/tIoEKbbg
+         73ug==
+X-Gm-Message-State: AOAM530YMYDDDEvQcHocgWrm28+Ypsj55mkvx3Fz2b1hCxH3uNJedpUa
+        j4kU6IY9H1g46BliJN506r0D4PiubNc=
+X-Google-Smtp-Source: ABdhPJzBZmmTRQ/kxMahg9bORi+3VzAOpT6+Mrshx34VQEpA48KME0j6Kg+Zs8lNu4cZ1jCOzKIb+A==
+X-Received: by 2002:a17:90a:b64:: with SMTP id 91mr2453816pjq.24.1623888350616;
+        Wed, 16 Jun 2021 17:05:50 -0700 (PDT)
+Received: from sea-l-00029082.olympus.f5net.com (d66-183-43-174.bchsia.telus.net. [66.183.43.174])
+        by smtp.gmail.com with ESMTPSA id cv6sm3165721pjb.12.2021.06.16.17.05.49
+        for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 16:55:21 -0700 (PDT)
-Date:   Thu, 17 Jun 2021 05:23:55 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2] libbpf: add request buffer type for netlink messages
-Message-ID: <20210616235351.ay3vj6gk36bpatgy@apollo>
-References: <20210616170231.2194285-1-memxor@gmail.com>
- <CAEf4BzZTgMHVd2kEQ5vakgNSJYFB7uiY0j_NBGdG_xzmjKQTAA@mail.gmail.com>
+        Wed, 16 Jun 2021 17:05:49 -0700 (PDT)
+From:   Vincent Li <vincent.mc.li@gmail.com>
+X-Google-Original-From: Vincent Li <vli@gmail.com>
+Date:   Wed, 16 Jun 2021 17:05:48 -0700 (PDT)
+To:     bpf@vger.kernel.org
+Subject: R1 invalid mem access 'inv'
+Message-ID: <c43bc0a9-9eca-44df-d0c7-7865f448cc24@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZTgMHVd2kEQ5vakgNSJYFB7uiY0j_NBGdG_xzmjKQTAA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 04:48:08AM IST, Andrii Nakryiko wrote:
-> On Wed, Jun 16, 2021 at 10:04 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > Coverity complains about OOB writes to nlmsghdr. There is no OOB as we
-> > write to the trailing buffer, but static analyzers and compilers may
-> > rightfully be confused as the nlmsghdr pointer has subobject provenance
-> > (and hence subobject bounds).
-> >
-> > Remedy this by using an explicit request structure, but we also need to
-> > start the buffer in case of ifinfomsg without any padding. The alignment
-> > on netlink wire protocol is 4 byte boundary, so we just insert explicit
->
-> struct ifinfomsg has unsigned field in it, which makes it
-> automatically 4-byte aligned because the struct is not packed. Do we
-> really need that _pad[4] thing?.. Even if we do, I'm still not sure
-> how it helps with alignment... If anything, explicit
-> __attribute__((aligned(4))) would be better.
->
+Hi BPF Experts,
 
-What I meant was that reusing the same struct for both means that the trailing
-buffer where attributes are added starts right after struct tcmsg/struct
-ifinfomsg. Since tcmsg is 20 bytes, ifinfomsg is 16. I didn't want it to trigger
-if it ends up tracking the active member of the union (or effective type). Poor
-wording I guess. Everything is aligned properly, just wanted to explain why
-_pad[4] is there.
+I had a problem that verifier report "R1 invalid mem access 'inv'" when 
+I attempted to rewrite packet destination ethernet MAC address in Cilium 
+tunnel mode, I opened an issue 
+with detail here https://github.com/cilium/cilium/issues/16571:
 
-> > 4 byte buffer to avoid compilers throwing off on read and write from/to
-> > padding.
-> >
-> > Also switch nh_tail (renamed to req_tail) to cast req * to char * so
->
-> it probably should use (void *) everywhere, instead of (char *), but I
-> see that existing code is using char * exclusively, so it's probably
-> for another patch
->
+I have couple of questions in general to try to understand the compiler, 
+BPF byte code, and the verifier.
 
-I'll fix it in the resend.
+1 Why the BPF byte code changes so much with my simple C code change
 
-> > that it can be understood as arithmetic on pointer to the representation
-> > array (hence having same bound as request structure), which should
-> > further appease analyzers.
-> >
-> > As a bonus, callers don't have to pass sizeof(req) all the time now, as
-> > size is implicitly obtained using the pointer. While at it, also reduce
-> > the size of attribute buffer to 128 bytes (132 for ifinfomsg using
-> > functions due to the need to align buffer after it).
->
-> Sorry if it's a stupid question, but why it's safe to reduce the
-> buffer size from 128 to 256?
->
+a: BPF byte code  before C code change:
 
-We just need something big enough, we already check the size everytime we add an
-attribute to make sure we don't run out of space. It was a remnant from previous
-versions where a lot of attributes were added. They're pretty limited now so I
-just changed to a small safe value that works fine for both.
+0000000000006068 <LBB12_410>:
+    3085:       bf a2 00 00 00 00 00 00 r2 = r10
+;       tunnel = map_lookup_elem(&TUNNEL_MAP, key);
+    3086:       07 02 00 00 78 ff ff ff r2 += -136
+    3087:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+    3089:       85 00 00 00 01 00 00 00 call 1
+;       if (!tunnel)
+    3090:       15 00 06 01 00 00 00 00 if r0 == 0 goto +262 <LBB12_441>
+;       key.tunnel_id = seclabel;
+    3091:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 = 0 ll
+    3093:       67 02 00 00 20 00 00 00 r2 <<= 32
+    3094:       77 02 00 00 20 00 00 00 r2 >>= 32
+    3095:       b7 01 00 00 06 00 00 00 r1 = 6
+    3096:       15 02 02 00 01 00 00 00 if r2 == 1 goto +2 <LBB12_413>
+    3097:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
 
-> >
-> > Summary of problem:
-> >   Even though C standard allows interconveritility of pointer to first
->
-> s/interconveritility/interconvertibility/ ?
->
-> >   member and pointer to struct, for the purposes of alias analysis it
-> >   would still consider the first as having pointer value "pointer to T"
-> >   where T is type of first member hence having subobject bounds,
-> >   allowing analyzers within reason to complain when object is accessed
-> >   beyond the size of pointed to object.
-> >
-> >   The only exception to this rule may be when a char * is formed to a
-> >   member subobject. It is not possible for the compiler to be able to
-> >   tell the intent of the programmer that it is a pointer to member
-> >   object or the underlying representation array of the containing
-> >   object, so such diagnosis is supressed.
->
-> typo: suppressed
->
+00000000000060d8 <LBB12_413>:
+;       return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4, 
+seclabel, monitor);
 
-Thanks.
 
-> >
-> > Fixes: 715c5ce454a6 ("libbpf: Add low level TC-BPF management API")
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> > Changelog:
-> > v1 -> v2:
-> >  * Add short summary instead of links about the underlying issue (Daniel)
-> > ---
-> >  tools/lib/bpf/netlink.c | 107 +++++++++++++++-------------------------
-> >  tools/lib/bpf/nlattr.h  |  37 +++++++++-----
-> >  2 files changed, 65 insertions(+), 79 deletions(-)
-> >
->
-> [...]
+b: BPF byte code  after C code change:
 
---
-Kartikeya
+the C code diff change:
+
+diff --git a/bpf/lib/encap.h b/bpf/lib/encap.h
+index dfd87bd82..19199429d 100644
+--- a/bpf/lib/encap.h
++++ b/bpf/lib/encap.h
+@@ -187,6 +187,8 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32 
+tunnel_endpoint,
+                       struct endpoint_key *key, __u32 seclabel, __u32 
+monitor)
+ {
+        struct endpoint_key *tunnel;
++#define VTEP_MAC  { .addr = { 0xce, 0x72, 0xa7, 0x03, 0x88, 0x58 } }
++       union macaddr vtep_mac = VTEP_MAC;
+ 
+        if (tunnel_endpoint) {
+ #ifdef ENABLE_IPSEC
+@@ -221,6 +223,8 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx, __u32 
+tunnel_endpoint,
+                                                seclabel);
+        }
+ #endif
++       if (eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0)
++               return DROP_WRITE_ERROR;
+        return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4, 
+seclabel, monitor);
+ }
+
+the result BPF byte code 
+
+0000000000004468 <LBB3_274>:
+    2189:       bf a2 00 00 00 00 00 00 r2 = r10
+;       tunnel = map_lookup_elem(&TUNNEL_MAP, key);
+    2190:       07 02 00 00 50 ff ff ff r2 += -176
+    2191:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+    2193:       85 00 00 00 01 00 00 00 call 1
+    2194:       bf 07 00 00 00 00 00 00 r7 = r0
+    2195:       79 a6 48 ff 00 00 00 00 r6 = *(u64 *)(r10 - 184)
+;       if (!tunnel)
+    2196:       55 07 94 00 00 00 00 00 if r7 != 0 goto +148 <LBB3_289>
+
+00000000000044a8 <LBB3_275>:
+;       __u8 new_ttl, ttl = ip4->ttl;
+    2197:       79 a1 38 ff 00 00 00 00 r1 = *(u64 *)(r10 - 200)
+    2198:       71 13 16 00 00 00 00 00 r3 = *(u8 *)(r1 + 22)
+;       if (ttl <= 1)
+    2199:       25 03 01 00 01 00 00 00 if r3 > 1 goto +1 <LBB3_277>
+    2200:       05 00 20 ff 00 00 00 00 goto -224 <LBB3_253>
+
+
+You can see that:
+
+before change:  <LBB12_410>  
+after change    <LBB3_274>
+
+is different that <LBB12_410> has instructions 3091, 3092... but 
+<LBB3_274> end with instruction 2196
+
+before change: <LBB12_413> follows <LBB12_410> 
+after change: <LBB3_275> follows <LBB3_274>
+
+<LBB12_413> and <LBB3_275> is very much different
+
+and  <LBB3_275> instruction 2198 is the one with "R1 invalid mem access 
+'inv'"
+
+Why <LBB3_275> follows <LBB3_274> ? from C code, <LBB3_275> is not close 
+to <LBB3_274>.
+
+
+2, Can I assume the verifier is to simulate the order of BPF byte 
+code execution in run time, like if without any jump or goto in 
+<LBB3_274>, <LBB3_275> will be executed after <LBB3_274>?
+
+
+
+Enterprise Network Engineer
+F5 Networks Inc
+https://www.youtube.com/c/VincentLi
