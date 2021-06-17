@@ -2,155 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5F93ABDA6
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 22:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E303ABDD6
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 23:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbhFQUn3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 16:43:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230519AbhFQUn2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 16:43:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F2EF610A7;
-        Thu, 17 Jun 2021 20:41:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623962480;
-        bh=2YUU2tY2xJoJ21hHHc5TWXB8wa+Kel08+1ETHXIJ6Ps=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LDKwc/AUQ4UZ3H3++Bdu3dSWEScRmpNeVbdycEVqbaQDDcB2hcG543XvAgQaQEYaY
-         B08fcADjJhdv4CSTRqF8CN3KitSmGkxFlP/O1mthyN9R+iwaSYMCOm5g9nAAgX+GxK
-         9H83ROEa1ZDBkwOJRUQIadmiqDPjYlsij9wVxt9SKOQTgWuTJb2232imWc5jFQUDW6
-         +mhaaTh2dpAqrhZoRH82l28B7FvRfovIGQqXd0GS/knbSJ6AAppnWb/tR4n4bOvCf6
-         R1fGnimySS5loanhzwTFoE8O+VYL/MtmTm+rPSCtaP15BwRYPxHj41d1DeUR1ozl0e
-         Ryj3pn2M1nTdg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id EAF7D40B1A; Thu, 17 Jun 2021 17:41:17 -0300 (-03)
-Date:   Thu, 17 Jun 2021 17:41:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        dwarves@vger.kernel.org, siudin@fb.com
-Subject: Re: latest pahole breaks libbpf CI and let's talk about staging
-Message-ID: <YMuzbVZoCbiq0CAz@kernel.org>
-References: <CAEf4BzZnZN2mt4+5F-00ggO9YHWrL3Jru_u3Qt2JJ+SMkHwg+w@mail.gmail.com>
- <YMoRBvTdD0qzjYf4@kernel.org>
- <YMopYxHgmoNVd3Yl@kernel.org>
- <YMph3VeKA1Met65X@kernel.org>
- <CAEf4BzZmBbkU1WWLEsZG1yVMdt7CDcuHhRF8uoLqeamhef3bVQ@mail.gmail.com>
- <YMtgz+hcE/7iO7Ux@kernel.org>
- <YMuoQntxW1zOujHU@kernel.org>
- <CAEf4BzaA2XwjeVNWTa2eyMvzkwp9eUHSXqMVJukMf0_mzh8CnQ@mail.gmail.com>
+        id S232873AbhFQVQI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 17:16:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23931 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232867AbhFQVQF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 17 Jun 2021 17:16:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623964436;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gvcjlBEvHeWuTjxP8E3cv/s4SZ5Slc2G2g3da4eluAI=;
+        b=Ui+3gRvvl379+39BF4NvuOyOum+HLOvHO55VVucjjADd9luYBq+poN4qKvwbO6uQHJCpYX
+        jMBLtvrRPHuaKLVAMja66oG3V37KuGts+mJy8izxQdTLQDHp5dQ0csG/w/6hmV86fx0WdC
+        aTHfBL9wi3FyKajbzjaeDdE4rQhN+Sg=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-25Z9XmpYPa6HLpKJQLLlEA-1; Thu, 17 Jun 2021 17:13:53 -0400
+X-MC-Unique: 25Z9XmpYPa6HLpKJQLLlEA-1
+Received: by mail-ed1-f70.google.com with SMTP id y18-20020a0564022712b029038ffac1995eso2376667edd.12
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 14:13:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=gvcjlBEvHeWuTjxP8E3cv/s4SZ5Slc2G2g3da4eluAI=;
+        b=PQhfsOvHwwYueQ8apBEDluO6EpNME6+gGtgt5LuYSpJhBJJACQZghLygt7+UQdePgr
+         rmadPRvn+kKuTNIA2T4PUjp17JjsbUiJUw3UmE2QfVIyLJxmEvfxEDZdu/JgvJS9B/ka
+         hVtHzY+Rtk5dricVUuxLEm9IGS9lZjr+j3vZKAZI0JMiSwxleFhxLCTozoI1Yd3rW9DH
+         qNl/k6cn0Ur1/S5CP6FJ/dDXLPkuhQBESJvl2mE89AqLdcHgPnDZntxfu2zqRb1bqR1L
+         wsZd3GWoUPRjWtsOQ0ANrGxpst8aiQJRKWALUf/J/JXzj5pryAE+bZTj4eJVFkDxggh/
+         71ZA==
+X-Gm-Message-State: AOAM530W1vZWtI96xEe/S4mMPw1gTjpCAds2zHNDH9AjDY9MmddMjb1l
+        sn3XBYVFp7uA4YGC5QLwlftiWr9dFv61emIUi0SF2lRsOcV2UcCvir9DsnyjStNBMJN43JHbvWc
+        eiUxm1IfVOX9D
+X-Received: by 2002:a17:907:2642:: with SMTP id ar2mr7403688ejc.391.1623964432381;
+        Thu, 17 Jun 2021 14:13:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJgTzSgJN7Vwr5cV0KUJCXbUnYuSmlFDeTdQTiylbTgEQLSZJrOhBB9vBBUggKwM2heDGctQ==
+X-Received: by 2002:a17:907:2642:: with SMTP id ar2mr7403675ejc.391.1623964432199;
+        Thu, 17 Jun 2021 14:13:52 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id w8sm5026698edc.39.2021.06.17.14.13.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 14:13:50 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 6030E180350; Thu, 17 Jun 2021 23:13:49 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH bpf-next v2 03/16] xdp: add proper __rcu annotations to
+ redirect map entries
+In-Reply-To: <20210617194155.rkfyv2ixgshuknt6@kafai-mbp.dhcp.thefacebook.com>
+References: <20210615145455.564037-1-toke@redhat.com>
+ <20210615145455.564037-4-toke@redhat.com>
+ <20210617194155.rkfyv2ixgshuknt6@kafai-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 17 Jun 2021 23:13:49 +0200
+Message-ID: <87czskdwj6.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzaA2XwjeVNWTa2eyMvzkwp9eUHSXqMVJukMf0_mzh8CnQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jun 17, 2021 at 01:03:17PM -0700, Andrii Nakryiko escreveu:
-> On Thu, Jun 17, 2021 at 12:53 PM Arnaldo Carvalho de Melo
-> <arnaldo.melo@gmail.com> wrote:
-> >
-> > Em Thu, Jun 17, 2021 at 11:48:47AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Wed, Jun 16, 2021 at 03:36:54PM -0700, Andrii Nakryiko escreveu:
-> > > > On Wed, Jun 16, 2021 at 1:41 PM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
-> > > > > And if I use pahole's BTF loader I find the info about that function:
-> >
-> > > > > [acme@seventh linux]$ strace -e openat -o /tmp/bla pfunct -F btf tcp_cong_avoid_ai  ; grep vmlinux /tmp/bla
-> > > > > void tcp_cong_avoid_ai(struct tcp_sock * tp, u32 w, u32 acked);
-> > > > > openat(AT_FDCWD, "/sys/kernel/btf/vmlinux", O_RDONLY) = 3
-> >
-> > > > > So this should be unrelated to the breakage you noticed in the CI.
-> >
-> > > > > I'm trying to to reproduce the CI breakage by building the kernel and
-> > > > > running selftests after a reboot.
-> >
-> > > > > I suspect I'm missing something, can you see what it is?
-> >
-> > > > Oh, I didn't realize initially what it is. This is not kernel-related,
-> > > > you are right. You just need newer Clang. Can you please use nightly
-> > > > version or build from sources? Basically, your Clang is too old and it
-> > > > doesn't generate BTF information for extern functions in BPF code.
-> >
-> > > Oh well, I thought that that clang was new enough, the system being
-> > > Fedora rawhide:
-> >
-> > > [acme@seventh ~]$ clang -v |& head -1
-> > > clang version 12.0.0 (https://github.com/llvm/llvm-project 87369c626114ae17f4c637635c119e6de0856a9a)
-> >
-> > > I'm now building the single-repo main...
-> >
-> > So I updated clang and now I'm stumbling on another one, again using
-> > pahole 1.21 + fixes, without any of my changes, is this a known issue?
-> >
-> > [root@seventh bpf]# pwd
-> > /mnt/linux/tools/testing/selftests/bpf
-> > [root@seventh bpf]# git log --oneline -5
-> > 94f0b2d4a1d0 (HEAD -> master, torvalds/master) proc: only require mm_struct for writing
-> 
-> Please use bpf-next tree. Bleeding edge clang started generating new
-> ELF relocation types, so you need bleeding edge libbpfs in selftests
-> to handle that during static linking.
+Martin KaFai Lau <kafai@fb.com> writes:
 
-Yeah, bleeding edge indeed, will use that then
- 
-> > a33d62662d27 afs: Fix an IS_ERR() vs NULL check
-> > 009c9aa5be65 (tag: v5.13-rc6) Linux 5.13-rc6
-> > e4e453434a19 Merge tag 'perf-tools-fixes-for-v5.13-2021-06-13' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
-> > 960f0716d80f Merge tag 'nfs-for-5.13-3' of git://git.linux-nfs.org/projects/trondmy/linux-nfs
-> > [root@seventh bpf]#
-> > [root@seventh bpf]# make run_tests
-> 
-> I never use make run_tests.
+> On Tue, Jun 15, 2021 at 04:54:42PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+> [ ... ]
+>
+>>  static void *__dev_map_hash_lookup_elem(struct bpf_map *map, u32 key)
+>>  {
+>>  	struct bpf_dtab *dtab =3D container_of(map, struct bpf_dtab, map);
+>> @@ -266,7 +270,8 @@ static void *__dev_map_hash_lookup_elem(struct bpf_m=
+ap *map, u32 key)
+>>  	struct bpf_dtab_netdev *dev;
+>>=20=20
+>>  	hlist_for_each_entry_rcu(dev, head, index_hlist,
+>> -				 lockdep_is_held(&dtab->index_lock))
+>> +				 (lockdep_is_held(&dtab->index_lock) ||
+>> +				  rcu_read_lock_bh_held()))
+> This change is not needed also.
 
-One more thing to put into my BTF development cheat sheet, thanks.
+Ah yes, of course - my bad for forgetting to remove that as well. Will
+send a v3!
 
-I looked at git log tools/testing/selftests/bpf and looked for the first
-commit, which I thought would have instructions on how to use it, and
-there I found about 'make run_tests'.
- 
-> Try `make clean && make -j60 && sudo ./test_progs`.
-> 
-> > <SNIP>
-> >   GEN-SKEL [test_progs] atomic_bounds.skel.h
-> >   GEN-SKEL [test_progs] atomics.skel.h
-> >   GEN-SKEL [test_progs] bind4_prog.skel.h
-> > libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
-> >   GEN-SKEL [test_progs] bind6_prog.skel.h
-> > libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
-> >   GEN-SKEL [test_progs] bind_perm.skel.h
-> >   GEN-SKEL [test_progs] bpf_cubic.skel.h
-> > libbpf: ELF relo #0 in section #15 has unexpected type 2 in /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.o
-> > Error: failed to link '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.o': Unknown error -22 (-22)
-> > make: *** [Makefile:456: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 234
-> > [root@seventh bpf]# clang -v |& head -2
-> > clang version 13.0.0 (https://github.com/llvm/llvm-project dee2c76b4c46e71903e3d86ab7555a80d51d1288)
-> > Target: x86_64-unknown-linux-gnu
-> > [root@seventh bpf]#
-> >
-> > - Arnaldo
-> >
-> > > Would you consider a patch for libbpf that would turn this:
-> > >
-> > > > > > libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-> > > > > > Error: failed to open BPF object file: No such file or directory
-> > > > > > make: *** [Makefile:460: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 255
-> > > > > > make: *** Deleting file '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h'
-> > > > > > make: Leaving directory '/mnt/linux/tools/testing/selftests/bpf'
-> > >
-> > > Into:
-> > >
-> > > libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-> > > HINT: Please update your clang/llvm toolchain to at least cset abcdef123456
-> > > HINT: That is where clang started generating BTF information for extern functions in BPF code.
-> > >
-> > > ?
-> > >
-> > > :-)
+-Toke
 
--- 
-
-- Arnaldo
