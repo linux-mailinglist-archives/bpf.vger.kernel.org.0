@@ -2,214 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7DB3AAE78
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 10:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678013AAF40
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 11:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhFQILn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 04:11:43 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:52489 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhFQILn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 04:11:43 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 4B98A20017;
-        Thu, 17 Jun 2021 08:09:23 +0000 (UTC)
-Subject: Re: [PATCH] riscv: Ensure BPF_JIT_REGION_START aligned with PMD size
-To:     Palmer Dabbelt <palmer@dabbelt.com>, jszhang3@mail.ustc.edu.cn
-Cc:     schwab@linux-m68k.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, ryabinin.a.a@gmail.com, glider@google.com,
-        andreyknvl@gmail.com, dvyukov@google.com, bjorn@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        luke.r.nels@gmail.com, xi.wang@gmail.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <mhng-042979fe-75f0-4873-8afd-f8c07942f792@palmerdabbelt-glaptop>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <ae256a5d-70ac-3a5f-ca55-5e4210a0624c@ghiti.fr>
-Date:   Thu, 17 Jun 2021 10:09:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231365AbhFQJEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 05:04:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26782 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230242AbhFQJEd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 17 Jun 2021 05:04:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623920546;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uLAb2LWOWOji+4QIg5CxEI4uB4pyxF2B9IUfZkfCsDc=;
+        b=WUOF5pg+5SPDFFP14f2cpbDIZSlsWJGMJ+uafFi9DgEDL17hmI9YFwoLzz0Ga1Rd9TRWEx
+        hCU7NpzpSywWDtJ8DLOpnAzuP6MoCzz7wI+lIxFBoWKSIptmTXAeWAJxKAQW0U/t5XPu3O
+        BR2RLrMsWlutkH1sq2SHvHhRMcl1sk4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-SK50E7nYPmmmJQzWF-t3Iw-1; Thu, 17 Jun 2021 05:02:24 -0400
+X-MC-Unique: SK50E7nYPmmmJQzWF-t3Iw-1
+Received: by mail-ej1-f69.google.com with SMTP id w13-20020a170906384db02903d9ad6b26d8so1924638ejc.0
+        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 02:02:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uLAb2LWOWOji+4QIg5CxEI4uB4pyxF2B9IUfZkfCsDc=;
+        b=Jgxuv4ER6KJPrc8tmIQHoFGRp+j/ATfrs6iu9vcbhq7LLgKdO7pSCHq3JCj4i9P2pj
+         7meiaXhx3eG41pbwKnAOR/loa7nQabyTT2jmL59yLu/sbSk1JYs+slBFTO0PTrkGdlqP
+         vE+Edj/gE6bBY4yGQDqdzQe+cZDmK2i1wbEthVT7ixG2h/y6mXbENo5ZUocJdeM7E2P/
+         l+f746B0ld5PWNrfy0u1rE85XHsYag8o/+rhpSjl1cWFC5hmE04vAbvy4xBO+C/Zk7O2
+         lLnLbu10XAOcriTNPNEO+Dp2CLmtEfiDruZChl7JxUTflw+TsuhtajCGaYGXejkeNAWb
+         CNSA==
+X-Gm-Message-State: AOAM531TOfP7tWtlJxdKn4w+KKQqIu4Nx+U+8lXVe1Q2BswZoqf/UY7j
+        ihWY6tipPa3rOeLwwM0xW1JprPJjWTSmh/WHf6uu5ENavLlatKfHSSu//crEjI5KCXo2sNN+rUD
+        dQWHRgDR7PXlY
+X-Received: by 2002:a17:906:3402:: with SMTP id c2mr4129524ejb.213.1623920543649;
+        Thu, 17 Jun 2021 02:02:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzogSU+ufXCMZzwMM0twjtu/A99aCzJYDHKy42Qiq22+cRh/KkDm9wZRCIVPMGJ4b/rkw+22Q==
+X-Received: by 2002:a17:906:3402:: with SMTP id c2mr4129502ejb.213.1623920543441;
+        Thu, 17 Jun 2021 02:02:23 -0700 (PDT)
+Received: from krava ([83.240.60.126])
+        by smtp.gmail.com with ESMTPSA id t15sm3412610ejf.119.2021.06.17.02.02.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 02:02:23 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 11:02:21 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Mark Wielaard <mark@klomp.org>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Tony Ambardar <tony.ambardar@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, stable@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, Frank Eigler <fche@redhat.com>
+Subject: Re: [PATCH bpf v1] bpf: fix libelf endian handling in resolv_btfids
+Message-ID: <YMsPnaV798ICuMbv@krava>
+References: <20210616092521.800788-1-Tony.Ambardar@gmail.com>
+ <caf1dcbd-7a07-993c-e940-1b2689985c5a@fb.com>
+ <YMopCb5CqOYsl6HR@krava>
+ <YMp68Dlqwu+wuHV9@wildebeest.org>
 MIME-Version: 1.0
-In-Reply-To: <mhng-042979fe-75f0-4873-8afd-f8c07942f792@palmerdabbelt-glaptop>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMp68Dlqwu+wuHV9@wildebeest.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Le 17/06/2021 à 09:30, Palmer Dabbelt a écrit :
-> On Tue, 15 Jun 2021 17:03:28 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
->> On Tue, 15 Jun 2021 20:54:19 +0200
->> Alex Ghiti <alex@ghiti.fr> wrote:
->>
->>> Hi Jisheng,
->>
->> Hi Alex,
->>
->>>
->>> Le 14/06/2021 à 18:49, Jisheng Zhang a écrit :
->>> > From: Jisheng Zhang <jszhang@kernel.org>
->>> > > Andreas reported commit fc8504765ec5 ("riscv: bpf: Avoid breaking 
->>> W^X")
->>> > breaks booting with one kind of config file, I reproduced a kernel 
->>> panic
->>> > with the config:
->>> > > [    0.138553] Unable to handle kernel paging request at virtual 
->>> address ffffffff81201220
->>> > [    0.139159] Oops [#1]
->>> > [    0.139303] Modules linked in:
->>> > [    0.139601] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 
->>> 5.13.0-rc5-default+ #1
->>> > [    0.139934] Hardware name: riscv-virtio,qemu (DT)
->>> > [    0.140193] epc : __memset+0xc4/0xfc
->>> > [    0.140416]  ra : skb_flow_dissector_init+0x1e/0x82
->>> > [    0.140609] epc : ffffffff8029806c ra : ffffffff8033be78 sp : 
->>> ffffffe001647da0
->>> > [    0.140878]  gp : ffffffff81134b08 tp : ffffffe001654380 t0 : 
->>> ffffffff81201158
->>> > [    0.141156]  t1 : 0000000000000002 t2 : 0000000000000154 s0 : 
->>> ffffffe001647dd0
->>> > [    0.141424]  s1 : ffffffff80a43250 a0 : ffffffff81201220 a1 : 
->>> 0000000000000000
->>> > [    0.141654]  a2 : 000000000000003c a3 : ffffffff81201258 a4 : 
->>> 0000000000000064
->>> > [    0.141893]  a5 : ffffffff8029806c a6 : 0000000000000040 a7 : 
->>> ffffffffffffffff
->>> > [    0.142126]  s2 : ffffffff81201220 s3 : 0000000000000009 s4 : 
->>> ffffffff81135088
->>> > [    0.142353]  s5 : ffffffff81135038 s6 : ffffffff8080ce80 s7 : 
->>> ffffffff80800438
->>> > [    0.142584]  s8 : ffffffff80bc6578 s9 : 0000000000000008 s10: 
->>> ffffffff806000ac
->>> > [    0.142810]  s11: 0000000000000000 t3 : fffffffffffffffc t4 : 
->>> 0000000000000000
->>> > [    0.143042]  t5 : 0000000000000155 t6 : 00000000000003ff
->>> > [    0.143220] status: 0000000000000120 badaddr: ffffffff81201220 
->>> cause: 000000000000000f
->>> > [    0.143560] [<ffffffff8029806c>] __memset+0xc4/0xfc
->>> > [    0.143859] [<ffffffff8061e984>] 
->>> init_default_flow_dissectors+0x22/0x60
->>> > [    0.144092] [<ffffffff800010fc>] do_one_initcall+0x3e/0x168
->>> > [    0.144278] [<ffffffff80600df0>] kernel_init_freeable+0x1c8/0x224
->>> > [    0.144479] [<ffffffff804868a8>] kernel_init+0x12/0x110
->>> > [    0.144658] [<ffffffff800022de>] ret_from_exception+0x0/0xc
->>> > [    0.145124] ---[ end trace f1e9643daa46d591 ]---
->>> > > After some investigation, I think I found the root cause: commit
->>> > 2bfc6cd81bd ("move kernel mapping outside of linear mapping") moves
->>> > BPF JIT region after the kernel:
->>> > > The &_end is unlikely aligned with PMD size, so the front bpf jit
->>> > region sits with part of kernel .data section in one PMD size mapping.
->>> > But kernel is mapped in PMD SIZE, when bpf_jit_binary_lock_ro() is
->>> > called to make the first bpf jit prog ROX, we will make part of kernel
->>> > .data section RO too, so when we write to, for example memset the
->>> > .data section, MMU will trigger a store page fault.
->>> Good catch, we make sure no physical allocation happens between _end 
->>> and the next PMD aligned address, but I missed this one.
->>>
->>> > > To fix the issue, we need to ensure the BPF JIT region is PMD size
->>> > aligned. This patch acchieve this goal by restoring the BPF JIT region
->>> > to original position, I.E the 128MB before kernel .text section.
->>> But I disagree with your solution: I made sure modules and BPF 
->>> programs get their own virtual regions to avoid worst case scenario 
->>> where one could allocate all the space and leave nothing to the other 
->>> (we are limited to +- 2GB offset). Why don't just align 
->>> BPF_JIT_REGION_START to the next PMD aligned address?
->>
->> Originally, I planed to fix the issue by aligning 
->> BPF_JIT_REGION_START, but
->> IIRC, BPF experts are adding (or have added) "Calling kernel functions 
->> from BPF"
->> feature, there's a risk that BPF JIT region is beyond the 2GB of 
->> module region:
->>
->> ------
->> module
->> ------
->> kernel
->> ------
->> BPF_JIT
->>
->> So I made this patch finally. In this patch, we let BPF JIT region sit
->> between module and kernel.
->>
->> To address "make sure modules and BPF programs get their own virtual 
->> regions",
->> what about something as below (applied against this patch)?
->>
->> diff --git a/arch/riscv/include/asm/pgtable.h 
->> b/arch/riscv/include/asm/pgtable.h
->> index 380cd3a7e548..da1158f10b09 100644
->> --- a/arch/riscv/include/asm/pgtable.h
->> +++ b/arch/riscv/include/asm/pgtable.h
->> @@ -31,7 +31,7 @@
->>  #define BPF_JIT_REGION_SIZE    (SZ_128M)
->>  #ifdef CONFIG_64BIT
->>  #define BPF_JIT_REGION_START    (BPF_JIT_REGION_END - 
->> BPF_JIT_REGION_SIZE)
->> -#define BPF_JIT_REGION_END    (MODULES_END)
->> +#define BPF_JIT_REGION_END    (PFN_ALIGN((unsigned long)&_start))
->>  #else
->>  #define BPF_JIT_REGION_START    (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
->>  #define BPF_JIT_REGION_END    (VMALLOC_END)
->> @@ -40,7 +40,7 @@
->>  /* Modules always live before the kernel */
->>  #ifdef CONFIG_64BIT
->>  #define MODULES_VADDR    (PFN_ALIGN((unsigned long)&_end) - SZ_2G)
->> -#define MODULES_END    (PFN_ALIGN((unsigned long)&_start))
->> +#define MODULES_END    (BPF_JIT_REGION_END)
->>  #endif
->>
->>
->>
->>>
->>> Again, good catch, thanks,
->>>
->>> Alex
->>>
->>> > > Reported-by: Andreas Schwab <schwab@linux-m68k.org>
->>> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->>> > ---
->>> >   arch/riscv/include/asm/pgtable.h | 5 ++---
->>> >   1 file changed, 2 insertions(+), 3 deletions(-)
->>> > > diff --git a/arch/riscv/include/asm/pgtable.h 
->>> b/arch/riscv/include/asm/pgtable.h
->>> > index 9469f464e71a..380cd3a7e548 100644
->>> > --- a/arch/riscv/include/asm/pgtable.h
->>> > +++ b/arch/riscv/include/asm/pgtable.h
->>> > @@ -30,9 +30,8 @@
->>> > >   #define BPF_JIT_REGION_SIZE    (SZ_128M)
->>> >   #ifdef CONFIG_64BIT
->>> > -/* KASLR should leave at least 128MB for BPF after the kernel */
->>> > -#define BPF_JIT_REGION_START    PFN_ALIGN((unsigned long)&_end)
->>> > -#define BPF_JIT_REGION_END    (BPF_JIT_REGION_START + 
->>> BPF_JIT_REGION_SIZE)
->>> > +#define BPF_JIT_REGION_START    (BPF_JIT_REGION_END - 
->>> BPF_JIT_REGION_SIZE)
->>> > +#define BPF_JIT_REGION_END    (MODULES_END)
->>> >   #else
->>> >   #define BPF_JIT_REGION_START    (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
->>> >   #define BPF_JIT_REGION_END    (VMALLOC_END)
->>> > 
+On Thu, Jun 17, 2021 at 12:28:00AM +0200, Mark Wielaard wrote:
+> Hoi,
 > 
-> This, when applied onto fixes, is breaking early boot on KASAN 
-> configurations for me.
-
-Not surprising, I took a shortcut when initializing KASAN for modules, 
-kernel and BPF:
-
-         kasan_populate(kasan_mem_to_shadow((const void *)MODULES_VADDR),
-                        kasan_mem_to_shadow((const void 
-*)BPF_JIT_REGION_END));
-
-The kernel is then not covered, I'm taking a look at how to fix that 
-properly.
-
+> On Wed, Jun 16, 2021 at 06:38:33PM +0200, Jiri Olsa wrote:
+> > > > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> > > > index d636643ddd35..f32c059fbfb4 100644
+> > > > --- a/tools/bpf/resolve_btfids/main.c
+> > > > +++ b/tools/bpf/resolve_btfids/main.c
+> > > > @@ -649,6 +649,9 @@ static int symbols_patch(struct object *obj)
+> > > >   	if (sets_patch(obj))
+> > > >   		return -1;
+> > > > +	/* Set type to ensure endian translation occurs. */
+> > > > +	obj->efile.idlist->d_type = ELF_T_WORD;
+> > > 
+> > > The change makes sense to me as .BTF_ids contains just a list of
+> > > u32's.
+> > > 
+> > > Jiri, could you double check on this?
+> > 
+> > the comment in ELF_T_WORD declaration suggests the size depends on
+> > elf's class?
+> > 
+> >   ELF_T_WORD,                   /* Elf32_Word, Elf64_Word, ... */
+> > 
+> > data in .BTF_ids section are allways u32
+> > 
+> > I have no idea how is this handled in libelf (perhaps it's ok),
+> > but just that comment above suggests it could be also 64 bits,
+> > cc-ing Frank and Mark for more insight
 > 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> It is correct to use ELF_T_WORD, which means a 32bit unsigned word.
+> 
+> The comment is meant to explain that, but is really confusing if you
+> don't know that Elf32_Word and Elf64_Word are the same thing (a 32bit
+> unsigned word). This comes from being "too consistent" in defining all
+> data types for both 32bit and 64bit ELF, even if those types are the
+> same in both formats...
+> 
+> Only Elf32_Addr/Elf64_Addr and Elf32_Off/Elf64_Off are different
+> sizes. But Elf32/Elf_64_Half (16 bit), Elf32/Elf64_Word (32 bit),
+> Elf32/Elf64_Xword (64 bit) and their Sword/Sxword (signed) variants
+> are all identical data types in both the Elf32 and Elf64 formats.
+> 
+> I don't really know why. It seems the original ELF spec was 32bit only
+> and when introducing the ELF64 format "they" simply duplicated all
+> data types whether or not those data type were actually different
+> between the 32 and 64 bit format.
+
+nice, thanks for details
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+jirka
+
