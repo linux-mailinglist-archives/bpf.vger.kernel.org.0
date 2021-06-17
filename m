@@ -2,142 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A243AAAA7
-	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 07:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FED3AAB8E
+	for <lists+bpf@lfdr.de>; Thu, 17 Jun 2021 08:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhFQFPE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Jun 2021 01:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhFQFPD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Jun 2021 01:15:03 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE822C061574
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 22:12:55 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id p15so6378886ybe.6
-        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 22:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ClM324FNrdH3q99k5UcsI+S9yLK9S2TWREmKYzBSs6Y=;
-        b=PTAR05taIoMZ5qd/7IqUELaD8IHXjfEAFbSNSJj+x0IuVzVHk2xmFTv6k/fE+upLq6
-         hNYHNzCSVIqiqMejHanFeZ4CAr5CKFFzJ+qaRnMnf2eR6/dfTgfjpSfnmIncR8jS6bDo
-         +boegZNgFTKGOlAHoJykSoj8AWBJaIBQwftAmxwd6m3gtVYkdvmH3K2XpE+RC+OfZWsS
-         bSKapQ39yZ9UPoqxTVvgzAAQnxcSeSo+MJwM4Vcs0odgySEDVl27evd5ilTWS7I5sciF
-         +X/oYnw9MpRC4HA22ZnC2ZC+a0Zk7nQ+g2Zgn6mJlNYzU23fLVfWEpICHGQU5+7h/LLV
-         sf1g==
+        id S229729AbhFQGDF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Jun 2021 02:03:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57941 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229716AbhFQGDE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 17 Jun 2021 02:03:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623909657;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R5Nns6EKPwDlVeXRTH4tRpggC3e49X2WwCh4ckH6I4Y=;
+        b=DHxsMCLuaZ9T6u5wEVYImMBF7FC8vdPTigaSUnxJQ7zU43uNLCwrpb4Y9KVeLIbivY6hzc
+        4ghXpzD9cnJQ4o1YfVNNEV6PcZJIDirZ42z2DaTqXIaOKipVc/h/rpL+vJIG+efpHdcXR2
+        Jft9zYhfBpsKWXti4zqvstpI0D44H5c=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-4vmmqm9_PXa3PiLXidOf6A-1; Thu, 17 Jun 2021 02:00:55 -0400
+X-MC-Unique: 4vmmqm9_PXa3PiLXidOf6A-1
+Received: by mail-pf1-f198.google.com with SMTP id r15-20020a62e40f0000b02902ec871096d3so3096461pfh.12
+        for <bpf@vger.kernel.org>; Wed, 16 Jun 2021 23:00:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ClM324FNrdH3q99k5UcsI+S9yLK9S2TWREmKYzBSs6Y=;
-        b=LS/zwba8OEK7w54aPToTwLLEmnei8C+ya/eIu2ekKkUigvfI9HyOr1brmkAYjLyHxi
-         d2tdJ+c/2upta7miWbD4yqu5Omfqxn2sl0AtrStK16dnnLlM5y1JJ2eYWUSGw7X6Nxmx
-         dIUroK4byuFomPauyH82CxoifhYpVck61PE8Fce+wfa14yDmhTqbu1s4CUwjoFWY1zVc
-         AWNRd7Skgn/zn/ja+C7CtfRc4IDRYdEpmBRF32Axgf76Sr30X58jBjTyVnJC4qYXNo2C
-         FcIiCuIKxedI80AU+6J3XN0Tv2R+h3FIdpvhHH7EvCxMpXkwifsT7eneARMy95CnohN4
-         ur7g==
-X-Gm-Message-State: AOAM530Q8TjkryP8E7eo/7ieBYW1fMsvwRv5LFA8656dbxQ0W6ZA36Em
-        HcTSldZh2G91/dloZCDpPkhAwFAmTiZzX3vW9Bg=
-X-Google-Smtp-Source: ABdhPJzejfGoN5ZkefoaKfN1e0hEsDoHzzht0kIS1DuumMVJeKzkW050yHDwdPg7IiHXihyBkz0+lI97gzU5ivJMXRU=
-X-Received: by 2002:a25:aa66:: with SMTP id s93mr4132372ybi.260.1623906775115;
- Wed, 16 Jun 2021 22:12:55 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=R5Nns6EKPwDlVeXRTH4tRpggC3e49X2WwCh4ckH6I4Y=;
+        b=qlUSOYoze4tpHeB09X/WHtAsaFGWLDJ34JvuVn6lP9sT8B+bwVOu6xklkgiXsPj7IF
+         dEELALQSXHiT1VlXVDeC3v9r0uly5uOJC+nJWmqaRSa3C+ldxaYvO9QQqc38YosI4Ch8
+         Kr1ZJTMA0OaD+jY7ljbHuJHQL1jrynbpnID0KJgTvVWCxEokq8/CzmiX+TskkTtQ7upS
+         FVkccLZ5SvWC1h1E281KcCOAcmE0urkgyJaUTxLGMk11Ylf7Ilq0ub7vN3jrvMuFKxRs
+         27gJ6HECECiZy2YT5NewHyOUwQYX8X9sCXHuwx6rsI01N471TDZEJEyWiQorrGTA1M3P
+         fy9g==
+X-Gm-Message-State: AOAM531Q7aeVjeSMrCxMl0wufjbw4qfDm4zCgPm0JM8QZrAP8uQ8ITz2
+        0QNnzYDeqtlUcf76iyM53SK0z8ryLIvdwpHxg5AFUg5IbDzqUo/i+LhoOjDN9i2DVu0mdbcucig
+        FbkhADn7AwBtE
+X-Received: by 2002:a17:902:44:b029:ee:9107:4242 with SMTP id 62-20020a1709020044b02900ee91074242mr3076025pla.18.1623909654717;
+        Wed, 16 Jun 2021 23:00:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzuQhJpZT/LZ/ASFsb1M1/+EAX4mrMb6hbKka5HX50c/zkTQLGy9dTYYEIyKzRhR0E3/G1avw==
+X-Received: by 2002:a17:902:44:b029:ee:9107:4242 with SMTP id 62-20020a1709020044b02900ee91074242mr3075997pla.18.1623909654430;
+        Wed, 16 Jun 2021 23:00:54 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id x2sm3881306pfp.155.2021.06.16.23.00.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 23:00:53 -0700 (PDT)
+Subject: Re: [PATCH net-next v5 15/15] virtio-net: xsk zero copy xmit kick by
+ threshold
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        "dust.li" <dust.li@linux.alibaba.com>, netdev@vger.kernel.org
+References: <1623909417.6591244-3-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <3a7142e0-e4d7-e6c3-a7c0-02df891f42a5@redhat.com>
+Date:   Thu, 17 Jun 2021 14:00:40 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <YQXPR0101MB075902232E6458F07FBB78E39D0F9@YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM>
-In-Reply-To: <YQXPR0101MB075902232E6458F07FBB78E39D0F9@YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 16 Jun 2021 22:12:44 -0700
-Message-ID: <CAEf4BzYtuJKaOSk6nqkMbb4vwmTAXjSWOZUJ8FnRUf_7LKkO1w@mail.gmail.com>
-Subject: Re: [PATCH] add multiple program checks to bpf_object__probe_loading
-To:     Jonathan Edwards <jonathan.edwards@165gc.onmicrosoft.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1623909417.6591244-3-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 7:19 PM Jonathan Edwards
-<jonathan.edwards@165gc.onmicrosoft.com> wrote:
->
-> eBPF has been backported for RHEL 7 w/ kernel 3.10-940+ (https://www.redh=
-at.com/en/blog/introduction-ebpf-red-hat-enterprise-linux-7).
->
-> However only the following program types are supported (https://access.re=
-dhat.com/articles/3550581)
->
-> BPF_PROG_TYPE_KPROBE
-> BPF_PROG_TYPE_TRACEPOINT
-> BPF_PROG_TYPE_PERF_EVENT
->
-> Source is here: https://access.redhat.com/labs/rhcb/RHEL-7.9/kernel-3.10.=
-0-1160.25.1.el7/sources/raw/kernel/bpf/syscall.c#_code.1177
->
-> For libbpf 0.4.0 (db9614b6bd69746809d506c2786f914b0f812c37) this causes a=
-n EINVAL return during the bpf_object__probe_loading call which only checks=
- to see if programs of type BPF_PROG_TYPE_SOCKET_FILTER can load as a test.
->
-> Quick discussion with anakryiko (https://github.com/libbpf/libbpf/issues/=
-320) indicated a preference for trying to load multiple program types befor=
-e failing (e.g SOCKET_FILTER, then KPROBE). On older kernels KPROBE require=
-s attr.kern_version =3D=3D LINUX_VERSION_CODE, which may not always be avai=
-lable (out of tree builds). TRACEPOINT will work without needing to know th=
-e version. We can use multiple tests.
->
-> The following suggestion will try multiple program types and return succe=
-ssfully if one passes. TRACEPOINT works for the ebpf backport for RHEL 7, K=
-PROBE on newer kernels (e.g 5+)
->
 
-So few high-level points about formatting the patch itself:
- - please use [PATCH bpf-next] subject prefix when submitting patches
-against bpf-next tree;
- - please wrap all the lines at 80 and please look through general
-kernel patch submission guidelines ([0])
- - note how I didn't include URL directly and used [0] (and [1], [2],
-etc, if necessary). Please do the same, that keeps text more readable
-and shorter.
-
-  [0] https://www.kernel.org/doc/html/latest/process/submitting-patches.htm=
-l
-
-> ---
->  src/libbpf.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+在 2021/6/17 下午1:56, Xuan Zhuo 写道:
+> On Thu, 17 Jun 2021 11:08:34 +0800, Jason Wang <jasowang@redhat.com> wrote:
+>> 在 2021/6/10 下午4:22, Xuan Zhuo 写道:
+>>> After testing, the performance of calling kick every time is not stable.
+>>> And if all the packets are sent and kicked again, the performance is not
+>>> good. So add a module parameter to specify how many packets are sent to
+>>> call a kick.
+>>>
+>>> 8 is a relatively stable value with the best performance.
+>>>
+>>> Here is the pps of the test of xsk_kick_thr under different values (from
+>>> 1 to 64).
+>>>
+>>> thr  PPS             thr PPS             thr PPS
+>>> 1    2924116.74247 | 23  3683263.04348 | 45  2777907.22963
+>>> 2    3441010.57191 | 24  3078880.13043 | 46  2781376.21739
+>>> 3    3636728.72378 | 25  2859219.57656 | 47  2777271.91304
+>>> 4    3637518.61468 | 26  2851557.9593  | 48  2800320.56575
+>>> 5    3651738.16251 | 27  2834783.54408 | 49  2813039.87599
+>>> 6    3652176.69231 | 28  2847012.41472 | 50  3445143.01839
+>>> 7    3665415.80602 | 29  2860633.91304 | 51  3666918.01281
+>>> 8    3665045.16555 | 30  2857903.5786  | 52  3059929.2709
+>>
+>> I wonder what's the number for the case of non zc xsk?
 >
-> diff --git a/src/libbpf.c b/src/libbpf.c
-> index 5e13c9d..c33acf1 100644
-> --- a/src/libbpf.c
-> +++ b/src/libbpf.c
-> @@ -4002,6 +4002,12 @@ bpf_object__probe_loading(struct bpf_object *obj)
->         attr.license =3D "GPL";
+> These data are used to compare the situation of sending different numbers of
+> packets to virtio at one time. I think it has nothing to do with non-zerocopy
+> xsk.
+
+
+Yes, but it would be helpful to see how much we can gain from zerocopy.
+
+Thanks
+
+
 >
->         ret =3D bpf_load_program_xattr(&attr, NULL, 0);
-> +
-> +       attr.prog_type =3D BPF_PROG_TYPE_KPROBE;
-> +       ret =3D (ret < 0) ? bpf_load_program_xattr(&attr, NULL, 0) : ret;
-> +       attr.prog_type =3D BPF_PROG_TYPE_TRACEPOINT;
-> +       ret =3D (ret < 0) ? bpf_load_program_xattr(&attr, NULL, 0) : ret;
+> Thanks.
+>
+>> Thanks
+>>
+>>
+>>> 9    3671023.2401  | 31  2835589.98963 | 53  2831515.21739
+>>> 10   3669532.23274 | 32  2862827.88706 | 54  3451804.07204
+>>> 11   3666160.37749 | 33  2871855.96696 | 55  3654975.92385
+>>> 12   3674951.44813 | 34  3434456.44816 | 56  3676198.3188
+>>> 13   3667447.57331 | 35  3656918.54177 | 57  3684740.85619
+>>> 14   3018846.0503  | 36  3596921.16722 | 58  3060958.8594
+>>> 15   2792773.84505 | 37  3603460.63903 | 59  2828874.57191
+>>> 16   3430596.3602  | 38  3595410.87666 | 60  3459926.11027
+>>> 17   3660525.85806 | 39  3604250.17819 | 61  3685444.47599
+>>> 18   3045627.69054 | 40  3596542.28428 | 62  3049959.0809
+>>> 19   2841542.94177 | 41  3600705.16054 | 63  2806280.04013
+>>> 20   2830475.97348 | 42  3019833.71191 | 64  3448494.3913
+>>> 21   2845655.55789 | 43  2752951.93264 |
+>>> 22   3450389.84365 | 44  2753107.27164 |
+>>>
+>>> It can be found that when the value of xsk_kick_thr is relatively small,
+>>> the performance is not good, and when its value is greater than 13, the
+>>> performance will be more irregular and unstable. It looks similar from 3
+>>> to 13, I chose 8 as the default value.
+>>>
+>>> The test environment is qemu + vhost-net. I modified vhost-net to drop
+>>> the packets sent by vm directly, so that the cpu of vm can run higher.
+>>> By default, the processes in the vm and the cpu of softirqd are too low,
+>>> and there is no obvious difference in the test data.
+>>>
+>>> During the test, the cpu of softirq reached 100%. Each xsk_kick_thr was
+>>> run for 300s, the pps of every second was recorded, and the average of
+>>> the pps was finally taken. The vhost process cpu on the host has also
+>>> reached 100%.
+>>>
+>>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+>>> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+>>> ---
+>>>    drivers/net/virtio/virtio_net.c |  1 +
+>>>    drivers/net/virtio/xsk.c        | 18 ++++++++++++++++--
+>>>    drivers/net/virtio/xsk.h        |  2 ++
+>>>    3 files changed, 19 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/net/virtio/virtio_net.c b/drivers/net/virtio/virtio_net.c
+>>> index 9503133e71f0..dfe509939b45 100644
+>>> --- a/drivers/net/virtio/virtio_net.c
+>>> +++ b/drivers/net/virtio/virtio_net.c
+>>> @@ -14,6 +14,7 @@ static bool csum = true, gso = true, napi_tx = true;
+>>>    module_param(csum, bool, 0444);
+>>>    module_param(gso, bool, 0444);
+>>>    module_param(napi_tx, bool, 0644);
+>>> +module_param(xsk_kick_thr, int, 0644);
+>>>
+>>>    /* FIXME: MTU in config. */
+>>>    #define GOOD_PACKET_LEN (ETH_HLEN + VLAN_HLEN + ETH_DATA_LEN)
+>>> diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
+>>> index 3973c82d1ad2..2f3ba6ab4798 100644
+>>> --- a/drivers/net/virtio/xsk.c
+>>> +++ b/drivers/net/virtio/xsk.c
+>>> @@ -5,6 +5,8 @@
+>>>
+>>>    #include "virtio_net.h"
+>>>
+>>> +int xsk_kick_thr = 8;
+>>> +
+>>>    static struct virtio_net_hdr_mrg_rxbuf xsk_hdr;
+>>>
+>>>    static struct virtnet_xsk_ctx *virtnet_xsk_ctx_get(struct virtnet_xsk_ctx_head *head)
+>>> @@ -455,6 +457,7 @@ static int virtnet_xsk_xmit_batch(struct send_queue *sq,
+>>>    	struct xdp_desc desc;
+>>>    	int err, packet = 0;
+>>>    	int ret = -EAGAIN;
+>>> +	int need_kick = 0;
+>>>
+>>>    	while (budget-- > 0) {
+>>>    		if (sq->vq->num_free < 2 + MAX_SKB_FRAGS) {
+>>> @@ -475,11 +478,22 @@ static int virtnet_xsk_xmit_batch(struct send_queue *sq,
+>>>    		}
+>>>
+>>>    		++packet;
+>>> +		++need_kick;
+>>> +		if (need_kick > xsk_kick_thr) {
+>>> +			if (virtqueue_kick_prepare(sq->vq) &&
+>>> +			    virtqueue_notify(sq->vq))
+>>> +				++stats->kicks;
+>>> +
+>>> +			need_kick = 0;
+>>> +		}
+>>>    	}
+>>>
+>>>    	if (packet) {
+>>> -		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq))
+>>> -			++stats->kicks;
+>>> +		if (need_kick) {
+>>> +			if (virtqueue_kick_prepare(sq->vq) &&
+>>> +			    virtqueue_notify(sq->vq))
+>>> +				++stats->kicks;
+>>> +		}
+>>>
+>>>    		*done += packet;
+>>>    		stats->xdp_tx += packet;
+>>> diff --git a/drivers/net/virtio/xsk.h b/drivers/net/virtio/xsk.h
+>>> index fe22cf78d505..4f0f4f9cf23b 100644
+>>> --- a/drivers/net/virtio/xsk.h
+>>> +++ b/drivers/net/virtio/xsk.h
+>>> @@ -7,6 +7,8 @@
+>>>
+>>>    #define VIRTNET_XSK_BUFF_CTX  ((void *)(unsigned long)~0L)
+>>>
+>>> +extern int xsk_kick_thr;
+>>> +
+>>>    /* When xsk disable, under normal circumstances, the network card must reclaim
+>>>     * all the memory that has been sent and the memory added to the rq queue by
+>>>     * destroying the queue.
 
-As for this logic, I think let's drop KPROBE altogether. Ubuntu has
-problems with LINUX_VERSION_CODE. Let's try SOCKET_FILTER and fallback
-to TRACEPOINT before giving up. Very old upstream kernels allow
-SOCKET_FILTER, so that is covered. And then backported RHEL will know
-about TRACEPOINT. That should be good enough.
-
-Also, explicit if in this case is more appropriate:
-
-if (ret < 0) {
-    attr.prog_type =3D BPF_PROG_TYPE_TRACEPOINT;
-    ret =3D bpf_load_program_xattr(...);
-}
-
-if (ret < 0) { /* warn and error out */ }
-
-> +
->         if (ret < 0) {
->                 ret =3D errno;
->                 cp =3D libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
-> --
-> 2.17.1
