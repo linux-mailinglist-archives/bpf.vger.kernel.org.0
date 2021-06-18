@@ -2,99 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFC73AD244
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 20:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2187F3AD362
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 22:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhFRSk0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 14:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbhFRSkY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:40:24 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B399AC061760
-        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 11:38:13 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id n61so3737571uan.2
-        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 11:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DB2KtV4huzDvhq/Zw0R+/LkrQSRw1LO05/D22qr6dbU=;
-        b=tIIgm2cZNItj/jycwMzyYp3p96yXQ4kK1YCraXyqsKQp3CntGE7q58d7awGidqAldZ
-         KTeDW7VMONgTvlomLboOwEJC+XNLpnBj83yWCpcZ3rwW7N/CpWGOrn56qf/N6ueEuKAv
-         Rs+0Cttg0oqOzeN65pYDcFq+0dnIPaOpbx6vu+ZntyURMYHTkyv2T6mng7/Te7XmxcA1
-         wd7+PIHBAbaHCGLqJ9bLZjTS4LdERnO4ChIcg/dSKQJwOYKNSJWv2SYWlRatAFIAt0oQ
-         n63V02/IPwj2PjgsWvNIYUhMMj68GAEpH9aoAA6a8oNAV5TAcwrOrVO/GeP4MsWv31xg
-         //Yw==
+        id S232959AbhFRUJX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 16:09:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37443 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229848AbhFRUJX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 18 Jun 2021 16:09:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624046832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nF7w/bRMF9yLough+lpnUI5zPdwvtiS+Mg2nsdKHrg4=;
+        b=VjSr+y1EJD8n4mP1gNazOeAeC48HA0o98594rlYNXMIStA/0MWmqx2GkkSmLyub4tHZjzm
+        9XLO3HT6IyAq4G+p/nQGaMAHIh1WsawKMR1LKhG4I9rkElqGrG44g8OfkkzWRWIWecMe5v
+        LV8pytDRqg/y3/qCpwa6iVcd0w15Vr0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281--1Zt57NqMveCxQVn6E8lRg-1; Fri, 18 Jun 2021 16:07:10 -0400
+X-MC-Unique: -1Zt57NqMveCxQVn6E8lRg-1
+Received: by mail-ed1-f70.google.com with SMTP id j19-20020aa7c4130000b029039497d5cdbeso209390edq.15
+        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 13:07:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DB2KtV4huzDvhq/Zw0R+/LkrQSRw1LO05/D22qr6dbU=;
-        b=QoSl4GDKfZO01UyiMkvIWaJ9GbtbwVf0aOHfBu5Y+m4yHdSl3ZhUey6p26FNXXuKx4
-         9z/RIBPb88rRUiQFt0FRgmjDs84ULTc6lQQA6FyYfI6C2fV9egCZytc04+6vfpy1QR94
-         GcZQgh/1tBQxk0H6ExRaBDPg22mH24jmgDKkRE8Ii2VyyvqpF7O3DD1irb2WUuaYzSSn
-         jobfPaO62+u5g0cE7FzAhi/F9PDJyyMJNtUiQH0t1J74GElf3wAFT5F931Rk5MlUzIA0
-         1BO0DPpm8RIHEKX59yQihmk2+e8h41gTkM1MIgMGO78yLOs8Fzfxt//5eIDcdR6+CmSq
-         ePbQ==
-X-Gm-Message-State: AOAM533K+QKKrcRD6uMsRXIXKfXtUUQGujvy09vxfagAoykU7vrqfdFY
-        JQxPjPI8hv+uI0Cb2fo/FAJ96qPZ6e8WPPZkui/uyA==
-X-Google-Smtp-Source: ABdhPJwz2ZJpfcsl04Unjheqw2xcmn3vHpAq9WrE/MNE1GmJYx0xXDii3HA6hXdDlYY9b3I3uvLTtIsMxZJggcn3Hlk=
-X-Received: by 2002:ab0:30d4:: with SMTP id c20mr9018989uam.60.1624041492697;
- Fri, 18 Jun 2021 11:38:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210618105526.265003-1-zenczykowski@gmail.com> <CACAyw99k4ZhePBcRJzJn37rvGKnPHEgE3z8Y-47iYKQO2nqFpQ@mail.gmail.com>
-In-Reply-To: <CACAyw99k4ZhePBcRJzJn37rvGKnPHEgE3z8Y-47iYKQO2nqFpQ@mail.gmail.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Date:   Fri, 18 Jun 2021 11:38:01 -0700
-Message-ID: <CANP3RGcj_C-DorLcg58M2FYQMtz8wcX=qqVQmW6MH3uE-suh=w@mail.gmail.com>
-Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET"
-To:     Lorenz Bauer <lmb@cloudflare.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nF7w/bRMF9yLough+lpnUI5zPdwvtiS+Mg2nsdKHrg4=;
+        b=sJ5eirSbOOgjlOTbTh96M5OCAFvVrIJ/2DBj2WVk5oCn33jDJJnDdh0sbqb7MS1j9F
+         ntO5pJtxZLOoFHqwgFdE7R2Q6UmRtSfipHlM9hKrM22Yp0hDVuI9xQ9OMSaoN3hE5Hu4
+         iKiHE9XMBZpvaMVxxNxe++vvdMLAVJzcuS8UkNuUkohaWKF2XxTeHAcLVOfTP+07sYw7
+         eFYbKM9U8cOeWJHgd4kkLRVvvk09edkeQ3OjZSgoe77jWWBva1mNoxsXKJ3l3IMtJFIs
+         jjt8CTmHSDUcDREO/ZDI1/ZpuJc4BvR3gQGUFIL+Og51lydeOy8OJX/QPZ3KWcJPKVDy
+         B1bQ==
+X-Gm-Message-State: AOAM533pQxG5WZA9UhhuewvPy+GF8uq9CxdGaVOe9T631lDbgYw6ZXgS
+        4GIneKk6c7OCY33bs1DLI42c+ub6dApHE56gk95qypmYzCVWzw/13osZ+ASATVuWpAif+B5e7WF
+        enI12PyxACHnV
+X-Received: by 2002:a17:906:1c84:: with SMTP id g4mr12260382ejh.99.1624046829133;
+        Fri, 18 Jun 2021 13:07:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJymURQ+JwV7b+V1F2pnphqLC6Cl2Klj4s5lxuDVf5+VvgJ417d5EIiqn/XBcMZgoEQ/LFVyKw==
+X-Received: by 2002:a17:906:1c84:: with SMTP id g4mr12260367ejh.99.1624046828988;
+        Fri, 18 Jun 2021 13:07:08 -0700 (PDT)
+Received: from krava ([37.188.132.65])
+        by smtp.gmail.com with ESMTPSA id yh11sm1402145ejb.16.2021.06.18.13.07.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 13:07:08 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 22:07:04 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Network Development Mailing List 
-        <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Greg Kroah-Hartman <gregkh@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH bpf-next] bpf, x86: Remove unused cnt increase from EMIT
+ macro
+Message-ID: <YMz86IxKqoXGErAW@krava>
+References: <20210616133400.315039-1-jolsa@kernel.org>
+ <08876866-c004-ede7-6657-10a15f51f6d8@iogearbox.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <08876866-c004-ede7-6657-10a15f51f6d8@iogearbox.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 4:55 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> On Fri, 18 Jun 2021 at 11:55, Maciej =C5=BBenczykowski
-> <zenczykowski@gmail.com> wrote:
-> >
-> > This reverts commit d37300ed182131f1757895a62e556332857417e5.
-> >
-> > This breaks Android userspace which expects to be able to
-> > fetch programs with just read permissions.
->
-> Sorry about this! I'll defer to the maintainers what to do here.
-> Reverting leaves us with a gaping hole for access control of pinned
-> programs.
+On Thu, Jun 17, 2021 at 01:04:08PM +0200, Daniel Borkmann wrote:
+> On 6/16/21 3:34 PM, Jiri Olsa wrote:
+> > Removing unused cnt increase from EMIT macro together
+> > with cnt declarations. This was introduced in commit [1]
+> > to ensure proper code generation. But that code was
+> > removed in commit [2] and this extra code was left in.
+> > 
+> > [1] b52f00e6a715 ("x86: bpf_jit: implement bpf_tail_call() helper")
+> > [2] ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@redhat.com>
+> > ---
+> >   arch/x86/net/bpf_jit_comp.c | 39 ++++++++++---------------------------
+> >   1 file changed, 10 insertions(+), 29 deletions(-)
+> > 
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index 2a2e290fa5d8..19715542cd9c 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -31,7 +31,7 @@ static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
+> >   }
+> >   #define EMIT(bytes, len) \
+> > -	do { prog = emit_code(prog, bytes, len); cnt += len; } while (0)
+> > +	do { prog = emit_code(prog, bytes, len); } while (0)
+> >   #define EMIT1(b1)		EMIT(b1, 1)
+> >   #define EMIT2(b1, b2)		EMIT((b1) + ((b2) << 8), 2)
+> > @@ -239,7 +239,6 @@ struct jit_context {
+> >   static void push_callee_regs(u8 **pprog, bool *callee_regs_used)
+> >   {
+> >   	u8 *prog = *pprog;
+> > -	int cnt = 0;
+> >   	if (callee_regs_used[0])
+> >   		EMIT1(0x53);         /* push rbx */
+> > @@ -255,7 +254,6 @@ static void push_callee_regs(u8 **pprog, bool *callee_regs_used)
+> >   static void pop_callee_regs(u8 **pprog, bool *callee_regs_used)
+> >   {
+> >   	u8 *prog = *pprog;
+> > -	int cnt = 0;
+> >   	if (callee_regs_used[3])
+> >   		EMIT2(0x41, 0x5F);   /* pop r15 */
+> > @@ -303,7 +301,6 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+> 
+> nit: In emit_prologue() we also have cnt that we could just replace with X86_PATCH_SIZE
+> directly as well.
 
+right, will send v2
 
-Not sure what hole you're referring to.  Could you provide more
-details/explanation?
+thanks,
+jirka
 
-It seems perfectly reasonable to be able to get a program with just read pr=
-ivs.
-After all, you're not modifying it, just using it.
+> 
+> >   static int emit_patch(u8 **pprog, void *func, void *ip, u8 opcode)
+> >   {
+> >   	u8 *prog = *pprog;
+> 
+> Otherwise, lgtm.
+> 
+> Thanks,
+> Daniel
+> 
 
-AFAIK there is no way to modify a program after it was loaded, has this cha=
-nged?
-if so, the checks should be on the modifications not the fd fetch.
-
-I guess one could argue fetching with write only privs doesn't make sense?
-
-Anyway... userspace is broken... so revert is the answer.
-
-In Android the process loading/pinning bpf maps/programs is a different
-process (the 'bpfloader') to the users (which are far less privileged)
