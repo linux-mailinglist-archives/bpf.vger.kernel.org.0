@@ -2,117 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895F53ACDA4
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 16:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63113ACDAB
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 16:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234535AbhFROhG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 10:37:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36496 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234482AbhFROhG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:37:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36A9E6124C
-        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 14:34:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624026897;
-        bh=N9UDQqZZ0AGkRnj0wbo6vhFy/OzbAwVWle+6q6z2zEE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=I6xDCaaTg8JLe/S7puVXIXsQGZnVuZhz/PUd0TSQoia3rMoqkJax3LIqxWIXIbR43
-         X2jIWkuVZbwZ1rkrb+y4W/e4nDsoRAkmJRNqkwweTz1pTwCHEwtbWV2lNi57lnZZ0/
-         qISI/FCgWlBdAUY7WZ0fK7cSmvAif5n99GGniRLN29n3IRbmqrPyj5UZ86hrWzntLe
-         fge4ViHz/E7M7mvtekrgpuI6KOi7OJm92Q0tE/6bNt12nt96jSbG59Va6ZPi4YdMlP
-         d1XtNSwpLRedHqltnY+RclwX2jZxov43KdPn/p0bDtmtCoUQH1faomOdqK2L3JbWTK
-         YcWoIppGbUsWg==
-Received: by mail-lj1-f171.google.com with SMTP id s22so14335436ljg.5
-        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 07:34:57 -0700 (PDT)
-X-Gm-Message-State: AOAM532fLcl4JJaKEqYHUbRHW0rD7LxS+sJ3H69uVZ7l4BhHqkgb5If0
-        2POwEoGRYsVMXcGK0IWcEyvYhXv5Ykpa8B6BH7nGaQ==
-X-Google-Smtp-Source: ABdhPJxFgzhPdZaJLYyEUz+jtblE+JDPDwN8rpiFfw6lzdJThmS4ki7Jf93lW+ogJw+qXT8dYHPUX70gb4GAo/drQj8=
-X-Received: by 2002:a2e:9e8e:: with SMTP id f14mr9686603ljk.468.1624026895574;
- Fri, 18 Jun 2021 07:34:55 -0700 (PDT)
+        id S234554AbhFROks (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 10:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234232AbhFROks (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:40:48 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C87C061574;
+        Fri, 18 Jun 2021 07:38:37 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id x24so17036894lfr.10;
+        Fri, 18 Jun 2021 07:38:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3zleJHevyKJ//b+WW8snwMv50WmZuJV+nTZxScFD/g4=;
+        b=sZ2igkKc4vWxJhusDLqAlz4NAWGWyjs+Jh4INzsqE/ZnesEdA74yzqeK/TWOdvstFH
+         15LN5ZgnIW/pNiXdcUW3zA9MtKsi4vx6SZ2exfq01bxKKqjGz4WutaGW4bUFCgJxOlGd
+         28zSDQf8WCM/IHZj5aq6Am2WX1o22SUSQ1/2Ye0xg5jiKKONIhOXIuC0A0B5W7PN75nn
+         PB4+t9v38c7ocyNyuzf1I2M2HBZrnbfuok7mP2UZM2d8/z0tJhi3vPd9oYJlAHTcVEg9
+         xAIIv9Px673qrGswyS1Wzah48IFk+LPsTT2mhzWs+9jS8tJviW3YSLUxX4+oyhB26m3+
+         ImkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3zleJHevyKJ//b+WW8snwMv50WmZuJV+nTZxScFD/g4=;
+        b=DPaFhMzMLidBiMtIW5QLL08mHaQxtATFHMjxgpgH/S/UJsT7PybiSwooRSqDdOd1Hn
+         HyLr/4SCRpbXvjEy2Vg8ioUvHn3U/Qpb+eEoDqC6Jv4cy5fhTNskjE93mO6/XcRDh3Iu
+         CDmgZsvdQJhsjcfEaLcb/A0ey42dY/43H73D/dPSuGRilG3kt/dNLoKewOU99JKQCftA
+         gWeIj9FPlK0+zrLHX61Fwm0aHAluLPTAtNxme34NDTlSAASZbR2VLFKGVRhrHYP0GITy
+         po1xxb71pmB5mEwEfFMVFDo7j+Gbj+JH4DqgRzMRqAiyA3wIfT1yPq34F8iQrLlR+9ZW
+         ctGA==
+X-Gm-Message-State: AOAM533mW0gHULdw3SqZJaXcxV/rqsf2/3+eqTwtTfBP6mS8vQt/W227
+        yoz66UWryHFTLp3f6M2uU942f73Gv0c+Wy4GduE=
+X-Google-Smtp-Source: ABdhPJzAuzMs6NVa0s3TWesq9m5lyxTWrjZKrZnoV7lTC059Ikwx8s+mPuRMf/R5BSkb+EraqBhM4YRkd2GRseef404=
+X-Received: by 2002:ac2:4649:: with SMTP id s9mr3675765lfo.540.1624027116224;
+ Fri, 18 Jun 2021 07:38:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGG-pUTpppu-voYuT81LiTMAUA5oAWwnAwYQVAhyPwj3CwnZPA@mail.gmail.com>
- <CAEf4BzZkK9X2RadSYUWV5oh960iwaw3y5EKr7zu8WZ7XnRYz6g@mail.gmail.com>
- <CAHn8xc==x92fXpOM42-FJ_ondhGPdMOrTmgYr3K=w8WvZqXEVQ@mail.gmail.com>
- <CACYkzJ59tvKKxaG9S+QLVbC=4szbFjouDUDaaTCNUytQBT7nSg@mail.gmail.com>
- <CAGG-pUQTTBtqJgMo07bFdJS-nKBZDi9UzSYVQ200tsKP6iuTVQ@mail.gmail.com>
- <CACYkzJ5odOMQzcbfnvJmW52uxs50FY1=kSbADvD4UCF9fh3X5w@mail.gmail.com>
- <CAGG-pURQ4hxQe8w3zdW4y1hBRn1sGikB_5oodid_NHaw_U=9iw@mail.gmail.com>
- <CACYkzJ5dgxdNJK6vjdfA37PX9zkDpS1QcZgUTdO4ywzkM4-6fQ@mail.gmail.com>
- <CAGG-pURkzDB5na9OpZ5QJFofG7YWm1EYCENs2O988T3QpbhwTA@mail.gmail.com> <CAEf4BzbttnVxHccPjeFednpZ24Q4UHzTE96xbpMrFBBrZZXFDg@mail.gmail.com>
-In-Reply-To: <CAEf4BzbttnVxHccPjeFednpZ24Q4UHzTE96xbpMrFBBrZZXFDg@mail.gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Fri, 18 Jun 2021 16:34:44 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ57Eo_A_F-kXo_EEcod6odhv6ACfYpiAqr2AXnr-n8hEA@mail.gmail.com>
-Message-ID: <CACYkzJ57Eo_A_F-kXo_EEcod6odhv6ACfYpiAqr2AXnr-n8hEA@mail.gmail.com>
-Subject: Re: kernel bpf test_progs - vm wrong libc version
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     "Geyslan G. Bem" <geyslan@gmail.com>, bpf <bpf@vger.kernel.org>
+References: <20210607060724.4nidap5eywb23l3d@apollo> <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
+ <20210608071908.sos275adj3gunewo@apollo> <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+ <20210613025308.75uia7rnt4ue2k7q@apollo> <30ab29b9-c8b0-3b0f-af5f-78421b27b49c@mojatatu.com>
+ <20210613203438.d376porvf5zycatn@apollo> <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
+ <bd18943b-8a0e-be8c-6a99-17f7dfdd3bc4@iogearbox.net> <7248dc4e-8c07-a25d-5ac3-c4c106b7a266@mojatatu.com>
+ <20210616153209.pejkgb3iieu6idqq@apollo> <05ec2836-7f0d-0393-e916-fd578d8f14ac@iogearbox.net>
+ <f038645a-cb8a-dc59-e57e-2544a259bab1@mojatatu.com>
+In-Reply-To: <f038645a-cb8a-dc59-e57e-2544a259bab1@mojatatu.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 18 Jun 2021 07:38:24 -0700
+Message-ID: <CAADnVQLO-r88OZEj93Bp_eOLi1zFu3Gfm7To+XtEN7Sj0ZpOMg@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Vlad Buslov <vladbu@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 9:00 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Jun 18, 2021 at 4:40 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
 >
-> On Tue, Jun 15, 2021 at 9:42 AM Geyslan G. Bem <geyslan@gmail.com> wrote:
-> >
-> > On Tue, 15 Jun 2021 at 12:58, KP Singh <kpsingh@kernel.org> wrote:
-> > >
-> > > On Tue, Jun 15, 2021 at 4:57 PM Geyslan G. Bem <geyslan@gmail.com> wrote:
-> > > >
-> > > > On Tue, 15 Jun 2021 at 11:33, KP Singh <kpsingh@kernel.org> wrote:
-> > > > >
-> > > > > On Tue, Jun 15, 2021 at 2:34 PM Geyslan G. Bem <geyslan@gmail.com> wrote:
+> We are going to present some of the challenges we faced in a subset
+> of our work in an approach to replace iptables at netdev 0x15
+> (hopefully we get accepted).
 
-[...]
-
-> > >
-> > > [...]
-> > >
-> > > It seems like arch does not have them:
-> > >
-> > > https://bbs.archlinux.org/viewtopic.php?id=245303
-> >
-> > Indeed.
-> >
-> > >
-> > > and they don't plan to either. So you can either build the library locally
-> > > or possibly move to a distribution that provides static linking.
-> >
-> > I think this would keep things in different host environments
-> > complicated. I'm more likely to create a proper VM to handle kernel
-> > source and bpf tests, since bpf also demands llvm13 (cutting edge)
-> > which is conflicting with other projects.
-> >
->
-> KP, how do you feel about teaching vmtest.sh to (optionally, if
-> requested or if we detect that environment clang is too old) checkout
-> clang and build it before building selftests? So many people would be
-> grateful for this, I imagine! ;)
-
-I agree, I also want to do it for pahole. It will save a lot of time when a
-build error could simply be solved by updating clang and pahole.
-
->
-> > >
-> > > [incase we decide to use the static linking for vmtest.sh]
-> >
-> > It's still a good decision for environments with readily available
-> > static binaries.
->
-> yeah, it's a good option to have at the very least
-
-Cool, will send a patch for this.
-
-- KP
-
->
-> >
-> > Thanks a million for your attention.
-> >
-> > --
-> > Regards,
-> >
-> > Geyslan G. Bem
+Jamal,
+please stop using netdev@vger mailing list to promote a conference
+that does NOT represent the netdev kernel community.
+Slides shown at that conference is a non-event as far as this discussion goes.
