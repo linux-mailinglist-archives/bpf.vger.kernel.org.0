@@ -2,46 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B34B3AD200
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 20:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF833AD223
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 20:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbhFRSWN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 14:22:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49960 "EHLO mail.kernel.org"
+        id S232728AbhFRScP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 14:32:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234175AbhFRSWN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:22:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 601BE613C2;
-        Fri, 18 Jun 2021 18:20:03 +0000 (UTC)
+        id S229475AbhFRScO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 14:32:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 30368613ED;
+        Fri, 18 Jun 2021 18:30:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624040403;
-        bh=6ywh9bHoVEBIVZNLwsBQgS4AZlK5lBo5UuyQGPd/S+s=;
+        s=k20201202; t=1624041005;
+        bh=hla1afcXiBZO3Ji0LffAnkcrWwE5QynZOPQYf/PQXPQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=X5VNP4/j3k9on+MC4+VD4GXL0oQ0WLG7Acwn0Bvnk9352nIxGcbO/fv95fYxuSRaF
-         2l3XrDZ4ZKXDd/KYP9jr/V6vesZBjaYD+kPVeiAVWDAfbi6lpfFl2egbu9qe08S1wi
-         +Kz8WTloB680NTwb4vFg7ZBoHG1aGVcoYpbTRSwldoCDrkbQAzXBFNXYRERskDGKSU
-         1W0rDk2HXy90AIWxV+s+rcwfi9a7xfuBvjmljgDjvBNQ2KXXDcaLun3Y+OQacrOq9N
-         5RXps4lV+hdsSGMKWpb4mx32IR6jWkIqTHVB/Ei1g9sZSz4kWuSrGKKqygSWphJ/Un
-         +aZARnmBdODKw==
+        b=tmlZOfeOHtWbpgwFCoLo0V3OLvIoq6VCoyDfSFIq/hBH6vTT2HPHYOgZbS+qnl5bg
+         Mm3/P0nU9Ls2ylT/hUAigor4n6rx+FTJM9c6ft/RxYe8XZnfEI0IkQFwLUWzL4piLf
+         2vfjZ6SILHwwsFa2NPQ6rPeEPzUaWWaNhQJS59vOloobhc2ScAvYqOArA54qebN/IF
+         NzqjlHzWQqWNonAeMKo4GRbDGQ2aSeEIV7P4WeUoNsWGkfrtwCBdeLoIDR1H2V0hYj
+         Vr9/UvbSS18p9Y5D8ZbNWzNSkRJrV9ILk7xkRFstVvnnf3rDg9fo8lircrLGn53zQd
+         qNJcLNHbCMlaQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4D86E608B8;
-        Fri, 18 Jun 2021 18:20:03 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2A29E60A17;
+        Fri, 18 Jun 2021 18:30:05 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] samples/bpf: Fix Segmentation fault for xdp_redirect
- command
+Subject: Re: [PATCH bpf-next v4 0/1] Autogenerating libbpf API documentation
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162404040331.13927.1341543990901719711.git-patchwork-notify@kernel.org>
-Date:   Fri, 18 Jun 2021 18:20:03 +0000
-References: <20210616042324.314832-1-wanghai38@huawei.com>
-In-Reply-To: <20210616042324.314832-1-wanghai38@huawei.com>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Message-Id: <162404100516.18542.1194147590836785271.git-patchwork-notify@kernel.org>
+Date:   Fri, 18 Jun 2021 18:30:05 +0000
+References: <20210618140459.9887-1-grantseltzer@gmail.com>
+In-Reply-To: <20210618140459.9887-1-grantseltzer@gmail.com>
+To:     grantseltzer <grantseltzer@gmail.com>
+Cc:     andrii@kernel.org, daniel@iogearbox.net, corbet@lwn.net,
+        linux-doc@vger.kernel.org, bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -50,21 +46,20 @@ Hello:
 
 This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Wed, 16 Jun 2021 12:23:24 +0800 you wrote:
-> A Segmentation fault error is caused when the following command
-> is executed.
+On Fri, 18 Jun 2021 14:04:58 +0000 you wrote:
+> This patch series is meant to start the initiative to document libbpf.
+> It includes .rst files which are text documentation describing building,
+> API naming convention, as well as an index to generated API documentation.
 > 
-> $ sudo ./samples/bpf/xdp_redirect lo
-> Segmentation fault
-> 
-> This command is missing a device <IFNAME|IFINDEX> as an argument, resulting
-> in out-of-bounds access from argv.
+> In this approach the generated API documentation is enabled by the kernels
+> existing kernel documentation system which uses sphinx. The resulting docs
+> would then be synced to kernel.org/doc
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf] samples/bpf: Fix Segmentation fault for xdp_redirect command
-    https://git.kernel.org/bpf/bpf-next/c/85102ba58b41
+  - [bpf-next,v4,1/1] Add documentation for libbpf including API autogen
+    https://git.kernel.org/bpf/bpf-next/c/f540a7d2c37f
 
 You are awesome, thank you!
 --
