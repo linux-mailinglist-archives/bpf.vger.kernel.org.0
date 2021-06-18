@@ -2,133 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B083ACC86
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 15:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C503ACCFD
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 16:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbhFRNqP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 09:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
+        id S234231AbhFRODX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 10:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbhFRNqO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:46:14 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431C7C061574;
-        Fri, 18 Jun 2021 06:44:04 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id b3so587998wrm.6;
-        Fri, 18 Jun 2021 06:44:04 -0700 (PDT)
+        with ESMTP id S234179AbhFRODW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:03:22 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93ACC061574;
+        Fri, 18 Jun 2021 07:01:11 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id 68so4982934vsu.6;
+        Fri, 18 Jun 2021 07:01:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1KZhL4TvWHdLfflpYli1LmfRJGpIKZAtvn+Dbu/3l0s=;
-        b=MGyPV4on7GsD51BQYcCQ1fZrYP8m8nAmdE+bzB6Y30bmY5GgO1akMScO+nlLoC5BiN
-         pgtu1dptoKZhtPZ9ofkZNtYzl7xrRALx6BheM0R9caM0eVeaTbeSEz4CZzHsEQHczxys
-         tQY5OgxxSktZ/MTRHwkD5l//mbKmSdslSZDgEU6gJFn0G0RXBCP2Fo/gwGPKlc0pJzcT
-         EJerTELPQlBHy6+vuYSzuk6Q/vsGEpEKg0EaH3I85SBD3gYHeZV963+1LckpKiiOmnCT
-         I3L99CSUX1WfjdmRRC5Vp5tDsoYYVCikzyDuvzGC0+H5E/7QbugXXsXeK9/N4biHcEeZ
-         phTQ==
+         :cc;
+        bh=Cvh75hY019BX7uc+RL+q/CXawViVX/LTbPoN9FGziiU=;
+        b=TPLqjgPX8zTppClsQrKq5bIUE8xSKDkvXMOs4lwm9LIrccUkW9YUHsAJI+/8S7cayg
+         849czcxIu9SS+BMEkaB/5jJ0clO5nhJFv6P9UZE9MaPZfVxZiykTwQV2MvDJct/3YyT6
+         8vTbeml8S7jW8wrSFTUZO2ucTROh3al+/z5UejSXeAh//gSBu0fLEaQs92kWYlHAjKJW
+         yFmKKjq3XNDaMe4NXMTbsSuwHcek9JX3JsBd+wxdiOO6ywk0SeZxo19dmQj7RTpk7Kb9
+         gbAVEEXW5YsqX70dHMO8NXz0+jIATjGUSi2gdQ185aeH5Hg+bCKItFmh6w7juqTFqHUt
+         V1JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1KZhL4TvWHdLfflpYli1LmfRJGpIKZAtvn+Dbu/3l0s=;
-        b=tb8W2jvZOevedJBw0cJuGi41XflKIq1RZb4+0pxsCvRpv9jKYBBXti4ui1Ld4V8tyH
-         63AiEKBS3Hzsu+FUJh+rJTKylOYXLDH10yQQxhICZftOIJQ8KMwlGzH3lwJZe9ByS1GM
-         +AT7Sce6v6GJiZ3XqyyDjzVjSpGa5VQFh8WYdodoLtqTlB/iBZeLlQgfC+hQ8yDyqRHX
-         VqrjOf+CnJ8h30WVrRya+Ut7+ag2ggGd2JYUUND4iwcPxnzQDMUU4160/eSoUXKNL3rC
-         iRyLOlxStT7TUjPjIjLT0SGXgxtFjE8NRzSOC2SISblQREPLyDMlzSlmNrRCFitrm4tU
-         2fXQ==
-X-Gm-Message-State: AOAM530JdIq2NJGRp7jMSDOg2eVbXip7PKYKIP9gtri2OPlTliQZAhXV
-        O6E5wiTNZbtR1aA5CpgT9QckWtD1m7kacATV4fQ=
-X-Google-Smtp-Source: ABdhPJxFHfoQkx3BVfylZ5cw/ObUFz+PFEmvGBjHnKIEdcnV/CxsN+HtFZd0h4mmELSNYu7n9I+FNoXtbZJXF+6NUtE=
-X-Received: by 2002:adf:f842:: with SMTP id d2mr12557882wrq.52.1624023842935;
- Fri, 18 Jun 2021 06:44:02 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Cvh75hY019BX7uc+RL+q/CXawViVX/LTbPoN9FGziiU=;
+        b=bI9UYDdH/qxaQDgA54zIX6nFjNWemlJm9K9x9DEFkO9Krnx+6wcJg6N9x/+5n25nV0
+         qUxk6zKeCG/eu0mN/JB2JwbkznKEvLG63CPU66/MfnHISE1guc5A6/n35T7gB2D0caq+
+         fg1JMFbn2/cqfZ5x85CBgG2YWcLvMGFVJJKT9HdE2BBcVpPDqt/jg5Pi6rqTUaaED3sl
+         f2GgAseZihO9cLWDHYTJ+t17o4ktnfmC2/3OOtWePFvCzq7vukEszyBUADYi+fMkEHaD
+         Jchap/hAOXIsHRZ0jtLopmgK9uMtCQvDNtK3Y8NLfxK6wjInZj5ZC48PAqgsUUSav4Vd
+         E6rA==
+X-Gm-Message-State: AOAM533DOxakoh3emaogeGkwDmwmY8YTCffUJhueNVaFFEMxGCNcgXcY
+        4XhETZoXKVaO171BYsgyeyu66gfJkNNQ2wm+iPY=
+X-Google-Smtp-Source: ABdhPJyP/wfyi3OjQdOB27bjaAtzuwv0aKxCsuMKO/D6Ptea0UfTWxI2NV18ffpeB7Q/ieRYFZOch8zdVZCVOESNBVE=
+X-Received: by 2002:a05:6102:358b:: with SMTP id h11mr7143898vsu.6.1624024871034;
+ Fri, 18 Jun 2021 07:01:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210617092255.3487-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20210617092255.3487-1-magnus.karlsson@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 18 Jun 2021 15:43:49 +0200
-Message-ID: <CAJ+HfNgRFgfk5oVROquSaAw2F34A42xfGGMf_PXwVKYHXs80uQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] xsk: fix missing validation for skb and unaligned mode
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20210617182023.8137-1-grantseltzer@gmail.com> <20210617182023.8137-2-grantseltzer@gmail.com>
+ <CAEf4Bzar3CVJCkKHo5RKcCXLAwEVW5y_JUTo7_cVuBOwjRaiJg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzar3CVJCkKHo5RKcCXLAwEVW5y_JUTo7_cVuBOwjRaiJg@mail.gmail.com>
+From:   Grant Seltzer Richman <grantseltzer@gmail.com>
+Date:   Fri, 18 Jun 2021 10:00:59 -0400
+Message-ID: <CAO658oXL0++2gHc=E0i5YinHkmRJgFzq05+DxRkRrJ3ku1Ufow@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/1] Add documentation for libbpf including
+ API autogen
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
         bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 17 Jun 2021 at 11:23, Magnus Karlsson <magnus.karlsson@gmail.com> w=
-rote:
+On Thu, Jun 17, 2021 at 4:36 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
+> On Thu, Jun 17, 2021 at 11:20 AM grantseltzer <grantseltzer@gmail.com> wrote:
+> >
+> > This adds rst files containing documentation for libbpf. This includes
+> > the addition of libbpf_api.rst which pulls comment documentation from
+> > header files in libbpf under tools/lib/bpf/. The comment docs would be
+> > of the standard kernel doc format.
+> >
+> > Signed-off-by: grantseltzer <grantseltzer@gmail.com>
+> > ---
+> >  Documentation/bpf/index.rst                   | 13 +++++++
+> >  Documentation/bpf/libbpf.rst                  | 14 +++++++
+> >  Documentation/bpf/libbpf_api.rst              | 27 ++++++++++++++
+> >  Documentation/bpf/libbpf_build.rst            | 37 +++++++++++++++++++
 >
-> Fix a missing validation of a Tx descriptor when executing in skb mode
-> and the umem is in unaligned mode. A descriptor could point to a
-> buffer straddling the end of the umem, thus effectively tricking the
-> kernel to read outside the allowed umem region. This could lead to a
-> kernel crash if that part of memory is not mapped.
->
-> In zero-copy mode, the descriptor validation code rejects such
-> descriptors by checking a bit in the DMA address that tells us if the
-> next page is physically contiguous or not. For the last page in the
-> umem, this bit is not set, therefore any descriptor pointing to a
-> packet straddling this last page boundary will be rejected. However,
-> the skb path does not use this bit since it copies out data and can do
-> so to two different pages. (It also does not have the array of DMA
-> address, so it cannot even store this bit.) The code just returned
-> that the packet is always physically contiguous. But this is
-> unfortunately also returned for the last page in the umem, which means
-> that packets that cross the end of the umem are being allowed, which
-> they should not be.
->
-> Fix this by introducing a check for this in the SKB path only, not
-> penalizing the zero-copy path.
->
-> Fixes: 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> Didn't we agree to have docs under Documentation/bpf/libbpf? That
+> should make it clear that each is libbpf-specific and probably would
+> make copying/syncing easier. Plus it will be a libbpf sub-section in
+> the docs, no?
 
-Nice catch!
+Ah sure, that works.
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+>
+> >  .../bpf/libbpf_naming_convention.rst          | 32 +++++++---------
+> >  5 files changed, 104 insertions(+), 19 deletions(-)
+> >  create mode 100644 Documentation/bpf/libbpf.rst
+> >  create mode 100644 Documentation/bpf/libbpf_api.rst
+> >  create mode 100644 Documentation/bpf/libbpf_build.rst
+> >  rename tools/lib/bpf/README.rst => Documentation/bpf/libbpf_naming_convention.rst (89%)
+> >
+> > diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+> > index a702f67dd..44f646735 100644
+> > --- a/Documentation/bpf/index.rst
+> > +++ b/Documentation/bpf/index.rst
+> > @@ -12,6 +12,19 @@ BPF instruction-set.
+> >  The Cilium project also maintains a `BPF and XDP Reference Guide`_
+> >  that goes into great technical depth about the BPF Architecture.
+> >
+> > +libbpf
+> > +======
+> > +
+> > +Libbpf is a userspace library for loading and interacting with bpf programs.
+> > +
+> > +.. toctree::
+> > +   :maxdepth: 1
+> > +
+> > +   libbpf
+> > +   libbpf_api
+> > +   libbpf_build
+> > +   libbpf_naming_convention
+> > +
+> >  BPF Type Format (BTF)
+> >  =====================
+> >
+> > diff --git a/Documentation/bpf/libbpf.rst b/Documentation/bpf/libbpf.rst
+> > new file mode 100644
+> > index 000000000..2e62cadee
+> > --- /dev/null
+> > +++ b/Documentation/bpf/libbpf.rst
+> > @@ -0,0 +1,14 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+>
+> Should we use dual-license LGPL-2.1 OR BSD-2-Clause like the rest of libbpf?
+>
+> > +
+> > +libbpf
+> > +======
+> > +
+> > +This is documentation for libbpf, a userspace library for loading and
+> > +interacting with bpf programs.
+> > +
+>
+> [...]
+>
+> > +    $ cd src
+> > +    $ PKG_CONFIG_PATH=/build/root/lib64/pkgconfig DESTDIR=/build/root make
+> > \ No newline at end of file
+> > diff --git a/tools/lib/bpf/README.rst b/Documentation/bpf/libbpf_naming_convention.rst
+> > similarity index 89%
+> > rename from tools/lib/bpf/README.rst
+> > rename to Documentation/bpf/libbpf_naming_convention.rst
+> > index 8928f7787..b6dc5c592 100644
+> > --- a/tools/lib/bpf/README.rst
+> > +++ b/Documentation/bpf/libbpf_naming_convention.rst
+> > @@ -1,7 +1,7 @@
+> > -.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> > +.. SPDX-License-Identifier: GPL-2.0
+>
+> I don't think we can just easily re-license without asking original
+> contributor. But see above, I think we should stick to the
+> dual-license to stay consistent with libbpf sources?
 
-> ---
->  include/net/xsk_buff_pool.h | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
+This change was not at all intentional. I'll change it back to the
+dual license.
 >
-> diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-> index eaa8386dbc63..7a9a23e7a604 100644
-> --- a/include/net/xsk_buff_pool.h
-> +++ b/include/net/xsk_buff_pool.h
-> @@ -147,11 +147,16 @@ static inline bool xp_desc_crosses_non_contig_pg(st=
-ruct xsk_buff_pool *pool,
->  {
->         bool cross_pg =3D (addr & (PAGE_SIZE - 1)) + len > PAGE_SIZE;
 >
-> -       if (pool->dma_pages_cnt && cross_pg) {
-> +       if (likely(!cross_pg))
-> +               return false;
-> +
-> +       if (pool->dma_pages_cnt) {
->                 return !(pool->dma_pages[addr >> PAGE_SHIFT] &
->                          XSK_NEXT_PG_CONTIG_MASK);
->         }
-> -       return false;
-> +
-> +       /* skb path */
-> +       return addr + len > pool->addrs_cnt;
->  }
->
->  static inline u64 xp_aligned_extract_addr(struct xsk_buff_pool *pool, u6=
-4 addr)
->
-> base-commit: da5ac772cfe2a03058b0accfac03fad60c46c24d
-> --
-> 2.29.0
->
+> [...]
