@@ -2,120 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA623AC58A
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 09:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB693AC7F8
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 11:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbhFRIA2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 04:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232431AbhFRIA2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:00:28 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B239C061574;
-        Fri, 18 Jun 2021 00:58:18 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id v9so9691812wrx.6;
-        Fri, 18 Jun 2021 00:58:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XT9PsaveS2wI1C58XJPAB7cgQcAtkyBEo052+9tGtKM=;
-        b=CjIctjhxB6j099eunr1UNTydC6I8DWATEDos/3xAlfpr+enFqMHadXj2MQJQ6Qcs8Y
-         BabKe9ndbgKcPPKwIGFxuadpKPwbtmQ7nx/F2hSgU9fA0vc1OKaUDeyWhMYVtmX4IMzq
-         PUxoue2BCFq48UPcgTDO/k5lzZh5YHhuj0q77/tWw9N1rTxdMVpgcpf4ZAm0/r5QpSJO
-         9JbOA8OgR1wlc6Am1lq32UdYz5DFgFJGp9DCjIpd8b8ElJk3OYyEBM22GqlxBqldxiM8
-         sjyCZKO9+CDnMvhDX067prYMDfaTFGPn3cPb6Huc+mi5MKENBaOK+Ru+naRMpj2lY7Mc
-         4BDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XT9PsaveS2wI1C58XJPAB7cgQcAtkyBEo052+9tGtKM=;
-        b=L0/yYD1LbETUEfHtqUwm/MsutuB07ieDegwTrPqIP3swB52hIuMCe0VYe+wMiaNbkD
-         4QrLTLrwDTStYf2Q3c1gSpUo3TjYlg5HLKhuVCWFjueBDWLI7np5QUga6LgApyAQN28X
-         h2VAlF9MPWKE31bPNmyVBbRNnsh/65QWrZRwSm8hlDyAXpbcP0HuezbGMlpBMhyolTX2
-         k6zZSD24U5kzIVHmok1MAIuUrlspTUtVNVjIWEL3OLvMomZMD8Hc3d0lJdiTi4W5z9fG
-         Cjk6CoUAMYtf2D62k3fV2U3fsG8DgpDt7bGcaQbKzf5voKzaUvyQbZ5nGoVq3J6TLWix
-         tdng==
-X-Gm-Message-State: AOAM532X7lSAaQWRg6sYJ+Vd/aBWeSDaDoDOVX9ivjrKOL3KefaERqmL
-        IJ4j5e4W+ALJcJGEcw3KrY4=
-X-Google-Smtp-Source: ABdhPJzJ0uUVKjnZEY02JzGRkvDrkB7OSAvzuWAiSilGgIfBg/jQlOGJ5PcX+KOuDLjPXCMwgEUzYA==
-X-Received: by 2002:a5d:410f:: with SMTP id l15mr10934663wrp.82.1624003096502;
-        Fri, 18 Jun 2021 00:58:16 -0700 (PDT)
-Received: from localhost.localdomain (h-46-59-47-246.A165.priv.bahnhof.se. [46.59.47.246])
-        by smtp.gmail.com with ESMTPSA id i9sm4676705wrn.13.2021.06.18.00.58.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 18 Jun 2021 00:58:15 -0700 (PDT)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com
-Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH bpf v2] xsk: fix broken Tx ring validation
-Date:   Fri, 18 Jun 2021 09:58:05 +0200
-Message-Id: <20210618075805.14412-1-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        id S232256AbhFRJtw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 05:49:52 -0400
+Received: from mga11.intel.com ([192.55.52.93]:21270 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231883AbhFRJtv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 05:49:51 -0400
+IronPort-SDR: ermsy+8dmuKh+Jmbxh8A9R0kHNThhZf+9Vr8ptQJcyfTujx6AvJspIfUu1taP7k1ApO4S/IbUh
+ UTtAxONPvxmA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="203504333"
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="203504333"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 02:47:42 -0700
+IronPort-SDR: wDpi506e2+6bBIzg+IqFUWlKeNjb6pkMACbup5ULUb/Gfa1QA4njDeGcXUhReThghW666231ix
+ Lje+T26pE2wA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="554687643"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP; 18 Jun 2021 02:47:41 -0700
+Received: from linux.intel.com (vwong3-iLBPG3.png.intel.com [10.88.229.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id CD492580689;
+        Fri, 18 Jun 2021 02:47:38 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 17:47:35 +0800
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Song Yoong Siang <Yoong.Siang.Song@intel.com>
+Subject: Re: [PATCH bpf-next v3 15/16] stmmac: remove rcu_read_lock() around
+ XDP program invocation
+Message-ID: <20210618094735.GA20711@linux.intel.com>
+References: <20210617212748.32456-1-toke@redhat.com>
+ <20210617212748.32456-16-toke@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210617212748.32456-16-toke@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Thu, Jun 17, 2021 at 11:27:47PM +0200, Toke Høiland-Jørgensen wrote:
+> The stmmac driver has rcu_read_lock()/rcu_read_unlock() pairs around XDP
+> program invocations. However, the actual lifetime of the objects referred
+> by the XDP program invocation is longer, all the way through to the call to
+> xdp_do_flush(), making the scope of the rcu_read_lock() too small. This
+> turns out to be harmless because it all happens in a single NAPI poll
+> cycle (and thus under local_bh_disable()), but it makes the rcu_read_lock()
+> misleading.
+> 
+> Rather than extend the scope of the rcu_read_lock(), just get rid of it
+> entirely. With the addition of RCU annotations to the XDP_REDIRECT map
+> types that take bh execution into account, lockdep even understands this to
+> be safe, so there's really no reason to keep it around.
+> 
+> Cc: Giuseppe Cavallaro <peppe.cavallaro@st.com>
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Cc: Jose Abreu <joabreu@synopsys.com>
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 
-Fix broken Tx ring validation for AF_XDP. The commit under the Fixes
-tag, fixed an off-by-one error in the validation but introduced
-another error. Descriptors are now let through even if they straddle a
-chunk boundary which they are not allowed to do in aligned mode. Worse
-is that they are let through even if they straddle the end of the umem
-itself, tricking the kernel to read data outside the allowed umem
-region which might or might not be mapped at all.
+Acked-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Tested-by: Song, Yoong Siang <yoong.siang.song@intel.com>
 
-Fix this by reintroducing the old code, but subtract the length by one
-to fix the off-by-one error that the original patch was
-addressing. The test chunk != chunk_end makes sure packets do not
-straddle chunk boundraries. Note that packets of zero length are
-allowed in the interface, therefore the test if the length is
-non-zero.
-
-v1 -> v2:
-* Improved commit message
-
-Fixes: ac31565c2193 ("xsk: Fix for xp_aligned_validate_desc() when len == chunk_size")
-Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk_queue.h | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index 9d2a89d793c0..9ae13cccfb28 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -128,12 +128,15 @@ static inline bool xskq_cons_read_addr_unchecked(struct xsk_queue *q, u64 *addr)
- static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
- 					    struct xdp_desc *desc)
- {
--	u64 chunk;
--
--	if (desc->len > pool->chunk_size)
--		return false;
-+	u64 chunk, chunk_end;
- 
- 	chunk = xp_aligned_extract_addr(pool, desc->addr);
-+	if (likely(desc->len)) {
-+		chunk_end = xp_aligned_extract_addr(pool, desc->addr + desc->len - 1);
-+		if (chunk != chunk_end)
-+			return false;
-+	}
-+
- 	if (chunk >= pool->addrs_cnt)
- 		return false;
- 
-
-base-commit: da5ac772cfe2a03058b0accfac03fad60c46c24d
--- 
-2.29.0
-
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 13 +++++--------
+>  1 file changed, 5 insertions(+), 8 deletions(-)
