@@ -2,309 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E8F3ACD0E
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 16:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4345C3ACD4C
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 16:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbhFROHf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 10:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
+        id S233543AbhFRORj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 10:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234059AbhFROHf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:07:35 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B83C06175F;
-        Fri, 18 Jun 2021 07:05:25 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id g19so717113qvx.12;
-        Fri, 18 Jun 2021 07:05:25 -0700 (PDT)
+        with ESMTP id S229782AbhFRORf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:17:35 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F3CAC061574;
+        Fri, 18 Jun 2021 07:15:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=a508cxmJ8BbQ6PvxZBmVZwYXCufbRzWcf4XqrLdaMqg=;
-        b=IdTjaAvlIODgNunyEPAOvGD2yo43KcE/FyrK7Nh/A61SKphzAB0PzBszPFv9dwJ4Aq
-         1TCwnYo+5/U6lFwYwMKRYscBTWP5YMc0TG55LQ9hYwpo/qc2Jv+3aJuA1ZBqBeigQC0G
-         xF1VwhK+Kp7JQXM+kFCjQFUpz9PiDPylB0aJlkNaXsqRpuX8t65sAaA4Rj8ElEum/OUK
-         z1eOm4wvPM5CprdORcteuMhlCHAM18pAsoTCKZ4TIt7dQuyFx908tSSnD9gcoLon/B8R
-         VzDrhNJdZid/sBjObnyphrl+GrdQL9ddXMYLbycOAB+NrnaWYm9frTvyO2td3v0adf88
-         IEpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=a508cxmJ8BbQ6PvxZBmVZwYXCufbRzWcf4XqrLdaMqg=;
-        b=lK64wiF1nnVLey92eu91EaDELEnw8KtB8XYM9vg+IGBkKF/J4xUskPlKGFJTLVNeaw
-         T/t0mF0/h5U0gjEUe6CQRvs2eN5uMpJ+kxZnMbfEGON5xydIKqDXjt3knxrNlpwEOhgR
-         JrjpJO/jY44pkGWIOnvdggJPO4UizF+DHg1g7tUPPHEfN74LNJpIQlDtVzTGmZ/75Dzx
-         MiBcXdR6AotN5fNDNKVV2Xb9oJWNqKQ8gJjC+dTmqEFKlBWb2YnKDLhHfdvGgRzByThf
-         nblOi4dmkAeWMt0hBcYVlkbjmrqLvREgEmSgcXg7VCziKmtUhQcA716Ud9Kq1/EkR91K
-         ZzvQ==
-X-Gm-Message-State: AOAM530rbYMNEuYGUOItpsmxq8yYSwK5lDdemhAizrNmB26wqVCOZtRm
-        90+lcSz1HPWl9CZlw/Pd4gE=
-X-Google-Smtp-Source: ABdhPJz9do0Ri71ZA8dUwSHCezOT06nPA/0tWYdtYuDHtvU8yDWaTOgLOdSYgvknBQSyowdtKNJnOg==
-X-Received: by 2002:a05:6214:18d0:: with SMTP id cy16mr5736333qvb.29.1624025124823;
-        Fri, 18 Jun 2021 07:05:24 -0700 (PDT)
-Received: from localhost.localdomain (pool-108-54-205-133.nycmny.fios.verizon.net. [108.54.205.133])
-        by smtp.gmail.com with ESMTPSA id t30sm3974078qkm.11.2021.06.18.07.05.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 07:05:24 -0700 (PDT)
-From:   grantseltzer <grantseltzer@gmail.com>
-To:     andrii@kernel.org, daniel@iogearbox.net, corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, grantseltzer@gmail.com,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next v4 1/1] Add documentation for libbpf including API autogen
-Date:   Fri, 18 Jun 2021 14:04:59 +0000
-Message-Id: <20210618140459.9887-2-grantseltzer@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210618140459.9887-1-grantseltzer@gmail.com>
-References: <20210618140459.9887-1-grantseltzer@gmail.com>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=R5rGWfYjWzannEPfCFi17k2rcSwUm8SqL8TNYdn/BEM=; b=s7whCFqb7FLUu
+        kEGCCMwhOpiWfcIUIGwYidH0mGDW/FoKMrc96cyok59W4hsU7T1htQ2r76jFyOIP
+        YFS1jr5YtCfjFGlghncCdqGReB6SBs5x8MbYy8IdjmGq/O9kSdzQcRJF1uN2hk30
+        8QhvQx85uOKcI2gJXwcjOSKtGEGAYA=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAHk6BXqsxgBAv_AA--.19232S2;
+        Fri, 18 Jun 2021 22:14:48 +0800 (CST)
+Date:   Fri, 18 Jun 2021 22:09:13 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Alexandre Ghiti <alex@ghiti.fr>,
+        Andreas Schwab <schwab@linux-m68k.org>
+Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH v3] riscv: Ensure BPF_JIT_REGION_START aligned with PMD size
+Message-ID: <20210618220913.6fde1957@xhacker>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygAHk6BXqsxgBAv_AA--.19232S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3AFy3GrWDWF1xCw4UAr4fKrg_yoW7Zw1xpr
+        45Jr1xGrW8JryUXw18Ary5Cr1UA3WUC3W3JrnxJr15XFyUGF1UAr1UtFW3Xr1DXF4rJ3W7
+        tr1DGrWUtr1UAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkGb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
+        WxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07b0NVkUUU
+        UU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds rst files containing documentation for libbpf. This includes
-the addition of libbpf_api.rst which pulls comment documentation from
-header files in libbpf under tools/lib/bpf/. The comment docs would be
-of the standard kernel doc format.
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Signed-off-by: grantseltzer <grantseltzer@gmail.com>
+Andreas reported commit fc8504765ec5 ("riscv: bpf: Avoid breaking W^X")
+breaks booting with one kind of defconfig, I reproduced a kernel panic
+with the defconfig:
+
+[    0.138553] Unable to handle kernel paging request at virtual address ffffffff81201220
+[    0.139159] Oops [#1]
+[    0.139303] Modules linked in:
+[    0.139601] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5-default+ #1
+[    0.139934] Hardware name: riscv-virtio,qemu (DT)
+[    0.140193] epc : __memset+0xc4/0xfc
+[    0.140416]  ra : skb_flow_dissector_init+0x1e/0x82
+[    0.140609] epc : ffffffff8029806c ra : ffffffff8033be78 sp : ffffffe001647da0
+[    0.140878]  gp : ffffffff81134b08 tp : ffffffe001654380 t0 : ffffffff81201158
+[    0.141156]  t1 : 0000000000000002 t2 : 0000000000000154 s0 : ffffffe001647dd0
+[    0.141424]  s1 : ffffffff80a43250 a0 : ffffffff81201220 a1 : 0000000000000000
+[    0.141654]  a2 : 000000000000003c a3 : ffffffff81201258 a4 : 0000000000000064
+[    0.141893]  a5 : ffffffff8029806c a6 : 0000000000000040 a7 : ffffffffffffffff
+[    0.142126]  s2 : ffffffff81201220 s3 : 0000000000000009 s4 : ffffffff81135088
+[    0.142353]  s5 : ffffffff81135038 s6 : ffffffff8080ce80 s7 : ffffffff80800438
+[    0.142584]  s8 : ffffffff80bc6578 s9 : 0000000000000008 s10: ffffffff806000ac
+[    0.142810]  s11: 0000000000000000 t3 : fffffffffffffffc t4 : 0000000000000000
+[    0.143042]  t5 : 0000000000000155 t6 : 00000000000003ff
+[    0.143220] status: 0000000000000120 badaddr: ffffffff81201220 cause: 000000000000000f
+[    0.143560] [<ffffffff8029806c>] __memset+0xc4/0xfc
+[    0.143859] [<ffffffff8061e984>] init_default_flow_dissectors+0x22/0x60
+[    0.144092] [<ffffffff800010fc>] do_one_initcall+0x3e/0x168
+[    0.144278] [<ffffffff80600df0>] kernel_init_freeable+0x1c8/0x224
+[    0.144479] [<ffffffff804868a8>] kernel_init+0x12/0x110
+[    0.144658] [<ffffffff800022de>] ret_from_exception+0x0/0xc
+[    0.145124] ---[ end trace f1e9643daa46d591 ]---
+
+After some investigation, I think I found the root cause: commit
+2bfc6cd81bd ("move kernel mapping outside of linear mapping") moves
+BPF JIT region after the kernel:
+
+| #define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
+
+The &_end is unlikely aligned with PMD size, so the front bpf jit
+region sits with part of kernel .data section in one PMD size mapping.
+But kernel is mapped in PMD SIZE, when bpf_jit_binary_lock_ro() is
+called to make the first bpf jit prog ROX, we will make part of kernel
+.data section RO too, so when we write to, for example memset the
+.data section, MMU will trigger a store page fault.
+
+To fix the issue, we need to ensure the BPF JIT region is PMD size
+aligned. This patch acchieve this goal by restoring the BPF JIT region
+to original position, I.E the 128MB before kernel .text section. The
+modification to kasan_init.c is inspired by Alexandre.
+
+Fixes: fc8504765ec5 ("riscv: bpf: Avoid breaking W^X")
+Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- Documentation/bpf/index.rst                   | 13 +++++++
- Documentation/bpf/libbpf/libbpf.rst           | 14 +++++++
- Documentation/bpf/libbpf/libbpf_api.rst       | 27 ++++++++++++++
- Documentation/bpf/libbpf/libbpf_build.rst     | 37 +++++++++++++++++++
- .../bpf/libbpf/libbpf_naming_convention.rst   | 30 ++++++---------
- 5 files changed, 103 insertions(+), 18 deletions(-)
- create mode 100644 Documentation/bpf/libbpf/libbpf.rst
- create mode 100644 Documentation/bpf/libbpf/libbpf_api.rst
- create mode 100644 Documentation/bpf/libbpf/libbpf_build.rst
- rename tools/lib/bpf/README.rst => Documentation/bpf/libbpf/libbpf_naming_convention.rst (90%)
+Since v2:
+ - Split the local vars rename modification into another patch per Alexandre
+   suggestion
+ - Add Fixes tag
 
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index a702f67dd..319b06a7a 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -12,6 +12,19 @@ BPF instruction-set.
- The Cilium project also maintains a `BPF and XDP Reference Guide`_
- that goes into great technical depth about the BPF Architecture.
+Since v1:
+ - Fix early boot hang when kasan is enabled
+ - Update Documentation/riscv/vm-layout.rst
+
+ Documentation/riscv/vm-layout.rst | 4 ++--
+ arch/riscv/include/asm/pgtable.h  | 5 ++---
+ arch/riscv/mm/kasan_init.c        | 2 +-
+ 3 files changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/riscv/vm-layout.rst b/Documentation/riscv/vm-layout.rst
+index 329d32098af4..b7f98930d38d 100644
+--- a/Documentation/riscv/vm-layout.rst
++++ b/Documentation/riscv/vm-layout.rst
+@@ -58,6 +58,6 @@ RISC-V Linux Kernel SV39
+                                                               |
+   ____________________________________________________________|____________________________________________________________
+                     |            |                  |         |
+-   ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | modules
+-   ffffffff80000000 |   -2    GB | ffffffffffffffff |    2 GB | kernel, BPF
++   ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | modules, BPF
++   ffffffff80000000 |   -2    GB | ffffffffffffffff |    2 GB | kernel
+   __________________|____________|__________________|_________|____________________________________________________________
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 9469f464e71a..380cd3a7e548 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -30,9 +30,8 @@
  
-+libbpf
-+======
-+
-+Libbpf is a userspace library for loading and interacting with bpf programs.
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   libbpf/libbpf
-+   libbpf/libbpf_api
-+   libbpf/libbpf_build
-+   libbpf/libbpf_naming_convention
-+
- BPF Type Format (BTF)
- =====================
+ #define BPF_JIT_REGION_SIZE	(SZ_128M)
+ #ifdef CONFIG_64BIT
+-/* KASLR should leave at least 128MB for BPF after the kernel */
+-#define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
+-#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
++#define BPF_JIT_REGION_START	(BPF_JIT_REGION_END - BPF_JIT_REGION_SIZE)
++#define BPF_JIT_REGION_END	(MODULES_END)
+ #else
+ #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+ #define BPF_JIT_REGION_END	(VMALLOC_END)
+diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+index 9daacae93e33..55c113345460 100644
+--- a/arch/riscv/mm/kasan_init.c
++++ b/arch/riscv/mm/kasan_init.c
+@@ -201,7 +201,7 @@ void __init kasan_init(void)
  
-diff --git a/Documentation/bpf/libbpf/libbpf.rst b/Documentation/bpf/libbpf/libbpf.rst
-new file mode 100644
-index 000000000..1b1e61d5e
---- /dev/null
-+++ b/Documentation/bpf/libbpf/libbpf.rst
-@@ -0,0 +1,14 @@
-+.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+
-+libbpf
-+======
-+
-+This is documentation for libbpf, a userspace library for loading and
-+interacting with bpf programs.
-+
-+All general BPF questions, including kernel functionality, libbpf APIs and
-+their application, should be sent to bpf@vger.kernel.org mailing list.
-+You can `subscribe <http://vger.kernel.org/vger-lists.html#bpf>`_ to the
-+mailing list search its `archive <https://lore.kernel.org/bpf/>`_.
-+Please search the archive before asking new questions. It very well might
-+be that this was already addressed or answered before.
-diff --git a/Documentation/bpf/libbpf/libbpf_api.rst b/Documentation/bpf/libbpf/libbpf_api.rst
-new file mode 100644
-index 000000000..f07eecd05
---- /dev/null
-+++ b/Documentation/bpf/libbpf/libbpf_api.rst
-@@ -0,0 +1,27 @@
-+.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+
-+API
-+===
-+
-+This documentation is autogenerated from header files in libbpf, tools/lib/bpf
-+
-+.. kernel-doc:: tools/lib/bpf/libbpf.h
-+   :internal:
-+
-+.. kernel-doc:: tools/lib/bpf/bpf.h
-+   :internal:
-+
-+.. kernel-doc:: tools/lib/bpf/btf.h
-+   :internal:
-+
-+.. kernel-doc:: tools/lib/bpf/xsk.h
-+   :internal:
-+
-+.. kernel-doc:: tools/lib/bpf/bpf_tracing.h
-+   :internal:
-+
-+.. kernel-doc:: tools/lib/bpf/bpf_core_read.h
-+   :internal:
-+
-+.. kernel-doc:: tools/lib/bpf/bpf_endian.h
-+   :internal:
-\ No newline at end of file
-diff --git a/Documentation/bpf/libbpf/libbpf_build.rst b/Documentation/bpf/libbpf/libbpf_build.rst
-new file mode 100644
-index 000000000..8e8c23e80
---- /dev/null
-+++ b/Documentation/bpf/libbpf/libbpf_build.rst
-@@ -0,0 +1,37 @@
-+.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+
-+Building libbpf
-+===============
-+
-+libelf and zlib are internal dependencies of libbpf and thus are required to link
-+against and must be installed on the system for applications to work.
-+pkg-config is used by default to find libelf, and the program called
-+can be overridden with PKG_CONFIG.
-+
-+If using pkg-config at build time is not desired, it can be disabled by
-+setting NO_PKG_CONFIG=1 when calling make.
-+
-+To build both static libbpf.a and shared libbpf.so:
-+
-+.. code-block:: bash
-+
-+    $ cd src
-+    $ make
-+
-+To build only static libbpf.a library in directory build/ and install them
-+together with libbpf headers in a staging directory root/:
-+
-+.. code-block:: bash
-+
-+    $ cd src
-+    $ mkdir build root
-+    $ BUILD_STATIC_ONLY=y OBJDIR=build DESTDIR=root make install
-+
-+To build both static libbpf.a and shared libbpf.so against a custom libelf
-+dependency installed in /build/root/ and install them together with libbpf
-+headers in a build directory /build/root/:
-+
-+.. code-block:: bash
-+
-+    $ cd src
-+    $ PKG_CONFIG_PATH=/build/root/lib64/pkgconfig DESTDIR=/build/root make
-\ No newline at end of file
-diff --git a/tools/lib/bpf/README.rst b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-similarity index 90%
-rename from tools/lib/bpf/README.rst
-rename to Documentation/bpf/libbpf/libbpf_naming_convention.rst
-index 8928f7787..3de1d51e4 100644
---- a/tools/lib/bpf/README.rst
-+++ b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
-@@ -1,7 +1,7 @@
- .. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+ 	/* Populate kernel, BPF, modules mapping */
+ 	kasan_populate(kasan_mem_to_shadow((const void *)MODULES_VADDR),
+-		       kasan_mem_to_shadow((const void *)BPF_JIT_REGION_END));
++		       kasan_mem_to_shadow((const void *)MODULES_VADDR + SZ_2G));
  
--libbpf API naming convention
--============================
-+API naming convention
-+=====================
- 
- libbpf API provides access to a few logically separated groups of
- functions and types. Every group has its own naming convention
-@@ -10,14 +10,14 @@ new function or type is added to keep libbpf API clean and consistent.
- 
- All types and functions provided by libbpf API should have one of the
- following prefixes: ``bpf_``, ``btf_``, ``libbpf_``, ``xsk_``,
--``perf_buffer_``.
-+``btf_dump_``, ``ring_buffer_``, ``perf_buffer_``.
- 
- System call wrappers
- --------------------
- 
- System call wrappers are simple wrappers for commands supported by
- sys_bpf system call. These wrappers should go to ``bpf.h`` header file
--and map one-on-one to corresponding commands.
-+and map one to one to corresponding commands.
- 
- For example ``bpf_map_lookup_elem`` wraps ``BPF_MAP_LOOKUP_ELEM``
- command of sys_bpf, ``bpf_prog_attach`` wraps ``BPF_PROG_ATTACH``, etc.
-@@ -49,10 +49,6 @@ object, ``bpf_object``, double underscore and ``open`` that defines the
- purpose of the function to open ELF file and create ``bpf_object`` from
- it.
- 
--Another example: ``bpf_program__load`` is named for corresponding
--object, ``bpf_program``, that is separated from other part of the name
--by double underscore.
--
- All objects and corresponding functions other than BTF related should go
- to ``libbpf.h``. BTF types and functions should go to ``btf.h``.
- 
-@@ -72,11 +68,7 @@ of both low-level ring access functions and high-level configuration
- functions. These can be mixed and matched. Note that these functions
- are not reentrant for performance reasons.
- 
--Please take a look at Documentation/networking/af_xdp.rst in the Linux
--kernel source tree on how to use XDP sockets and for some common
--mistakes in case you do not get any traffic up to user space.
--
--libbpf ABI
-+ABI
- ==========
- 
- libbpf can be both linked statically or used as DSO. To avoid possible
-@@ -116,7 +108,8 @@ This bump in ABI version is at most once per kernel development cycle.
- 
- For example, if current state of ``libbpf.map`` is:
- 
--.. code-block::
-+.. code-block:: c
-+
-         LIBBPF_0.0.1 {
-         	global:
-                         bpf_func_a;
-@@ -128,7 +121,8 @@ For example, if current state of ``libbpf.map`` is:
- , and a new symbol ``bpf_func_c`` is being introduced, then
- ``libbpf.map`` should be changed like this:
- 
--.. code-block::
-+.. code-block:: c
-+
-         LIBBPF_0.0.1 {
-         	global:
-                         bpf_func_a;
-@@ -148,7 +142,7 @@ Format of version script and ways to handle ABI changes, including
- incompatible ones, described in details in [1].
- 
- Stand-alone build
--=================
-+-------------------
- 
- Under https://github.com/libbpf/libbpf there is a (semi-)automated
- mirror of the mainline's version of libbpf for a stand-alone build.
-@@ -157,12 +151,12 @@ However, all changes to libbpf's code base must be upstreamed through
- the mainline kernel tree.
- 
- License
--=======
-+-------------------
- 
- libbpf is dual-licensed under LGPL 2.1 and BSD 2-Clause.
- 
- Links
--=====
-+-------------------
- 
- [1] https://www.akkadia.org/drepper/dsohowto.pdf
-     (Chapter 3. Maintaining APIs and ABIs).
+ 	for (i = 0; i < PTRS_PER_PTE; i++)
+ 		set_pte(&kasan_early_shadow_pte[i],
 -- 
-2.31.1
+2.32.0
+
 
