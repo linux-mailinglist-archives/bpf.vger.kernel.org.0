@@ -2,95 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FF53AD083
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 18:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA393AD09D
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 18:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235534AbhFRQge (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 12:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45592 "EHLO
+        id S234394AbhFRQoM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 12:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235935AbhFRQgd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:36:33 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900B7C061574
-        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 09:34:23 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id d13so14772586ljg.12
-        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 09:34:23 -0700 (PDT)
+        with ESMTP id S232433AbhFRQoL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:44:11 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38DEC06175F
+        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 09:42:00 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id l2so5230153qtq.10
+        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 09:42:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lkx42xvDJRPSSnKdE8DLKotr/K3bpuE6WK8sAqlkMFA=;
-        b=kqJZynKRAB1GJSoqQ8pKRtKMM9MKibVCAbqQgExwErxnzyoc3eMU+kNItLgXShxPAz
-         ACNpJA0irAaJWzgXrrJQohoa8/c0o2I6Pkffffv1xo/GOW1RDYMhppf295+ZvCaQlavU
-         nU7isK9YGn7LZeYzfqhuU1I4OIy9Z9vtMenHRc/Wnvqeo4TJ7aFbEpPV4+USdEbSdRee
-         3LTqXParE3sHX7bEi1AcetYqKRWQaMgWATIxGzJV+fowM8rFVJrgGhz/7DQ5tGjjspzN
-         9YV2XvUY9QbpXpq9BzUg5Ue0kcmOtzawtjxoXqRwrl/jiqUu2wiEIavXeJpDtNMcrs2T
-         pqdA==
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xqBz3eNyDUZXRDT/sBrEORRw8yLFnQSQre/jnFUfhGA=;
+        b=pJ+/lN+w7GrXtRcmNVeBtY0FApfLVdPIfcFg3mFbrgO3nVzsyJ7a1POU2f6PkgX9sJ
+         pLq4NsFhfgXqCe1mX/tFYt4HQRKoZTAMNZGfnGR8Sx1TAMYz8HEBDRFt5iaWwCuW0hP+
+         kFmOw/hJePlJ6qNHvbBdHTbyXptXYIPqj+Il/j0mL0tZTmOY3RYMh0WvWQbur+QqF0+m
+         KAPQ0QmGWo5a1KqueaS3TXL4dapQ07/LkURD14dUUB799oS5ZOPoDD2183adkYFR3aar
+         m1C3W7xpfYKnOeCbtVgf+0Mq9abfegs+Taf/c5WhzSrurN6b5LESH2QJwJIkgKTLAyLw
+         Bs9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lkx42xvDJRPSSnKdE8DLKotr/K3bpuE6WK8sAqlkMFA=;
-        b=KJBpD+IrTjw9SmFfhwjoBbxyMEolSYY+GBqHMhcqkt5QosB5uACP16AunoGbFqX8oq
-         PCozdZukrQTFGWWB9GL65weRNMbWXkQC+IwC0o0AHqZgxHjCwCsGusdTcG+qstHVNvlU
-         jRBKuscT64Olx80k9U5asQ1hKMFvifB4ZEKkHw0RjFjexDZHEOzkubolN/qD4hPm7Vuu
-         s8J7Iex90cuyUcvPimpqht4RAHzJ/aGfjiJBfsDXnpOGeAtlZH8OlW+IegoouKDnIaU4
-         R+Ov9odLYcrlakaentQpBDU3Tua9qwphMlFq4UuuvQ6XqaUtx9badxqOfyIVAbjB+sR2
-         A0hw==
-X-Gm-Message-State: AOAM533x2qfZgUH3kWA/1bJJIps4z0QBQiXfVfAXod9c31qZIk+wMMEH
-        Z5hW3QChdqaZfItymPkW9/UqJQ5YkAMQOSnbp/A=
-X-Google-Smtp-Source: ABdhPJxsgzCMHGRE3Ma/2pyFgGPrqFfc7/nFHMvYmphpGnBcbM7SVnyZ1TYWqgKxfPO4vS308VQ+CehePK4cD9PiP1s=
-X-Received: by 2002:a05:651c:102a:: with SMTP id w10mr9874798ljm.486.1624034061960;
- Fri, 18 Jun 2021 09:34:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200728152122.1292756-1-jean-philippe@linaro.org>
- <daba29d3-46bb-8246-74a7-83184c92435c@linux.ibm.com> <CAADnVQJsCkSdqCaQt2hretdqamWJmWRQvh+=RvwHmHAOW2kL6g@mail.gmail.com>
- <fedff32f-e511-a191-22b0-bf421bdcce2a@linux.ibm.com>
-In-Reply-To: <fedff32f-e511-a191-22b0-bf421bdcce2a@linux.ibm.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 18 Jun 2021 09:34:10 -0700
-Message-ID: <CAADnVQJux+8n-vpuK9FqTLuj4cXrp04pGkpvKaUdAPXLQ4c-PQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/1] arm64: Add BPF exception tables
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xqBz3eNyDUZXRDT/sBrEORRw8yLFnQSQre/jnFUfhGA=;
+        b=lmb643GXzqEfX2El9Wp97ijmBF+reMir3hSVOnc2FVkak6RDSXhcHSd4+9aFTG1n0o
+         L/eJkYHvwj07SFlu32p2L1ZG6LXZQ28xr3hgcC29nxPAYKujlfuBu6RyPuGm4d2jQbYz
+         RMKCfltATzy0Y/awTGS6T3xGSh5FdQNWoa7JoYuB+kUa8GmMQqmoeUoBAJduotYaqra3
+         dXk+rqdxMw5tXPn8NgqnbBYkLJJ1ecJRP+1KGWFXLHHrQTZI+s8FMTD4nQgG5Pj2+FpO
+         Lj8vkcJFQ9bDjY/+AUZtyG2dyqVTNi9t8MNMGYN7AwRGMQAycym8VEe6yo71eONxhzNH
+         9VwQ==
+X-Gm-Message-State: AOAM531xp5nZTgipBA3ZcfPuNiJu0jqFjKsJBfYHALh+dec9bhbwUGwZ
+        7qOlJBBC1aoe1i0VdicKPV7VSw==
+X-Google-Smtp-Source: ABdhPJziPuW9/1zINhuPZAGTnlXdpWXiDSX+xD0+k+SCaxW1JORItNhnA+WG47sRmjNY69BUpJUp8A==
+X-Received: by 2002:ac8:5c11:: with SMTP id i17mr11741918qti.64.1624034519941;
+        Fri, 18 Jun 2021 09:41:59 -0700 (PDT)
+Received: from [192.168.1.171] (bras-base-kntaon1617w-grc-28-184-148-47-211.dsl.bell.ca. [184.148.47.211])
+        by smtp.googlemail.com with ESMTPSA id m126sm4332683qke.16.2021.06.18.09.41.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 09:41:59 -0700 (PDT)
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        bpf <bpf@vger.kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@kernel.org>, Vlad Buslov <vladbu@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>
+References: <20210607060724.4nidap5eywb23l3d@apollo>
+ <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
+ <20210608071908.sos275adj3gunewo@apollo>
+ <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+ <20210613025308.75uia7rnt4ue2k7q@apollo>
+ <30ab29b9-c8b0-3b0f-af5f-78421b27b49c@mojatatu.com>
+ <20210613203438.d376porvf5zycatn@apollo>
+ <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
+ <bd18943b-8a0e-be8c-6a99-17f7dfdd3bc4@iogearbox.net>
+ <7248dc4e-8c07-a25d-5ac3-c4c106b7a266@mojatatu.com>
+ <20210616153209.pejkgb3iieu6idqq@apollo>
+ <05ec2836-7f0d-0393-e916-fd578d8f14ac@iogearbox.net>
+ <f038645a-cb8a-dc59-e57e-2544a259bab1@mojatatu.com>
+ <CAADnVQLO-r88OZEj93Bp_eOLi1zFu3Gfm7To+XtEN7Sj0ZpOMg@mail.gmail.com>
+ <ec3a9381-7b15-e60f-86b6-87135393461d@mojatatu.com>
+ <CAADnVQKi_3i6bOrYiDTLXwxhQnHDBJvHankqndzNP7eCJr27pQ@mail.gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <d2a23b1b-aa2e-ee55-fff7-89a59ea57c8e@mojatatu.com>
+Date:   Fri, 18 Jun 2021 12:41:58 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAADnVQKi_3i6bOrYiDTLXwxhQnHDBJvHankqndzNP7eCJr27pQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 11:58 PM Ravi Bangoria
-<ravi.bangoria@linux.ibm.com> wrote:
+On 2021-06-18 12:23 p.m., Alexei Starovoitov wrote:
+> On Fri, Jun 18, 2021 at 7:50 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
 >
->    $ dmesg
->    [  166.864325] BUG: unable to handle page fault for address: 0000000000d12345
->    [  166.864336] #PF: supervisor read access in kernel mode
->    [  166.864338] #PF: error_code(0x0000) - not-present page
->
-> 0xd12345 is unallocated userspace address. Similarly, I also tried with
 
-that's unfortunately expected, since this is a user address.
+[..]
+>> Alexei,
+>> Tame the aggression, would you please?
+>> You have no right to make claims as to who represents the community.
+>> Absolutely none. So get off that high horse.
+>>
+>> I only mentioned the slides because it will be a good spot when
+>> done which captures the issues. As i mentioned in i actually did
+>> send some email (some Cced to you) but got no response.
+>> I dont mind having a discussion but you have to be willing to
+>> listen as well.
+> 
+> You've side tracked technical discussion to promote your own conference.
+> That's not acceptable. Please use other forums for marketing.
+ >
+> This mailing list is for technical discussions.
 
-> p->dte = (void *)0xffffffffc1234567 after confirming it's not allocated
-> to kernel or any module address. I see the same failure with it too.
+I just made a statement in passing and you took it to a
+tangent. If you are so righteous, why didnt you just stick
+to making technical comments?
+Stop making bold statements and then playing the victim.
 
-This one is surprising though. Sounds like a bug in exception table
-construction. Can you debug it to see what's causing it?
-First check that do_kern_addr_fault() is invoked in this case.
-And then fixup_exception() and why search_bpf_extables()
-cannot find it.
-Separately we probably need to replace the NULL check
-with addr >= TASK_SIZE_MAX to close this issue though it's a bit artificial.
+cheers,
+jamal
