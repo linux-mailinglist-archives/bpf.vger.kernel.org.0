@@ -2,125 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC1D3AD0BC
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 18:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8AC3AD111
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 19:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbhFRQvz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 12:51:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50952 "EHLO mail.kernel.org"
+        id S231972AbhFRRXN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 13:23:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229730AbhFRQvz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:51:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8A02613EB;
-        Fri, 18 Jun 2021 16:49:45 +0000 (UTC)
+        id S230499AbhFRRXN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 13:23:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B60F4611CD;
+        Fri, 18 Jun 2021 17:21:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624034985;
-        bh=mTZnpeYyj5Av/AzIIZndE8lb3hBum1ZaDaXOdWjBMfw=;
+        s=k20201202; t=1624036863;
+        bh=+Jg/bfxNuGBmNHrK+MRsqTgFzVE+q+JmRTexmJwVyWg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OXpbWO+S3Md/YSfnSYTYwInfGeT2T6j+K0grh7Uog3hSNasVP9V46Z2XayriLrdlT
-         Tl+6J4n9RVM9Z4SOq1Ef9xofCKzS0nCZq3WDQ7CnmjszqZGFJ0oHaKjjEtkEyB+3yH
-         VyvlHdlaClDAzcfZ9iPPpEtMaIbwwovP97KTbReh5jY+HZO/c9bd3AlZmUQiFRnDcW
-         dzKI+7QroiJp3et548rkoWtsNpS+2Qg9ktETlfvSZ8lTUlvVlG7IyJwrKoX7DI1oOD
-         hokPk6KeKUVhOSHKzCI3Mj6HZQBUH+S7+jfYtRMDsIDvVDZK0Rj3LIU0jnIqPw7wUJ
-         bJyHfJlczmBgA==
+        b=RKam7Y1M05dH9OH6xEF5PVqpdIE1n/Beq8rf4VMgLnzexQXixdGNKHxt6+XkSFJtH
+         5Z4Ydug6Rm522DpuFZ+nGv7OMvyswv010rHxbF1fZwOpwutnyULLdKN8+gY0nyMpU0
+         319ar+aHvI7FrVQSrrSPrSjyuPIWVhRnjLnoUutmwuWM+IgLJzBmO9hd72kNkFwcmB
+         T4qt1TI007gzIMauluWLi7jfixKb1TXLtYY+Eg9K6pVHQ4IeBNUA8qpNSO36JdhZ2S
+         sQJPY+61iktVMlWFHALWv5bqWI/FF9nAcvSqCLD30nfx/z3s3va3E462BPuLoEbbAP
+         gHNWfrhCf++hw==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 63AD640B1A; Fri, 18 Jun 2021 13:49:42 -0300 (-03)
-Date:   Fri, 18 Jun 2021 13:49:42 -0300
+        id 6C42340B1A; Fri, 18 Jun 2021 14:21:00 -0300 (-03)
+Date:   Fri, 18 Jun 2021 14:21:00 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/4] perf test: Pass the verbose option to shell tests
-Message-ID: <YMzOpgZPJeC2jGKf@kernel.org>
-References: <20210617184216.2075588-1-irogers@google.com>
- <20210617184216.2075588-2-irogers@google.com>
- <YMugKlkH7lTWxTQ/@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        dwarves@vger.kernel.org, siudin@fb.com
+Subject: Re: latest pahole breaks libbpf CI and let's talk about staging
+Message-ID: <YMzV/C2A0PAHsLuD@kernel.org>
+References: <CAEf4BzZnZN2mt4+5F-00ggO9YHWrL3Jru_u3Qt2JJ+SMkHwg+w@mail.gmail.com>
+ <YMoRBvTdD0qzjYf4@kernel.org>
+ <YMopYxHgmoNVd3Yl@kernel.org>
+ <YMph3VeKA1Met65X@kernel.org>
+ <CAEf4BzZmBbkU1WWLEsZG1yVMdt7CDcuHhRF8uoLqeamhef3bVQ@mail.gmail.com>
+ <YMtgz+hcE/7iO7Ux@kernel.org>
+ <CAEf4BzbK4jN7c8aa05xGyLm_FJKgywW8Ju8dA11VAJ9Nx8drVQ@mail.gmail.com>
+ <YMuzAfK6vwbeN3XX@kernel.org>
+ <CAEf4BzZWq21zP+1C4=qqWGQ3WUXK-pvt+rWpcsh_971qAw4Wzw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMugKlkH7lTWxTQ/@kernel.org>
+In-Reply-To: <CAEf4BzZWq21zP+1C4=qqWGQ3WUXK-pvt+rWpcsh_971qAw4Wzw@mail.gmail.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jun 17, 2021 at 04:19:06PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Jun 17, 2021 at 11:42:14AM -0700, Ian Rogers escreveu:
-> > Having a verbose option will allow shell tests to provide extra failure
-> > details when the fail or skip.
->  
+Em Thu, Jun 17, 2021 at 02:52:57PM -0700, Andrii Nakryiko escreveu:
+> On Thu, Jun 17, 2021 at 1:39 PM Arnaldo Carvalho de Melo
+> <arnaldo.melo@gmail.com> wrote:
+> >
+> > Em Thu, Jun 17, 2021 at 01:00:11PM -0700, Andrii Nakryiko escreveu:
+> > > On Thu, Jun 17, 2021 at 7:48 AM Arnaldo Carvalho de Melo
+> > > <arnaldo.melo@gmail.com> wrote:
+> > > >
+> > > > Em Wed, Jun 16, 2021 at 03:36:54PM -0700, Andrii Nakryiko escreveu:
+> > > > > On Wed, Jun 16, 2021 at 1:41 PM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
+> > > > > > And if I use pahole's BTF loader I find the info about that function:
+> > > > > >
+> > > > > > [acme@seventh linux]$ strace -e openat -o /tmp/bla pfunct -F btf tcp_cong_avoid_ai  ; grep vmlinux /tmp/bla
+> > > > > > void tcp_cong_avoid_ai(struct tcp_sock * tp, u32 w, u32 acked);
+> > > > > > openat(AT_FDCWD, "/sys/kernel/btf/vmlinux", O_RDONLY) = 3
+> > > > > >
+> > > > > > So this should be unrelated to the breakage you noticed in the CI.
+> > > > > >
+> > > > > > I'm trying to to reproduce the CI breakage by building the kernel and
+> > > > > > running selftests after a reboot.
+> > > > > >
+> > > > > > I suspect I'm missing something, can you see what it is?
+> > > > >
+> > > > > Oh, I didn't realize initially what it is. This is not kernel-related,
+> > > > > you are right. You just need newer Clang. Can you please use nightly
+> > > > > version or build from sources? Basically, your Clang is too old and it
+> > > > > doesn't generate BTF information for extern functions in BPF code.
+> > > >
+> > > > Oh well, I thought that that clang was new enough, the system being
+> > > > Fedora rawhide:
+> > > >
+> > > > [acme@seventh ~]$ clang -v |& head -1
+> > > > clang version 12.0.0 (https://github.com/llvm/llvm-project 87369c626114ae17f4c637635c119e6de0856a9a)
+> > > >
+> > > > I'm now building the single-repo main...
+> > > >
+> > > > Would you consider a patch for libbpf that would turn this:
+> > > >
+> > > > > > > libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
+> > > > > > > Error: failed to open BPF object file: No such file or directory
+> > > > > > > make: *** [Makefile:460: /mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h] Error 255
+> > > > > > > make: *** Deleting file '/mnt/linux/tools/testing/selftests/bpf/bpf_cubic.skel.h'
+> > > > > > > make: Leaving directory '/mnt/linux/tools/testing/selftests/bpf'
+> > > >
+> > > > Into:
+> > > >
+> > > > libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
+> > > > HINT: Please update your clang/llvm toolchain to at least cset abcdef123456
+> > > > HINT: That is where clang started generating BTF information for extern functions in BPF code.
+> > > >
+> > > > ?
+> > > >
+> > > > :-)
+> > >
+> > > I'd rather not :)
+> >
+> > Not even a "please update clang?"
+> >
 > 
-> Thanks, applied to perf/core.
+> It could be old clang, it could also be because BPF program wasn't
+> built with BTF (i.e., you didn't specify -g during clang invocation),
+> it could probably be due to some other problems as well.
+
+Perhaps:
+
+"Please look at http://bla.html/known-reasons-for-failure.html?
+
+Perhaps we could even ask the Cilium people to take care of that since
+they have such wonderful, detailed docs? 8-)
+
+I understand that it is indeed difficult (albeit I find it valid/useful)
+to give useful information about the myriad ways this can blown up, but
+reducing to some degree the difficulties of testing libbpf, etc, is
+something I think is important.
+ 
+> I don't want libbpf to turn into a library that's constantly trying to
+> guess possible problems. It will become a complete mess to maintain.
+> And when it will still be wrong sometimes, causing more harm than
+> being helpful. Especially for relatively uncommon problems like this.
 > 
-> - Arnaldo
-> 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/tests/builtin-test.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> > index cbbfe48ab802..a8160b1684de 100644
-> > --- a/tools/perf/tests/builtin-test.c
-> > +++ b/tools/perf/tests/builtin-test.c
-> > @@ -577,11 +577,14 @@ struct shell_test {
-> >  static int shell_test__run(struct test *test, int subdir __maybe_unused)
-> >  {
-> >  	int err;
-> > -	char script[PATH_MAX];
-> > +	char script[PATH_MAX + 3];
-> >  	struct shell_test *st = test->priv;
-> >  
-> >  	path__join(script, sizeof(script), st->dir, st->file);
+> Those people who are trying to use features like BPF unstable helpers
+> (calling whitelisted kernel functions), should know that they need
+> Clang of some version and build with BTF. We have that also mentioned
+> in selftest/bpf/README.rst. I'd rather not duplicate all that in
+> libbpf code as well.
 
-probably you need to add a  '- 3' after the sizeof above, right?
+Perhaps then just say:
 
-> >  
-> > +	if (verbose)
-> > +		strncat(script, " -v", sizeof(script));
-> > +
+"Please run: cat tools/testing/selftest/bpf/README.rst"
 
-Seemed simple enough, but gcc knows better, I'm removing this one:
+8-)
 
-    tests/builtin-test.c:586:26: error: the value of the size argument in 'strncat' is too large, might lead to a buffer overflow [-Werror,-Wstrncat-size]
-                    strncat(script, " -v", sizeof(script));
-                                           ^~~~~~~~~~~~~~
-    tests/builtin-test.c:586:26: note: change the argument to be the free space in the destination buffer minus the terminating null byte
-                    strncat(script, " -v", sizeof(script));
-                                           ^~~~~~~~~~~~~~
-                                           sizeof(script) - strlen(script) - 1
-    1 error generated.
-    make[3]: *** [/git/perf-5.13.0-rc4/tools/build/Makefile.build:139: tests] Error 2
-  77    31.98 ubuntu:21.04                  : FAIL gcc version 10.3.0 (Ubuntu 10.3.0-1ubuntu1)
-    tests/builtin-test.c:586:26: error: the value of the size argument in 'strncat' is too large, might lead to a buffer overflow [-Werror,-Wstrncat-size]
-                    strncat(script, " -v", sizeof(script));
-                                           ^~~~~~~~~~~~~~
-    tests/builtin-test.c:586:26: note: change the argument to be the free space in the destination buffer minus the terminating null byte
-                    strncat(script, " -v", sizeof(script));
-                                           ^~~~~~~~~~~~~~
-                                           sizeof(script) - strlen(script) - 1
-    1 error generated.
-    make[3]: *** [/git/perf-5.13.0-rc4/tools/build/Makefile.build:139: tests] Error 2
+This could be in the makefile, no need to bother libbpf with that.
 
-
-> >  	err = system(script);
-> >  	if (!err)
-> >  		return TEST_OK;
-> > -- 
-> > 2.32.0.288.g62a8d224e6-goog
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
-
--- 
+You're working on this daily, some people do it from time to time, but
+nah, I'll stop here, felt just that I had to say it fwiw.
 
 - Arnaldo
+ 
+> > "-2" and "Error 255" doesn't seem that helpful :-\
+> 
+> But "failed to find BTF for extern 'tcp_cong_avoid_ai'" is pretty
+> helpful. -2 is for more involved debugging, if necessary.
