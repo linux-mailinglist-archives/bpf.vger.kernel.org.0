@@ -2,156 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8AC3AD5AE
-	for <lists+bpf@lfdr.de>; Sat, 19 Jun 2021 01:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20BE3AD5D9
+	for <lists+bpf@lfdr.de>; Sat, 19 Jun 2021 01:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232381AbhFRXPi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 19:15:38 -0400
-Received: from mail-eopbgr670067.outbound.protection.outlook.com ([40.107.67.67]:25556
-        "EHLO CAN01-TO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230024AbhFRXPi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:15:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KgHirpSFqKFfvACSgU9/afyXt+4pdM2VuscY2BtXRszOLJjWnqaPyk7wVmATCMfOAencpJFAyXAaxFawwGEWOKoI+kq6/33FeIDNg8OWx+imMr5LYPaSq/+xJqaD+pDcPf4wi1yR8Kzwr2CXYeQK94NtFilqPU2ZctKrHEYWtLcV4epihEFxcdKw3MNYWskWVXb4swb0lnW4lYrN10phnc9a8DbBjlOA/qyNgtywob+a5TXs9CkfCPMfrLHr5j7ZYjmGY3Cf8mCT6sftpzrOePD+gnchf4Je+HVRQBUC8JNIvqSMNdGQo684gIHVv0e1DIYU47nNFmSTsm2KKhyaRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RtkJQh5CGL1bxKP3H0YD7xZJ69/wAVsCneNFhGRBwRA=;
- b=DiUcG+VQ0cLN2qGIcFPzwRgfn7JngGuNlvXGUoBO2j7pYepWtgQg+cj/2pu3AlqT3oZXPgXNcG+5PWX4MFpk6L9o+VOn+D9R0oBfB9fHPyn67ddrFUphn+8BYehDX4yvryTaah1oNjo2mspyPyDhMlesuNmzKlCHHtMX40ZON34bX+Ikr6VEWxi0wVlgZJU39Pp4U1gVriYtETibCK3bA6xisJT1WyfYYF+E7bu0ApZagGROtIqsTuolb8FLE1IOf5tbKM5mf6I9Co1Xpw5J/ynFBDn3WXfXGbSSNmMojemPDHiONsnW3zwloSBo8a97fyX9pzzEfmJhGR2Kbyndlg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=165gc.onmicrosoft.com; dmarc=pass action=none
- header.from=165gc.onmicrosoft.com; dkim=pass header.d=165gc.onmicrosoft.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=165gc.onmicrosoft.com;
- s=selector1-165gc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RtkJQh5CGL1bxKP3H0YD7xZJ69/wAVsCneNFhGRBwRA=;
- b=p6q3CMNXNHMmyGDiHHD7bhh+5QPB9srtD4bitqxV7Km+J/w5V3bzoi23YdJ7cKvmIqi8/LS2hiXhPGZeAoeFPLPZ37HaAb9mVEZN0EQC5Ygtw4FM6nXzHdmyEYdWpmUFz5cMe22z0LxDzBy16JLs0l5sExFGODW6DNFvuYyrqNA=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=165gc.onmicrosoft.com;
-Received: from YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:17::24) by YQBPR0101MB4796.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:18::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Fri, 18 Jun
- 2021 23:13:26 +0000
-Received: from YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::c132:2223:87d:9e86]) by YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::c132:2223:87d:9e86%6]) with mapi id 15.20.4242.022; Fri, 18 Jun 2021
- 23:13:26 +0000
-Date:   Fri, 18 Jun 2021 19:13:22 -0400
-From:   jjedwa165 <jonathan.edwards@165gc.onmicrosoft.com>
-To:     andrii.nakryiko@gmail.com
-Cc:     bpf@vger.kernel.org, jonathan.edwards@165gc.onmicrosoft.com
-Subject: [PATCH bpf-next] libbpf: add extra BPF_PROG_TYPE check to
- bpf_object__probe_loading
-Message-ID: <20210618231322.GA27742@165gc.onmicrosoft.com>
-References: <CAEf4BzYtuJKaOSk6nqkMbb4vwmTAXjSWOZUJ8FnRUf_7LKkO1w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYtuJKaOSk6nqkMbb4vwmTAXjSWOZUJ8FnRUf_7LKkO1w@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [174.91.65.25]
-X-ClientProxiedBy: YT1PR01CA0004.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::17)
- To YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c00:17::24)
+        id S234212AbhFRX3j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 19:29:39 -0400
+Received: from www62.your-server.de ([213.133.104.62]:58866 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230024AbhFRX3j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 19:29:39 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1luNtY-0006gO-BZ; Sat, 19 Jun 2021 01:27:28 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1luNtY-00037V-4T; Sat, 19 Jun 2021 01:27:28 +0200
+Subject: Re: [PATCH bpf-next v3 03/16] xdp: add proper __rcu annotations to
+ redirect map entries
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210617212748.32456-1-toke@redhat.com>
+ <20210617212748.32456-4-toke@redhat.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1881ecbe-06ec-6b0a-836c-033c31fabef4@iogearbox.net>
+Date:   Sat, 19 Jun 2021 01:27:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 165gc.onmicrosoft.com (174.91.65.25) by YT1PR01CA0004.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15 via Frontend Transport; Fri, 18 Jun 2021 23:13:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5e2c1de3-e7c0-467f-1e3a-08d932aeacb4
-X-MS-TrafficTypeDiagnostic: YQBPR0101MB4796:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <YQBPR0101MB4796FF226D972BEB69964D6C9D0D9@YQBPR0101MB4796.CANPRD01.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: orlOoNH7nBNRndY6SDpjSPLcZzGHoH6VLXfBbNZ+IetNTjmrSZFU6yXFO7qfRUhdOyqnbJKfeW+Yn0OwhbYmhHAZp8/eROTjRtW0ZpJJLqvYON+WRciw74ECr0+MILbIPeTtOiLPB+LuuyFuNKCImFRvFPEg2s5fyb1T7q0Ov1v5kfpvMevRYdhsdDeLicTR6/k27YCLMAnbmycnhYiRRbuk/WolF5oXTr/kDMFi1J3LmZOf/ejza5BH63QM8UZcH9c7eVPBVRLn3h2Ya0YGLeQZfqiN6R/C//moFROvjNSGpMsgLFWnrNT+0nLINot63d4XuhmRxQR3Z8C78zJ/GAS1P3/8gZ5QDVRNdfYSmc827D9Zv1wYxLlcxhmD3NDiR4KSow3x76TcQxOy9yWriXoRT5tGoQRry4OV9jo20Nxc3rUwLcixVaLuYcIFm6rs1WK0u+OQOSc2q7HnUTvLZT98OptutIHzL7clkzq8hnQjTElvmbSNpBIIxi7ZDaEFZmZB+yfSkElLoI6hKYMTVhobiaDgVzlSGqIrnSW7sv09EOctgvysjqa5g+rgfM7pXmblM8bdHsJfHi7doKoaSInthclAFa+xDZHIWHOXIKXa337LrYUqLkCiUvfbZ2GgSbApzM4sblyiFaotkPkyWb55Gh2jKhuYFOGaMYh672meF2Mwlv+wvtcqWW7xzbh7LF28jvbA/qYtiaoM716RVvp3dz5Sx1rcMbg1KYYHkcc2jbq3aDXgpe8eGb1DQ5pTvDVTFEIkQOPaCO8tov4SGawb99VfPCN8ab4N5zOOGa79cmdNxGNRINQhFwThINqyNJoGU1AMwdVpv0msNkcyRA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(136003)(376002)(39830400003)(2906002)(66476007)(66946007)(1076003)(6916009)(186003)(26005)(6666004)(8676002)(8936002)(966005)(66556008)(83380400001)(478600001)(38100700002)(38350700002)(33656002)(4326008)(5660300002)(55016002)(16526019)(316002)(107886003)(86362001)(956004)(2616005)(7696005)(52116002)(43062005)(101420200003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cytpbzZicDdDM1dBcTlnbXdPUkE1QjBldEhPVkVrN0NHRHQ2ZFM5eWp4ODAx?=
- =?utf-8?B?Rm50SDU4RDkvR2p0TTF5c1V2TS9VVEF5dWVhbk0wWWJoVE1UUTh1UTNuOXQ5?=
- =?utf-8?B?dWZlOHl2VHliRUhnV21WS1lzSW9UYk1PTDhvUFpQZU1pbWRuSllRd0R6OFB1?=
- =?utf-8?B?dFEwOVhJeVpyQnJxTWd3KzViQnJVTWtISGo1NzdiNGk5eTgzWHo3VjBFMk9a?=
- =?utf-8?B?RHB6RDRQSG84dklDRlNjanQxTnRteWZjK3R0SXVvQUxMVURjc2ZiQXpveVVt?=
- =?utf-8?B?cXJvUU1PWWQvSWhudUN6SGkxVmU4T0FMZ0lZNVhGc3pCczFXWkoxWTJHWGFm?=
- =?utf-8?B?RGhWQXVuallld0ZoeS9NZFFaTkRWTXhSSWI1RldhLzk0MEgyRFZ0dlFZcFhB?=
- =?utf-8?B?L2lHanZnRHJGaFR1ajFQT1A0UE5xeFpScEhNNTRJYm42REdNcDdTQ2dUK0NO?=
- =?utf-8?B?R3p0R2N1YWJWSE5mNHJ1amYrL0lwc2RmTFUvTkg4SnJFUTd1NnlDSjFRN3NI?=
- =?utf-8?B?cy83UkVIRm1GRjd2dEl1eXg1M3RIN000ck5uSTY0WUtDcGJ5QVdUck9ndjhv?=
- =?utf-8?B?bVVDaHlBM3I1NHJYNDV3QUtwWlVSVXlKVmx5a1AxTWtUTndaZlN5ZGJ6MXps?=
- =?utf-8?B?cGxpM01vN1lYWUoxVVF1Vnk0dHM1WGF5bjRiSlN4aFhWSkd4ZFJsUDJxNHRR?=
- =?utf-8?B?SXZkNzZiTHMrT0FhQjA4Y2hJVENlejVFeWdxWmpSVk9jVTJsb3NCYzZMNXUz?=
- =?utf-8?B?cWpWT2NRc2dnb2FnOGI4OGdpL1dpelI5cGcwajNLN0RlZUlBdkVlajhVaWtt?=
- =?utf-8?B?WXpZNHArQklhUTN0akNWenBkK1hQVmVwN3dJWndiVTREUGREMEZBZkwwcW4r?=
- =?utf-8?B?QjZGZ29uOGhxSmNyakhweG5GWGs5bDh5ajFpR1NXSlpMU2tub0JpNnRkMnRO?=
- =?utf-8?B?MFZkVUM4cXI1aFAzSVEzczk0Y2dUdHN1VW51d0NoVHZFNlRieTVsaGRIbDFF?=
- =?utf-8?B?Um1yTkV2bFVlMldaU2IvS01DNFRaSytUZHZGZGI1MkMzWmVJYmtUaW44bGF6?=
- =?utf-8?B?TG0yUldNNFk0ZGZKREdzbTVnU0tvRUdXcndnMzdma3QvZ1VaeWhhQTBzRjdD?=
- =?utf-8?B?Vk01SG1QUWZ4QXhYaEJwNEc5dkNJWU5MWWQ3VXJPZEVwRXMySWs5ZDR0QU05?=
- =?utf-8?B?YlR5bndqdTVJckxtQzFyR2JNQ0tjbWI1MWQ0dU5xWWpmSVErcmRwQ0xGd3BN?=
- =?utf-8?B?M0g5M2d2QlpRODFYclBHRC9UaHdweVF4LzN2YlNyY0R5SjBleXQyOEpBeGFN?=
- =?utf-8?B?K1lteGJKaWw4cHZoekN3MXgxeUNkWDkxd1pHemFKR0dhQVl1Qmc0dTV4bzF0?=
- =?utf-8?B?NEdGSVI1NjU4UFllQ0JlUW5uU043NmhzVlZrLzVyQnF4KzQ3V3phRzlNNXhY?=
- =?utf-8?B?a0JCRExXQzgvUkFFQ2YycmlwNW9qRjdNSkFSUGJ1TEZnQlRMbFVCTWhoN3hR?=
- =?utf-8?B?WlVhNkh2VTZubTRsUDUyM1RNWno0ejNqdGIwR3BkWGNHVVRHbVpoVkl3RzQx?=
- =?utf-8?B?cDNhd0huc2o0V0dFK3RPYm5wV0RYc3d6WTdIRFNxYUtLZVlhWUtxdG9VWmYr?=
- =?utf-8?B?bWcrU3lWMXFXVFMzcXFISm9CUkFQejVRTjBqeWREeC9pdVVBbDdQUlFsQkxD?=
- =?utf-8?B?Skl1ajc0SUVmUkJVVEt4WDRjQktiUEZvMlBGVTB0R3JmMlRNNHRnUkJ6NFFJ?=
- =?utf-8?Q?cZmngOTQe+LQV6FUP9eaYwnOSdS41V8Z2TEHeB2?=
-X-OriginatorOrg: 165gc.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e2c1de3-e7c0-467f-1e3a-08d932aeacb4
-X-MS-Exchange-CrossTenant-AuthSource: YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 23:13:25.9225
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fa9b7bc4-84f2-4ea2-932a-26ca2f5fb014
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qhAXUuh9yx+03NqvDfJyfgZx6cLci8jWJ8XzmwACg+KZKdPc3KdAel0tiEoenezr7o0Pqa8NZnkN8v9gmBgMV6H/usq4l6RWE5kk3G5iRT/amWdkcbP/ao5W/GiPTHP8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YQBPR0101MB4796
+In-Reply-To: <20210617212748.32456-4-toke@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26205/Fri Jun 18 13:18:00 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-eBPF has been backported for RHEL 7 w/ kernel 3.10-940+ [0]. However 
-only the following program types are supported [1]
+On 6/17/21 11:27 PM, Toke Høiland-Jørgensen wrote:
+> XDP_REDIRECT works by a three-step process: the bpf_redirect() and
+> bpf_redirect_map() helpers will lookup the target of the redirect and store
+> it (along with some other metadata) in a per-CPU struct bpf_redirect_info.
+> Next, when the program returns the XDP_REDIRECT return code, the driver
+> will call xdp_do_redirect() which will use the information thus stored to
+> actually enqueue the frame into a bulk queue structure (that differs
+> slightly by map type, but shares the same principle). Finally, before
+> exiting its NAPI poll loop, the driver will call xdp_do_flush(), which will
+> flush all the different bulk queues, thus completing the redirect.
+> 
+> Pointers to the map entries will be kept around for this whole sequence of
+> steps, protected by RCU. However, there is no top-level rcu_read_lock() in
+> the core code; instead drivers add their own rcu_read_lock() around the XDP
+> portions of the code, but somewhat inconsistently as Martin discovered[0].
+> However, things still work because everything happens inside a single NAPI
+> poll sequence, which means it's between a pair of calls to
+> local_bh_disable()/local_bh_enable(). So Paul suggested[1] that we could
+> document this intention by using rcu_dereference_check() with
+> rcu_read_lock_bh_held() as a second parameter, thus allowing sparse and
+> lockdep to verify that everything is done correctly.
+> 
+> This patch does just that: we add an __rcu annotation to the map entry
+> pointers and remove the various comments explaining the NAPI poll assurance
+> strewn through devmap.c in favour of a longer explanation in filter.c. The
+> goal is to have one coherent documentation of the entire flow, and rely on
+> the RCU annotations as a "standard" way of communicating the flow in the
+> map code (which can additionally be understood by sparse and lockdep).
+> 
+> The RCU annotation replacements result in a fairly straight-forward
+> replacement where READ_ONCE() becomes rcu_dereference_check(), WRITE_ONCE()
+> becomes rcu_assign_pointer() and xchg() and cmpxchg() gets wrapped in the
+> proper constructs to cast the pointer back and forth between __rcu and
+> __kernel address space (for the benefit of sparse). The one complication is
+> that xskmap has a few constructions where double-pointers are passed back
+> and forth; these simply all gain __rcu annotations, and only the final
+> reference/dereference to the inner-most pointer gets changed.
+> 
+> With this, everything can be run through sparse without eliciting
+> complaints, and lockdep can verify correctness even without the use of
+> rcu_read_lock() in the drivers. Subsequent patches will clean these up from
+> the drivers.
+> 
+> [0] https://lore.kernel.org/bpf/20210415173551.7ma4slcbqeyiba2r@kafai-mbp.dhcp.thefacebook.com/
+> [1] https://lore.kernel.org/bpf/20210419165837.GA975577@paulmck-ThinkPad-P17-Gen-1/
+> 
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> ---
+>   include/net/xdp_sock.h |  2 +-
+>   kernel/bpf/cpumap.c    | 13 +++++++----
+>   kernel/bpf/devmap.c    | 49 ++++++++++++++++++------------------------
+>   net/core/filter.c      | 28 ++++++++++++++++++++++++
+>   net/xdp/xsk.c          |  4 ++--
+>   net/xdp/xsk.h          |  4 ++--
+>   net/xdp/xskmap.c       | 29 ++++++++++++++-----------
+>   7 files changed, 80 insertions(+), 49 deletions(-)
+[...]
+>   						 __dev_map_entry_free);
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index caa88955562e..0b7db5c70385 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3922,6 +3922,34 @@ static const struct bpf_func_proto bpf_xdp_adjust_meta_proto = {
+>   	.arg2_type	= ARG_ANYTHING,
+>   };
+>   
+> +/* XDP_REDIRECT works by a three-step process, implemented in the functions
+> + * below:
+> + *
+> + * 1. The bpf_redirect() and bpf_redirect_map() helpers will lookup the target
+> + *    of the redirect and store it (along with some other metadata) in a per-CPU
+> + *    struct bpf_redirect_info.
+> + *
+> + * 2. When the program returns the XDP_REDIRECT return code, the driver will
+> + *    call xdp_do_redirect() which will use the information in struct
+> + *    bpf_redirect_info to actually enqueue the frame into a map type-specific
+> + *    bulk queue structure.
+> + *
+> + * 3. Before exiting its NAPI poll loop, the driver will call xdp_do_flush(),
+> + *    which will flush all the different bulk queues, thus completing the
+> + *    redirect.
+> + *
+> + * Pointers to the map entries will be kept around for this whole sequence of
+> + * steps, protected by RCU. However, there is no top-level rcu_read_lock() in
+> + * the core code; instead, the RCU protection relies on everything happening
+> + * inside a single NAPI poll sequence, which means it's between a pair of calls
+> + * to local_bh_disable()/local_bh_enable().
+> + *
+> + * The map entries are marked as __rcu and the map code makes sure to
+> + * dereference those pointers with rcu_dereference_check() in a way that works
+> + * for both sections that to hold an rcu_read_lock() and sections that are
+> + * called from NAPI without a separate rcu_read_lock(). The code below does not
+> + * use RCU annotations, but relies on those in the map code.
 
-BPF_PROG_TYPE_KPROBE
-BPF_PROG_TYPE_TRACEPOINT
-BPF_PROG_TYPE_PERF_EVENT
+One more follow-up question related to tc BPF: given we do use rcu_read_lock_bh()
+in case of sch_handle_egress(), could we also remove the rcu_read_lock() pair
+from cls_bpf_classify() then?
 
-For libbpf this causes an EINVAL return during the bpf_object__probe_loading
-call which only checks to see if programs of type BPF_PROG_TYPE_SOCKET_FILTER
-can load.
+It would also be great if this scenario in general could be placed under the
+Documentation/RCU/whatisRCU.rst as an example, so we could refer to the official
+doc on this, too, if Paul is good with this.
 
-The following will try BPF_PROG_TYPE_TRACEPOINT as a fallback attempt before 
-erroring out. BPF_PROG_TYPE_KPROBE was not a good candidate because on some
-kernels it requires knowledge of the LINUX_VERSION_CODE.
+Could you also update the RCU comment in bpf_prog_run_xdp()? Or alternatively move all
+the below driver comments in there as a single location?
 
-[0] https://www.redhat.com/en/blog/introduction-ebpf-red-hat-enterprise-linux-7
-[1] https://access.redhat.com/articles/3550581
+   /* This code is invoked within a single NAPI poll cycle and thus under
+    * local_bh_disable(), which provides the needed RCU protection.
+    */
 
-Signed-off-by: jjedwa165 <jonathan.edwards@165gc.onmicrosoft.com>
----
- tools/lib/bpf/libbpf.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 48c0ade05..1e04ce724 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4000,6 +4000,10 @@ bpf_object__probe_loading(struct bpf_object *obj)
- 	attr.license = "GPL";
- 
- 	ret = bpf_load_program_xattr(&attr, NULL, 0);
-+	if (ret < 0) {
-+		attr.prog_type = BPF_PROG_TYPE_TRACEPOINT;
-+		ret = bpf_load_program_xattr(&attr, NULL, 0);
-+	}
- 	if (ret < 0) {
- 		ret = errno;
- 		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
--- 
-2.17.1
-
+Thanks,
+Daniel
