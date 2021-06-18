@@ -2,146 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FCE3AD555
-	for <lists+bpf@lfdr.de>; Sat, 19 Jun 2021 00:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8AC3AD5AE
+	for <lists+bpf@lfdr.de>; Sat, 19 Jun 2021 01:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhFRWoq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 18:44:46 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52446 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbhFRWop (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 18:44:45 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1luNC2-0003Ln-Uh; Sat, 19 Jun 2021 00:42:31 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1luNC2-000J0n-Ii; Sat, 19 Jun 2021 00:42:30 +0200
-Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
-To:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Vlad Buslov <vladbu@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        Marcelo Ricardo Leitner <mleitner@redhat.com>
-References: <20210607060724.4nidap5eywb23l3d@apollo>
- <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
- <20210608071908.sos275adj3gunewo@apollo>
- <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
- <20210613025308.75uia7rnt4ue2k7q@apollo>
- <30ab29b9-c8b0-3b0f-af5f-78421b27b49c@mojatatu.com>
- <20210613203438.d376porvf5zycatn@apollo>
- <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
- <bd18943b-8a0e-be8c-6a99-17f7dfdd3bc4@iogearbox.net>
- <7248dc4e-8c07-a25d-5ac3-c4c106b7a266@mojatatu.com>
- <20210616153209.pejkgb3iieu6idqq@apollo>
- <05ec2836-7f0d-0393-e916-fd578d8f14ac@iogearbox.net>
- <f038645a-cb8a-dc59-e57e-2544a259bab1@mojatatu.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3e9bf85b-60a4-d5d2-0267-85bb76974339@iogearbox.net>
-Date:   Sat, 19 Jun 2021 00:42:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S232381AbhFRXPi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 19:15:38 -0400
+Received: from mail-eopbgr670067.outbound.protection.outlook.com ([40.107.67.67]:25556
+        "EHLO CAN01-TO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230024AbhFRXPi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 19:15:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KgHirpSFqKFfvACSgU9/afyXt+4pdM2VuscY2BtXRszOLJjWnqaPyk7wVmATCMfOAencpJFAyXAaxFawwGEWOKoI+kq6/33FeIDNg8OWx+imMr5LYPaSq/+xJqaD+pDcPf4wi1yR8Kzwr2CXYeQK94NtFilqPU2ZctKrHEYWtLcV4epihEFxcdKw3MNYWskWVXb4swb0lnW4lYrN10phnc9a8DbBjlOA/qyNgtywob+a5TXs9CkfCPMfrLHr5j7ZYjmGY3Cf8mCT6sftpzrOePD+gnchf4Je+HVRQBUC8JNIvqSMNdGQo684gIHVv0e1DIYU47nNFmSTsm2KKhyaRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RtkJQh5CGL1bxKP3H0YD7xZJ69/wAVsCneNFhGRBwRA=;
+ b=DiUcG+VQ0cLN2qGIcFPzwRgfn7JngGuNlvXGUoBO2j7pYepWtgQg+cj/2pu3AlqT3oZXPgXNcG+5PWX4MFpk6L9o+VOn+D9R0oBfB9fHPyn67ddrFUphn+8BYehDX4yvryTaah1oNjo2mspyPyDhMlesuNmzKlCHHtMX40ZON34bX+Ikr6VEWxi0wVlgZJU39Pp4U1gVriYtETibCK3bA6xisJT1WyfYYF+E7bu0ApZagGROtIqsTuolb8FLE1IOf5tbKM5mf6I9Co1Xpw5J/ynFBDn3WXfXGbSSNmMojemPDHiONsnW3zwloSBo8a97fyX9pzzEfmJhGR2Kbyndlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=165gc.onmicrosoft.com; dmarc=pass action=none
+ header.from=165gc.onmicrosoft.com; dkim=pass header.d=165gc.onmicrosoft.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=165gc.onmicrosoft.com;
+ s=selector1-165gc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RtkJQh5CGL1bxKP3H0YD7xZJ69/wAVsCneNFhGRBwRA=;
+ b=p6q3CMNXNHMmyGDiHHD7bhh+5QPB9srtD4bitqxV7Km+J/w5V3bzoi23YdJ7cKvmIqi8/LS2hiXhPGZeAoeFPLPZ37HaAb9mVEZN0EQC5Ygtw4FM6nXzHdmyEYdWpmUFz5cMe22z0LxDzBy16JLs0l5sExFGODW6DNFvuYyrqNA=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none
+ header.from=165gc.onmicrosoft.com;
+Received: from YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:17::24) by YQBPR0101MB4796.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:18::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Fri, 18 Jun
+ 2021 23:13:26 +0000
+Received: from YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::c132:2223:87d:9e86]) by YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::c132:2223:87d:9e86%6]) with mapi id 15.20.4242.022; Fri, 18 Jun 2021
+ 23:13:26 +0000
+Date:   Fri, 18 Jun 2021 19:13:22 -0400
+From:   jjedwa165 <jonathan.edwards@165gc.onmicrosoft.com>
+To:     andrii.nakryiko@gmail.com
+Cc:     bpf@vger.kernel.org, jonathan.edwards@165gc.onmicrosoft.com
+Subject: [PATCH bpf-next] libbpf: add extra BPF_PROG_TYPE check to
+ bpf_object__probe_loading
+Message-ID: <20210618231322.GA27742@165gc.onmicrosoft.com>
+References: <CAEf4BzYtuJKaOSk6nqkMbb4vwmTAXjSWOZUJ8FnRUf_7LKkO1w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYtuJKaOSk6nqkMbb4vwmTAXjSWOZUJ8FnRUf_7LKkO1w@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [174.91.65.25]
+X-ClientProxiedBy: YT1PR01CA0004.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::17)
+ To YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c00:17::24)
 MIME-Version: 1.0
-In-Reply-To: <f038645a-cb8a-dc59-e57e-2544a259bab1@mojatatu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26205/Fri Jun 18 13:18:00 2021)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 165gc.onmicrosoft.com (174.91.65.25) by YT1PR01CA0004.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15 via Frontend Transport; Fri, 18 Jun 2021 23:13:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5e2c1de3-e7c0-467f-1e3a-08d932aeacb4
+X-MS-TrafficTypeDiagnostic: YQBPR0101MB4796:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <YQBPR0101MB4796FF226D972BEB69964D6C9D0D9@YQBPR0101MB4796.CANPRD01.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: orlOoNH7nBNRndY6SDpjSPLcZzGHoH6VLXfBbNZ+IetNTjmrSZFU6yXFO7qfRUhdOyqnbJKfeW+Yn0OwhbYmhHAZp8/eROTjRtW0ZpJJLqvYON+WRciw74ECr0+MILbIPeTtOiLPB+LuuyFuNKCImFRvFPEg2s5fyb1T7q0Ov1v5kfpvMevRYdhsdDeLicTR6/k27YCLMAnbmycnhYiRRbuk/WolF5oXTr/kDMFi1J3LmZOf/ejza5BH63QM8UZcH9c7eVPBVRLn3h2Ya0YGLeQZfqiN6R/C//moFROvjNSGpMsgLFWnrNT+0nLINot63d4XuhmRxQR3Z8C78zJ/GAS1P3/8gZ5QDVRNdfYSmc827D9Zv1wYxLlcxhmD3NDiR4KSow3x76TcQxOy9yWriXoRT5tGoQRry4OV9jo20Nxc3rUwLcixVaLuYcIFm6rs1WK0u+OQOSc2q7HnUTvLZT98OptutIHzL7clkzq8hnQjTElvmbSNpBIIxi7ZDaEFZmZB+yfSkElLoI6hKYMTVhobiaDgVzlSGqIrnSW7sv09EOctgvysjqa5g+rgfM7pXmblM8bdHsJfHi7doKoaSInthclAFa+xDZHIWHOXIKXa337LrYUqLkCiUvfbZ2GgSbApzM4sblyiFaotkPkyWb55Gh2jKhuYFOGaMYh672meF2Mwlv+wvtcqWW7xzbh7LF28jvbA/qYtiaoM716RVvp3dz5Sx1rcMbg1KYYHkcc2jbq3aDXgpe8eGb1DQ5pTvDVTFEIkQOPaCO8tov4SGawb99VfPCN8ab4N5zOOGa79cmdNxGNRINQhFwThINqyNJoGU1AMwdVpv0msNkcyRA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(136003)(376002)(39830400003)(2906002)(66476007)(66946007)(1076003)(6916009)(186003)(26005)(6666004)(8676002)(8936002)(966005)(66556008)(83380400001)(478600001)(38100700002)(38350700002)(33656002)(4326008)(5660300002)(55016002)(16526019)(316002)(107886003)(86362001)(956004)(2616005)(7696005)(52116002)(43062005)(101420200003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cytpbzZicDdDM1dBcTlnbXdPUkE1QjBldEhPVkVrN0NHRHQ2ZFM5eWp4ODAx?=
+ =?utf-8?B?Rm50SDU4RDkvR2p0TTF5c1V2TS9VVEF5dWVhbk0wWWJoVE1UUTh1UTNuOXQ5?=
+ =?utf-8?B?dWZlOHl2VHliRUhnV21WS1lzSW9UYk1PTDhvUFpQZU1pbWRuSllRd0R6OFB1?=
+ =?utf-8?B?dFEwOVhJeVpyQnJxTWd3KzViQnJVTWtISGo1NzdiNGk5eTgzWHo3VjBFMk9a?=
+ =?utf-8?B?RHB6RDRQSG84dklDRlNjanQxTnRteWZjK3R0SXVvQUxMVURjc2ZiQXpveVVt?=
+ =?utf-8?B?cXJvUU1PWWQvSWhudUN6SGkxVmU4T0FMZ0lZNVhGc3pCczFXWkoxWTJHWGFm?=
+ =?utf-8?B?RGhWQXVuallld0ZoeS9NZFFaTkRWTXhSSWI1RldhLzk0MEgyRFZ0dlFZcFhB?=
+ =?utf-8?B?L2lHanZnRHJGaFR1ajFQT1A0UE5xeFpScEhNNTRJYm42REdNcDdTQ2dUK0NO?=
+ =?utf-8?B?R3p0R2N1YWJWSE5mNHJ1amYrL0lwc2RmTFUvTkg4SnJFUTd1NnlDSjFRN3NI?=
+ =?utf-8?B?cy83UkVIRm1GRjd2dEl1eXg1M3RIN000ck5uSTY0WUtDcGJ5QVdUck9ndjhv?=
+ =?utf-8?B?bVVDaHlBM3I1NHJYNDV3QUtwWlVSVXlKVmx5a1AxTWtUTndaZlN5ZGJ6MXps?=
+ =?utf-8?B?cGxpM01vN1lYWUoxVVF1Vnk0dHM1WGF5bjRiSlN4aFhWSkd4ZFJsUDJxNHRR?=
+ =?utf-8?B?SXZkNzZiTHMrT0FhQjA4Y2hJVENlejVFeWdxWmpSVk9jVTJsb3NCYzZMNXUz?=
+ =?utf-8?B?cWpWT2NRc2dnb2FnOGI4OGdpL1dpelI5cGcwajNLN0RlZUlBdkVlajhVaWtt?=
+ =?utf-8?B?WXpZNHArQklhUTN0akNWenBkK1hQVmVwN3dJWndiVTREUGREMEZBZkwwcW4r?=
+ =?utf-8?B?QjZGZ29uOGhxSmNyakhweG5GWGs5bDh5ajFpR1NXSlpMU2tub0JpNnRkMnRO?=
+ =?utf-8?B?MFZkVUM4cXI1aFAzSVEzczk0Y2dUdHN1VW51d0NoVHZFNlRieTVsaGRIbDFF?=
+ =?utf-8?B?Um1yTkV2bFVlMldaU2IvS01DNFRaSytUZHZGZGI1MkMzWmVJYmtUaW44bGF6?=
+ =?utf-8?B?TG0yUldNNFk0ZGZKREdzbTVnU0tvRUdXcndnMzdma3QvZ1VaeWhhQTBzRjdD?=
+ =?utf-8?B?Vk01SG1QUWZ4QXhYaEJwNEc5dkNJWU5MWWQ3VXJPZEVwRXMySWs5ZDR0QU05?=
+ =?utf-8?B?YlR5bndqdTVJckxtQzFyR2JNQ0tjbWI1MWQ0dU5xWWpmSVErcmRwQ0xGd3BN?=
+ =?utf-8?B?M0g5M2d2QlpRODFYclBHRC9UaHdweVF4LzN2YlNyY0R5SjBleXQyOEpBeGFN?=
+ =?utf-8?B?K1lteGJKaWw4cHZoekN3MXgxeUNkWDkxd1pHemFKR0dhQVl1Qmc0dTV4bzF0?=
+ =?utf-8?B?NEdGSVI1NjU4UFllQ0JlUW5uU043NmhzVlZrLzVyQnF4KzQ3V3phRzlNNXhY?=
+ =?utf-8?B?a0JCRExXQzgvUkFFQ2YycmlwNW9qRjdNSkFSUGJ1TEZnQlRMbFVCTWhoN3hR?=
+ =?utf-8?B?WlVhNkh2VTZubTRsUDUyM1RNWno0ejNqdGIwR3BkWGNHVVRHbVpoVkl3RzQx?=
+ =?utf-8?B?cDNhd0huc2o0V0dFK3RPYm5wV0RYc3d6WTdIRFNxYUtLZVlhWUtxdG9VWmYr?=
+ =?utf-8?B?bWcrU3lWMXFXVFMzcXFISm9CUkFQejVRTjBqeWREeC9pdVVBbDdQUlFsQkxD?=
+ =?utf-8?B?Skl1ajc0SUVmUkJVVEt4WDRjQktiUEZvMlBGVTB0R3JmMlRNNHRnUkJ6NFFJ?=
+ =?utf-8?Q?cZmngOTQe+LQV6FUP9eaYwnOSdS41V8Z2TEHeB2?=
+X-OriginatorOrg: 165gc.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e2c1de3-e7c0-467f-1e3a-08d932aeacb4
+X-MS-Exchange-CrossTenant-AuthSource: YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 23:13:25.9225
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fa9b7bc4-84f2-4ea2-932a-26ca2f5fb014
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qhAXUuh9yx+03NqvDfJyfgZx6cLci8jWJ8XzmwACg+KZKdPc3KdAel0tiEoenezr7o0Pqa8NZnkN8v9gmBgMV6H/usq4l6RWE5kk3G5iRT/amWdkcbP/ao5W/GiPTHP8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: YQBPR0101MB4796
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/18/21 1:40 PM, Jamal Hadi Salim wrote:
-> On 2021-06-16 12:00 p.m., Daniel Borkmann wrote:
->> On 6/16/21 5:32 PM, Kumar Kartikeya Dwivedi wrote:
->>> On Wed, Jun 16, 2021 at 08:10:55PM IST, Jamal Hadi Salim wrote:
->>>> On 2021-06-15 7:07 p.m., Daniel Borkmann wrote:
->>>>> On 6/13/21 11:10 PM, Jamal Hadi Salim wrote:
-> 
-> [..]
-> 
->>>> In particular, here's a list from Kartikeya's implementation:
->>>>
->>>> 1) Direct action mode only
->>
->> (More below.)
->>
->>>> 2) Protocol ETH_P_ALL only
->>
->> The issue I see with this one is that it's not very valuable or useful from a BPF
->> point of view. Meaning, this kind of check can and typically is implemented from
->> BPF program anyway. For example, when you have direct packet access initially
->> parsing the eth header anyway (and from there having logic for the various eth
->> protos).
-> 
-> In that case make it optional to specify proto and default it to
-> ETH_P_ALL. As far as i can see this flexibility doesnt
-> complicate usability or add code complexity to the interfaces.
+eBPF has been backported for RHEL 7 w/ kernel 3.10-940+ [0]. However 
+only the following program types are supported [1]
 
- From a user interface PoV it's odd since you need to go and parse that anyway, at
-least the programs typically start out with a switch/case on either reading the
-skb->protocol or getting it via eth->h_proto. But then once you extend that same
-program to also cover IPv6, you don't need to do anything with the ETH_P_ALL
-from the loader application, but now you'd also need to additionally remember to
-downgrade ETH_P_IP to ETH_P_ALL and rebuild the loader to get v6 traffic. But even
-if you were to split things in the main/entry program to separate v4/v6 processing
-into two different ones, I expect this to be faster via tail calls (given direct
-absolute jump) instead of walking a list of tcf_proto objects, comparing the
-tp->protocol and going into a different cls_bpf instance.
+BPF_PROG_TYPE_KPROBE
+BPF_PROG_TYPE_TRACEPOINT
+BPF_PROG_TYPE_PERF_EVENT
 
-[...]>> Could you elaborate on that or provide code examples? Since introduction of the
->> direct action mode I've never used anything else again, and we do have complex
->> BPF code blocks that we need to handle as well. Would be good if you could provide
->> more details on things you ran into, maybe they can be solved?
-> 
-> Main issue is code complexity in ebpf and not so much instruction
-> count (which is complicated once you have bounded loops).
-> Earlier, I tried to post on the ebpf list but i got no response.
-> I moved on since. I would like to engage you at some point - and
-> you are right there may be some clever tricks to achieve the goals
-> we had. The challenge is in keeping up with the bag of tricks to make
-> the verifier happy.
-> Being able to run non-da mode and for example attach an action such
-> as the policer (and others) has pragmatic uses. It would be quiet complex to implement the policer within an all-in-one-appliance
-> da-mode ebpf code.
+For libbpf this causes an EINVAL return during the bpf_object__probe_loading
+call which only checks to see if programs of type BPF_PROG_TYPE_SOCKET_FILTER
+can load.
 
-It may be more tricky but not impossible either, in recent years some (imho) very
-interesting and exciting use cases have been implemented and talked about e.g. [0-2],
-and with the recent linker work there could also be a [e.g. in-kernel] collection with
-library code that can be pulled in by others aside from using them as BPF selftests
-as one option. The gain you have with the flexibility [as you know] is that it allows
-easy integration/orchestration into user space applications and thus suitable for
-more dynamic envs as with old-style actions. The issue I have with the latter is
-that they're not scalable enough from a SW datapath / tc fast-path perspective given
-you then need to fallback to old-style list processing of cls+act combinations which
-is also not covered / in scope for the libbpf API in terms of their setup, and
-additionally not all of the BPF features can be used this way either, so it'll be very
-hard for users to debug why their BPF programs don't work as they're expected to.
+The following will try BPF_PROG_TYPE_TRACEPOINT as a fallback attempt before 
+erroring out. BPF_PROG_TYPE_KPROBE was not a good candidate because on some
+kernels it requires knowledge of the LINUX_VERSION_CODE.
 
-But also aside from those blockers, the case with this clean slate tc BPF API is that
-we have a unique chance to overcome the cmdline usability struggles, and make it as
-straight forward as possible for new generation of users.
+[0] https://www.redhat.com/en/blog/introduction-ebpf-red-hat-enterprise-linux-7
+[1] https://access.redhat.com/articles/3550581
 
-   [0] https://linuxplumbersconf.org/event/7/contributions/677/
-   [1] https://linuxplumbersconf.org/event/2/contributions/121/
-   [2] https://netdevconf.info/0x14/session.html?talk-replacing-HTB-with-EDT-and-BPF
+Signed-off-by: jjedwa165 <jonathan.edwards@165gc.onmicrosoft.com>
+---
+ tools/lib/bpf/libbpf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks,
-Daniel
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 48c0ade05..1e04ce724 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4000,6 +4000,10 @@ bpf_object__probe_loading(struct bpf_object *obj)
+ 	attr.license = "GPL";
+ 
+ 	ret = bpf_load_program_xattr(&attr, NULL, 0);
++	if (ret < 0) {
++		attr.prog_type = BPF_PROG_TYPE_TRACEPOINT;
++		ret = bpf_load_program_xattr(&attr, NULL, 0);
++	}
+ 	if (ret < 0) {
+ 		ret = errno;
+ 		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+-- 
+2.17.1
+
