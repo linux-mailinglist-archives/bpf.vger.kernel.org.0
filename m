@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6303AC498
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 09:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E1C3AC49B
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 09:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232880AbhFRHIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 03:08:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45314 "EHLO mail.kernel.org"
+        id S232925AbhFRHIo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 03:08:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232836AbhFRHIb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:08:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27DEB61351;
-        Fri, 18 Jun 2021 07:06:20 +0000 (UTC)
+        id S232903AbhFRHIk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 03:08:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49A716100A;
+        Fri, 18 Jun 2021 07:06:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623999982;
-        bh=KEe5WdEyJHtzuPMGzpiocUmfrX3xOnunn5dZvpKwBh8=;
+        s=k20201202; t=1623999991;
+        bh=eXubxiP2sfbDRxWXxCS2276qipPi7ZT+e19fUSeI+18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KPGZ3Q8c9fRtoUEwb8fYzZZtaoq4TEJN29fsxD2jLfun2+ACEKE2Eql2SwW4PJJUc
-         DfxZSXdTuE603PLvSkizfhCCoyXcD8FH9TIeovQH9CPFaC3dyJofbLYQaHLCLK1lU4
-         2z86Uaf2/i+Yv7AU3qmwOM1YBrnjJxk8PCS+/fKzuRvHcAFdikrMHLaop8M/T7/iV0
-         2Tv2IBCBcxDhN72l1nwDftw8LP0m7VaEm/Lqzl0jE4zkKd6HNg0U5rMsda0g0OSvWH
-         jAlwRLQT8gdS/h4+QlHSsoVx22zuLpluaEx9R/vQe70zPL1b2RLgpk2ESv8G8Aa4A+
-         HTVmzveZ5tLrA==
+        b=QlnpvzazRx6/xgsOWH3bNTfdA1pMop85FvoSqQnj+Fp/vKYT5ilFtgZAewFyEXxFM
+         OFFznFI8IB6puBfHQiQwLWZ2ELiuV2h0+6HoE15CRc285qS7LVELIQjiB6pe4zgsBO
+         l5thuKQKw5EvNhzTp8+61gZgeXm8fAkH9XnPsr87rDfVzKZthUmjDBCaNDs9/3z9pg
+         cghwFbOVOHd4iR7gNBpaYTj/IrNTYJek2aIxz/3gdILhz5SLRumOnnO6JkzRtOV9eC
+         tIJcQArwuHRKBgS51J1Gu9meChjHys9Vj6kizJhq2m6WQ7MGo/h2ABzgvqwnNJe90h
+         4/G531QSMcatw==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -36,9 +36,9 @@ Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
         yhs@fb.com, linux-ia64@vger.kernel.org,
         Abhishek Sagar <sagar.abhishek@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH -tip v8 06/13] ARC: Add instruction_pointer_set() API
-Date:   Fri, 18 Jun 2021 16:06:18 +0900
-Message-Id: <162399997853.506599.13701157683968161733.stgit@devnote2>
+Subject: [PATCH -tip v8 07/13] ia64: Add instruction_pointer_set() API
+Date:   Fri, 18 Jun 2021 16:06:27 +0900
+Message-Id: <162399998747.506599.1115560529431673586.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <162399992186.506599.8457763707951687195.stgit@devnote2>
 References: <162399992186.506599.8457763707951687195.stgit@devnote2>
@@ -50,27 +50,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add instruction_pointer_set() API for arc.
+Add instruction_pointer_set() API for ia64.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- arch/arc/include/asm/ptrace.h |    5 +++++
+  Changes in v4:
+   - Make the API macro for avoiding a build error.
+---
+ arch/ia64/include/asm/ptrace.h |    5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/arch/arc/include/asm/ptrace.h b/arch/arc/include/asm/ptrace.h
-index 4c3c9be5bd16..cca8d6583e31 100644
---- a/arch/arc/include/asm/ptrace.h
-+++ b/arch/arc/include/asm/ptrace.h
-@@ -149,6 +149,11 @@ static inline long regs_return_value(struct pt_regs *regs)
- 	return (long)regs->r0;
- }
+diff --git a/arch/ia64/include/asm/ptrace.h b/arch/ia64/include/asm/ptrace.h
+index 08179135905c..a024afbc70e5 100644
+--- a/arch/ia64/include/asm/ptrace.h
++++ b/arch/ia64/include/asm/ptrace.h
+@@ -51,6 +51,11 @@
+  * the canonical representation by adding to instruction pointer.
+  */
+ # define instruction_pointer(regs) ((regs)->cr_iip + ia64_psr(regs)->ri)
++# define instruction_pointer_set(regs, val)	\
++  ({						\
++	ia64_psr(regs)->ri = (val & 0xf);	\
++	regs->cr_iip = (val & ~0xfULL);		\
++  })
  
-+static inline void instruction_pointer_set(struct pt_regs *regs,
-+					   unsigned long val)
-+{
-+	instruction_pointer(regs) = val;
-+}
- #endif /* !__ASSEMBLY__ */
- 
- #endif /* __ASM_PTRACE_H */
+ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
+ {
 
