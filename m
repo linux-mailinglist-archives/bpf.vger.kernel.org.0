@@ -2,80 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AB63ACDBA
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 16:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DF03ACDE1
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 16:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234574AbhFROnz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 10:43:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48210 "EHLO
+        id S234664AbhFROwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 10:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234485AbhFROnz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:43:55 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84326C061574
-        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 07:41:45 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id r16so14350261ljk.9
-        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 07:41:45 -0700 (PDT)
+        with ESMTP id S234383AbhFROwO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:52:14 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38A8C061574
+        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 07:50:04 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id f16so2815125qvs.7
+        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 07:50:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JCBR6BF7LMg2tHmudh4GAfsetx7z27keqs+ygzFCjtA=;
-        b=sPSVqFHpyGDS1pJSPPAZ4Oo4ATO6x61Ylou1imOHKo3v5SNqSdVWYCLo7xca+OpsRj
-         TGwZc7SeNCiZHnb+KdLF9/Ozj27ruT7OdVPgIRandTbsus7EP1zhyHYNgLqzwQnaT6EN
-         OytIvX1pKK5kK/KFjWE776Ey/NJiX731r3cVBRgYJxXwt2/p6ePVbib63R2F9TGg785J
-         /woRk4WVj3QDjojokp10gbU+P4ZYqgIO4ESKPK0RIJk4o2Odjg9XAXbeZRn+HEEU4B2L
-         l0LnMjmhALevBqCsVIbeH8J4l9+fdcUm6vePPiYnjW17shU+Hh9Y+nvwZg2eJx2KPzXX
-         1coA==
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xugROgai1hDRqrla6F1TMCpSa/EBaupT4G6tJbJ5feA=;
+        b=KP5Hnjf2Z2Hsaa9wSsGpRGlA7nf0EXHywcHY2h7boPODHyDvB+ZaKL5GkQ9hFyRzr+
+         pWqIYdiLt1pN6OXG+2J8jFS5QO4RJJbJzHLkjQ4ATTQteHZWmnLXYS+n4uSdxjDdhaWt
+         9/kXtGotrSEUUyt2bsSkwrZok7LxvNbf4ovKLEcwNfAUjyvaP1YuG9d5YmO69migLCc+
+         iz7rZN+8utNxRulUGpVGuPk/zJ7dyIIky0+c7OHyF7QOT7Qc4+M6St5gVKXGQMuHZKAK
+         xiBRi1A3253LPY15CPrXms26N+PxNawpcC6DUZaIEFba01TW01BbIumE5savHAD8bHMS
+         pNcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JCBR6BF7LMg2tHmudh4GAfsetx7z27keqs+ygzFCjtA=;
-        b=SP2whG6QoHiz9ZA7au2zib4qXwBmpSMvB7OoB7UhJqz0ZKV4pkRMpk271W8xMbU3yr
-         79S1RrWFnSD1gmqUew570fSrEAwo65WamQG4c914J3fRH32nhU7EhmaFXnta0leXpt9d
-         VNxY0dJ/6HsyvCvjxg5177V5i1ZbFS9sR7Vm+rI5CIUUbX/VRIewkLrpp90Jd3yPwGsu
-         5gXcJvAQIjvp0jZ7VnV3MSnPmsugu4RKx4HT/3WR0ACLMgT3nt0hZYOQo7SziwzdZdL1
-         oIrR8MSZy/Lxk9an7Kjyaf40C8pl/hy42w6v7wwtltVswUXwz/p5ONBOPcMHRQEF2PTD
-         IkCA==
-X-Gm-Message-State: AOAM533znSLFzMEkVjoVW1dg3uo50enka7IkyeNsARZfe15S27m0MemT
-        zxigDPi08jSYNkHQoY+ce4gmpMlyLqygOxnC2hUAo7Zk
-X-Google-Smtp-Source: ABdhPJwDaWLdcgnm7urD4xF7QHY0puKhEk51aK7yzkLQvmeZ4TBahZO+dxRodS4f3du8FBcEsCBvS4VRXQl2qAAjMLY=
-X-Received: by 2002:a2e:b5c8:: with SMTP id g8mr9754541ljn.204.1624027303930;
- Fri, 18 Jun 2021 07:41:43 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xugROgai1hDRqrla6F1TMCpSa/EBaupT4G6tJbJ5feA=;
+        b=D71R/WFj6WXS2ZhNsydHPmSbUmhlO+EjjvyTHxu/R5s2eEXnLJt5t6Th1AHeiAFfji
+         7wptuehYhMBumNXVokjImvisCJDeYHJ7Oujv/yLxnakNZCQ0BZE1Gj9djMXvoMhisDOS
+         DWUrSVyvU4aE/kWGiaaPXbtPuZ9NgiKpMjUmVIZNxISJ19laCBrih5GvqlR5e8Bh1G5t
+         wHbR00PhC0xnO8ZTU9IMByCTSIq95UYaOiklE1hTVRwjD7zAOrCLGc0kMXJL233mrrEq
+         u7L7+TrtJZ/TJgaLkNtnTjSWeXvYO+lZbC6huJ1pSRDoxMb5T4+fDavcAD6FZaw3Db4G
+         vf4A==
+X-Gm-Message-State: AOAM530HoROCZn/e+3GYpEPgogLTcpiEyCDNA5kvWouDNyqr4UTyAmyR
+        j35lCtCWH9nIsgdH47vdG2pkZA==
+X-Google-Smtp-Source: ABdhPJxCm0L+Ug2xyNCYEau2Lv5uFkEpis64reBWiuncwGgYVPAop/EUlY+yE0SEWJlNIDJzVIhvLg==
+X-Received: by 2002:a0c:e8cd:: with SMTP id m13mr6084488qvo.52.1624027804075;
+        Fri, 18 Jun 2021 07:50:04 -0700 (PDT)
+Received: from [192.168.1.171] (bras-base-kntaon1617w-grc-28-184-148-47-211.dsl.bell.ca. [184.148.47.211])
+        by smtp.googlemail.com with ESMTPSA id i67sm4203656qkd.90.2021.06.18.07.50.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 07:50:03 -0700 (PDT)
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Vlad Buslov <vladbu@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>
+References: <20210607060724.4nidap5eywb23l3d@apollo>
+ <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
+ <20210608071908.sos275adj3gunewo@apollo>
+ <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+ <20210613025308.75uia7rnt4ue2k7q@apollo>
+ <30ab29b9-c8b0-3b0f-af5f-78421b27b49c@mojatatu.com>
+ <20210613203438.d376porvf5zycatn@apollo>
+ <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
+ <bd18943b-8a0e-be8c-6a99-17f7dfdd3bc4@iogearbox.net>
+ <7248dc4e-8c07-a25d-5ac3-c4c106b7a266@mojatatu.com>
+ <20210616153209.pejkgb3iieu6idqq@apollo>
+ <05ec2836-7f0d-0393-e916-fd578d8f14ac@iogearbox.net>
+ <f038645a-cb8a-dc59-e57e-2544a259bab1@mojatatu.com>
+ <CAADnVQLO-r88OZEj93Bp_eOLi1zFu3Gfm7To+XtEN7Sj0ZpOMg@mail.gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <ec3a9381-7b15-e60f-86b6-87135393461d@mojatatu.com>
+Date:   Fri, 18 Jun 2021 10:50:02 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <aaedcede-5db5-1015-7dbf-7c45421c1e98@ghiti.fr>
-In-Reply-To: <aaedcede-5db5-1015-7dbf-7c45421c1e98@ghiti.fr>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 18 Jun 2021 07:41:32 -0700
-Message-ID: <CAADnVQLTDXQkeCMJhz8ar76-XphrsA9uAqy9oGSb2B7Eg--y5w@mail.gmail.com>
-Subject: Re: BPF calls to modules?
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     bpf <bpf@vger.kernel.org>, Jisheng Zhang <jszhang@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAADnVQLO-r88OZEj93Bp_eOLi1zFu3Gfm7To+XtEN7Sj0ZpOMg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 2:13 AM Alex Ghiti <alex@ghiti.fr> wrote:
->
-> Hi guys,
->
-> First, pardon my ignorance regarding BPF, the following might be silly.
->
-> We were wondering here
-> https://patchwork.kernel.org/project/linux-riscv/patch/20210615004928.2d27d2ac@xhacker/
-> if BPF programs that now have the capability to call kernel functions
-> (https://lwn.net/Articles/856005/) can also call modules function or
-> vice-versa?
->
-> The underlying important fact is that in riscv, we are limited to 2GB
-> offset to call functions and that restricts where we can place modules
-> and BPF regions wrt kernel (see Documentation/riscv/vm-layout.rst for
-> the current possibly wrong layout).
->
-> So should we make sure that modules and BPF lie in the same 2GB region?
+On 2021-06-18 10:38 a.m., Alexei Starovoitov wrote:
+> On Fri, Jun 18, 2021 at 4:40 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+>>
+>> We are going to present some of the challenges we faced in a subset
+>> of our work in an approach to replace iptables at netdev 0x15
+>> (hopefully we get accepted).
+> 
+> Jamal,
+> please stop using netdev@vger mailing list to promote a conference
+> that does NOT represent the netdev kernel community.
+ >
+> Slides shown at that conference is a non-event as far as this discussion goes.
 
-Ideally yes. bpf programs can call functions in modules and vice versa.
-riscv can keep them in separate regions, but then riscv JIT will get more
-complicated and run-time overhead of the function call will increase.
+Alexei,
+Tame the aggression, would you please?
+You have no right to make claims as to who represents the community.
+Absolutely none. So get off that high horse.
+
+I only mentioned the slides because it will be a good spot when
+done which captures the issues. As i mentioned in i actually did
+send some email (some Cced to you) but got no response.
+I dont mind having a discussion but you have to be willing to
+listen as well.
+
+
+cheers,
+jamal
+
+
