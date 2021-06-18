@@ -2,501 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89A23AC1D9
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 06:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D023F3AC2A2
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 06:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhFRERv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 00:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhFRERv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Jun 2021 00:17:51 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958EBC061574
-        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 21:15:41 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so2284778pji.0
-        for <bpf@vger.kernel.org>; Thu, 17 Jun 2021 21:15:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=rnQbn2l8NwaQhCm9jOHWkf0hhFUfwxDERVa9U+SbkU0=;
-        b=X41V2t7eHlEj60VSf9GEE0gzO1wcGmKHpZWlJ17Nlu57ieZYZ+yO5HXQEEzhlkIgWl
-         Usl8Mm+tVGZz673kbfx4eYQgCcvSmx6AsWwtLYlQ2GEEijBJEdJ4JZ2SodWxgoyADpsp
-         62llQrSy+A/AzNDiOtAsMR6AKVaJvjGfLYDgqXcQtaQTvh1Dmj178doU5ShD0YAGCVqB
-         g82RuytcTHYKrFe6hmy2MGD7WY/MTwx//W/VD7rERxdWX770vdTkvOuZQ1q6V4csfVC6
-         Ez9QZKkqVFfe/X92qj/jccpIO8WvcQ4iwNrivaDmIyfm02+5X1LYpaIA8Bu85+JVaAg4
-         baEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=rnQbn2l8NwaQhCm9jOHWkf0hhFUfwxDERVa9U+SbkU0=;
-        b=PflkSGc3nP8oP9FRMx00IottRcjrMrs/FpqnCnK5rsGWBtJg6rh+Y2iYRV57Nfxx14
-         J7TdWV2SmrAl861oEqccDJs/drcN04ayIuRRCw1D9lzSRV2bxDYTX8rkYJnpNRBlJrmG
-         M/jFDDRWfZg0bPWJKL5qMM81VkKlnz9Da0LpOphci4C84jfojDw6pG1+FfIu4xtqOoPV
-         qJZDTwVAGbRjGzD3H0fXAn0pWiZg70eTHWn6Ytb0ZhV1y6/SFwQu+Jy592//BjpagpIE
-         Sq9YaC8sU0hHq+4XretkXhr1Y1Wb0hds8TDEZIBOrWW2sJYoDN3KP47bnXlMYaP5KV4V
-         O9JQ==
-X-Gm-Message-State: AOAM530QqKWh5mmkzr9xdkd3F/wwGv3bUlG99Tlmd1PP720IoxK3T1/6
-        UYJ074Q0GDMKdlj0Rq4XcYs=
-X-Google-Smtp-Source: ABdhPJzzAfVvhMyjgOKxTNXh+Mgm4exyF3b44d7y1hNTuhgIGkik6j5avixeWt9bfPQEr6HZNIiCRQ==
-X-Received: by 2002:a17:90a:a107:: with SMTP id s7mr19651667pjp.1.1623989740921;
-        Thu, 17 Jun 2021 21:15:40 -0700 (PDT)
-Received: from sea-l-00029082.olympus.f5net.com (d66-183-43-174.bchsia.telus.net. [66.183.43.174])
-        by smtp.gmail.com with ESMTPSA id g6sm6790555pfq.110.2021.06.17.21.15.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 21:15:40 -0700 (PDT)
-From:   Vincent Li <vincent.mc.li@gmail.com>
-X-Google-Original-From: Vincent Li <vli@gmail.com>
-Date:   Thu, 17 Jun 2021 21:15:39 -0700 (PDT)
-To:     Vincent Li <vincent.mc.li@gmail.com>
-cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
-Subject: Re: R1 invalid mem access 'inv'
-In-Reply-To: <64cd3e3e-3b6-52b2-f176-9075f4804b7a@gmail.com>
-Message-ID: <497fc0fe-8036-8b79-2c6e-495f2a7b0ae@gmail.com>
-References: <c43bc0a9-9eca-44df-d0c7-7865f448cc24@gmail.com> <92121d33-4a45-b27a-e3cd-e54232924583@fb.com> <79e4924c-e581-47dd-875c-6fd72e85dfac@gmail.com> <6c6b765d-1d8e-671c-c0a9-97b44c04862c@fb.com> <85caf3b3-868-7085-f4df-89df7930ad9b@gmail.com>
- <ce2ea7e8-0443-3e78-6cf8-d3105f729646@fb.com> <64cd3e3e-3b6-52b2-f176-9075f4804b7a@gmail.com>
+        id S231889AbhFRE6S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 00:58:18 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22304 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231365AbhFRE6S (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 18 Jun 2021 00:58:18 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15I4u2gU010453;
+        Thu, 17 Jun 2021 21:56:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=CIWiwxoeS4m5gfUTrVz/SwFgX90V4rHM5pKXJqmhMkQ=;
+ b=BAeOqXItWES9Rhr9VlQY6MacytG22KYrOifJzrKEkcN4WROdFIVZHfxJPLAV9szxIaIQ
+ tjLAH53tV4VkQSOYatRbzm8DQrQ9PG/uFw1O7GSsDrBNXGeI2brJE76D5CnKJ5u7waYC
+ mKG89/9mox3ZaXIIXgZe//JoaT7E/nGj1wM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 398epnhmj9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 17 Jun 2021 21:56:04 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 17 Jun 2021 21:56:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F1gvkCQTjH4qwRE9CNJT9XjhwKaogal6XlaQg5GF581c61DYoG2UM2bxN45xJxyhUpjUYzYhoI3jmg5C9hty1Xt7nH7cdF6W5mIKcVZBdFyEQD1Sr4SbaHwysmK/DoLWI3HcRSOR9Z21sbBTUlQdf2x5N5MX98Gj4LeI2QNwjCqnASPFfbtuzMvyjxKt+kwc/Jc912L8kzNBkKFO4jM39gxoVUZWbIH4ogRLGF+D9e3PLaSOuGzO+rcPOGNVusMwmfQQvB+Fc5OTRg/G4HPis5Tt065nz8M/6L3eejT4km5PD+aTHCY+oiwI8gRilmk/lVRAC4EdY/3WN7NznUbgdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=56NCSE4mhrn/PxubquiFHVtx8/o5zDTaRVxTvScgrdk=;
+ b=VtCKY6x1CHAOXsv2VQ8B60AQahsftABrZLxJoz0qKLCNTdo4moWVgQ6M4aYf4xyC/SlU9PvVIobwpGZaAU5UxVVPU2L/bhSz/dkBCUdJv/JfPcv6u6e02F/8j/dlQB4mPGt0wlNTWR7xa6wl/M34IOtpntA2y02aF1iwlwfeih95UW1JCW4b5EofrAkCMHYcb/f338FG1QUFTBqVgBoYM75m05ZXnYXamwRNyz3lb1nlEckoux7bmJZ1Dyih4WU919AldPYTHLXvmr7L/+e+Pb6a/PkksyMARLx2/dj4ld50P5I0T/MShCPAvvxQBLmTZykx/0+1XJnviEGPFdwZyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from CO1PR15MB5017.namprd15.prod.outlook.com (2603:10b6:303:e8::19)
+ by MWHPR15MB1408.namprd15.prod.outlook.com (2603:10b6:300:bc::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Fri, 18 Jun
+ 2021 04:56:01 +0000
+Received: from CO1PR15MB5017.namprd15.prod.outlook.com
+ ([fe80::9136:4222:44f7:954b]) by CO1PR15MB5017.namprd15.prod.outlook.com
+ ([fe80::9136:4222:44f7:954b%5]) with mapi id 15.20.4219.026; Fri, 18 Jun 2021
+ 04:56:00 +0000
+Date:   Thu, 17 Jun 2021 21:55:58 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH bpf-next v3 03/16] xdp: add proper __rcu annotations to
+ redirect map entries
+Message-ID: <20210618045558.b57uy6pl2rwcmdrb@kafai-mbp.dhcp.thefacebook.com>
+References: <20210617212748.32456-1-toke@redhat.com>
+ <20210617212748.32456-4-toke@redhat.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+In-Reply-To: <20210617212748.32456-4-toke@redhat.com>
+X-Originating-IP: [2620:10d:c090:400::5:f1fa]
+X-ClientProxiedBy: SJ0PR03CA0134.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::19) To CO1PR15MB5017.namprd15.prod.outlook.com
+ (2603:10b6:303:e8::19)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:f1fa) by SJ0PR03CA0134.namprd03.prod.outlook.com (2603:10b6:a03:33c::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Fri, 18 Jun 2021 04:56:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2c3cf7d7-4589-4961-7990-08d932155e19
+X-MS-TrafficTypeDiagnostic: MWHPR15MB1408:
+X-Microsoft-Antispam-PRVS: <MWHPR15MB140820FF75EC06A342DD7695D50D9@MWHPR15MB1408.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PrZIsCCykt2irjLcgV3anl+oaFM+S6gme9cpRil0zNo6zjwROADlywF/GUa4RDkdsWdqox/6iPwH0+tqLEa0wSUvpCtjzoux9sE+s9XmlWJ2Gwq1v4ho62unJiJmspxojsHhohXXgOIn3cw5ua6sV5xeGAjCcoDmDF2Mi84qUsZ1rO3dcyq7Z8N5PoORsF2kOvdTKSCRwix1kDQQny0FKLw2A1wksTSw8gICDqUapKTnhWQ1B3czCtQ1HZxkJ2QE0TaKxVibyE2wplgz1Pv+hlzigBIuQVCk2rGRDRCCbmjud0vgvFssT1Z4ct+AoR+aUrvJv4JqLOYNbKqL5dhNLpufZCO9FHSRR62b8pCjiSWwdTqdu9F8yvi4YCe5bboRbXF1PIYeb/3RBtIm3lgXVnhnpPsxSrMf6yJEXAomNVw6T4ZiPYciIg6Z5Ee7bZRlrkMeZ4KNLqWyQXQArh/mot6EQeVPMQ5f8PPRoy3pXXrUW7ReDRP0ksTs/yXLe+uZPMoi9ayWq2MA7/6oB/QWo3JOTcI+Bd27IBWCvfksmOF56Xno1ue00akrdNcWj6hFz7p+KPHOQ5I8VBYRnUrTm8IuWHYDMRfu50e+ktAsrxCJs6mhn3mP+SaV9U9cWEg7OgiJlKPiCGT6SDFIl1wHQcPni2argH6vfySInoTeha5LzC6i3OuPekJGk1zmTOZDM+bSoqi3bmCcB3Oi6BwwIhFEhNF780LnfP1jJzEzPHNHVUuenrrYZL1YN4BmKpW/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR15MB5017.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(136003)(366004)(39860400002)(966005)(38100700002)(66574015)(6506007)(52116002)(83380400001)(7696005)(16526019)(478600001)(2906002)(4326008)(6916009)(186003)(66476007)(54906003)(1076003)(66556008)(9686003)(55016002)(316002)(86362001)(5660300002)(8676002)(8936002)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?DqkNbY3fNMz41jULRVPAC5jkRt50ZHbnGaD1tjixv2DRLXny6mHthDVo7n?=
+ =?iso-8859-1?Q?9hxdItndigjJZmodzd8OoJonyVifnz2oo+aUqUHV26NRnL1Y2ka2HdSJaY?=
+ =?iso-8859-1?Q?gsihm77AaQ+x/Yi+9lLEnrYXfyXwsYOdfuQq2SRVo75oykvMSthfTo+lLV?=
+ =?iso-8859-1?Q?Gh1+nr4wdj5uM8AEdTDZaGvH/AWg5bMR7xnI/Oj2ASgUOIJhwuDkHfBAjU?=
+ =?iso-8859-1?Q?7chRPfFl20Jq75iYbYaeFil/kL1ETa0MblChsm56E4AQ6y2V3lfzMWkdN6?=
+ =?iso-8859-1?Q?/NHYoxRz5DI4fNeksEhj3mglfftucmNtYp2QSaG5xxuU/jJLuG/xE7aWXA?=
+ =?iso-8859-1?Q?nnnEF5QKJ74reM6vbC7qAWtYI6Us7QOSM1lZM3c09PLjgSB1Aat4pXgrhG?=
+ =?iso-8859-1?Q?/L3HvuQIt+2pUmjUCDTwxqbs8Ra1/eh6qP/7eqW4A3yA9/sk12zqdgdRW+?=
+ =?iso-8859-1?Q?BEo8uHlyVjRK44gTA0Wx6df9cbYt5Je5XfJKRsdxeBzl0FluVdYJr0kbuy?=
+ =?iso-8859-1?Q?S8Er+vVE6LX6YJTqSdTUFN9waAkFE9Xduc/MPBpo/11ROyW8oxvZGVVwZo?=
+ =?iso-8859-1?Q?C7sG2jfBMU+c7QwNtFY+ASBIK/YJXLsmEE9v5p38Q54a+K9K83SVRuu5PH?=
+ =?iso-8859-1?Q?KkIP7sZ6klpvVr6zJn/fpOSV3JC4H5TahbeIWVzsl5hFpylzLFX86HVGgn?=
+ =?iso-8859-1?Q?Dosxm4JJ801DHNVNmfmtzXYnQ0x3V6pKSOv6Gn8i+7GBIGnt5yYIswxQfP?=
+ =?iso-8859-1?Q?8+XHlCdmlWPuP0otnTnvbe3OpkMPFSk6RF8or9h4CicXXkTpnzag2R5f7s?=
+ =?iso-8859-1?Q?NHWF8LaUK1/yxFGE0D1r5vrL3vPhKBFPHWnzBTckbyOB2iB+KS5ph60ctA?=
+ =?iso-8859-1?Q?7vjvgzwmcElWF52f3E1tyMaN1ns+wkDXJaW5uerHDsY7WiI6FmBMsM4fGw?=
+ =?iso-8859-1?Q?Pugw8EZWihPRAuPW3Cn3CLcn4GXXmEMmrBzRXkjc9hNs1T1s3b6k9rkP0A?=
+ =?iso-8859-1?Q?OvewROu8Elczz2fJlwIinpMDHHAYsmjNuMIhDl3wZLZckm9PBDY2ip42J+?=
+ =?iso-8859-1?Q?AJuTfSqm/hlb8RNWSvLUuKGonZOf8mt1OliLzIp/PMxH89Tp7x+cr6AvV8?=
+ =?iso-8859-1?Q?d1jVnA/bpKkkkIopSjcRMKvejwvnnjZVeMG5ReNAMLSb4wcCoRKpWZPAI3?=
+ =?iso-8859-1?Q?jeTmMQ36MFATiy8uWuWemfukR325nJjYTOihAgSLcLsfRaw8UEjW395PQr?=
+ =?iso-8859-1?Q?/yvADGcn8WYau1D4WCjJnTbM1TQ/V3E/Oy4jKS9QpwTb4P5pElqL0HCJWe?=
+ =?iso-8859-1?Q?PJAxNhOBNPj+IFO2gnxnq3rjy0D4n/3xJrFC+GUbJ6B3cf8fU7j+ItEloW?=
+ =?iso-8859-1?Q?XsN00uhmyAPGwlii6xSilOWcaQ1mmtVQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c3cf7d7-4589-4961-7990-08d932155e19
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR15MB5017.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 04:56:00.7201
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ERBRGjNQMjxp7ERUoDlTZkGED8C8wxMq0Hnvqkl+IN/4JfypS/g8KbJaPwy7Q89b
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1408
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: Z4pjk4loPx7edc8HtEwsnwlm60sNzMQ4
+X-Proofpoint-ORIG-GUID: Z4pjk4loPx7edc8HtEwsnwlm60sNzMQ4
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_17:2021-06-15,2021-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
+ bulkscore=0 impostorscore=0 clxscore=1015 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106180027
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On Thu, 17 Jun 2021, Vincent Li wrote:
-
+On Thu, Jun 17, 2021 at 11:27:35PM +0200, Toke Høiland-Jørgensen wrote:
+> XDP_REDIRECT works by a three-step process: the bpf_redirect() and
+> bpf_redirect_map() helpers will lookup the target of the redirect and store
+> it (along with some other metadata) in a per-CPU struct bpf_redirect_info.
+> Next, when the program returns the XDP_REDIRECT return code, the driver
+> will call xdp_do_redirect() which will use the information thus stored to
+> actually enqueue the frame into a bulk queue structure (that differs
+> slightly by map type, but shares the same principle). Finally, before
+> exiting its NAPI poll loop, the driver will call xdp_do_flush(), which will
+> flush all the different bulk queues, thus completing the redirect.
 > 
+> Pointers to the map entries will be kept around for this whole sequence of
+> steps, protected by RCU. However, there is no top-level rcu_read_lock() in
+> the core code; instead drivers add their own rcu_read_lock() around the XDP
+> portions of the code, but somewhat inconsistently as Martin discovered[0].
+> However, things still work because everything happens inside a single NAPI
+> poll sequence, which means it's between a pair of calls to
+> local_bh_disable()/local_bh_enable(). So Paul suggested[1] that we could
+> document this intention by using rcu_dereference_check() with
+> rcu_read_lock_bh_held() as a second parameter, thus allowing sparse and
+> lockdep to verify that everything is done correctly.
 > 
-> On Thu, 17 Jun 2021, Yonghong Song wrote:
+> This patch does just that: we add an __rcu annotation to the map entry
+> pointers and remove the various comments explaining the NAPI poll assurance
+> strewn through devmap.c in favour of a longer explanation in filter.c. The
+> goal is to have one coherent documentation of the entire flow, and rely on
+> the RCU annotations as a "standard" way of communicating the flow in the
+> map code (which can additionally be understood by sparse and lockdep).
 > 
-> > 
-> > 
-> > On 6/17/21 3:19 PM, Vincent Li wrote:
-> > > 
-> > > 
-> > > On Thu, 17 Jun 2021, Yonghong Song wrote:
-> > > 
-> > > > 
-> > > > 
-> > > > On 6/17/21 7:19 AM, Vincent Li wrote:
-> > > > > 
-> > > > > Hi Song,
-> > > > > 
-> > > > > Thank you for your response!
-> > > > > 
-> > > > > 
-> > > > > On Wed, 16 Jun 2021, Yonghong Song wrote:
-> > > > > 
-> > > > > > 
-> > > > > > 
-> > > > > > On 6/16/21 5:05 PM, Vincent Li wrote:
-> > > > > > > Hi BPF Experts,
-> > > > > > > 
-> > > > > > > I had a problem that verifier report "R1 invalid mem access 'inv'"
-> > > > > > > when
-> > > > > > > I attempted to rewrite packet destination ethernet MAC 
-address in
-> > > > > > > Cilium
-> > > > > > > tunnel mode, I opened an issue
-> > > > > > > with detail here https://github.com/cilium/cilium/issues/16571:
-> > > > > > > 
-> > > > > > > I have couple of questions in general to try to understand the
-> > > > > > > compiler,
-> > > > > > > BPF byte code, and the verifier.
-> > > > > > > 
-> > > > > > > 1 Why the BPF byte code changes so much with my simple C code change
-> > > > > > > 
-> > > > > > > a: BPF byte code  before C code change:
-> > > > > > > 
-> > > > > > > 0000000000006068 <LBB12_410>:
-> > > > > > >        3085:       bf a2 00 00 00 00 00 00 r2 = r10
-> > > > > > > ;       tunnel = map_lookup_elem(&TUNNEL_MAP, key);
-> > > > > > >        3086:       07 02 00 00 78 ff ff ff r2 += -136
-> > > > > > >        3087:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > > > > > > r1 = 0
-> > > > > > > ll
-> > > > > > >        3089:       85 00 00 00 01 00 00 00 call 1
-> > > > > > > ;       if (!tunnel)
-> > > > > > >        3090:       15 00 06 01 00 00 00 00 if r0 == 0 goto +262
-> > > > > > > <LBB12_441>
-> > > > > > > ;       key.tunnel_id = seclabel;
-> > > > > > >        3091:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > > > > > > r2 = 0
-> > > > > > > ll
-> > > > > > >        3093:       67 02 00 00 20 00 00 00 r2 <<= 32
-> > > > > > >        3094:       77 02 00 00 20 00 00 00 r2 >>= 32
-> > > > > > >        3095:       b7 01 00 00 06 00 00 00 r1 = 6
-> > > > > > >        3096:       15 02 02 00 01 00 00 00 if r2 == 1 goto +2
-> > > > > > > <LBB12_413>
-> > > > > > >        3097:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > > > > > > r1 = 0
-> > > > > > > ll
-> > > > > > > 
-> > > > > > > 00000000000060d8 <LBB12_413>:
-> > > > > > > ;       return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4,
-> > > > > > > seclabel, monitor);
-> > > > > > > 
-> > > > > > > 
-> > > > > > > b: BPF byte code  after C code change:
-> > > > > > > 
-> > > > > > > the C code diff change:
-> > > > > > > 
-> > > > > > > diff --git a/bpf/lib/encap.h b/bpf/lib/encap.h
-> > > > > > > index dfd87bd82..19199429d 100644
-> > > > > > > --- a/bpf/lib/encap.h
-> > > > > > > +++ b/bpf/lib/encap.h
-> > > > > > > @@ -187,6 +187,8 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx,
-> > > > > > > __u32
-> > > > > > > tunnel_endpoint,
-> > > > > > >                           struct endpoint_key *key, __u32 seclabel,
-> > > > > > > __u32
-> > > > > > > monitor)
-> > > > > > >     {
-> > > > > > >            struct endpoint_key *tunnel;
-> > > > > > > +#define VTEP_MAC  { .addr = { 0xce, 0x72, 0xa7, 0x03, 0x88, 0x58 }
-> > > > > > > }
-> > > > > > > +       union macaddr vtep_mac = VTEP_MAC;
-> > > > > > >              if (tunnel_endpoint) {
-> > > > > > >     #ifdef ENABLE_IPSEC
-> > > > > > > @@ -221,6 +223,8 @@ encap_and_redirect_lxc(struct __ctx_buff *ctx,
-> > > > > > > __u32
-> > > > > > > tunnel_endpoint,
-> > > > > > >                                                    seclabel);
-> > > > > > >            }
-> > > > > > >     #endif
-> > > > > > > +       if (eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0)
-> > > > > > > +               return DROP_WRITE_ERROR;
-> > > > > > >            return __encap_and_redirect_with_nodeid(ctx, tunnel->ip4,
-> > > > > > > seclabel, monitor);
-> > > > > > >     }
-> > > > > > > 
-> > > > > > > the result BPF byte code
-> > > > > > > 
-> > > > > > > 0000000000004468 <LBB3_274>:
-> > > > > > >        2189:       bf a2 00 00 00 00 00 00 r2 = r10
-> > > > > > > ;       tunnel = map_lookup_elem(&TUNNEL_MAP, key);
-> > > > > > >        2190:       07 02 00 00 50 ff ff ff r2 += -176
-> > > > > > >        2191:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > > > > > > r1 = 0
-> > > > > > > ll
-> > > > > > >        2193:       85 00 00 00 01 00 00 00 call 1
-> > > > > > >        2194:       bf 07 00 00 00 00 00 00 r7 = r0
-> > > > > > >        2195:       79 a6 48 ff 00 00 00 00 r6 = *(u64 *)(r10 - 184)
-> > > > > > > ;       if (!tunnel)
-> > > > > > >        2196:       55 07 94 00 00 00 00 00 if r7 != 0 goto +148
-> > > > > > > <LBB3_289>
-> > > > > > > 
-> > > > > > > 00000000000044a8 <LBB3_275>:
-> > > > > > > ;       __u8 new_ttl, ttl = ip4->ttl;
-> > > > > > >        2197:       79 a1 38 ff 00 00 00 00 r1 = *(u64 *)(r10 - 200)
-> > > > > > >        2198:       71 13 16 00 00 00 00 00 r3 = *(u8 *)(r1 + 22)
-> > > > > > > ;       if (ttl <= 1)
-> > > > > > >        2199:       25 03 01 00 01 00 00 00 if r3 > 1 goto +1
-> > > > > > > <LBB3_277>
-> > > > > > >        2200:       05 00 20 ff 00 00 00 00 goto -224 <LBB3_253>
-> > > > > > > 
-> > > > > > > 
-> > > > > > > You can see that:
-> > > > > > > 
-> > > > > > > before change:  <LBB12_410>
-> > > > > > > after change    <LBB3_274>
-> > > > > > > 
-> > > > > > > is different that <LBB12_410> has instructions 3091, 3092... but
-> > > > > > > <LBB3_274> end with instruction 2196
-> > > > > > > 
-> > > > > > > before change: <LBB12_413> follows <LBB12_410>
-> > > > > > > after change: <LBB3_275> follows <LBB3_274>
-> > > > > > > 
-> > > > > > > <LBB12_413> and <LBB3_275> is very much different
-> > > > > > > 
-> > > > > > > and  <LBB3_275> instruction 2198 is the one with "R1 invalid mem
-> > > > > > > access
-> > > > > > > 'inv'"
-> > > > > > > 
-> > > > > > > Why <LBB3_275> follows <LBB3_274> ? from C code, <LBB3_275> is not
-> > > > > > > close
-> > > > > > > to <LBB3_274>.
-> > > > > > 
-> > > > > > The cilium code has a lot of functions inlined and after inlining,
-> > > > > > clang
-> > > > > > may
-> > > > > > do reordering based on its internal heuristics. It is totally possible
-> > > > > > slight
-> > > > > > code change may cause generated codes quite different.
-> > > > > > 
-> > > > > > Regarding to
-> > > > > > > and  <LBB3_275> instruction 2198 is the one with "R1 invalid mem
-> > > > > > > access
-> > > > > > > 'inv'"
-> > > > > > 
-> > > > > > 
-> > > > > > > 00000000000044a8 <LBB3_275>:
-> > > > > > > ;       __u8 new_ttl, ttl = ip4->ttl;
-> > > > > > >        2197:       79 a1 38 ff 00 00 00 00 r1 = *(u64 *)(r10 - 200)
-> > > > > > >        2198:       71 13 16 00 00 00 00 00 r3 = *(u8 *)(r1 + 22)
-> > > > > > > ;       if (ttl <= 1)
-> > > > > > >        2199:       25 03 01 00 01 00 00 00 if r3 > 1 goto +1
-> > > > > > > <LBB3_277>
-> > > > > > >        2200:       05 00 20 ff 00 00 00 00 goto -224 <LBB3_253>
-> > > > > > 
-> > > > > > Looks like "ip4" is spilled on the stack. and maybe the stack
-> > > > > > save/restore
-> > > > > > for
-> > > > > > "ip4" does not preserve its original type.
-> > > > > > This mostly happens to old kernels, I think.
-> > > > > > 
-> > > > > 
-> > > > > the kernel 4.18 on Centos8, I also custom build most recent mainline git
-> > > > > kernel 5.13 on Centos8, I recall I got same invaid memory access
-> > > > > 
-> > > > > > If you have verifier log, it may help identify issues easily.
-> > > > > 
-> > > > > Here is the complete verifer log, I skipped the BTF part
-> > > > > 
-> > > > > level=warning msg="Prog section '2/7' rejected: Permission denied (13)!"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg=" - Type:         3" subsys=datapath-loader
-> > > > > level=warning msg=" - Attach Type:  0" subsys=datapath-loader
-> > > > > level=warning msg=" - Instructions: 2488 (0 over limit)"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg=" - License:      GPL" subsys=datapath-loader
-> > > > > level=warning subsys=datapath-loader
-> > > > > level=warning msg="Verifier analysis:" subsys=datapath-loader
-> > > > > level=warning subsys=datapath-loader
-> > > > > level=warning msg="Skipped 158566 bytes, use 'verb' option for the full
-> > > > > verbose log." subsys=datapath-loader
-> > > > > level=warning msg="[...]" subsys=datapath-loader
-> > > > > level=warning msg="-136=????00mm fp-144=00000000 fp-152=0000mmmm
-> > > > > fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx
-> > > > > fp-192=mmmmmmmm
-> > > > > fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
-> > > > > fp-240=inv128" subsys=datapath-loader
-> > > > > level=warning msg="2437: (0f) r1 += r8" subsys=datapath-loader
-> > > > > level=warning msg="2438: (7b) *(u64 *)(r0 +8) = r1"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg=" R0_w=map_value(id=0,off=0,ks=8,vs=16,imm=0)
-> > > > > R1_w=inv(id=0) R6=ctx(id=0,off=0,imm=0)
-> > > > > R7=inv(id=0,umax_value=128,var_off=(0x0; 0xff))
-> > > > > R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9=invP0 R10=fp0
-> > > > > fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
-> > > > > fp-40=mmmmmmmm
-> > > > > fp-48=mmmmmmmm fp-88=mmmmmmmm fp-96=00000000 fp-104=00000000
-> > > > > fp-112=??mmmmmm fp-120=mmmmmmmm fp-128=??mmmmmm fp-136=????00mm
-> > > > > fp-144=00000000 fp-152=0000mmmm fp-160=????mmmm fp-168=mmmmmmmm
-> > > > > fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm fp-200=inv fp-208=mmmmmmmm
-> > > > > fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm fp-240=inv128"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2439: (05) goto pc+41" subsys=datapath-loader
-> > > > > level=warning msg="2481: (18) r2 = 0x5c7" subsys=datapath-loader
-> > > > > level=warning msg="2483: (67) r2 <<= 32" subsys=datapath-loader
-> > > > > level=warning msg="2484: (77) r2 >>= 32" subsys=datapath-loader
-> > > > > level=warning msg="2485: (b7) r1 = 6" subsys=datapath-loader
-> > > > > level=warning msg="2486: (15) if r2 == 0x1 goto pc-341"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="last_idx 2486 first_idx 2481" subsys=datapath-loader
-> > > > > level=warning msg="regs=4 stack=0 before 2485: (b7) r1 = 6"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="regs=4 stack=0 before 2484: (77) r2 >>= 32"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="regs=4 stack=0 before 2483: (67) r2 <<= 32"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="regs=4 stack=0 before 2481: (18) r2 = 0x5c7"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2487: (05) goto pc-344" subsys=datapath-loader
-> > > > > level=warning msg="2144: (18) r1 = 0x5c7" subsys=datapath-loader
-> > > > > level=warning msg="2146: (61) r2 = *(u32 *)(r6 +68)"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2147: (b7) r3 = 39" subsys=datapath-loader
-> > > > > level=warning msg="2148: (63) *(u32 *)(r10 -76) = r3"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2149: (b7) r3 = 1" subsys=datapath-loader
-> > > > > level=warning msg="2150: (6b) *(u16 *)(r10 -90) = r3"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2151: (63) *(u32 *)(r10 -96) = r8"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2152: (63) *(u32 *)(r10 -100) = r2"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2153: (18) r2 = 0x1d3" subsys=datapath-loader
-> > > > > level=warning msg="2155: (6b) *(u16 *)(r10 -102) = r2"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2156: (b7) r2 = 1028" subsys=datapath-loader
-> > > > > level=warning msg="2157: (6b) *(u16 *)(r10 -104) = r2"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2158: (b7) r2 = 0" subsys=datapath-loader
-> > > > > level=warning msg="2159: (63) *(u32 *)(r10 -80) = r2"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="last_idx 2159 first_idx 2481" subsys=datapath-loader
-> > > > > level=warning msg="regs=4 stack=0 before 2158: (b7) r2 = 0"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2160: (63) *(u32 *)(r10 -84) = r2"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2161: (7b) *(u64 *)(r10 -72) = r2"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2162: (7b) *(u64 *)(r10 -64) = r2"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2163: (63) *(u32 *)(r10 -88) = r1"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2164: (6b) *(u16 *)(r10 -92) = r7"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2165: (67) r7 <<= 32" subsys=datapath-loader
-> > > > > level=warning msg="2166: (18) r1 = 0xffffffff" subsys=datapath-loader
-> > > > > level=warning msg="2168: (4f) r7 |= r1" subsys=datapath-loader
-> > > > > level=warning msg="2169: (bf) r4 = r10" subsys=datapath-loader
-> > > > > level=warning msg="2170: (07) r4 += -104" subsys=datapath-loader
-> > > > > level=warning msg="2171: (bf) r1 = r6" subsys=datapath-loader
-> > > > > level=warning msg="2172: (18) r2 = 0xffffa0c68cae1600"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2174: (bf) r3 = r7" subsys=datapath-loader
-> > > > > level=warning msg="2175: (b7) r5 = 48" subsys=datapath-loader
-> > > > > level=warning msg="2176: (85) call bpf_perf_event_output#25"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="last_idx 2176 first_idx 2481" subsys=datapath-loader
-> > > > > level=warning msg="regs=20 stack=0 before 2175: (b7) r5 = 48"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2177: (b7) r1 = 39" subsys=datapath-loader
-> > > > > level=warning msg="2178: (b7) r2 = 0" subsys=datapath-loader
-> > > > > level=warning msg="2179: (85) call bpf_redirect#23"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2180: (bf) r9 = r0" subsys=datapath-loader
-> > > > > level=warning msg="2181: (bf) r1 = r9" subsys=datapath-loader
-> > > > > level=warning msg="2182: (67) r1 <<= 32" subsys=datapath-loader
-> > > > > level=warning msg="2183: (77) r1 >>= 32" subsys=datapath-loader
-> > > > > level=warning msg="2184: (15) if r1 == 0x0 goto pc+57"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg=" R0_w=inv(id=0)
-> > > > > R1_w=inv(id=0,umax_value=2147483647,var_off=(0x0; 0x7fffffff))
-> > > > > R6=ctx(id=0,off=0,imm=0)
-> > > > > R7=inv(id=0,umin_value=4294967295,umax_value=1099511627775,var_off=(0xffffffff;
-> > > > > 0xff00000000),s32_min_value=-1,s32_max_value=0,u32_max_value=0)
-> > > > > R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9_w=inv(id=0) R10=fp0
-> > > > > fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
-> > > > > fp-40=mmmmmmmm
-> > > > > fp-48=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm fp-80=mmmmmmmm
-> > > > > fp-88=mmmmmmmm
-> > > > > fp-96=mmmmmmmm fp-104=mmmmmmmm fp-112=??mmmmmm fp-120=mmmmmmmm
-> > > > > fp-128=??mmmmmm fp-136=????00mm fp-144=00000000 fp-152=0000mmmm
-> > > > > fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx
-> > > > > fp-192=mmmmmmmm
-> > > > > fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
-> > > > > fp-240=inv128" subsys=datapath-loader
-> > > > > level=warning msg="2185: (18) r2 = 0xffffff60" subsys=datapath-loader
-> > > > > level=warning msg="2187: (1d) if r1 == r2 goto pc+9"
-> > > > > subsys=datapath-loader
-> > > > > level=warning subsys=datapath-loader
-> > > > > level=warning msg="from 2187 to 2197: R0=inv(id=0) R1=inv4294967136
-> > > > > R2=inv4294967136 R6=ctx(id=0,off=0,imm=0)
-> > > > > R7=inv(id=0,umin_value=4294967295,umax_value=1099511627775,var_off=(0xffffffff;
-> > > > > 0xff00000000),s32_min_value=-1,s32_max_value=0,u32_max_value=0)
-> > > > > R8=inv(id=0,umax_value=128,var_off=(0x0; 0xff)) R9=inv(id=0) R10=fp0
-> > > > > fp-8=mmmmmmmm fp-16=????mmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
-> > > > > fp-40=mmmmmmmm
-> > > > > fp-48=mmmmmmmm fp-64=mmmmmmmm fp-72=mmmmmmmm fp-80=mmmmmmmm
-> > > > > fp-88=mmmmmmmm
-> > > > > fp-96=mmmmmmmm fp-104=mmmmmmmm fp-112=??mmmmmm fp-120=mmmmmmmm
-> > > > > fp-128=??mmmmmm fp-136=????00mm fp-144=00000000 fp-152=0000mmmm
-> > > > > fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx
-> > > > > fp-192=mmmmmmmm
-> > > > > fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
-> > > > 
-> > > > This is the problem. Here, we have "fp-200=inv" and
-> > > > later on we have
-> > > >     r1 = *(u64 *)(r10 -200)  // r1 is a unknown scalar
-> > > > 
-> > > > We cannot do the following operation
-> > > >     r3 = *(u8 *)(r1 +22)
-> > > > since r1 is a unknown scalar and the verifier rightfully rejected
-> > > > the program.
-> > > > 
-> > > > You need to examine complete log to find out why fp-200 stores
-> > > > an "inv" (a unknown scalar).
-> > > 
-> > > I guess you mean the complete log starting from the prog section 2/7 from
-> > > verifier, if so, it seems fp-200 started with "inv"
-> > > 
-> > > level=warning msg="Prog section '2/7' rejected: Permission denied (13)!"
-> > > subsys=datapath-loader
-> > > 
-> > > level=warning msg="-136=????00mm fp-144=00000000 fp-152=0000mmmm
-> > > fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm
-> > > fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
-> > > fp-240=inv128" subsys=datapath-loader
-> > > 
-> > > and I don't see fp-200 ever changed to something else after, maybe I am
-> > > reading it wrong
-> > 
-> > The log is truncated.
-> > 
-> > >>> level=warning msg="[...]" subsys=datapath-loader
-> > >>> level=warning msg="-136=????00mm fp-144=00000000 fp-152=0000mmmm
-> > >>> fp-160=????mmmm fp-168=mmmmmmmm fp-176=mmmmmmmm fp-184=ctx fp-192=mmmmmmmm
-> > >>> fp-200=inv fp-208=mmmmmmmm fp-216=inv3 fp-224=mmmmmmmm fp-232=mmmmmmmm
-> > >>> fp-240=inv128" subsys=datapath-loader
-> > >>> level=warning msg="2437: (0f) r1 += r8" subsys=datapath-loader
-> > >>> level=warning msg="2438: (7b) *(u64 *)(r0 +8) = r1" subsys=datapath-loader
-> > 
-> > The log starts with insn 2437.
-> > The complete log should start with insn 0.
+> The RCU annotation replacements result in a fairly straight-forward
+> replacement where READ_ONCE() becomes rcu_dereference_check(), WRITE_ONCE()
+> becomes rcu_assign_pointer() and xchg() and cmpxchg() gets wrapped in the
+> proper constructs to cast the pointer back and forth between __rcu and
+> __kernel address space (for the benefit of sparse). The one complication is
+> that xskmap has a few constructions where double-pointers are passed back
+> and forth; these simply all gain __rcu annotations, and only the final
+> reference/dereference to the inner-most pointer gets changed.
 > 
-> I see, it looks verb option need to be appended to the tc command I guess
-> I will check with Cilium experts on appending the verb to the tc command
+> With this, everything can be run through sparse without eliciting
+> complaints, and lockdep can verify correctness even without the use of
+> rcu_read_lock() in the drivers. Subsequent patches will clean these up from
+> the drivers.
 > 
-> level=error msg="Command execution failed" cmd="[tc filter replace dev 
-> lxc10a7b9a3c745 ingress prio 1 handle 1 bpf da obj 467_next/bpf_lxc.o sec 
-> from-container]" error="exit status 1" subsys=datapath-loader
+> [0] https://lore.kernel.org/bpf/20210415173551.7ma4slcbqeyiba2r@kafai-mbp.dhcp.thefacebook.com/
+> [1] https://lore.kernel.org/bpf/20210419165837.GA975577@paulmck-ThinkPad-P17-Gen-1/
 > 
-> level=warning subsys=datapath-loader
-> level=warning msg="BTF debug data section '.BTF' rejected: Invalid 
-> argument (22)!" subsys=datapath-loader
-> level=warning msg=" - Length:       24779" subsys=datapath-loader
-> level=warning msg="Verifier analysis:" subsys=datapath-loader
-> level=warning subsys=datapath-loader
-> 
-> level=warning msg="Skipped 787 bytes, use 'verb' option for the full 
-> verbose log." subsys=datapath-loader
-
-after a quick look, I might just need to append the verb here
-
-tc filter replace dev $DEV $WHERE prio 1 handle 1 bpf da obj $OUT sec $SEC 
-
-in bpf_load in cilium bpf/init.sh, I will try to get the full log, 
-appreciate your patience and help :)
-
-> 
->  > 
-> > > 
-> > > > 
-> > > > > fp-240=inv128" subsys=datapath-loader
-> > > > > level=warning msg="2197: (79) r1 = *(u64 *)(r10 -200)"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="2198: (71) r3 = *(u8 *)(r1 +22)"
-> > > > > subsys=datapath-loader
-> > > > > level=warning msg="R1 invalid mem access 'inv'" subsys=datapath-loader
-> > > > > level=warning msg="processed 1802 insns (limit 1000000)
-> > > > > max_states_per_insn 4 total_states 103 peak_states 103 mark_read 49"
-> > > > > subsys=datapath-loader
-> > > > > level=warning subsys=datapath-loader
-> > > > > level=warning msg="Error filling program arrays!" subsys=datapath-loader
-> > > > > level=warning msg="Unable to load program" subsys=datapath-loader
-> > > > >    
-> > > > > 
-> > > > > > > 
-> > > > > > > 
-> > > > > > > 2, Can I assume the verifier is to simulate the order of BPF byte
-> > > > > > > code execution in run time, like if without any jump or goto in
-> > > > > > > <LBB3_274>, <LBB3_275> will be executed after <LBB3_274>?
-> > > > > > 
-> > > > > > The verifier will try to verify both paths, jumping to LBB3_289
-> > > > > > or fall back to LBB3_275.
-> > > > > > 
-> > > > > > > 
-> > > > > > > 
-> > > > > > > 
-> > > > > > > Enterprise Network Engineer
-> > > > > > > F5 Networks Inc
-> > > > > > > https://www.youtube.com/c/VincentLi
-> > > > > > > 
-> > > > > > 
-> > > > 
-> > 
-> 
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
