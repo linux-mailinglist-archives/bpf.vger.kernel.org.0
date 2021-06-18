@@ -2,133 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2187F3AD362
-	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 22:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD593AD3D7
+	for <lists+bpf@lfdr.de>; Fri, 18 Jun 2021 22:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhFRUJX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Jun 2021 16:09:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37443 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229848AbhFRUJX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 18 Jun 2021 16:09:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624046832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nF7w/bRMF9yLough+lpnUI5zPdwvtiS+Mg2nsdKHrg4=;
-        b=VjSr+y1EJD8n4mP1gNazOeAeC48HA0o98594rlYNXMIStA/0MWmqx2GkkSmLyub4tHZjzm
-        9XLO3HT6IyAq4G+p/nQGaMAHIh1WsawKMR1LKhG4I9rkElqGrG44g8OfkkzWRWIWecMe5v
-        LV8pytDRqg/y3/qCpwa6iVcd0w15Vr0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281--1Zt57NqMveCxQVn6E8lRg-1; Fri, 18 Jun 2021 16:07:10 -0400
-X-MC-Unique: -1Zt57NqMveCxQVn6E8lRg-1
-Received: by mail-ed1-f70.google.com with SMTP id j19-20020aa7c4130000b029039497d5cdbeso209390edq.15
-        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 13:07:10 -0700 (PDT)
+        id S234106AbhFRUrh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Jun 2021 16:47:37 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:47959 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234087AbhFRUre (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Jun 2021 16:47:34 -0400
+Received: by mail-il1-f197.google.com with SMTP id x11-20020a056e021cabb02901ee217d181eso1224865ill.14
+        for <bpf@vger.kernel.org>; Fri, 18 Jun 2021 13:45:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nF7w/bRMF9yLough+lpnUI5zPdwvtiS+Mg2nsdKHrg4=;
-        b=sJ5eirSbOOgjlOTbTh96M5OCAFvVrIJ/2DBj2WVk5oCn33jDJJnDdh0sbqb7MS1j9F
-         ntO5pJtxZLOoFHqwgFdE7R2Q6UmRtSfipHlM9hKrM22Yp0hDVuI9xQ9OMSaoN3hE5Hu4
-         iKiHE9XMBZpvaMVxxNxe++vvdMLAVJzcuS8UkNuUkohaWKF2XxTeHAcLVOfTP+07sYw7
-         eFYbKM9U8cOeWJHgd4kkLRVvvk09edkeQ3OjZSgoe77jWWBva1mNoxsXKJ3l3IMtJFIs
-         jjt8CTmHSDUcDREO/ZDI1/ZpuJc4BvR3gQGUFIL+Og51lydeOy8OJX/QPZ3KWcJPKVDy
-         B1bQ==
-X-Gm-Message-State: AOAM533pQxG5WZA9UhhuewvPy+GF8uq9CxdGaVOe9T631lDbgYw6ZXgS
-        4GIneKk6c7OCY33bs1DLI42c+ub6dApHE56gk95qypmYzCVWzw/13osZ+ASATVuWpAif+B5e7WF
-        enI12PyxACHnV
-X-Received: by 2002:a17:906:1c84:: with SMTP id g4mr12260382ejh.99.1624046829133;
-        Fri, 18 Jun 2021 13:07:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJymURQ+JwV7b+V1F2pnphqLC6Cl2Klj4s5lxuDVf5+VvgJ417d5EIiqn/XBcMZgoEQ/LFVyKw==
-X-Received: by 2002:a17:906:1c84:: with SMTP id g4mr12260367ejh.99.1624046828988;
-        Fri, 18 Jun 2021 13:07:08 -0700 (PDT)
-Received: from krava ([37.188.132.65])
-        by smtp.gmail.com with ESMTPSA id yh11sm1402145ejb.16.2021.06.18.13.07.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 13:07:08 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 22:07:04 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH bpf-next] bpf, x86: Remove unused cnt increase from EMIT
- macro
-Message-ID: <YMz86IxKqoXGErAW@krava>
-References: <20210616133400.315039-1-jolsa@kernel.org>
- <08876866-c004-ede7-6657-10a15f51f6d8@iogearbox.net>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=WWy358Ai3kRq2oHNuyRjq5Ya1NqTVhnP0/NxBKOX8F8=;
+        b=eSxIloJ5lMKSzRA9GmB7bcpylOD5rx2Km6Iga4VaZPqq1d5Q2awYfCV/nNGDmiRvhg
+         X15CVryN+3b9999MoVS3wn9W8v6qms7jkXjdpzJK+rkvreMgdUXsEjgMCPzbWdY5hMQc
+         +U2n1h3dW08XMjpytnOFOUc0zrGUa0QNcD170ZeV7Ulv0f/JyieVDl6L9jo2jsR3MBEO
+         Iai+07oRJjVmZrX0RN+o5cHrkchJ0IfieLJg1miue60FTiEUyCZHf855KNfXKT5sPv99
+         oStnxzXuC4/re/5abEqZAulijZ5nAJfvLqf08fbLizgTJReMiWHodbzUZtq9IH/oEG2z
+         KMvA==
+X-Gm-Message-State: AOAM5321KM6K2o/YIZi2F8JRmhICDD5qg8plv7R2gzL2S13ZpwoPITCt
+        2hkOXih1wrRdGN1rvlR33JvMiDaijPbIsNTvoHswuu7xCEL5
+X-Google-Smtp-Source: ABdhPJx8Re1LIzYZ2B7UVB8Z4gWXT/X637J6gdoS+9MRRpNPWLdN6ZGOdDoLZTgQIKAoTCA5toghBPk9v6JwRevIjTbChfpPPDhB
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08876866-c004-ede7-6657-10a15f51f6d8@iogearbox.net>
+X-Received: by 2002:a05:6638:191d:: with SMTP id p29mr5070003jal.75.1624049123988;
+ Fri, 18 Jun 2021 13:45:23 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 13:45:23 -0700
+In-Reply-To: <000000000000f034fc05c2da6617@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000022183205c5106739@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
+From:   syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, dvyukov@google.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, john.fastabend@gmail.com,
+        josh@joshtriplett.org, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        netdev@vger.kernel.org, paulmck@kernel.org, peterz@infradead.org,
+        rcu@vger.kernel.org, rostedt@goodmis.org, shakeelb@google.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        yanfei.xu@windriver.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 01:04:08PM +0200, Daniel Borkmann wrote:
-> On 6/16/21 3:34 PM, Jiri Olsa wrote:
-> > Removing unused cnt increase from EMIT macro together
-> > with cnt declarations. This was introduced in commit [1]
-> > to ensure proper code generation. But that code was
-> > removed in commit [2] and this extra code was left in.
-> > 
-> > [1] b52f00e6a715 ("x86: bpf_jit: implement bpf_tail_call() helper")
-> > [2] ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@redhat.com>
-> > ---
-> >   arch/x86/net/bpf_jit_comp.c | 39 ++++++++++---------------------------
-> >   1 file changed, 10 insertions(+), 29 deletions(-)
-> > 
-> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > index 2a2e290fa5d8..19715542cd9c 100644
-> > --- a/arch/x86/net/bpf_jit_comp.c
-> > +++ b/arch/x86/net/bpf_jit_comp.c
-> > @@ -31,7 +31,7 @@ static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
-> >   }
-> >   #define EMIT(bytes, len) \
-> > -	do { prog = emit_code(prog, bytes, len); cnt += len; } while (0)
-> > +	do { prog = emit_code(prog, bytes, len); } while (0)
-> >   #define EMIT1(b1)		EMIT(b1, 1)
-> >   #define EMIT2(b1, b2)		EMIT((b1) + ((b2) << 8), 2)
-> > @@ -239,7 +239,6 @@ struct jit_context {
-> >   static void push_callee_regs(u8 **pprog, bool *callee_regs_used)
-> >   {
-> >   	u8 *prog = *pprog;
-> > -	int cnt = 0;
-> >   	if (callee_regs_used[0])
-> >   		EMIT1(0x53);         /* push rbx */
-> > @@ -255,7 +254,6 @@ static void push_callee_regs(u8 **pprog, bool *callee_regs_used)
-> >   static void pop_callee_regs(u8 **pprog, bool *callee_regs_used)
-> >   {
-> >   	u8 *prog = *pprog;
-> > -	int cnt = 0;
-> >   	if (callee_regs_used[3])
-> >   		EMIT2(0x41, 0x5F);   /* pop r15 */
-> > @@ -303,7 +301,6 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
-> 
-> nit: In emit_prologue() we also have cnt that we could just replace with X86_PATCH_SIZE
-> directly as well.
+syzbot has found a reproducer for the following issue on:
 
-right, will send v2
+HEAD commit:    0c38740c selftests/bpf: Fix ringbuf test fetching map FD
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=128a7e34300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a6380da8984033f1
+dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1264c2d7d00000
 
-thanks,
-jirka
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
 
-> 
-> >   static int emit_patch(u8 **pprog, void *func, void *ip, u8 opcode)
-> >   {
-> >   	u8 *prog = *pprog;
-> 
-> Otherwise, lgtm.
-> 
-> Thanks,
-> Daniel
-> 
+==================================================================
+BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+Read of size 1 at addr ffff8880294cbc9c by task rcu_tasks_trace/12
+
+CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.13.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+ check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+ rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+ rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Allocated by task 8499:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:428 [inline]
+ __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
+ kasan_slab_alloc include/linux/kasan.h:236 [inline]
+ slab_post_alloc_hook mm/slab.h:524 [inline]
+ slab_alloc_node mm/slub.c:2913 [inline]
+ kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2949
+ alloc_task_struct_node kernel/fork.c:171 [inline]
+ dup_task_struct kernel/fork.c:865 [inline]
+ copy_process+0x5c8/0x7120 kernel/fork.c:1947
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 12:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
+ kasan_slab_free include/linux/kasan.h:212 [inline]
+ slab_free_hook mm/slub.c:1582 [inline]
+ slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1607
+ slab_free mm/slub.c:3167 [inline]
+ kmem_cache_free+0x8a/0x740 mm/slub.c:3183
+ __put_task_struct+0x26f/0x400 kernel/fork.c:747
+ trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
+ check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
+ rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+ rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3038 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+ release_task+0xca1/0x1690 kernel/exit.c:226
+ wait_task_zombie kernel/exit.c:1108 [inline]
+ wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
+ do_wait_thread kernel/exit.c:1398 [inline]
+ do_wait+0x724/0xd40 kernel/exit.c:1515
+ kernel_wait4+0x14c/0x260 kernel/exit.c:1678
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3038 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+ release_task+0xca1/0x1690 kernel/exit.c:226
+ wait_task_zombie kernel/exit.c:1108 [inline]
+ wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
+ do_wait_thread kernel/exit.c:1398 [inline]
+ do_wait+0x724/0xd40 kernel/exit.c:1515
+ kernel_wait4+0x14c/0x260 kernel/exit.c:1678
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff8880294cb880
+ which belongs to the cache task_struct of size 6976
+The buggy address is located 1052 bytes inside of
+ 6976-byte region [ffff8880294cb880, ffff8880294cd3c0)
+The buggy address belongs to the page:
+page:ffffea0000a53200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x294c8
+head:ffffea0000a53200 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 ffffea00008d6400 0000000200000002 ffff888140005140
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2, ts 15187628853, free_ts 0
+ prep_new_page mm/page_alloc.c:2358 [inline]
+ get_page_from_freelist+0x1034/0x2bf0 mm/page_alloc.c:3994
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+ alloc_slab_page mm/slub.c:1645 [inline]
+ allocate_slab+0x32e/0x4c0 mm/slub.c:1785
+ new_slab mm/slub.c:1848 [inline]
+ new_slab_objects mm/slub.c:2594 [inline]
+ ___slab_alloc+0x4a1/0x810 mm/slub.c:2757
+ __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2797
+ slab_alloc_node mm/slub.c:2879 [inline]
+ kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2949
+ alloc_task_struct_node kernel/fork.c:171 [inline]
+ dup_task_struct kernel/fork.c:865 [inline]
+ copy_process+0x5c8/0x7120 kernel/fork.c:1947
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2555
+ create_kthread kernel/kthread.c:336 [inline]
+ kthreadd+0x52a/0x790 kernel/kthread.c:679
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff8880294cbb80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880294cbc00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8880294cbc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff8880294cbd00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880294cbd80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
