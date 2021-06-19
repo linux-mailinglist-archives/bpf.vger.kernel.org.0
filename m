@@ -2,158 +2,283 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E64E3ADA82
-	for <lists+bpf@lfdr.de>; Sat, 19 Jun 2021 17:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD043ADAD8
+	for <lists+bpf@lfdr.de>; Sat, 19 Jun 2021 18:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbhFSPMZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Jun 2021 11:12:25 -0400
-Received: from mail-eopbgr670086.outbound.protection.outlook.com ([40.107.67.86]:46062
-        "EHLO CAN01-TO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234545AbhFSPMY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Jun 2021 11:12:24 -0400
+        id S234734AbhFSQXA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Jun 2021 12:23:00 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:25828 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232640AbhFSQXA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 19 Jun 2021 12:23:00 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15JGFCZx020808;
+        Sat, 19 Jun 2021 09:20:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=WnVxsMOxOYd3FIuAv52CXAxkCbptem89q80l+T1DXxQ=;
+ b=ZSWrnyMTMNjPD5gzm9vJHVuRXkgH3n7cLP3tru5Oascq/9Z2U8ZUPdvDc5DccLAWpoOd
+ sKAtkfFJSVUJPfEfHaG4a0um8mtq4AP5GcPG+oEg+rIilaib2K2CJrD863/Go/8X2ac/
+ xUyeN+D+jsVl+WAmDM4YPjB4zhBHQX/cj4Q= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 399eb01474-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 19 Jun 2021 09:20:05 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 19 Jun 2021 09:20:04 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j/pqsZI8KzGTWr901chMxTbGWTQ91p4OfMQnWvzcKaUDbuMY0BiNGy0HAQQC7ZoVLYeLaKb23Y+rPR7TziBOLZxaID7jow5pZOUR0vYwW6BvE52Chq8f8Q1qqPkulpYCrenIxC12x8DRzcmjkAxrc/ny7G8aNiZk3rpCwuLXcZTArEi8XPVp/moclsryk1PxL14gOgT84qmb5sZQ9cyz2PUjsWYrIwsNKhqX9Q6cNogZ7JXP6JanJP/kFZoMWHnleTCN5cNouKFkMaQzJVXKMfKdGDXqgtQaR0wPH9oG1RChOB79lXNdd4zD04wv3jhQDhUv3YUwCfxNf696CZ3Hcg==
+ b=juuRx6qgqO1gDBtAU7x8dTkssR9WWrBvJ5cZGYhl8JZjhFsvHouZ9nywIRTER9YChc7luod4pH1svsH9MvP20SnKypHvDP9/fYoKp8wZUjc2oD7Gqe6vca5ioIxQeUi3IHQFS4FeOda3JBYTQkusyclBkZF1k04x/TXoliElghhcd/6fawGu5vDg37xuFkRhiIR7cMmffxPFzZw0dOznGNy1NJiBoqHgZlc0bGOOr8P/BsMD4X9+icIYEFgMd1a+2wBE8/M3Bl3Jaalj6WtBxk+NpqpyE337iQPHtw/IDFDd1KezHmAq7/epCpddmASD9ArXZHyV/YqhQa+W42kLWg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yl4wNwG1TMxu8JfJqwSwoQTXZASw0m7HaoMsnKnqkxQ=;
- b=JgtaGBGCqrSE7WLhew1mO1uGqicUnIV49nBgNvQLARK3dsoNl7hPYbeLd8tJSTQ5P8Pl8ILJRgm4eW1UO71WhODtptnm1YB37udwHp9Jq3+i2UJrRivioeHJujRN2cQuatdNrhwhnm1b6aMg+9Cb8BHYbeKOlbkVnW0nMmY81a2NzdSQIKnNCzXWiDoaaZ8gjowTmXNMlIXBofGu2C9SAIf4Pj5bVzLpIOUiDfGrb9yiK3+7C5NyjcKuPtCnR/oURR5ClwyPqUDzShP8Hg4Gblo/rG6XskfAw9Ru8bm7TmxFUJXQ7d3tkbhSPOUbjZ5U9MdOk8cy7XX8mbdXkzYI/A==
+ bh=WnVxsMOxOYd3FIuAv52CXAxkCbptem89q80l+T1DXxQ=;
+ b=HWr4u+WslFiPZ0UnD6sOk1+bHhLpf4fBE6jeF9HzBphetkn9OFCWcmuSQiJq+TUvTQcQ7KlCVNIhdJAm4mOyyyh0LxH9C+yHT6uK66LFBmzxPyPDkGszMbA0QLLE9Yii5iwGy6XFCdcCDjkOnJDbCA/Z2SDWfjqitC8lmsMM1S77c/i5qPg8A1xYmUHOJP5qVa1mlx9vO9ezAMmB/kboTZbBypHFLHoxCGEQbPGIKl8IcPHYTe99DMzN/ubMjMM5sytmNjuqANl0k5aqKtqh8fs+zW60k5oaPqqWVVDEhAkDMD2gVdPzli+aOVdVtF6NzXkb1XTLvevfN7PiNKdSNQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=165gc.onmicrosoft.com; dmarc=pass action=none
- header.from=165gc.onmicrosoft.com; dkim=pass header.d=165gc.onmicrosoft.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=165gc.onmicrosoft.com;
- s=selector1-165gc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yl4wNwG1TMxu8JfJqwSwoQTXZASw0m7HaoMsnKnqkxQ=;
- b=dkv5m9W3yLaXDXKFwyyYUKeITmcsL1+vYmsY1/G9quQ/vOmjwWPoFFontzhhy1P8Xs2clxOTBJW87TSz/ZDNCxtZtCcjrZV0/0DmgUq+qM2R/v8obUJVEH5UEUjgDDhLuh7k3GFoz6F78KfqOB9HKIRdf1TJypEMpdcyk23co9w=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=165gc.onmicrosoft.com;
-Received: from YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:17::24) by YQXPR0101MB1942.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:18::25) with Microsoft SMTP Server (version=TLS1_2,
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR15MB2478.namprd15.prod.outlook.com (2603:10b6:805:1a::24) with
+ Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Sat, 19 Jun
- 2021 15:10:10 +0000
-Received: from YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::c132:2223:87d:9e86]) by YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::c132:2223:87d:9e86%6]) with mapi id 15.20.4242.023; Sat, 19 Jun 2021
- 15:10:10 +0000
-Date:   Sat, 19 Jun 2021 11:10:07 -0400
-From:   Jonathan Edwards <jonathan.edwards@165gc.onmicrosoft.com>
-To:     andrii.nakryiko@gmail.com
-Cc:     bpf@vger.kernel.org, jonathan.edwards@165gc.onmicrosoft.com
-Subject: [PATCH bpf-next] libbpf: add extra BPF_PROG_TYPE check to
- bpf_object__probe_loading
-Message-ID: <20210619151007.GA6963@165gc.onmicrosoft.com>
-References: <CAEf4BzZxHSAn6d7M9O5_HE7p5K-Z2OJ1E9f0YGXfAbdWhsZ1GQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZxHSAn6d7M9O5_HE7p5K-Z2OJ1E9f0YGXfAbdWhsZ1GQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [174.91.65.25]
-X-ClientProxiedBy: YQBPR01CA0070.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:2::42) To YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:17::24)
-MIME-Version: 1.0
+ 2021 16:20:01 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4242.023; Sat, 19 Jun 2021
+ 16:20:01 +0000
+Subject: Re: [RFCv3 00/19] x86/ftrace/bpf: Add batch support for
+ direct/tracing attach
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>
+References: <20210605111034.1810858-1-jolsa@kernel.org>
+ <CAEf4BzaK+t7zom6JHWf6XSPGDxjwhG4Wj3+CHKVshdmP3=FgnA@mail.gmail.com>
+ <YM2r139rHuXialVG@krava>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <4af931a5-3c43-9571-22ac-63e5d299fa42@fb.com>
+Date:   Sat, 19 Jun 2021 09:19:57 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <YM2r139rHuXialVG@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:4564]
+X-ClientProxiedBy: BYAPR01CA0003.prod.exchangelabs.com (2603:10b6:a02:80::16)
+ To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 165gc.onmicrosoft.com (174.91.65.25) by YQBPR01CA0070.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01:2::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18 via Frontend Transport; Sat, 19 Jun 2021 15:10:09 +0000
+Received: from [IPv6:2620:10d:c085:21c8::1349] (2620:10d:c090:400::5:4564) by BYAPR01CA0003.prod.exchangelabs.com (2603:10b6:a02:80::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend Transport; Sat, 19 Jun 2021 16:19:59 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 70bbd51e-5373-4cdb-875b-08d933345463
-X-MS-TrafficTypeDiagnostic: YQXPR0101MB1942:
+X-MS-Office365-Filtering-Correlation-Id: 4d09fd9b-2854-45f2-7952-08d9333e1674
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2478:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <YQXPR0101MB19428DC0758DD32AA937CE5E9D0C9@YQXPR0101MB1942.CANPRD01.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Microsoft-Antispam-PRVS: <SN6PR15MB247832447F88FB48DE69209DD30C9@SN6PR15MB2478.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XcbvVlAxPKmPuGpx0o7oIrMK7RAUkarT1KVqG+yki0AKyAiPyHC0ZlTJ57TQfNnoMPNTuXniyQqDeC87+icPuYljBzlEJ+qwNk06irdG8POERvWqTIxglehpVSftTSfsosq6SdRvOmgaumcywpPaYDWjpbnK0Wcvz+2VNLZ4WMVm3WTxGQ18zfjiKQ6TNM0J0nMfOrF1sB97GrhJCYDIr1O5JugeN0B4fYhlqYrqMxfHQ2wDEUnrRx/LYLCgfRHMHKSlXi9VtlnzAYxGoEz0lvEloyHQYzVa3HLQtO2Z60VQ/PMLrw8dvxMXsUsbRiPUoSLYQrLAXfQxA1ykBjIf2+8BcakUdiSgwBc2ePrthy4ldMdSBjgT+8M9TT7z+Xn1YkFeiL8ZRbq70afp+i7wPOmRTVjAXctXANsx0+KZyVA52WO93mmfWhBI07QL/blCm6+SCQIYwHaRKU4yAjXD3eiXHWEa82NYHfCYJT76VQIPXq+nVIjSXaE/U50238YYoCPEtgqgVcSkx5QTRBp+P8V7QT7/soX6lmKl7/lHdQyLBg/toO4dSH2+1uM7QN93eSPTjW3mF38fXqUymsjuAYfIDtzo6KOmQVUCtq1DWeu0mLgCSdaJCP8vE95h7KWUQELWYGoz278fT5QritWOrZpxGCK2eKC2zUBSKG8GZdu+9bweHEIDYv3Lzwr58OfK0Yxz4U4dC42ePXkU91hNORskTcObI6GXyv+x9BrfjLbO6EqZ6jklsi9DiLQhi5AhRiUPyiTUrxlaUP9/IuAomS0OYyCEQUBb771Uqht9tyFX5+Km4fl8GbHVrQlaz37v
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39830400003)(346002)(136003)(376002)(66476007)(66946007)(2906002)(83380400001)(186003)(16526019)(107886003)(5660300002)(86362001)(2616005)(956004)(6916009)(66556008)(8676002)(478600001)(33656002)(1076003)(8936002)(38100700002)(38350700002)(4326008)(55016002)(26005)(52116002)(7696005)(966005)(316002)(44832011)(101420200003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: zJG7C7S/rcc3wWGTKFuVrkREmhKldhBaFzz7ciKjXrY+VXloHTfQvmc6JOpMPxayfcL0tU2iqzE5Lrxa7RzfTLuDfenPpFKymX/++v0nCsf53ZfCWJiRvLlAP2oQObxtqvzIvajHofaE+QrCc+lNbDxxYfiCbKLAM70695/O6W0DcAZlC+1eDFAFgxyiVH0pStPl/VCUuf3OCyiTJkNikf+wLfTTQz6a9yS1SAiJRIp62yLjfqDHWlRG/eekV7Y0+0rpfKxCpXUOnZZJUz7I88CuhLKkfyc94RrZBNcxyl/zXo3fylsI1P2zit22kQogU8NEqXHQ77hVOSykT4g5RHTJ9bqjz1zByoFKccExTH+XM9iBeU7bRlowsXODfADWZxYQkW06pE1EJy5TOEtmNPGpMwYRK6BxSt6wpzhXxdmafvlL2Sdr47/YWNL/8HwjWBCfga2I4Ldsp386F8hvU3I/TgHyBpVZKwggfbo775Z4JroXVitS+QbtUj5RK+9x1f/1oQtYPwAP3xg9Uyumeb59YDOJ8qgUKigTn6bkX6W13wWey9Sk/VLPxZBLlYi2luRTe3o8LL9/HKkDiElnql8/F9x/Hax9WerDaFCOMKd8muhf2mnPCyg/XLnnOpt1fiAdZdyeUYr+u9AJQICctBmy8QD4oK1yRdsuEu6ug2s1KhSfttZ/TaQAfDTA0+/m6jWtSFgfi5fzjhEGct36/PJz5pTyRl/FRHHSaWD+rbFz90/lWN2h40P2msKx5TCP7+wiUa4l56LmZjr/5TfZlg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(366004)(396003)(83380400001)(36756003)(4326008)(31696002)(478600001)(2616005)(31686004)(38100700002)(966005)(66476007)(66556008)(66946007)(316002)(7416002)(54906003)(186003)(110136005)(5660300002)(6486002)(8676002)(53546011)(16526019)(8936002)(86362001)(2906002)(52116002)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Tm0vNFQ1Y0VNb2dPS2hmOW1pV3BOR3hRZkQ1Tm5sYjM4RGdDOVl0S21JeFhL?=
- =?utf-8?B?aTN2NnUzWjFIR01kcEo4ME9abXhPMHNtUmJpVTNmeXBRcWdwTjBFa2FwOVpk?=
- =?utf-8?B?TnA0WEZoRktZUDhjczFnbTVKblpFMTBGK0kyU0JGZE8vSzdnelNkeWl4L2xi?=
- =?utf-8?B?ZjdHRHVzWTB6ZlA4QlptT3FKWHFNeVlPZ0NSeVpNeU9zRkxEZ3U1U01mcUl3?=
- =?utf-8?B?T3NpVTJiTkNkYU8ybmdmTnA4MjhyL2ZJZnpQSUEyZXhUUVI3bjFhdEdaakIv?=
- =?utf-8?B?WWhGeGxVZHFGQkIydUhZai9DT0p6eFVLK0JUbXpYUEU4cjI3QkQ3Tkp5WlRC?=
- =?utf-8?B?cnVYbHFkVDJld3RQU3BFQWRSdFpRMkg5U2dzOGpTY3hWcmYzZUtPNnVXeFFP?=
- =?utf-8?B?QmllM1ZqeFB1NEUzc1ovVlJnQ3Nwd09WbHpIczVFNXNsSXUwdE5neEdDMXgz?=
- =?utf-8?B?Q0JBQXhBTU83RllRK1loK0VPUExGZ2tYWGJMN056RktKbGlpa2s3QWcyeEN1?=
- =?utf-8?B?VzRvdlFuM2dZN1RLZHZNcWhNd0FNTDRtTmlYd0VqV3ZPRHpnSG8wLzMxd0Y2?=
- =?utf-8?B?ZG9LRy9qWk9UcnEramoxWTRUS3B1NHZNeUlNcXFINVNaMVlOSi9aeWNmaVcy?=
- =?utf-8?B?Q1ZLMGRnNXl4N1F3ZzF4a1A0K2tGL09LcEV3YzlQTzB4Njk0TFVWd3dkaUJB?=
- =?utf-8?B?cWF6bTJRSGxqZnRhSVBXUTE0dXRuVHlIVC9Vd0swVE84R0llSit4alZWU1Bv?=
- =?utf-8?B?RFN2SzBCZ0RId2NNRmprVEJqQ2ZtcGlucS9aaEx5VEdENG4remh2bUxoZ3NB?=
- =?utf-8?B?UHhIcDUweDVRZzFRRU9nRERSM0FBQkEwSWVvcDRtdVl2U0JGb1kyMkdKaTNr?=
- =?utf-8?B?NWNlREJFbG5nVTlCV1l3S1ltV0JCZXEyWS9IM3ZKOEhtdy84emtZYzVpM05L?=
- =?utf-8?B?cEg5bGNzRTZlRFJlWkQxc0YvN3dRanY0SmlTZTdoR0MzcXZTbHNZUkE0K2FV?=
- =?utf-8?B?cElyd3I2ZzBqOGdhYUFmNzVScVFOKzl2TEhKN3lpcjNuRVJXczh5SlFSb0wy?=
- =?utf-8?B?ek9pRk82MWdKamtOSnBkZUNMS3R2cERsWUZHZ05QQkJqNUlObFUrT1c5QVNs?=
- =?utf-8?B?cDl1UlROTDBkNmI1V00xMkRBeTlYSzNISElKcVpkU2xwQVBGa1Y4ZDlpTjZi?=
- =?utf-8?B?UzdDcEhSVkMwUTJZWHZ4OXlCc1ZuZHRHYmo0WVBZaFBkQzhnTVAvbHUySWps?=
- =?utf-8?B?bE5yZDljM0EvdVlPV3dZSFp5Nk1QY0N2blY3WmVQODQ5TWlwK010MWpaU3Ju?=
- =?utf-8?B?UWdFZnh2Tk9GSkZpVlp4azdvMUFuQktZdVNPeEswcFRtMVNLSUpxTU4xYWE0?=
- =?utf-8?B?WGZOWlhtN0tpVGZ3NU12QzQvYVdRZDA5SHEzQTNBcTV1WVhFNWcvTFFFRVNz?=
- =?utf-8?B?ZzRCdzRReWlVQzg4NXFmMUdFYkVwcHhzMEd3SjU0Q2ZCamc4TE1xanBvZ3Jv?=
- =?utf-8?B?VFhYeG45RHF2MFdMTEVQd0FDL1lPTkF0MmkvNTRJdnloelpHMWphVHMwL045?=
- =?utf-8?B?T3pqNm9ZeEhPemhteUtmNWtPZzBranF3VmRmc1d2bXBoNytOdkcvajlhZUhQ?=
- =?utf-8?B?eHNsSkt5anBjZTZqbTZVdHI3eXkrQURPS1FnZjhBNW9pMFRKTFU5WHVtV0d6?=
- =?utf-8?B?R1NDNFZLN3BaN0ZObTFacG1uTGVteFM1YUQxUzdKYkFSL0hRREp3eEdBTXBX?=
- =?utf-8?Q?2py7pbkJVOClMFs24WlxAwy3K/htGnHJ/f0G6cO?=
-X-OriginatorOrg: 165gc.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70bbd51e-5373-4cdb-875b-08d933345463
-X-MS-Exchange-CrossTenant-AuthSource: YQXPR0101MB0759.CANPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NFo2R2F5emlRSVhJbUN0MXVDWHBWVmxrekJRUnJpU2hJRUtjSnFKZm11aTF2?=
+ =?utf-8?B?aTIvUGZFYXk2c1RnNVRaNjVqSVdUb2xFTFNVclZLZ1hPWWVwdlJNUjV4a0Zm?=
+ =?utf-8?B?OEVFenZpUUJwTUxTdEFTWklNZWdQTlc1bFVPa3NOcDNHOGNuTVp2M0dWM0px?=
+ =?utf-8?B?ZHFNNFM3aXk1d3MrZUsySWpWRS94cEZ6djRpRXIyOFpONXY0ZVgwUG5FdWxu?=
+ =?utf-8?B?MUdtZUFLcXgwcFBlVzJLbW13TVJ0WFZiMnBaSjA5NE5zcmxBUEx5aWJWU08v?=
+ =?utf-8?B?RmYwRzNzZTFnSVdlcU4rbzlQUE5CQ2h0SkNncS91aWoxUlhPTEg0RkU3WVBv?=
+ =?utf-8?B?cG81NzJ1MDVvSmtqd3FFQnAvRzhCQy9Ia2hOZkdUeVE3Y0twOU1EVW44bmpk?=
+ =?utf-8?B?c1RvejNBQ3lkamtUZzBvaUFwUUV4RmhkeExSZTRiVHlRcFR6L2VrVXFUbGN5?=
+ =?utf-8?B?amtNa1lSaHJ2aFJsQ0p1WFJnSHhyVEJtZytPbUJQQzFjdDFmeWpxSjI1cHBw?=
+ =?utf-8?B?WVVCcXU1eUlmWVJtZEJUSnJhbzY0NjJHZXRyZlkrMWhBam1rVldsT1k1Zy9x?=
+ =?utf-8?B?THljbVJwbXhxelJYRjc1bFUxZ01ZdU1LWGE5UFVSWWtYdStzTGt1Mm5Zb0Jn?=
+ =?utf-8?B?S1B5ZituNFNPZjU4aU5Tc0hCdVhKeVAzaWExbkVMckN6V0FLOTlvaEZqbDMr?=
+ =?utf-8?B?dDlmZ2lSVU4rMVh4Ty80RlE2d3ZhbnRJOFlRa2ptaHdSOTlCa2tqZ0NFS2tt?=
+ =?utf-8?B?bWhvRU8ycUpXUmh6ZVdPeUtGN2haYzRxcjQ3Z0VsLzhTM0FmL2VJOXp3VVN4?=
+ =?utf-8?B?dVRUaklzc0dIQk1uTHpaSmRCVGZCY1dqUTZyblppTmpyS0pMdm9QV2VTemZz?=
+ =?utf-8?B?T09MTExKcndVWnFKVXpHcURLV285dEhQWTNzbXZ6dXJObDRIbGxIMW85SndW?=
+ =?utf-8?B?eXFZMFV4dFhRRU0zMERmdHZSMkF1WlN6VlBOcTRxVXVCVWkzYlZaY3hUN3dM?=
+ =?utf-8?B?VW90Vmo5TVU2SUhZZFN5V1FSS2VLUTdtbS9qVXFranEySHFtMDFJdXFPdVkv?=
+ =?utf-8?B?bnVFdU90OEVoeW1ndGhScC9JUVczbStpSktIRERXL05sdk9PTlp2TUlwVTZD?=
+ =?utf-8?B?TWUzZThOaURGNTlDZEhyVVpIS3JtS2IzN1h0QjBMUXB0cHVFNjZKUEkyYkg2?=
+ =?utf-8?B?ZFdueWpUemZLS01KK3ZFNHFETkZVTVY2VFFWQzZ4M3NYWVk0SVcrRGsweTlQ?=
+ =?utf-8?B?OFVzVjZiL2dOR0pDaUhGN0h4TlJMYWNqa3VmV2ZsOE1tbGRieDdUK2lnWmpi?=
+ =?utf-8?B?aUUralRYb1hWVUpsMGNUei8vUkU0SUJLQjZ3eEFCZW02TDF3eXhiWUhKeTZH?=
+ =?utf-8?B?eW0xdXAyd2h2ZXorT2k4c2J3REk1ektFTDdJVng0TU55U3VCc3ZpdUlkNWlQ?=
+ =?utf-8?B?UzNoc0dGbWF5RytLbU1pUldZUFVWbXN2a2FmT3lGY1ZSS3NlZkdzTDBRZzNl?=
+ =?utf-8?B?cDJoSVlOdnFkWnNhWmxtZzM3Ym80Mnh3RzV0UzNYOHFMd1VmRmJhaTdyUklL?=
+ =?utf-8?B?OFdIZW50Q3pQRGVCbDF3cEJmT2kzcjUrRUhQWlo0R1l2aXV0U2E3ZGFPaTJZ?=
+ =?utf-8?B?bHkxaE9RU2t5dENTQjRldVZST1BaYXFWaEZnVStKL2krUkYwWU9xV3lLYkFv?=
+ =?utf-8?B?aWErT0JWTkxRV1UvSjE3MjZMdUMrK3h6SHFmcHp6OUo3WHlwNVBYdDF2WGd0?=
+ =?utf-8?B?WFl1OENITGFCZ2cvcjZKSlpGejd6Zm1GMWcrOEUya0xjS3o1c0NkRnJtdEpN?=
+ =?utf-8?B?b2Q5am1hNFdrNFdDMjFlZz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d09fd9b-2854-45f2-7952-08d9333e1674
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2021 15:10:10.5665
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2021 16:20:00.9625
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fa9b7bc4-84f2-4ea2-932a-26ca2f5fb014
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9Mwhtd/EsPs0X1Dei7wVvrzVu3H42qDuS2xfdJKdC+ykSgDIMNpYkZSEYJc3eWL4jOLgrwEoKn9CQUTZrm25GVGjzDFyle6eI+FnIw84h33MnudPuz7Lo/+hQTDP3pSv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YQXPR0101MB1942
+X-MS-Exchange-CrossTenant-UserPrincipalName: UFS6ACh+2RqQiKh89Q84QW5cwutCQYkVPvGTd42yU/Pcn9VWlvAdzdcukSN7M+BW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2478
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: VmCF6NskusvuHdiX-QpDYusfTs8jKu0S
+X-Proofpoint-ORIG-GUID: VmCF6NskusvuHdiX-QpDYusfTs8jKu0S
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-19_13:2021-06-18,2021-06-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
+ malwarescore=0 adultscore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106190110
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-eBPF has been backported for RHEL 7 w/ kernel 3.10-940+ [0]. However 
-only the following program types are supported [1]
 
-BPF_PROG_TYPE_KPROBE
-BPF_PROG_TYPE_TRACEPOINT
-BPF_PROG_TYPE_PERF_EVENT
 
-For libbpf this causes an EINVAL return during the bpf_object__probe_loading
-call which only checks to see if programs of type BPF_PROG_TYPE_SOCKET_FILTER
-can load.
+On 6/19/21 1:33 AM, Jiri Olsa wrote:
+> On Thu, Jun 17, 2021 at 01:29:45PM -0700, Andrii Nakryiko wrote:
+>> On Sat, Jun 5, 2021 at 4:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>>>
+>>> hi,
+>>> saga continues.. ;-) previous post is in here [1]
+>>>
+>>> After another discussion with Steven, he mentioned that if we fix
+>>> the ftrace graph problem with direct functions, he'd be open to
+>>> add batch interface for direct ftrace functions.
+>>>
+>>> He already had prove of concept fix for that, which I took and broke
+>>> up into several changes. I added the ftrace direct batch interface
+>>> and bpf new interface on top of that.
+>>>
+>>> It's not so many patches after all, so I thought having them all
+>>> together will help the review, because they are all connected.
+>>> However I can break this up into separate patchsets if necessary.
+>>>
+>>> This patchset contains:
+>>>
+>>>    1) patches (1-4) that fix the ftrace graph tracing over the function
+>>>       with direct trampolines attached
+>>>    2) patches (5-8) that add batch interface for ftrace direct function
+>>>       register/unregister/modify
+>>>    3) patches (9-19) that add support to attach BPF program to multiple
+>>>       functions
+>>>
+>>> In nutshell:
+>>>
+>>> Ad 1) moves the graph tracing setup before the direct trampoline
+>>> prepares the stack, so they don't clash
+>>>
+>>> Ad 2) uses ftrace_ops interface to register direct function with
+>>> all functions in ftrace_ops filter.
+>>>
+>>> Ad 3) creates special program and trampoline type to allow attachment
+>>> of multiple functions to single program.
+>>>
+>>> There're more detailed desriptions in related changelogs.
+>>>
+>>> I have working bpftrace multi attachment code on top this. I briefly
+>>> checked retsnoop and I think it could use the new API as well.
+>>
+>> Ok, so I had a bit of time and enthusiasm to try that with retsnoop.
+>> The ugly code is at [0] if you'd like to see what kind of changes I
+>> needed to make to use this (it won't work if you check it out because
+>> it needs your libbpf changes synced into submodule, which I only did
+>> locally). But here are some learnings from that experiment both to
+>> emphasize how important it is to make this work and how restrictive
+>> are some of the current limitations.
+>>
+>> First, good news. Using this mass-attach API to attach to almost 1000
+>> kernel functions goes from
+>>
+>> Plain fentry/fexit:
+>> ===================
+>> real    0m27.321s
+>> user    0m0.352s
+>> sys     0m20.919s
+>>
+>> to
+>>
+>> Mass-attach fentry/fexit:
+>> =========================
+>> real    0m2.728s
+>> user    0m0.329s
+>> sys     0m2.380s
+> 
+> I did not meassured the bpftrace speedup, because the new code
+> attached instantly ;-)
+> 
+>>
+>> It's a 10x speed up. And a good chunk of those 2.7 seconds is in some
+>> preparatory steps not related to fentry/fexit stuff.
+>>
+>> It's not exactly apples-to-apples, though, because the limitations you
+>> have right now prevents attaching both fentry and fexit programs to
+>> the same set of kernel functions. This makes it pretty useless for a
+> 
+> hum, you could do link_update with fexit program on the link fd,
+> like in the selftest, right?
+> 
+>> lot of cases, in particular for retsnoop. So I haven't really tested
+>> retsnoop end-to-end, I only verified that I do see fentries triggered,
+>> but can't have matching fexits. So the speed-up might be smaller due
+>> to additional fexit mass-attach (once that is allowed), but it's still
+>> a massive difference. So we absolutely need to get this optimization
+>> in.
+>>
+>> Few more thoughts, if you'd like to plan some more work ahead ;)
+>>
+>> 1. We need similar mass-attach functionality for kprobe/kretprobe, as
+>> there are use cases where kprobe are more useful than fentry (e.g., >6
+>> args funcs, or funcs with input arguments that are not supported by
+>> BPF verifier, like struct-by-value). It's not clear how to best
+>> represent this, given currently we attach kprobe through perf_event,
+>> but we'll need to think about this for sure.
+> 
+> I'm fighting with the '2 trampolines concept' at the moment, but the
+> mass attach for kprobes seems interesting ;-) will check
+> 
+>>
+>> 2. To make mass-attach fentry/fexit useful for practical purposes, it
+>> would be really great to have an ability to fetch traced function's
+>> IP. I.e., if we fentry/fexit func kern_func_abc, bpf_get_func_ip()
+>> would return IP of that functions that matches the one in
+>> /proc/kallsyms. Right now I do very brittle hacks to do that.
+> 
+> so I hoped that we could store ip always in ctx-8 and have
+> the bpf_get_func_ip helper to access that, but the BPF_PROG
+> macro does not pass ctx value to the program, just args
 
-The following will try BPF_PROG_TYPE_TRACEPOINT as a fallback attempt before 
-erroring out. BPF_PROG_TYPE_KPROBE was not a good candidate because on some
-kernels it requires knowledge of the LINUX_VERSION_CODE.
+ctx does pass to the bpf program. You can check BPF_PROG
+macro definition.
 
-[0] https://www.redhat.com/en/blog/introduction-ebpf-red-hat-enterprise-linux-7
-[1] https://access.redhat.com/articles/3550581
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jonathan Edwards <jonathan.edwards@165gc.onmicrosoft.com>
----
- tools/lib/bpf/libbpf.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 48c0ade05..1e04ce724 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4000,6 +4000,10 @@ bpf_object__probe_loading(struct bpf_object *obj)
- 	attr.license = "GPL";
- 
- 	ret = bpf_load_program_xattr(&attr, NULL, 0);
-+	if (ret < 0) {
-+		attr.prog_type = BPF_PROG_TYPE_TRACEPOINT;
-+		ret = bpf_load_program_xattr(&attr, NULL, 0);
-+	}
- 	if (ret < 0) {
- 		ret = errno;
- 		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
--- 
-2.17.1
-
+> 
+> we could perhaps somehow store the ctx in BPF_PROG before calling
+> the bpf program, but I did not get to try that yet
+> 
+>>
+>> So all-in-all, super excited about this, but I hope all those issues
+>> are addressed to make retsnoop possible and fast.
+>>
+>>    [0] https://github.com/anakryiko/retsnoop/commit/8a07bc4d8c47d025f755c108f92f0583e3fda6d8
+> 
+> thanks for checking on this,
+> jirka
+> 
