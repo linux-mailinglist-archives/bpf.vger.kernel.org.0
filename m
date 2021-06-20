@@ -2,90 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A923AE0CA
-	for <lists+bpf@lfdr.de>; Sun, 20 Jun 2021 23:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53E83AE11B
+	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 01:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhFTV5r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Jun 2021 17:57:47 -0400
-Received: from ozlabs.org ([203.11.71.1]:48519 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229708AbhFTV5r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Jun 2021 17:57:47 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G7RKq57Bwz9sVp;
-        Mon, 21 Jun 2021 07:55:27 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624226132;
-        bh=tdHZKt3n8QMhM7P+AhMaV6aoHvRWZ3MqYrGNEHyCAWg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JCEjcAiOxAMTbXM3XkS29q1DyvKDerVqg4nI7N1AOLBLHKUIRm4/PQGtuUhqvSRQJ
-         Btr/+YTsFdO8GkLTjIJXDxxP2BKFkoqL56S0NOgxr6TyxIQ0c/eyoYaiYorm1wT5j3
-         lfQWjF+A8gnKzXfl2bnNb8Rv2ceZ3vw8pVoXD06hkthj0vc7EERNBdZy7yb+5XLXk/
-         r9sWFQJqRMD+LuPEveUqLqSk8X6wJ4vNffP5wV5zANN5kH9EV3b3H9XY64+fVw7iqm
-         sWKT0E4ya1DOgIEznXNTUTClG+C0z95amzrBtJKENkgE9NzkCteGRUY0Hj3ek+jGTo
-         X8DNFNOqF6WuA==
-Date:   Mon, 21 Jun 2021 07:55:25 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 1/4] perf test: Fix non-bash issue with stat bpf
- counters
-Message-ID: <20210621075525.128b476f@canb.auug.org.au>
-In-Reply-To: <20210617184216.2075588-1-irogers@google.com>
-References: <20210617184216.2075588-1-irogers@google.com>
+        id S229901AbhFTXfr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Jun 2021 19:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229875AbhFTXfq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Jun 2021 19:35:46 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E04C061574;
+        Sun, 20 Jun 2021 16:33:31 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id e22so6481679pgv.10;
+        Sun, 20 Jun 2021 16:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1lVW3HMvV7PGKEOE4wSYmG/nnlk0/5O4ry2knqqF6jc=;
+        b=N92a0qghC+n7kcaKu17vH/+n1v4qj2e4RYQolZ9Zu6awz3mwtWMHrR5NN4XU3L6gwn
+         d5AB18E710BWrDI/DBWIyayJ71tj/G6/Cc5yOnhD6y8o9lnBvSzZJPGhKm27qoOpsz0z
+         r2LSDZF3mCUKB2Asu/ZZfykrCUlwbBZx55Cs6RdN2k8a0FDqfruNjveF87ZpiWKsJFGW
+         a9dlOZoHe0nHhYkGjclTi7+MkvWVw9JrqMjTzU3O4XQyvBS8y58EelnkEY44tVYj2fdY
+         AGH8eneBPGX0gD4mbD4xrd0Fy4vqhOvXu7aauekCQtZrLMzNrvcUEUWDfMpkj/YJorIy
+         mKrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1lVW3HMvV7PGKEOE4wSYmG/nnlk0/5O4ry2knqqF6jc=;
+        b=tGOIvXWmjwwWTl0xZgWbehhWDjJUT55utGNExuTNo03Wf5Y20xt9WSJQO/ls+7l+VK
+         r5KbrP1I1q6rfZO0AX6XoQ+m0dbuAnHRf4QJPySFl5OfApP+CbCmLXdC9J0siUqL1ld6
+         wOOisgH0or4ofHhqB7H3vCtWsP4LMtWTX4ZGBxSM2y6a+Dx3rj4YKl0Tf+YjD/pk61Qn
+         K+7BIIqddRTqrRBDAn/fMiWhcuwvdQHYlujZGMzU28z05hum8ZBHMbBQ3yE99x8KT2f7
+         frPrrKxGNJqyLRIWXcxg+dqlYjLnsE5jiH9IidyYCBZtkJgcOo8dbeDHxHDPEqOd/IW/
+         ZVyw==
+X-Gm-Message-State: AOAM532DOQDtkbzP/Pc3ZtclBAAMO69InsmOn+ja7xfD+ksFcNn1tExg
+        fr+mXPLBRpbiiCxoM9X8WjUIRWRR+5Y=
+X-Google-Smtp-Source: ABdhPJyOkMhRCD6QjbyA0BO8C1A04kPejkFyvtdz4oCDwGGevQmh3ZbnCsEB9dR9g6WbTPznOuRI2g==
+X-Received: by 2002:a62:8647:0:b029:302:4642:ae52 with SMTP id x68-20020a6286470000b02903024642ae52mr6139476pfd.7.1624232010753;
+        Sun, 20 Jun 2021 16:33:30 -0700 (PDT)
+Received: from localhost ([2409:4063:4d19:cf2b:5167:bcec:f927:8a69])
+        by smtp.gmail.com with ESMTPSA id e24sm14547102pgi.17.2021.06.20.16.33.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 16:33:30 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
+Subject: [PATCH net-next 0/4] Generic XDP improvements
+Date:   Mon, 21 Jun 2021 05:01:56 +0530
+Message-Id: <20210620233200.855534-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zoZrJw/m85R1sYwgf=Mbt_b";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/zoZrJw/m85R1sYwgf=Mbt_b
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This small series makes some improvements to generic XDP mode and brings it
+closer to native XDP. Patch 1 splits out generic XDP processing into reusable
+parts, patch 2 implements generic cpumap support (details in commit) and patch 3
+allows devmap bpf prog execution before generic_xdp_tx is called.
 
-Hi Ian,
+Patch 4 just updates a couple of selftests to adapt to changes in behavior (in
+that specifying devmap/cpumap prog fd in generic mode is now allowed).
 
-On Thu, 17 Jun 2021 11:42:13 -0700 Ian Rogers <irogers@google.com> wrote:
->
-> $(( .. )) is a bash feature but the test's interpreter is !/bin/sh,
-> switch the code to use expr.
+Kumar Kartikeya Dwivedi (4):
+  net: core: split out code to run generic XDP prog
+  net: implement generic cpumap
+  bpf: devmap: implement devmap prog execution for generic XDP
+  bpf: update XDP selftests to not fail with generic XDP
 
-The $(( .. )) syntax is specified in POSIX (see
-https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#t=
-ag_18_06_04),
-so unless this caused an actual problem, this change is unnecessary.
+ include/linux/bpf.h                           |   8 +
+ include/linux/netdevice.h                     |   2 +
+ include/linux/skbuff.h                        |  10 +-
+ kernel/bpf/cpumap.c                           | 151 ++++++++++++++++--
+ kernel/bpf/devmap.c                           |  42 ++++-
+ net/core/dev.c                                |  86 ++++++----
+ net/core/filter.c                             |   6 +-
+ .../bpf/prog_tests/xdp_cpumap_attach.c        |   4 +-
+ .../bpf/prog_tests/xdp_devmap_attach.c        |   4 +-
+ 9 files changed, 255 insertions(+), 58 deletions(-)
 
---=20
-Cheers,
-Stephen Rothwell
+--
+2.31.1
 
---Sig_/zoZrJw/m85R1sYwgf=Mbt_b
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDPuU0ACgkQAVBC80lX
-0Gz49wgAmStmGqWpOagN6Ov5tTwdPk1XiTOzF7QnzPkIrSsrlb14wdiartR9A9Yi
-L/xFGhRz7nlGZu2Rgsq1CVKA9maLkFpUJN5qjGVRlmBi1o6xDNhfvSoenHY6J4sI
-+yUEboS8gH3C3OpSlVSj6HhGlfUFrXDjCHSaoZVZZ+S7cwP8PnaN02IkXouYbGES
-fJuBjgzbxxIChC6YFa4Ws9YGlQfNAJsqok9W+mUuT2dfIj3Ymns7GzNqnxmtUTXk
-+pttH+/Y1kwPca3MljuMfBxQaKWD+ogdJwOVOWnIL4DLellxoMamJ9Yg2oOBQPZe
-DjM7fviURinAyv98w8kmMniXyIrZCA==
-=0kaQ
------END PGP SIGNATURE-----
-
---Sig_/zoZrJw/m85R1sYwgf=Mbt_b--
