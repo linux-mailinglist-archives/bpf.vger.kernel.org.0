@@ -2,115 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1053AE123
-	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 01:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06E73AE358
+	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 08:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhFTXgC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Jun 2021 19:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbhFTXgB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Jun 2021 19:36:01 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804E1C061574;
-        Sun, 20 Jun 2021 16:33:47 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id x19so7554605pln.2;
-        Sun, 20 Jun 2021 16:33:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ho8mpG9beAl+0ggB96aMls1JfFIVbnP4cgBTDr5kAic=;
-        b=guYP/Tk3zSbYsOIQ9PrYGzJ7gfHR+mCAl01iZpc2Q3jFVULZFZBMYMhwtBinwuBQNy
-         vZii9E8BjlHgA0iVel4ZqhGkkrj+TwgHQEoky03EPtpgloB/gVHFBl8vy7sMUqxtFCQU
-         9cqXrYfqVxVBX/THHb/ckbHSa308lnO2Zb87yI2LgIGpq1DyZZii9OpvSst9eaujriZG
-         XjAi+GNIk0hJSTCP4HN0UQrDWgvY8AWyEYZT4Jwj10vqxFL4Et3SH32rsPkNh15o+ZXB
-         jvyattL2fpSV3ARbWIQrDWBgzzy4EJnBVA+pm+hMm0/ZfSI0EWvCOHAXXzH9dM7lmUhz
-         hrXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ho8mpG9beAl+0ggB96aMls1JfFIVbnP4cgBTDr5kAic=;
-        b=lScvOC1dOkMTTOIB4axl1yF/85qK2qYgFUqKnHlxT3YLYjaTPUPT06lLIX2fiuZXDh
-         a2Y/l6jOc4THDW71ytW5r26C29UYvjTmw64rpSUUpIybz1Jhv6HawON2ZEoacuDbRt7e
-         Ap3wX6wqb2OkznIubagsgBOAYAulkS1xpmW8D3haqkXgAbvjJrAaNTI5yWzr9HJ24Cq2
-         Qt78z8/9Xr65cosnGR406xRdadwDYPxiP9Wov6Tu86MWsoMJT8wZxz5scQyouV0ZHhI1
-         Voic/m2U3cyQb6uP3I6SdRUu0667kluYNImkZpUZ5I4/y/veDbNlf2EOwjGzRs0JptAU
-         51mQ==
-X-Gm-Message-State: AOAM5326w0MyWU0JImstF0CMNMxNGTL8J/V53bL5vUCkKO175wQRzeEg
-        fLGI55FGQC8La08HsPhnx1FNIo2K/1c=
-X-Google-Smtp-Source: ABdhPJxgvgUuK+Pk2t5qQdxmzDjs9a+339K+95TM/2HNeWj8VTgVKaQ4FuQES/mx0zLU4zEtdqmCrQ==
-X-Received: by 2002:a17:90a:8b0d:: with SMTP id y13mr34262611pjn.14.1624232026947;
-        Sun, 20 Jun 2021 16:33:46 -0700 (PDT)
-Received: from localhost ([2409:4063:4d19:cf2b:5167:bcec:f927:8a69])
-        by smtp.gmail.com with ESMTPSA id o1sm13359033pjf.56.2021.06.20.16.33.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jun 2021 16:33:46 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-Subject: [PATCH net-next 4/4] bpf: update XDP selftests to not fail with generic XDP
-Date:   Mon, 21 Jun 2021 05:02:00 +0530
-Message-Id: <20210620233200.855534-5-memxor@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210620233200.855534-1-memxor@gmail.com>
-References: <20210620233200.855534-1-memxor@gmail.com>
+        id S229597AbhFUGor (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Jun 2021 02:44:47 -0400
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:60765 "EHLO
+        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFUGoq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Jun 2021 02:44:46 -0400
+Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 2FD4CC0415
+        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 06:34:29 +0000 (UTC)
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 360E3C0003;
+        Mon, 21 Jun 2021 06:34:06 +0000 (UTC)
+Subject: Re: BPF calls to modules?
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Jisheng Zhang <jszhang@kernel.org>
+References: <aaedcede-5db5-1015-7dbf-7c45421c1e98@ghiti.fr>
+ <CAEf4Bzbt1wvJ=J7Fb6TWUS52j11k3w_b+KpZPCMdsBRUTSsyOw@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <30629163-4a65-43f6-c620-9611e45815c4@ghiti.fr>
+Date:   Mon, 21 Jun 2021 08:34:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAEf4Bzbt1wvJ=J7Fb6TWUS52j11k3w_b+KpZPCMdsBRUTSsyOw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Generic XDP devmaps and cpumaps now allow setting value_size to 8 bytes
-(so that prog_fd can be specified) and XDP progs using them succeed in
-SKB mode now. Adjust the checks.
+Hi,
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c | 4 ++--
- tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Le 18/06/2021 à 19:32, Andrii Nakryiko a écrit :
+> On Fri, Jun 18, 2021 at 2:13 AM Alex Ghiti <alex@ghiti.fr> wrote:
+>>
+>> Hi guys,
+>>
+>> First, pardon my ignorance regarding BPF, the following might be silly.
+>>
+>> We were wondering here
+>> https://patchwork.kernel.org/project/linux-riscv/patch/20210615004928.2d27d2ac@xhacker/
+>> if BPF programs that now have the capability to call kernel functions
+>> (https://lwn.net/Articles/856005/) can also call modules function or
+>> vice-versa?
+> 
+> Not yet, but it was an explicit design consideration and there was
+> public interest just recently. So I'd say this is going to happen
+> sooner rather than later.
+> 
+>>
+>> The underlying important fact is that in riscv, we are limited to 2GB
+>> offset to call functions and that restricts where we can place modules
+>> and BPF regions wrt kernel (see Documentation/riscv/vm-layout.rst for
+>> the current possibly wrong layout).
+>>
+>> So should we make sure that modules and BPF lie in the same 2GB region?
+> 
+> Based on the above and what you are explaining about 2GB limits, I'd
+> say yes?.. Or alternatively those 2GB restrictions might perhaps be
+> lifted somehow?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-index 0176573fe4e7..42e46d2ae349 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-@@ -29,8 +29,8 @@ void test_xdp_with_cpumap_helpers(void)
- 	 */
- 	prog_fd = bpf_program__fd(skel->progs.xdp_redir_prog);
- 	err = bpf_set_link_xdp_fd(IFINDEX_LO, prog_fd, XDP_FLAGS_SKB_MODE);
--	CHECK(err == 0, "Generic attach of program with 8-byte CPUMAP",
--	      "should have failed\n");
-+	CHECK(err, "Generic attach of program with 8-byte CPUMAP",
-+	      "shouldn't have failed\n");
- 
- 	prog_fd = bpf_program__fd(skel->progs.xdp_dummy_cm);
- 	map_fd = bpf_map__fd(skel->maps.cpu_map);
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c
-index 88ef3ec8ac4c..861db508ace2 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c
-@@ -31,8 +31,8 @@ void test_xdp_with_devmap_helpers(void)
- 	 */
- 	dm_fd = bpf_program__fd(skel->progs.xdp_redir_prog);
- 	err = bpf_set_link_xdp_fd(IFINDEX_LO, dm_fd, XDP_FLAGS_SKB_MODE);
--	CHECK(err == 0, "Generic attach of program with 8-byte devmap",
--	      "should have failed\n");
-+	CHECK(err, "Generic attach of program with 8-byte devmap",
-+	      "shouldn't have failed\n");
- 
- 	dm_fd = bpf_program__fd(skel->progs.xdp_dummy_dm);
- 	map_fd = bpf_map__fd(skel->maps.dm_ports);
--- 
-2.31.1
 
+Actually we have this limit when we have PC-relative branch which is our 
+current code model. To better understand what happened, I took a look at 
+our JIT implementation and noticed that BPF_CALL are implemented using 
+absolute addressing so for this pseudo-instruction, the limit I evoked 
+does not apply. How are the kernel (and modules) symbol addresses 
+resolved? Is it relative or absolute? Is there then any guarantee that a 
+kernel or module call will always emit a BPF_CALL?
+
+Thanks Alexei and Andrii for your answers,
+
+Alex
+
+> 
+>>
+>> Thanks,
+>>
+>> Alex
