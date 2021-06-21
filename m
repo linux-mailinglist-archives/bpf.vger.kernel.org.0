@@ -2,117 +2,371 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62ABC3AECC7
-	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 17:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCD83AF29D
+	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 19:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhFUPwx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Jun 2021 11:52:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54863 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230028AbhFUPwx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 21 Jun 2021 11:52:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624290638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bhiN9L8xkxoHGrh/rosbAHaVX/RlsXtRLjFzFufUl1w=;
-        b=E44M5hnC9Wa1ZS0jrfaoABfWXD2udYbxlagqDZZzGW+UqC8AyA2WyRUyvl8EjrMhHR7HTT
-        mBKB45QxRprAO2GRmcZgJAbGGvT0LrxotQldbAvv8+njNnRS4Zb7nxjYJ1rrYmMSvevYDD
-        9L/7PfsILx4SQPTb3eu5GOcEPtVQqks=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-kd0khh30OTqwSko4WyuuVw-1; Mon, 21 Jun 2021 11:50:36 -0400
-X-MC-Unique: kd0khh30OTqwSko4WyuuVw-1
-Received: by mail-ed1-f70.google.com with SMTP id y18-20020a0564022712b029038ffac1995eso8028116edd.12
-        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 08:50:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=bhiN9L8xkxoHGrh/rosbAHaVX/RlsXtRLjFzFufUl1w=;
-        b=GC/8Ry6twsDA1ABj1TG15ElSS6dv/m0jeN/1UUQxH/RU/opdHelhPRgcBNeJw5VTPQ
-         EBPfbrnR6SRoo9ObGeAmuPFIjUHOMNdnl06tzCvyr2kEqXe7m64k+Adjt4sWo+Tq66V5
-         kz/kQ21fDwGqQvcIbyvvigZnWaqMnu1GGsSsyG0wgPmdqdT1zkg/QkTE3e5MTQgk2adK
-         Mbdv5IYxcbhR6lPCCZ4OWn9lH7sD/2NInpd75wtUf4Yf5I4nASnvvHHdPUbZeXKSuc7E
-         mLtXNsRQ2AKrrPpwXnRDWdVyYoK+nFAz4j6Yx9WCrs/dZbRHib0qrzdm1AxWY3Gh7jD1
-         kb/w==
-X-Gm-Message-State: AOAM530UX5ctloEckHZaIT6QL1I10pI+F75lBraqfzpNkRMTo4VS7JM6
-        JOqpBZXAaPRynvrCSJtK+2VzsajKGnO66wkjoG1Cpooo905Qxr2QIMX2xzINL3nMy22lLrUtDnJ
-        fpEKXiVRNnSTe
-X-Received: by 2002:a05:6402:3514:: with SMTP id b20mr22163007edd.12.1624290635608;
-        Mon, 21 Jun 2021 08:50:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy8mB6ET6QXJ6602FS9T53mFOWuf+6C+0SthHvXV5z2Hgq9JKAtfOCUFepukUKJtB6pMeTqew==
-X-Received: by 2002:a05:6402:3514:: with SMTP id b20mr22162984edd.12.1624290635420;
-        Mon, 21 Jun 2021 08:50:35 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id u12sm4935071eje.40.2021.06.21.08.50.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 08:50:34 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 4275118071D; Mon, 21 Jun 2021 17:50:34 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, netdev@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S232705AbhFURzd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Jun 2021 13:55:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232159AbhFURyx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Jun 2021 13:54:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4AB361245;
+        Mon, 21 Jun 2021 17:52:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624297957;
+        bh=68AJOoVwWxBdb/3/bzkAbDf6WVmDzmkEuw/hJ7ziSgc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=StAyDnyXAOQ8oPldjjCV6DRUjrR6a4y48Kx26RhZiEYkQEu6GHc4IkqTEp1yv9kMr
+         wR2KdsDZmXRxzylUEWgXv8ULf0LpOczQKfMI/JP9JgXMEJuQxNlW8EaCs90P1pJ7YR
+         aHP0uTMXSIUqK0sET3+tQwKDoXsXNhPVJuTlPnKO7v1+s0flooP4rZTHpUL8JOnEfD
+         +gO5IkZ9T+4siI0RroDYZHwqvvuVJMNtUXlhXFyr7iC/S9eGMlShgkncq8hcVQ+jSZ
+         erpqzTNEZFmsTgMcHjnNJrXdBcSvKbbAybuvDP+iHoObRyCo3allwgcE1Hpn8HEOU/
+         mY1h5yxEKVQlg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 3/4] bpf: devmap: implement devmap prog
- execution for generic XDP
-In-Reply-To: <20210620233200.855534-4-memxor@gmail.com>
-References: <20210620233200.855534-1-memxor@gmail.com>
- <20210620233200.855534-4-memxor@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 21 Jun 2021 17:50:34 +0200
-Message-ID: <87sg1brzcl.fsf@toke.dk>
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 24/39] bpf, selftests: Adjust few selftest outcomes wrt unreachable code
+Date:   Mon, 21 Jun 2021 13:51:40 -0400
+Message-Id: <20210621175156.735062-24-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210621175156.735062-1-sashal@kernel.org>
+References: <20210621175156.735062-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-> This lifts the restriction on running devmap BPF progs in generic
-> redirect mode. To match native XDP behavior, it is invoked right before
-> generic_xdp_tx is called, and only supports XDP_PASS/XDP_ABORTED/
-> XDP_DROP actions.
->
-> We also return 0 even if devmap program drops the packet, as
-> semantically redirect has already succeeded and the devmap prog is the
-> last point before TX of the packet to device where it can deliver a
-> verdict on the packet.
->
-> This also means it must take care of freeing the skb, as
-> xdp_do_generic_redirect callers only do that in case an error is
-> returned.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  kernel/bpf/devmap.c | 42 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 41 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> index 2a75e6c2d27d..db3ed8b20c8c 100644
-> --- a/kernel/bpf/devmap.c
-> +++ b/kernel/bpf/devmap.c
-> @@ -322,7 +322,8 @@ bool dev_map_can_have_prog(struct bpf_map *map)
->  {
->  	if ((map->map_type == BPF_MAP_TYPE_DEVMAP ||
->  	     map->map_type == BPF_MAP_TYPE_DEVMAP_HASH) &&
-> -	    map->value_size != offsetofend(struct bpf_devmap_val, ifindex))
-> +	    map->value_size != offsetofend(struct bpf_devmap_val, ifindex) &&
-> +	    map->value_size != offsetofend(struct bpf_devmap_val, bpf_prog.fd))
->  		return true;
+[ Upstream commit 973377ffe8148180b2651825b92ae91988141b05 ]
 
-With this you've basically removed the need for the check that calls
-this, so why not just get rid of it entirely? Same thing for cpumap,
-instead of updating cpu_map_prog_allowed(), just get rid of it...
+In almost all cases from test_verifier that have been changed in here, we've
+had an unreachable path with a load from a register which has an invalid
+address on purpose. This was basically to make sure that we never walk this
+path and to have the verifier complain if it would otherwise. Change it to
+match on the right error for unprivileged given we now test these paths
+under speculative execution.
 
--Toke
+There's one case where we match on exact # of insns_processed. Due to the
+extra path, this will of course mismatch on unprivileged. Thus, restrict the
+test->insn_processed check to privileged-only.
+
+In one other case, we result in a 'pointer comparison prohibited' error. This
+is similarly due to verifying an 'invalid' branch where we end up with a value
+pointer on one side of the comparison.
+
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/testing/selftests/bpf/test_verifier.c   |  2 +-
+ tools/testing/selftests/bpf/verifier/and.c    |  2 ++
+ tools/testing/selftests/bpf/verifier/bounds.c | 14 ++++++++++++
+ .../selftests/bpf/verifier/dead_code.c        |  2 ++
+ tools/testing/selftests/bpf/verifier/jmp32.c  | 22 +++++++++++++++++++
+ tools/testing/selftests/bpf/verifier/jset.c   | 10 +++++----
+ tools/testing/selftests/bpf/verifier/unpriv.c |  2 ++
+ .../selftests/bpf/verifier/value_ptr_arith.c  |  7 +++---
+ 8 files changed, 53 insertions(+), 8 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index 58b5a349d3ba..ea3158b0d551 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -1147,7 +1147,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 		}
+ 	}
+ 
+-	if (test->insn_processed) {
++	if (!unpriv && test->insn_processed) {
+ 		uint32_t insn_processed;
+ 		char *proc;
+ 
+diff --git a/tools/testing/selftests/bpf/verifier/and.c b/tools/testing/selftests/bpf/verifier/and.c
+index ca8fdb1b3f01..7d7ebee5cc7a 100644
+--- a/tools/testing/selftests/bpf/verifier/and.c
++++ b/tools/testing/selftests/bpf/verifier/and.c
+@@ -61,6 +61,8 @@
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R1 !read_ok",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 0
+ },
+diff --git a/tools/testing/selftests/bpf/verifier/bounds.c b/tools/testing/selftests/bpf/verifier/bounds.c
+index 8a1caf46ffbc..e061e8799ce2 100644
+--- a/tools/testing/selftests/bpf/verifier/bounds.c
++++ b/tools/testing/selftests/bpf/verifier/bounds.c
+@@ -508,6 +508,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, -1),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT
+ },
+ {
+@@ -528,6 +530,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, -1),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT
+ },
+ {
+@@ -569,6 +573,8 @@
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 min value is outside of the allowed memory range",
++	.result_unpriv = REJECT,
+ 	.fixup_map_hash_8b = { 3 },
+ 	.result = ACCEPT,
+ },
+@@ -589,6 +595,8 @@
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 min value is outside of the allowed memory range",
++	.result_unpriv = REJECT,
+ 	.fixup_map_hash_8b = { 3 },
+ 	.result = ACCEPT,
+ },
+@@ -609,6 +617,8 @@
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 min value is outside of the allowed memory range",
++	.result_unpriv = REJECT,
+ 	.fixup_map_hash_8b = { 3 },
+ 	.result = ACCEPT,
+ },
+@@ -674,6 +684,8 @@
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 min value is outside of the allowed memory range",
++	.result_unpriv = REJECT,
+ 	.fixup_map_hash_8b = { 3 },
+ 	.result = ACCEPT,
+ },
+@@ -695,6 +707,8 @@
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 min value is outside of the allowed memory range",
++	.result_unpriv = REJECT,
+ 	.fixup_map_hash_8b = { 3 },
+ 	.result = ACCEPT,
+ },
+diff --git a/tools/testing/selftests/bpf/verifier/dead_code.c b/tools/testing/selftests/bpf/verifier/dead_code.c
+index 5cf361d8eb1c..721ec9391be5 100644
+--- a/tools/testing/selftests/bpf/verifier/dead_code.c
++++ b/tools/testing/selftests/bpf/verifier/dead_code.c
+@@ -8,6 +8,8 @@
+ 	BPF_JMP_IMM(BPF_JGE, BPF_REG_0, 10, -4),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R9 !read_ok",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 7,
+ },
+diff --git a/tools/testing/selftests/bpf/verifier/jmp32.c b/tools/testing/selftests/bpf/verifier/jmp32.c
+index bd5cae4a7f73..1c857b2fbdf0 100644
+--- a/tools/testing/selftests/bpf/verifier/jmp32.c
++++ b/tools/testing/selftests/bpf/verifier/jmp32.c
+@@ -87,6 +87,8 @@
+ 	BPF_LDX_MEM(BPF_B, BPF_REG_8, BPF_REG_9, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R9 !read_ok",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ },
+ {
+@@ -150,6 +152,8 @@
+ 	BPF_LDX_MEM(BPF_B, BPF_REG_8, BPF_REG_9, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R9 !read_ok",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ },
+ {
+@@ -213,6 +217,8 @@
+ 	BPF_LDX_MEM(BPF_B, BPF_REG_8, BPF_REG_9, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R9 !read_ok",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ },
+ {
+@@ -280,6 +286,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 2,
+ },
+@@ -348,6 +356,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 2,
+ },
+@@ -416,6 +426,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 2,
+ },
+@@ -484,6 +496,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 2,
+ },
+@@ -552,6 +566,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 2,
+ },
+@@ -620,6 +636,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 2,
+ },
+@@ -688,6 +706,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 2,
+ },
+@@ -756,6 +776,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 2,
+ },
+diff --git a/tools/testing/selftests/bpf/verifier/jset.c b/tools/testing/selftests/bpf/verifier/jset.c
+index 8dcd4e0383d5..11fc68da735e 100644
+--- a/tools/testing/selftests/bpf/verifier/jset.c
++++ b/tools/testing/selftests/bpf/verifier/jset.c
+@@ -82,8 +82,8 @@
+ 	BPF_EXIT_INSN(),
+ 	},
+ 	.prog_type = BPF_PROG_TYPE_SOCKET_FILTER,
+-	.retval_unpriv = 1,
+-	.result_unpriv = ACCEPT,
++	.errstr_unpriv = "R9 !read_ok",
++	.result_unpriv = REJECT,
+ 	.retval = 1,
+ 	.result = ACCEPT,
+ },
+@@ -141,7 +141,8 @@
+ 	BPF_EXIT_INSN(),
+ 	},
+ 	.prog_type = BPF_PROG_TYPE_SOCKET_FILTER,
+-	.result_unpriv = ACCEPT,
++	.errstr_unpriv = "R9 !read_ok",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ },
+ {
+@@ -162,6 +163,7 @@
+ 	BPF_EXIT_INSN(),
+ 	},
+ 	.prog_type = BPF_PROG_TYPE_SOCKET_FILTER,
+-	.result_unpriv = ACCEPT,
++	.errstr_unpriv = "R9 !read_ok",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ },
+diff --git a/tools/testing/selftests/bpf/verifier/unpriv.c b/tools/testing/selftests/bpf/verifier/unpriv.c
+index bd436df5cc32..111801aea5e3 100644
+--- a/tools/testing/selftests/bpf/verifier/unpriv.c
++++ b/tools/testing/selftests/bpf/verifier/unpriv.c
+@@ -420,6 +420,8 @@
+ 	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_7, 0),
+ 	BPF_EXIT_INSN(),
+ 	},
++	.errstr_unpriv = "R7 invalid mem access 'inv'",
++	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ 	.retval = 0,
+ },
+diff --git a/tools/testing/selftests/bpf/verifier/value_ptr_arith.c b/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
+index 7ae2859d495c..a3e593ddfafc 100644
+--- a/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
++++ b/tools/testing/selftests/bpf/verifier/value_ptr_arith.c
+@@ -120,7 +120,7 @@
+ 	.fixup_map_array_48b = { 1 },
+ 	.result = ACCEPT,
+ 	.result_unpriv = REJECT,
+-	.errstr_unpriv = "R2 tried to add from different maps, paths or scalars",
++	.errstr_unpriv = "R2 pointer comparison prohibited",
+ 	.retval = 0,
+ },
+ {
+@@ -159,7 +159,8 @@
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+ 	// fake-dead code; targeted from branch A to
+-	// prevent dead code sanitization
++	// prevent dead code sanitization, rejected
++	// via branch B however
+ 	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_0, 0),
+ 	BPF_MOV64_IMM(BPF_REG_0, 0),
+ 	BPF_EXIT_INSN(),
+@@ -167,7 +168,7 @@
+ 	.fixup_map_array_48b = { 1 },
+ 	.result = ACCEPT,
+ 	.result_unpriv = REJECT,
+-	.errstr_unpriv = "R2 tried to add from different maps, paths or scalars",
++	.errstr_unpriv = "R0 invalid mem access 'inv'",
+ 	.retval = 0,
+ },
+ {
+-- 
+2.30.2
 
