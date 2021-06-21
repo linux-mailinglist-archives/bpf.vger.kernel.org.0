@@ -2,123 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB73C3AE580
-	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 11:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8DB3AE9CF
+	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 15:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhFUJFI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Jun 2021 05:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
+        id S229804AbhFUNPG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Jun 2021 09:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhFUJFF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:05:05 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051B4C061574
-        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 02:02:25 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id f30so28994134lfj.1
-        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 02:02:24 -0700 (PDT)
+        with ESMTP id S229695AbhFUNPG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Jun 2021 09:15:06 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0628EC061574
+        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 06:12:52 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id bm25so15342819qkb.0
+        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 06:12:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Nq3WNLZDD5TUkqUq2T7xdTTFqt8QZMxPPek1GdjMl5o=;
-        b=M6jGMhTNj9uXP03+2FLYoJLxmCiNYeikOTKx0N7ZrSDZyxsqQdxOC7rkXs54sDRIdm
-         yoIJJG3F8BL77ZJ4/2ZkgOiO5HNRyaucEN8krsvqMkgPOpX981SQ5CFKXHbf0vxDoLrw
-         3s4gxG6ELt5enw3rmAJ1aVHwLGjDDkuZ1xiSk=
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=xWhYn+WlRjUC4zBpI8Caq+8Ybn6U/+lv6sESG3EDnWs=;
+        b=nqB6Z6inHjjL5CNAPJqdZi2pyH9lVvLfPVPG4hm4CQJOUzamZEv6eUkensbb0GXKOw
+         50t7dRlFw7ELvg0fHppa4H4csxBCiyrvfVOuYRnRA2uI7142Uj8DfVI5mrTpc7u6yquc
+         j+AUUBsLQOojw2lJ3nDzgmfWvgIZAAtwI1L1kcF3rzVwXsoHLsawnfKnaw6timmP7jM3
+         qS69iS1xwfAuyaxNTNiWqRWs1IH0Bmjz2VobXf9cq2btsKn36gc+SShpwPUyCwjFJy7k
+         eo8CEmWhV/nt4J7AZyQSguspgQbh/6cj4xux10COpyBTVS9mLk2Y2uL5gg1HNkVtgjHA
+         KOog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Nq3WNLZDD5TUkqUq2T7xdTTFqt8QZMxPPek1GdjMl5o=;
-        b=Z4QNXvCZnRYpgvBULhj6u8KVxI8+WxJseOElapBMCvUE8Lo+ixa4fr9Oc7Hrws9XCc
-         JcHPU3qKA+dDio9Fps6gtnU1PjEPzoP7SiNypczozS6zVyrJHn/xpjIAo420FAyaWq3w
-         xEpCFBXRUFsdY7t8KzrNWgskX93K3sO6npIgaH7O2meXh8mUM3ZPetz75iKNI7EAhCmt
-         2dw78jY2wvOOjGNOWdULHXNqvHcFhFoqkDWzIwiy2vt0mWmShSSoIX1ls6vqnI6ZmNR7
-         Cjpuqscz5udvc63+ptW8iZtFG4wl1uD1EBX8jQmwtJyqpM5w/IGqCieUXWyyGOSgCURi
-         yVbw==
-X-Gm-Message-State: AOAM532c5CNSMIoz/SfjpvSpVVit0oxbL2K4mNBRkzoJp8ip5tOr4moy
-        33egUPRHFF8MkT8KQUlhww67zajz3d78ONXgUVNMWw==
-X-Google-Smtp-Source: ABdhPJxcORZTI+CnqMEeMcoOmhmNiHs5AdCZXgv+zwbf1dsl255ey/bFramLzM3YYgdZiwH9G8yDYATX/pAuIwxRkWc=
-X-Received: by 2002:a19:ae0b:: with SMTP id f11mr3223902lfc.13.1624266143342;
- Mon, 21 Jun 2021 02:02:23 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=xWhYn+WlRjUC4zBpI8Caq+8Ybn6U/+lv6sESG3EDnWs=;
+        b=pIZkXCGms2s1CCw5eltHVOfP/KNjmkCAQhAcnppRrH++Y9GaXgBRu6KdX25gPfANN2
+         hlGrzcSEDl3zImzaUXqnL7ZO4eK1cexT6OG4QpOhIt2S/ZpXbj+N6SeLhp7qbhEI6ut2
+         EdI8YMaLcm1j9Wjml+eQmyLb4rJz8gOoCHYj+eFQvqATJxXk5MDjExyB6u6pYhie9pQR
+         82a4Q2mW+YA67o4lusnx5WSJLkqGfpeoe+dR60ktb3TPR+1b838TI8boOPTSpIo2JrmU
+         RMdYJr9HTACodftms1MmB+jtw/LQhx/0CKJDlAYvgH1Z/drqbVl7XoM9TMEU8Wpbeegh
+         j6JA==
+X-Gm-Message-State: AOAM530dFd/fD7fQGTINDD+ef2KePtRScAjr+40jsCGOqa6IRZI1WZVu
+        7hb8H4DC2ipSI+D1Kylr+Yci8Eu4JiMvKKke9k6OF9L4wAw=
+X-Google-Smtp-Source: ABdhPJyToAO97dQSkt8P4F82Z2+/S82NzY5h8lUmdQpbj2n76i7meQdgXLqy2IhOcf8svwOd87UKAhLWC7AZHeJKnZQ=
+X-Received: by 2002:a25:2d18:: with SMTP id t24mr2192776ybt.158.1624281170949;
+ Mon, 21 Jun 2021 06:12:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210618105526.265003-1-zenczykowski@gmail.com>
- <CACAyw99k4ZhePBcRJzJn37rvGKnPHEgE3z8Y-47iYKQO2nqFpQ@mail.gmail.com> <CANP3RGdrpb+KiD+a29zTSU3LKR8Qo6aFdo4QseRvPdNhZ_AOJw@mail.gmail.com>
-In-Reply-To: <CANP3RGdrpb+KiD+a29zTSU3LKR8Qo6aFdo4QseRvPdNhZ_AOJw@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 21 Jun 2021 10:02:12 +0100
-Message-ID: <CACAyw9948drqRE=0tC=5OrdX=nOVR3JSPScXrkdAv+kGD_P3ZA@mail.gmail.com>
-Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET"
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Network Development Mailing List 
-        <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Greg Kroah-Hartman <gregkh@google.com>
+From:   rainkin <rainkin1993@gmail.com>
+Date:   Mon, 21 Jun 2021 21:12:15 +0800
+Message-ID: <CAHb-xau6SrWN0eU1XB=jjvae3YxnAK0VsU08R0bH4bbRqo4aBA@mail.gmail.com>
+Subject: Create inner maps dynamically from ebpf kernel prog program
+To:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 18 Jun 2021 at 19:30, Maciej =C5=BBenczykowski
-<zenczykowski@gmail.com> wrote:
->
-> On Fri, Jun 18, 2021 at 4:55 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > On Fri, 18 Jun 2021 at 11:55, Maciej =C5=BBenczykowski
-> > <zenczykowski@gmail.com> wrote:
-> > >
-> > > This reverts commit d37300ed182131f1757895a62e556332857417e5.
-> > >
-> > > This breaks Android userspace which expects to be able to
-> > > fetch programs with just read permissions.
-> >
-> > Sorry about this! I'll defer to the maintainers what to do here.
-> > Reverting leaves us with a gaping hole for access control of pinned
-> > programs.
->
-> Not sure what hole you're referring to.  Could you provide more details/e=
-xplanation?
->
-> It seems perfectly reasonable to be able to get a program with just read =
-privs.
-> After all, you're not modifying it, just using it.
+Hi,
 
-Agreed, if that was what the kernel is doing. What you get with
-BPF_F_RDONLY is a fully read-write fd, since the rest of the BPF
-subsystem doesn't check program fd flags. Hence my fix to only allow
-O_RDWR, which matches what the kernel actually does. Otherwise any
-user with read-only access can get a R/W fd.
+My ebpf program is attched to kprobe/vfs_read, my use case is to store
+information of each file (i.e., inode) of each process by using
+map-in-map (e.g., outer map is a hash map where key is pid, value is a
+inner map where key is inode, value is some stateful information I
+want to store.
+Thus I need to create a new inner map for a new coming inode.
 
-> AFAIK there is no way to modify a program after it was loaded, has this c=
-hanged?
+I know there exists local storage for task/inode, however, limited to
+my kernel version (4.1x), those local storage cannot be used.
 
-You can't modify the program, but you can detach it, for example. Any
-program related bpf command that takes a program fd basically.
+I tried two methods:
+1. dynamically create a new inner in user-land ebpf program by
+following this tutorial:
+https://github.com/torvalds/linux/blob/master/samples/bpf/test_map_in_map_user.c
+Then insert the new inner map into the outer map.
+The limitation of this method:
+It requires ebpf kernel program send a message to user-land program to
+create a newly inner map.
+And ebpf kernel programs might access the map before user-land program
+finishes the job.
 
-> if so, the checks should be on the modifications not the fd fetch.
+2. Thus, i prefer the second method: dynamically create inner maps in
+the kernel ebpf program.
+According to the discussion in the following thread, it seems that it
+can be done by calling bpf_map_update_elem():
+https://lore.kernel.org/bpf/878sdlpv92.fsf@toke.dk/T/#e9bac624324ffd3efb0c9f600426306e3a40ec
+7b5
+> Creating a new map for map_in_map from bpf prog can be implemented.
+> bpf_map_update_elem() is doing memory allocation for map elements. In such a case calling
+> this helper on map_in_map can, in theory, create a new inner map and insert it into the outer map.
 
-True, unfortunately that code doesn't exist. It's also not
-straightforward to write and probably impossible to backport.
+However, when I call method to create a new inner, it return the error:
+64: (bf) r2 = r10
+65: (07) r2 += -144
+66: (bf) r3 = r10
+67: (07) r3 += -176
+; bpf_map_update_elem(&outer, &ino, &new_inner, BPF_ANY);
+68: (18) r1 = 0xffff8dfb7399e400
+70: (b7) r4 = 0
+71: (85) call bpf_map_update_elem#2
+cannot pass map_type 13 into func bpf_map_update_elem#2
 
-> I guess one could argue fetching with write only privs doesn't make sense=
-?
->
-> Anyway... userspace is broken... so revert is the answer.
->
-> In Android the process loading/pinning bpf maps/programs is a different
-> process (the 'bpfloader') to the users (which are far less privileged)
+new_inner is a structure of inner hashmap.
 
-If the revert happens you need to make sure that all of your pinned
-state is only readable by the bpfloader user. And everybody else,
-realistically.
-
---=20
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+Any suggestions?
+Thanks,
+Rainkin
