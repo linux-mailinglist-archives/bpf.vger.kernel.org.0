@@ -2,78 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC043AEBE7
-	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 17:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCE53AEC64
+	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 17:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhFUPCT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Jun 2021 11:02:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44654 "EHLO mail.kernel.org"
+        id S230252AbhFUPc0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Jun 2021 11:32:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229789AbhFUPCT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:02:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 28A67610C7;
-        Mon, 21 Jun 2021 15:00:05 +0000 (UTC)
+        id S230241AbhFUPcY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Jun 2021 11:32:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 82C31610A3;
+        Mon, 21 Jun 2021 15:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624287605;
-        bh=pnxwEpJNZef6+we8iGAulCkpSgUW5KQYq3qjcW+5qZM=;
+        s=k20201202; t=1624289410;
+        bh=waUayk7E9O05zgw1JEPUtUwq0ivvDK8ooVWDxBQrHG4=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uFyIfPrBkIUPkm2QmfrO+uXuvGYArMquRMfkSSwfsU5OOVCF+LF5ef4gPM/A43RG/
-         x1zQ2F8mDCPXW/N6Vuj4F9o9Tk4jXTfbSrJ2arTE3BuMyaUeyCKC6whLIrvxgLVoc/
-         oqP2g/+WamkF2vL7efJleCH4LhssTfCOiW3FL02Uwm30woq45BevbfLJZSJ0lV5+BO
-         qFjlw9fHLjro/5wIDQJb1MEleBwF4ldpOKzsUoAhJQLRbAaEhGpYrykQQrDhUv0nJi
-         rC+EdLBkaArbkxeYt+W5AKkQkiOZxDgz+5svO2AhY4ceBx/Ya1wffN4MSMx5Hqsxcd
-         9C1McIGWNDjig==
+        b=cSHud9uWc9ambxvD6TxEoyhUVhLNhmYAejcgXt9RNyPdctJSorwC9cC0i4x2pr/2U
+         cqw2h5V9naXpLnNXBMiY1UOeam9Gy40gv9Ax97MKK63WAHYEGV/lM7DLS9OWcPWwgx
+         KIlftQjmGAmC6pfTheT4g2iaY2pNPdBdWkHRqO9PanAHGjEY0Jab5KsV83Y0xqfv6P
+         2+7kWz5jsk0XRA8dMKj29PG1+liwAlqNhksupjpnhaabn1BnMpYzFOOtO4cIALUhny
+         5/GAcS9EcKz3pdOs8ag2z7rHNRP1x9tZSyoZ8+0DonOJDAB02p3UvboxaPVlCY6Eya
+         gCiNdz/dZ1FWQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 182C06094F;
-        Mon, 21 Jun 2021 15:00:05 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7A87D604EB;
+        Mon, 21 Jun 2021 15:30:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH RESEND bpf v3 0/8] sock_map: some bug fixes and improvements
+Subject: Re: [PATCH bpf-next] libbpf: add extra BPF_PROG_TYPE check to
+ bpf_object__probe_loading
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162428760509.31493.2198162085381420192.git-patchwork-notify@kernel.org>
-Date:   Mon, 21 Jun 2021 15:00:05 +0000
-References: <20210615021342.7416-1-xiyou.wangcong@gmail.com>
-In-Reply-To: <20210615021342.7416-1-xiyou.wangcong@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        cong.wang@bytedance.com, john.fastabend@gmail.com
+Message-Id: <162428941049.14724.10215291624709324980.git-patchwork-notify@kernel.org>
+Date:   Mon, 21 Jun 2021 15:30:10 +0000
+References: <20210619151007.GA6963@165gc.onmicrosoft.com>
+In-Reply-To: <20210619151007.GA6963@165gc.onmicrosoft.com>
+To:     Jonathan Edwards <jonathan.edwards@165gc.onmicrosoft.com>
+Cc:     andrii.nakryiko@gmail.com, bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf.git (refs/heads/master):
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Mon, 14 Jun 2021 19:13:34 -0700 you wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
+On Sat, 19 Jun 2021 11:10:07 -0400 you wrote:
+> eBPF has been backported for RHEL 7 w/ kernel 3.10-940+ [0]. However
+> only the following program types are supported [1]
 > 
-> This patchset contains a few bug fixes and improvements for sock_map.
-> 
-> Patch 1 improves recvmsg() accuracy for UDP, patch 2 improves UDP
-> non-blocking read() by retrying on EAGAIN. With both of them, the
-> failure rate of the UDP test case goes down from 10% to 1%.
+> BPF_PROG_TYPE_KPROBE
+> BPF_PROG_TYPE_TRACEPOINT
+> BPF_PROG_TYPE_PERF_EVENT
 > 
 > [...]
 
 Here is the summary with links:
-  - [RESEND,bpf,v3,1/8] skmsg: improve udp_bpf_recvmsg() accuracy
-    https://git.kernel.org/bpf/bpf/c/9f2470fbc4cb
-  - [RESEND,bpf,v3,2/8] selftests/bpf: Retry for EAGAIN in udp_redir_to_connected()
-    https://git.kernel.org/bpf/bpf/c/a7e65fe7d820
-  - [RESEND,bpf,v3,3/8] udp: fix a memory leak in udp_read_sock()
-    https://git.kernel.org/bpf/bpf/c/e00a5c331bf5
-  - [RESEND,bpf,v3,4/8] skmsg: clear skb redirect pointer before dropping it
-    https://git.kernel.org/bpf/bpf/c/30b9c54a707d
-  - [RESEND,bpf,v3,5/8] skmsg: fix a memory leak in sk_psock_verdict_apply()
-    https://git.kernel.org/bpf/bpf/c/0cf6672b23c8
-  - [RESEND,bpf,v3,6/8] skmsg: teach sk_psock_verdict_apply() to return errors
-    https://git.kernel.org/bpf/bpf/c/1581a6c1c329
-  - [RESEND,bpf,v3,7/8] skmsg: pass source psock to sk_psock_skb_redirect()
-    https://git.kernel.org/bpf/bpf/c/42830571f1fd
-  - [RESEND,bpf,v3,8/8] skmsg: increase sk->sk_drops when dropping packets
-    https://git.kernel.org/bpf/bpf/c/781dd0431eb5
+  - [bpf-next] libbpf: add extra BPF_PROG_TYPE check to bpf_object__probe_loading
+    https://git.kernel.org/bpf/bpf-next/c/5c10a3dbe922
 
 You are awesome, thank you!
 --
