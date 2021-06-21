@@ -2,204 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350523AE386
-	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 08:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0CB3AE52F
+	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 10:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbhFUGxX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Jun 2021 02:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFUGxX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Jun 2021 02:53:23 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670E1C061574;
-        Sun, 20 Jun 2021 23:51:08 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id w21so14009987qkb.9;
-        Sun, 20 Jun 2021 23:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P/Jd69LAIaulebYjXEri4xk253ZJaVKSOVRKmX5VtLw=;
-        b=rbDG3wWTV+6uq15QI2c1+Pzt7ZUGxEWWqfHK5rch8C1P+GhjS4mwnd7EiXj44MX3F4
-         75pgBhyyi3GgUr9PkGNOD7lHVAVH5at0adzzsHKN11A6hjMU0h7eh96RI4f8wrfXaUUN
-         E+gJTfOr3HKrpS/dbJ65i1FHChVE35Fzy1f2uUwZxIViH1QNYwUGUxa55kQRSmp9IxiJ
-         vt4eUadxCwTVrGOT3702dxb1FHO1yLwUa5oA4S3Y5PYql7TwBi9gktTWbx1OxaXAJE/a
-         uUAl/5cBbeEcjxeHkyryDnn4N0GCPDK9Zoo1XnlL/iDf1OzCy30TI8/K7XFaJuaoQAwv
-         Kwgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P/Jd69LAIaulebYjXEri4xk253ZJaVKSOVRKmX5VtLw=;
-        b=XTiRHYfzF4vvdR8F8vF6E+SkEX2Dtul/Rq6OtS7rx1zOxhFnBiLEvabDqNCoMUIAfN
-         vvbPDEl3Ng7HJ6vMACe0vBCIluAoN9RYupTJBD0PXTGIyFVVLigK1MvXak5NtpaGFIGt
-         emtu3y2LNi12FASKkgnSamKaHp3TDFhLR3YSEhrE+6Mx2L631O6F+p3RMfxigmhImDYm
-         RtCGQLwDjPbnTFVlRXUbKW2u2/s9GBPuX5F7EyHnGA8kUIwQGUWG+7NPxaabQp3CWsjJ
-         HwCPG/mLxsJ8ZGERRheRuce6tSjXfeGN6zLKmu3itKBjhlaVRP198zvLUALSubmWeymC
-         HdNw==
-X-Gm-Message-State: AOAM533Wg/SLVenpxY/lqv3amOwDpyB5CtaW7mmgo1wj+1RfRx02Gr8q
-        WBcwE9TafnoEn0ilwbpBg8nK+M62bLr7h1df1mo=
-X-Google-Smtp-Source: ABdhPJwkHoocM+N5V6xVmyyV+rXwk+Hcflcx3RAkkFhjRCNyjl9ykduMipWEBH65st2mQPKARZndFwhnrrL3LV3NQZA=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr30210550ybu.403.1624258267361;
- Sun, 20 Jun 2021 23:51:07 -0700 (PDT)
+        id S230286AbhFUIrk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Jun 2021 04:47:40 -0400
+Received: from mailout1.secunet.com ([62.96.220.44]:57870 "EHLO
+        mailout1.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhFUIrk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:47:40 -0400
+X-Greylist: delayed 582 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Jun 2021 04:47:37 EDT
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        by mailout1.secunet.com (Postfix) with ESMTP id BAFED80004E;
+        Mon, 21 Jun 2021 10:35:39 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 10:35:39 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
+ 2021 10:35:39 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 249D031803E8; Mon, 21 Jun 2021 10:35:39 +0200 (CEST)
+Date:   Mon, 21 Jun 2021 10:35:39 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+CC:     <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Herbert Xu" <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        <selinux@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <x86@kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-cxl@vger.kernel.org>, <linux-efi@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: Re: [PATCH v3] lockdown,selinux: fix wrong subject in some SELinux
+ lockdown checks
+Message-ID: <20210621083539.GY40979@gauss3.secunet.de>
+References: <20210616085118.1141101-1-omosnace@redhat.com>
 MIME-Version: 1.0
-References: <20210605111034.1810858-1-jolsa@kernel.org> <CAEf4BzaK+t7zom6JHWf6XSPGDxjwhG4Wj3+CHKVshdmP3=FgnA@mail.gmail.com>
- <YM2r139rHuXialVG@krava>
-In-Reply-To: <YM2r139rHuXialVG@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Jun 2021 09:50:56 +0300
-Message-ID: <CAEf4BzaCXG=Z4F=WQCZVRQFq2zYeY_tmxRVpOtZpgJ2Y+sVLgw@mail.gmail.com>
-Subject: Re: [RFCv3 00/19] x86/ftrace/bpf: Add batch support for
- direct/tracing attach
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210616085118.1141101-1-omosnace@redhat.com>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 11:33 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Thu, Jun 17, 2021 at 01:29:45PM -0700, Andrii Nakryiko wrote:
-> > On Sat, Jun 5, 2021 at 4:12 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > hi,
-> > > saga continues.. ;-) previous post is in here [1]
-> > >
-> > > After another discussion with Steven, he mentioned that if we fix
-> > > the ftrace graph problem with direct functions, he'd be open to
-> > > add batch interface for direct ftrace functions.
-> > >
-> > > He already had prove of concept fix for that, which I took and broke
-> > > up into several changes. I added the ftrace direct batch interface
-> > > and bpf new interface on top of that.
-> > >
-> > > It's not so many patches after all, so I thought having them all
-> > > together will help the review, because they are all connected.
-> > > However I can break this up into separate patchsets if necessary.
-> > >
-> > > This patchset contains:
-> > >
-> > >   1) patches (1-4) that fix the ftrace graph tracing over the function
-> > >      with direct trampolines attached
-> > >   2) patches (5-8) that add batch interface for ftrace direct function
-> > >      register/unregister/modify
-> > >   3) patches (9-19) that add support to attach BPF program to multiple
-> > >      functions
-> > >
-> > > In nutshell:
-> > >
-> > > Ad 1) moves the graph tracing setup before the direct trampoline
-> > > prepares the stack, so they don't clash
-> > >
-> > > Ad 2) uses ftrace_ops interface to register direct function with
-> > > all functions in ftrace_ops filter.
-> > >
-> > > Ad 3) creates special program and trampoline type to allow attachment
-> > > of multiple functions to single program.
-> > >
-> > > There're more detailed desriptions in related changelogs.
-> > >
-> > > I have working bpftrace multi attachment code on top this. I briefly
-> > > checked retsnoop and I think it could use the new API as well.
-> >
-> > Ok, so I had a bit of time and enthusiasm to try that with retsnoop.
-> > The ugly code is at [0] if you'd like to see what kind of changes I
-> > needed to make to use this (it won't work if you check it out because
-> > it needs your libbpf changes synced into submodule, which I only did
-> > locally). But here are some learnings from that experiment both to
-> > emphasize how important it is to make this work and how restrictive
-> > are some of the current limitations.
-> >
-> > First, good news. Using this mass-attach API to attach to almost 1000
-> > kernel functions goes from
-> >
-> > Plain fentry/fexit:
-> > ===================
-> > real    0m27.321s
-> > user    0m0.352s
-> > sys     0m20.919s
-> >
-> > to
-> >
-> > Mass-attach fentry/fexit:
-> > =========================
-> > real    0m2.728s
-> > user    0m0.329s
-> > sys     0m2.380s
->
-> I did not meassured the bpftrace speedup, because the new code
-> attached instantly ;-)
->
-> >
-> > It's a 10x speed up. And a good chunk of those 2.7 seconds is in some
-> > preparatory steps not related to fentry/fexit stuff.
-> >
-> > It's not exactly apples-to-apples, though, because the limitations you
-> > have right now prevents attaching both fentry and fexit programs to
-> > the same set of kernel functions. This makes it pretty useless for a
->
-> hum, you could do link_update with fexit program on the link fd,
-> like in the selftest, right?
+On Wed, Jun 16, 2021 at 10:51:18AM +0200, Ondrej Mosnacek wrote:
+> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+> lockdown") added an implementation of the locked_down LSM hook to
+> SELinux, with the aim to restrict which domains are allowed to perform
+> operations that would breach lockdown.
+> 
+> However, in several places the security_locked_down() hook is called in
+> situations where the current task isn't doing any action that would
+> directly breach lockdown, leading to SELinux checks that are basically
+> bogus.
+> 
+> To fix this, add an explicit struct cred pointer argument to
+> security_lockdown() and define NULL as a special value to pass instead
+> of current_cred() in such situations. LSMs that take the subject
+> credentials into account can then fall back to some default or ignore
+> such calls altogether. In the SELinux lockdown hook implementation, use
+> SECINITSID_KERNEL in case the cred argument is NULL.
+> 
+> Most of the callers are updated to pass current_cred() as the cred
+> pointer, thus maintaining the same behavior. The following callers are
+> modified to pass NULL as the cred pointer instead:
+> 1. arch/powerpc/xmon/xmon.c
+>      Seems to be some interactive debugging facility. It appears that
+>      the lockdown hook is called from interrupt context here, so it
+>      should be more appropriate to request a global lockdown decision.
+> 2. fs/tracefs/inode.c:tracefs_create_file()
+>      Here the call is used to prevent creating new tracefs entries when
+>      the kernel is locked down. Assumes that locking down is one-way -
+>      i.e. if the hook returns non-zero once, it will never return zero
+>      again, thus no point in creating these files. Also, the hook is
+>      often called by a module's init function when it is loaded by
+>      userspace, where it doesn't make much sense to do a check against
+>      the current task's creds, since the task itself doesn't actually
+>      use the tracing functionality (i.e. doesn't breach lockdown), just
+>      indirectly makes some new tracepoints available to whoever is
+>      authorized to use them.
+> 3. net/xfrm/xfrm_user.c:copy_to_user_*()
+>      Here a cryptographic secret is redacted based on the value returned
+>      from the hook. There are two possible actions that may lead here:
+>      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
+>         task context is relevant, since the dumped data is sent back to
+>         the current task.
+>      b) When adding/deleting/updating an SA via XFRM_MSG_xxxSA, the
+>         dumped SA is broadcasted to tasks subscribed to XFRM events -
+>         here the current task context is not relevant as it doesn't
+>         represent the tasks that could potentially see the secret.
+>      It doesn't seem worth it to try to keep using the current task's
+>      context in the a) case, since the eventual data leak can be
+>      circumvented anyway via b), plus there is no way for the task to
+>      indicate that it doesn't care about the actual key value, so the
+>      check could generate a lot of "false alert" denials with SELinux.
+>      Thus, let's pass NULL instead of current_cred() here faute de
+>      mieux.
+> 
+> Improvements-suggested-by: Casey Schaufler <casey@schaufler-ca.com>
+> Improvements-suggested-by: Paul Moore <paul@paul-moore.com>
+> Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
+> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
 
-Hm... I didn't realize we can attach two different prog FDs to the
-same link, honestly (and was too lazy to look through selftests
-again). I can try that later. But it's actually quite a
-counter-intuitive API (I honestly assumed that link_update can be used
-to add more BTF IDs, but not change prog_fd). Previously bpf_link was
-always associated with single BPF prog FD. It would be good to keep
-that property in the final version, but we can get back to that later.
+For the xfrm part:
 
->
-> > lot of cases, in particular for retsnoop. So I haven't really tested
-> > retsnoop end-to-end, I only verified that I do see fentries triggered,
-> > but can't have matching fexits. So the speed-up might be smaller due
-> > to additional fexit mass-attach (once that is allowed), but it's still
-> > a massive difference. So we absolutely need to get this optimization
-> > in.
-> >
-> > Few more thoughts, if you'd like to plan some more work ahead ;)
-> >
-> > 1. We need similar mass-attach functionality for kprobe/kretprobe, as
-> > there are use cases where kprobe are more useful than fentry (e.g., >6
-> > args funcs, or funcs with input arguments that are not supported by
-> > BPF verifier, like struct-by-value). It's not clear how to best
-> > represent this, given currently we attach kprobe through perf_event,
-> > but we'll need to think about this for sure.
->
-> I'm fighting with the '2 trampolines concept' at the moment, but the
-> mass attach for kprobes seems interesting ;-) will check
->
-> >
-> > 2. To make mass-attach fentry/fexit useful for practical purposes, it
-> > would be really great to have an ability to fetch traced function's
-> > IP. I.e., if we fentry/fexit func kern_func_abc, bpf_get_func_ip()
-> > would return IP of that functions that matches the one in
-> > /proc/kallsyms. Right now I do very brittle hacks to do that.
->
-> so I hoped that we could store ip always in ctx-8 and have
-> the bpf_get_func_ip helper to access that, but the BPF_PROG
-> macro does not pass ctx value to the program, just args
->
-> we could perhaps somehow store the ctx in BPF_PROG before calling
-> the bpf program, but I did not get to try that yet
->
-> >
-> > So all-in-all, super excited about this, but I hope all those issues
-> > are addressed to make retsnoop possible and fast.
-> >
-> >   [0] https://github.com/anakryiko/retsnoop/commit/8a07bc4d8c47d025f755c108f92f0583e3fda6d8
->
-> thanks for checking on this,
-> jirka
->
+Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
+
