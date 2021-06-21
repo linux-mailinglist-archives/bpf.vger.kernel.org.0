@@ -2,86 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06E73AE358
-	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 08:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624B73AE378
+	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 08:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbhFUGor (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Jun 2021 02:44:47 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:60765 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFUGoq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Jun 2021 02:44:46 -0400
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 2FD4CC0415
-        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 06:34:29 +0000 (UTC)
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 360E3C0003;
-        Mon, 21 Jun 2021 06:34:06 +0000 (UTC)
-Subject: Re: BPF calls to modules?
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Jisheng Zhang <jszhang@kernel.org>
-References: <aaedcede-5db5-1015-7dbf-7c45421c1e98@ghiti.fr>
- <CAEf4Bzbt1wvJ=J7Fb6TWUS52j11k3w_b+KpZPCMdsBRUTSsyOw@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <30629163-4a65-43f6-c620-9611e45815c4@ghiti.fr>
-Date:   Mon, 21 Jun 2021 08:34:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229623AbhFUGsh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Jun 2021 02:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhFUGsg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Jun 2021 02:48:36 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EA9C061574;
+        Sun, 20 Jun 2021 23:46:21 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id d196so27708026qkg.12;
+        Sun, 20 Jun 2021 23:46:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KMFsT7JR74+GVg+w1ThONFPwyNlcIAkOuiSUyJy9N14=;
+        b=S+CNxQ589/dBSQ6Ry4o5zvK3BB8VgWgytxQ0lWINFRh3rJqYJJgUiUJ0oo4/TNlUtE
+         6S/i5SRzCZ7UCpxbblZtBEXwQSTChqSXF7BjSewUe7Jt0ZzF9kGkcmwpl9JNabAddsDP
+         fXtuoz9+BLliPGtglCtQYa7SJlLv3N/lazqPGSpv+ftt3RnUhZntx8r2s+Ds6XjQQDyj
+         dXEvIncW0E5M6tQOSPODtOJamEJddZLpzx3rkNPwICWNmw3egVhIQWfJQno6+SoPfUUe
+         MFWOkcIHG4PXPrHWJFR1VNX5US902V9i6yzsAwW7/XxFZeWMTGnJr0dyloUiTM4pA+Fy
+         T20w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KMFsT7JR74+GVg+w1ThONFPwyNlcIAkOuiSUyJy9N14=;
+        b=VjFudWUI8HKZjKkNtHyenRl4IGKlrLSppK0xAzIYnrgKWHXQCErNb6gEchHQeabwrV
+         uiNSQCdTGbpbdvxn/zE0SQPwImE7KrqD4J8rF4xmZA3ISBx4c1roK0LMYK2F6WeYiuGo
+         pmc5RTAtOCUcz88z+hY37NAeddooCTAc8bhDgAgGM/u32M8uwsJEh+qZsjJxqXwyL2/z
+         JIoxlOEHQDA7JaVbdLE42J+b5YgVM6QchaZzpFHtNb/yXrXnxqI9peIedUg7S2ksZBYP
+         hY+uyWDDziGCK/0FRjfcnLLhXm3ksJYXn8Ni1uYbqwRXr84zDwABf8aLSA4G11nyMpul
+         /6PA==
+X-Gm-Message-State: AOAM533lmn8GE8u1ZrerdV5kIVnB+PsSdAocyzu/6B0EIyULXkNwPz9j
+        emPGR8P11U4RmTyT0jVV8ZbMGD92ZhbYbcQAPlw=
+X-Google-Smtp-Source: ABdhPJxr+KZBNNIVo3Sjy/UelsZeCBfH/JyVY5HW6Ga7P3yroaMndtK0OkPu/lCGG9RmOuAZn1Ce3d7JyOtbJuReXlg=
+X-Received: by 2002:a25:870b:: with SMTP id a11mr24882824ybl.260.1624257980890;
+ Sun, 20 Jun 2021 23:46:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEf4Bzbt1wvJ=J7Fb6TWUS52j11k3w_b+KpZPCMdsBRUTSsyOw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210605111034.1810858-1-jolsa@kernel.org> <CAEf4BzaK+t7zom6JHWf6XSPGDxjwhG4Wj3+CHKVshdmP3=FgnA@mail.gmail.com>
+ <YM2r139rHuXialVG@krava> <4af931a5-3c43-9571-22ac-63e5d299fa42@fb.com>
+ <YM4kxcCMHpIJeKum@krava> <e8f7ab9f-545a-2f43-82a6-91332a301a77@fb.com> <CAADnVQJFzGd-7C9Gn1XqhBWKY+fyr=4WooDSokkff+Ga-2U+nw@mail.gmail.com>
+In-Reply-To: <CAADnVQJFzGd-7C9Gn1XqhBWKY+fyr=4WooDSokkff+Ga-2U+nw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 21 Jun 2021 09:46:09 +0300
+Message-ID: <CAEf4BzYyvHO_ooGrMFQVwt5xvDo=r3YTgNCK9uRTnNQtZY4q6g@mail.gmail.com>
+Subject: Re: [RFCv3 00/19] x86/ftrace/bpf: Add batch support for
+ direct/tracing attach
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Jiri Olsa <jolsa@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Sun, Jun 20, 2021 at 8:47 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sun, Jun 20, 2021 at 9:57 AM Yonghong Song <yhs@fb.com> wrote:
+> > >
+> > > ah right, should have checked it.. so how about we change
+> > > trampoline code to store ip in ctx-8 and make bpf_get_func_ip(ctx)
+> > > to return [ctx-8]
+> >
+> > This should work. Thanks!
+>
+> +1
+> and pls make it always inline into single LDX insn in the verifier.
+> For both mass attach and normal fentry/fexit.
 
-Le 18/06/2021 à 19:32, Andrii Nakryiko a écrit :
-> On Fri, Jun 18, 2021 at 2:13 AM Alex Ghiti <alex@ghiti.fr> wrote:
->>
->> Hi guys,
->>
->> First, pardon my ignorance regarding BPF, the following might be silly.
->>
->> We were wondering here
->> https://patchwork.kernel.org/project/linux-riscv/patch/20210615004928.2d27d2ac@xhacker/
->> if BPF programs that now have the capability to call kernel functions
->> (https://lwn.net/Articles/856005/) can also call modules function or
->> vice-versa?
-> 
-> Not yet, but it was an explicit design consideration and there was
-> public interest just recently. So I'd say this is going to happen
-> sooner rather than later.
-> 
->>
->> The underlying important fact is that in riscv, we are limited to 2GB
->> offset to call functions and that restricts where we can place modules
->> and BPF regions wrt kernel (see Documentation/riscv/vm-layout.rst for
->> the current possibly wrong layout).
->>
->> So should we make sure that modules and BPF lie in the same 2GB region?
-> 
-> Based on the above and what you are explaining about 2GB limits, I'd
-> say yes?.. Or alternatively those 2GB restrictions might perhaps be
-> lifted somehow?
+Yep.
 
-
-Actually we have this limit when we have PC-relative branch which is our 
-current code model. To better understand what happened, I took a look at 
-our JIT implementation and noticed that BPF_CALL are implemented using 
-absolute addressing so for this pseudo-instruction, the limit I evoked 
-does not apply. How are the kernel (and modules) symbol addresses 
-resolved? Is it relative or absolute? Is there then any guarantee that a 
-kernel or module call will always emit a BPF_CALL?
-
-Thanks Alexei and Andrii for your answers,
-
-Alex
-
-> 
->>
->> Thanks,
->>
->> Alex
+And we should do it for kprobes (trivial, PT_REGS_IP(ctx)) and
+kretprobe (less trivial but simple from inside the kernel, Masami
+showed how to do it in one of the previous emails). I hope BPF infra
+allows inlining of helpers for some program types but not the others.
