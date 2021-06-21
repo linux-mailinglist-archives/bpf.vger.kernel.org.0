@@ -2,102 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8DB3AE9CF
-	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 15:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666F03AEA8F
+	for <lists+bpf@lfdr.de>; Mon, 21 Jun 2021 15:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhFUNPG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Jun 2021 09:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
+        id S230390AbhFUN5u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Jun 2021 09:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhFUNPG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:15:06 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0628EC061574
-        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 06:12:52 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id bm25so15342819qkb.0
-        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 06:12:51 -0700 (PDT)
+        with ESMTP id S230330AbhFUN5t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Jun 2021 09:57:49 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66992C061574
+        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 06:55:34 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id t9so13416260qtw.7
+        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 06:55:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=xWhYn+WlRjUC4zBpI8Caq+8Ybn6U/+lv6sESG3EDnWs=;
-        b=nqB6Z6inHjjL5CNAPJqdZi2pyH9lVvLfPVPG4hm4CQJOUzamZEv6eUkensbb0GXKOw
-         50t7dRlFw7ELvg0fHppa4H4csxBCiyrvfVOuYRnRA2uI7142Uj8DfVI5mrTpc7u6yquc
-         j+AUUBsLQOojw2lJ3nDzgmfWvgIZAAtwI1L1kcF3rzVwXsoHLsawnfKnaw6timmP7jM3
-         qS69iS1xwfAuyaxNTNiWqRWs1IH0Bmjz2VobXf9cq2btsKn36gc+SShpwPUyCwjFJy7k
-         eo8CEmWhV/nt4J7AZyQSguspgQbh/6cj4xux10COpyBTVS9mLk2Y2uL5gg1HNkVtgjHA
-         KOog==
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6Ougy1rc6cqK/L0Yxf92AJ9zYcOkCJyCYFV/gxpwdkI=;
+        b=XZajQ0C6K9LCa+8YhGzsGrqq3CaWrPw2ptkSvWOpjQqGj6tNj5uZynPf+FJs66ScJK
+         KVb0emS8xFHKco+7NWrrQQRO1339Y9ycIpKnhBW2X47EOZxdNU9v+yeVWSU95brLbJxO
+         nL3atOQwzbScq40I7LcADa3ZEhVQ8Cjs00KjFRM13jM/4GaKr24VdDJSpKenEKKLWxPl
+         /HpCuKMaCQXwD0RM2yA2BLAqHQ5GAUp+EvA6XSooTiwSCNbH6AE3+KLddXdJwTdLJdVX
+         P2f+N6GfkLE6HfR8vZU9wx8mgiJv935LpQqtZbsbaZe4lQOHkmyKBqaAF+IWMlDJgamD
+         8E/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=xWhYn+WlRjUC4zBpI8Caq+8Ybn6U/+lv6sESG3EDnWs=;
-        b=pIZkXCGms2s1CCw5eltHVOfP/KNjmkCAQhAcnppRrH++Y9GaXgBRu6KdX25gPfANN2
-         hlGrzcSEDl3zImzaUXqnL7ZO4eK1cexT6OG4QpOhIt2S/ZpXbj+N6SeLhp7qbhEI6ut2
-         EdI8YMaLcm1j9Wjml+eQmyLb4rJz8gOoCHYj+eFQvqATJxXk5MDjExyB6u6pYhie9pQR
-         82a4Q2mW+YA67o4lusnx5WSJLkqGfpeoe+dR60ktb3TPR+1b838TI8boOPTSpIo2JrmU
-         RMdYJr9HTACodftms1MmB+jtw/LQhx/0CKJDlAYvgH1Z/drqbVl7XoM9TMEU8Wpbeegh
-         j6JA==
-X-Gm-Message-State: AOAM530dFd/fD7fQGTINDD+ef2KePtRScAjr+40jsCGOqa6IRZI1WZVu
-        7hb8H4DC2ipSI+D1Kylr+Yci8Eu4JiMvKKke9k6OF9L4wAw=
-X-Google-Smtp-Source: ABdhPJyToAO97dQSkt8P4F82Z2+/S82NzY5h8lUmdQpbj2n76i7meQdgXLqy2IhOcf8svwOd87UKAhLWC7AZHeJKnZQ=
-X-Received: by 2002:a25:2d18:: with SMTP id t24mr2192776ybt.158.1624281170949;
- Mon, 21 Jun 2021 06:12:50 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6Ougy1rc6cqK/L0Yxf92AJ9zYcOkCJyCYFV/gxpwdkI=;
+        b=KhRTeqLrNrgCda9wgnTO0f6lULF1Vvdi9672BPQ7OC4c9SuUnnNyYzaQrZUw1Tm0se
+         y6ROvcBn9UThKZhjbpCWoED8nWd0LD17VdxjOGyOvK3m15hCxTZf1wCAuxjn/hFoxwkU
+         wMV5EqmPFinGY66wMWHVcEwIKC1DOQXEqk2s32eMJvIpLqtb8lrZtZ8MeS0cuN90YmeZ
+         KWxL9X2AH6EMBvdni3sNaReLmGqbeapy9GF9Ts2MhlpJDVMfbye+AEgbBdHBiIMD4FhC
+         k7gl+gCE2CnSBeREhbPi7kJ+TGuXA/4aUCxXBa2kmXAmvzhqrlMUHqq59hAkABkeXU0P
+         3vfw==
+X-Gm-Message-State: AOAM5320MqP+7CxXQxr+Cjta82mbdmS7eSECwfzMpQvmT0rimUfQ955R
+        9NVqKquN8zJvSiIqEb9Aube7/A==
+X-Google-Smtp-Source: ABdhPJyYDEzdi/1hbbOYGLD2+Kzbq4pqXthUystxxVMqorPWSzXgB/kTMhae1Z0dnTxWmzHMP+CDgw==
+X-Received: by 2002:ac8:5f93:: with SMTP id j19mr23965892qta.298.1624283733550;
+        Mon, 21 Jun 2021 06:55:33 -0700 (PDT)
+Received: from [192.168.1.171] (bras-base-kntaon1617w-grc-24-174-92-115-23.dsl.bell.ca. [174.92.115.23])
+        by smtp.googlemail.com with ESMTPSA id k19sm10035340qkj.89.2021.06.21.06.55.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 06:55:32 -0700 (PDT)
+Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Vlad Buslov <vladbu@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>
+References: <20210607060724.4nidap5eywb23l3d@apollo>
+ <CAM_iQpWA=SXNR3Ya8_L2aoVJGP_uaRP8EYCpDrnq3y8Uf6qu=g@mail.gmail.com>
+ <20210608071908.sos275adj3gunewo@apollo>
+ <CAM_iQpXFmsWhMA-RO2j5Ph5Ak8yJgUVBppGj2_5NS3BuyjkvzQ@mail.gmail.com>
+ <20210613025308.75uia7rnt4ue2k7q@apollo>
+ <30ab29b9-c8b0-3b0f-af5f-78421b27b49c@mojatatu.com>
+ <20210613203438.d376porvf5zycatn@apollo>
+ <4b1046ef-ba16-f8d8-c02e-d69648ab510b@mojatatu.com>
+ <bd18943b-8a0e-be8c-6a99-17f7dfdd3bc4@iogearbox.net>
+ <7248dc4e-8c07-a25d-5ac3-c4c106b7a266@mojatatu.com>
+ <20210616153209.pejkgb3iieu6idqq@apollo>
+ <05ec2836-7f0d-0393-e916-fd578d8f14ac@iogearbox.net>
+ <f038645a-cb8a-dc59-e57e-2544a259bab1@mojatatu.com>
+ <3e9bf85b-60a4-d5d2-0267-85bb76974339@iogearbox.net>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <90f403df-520a-a3c0-0272-8118f9628498@mojatatu.com>
+Date:   Mon, 21 Jun 2021 09:55:31 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-From:   rainkin <rainkin1993@gmail.com>
-Date:   Mon, 21 Jun 2021 21:12:15 +0800
-Message-ID: <CAHb-xau6SrWN0eU1XB=jjvae3YxnAK0VsU08R0bH4bbRqo4aBA@mail.gmail.com>
-Subject: Create inner maps dynamically from ebpf kernel prog program
-To:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3e9bf85b-60a4-d5d2-0267-85bb76974339@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On 2021-06-18 6:42 p.m., Daniel Borkmann wrote:
+> On 6/18/21 1:40 PM, Jamal Hadi Salim wrote:
 
-My ebpf program is attched to kprobe/vfs_read, my use case is to store
-information of each file (i.e., inode) of each process by using
-map-in-map (e.g., outer map is a hash map where key is pid, value is a
-inner map where key is inode, value is some stateful information I
-want to store.
-Thus I need to create a new inner map for a new coming inode.
+[..]
+>  From a user interface PoV it's odd since you need to go and parse that 
+> anyway, at
+> least the programs typically start out with a switch/case on either 
+> reading the
+> skb->protocol or getting it via eth->h_proto. But then once you extend 
+> that same
+> program to also cover IPv6, you don't need to do anything with the 
+> ETH_P_ALL
+> from the loader application, but now you'd also need to additionally 
+> remember to
+> downgrade ETH_P_IP to ETH_P_ALL and rebuild the loader to get v6 
+> traffic. But even
+> if you were to split things in the main/entry program to separate v4/v6 
+> processing
+> into two different ones, I expect this to be faster via tail calls 
+> (given direct
+> absolute jump) instead of walking a list of tcf_proto objects, comparing 
+> the
+> tp->protocol and going into a different cls_bpf instance.
+> 
 
-I know there exists local storage for task/inode, however, limited to
-my kernel version (4.1x), those local storage cannot be used.
+Good point on being more future proof with ETH_P_ALL.
+Note: In our case we were only interested in ipv4 and i dont see that
+changing for the specific prog we have. From a compute perspective all
+i am saving by not using ETH_P_ALL is one if statement (checking if
+proto is ipv4). If you feel strongly about it we can change our code.
+My worry now is if we used this approach then likely someone else in the 
+wild used something similar.
 
-I tried two methods:
-1. dynamically create a new inner in user-land ebpf program by
-following this tutorial:
-https://github.com/torvalds/linux/blob/master/samples/bpf/test_map_in_map_user.c
-Then insert the new inner map into the outer map.
-The limitation of this method:
-It requires ebpf kernel program send a message to user-land program to
-create a newly inner map.
-And ebpf kernel programs might access the map before user-land program
-finishes the job.
+I think it boils down again to: if it doesnt confuse the API or add
+extra complexity why not allow it and default to ETH_P_ALL?
 
-2. Thus, i prefer the second method: dynamically create inner maps in
-the kernel ebpf program.
-According to the discussion in the following thread, it seems that it
-can be done by calling bpf_map_update_elem():
-https://lore.kernel.org/bpf/878sdlpv92.fsf@toke.dk/T/#e9bac624324ffd3efb0c9f600426306e3a40ec
-7b5
-> Creating a new map for map_in_map from bpf prog can be implemented.
-> bpf_map_update_elem() is doing memory allocation for map elements. In such a case calling
-> this helper on map_in_map can, in theory, create a new inner map and insert it into the outer map.
+On your comment that a bpf based proto comparison being faster - the
+issue is that the tp proto always happens regardless and ebpf, depending
+on your program, may not fit all your code. Example i may actually
+decide to have a program for v6 and v4 separately if i wanted
+to with current mechanism - at different tc ruleset prios just
+so as to work around code/complexity issues.
 
-However, when I call method to create a new inner, it return the error:
-64: (bf) r2 = r10
-65: (07) r2 += -144
-66: (bf) r3 = r10
-67: (07) r3 += -176
-; bpf_map_update_elem(&outer, &ino, &new_inner, BPF_ANY);
-68: (18) r1 = 0xffff8dfb7399e400
-70: (b7) r4 = 0
-71: (85) call bpf_map_update_elem#2
-cannot pass map_type 13 into func bpf_map_update_elem#2
+BTW: tail call limit of 32 provides an upper bound which affects
+depth of (generic) parsing.
+Does it make sense to allow (maybe on a per-boot) increasing the size?
+The fact things run on the stack may be restricting.
 
-new_inner is a structure of inner hashmap.
 
-Any suggestions?
-Thanks,
-Rainkin
+> It may be more tricky but not impossible either, in recent years some 
+> (imho) very
+> interesting and exciting use cases have been implemented and talked 
+> about e.g. [0-2],
+> and with the recent linker work there could also be a [e.g. in-kernel] 
+> collection with
+> library code that can be pulled in by others aside from using them as 
+> BPF selftests
+> as one option. The gain you have with the flexibility [as you know] is 
+> that it allows
+> easy integration/orchestration into user space applications and thus 
+> suitable for
+> more dynamic envs as with old-style actions. The issue I have with the 
+> latter is
+> that they're not scalable enough from a SW datapath / tc fast-path 
+> perspective given
+> you then need to fallback to old-style list processing of cls+act 
+> combinations which
+> is also not covered / in scope for the libbpf API in terms of their 
+> setup, and
+> additionally not all of the BPF features can be used this way either, so 
+> it'll be very
+> hard for users to debug why their BPF programs don't work as they're 
+> expected to.
+> 
+> But also aside from those blockers, the case with this clean slate tc 
+> BPF API is that
+> we have a unique chance to overcome the cmdline usability struggles, and 
+> make it as
+> straight forward as possible for new generation of users.
+> 
+>    [0] https://linuxplumbersconf.org/event/7/contributions/677/
+>    [1] https://linuxplumbersconf.org/event/2/contributions/121/
+>    [2] 
+> https://netdevconf.info/0x14/session.html?talk-replacing-HTB-with-EDT-and-BPF 
+
+I took a quick glance at the refs.
+
+IIUC, your message is "do more with less" i.e restrict choices now
+so we can focus on optimizing for speed. Here's my experience.
+We have two pragmatic challenges:
+
+1) In a deployment, like some enterprise class data centers, we are
+often limited by the kernel and often even the distro you are on. You
+cant just upgrade to the latest and greatest without risking voiding
+the distro vendors support contract. Big shops with a lot of geniuses
+like FB and Google dont have these problems of course - but the majority
+out there do.
+
+So even our little program must use supported interfaces (ex: You cant
+expect support on RH8.3 for an XDP issue without using the supplied XDP 
+lib) to be accepted.
+
+So building in support to use existing infra is useful
+
+2) challenges with ebpf code space and code complexity: Depending
+on the complexity, a program with less than 4K instructions may be
+rejected by the verifier. IOW, I just cant add all the features
+i need _even if i wanted to_.
+
+For this reason working cooperatively with other existing kernel
+and user infra makes sense (Ref [2] is doing that for example).
+You dont want to rewrite the kernel using ebpf. Extending the kernel
+with ebpf makes sense. And of course I dont want to loose performance
+but there may be a trade-off sometimes where a little loss in 
+performance is justified for gain of a feature makes sense
+(the non-da example applies).
+
+Perhaps adding more helpers to interface to the actions and classifiers
+is one way forward.
+
+cheers,
+jamal
+
+PS: I didnt understand the kernel linker point with BPF selftests.
+Pointer?
