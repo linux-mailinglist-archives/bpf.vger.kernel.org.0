@@ -2,96 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F6F3B1079
-	for <lists+bpf@lfdr.de>; Wed, 23 Jun 2021 01:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC81B3B10AE
+	for <lists+bpf@lfdr.de>; Wed, 23 Jun 2021 01:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhFVXWH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Jun 2021 19:22:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229704AbhFVXWH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Jun 2021 19:22:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B3A8600EF;
-        Tue, 22 Jun 2021 23:19:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624403990;
-        bh=3eBGjsipU4p5Rfq2y0i9xFf2Mk3jC+8e4Dwa+KFevBw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AFyvU966LIFTw+5rX/Rw4tQFBkeM327rh74IZ5Ox01r+9iIsM5jPg+6YQn6J3WMFC
-         1Eow6O5IaFx9E6g1cI/3RBzXRU+bwu8ur6dDRF86xwQDbwHs/XdonHTfnAIlZlTjOb
-         IOCjkEIp3GZ9F6mOwCiYYRpHPgAsmcABehZynhrHHXAXxAG95anP8143Oom7/xRTan
-         E5YNm9nF7RLbnZ8b+dq6oeTVaEmNpgKMlvXVcLnpsJBq+Iw74Vk57fWAA7WiKwqrjz
-         cO5bZCUfGtUesfRvExIAb7EQ1x0cPfFhBdGcUDWYfz5hbGa2FmWG+iIHm4z86DUFmQ
-         nlsS61SHwBOVg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5842B5C08B8; Tue, 22 Jun 2021 16:19:50 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 16:19:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        id S229718AbhFVXkR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Jun 2021 19:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhFVXkR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Jun 2021 19:40:17 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5F5C061574;
+        Tue, 22 Jun 2021 16:38:00 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id d9so1197625ioo.2;
+        Tue, 22 Jun 2021 16:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=8fEzBbUVM6Br303r9wPjZ5cak2kYT/wYK8XH8paPOy8=;
+        b=t4WqQZS7JomsUMWmchBW1LwUmA1X1tjqycdE8/wv3Ty5DZO8pMT1wLrLEIlM1zEd8B
+         hGie5vpGis6A21O/bmh+ccFaLF13IBcoC8z3kNgYDCVS6pf6TzPlLD+CllvItGnTrpga
+         jaPeFlzbxOQq6c9zxgIYgrtn2F+sn2w093v3TAFcw2iE4TIH5S7Sg+hVTg0M3+TPPIN3
+         af60S17dcplncx8LXcAqMB3zFCO1LI6Zxfu2mdgkVWwkxZ0DZXPWwyuPQktnSYK2RcbQ
+         ASxGR4ovGROCCsttE4L18YvFO9hh/34hUVLsx8w++bSsC+EvS7LMxSb9F7rSIY2kozUs
+         TLcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=8fEzBbUVM6Br303r9wPjZ5cak2kYT/wYK8XH8paPOy8=;
+        b=ERzVIMAioPBTp/7/iE8IXkcnE43ezvhN8pNEOsF9WzJt628Ywn6MzN2mQOb+569ynA
+         G037oa0uxaPmIw3GIV6K05zE5Y+oL5hTLXRQ1Ra0FmaYBR75CddF1cWtWAQ1ZYpAwCEb
+         CLYwHSGsASXhfF2RzcNI6dNHNtIf3R80LEurUGGMGVtul6PSyDY2hmM0sqIYhpYAJuCH
+         PEQM8NnhU4WY43mZgVA2HF4/oLvMd6npZqivyi8EhCm5/whAVjVbI3pYyxXJ1+UcsuNQ
+         OW6lHr1qL/LmgyYHsDrkVKfTawQ1UO5djRIR6X2lPzqo/DETAfO66lBHNikO1MWG5c9D
+         lPTA==
+X-Gm-Message-State: AOAM530UCGmhOWlfx7yQyfMtbv4/60OoUeLAtpo7TgGa53o9IouK8m/z
+        tTII9Na0SgUFx2gZB2bJInA=
+X-Google-Smtp-Source: ABdhPJzOpjusoTATNk78lE6l9ADCbWG7QsB5AbJP09T0NvBUROQ6qhwbsZy3kx0htbtTNqPEZ/vAIQ==
+X-Received: by 2002:a05:6602:2001:: with SMTP id y1mr4815280iod.181.1624405079751;
+        Tue, 22 Jun 2021 16:37:59 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id z19sm12307486ioc.29.2021.06.22.16.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 16:37:59 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 16:37:50 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 03/16] xdp: add proper __rcu annotations to
- redirect map entries
-Message-ID: <20210622231950.GK4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210617212748.32456-1-toke@redhat.com>
- <20210617212748.32456-4-toke@redhat.com>
- <1881ecbe-06ec-6b0a-836c-033c31fabef4@iogearbox.net>
- <87zgvirj6g.fsf@toke.dk>
- <87r1guovg2.fsf@toke.dk>
- <20210622202604.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <874kdppo45.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <874kdppo45.fsf@toke.dk>
+Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        sameehj@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
+        brouer@redhat.com, echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com
+Message-ID: <60d2744ee12c2_1342e208f7@john-XPS-13-9370.notmuch>
+In-Reply-To: <863f4934d251f44ad85a6be08b3737fac74f9b5a.1623674025.git.lorenzo@kernel.org>
+References: <cover.1623674025.git.lorenzo@kernel.org>
+ <863f4934d251f44ad85a6be08b3737fac74f9b5a.1623674025.git.lorenzo@kernel.org>
+Subject: RE: [PATCH v9 bpf-next 08/14] bpf: add multi-buff support to the
+ bpf_xdp_adjust_tail() API
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 11:48:26PM +0200, Toke Høiland-Jørgensen wrote:
-> "Paul E. McKenney" <paulmck@kernel.org> writes:
+Lorenzo Bianconi wrote:
+> From: Eelco Chaudron <echaudro@redhat.com>
 > 
-> > On Tue, Jun 22, 2021 at 03:55:25PM +0200, Toke Høiland-Jørgensen wrote:
-> >> Toke Høiland-Jørgensen <toke@redhat.com> writes:
-> >> 
-> >> >> It would also be great if this scenario in general could be placed
-> >> >> under the Documentation/RCU/whatisRCU.rst as an example, so we could
-> >> >> refer to the official doc on this, too, if Paul is good with this.
-> >> >
-> >> > I'll take a look and see if I can find a way to fit it in there...
-> >> 
-> >> OK, I poked around in Documentation/RCU and decided that the most
-> >> natural place to put this was in checklist.rst which already talks about
-> >> local_bh_disable(), but a bit differently. Fixing that up to correspond
-> >> to what we've been discussing in this thread, and adding a mention of
-> >> XDP as a usage example, results in the patch below.
-> >> 
-> >> Paul, WDYT?
-> >
-> > I think that my original paragraph needed to have been updated back
-> > when v4.20 came out.  And again when RCU Tasks Trace came out.  ;-)
-> >
-> > So I did that updating, then approximated your patch on top of it,
-> > as shown below.  Does this work for you?
+> This change adds support for tail growing and shrinking for XDP multi-buff.
 > 
-> Yup, LGTM, thanks! Shall I just fold that version into the next version
-> of my series, or do you want to take it through your tree (I suppose
-> it's independent of the rest, so either way is fine by me)?
 
-I currently have the two here in -rcu, most likely for v5.15 (as in
-the merge window after the upcoming one):
+It would be nice if the commit message gave us some details on how the
+growing/shrinking works in the multi-buff support.
 
-2b7cb9d95ba4 ("doc: Clarify and expand RCU updaters and corresponding readers")
-c6ef58907d22 ("doc: Give XDP as example of non-obvious RCU reader/updater pairing")
+> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/net/xdp.h |  7 ++++++
+>  net/core/filter.c | 62 +++++++++++++++++++++++++++++++++++++++++++++++
+>  net/core/xdp.c    |  5 ++--
+>  3 files changed, 72 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 935a6f83115f..3525801c6ed5 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -132,6 +132,11 @@ xdp_get_shared_info_from_buff(struct xdp_buff *xdp)
+>  	return (struct skb_shared_info *)xdp_data_hard_end(xdp);
+>  }
+>  
+> +static inline unsigned int xdp_get_frag_tailroom(const skb_frag_t *frag)
+> +{
+> +	return PAGE_SIZE - skb_frag_size(frag) - skb_frag_off(frag);
+> +}
+> +
+>  struct xdp_frame {
+>  	void *data;
+>  	u16 len;
+> @@ -259,6 +264,8 @@ struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
+>  	return xdp_frame;
+>  }
+>  
+> +void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+> +		  struct xdp_buff *xdp);
+>  void xdp_return_frame(struct xdp_frame *xdpf);
+>  void xdp_return_frame_rx_napi(struct xdp_frame *xdpf);
+>  void xdp_return_buff(struct xdp_buff *xdp);
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index caa88955562e..05f574a3d690 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3859,11 +3859,73 @@ static const struct bpf_func_proto bpf_xdp_adjust_head_proto = {
+>  	.arg2_type	= ARG_ANYTHING,
+>  };
+>  
+> +static int bpf_xdp_mb_adjust_tail(struct xdp_buff *xdp, int offset)
+> +{
+> +	struct skb_shared_info *sinfo;
+> +
+> +	if (unlikely(!xdp_buff_is_mb(xdp)))
+> +		return -EINVAL;
+> +
+> +	sinfo = xdp_get_shared_info_from_buff(xdp);
+> +	if (offset >= 0) {
+> +		skb_frag_t *frag = &sinfo->frags[sinfo->nr_frags - 1];
+> +		int size;
+> +
+> +		if (unlikely(offset > xdp_get_frag_tailroom(frag)))
+> +			return -EINVAL;
+> +
+> +		size = skb_frag_size(frag);
+> +		memset(skb_frag_address(frag) + size, 0, offset);
+> +		skb_frag_size_set(frag, size + offset);
+> +		sinfo->data_len += offset;
 
-I am happy taking it, but if you really would like to add it to your
-series, please do take both.  ;-)
+Can you add some comment on how this works? So today I call
+bpf_xdp_adjust_tail() to add some trailer to my packet.
+This looks like it adds tailroom to the last frag? But, then
+how do I insert my trailer? I don't think we can without the
+extra multi-buffer access support right.
 
-							Thanx, Paul
+Also data_end will be unchanged yet it will return 0 so my
+current programs will likely be a bit confused by this.
+
+> +	} else {
