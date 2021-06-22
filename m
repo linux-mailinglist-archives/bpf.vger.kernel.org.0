@@ -2,113 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33EB3B0231
-	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 13:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B71D3B02E7
+	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 13:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhFVLD1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Jun 2021 07:03:27 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1880 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229900AbhFVLD1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 22 Jun 2021 07:03:27 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15MAYPVe098323;
-        Tue, 22 Jun 2021 07:00:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=9nHUOsGnQ4ITyyoVw8BZrQaCw6OVDI7T1vsgnDQpwCg=;
- b=hL/Ll5jjmLIXyBzOCcu+P0jb5A1OaXkC3i6HiaWiw3fYixTg7ewley7sQ0PB8lK6Gigz
- sCCU5AO9oy6FqE+U2B+2EowW2WFnx9bX8Y1wCMGBnxo2jJg4oJs4IwG25RifbrtxXQ1Y
- VTQ+4hOC5bidm9WLyr83Yeb5Kn7dWXo2/nSlZrPji5TYqqi8eCHnasrrn3LMrxsOZ9NI
- XsB3G8zXI+LIxthlGsSKai4riQW6ukmmx7pP/budGihyoS1fhOWebUTeRa5obNdoWHNa
- fATkk80KCjVcLRi1uTlOZtJA+ngpsR1sSMiSAyKhsxvJmle70cnHMecf2Y58y6++sUB+ Pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39bct1kef8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 07:00:45 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15MAZGk0102561;
-        Tue, 22 Jun 2021 07:00:44 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39bct1ked4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 07:00:44 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15MB0g54030094;
-        Tue, 22 Jun 2021 11:00:42 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 3998788scd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 11:00:41 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15MB0d4S18022790
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Jun 2021 11:00:39 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5E30E4C063;
-        Tue, 22 Jun 2021 11:00:39 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7C3F94C052;
-        Tue, 22 Jun 2021 11:00:31 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.39.114])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Jun 2021 11:00:31 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     ast@kernel.org
-Cc:     ravi.bangoria@linux.ibm.com, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, daniel@iogearbox.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, naveen.n.rao@linux.vnet.ibm.com
-Subject: [PATCH] x86 bpf: Fix extable offset calculation
-Date:   Tue, 22 Jun 2021 16:30:26 +0530
-Message-Id: <20210622110026.1157847-1-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <CAADnVQJux+8n-vpuK9FqTLuj4cXrp04pGkpvKaUdAPXLQ4c-PQ@mail.gmail.com>
-References: <CAADnVQJux+8n-vpuK9FqTLuj4cXrp04pGkpvKaUdAPXLQ4c-PQ@mail.gmail.com>
+        id S229853AbhFVLjj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Jun 2021 07:39:39 -0400
+Received: from mga03.intel.com ([134.134.136.65]:40190 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229668AbhFVLji (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Jun 2021 07:39:38 -0400
+IronPort-SDR: h0UOoRlFOjedy0Go8YcsJ3oCBcWjqNBYncouoa5ZRJc6eNk0lgE7vJsiXfgOiRQ5TJRd/EaR+u
+ Z8PYKunjZhMw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="207077491"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="207077491"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 04:37:19 -0700
+IronPort-SDR: WUwTv2aLeG/2pNEUPV7sZsP+vVv/S2Ypr4smWyUa+lRq7RLn0Oc2jVDc/ene0gpEJ1HuropDer
+ Uqiwhe0UU4+A==
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="486877573"
+Received: from unknown (HELO localhost.localdomain) ([10.102.102.63])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 04:37:14 -0700
+Date:   Tue, 22 Jun 2021 03:44:32 -0400
+From:   Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net
+Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
+Message-ID: <YNGU4GhL8fZ0ErzS@localhost.localdomain>
+References: <60aeeb5252147_19a622085a@john-XPS-13-9370.notmuch>
+ <CAEf4Bzb1OZHpHYagbVs7s9tMSk4wrbxzGeBCCBHQ-qCOgdu6EQ@mail.gmail.com>
+ <60b08442b18d5_1cf8208a0@john-XPS-13-9370.notmuch>
+ <87fsy7gqv7.fsf@toke.dk>
+ <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch>
+ <20210528180214.3b427837@carbon>
+ <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
+ <8735u3dv2l.fsf@toke.dk>
+ <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
+ <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: m5cZHEWeG_2oqjpn46IGUBN2XvLtFzNO
-X-Proofpoint-ORIG-GUID: 9Qn6mGwQMYpKccXinhBoUQTuOf87DwyJ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-22_05:2021-06-21,2021-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 impostorscore=0 clxscore=1011 phishscore=0
- suspectscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106220067
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-commit 4c5de127598e1 ("bpf: Emit explicit NULL pointer checks
-for PROBE_LDX instructions.") is emitting couple of instructions
-before actual load. Consider those additional instructions while
-calculating extable offset.
+On Wed, Jun 02, 2021 at 09:18:37AM -0700, Jakub Kicinski wrote:
+> On Tue, 01 Jun 2021 17:22:51 -0700 John Fastabend wrote:
+> > > If we do this, the BPF program obviously needs to know which fields are
+> > > valid and which are not. AFAICT you're proposing that this should be
+> > > done out-of-band (i.e., by the system administrator manually ensuring
+> > > BPF program config fits system config)? I think there are a couple of
+> > > problems with this:
+> > > 
+> > > - It requires the system admin to coordinate device config with all of
+> > >   their installed XDP applications. This is error-prone, especially as
+> > >   the number of applications grows (say if different containers have
+> > >   different XDP programs installed on their virtual devices).  
+> > 
+> > A complete "system" will need to be choerent. If I forward into a veth
+> > device the orchestration component needs to ensure program sending
+> > bits there is using the same format the program installed there expects.
+> > 
+> > If I tailcall/fentry into another program that program the callee and
+> > caller need to agree on the metadata protocol.
+> > 
+> > I don't see any way around this. Someone has to manage the network.
+> 
+> FWIW I'd like to +1 Toke's concerns.
+> 
+> In large deployments there won't be a single arbiter. Saying there 
+> is seems to contradict BPF maintainers' previous stand which lead 
+> to addition of bpf_links for XDP.
+> 
+> In practical terms person rolling out an NTP config change may not 
+> be aware that in some part of the network some BPF program expects
+> descriptor not to contain time stamps. Besides features may depend 
+> or conflict so the effects of feature changes may not be obvious 
+> across multiple drivers in a heterogeneous environment.
+> 
+> IMO guarding from obvious mis-configuration provides obvious value.
 
-Fixes: 4c5de127598e1 ("bpf: Emit explicit NULL pointer checks for PROBE_LDX instructions.")
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
----
- arch/x86/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 2a2e290fa5d8..231a8178cc11 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1297,7 +1297,7 @@ st:			if (is_imm8(insn->off))
- 			emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
- 			if (BPF_MODE(insn->code) == BPF_PROBE_MEM) {
- 				struct exception_table_entry *ex;
--				u8 *_insn = image + proglen;
-+				u8 *_insn = image + proglen + (u8)(start_of_ldx - temp);
- 				s64 delta;
- 
- 				/* populate jmp_offset for JMP above */
--- 
-2.30.2
+Thanks for a lot of usefull information about CO-RE. I have read
+recommended articles, but still don't understand everything, so sorry if
+my questions are silly.
 
+As introduction, I wrote small XDP example using CO-RE (autogenerated
+vmlinux.h and getting rid of skeleton etc.) based on runqslower
+implementation. Offset reallocation of hints works great, I built CO-RE
+application, added new field to hints struct, changed struct layout and
+without rebuilding application everything still works fine. Is it worth
+to add XDP sample using CO-RE in kernel or this isn't good place for
+this kind of sample?
+
+First question not stricte related to hints. How to get rid of #define
+and macro when I am using generated vmlinux.h? For example I wanted to
+use htons macro and ethtype definition. They are located in headers that
+also contains few struct definition. Because of that I have redefinition
+error when I am trying to include them (redefinition in vmlinux.h and
+this included file). What can I do with this besides coping definitions
+to bpf code?
+
+I defined hints struct in driver code, is it right place for that? All
+vendors will define their own hints struct or the idea is to have one
+big hints struct with flags informing about availability of each fields?
+
+For me defining it in driver code was easier because I can have used
+module btf to generate vmlinux.h with hints struct inside. However this
+break portability if other vendors will have different struct name etc,
+am I right?
