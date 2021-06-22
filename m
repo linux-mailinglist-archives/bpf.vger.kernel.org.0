@@ -2,90 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C710F3AFFBE
-	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 10:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5913B00BA
+	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 11:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbhFVJBm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Jun 2021 05:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
+        id S229791AbhFVJuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Jun 2021 05:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhFVJBl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:01:41 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC36C061574
-        for <bpf@vger.kernel.org>; Tue, 22 Jun 2021 01:59:25 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id j2so34751235lfg.9
-        for <bpf@vger.kernel.org>; Tue, 22 Jun 2021 01:59:25 -0700 (PDT)
+        with ESMTP id S229775AbhFVJuu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:50:50 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB65C061574
+        for <bpf@vger.kernel.org>; Tue, 22 Jun 2021 02:48:34 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id dm5so21159409ejc.9
+        for <bpf@vger.kernel.org>; Tue, 22 Jun 2021 02:48:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IgEmzdTN4HRdSGSGItritGnREG7UWG/WRpkp7ArUXcE=;
-        b=rGxrgaPHp+sQC8l6VapK8a6P5JqjpCZwJMXBj5xpye8EpqoWWkNlfMdkIdX5xHnqdL
-         3d7HZpEuLuxfLrsnaxPnbxThAWdjgDSMO7dFAv/gStfhd10R17bNGBDxQGTWDtNGj05s
-         ousef4QBfEkd8sZfycBEZooTm6yIngfBBQhY0=
+        d=google.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8RElOEKvFjVDV6P4V4jZfTHZh2xq8goB+o7Uy2R9On8=;
+        b=PNXBWT02dfS8FqE1Q/wf5z9bqcxP+j2CyosODpK7IQNn+TElZpoF/HJw523KHpCwd5
+         CQEULM8QGFRDTrKLgG8Z6GEeN+0H0Zxf8S36C9EfX5/iEJELDOehZGGHcNT3zx4YMGCz
+         QtS0t1ba2e5lFd2A/t1uIEAGPE7sHHcX+6uswrkdjutpisbKoYQab1ctWGae/RGCQkfE
+         ympmhOfTUYJ6WMqyzh+TPrFvbRAX7F9ZUxO8MvBBjcxlxEtFK+yKVNR4s9XOyQC4rzrg
+         QwBri5bUUiyJArh9h9PbulPHlADaaK+k/Lio85lN1uJB0IhRePg2IXOjDQzcVBXzLf/6
+         Jhdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IgEmzdTN4HRdSGSGItritGnREG7UWG/WRpkp7ArUXcE=;
-        b=g1X0MNWke4r7Bwm0lzp8HpJLHOhz4UX47l1SHQk8rqNSvaVseYwy+J/zw/6KTpsBYo
-         qASwdTVhL+G54A6mv2QODAU7orHXhjiAWfNbpudy0FNRoVCYOZCqM+Iqhd+9Fjl6zIWL
-         tFOIOvpCF3Y5iYsqCLE9PM3X1m9nV0BeZfXaeHWpNu0JOkiQ4nEbh5jmPmQLMSmnD8xr
-         48XQNGVDAxHvJdeT2nOavRBh5WPtX3Zguty/eZs1aqtn10JL6sWF2xgmP6o7YvJVnD6s
-         /HHUe8OIzk9oWrFld1nJJaUOXhYYUuRqFy1IPf3BkxhnnkZL9DGv0roovQmZUlMKTfl6
-         WlaQ==
-X-Gm-Message-State: AOAM530PXRNcNC+AKrjmr5hIQa/pUg6tZdYDya1hVoo2yILa9l5d9MWw
-        Q3P6ZNveMHhVJLgRDcwDO5q2V8DS5iBdTwtb73vjXA==
-X-Google-Smtp-Source: ABdhPJzp+TlD60AbwK4d3/UXVRAhqAIiO3g137IxT9Fo7F+PNWnfzCBea7CtOcT9B5cFOg/d8yatTDuV+UGXrgsRXB4=
-X-Received: by 2002:ac2:4db6:: with SMTP id h22mr1985921lfe.171.1624352363827;
- Tue, 22 Jun 2021 01:59:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210618105526.265003-1-zenczykowski@gmail.com>
- <CACAyw99k4ZhePBcRJzJn37rvGKnPHEgE3z8Y-47iYKQO2nqFpQ@mail.gmail.com>
- <CANP3RGdrpb+KiD+a29zTSU3LKR8Qo6aFdo4QseRvPdNhZ_AOJw@mail.gmail.com>
- <CACAyw9948drqRE=0tC=5OrdX=nOVR3JSPScXrkdAv+kGD_P3ZA@mail.gmail.com> <CAHo-Oozra2ygb4qW6s8rsgZFmdr-gaQuGzREtXuZLwzzESCYNw@mail.gmail.com>
-In-Reply-To: <CAHo-Oozra2ygb4qW6s8rsgZFmdr-gaQuGzREtXuZLwzzESCYNw@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 22 Jun 2021 09:59:12 +0100
-Message-ID: <CACAyw98B=uCnDY1tTw5STLUgNKvJeksJjaKiGqasJEEVv99GqA@mail.gmail.com>
-Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET"
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Network Development Mailing List 
-        <netdev@vger.kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8RElOEKvFjVDV6P4V4jZfTHZh2xq8goB+o7Uy2R9On8=;
+        b=KVSrbu4almUrFme5/1KF1YZs3dh0aRqalO/9SuS1TqdkbYycFEw85+lMMCSbdA2LdK
+         bxSe9ZlkB2JCjsZ0RioZxJsmBKRvQDHhq+sUFe8Cr6Ha2PBSGEesjL1t978Gsj5exddU
+         FD4ctS1uTndturxXsiq4qhyE5T+SIszcob8WMr75TjqalyXNT6LdSP3zXS7jKBZ91WmF
+         H8rHPoRd88yOy6tsqMiY70dpEKrikMp6D6KpbHdBdvfzs0Q7VF4CRfbgus/3Ec0sqFUL
+         puBr8nYMZS1vuWOBoX/OBD+Rza/wpNtr7FlWhC+NegFqXZNbO4WVcLYIOoBvcAk+AFUw
+         Uc6g==
+X-Gm-Message-State: AOAM532gDnhgVVM2nxa2hkUvcTGWud9h/NS1uqWb0khmF8IX4PB/fWB2
+        3b0IYTtcbJQmqvWsut4rYzVQ/w==
+X-Google-Smtp-Source: ABdhPJwT54mMYJbx4XCwLZiMsO86QqUxLUC66X2nMx+DeIJVS1Tq/kYOALMd264S1WlQS4JrtC8DBg==
+X-Received: by 2002:a17:907:9c9:: with SMTP id bx9mr3035256ejc.144.1624355313123;
+        Tue, 22 Jun 2021 02:48:33 -0700 (PDT)
+Received: from [192.168.1.204] (83-86-74-64.cable.dynamic.v4.ziggo.nl. [83.86.74.64])
+        by smtp.gmail.com with ESMTPSA id gx4sm2213955ejc.34.2021.06.22.02.48.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 02:48:32 -0700 (PDT)
+Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in
+ BPF_OBJ_GET"
+To:     =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <zenczykowski@gmail.com>,
+        =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         BPF Mailing List <bpf@vger.kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Lorenzo Colitti <lorenzo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Lorenz Bauer <lmb@cloudflare.com>
+References: <20210618105526.265003-1-zenczykowski@gmail.com>
+From:   Greg Kroah-Hartman <gregkh@google.com>
+Message-ID: <f3133985-dcc0-89be-4cfa-8ba16456e1b9@google.com>
+Date:   Tue, 22 Jun 2021 11:48:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210618105526.265003-1-zenczykowski@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 21 Jun 2021 at 22:37, Maciej =C5=BBenczykowski
-<zenczykowski@gmail.com> wrote:
->
-> Please revert immediately.  I've got better things to do.  I shouldn't
-> have to be thinking about this or arguing about this.
-> It already took me significantly more than a day simply to track this
-> down (arguably due to miscommunications with Greg, who'd earlier
-> actually found this in 5.12, but misunderstood the problem, but
-> still...).
+On 6/18/21 12:55 PM, Maciej Żenczykowski wrote:
+> From: Maciej Żenczykowski <maze@google.com>
+> 
+> This reverts commit d37300ed182131f1757895a62e556332857417e5.
+> 
+> This breaks Android userspace which expects to be able to
+> fetch programs with just read permissions.
+> 
+> See: https://cs.android.com/android/platform/superproject/+/master:frameworks/libs/net/common/native/bpf_syscall_wrappers/include/BpfSyscallWrappers.h;drc=7005c764be23d31fa1d69e826b4a2f6689a8c81e;l=124
+> 
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Greg Kroah-Hartman <gregkh@google.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Fixes: d37300ed1821 ("bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET")
+> Signed-off-by: Maciej Żenczykowski <maze@google.com>
+> ---
 
-You're barking up the wrong tree. I don't object to reverting the
-patch, you asked me for context and I gave it to you.
-
-Best
-Lorenz
-
---=20
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+Acked-by: Greg Kroah-Hartman <gregkh@google.com>
