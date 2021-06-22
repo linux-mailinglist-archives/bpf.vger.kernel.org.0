@@ -2,96 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5913B00BA
-	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 11:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33EB3B0231
+	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 13:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhFVJuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Jun 2021 05:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhFVJuu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:50:50 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB65C061574
-        for <bpf@vger.kernel.org>; Tue, 22 Jun 2021 02:48:34 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id dm5so21159409ejc.9
-        for <bpf@vger.kernel.org>; Tue, 22 Jun 2021 02:48:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8RElOEKvFjVDV6P4V4jZfTHZh2xq8goB+o7Uy2R9On8=;
-        b=PNXBWT02dfS8FqE1Q/wf5z9bqcxP+j2CyosODpK7IQNn+TElZpoF/HJw523KHpCwd5
-         CQEULM8QGFRDTrKLgG8Z6GEeN+0H0Zxf8S36C9EfX5/iEJELDOehZGGHcNT3zx4YMGCz
-         QtS0t1ba2e5lFd2A/t1uIEAGPE7sHHcX+6uswrkdjutpisbKoYQab1ctWGae/RGCQkfE
-         ympmhOfTUYJ6WMqyzh+TPrFvbRAX7F9ZUxO8MvBBjcxlxEtFK+yKVNR4s9XOyQC4rzrg
-         QwBri5bUUiyJArh9h9PbulPHlADaaK+k/Lio85lN1uJB0IhRePg2IXOjDQzcVBXzLf/6
-         Jhdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8RElOEKvFjVDV6P4V4jZfTHZh2xq8goB+o7Uy2R9On8=;
-        b=KVSrbu4almUrFme5/1KF1YZs3dh0aRqalO/9SuS1TqdkbYycFEw85+lMMCSbdA2LdK
-         bxSe9ZlkB2JCjsZ0RioZxJsmBKRvQDHhq+sUFe8Cr6Ha2PBSGEesjL1t978Gsj5exddU
-         FD4ctS1uTndturxXsiq4qhyE5T+SIszcob8WMr75TjqalyXNT6LdSP3zXS7jKBZ91WmF
-         H8rHPoRd88yOy6tsqMiY70dpEKrikMp6D6KpbHdBdvfzs0Q7VF4CRfbgus/3Ec0sqFUL
-         puBr8nYMZS1vuWOBoX/OBD+Rza/wpNtr7FlWhC+NegFqXZNbO4WVcLYIOoBvcAk+AFUw
-         Uc6g==
-X-Gm-Message-State: AOAM532gDnhgVVM2nxa2hkUvcTGWud9h/NS1uqWb0khmF8IX4PB/fWB2
-        3b0IYTtcbJQmqvWsut4rYzVQ/w==
-X-Google-Smtp-Source: ABdhPJwT54mMYJbx4XCwLZiMsO86QqUxLUC66X2nMx+DeIJVS1Tq/kYOALMd264S1WlQS4JrtC8DBg==
-X-Received: by 2002:a17:907:9c9:: with SMTP id bx9mr3035256ejc.144.1624355313123;
-        Tue, 22 Jun 2021 02:48:33 -0700 (PDT)
-Received: from [192.168.1.204] (83-86-74-64.cable.dynamic.v4.ziggo.nl. [83.86.74.64])
-        by smtp.gmail.com with ESMTPSA id gx4sm2213955ejc.34.2021.06.22.02.48.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 02:48:32 -0700 (PDT)
-Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in
- BPF_OBJ_GET"
-To:     =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <zenczykowski@gmail.com>,
-        =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Lorenz Bauer <lmb@cloudflare.com>
-References: <20210618105526.265003-1-zenczykowski@gmail.com>
-From:   Greg Kroah-Hartman <gregkh@google.com>
-Message-ID: <f3133985-dcc0-89be-4cfa-8ba16456e1b9@google.com>
-Date:   Tue, 22 Jun 2021 11:48:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230002AbhFVLD1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Jun 2021 07:03:27 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1880 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229900AbhFVLD1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 22 Jun 2021 07:03:27 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15MAYPVe098323;
+        Tue, 22 Jun 2021 07:00:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=9nHUOsGnQ4ITyyoVw8BZrQaCw6OVDI7T1vsgnDQpwCg=;
+ b=hL/Ll5jjmLIXyBzOCcu+P0jb5A1OaXkC3i6HiaWiw3fYixTg7ewley7sQ0PB8lK6Gigz
+ sCCU5AO9oy6FqE+U2B+2EowW2WFnx9bX8Y1wCMGBnxo2jJg4oJs4IwG25RifbrtxXQ1Y
+ VTQ+4hOC5bidm9WLyr83Yeb5Kn7dWXo2/nSlZrPji5TYqqi8eCHnasrrn3LMrxsOZ9NI
+ XsB3G8zXI+LIxthlGsSKai4riQW6ukmmx7pP/budGihyoS1fhOWebUTeRa5obNdoWHNa
+ fATkk80KCjVcLRi1uTlOZtJA+ngpsR1sSMiSAyKhsxvJmle70cnHMecf2Y58y6++sUB+ Pw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39bct1kef8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Jun 2021 07:00:45 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15MAZGk0102561;
+        Tue, 22 Jun 2021 07:00:44 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39bct1ked4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Jun 2021 07:00:44 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15MB0g54030094;
+        Tue, 22 Jun 2021 11:00:42 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 3998788scd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Jun 2021 11:00:41 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15MB0d4S18022790
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Jun 2021 11:00:39 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E30E4C063;
+        Tue, 22 Jun 2021 11:00:39 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7C3F94C052;
+        Tue, 22 Jun 2021 11:00:31 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.39.114])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Jun 2021 11:00:31 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     ast@kernel.org
+Cc:     ravi.bangoria@linux.ibm.com, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, daniel@iogearbox.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, naveen.n.rao@linux.vnet.ibm.com
+Subject: [PATCH] x86 bpf: Fix extable offset calculation
+Date:   Tue, 22 Jun 2021 16:30:26 +0530
+Message-Id: <20210622110026.1157847-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <CAADnVQJux+8n-vpuK9FqTLuj4cXrp04pGkpvKaUdAPXLQ4c-PQ@mail.gmail.com>
+References: <CAADnVQJux+8n-vpuK9FqTLuj4cXrp04pGkpvKaUdAPXLQ4c-PQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210618105526.265003-1-zenczykowski@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: m5cZHEWeG_2oqjpn46IGUBN2XvLtFzNO
+X-Proofpoint-ORIG-GUID: 9Qn6mGwQMYpKccXinhBoUQTuOf87DwyJ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-22_05:2021-06-21,2021-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1011 phishscore=0
+ suspectscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106220067
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/18/21 12:55 PM, Maciej Żenczykowski wrote:
-> From: Maciej Żenczykowski <maze@google.com>
-> 
-> This reverts commit d37300ed182131f1757895a62e556332857417e5.
-> 
-> This breaks Android userspace which expects to be able to
-> fetch programs with just read permissions.
-> 
-> See: https://cs.android.com/android/platform/superproject/+/master:frameworks/libs/net/common/native/bpf_syscall_wrappers/include/BpfSyscallWrappers.h;drc=7005c764be23d31fa1d69e826b4a2f6689a8c81e;l=124
-> 
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Greg Kroah-Hartman <gregkh@google.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Fixes: d37300ed1821 ("bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET")
-> Signed-off-by: Maciej Żenczykowski <maze@google.com>
-> ---
+commit 4c5de127598e1 ("bpf: Emit explicit NULL pointer checks
+for PROBE_LDX instructions.") is emitting couple of instructions
+before actual load. Consider those additional instructions while
+calculating extable offset.
 
-Acked-by: Greg Kroah-Hartman <gregkh@google.com>
+Fixes: 4c5de127598e1 ("bpf: Emit explicit NULL pointer checks for PROBE_LDX instructions.")
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 2a2e290fa5d8..231a8178cc11 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1297,7 +1297,7 @@ st:			if (is_imm8(insn->off))
+ 			emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
+ 			if (BPF_MODE(insn->code) == BPF_PROBE_MEM) {
+ 				struct exception_table_entry *ex;
+-				u8 *_insn = image + proglen;
++				u8 *_insn = image + proglen + (u8)(start_of_ldx - temp);
+ 				s64 delta;
+ 
+ 				/* populate jmp_offset for JMP above */
+-- 
+2.30.2
+
