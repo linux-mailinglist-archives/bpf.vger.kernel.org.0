@@ -2,32 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F2A3B0C69
-	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 20:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F623B0CB3
+	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 20:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbhFVSIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Jun 2021 14:08:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232986AbhFVSHj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:07:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 077666102A;
-        Tue, 22 Jun 2021 18:05:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624385123;
-        bh=xOr3aNQ3y835jCNRsNEiusqupvJHo+M8yZ7YyWDeqTM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E3pe/RwwsR7ftBaU/Mz28Rub+psTYf5StzRVhQvDEA+Vq8JVPnWsj7s8CvHrksTfu
-         PLYh1GjY1y9yvNtoEw9MfJ033KzIfVh4v8j7js/VtcEJRaqwzs+1L5t9CXqznjvvxr
-         GNJ3V/ZiWh8DbGcIFuuFOKpP3Q8LLszHhKDCme4vMGfsBN3yFisorBbddcnkPk1JQP
-         5A/Tn5sne8AixOfhlRpQsEpzg+BczkOG7mCWoi1zodFjIv52dGP106KButUPBB/edo
-         AA+wY0UR8nOGsAY4L7vEy1xsdu2l2bL1T96gZAv7XEZImT1L4y4+joKh8LK/D9YNJr
-         rZ9Z35tFgcZpQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 332C840F21; Tue, 22 Jun 2021 15:05:21 -0300 (-03)
-Date:   Tue, 22 Jun 2021 15:05:21 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
+        id S232339AbhFVSTw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Jun 2021 14:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230146AbhFVSTv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Jun 2021 14:19:51 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5324BC06175F
+        for <bpf@vger.kernel.org>; Tue, 22 Jun 2021 11:17:35 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id j2so14204098wrs.12
+        for <bpf@vger.kernel.org>; Tue, 22 Jun 2021 11:17:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dUjNFgJbMc3n/4UpR024/4xgXFRMOO3TLXFoCvUi2LM=;
+        b=ZCaB6t+mhREkhR2OvNFoApIE1ei48vRy96ybHQvvpa0MUrNGm/D8CtXEAmf2AckYqc
+         +8phSg2DOhfIRbX6xyLwluGh2a3zgUgofsBBEpCEXFq71BRAvUNhHnNqz2y2K45pjodr
+         vSZiL6w+/RuM2lVCluoiuATe1Evwl+5YPqOSpYAipU+eVTaiZFd11jVOiAarRbPybAKQ
+         FOJndxr8aMZYOiCaGRsiSRWSWRQYHHwbPpM3an9YVhxoUtvr9cf9WXbCR6LofyEhQ9qo
+         Y7vzKUv20I87Pv5KGp0y9ZO5TEZarChFNwgw9ZrLTo8aA/PEWFFi7qT4zSno74UaNHZR
+         G+5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dUjNFgJbMc3n/4UpR024/4xgXFRMOO3TLXFoCvUi2LM=;
+        b=bMpyFPaduyZw8aTPjO8af7FlSYNVg+7AsP4LyIfDG1fBZKwFldq2P+TODE8j3D301n
+         yUwku7RwknWfXONM6uyNqWekN4Gq6dtz24nqKa/gn94zqv6dLp9CjYi0hZIjmLhXpYoZ
+         GwqamBMCXvqpWpLXLx66EtpSzYXNIgd+/DLFaPB1NAbSkEJ74anJkevFjD9Tv7DgLNZw
+         4SHUSdks87935OafhuJ6knrjnvh5eeJ/NHpdEzH4j0LGencgfiZR1cV1c1ZQNssJRII0
+         q/hfTjpmdunuCo1iF3MbDRBVqqNwsZ+j0aMvxx5clT7fCcW/IJQAyqYR9tjabFsKCXF1
+         uIBg==
+X-Gm-Message-State: AOAM531w1T1TaB4wgFrxi1pEPd0RwHeD4wj/tPsgk8bwWHgNDPoovt6F
+        VqPpGUHegje3mNPl/TqdyG9QRP3k/n1GQUpDdDxthQ==
+X-Google-Smtp-Source: ABdhPJyyD07iHLTvYxa9U4h3OlVZ8XIGjNQEW31my+3kcgwEcINQJUt+bKV/AuDvHglyJgtyk90UVOSS0U0MHI7/gOQ=
+X-Received: by 2002:adf:f30d:: with SMTP id i13mr6318395wro.119.1624385853745;
+ Tue, 22 Jun 2021 11:17:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210621215648.2991319-1-irogers@google.com> <YNIhzyKPqfFvvoYs@kernel.org>
+ <YNIjtOSoj+aWnQns@kernel.org>
+In-Reply-To: <YNIjtOSoj+aWnQns@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 22 Jun 2021 11:17:21 -0700
+Message-ID: <CAP-5=fUtE_9=dYaazUJYzDGz2+nGcWjJoCxGb6b5oSbU6Z02AQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] perf test: Pass the verbose option to shell tests
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -37,53 +61,61 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Song Liu <songliubraving@fb.com>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] perf test: Add verbose skip output for bpf
- counters
-Message-ID: <YNImYYYbIuc5V98C@kernel.org>
-References: <20210621215648.2991319-1-irogers@google.com>
- <20210621215648.2991319-2-irogers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621215648.2991319-2-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Jun 21, 2021 at 02:56:47PM -0700, Ian Rogers escreveu:
-> Provide additional context for when the stat bpf counters test skips.
+On Tue, Jun 22, 2021 at 10:54 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Jun 22, 2021 at 02:45:51PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Mon, Jun 21, 2021 at 02:56:46PM -0700, Ian Rogers escreveu:
+> > > Having a verbose option will allow shell tests to provide extra failure
+> > > details when the fail or skip.
+> > >
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > ---
+> > >  tools/perf/tests/builtin-test.c | 7 +++++--
+> > >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> > > index cbbfe48ab802..e1ed60567b2f 100644
+> > > --- a/tools/perf/tests/builtin-test.c
+> > > +++ b/tools/perf/tests/builtin-test.c
+> > > @@ -577,10 +577,13 @@ struct shell_test {
+> > >  static int shell_test__run(struct test *test, int subdir __maybe_unused)
+> > >  {
+> > >     int err;
+> > > -   char script[PATH_MAX];
+> > > +   char script[PATH_MAX + 3];
+> >
+> > This looks strange, i.e. if it is a _path_ _MAX_, why add 3 chars past
+> > that max when generating a _path_? I'll drop the above hunk and keep the
+> > rest, ok?
+>
+> Oh well, its not a path after all, its something that is passed to
+> system(), the use of PATH_MAX seems arbitrary, so your patch wasn't
+> wrong, but since it is arbitrary, I'll keep it at PATH_MAX and reduce
+> the patch size 8-)
+>
+> - Arnaldo
 
-Ditto
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/tests/shell/stat_bpf_counters.sh | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
-> index 22eb31e48ca7..85eb689fe202 100755
-> --- a/tools/perf/tests/shell/stat_bpf_counters.sh
-> +++ b/tools/perf/tests/shell/stat_bpf_counters.sh
-> @@ -22,7 +22,13 @@ compare_number()
->  }
->  
->  # skip if --bpf-counters is not supported
-> -perf stat --bpf-counters true > /dev/null 2>&1 || exit 2
-> +if ! perf stat --bpf-counters true > /dev/null 2>&1; then
-> +	if [ "$1" == "-v" ]; then
-> +		echo "Skipping: --bpf-counters not supported"
-> +		perf --no-pager stat --bpf-counters true || true
-> +	fi
-> +	exit 2
-> +fi
->  
->  base_cycles=$(perf stat --no-big-num -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
->  bpf_cycles=$(perf stat --no-big-num --bpf-counters -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
-> -- 
-> 2.32.0.288.g62a8d224e6-goog
-> 
+Works for me. Thanks,
 
--- 
+Ian
 
-- Arnaldo
+> > >     struct shell_test *st = test->priv;
+> > >
+> > > -   path__join(script, sizeof(script), st->dir, st->file);
+> > > +   path__join(script, sizeof(script) - 3, st->dir, st->file);
+> > > +
+> > > +   if (verbose)
+> > > +           strncat(script, " -v", sizeof(script) - strlen(script) - 1);
+> > >
+> > >     err = system(script);
+> > >     if (!err)
+>
+> --
+>
+> - Arnaldo
