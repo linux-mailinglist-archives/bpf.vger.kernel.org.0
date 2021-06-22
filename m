@@ -2,120 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064A43B0D48
-	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 20:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F043E3B0D4A
+	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 20:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbhFVS7M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Jun 2021 14:59:12 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:42363 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbhFVS7L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:59:11 -0400
-Received: (Authenticated sender: i.maximets@ovn.org)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 2E1AA200004;
-        Tue, 22 Jun 2021 18:56:50 +0000 (UTC)
-From:   Ilya Maximets <i.maximets@ovn.org>
-To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ilya Maximets <i.maximets@ovn.org>
-Subject: [PATCH] docs: af_xdp: consistent indentation in examples
-Date:   Tue, 22 Jun 2021 20:56:47 +0200
-Message-Id: <20210622185647.3705104-1-i.maximets@ovn.org>
-X-Mailer: git-send-email 2.26.3
+        id S232678AbhFVS7W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Jun 2021 14:59:22 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:58083 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230146AbhFVS7W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Jun 2021 14:59:22 -0400
+X-Greylist: delayed 130980 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Jun 2021 14:59:21 EDT
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 839B1FF805;
+        Tue, 22 Jun 2021 18:57:04 +0000 (UTC)
+Subject: Re: BPF calls to modules?
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Jisheng Zhang <jszhang@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+References: <aaedcede-5db5-1015-7dbf-7c45421c1e98@ghiti.fr>
+ <CAEf4Bzbt1wvJ=J7Fb6TWUS52j11k3w_b+KpZPCMdsBRUTSsyOw@mail.gmail.com>
+ <30629163-4a65-43f6-c620-9611e45815c4@ghiti.fr>
+ <CAADnVQ+vcdO2SLnEeo5R4=8bTrkQiv-x2Ejcg08OsoZJJ4RXhw@mail.gmail.com>
+ <56086fb4-3fdb-9e81-227c-721934fe2cb4@ghiti.fr>
+ <CAADnVQJLwQhFZbNqA4jfJiqvKV2E8crOYns6oTCeDFeKoSmgBQ@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <a5d92288-7b74-b413-bc1d-1053d7284da8@ghiti.fr>
+Date:   Tue, 22 Jun 2021 20:57:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAADnVQJLwQhFZbNqA4jfJiqvKV2E8crOYns6oTCeDFeKoSmgBQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Examples in this document use all kinds of indentation from 3 to 5
-spaces and even mixed with tabs.  Making them all even and equal to
-4 spaces.
+Le 22/06/2021 à 19:25, Alexei Starovoitov a écrit :
+> On Tue, Jun 22, 2021 at 12:31 AM Alex Ghiti <alex@ghiti.fr> wrote:
+>>
+>> Hi Alexei,
+>>
+>> Le 22/06/2021 à 02:28, Alexei Starovoitov a écrit :
+>>> On Sun, Jun 20, 2021 at 11:43 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> Le 18/06/2021 à 19:32, Andrii Nakryiko a écrit :
+>>>>> On Fri, Jun 18, 2021 at 2:13 AM Alex Ghiti <alex@ghiti.fr> wrote:
+>>>>>>
+>>>>>> Hi guys,
+>>>>>>
+>>>>>> First, pardon my ignorance regarding BPF, the following might be silly.
+>>>>>>
+>>>>>> We were wondering here
+>>>>>> https://patchwork.kernel.org/project/linux-riscv/patch/20210615004928.2d27d2ac@xhacker/
+>>>>>> if BPF programs that now have the capability to call kernel functions
+>>>>>> (https://lwn.net/Articles/856005/) can also call modules function or
+>>>>>> vice-versa?
+>>>>>
+>>>>> Not yet, but it was an explicit design consideration and there was
+>>>>> public interest just recently. So I'd say this is going to happen
+>>>>> sooner rather than later.
+>>>>>
+>>>>>>
+>>>>>> The underlying important fact is that in riscv, we are limited to 2GB
+>>>>>> offset to call functions and that restricts where we can place modules
+>>>>>> and BPF regions wrt kernel (see Documentation/riscv/vm-layout.rst for
+>>>>>> the current possibly wrong layout).
+>>>>>>
+>>>>>> So should we make sure that modules and BPF lie in the same 2GB region?
+>>>>>
+>>>>> Based on the above and what you are explaining about 2GB limits, I'd
+>>>>> say yes?.. Or alternatively those 2GB restrictions might perhaps be
+>>>>> lifted somehow?
+>>>>
+>>>>
+>>>> Actually we have this limit when we have PC-relative branch which is our
+>>>> current code model. To better understand what happened, I took a look at
+>>>> our JIT implementation and noticed that BPF_CALL are implemented using
+>>>> absolute addressing so for this pseudo-instruction, the limit I evoked
+>>>> does not apply. How are the kernel (and modules) symbol addresses
+>>>> resolved? Is it relative or absolute? Is there then any guarantee that a
+>>>> kernel or module call will always emit a BPF_CALL?
+>>>
+>>> Are those questions for riscv bpf JIT experts?
+>>
+>> Yes more or less, sorry about that, I added Bjorn in cc in case he wants
+>> to intervene. But I think my last question is relevant: Is there then
+>> any guarantee that a kernel or module call will always emit a BPF_CALL?
+>> Because that would mean that we don't need to place BPF close to modules
+>> since BPF_CALL are JITed into an absolute branch in riscv.
+> 
+> I don't understand what you mean with this question.
+> BPF_CALL is a BPF instruction to call from bpf prog. Not into bpf prog.
+> When kernel or module calls into JITed bpf prog
+> they use indirect call insn of the given arch.
 
-Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
----
- Documentation/networking/af_xdp.rst | 32 ++++++++++++++---------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+So a call to BPF program from kernel/module function is done using an 
+indirect call. I have to check how this is actually done in riscv.
 
-diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
-index 2ccc5644cc98..42576880aa4a 100644
---- a/Documentation/networking/af_xdp.rst
-+++ b/Documentation/networking/af_xdp.rst
-@@ -290,19 +290,19 @@ round-robin example of distributing packets is shown below:
-    #define MAX_SOCKS 16
- 
-    struct {
--        __uint(type, BPF_MAP_TYPE_XSKMAP);
--        __uint(max_entries, MAX_SOCKS);
--        __uint(key_size, sizeof(int));
--        __uint(value_size, sizeof(int));
-+       __uint(type, BPF_MAP_TYPE_XSKMAP);
-+       __uint(max_entries, MAX_SOCKS);
-+       __uint(key_size, sizeof(int));
-+       __uint(value_size, sizeof(int));
-    } xsks_map SEC(".maps");
- 
-    static unsigned int rr;
- 
-    SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
-    {
--	rr = (rr + 1) & (MAX_SOCKS - 1);
-+       rr = (rr + 1) & (MAX_SOCKS - 1);
- 
--	return bpf_redirect_map(&xsks_map, rr, XDP_DROP);
-+       return bpf_redirect_map(&xsks_map, rr, XDP_DROP);
-    }
- 
- Note, that since there is only a single set of FILL and COMPLETION
-@@ -379,7 +379,7 @@ would look like this for the TX path:
- .. code-block:: c
- 
-    if (xsk_ring_prod__needs_wakeup(&my_tx_ring))
--      sendto(xsk_socket__fd(xsk_handle), NULL, 0, MSG_DONTWAIT, NULL, 0);
-+       sendto(xsk_socket__fd(xsk_handle), NULL, 0, MSG_DONTWAIT, NULL, 0);
- 
- I.e., only use the syscall if the flag is set.
- 
-@@ -442,9 +442,9 @@ purposes. The supported statistics are shown below:
- .. code-block:: c
- 
-    struct xdp_statistics {
--	  __u64 rx_dropped; /* Dropped for reasons other than invalid desc */
--	  __u64 rx_invalid_descs; /* Dropped due to invalid descriptor */
--	  __u64 tx_invalid_descs; /* Dropped due to invalid descriptor */
-+       __u64 rx_dropped; /* Dropped for reasons other than invalid desc */
-+       __u64 rx_invalid_descs; /* Dropped due to invalid descriptor */
-+       __u64 tx_invalid_descs; /* Dropped due to invalid descriptor */
-    };
- 
- XDP_OPTIONS getsockopt
-@@ -483,15 +483,15 @@ like this:
- .. code-block:: c
- 
-     // struct xdp_rxtx_ring {
--    // 	__u32 *producer;
--    // 	__u32 *consumer;
--    // 	struct xdp_desc *desc;
-+    //     __u32 *producer;
-+    //     __u32 *consumer;
-+    //     struct xdp_desc *desc;
-     // };
- 
-     // struct xdp_umem_ring {
--    // 	__u32 *producer;
--    // 	__u32 *consumer;
--    // 	__u64 *desc;
-+    //     __u32 *producer;
-+    //     __u32 *consumer;
-+    //     __u64 *desc;
-     // };
- 
-     // typedef struct xdp_rxtx_ring RING;
--- 
-2.26.3
+> In case of bpf dispatcher there is a generated asm code that uses jmp
+> by register
+> or retpoline style.
+> So JITed bpf progs not only 'called' into.
+>  From bpf prog the helpers and kernel funcs are called via BPF_CALL.
+
+And this answers my question (I admit my phrasing may have been a bit 
+confusing): a call to a kernel/module function from within a BPF program 
+is done using a BPF_CALL.
+
+> And this bpf insn has 32-bit offset requirement across archs. So all callable
+> functions have to be in the same 4G region. So far that was the case
+> for all archs.
+> If riscv is going to separate things by more than 4G it will cause
+> plenty of headaches
+> for riscv JIT.
+> 
+
+No no, don't worry, we already are in the same 4G region, the question 
+is do we need to be in the same *2G* region. I have enough material to 
+continue my investigation.
+
+Thank you very much for your time,
+
+Alex
+
 
