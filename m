@@ -2,92 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0AB3AF953
-	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 01:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD5C3AFA29
+	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 02:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhFUXcF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Jun 2021 19:32:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229940AbhFUXcF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:32:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF67361107;
-        Mon, 21 Jun 2021 23:29:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624318190;
-        bh=KJ7WjNmYBh491XSyMu7GNf72RVITjezyvu+GpDfxP68=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZRXiSwzfgMsXsiyC6PWxyDTyeLja1PzZZTgHJ4+ieqEm9pHgyvX4b0Ukpr5uohPCM
-         V95Cs41ac4+X87InUs201y7VO5n67lQ7OKsenZlHOt27nKOg2oc3D70x8+JYGgtKnp
-         Um6v60oA+Gkzy33QwxRw4LZ6WAejU+YpWrPlXYQShZMjHIWhZYcyrmNiB0KYgplv07
-         jiToLQYF8JmJg10sFhWnuk/XNSO48GFDDBmE17Hceq43zPOp7sLF2hXjX2CpPxDIzC
-         kVxLpeQNZwEuzlix6otpNhemDOeFC6JQLtUwszniDv7CuPtW7LnPSO3C/QP9LU2O4s
-         rn2A3zIQWfJ9A==
-Date:   Mon, 21 Jun 2021 16:29:48 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <yunshenglin0825@gmail.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        olteanv@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, edumazet@google.com, weiwan@google.com,
-        cong.wang@bytedance.com, ap420073@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@openeuler.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
-        a.fatoum@pengutronix.de, atenart@kernel.org,
-        alexander.duyck@gmail.com, hdanton@sina.com, jgross@suse.com,
-        JKosina@suse.com, mkubecek@suse.cz, bjorn@kernel.org,
-        alobakin@pm.me
-Subject: Re: [PATCH net v2] net: sched: add barrier to ensure correct
- ordering for lockless qdisc
-Message-ID: <20210621162948.179f0753@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210619103009.GA1530@ip-172-31-30-86.us-east-2.compute.internal>
-References: <1623891854-57416-1-git-send-email-linyunsheng@huawei.com>
-        <20210618173047.68db0b81@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210618173837.0131edc3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210619103009.GA1530@ip-172-31-30-86.us-east-2.compute.internal>
+        id S229807AbhFVAbR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Jun 2021 20:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhFVAbR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Jun 2021 20:31:17 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244EFC061574
+        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 17:29:01 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id m21so33044442lfg.13
+        for <bpf@vger.kernel.org>; Mon, 21 Jun 2021 17:29:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LamixgIpkN3cuL3y9Lx9NI98VYIU6gjrvl7FF7/x0aY=;
+        b=Y1nds71MCTmsOSLNIXO/ppbZnXu/UWcO7mo5NTwWhSkPdhLMbSsWSmoXh1/97T5sTu
+         AlwoM9VTCqe5DLw6LWEV+AKF8k08QRhSu211ilybyYo5u3aPLqjsPirLGt5JBphYbXKL
+         rB0YmfkeJrhV4ZjjbZ7ioi0Vz/poMYfzys6P+x5nS+ZXjGu49Dm5zzhfIKGES6InsdtV
+         8AQYQDhtBpdOQVfqNg1bOHuGjq2n2TbPE0qhdWZEklH855ZgUAS63cJx+wjZAVp30E3J
+         mWwLN29bZPxYyP5nKkSHGXKdouIhTlCHPQu6bKd+1K3y8YbLDaUz9CftfkKcz1zTOSxm
+         hAqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LamixgIpkN3cuL3y9Lx9NI98VYIU6gjrvl7FF7/x0aY=;
+        b=sKtq3pAal1I5K8z6xer1J4aiOnnsvAyvUmtZTz9OPHaot1+wFG/ZKRBxs6DYV7YmaC
+         9s5Nly3+riSspwZNwr4bSpRWggVaN7ESSaPH7cUXxz9v/9e/W/iph8M0JbFCc30BIvpd
+         YXa78XwiJVLGLDa1Yl6kJ8p1viVb/peYqs0MwD61s9uCdx+7IClxFXzf8/dQ2qqohnPm
+         byOx48rL6Ss3xUspDtyFcM5cxxCo07h75SwoCc9Qqqg/P+F4QsTlZVz9gMI716RG+HYr
+         pXQtlXruXGtRp7rzOO81E5p7fSMyfCAcWAvLqHKHShhuwW5Vmyc+Qrg9nJpjv7jGlsE7
+         Ywow==
+X-Gm-Message-State: AOAM533a/9OawiOSWI+b70ODC1GqsA0Qv7pgPNcwqmEYl5jQ4k5dyiDu
+        xCnUK/7uXNUoNs1a9wN6l7wqj2KoCGkj+rTp1O7oMFER
+X-Google-Smtp-Source: ABdhPJywc4CO24vuCXw3xl+aAGwhqng/7nvtKaEeg7Ujv0fO6ng9aHCjGSMu5hrZUATeaeHUevv5AJ060hJhm0u5Ge0=
+X-Received: by 2002:a05:6512:3f9a:: with SMTP id x26mr713500lfa.75.1624321739467;
+ Mon, 21 Jun 2021 17:28:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <aaedcede-5db5-1015-7dbf-7c45421c1e98@ghiti.fr>
+ <CAEf4Bzbt1wvJ=J7Fb6TWUS52j11k3w_b+KpZPCMdsBRUTSsyOw@mail.gmail.com> <30629163-4a65-43f6-c620-9611e45815c4@ghiti.fr>
+In-Reply-To: <30629163-4a65-43f6-c620-9611e45815c4@ghiti.fr>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 21 Jun 2021 17:28:48 -0700
+Message-ID: <CAADnVQ+vcdO2SLnEeo5R4=8bTrkQiv-x2Ejcg08OsoZJJ4RXhw@mail.gmail.com>
+Subject: Re: BPF calls to modules?
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Jisheng Zhang <jszhang@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 19 Jun 2021 10:30:09 +0000 Yunsheng Lin wrote:
-> When debugging pointed to the misordering between STATE_MISSED
-> setting/clearing and STATE_MISSED checking, only _after_atomic()
-> was added first, and it did not fix the misordering problem,
-> when both _before_atomic() and _after_atomic() were added, the
-> misordering problem disappeared.
-> 
-> I suppose _before_atomic() matters because the STATE_MISSED
-> setting and the lock rechecking is only done when first check of
-> STATE_MISSED returns false. _before_atomic() is used to make sure
-> the first check returns correct result, if it does not return the
-> correct result, then we may have misordering problem too.
-> 
->      cpu0                        cpu1
->                               clear MISSED
->                              _after_atomic()
->                                 dequeue
->     enqueue
->  first trylock() #false
->   MISSED check #*true* ?
-> 
-> As above, even cpu1 has a _after_atomic() between clearing
-> STATE_MISSED and dequeuing, we might stiil need a barrier to
-> prevent cpu0 doing speculative MISSED checking before cpu1
-> clearing MISSED?
-> 
-> And the implicit load-acquire barrier contained in the first
-> trylock() does not seems to prevent the above case too.
-> 
-> And there is no load-acquire barrier in pfifo_fast_dequeue()
-> too, which possibly make the above case more likely to happen.
+On Sun, Jun 20, 2021 at 11:43 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>
+> Hi,
+>
+> Le 18/06/2021 =C3=A0 19:32, Andrii Nakryiko a =C3=A9crit :
+> > On Fri, Jun 18, 2021 at 2:13 AM Alex Ghiti <alex@ghiti.fr> wrote:
+> >>
+> >> Hi guys,
+> >>
+> >> First, pardon my ignorance regarding BPF, the following might be silly=
+.
+> >>
+> >> We were wondering here
+> >> https://patchwork.kernel.org/project/linux-riscv/patch/20210615004928.=
+2d27d2ac@xhacker/
+> >> if BPF programs that now have the capability to call kernel functions
+> >> (https://lwn.net/Articles/856005/) can also call modules function or
+> >> vice-versa?
+> >
+> > Not yet, but it was an explicit design consideration and there was
+> > public interest just recently. So I'd say this is going to happen
+> > sooner rather than later.
+> >
+> >>
+> >> The underlying important fact is that in riscv, we are limited to 2GB
+> >> offset to call functions and that restricts where we can place modules
+> >> and BPF regions wrt kernel (see Documentation/riscv/vm-layout.rst for
+> >> the current possibly wrong layout).
+> >>
+> >> So should we make sure that modules and BPF lie in the same 2GB region=
+?
+> >
+> > Based on the above and what you are explaining about 2GB limits, I'd
+> > say yes?.. Or alternatively those 2GB restrictions might perhaps be
+> > lifted somehow?
+>
+>
+> Actually we have this limit when we have PC-relative branch which is our
+> current code model. To better understand what happened, I took a look at
+> our JIT implementation and noticed that BPF_CALL are implemented using
+> absolute addressing so for this pseudo-instruction, the limit I evoked
+> does not apply. How are the kernel (and modules) symbol addresses
+> resolved? Is it relative or absolute? Is there then any guarantee that a
+> kernel or module call will always emit a BPF_CALL?
 
-Ah, you're right. The test_bit() was not in the patch context, 
-I forgot it's there... Both barriers are indeed needed.
+Are those questions for riscv bpf JIT experts?
+Like 'relative or absolute' depends on arch.
+On x86-64 BPF_CALL is JITed into single x86 call instruction that
+has 32-bit immediate which is PC relative.
+Every JIT picks what's the best for that particular arch.
