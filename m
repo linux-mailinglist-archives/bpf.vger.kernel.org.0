@@ -2,116 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82403B0EB1
-	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 22:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87193B0EBE
+	for <lists+bpf@lfdr.de>; Tue, 22 Jun 2021 22:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhFVU2W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Jun 2021 16:28:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229667AbhFVU2V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:28:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BDA460E0B;
-        Tue, 22 Jun 2021 20:26:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624393565;
-        bh=qpCarUrE6M1bqv8vfKl1s5mpXDSoAtStf6HoT26ljLU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VwxeTrzroJ/fTsPn+f19sxUCUVp/qw5iiBqCceZP3dmezQMtGqZ90EwayW1muKT7g
-         F9wL/Yb0RBeUD/xfvs+IoCICUBHbbHQpk6ZJoI8fE8dRGBib5i95L9T1ahXPyQxrye
-         eUh3GqwffVG6/Qkj2zE3A/ShT6OfoHtbfajpFW5Fc+Wf1WEh7DeM+z5gGVTgGUl1JK
-         LP6COWKfbqaiVbxiad7mNFjekCB/bQmvg+W9D0bZ6/tY0Cie2kpbbHonZvppePpZM4
-         P0OHqScSMjNsPmnsstv4aEYIAsFX/GJPvXLR9/e1+TZwWhGqPRPVtF4ZK93L/CeniX
-         inX5lfpBsUzLg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D7B9C5C0166; Tue, 22 Jun 2021 13:26:04 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 13:26:04 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
+        id S229769AbhFVUdK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Jun 2021 16:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhFVUdJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Jun 2021 16:33:09 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61028C061574;
+        Tue, 22 Jun 2021 13:30:53 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w71so492555pfd.4;
+        Tue, 22 Jun 2021 13:30:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gmOirJqOCVETUPV1FbZFByNJhYz+YUYcI9+VcLfRUoc=;
+        b=jUcGd8jnaoO2YIM2z1ipRLJKeDUK//EOVXBPejtVYqF4azm05uFodHEo6iF3Pif3JV
+         OK/jAKqcqLjLnjrhCWJ6fPPrwryY5sFdvRqsZBLIKe+Fc1PHnN8IrCioX1NCLirIL71O
+         mJKheywpcDGOgeJi1oyGE1NTB8WISrpacCWirFMzXLuc6R42MGLt3MN+I+rpoyUv5/A+
+         +iVr0p0MFdWrk8RPNiOHJAhEv1XM/YjVmXXx0HHmt9+upwohcZCyNgYPQIBmoXpQJ6Hc
+         vjx1dsBRlS5j26Z4DxHKO/h6DRpoGsoe5yOnx5T3Ee6gyWNk/lMTA7Mx9zYgXZlk0FuT
+         dCKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gmOirJqOCVETUPV1FbZFByNJhYz+YUYcI9+VcLfRUoc=;
+        b=HUZ2vKAvCt4IqzF0v4IxTlbgnwdacWSW1Iy59VV5T9UcGfVY65xzkjYZr3BvCp7a9g
+         rJNPAwERmGAQjTDB5UuDvtYuh7z0gwd1NykypeMrAwuWmK13LGh4DV13onYgVgs2u7fi
+         feL2Cwb1yr15A92TNPOoZ7maM34w3jjTYcE5GFFv4Bh3AIr1dwZThYXkuNtbIowtu7QV
+         DpfnBOKVdHqyi/NOIgW9XR8J23pJeKLmdCCGPhpOmRwjqnoyPlSZq1PjCxvjZTXuxvKf
+         hMZhnAMEHo40u5mwUBfZnmo+Qkuu6yEUk/tKOt1G1V8kYw5tOvFhxHtgKWS+jTIw/WZw
+         NSLQ==
+X-Gm-Message-State: AOAM532I0bLKm8v2l4T7wwFiPU6JozNUIU/4EKSVOwZYs1C6yauNG2wX
+        EaxwFxgyt/5ieXm5MtzoO9Aevgb4NXE=
+X-Google-Smtp-Source: ABdhPJwwlFT2XjRWwEHaPAG5p8BmNn+9fA9/kK419rjV4LLQzGHZKDtY+rzUVz+68KqZowDNLXHXVg==
+X-Received: by 2002:aa7:9729:0:b029:2ff:1e52:e284 with SMTP id k9-20020aa797290000b02902ff1e52e284mr5292021pfg.71.1624393852687;
+        Tue, 22 Jun 2021 13:30:52 -0700 (PDT)
+Received: from localhost ([2402:3a80:11bb:33b3:7f0c:3646:8bde:417e])
+        by smtp.gmail.com with ESMTPSA id k9sm20994029pgq.27.2021.06.22.13.30.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 13:30:52 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 03/16] xdp: add proper __rcu annotations to
- redirect map entries
-Message-ID: <20210622202604.GH4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210617212748.32456-1-toke@redhat.com>
- <20210617212748.32456-4-toke@redhat.com>
- <1881ecbe-06ec-6b0a-836c-033c31fabef4@iogearbox.net>
- <87zgvirj6g.fsf@toke.dk>
- <87r1guovg2.fsf@toke.dk>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
+Subject: [PATCH net-next v3 0/5] Generic XDP improvements
+Date:   Wed, 23 Jun 2021 01:58:30 +0530
+Message-Id: <20210622202835.1151230-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87r1guovg2.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 03:55:25PM +0200, Toke Høiland-Jørgensen wrote:
-> Toke Høiland-Jørgensen <toke@redhat.com> writes:
-> 
-> >> It would also be great if this scenario in general could be placed
-> >> under the Documentation/RCU/whatisRCU.rst as an example, so we could
-> >> refer to the official doc on this, too, if Paul is good with this.
-> >
-> > I'll take a look and see if I can find a way to fit it in there...
-> 
-> OK, I poked around in Documentation/RCU and decided that the most
-> natural place to put this was in checklist.rst which already talks about
-> local_bh_disable(), but a bit differently. Fixing that up to correspond
-> to what we've been discussing in this thread, and adding a mention of
-> XDP as a usage example, results in the patch below.
-> 
-> Paul, WDYT?
+This small series makes some improvements to generic XDP mode and brings it
+closer to native XDP. Patch 1 splits out generic XDP processing into reusable
+parts, patch 2 adds pointer friendly wrappers for bitops (not have to cast back
+and forth the address of local pointer to unsigned long *), patch 3 implements
+generic cpumap support (details in commit) and patch 4 allows devmap bpf prog
+execution before generic_xdp_tx is called.
 
-I think that my original paragraph needed to have been updated back
-when v4.20 came out.  And again when RCU Tasks Trace came out.  ;-)
+Patch 5 just updates a couple of selftests to adapt to changes in behavior (in
+that specifying devmap/cpumap prog fd in generic mode is now allowed).
 
-So I did that updating, then approximated your patch on top of it,
-as shown below.  Does this work for you?
+Changelog:
+----------
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20210622195527.1110497-1-memxor@gmail.com
+ * list_for_each_entry -> list_for_each_entry_safe (due to deletion of skb)
 
-							Thanx, Paul
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20210620233200.855534-1-memxor@gmail.com
+ * Move __ptr_{set,clear,test}_bit to bitops.h (Toke)
+   Also changed argument order to match the bit op they wrap.
+ * Remove map value size checking functions for cpumap/devmap (Toke)
+ * Rework prog run for skb in cpu_map_kthread_run (Toke)
+ * Set skb->dev to dst->dev after devmap prog has run
+ * Don't set xdp rxq that will be overwritten in cpumap prog run
 
-------------------------------------------------------------------------
+Kumar Kartikeya Dwivedi (5):
+  net: core: split out code to run generic XDP prog
+  bitops: add non-atomic bitops for pointers
+  bpf: cpumap: implement generic cpumap
+  bpf: devmap: implement devmap prog execution for generic XDP
+  bpf: update XDP selftests to not fail with generic XDP
 
-commit c6ef58907d22f4f327f1e9a637b50a5899aac450
-Author: Toke Høiland-Jørgensen <toke@redhat.com>
-Date:   Tue Jun 22 11:54:34 2021 -0700
+ include/linux/bitops.h                        |  19 +++
+ include/linux/bpf.h                           |  10 +-
+ include/linux/netdevice.h                     |   2 +
+ include/linux/skbuff.h                        |  10 +-
+ include/linux/typecheck.h                     |  10 ++
+ kernel/bpf/cpumap.c                           | 115 +++++++++++++++---
+ kernel/bpf/devmap.c                           |  49 ++++++--
+ net/core/dev.c                                | 103 ++++++++--------
+ net/core/filter.c                             |   6 +-
+ .../bpf/prog_tests/xdp_cpumap_attach.c        |   4 +-
+ .../bpf/prog_tests/xdp_devmap_attach.c        |   4 +-
+ 11 files changed, 241 insertions(+), 91 deletions(-)
 
-    doc: Give XDP as example of non-obvious RCU reader/updater pairing
-    
-    This commit gives an example of non-obvious RCU reader/updater pairing
-    in the guise of the XDP feature in networking, which calls BPF programs
-    from network-driver NAPI (softirq) context.
-    
-    Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+-- 
+2.31.1
 
-diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
-index 4df78f8bd700..f4545b7c9a63 100644
---- a/Documentation/RCU/checklist.rst
-+++ b/Documentation/RCU/checklist.rst
-@@ -236,8 +236,15 @@ over a rather long period of time, but improvements are always welcome!
- 
- 	Mixing things up will result in confusion and broken kernels, and
- 	has even resulted in an exploitable security issue.  Therefore,
--	when using non-obvious pairs of primitives, commenting is of
--	course a must.
-+	when using non-obvious pairs of primitives, commenting is
-+	of course a must.  One example of non-obvious pairing is
-+	the XDP feature in networking, which calls BPF programs from
-+	network-driver NAPI (softirq) context.	BPF relies heavily on RCU
-+	protection for its data structures, but because the BPF program
-+	invocation happens entirely within a single local_bh_disable()
-+	section in a NAPI poll cycle, this usage is safe.  The reason
-+	that this usage is safe is that readers can use anything that
-+	disables BH when updaters use call_rcu() or synchronize_rcu().
- 
- 8.	Although synchronize_rcu() is slower than is call_rcu(), it
- 	usually results in simpler code.  So, unless update performance is
