@@ -2,148 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698CF3B135C
-	for <lists+bpf@lfdr.de>; Wed, 23 Jun 2021 07:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850293B13FC
+	for <lists+bpf@lfdr.de>; Wed, 23 Jun 2021 08:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbhFWFuo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Jun 2021 01:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54398 "EHLO
+        id S229853AbhFWGfA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Jun 2021 02:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWFuo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Jun 2021 01:50:44 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD6BC061574;
-        Tue, 22 Jun 2021 22:48:26 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id k16so1873510ios.10;
-        Tue, 22 Jun 2021 22:48:26 -0700 (PDT)
+        with ESMTP id S229660AbhFWGfA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Jun 2021 02:35:00 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854D0C061574;
+        Tue, 22 Jun 2021 23:32:42 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id l11so913505pji.5;
+        Tue, 22 Jun 2021 23:32:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=AZ8B0+Bw5XeVcaZ1NJ4GhJlOgBdWpAMkLyJw6HcKhtY=;
-        b=OYbou5qCbscoSLPvAVYCCzQNbT9Vel1f6ls8sgl+eHL+nN0HS7byalNaPBXW+caN29
-         wUhkZduc0915Z/Mytj/IUUzaGW/BnZLhvnLyYtUwlkkAhYh3yTl+9qYTHn3MdkApjvEq
-         MZXRkxi0VsiVe0ConGUD+ajseDRP7GvSyvGRzeaRSUaUykLACX0Gxf35rlZ2EPDwmqCi
-         1zk2iHKVa7yKrE7ksj9sfPaT9zGo/UWl/GzIRat3QTZithkYsMZb9ZdwJZ/3pU7bj9f9
-         VGVm4oCF7Y/C0PownDcTZ9gR8/x7qBEpYQZnhxfKtG6Ch3Sjnti5mRa9Z1ZS4T5fW9R5
-         7aeg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xJdnFfE3PfYVnhG5Z/vLXv7ETsm3m4letYFLnkEV8dM=;
+        b=kKHO+F2wzhMRj9EgaZlyVg552Sm6hloAXa1E534iJAGvKsRIAfUGHZgw5SCARpeos2
+         c+YI6/QunZgQrWlyJUuEFqGbOTV4Zg6JOwhhRK7AteFqZrKM66i/PIrqjYK0mY1Te9Vj
+         eQLz35+73moIyCLaWsHyg6af8MNf4C/uhnrcHtitmPsQfiKQTz5zXMeKzpRKNXwjFfq/
+         5ALRlubNloYGJvNbeHLdpi4HcCHCseTIByVTaWc8oRxjr4VVI+zZ08bTi7GEOT21nZc1
+         tGUfqhXumPJJIanSTGOduA40fTI5hHRx6LzB3fXEwlw3ywPI/rKNZrtXmFmw0pIcskNr
+         +nSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=AZ8B0+Bw5XeVcaZ1NJ4GhJlOgBdWpAMkLyJw6HcKhtY=;
-        b=fXBvEshAXRrYLkZkPFdztA3sRji/Ntsa0Z7W3cZxxMQt+/zEU/THrFxKd8BTNno642
-         dYOdJiSGQI17+Q0FcoFt72aRbpzAXfSpf9j7cLsXKtr1AeA9KmsKcan/ug53+JvfEKHL
-         rqvEZyu2g1awPlPd/Q0Iqcu/nC/ptCyp7gPH1mZ+87J8Oo67grsszsS6DJKjd1pbaKa+
-         tBO2r9GsGOxc9QvXSi3hixWc7sW//xMkWGRDTS+TelCkqTYA04uJpif4GAGL2+9OjnS9
-         pKGyahocf6l4BXGraVH42z02hfQHpt/g/oKUokJRrQL4O9glW3/Fv38A/HUFoK08SJ0u
-         VBBQ==
-X-Gm-Message-State: AOAM530IHzx/gpXnJtIJVbEg0Iz9U/YdZmsFWbIzFfyr61VG+G2nMaBD
-        veaMkgA4jvoYWZ/0TYRA6zY=
-X-Google-Smtp-Source: ABdhPJzEVsVOis5Owpfg6SBPtb2+DzbxOrRViRTGcpnTtM7LNisQqh4qrX08seDfDflnXdy02Z4cnw==
-X-Received: by 2002:a05:6638:2143:: with SMTP id z3mr7524853jaj.103.1624427306288;
-        Tue, 22 Jun 2021 22:48:26 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id s10sm4546807ilv.81.2021.06.22.22.48.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 22:48:25 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 22:48:15 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     David Ahern <dsahern@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        sameehj@amazon.com, dsahern@kernel.org, brouer@redhat.com,
-        echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com
-Message-ID: <60d2cb1fd2bf9_2052b20886@john-XPS-13-9370.notmuch>
-In-Reply-To: <efe4fcfa-087b-e025-a371-269ef36a3e86@gmail.com>
-References: <cover.1623674025.git.lorenzo@kernel.org>
- <60d26fcdbd5c7_1342e208f6@john-XPS-13-9370.notmuch>
- <efe4fcfa-087b-e025-a371-269ef36a3e86@gmail.com>
-Subject: Re: [PATCH v9 bpf-next 00/14] mvneta: introduce XDP multi-buffer
- support
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xJdnFfE3PfYVnhG5Z/vLXv7ETsm3m4letYFLnkEV8dM=;
+        b=Lo+fZ2Ym+QYTcbIAAKjhz3CW9SPwh7dqfCq1k7WhwL8Q0G5Apd7HVsUI2LzW2Lr4J2
+         fnCvXSWD3buKp7r1v3M1TUi2NCNCpW31T7H98jV68RrmrRzdUGh6qTgUvyJX7YpgGCdt
+         qMAliqO6JDCsZIYNGPSQtpsDdcod5o3KKT2Dl1WeWx3uoQxRtSNr93iTN3ytk/j+b93t
+         UqHtYT7IiRmv0x1+sIA95XeCI5Vge6YlGnVu+bDYA+4efaAEjTvVHke22M0SPIM6yiiv
+         iD1lUwSu4DV+N2wGOvV8vdrh36FMem9RN0JgoHmOaK1g6EyPmO9229Gswz4QzNJwoG3G
+         8QIw==
+X-Gm-Message-State: AOAM531YE7wAr4WFvFcOA9Dz3OBBWu5Ax7LB3ZVHbcovONR0f/dY3rJO
+        GHqjZrvFZjgrr1tT2KLYYaJJYgNCC/yYAnV9GUU=
+X-Google-Smtp-Source: ABdhPJw7ScLCZDYlVN5RUxJ2w8iUMF+Ur6lP6oF1HYkj6gfGi5L79ao+U07v6Dvsaeg8fFnx8/lPuZSFVglkCmSvQWg=
+X-Received: by 2002:a17:90a:8589:: with SMTP id m9mr7956572pjn.168.1624429961937;
+ Tue, 22 Jun 2021 23:32:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210622185647.3705104-1-i.maximets@ovn.org>
+In-Reply-To: <20210622185647.3705104-1-i.maximets@ovn.org>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 23 Jun 2021 08:32:30 +0200
+Message-ID: <CAJ8uoz3Wbfq4C2NeXS6f_1aUk6tb9qRmsKQK7fDyqsgZEXKoSA@mail.gmail.com>
+Subject: Re: [PATCH] docs: af_xdp: consistent indentation in examples
+To:     Ilya Maximets <i.maximets@ovn.org>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-David Ahern wrote:
-> On 6/22/21 5:18 PM, John Fastabend wrote:
-> > At this point I don't think we can have a partial implementation. At
-> > the moment we have packet capture applications and protocol parsers
-> > running in production. If we allow this to go in staged we are going
-> > to break those applications that make the fundamental assumption they
-> > have access to all the data in the packet.
-> 
-> What about cases like netgpu where headers are accessible but data is
-> not (e.g., gpu memory)? If the API indicates limited buffer access, is
-> that sufficient?
+On Tue, Jun 22, 2021 at 8:57 PM Ilya Maximets <i.maximets@ovn.org> wrote:
+>
+> Examples in this document use all kinds of indentation from 3 to 5
+> spaces and even mixed with tabs.  Making them all even and equal to
+> 4 spaces.
+>
+> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+> ---
+>  Documentation/networking/af_xdp.rst | 32 ++++++++++++++---------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
 
-I never consider netgpus and I guess I don't fully understand the
-architecture to say. But, I would try to argue that an XDP API
-should allow XDP to reach into the payload of these GPU packets as well.
-Of course it might be slow.
+Thanks for the cleanup Ilya.
 
-I'm not really convinced just indicating its a limited buffer is enough.
-I think we want to be able to read/write any byte in the packet. I see
-two ways to do it,
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-  /* xdp_pull_data moves data and data_end pointers into the frag
-   * containing the byte offset start.
-   *
-   * returns negative value on error otherwise returns offset of
-   * data pointer into payload.
-   */
-  int xdp_pull_data(int start)
-
-This would be a helper call to push the xdp->data{_end} pointers into
-the correct frag and then normal verification should work. From my
-side this works because I can always find the next frag by starting
-at 'xdp_pull_data(xdp->data_end+1)'. And by returning offset we can
-always figure out where we are in the payload. This is the easiest
-thing I could come up with. And hopefully for _most_ cases the bytes
-we need are in the initial data. Also I don't see how extending tail
-works without something like this.
-
-My other thought, but requires some verifier work would be to extend
-'struct xdp_md' with a frags[] pointer.
-
- struct xdp_md {
-   __u32 data;
-   __u32 data_end;
-   __u32 data_meta;
-   /* metadata stuff */
-  struct _xdp_md frags[] 
-  __u32 frags_end;
- }
-
-Then a XDP program could read access a frag like so,
-
-  if (i < xdp->frags_end) {
-     frag = xdp->frags[i];
-     if (offset + hdr_size < frag->data_end)
-         memcpy(dst, frag->data[offset], hdr_size);
-  }
-
-The nice bit about above is you avoid the call, but maybe it doesn't
-matter if you are already looking into frags pps is probably not at
-64B sizes anyways.
-
-My main concern here is we hit a case where the driver doesn't pull in
-the bytes we need and then we are stuck without a workaround. The helper
-looks fairly straightforward to me could we try that?
-
-Also I thought we had another driver in the works? Any ideas where
-that went...
-
-Last, I'll add thanks for working on this everyone.
-
-.John
+> diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
+> index 2ccc5644cc98..42576880aa4a 100644
+> --- a/Documentation/networking/af_xdp.rst
+> +++ b/Documentation/networking/af_xdp.rst
+> @@ -290,19 +290,19 @@ round-robin example of distributing packets is shown below:
+>     #define MAX_SOCKS 16
+>
+>     struct {
+> -        __uint(type, BPF_MAP_TYPE_XSKMAP);
+> -        __uint(max_entries, MAX_SOCKS);
+> -        __uint(key_size, sizeof(int));
+> -        __uint(value_size, sizeof(int));
+> +       __uint(type, BPF_MAP_TYPE_XSKMAP);
+> +       __uint(max_entries, MAX_SOCKS);
+> +       __uint(key_size, sizeof(int));
+> +       __uint(value_size, sizeof(int));
+>     } xsks_map SEC(".maps");
+>
+>     static unsigned int rr;
+>
+>     SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
+>     {
+> -       rr = (rr + 1) & (MAX_SOCKS - 1);
+> +       rr = (rr + 1) & (MAX_SOCKS - 1);
+>
+> -       return bpf_redirect_map(&xsks_map, rr, XDP_DROP);
+> +       return bpf_redirect_map(&xsks_map, rr, XDP_DROP);
+>     }
+>
+>  Note, that since there is only a single set of FILL and COMPLETION
+> @@ -379,7 +379,7 @@ would look like this for the TX path:
+>  .. code-block:: c
+>
+>     if (xsk_ring_prod__needs_wakeup(&my_tx_ring))
+> -      sendto(xsk_socket__fd(xsk_handle), NULL, 0, MSG_DONTWAIT, NULL, 0);
+> +       sendto(xsk_socket__fd(xsk_handle), NULL, 0, MSG_DONTWAIT, NULL, 0);
+>
+>  I.e., only use the syscall if the flag is set.
+>
+> @@ -442,9 +442,9 @@ purposes. The supported statistics are shown below:
+>  .. code-block:: c
+>
+>     struct xdp_statistics {
+> -         __u64 rx_dropped; /* Dropped for reasons other than invalid desc */
+> -         __u64 rx_invalid_descs; /* Dropped due to invalid descriptor */
+> -         __u64 tx_invalid_descs; /* Dropped due to invalid descriptor */
+> +       __u64 rx_dropped; /* Dropped for reasons other than invalid desc */
+> +       __u64 rx_invalid_descs; /* Dropped due to invalid descriptor */
+> +       __u64 tx_invalid_descs; /* Dropped due to invalid descriptor */
+>     };
+>
+>  XDP_OPTIONS getsockopt
+> @@ -483,15 +483,15 @@ like this:
+>  .. code-block:: c
+>
+>      // struct xdp_rxtx_ring {
+> -    //         __u32 *producer;
+> -    //         __u32 *consumer;
+> -    //         struct xdp_desc *desc;
+> +    //     __u32 *producer;
+> +    //     __u32 *consumer;
+> +    //     struct xdp_desc *desc;
+>      // };
+>
+>      // struct xdp_umem_ring {
+> -    //         __u32 *producer;
+> -    //         __u32 *consumer;
+> -    //         __u64 *desc;
+> +    //     __u32 *producer;
+> +    //     __u32 *consumer;
+> +    //     __u64 *desc;
+>      // };
+>
+>      // typedef struct xdp_rxtx_ring RING;
+> --
+> 2.26.3
+>
