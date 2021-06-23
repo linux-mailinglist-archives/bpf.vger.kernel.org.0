@@ -2,125 +2,332 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717E53B18BA
-	for <lists+bpf@lfdr.de>; Wed, 23 Jun 2021 13:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8143B18CB
+	for <lists+bpf@lfdr.de>; Wed, 23 Jun 2021 13:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhFWLT7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Jun 2021 07:19:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24808 "EHLO
+        id S230083AbhFWL1f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Jun 2021 07:27:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59311 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230204AbhFWLT4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 23 Jun 2021 07:19:56 -0400
+        by vger.kernel.org with ESMTP id S230031AbhFWL1e (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 23 Jun 2021 07:27:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624447058;
+        s=mimecast20190719; t=1624447516;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b/3yS7LjHTHKfwybIlEpPmbf7+iHJm11BxEfhxSMx4s=;
-        b=SxQGLlR7g284IO5qTrBzTivM1l94i6wUUv8GFWr2FVWvd3LYWhyPb3eIiBtaJG8+02f7Qk
-        ARb588eA81/RW7o4yYZiYSSV2lx/dhJkUvmmC5Hm6lI4n6Iu2S7GQ2ioXW9FMrjbw22n1X
-        z5c0IJPE91L3PJ/Gc3lePSb9UQY0yDw=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-LSOPQmGCODyAvFlGcO6RXw-1; Wed, 23 Jun 2021 07:17:37 -0400
-X-MC-Unique: LSOPQmGCODyAvFlGcO6RXw-1
-Received: by mail-ej1-f69.google.com with SMTP id w22-20020a17090652d6b029048a3391d9f6so856590ejn.12
-        for <bpf@vger.kernel.org>; Wed, 23 Jun 2021 04:17:37 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kJXqD5KL0IbVw3vtc9KeCCi86mQtSwSZ2WOt7GmEWTk=;
+        b=XW0FMiGAZaUxxKlV0bpm/977nzdeDkf9N6HTqHc5a5NmbCRztU2PI8Vv9nvrFL6WyjZLLS
+        poki5T1LmXgQDPHj7gmCRpoUzwXptdM9dWkH4K2aXUoASlsN6qdoJPwqcm9pbRPTU7rGxM
+        Pb1iB1K/Au3yQ4il5oTSAbRZ13Ub/ho=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-311-9eCcVKrONueLyvW1fOlGXw-1; Wed, 23 Jun 2021 07:25:15 -0400
+X-MC-Unique: 9eCcVKrONueLyvW1fOlGXw-1
+Received: by mail-wm1-f72.google.com with SMTP id v2-20020a7bcb420000b0290146b609814dso483152wmj.0
+        for <bpf@vger.kernel.org>; Wed, 23 Jun 2021 04:25:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=b/3yS7LjHTHKfwybIlEpPmbf7+iHJm11BxEfhxSMx4s=;
-        b=FifgSAdj+6vBQMzxq7ytryuQeLM6nbPCXv6ty/8oWVRIrn60H8QzvrkVd66k9s74Cf
-         UAayV+4iHC8BsC+qJjnxclM3fcmCw1kR697p1hwI4Uwnsg7VnmAogIuJtG2sBeNnCq3g
-         mjGIOP5yxW6um5EpPo7bFG2Bc3G2rXNSnDPf8rneDhfRoKyX6+uyKCLoaPnFHerpkjsB
-         CnmT+n0XHWvIu/5DPiUChjWbprMnmdQj8Y5NIC7N0pJd5MnLjVj9VjVHHpPN9CcL4rkv
-         G8g6FVolrnDpgtSoh8diazHA1E155JuOWuU5vf0nUKhAQkxYrn9gO3SIRTRzgZsFf0Au
-         257A==
-X-Gm-Message-State: AOAM5328mjkuFK5QGQNhTWY8FHRa2POXwIC48Yau0ov3e0A/90B2hr1+
-        HSB+f9jU70C9sGEXFjIBng8vpeLELvXSJs5e90hIdHxL2+QQFhiFbCJk5e77I2793aYONWMoDnt
-        1KGPyNUSwPQy1
-X-Received: by 2002:a17:907:628a:: with SMTP id nd10mr9446187ejc.326.1624447056182;
-        Wed, 23 Jun 2021 04:17:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz25B0vO27pZCcHDvVK0CgKzd9Bg8TdjridQdPvHb/yGoxtJKIdGkfYPe6XcUq0TCELpd5TLQ==
-X-Received: by 2002:a17:907:628a:: with SMTP id nd10mr9446166ejc.326.1624447056034;
-        Wed, 23 Jun 2021 04:17:36 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id cd4sm7154729ejb.104.2021.06.23.04.17.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kJXqD5KL0IbVw3vtc9KeCCi86mQtSwSZ2WOt7GmEWTk=;
+        b=IZNvDiFliJxRbKHSZ0kWJAtRcWRtXSMrTA5Ep/kYugxUugjwJOxHy5o03m7jJT+uF2
+         smkHEKd/TdmsYEG1K5jxHLyG5yLGlPbhyW7OxTKt6ep82c3q1dyUbZnlaw3onVi+K3Lc
+         oW2OHkoQfu2N+47Derm1YaFOQJmb5Y5v9DsNnsI1rBeDYXCiyehky8JsvvmVFL8+Mtts
+         EFVcJcZRWHcgVh1/xLiMmnoiAV6/cWdyySLJOcph3tQA7Alg99ohnx0D6Wo6CUgxGgUT
+         3omWI3eIPqr260/pCjeeBL64/E6stPybJVeUwMCGI05xjet+0+vmpYkfcMvoEXyfod7n
+         oRWQ==
+X-Gm-Message-State: AOAM533jb3NVlilBWcVUjxeaC8LzpMq+PQeaywNUqx2a4xWD/PmB1KNy
+        oZlDJKdwKv8kGnIh6tOk3g88GkzkKpZTv5ZytPPX+Dhw7gb5crS0gG5q72jPSjkfqxSu9n8XGDD
+        5RGimn3TUwLPx
+X-Received: by 2002:adf:d0ca:: with SMTP id z10mr10463247wrh.376.1624447514309;
+        Wed, 23 Jun 2021 04:25:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyWKIPRZmp2EpzYB2ZX8rES77ZXJ3/moH/ilpRK/4TbvLRncRl5OaVWM8dmQ978zWZohCzWAQ==
+X-Received: by 2002:adf:d0ca:: with SMTP id z10mr10463228wrh.376.1624447514072;
+        Wed, 23 Jun 2021 04:25:14 -0700 (PDT)
+Received: from krava.redhat.com ([5.171.242.166])
+        by smtp.gmail.com with ESMTPSA id t64sm5325168wma.44.2021.06.23.04.25.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Jun 2021 04:17:35 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id EC264180730; Wed, 23 Jun 2021 13:17:34 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, netdev@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Wed, 23 Jun 2021 04:25:13 -0700 (PDT)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v3 5/5] bpf: update XDP selftests to not fail
- with generic XDP
-In-Reply-To: <20210622202835.1151230-6-memxor@gmail.com>
-References: <20210622202835.1151230-1-memxor@gmail.com>
- <20210622202835.1151230-6-memxor@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 23 Jun 2021 13:17:34 +0200
-Message-ID: <878s30omnl.fsf@toke.dk>
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCHv2 bpf-next] bpf, x86: Remove unused cnt increase from EMIT macro
+Date:   Wed, 23 Jun 2021 13:25:04 +0200
+Message-Id: <20210623112504.709856-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+Removing unused cnt increase from EMIT macro together
+with cnt declarations. This was introduced in commit [1]
+to ensure proper code generation. But that code was
+removed in commit [2] and this extra code was left in.
 
-> Generic XDP devmaps and cpumaps now allow setting value_size to 8 bytes
-> (so that prog_fd can be specified) and XDP progs using them succeed in
-> SKB mode now. Adjust the checks.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c | 4 ++--
->  tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-> index 0176573fe4e7..42e46d2ae349 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_cpumap_attach.c
-> @@ -29,8 +29,8 @@ void test_xdp_with_cpumap_helpers(void)
->  	 */
->  	prog_fd = bpf_program__fd(skel->progs.xdp_redir_prog);
->  	err = bpf_set_link_xdp_fd(IFINDEX_LO, prog_fd, XDP_FLAGS_SKB_MODE);
-> -	CHECK(err == 0, "Generic attach of program with 8-byte CPUMAP",
-> -	      "should have failed\n");
-> +	CHECK(err, "Generic attach of program with 8-byte CPUMAP",
-> +	      "shouldn't have failed\n");
+[1] b52f00e6a715 ("x86: bpf_jit: implement bpf_tail_call() helper")
+[2] ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
 
-There's a comment right above this that is now wrong... Also, this
-program is never being detached.
+Signed-off-by: Jiri Olsa <jolsa@redhat.com>
+---
+ v2 changes:
+   - removed cnt also in emit_prologue [David]
 
->  	prog_fd = bpf_program__fd(skel->progs.xdp_dummy_cm);
->  	map_fd = bpf_map__fd(skel->maps.cpu_map);
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c
-> index 88ef3ec8ac4c..861db508ace2 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_devmap_attach.c
-> @@ -31,8 +31,8 @@ void test_xdp_with_devmap_helpers(void)
->  	 */
->  	dm_fd = bpf_program__fd(skel->progs.xdp_redir_prog);
->  	err = bpf_set_link_xdp_fd(IFINDEX_LO, dm_fd, XDP_FLAGS_SKB_MODE);
-> -	CHECK(err == 0, "Generic attach of program with 8-byte devmap",
-> -	      "should have failed\n");
-> +	CHECK(err, "Generic attach of program with 8-byte devmap",
-> +	      "shouldn't have failed\n");
+ arch/x86/net/bpf_jit_comp.c | 44 ++++++++++---------------------------
+ 1 file changed, 12 insertions(+), 32 deletions(-)
 
-... same here
-
-
--Toke
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 2a2e290fa5d8..db1e83813db5 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -31,7 +31,7 @@ static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
+ }
+ 
+ #define EMIT(bytes, len) \
+-	do { prog = emit_code(prog, bytes, len); cnt += len; } while (0)
++	do { prog = emit_code(prog, bytes, len); } while (0)
+ 
+ #define EMIT1(b1)		EMIT(b1, 1)
+ #define EMIT2(b1, b2)		EMIT((b1) + ((b2) << 8), 2)
+@@ -239,7 +239,6 @@ struct jit_context {
+ static void push_callee_regs(u8 **pprog, bool *callee_regs_used)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (callee_regs_used[0])
+ 		EMIT1(0x53);         /* push rbx */
+@@ -255,7 +254,6 @@ static void push_callee_regs(u8 **pprog, bool *callee_regs_used)
+ static void pop_callee_regs(u8 **pprog, bool *callee_regs_used)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (callee_regs_used[3])
+ 		EMIT2(0x41, 0x5F);   /* pop r15 */
+@@ -277,13 +275,12 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+ 			  bool tail_call_reachable, bool is_subprog)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = X86_PATCH_SIZE;
+ 
+ 	/* BPF trampoline can be made to work without these nops,
+ 	 * but let's waste 5 bytes for now and optimize later
+ 	 */
+-	memcpy(prog, x86_nops[5], cnt);
+-	prog += cnt;
++	memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
++	prog += X86_PATCH_SIZE;
+ 	if (!ebpf_from_cbpf) {
+ 		if (tail_call_reachable && !is_subprog)
+ 			EMIT2(0x31, 0xC0); /* xor eax, eax */
+@@ -303,7 +300,6 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+ static int emit_patch(u8 **pprog, void *func, void *ip, u8 opcode)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 	s64 offset;
+ 
+ 	offset = func - (ip + X86_PATCH_SIZE);
+@@ -423,7 +419,6 @@ static void emit_bpf_tail_call_indirect(u8 **pprog, bool *callee_regs_used,
+ 	int off1 = 42;
+ 	int off2 = 31;
+ 	int off3 = 9;
+-	int cnt = 0;
+ 
+ 	/* count the additional bytes used for popping callee regs from stack
+ 	 * that need to be taken into account for each of the offsets that
+@@ -513,7 +508,6 @@ static void emit_bpf_tail_call_direct(struct bpf_jit_poke_descriptor *poke,
+ 	int pop_bytes = 0;
+ 	int off1 = 20;
+ 	int poke_off;
+-	int cnt = 0;
+ 
+ 	/* count the additional bytes used for popping callee regs to stack
+ 	 * that need to be taken into account for jump offset that is used for
+@@ -615,7 +609,6 @@ static void emit_mov_imm32(u8 **pprog, bool sign_propagate,
+ {
+ 	u8 *prog = *pprog;
+ 	u8 b1, b2, b3;
+-	int cnt = 0;
+ 
+ 	/*
+ 	 * Optimization: if imm32 is positive, use 'mov %eax, imm32'
+@@ -655,7 +648,6 @@ static void emit_mov_imm64(u8 **pprog, u32 dst_reg,
+ 			   const u32 imm32_hi, const u32 imm32_lo)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (is_uimm32(((u64)imm32_hi << 32) | (u32)imm32_lo)) {
+ 		/*
+@@ -678,7 +670,6 @@ static void emit_mov_imm64(u8 **pprog, u32 dst_reg,
+ static void emit_mov_reg(u8 **pprog, bool is64, u32 dst_reg, u32 src_reg)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (is64) {
+ 		/* mov dst, src */
+@@ -697,7 +688,6 @@ static void emit_mov_reg(u8 **pprog, bool is64, u32 dst_reg, u32 src_reg)
+ static void emit_insn_suffix(u8 **pprog, u32 ptr_reg, u32 val_reg, int off)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (is_imm8(off)) {
+ 		/* 1-byte signed displacement.
+@@ -720,7 +710,6 @@ static void emit_insn_suffix(u8 **pprog, u32 ptr_reg, u32 val_reg, int off)
+ static void maybe_emit_mod(u8 **pprog, u32 dst_reg, u32 src_reg, bool is64)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	if (is64)
+ 		EMIT1(add_2mod(0x48, dst_reg, src_reg));
+@@ -733,7 +722,6 @@ static void maybe_emit_mod(u8 **pprog, u32 dst_reg, u32 src_reg, bool is64)
+ static void emit_ldx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	switch (size) {
+ 	case BPF_B:
+@@ -764,7 +752,6 @@ static void emit_ldx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+ static void emit_stx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	switch (size) {
+ 	case BPF_B:
+@@ -799,7 +786,6 @@ static int emit_atomic(u8 **pprog, u8 atomic_op,
+ 		       u32 dst_reg, u32 src_reg, s16 off, u8 bpf_size)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 
+ 	EMIT1(0xF0); /* lock prefix */
+ 
+@@ -869,10 +855,10 @@ static void detect_reg_usage(struct bpf_insn *insn, int insn_cnt,
+ 	}
+ }
+ 
+-static int emit_nops(u8 **pprog, int len)
++static void emit_nops(u8 **pprog, int len)
+ {
+ 	u8 *prog = *pprog;
+-	int i, noplen, cnt = 0;
++	int i, noplen;
+ 
+ 	while (len > 0) {
+ 		noplen = len;
+@@ -886,8 +872,6 @@ static int emit_nops(u8 **pprog, int len)
+ 	}
+ 
+ 	*pprog = prog;
+-
+-	return cnt;
+ }
+ 
+ #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+@@ -902,7 +886,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+ 	bool tail_call_seen = false;
+ 	bool seen_exit = false;
+ 	u8 temp[BPF_MAX_INSN_SIZE + BPF_INSN_SAFETY];
+-	int i, cnt = 0, excnt = 0;
++	int i, excnt = 0;
+ 	int ilen, proglen = 0;
+ 	u8 *prog = temp;
+ 	int err;
+@@ -1576,7 +1560,7 @@ st:			if (is_imm8(insn->off))
+ 						       nops);
+ 						return -EFAULT;
+ 					}
+-					cnt += emit_nops(&prog, nops);
++					emit_nops(&prog, nops);
+ 				}
+ 				EMIT2(jmp_cond, jmp_offset);
+ 			} else if (is_simm32(jmp_offset)) {
+@@ -1622,7 +1606,7 @@ st:			if (is_imm8(insn->off))
+ 						       nops);
+ 						return -EFAULT;
+ 					}
+-					cnt += emit_nops(&prog, nops);
++					emit_nops(&prog, nops);
+ 				}
+ 				break;
+ 			}
+@@ -1647,7 +1631,7 @@ st:			if (is_imm8(insn->off))
+ 						       nops);
+ 						return -EFAULT;
+ 					}
+-					cnt += emit_nops(&prog, INSN_SZ_DIFF - 2);
++					emit_nops(&prog, INSN_SZ_DIFF - 2);
+ 				}
+ 				EMIT2(0xEB, jmp_offset);
+ 			} else if (is_simm32(jmp_offset)) {
+@@ -1754,7 +1738,6 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+ {
+ 	u8 *prog = *pprog;
+ 	u8 *jmp_insn;
+-	int cnt = 0;
+ 
+ 	/* arg1: mov rdi, progs[i] */
+ 	emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
+@@ -1822,7 +1805,6 @@ static void emit_align(u8 **pprog, u32 align)
+ static int emit_cond_near_jump(u8 **pprog, void *func, void *ip, u8 jmp_cond)
+ {
+ 	u8 *prog = *pprog;
+-	int cnt = 0;
+ 	s64 offset;
+ 
+ 	offset = func - (ip + 2 + 4);
+@@ -1854,7 +1836,7 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
+ 			      u8 **branches)
+ {
+ 	u8 *prog = *pprog;
+-	int i, cnt = 0;
++	int i;
+ 
+ 	/* The first fmod_ret program will receive a garbage return value.
+ 	 * Set this to 0 to avoid confusing the program.
+@@ -1950,7 +1932,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 				struct bpf_tramp_progs *tprogs,
+ 				void *orig_call)
+ {
+-	int ret, i, cnt = 0, nr_args = m->nr_args;
++	int ret, i, nr_args = m->nr_args;
+ 	int stack_size = nr_args * 8;
+ 	struct bpf_tramp_progs *fentry = &tprogs[BPF_TRAMP_FENTRY];
+ 	struct bpf_tramp_progs *fexit = &tprogs[BPF_TRAMP_FEXIT];
+@@ -2095,8 +2077,6 @@ static int emit_fallback_jump(u8 **pprog)
+ 	 */
+ 	err = emit_jump(&prog, __x86_indirect_thunk_rdx, prog);
+ #else
+-	int cnt = 0;
+-
+ 	EMIT2(0xFF, 0xE2);	/* jmp rdx */
+ #endif
+ 	*pprog = prog;
+@@ -2106,7 +2086,7 @@ static int emit_fallback_jump(u8 **pprog)
+ static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs)
+ {
+ 	u8 *jg_reloc, *prog = *pprog;
+-	int pivot, err, jg_bytes = 1, cnt = 0;
++	int pivot, err, jg_bytes = 1;
+ 	s64 jg_offset;
+ 
+ 	if (a == b) {
+-- 
+2.31.1
 
