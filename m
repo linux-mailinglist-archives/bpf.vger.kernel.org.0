@@ -2,130 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6543B2216
-	for <lists+bpf@lfdr.de>; Wed, 23 Jun 2021 22:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3A43B2290
+	for <lists+bpf@lfdr.de>; Wed, 23 Jun 2021 23:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbhFWU5B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Jun 2021 16:57:01 -0400
-Received: from www62.your-server.de ([213.133.104.62]:36430 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhFWU5B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:57:01 -0400
-Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lw9tR-000AgR-Ht; Wed, 23 Jun 2021 22:54:41 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2021-06-23
-Date:   Wed, 23 Jun 2021 22:54:41 +0200
-Message-Id: <20210623205441.29571-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S229758AbhFWVkP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Jun 2021 17:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhFWVkP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Jun 2021 17:40:15 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B27C061574;
+        Wed, 23 Jun 2021 14:37:57 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 9B26BC6459; Wed, 23 Jun 2021 22:37:54 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1624484274; bh=5bSB3kmpUKEJJoBtGPXTTqqjbJ+on9c7qoVfISkOcvY=;
+        h=From:To:Subject:Date:From;
+        b=X7qMHWcTqr/Kv+awYva64N0vetEoGBf6PZulHPcR0jv5Hh3q07Z1Rm4DVwGZyRnCP
+         vhVUYSJs8YcKUYjDpqAVvF6iGqlEtYGPUT8cHsK2v5zoMRg4jQTyR6Q9ZO45zdktSv
+         Gu9GpefzyFYOSvoK7B10N6GjXGUTGTJIykhZAguTY6TpN9ETnYE7CgO4oPKlUz/H+o
+         bGal7Umy2xfLEIjLgjC3lK/j935xDTjRQsx/awdYogIYzWcv7QvfqWoNi/96JMf0Xo
+         n4Svi7uRco1rFt145Hf5PULtPH6G4t/VFZgq5OBFtw5weO/LSKSVNHI3GJAQa38QUJ
+         Fgjzppy+fT/aw==
+From:   Sean Young <sean@mess.org>
+To:     linux-media@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
+Subject: [PATCH] media: bpf: do not copy more entries than user space requested
+Date:   Wed, 23 Jun 2021 22:37:54 +0100
+Message-Id: <20210623213754.632-1-sean@mess.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26210/Wed Jun 23 13:10:24 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+The syscall bpf(BPF_PROG_QUERY, &attr) should the prog_cnt field to see
+how many entries user space provided and return ENOSPC if there are
+more programs than that. Before this patch, this is not checked and
+ENOSPC is never returned.
 
-The following pull-request contains BPF updates for your *net* tree.
+Note that one lirc device is limited to 64 bpf programs, and user space
+I'm aware of -- ir-keytable -- always gives enough space for 64 entries
+already. However, we should not copy program ids than are requested.
 
-We've added 14 non-merge commits during the last 6 day(s) which contain
-a total of 13 files changed, 137 insertions(+), 64 deletions(-).
+Signed-off-by: Sean Young <sean@mess.org>
+---
+ drivers/media/rc/bpf-lirc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Note that when you merge net into net-next, there is a small merge conflict
-between 9f2470fbc4cb ("skmsg: Improve udp_bpf_recvmsg() accuracy") from bpf
-with c49661aa6f70 ("skmsg: Remove unused parameters of sk_msg_wait_data()")
-from net-next. Resolution is to: i) net/ipv4/udp_bpf.c: take udp_msg_wait_data()
-and remove err parameter from the function, ii) net/ipv4/tcp_bpf.c: take
-tcp_msg_wait_data() and remove err parameter from the function, iii) for
-net/core/skmsg.c and include/linux/skmsg.h: remove the sk_msg_wait_data()
-implementation and its prototype in header.
+diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
+index 3fe3edd80876..afae0afe3f81 100644
+--- a/drivers/media/rc/bpf-lirc.c
++++ b/drivers/media/rc/bpf-lirc.c
+@@ -326,7 +326,8 @@ int lirc_prog_query(const union bpf_attr *attr, union bpf_attr __user *uattr)
+ 	}
+ 
+ 	if (attr->query.prog_cnt != 0 && prog_ids && cnt)
+-		ret = bpf_prog_array_copy_to_user(progs, prog_ids, cnt);
++		ret = bpf_prog_array_copy_to_user(progs, prog_ids,
++						  attr->query.prog_cnt);
+ 
+ unlock:
+ 	mutex_unlock(&ir_raw_handler_lock);
+-- 
+2.31.1
 
-The main changes are:
-
-1) Fix BPF poke descriptor adjustments after insn rewrite, from John Fastabend.
-
-2) Fix regression when using BPF_OBJ_GET with non-O_RDWR flags, from Maciej Żenczykowski.
-
-3) Various bug and error handling fixes for UDP-related sock_map, from Cong Wang.
-
-4) Fix patching of vmlinux BTF IDs with correct endianness, from Tony Ambardar.
-
-5) Two fixes for TX descriptor validation in AF_XDP, from Magnus Karlsson.
-
-6) Fix overflow in size calculation for bpf_map_area_alloc(), from Bui Quang Minh.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Björn Töpel, Daniel Borkmann, Greg Kroah-Hartman, Jakub Sitnicki, Jiang 
-Wang, Jiri Olsa, John Fastabend, Jussi Maki, Lorenz Bauer, Xuan Zhuo
-
-----------------------------------------------------------------
-
-The following changes since commit 1c200f832e14420fa770193f9871f4ce2df00d07:
-
-  net: qed: Fix memcpy() overflow of qed_dcbx_params() (2021-06-17 12:14:51 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 7506d211b932870155bcb39e3dd9e39fab45a7c7:
-
-  bpf: Fix null ptr deref with mixed tail calls and subprogs (2021-06-22 14:46:39 -0700)
-
-----------------------------------------------------------------
-Bui Quang Minh (1):
-      bpf: Fix integer overflow in argument calculation for bpf_map_area_alloc
-
-Cong Wang (8):
-      skmsg: Improve udp_bpf_recvmsg() accuracy
-      selftests/bpf: Retry for EAGAIN in udp_redir_to_connected()
-      udp: Fix a memory leak in udp_read_sock()
-      skmsg: Clear skb redirect pointer before dropping it
-      skmsg: Fix a memory leak in sk_psock_verdict_apply()
-      skmsg: Teach sk_psock_verdict_apply() to return errors
-      skmsg: Pass source psock to sk_psock_skb_redirect()
-      skmsg: Increase sk->sk_drops when dropping packets
-
-John Fastabend (1):
-      bpf: Fix null ptr deref with mixed tail calls and subprogs
-
-Maciej Żenczykowski (1):
-      bpf: Fix regression on BPF_OBJ_GET with non-O_RDWR flags
-
-Magnus Karlsson (2):
-      xsk: Fix missing validation for skb and unaligned mode
-      xsk: Fix broken Tx ring validation
-
-Tony Ambardar (1):
-      bpf: Fix libelf endian handling in resolv_btfids
-
- include/linux/skmsg.h                              |  2 -
- include/net/xsk_buff_pool.h                        |  9 ++-
- kernel/bpf/devmap.c                                |  4 +-
- kernel/bpf/inode.c                                 |  2 +-
- kernel/bpf/verifier.c                              |  6 +-
- net/core/skmsg.c                                   | 82 ++++++++++------------
- net/core/sock_map.c                                |  2 +-
- net/ipv4/tcp_bpf.c                                 | 24 ++++++-
- net/ipv4/udp.c                                     |  2 +
- net/ipv4/udp_bpf.c                                 | 47 +++++++++++--
- net/xdp/xsk_queue.h                                | 11 +--
- tools/bpf/resolve_btfids/main.c                    |  3 +
- .../selftests/bpf/prog_tests/sockmap_listen.c      |  7 +-
- 13 files changed, 137 insertions(+), 64 deletions(-)
