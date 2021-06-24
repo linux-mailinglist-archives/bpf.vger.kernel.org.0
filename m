@@ -2,68 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884EC3B30ED
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 16:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F5C3B3107
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 16:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhFXOIA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 10:08:00 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57574 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhFXOH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:07:59 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lwPz6-0006Zz-65; Thu, 24 Jun 2021 16:05:36 +0200
-Received: from [85.7.101.30] (helo=linux-3.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lwPz5-000JT6-UK; Thu, 24 Jun 2021 16:05:35 +0200
-Subject: Re: [PATCH bpf-next v2 4/4] bpf: more lenient bpf_skb_net_shrink()
- with BPF_F_ADJ_ROOM_FIXED_GSO
-To:     =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <zenczykowski@gmail.com>,
-        =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Willem de Bruijn <willemb@google.com>
-References: <CANP3RGfjLikQ6dg=YpBU0OeHvyv7JOki7CyOUS9modaXAi-9vQ@mail.gmail.com>
- <20210617000953.2787453-1-zenczykowski@gmail.com>
- <20210617000953.2787453-4-zenczykowski@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <919e8f26-4b82-9d4c-8973-b2ab2b4bc5bf@iogearbox.net>
-Date:   Thu, 24 Jun 2021 16:05:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S229881AbhFXONf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 10:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhFXONe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Jun 2021 10:13:34 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1238C061574
+        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 07:11:14 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id j2so10492231lfg.9
+        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 07:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
+         :subject:to;
+        bh=ANhbTggsY3NFhRZExKMwUmb3VzJqye8XLvWVXSvNBkQ=;
+        b=MZznucNkzHCVtX06oF4YOKNt7j9X/CM4V2afDINg9phGeNwd0jfJPN5WXeK+ajhBGS
+         avxY1N2fd06GecT4IhpLvJpsrSnfVkXl/WeDiV7YH7gHvxkcpKWnHx6O+wChMbNc3z50
+         pjRV+rwD33KsPpyqdSPP6r3DQZ7WsgB769q1SmEGlRzY9MjYLCO/t5+6zmHvU06hJsrt
+         KzwDYrRZY7J0Jw3hbeuokQYhUpAvq4pgTes+T0VnUm1n/ESmjeQTrYjvKKaLiY4mwLoU
+         NUGbs7WDjA4Vf8MCK0BE89BvKFbO+gMEfPntU0dmOWlrebHTmJjpcVlpIZR7DueEEBbB
+         faQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
+         :from:date:message-id:subject:to;
+        bh=ANhbTggsY3NFhRZExKMwUmb3VzJqye8XLvWVXSvNBkQ=;
+        b=YyX8T2qYNNAoNeDs+yldUlLMXL6RPpfTcX3NaNd+SCTGnzVmUaIBbFmhgEcZtCKbsM
+         l9JbczZxfzibVIEJZgPdDrPkvy7EVvT08pRaD8HwDA2wK704C07YmoirQGJoQuLZmrvu
+         ZpwFXigc8kcwvtecFKmTLiZisBXpQbWPjlopyVoMBelQ76cdlRk4w/6HpLu/zXuW+C/n
+         DnJo1Qp9QUtdx4w4grHpSbrPY0PW9mqUxPpGf4MHfF/b5fLF7Qh81ka5+bS+uyNzwfLA
+         TCAUp4/EjNlSUTqCTwhWfWSAq4r+fIbD/f4GY6HXVXZnPySJmMqAuHXTQpXUDj2T3RKx
+         b6Dg==
+X-Gm-Message-State: AOAM532zMZQkiiahm80f8pN/Dr9WPrMcc2AsaW4q/Q9YMcufo2ej5n2r
+        PZmf8kZAh3jvFp8Oq/Y3FDwBy3f6asg7XsgNlFM=
+X-Google-Smtp-Source: ABdhPJwpZejRlDqQAFV75zZ3THFwqC4TmYzpj/PG15BemWTayLmqmDn92xBoQLDjkWt3NKyKDMOOHrRQHDC6E3w/gWA=
+X-Received: by 2002:ac2:4c36:: with SMTP id u22mr4161322lfq.218.1624543872993;
+ Thu, 24 Jun 2021 07:11:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210617000953.2787453-4-zenczykowski@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26211/Thu Jun 24 13:04:24 2021)
+Received: by 2002:a05:651c:1a1:0:0:0:0 with HTTP; Thu, 24 Jun 2021 07:11:12
+ -0700 (PDT)
+Reply-To: tutywoolgar021@gmail.com
+In-Reply-To: <CACGGhyQDhNjM7pPW0wTzyn7LBiGmaBAqeP5L66y=E2TL4U9+PQ@mail.gmail.com>
+References: <CACGGhyQDhNjM7pPW0wTzyn7LBiGmaBAqeP5L66y=E2TL4U9+PQ@mail.gmail.com>
+From:   tuty woolgar <assihbernard6@gmail.com>
+Date:   Thu, 24 Jun 2021 14:11:12 +0000
+Message-ID: <CACGGhyRDWiuZgfCGUby9BHL0o7Tsav7CEDT+SZUBALajZk=Ahw@mail.gmail.com>
+Subject: greetings,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/17/21 2:09 AM, Maciej Żenczykowski wrote:
-> From: Maciej Żenczykowski <maze@google.com>
-> 
-> This is to more closely match behaviour of bpf_skb_change_proto()
-> which now does not adjust gso_size, and thus thoretically supports
-> all gso types, and does not need to set SKB_GSO_DODGY nor reset
-> gso_segs to zero.
-> 
-> Something similar should probably be done with bpf_skb_net_grow(),
-> but that code scares me.
-
-Took in all except this one, would be good to have a complete solution for
-both bpf_skb_net_{shrink,grow}(). If you don't have the cycles, I'll look
-into it.
-
-Thanks,
-Daniel
+My greetings to you my friend i hope you are fine and good please respond
+back to me thanks,
