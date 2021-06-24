@@ -2,70 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE503B3041
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 15:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884EC3B30ED
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 16:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhFXNmX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 09:42:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhFXNmW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:42:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B37C0613DC;
-        Thu, 24 Jun 2021 13:40:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624542003;
-        bh=8200jJar8YhGhKF5JuraOSmsv2NeCaSFWxQjEgXS1rs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jxbuHlMEVW7BI0PNQOJgwYPGhgUb+KC+g1Qd3Jv3101L7aXpRdQ1BU1ljR57QmpNB
-         ODiyD8bPvY/mVXE2b1QCQ5hyW7hvc3C5kqeIfisFqXJFhpX8jLhGYHfNmJvoWopvfv
-         UXo0ySMDPPbLl2KKVkHy/k74lzyZsEVc+q09a1HeN11dKRlYhhGxdtBzT1G4VhgY1l
-         bribe6PGj7aDgKve+mVAcjK04DwpXLrypKpWRZY2nrFQawB0vRrXx8TXhFZYjexuNl
-         QzNGzPrdaj8hICKEBY9N0MUodLiIbASddrCHLxgVk9K7/koMGL7AEGLD3CIxwbSy2r
-         yt2261FHdgQZA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A443E60978;
-        Thu, 24 Jun 2021 13:40:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229940AbhFXOIA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 10:08:00 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57574 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhFXOH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Jun 2021 10:07:59 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lwPz6-0006Zz-65; Thu, 24 Jun 2021 16:05:36 +0200
+Received: from [85.7.101.30] (helo=linux-3.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lwPz5-000JT6-UK; Thu, 24 Jun 2021 16:05:35 +0200
+Subject: Re: [PATCH bpf-next v2 4/4] bpf: more lenient bpf_skb_net_shrink()
+ with BPF_F_ADJ_ROOM_FIXED_GSO
+To:     =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <zenczykowski@gmail.com>,
+        =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Willem de Bruijn <willemb@google.com>
+References: <CANP3RGfjLikQ6dg=YpBU0OeHvyv7JOki7CyOUS9modaXAi-9vQ@mail.gmail.com>
+ <20210617000953.2787453-1-zenczykowski@gmail.com>
+ <20210617000953.2787453-4-zenczykowski@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <919e8f26-4b82-9d4c-8973-b2ab2b4bc5bf@iogearbox.net>
+Date:   Thu, 24 Jun 2021 16:05:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <20210617000953.2787453-4-zenczykowski@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] media: bpf: do not copy more entries than user space
- requested
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162454200366.13710.10179869349829486025.git-patchwork-notify@kernel.org>
-Date:   Thu, 24 Jun 2021 13:40:03 +0000
-References: <20210623213754.632-1-sean@mess.org>
-In-Reply-To: <20210623213754.632-1-sean@mess.org>
-To:     Sean Young <sean@mess.org>
-Cc:     linux-media@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, bpf@vger.kernel.org
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26211/Thu Jun 24 13:04:24 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Wed, 23 Jun 2021 22:37:54 +0100 you wrote:
-> The syscall bpf(BPF_PROG_QUERY, &attr) should the prog_cnt field to see
-> how many entries user space provided and return ENOSPC if there are
-> more programs than that. Before this patch, this is not checked and
-> ENOSPC is never returned.
+On 6/17/21 2:09 AM, Maciej Żenczykowski wrote:
+> From: Maciej Żenczykowski <maze@google.com>
 > 
-> Note that one lirc device is limited to 64 bpf programs, and user space
-> I'm aware of -- ir-keytable -- always gives enough space for 64 entries
-> already. However, we should not copy program ids than are requested.
+> This is to more closely match behaviour of bpf_skb_change_proto()
+> which now does not adjust gso_size, and thus thoretically supports
+> all gso types, and does not need to set SKB_GSO_DODGY nor reset
+> gso_segs to zero.
 > 
-> [...]
+> Something similar should probably be done with bpf_skb_net_grow(),
+> but that code scares me.
 
-Here is the summary with links:
-  - media: bpf: do not copy more entries than user space requested
-    https://git.kernel.org/bpf/bpf-next/c/647d446d66e4
+Took in all except this one, would be good to have a complete solution for
+both bpf_skb_net_{shrink,grow}(). If you don't have the cycles, I'll look
+into it.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Daniel
