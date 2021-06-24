@@ -2,30 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEC73B2F2A
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 14:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBEA3B2FBF
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 15:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhFXMlp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 08:41:45 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:58695 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229573AbhFXMlp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:41:45 -0400
-X-UUID: f67ee3b2ab0443539a473b3e01faec5e-20210624
-X-UUID: f67ee3b2ab0443539a473b3e01faec5e-20210624
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1818821037; Thu, 24 Jun 2021 20:39:23 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Jun 2021 20:39:21 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Jun 2021 20:39:20 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "David S . Miller" <davem@davemloft.net>,
+        id S230046AbhFXNIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 09:08:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229940AbhFXNIb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Jun 2021 09:08:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D974C613C3;
+        Thu, 24 Jun 2021 13:06:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624539971;
+        bh=X5fgruXZAH6/dwtIj9BUqyJ6jlUiiRQEvoljwULOpAw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OGYINAbuGasSG7nLZAa1F5HYrm1MRw/U0QA6imTs9s2BE2lPupOdkJkq0gZ87x0Sb
+         yesHqPbqTj80zcQ+MmgtI5bRE7sFF0bQV4SBJdQRyd99mOxV4POTAfrCs9pMok1y/Q
+         M8IzFW4pQrZMldEaFQlwECzz5es9sGGbKy5izkaY=
+Date:   Thu, 24 Jun 2021 15:06:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
@@ -33,91 +31,92 @@ CC:     "David S . Miller" <davem@davemloft.net>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
         Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
-        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
+        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
+        wsd_upstream@mediatek.com, chao.song@mediatek.com,
+        kuohong.wang@mediatek.com
 Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
-Date:   Thu, 24 Jun 2021 20:24:35 +0800
-Message-ID: <20210624122435.11887-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <YNRKhJB9/K4SKPdR@kroah.com>
+Message-ID: <YNSDQbp/h/aadpmV@kroah.com>
 References: <YNRKhJB9/K4SKPdR@kroah.com>
+ <20210624122435.11887-1-rocco.yue@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624122435.11887-1-rocco.yue@mediatek.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2021-06-24 at 11:04 +0200, Greg KH wrote:
-On Thu, Jun 24, 2021 at 02:13:10PM +0800, Rocco Yue wrote:
->> On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
->>> 
->>> Thanks for the explaination, why is this hardware somehow "special" in
->>> this way that this has never been needed before?
->>> 
->>> thanks,
->>> 
->>> greg k-h
->>> 
->> 
->> Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
->> automatically generates an IPv6 link-local address, and the way to
->> generate an IPv6 global address is the same.
->> 
->> After kernel-4.18 (include 4.18 version), the behavior of RAWIP had
->> changed due to the following patch:
->> @@  static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
->> +	case ARPHRD_RAWIP:
->> +		return addrconf_ifid_rawip(eui, dev);
->>  	}
->>  	return -1;
->> }
->> 
->> the reason why the kernel doesn't need to generate the link-local
->> address automatically is as follows:
->> 
->> In the 3GPP 29.061, here is some description as follows:
->> "in order to avoid any conflict between the link-local address of
->> MS and that of the GGSN, the Interface-Identifier used by the MS to
->> build its link-local address shall be assigned by the GGSN. The GGSN
->> ensures the uniqueness of this Interface-Identifier. Then MT shall
->> then enforce the use of this Interface-Identifier by the TE"
->> 
->> In other words, in the cellular network, GGSN determines whether to
->> reply to the Router Solicitation message of UE by identifying the
->> low 64bits of UE interface's ipv6 link-local address.
->> 
->> When using a new kernel and RAWIP, kernel will generate an EUI64
->> format ipv6 link-local address, and if the device uses this address
->> to send RS, GGSN will not reply RA message.
->> 
->> Therefore, in that background, we came up with PUREIP to make kernel
->> doesn't generate a ipv6 link-local address in any address generate
->> mode.
+On Thu, Jun 24, 2021 at 08:24:35PM +0800, Rocco Yue wrote:
+> On Thu, 2021-06-24 at 11:04 +0200, Greg KH wrote:
+> On Thu, Jun 24, 2021 at 02:13:10PM +0800, Rocco Yue wrote:
+> >> On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
+> >>> 
+> >>> Thanks for the explaination, why is this hardware somehow "special" in
+> >>> this way that this has never been needed before?
+> >>> 
+> >>> thanks,
+> >>> 
+> >>> greg k-h
+> >>> 
+> >> 
+> >> Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
+> >> automatically generates an IPv6 link-local address, and the way to
+> >> generate an IPv6 global address is the same.
+> >> 
+> >> After kernel-4.18 (include 4.18 version), the behavior of RAWIP had
+> >> changed due to the following patch:
+> >> @@  static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
+> >> +	case ARPHRD_RAWIP:
+> >> +		return addrconf_ifid_rawip(eui, dev);
+> >>  	}
+> >>  	return -1;
+> >> }
+> >> 
+> >> the reason why the kernel doesn't need to generate the link-local
+> >> address automatically is as follows:
+> >> 
+> >> In the 3GPP 29.061, here is some description as follows:
+> >> "in order to avoid any conflict between the link-local address of
+> >> MS and that of the GGSN, the Interface-Identifier used by the MS to
+> >> build its link-local address shall be assigned by the GGSN. The GGSN
+> >> ensures the uniqueness of this Interface-Identifier. Then MT shall
+> >> then enforce the use of this Interface-Identifier by the TE"
+> >> 
+> >> In other words, in the cellular network, GGSN determines whether to
+> >> reply to the Router Solicitation message of UE by identifying the
+> >> low 64bits of UE interface's ipv6 link-local address.
+> >> 
+> >> When using a new kernel and RAWIP, kernel will generate an EUI64
+> >> format ipv6 link-local address, and if the device uses this address
+> >> to send RS, GGSN will not reply RA message.
+> >> 
+> >> Therefore, in that background, we came up with PUREIP to make kernel
+> >> doesn't generate a ipv6 link-local address in any address generate
+> >> mode.
+> > 
+> > Thanks for the better description.  That should go into the changelog
+> > text somewhere so that others know what is going on here with this new
+> > option.
+> >
 > 
-> Thanks for the better description.  That should go into the changelog
-> text somewhere so that others know what is going on here with this new
-> option.
->
+> Does changelog mean adding these details to the commit message ?
 
-Does changelog mean adding these details to the commit message ?
-I am willing do it.
+Yes please.
 
-> And are these user-visable flags documented in a man page or something
-> else somewhere?  If not, how does userspace know about them?
+> > And are these user-visable flags documented in a man page or something
+> > else somewhere?  If not, how does userspace know about them?
+> > 
 > 
+> There are mappings of these device types value in the libc:
+> "/bionic/libc/kernel/uapi/linux/if_arp.h".
+> userspace can get it from here.
 
-There are mappings of these device types value in the libc:
-"/bionic/libc/kernel/uapi/linux/if_arp.h".
-userspace can get it from here.
+Yes, they will show up in a libc definition, but where is it documented
+in text form what the flag does?
 
-But I also failed to find a man page or a description of these
-device types.
+thanks,
 
-Thanks,
-Rocco
-
+greg k-h
