@@ -2,133 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603C03B33A8
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 18:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C870F3B33B1
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 18:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhFXQQV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 12:16:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27635 "EHLO
+        id S229464AbhFXQRB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 12:17:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52109 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230052AbhFXQQS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 24 Jun 2021 12:16:18 -0400
+        by vger.kernel.org with ESMTP id S229831AbhFXQQ4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Jun 2021 12:16:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624551238;
+        s=mimecast20190719; t=1624551276;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=436OaxB7FEvDC8Cj4cGRRV7bgo1JzvFAvSGPF+E5hVA=;
-        b=Jan/KNbZsQ6l5N33RAmp+3SZgMwQBRR1zqGFBWdyQD3TNpYBQNVzcSckFJNxBoatZwxsDm
-        KTAuO5rBRZfv9t9ze7IW6dAPSx1drcxXshCNuNcwy4vkEEvUlqaoRkRkcldNoAEvHjOvYX
-        MKqI0YBCwcZvdwiARA60frbepynq5BQ=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-768-Pu25Pmi8hIm2eMO4mQ-1; Thu, 24 Jun 2021 12:13:57 -0400
-X-MC-Unique: 768-Pu25Pmi8hIm2eMO4mQ-1
-Received: by mail-ed1-f69.google.com with SMTP id p23-20020aa7cc970000b02903948bc39fd5so3602299edt.13
-        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 09:13:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=436OaxB7FEvDC8Cj4cGRRV7bgo1JzvFAvSGPF+E5hVA=;
-        b=p567rtUiO/nVZOTnljHxQ90abx/ct31mCxpUbGdkGQYF8/16x6axgDh0LkqwT0zkjS
-         GvT3gJyCqHTMOus5JW0hPmnpz1UvrlMokEaJc2c8e1aPx1NepDmc0qJG93/giTpybwH2
-         PzpWRQvM6UPK0jFIKG4V0zBih46CmilRf124XSnJy3GXkZCLLJ1vrp9LyBu9vO5zWPcG
-         KwxR/ZuO9yTIqjNr1dMu5IKMYFJRsbzmkX5b679t1ilu5PRsfvOAkvsxnDjkHKL2cArd
-         sgrVCY0g60YkC76Wu6jgasPjXCbJQbX913Ak1Zi4wPzymMk3M6QO7FvPhYvIYxZ5uIJQ
-         VnRg==
-X-Gm-Message-State: AOAM533XtDOzg/ocyxqjrKAGFPLo4OqYbZkiNqsQOjM98orUAvjcebxq
-        dZhlNK8zGLSDZBJgqQu/3ihoTHWrgcbJOTv3SpKfcxyQl2jai4tP97pLGzhmyRZhr7K2gBcQE4S
-        LeFD8B/NCNheK
-X-Received: by 2002:a17:906:6c92:: with SMTP id s18mr6001742ejr.246.1624551235823;
-        Thu, 24 Jun 2021 09:13:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyTqg1XkldV4Ka01Fa9wZUX9Na6VfS2RopbGr4a7OYV7FQUPzbFORmoCWAMgTSsKp/g8aWzXw==
-X-Received: by 2002:a17:906:6c92:: with SMTP id s18mr6001702ejr.246.1624551235374;
-        Thu, 24 Jun 2021 09:13:55 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id yh11sm1408621ejb.16.2021.06.24.09.13.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 09:13:54 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C0535180744; Thu, 24 Jun 2021 18:06:10 +0200 (CEST)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
+        bh=wE3C8fAY2Ke4f8GlbED3jZxKdHMupZo0qHgep6Jpwjw=;
+        b=W39kIwqf1rdihPTb9VtEfKSdfyq8VAaXVX+iFQ60maw1/ysAxhtbSN6NTlqc+AwrbTRsrO
+        H0XE5qbypr4NIMA9gw9q0+uyN//IrB/4cKGa1KPX+fpDkO6NUCtqgr1Oj+0FlZXT0zDQYE
+        IYUXTGRlBl1MrxwH1Rr7wx2+aDXQllk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-kn1rgtX5OaScVNH41hFkNw-1; Thu, 24 Jun 2021 12:14:32 -0400
+X-MC-Unique: kn1rgtX5OaScVNH41hFkNw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FA39801596;
+        Thu, 24 Jun 2021 16:14:29 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.10.110.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E91A19C66;
+        Thu, 24 Jun 2021 16:14:24 +0000 (UTC)
+Message-ID: <0548d1daa7e1eee9d8202481668bbe4975c9b33d.camel@redhat.com>
+Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
+From:   Dan Williams <dcbw@redhat.com>
+To:     Rocco Yue <rocco.yue@mediatek.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        David Ahern <dsahern@gmail.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        linux-omap@vger.kernel.org
-Subject: [PATCH bpf-next v5 19/19] net: ti: remove rcu_read_lock() around XDP program invocation
-Date:   Thu, 24 Jun 2021 18:06:09 +0200
-Message-Id: <20210624160609.292325-20-toke@redhat.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210624160609.292325-1-toke@redhat.com>
-References: <20210624160609.292325-1-toke@redhat.com>
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
+        wsd_upstream@mediatek.com, chao.song@mediatek.com,
+        kuohong.wang@mediatek.com
+Date:   Thu, 24 Jun 2021 11:14:24 -0500
+In-Reply-To: <20210624061310.12315-1-rocco.yue@mediatek.com>
+References: <YNQYHfE09Dx5kWyg@kroah.com>
+         <20210624061310.12315-1-rocco.yue@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The cpsw driver has rcu_read_lock()/rcu_read_unlock() pairs around XDP
-program invocations. However, the actual lifetime of the objects referred
-by the XDP program invocation is longer, all the way through to the call to
-xdp_do_flush(), making the scope of the rcu_read_lock() too small. This
-turns out to be harmless because it all happens in a single NAPI poll
-cycle (and thus under local_bh_disable()), but it makes the rcu_read_lock()
-misleading.
+On Thu, 2021-06-24 at 14:13 +0800, Rocco Yue wrote:
+> On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
+> > 
+> > Thanks for the explaination, why is this hardware somehow "special"
+> > in
+> > this way that this has never been needed before?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> 
+> Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
+> automatically generates an IPv6 link-local address, and the way to
+> generate an IPv6 global address is the same.
 
-Rather than extend the scope of the rcu_read_lock(), just get rid of it
-entirely. With the addition of RCU annotations to the XDP_REDIRECT map
-types that take bh execution into account, lockdep even understands this to
-be safe, so there's really no reason to keep it around.
+This distinction seems confusing from a kernel standpoint if it only
+changes how v6 IIDs are determined. Do we really need something that's
+also reflected to userspace (in struct ifinfomsg -> ifi_type) if the
+kernel is handling the behavior that's different? Why should userspace
+care?
 
-Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-Cc: linux-omap@vger.kernel.org
-Tested-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- drivers/net/ethernet/ti/cpsw_priv.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+I'm also curious why this isn't an issue for the ipa/rmnet (Qualcomm)
+modem drivers. There's probably a good reason, but would be good to
+know what that is from Alex Elder or Loic or Bjorn...
 
-diff --git a/drivers/net/ethernet/ti/cpsw_priv.c b/drivers/net/ethernet/ti/cpsw_priv.c
-index 5862f0a4a975..ecc2a6b7e28f 100644
---- a/drivers/net/ethernet/ti/cpsw_priv.c
-+++ b/drivers/net/ethernet/ti/cpsw_priv.c
-@@ -1328,13 +1328,9 @@ int cpsw_run_xdp(struct cpsw_priv *priv, int ch, struct xdp_buff *xdp,
- 	struct bpf_prog *prog;
- 	u32 act;
- 
--	rcu_read_lock();
--
- 	prog = READ_ONCE(priv->xdp_prog);
--	if (!prog) {
--		ret = CPSW_XDP_PASS;
--		goto out;
--	}
-+	if (!prog)
-+		return CPSW_XDP_PASS;
- 
- 	act = bpf_prog_run_xdp(prog, xdp);
- 	/* XDP prog might have changed packet data and boundaries */
-@@ -1378,10 +1374,8 @@ int cpsw_run_xdp(struct cpsw_priv *priv, int ch, struct xdp_buff *xdp,
- 	ndev->stats.rx_bytes += *len;
- 	ndev->stats.rx_packets++;
- out:
--	rcu_read_unlock();
- 	return ret;
- drop:
--	rcu_read_unlock();
- 	page_pool_recycle_direct(cpsw->page_pool[ch], page);
- 	return ret;
- }
--- 
-2.32.0
+Dan
+
+> 
+> After kernel-4.18 (include 4.18 version), the behavior of RAWIP had
+> changed due to the following patch:
+> @@  static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
+> +       case ARPHRD_RAWIP:
+> +               return addrconf_ifid_rawip(eui, dev);
+>         }
+>         return -1;
+> }
+> 
+> the reason why the kernel doesn't need to generate the link-local
+> address automatically is as follows:
+> 
+> In the 3GPP 29.061, here is some description as follows:
+> "in order to avoid any conflict between the link-local address of
+> MS and that of the GGSN, the Interface-Identifier used by the MS to
+> build its link-local address shall be assigned by the GGSN. The GGSN
+> ensures the uniqueness of this Interface-Identifier. Then MT shall
+> then enforce the use of this Interface-Identifier by the TE"
+> 
+> In other words, in the cellular network, GGSN determines whether to
+> reply to the Router Solicitation message of UE by identifying the
+> low 64bits of UE interface's ipv6 link-local address.
+> 
+> When using a new kernel and RAWIP, kernel will generate an EUI64
+> format ipv6 link-local address, and if the device uses this address
+> to send RS, GGSN will not reply RA message.
+> 
+> Therefore, in that background, we came up with PUREIP to make kernel
+> doesn't generate a ipv6 link-local address in any address generate
+> mode.
+> 
+> Thanks,
+> Rocco
+> 
+
 
