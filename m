@@ -2,28 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D2D3B2EDF
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 14:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEC73B2F2A
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 14:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhFXMZw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 08:25:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhFXMZw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Jun 2021 08:25:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 937C861209;
-        Thu, 24 Jun 2021 12:23:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624537413;
-        bh=JTsUy6jEymu4qp5qGCh4JVhR5yjdg1Lz3myy2L5OZJU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QvClQ3g2Htt0PFAENbaUhP8J94m0ztjO+UjJ/8v1MDWqUWSbTiiXYg2gxvP15Coxm
-         FkDdN64l6rzNumPsxbxhBgsv6hJ1RtC9K7lOnuO9v1B0756lA6iqnGwQ3TneWrbSOG
-         Ty5Nr9Krggxb5ET4emDq8Dfm/J67T2CioXuvCGqA=
-Date:   Thu, 24 Jun 2021 14:23:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
+        id S230020AbhFXMlp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 08:41:45 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:58695 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229573AbhFXMlp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Jun 2021 08:41:45 -0400
+X-UUID: f67ee3b2ab0443539a473b3e01faec5e-20210624
+X-UUID: f67ee3b2ab0443539a473b3e01faec5e-20210624
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1818821037; Thu, 24 Jun 2021 20:39:23 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Jun 2021 20:39:21 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Jun 2021 20:39:20 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
@@ -31,81 +33,91 @@ Cc:     "David S . Miller" <davem@davemloft.net>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
         Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
-        wsd_upstream@mediatek.com, chao.song@mediatek.com,
-        kuohong.wang@mediatek.com
+        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
+        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
 Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
-Message-ID: <YNR5QuYqknaZS9+j@kroah.com>
-References: <YNNv1AxDNBdPcQ1U@kroah.com>
- <20210624115349.2264-1-rocco.yue@mediatek.com>
+Date:   Thu, 24 Jun 2021 20:24:35 +0800
+Message-ID: <20210624122435.11887-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <YNRKhJB9/K4SKPdR@kroah.com>
+References: <YNRKhJB9/K4SKPdR@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624115349.2264-1-rocco.yue@mediatek.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 07:53:49PM +0800, Rocco Yue wrote:
-> >> +/* exposed API
-> >> + * receive incoming datagrams from the Modem and push them to the
-> >> + * kernel networking system
-> >> + */
-> >> +int ccmni_rx_push(unsigned int ccmni_idx, struct sk_buff *skb)
-> > 
-> > Ah, so this driver doesn't really do anything on its own, as there is no
-> > modem driver for it.
-> > 
-> > So without a modem driver, it will never be used?  Please submit the
-> > modem driver at the same time, otherwise it's impossible to review this
-> > correctly.
-> > 
+On Thu, 2021-06-24 at 11:04 +0200, Greg KH wrote:
+On Thu, Jun 24, 2021 at 02:13:10PM +0800, Rocco Yue wrote:
+>> On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
+>>> 
+>>> Thanks for the explaination, why is this hardware somehow "special" in
+>>> this way that this has never been needed before?
+>>> 
+>>> thanks,
+>>> 
+>>> greg k-h
+>>> 
+>> 
+>> Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
+>> automatically generates an IPv6 link-local address, and the way to
+>> generate an IPv6 global address is the same.
+>> 
+>> After kernel-4.18 (include 4.18 version), the behavior of RAWIP had
+>> changed due to the following patch:
+>> @@  static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
+>> +	case ARPHRD_RAWIP:
+>> +		return addrconf_ifid_rawip(eui, dev);
+>>  	}
+>>  	return -1;
+>> }
+>> 
+>> the reason why the kernel doesn't need to generate the link-local
+>> address automatically is as follows:
+>> 
+>> In the 3GPP 29.061, here is some description as follows:
+>> "in order to avoid any conflict between the link-local address of
+>> MS and that of the GGSN, the Interface-Identifier used by the MS to
+>> build its link-local address shall be assigned by the GGSN. The GGSN
+>> ensures the uniqueness of this Interface-Identifier. Then MT shall
+>> then enforce the use of this Interface-Identifier by the TE"
+>> 
+>> In other words, in the cellular network, GGSN determines whether to
+>> reply to the Router Solicitation message of UE by identifying the
+>> low 64bits of UE interface's ipv6 link-local address.
+>> 
+>> When using a new kernel and RAWIP, kernel will generate an EUI64
+>> format ipv6 link-local address, and if the device uses this address
+>> to send RS, GGSN will not reply RA message.
+>> 
+>> Therefore, in that background, we came up with PUREIP to make kernel
+>> doesn't generate a ipv6 link-local address in any address generate
+>> mode.
 > 
-> without MTK ap ccci driver (modem driver), ccmni_rx_push() and
-> ccmni_hif_hook() are not be used.
+> Thanks for the better description.  That should go into the changelog
+> text somewhere so that others know what is going on here with this new
+> option.
+>
+
+Does changelog mean adding these details to the commit message ?
+I am willing do it.
+
+> And are these user-visable flags documented in a man page or something
+> else somewhere?  If not, how does userspace know about them?
 > 
-> Both of them are exported as symbols because MTK ap ccci driver
-> will be complied to the ccci.ko file.
 
-But I do not see any code in this series that use these symbols.  We can
-not have exports that no one uses.  Please add the driver to this patch
-series when you resend it.
+There are mappings of these device types value in the libc:
+"/bionic/libc/kernel/uapi/linux/if_arp.h".
+userspace can get it from here.
 
-> In addition, the code of MTK's modem driver is a bit complicated,
-> because this part has more than 30,000 lines of code and contains
-> more than 10 modules. We are completeing the upload of this huge
-> code step by step. Our original intention was to upload the ccmni
-> driver that directly interacts with the kernel first, and then
-> complete the code from ccmni to the bottom layer one by one from
-> top to bottom. We expect the completion period to be about 1 year.
+But I also failed to find a man page or a description of these
+device types.
 
-Again, we can not add code to the kernel that is not used, sorry.  That
-would not make any sense, would you want to maintain such a thing?
+Thanks,
+Rocco
 
-And 30k of code seems a bit excesive for a modem driver.   Vendors find
-that when they submit code for inclusion in the kernel tree, in the end,
-they end up 1/3 the original size, so 10k is reasonable.
-
-I can also take any drivers today into the drivers/staging/ tree, and
-you can do the cleanups there as well as getting help from others.
-
-1 year seems like a long time to do "cleanup", good luck!
-
-> > +++ b/drivers/net/ethernet/mediatek/ccmni/ccmni.h
-> > 
-> > Why do you have a .h file for a single .c file?  that shouldn't be
-> > needed.
-> 
-> I add a .h file to facilitate subsequent code expansion. If it's
-> not appropriate to do this here, I can add the content of .h into
-> .c file.
-
-If nothing other than a single .c file needs it, put it into that .c
-file please.
-
-thanks,
-
-greg k-h
