@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DEA3B3138
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 16:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5283B3151
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 16:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhFXO1I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 10:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43282 "EHLO
+        id S230056AbhFXObA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 10:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231942AbhFXO1I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:27:08 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913AEC061574;
-        Thu, 24 Jun 2021 07:24:49 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id i17so6448775ilj.11;
-        Thu, 24 Jun 2021 07:24:49 -0700 (PDT)
+        with ESMTP id S230008AbhFXOa7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Jun 2021 10:30:59 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C84DC061574;
+        Thu, 24 Jun 2021 07:28:39 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id o5so8440448iob.4;
+        Thu, 24 Jun 2021 07:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=5ookobeVhr64r1NaUzaLn/rFAOpu9+UYNo31Yeae0Iw=;
-        b=cOHUdhaZootRKX2DAQO/73sxk9NheMXwv/iPVOtTNgTLrQuIJsvokK+CI4tVwvR1Sz
-         jI5SElKgrVcsreuz/5Pg4LLYuVzDJXzlHaGIgoQK0y3caFGWvnn7JGqRs/j2oH7KTlX+
-         jmHKGrq4iHSrsexRBELc8okQdiYNkROiDqYC7DDb10kAGnU08ncKsDckOZwrZ4whma8q
-         2azwVUcdPJmlwlVQAa8No43suzN91CdWFMKoKUaWSLn1F0RA7MUfmm/dZWRNSMgFXjkf
-         GsOVBdSb7lFZ3yicch2f3PtQLrB1+J3f5gb6Z6fQGU0tPypqEg2uKQf33z9Fuf8Yv7F4
-         cTjQ==
+        bh=58c/kEfPGM7eo+DwySZzk3eJ3sXDxuIrRbqL+hypr44=;
+        b=dBDmnvYDh1q99UfATEv3TZ1H+fgzJtNInkfw4GpJRRNgEEE3XUQ+9U5XFIb1qpXVdg
+         smMHWBiU1sZcmru2eAIfqW7RDAAYF1spjXwVqfoAYntVmHTwYiXse8KExGDQFGZLLQiy
+         I2S/f7zxw5eri1UyCyVdy88zCp2WZCuaQ4myf+8SiZGf2wED2WbHlUV2SOszWSjMv7Er
+         6Sh4BWsw7rSWo3iOUv2HyFIS6HA4W4lgq5x6QXFilAB5ikOa2wwCan2qoeYJwyeUhfCr
+         wop4q10y+4BAVpddW8mlwbH8MMWKJlQ5ohvPZ+85wH5n+s1ZHUXifGETnH1f4DkYZAiN
+         JDOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=5ookobeVhr64r1NaUzaLn/rFAOpu9+UYNo31Yeae0Iw=;
-        b=mQRjNCleBQz9FnVeok5dzKmVwTpOh6hA7BxrGMbxg5wDnwPbMK0tpRJ/To40ZN0kzL
-         6INjx2FBBVdJqukh/JsmP6R1/MBbOVpOuTpx2eUGOip+m0wivILBFj6mLkpt48YQNBQg
-         DB17BMkaJWzMbZ2IeVvB1SUzwJi9nK5mRI06pWNxodvsaWzmtKc0UqzRfbJ8Kj4jLTiK
-         EdLzphbgcotdM6NsQk0dZtfKvjiy7lQA3N931jVxddAFmTKOASHN+l4nWVx9oB2Kaw8k
-         C/Cl3nFWxcVzh4wDoUVxkQFgIpZcsaUtghfHCMhgOXMJTzLY2cnKDTnwedkkTtSD4sKb
-         XBXA==
-X-Gm-Message-State: AOAM533gTJdhxH4JAy69LU/JWeZ1YQURjsBFQjJZS777t1UZrwFZ7qht
-        jEQwCxfNxDVAAIlHJBWXbis=
-X-Google-Smtp-Source: ABdhPJyroQNvPSwBQpM62epA8QpRYoa7bTKq3OmTZRvc4q+q8gxR4SaqQlc0gskGSWcab1KgNvJz9w==
-X-Received: by 2002:a92:7f07:: with SMTP id a7mr3677588ild.202.1624544689070;
-        Thu, 24 Jun 2021 07:24:49 -0700 (PDT)
+        bh=58c/kEfPGM7eo+DwySZzk3eJ3sXDxuIrRbqL+hypr44=;
+        b=iiUG+JZdlgxEMhwiiscoq4M00xrsMdJvxqgmLB3y849ZY8ZxWqsImNd5rs8p2Rdbsr
+         o6Cceonc+v4yPluNAWJL/Z4UJDDFeLHGolcQamjLk/MhAlXA14irwbTwiYmHX0OQRnNy
+         qB7fkqwFa5EbSvPlLKGsz5/mPMDTMgFoh57cqGH6+QyRpWXiBfeqZzC8DqOcuynUrMpC
+         iWSLaVl3/ElYwIwntnj5vWDXKs02cvktGGcZca3dP1OqRBEFIasElhOSdUiBjhec2+Ul
+         drqAWaiS8hMjqjXjfNvc9x0RzXeP7ETV1wsN2B9kRH+nURs0m7nOWViOd7gK2PFYBM8q
+         n99g==
+X-Gm-Message-State: AOAM533xZyZ5nsGcgWeTBDkI/7o5EuBTIO/WdfXzJOlznCyVeovN2dlC
+        rggfcX04qwly3aLl2QaCzjI=
+X-Google-Smtp-Source: ABdhPJxjMLXitfryZDvN2eiy/3UeT/GGiDoL2ZkXPII0bjV70dgbIEfeYsytc7jZz0kPLwqvRkHPow==
+X-Received: by 2002:a02:c808:: with SMTP id p8mr4946126jao.109.1624544919142;
+        Thu, 24 Jun 2021 07:28:39 -0700 (PDT)
 Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id v18sm1385869iom.5.2021.06.24.07.24.46
+        by smtp.gmail.com with ESMTPSA id r20sm1834269ilj.56.2021.06.24.07.28.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 07:24:48 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 07:24:41 -0700
+        Thu, 24 Jun 2021 07:28:38 -0700 (PDT)
+Date:   Thu, 24 Jun 2021 07:28:32 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Eelco Chaudron <echaudro@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>
@@ -59,14 +59,14 @@ Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
         alexander.duyck@gmail.com, saeed@kernel.org,
         maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
         tirthendu.sarkar@intel.com
-Message-ID: <60d495a914773_2e84a2082d@john-XPS-13-9370.notmuch>
-In-Reply-To: <4F52EE5B-1A3F-46CE-9A39-98475CA6B684@redhat.com>
+Message-ID: <60d49690a87ae_2e84a2082c@john-XPS-13-9370.notmuch>
+In-Reply-To: <34E2BF41-03E0-4DEC-ABF3-72C8FF7B4E4A@redhat.com>
 References: <cover.1623674025.git.lorenzo@kernel.org>
- <863f4934d251f44ad85a6be08b3737fac74f9b5a.1623674025.git.lorenzo@kernel.org>
- <60d2744ee12c2_1342e208f7@john-XPS-13-9370.notmuch>
- <4F52EE5B-1A3F-46CE-9A39-98475CA6B684@redhat.com>
-Subject: Re: [PATCH v9 bpf-next 08/14] bpf: add multi-buff support to the
- bpf_xdp_adjust_tail() API
+ <4d2a74f7389eb51e2b43c63df76d9cd76f57384c.1623674025.git.lorenzo@kernel.org>
+ <60d27716b5a5a_1342e208d5@john-XPS-13-9370.notmuch>
+ <34E2BF41-03E0-4DEC-ABF3-72C8FF7B4E4A@redhat.com>
+Subject: Re: [PATCH v9 bpf-next 10/14] bpf: add multi-buffer support to xdp
+ copy helpers
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -78,102 +78,42 @@ X-Mailing-List: bpf@vger.kernel.org
 Eelco Chaudron wrote:
 > 
 > 
-> On 23 Jun 2021, at 1:37, John Fastabend wrote:
+> On 23 Jun 2021, at 1:49, John Fastabend wrote:
 > 
 > > Lorenzo Bianconi wrote:
 > >> From: Eelco Chaudron <echaudro@redhat.com>
 > >>
-> >> This change adds support for tail growing and shrinking for XDP multi-buff.
+> >> This patch adds support for multi-buffer for the following helpers:
+> >>   - bpf_xdp_output()
+> >>   - bpf_perf_event_output()
 > >>
-> >
-> > It would be nice if the commit message gave us some details on how the
-> > growing/shrinking works in the multi-buff support.
-> 
-> Will add this to the next rev.
-> 
 > >> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
 > >> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 > >> ---
-> >>  include/net/xdp.h |  7 ++++++
-> >>  net/core/filter.c | 62 +++++++++++++++++++++++++++++++++++++++++++++++
-> >>  net/core/xdp.c    |  5 ++--
-> >>  3 files changed, 72 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> >> index 935a6f83115f..3525801c6ed5 100644
-> >> --- a/include/net/xdp.h
-> >> +++ b/include/net/xdp.h
-> >> @@ -132,6 +132,11 @@ xdp_get_shared_info_from_buff(struct xdp_buff *xdp)
-> >>  	return (struct skb_shared_info *)xdp_data_hard_end(xdp);
-> >>  }
-> >>
-> >> +static inline unsigned int xdp_get_frag_tailroom(const skb_frag_t *frag)
-> >> +{
-> >> +	return PAGE_SIZE - skb_frag_size(frag) - skb_frag_off(frag);
-> >> +}
-> >> +
-> >>  struct xdp_frame {
-> >>  	void *data;
-> >>  	u16 len;
-> >> @@ -259,6 +264,8 @@ struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
-> >>  	return xdp_frame;
-> >>  }
-> >>
-> >> +void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
-> >> +		  struct xdp_buff *xdp);
-> >>  void xdp_return_frame(struct xdp_frame *xdpf);
-> >>  void xdp_return_frame_rx_napi(struct xdp_frame *xdpf);
-> >>  void xdp_return_buff(struct xdp_buff *xdp);
-> >> diff --git a/net/core/filter.c b/net/core/filter.c
-> >> index caa88955562e..05f574a3d690 100644
-> >> --- a/net/core/filter.c
-> >> +++ b/net/core/filter.c
-> >> @@ -3859,11 +3859,73 @@ static const struct bpf_func_proto bpf_xdp_adjust_head_proto = {
-> >>  	.arg2_type	= ARG_ANYTHING,
-> >>  };
-> >>
-> >> +static int bpf_xdp_mb_adjust_tail(struct xdp_buff *xdp, int offset)
-> >> +{
-> >> +	struct skb_shared_info *sinfo;
-> >> +
-> >> +	if (unlikely(!xdp_buff_is_mb(xdp)))
-> >> +		return -EINVAL;
-> >> +
-> >> +	sinfo = xdp_get_shared_info_from_buff(xdp);
-> >> +	if (offset >= 0) {
-> >> +		skb_frag_t *frag = &sinfo->frags[sinfo->nr_frags - 1];
-> >> +		int size;
-> >> +
-> >> +		if (unlikely(offset > xdp_get_frag_tailroom(frag)))
-> >> +			return -EINVAL;
-> >> +
-> >> +		size = skb_frag_size(frag);
-> >> +		memset(skb_frag_address(frag) + size, 0, offset);
-> >> +		skb_frag_size_set(frag, size + offset);
-> >> +		sinfo->data_len += offset;
 > >
-> > Can you add some comment on how this works? So today I call
-> > bpf_xdp_adjust_tail() to add some trailer to my packet.
-> > This looks like it adds tailroom to the last frag? But, then
-> > how do I insert my trailer? I don't think we can without the
-> > extra multi-buffer access support right.
+> > Ah ok so at least xdp_output will work with all bytes. But this is
+> > getting close to having access into the frags so I think doing
+> > the last bit shouldn't be too hard?
 > 
-> You are right, we need some kind of multi-buffer access helpers.
 > 
-> > Also data_end will be unchanged yet it will return 0 so my
-> > current programs will likely be a bit confused by this.
+> Guess you are talking about multi-buffer access in the XDP program?
 > 
-> Guess this is the tricky part, applications need to be multi-buffer aware. If current applications rely on bpf_xdp_adjust_tail(+) to determine maximum frame length this approach might not work. In this case, we might need an additional helper to do tail expansion with multi buffer support.
-> 
-> But then the question arrives how would mb unaware application behave in general when an mb packet is supplied?? It would definitely not determine the correct packet length.
+> I did suggest an API a while back, https://lore.kernel.org/bpf/FD3E6E08-DE78-4FBA-96F6-646C93E88631@redhat.com/ but I had/have not time to work on it. Guess the difficult part is to convince the verifier to allow the data to be accessed.
 
-Right that was my conclusion as well. Existing programs might
-have subtle side effects if they start running on multibuffer
-drivers as is. I don't have any good ideas though on how
-to handle this.
+Ah great I think we had the same idea I called it xdp_pull_data()
+though.
 
-> 
-> >> +	} else {
-> 
+Whats the complication though it looks like it can be done by simply
+moving the data and data_end pointers around then marking them
+invalidated. This way the verifier knows the program needs to
+rewrite them. I can probably look more into next week.
+
+From my first glance it looks relatively straight forward to do
+now. I really would like to avoid yet another iteration of
+programs features I have to discover and somehow work around
+if we can get the helper into this series. If you really don't
+have time I can probably take a look early next week on an
+RFC for something like above helper.
 
 
+.John
