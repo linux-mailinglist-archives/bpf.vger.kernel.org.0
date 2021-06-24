@@ -2,118 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5283B3151
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 16:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C51B83B31C6
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 16:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhFXObA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 10:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhFXOa7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Jun 2021 10:30:59 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C84DC061574;
-        Thu, 24 Jun 2021 07:28:39 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id o5so8440448iob.4;
-        Thu, 24 Jun 2021 07:28:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=58c/kEfPGM7eo+DwySZzk3eJ3sXDxuIrRbqL+hypr44=;
-        b=dBDmnvYDh1q99UfATEv3TZ1H+fgzJtNInkfw4GpJRRNgEEE3XUQ+9U5XFIb1qpXVdg
-         smMHWBiU1sZcmru2eAIfqW7RDAAYF1spjXwVqfoAYntVmHTwYiXse8KExGDQFGZLLQiy
-         I2S/f7zxw5eri1UyCyVdy88zCp2WZCuaQ4myf+8SiZGf2wED2WbHlUV2SOszWSjMv7Er
-         6Sh4BWsw7rSWo3iOUv2HyFIS6HA4W4lgq5x6QXFilAB5ikOa2wwCan2qoeYJwyeUhfCr
-         wop4q10y+4BAVpddW8mlwbH8MMWKJlQ5ohvPZ+85wH5n+s1ZHUXifGETnH1f4DkYZAiN
-         JDOg==
+        id S231475AbhFXOzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 10:55:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25169 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230377AbhFXOzQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Jun 2021 10:55:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624546377;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BqTgXghty2FEnYbebm8W12wOyL6TGAtlqo6b00KWGLk=;
+        b=jSkJc9rxhjeLbXMRFQbYmPSicA0o1XVWopPZ0M1ON5bAQfJV4tdCzvSyVhHdZp21J205gL
+        w03RTEoHnQnftv17cEFZ87Hdem/9C5crPzqa9igQEHwqGr2pGVtqYxQGa2pjT1NKJZwPlm
+        LJKjtas+BBdaTtOu0ckLPcPaAZIcscU=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-572-8mMe_R5jNQqd8OJ60pj3rg-1; Thu, 24 Jun 2021 10:52:56 -0400
+X-MC-Unique: 8mMe_R5jNQqd8OJ60pj3rg-1
+Received: by mail-ej1-f72.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so2112593ejz.5
+        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 07:52:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=58c/kEfPGM7eo+DwySZzk3eJ3sXDxuIrRbqL+hypr44=;
-        b=iiUG+JZdlgxEMhwiiscoq4M00xrsMdJvxqgmLB3y849ZY8ZxWqsImNd5rs8p2Rdbsr
-         o6Cceonc+v4yPluNAWJL/Z4UJDDFeLHGolcQamjLk/MhAlXA14irwbTwiYmHX0OQRnNy
-         qB7fkqwFa5EbSvPlLKGsz5/mPMDTMgFoh57cqGH6+QyRpWXiBfeqZzC8DqOcuynUrMpC
-         iWSLaVl3/ElYwIwntnj5vWDXKs02cvktGGcZca3dP1OqRBEFIasElhOSdUiBjhec2+Ul
-         drqAWaiS8hMjqjXjfNvc9x0RzXeP7ETV1wsN2B9kRH+nURs0m7nOWViOd7gK2PFYBM8q
-         n99g==
-X-Gm-Message-State: AOAM533xZyZ5nsGcgWeTBDkI/7o5EuBTIO/WdfXzJOlznCyVeovN2dlC
-        rggfcX04qwly3aLl2QaCzjI=
-X-Google-Smtp-Source: ABdhPJxjMLXitfryZDvN2eiy/3UeT/GGiDoL2ZkXPII0bjV70dgbIEfeYsytc7jZz0kPLwqvRkHPow==
-X-Received: by 2002:a02:c808:: with SMTP id p8mr4946126jao.109.1624544919142;
-        Thu, 24 Jun 2021 07:28:39 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id r20sm1834269ilj.56.2021.06.24.07.28.37
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=BqTgXghty2FEnYbebm8W12wOyL6TGAtlqo6b00KWGLk=;
+        b=tax1XeC0KRyKdsmk/XmCI4Ga00l7MQUwKcYvxL8t1J7s0hCjtI55I1xpic8hRatNTV
+         R/eHxUBiKP3TV28C/zDbjaifW+dcdWhL4BiR/zkMKpLmbdzSN9fugSy7/xGpnYmjS0Lq
+         afGO4BHjtxA9E0hS93+Ue9S/j/7+qC+qF01F07ZNaWT65f/bCM5l7ixL7TtwFEFh2EfZ
+         PfWJ3P0Rf8cskvG5g06RMfiK66EpkDAVEpqDMrVXepGGKQq5nYqxHoaOUFt5CxBVaWBz
+         TMNqlxSZkt69ktTm1CUHnsNjIBYLv3bU8rROQjtxvrT1RAWtdNnWHbvAfUtbtTcBKQST
+         Odvw==
+X-Gm-Message-State: AOAM531bjHIR660Do5Ewt818i7Ce8gwy3HimMAf84uzU6sXeR09KsNF5
+        wLK8J8Kl2kOUtC/XFc71szEb5qVWoJCtbo3xHu6A/TQx1j3ablv8KXCpaOaFGkx6t+kv0JX2vnU
+        oAB4TcQI3EtLP
+X-Received: by 2002:a17:906:2b0a:: with SMTP id a10mr5648030ejg.521.1624546374742;
+        Thu, 24 Jun 2021 07:52:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9eVOJFLTiWjssfy7sq+Hieyv040TSaY+VsPSqg5BuYtJURghjEkYSNKRIAokrtH1mwNvDAQ==
+X-Received: by 2002:a17:906:2b0a:: with SMTP id a10mr5647994ejg.521.1624546374320;
+        Thu, 24 Jun 2021 07:52:54 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l26sm2110445edt.40.2021.06.24.07.52.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 07:28:38 -0700 (PDT)
-Date:   Thu, 24 Jun 2021 07:28:32 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Eelco Chaudron <echaudro@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, shayagr@amazon.com, sameehj@amazon.com,
-        dsahern@kernel.org, brouer@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com
-Message-ID: <60d49690a87ae_2e84a2082c@john-XPS-13-9370.notmuch>
-In-Reply-To: <34E2BF41-03E0-4DEC-ABF3-72C8FF7B4E4A@redhat.com>
-References: <cover.1623674025.git.lorenzo@kernel.org>
- <4d2a74f7389eb51e2b43c63df76d9cd76f57384c.1623674025.git.lorenzo@kernel.org>
- <60d27716b5a5a_1342e208d5@john-XPS-13-9370.notmuch>
- <34E2BF41-03E0-4DEC-ABF3-72C8FF7B4E4A@redhat.com>
-Subject: Re: [PATCH v9 bpf-next 10/14] bpf: add multi-buffer support to xdp
- copy helpers
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Thu, 24 Jun 2021 07:52:53 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D6D1E180731; Thu, 24 Jun 2021 16:52:52 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH bpf-next v4 05/19] xdp: add proper __rcu annotations to
+ redirect map entries
+In-Reply-To: <f26af869-5ea2-878a-a263-ae6f099043e9@iogearbox.net>
+References: <20210623110727.221922-1-toke@redhat.com>
+ <20210623110727.221922-6-toke@redhat.com>
+ <f26af869-5ea2-878a-a263-ae6f099043e9@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 24 Jun 2021 16:52:52 +0200
+Message-ID: <87eecrmi0r.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eelco Chaudron wrote:
-> 
-> 
-> On 23 Jun 2021, at 1:49, John Fastabend wrote:
-> 
-> > Lorenzo Bianconi wrote:
-> >> From: Eelco Chaudron <echaudro@redhat.com>
-> >>
-> >> This patch adds support for multi-buffer for the following helpers:
-> >>   - bpf_xdp_output()
-> >>   - bpf_perf_event_output()
-> >>
-> >> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-> >> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> >> ---
-> >
-> > Ah ok so at least xdp_output will work with all bytes. But this is
-> > getting close to having access into the frags so I think doing
-> > the last bit shouldn't be too hard?
-> 
-> 
-> Guess you are talking about multi-buffer access in the XDP program?
-> 
-> I did suggest an API a while back, https://lore.kernel.org/bpf/FD3E6E08-DE78-4FBA-96F6-646C93E88631@redhat.com/ but I had/have not time to work on it. Guess the difficult part is to convince the verifier to allow the data to be accessed.
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-Ah great I think we had the same idea I called it xdp_pull_data()
-though.
+> On 6/23/21 1:07 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> XDP_REDIRECT works by a three-step process: the bpf_redirect() and
+>> bpf_redirect_map() helpers will lookup the target of the redirect and st=
+ore
+>> it (along with some other metadata) in a per-CPU struct bpf_redirect_inf=
+o.
+>> Next, when the program returns the XDP_REDIRECT return code, the driver
+>> will call xdp_do_redirect() which will use the information thus stored to
+>> actually enqueue the frame into a bulk queue structure (that differs
+>> slightly by map type, but shares the same principle). Finally, before
+>> exiting its NAPI poll loop, the driver will call xdp_do_flush(), which w=
+ill
+>> flush all the different bulk queues, thus completing the redirect.
+> [...]
+>>=20
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> [...]
+>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>> index c5ad7df029ed..b01e266dad9e 100644
+>> --- a/include/linux/filter.h
+>> +++ b/include/linux/filter.h
+>> @@ -762,12 +762,10 @@ DECLARE_BPF_DISPATCHER(xdp)
+>>=20=20=20
+>>   static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *pro=
+g,
+>>   					    struct xdp_buff *xdp)
+>> -{
+>> -	/* Caller needs to hold rcu_read_lock() (!), otherwise program
+>> -	 * can be released while still running, or map elements could be
+>> -	 * freed early while still having concurrent users. XDP fastpath
+>> -	 * already takes rcu_read_lock() when fetching the program, so
+>> -	 * it's not necessary here anymore.
+>> +
+>> +	/* Driver XDP hooks are invoked within a single NAPI poll cycle and th=
+us
+>> +	 * under local_bh_disable(), which provides the needed RCU protection
+>> +	 * for accessing map entries.
+>>   	 */
+>>   	return __BPF_PROG_RUN(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
+>>   }
+>
+> I just went over the series to manually fix up merge conflicts in the dri=
+ver
+> patches since they didn't apply cleanly against bpf-next.
+>
+> But as it turned out that extra work was needless, since you didn't even =
+compile
+> test the series before submission, sigh.
+>
+> Please fix (and only submit compile- & runtime-tested code in future).
 
-Whats the complication though it looks like it can be done by simply
-moving the data and data_end pointers around then marking them
-invalidated. This way the verifier knows the program needs to
-rewrite them. I can probably look more into next week.
+Yikes! I was too much in a hurry with to re-submit and neglected to
+re-do the compile check before hitting send. Apologies, that was sloppy
+of me - I will do better in the future.
 
-From my first glance it looks relatively straight forward to do
-now. I really would like to avoid yet another iteration of
-programs features I have to discover and somehow work around
-if we can get the helper into this series. If you really don't
-have time I can probably take a look early next week on an
-RFC for something like above helper.
+Will rebase and send a v5 that doesn't blow up on compile :)
 
+-Toke
 
-.John
