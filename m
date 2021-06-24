@@ -2,263 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8723B2FC5
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 15:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E283B2FCA
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 15:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbhFXNK3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 09:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhFXNK3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Jun 2021 09:10:29 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227A3C061574
-        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 06:08:10 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id s14so3849569pfg.0
-        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 06:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=se+PGkzeNyn7tbhEGqFcJ1oNABKdMvCZshRc4NKF6Mw=;
-        b=C2Vht/YSp+Z+8Gkdpr+zBqld8wbTjuU+PuizstetYcBbGqePcnE0XoE5JEg6OF+dH8
-         H7I95tL0Zy+U/UvbTZczB+VL6AUUVVLcDfFbg7wEtlMTCMrdwLYzsvfpABlfiK7mI10l
-         x29p062tD4EuI5uBNzK9fcWFJs2Eb/KJTvNeRMaArQwBD9RmZ4f7WfGPbubKsHd9LPDf
-         BKurcR4Nsre6VI1DmRuUe+ScKutEZXU5zBuws2r2gVJcikrVcR+CSoQ1mjeRv+sY9lfo
-         TBeZzY7/nhO+7SpvpinPj6NoOx0/d+2kgzlhBYVfJtwhXsgcTdAakmfiw+RpK5YXQFHI
-         rsdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=se+PGkzeNyn7tbhEGqFcJ1oNABKdMvCZshRc4NKF6Mw=;
-        b=peNRcid3cQj7LBcqYE1Qgibh9//91MATX5DaHKxnNxTRtVd6YZ+4fYNmozdzu4+zLp
-         zFRqdCATJTJfXeh1NDhZ8PYDzP1kHMpBW2NpCQBVU465ujuIxFqaRSfg1iwc04VO4/8j
-         Q3ys1eHjHfZAhGt+a8cAGMF9hpR3O3i4gSkLuevDevV8OPrzNHCvrGoW9PLOLbFwTN5n
-         FnLiVJ+0RqGdchs/JbIDMJN2MpnYNORa4xsvMPaVyk51xWOabsAt5priYPpYk9JYSpiD
-         LB/95KwOHPipqxOSgb9LCf2w6EmbMXlvItaklYQ0i2cDDUgUXlHH/oPFGSsl3mAQ5ONN
-         +uvg==
-X-Gm-Message-State: AOAM531s5RreQ4gqcPnNzUirn/ya614uOrX9fTtRIeSdGwzkry1EdsyH
-        ZRKqdl4x5EIOE2+ec18wRVBhDDJ0Xl1ga07EVyY=
-X-Google-Smtp-Source: ABdhPJzihQRhs7Enr4iQR3w1LBYgfYXXXCgCdMuKC+OQ/ftNc0qjhUy+CaQ4ldsVxbXdpxxx4UDqlaPXVSSXEsoWSmY=
-X-Received: by 2002:aa7:824a:0:b029:2ec:89ee:e798 with SMTP id
- e10-20020aa7824a0000b02902ec89eee798mr5123775pfn.12.1624540089532; Thu, 24
- Jun 2021 06:08:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <60b08442b18d5_1cf8208a0@john-XPS-13-9370.notmuch>
- <87fsy7gqv7.fsf@toke.dk> <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch>
- <20210528180214.3b427837@carbon> <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
- <8735u3dv2l.fsf@toke.dk> <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
- <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <YNGU4GhL8fZ0ErzS@localhost.localdomain> <874kdqqfnm.fsf@toke.dk>
- <YNLxtsasQSv+YR1w@localhost.localdomain> <87mtrfmoyh.fsf@toke.dk>
-In-Reply-To: <87mtrfmoyh.fsf@toke.dk>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Thu, 24 Jun 2021 15:07:58 +0200
-Message-ID: <CAJ8uoz2jgEJUb7Yj25HUrVX66PDde2o74GHsq21SdUtQESRkPw@mail.gmail.com>
-Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
+        id S230334AbhFXNK7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 09:10:59 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:40948 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230257AbhFXNK7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Jun 2021 09:10:59 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-288-a_p6BJwHOr2fagm1ZXVMHg-1; Thu, 24 Jun 2021 14:08:37 +0100
+X-MC-Unique: a_p6BJwHOr2fagm1ZXVMHg-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 24 Jun
+ 2021 14:08:36 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Thu, 24 Jun 2021 14:08:36 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     =?utf-8?B?J1Rva2UgSMO4aWxhbmQtSsO4cmdlbnNlbic=?= <toke@redhat.com>,
+        "Kumar Kartikeya Dwivedi" <memxor@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH net-next v3 2/5] bitops: add non-atomic bitops for
+ pointers
+Thread-Topic: [PATCH net-next v3 2/5] bitops: add non-atomic bitops for
+ pointers
+Thread-Index: AQHXaCAwV0vR/9EzC02g7KfO67nDyqsjIkFA
+Date:   Thu, 24 Jun 2021 13:08:36 +0000
+Message-ID: <efba2726208045398f40fab7a9dc35e6@AcuMS.aculab.com>
+References: <20210622202835.1151230-1-memxor@gmail.com>
+ <20210622202835.1151230-3-memxor@gmail.com> <871r8tpnws.fsf@toke.dk>
+ <20210622221023.gklikg5yib4ky35m@apollo> <87y2b1o7h9.fsf@toke.dk>
+ <20210622231606.6ak5shta5bknt7lb@apollo> <87bl7won1v.fsf@toke.dk>
+In-Reply-To: <87bl7won1v.fsf@toke.dk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 2:23 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Michal Swiatkowski <michal.swiatkowski@linux.intel.com> writes:
->
-> > On Tue, Jun 22, 2021 at 01:53:33PM +0200, Toke H=C3=B8iland-J=C3=B8rgen=
-sen wrote:
-> >> Michal Swiatkowski <michal.swiatkowski@linux.intel.com> writes:
-> >>
-> >> > On Wed, Jun 02, 2021 at 09:18:37AM -0700, Jakub Kicinski wrote:
-> >> >> On Tue, 01 Jun 2021 17:22:51 -0700 John Fastabend wrote:
-> >> >> > > If we do this, the BPF program obviously needs to know which fi=
-elds are
-> >> >> > > valid and which are not. AFAICT you're proposing that this shou=
-ld be
-> >> >> > > done out-of-band (i.e., by the system administrator manually en=
-suring
-> >> >> > > BPF program config fits system config)? I think there are a cou=
-ple of
-> >> >> > > problems with this:
-> >> >> > >
-> >> >> > > - It requires the system admin to coordinate device config with=
- all of
-> >> >> > >   their installed XDP applications. This is error-prone, especi=
-ally as
-> >> >> > >   the number of applications grows (say if different containers=
- have
-> >> >> > >   different XDP programs installed on their virtual devices).
-> >> >> >
-> >> >> > A complete "system" will need to be choerent. If I forward into a=
- veth
-> >> >> > device the orchestration component needs to ensure program sendin=
-g
-> >> >> > bits there is using the same format the program installed there e=
-xpects.
-> >> >> >
-> >> >> > If I tailcall/fentry into another program that program the callee=
- and
-> >> >> > caller need to agree on the metadata protocol.
-> >> >> >
-> >> >> > I don't see any way around this. Someone has to manage the networ=
-k.
-> >> >>
-> >> >> FWIW I'd like to +1 Toke's concerns.
-> >> >>
-> >> >> In large deployments there won't be a single arbiter. Saying there
-> >> >> is seems to contradict BPF maintainers' previous stand which lead
-> >> >> to addition of bpf_links for XDP.
-> >> >>
-> >> >> In practical terms person rolling out an NTP config change may not
-> >> >> be aware that in some part of the network some BPF program expects
-> >> >> descriptor not to contain time stamps. Besides features may depend
-> >> >> or conflict so the effects of feature changes may not be obvious
-> >> >> across multiple drivers in a heterogeneous environment.
-> >> >>
-> >> >> IMO guarding from obvious mis-configuration provides obvious value.
-> >> >
-> >> > Hi,
-> >> >
-> >> > Thanks for a lot of usefull information about CO-RE. I have read
-> >> > recommended articles, but still don't understand everything, so sorr=
-y if
-> >> > my questions are silly.
-> >> >
-> >> > As introduction, I wrote small XDP example using CO-RE (autogenerate=
-d
-> >> > vmlinux.h and getting rid of skeleton etc.) based on runqslower
-> >> > implementation. Offset reallocation of hints works great, I built CO=
--RE
-> >> > application, added new field to hints struct, changed struct layout =
-and
-> >> > without rebuilding application everything still works fine. Is it wo=
-rth
-> >> > to add XDP sample using CO-RE in kernel or this isn't good place for
-> >> > this kind of sample?
-> >> >
-> >> > First question not stricte related to hints. How to get rid of #defi=
-ne
-> >> > and macro when I am using generated vmlinux.h? For example I wanted =
-to
-> >> > use htons macro and ethtype definition. They are located in headers =
-that
-> >> > also contains few struct definition. Because of that I have redefini=
-tion
-> >> > error when I am trying to include them (redefinition in vmlinux.h an=
-d
-> >> > this included file). What can I do with this besides coping definiti=
-ons
-> >> > to bpf code?
-> >>
-> >> One way is to only include the structs you actually need from vmlinux.=
-h.
-> >> You can even prune struct members, since CO-RE works just fine with
-> >> partial struct definitions as long as the member names match.
-> >>
-> >> Jesper has an example on how to handle this here:
-> >> https://github.com/netoptimizer/bpf-examples/blob/ktrace01-CO-RE.publi=
-c/headers/vmlinux_local.h
-> >>
-> >
-> > I see, thanks, I will take a look at other examples.
-> >
-> >> > I defined hints struct in driver code, is it right place for that? A=
-ll
-> >> > vendors will define their own hints struct or the idea is to have on=
-e
-> >> > big hints struct with flags informing about availability of each fie=
-lds?
-> >> >
-> >> > For me defining it in driver code was easier because I can have used
-> >> > module btf to generate vmlinux.h with hints struct inside. However t=
-his
-> >> > break portability if other vendors will have different struct name e=
-tc,
-> >> > am I right?
-> >>
-> >> I would expect the easiest is for drivers to just define their own
-> >> structs and maybe have some infrastructure in the core to let userspac=
-e
-> >> discover the right BTF IDs to use for a particular netdev. However, as
-> >> you say it's not going to work if every driver just invents their own
-> >> field names, so we'll need to coordinate somehow. We could do this by
-> >> convention, though, it'll need manual intervention to make sure the
-> >> semantics of identically-named fields match anyway.
-> >>
-> >> Cf the earlier discussion with how many BTF IDs each driver might
-> >> define, I think we *also* need a way to have flags that specify which
-> >> fields of a given BTF ID are currently used; and having some common
-> >> infrastructure for that would be good...
-> >>
-> >
-> > Sounds good.
-> >
-> > Sorry, but I feel that I don't fully understand the idea. Correct me if
-> > I am wrong:
-> >
-> > In building CO-RE application step we can defined big struct with
-> > all possible fields or even empty struct (?) and use
-> > bpf_core_field_exists.
-> >
-> > bpf_core_field_exists will be resolve before loading program by libbpf
-> > code. In normal case libbpf will look for btf with hints name in vmlinu=
-x
-> > of running kernel and do offset rewrite and exsistence check. But as th=
-e
-> > same hints struct will be define in multiple modules we want to add mor=
-e
-> > logic to libbpf to discover correct BTF ID based on netdev on which pro=
-gram
-> > will be loaded?
->
-> I would expect that the program would decide ahead-of-time which BTF IDs
-> it supports, by something like including the relevant structs from
-> vmlinux.h. And then we need the BTF ID encoded into the packet metadata
-> as well, so that it is possible to check at run-time which driver the
-> packet came from (since a packet can be redirected, so you may end up
-> having to deal with multiple formats in the same XDP program).
->
-> Which would allow you to write code like:
->
-> if (ctx->has_driver_meta) {
->   /* this should be at a well-known position, like first (or last) in met=
-a area */
->   __u32 *meta_btf_id =3D ctx->data_meta;
->
->   if (*meta_btf_id =3D=3D BTF_ID_MLX5) {
->     struct meta_mlx5 *meta =3D ctx->data_meta;
->     /* do something with meta */
->   } else if (meta_btf_id =3D=3D BTF_ID_I40E) {
->     struct meta_i40e *meta =3D ctx->data_meta;
->     /* do something with meta */
->   } /* etc */
-> }
->
-> and libbpf could do relocations based on the different meta structs,
-> even removing the code for the ones that don't exist on the running
-> kernel.
+RnJvbTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuDQo+IFNlbnQ6IDIzIEp1bmUgMjAyMSAxMjow
+OQ0KPiBLdW1hciBLYXJ0aWtleWEgRHdpdmVkaSA8bWVteG9yQGdtYWlsLmNvbT4gd3JpdGVzOg0K
+PiANCj4gPiBPbiBXZWQsIEp1biAyMywgMjAyMSBhdCAwNDowMzowNkFNIElTVCwgVG9rZSBIw7hp
+bGFuZC1Kw7hyZ2Vuc2VuIHdyb3RlOg0KPiA+PiBLdW1hciBLYXJ0aWtleWEgRHdpdmVkaSA8bWVt
+eG9yQGdtYWlsLmNvbT4gd3JpdGVzOg0KPiA+Pg0KPiA+PiA+IE9uIFdlZCwgSnVuIDIzLCAyMDIx
+IGF0IDAzOjIyOjUxQU0gSVNULCBUb2tlIEjDuGlsYW5kLUrDuHJnZW5zZW4gd3JvdGU6DQo+ID4+
+ID4+IEt1bWFyIEthcnRpa2V5YSBEd2l2ZWRpIDxtZW14b3JAZ21haWwuY29tPiB3cml0ZXM6DQo+
+ID4+ID4+DQo+ID4+ID4+ID4gY3B1bWFwIG5lZWRzIHRvIHNldCwgY2xlYXIsIGFuZCB0ZXN0IHRo
+ZSBsb3dlc3QgYml0IGluIHNrYiBwb2ludGVyIGluDQo+ID4+ID4+ID4gdmFyaW91cyBwbGFjZXMu
+IFRvIG1ha2UgdGhlc2UgY2hlY2tzIGxlc3Mgbm9pc3ksIGFkZCBwb2ludGVyIGZyaWVuZGx5DQo+
+ID4+ID4+ID4gYml0b3AgbWFjcm9zIHRoYXQgYWxzbyBkbyBzb21lIHR5cGVjaGVja2luZyB0byBz
+YW5pdGl6ZSB0aGUgYXJndW1lbnQuDQo+ID4+ID4+ID4NCj4gPj4gPj4gPiBUaGVzZSB3cmFwIHRo
+ZSBub24tYXRvbWljIGJpdG9wcyBfX3NldF9iaXQsIF9fY2xlYXJfYml0LCBhbmQgdGVzdF9iaXQN
+Cj4gPj4gPj4gPiBidXQgZm9yIHBvaW50ZXIgYXJndW1lbnRzLiBQb2ludGVyJ3MgYWRkcmVzcyBo
+YXMgdG8gYmUgcGFzc2VkIGluIGFuZCBpdA0KPiA+PiA+PiA+IGlzIHRyZWF0ZWQgYXMgYW4gdW5z
+aWduZWQgbG9uZyAqLCBzaW5jZSB3aWR0aCBhbmQgcmVwcmVzZW50YXRpb24gb2YNCj4gPj4gPj4g
+PiBwb2ludGVyIGFuZCB1bnNpZ25lZCBsb25nIG1hdGNoIG9uIHRhcmdldHMgTGludXggc3VwcG9y
+dHMuIFRoZXkgYXJlDQo+ID4+ID4+ID4gcHJlZml4ZWQgd2l0aCBkb3VibGUgdW5kZXJzY29yZSB0
+byBpbmRpY2F0ZSBsYWNrIG9mIGF0b21pY2l0eS4NCj4gPj4gPj4gPg0KPiA+PiA+PiA+IFNpZ25l
+ZC1vZmYtYnk6IEt1bWFyIEthcnRpa2V5YSBEd2l2ZWRpIDxtZW14b3JAZ21haWwuY29tPg0KPiA+
+PiA+PiA+IC0tLQ0KPiA+PiA+PiA+ICBpbmNsdWRlL2xpbnV4L2JpdG9wcy5oICAgIHwgMTkgKysr
+KysrKysrKysrKysrKysrKw0KPiA+PiA+PiA+ICBpbmNsdWRlL2xpbnV4L3R5cGVjaGVjay5oIHwg
+MTAgKysrKysrKysrKw0KPiA+PiA+PiA+ICAyIGZpbGVzIGNoYW5nZWQsIDI5IGluc2VydGlvbnMo
+KykNCj4gPj4gPj4gPg0KPiA+PiA+PiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2JpdG9w
+cy5oIGIvaW5jbHVkZS9saW51eC9iaXRvcHMuaA0KPiA+PiA+PiA+IGluZGV4IDI2YmYxNWU2Y2Qz
+NS4uYTllMzM2YjlmYTRkIDEwMDY0NA0KPiA+PiA+PiA+IC0tLSBhL2luY2x1ZGUvbGludXgvYml0
+b3BzLmgNCj4gPj4gPj4gPiArKysgYi9pbmNsdWRlL2xpbnV4L2JpdG9wcy5oDQo+ID4+ID4+ID4g
+QEAgLTQsNiArNCw3IEBADQo+ID4+ID4+ID4NCj4gPj4gPj4gPiAgI2luY2x1ZGUgPGFzbS90eXBl
+cy5oPg0KPiA+PiA+PiA+ICAjaW5jbHVkZSA8bGludXgvYml0cy5oPg0KPiA+PiA+PiA+ICsjaW5j
+bHVkZSA8bGludXgvdHlwZWNoZWNrLmg+DQo+ID4+ID4+ID4NCj4gPj4gPj4gPiAgI2luY2x1ZGUg
+PHVhcGkvbGludXgva2VybmVsLmg+DQo+ID4+ID4+ID4NCj4gPj4gPj4gPiBAQCAtMjUzLDYgKzI1
+NCwyNCBAQCBzdGF0aWMgX19hbHdheXNfaW5saW5lIHZvaWQgX19hc3NpZ25fYml0KGxvbmcgbnIs
+IHZvbGF0aWxlIHVuc2lnbmVkIGxvbmcNCj4gKmFkZHIsDQo+ID4+ID4+ID4gIAkJX19jbGVhcl9i
+aXQobnIsIGFkZHIpOw0KPiA+PiA+PiA+ICB9DQo+ID4+ID4+ID4NCj4gPj4gPj4gPiArI2RlZmlu
+ZSBfX3B0cl9zZXRfYml0KG5yLCBhZGRyKSAgICAgICAgICAgICAgICAgICAgICAgICBcDQo+ID4+
+ID4+ID4gKwkoeyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBc
+DQo+ID4+ID4+ID4gKwkJdHlwZWNoZWNrX3BvaW50ZXIoKihhZGRyKSk7ICAgICAgICAgICAgIFwN
+Cj4gPj4gPj4gPiArCQlfX3NldF9iaXQobnIsICh1bnNpZ25lZCBsb25nICopKGFkZHIpKTsgXA0K
+PiA+PiA+PiA+ICsJfSkNCj4gPj4gPj4gPiArDQo+ID4+ID4+ID4gKyNkZWZpbmUgX19wdHJfY2xl
+YXJfYml0KG5yLCBhZGRyKSAgICAgICAgICAgICAgICAgICAgICAgICBcDQo+ID4+ID4+ID4gKwko
+eyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwNCj4gPj4g
+Pj4gPiArCQl0eXBlY2hlY2tfcG9pbnRlcigqKGFkZHIpKTsgICAgICAgICAgICAgICBcDQo+ID4+
+ID4+ID4gKwkJX19jbGVhcl9iaXQobnIsICh1bnNpZ25lZCBsb25nICopKGFkZHIpKTsgXA0KPiA+
+PiA+PiA+ICsJfSkNCj4gPj4gPj4gPiArDQo+ID4+ID4+ID4gKyNkZWZpbmUgX19wdHJfdGVzdF9i
+aXQobnIsIGFkZHIpICAgICAgICAgICAgICAgICAgICAgICBcDQo+ID4+ID4+ID4gKwkoeyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwNCj4gPj4gPj4gPiArCQl0
+eXBlY2hlY2tfcG9pbnRlcigqKGFkZHIpKTsgICAgICAgICAgICBcDQo+ID4+ID4+ID4gKwkJdGVz
+dF9iaXQobnIsICh1bnNpZ25lZCBsb25nICopKGFkZHIpKTsgXA0KPiA+PiA+PiA+ICsJfSkNCj4g
+Pj4gPj4gPiArDQo+ID4+ID4+DQo+ID4+ID4+IEJlZm9yZSB0aGVzZSB3ZXJlIGZ1bmN0aW9ucyB0
+aGF0IHJldHVybmVkIHRoZSBtb2RpZmllZCB2YWx1ZXMsIG5vdyB0aGV5DQo+ID4+ID4+IGFyZSBt
+YWNyb3MgdGhhdCBtb2RpZnkgaW4tcGxhY2UuIFdoeSB0aGUgY2hhbmdlPyA6KQ0KPiA+PiA+Pg0K
+PiA+PiA+DQo+ID4+ID4gR2l2ZW4gdGhhdCB3ZSdyZSBleHBvcnRpbmcgdGhpcyB0byBhbGwga2Vy
+bmVsIHVzZXJzIG5vdywgaXQgZmVsdCBtb3JlDQo+ID4+ID4gYXBwcm9wcmlhdGUgdG8gZm9sbG93
+IHRoZSBleGlzdGluZyBjb252ZW50aW9uL2FyZ3VtZW50IG9yZGVyIGZvciB0aGUNCj4gPj4gPiBm
+dW5jdGlvbnMvb3BzIHRoZXkgYXJlIHdyYXBwaW5nLg0KPiA+Pg0KPiA+PiBJIHdhc24ndCB0YWxr
+aW5nIGFib3V0IHRoZSBvcmRlciBvZiB0aGUgYXJndW1lbnRzOyBzd2FwcGluZyB0aG9zZSBpcw0K
+PiA+PiBmaW5lLiBCdXQgYmVmb3JlLCB5b3UgaGFkOg0KPiA+Pg0KPiA+PiBzdGF0aWMgdm9pZCAq
+X19wdHJfc2V0X2JpdCh2b2lkICpwdHIsIGludCBiaXQpDQo+ID4+DQo+ID4+IHdpdGggdXNhZ2Ug
+KGZ1bmN0aW9uIHJldHVybiBpcyB0aGUgbW9kaWZpZWQgdmFsdWUpOg0KPiA+PiByZXQgPSBwdHJf
+cmluZ19wcm9kdWNlKHJjcHUtPnF1ZXVlLCBfX3B0cl9zZXRfYml0KHNrYiwgMCkpOw0KPiA+Pg0K
+PiA+PiBub3cgeW91IGhhdmU6DQo+ID4+ICNkZWZpbmUgX19wdHJfc2V0X2JpdChuciwgYWRkcikN
+Cj4gPj4NCj4gPj4gd2l0aCB1c2FnZSAobW9kaWZpZXMgYXJndW1lbnQgaW4tcGxhY2UpOg0KPiA+
+PiBfX3B0cl9zZXRfYml0KDAsICZza2IpOw0KPiA+PiByZXQgPSBwdHJfcmluZ19wcm9kdWNlKHJj
+cHUtPnF1ZXVlLCBza2IpOw0KPiA+Pg0KPiA+PiB3aHkgY2hhbmdlIGZyb20gZnVuY3Rpb24gdG8g
+bWFjcm8/DQo+ID4+DQo+ID4NCj4gPiBFYXJsaWVyIGl0IGp1c3QgdG9vayB0aGUgcG9pbnRlciB2
+YWx1ZSBhbmQgcmV0dXJuZWQgb25lIHdpdGggdGhlIGJpdCBzZXQuIEkNCj4gPiBjaGFuZ2VkIGl0
+IHRvIHdvcmsgc2ltaWxhciB0byBfX3NldF9iaXQuDQo+IA0KPiBIbW0sIG9rYXksIGZhaXIgZW5v
+dWdoIEkgc3VwcG9zZSB0aGVyZSdzIHNvbWV0aGluZyB0byBiZSBzYWlkIGZvcg0KPiBjb25zaXN0
+ZW5jeSwgZXZlbiB0aG91Z2ggSSBwZXJzb25hbGx5IHByZWZlciB0aGUgZnVuY3Rpb24gc3R5bGUu
+IExldCdzDQo+IGtlZXAgaXQgYXMgbWFjcm9zLCB0aGVuIDopDQoNClBhc3NpbmcgdGhlIGFkZHJl
+c3Mgb2YgdGhlIHBvaW50ZXIgd2lsbCB0cmFzaCBhIGxvdCBvZiBvcHRpbWlzYXRpb25zLg0KWW91
+IGRvIHJlYWxseSB3YW50IHRvIHVzZSB0aGUgcmV0dXJuIGFkZHJlc3MuDQpPciwgZXZlbiBiZXR0
+ZXIsIGdldCB0aGUgd2hvbGUgdGhpbmcgaW5saW5lZC4NCg0KU28gc29tZXRoaW5nIGxpa2U6DQoj
+ZGVmaW5lIHB0cl9zZXRfYml0KHB0ciwgdmFsKSAoKHR5cGVvZiAocHRyKSkoKHVuc2lnbmVkIGxv
+bmcpKHB0cikgfCAoMSA8PCAodmFsKSkpKQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRy
+ZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1L
+MSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Just wondering how this will carry over to user-space and AF_XDP since
-it sees the same metadata area as XDP? AFAIK, dynamic linkers today
-cannot relocate structs or remove members, but I am not up-to-date
-with the latest here so might be completely wrong. And it would be
-good not to have to recompile a user-space binary just because a new
-NIC came out with a new BTF ID and layout, but with the same metadata
-member name and format as previous NICs/BTF IDs. But I do not know how
-to solve these things in user-space at the moment (except to have
-fixed locations for a common set of metadata, but that is what we are
-trying to avoid), so any hints and suggestions are highly appreciated.
-
-> -Toke
->
