@@ -2,139 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51B83B31C6
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 16:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7B13B321C
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 16:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhFXOzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 10:55:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25169 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230377AbhFXOzQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 24 Jun 2021 10:55:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624546377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BqTgXghty2FEnYbebm8W12wOyL6TGAtlqo6b00KWGLk=;
-        b=jSkJc9rxhjeLbXMRFQbYmPSicA0o1XVWopPZ0M1ON5bAQfJV4tdCzvSyVhHdZp21J205gL
-        w03RTEoHnQnftv17cEFZ87Hdem/9C5crPzqa9igQEHwqGr2pGVtqYxQGa2pjT1NKJZwPlm
-        LJKjtas+BBdaTtOu0ckLPcPaAZIcscU=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-8mMe_R5jNQqd8OJ60pj3rg-1; Thu, 24 Jun 2021 10:52:56 -0400
-X-MC-Unique: 8mMe_R5jNQqd8OJ60pj3rg-1
-Received: by mail-ej1-f72.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so2112593ejz.5
-        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 07:52:55 -0700 (PDT)
+        id S231250AbhFXPB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 11:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230377AbhFXPB2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Jun 2021 11:01:28 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A77C061574
+        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 07:59:08 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id d2so8137210ljj.11
+        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 07:59:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A5Af/F0RmtdZJaaM4A4ftcPZxj+C6ieZjclwoHh13Kc=;
+        b=OuLfJ5S9M+bTjtperCT65qqeQPvaGLoy+V1ScPqwnNLlhwt60KifDTIKRoj2MWlCZC
+         4bEAw3HBog77tcChDUcb+2tFVBH8lW5D4O2j3VvMEOnRDEwvkbD5iU7nC9A1ZeFuQn0B
+         kQKF9xuo+bod0cz/YuL4a0k9N42gfhjG5dXMM/i1LgqveSPzbfbpFGYu7RCWqlKxiVdo
+         +1tGsJKH4+s0v2VkXvvFKkdM+iM36KiL1EwkQJBdA7AaOfs8z1Ob8iFx7OqR4YL0JJk+
+         lKjrVh5ctZPVfaP9KK8anFuiMiTt5Aw759y7fL2IksZnQ1Ou3UPITDP9ctoaB5NL4hCr
+         QxbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=BqTgXghty2FEnYbebm8W12wOyL6TGAtlqo6b00KWGLk=;
-        b=tax1XeC0KRyKdsmk/XmCI4Ga00l7MQUwKcYvxL8t1J7s0hCjtI55I1xpic8hRatNTV
-         R/eHxUBiKP3TV28C/zDbjaifW+dcdWhL4BiR/zkMKpLmbdzSN9fugSy7/xGpnYmjS0Lq
-         afGO4BHjtxA9E0hS93+Ue9S/j/7+qC+qF01F07ZNaWT65f/bCM5l7ixL7TtwFEFh2EfZ
-         PfWJ3P0Rf8cskvG5g06RMfiK66EpkDAVEpqDMrVXepGGKQq5nYqxHoaOUFt5CxBVaWBz
-         TMNqlxSZkt69ktTm1CUHnsNjIBYLv3bU8rROQjtxvrT1RAWtdNnWHbvAfUtbtTcBKQST
-         Odvw==
-X-Gm-Message-State: AOAM531bjHIR660Do5Ewt818i7Ce8gwy3HimMAf84uzU6sXeR09KsNF5
-        wLK8J8Kl2kOUtC/XFc71szEb5qVWoJCtbo3xHu6A/TQx1j3ablv8KXCpaOaFGkx6t+kv0JX2vnU
-        oAB4TcQI3EtLP
-X-Received: by 2002:a17:906:2b0a:: with SMTP id a10mr5648030ejg.521.1624546374742;
-        Thu, 24 Jun 2021 07:52:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy9eVOJFLTiWjssfy7sq+Hieyv040TSaY+VsPSqg5BuYtJURghjEkYSNKRIAokrtH1mwNvDAQ==
-X-Received: by 2002:a17:906:2b0a:: with SMTP id a10mr5647994ejg.521.1624546374320;
-        Thu, 24 Jun 2021 07:52:54 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id l26sm2110445edt.40.2021.06.24.07.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 07:52:53 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D6D1E180731; Thu, 24 Jun 2021 16:52:52 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH bpf-next v4 05/19] xdp: add proper __rcu annotations to
- redirect map entries
-In-Reply-To: <f26af869-5ea2-878a-a263-ae6f099043e9@iogearbox.net>
-References: <20210623110727.221922-1-toke@redhat.com>
- <20210623110727.221922-6-toke@redhat.com>
- <f26af869-5ea2-878a-a263-ae6f099043e9@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 24 Jun 2021 16:52:52 +0200
-Message-ID: <87eecrmi0r.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A5Af/F0RmtdZJaaM4A4ftcPZxj+C6ieZjclwoHh13Kc=;
+        b=YyBdJZZDOErJu2YP9gYIkBU1l/CnYIbJXRY/BlZ+1lFhoPsrtbu8LuoW6ZHfi0XleZ
+         quUfu4WR3lg3T3SMjiAi3a7r8XPXkEL8dkA1GNxZCXrROJE7g5t6dURFPBHQdepQ1iGZ
+         lSCew1eZ7swLgUe3NcnfgPqwJpsJ5BEKVD0iLSMB6OS6B4faMw4hFfyUz0sd/Ih5tRIv
+         5D8sNZHkFW4Z+Q7nSphRqsr7OQr4v4dpi/eSoyOHcMM/zxTKNTUXiHjQC+XnU6vqx9EJ
+         Ltdw9ruwDTS56Tsv2EynlUZPIQoNQyMJD75E8mOnjdnfVF1SlUXjBzW8lRIcJp8f3dZB
+         5mAA==
+X-Gm-Message-State: AOAM530nXJV/5o7A62VXo236kTFUizwMrC/9my5oxR7DTu+bGHzyHoev
+        ygPbMeINeDZ893izavbJdVme+mAIrwnfqjpn5L4=
+X-Google-Smtp-Source: ABdhPJyZkIOCJcRLz8nrja7NxQQjXYNsSXh9Q8wMc5WcrbysCtMkIwW+EC3NM42TRtoM1Z7nBnb637HVIN3Jh8azfCI=
+X-Received: by 2002:a2e:7e0e:: with SMTP id z14mr4355228ljc.21.1624546747262;
+ Thu, 24 Jun 2021 07:59:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <60b08442b18d5_1cf8208a0@john-XPS-13-9370.notmuch>
+ <87fsy7gqv7.fsf@toke.dk> <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch>
+ <20210528180214.3b427837@carbon> <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
+ <8735u3dv2l.fsf@toke.dk> <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
+ <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <YNGU4GhL8fZ0ErzS@localhost.localdomain> <874kdqqfnm.fsf@toke.dk>
+ <YNLxtsasQSv+YR1w@localhost.localdomain> <87mtrfmoyh.fsf@toke.dk> <CAJ8uoz2jgEJUb7Yj25HUrVX66PDde2o74GHsq21SdUtQESRkPw@mail.gmail.com>
+In-Reply-To: <CAJ8uoz2jgEJUb7Yj25HUrVX66PDde2o74GHsq21SdUtQESRkPw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 24 Jun 2021 07:58:55 -0700
+Message-ID: <CAADnVQKv5SLBfnBWnEBFqf0-DQv+NZuixGiCVx1hewfQFhHSKg@mail.gmail.com>
+Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
-
-> On 6/23/21 1:07 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> XDP_REDIRECT works by a three-step process: the bpf_redirect() and
->> bpf_redirect_map() helpers will lookup the target of the redirect and st=
-ore
->> it (along with some other metadata) in a per-CPU struct bpf_redirect_inf=
-o.
->> Next, when the program returns the XDP_REDIRECT return code, the driver
->> will call xdp_do_redirect() which will use the information thus stored to
->> actually enqueue the frame into a bulk queue structure (that differs
->> slightly by map type, but shares the same principle). Finally, before
->> exiting its NAPI poll loop, the driver will call xdp_do_flush(), which w=
-ill
->> flush all the different bulk queues, thus completing the redirect.
-> [...]
->>=20
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> [...]
->> diff --git a/include/linux/filter.h b/include/linux/filter.h
->> index c5ad7df029ed..b01e266dad9e 100644
->> --- a/include/linux/filter.h
->> +++ b/include/linux/filter.h
->> @@ -762,12 +762,10 @@ DECLARE_BPF_DISPATCHER(xdp)
->>=20=20=20
->>   static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *pro=
-g,
->>   					    struct xdp_buff *xdp)
->> -{
->> -	/* Caller needs to hold rcu_read_lock() (!), otherwise program
->> -	 * can be released while still running, or map elements could be
->> -	 * freed early while still having concurrent users. XDP fastpath
->> -	 * already takes rcu_read_lock() when fetching the program, so
->> -	 * it's not necessary here anymore.
->> +
->> +	/* Driver XDP hooks are invoked within a single NAPI poll cycle and th=
-us
->> +	 * under local_bh_disable(), which provides the needed RCU protection
->> +	 * for accessing map entries.
->>   	 */
->>   	return __BPF_PROG_RUN(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
->>   }
+On Thu, Jun 24, 2021 at 6:08 AM Magnus Karlsson
+<magnus.karlsson@gmail.com> wrote:
+> >
+> > and libbpf could do relocations based on the different meta structs,
+> > even removing the code for the ones that don't exist on the running
+> > kernel.
 >
-> I just went over the series to manually fix up merge conflicts in the dri=
-ver
-> patches since they didn't apply cleanly against bpf-next.
->
-> But as it turned out that extra work was needless, since you didn't even =
-compile
-> test the series before submission, sigh.
->
-> Please fix (and only submit compile- & runtime-tested code in future).
+> Just wondering how this will carry over to user-space and AF_XDP since
+> it sees the same metadata area as XDP? AFAIK, dynamic linkers today
+> cannot relocate structs or remove members, but I am not up-to-date
+> with the latest here so might be completely wrong. And it would be
+> good not to have to recompile a user-space binary just because a new
+> NIC came out with a new BTF ID and layout, but with the same metadata
+> member name and format as previous NICs/BTF IDs. But I do not know how
+> to solve these things in user-space at the moment (except to have
+> fixed locations for a common set of metadata, but that is what we are
+> trying to avoid), so any hints and suggestions are highly appreciated.
 
-Yikes! I was too much in a hurry with to re-submit and neglected to
-re-do the compile check before hitting send. Apologies, that was sloppy
-of me - I will do better in the future.
-
-Will rebase and send a v5 that doesn't blow up on compile :)
-
--Toke
-
+CO-RE is not a kernel only feature.
+The BTF tests in selftest/bpf exercise most of CO-RE purely in user space.
+The libbpf needs to know the original BTF and the target BTF to
+match one to another.
+One option for AF_XDP would be to write a bpf program to be run in user space
+and let libbpf handle relocations.
+Another option is to teach llvm x86 backend to support
+__attribute__((preserve_access_index)).
+The work done by llvm BPF backend can be copy pasted to x86 backend.
+Then standard x86 binaries will support dynamic struct layout.
+imo CO-RE for x86 backend would be great to do regardless of xdp hints.
+It's a straightforward copy-paste. Only need to convince x86 llvm maintainers.
