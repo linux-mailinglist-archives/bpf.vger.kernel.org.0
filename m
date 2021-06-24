@@ -2,115 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079B43B25B5
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 05:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5603B25FB
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 06:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhFXDvW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Jun 2021 23:51:22 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39818 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229850AbhFXDvW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Jun 2021 23:51:22 -0400
-X-UUID: 0e541a2a7cb5412db0d434357bec808b-20210624
-X-UUID: 0e541a2a7cb5412db0d434357bec808b-20210624
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <rocco.yue@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 358019924; Thu, 24 Jun 2021 11:48:58 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Jun 2021 11:48:56 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Jun 2021 11:48:54 +0800
-From:   Rocco Yue <rocco.yue@mediatek.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
-        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
-Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
-Date:   Thu, 24 Jun 2021 11:33:53 +0800
-Message-ID: <20210624033353.25636-1-rocco.yue@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <YNNtN3cdDL71SiNt@kroah.com>
-References: <YNNtN3cdDL71SiNt@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        id S229454AbhFXEGZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 00:06:25 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:51118 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229448AbhFXEGZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Jun 2021 00:06:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UdU7aWh_1624507436;
+Received: from localhost(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0UdU7aWh_1624507436)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 24 Jun 2021 12:04:04 +0800
+From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Subject: [PATCH bpf-next] libbpf: Introduce 'custom_btf_path' to 'bpf_obj_open_opts'.
+Date:   Thu, 24 Jun 2021 12:03:29 +0800
+Message-Id: <1624507409-114522-1-git-send-email-chengshuyi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2021-06-23 at 19:19 +0200, Greg KH wrote:
-On Wed, Jun 23, 2021 at 07:34:49PM +0800, Rocco Yue wrote:
->> This patch add the definition of ARPHRD_PUREIP which can for
->> example be used by mobile ccmni device as device type.
->> ARPHRD_PUREIP means that this device doesn't need kernel to
->> generate ipv6 link-local address in any addr_gen_mode.
->> 
->> Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
->> ---
->>  include/uapi/linux/if_arp.h | 1 +
->>  1 file changed, 1 insertion(+)
->> 
->> diff --git a/include/uapi/linux/if_arp.h b/include/uapi/linux/if_arp.h
->> index c3cc5a9e5eaf..4463c9e9e8b4 100644
->> --- a/include/uapi/linux/if_arp.h
->> +++ b/include/uapi/linux/if_arp.h
->> @@ -61,6 +61,7 @@
->>  #define ARPHRD_DDCMP    517		/* Digital's DDCMP protocol     */
->>  #define ARPHRD_RAWHDLC	518		/* Raw HDLC			*/
->>  #define ARPHRD_RAWIP    519		/* Raw IP                       */
->> +#define ARPHRD_PUREIP	520		/* Pure IP			*/
-> 
-> In looking at the patches, what differs "PUREIP" from "RAWIP"?  It seems
+In order to enable the older kernel to use the CO-RE feature, load the
+vmlinux btf of the specified path.
 
-Thanks for your review.
+Learn from Andrii's comments in [0], add the custom_btf_path parameter
+to bpf_obj_open_opts, you can directly use the skeleton's
+<objname>_bpf__open_opts function to pass in the custom_btf_path
+parameter.
 
-The difference between RAWIP and PUREIP is that they generate IPv6
-link-local address and IPv6 global address in different ways.
+Prior to this, there was also a developer who provided a patch with
+similar functions. It is a pity that the follow-up did not continue to
+advance. See [1].
 
-RAWIP:
-~~~~~~
-In the ipv6_generate_eui64() function, using RAWIP will always return 0,
-which will cause the kernel to automatically generate an IPv6 link-local
-address in EUI64 format and an IPv6 global address in EUI64 format.
+	[0]https://lore.kernel.org/bpf/CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com/#t
+	[1]https://yhbt.net/lore/all/CAEf4Bzbgw49w2PtowsrzKQNcxD4fZRE6AKByX-5-dMo-+oWHHA@mail.gmail.com/
 
-PUREIP:
-~~~~~~~
-After this patch set, when using PUREIP, kernel doesn't generate IPv6
-link-local address regardless of which IN6_ADDR_GEN_MODE is used.
+Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
+---
+ tools/lib/bpf/libbpf.c | 23 ++++++++++++++++++++---
+ tools/lib/bpf/libbpf.h |  6 +++++-
+ 2 files changed, 25 insertions(+), 4 deletions(-)
 
-@@  static void addrconf_dev_config(struct net_device *dev)
-+       if (dev->type == ARPHRD_PUREIP)
-+               return;
-
-And after recving RA message, kernel iterates over the link-local address
-that exists for the interface and uses the low 64bits of the link-local
-address to generate the IPv6 global address.
-The general process is as follows:
-ndisc_router_discovery() -> addrconf_prefix_rcv() -> ipv6_generate_eui64() -> ipv6_inherit_eui64()
-
-> to be the same to me.  If they are different, where is that documented?
-> 
-> thanks,
-> 
-> greg k-h
-
-I tried to find corresponding documents about other device types, but I
-am sorry I didn't find it. If it is needed, I am willing to provide.
-
-Thanks,
-Rocco
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 1e04ce7..518b19f 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -509,6 +509,8 @@ struct bpf_object {
+ 	void *priv;
+ 	bpf_object_clear_priv_t clear_priv;
+ 
++	char *custom_btf_path;
++
+ 	char path[];
+ };
+ #define obj_elf_valid(o)	((o)->efile.elf)
+@@ -2679,8 +2681,15 @@ static int bpf_object__load_vmlinux_btf(struct bpf_object *obj, bool force)
+ 	if (!force && !obj_needs_vmlinux_btf(obj))
+ 		return 0;
+ 
+-	obj->btf_vmlinux = libbpf_find_kernel_btf();
+-	err = libbpf_get_error(obj->btf_vmlinux);
++	if (obj->custom_btf_path) {
++		obj->btf_vmlinux = btf__parse(obj->custom_btf_path, NULL);
++		err = libbpf_get_error(obj->btf_vmlinux);
++		pr_debug("loading custom vmlinux BTF '%s': %d\n", obj->custom_btf_path, err);
++	} else {
++		obj->btf_vmlinux = libbpf_find_kernel_btf();
++		err = libbpf_get_error(obj->btf_vmlinux);
++	}
++
+ 	if (err) {
+ 		pr_warn("Error loading vmlinux BTF: %d\n", err);
+ 		obj->btf_vmlinux = NULL;
+@@ -7554,7 +7563,7 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
+ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
+ 		   const struct bpf_object_open_opts *opts)
+ {
+-	const char *obj_name, *kconfig;
++	const char *obj_name, *kconfig, *tmp_btf_path;
+ 	struct bpf_program *prog;
+ 	struct bpf_object *obj;
+ 	char tmp_name[64];
+@@ -7584,6 +7593,13 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
+ 	obj = bpf_object__new(path, obj_buf, obj_buf_sz, obj_name);
+ 	if (IS_ERR(obj))
+ 		return obj;
++
++	tmp_btf_path = OPTS_GET(opts, custom_btf_path, NULL);
++	if (tmp_btf_path && strlen(tmp_btf_path) < PATH_MAX) {
++		obj->custom_btf_path = strdup(tmp_btf_path);
++		if (!obj->custom_btf_path)
++			return ERR_PTR(-ENOMEM);
++	}
+ 
+ 	kconfig = OPTS_GET(opts, kconfig, NULL);
+ 	if (kconfig) {
+@@ -8702,6 +8718,7 @@ void bpf_object__close(struct bpf_object *obj)
+ 	for (i = 0; i < obj->nr_maps; i++)
+ 		bpf_map__destroy(&obj->maps[i]);
+ 
++	zfree(&obj->custom_btf_path);
+ 	zfree(&obj->kconfig);
+ 	zfree(&obj->externs);
+ 	obj->nr_extern = 0;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6e61342..16e0f01 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -94,8 +94,12 @@ struct bpf_object_open_opts {
+ 	 * system Kconfig for CONFIG_xxx externs.
+ 	 */
+ 	const char *kconfig;
++	/* Specify the path of vmlinux btf to facilitate the use of CO-RE features
++	 * in the old kernel.
++	 */
++	char *custom_btf_path;
+ };
+-#define bpf_object_open_opts__last_field kconfig
++#define bpf_object_open_opts__last_field custom_btf_path
+ 
+ LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
+ LIBBPF_API struct bpf_object *
+-- 
+1.8.3.1
 
