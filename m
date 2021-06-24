@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29DE3B337A
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 18:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6453B3380
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 18:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhFXQIo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 12:08:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47949 "EHLO
+        id S230239AbhFXQIy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 12:08:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35779 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230296AbhFXQIk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 24 Jun 2021 12:08:40 -0400
+        by vger.kernel.org with ESMTP id S231569AbhFXQIo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Jun 2021 12:08:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624550780;
+        s=mimecast20190719; t=1624550784;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ESlzoBrCtV1p5Bz5L61JWXgmG5edOzrWTpf13f6lwsQ=;
-        b=Y+2T2xE46Swz6ibryGYKTYGEUvoWDzLyE3fGyM9K570YA4DAOnNuNyM5ogxTpazGxxKfBg
-        shVVC7ImaSV7e5o2AnIfczT+cHEVHowVqmQbCh9+5houI1s2mrTq5yBUQTmt1JYvqxxWRX
-        WrSBV2a6XCkM/lObgdgLUlz8V3CSmrQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-466-rCUnMlmIN7uY29pn-iii4g-1; Thu, 24 Jun 2021 12:06:19 -0400
-X-MC-Unique: rCUnMlmIN7uY29pn-iii4g-1
-Received: by mail-ej1-f71.google.com with SMTP id c13-20020a17090603cdb029049617c6be8eso2169025eja.19
-        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 09:06:19 -0700 (PDT)
+        bh=gCA//v5U2zdeKF30MPJkPlDU8nWyKsxnTIF8PhfpTLo=;
+        b=IQ2wdmJ9vgKKLCihvF70MJ/rJPJBUSaLe6XFbl3BTmJVauZLzyyxO6WRy0dUUWLu0cLw4c
+        8HiA6Sdvnl5T5DpMgB8Sm/WagAsNM0aNFKvQDjd5nPa4e6M9EI5y0fEeAfali1nR51XfQl
+        pQyRHno43/caGKzTttvXeCnPx8T1BsM=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-529-n4SnMtH8OMitetuzDDtJ7g-1; Thu, 24 Jun 2021 12:06:22 -0400
+X-MC-Unique: n4SnMtH8OMitetuzDDtJ7g-1
+Received: by mail-ed1-f72.google.com with SMTP id v8-20020a0564023488b0290393873961f6so3593114edc.17
+        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 09:06:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ESlzoBrCtV1p5Bz5L61JWXgmG5edOzrWTpf13f6lwsQ=;
-        b=JiQy0XztSpBeVhftkT8XhaHhHooNpvpSK6hm/BFNTlGv2se2a9z/Z9bUKonls5vCF/
-         8Vx0cYu5/FAM7lGkruVWboll6GF79XYXi4kd3m/q/JPV+5pLPh/Blt5O3eoqsssptjOk
-         oxFjCf7YMAU3gvbHCJkurSbZ3wGyJbSJ0icZ4NtELjJna5eHVqRJVHm9ElI15UHwmn2T
-         AhqEUxUaq9OEpsGY7Ohc1kLBFIxbE6NJ2Ao6UAGBkJ91YsOV0Mw+AQC3bED5cG2zHyzY
-         VPkP2bIzTf6KZTlP10DnzPFASOOHU1xx7X/R2eKqtxuU9rkPBu8v12Gno8rb6d26yg1H
-         YxOg==
-X-Gm-Message-State: AOAM532k9I7PH3M3XET0Q1JX5FFBYeIs/LnTdzjfcWLXLx1zCJFzRr4R
-        tRtuB7tCcPnu8neCJh/izu4tmSMPZlG+oOT2WpImh5WN8wTpz6YVvcj13xAzX4gXo0fL3hrqJc4
-        r8orMmWcLAucb
-X-Received: by 2002:a05:6402:510d:: with SMTP id m13mr8088949edd.179.1624550778324;
-        Thu, 24 Jun 2021 09:06:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxldU8NMGgCkkQX3pZfpalJnCIJrXi/RaF7X+X+ZKboqWU5Yi+tdklycvF1YBs+a+ixBoc+Og==
-X-Received: by 2002:a05:6402:510d:: with SMTP id m13mr8088919edd.179.1624550778193;
-        Thu, 24 Jun 2021 09:06:18 -0700 (PDT)
+        bh=gCA//v5U2zdeKF30MPJkPlDU8nWyKsxnTIF8PhfpTLo=;
+        b=Y3KsterjLR3mogz7uVu0MA4OAQExmW/7lb5uz8PMYB0wJh5AhUcy7X5tCkXW+CEo+a
+         xJKuuFsqkw6AJOq2hApjTGinXzlj/AK57C5eL2s7XXIqdI09MqfLgHlp1rbGvB89tfMf
+         A+jevots7/BjqSX714fRgXq31uQGcXU2sYn/60K+y/X+oAp0Xs/WNTfLIy8SrvyUI9l/
+         oeoJsMrcHWfwHJcdnJR5ZHdXiBwYh/fp5rFxpo/MmC5/6vgO7Y90B3gd4suUWYpW4XGs
+         3KWnkjfSNWzpE8pNKMTTHoQYrD8U7MtWYta/Hyct5IGo7UBI+B1Bg3Lx5tGHaIRT23zl
+         3PnA==
+X-Gm-Message-State: AOAM5307MuaSfFG90wyFtPukr41PUAWSCZAffja0SsXvTEX4pX5oEerr
+        bYzKr6hk3POV8QO0/YO/5Vwj3AwsrRQmbAy2w3ODwi0nTiQFjvAnL0OCkrKu5PBdii3M9YQEYS+
+        THO0ep5z0RSwa
+X-Received: by 2002:a17:906:680f:: with SMTP id k15mr5958332ejr.75.1624550781494;
+        Thu, 24 Jun 2021 09:06:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzaQsXTowCVLdvWyPcdt8T/pD1yrSeJT5zej5tl3HbfAnh9ZWpoWQScDtHMX0OC5sfsqpPpLQ==
+X-Received: by 2002:a17:906:680f:: with SMTP id k15mr5958316ejr.75.1624550781251;
+        Thu, 24 Jun 2021 09:06:21 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id y10sm2043535edc.66.2021.06.24.09.06.14
+        by smtp.gmail.com with ESMTPSA id fl21sm1448600ejc.79.2021.06.24.09.06.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 24 Jun 2021 09:06:15 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2DB06180732; Thu, 24 Jun 2021 18:06:10 +0200 (CEST)
+        id 345FC180733; Thu, 24 Jun 2021 18:06:10 +0200 (CEST)
 From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     bpf@vger.kernel.org, netdev@vger.kernel.org
 Cc:     Martin KaFai Lau <kafai@fb.com>,
@@ -61,9 +61,9 @@ Cc:     Martin KaFai Lau <kafai@fb.com>,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH bpf-next v5 01/19] rcu: Create an unrcu_pointer() to remove __rcu from a pointer
-Date:   Thu, 24 Jun 2021 18:05:51 +0200
-Message-Id: <20210624160609.292325-2-toke@redhat.com>
+Subject: [PATCH bpf-next v5 02/19] doc: Clarify and expand RCU updaters and corresponding readers
+Date:   Thu, 24 Jun 2021 18:05:52 +0200
+Message-Id: <20210624160609.292325-3-toke@redhat.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210624160609.292325-1-toke@redhat.com>
 References: <20210624160609.292325-1-toke@redhat.com>
@@ -76,53 +76,76 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The xchg() and cmpxchg() functions are sometimes used to carry out RCU
-updates.  Unfortunately, this can result in sparse warnings for both
-the old-value and new-value arguments, as well as for the return value.
-The arguments can be dealt with using RCU_INITIALIZER():
+This commit clarifies which primitives readers can use given that the
+corresponding updaters have made a specific choice.  This commit also adds
+this information for the various RCU Tasks flavors.  While in the area, it
+removes a paragraph that no longer applies in any straightforward manner.
 
-        old_p = xchg(&p, RCU_INITIALIZER(new_p));
-
-But a sparse warning still remains due to assigning the __rcu pointer
-returned from xchg to the (most likely) non-__rcu pointer old_p.
-
-This commit therefore provides an unrcu_pointer() macro that strips
-the __rcu.  This macro can be used as follows:
-
-        old_p = unrcu_pointer(xchg(&p, RCU_INITIALIZER(new_p)));
-
-Reported-by: Toke Høiland-Jørgensen <toke@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- include/linux/rcupdate.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ Documentation/RCU/checklist.rst | 48 ++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 21 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 9455476c5ba2..d7895b81264e 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -363,6 +363,20 @@ static inline void rcu_preempt_sleep_check(void) { }
- #define rcu_check_sparse(p, space)
- #endif /* #else #ifdef __CHECKER__ */
+diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+index 1030119294d0..07f6cb8f674d 100644
+--- a/Documentation/RCU/checklist.rst
++++ b/Documentation/RCU/checklist.rst
+@@ -211,27 +211,33 @@ over a rather long period of time, but improvements are always welcome!
+ 	of the system, especially to real-time workloads running on
+ 	the rest of the system.
  
-+/**
-+ * unrcu_pointer - mark a pointer as not being RCU protected
-+ * @p: pointer needing to lose its __rcu property
-+ *
-+ * Converts @p from an __rcu pointer to a __kernel pointer.
-+ * This allows an __rcu pointer to be used with xchg() and friends.
-+ */
-+#define unrcu_pointer(p)						\
-+({									\
-+	typeof(*p) *_________p1 = (typeof(*p) *__force)(p);		\
-+	rcu_check_sparse(p, __rcu); 					\
-+	((typeof(*p) __force __kernel *)(_________p1)); 		\
-+})
+-7.	As of v4.20, a given kernel implements only one RCU flavor,
+-	which is RCU-sched for PREEMPTION=n and RCU-preempt for PREEMPTION=y.
+-	If the updater uses call_rcu() or synchronize_rcu(),
+-	then the corresponding readers may use rcu_read_lock() and
+-	rcu_read_unlock(), rcu_read_lock_bh() and rcu_read_unlock_bh(),
+-	or any pair of primitives that disables and re-enables preemption,
+-	for example, rcu_read_lock_sched() and rcu_read_unlock_sched().
+-	If the updater uses synchronize_srcu() or call_srcu(),
+-	then the corresponding readers must use srcu_read_lock() and
+-	srcu_read_unlock(), and with the same srcu_struct.  The rules for
+-	the expedited primitives are the same as for their non-expedited
+-	counterparts.  Mixing things up will result in confusion and
+-	broken kernels, and has even resulted in an exploitable security
+-	issue.
+-
+-	One exception to this rule: rcu_read_lock() and rcu_read_unlock()
+-	may be substituted for rcu_read_lock_bh() and rcu_read_unlock_bh()
+-	in cases where local bottom halves are already known to be
+-	disabled, for example, in irq or softirq context.  Commenting
+-	such cases is a must, of course!  And the jury is still out on
+-	whether the increased speed is worth it.
++7.	As of v4.20, a given kernel implements only one RCU flavor, which
++	is RCU-sched for PREEMPTION=n and RCU-preempt for PREEMPTION=y.
++	If the updater uses call_rcu() or synchronize_rcu(), then
++	the corresponding readers may use:  (1) rcu_read_lock() and
++	rcu_read_unlock(), (2) any pair of primitives that disables
++	and re-enables softirq, for example, rcu_read_lock_bh() and
++	rcu_read_unlock_bh(), or (3) any pair of primitives that disables
++	and re-enables preemption, for example, rcu_read_lock_sched() and
++	rcu_read_unlock_sched().  If the updater uses synchronize_srcu()
++	or call_srcu(), then the corresponding readers must use
++	srcu_read_lock() and srcu_read_unlock(), and with the same
++	srcu_struct.  The rules for the expedited RCU grace-period-wait
++	primitives are the same as for their non-expedited counterparts.
 +
- #define __rcu_access_pointer(p, space) \
- ({ \
- 	typeof(*p) *_________p1 = (typeof(*p) *__force)READ_ONCE(p); \
++	If the updater uses call_rcu_tasks() or synchronize_rcu_tasks(),
++	then the readers must refrain from executing voluntary
++	context switches, that is, from blocking.  If the updater uses
++	call_rcu_tasks_trace() or synchronize_rcu_tasks_trace(), then
++	the corresponding readers must use rcu_read_lock_trace() and
++	rcu_read_unlock_trace().  If an updater uses call_rcu_tasks_rude()
++	or synchronize_rcu_tasks_rude(), then the corresponding readers
++	must use anything that disables interrupts.
++
++	Mixing things up will result in confusion and broken kernels, and
++	has even resulted in an exploitable security issue.  Therefore,
++	when using non-obvious pairs of primitives, commenting is of
++	course a must.
+ 
+ 8.	Although synchronize_rcu() is slower than is call_rcu(), it
+ 	usually results in simpler code.  So, unless update performance is
 -- 
 2.32.0
 
