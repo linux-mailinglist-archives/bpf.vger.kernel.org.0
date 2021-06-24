@@ -2,197 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F783B3266
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 17:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4213B3399
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 18:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhFXPTV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 11:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232358AbhFXPTT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Jun 2021 11:19:19 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D283BC061756
-        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 08:16:59 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id bu12so10217043ejb.0
-        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 08:16:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riotgames.com; s=riotgames;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=22Y42jbPpmoIkLk/IuRR1ccQuv0bmYkqo5PtAHbSdH4=;
-        b=P3TR7/0JAw5ltnrWXbgbwGgKDb7xESJQnbzm52rLFHQjluUFSiXwTyqxlOoJIOUto9
-         KsONtCEmqsd8vRIbOu/6XQoRCpN5Psy0c2AlET8uDUXuRHb8QMJ5YLqehPr9LsH4qQP2
-         6sMyF7zT0bGsSg1QOpdiIAz8lQ3Gknco+VM00=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=22Y42jbPpmoIkLk/IuRR1ccQuv0bmYkqo5PtAHbSdH4=;
-        b=uATax/6VF3+aqAHCh5WNOnHCY16fbpwjRC1BW4PyOkeJT3+ysajSNWRpIMcgq2NB/E
-         4gqOQclanqheCVxcx4ZrktgA3oukMWwswmXAiRhhoKccm4pP5dvwsthmcmz2OP+U5J6j
-         uxEHT7N5bBteaxy/exPHz0oqThBcdPXT3UjrdgIwHCYQPLHfFAALdPe6AksDfuwCnM7D
-         O4IEBYiicwTO3bQbo/p0eWaFapsBeo1LMq1MWMlI+dfblvoX2s6hR1mPMjhUOlAVAA72
-         0jz3c6X+X/XlXRd88Gk9odLbvmJ4DHwgBRq4SHHP104PnQEoK/vkiCQ6PJu2KvoMJuDG
-         fzEQ==
-X-Gm-Message-State: AOAM53022XYtkMs7NLf7SM7s2rQS2XSAVfJZaxfHpSQNQ27I9/4VJ/B6
-        3rCg3guG6rhOuIVHa9QprZ17j3eD2IEOnsxmc8JTPQ==
-X-Google-Smtp-Source: ABdhPJxeiQZYYynTSeIrS2wCBkIK9QDAkD/Kt5eh4syfFc1Nui5REYA/ZueyOvBuvrAXrZuoqdBAqSOJR9RhpTOSMrY=
-X-Received: by 2002:a17:907:c87:: with SMTP id gi7mr5824600ejc.452.1624547817912;
- Thu, 24 Jun 2021 08:16:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1623674025.git.lorenzo@kernel.org> <863f4934d251f44ad85a6be08b3737fac74f9b5a.1623674025.git.lorenzo@kernel.org>
- <60d2744ee12c2_1342e208f7@john-XPS-13-9370.notmuch> <4F52EE5B-1A3F-46CE-9A39-98475CA6B684@redhat.com>
- <60d495a914773_2e84a2082d@john-XPS-13-9370.notmuch>
-In-Reply-To: <60d495a914773_2e84a2082d@john-XPS-13-9370.notmuch>
-From:   Zvi Effron <zeffron@riotgames.com>
-Date:   Thu, 24 Jun 2021 08:16:46 -0700
-Message-ID: <CAC1LvL0_DhsStjzHhRY_JrCVeBW0J6M2CDJ6qT77Do-deXq8Zg@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 08/14] bpf: add multi-buff support to the
- bpf_xdp_adjust_tail() API
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Eelco Chaudron <echaudro@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        bpf <bpf@vger.kernel.org>, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, David Miller <davem@davemloft.net>,
+        id S229995AbhFXQMV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 12:12:21 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51564 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229445AbhFXQMU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Jun 2021 12:12:20 -0400
+X-UUID: 8279eec4480b4048a414ccc5cbd21ae2-20210625
+X-UUID: 8279eec4480b4048a414ccc5cbd21ae2-20210625
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2104162736; Fri, 25 Jun 2021 00:09:59 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 25 Jun 2021 00:09:58 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 25 Jun 2021 00:09:56 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
-        sameehj@amazon.com, dsahern@kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        tirthendu.sarkar@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
+        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH 4/4] drivers: net: mediatek: initial implementation of ccmni
+Date:   Thu, 24 Jun 2021 23:55:02 +0800
+Message-ID: <20210624155501.10024-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <YNR5QuYqknaZS9+j@kroah.com>
+References: <YNR5QuYqknaZS9+j@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 7:24 AM John Fastabend <john.fastabend@gmail.com> w=
-rote:
->
-> Eelco Chaudron wrote:
-> >
-> >
-> > On 23 Jun 2021, at 1:37, John Fastabend wrote:
-> >
-> > > Lorenzo Bianconi wrote:
-> > >> From: Eelco Chaudron <echaudro@redhat.com>
-> > >>
-> > >> This change adds support for tail growing and shrinking for XDP mult=
-i-buff.
-> > >>
-> > >
-> > > It would be nice if the commit message gave us some details on how th=
-e
-> > > growing/shrinking works in the multi-buff support.
-> >
-> > Will add this to the next rev.
-> >
-> > >> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-> > >> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > >> ---
-> > >>  include/net/xdp.h |  7 ++++++
-> > >>  net/core/filter.c | 62 ++++++++++++++++++++++++++++++++++++++++++++=
-+++
-> > >>  net/core/xdp.c    |  5 ++--
-> > >>  3 files changed, 72 insertions(+), 2 deletions(-)
-> > >>
-> > >> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > >> index 935a6f83115f..3525801c6ed5 100644
-> > >> --- a/include/net/xdp.h
-> > >> +++ b/include/net/xdp.h
-> > >> @@ -132,6 +132,11 @@ xdp_get_shared_info_from_buff(struct xdp_buff *=
-xdp)
-> > >>    return (struct skb_shared_info *)xdp_data_hard_end(xdp);
-> > >>  }
-> > >>
-> > >> +static inline unsigned int xdp_get_frag_tailroom(const skb_frag_t *=
-frag)
-> > >> +{
-> > >> +  return PAGE_SIZE - skb_frag_size(frag) - skb_frag_off(frag);
-> > >> +}
-> > >> +
-> > >>  struct xdp_frame {
-> > >>    void *data;
-> > >>    u16 len;
-> > >> @@ -259,6 +264,8 @@ struct xdp_frame *xdp_convert_buff_to_frame(stru=
-ct xdp_buff *xdp)
-> > >>    return xdp_frame;
-> > >>  }
-> > >>
-> > >> +void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_d=
-irect,
-> > >> +            struct xdp_buff *xdp);
-> > >>  void xdp_return_frame(struct xdp_frame *xdpf);
-> > >>  void xdp_return_frame_rx_napi(struct xdp_frame *xdpf);
-> > >>  void xdp_return_buff(struct xdp_buff *xdp);
-> > >> diff --git a/net/core/filter.c b/net/core/filter.c
-> > >> index caa88955562e..05f574a3d690 100644
-> > >> --- a/net/core/filter.c
-> > >> +++ b/net/core/filter.c
-> > >> @@ -3859,11 +3859,73 @@ static const struct bpf_func_proto bpf_xdp_a=
-djust_head_proto =3D {
-> > >>    .arg2_type      =3D ARG_ANYTHING,
-> > >>  };
-> > >>
-> > >> +static int bpf_xdp_mb_adjust_tail(struct xdp_buff *xdp, int offset)
-> > >> +{
-> > >> +  struct skb_shared_info *sinfo;
-> > >> +
-> > >> +  if (unlikely(!xdp_buff_is_mb(xdp)))
-> > >> +          return -EINVAL;
-> > >> +
-> > >> +  sinfo =3D xdp_get_shared_info_from_buff(xdp);
-> > >> +  if (offset >=3D 0) {
-> > >> +          skb_frag_t *frag =3D &sinfo->frags[sinfo->nr_frags - 1];
-> > >> +          int size;
-> > >> +
-> > >> +          if (unlikely(offset > xdp_get_frag_tailroom(frag)))
-> > >> +                  return -EINVAL;
-> > >> +
-> > >> +          size =3D skb_frag_size(frag);
-> > >> +          memset(skb_frag_address(frag) + size, 0, offset);
-> > >> +          skb_frag_size_set(frag, size + offset);
-> > >> +          sinfo->data_len +=3D offset;
-> > >
-> > > Can you add some comment on how this works? So today I call
-> > > bpf_xdp_adjust_tail() to add some trailer to my packet.
-> > > This looks like it adds tailroom to the last frag? But, then
-> > > how do I insert my trailer? I don't think we can without the
-> > > extra multi-buffer access support right.
-> >
-> > You are right, we need some kind of multi-buffer access helpers.
-> >
-> > > Also data_end will be unchanged yet it will return 0 so my
-> > > current programs will likely be a bit confused by this.
-> >
-> > Guess this is the tricky part, applications need to be multi-buffer awa=
-re. If current applications rely on bpf_xdp_adjust_tail(+) to determine max=
-imum frame length this approach might not work. In this case, we might need=
- an additional helper to do tail expansion with multi buffer support.
-> >
-> > But then the question arrives how would mb unaware application behave i=
-n general when an mb packet is supplied?? It would definitely not determine=
- the correct packet length.
->
-> Right that was my conclusion as well. Existing programs might
-> have subtle side effects if they start running on multibuffer
-> drivers as is. I don't have any good ideas though on how
-> to handle this.
->
+On Thu, 2021-06-24 at 14:23 +0200, Greg KH wrote:
+On Thu, Jun 24, 2021 at 07:53:49PM +0800, Rocco Yue wrote:
+>> 
+>> without MTK ap ccci driver (modem driver), ccmni_rx_push() and
+>> ccmni_hif_hook() are not be used.
+>> 
+>> Both of them are exported as symbols because MTK ap ccci driver
+>> will be compiled to the ccci.ko file.
+> 
+> But I do not see any code in this series that use these symbols.  We can
 
-Would it be possible to detect multibuffer awareness of a program at load
-(or attach) time, perhaps by looking for the use of the new multibuffer
-helpers? That might make it possible to reject a non-multibuffer aware
-program on multibuffer drivers (or maybe even put the driver into a
-non-multibuffer mode at attach time), or at the very least issue a
-warning?
+will delete these symbols.
 
-> >
-> > >> +  } else {
-> >
->
->
+> not have exports that no one uses.  Please add the driver to this patch
+> series when you resend it.
+> 
+
+I've just took a look at what the Linux staging tree is. It looks like
+a good choice for the current ccmni driver.
+
+honstly, If I simply upload the relevant driver code B that calls
+A (e.g. ccmni_rx_push), there is still a lack of code to call B.
+This seems to be a continuty problem, unless all drivers codes are
+uploaded (e.g. power on modem, get hardware status, complete tx/rx flow).
+
+>> In addition, the code of MTK's modem driver is a bit complicated,
+>> because this part has more than 30,000 lines of code and contains
+>> more than 10 modules. We are completeing the upload of this huge
+>> code step by step. Our original intention was to upload the ccmni
+>> driver that directly interacts with the kernel first, and then
+>> complete the code from ccmni to the bottom layer one by one from
+>> top to bottom. We expect the completion period to be about 1 year.
+> 
+> Again, we can not add code to the kernel that is not used, sorry.  That
+> would not make any sense, would you want to maintain such a thing?
+> 
+> And 30k of code seems a bit excesive for a modem driver.   Vendors find
+> that when they submit code for inclusion in the kernel tree, in the end,
+> they end up 1/3 the original size, so 10k is reasonable.
+> 
+> I can also take any drivers today into the drivers/staging/ tree, and
+> you can do the cleanups there as well as getting help from others.
+> 
+> 1 year seems like a long time to do "cleanup", good luck!
+> 
+
+Thanks~
+
+Can I resend patch set as follows:
+(1) supplement the details of pureip for patch 1/4;
+(2) the document of ccmni.rst still live in the Documentation/...
+(3) modify ccmni and move it into the drivers/staging/...
+
+>>> +++ b/drivers/net/ethernet/mediatek/ccmni/ccmni.h
+>>> 
+>>> Why do you have a .h file for a single .c file?  that shouldn't be
+>>> needed.
+>> 
+>> I add a .h file to facilitate subsequent code expansion. If it's
+>> not appropriate to do this here, I can add the content of .h into
+>> .c file.
+> 
+> If nothing other than a single .c file needs it, put it into that .c
+> file please.
+
+will do.
+
+Thanks,
+Rocco
+
