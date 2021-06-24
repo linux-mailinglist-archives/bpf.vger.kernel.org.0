@@ -2,107 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C337C3B2B06
-	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 11:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957443B2B38
+	for <lists+bpf@lfdr.de>; Thu, 24 Jun 2021 11:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhFXJG2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 05:06:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230013AbhFXJG1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Jun 2021 05:06:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DCAE613DC;
-        Thu, 24 Jun 2021 09:04:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624525448;
-        bh=rby+ZPgSSxK8+RzLEO6EAEviTD7NAgOLS/9KpTQJ4FU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YwvmEv3TARAfMjBW8u0BmYQnLofpa8rvMy3sGduJ2AW5d4eg6GWV6H7og8F0G+vTV
-         5f3ZCXj78qe5lizHerdHMjDRZXlMwvBNzuwctQrXCK0bjoZaJu5cPlJBSM417NzGqO
-         YinHgu09t22NltJkxV+4C25ZsjzZtgAP9awWL/XE=
-Date:   Thu, 24 Jun 2021 11:04:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     David Ahern <dsahern@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
-        wsd_upstream@mediatek.com, chao.song@mediatek.com,
-        kuohong.wang@mediatek.com
-Subject: Re: [PATCH 1/4] net: if_arp: add ARPHRD_PUREIP type
-Message-ID: <YNRKhJB9/K4SKPdR@kroah.com>
-References: <YNQYHfE09Dx5kWyg@kroah.com>
- <20210624061310.12315-1-rocco.yue@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624061310.12315-1-rocco.yue@mediatek.com>
+        id S231633AbhFXJVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 05:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231569AbhFXJVQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Jun 2021 05:21:16 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C481BC061574;
+        Thu, 24 Jun 2021 02:18:56 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id h11so5808928wrx.5;
+        Thu, 24 Jun 2021 02:18:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=tM3RWQBBauYQYRk1u1dT2ftwopoSoZPRTaiu9Ggky6I=;
+        b=YOLXzhpASbcxTUxqqfJxuMo/Ew36FKQEsppSpsnhHQjlYyx5Vl2GuLJLaGTrSutoJ1
+         QXlPHb1KdiUEkI2xX9vME6kSLOhd0rj6gGEYCYEFQbsO1/X0Qt1RAKM7SdZw/qAU+Pvb
+         Y9ys6H9lXZeMEeuIHpAepVj4EA5vzCRpm664owv6F72k7fkE+RVcngD22j24Jc39oQyE
+         UWH46172+SmCMR6ZPq7TV6/83y5SRFhbtQ0ArjcRs08mq6QX6QTLkJV4wRkUylULMaTQ
+         wIJen/HX2pR+V0w/WY0RVPAILR2KDl9RTgagEvbqk1n130ahN9J3kspMYJg10J5FRz5P
+         AVNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=tM3RWQBBauYQYRk1u1dT2ftwopoSoZPRTaiu9Ggky6I=;
+        b=iUFtgzywMxqJz08yeTEI03kUDKmH6nwGzMFrb0UxhQphEl5BLxcYJRY5R2kcr1ijMR
+         Sh2CAY6EG8peM+mrczVeo3zST4phb1tgv6YJiwqmG4/Ul/kVfgAD7j/MBarbUos8aCZE
+         iHINBa45b/vu45SK30S6C9fgeRlPxfhT6rN8MlN3ABSWOPNK5nSafHBUfEhIPd9ynqho
+         78PIXJj41DYQYfBP6E1uoKLFiqafJzsom+8kvc3i1E5uaeEI/jYHxQv7eQrAXVqvPMqT
+         q/zYWoJIXpfrVkGAETGkydZwMS2r7er6ZyiTwobCo22b1dZWqKQ8THqeS9lKc1JDSSqS
+         HJNA==
+X-Gm-Message-State: AOAM530j+IzA+iXOM+0LYz6/toEdPwnHRZ6GUCqudzY/FkS/auiK9SXz
+        0aXSFAlvwYs0bLkKsCb/tR3V0jgKJtaHbPQ=
+X-Google-Smtp-Source: ABdhPJzp7Ig9vw7TqbMWKXJPRqdcYDe4o1FAzg2lAr1omGVf5YQbExagHZw2S9Clm6CL3SFy1iQwNQ==
+X-Received: by 2002:a5d:47ca:: with SMTP id o10mr2594958wrc.339.1624526335042;
+        Thu, 24 Jun 2021 02:18:55 -0700 (PDT)
+Received: from localhost.localdomain (212-51-151-130.fiber7.init7.net. [212.51.151.130])
+        by smtp.gmail.com with ESMTPSA id r1sm2456216wmh.32.2021.06.24.02.18.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Jun 2021 02:18:54 -0700 (PDT)
+From:   joamaki@gmail.com
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, j.vosburgh@gmail.com,
+        andy@greyhouse.net, vfalico@gmail.com, andrii@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        Jussi Maki <joamaki@gmail.com>
+Subject: [PATCH bpf-next v2 0/4] XDP bonding support
+Date:   Thu, 24 Jun 2021 09:18:39 +0000
+Message-Id: <20210624091843.5151-1-joamaki@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210609135537.1460244-1-joamaki@gmail.com>
+References: <20210609135537.1460244-1-joamaki@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 02:13:10PM +0800, Rocco Yue wrote:
-> On Thu, 2021-06-24 at 07:29 +0200, Greg KH wrote:
-> > 
-> > Thanks for the explaination, why is this hardware somehow "special" in
-> > this way that this has never been needed before?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> 
-> Before kernel-4.18, RAWIP was the same as PUREIP, neither of them
-> automatically generates an IPv6 link-local address, and the way to
-> generate an IPv6 global address is the same.
-> 
-> After kernel-4.18 (include 4.18 version), the behavior of RAWIP had
-> changed due to the following patch:
-> @@  static int ipv6_generate_eui64(u8 *eui, struct net_device *dev)
-> +	case ARPHRD_RAWIP:
-> +		return addrconf_ifid_rawip(eui, dev);
->  	}
->  	return -1;
-> }
-> 
-> the reason why the kernel doesn't need to generate the link-local
-> address automatically is as follows:
-> 
-> In the 3GPP 29.061, here is some description as follows:
-> "in order to avoid any conflict between the link-local address of
-> MS and that of the GGSN, the Interface-Identifier used by the MS to
-> build its link-local address shall be assigned by the GGSN. The GGSN
-> ensures the uniqueness of this Interface-Identifier. Then MT shall
-> then enforce the use of this Interface-Identifier by the TE"
-> 
-> In other words, in the cellular network, GGSN determines whether to
-> reply to the Router Solicitation message of UE by identifying the
-> low 64bits of UE interface's ipv6 link-local address.
-> 
-> When using a new kernel and RAWIP, kernel will generate an EUI64
-> format ipv6 link-local address, and if the device uses this address
-> to send RS, GGSN will not reply RA message.
-> 
-> Therefore, in that background, we came up with PUREIP to make kernel
-> doesn't generate a ipv6 link-local address in any address generate
-> mode.
+From: Jussi Maki <joamaki@gmail.com>
 
-Thanks for the better description.  That should go into the changelog
-text somewhere so that others know what is going on here with this new
-option.
+This patchset introduces XDP support to the bonding driver.
 
-And are these user-visable flags documented in a man page or something
-else somewhere?  If not, how does userspace know about them?
+The motivation for this change is to enable use of bonding (and
+802.3ad) in hairpinning L4 load-balancers such as [1] implemented with
+XDP and also to transparently support bond devices for projects that
+use XDP given most modern NICs have dual port adapters.  An alternative
+to this approach would be to implement 802.3ad in user-space and
+implement the bonding load-balancing in the XDP program itself, but
+is rather a cumbersome endeavor in terms of slave device management
+(e.g. by watching netlink) and requires separate programs for native
+vs bond cases for the orchestrator. A native in-kernel implementation
+overcomes these issues and provides more flexibility.
 
-thanks,
+Below are benchmark results done on two machines with 100Gbit
+Intel E810 (ice) NIC and with 32-core 3970X on sending machine, and
+16-core 3950X on receiving machine. 64 byte packets were sent with
+pktgen-dpdk at full rate. Two issues [2, 3] were identified with the
+ice driver, so the tests were performed with iommu=off and patch [2]
+applied. Additionally the bonding round robin algorithm was modified
+to use per-cpu tx counters as high CPU load (50% vs 10%) and high rate
+of cache misses were caused by the shared rr_tx_counter. Fix for this
+has been already merged into net-next. The statistics were collected 
+using "sar -n dev -u 1 10".
 
-greg k-h
+ -----------------------|  CPU  |--| rxpck/s |--| txpck/s |----
+ without patch (1 dev):
+   XDP_DROP:              3.15%      48.6Mpps
+   XDP_TX:                3.12%      18.3Mpps     18.3Mpps
+   XDP_DROP (RSS):        9.47%      116.5Mpps
+   XDP_TX (RSS):          9.67%      25.3Mpps     24.2Mpps
+ -----------------------
+ with patch, bond (1 dev):
+   XDP_DROP:              3.14%      46.7Mpps
+   XDP_TX:                3.15%      13.9Mpps     13.9Mpps
+   XDP_DROP (RSS):        10.33%     117.2Mpps
+   XDP_TX (RSS):          10.64%     25.1Mpps     24.0Mpps
+ -----------------------
+ with patch, bond (2 devs):
+   XDP_DROP:              6.27%      92.7Mpps
+   XDP_TX:                6.26%      17.6Mpps     17.5Mpps
+   XDP_DROP (RSS):       11.38%      117.2Mpps
+   XDP_TX (RSS):         14.30%      28.7Mpps     27.4Mpps
+ --------------------------------------------------------------
+
+RSS: Receive Side Scaling, e.g. the packets were sent to a range of
+destination IPs.
+
+[1]: https://cilium.io/blog/2021/05/20/cilium-110#standalonelb
+[2]: https://lore.kernel.org/bpf/20210601113236.42651-1-maciej.fijalkowski@intel.com/T/#t
+[3]: https://lore.kernel.org/bpf/CAHn8xckNXci+X_Eb2WMv4uVYjO2331UWB2JLtXr_58z0Av8+8A@mail.gmail.com/
+
+Patch 1 prepares bond_xmit_hash for hashing xdp_buff's
+Patch 2 adds hooks to implement redirection after bpf prog run
+Patch 3 implements the hooks in the bonding driver. 
+Patch 4 modifies devmap to properly handle EXCLUDE_INGRESS with a slave device.
+
+v1->v2:
+- Split up into smaller easier to review patches and address cosmetic 
+  review comments.
+- Drop the INDIRECT_CALL optimization as it showed little improvement in tests.
+- Drop the rr_tx_counter patch as that has already been merged into net-next.
+- Separate the test suite into another patch set. This will follow later once a
+  patch set from Magnus Karlsson is merged and provides test utilities that can
+  be reused for XDP bonding tests. v2 contains no major functional changes and
+  was tested with the test suite included in v1.
+  (https://lore.kernel.org/bpf/202106221509.kwNvAAZg-lkp@intel.com/T/#m464146d47299125d5868a08affd6d6ce526dfad1)
+
+---
+
+Jussi Maki (4):
+  net: bonding: Refactor bond_xmit_hash for use with xdp_buff
+  net: core: Add support for XDP redirection to slave device
+  net: bonding: Add XDP support to the bonding driver
+  devmap: Exclude XDP broadcast to master device
+
+ drivers/net/bonding/bond_main.c | 431 +++++++++++++++++++++++++++-----
+ include/linux/filter.h          |  13 +-
+ include/linux/netdevice.h       |   5 +
+ include/net/bonding.h           |   1 +
+ kernel/bpf/devmap.c             |  34 ++-
+ net/core/filter.c               |  25 ++
+ 6 files changed, 445 insertions(+), 64 deletions(-)
+
+-- 
+2.27.0
+
