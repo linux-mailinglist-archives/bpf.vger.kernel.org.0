@@ -2,255 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DFE3B3BB8
-	for <lists+bpf@lfdr.de>; Fri, 25 Jun 2021 06:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF523B3BE3
+	for <lists+bpf@lfdr.de>; Fri, 25 Jun 2021 07:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbhFYErZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Jun 2021 00:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        id S230210AbhFYFD7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Jun 2021 01:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhFYErZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Jun 2021 00:47:25 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722CCC061574
-        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 21:45:04 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id m15so4552095qvc.9
-        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 21:45:04 -0700 (PDT)
+        with ESMTP id S230139AbhFYFD7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Jun 2021 01:03:59 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C830C061574
+        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 22:01:39 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id y76so460351iof.6
+        for <bpf@vger.kernel.org>; Thu, 24 Jun 2021 22:01:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HgCbpPmE0R9K+y4SzwV9wF0RRrmvvs/E6Wj/xmnh054=;
-        b=JdFrnKimciFdo4Umf4jkKeJ36nhiCMvHLUTby+sudAGj++oG/7gXakYV5CEMJjU4Go
-         eRMeb33UQ0LMz1RKNpeJyfhRtJIgFm/G8w2Jqjs1ew7VvSABHtuQGUaClX4tX5wESPke
-         FgBg12yRWWdr0CgPrS07atL2zTx2/gX5H+ttW6fK7W24Mz1LeHsUAJj/VDDKcenvNlmr
-         1zzA/jq0ISKp93viiSQLfF4/ntXAIaWLQKGb/n7MG8RRnaxxfJ/Qbn3PtIbl0SGZv3kf
-         V7xtcpjlQM0Zz6iNalT8XijWY8LALBNG0BSPsrzpZcpOKYL6cs7GHVqx4EAUyGUyrDh3
-         jFiA==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=cMvnu7je0Sj5MidjD7zrx2UfDukOxP6oyglBWssgom8=;
+        b=dk27BBSfRthGQpdi1a+nlam2Biw5pjMPbewkDcXyNBs2cX//8uDAZiuTofiNdPjRcj
+         iKA8RktVm1l3wIDWVnKbU83oB2OcdxvlZfHHsEQwZ/6motQjiBSTUcWo0oac10BFi2Ll
+         Fk+cQIr+2a6QRQoJLt/VdwOWZEpesiJbWsIEb4vOTrMvLJwaWr59nZJw9DatXp/mE/Cx
+         Ql5YZQ6W8cgc9cQafVm1sxOegR3P9uhs0UXJL6I/OdEsDLiqfctDDe8fN9SLSQ1+Hv+W
+         0PMRmTvuEPvZhMNITGpgkTt5FFnj8BIXk6RC08kwtqf+mAWCyr4DRNIdNc0br2CY2ITL
+         Nxjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HgCbpPmE0R9K+y4SzwV9wF0RRrmvvs/E6Wj/xmnh054=;
-        b=GTYxyOinsEKKsIK2OvFcndrR3GBSbD7+YTeSK205no9b88VtCRiaIB8sXh/mgkvKj8
-         ieiJqLZxRI7igpqw2ldUoXIn95VHDUoXCHHYfgynvaDO7OpltE9cyBNp5i6tRDm6A8/P
-         WLfu7i1D7HCK1wvF3F1JiNbkPUhJjoU5HRE7w7KF0Somf33dAJgyxejAfOiBweQlQnJn
-         UUwXzQ+wpDnbbUo3RxbLNZy0oQLHQo1bqCsRdxIvFOVJ1A90aScacLAddlhzK69GEzfK
-         4MAR6VU6PeMK3SVsazPjGoZVuUuIN3Dv786zQj/fULvzr2SP1czbOzcqBhXWQ3K4fgDt
-         +/lw==
-X-Gm-Message-State: AOAM5319GPxKkSmONL2t748OpXMvTA4hlgIG6siUX4tZ3aCHPOyyajtk
-        xOPVOE/O58byAMCeQN9bYw/9usc/whPI
-X-Google-Smtp-Source: ABdhPJxORvaf3lt4OakKxiGL8t2PV9pWZt3K5ktCL4WsTkibaT4UJw5KO1ZfrC66Jek88UZdprwqxw==
-X-Received: by 2002:a0c:c3d1:: with SMTP id p17mr8875482qvi.44.1624596303225;
-        Thu, 24 Jun 2021 21:45:03 -0700 (PDT)
-Received: from fujitsu.celeiro.cu ([191.177.175.120])
-        by smtp.gmail.com with ESMTPSA id q2sm4168752qkc.77.2021.06.24.21.45.01
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=cMvnu7je0Sj5MidjD7zrx2UfDukOxP6oyglBWssgom8=;
+        b=gyWREPb5bEy/Vx4ZDkjfHBamMyZPMyaiCGO4KYZ8nUuo5jneVgezTQDLm+j8diBc5t
+         3SyxeRRmFbrYgzDP7Jw0yXwK0bGdaKQ6VUHh/VtfUTb7druEmxvjZqSNWxDK7DP58UDB
+         8FXrfe4bS7TGm6tbIm5UGLXYA4Xn0NqOG0+/z0P8FOAt00CeG2eKp0dZ1x8Bkr24zz3h
+         HxvVhfC6KZmPzPBehU5kKV4zLR138+TPnj6XbENaurz5h+WxN72qHW2jUk4zk+KeYveX
+         vJW3Xh6K40hE2/ar3YyL8/s2SHgMrn9hQVXv7t8FNldGw6IpKHf1MJw7KL6qGtMlOYVo
+         Kcxw==
+X-Gm-Message-State: AOAM530JIMMmdDRlHKeVhiPw/sHbmCkwzZFPyrWi7tai1s4PlCERvxLs
+        zn6iYPK6tbJezzfb4j5U/Q==
+X-Google-Smtp-Source: ABdhPJwWHp0a1W94F/laqZYIpBVP+WinNxIIJwsqdJGI8vKPFzm9tzCN3s3cizUtYB3fk4vJ5t3LIw==
+X-Received: by 2002:a05:6638:110e:: with SMTP id n14mr7879762jal.4.1624597297478;
+        Thu, 24 Jun 2021 22:01:37 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id j18sm2551272ila.9.2021.06.24.22.01.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Jun 2021 21:45:02 -0700 (PDT)
+        Thu, 24 Jun 2021 22:01:37 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 54E0727C0054;
+        Fri, 25 Jun 2021 01:01:36 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 25 Jun 2021 01:01:36 -0400
+X-ME-Sender: <xms:L2PVYKwUq4Ea4cP4NyUeMPm9wiRlz2nHFupIku3V5LoEbyfi0jx6sw>
+    <xme:L2PVYGRx8Ghn0C2HbP9QuikE7O43KLY0CYkRgxt16PFBce-nQ7CcLrSVLXqnkkcfN
+    gvcYpJybgQJ61SuMxs>
+X-ME-Received: <xmr:L2PVYMV30Ou0oAU6p0922a-xKsdEADbzVhKwu_k4EBJ7rh_VqMwmHXJ8epo_GwmJfJFe_08>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegiedgleduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurheptggguffhjgffgffkfhfvofesthhqmhdthhdtjeenucfhrhhomheptfgrfhgr
+    vghlucffrghvihguucfvihhnohgtohcuoehrrghfrggvlhguthhinhhotghosehgmhgrih
+    hlrdgtohhmqeenucggtffrrghtthgvrhhnpeefheekffeigedvhedtteefheffgeffuedu
+    geefveeghfdtiedvkeelhfdvvedutdenucffohhmrghinhepghhithhhuhgsrdgtohhmne
+    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrfhgr
+    vghlughtihhnohgtohdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduvd
+    ehieehledtgedqvdehheekjeelfeeiqdhrrghfrggvlhguthhinhhotghopeepghhmrghi
+    lhdrtghomhesuddvfehmrghilhdrohhrgh
+X-ME-Proxy: <xmx:L2PVYAhp3TfG68k6-qJC0ZPaX-GiuZyaMkKe7AkeVhTpiEJycaQbcA>
+    <xmx:L2PVYMCsRrW9WGE7sLU9RQ9tcXrP3mxk3bz_anNFElO7JXRfYTkVpg>
+    <xmx:L2PVYBKqMvAmu2c7Bx2qa7d-8-bldpDoFucFCBBLweFb8ukUc-fiqQ>
+    <xmx:MGPVYF6NRfnOrL2d1VEPfbzgKYJY08goRu2SwR85kEbXMPGwGLJYqA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 25 Jun 2021 01:01:35 -0400 (EDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH bpf-next v3] libbpf: introduce legacy kprobe events
+ support
 From:   Rafael David Tinoco <rafaeldtinoco@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     rafaeldtinoco@gmail.com, andrii.nakryiko@gmail.com
-Subject: [PATCH bpf-next v3] libbpf: introduce legacy kprobe events support
-Date:   Fri, 25 Jun 2021 01:44:59 -0300
-Message-Id: <20210625044459.1249282-1-rafaeldtinoco@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <CAEf4BzYQcD8vrTkXSgwBVGhRKvSWM6KyNc07QthK+=60+vUf8w@mail.gmail.com>
+In-Reply-To: <20210625044459.1249282-1-rafaeldtinoco@gmail.com>
+Date:   Fri, 25 Jun 2021 02:01:33 -0300
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>
+X-Mao-Original-Outgoing-Id: 646290093.730171-4fff6a0012bbf6bfe09beaaeb0b3f8aa
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B3E3D5CF-95BC-4D48-8F68-93DF4922FF00@gmail.com>
 References: <CAEf4BzYQcD8vrTkXSgwBVGhRKvSWM6KyNc07QthK+=60+vUf8w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <20210625044459.1249282-1-rafaeldtinoco@gmail.com>
+To:     LKML BPF <bpf@vger.kernel.org>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow kprobe tracepoint events creation through legacy interface, as the
-kprobe dynamic PMUs support, used by default, was only created in v4.17.
 
-This enables CO.RE support for older kernels.
+> Allow kprobe tracepoint events creation through legacy interface, as =
+the
+> kprobe dynamic PMUs support, used by default, was only created in =
+v4.17.
+>=20
+> This enables CO.RE support for older kernels.
+>=20
+> Signed-off-by: Rafael David Tinoco <rafaeldtinoco@gmail.com>
 
-Signed-off-by: Rafael David Tinoco <rafaeldtinoco@gmail.com>
----
- tools/lib/bpf/libbpf.c | 125 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 123 insertions(+), 2 deletions(-)
+Related to:
+https://github.com/libbpf/libbpf/issues/317
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 1e04ce724240..72a22c4d8295 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10007,6 +10007,10 @@ struct bpf_link {
- 	char *pin_path;		/* NULL, if not pinned */
- 	int fd;			/* hook FD, -1 if not applicable */
- 	bool disconnected;
-+	struct {
-+		char *name;
-+		bool retprobe;
-+	} legacy;
- };
- 
- /* Replace link's underlying BPF program with the new one */
-@@ -10143,6 +10147,47 @@ int bpf_link__unpin(struct bpf_link *link)
- 	return 0;
- }
- 
-+static int poke_kprobe_events(bool add, const char *name, bool retprobe)
-+{
-+	int fd, ret = 0;
-+	char probename[32], cmd[160];
-+	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
-+
-+	memset(probename, 0, sizeof(probename));
-+
-+	if (retprobe)
-+		ret = snprintf(probename, sizeof(probename), "kprobes/%s_ret", name);
-+	else
-+		ret = snprintf(probename, sizeof(probename), "kprobes/%s", name);
-+
-+	if (ret <= strlen("kprobes/"))
-+		return -EINVAL;
-+
-+	if (add)
-+		snprintf(cmd, sizeof(cmd),"%c:%s %s", retprobe ? 'r' : 'p', probename, name);
-+	else
-+		snprintf(cmd, sizeof(cmd), "-:%s", probename);
-+
-+	if (!(fd = open(file, O_WRONLY|O_APPEND, 0)))
-+		return -errno;
-+	if ((ret = write(fd, cmd, strlen(cmd))) < 0)
-+		ret = -errno;
-+
-+	close(fd);
-+
-+	return ret;
-+}
-+
-+static inline int add_kprobe_event_legacy(const char* name, bool retprobe)
-+{
-+	return poke_kprobe_events(true, name, retprobe);
-+}
-+
-+static inline int remove_kprobe_event_legacy(const char* name, bool retprobe)
-+{
-+	return poke_kprobe_events(false, name, retprobe);
-+}
-+
- static int bpf_link__detach_perf_event(struct bpf_link *link)
- {
- 	int err;
-@@ -10152,6 +10197,12 @@ static int bpf_link__detach_perf_event(struct bpf_link *link)
- 		err = -errno;
- 
- 	close(link->fd);
-+
-+	if (link->legacy.name) {
-+		remove_kprobe_event_legacy(link->legacy.name, link->legacy.retprobe);
-+		free(link->legacy.name);
-+	}
-+
- 	return libbpf_err(err);
- }
- 
-@@ -10229,6 +10280,23 @@ static int parse_uint_from_file(const char *file, const char *fmt)
- 	return ret;
- }
- 
-+static bool determine_kprobe_legacy(void)
-+{
-+	const char *file = "/sys/bus/event_source/devices/kprobe/type";
-+
-+	return access(file, 0) == 0 ? false : true;
-+}
-+
-+static int determine_kprobe_perf_type_legacy(const char *func_name)
-+{
-+	char file[96];
-+	const char *fname = "/sys/kernel/debug/tracing/events/kprobes/%s/id";
-+
-+	snprintf(file, sizeof(file), fname, func_name);
-+
-+	return parse_uint_from_file(file, "%d\n");
-+}
-+
- static int determine_kprobe_perf_type(void)
- {
- 	const char *file = "/sys/bus/event_source/devices/kprobe/type";
-@@ -10304,6 +10372,43 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
- 	return pfd;
- }
- 
-+static int perf_event_open_probe_legacy(bool uprobe, bool retprobe, const char *name,
-+					uint64_t offset, int pid)
-+{
-+	struct perf_event_attr attr = {};
-+	char errmsg[STRERR_BUFSIZE];
-+	int type, pfd, err;
-+
-+	if (uprobe) // unsupported
-+		return -EINVAL;
-+
-+	if ((err = add_kprobe_event_legacy(name, retprobe)) < 0) {
-+		pr_warn("failed to add legacy kprobe event: %s\n",
-+		libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-+		return err;
-+	}
-+	if ((type = determine_kprobe_perf_type_legacy(name)) < 0) {
-+		pr_warn("failed to determine legacy kprobe event id: %s\n",
-+		libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
-+		return type;
-+	}
-+	attr.size = sizeof(attr);
-+	attr.config = type;
-+	attr.type = PERF_TYPE_TRACEPOINT;
-+
-+	pfd = syscall(__NR_perf_event_open, &attr,
-+		      pid < 0 ? -1 : pid, /* pid */
-+		      pid == -1 ? 0 : -1, /* cpu */
-+		      -1 /* group_fd */,  PERF_FLAG_FD_CLOEXEC);
-+	if (pfd < 0) {
-+		err = -errno;
-+		pr_warn("legacy kprobe perf_event_open() failed: %s\n",
-+			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-+		return err;
-+	}
-+	return pfd;
-+}
-+
- struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
- 					    bool retprobe,
- 					    const char *func_name)
-@@ -10311,9 +10416,18 @@ struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
- 	char errmsg[STRERR_BUFSIZE];
- 	struct bpf_link *link;
- 	int pfd, err;
-+	bool legacy = false;
- 
--	pfd = perf_event_open_probe(false /* uprobe */, retprobe, func_name,
--				    0 /* offset */, -1 /* pid */);
-+	if (!(legacy = determine_kprobe_legacy()))
-+		pfd = perf_event_open_probe(false /* uprobe */,
-+					    retprobe, func_name,
-+					     0 /* offset */,
-+					    -1 /* pid */);
-+	else
-+		pfd = perf_event_open_probe_legacy(false /* uprobe */,
-+					    retprobe, func_name,
-+					     0 /* offset */,
-+					    -1 /* pid */);
- 	if (pfd < 0) {
- 		pr_warn("prog '%s': failed to create %s '%s' perf event: %s\n",
- 			prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
-@@ -10329,6 +10443,13 @@ struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
- 			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
- 		return libbpf_err_ptr(err);
- 	}
-+
-+	if (legacy) {
-+		/* needed history for the legacy probe cleanup */
-+		link->legacy.name = strdup(func_name);
-+		link->legacy.retprobe = retprobe;
-+	}
-+
- 	return link;
- }
- 
--- 
-2.27.0
+> ---
+> tools/lib/bpf/libbpf.c | 125 ++++++++++++++++++++++++++++++++++++++++-
+> 1 file changed, 123 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 1e04ce724240..72a22c4d8295 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+
+[snip]
+
+> static int bpf_link__detach_perf_event(struct bpf_link *link)
+> {
+> 	int err;
+> @@ -10152,6 +10197,12 @@ static int bpf_link__detach_perf_event(struct =
+bpf_link *link)
+> 		err =3D -errno;
+>=20
+> 	close(link->fd);
+
+It needed the perf event fd closure for the =E2=80=98kprobe_events=E2=80=99=
+ to allow releasing.
+
+> +
+> +	if (link->legacy.name) {
+> +		remove_kprobe_event_legacy(link->legacy.name, =
+link->legacy.retprobe);
+> +		free(link->legacy.name);
+> +	}
+> +
+> 	return libbpf_err(err);
+> }
+
+[snip]
+
+Tested with: https://github.com/rafaeldtinoco/portablebpf (w/ CO.RE) in =
+kernels 5.8 and 4.15.
+
+
 
