@@ -2,184 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B426B3B3ABA
-	for <lists+bpf@lfdr.de>; Fri, 25 Jun 2021 04:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CCB3B3B4B
+	for <lists+bpf@lfdr.de>; Fri, 25 Jun 2021 05:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233044AbhFYCHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 22:07:46 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:51724 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232942AbhFYCHp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 24 Jun 2021 22:07:45 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UdZHJqO_1624586721;
-Received: from B-39YZML7H-2200.local(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0UdZHJqO_1624586721)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 25 Jun 2021 10:05:22 +0800
-Subject: Re: [PATCH bpf-next] libbpf: Introduce 'custom_btf_path' to
- 'bpf_obj_open_opts'.
-To:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <1624507409-114522-1-git-send-email-chengshuyi@linux.alibaba.com>
- <8ca15bab-ec66-657d-570a-278deff0b1a3@iogearbox.net>
-From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
-Message-ID: <e8a17455-e3e7-d259-b7ae-154cfa6f1a0a@linux.alibaba.com>
-Date:   Fri, 25 Jun 2021 10:05:19 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S233017AbhFYDtm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Jun 2021 23:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232996AbhFYDtl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Jun 2021 23:49:41 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660B1C061574;
+        Thu, 24 Jun 2021 20:47:20 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id j4so14002850lfc.8;
+        Thu, 24 Jun 2021 20:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=toZAs9JPmAsiOSU1MchBEbcfF/e+3WBe3Mbk19M8Xak=;
+        b=Ub0q0f9PXGDvdf0VIKmWYwY2N4zilskDEJxvFL47SQvZpC3JD1ZTftgRPCsB6Oo3ih
+         fThaeKnMz+tqj4Ydo+Y6ttmF9aIYmZy1+AbrTY3cEfm4+8yl6zXrm9GYtWKcvh6HEfVj
+         EnxpQBQH2YEDeG+5lwlDphfY8u7DNw7Ig0gwKIZzlmN0E1T/dxjvepB6+8w3SspLpQcG
+         J1Caj7hkaGRWZtdnQjk2uhralBsuHdPRR1iu9bM1Wo9v8+c6Lbm3kFIrST6qszMUsdYf
+         O1yB2GymzGCk60WSyMhn/N+dUTpD9BhGsaWP8geaRxAjAxo4VQ864yI0ZePjA87R9FZW
+         1Iew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=toZAs9JPmAsiOSU1MchBEbcfF/e+3WBe3Mbk19M8Xak=;
+        b=JjNwOWcbfSe9YfOUDFzQwk24KUyTs4qmf6sz3XgzJEgkpLaNzXF9P9/yAPH41vVho9
+         ad6I5SJtyZON0cV0RTeJ5oJdx+I4kBa/l7W9mU4fx0aaME0cfsOVuY+XCDrOUpZn7E/4
+         DcYJpO3UdBsIftALuYuWBM4slL8kdESn2YvClLofTNcX1QrCTQ0oZZEsJFLMnxZMl9fd
+         4X96ECAwPY5DWkibTwXcfsbqQNQi1xbrPS9IivEkQCfxt8Ey/+14SI10Pa+zGdcGG8YS
+         WwBnXL0u7Qwnfkkmp3L+nlfM5qLoMkuQRqPRSR3Ty45ksVoeskDmvrVcW+wOnKtmQud7
+         CUCA==
+X-Gm-Message-State: AOAM532ZecgyIdQHMyiVY/bICGe81EUqvfYbUickW2/jxN11N1ma+zyL
+        cimlrppzBd2jk0QhcSsJ/dbiLPAXbP7+x3wLZho=
+X-Google-Smtp-Source: ABdhPJyx6Gtk+UC67EnJ7OopVHNoNFLcsWqtJnP+/KpuoMIhDpX/gUZE9KGMKKlCD3eJFwmOiUje8R3L7t+ubZ+Kul4=
+X-Received: by 2002:a05:6512:3293:: with SMTP id p19mr6568951lfe.214.1624592837649;
+ Thu, 24 Jun 2021 20:47:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8ca15bab-ec66-657d-570a-278deff0b1a3@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20210623040918.8683-1-glin@suse.com> <CAADnVQLpN993VpnPkTUxXpBMZtS6+h4CVruH33zbw-BLWj41-A@mail.gmail.com>
+ <20210623065744.igawwy424y2zy26t@amnesia>
+In-Reply-To: <20210623065744.igawwy424y2zy26t@amnesia>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 24 Jun 2021 20:47:06 -0700
+Message-ID: <CAADnVQK2uQ3MvwaRztMtcw8SJz1r213hxA+vM2dCtr6RfpZnSA@mail.gmail.com>
+Subject: Re: [PATCH bpf] net/bpfilter: specify the log level for the kmsg message
+To:     Dmitrii Banshchikov <me@ubique.spb.ru>
+Cc:     Gary Lin <glin@suse.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Martin Loviska <mloviska@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Jun 22, 2021 at 11:57 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+>
+> On Tue, Jun 22, 2021 at 09:38:38PM -0700, Alexei Starovoitov wrote:
+> > On Tue, Jun 22, 2021 at 9:09 PM Gary Lin <glin@suse.com> wrote:
+> > >
+> > > Per the kmsg document(*), if we don't specify the log level with a
+> > > prefix "<N>" in the message string, the default log level will be
+> > > applied to the message. Since the default level could be warning(4),
+> > > this would make the log utility such as journalctl treat the message,
+> > > "Started bpfilter", as a warning. To avoid confusion, this commit adds
+> > > the prefix "<5>" to make the message always a notice.
+> > >
+> > > (*) https://www.kernel.org/doc/Documentation/ABI/testing/dev-kmsg
+> > >
+> > > Fixes: 36c4357c63f3 ("net: bpfilter: print umh messages to /dev/kmsg")
+> > > Reported-by: Martin Loviska <mloviska@suse.com>
+> > > Signed-off-by: Gary Lin <glin@suse.com>
+> > > ---
+> > >  net/bpfilter/main.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/net/bpfilter/main.c b/net/bpfilter/main.c
+> > > index 05e1cfc1e5cd..291a92546246 100644
+> > > --- a/net/bpfilter/main.c
+> > > +++ b/net/bpfilter/main.c
+> > > @@ -57,7 +57,7 @@ int main(void)
+> > >  {
+> > >         debug_f = fopen("/dev/kmsg", "w");
+> > >         setvbuf(debug_f, 0, _IOLBF, 0);
+> > > -       fprintf(debug_f, "Started bpfilter\n");
+> > > +       fprintf(debug_f, "<5>Started bpfilter\n");
+> > >         loop();
+> > >         fclose(debug_f);
+> > >         return 0;
+> >
+> > Adding Dmitrii who is redesigning the whole bpfilter.
+>
+> Thanks. The same logic already exists in the bpfilter v1 patchset
+> - [1].
+>
+> 1. https://lore.kernel.org/bpf/c72bac57-84a0-ac4c-8bd8-08758715118e@fb.com/T/#mb36e20c4e5e4a70746bd50a109b1630687990214
 
+Dmitrii,
 
-On 6/24/21 11:06 PM, Daniel Borkmann wrote:
-> On 6/24/21 6:03 AM, Shuyi Cheng wrote:
->> In order to enable the older kernel to use the CO-RE feature, load the
->> vmlinux btf of the specified path.
->>
->> Learn from Andrii's comments in [0], add the custom_btf_path parameter
->> to bpf_obj_open_opts, you can directly use the skeleton's
->> <objname>_bpf__open_opts function to pass in the custom_btf_path
->> parameter.
->>
->> Prior to this, there was also a developer who provided a patch with
->> similar functions. It is a pity that the follow-up did not continue to
->> advance. See [1].
->>
->>     [0]https://lore.kernel.org/bpf/CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com/#t 
->>
->>     [1]https://yhbt.net/lore/all/CAEf4Bzbgw49w2PtowsrzKQNcxD4fZRE6AKByX-5-dMo-+oWHHA@mail.gmail.com/ 
->>
->>
->> Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
->> ---
->>   tools/lib/bpf/libbpf.c | 23 ++++++++++++++++++++---
->>   tools/lib/bpf/libbpf.h |  6 +++++-
->>   2 files changed, 25 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 1e04ce7..518b19f 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -509,6 +509,8 @@ struct bpf_object {
->>       void *priv;
->>       bpf_object_clear_priv_t clear_priv;
->> +    char *custom_btf_path;
->> +
-> 
-> nit: This should rather go to the 'Parse and load BTF vmlinux if any of 
-> [...]'
-> section of struct bpf_object, and for consistency, I'd keep the btf_ 
-> prefix,
-> like: char *btf_custom_path
-> 
-
-Thank you very much for your reply.
-
-Agree.
-
-
->>       char path[];
->>   };
->>   #define obj_elf_valid(o)    ((o)->efile.elf)
->> @@ -2679,8 +2681,15 @@ static int bpf_object__load_vmlinux_btf(struct 
->> bpf_object *obj, bool force)
->>       if (!force && !obj_needs_vmlinux_btf(obj))
->>           return 0;
->> -    obj->btf_vmlinux = libbpf_find_kernel_btf();
->> -    err = libbpf_get_error(obj->btf_vmlinux);
->> +    if (obj->custom_btf_path) {
->> +        obj->btf_vmlinux = btf__parse(obj->custom_btf_path, NULL);
->> +        err = libbpf_get_error(obj->btf_vmlinux);
->> +        pr_debug("loading custom vmlinux BTF '%s': %d\n", 
->> obj->custom_btf_path, err);
->> +    } else {
->> +        obj->btf_vmlinux = libbpf_find_kernel_btf();
->> +        err = libbpf_get_error(obj->btf_vmlinux);
->> +    }
-> 
-> Couldn't we do something like (only compile-tested):
-> 
-
-Your approach is very inspiring to me. But I did it for two reasons.
-
-1. When the developer specifies btf_custom_path, btf should only be 
-loaded from btf_custom_path;
-2. Now pahole supports saving vmlinux's btf in raw format, so the old 
-kernel can provide btf in elf format or raw format. see [0].
-
-	[0] 
-https://git.kernel.org/pub/scm/devel/pahole/pahole.git/tree/pahole.c#n1157
-
-What do you think?
-	
-Regards,
-Shuyi
-
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index b46760b93bb4..5b88ce3e483c 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -4394,7 +4394,7 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
->    * Probe few well-known locations for vmlinux kernel image and try to 
-> load BTF
->    * data out of it to use for target BTF.
->    */
-> -struct btf *libbpf_find_kernel_btf(void)
-> +static struct btf *__libbpf_find_kernel_btf(char *btf_custom_path)
->   {
->       struct {
->           const char *path_fmt;
-> @@ -4402,6 +4402,8 @@ struct btf *libbpf_find_kernel_btf(void)
->       } locations[] = {
->           /* try canonical vmlinux BTF through sysfs first */
->           { "/sys/kernel/btf/vmlinux", true /* raw BTF */ },
-> +        /* try user defined vmlinux ELF if a path was specified */
-> +        { btf_custom_path },
->           /* fall back to trying to find vmlinux ELF on disk otherwise */
->           { "/boot/vmlinux-%1$s" },
->           { "/lib/modules/%1$s/vmlinux-%1$s" },
-> @@ -4419,11 +4421,11 @@ struct btf *libbpf_find_kernel_btf(void)
->       uname(&buf);
-> 
->       for (i = 0; i < ARRAY_SIZE(locations); i++) {
-> +        if (!locations[i].path_fmt)
-> +            continue;
->           snprintf(path, PATH_MAX, locations[i].path_fmt, buf.release);
-> -
->           if (access(path, R_OK))
->               continue;
-> -
->           if (locations[i].raw_btf)
->               btf = btf__parse_raw(path);
->           else
-> @@ -4440,6 +4442,11 @@ struct btf *libbpf_find_kernel_btf(void)
->       return libbpf_err_ptr(-ESRCH);
->   }
-> 
-> +struct btf *libbpf_find_kernel_btf(void)
-> +{
-> +    return __libbpf_find_kernel_btf(NULL);
-> +}
-> +
->   int btf_type_visit_type_ids(struct btf_type *t, type_id_visit_fn 
-> visit, void *ctx)
->   {
->       int i, n, err;
-> 
-> And then you just call it as:
-> 
->      obj->btf_vmlinux = __libbpf_find_kernel_btf(obj->btf_custom_path);
->      err = libbpf_get_error(obj->btf_vmlinux);
-> 
->>       if (err) {
->>           pr_warn("Error loading vmlinux BTF: %d\n", err);
->>           obj->btf_vmlinux = NULL;
-
+what do you prefer we should do with this patch then?
