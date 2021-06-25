@@ -2,108 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CCB3B3B4B
-	for <lists+bpf@lfdr.de>; Fri, 25 Jun 2021 05:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650303B3B5F
+	for <lists+bpf@lfdr.de>; Fri, 25 Jun 2021 06:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhFYDtm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Jun 2021 23:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
+        id S229470AbhFYEDk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Jun 2021 00:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232996AbhFYDtl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Jun 2021 23:49:41 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660B1C061574;
-        Thu, 24 Jun 2021 20:47:20 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id j4so14002850lfc.8;
-        Thu, 24 Jun 2021 20:47:20 -0700 (PDT)
+        with ESMTP id S229449AbhFYEDk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Jun 2021 00:03:40 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DA3C061574;
+        Thu, 24 Jun 2021 21:01:18 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id j2so14026974lfg.9;
+        Thu, 24 Jun 2021 21:01:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=toZAs9JPmAsiOSU1MchBEbcfF/e+3WBe3Mbk19M8Xak=;
-        b=Ub0q0f9PXGDvdf0VIKmWYwY2N4zilskDEJxvFL47SQvZpC3JD1ZTftgRPCsB6Oo3ih
-         fThaeKnMz+tqj4Ydo+Y6ttmF9aIYmZy1+AbrTY3cEfm4+8yl6zXrm9GYtWKcvh6HEfVj
-         EnxpQBQH2YEDeG+5lwlDphfY8u7DNw7Ig0gwKIZzlmN0E1T/dxjvepB6+8w3SspLpQcG
-         J1Caj7hkaGRWZtdnQjk2uhralBsuHdPRR1iu9bM1Wo9v8+c6Lbm3kFIrST6qszMUsdYf
-         O1yB2GymzGCk60WSyMhn/N+dUTpD9BhGsaWP8geaRxAjAxo4VQ864yI0ZePjA87R9FZW
-         1Iew==
+        bh=S1GTNN1z/IkduZ5kkv4dtHHucdV9KwV0K8dsnXmmNYM=;
+        b=CuIJ9nSdpHWKq9ctkFdCqNdG6yzAF5jDIHs1A/xH0zZQkVq8Gn3LiGIN29hqy1idpG
+         cSX7DiU33QGYIZ3KTMuCU1M4dprCB5SEUroXbHJjLoClYSj95w3IUJVURdbQiAsYVDqv
+         qQuC1V9NFP1afIPDroAABoY9AgTVMy14Hju5OAmxqCEjA/EhsMaDfMcWwJo2kIyp19Qo
+         9e7hIRiUGX0swPjBzn1QbMZpuumDLDMXgVQJLv4mp26I2VrlAZ8rV6vdQ72q2kG7BVTu
+         xFZaLVzup1MyidHbZHrx3EljAkGuyhdds7irHGBP6cf/6r7y1TN7Hx8GA6SCp5lobMLJ
+         n2zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=toZAs9JPmAsiOSU1MchBEbcfF/e+3WBe3Mbk19M8Xak=;
-        b=JjNwOWcbfSe9YfOUDFzQwk24KUyTs4qmf6sz3XgzJEgkpLaNzXF9P9/yAPH41vVho9
-         ad6I5SJtyZON0cV0RTeJ5oJdx+I4kBa/l7W9mU4fx0aaME0cfsOVuY+XCDrOUpZn7E/4
-         DcYJpO3UdBsIftALuYuWBM4slL8kdESn2YvClLofTNcX1QrCTQ0oZZEsJFLMnxZMl9fd
-         4X96ECAwPY5DWkibTwXcfsbqQNQi1xbrPS9IivEkQCfxt8Ey/+14SI10Pa+zGdcGG8YS
-         WwBnXL0u7Qwnfkkmp3L+nlfM5qLoMkuQRqPRSR3Ty45ksVoeskDmvrVcW+wOnKtmQud7
-         CUCA==
-X-Gm-Message-State: AOAM532ZecgyIdQHMyiVY/bICGe81EUqvfYbUickW2/jxN11N1ma+zyL
-        cimlrppzBd2jk0QhcSsJ/dbiLPAXbP7+x3wLZho=
-X-Google-Smtp-Source: ABdhPJyx6Gtk+UC67EnJ7OopVHNoNFLcsWqtJnP+/KpuoMIhDpX/gUZE9KGMKKlCD3eJFwmOiUje8R3L7t+ubZ+Kul4=
-X-Received: by 2002:a05:6512:3293:: with SMTP id p19mr6568951lfe.214.1624592837649;
- Thu, 24 Jun 2021 20:47:17 -0700 (PDT)
+        bh=S1GTNN1z/IkduZ5kkv4dtHHucdV9KwV0K8dsnXmmNYM=;
+        b=cZlAr1rsJunjl8NYAb/NeEvu3MIPtjmgvzcad1hto5tQUf60NOU/MpshMkKZyymLuy
+         GxljL4UPAQH8kou06vrnOcE8lFHrpCyYTmS0LHswJlTZPzI+zE1f+AsAOO4jAsv9Yinm
+         1LCJlpwwasfG5TfGtq/bNIBTJjspe+zvUV283SqXqOcU9Pyx74//kph7uesl+3Wk6CKr
+         BZcFSR3wMtHTI8ilzvU28cocAQShakxSqcOiqix/seI5CAzA8BFCZf986/Y2IOimlgep
+         tas92vHycii+mLW/Fs9vHcusKEYwWwkqkKWtqEnJI5caO/jfTMLSDZxotAzrfn9DHQvi
+         4gqw==
+X-Gm-Message-State: AOAM533/hzLaROUc+z1WH/YBT7SFDHj/0/fDxzEVMgweEBoN86wBAA3x
+        BNgRD3DJuGEp0VfLYJ9We9rlZjxOnd+cvViV3H8=
+X-Google-Smtp-Source: ABdhPJzLYV7rYqObjx7O7ZdxD6gFN8Z948ZlrxW66doL5t0jNv0vm1dKo9zaOXnzTdIOIksLAOVQIG8maiiCJoOneU8=
+X-Received: by 2002:a05:6512:10cb:: with SMTP id k11mr6375062lfg.182.1624593677206;
+ Thu, 24 Jun 2021 21:01:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210623040918.8683-1-glin@suse.com> <CAADnVQLpN993VpnPkTUxXpBMZtS6+h4CVruH33zbw-BLWj41-A@mail.gmail.com>
- <20210623065744.igawwy424y2zy26t@amnesia>
-In-Reply-To: <20210623065744.igawwy424y2zy26t@amnesia>
+References: <CAADnVQJux+8n-vpuK9FqTLuj4cXrp04pGkpvKaUdAPXLQ4c-PQ@mail.gmail.com>
+ <20210622110026.1157847-1-ravi.bangoria@linux.ibm.com>
+In-Reply-To: <20210622110026.1157847-1-ravi.bangoria@linux.ibm.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 24 Jun 2021 20:47:06 -0700
-Message-ID: <CAADnVQK2uQ3MvwaRztMtcw8SJz1r213hxA+vM2dCtr6RfpZnSA@mail.gmail.com>
-Subject: Re: [PATCH bpf] net/bpfilter: specify the log level for the kmsg message
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     Gary Lin <glin@suse.com>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 24 Jun 2021 21:01:05 -0700
+Message-ID: <CAADnVQKLwEEZJ=_=g8RfgOrt9b1XN=dM9bt515pOrru=ADQR1Q@mail.gmail.com>
+Subject: Re: [PATCH] x86 bpf: Fix extable offset calculation
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        Martin Loviska <mloviska@suse.com>
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 11:57 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+On Tue, Jun 22, 2021 at 4:01 AM Ravi Bangoria
+<ravi.bangoria@linux.ibm.com> wrote:
 >
-> On Tue, Jun 22, 2021 at 09:38:38PM -0700, Alexei Starovoitov wrote:
-> > On Tue, Jun 22, 2021 at 9:09 PM Gary Lin <glin@suse.com> wrote:
-> > >
-> > > Per the kmsg document(*), if we don't specify the log level with a
-> > > prefix "<N>" in the message string, the default log level will be
-> > > applied to the message. Since the default level could be warning(4),
-> > > this would make the log utility such as journalctl treat the message,
-> > > "Started bpfilter", as a warning. To avoid confusion, this commit adds
-> > > the prefix "<5>" to make the message always a notice.
-> > >
-> > > (*) https://www.kernel.org/doc/Documentation/ABI/testing/dev-kmsg
-> > >
-> > > Fixes: 36c4357c63f3 ("net: bpfilter: print umh messages to /dev/kmsg")
-> > > Reported-by: Martin Loviska <mloviska@suse.com>
-> > > Signed-off-by: Gary Lin <glin@suse.com>
-> > > ---
-> > >  net/bpfilter/main.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/net/bpfilter/main.c b/net/bpfilter/main.c
-> > > index 05e1cfc1e5cd..291a92546246 100644
-> > > --- a/net/bpfilter/main.c
-> > > +++ b/net/bpfilter/main.c
-> > > @@ -57,7 +57,7 @@ int main(void)
-> > >  {
-> > >         debug_f = fopen("/dev/kmsg", "w");
-> > >         setvbuf(debug_f, 0, _IOLBF, 0);
-> > > -       fprintf(debug_f, "Started bpfilter\n");
-> > > +       fprintf(debug_f, "<5>Started bpfilter\n");
-> > >         loop();
-> > >         fclose(debug_f);
-> > >         return 0;
-> >
-> > Adding Dmitrii who is redesigning the whole bpfilter.
+> commit 4c5de127598e1 ("bpf: Emit explicit NULL pointer checks
+> for PROBE_LDX instructions.") is emitting couple of instructions
+> before actual load. Consider those additional instructions while
+> calculating extable offset.
 >
-> Thanks. The same logic already exists in the bpfilter v1 patchset
-> - [1].
+> Fixes: 4c5de127598e1 ("bpf: Emit explicit NULL pointer checks for PROBE_LDX instructions.")
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> ---
+>  arch/x86/net/bpf_jit_comp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> 1. https://lore.kernel.org/bpf/c72bac57-84a0-ac4c-8bd8-08758715118e@fb.com/T/#mb36e20c4e5e4a70746bd50a109b1630687990214
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 2a2e290fa5d8..231a8178cc11 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1297,7 +1297,7 @@ st:                       if (is_imm8(insn->off))
+>                         emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
+>                         if (BPF_MODE(insn->code) == BPF_PROBE_MEM) {
+>                                 struct exception_table_entry *ex;
+> -                               u8 *_insn = image + proglen;
+> +                               u8 *_insn = image + proglen + (u8)(start_of_ldx - temp);
 
-Dmitrii,
-
-what do you prefer we should do with this patch then?
+Great debugging and the fix. Thanks a lot.
+I've dropped (u8) cast, kept (), and applied to bpf tree.
+I think it looks cleaner without that cast.
+Could you send a followup patch with a selftest, so I don't make
+the same mistake again ? ;)
