@@ -2,114 +2,445 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED423B4EEA
-	for <lists+bpf@lfdr.de>; Sat, 26 Jun 2021 16:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10683B4F1E
+	for <lists+bpf@lfdr.de>; Sat, 26 Jun 2021 17:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhFZOVT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Jun 2021 10:21:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39670 "EHLO mail.kernel.org"
+        id S229796AbhFZPOT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Jun 2021 11:14:19 -0400
+Received: from mga14.intel.com ([192.55.52.115]:22924 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhFZOVT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Jun 2021 10:21:19 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C81661C2E;
-        Sat, 26 Jun 2021 14:18:56 +0000 (UTC)
-Date:   Sat, 26 Jun 2021 10:18:34 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Robert Richter <rric@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] tracepoint: Do not warn on EEXIST or ENOENT
-Message-ID: <20210626101834.55b4ecf1@rorschach.local.home>
-In-Reply-To: <20210626135845.4080-1-penguin-kernel@I-love.SAKURA.ne.jp>
-References: <20210626135845.4080-1-penguin-kernel@I-love.SAKURA.ne.jp>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230104AbhFZPOS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Jun 2021 11:14:18 -0400
+IronPort-SDR: Kuq0Z2uHtLn2HXj7YrpYM/0T0HJVcMV8l64dyiYX63CDVxsZBfnsgJapwZ+JYRiKRKh/IUF0qP
+ grIFBtohbmHQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10027"; a="207613935"
+X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; 
+   d="scan'208";a="207613935"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 08:11:56 -0700
+X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; 
+   d="scan'208";a="642895568"
+Received: from mlubyani-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.8.25])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 08:11:55 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
+Subject: [PATCH v1 6/6] tools/tdx: Add a sample attestation user app
+Date:   Sat, 26 Jun 2021 08:11:46 -0700
+Message-Id: <19cdd6c81bfabd0c4fd3543419540cd1ad94aacf.1624719668.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1624719668.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <cover.1624719668.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 26 Jun 2021 22:58:45 +0900
-Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> wrote:
+This application uses the misc device /dev/tdx-attest to get TDREPORT
+from the TDX Module or request quote from the VMM.
 
-> syzbot is hitting WARN_ON_ONCE() at tracepoint_add_func() [1], but
-> func_add() returning -EEXIST and func_remove() returning -ENOENT are
-> not kernel bugs that can justify crashing the system.
+It tests following attestation features:
 
-There should be no path that registers a tracepoint twice. That's a bug
-in the kernel. Looking at the link below, I see the backtrace:
+  - Get report using TDX_CMD_GET_TDREPORT IOCTL.
+  - Using report data request quote from VMM using TDX_CMD_GEN_QUOTE IOCTL.
+  - Get the quote size using TDX_CMD_GET_QUOTE_SIZE IOCTL.
 
-Call Trace:
- tracepoint_probe_register_prio kernel/tracepoint.c:369 [inline]
- tracepoint_probe_register+0x9c/0xe0 kernel/tracepoint.c:389
- __bpf_probe_register kernel/trace/bpf_trace.c:2154 [inline]
- bpf_probe_register+0x15a/0x1c0 kernel/trace/bpf_trace.c:2159
- bpf_raw_tracepoint_open+0x34a/0x720 kernel/bpf/syscall.c:2878
- __do_sys_bpf+0x2586/0x4f40 kernel/bpf/syscall.c:4435
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: bpf@vger.kernel.org
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
+ tools/Makefile                     |  13 +-
+ tools/tdx/Makefile                 |  19 +++
+ tools/tdx/attest/.gitignore        |   2 +
+ tools/tdx/attest/Makefile          |  24 +++
+ tools/tdx/attest/tdx-attest-test.c | 232 +++++++++++++++++++++++++++++
+ 5 files changed, 284 insertions(+), 6 deletions(-)
+ create mode 100644 tools/tdx/Makefile
+ create mode 100644 tools/tdx/attest/.gitignore
+ create mode 100644 tools/tdx/attest/Makefile
+ create mode 100644 tools/tdx/attest/tdx-attest-test.c
 
-So BPF is allowing the user to register the same tracepoint more than
-once? That looks to be a bug in the BPF code where it shouldn't be
-allowing user space to register the same tracepoint multiple times.
-
-If we take the patch and just error out, that is probably not what the
-BPF user wants.
-
--- Steve
-
-
-
-> 
-> Commit d66a270be3310d7a ("tracepoint: Do not warn on ENOMEM") says that
-> tracepoint should only warn when a kernel API user does not respect the
-> required preconditions (e.g. same tracepoint enabled twice, or called
-> to remove a tracepoint that does not exist). But WARN*() must be used to
-> denote kernel bugs and not to print simple warnings. If someone wants to
-> print warnings, pr_warn() etc. should be used instead.
-> 
-> Link: https://syzkaller.appspot.com/bug?id=41f4318cf01762389f4d1c1c459da4f542fe5153 [1]
-> Reported-by: syzbot <syzbot+721aa903751db87aa244@syzkaller.appspotmail.com>
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Tested-by: syzbot <syzbot+721aa903751db87aa244@syzkaller.appspotmail.com>
-> ---
->  kernel/tracepoint.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> index 9f478d29b926..3cfa37a3d05c 100644
-> --- a/kernel/tracepoint.c
-> +++ b/kernel/tracepoint.c
-> @@ -287,10 +287,8 @@ static int tracepoint_add_func(struct tracepoint *tp,
->  	tp_funcs = rcu_dereference_protected(tp->funcs,
->  			lockdep_is_held(&tracepoints_mutex));
->  	old = func_add(&tp_funcs, func, prio);
-> -	if (IS_ERR(old)) {
-> -		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
-> +	if (IS_ERR(old))
->  		return PTR_ERR(old);
-> -	}
->  
->  	/*
->  	 * rcu_assign_pointer has as smp_store_release() which makes sure
-> @@ -320,7 +318,7 @@ static int tracepoint_remove_func(struct tracepoint *tp,
->  	tp_funcs = rcu_dereference_protected(tp->funcs,
->  			lockdep_is_held(&tracepoints_mutex));
->  	old = func_remove(&tp_funcs, func);
-> -	if (WARN_ON_ONCE(IS_ERR(old)))
-> +	if (IS_ERR(old))
->  		return PTR_ERR(old);
->  
->  	if (tp_funcs == old)
+diff --git a/tools/Makefile b/tools/Makefile
+index 7e9d34ddd74c..5d68084511cb 100644
+--- a/tools/Makefile
++++ b/tools/Makefile
+@@ -30,6 +30,7 @@ help:
+ 	@echo '  selftests              - various kernel selftests'
+ 	@echo '  bootconfig             - boot config tool'
+ 	@echo '  spi                    - spi tools'
++	@echo '  tdx                    - TDX related test tools'
+ 	@echo '  tmon                   - thermal monitoring and tuning tool'
+ 	@echo '  tracing                - misc tracing tools'
+ 	@echo '  turbostat              - Intel CPU idle stats and freq reporting tool'
+@@ -65,7 +66,7 @@ acpi: FORCE
+ cpupower: FORCE
+ 	$(call descend,power/$@)
+ 
+-cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing: FORCE
++cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing tdx: FORCE
+ 	$(call descend,$@)
+ 
+ bpf/%: FORCE
+@@ -104,7 +105,7 @@ all: acpi cgroup cpupower gpio hv firewire liblockdep \
+ 		perf selftests bootconfig spi turbostat usb \
+ 		virtio vm bpf x86_energy_perf_policy \
+ 		tmon freefall iio objtool kvm_stat wmi \
+-		pci debugging tracing
++		pci debugging tracing tdx
+ 
+ acpi_install:
+ 	$(call descend,power/$(@:_install=),install)
+@@ -112,7 +113,7 @@ acpi_install:
+ cpupower_install:
+ 	$(call descend,power/$(@:_install=),install)
+ 
+-cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install:
++cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install tdx_install:
+ 	$(call descend,$(@:_install=),install)
+ 
+ liblockdep_install:
+@@ -139,7 +140,7 @@ install: acpi_install cgroup_install cpupower_install gpio_install \
+ 		virtio_install vm_install bpf_install x86_energy_perf_policy_install \
+ 		tmon_install freefall_install objtool_install kvm_stat_install \
+ 		wmi_install pci_install debugging_install intel-speed-select_install \
+-		tracing_install
++		tracing_install tdx_install
+ 
+ acpi_clean:
+ 	$(call descend,power/acpi,clean)
+@@ -147,7 +148,7 @@ acpi_clean:
+ cpupower_clean:
+ 	$(call descend,power/cpupower,clean)
+ 
+-cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean:
++cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean tdx_clean:
+ 	$(call descend,$(@:_clean=),clean)
+ 
+ liblockdep_clean:
+@@ -186,6 +187,6 @@ clean: acpi_clean cgroup_clean cpupower_clean hv_clean firewire_clean \
+ 		vm_clean bpf_clean iio_clean x86_energy_perf_policy_clean tmon_clean \
+ 		freefall_clean build_clean libbpf_clean libsubcmd_clean liblockdep_clean \
+ 		gpio_clean objtool_clean leds_clean wmi_clean pci_clean firmware_clean debugging_clean \
+-		intel-speed-select_clean tracing_clean
++		intel-speed-select_clean tracing_clean tdx_clean
+ 
+ .PHONY: FORCE
+diff --git a/tools/tdx/Makefile b/tools/tdx/Makefile
+new file mode 100644
+index 000000000000..e2564557d463
+--- /dev/null
++++ b/tools/tdx/Makefile
+@@ -0,0 +1,19 @@
++# SPDX-License-Identifier: GPL-2.0
++include ../scripts/Makefile.include
++
++all: attest
++
++clean: attest_clean
++
++install: attest_install
++
++attest:
++	$(call descend,attest)
++
++attest_install:
++	$(call descend,attest,install)
++
++attest_clean:
++	$(call descend,attest,clean)
++
++.PHONY: all install clean attest latency_install latency_clean
+diff --git a/tools/tdx/attest/.gitignore b/tools/tdx/attest/.gitignore
+new file mode 100644
+index 000000000000..5f819a8a6c49
+--- /dev/null
++++ b/tools/tdx/attest/.gitignore
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0
++tdx-attest-test
+diff --git a/tools/tdx/attest/Makefile b/tools/tdx/attest/Makefile
+new file mode 100644
+index 000000000000..bf47ba718386
+--- /dev/null
++++ b/tools/tdx/attest/Makefile
+@@ -0,0 +1,24 @@
++# SPDX-License-Identifier: GPL-2.0
++# Makefile for vm tools
++#
++VAR_CFLAGS := $(shell pkg-config --cflags libtracefs 2>/dev/null)
++VAR_LDLIBS := $(shell pkg-config --libs libtracefs 2>/dev/null)
++
++TARGETS = tdx-attest-test
++CFLAGS = -static -Wall -Wextra -g -O2 $(VAR_CFLAGS)
++LDFLAGS = -lpthread $(VAR_LDLIBS)
++
++all: $(TARGETS)
++
++%: %.c
++	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
++
++clean:
++	$(RM) tdx-attest-test
++
++prefix ?= /usr/local
++sbindir ?= ${prefix}/sbin
++
++install: all
++	install -d $(DESTDIR)$(sbindir)
++	install -m 755 -p $(TARGETS) $(DESTDIR)$(sbindir)
+diff --git a/tools/tdx/attest/tdx-attest-test.c b/tools/tdx/attest/tdx-attest-test.c
+new file mode 100644
+index 000000000000..7634ec6a084c
+--- /dev/null
++++ b/tools/tdx/attest/tdx-attest-test.c
+@@ -0,0 +1,232 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * tdx-attest-test.c - utility to test TDX attestation feature.
++ *
++ * Copyright (C) 2020 - 2021 Intel Corporation. All rights reserved.
++ *
++ * Author: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
++ *
++ */
++
++#include <linux/types.h>
++#include <linux/ioctl.h>
++#include <sys/ioctl.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <stdio.h>
++#include <ctype.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <limits.h>
++#include <stdbool.h>
++#include <getopt.h>
++#include <stdint.h> /* uintmax_t */
++#include <sys/mman.h>
++#include <unistd.h> /* sysconf */
++#include <time.h>
++
++#include "../../../include/uapi/misc/tdx.h"
++
++#define devname		"/dev/tdx-attest"
++
++#define HEX_DUMP_SIZE	16
++#define MAX_ROW_SIZE	70
++
++#define ATTESTATION_TEST_BIN_VERSION "0.1"
++
++struct tdx_attest_args {
++	bool is_dump_data;
++	bool is_get_tdreport;
++	bool is_get_quote_size;
++	bool is_gen_quote;
++	bool debug_mode;
++	char *out_file;
++};
++
++static void print_hex_dump(const char *title, const char *prefix_str,
++			   const void *buf, int len)
++{
++	const __u8 *ptr = buf;
++	int i, rowsize = HEX_DUMP_SIZE;
++
++	if (!len || !buf)
++		return;
++
++	printf("\t\t%s", title);
++
++	for (i = 0; i < len; i++) {
++		if (!(i % rowsize))
++			printf("\n%s%.8x:", prefix_str, i);
++		printf(" %.2x", ptr[i])
++	}
++
++	printf("\n");
++}
++
++static void gen_report_data(__u8 *report_data, bool dump_data)
++{
++	int i;
++
++	srand(time(NULL));
++
++	for (i = 0; i < TDX_REPORT_DATA_LEN; i++)
++		report_data[i] = rand();
++
++	if (dump_data)
++		print_hex_dump("\n\t\tTDX report data\n", " ",
++			       report_data, TDX_REPORT_DATA_LEN);
++}
++
++static int get_tdreport(int devfd, bool dump_data, __u8 *report_data)
++{
++	__u8 tdrdata[TDX_TDREPORT_LEN] = {0};
++	int ret;
++
++	if (!report_data)
++		report_data = tdrdata;
++
++	gen_report_data(report_data, dump_data);
++
++	ret = ioctl(devfd, TDX_CMD_GET_TDREPORT, report_data);
++	if (ret) {
++		printf("TDX_CMD_GET_TDREPORT ioctl() %d failed\n", ret);
++		return -EIO;
++	}
++
++	if (dump_data)
++		print_hex_dump("\n\t\tTDX tdreport data\n", " ", report_data,
++			       TDX_TDREPORT_LEN);
++
++	return 0;
++}
++
++static __u64 get_quote_size(int devfd)
++{
++	int ret;
++	__u64 quote_size;
++
++	ret = ioctl(devfd, TDX_CMD_GET_QUOTE_SIZE, &quote_size);
++	if (ret) {
++		printf("TDX_CMD_GET_QUOTE_SIZE ioctl() %d failed\n", ret);
++		return -EIO;
++	}
++
++	printf("Quote size: %lld\n", quote_size);
++
++	return quote_size;
++}
++
++static int gen_quote(int devfd, bool dump_data)
++{
++	__u8 *quote_data;
++	__u64 quote_size;
++	int ret;
++
++	quote_size = get_quote_size(devfd);
++
++	quote_data = malloc(sizeof(char) * quote_size);
++	if (!quote_data) {
++		printf("%s queue data alloc failed\n", devname);
++		return -ENOMEM;
++	}
++
++	ret = get_tdreport(devfd, dump_data, quote_data);
++	if (ret) {
++		printf("TDX_CMD_GET_TDREPORT ioctl() %d failed\n", ret);
++		goto done;
++	}
++
++	ret = ioctl(devfd, TDX_CMD_GEN_QUOTE, quote_data);
++	if (ret) {
++		printf("TDX_CMD_GEN_QUOTE ioctl() %d failed\n", ret);
++		goto done;
++	}
++
++	print_hex_dump("\n\t\tTDX Quote MMIO data\n", " ", quote_data,
++		       quote_size);
++
++done:
++	free(quote_data);
++
++	return ret;
++}
++
++static void usage(void)
++{
++	puts("\nUsage:\n");
++	puts("tdx_attest [options] \n");
++
++	puts("Attestation device test utility.");
++
++	puts("\nOptions:\n");
++	puts(" -d, --dump                Dump tdreport/tdquote data");
++	puts(" -r, --get-tdreport        Get TDREPORT data");
++	puts(" -g, --gen-quote           Generate TDQUOTE");
++	puts(" -s, --get-quote-size      Get TDQUOTE size");
++}
++
++int main(int argc, char **argv)
++{
++	int ret, devfd;
++	struct tdx_attest_args args = {0};
++
++	static const struct option longopts[] = {
++		{ "dump",           no_argument,       NULL, 'd' },
++		{ "get-tdreport",   required_argument, NULL, 'r' },
++		{ "gen-quote",      required_argument, NULL, 'g' },
++		{ "gen-quote-size", required_argument, NULL, 's' },
++		{ "version",        no_argument,       NULL, 'V' },
++		{ NULL,             0, NULL, 0 }
++	};
++
++	while ((ret = getopt_long(argc, argv, "hdrgsV", longopts,
++				  NULL)) != -1) {
++		switch (ret) {
++		case 'd':
++			args.is_dump_data = true;
++			break;
++		case 'r':
++			args.is_get_tdreport = true;
++			break;
++		case 'g':
++			args.is_gen_quote = true;
++			break;
++		case 's':
++			args.is_get_quote_size = true;
++			break;
++		case 'h':
++			usage();
++			return 0;
++		case 'V':
++			printf("Version: %s\n", ATTESTATION_TEST_BIN_VERSION);
++			return 0;
++		default:
++			printf("Invalid options\n");
++			usage();
++			return -EINVAL;
++		}
++	}
++
++	devfd = open(devname, O_RDWR | O_SYNC);
++	if (devfd < 0) {
++		printf("%s open() failed\n", devname);
++		return -ENODEV;
++	}
++
++	if (args.is_get_quote_size)
++		get_quote_size(devfd);
++
++	if (args.is_get_tdreport)
++		get_tdreport(devfd, args.is_dump_data, NULL);
++
++	if (args.is_gen_quote)
++		gen_quote(devfd, args.is_dump_data);
++
++	close(devfd);
++
++	return 0;
++}
+-- 
+2.25.1
 
