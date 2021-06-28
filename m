@@ -2,40 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132783B6013
-	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 16:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720843B61BB
+	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 16:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbhF1OWD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Jun 2021 10:22:03 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52636 "EHLO
+        id S234151AbhF1OiF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Jun 2021 10:38:05 -0400
+Received: from www62.your-server.de ([213.133.104.62]:55000 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232530AbhF1OVg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:21:36 -0400
+        with ESMTP id S234578AbhF1Of4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Jun 2021 10:35:56 -0400
 Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lxs6M-0001mq-1O; Mon, 28 Jun 2021 16:19:06 +0200
+        id 1lxsKC-0002mF-GH; Mon, 28 Jun 2021 16:33:24 +0200
 Received: from [85.7.101.30] (helo=linux.home)
         by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lxs6L-000VbA-PF; Mon, 28 Jun 2021 16:19:05 +0200
-Subject: Re: [PATCH] bpf: fix false positive kmemleak report in
- bpf_ringbuf_area_alloc()
-To:     Rustam Kovhaev <rkovhaev@gmail.com>, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dvyukov@google.com, andrii@kernel.org
-References: <20210626181156.1873604-1-rkovhaev@gmail.com>
+        id 1lxsKB-000XfH-Fo; Mon, 28 Jun 2021 16:33:24 +0200
+Subject: Re: [PATCH net v3] xdp, net: fix for construct skb by xdp inside xsk
+ zc rx
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Krzysztof Kazimierczak <krzysztof.kazimierczak@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        linux-stm32@st-md-mailman.stormreply.com, maximmi@nvidia.com
+References: <20210628114647.75449-1-xuanzhuo@linux.alibaba.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <254ef541-6fd6-9ddf-3491-97b854a09554@iogearbox.net>
-Date:   Mon, 28 Jun 2021 16:19:05 +0200
+Message-ID: <0a1614c4-19b7-2665-8eb9-7df776fa4c13@iogearbox.net>
+Date:   Mon, 28 Jun 2021 16:33:10 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210626181156.1873604-1-rkovhaev@gmail.com>
+In-Reply-To: <20210628114647.75449-1-xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -45,26 +62,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/26/21 8:11 PM, Rustam Kovhaev wrote:
-> kmemleak scans struct page, but it does not scan the page content.
-> if we allocate some memory with kmalloc(), then allocate page with
-> alloc_page(), and if we put kmalloc pointer somewhere inside that page,
-> kmemleak will report kmalloc pointer as a false positive.
-> 
-> we can instruct kmemleak to scan the memory area by calling
-> kmemleak_alloc()/kmemleak_free(), but part of struct bpf_ringbuf is
-> mmaped to user space, and if struct bpf_ringbuf changes we would have to
-> revisit and review size argument in kmemleak_alloc(), because we do not
-> want kmemleak to scan the user space memory.
-> let's simplify things and use kmemleak_not_leak() here.
-> 
-> Link: https://lore.kernel.org/lkml/YNTAqiE7CWJhOK2M@nuc10/
-> Link: https://lore.kernel.org/lkml/20210615101515.GC26027@arm.com/
-> Link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
-> Reported-and-tested-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
-> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+Hi Xuan,
 
-Applied, thanks! (Also included Andrii's prior analysis as well to the commit
-log so there's a bit more context if we need to revisit in future [0].)
+On 6/28/21 1:46 PM, Xuan Zhuo wrote:
+> When each driver supports xsk rx, if the received buff returns XDP_PASS
+> after run xdp prog, it must construct skb based on xdp. This patch
+> extracts this logic into a public function xdp_construct_skb().
+> 
+> There is a bug in the original logic. When constructing skb, we should
+> copy the meta information to skb and then use __skb_pull() to correct
+> the data.
+> 
+> Fixes: 0a714186d3c0f ("i40e: add AF_XDP zero-copy Rx support")
+> Fixes: 2d4238f556972 ("ice: Add support for AF_XDP")
+> Fixes: bba2556efad66 ("net: stmmac: Enable RX via AF_XDP zero-copy")
+> Fixes: d0bcacd0a1309 ("ixgbe: add AF_XDP zero-copy Rx support")
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-   [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=ccff81e1d028bbbf8573d3364a87542386c707bf
+There was still an ongoing discussion on the v2 of your patch between
+Maciej and Maxim (Cc). Before you submit a v3, please let the discussion
+conclude first.
+
+Thanks,
+Daniel
