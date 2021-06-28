@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442DD3B6990
-	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 22:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1703B69FC
+	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 23:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234054AbhF1URL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Jun 2021 16:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
+        id S237592AbhF1VIX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Jun 2021 17:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232014AbhF1URL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Jun 2021 16:17:11 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D289C061574;
-        Mon, 28 Jun 2021 13:14:44 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id o11so18888068ejd.4;
-        Mon, 28 Jun 2021 13:14:44 -0700 (PDT)
+        with ESMTP id S236768AbhF1VIW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Jun 2021 17:08:22 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E620FC061574;
+        Mon, 28 Jun 2021 14:05:54 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id l24so2984926ejq.11;
+        Mon, 28 Jun 2021 14:05:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zdPs58wcAuPAnNalGg5J4lyyztWTzk7zaRQZ5k0nKeI=;
-        b=UkpM7K61kor99zTc/7KZs9Sr9xJWWNL+cHTSHNbmGYibhcUtWx6/CmZxbQhrBk/F9U
-         c+l0W95A1kOGdwb7o9I3ciAWTpYaUVvjuLqgk3dyLe7/v4iyns0qI2sD8MtUQuQyP3p4
-         G0FHgxjVzZFvuzsYTaHaUlc5UdquE12/SDv3Fs4gW6oao+8Of8KcQGMPQPsYQdi5yBvY
-         m5bpuIdlb2KVhVTYVqZN+yYgAcQqFoGWE5Hpd9yXGHnOqFXWjNoaTGi2fQkHCYzZhCjl
-         oeczLfPoJXEl1FtJeRTVKNZJlNBc554h2qQlTNLWXcn6nPz3fPDRwJYR8vYBGqWVQUek
-         lErw==
+        bh=tSDrQI55PB7nEOHMqwZIcytnnCkvMaB4GbC+4XlI3S0=;
+        b=HJ9yta653GJGmMG+RUIh44BNmEtzZKzXrGVSL7vt+vfXMaMloURcGruXv1Hu+JoVlo
+         ek6fWVq2hCYQbK+u1vghIpb6zlGdOfBQXhr7v3YfRORHEpZkeXX3PsLFym/s67L/fQxP
+         7Rb1aB4N72utred8t1W+65m6jszkzkHBRc80SwSVbwIGdR3BYHQpaimN9pV/y7769ZOu
+         bB71Fxhg5cr0TnLmdvhyQU7y6x8csiw921sb/jPzkaLOeUMXpi5qUvGPpHzcjfZwGDHB
+         gAXDw5B+wu2ekDZRNZH6ZjtF6yHlbkOxO0A7LkTwPAPzEH39rJu12R/NJEyhseJRYk1j
+         N9wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zdPs58wcAuPAnNalGg5J4lyyztWTzk7zaRQZ5k0nKeI=;
-        b=AxhWzqX+HEgW+WWq83QREURPiz+HOACTeB/k3pktGTAcfdZpVDaQjDH8FuE04xdtpx
-         vdjUcPJV9Is429yjD9K1BJekgEXLRwO8OgKjgqO6Y00cUb47MBh3H78rKqYxvEfo+YP9
-         WPxJywOA0ev+wQUdi1K4cdahe9u1quJ7DWfiprvS4W6/rEGP9oDHryEKedmKC/f3CmuS
-         ybfC1fZPp4u7erscuvZVgdkWat37wXeEppRbqHk3QH7H5SGq6DB+oF+uA5BqHJy07/MB
-         vh4w60W9bnPVOjAwCcwT/xHilqCd1mrxSCdocmO1CR0/w0BoBgdiYucTBXc1E/GJACdl
-         0TWA==
-X-Gm-Message-State: AOAM530zMYouHGchTGBz7VgMnT5CUGuA9r/4ZSYa6+WQCgvjY5VK+UDE
-        PVyR2CTcjmSwF3Krpi7vafGkJbYvtJb6MUnyGjY=
-X-Google-Smtp-Source: ABdhPJx1mkhEM+RWmaAl8527gWYv1j9Y0Qe0LxpHrFe6mm7dOgUgvq3OZq4HnwYsFMhSf00Le1njz4I2Vmg9F6Zrz94=
-X-Received: by 2002:a17:906:dbe1:: with SMTP id yd1mr26542431ejb.114.1624911282417;
- Mon, 28 Jun 2021 13:14:42 -0700 (PDT)
+        bh=tSDrQI55PB7nEOHMqwZIcytnnCkvMaB4GbC+4XlI3S0=;
+        b=mV7oxV8KwukQM/TbC1bEqRbBgSDbIsWacys73PSZuGQmqOXTcjYfhUxVtjeCbbNjEz
+         oSAUkY/NobIjgQLvtW30bBypwwOsl+zMamdU/1ZKN8I/LUVLWnRGgjFwVo9bPSlXQt9L
+         yiIzXe2mrK5ly1ogF94WYnK/hSxfXkQLaqqSj6yWIz05GygWm+armb/g4GsUXpZSvIBs
+         tAqqeZPBaUQ9ZcfwnTeAn1tspHx+opjzf5P0PPX8fhEjuAq4qmm5hZqVuBiVZsooxNcp
+         cHS4UEbVZovNgmxaHcmZ67mkeZMIxseudZL+Wvt4NAr4WGCyJp1XhcswgwaYk02P5x2R
+         YmKw==
+X-Gm-Message-State: AOAM5301IG/h35xrouKHfrZwlYuZgCcCP9lP2XCB7yEWO2tsZjFM/uuW
+        HwCgik1roaK4Fh3kh9QnimmZk6GMrFczYmJRF4g=
+X-Google-Smtp-Source: ABdhPJx/Q1Ch1QWdDp/MHfuw1NEtPmcLdB7+4nJIBdUcPfDaqoA0MjN35w5gCpL9P4dfqP3GEiMXku1vM2RGKdWd9ho=
+X-Received: by 2002:a17:907:3e1b:: with SMTP id hp27mr25777856ejc.470.1624914353373;
+ Mon, 28 Jun 2021 14:05:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1623674025.git.lorenzo@kernel.org> <1316f3ef2763ff4c02244fb726c61568c972514c.1623674025.git.lorenzo@kernel.org>
-In-Reply-To: <1316f3ef2763ff4c02244fb726c61568c972514c.1623674025.git.lorenzo@kernel.org>
+References: <cover.1623674025.git.lorenzo@kernel.org> <7f61f8f7d38cf819383db739c14c874ccd3b53e2.1623674025.git.lorenzo@kernel.org>
+In-Reply-To: <7f61f8f7d38cf819383db739c14c874ccd3b53e2.1623674025.git.lorenzo@kernel.org>
 From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 28 Jun 2021 13:14:31 -0700
-Message-ID: <CAKgT0Ue7TsgwbQF+mfeDB-18Q-R29YZWe=y6Kgeg0xxbwds=vw@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 02/14] xdp: introduce flags field in xdp_buff/xdp_frame
+Date:   Mon, 28 Jun 2021 14:05:42 -0700
+Message-ID: <CAKgT0Ue=74BPWFDFYtWEA9DnNj35PgigDZAwCc5N6X=QpKz4GA@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 07/14] net: xdp: add multi-buff support to xdp_build_skb_from_frame
 To:     Lorenzo Bianconi <lorenzo@kernel.org>
 Cc:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
         lorenzo.bianconi@redhat.com, David Miller <davem@davemloft.net>,
@@ -71,21 +71,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 5:50 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+On Mon, Jun 14, 2021 at 5:51 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 >
-> Introduce flags field in xdp_frame/xdp_buffer data structure
-> to define additional buffer features. At the moment the only
-> supported buffer feature is multi-buffer bit (mb). Multi-buffer bit
-> is used to specify if this is a linear buffer (mb = 0) or a multi-buffer
-> frame (mb = 1). In the latter case the shared_info area at the end of
-> the first buffer will be properly initialized to link together
-> subsequent buffers.
+> Introduce xdp multi-buff support to
+> __xdp_build_skb_from_frame/xdp_build_skb_from_frame
+> utility routines.
 >
 > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  net/core/xdp.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index f61c63115c95..71bedf6049a1 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -582,9 +582,15 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+>                                            struct sk_buff *skb,
+>                                            struct net_device *dev)
+>  {
+> +       struct skb_shared_info *sinfo = xdp_get_shared_info_from_frame(xdpf);
+>         unsigned int headroom, frame_size;
+> +       int i, num_frags = 0;
+>         void *hard_start;
+>
+> +       /* xdp multi-buff frame */
+> +       if (unlikely(xdp_frame_is_mb(xdpf)))
+> +               num_frags = sinfo->nr_frags;
+> +
+>         /* Part of headroom was reserved to xdpf */
+>         headroom = sizeof(*xdpf) + xdpf->headroom;
+>
+> @@ -603,6 +609,13 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+>         if (xdpf->metasize)
+>                 skb_metadata_set(skb, xdpf->metasize);
+>
+> +       for (i = 0; i < num_frags; i++)
+> +               skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
+> +                               skb_frag_page(&sinfo->frags[i]),
+> +                               skb_frag_off(&sinfo->frags[i]),
+> +                               skb_frag_size(&sinfo->frags[i]),
+> +                               xdpf->frame_sz);
+> +
 
-Instead of passing this between buffers and frames I wonder if this
-wouldn't be better to place in something like the xdp_mem_info
-structure since this is something that would be specific to how the
-device is handling memory anyway. You could probably split the type
-field into a 16b type and a 16b flags field. Then add your bit where 0
-is linear/legacy and 1 is scatter-gather/multi-buffer.
+So this is assuming the header frame and all of the frags are using
+the same size. Rather than reading the frags out and then writing them
+back, why not just directly rewrite the nr_frags, add the total size
+to skb->len and skb->data_len, and then update the truesize?
+
+Actually, I think you might need to store the truesize somewhere in
+addition to the data_len that you were storing in the shared info.
