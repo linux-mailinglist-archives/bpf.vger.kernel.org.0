@@ -2,143 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CF53B5B4D
-	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 11:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6866C3B5CD9
+	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 12:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbhF1JdL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Jun 2021 05:33:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32900 "EHLO mail.kernel.org"
+        id S232745AbhF1LCF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Jun 2021 07:02:05 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21666 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232426AbhF1JdL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:33:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D96461C5A;
-        Mon, 28 Jun 2021 09:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624872646;
-        bh=tko4HhpTn1KfqSQcG6rk256TdCkSHRTiZNDg1gfOL1U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mdirt+wh3MtaZ7eNyZ9G3nbYCW5idUpb0uLyW3y3Pff8g1i8FeRt120hCx8rMfLOA
-         LnRoyQZ6znqLxXb5WQ4POqk3nvJJlxgEnyIMLyf/4xRDnJ3jrCYholI79Dx7JQswRh
-         BPPsck43uFy1epGSrPj0zjj0CnIzhGXT51/oNF84=
-Date:   Mon, 28 Jun 2021 11:30:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
+        id S232786AbhF1LCE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Jun 2021 07:02:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10028"; a="195081205"
+X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
+   d="scan'208";a="195081205"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 03:59:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,305,1616482800"; 
+   d="scan'208";a="407692251"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga006.jf.intel.com with ESMTP; 28 Jun 2021 03:59:34 -0700
+Date:   Mon, 28 Jun 2021 12:47:21 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org,
-        wsd_upstream@mediatek.com, chao.song@mediatek.com,
-        kuohong.wang@mediatek.com
-Subject: Re: [PATCH 4/4] drivers: net: mediatek: initial implementation of
- ccmni
-Message-ID: <YNmWwSsZ02iigiHC@kroah.com>
-References: <YNS4GzYHpxMWIH+1@kroah.com>
- <20210628071829.14925-1-rocco.yue@mediatek.com>
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Krzysztof Kazimierczak <krzysztof.kazimierczak@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net v2] xdp, net: fix for construct skb by xdp inside xsk
+ zc rx
+Message-ID: <20210628104721.GA57589@ranger.igk.intel.com>
+References: <20210617145534.101458-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210628071829.14925-1-rocco.yue@mediatek.com>
+In-Reply-To: <20210617145534.101458-1-xuanzhuo@linux.alibaba.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 03:18:30PM +0800, Rocco Yue wrote:
-> On Thu, 2021-06-24 at 18:51 +0200, Greg KH wrote:
-> On Thu, Jun 24, 2021 at 11:55:02PM +0800, Rocco Yue wrote:
-> >> On Thu, 2021-06-24 at 14:23 +0200, Greg KH wrote:
-> >> On Thu, Jun 24, 2021 at 07:53:49PM +0800, Rocco Yue wrote:
-> >>> 
-> >>> not have exports that no one uses.  Please add the driver to this patch
-> >>> series when you resend it.
-> >>> 
-> >> 
-> >> I've just took a look at what the Linux staging tree is. It looks like
-> >> a good choice for the current ccmni driver.
-> >> 
-> >> honstly, If I simply upload the relevant driver code B that calls
-> >> A (e.g. ccmni_rx_push), there is still a lack of code to call B.
-> >> This seems to be a continuty problem, unless all drivers codes are
-> >> uploaded (e.g. power on modem, get hardware status, complete tx/rx flow).
-> > 
-> > Great, send it all!  Why is it different modules, it's only for one
-> > chunk of hardware, no need to split it up into tiny pieces.  That way
-> > only causes it to be more code overall.
-> > 
-> >> 
-> >> Thanks~
-> >> 
-> >> Can I resend patch set as follows:
-> >> (1) supplement the details of pureip for patch 1/4;
-> >> (2) the document of ccmni.rst still live in the Documentation/...
-> >> (3) modify ccmni and move it into the drivers/staging/...
-> > 
-> > for drivers/staging/ the code needs to be "self contained" in that it
-> > does not require adding anything outside of the directory for it.
-> > 
-> > If you still require this core networking change, that needs to be
-> > accepted first by the networking developers and maintainers.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
+On Thu, Jun 17, 2021 at 10:55:34PM +0800, Xuan Zhuo wrote:
+> When each driver supports xsk rx, if the received buff returns XDP_PASS
+> after run xdp prog, it must construct skb based on xdp. This patch
+> extracts this logic into a public function xdp_construct_skb().
 > 
-> Hi Greg,
+> There is a bug in the original logic. When constructing skb, we should
+> copy the meta information to skb and then use __skb_pull() to correct
+> the data.
+
+Thanks for fixing the bug on Intel drivers, Xuan. However, together with
+Magnus we feel that include/net/xdp.h is not a correct place for
+introducing xdp_construct_skb. If mlx side could use it, then probably
+include/net/xdp_sock_drv.h is a better fit for that.
+
+Once again, CCing Maxim.
+Maxim, any chances that mlx driver could be aligned in a way that we could
+have a common function for creating skb on ZC path?
+
+Otherwise, maybe we should think about introducing the Intel-specific
+common header in tree?
+
 > 
-> I am grateful for your help.
+> Fixes: 0a714186d3c0f ("i40e: add AF_XDP zero-copy Rx support")
+> Fixes: 2d4238f556972 ("ice: Add support for AF_XDP")
+> Fixes: bba2556efad66 ("net: stmmac: Enable RX via AF_XDP zero-copy")
+> Fixes: d0bcacd0a1309 ("ixgbe: add AF_XDP zero-copy Rx support")
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 16 +---------
+>  drivers/net/ethernet/intel/ice/ice_xsk.c      | 12 +-------
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 12 +-------
+>  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 23 +-------------
+>  include/net/xdp.h                             | 30 +++++++++++++++++++
+>  5 files changed, 34 insertions(+), 59 deletions(-)
 > 
-> Both ccmni change and networking changes are needed, because as far
-> as I know, usually a device type should have at least one device to
-> use it, and pureip is what the ccmni driver needs, so I uploaded the
-> networking change and ccmni driver together;
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> index 68f177a86403..81b0f44eedda 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> @@ -246,23 +246,9 @@ bool i40e_alloc_rx_buffers_zc(struct i40e_ring *rx_ring, u16 count)
+>  static struct sk_buff *i40e_construct_skb_zc(struct i40e_ring *rx_ring,
+>  					     struct xdp_buff *xdp)
+>  {
+> -	unsigned int metasize = xdp->data - xdp->data_meta;
+> -	unsigned int datasize = xdp->data_end - xdp->data;
+>  	struct sk_buff *skb;
+>  
+> -	/* allocate a skb to store the frags */
+> -	skb = __napi_alloc_skb(&rx_ring->q_vector->napi,
+> -			       xdp->data_end - xdp->data_hard_start,
+> -			       GFP_ATOMIC | __GFP_NOWARN);
+> -	if (unlikely(!skb))
+> -		goto out;
+> -
+> -	skb_reserve(skb, xdp->data - xdp->data_hard_start);
+> -	memcpy(__skb_put(skb, datasize), xdp->data, datasize);
+> -	if (metasize)
+> -		skb_metadata_set(skb, metasize);
+> -
+> -out:
+> +	skb = xdp_construct_skb(xdp, &rx_ring->q_vector->napi);
+>  	xsk_buff_free(xdp);
+>  	return skb;
+>  }
+> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> index a1f89ea3c2bd..f95e1adcebda 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> @@ -430,22 +430,12 @@ static void ice_bump_ntc(struct ice_ring *rx_ring)
+>  static struct sk_buff *
+>  ice_construct_skb_zc(struct ice_ring *rx_ring, struct ice_rx_buf *rx_buf)
+>  {
+> -	unsigned int metasize = rx_buf->xdp->data - rx_buf->xdp->data_meta;
+> -	unsigned int datasize = rx_buf->xdp->data_end - rx_buf->xdp->data;
+> -	unsigned int datasize_hard = rx_buf->xdp->data_end -
+> -				     rx_buf->xdp->data_hard_start;
+>  	struct sk_buff *skb;
+>  
+> -	skb = __napi_alloc_skb(&rx_ring->q_vector->napi, datasize_hard,
+> -			       GFP_ATOMIC | __GFP_NOWARN);
+> +	skb = xdp_construct_skb(rx_buf->xdp, &rx_ring->q_vector->napi);
+>  	if (unlikely(!skb))
+>  		return NULL;
+>  
+> -	skb_reserve(skb, rx_buf->xdp->data - rx_buf->xdp->data_hard_start);
+> -	memcpy(__skb_put(skb, datasize), rx_buf->xdp->data, datasize);
+> -	if (metasize)
+> -		skb_metadata_set(skb, metasize);
+> -
+>  	xsk_buff_free(rx_buf->xdp);
+>  	rx_buf->xdp = NULL;
+>  	return skb;
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> index f72d2978263b..123945832c96 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+> @@ -203,22 +203,12 @@ bool ixgbe_alloc_rx_buffers_zc(struct ixgbe_ring *rx_ring, u16 count)
+>  static struct sk_buff *ixgbe_construct_skb_zc(struct ixgbe_ring *rx_ring,
+>  					      struct ixgbe_rx_buffer *bi)
+>  {
+> -	unsigned int metasize = bi->xdp->data - bi->xdp->data_meta;
+> -	unsigned int datasize = bi->xdp->data_end - bi->xdp->data;
+>  	struct sk_buff *skb;
+>  
+> -	/* allocate a skb to store the frags */
+> -	skb = __napi_alloc_skb(&rx_ring->q_vector->napi,
+> -			       bi->xdp->data_end - bi->xdp->data_hard_start,
+> -			       GFP_ATOMIC | __GFP_NOWARN);
+> +	skb = xdp_construct_skb(bi->xdp, &rx_ring->q_vector->napi);
+>  	if (unlikely(!skb))
+>  		return NULL;
+>  
+> -	skb_reserve(skb, bi->xdp->data - bi->xdp->data_hard_start);
+> -	memcpy(__skb_put(skb, datasize), bi->xdp->data, datasize);
+> -	if (metasize)
+> -		skb_metadata_set(skb, metasize);
+> -
+>  	xsk_buff_free(bi->xdp);
+>  	bi->xdp = NULL;
+>  	return skb;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index c87202cbd3d6..143ac1edb876 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -4729,27 +4729,6 @@ static void stmmac_finalize_xdp_rx(struct stmmac_priv *priv,
+>  		xdp_do_flush();
+>  }
+>  
+> -static struct sk_buff *stmmac_construct_skb_zc(struct stmmac_channel *ch,
+> -					       struct xdp_buff *xdp)
+> -{
+> -	unsigned int metasize = xdp->data - xdp->data_meta;
+> -	unsigned int datasize = xdp->data_end - xdp->data;
+> -	struct sk_buff *skb;
+> -
+> -	skb = __napi_alloc_skb(&ch->rxtx_napi,
+> -			       xdp->data_end - xdp->data_hard_start,
+> -			       GFP_ATOMIC | __GFP_NOWARN);
+> -	if (unlikely(!skb))
+> -		return NULL;
+> -
+> -	skb_reserve(skb, xdp->data - xdp->data_hard_start);
+> -	memcpy(__skb_put(skb, datasize), xdp->data, datasize);
+> -	if (metasize)
+> -		skb_metadata_set(skb, metasize);
+> -
+> -	return skb;
+> -}
+> -
+>  static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
+>  				   struct dma_desc *p, struct dma_desc *np,
+>  				   struct xdp_buff *xdp)
+> @@ -4761,7 +4740,7 @@ static void stmmac_dispatch_skb_zc(struct stmmac_priv *priv, u32 queue,
+>  	struct sk_buff *skb;
+>  	u32 hash;
+>  
+> -	skb = stmmac_construct_skb_zc(ch, xdp);
+> +	skb = xdp_construct_skb(xdp, &ch->rxtx_napi);
+>  	if (!skb) {
+>  		priv->dev->stats.rx_dropped++;
+>  		return;
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index a5bc214a49d9..561e21eaf718 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -95,6 +95,36 @@ xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
+>  	xdp->data_meta = meta_valid ? data : data + 1;
+>  }
+>  
+> +static __always_inline struct sk_buff *
+> +xdp_construct_skb(struct xdp_buff *xdp, struct napi_struct *napi)
+> +{
+> +	unsigned int metasize;
+> +	unsigned int datasize;
+> +	unsigned int headroom;
+> +	struct sk_buff *skb;
+> +	unsigned int len;
+> +
+> +	/* this include metasize */
+> +	datasize = xdp->data_end  - xdp->data_meta;
+> +	metasize = xdp->data      - xdp->data_meta;
+> +	headroom = xdp->data_meta - xdp->data_hard_start;
+> +	len      = xdp->data_end  - xdp->data_hard_start;
+> +
+> +	/* allocate a skb to store the frags */
+> +	skb = __napi_alloc_skb(napi, len, GFP_ATOMIC | __GFP_NOWARN);
+> +	if (unlikely(!skb))
+> +		return NULL;
+> +
+> +	skb_reserve(skb, headroom);
+> +	memcpy(__skb_put(skb, datasize), xdp->data_meta, datasize);
+> +	if (metasize) {
+> +		__skb_pull(skb, metasize);
+> +		skb_metadata_set(skb, metasize);
+> +	}
+> +
+> +	return skb;
+> +}
+> +
+>  /* Reserve memory area at end-of data area.
+>   *
+>   * This macro reserves tailroom in the XDP buffer by limiting the
+> -- 
+> 2.31.0
 > 
-> Since MTK’s modem driver has a large amount of code and strong code
-> coupling, it takes some time to clean up them. At this stage, it may
-> be difficult to upstream all the codes together.
-
-Why?  Just dump the whole thing in a drivers/staging/mtk/ directory
-structure and all should be fine.
-
-> During this period, even if ccmni is incomplete, can I put the ccmni
-> driver initial code in the driver/staging first ? After that, we will
-> gradually implement more functions of ccmni in the staging tree, and
-> we can also gradually sort out and clean up modem driver in the staging.
-
-I do not know, let's see the code first.  But we can not add frameworks
-with no in-kernel users, as that does not make any sense at all.
-
-> In addition, due to the requirements of GKI 2.0,
-
-That is a Google requirement, not a kernel.org requirement.  Please work
-with Google if you have questions/issues about that, there is NOTHING we
-can do about that here in the community for obvious reasons.
-
-> if ccmni device
-> uses RAWIP or NONE, it will hit ipv6 issue; and if ccmni uses
-> a device type other than PUREIP/RAWIP/NONE, there will be tethering
-> ebpf offload or clat ebpf offload can not work problems.
-> 
-> I hope PUREIP and ccmni can be accepted by the Linux community.
-
-As I stated before you need to have an in-kernel user for us to be able
-to accept frameworks and functions into the tree.  Otherwise Linux would
-quickly become unmanagable and unmaintainable.  Would you want to try to
-maintain code with no in-tree users?  What would you do if you were in
-our position?
-
-But for networking flags like this that go into userspace, I do not know
-what the maintainers of the networking stack require, so that really is
-up to them, not me.
-
-thanks,
-
-greg k-h
