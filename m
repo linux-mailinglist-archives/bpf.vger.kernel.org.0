@@ -2,86 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720843B61BB
-	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 16:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 586B03B65D7
+	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 17:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234151AbhF1OiF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Jun 2021 10:38:05 -0400
-Received: from www62.your-server.de ([213.133.104.62]:55000 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234578AbhF1Of4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:35:56 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lxsKC-0002mF-GH; Mon, 28 Jun 2021 16:33:24 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lxsKB-000XfH-Fo; Mon, 28 Jun 2021 16:33:24 +0200
-Subject: Re: [PATCH net v3] xdp, net: fix for construct skb by xdp inside xsk
- zc rx
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Krzysztof Kazimierczak <krzysztof.kazimierczak@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        linux-stm32@st-md-mailman.stormreply.com, maximmi@nvidia.com
-References: <20210628114647.75449-1-xuanzhuo@linux.alibaba.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0a1614c4-19b7-2665-8eb9-7df776fa4c13@iogearbox.net>
-Date:   Mon, 28 Jun 2021 16:33:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S234258AbhF1PlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Jun 2021 11:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238352AbhF1Pkd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:40:33 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED227C014DB2;
+        Mon, 28 Jun 2021 07:49:15 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id s137so6658100pfc.4;
+        Mon, 28 Jun 2021 07:49:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xiDXnE8T2Ig5kLEgxQ1DfTJKMTQe2R8bhbRnEAoK84s=;
+        b=Vrq/Ea6qGJUhzc7gcvNXr57zCRefc4FYl6MasfCkZZ8WaC0yPEEnfdg1z8CR/Ykoph
+         KM2apzV6fPdUogvpTes/NWICoQWmZ9nqHa4/Jd15l13BQbzMRGqgupSCSUeaa8ujaAaf
+         Xj1BYIshZxIF9exy9WTevwciw9WZzkOx1fTbDujJ3oJiKWhqcKltHoiKRpjMay24gkDN
+         nrS74Xt7HJdLwsIuUfeMavUi92C5rUF8yD9gdi3ZUZHI7pn11nufYoY9fB6muo0H06i0
+         ezDWdzWmk2A09w1NWjiR2Ahn4STqPGxwme4TocaRRSQafPPcRC8XP+WGzCkKfDxOaYc6
+         STJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xiDXnE8T2Ig5kLEgxQ1DfTJKMTQe2R8bhbRnEAoK84s=;
+        b=TXjGmoQYIb1ytfXe35iD1d1zfJULEN1Ws7E5d/hkDOYVX6mixKqIAqCUjWH2oKL8R7
+         Da2RSxrbzfhh+rJwuMwsdc5j5ZBIYbC4WbjTWJctAV7PnhT6B241q2WY6bRYPhzNZgiE
+         KVHhJOioCsu8mi/mZZOWAtCTIT/TjmjV5JpAmf6SsNJ4HhaKBiJ3ZxOR9+YwGML4OOXH
+         sSUFbeYJxMQu7Q7qyF5Prf3FvZmiEcyIJNHjRF3BlHiZhL3fzwjgD7t6vFT803peYPxZ
+         hWi3Xm1OuHpBSXp0QuGYa1nLUX7v7tBLwUaLdYRx7JHWS78HeH2eaEvcOLTs/kmlxE0Z
+         YaAw==
+X-Gm-Message-State: AOAM5328hsHqXYtPe1h9tlGi0yznqPeDqu2CULEepMqtQft7f7POllwu
+        YYXAewpm2ImXlb2qHRYUu8k=
+X-Google-Smtp-Source: ABdhPJwKRrblBM25Q0gWgepFLowuQ9Gnaf0uLSdgkLD8VmLcQUsMzPzn0e2TSPMDaIbzr3Q8UTXvxQ==
+X-Received: by 2002:aa7:999c:0:b029:308:7e6e:6fbc with SMTP id k28-20020aa7999c0000b02903087e6e6fbcmr22364879pfh.10.1624891755408;
+        Mon, 28 Jun 2021 07:49:15 -0700 (PDT)
+Received: from pn-hyperv.lan (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id j24sm14695331pfe.58.2021.06.28.07.49.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 07:49:15 -0700 (PDT)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+Subject: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
+Date:   Mon, 28 Jun 2021 22:49:08 +0800
+Message-Id: <20210628144908.881499-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210628114647.75449-1-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26215/Mon Jun 28 13:09:26 2021)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Xuan,
+icsk_ca_initialized be always set to zero before we examine it in if
+block, this makes the congestion control module's initialization be
+called even if the CC module was initialized already.
+In case the CC module allocates and setups its dynamically allocated
+private data in its init() function, e.g, CDG, the memory leak may occur.
 
-On 6/28/21 1:46 PM, Xuan Zhuo wrote:
-> When each driver supports xsk rx, if the received buff returns XDP_PASS
-> after run xdp prog, it must construct skb based on xdp. This patch
-> extracts this logic into a public function xdp_construct_skb().
-> 
-> There is a bug in the original logic. When constructing skb, we should
-> copy the meta information to skb and then use __skb_pull() to correct
-> the data.
-> 
-> Fixes: 0a714186d3c0f ("i40e: add AF_XDP zero-copy Rx support")
-> Fixes: 2d4238f556972 ("ice: Add support for AF_XDP")
-> Fixes: bba2556efad66 ("net: stmmac: Enable RX via AF_XDP zero-copy")
-> Fixes: d0bcacd0a1309 ("ixgbe: add AF_XDP zero-copy Rx support")
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
 
-There was still an ongoing discussion on the v2 of your patch between
-Maciej and Maxim (Cc). Before you submit a v3, please let the discussion
-conclude first.
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+---
+ net/ipv4/tcp_input.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks,
-Daniel
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index 7d5e59f688de..855ada2be25e 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -5922,7 +5922,6 @@ void tcp_init_transfer(struct sock *sk, int bpf_op, struct sk_buff *skb)
+ 		tp->snd_cwnd = tcp_init_cwnd(tp, __sk_dst_get(sk));
+ 	tp->snd_cwnd_stamp = tcp_jiffies32;
+
+-	icsk->icsk_ca_initialized = 0;
+ 	bpf_skops_established(sk, bpf_op, skb);
+ 	if (!icsk->icsk_ca_initialized)
+ 		tcp_init_congestion_control(sk);
+--
+2.25.1
+
