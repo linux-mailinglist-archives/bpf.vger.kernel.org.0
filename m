@@ -2,118 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6E13B6751
-	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 19:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0973B6762
+	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 19:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbhF1RM3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Jun 2021 13:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233003AbhF1RM2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Jun 2021 13:12:28 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9577C061574
-        for <bpf@vger.kernel.org>; Mon, 28 Jun 2021 10:10:01 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id v12so10419124vsg.10
-        for <bpf@vger.kernel.org>; Mon, 28 Jun 2021 10:10:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mo3OdiLTZvGcXxBpncIESoNRczm8dPaHap71ZY+M2V0=;
-        b=vIIyxo7OmqipykkX5c7TZY0dBl2DBO3LJAsvk6kupavZ/V87biwTFvAdI+3oiiDJX+
-         EzSvGXjyp22IIwsK7mBLNaYK555SXWp/BRJ0EhlU636KrVcvtIAssh5/qazVZqfrqcuF
-         92aIwWe3w8N96gfULh0Ql+FKm+XbNgVhqm0e/M2O3+0TR6w6FCUycRXn0Jw4F/JcKgUk
-         LsF/f8FZNQLv+CpRz5a7Ruq6qCmvTmH/c5Fy8hb8bLFq18kpNQ74EBh7HGgcau3OuQoq
-         XAiVrjqI5gMizAgWSksVHOLw/nOB4/PnbeLua3/N28XxnwCnK6rVI0SCLJ4q4CN3/5hk
-         tr7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mo3OdiLTZvGcXxBpncIESoNRczm8dPaHap71ZY+M2V0=;
-        b=eIMZOHNuHT2lt+jMh40e8cjXzjJl3VwunGtCnAFL60m/zL0Jipw3davwWSR0otxGqD
-         3NFc02Nf3b9lF5z0hYpa+pOOwUqgwNYcD9oukYFLK4NfLXu5kF3Ddnc8GUMx0vPhkQiX
-         nh+e5aiz1LewYoSlXb8ai+spTHowSuuRzrBelw0sUeJ8OvWbsyHrYpPcKfH2DPREuCPu
-         4I/598AGGRyqo0D+a1lu4sjqdE+isemMN0yw4qs0ROxodJGb7wKwZeqmqL47K8VZABrK
-         uiVMPjaft+NVEyIGpWxkCTBsBhz0Ajdr463ai1Voytm4faZGcoT/qaUyHQLH8Umc4/Ye
-         5F7w==
-X-Gm-Message-State: AOAM532Z5B1JnWrLQKQEF8MC1zPec6xomusr4UIBHTqfEESRvH8QoP9P
-        uW1McR0f3NWTo/QMBg8vCVX0cGT4pqU7xw697CKnIw==
-X-Google-Smtp-Source: ABdhPJxZvUL4IYU2328Efy3AR47Zraw12zY2/+WkyDw8j3H3zqpchIbYSF4iWNXEHqJseW4aHy4U7rx1BK2J5qYZGL4=
-X-Received: by 2002:a67:f244:: with SMTP id y4mr20182870vsm.52.1624900200466;
- Mon, 28 Jun 2021 10:10:00 -0700 (PDT)
+        id S233065AbhF1RP4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Jun 2021 13:15:56 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:54743 "EHLO todd.t-8ch.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232084AbhF1RP4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Jun 2021 13:15:56 -0400
+Date:   Mon, 28 Jun 2021 19:13:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1624900407;
+        bh=g8Q9er+HLedVUAwmx+vgjIcik4+FkDXHMkwZooRvcUw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H6RvxDo1Q1vTJYDNKraxw5WQeSEZGISMnc/qXR6RPDoBMsV0HuVfi7QJWFpuJ6zZ+
+         H5ZWcsuU/CvBTiibAkNz+ycZlXH2WinpUtBxJ4BZ9MsVVLJZgq8zy8vTHI/QV2Zhk/
+         cb/upvyeJGeCMg/q7JZ8JLhHYrTgvcvNOfcJJCWM=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     linux-audit@redhat.com, bpf@vger.kernel.org
+Subject: Re: AUDIT_ARCH_ and __NR_syscall constants for seccomp filters
+Message-ID: <696bf938-c9d2-4b18-9f53-b6ff27035a97@t-8ch.de>
+References: <0b926f59-464d-4b67-8f32-329cf9695cf7@t-8ch.de>
+ <CAHC9VhSTb75NEPZRm+Tkngv=SW8ntmSpVCrXMHHHWc2qYNZqCA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210628144908.881499-1-phind.uet@gmail.com>
-In-Reply-To: <20210628144908.881499-1-phind.uet@gmail.com>
-From:   Neal Cardwell <ncardwell@google.com>
-Date:   Mon, 28 Jun 2021 13:09:43 -0400
-Message-ID: <CADVnQy=QDCFi8mj249krPyPZmPickEaC+3z_7-tCSvsde65xOw@mail.gmail.com>
-Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
-To:     Nguyen Dinh Phi <phind.uet@gmail.com>
-Cc:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
-        Yuchung Cheng <ycheng@google.com>, Kevin Yang <yyd@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhSTb75NEPZRm+Tkngv=SW8ntmSpVCrXMHHHWc2qYNZqCA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 11:39 AM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
->
-> icsk_ca_initialized be always set to zero before we examine it in if
-> block, this makes the congestion control module's initialization be
-> called even if the CC module was initialized already.
-> In case the CC module allocates and setups its dynamically allocated
-> private data in its init() function, e.g, CDG, the memory leak may occur.
->
-> Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
->
-> Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-> ---
->  net/ipv4/tcp_input.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> index 7d5e59f688de..855ada2be25e 100644
-> --- a/net/ipv4/tcp_input.c
-> +++ b/net/ipv4/tcp_input.c
-> @@ -5922,7 +5922,6 @@ void tcp_init_transfer(struct sock *sk, int bpf_op, struct sk_buff *skb)
->                 tp->snd_cwnd = tcp_init_cwnd(tp, __sk_dst_get(sk));
->         tp->snd_cwnd_stamp = tcp_jiffies32;
->
-> -       icsk->icsk_ca_initialized = 0;
+Hi Paul,
 
-If this patch removes that line, then AFAICT the patch should also
-insert a corresponding:
+thanks for your response!
 
-  icsk->icsk_ca_initialized = 0;
+On Mo, 2021-06-28T12:59-0400, Paul Moore wrote:
+> On Mon, Jun 28, 2021 at 9:25 AM Thomas Weißschuh <linux@weissschuh.net> wrote:
+> >
+> > Hi everyone,
+> >
+> > there does not seem to be a way to access the AUDIT_ARCH_ constant that matches
+> > the currently visible syscall numbers (__NR_...) from the kernel uapi headers.
+> 
+> Looking at Linus' current tree I see the AUDIT_ARCH_* defines in
+> include/uapi/linux/audit.h; looking on my system right now I see the
+> defines in /usr/include/linux/audit.h.  What kernel repository and
+> distribution are you using?
 
-in tcp_ca_openreq_child(), so that any non-zero icsk_ca_initialized
-value in a listener socket (on which setsockopt(TCP_CONGESTION) was
-called)  is not erroneously inherited by a child socket due to the
-tcp_create_openreq_child() -> inet_csk_clone_lock() -> sock_copy()
-call chain. Something like:
+I am using ArchLinux and also have all these defines.
 
-diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
-index c48d8336f26d..4d6a76dfa1c4 100644
---- a/net/ipv4/tcp_minisocks.c
-+++ b/net/ipv4/tcp_minisocks.c
-@@ -446,6 +446,7 @@ void tcp_ca_openreq_child(struct sock *sk, const
-struct dst_entry *dst)
-        }
+> > Questions:
+> >
+> > Is it really necessary to validate the arch value when syscall numbers are
+> > already target-specific?
+> > (If not, should this be added to the docs?)
+> 
+> Checking the arch/ABI value is important so that you can ensure that
+> you are using the syscall number in the proper context.  For example,
+> look at the access(2) syscall: it is undefined on some ABIs and can
+> take either a value of 20, 21, or 33 depending on the arch/ABI.
+> Unfortunately this is rather common.
 
-        /* If no valid choice made yet, assign current system default ca. */
-+       icsk->icsk_ca_initialized = 0;
-        if (!ca_got_dst &&
-            (!icsk->icsk_ca_setsockopt ||
-             !bpf_try_module_get(icsk->icsk_ca_ops, icsk->icsk_ca_ops->owner)))
+But when if I am not hardcoding the syscall numbers but use the
+__NR_access kernel define then I should always get the correct number for the
+ABI I am compiling for (or an error if the syscall does not exist), no?
 
-thanks,
-neal
+> Checking the arch/ABI value is also handy if you want to quickly
+> disallow certain ABIs on a system that supports multiple ABI, e.g.
+> disabling 32-bit x86 on a 64-bit x86_64 system.
+> 
+> > Would it make sense to expose the audit arch matching the syscall numbers in
+> > the uapi headers?
+> 
+> Yes, which is why the existing headers do so ;)  If you don't see the
+> header files I mentioned above, it may be worth checking your kernel
+> source repository and your distribution's installed kernel header
+> files.
+
+I do see constants for all the possible ABIs but not one constant that always
+represents the one I am currently compiling for.
+The same way the syscall number defines always give me the syscall number for
+the currently targeted ABI.
+
+Thomas
