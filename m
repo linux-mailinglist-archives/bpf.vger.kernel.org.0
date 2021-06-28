@@ -2,90 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5433B57AF
-	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 05:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B133B59CF
+	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 09:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbhF1DHw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 27 Jun 2021 23:07:52 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8473 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231678AbhF1DHw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 27 Jun 2021 23:07:52 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GCsph3sJ7zZfy4;
-        Mon, 28 Jun 2021 11:02:20 +0800 (CST)
-Received: from localhost.localdomain (10.175.103.91) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 28 Jun 2021 11:05:24 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <huawei.libin@huawei.com>
-Subject: [PATCH] tools: bpf: Fix error in 'make -C tools/ bpf_install'
-Date:   Mon, 28 Jun 2021 11:04:09 +0800
-Message-ID: <20210628030409.3459095-1-liwei391@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S232312AbhF1HgW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Jun 2021 03:36:22 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:53400 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232246AbhF1HgV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Jun 2021 03:36:21 -0400
+X-UUID: 574c76e2c2aa4ea5935980c50dcfcddf-20210628
+X-UUID: 574c76e2c2aa4ea5935980c50dcfcddf-20210628
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 253331028; Mon, 28 Jun 2021 15:33:51 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 28 Jun 2021 15:33:43 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 28 Jun 2021 15:33:42 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>, <netdev@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>, <chao.song@mediatek.com>,
+        <kuohong.wang@mediatek.com>, Rocco Yue <rocco.yue@mediatek.com>
+Subject: Re: [PATCH 4/4] drivers: net: mediatek: initial implementation of ccmni
+Date:   Mon, 28 Jun 2021 15:18:30 +0800
+Message-ID: <20210628071829.14925-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <YNS4GzYHpxMWIH+1@kroah.com>
+References: <YNS4GzYHpxMWIH+1@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-make[2]: *** No rule to make target 'install'.  Stop.
-make[1]: *** [Makefile:122: runqslower_install] Error 2
-make: *** [Makefile:116: bpf_install] Error 2
+On Thu, 2021-06-24 at 18:51 +0200, Greg KH wrote:
+On Thu, Jun 24, 2021 at 11:55:02PM +0800, Rocco Yue wrote:
+>> On Thu, 2021-06-24 at 14:23 +0200, Greg KH wrote:
+>> On Thu, Jun 24, 2021 at 07:53:49PM +0800, Rocco Yue wrote:
+>>> 
+>>> not have exports that no one uses.  Please add the driver to this patch
+>>> series when you resend it.
+>>> 
+>> 
+>> I've just took a look at what the Linux staging tree is. It looks like
+>> a good choice for the current ccmni driver.
+>> 
+>> honstly, If I simply upload the relevant driver code B that calls
+>> A (e.g. ccmni_rx_push), there is still a lack of code to call B.
+>> This seems to be a continuty problem, unless all drivers codes are
+>> uploaded (e.g. power on modem, get hardware status, complete tx/rx flow).
+> 
+> Great, send it all!  Why is it different modules, it's only for one
+> chunk of hardware, no need to split it up into tiny pieces.  That way
+> only causes it to be more code overall.
+> 
+>> 
+>> Thanks~
+>> 
+>> Can I resend patch set as follows:
+>> (1) supplement the details of pureip for patch 1/4;
+>> (2) the document of ccmni.rst still live in the Documentation/...
+>> (3) modify ccmni and move it into the drivers/staging/...
+> 
+> for drivers/staging/ the code needs to be "self contained" in that it
+> does not require adding anything outside of the directory for it.
+> 
+> If you still require this core networking change, that needs to be
+> accepted first by the networking developers and maintainers.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-There is no rule for target 'install' in tools/bpf/runqslower/Makefile,
-and there is no need to install it, so just remove 'runqslower_install'.
+Hi Greg,
 
-Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
-Signed-off-by: Wei Li <liwei391@huawei.com>
----
- tools/bpf/Makefile | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+I am grateful for your help.
 
-diff --git a/tools/bpf/Makefile b/tools/bpf/Makefile
-index 39bb322707b4..b11cfc86a3d0 100644
---- a/tools/bpf/Makefile
-+++ b/tools/bpf/Makefile
-@@ -97,7 +97,7 @@ clean: bpftool_clean runqslower_clean resolve_btfids_clean
- 	$(Q)$(RM) -- $(OUTPUT)FEATURE-DUMP.bpf
- 	$(Q)$(RM) -r -- $(OUTPUT)feature
- 
--install: $(PROGS) bpftool_install runqslower_install
-+install: $(PROGS) bpftool_install
- 	$(call QUIET_INSTALL, bpf_jit_disasm)
- 	$(Q)$(INSTALL) -m 0755 -d $(DESTDIR)$(prefix)/bin
- 	$(Q)$(INSTALL) $(OUTPUT)bpf_jit_disasm $(DESTDIR)$(prefix)/bin/bpf_jit_disasm
-@@ -118,9 +118,6 @@ bpftool_clean:
- runqslower:
- 	$(call descend,runqslower)
- 
--runqslower_install:
--	$(call descend,runqslower,install)
--
- runqslower_clean:
- 	$(call descend,runqslower,clean)
- 
-@@ -131,5 +128,5 @@ resolve_btfids_clean:
- 	$(call descend,resolve_btfids,clean)
- 
- .PHONY: all install clean bpftool bpftool_install bpftool_clean \
--	runqslower runqslower_install runqslower_clean \
-+	runqslower runqslower_clean \
- 	resolve_btfids resolve_btfids_clean
--- 
-2.25.1
+Both ccmni change and networking changes are needed, because as far
+as I know, usually a device type should have at least one device to
+use it, and pureip is what the ccmni driver needs, so I uploaded the
+networking change and ccmni driver together;
+
+Since MTK’s modem driver has a large amount of code and strong code
+coupling, it takes some time to clean up them. At this stage, it may
+be difficult to upstream all the codes together.
+
+During this period, even if ccmni is incomplete, can I put the ccmni
+driver initial code in the driver/staging first ? After that, we will
+gradually implement more functions of ccmni in the staging tree, and
+we can also gradually sort out and clean up modem driver in the staging.
+
+In addition, due to the requirements of GKI 2.0, if ccmni device
+uses RAWIP or NONE, it will hit ipv6 issue; and if ccmni uses
+a device type other than PUREIP/RAWIP/NONE, there will be tethering
+ebpf offload or clat ebpf offload can not work problems.
+
+I hope PUREIP and ccmni can be accepted by the Linux community.
+
+Thanks,
+Rocco
 
