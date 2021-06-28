@@ -2,106 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA273B5A97
-	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 10:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BD33B5B19
+	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 11:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhF1Ipu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Jun 2021 04:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232312AbhF1Ipt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Jun 2021 04:45:49 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCE4C061787
-        for <bpf@vger.kernel.org>; Mon, 28 Jun 2021 01:43:23 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id f13so6866855qtb.6
-        for <bpf@vger.kernel.org>; Mon, 28 Jun 2021 01:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+G0aFIa+dKIdQGhhAX7TYqH/nk+PfE3E5edNbclxiZM=;
-        b=SnecMWl5iR/bF/bsX0hSkvINZEErBldRKMwqj/t01OhZmr/rUI6aWOgdV2Z63oUgM8
-         6pqllFAquDXwhOQfUujcnQXr2Vdt/TS3VRqpGQQPXN39+8ZaFdMt+w6j7XAiAv7kkBKF
-         MkImyUeZ8SQcIaj50jvgoPeP+PjxLMw18cHaiGzDDHYp7DkDVtrgn9+Q5TdbukBrXTEj
-         wHo4sHoFMFroy4QnXleLwU4bn4lUpYGQKiJyfeTI9OHRFnv4nno16WIDeej7Bhm6OgYY
-         JNPI/h25UQu0S8vBO8Snj9ZCwWPrND4i+29JHGnz0A2KJsTCYh9ntV1ES2Wy3CYa4Gh7
-         RqZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+G0aFIa+dKIdQGhhAX7TYqH/nk+PfE3E5edNbclxiZM=;
-        b=AUiVWYAGZgtm4Ga0QPLU3HdC+7tpoVp14AikR2gpkB3BaRlV7Jp3KxZ4AZtzZ5AmCn
-         M6bpyD12daXaISi2u4Fn1C3V61AjUOTpptVxECwOsRYJ9Tie1iNq4+jMV7C4oJAECkyD
-         BDnc3MwDnDw52bh81b/k8VIp3iNdT5arncnM+uJeu/tYyYQtqqGp8ntG6JcJFGk3xvbY
-         wp14HXP50P2HcgGpVi5HS1m3D4IzaYm+kMKhmwGuIBcblMslqRt9UPUTVCDwONlLspjq
-         V1fkqfQG5DS451LhZnZJ5F8KDVNXflDUb16ZFNaYYGd9U2CWbO5TmaMML38BOaCG/FRU
-         0EMA==
-X-Gm-Message-State: AOAM532elfy7AIcF/m517V0wQ8zPnhY9473yN425xFltOgFhRcS6T+5M
-        ECFBY3Hl6T9C//+0/kez0zlyR5vIAIQjAuztQKVd8dqz79pFRg==
-X-Google-Smtp-Source: ABdhPJxVs9ovjQ9jj3UPUGVpqeS8rM0QoHg1qqvU59gg0Usr9RQl2QZjr4tMZakv7PIzKG8ZKBTB8VWWRxLoV12CKEw=
-X-Received: by 2002:ac8:1090:: with SMTP id a16mr20368058qtj.290.1624869796278;
- Mon, 28 Jun 2021 01:43:16 -0700 (PDT)
+        id S232312AbhF1JVq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Jun 2021 05:21:46 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5923 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232200AbhF1JVq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Jun 2021 05:21:46 -0400
+Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GD25p5Czlz75DV;
+        Mon, 28 Jun 2021 17:15:58 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by dggeme766-chm.china.huawei.com
+ (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 28
+ Jun 2021 17:19:15 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <davem@davemloft.net>, <bjorn@kernel.org>,
+        <magnus.karlsson@intel.com>, <jonathan.lemon@gmail.com>,
+        <maciej.fijalkowski@intel.com>, <kuba@kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <andrii@kernel.org>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <kpsingh@kernel.org>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH bpf] samples/bpf: Fix xdpsock with '-M' parameter missing unload process
+Date:   Mon, 28 Jun 2021 17:18:15 +0800
+Message-ID: <20210628091815.2373487-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <000000000000f034fc05c2da6617@google.com> <000000000000cac82d05c5214992@google.com>
- <20210621224119.GW4397@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210621224119.GW4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 28 Jun 2021 10:43:04 +0200
-Message-ID: <CACT4Y+bL26nyHU5Tc4SV7AepPYSt_YZVfhLEMaLncZ2+-OyFCg@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
-To:     paulmck@kernel.org
-Cc:     syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
-        coreteam@netfilter.org, daniel@iogearbox.net, davem@davemloft.net,
-        dsahern@kernel.org, fw@strlen.de, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, john.fastabend@gmail.com,
-        josh@joshtriplett.org, kadlec@netfilter.org, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mathieu.desnoyers@efficios.com, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        peterz@infradead.org, rcu@vger.kernel.org, rostedt@goodmis.org,
-        shakeelb@google.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yanfei.xu@windriver.com,
-        yhs@fb.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme766-chm.china.huawei.com (10.3.19.112)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 12:41 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Sat, Jun 19, 2021 at 09:54:06AM -0700, syzbot wrote:
-> > syzbot has bisected this issue to:
-> >
-> > commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
-> > Author: Florian Westphal <fw@strlen.de>
-> > Date:   Wed Apr 21 07:51:08 2021 +0000
-> >
-> >     netfilter: arp_tables: pass table pointer via nf_hook_ops
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10dceae8300000
-> > start commit:   0c38740c selftests/bpf: Fix ringbuf test fetching map FD
-> > git tree:       bpf-next
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=12dceae8300000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=14dceae8300000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=a6380da8984033f1
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1264c2d7d00000
-> >
-> > Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
-> > Fixes: f9006acc8dfe ("netfilter: arp_tables: pass table pointer via nf_hook_ops")
-> >
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
->
-> I am not seeing any mention of check_all_holdout_tasks_trace() in
-> the console output, but I again suggest the following two patches:
->
-> 6a04a59eacbd ("rcu-tasks: Don't delete holdouts within trc_inspect_reader()"
-> dd5da0a9140e ("rcu-tasks: Don't delete holdouts within trc_wait_for_one_reader()")
+Execute the following command and exit, then execute it again, the
+following error will be reported.
 
-Let's tell syzbot about these fixes, then it will tell us if they help or not.
+$ sudo ./samples/bpf/xdpsock -i ens4f2 -M
+^C
+$ sudo ./samples/bpf/xdpsock -i ens4f2 -M
+libbpf: elf: skipping unrecognized data section(16) .eh_frame
+libbpf: elf: skipping relo section(17) .rel.eh_frame for section(16) .eh_frame
+libbpf: Kernel error message: XDP program already attached
+ERROR: link set xdp fd failed
 
-#syz fix: rcu-tasks: Don't delete holdouts within trc_inspect_reader()
+commit c9d27c9e8dc7 ("samples: bpf: Do not unload prog within xdpsock")
+removed the unload prog code because of the presence of bpf_link. This
+is fine if XDP_SHARED_UMEM is disable, but if it is enable, unload prog
+is still needed.
+
+Fixes: c9d27c9e8dc7 ("samples: bpf: Do not unload prog within xdpsock")
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ samples/bpf/xdpsock_user.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+index 53e300f860bb..33d0bdebbed8 100644
+--- a/samples/bpf/xdpsock_user.c
++++ b/samples/bpf/xdpsock_user.c
+@@ -96,6 +96,7 @@ static int opt_xsk_frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE;
+ static int opt_timeout = 1000;
+ static bool opt_need_wakeup = true;
+ static u32 opt_num_xsks = 1;
++static u32 prog_id;
+ static bool opt_busy_poll;
+ static bool opt_reduced_cap;
+ 
+@@ -461,6 +462,23 @@ static void *poller(void *arg)
+ 	return NULL;
+ }
+ 
++static void remove_xdp_program(void)
++{
++	u32 curr_prog_id = 0;
++
++	if (bpf_get_link_xdp_id(opt_ifindex, &curr_prog_id, opt_xdp_flags)) {
++		printf("bpf_get_link_xdp_id failed\n");
++		exit(EXIT_FAILURE);
++	}
++
++	if (prog_id == curr_prog_id)
++		bpf_set_link_xdp_fd(opt_ifindex, -1, opt_xdp_flags);
++	else if (!curr_prog_id)
++		printf("couldn't find a prog id on a given interface\n");
++	else
++		printf("program on interface changed, not removing\n");
++}
++
+ static void int_exit(int sig)
+ {
+ 	benchmark_done = true;
+@@ -471,6 +489,9 @@ static void __exit_with_error(int error, const char *file, const char *func,
+ {
+ 	fprintf(stderr, "%s:%s:%i: errno: %d/\"%s\"\n", file, func,
+ 		line, error, strerror(error));
++
++	if (opt_num_xsks > 1)
++		remove_xdp_program();
+ 	exit(EXIT_FAILURE);
+ }
+ 
+@@ -490,6 +511,9 @@ static void xdpsock_cleanup(void)
+ 		if (write(sock, &cmd, sizeof(int)) < 0)
+ 			exit_with_error(errno);
+ 	}
++
++	if (opt_num_xsks > 1)
++		remove_xdp_program();
+ }
+ 
+ static void swap_mac_addresses(void *data)
+@@ -857,6 +881,10 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem,
+ 	if (ret)
+ 		exit_with_error(-ret);
+ 
++	ret = bpf_get_link_xdp_id(opt_ifindex, &prog_id, opt_xdp_flags);
++	if (ret)
++		exit_with_error(-ret);
++
+ 	xsk->app_stats.rx_empty_polls = 0;
+ 	xsk->app_stats.fill_fail_polls = 0;
+ 	xsk->app_stats.copy_tx_sendtos = 0;
+-- 
+2.17.1
+
