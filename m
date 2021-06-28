@@ -2,146 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42683B6B08
-	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 00:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A1A3B6B20
+	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 01:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232992AbhF1Wq2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Jun 2021 18:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbhF1Wq1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Jun 2021 18:46:27 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFB2C061574
-        for <bpf@vger.kernel.org>; Mon, 28 Jun 2021 15:43:59 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id l24so265821edr.11
-        for <bpf@vger.kernel.org>; Mon, 28 Jun 2021 15:43:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=73hLMKdVoRqxwgfRW2NqWRHvgNVWFIhcX75t56intpI=;
-        b=T94NfHr8X2vFc56fEztBgSPItjLSlacIfow9DzN/QEbltrt7+fAEhvX0rS924z5ev7
-         zC4nR/5VzX+loaQf1fg01aQjUhDEpprpYgCHKSS4VTT1iIkxhAMEAwGJXrcW1El2i6A1
-         7r+UqhYwUe37RjjaFUP3k4ZFp924PnxTasvPgjjTDPW47QDut963yQygBlBmA+eW/e0W
-         /P2A8mrgDrzjlwUH+cdL8qcgFVBM4CYMcY5O0WsDGRGGLGpsC6EB3Aw4jCdVi/0x9zvD
-         gWrkbL+fqmRU+CZqkmc0WRD6Twi8gTVMtbFNIid5D3COW18+0AAZBBMxHIa8KCND/ZTA
-         WxwQ==
+        id S236128AbhF1XDh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Jun 2021 19:03:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39021 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235942AbhF1XDg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 28 Jun 2021 19:03:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624921269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wET16Z+BojG4tjaqWO4XLxsxQNkC9SqpExUXVqFNB/Y=;
+        b=Um4/V7d07wIP9/cvoE1GB5eooJw35vgVyjhApnCquN05LAvx4Mqtbx+FmFvAc/kNee9Wur
+        owp/sYILmHd2lAg6DxeQoWEH7cJK9B+IwwYnffN0V1qDNvHRm4urLQ8CFD7eCn6TyjINc+
+        yxnds9gjhQt/kcuK6P4KSleryU7Hj/8=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-cOfyTmCpNFOhzVwNCcXAiw-1; Mon, 28 Jun 2021 19:01:08 -0400
+X-MC-Unique: cOfyTmCpNFOhzVwNCcXAiw-1
+Received: by mail-ej1-f70.google.com with SMTP id w22-20020a17090652d6b029048a3391d9f6so4962359ejn.12
+        for <bpf@vger.kernel.org>; Mon, 28 Jun 2021 16:01:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=73hLMKdVoRqxwgfRW2NqWRHvgNVWFIhcX75t56intpI=;
-        b=MoQlI7Su0WY1Fi/xo8VT1nZRwXgvnwFuG47Zu+S9NGkNpzHT0fOTKv1zLk3Sbcvxm/
-         CIrayFur2S7EDOY8mh3SxAxDmLjpPlo/kU1F8ju4Z+meTR7hmrmGGmGKd+sXOV+cmYOa
-         sRoW2I0QIae9aBjQLaO0ujdN08OB0ihwEPlzCxHASp6FFYvPPkmP4eWX6WxAi1AuA892
-         gFx6VpDACetuvvo6t9xECUf0cHLi65hWfNf1LokiEt7iVJdyiLoFYFxdtgzqZhq6GewY
-         0F8FGDe5IhJMKWGF1lonvQ0VNIGnMClF3YCBJZ6j4hdPwRfdhBXgm/ltE0jjBBVcwEcZ
-         +gdA==
-X-Gm-Message-State: AOAM532OSrd1sXSLUldBKv3d92tUQLOwTpGpp/jsGJtkpKwm6c/rgMJB
-        NXmrdH0KPM8aRIsggYbQ29CEZYZ7ubywOl4LU/ra
-X-Google-Smtp-Source: ABdhPJw+cPBBLNiR5YTeSVbi5e3DXb/AzCzyp2HNoXUOnsAMd8AlumYblSXH514TyE0NP7bPcOHFVg/m0Zc4pJOvqRo=
-X-Received: by 2002:aa7:d592:: with SMTP id r18mr1593035edq.269.1624920237966;
- Mon, 28 Jun 2021 15:43:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wET16Z+BojG4tjaqWO4XLxsxQNkC9SqpExUXVqFNB/Y=;
+        b=Uw3R45qqp3zOnixGhUZ+oh/TuhhvTn2Gen6FdA4vW72SpowHMz/6onXVOEwggoQcwd
+         OtupaeJKSIaJDqst8PFTZ/mLaCbM2H0P8DsqE7wX9l6wNNCvIB5TU+DzHnxEiMHfXrAS
+         9MIm5XskPqN9RTx2iy8NQe9p+Gql5IG4wWqAzWvqmGZn9GO1tbMsCtUSThVz+LMSbkUe
+         QWpNwDi8wBYDkj95WIjxEQMkw5BNZpChZB21b6eVYaIRnK/tcuiPl1dc+mDpLfC8JJEo
+         ETg3Wa8VO68JY1UE9vmDLzIv1Fe+6ONztnbQdL/DfIF1dso0dFijsq8J+fFWBtVcpJp6
+         wuiQ==
+X-Gm-Message-State: AOAM530yFvPVTSRotlwPhWoW0F7mezfyFxMk5RSXv+eR+12BBSfbxZFj
+        aPfxaS7uw4F0US0T0C2l+37nmEW76Jp7wcojRpaEydPjFFxexkpK7D3ehOUjB3h98icsr6eWE2Z
+        dgybfYXCxt2fh
+X-Received: by 2002:a05:6402:4243:: with SMTP id g3mr18788264edb.118.1624921266882;
+        Mon, 28 Jun 2021 16:01:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOkhovZmeE6X4ovlHzS0eNaA0YXEDY/lSgliR+5z8ViDbIlcWecWw/i/RKdJoqWe8GOiDYuw==
+X-Received: by 2002:a05:6402:4243:: with SMTP id g3mr18788244edb.118.1624921266707;
+        Mon, 28 Jun 2021 16:01:06 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id z28sm7165024ejl.69.2021.06.28.16.01.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 16:01:05 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 280AE18071E; Tue, 29 Jun 2021 01:01:03 +0200 (CEST)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH bpf-next] bpf/devmap: convert remaining READ_ONCE() to rcu_dereference()
+Date:   Tue, 29 Jun 2021 01:00:51 +0200
+Message-Id: <20210628230051.556099-1-toke@redhat.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <0b926f59-464d-4b67-8f32-329cf9695cf7@t-8ch.de>
- <CAHC9VhSTb75NEPZRm+Tkngv=SW8ntmSpVCrXMHHHWc2qYNZqCA@mail.gmail.com>
- <696bf938-c9d2-4b18-9f53-b6ff27035a97@t-8ch.de> <CAHC9VhSrki+=724CSQbDdiiMnM8oXTmFP-XFnOmq28c03x1RQQ@mail.gmail.com>
- <efb74f33-6876-48ec-bb9c-87b2247bdedb@t-8ch.de>
-In-Reply-To: <efb74f33-6876-48ec-bb9c-87b2247bdedb@t-8ch.de>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 28 Jun 2021 18:43:46 -0400
-Message-ID: <CAHC9VhTKOZepgVwpc=rh65-ziMTvSvgtCjP6S9+SQ=YDqg-vsA@mail.gmail.com>
-Subject: Re: AUDIT_ARCH_ and __NR_syscall constants for seccomp filters
-To:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc:     linux-audit@redhat.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 1:58 PM Thomas Wei=C3=9Fschuh <linux@weissschuh.net=
-> wrote:
->
-> Hi again!
+There were a couple of READ_ONCE()-invocations left-over by the devmap RCU
+conversion. Convert these to rcu_dereference() as well to avoid complaints
+from sparse.
 
-!!! :)
+Fixes: 782347b6bcad ("xdp: Add proper __rcu annotations to redirect map entries")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ kernel/bpf/devmap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> On Mo, 2021-06-28T13:34-0400, Paul Moore wrote:
-> > On Mon, Jun 28, 2021 at 1:13 PM Thomas Wei=C3=9Fschuh <linux@weissschuh=
-.net> wrote:
-> > > On Mo, 2021-06-28T12:59-0400, Paul Moore wrote:
-> > > > On Mon, Jun 28, 2021 at 9:25 AM Thomas Wei=C3=9Fschuh <linux@weisss=
-chuh.net> wrote:
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index 2f6bd75cd682..7a0c008f751b 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -558,7 +558,7 @@ int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_rx,
+ 
+ 	if (map->map_type == BPF_MAP_TYPE_DEVMAP) {
+ 		for (i = 0; i < map->max_entries; i++) {
+-			dst = READ_ONCE(dtab->netdev_map[i]);
++			dst = rcu_dereference(dtab->netdev_map[i]);
+ 			if (!is_valid_dst(dst, xdp, exclude_ifindex))
+ 				continue;
+ 
+@@ -654,7 +654,7 @@ int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
+ 
+ 	if (map->map_type == BPF_MAP_TYPE_DEVMAP) {
+ 		for (i = 0; i < map->max_entries; i++) {
+-			dst = READ_ONCE(dtab->netdev_map[i]);
++			dst = rcu_dereference(dtab->netdev_map[i]);
+ 			if (!dst || dst->dev->ifindex == exclude_ifindex)
+ 				continue;
+ 
+-- 
+2.32.0
 
-...
-
-> > Remember that seccomp filters are inherited across forks, so if your
-> > application loads an ABI specific filter and then fork()/exec()'s an
-> > application with a different ABI you could be in trouble.  We saw this
-> > some years ago when people started running containers with ABIs other
-> > than the native system; if the container orchestrator didn't load a
-> > filter that knew about these non-native ABIs Bad Things happened.
->
-> My application will not be able to spawn any new processes.
-> It is limited to write() and exit().
-> Also this is a low-level system application so it should always be compil=
-ed for
-> the native ABI.
-> So this should not be an issue.
->
-> > I'm sure you are already aware of libseccomp, but if not you may want
-> > to consider it for your application.  Not only does it provide a safe
-> > and easy way to handle multiple ABIs in a single filter, it handles
-> > other seccomp problem areas like build/runtime system differences in
-> > the syscall tables/defines as well as the oddball nature of
-> > direct-call and multiplexed socket related syscalls, i.e. socketcall()
-> > vs socket(), etc.
->
-> For a larger application this would be indeed my choice.
-> But for a small application like mine I don't think it is worth it.
-> libseccomp for example does provide a way to get the native audit arch:
-> `uint32_t seccomp_arch_native(void);`. It is implemented by ifdef-ing on
-> various compiler defines to detect the ABI compiled for.
->
-> I'd like the kernel to provide this out-of-the box, so I don't have to ha=
-ve the
-> same ifdefs in my application(s) and keep them up to date.
->
-> I found that the kernel internally already has a definition for my usecas=
-e:
-> SECCOMP_ARCH_NATIVE.
-> It is just not exported to userspace.
-
-I'm not sure that keeping the ifdefs up to date is going to be that
-hard, and honestly that is the right place to do it IMHO.  The kernel
-can support any number of ABIs, but in the narrow use case you are
-describing in this thread you only care about the ABI of your own
-application; it doesn't sound like you really care about the kernel's
-ABI, but rather your application's ABI.
-
-> > I'm sorry, but I don't quite understand what you are looking for in
-> > the header files ... ?  It might help if you could provide a concrete
-> > example of what you would like to see in the header files?
->
-> I want to do something like the follwing inside my program to assemble a
-> seccomp filter that will be loaded before the error-prone parts of the
-> application will begin.
->
-> 1: BPF_STMT(BPF_LD | BPF_W | BPF_ABS, syscall_arch),
-> 2: BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, SECCOMP_ARCH_NATIVE, 0, $KILL)
-> 3: BPF_STMT(BPF_LD | BPF_W | BPF_ABS, syscall_nr),
-> 4: BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_write, $ALLOW, $KILL),
->
-> In line 4 I can already have the kernel headers provide me the correct sy=
-scall
-> number for the ABI my application is compiled for.
->
-> For line 2 however I need to define AUDIT_ARCH_CURRENT on my own instead =
-of
-> having a kernel header provide the correct value.
-
---=20
-paul moore
-www.paul-moore.com
