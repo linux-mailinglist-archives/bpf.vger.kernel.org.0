@@ -2,97 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C733B540D
-	for <lists+bpf@lfdr.de>; Sun, 27 Jun 2021 17:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5433B57AF
+	for <lists+bpf@lfdr.de>; Mon, 28 Jun 2021 05:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhF0Pi5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 27 Jun 2021 11:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhF0Pi4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 27 Jun 2021 11:38:56 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B8BC061574;
-        Sun, 27 Jun 2021 08:36:31 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id v13so7438844ple.9;
-        Sun, 27 Jun 2021 08:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L9vx7ZeAYb0qC/JQDEJmS9u06mQwchRQpGl0dOYAjeA=;
-        b=g9B+A86Nftnm3ZY9UvA/yBWiqlKFtga69gAE0UmiiWfeZJ/ed6VHcSaBOdrW+KF27i
-         oN+4h336cM4mwDDjhY0wUkr1t9mAEEODxkzVaFH/gku2BE5W07CY8pvKIxqRErCormAB
-         DIAop3isHl+A6BC5XQdfLlKPQn6ee5hHhcf6rSOm3xuS8biobIPL8M2Islh7zprAZhsP
-         pcqodJc/+yMbasODXv/jx2JrK84wNcKEHY19P5Jlno/kYCvjLbvBi1WOh9NaFDw4Pyh+
-         CWVG89CUiihlkXVhwfVpxDdSHXx07raViTE2YU93kj9F3ZDx/hK5WGG8wgpnc5NnWch4
-         Blrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=L9vx7ZeAYb0qC/JQDEJmS9u06mQwchRQpGl0dOYAjeA=;
-        b=MJyi6sFy51dAswWReSKHHGBaNF5Ff8gHETw+fpibGmsBwP9d5U1uyurIgfJdYgWIfx
-         ngjglXpHe2L/3BQ99STeZWwCZGM/qYwFm7skDIWzj4mJCwQUHGNxdM9HuRp3zMx90ORs
-         5jp8UoBYcbyteJxBWuHQW92YD0rSsUxu4MaGiUNNQMFb/3+cRTGWsIqdFoylWMbS7zfS
-         gGXdRvN7yj7+pxqHo5onM2TR0fJobl9cyftx4TPdd28CoVCFILBpWrp//6gF3ofZziR8
-         z54zPjaZS+4Qx5E0KZHdGvK6qWp4a5UKbiDKSpdUESTYH5yAGWoWav8PiaLM76M6wbbX
-         U/4g==
-X-Gm-Message-State: AOAM5329Ua5nNn76hBpVEElgEh+3FtKHBGBU98Q/5LeoPszzW/cQMQZ5
-        aSTt20rRQbVTlPRho+JoKy8=
-X-Google-Smtp-Source: ABdhPJyCo1HlAWtR8urbZkDHgPOP+9X/YN8qWPeRVAIIj6OSP3uiqk13JUY0c3c4YwIMorjX/+T6Ow==
-X-Received: by 2002:a17:903:2082:b029:127:9b96:a6f5 with SMTP id d2-20020a1709032082b02901279b96a6f5mr16724972plc.55.1624808191497;
-        Sun, 27 Jun 2021 08:36:31 -0700 (PDT)
-Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:d3c0:a839:951e:acc3])
-        by smtp.gmail.com with ESMTPSA id v1sm11515170pjg.19.2021.06.27.08.36.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Jun 2021 08:36:30 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
+        id S231815AbhF1DHw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 27 Jun 2021 23:07:52 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8473 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231678AbhF1DHw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 27 Jun 2021 23:07:52 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GCsph3sJ7zZfy4;
+        Mon, 28 Jun 2021 11:02:20 +0800 (CST)
+Received: from localhost.localdomain (10.175.103.91) by
+ dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 28 Jun 2021 11:05:24 +0800
+From:   Wei Li <liwei391@huawei.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ian Rogers <irogers@google.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] bpf: Allow bpf_get_current_ancestor_cgroup_id for tracing
-Date:   Sun, 27 Jun 2021 08:36:27 -0700
-Message-Id: <20210627153627.824198-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
+        KP Singh <kpsingh@kernel.org>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <huawei.libin@huawei.com>
+Subject: [PATCH] tools: bpf: Fix error in 'make -C tools/ bpf_install'
+Date:   Mon, 28 Jun 2021 11:04:09 +0800
+Message-ID: <20210628030409.3459095-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow the helper to be called from tracing programs.  This is needed
-to handle cgroup hiererachies in the program.
+make[2]: *** No rule to make target 'install'.  Stop.
+make[1]: *** [Makefile:122: runqslower_install] Error 2
+make: *** [Makefile:116: bpf_install] Error 2
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+There is no rule for target 'install' in tools/bpf/runqslower/Makefile,
+and there is no need to install it, so just remove 'runqslower_install'.
+
+Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
+Signed-off-by: Wei Li <liwei391@huawei.com>
 ---
- kernel/trace/bpf_trace.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/bpf/Makefile | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 7a52bc172841..64bd2d84367f 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1017,6 +1017,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- #ifdef CONFIG_CGROUPS
- 	case BPF_FUNC_get_current_cgroup_id:
- 		return &bpf_get_current_cgroup_id_proto;
-+	case BPF_FUNC_get_current_ancestor_cgroup_id:
-+		return &bpf_get_current_ancestor_cgroup_id_proto;
- #endif
- 	case BPF_FUNC_send_signal:
- 		return &bpf_send_signal_proto;
+diff --git a/tools/bpf/Makefile b/tools/bpf/Makefile
+index 39bb322707b4..b11cfc86a3d0 100644
+--- a/tools/bpf/Makefile
++++ b/tools/bpf/Makefile
+@@ -97,7 +97,7 @@ clean: bpftool_clean runqslower_clean resolve_btfids_clean
+ 	$(Q)$(RM) -- $(OUTPUT)FEATURE-DUMP.bpf
+ 	$(Q)$(RM) -r -- $(OUTPUT)feature
+ 
+-install: $(PROGS) bpftool_install runqslower_install
++install: $(PROGS) bpftool_install
+ 	$(call QUIET_INSTALL, bpf_jit_disasm)
+ 	$(Q)$(INSTALL) -m 0755 -d $(DESTDIR)$(prefix)/bin
+ 	$(Q)$(INSTALL) $(OUTPUT)bpf_jit_disasm $(DESTDIR)$(prefix)/bin/bpf_jit_disasm
+@@ -118,9 +118,6 @@ bpftool_clean:
+ runqslower:
+ 	$(call descend,runqslower)
+ 
+-runqslower_install:
+-	$(call descend,runqslower,install)
+-
+ runqslower_clean:
+ 	$(call descend,runqslower,clean)
+ 
+@@ -131,5 +128,5 @@ resolve_btfids_clean:
+ 	$(call descend,resolve_btfids,clean)
+ 
+ .PHONY: all install clean bpftool bpftool_install bpftool_clean \
+-	runqslower runqslower_install runqslower_clean \
++	runqslower runqslower_clean \
+ 	resolve_btfids resolve_btfids_clean
 -- 
-2.32.0.93.g670b81a890-goog
+2.25.1
 
