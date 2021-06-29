@@ -2,202 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191EA3B72CD
-	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 14:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30ED3B72F5
+	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 15:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbhF2NA4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Jun 2021 09:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
+        id S233955AbhF2NKB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Jun 2021 09:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233006AbhF2NA4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Jun 2021 09:00:56 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27B7C061760
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 05:58:28 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id i4so24261426ybe.2
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 05:58:28 -0700 (PDT)
+        with ESMTP id S233688AbhF2NJ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Jun 2021 09:09:59 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F067C061760;
+        Tue, 29 Jun 2021 06:07:31 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id q14so31194690eds.5;
+        Tue, 29 Jun 2021 06:07:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1Ixc1yg9az9B0t1cymNZSTN2Zbg+u86yZpoOKVTjo0E=;
-        b=Wicg5j6Czkzx0aBfwLjleCGbinRhL8+0w31l9FEZowcaMUpWvwBFPkRpcYqAIq9Uhn
-         E/eMTTWZeI+EKOhf4H++Inrj3nLMtGcbPRthOpIWvPU9ZmoRh54CInF1TPBq8qaOcML3
-         tv+eMU6hdKk3RSimSdiuYz3fuVFIXc5LrHNGoNn0v5la4fA5NQIzcBmQhbFzSBmoQfcw
-         Srg8l463/0H/NQh/0SnvrHEwFqijLF0lSv6Mgh99EyZCG2ATAywcksdxC5avjcBuwa/M
-         9ALnQkHDCcsr7Z8AZJsCIMqeB1MArs/LWT6uP+QARJjnyjCjwGkbEXFii77kkOS3lXtT
-         h19A==
+        bh=eybvse0kYdOhyWZwFt4avTwT1xAvOttt06mlkUESuu8=;
+        b=S4RBVOiGQ9AU9EjoEx0fq0nUTs/8O218qJp4GhGhaW6sQpzt//Gv2sjkSqSeQsTq/X
+         1A2uaaF9E8pVDp22rV+QeUZyF9rPTNBPK7zx6NtgA4ZQCJlANo4L0QccmsW0eHwrVsan
+         wlLZJKUXqU2nb2DN2PqY8ZgJS1SjoOk6g8qkY8Yq1BKbSypktCOSllDfP3dr0GINuqNB
+         4FBEP+B8COso9pyUO1VgYoluOYq/C6hiDZFEDAXkuulWQk/ZwiE30gZ7ewcWbd9RFPCQ
+         XD8AnMb7oQs5+R5wCEbLOQcghObUIa/UsKFak0WJJoV7PimjKT7OzmyKgxxUgXBUbEzx
+         3kCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1Ixc1yg9az9B0t1cymNZSTN2Zbg+u86yZpoOKVTjo0E=;
-        b=r/tAWXQW5ltS7y7eeNwej5BFJbgjpv/GFbF2gOY5MPTgMQOjDawHp6aRUOAC2+/qRR
-         +pvOo13JUNwFwwtj172RdhIAiEuAswyqoAKZgh4nJnkLzzD6CjQYV3sSoLSdY17WFRvf
-         YA9slKEDB0wXMSn/hB1HGjQErPwgHHWyQSuQA3g/ram7JczEdzJC9Bx+ZPXbpNjU7beS
-         3Nh4q8RBQTxUwn+D9dXsbdsVs3QcKGip9SC5xhYjU1XyxDO5NXnqnwYjBOD4+8Oiu5a4
-         oZO7al+6UjA2anq95SPar8Ao1lyXgbQjM4bg2bUwEodcgWwByBSemZm2diRWlIBWNv36
-         sixA==
-X-Gm-Message-State: AOAM5326bUOne8s2zYPd6ahSF9hd0TVN7Xab3mbkMASh/GuxIqq3ugC6
-        ZlQXe0BveKmzcedx87YWdqQE0TlVKAeSOREKc7Gz8Q==
-X-Google-Smtp-Source: ABdhPJzzoslHpNOjPtnVYKAzjGWGsIH245MtaS0SvFM7raV9Sntz6KxmD/giFXDhp6Zk1NFGv/oaa+Fhm006+0DYpUI=
-X-Received: by 2002:a05:6902:544:: with SMTP id z4mr39530633ybs.452.1624971507741;
- Tue, 29 Jun 2021 05:58:27 -0700 (PDT)
+        bh=eybvse0kYdOhyWZwFt4avTwT1xAvOttt06mlkUESuu8=;
+        b=rhwG7kX+t+Uj9SzIBlPH59iQ6qsqqr0fypb2sa+aaEWtogL9MYjWiqzd36ZsBrKAsZ
+         ErojUkfwhj+lNuOi8jmJ2HFYP7Mkol9QpFhmQq4/+bzMw1fsiBIJ4cHqKF2yWPi0euTj
+         tV8Hj7q9Qoj9iMJpZqFDwKboP+eYzjJvdYFBB/iI8pdW/xfIeaarj/R2n14WTgwRX6Zc
+         WlqGG+tklOZ4sbVZFc4C4m0/48W2mtEKeJKe2GnssK8MK4++jGJpWwa8fyc3OoJ3NmbG
+         b+OoOqhEeVGXHy/CmdJo2HdDlSHoasYnRz/d6dmxm914lI+akm17W9AwCn2m9whNqW5C
+         fBVQ==
+X-Gm-Message-State: AOAM5332aTyFRFA5WDYhLjemMYRes3y+QQKmRfbCkwVKgJT1vxf5BTF9
+        HDiu6opsFeZdswPna9wFsWMgFwg2EhfC3z2Nkc0=
+X-Google-Smtp-Source: ABdhPJw04cvL9c46FGApZkmu16kgUPPJmQcxsCUZhZruLW4rTyFa/dq++dcVP2Kgf2Mtg569+8640oEESPTXm/apQf4=
+X-Received: by 2002:aa7:d6d6:: with SMTP id x22mr39565965edr.224.1624972050162;
+ Tue, 29 Jun 2021 06:07:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
- <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
- <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com> <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
- <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com> <CANn89iJbquZ=tVBRg7JNR8pB106UY4Xvi7zkPVn0Uov9sj8akg@mail.gmail.com>
- <1786BBEE-9C7B-45B2-B451-F535ABB804EF@gmail.com>
-In-Reply-To: <1786BBEE-9C7B-45B2-B451-F535ABB804EF@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 29 Jun 2021 14:58:16 +0200
-Message-ID: <CANn89iK4Qwf0ezWac3Cn1xWN_Hw+-QL-+H8YmDm4cZP=FH+MTQ@mail.gmail.com>
-Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
-To:     Nguyen Dinh Phi <phind.uet@gmail.com>
-Cc:     Neal Cardwell <ncardwell@google.com>,
+References: <cover.1623674025.git.lorenzo@kernel.org> <1316f3ef2763ff4c02244fb726c61568c972514c.1623674025.git.lorenzo@kernel.org>
+ <CAKgT0Ue7TsgwbQF+mfeDB-18Q-R29YZWe=y6Kgeg0xxbwds=vw@mail.gmail.com> <YNsVcy8e4Mgyg7g3@lore-desk>
+In-Reply-To: <YNsVcy8e4Mgyg7g3@lore-desk>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 29 Jun 2021 06:07:19 -0700
+Message-ID: <CAKgT0Ucg5RbzKt63u5RfXee94kd+1oJ+o_qgUwCwnVCoQjDdPw@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 02/14] xdp: introduce flags field in xdp_buff/xdp_frame
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
         David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
-        Yuchung Cheng <ycheng@google.com>
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
+        "Jubran, Samih" <sameehj@amazon.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Tirthendu <tirthendu.sarkar@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 2:28 PM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
+On Tue, Jun 29, 2021 at 5:43 AM Lorenzo Bianconi
+<lorenzo.bianconi@redhat.com> wrote:
 >
-> On June 29, 2021 4:21:59 PM GMT+08:00, Eric Dumazet <edumazet@google.com> wrote:
-> >On Tue, Jun 29, 2021 at 9:17 AM Nguyen Dinh Phi <phind.uet@gmail.com>
-> >wrote:
-> >>
-> >> On June 29, 2021 1:20:19 AM GMT+08:00, Neal Cardwell
-> ><ncardwell@google.com> wrote:
-> >> >)
-> >> >
-> >> >On Mon, Jun 28, 2021 at 1:15 PM Phi Nguyen <phind.uet@gmail.com>
-> >wrote:
-> >> >>
-> >> >> On 6/29/2021 12:24 AM, Neal Cardwell wrote:
-> >> >>
-> >> >> > Thanks.
-> >> >> >
-> >> >> > Can you also please provide a summary of the event sequence that
-> >> >> > triggers the bug? Based on your Reported-by tag, I guess this is
-> >> >based
-> >> >> > on the syzbot reproducer:
-> >> >> >
-> >> >> >
-> >>
-> >>https://groups.google.com/g/syzkaller-bugs/c/VbHoSsBz0hk/m/cOxOoTgPCAAJ
-> >> >> >
-> >> >> > but perhaps you can give a summary of the event sequence that
-> >> >causes
-> >> >> > the bug? Is it that the call:
-> >> >> >
-> >> >> > setsockopt$inet_tcp_TCP_CONGESTION(r0, 0x6, 0xd,
-> >> >> > &(0x7f0000000000)='cdg\x00', 0x4)
-> >> >> >
-> >> >> > initializes the CC and happens before the connection is
-> >> >established,
-> >> >> > and then when the connection is established, the line that sets:
-> >> >> >    icsk->icsk_ca_initialized = 0;
-> >> >> > is incorrect, causing the CC to be initialized again without
-> >first
-> >> >> > calling the cleanup code that deallocates the CDG-allocated
-> >memory?
-> >> >> >
-> >> >> > thanks,
-> >> >> > neal
-> >> >> >
-> >> >>
-> >> >> Hi Neal,
-> >> >>
-> >> >> The gdb stack trace that lead to init_transfer_input() is as
-> >bellow,
-> >> >the
-> >> >> current sock state is TCP_SYN_RECV.
-> >> >
-> >> >Thanks. That makes sense as a snapshot of time for
-> >> >tcp_init_transfer(), but I think what would be more useful would be
-> >a
-> >> >description of the sequence of events, including when the CC was
-> >> >initialized previous to that point (as noted above, was it that the
-> >> >setsockopt(TCP_CONGESTION) completed before that point?).
-> >> >
-> >> >thanks,
-> >> >neal
-> >>
-> >> I resend my message because I accidently used html format in last
-> >one. I am very sorry for the inconvenience caused.
-> >> ---
-> >> Yes, the CC had been initialized by the setsockopt, after that, it
-> >was initialized again in function tcp_init_transfer() because of
-> >setting isck_ca_initialized to 0.
+> > On Mon, Jun 14, 2021 at 5:50 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> > >
+> > > Introduce flags field in xdp_frame/xdp_buffer data structure
+> > > to define additional buffer features. At the moment the only
+> > > supported buffer feature is multi-buffer bit (mb). Multi-buffer bit
+> > > is used to specify if this is a linear buffer (mb = 0) or a multi-buffer
+> > > frame (mb = 1). In the latter case the shared_info area at the end of
+> > > the first buffer will be properly initialized to link together
+> > > subsequent buffers.
+> > >
+> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 > >
-> >"the setsockopt" is rather vague, sorry.
+> > Instead of passing this between buffers and frames I wonder if this
+> > wouldn't be better to place in something like the xdp_mem_info
+> > structure since this is something that would be specific to how the
+> > device is handling memory anyway. You could probably split the type
+> > field into a 16b type and a 16b flags field. Then add your bit where 0
+> > is linear/legacy and 1 is scatter-gather/multi-buffer.
 > >
-> >
-> >The hard part is that all scenarios have to be considered.
-> >
-> >TCP flows can either be passive and active.
-> >
-> >CC can be set :
-> >
-> >1) Before the connect() or accept()
-> >2) After the connect() or accept()
-> >3) after the connect() but before 3WHS is completed.
-> >
-> >So we need to make sure all cases will still work with any combination
-> >of CDG CC (before/after) in the picture.
-> >
-> >Note that a memory leak for a restricted CC (CDG can only be used by
-> >CAP_NET_ADMIN privileged user)
-> > is a small problem compared to more serious bug that could be added
-> >by an incomplete fix.
-> >
-> >I also note that if icsk_ca_priv] was increased from 104 to 120 bytes,
-> >tcp_cdg would no longer need a dynamic memory allocation.
-> >
-> >Thank you.
 >
-> Hi,
-> I will try to see whether I am able to get the full sequence. I am also affraid of making a change that could affect big part of the kernel.
-> About CDG, how we can get rid of dynamic allocation by increasing icsk_priv_data to 120? because I see that the window size is a module parameter, so I guess it is not a fixed value.
+> ack, this should be fine but I put the flag field in xdp_buff/xdp_frame
+> in order to reuse it for some xdp hw-hints (e.g rx checksum type).
+> We can put it in xdp_mem_info too but I guess it would be less intuitive, what
+> do you think?
 
-Given this module parameter is constant, I doubt anyone really uses a
-bigger window.
-If researchers want to experiment bigger window, they could adjust a
-macro and recompile (#define TCP_CDG_WINDOW 8 -> X)
+I think it makes the most sense in xdp_mem_info. It already tells us
+what to expect in some respect in regards to memory layout as it tells
+us if we are dealing with shared pages or whole pages and how to
+recycle them. I would think that applies almost identically to
+scatter-gather XDP the same way.
 
-> Because the problem only happens with CDG, is adding check in its tcp_cdg_init() function Ok? And about  icsk_ca_initialized, Could I expect it to be 0 in CC's init functions?
-
-I think icsk_ca_initialized  lost its strong meaning when CDG was
-introduced (since this is the only CC allocating memory)
-
-The bug really is that before clearing icsk_ca_initialized we should
-call cc->release()
-
-Maybe we missed this cleanup in commit
-8919a9b31eb4fb4c0a93e5fb350a626924302aa6 ("tcp: Only init congestion
-control if not initialized already")
-
-Although I am not sure what happens at accept() time when the listener
-socket is cloned.
-
-If we make any hypothesis, we need to check all CC modules to make
-sure they respect it.
-
->
-> Thank you.
+As far as the addition of flags there is still time for that later as
+we still have the 32b of unused space after frame_sz.
