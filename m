@@ -2,152 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3043B7324
-	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 15:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876643B7329
+	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 15:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233993AbhF2N0A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Jun 2021 09:26:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47315 "EHLO
+        id S233971AbhF2N1w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Jun 2021 09:27:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53195 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233625AbhF2NZ6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 29 Jun 2021 09:25:58 -0400
+        by vger.kernel.org with ESMTP id S233966AbhF2N1w (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 29 Jun 2021 09:27:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624973011;
+        s=mimecast20190719; t=1624973124;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=EyvaCkZhOMSHx3o21qIXEKCGCED9gI6ag82jMyhH/Sg=;
-        b=hurU+CJnDsKaaYSZkkeqGxqPhtgJ2sar5z1HZKl3LUN2Y7QP2G4wc9kOw/9kfublDNVlX0
-        LiPOPCU/jXb51RhJocqhw55Xq8RSKm8XphpbiTBL0ZeZ6nw5QpmHhvCj01OIIYXtl2olXC
-        JyiJFaGzFEjFlXp9BnXRb7/JsNY6bxU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-60-aO7U67jfPX21n6pmH5cEfw-1; Tue, 29 Jun 2021 09:23:29 -0400
-X-MC-Unique: aO7U67jfPX21n6pmH5cEfw-1
-Received: by mail-wm1-f70.google.com with SMTP id n11-20020a05600c3b8bb02901ec5ef98aa0so1385501wms.0
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 06:23:29 -0700 (PDT)
+        bh=gDdP+4K8K9Y+KgRJvzSza5P+wZ5QtvP5Ddc18bELaNY=;
+        b=RdT23yJ+7rHbBRYGsZbU2+rP6/cmTerlB91FKDPAWbj08SxMeyH2rK8Rmxado7LjZaE/ZY
+        AUuYPC7KXzQdBV5K03MdiQ9/YMfDL/tIOBMdm/eTZaOBGyeFVB0TxrA3cwj4XhGqlf1W01
+        7zeXZBuia8oJi7iP4FVFbjl2rq4Vdrc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-397-iuIAlZoDNziuuVHngvWjcA-1; Tue, 29 Jun 2021 09:25:22 -0400
+X-MC-Unique: iuIAlZoDNziuuVHngvWjcA-1
+Received: by mail-wm1-f71.google.com with SMTP id s80-20020a1ca9530000b02901cff732fde5so1606598wme.6
+        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 06:25:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=EyvaCkZhOMSHx3o21qIXEKCGCED9gI6ag82jMyhH/Sg=;
-        b=H3TaHJSozpjhpSFKPD8wpGzW76si32WOsEdDJbk4y4e//77ALsFOvA7eyVEK/p7Xyh
-         rM3NY+igy+wj6UJfjOzS4hAAHothSZJgNEXStV8GNsBo8DX7Taw1UfIG5M9RuZ85aBBW
-         j9XHaksVuXLQz2e1PIYrQ1AH3MkkGdQ2kWMXPYNwjydqytBYxTYbuNPd/DUYGEyKuv3X
-         AmVQTOaniETEu4oeDOzuwGipeC8ugFhGByiSCKM6NV31DRgg2F0ckqCkThWs00ARnRIq
-         dT7OhAKT3YFq5n9kL2cq5gcW0om0rcu6Pr0ArG2/u+KOBqo3UkvQ65F+E/ci7cU5WNvn
-         VZ5A==
-X-Gm-Message-State: AOAM533FM8L/6exwpLEReNAufY9/QjK32Glx4O0JNzfg1DcN9vn0b2CZ
-        cc6Dtwq/HQCjQTzb3pQbB67rxfyd2dVXs+k+huixHzflMKaW7wWtYVYxsUy+0wQuDG4MPOgIpoM
-        B9/JZzYoJ5ziq
-X-Received: by 2002:a05:600c:4848:: with SMTP id j8mr5378975wmo.7.1624973008148;
-        Tue, 29 Jun 2021 06:23:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzAy9pTIcfHtjG5M9hiqZdtsR7veAROp86GMT0KUa/h/AhCNTJIIsF+C6gf0uOzqFOhL26K6Q==
-X-Received: by 2002:a05:600c:4848:: with SMTP id j8mr5378945wmo.7.1624973007947;
-        Tue, 29 Jun 2021 06:23:27 -0700 (PDT)
+        bh=gDdP+4K8K9Y+KgRJvzSza5P+wZ5QtvP5Ddc18bELaNY=;
+        b=ZhSzYpwmmpwcrFL0Sf3IvF7N13szAgLNseDL2V4GkMX8d+kUZTzJlsX0lOnYMm6hSS
+         CVn7N7yhfb1KiplNZx7ankOGg0WbJxKmquOdcJUWVWGsm0MqeY65z8L/mkoZ5Sy4r+0E
+         AK/GGEeLdbvAMHbZA3241WQJqX679iZndlld7/581K+onGV0yUQYt87SeGZUrsbkJGSL
+         37eGdh4sSJmDHTMSHGKfMMGLeQGLTshkvY8GcZpV8TLQtTMOYZcypZCqRBTF5UEOxHYT
+         IuD6WYEBm9u4L3ROAtKGFcmMfpPxK8mz7eokoGwaGgv9z334n51o9DOUfYlJdp17ZDLS
+         qibg==
+X-Gm-Message-State: AOAM532osFMtfnvLtUCQNl8/YQPt4OQ5cEmVDuuNCKo6mcRTEt4ll2TR
+        /57c5wFCDN6RLpInzFpZB75B9tTsCcdQo+h+CAgBRsEK1Ve5GgVEOKkk45Soy+AcIQTKAwgjKkI
+        nIleFk7Qso4wz
+X-Received: by 2002:a5d:6547:: with SMTP id z7mr5460159wrv.27.1624973121838;
+        Tue, 29 Jun 2021 06:25:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzaXRrasrTdpN6XxNUwgp9N80ps3VxZjpoZ8HDqsygPgFNk1LZ06cilM4FNpOZUUTt2zyOVGg==
+X-Received: by 2002:a5d:6547:: with SMTP id z7mr5460133wrv.27.1624973121710;
+        Tue, 29 Jun 2021 06:25:21 -0700 (PDT)
 Received: from localhost (net-130-25-105-72.cust.vodafonedsl.it. [130.25.105.72])
-        by smtp.gmail.com with ESMTPSA id f2sm8645765wrd.64.2021.06.29.06.23.27
+        by smtp.gmail.com with ESMTPSA id k6sm16354667wms.8.2021.06.29.06.25.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 06:23:27 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 15:23:24 +0200
+        Tue, 29 Jun 2021 06:25:21 -0700 (PDT)
+Date:   Tue, 29 Jun 2021 15:25:18 +0200
 From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Eelco Chaudron <echaudro@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        sameehj@amazon.com, dsahern@kernel.org, brouer@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com
-Subject: Re: [PATCH v9 bpf-next 10/14] bpf: add multi-buffer support to xdp
- copy helpers
-Message-ID: <YNsezApfos+47EZr@lore-desk>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
+        "Jubran, Samih" <sameehj@amazon.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Tirthendu <tirthendu.sarkar@intel.com>
+Subject: Re: [PATCH v9 bpf-next 02/14] xdp: introduce flags field in
+ xdp_buff/xdp_frame
+Message-ID: <YNsfPsG2+X6xxnE6@lore-desk>
 References: <cover.1623674025.git.lorenzo@kernel.org>
- <4d2a74f7389eb51e2b43c63df76d9cd76f57384c.1623674025.git.lorenzo@kernel.org>
- <60d27716b5a5a_1342e208d5@john-XPS-13-9370.notmuch>
- <34E2BF41-03E0-4DEC-ABF3-72C8FF7B4E4A@redhat.com>
- <60d49690a87ae_2e84a2082c@john-XPS-13-9370.notmuch>
+ <1316f3ef2763ff4c02244fb726c61568c972514c.1623674025.git.lorenzo@kernel.org>
+ <CAKgT0Ue7TsgwbQF+mfeDB-18Q-R29YZWe=y6Kgeg0xxbwds=vw@mail.gmail.com>
+ <YNsVcy8e4Mgyg7g3@lore-desk>
+ <CAKgT0Ucg5RbzKt63u5RfXee94kd+1oJ+o_qgUwCwnVCoQjDdPw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="YP2g8SKWm09WLO9v"
+        protocol="application/pgp-signature"; boundary="OwQ1CcrQXpOb47nY"
 Content-Disposition: inline
-In-Reply-To: <60d49690a87ae_2e84a2082c@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAKgT0Ucg5RbzKt63u5RfXee94kd+1oJ+o_qgUwCwnVCoQjDdPw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
---YP2g8SKWm09WLO9v
+--OwQ1CcrQXpOb47nY
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-> >=20
-> >=20
-> > On 23 Jun 2021, at 1:49, John Fastabend wrote:
-> >=20
-> > > Lorenzo Bianconi wrote:
-> > >> From: Eelco Chaudron <echaudro@redhat.com>
-> > >>
-> > >> This patch adds support for multi-buffer for the following helpers:
-> > >>   - bpf_xdp_output()
-> > >>   - bpf_perf_event_output()
-> > >>
-> > >> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-> > >> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > >> ---
+> On Tue, Jun 29, 2021 at 5:43 AM Lorenzo Bianconi
+> <lorenzo.bianconi@redhat.com> wrote:
+> >
+> > > On Mon, Jun 14, 2021 at 5:50 AM Lorenzo Bianconi <lorenzo@kernel.org>=
+ wrote:
+> > > >
+> > > > Introduce flags field in xdp_frame/xdp_buffer data structure
+> > > > to define additional buffer features. At the moment the only
+> > > > supported buffer feature is multi-buffer bit (mb). Multi-buffer bit
+> > > > is used to specify if this is a linear buffer (mb =3D 0) or a multi=
+-buffer
+> > > > frame (mb =3D 1). In the latter case the shared_info area at the en=
+d of
+> > > > the first buffer will be properly initialized to link together
+> > > > subsequent buffers.
+> > > >
+> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 > > >
-> > > Ah ok so at least xdp_output will work with all bytes. But this is
-> > > getting close to having access into the frags so I think doing
-> > > the last bit shouldn't be too hard?
-> >=20
-> >=20
-> > Guess you are talking about multi-buffer access in the XDP program?
-> >=20
-> > I did suggest an API a while back, https://lore.kernel.org/bpf/FD3E6E08=
--DE78-4FBA-96F6-646C93E88631@redhat.com/ but I had/have not time to work on=
- it. Guess the difficult part is to convince the verifier to allow the data=
- to be accessed.
+> > > Instead of passing this between buffers and frames I wonder if this
+> > > wouldn't be better to place in something like the xdp_mem_info
+> > > structure since this is something that would be specific to how the
+> > > device is handling memory anyway. You could probably split the type
+> > > field into a 16b type and a 16b flags field. Then add your bit where 0
+> > > is linear/legacy and 1 is scatter-gather/multi-buffer.
+> > >
+> >
+> > ack, this should be fine but I put the flag field in xdp_buff/xdp_frame
+> > in order to reuse it for some xdp hw-hints (e.g rx checksum type).
+> > We can put it in xdp_mem_info too but I guess it would be less intuitiv=
+e, what
+> > do you think?
 >=20
-> Ah great I think we had the same idea I called it xdp_pull_data()
-> though.
+> I think it makes the most sense in xdp_mem_info. It already tells us
+> what to expect in some respect in regards to memory layout as it tells
+> us if we are dealing with shared pages or whole pages and how to
+> recycle them. I would think that applies almost identically to
+> scatter-gather XDP the same way.
 >=20
-> Whats the complication though it looks like it can be done by simply
-> moving the data and data_end pointers around then marking them
-> invalidated. This way the verifier knows the program needs to
-> rewrite them. I can probably look more into next week.
->=20
-> From my first glance it looks relatively straight forward to do
-> now. I really would like to avoid yet another iteration of
-> programs features I have to discover and somehow work around
-> if we can get the helper into this series. If you really don't
-> have time I can probably take a look early next week on an
-> RFC for something like above helper.
+> As far as the addition of flags there is still time for that later as
+> we still have the 32b of unused space after frame_sz.
 
-cool, thx :)
-What about discussing APIs during the BPF mtg upstream on Thursday (probably
-not next one since most of the people will be in PTO)? I will work on some =
-docs.
+ack, I am fine with it. If everybody agree, I will fix it in v10.
 
 Regards,
 Lorenzo
 
 >=20
->=20
-> .John
->=20
 
---YP2g8SKWm09WLO9v
+--OwQ1CcrQXpOb47nY
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYNseyQAKCRA6cBh0uS2t
-rBG5AP40aAEo3QWo/uXjy5xR/9sTxDknxvWEfU422xQFFaExSQD8D2z+yioaQ7WA
-2tnW5x2HV/E5vID4hebnOuPKhIYcuwQ=
-=+6MP
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYNsfOQAKCRA6cBh0uS2t
+rCYqAQCeZ4QyxMKeJMz1c27Yth/dSbC7IZuTvGXJpl/quunfNAEA6dkmbgvPN4c8
+r+N6RvZmy59pX71L1sC08hRr4DLj+wg=
+=1fSm
 -----END PGP SIGNATURE-----
 
---YP2g8SKWm09WLO9v--
+--OwQ1CcrQXpOb47nY--
 
