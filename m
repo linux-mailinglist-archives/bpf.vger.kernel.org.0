@@ -2,139 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AA63B7242
-	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 14:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191EA3B72CD
+	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 14:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbhF2Mrb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Jun 2021 08:47:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53332 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233000AbhF2Mra (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 29 Jun 2021 08:47:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624970703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xIjW/V4kVWn/MdXXf2UdvAErF5+HSdnEQLS6aNgfUT0=;
-        b=RoFYQg2VTG0z0lEDUgHq24RvKLjlo6T8XZnQF0zB2H/WEonSGXNeuF8kVxGkNORoivbxUu
-        uKx0tkJ5BYT19KGWermztjpNfpJFMzfhO7GotVeCUa/+YfPm10PQF5Q3FgEQuLuNumqtkU
-        Xe1D9UxmD40qZT8rfMvK3slN5M4nr54=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-Q4zyCUDbNJWhC1ho3AIPBA-1; Tue, 29 Jun 2021 08:45:01 -0400
-X-MC-Unique: Q4zyCUDbNJWhC1ho3AIPBA-1
-Received: by mail-wm1-f70.google.com with SMTP id f11-20020a05600c154bb02901e0210617aaso536694wmg.1
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 05:45:00 -0700 (PDT)
+        id S233299AbhF2NA4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Jun 2021 09:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233006AbhF2NA4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Jun 2021 09:00:56 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27B7C061760
+        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 05:58:28 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id i4so24261426ybe.2
+        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 05:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Ixc1yg9az9B0t1cymNZSTN2Zbg+u86yZpoOKVTjo0E=;
+        b=Wicg5j6Czkzx0aBfwLjleCGbinRhL8+0w31l9FEZowcaMUpWvwBFPkRpcYqAIq9Uhn
+         E/eMTTWZeI+EKOhf4H++Inrj3nLMtGcbPRthOpIWvPU9ZmoRh54CInF1TPBq8qaOcML3
+         tv+eMU6hdKk3RSimSdiuYz3fuVFIXc5LrHNGoNn0v5la4fA5NQIzcBmQhbFzSBmoQfcw
+         Srg8l463/0H/NQh/0SnvrHEwFqijLF0lSv6Mgh99EyZCG2ATAywcksdxC5avjcBuwa/M
+         9ALnQkHDCcsr7Z8AZJsCIMqeB1MArs/LWT6uP+QARJjnyjCjwGkbEXFii77kkOS3lXtT
+         h19A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xIjW/V4kVWn/MdXXf2UdvAErF5+HSdnEQLS6aNgfUT0=;
-        b=t6mRl0fO85020DMdvQAKUhaSveBaOwo2YdgEcC2OObi4pTKwLwLMLaD8QVV7NRaKJ6
-         MHopgN7vv95xEg079ftCRmtwXnGAl1b3rUOsknf8LhtPtHDGFm4x0yxuvDeJkfUzOghM
-         /GEc+SVvwYX9eBeRNK/3i0ijX2g6F6wv7SJ+r/yxQaRrkTeOADzIGR0Thj/JpQqdis0u
-         +jmg5aWOLPM5PQ470URHe7YWa0FfpC6MJLggAtKyJPGw0mGR9Q0orwlDSQGBLga0VJds
-         MKIlIxW0jQoBX9+zxccNRYEFNlNJHj2LyBXQ8jVYjyfCcbS+IkzVRaPy2tR3OQXGsZFw
-         pVnA==
-X-Gm-Message-State: AOAM532s73nj7fzYWOIOz3e18PpLvsElU24z6Qie9yivS7U9cpMpaFGp
-        HugZIA2EszQAlW9+NOW8WCWyFCrUmDDhIRqe5jAZMbnHqOYgwGThwRnPV8rgtQ0CpCO96mETkRf
-        phuj+kR9rgqLy
-X-Received: by 2002:a5d:5742:: with SMTP id q2mr13942857wrw.256.1624970699913;
-        Tue, 29 Jun 2021 05:44:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyotqRFyli+/8rVZrv9pvFzSzm2HLFibGkrDpQKFRn5/xEi7IrLcvCjXFQPc3qOoI6HNGSmcQ==
-X-Received: by 2002:a5d:5742:: with SMTP id q2mr13942835wrw.256.1624970699730;
-        Tue, 29 Jun 2021 05:44:59 -0700 (PDT)
-Received: from localhost (net-130-25-105-72.cust.vodafonedsl.it. [130.25.105.72])
-        by smtp.gmail.com with ESMTPSA id u12sm18900267wrq.50.2021.06.29.05.44.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 05:44:59 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 14:44:56 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Ixc1yg9az9B0t1cymNZSTN2Zbg+u86yZpoOKVTjo0E=;
+        b=r/tAWXQW5ltS7y7eeNwej5BFJbgjpv/GFbF2gOY5MPTgMQOjDawHp6aRUOAC2+/qRR
+         +pvOo13JUNwFwwtj172RdhIAiEuAswyqoAKZgh4nJnkLzzD6CjQYV3sSoLSdY17WFRvf
+         YA9slKEDB0wXMSn/hB1HGjQErPwgHHWyQSuQA3g/ram7JczEdzJC9Bx+ZPXbpNjU7beS
+         3Nh4q8RBQTxUwn+D9dXsbdsVs3QcKGip9SC5xhYjU1XyxDO5NXnqnwYjBOD4+8Oiu5a4
+         oZO7al+6UjA2anq95SPar8Ao1lyXgbQjM4bg2bUwEodcgWwByBSemZm2diRWlIBWNv36
+         sixA==
+X-Gm-Message-State: AOAM5326bUOne8s2zYPd6ahSF9hd0TVN7Xab3mbkMASh/GuxIqq3ugC6
+        ZlQXe0BveKmzcedx87YWdqQE0TlVKAeSOREKc7Gz8Q==
+X-Google-Smtp-Source: ABdhPJzzoslHpNOjPtnVYKAzjGWGsIH245MtaS0SvFM7raV9Sntz6KxmD/giFXDhp6Zk1NFGv/oaa+Fhm006+0DYpUI=
+X-Received: by 2002:a05:6902:544:: with SMTP id z4mr39530633ybs.452.1624971507741;
+ Tue, 29 Jun 2021 05:58:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
+ <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
+ <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com> <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
+ <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com> <CANn89iJbquZ=tVBRg7JNR8pB106UY4Xvi7zkPVn0Uov9sj8akg@mail.gmail.com>
+ <1786BBEE-9C7B-45B2-B451-F535ABB804EF@gmail.com>
+In-Reply-To: <1786BBEE-9C7B-45B2-B451-F535ABB804EF@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 29 Jun 2021 14:58:16 +0200
+Message-ID: <CANn89iK4Qwf0ezWac3Cn1xWN_Hw+-QL-+H8YmDm4cZP=FH+MTQ@mail.gmail.com>
+Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
+To:     Nguyen Dinh Phi <phind.uet@gmail.com>
+Cc:     Neal Cardwell <ncardwell@google.com>,
         David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
-        "Jubran, Samih" <sameehj@amazon.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Tirthendu <tirthendu.sarkar@intel.com>
-Subject: Re: [PATCH v9 bpf-next 01/14] net: skbuff: add data_len field to
- skb_shared_info
-Message-ID: <YNsVyBw5i4hAHRN8@lore-desk>
-References: <cover.1623674025.git.lorenzo@kernel.org>
- <8ad0d38259a678fb42245368f974f1a5cf47d68d.1623674025.git.lorenzo@kernel.org>
- <CAKgT0UcwYHXosz-XuQximak63=ugb9thEc=dkUUZzDpoPCH+Qg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TnpqoEfdeJq0NZsS"
-Content-Disposition: inline
-In-Reply-To: <CAKgT0UcwYHXosz-XuQximak63=ugb9thEc=dkUUZzDpoPCH+Qg@mail.gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
+        Yuchung Cheng <ycheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
---TnpqoEfdeJq0NZsS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> On Mon, Jun 14, 2021 at 5:50 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
-te:
+On Tue, Jun 29, 2021 at 2:28 PM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
+>
+> On June 29, 2021 4:21:59 PM GMT+08:00, Eric Dumazet <edumazet@google.com> wrote:
+> >On Tue, Jun 29, 2021 at 9:17 AM Nguyen Dinh Phi <phind.uet@gmail.com>
+> >wrote:
+> >>
+> >> On June 29, 2021 1:20:19 AM GMT+08:00, Neal Cardwell
+> ><ncardwell@google.com> wrote:
+> >> >)
+> >> >
+> >> >On Mon, Jun 28, 2021 at 1:15 PM Phi Nguyen <phind.uet@gmail.com>
+> >wrote:
+> >> >>
+> >> >> On 6/29/2021 12:24 AM, Neal Cardwell wrote:
+> >> >>
+> >> >> > Thanks.
+> >> >> >
+> >> >> > Can you also please provide a summary of the event sequence that
+> >> >> > triggers the bug? Based on your Reported-by tag, I guess this is
+> >> >based
+> >> >> > on the syzbot reproducer:
+> >> >> >
+> >> >> >
+> >>
+> >>https://groups.google.com/g/syzkaller-bugs/c/VbHoSsBz0hk/m/cOxOoTgPCAAJ
+> >> >> >
+> >> >> > but perhaps you can give a summary of the event sequence that
+> >> >causes
+> >> >> > the bug? Is it that the call:
+> >> >> >
+> >> >> > setsockopt$inet_tcp_TCP_CONGESTION(r0, 0x6, 0xd,
+> >> >> > &(0x7f0000000000)='cdg\x00', 0x4)
+> >> >> >
+> >> >> > initializes the CC and happens before the connection is
+> >> >established,
+> >> >> > and then when the connection is established, the line that sets:
+> >> >> >    icsk->icsk_ca_initialized = 0;
+> >> >> > is incorrect, causing the CC to be initialized again without
+> >first
+> >> >> > calling the cleanup code that deallocates the CDG-allocated
+> >memory?
+> >> >> >
+> >> >> > thanks,
+> >> >> > neal
+> >> >> >
+> >> >>
+> >> >> Hi Neal,
+> >> >>
+> >> >> The gdb stack trace that lead to init_transfer_input() is as
+> >bellow,
+> >> >the
+> >> >> current sock state is TCP_SYN_RECV.
+> >> >
+> >> >Thanks. That makes sense as a snapshot of time for
+> >> >tcp_init_transfer(), but I think what would be more useful would be
+> >a
+> >> >description of the sequence of events, including when the CC was
+> >> >initialized previous to that point (as noted above, was it that the
+> >> >setsockopt(TCP_CONGESTION) completed before that point?).
+> >> >
+> >> >thanks,
+> >> >neal
+> >>
+> >> I resend my message because I accidently used html format in last
+> >one. I am very sorry for the inconvenience caused.
+> >> ---
+> >> Yes, the CC had been initialized by the setsockopt, after that, it
+> >was initialized again in function tcp_init_transfer() because of
+> >setting isck_ca_initialized to 0.
 > >
-> > data_len field will be used for paged frame len for xdp_buff/xdp_frame.
-> > This is a preliminary patch to properly support xdp-multibuff
+> >"the setsockopt" is rather vague, sorry.
 > >
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  include/linux/skbuff.h | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> > index dbf820a50a39..332ec56c200d 100644
-> > --- a/include/linux/skbuff.h
-> > +++ b/include/linux/skbuff.h
-> > @@ -522,7 +522,10 @@ struct skb_shared_info {
-> >         struct sk_buff  *frag_list;
-> >         struct skb_shared_hwtstamps hwtstamps;
-> >         unsigned int    gso_type;
-> > -       u32             tskey;
-> > +       union {
-> > +               u32     tskey;
-> > +               u32     data_len;
-> > +       };
+> >The hard part is that all scenarios have to be considered.
 > >
->=20
-> Rather than use the tskey field why not repurpose the gso_size field?
-> I would think in the XDP paths that the gso fields would be unused
-> since LRO and HW_GRO would be incompatible with XDP anyway.
->=20
+> >TCP flows can either be passive and active.
+> >
+> >CC can be set :
+> >
+> >1) Before the connect() or accept()
+> >2) After the connect() or accept()
+> >3) after the connect() but before 3WHS is completed.
+> >
+> >So we need to make sure all cases will still work with any combination
+> >of CDG CC (before/after) in the picture.
+> >
+> >Note that a memory leak for a restricted CC (CDG can only be used by
+> >CAP_NET_ADMIN privileged user)
+> > is a small problem compared to more serious bug that could be added
+> >by an incomplete fix.
+> >
+> >I also note that if icsk_ca_priv] was increased from 104 to 120 bytes,
+> >tcp_cdg would no longer need a dynamic memory allocation.
+> >
+> >Thank you.
+>
+> Hi,
+> I will try to see whether I am able to get the full sequence. I am also affraid of making a change that could affect big part of the kernel.
+> About CDG, how we can get rid of dynamic allocation by increasing icsk_priv_data to 120? because I see that the window size is a module parameter, so I guess it is not a fixed value.
 
-ack, I agree. I will fix it in v10.
+Given this module parameter is constant, I doubt anyone really uses a
+bigger window.
+If researchers want to experiment bigger window, they could adjust a
+macro and recompile (#define TCP_CDG_WINDOW 8 -> X)
 
-Regards,
-Lorenzo
+> Because the problem only happens with CDG, is adding check in its tcp_cdg_init() function Ok? And about  icsk_ca_initialized, Could I expect it to be 0 in CC's init functions?
 
---TnpqoEfdeJq0NZsS
-Content-Type: application/pgp-signature; name="signature.asc"
+I think icsk_ca_initialized  lost its strong meaning when CDG was
+introduced (since this is the only CC allocating memory)
 
------BEGIN PGP SIGNATURE-----
+The bug really is that before clearing icsk_ca_initialized we should
+call cc->release()
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYNsVxQAKCRA6cBh0uS2t
-rEmgAP9KZXucmbMs8RGZQqN1U14pzi2BrPVzx7MbkYu4b1UwjwD+MRc5OwyXRxU2
-KxbPHqzyhcEiQqaZ4ETD/w8rIWaUwAU=
-=T+wb
------END PGP SIGNATURE-----
+Maybe we missed this cleanup in commit
+8919a9b31eb4fb4c0a93e5fb350a626924302aa6 ("tcp: Only init congestion
+control if not initialized already")
 
---TnpqoEfdeJq0NZsS--
+Although I am not sure what happens at accept() time when the listener
+socket is cloned.
 
+If we make any hypothesis, we need to check all CC modules to make
+sure they respect it.
+
+>
+> Thank you.
