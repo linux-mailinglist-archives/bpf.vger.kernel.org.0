@@ -2,149 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C833B70DB
-	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 12:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A833B7121
+	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 13:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhF2Kn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Jun 2021 06:43:27 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:44609 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233111AbhF2KnZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Jun 2021 06:43:25 -0400
-Date:   Tue, 29 Jun 2021 12:40:55 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1624963257;
-        bh=xAiXp/C06ag7DbcOfG/lfgCJixhQy0QwXW4k57bDNDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rWltZpvKlQXIQKIoBTYCd3fOzZ0U+WFEP81IdMSzhlGKCH/jsilJuGn19H1YxY8Q4
-         HPt3cOzbmUUu0ehSQJBmqeCGu5deAmVHEJu+Y7rvkdccijaHGmgL6HW3T2zIQ8rh2r
-         8AK/FP6ufXImwp/8s+dEaILVKypc2247kIQp4RxU=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     linux-audit@redhat.com, bpf@vger.kernel.org
-Subject: Re: AUDIT_ARCH_ and __NR_syscall constants for seccomp filters
-Message-ID: <60ba7e11-36af-4b24-9132-c5214f32bdad@t-8ch.de>
-References: <0b926f59-464d-4b67-8f32-329cf9695cf7@t-8ch.de>
- <CAHC9VhSTb75NEPZRm+Tkngv=SW8ntmSpVCrXMHHHWc2qYNZqCA@mail.gmail.com>
- <696bf938-c9d2-4b18-9f53-b6ff27035a97@t-8ch.de>
- <CAHC9VhSrki+=724CSQbDdiiMnM8oXTmFP-XFnOmq28c03x1RQQ@mail.gmail.com>
- <efb74f33-6876-48ec-bb9c-87b2247bdedb@t-8ch.de>
- <CAHC9VhTKOZepgVwpc=rh65-ziMTvSvgtCjP6S9+SQ=YDqg-vsA@mail.gmail.com>
+        id S233096AbhF2LMv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Jun 2021 07:12:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41701 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233315AbhF2LMu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 29 Jun 2021 07:12:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624965023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=M9+dWhJWmd7DVS+Y6c5YJeckM41fEC7rx3NEP6gte0o=;
+        b=S/RvQsiWtigUzdmRUoEPK5MlR2QGmjtBnUUl2VAsvbveUfNNmix9XobsDjU2mTmw2YUshL
+        9c/KEJJSYxM/P0RgzllCHvtJB1grGKll8I+CnEIqLMe0XTflLQ1GQpum+gUyr0htMgMe20
+        mDGVKACHRd6XOZljOhuZYaLbY+WH/5k=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-322-2jPxgZNkPdeKNhrRcmNKzQ-1; Tue, 29 Jun 2021 07:10:21 -0400
+X-MC-Unique: 2jPxgZNkPdeKNhrRcmNKzQ-1
+Received: by mail-ej1-f70.google.com with SMTP id lt4-20020a170906fa84b0290481535542e3so5615279ejb.18
+        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 04:10:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M9+dWhJWmd7DVS+Y6c5YJeckM41fEC7rx3NEP6gte0o=;
+        b=ltOrvWTDqiH9/aoIAOVozAv2XRh7WJdZ2qhk9l2FhQD1P4C2O7ldeC+0nOR4b0beF0
+         We8IRTA6V12nS1/5DPh3JnNoOW/WALKcYQEtuOYmp3oJnA4b1GH0c8QHawjzNn1yt3Z9
+         kq0AeWB93Rd+PZ3trnsnZDGXCYSL6JaDt90vG1KZMlam3rDWdbH8/MBt68pUk70d+82n
+         vfkSxaln+nUVbB2LFFHWuZ7l16PjBxZT4ioh5AMiNHUe5x7WM/8OtD+vieye9nbC6wN4
+         8QyRAtxyiZBFEgsriK8lKF6XuoQk9T8bfQ4Dt4jX2IlO7fPUfjFRhzfvm91tYtP2G3Tb
+         bHOA==
+X-Gm-Message-State: AOAM5325zM6GL1OIjr4tr2KKnwNbnenQFXalX3oRiqDnafTvzUS0ibiG
+        A3GEkT+dQeVOLCXME+OI6tIzwpmKQyMK0rhGC+ObR0g27obNfMUjndSCcJQc5Z0a+tXlkGah4M/
+        a6IEYnOZ52w0C
+X-Received: by 2002:a17:907:1b11:: with SMTP id mp17mr29716024ejc.1.1624965020237;
+        Tue, 29 Jun 2021 04:10:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw5KWgSEx8rM8xYRPasysP1U5T1yzTEt1GS6wbBy6hSuKWtXuoy9AIjzxSwy1lTZ2UfQ0atTg==
+X-Received: by 2002:a17:907:1b11:: with SMTP id mp17mr29715978ejc.1.1624965019709;
+        Tue, 29 Jun 2021 04:10:19 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id h4sm3609147edv.59.2021.06.29.04.10.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 04:10:19 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 71C4018071E; Tue, 29 Jun 2021 13:10:18 +0200 (CEST)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: [PATCH bpf-next] libbpf: ignore .eh_frame sections when parsing elf files
+Date:   Tue, 29 Jun 2021 13:09:23 +0200
+Message-Id: <20210629110923.580029-1-toke@redhat.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhTKOZepgVwpc=rh65-ziMTvSvgtCjP6S9+SQ=YDqg-vsA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mo, 2021-06-28T18:43-0400, Paul Moore wrote:
-> On Mon, Jun 28, 2021 at 1:58 PM Thomas Weißschuh <linux@weissschuh.net> wrote:
-> >
-> > Hi again!
-> 
-> !!! :)
+The .eh_frame and .rel.eh_frame sections will be present in BPF object
+files when compiled using a multi-stage compile pipe like in samples/bpf.
+This produces errors when loading such a file with libbpf. While the errors
+are technically harmless, they look odd and confuse users. So add .eh_frame
+sections to is_sec_name_dwarf() so they will also be ignored by libbpf
+processing. This gets rid of output like this from samples/bpf:
 
-Indeed, hi!
+libbpf: elf: skipping unrecognized data section(32) .eh_frame
+libbpf: elf: skipping relo section(33) .rel.eh_frame for section(32) .eh_frame
 
-> > On Mo, 2021-06-28T13:34-0400, Paul Moore wrote:
-> > > On Mon, Jun 28, 2021 at 1:13 PM Thomas Weißschuh <linux@weissschuh.net> wrote:
-> > > > On Mo, 2021-06-28T12:59-0400, Paul Moore wrote:
-> > > > > On Mon, Jun 28, 2021 at 9:25 AM Thomas Weißschuh <linux@weissschuh.net> wrote:
-> 
-> ...
-> 
-> > > Remember that seccomp filters are inherited across forks, so if your
-> > > application loads an ABI specific filter and then fork()/exec()'s an
-> > > application with a different ABI you could be in trouble.  We saw this
-> > > some years ago when people started running containers with ABIs other
-> > > than the native system; if the container orchestrator didn't load a
-> > > filter that knew about these non-native ABIs Bad Things happened.
-> >
-> > My application will not be able to spawn any new processes.
-> > It is limited to write() and exit().
-> > Also this is a low-level system application so it should always be compiled for
-> > the native ABI.
-> > So this should not be an issue.
-> >
-> > > I'm sure you are already aware of libseccomp, but if not you may want
-> > > to consider it for your application.  Not only does it provide a safe
-> > > and easy way to handle multiple ABIs in a single filter, it handles
-> > > other seccomp problem areas like build/runtime system differences in
-> > > the syscall tables/defines as well as the oddball nature of
-> > > direct-call and multiplexed socket related syscalls, i.e. socketcall()
-> > > vs socket(), etc.
-> >
-> > For a larger application this would be indeed my choice.
-> > But for a small application like mine I don't think it is worth it.
-> > libseccomp for example does provide a way to get the native audit arch:
-> > `uint32_t seccomp_arch_native(void);`. It is implemented by ifdef-ing on
-> > various compiler defines to detect the ABI compiled for.
-> >
-> > I'd like the kernel to provide this out-of-the box, so I don't have to have the
-> > same ifdefs in my application(s) and keep them up to date.
-> >
-> > I found that the kernel internally already has a definition for my usecase:
-> > SECCOMP_ARCH_NATIVE.
-> > It is just not exported to userspace.
-> 
-> I'm not sure that keeping the ifdefs up to date is going to be that
-> hard, and honestly that is the right place to do it IMHO.  The kernel
-> can support any number of ABIs, but in the narrow use case you are
-> describing in this thread you only care about the ABI of your own
-> application; it doesn't sound like you really care about the kernel's
-> ABI, but rather your application's ABI.
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ tools/lib/bpf/libbpf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Ok, fair enough.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 1e04ce724240..676af6be5961 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -2906,7 +2906,8 @@ static Elf_Data *elf_sec_data(const struct bpf_object *obj, Elf_Scn *scn)
+ static bool is_sec_name_dwarf(const char *name)
+ {
+ 	/* approximation, but the actual list is too long */
+-	return strncmp(name, ".debug_", sizeof(".debug_") - 1) == 0;
++	return (strncmp(name, ".debug_", sizeof(".debug_") - 1) == 0 ||
++		strncmp(name, ".eh_frame", sizeof(".eh_frame") - 1) == 0);
+ }
+ 
+ static bool ignore_elf_section(GElf_Shdr *hdr, const char *name)
+-- 
+2.32.0
 
-My goal was to keep the amount of support code in my application small.
-Out of 250 lines of code
-100 are actual business logic,
-50 are the current seccomp code
-and the ifdefs would be another 50 (looking at those in libseccomp).
-
-Having a #define provided by the kernel headers, which already cares about
-my application ABI when providing the syscall numbers, would have sidestepped
-all clutter and maintenance issues neatly.
-
-I'll add my own logic then.
-
-To get back to my other question:
-
-Is there any chance a single given process can have multiple different ABIs
-active at the same time?
-Without using special syscalls to switch between them.
-
-Because if that is not possible I can skip the checks for the arch completely
-because the filter is constructed at compile time for the specific ABI
-targetted and all funky syscalls are forbidden anyways.
-
-> > > I'm sorry, but I don't quite understand what you are looking for in
-> > > the header files ... ?  It might help if you could provide a concrete
-> > > example of what you would like to see in the header files?
-> >
-> > I want to do something like the follwing inside my program to assemble a
-> > seccomp filter that will be loaded before the error-prone parts of the
-> > application will begin.
-> >
-> > 1: BPF_STMT(BPF_LD | BPF_W | BPF_ABS, syscall_arch),
-> > 2: BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, SECCOMP_ARCH_NATIVE, 0, $KILL)
-> > 3: BPF_STMT(BPF_LD | BPF_W | BPF_ABS, syscall_nr),
-> > 4: BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_write, $ALLOW, $KILL),
-> >
-> > In line 4 I can already have the kernel headers provide me the correct syscall
-> > number for the ABI my application is compiled for.
-> >
-> > For line 2 however I need to define AUDIT_ARCH_CURRENT on my own instead of
-> > having a kernel header provide the correct value.
-
-PS: I know that this seems to be a lot of discussion for fairly little gain in
-this specific case, but I'd like to use seccomp filters in the future more and
-am trying to find the most unobtrusive way to add them to applications for each
-given usecase.
-(For any larger applications that will certainly include libseccomp, but that
-feels overkill for very specific, zero-runtime-dependency utilities)
-
-Thanks again!
-Thomas
