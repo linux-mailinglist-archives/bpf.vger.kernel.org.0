@@ -2,136 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFEC3B76BF
-	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 18:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D4A3B76E8
+	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 19:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234375AbhF2Q6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Jun 2021 12:58:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24736 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232176AbhF2Q6l (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 29 Jun 2021 12:58:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624985773;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q2NICKy+eY6u9v6U5C5rPMzRkfmDNI+XJLW4LIKdeOM=;
-        b=gr/1C/vVLlGdytCIc1/Grpky84G/AVVkSIIsHWcR8mVIFFNRsxS3xOLdCi0phOOEf1sWQI
-        5oLnU66q3tdIb5JuK/EDzUFQkFUMUDwtG1NuvExMKCh62cYF0itLA5i93GJUJQBtfPL4e3
-        mTBthUMZ9qSGYzd2RDIJdujqoo7BSzg=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-ad2zRqGsPDuU-nkHPsjpZQ-1; Tue, 29 Jun 2021 12:56:02 -0400
-X-MC-Unique: ad2zRqGsPDuU-nkHPsjpZQ-1
-Received: by mail-ed1-f69.google.com with SMTP id w1-20020aa7da410000b029039533674a84so7103502eds.9
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 09:56:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=q2NICKy+eY6u9v6U5C5rPMzRkfmDNI+XJLW4LIKdeOM=;
-        b=nKRY/78wiaFXR8hfh4r3tKxTJnhqobKcMmq/FT3Aabw5+f8ydEeQoZAHH7YT9+0g++
-         EttFnDU0cn718welYiCANE6mL0BzjB/ktlQ1FBzL/PVBy5HNq8C1Bpdige/2vRLl6jPZ
-         JAiTZ6ZIwTORYWidE2JbcVzaQPa1l70t5E0MTnwO276IWHMHigJXWqwBhlDvoS+7dNIh
-         AnmTXl8SNoTF9ySe0e8P+9lidLhWdnhqqe4atq38l7I4ChvMnpDCAU6Tr7UufjomS16c
-         XkqnDVfNk6U9wFUuP9KhWRoa74x0HtfG+QaIpiFRL2cD4xjsU4ySctns1ek7aQ70Yy6p
-         syZA==
-X-Gm-Message-State: AOAM531hjTqyOrNu75G1AKCnYeyCA+x8XHixBhYQlevTR4rgO4349W54
-        zxIQ3sNUwyR2YZQ0ADpMRKdDPVfei/JoiOV7DoGAFzkYGvY5RHlsAsXCDmU8C6hcOds1GXdHGL7
-        dHb7oqk+tp1IY
-X-Received: by 2002:a05:6402:51c9:: with SMTP id r9mr10497272edd.326.1624985761638;
-        Tue, 29 Jun 2021 09:56:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx6JX0kG7OliK+69WwEBKZuT8U9A5MzKTXCdCtoFvyGEIz/VAikmU9KP1H/PmK4CJpy/7zJHQ==
-X-Received: by 2002:a05:6402:51c9:: with SMTP id r9mr10497251edd.326.1624985761526;
-        Tue, 29 Jun 2021 09:56:01 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id gv20sm8656803ejc.23.2021.06.29.09.56.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 09:56:01 -0700 (PDT)
-Subject: Re: [PATCH net v2] xdp, net: fix for construct skb by xdp inside xsk
- zc rx
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        id S232540AbhF2RLV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Jun 2021 13:11:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232398AbhF2RLV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Jun 2021 13:11:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 236F361CA2;
+        Tue, 29 Jun 2021 17:08:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624986533;
+        bh=+dC51rWNo1wDeYPoalM+gQQN7q0mu0SuHEZ2RWtnHzQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ry8PL6pWVxargf19eA97YHT5jTEszXOlOtOKrDK7Ekb7k2Krgiow14jZs1v3Rl4rn
+         Ri55Nzn7c7ucumSSi6ZLqgaLTTOP7ZvTJrkZxt+CyQcxG+kFnLuoS+sg3m9qbraeA8
+         9qeS6s928pyUDUReY5WziZ1QhvjZbojOLRSVyl+0FjIniRfRsoQ3KWMFgh4Vab5Dyg
+         f49tJlS/HqGYTwnWJPeEWVsgYfOQ0cjs/N9vNGO8c4/UzZVuC/cI5Ac1DUa9fCT6XR
+         8S5K5+XqI4IrPWxp4w95ReKoiFflr/nJ0UVH5zh8+XG4/O6na92z7H0y0/gv2QJ26U
+         SyZAuVpaR7Svg==
+Date:   Tue, 29 Jun 2021 10:08:52 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
+        "Jubran, Samih" <sameehj@amazon.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Krzysztof Kazimierczak <krzysztof.kazimierczak@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210617145534.101458-1-xuanzhuo@linux.alibaba.com>
- <20210628104721.GA57589@ranger.igk.intel.com>
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-Message-ID: <f5ce5610-443c-a2d9-43ef-d203f9afb0d8@redhat.com>
-Date:   Tue, 29 Jun 2021 18:55:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Tirthendu <tirthendu.sarkar@intel.com>
+Subject: Re: [PATCH v9 bpf-next 01/14] net: skbuff: add data_len field to
+ skb_shared_info
+Message-ID: <20210629100852.56d995a6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YNsVyBw5i4hAHRN8@lore-desk>
+References: <cover.1623674025.git.lorenzo@kernel.org>
+        <8ad0d38259a678fb42245368f974f1a5cf47d68d.1623674025.git.lorenzo@kernel.org>
+        <CAKgT0UcwYHXosz-XuQximak63=ugb9thEc=dkUUZzDpoPCH+Qg@mail.gmail.com>
+        <YNsVyBw5i4hAHRN8@lore-desk>
 MIME-Version: 1.0
-In-Reply-To: <20210628104721.GA57589@ranger.igk.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 28/06/2021 12.47, Maciej Fijalkowski wrote:
+On Tue, 29 Jun 2021 14:44:56 +0200 Lorenzo Bianconi wrote:
+> > On Mon, Jun 14, 2021 at 5:50 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:  
+> > >
+> > > data_len field will be used for paged frame len for xdp_buff/xdp_frame.
+> > > This is a preliminary patch to properly support xdp-multibuff
+> > >
+> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > ---
+> > >  include/linux/skbuff.h | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > > index dbf820a50a39..332ec56c200d 100644
+> > > --- a/include/linux/skbuff.h
+> > > +++ b/include/linux/skbuff.h
+> > > @@ -522,7 +522,10 @@ struct skb_shared_info {
+> > >         struct sk_buff  *frag_list;
+> > >         struct skb_shared_hwtstamps hwtstamps;
+> > >         unsigned int    gso_type;
+> > > -       u32             tskey;
+> > > +       union {
+> > > +               u32     tskey;
+> > > +               u32     data_len;
+> > > +       };
+> > >  
+> > 
+> > Rather than use the tskey field why not repurpose the gso_size field?
+> > I would think in the XDP paths that the gso fields would be unused
+> > since LRO and HW_GRO would be incompatible with XDP anyway.
+> 
+> ack, I agree. I will fix it in v10.
 
-> +static __always_inline struct sk_buff *
-> +xdp_construct_skb(struct xdp_buff *xdp, struct napi_struct *napi)
-> +{
-
-I don't like the generic name "xdp_construct_skb".
-
-What about calling it "xdp_copy_construct_skb", because below is 
-memcpy'ing the data.
-
-Functions that use this call free (or recycle) the memory backing the 
-packet, after calling this function.
-
-(I'm open to other naming suggestions)
-
-
-> +	unsigned int metasize;
-> +	unsigned int datasize;
-> +	unsigned int headroom;
-> +	struct sk_buff *skb;
-> +	unsigned int len;
-> +
-> +	/* this include metasize */
-> +	datasize = xdp->data_end  - xdp->data_meta;
-> +	metasize = xdp->data      - xdp->data_meta;
-> +	headroom = xdp->data_meta - xdp->data_hard_start;
-> +	len      = xdp->data_end  - xdp->data_hard_start;
-> +
-> +	/* allocate a skb to store the frags */
-> +	skb = __napi_alloc_skb(napi, len, GFP_ATOMIC | __GFP_NOWARN);
-> +	if (unlikely(!skb))
-> +		return NULL;
-> +
-> +	skb_reserve(skb, headroom);
-> +	memcpy(__skb_put(skb, datasize), xdp->data_meta, datasize);
-> +	if (metasize) {
-> +		__skb_pull(skb, metasize);
-> +		skb_metadata_set(skb, metasize);
-> +	}
-> +
-> +	return skb;
-> +}
-
+Why is XDP mb incompatible with LRO? I thought that was one of the use
+cases (mentioned by Willem IIRC).
