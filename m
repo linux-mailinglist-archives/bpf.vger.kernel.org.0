@@ -2,68 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC33A3B7754
-	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 19:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24863B7755
+	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 19:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbhF2RkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Jun 2021 13:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
+        id S232844AbhF2Rk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Jun 2021 13:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbhF2RkS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Jun 2021 13:40:18 -0400
-Received: from mail-pl1-x663.google.com (mail-pl1-x663.google.com [IPv6:2607:f8b0:4864:20::663])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176EBC061760
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 10:37:51 -0700 (PDT)
-Received: by mail-pl1-x663.google.com with SMTP id i4so11303619plt.12
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 10:37:51 -0700 (PDT)
+        with ESMTP id S232523AbhF2Rk0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Jun 2021 13:40:26 -0400
+Received: from mail-vs1-xe61.google.com (mail-vs1-xe61.google.com [IPv6:2607:f8b0:4864:20::e61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDAEC061760
+        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 10:37:58 -0700 (PDT)
+Received: by mail-vs1-xe61.google.com with SMTP id 68so15110vsu.6
+        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 10:37:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:dkim-signature:mime-version:from:date:message-id
          :subject:to:cc;
-        bh=UNyWplnK1RWdGLxbRVuOQ5s+qEqLt/CTuvraWi7Z4dg=;
-        b=K0OssyBM6KfEii3OusKQX1O+nqGQMk0O9rSnHhEzUMbXangMjhitdOcz/bjTazct51
-         7usbkMTSSVhTPNXKVkpbrO9Pt6GlXaR0ZERz4LHUiof0csv+mOCsQvBPHhGZ9W6Klv4e
-         49ubwwtDZTdS5HQJ8qzRYNe5E6vadetcVNMuqWp/n7CZvyPvTb6DmkIse1tzCZa1OkxC
-         F/QliUu94l3BArNCs5mMDds0geM15qFRm7pv2aaf8CB9oQgVPH8R3CTFCUFInM5OyscN
-         Q/gKl7I2gEfLEaDvaB8TR8Lyom9kIwNQnRCYfNhPR1d85aiQFU5EKMKCw3ls0m/sg7a1
-         eKBQ==
-X-Gm-Message-State: AOAM530DyqJjIFg/h7SFvnNW2QhmIHtcJRwiA5AslNoAJOKj9ihmEk/F
-        CzlnoHToiyrtohDxRT0xT989gq/AfiS4qplKd6sh82doy0vsog==
-X-Google-Smtp-Source: ABdhPJyRzxoR1DeHJC0P7HkrHD2eopln+2yh9UXVn6EyZSrujnNNwKGkERqs7NLp22yj5ZeSV1y/0uA6mfLc
-X-Received: by 2002:a17:903:228e:b029:101:af04:4e24 with SMTP id b14-20020a170903228eb0290101af044e24mr28797671plh.3.1624988270456;
-        Tue, 29 Jun 2021 10:37:50 -0700 (PDT)
-Received: from restore.menlosecurity.com ([13.56.32.60])
-        by smtp-relay.gmail.com with ESMTPS id cs19sm6818295pjb.0.2021.06.29.10.37.48
+        bh=zthhZ9jdCXIWdOsZ/wYauwpGG80Lj4IedY8vX/qxgyo=;
+        b=cptEcPXG86xbKun12L+xSHwYkobUK1CviP5r52lTpRJYxvQuU7iiF63iPDZilNAiwe
+         GShGgYua1Xhhk3q1pux/Jd3EyT6VdZIHlk3ypX7BNBLLO/IJTVvDrfDVJTmyBP2zJdss
+         C3aDQqnHGSlHcnCrw959Wt74PxGIyPvudYQTzoUSYShDi8xIaCDMsP5SOwocr5xX1cN3
+         KZw3vlCsEH78aT44QRmkut9IqJbeHt1DTlqz2OWtMg8e8cqzbqgCIauVqWJHFMBJ9yGz
+         iWLAyunQvEmt0bJPTiN3e3pQ7DppB6XzOO4KcakEKYN8wSI98oFPW5EoglCrcvApVI71
+         AfCg==
+X-Gm-Message-State: AOAM530lQepY78g4m+DbgujTq7mhgGYN046IxL0krY2exf8qezdNlTTm
+        WC5jL2jpBqk/J1jsXWofH1nUYHxeMfAlctxQFYQT39ysq+Qsyw==
+X-Google-Smtp-Source: ABdhPJxMMe2g6hNAIgN3043CcY1c/EhjTSDmV51Ic1Ukz81ou/2zMlX3jY+qIeQW8Kchou0GXaJb0aVqyZMQ
+X-Received: by 2002:a67:c39c:: with SMTP id s28mr25973895vsj.44.1624988277752;
+        Tue, 29 Jun 2021 10:37:57 -0700 (PDT)
+Received: from restore.menlosecurity.com ([13.56.32.62])
+        by smtp-relay.gmail.com with ESMTPS id l7sm330651uar.2.2021.06.29.10.37.57
         for <bpf@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 29 Jun 2021 10:37:50 -0700 (PDT)
+        Tue, 29 Jun 2021 10:37:57 -0700 (PDT)
 X-Relaying-Domain: menlosecurity.com
-Received: from safemail-prod-02790022cr-re.menlosecurity.com (13.56.32.61)
-    by restore.menlosecurity.com (13.56.32.60)
-    with SMTP id b84b92c0-d900-11eb-8d46-f1832bde6be8;
-    Tue, 29 Jun 2021 17:37:50 GMT
-Received: from mail-ed1-f71.google.com (209.85.208.71)
-    by safemail-prod-02790022cr-re.menlosecurity.com (13.56.32.61)
-    with SMTP id b84b92c0-d900-11eb-8d46-f1832bde6be8;
-    Tue, 29 Jun 2021 17:37:49 GMT
-Received: by mail-ed1-f71.google.com with SMTP id s6-20020a0564020146b029039578926b8cso2470293edu.20
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 10:37:47 -0700 (PDT)
+Received: from safemail-prod-02790022cr-re.menlosecurity.com (13.56.32.63)
+    by restore.menlosecurity.com (13.56.32.62)
+    with SMTP id bd35a910-d900-11eb-91b5-b3c80c742345;
+    Tue, 29 Jun 2021 17:37:57 GMT
+Received: from mail-ej1-f69.google.com (209.85.218.69)
+    by safemail-prod-02790022cr-re.menlosecurity.com (13.56.32.63)
+    with SMTP id bd35a910-d900-11eb-91b5-b3c80c742345;
+    Tue, 29 Jun 2021 17:37:57 GMT
+Received: by mail-ej1-f69.google.com with SMTP id g18-20020a1709063952b02904c6c7b11c45so1450071eje.2
+        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 10:37:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=menlosecurity.com; s=google;
         h=mime-version:from:date:message-id:subject:to:cc;
-        bh=UNyWplnK1RWdGLxbRVuOQ5s+qEqLt/CTuvraWi7Z4dg=;
-        b=HLXa5iST1dBAmqyrm3a1uMy66GCZ1PckBNEEGvk6BvYytv/R7+iFPp3MxPHfrf8QIZ
-         AreUOxLSOqQOTmf+mAfzm3uZrlqhyuATQFv0p/6g7Bgw49AuXP7lYv8ASELNeErFE41s
-         rHQd0fwOnC5L/M2mvfZ3slTWOmZGhUKf61QAM=
-X-Received: by 2002:aa7:cc01:: with SMTP id q1mr38240532edt.84.1624988265840;
-        Tue, 29 Jun 2021 10:37:45 -0700 (PDT)
-X-Received: by 2002:aa7:cc01:: with SMTP id q1mr38240517edt.84.1624988265665;
- Tue, 29 Jun 2021 10:37:45 -0700 (PDT)
+        bh=zthhZ9jdCXIWdOsZ/wYauwpGG80Lj4IedY8vX/qxgyo=;
+        b=HhAnHgG/v1tnXdqjyPbp+Py0jQTqL2PhPAbPxnvG7dGji0OoRfgEt8AcirWxAP3fqR
+         Z3gbkTl1HjthrHvRbEz2C3CG7LCCeCs1RL4LKc1Q3yBn3LBlLaTdBSZGypgkU9+uS0bm
+         9YSDCqZoWEtJT7n0QBEd5eXwtV0eODsV2YKNA=
+X-Received: by 2002:a17:906:9e05:: with SMTP id fp5mr23447787ejc.376.1624988274313;
+        Tue, 29 Jun 2021 10:37:54 -0700 (PDT)
+X-Received: by 2002:a17:906:9e05:: with SMTP id fp5mr23447782ejc.376.1624988274163;
+ Tue, 29 Jun 2021 10:37:54 -0700 (PDT)
 MIME-Version: 1.0
 From:   Rumen Telbizov <rumen.telbizov@menlosecurity.com>
-Date:   Tue, 29 Jun 2021 10:37:34 -0700
-Message-ID: <CA+FoirAaqbnYan2NEQVaxZ2s_brPNZ02hRFhW9miyfqn+KVGbA@mail.gmail.com>
-Subject: [PATCH 1/3] bpf: Add support for mark with bpf_fib_lookup
+Date:   Tue, 29 Jun 2021 10:37:43 -0700
+Message-ID: <CA+FoirAefuGFbDVBenv1zh5PeR9V3JS=k8o+01zC7ytEs9g+8g@mail.gmail.com>
+Subject: [PATCH 2/3] tools: Update bpf header
 To:     bpf@vger.kernel.org
 Cc:     David Ahern <dsahern@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -73,24 +73,18 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add support for policy routing via marks to the bpf_fib_lookup
-helper. The bpf_fib_lookup struct is constrained to 64B for
-performance. Since the smac and dmac entries are used only for
-output, put them in an anonymous struct and then add a union
-around a second struct that contains the mark to use in the FIB
-lookup.
+Update bpf header under tools to bring in the bpf_fib_lookup
+struct changes.
 
-Signed-off-by: David Ahern <dsahern@kernel.org>
 Signed-off-by: Rumen Telbizov <telbizov@gmail.com>
 ---
- include/uapi/linux/bpf.h | 16 ++++++++++++++--
- net/core/filter.c        |  4 ++--
- 2 files changed, 16 insertions(+), 4 deletions(-)
+ tools/include/uapi/linux/bpf.h | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
 index ec6d85a81744..6c78cc9c3c75 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
 @@ -5925,8 +5925,20 @@ struct bpf_fib_lookup {
   /* output */
   __be16 h_vlan_proto;
@@ -114,45 +108,5 @@ index ec6d85a81744..6c78cc9c3c75 100644
  };
 
  struct bpf_redir_neigh {
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 65ab4e21c087..2ea997cacf4d 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -5299,6 +5299,7 @@ static int bpf_ipv4_fib_lookup(struct net *net,
-struct bpf_fib_lookup *params,
-  fl4.saddr = params->ipv4_src;
-  fl4.fl4_sport = params->sport;
-  fl4.fl4_dport = params->dport;
-+ fl4.flowi4_mark = params->mark;
-  fl4.flowi4_multipath_hash = 0;
-
-  if (flags & BPF_FIB_LOOKUP_DIRECT) {
-@@ -5311,7 +5312,6 @@ static int bpf_ipv4_fib_lookup(struct net *net,
-struct bpf_fib_lookup *params,
-
-  err = fib_table_lookup(tb, &fl4, &res, FIB_LOOKUP_NOREF);
-  } else {
-- fl4.flowi4_mark = 0;
-  fl4.flowi4_secid = 0;
-  fl4.flowi4_tun_key.tun_id = 0;
-  fl4.flowi4_uid = sock_net_uid(net, NULL);
-@@ -5425,6 +5425,7 @@ static int bpf_ipv6_fib_lookup(struct net *net,
-struct bpf_fib_lookup *params,
-  fl6.saddr = *src;
-  fl6.fl6_sport = params->sport;
-  fl6.fl6_dport = params->dport;
-+ fl6.flowi6_mark = params->mark;
-
-  if (flags & BPF_FIB_LOOKUP_DIRECT) {
-  u32 tbid = l3mdev_fib_table_rcu(dev) ? : RT_TABLE_MAIN;
-@@ -5437,7 +5438,6 @@ static int bpf_ipv6_fib_lookup(struct net *net,
-struct bpf_fib_lookup *params,
-  err = ipv6_stub->fib6_table_lookup(net, tb, oif, &fl6, &res,
-    strict);
-  } else {
-- fl6.flowi6_mark = 0;
-  fl6.flowi6_secid = 0;
-  fl6.flowi6_tun_key.tun_id = 0;
-  fl6.flowi6_uid = sock_net_uid(net, NULL);
 --
 2.30.1 (Apple Git-130)
