@@ -2,157 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084FC3B6F40
-	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 10:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 189603B7028
+	for <lists+bpf@lfdr.de>; Tue, 29 Jun 2021 11:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232573AbhF2IYn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Jun 2021 04:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232563AbhF2IYj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:24:39 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F984C061574
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 01:22:12 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id i18so16741029yba.13
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 01:22:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b86U7qOD9Go7UjAxHqjyMo73nkm6a/V5QTpw7IQUw/0=;
-        b=SiX9r9dgg6r6z6VL+6XFCBA8PtLqqP8EjVjknH/LRrL0MsSzgzW6NoXOwoh0xQNgPV
-         6zIu/InaqEx5zmydhC+QuLMT+UMrbsEXBw2JBgAPME4uXG67oygSZzmwUNSox69rlWOl
-         MX8DDVzp8OTnMDPgbU3dYgjX+GSSPjCuZ14XCNAxPWIgvPccT/Hzd3IOYj+o0/eUUvdb
-         Xp+he1Qspq+Fdop1raUQPjpzigswTnTn1q2/UJAdIYap8JNAzHw0+GAejHDASg54Q5bo
-         S4TvOHlDZq/nWPxwgJroeOGnUqlY5YSG7WsfshaVlEH555kOnVTzX/B0chf7qEMnaXED
-         hqOg==
+        id S232847AbhF2JkR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Jun 2021 05:40:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34735 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232614AbhF2JkR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 29 Jun 2021 05:40:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624959470;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KBcVNsTwTw4t7ab3uozYsfoVrcxV8lqxnJAi7ZpD9Zo=;
+        b=Ks4Fy2VYv+wAEI/axeWLLg8UkTRQsnstnHW214f07ZkOS7vUbLtdQ5bPQyNUMZ6DSd3Z5n
+        hFLdetkYr6usquZyplJccWFUfZdH4fHAj3mJnOkzix7HaxoP9UuKL+IzKKc9Sk2ZDyQKcY
+        6uHRk4SR/f1Z/A9xsrLdC7dGc6F1s60=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-642A67DeOVGtrb_pkqujEQ-1; Tue, 29 Jun 2021 05:37:49 -0400
+X-MC-Unique: 642A67DeOVGtrb_pkqujEQ-1
+Received: by mail-ed1-f70.google.com with SMTP id ee28-20020a056402291cb0290394a9a0bfaeso11173358edb.6
+        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 02:37:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b86U7qOD9Go7UjAxHqjyMo73nkm6a/V5QTpw7IQUw/0=;
-        b=QTKoRAHBoCU5EDljRiL/cXelAsb+8nnvgvzDkaflHw+lvHCqChBoWUwFiKoIYdRjay
-         hK/l4j8GRl/JtUgulmHzt6o1ohtMFcG3QKBU9gBErivjXS+dm842AviG1z1HWfASgW7T
-         Yv8gOMlpUe1p1S+th0oaIj17GPEuVU/iObk/hY2buGktNVDQOwg89YdDRoqO/cmOHNfJ
-         hlGFyWg1xvK+MwyXU5GjYznmY39kOC2Tj4JLeKDKEKDWIoUMRGwFjb/qDXK8mz6mLo8S
-         B8wV3LQepoQYKjXk9shwusausUrvuCNSucjfog2w1SCFLL0Qo2SrmUq7D0vU7o2LOOa/
-         QiyQ==
-X-Gm-Message-State: AOAM533V6zjSW3pG9ZKkxbU+AxloJldz7rDoV5c5p2TsFsl2OpNU845H
-        0qXnlc5Zh8pWUu/X2SXkxkj9gnQbEfPw9QoI9qHA9w==
-X-Google-Smtp-Source: ABdhPJxeB+P2TJ4vfKfTrwgdN9swrJc/3hVQCio5bE343GXZDKj6fcFsoFxiEZmmVoGyrBJ22yERCtdFyRrcpJD+H8o=
-X-Received: by 2002:a25:f0b:: with SMTP id 11mr21678043ybp.518.1624954930973;
- Tue, 29 Jun 2021 01:22:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
- <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
- <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com> <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
- <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com>
-In-Reply-To: <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 29 Jun 2021 10:21:59 +0200
-Message-ID: <CANn89iJbquZ=tVBRg7JNR8pB106UY4Xvi7zkPVn0Uov9sj8akg@mail.gmail.com>
-Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
-To:     Nguyen Dinh Phi <phind.uet@gmail.com>
-Cc:     Neal Cardwell <ncardwell@google.com>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=KBcVNsTwTw4t7ab3uozYsfoVrcxV8lqxnJAi7ZpD9Zo=;
+        b=pZNwrXF0bZsH55EccGZAoGjMKKCYwK973xbvI1Eqz9DpnXfLr5jH5dB3xRvUPY+lg6
+         Tj0QYY3OzyqEdQT9Br6MFrXcU6+GbmTkCth+XvmJCNb1KqYOR4HB9FP15IxlKgiSO32u
+         Q06sS6c9BpTrI9FA/Qtj7fvo1F9P69qYHJdLzhpt46XKyrYNn9MSNk4VMhXkMuDsBf6P
+         A79pnnvw/5ddmOap1eRybqJC5y9BzTR8wjcNeNaY3A3cdvgQrVUdCn/u3n+aSUdujTaK
+         W8GhSlDB/bPZdweQenk6pknl3SZC5xDOwIvSNB++ovsKEemDUHys33heHbUEfqMZPUA2
+         ViVw==
+X-Gm-Message-State: AOAM532N11kbLdY8iptd9z+s4YkjJH4iEHe2o2GwxPIUDicZ9b6NSoTG
+        FG9ENpAN1zP3DOwJrX+25OkdzwNMidIsIuya5BOhCS05Km0L6LdmsrXEXubaJYGs2/xsZGXI3uJ
+        8VtS6UL7p4iMy
+X-Received: by 2002:a17:906:25db:: with SMTP id n27mr28239139ejb.170.1624959467544;
+        Tue, 29 Jun 2021 02:37:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxOH5SNZqKx/5a+ztg7Mo18FQk9YJwyegOFUl4APyLIzzLuJ0PVk6uaD55PRUVQHNCK6OHWGg==
+X-Received: by 2002:a17:906:25db:: with SMTP id n27mr28239117ejb.170.1624959467145;
+        Tue, 29 Jun 2021 02:37:47 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id yd2sm8023006ejb.124.2021.06.29.02.37.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Jun 2021 02:37:46 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id BE3D818071E; Tue, 29 Jun 2021 11:37:42 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
-        Yuchung Cheng <ycheng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH bpf-next] bpf/devmap: convert remaining READ_ONCE() to
+ rcu_dereference()
+In-Reply-To: <20210628235559.sgq7txsjmz3s2zeb@kafai-mbp.dhcp.thefacebook.com>
+References: <20210628230051.556099-1-toke@redhat.com>
+ <20210628235559.sgq7txsjmz3s2zeb@kafai-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 29 Jun 2021 11:37:42 +0200
+Message-ID: <87h7hhj9jt.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 9:17 AM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
->
-> On June 29, 2021 1:20:19 AM GMT+08:00, Neal Cardwell <ncardwell@google.com> wrote:
-> >)
-> >
-> >On Mon, Jun 28, 2021 at 1:15 PM Phi Nguyen <phind.uet@gmail.com> wrote:
-> >>
-> >> On 6/29/2021 12:24 AM, Neal Cardwell wrote:
-> >>
-> >> > Thanks.
-> >> >
-> >> > Can you also please provide a summary of the event sequence that
-> >> > triggers the bug? Based on your Reported-by tag, I guess this is
-> >based
-> >> > on the syzbot reproducer:
-> >> >
-> >> >
-> >https://groups.google.com/g/syzkaller-bugs/c/VbHoSsBz0hk/m/cOxOoTgPCAAJ
-> >> >
-> >> > but perhaps you can give a summary of the event sequence that
-> >causes
-> >> > the bug? Is it that the call:
-> >> >
-> >> > setsockopt$inet_tcp_TCP_CONGESTION(r0, 0x6, 0xd,
-> >> > &(0x7f0000000000)='cdg\x00', 0x4)
-> >> >
-> >> > initializes the CC and happens before the connection is
-> >established,
-> >> > and then when the connection is established, the line that sets:
-> >> >    icsk->icsk_ca_initialized = 0;
-> >> > is incorrect, causing the CC to be initialized again without first
-> >> > calling the cleanup code that deallocates the CDG-allocated memory?
-> >> >
-> >> > thanks,
-> >> > neal
-> >> >
-> >>
-> >> Hi Neal,
-> >>
-> >> The gdb stack trace that lead to init_transfer_input() is as bellow,
-> >the
-> >> current sock state is TCP_SYN_RECV.
-> >
-> >Thanks. That makes sense as a snapshot of time for
-> >tcp_init_transfer(), but I think what would be more useful would be a
-> >description of the sequence of events, including when the CC was
-> >initialized previous to that point (as noted above, was it that the
-> >setsockopt(TCP_CONGESTION) completed before that point?).
-> >
-> >thanks,
-> >neal
->
-> I resend my message because I accidently used html format in last one. I am very sorry for the inconvenience caused.
-> ---
-> Yes, the CC had been initialized by the setsockopt, after that, it was initialized again in function tcp_init_transfer() because of setting isck_ca_initialized to 0.
+Martin KaFai Lau <kafai@fb.com> writes:
 
-"the setsockopt" is rather vague, sorry.
+> On Tue, Jun 29, 2021 at 01:00:51AM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> There were a couple of READ_ONCE()-invocations left-over by the devmap R=
+CU
+>> conversion. Convert these to rcu_dereference() as well to avoid complain=
+ts
+>> from sparse.
+>>=20
+>> Fixes: 782347b6bcad ("xdp: Add proper __rcu annotations to redirect map =
+entries")
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>>  kernel/bpf/devmap.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>=20
+>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+>> index 2f6bd75cd682..7a0c008f751b 100644
+>> --- a/kernel/bpf/devmap.c
+>> +++ b/kernel/bpf/devmap.c
+>> @@ -558,7 +558,7 @@ int dev_map_enqueue_multi(struct xdp_buff *xdp, stru=
+ct net_device *dev_rx,
+>>=20=20
+>>  	if (map->map_type =3D=3D BPF_MAP_TYPE_DEVMAP) {
+>>  		for (i =3D 0; i < map->max_entries; i++) {
+>> -			dst =3D READ_ONCE(dtab->netdev_map[i]);
+>> +			dst =3D rcu_dereference(dtab->netdev_map[i]);
+> __dev_map_lookup_elem() uses rcu_dereference_check(dtab->netdev_map[key],=
+ rcu_read_lock_bh_held()).
+> It is not needed here?
 
+Hmm, I somehow managed to convince myself last night that it wasn't, but
+looking at it again now I think you're right. Will send a v2.
 
-The hard part is that all scenarios have to be considered.
+-Toke
 
-TCP flows can either be passive and active.
-
-CC can be set :
-
-1) Before the connect() or accept()
-2) After the connect() or accept()
-3) after the connect() but before 3WHS is completed.
-
-So we need to make sure all cases will still work with any combination
-of CDG CC (before/after) in the picture.
-
-Note that a memory leak for a restricted CC (CDG can only be used by
-CAP_NET_ADMIN privileged user)
- is a small problem compared to more serious bug that could be added
-by an incomplete fix.
-
-I also note that if icsk_ca_priv] was increased from 104 to 120 bytes,
-tcp_cdg would no longer need a dynamic memory allocation.
-
-Thank you.
