@@ -2,148 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B110C3B809A
-	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 12:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160F53B80E1
+	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 12:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbhF3KKw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Jun 2021 06:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
+        id S233994AbhF3Khk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Jun 2021 06:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234095AbhF3KKw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:10:52 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26204C061756;
-        Wed, 30 Jun 2021 03:08:23 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id i4so4101627ybe.2;
-        Wed, 30 Jun 2021 03:08:23 -0700 (PDT)
+        with ESMTP id S229882AbhF3Khj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Jun 2021 06:37:39 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2ADC061756
+        for <bpf@vger.kernel.org>; Wed, 30 Jun 2021 03:35:11 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id t12so2341301ile.13
+        for <bpf@vger.kernel.org>; Wed, 30 Jun 2021 03:35:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=315GgWjphcSz4gPu0C1m0uStExLIy8BjxmSHxJbMz+A=;
-        b=ZnDBa1cXuz8dugVH3GM27VJNdOaUpFHAt1ec71DlEUe9Fs5vHDkM5qK4wDJWt5dEap
-         tfS8FvGyEXeO4G//gvgDi63Y6FjfNrmutpus4X4YHBWTi16pQ3oplLhkqRFKMGke2beZ
-         EIiGrP9u2oQ0WtMwWycf3SemKo3/LbUCoyarSTdragiWtNo6Zj6CbArMe62GncasWQqi
-         Qpv0pE1YIOWnosj6Isn6xYYy6X3KNuDZvlOLSQc20rpRoKolqCZAasyntyewtKKsEd3Y
-         pCm2lZ4W0WE9BGCnmchzO5Qpr8q1Oly+VhP4YQUq95lHQxLWtt7BBqtXGPbFUr3EUsxc
-         xMLA==
+        bh=oYowxdHPN61Y9qY1zFymchy5MCzI2srPYMEbOZef5aE=;
+        b=hgDnjDNPxcONENyswmTFE8XXY4m3HgOTeKMOhw0bVmtFmk012qRj6ji+M+7jCJTHb3
+         YqIvrawiTYLD2xSy/a7hBAXqqnpbXwnSVD9IrQyaV9RUyXnbBOjyoa2Xno/TwatLesaW
+         E2KuVhmqNPdoPekT1NR8HoXVWtdY3oUFW1BpS0TvTEW5YAwHrq2C8khf0i2cAMGLZZbl
+         76ecF3LebTIweZEMz/VFo0JMMLMfGc/jbRK46iQT86TtR7wW9MRPTNm/bCib3OTfKJM0
+         ywBTie6eJSJFyTA7Z7EDHm+jDnxHor0OMMqMpnlt170jXxFg1sZabpFHfYLnCWIzEvMZ
+         lxMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=315GgWjphcSz4gPu0C1m0uStExLIy8BjxmSHxJbMz+A=;
-        b=V83wiMX7D6/7uM/cHO2yCBE5opJ5U4mKI0KV721eO1IdcgBcAYNrgtDgWCWWYz5Ywh
-         bj6gcQ2RUV1AEFaurry3GON7LIvDb7eSfnfUpGglOsTzFt5Q/9QXlv40NmLfVczmswNS
-         7aSsSskFWS9TMBKWnWq7/ebYsM/FvfL7PvzuBw7oGj6feP+HvTapB659/Q32Eqd+Sz0t
-         I4wghSYQzb4+uKQUtOJFMrEhdTl1fKsL2ltOK3jjgLnXsAzA9OgoxjzeyoIb1+sKCsOu
-         SOGP1al8NZAc41ZTxmbVQEJJOJmkA+6oCT5oqD+lqFsVQ+4+MdaSiUs3wvgYhMBi8lGg
-         NlUA==
-X-Gm-Message-State: AOAM532UPjhJS9rFvxAChM8VwuxZh8tV53DL1OsTdBhCIFu4QFOxWDlV
-        MJAK7afjW+lZAL9g7ZrZsp38W/Zzac6+P8J1v7o=
-X-Google-Smtp-Source: ABdhPJyP06aeOdXsv7HZlWAV/uAGgwFMb31hNT4oKTPcE3/6jCBK8xYLq6eH5qRRwa9FQ5luL0ArmsAZMBy1GN1Ctdo=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr44281547ybu.403.1625047701821;
- Wed, 30 Jun 2021 03:08:21 -0700 (PDT)
+        bh=oYowxdHPN61Y9qY1zFymchy5MCzI2srPYMEbOZef5aE=;
+        b=et5cDWq5UQVZsLzv6BcEhVph6q8VnZA0pFcgkbWIcYOfT9rJ82IZTQ7GWq9qtHEesF
+         ONmEqvEtfhI7+DFMKCkpV0ffqEeZmzm0GGep4uqcaUV6Ua9J5ZAUHDOavXGtDJAdHCKa
+         ZkzZTiFPYb3a+6xNldVeoS78/XUviEPyhseMM81l8c5bgE2c8UVdy9WjxWS0JR79FZj3
+         wkMdYeKM1QT70qddqsopRFa6bOObN4PUfD3KWb9lEwCKLd9a78lvlUpMJlO62AKSqvaM
+         kw0+djor1CQtkb4SUD1d+HK9dV7pEOY/638AygI0wdol++itYPsGA/2jQaRT7kXPFlgc
+         xNmw==
+X-Gm-Message-State: AOAM530NX0j+E9Ihc32BA62JrtGu2GG2xHcfAMWynb8xMG7vvsGKTjmR
+        H+0gLBz6KIG1Uda8FD5QDpar0Y1E+omCCegJpKylbg==
+X-Google-Smtp-Source: ABdhPJxRzsAEg4/s6pozP7seom0nszwjf0oBy2qft+RSoAbYrNP/1NTOVsnnPl/qEmYA92ggPR1vT+gqOkOE+sWob4M=
+X-Received: by 2002:a92:6f07:: with SMTP id k7mr14654789ilc.276.1625049310206;
+ Wed, 30 Jun 2021 03:35:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210624022518.57875-1-alexei.starovoitov@gmail.com>
- <20210624022518.57875-2-alexei.starovoitov@gmail.com> <fd30895e-475f-c78a-d367-2abdf835c9ef@fb.com>
- <20210629014607.fz5tkewb6n3u6pvr@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzaPPDEUvsx51mEpp_vJoXVwJQrLu5QnL4pSnL9YAPXevw@mail.gmail.com> <CAADnVQ+erEuHj_0cy16DBFSu_Otj-+60EZN__9W=vogeNQuBOg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+erEuHj_0cy16DBFSu_Otj-+60EZN__9W=vogeNQuBOg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 30 Jun 2021 13:08:08 +0300
-Message-ID: <CAEf4BzbpF7S2861ueTHC7u4avzFZU7vXkujNX+bLewd4hN5trw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/8] bpf: Introduce bpf timers.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
+References: <20210202135002.4024825-1-jackmanb@google.com> <YNiadhIbJBBPeOr6@krava>
+ <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
+ <YNspwB8ejUeRIVxt@krava> <YNtEcjYvSvk8uknO@krava> <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
+ <YNtNMSSZh3LTp2we@krava> <YNuL442y2yn5RRdc@krava>
+In-Reply-To: <YNuL442y2yn5RRdc@krava>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Wed, 30 Jun 2021 12:34:58 +0200
+Message-ID: <CA+i-1C1-7O5EYHZcDtgQaDVrRW+gEQ1WOtiNDZ19NKXUQ_ZLtw@mail.gmail.com>
+Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
+ bounds to registers in atomics w/ BPF_FETCH
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 4:28 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, 29 Jun 2021 at 23:09, Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Mon, Jun 28, 2021 at 11:34 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Tue, Jun 29, 2021 at 06:41:24PM +0200, Jiri Olsa wrote:
+> > On Tue, Jun 29, 2021 at 06:25:33PM +0200, Brendan Jackman wrote:
+> > > On Tue, 29 Jun 2021 at 18:04, Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > On Tue, Jun 29, 2021 at 04:10:12PM +0200, Jiri Olsa wrote:
+> > > > > On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
+
+> > > > > > atomics in .imm). Any idea if this test was ever passing on PowerPC?
+> > > > > >
+> > > > >
+> > > > > hum, I guess not.. will check
+> > > >
+> > > > nope, it locks up the same:
+> > >
+> > > Do you mean it locks up at commit 91c960b0056 too?
+
+Sorry I was being stupid here - the test didn't exist at this commit
+
+> > I tried this one:
+> >   37086bfdc737 bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH
 > >
-> > Have you considered alternatively to implement something like
-> > bpf_ringbuf_query() for BPF ringbuf that will allow to query various
-> > things about the timer (e.g., whether it is active or not, and, of
-> > course, remaining expiry time). That will be more general, easier to
-> > extend, and will cover this use case:
-> >
-> > long exp = bpf_timer_query(&t->timer, BPF_TIMER_EXPIRY);
-> > bpf_timer_start(&t->timer, new_callback, exp);
->
-> yes, but...
-> hrtimer_get_remaining + timer_start to that value is racy
-> and not accurate.
+> > I will check also 91c960b0056, but I think it's the new test issue
 
-yes, but even though we specify expiration in nanosecond precision, no
-one should expect that precision w.r.t. when callback is actually
-fired. So fetching current expiration, adding new one, and re-setting
-it shouldn't be a problem in practice, IMO.
+So yeah hard to say whether this was broken on PowerPC all along. How
+hard is it for me to get set up to reproduce the failure? Is there a
+rootfs I can download, and some instructions for running a PowerPC
+QEMU VM? If so if you can also share your config and I'll take a look.
 
-I just think the most common case is to set a timer once, so ideally
-usability is optimized for that (so taken to extreme it would be just
-bpf_timer_start without any bpf_timer_init, but we've already
-discussed this, no need to do that again here). Needing bpf_timer_init
-+ bpf_timer_set_callbcack + bpf_timer_start for a common case feels
-suboptimal usability-wise.
-
-There is also a new race with bpf_timer_set_callback +
-bpf_timer_start. Callback can fire inbetween those two operations, so
-we could get new callback at old expiration or old callback with new
-expiration. To do full update reliably, you'd need to explicitly
-bpf_timer_cancel() first, at which point separate
-bpf_timer_set_callback() doesn't help at all.
-
-> hrtimer_get_expires_ns + timer_start(MODE_ABS)
-> would be accurate, but that's an unnecessary complication.
-> To live replace old bpf prog with new one
-> bpf_for_each_map_elem() { bpf_timer_set_callback(new_prog); }
-> is much faster, since timers don't need to be dequeue, enqueue.
-> No need to worry about hrtimer machinery internal changes, etc.
-> bpf prog being replaced shouldn't be affecting the rest of the system.
-
-That's a good property, but if it was done as a
-bpf_timer_set_callback() in addition to current
-bpf_timer_start(callback_fn) it would still allow to have a simple
-typical use.
-
-Another usability consideration. With mandatory
-bpf_timer_set_callback(), bpf_timer_start() will need to return some
-error code if the callback wasn't set yet, right? I'm afraid that in
-practice it will be the situation similar to bpf_trace_printk() where
-people expect that it always succeeds and will never check the return
-code. It's obviously debuggable, but a friction point nevertheless.
-
->
-> > This will keep common timer scenarios to just two steps, init + start,
-> > but won't prevent more complicated ones. Things like extending
-> > expiration by one second relative that what was remaining will be
-> > possible as well.
->
-> Extending expiration would be more accurate with hrtimer_forward_now().
->
-> All of the above points are minor compared to the verifier advantage.
-> bpf_timer_set_callback() typically won't be called from the callback.
-> So verifier's insn_procssed will be drastically lower.
-> The combinatorial explosion of states even for this small
-> selftests/bpf/progs/timer.c is significant.
-> With bpf_timer_set_callback() is done outside of callback the verifier
-> behavior will be predictable.
-> To some degree patches 4-6 could have been delayed, but since the
-> the algo is understood and it's working, I'm going to keep them.
-> It's nice to have that flexibility, but the less pressure on the
-> verifier the better.
-
-I haven't had time to understand those new patches yet, sorry, so not
-sure where the state explosion is coming from. I'll get to it for real
-next week. But improving verifier internals can be done transparently,
-while changing/fixing BPF UAPI is much harder and more disruptive.
+If it's not as simple as that, I'll stare at the code for a while and
+see if anything jumps out.
