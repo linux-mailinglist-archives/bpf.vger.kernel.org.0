@@ -2,136 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893193B7ABB
-	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 01:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286773B7ADA
+	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 02:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235399AbhF2XoZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Jun 2021 19:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235295AbhF2XoZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Jun 2021 19:44:25 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8596BC061760
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 16:41:56 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id l24so481236edr.11
-        for <bpf@vger.kernel.org>; Tue, 29 Jun 2021 16:41:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GiAEL8RQlGKZ2BTwflqDz9oLqrOg69RXnUkKsnt0IhQ=;
-        b=JaiQlo+eI+tPLSWg5G5cVJ4PuJqQmzFx43A1sD93Ip4z+NFzm+hOyqGY29Z2l2oxKO
-         I1XhaoX7TYHHRPVC+tpdHXt4PBxADmkb99MkCiYQQL5e2ymwUTyxBq/ZYaQEsfXoD4wz
-         /oD+Z8iIQkehPAB3J+09pyVOR+xwY7vZXStxNHWcSqIO8HF3Fdo91NLMQ6/UCkHhABIV
-         YJm5LDOTRzb9V7ABk+FY9rpHhl61dwhpl7aVAGfUng2Os9/WwZ/mxOD2zXH5vBr6JNrx
-         c0mvWUXhBTHQvvurzLWBe/a7AYxC22II1n/bANL6uf42i2FbdR8iLVRbpqZnWrH/6FXu
-         towA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GiAEL8RQlGKZ2BTwflqDz9oLqrOg69RXnUkKsnt0IhQ=;
-        b=Y3iV/zUKLxDF66H70SwVefnIjxMMaqAwLNVXMlj7tpihqmzMmoFDHS2YUHf660Xk6c
-         CLdgBuEkkBMkEvAidwj/kq1b95MupiWfVeYdzY8Z+Nkj67Y/yVoiL7EXH9ffQBs5UF7q
-         OCGnocyFFR4MZ0qiSMTG25Wm4rV+Dwf7eZ6jzufVwaa5MfwgwXVGGuJNAGLkm9upe/P8
-         8d3DD6eglIxVRjaA8cHYWXilpTMJut1Gob3/MoDEKW6F81HOLze73Kpv5KmfsOLb9pFN
-         d1vCUl0bbsD2KVz8DHDQG6mDnHrc7TMpJHeG8GZ2hs/sgWt52Y6s7432nREBJR/jenkk
-         frJg==
-X-Gm-Message-State: AOAM531iUrho3Lt1PZmpTusDcjnp6+wOf5HNrzRnppzG4N2S75/zjZ74
-        zXnF+WLh/VA8WvUXvtNC1E3DfkSJGR8+WC2r3Bnp
-X-Google-Smtp-Source: ABdhPJwQ/gd9GPqFB99hR/6YrU2skzGwUo5FP2tRuuD6vMxdu+L3YFy6u6VR1o88l9wUkV/CNkrsgRS8baGzwFw5+oM=
-X-Received: by 2002:a05:6402:1d17:: with SMTP id dg23mr43360894edb.128.1625010114354;
- Tue, 29 Jun 2021 16:41:54 -0700 (PDT)
+        id S235240AbhF3ALc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Jun 2021 20:11:32 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53388 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233056AbhF3ALc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 29 Jun 2021 20:11:32 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 15TNsxkM004596;
+        Tue, 29 Jun 2021 17:08:59 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=Dy10X6Y8vz9MrUep4YN3/0B5iH8icmzGacIzc05NVyM=;
+ b=kToXRAI48DM0vpbKPWO23lDB0X3/KivBjnU4JfPhI7llvhaG739Gh1ITuWdqdlO/qmx4
+ a5vUk7k79COF0aSqsTaSYF1Kilqrv9kPyydw0V6lVnJQwYFEnnEVL5j5MIoYgG0CmRlV
+ 21cvEKUEk+kmvVe0aOWD7MiNJaaCFjO8dms= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 39g0fcn4t9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 29 Jun 2021 17:08:59 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 29 Jun 2021 17:08:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aT8F1J1fI48/RrCVfEZP2V84+z1n/xcgkveMy7zy1eECac9K+KOUhGBefL4bcjiGYIrUnOw28bDZE6LSDThGeFVdx5+YsEuWLxSWvXXLSimluuJRLBdEQcDAHjIVv7O0YJ18cg78idjIm/CC1Bi6zEoqraHqiO4xV4nuGC5UshKbNwGj3uXVX705LEdCsGdALwMsIPrQsDBiOk6tVw0PlMb12F8TbSAMMJwlXyX+yPx59HNiGAvE683rlpK0PC0xCE8BSB3uMFNxTvT9ueVokKZDpf95Rve5cp59mPTOQIOGkoFadWr1YACSgiaD82c4i3EPquUDQFFYrmgxSQ6dmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jr951Kt505wY2CgLV1h1JimKSQU7jN2dq3aIwpMRP6A=;
+ b=g0O/w5NcZr2p4S6OJaIbFiVIIgLSV8lrxs2vth7V5z+nysmCEsrwe7ussqP3RhaI5csd9FrwB8RGz7juG35/CAhX/G26NRchjKz1IqUXT9VifUqDPRozd+MshhjyluSUHDPUSIoLC2AOnwumMjPRuydw8sOaXGP89W+t1gYGESa2ZWCx7qh4VzHLysLE4XmwHrZdbg1ahlYggm23+pivADWBxGON256KoZhAgSn2YIZDIvoCLyQ/G0A3xxU/RVSVlE/nCsT+lP+v+4JHtVwRu1N3qJt5aarisxtxUd0Hr3u3TdABxYdgJEe/AMl6z/P6jBgGwS4NRPjYkLy4fdy47g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by SA1PR15MB4821.namprd15.prod.outlook.com (2603:10b6:806:1e0::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Wed, 30 Jun
+ 2021 00:08:56 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::803d:ce17:853f:6ba6]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::803d:ce17:853f:6ba6%7]) with mapi id 15.20.4264.026; Wed, 30 Jun 2021
+ 00:08:56 +0000
+Date:   Tue, 29 Jun 2021 17:08:54 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH bpf-next v2] bpf/devmap: convert remaining READ_ONCE() to
+ rcu_dereference_check()
+Message-ID: <20210630000854.xfzf4rloihsiw2nf@kafai-mbp.dhcp.thefacebook.com>
+References: <20210629093907.573598-1-toke@redhat.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210629093907.573598-1-toke@redhat.com>
+X-Originating-IP: [2620:10d:c090:400::5:75f3]
+X-ClientProxiedBy: BYAPR05CA0082.namprd05.prod.outlook.com
+ (2603:10b6:a03:e0::23) To SA1PR15MB5016.namprd15.prod.outlook.com
+ (2603:10b6:806:1db::19)
 MIME-Version: 1.0
-References: <0b926f59-464d-4b67-8f32-329cf9695cf7@t-8ch.de>
- <CAHC9VhSTb75NEPZRm+Tkngv=SW8ntmSpVCrXMHHHWc2qYNZqCA@mail.gmail.com>
- <696bf938-c9d2-4b18-9f53-b6ff27035a97@t-8ch.de> <CAHC9VhSrki+=724CSQbDdiiMnM8oXTmFP-XFnOmq28c03x1RQQ@mail.gmail.com>
- <efb74f33-6876-48ec-bb9c-87b2247bdedb@t-8ch.de> <CAHC9VhTKOZepgVwpc=rh65-ziMTvSvgtCjP6S9+SQ=YDqg-vsA@mail.gmail.com>
- <60ba7e11-36af-4b24-9132-c5214f32bdad@t-8ch.de>
-In-Reply-To: <60ba7e11-36af-4b24-9132-c5214f32bdad@t-8ch.de>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 29 Jun 2021 19:41:43 -0400
-Message-ID: <CAHC9VhSzqfnWUu=L2sW44S1y4TKR1j6=CV5rWRwsnHvZPdfrgA@mail.gmail.com>
-Subject: Re: AUDIT_ARCH_ and __NR_syscall constants for seccomp filters
-To:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc:     linux-audit@redhat.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:75f3) by BYAPR05CA0082.namprd05.prod.outlook.com (2603:10b6:a03:e0::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.8 via Frontend Transport; Wed, 30 Jun 2021 00:08:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6e408505-899a-4cf6-365e-08d93b5b40be
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4821:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB482166DE54661F3E119461B8D5019@SA1PR15MB4821.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Lpg/Weo5+PeS69/KdbqvhKZ5RAwA1GqK3Zj1yONmP5EtruwQw6T+PpaBsL67Ncuutlex5AK4SNGM+3MUF8+bejFRhUAnTwMAx5xj02JRddEb2bz2gr/GwtNcf0D98PlPASrBHy2z802Wk53Cy1y8xHOpurNCGnYPcQjOKGNT7pHxXCO03u2ZfzBKql/vDPdUKW5llaLResuK8lFYVqiT9/6eGqpS+LYG2GA6DPREILBSvGrTTY8NpZZ9Vhbdg06quUc7bhDnoIW3xeZfVcwcMr2aURFohObJdBtXJvbO3/Vf0JnL8xPfynWK63FZU7iGAuROBmodd5tIl15tCxhCCeDZkunpAiHg5ZWSe9PYyEcCQPJsxiPLW/KYeK4OMoDIph+gWNMJFcR3QBm+nlwubDKUYjtVEtVj2qXn78eGI1zz/KARXewgXvpcdNQwUr+dNtNNIWHm09I3FwejOFy1Gi6qbAAuvbb2vYOT81pgmOBHw/eOgjp9atlGWCYveJW1/io+RSXKh1J9UJQOm239RpfcDpqDjXWttc+QPfanoJ0pJJDar9TERltcu2TsWEVjO7TO7pWQu4XHoqmh/0gQEbF/NqF53Lxm9LDwtrJDse2/c+D/dTjh/Jo06GuM+vRavMLvTH/rlgC5IsK5aDOrtw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(376002)(136003)(366004)(478600001)(8936002)(66556008)(8676002)(4326008)(316002)(52116002)(38100700002)(7696005)(66476007)(66946007)(54906003)(6506007)(86362001)(1076003)(5660300002)(186003)(16526019)(6916009)(2906002)(55016002)(9686003)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?0RJfFBz77lLZKFHSzQjhtdszfiG26k+KX9F3NrdIbzexiECXlMHz2J3T3r?=
+ =?iso-8859-1?Q?fcEbwSWA1W+ASViAFvAwNexzcEn4A2oQc0IvV+oR8ua7OmI4Al4/Mk9EHO?=
+ =?iso-8859-1?Q?LnKTuyu5OD/apZZsn+GXpgST7DuRzCV/zInZEvkpGhifXBlHacK9aIlGrz?=
+ =?iso-8859-1?Q?+YujuVwJ4XNCpN/9lW8yIQMcj+8amJvYvIvrNiQEz7V0ryyGPLGxcSSPlN?=
+ =?iso-8859-1?Q?PbLHAv0Pnh6qWhvWizhDxG2sWhZzrAf4Lte/OJSXGU4G1dPOxLKraIUwVD?=
+ =?iso-8859-1?Q?wu6E4/ATwllONthHRSmWKS/9OFoFVoTVxESbowIvKw7FX9cv1HWtiTwxKy?=
+ =?iso-8859-1?Q?GJzZAB+FM2B4hD4kmuJj675F2yBqmucmgKC6TRq5EFVEVJEtW1SwzFJ80z?=
+ =?iso-8859-1?Q?YeLfqBeAlT1L/LEQvDmmduYKZkV9bRk9V+WcNCUlo/UsbVbQ3OpSAKhSdf?=
+ =?iso-8859-1?Q?R5z+F1ieEpNeUqapcviHNpQmqRtb6iWbovU1Z/syUcANTdToR5UtiRIgCN?=
+ =?iso-8859-1?Q?Dcpe4auk/5mU3y5JugKJq0y+0vlIs6PjFsdjFiRygcPP84LazWmK4g1s3o?=
+ =?iso-8859-1?Q?nK5bp3YYlxJwhFoKjthjQelvqOYhUC4RsASb5egHs9ZdNPF/LZyTTGlvTI?=
+ =?iso-8859-1?Q?SFIze/VhrIInBxvFAeV81oIwpF2sg570AGm03ED67mj1FANT81l0m87DZn?=
+ =?iso-8859-1?Q?S2GqITuJVbJPmf/iGv676b3RDAjxiHYqdyQLyvDoDI3WMs0AuLszBZuQcv?=
+ =?iso-8859-1?Q?Nd3IJZ0YD5BVHLUd0OGuGqwdYrjcPoOeEKIClMa0DpaqW9oG7KwmbJ6Kst?=
+ =?iso-8859-1?Q?HCsprRGGk3j70vL5mI9y5A2UCtg91In6Xicj/YwMYINwkeC/dzsxIGtRzs?=
+ =?iso-8859-1?Q?pWjOqG7zCMg1XSLZFzJkcdk9wM9om0RwQeofxMI0Gh36MT5tNyMoF6U4IG?=
+ =?iso-8859-1?Q?txzsu3p6Sf6wrebX3siSH5j+adQSOfPpRqhYE2JD5dfJ0tEspf/uBnyv7X?=
+ =?iso-8859-1?Q?1UH00TYeGQyjB5KAH7naK1QzbYuNrMC/KDHxldIxHFxRNDWsfiUwo8QwGW?=
+ =?iso-8859-1?Q?LD8XV0vL+pXabg0PXv8hwHfiF4sQtMhNYUA9yTgI0JftmEBUxGVg36bhP2?=
+ =?iso-8859-1?Q?OySwFOHFmk3e1pk8qK/C5UoWzltvyEMBithXxxyM49Xa+pTdgeh7SRTrGP?=
+ =?iso-8859-1?Q?nqSu1w1zRKzkZETELf4FjGeVPsjLwX0Zdmfsz1CVAtiy+zztASFHXdZ21y?=
+ =?iso-8859-1?Q?nsRR+FfbMct3QQjfA3T+lP2cy+igUY4tepownnTIHKXTzP3r6/6zzOi9XQ?=
+ =?iso-8859-1?Q?GFul4dbqFWmlX8FTkmurCgMzdAfHrIcn5QulN39/wt8ZVm1iM4pEgDYr0T?=
+ =?iso-8859-1?Q?0ZSQEWwqFfAbDpvTKghcSKr6/W1ZuUJA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e408505-899a-4cf6-365e-08d93b5b40be
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2021 00:08:56.5469
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Qo3tVqC8UNNCiuIkFckD4F61TVHwFJ9TBCYqy7BeHzdi1DTS9yOpzajvzUC1W22Y
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4821
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: d0O_yTnKe4jCgQXbwMM1eBkV1N3p9NIz
+X-Proofpoint-ORIG-GUID: d0O_yTnKe4jCgQXbwMM1eBkV1N3p9NIz
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-29_14:2021-06-29,2021-06-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=923 impostorscore=0 mlxscore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106290148
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 6:40 AM Thomas Wei=C3=9Fschuh <linux@weissschuh.net=
-> wrote:
->
-> On Mo, 2021-06-28T18:43-0400, Paul Moore wrote:
-> > On Mon, Jun 28, 2021 at 1:58 PM Thomas Wei=C3=9Fschuh <linux@weissschuh=
-.net> wrote:
-> > >
-> > > Hi again!
-> >
-> > !!! :)
->
-> Indeed, hi!
-
-'sup.
-
-> > > On Mo, 2021-06-28T13:34-0400, Paul Moore wrote:
-> > > > On Mon, Jun 28, 2021 at 1:13 PM Thomas Wei=C3=9Fschuh <linux@weisss=
-chuh.net> wrote:
-> > > > > On Mo, 2021-06-28T12:59-0400, Paul Moore wrote:
-> > > > > > On Mon, Jun 28, 2021 at 9:25 AM Thomas Wei=C3=9Fschuh <linux@we=
-issschuh.net> wrote:
-
-...
-
-> To get back to my other question:
->
-> Is there any chance a single given process can have multiple different AB=
-Is
-> active at the same time?
-> Without using special syscalls to switch between them.
->
-> Because if that is not possible I can skip the checks for the arch comple=
-tely
-> because the filter is constructed at compile time for the specific ABI
-> targetted and all funky syscalls are forbidden anyways.
-
-Is it common for a single executing process/executable to use multiple
-ABIs?  No, I don't think so, although maybe someone can provide an
-example where this happens normally.  However, don't ignore what might
-be possible from a malicious userspace. :)
-
-> PS: I know that this seems to be a lot of discussion for fairly little ga=
-in in
-> this specific case, but I'd like to use seccomp filters in the future mor=
-e and
-> am trying to find the most unobtrusive way to add them to applications fo=
-r each
-> given usecase.
-> (For any larger applications that will certainly include libseccomp, but =
-that
-> feels overkill for very specific, zero-runtime-dependency utilities)
-
-One thing to keep in mind is the maintainability of these tools you
-are creating.  For example, several years ago there was no such thing
-as direct socket syscalls on 32-bit x86, but now they exist alongside
-the legacy socketcall() syscall.  Do your custom seccomp filters
-handle that properly, for all combinations of kernel and libc?  What
-about your older tools that were written back when socketcall() was
-the only option?
-
-There is also the issue of x86_64 and x32, but that may be of little
-interest to you, and I hear that x32 may be deprecated in the future
-(woo hoo!).
-
-Regardless, there are lots of interesting corner cases with seccomp so
-I would urge you to do your homework before using custom filters in
-critical tools.
-
-Good luck!
-
---=20
-paul moore
-www.paul-moore.com
+On Tue, Jun 29, 2021 at 11:39:07AM +0200, Toke Høiland-Jørgensen wrote:
+> There were a couple of READ_ONCE()-invocations left-over by the devmap RCU
+> conversion. Convert these to rcu_dereference_check() as well to avoid
+> complaints from sparse.
+> 
+> v2:
+>  - Use rcu_dereference_check()
+Acked-by: Martin KaFai Lau <kafai@fb.com>
