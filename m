@@ -2,97 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0673B7FE1
-	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 11:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B110C3B809A
+	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 12:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233831AbhF3JX6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Jun 2021 05:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
+        id S234101AbhF3KKw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Jun 2021 06:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbhF3JX5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:23:57 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105A3C061766
-        for <bpf@vger.kernel.org>; Wed, 30 Jun 2021 02:21:29 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id w11so2409463ljh.0
-        for <bpf@vger.kernel.org>; Wed, 30 Jun 2021 02:21:28 -0700 (PDT)
+        with ESMTP id S234095AbhF3KKw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Jun 2021 06:10:52 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26204C061756;
+        Wed, 30 Jun 2021 03:08:23 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id i4so4101627ybe.2;
+        Wed, 30 Jun 2021 03:08:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=0bgZwa4+MDdMGBtJ8KpBWEqd1dAeuKVVmAXrR5/PinE=;
-        b=EEHK0RGTk3ViFVH1QaQoJEyzNlOU12OwZ/tm20dS8E9AHeybmvaFsZJLfahN5/wuaQ
-         2UTghkPXBmKqYnHrSAgNh4mY5GnsaWYuCE4+1RJsOG44GfhpmStOoPrigjU6EDSKTwzN
-         0uRXiQ3+tm5ndNZkJ7Zcu9MDZP+XO4o5VC6ys=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=315GgWjphcSz4gPu0C1m0uStExLIy8BjxmSHxJbMz+A=;
+        b=ZnDBa1cXuz8dugVH3GM27VJNdOaUpFHAt1ec71DlEUe9Fs5vHDkM5qK4wDJWt5dEap
+         tfS8FvGyEXeO4G//gvgDi63Y6FjfNrmutpus4X4YHBWTi16pQ3oplLhkqRFKMGke2beZ
+         EIiGrP9u2oQ0WtMwWycf3SemKo3/LbUCoyarSTdragiWtNo6Zj6CbArMe62GncasWQqi
+         Qpv0pE1YIOWnosj6Isn6xYYy6X3KNuDZvlOLSQc20rpRoKolqCZAasyntyewtKKsEd3Y
+         pCm2lZ4W0WE9BGCnmchzO5Qpr8q1Oly+VhP4YQUq95lHQxLWtt7BBqtXGPbFUr3EUsxc
+         xMLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=0bgZwa4+MDdMGBtJ8KpBWEqd1dAeuKVVmAXrR5/PinE=;
-        b=NU1/0cdYCwfuBCuWSL3pD7chOOuZh2HlCtJgqqTNBwFTywi3eKGZINy5vY/iJjFY4h
-         h9zZL8JxnmAtRJnbQli7ljYPAVlm0u5olCCfLoEXLnGTEc+xfWofeWyIdkCwJfnZh/FZ
-         tkcGLJUxeikrBrfZHzVlKL1KiMcrqwaeX7YlbmQ6F5mIWctBJ49Xfr8fNA7piOhC1cwm
-         4U76fFqor7EnAeqsf19AodjtJblf5QJao9THobElafgXXxddnT53m6FEEHqcH16ENwp/
-         MwdO2xsmvit88OyVy5WajsdmjxEmFS3z6TCEf0CPO7Kq08Y6OI1+xcW8hJosb/Y9wzSl
-         jX+g==
-X-Gm-Message-State: AOAM533prYRugiyXe5EHmgKSg+orZEjUrbYnTWxtQ4XgdaV+CBmB1w6a
-        WhnAwBI9OX/X1AOPaCDnpGIt7A==
-X-Google-Smtp-Source: ABdhPJyFBzQBHwTVCQ+0nwODrze7uFbsDwv47P6JzI3uSnqJBwH6MAcX1twT4v1dfepFo2H2jrOl7w==
-X-Received: by 2002:a2e:a78d:: with SMTP id c13mr7442575ljf.0.1625044887228;
-        Wed, 30 Jun 2021 02:21:27 -0700 (PDT)
-Received: from cloudflare.com (79.191.58.233.ipv4.supernova.orange.pl. [79.191.58.233])
-        by smtp.gmail.com with ESMTPSA id i130sm1866108lfd.304.2021.06.30.02.21.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 02:21:26 -0700 (PDT)
-References: <20210629062029.13684-1-xiyou.wangcong@gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: Re: [Patch bpf] skmsg: check sk_rcvbuf limit before queuing to
- ingress_skb
-In-reply-to: <20210629062029.13684-1-xiyou.wangcong@gmail.com>
-Date:   Wed, 30 Jun 2021 11:21:25 +0200
-Message-ID: <878s2rso6i.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=315GgWjphcSz4gPu0C1m0uStExLIy8BjxmSHxJbMz+A=;
+        b=V83wiMX7D6/7uM/cHO2yCBE5opJ5U4mKI0KV721eO1IdcgBcAYNrgtDgWCWWYz5Ywh
+         bj6gcQ2RUV1AEFaurry3GON7LIvDb7eSfnfUpGglOsTzFt5Q/9QXlv40NmLfVczmswNS
+         7aSsSskFWS9TMBKWnWq7/ebYsM/FvfL7PvzuBw7oGj6feP+HvTapB659/Q32Eqd+Sz0t
+         I4wghSYQzb4+uKQUtOJFMrEhdTl1fKsL2ltOK3jjgLnXsAzA9OgoxjzeyoIb1+sKCsOu
+         SOGP1al8NZAc41ZTxmbVQEJJOJmkA+6oCT5oqD+lqFsVQ+4+MdaSiUs3wvgYhMBi8lGg
+         NlUA==
+X-Gm-Message-State: AOAM532UPjhJS9rFvxAChM8VwuxZh8tV53DL1OsTdBhCIFu4QFOxWDlV
+        MJAK7afjW+lZAL9g7ZrZsp38W/Zzac6+P8J1v7o=
+X-Google-Smtp-Source: ABdhPJyP06aeOdXsv7HZlWAV/uAGgwFMb31hNT4oKTPcE3/6jCBK8xYLq6eH5qRRwa9FQ5luL0ArmsAZMBy1GN1Ctdo=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr44281547ybu.403.1625047701821;
+ Wed, 30 Jun 2021 03:08:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210624022518.57875-1-alexei.starovoitov@gmail.com>
+ <20210624022518.57875-2-alexei.starovoitov@gmail.com> <fd30895e-475f-c78a-d367-2abdf835c9ef@fb.com>
+ <20210629014607.fz5tkewb6n3u6pvr@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzaPPDEUvsx51mEpp_vJoXVwJQrLu5QnL4pSnL9YAPXevw@mail.gmail.com> <CAADnVQ+erEuHj_0cy16DBFSu_Otj-+60EZN__9W=vogeNQuBOg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+erEuHj_0cy16DBFSu_Otj-+60EZN__9W=vogeNQuBOg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 30 Jun 2021 13:08:08 +0300
+Message-ID: <CAEf4BzbpF7S2861ueTHC7u4avzFZU7vXkujNX+bLewd4hN5trw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/8] bpf: Introduce bpf timers.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 08:20 AM CEST, Cong Wang wrote:
+On Tue, Jun 29, 2021 at 4:28 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jun 28, 2021 at 11:34 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > Have you considered alternatively to implement something like
+> > bpf_ringbuf_query() for BPF ringbuf that will allow to query various
+> > things about the timer (e.g., whether it is active or not, and, of
+> > course, remaining expiry time). That will be more general, easier to
+> > extend, and will cover this use case:
+> >
+> > long exp = bpf_timer_query(&t->timer, BPF_TIMER_EXPIRY);
+> > bpf_timer_start(&t->timer, new_callback, exp);
+>
+> yes, but...
+> hrtimer_get_remaining + timer_start to that value is racy
+> and not accurate.
 
-[...]
+yes, but even though we specify expiration in nanosecond precision, no
+one should expect that precision w.r.t. when callback is actually
+fired. So fetching current expiration, adding new one, and re-setting
+it shouldn't be a problem in practice, IMO.
 
-> @@ -854,7 +854,8 @@ static int sk_psock_skb_redirect(struct sk_psock *from, struct sk_buff *skb)
->  		return -EIO;
->  	}
->  	spin_lock_bh(&psock_other->ingress_lock);
-> -	if (!sk_psock_test_state(psock_other, SK_PSOCK_TX_ENABLED)) {
-> +	if (!sk_psock_test_state(psock_other, SK_PSOCK_TX_ENABLED) ||
-> +	    atomic_read(&sk_other->sk_rmem_alloc) > sk_other->sk_rcvbuf) {
->  		spin_unlock_bh(&psock_other->ingress_lock);
->  		skb_bpf_redirect_clear(skb);
->  		sock_drop(from->sk, skb);
-> @@ -930,7 +931,8 @@ static int sk_psock_verdict_apply(struct sk_psock *psock, struct sk_buff *skb,
->  		}
->  		if (err < 0) {
->  			spin_lock_bh(&psock->ingress_lock);
-> -			if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)) {
-> +			if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED) &&
-> +			    atomic_read(&sk_other->sk_rmem_alloc) <= sk_other->sk_rcvbuf) {
->  				skb_queue_tail(&psock->ingress_skb, skb);
->  				schedule_work(&psock->work);
->  				err = 0;
+I just think the most common case is to set a timer once, so ideally
+usability is optimized for that (so taken to extreme it would be just
+bpf_timer_start without any bpf_timer_init, but we've already
+discussed this, no need to do that again here). Needing bpf_timer_init
++ bpf_timer_set_callbcack + bpf_timer_start for a common case feels
+suboptimal usability-wise.
 
-I belive access to sk_rcvbuf should be annotated with READ_ONCE (for
-KCSAN's sake) as we don't lock the egress socket. See 8265792bf887 [1]
-("net: silence KCSAN warnings around sk_add_backlog() calls") for
-guidance.
+There is also a new race with bpf_timer_set_callback +
+bpf_timer_start. Callback can fire inbetween those two operations, so
+we could get new callback at old expiration or old callback with new
+expiration. To do full update reliably, you'd need to explicitly
+bpf_timer_cancel() first, at which point separate
+bpf_timer_set_callback() doesn't help at all.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8265792bf8871acc2d00fd03883d830e2249d395
+> hrtimer_get_expires_ns + timer_start(MODE_ABS)
+> would be accurate, but that's an unnecessary complication.
+> To live replace old bpf prog with new one
+> bpf_for_each_map_elem() { bpf_timer_set_callback(new_prog); }
+> is much faster, since timers don't need to be dequeue, enqueue.
+> No need to worry about hrtimer machinery internal changes, etc.
+> bpf prog being replaced shouldn't be affecting the rest of the system.
+
+That's a good property, but if it was done as a
+bpf_timer_set_callback() in addition to current
+bpf_timer_start(callback_fn) it would still allow to have a simple
+typical use.
+
+Another usability consideration. With mandatory
+bpf_timer_set_callback(), bpf_timer_start() will need to return some
+error code if the callback wasn't set yet, right? I'm afraid that in
+practice it will be the situation similar to bpf_trace_printk() where
+people expect that it always succeeds and will never check the return
+code. It's obviously debuggable, but a friction point nevertheless.
+
+>
+> > This will keep common timer scenarios to just two steps, init + start,
+> > but won't prevent more complicated ones. Things like extending
+> > expiration by one second relative that what was remaining will be
+> > possible as well.
+>
+> Extending expiration would be more accurate with hrtimer_forward_now().
+>
+> All of the above points are minor compared to the verifier advantage.
+> bpf_timer_set_callback() typically won't be called from the callback.
+> So verifier's insn_procssed will be drastically lower.
+> The combinatorial explosion of states even for this small
+> selftests/bpf/progs/timer.c is significant.
+> With bpf_timer_set_callback() is done outside of callback the verifier
+> behavior will be predictable.
+> To some degree patches 4-6 could have been delayed, but since the
+> the algo is understood and it's working, I'm going to keep them.
+> It's nice to have that flexibility, but the less pressure on the
+> verifier the better.
+
+I haven't had time to understand those new patches yet, sorry, so not
+sure where the state explosion is coming from. I'll get to it for real
+next week. But improving verifier internals can be done transparently,
+while changing/fixing BPF UAPI is much harder and more disruptive.
