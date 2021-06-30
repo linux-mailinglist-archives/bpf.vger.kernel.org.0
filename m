@@ -2,218 +2,283 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131F83B87CF
-	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 19:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EE73B87EE
+	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 19:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232544AbhF3Rla (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Jun 2021 13:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232585AbhF3Rl3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Jun 2021 13:41:29 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFBDC0617AD;
-        Wed, 30 Jun 2021 10:39:00 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id h6so760497plf.11;
-        Wed, 30 Jun 2021 10:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OupyowH9BBI4uttcWt4YzocgT3IPmL5mRDSVQam94G0=;
-        b=iYVlVlr6GLpHKyoCyyERuWxb/BmIDC6b6aMbEIlrWqB5EgqM5r3XAoS4WQpOSvSHKt
-         hdPqbIVosI54c3Y994ZSiFRmJ4NP7t1gJYSHN6edQ0U94yj4YqL5Rmqa5zp6yNQQX3vJ
-         4uyCle6RbEFyhkCMlbz7i+DyreL0fi0b51BCQOBR2XMkpeh435y1XNx8Wi0GvVBaDpvV
-         z/McIqtUI3XJ1ecjo4G2aVhX6fE8QW8RzXLEW7xUk5IY+uUWCjMQldoM2sqPmkpcjc9T
-         6ils75uTCsTGLo0PeCA5hdJ9NyTFaJrFBYadvl0p5ZPnrASVCXgz0yDV6DcVHzpLzCuV
-         T7Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OupyowH9BBI4uttcWt4YzocgT3IPmL5mRDSVQam94G0=;
-        b=RQqp2X+b4HrkLlMNhr5m30SFAe1UU1wsCwWhJv5TGZWJxPk/r/YfAcDwtyEfYGPsPP
-         uYQQE6RGa1ArZ6tpqe4f8yzsazi/YvbqczR01bxh2+O+YoBEq1pIMwYhF1D//mEoMcUY
-         4ig+cygMVITr1h1pMMNJergAXA1C4/Lg77ig61Cj5YmHv8c61+pEPanXXn9AcoBhilTF
-         MGnicZLmmt9/5/bgkxLIK0GEHfOEwBar8vF4hVcz+gtIVpjs1yZjqkjr4W88mjGwdCzY
-         kCuhL8YyzjjqgU3v0Ma19UG4VhC+wGLAhw0APE7ujP9+eyrdZlyI9X62Ph51xjmpdw2/
-         QqOg==
-X-Gm-Message-State: AOAM53366K6lbnAjv53bDm3/yyYLF6mscIUhow4J5+rN0F1rDO/YPAr0
-        cUNQpOEGSAwNhF8lehUtWno=
-X-Google-Smtp-Source: ABdhPJybctRw7N1J3e4EImEsxoLZxDgrY7u/y2OtRzDGIRgl79ntJ1d0Y86v5qmK+k+3sm3QE3hGTQ==
-X-Received: by 2002:a17:902:b409:b029:114:afa6:7f4a with SMTP id x9-20020a170902b409b0290114afa67f4amr33616399plr.56.1625074739895;
-        Wed, 30 Jun 2021 10:38:59 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:a932])
-        by smtp.gmail.com with ESMTPSA id f6sm15805425pfj.28.2021.06.30.10.38.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 30 Jun 2021 10:38:59 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 10:38:57 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S232478AbhF3Rtv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Jun 2021 13:49:51 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51590 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229573AbhF3Rtv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 30 Jun 2021 13:49:51 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 15UHh82O027169;
+        Wed, 30 Jun 2021 10:47:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=hkc9gTerCLcCkq2koJVmvi4/rj+V4iDagtqqOnQJePw=;
+ b=S0hO85sqxsqSChpIb++ZCLRQr78Pm9LoqAie7x97h2NDu1gztNj6IZbTpYReQ7Iur10k
+ 35x3oIHd7iha8wmD4qQqCGDI0811YB5Q25Z3a56ZsrIVGryDAO+UtZpNGGOH3qL1avCW
+ PDKuAz25P1InZSRtqFSubzCvMA/6/75jcto= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 39gt4hsd4f-11
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 30 Jun 2021 10:47:06 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 10:47:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FPCORGfWR7j7a+gxQRNMHQmhizP8ibqU8gnpTdJ46l808EriekJLFtbtAZtmnHm4lQeJvcKjOfM6i2cGwZhTMJJJY9yTWciRlu3rQ2LmjsxKJvSrtKUtSe37Znbn9LGTpX35O++fscRfz+0eHCOVcpFqPiREOD99IpfqNYc3BaZqCM8GB9b0RjZYeTnUhwvQt1rdsH0BrVv70op+7xavt4chkrnxOz6de6hRO/YAM9CBuRExzPZQ1Cc8AAFpzj5BtGBiWoPN0VIZUnsmq5agW49p/cvq9uuNxWEScPAyeTtjfbXteOiiQ3Zvd/kKTSYnGz+dz/jgSaoV1HmEtf90ew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hkc9gTerCLcCkq2koJVmvi4/rj+V4iDagtqqOnQJePw=;
+ b=mn7pf23WKy130avYHjx+VZr0oiTgtfhgtbEnDCnJ0w8Vnv2iQWUktcthGKYrJAGGnAMVaGh74fM4k4MiJBc4eauSJVQDfMZtYf4IKDCrtOL6dBubB0SeaXh9HF1DhZ4hSAnbMMLjjybd9mAqtdmz9ZGG5HMCF5xhq1KkLeIxedePX3AyptYlVfVkCng63Sl4dUYo7UoABBKLaMMkwlljADVAYbQS5JCs+Hj/VveNoF/C34/Kgr+p+bfxnBVvqu02jXRocV/y9tCiTj8dRddKv0xCi+3PcCiphPDoBuBNcYdeAoVQ+gyDNoAlodarRFcP6kmErBLv4cipzd7z3Lchyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR15MB2479.namprd15.prod.outlook.com (2603:10b6:805:17::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Wed, 30 Jun
+ 2021 17:47:03 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4287.023; Wed, 30 Jun 2021
+ 17:47:03 +0000
+Subject: Re: [PATCH bpf-next 4/5] bpf: Add bpf_get_func_ip helper for kprobe
+ programs
+To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v3 bpf-next 1/8] bpf: Introduce bpf timers.
-Message-ID: <20210630173854.ofe2rvbghmkn4w6k@ast-mbp.dhcp.thefacebook.com>
-References: <20210624022518.57875-1-alexei.starovoitov@gmail.com>
- <20210624022518.57875-2-alexei.starovoitov@gmail.com>
- <fd30895e-475f-c78a-d367-2abdf835c9ef@fb.com>
- <20210629014607.fz5tkewb6n3u6pvr@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzaPPDEUvsx51mEpp_vJoXVwJQrLu5QnL4pSnL9YAPXevw@mail.gmail.com>
- <CAADnVQ+erEuHj_0cy16DBFSu_Otj-+60EZN__9W=vogeNQuBOg@mail.gmail.com>
- <CAEf4BzbpF7S2861ueTHC7u4avzFZU7vXkujNX+bLewd4hN5trw@mail.gmail.com>
+        Andrii Nakryiko <andriin@fb.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+References: <20210629192945.1071862-1-jolsa@kernel.org>
+ <20210629192945.1071862-5-jolsa@kernel.org>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <9286ce63-5cba-e16a-a7db-886548a04a64@fb.com>
+Date:   Wed, 30 Jun 2021 10:47:01 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <20210629192945.1071862-5-jolsa@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:a3d3]
+X-ClientProxiedBy: SJ0PR03CA0128.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::13) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbpF7S2861ueTHC7u4avzFZU7vXkujNX+bLewd4hN5trw@mail.gmail.com>
-User-Agent: NeoMutt/20180223
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::1398] (2620:10d:c090:400::5:a3d3) by SJ0PR03CA0128.namprd03.prod.outlook.com (2603:10b6:a03:33c::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Wed, 30 Jun 2021 17:47:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2485956a-11c8-4ed6-d454-08d93bef1217
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2479:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR15MB2479F30A4C5F23DED63EDE3CD3019@SN6PR15MB2479.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1148;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0xRxX664Ptje9nIs+Txetycxs4Bouedm/fm5Ocqk7aV3cxT6ML6KkzZYzrc8kzOOjIbmkCuf9qjImwCh7nWYHUj0gThU1uN32AoCOwd/AhitN0NYy7nNz+0R4nCL5wpvrOxbz77pJ3g8aS/zgTezwzzVMAftbOw5pShZc5AIjuBHOgn9zbr3jwYKGm7Olnbj457sCoBx/K9dJ+WaS0HSPIT1bv+xXmOLkSiQ+dcTpufrmx7wlPnLY2VwJAaBsza2xzy6oqCxorLF3zAfPKtyM8EJR3aiqR1rFAuxIQNNUaNz+O4iXq/Y3r8GrRHfc1p5VhL1zQihDpGG7DYmMFFQKxsq84+LzRoHYG22Nozx2GpE7VfwNqmTJVTav3dSs15BZp1zVtXVv4ahFPkCayVn7s0XMFEnD+9mrQOgYKyOwr63GHiDVUcx4AEyJNodqicFk6AOROO79gV/pbJ8gkIs8IBoORwtE2ryl1kEevLSAecoWXJoSZG5zO5THvVTKsB+r1aCyORyckUvUKPhDD8eZWHiBX1QlvVFDnHJFt+vbwxL81xzezLTEchb5GcW2o/+hDZ0g5jLD2Jky6fXQM2iFihGvFR3yB7WyTHg5PH9li8d9VIs7RdzhApnG6J3X7zyCkTJK9ZJ+PpGX8776wvJ0BcLN1FiuyaWARkZKpjVbIrzZy4+WnR6Pu4MKf5aKz3tXWLddBQybsC0XnKqVmqRSGim1LAE2lA7fsbAC0Fa8JQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39860400002)(346002)(366004)(2616005)(478600001)(36756003)(66556008)(8936002)(53546011)(66946007)(6486002)(2906002)(66476007)(110136005)(54906003)(83380400001)(52116002)(186003)(8676002)(16526019)(4326008)(6636002)(5660300002)(86362001)(31686004)(31696002)(38100700002)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZVRpcm1mQXNtS21qT2h1SC9USWROQkZkcEZoT1Fla1cxRVFGVExmbVNzTGxv?=
+ =?utf-8?B?S29EeVhCZDhQN21rb3Q1TSs0QmRPV3ZtL2hmVDVOdjQ3Mk42Z0Fjdk1nVmQ3?=
+ =?utf-8?B?TkR0VVRKZ2tyNjhRWmZqeEM5aWMwcjVnbmZiTDJaNGtLUmk2TVZMc1VmcWgx?=
+ =?utf-8?B?TXBNK3VwZ05qdnE1dlpSdW9naGxZaC83RFBsZElHUVNTeUhoZVpxc0dyTkNB?=
+ =?utf-8?B?Q2dMb1BDT1F5d2hUQ3AwaElJcVZ0d0FOcG1jaGFIVzYvSGdQRGVjSytncDd3?=
+ =?utf-8?B?SktteDJYN0duZjRDUWtMUnFqQXlWS2tscWtqSU1wNlVqQ0lKWi9PVTFhS2xL?=
+ =?utf-8?B?RTFsTXBhSXVwZVorWHo5Nlh4eGhZd0VCTUJmTGU2WDhUQ3FQT2V1djZoUU9Z?=
+ =?utf-8?B?bCtNVkFQUS9JajJmZzBySEpkclhDdmZORStDVElSeFZuNjlGMjBFN214bmNU?=
+ =?utf-8?B?eGd6NHhRTWNZWXF0azBoMzJTeitFRm5JbDFBMEtCUHBDSkRHQkJZYUQzakJI?=
+ =?utf-8?B?THhVUXd5eCtNOGh1cUVDS2YzWk9SQUJScGhmYmovNlJkMGRjejE5Z0JzQmtO?=
+ =?utf-8?B?ckdES1pOM0NLVHVvdXhZUEk1T3pFcm1GSlFieWFrbVZZd2I3N1l4OW5QaUhN?=
+ =?utf-8?B?aGdIcEFxOWx2YzhybmdlMVN6UnZVVWoyQ2xBcVFjVkE4dW8yVDMrRzZjbkpJ?=
+ =?utf-8?B?MWx0cUlMelJSMmpKWGRjQWZVbUJzR1YvL1FWVjNTVWpWVUp6aUVVZXlGY2M1?=
+ =?utf-8?B?dGkyaFNQVjBTNTlOc1kvbXAzWGdGNzdEZkZ5WUdDdnBmQk9UWFVUUitjZFpT?=
+ =?utf-8?B?eittOFc5OGFsWlo1MC9wSm9rYWxkN09NbkR4dG81bHRtd3d0a0xNQ2ZJN2FC?=
+ =?utf-8?B?TkQzUWZJUGZLbVN2S2xnZHRHbDNvWDNkY2dPRnZVMlhiVEVYNDZzVW12QVhU?=
+ =?utf-8?B?TzBQV2pJSUZHaXJvRG42SG51aUpXdDBYYmN2UVBGSlpaRG1KV2l3R09BOFhE?=
+ =?utf-8?B?bTJrMWZBRG9KY2JXMjcrYVdONVpoaGRCVXJ5UTgybzFWSjliWkVscDZGZmpz?=
+ =?utf-8?B?R3NLVXZKK2VTTVNYeU5JY3JpUHV2aGFkZ2ZqUnkrTnRmdjVNTTBvNHZESTBv?=
+ =?utf-8?B?b3JwL2dnbmtVeUpEMERhRHJxR3gwNXFia0twamdROEhKYXF6ZVcvMnA0STNO?=
+ =?utf-8?B?cVpKeHE5MnljL2loSGxCLzB4MUJTSUsyaisrNVoraFVXVWhKRFdMYmhNK3I1?=
+ =?utf-8?B?d1FSK1BiMXZMdDN6N1cvT0VjSUZEK1lyWVorSHlmbms3UHVIcTFKOEFxVnlH?=
+ =?utf-8?B?VlpmaDRkRklZN3JHeE5FOUpGQUpudzRZR2MxZ3IraTZzSGZOeGVnNmlId0s4?=
+ =?utf-8?B?MTYvNUZ0V2xFQ2VUTjZmUU11aW9FOXNwWUxzQUxIb0JSdWVTaUxOZGtMTU56?=
+ =?utf-8?B?d09nYmVvOXk0UFZsM09Ua2JNUDBWOXdtaXpyR3dBUnlKWTNrdXdpV01vT2ZC?=
+ =?utf-8?B?Q25Cb3NvQk9mRlhYdzFOOWltV200WXUwb3ZBMktNMEtRQVVZaUxDeDVKQ25E?=
+ =?utf-8?B?amVjem01cU14b0RYVmJCVC9MbW5xL1F5Tnc4azZpU0hydXpvdjJ6RE5taEN1?=
+ =?utf-8?B?M2pZTXNsL0VBTVJ2NndjZXY1ZjMrZGJQM2ZRVXBrY2I3MGJLWTA0UTlNMVph?=
+ =?utf-8?B?K3VHbDZRNFZoT243RFVpbjJLUTdVdjdzKy9NclhQbEpoUjI2U1BVK0ZIR0Ns?=
+ =?utf-8?B?SnJBem5hNk1PbTYrSUxFVmR6YmRFdWJWbUZoTXB5YmFUZWQ4b2xQdlZ3ckE0?=
+ =?utf-8?B?VTdTZS9CZGNTd29lUG5tUT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2485956a-11c8-4ed6-d454-08d93bef1217
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2021 17:47:03.8058
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VL6vEzcwPn7lljZkK+4htcEkVa21cRhXICuunTkw5eKDKeeILgx4dlxlFagA1V7I
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2479
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: 1BqWpWDE2_pdIHG9aIw3DXZ2TZMIQdxk
+X-Proofpoint-ORIG-GUID: 1BqWpWDE2_pdIHG9aIw3DXZ2TZMIQdxk
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-30_08:2021-06-30,2021-06-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 phishscore=0
+ malwarescore=0 impostorscore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
+ priorityscore=1501 suspectscore=0 adultscore=0 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106300097
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 01:08:08PM +0300, Andrii Nakryiko wrote:
-> On Tue, Jun 29, 2021 at 4:28 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Jun 28, 2021 at 11:34 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > Have you considered alternatively to implement something like
-> > > bpf_ringbuf_query() for BPF ringbuf that will allow to query various
-> > > things about the timer (e.g., whether it is active or not, and, of
-> > > course, remaining expiry time). That will be more general, easier to
-> > > extend, and will cover this use case:
-> > >
-> > > long exp = bpf_timer_query(&t->timer, BPF_TIMER_EXPIRY);
-> > > bpf_timer_start(&t->timer, new_callback, exp);
-> >
-> > yes, but...
-> > hrtimer_get_remaining + timer_start to that value is racy
-> > and not accurate.
+
+
+On 6/29/21 12:29 PM, Jiri Olsa wrote:
+> Adding bpf_get_func_ip helper for BPF_PROG_TYPE_KPROBE programs,
+> so it's now possible to call bpf_get_func_ip from both kprobe and
+> kretprobe programs.
 > 
-> yes, but even though we specify expiration in nanosecond precision, no
-> one should expect that precision w.r.t. when callback is actually
-> fired. So fetching current expiration, adding new one, and re-setting
-> it shouldn't be a problem in practice, IMO.
-
-Just because we're dealing with time? Sounds sloppy. I suspect RT
-folks take pride to make nsec precision as accurate as possible.
-
-> I just think the most common case is to set a timer once, so ideally
-> usability is optimized for that (so taken to extreme it would be just
-> bpf_timer_start without any bpf_timer_init, but we've already
-> discussed this, no need to do that again here). Needing bpf_timer_init
-> + bpf_timer_set_callbcack + bpf_timer_start for a common case feels
-> suboptimal usability-wise.
-
-init+set+start could be one helper. See more below.
-
+> Taking the caller's address from 'struct kprobe::addr', which is
+> defined for both kprobe and kretprobe.
 > 
-> There is also a new race with bpf_timer_set_callback +
-> bpf_timer_start. Callback can fire inbetween those two operations, so
-> we could get new callback at old expiration or old callback with new
-> expiration. 
-
-sure, but that's a different issue.
-When XDP prog is being replaced some packets might hit old one
-even though there is an atomic replace of the pointer to a prog.
-Two XDP progs and two timer callbacks running on different cpus
-is an inevitable situation.
-
-> To do full update reliably, you'd need to explicitly
-> bpf_timer_cancel() first, at which point separate
-> bpf_timer_set_callback() doesn't help at all.
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>   include/uapi/linux/bpf.h       |  2 +-
+>   kernel/bpf/verifier.c          |  2 ++
+>   kernel/trace/bpf_trace.c       | 14 ++++++++++++++
+>   kernel/trace/trace_kprobe.c    | 20 ++++++++++++++++++--
+>   kernel/trace/trace_probe.h     |  5 +++++
+>   tools/include/uapi/linux/bpf.h |  2 +-
+>   6 files changed, 41 insertions(+), 4 deletions(-)
 > 
-> > hrtimer_get_expires_ns + timer_start(MODE_ABS)
-> > would be accurate, but that's an unnecessary complication.
-> > To live replace old bpf prog with new one
-> > bpf_for_each_map_elem() { bpf_timer_set_callback(new_prog); }
-> > is much faster, since timers don't need to be dequeue, enqueue.
-> > No need to worry about hrtimer machinery internal changes, etc.
-> > bpf prog being replaced shouldn't be affecting the rest of the system.
-> 
-> That's a good property, but if it was done as a
-> bpf_timer_set_callback() in addition to current
-> bpf_timer_start(callback_fn) it would still allow to have a simple
-> typical use.
-> 
-> Another usability consideration. With mandatory
-> bpf_timer_set_callback(), bpf_timer_start() will need to return some
-> error code if the callback wasn't set yet, right? I'm afraid that in
-> practice it will be the situation similar to bpf_trace_printk() where
-> people expect that it always succeeds and will never check the return
-> code. It's obviously debuggable, but a friction point nevertheless.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 83e87ffdbb6e..4894f99a1993 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4783,7 +4783,7 @@ union bpf_attr {
+>    *
+>    * u64 bpf_get_func_ip(void *ctx)
+>    * 	Description
+> - * 		Get address of the traced function (for tracing programs).
+> + * 		Get address of the traced function (for tracing and kprobe programs).
+>    * 	Return
+>    * 		Address of the traced function.
+>    */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 701ff7384fa7..b66e0a7104f8 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5979,6 +5979,8 @@ static bool has_get_func_ip(struct bpf_verifier_env *env)
+>   			return -ENOTSUPP;
+>   		}
+>   		return 0;
+> +	} else if (type == BPF_PROG_TYPE_KPROBE) {
+> +		return 0;
+>   	}
+>   
+>   	verbose(env, "func %s#%d not supported for program type %d\n",
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 9edd3b1a00ad..1a5bddce9abd 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -961,6 +961,18 @@ static const struct bpf_func_proto bpf_get_func_ip_proto_tracing = {
+>   	.arg1_type	= ARG_PTR_TO_CTX,
+>   };
+>   
+> +BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
+> +{
+> +	return trace_current_kprobe_addr();
+> +}
+> +
+> +static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe = {
+> +	.func		= bpf_get_func_ip_kprobe,
+> +	.gpl_only	= true,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_CTX,
+> +};
+> +
+>   const struct bpf_func_proto *
+>   bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   {
+> @@ -1092,6 +1104,8 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   	case BPF_FUNC_override_return:
+>   		return &bpf_override_return_proto;
+>   #endif
+> +	case BPF_FUNC_get_func_ip:
+> +		return &bpf_get_func_ip_proto_kprobe;
+>   	default:
+>   		return bpf_tracing_func_proto(func_id, prog);
+>   	}
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index ea6178cb5e33..b07d5888db14 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -1570,6 +1570,18 @@ static int kretprobe_event_define_fields(struct trace_event_call *event_call)
+>   }
+>   
+>   #ifdef CONFIG_PERF_EVENTS
+> +/* Used by bpf get_func_ip helper */
+> +DEFINE_PER_CPU(u64, current_kprobe_addr) = 0;
 
-It sucks that you had this printk experience. We screwed up.
-It's definitely something to watch out for in the future.
-But this analogy doesn't apply here.
-bpf_timer_init/set_callback/start/cancel matches one to one to hrtimer api.
-In earlier patches the callback setting was part of 'init' and then later
-it was part of 'start'. imo that was 'reinvent the wheel' moment.
-Not sure why such simple and elegant solution as indepdent
-bpf_timer_set_callback wasn't obvious earlier.
-There are tons of examples of hrtimer usage in the kernel
-and it's safe to assume that bpf usage will be similar.
-Typically the kernel does init + set_callback once and then start/cancel a lot.
-Including doing 'start' from the callback.
-I found one driver where callback is being selected dynamically.
-So even without 'bpf prog live replace' use case there could be
-use cases for dynamic set_callback for bpf timers too.
-In all cases I've examined the 'start' is the most used function.
-Coupling it with setting callback looks quite wrong to me from api pov.
-Like there are examples in the kernel where 'start' is done in one .c file
-while callback is defined in a different .c file.
-Doing 'extern .. callback();' just to pass it into hrimter_start()
-would have been ugly. Same thing we can expect to happen with bpf timers.
+Didn't check other architectures. But this should work
+for x86 where if nested kprobe happens, the second
+kprobe will not call kprobe handlers.
 
-But if you really really want bpf_timer_start with callback I wouldn't
-mind to have:
-static inline int bpf_timer_start2(timer, callback, nsec)
-{
-  int err = bpf_timer_set_callback(timer, callback);
-  if (err)...
-  err = bpf_timer_start(timer, nsec, 0);
-  ...
-}
-to be defined in libbpf's bpf_helpers.h file.
-That could be a beginning of new way of defining helpers.
-But based on the kernel usage of the hrimter I suspect that this helper
-won't be used too much and people will stick to independent
-steps to set callback and start it.
+This essentially is to provide an additional parameter to
+bpf program. Andrii is developing a mechanism to
+save arbitrary data in *current task_struct*, which
+might be used here to save current_kprobe_addr, we can
+save one per cpu variable.
 
-There could be a helper that does init+set+start too.
-
-> >
-> > > This will keep common timer scenarios to just two steps, init + start,
-> > > but won't prevent more complicated ones. Things like extending
-> > > expiration by one second relative that what was remaining will be
-> > > possible as well.
-> >
-> > Extending expiration would be more accurate with hrtimer_forward_now().
-> >
-> > All of the above points are minor compared to the verifier advantage.
-> > bpf_timer_set_callback() typically won't be called from the callback.
-> > So verifier's insn_procssed will be drastically lower.
-> > The combinatorial explosion of states even for this small
-> > selftests/bpf/progs/timer.c is significant.
-> > With bpf_timer_set_callback() is done outside of callback the verifier
-> > behavior will be predictable.
-> > To some degree patches 4-6 could have been delayed, but since the
-> > the algo is understood and it's working, I'm going to keep them.
-> > It's nice to have that flexibility, but the less pressure on the
-> > verifier the better.
-> 
-> I haven't had time to understand those new patches yet, sorry, so not
-> sure where the state explosion is coming from. I'll get to it for real
-> next week. But improving verifier internals can be done transparently,
-> while changing/fixing BPF UAPI is much harder and more disruptive.
-
-It's not about the inadequate implementation of the async callback
-verification in patches 4-6 (as you're hinting).
-It's path aware property of the verifier that requires more passes
-when callback is set from callback. Even with brand new verifier 2.0
-the more passes issue will remain the same (unless it's not path
-aware and can merge different branches and states).
+> +
+> +u64 trace_current_kprobe_addr(void)
+> +{
+> +	return *this_cpu_ptr(&current_kprobe_addr);
+> +}
+> +
+> +static void trace_current_kprobe_set(struct trace_kprobe *tk)
+> +{
+> +	__this_cpu_write(current_kprobe_addr, (u64) tk->rp.kp.addr);
+> +}
+>   
+>   /* Kprobe profile handler */
+>   static int
+> @@ -1585,6 +1597,7 @@ kprobe_perf_func(struct trace_kprobe *tk, struct pt_regs *regs)
+>   		unsigned long orig_ip = instruction_pointer(regs);
+>   		int ret;
+>   
+> +		trace_current_kprobe_set(tk);
+>   		ret = trace_call_bpf(call, regs);
+>   
+>   		/*
+> @@ -1631,8 +1644,11 @@ kretprobe_perf_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
+>   	int size, __size, dsize;
+>   	int rctx;
+>   
+> -	if (bpf_prog_array_valid(call) && !trace_call_bpf(call, regs))
+> -		return;
+> +	if (bpf_prog_array_valid(call)) {
+> +		trace_current_kprobe_set(tk);
+> +		if (!trace_call_bpf(call, regs))
+> +			return;
+> +	}
+>   
+>   	head = this_cpu_ptr(call->perf_events);
+>   	if (hlist_empty(head))
+[...]
