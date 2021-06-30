@@ -2,56 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED733B7D04
-	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 07:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60643B7FCE
+	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 11:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhF3Fhj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Jun 2021 01:37:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229510AbhF3Fhh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Jun 2021 01:37:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51A6661C65;
-        Wed, 30 Jun 2021 05:35:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1625031309;
-        bh=VBctbRohZEP0Od52mE6m6uhQBMkSeCuEYjH5LmodY+o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YuByqsHZKmnU5z0p9CS/OZ2VxZTBlFj6nDRgsR0M/C/jASN/WsMuo1tUBNfa9E8wy
-         9n6p7e8QiGl9O+PLSp3+P35ZAeGl7VtUAH+PdGoDhQHggV7hNgzPc/k1xq4HNrTWQm
-         99jnBEBFO2atCnByL0MqZNnaH/TD/wIzayIaT4d0=
-Date:   Wed, 30 Jun 2021 07:35:05 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Rumen Telbizov <rumen.telbizov@menlosecurity.com>
-Cc:     bpf@vger.kernel.org, dsahern@gmail.com,
-        David Ahern <dsahern@kernel.org>
-Subject: Re: [PATCH 1/3] bpf: Add support for mark with bpf_fib_lookup
-Message-ID: <YNwCiZpNoKaL6fa1@kroah.com>
-References: <20210629185537.78008-1-rumen.telbizov@menlosecurity.com>
- <20210629185537.78008-2-rumen.telbizov@menlosecurity.com>
+        id S233855AbhF3JU6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Jun 2021 05:20:58 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13045 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233749AbhF3JU6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Jun 2021 05:20:58 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GFG093FxxzYrcj;
+        Wed, 30 Jun 2021 17:15:21 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 17:18:27 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 30 Jun 2021 17:18:27 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linuxarm@openeuler.org>, <yisen.zhuang@huawei.com>,
+        <salil.mehta@huawei.com>, <thomas.petazzoni@bootlin.com>,
+        <mw@semihalf.com>, <linux@armlinux.org.uk>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
+        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
+        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
+        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH net-next RFC 0/2] add elevated refcnt support for page pool
+Date:   Wed, 30 Jun 2021 17:17:54 +0800
+Message-ID: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210629185537.78008-2-rumen.telbizov@menlosecurity.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 11:55:35AM -0700, Rumen Telbizov wrote:
-> From: David Ahern <dsahern@kernel.org>
-> 
-> Add support for policy routing via marks to the bpf_fib_lookup
-> helper. The bpf_fib_lookup struct is constrained to 64B for
-> performance. Since the smac and dmac entries are used only for
-> output, put them in an anonymous struct and then add a union
-> around a second struct that contains the mark to use in the FIB
-> lookup.
-> 
-> Signed-off-by: Rumen Telbizov <rumen.telbizov@menlosecurity.com>
-> ---
+This patchset adds elevated refcnt support for page pool
+and enable skb's page frag recycling based on page pool
+in hns3 drvier.
 
-Any reason that David didn't also sign off on this?
+Yunsheng Lin (2):
+  page_pool: add page recycling support based on elevated refcnt
+  net: hns3: support skb's frag page recycling based on page pool
 
-thanks,
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
+ drivers/net/ethernet/marvell/mvneta.c              |   6 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/skbuff.h                             |   4 +-
+ include/net/page_pool.h                            |  30 ++-
+ net/core/page_pool.c                               | 215 +++++++++++++++++----
+ 9 files changed, 285 insertions(+), 57 deletions(-)
 
-greg k-h
+-- 
+2.7.4
+
