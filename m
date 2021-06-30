@@ -2,160 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D772A3B885F
-	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 20:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1F03B8939
+	for <lists+bpf@lfdr.de>; Wed, 30 Jun 2021 21:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232706AbhF3S2E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Jun 2021 14:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        id S233675AbhF3Tne (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Jun 2021 15:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232694AbhF3S2E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Jun 2021 14:28:04 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FA2C061756;
-        Wed, 30 Jun 2021 11:25:33 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id b5so1985656plg.2;
-        Wed, 30 Jun 2021 11:25:33 -0700 (PDT)
+        with ESMTP id S229700AbhF3Tnd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Jun 2021 15:43:33 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2E1C061756;
+        Wed, 30 Jun 2021 12:41:04 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id g5so994727iox.11;
+        Wed, 30 Jun 2021 12:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RvDcmONdyX10LsCogZh526Ob3MOiNIiyAoMdUbjNYVY=;
-        b=IhbSgoSqRJnLgBW0+P9Yus/OfADtejJOvJioaPlYT8TnMYVhk6wKXe0dviexFIDz2h
-         3SL1aYsFBV3h4QiJ/oV2RbIQEnScB7ta/T4Agx85ImkxggVv7u/rLnHbEpUFH4usl1R0
-         D8tEgceKFC1b+hFoD6roduWWlKQX0JEfEflfQ/vvOqZhxvD9mg9c7ZTNq+fNg6/vw9gU
-         ll0k9nWkbHckQFPWm9tV0cD+qzn1TDfJdp3RrdqU8mZw6Otv3fckMn/7irfUOVZvGRlV
-         1r65NAenCEvmS1A94qFcKBIPBpNqD6WioQSyKJTJtsmZi/BqxuT4T16UZ8y6O12j6vUz
-         s40A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lkJQOGiwT+DGB6+eIh/APUPWuOaqVm+NgY9lIiOSbgc=;
+        b=laziTJ5wKMko/fU+k9K3zBUSgTXZo2afuHDsgRIpmjOkyH5r+C4m7WzIzeesjfSBk/
+         PWF7KbkVuUnhiSWG9Lp23mLjAAgvvelJBHWWEOWrKX0mmfbjy1ptkkJKyxipOoDND9+G
+         HvWYdbabW8uKZNqjwZQgI+NhYHXMqIO5k5+9udEX5v2mchnS4sUm23AksOtv6nTAEAaU
+         cO5icYgpyEXbVijw//VJt0YOFKy7KveH00L3HBHUlHXEUKqkQ7cQroAmgdcGMNGmEf/J
+         ZPZO93MSDVd0ZYcm0YQRXl0t/CDclO4936LfNEyYcc9QGQ5p/OQu8OR/Edt9w8GOnRCz
+         dEAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RvDcmONdyX10LsCogZh526Ob3MOiNIiyAoMdUbjNYVY=;
-        b=TVBT+APJDKHYQurzxvhoC4AYvjwy4QyNvfTUUI3uuItUZBvYbhYevjBFXwYHx4oyL2
-         Fd7udTThbtcqlYHVn+xuzZgv79sz7CxppdvMkojDzWijoL84B8oaIVJMKTbTaAn9nsP6
-         m5+wWALA/97DHmQab4FJK6J5bgHpEPr0ZTzn2d6/NyoYpsaDp8VFdMYPfjIvPF6f6XuQ
-         oSoKu/s5c0z9bA2SDpti/L348493uU8bN1FfbitOoYhRnPIxthnTPCbMhgv33pzLZ1gX
-         ETaur86n/QvVKyk3raWLuF28WpQIzBM+/ly+zuGgeXAso/ZQjnfFrVGAOEkkt113ztZw
-         1Omg==
-X-Gm-Message-State: AOAM531Oe+Qz1D89r0HF7uHpfLQcf3H0PbTp7fAqrkSGM4iVOy4MebqB
-        7PiVwiU75o3brhhkXuHj6TY=
-X-Google-Smtp-Source: ABdhPJyTWwng5BNPKZMORDtd68eMkisMZMmSgfZ9BQ8f9UMeX7EpBKiEVBUHIZRyaJOGP40V3igW9g==
-X-Received: by 2002:a17:90a:8403:: with SMTP id j3mr41618840pjn.212.1625077533070;
-        Wed, 30 Jun 2021 11:25:33 -0700 (PDT)
-Received: from [192.168.93.106] (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
-        by smtp.gmail.com with ESMTPSA id c24sm20423489pfn.86.2021.06.30.11.25.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Jun 2021 11:25:32 -0700 (PDT)
-Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in
- tcp_init_transfer.
-To:     Neal Cardwell <ncardwell@google.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
-        Yuchung Cheng <ycheng@google.com>
-References: <20210628144908.881499-1-phind.uet@gmail.com>
- <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
- <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com>
- <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
- <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com>
- <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
- <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com>
- <CANn89iJbquZ=tVBRg7JNR8pB106UY4Xvi7zkPVn0Uov9sj8akg@mail.gmail.com>
- <1786BBEE-9C7B-45B2-B451-F535ABB804EF@gmail.com>
- <CANn89iK4Qwf0ezWac3Cn1xWN_Hw+-QL-+H8YmDm4cZP=FH+MTQ@mail.gmail.com>
- <CADVnQyk9maCc+tJ4-b6kufcBES9+Y2KpHPZadXssoVWX=Xr1Vw@mail.gmail.com>
-From:   Phi Nguyen <phind.uet@gmail.com>
-Message-ID: <30527e25-dd66-da7a-7344-494b4539abf7@gmail.com>
-Date:   Thu, 1 Jul 2021 02:25:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=lkJQOGiwT+DGB6+eIh/APUPWuOaqVm+NgY9lIiOSbgc=;
+        b=nP8f+Mjl9gW0XiZTdp/HRofkWC6hzHpOO95R2qnHeFlzL/8jewmINh+wLT59snR3bX
+         8xDbVB1XM7HSF+t2HwHukZW5O1DthZ2gIPHDYuI+cKwYq4qvJMDq+U8lIBCNgXtggUbA
+         jyhEzH7lkuvWX5DOHkEAAsLTFitBOGwuJkIzIybVjQQIFYYWzB0bHmuscuUiPx3c2dmM
+         ag5pRNadfQ3p2ytYHhOD7lh+4ii2mN1ZWRs1r0fFyAA0B9oGR7RAOirko1XhecwppHAN
+         oFvTse/c4z7+UvolKTxde3DlWxCYSiLMFtXGvXeggx/rKYMQpGo3rYvwoIrAZar0gx62
+         zaGQ==
+X-Gm-Message-State: AOAM5334apkqHIekOUcIXfAWpRCpYTCWh5GYKW/Qi+wpX24LvckP0H+B
+        7C+TFfwRzInRgbK7LEGHblg=
+X-Google-Smtp-Source: ABdhPJy71U8CLIJNbFkD+02PQpqpZSqvJE1enxegE3+CIiiQJqF0AiJ+90F00npWoIJUWFLViq/aJw==
+X-Received: by 2002:a05:6638:110e:: with SMTP id n14mr10250052jal.4.1625082064179;
+        Wed, 30 Jun 2021 12:41:04 -0700 (PDT)
+Received: from john-XPS-13-9370.lan ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id p9sm10977680iod.48.2021.06.30.12.40.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 12:41:03 -0700 (PDT)
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     maciej.fijalkowski@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        andriin@fb.com
+Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH bpf 0/2] bpf, fix for subprogs with tailcalls
+Date:   Wed, 30 Jun 2021 12:40:47 -0700
+Message-Id: <20210630194049.46453-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CADVnQyk9maCc+tJ4-b6kufcBES9+Y2KpHPZadXssoVWX=Xr1Vw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/29/2021 11:59 PM, Neal Cardwell wrote:
->    On Tue, Jun 29, 2021 at 8:58 AM Eric Dumazet <edumazet@google.com> wrote:
->  From my perspective, the bug was introduced when that 8919a9b31eb4
-> commit introduced icsk_ca_initialized and set icsk_ca_initialized to 0
-> in tcp_init_transfer(), missing the possibility that a process could
-> call setsockopt(TCP_CONGESTION)  in state TCP_SYN_SENT (i.e. after the
-> connect() or TFO open sendmsg()), which would call
-> tcp_init_congestion_control(). The 8919a9b31eb4 commit did not intend
-> to reset any initialization that the user had already explicitly made;
-> it just missed the possibility of that particular sequence (which
-> syzkaller managed to find!).
-> 
->> Although I am not sure what happens at accept() time when the listener
->> socket is cloned.
-> 
-> It seems that for listener sockets, they cannot initialize their CC
-> module state, because there is no way for them to reach
-> tcp_init_congestion_control(), since:
-> 
-> (a) tcp_set_congestion_control() -> tcp_reinit_congestion_control()
-> will not call tcp_init_congestion_control() on a socket in CLOSE or
-> LISTEN
-> 
-> (b) tcp_init_transfer() -> tcp_init_congestion_control() can only
-> happen for established sockets and successful TFO SYN_RECV sockets
-Is this what was mentioned in this commit ce69e563b325(tcp: make sure 
-listeners don't initialize congestion-control state)
+This fixes a use-after-free when using subprogs and tailcalls and adds
+a test case to trigger the use-after-free.
 
-> --
-> [PATCH] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
-> 
-> This commit fixes a bug (found by syzkaller) that could cause spurious
-> double-initializations for congestion control modules, which could cause memory
-> leaks orother problems for congestion control modules (like CDG) that allocate
-> memory in their init functions.
-> 
-> The buggy scenario constructed by syzkaller was something like:
-> 
-> (1) create a TCP socket
-> (2) initiate a TFO connect via sendto()
-> (3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
->      which calls:
->         tcp_set_congestion_control() ->
->           tcp_reinit_congestion_control() ->
->             tcp_init_congestion_control()
-> (4) receive ACK, connection is established, call tcp_init_transfer(),
->      set icsk_ca_initialized=0 (without first calling cc->release()),
->      call tcp_init_congestion_control() again.
-> 
-> Note that in this sequence tcp_init_congestion_control() is called twice
-> without a cc->release() call in between. Thus, for CC modules that allocate
-> memory in their init() function, e.g, CDG, a memory leak may occur. The
-> syzkaller tool managed to find a reproducer that triggered such a leak in CDG.
-> 
-> The bug was introduced when that 8919a9b31eb4 commit introduced
-> icsk_ca_initialized and set icsk_ca_initialized to 0 in tcp_init_transfer(),
-> missing the possibility for a sequence like the one above, where a process
-> could call setsockopt(TCP_CONGESTION) in state TCP_SYN_SENT (i.e. after the
-> connect() or TFO open sendmsg()), which would call
-> tcp_init_congestion_control(). The 8919a9b31eb4 commit did not intend to reset
-> any initialization that the user had already explicitly made; it just missed
-> the possibility of that particular sequence (which syzkaller managed to find).
+John Fastabend (2):
+  bpf: track subprog poke correctly, fix use-after-free
+  bpf: selftest to verify mixing bpf2bpf calls and tailcalls with insn
+    patch
 
-Could I use your commit message when I resubmit patch?
+ arch/x86/net/bpf_jit_comp.c                   |  4 ++
+ include/linux/bpf.h                           |  1 +
+ kernel/bpf/core.c                             |  7 +++-
+ kernel/bpf/verifier.c                         | 39 ++++---------------
+ .../selftests/bpf/prog_tests/tailcalls.c      | 36 ++++++++++++-----
+ .../selftests/bpf/progs/tailcall_bpf2bpf4.c   | 21 +++++++++-
+ 6 files changed, 64 insertions(+), 44 deletions(-)
 
-Thank you.
+-- 
+2.25.1
 
