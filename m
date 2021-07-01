@@ -2,121 +2,444 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E21A3B8EF1
-	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 10:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A77E3B8F9D
+	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 11:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235303AbhGAIkw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Jul 2021 04:40:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36693 "EHLO
+        id S235609AbhGAJSl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Jul 2021 05:18:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45707 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235088AbhGAIkv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 1 Jul 2021 04:40:51 -0400
+        by vger.kernel.org with ESMTP id S235497AbhGAJSl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 1 Jul 2021 05:18:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625128701;
+        s=mimecast20190719; t=1625130970;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RdW9ELkyVqCWFo2sv1vnTomLn4doa9a6zTYTvItJQns=;
-        b=aBixhq8w08GXYlog/ZprhmuCIpmPI0dXuHrZEg7R+2R6/GzS7/tzQzSyrONqSqZQRQQ2R9
-        wSc870/jRICVUpySIvVV4Uxb4cCftGKTl8mPApyzj64nzUC6muPsx0rU0qck7Vbyq1Hvcw
-        7hgxZUXM+7/1Vgz1DKcNTATcYdFzlII=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-n0YxuQKhPYa1-pSKzp8ijw-1; Thu, 01 Jul 2021 04:38:20 -0400
-X-MC-Unique: n0YxuQKhPYa1-pSKzp8ijw-1
-Received: by mail-ej1-f69.google.com with SMTP id c13-20020a17090603cdb029049617c6be8eso1818266eja.19
-        for <bpf@vger.kernel.org>; Thu, 01 Jul 2021 01:38:19 -0700 (PDT)
+        bh=RwAN9Fk3DO6mr4H8sxlc4mxUEwHN0v2CqyZHwyiaUkY=;
+        b=UTGQXrX/lRWkmcuRvQNnsn7aLAwm4DTTV6/W0Rlv6YUSpBHocdiEg/YvhGcsOOn/sx6erL
+        VO0MC1ENzZ5rlzehLTAMtOyqLNLqDoFcci4krloHuxFqs+XOd500xSSE2kKPbjO6Z1jMnD
+        w9hHWPkiE50n93O/h61n5wchVTb4UYk=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-432-rdTEZNNuN5OVGiYTCDFmNA-1; Thu, 01 Jul 2021 05:16:09 -0400
+X-MC-Unique: rdTEZNNuN5OVGiYTCDFmNA-1
+Received: by mail-ed1-f71.google.com with SMTP id p19-20020aa7c4d30000b0290394bdda6d9cso2701503edr.21
+        for <bpf@vger.kernel.org>; Thu, 01 Jul 2021 02:16:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RdW9ELkyVqCWFo2sv1vnTomLn4doa9a6zTYTvItJQns=;
-        b=Pp4cBTrlr9maYo5RWQLQvc3XD2LLBjPrWd4HOMZ/sMJKxL7CQqLTiKMX5umQvITchQ
-         wuTNvbV/5wmFWddxstz8mD4YU+gsovHtybwAvwQMvmKJSfExx3BKp62hBBWb0U7gBcRJ
-         v30Jw+wbK80IZNaqWEIxlAjDZ58JXjeuusNV7c2s/a59oHZPZAe9sYo2DgLDU6nsnlNc
-         cu1ZbmWO02KOuxAQFaAtgB8aA20yQo+jaeyID99+U9j9FQPipCpVx/gZyq9jmHfJg5/F
-         IrmxONpsfpWSdbHrZYeMHfL9PCFLnqo0NvbPWsndxGwFnBwSeYLurQTFtpvJk9lIrxnM
-         cfMg==
-X-Gm-Message-State: AOAM533XOqGNQx98NWL/ikBTuLEl9z0u0AN/M3ZXfmOwwb9Gi8EdH2I4
-        dZ/rg3BtWekrV4oLFTMjd3WDRYQ81P8O/ZRtIG8dM19nrdhqPZqroY5CSvvPZu6HnMqK7fWvrNj
-        qxFn3pnLRC3ae
-X-Received: by 2002:a05:6402:358:: with SMTP id r24mr52923925edw.69.1625128699010;
-        Thu, 01 Jul 2021 01:38:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyE0E4bB0+/WsTGDPlKeZhSomz9jqMJL2UQrPuxlMBN22o0n4P+alKA28qRrT562EECFvEodA==
-X-Received: by 2002:a05:6402:358:: with SMTP id r24mr52923905edw.69.1625128698900;
-        Thu, 01 Jul 2021 01:38:18 -0700 (PDT)
-Received: from krava ([185.153.78.55])
-        by smtp.gmail.com with ESMTPSA id n2sm13748418edi.32.2021.07.01.01.38.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 01:38:18 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 10:38:14 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=RwAN9Fk3DO6mr4H8sxlc4mxUEwHN0v2CqyZHwyiaUkY=;
+        b=FLRuh4bhjqqpBPuU8lWUHiOY+WtMOP4rrX42026NBc2xAznyJeqgYRr/y51UocT1MI
+         /W8rnAkPBQpjDZ5WDQ/ZAaZiYmICtT13ftXcRoycwglpbLUVw2SHAjvqCs+loRIToz61
+         L+41uFvz4cNB/xlikkwrOnBKQ1hPkzNVhsr+T2hU3OX/4i38gSoYjUb9+dy0z0J8OaPj
+         mrozfQxkWhoPXX3I9UhoQM6o9BKaKD1tOFz9PzoHD2QWWTuQZalFnHAHviSS3W8xSje2
+         pZKV/NS2zYQNUp7oXd9xUfR6PAd9NTvc8XfpDU59fp0rtkjYgyCnZ8AwoHTAW9uWzsD3
+         Eabw==
+X-Gm-Message-State: AOAM530SVRrAnX8Un/e83kVkEF695ui8zTx7MqxxMtD/8RftLMfXlPXP
+        Gcpg1FNQmATRtlOTCGPOFxoGcmgWUU4rF93CseryrcuYtBODNnWYIzJKzAuYAj0ku0h30TeUZlE
+        gTGGiVAj4Z4JF
+X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr48181862edz.371.1625130968217;
+        Thu, 01 Jul 2021 02:16:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzgR32zc39DJneORe2We+YRgJH1E6If1sCkciWxK1AL51Tu6QMiCgta8EnCqYqAGtiS9nEB6A==
+X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr48181836edz.371.1625130967948;
+        Thu, 01 Jul 2021 02:16:07 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id b17sm4547546edd.58.2021.07.01.02.16.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jul 2021 02:16:06 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [PATCH net-next v5 3/5] bpf: cpumap: implement generic cpumap
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, netdev@vger.kernel.org
+Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH bpf-next 4/5] bpf: Add bpf_get_func_ip helper for kprobe
- programs
-Message-ID: <YN1+9osJ4NhqZK/j@krava>
-References: <20210629192945.1071862-1-jolsa@kernel.org>
- <20210629192945.1071862-5-jolsa@kernel.org>
- <9286ce63-5cba-e16a-a7db-886548a04a64@fb.com>
- <20210701085854.0f2aeafc0fce11f3ca9d52a8@kernel.org>
+        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org,
+        Eric Leblond <eric@regit.org>
+References: <20210701002759.381983-1-memxor@gmail.com>
+ <20210701002759.381983-4-memxor@gmail.com>
+Message-ID: <3b80be91-41f2-5c5d-4e93-e6290812f756@redhat.com>
+Date:   Thu, 1 Jul 2021 11:16:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701085854.0f2aeafc0fce11f3ca9d52a8@kernel.org>
+In-Reply-To: <20210701002759.381983-4-memxor@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 08:58:54AM +0900, Masami Hiramatsu wrote:
+(Cc. Eric Leblond as he needed this for Suricata.)
 
-SNIP
+On 01/07/2021 02.27, Kumar Kartikeya Dwivedi wrote:
+> This change implements CPUMAP redirect support for generic XDP programs.
+> The idea is to reuse the cpu map entry's queue that is used to push
+> native xdp frames for redirecting skb to a different CPU. This will
+> match native XDP behavior (in that RPS is invoked again for packet
+> reinjected into networking stack).
+>
+> To be able to determine whether the incoming skb is from the driver or
+> cpumap, we reuse skb->redirected bit that skips generic XDP processing
+> when it is set. To always make use of this, CONFIG_NET_REDIRECT guard on
+> it has been lifted and it is always available.
+>
+>  From the redirect side, we add the skb to ptr_ring with its lowest bit
+> set to 1.  This should be safe as skb is not 1-byte aligned. This allows
+> kthread to discern between xdp_frames and sk_buff. On consumption of the
+> ptr_ring item, the lowest bit is unset.
+>
+> In the end, the skb is simply added to the list that kthread is anyway
+> going to maintain for xdp_frames converted to skb, and then received
+> again by using netif_receive_skb_list.
+>
+> Bulking optimization for generic cpumap is left as an exercise for a
+> future patch for now.
+Fine by me, I hope bulking is added later, as I think with bulking this 
+will be a faster alternative than RPS.
+>
+> Since cpumap entry progs are now supported, also remove check in
+> generic_xdp_install for the cpumap.
+>
+> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>   include/linux/bpf.h    |   9 +++-
+>   include/linux/skbuff.h |  10 +---
+>   kernel/bpf/cpumap.c    | 115 +++++++++++++++++++++++++++++++++++------
+>   net/core/dev.c         |   3 +-
+>   net/core/filter.c      |   6 ++-
+>   5 files changed, 115 insertions(+), 28 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index f309fc1509f2..095aaa104c56 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1513,7 +1513,8 @@ bool dev_map_can_have_prog(struct bpf_map *map);
+>   void __cpu_map_flush(void);
+>   int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_buff *xdp,
+>   		    struct net_device *dev_rx);
+> -bool cpu_map_prog_allowed(struct bpf_map *map);
+> +int cpu_map_generic_redirect(struct bpf_cpu_map_entry *rcpu,
+> +			     struct sk_buff *skb);
+>   
+>   /* Return map's numa specified by userspace */
+>   static inline int bpf_map_attr_numa_node(const union bpf_attr *attr)
+> @@ -1710,6 +1711,12 @@ static inline int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu,
+>   	return 0;
+>   }
+>   
+> +static inline int cpu_map_generic_redirect(struct bpf_cpu_map_entry *rcpu,
+> +					   struct sk_buff *skb)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>   static inline bool cpu_map_prog_allowed(struct bpf_map *map)
+>   {
+>   	return false;
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index b2db9cd9a73f..f19190820e63 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -863,8 +863,8 @@ struct sk_buff {
+>   	__u8			tc_skip_classify:1;
+>   	__u8			tc_at_ingress:1;
+>   #endif
+> -#ifdef CONFIG_NET_REDIRECT
+>   	__u8			redirected:1;
+> +#ifdef CONFIG_NET_REDIRECT
+>   	__u8			from_ingress:1;
+>   #endif
+>   #ifdef CONFIG_TLS_DEVICE
+> @@ -4664,17 +4664,13 @@ static inline __wsum lco_csum(struct sk_buff *skb)
+>   
+>   static inline bool skb_is_redirected(const struct sk_buff *skb)
+>   {
+> -#ifdef CONFIG_NET_REDIRECT
+>   	return skb->redirected;
+> -#else
+> -	return false;
+> -#endif
+>   }
+>   
+>   static inline void skb_set_redirected(struct sk_buff *skb, bool from_ingress)
+>   {
+> -#ifdef CONFIG_NET_REDIRECT
+>   	skb->redirected = 1;
+> +#ifdef CONFIG_NET_REDIRECT
+>   	skb->from_ingress = from_ingress;
+>   	if (skb->from_ingress)
+>   		skb->tstamp = 0;
+> @@ -4683,9 +4679,7 @@ static inline void skb_set_redirected(struct sk_buff *skb, bool from_ingress)
+>   
+>   static inline void skb_reset_redirect(struct sk_buff *skb)
+>   {
+> -#ifdef CONFIG_NET_REDIRECT
+>   	skb->redirected = 0;
+> -#endif
+>   }
+>   
+>   static inline bool skb_csum_is_sctp(struct sk_buff *skb)
+> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> index a1a0c4e791c6..274353e2cd70 100644
+> --- a/kernel/bpf/cpumap.c
+> +++ b/kernel/bpf/cpumap.c
+> @@ -16,6 +16,7 @@
+>    * netstack, and assigning dedicated CPUs for this stage.  This
+>    * basically allows for 10G wirespeed pre-filtering via bpf.
+>    */
+> +#include <linux/bitops.h>
+>   #include <linux/bpf.h>
+>   #include <linux/filter.h>
+>   #include <linux/ptr_ring.h>
+> @@ -168,6 +169,49 @@ static void put_cpu_map_entry(struct bpf_cpu_map_entry *rcpu)
+>   	}
+>   }
+>   
+> +static void cpu_map_bpf_prog_run_skb(struct bpf_cpu_map_entry *rcpu,
+> +				     struct list_head *listp,
+> +				     struct xdp_cpumap_stats *stats)
+> +{
+> +	struct sk_buff *skb, *tmp;
+> +	struct xdp_buff xdp;
+> +	u32 act;
+> +	int err;
+> +
+> +	if (!rcpu->prog)
+> +		return;
 
-> > >   		return &bpf_override_return_proto;
-> > >   #endif
-> > > +	case BPF_FUNC_get_func_ip:
-> > > +		return &bpf_get_func_ip_proto_kprobe;
-> > >   	default:
-> > >   		return bpf_tracing_func_proto(func_id, prog);
-> > >   	}
-> > > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> > > index ea6178cb5e33..b07d5888db14 100644
-> > > --- a/kernel/trace/trace_kprobe.c
-> > > +++ b/kernel/trace/trace_kprobe.c
-> > > @@ -1570,6 +1570,18 @@ static int kretprobe_event_define_fields(struct trace_event_call *event_call)
-> > >   }
-> > >   
-> > >   #ifdef CONFIG_PERF_EVENTS
-> > > +/* Used by bpf get_func_ip helper */
-> > > +DEFINE_PER_CPU(u64, current_kprobe_addr) = 0;
-> > 
-> > Didn't check other architectures. But this should work
-> > for x86 where if nested kprobe happens, the second
-> > kprobe will not call kprobe handlers.
-> 
-> No problem, other architecture also does not call nested kprobes handlers.
-> However, you don't need this because you can use kprobe_running()
-> in kprobe context.
-> 
-> kp = kprobe_running();
-> if (kp)
-> 	return kp->addr;
+Move this one level out. Why explained below.
 
-great, that's easier
 
-> 
-> BTW, I'm not sure why don't you use instruction_pointer(regs)?
+> +
+> +	list_for_each_entry_safe(skb, tmp, listp, list) {
+> +		act = bpf_prog_run_generic_xdp(skb, &xdp, rcpu->prog);
+> +		switch (act) {
+> +		case XDP_PASS:
+> +			break;
+> +		case XDP_REDIRECT:
+> +			skb_list_del_init(skb);
+> +			err = xdp_do_generic_redirect(skb->dev, skb, &xdp,
+> +						      rcpu->prog);
+> +			if (unlikely(err)) {
+> +				kfree_skb(skb);
+> +				stats->drop++;
+> +			} else {
+> +				stats->redirect++;
+> +			}
+> +			return;
+> +		default:
+> +			bpf_warn_invalid_xdp_action(act);
+> +			fallthrough;
+> +		case XDP_ABORTED:
+> +			trace_xdp_exception(skb->dev, rcpu->prog, act);
+> +			fallthrough;
+> +		case XDP_DROP:
+> +			skb_list_del_init(skb);
+> +			kfree_skb(skb);
+> +			stats->drop++;
+> +			return;
+> +		}
+> +	}
+> +}
+> +
+>   static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+>   				    void **frames, int n,
+>   				    struct xdp_cpumap_stats *stats)
+> @@ -179,8 +223,6 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+>   	if (!rcpu->prog)
+>   		return n;
+>   
+> -	rcu_read_lock_bh();
+> -
 
-I tried that but it returns function address + 1,
-and I thought that could be different on each arch
-and we'd need arch specific code to deal with that
+Notice the return before doing rcu_read_lock_bh().
 
-thanks,
-jirka
+Here we try to avoid the extra call to do_softirq() when calling 
+rcu_read_unlock_bh.
+
+When RX-napi and cpumap share/run-on the same CPU, activating 
+do_softirq() two time in the kthread_cpumap cause RX-napi to get more 
+CPU time to enqueue more packets into cpumap.  Thus, cpumap can easier 
+get overloaded.
+
+
+>   	xdp_set_return_frame_no_direct();
+>   	xdp.rxq = &rxq;
+>   
+> @@ -227,17 +269,34 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+>   		}
+>   	}
+>   
+> +	xdp_clear_return_frame_no_direct();
+> +
+> +	return nframes;
+> +}
+> +
+> +#define CPUMAP_BATCH 8
+> +
+> +static int cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+> +				int xdp_n, struct xdp_cpumap_stats *stats,
+> +				struct list_head *list)
+> +{
+> +	int nframes;
+> +
+> +	rcu_read_lock_bh();
+> +
+> +	nframes = cpu_map_bpf_prog_run_xdp(rcpu, frames, xdp_n, stats);
+> +
+>   	if (stats->redirect)
+> -		xdp_do_flush_map();
+> +		xdp_do_flush();
+>   
+> -	xdp_clear_return_frame_no_direct();
+> +	if (unlikely(!list_empty(list)))
+> +		cpu_map_bpf_prog_run_skb(rcpu, list, stats);
+>   
+> -	rcu_read_unlock_bh(); /* resched point, may call do_softirq() */
+> +	rcu_read_unlock_bh();
+
+I would like to keep this comment, to help people 
+troubleshooting/understand why RX-napi to get more CPU time than kthread.
+
+
+>   
+>   	return nframes;
+>   }
+>   
+> -#define CPUMAP_BATCH 8
+>   
+>   static int cpu_map_kthread_run(void *data)
+>   {
+> @@ -254,9 +313,9 @@ static int cpu_map_kthread_run(void *data)
+>   		struct xdp_cpumap_stats stats = {}; /* zero stats */
+>   		unsigned int kmem_alloc_drops = 0, sched = 0;
+>   		gfp_t gfp = __GFP_ZERO | GFP_ATOMIC;
+> +		int i, n, m, nframes, xdp_n;
+>   		void *frames[CPUMAP_BATCH];
+>   		void *skbs[CPUMAP_BATCH];
+> -		int i, n, m, nframes;
+>   		LIST_HEAD(list);
+>   
+>   		/* Release CPU reschedule checks */
+> @@ -280,9 +339,20 @@ static int cpu_map_kthread_run(void *data)
+>   		 */
+>   		n = __ptr_ring_consume_batched(rcpu->queue, frames,
+>   					       CPUMAP_BATCH);
+> -		for (i = 0; i < n; i++) {
+> +		for (i = 0, xdp_n = 0; i < n; i++) {
+>   			void *f = frames[i];
+> -			struct page *page = virt_to_page(f);
+> +			struct page *page;
+> +
+> +			if (unlikely(__ptr_test_bit(0, &f))) {
+> +				struct sk_buff *skb = f;
+> +
+> +				__ptr_clear_bit(0, &skb);
+> +				list_add_tail(&skb->list, &list);
+> +				continue;
+> +			}
+> +
+> +			frames[xdp_n++] = f;
+> +			page = virt_to_page(f);
+>   
+>   			/* Bring struct page memory area to curr CPU. Read by
+>   			 * build_skb_around via page_is_pfmemalloc(), and when
+> @@ -292,7 +362,7 @@ static int cpu_map_kthread_run(void *data)
+>   		}
+>   
+>   		/* Support running another XDP prog on this CPU */
+> -		nframes = cpu_map_bpf_prog_run_xdp(rcpu, frames, n, &stats);
+> +		nframes = cpu_map_bpf_prog_run(rcpu, frames, xdp_n, &stats, &list);
+>   		if (nframes) {
+>   			m = kmem_cache_alloc_bulk(skbuff_head_cache, gfp, nframes, skbs);
+>   			if (unlikely(m == 0)) {
+> @@ -330,12 +400,6 @@ static int cpu_map_kthread_run(void *data)
+>   	return 0;
+>   }
+>   
+> -bool cpu_map_prog_allowed(struct bpf_map *map)
+> -{
+> -	return map->map_type == BPF_MAP_TYPE_CPUMAP &&
+> -	       map->value_size != offsetofend(struct bpf_cpumap_val, qsize);
+> -}
+> -
+>   static int __cpu_map_load_bpf_program(struct bpf_cpu_map_entry *rcpu, int fd)
+>   {
+>   	struct bpf_prog *prog;
+> @@ -696,6 +760,25 @@ int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_buff *xdp,
+>   	return 0;
+>   }
+>   
+> +int cpu_map_generic_redirect(struct bpf_cpu_map_entry *rcpu,
+> +			     struct sk_buff *skb)
+> +{
+> +	int ret;
+> +
+> +	__skb_pull(skb, skb->mac_len);
+> +	skb_set_redirected(skb, false);
+> +	__ptr_set_bit(0, &skb);
+> +
+> +	ret = ptr_ring_produce(rcpu->queue, skb);
+> +	if (ret < 0)
+> +		goto trace;
+> +
+> +	wake_up_process(rcpu->kthread);
+> +trace:
+> +	trace_xdp_cpumap_enqueue(rcpu->map_id, !ret, !!ret, rcpu->cpu);
+> +	return ret;
+> +}
+> +
+>   void __cpu_map_flush(void)
+>   {
+>   	struct list_head *flush_list = this_cpu_ptr(&cpu_map_flush_list);
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index ad5ab33cbd39..8521936414f2 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -5665,8 +5665,7 @@ static int generic_xdp_install(struct net_device *dev, struct netdev_bpf *xdp)
+>   		 * have a bpf_prog installed on an entry
+>   		 */
+>   		for (i = 0; i < new->aux->used_map_cnt; i++) {
+> -			if (dev_map_can_have_prog(new->aux->used_maps[i]) ||
+> -			    cpu_map_prog_allowed(new->aux->used_maps[i])) {
+> +			if (dev_map_can_have_prog(new->aux->used_maps[i])) {
+>   				mutex_unlock(&new->aux->used_maps_mutex);
+>   				return -EINVAL;
+>   			}
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 0b13d8157a8f..4a21fde3028f 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4038,8 +4038,12 @@ static int xdp_do_generic_redirect_map(struct net_device *dev,
+>   			goto err;
+>   		consume_skb(skb);
+>   		break;
+> +	case BPF_MAP_TYPE_CPUMAP:
+> +		err = cpu_map_generic_redirect(fwd, skb);
+> +		if (unlikely(err))
+> +			goto err;
+> +		break;
+>   	default:
+> -		/* TODO: Handle BPF_MAP_TYPE_CPUMAP */
+>   		err = -EBADRQC;
+>   		goto err;
+>   	}
+
+
+I like the rest :-)
+
+Thanks for working on this!
+
+--Jesper
 
