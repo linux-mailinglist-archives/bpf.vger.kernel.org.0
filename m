@@ -2,100 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E9E3B8D73
-	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 07:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06143B8DAE
+	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 08:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbhGAFng (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Jul 2021 01:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
+        id S234296AbhGAGTo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Jul 2021 02:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhGAFnf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Jul 2021 01:43:35 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F73C061756;
-        Wed, 30 Jun 2021 22:41:05 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id u13so9644644lfk.2;
-        Wed, 30 Jun 2021 22:41:05 -0700 (PDT)
+        with ESMTP id S234174AbhGAGTo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Jul 2021 02:19:44 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA38DC061756;
+        Wed, 30 Jun 2021 23:17:13 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id x6so2434897qvx.4;
+        Wed, 30 Jun 2021 23:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xGmfG856K6AgDGtPMSPLeZTsFwSPkyrkWA8yg2JxaMw=;
-        b=eSAd5lcPcJFbP4i6UZS9mbkBJg1z1jtjTZlNffvaA9hI3TfktqZAKGCntRXJ8kS70M
-         s1z6V79rR5PCbOUyqzjm6HFsvIhgToxpS0M0mtmFNjY1XOxzjBq2bhY8pktOUJmEzuW0
-         viLHstDEnuI4B2e8jQxQWVNA1nqWRIV7zfrnPosvUZgSwIaIQd9hUKGm0lkPSL+WT5LD
-         /Qk1EoCWgls7wR3Ubd9rQkgqw63sXegPSXDw4CnuuUkeRf0f1cVHWzAklB81AQeIp9aK
-         51nPFc9jsRpNGuTm9jvfqhyDhsU8x9h5ZNd7aOpHsX6e77DKg2O6yBDUk9oACEmnuHqU
-         /B2A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jQmdEh20TzOPTN5vRc3RTXpDGJW2JVfPqZfqDo6hNC8=;
+        b=FmiIHUPRQ1Lcwzm3vtLI/LKQoPIaliVn7nEp5gR9GH8oZOjorH4b/NHLfDT+eGExbq
+         MYyk6s9/ieatOcxHK3U2Ekm7gr7PHGh+cH+A+WuLRG9vojGtDCx4g2qoYDjJ0rDsm8sv
+         WjhItpKUPmozyybcNhfY3UdjueFp7kkJZQRBu4niqb5ixpZ90+0B9++dcuN8zDWNCdK+
+         MYN7iQefNejCxVCCbBBDdFOPFYpFWoeEpkObccZzLANpip3tcKBh6i+wxiU9ZWHpol6Q
+         4lZE5WBzD0an9+zOzPYWxogqmKP0UCjNinyUrJQhdaP2vTa8dJ4UWQ1YmJI2rI/elMF/
+         xWUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xGmfG856K6AgDGtPMSPLeZTsFwSPkyrkWA8yg2JxaMw=;
-        b=sEg1fFyiBmevJcr2jZO3vNEs2gfdjiObASnZQWaCShI51vsDJtn2VqZINtuXfxW265
-         My+8rvh19fIhu/gkMX73ZBrzjhk8ULwYhBjJ8nWktGc+kmFbAUGEXRvo/ly6rHP68Yc3
-         ilkgH51ZyW9DwqaKoVkfz5DW3VPNnteOk55mXP6JPY1IDwdrhOQ0hZtEOAb4pqeAL0YJ
-         Lp3eXDJmmNPBFzFaf3f4kgt8WFRblphsQscvyQ03ZSXV4AreMWgMsfLLu5sWsLNfXg/p
-         9PAtb3mfgYHlGTBqbX/F/mCI+K4nd7DF7/MQj9Pufv7IfVF03MBIScOqxI556qnugz5G
-         HLyQ==
-X-Gm-Message-State: AOAM531MbMgkRMmYCthhhGFQk8qoRoVNMUuQmXx0JYIGMvQqqV8I7y57
-        zQdp4GnxcOCQvzkbmH+XFCp/6F7CZKmbAxmgQOA=
-X-Google-Smtp-Source: ABdhPJzFeBgjZgK+9H2gQurnymFyoX9aN0lKdNLTyOqO7ggvlQaqm1rn16geJUT1QK632P6U8p2oCs4J0D4Jhg7122Q=
-X-Received: by 2002:ac2:43b4:: with SMTP id t20mr30809417lfl.539.1625118063966;
- Wed, 30 Jun 2021 22:41:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jQmdEh20TzOPTN5vRc3RTXpDGJW2JVfPqZfqDo6hNC8=;
+        b=lPG4LO9yfGBj7DcY7CLDjimGNwKdw5/iCLmSdV4r+fOucG1FBiJOvLoOeLUQxAWkdP
+         nlzIXoTSMojaNgpyNx9qnj9NIDSM2l5QYWcyNGrHc+LDrMb1nplMl8GuoOIy2Z4aCyG1
+         flfy1VAn2bIFHd8pNzkNmydw99OK4jnpRi/8/9CMsd3+yp/IGBorbFYgFlHcagE+wZ6W
+         w+fWM0hkpfZp9UfCiDTLXKEdGjA1XF3tPrxSC3enF3uH1dYNhBzub2w61mtU5xP0VgLN
+         oc2zDIfqOaTcyDpUqY/NUjEcpCf9+FIHMiN49GrinIbZv8ELyuoHcWJaTPWN9R1ae+46
+         gI3g==
+X-Gm-Message-State: AOAM533qUFSvRD/kwxRhlZRRe4v3UTXCLQ9otCcRfK1LPnxCBY6X0i95
+        s5GlatWSSNijQjwqRcqN+kQeoBIS1I6oCw==
+X-Google-Smtp-Source: ABdhPJzqXh1wsVH46pv+j9y8magyspFKSnYFv3NUcSqNnvoCaX11NyTddzX0zsCHHx30It3p17855Q==
+X-Received: by 2002:a05:6214:c26:: with SMTP id a6mr40931996qvd.55.1625120232667;
+        Wed, 30 Jun 2021 23:17:12 -0700 (PDT)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:2bdf:cf98:b2c0:7257])
+        by smtp.gmail.com with ESMTPSA id g5sm6292830qtj.7.2021.06.30.23.17.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 23:17:12 -0700 (PDT)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Subject: [Patch bpf v2] skmsg: check sk_rcvbuf limit before queuing to ingress_skb
+Date:   Wed, 30 Jun 2021 23:16:56 -0700
+Message-Id: <20210701061656.34150-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210624022518.57875-1-alexei.starovoitov@gmail.com> <20210624022518.57875-2-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210624022518.57875-2-alexei.starovoitov@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 30 Jun 2021 22:40:52 -0700
-Message-ID: <CAADnVQJrZdC3f8SxxBqQK9Ov4Kcgao0enBNAhmwJuZPgxwjQUg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/8] bpf: Introduce bpf timers.
-To:     "David S. Miller" <davem@davemloft.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 7:25 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> The bpf_timer_init() helper is receiving hidden 'map' argument and
-...
-> +               if (insn->imm == BPF_FUNC_timer_init) {
-> +                       aux = &env->insn_aux_data[i + delta];
-> +                       if (bpf_map_ptr_poisoned(aux)) {
-> +                               verbose(env, "bpf_timer_init abusing map_ptr\n");
-> +                               return -EINVAL;
-> +                       }
-> +                       map_ptr = BPF_MAP_PTR(aux->map_ptr_state);
-> +                       {
-> +                               struct bpf_insn ld_addrs[2] = {
-> +                                       BPF_LD_IMM64(BPF_REG_3, (long)map_ptr),
-> +                               };
+From: Cong Wang <cong.wang@bytedance.com>
 
-After a couple of hours of ohh so painful debugging I realized that this
-approach doesn't work for inner maps. Duh.
-For inner maps it remembers inner_map_meta which is a template
-of inner map.
-Then bpf_timer_cb() passes map ptr into timer callback and if it tries
-to do map operations on it the inner_map_meta->ops will be valid,
-but the struct bpf_map doesn't have the actual data.
-So to support map-in-map we need to require users to pass map pointer
-explicitly into bpf_timer_init().
-Unfortunately the verifier cannot guarantee that bpf timer field inside
-map element is from the same map that is passed as a map ptr.
-The verifier can check that they're equivalent from safety pov
-via bpf_map_meta_equal(), so common user mistakes will be caught by it.
-Still not pretty that it's partially on the user to do:
-bpf_timer_init(timer, CLOCK, map);
-with 'timer' matching the 'map'.
-Another option is to drop 'map' arg from timer callback,
-but the usability of the callback will suffer. The inner maps
-will be quite painful to use from it.
-Anyway I'm going with explicit 'map' arg in the next respin.
-Other ideas?
+Jiang observed OOM frequently when testing our AF_UNIX/UDP
+proxy. This is due to the fact that we do not actually limit
+the socket memory before queueing skb to ingress_skb. We
+charge the skb memory later when handling the psock backlog,
+but it is not limited either.
+
+This patch adds checks for sk->sk_rcvbuf right before queuing
+to ingress_skb and drops packets if this limit exceeds. This
+is very similar to UDP receive path. Ideally we should set the
+skb owner before this check too, but it is hard to make TCP
+happy about sk_forward_alloc.
+
+Reported-by: Jiang Wang <jiang.wang@bytedance.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Lorenz Bauer <lmb@cloudflare.com>
+Cc: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+---
+ net/core/skmsg.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 9b6160a191f8..a5185c781332 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -854,7 +854,8 @@ static int sk_psock_skb_redirect(struct sk_psock *from, struct sk_buff *skb)
+ 		return -EIO;
+ 	}
+ 	spin_lock_bh(&psock_other->ingress_lock);
+-	if (!sk_psock_test_state(psock_other, SK_PSOCK_TX_ENABLED)) {
++	if (!sk_psock_test_state(psock_other, SK_PSOCK_TX_ENABLED) ||
++	    atomic_read(&sk_other->sk_rmem_alloc) > READ_ONCE(sk_other->sk_rcvbuf)) {
+ 		spin_unlock_bh(&psock_other->ingress_lock);
+ 		skb_bpf_redirect_clear(skb);
+ 		sock_drop(from->sk, skb);
+@@ -930,7 +931,8 @@ static int sk_psock_verdict_apply(struct sk_psock *psock, struct sk_buff *skb,
+ 		}
+ 		if (err < 0) {
+ 			spin_lock_bh(&psock->ingress_lock);
+-			if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)) {
++			if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED) &&
++			    atomic_read(&sk_other->sk_rmem_alloc) <= READ_ONCE(sk_other->sk_rcvbuf)) {
+ 				skb_queue_tail(&psock->ingress_skb, skb);
+ 				schedule_work(&psock->work);
+ 				err = 0;
+-- 
+2.27.0
+
