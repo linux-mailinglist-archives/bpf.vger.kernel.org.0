@@ -2,205 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A32F43B8B06
-	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 01:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C923B8B42
+	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 02:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhGAAB1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Jun 2021 20:01:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229864AbhGAAB1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Jun 2021 20:01:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 493F3613F7;
-        Wed, 30 Jun 2021 23:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625097537;
-        bh=F5a8UcLjpBxCfgcs/9ldfS6ToJ0b1vKhOUDCo+oZJjc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SG/hE0eBldza/ursZAX5oBMZG14zhf6rEn7rqweEnXsAN+vK11iwWZtpx7xT3DQqE
-         vRFqrN9P0lHH6L0gVvHp+b27qkuyvtJ/bJuivenBBO9P+vNUZKCexHO8pJGMoVFN16
-         IKvGVDVaGO8w8ZtXmGDU+2ku0SQSoVcqa87S761NvPXp9AJjbn9m1ztbNl0Ax3+J2x
-         EWHN1Dwe4fRMCxBoC9d2Gqg87g6aHtqIj32kHMmzWRvY7pfwnp7Hjk/pcZV+fqWna2
-         /ld2Pe973Lu1dZkUhvm3Ew47iPvu7kYKa7D3YfheS+dBWnGigR3s7uB6RrMXaq8v2O
-         1T7gtl4VrpBgA==
-Date:   Thu, 1 Jul 2021 08:58:54 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+        id S236997AbhGAAc1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Jun 2021 20:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236734AbhGAAc0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Jun 2021 20:32:26 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DD3C061756;
+        Wed, 30 Jun 2021 17:29:57 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o18so3793478pgu.10;
+        Wed, 30 Jun 2021 17:29:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9x5BchN3NyN4XOrBBibcJFStLPbLfDkegNtVEHEhvow=;
+        b=SOFrt3F5qaV4q0jBm86IO4GW5WMzQUAdG8f4Nd44/crdr4wwS6ErUOjaxhkucA9EdK
+         8oHc14WEhWq4YHWJlWbTLfMQpuXLgEr0rXz5lPcbhEoG2z1xXighHhOZTSta4vOnDpUM
+         rUZmZOLGG3nMSmX5fQd2Fzs+Fyx8B6kSUQTYTxSMmXw4noZXdhNMO42Ar4ltV91XXN6K
+         ov6pPvkr2ok5JGRCIr6nMfoul5B6B6nffSv5d5wSagQXXWlokahyBFrTt7EkE9nthuPw
+         Gf4iNKBnHJLdba/V1Qx9mdnfeK1QCnjXES5X/7uBqa0lF+xlQk5LJ6jZl+1Fswb+Zls1
+         2v/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9x5BchN3NyN4XOrBBibcJFStLPbLfDkegNtVEHEhvow=;
+        b=ZZ3SowUsORmoYSlPC/qYnDW5n6jDLvlP7MSXd+Ddfw/Y2TZ+2LZirINuqJ5b6jWmgl
+         UBMlTZqNlnhm5+k2CcBKhwW/RrZOYReIniTziTQFGpKeuqUt+KOVcAQnBwxoDZsaPcQA
+         Sf05MNmOz4bYJ77HWsaGrJZcrloIT3HKPgisgNePwMN6NZ1T4yXFPX++/OHaYadxgesD
+         L4eL791rvsgYTX9l0NEhru0/HrsRkGeirRRfVmSQHVoltAG0oTJrXIrXnXnOYDbyGpTV
+         dSgIli71UPdF/qpcP0B3Y4zChChebYJpw9a4dDWuzUJ4ZpT/VsyAG9mrl6oSb5+byIww
+         AG0w==
+X-Gm-Message-State: AOAM533Tvjqbm7HFUNMHnIvhJL8ZTJD/iTxan2+CiONrpFPYd1TCqtom
+        GFbe/AfzRIITPXOBaiL6kg4gR9icH3o=
+X-Google-Smtp-Source: ABdhPJwT8aN3kYUd29I/p9mBW+gydx4/N2b8b2Esc7F4ySKx8vyFGuA16reoJ0Xm2RQLuePzsbV6Xg==
+X-Received: by 2002:a05:6a00:c85:b029:311:bfe1:e407 with SMTP id a5-20020a056a000c85b0290311bfe1e407mr1090611pfv.77.1625099396244;
+        Wed, 30 Jun 2021 17:29:56 -0700 (PDT)
+Received: from localhost ([2402:3a80:11db:6f6:e6a8:37a6:1da7:fbc7])
+        by smtp.gmail.com with ESMTPSA id e4sm22498596pfa.29.2021.06.30.17.29.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 17:29:55 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH bpf-next 4/5] bpf: Add bpf_get_func_ip helper for kprobe
- programs
-Message-Id: <20210701085854.0f2aeafc0fce11f3ca9d52a8@kernel.org>
-In-Reply-To: <9286ce63-5cba-e16a-a7db-886548a04a64@fb.com>
-References: <20210629192945.1071862-1-jolsa@kernel.org>
-        <20210629192945.1071862-5-jolsa@kernel.org>
-        <9286ce63-5cba-e16a-a7db-886548a04a64@fb.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
+Subject: [PATCH net-next v5 0/5] Generic XDP improvements
+Date:   Thu,  1 Jul 2021 05:57:54 +0530
+Message-Id: <20210701002759.381983-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 30 Jun 2021 10:47:01 -0700
-Yonghong Song <yhs@fb.com> wrote:
+This small series makes some improvements to generic XDP mode and brings it
+closer to native XDP. Patch 1 splits out generic XDP processing into reusable
+parts, patch 2 adds pointer friendly wrappers for bitops (not have to cast back
+and forth the address of local pointer to unsigned long *), patch 3 implements
+generic cpumap support (details in commit) and patch 4 allows devmap bpf prog
+execution before generic_xdp_tx is called.
 
-> 
-> 
-> On 6/29/21 12:29 PM, Jiri Olsa wrote:
-> > Adding bpf_get_func_ip helper for BPF_PROG_TYPE_KPROBE programs,
-> > so it's now possible to call bpf_get_func_ip from both kprobe and
-> > kretprobe programs.
-> > 
-> > Taking the caller's address from 'struct kprobe::addr', which is
-> > defined for both kprobe and kretprobe.
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >   include/uapi/linux/bpf.h       |  2 +-
-> >   kernel/bpf/verifier.c          |  2 ++
-> >   kernel/trace/bpf_trace.c       | 14 ++++++++++++++
-> >   kernel/trace/trace_kprobe.c    | 20 ++++++++++++++++++--
-> >   kernel/trace/trace_probe.h     |  5 +++++
-> >   tools/include/uapi/linux/bpf.h |  2 +-
-> >   6 files changed, 41 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 83e87ffdbb6e..4894f99a1993 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -4783,7 +4783,7 @@ union bpf_attr {
-> >    *
-> >    * u64 bpf_get_func_ip(void *ctx)
-> >    * 	Description
-> > - * 		Get address of the traced function (for tracing programs).
-> > + * 		Get address of the traced function (for tracing and kprobe programs).
-> >    * 	Return
-> >    * 		Address of the traced function.
-> >    */
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 701ff7384fa7..b66e0a7104f8 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -5979,6 +5979,8 @@ static bool has_get_func_ip(struct bpf_verifier_env *env)
-> >   			return -ENOTSUPP;
-> >   		}
-> >   		return 0;
-> > +	} else if (type == BPF_PROG_TYPE_KPROBE) {
-> > +		return 0;
-> >   	}
-> >   
-> >   	verbose(env, "func %s#%d not supported for program type %d\n",
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index 9edd3b1a00ad..1a5bddce9abd 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -961,6 +961,18 @@ static const struct bpf_func_proto bpf_get_func_ip_proto_tracing = {
-> >   	.arg1_type	= ARG_PTR_TO_CTX,
-> >   };
-> >   
-> > +BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
-> > +{
-> > +	return trace_current_kprobe_addr();
-> > +}
-> > +
-> > +static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe = {
-> > +	.func		= bpf_get_func_ip_kprobe,
-> > +	.gpl_only	= true,
-> > +	.ret_type	= RET_INTEGER,
-> > +	.arg1_type	= ARG_PTR_TO_CTX,
-> > +};
-> > +
-> >   const struct bpf_func_proto *
-> >   bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> >   {
-> > @@ -1092,6 +1104,8 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> >   	case BPF_FUNC_override_return:
-> >   		return &bpf_override_return_proto;
-> >   #endif
-> > +	case BPF_FUNC_get_func_ip:
-> > +		return &bpf_get_func_ip_proto_kprobe;
-> >   	default:
-> >   		return bpf_tracing_func_proto(func_id, prog);
-> >   	}
-> > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> > index ea6178cb5e33..b07d5888db14 100644
-> > --- a/kernel/trace/trace_kprobe.c
-> > +++ b/kernel/trace/trace_kprobe.c
-> > @@ -1570,6 +1570,18 @@ static int kretprobe_event_define_fields(struct trace_event_call *event_call)
-> >   }
-> >   
-> >   #ifdef CONFIG_PERF_EVENTS
-> > +/* Used by bpf get_func_ip helper */
-> > +DEFINE_PER_CPU(u64, current_kprobe_addr) = 0;
-> 
-> Didn't check other architectures. But this should work
-> for x86 where if nested kprobe happens, the second
-> kprobe will not call kprobe handlers.
+Patch 5 just updates a couple of selftests to adapt to changes in behavior (in
+that specifying devmap/cpumap prog fd in generic mode is now allowed).
 
-No problem, other architecture also does not call nested kprobes handlers.
-However, you don't need this because you can use kprobe_running()
-in kprobe context.
+Changelog:
+----------
+v4 -> v5
+v4: https://lore.kernel.org/bpf/20210628114746.129669-1-memxor@gmail.com
+ * Add comments and examples for new bitops macros (Alexei)
 
-kp = kprobe_running();
-if (kp)
-	return kp->addr;
+v3 -> v4
+v3: https://lore.kernel.org/bpf/20210622202835.1151230-1-memxor@gmail.com
+ * Add detach now that attach of XDP program succeeds (Toke)
+ * Clean up the test to use new ASSERT macros
 
-BTW, I'm not sure why don't you use instruction_pointer(regs)?
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20210622195527.1110497-1-memxor@gmail.com
+ * list_for_each_entry -> list_for_each_entry_safe (due to deletion of skb)
 
-Thank you,
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20210620233200.855534-1-memxor@gmail.com
+ * Move __ptr_{set,clear,test}_bit to bitops.h (Toke)
+   Also changed argument order to match the bit op they wrap.
+ * Remove map value size checking functions for cpumap/devmap (Toke)
+ * Rework prog run for skb in cpu_map_kthread_run (Toke)
+ * Set skb->dev to dst->dev after devmap prog has run
+ * Don't set xdp rxq that will be overwritten in cpumap prog run
 
-> 
-> This essentially is to provide an additional parameter to
-> bpf program. Andrii is developing a mechanism to
-> save arbitrary data in *current task_struct*, which
-> might be used here to save current_kprobe_addr, we can
-> save one per cpu variable.
-> 
-> > +
-> > +u64 trace_current_kprobe_addr(void)
-> > +{
-> > +	return *this_cpu_ptr(&current_kprobe_addr);
-> > +}
-> > +
-> > +static void trace_current_kprobe_set(struct trace_kprobe *tk)
-> > +{
-> > +	__this_cpu_write(current_kprobe_addr, (u64) tk->rp.kp.addr);
-> > +}
-> >   
-> >   /* Kprobe profile handler */
-> >   static int
-> > @@ -1585,6 +1597,7 @@ kprobe_perf_func(struct trace_kprobe *tk, struct pt_regs *regs)
-> >   		unsigned long orig_ip = instruction_pointer(regs);
-> >   		int ret;
-> >   
-> > +		trace_current_kprobe_set(tk);
-> >   		ret = trace_call_bpf(call, regs);
-> >   
-> >   		/*
-> > @@ -1631,8 +1644,11 @@ kretprobe_perf_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
-> >   	int size, __size, dsize;
-> >   	int rctx;
-> >   
-> > -	if (bpf_prog_array_valid(call) && !trace_call_bpf(call, regs))
-> > -		return;
-> > +	if (bpf_prog_array_valid(call)) {
-> > +		trace_current_kprobe_set(tk);
-> > +		if (!trace_call_bpf(call, regs))
-> > +			return;
-> > +	}
-> >   
-> >   	head = this_cpu_ptr(call->perf_events);
-> >   	if (hlist_empty(head))
-> [...]
+Kumar Kartikeya Dwivedi (5):
+  net: core: split out code to run generic XDP prog
+  bitops: add non-atomic bitops for pointers
+  bpf: cpumap: implement generic cpumap
+  bpf: devmap: implement devmap prog execution for generic XDP
+  bpf: tidy xdp attach selftests
 
+ include/linux/bitops.h                        |  50 ++++++++
+ include/linux/bpf.h                           |  10 +-
+ include/linux/netdevice.h                     |   2 +
+ include/linux/skbuff.h                        |  10 +-
+ include/linux/typecheck.h                     |   9 ++
+ kernel/bpf/cpumap.c                           | 115 +++++++++++++++---
+ kernel/bpf/devmap.c                           |  49 ++++++--
+ net/core/dev.c                                | 103 ++++++++--------
+ net/core/filter.c                             |   6 +-
+ .../bpf/prog_tests/xdp_cpumap_attach.c        |  43 +++----
+ .../bpf/prog_tests/xdp_devmap_attach.c        |  39 +++---
+ 11 files changed, 299 insertions(+), 137 deletions(-)
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.31.1
+
