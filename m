@@ -2,444 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A77E3B8F9D
-	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 11:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7D73B9069
+	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 12:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235609AbhGAJSl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Jul 2021 05:18:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45707 "EHLO
+        id S236024AbhGAKTO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Jul 2021 06:19:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35908 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235497AbhGAJSl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 1 Jul 2021 05:18:41 -0400
+        by vger.kernel.org with ESMTP id S235939AbhGAKTO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 1 Jul 2021 06:19:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625130970;
+        s=mimecast20190719; t=1625134603;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RwAN9Fk3DO6mr4H8sxlc4mxUEwHN0v2CqyZHwyiaUkY=;
-        b=UTGQXrX/lRWkmcuRvQNnsn7aLAwm4DTTV6/W0Rlv6YUSpBHocdiEg/YvhGcsOOn/sx6erL
-        VO0MC1ENzZ5rlzehLTAMtOyqLNLqDoFcci4krloHuxFqs+XOd500xSSE2kKPbjO6Z1jMnD
-        w9hHWPkiE50n93O/h61n5wchVTb4UYk=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-432-rdTEZNNuN5OVGiYTCDFmNA-1; Thu, 01 Jul 2021 05:16:09 -0400
-X-MC-Unique: rdTEZNNuN5OVGiYTCDFmNA-1
-Received: by mail-ed1-f71.google.com with SMTP id p19-20020aa7c4d30000b0290394bdda6d9cso2701503edr.21
-        for <bpf@vger.kernel.org>; Thu, 01 Jul 2021 02:16:09 -0700 (PDT)
+        bh=A3sKDRuSMeLomK82BHUwYIxcC2r0lOgJd1SJHmFm4GE=;
+        b=D21MrgbgIfJcWEAur3XS8aYDEXYU3c2z+8m7/T77qkQZ5+WY/UNP95oHc95hjTZB1dOTbz
+        GF8hzFSDWvMjnKNMB2nUntY8QMmw0TuukD9vig9bcE1bzmx5fyebCI9nf2aNAW88b51OKV
+        aSbPnhdwSpwlVxeKFBczarrvIFPZy+0=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177-EbaSWfqrOxuQ8w_YsEoKxA-1; Thu, 01 Jul 2021 06:16:42 -0400
+X-MC-Unique: EbaSWfqrOxuQ8w_YsEoKxA-1
+Received: by mail-ej1-f70.google.com with SMTP id k1-20020a17090666c1b029041c273a883dso1932549ejp.3
+        for <bpf@vger.kernel.org>; Thu, 01 Jul 2021 03:16:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RwAN9Fk3DO6mr4H8sxlc4mxUEwHN0v2CqyZHwyiaUkY=;
-        b=FLRuh4bhjqqpBPuU8lWUHiOY+WtMOP4rrX42026NBc2xAznyJeqgYRr/y51UocT1MI
-         /W8rnAkPBQpjDZ5WDQ/ZAaZiYmICtT13ftXcRoycwglpbLUVw2SHAjvqCs+loRIToz61
-         L+41uFvz4cNB/xlikkwrOnBKQ1hPkzNVhsr+T2hU3OX/4i38gSoYjUb9+dy0z0J8OaPj
-         mrozfQxkWhoPXX3I9UhoQM6o9BKaKD1tOFz9PzoHD2QWWTuQZalFnHAHviSS3W8xSje2
-         pZKV/NS2zYQNUp7oXd9xUfR6PAd9NTvc8XfpDU59fp0rtkjYgyCnZ8AwoHTAW9uWzsD3
-         Eabw==
-X-Gm-Message-State: AOAM530SVRrAnX8Un/e83kVkEF695ui8zTx7MqxxMtD/8RftLMfXlPXP
-        Gcpg1FNQmATRtlOTCGPOFxoGcmgWUU4rF93CseryrcuYtBODNnWYIzJKzAuYAj0ku0h30TeUZlE
-        gTGGiVAj4Z4JF
-X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr48181862edz.371.1625130968217;
-        Thu, 01 Jul 2021 02:16:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzgR32zc39DJneORe2We+YRgJH1E6If1sCkciWxK1AL51Tu6QMiCgta8EnCqYqAGtiS9nEB6A==
-X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr48181836edz.371.1625130967948;
-        Thu, 01 Jul 2021 02:16:07 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id b17sm4547546edd.58.2021.07.01.02.16.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Jul 2021 02:16:06 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH net-next v5 3/5] bpf: cpumap: implement generic cpumap
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, netdev@vger.kernel.org
-Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A3sKDRuSMeLomK82BHUwYIxcC2r0lOgJd1SJHmFm4GE=;
+        b=ArUk8efTnRw+cSPQsUYJpUyTvlCAaTCukrS7hqFunXCXqMg0swVVavIZ9pG/laFvxK
+         BWB6pFgoa71P4kpKfOEi7BDLLyCPaff90SlznRwCYpI+m01GhfVsrIVAtLTHuBZI9rDo
+         LLqVNLR0mZjfcOOLAK8D+9fFukIRrFQCPA6R73NuyYlOqv7Whf2/y3K6HwV2iMpQxEot
+         cjSsHTRqVdmD1jP3GevcGoa2cBaFSR9eHHekJbvPJ9TXqImHGY1q1smr6H12jC6DCG5L
+         +Dx00vCimHKk6HMf/Vx6eX4UufXcfP1wlEVVb7S+N5bemmSpeEBIW8ArCxdz0tSrqcy5
+         NX0Q==
+X-Gm-Message-State: AOAM532VRs5awDiDOEoV5lHbhfLqyFMFR/H0kMdGQuftitDKxM9Nv8Uk
+        2GWsiBG/gGyHMSMBCv2HpSNmChQtxsUBU21zBba/YTwGEgZ5H3w/I0QzdPe+2I8QegTPMz/es3R
+        BH1T4bUzkDYir
+X-Received: by 2002:a05:6402:520c:: with SMTP id s12mr54484291edd.357.1625134600370;
+        Thu, 01 Jul 2021 03:16:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRJAZQPIzfqv/EszLsvkJpAG8mWwKTbWPHYsqPS44RT3awO+9ATUYAoKZelnWXnNq29MtqTg==
+X-Received: by 2002:a05:6402:520c:: with SMTP id s12mr54484263edd.357.1625134600168;
+        Thu, 01 Jul 2021 03:16:40 -0700 (PDT)
+Received: from krava ([185.153.78.55])
+        by smtp.gmail.com with ESMTPSA id b15sm2046767eja.82.2021.07.01.03.16.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 03:16:39 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 12:16:36 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     Sandipan Das <sandipan@linux.ibm.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org,
-        Eric Leblond <eric@regit.org>
-References: <20210701002759.381983-1-memxor@gmail.com>
- <20210701002759.381983-4-memxor@gmail.com>
-Message-ID: <3b80be91-41f2-5c5d-4e93-e6290812f756@redhat.com>
-Date:   Thu, 1 Jul 2021 11:16:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
+ bounds to registers in atomics w/ BPF_FETCH
+Message-ID: <YN2WBP9kjGQxHrKS@krava>
+References: <YNiadhIbJBBPeOr6@krava>
+ <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
+ <YNspwB8ejUeRIVxt@krava>
+ <YNtEcjYvSvk8uknO@krava>
+ <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
+ <YNtNMSSZh3LTp2we@krava>
+ <YNuL442y2yn5RRdc@krava>
+ <CA+i-1C1-7O5EYHZcDtgQaDVrRW+gEQ1WOtiNDZ19NKXUQ_ZLtw@mail.gmail.com>
+ <YNxmwZGtnqiXGnF0@krava>
+ <CA+i-1C2-MGe0BziQc8t4ry3mj45W0ULVrGsU+uQw9952tFZ1nA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210701002759.381983-4-memxor@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+i-1C2-MGe0BziQc8t4ry3mj45W0ULVrGsU+uQw9952tFZ1nA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-(Cc. Eric Leblond as he needed this for Suricata.)
+On Thu, Jul 01, 2021 at 10:18:39AM +0200, Brendan Jackman wrote:
+> On Wed, 30 Jun 2021 at 14:42, Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Wed, Jun 30, 2021 at 12:34:58PM +0200, Brendan Jackman wrote:
+> > > On Tue, 29 Jun 2021 at 23:09, Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Tue, Jun 29, 2021 at 06:41:24PM +0200, Jiri Olsa wrote:
+> > > > > On Tue, Jun 29, 2021 at 06:25:33PM +0200, Brendan Jackman wrote:
+> > > > > > On Tue, 29 Jun 2021 at 18:04, Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > > > > On Tue, Jun 29, 2021 at 04:10:12PM +0200, Jiri Olsa wrote:
+> > > > > > > > On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
+> > >
+> > > > > > > > > atomics in .imm). Any idea if this test was ever passing on PowerPC?
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > hum, I guess not.. will check
+> > > > > > >
+> > > > > > > nope, it locks up the same:
+> > > > > >
+> > > > > > Do you mean it locks up at commit 91c960b0056 too?
+> > >
+> > > Sorry I was being stupid here - the test didn't exist at this commit
+> > >
+> > > > > I tried this one:
+> > > > >   37086bfdc737 bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH
+> > > > >
+> > > > > I will check also 91c960b0056, but I think it's the new test issue
+> > >
+> > > So yeah hard to say whether this was broken on PowerPC all along. How
+> > > hard is it for me to get set up to reproduce the failure? Is there a
+> > > rootfs I can download, and some instructions for running a PowerPC
+> > > QEMU VM? If so if you can also share your config and I'll take a look.
+> > >
+> > > If it's not as simple as that, I'll stare at the code for a while and
+> > > see if anything jumps out.
+> > >
+> >
+> > I have latest fedora ppc server and compile/install latest bpf-next tree
+> > I think it will be reproduced also on vm, I attached my config
+> 
+> OK, getting set up to boot a PowerPC QEMU isn't practical here unless
+> someone's got commands I can copy-paste (suspect it will need .config
+> hacking too). Looks like you need to build a proper bootloader, and
+> boot an installer disk.
+> 
+> Looked at the code for a bit but nothing jumped out. It seems like the
+> verifier is seeing a BPF_ADD | BPF_FETCH, which means it doesn't
+> detect an infinite loop, but then we lose the BPF_FETCH flag somewhere
+> between do_check in verifier.c and bpf_jit_build_body in
+> bpf_jit_comp64.c. That would explain why we don't get the "eBPF filter
+> atomic op code %02x (@%d) unsupported", and would also explain the
+> lockup because a normal atomic add without fetch would leave BPF R1
+> unchanged.
+> 
+> We should be able to confirm that theory by disassembling the JITted
+> code that gets hexdumped by bpf_jit_dump when bpf_jit_enable is set to
+> 2... at least for PowerPC 32-bit... maybe you could paste those lines
+> into the 64-bit version too? Here's some notes I made for
+> disassembling the hexdump on x86, I guess you'd just need to change
+> the objdump flags:
+> 
+> -- 
+> 
+> - Enable console JIT output:
+> ```shell
+> echo 2 > /proc/sys/net/core/bpf_jit_enable
+> ```
+> - Load & run the program of interest.
+> - Copy the hex code from the kernel console to `/tmp/jit.txt`. Here's what a
+> short program looks like. This includes a line of context - don't paste the
+> `flen=` line.
+> ```
+> [ 79.381020] flen=8 proglen=54 pass=4 image=000000001af6f390
+> from=test_verifier pid=258
+> [ 79.389568] JIT code: 00000000: 0f 1f 44 00 00 66 90 55 48 89 e5 48 81 ec 08 00
+> [ 79.397411] JIT code: 00000010: 00 00 48 c7 45 f8 64 00 00 00 bf 04 00 00 00 48
+> [ 79.405965] JIT code: 00000020: f7 df f0 48 29 7d f8 8b 45 f8 48 83 f8 60 74 02
+> [ 79.414719] JIT code: 00000030: c9 c3 31 c0 eb fa
+> ```
+> - This incantation will split out and decode the hex, then disassemble the
+> result:
+> ```shell
+> cat /tmp/jit.txt | cut -d: -f2- | xxd -r >/tmp/obj && objdump -D -b
+> binary -m i386:x86-64 /tmp/obj
+> ```
 
-On 01/07/2021 02.27, Kumar Kartikeya Dwivedi wrote:
-> This change implements CPUMAP redirect support for generic XDP programs.
-> The idea is to reuse the cpu map entry's queue that is used to push
-> native xdp frames for redirecting skb to a different CPU. This will
-> match native XDP behavior (in that RPS is invoked again for packet
-> reinjected into networking stack).
->
-> To be able to determine whether the incoming skb is from the driver or
-> cpumap, we reuse skb->redirected bit that skips generic XDP processing
-> when it is set. To always make use of this, CONFIG_NET_REDIRECT guard on
-> it has been lifted and it is always available.
->
->  From the redirect side, we add the skb to ptr_ring with its lowest bit
-> set to 1.  This should be safe as skb is not 1-byte aligned. This allows
-> kthread to discern between xdp_frames and sk_buff. On consumption of the
-> ptr_ring item, the lowest bit is unset.
->
-> In the end, the skb is simply added to the list that kthread is anyway
-> going to maintain for xdp_frames converted to skb, and then received
-> again by using netif_receive_skb_list.
->
-> Bulking optimization for generic cpumap is left as an exercise for a
-> future patch for now.
-Fine by me, I hope bulking is added later, as I think with bulking this 
-will be a faster alternative than RPS.
->
-> Since cpumap entry progs are now supported, also remove check in
-> generic_xdp_install for the cpumap.
->
-> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->   include/linux/bpf.h    |   9 +++-
->   include/linux/skbuff.h |  10 +---
->   kernel/bpf/cpumap.c    | 115 +++++++++++++++++++++++++++++++++++------
->   net/core/dev.c         |   3 +-
->   net/core/filter.c      |   6 ++-
->   5 files changed, 115 insertions(+), 28 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f309fc1509f2..095aaa104c56 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1513,7 +1513,8 @@ bool dev_map_can_have_prog(struct bpf_map *map);
->   void __cpu_map_flush(void);
->   int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_buff *xdp,
->   		    struct net_device *dev_rx);
-> -bool cpu_map_prog_allowed(struct bpf_map *map);
-> +int cpu_map_generic_redirect(struct bpf_cpu_map_entry *rcpu,
-> +			     struct sk_buff *skb);
->   
->   /* Return map's numa specified by userspace */
->   static inline int bpf_map_attr_numa_node(const union bpf_attr *attr)
-> @@ -1710,6 +1711,12 @@ static inline int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu,
->   	return 0;
->   }
->   
-> +static inline int cpu_map_generic_redirect(struct bpf_cpu_map_entry *rcpu,
-> +					   struct sk_buff *skb)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
->   static inline bool cpu_map_prog_allowed(struct bpf_map *map)
->   {
->   	return false;
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index b2db9cd9a73f..f19190820e63 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -863,8 +863,8 @@ struct sk_buff {
->   	__u8			tc_skip_classify:1;
->   	__u8			tc_at_ingress:1;
->   #endif
-> -#ifdef CONFIG_NET_REDIRECT
->   	__u8			redirected:1;
-> +#ifdef CONFIG_NET_REDIRECT
->   	__u8			from_ingress:1;
->   #endif
->   #ifdef CONFIG_TLS_DEVICE
-> @@ -4664,17 +4664,13 @@ static inline __wsum lco_csum(struct sk_buff *skb)
->   
->   static inline bool skb_is_redirected(const struct sk_buff *skb)
->   {
-> -#ifdef CONFIG_NET_REDIRECT
->   	return skb->redirected;
-> -#else
-> -	return false;
-> -#endif
->   }
->   
->   static inline void skb_set_redirected(struct sk_buff *skb, bool from_ingress)
->   {
-> -#ifdef CONFIG_NET_REDIRECT
->   	skb->redirected = 1;
-> +#ifdef CONFIG_NET_REDIRECT
->   	skb->from_ingress = from_ingress;
->   	if (skb->from_ingress)
->   		skb->tstamp = 0;
-> @@ -4683,9 +4679,7 @@ static inline void skb_set_redirected(struct sk_buff *skb, bool from_ingress)
->   
->   static inline void skb_reset_redirect(struct sk_buff *skb)
->   {
-> -#ifdef CONFIG_NET_REDIRECT
->   	skb->redirected = 0;
-> -#endif
->   }
->   
->   static inline bool skb_csum_is_sctp(struct sk_buff *skb)
-> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-> index a1a0c4e791c6..274353e2cd70 100644
-> --- a/kernel/bpf/cpumap.c
-> +++ b/kernel/bpf/cpumap.c
-> @@ -16,6 +16,7 @@
->    * netstack, and assigning dedicated CPUs for this stage.  This
->    * basically allows for 10G wirespeed pre-filtering via bpf.
->    */
-> +#include <linux/bitops.h>
->   #include <linux/bpf.h>
->   #include <linux/filter.h>
->   #include <linux/ptr_ring.h>
-> @@ -168,6 +169,49 @@ static void put_cpu_map_entry(struct bpf_cpu_map_entry *rcpu)
->   	}
->   }
->   
-> +static void cpu_map_bpf_prog_run_skb(struct bpf_cpu_map_entry *rcpu,
-> +				     struct list_head *listp,
-> +				     struct xdp_cpumap_stats *stats)
-> +{
-> +	struct sk_buff *skb, *tmp;
-> +	struct xdp_buff xdp;
-> +	u32 act;
-> +	int err;
-> +
-> +	if (!rcpu->prog)
-> +		return;
+that's where I decided to write to list and ask for help before
+googling ppc assembly ;-)
 
-Move this one level out. Why explained below.
+I changed the test_verifier to stop before executing the test
+so I can dump the program via bpftool:
 
+	[root@ibm-p9z-07-lp1 bpf-next]# bpftool prog dump xlated id 48
+	   0: (b7) r0 = 0
+	   1: (7b) *(u64 *)(r10 -8) = r0
+	   2: (b7) r1 = 1
+	   3: (db) r1 = atomic64_fetch_add((u64 *)(r10 -8), r1)
+	   4: (55) if r1 != 0x0 goto pc-1
+	   5: (95) exit
 
-> +
-> +	list_for_each_entry_safe(skb, tmp, listp, list) {
-> +		act = bpf_prog_run_generic_xdp(skb, &xdp, rcpu->prog);
-> +		switch (act) {
-> +		case XDP_PASS:
-> +			break;
-> +		case XDP_REDIRECT:
-> +			skb_list_del_init(skb);
-> +			err = xdp_do_generic_redirect(skb->dev, skb, &xdp,
-> +						      rcpu->prog);
-> +			if (unlikely(err)) {
-> +				kfree_skb(skb);
-> +				stats->drop++;
-> +			} else {
-> +				stats->redirect++;
-> +			}
-> +			return;
-> +		default:
-> +			bpf_warn_invalid_xdp_action(act);
-> +			fallthrough;
-> +		case XDP_ABORTED:
-> +			trace_xdp_exception(skb->dev, rcpu->prog, act);
-> +			fallthrough;
-> +		case XDP_DROP:
-> +			skb_list_del_init(skb);
-> +			kfree_skb(skb);
-> +			stats->drop++;
-> +			return;
-> +		}
-> +	}
-> +}
-> +
->   static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
->   				    void **frames, int n,
->   				    struct xdp_cpumap_stats *stats)
-> @@ -179,8 +223,6 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
->   	if (!rcpu->prog)
->   		return n;
->   
-> -	rcu_read_lock_bh();
-> -
+	[root@ibm-p9z-07-lp1 bpf-next]# bpftool prog dump jited id 48
+	bpf_prog_a2eb9104e5e8a5bf:
+	   0:   nop
+	   4:   nop
+	   8:   stdu    r1,-112(r1)
+	   c:   std     r31,104(r1)
+	  10:   addi    r31,r1,48
+	  14:   li      r8,0
+	  18:   std     r8,-8(r31)
+	  1c:   li      r3,1
+	  20:   addi    r9,r31,-8
+	  24:   ldarx   r10,0,r9
+	  28:   add     r10,r10,r3
+	  2c:   stdcx.  r10,0,r9
+	  30:   bne     0x0000000000000024
+	  34:   cmpldi  r3,0
+	  38:   bne     0x0000000000000034
+	  3c:   nop
+	  40:   ld      r31,104(r1)
+	  44:   addi    r1,r1,112
+	  48:   mr      r3,r8
+	  4c:   blr
 
-Notice the return before doing rcu_read_lock_bh().
+I wanted to also do it through bpf_jit_enable and bpf_jit_dump, but I need to check
+the setup, because I can't set bpf_jit_enable to 2 at the moment.. might take some time
 
-Here we try to avoid the extra call to do_softirq() when calling 
-rcu_read_unlock_bh.
+	[root@ibm-p9z-07-lp1 bpf-next]# echo 2 > /proc/sys/net/core/bpf_jit_enable 
+	-bash: echo: write error: Invalid argument
 
-When RX-napi and cpumap share/run-on the same CPU, activating 
-do_softirq() two time in the kthread_cpumap cause RX-napi to get more 
-CPU time to enqueue more packets into cpumap.  Thus, cpumap can easier 
-get overloaded.
+jirka
 
-
->   	xdp_set_return_frame_no_direct();
->   	xdp.rxq = &rxq;
->   
-> @@ -227,17 +269,34 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
->   		}
->   	}
->   
-> +	xdp_clear_return_frame_no_direct();
-> +
-> +	return nframes;
-> +}
-> +
-> +#define CPUMAP_BATCH 8
-> +
-> +static int cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
-> +				int xdp_n, struct xdp_cpumap_stats *stats,
-> +				struct list_head *list)
-> +{
-> +	int nframes;
-> +
-> +	rcu_read_lock_bh();
-> +
-> +	nframes = cpu_map_bpf_prog_run_xdp(rcpu, frames, xdp_n, stats);
-> +
->   	if (stats->redirect)
-> -		xdp_do_flush_map();
-> +		xdp_do_flush();
->   
-> -	xdp_clear_return_frame_no_direct();
-> +	if (unlikely(!list_empty(list)))
-> +		cpu_map_bpf_prog_run_skb(rcpu, list, stats);
->   
-> -	rcu_read_unlock_bh(); /* resched point, may call do_softirq() */
-> +	rcu_read_unlock_bh();
-
-I would like to keep this comment, to help people 
-troubleshooting/understand why RX-napi to get more CPU time than kthread.
-
-
->   
->   	return nframes;
->   }
->   
-> -#define CPUMAP_BATCH 8
->   
->   static int cpu_map_kthread_run(void *data)
->   {
-> @@ -254,9 +313,9 @@ static int cpu_map_kthread_run(void *data)
->   		struct xdp_cpumap_stats stats = {}; /* zero stats */
->   		unsigned int kmem_alloc_drops = 0, sched = 0;
->   		gfp_t gfp = __GFP_ZERO | GFP_ATOMIC;
-> +		int i, n, m, nframes, xdp_n;
->   		void *frames[CPUMAP_BATCH];
->   		void *skbs[CPUMAP_BATCH];
-> -		int i, n, m, nframes;
->   		LIST_HEAD(list);
->   
->   		/* Release CPU reschedule checks */
-> @@ -280,9 +339,20 @@ static int cpu_map_kthread_run(void *data)
->   		 */
->   		n = __ptr_ring_consume_batched(rcpu->queue, frames,
->   					       CPUMAP_BATCH);
-> -		for (i = 0; i < n; i++) {
-> +		for (i = 0, xdp_n = 0; i < n; i++) {
->   			void *f = frames[i];
-> -			struct page *page = virt_to_page(f);
-> +			struct page *page;
-> +
-> +			if (unlikely(__ptr_test_bit(0, &f))) {
-> +				struct sk_buff *skb = f;
-> +
-> +				__ptr_clear_bit(0, &skb);
-> +				list_add_tail(&skb->list, &list);
-> +				continue;
-> +			}
-> +
-> +			frames[xdp_n++] = f;
-> +			page = virt_to_page(f);
->   
->   			/* Bring struct page memory area to curr CPU. Read by
->   			 * build_skb_around via page_is_pfmemalloc(), and when
-> @@ -292,7 +362,7 @@ static int cpu_map_kthread_run(void *data)
->   		}
->   
->   		/* Support running another XDP prog on this CPU */
-> -		nframes = cpu_map_bpf_prog_run_xdp(rcpu, frames, n, &stats);
-> +		nframes = cpu_map_bpf_prog_run(rcpu, frames, xdp_n, &stats, &list);
->   		if (nframes) {
->   			m = kmem_cache_alloc_bulk(skbuff_head_cache, gfp, nframes, skbs);
->   			if (unlikely(m == 0)) {
-> @@ -330,12 +400,6 @@ static int cpu_map_kthread_run(void *data)
->   	return 0;
->   }
->   
-> -bool cpu_map_prog_allowed(struct bpf_map *map)
-> -{
-> -	return map->map_type == BPF_MAP_TYPE_CPUMAP &&
-> -	       map->value_size != offsetofend(struct bpf_cpumap_val, qsize);
-> -}
-> -
->   static int __cpu_map_load_bpf_program(struct bpf_cpu_map_entry *rcpu, int fd)
->   {
->   	struct bpf_prog *prog;
-> @@ -696,6 +760,25 @@ int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_buff *xdp,
->   	return 0;
->   }
->   
-> +int cpu_map_generic_redirect(struct bpf_cpu_map_entry *rcpu,
-> +			     struct sk_buff *skb)
-> +{
-> +	int ret;
-> +
-> +	__skb_pull(skb, skb->mac_len);
-> +	skb_set_redirected(skb, false);
-> +	__ptr_set_bit(0, &skb);
-> +
-> +	ret = ptr_ring_produce(rcpu->queue, skb);
-> +	if (ret < 0)
-> +		goto trace;
-> +
-> +	wake_up_process(rcpu->kthread);
-> +trace:
-> +	trace_xdp_cpumap_enqueue(rcpu->map_id, !ret, !!ret, rcpu->cpu);
-> +	return ret;
-> +}
-> +
->   void __cpu_map_flush(void)
->   {
->   	struct list_head *flush_list = this_cpu_ptr(&cpu_map_flush_list);
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index ad5ab33cbd39..8521936414f2 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -5665,8 +5665,7 @@ static int generic_xdp_install(struct net_device *dev, struct netdev_bpf *xdp)
->   		 * have a bpf_prog installed on an entry
->   		 */
->   		for (i = 0; i < new->aux->used_map_cnt; i++) {
-> -			if (dev_map_can_have_prog(new->aux->used_maps[i]) ||
-> -			    cpu_map_prog_allowed(new->aux->used_maps[i])) {
-> +			if (dev_map_can_have_prog(new->aux->used_maps[i])) {
->   				mutex_unlock(&new->aux->used_maps_mutex);
->   				return -EINVAL;
->   			}
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 0b13d8157a8f..4a21fde3028f 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -4038,8 +4038,12 @@ static int xdp_do_generic_redirect_map(struct net_device *dev,
->   			goto err;
->   		consume_skb(skb);
->   		break;
-> +	case BPF_MAP_TYPE_CPUMAP:
-> +		err = cpu_map_generic_redirect(fwd, skb);
-> +		if (unlikely(err))
-> +			goto err;
-> +		break;
->   	default:
-> -		/* TODO: Handle BPF_MAP_TYPE_CPUMAP */
->   		err = -EBADRQC;
->   		goto err;
->   	}
-
-
-I like the rest :-)
-
-Thanks for working on this!
-
---Jesper
+> 
+> --
+> 
+> Sandipan, Naveen, do you know of anything in the PowerPC code that
+> might be leading us to drop the BPF_FETCH flag from the atomic
+> instruction in tools/testing/selftests/bpf/verifier/atomic_bounds.c?
+> 
 
