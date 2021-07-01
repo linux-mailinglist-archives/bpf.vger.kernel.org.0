@@ -2,132 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2DE3B93B9
-	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 17:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247E93B9403
+	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 17:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbhGAPMp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Jul 2021 11:12:45 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5131 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232969AbhGAPMp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 1 Jul 2021 11:12:45 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161F79gA076288;
-        Thu, 1 Jul 2021 11:09:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=ubGNqFG5KcgLyKIENcAKYydTQimq31wdX0j7ep3sUHI=;
- b=nhLmLtTzJJvcY+cGQzG3e0L4t/SF2u/q8hxxsSGxBQmTh7WS4XHWPGqoY9FtaDiEY//9
- wOxOPOtt0YG2WFG8D6GWGp6vySsOcjN1zfpTzWoaNaVPZZIP06zsdCQjzCWzXGiUW6a9
- H+rj7xpsXaurOHTkviufxyek6v8/HZY0zgj/v66/DXfbC8xjEBEZBUAVu4yd3XHxa5r5
- ntjiwU86ykFUPfrJfOctYKFMjcZ/r/4qqusTiGBfzIQ39Y+fDv4JvVcnnV7CYFYw4IT+
- Chq7LoeLXp3oGkVlIdCIDSAYH6k69c7K5WBe1iYAp1NM7t1vKAMoGuBlWaPCAQp8Ccir 7g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39he8fusk9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 11:09:35 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 161F7Ndh077943;
-        Thu, 1 Jul 2021 11:09:34 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39he8fusj1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 11:09:34 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 161EtEBW026989;
-        Thu, 1 Jul 2021 15:09:32 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 39duv8aftx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 15:09:32 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 161F9UxH31588764
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Jul 2021 15:09:30 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F82FAE89D;
-        Thu,  1 Jul 2021 15:09:30 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 45487AE87F;
-        Thu,  1 Jul 2021 15:09:26 +0000 (GMT)
-Received: from naverao1-tp.in.ibm.com (unknown [9.85.115.110])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Jul 2021 15:09:26 +0000 (GMT)
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-To:     <bpf@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Brendan Jackman <jackmanb@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH 2/2] powerpc/bpf: Reject atomic ops in ppc32 JIT
-Date:   Thu,  1 Jul 2021 20:38:59 +0530
-Message-Id: <426699046d89fe50f66ecf74bd31c01eda976ba5.1625145429.git.naveen.n.rao@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1625145429.git.naveen.n.rao@linux.vnet.ibm.com>
-References: <cover.1625145429.git.naveen.n.rao@linux.vnet.ibm.com>
+        id S233335AbhGAPgu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Jul 2021 11:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233239AbhGAPgt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Jul 2021 11:36:49 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EF7C061762;
+        Thu,  1 Jul 2021 08:34:19 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id kt19so4492850pjb.2;
+        Thu, 01 Jul 2021 08:34:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hM48D/tfWkKwtaJqEBYo4LKCs7wLgMCLr8CTnLjZ3ds=;
+        b=FwT/3Ybvlf54T1QM2fsHElcQWpBh+xuJ9nqlmdIH85OgBeGTlx39mvZA10IqqZEDjv
+         CyoxIgOHqEnHPihzUAl90UdU4knf6i9EMquID6CBiZdw/bshnHtU/7C26wShQmGpNGOD
+         bRsNAXAl9qHNGGMCMd38ABQmiAipbxBygOYtrqH5lW4k2kPYIEgGbmj6oH34B6FEKNOR
+         BrwTY9f3nFpZEvAsG9KHa5zXVB+cDHZJ+hW6fPjcMdvN0rzyXcQCVLUfVHG3dpJ0sRf9
+         rPmTZLLfl3mm3xtknOOQRR1/JDd+STPxBQCm/dufVLewlpNB4d/b7oM720et0HNFb57i
+         tILw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hM48D/tfWkKwtaJqEBYo4LKCs7wLgMCLr8CTnLjZ3ds=;
+        b=e3dXhmHEWMXtYi4fSaCRyKvdQVIyFYRMe5ZJ3SmGU6Gg+T9Z8eh8msixe8UN9j+4f5
+         0ar+LjGxNSzuM1v3zRRm3PA3Olfm1VgQ9YH8O0O9aECOog3UUYr0L3HFUl62yBUVJ/4n
+         jemckd72/8dxfvdEBn3dnotEmDRbYaw/JJwdPrpWIFD3X5/msMORKziH8HqF6Wzsf+Sq
+         BdiGJoBXtOKdEEuG/W1E1b5r49Cp6BHpCqWGAm+MjQNksEssXC3cUGfOg3ZL18XUoJ5o
+         APSP0vD9HqV/hQpSg5ehY/VdSPk0byO5OfAhSLy5v3Y2xULEOwDXZGn9BLLbqYvRx67P
+         rdqw==
+X-Gm-Message-State: AOAM533mbW0zneI9SIKKqc1EoUeacvV4Dl6Q0Y0ixHRxi9OY4n0L6FXV
+        t6rMrm1DPtiQaQU7BPpwuHg=
+X-Google-Smtp-Source: ABdhPJzEOH8b31RRmBXOt7nPL2VmzJZ+x8vhtAbyK99mV4VcWK0EUkGYr3+S3pEN2fxzWeZi1dXZFQ==
+X-Received: by 2002:a17:902:e890:b029:129:3bb0:37cf with SMTP id w16-20020a170902e890b02901293bb037cfmr159850plg.68.1625153658826;
+        Thu, 01 Jul 2021 08:34:18 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:f1f2])
+        by smtp.gmail.com with ESMTPSA id m18sm391725pff.88.2021.07.01.08.34.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 08:34:18 -0700 (PDT)
+Date:   Thu, 1 Jul 2021 08:34:14 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next 1/8] bpf: Introduce bpf timers.
+Message-ID: <20210701153414.5kxste77mejnv4yp@ast-mbp.dhcp.thefacebook.com>
+References: <20210624022518.57875-1-alexei.starovoitov@gmail.com>
+ <20210624022518.57875-2-alexei.starovoitov@gmail.com>
+ <CAADnVQJrZdC3f8SxxBqQK9Ov4Kcgao0enBNAhmwJuZPgxwjQUg@mail.gmail.com>
+ <878s2q1cd3.fsf@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yCBw-pmmBVaW5t4-Az1aurzpmog8aV3n
-X-Proofpoint-GUID: 6inMzho6QJFnYVkHYViCz-ACO8_UkTQB
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-01_08:2021-07-01,2021-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 impostorscore=0 malwarescore=0
- spamscore=0 adultscore=0 bulkscore=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107010092
+In-Reply-To: <878s2q1cd3.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 91c960b0056672 ("bpf: Rename BPF_XADD and prepare to encode other
-atomics in .imm") converted BPF_XADD to BPF_ATOMIC and updated all JIT
-implementations to reject JIT'ing instructions with an immediate value
-different from BPF_ADD. However, ppc32 BPF JIT was implemented around
-the same time and didn't include the same change. Update the ppc32 JIT
-accordingly.
+On Thu, Jul 01, 2021 at 01:51:04PM +0200, Toke Høiland-Jørgensen wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> 
+> > On Wed, Jun 23, 2021 at 7:25 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >>
+> >> The bpf_timer_init() helper is receiving hidden 'map' argument and
+> > ...
+> >> +               if (insn->imm == BPF_FUNC_timer_init) {
+> >> +                       aux = &env->insn_aux_data[i + delta];
+> >> +                       if (bpf_map_ptr_poisoned(aux)) {
+> >> +                               verbose(env, "bpf_timer_init abusing map_ptr\n");
+> >> +                               return -EINVAL;
+> >> +                       }
+> >> +                       map_ptr = BPF_MAP_PTR(aux->map_ptr_state);
+> >> +                       {
+> >> +                               struct bpf_insn ld_addrs[2] = {
+> >> +                                       BPF_LD_IMM64(BPF_REG_3, (long)map_ptr),
+> >> +                               };
+> >
+> > After a couple of hours of ohh so painful debugging I realized that this
+> > approach doesn't work for inner maps. Duh.
+> > For inner maps it remembers inner_map_meta which is a template
+> > of inner map.
+> > Then bpf_timer_cb() passes map ptr into timer callback and if it tries
+> > to do map operations on it the inner_map_meta->ops will be valid,
+> > but the struct bpf_map doesn't have the actual data.
+> > So to support map-in-map we need to require users to pass map pointer
+> > explicitly into bpf_timer_init().
+> > Unfortunately the verifier cannot guarantee that bpf timer field inside
+> > map element is from the same map that is passed as a map ptr.
+> > The verifier can check that they're equivalent from safety pov
+> > via bpf_map_meta_equal(), so common user mistakes will be caught by it.
+> > Still not pretty that it's partially on the user to do:
+> > bpf_timer_init(timer, CLOCK, map);
+> > with 'timer' matching the 'map'.
+> 
+> The implication being that if they don't match, the callback will just
+> get a different argument and it'll be up to the developer to deal with
+> any bugs arising from that?
 
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
----
- arch/powerpc/net/bpf_jit_comp32.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+Right. The kernel won't crash, of course.
 
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index cbe5b399ed869d..91c990335a16c9 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -773,9 +773,17 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 			break;
- 
- 		/*
--		 * BPF_STX XADD (atomic_add)
-+		 * BPF_STX ATOMIC (atomic ops)
- 		 */
--		case BPF_STX | BPF_XADD | BPF_W: /* *(u32 *)(dst + off) += src */
-+		case BPF_STX | BPF_ATOMIC | BPF_W:
-+			if (imm != BPF_ADD) {
-+				pr_err_ratelimited(
-+					"eBPF filter atomic op code %02x (@%d) unsupported\n", code, i);
-+				return -ENOTSUPP;
-+			}
-+
-+			/* *(u32 *)(dst + off) += src */
-+
- 			bpf_set_seen_register(ctx, tmp_reg);
- 			/* Get offset into TMP_REG */
- 			EMIT(PPC_RAW_LI(tmp_reg, off));
-@@ -789,7 +797,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 			PPC_BCC_SHORT(COND_NE, (ctx->idx - 3) * 4);
- 			break;
- 
--		case BPF_STX | BPF_XADD | BPF_DW: /* *(u64 *)(dst + off) += src */
-+		case BPF_STX | BPF_ATOMIC | BPF_DW: /* *(u64 *)(dst + off) += src */
- 			return -EOPNOTSUPP;
- 
- 		/*
+> > Another option is to drop 'map' arg from timer callback,
+> > but the usability of the callback will suffer. The inner maps
+> > will be quite painful to use from it.
+> > Anyway I'm going with explicit 'map' arg in the next respin.
+> > Other ideas?
+> 
+> So the problem here is that the inner map pointer is not known at
+> verification time but only at runtime? Could the verifier inject code to
+
+yep.
+
+> always spill inner map pointers to a known area of the stack after a
+> map-in-map lookup, and then just load them back from there when needed?
+
+interesting idea. That made me thinking that the verifier has
+"map_lookup tracking" ability with increasing reg->id.
+Since in some cases we had to distinguish that
+val1 = map_lookup(map1, key1);
+val2 = map_lookup(map1, key1);
+val1 != val2, though they could be from the same map and key.
+Maybe building on top of that feature will address the map vs timer
+equivalence issue.
+
+> Not sure that would be worth the complexity (and overhead!), though;
+> having to supply an explicit callback arg is not that uncommon a pattern
+> after all...
+> 
+> -Toke
+> 
+
 -- 
-2.31.1
-
