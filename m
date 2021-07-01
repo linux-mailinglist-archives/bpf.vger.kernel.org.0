@@ -2,227 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D403B9303
-	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 16:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C853B9330
+	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 16:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbhGAOSX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Jul 2021 10:18:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39779 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232081AbhGAOSX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 1 Jul 2021 10:18:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625148952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BQuBNqnXtrucufI+PPJzux6WeHo7CQIrHe9vbJeS+xA=;
-        b=LWqpym9VzZz3RTNin7HkZg2ho4xMMz6P1Q8lt1qcGIGMMi6pjaThRxlAfjdwYzAbRw315Z
-        tKdj7Jk4k60h+lasReJJaVb+UeuunyPk5a74QkvW5AcNuFTDR2xxTEkQzGLl0mnTBeK0m+
-        1wu4kLYwgNQ2xcNR1vX86bbxjIAyuqY=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-234-yKIo32r8N_-js8fdyFegZg-1; Thu, 01 Jul 2021 10:15:51 -0400
-X-MC-Unique: yKIo32r8N_-js8fdyFegZg-1
-Received: by mail-ed1-f70.google.com with SMTP id w15-20020a05640234cfb02903951279f8f3so3173334edc.11
-        for <bpf@vger.kernel.org>; Thu, 01 Jul 2021 07:15:51 -0700 (PDT)
+        id S233288AbhGAO0C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Jul 2021 10:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233278AbhGAO0C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Jul 2021 10:26:02 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24ACC061764
+        for <bpf@vger.kernel.org>; Thu,  1 Jul 2021 07:23:31 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id n61so2519463uan.2
+        for <bpf@vger.kernel.org>; Thu, 01 Jul 2021 07:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8ZYZZPLtxm0D8wKCq6t4+Fy+RhxhZRnjK7G5sIibVAY=;
+        b=kBv9cdGrIayWfMzZazwxNI9/duBTp2RkiZ5RCpTGoMmI4sxwPfmxtyqijgoC6eFaHP
+         vuY6nQPmSg0rBx1F6AnU3iGjJXVrIv6hMPT5BDZnXtJ8kZ6ta2AKfwvSzsQiBoGDBLxe
+         Dmi2eQ+66de1aSZjyItIFwNWh1cy7b6EjIO393RJPGKNXebp3P4Yx/mAegF28z7zxu3H
+         LLjGSN1TkEEC2gynwHgOJdUg1KIDxVmNmxUfSOg+YNg1SDUVOYC9QVrLdvNk9oHHIut5
+         NEaw07sNcTuAQPUw2+IKV8UcC+TCiR2ZQmvtrZRt2mROer1FgbKX1f54BG6f/nPVo19B
+         +X5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BQuBNqnXtrucufI+PPJzux6WeHo7CQIrHe9vbJeS+xA=;
-        b=Ilf5DuHZzNgzJCZw5ftfYeES6I7WL6fGSbomnuaCItBlMh5+/XSUEnEK7skz8SkFin
-         2/TDlT4akCc7OvNcjJ9efnBVDk9JZdNcXr+1DsmAMfiNcUwoiHiN9O4FOTt6zp2Mg2/z
-         vzH9FXAoT3xgqsJmgFWWVEhW72LIq2QuOD9A9yhROzXb8gS4IK3ddT3WRNl/aa4q5Fnx
-         BNiJaEStH5mPSXolM8bpKt2WYzBxl8FD3OxkINdCMLK0aTEo7lhoTvUUCPcAh/PE6f8A
-         ErCPRXu5qxpUT3Yi2KAF9MwI67BKs/zu28X1MzjRlq1v5mFlgePkNLj1yt6xFct9amHd
-         J9EQ==
-X-Gm-Message-State: AOAM531FuDjNr/oFgp8neks4TVpsD/VkTJCQtclDO3t0i44l1rHmVd3P
-        KgCr+n0JAqHwKolfVrOVGhpqo0/6NRn2OSOiE3fAsQISxbJuSA3cc6R9iSxXWDHY+2xBmGmKx/+
-        QHp/wRZJCrQO6
-X-Received: by 2002:a17:906:7315:: with SMTP id di21mr10130852ejc.511.1625148950314;
-        Thu, 01 Jul 2021 07:15:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx8+fZHlQYTx1lHxW02w5jBxsLJMZbpyGox4k3DzlqokvEZ8C1gtgGk7SsPHAZnCXYXlibLVQ==
-X-Received: by 2002:a17:906:7315:: with SMTP id di21mr10130826ejc.511.1625148950118;
-        Thu, 01 Jul 2021 07:15:50 -0700 (PDT)
-Received: from krava ([185.153.78.55])
-        by smtp.gmail.com with ESMTPSA id cd4sm10870515ejb.104.2021.07.01.07.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 07:15:49 -0700 (PDT)
-Date:   Thu, 1 Jul 2021 16:15:45 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Cc:     Brendan Jackman <jackmanb@google.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Florent Revest <revest@chromium.org>
-Subject: Re: [BUG soft lockup] Re: [PATCH bpf-next v3] bpf: Propagate stack
- bounds to registers in atomics w/ BPF_FETCH
-Message-ID: <YN3OEbjzxPgCWN0v@krava>
-References: <CA+i-1C0DAr5ecAOV06_fqeCooic4AF=71ur63HJ6ddbj9ceDpQ@mail.gmail.com>
- <YNspwB8ejUeRIVxt@krava>
- <YNtEcjYvSvk8uknO@krava>
- <CA+i-1C3RDT1Y=A7rAitfbrUUDXxCJeXJLw1oABBCpBubm5De6A@mail.gmail.com>
- <YNtNMSSZh3LTp2we@krava>
- <YNuL442y2yn5RRdc@krava>
- <CA+i-1C1-7O5EYHZcDtgQaDVrRW+gEQ1WOtiNDZ19NKXUQ_ZLtw@mail.gmail.com>
- <YNxmwZGtnqiXGnF0@krava>
- <CA+i-1C2-MGe0BziQc8t4ry3mj45W0ULVrGsU+uQw9952tFZ1nA@mail.gmail.com>
- <1625133383.8r6ttp782l.naveen@linux.ibm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8ZYZZPLtxm0D8wKCq6t4+Fy+RhxhZRnjK7G5sIibVAY=;
+        b=UG/syKCr6xczGGUNDIUymEYIwMirRGoiwrQswy4b6tNSfIp5EKAzzlpqdr6m28av7z
+         /Zfz2oVlZM8T75yZCm+4D7YBAdrlmTb6ZmX7138w7ow6EEvPAKasntq8XWzCB2DsU/nS
+         F+0SqSmgr5Jhb08Quge5bi4K43/KDJ6UhljLKMCUyqjJ7rJtEg+yVI0/JAidVuP/M9Wt
+         UsJz6XnYzpoWB+9DkYnCTu2zWOX+Grg79JFwnFnig1BI/nPmZ/hQ39jnxXl6x3xTRa/o
+         rGqRy2LP2QqPmXd0EDIjffzAm1vCncrsFEDX0easI0dCF7yPRTCa9ek44UgEenZ4jxIX
+         /jiQ==
+X-Gm-Message-State: AOAM532cLbjnKzM1FE2av713EkDk7XFSFm6DKL0ydbfoMVTAXtZu61AI
+        5On3haEYxMeZ8+vXIPYSIbYb3hq1X4FVRbUBsKDRgw==
+X-Google-Smtp-Source: ABdhPJx2oBw+TeBECEm0/q5V+pChm69gVODCsQXZeTvzl9jaJ3WWW/V23J8lrJcxwiS1GyjoBORkKFEfajqRXSJj0AE=
+X-Received: by 2002:ab0:3ae:: with SMTP id 43mr211048uau.63.1625149409711;
+ Thu, 01 Jul 2021 07:23:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1625133383.8r6ttp782l.naveen@linux.ibm.com>
+References: <20210628144908.881499-1-phind.uet@gmail.com> <CANn89iJ6M2WFS3B+sSOysekScUFmO9q5YHxgHGsbozbvkW9ivg@mail.gmail.com>
+ <79490158-e6d1-aabf-64aa-154b71205c74@gmail.com> <CADVnQy=Q9W=Vxu81ctPLx08D=ALnHBXGr0c4BLtQGxwQE+yjRg@mail.gmail.com>
+ <ee5ef69e-ee3f-1df0-2033-5adc06a46b9c@gmail.com> <CADVnQynqMQhO4cBON=xUCkne9-E1hze3naMZZ8tQ-a0k71kh8g@mail.gmail.com>
+ <205F52AB-4A5B-4953-B97E-17E7CACBBCD8@gmail.com> <CANn89iJbquZ=tVBRg7JNR8pB106UY4Xvi7zkPVn0Uov9sj8akg@mail.gmail.com>
+ <1786BBEE-9C7B-45B2-B451-F535ABB804EF@gmail.com> <CANn89iK4Qwf0ezWac3Cn1xWN_Hw+-QL-+H8YmDm4cZP=FH+MTQ@mail.gmail.com>
+ <CADVnQyk9maCc+tJ4-b6kufcBES9+Y2KpHPZadXssoVWX=Xr1Vw@mail.gmail.com> <30527e25-dd66-da7a-7344-494b4539abf7@gmail.com>
+In-Reply-To: <30527e25-dd66-da7a-7344-494b4539abf7@gmail.com>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Thu, 1 Jul 2021 10:23:13 -0400
+Message-ID: <CADVnQyn_965EHdQke_S7FUySiamyyRx-3b8o+cm+=4jYxG_GOw@mail.gmail.com>
+Subject: Re: [PATCH] tcp: Do not reset the icsk_ca_initialized in tcp_init_transfer.
+To:     Phi Nguyen <phind.uet@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com,
+        Yuchung Cheng <ycheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 04:32:03PM +0530, Naveen N. Rao wrote:
-> Hi Brendan, Hi Jiri,
-> 
-> 
-> Brendan Jackman wrote:
-> > On Wed, 30 Jun 2021 at 14:42, Jiri Olsa <jolsa@redhat.com> wrote:
-> > > 
-> > > On Wed, Jun 30, 2021 at 12:34:58PM +0200, Brendan Jackman wrote:
-> > > > On Tue, 29 Jun 2021 at 23:09, Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > >
-> > > > > On Tue, Jun 29, 2021 at 06:41:24PM +0200, Jiri Olsa wrote:
-> > > > > > On Tue, Jun 29, 2021 at 06:25:33PM +0200, Brendan Jackman wrote:
-> > > > > > > On Tue, 29 Jun 2021 at 18:04, Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > > > > > On Tue, Jun 29, 2021 at 04:10:12PM +0200, Jiri Olsa wrote:
-> > > > > > > > > On Mon, Jun 28, 2021 at 11:21:42AM +0200, Brendan Jackman wrote:
-> > > >
-> > > > > > > > > > atomics in .imm). Any idea if this test was ever passing on PowerPC?
-> > > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > hum, I guess not.. will check
-> > > > > > > >
-> > > > > > > > nope, it locks up the same:
-> > > > > > >
-> > > > > > > Do you mean it locks up at commit 91c960b0056 too?
-> > > >
-> > > > Sorry I was being stupid here - the test didn't exist at this commit
-> > > >
-> > > > > > I tried this one:
-> > > > > >   37086bfdc737 bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH
-> > > > > >
-> > > > > > I will check also 91c960b0056, but I think it's the new test issue
-> > > >
-> > > > So yeah hard to say whether this was broken on PowerPC all along. How
-> > > > hard is it for me to get set up to reproduce the failure? Is there a
-> > > > rootfs I can download, and some instructions for running a PowerPC
-> > > > QEMU VM? If so if you can also share your config and I'll take a look.
-> > > >
-> > > > If it's not as simple as that, I'll stare at the code for a while and
-> > > > see if anything jumps out.
-> > > >
-> > > 
-> > > I have latest fedora ppc server and compile/install latest bpf-next tree
-> > > I think it will be reproduced also on vm, I attached my config
-> > 
-> > OK, getting set up to boot a PowerPC QEMU isn't practical here unless
-> > someone's got commands I can copy-paste (suspect it will need .config
-> > hacking too). Looks like you need to build a proper bootloader, and
-> > boot an installer disk.
-> 
-> There are some notes put up here, though we can do better:
-> https://github.com/linuxppc/wiki/wiki/Booting-with-Qemu
-> 
-> If you are familiar with ubuntu/fedora cloud images (and cloud-init), you
-> should be able to grab one of the ppc64le images and boot it in qemu:
-> https://cloud-images.ubuntu.com/releases/hirsute/release/
-> https://alt.fedoraproject.org/alt/
-> 
-> > 
-> > Looked at the code for a bit but nothing jumped out. It seems like the
-> > verifier is seeing a BPF_ADD | BPF_FETCH, which means it doesn't
-> > detect an infinite loop, but then we lose the BPF_FETCH flag somewhere
-> > between do_check in verifier.c and bpf_jit_build_body in
-> > bpf_jit_comp64.c. That would explain why we don't get the "eBPF filter
-> > atomic op code %02x (@%d) unsupported", and would also explain the
-> > lockup because a normal atomic add without fetch would leave BPF R1
-> > unchanged.
-> > 
-> > We should be able to confirm that theory by disassembling the JITted
-> > code that gets hexdumped by bpf_jit_dump when bpf_jit_enable is set to
-> > 2... at least for PowerPC 32-bit... maybe you could paste those lines
-> > into the 64-bit version too? Here's some notes I made for
-> > disassembling the hexdump on x86, I guess you'd just need to change
-> > the objdump flags:
-> > 
-> > -- 
-> > 
-> > - Enable console JIT output:
-> > ```shell
-> > echo 2 > /proc/sys/net/core/bpf_jit_enable
-> > ```
-> > - Load & run the program of interest.
-> > - Copy the hex code from the kernel console to `/tmp/jit.txt`. Here's what a
-> > short program looks like. This includes a line of context - don't paste the
-> > `flen=` line.
-> > ```
-> > [ 79.381020] flen=8 proglen=54 pass=4 image=000000001af6f390
-> > from=test_verifier pid=258
-> > [ 79.389568] JIT code: 00000000: 0f 1f 44 00 00 66 90 55 48 89 e5 48 81 ec 08 00
-> > [ 79.397411] JIT code: 00000010: 00 00 48 c7 45 f8 64 00 00 00 bf 04 00 00 00 48
-> > [ 79.405965] JIT code: 00000020: f7 df f0 48 29 7d f8 8b 45 f8 48 83 f8 60 74 02
-> > [ 79.414719] JIT code: 00000030: c9 c3 31 c0 eb fa
-> > ```
-> > - This incantation will split out and decode the hex, then disassemble the
-> > result:
-> > ```shell
-> > cat /tmp/jit.txt | cut -d: -f2- | xxd -r >/tmp/obj && objdump -D -b
-> > binary -m i386:x86-64 /tmp/obj
-> > ```
-> > 
+On Wed, Jun 30, 2021 at 2:25 PM Phi Nguyen <phind.uet@gmail.com> wrote:
+>
+> On 6/29/2021 11:59 PM, Neal Cardwell wrote:
+> >    On Tue, Jun 29, 2021 at 8:58 AM Eric Dumazet <edumazet@google.com> wrote:
+> >  From my perspective, the bug was introduced when that 8919a9b31eb4
+> > commit introduced icsk_ca_initialized and set icsk_ca_initialized to 0
+> > in tcp_init_transfer(), missing the possibility that a process could
+> > call setsockopt(TCP_CONGESTION)  in state TCP_SYN_SENT (i.e. after the
+> > connect() or TFO open sendmsg()), which would call
+> > tcp_init_congestion_control(). The 8919a9b31eb4 commit did not intend
+> > to reset any initialization that the user had already explicitly made;
+> > it just missed the possibility of that particular sequence (which
+> > syzkaller managed to find!).
+> >
+> >> Although I am not sure what happens at accept() time when the listener
+> >> socket is cloned.
+> >
+> > It seems that for listener sockets, they cannot initialize their CC
+> > module state, because there is no way for them to reach
+> > tcp_init_congestion_control(), since:
+> >
+> > (a) tcp_set_congestion_control() -> tcp_reinit_congestion_control()
+> > will not call tcp_init_congestion_control() on a socket in CLOSE or
+> > LISTEN
+> >
+> > (b) tcp_init_transfer() -> tcp_init_congestion_control() can only
+> > happen for established sockets and successful TFO SYN_RECV sockets
+> Is this what was mentioned in this commit ce69e563b325(tcp: make sure
+> listeners don't initialize congestion-control state)
+
+Yes, exactly.
+
 > > --
-> > 
-> > Sandipan, Naveen, do you know of anything in the PowerPC code that
-> > might be leading us to drop the BPF_FETCH flag from the atomic
-> > instruction in tools/testing/selftests/bpf/verifier/atomic_bounds.c?
-> 
-> Yes, I think I just found the issue. We aren't looking at the correct BPF
-> instruction when checking the IMM value.
+> > [PATCH] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
+> >
+> > This commit fixes a bug (found by syzkaller) that could cause spurious
+> > double-initializations for congestion control modules, which could cause memory
+> > leaks orother problems for congestion control modules (like CDG) that allocate
+> > memory in their init functions.
+> >
+> > The buggy scenario constructed by syzkaller was something like:
+> >
+> > (1) create a TCP socket
+> > (2) initiate a TFO connect via sendto()
+> > (3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
+> >      which calls:
+> >         tcp_set_congestion_control() ->
+> >           tcp_reinit_congestion_control() ->
+> >             tcp_init_congestion_control()
+> > (4) receive ACK, connection is established, call tcp_init_transfer(),
+> >      set icsk_ca_initialized=0 (without first calling cc->release()),
+> >      call tcp_init_congestion_control() again.
+> >
+> > Note that in this sequence tcp_init_congestion_control() is called twice
+> > without a cc->release() call in between. Thus, for CC modules that allocate
+> > memory in their init() function, e.g, CDG, a memory leak may occur. The
+> > syzkaller tool managed to find a reproducer that triggered such a leak in CDG.
+> >
+> > The bug was introduced when that 8919a9b31eb4 commit introduced
+> > icsk_ca_initialized and set icsk_ca_initialized to 0 in tcp_init_transfer(),
+> > missing the possibility for a sequence like the one above, where a process
+> > could call setsockopt(TCP_CONGESTION) in state TCP_SYN_SENT (i.e. after the
+> > connect() or TFO open sendmsg()), which would call
+> > tcp_init_congestion_control(). The 8919a9b31eb4 commit did not intend to reset
+> > any initialization that the user had already explicitly made; it just missed
+> > the possibility of that particular sequence (which syzkaller managed to find).
+>
+> Could I use your commit message when I resubmit patch?
 
-great, nice catch! :-) that fixes it for me.. 
-
-Tested-by: Jiri Olsa <jolsa@redhat.com>
+Yes, feel free to use that commit message verbatim or modified.
 
 thanks,
-jirka
-
-> 
-> 
-> --- a/arch/powerpc/net/bpf_jit_comp64.c
-> +++ b/arch/powerpc/net/bpf_jit_comp64.c
-> @@ -673,7 +673,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->                 * BPF_STX ATOMIC (atomic ops)
->                 */
->                case BPF_STX | BPF_ATOMIC | BPF_W:
-> -                       if (insn->imm != BPF_ADD) {
-> +                       if (insn[i].imm != BPF_ADD) {
->                                pr_err_ratelimited(
->                                        "eBPF filter atomic op code %02x (@%d) unsupported\n",
->                                        code, i);
-> @@ -695,7 +695,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->                        PPC_BCC_SHORT(COND_NE, tmp_idx);
->                        break;
->                case BPF_STX | BPF_ATOMIC | BPF_DW:
-> -                       if (insn->imm != BPF_ADD) {
-> +                       if (insn[i].imm != BPF_ADD) {
->                                pr_err_ratelimited(
->                                        "eBPF filter atomic op code %02x (@%d) unsupported\n",
->                                        code, i);
-> 
-> 
-> 
-> Thanks,
-> Naveen
-> 
-
+neal
