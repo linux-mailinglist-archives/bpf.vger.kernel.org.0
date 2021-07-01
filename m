@@ -2,118 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF253B96A5
-	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 21:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4503B96DF
+	for <lists+bpf@lfdr.de>; Thu,  1 Jul 2021 22:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233327AbhGATjY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Jul 2021 15:39:24 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33146 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229894AbhGATjX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 1 Jul 2021 15:39:23 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161JXlNW155054;
-        Thu, 1 Jul 2021 15:36:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=jEVJ4q1ZvfZGmK6n0Mm367AN8ZZJQTFhBD8TmMyFW54=;
- b=agYOEfJp3o8IAEl3xdu2/XUEP9KiwzHWO1HM7Gycc1Rc8+OJ/3d9iCXCCgOyes8jZ7nI
- UpSmzLuBgzBWDTj0Qz96wKrPkLn2ca6jSHYo0nskm8uh0yMGp2vten8pMFfW39FyEDDG
- saYI0tsZALTc8pNKRYrotnRmGtnVgpPLR2K01Ru+KziHIg+Fd87J1PPwD7rdIakZXhKs
- dbub+10jeijb7WMLr0T14z2sHWL7DM1oBW2K3MYKcV4EXWkJbCALLRyVuWNXKsZRn/5W
- tx2xFmHdBLxG2UpGx2jX8gMGgdw9ZT1hCIk/w3d/VK2E96I70qsnx2ySa+/GCzrjlenu 6Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39hepr9xda-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 15:36:35 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 161JaY6I168946;
-        Thu, 1 Jul 2021 15:36:34 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39hepr9xc7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 15:36:34 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 161J2YmX025016;
-        Thu, 1 Jul 2021 19:36:32 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 39duv8aj8y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Jul 2021 19:36:32 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 161JaTqS19988856
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Jul 2021 19:36:30 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DD1B74208C;
-        Thu,  1 Jul 2021 19:36:29 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E9E34208E;
-        Thu,  1 Jul 2021 19:36:29 +0000 (GMT)
-Received: from localhost (unknown [9.85.115.110])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  1 Jul 2021 19:36:28 +0000 (GMT)
-Date:   Fri, 02 Jul 2021 01:06:27 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [PATCH 2/2] powerpc/bpf: Reject atomic ops in ppc32 JIT
-To:     bpf@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S231842AbhGAUIL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Jul 2021 16:08:11 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51578 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229894AbhGAUIL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 1 Jul 2021 16:08:11 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 161JwjVM001214
+        for <bpf@vger.kernel.org>; Thu, 1 Jul 2021 13:05:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=rfEWlzyTBYt8xwmwundc1bYUM5A4dNQaNhfW7pvLG/A=;
+ b=qAUqUMkE43XFNCTfobEZWfNse7U5NW0HHcFRGnBtFW1WBiout/hZNydpUNcwJtWH3h2g
+ wdHZXep3IRHzjwL9s7MxQaVDzkfNoiKJfn8QyPgqWTpZSg3IB4nXn+6QYlKijAfBXyHU
+ 32MsKeYhLJDeuXntjN4Bnrvp2nchTCZ1Grw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 39h1wyxbqq-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 01 Jul 2021 13:05:40 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 1 Jul 2021 13:05:38 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id A43192940BB9; Thu,  1 Jul 2021 13:05:35 -0700 (PDT)
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Brendan Jackman <jackmanb@google.com>,
-        Jiri Olsa <jolsa@redhat.com>
-References: <cover.1625145429.git.naveen.n.rao@linux.vnet.ibm.com>
-        <426699046d89fe50f66ecf74bd31c01eda976ba5.1625145429.git.naveen.n.rao@linux.vnet.ibm.com>
-        <f05821f6-816f-c9bf-faa9-015e11f25a46@csgroup.eu>
-In-Reply-To: <f05821f6-816f-c9bf-faa9-015e11f25a46@csgroup.eu>
+        Eric Dumazet <edumazet@google.com>, <kernel-team@fb.com>,
+        Neal Cardwell <ncardwell@google.com>, <netdev@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Yuchung Cheng <ycheng@google.com>
+Subject: [PATCH v2 bpf-next 0/8] bpf: Allow bpf tcp iter to do bpf_(get|set)sockopt
+Date:   Thu, 1 Jul 2021 13:05:35 -0700
+Message-ID: <20210701200535.1033513-1-kafai@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-23-gcdc62b30
- (https://github.com/astroidmail/astroid)
-Message-Id: <1625167931.l9jfkufqlx.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: z2J8m6gLUp2f2qpYmf6YJErztQWhVXxR
-X-Proofpoint-GUID: 5ZgWX0_ngW6RQ_WQf0d_DWZq317cZtBe
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: t4zDYewJfeUBjciJON0Z7iD1j31EsQ4B
+X-Proofpoint-GUID: t4zDYewJfeUBjciJON0Z7iD1j31EsQ4B
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-07-01_12:2021-07-01,2021-07-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
- impostorscore=0 adultscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107010114
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ clxscore=1015 priorityscore=1501 spamscore=0 mlxlogscore=650
+ suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2107010117
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Christophe Leroy wrote:
->=20
->=20
-> Le 01/07/2021 =C3=A0 17:08, Naveen N. Rao a =C3=A9crit=C2=A0:
->> Commit 91c960b0056672 ("bpf: Rename BPF_XADD and prepare to encode other
->> atomics in .imm") converted BPF_XADD to BPF_ATOMIC and updated all JIT
->> implementations to reject JIT'ing instructions with an immediate value
->> different from BPF_ADD. However, ppc32 BPF JIT was implemented around
->> the same time and didn't include the same change. Update the ppc32 JIT
->> accordingly.
->>=20
->> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
->=20
-> Shouldn't it also include a Fixes tag and stable Cc as PPC32 eBPF was add=
-ed in 5.13 ?
+This set is to allow bpf tcp iter to call bpf_(get|set)sockopt.
 
-Yes, I wasn't sure which patch to actually blame. But you're right, this=20
-should have the below fixes tag since this affects the ppc32 eBPF JIT.
+With bpf-tcp-cc, new algo rollout happens more often.  Instead of
+restarting the applications to pick up the new tcp-cc, this set
+allows the bpf tcp iter to call bpf_(get|set)sockopt(TCP_CONGESTION).
+It is not limited to TCP_CONGESTION, the bpf tcp iter can call
+bpf_(get|set)sockopt() with other options.  The bpf tcp iter can read
+into all the fields of a tcp_sock, so there is a lot of flexibility
+to select the desired sk to do setsockopt(), e.g. it can test for
+TCP_LISTEN only and leave the established connections untouched,
+or check the addr/port, or check the current tcp-cc name, ...etc.
 
->=20
-> Fixes: 51c66ad849a7 ("powerpc/bpf: Implement extended BPF on PPC32")
-> Cc: stable@vger.kernel.org
+Patch 1-4 are some cleanup and prep work in the tcp and bpf seq_file.
 
-Cc: stable@vger.kernel.org # v5.13
+Patch 5 is to have the tcp seq_file iterate on the
+port+addr lhash2 instead of the port only listening_hash.
 
+Patch 6 is to have the bpf tcp iter doing batching which
+then allows lock_sock.  lock_sock is needed for setsockopt.
 
-Thanks,
-- Naveen
+Patch 7 allows the bpf tcp iter to call bpf_(get|set)sockopt.
+
+v2:
+- Use __GFP_NOWARN in patch 6
+- Add bpf_getsockopt() in patch 7 to give a symmetrical user experience.
+  selftest in patch 8 is changed to also cover bpf_getsockopt().
+- Remove CAP_NET_ADMIN check in patch 7. Tracing bpf prog has already
+  required CAP_SYS_ADMIN or CAP_PERFMON.
+- Move some def macros to bpf_tracing_net.h in patch 8
+
+Martin KaFai Lau (8):
+  tcp: seq_file: Avoid skipping sk during tcp_seek_last_pos
+  tcp: seq_file: Refactor net and family matching
+  bpf: tcp: seq_file: Remove bpf_seq_afinfo from tcp_iter_state
+  tcp: seq_file: Add listening_get_first()
+  tcp: seq_file: Replace listening_hash with lhash2
+  bpf: tcp: bpf iter batching and lock_sock
+  bpf: tcp: Support bpf_(get|set)sockopt in bpf tcp iter
+  bpf: selftest: Test batching and bpf_(get|set)sockopt in bpf tcp iter
+
+ include/linux/bpf.h                           |   8 +
+ include/net/inet_hashtables.h                 |   6 +
+ include/net/tcp.h                             |   1 -
+ kernel/bpf/bpf_iter.c                         |  22 +
+ kernel/trace/bpf_trace.c                      |   7 +-
+ net/core/filter.c                             |  34 ++
+ net/ipv4/tcp_ipv4.c                           | 410 ++++++++++++++----
+ tools/testing/selftests/bpf/network_helpers.c |  85 +++-
+ tools/testing/selftests/bpf/network_helpers.h |   4 +
+ .../bpf/prog_tests/bpf_iter_setsockopt.c      | 226 ++++++++++
+ .../selftests/bpf/progs/bpf_iter_setsockopt.c |  72 +++
+ .../selftests/bpf/progs/bpf_tracing_net.h     |   6 +
+ 12 files changed, 784 insertions(+), 97 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_iter_setso=
+ckopt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_setsockopt=
+.c
+
+--=20
+2.30.2
 
