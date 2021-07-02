@@ -2,94 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA4E3BA47D
-	for <lists+bpf@lfdr.de>; Fri,  2 Jul 2021 21:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06E23BA4B1
+	for <lists+bpf@lfdr.de>; Fri,  2 Jul 2021 22:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhGBT4q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Jul 2021 15:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        id S230116AbhGBUed (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Jul 2021 16:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhGBT4p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Jul 2021 15:56:45 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56525C061762;
-        Fri,  2 Jul 2021 12:54:12 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id b5so6244487plg.2;
-        Fri, 02 Jul 2021 12:54:12 -0700 (PDT)
+        with ESMTP id S230176AbhGBUed (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Jul 2021 16:34:33 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A712BC061765
+        for <bpf@vger.kernel.org>; Fri,  2 Jul 2021 13:32:00 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id k20so4292006uao.8
+        for <bpf@vger.kernel.org>; Fri, 02 Jul 2021 13:32:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=V2rbehZfbjOsbvkL1TBR648VMARxa6al/csz1qm37xc=;
-        b=SdHaAXrP4lkSqbRKXEGRNuaDwZOEQ39yV78tV+Ibp1kGl9FIoquN70MTT4Z16BzkAj
-         VRjnd7m+UD7YHep2QqCxE6KhcLgPZrL0SVCE+AQLerVfJxn6lyoxzYMGrBURcVtgSz2U
-         lJWaCaAcbIK9anYi2oh5Hd7xTZVN82K+GSdHnOmK+HjcywyCPlAJthox+6lFs4K3xXVP
-         lOJ5LqXLLve/qM7M3m3sDQnXRIE4e8/tyjVk+ie5Dt4IK4a6vz1hHmdyBThREomKclr+
-         Zc1ABlRPrFl8EHQXcNJ9NzmsP+6EoTI8OYOC7bXnc4D2Vlp4Y+8Q04yweY9BuOjO78C3
-         0Ixg==
+        bh=iGOVo0v3XCUiMjAb3ZKMCET9+F7mgGvVi8d4kWAB/nQ=;
+        b=PIFD2PkAcBtdfGneD9rdOJGSbRlyUuSajHo5rEdUXjADsabsK9eaOyFu3SMjmK39Fs
+         MYrFqCKI2Kd4ntd9AaXV8eU9jGb+yNTC9Ku5Qxr0uNu2sboax8qlfTjSn/Lmx+xndcXD
+         WNQg85BnCQ55UBKyglFn2HSsvvbLEEozt5WIjhlPlFsgzopHUNiXv/A9mOlJZkJPwv5G
+         fWGxW7MifwodbKAKIly274PrM3e2FWqdiz/YcZ644HkCHK88cGVrftnRUIe1tHBK8tUx
+         ENvkbjIC3xpUgG5SZbZvGlS5n2oB19kmyL+Du1wgrdbBysCAj+KHsV9I+KrkT7JCM5LW
+         Allg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=V2rbehZfbjOsbvkL1TBR648VMARxa6al/csz1qm37xc=;
-        b=TOBX9TtBHiDacNtBrFaS4B4XJ1uMYR/ZKglFUpsIarISO/8J3BCxxiimMt8HXZBIgb
-         foRZTHLEvNghtQD5+dl+01C3wDCfD2K1EnCkjKCQF+Ctf4LktjvA73avQwljG2jyFCFn
-         px2UZmAcsfB+Cyx9dljho/WDOClwuZuGNu1isy94SD5530e5KG+vSZt9oHHR8sKptnqc
-         FRcPjtOImRB7eaAXPt6fkr/ozsq1SO4eZyvDx9Q8eR4dkLJ7VCun2a3156cZ1vH0Nd1j
-         l45nxKlurqYH8WB+FjH5LAfSjsTiO6haQo85Vl2gGphePc0WhfFSL1owl2daSbTctHLy
-         eSBw==
-X-Gm-Message-State: AOAM5305B6Urse8G5+ApvmZTXdPBG74q8GC5XLiqnC9w6r+q3OIr2M7P
-        VXrXlynDbI4Tc0m6U+wZXilVWpEYZ1+d0JLlDlM=
-X-Google-Smtp-Source: ABdhPJzxYnjpx1pP5AK5rs5pPGzJAppE3DWukhMXjgDk4JN51ESJ9rzTMCrvMlo6YFEPFRJO1MLw+UrEEPCsZ6XjRa4=
-X-Received: by 2002:a17:90a:17c1:: with SMTP id q59mr330203pja.231.1625255651825;
- Fri, 02 Jul 2021 12:54:11 -0700 (PDT)
+        bh=iGOVo0v3XCUiMjAb3ZKMCET9+F7mgGvVi8d4kWAB/nQ=;
+        b=L3TydPd5xnFe6gx5DnBkIhd1Mq6onzzoCGcgwIga6BMvZE9aJWXGfsRJAJVaThi+g/
+         hAX2pHmbdRegoa3TLZo0USbl//hvIXwLVwX4n2Vr8rrBcj86nLTT1KGDjDbTOGXGvcBc
+         insu9p0dr15F/342hkwhGOMcvnSC2fHiGvaIATKwcVjbjBHLzHXEaeRAfAp5F+/XApEN
+         u9DpwFHxJGFqJiwuB/OC/WEHmay0HeSNK0Kcr4TSQQjji+eSguLYftrSKsc6O5z9LQYZ
+         W+Ua2iDywCjZP0s42svd5GX0LMsF1i41EuUT4/uDItypFyMZWZ/KqjGrweZMyiO2n7nQ
+         vEQg==
+X-Gm-Message-State: AOAM533PvXG+O+hEmsWwnK1QATvoSeXnxdcgM64ShOu8AWs+PEB5j09U
+        4eS6jny2wszGE2gPQJiDP3SbsOISYqEhQIUYjARx8A==
+X-Google-Smtp-Source: ABdhPJz4axXxYgNaw6qv30zYaVckpnHi/S38bZVet4scjqfWTYa4pK51kVkcebfSQ3hnZ/OxwnV3PR1gwx3ni/HCqUw=
+X-Received: by 2002:ab0:77d0:: with SMTP id y16mr2408304uar.46.1625257919512;
+ Fri, 02 Jul 2021 13:31:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210702001123.728035-1-john.fastabend@gmail.com> <20210702001123.728035-2-john.fastabend@gmail.com>
-In-Reply-To: <20210702001123.728035-2-john.fastabend@gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Fri, 2 Jul 2021 12:54:01 -0700
-Message-ID: <CAM_iQpXwTJ4kKNtcH27VVvX+bYFKTvVnM_RtP5G7zg_Nt9QBYw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf 1/2] bpf, sockmap: fix potential msg memory leak
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
+References: <20210702194033.1370634-1-phind.uet@gmail.com>
+In-Reply-To: <20210702194033.1370634-1-phind.uet@gmail.com>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Fri, 2 Jul 2021 16:31:42 -0400
+Message-ID: <CADVnQynvWsD2qWfw4qJsNhyyPXbFGfhZmhMzaggfJ8JtUUt9VA@mail.gmail.com>
+Subject: Re: [PATCH v2] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
+To:     Nguyen Dinh Phi <phind.uet@gmail.com>
+Cc:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 5:12 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Fri, Jul 2, 2021 at 3:41 PM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
 >
-> If skb_linearize is needed and fails we could leak a msg on the error
-> handling. To fix ensure we kfree the msg block before returning error.
-> Found during code review.
+> This commit fixes a bug (found by syzkaller) that could cause spurious
+> double-initializations for congestion control modules, which could cause
+> memory leaks orother problems for congestion control modules (like CDG)
+> that allocate memory in their init functions.
 >
-> Fixes: 4363023d2668e ("bpf, sockmap: Avoid failures from skb_to_sgvec when skb has frag_list")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->  net/core/skmsg.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> The buggy scenario constructed by syzkaller was something like:
 >
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index 9b6160a191f8..22603289c2b2 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -505,8 +505,10 @@ static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
->          * drop the skb. We need to linearize the skb so that the mapping
->          * in skb_to_sgvec can not error.
->          */
-> -       if (skb_linearize(skb))
-> +       if (skb_linearize(skb)) {
-> +               kfree(msg);
->                 return -EAGAIN;
-> +       }
->         num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
->         if (unlikely(num_sge < 0)) {
->                 kfree(msg);
+> (1) create a TCP socket
+> (2) initiate a TFO connect via sendto()
+> (3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
+>     which calls:
+>        tcp_set_congestion_control() ->
+>          tcp_reinit_congestion_control() ->
+>            tcp_init_congestion_control()
+> (4) receive ACK, connection is established, call tcp_init_transfer(),
+>     set icsk_ca_initialized=0 (without first calling cc->release()),
+>     call tcp_init_congestion_control() again.
+>
+> Note that in this sequence tcp_init_congestion_control() is called
+> twice without a cc->release() call in between. Thus, for CC modules
+> that allocate memory in their init() function, e.g, CDG, a memory leak
+> may occur. The syzkaller tool managed to find a reproducer that
+> triggered such a leak in CDG.
+>
+> The bug was introduced when that commit 8919a9b31eb4 ("tcp: Only init
+> congestion control if not initialized already")
+> introduced icsk_ca_initialized and set icsk_ca_initialized to 0 in
+> tcp_init_transfer(), missing the possibility for a sequence like the
+> one above, where a process could call setsockopt(TCP_CONGESTION) in
+> state TCP_SYN_SENT (i.e. after the connect() or TFO open sendmsg()),
+> which would call tcp_init_congestion_control(). It did not intend to
+> reset any initialization that the user had already explicitly made;
+> it just missed the possibility of that particular sequence (which
+> syzkaller managed to find).
+>
+> Fixes: commit 8919a9b31eb4 ("tcp: Only init congestion control if not
+> initialized already")
 
-I think it is better to let whoever allocates msg free it, IOW,
-let sk_psock_skb_ingress_enqueue()'s callers handle its failure.
+Please note that the patchwork tools have found a style/formatting
+issue with your Fixes tag:
 
-Thanks.
+You can find them at:
+https://patchwork.kernel.org/project/netdevbpf/list/
+ ->
+ https://patchwork.kernel.org/project/netdevbpf/patch/20210702194033.1370634-1-phind.uet@gmail.com/
+  ->
+   https://patchwork.hopto.org/static/nipa/510221/12356435/verify_fixes/stdout
+
+The error is:
+---
+Fixes tag: Fixes: commit 8919a9b31eb4 ("tcp: Only init congestion control if not
+Has these problem(s):
+- leading word 'commit' unexpected
+- Subject has leading but no trailing parentheses
+- Subject has leading but no trailing quotes
+---
+
+Basically, please omit the "commit" and don't wrap the text (it's OK
+if it's longer than 80 or 100 characters).
+
+thanks,
+neal
