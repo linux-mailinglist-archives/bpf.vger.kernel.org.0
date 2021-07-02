@@ -2,129 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D5A3B9D6B
-	for <lists+bpf@lfdr.de>; Fri,  2 Jul 2021 10:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E100A3B9D99
+	for <lists+bpf@lfdr.de>; Fri,  2 Jul 2021 10:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbhGBIT2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Jul 2021 04:19:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26391 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230149AbhGBIT1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 2 Jul 2021 04:19:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625213815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zBkbuL0GAQIoWtsDWjIVFNTZu/k7IM9ZWEHLrdTuBFM=;
-        b=gxFWVMuVLRQlLw85KWIoHfWUyee3/FK3kzWKcb/Jkxr0RSCWVJ0se8Fi60qhMCmgq7Lamg
-        4EMUH339MOCItDEL2GWSJb2CKrs+4r08FBWP9CIyZGB1DeqNyPbgL4Ek3bzjX1m5Jan3cM
-        H+RnMF+skT7ErC+Zrj29iQ0Jfl29eMk=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-39SKAIxMOwiRanYKJ-ES0g-1; Fri, 02 Jul 2021 04:16:53 -0400
-X-MC-Unique: 39SKAIxMOwiRanYKJ-ES0g-1
-Received: by mail-ej1-f69.google.com with SMTP id d21-20020a1709063455b02904c609ed19f1so3263373ejb.11
-        for <bpf@vger.kernel.org>; Fri, 02 Jul 2021 01:16:53 -0700 (PDT)
+        id S230425AbhGBIik (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Jul 2021 04:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230447AbhGBIij (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Jul 2021 04:38:39 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2434C061762
+        for <bpf@vger.kernel.org>; Fri,  2 Jul 2021 01:36:07 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id m18so11496200wrv.2
+        for <bpf@vger.kernel.org>; Fri, 02 Jul 2021 01:36:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7FZN41zFvSYxh+iEV226AlMaIZ9YuMRVvjo0w5RlrRg=;
+        b=zARHa0Smrt/1UIlw1UhZvHTz5jbXFIGlSVYne/ZG7zj6bAj6G68ScyCLlTxEQAxFv6
+         qJIJhckBCmxtJ/QsW6Ck5W5YdiIyOzm987UxCmeVfg6hQIeZDSaq1Ztj+kQdNHpMx1w/
+         4z7MpEVjIQK9G1EMnQvMQ/N9Vw0cYmo1OTj9n5toT/cZ/IVEvLZwXVYMq6IxhOxLpHQm
+         2haIVsCbbQstJkfnjqc0XnHwPD0TDrZt7G/d8b828z248uFm6YZGw1yiEBqmXzCCXeeU
+         f1Arll1K+2v/i6+OfR8AWn0cl8ylzGpknTGQMmVvBxehFETzzN+IU/X3BlGrdZAASvPY
+         Fcag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=zBkbuL0GAQIoWtsDWjIVFNTZu/k7IM9ZWEHLrdTuBFM=;
-        b=jwf9Vihd0ycgoDOdE1tK5f6UgbOdC4QOGrOdxkJ6NYGf9ysth8AYQ0VURsL2SDlUmy
-         HP5x2l11fjnFKNmHmb5qbubjSCkxQYTxUW11QTTTtVqp0bMsLxYglxqeEdAR9iBh91Lf
-         5jkPgLxAbH4+P6ywjybZjVdCpoS5t1CrUAh8JSYrnfDA2/yLbrOwRj+tzDpDEWZ1s2qI
-         BderxR83mhK8jJ/S4H5BzJiX5R3ysiUJ4wQ1Qh8Kc1sIobPak5nYDzAcHqU4yzZaiLga
-         AVZwghc4zbPlBnL2qNnvKMfs2dB0SMAcEgeWETWomb9+ZI8HDL4awGzguMGetTTVFusP
-         6Qtw==
-X-Gm-Message-State: AOAM532Ebulk5a9dClvFvYLXQ1rrz8iLtEBk275XNklV+9d4pHbm67EN
-        9XqcQn4Qyr2DGCaG3isDjEopda6opJ+Sq79+/xRp0T7kXamaTWIyM8j7YMk9dLg6oBS3lYB1vwm
-        hvyDo6F7mm5s+
-X-Received: by 2002:a17:906:940b:: with SMTP id q11mr4274039ejx.79.1625213812784;
-        Fri, 02 Jul 2021 01:16:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyzi6ZvJtE42/Z8dw3YYQEScj3zDC9d9Z8uOfAcwviCkH+zoWbYqKCjfOrDMjV851yZkNo9sw==
-X-Received: by 2002:a17:906:940b:: with SMTP id q11mr4274024ejx.79.1625213812587;
-        Fri, 02 Jul 2021 01:16:52 -0700 (PDT)
-Received: from krava ([185.153.78.55])
-        by smtp.gmail.com with ESMTPSA id jz12sm738900ejc.94.2021.07.02.01.16.50
+        bh=7FZN41zFvSYxh+iEV226AlMaIZ9YuMRVvjo0w5RlrRg=;
+        b=Kn6mRiXExRdmfHgmV3k24NRWctf6BopObwwOiaizxCAojqn3edRSKHwhIELRISxmJN
+         WOq6ymKl+1WGs9VN/9cB3tTkg7c6e8PFtZAdiNcmE0bNStx02QKcdnLtniTGt+29Kx/+
+         zPmOtOs+6EXz2Ae7v8zEfXJmi6Bk378gM9vR7s15x0ZmM+IW8Uh9b6HK1iEKaQwSRe7Q
+         V2ltCg87I24D/L8ZQHgogMt3e7camG0ZLjSHkQg23eMl1hmlAva8JiiS5jg7Gl0nHHwo
+         KUzhtlufC+fiptZRaGxPA4gDVHivaOt03w1HfMzXHaEFRNQMLK7RKU2toB49F/bfGKYI
+         Ne8Q==
+X-Gm-Message-State: AOAM530m1RYqOrN4StDdyUot9XoTzAx9bIzLLFzXDFuCKH7iB3PcWMHe
+        GyXROEeId+XkHoDFz/YcJQFAOw==
+X-Google-Smtp-Source: ABdhPJzga7frJg+9Zf+0ANeCdeGJyDqrA4zrx8RoTlibuVEj3L9i0gf3FY/cbI1z2ewA+/OBYH4y6A==
+X-Received: by 2002:a05:6000:1251:: with SMTP id j17mr4499946wrx.122.1625214966270;
+        Fri, 02 Jul 2021 01:36:06 -0700 (PDT)
+Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
+        by smtp.gmail.com with ESMTPSA id w3sm11965453wmi.24.2021.07.02.01.36.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jul 2021 01:16:52 -0700 (PDT)
-Date:   Fri, 2 Jul 2021 10:16:48 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [RFC bpf-next 0/5] bpf, x86: Add bpf_get_func_ip helper
-Message-ID: <YN7LcJu73nCz3Ips@krava>
-References: <20210629192945.1071862-1-jolsa@kernel.org>
- <alpine.LRH.2.23.451.2107011819160.27594@localhost>
+        Fri, 02 Jul 2021 01:36:05 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 11:36:01 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        thomas.petazzoni@bootlin.com, mw@semihalf.com,
+        linux@armlinux.org.uk, hawk@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        akpm@linux-foundation.org, peterz@infradead.org, will@kernel.org,
+        willy@infradead.org, vbabka@suse.cz, fenghua.yu@intel.com,
+        guro@fb.com, peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
+        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
+        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
+        elver@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page
+ pool
+Message-ID: <YN7P8Y+qWxAADJJR@enceladus>
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.23.451.2107011819160.27594@localhost>
+In-Reply-To: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 06:22:45PM +0100, Alan Maguire wrote:
-> On Tue, 29 Jun 2021, Jiri Olsa wrote:
-> 
-> > hi,
-> > adding bpf_get_func_ip helper that returns IP address of the
-> > caller function for trampoline and krobe programs.
-> > 
-> > There're 2 specific implementation of the bpf_get_func_ip
-> > helper, one for trampoline progs and one for kprobe/kretprobe
-> > progs.
-> > 
-> > The trampoline helper call is replaced/inlined by verifier
-> > with simple move instruction. The kprobe/kretprobe is actual
-> > helper call that returns prepared caller address.
-> > 
-> > The trampoline extra 3 instructions for storing IP address
-> > is now optional, which I'm not completely sure is necessary,
-> > so I plan to do some benchmarks, if it's noticeable, hence
-> > the RFC. I'm also not completely sure about the kprobe/kretprobe
-> > implementation.
-> > 
-> > Also available at:
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> >   bpf/get_func_ip
-> > 
-> > thanks,
-> > jirka
-> > 
-> >
-> 
-> This is great Jiri! Feel free to add for the series:
-> 
-> Tested-by: Alan Maguire <alan.maguire@oracle.com>
+Hi Yunsheng, 
 
-great, thanks for testing
-
+On Wed, Jun 30, 2021 at 05:17:54PM +0800, Yunsheng Lin wrote:
+> This patchset adds elevated refcnt support for page pool
+> and enable skb's page frag recycling based on page pool
+> in hns3 drvier.
 > 
-> BTW I also verified that if we extend bpf_program__attach_kprobe() to
-> support the function+offset format in the func_name argument for kprobes, 
-> the following test will pass too:
+
+Thanks for taking the time with this! I am a bit overloaded atm, give me a
+few days and I'll go through the patches
+
+Cheers
+/Ilias
+
+
+> Yunsheng Lin (2):
+>   page_pool: add page recycling support based on elevated refcnt
+>   net: hns3: support skb's frag page recycling based on page pool
 > 
-> __u64 test5_result = 0;
-> SEC("kprobe/bpf_fentry_test5+0x6")
-> int test5(struct pt_regs *ctx)
-> {
->         __u64 addr = bpf_get_func_ip(ctx);
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
+>  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
+>  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
+>  include/linux/mm_types.h                           |   2 +-
+>  include/linux/skbuff.h                             |   4 +-
+>  include/net/page_pool.h                            |  30 ++-
+>  net/core/page_pool.c                               | 215 +++++++++++++++++----
+>  9 files changed, 285 insertions(+), 57 deletions(-)
 > 
->         test5_result = (const void *) addr == (&bpf_fentry_test5 + 0x6);
->         return 0;
-> }
-
-right, I did not think of this test, I'll add it
-
-thanks,
-jirka
-
+> -- 
+> 2.7.4
+> 
