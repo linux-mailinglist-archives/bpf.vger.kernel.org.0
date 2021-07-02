@@ -2,114 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09293B9EE7
-	for <lists+bpf@lfdr.de>; Fri,  2 Jul 2021 12:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319833B9F11
+	for <lists+bpf@lfdr.de>; Fri,  2 Jul 2021 12:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhGBKRv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Jul 2021 06:17:51 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:9336 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhGBKRs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Jul 2021 06:17:48 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GGW7Q1W0hz74gT;
-        Fri,  2 Jul 2021 18:10:58 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 2 Jul 2021 18:15:13 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 2 Jul 2021
- 18:15:13 +0800
-Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
- based on elevated refcnt
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <linuxarm@openeuler.org>, <yisen.zhuang@huawei.com>,
-        <salil.mehta@huawei.com>, <thomas.petazzoni@bootlin.com>,
-        <mw@semihalf.com>, <linux@armlinux.org.uk>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Alexander Duyck <alexander.duyck@gmail.com>
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
- <6c2d76e2-30ce-5c0f-9d71-f6b71f9ad34f@redhat.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <ec994486-b385-0597-39f7-128092cba0ce@huawei.com>
-Date:   Fri, 2 Jul 2021 18:15:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S231297AbhGBK2t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Jul 2021 06:28:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22165 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230496AbhGBK2t (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 2 Jul 2021 06:28:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625221577;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EM4rv+Os2BFUcNbdujbpAl42XdEpcURNArLBdyldSyk=;
+        b=MxM6F1mRqZsHnllDbFUcTx+B+NE8XZ77vuwb6uwr46M2aQs99uRI0EDKMCc7mdtqoKkkgc
+        gRU7/nsGHDIp0ZPSMDMNe8YPAiSpn0/rlbl+gFwZ3B+Oal/HcDA7ltGDlZ1EvDwYU99189
+        yvGUPCF3nlJHa5wicEn5wHvbIQ+AdR8=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-208-zErVilPiN-CWFQPsa3teUQ-1; Fri, 02 Jul 2021 06:26:16 -0400
+X-MC-Unique: zErVilPiN-CWFQPsa3teUQ-1
+Received: by mail-ed1-f71.google.com with SMTP id f20-20020a0564020054b0290395573bbc17so4857029edu.19
+        for <bpf@vger.kernel.org>; Fri, 02 Jul 2021 03:26:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EM4rv+Os2BFUcNbdujbpAl42XdEpcURNArLBdyldSyk=;
+        b=l07L+mV6IaCgDO2A72PA892fovtQTbSgwDRZ+gVQiE+oshNRDeZ60QAELMPE13YpbY
+         t2jFYIyNpJ+2u4/IYn+bBuXCkPJjtnJnOKyefV40YtlWJ6kMIkEySW3Bd6KS0JGBfGwN
+         IyVvDI2BsrVuZx3KYu0r69/3Szqt9474zdai1QJFshyUdntKEdMXIaE4ciLYxtvVrQXl
+         C+bKNoJglaESYGRrAzByZAiRc0ksVNcWxUWOWDfN9cUCTkvXXcHhtDbR3ULW5sX+O5L1
+         hx19Yht45oVHalePa5qMNsNrqxU6h1Pe7jackD/eGby5nAsUem1XwuUi086oZyYHbozc
+         xkAw==
+X-Gm-Message-State: AOAM5324qSXDJ52zNEJBU892GGCLP9nAzgmfVGD4QzDKp8KnbrG3Acbz
+        q8XSEluo8P5fpcD3gxuq6uh1a/9ADdL1kQm3wHUWkQxobJWoPuuWGS4hjjlzRlAzfl5B73zwDee
+        ZpNWqM/iv0TkB
+X-Received: by 2002:a05:6402:31b3:: with SMTP id dj19mr1648293edb.24.1625221574989;
+        Fri, 02 Jul 2021 03:26:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzn8k1h6e/dZCweAEKoFXiejKrvCFYp7PHqlHpnkSx8je37PU0hXAgg8Sl+uceeRMdngxs2Gg==
+X-Received: by 2002:a05:6402:31b3:: with SMTP id dj19mr1648281edb.24.1625221574866;
+        Fri, 02 Jul 2021 03:26:14 -0700 (PDT)
+Received: from krava ([185.153.78.55])
+        by smtp.gmail.com with ESMTPSA id g23sm1122002edp.74.2021.07.02.03.26.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jul 2021 03:26:14 -0700 (PDT)
+Date:   Fri, 2 Jul 2021 12:26:11 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Brendan Jackman <jackmanb@google.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH 1/2] powerpc/bpf: Fix detecting BPF atomic instructions
+Message-ID: <YN7pw2mAg35Yao6/@krava>
+References: <cover.1625145429.git.naveen.n.rao@linux.vnet.ibm.com>
+ <4117b430ffaa8cd7af042496f87fd7539e4f17fd.1625145429.git.naveen.n.rao@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <6c2d76e2-30ce-5c0f-9d71-f6b71f9ad34f@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4117b430ffaa8cd7af042496f87fd7539e4f17fd.1625145429.git.naveen.n.rao@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/7/2 17:42, Jesper Dangaard Brouer wrote:
+On Thu, Jul 01, 2021 at 08:38:58PM +0530, Naveen N. Rao wrote:
+> Commit 91c960b0056672 ("bpf: Rename BPF_XADD and prepare to encode other
+> atomics in .imm") converted BPF_XADD to BPF_ATOMIC and added a way to
+> distinguish instructions based on the immediate field. Existing JIT
+> implementations were updated to check for the immediate field and to
+> reject programs utilizing anything more than BPF_ADD (such as BPF_FETCH)
+> in the immediate field.
 > 
-> On 30/06/2021 11.17, Yunsheng Lin wrote:
->> Currently page pool only support page recycling only when
->> refcnt of page is one, which means it can not support the
->> split page recycling implemented in the most ethernet driver.
+> However, the check added to powerpc64 JIT did not look at the correct
+> BPF instruction. Due to this, such programs would be accepted and
+> incorrectly JIT'ed resulting in soft lockups, as seen with the atomic
+> bounds test. Fix this by looking at the correct immediate value.
 > 
-> Cc. Alex Duyck as I consider him an expert in this area.
+> Fixes: 91c960b0056672 ("bpf: Rename BPF_XADD and prepare to encode other atomics in .imm")
+> Reported-by: Jiri Olsa <jolsa@redhat.com>
+> Tested-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> ---
+> Hi Jiri,
+> FYI: I made a small change in this patch -- using 'imm' directly, rather 
+> than insn[i].imm. I've still added your Tested-by since this shouldn't 
+> impact the fix in any way.
 
-Thanks.
+yep, it works nicely
 
-> 
-> 
->> So add elevated refcnt support in page pool, and support
->> allocating page frag to enable multi-frames-per-page based
->> on the elevated refcnt support.
->>
->> As the elevated refcnt is per page, and there is no space
->> for that in "struct page" now, so add a dynamically allocated
->> "struct page_pool_info" to record page pool ptr and refcnt
->> corrsponding to a page for now. Later, we can recycle the
->> "struct page_pool_info" too, or use part of page memory to
->> record pp_info.
-> 
-> I'm not happy with allocating a memory (slab) object "struct page_pool_info" per page.
-> 
-> This also gives us an extra level of indirection.
-
-I'm not happy with that either, if there is better way to
-avoid that, I will be happy to change it:)
+thanks
+jirka
 
 > 
-> 
-> You are also adding a page "frag" API inside page pool, which I'm not 100% convinced belongs inside page_pool APIs.
-> 
-> Please notice the APIs that Alex Duyck added in mm/page_alloc.c:
-
-Actually, that is where the idea of using "page frag" come from.
-
-Aside from the performance improvement, there is memory usage
-decrease for 64K page size kernel, which means a 64K page can
-be used by 32 description with 2k buffer size, and that is a
-lot of memory saving for 64 page size kernel comparing to the
-current split page reusing implemented in the driver.
-
-
-> 
->  __page_frag_cache_refill() + __page_frag_cache_drain() + page_frag_alloc_align()
+> - Naveen
 > 
 > 
+>  arch/powerpc/net/bpf_jit_comp64.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index 5cad5b5a7e9774..de8595880feec6 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -667,7 +667,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>  		 * BPF_STX ATOMIC (atomic ops)
+>  		 */
+>  		case BPF_STX | BPF_ATOMIC | BPF_W:
+> -			if (insn->imm != BPF_ADD) {
+> +			if (imm != BPF_ADD) {
+>  				pr_err_ratelimited(
+>  					"eBPF filter atomic op code %02x (@%d) unsupported\n",
+>  					code, i);
+> @@ -689,7 +689,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>  			PPC_BCC_SHORT(COND_NE, tmp_idx);
+>  			break;
+>  		case BPF_STX | BPF_ATOMIC | BPF_DW:
+> -			if (insn->imm != BPF_ADD) {
+> +			if (imm != BPF_ADD) {
+>  				pr_err_ratelimited(
+>  					"eBPF filter atomic op code %02x (@%d) unsupported\n",
+>  					code, i);
+> -- 
+> 2.31.1
+> 
 
-[...]
