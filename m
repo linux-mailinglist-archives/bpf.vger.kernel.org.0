@@ -2,76 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C57D3BA256
-	for <lists+bpf@lfdr.de>; Fri,  2 Jul 2021 16:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C033BA319
+	for <lists+bpf@lfdr.de>; Fri,  2 Jul 2021 18:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhGBOuX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Jul 2021 10:50:23 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20125 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231925AbhGBOuX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 2 Jul 2021 10:50:23 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-74-fqCV_caBPBSWmy0ru-nyQg-1; Fri, 02 Jul 2021 15:47:48 +0100
-X-MC-Unique: fqCV_caBPBSWmy0ru-nyQg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 2 Jul
- 2021 15:47:47 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Fri, 2 Jul 2021 15:47:47 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kumar Kartikeya Dwivedi' <memxor@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Eric Leblond <eric@regit.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH net-next v6 2/5] bitops: add non-atomic bitops for
- pointers
-Thread-Topic: [PATCH net-next v6 2/5] bitops: add non-atomic bitops for
- pointers
-Thread-Index: AQHXbzRKzJTJSAg3rk6Hii1kaDElvqsvwdKQ
-Date:   Fri, 2 Jul 2021 14:47:47 +0000
-Message-ID: <0660a065aad94979a560682cef5d573c@AcuMS.aculab.com>
-References: <20210702111825.491065-1-memxor@gmail.com>
- <20210702111825.491065-3-memxor@gmail.com>
-In-Reply-To: <20210702111825.491065-3-memxor@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S229519AbhGBQMu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Jul 2021 12:12:50 -0400
+Received: from www62.your-server.de ([213.133.104.62]:41262 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhGBQMu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Jul 2021 12:12:50 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lzLk6-000CJ0-HA; Fri, 02 Jul 2021 18:10:14 +0200
+Received: from [85.5.47.65] (helo=linux-3.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lzLk6-000SHb-Av; Fri, 02 Jul 2021 18:10:14 +0200
+Subject: Re: [PATCH bpf-next] libbpf: ignore .eh_frame sections when parsing
+ elf files
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20210629110923.580029-1-toke@redhat.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ac14ef3c-ccd5-5f74-dda5-1d9366883813@iogearbox.net>
+Date:   Fri, 2 Jul 2021 18:10:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20210629110923.580029-1-toke@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26219/Fri Jul  2 13:06:52 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogS3VtYXIgS2FydGlrZXlhIER3aXZlZGkNCj4gU2VudDogMDIgSnVseSAyMDIxIDEyOjE4
-DQo+IA0KPiBjcHVtYXAgbmVlZHMgdG8gc2V0LCBjbGVhciwgYW5kIHRlc3QgdGhlIGxvd2VzdCBi
-aXQgaW4gc2tiIHBvaW50ZXIgaW4NCj4gdmFyaW91cyBwbGFjZXMuIFRvIG1ha2UgdGhlc2UgY2hl
-Y2tzIGxlc3Mgbm9pc3ksIGFkZCBwb2ludGVyIGZyaWVuZGx5DQo+IGJpdG9wIG1hY3JvcyB0aGF0
-IGFsc28gZG8gc29tZSB0eXBlY2hlY2tpbmcgdG8gc2FuaXRpemUgdGhlIGFyZ3VtZW50Lg0KDQpX
-b3VsZCB0aGlzIHdvcms/DQojZGVmaW5lIEJJVF9PUCh2YWwsIG9wKSAoKHR5cGVvZiAodmFsKSko
-KHVuc2lnbmVkIGxvbmcpKHZhbCkgb3ApKQ0KDQpTaG91bGQgbGV0IHlvdSBkbzoNCglwdHIgPSBC
-SVRfT1AocHRyLCB8IDEpOw0KCXB0ciA9IEJJVF9PUChwdHIsICYgfjEpOw0KCWlmIChCSVRfT1BU
-KHB0ciwgJiAxKSkNCgkJLi4uDQoNClNlZSBodHRwczovL2dvZGJvbHQub3JnL3ovRTU3YUdLNGpz
-DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9h
-ZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBO
-bzogMTM5NzM4NiAoV2FsZXMpDQo=
+On 6/29/21 1:09 PM, Toke Høiland-Jørgensen wrote:
+> The .eh_frame and .rel.eh_frame sections will be present in BPF object
+> files when compiled using a multi-stage compile pipe like in samples/bpf.
+> This produces errors when loading such a file with libbpf. While the errors
+> are technically harmless, they look odd and confuse users. So add .eh_frame
+> sections to is_sec_name_dwarf() so they will also be ignored by libbpf
+> processing. This gets rid of output like this from samples/bpf:
+> 
+> libbpf: elf: skipping unrecognized data section(32) .eh_frame
+> libbpf: elf: skipping relo section(33) .rel.eh_frame for section(32) .eh_frame
+> 
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 
+For the samples/bpf case, could we instead just add a -fno-asynchronous-unwind-tables
+to clang as cflags to avoid .eh_frame generation in the first place?
+
+> ---
+>   tools/lib/bpf/libbpf.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 1e04ce724240..676af6be5961 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -2906,7 +2906,8 @@ static Elf_Data *elf_sec_data(const struct bpf_object *obj, Elf_Scn *scn)
+>   static bool is_sec_name_dwarf(const char *name)
+>   {
+>   	/* approximation, but the actual list is too long */
+> -	return strncmp(name, ".debug_", sizeof(".debug_") - 1) == 0;
+> +	return (strncmp(name, ".debug_", sizeof(".debug_") - 1) == 0 ||
+> +		strncmp(name, ".eh_frame", sizeof(".eh_frame") - 1) == 0);
+>   }
+>   
+>   static bool ignore_elf_section(GElf_Shdr *hdr, const char *name)
+> 
+
+Thanks,
+Daniel
