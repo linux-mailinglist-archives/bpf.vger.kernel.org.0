@@ -2,64 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A958F3BA7E5
-	for <lists+bpf@lfdr.de>; Sat,  3 Jul 2021 10:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB673BA810
+	for <lists+bpf@lfdr.de>; Sat,  3 Jul 2021 11:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhGCItr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Jul 2021 04:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S230079AbhGCJg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Jul 2021 05:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhGCItq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Jul 2021 04:49:46 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A89C061762;
-        Sat,  3 Jul 2021 01:47:13 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso9025217pjx.1;
-        Sat, 03 Jul 2021 01:47:13 -0700 (PDT)
+        with ESMTP id S230060AbhGCJg6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Jul 2021 05:36:58 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B92C061762;
+        Sat,  3 Jul 2021 02:34:25 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 62so4355489pgf.1;
+        Sat, 03 Jul 2021 02:34:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=X5LqaHOTleUwEc8rezvK4+11SzDVWy9M2nq3QHqzO1A=;
-        b=JmksDk+G/11lCWwdFtloFd5ErcfB70in1PJ8teXH827oRb1YG9b5QnMaMSA/l/3NwA
-         VVYj5slobUkbtaJDdvQtd+OFd3BTpzfAtSpd9rSGgs0kODZqe5j5WyHbnNeBKb0mGemP
-         0Kin+cgjF/yw/vXYSqrGex5qH89vLWcKilbKVL6m4XHhQ4CS5EGtS7JlclGzraL0+SLf
-         IM2k5af5hs6PGPe4ZigHWrzVB5/xNeQGvEsTBF94q0kBGuBDwBiTbZTUHJgYqXALFgUd
-         e/eC6kNfH0fpe7eWOBn5x5UTeI5dOLO2/D4UYHKOZVmXV/8NLzRJeWKC4JgYa1sjhg1/
-         dttg==
+        bh=NA2FyDBb7VVZ1//gW7vJlp4ZAiXUzh99M3RwT57vTIw=;
+        b=Az5UIhl/sRLYFP7/l98uaxO8255cP2jLQFPASm7wIL8pcr4SkuEctY2ZXYCRWe6PYE
+         Q8MKV/+5JjaVrkibRAlQVwwTbz287kc0JfkE0QG/Fpk7yGcZV9Xb0pAA8SdAf0hP+3BK
+         nAZuI+V9p5GvL4HhqZdarEMj7b+0IH3xJ/D1Li5xnjtXJSUjhKfblPJylh3IyZFPtBtd
+         9rIiKYQaHcw73Osh/cFoCqva612gT1Yv3DcJmC3bDw1NcK6kcbmjUOKZzHn9kcwsdXeI
+         4M3mafEiCNk6pxelGcMhseZmhGyTBwVW2PzJ61aQ22GfgO01682JTKHfS+ObcA+SYA0i
+         v1Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=X5LqaHOTleUwEc8rezvK4+11SzDVWy9M2nq3QHqzO1A=;
-        b=cMHDyK5c7qIlwDPS7HXZSO11vJ3pxZbXM/HVdfLAYmBer3D6XplBBpGF2zq8yszM/u
-         tyAW2dVDJkXEkz/Z7ElQU1WJPCb+2F8tpsL5ty1gsLZXIlzPPpRgd5eEFhf5w2DjxYd/
-         vECm74TnO2b6SvDlNCFfQx6VqiPAhdVlPAejFiGu0VAVk4U+8va8cYDQqqMeV3m+HU8y
-         O6VqSzGvEqzVAFROkwGBJ/kzcUVbEUU/qFo4Hizoa73LbzkCf6kQO2PSaWEjQ09hzUHA
-         /mmfvuvJFwbG/ehqiPqBbz4r2GoTyXd4Zb06Cid/SNwa0iNM1l6ewhKqXaqGZXyRB4+5
-         AQ0A==
-X-Gm-Message-State: AOAM532LX3qidUwUkeC58J9+MV7CnoaaYz3a8x7sOojGTH5U5NKNe1jt
-        GLJGQNc7lpbZ5RZmjcPs3GA=
-X-Google-Smtp-Source: ABdhPJy4kQ82sVIVkMMbUFzKmgZYCcgMjoMXW0PnOfLEgnWYrWhHK49npgVaZbBi1xJ2U3+Pt8IvIw==
-X-Received: by 2002:a17:90b:4d81:: with SMTP id oj1mr3609967pjb.153.1625302033236;
-        Sat, 03 Jul 2021 01:47:13 -0700 (PDT)
+        bh=NA2FyDBb7VVZ1//gW7vJlp4ZAiXUzh99M3RwT57vTIw=;
+        b=W7JAlbYjXqXBHOCyR7FXLPU0NOiEf6vRa1kHSHnf9CWFPn5DSj+BpqFqG2CaKLkNVe
+         c3fl10N0x0F4kMn3eAbN1oJ7cy2uQQ5EQbhV5GxRR9a6E8y2qinjJ9SlizrKNFTUKgGs
+         xj6Kj78sfhFMcDjS2omSqpIzdzTEF6SXvwAm8fN6XRi634cJHxog3bWByRkDGhWb7MrU
+         gkdKfoZQ3L95eU0OM0MZIlx0b8DUdK/TDZdcXdI3LX6iNxn0BWSLnIlZaU3M5NdHQdkd
+         OLaght0kBao0yEj8/v2SOA+nsQOeBYjxURqpzPa0TUXzP0iB5GJROPwU92PgPhYySzuz
+         kxEg==
+X-Gm-Message-State: AOAM533iS22baLy2/8E5HcNrXEYvJyWPt57BLYYdcPUZ2lg4qUkJ0pWJ
+        bpUoeThbQ5K9h+kl9YsCXrk=
+X-Google-Smtp-Source: ABdhPJxyffHwZGoXuXPFOyFpbw/YsOfSYAd3+uayOwhxVr3lCsxNRoB+lGmlEXPjCN7XJPH6dKOCmg==
+X-Received: by 2002:a62:8286:0:b029:2fc:812d:2e70 with SMTP id w128-20020a6282860000b02902fc812d2e70mr3813374pfd.24.1625304864568;
+        Sat, 03 Jul 2021 02:34:24 -0700 (PDT)
 Received: from pn-hyperv.lan (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
-        by smtp.gmail.com with ESMTPSA id h27sm6557907pfr.171.2021.07.03.01.47.09
+        by smtp.gmail.com with ESMTPSA id 144sm7200562pgg.4.2021.07.03.02.34.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Jul 2021 01:47:12 -0700 (PDT)
+        Sat, 03 Jul 2021 02:34:24 -0700 (PDT)
 From:   Nguyen Dinh Phi <phind.uet@gmail.com>
 To:     yhs@fb.com, edumazet@google.com, davem@davemloft.net,
         yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
         ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org
+        kpsingh@kernel.org, ycheng@google.com, ncardwell@google.com,
+        yyd@google.com
 Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
         syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
-Subject: [PATCH v3] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
-Date:   Sat,  3 Jul 2021 16:47:00 +0800
-Message-Id: <20210703084700.1546968-1-phind.uet@gmail.com>
+Subject: [PATCH v4] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
+Date:   Sat,  3 Jul 2021 17:34:17 +0800
+Message-Id: <20210703093417.1569943-1-phind.uet@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -110,6 +111,7 @@ V2:     - Modify the Subject line.
         - Adjust the commit message.
         - Add Fixes: tag.
 V3:	- Fix netdev/verify_fixes format error.
+V4:	- Add blamed authors to receiver list.
 
  net/ipv4/tcp_input.c | 1 -
  1 file changed, 1 deletion(-)
