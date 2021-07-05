@@ -2,92 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7F33BB8AC
-	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 10:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E4D3BB909
+	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 10:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbhGEIUI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Jul 2021 04:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
+        id S230083AbhGEI04 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Jul 2021 04:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhGEIUI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:20:08 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32158C061574;
-        Mon,  5 Jul 2021 01:17:30 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id t15so17616098wry.11;
-        Mon, 05 Jul 2021 01:17:30 -0700 (PDT)
+        with ESMTP id S230063AbhGEI0z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Jul 2021 04:26:55 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E2EC061574
+        for <bpf@vger.kernel.org>; Mon,  5 Jul 2021 01:24:18 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id a18so30998727lfs.10
+        for <bpf@vger.kernel.org>; Mon, 05 Jul 2021 01:24:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0hN6t3XOPfYl7bbCREM9Ps0hpP4pUKWb+JjtXnJ6TMY=;
-        b=s0FopFfcJJr0KsFtnbGPHOSAe9XCFfZpNrl8E0mT7vGLXfUNcyCkR28wT7mUZBO0zo
-         0ANXLA95yP3XsebQ1PQIPXABNWh+0pe7O+BKumXzEv9ta/4r5jRXH6GyM+a1kMovZmVO
-         4kw4hFqnckMdjh/CrNrZCFyuaLeZGxOlEY27Q+EGdXA46/Yn+w0OyuXiDDmpet1rxJvG
-         Wweln2NqzNZr3xJV2wNZp9IQyvrsseo7nQbOyFEsT9Q4QN0wDT9vyMtpaVxBw8tT6Dt0
-         CiyGqjiP3k6x5TxWVmNPjI/iSDCueCcrWwFsErpavhoXuO4yAgtAmsFPsaDp6GBzhAlH
-         JE/w==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=jj7+TNaQPU7Jf9mnJvAob2AETZ45tmS9p0g/FllWrLI=;
+        b=bW5aQeJv5u9spwJKsAoW+ujLrBiU5Ns/pklQSVKBACDfMVlR7mdbYQ7/RgXPZ64jLQ
+         NUddf/CwUxaaxn5wfV66vKIsnv+uRLYUP1Ykd2a6/PkyAAkoaRb6HKSuBktdwmCd0kEF
+         lXwU3pQ8lff2t1XXCXLhXCWMmLdUgWyuw8hig=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=0hN6t3XOPfYl7bbCREM9Ps0hpP4pUKWb+JjtXnJ6TMY=;
-        b=jvKMp1yuErD61Q3YMvNyBJoBFg2yj4hNOwZ894nFnUjnucTCIQLLs3xMagl+889I8n
-         7IkDpm5vp0VRReVqRbtmKetuT4jgP6Izser9pwvYs/P62kQ0XU09oVTX7o2Vf+hFh78k
-         I3Os1sF0iXN2Rt+ofYUuiq3suePcjxSbJK2jCSflwvxoSFGbvfEK+7Mshjaku1BZXOnd
-         A4+HPclyb8qePa78wrAjv1MMU1+Q9TrHC/Ht65Uxmq3UIEiGgD/E9zOTg/3tDtp0c6J1
-         ZruGGRpHruJrV57Me2vwFJvyWyOqX2SOTH1L3Z8zvmhanpWNUBbpUy2LNZvXcPpaAxio
-         RJbw==
-X-Gm-Message-State: AOAM5329sFKYHFWmrnTvWJEfmAfxHuBCfBpM5lknhIEGIDjZtwNT826Q
-        TuXYbjcKJUHVU7jLwPxR2Ss=
-X-Google-Smtp-Source: ABdhPJxldIS0FV2nN7r6D7TYxp4Z3Kg5zle4YEupnyXfrICk/EBGqctPw0IMvloXUnaET3Xk9yYGsA==
-X-Received: by 2002:a5d:4849:: with SMTP id n9mr6780932wrs.186.1625473048901;
-        Mon, 05 Jul 2021 01:17:28 -0700 (PDT)
-Received: from gmail.com (178-164-188-14.pool.digikabel.hu. [178.164.188.14])
-        by smtp.gmail.com with ESMTPSA id j37sm8968987wms.37.2021.07.05.01.17.27
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
+        bh=jj7+TNaQPU7Jf9mnJvAob2AETZ45tmS9p0g/FllWrLI=;
+        b=TDQy6A+r46gXrSSuw/KdG5Kz3Q1blayR2kktKAg+6JrhByr1ufI6uBYZnANon//i14
+         QaRKLabWG6XtOAF1Z89FuvGiESMS2VGiP/nCIGz1g0rHR3lMCJZjjnomvoDneTygna1d
+         c4XsBFItpORSVmr0aKxQvWBzrZG4BXykEDU/hE8cdAkl6gcl8bhJAbhN73q2IoRqMinA
+         W7vP49UKp9dhZGVUfUGKu/vmEv+r1p87Ty2/nufssVkp+uOyg0MDnZsJDhTnSakHBj0L
+         12K+zp4ICLKqCoo94btTm/vyI2KeK5YucZJU4pRobcqPe6zY0s8UwFFqtH9v/zYwjsl3
+         JfuQ==
+X-Gm-Message-State: AOAM530BDlcHOqxIV+9WF0B2RbSbB7MSOmnqVo09f3dCnu+3VVvHMHor
+        A/xJO4gzSVT2Sn459/4KpVjiag==
+X-Google-Smtp-Source: ABdhPJyuv0Af+71XBG42//1ycauvRXPfDh2WQitebY4gI+kynh2D2B/vCHAtT6CTPB1LEz1fH6CX+g==
+X-Received: by 2002:a05:6512:32a4:: with SMTP id q4mr4859841lfe.252.1625473457348;
+        Mon, 05 Jul 2021 01:24:17 -0700 (PDT)
+Received: from cloudflare.com (79.191.58.233.ipv4.supernova.orange.pl. [79.191.58.233])
+        by smtp.gmail.com with ESMTPSA id f1sm1012993lfs.211.2021.07.05.01.24.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 01:17:28 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 5 Jul 2021 10:17:26 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 10/13] x86/kprobes: Push a fake return address at
- kretprobe_trampoline
-Message-ID: <YOLAFswnvyNReMmI@gmail.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
- <162400001661.506599.5153975410607447958.stgit@devnote2>
+        Mon, 05 Jul 2021 01:24:16 -0700 (PDT)
+References: <20210701061656.34150-1-xiyou.wangcong@gmail.com>
+ <60ddec01c651b_3fe24208dc@john-XPS-13-9370.notmuch>
+ <875yxrs2sc.fsf@cloudflare.com>
+ <CAM_iQpW69PGfp_Y8mZoqznwCk2axask5qJLB7ntZjFgGO+Eizg@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [Patch bpf v2] skmsg: check sk_rcvbuf limit before queuing to
+ ingress_skb
+In-reply-to: <CAM_iQpW69PGfp_Y8mZoqznwCk2axask5qJLB7ntZjFgGO+Eizg@mail.gmail.com>
+Date:   Mon, 05 Jul 2021 10:24:15 +0200
+Message-ID: <8735strwwg.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162400001661.506599.5153975410607447958.stgit@devnote2>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sun, Jul 04, 2021 at 09:53 PM CEST, Cong Wang wrote:
+> On Sat, Jul 3, 2021 at 10:52 AM Jakub Sitnicki <jakub@cloudflare.com> wro=
+te:
+>> When running with just the verdict prog attached, the -EIO error from
+>> sk_psock_verdict_apply is propagated up to tcp_read_sock. That is, it
+>> maps to 0 bytes used by recv_actor. sk_psock_verdict_recv in this case.
+>>
+>> tcp_read_sock, if 0 bytes were used =3D copied, won't sk_eat_skb. It sta=
+ys
+>> on sk_receive_queue.
+>
+> Are you sure?
+>
+> When recv_actor() returns 0, the while loop breaks:
+>
+> 1661                         used =3D recv_actor(desc, skb, offset, len);
+> 1662                         if (used <=3D 0) {
+> 1663                                 if (!copied)
+> 1664                                         copied =3D used;
+> 1665                                 break;
+>
+> then it calls sk_eat_skb() a few lines after the loop:
+> ...
+> 1690                 sk_eat_skb(sk, skb);
 
-* Masami Hiramatsu <mhiramat@kernel.org> wrote:
+This sk_eat_skb is still within the loop:
 
-> +	/* Replace fake return address with real one. */
-> +	*frame_pointer = kretprobe_trampoline_handler(regs, frame_pointer);
-> +	/*
-> +	 * Move flags to sp so that kretprobe_trapmoline can return
-> +	 * right after popf.
+1636:int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
+1637-		  sk_read_actor_t recv_actor)
+1638-{
+	=E2=80=A6
+1643-	int copied =3D 0;
+        =E2=80=A6
+1647-	while ((skb =3D tcp_recv_skb(sk, seq, &offset)) !=3D NULL) {
+1648-		if (offset < skb->len) {
+			=E2=80=A6
+1661-			used =3D recv_actor(desc, skb, offset, len);
+1662-			if (used <=3D 0) {
+1663-				if (!copied)
+1664-					copied =3D used;
+1665-				break;
+1666-			} else if (used <=3D len) {
+1667-				seq +=3D used;
+1668-				copied +=3D used;
+1669-				offset +=3D used;
+1670-			}
+			=E2=80=A6
+1684-		}
+		=E2=80=A6
+1690-		sk_eat_skb(sk, skb);
+		=E2=80=A6
+1694-	}
+	=E2=80=A6
+1699-	/* Clean up data we have read: This will do ACK frames. */
+1700-	if (copied > 0) {
+1701-		tcp_recv_skb(sk, seq, &offset);
+1702-		tcp_cleanup_rbuf(sk, copied);
+1703-	}
+1704-	return copied;
+1705-}
 
-What is a trapmoline?
+sk_eat_skb could get called by tcp_recv_skb =E2=86=92 sk_eat_skb if recv_ac=
+tor
+returned > 0 (the case when we have parser attached).
 
-Also, in the x86 code we capitalize register and instruction names so that 
-they are more distinctive and easier to read in the flow of English text.
+>
+>>
+>>   sk->sk_data_ready
+>>     sk_psock_verdict_data_ready
+>>       ->read_sock(..., sk_psock_verdict_recv)
+>>         tcp_read_sock (used =3D copied =3D 0)
+>>           sk_psock_verdict_recv -> ret =3D 0
+>>             sk_psock_verdict_apply -> -EIO
+>>               sk_psock_skb_redirect -> -EIO
+>>
+>> However, I think this gets us stuck. What if no more data gets queued,
+>> and sk_data_ready doesn't get called again?
+>
+> I think it is dropped by sk_eat_skb() in TCP case and of course the
+> sender will retransmit it after detecting this loss. So from this point of
+> view, there is no difference between drops due to overlimit and drops
+> due to eBPF program policy.
 
-Thanks,
+I'm not sure the retransmit will happen.
 
-	Ingo
+We update tp->rcv_nxt (tcp_rcv_nxt_update) when skb gets pushed onto
+sk_receive_queue in either:
+
+ - tcp_rcv_established -> tcp_queue_rcv, or
+ - tcp_rcv_established -> tcp_data_queue -> tcp_queue_rcv
+
+... and schedule ACK (tcp_event_data_recv) to be sent.
+
+Say we are in quickack mode, then
+tcp_ack_snd_check()/__tcp_ack_snd_check() would cause ACK to be sent
+out.
