@@ -2,82 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352503BBC58
-	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 13:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5633BBC5B
+	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 13:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhGELrG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Jul 2021 07:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
+        id S231250AbhGELrd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Jul 2021 07:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhGELrG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Jul 2021 07:47:06 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B519EC061574;
-        Mon,  5 Jul 2021 04:44:28 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id e14so5785379qkl.9;
-        Mon, 05 Jul 2021 04:44:28 -0700 (PDT)
+        with ESMTP id S230174AbhGELra (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Jul 2021 07:47:30 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CB7C06175F
+        for <bpf@vger.kernel.org>; Mon,  5 Jul 2021 04:44:52 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id t14-20020a05600c198eb029020c8aac53d4so2873325wmq.1
+        for <bpf@vger.kernel.org>; Mon, 05 Jul 2021 04:44:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y5GEj+8326+PbDDr2Nykyt3XrIRloqp5T0iaY8wvCN4=;
-        b=G24fJESmPH7nMdQIwUF+gb58lyy7jFnZXRymXctn3VclV53TwK3vCHPmR/+fy1Xiyk
-         dZrcbk1TXH/kk/UA+a6WCEsgPASxBYuaz82UQSBuNNgO+iio+ACdlfpBBU26QLIoGjiI
-         dbu9d3RBTrQrDstdev67/pEn1BoL9D3wfA60ghspnb4O0cloQ6Lu5Nx3hcx5XPiNqVdG
-         G1kWJSPXzWx+JdAwMj8CJMlsKRrq5z5PZGjgbBg2tbavl4CVvYtS97LWempUSqoPmSw1
-         SBQZ0JnrwvvEbuVxaTvRqXLfh1+udw7lUA471drIw9XIQUJyqgWMW+v9BN+R8xSHkR7W
-         BMzA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JP655Kr0pQo2WIEbmEE6zI777FgwwqQfTWCo3Yd5U5Y=;
+        b=uVl/FVYJR66p3A+kTDkqnN7VGlSQH2HYny3y9odL82wmHYTn9aH1WGEmu+h0FeYauC
+         XwnS6zy3SaCJ5XCHrHqep5UyIi/Wh0uzT5Y+/+hCbwiCW1j0KO1o1ZzggGbPVvM3rbm8
+         aRD4zSyImawZGVKdM8xHreAQBpF5mJ+/YA8+ZeyFTjBWC3xx6a9yBGyjOzzgyr5fsrrH
+         KcwGX4zga1PXdrqed0GRvruAL7oWpaaGtmB5zPknc2F/r6F/O1YEhNCBP0fbDvePqyA/
+         LhEohLJTnAZPxf1ck9Kp+6WvXiQBYaYszNeweTXKjsztlc3qEmqV/tBr19WeIEtJFawi
+         4D5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y5GEj+8326+PbDDr2Nykyt3XrIRloqp5T0iaY8wvCN4=;
-        b=pHrFsn9iQH3l0+h/oyKuMPc6349fuzAYYO/ycW3ipASxQR6Q6wqcyQNdXi+oauZuuI
-         a3PhMP1NvbY2aR+x9J7GFVQV/Rh9cN4117YL11SV3S0gO12deQJSon3/jyDCEb1Tt0hO
-         ZHr4tEkO6irBit1S9285WolQ9jJDK+6XIGJMhjDP9ofoHLnBQ4pHt90dvfi6kM0a7+qP
-         5+agLZzynULyF93VkJKV3Dv16ed80BRX1g0KjpJBJG2yEqgTfdsenJcjkTrwr4q+XELj
-         0UbliqZ/ZaHF9Ui6CcK7JmfUOSSFVj7t+l7y51vKngHVrFv+EkZTTcEspM3pfErZm2eC
-         I6XQ==
-X-Gm-Message-State: AOAM5327HD9S1yDVMjyci+wd2Aj7thO2VhlnYAYhNbmjQbRR3BKZu6WT
-        zb/LYSLkFC/vINCFf2fnxJyNDUVgKOZO7o1Ctw==
-X-Google-Smtp-Source: ABdhPJzzvfN9ja3xrr+zfs22ZbMSe98belDpsaJbzFRIfwLcqhb3FwVgOTTioY6zAgoIuzsz2uwHW9CofOuY+gGxr0E=
-X-Received: by 2002:a05:620a:17a5:: with SMTP id ay37mr13801980qkb.465.1625485467815;
- Mon, 05 Jul 2021 04:44:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210609135537.1460244-1-joamaki@gmail.com> <20210624091843.5151-1-joamaki@gmail.com>
- <20210624091843.5151-5-joamaki@gmail.com> <31210.1625163167@famine>
-In-Reply-To: <31210.1625163167@famine>
-From:   Jussi Maki <joamaki@gmail.com>
-Date:   Mon, 5 Jul 2021 14:44:16 +0300
-Message-ID: <CAHn8xcmkDz9DG_s_6G9osakb5QD9O3AE46PfZTeAyi12h_s5rQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/4] devmap: Exclude XDP broadcast to master device
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JP655Kr0pQo2WIEbmEE6zI777FgwwqQfTWCo3Yd5U5Y=;
+        b=XEemVHQ2GG5c0yl9Q+PQJqsJ6Kqck3pDva4cZTPflUGP5CBUFlcSWM1RL5L8zLagHC
+         eYmrIcYqdfYpIlejHKPqmkLtwyLrNOIjXvemN+cJzsT5PNeWjUIkE9fuspXE6g+PiFCp
+         d156NVyxW5Iy6l/on/UosgbRGoh9KgR7p/VFCeTzkIiGyueJEfiSfWWnqYxCbnC6vEDV
+         dXyU6qZ3MCkQVaKg2cFsiNrBm+lAOHCksJG6WNne79rzMUG46rZF+imisw/P9GBPO9+S
+         GV2UgYdjN3i0CHejJtrmvLZcGpddPGb08gIfSKYVe990pZdc7Z3qGAXFyDTIzV4LcozA
+         QIUQ==
+X-Gm-Message-State: AOAM530egAYcAN2nQ/jDL/Z46perXHPRYElqRWx09VJGbMl88O5RKSHP
+        22zVufPSeW2IJzzd2rVZevvzsg==
+X-Google-Smtp-Source: ABdhPJzljqGqiLe7uyr/rqQf0Ml0k1xid251PBNTF5gFjcEUlXtmY57iuHxc55ce9q/6TbKn4gwJ0Q==
+X-Received: by 2002:a1c:25c6:: with SMTP id l189mr15148080wml.49.1625485490745;
+        Mon, 05 Jul 2021 04:44:50 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:dddd:647c:7745:e5f7])
+        by smtp.gmail.com with ESMTPSA id r16sm15313150wrx.63.2021.07.05.04.44.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 04:44:50 -0700 (PDT)
+Date:   Mon, 5 Jul 2021 13:44:44 +0200
+From:   Marco Elver <elver@google.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     akpm@linux-foundation.org, glider@google.com, dvyukov@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com, Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Gospodarek <andy@greyhouse.net>, vfalico@gmail.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH] Revert "mm/page_alloc: make should_fail_alloc_page()
+ static"
+Message-ID: <YOLwrMBk6TymR74k@elver.google.com>
+References: <20210705103806.2339467-1-elver@google.com>
+ <20210705113723.GN3840@techsingularity.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210705113723.GN3840@techsingularity.net>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 1, 2021 at 9:12 PM Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
-> >+      if (static_branch_unlikely(&bpf_master_redirect_enabled_key)) {
-> >+              struct net_device *master = netdev_master_upper_dev_get_rcu(dev_rx);
-> >+
-> >+              exclude_ifindex_master = (master && exclude_ingress) ? master->ifindex : 0;
-> >+      }
-> >+
->
->         Will the above logic do what is intended if the device stacking
-> isn't a simple bond -> ethX arrangement?  I.e., bond -> VLAN.?? -> ethX
-> or perhaps even bondA -> VLAN.?? -> bondB -> ethX ?
+On Mon, Jul 05, 2021 at 12:37PM +0100, Mel Gorman wrote:
+> On Mon, Jul 05, 2021 at 12:38:06PM +0200, Marco Elver wrote:
+> > This reverts commit f7173090033c70886d925995e9dfdfb76dbb2441.
+> > 
+> > Commit 76cd61739fd1 ("mm/error_inject: Fix allow_error_inject function
+> > signatures") explicitly made should_fail_alloc_page() non-static, due to
+> > worries of remaining compiler optimizations in the absence of function
+> > side-effects while being noinline.
+> > 
+> > Furthermore, kernel/bpf/verifier.c pushes should_fail_alloc_page onto
+> > the btf_non_sleepable_error_inject BTF IDs set, which when enabling
+> > CONFIG_DEBUG_INFO_BTF results in an error at the BTFIDS stage:
+> > 
+> >   FAILED unresolved symbol should_fail_alloc_page
+> > 
+> > To avoid the W=1 warning, add a function declaration right above the
+> > function itself, with a comment it is required in a BTF IDs set.
+> > 
+> > Fixes: f7173090033c ("mm/page_alloc: make should_fail_alloc_page() static")
+> > Cc: Mel Gorman <mgorman@techsingularity.net>
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Signed-off-by: Marco Elver <elver@google.com>
+> 
+> Acked-by: Mel Gorman <mgorman@techsingularity.net>
+> 
+> Out of curiousity though, why does block/blk-core.c not require
+> something similar for should_fail_bio?
 
-Good point. "bond -> VLAN -> eth" isn't an issue currently as vlan
-devices do not support XDP. "bondA -> bondB -> ethX" however would be
-supported, so I think it makes sense to change the code to collect all
-upper devices and exclude them. I'll try to follow up with an updated
-patch for this soon.
+It seems kernel/bpf/verifier.c doesn't refer to it in an BTF IDs set.
+Looks like should_fail_alloc_page is special for BPF purposes. I'm not a
+BPF maintainer, so hopefully someone can explain why
+should_fail_alloc_page is special for BPF.
+
+Thanks,
+-- Marco
