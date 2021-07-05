@@ -2,71 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDBD3BBC7A
-	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 13:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669293BBC98
+	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 14:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhGEL6G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Jul 2021 07:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbhGEL6F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Jul 2021 07:58:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F8DC061574;
-        Mon,  5 Jul 2021 04:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Pq7bP+MTawU/za6/1KcKOrsotUVcyEKhovbCd0LbYxs=; b=a+qDzygSNKqUonGPkaGwhrnB5T
-        Nm56mhN/nkb4qEMQf8wo67ZcRNY40zF/g8Gq5vbUJaVK6mdWQghoQ3ItzYisV3ahD7M1pZPf0+pBq
-        sMzo8GAzPGX7lfnm0nAj6EskGk523UnvjSQpgad6kBB0C5v77Q6AGNxYZr02WitwcdudQVcBcMInY
-        6oJbrQKYUcJSntqCQhanhsjE6+0gv0E97fMm8JyML0mfWCAHZ27WkdgxeMsVwmZy3KG1q+3WYKGWK
-        shmZK3c9fzIarX5AleY8Gzgbx+FgK67mHhpgrYKQN1XMfP4QzQkghUyF0KQ16pFGsHG6PfrECEfNe
-        xihRRcrA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m0NBl-00ADQL-7P; Mon, 05 Jul 2021 11:55:09 +0000
-Date:   Mon, 5 Jul 2021 12:55:01 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     akpm@linux-foundation.org, glider@google.com, dvyukov@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com, Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>, bpf@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH] Revert "mm/page_alloc: make should_fail_alloc_page()
- static"
-Message-ID: <YOLzFecogWmdZ5Hc@infradead.org>
-References: <20210705103806.2339467-1-elver@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210705103806.2339467-1-elver@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        id S231184AbhGEMGS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Jul 2021 08:06:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231159AbhGEMGS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Jul 2021 08:06:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A68B860241;
+        Mon,  5 Jul 2021 12:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625486621;
+        bh=SjTdmsxCPlxVFlvZvH52SfXXPq9CdpmxbJ1E9QcX+fs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Y3eFVJeLa8O2Yfy8Gp3KwhyukvAPXPZwNZcsY6YAijHoPLWls/zBsDSTWgukWEajS
+         nJVGNHxMuVtvSWrI/MVO7/jbbC6XImJZ/LNG17ZXUIemHPQziCFzLMV2R8sCx6x+n3
+         GK10H0854TeUAIULzi//RRV8lo7tdZ7x/xCoAyyZ8bfEghsXFgSmwnljbD3Kuwgs0P
+         NBs6GWBo7ThEqJiEP6+YGNehbIhSS/WS1ZHC8LJKy8bpeMbgUOgAuZ+PNxMg3ecpiq
+         NLXPr5jLlbc62a0bpHj/MuakB+GBnui128I0mZ7M7HmGIaBtTRKMXQ64e6R0oWCxPN
+         YFB9TM6eZloGg==
+Date:   Mon, 5 Jul 2021 21:03:36 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 02/13] kprobes: treewide: Replace
+ arch_deref_entry_point() with dereference_symbol_descriptor()
+Message-Id: <20210705210336.8428fbf0e65deb1e437374f4@kernel.org>
+In-Reply-To: <YOK5OV0zdjvrsqju@gmail.com>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162399994018.506599.10332627573727646767.stgit@devnote2>
+        <YOK5OV0zdjvrsqju@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 12:38:06PM +0200, Marco Elver wrote:
-> This reverts commit f7173090033c70886d925995e9dfdfb76dbb2441.
-> 
-> Commit 76cd61739fd1 ("mm/error_inject: Fix allow_error_inject function
-> signatures") explicitly made should_fail_alloc_page() non-static, due to
-> worries of remaining compiler optimizations in the absence of function
-> side-effects while being noinline.
-> 
-> Furthermore, kernel/bpf/verifier.c pushes should_fail_alloc_page onto
-> the btf_non_sleepable_error_inject BTF IDs set, which when enabling
-> CONFIG_DEBUG_INFO_BTF results in an error at the BTFIDS stage:
-> 
->   FAILED unresolved symbol should_fail_alloc_page
-> 
-> To avoid the W=1 warning, add a function declaration right above the
-> function itself, with a comment it is required in a BTF IDs set.
+On Mon, 5 Jul 2021 09:48:09 +0200
+Ingo Molnar <mingo@kernel.org> wrote:
 
-NAK.  We're not going to make symbols pointlessly global for broken
-instrumentation coe.  Someone needs to fixthis eBPF mess as we had
-the same kind of issue before already.
+> 
+> * Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > Replace arch_deref_entry_point() with dereference_symbol_descriptor()
+> > because those are doing same thing.
+> > 
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > Tested-by: Andrii Nakryik <andrii@kernel.org>
+> 
+> A better changelog:
+> 
+>   ~15 years ago kprobes grew the 'arch_deref_entry_point()' __weak function:
+> 
+>     3d7e33825d87: ("jprobes: make jprobes a little safer for users")
+> 
+>   But this is just open-coded dereference_symbol_descriptor() in essence, and
+>   its obscure nature was causing bugs.
+> 
+>   Just use the real thing.
+
+OK. BTW, I couldn't find actual bugs from it. What about this?
+
+"its obscure nature was causing problems in the past."
+
+Thank you,
+
+> 
+> Thanks,
+> 
+> 	Ingo
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
