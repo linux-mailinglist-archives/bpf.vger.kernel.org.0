@@ -2,166 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E4D3BB909
-	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 10:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C2D3BB968
+	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 10:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhGEI04 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Jul 2021 04:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        id S230134AbhGEIhj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Jul 2021 04:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhGEI0z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Jul 2021 04:26:55 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E2EC061574
-        for <bpf@vger.kernel.org>; Mon,  5 Jul 2021 01:24:18 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id a18so30998727lfs.10
-        for <bpf@vger.kernel.org>; Mon, 05 Jul 2021 01:24:18 -0700 (PDT)
+        with ESMTP id S230085AbhGEIhi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Jul 2021 04:37:38 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD4DC061574;
+        Mon,  5 Jul 2021 01:35:01 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso8636878wme.0;
+        Mon, 05 Jul 2021 01:35:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=jj7+TNaQPU7Jf9mnJvAob2AETZ45tmS9p0g/FllWrLI=;
-        b=bW5aQeJv5u9spwJKsAoW+ujLrBiU5Ns/pklQSVKBACDfMVlR7mdbYQ7/RgXPZ64jLQ
-         NUddf/CwUxaaxn5wfV66vKIsnv+uRLYUP1Ykd2a6/PkyAAkoaRb6HKSuBktdwmCd0kEF
-         lXwU3pQ8lff2t1XXCXLhXCWMmLdUgWyuw8hig=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vGRWvdOK1PgDadGaQtrO3gHLl2eTZPMYHv0bkQBzh00=;
+        b=iS+lH8U9/XgWWefVhtVSlFRj5PsQkAjqPPdERklq6ayKTQPmRvs4vnr3SDUy2vNTRw
+         f/GdEj1zz4eBn4lZumC+4tZ6ruSYP5Q6MA/CWiyF/15wvxgxkTHVtGfTldj9fvRByZGj
+         94YaWvJSt6d+yNDl+FRC2sKu/FDI3T3FyLr+OT7lh+sA88G5p6nwESmiYD6Aybw09+aC
+         5CgMTBLfnSe7MOqW6a0cvFo8cFrFCzFkn0vXOiQ7RcnM1LE14HgfDTXFk+MCgcrv3kZ6
+         N5tCNlehjL+RxKFY6uKc5V3N2I0Q2ow68v3wn+8+nhS6Y9va5Z3r7c1bVPbPfKIuF/Y1
+         drFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
-        bh=jj7+TNaQPU7Jf9mnJvAob2AETZ45tmS9p0g/FllWrLI=;
-        b=TDQy6A+r46gXrSSuw/KdG5Kz3Q1blayR2kktKAg+6JrhByr1ufI6uBYZnANon//i14
-         QaRKLabWG6XtOAF1Z89FuvGiESMS2VGiP/nCIGz1g0rHR3lMCJZjjnomvoDneTygna1d
-         c4XsBFItpORSVmr0aKxQvWBzrZG4BXykEDU/hE8cdAkl6gcl8bhJAbhN73q2IoRqMinA
-         W7vP49UKp9dhZGVUfUGKu/vmEv+r1p87Ty2/nufssVkp+uOyg0MDnZsJDhTnSakHBj0L
-         12K+zp4ICLKqCoo94btTm/vyI2KeK5YucZJU4pRobcqPe6zY0s8UwFFqtH9v/zYwjsl3
-         JfuQ==
-X-Gm-Message-State: AOAM530BDlcHOqxIV+9WF0B2RbSbB7MSOmnqVo09f3dCnu+3VVvHMHor
-        A/xJO4gzSVT2Sn459/4KpVjiag==
-X-Google-Smtp-Source: ABdhPJyuv0Af+71XBG42//1ycauvRXPfDh2WQitebY4gI+kynh2D2B/vCHAtT6CTPB1LEz1fH6CX+g==
-X-Received: by 2002:a05:6512:32a4:: with SMTP id q4mr4859841lfe.252.1625473457348;
-        Mon, 05 Jul 2021 01:24:17 -0700 (PDT)
-Received: from cloudflare.com (79.191.58.233.ipv4.supernova.orange.pl. [79.191.58.233])
-        by smtp.gmail.com with ESMTPSA id f1sm1012993lfs.211.2021.07.05.01.24.16
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=vGRWvdOK1PgDadGaQtrO3gHLl2eTZPMYHv0bkQBzh00=;
+        b=b4y462iJ2QD5oS4KXuhdjrDhpql2hgENnkkf7QDrhzFRlUzFe+dWxh35b6iZjsI3hX
+         /C0SoQMo2gmtMvJru8m7DF+ApO0zDjkRX/nP93PnosHHqUnYYZE3riqOq4J2H+E4qsyO
+         lgV6OGhS4XwZqleJZlroQOA6oHde8aGlIQsYJmhlGZhqS4vfZnLed9WSSlOObWmAxgR0
+         K6HOnDhqfh5ZPwzw7JUxsdLJvJ08gXeMSFW2yHCJXwQi/hep2KRj2owWnE/5fNQPrnlg
+         unQD8Mui6GoIhLP1weXV+qn8n++ikLn19zDVObt389Fo71auJasPE7E64RPXjdL0hG6l
+         UHVw==
+X-Gm-Message-State: AOAM530pvpVXYirVmJbcEXRHxgg4jdRC6Qlv2Jfxpcvquw9UtaqPozO8
+        gSPVzUAwFHnaU59wyN1Zapg=
+X-Google-Smtp-Source: ABdhPJwoW+wrIqWbqydnd2SnNFn+Rr7wab7v4jWy971rPZ7WDn00TetlfWn+CwRfKmrKoYP01daj9w==
+X-Received: by 2002:a1c:9dce:: with SMTP id g197mr13985028wme.149.1625474100512;
+        Mon, 05 Jul 2021 01:35:00 -0700 (PDT)
+Received: from gmail.com (178-164-188-14.pool.digikabel.hu. [178.164.188.14])
+        by smtp.gmail.com with ESMTPSA id a9sm12092809wrv.37.2021.07.05.01.34.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 01:24:16 -0700 (PDT)
-References: <20210701061656.34150-1-xiyou.wangcong@gmail.com>
- <60ddec01c651b_3fe24208dc@john-XPS-13-9370.notmuch>
- <875yxrs2sc.fsf@cloudflare.com>
- <CAM_iQpW69PGfp_Y8mZoqznwCk2axask5qJLB7ntZjFgGO+Eizg@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: Re: [Patch bpf v2] skmsg: check sk_rcvbuf limit before queuing to
- ingress_skb
-In-reply-to: <CAM_iQpW69PGfp_Y8mZoqznwCk2axask5qJLB7ntZjFgGO+Eizg@mail.gmail.com>
-Date:   Mon, 05 Jul 2021 10:24:15 +0200
-Message-ID: <8735strwwg.fsf@cloudflare.com>
+        Mon, 05 Jul 2021 01:35:00 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 5 Jul 2021 10:34:58 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 13/13] x86/kprobes: Fixup return address in
+ generic trampoline handler
+Message-ID: <YOLEMvR1bCQiIMcl@gmail.com>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+ <162400004562.506599.7549585083316952768.stgit@devnote2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162400004562.506599.7549585083316952768.stgit@devnote2>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 04, 2021 at 09:53 PM CEST, Cong Wang wrote:
-> On Sat, Jul 3, 2021 at 10:52 AM Jakub Sitnicki <jakub@cloudflare.com> wro=
-te:
->> When running with just the verdict prog attached, the -EIO error from
->> sk_psock_verdict_apply is propagated up to tcp_read_sock. That is, it
->> maps to 0 bytes used by recv_actor. sk_psock_verdict_recv in this case.
->>
->> tcp_read_sock, if 0 bytes were used =3D copied, won't sk_eat_skb. It sta=
-ys
->> on sk_receive_queue.
->
-> Are you sure?
->
-> When recv_actor() returns 0, the while loop breaks:
->
-> 1661                         used =3D recv_actor(desc, skb, offset, len);
-> 1662                         if (used <=3D 0) {
-> 1663                                 if (!copied)
-> 1664                                         copied =3D used;
-> 1665                                 break;
->
-> then it calls sk_eat_skb() a few lines after the loop:
-> ...
-> 1690                 sk_eat_skb(sk, skb);
 
-This sk_eat_skb is still within the loop:
+* Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-1636:int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
-1637-		  sk_read_actor_t recv_actor)
-1638-{
-	=E2=80=A6
-1643-	int copied =3D 0;
-        =E2=80=A6
-1647-	while ((skb =3D tcp_recv_skb(sk, seq, &offset)) !=3D NULL) {
-1648-		if (offset < skb->len) {
-			=E2=80=A6
-1661-			used =3D recv_actor(desc, skb, offset, len);
-1662-			if (used <=3D 0) {
-1663-				if (!copied)
-1664-					copied =3D used;
-1665-				break;
-1666-			} else if (used <=3D len) {
-1667-				seq +=3D used;
-1668-				copied +=3D used;
-1669-				offset +=3D used;
-1670-			}
-			=E2=80=A6
-1684-		}
-		=E2=80=A6
-1690-		sk_eat_skb(sk, skb);
-		=E2=80=A6
-1694-	}
-	=E2=80=A6
-1699-	/* Clean up data we have read: This will do ACK frames. */
-1700-	if (copied > 0) {
-1701-		tcp_recv_skb(sk, seq, &offset);
-1702-		tcp_cleanup_rbuf(sk, copied);
-1703-	}
-1704-	return copied;
-1705-}
+> In x86, kretprobe trampoline address on the stack frame will
+> be replaced with the real return address after returning from
+> trampoline_handler. Before fixing the return address, the real
+> return address can be found in the current->kretprobe_instances.
+> 
+> However, since there is a window between updating the
+> current->kretprobe_instances and fixing the address on the stack,
+> if an interrupt caused at that timing and the interrupt handler
+> does stacktrace, it may fail to unwind because it can not get
+> the correct return address from current->kretprobe_instances.
+> 
+> This will minimize that window by fixing the return address
+> right before updating current->kretprobe_instances.
 
-sk_eat_skb could get called by tcp_recv_skb =E2=86=92 sk_eat_skb if recv_ac=
-tor
-returned > 0 (the case when we have parser attached).
+Is there still a window? I.e. is it "minimized" (to how big of a window?), 
+or eliminated?
 
->
->>
->>   sk->sk_data_ready
->>     sk_psock_verdict_data_ready
->>       ->read_sock(..., sk_psock_verdict_recv)
->>         tcp_read_sock (used =3D copied =3D 0)
->>           sk_psock_verdict_recv -> ret =3D 0
->>             sk_psock_verdict_apply -> -EIO
->>               sk_psock_skb_redirect -> -EIO
->>
->> However, I think this gets us stuck. What if no more data gets queued,
->> and sk_data_ready doesn't get called again?
->
-> I think it is dropped by sk_eat_skb() in TCP case and of course the
-> sender will retransmit it after detecting this loss. So from this point of
-> view, there is no difference between drops due to overlimit and drops
-> due to eBPF program policy.
+> +void arch_kretprobe_fixup_return(struct pt_regs *regs,
+> +				 unsigned long correct_ret_addr)
+> +{
+> +	unsigned long *frame_pointer;
+> +
+> +	frame_pointer = ((unsigned long *)&regs->sp) + 1;
+> +
+> +	/* Replace fake return address with real one. */
+> +	*frame_pointer = correct_ret_addr;
 
-I'm not sure the retransmit will happen.
+Firstly, why does &regs->sp have to be forced to 'unsigned long *'? 
 
-We update tp->rcv_nxt (tcp_rcv_nxt_update) when skb gets pushed onto
-sk_receive_queue in either:
+pt_regs::sp is 'unsigned long' on both 32-bit and 64-bit kernels AFAICS.
 
- - tcp_rcv_established -> tcp_queue_rcv, or
- - tcp_rcv_established -> tcp_data_queue -> tcp_queue_rcv
+Secondly, the new code modified by your patch now looks like this:
 
-... and schedule ACK (tcp_event_data_recv) to be sent.
+        frame_pointer = ((unsigned long *)&regs->sp) + 1;
+ 
++       kretprobe_trampoline_handler(regs, frame_pointer);
 
-Say we are in quickack mode, then
-tcp_ack_snd_check()/__tcp_ack_snd_check() would cause ACK to be sent
-out.
+where:
+
++void arch_kretprobe_fixup_return(struct pt_regs *regs,
++                                unsigned long correct_ret_addr)
++{
++       unsigned long *frame_pointer;
++
++       frame_pointer = ((unsigned long *)&regs->sp) + 1;
++
++       /* Replace fake return address with real one. */
++       *frame_pointer = correct_ret_addr;
++}
+
+So we first do:
+
+        frame_pointer = ((unsigned long *)&regs->sp) + 1;
+
+... and pass that in to arch_kretprobe_fixup_return() as 
+'correct_ret_addr', which does:
+
++       frame_pointer = ((unsigned long *)&regs->sp) + 1;
++	*frame_pointer = correct_ret_addr;
+
+... which looks like the exact same thing as:
+
+	*frame_pointer = frame_pointer;
+
+... obfuscated through a thick layer of type casts?
+
+Thanks,
+
+	Ingo
