@@ -2,77 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B3B3BC3B8
-	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 23:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF48F3BC40A
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 01:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhGEVln (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Jul 2021 17:41:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230074AbhGEVln (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Jul 2021 17:41:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9110A61988;
-        Mon,  5 Jul 2021 21:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625521145;
-        bh=1mb6JbXNyZgCObHmxZmdRO5rnBjKtLLrG10anGcwyMk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=m37KOfuPFl43oXbrIOLjuZ4R5OWHGllkbu2PVq6bK5Vv9w/QYzqOxigliaZbWiTUj
-         KHhnBPUcQKxYfiF1nWDxz4FsMoOBlmVMpjDHELjY5M1DqVlRBxBUtR2uZO+R/viK0i
-         UGP/16b5xX7SHokSH3gsA8Lv9BET9UrQw4JzqaUpmrRUUFYYRbLFMWa4i2FsWIsc+m
-         hTze3miVz6xgnSavFYExCzqXU4l+odVigu9rIdiSKDBaiAVoXPbRUUc4+SNek/X0FC
-         wdt1FDhUOT4fA9TTR14HkJYMvY2at91xR6u2bAKtr22BDfe1yYBOLlo9BDlgLuJb07
-         8wUS7UgS2zNmw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 846E860A4D;
-        Mon,  5 Jul 2021 21:39:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231899AbhGEXWC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Jul 2021 19:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231640AbhGEXV7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Jul 2021 19:21:59 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB07C061574;
+        Mon,  5 Jul 2021 16:19:20 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id mn20-20020a17090b1894b02901707fc074e8so659497pjb.0;
+        Mon, 05 Jul 2021 16:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AwbRb3jpffDliQd5+ObWDoU7B1AAjNEgpgkFUzNvpnw=;
+        b=pFesCE1VkR9SI4pdCrxbURHurlHIt4eRLJKC8LblTfpZ+XHwCZFE94HfRtesarR2c7
+         P5k1nbLOJKFwJLf4a4y4M6wRcFb7zhs37sKOtNxAwiMvhJuNyzPZCOHZT4z/P/9qQBv1
+         aC3lUFw++YSCh1PCm5Q5LFBVOsGOLQ44/N6nnKu2jO4hvfxSzw6IVvlHZCdx2lZtNacc
+         C/3yT8MoCMkD/KaNVf9sEmyJ+2GlJpWybsTS83FI/edMdDU1v/nB0ivYvWfvWJ8+qX1b
+         hB3aXw4wdmZQBQtQoKVhlfRNyrtbeXKpuYq92Ciq1XcAPxKbzVz6QrnZ/K8+A5HZfgk5
+         j09Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AwbRb3jpffDliQd5+ObWDoU7B1AAjNEgpgkFUzNvpnw=;
+        b=bilbkT0Nmw9YxwGidlKLvdDy8aTSEN5uOnml8BibIUOeMw+yEJqoEKJEHcOT/mpcsj
+         8dfsVjt54czZEEzSZ0AmXNaO/fPMd0dxUUFJEm75iEWLwShOBEeKT4gHzVKwRV0BNHav
+         q9DejzXzCmjUQglyWIfic66WnwroFVT3ubPDa3nCzVj/y6VsQCYhMuriN+Xr5gQClhbx
+         z9v58SqO1L8AIqzkreYbRA9xoIsTIeA2fOfHQ3GYllmWpskqJGOzNmtCEjQpfWMiHQKo
+         3uhgvt9wKx/Kui/I9cWSffaezhRVN9ajtVe7EGEyODmKrdf+1OgST61a+9BLGSLz7V5/
+         z1LQ==
+X-Gm-Message-State: AOAM531kucPVveBM79JxbUO/3mNXa6mZDNq9GHvfomHEPrxQeeAg915Y
+        Z5oSVJKXpl+TqCffpIDqANk=
+X-Google-Smtp-Source: ABdhPJzkoI7y2nCb4uw1FOobg+RUTq8genZo373bH67t9YA/FNNwL/28LTVHjjYnaLLreGColocYCA==
+X-Received: by 2002:a17:902:b210:b029:11a:bf7b:1a83 with SMTP id t16-20020a170902b210b029011abf7b1a83mr14306975plr.84.1625527160305;
+        Mon, 05 Jul 2021 16:19:20 -0700 (PDT)
+Received: from pn-hyperv.lan (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id h9sm6579067pgi.43.2021.07.05.16.19.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 16:19:19 -0700 (PDT)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     yhs@fb.com, edumazet@google.com, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, ycheng@google.com, ncardwell@google.com,
+        yyd@google.com
+Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+Subject: [PATCH v6] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
+Date:   Tue,  6 Jul 2021 07:19:12 +0800
+Message-Id: <20210705231912.532186-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] samples/bpf: Fix xdpsock with '-M' parameter missing
- unload process
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162552114553.18127.14437344539582058429.git-patchwork-notify@kernel.org>
-Date:   Mon, 05 Jul 2021 21:39:05 +0000
-References: <20210628091815.2373487-1-wanghai38@huawei.com>
-In-Reply-To: <20210628091815.2373487-1-wanghai38@huawei.com>
-To:     wanghai (M) <wanghai38@huawei.com>
-Cc:     davem@davemloft.net, bjorn@kernel.org, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com, maciej.fijalkowski@intel.com,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+This commit fixes a bug (found by syzkaller) that could cause spurious
+double-initializations for congestion control modules, which could cause
+memory leaks or other problems for congestion control modules (like CDG)
+that allocate memory in their init functions.
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
+The buggy scenario constructed by syzkaller was something like:
 
-On Mon, 28 Jun 2021 17:18:15 +0800 you wrote:
-> Execute the following command and exit, then execute it again, the
-> following error will be reported.
-> 
-> $ sudo ./samples/bpf/xdpsock -i ens4f2 -M
-> ^C
-> $ sudo ./samples/bpf/xdpsock -i ens4f2 -M
-> libbpf: elf: skipping unrecognized data section(16) .eh_frame
-> libbpf: elf: skipping relo section(17) .rel.eh_frame for section(16) .eh_frame
-> libbpf: Kernel error message: XDP program already attached
-> ERROR: link set xdp fd failed
-> 
-> [...]
+(1) create a TCP socket
+(2) initiate a TFO connect via sendto()
+(3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
+    which calls:
+       tcp_set_congestion_control() ->
+         tcp_reinit_congestion_control() ->
+           tcp_init_congestion_control()
+(4) receive ACK, connection is established, call tcp_init_transfer(),
+    set icsk_ca_initialized=0 (without first calling cc->release()),
+    call tcp_init_congestion_control() again.
 
-Here is the summary with links:
-  - [bpf] samples/bpf: Fix xdpsock with '-M' parameter missing unload process
-    https://git.kernel.org/bpf/bpf/c/2620e92ae6ed
+Note that in this sequence tcp_init_congestion_control() is called
+twice without a cc->release() call in between. Thus, for CC modules
+that allocate memory in their init() function, e.g, CDG, a memory leak
+may occur. The syzkaller tool managed to find a reproducer that
+triggered such a leak in CDG.
 
-You are awesome, thank you!
+The bug was introduced when that commit 8919a9b31eb4 ("tcp: Only init
+congestion control if not initialized already")
+introduced icsk_ca_initialized and set icsk_ca_initialized to 0 in
+tcp_init_transfer(), missing the possibility for a sequence like the
+one above, where a process could call setsockopt(TCP_CONGESTION) in
+state TCP_SYN_SENT (i.e. after the connect() or TFO open sendmsg()),
+which would call tcp_init_congestion_control(). It did not intend to
+reset any initialization that the user had already explicitly made;
+it just missed the possibility of that particular sequence (which
+syzkaller managed to find).
+
+Fixes: 8919a9b31eb4 ("tcp: Only init congestion control if not initialized already")
+Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+---
+V2:     - Modify the Subject line.
+        - Adjust the commit message.
+        - Add Fixes: tag.
+V3:     - Fix netdev/verify_fixes format error.
+V4:     - Add blamed authors to receiver list.
+V5:	- Add comment about the congestion control initialization.
+V6:	- Fix typo in commit message.
+ net/ipv4/tcp_input.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index 7d5e59f688de..84c70843b404 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -5922,8 +5922,8 @@ void tcp_init_transfer(struct sock *sk, int bpf_op, struct sk_buff *skb)
+ 		tp->snd_cwnd = tcp_init_cwnd(tp, __sk_dst_get(sk));
+ 	tp->snd_cwnd_stamp = tcp_jiffies32;
+
+-	icsk->icsk_ca_initialized = 0;
+ 	bpf_skops_established(sk, bpf_op, skb);
++	/* Initialize congestion control unless BPF initialized it already: */
+ 	if (!icsk->icsk_ca_initialized)
+ 		tcp_init_congestion_control(sk);
+ 	tcp_init_buffer_space(sk);
 --
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
