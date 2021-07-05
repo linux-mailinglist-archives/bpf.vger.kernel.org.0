@@ -2,104 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6833BB81A
-	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 09:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C673BB823
+	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 09:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhGEHrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Jul 2021 03:47:47 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6395 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhGEHrr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:47:47 -0400
-Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GJHgp59d4z77t6;
-        Mon,  5 Jul 2021 15:41:42 +0800 (CST)
-Received: from [10.174.176.245] (10.174.176.245) by
- dggeme766-chm.china.huawei.com (10.3.19.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 5 Jul 2021 15:45:07 +0800
-Subject: Re: [PATCH bpf] samples/bpf: Fix the error return code of
- xdp_redirect's main()
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <kpsingh@kernel.org>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210616042534.315097-1-wanghai38@huawei.com>
- <94aad4ed-8384-1841-88ec-6c7e39d63148@redhat.com>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <6f35ad34-1334-bdae-da7f-a20f1af34ea5@huawei.com>
-Date:   Mon, 5 Jul 2021 15:45:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S229978AbhGEHtP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Jul 2021 03:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229884AbhGEHtO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Jul 2021 03:49:14 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35B2C061574;
+        Mon,  5 Jul 2021 00:46:36 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id t14-20020a05600c198eb029020c8aac53d4so1408957wmq.1;
+        Mon, 05 Jul 2021 00:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BqiXpIg5V7sTEup/0xQEj/hiyc6Lh+cfI6OcJeOZV6k=;
+        b=WR6kiKkgvYcUCbfT/u13+/pNOZq+b+XOF1PJ3iEFiJgW4etthuXnUfg9JqvWujWO0d
+         2ijodrfHco8iKlGyiHQeuBH/SiSArHzI51AAyhrQEFll7UpyV9/uC/BdaUb2goRWIbuK
+         rv6lgaOAGdhdCiX0rlhfHmpVSyartqAp/V+jQV3N1kArVPw1jtyO3UsTNeL6Ji5xtL1e
+         7l0Nzif+59g3P+LYl2dndOPZg3pNqOB64pHLyBs+iAmUoTI9lzHpDIIRLBQtKfvvYduo
+         VOclfqSk7u9sh9HQBLq7WNtdUIRuhTqdGll3JHmuuUQy0ECY16ONoquJJhEXuzXjNnnQ
+         LMyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=BqiXpIg5V7sTEup/0xQEj/hiyc6Lh+cfI6OcJeOZV6k=;
+        b=lAnZL70YbGZqpLYbcdpProiP0hBBGqjdxVHUpuHhn/ORlgcjQ9yokOseOL+Af8rMb6
+         wtunHsOQqhQEkDwLf6+Md1Si8BSToViSSnKWk4+Y0miMzjRJrCbiz6oN/hhSDkbDv02K
+         vhqXJb0U138GYYiK64v/5qz6HjF7b5g/0hcUKCkGu5PRdxJg5QP3XtIVqeFfh4+p9rpY
+         tb6b3CVuOk33e1pEkFnFTW6RAkG9hzgK3STeWbUZoIzMqbb38ucB0zBfpeG04MmAIFTt
+         VeIjYpvxAaaSb/kcJKvzXWaihaUTw/YSCzPus0acftfvv3rivImXVICsji55szAsyIxR
+         +tEg==
+X-Gm-Message-State: AOAM530SNZo+aCjOdnmT+kJQL8sfm8tuVxChyI48UwPr6Js187rR9Vu6
+        zpOdhhfy5h5rZgcem0mD9uA=
+X-Google-Smtp-Source: ABdhPJzPaW2ETGgvgF/SEu1sGob4DqTnra/paPyyaLujOFXbTpNTTyk0Wc0I9s09u0xFF5yRzBio/A==
+X-Received: by 2002:a05:600c:3648:: with SMTP id y8mr13405428wmq.174.1625471195631;
+        Mon, 05 Jul 2021 00:46:35 -0700 (PDT)
+Received: from gmail.com (178-164-188-14.pool.digikabel.hu. [178.164.188.14])
+        by smtp.gmail.com with ESMTPSA id v15sm21422491wmj.39.2021.07.05.00.46.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jul 2021 00:46:34 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 5 Jul 2021 09:46:33 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 01/13] ia64: kprobes: Fix to pass correct
+ trampoline address to the handler
+Message-ID: <YOK42eM70kb9fd6r@gmail.com>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+ <162399993125.506599.11062077324255866677.stgit@devnote2>
 MIME-Version: 1.0
-In-Reply-To: <94aad4ed-8384-1841-88ec-6c7e39d63148@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.245]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme766-chm.china.huawei.com (10.3.19.112)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162399993125.506599.11062077324255866677.stgit@devnote2>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-在 2021/7/2 18:29, Jesper Dangaard Brouer 写道:
->
-> On 16/06/2021 06.25, Wang Hai wrote:
->> Fix to return a negative error code from the error handling
->> case instead of 0, as done elsewhere in this function.
->
-> The main() function in C should never return a negative value on Unix 
-> POSIX systems.
->
->
-> There is a good explaination in exit(3p): `man 3p exit`
->
->    The  value  of  status may be 0, EXIT_SUCCESS, EXIT_FAILURE, or any 
-> other value, though only the least significant 8 bits (that is, status 
-> & 0377) shall be available to a waiting parent process.
->
-> Thus, negative values are often seen as 255 in the $? program exit 
-> status variable $?.
->
->
-> Also explained in exit(3):
->
->     The C standard specifies two constants, EXIT_SUCCESS=0 and 
-> EXIT_FAILURE=1.
->
-> I see the 'samples/bpf/xdp_redirect_user.c' in most places just use 0 
-> or 1.
->
-Got it, thanks for the explanation, I will fix it to return 1, just like 
-the other error paths in samples/bpf/xdp_redirect_user.c
->
->> If bpf_map_update_elem() failed, main() should return a negative error.
->>
->> Fixes: 832622e6bd18 ("xdp: sample program for new bpf_redirect helper")
->> Signed-off-by: Wang Hai <wanghai38@huawei.com>
->> ---
->>   samples/bpf/xdp_redirect_user.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/samples/bpf/xdp_redirect_user.c 
->> b/samples/bpf/xdp_redirect_user.c
->> index 41d705c3a1f7..c903f1ccc15e 100644
->> --- a/samples/bpf/xdp_redirect_user.c
->> +++ b/samples/bpf/xdp_redirect_user.c
->> @@ -213,5 +213,5 @@ int main(int argc, char **argv)
->>       poll_stats(2, ifindex_out);
->>     out:
->> -    return 0;
->> +    return ret;
->>   }
->
->
-> (Sorry, I didn't complain it time as I see this patch is already applied)
->
-> .
->
+* Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Commit e792ff804f49 ("ia64: kprobes: Use generic kretprobe trampoline handler")
+> missed to pass the wrong trampoline address (it passes the descriptor address
+> instead of function entry address).
+> This fixes it to pass correct trampoline address to __kretprobe_trampoline_handler().
+> This also changes to use correct symbol dereference function to get the
+> function address from the kretprobe_trampoline.
+> 
+> Fixes: e792ff804f49 ("ia64: kprobes: Use generic kretprobe trampoline handler")
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+A better changelog:
+
+  The following commit:
+
+     Commit e792ff804f49 ("ia64: kprobes: Use generic kretprobe trampoline handler")
+
+  Passed the wrong trampoline address to __kretprobe_trampoline_handler(): it
+  passes the descriptor address instead of function entry address.
+
+  Pass the right parameter.
+
+  Also use correct symbol dereference function to get the function address
+  from 'kretprobe_trampoline' - an IA64 special.
+
+(Although I realize that much of this goes away just a couple of patches 
+later.)
+
+Thanks,
+
+	Ingo
