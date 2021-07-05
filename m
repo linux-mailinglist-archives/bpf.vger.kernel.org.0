@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2903BB830
-	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 09:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29833BB835
+	for <lists+bpf@lfdr.de>; Mon,  5 Jul 2021 09:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhGEHut (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Jul 2021 03:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46880 "EHLO
+        id S230007AbhGEHwP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Jul 2021 03:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhGEHut (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Jul 2021 03:50:49 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CABC061574;
-        Mon,  5 Jul 2021 00:48:12 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso13353438wmh.4;
-        Mon, 05 Jul 2021 00:48:12 -0700 (PDT)
+        with ESMTP id S229884AbhGEHwO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Jul 2021 03:52:14 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B712C061574;
+        Mon,  5 Jul 2021 00:49:38 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id a8so9185848wrp.5;
+        Mon, 05 Jul 2021 00:49:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=SXbBPp2iS8nwSVm3yeB0A4lnvn/jOz20r+A/6pXUHHY=;
-        b=K8KS25r0RHUrbbXW3XiToZgcpnEoMxthTUzc1et0doSyqpGURw6rN9YwfipD9F6CuL
-         Is8DqkdKuvQcJf7ZaelDbb+eut3Ec8uLegYdq5+d/eYmBO/Pl4fHeXAzR9ErOFlMVcF4
-         FB2H2ELWS1sJf+S1nN+B3l9y3VEVkLeIHLDk10dcm4FLKlYqzGLpOgvB134B9/b2U/bi
-         ojuo5MBMt3aKTwYes5IewmdskUhFMQc0gWJHHW1zDGTI1QZf7RJ2xaoSZGcCqhDrBraP
-         ATo6vteW9N89mHO9GWkyluVbcXsO326VdWCz7J6gKq9sjKgz5juwI9Z7jzVt2T0l8x+T
-         BqKw==
+        bh=d0dQZRJ3T9P2oADq6Txm5lSu38y0NAynZvCdSK4/Cao=;
+        b=HLcDlujDpRoNX7m9HZff0LdF8NBRLnSnmM0Uhbag1lNq/wa9op2N3WcnUEziL6gRF8
+         ZVtqxftQOEBMunfMZy5jAJ2WWwgDZZU1w0ILeou5SeuN+ft032yhkiY1XpVwdhTkTG7i
+         ZDtDvmQFiDdPeg/cW5wpx2aJ0YUV3UDrns/Ew8sIw5T2XoHwjzOFXIR22nekXkZ4qby0
+         2kun0p5dGvh6B+RiM48fmtXjlMsaY18nqpLV2IQUqG9hC0U98VZy9A2G6tv8GwXXx2CA
+         VnczIipniTEtJtHv15OObIpDhVb4ax8boHKHMCjr0qbIKQIc14apJ6nyoUuZ/sY3U6kF
+         CS+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=SXbBPp2iS8nwSVm3yeB0A4lnvn/jOz20r+A/6pXUHHY=;
-        b=YaryAMR2v3trHfK9UAvJFENQZu915K3W4A+57UAKnaQOHz9GovB1F+H+Q3fDlEHUIO
-         O8XmScZwuLmnO2qBPQO/0yXN8qGVNwW530wavIdZ/As5eH8ruWymDZ+wpiYp8zbl0YXQ
-         8XsIhs9nt7W6n2R95iLzE2O7NapfWCBvXhE35pxrCMpKEkXD3iAccZkhrDNeZaMWU1u8
-         Flw2OHG+s5dh4sUGxcDgT9PAsT5GARrsO58SGcJamOVDQbIvN9BI5uhgJGD4aAT8Hq+n
-         wCk1PGRqNSVgeT1hcplRhzBetr57VWVp0wpelFZ59wMEV18cqzpf3EsCqMmGUgBk5oKs
-         ohMQ==
-X-Gm-Message-State: AOAM5320V99dkVKOsUP6srYRRmLrGRLx1pmzqMS+26utaS6b/iIzpJIG
-        D8PXma9lB0TET6hoz0ZRzMg=
-X-Google-Smtp-Source: ABdhPJy6OJA4bmaOgopY9Tl8app1eKjIwf+NslUjIwcHRD1gJ9o0m+6u65c2eaKAsQ6yFou5vY0k6A==
-X-Received: by 2002:a7b:c417:: with SMTP id k23mr13561630wmi.87.1625471291570;
-        Mon, 05 Jul 2021 00:48:11 -0700 (PDT)
+        bh=d0dQZRJ3T9P2oADq6Txm5lSu38y0NAynZvCdSK4/Cao=;
+        b=B1ocmmUUe24zQuNfqpcAmcSzLv3BaJ4nral0DswV5E8KWIkERkUWbA5o4rzu60xLNr
+         QjGhE6W5jlvh6ZFzC4G7YUvlpr4RcYwjtMZzoTjBjp34JlYSDLfU4NZOBuE1UJxmvC/m
+         G0ep2Bz1Vvf1n2AvfMrSovq28e7t8eA3AowuINEMJ1SMOSd50j6xTcESPbVe3QWJ7/TN
+         1A2sekPmngKMSIBBHNXaUpAOSatCHDyNJxiX545J/XGnEgTTTAf3DAFZR5d7Yi5lSzpM
+         6Ijht+0lRPGhZxkLr4hEgAFH5f1pikZp1aB1Wkw1ckbS1+ehc2ocJCcQReAqCh6J7QIn
+         6Kbw==
+X-Gm-Message-State: AOAM5318TpqjR5Ku8dL0sN2ZuOBo+pPq//iy2inokrNgjHeUvMAy850z
+        /IzNbHB42Fq8cY938aPhsL0=
+X-Google-Smtp-Source: ABdhPJzpCdRjyhNQxEEbs/Y4eM6QQJ1T9DrtOXPxm8LQgJlto2y2uNrXsSiJYs9dRdo27Rlq99SaDw==
+X-Received: by 2002:adf:a4d8:: with SMTP id h24mr14010038wrb.416.1625471376798;
+        Mon, 05 Jul 2021 00:49:36 -0700 (PDT)
 Received: from gmail.com (178-164-188-14.pool.digikabel.hu. [178.164.188.14])
-        by smtp.gmail.com with ESMTPSA id h14sm13181602wro.32.2021.07.05.00.48.10
+        by smtp.gmail.com with ESMTPSA id y13sm12287630wrp.80.2021.07.05.00.49.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 00:48:11 -0700 (PDT)
+        Mon, 05 Jul 2021 00:49:36 -0700 (PDT)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 5 Jul 2021 09:48:09 +0200
+Date:   Mon, 5 Jul 2021 09:49:34 +0200
 From:   Ingo Molnar <mingo@kernel.org>
 To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
@@ -61,15 +61,15 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         yhs@fb.com, linux-ia64@vger.kernel.org,
         Abhishek Sagar <sagar.abhishek@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 02/13] kprobes: treewide: Replace
- arch_deref_entry_point() with dereference_symbol_descriptor()
-Message-ID: <YOK5OV0zdjvrsqju@gmail.com>
+Subject: Re: [PATCH -tip v8 03/13] kprobes: treewide: Remove
+ trampoline_address from kretprobe_trampoline_handler()
+Message-ID: <YOK5jnkaqNCMQkJi@gmail.com>
 References: <162399992186.506599.8457763707951687195.stgit@devnote2>
- <162399994018.506599.10332627573727646767.stgit@devnote2>
+ <162399994996.506599.17672270294950096639.stgit@devnote2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <162399994018.506599.10332627573727646767.stgit@devnote2>
+In-Reply-To: <162399994996.506599.17672270294950096639.stgit@devnote2>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -77,22 +77,25 @@ X-Mailing-List: bpf@vger.kernel.org
 
 * Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> Replace arch_deref_entry_point() with dereference_symbol_descriptor()
-> because those are doing same thing.
+> Remove trampoline_address from kretprobe_trampoline_handler().
+> Instead of passing the address, kretprobe_trampoline_handler()
+> can use new kretprobe_trampoline_addr().
 > 
 > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 > Tested-by: Andrii Nakryik <andrii@kernel.org>
 
 A better changelog:
 
-  ~15 years ago kprobes grew the 'arch_deref_entry_point()' __weak function:
+   The __kretprobe_trampoline_handler() callback, called from low level 
+   arch kprobes methods, has the 'trampoline_address' parameter, which is 
+   entirely superfluous as it basically just replicates:
 
-    3d7e33825d87: ("jprobes: make jprobes a little safer for users")
+        dereference_kernel_function_descriptor(kretprobe_trampoline)
 
-  But this is just open-coded dereference_symbol_descriptor() in essence, and
-  its obscure nature was causing bugs.
+   In fact we had bugs in arch code where it wasn't replicated correctly.
 
-  Just use the real thing.
+   So remove this superfluous parameter and use kretprobe_trampoline_addr() 
+   instead.
 
 Thanks,
 
