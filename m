@@ -2,65 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF48F3BC40A
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 01:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8202E3BC481
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 03:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbhGEXWC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Jul 2021 19:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
+        id S229734AbhGFBOh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Jul 2021 21:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbhGEXV7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Jul 2021 19:21:59 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB07C061574;
-        Mon,  5 Jul 2021 16:19:20 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id mn20-20020a17090b1894b02901707fc074e8so659497pjb.0;
-        Mon, 05 Jul 2021 16:19:20 -0700 (PDT)
+        with ESMTP id S229722AbhGFBOg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Jul 2021 21:14:36 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF51C061574;
+        Mon,  5 Jul 2021 18:11:58 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso896708pjp.5;
+        Mon, 05 Jul 2021 18:11:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=AwbRb3jpffDliQd5+ObWDoU7B1AAjNEgpgkFUzNvpnw=;
-        b=pFesCE1VkR9SI4pdCrxbURHurlHIt4eRLJKC8LblTfpZ+XHwCZFE94HfRtesarR2c7
-         P5k1nbLOJKFwJLf4a4y4M6wRcFb7zhs37sKOtNxAwiMvhJuNyzPZCOHZT4z/P/9qQBv1
-         aC3lUFw++YSCh1PCm5Q5LFBVOsGOLQ44/N6nnKu2jO4hvfxSzw6IVvlHZCdx2lZtNacc
-         C/3yT8MoCMkD/KaNVf9sEmyJ+2GlJpWybsTS83FI/edMdDU1v/nB0ivYvWfvWJ8+qX1b
-         hB3aXw4wdmZQBQtQoKVhlfRNyrtbeXKpuYq92Ciq1XcAPxKbzVz6QrnZ/K8+A5HZfgk5
-         j09Q==
+        bh=NwQaLt08jBec11KMF4e1SB6lInafR9MTNHkp/3GAlCs=;
+        b=GrH7hbBZRjhmUoQzTYxVhnvJrgTf6HEZuivxzAFryLBr+X+CbRKtUf0W4ybY+myvtc
+         sh+IvumMoC8jOMd/iaFUBaJj2JK5QJqd2nHYthE2Mbj0XQ2lZdyg5UoYliOT+gC064at
+         FJtsxcQk3V6in/tiOY36+CqYpQS1ngOkdobFQwX2NdPRBtXY66JWP4nAHnv+9qlIzFVu
+         jntzgNiRwql5L6++9YGAsjdPpwb9vb02QEuu8d09qpY2LZ53Z8cnRGo5Qkanr5K8a2bb
+         Btf3/rp5VzC7jgC7ZxU02+TYGUaGdtKZY62GnqjxIez6rxevnD2fPW04Xpy5F7QBGcjO
+         QD5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=AwbRb3jpffDliQd5+ObWDoU7B1AAjNEgpgkFUzNvpnw=;
-        b=bilbkT0Nmw9YxwGidlKLvdDy8aTSEN5uOnml8BibIUOeMw+yEJqoEKJEHcOT/mpcsj
-         8dfsVjt54czZEEzSZ0AmXNaO/fPMd0dxUUFJEm75iEWLwShOBEeKT4gHzVKwRV0BNHav
-         q9DejzXzCmjUQglyWIfic66WnwroFVT3ubPDa3nCzVj/y6VsQCYhMuriN+Xr5gQClhbx
-         z9v58SqO1L8AIqzkreYbRA9xoIsTIeA2fOfHQ3GYllmWpskqJGOzNmtCEjQpfWMiHQKo
-         3uhgvt9wKx/Kui/I9cWSffaezhRVN9ajtVe7EGEyODmKrdf+1OgST61a+9BLGSLz7V5/
-         z1LQ==
-X-Gm-Message-State: AOAM531kucPVveBM79JxbUO/3mNXa6mZDNq9GHvfomHEPrxQeeAg915Y
-        Z5oSVJKXpl+TqCffpIDqANk=
-X-Google-Smtp-Source: ABdhPJzkoI7y2nCb4uw1FOobg+RUTq8genZo373bH67t9YA/FNNwL/28LTVHjjYnaLLreGColocYCA==
-X-Received: by 2002:a17:902:b210:b029:11a:bf7b:1a83 with SMTP id t16-20020a170902b210b029011abf7b1a83mr14306975plr.84.1625527160305;
-        Mon, 05 Jul 2021 16:19:20 -0700 (PDT)
-Received: from pn-hyperv.lan (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
-        by smtp.gmail.com with ESMTPSA id h9sm6579067pgi.43.2021.07.05.16.19.15
+        bh=NwQaLt08jBec11KMF4e1SB6lInafR9MTNHkp/3GAlCs=;
+        b=iijGrmtJBo0efwHYYfGV1BxN9eRbndGvGTi0nfa1b+LjCy4Da7PdcW0SULcXF+v3/6
+         NUFISz94WAoWE1cwmrfKRlGue7CFdta6k/wXBh8fK6wwVUd4mb9t/7mdLKzz8Mul8W7o
+         1HlflDl2f8/YdB4V/RKrfElqLBUXzZidp5z5ghx04+EnWSqcPSg8GRGoSWqIDkOaDWrW
+         55F5wAEeJg9fnEZxLWLjnzth7Y8R5hwPIgj4XdrxZOg80CTXaCPYVielZjaRZ7lEVOzx
+         o905zeVSKh6jzfqnUqplCODCvdMWUFVwT/ZwUWOhKFgzhhTXnKkyQQEjQC4kLSyNwNBZ
+         VqZA==
+X-Gm-Message-State: AOAM533seO2fEOYvzy2MDzB7F5YqOc01xhABRccs3tVdb+rqRc8yyAM8
+        BxK9D4cJ8fNLVRIToG5Tzps=
+X-Google-Smtp-Source: ABdhPJxyVBLkpgGVc/tcOrtl50EC8uoGSyLEDjcPeC7u5xbnkGWbldxhnRLLRWu2eDHWgIkL8CZNiA==
+X-Received: by 2002:a17:903:2341:b029:129:33d3:60ee with SMTP id c1-20020a1709032341b029012933d360eemr14771858plh.66.1625533918176;
+        Mon, 05 Jul 2021 18:11:58 -0700 (PDT)
+Received: from ubuntu.localdomain ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id o16sm9017810pjw.51.2021.07.05.18.11.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 16:19:19 -0700 (PDT)
-From:   Nguyen Dinh Phi <phind.uet@gmail.com>
-To:     yhs@fb.com, edumazet@google.com, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, ycheng@google.com, ncardwell@google.com,
-        yyd@google.com
-Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
-Subject: [PATCH v6] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
-Date:   Tue,  6 Jul 2021 07:19:12 +0800
-Message-Id: <20210705231912.532186-1-phind.uet@gmail.com>
+        Mon, 05 Jul 2021 18:11:57 -0700 (PDT)
+From:   gushengxian <gushengxian507419@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
+Subject: [PATCH v2] tools: bpftool: close va_list 'ap' by va_end()
+Date:   Mon,  5 Jul 2021 18:11:50 -0700
+Message-Id: <20210706011150.670544-1-gushengxian507419@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -68,69 +61,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit fixes a bug (found by syzkaller) that could cause spurious
-double-initializations for congestion control modules, which could cause
-memory leaks or other problems for congestion control modules (like CDG)
-that allocate memory in their init functions.
+From: gushengxian <gushengxian@yulong.com>
 
-The buggy scenario constructed by syzkaller was something like:
+va_list 'ap' was opened but not closed by va_end(). It should be
+closed by va_end() before return.
 
-(1) create a TCP socket
-(2) initiate a TFO connect via sendto()
-(3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
-    which calls:
-       tcp_set_congestion_control() ->
-         tcp_reinit_congestion_control() ->
-           tcp_init_congestion_control()
-(4) receive ACK, connection is established, call tcp_init_transfer(),
-    set icsk_ca_initialized=0 (without first calling cc->release()),
-    call tcp_init_congestion_control() again.
-
-Note that in this sequence tcp_init_congestion_control() is called
-twice without a cc->release() call in between. Thus, for CC modules
-that allocate memory in their init() function, e.g, CDG, a memory leak
-may occur. The syzkaller tool managed to find a reproducer that
-triggered such a leak in CDG.
-
-The bug was introduced when that commit 8919a9b31eb4 ("tcp: Only init
-congestion control if not initialized already")
-introduced icsk_ca_initialized and set icsk_ca_initialized to 0 in
-tcp_init_transfer(), missing the possibility for a sequence like the
-one above, where a process could call setsockopt(TCP_CONGESTION) in
-state TCP_SYN_SENT (i.e. after the connect() or TFO open sendmsg()),
-which would call tcp_init_congestion_control(). It did not intend to
-reset any initialization that the user had already explicitly made;
-it just missed the possibility of that particular sequence (which
-syzkaller managed to find).
-
-Fixes: 8919a9b31eb4 ("tcp: Only init congestion control if not initialized already")
-Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+According to suggestion of Daniel Borkmann <daniel@iogearbox.net>.
+Signed-off-by: gushengxian <gushengxian@yulong.com>
 ---
-V2:     - Modify the Subject line.
-        - Adjust the commit message.
-        - Add Fixes: tag.
-V3:     - Fix netdev/verify_fixes format error.
-V4:     - Add blamed authors to receiver list.
-V5:	- Add comment about the congestion control initialization.
-V6:	- Fix typo in commit message.
- net/ipv4/tcp_input.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/bpf/bpftool/jit_disasm.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 7d5e59f688de..84c70843b404 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -5922,8 +5922,8 @@ void tcp_init_transfer(struct sock *sk, int bpf_op, struct sk_buff *skb)
- 		tp->snd_cwnd = tcp_init_cwnd(tp, __sk_dst_get(sk));
- 	tp->snd_cwnd_stamp = tcp_jiffies32;
-
--	icsk->icsk_ca_initialized = 0;
- 	bpf_skops_established(sk, bpf_op, skb);
-+	/* Initialize congestion control unless BPF initialized it already: */
- 	if (!icsk->icsk_ca_initialized)
- 		tcp_init_congestion_control(sk);
- 	tcp_init_buffer_space(sk);
---
+diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
+index e7e7eee9f172..24734f2249d6 100644
+--- a/tools/bpf/bpftool/jit_disasm.c
++++ b/tools/bpf/bpftool/jit_disasm.c
+@@ -43,11 +43,13 @@ static int fprintf_json(void *out, const char *fmt, ...)
+ {
+ 	va_list ap;
+ 	char *s;
++	int err;
+ 
+ 	va_start(ap, fmt);
+-	if (vasprintf(&s, fmt, ap) < 0)
+-		return -1;
++	err = vasprintf(&s, fmt, ap);
+ 	va_end(ap);
++	if (err < 0)
++		return -1;
+ 
+ 	if (!oper_count) {
+ 		int i;
+-- 
 2.25.1
 
