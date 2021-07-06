@@ -2,157 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD563BD74B
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 14:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4360C3BD922
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 16:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhGFNAg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 09:00:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231614AbhGFNAg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 09:00:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95072619B2;
-        Tue,  6 Jul 2021 12:57:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625576277;
-        bh=tXJG+vlNUQuSlsOGmqvU6o9KMiZhzD6lIR38SC/vSio=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JdckYc3K8x8Unj771PzniuMxFqJCDQ00CQleN9+z74naWEyY6Yqc14+V3OZhT/75a
-         pDuFZq/PfVSKtR0rsC4l183ob4gwqMU4w8F3qYWmjWNveAqS95siHZtoXfBiTstsw+
-         J7xE14wMb2/2gtYaX20z9Gvsq4sBSfUixb8AyjF25YnS26QbF64AVuZPXG9sjPhJFq
-         ZO8MbM7S6uUEXFXcaMhadQ2+as58hzWLBlyqGpOAjvxX1RvwfcheuahNvxTc4nqOPY
-         QwOASxp7i0AsbkBCJ/NJrbY1q2noOyiGh0OfWxdqdES4hmA7P3P0lWISRy5IYc58hR
-         620aCKEn0JAKw==
-Date:   Tue, 6 Jul 2021 21:57:53 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 13/13] x86/kprobes: Fixup return address in
- generic trampoline handler
-Message-Id: <20210706215753.c7cad02afdeda48bf801d294@kernel.org>
-In-Reply-To: <YOLEMvR1bCQiIMcl@gmail.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
-        <162400004562.506599.7549585083316952768.stgit@devnote2>
-        <YOLEMvR1bCQiIMcl@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231923AbhGFO6C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 10:58:02 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6429 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231460AbhGFO6B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 10:58:01 -0400
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GK3vQ6Qspz76rF;
+        Tue,  6 Jul 2021 21:54:26 +0800 (CST)
+Received: from [10.174.178.171] (10.174.178.171) by
+ dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 6 Jul 2021 21:57:53 +0800
+Subject: Re: [PATCH v4 bpf-next 1/9] bpf: Introduce bpf timers.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>
+References: <20210701192044.78034-1-alexei.starovoitov@gmail.com>
+ <20210701192044.78034-2-alexei.starovoitov@gmail.com>
+From:   "luwei (O)" <luwei32@huawei.com>
+Message-ID: <bcdccd37-6372-859f-824e-c96250361904@huawei.com>
+Date:   Tue, 6 Jul 2021 21:57:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210701192044.78034-2-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.171]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 5 Jul 2021 10:34:58 +0200
-Ingo Molnar <mingo@kernel.org> wrote:
 
-> 
-> * Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > In x86, kretprobe trampoline address on the stack frame will
-> > be replaced with the real return address after returning from
-> > trampoline_handler. Before fixing the return address, the real
-> > return address can be found in the current->kretprobe_instances.
-> > 
-> > However, since there is a window between updating the
-> > current->kretprobe_instances and fixing the address on the stack,
-> > if an interrupt caused at that timing and the interrupt handler
-> > does stacktrace, it may fail to unwind because it can not get
-> > the correct return address from current->kretprobe_instances.
-> > 
-> > This will minimize that window by fixing the return address
-> > right before updating current->kretprobe_instances.
-> 
-> Is there still a window? I.e. is it "minimized" (to how big of a window?), 
-> or eliminated?
-
-Oh, this will eliminate the window, because the return address is
-fixed before updating the 'current->kretprobe_instance'.
-
-
-> 
-> > +void arch_kretprobe_fixup_return(struct pt_regs *regs,
-> > +				 unsigned long correct_ret_addr)
-> > +{
-> > +	unsigned long *frame_pointer;
-> > +
-> > +	frame_pointer = ((unsigned long *)&regs->sp) + 1;
-> > +
-> > +	/* Replace fake return address with real one. */
-> > +	*frame_pointer = correct_ret_addr;
-> 
-> Firstly, why does &regs->sp have to be forced to 'unsigned long *'? 
-> 
-> pt_regs::sp is 'unsigned long' on both 32-bit and 64-bit kernels AFAICS.
-
-Ah, right.
-
-> 
-> Secondly, the new code modified by your patch now looks like this:
-> 
->         frame_pointer = ((unsigned long *)&regs->sp) + 1;
->  
-> +       kretprobe_trampoline_handler(regs, frame_pointer);
-> 
-> where:
-> 
-> +void arch_kretprobe_fixup_return(struct pt_regs *regs,
-> +                                unsigned long correct_ret_addr)
+在 2021/7/2 3:20 AM, Alexei Starovoitov 写道:
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Introduce 'struct bpf_timer { __u64 :64; __u64 :64; };' that can be embedded
+> in hash/array/lru maps as a regular field and helpers to operate on it:
+>
+> // Initialize the timer.
+> // First 4 bits of 'flags' specify clockid.
+> // Only CLOCK_MONOTONIC, CLOCK_REALTIME, CLOCK_BOOTTIME are allowed.
+> long bpf_timer_init(struct bpf_timer *timer, struct bpf_map *map, int flags);
+>
+> // Configure the timer to call 'callback_fn' static function.
+> long bpf_timer_set_callback(struct bpf_timer *timer, void *callback_fn);
+>
+> // Arm the timer to expire 'nsec' nanoseconds from the current time.
+> long bpf_timer_start(struct bpf_timer *timer, u64 nsec, u64 flags);
+>
+> // Cancel the timer and wait for callback_fn to finish if it was running.
+> long bpf_timer_cancel(struct bpf_timer *timer);
+>
+[...]
+> +static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
 > +{
-> +       unsigned long *frame_pointer;
+> +	struct bpf_hrtimer *t = container_of(hrtimer, struct bpf_hrtimer, timer);
+> +	struct bpf_map *map = t->map;
+> +	void *value = t->value;
+> +	struct bpf_timer_kern *timer = value + map->timer_off;
+> +	struct bpf_prog *prog;
+> +	void *callback_fn;
+> +	void *key;
+> +	u32 idx;
+> +	int ret;
 > +
-> +       frame_pointer = ((unsigned long *)&regs->sp) + 1;
+> +	/* The triple underscore bpf_spin_lock is a direct call
+> +	 * to BPF_CALL_1(bpf_spin_lock) which does irqsave.
+> +	 */
+> +	____bpf_spin_lock(&timer->lock);
+> +	/* callback_fn and prog need to match. They're updated together
+> +	 * and have to be read under lock.
+> +	 */
+> +	prog = t->prog;
+> +	callback_fn = t->callback_fn;
 > +
-> +       /* Replace fake return address with real one. */
-> +       *frame_pointer = correct_ret_addr;
+> +	/* wrap bpf subprog invocation with prog->refcnt++ and -- to make
+> +	 * sure that refcnt doesn't become zero when subprog is executing.
+> +	 * Do it under lock to make sure that bpf_timer_start doesn't drop
+> +	 * prev prog refcnt to zero before timer_cb has a chance to bump it.
+> +	 */
+> +	bpf_prog_inc(prog);
+> +	____bpf_spin_unlock(&timer->lock);
+> +
+> +	/* bpf_timer_cb() runs in hrtimer_run_softirq. It doesn't migrate and
+> +	 * cannot be preempted by another bpf_timer_cb() on the same cpu.
+> +	 * Remember the timer this callback is servicing to prevent
+> +	 * deadlock if callback_fn() calls bpf_timer_cancel() on the same timer.
+> +	 */
+> +	this_cpu_write(hrtimer_running, t);
+> +	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
+> +		struct bpf_array *array = container_of(map, struct bpf_array, map);
+> +
+> +		/* compute the key */
+> +		idx = ((char *)value - array->value) / array->elem_size;
+> +		key = &idx;
+> +	} else { /* hash or lru */
+> +		key = value - round_up(map->key_size, 8);
+> +	}
+> +
+> +	ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
+> +					 (u64)(long)key,
+> +					 (u64)(long)value, 0, 0);
+> +	WARN_ON(ret != 0); /* Next patch moves this check into the verifier */
+> +	bpf_prog_put(prog);
+> +
+> +	this_cpu_write(hrtimer_running, NULL);
+> +	return HRTIMER_NORESTART;
 > +}
-> 
-> So we first do:
-> 
->         frame_pointer = ((unsigned long *)&regs->sp) + 1;
-> 
-> ... and pass that in to arch_kretprobe_fixup_return() as 
-> 'correct_ret_addr', which does:
+> +
+Your patch is awesome, and I tried your example and it works, my 
+call_back() is called after a certained time.  But  I am confued that 
+the bpf_timer_cb() function only returns HRTIMER_NORESTART,
 
-No, 'correct_ret_addr' is found from 'current->kretprobe_instances'
+how to trigger a periodic task, that means I want to call my call_back() 
+periodically, not just for one time ?
 
-        /* Find correct address and all nodes for this frame. */
-        correct_ret_addr = (void *)__kretprobe_find_ret_addr(current, &node);
-
-> 
-> +       frame_pointer = ((unsigned long *)&regs->sp) + 1;
-> +	*frame_pointer = correct_ret_addr;
-> 
-> ... which looks like the exact same thing as:
-> 
-> 	*frame_pointer = frame_pointer;
-> 
-> ... obfuscated through a thick layer of type casts?
-
-Thus it will be the same thing as
-
-	*frame_pointer = __kretprobe_find_ret_addr(current, &node);
-
-Actually, this is a bit confusing because same 'frame_pointer' is
-calcurated twice from 'regs->sp'. This is because the return address
-is stored at 'frame_pointer' or not depends on the architecture.
-
-
-Thank you,
-
-> 
-> Thanks,
-> 
-> 	Ingo
-
+[...]
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Best Regards,
+Lu Wei
+
