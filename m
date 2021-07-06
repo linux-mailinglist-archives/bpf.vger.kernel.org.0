@@ -2,145 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF923BD4BE
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 14:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAA03BD4C0
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 14:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234467AbhGFMRH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 08:17:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39237 "EHLO
+        id S238132AbhGFMRJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 08:17:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28879 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238402AbhGFLye (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Jul 2021 07:54:34 -0400
+        by vger.kernel.org with ESMTP id S239726AbhGFL4B (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 6 Jul 2021 07:56:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625572315;
+        s=mimecast20190719; t=1625572403;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DiTI9c6T5l9HgqGMHwic7EfszJBjFE6dl2V5J6/ONnM=;
-        b=ihnzg1nUtVOt9HXUGqx5EVFBwrImaYqSH97YNgOqGHcm3uMKU/ip5J8VrDT4HJKzxH2+vM
-        DLh2k6uqzgmaDbWm/ebtxuxIll/BpkiSqSTGtkW/9dh56qRpVIHqdll+bOKPauAYFmg/1+
-        TCKvXBqPm23aVzAzT5lfy4RQGM3zBng=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-hxHuWiVCO9aRiLRUVGVw1Q-1; Tue, 06 Jul 2021 07:51:54 -0400
-X-MC-Unique: hxHuWiVCO9aRiLRUVGVw1Q-1
-Received: by mail-ej1-f70.google.com with SMTP id v5-20020a1709068585b02904eb913da73bso40474ejx.8
-        for <bpf@vger.kernel.org>; Tue, 06 Jul 2021 04:51:53 -0700 (PDT)
+        bh=v+KqBRx37GHazbrEYLLrAx3jPN6x/mr0O28bD/AHrEQ=;
+        b=atalgSdnNUM8at1Lpg3PQ4Mi/QUVFUiluM+mAcmIDGaeTGfulZyGYTvJC2SNiyoxFn9aCm
+        7IQ52ezcmbR58TTwYo1f88DrD4eg7Zt6dDWR7Y7Lnq/f/ZlEdb+Trut/Klir26ZfJLe+h1
+        HP9aBK7fBdxF6g3w51q2imm2jfzSLFM=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-536-t7chfggmP6isByCus6OLZA-1; Tue, 06 Jul 2021 07:53:21 -0400
+X-MC-Unique: t7chfggmP6isByCus6OLZA-1
+Received: by mail-ed1-f70.google.com with SMTP id p13-20020a05640210cdb029039560ff6f46so10669225edu.17
+        for <bpf@vger.kernel.org>; Tue, 06 Jul 2021 04:53:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=DiTI9c6T5l9HgqGMHwic7EfszJBjFE6dl2V5J6/ONnM=;
-        b=be6jeoJvUa3H8iKGL4RlRHmcsYFA2wQ8T2ieifPKZsieMUfccEH2K1vOnjf/tGej8z
-         5+PcpWFX4leVAvROgv9caaP1ebSwL2pajR2sM0np573bjtjIiP8OlHqKFxpLMQ1CXLAY
-         VPaTaw/5HSMgNqVIaUR5uPB6FjkKO9VHYQbidGryoJ0S7jpMm+2DwY+1HahiZrVRJCHQ
-         e5rtwjUtpRoakTyyvrEH1Xsbd9UyVZbgQkGoKMlhUC7aS/Qncl9r2Ss3/0BNd3lJaKEn
-         BdRHVybjkjnede2aA5OimJTdtBGqVr31w80EbexBljbmQ4Hm930ec5JdaiVcNB3IjfIL
-         GIgw==
-X-Gm-Message-State: AOAM530+dJVIW44OOiBcwOWhFhLZsPdK3DlrbFW3I/dB083P4tk12kce
-        7J2G9UFmIgIvUtCYXeEashKVsCXtw3j5wczyOobQsvSe/UFtkHbOrva7K22lH6LBi9lKYaQ8mu0
-        48sjopCCH/6gE
-X-Received: by 2002:a17:906:8149:: with SMTP id z9mr18060915ejw.547.1625572312745;
-        Tue, 06 Jul 2021 04:51:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzu8opq+E4dS5G9On8xvZNBMIv3W9wkdoI9GmptYcaDf1n7hRZjWvUW4mUeKLoMlcB7wl/IOw==
-X-Received: by 2002:a17:906:8149:: with SMTP id z9mr18060880ejw.547.1625572312336;
-        Tue, 06 Jul 2021 04:51:52 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id d13sm7190658eds.56.2021.07.06.04.51.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v+KqBRx37GHazbrEYLLrAx3jPN6x/mr0O28bD/AHrEQ=;
+        b=tgOANz3YsNJVOHjhIOOmWcO3JTVmComQJHAZUWSeXH2l+t9P+5DZahTaIAOzxV5apC
+         2apiva9sB9NftWQbWH7K7Xa7u7LGfLAWO4OTfY3ZeD4xPNAyvnFknybICB4g3FB6FKoI
+         cyZDa6xlRxI2Yy9EOBYMlb5Yo7KfTcd5sWKin8tDVgJw3VXy5YszWIPeLR0kBERfGNW7
+         sYQE36lZbao/4WiZ41c2IcTf8Beg/7Sgx+boAVOaPNbrrMjrhzm5nOkYwh9Ddo355uZE
+         dQQurQeLuyUYNyDaLzwdpcjVmEKyK4KbRhkTLm0k1ofhhjlyINfOwEc7uO2CqH25P8Wn
+         svGQ==
+X-Gm-Message-State: AOAM530SWkQWmDfKVHgTOgPlHdY+i9uyM8sXgf/11DsWE+e1HHV+Pb7P
+        QRN7oQ/8+Fh7tvFIrovbawC7VEZgvp0U0c79hj4VIaSjtm97lgD7GO0Ix3IEKrDK6hZZhGEM1/Q
+        RyG3WQ6jIxn2X
+X-Received: by 2002:a05:6402:28a1:: with SMTP id eg33mr22453593edb.249.1625572400271;
+        Tue, 06 Jul 2021 04:53:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzEfb/3dVMfJMNrITNAg2I1tARs2f2DFCfF9AM3+rFYnT+3k7BTi74dHnYH6VHbNpvZuTehtw==
+X-Received: by 2002:a05:6402:28a1:: with SMTP id eg33mr22453579edb.249.1625572400123;
+        Tue, 06 Jul 2021 04:53:20 -0700 (PDT)
+Received: from localhost (net-93-71-3-244.cust.vodafonedsl.it. [93.71.3.244])
+        by smtp.gmail.com with ESMTPSA id d13sm7039781edt.31.2021.07.06.04.53.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 04:51:51 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C5D7518072E; Tue,  6 Jul 2021 13:51:50 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, yhs@fb.com
-Subject: Re: [PATCH bpf-next] libbpf: ignore .eh_frame sections when parsing
- elf files
-In-Reply-To: <e8385d06-ac0a-de99-de92-c91d5970b7e8@iogearbox.net>
-References: <20210629110923.580029-1-toke@redhat.com>
- <ac14ef3c-ccd5-5f74-dda5-1d9366883813@iogearbox.net>
- <87czrxyrru.fsf@toke.dk>
- <e8385d06-ac0a-de99-de92-c91d5970b7e8@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 06 Jul 2021 13:51:50 +0200
-Message-ID: <87k0m3y815.fsf@toke.dk>
+        Tue, 06 Jul 2021 04:53:19 -0700 (PDT)
+Date:   Tue, 6 Jul 2021 13:53:16 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
+        "Jubran, Samih" <sameehj@amazon.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Tirthendu <tirthendu.sarkar@intel.com>
+Subject: Re: [PATCH v9 bpf-next 02/14] xdp: introduce flags field in
+ xdp_buff/xdp_frame
+Message-ID: <YORELD7ve/RMYsua@lore-desk>
+References: <cover.1623674025.git.lorenzo@kernel.org>
+ <1316f3ef2763ff4c02244fb726c61568c972514c.1623674025.git.lorenzo@kernel.org>
+ <CAKgT0Ue7TsgwbQF+mfeDB-18Q-R29YZWe=y6Kgeg0xxbwds=vw@mail.gmail.com>
+ <YNsVcy8e4Mgyg7g3@lore-desk>
+ <CAKgT0Ucg5RbzKt63u5RfXee94kd+1oJ+o_qgUwCwnVCoQjDdPw@mail.gmail.com>
+ <YOMq0WRu4lsGZJk2@lore-desk>
+ <CAKgT0Udn90g9s3RYiGA0hFz7bXaepPNJNqgRjMtwjpdj1zZTDw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4gKitswv7GoTaRt2"
+Content-Disposition: inline
+In-Reply-To: <CAKgT0Udn90g9s3RYiGA0hFz7bXaepPNJNqgRjMtwjpdj1zZTDw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
 
-> On 7/5/21 12:33 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Daniel Borkmann <daniel@iogearbox.net> writes:
->>> On 6/29/21 1:09 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>> The .eh_frame and .rel.eh_frame sections will be present in BPF object
->>>> files when compiled using a multi-stage compile pipe like in samples/b=
-pf.
->>>> This produces errors when loading such a file with libbpf. While the e=
-rrors
->>>> are technically harmless, they look odd and confuse users. So add .eh_=
-frame
->>>> sections to is_sec_name_dwarf() so they will also be ignored by libbpf
->>>> processing. This gets rid of output like this from samples/bpf:
->>>>
->>>> libbpf: elf: skipping unrecognized data section(32) .eh_frame
->>>> libbpf: elf: skipping relo section(33) .rel.eh_frame for section(32) .=
-eh_frame
->>>>
->>>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>>
->>> For the samples/bpf case, could we instead just add a -fno-asynchronous=
--unwind-tables
->>> to clang as cflags to avoid .eh_frame generation in the first place?
->>=20
->> Ah, great suggestion! Was trying, but failed, to figure out how to do
->> that. Just tested it, and yeah, that does fix samples; will send a
->> separate patch to add that.
->
-> Sounds good, just applied.
+--4gKitswv7GoTaRt2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Awesome, thanks!
+> On Mon, Jul 5, 2021 at 8:52 AM Lorenzo Bianconi
+> <lorenzo.bianconi@redhat.com> wrote:
+> >
+> > > On Tue, Jun 29, 2021 at 5:43 AM Lorenzo Bianconi
+> > > <lorenzo.bianconi@redhat.com> wrote:
 
->> I still think filtering this section name in libbpf is worthwhile,
->> though, as the error message is really just noise... WDYT?
->
-> No strong opinion from my side, I can also see the argument that
-> Andrii made some time ago [0] in that normally you should never see
-> these in a BPF object file. But then ... there's BPF samples giving a
-> wrong sample. ;( And I bet some users might have copied from there,
-> and it's generally confusing from a user experience in libbpf on
-> whether it's harmless or not.
+[...]
+>=20
+> Hi Lorenzo,
+>=20
+> What about doing something like breaking up the type value in
+> xdp_mem_info? The fact is having it as an enum doesn't get us much
+> since we have a 32b type field but are only storing 4 possible values
+> there currently
+>=20
+> The way I see it, scatter-gather is just another memory model
+> attribute rather than being something entirely new. It makes as much
+> sense to have a bit there for MEM_TYPE_PAGE_SG as it does for
+> MEM_TYPE_PAGE_SHARED. I would consider either splitting the type field
+> into two 16b fields. For example you might have one field that
+> describes the source pool which is currently either allocated page
+> (ORDER0, SHARED), page_pool (PAGE_POOL), or XSK pool (XSK_BUFF_POOL),
+> and then two flags for type with there being either shared and/or
+> scatter-gather.
 
-Yeah, they "shouldn't" be there, but they clearly can be. So given that
-it's pretty trivial to filter it, IMO, that would be the friendly thing
-to do. Let's see what Andrii thinks.
+Hi Alex,
 
-> Side-question: Did you check if it is still necessary in general to
-> have this multi-stage compile pipe in samples with the native clang
-> frontend invocation (instead of bpf target one)? (Maybe it's time to
-> get rid of it in general.)
+I am fine reducing the xdp_mem_info size defining type field as u16 instead=
+ of
+u32 but I think mb is a per-xdp_buff/xdp_frame property since at runtime we=
+ can
+receive a tiny single page xdp_buff/xdp_frame and a "jumbo" xdp_buff/xdp_fr=
+ame
+composed by multiple pages. According to the documentation available in
+include/net/xdp.h, xdp_rxq_info (where xdp_mem_info is contained for xdp_bu=
+ff)=20
+is "associated with the driver level RX-ring queues and it is information t=
+hat
+is specific to how the driver have configured a given RX-ring queue" so I g=
+uess
+it is a little bit counterintuitive to add this info there.
+Moreover we have the "issue" for devmap in dev_map_bpf_prog_run() when we
+perform XDP_REDIRECT with the approach you proposed and last we can reuse t=
+his
+new flags filed for XDP hw-hints support.
+What about reducing xdp_mem_info and add the flags field in xdp_buff/xdp_fr=
+ame
+in order to avoid increasing the xdp_buff/xdp_frame size? Am I missing
+something?
 
-I started looking into this, but chickened out of actually changing it.
-The comment above the rule mentions LLVM 12, so it seems like it has
-been updated fairly recently, specifically in:
-9618bde489b2 ("samples/bpf: Change Makefile to cope with latest llvm")
+Regards,
+Lorenzo
 
-OTOH, that change does seem to be a fix to the native-compilation mode;
-so maybe it would be viable to just change it to straight bpf-target
-clang compilation? Yonghong, any opinion?
+>=20
+> Also, looking over the code I don't see any reason why current
+> ORDER0/SHARED couldn't be merged as the free paths are essentially
+> identical since the MEM_TYPE_PAGE_SHARED path would function perfectly
+> fine to free MEM_TYPE_PAGE_ORDER0 pages.
+>=20
+> Thanks,
+>=20
+> - Alex
+>=20
 
-> Anyway, would be nice to add further context/description about it to
-> the commit message at least for future reference on what the .eh_frame
-> sections contain exactly and why it's harmless. (Right now it only
-> states that it is but without more concrete rationale, would be good
-> to still add.)
+--4gKitswv7GoTaRt2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Sure, can add that and send a v2 :)
+-----BEGIN PGP SIGNATURE-----
 
--Toke
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYOREKgAKCRA6cBh0uS2t
+rBYzAQDOsV2aChstpZW4dPa1vZ9yJzqGlm3aybO0ZgyCxT8J8AEAtqJojLaOE/i7
+tYTXiyq/jYSzSDFG9TaHO1dx/HuBnQY=
+=pqks
+-----END PGP SIGNATURE-----
+
+--4gKitswv7GoTaRt2--
 
