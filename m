@@ -2,178 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF6A3BC742
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 09:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFA13BC789
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 09:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhGFHgN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 03:36:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14304 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230367AbhGFHgM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Jul 2021 03:36:12 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1667Wf0L143497;
-        Tue, 6 Jul 2021 03:33:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Gew95MZVARp719IXqnhXu+l8ESoMwp/ceIvRn2Onm3g=;
- b=olfjstCWcoU196d8uV0n9vh3QwTaArdfTeZPWU3iGrKgDYWiPFFEpeZCLsStFDMWibmB
- hn45bHPPo1dAr7l41tB0CzU5PcUJB9I9rt7WHvUKwNj5yoWLMjTQAXJSqcKR4T7v4FX8
- viJU1LzdQVVOsxQV/2h2R+s63hYJmJhYsAczl5mSCep+6wjIB3Mwfaep85GHHG/o2HzC
- JBZa/+RePWzA+2Q2vMOAWprOBJVNreEhCpiyzS6GMdQkAXUU3DoY8+QQt6mMM0wM7+rl
- d9tgrCyT+iW9pR/isOCDosA/kVK0NmVzRGkn6e6y5iQNJEqgxv4q+n3i7YEfQ3tRdzUQ oA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39mbkds3mw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 03:33:03 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1667X3SR145418;
-        Tue, 6 Jul 2021 03:33:03 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39mbkds3m8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 03:33:02 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1667FkG0013626;
-        Tue, 6 Jul 2021 07:33:01 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 39jfh88kpt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Jul 2021 07:33:01 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1667WwAH23265774
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 6 Jul 2021 07:32:58 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F255D52052;
-        Tue,  6 Jul 2021 07:32:57 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.43.134])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A32C552059;
-        Tue,  6 Jul 2021 07:32:51 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     ravi.bangoria@linux.ibm.com, sandipan@linux.ibm.com,
-        paulus@samba.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] bpf powerpc: Add addr > TASK_SIZE_MAX explicit check
-Date:   Tue,  6 Jul 2021 13:02:11 +0530
-Message-Id: <20210706073211.349889-5-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
-References: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
+        id S230386AbhGFH6J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 03:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230274AbhGFH6J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 03:58:09 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B0EC061574;
+        Tue,  6 Jul 2021 00:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PHmwfF66DF3ND/ZlAeaO0Y+ydd1OV8Qn7m+HyKVviH0=; b=mDFoN6jKwbzJOcU3MKwK7TiDSw
+        TApWi0MZ26WSrA2OOgCBdYlgbApezWRB+u7yMnh7d5For8iLhQNieNbezlv8KsfG2Tbw+PiG0bKaR
+        PlEVyhQb6dgQNZjPwnBf2/KSz4gbwPCcRNGImP3fd5oUpZeZl3BL/Vl4x6gU9ZOMfygiaJ8Bc8396
+        ahg4qJ7Bt1i5GXiOt4oSeOoq5IBSgCxOyQlRrFaJiqTFbnyY9pi28n70w7QYErcD2FV5iB1wMSJl5
+        vDy5JRGXLap/ow0H/UbcEbwTOCzoOXSVW7sLp77yvU7Y6hGpfCJCOmbfLUMNOtGyEhZuXeXU2xHeu
+        kfKLCqTg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m0fv8-00EyhE-0s; Tue, 06 Jul 2021 07:55:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A7B33001DC;
+        Tue,  6 Jul 2021 09:55:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 44BD2200E1E68; Tue,  6 Jul 2021 09:55:03 +0200 (CEST)
+Date:   Tue, 6 Jul 2021 09:55:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-ID: <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+ <162400002631.506599.2413605639666466945.stgit@devnote2>
+ <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+ <20210706004257.9e282b98f447251a380f658f@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: qesT2bE4nOfw031iJk2-FJ_fyRTXBqXS
-X-Proofpoint-ORIG-GUID: t__WcHqeh_O8KkfEbK3T3y00H-PG9cSJ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-06_02:2021-07-02,2021-07-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=999 phishscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107060037
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706004257.9e282b98f447251a380f658f@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On PowerPC with KUAP enabled, any kernel code which wants to
-access userspace needs to be surrounded by disable-enable KUAP.
-But that is not happening for BPF_PROBE_MEM load instruction.
-So, when BPF program tries to access invalid userspace address,
-page-fault handler considers it as bad KUAP fault:
+On Tue, Jul 06, 2021 at 12:42:57AM +0900, Masami Hiramatsu wrote:
+> On Mon, 5 Jul 2021 13:36:14 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > On Fri, Jun 18, 2021 at 04:07:06PM +0900, Masami Hiramatsu wrote:
+> > > @@ -549,7 +548,15 @@ bool unwind_next_frame(struct unwind_state *state)
+> > >  					 (void *)orig_ip);
+> > >  			goto err;
+> > >  		}
+> > > -
+> > > +		/*
+> > > +		 * There is a small chance to interrupt at the entry of
+> > > +		 * kretprobe_trampoline where the ORC info doesn't exist.
+> > > +		 * That point is right after the RET to kretprobe_trampoline
+> > > +		 * which was modified return address. So the @addr_p must
+> > > +		 * be right before the regs->sp.
+> > > +		 */
+> > > +		state->ip = unwind_recover_kretprobe(state, state->ip,
+> > > +				(unsigned long *)(state->sp - sizeof(long)));
+> > >  		state->regs = (struct pt_regs *)sp;
+> > >  		state->prev_regs = NULL;
+> > >  		state->full_regs = true;
+> > > @@ -562,6 +569,9 @@ bool unwind_next_frame(struct unwind_state *state)
+> > >  					 (void *)orig_ip);
+> > >  			goto err;
+> > >  		}
+> > > +		/* See UNWIND_HINT_TYPE_REGS case comment. */
+> > > +		state->ip = unwind_recover_kretprobe(state, state->ip,
+> > > +				(unsigned long *)(state->sp - sizeof(long)));
+> > >  
+> > >  		if (state->full_regs)
+> > >  			state->prev_regs = state->regs;
+> > 
+> > Why doesn't the ftrace case have this? That is, why aren't both return
+> > trampolines having the same general shape?
+> 
+> Ah, this strongly depends what the trampoline code does.
+> For the kretprobe case, the PUSHQ at the entry of the kretprobe_trampoline()
+> does not covered by UNWIND_HINT_FUNC. Thus it needs to find 'correct_ret_addr'
+> by the frame pointer (which is next to the sp).
+> 
+>         "kretprobe_trampoline:\n"
+> #ifdef CONFIG_X86_64
+>         /* Push fake return address to tell the unwinder it's a kretprobe */
+>         "       pushq $kretprobe_trampoline\n"
+>         UNWIND_HINT_FUNC
+> 
+> But I'm not so sure how ftrace treat it. It seems that the return_to_handler()
+> doesn't care such case. (anyway, return_to_handler() does not return but jump
+> to the original call-site, in that case, the information will be lost.)
 
-  Kernel attempted to read user page (d0000000) - exploit attempt? (uid: 0)
+I find it bothersome (OCD, sorry :-) that both return trampolines behave
+differently. Doubly so because I know people (Steve in particular) have
+been talking about unifying them.
 
-Considering the fact that PTR_TO_BTF_ID (which uses BPF_PROBE_MEM
-mode) could either be a valid kernel pointer or NULL but should
-never be a pointer to userspace address, execute BPF_PROBE_MEM load
-only if addr > TASK_SIZE_MAX, otherwise set dst_reg=0 and move on.
-
-This will catch NULL, valid or invalid userspace pointers. Only bad
-kernel pointer will be handled by BPF exception table.
-
-[Alexei suggested for x86]
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
----
- arch/powerpc/net/bpf_jit_comp64.c | 38 +++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 1884c6dca89a..46becae76210 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -753,6 +753,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		/* dst = *(u8 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_B:
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
-+			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-+				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-+				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-+				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-+				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-+				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-+				PPC_JMP((ctx->idx + 2) * 4);
-+			}
- 			EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
- 			if (insn_is_zext(&insn[i + 1]))
- 				addrs[++i] = ctx->idx * 4;
-@@ -763,6 +771,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		/* dst = *(u16 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_H:
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_H:
-+			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-+				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-+				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-+				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-+				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-+				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-+				PPC_JMP((ctx->idx + 2) * 4);
-+			}
- 			EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
- 			if (insn_is_zext(&insn[i + 1]))
- 				addrs[++i] = ctx->idx * 4;
-@@ -773,6 +789,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		/* dst = *(u32 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_W:
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_W:
-+			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-+				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-+				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-+				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-+				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-+				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-+				PPC_JMP((ctx->idx + 2) * 4);
-+			}
- 			EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
- 			if (insn_is_zext(&insn[i + 1]))
- 				addrs[++i] = ctx->idx * 4;
-@@ -783,6 +807,20 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		/* dst = *(u64 *)(ul) (src + off) */
- 		case BPF_LDX | BPF_MEM | BPF_DW:
- 		case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
-+			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-+				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-+				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-+				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-+				if (off % 4)
-+					PPC_BCC(COND_GT, (ctx->idx + 5) * 4);
-+				else
-+					PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-+				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-+				if (off % 4)
-+					PPC_JMP((ctx->idx + 3) * 4);
-+				else
-+					PPC_JMP((ctx->idx + 2) * 4);
-+			}
- 			PPC_BPF_LL(dst_reg, src_reg, off);
- 			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
- 			if (ret)
--- 
-2.26.3
-
+Steve, can you clarify the ftrace side here? Afaict return_to_handler()
+is similarly affected.
