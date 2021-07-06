@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7763BCF26
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 13:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7F33BCF28
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 13:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233855AbhGFL2M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 07:28:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55940 "EHLO mail.kernel.org"
+        id S234601AbhGFL2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 07:28:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233349AbhGFLWU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:22:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5539A61CD8;
-        Tue,  6 Jul 2021 11:17:53 +0000 (UTC)
+        id S234156AbhGFLXv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:23:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA19D61CF6;
+        Tue,  6 Jul 2021 11:18:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570274;
-        bh=KOu7qrupT3Xq1MPcezUqH3okfRUfVTjKqiEIPZ1rfEU=;
+        s=k20201202; t=1625570294;
+        bh=0XRFg5hIq6dpQhf6aGNiDBR8wtXCngnhyGCW3ADbjSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YN/lNI0u9PIMQ+tLXGiql6tKPJFmBMLIwNUm+lCFvexBYRI+bztqiMjGM96JcIhTd
-         YqO1XJvTYSha1a5EiBKbkMivpDEbnbA/4thf9fm3uAXKnvySUVfIM3gOKL4i11vqY7
-         2fRFL1fBPv2kqro/yQXN/aTcxD9j6x22ZJ4L0CX9SLsDW89gf1e1MsrBKi0HvAPxol
-         xPwgezk1vd+Yfcvl2za9DUJZj+EyhJsdwkk87KB2KwHtw9IAkqzDaikKo07ksojlrj
-         eJmdHHAQXaafuz6ysmKGAsUAyiIL9pVLcPFndwIxklnXwTpbiL5Dt30JPCX29o5Jfg
-         KUwokFVr1tS2A==
+        b=I/SBOK4r4sJj2SL73IkYkBCghYPt7Moun1BR21+2T6lUageP0eWks4rxqS2zXgP1K
+         Bf8RASvsKmvBPnSFqh9qTx5sXxMmaDQDFQEezpmf+ZLiRfDqqxkChFxve2dgEQmnrn
+         HJW1HhA5VwoMzDN5cfMjLGFv3dqUvzn9p1WYNQk9xFU52DMElB2jQbiY92OFh33Msb
+         ar7PylZGsP+HXxaX+32/JxWk+0rPLQLjfvXiiWj9/7ADu22x5l+GjTmZC2BRzDl3/m
+         u0T3wrJ6tia+t5FJYBEobfiZeRnqh+yEnI+6LJQemAZS9XRKwof81zKHm3j9BOaC7s
+         NNks1vEFIkDnw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Martynas Pumputis <m@lambda.lt>, Lorenz Bauer <lmb@cloudflare.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 167/189] net: retrieve netns cookie via getsocketopt
-Date:   Tue,  6 Jul 2021 07:13:47 -0400
-Message-Id: <20210706111409.2058071-167-sashal@kernel.org>
+Cc:     Rustam Kovhaev <rkovhaev@gmail.com>,
+        syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 183/189] bpf: Fix false positive kmemleak report in bpf_ringbuf_area_alloc()
+Date:   Tue,  6 Jul 2021 07:14:03 -0400
+Message-Id: <20210706111409.2058071-183-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111409.2058071-1-sashal@kernel.org>
 References: <20210706111409.2058071-1-sashal@kernel.org>
@@ -46,135 +46,108 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Martynas Pumputis <m@lambda.lt>
+From: Rustam Kovhaev <rkovhaev@gmail.com>
 
-[ Upstream commit e8b9eab99232c4e62ada9d7976c80fd5e8118289 ]
+[ Upstream commit ccff81e1d028bbbf8573d3364a87542386c707bf ]
 
-It's getting more common to run nested container environments for
-testing cloud software. One of such examples is Kind [1] which runs a
-Kubernetes cluster in Docker containers on a single host. Each container
-acts as a Kubernetes node, and thus can run any Pod (aka container)
-inside the former. This approach simplifies testing a lot, as it
-eliminates complicated VM setups.
+kmemleak scans struct page, but it does not scan the page content. If we
+allocate some memory with kmalloc(), then allocate page with alloc_page(),
+and if we put kmalloc pointer somewhere inside that page, kmemleak will
+report kmalloc pointer as a false positive.
 
-Unfortunately, such a setup breaks some functionality when cgroupv2 BPF
-programs are used for load-balancing. The load-balancer BPF program
-needs to detect whether a request originates from the host netns or a
-container netns in order to allow some access, e.g. to a service via a
-loopback IP address. Typically, the programs detect this by comparing
-netns cookies with the one of the init ns via a call to
-bpf_get_netns_cookie(NULL). However, in nested environments the latter
-cannot be used given the Kubernetes node's netns is outside the init ns.
-To fix this, we need to pass the Kubernetes node netns cookie to the
-program in a different way: by extending getsockopt() with a
-SO_NETNS_COOKIE option, the orchestrator which runs in the Kubernetes
-node netns can retrieve the cookie and pass it to the program instead.
+We can instruct kmemleak to scan the memory area by calling kmemleak_alloc()
+and kmemleak_free(), but part of struct bpf_ringbuf is mmaped to user space,
+and if struct bpf_ringbuf changes we would have to revisit and review size
+argument in kmemleak_alloc(), because we do not want kmemleak to scan the
+user space memory. Let's simplify things and use kmemleak_not_leak() here.
 
-Thus, this is following up on Eric's commit 3d368ab87cf6 ("net:
-initialize net->net_cookie at netns setup") to allow retrieval via
-SO_NETNS_COOKIE.  This is also in line in how we retrieve socket cookie
-via SO_COOKIE.
+For posterity, also adding additional prior analysis from Andrii:
 
-  [1] https://kind.sigs.k8s.io/
+  I think either kmemleak or syzbot are misreporting this. I've added a
+  bunch of printks around all allocations performed by BPF ringbuf. [...]
+  On repro side I get these two warnings:
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Martynas Pumputis <m@lambda.lt>
-Cc: Eric Dumazet <edumazet@google.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+  [vmuser@archvm bpf]$ sudo ./repro
+  BUG: memory leak
+  unreferenced object 0xffff88810d538c00 (size 64):
+    comm "repro", pid 2140, jiffies 4294692933 (age 14.540s)
+    hex dump (first 32 bytes):
+      00 af 19 04 00 ea ff ff c0 ae 19 04 00 ea ff ff  ................
+      80 ae 19 04 00 ea ff ff c0 29 2e 04 00 ea ff ff  .........)......
+    backtrace:
+      [<0000000077bfbfbd>] __bpf_map_area_alloc+0x31/0xc0
+      [<00000000587fa522>] ringbuf_map_alloc.cold.4+0x48/0x218
+      [<0000000044d49e96>] __do_sys_bpf+0x359/0x1d90
+      [<00000000f601d565>] do_syscall_64+0x2d/0x40
+      [<0000000043d3112a>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+  BUG: memory leak
+  unreferenced object 0xffff88810d538c80 (size 64):
+    comm "repro", pid 2143, jiffies 4294699025 (age 8.448s)
+    hex dump (first 32 bytes):
+      80 aa 19 04 00 ea ff ff 00 ab 19 04 00 ea ff ff  ................
+      c0 ab 19 04 00 ea ff ff 80 44 28 04 00 ea ff ff  .........D(.....
+    backtrace:
+      [<0000000077bfbfbd>] __bpf_map_area_alloc+0x31/0xc0
+      [<00000000587fa522>] ringbuf_map_alloc.cold.4+0x48/0x218
+      [<0000000044d49e96>] __do_sys_bpf+0x359/0x1d90
+      [<00000000f601d565>] do_syscall_64+0x2d/0x40
+      [<0000000043d3112a>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+  Note that both reported leaks (ffff88810d538c80 and ffff88810d538c00)
+  correspond to pages array bpf_ringbuf is allocating and tracking properly
+  internally. Note also that syzbot repro doesn't close FD of created BPF
+  ringbufs, and even when ./repro itself exits with error, there are still
+  two forked processes hanging around in my system. So clearly ringbuf maps
+  are alive at that point. So reporting any memory leak looks weird at that
+  point, because that memory is being used by active referenced BPF ringbuf.
+
+  It's also a question why repro doesn't clean up its forks. But if I do a
+  `pkill repro`, I do see that all the allocated memory is /properly/ cleaned
+  up [and the] "leaks" are deallocated properly.
+
+  BTW, if I add close() right after bpf() syscall in syzbot repro, I see that
+  everything is immediately deallocated, like designed. And no memory leak
+  is reported. So I don't think the problem is anywhere in bpf_ringbuf code,
+  rather in the leak detection and/or repro itself.
+
+Reported-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+[ Daniel: also included analysis from Andrii to the commit log ]
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/CAEf4BzYk+dqs+jwu6VKXP-RttcTEGFe+ySTGWT9CRNkagDiJVA@mail.gmail.com
+Link: https://lore.kernel.org/lkml/YNTAqiE7CWJhOK2M@nuc10
+Link: https://lore.kernel.org/lkml/20210615101515.GC26027@arm.com
+Link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
+Link: https://lore.kernel.org/bpf/20210626181156.1873604-1-rkovhaev@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/alpha/include/uapi/asm/socket.h  | 2 ++
- arch/mips/include/uapi/asm/socket.h   | 2 ++
- arch/parisc/include/uapi/asm/socket.h | 2 ++
- arch/sparc/include/uapi/asm/socket.h  | 2 ++
- include/uapi/asm-generic/socket.h     | 2 ++
- net/core/sock.c                       | 7 +++++++
- 6 files changed, 17 insertions(+)
+ kernel/bpf/ringbuf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
-index 57420356ce4c..6b3daba60987 100644
---- a/arch/alpha/include/uapi/asm/socket.h
-+++ b/arch/alpha/include/uapi/asm/socket.h
-@@ -127,6 +127,8 @@
- #define SO_PREFER_BUSY_POLL	69
- #define SO_BUSY_POLL_BUDGET	70
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index 84b3b35fc0d0..9e0c10c6892a 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -8,6 +8,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/wait.h>
+ #include <linux/poll.h>
++#include <linux/kmemleak.h>
+ #include <uapi/linux/btf.h>
  
-+#define SO_NETNS_COOKIE		71
-+
- #if !defined(__KERNEL__)
- 
- #if __BITS_PER_LONG == 64
-diff --git a/arch/mips/include/uapi/asm/socket.h b/arch/mips/include/uapi/asm/socket.h
-index 2d949969313b..cdf404a831b2 100644
---- a/arch/mips/include/uapi/asm/socket.h
-+++ b/arch/mips/include/uapi/asm/socket.h
-@@ -138,6 +138,8 @@
- #define SO_PREFER_BUSY_POLL	69
- #define SO_BUSY_POLL_BUDGET	70
- 
-+#define SO_NETNS_COOKIE		71
-+
- #if !defined(__KERNEL__)
- 
- #if __BITS_PER_LONG == 64
-diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
-index f60904329bbc..5b5351cdcb33 100644
---- a/arch/parisc/include/uapi/asm/socket.h
-+++ b/arch/parisc/include/uapi/asm/socket.h
-@@ -119,6 +119,8 @@
- #define SO_PREFER_BUSY_POLL	0x4043
- #define SO_BUSY_POLL_BUDGET	0x4044
- 
-+#define SO_NETNS_COOKIE		0x4045
-+
- #if !defined(__KERNEL__)
- 
- #if __BITS_PER_LONG == 64
-diff --git a/arch/sparc/include/uapi/asm/socket.h b/arch/sparc/include/uapi/asm/socket.h
-index 848a22fbac20..92675dc380fa 100644
---- a/arch/sparc/include/uapi/asm/socket.h
-+++ b/arch/sparc/include/uapi/asm/socket.h
-@@ -120,6 +120,8 @@
- #define SO_PREFER_BUSY_POLL	 0x0048
- #define SO_BUSY_POLL_BUDGET	 0x0049
- 
-+#define SO_NETNS_COOKIE          0x0050
-+
- #if !defined(__KERNEL__)
- 
- 
-diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
-index 4dcd13d097a9..d588c244ec2f 100644
---- a/include/uapi/asm-generic/socket.h
-+++ b/include/uapi/asm-generic/socket.h
-@@ -122,6 +122,8 @@
- #define SO_PREFER_BUSY_POLL	69
- #define SO_BUSY_POLL_BUDGET	70
- 
-+#define SO_NETNS_COOKIE		71
-+
- #if !defined(__KERNEL__)
- 
- #if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 946888afef88..2003c5ebb4c2 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1622,6 +1622,13 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
- 		v.val = sk->sk_bound_dev_if;
- 		break;
- 
-+	case SO_NETNS_COOKIE:
-+		lv = sizeof(u64);
-+		if (len != lv)
-+			return -EINVAL;
-+		v.val64 = sock_net(sk)->net_cookie;
-+		break;
-+
- 	default:
- 		/* We implement the SO_SNDLOWAT etc to not be settable
- 		 * (1003.1g 7).
+ #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
+@@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
+ 	rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
+ 		  VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
+ 	if (rb) {
++		kmemleak_not_leak(pages);
+ 		rb->pages = pages;
+ 		rb->nr_pages = nr_pages;
+ 		return rb;
 -- 
 2.30.2
 
