@@ -2,177 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F523BC6D9
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 08:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1903BC703
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 09:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbhGFGsv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 02:48:51 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:10274 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhGFGst (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 02:48:49 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GJtGx62nCz1CFnD;
-        Tue,  6 Jul 2021 14:40:41 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 6 Jul 2021 14:46:09 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 6 Jul 2021
- 14:46:08 +0800
-Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
- based on elevated refcnt
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Jesper Dangaard Brouer <jbrouer@redhat.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <mw@semihalf.com>,
-        <linux@armlinux.org.uk>, <hawk@kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Alexander Duyck <alexander.duyck@gmail.com>
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
- <6c2d76e2-30ce-5c0f-9d71-f6b71f9ad34f@redhat.com>
- <ec994486-b385-0597-39f7-128092cba0ce@huawei.com>
- <YOPiHzVkKhdHmxLB@enceladus>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <33aee58e-b1d5-ce7b-1576-556d0da28560@huawei.com>
-Date:   Tue, 6 Jul 2021 14:46:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
-MIME-Version: 1.0
-In-Reply-To: <YOPiHzVkKhdHmxLB@enceladus>
+        id S230198AbhGFHWl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 03:22:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230164AbhGFHWl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 03:22:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3242261206;
+        Tue,  6 Jul 2021 07:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625556003;
+        bh=VRirDG2vqV1nQEPAVuRRRHRJ/jYUaivULuPRDwECKCo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=QfEKn9ty58ArQ+bjfRZX48ZeQ7V6gV5ghBr9MvqhlOgpU+BljNjLM+FP6lp/w1k17
+         T6TIDd2RHI5gbJs0q9CWab4Pw2Wq3b0udJyANczIq+eECX1+XasSTC0zvpL1TDjyks
+         qWnC8aZw81SdVsbSdfQT7DhladPquiPZm5r5JfqfKvJriinM1Zwmt/4XSSdxkhsHBf
+         A+vc6w0zbWvGDUUJICMWv1RN5SzW61otiSrXPQnLs/0SviAL2WlY/kKZHSI/DjqGsi
+         kVZcfkeSf1rMOzWU2VaNDF2Z+dXlwLV2UnLzxgEdh20tSd52VtvkV6YFQqgXRDyZcB
+         J2zEytjMNRhmQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2510760BE2;
+        Tue,  6 Jul 2021 07:20:03 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3] tools: bpftool: close va_list 'ap' by va_end()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162555600314.16241.8997704889590852579.git-patchwork-notify@kernel.org>
+Date:   Tue, 06 Jul 2021 07:20:03 +0000
+References: <20210706013543.671114-1-gushengxian507419@gmail.com>
+In-Reply-To: <20210706013543.671114-1-gushengxian507419@gmail.com>
+To:     Gu Shengxian <gushengxian507419@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gushengxian@yulong.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/7/6 12:54, Ilias Apalodimas wrote:
-> Hi Yunsheng,
+Hello:
+
+This patch was applied to bpf/bpf.git (refs/heads/master):
+
+On Mon,  5 Jul 2021 18:35:43 -0700 you wrote:
+> From: Gu Shengxian <gushengxian@yulong.com>
 > 
-> Thanks for having a look!
-
-Hi,
-
-Thanks for reviewing.
-
+> va_list 'ap' was opened but not closed by va_end(). It should be
+> closed by va_end() before return.
 > 
-> On Fri, Jul 02, 2021 at 06:15:13PM +0800, Yunsheng Lin wrote:
->> On 2021/7/2 17:42, Jesper Dangaard Brouer wrote:
->>>
->>> On 30/06/2021 11.17, Yunsheng Lin wrote:
->>>> Currently page pool only support page recycling only when
->>>> refcnt of page is one, which means it can not support the
->>>> split page recycling implemented in the most ethernet driver.
->>>
->>> Cc. Alex Duyck as I consider him an expert in this area.
->>
->> Thanks.
->>
->>>
->>>
->>>> So add elevated refcnt support in page pool, and support
->>>> allocating page frag to enable multi-frames-per-page based
->>>> on the elevated refcnt support.
->>>>
->>>> As the elevated refcnt is per page, and there is no space
->>>> for that in "struct page" now, so add a dynamically allocated
->>>> "struct page_pool_info" to record page pool ptr and refcnt
->>>> corrsponding to a page for now. Later, we can recycle the
->>>> "struct page_pool_info" too, or use part of page memory to
->>>> record pp_info.
->>>
->>> I'm not happy with allocating a memory (slab) object "struct page_pool_info" per page.
->>>
->>> This also gives us an extra level of indirection.
->>
->> I'm not happy with that either, if there is better way to
->> avoid that, I will be happy to change it:)
+> According to suggestion of Daniel Borkmann <daniel@iogearbox.net>.
+> Signed-off-by: Gu Shengxian <gushengxian@yulong.com>
 > 
-> I think what we have to answer here is, do we want and does it make sense
-> for page_pool to do the housekeeping of the buffer splitting or are we
-> better of having each driver do that.  IIRC your previous patch on top of
-> the original recycling patchset was just 'atomic' refcnts on top of page pool.
+> [...]
 
-You are right that driver was doing the the buffer splitting in previous
-patch.
+Here is the summary with links:
+  - [v3] tools: bpftool: close va_list 'ap' by va_end()
+    https://git.kernel.org/bpf/bpf/c/519f9d19e135
 
-The reason why I abandoned that is:
-1. Currently the meta-data of page in the driver is per desc, which means
-   it might not be able to use first half of a page for a desc, and the
-   second half of the same page for another desc, this ping-pong way of
-   reusing the whole page for only one desc in the driver seems unnecessary
-   and waste a lot of memory when there is already reusing in the page pool.
-
-2. Easy use of API for the driver too, which means the driver uses
-   page_pool_dev_alloc_frag() and page_pool_put_full_page() for elevated
-   refcnt case, corresponding to page_pool_dev_alloc_pages() and
-   page_pool_put_full_page() for non-elevated refcnt case, the driver does
-   not need to worry about the meta-data of a page.
-
-> 
-> I think I'd prefer each driver having it's own meta-data of how he splits
-> the page, mostly due to hardware diversity, but tbh I don't have any
-> strong preference atm.
-
-Usually how the driver split the page is fixed for a given rx configuration(
-like MTU), so the driver is able to pass that info to page pool.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-> 
->>
->>>
->>>
->>> You are also adding a page "frag" API inside page pool, which I'm not 100% convinced belongs inside page_pool APIs.
->>>
->>> Please notice the APIs that Alex Duyck added in mm/page_alloc.c:
->>
->> Actually, that is where the idea of using "page frag" come from.
->>
->> Aside from the performance improvement, there is memory usage
->> decrease for 64K page size kernel, which means a 64K page can
->> be used by 32 description with 2k buffer size, and that is a
->> lot of memory saving for 64 page size kernel comparing to the
->> current split page reusing implemented in the driver.
->>
-> 
-> Whether the driver or page_pool itself keeps the meta-data, the outcome
-> here won't change.  We'll still be able to use page frags.
-
-As above, it is the ping-pong way of reusing when the driver keeps the
-meta-data, and it is page-frag way of reusing when the page pool keeps
-the meta-data.
-
-I am not sure if the page-frag way of reusing is possible when we still
-keep the meta-data in the driver, which seems very complex at the initial
-thinking.
-
-> 
-> 
-> Cheers
-> /Ilias
->>
->>>
->>>  __page_frag_cache_refill() + __page_frag_cache_drain() + page_frag_alloc_align()
->>>
->>>
->>
->> [...]
-> .
-> 
