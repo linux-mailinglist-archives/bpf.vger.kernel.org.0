@@ -2,171 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAA03BD4C0
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 14:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839883BD4C1
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 14:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238132AbhGFMRJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 08:17:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28879 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239726AbhGFL4B (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Jul 2021 07:56:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625572403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v+KqBRx37GHazbrEYLLrAx3jPN6x/mr0O28bD/AHrEQ=;
-        b=atalgSdnNUM8at1Lpg3PQ4Mi/QUVFUiluM+mAcmIDGaeTGfulZyGYTvJC2SNiyoxFn9aCm
-        7IQ52ezcmbR58TTwYo1f88DrD4eg7Zt6dDWR7Y7Lnq/f/ZlEdb+Trut/Klir26ZfJLe+h1
-        HP9aBK7fBdxF6g3w51q2imm2jfzSLFM=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-t7chfggmP6isByCus6OLZA-1; Tue, 06 Jul 2021 07:53:21 -0400
-X-MC-Unique: t7chfggmP6isByCus6OLZA-1
-Received: by mail-ed1-f70.google.com with SMTP id p13-20020a05640210cdb029039560ff6f46so10669225edu.17
-        for <bpf@vger.kernel.org>; Tue, 06 Jul 2021 04:53:21 -0700 (PDT)
+        id S238147AbhGFMRL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 08:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245112AbhGFMM1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 08:12:27 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A16C08EC23
+        for <bpf@vger.kernel.org>; Tue,  6 Jul 2021 04:56:21 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id i13so20327919ilu.4
+        for <bpf@vger.kernel.org>; Tue, 06 Jul 2021 04:56:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=MgMduQFyj2+3I/MiKDJaPgLQZIvIl4Pjf9M0dRhRxd0=;
+        b=ARpdgP+Uisj4uBKSSFlaA6j8SPoQvVmnEDQhF1jjov8wZJtDN8VdCKIdzwi9/r6tbg
+         ApeJlxBgLE6R3JGkn7XURwJdnaOFm0zHzvlccNgk7FMtosW5dVRHeFL5goKh/i0+JVds
+         LaZeOFtMICCt/KAwCfBWPPM0SseDKJWEl9oWC9oJ3iGZ0Ld4lEmorXHLL+3Gi+LEba64
+         onPSEvJyiGPqZx2dIiELtgRzMN1wo0hfTNgkJX8WTjqp+afVh+a7EjAM+l+NIRv0OiNY
+         BIXGKVJMYRj0LeZ3Pri+mI8FdEIuVC9Oyn7yS3Jla2DXBksRvvc7GHRwB+xPd+2G/ucb
+         y5gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v+KqBRx37GHazbrEYLLrAx3jPN6x/mr0O28bD/AHrEQ=;
-        b=tgOANz3YsNJVOHjhIOOmWcO3JTVmComQJHAZUWSeXH2l+t9P+5DZahTaIAOzxV5apC
-         2apiva9sB9NftWQbWH7K7Xa7u7LGfLAWO4OTfY3ZeD4xPNAyvnFknybICB4g3FB6FKoI
-         cyZDa6xlRxI2Yy9EOBYMlb5Yo7KfTcd5sWKin8tDVgJw3VXy5YszWIPeLR0kBERfGNW7
-         sYQE36lZbao/4WiZ41c2IcTf8Beg/7Sgx+boAVOaPNbrrMjrhzm5nOkYwh9Ddo355uZE
-         dQQurQeLuyUYNyDaLzwdpcjVmEKyK4KbRhkTLm0k1ofhhjlyINfOwEc7uO2CqH25P8Wn
-         svGQ==
-X-Gm-Message-State: AOAM530SWkQWmDfKVHgTOgPlHdY+i9uyM8sXgf/11DsWE+e1HHV+Pb7P
-        QRN7oQ/8+Fh7tvFIrovbawC7VEZgvp0U0c79hj4VIaSjtm97lgD7GO0Ix3IEKrDK6hZZhGEM1/Q
-        RyG3WQ6jIxn2X
-X-Received: by 2002:a05:6402:28a1:: with SMTP id eg33mr22453593edb.249.1625572400271;
-        Tue, 06 Jul 2021 04:53:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzEfb/3dVMfJMNrITNAg2I1tARs2f2DFCfF9AM3+rFYnT+3k7BTi74dHnYH6VHbNpvZuTehtw==
-X-Received: by 2002:a05:6402:28a1:: with SMTP id eg33mr22453579edb.249.1625572400123;
-        Tue, 06 Jul 2021 04:53:20 -0700 (PDT)
-Received: from localhost (net-93-71-3-244.cust.vodafonedsl.it. [93.71.3.244])
-        by smtp.gmail.com with ESMTPSA id d13sm7039781edt.31.2021.07.06.04.53.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 04:53:19 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 13:53:16 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
-        "Jubran, Samih" <sameehj@amazon.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Tirthendu <tirthendu.sarkar@intel.com>
-Subject: Re: [PATCH v9 bpf-next 02/14] xdp: introduce flags field in
- xdp_buff/xdp_frame
-Message-ID: <YORELD7ve/RMYsua@lore-desk>
-References: <cover.1623674025.git.lorenzo@kernel.org>
- <1316f3ef2763ff4c02244fb726c61568c972514c.1623674025.git.lorenzo@kernel.org>
- <CAKgT0Ue7TsgwbQF+mfeDB-18Q-R29YZWe=y6Kgeg0xxbwds=vw@mail.gmail.com>
- <YNsVcy8e4Mgyg7g3@lore-desk>
- <CAKgT0Ucg5RbzKt63u5RfXee94kd+1oJ+o_qgUwCwnVCoQjDdPw@mail.gmail.com>
- <YOMq0WRu4lsGZJk2@lore-desk>
- <CAKgT0Udn90g9s3RYiGA0hFz7bXaepPNJNqgRjMtwjpdj1zZTDw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=MgMduQFyj2+3I/MiKDJaPgLQZIvIl4Pjf9M0dRhRxd0=;
+        b=DdAsYc7IlRd6aCHk9fiFZi/qXmqhEDthD3Mt/pA4MM8O8eZ1qPctCJzQg9PLvfpXZR
+         yZ5+8ybT+aG60l9BGfgk0TM54XKMB6qXSC2GnSKe50zm+ppS9JkEhjZak+8E2M5GqjCL
+         ffmEUIanjJXyLc+7TBs+vdHE830uiSNJi60f5/kKYOQSGlt4QKd5SWrImgO3Srxny+Ly
+         eCakIczzc9dkilbFUybpIY61cX0cbHF/upZN0Id3UVIPcVHcRYQ8626VOhMPkgzJWrhH
+         HLFc9OcmrH7hPWTbItY1Mt3zuzRAL5TMGDN1vy7oPjeg87kS8I/lvsQaOc6YkVN7T2EZ
+         Uzug==
+X-Gm-Message-State: AOAM531s1LBDAc1PRJtKeOMO7w1RfC4Fn+CI8uJWdpxt8ekvXkJ2J+1r
+        I8Wpo9t0M4tNo9B/L1BBMoOC9AEGoKUQY5dT9C5705E+474=
+X-Google-Smtp-Source: ABdhPJw/FLqih/FWzZfan50tlDRyAlrp/KN1+zrCRo5gTgqq8PCROnK1DXcKCFLpel6KOVfRsk/NZXh0+KMKh/jI2d8=
+X-Received: by 2002:a92:b004:: with SMTP id x4mr14718899ilh.121.1625572580238;
+ Tue, 06 Jul 2021 04:56:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4gKitswv7GoTaRt2"
-Content-Disposition: inline
-In-Reply-To: <CAKgT0Udn90g9s3RYiGA0hFz7bXaepPNJNqgRjMtwjpdj1zZTDw@mail.gmail.com>
+From:   asaf eitani <eitaniasaf@gmail.com>
+Date:   Tue, 6 Jul 2021 14:56:09 +0300
+Message-ID: <CAAihumD0AOem=UhqRBDULQ6ZDL=n2vhn-3rLJq+mOm5-q2Wfjw@mail.gmail.com>
+Subject: Failed to attach to kprobe (non blacklisted)
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi BPF experts,
 
---4gKitswv7GoTaRt2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm having issues to attach to certain kprobes and kretprobes that are
+not in the blacklist, like ftrace_modify_all_code.
+There are kernel modules that are capable of attaching to those
+kprobes and kretprobes but I could not attach them using libbpf.
 
-> On Mon, Jul 5, 2021 at 8:52 AM Lorenzo Bianconi
-> <lorenzo.bianconi@redhat.com> wrote:
-> >
-> > > On Tue, Jun 29, 2021 at 5:43 AM Lorenzo Bianconi
-> > > <lorenzo.bianconi@redhat.com> wrote:
+I tried using both tracee(https://github.com/aquasecurity/tracee) and
+bpftrace(https://github.com/iovisor/bpftrace) to attach to those
+kprobes, which to my understanding uses libbpf, but both of them
+returned an "Invalid argument" error.
 
-[...]
->=20
-> Hi Lorenzo,
->=20
-> What about doing something like breaking up the type value in
-> xdp_mem_info? The fact is having it as an enum doesn't get us much
-> since we have a 32b type field but are only storing 4 possible values
-> there currently
->=20
-> The way I see it, scatter-gather is just another memory model
-> attribute rather than being something entirely new. It makes as much
-> sense to have a bit there for MEM_TYPE_PAGE_SG as it does for
-> MEM_TYPE_PAGE_SHARED. I would consider either splitting the type field
-> into two 16b fields. For example you might have one field that
-> describes the source pool which is currently either allocated page
-> (ORDER0, SHARED), page_pool (PAGE_POOL), or XSK pool (XSK_BUFF_POOL),
-> and then two flags for type with there being either shared and/or
-> scatter-gather.
+As the blacklist doesn't seem to cover all the functions which are not
+attachable to kprobes, is there a way to get/compile such a list?
+Also, what is the specific problem with attaching to this function
+(ftrace_modify_all_code)?
 
-Hi Alex,
-
-I am fine reducing the xdp_mem_info size defining type field as u16 instead=
- of
-u32 but I think mb is a per-xdp_buff/xdp_frame property since at runtime we=
- can
-receive a tiny single page xdp_buff/xdp_frame and a "jumbo" xdp_buff/xdp_fr=
-ame
-composed by multiple pages. According to the documentation available in
-include/net/xdp.h, xdp_rxq_info (where xdp_mem_info is contained for xdp_bu=
-ff)=20
-is "associated with the driver level RX-ring queues and it is information t=
-hat
-is specific to how the driver have configured a given RX-ring queue" so I g=
-uess
-it is a little bit counterintuitive to add this info there.
-Moreover we have the "issue" for devmap in dev_map_bpf_prog_run() when we
-perform XDP_REDIRECT with the approach you proposed and last we can reuse t=
-his
-new flags filed for XDP hw-hints support.
-What about reducing xdp_mem_info and add the flags field in xdp_buff/xdp_fr=
-ame
-in order to avoid increasing the xdp_buff/xdp_frame size? Am I missing
-something?
-
-Regards,
-Lorenzo
-
->=20
-> Also, looking over the code I don't see any reason why current
-> ORDER0/SHARED couldn't be merged as the free paths are essentially
-> identical since the MEM_TYPE_PAGE_SHARED path would function perfectly
-> fine to free MEM_TYPE_PAGE_ORDER0 pages.
->=20
-> Thanks,
->=20
-> - Alex
->=20
-
---4gKitswv7GoTaRt2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYOREKgAKCRA6cBh0uS2t
-rBYzAQDOsV2aChstpZW4dPa1vZ9yJzqGlm3aybO0ZgyCxT8J8AEAtqJojLaOE/i7
-tYTXiyq/jYSzSDFG9TaHO1dx/HuBnQY=
-=pqks
------END PGP SIGNATURE-----
-
---4gKitswv7GoTaRt2--
-
+Thanks.
