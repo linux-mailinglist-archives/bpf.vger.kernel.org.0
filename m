@@ -2,248 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522E23BD4BA
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 14:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF923BD4BE
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 14:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238079AbhGFMRF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 08:17:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237186AbhGFLf7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:35:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F2F961D55;
-        Tue,  6 Jul 2021 11:26:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570762;
-        bh=MHroxlK9ufh3dZpCcToyxGZTifcqMgh8x/YsxE0oUxU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OCkcB/NUOauxGNQBwbY0fpz3Pzg7KRCUOV52tCj8Cq3Lx0y9KxZ4nUd2sNjyaGqDk
-         mA9WlyRDmNL1COEFt3EzGp4nC+ucfgciCW01f5FsMHnWa9gNCLeYurq1D/nQLVRL5E
-         ddwxaXDwpERdnS5eBtr7WOsUlKI3Ysml3mwrnbvDo1rSHgmIOOfis0MMo8ErTSlQuI
-         MtQvCA06l6uXS90b5cS0KG5lj7SsOUFh2smFJhP2gd4vBNq8KFfpNOkbif1G/wSYX2
-         1/n0IAIys+B/plV1Ox6KE/I4hWSwjFW57RsRdAOFGAaBRjIW7ezrpsSgR5er92QrYG
-         z1MocR3nS1EGQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        syzbot+bed360704c521841c85d@syzkaller.appspotmail.com,
-        Kurt Manucredo <fuzzybritches0@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 47/74] bpf: Fix up register-based shifts in interpreter to silence KUBSAN
-Date:   Tue,  6 Jul 2021 07:24:35 -0400
-Message-Id: <20210706112502.2064236-47-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
-References: <20210706112502.2064236-1-sashal@kernel.org>
+        id S234467AbhGFMRH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 08:17:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39237 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238402AbhGFLye (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 6 Jul 2021 07:54:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625572315;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DiTI9c6T5l9HgqGMHwic7EfszJBjFE6dl2V5J6/ONnM=;
+        b=ihnzg1nUtVOt9HXUGqx5EVFBwrImaYqSH97YNgOqGHcm3uMKU/ip5J8VrDT4HJKzxH2+vM
+        DLh2k6uqzgmaDbWm/ebtxuxIll/BpkiSqSTGtkW/9dh56qRpVIHqdll+bOKPauAYFmg/1+
+        TCKvXBqPm23aVzAzT5lfy4RQGM3zBng=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-hxHuWiVCO9aRiLRUVGVw1Q-1; Tue, 06 Jul 2021 07:51:54 -0400
+X-MC-Unique: hxHuWiVCO9aRiLRUVGVw1Q-1
+Received: by mail-ej1-f70.google.com with SMTP id v5-20020a1709068585b02904eb913da73bso40474ejx.8
+        for <bpf@vger.kernel.org>; Tue, 06 Jul 2021 04:51:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=DiTI9c6T5l9HgqGMHwic7EfszJBjFE6dl2V5J6/ONnM=;
+        b=be6jeoJvUa3H8iKGL4RlRHmcsYFA2wQ8T2ieifPKZsieMUfccEH2K1vOnjf/tGej8z
+         5+PcpWFX4leVAvROgv9caaP1ebSwL2pajR2sM0np573bjtjIiP8OlHqKFxpLMQ1CXLAY
+         VPaTaw/5HSMgNqVIaUR5uPB6FjkKO9VHYQbidGryoJ0S7jpMm+2DwY+1HahiZrVRJCHQ
+         e5rtwjUtpRoakTyyvrEH1Xsbd9UyVZbgQkGoKMlhUC7aS/Qncl9r2Ss3/0BNd3lJaKEn
+         BdRHVybjkjnede2aA5OimJTdtBGqVr31w80EbexBljbmQ4Hm930ec5JdaiVcNB3IjfIL
+         GIgw==
+X-Gm-Message-State: AOAM530+dJVIW44OOiBcwOWhFhLZsPdK3DlrbFW3I/dB083P4tk12kce
+        7J2G9UFmIgIvUtCYXeEashKVsCXtw3j5wczyOobQsvSe/UFtkHbOrva7K22lH6LBi9lKYaQ8mu0
+        48sjopCCH/6gE
+X-Received: by 2002:a17:906:8149:: with SMTP id z9mr18060915ejw.547.1625572312745;
+        Tue, 06 Jul 2021 04:51:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzu8opq+E4dS5G9On8xvZNBMIv3W9wkdoI9GmptYcaDf1n7hRZjWvUW4mUeKLoMlcB7wl/IOw==
+X-Received: by 2002:a17:906:8149:: with SMTP id z9mr18060880ejw.547.1625572312336;
+        Tue, 06 Jul 2021 04:51:52 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id d13sm7190658eds.56.2021.07.06.04.51.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jul 2021 04:51:51 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id C5D7518072E; Tue,  6 Jul 2021 13:51:50 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, yhs@fb.com
+Subject: Re: [PATCH bpf-next] libbpf: ignore .eh_frame sections when parsing
+ elf files
+In-Reply-To: <e8385d06-ac0a-de99-de92-c91d5970b7e8@iogearbox.net>
+References: <20210629110923.580029-1-toke@redhat.com>
+ <ac14ef3c-ccd5-5f74-dda5-1d9366883813@iogearbox.net>
+ <87czrxyrru.fsf@toke.dk>
+ <e8385d06-ac0a-de99-de92-c91d5970b7e8@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 06 Jul 2021 13:51:50 +0200
+Message-ID: <87k0m3y815.fsf@toke.dk>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-[ Upstream commit 28131e9d933339a92f78e7ab6429f4aaaa07061c ]
+> On 7/5/21 12:33 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Daniel Borkmann <daniel@iogearbox.net> writes:
+>>> On 6/29/21 1:09 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>>>> The .eh_frame and .rel.eh_frame sections will be present in BPF object
+>>>> files when compiled using a multi-stage compile pipe like in samples/b=
+pf.
+>>>> This produces errors when loading such a file with libbpf. While the e=
+rrors
+>>>> are technically harmless, they look odd and confuse users. So add .eh_=
+frame
+>>>> sections to is_sec_name_dwarf() so they will also be ignored by libbpf
+>>>> processing. This gets rid of output like this from samples/bpf:
+>>>>
+>>>> libbpf: elf: skipping unrecognized data section(32) .eh_frame
+>>>> libbpf: elf: skipping relo section(33) .rel.eh_frame for section(32) .=
+eh_frame
+>>>>
+>>>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>>>
+>>> For the samples/bpf case, could we instead just add a -fno-asynchronous=
+-unwind-tables
+>>> to clang as cflags to avoid .eh_frame generation in the first place?
+>>=20
+>> Ah, great suggestion! Was trying, but failed, to figure out how to do
+>> that. Just tested it, and yeah, that does fix samples; will send a
+>> separate patch to add that.
+>
+> Sounds good, just applied.
 
-syzbot reported a shift-out-of-bounds that KUBSAN observed in the
-interpreter:
+Awesome, thanks!
 
-  [...]
-  UBSAN: shift-out-of-bounds in kernel/bpf/core.c:1420:2
-  shift exponent 255 is too large for 64-bit type 'long long unsigned int'
-  CPU: 1 PID: 11097 Comm: syz-executor.4 Not tainted 5.12.0-rc2-syzkaller #0
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-  Call Trace:
-   __dump_stack lib/dump_stack.c:79 [inline]
-   dump_stack+0x141/0x1d7 lib/dump_stack.c:120
-   ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
-   __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
-   ___bpf_prog_run.cold+0x19/0x56c kernel/bpf/core.c:1420
-   __bpf_prog_run32+0x8f/0xd0 kernel/bpf/core.c:1735
-   bpf_dispatcher_nop_func include/linux/bpf.h:644 [inline]
-   bpf_prog_run_pin_on_cpu include/linux/filter.h:624 [inline]
-   bpf_prog_run_clear_cb include/linux/filter.h:755 [inline]
-   run_filter+0x1a1/0x470 net/packet/af_packet.c:2031
-   packet_rcv+0x313/0x13e0 net/packet/af_packet.c:2104
-   dev_queue_xmit_nit+0x7c2/0xa90 net/core/dev.c:2387
-   xmit_one net/core/dev.c:3588 [inline]
-   dev_hard_start_xmit+0xad/0x920 net/core/dev.c:3609
-   __dev_queue_xmit+0x2121/0x2e00 net/core/dev.c:4182
-   __bpf_tx_skb net/core/filter.c:2116 [inline]
-   __bpf_redirect_no_mac net/core/filter.c:2141 [inline]
-   __bpf_redirect+0x548/0xc80 net/core/filter.c:2164
-   ____bpf_clone_redirect net/core/filter.c:2448 [inline]
-   bpf_clone_redirect+0x2ae/0x420 net/core/filter.c:2420
-   ___bpf_prog_run+0x34e1/0x77d0 kernel/bpf/core.c:1523
-   __bpf_prog_run512+0x99/0xe0 kernel/bpf/core.c:1737
-   bpf_dispatcher_nop_func include/linux/bpf.h:644 [inline]
-   bpf_test_run+0x3ed/0xc50 net/bpf/test_run.c:50
-   bpf_prog_test_run_skb+0xabc/0x1c50 net/bpf/test_run.c:582
-   bpf_prog_test_run kernel/bpf/syscall.c:3127 [inline]
-   __do_sys_bpf+0x1ea9/0x4f00 kernel/bpf/syscall.c:4406
-   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-  [...]
+>> I still think filtering this section name in libbpf is worthwhile,
+>> though, as the error message is really just noise... WDYT?
+>
+> No strong opinion from my side, I can also see the argument that
+> Andrii made some time ago [0] in that normally you should never see
+> these in a BPF object file. But then ... there's BPF samples giving a
+> wrong sample. ;( And I bet some users might have copied from there,
+> and it's generally confusing from a user experience in libbpf on
+> whether it's harmless or not.
 
-Generally speaking, KUBSAN reports from the kernel should be fixed.
-However, in case of BPF, this particular report caused concerns since
-the large shift is not wrong from BPF point of view, just undefined.
-In the verifier, K-based shifts that are >= {64,32} (depending on the
-bitwidth of the instruction) are already rejected. The register-based
-cases were not given their content might not be known at verification
-time. Ideas such as verifier instruction rewrite with an additional
-AND instruction for the source register were brought up, but regularly
-rejected due to the additional runtime overhead they incur.
+Yeah, they "shouldn't" be there, but they clearly can be. So given that
+it's pretty trivial to filter it, IMO, that would be the friendly thing
+to do. Let's see what Andrii thinks.
 
-As Edward Cree rightly put it:
+> Side-question: Did you check if it is still necessary in general to
+> have this multi-stage compile pipe in samples with the native clang
+> frontend invocation (instead of bpf target one)? (Maybe it's time to
+> get rid of it in general.)
 
-  Shifts by more than insn bitness are legal in the BPF ISA; they are
-  implementation-defined behaviour [of the underlying architecture],
-  rather than UB, and have been made legal for performance reasons.
-  Each of the JIT backends compiles the BPF shift operations to machine
-  instructions which produce implementation-defined results in such a
-  case; the resulting contents of the register may be arbitrary but
-  program behaviour as a whole remains defined.
+I started looking into this, but chickened out of actually changing it.
+The comment above the rule mentions LLVM 12, so it seems like it has
+been updated fairly recently, specifically in:
+9618bde489b2 ("samples/bpf: Change Makefile to cope with latest llvm")
 
-  Guard checks in the fast path (i.e. affecting JITted code) will thus
-  not be accepted.
+OTOH, that change does seem to be a fix to the native-compilation mode;
+so maybe it would be viable to just change it to straight bpf-target
+clang compilation? Yonghong, any opinion?
 
-  The case of division by zero is not truly analogous here, as division
-  instructions on many of the JIT-targeted architectures will raise a
-  machine exception / fault on division by zero, whereas (to the best
-  of my knowledge) none will do so on an out-of-bounds shift.
+> Anyway, would be nice to add further context/description about it to
+> the commit message at least for future reference on what the .eh_frame
+> sections contain exactly and why it's harmless. (Right now it only
+> states that it is but without more concrete rationale, would be good
+> to still add.)
 
-Given the KUBSAN report only affects the BPF interpreter, but not JITs,
-one solution is to add the ANDs with 63 or 31 into ___bpf_prog_run().
-That would make the shifts defined, and thus shuts up KUBSAN, and the
-compiler would optimize out the AND on any CPU that interprets the shift
-amounts modulo the width anyway (e.g., confirmed from disassembly that
-on x86-64 and arm64 the generated interpreter code is the same before
-and after this fix).
+Sure, can add that and send a v2 :)
 
-The BPF interpreter is slow path, and most likely compiled out anyway
-as distros select BPF_JIT_ALWAYS_ON to avoid speculative execution of
-BPF instructions by the interpreter. Given the main argument was to
-avoid sacrificing performance, the fact that the AND is optimized away
-from compiler for mainstream archs helps as well as a solution moving
-forward. Also add a comment on LSH/RSH/ARSH translation for JIT authors
-to provide guidance when they see the ___bpf_prog_run() interpreter
-code and use it as a model for a new JIT backend.
-
-Reported-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-Reported-by: Kurt Manucredo <fuzzybritches0@gmail.com>
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-Co-developed-by: Eric Biggers <ebiggers@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Tested-by: syzbot+bed360704c521841c85d@syzkaller.appspotmail.com
-Cc: Edward Cree <ecree.xilinx@gmail.com>
-Link: https://lore.kernel.org/bpf/0000000000008f912605bd30d5d7@google.com
-Link: https://lore.kernel.org/bpf/bac16d8d-c174-bdc4-91bd-bfa62b410190@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/bpf/core.c | 61 +++++++++++++++++++++++++++++++++--------------
- 1 file changed, 43 insertions(+), 18 deletions(-)
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 56bc96f5ad20..323913ba13b3 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1321,29 +1321,54 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
- select_insn:
- 	goto *jumptable[insn->code];
- 
--	/* ALU */
--#define ALU(OPCODE, OP)			\
--	ALU64_##OPCODE##_X:		\
--		DST = DST OP SRC;	\
--		CONT;			\
--	ALU_##OPCODE##_X:		\
--		DST = (u32) DST OP (u32) SRC;	\
--		CONT;			\
--	ALU64_##OPCODE##_K:		\
--		DST = DST OP IMM;		\
--		CONT;			\
--	ALU_##OPCODE##_K:		\
--		DST = (u32) DST OP (u32) IMM;	\
-+	/* Explicitly mask the register-based shift amounts with 63 or 31
-+	 * to avoid undefined behavior. Normally this won't affect the
-+	 * generated code, for example, in case of native 64 bit archs such
-+	 * as x86-64 or arm64, the compiler is optimizing the AND away for
-+	 * the interpreter. In case of JITs, each of the JIT backends compiles
-+	 * the BPF shift operations to machine instructions which produce
-+	 * implementation-defined results in such a case; the resulting
-+	 * contents of the register may be arbitrary, but program behaviour
-+	 * as a whole remains defined. In other words, in case of JIT backends,
-+	 * the AND must /not/ be added to the emitted LSH/RSH/ARSH translation.
-+	 */
-+	/* ALU (shifts) */
-+#define SHT(OPCODE, OP)					\
-+	ALU64_##OPCODE##_X:				\
-+		DST = DST OP (SRC & 63);		\
-+		CONT;					\
-+	ALU_##OPCODE##_X:				\
-+		DST = (u32) DST OP ((u32) SRC & 31);	\
-+		CONT;					\
-+	ALU64_##OPCODE##_K:				\
-+		DST = DST OP IMM;			\
-+		CONT;					\
-+	ALU_##OPCODE##_K:				\
-+		DST = (u32) DST OP (u32) IMM;		\
-+		CONT;
-+	/* ALU (rest) */
-+#define ALU(OPCODE, OP)					\
-+	ALU64_##OPCODE##_X:				\
-+		DST = DST OP SRC;			\
-+		CONT;					\
-+	ALU_##OPCODE##_X:				\
-+		DST = (u32) DST OP (u32) SRC;		\
-+		CONT;					\
-+	ALU64_##OPCODE##_K:				\
-+		DST = DST OP IMM;			\
-+		CONT;					\
-+	ALU_##OPCODE##_K:				\
-+		DST = (u32) DST OP (u32) IMM;		\
- 		CONT;
--
- 	ALU(ADD,  +)
- 	ALU(SUB,  -)
- 	ALU(AND,  &)
- 	ALU(OR,   |)
--	ALU(LSH, <<)
--	ALU(RSH, >>)
- 	ALU(XOR,  ^)
- 	ALU(MUL,  *)
-+	SHT(LSH, <<)
-+	SHT(RSH, >>)
-+#undef SHT
- #undef ALU
- 	ALU_NEG:
- 		DST = (u32) -DST;
-@@ -1368,13 +1393,13 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
- 		insn++;
- 		CONT;
- 	ALU_ARSH_X:
--		DST = (u64) (u32) (((s32) DST) >> SRC);
-+		DST = (u64) (u32) (((s32) DST) >> (SRC & 31));
- 		CONT;
- 	ALU_ARSH_K:
- 		DST = (u64) (u32) (((s32) DST) >> IMM);
- 		CONT;
- 	ALU64_ARSH_X:
--		(*(s64 *) &DST) >>= SRC;
-+		(*(s64 *) &DST) >>= (SRC & 63);
- 		CONT;
- 	ALU64_ARSH_K:
- 		(*(s64 *) &DST) >>= IMM;
--- 
-2.30.2
+-Toke
 
