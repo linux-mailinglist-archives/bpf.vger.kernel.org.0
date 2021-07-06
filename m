@@ -2,76 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3343BDF87
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 00:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05AE3BDFA7
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 01:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbhGFXAZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 19:00:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58648 "EHLO mail.kernel.org"
+        id S230014AbhGFXOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 19:14:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhGFXAZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 19:00:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F97D61CB7;
-        Tue,  6 Jul 2021 22:57:46 +0000 (UTC)
+        id S230012AbhGFXOL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 19:14:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7234E61CB0;
+        Tue,  6 Jul 2021 23:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625612266;
-        bh=Nl7gMxMmDvpXrZ/MzAsmLHRtkTSNsJ96S2OihsfVaUE=;
+        s=k20201202; t=1625613092;
+        bh=EOwCeWrO1xda1Q1l3BgEjdJEqMXFJtlECZzdKuyENmg=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Zx2d2uAenSD4VXx3AsDuksyXf3BQUZdDkbcZ027hczzIgOQhQpMyMwCWlf2TQ8Zg9
-         iz7TbNpLjTijBA3VpEfDvUrIuDBGO5bwxtWgTm48G6NUB/T4hwf9FjJ21bqpqgAm4W
-         AF4kFlvYrBon4SeAvMJM4Ltiz7Y5Z7dNuRoDZY3eETxQyXBT2cqx9HCXjlB0lFblbR
-         hoJ5y8Lf8KMLgnl3u/HcCEHe9SYzcGufQJelxRxbEMBAWMd5b4OLldy6JkThsgrsYi
-         IhwLjvPvWx4VgHnXfNU2JaBlY+vZeACh51rIpr9pntB2LGJy//Bj9OH2rm9Er0P3aW
-         DBUGeEyP9y88A==
-Received: by mail-lj1-f180.google.com with SMTP id a18so180601ljk.6;
-        Tue, 06 Jul 2021 15:57:45 -0700 (PDT)
-X-Gm-Message-State: AOAM5329ItKKxtBHkAe/oBsPT3Q5r8hbrMXhrVja3yky7gV5iF2yih2E
-        bf/YgZ2Zr/JWV6Ac+Cmnz5g6PwD9w20yreHJAUQ=
-X-Google-Smtp-Source: ABdhPJy0HTmTapx//iQEZNizEJYlp3Znk4OolUUBcyerUh4twWjQ6a6s8bhNcH/eHso8XEnVhem3+FVjjdq8v5YsBhk=
-X-Received: by 2002:a2e:22c6:: with SMTP id i189mr17291368lji.97.1625612264282;
- Tue, 06 Jul 2021 15:57:44 -0700 (PDT)
+        b=Lpc+5ak7jRQozvjHcl2dFyXzsGreTkw3jC0fi9DmL8BfDe30k+Ch7l4BUi5NOqzca
+         Mddo7dHf+oVj1iHZozqNjRTBhobLL49Xy69cTqrMSV3blwcMswaQG9OnHU/nGY8JtL
+         FjlnUZlG/OKm/Vd0NK87+xR4YRyRVNAZUWgEXYOyUInRXn8+Crho2tzIdeYPc1MYlT
+         WQpsJpPjpbATI3FL4zZlTZbGn/TPOOBc6Si7Q0qZpmGvAEtkkuPh1DneXwDztG3gGw
+         eTbSkiReq6NkU4tL3MsdE4tSAG0sEMCMzbUto+i43HZlp+rvDQoBkPyo1mar3BBs48
+         HqtKahBgKWr3A==
+Received: by mail-lj1-f179.google.com with SMTP id k8so228042lja.4;
+        Tue, 06 Jul 2021 16:11:32 -0700 (PDT)
+X-Gm-Message-State: AOAM532nOZWngzjnMaotexetZHnZZ+8Thv5EDEDvDGn6sQZaI/w/NA9+
+        2vLTk21wlIA+OvPIjZfVSNXrMeAoLUyKXlcdlGQ=
+X-Google-Smtp-Source: ABdhPJzbyZggoQgHXszIIbrZCG7wCB7WIbfCbZIDFecoKGN4kVmYEnr8QixAH0LCuXep0FVddJFAS60XmnvyB69L6TQ=
+X-Received: by 2002:a2e:6a07:: with SMTP id f7mr8954651ljc.506.1625613090714;
+ Tue, 06 Jul 2021 16:11:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210706204005.92541-1-jolsa@kernel.org> <CAPhsuW5Vs5_WKtoe3Yn1Da73HQ0G1Q1LDNFMJzGjJQtCjyRCnA@mail.gmail.com>
-In-Reply-To: <CAPhsuW5Vs5_WKtoe3Yn1Da73HQ0G1Q1LDNFMJzGjJQtCjyRCnA@mail.gmail.com>
+References: <20210706174409.15001-1-vjsanjay@gmail.com> <b87ad042-eaf0-d1ac-6760-b3c92439655d@fb.com>
+ <CAEf4BzZidvzFjw=m3zEmnrVhNYhrmy1pV-XgAfxMvgrb8Snw8w@mail.gmail.com>
+In-Reply-To: <CAEf4BzZidvzFjw=m3zEmnrVhNYhrmy1pV-XgAfxMvgrb8Snw8w@mail.gmail.com>
 From:   Song Liu <song@kernel.org>
-Date:   Tue, 6 Jul 2021 15:57:33 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4H20yNVuJW9RT01V2Qti8Yhxo=K432KBKoexe4boMhnw@mail.gmail.com>
-Message-ID: <CAPhsuW4H20yNVuJW9RT01V2Qti8Yhxo=K432KBKoexe4boMhnw@mail.gmail.com>
-Subject: Re: [PATCH] tools/runqslower: Change state to __state
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 6 Jul 2021 16:11:19 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4EeY9CHE73Sy6zdteLhj6G-f+M9jSxrPuXpE81tPZoeA@mail.gmail.com>
+Message-ID: <CAPhsuW4EeY9CHE73Sy6zdteLhj6G-f+M9jSxrPuXpE81tPZoeA@mail.gmail.com>
+Subject: Re: [PATCH] tools/runqslower: use __state instead of state
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, SanjayKumar J <vjsanjay@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 3:53 PM Song Liu <song@kernel.org> wrote:
+On Tue, Jul 6, 2021 at 3:05 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Tue, Jul 6, 2021 at 1:40 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> On Tue, Jul 6, 2021 at 11:26 AM Yonghong Song <yhs@fb.com> wrote:
 > >
-> > The task_struct state got renamed to __state, causing
-> > compile fail:
 > >
-> >   runqslower.bpf.c:77:12: error: no member named 'state' in 'struct task_struct'
-> >         if (prev->state == TASK_RUNNING)
 > >
-> > As this is tracing prog, I think we don't need to use
-> > READ_ONCE to access __state.
+> > On 7/6/21 10:44 AM, SanjayKumar J wrote:
+> > >       task->state is renamed to task->__state in task_struct
 > >
-> > Fixes: 2f064a59a11f ("sched: Change task_struct::state")
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > Could you add a reference to
+> >    2f064a59a11f ("sched: Change task_struct::state")
+> > which added this change?
+> >
+> > I think this should go to bpf tree as the change is in linus tree now.
+> > Could you annotate the tag as "[PATCH bpf]" ("[PATCH bpf v2]")?
+> >
+> > Please align comments to the left without margins.
+> >
+> > >
+> > >       Signed-off-by: SanjayKumar J <vjsanjay@gmail.com>
+> >
+> > This Singed-off-by is not needed.
+> >
+> > You can add my Ack in the next revision:
+> > Acked-by: Yonghong Song <yhs@fb.com>
+> >
+> > >
+> > > Signed-off-by: SanjayKumar J <vjsanjay@gmail.com>
+> > > ---
+> > >   tools/bpf/runqslower/runqslower.bpf.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
+> > > index 645530ca7e98..ab9353f2fd46 100644
+> > > --- a/tools/bpf/runqslower/runqslower.bpf.c
+> > > +++ b/tools/bpf/runqslower/runqslower.bpf.c
+> > > @@ -74,7 +74,7 @@ int handle__sched_switch(u64 *ctx)
+> > >       u32 pid;
+> > >
+> > >       /* ivcsw: treat like an enqueue event and store timestamp */
+> > > -     if (prev->state == TASK_RUNNING)
+> > > +     if (prev->__state == TASK_RUNNING)
+> >
+> > Currently, runqslower.bpf.c uses vmlinux.h.
+> > I am thinking to use bpf_core_field_exists(), but we need to
+> > single out task_struct structure from vmlinux.h
+> > with both state and __state fields, we could make it work
+> > by *changes* like
+> >
+> > #define task_struct task_struct_orig
+> > #include "vmlinux.h"
+> > #undef task_struct
+> >
+> > struct task_struct {
+> >     ... state;
+> >     ... __state;
+> > ...
+> > };
 >
-> Acked-by: Song Liu <songliubraving@fb.com>
+>
+> no need for such surgery, recommended way is to use ___suffix to
+> declare incompatible struct definition:
+>
+> struct task_struct___old {
+>     int state;
+> };
+>
+> Then do casting in BPF code. We don't have to do it in kernel tree's
+> runqslower, but we'll definitely have to do that for libbpf-tools'
+> runqslower and runqlat.
 
-Just realized there is another thread fixing the same error.
+Question on this topic: state and __state are of different sizes here. IIUC,
+bpf_core_types_are_compat() does allow size mismatch. But it may cause
+problems in some cases, no? For example, would some combination make
+task->state return 32 extra bits from another field and cause confusion?
 
 Thanks,
 Song
