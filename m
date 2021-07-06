@@ -2,139 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2453BDD25
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 20:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375DA3BDD82
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 20:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhGFS3D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 14:29:03 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1178 "EHLO
+        id S231318AbhGFSsw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 14:48:52 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:35238 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229954AbhGFS3B (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Jul 2021 14:29:01 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 166IDexl022801;
-        Tue, 6 Jul 2021 11:26:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
+        by vger.kernel.org with ESMTP id S230084AbhGFSsw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 6 Jul 2021 14:48:52 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 166IZN9d004777;
+        Tue, 6 Jul 2021 11:46:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : references
+ : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=qGr5ZGnRNSFPIMVtyZpqlQIFbV2C+jEwMhIqEAuPhes=;
- b=kJ5T2FNMHPGwsMmr7zqRADfRTqN1gepeyWOH3uzoCVaBhzuU8CmSQX5KVNruH6MKXdir
- BOKuNBHIQ1Z99/sGPR5Tu1d5eUF/BF/WCPj7vcCJW7dWAUbbLwppangPk9hkasNuKDbk
- gbAoKe5pplgHrTD9wAPJ2iU7LN5wzHicSOs= 
+ bh=RUD2gaviQdifogSsFDzQkYy0Hhe9q+d/ctdKL98Dbe4=;
+ b=qNywMJnl55VqsrSBfCehk8AxuJpyNgruFNOEpkmndyK06NAVvFNodhOvsCrKT3SiELt5
+ htZgh13sYrjBmWqMz85cfPenUDIuDNn2tOAWNsKjsbk1JGnFvldh808D44LcF0zGjB2+
+ ztHxnzOWdBJsjMWGgpwfvrWGB9hBbDYkvuQ= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 39mhtyuqs7-18
+        by mx0a-00082601.pphosted.com with ESMTP id 39mhu43sqn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 06 Jul 2021 11:26:10 -0700
+        Tue, 06 Jul 2021 11:46:09 -0700
 Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 6 Jul 2021 11:26:07 -0700
+ 15.1.2176.2; Tue, 6 Jul 2021 11:46:08 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gu0GNBwjOOS//CcLYCGdYYHh1vooOVzElLRJyiz6zB7EmC3kt308wuHQ8BQYNZYgM6tddWC+7XPBDFTh/v84ucKvdOx0WgzdZZqzlb4r5qkJo2ROzzIesRPhJWXxnzDDe55Qq1kF2RBeB9BpF0weY61WEI0IWny/xAH1yzFQFtsA3DjI3fHJgStWOq4bu6Yimqk5nYtZ3CG9iXSrrz9DtTrgfAegaINlm3WdKC2UlKeNsDS593MXToOf5JGRIi97q8G3Pb4U8KNajQ5oL9nt/trVSrvd2tbD3NSX+TdHO1YYXGW/5sFyDLvWs+lQvohrAk4DCUF/CFknSpyMf6Wvsw==
+ b=EbfGtInEnribaBYB87auNtx7GNDVewl4Ss/KzOMSfw3qpSX6ODpXn6vdCl/BNOGGop4qX3x/FTSE06R3JVUv5lDDE+xtFzaqfMIcVs4jQczHiAKP7k04IhDypX1jtSrHM9G3870MQzEagUzjaewcYevgvPQRouAYoj+XWkN/KElC8BPjEFXIryinhSDiHxNIfTuKRdYz3AzB33yP1cx6yudoodVfA84dxGzIdQs+WMrTfVRkS0eQwwEZUOUjMi/55Wt5PW4vO1fAqRlGrz39E58tSHjJ+A4fI8UDO4PhKxg4myQXXww9VMyjn/ArpYgKVEc77YbgzQegBnVkShGpgQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qGr5ZGnRNSFPIMVtyZpqlQIFbV2C+jEwMhIqEAuPhes=;
- b=Uz/PsQJpCUm5Kz1lP3xharnmdXEfckcVQXgqVYG8Wkki6b4gc8n5lMRziaMINpy0ay3LUP7RMS/PpNZht/tr6Pc/Wzn7KtWX6nICkm2P2tpeXEqqqym7Uqc/b61xRlwM4FXrm/VqlJuoE0CzC8rHEjUoY6w+iVRWezJY03j8/iL5wnjJ9RQK6osZ3bwXbdKVPYyIMdidiwzZpTqI2X+gfGEA3hXfLGoLZO2/rX+Gc799oAKPNnbXIvLcsU4akrXBi2GIx9RH4POfMLkZvRwADWswFJk/151Aj3IGGcVhDdsRAM8tdD98WMzwrQpUsP/SIvgD7Yg73SybguxCusfkLQ==
+ bh=rPfK814frfvBFP83r6kgapSZ1OC7Xm2iwJoBRL/vMEw=;
+ b=BMf3cMVCFZd7wQUxA44dwrrSEZX+8JtCHXoQEaWZ+3yndcaF3AdpTWXEBvzspV0aFVhbKqGXz3i62+v1UwO0L/jTdGsfCwod0MzKMCRIn9HF4TD4TLJ0eJSMfm8XbQT9bdf0zUzKY56z2Issmom5IojcFdsXhAG9c3Upq3NOnJeI9SDcVMA9N3qf/JV8uGZK++hCdSM4+GAVpW3IGhjFvg7obXeifMEgufgTmbobYe+Qu2Qpa0gItxapud1c3ZNzYsTvg+SScFie9xweMFRr5W+UrJ61O9JbH625/mgDNjtPAD+OOwqxPnX5A9616tSAtKRtwepQHnQ/JxWvUu5eGQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4869.namprd15.prod.outlook.com (2603:10b6:806:1d0::8) with
+ by SA1PR15MB4497.namprd15.prod.outlook.com (2603:10b6:806:198::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.31; Tue, 6 Jul
- 2021 18:26:06 +0000
+ 2021 18:46:06 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4287.033; Tue, 6 Jul 2021
- 18:26:06 +0000
-Subject: Re: [PATCH] tools/runqslower: use __state instead of state
-To:     SanjayKumar J <vjsanjay@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andrii@kernel.org>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@kernel.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20210706174409.15001-1-vjsanjay@gmail.com>
+ 18:46:06 +0000
+Subject: Re: using bpf_map_update_elem and bpf_map_get_next_key at the same
+ time when looping through the hash map
+To:     G <chapterk93@163.com>, <bpf@vger.kernel.org>
+References: <51e18157.22f7.17a79cc5306.Coremail.chapterk93@163.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <b87ad042-eaf0-d1ac-6760-b3c92439655d@fb.com>
-Date:   Tue, 6 Jul 2021 11:26:03 -0700
+Message-ID: <87a28f77-19c0-636a-3c79-a2c4eec17d81@fb.com>
+Date:   Tue, 6 Jul 2021 11:46:04 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <20210706174409.15001-1-vjsanjay@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <51e18157.22f7.17a79cc5306.Coremail.chapterk93@163.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0064.namprd03.prod.outlook.com
- (2603:10b6:a03:331::9) To SN6PR1501MB2064.namprd15.prod.outlook.com
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BY5PR16CA0024.namprd16.prod.outlook.com
+ (2603:10b6:a03:1a0::37) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::19fa] (2620:10d:c090:400::5:e2df) by SJ0PR03CA0064.namprd03.prod.outlook.com (2603:10b6:a03:331::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Tue, 6 Jul 2021 18:26:05 +0000
+Received: from [IPv6:2620:10d:c085:21c1::19fa] (2620:10d:c090:400::5:e2df) by BY5PR16CA0024.namprd16.prod.outlook.com (2603:10b6:a03:1a0::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Tue, 6 Jul 2021 18:46:06 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 39b7f299-5fcd-4c98-aaf2-08d940ab8495
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4869:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA1PR15MB486938BDE992D8857AE1C9D7D31B9@SA1PR15MB4869.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: ecf82230-b75f-4314-81a9-08d940ae5066
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4497:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB44971B26CE5F588629E90F07D31B9@SA1PR15MB4497.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KNKFiHbIsN6BlzhVrieNGazFSINiAekDCXIDNzw+Hg/nltyf+vmQ1af15O4KC+tzlMGwUbWMgu8gl7TTVRC2M4FV5teAaEIfn6GlV5rYNekP0phGPLT2wstpKFC1dRp5gSfgQPtKKUmLUAr7F9PcajZngIT1wkdo0Apw/Xwm9z6Hi1sHn8U8x2DSMsdmMGm/Cvpm1MPL9EiN8nFBCjJdXkdbFRC6xCOH1PjhrKGCoRfJG1kmESy2ooicV3A/97dNOUy41l5neS1DLyM2o61ePIHDqVDZFJKISJP5LwIj/pxiy3g5ZYUi6nNvA6eH4vLyCK6frWLafYXtTDnrlbmyY6IiMqIt3i8PWHwqvvrkfFZ1SPZdsjhwtMR2S6dLr7zHG6DFKFJIlBPu0xTAUaICMAEHX1ctPF0I5YqLQEVmC/055nCdECxu2CEQyxwLZxOTon72GV3W0vAJ0aSqoD7+ikFsganZAC9G6Ud4FQtOIUz59TF4niUaljAYqtdNq3NO76RgPwn9776EXR0MJ8r8xNk9ywVx6KHM7Zl9M5rxiHjvTS50ssuJXKj323zIVlV4Lt1vGhvwFctSXf0+6x/gxTApSPurv7xWao2we9gkcFMI/eY4YwBjQC7v8DUACBpWge6lsXz1rHNJHwtOzI7XRVRnwC/zgjrFgA5Lk6ji8BdpfM3oniGmMS/2XJNFrAkDNhYg4frqwzq5gI8FtP4g9LkP9wlaRiZITl6q1VXsuFvjocKoTMLeXJiZWhHj+PZi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(136003)(396003)(39860400002)(66476007)(316002)(6486002)(2906002)(2616005)(4326008)(478600001)(31696002)(53546011)(186003)(83380400001)(66946007)(66556008)(86362001)(31686004)(8676002)(36756003)(5660300002)(52116002)(38100700002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 6bkyFaPoBe3GFY/kf+aX0+r0e0EXMslPcI4mvvdf0siyVDbAyo8nRB/KwGAq9bpIvFaGJ1H0JTsqKAqu2CTPzc95odzemSqi7XsmcN9/xB2GOeW9voiUsrnW+20wvZ9M8zI4dg5Avxl5Fo0CIrctyrGR+oBj5JZcjTEGmLYPVTtgM9xeVtPkmvHDtvsupTb2hzY+ovy0KWQT9jxlbGcp2N5mIaFx5VmDF6MgXSuEAotL6I4BCBCtHFJhLi6bIjv7g63BewgPwSk/01tJWhresbTRKCI/9WZA/Hj4vU8yo8b5HAf2EIHMtgDB27ctwNr6mPdgNiMvWyZ0kwSy22rZI1ea/gAAXa1VT09OBdFiZrYLHpYulZOyz8edDjrt8lvWFhl9foqOPx+9FU1hSynqPITa1dV6Ep9U0RTTFFmso6fiM6mlTcpRB1ZucYwTWEDSDISB1LpM4XsF9CUqvaHOa4EsqMcdONNoOmvGrcTVxsAFMrWTUU8oiA2hT/eCbabt0bq2OrPKwDeXtAdEO4MkmGycE7HV7S5WYtDhPVMahck2LEt0xFAyJ6xEfgM1jIWR3Nsa0ntOqvVyb65E8wS5PANDK6yU+DFHmLIDmppqhPY5nosreMu3ecBNQ/yxU9/IxHaO5qbZtNcg6w3PMfRaUtNlWPXdfL6iS5YcTBx72/AMMun/kp1dw1jU8bjZsn9C9asEetqY/pRwHxLeTZaTXXr50UkuOOY8SlR6eC0cwO0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(136003)(39860400002)(346002)(478600001)(186003)(52116002)(2616005)(6486002)(38100700002)(8676002)(5660300002)(8936002)(53546011)(66556008)(86362001)(66946007)(316002)(31686004)(31696002)(83380400001)(66476007)(36756003)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UUZKY211cVFQNDloa2RlMndyam1mVXNFNEU3VStGWlN6c0E4OUVuREhtdFpO?=
- =?utf-8?B?MEZZbE12d3R1bnR0eWVzQTBxdXJmMFZpWlpKV0d3SllTQmZIbzFLbEtBWFdw?=
- =?utf-8?B?UGpSeThNVkwvMld4Q2JnRldObTNyUGd0NkkzdXdnR2JLS0M5bndtaEdXSXhl?=
- =?utf-8?B?NEttemRZcWpPdGN6dFFwVTdYNVllWXBuYVdid0FxSEhCRkU0WXhoMHNrNWth?=
- =?utf-8?B?QnZobDd5a1FNZkd3cU9naTYzUUc0RGlER3RFcGVsWlB0VmM0bzRHaFF3ZGMw?=
- =?utf-8?B?dFRCV1J3VDYvVFlrdlRsb3FSSjZWNEc2MS8xRElmVlJFRWtRbzdnR1c0cGtK?=
- =?utf-8?B?MHU3eDVqZUs1VkkyRlFlMGFDeE9xeHRxcEx6NEFJaFFaWG9KUHpCMjNXVjdO?=
- =?utf-8?B?U1JLOHV1bkpPU0RWVTErWXM2ZHlrL3BkVkpxS0FTUStrMGxTeTdCdXdPVnJ5?=
- =?utf-8?B?N0JpUzhjRHF1MUZxZi9EZTczMzJpODdWaDQza2UvSHRzaUltWmZvUDUxczBW?=
- =?utf-8?B?Qlo5bDVHdmpaSG1pS1ZObjJZc3JHZS9qYmQvOE1waXoveVRJOWZCOXQxVkJR?=
- =?utf-8?B?NzVoTUprOVhWSmdVeUR3L0tpOVVkdnRITlczZWRhZW5OTDBNbGZxN2F4dHE2?=
- =?utf-8?B?MDliditicEI5eStNa3ptSDRoc3BWM2ZONzZpZWZlcHYwMEhzTVpTU0J6ak41?=
- =?utf-8?B?clV2Ky9XSVo4TjVSVE5WNTVqdFVMblowUEVvcWhYZDZtYVgxK2phWnYvejNy?=
- =?utf-8?B?RU0rN2lFOXhPbkRsZXBqNFZrbmY1UTRwZUdjSW5UZG5oZnZZN0c3cHVwcFpS?=
- =?utf-8?B?TVNtOWd0bXd3ZzZYZkp6UXgxSEJ5ZjhaVzJ3b2hEcnZwZjVZVzZPb2c4eEV6?=
- =?utf-8?B?TGFsdU5JcERZZHEvL0ZjVE5nNHYyOEhaWXRwSjR6TVFlOEJRUUxRUlJjaDV5?=
- =?utf-8?B?M1h1dVdtOE9mb0VMOVRudlg1VE81cW1GYlRmQVpqYjMvTU01YkFHdC9VMXlI?=
- =?utf-8?B?dDRCZ1BhLy81NEVhdVZvSnV5a0lCY1ZDYWtNRS9aTGJFOFZPL1NwYXhYOGZs?=
- =?utf-8?B?NDA2U1dCTy8rQmt1RkhDSG1kUy9qZWdYUlp3cWJJVnZ4OVl4Uk9FWno4YldT?=
- =?utf-8?B?ZnEyeGJVdytaTUhaRTZCdnd6Zk1FMXllbW1neVh3dHRGVFg4UmtqNUVMUU5O?=
- =?utf-8?B?cTRkbExXNm1zUlAwMWNmQitSVDdDVENqYml4bUthK3VHZlFYVWQrdmJOVm5w?=
- =?utf-8?B?QmErQlA1eUt2VHhvVmErWnk3b3F3dmF4OEVST0xZWnQyTjdzM0ZvRXlFNVNN?=
- =?utf-8?B?QUtCM3l3YU44aEdhbFJockhYamFiZjY2UXp1Qzc0Q2tUbkE1bEMvaHBNWDBL?=
- =?utf-8?B?RFlCNkdqZjhQMkQ0bEp3Tk9MdHRkRE1QZTQ3YkxBUUJSdjd4Mnc0MEswK0NS?=
- =?utf-8?B?dnRJTGtqeEprVWtEUFJ0QnZQVEZSd0lTUXJPbjFzM1g2QVpYc3hWOEkyNTVG?=
- =?utf-8?B?aFYrckhrbGhma0VHWnoxZ1FhV1ZHV05uWWVJdjRFdE1URTc4OStWOEhxbDVj?=
- =?utf-8?B?SFAxMWNxc0pZRFZWZVF3VnJqVWtrZVIvTU5xeE5wUXV5cy9kM2hqOXcrZnFZ?=
- =?utf-8?B?WHQreXZHUHNhYTJGRkRQcXhnRFIvRUR3YW9hU05CbFVDbFlrRDBaNVNkVkdv?=
- =?utf-8?B?azZHTHkrYlIrbE8rdzhJN1pTNUlqTnYyV1VnUWFkYTUxY09QcktLb2ZtS3lO?=
- =?utf-8?B?SDBwZnVUTnVNVk9kbEZVeE8yekFIeWFkeHJJM05uNjZ1SzlGYVFkRFk2Q3lm?=
- =?utf-8?Q?Pxu0khIB7JXNxKAk7My8gSFMmyahS4I4kvzxA=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39b7f299-5fcd-4c98-aaf2-08d940ab8495
+X-MS-Exchange-AntiSpam-MessageData-0: =?gb2312?B?QkY1U2RYdU1mbzE1VmIraUJWRHJPQ2E0WFkwa1NSaGRMT2dNemNyekpqUk96?=
+ =?gb2312?B?NnY4NFczcERPTjdhbjgzazhUSFJOalBuRmdRODZhMGdySjJleFo4T3BmclBk?=
+ =?gb2312?B?MHhiSURneVV3M2FVY1c4djVsUkVseUJnU3lEYkxPc3ZhaWl3c1lIVVVYQkpO?=
+ =?gb2312?B?NG05cEVyMTBMWTdyRWw1TmdWTjJERmp6TUZIOURYUjdNRXlYTEh6OExWaUpt?=
+ =?gb2312?B?UVM1bzNlYklFMlNRNS9uQnBIVzZVRkhXTVpjWW5aaWpSQW0xSVBlVUpkb1oy?=
+ =?gb2312?B?aWc4MU83RFE4ZWl5WkROU0E3UzAvdEp1MG9SOGNZb2tDYm4rSHNFdmQzOU1v?=
+ =?gb2312?B?VG1maUNqcnR3WFFPUmJCU24yZ2pBRVQzKzZMVlMwMEx1THpmTFJROTVoTXZZ?=
+ =?gb2312?B?WE5MdVhRa2EyVktJMmN1YVFUOWtpME4rZTBjMlJtTWNUK3NnWjBEbW1tYmZG?=
+ =?gb2312?B?S3dMZVRvM1hCc1lNaVJJeEFDdXQ0aFdJSU1aZU5wWHZjUm9jZitBMU5xRVAr?=
+ =?gb2312?B?MjlxZmp4M1BSSUlzK0RCc04rSWhUWDcxUzUxZUVOREUwNHI2UW1USndUamlD?=
+ =?gb2312?B?dFdGcGlrRExZWW1aeDlFbkJ1ejh3OGIvM3RuUnpqeUVDOWhRV1JBRDVrbGpx?=
+ =?gb2312?B?ZDZrYkFOU1RZY2h6U21xbE1nZUdSY0NkZmNJakYzVmJUeHdweDFJTkdtUjZV?=
+ =?gb2312?B?NUZyNUx0elYrWnBScy90NktUa3lKS3dLRGtBcXMwR0lYbmE4cElZUGpzdVBD?=
+ =?gb2312?B?VWcxTlBCZ3NOK1BlR3c0N2xVK1pWYW53OFhqVVlva01qTGFZbmRGempiZEFZ?=
+ =?gb2312?B?M2FFSmVXNE40aHg0VHNZejhDdXVFdHY2WnlZUlI4VkxMSDNlODA1bEJOeDV0?=
+ =?gb2312?B?QVNFRitmemU3RzFTUEZVbFNXVENqcTRTbTVyaEZqeWxBTzF6MXIrT2dwcUZQ?=
+ =?gb2312?B?dGlsK3JFRlBMZzNYU3FvOEhJQytuN0RwUHNJSWwzVXFhUkRkbnJCSDAyUkxK?=
+ =?gb2312?B?cWtxNkwyUU9LNS85dTI0NS80QmhZcnBHcDAxb2NpV1pwSWRsK25ZY2hxQnhG?=
+ =?gb2312?B?bFlNNkNnMk9pR01hWXFCcXZxM2FrdVd2eTREc0lPVEowYzlpSk1CdXZ3TzFj?=
+ =?gb2312?B?N0xlTUo3N0R6dkQwUlVValdlKytnMk5vR3ppVnhqbTIyck05T2QxeGV1SFMx?=
+ =?gb2312?B?eFg0a3hQRXpkVmRXV2o5TjdFSkJ5M0p5NjhjdDI3dWlHa0JlNkREQS82MjZB?=
+ =?gb2312?B?dXEzRE5BNjh1dUlUekRTNzE3UTVpRDRHbnE4Y0dOMWczSXZFOUFxbXJvL0FZ?=
+ =?gb2312?B?TGI5b1FqYWZnOGZkejNodWlzMFhZbjk5VlV5KzRUOWpWMkdGWFFyVE9zdVM4?=
+ =?gb2312?B?T3Jlc241RXdJa3hwVGRndUdtOXcyVmFNYVFLYlRXYUxGNTBzVGhSc0g2ZFhK?=
+ =?gb2312?B?T2V6Mmd6dDJTaVJ1V3hhbVUxblB4c2xQSUtxYWR2aWFLR1N3UGtxbkNnWlQr?=
+ =?gb2312?B?R3h4amtRZVZWL1hrRXBUaDhkcmE0K0RUaENSbS8vK09tRHdrZTN4UTNETFlG?=
+ =?gb2312?B?UmVPcHZqeHN0eDBzeUdMVzZ1SVRHb1FZMzVydFY1VW1QcUYyT1I4aVhiL3lY?=
+ =?gb2312?B?R1FiVlB1dlpVZEtXZC80TDA4V3pkbDl6OG5FR005OFlQZi9IRkhtVjFZRzd1?=
+ =?gb2312?B?Rkp5YkNHVWgwM1RCMnFUdDRWeXcrTjd5eW9kd0l5Nm9CUnhzZUgvaGdDQkdy?=
+ =?gb2312?B?V3lyK1c4UURLMG9JbFFNMVdNbHlBRXNLK1VBb1BsMW5LSGFLQm9iZFJKUlJF?=
+ =?gb2312?B?dExBTDBLVUpkTmdkeHlodz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ecf82230-b75f-4314-81a9-08d940ae5066
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2021 18:26:05.9071
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2021 18:46:06.8067
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B+HskE6H3BChEzADTXtskH3NgJ1hFKTRyxY0V2DDFn9VurzWNSmpY9CMRAr2PK8d
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4869
+X-MS-Exchange-CrossTenant-UserPrincipalName: UuAHLU2SRtjt4HeoWwBr/c/qCj6b5rOy8XfmjkSol5ngC8KVjM3VOeRcpeDljbEt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4497
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: _VzK30_dEHpw7x_bnVKhthVICr9Dv4pd
-X-Proofpoint-GUID: _VzK30_dEHpw7x_bnVKhthVICr9Dv4pd
+X-Proofpoint-GUID: D9nWTvGRXuy66DjddblOCUz0X3GhH48U
+X-Proofpoint-ORIG-GUID: D9nWTvGRXuy66DjddblOCUz0X3GhH48U
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-06_09:2021-07-06,2021-07-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- mlxlogscore=999 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
- spamscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107060086
+ definitions=2021-07-06_10:2021-07-06,2021-07-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ adultscore=0 priorityscore=1501 mlxlogscore=819 clxscore=1011
+ lowpriorityscore=0 spamscore=0 malwarescore=0 phishscore=0 impostorscore=0
+ bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107060087
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -142,64 +138,49 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 7/6/21 10:44 AM, SanjayKumar J wrote:
-> 	task->state is renamed to task->__state in task_struct
+On 7/5/21 8:11 PM, G wrote:
+> Hi BPF Experts
+> 
+> I'm having an issue with using "bpf_map_update_elem" and  "bpf_map_get_next_key" at the same time when looping through the bpf HashMap.
+> My program turns to an infinite loop and the pseudocode is as following:
+> ------------------------------------------------------------------------------
+>      bpf.MapCreate          // type=BPF_MAP_TYPE_HASH size=128
+>      for { bpf.MapUpdate }  // add(update) 128 elements at once
+> 
+>      then loop through the map to update each element
+>      bpf.MapGetNextKey(fd, nil, &scankey) // find first key
+>      for {
+>            bpf.MapUpate(fd, &scankey, &val, BPF_EXIST)
+>            bpf.MapGetNextKey(fd, &scankey, &scankey)
+>      }
+> ------------------------------------------------------------------------------
+> 
+> I have tried to read the relevant kernel code, and seems like it is moving the element to the top of the has bucket when calling the ¡°bpf_map_update_elem¡± even the element already exists in the hash map. See the following source code:
+> ------------------------------------------------------------------------------
+>      // kernel/bpf/hashtab.c
+>      htab_map_update_elem {
+>          ...
+>         /* add new element to the head of the list, so that
+>          * concurrent search will find it before old elem
+>          */
+>         hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+>          ...
+>      }
+> ------------------------------------------------------------------------------
+> 
+> Therefore, when I was trying to traversing the two elements in the same hash a bucket, it ran into an infinite loop by repeatedly getting the key of these two elements. Not sure my understanding for "bpf_map_update_elem"and "bpf_map_get_next_key" is correct or not. My question is: is that behave as the design? or is it a bug for the bpf hashmap? Please let me know, thanks.
 
-Could you add a reference to
-   2f064a59a11f ("sched: Change task_struct::state")
-which added this change?
+bpf_map_get_next_key() is added after bpf_map_update_elem(). So the 
+above behavior is in the kernel already for sometimes.
 
-I think this should go to bpf tree as the change is in linus tree now.
-Could you annotate the tag as "[PATCH bpf]" ("[PATCH bpf v2]")?
-
-Please align comments to the left without margins.
+bpf_map_get_next_key() is not super reliable for hash table as if some 
+deletion happens, the get_next_key may start from the beginning.
+The recommendation is to use bpf_map_*_batch() interface.
+If your kernel does not implement bpf_map_*_batch() interface, I think
+it would be best you call bpf_map_get_next_key() for ALL elements before
+doing any update/delete.
 
 > 
-> 	Signed-off-by: SanjayKumar J <vjsanjay@gmail.com>
-
-This Singed-off-by is not needed.
-
-You can add my Ack in the next revision:
-Acked-by: Yonghong Song <yhs@fb.com>
-
-> 
-> Signed-off-by: SanjayKumar J <vjsanjay@gmail.com>
-> ---
->   tools/bpf/runqslower/runqslower.bpf.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
-> index 645530ca7e98..ab9353f2fd46 100644
-> --- a/tools/bpf/runqslower/runqslower.bpf.c
-> +++ b/tools/bpf/runqslower/runqslower.bpf.c
-> @@ -74,7 +74,7 @@ int handle__sched_switch(u64 *ctx)
->   	u32 pid;
->   
->   	/* ivcsw: treat like an enqueue event and store timestamp */
-> -	if (prev->state == TASK_RUNNING)
-> +	if (prev->__state == TASK_RUNNING)
-
-Currently, runqslower.bpf.c uses vmlinux.h.
-I am thinking to use bpf_core_field_exists(), but we need to
-single out task_struct structure from vmlinux.h
-with both state and __state fields, we could make it work
-by *changes* like
-
-#define task_struct task_struct_orig
-#include "vmlinux.h"
-#undef task_struct
-
-struct task_struct {
-    ... state;
-    ... __state;
-...
-};
-
-Considering tools/bpf/runqslower is tied with a particular
-kernel source, and vmlinux.h mostly derived from that
-kernel source, I feel the above change is not necessary.
-
->   		trace_enqueue(prev);
->   
->   	pid = next->pid;
+> Best regards
+> W.Gao
 > 
