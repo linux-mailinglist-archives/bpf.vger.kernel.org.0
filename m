@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8202E3BC481
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 03:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E8D3BC49C
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 03:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhGFBOh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Jul 2021 21:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        id S229814AbhGFBi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Jul 2021 21:38:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhGFBOg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Jul 2021 21:14:36 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF51C061574;
-        Mon,  5 Jul 2021 18:11:58 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso896708pjp.5;
-        Mon, 05 Jul 2021 18:11:58 -0700 (PDT)
+        with ESMTP id S229733AbhGFBi1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Jul 2021 21:38:27 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F290C06175F;
+        Mon,  5 Jul 2021 18:35:49 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id oj10-20020a17090b4d8ab0290172f77377ebso82425pjb.0;
+        Mon, 05 Jul 2021 18:35:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NwQaLt08jBec11KMF4e1SB6lInafR9MTNHkp/3GAlCs=;
-        b=GrH7hbBZRjhmUoQzTYxVhnvJrgTf6HEZuivxzAFryLBr+X+CbRKtUf0W4ybY+myvtc
-         sh+IvumMoC8jOMd/iaFUBaJj2JK5QJqd2nHYthE2Mbj0XQ2lZdyg5UoYliOT+gC064at
-         FJtsxcQk3V6in/tiOY36+CqYpQS1ngOkdobFQwX2NdPRBtXY66JWP4nAHnv+9qlIzFVu
-         jntzgNiRwql5L6++9YGAsjdPpwb9vb02QEuu8d09qpY2LZ53Z8cnRGo5Qkanr5K8a2bb
-         Btf3/rp5VzC7jgC7ZxU02+TYGUaGdtKZY62GnqjxIez6rxevnD2fPW04Xpy5F7QBGcjO
-         QD5w==
+        bh=EkHzJYg4aiSZ7PwP7OO3CqIBv9kFMsbKjd1eVH502Gs=;
+        b=vVdSAmUekAinM1YQD5T7wFBbxnofU8FXTV+HrfNtNGMId9GFhugC0Tz8wIBkgdiOzW
+         Z3BYwsEOXlanohwfRvRnTH05OQVR9mig1ibnCmDs9pg4z+lm73wBkgNzY8Rw2ACtB3Yu
+         0uzjkvUggu4JGqEY+monPF0JQ0DPCTNwy5mQVwOXhtRlWsdfECgLB1DbWJa4bKjU5g3g
+         ISNh/Fp7FhAbMEjhPrGV5Es59FW6JI0XQLK6jTuoVHxTB1dHhLO6Rpv0zVAJJVwbwlaJ
+         Gq+I1SEyO4X9a+q6z0nZIrSsrtAI6SwgIsrNz+KxT6tIhyz7CSDdk211/wbkPTGMJ+dA
+         +ETw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NwQaLt08jBec11KMF4e1SB6lInafR9MTNHkp/3GAlCs=;
-        b=iijGrmtJBo0efwHYYfGV1BxN9eRbndGvGTi0nfa1b+LjCy4Da7PdcW0SULcXF+v3/6
-         NUFISz94WAoWE1cwmrfKRlGue7CFdta6k/wXBh8fK6wwVUd4mb9t/7mdLKzz8Mul8W7o
-         1HlflDl2f8/YdB4V/RKrfElqLBUXzZidp5z5ghx04+EnWSqcPSg8GRGoSWqIDkOaDWrW
-         55F5wAEeJg9fnEZxLWLjnzth7Y8R5hwPIgj4XdrxZOg80CTXaCPYVielZjaRZ7lEVOzx
-         o905zeVSKh6jzfqnUqplCODCvdMWUFVwT/ZwUWOhKFgzhhTXnKkyQQEjQC4kLSyNwNBZ
-         VqZA==
-X-Gm-Message-State: AOAM533seO2fEOYvzy2MDzB7F5YqOc01xhABRccs3tVdb+rqRc8yyAM8
-        BxK9D4cJ8fNLVRIToG5Tzps=
-X-Google-Smtp-Source: ABdhPJxyVBLkpgGVc/tcOrtl50EC8uoGSyLEDjcPeC7u5xbnkGWbldxhnRLLRWu2eDHWgIkL8CZNiA==
-X-Received: by 2002:a17:903:2341:b029:129:33d3:60ee with SMTP id c1-20020a1709032341b029012933d360eemr14771858plh.66.1625533918176;
-        Mon, 05 Jul 2021 18:11:58 -0700 (PDT)
+        bh=EkHzJYg4aiSZ7PwP7OO3CqIBv9kFMsbKjd1eVH502Gs=;
+        b=KF7aKt60JzFAy4OmKdsB5hbC8uqoS7Q4eHBxBzGAPcG7RIeHoNNieCetlbvHcVCG7s
+         Y6RlsXKhOtcNOQfvNHVd4y7YNlKrZhUb5zfpH80E/C7oZI5TU7hMSDgV/ijJtTTWjjOn
+         ta/y1HD+x7d4o9sVSvi6LSURBaQqnWOr2Fvwx5lwcoYIwkB2095b6cswgtohwSec+qDO
+         nHC5JK8zEPyHhvAI0QIEWVVEpW1oy2z48A591gTEh+WEfTn36ce82a+BU+TyS2a2uHep
+         mEwrHZp+0vxtfkKMVPK8TIk3B2JBWuUDQGtte5yPQDR4Egs4F4GEUwg6TZXCnOO/a/5q
+         u7Lw==
+X-Gm-Message-State: AOAM533kttF2DwekLKHc3kQ64/mcMCF8sl/WR3QxQdfSjmTWK3twT2bV
+        saqGSNGCH7WZjnjjMzcmsio=
+X-Google-Smtp-Source: ABdhPJzf/UYDNE+1Nlc+E73Zjk8TgdJfa/T0m1Zycipk7qYx+02TFSQSFf8HrRBRXkwIu+lqBH9n8w==
+X-Received: by 2002:a17:90b:14a:: with SMTP id em10mr18247534pjb.154.1625535348907;
+        Mon, 05 Jul 2021 18:35:48 -0700 (PDT)
 Received: from ubuntu.localdomain ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id o16sm9017810pjw.51.2021.07.05.18.11.56
+        by smtp.gmail.com with ESMTPSA id m24sm9338851pgd.60.2021.07.05.18.35.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 18:11:57 -0700 (PDT)
-From:   gushengxian <gushengxian507419@gmail.com>
+        Mon, 05 Jul 2021 18:35:48 -0700 (PDT)
+From:   Gu Shengxian <gushengxian507419@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gushengxian <gushengxian@yulong.com>
-Subject: [PATCH v2] tools: bpftool: close va_list 'ap' by va_end()
-Date:   Mon,  5 Jul 2021 18:11:50 -0700
-Message-Id: <20210706011150.670544-1-gushengxian507419@gmail.com>
+        linux-kernel@vger.kernel.org, Gu Shengxian <gushengxian@yulong.com>
+Subject: [PATCH v3] tools: bpftool: close va_list 'ap' by va_end()
+Date:   Mon,  5 Jul 2021 18:35:43 -0700
+Message-Id: <20210706013543.671114-1-gushengxian507419@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -61,13 +61,13 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: gushengxian <gushengxian@yulong.com>
+From: Gu Shengxian <gushengxian@yulong.com>
 
 va_list 'ap' was opened but not closed by va_end(). It should be
 closed by va_end() before return.
 
 According to suggestion of Daniel Borkmann <daniel@iogearbox.net>.
-Signed-off-by: gushengxian <gushengxian@yulong.com>
+Signed-off-by: Gu Shengxian <gushengxian@yulong.com>
 ---
  tools/bpf/bpftool/jit_disasm.c | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
