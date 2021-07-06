@@ -2,89 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14A73BDDB4
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 21:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF493BDE10
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 21:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhGFTEx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 15:04:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhGFTEx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 15:04:53 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD17EC061574;
-        Tue,  6 Jul 2021 12:02:13 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id d12so22298841pgd.9;
-        Tue, 06 Jul 2021 12:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FxIWX9o3nry3qUAuCyUJX/YGznw7N9DuDggJJIUGkU4=;
-        b=HlRE+oldd0J9W+UGFBW0iMwJeVAgkEj17eUexgrpXHJlHBFsV9y9vYjnsbBeUaUtXU
-         4VD3PXEy2AUw3Q/m7/JWqHOAnvdYBmtIvjZbcjq0T9cZp3PZnTbJFyzlD7o8ts0xajJb
-         8Zb5S73Xvk8ysBZbw1H0eS6njsIiKQCpgtmkN/zq+ABg02QlDjKQbTKw98xSwga73J7N
-         eNilFIda1NOpvPQ2OHBNS8ER1w2svB/ZP5zn795o4A0ss99P8VDR0MADNJV5ixF9bZEO
-         vztue4WpKZc8Ru4l2LTKfMBQuAyhXJ+TWBETbjKrSOnWAp/vFBxz4NCK7cjUfqhyd3Xk
-         CGlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FxIWX9o3nry3qUAuCyUJX/YGznw7N9DuDggJJIUGkU4=;
-        b=Mezi6CMQcexdO06LEq5zgJ9dG6Mgws4qml8S48TN+M7Q0H+BW+FwHqmdXDfAW+wezD
-         H4YPhkigX8KuUAaYORdiheRbMDhhdeVEdTiDVGa28Z2uzZqOxGDe5VZtSnWW/k5qr6/r
-         Iq5KC5HJ6aHnmNs1hvMEVPQpINLGMzU9wLt5xo2NtBIj8O+fiwxxacN8edA3GsbTxZl0
-         EkVYqyBaFcNQmnJNlToyQlB/YKPJpc14ShDoANg2BJIijbrzSeVH+dj1qX9g7RmMjj4s
-         DRwkeGk5yHPDA6rAOk+okmWfr0mdrabger8sx4HKXUE2zhh987V1KDy9v4zK5yAlpCjG
-         26Pg==
-X-Gm-Message-State: AOAM533OrVu8Qop9IoPS5yxwNq2FTQEBqbd95F0g9Aahn12bCEU7hZEw
-        AMxJACv8siA0XEtCoHBAJrs=
-X-Google-Smtp-Source: ABdhPJzVCESAZmAIXrITAFmGvc6rVhQ9jct/kWSEaTilLJt4I7g1ogFjDnRzEMd4KR8ghhgiYRN7VQ==
-X-Received: by 2002:a65:6404:: with SMTP id a4mr22625782pgv.175.1625598133011;
-        Tue, 06 Jul 2021 12:02:13 -0700 (PDT)
-Received: from localhost.localdomain ([103.82.210.28])
-        by smtp.googlemail.com with ESMTPSA id y5sm3549437pjy.2.2021.07.06.12.02.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 12:02:12 -0700 (PDT)
-From:   SanjayKumar J <vjsanjay@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     SanjayKumar J <vjsanjay@gmail.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf v3] tools/runqslower: use __state instead of state
-Date:   Wed,  7 Jul 2021 00:29:26 +0530
-Message-Id: <20210706185927.19272-1-vjsanjay@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S229823AbhGFTfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 15:35:46 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43614 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhGFTfq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 15:35:46 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1m0qoa-0003eJ-DF; Tue, 06 Jul 2021 21:33:04 +0200
+Received: from [85.5.47.65] (helo=linux-3.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1m0qoa-000S7C-5t; Tue, 06 Jul 2021 21:33:04 +0200
+Subject: LPC 2021 Networking and BPF Track CFP (Reminder)
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     xdp-newbies@vger.kernel.org, iovisor-dev@lists.iovisor.org,
+        linux-wireless@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        lwn@lwn.net
+References: <6d225920-9ecc-ef24-2bf8-848ca86c7fb0@iogearbox.net>
+Message-ID: <c549da28-a3c0-9478-4b91-7aa2ff124b69@iogearbox.net>
+Date:   Tue, 6 Jul 2021 21:33:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <6d225920-9ecc-ef24-2bf8-848ca86c7fb0@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26223/Tue Jul  6 13:05:54 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 2f064a59a11f: sched: Change task_struct::state
-renamed task->state to task->__state in task_struct
+This is a reminder for the Call for Proposals (CFP) for the Networking and
+BPF track at the 2021 edition of the Linux Plumbers Conference (LPC), which
+will be held virtually on the wider Internet, on September 20th - 24th, 2021.
 
-Acked-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: SanjayKumar J <vjsanjay@gmail.com>
----
- tools/bpf/runqslower/runqslower.bpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This year's Networking and BPF track technical committee is comprised of:
 
-diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
-index 645530ca7e98..ab9353f2fd46 100644
---- a/tools/bpf/runqslower/runqslower.bpf.c
-+++ b/tools/bpf/runqslower/runqslower.bpf.c
-@@ -74,7 +74,7 @@ int handle__sched_switch(u64 *ctx)
- 	u32 pid;
- 
- 	/* ivcsw: treat like an enqueue event and store timestamp */
--	if (prev->state == TASK_RUNNING)
-+	if (prev->__state == TASK_RUNNING)
- 		trace_enqueue(prev);
- 
- 	pid = next->pid;
--- 
-2.32.0
+   David S. Miller <davem@davemloft.net>
+   Jakub Kicinski <kuba@kernel.org>
+   Eric Dumazet <edumazet@google.com>
+   Alexei Starovoitov <ast@kernel.org>
+   Daniel Borkmann <daniel@iogearbox.net>
+   Andrii Nakryiko <andrii@kernel.org>
 
+We are seeking proposals of 40 minutes in length (including Q&A discussion),
+optionally accompanied by papers of 2 to 10 pages in length.
+
+Any kind of advanced Linux networking and/or BPF related topic will be considered.
+
+Please submit your proposals through the official LPC website at:
+
+   https://linuxplumbersconf.org/event/11/abstracts/
+
+Make sure to select "Networking & BPF Summit" in the Track pull-down menu.
+
+Proposals must be submitted by August 13th, and submitters will be notified of
+acceptance by August 16th.
+
+Final slides and papers (as PDF) are due on the first day of the conference.
