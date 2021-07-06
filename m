@@ -2,179 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69613BC8E6
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 12:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF303BC94F
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 12:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhGFKDh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 06:03:37 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:37218 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231181AbhGFKDh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 06:03:37 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4GJyk209BMzBBw2;
-        Tue,  6 Jul 2021 12:00:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id qHKQQz_Am4dH; Tue,  6 Jul 2021 12:00:57 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4GJyk16G08zBBv0;
-        Tue,  6 Jul 2021 12:00:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 76A2E8B79C;
-        Tue,  6 Jul 2021 12:00:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id JB5RtjTJp_qu; Tue,  6 Jul 2021 12:00:56 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 48C198B794;
-        Tue,  6 Jul 2021 12:00:51 +0200 (CEST)
-Subject: Re: [PATCH 4/4] bpf powerpc: Add addr > TASK_SIZE_MAX explicit check
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     songliubraving@fb.com, netdev@vger.kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kpsingh@kernel.org,
-        paulus@samba.org, sandipan@linux.ibm.com, yhs@fb.com,
-        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kafai@fb.com,
-        linux-kernel@vger.kernel.org
-References: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
- <20210706073211.349889-5-ravi.bangoria@linux.ibm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <74f55f12-c7da-a06d-c3a5-6869b907e3f6@csgroup.eu>
-Date:   Tue, 6 Jul 2021 12:00:50 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231337AbhGFKSR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 06:18:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43367 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231293AbhGFKSQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 6 Jul 2021 06:18:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625566538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0uXh4hYsW1n5ig7p6gvHrs15tMwDdKovh4TpmR0Nfp8=;
+        b=FvL9OoN3kOM9BEA2M7HsF7QOjlplQ2M2PvsMa/CrkKIFESbGLoNlG4t/t6m3vl1+vOkBY+
+        p+t4j7z8HFltaGt6H3+DqRQPBGamN24SNl5V85O3KqXcqZxk3IhwW4lj6k4p4ScQw0Oi6z
+        xm+CvHNCt3CCOWM8xu+MUZBjc+Og+j4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-565N67SAO1q3DtPgVDgX0g-1; Tue, 06 Jul 2021 06:15:37 -0400
+X-MC-Unique: 565N67SAO1q3DtPgVDgX0g-1
+Received: by mail-ej1-f71.google.com with SMTP id h14-20020a1709070b0eb02904d7c421e00bso2482004ejl.2
+        for <bpf@vger.kernel.org>; Tue, 06 Jul 2021 03:15:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0uXh4hYsW1n5ig7p6gvHrs15tMwDdKovh4TpmR0Nfp8=;
+        b=RTREna4LK8vHrfBb/Ez8sXaqeRohXVX6jAZKyCkjEt/ICyAoppWm7q7E0/nAhFKnfz
+         J+8on/+JX1tpcszGy4gH8hESe6magnsuQkTvNugzyaubrzuzXsoVut+OCNskOZFLJHzx
+         XtTIBwZ2Yxy9b0cvqXb5Ml1tpE/mJox7IVKTiss1o3N2aKbA68GWOazdULsI4hTxRtrX
+         3qFz0JtwSzpMZsE29jmWFqF5iBY8MXIuOSX06v5G0HK20+/KZgZxjiV15hDEMe4xWprf
+         SBxUXmUaZMWeEr1vXFBs1j0WD50uDHRT/uJx91cxBBIi7l+Ol9Pg1ypUDiRJWjZGU0+Z
+         ZIqA==
+X-Gm-Message-State: AOAM533lHGLo3+lArW5lVEjgi8sDgzsvVf6eNjCFX4eS0BERwvUKC4hr
+        uA3ArBQ6S0XYLd52Qswpx6BH/rVtItgjdSa91njs1cwMd4d3oixt3A8TSIfn3NDzCm5dRs7Qgn6
+        vYFin5t5PQ2Oh
+X-Received: by 2002:aa7:ce08:: with SMTP id d8mr21902362edv.341.1625566535997;
+        Tue, 06 Jul 2021 03:15:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyqNq/L80XyGEn6AXG6CAPDrUV07gdYHjzf/myK8L7dN3swI6frl3kvy56XZXSC1f9dI1l2cA==
+X-Received: by 2002:aa7:ce08:: with SMTP id d8mr21902309edv.341.1625566535746;
+        Tue, 06 Jul 2021 03:15:35 -0700 (PDT)
+Received: from [10.36.112.251] (5920ab7b.static.cust.trined.nl. [89.32.171.123])
+        by smtp.gmail.com with ESMTPSA id q17sm4262297eja.108.2021.07.06.03.15.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 06 Jul 2021 03:15:35 -0700 (PDT)
+From:   Eelco Chaudron <echaudro@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, shayagr@amazon.com, sameehj@amazon.com,
+        dsahern@kernel.org, brouer@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com
+Subject: Re: [PATCH v9 bpf-next 10/14] bpf: add multi-buffer support to xdp copy helpers
+Date:   Tue, 06 Jul 2021 12:15:34 +0200
+X-Mailer: MailMate (1.14r5819)
+Message-ID: <E8662E15-A4FB-4828-830B-3543E9BE8F35@redhat.com>
+In-Reply-To: <60d49690a87ae_2e84a2082c@john-XPS-13-9370.notmuch>
+References: <cover.1623674025.git.lorenzo@kernel.org>
+ <4d2a74f7389eb51e2b43c63df76d9cd76f57384c.1623674025.git.lorenzo@kernel.org>
+ <60d27716b5a5a_1342e208d5@john-XPS-13-9370.notmuch>
+ <34E2BF41-03E0-4DEC-ABF3-72C8FF7B4E4A@redhat.com>
+ <60d49690a87ae_2e84a2082c@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-In-Reply-To: <20210706073211.349889-5-ravi.bangoria@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
 
-Le 06/07/2021 à 09:32, Ravi Bangoria a écrit :
-> On PowerPC with KUAP enabled, any kernel code which wants to
-> access userspace needs to be surrounded by disable-enable KUAP.
-> But that is not happening for BPF_PROBE_MEM load instruction.
-> So, when BPF program tries to access invalid userspace address,
-> page-fault handler considers it as bad KUAP fault:
-> 
->    Kernel attempted to read user page (d0000000) - exploit attempt? (uid: 0)
-> 
-> Considering the fact that PTR_TO_BTF_ID (which uses BPF_PROBE_MEM
-> mode) could either be a valid kernel pointer or NULL but should
-> never be a pointer to userspace address, execute BPF_PROBE_MEM load
-> only if addr > TASK_SIZE_MAX, otherwise set dst_reg=0 and move on.
-> 
-> This will catch NULL, valid or invalid userspace pointers. Only bad
-> kernel pointer will be handled by BPF exception table.
-> 
-> [Alexei suggested for x86]
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-> ---
->   arch/powerpc/net/bpf_jit_comp64.c | 38 +++++++++++++++++++++++++++++++
->   1 file changed, 38 insertions(+)
-> 
-> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-> index 1884c6dca89a..46becae76210 100644
-> --- a/arch/powerpc/net/bpf_jit_comp64.c
-> +++ b/arch/powerpc/net/bpf_jit_comp64.c
-> @@ -753,6 +753,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->   		/* dst = *(u8 *)(ul) (src + off) */
->   		case BPF_LDX | BPF_MEM | BPF_B:
->   		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
-> +			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-> +				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-> +				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-> +				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-> +				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-> +				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+On 24 Jun 2021, at 16:28, John Fastabend wrote:
 
-Prefered way to clear a register is to do 'li reg, 0'
+> Eelco Chaudron wrote:
+>>
+>>
+>> On 23 Jun 2021, at 1:49, John Fastabend wrote:
+>>
+>>> Lorenzo Bianconi wrote:
+>>>> From: Eelco Chaudron <echaudro@redhat.com>
+>>>>
+>>>> This patch adds support for multi-buffer for the following helpers:
+>>>>   - bpf_xdp_output()
+>>>>   - bpf_perf_event_output()
+>>>>
+>>>> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+>>>> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>>>> ---
+>>>
+>>> Ah ok so at least xdp_output will work with all bytes. But this is
+>>> getting close to having access into the frags so I think doing
+>>> the last bit shouldn't be too hard?
+>>
+>>
+>> Guess you are talking about multi-buffer access in the XDP program?
+>>
+>> I did suggest an API a while back, https://lore.kernel.org/bpf/FD3E6E0=
+8-DE78-4FBA-96F6-646C93E88631@redhat.com/ but I had/have not time to work=
+ on it. Guess the difficult part is to convince the verifier to allow the=
+ data to be accessed.
+>
+> Ah great I think we had the same idea I called it xdp_pull_data()
+> though.
+>
+> Whats the complication though it looks like it can be done by simply
+> moving the data and data_end pointers around then marking them
+> invalidated. This way the verifier knows the program needs to
+> rewrite them. I can probably look more into next week.
 
-> +				PPC_JMP((ctx->idx + 2) * 4);
-> +			}
->   			EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
->   			if (insn_is_zext(&insn[i + 1]))
->   				addrs[++i] = ctx->idx * 4;
-> @@ -763,6 +771,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->   		/* dst = *(u16 *)(ul) (src + off) */
->   		case BPF_LDX | BPF_MEM | BPF_H:
->   		case BPF_LDX | BPF_PROBE_MEM | BPF_H:
-> +			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-> +				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-> +				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-> +				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-> +				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-> +				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-> +				PPC_JMP((ctx->idx + 2) * 4);
-> +			}
 
-That code seems strictly identical to the previous one and the next one.
-Can you refactor in a function ?
+Sorry for the late response, but I did do a POC a while back with changin=
+g the data and data_end pointers, and this worked. The problem that got r=
+aised at the time was that it was not hiding the implementation. i.e. you=
+ had to put in the fragment number, and so you needed to know how many fr=
+agments existed and the size of each one.
 
->   			EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
->   			if (insn_is_zext(&insn[i + 1]))
->   				addrs[++i] = ctx->idx * 4;
-> @@ -773,6 +789,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->   		/* dst = *(u32 *)(ul) (src + off) */
->   		case BPF_LDX | BPF_MEM | BPF_W:
->   		case BPF_LDX | BPF_PROBE_MEM | BPF_W:
-> +			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-> +				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-> +				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-> +				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-> +				PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-> +				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-> +				PPC_JMP((ctx->idx + 2) * 4);
-> +			}
->   			EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
->   			if (insn_is_zext(&insn[i + 1]))
->   				addrs[++i] = ctx->idx * 4;
-> @@ -783,6 +807,20 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
->   		/* dst = *(u64 *)(ul) (src + off) */
->   		case BPF_LDX | BPF_MEM | BPF_DW:
->   		case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
-> +			if (BPF_MODE(code) == BPF_PROBE_MEM) {
-> +				EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
-> +				PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
-> +				EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
-> +				if (off % 4)
+With the API suggested in the above email link, I was trying to avoid thi=
+s. But it needs a lot of work in the verifier I guess.
 
-That test is worth a comment.
+> From my first glance it looks relatively straight forward to do
+> now. I really would like to avoid yet another iteration of
+> programs features I have to discover and somehow work around
+> if we can get the helper into this series. If you really don't
+> have time I can probably take a look early next week on an
+> RFC for something like above helper.
 
-And I'd prefer
+Thanks for looking at it.
 
-	if (off & 3) {
-		PPC_BCC(COND_GT, (ctx->idx + 5) * 4);
-		EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-		PPC_JMP((ctx->idx + 3) * 4);
-	} else {
-		PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-		EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
-		PPC_JMP((ctx->idx + 2) * 4);
-	}
 
-> +					PPC_BCC(COND_GT, (ctx->idx + 5) * 4);
-> +				else
-> +					PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
-> +				EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+Cheers,
 
-Use PPC_RAW_LI(dst_reg, 0);
 
-> +				if (off % 4)
-> +					PPC_JMP((ctx->idx + 3) * 4);
-> +				else
-> +					PPC_JMP((ctx->idx + 2) * 4);
-> +			}
->   			PPC_BPF_LL(dst_reg, src_reg, off);
->   			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
->   			if (ret)
-> 
+Eelco
+
