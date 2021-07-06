@@ -2,179 +2,361 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE2F3BC7B9
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 10:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133873BC8B1
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 11:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhGFIU6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 04:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbhGFIU6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 04:20:58 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF4CC06175F
-        for <bpf@vger.kernel.org>; Tue,  6 Jul 2021 01:18:19 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id l1so12928444wme.4
-        for <bpf@vger.kernel.org>; Tue, 06 Jul 2021 01:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3mgnx8fEegD/aQ9zqBoBzzOqjAcJdnecr5X8UBCh88A=;
-        b=jCtVYDlvBHH3GlSQUuqptLNQoADj8E6pFWpmgL1Or65pa8VgkFEwlKQz+Zy50buntc
-         1nXamWlS/PQVS/aK7+Q/p0wsC7O54/u3cjI7mRNz9oaiT5YjVbK8dhHZMxPRxotu43oF
-         shzv1ow2Fda7OXIQZ9qxe40tW1SS7DWp4D0t0P1LBT9ZCQ+VOMwI/d35WdrCZ8II0DP5
-         anwOy0CkQp+4q4RGCYoxoUe2gppifBs8Ic/KLbTXuyrK0cx5zAPtIXE46eNnPJgHUxFq
-         9+BEil0tPu6G0o3NnhY5Ioc49EO7vFdHqxmuWtvxc1NnlHrnGEGTam4NFPi1EfcpVZEb
-         bLdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3mgnx8fEegD/aQ9zqBoBzzOqjAcJdnecr5X8UBCh88A=;
-        b=gblV3LGOOdHPT3WkG0Our7cgtApU5c+PFYx1MDU5QanjgYYKdgLmKTCWilh+4Nkd03
-         gcTQvtUfeD8VIHhOCBe9bxiMGD06Fn20R4r6hQOo5FMsH9+hcqqnsyea51Ki2t0DkJBW
-         fHWKMUXkH1eSdUkphkjX+NdYrxND8NhwNudBloLk46uyGKDgddzMJeIP/61tjBuuAEK9
-         BwYQlkDmmzoCYxxcq8yvzniRlatOGKhEWip35FtzRkGCOXQNX+qm+ba61ErtWRzTTDB/
-         BLIaY7GWHZNwDcVJk/ap/BQ1Iki8zoe41yMlWnjfYnB5Be+tSmdHmWF4cwZkqCBsbmVI
-         L1fQ==
-X-Gm-Message-State: AOAM531UkO5wkAKPi79x/laf18GsHi9wzISZ5/lp3jnk6oDw3pWw5lGB
-        6TOrV8o63RXucZkgoHljvQmVhg==
-X-Google-Smtp-Source: ABdhPJzCkfz/lF+lODYpP9glLgYUjtgw7C2saATpfh0DjO+CQKgR8u8ve5k+pbfxMTn5z4kxfFlMXg==
-X-Received: by 2002:a05:600c:4843:: with SMTP id j3mr19554366wmo.73.1625559498313;
-        Tue, 06 Jul 2021 01:18:18 -0700 (PDT)
-Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
-        by smtp.gmail.com with ESMTPSA id a22sm13783534wrc.66.2021.07.06.01.18.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 01:18:17 -0700 (PDT)
-Date:   Tue, 6 Jul 2021 11:18:13 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>, davem@davemloft.net,
-        kuba@kernel.org, linuxarm@openeuler.org, yisen.zhuang@huawei.com,
-        salil.mehta@huawei.com, thomas.petazzoni@bootlin.com,
-        mw@semihalf.com, linux@armlinux.org.uk, hawk@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        akpm@linux-foundation.org, peterz@infradead.org, will@kernel.org,
-        willy@infradead.org, vbabka@suse.cz, fenghua.yu@intel.com,
-        guro@fb.com, peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
-        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
-        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
-        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
-        elver@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
- based on elevated refcnt
-Message-ID: <YOQRxS+MUFIRubsf@enceladus>
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
- <6c2d76e2-30ce-5c0f-9d71-f6b71f9ad34f@redhat.com>
- <ec994486-b385-0597-39f7-128092cba0ce@huawei.com>
- <YOPiHzVkKhdHmxLB@enceladus>
- <33aee58e-b1d5-ce7b-1576-556d0da28560@huawei.com>
+        id S231166AbhGFJ4Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 05:56:25 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:20903 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230472AbhGFJ4Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 05:56:25 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4GJyYj4Cr1zBBJS;
+        Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id oQkE2M0fqy9u; Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4GJyYj3BH9zBBJJ;
+        Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 579238B79E;
+        Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 8NcbPEjczuQZ; Tue,  6 Jul 2021 11:53:45 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5597F8B794;
+        Tue,  6 Jul 2021 11:53:44 +0200 (CEST)
+Subject: Re: [PATCH 3/4] bpf powerpc: Add BPF_PROBE_MEM support for 64bit JIT
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     songliubraving@fb.com, netdev@vger.kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kpsingh@kernel.org,
+        paulus@samba.org, sandipan@linux.ibm.com, yhs@fb.com,
+        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kafai@fb.com,
+        linux-kernel@vger.kernel.org
+References: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
+ <20210706073211.349889-4-ravi.bangoria@linux.ibm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <2bfcb782-3133-2db2-31a7-6886156d2048@csgroup.eu>
+Date:   Tue, 6 Jul 2021 11:53:43 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <33aee58e-b1d5-ce7b-1576-556d0da28560@huawei.com>
+In-Reply-To: <20210706073211.349889-4-ravi.bangoria@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> >>
 
-[...]
 
-> >>>
-> >>>
-> >>>> So add elevated refcnt support in page pool, and support
-> >>>> allocating page frag to enable multi-frames-per-page based
-> >>>> on the elevated refcnt support.
-> >>>>
-> >>>> As the elevated refcnt is per page, and there is no space
-> >>>> for that in "struct page" now, so add a dynamically allocated
-> >>>> "struct page_pool_info" to record page pool ptr and refcnt
-> >>>> corrsponding to a page for now. Later, we can recycle the
-> >>>> "struct page_pool_info" too, or use part of page memory to
-> >>>> record pp_info.
-> >>>
-> >>> I'm not happy with allocating a memory (slab) object "struct page_pool_info" per page.
-> >>>
-> >>> This also gives us an extra level of indirection.
-> >>
-> >> I'm not happy with that either, if there is better way to
-> >> avoid that, I will be happy to change it:)
-> > 
-> > I think what we have to answer here is, do we want and does it make sense
-> > for page_pool to do the housekeeping of the buffer splitting or are we
-> > better of having each driver do that.  IIRC your previous patch on top of
-> > the original recycling patchset was just 'atomic' refcnts on top of page pool.
+Le 06/07/2021 à 09:32, Ravi Bangoria a écrit :
+> BPF load instruction with BPF_PROBE_MEM mode can cause a fault
+> inside kernel. Append exception table for such instructions
+> within BPF program.
+
+Can you do the same for 32bit ?
+
 > 
-> You are right that driver was doing the the buffer splitting in previous
-> patch.
+> Unlike other archs which uses extable 'fixup' field to pass dest_reg
+> and nip, BPF exception table on PowerPC follows the generic PowerPC
+> exception table design, where it populates both fixup and extable
+> sections witin BPF program. fixup section contains two instructions,
+> first instruction clears dest_reg and 2nd jumps to next instruction
+> in the BPF code. extable 'insn' field contains relative offset of
+> the instruction and 'fixup' field contains relative offset of the
+> fixup entry. Example layout of BPF program with extable present:
 > 
-> The reason why I abandoned that is:
-> 1. Currently the meta-data of page in the driver is per desc, which means
->    it might not be able to use first half of a page for a desc, and the
->    second half of the same page for another desc, this ping-pong way of
->    reusing the whole page for only one desc in the driver seems unnecessary
->    and waste a lot of memory when there is already reusing in the page pool.
+>               +------------------+
+>               |                  |
+>               |                  |
+>     0x4020 -->| ld   r27,4(r3)   |
+>               |                  |
+>               |                  |
+>     0x40ac -->| lwz  r3,0(r4)    |
+>               |                  |
+>               |                  |
+>               |------------------|
+>     0x4280 -->| xor r27,r27,r27  |  \ fixup entry
+>               | b   0x4024       |  /
+>     0x4288 -->| xor r3,r3,r3     |
+>               | b   0x40b0       |
+>               |------------------|
+>     0x4290 -->| insn=0xfffffd90  |  \ extable entry
+>               | fixup=0xffffffec |  /
+>     0x4298 -->| insn=0xfffffe14  |
+>               | fixup=0xffffffec |
+>               +------------------+
 > 
-> 2. Easy use of API for the driver too, which means the driver uses
->    page_pool_dev_alloc_frag() and page_pool_put_full_page() for elevated
->    refcnt case, corresponding to page_pool_dev_alloc_pages() and
->    page_pool_put_full_page() for non-elevated refcnt case, the driver does
->    not need to worry about the meta-data of a page.
+>     (Addresses shown here are chosen random, not real)
 > 
-
-Ok that makes sense.  We'll need the complexity anyway and I said I don't
-have any strong opinions yet, we might as well make page_pool responsible
-for it.
-What we need to keep in mind is that page_pool was primarily used for XDP
-packets.  We need to make sure we have no performance regressions there.
-However I don't have access to > 10gbit NICs with XDP support. Can anyone
-apply the patchset and check the performance?
-
-> > 
-> >>
-
-[...]
-
-> >> Aside from the performance improvement, there is memory usage
-> >> decrease for 64K page size kernel, which means a 64K page can
-> >> be used by 32 description with 2k buffer size, and that is a
-> >> lot of memory saving for 64 page size kernel comparing to the
-> >> current split page reusing implemented in the driver.
-> >>
-> > 
-> > Whether the driver or page_pool itself keeps the meta-data, the outcome
-> > here won't change.  We'll still be able to use page frags.
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+> ---
+>   arch/powerpc/net/bpf_jit.h        |  5 ++-
+>   arch/powerpc/net/bpf_jit_comp.c   | 25 +++++++++----
+>   arch/powerpc/net/bpf_jit_comp32.c |  2 +-
+>   arch/powerpc/net/bpf_jit_comp64.c | 60 ++++++++++++++++++++++++++++++-
+>   4 files changed, 83 insertions(+), 9 deletions(-)
 > 
-> As above, it is the ping-pong way of reusing when the driver keeps the
-> meta-data, and it is page-frag way of reusing when the page pool keeps
-> the meta-data.
+> diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
+> index 411c63d945c7..e9408ad190d3 100644
+> --- a/arch/powerpc/net/bpf_jit.h
+> +++ b/arch/powerpc/net/bpf_jit.h
+> @@ -141,8 +141,11 @@ struct codegen_context {
+>   	unsigned int idx;
+>   	unsigned int stack_size;
+>   	int b2p[ARRAY_SIZE(b2p)];
+> +	unsigned int exentry_idx;
+>   };
+>   
+> +#define BPF_FIXUP_LEN	8 /* Two instructions */
+> +
+>   static inline void bpf_flush_icache(void *start, void *end)
+>   {
+>   	smp_wmb();	/* smp write barrier */
+> @@ -166,7 +169,7 @@ static inline void bpf_clear_seen_register(struct codegen_context *ctx, int i)
+>   
+>   void bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func);
+>   int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
+> -		       u32 *addrs);
+> +		       u32 *addrs, int pass);
+>   void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx);
+>   void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx);
+>   void bpf_jit_realloc_regs(struct codegen_context *ctx);
+> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+> index a9585e52a88d..3ebd8897cf09 100644
+> --- a/arch/powerpc/net/bpf_jit_comp.c
+> +++ b/arch/powerpc/net/bpf_jit_comp.c
+> @@ -89,6 +89,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   {
+>   	u32 proglen;
+>   	u32 alloclen;
+> +	u32 extable_len = 0;
+> +	u32 fixup_len = 0;
+
+Setting those to 0 doesn't seem to be needed, as it doesn't seem to exist any path to skip the 
+setting below. You should not perform unnecessary init at declaration as it is error prone.
+
+>   	u8 *image = NULL;
+>   	u32 *code_base;
+>   	u32 *addrs;
+> @@ -131,7 +133,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   		image = jit_data->image;
+>   		bpf_hdr = jit_data->header;
+>   		proglen = jit_data->proglen;
+> -		alloclen = proglen + FUNCTION_DESCR_SIZE;
+>   		extra_pass = true;
+>   		goto skip_init_ctx;
+>   	}
+> @@ -149,7 +150,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   	cgctx.stack_size = round_up(fp->aux->stack_depth, 16);
+>   
+>   	/* Scouting faux-generate pass 0 */
+> -	if (bpf_jit_build_body(fp, 0, &cgctx, addrs)) {
+> +	if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0)) {
+>   		/* We hit something illegal or unsupported. */
+>   		fp = org_fp;
+>   		goto out_addrs;
+> @@ -162,7 +163,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   	 */
+>   	if (cgctx.seen & SEEN_TAILCALL) {
+>   		cgctx.idx = 0;
+> -		if (bpf_jit_build_body(fp, 0, &cgctx, addrs)) {
+> +		if (bpf_jit_build_body(fp, 0, &cgctx, addrs, 0)) {
+>   			fp = org_fp;
+>   			goto out_addrs;
+>   		}
+> @@ -177,8 +178,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   	bpf_jit_build_prologue(0, &cgctx);
+>   	bpf_jit_build_epilogue(0, &cgctx);
+>   
+> +	fixup_len = fp->aux->num_exentries * BPF_FIXUP_LEN;
+> +	extable_len = fp->aux->num_exentries * sizeof(struct exception_table_entry);
+> +
+>   	proglen = cgctx.idx * 4;
+> -	alloclen = proglen + FUNCTION_DESCR_SIZE;
+> +	alloclen = proglen + FUNCTION_DESCR_SIZE + fixup_len + extable_len;
+>   
+>   	bpf_hdr = bpf_jit_binary_alloc(alloclen, &image, 4, bpf_jit_fill_ill_insns);
+>   	if (!bpf_hdr) {
+> @@ -186,6 +190,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   		goto out_addrs;
+>   	}
+>   
+> +	if (extable_len) {
+> +		fp->aux->extable = (void *)image + FUNCTION_DESCR_SIZE +
+> +				   proglen + fixup_len;
+> +	}
+> +
+>   skip_init_ctx:
+>   	code_base = (u32 *)(image + FUNCTION_DESCR_SIZE);
+>   
+> @@ -210,7 +219,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   		/* Now build the prologue, body code & epilogue for real. */
+>   		cgctx.idx = 0;
+>   		bpf_jit_build_prologue(code_base, &cgctx);
+> -		bpf_jit_build_body(fp, code_base, &cgctx, addrs);
+> +		if (bpf_jit_build_body(fp, code_base, &cgctx, addrs, pass)) {
+> +			bpf_jit_binary_free(bpf_hdr);
+> +			fp = org_fp;
+> +			goto out_addrs;
+> +		}
+>   		bpf_jit_build_epilogue(code_base, &cgctx);
+>   
+>   		if (bpf_jit_enable > 1)
+> @@ -234,7 +247,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>   
+>   	fp->bpf_func = (void *)image;
+>   	fp->jited = 1;
+> -	fp->jited_len = alloclen;
+> +	fp->jited_len = proglen + FUNCTION_DESCR_SIZE;
+>   
+>   	bpf_flush_icache(bpf_hdr, (u8 *)bpf_hdr + (bpf_hdr->pages * PAGE_SIZE));
+>   	if (!fp->is_func || extra_pass) {
+
+This hunk does not apply on latest powerpc tree. You are missing commit 62e3d4210ac9c
+
+
+> diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+> index 1f81bea35aab..23ab5620a45a 100644
+> --- a/arch/powerpc/net/bpf_jit_comp32.c
+> +++ b/arch/powerpc/net/bpf_jit_comp32.c
+> @@ -266,7 +266,7 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
+>   
+>   /* Assemble the body code between the prologue & epilogue */
+>   int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
+> -		       u32 *addrs)
+> +		       u32 *addrs, int pass)
+>   {
+>   	const struct bpf_insn *insn = fp->insnsi;
+>   	int flen = fp->len;
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index 984177d9d394..1884c6dca89a 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -270,9 +270,51 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
+>   	/* out: */
+>   }
+>   
+> +static int add_extable_entry(struct bpf_prog *fp, u32 *image, int pass,
+> +			     u32 code, struct codegen_context *ctx, int dst_reg)
+> +{
+> +	off_t offset;
+> +	unsigned long pc;
+> +	struct exception_table_entry *ex;
+> +	u32 *fixup;
+> +
+> +	/* Populate extable entries only in the last pass */
+> +	if (pass != 2 || BPF_MODE(code) != BPF_PROBE_MEM)
+
+'code' is only used for that test, can you do the test before calling add_extable_entry() ?
+
+> +		return 0;
+> +
+> +	if (!fp->aux->extable ||
+> +	    WARN_ON_ONCE(ctx->exentry_idx >= fp->aux->num_exentries))
+> +		return -EINVAL;
+> +
+> +	pc = (unsigned long)&image[ctx->idx - 1];
+
+You should call this function before incrementing ctx->idx
+
+> +
+> +	fixup = (void *)fp->aux->extable -
+> +		(fp->aux->num_exentries * BPF_FIXUP_LEN) +
+> +		(ctx->exentry_idx * BPF_FIXUP_LEN);
+> +
+> +	fixup[0] = PPC_RAW_XOR(dst_reg, dst_reg, dst_reg);
+
+Prefered way to clear a reg in according to ISA is to do 'li reg, 0'
+
+> +	fixup[1] = (PPC_INST_BRANCH |
+> +		   (((long)(pc + 4) - (long)&fixup[1]) & 0x03fffffc));
+
+Would be nice if we could have a PPC_RAW_BRANCH() stuff, we could do something like 
+PPC_RAW_BRANCH((long)(pc + 4) - (long)&fixup[1])
+
+
+> +
+> +	ex = &fp->aux->extable[ctx->exentry_idx];
+> +
+> +	offset = pc - (long)&ex->insn;
+> +	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
+> +		return -ERANGE;
+> +	ex->insn = offset;
+> +
+> +	offset = (long)fixup - (long)&ex->fixup;
+> +	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
+> +		return -ERANGE;
+> +	ex->fixup = offset;
+> +
+> +	ctx->exentry_idx++;
+> +	return 0;
+> +}
+> +
+>   /* Assemble the body code between the prologue & epilogue */
+>   int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
+> -		       u32 *addrs)
+> +		       u32 *addrs, int pass)
+>   {
+>   	const struct bpf_insn *insn = fp->insnsi;
+>   	int flen = fp->len;
+> @@ -710,25 +752,41 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>   		 */
+>   		/* dst = *(u8 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_B:
+> +		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
+
+Could do:
++		case BPF_LDX | BPF_PROBE_MEM | BPF_B:
++			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
++			if (ret)
++				return ret;
+   		case BPF_LDX | BPF_MEM | BPF_B:
+
+>   			EMIT(PPC_RAW_LBZ(dst_reg, src_reg, off));
+>   			if (insn_is_zext(&insn[i + 1]))
+>   				addrs[++i] = ctx->idx * 4;
+> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
+> +			if (ret)
+> +				return ret;
+>   			break;
+>   		/* dst = *(u16 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_H:
+> +		case BPF_LDX | BPF_PROBE_MEM | BPF_H:
+>   			EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
+>   			if (insn_is_zext(&insn[i + 1]))
+>   				addrs[++i] = ctx->idx * 4;
+> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
+> +			if (ret)
+> +				return ret;
+>   			break;
+>   		/* dst = *(u32 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_W:
+> +		case BPF_LDX | BPF_PROBE_MEM | BPF_W:
+>   			EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
+>   			if (insn_is_zext(&insn[i + 1]))
+>   				addrs[++i] = ctx->idx * 4;
+> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
+> +			if (ret)
+> +				return ret;
+>   			break;
+>   		/* dst = *(u64 *)(ul) (src + off) */
+>   		case BPF_LDX | BPF_MEM | BPF_DW:
+> +		case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
+>   			PPC_BPF_LL(dst_reg, src_reg, off);
+> +			ret = add_extable_entry(fp, image, pass, code, ctx, dst_reg);
+> +			if (ret)
+> +				return ret;
+>   			break;
+>   
+>   		/*
 > 
-> I am not sure if the page-frag way of reusing is possible when we still
-> keep the meta-data in the driver, which seems very complex at the initial
-> thinking.
-> 
-
-Fair enough. It's complex in both scenarios so if people think it's useful
-I am not against adding it in the API.
-
-
-Thanks
-/Ilias
-> > 
-> > 
-> > Cheers
-> > /Ilias
-> >>
-> >>>
-> >>>  __page_frag_cache_refill() + __page_frag_cache_drain() + page_frag_alloc_align()
-> >>>
-> >>>
-> >>
-> >> [...]
-> > .
-> > 
