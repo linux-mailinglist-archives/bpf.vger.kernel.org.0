@@ -2,133 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05AE3BDFA7
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 01:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB8B3BDFB9
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 01:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhGFXOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 19:14:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230012AbhGFXOL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 19:14:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7234E61CB0;
-        Tue,  6 Jul 2021 23:11:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625613092;
-        bh=EOwCeWrO1xda1Q1l3BgEjdJEqMXFJtlECZzdKuyENmg=;
+        id S230026AbhGFXXE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 19:23:04 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:42192 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhGFXXE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 19:23:04 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        by linux.microsoft.com (Postfix) with ESMTPSA id EEDBB20B8763;
+        Tue,  6 Jul 2021 16:20:24 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EEDBB20B8763
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1625613625;
+        bh=+B2RyBYE0y86L8yJkdHeDMZTG4ZuIZ21amffRovnID0=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Lpc+5ak7jRQozvjHcl2dFyXzsGreTkw3jC0fi9DmL8BfDe30k+Ch7l4BUi5NOqzca
-         Mddo7dHf+oVj1iHZozqNjRTBhobLL49Xy69cTqrMSV3blwcMswaQG9OnHU/nGY8JtL
-         FjlnUZlG/OKm/Vd0NK87+xR4YRyRVNAZUWgEXYOyUInRXn8+Crho2tzIdeYPc1MYlT
-         WQpsJpPjpbATI3FL4zZlTZbGn/TPOOBc6Si7Q0qZpmGvAEtkkuPh1DneXwDztG3gGw
-         eTbSkiReq6NkU4tL3MsdE4tSAG0sEMCMzbUto+i43HZlp+rvDQoBkPyo1mar3BBs48
-         HqtKahBgKWr3A==
-Received: by mail-lj1-f179.google.com with SMTP id k8so228042lja.4;
-        Tue, 06 Jul 2021 16:11:32 -0700 (PDT)
-X-Gm-Message-State: AOAM532nOZWngzjnMaotexetZHnZZ+8Thv5EDEDvDGn6sQZaI/w/NA9+
-        2vLTk21wlIA+OvPIjZfVSNXrMeAoLUyKXlcdlGQ=
-X-Google-Smtp-Source: ABdhPJzbyZggoQgHXszIIbrZCG7wCB7WIbfCbZIDFecoKGN4kVmYEnr8QixAH0LCuXep0FVddJFAS60XmnvyB69L6TQ=
-X-Received: by 2002:a2e:6a07:: with SMTP id f7mr8954651ljc.506.1625613090714;
- Tue, 06 Jul 2021 16:11:30 -0700 (PDT)
+        b=i8+3otj2+n6kuZyF3CxQ3ICAGTAFbCGsxjhAichRnN5quDMAf7WJMNGGpTj+mFh6W
+         XnYk+qVNIWJXayNCBPdx7X0B3L/NVFf8F3OzroPT8pygwnI15nC6/pYEI6ieIS7cC6
+         fQw/OEkcRdvTzAtv/fSXOnkuUyC7083HO7zFdgow=
+Received: by mail-oi1-f179.google.com with SMTP id h9so1253019oih.4;
+        Tue, 06 Jul 2021 16:20:24 -0700 (PDT)
+X-Gm-Message-State: AOAM531CYhO4IwMRTEvjQ7SdI0hfu19EALz6XsjBcRqpOCzSwzRdByPs
+        mLfT7ALRX+Ub+3WwH6j97uyGFINR7mpSt98vDHs=
+X-Google-Smtp-Source: ABdhPJwvODCWG0AeXR+9oECO+x2o6a1FUtOPxOFl78LnDVCsndsRrY7L/qQ1u0pK80Ldg6T8UkI2OFAHz5YoRYK66/Y=
+X-Received: by 2002:a17:90a:650b:: with SMTP id i11mr22926182pjj.39.1625613613347;
+ Tue, 06 Jul 2021 16:20:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210706174409.15001-1-vjsanjay@gmail.com> <b87ad042-eaf0-d1ac-6760-b3c92439655d@fb.com>
- <CAEf4BzZidvzFjw=m3zEmnrVhNYhrmy1pV-XgAfxMvgrb8Snw8w@mail.gmail.com>
-In-Reply-To: <CAEf4BzZidvzFjw=m3zEmnrVhNYhrmy1pV-XgAfxMvgrb8Snw8w@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 6 Jul 2021 16:11:19 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4EeY9CHE73Sy6zdteLhj6G-f+M9jSxrPuXpE81tPZoeA@mail.gmail.com>
-Message-ID: <CAPhsuW4EeY9CHE73Sy6zdteLhj6G-f+M9jSxrPuXpE81tPZoeA@mail.gmail.com>
-Subject: Re: [PATCH] tools/runqslower: use __state instead of state
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, SanjayKumar J <vjsanjay@gmail.com>,
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <20210702153947.7b44acdf@linux.microsoft.com> <20210706155131.GS22278@shell.armlinux.org.uk>
+In-Reply-To: <20210706155131.GS22278@shell.armlinux.org.uk>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 7 Jul 2021 01:19:37 +0200
+X-Gmail-Original-Message-ID: <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com>
+Message-ID: <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page pool
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        feng.tang@intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 3:05 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Jul 6, 2021 at 5:51 PM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
 >
-> On Tue, Jul 6, 2021 at 11:26 AM Yonghong Song <yhs@fb.com> wrote:
+> On Fri, Jul 02, 2021 at 03:39:47PM +0200, Matteo Croce wrote:
+> > On Wed, 30 Jun 2021 17:17:54 +0800
+> > Yunsheng Lin <linyunsheng@huawei.com> wrote:
 > >
-> >
-> >
-> > On 7/6/21 10:44 AM, SanjayKumar J wrote:
-> > >       task->state is renamed to task->__state in task_struct
-> >
-> > Could you add a reference to
-> >    2f064a59a11f ("sched: Change task_struct::state")
-> > which added this change?
-> >
-> > I think this should go to bpf tree as the change is in linus tree now.
-> > Could you annotate the tag as "[PATCH bpf]" ("[PATCH bpf v2]")?
-> >
-> > Please align comments to the left without margins.
-> >
+> > > This patchset adds elevated refcnt support for page pool
+> > > and enable skb's page frag recycling based on page pool
+> > > in hns3 drvier.
 > > >
-> > >       Signed-off-by: SanjayKumar J <vjsanjay@gmail.com>
-> >
-> > This Singed-off-by is not needed.
-> >
-> > You can add my Ack in the next revision:
-> > Acked-by: Yonghong Song <yhs@fb.com>
-> >
+> > > Yunsheng Lin (2):
+> > >   page_pool: add page recycling support based on elevated refcnt
+> > >   net: hns3: support skb's frag page recycling based on page pool
 > > >
-> > > Signed-off-by: SanjayKumar J <vjsanjay@gmail.com>
-> > > ---
-> > >   tools/bpf/runqslower/runqslower.bpf.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
+> > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
+> > >  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
+> > >  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
+> > >  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
+> > >  include/linux/mm_types.h                           |   2 +-
+> > >  include/linux/skbuff.h                             |   4 +-
+> > >  include/net/page_pool.h                            |  30 ++-
+> > >  net/core/page_pool.c                               | 215
+> > > +++++++++++++++++---- 9 files changed, 285 insertions(+), 57
+> > > deletions(-)
 > > >
-> > > diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
-> > > index 645530ca7e98..ab9353f2fd46 100644
-> > > --- a/tools/bpf/runqslower/runqslower.bpf.c
-> > > +++ b/tools/bpf/runqslower/runqslower.bpf.c
-> > > @@ -74,7 +74,7 @@ int handle__sched_switch(u64 *ctx)
-> > >       u32 pid;
-> > >
-> > >       /* ivcsw: treat like an enqueue event and store timestamp */
-> > > -     if (prev->state == TASK_RUNNING)
-> > > +     if (prev->__state == TASK_RUNNING)
 > >
-> > Currently, runqslower.bpf.c uses vmlinux.h.
-> > I am thinking to use bpf_core_field_exists(), but we need to
-> > single out task_struct structure from vmlinux.h
-> > with both state and __state fields, we could make it work
-> > by *changes* like
-> >
-> > #define task_struct task_struct_orig
-> > #include "vmlinux.h"
-> > #undef task_struct
-> >
-> > struct task_struct {
-> >     ... state;
-> >     ... __state;
-> > ...
-> > };
+> > Interesting!
+> > Unfortunately I'll not have access to my macchiatobin anytime soon, can
+> > someone test the impact, if any, on mvpp2?
 >
+> I'll try to test. Please let me know what kind of testing you're
+> looking for (I haven't been following these patches, sorry.)
 >
-> no need for such surgery, recommended way is to use ___suffix to
-> declare incompatible struct definition:
->
-> struct task_struct___old {
->     int state;
-> };
->
-> Then do casting in BPF code. We don't have to do it in kernel tree's
-> runqslower, but we'll definitely have to do that for libbpf-tools'
-> runqslower and runqlat.
 
-Question on this topic: state and __state are of different sizes here. IIUC,
-bpf_core_types_are_compat() does allow size mismatch. But it may cause
-problems in some cases, no? For example, would some combination make
-task->state return 32 extra bits from another field and cause confusion?
+A drop test or L2 routing will be enough.
+BTW I should have the macchiatobin back on friday.
 
-Thanks,
-Song
+Regards,
+-- 
+per aspera ad upstream
