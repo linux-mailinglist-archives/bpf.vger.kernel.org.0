@@ -2,276 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B707D3BDC3E
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 19:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658C03BDC53
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 19:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhGFR1E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 13:27:04 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:37439 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230412AbhGFR1D (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Jul 2021 13:27:03 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 13F3A5C00B3;
-        Tue,  6 Jul 2021 13:24:24 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 06 Jul 2021 13:24:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FBnl1UeduKaNbL/mj
-        UcgXJhB1KYKZjzQiSFrffwWEdM=; b=jxzdBVuOQjuF+hDKd6Kbqxz24pNAV1Lrj
-        q68XPXG/ov4u2YGhxneYOd6FzrQe+tlrIFfRXx0V6Fxlcb1sojLJxPYsB82PM8j+
-        LNaqTnng7ZlGfhH9I6YMa1VS8tFOakiS2SpuQ4AR+gRGxP4cRLVcSf6NhSmpyxVg
-        WT1cJF1S7/fgo1WG5966GsBCIQjNe9BBDe0VJGsqX5aEY1SdEG9d9yDFaoNJFMdJ
-        2+yJvOqEm5otGBuJns15xgo042xuTT8qME5dKw+H8D3Y7Ihp4pPWmyBX3RV/mT4C
-        Iot2V2usLGullM5DY9V4ZDzxQ0N8sflDJz8PZDRJYOO+OUdM+YtyA==
-X-ME-Sender: <xms:x5HkYBDQFe0SPsd96L6N8QooXQrBOpB4Wia8t6T3xX5_O3dw3ovsTQ>
-    <xme:x5HkYPgS7oH0BSzOO8m6xpqbgHrMB_iiLMtiMX4aqoJGlTgtW9JZHwl5cCXpxa84A
-    gXvljw8l9AK6Y9v1W4>
-X-ME-Received: <xmr:x5HkYMk7abuK2cDBBMWqSMDvADMSpUwQuVbhur6qBdRB-RDRQFL3-aWr_4_8A-4W2tvnPw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtddtgdejtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeforghrthihnhgrshcurfhumhhpuhhtihhsuceomheslhgrmhgsuggr
-    rdhltheqnecuggftrfgrthhtvghrnhepuefhfedvheelieduhedvveeiffdtleehieduue
-    ehjeejtdekuddvtdffheeuleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepmheslhgrmhgsuggrrdhlth
-X-ME-Proxy: <xmx:x5HkYLx2tAdTmnpBA9bGOcgWse5xa6O5cNubPWmgUB4nkGubuV5_QA>
-    <xmx:x5HkYGQ6FyR_kCKcrfZDwhaI4SDJFYmf-UxoAgioyFutTm4ogdCGuw>
-    <xmx:x5HkYOZQcElQUhaDPpPY9GFMPewO93APYfoC9ZKgON3s9u-EeMfdFA>
-    <xmx:yJHkYBewgV1iDdVxBNJM3a5LQfRw-DHC2IkGnymIa6u9eriTTq-vzg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 6 Jul 2021 13:24:21 -0400 (EDT)
-From:   Martynas Pumputis <m@lambda.lt>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        m@lambda.lt
-Subject: [PATCH bpf] libbpf: fix reuse of pinned map on older kernel
-Date:   Tue,  6 Jul 2021 19:26:19 +0200
-Message-Id: <20210706172619.579001-1-m@lambda.lt>
-X-Mailer: git-send-email 2.32.0
+        id S230348AbhGFRcq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 13:32:46 -0400
+Received: from mail-mw2nam10on2095.outbound.protection.outlook.com ([40.107.94.95]:28768
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229949AbhGFRcq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 13:32:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VurmsM6iE6bwa4dAhB9n67/YS3eBx3h739mSltVZ45BMtKrDe5/zRfU4okcTvWGF2M8OjnKLbysPtR3UVVLQoExWkJLvS1/zb6y9I1voWs4ReWUITtcS8OCdNDIPdrF1oHV+y/Dmb1tNqV9OZ6Nmo9EEF7smKKeb3sj0S05PPpznjz7IdngHYo5m/voM7Rss+RiNA9+zih0Dw6QahH+ooDB/ICbiBRXbll8TKZNvpnEFCBO+zlFgztjfPlOc/XWKjDKg0GkOiA5KA8Ix3FS0Tr3wVA+/htt5/+ERRRLlKCBG4RD/vIa3qV67Ihrsl8jk5h+N4WBEbYtQJ2bUOL21qA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LCF2hksrfQ7/y5wMyivt97kVRTpxa/wFU9hOU/Ucceg=;
+ b=gQJlwlAyTrrXZZLEEHvX9AnVjwK+t7dodipciC7XxrzWX7DwjUdgkux8D+7cW9WNi0fCfqRPkncM7O8V6Db4iyNS38dnxJn8T0zAeF8o9nqkkGv587r8J1hcGg1tvMJgfgFo8ZzO3ZM+YieoutSfOWnrym5U6l7DVyl2HSz68bo6eU1u5HYEAsSp5GdWB/qdTP+7jA8x4xi9jh0Z0/L1Tsf+KGlcFzU+LjoNootFXxq1KC+Wzfyjt0PRqMja8bLpgcRnfu7ltCbccDFFLyh2Yw9Wfi/FKmfVzxPovnyJm9FBEYJAwK5bbxz1bj3ZcY/nC6rSeRvoQa6qTZKDlFhGvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LCF2hksrfQ7/y5wMyivt97kVRTpxa/wFU9hOU/Ucceg=;
+ b=WW5iIh1ZVCUHH8SKFfC7o2tLO2AUdbny3VE7d1ar/t1/jw7tzcenIBGfXNOEyRnSdkAmk9BLc1QcZ6FUZ+5XvDMRPbzv6mgdGkdKF14LFJDb40XXZ5dKVXvGK/PcKv4rcI5i4Ym5Cti0UCebotfNeukmFzOv3wSC+VJRiYatg8c=
+Received: from CH2PR21MB1430.namprd21.prod.outlook.com (2603:10b6:610:80::17)
+ by CH2PR21MB1414.namprd21.prod.outlook.com (2603:10b6:610:87::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.5; Tue, 6 Jul
+ 2021 17:30:05 +0000
+Received: from CH2PR21MB1430.namprd21.prod.outlook.com
+ ([fe80::501b:91a2:627a:a246]) by CH2PR21MB1430.namprd21.prod.outlook.com
+ ([fe80::501b:91a2:627a:a246%9]) with mapi id 15.20.4308.019; Tue, 6 Jul 2021
+ 17:30:05 +0000
+From:   Alan Jowett <Alan.Jowett@microsoft.com>
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Signing of BPF programs as root delegation
+Thread-Topic: Signing of BPF programs as root delegation
+Thread-Index: Addyg5mKtHzGdYFdTFOhNdLsdiul7w==
+Date:   Tue, 6 Jul 2021 17:30:05 +0000
+Message-ID: <CH2PR21MB1430287CC594A28B1FC473EAFA1B9@CH2PR21MB1430.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=89c66d18-6fe0-4f10-9928-8f1729042599;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-07-06T16:24:19Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 78b5549b-b2db-40d7-2e2e-08d940a3b1a7
+x-ms-traffictypediagnostic: CH2PR21MB1414:
+x-microsoft-antispam-prvs: <CH2PR21MB14149780B63A690054568818FA1B9@CH2PR21MB1414.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Ui6+38JWn1GgkyF9elOVxCBxHZyF65wj3QS8KwTQloTNcH9jEKe2KbdViTW8+TeT9wiJpmsiUXzBnC2uuRpUrPOdCY+ELYZ1grkZTHYDcD0vROGc7bvvraiCsRhaS52xR0QGmiyzGsIAhWnhDsCW5HfHpp2prpL6sf2NwQZD7+XUr/JFv0cQ84MetuGMzz8in5bd/zRjCl/9igUbLi0Is5tTvK09H6Hk9jhvNnJ2XyVhJ0Z4ivs97HgQVsl/VpQvPmdyvGMSD4dOjB3nZCnPP2aYuHChQrqWIlLSUb7RrvfG/PWnU7D9y81k8TtPy1mXzpM+/4ES3jmmHAB9TyrFYHSE/Tzr55TWM1r8NFO1p0RNWW93h8H8NSgpw32FFr1FQNraxiRTokNhiLuZDto+pOxTSURzJSDWqlD8ejVBJiMJufkYr5WMZY0LvDtJI5XubDA9k/GZD+kPmAfsd79yUvslHM52vVVUX0r8ezaaU3iKONG7yYPG41VkX0Tku+s8ykBfeL0WuVD0qfAJdr57PWQF9er10lf8XkIfaz4eRaneznExqpWLvFbEgLFaxKTjwNhRw8y1Pp6ks4IhuNsGMQFDgtwt6OxWzkCJ/7MjYAmby295RO3o8I5X8Z2lee5PzM/UdrbDSS46ff5S4ow7GC2HrU8B553WCNvJNxpTPdijhC8XRHdIDjlChA9hqIZBNJsp8uU9oyj/yawypl0yjTdOE7cZa76e/yWBnvt19mc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR21MB1430.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(71200400001)(26005)(66446008)(122000001)(33656002)(2906002)(38100700002)(64756008)(66476007)(7696005)(86362001)(66556008)(6506007)(66946007)(478600001)(8990500004)(6916009)(55016002)(10290500003)(9686003)(52536014)(5660300002)(8936002)(82950400001)(82960400001)(316002)(83380400001)(76116006)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?eXKLYLrr/3Z/Js+i30n9rmiuzQ8IJ10W+14qXhkt8NbS155Ex8IFVnFY6a2s?=
+ =?us-ascii?Q?/3InzqlF4YsN2z1sH2UaaRLmevBagB9eT1+52Bykv1b4jszEF00azdyiadrO?=
+ =?us-ascii?Q?L4b47RvBvmVXkSEvvXZCXRMMdgJCR7hkyaOAulL865wkpCW73X8EMHWxdNXS?=
+ =?us-ascii?Q?LtdqbfVQl3Rp5xR4xWM7TfK6UiZHg91MYoeqehUfH9glk7aEuuy7RvXfPjDV?=
+ =?us-ascii?Q?ohTn/yGvb0PIHTrJYNNDvGAYKXRRQt0VUmJY811AmpmuJmE9vqU7aKQbNVZv?=
+ =?us-ascii?Q?8xwAp1tnZdU9yD9p09LAVob2DChuDDMcQE7Js5u/z7P8DhYFk9M+PHNcFqrE?=
+ =?us-ascii?Q?k+Von++g3mM0ynCnqWSznarwwsUOeBVfkIi6d4i37xMwH22eX86hasX8TqFT?=
+ =?us-ascii?Q?OzrXiwatP6W4r5qL/edBY3zZEBvIKkjDrQdE3sLp0zb6uZg25rV06GZYWsAT?=
+ =?us-ascii?Q?Pp6GeEprVE2t+Kdt9SRKdhkvPeCZE1YFksqb510uGghFkv1OFmhlyqDfpHil?=
+ =?us-ascii?Q?IKcO/e1mRY5EhThgPHzTqPbFX3a1UXu0TCwDmf2oPwenHb6RgEky6FTEXm0V?=
+ =?us-ascii?Q?d+kjAC8dD3JSoypSmyCxSLCNLmBpnPpDZ3MpYxBKOX8kLKfiwXtdR6uzg8wV?=
+ =?us-ascii?Q?bP0PfODT9EbwloiBZnRaEfFavp/NSdTrauTB0Y49sRc2VJDubfQXyKqt3GF2?=
+ =?us-ascii?Q?pCJtGswx4FCoDfZuvq8pjTR4f0LAIwAPucrk/r8ffN7xs/bttdKElFXMVcja?=
+ =?us-ascii?Q?0wNaRpmRMoUFvxLYgnlojIyW6j2ht6Vzt4N0kMRB1TF/014khkAkg7xdn+k6?=
+ =?us-ascii?Q?7VLRpEKtVVWwCrF1rUyfj6gUslpqbYKOtUADpgbwEp2/Ww4AMpPK6Ic1ujSu?=
+ =?us-ascii?Q?CQc99v0lULntQiQ7IbZc6fgLpe2C1/GBb8FQe31VAiu3oT6l9EEg9BvxqLaW?=
+ =?us-ascii?Q?05g/bNhf1BU6B27zlrGh4euOtVPCrZyE0lUKb63iZfGw6kTuOZWtXEbxw7n1?=
+ =?us-ascii?Q?frIrxXZMlFBjBv4VVjUVYfaNMV5lXc0JIx+QN6pP0+eGJmiP49Q8aJjfqPQw?=
+ =?us-ascii?Q?9TQXlnpqX75GiaQkAJqZYDjOUN6nTkxidXxxBlyLDDG6BeWNFvCLQqbIavkE?=
+ =?us-ascii?Q?EiiXQpgWs1648dyMTs1ml0OYoQXtaNlZPjdS4sAPifZEUSlonT7vJj9woKhj?=
+ =?us-ascii?Q?RTZKb+GV8/lAV1JykJbaAmO2Qe67CXfgIkiFYsvfvtpdv7J5EoTmRBbpc3KL?=
+ =?us-ascii?Q?x8G7HbdI4rbPPs+Qa29ToZIsTocYe0F9gNL4i6wtKHYCRoldeLax5dktoaU+?=
+ =?us-ascii?Q?Quc9Roinv4jaZ8x+xNPB/YJC?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR21MB1430.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78b5549b-b2db-40d7-2e2e-08d940a3b1a7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2021 17:30:05.2791
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1saWxVviyo6CmXNQnW7N4GoKzHVOJM0bLKJC95O6K2JrpD9P9TbL0m8ENGVeFeDPCuSR0Fu5zXm9bwk7obp5dg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR21MB1414
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When loading a BPF program with a pinned map, the loader checks whether
-the pinned map can be reused, i.e. their properties match. To derive
-such of the pinned map, the loader invokes BPF_OBJ_GET_INFO_BY_FD and
-then does the comparison.
+BPF folks,
 
-Unfortunately, on < 4.12 kernels the BPF_OBJ_GET_INFO_BY_FD is not
-available, so loading the program fails with the following error:
+Quick question: Has anyone considered using signing of BPF programs as comp=
+romise between completely denying non-root from loading eBPF programs and p=
+ermitting non-root to load any eBPF programs?
 
-	libbpf: failed to get map info for map FD 5: Invalid argument
-	libbpf: couldn't reuse pinned map at
-		'/sys/fs/bpf/tc/globals/cilium_call_policy': parameter
-		mismatch"
-	libbpf: map 'cilium_call_policy': error reusing pinned map
-	libbpf: map 'cilium_call_policy': failed to create:
-		Invalid argument(-22)
-	libbpf: failed to load object 'bpf_overlay.o'
+Problem statement:
+A large set of security issues have arisen because of permitting non-root t=
+o verify and load eBPF programs into the kernel. These range from Specter s=
+tyle speculative load side channel attacks to verification failures. The de=
+sire exists to permit programs that use eBPF to run as non-root as an effor=
+t to run with least privilege, but this conflicts with the desire to limit =
+eBPF program loading to root only.
 
-To fix this, probe the kernel for BPF_OBJ_GET_INFO_BY_FD support. If it
-doesn't support, then fallback to derivation of the map properties via
-/proc/$PID/fdinfo/$MAP_FD.
+Proposal:
+Enable signing enforcement of eBPF programs (https://lwn.net/Articles/85348=
+9/) and permit root to set a policy that permits non-root to only load eBPF=
+ programs signed by root. This would allow root to delegate permission to l=
+oad specific eBPF programs to a non-root entity while continuing to block l=
+oading of arbitrary eBPF programs. Root could then verify the provenance of=
+ eBPF programs and then sign them only if they are from a safe source and h=
+ave been compiled with appropriate speculative load hardening. This approac=
+h would appear to give the benefits of least privilege while also controlli=
+ng what is loaded into the kernel address space.
 
-Signed-off-by: Martynas Pumputis <m@lambda.lt>
----
- tools/lib/bpf/libbpf.c | 103 +++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 92 insertions(+), 11 deletions(-)
+Background:
+The eBPF for Windows (https://github.com/microsoft/ebpf-for-windows) team i=
+s exploring security hardening options and one of the options on the table =
+is to use signing to restrict loading of eBPF programs to those designated =
+as trusted. The desire exists to maintain a similar security model on all p=
+latforms on which eBPF is supported, hence reaching out to you folks.=20
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ac882e1..f3daed3 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -193,6 +193,8 @@ enum kern_feature_id {
- 	FEAT_MODULE_BTF,
- 	/* BTF_KIND_FLOAT support */
- 	FEAT_BTF_FLOAT,
-+	/* BPF_OBJ_GET_INFO_BY_FD support */
-+	FEAT_OBJ_GET_INFO_BY_FD,
- 	__FEAT_CNT,
- };
- 
-@@ -3920,14 +3922,54 @@ static int bpf_map_find_btf_info(struct bpf_object *obj, struct bpf_map *map)
- 	return 0;
- }
- 
--int bpf_map__reuse_fd(struct bpf_map *map, int fd)
-+static int bpf_get_map_info_from_fdinfo(int fd, struct bpf_map_info *info)
-+{
-+	char file[PATH_MAX], buff[4096];
-+	FILE *fp;
-+	__u32 val;
-+	int err;
-+
-+	snprintf(file, sizeof(file), "/proc/%d/fdinfo/%d", getpid(), fd);
-+	memset(info, 0, sizeof(*info));
-+
-+	fp = fopen(file, "r");
-+	if (!fp) {
-+		err = -errno;
-+		pr_warn("failed to open %s: %d. No procfs support?\n", file,
-+			err);
-+		return err;
-+	}
-+
-+	while (fgets(buff, sizeof(buff), fp)) {
-+		if (sscanf(buff, "map_type:\t%u", &val) == 1)
-+			info->type = val;
-+		else if (sscanf(buff, "key_size:\t%u", &val) == 1)
-+			info->key_size = val;
-+		else if (sscanf(buff, "value_size:\t%u", &val) == 1)
-+			info->value_size = val;
-+		else if (sscanf(buff, "max_entries:\t%u", &val) == 1)
-+			info->max_entries = val;
-+		else if (sscanf(buff, "map_flags:\t%i", &val) == 1)
-+			info->map_flags = val;
-+	}
-+
-+	fclose(fp);
-+
-+	return 0;
-+}
-+
-+static int bpf_map__reuse_fd_safe(struct bpf_object *obj, struct bpf_map *map,
-+				  int fd)
- {
- 	struct bpf_map_info info = {};
- 	__u32 len = sizeof(info);
- 	int new_fd, err;
- 	char *new_name;
- 
--	err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+	if (obj == NULL || kernel_supports(obj, FEAT_OBJ_GET_INFO_BY_FD))
-+		err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+	else
-+		err = bpf_get_map_info_from_fdinfo(fd, &info);
- 	if (err)
- 		return libbpf_err(err);
- 
-@@ -3974,6 +4016,11 @@ err_free_new_name:
- 	return libbpf_err(err);
- }
- 
-+int bpf_map__reuse_fd(struct bpf_map *map, int fd)
-+{
-+	return bpf_map__reuse_fd_safe(NULL, map, fd);
-+}
-+
- __u32 bpf_map__max_entries(const struct bpf_map *map)
- {
- 	return map->def.max_entries;
-@@ -4320,6 +4367,27 @@ static int probe_module_btf(void)
- 	return !err;
- }
- 
-+static int probe_kern_bpf_get_info_by_fd(void)
-+{
-+	int fd, err;
-+	__u32 len;
-+	struct bpf_map_info info;
-+	struct bpf_create_map_attr attr = {
-+		.map_type = BPF_MAP_TYPE_ARRAY,
-+		.key_size = sizeof(int),
-+		.value_size = sizeof(int),
-+		.max_entries = 1,
-+	};
-+
-+	fd = bpf_create_map_xattr(&attr);
-+	if (fd < 0)
-+		return 0;
-+
-+	err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+	close(fd);
-+	return !err;
-+}
-+
- enum kern_feature_result {
- 	FEAT_UNKNOWN = 0,
- 	FEAT_SUPPORTED = 1,
-@@ -4370,6 +4438,9 @@ static struct kern_feature_desc {
- 	[FEAT_BTF_FLOAT] = {
- 		"BTF_KIND_FLOAT support", probe_kern_btf_float,
- 	},
-+	[FEAT_OBJ_GET_INFO_BY_FD] = {
-+		"BPF_OBJ_GET_INFO_BY_FD support", probe_kern_bpf_get_info_by_fd,
-+	},
- };
- 
- static bool kernel_supports(const struct bpf_object *obj, enum kern_feature_id feat_id)
-@@ -4398,7 +4469,8 @@ static bool kernel_supports(const struct bpf_object *obj, enum kern_feature_id f
- 	return READ_ONCE(feat->res) == FEAT_SUPPORTED;
- }
- 
--static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
-+static bool map_is_reuse_compat(struct bpf_object *obj,
-+				const struct bpf_map *map, int map_fd)
- {
- 	struct bpf_map_info map_info = {};
- 	char msg[STRERR_BUFSIZE];
-@@ -4406,10 +4478,19 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
- 
- 	map_info_len = sizeof(map_info);
- 
--	if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
--		pr_warn("failed to get map info for map FD %d: %s\n",
--			map_fd, libbpf_strerror_r(errno, msg, sizeof(msg)));
--		return false;
-+	if (kernel_supports(obj, FEAT_OBJ_GET_INFO_BY_FD)) {
-+		if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
-+			pr_warn("failed to get map info for map FD %d: %s\n",
-+				map_fd,
-+				libbpf_strerror_r(errno, msg, sizeof(msg)));
-+			return false;
-+		}
-+	} else {
-+		if (bpf_get_map_info_from_fdinfo(map_fd, &map_info)) {
-+			pr_warn("failed to get map info for fdinfo: %s\n",
-+				libbpf_strerror_r(errno, msg, sizeof(msg)));
-+			return false;
-+		}
- 	}
- 
- 	return (map_info.type == map->def.type &&
-@@ -4420,7 +4501,7 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
- }
- 
- static int
--bpf_object__reuse_map(struct bpf_map *map)
-+bpf_object__reuse_map(struct bpf_object *obj, struct bpf_map *map)
- {
- 	char *cp, errmsg[STRERR_BUFSIZE];
- 	int err, pin_fd;
-@@ -4440,14 +4521,14 @@ bpf_object__reuse_map(struct bpf_map *map)
- 		return err;
- 	}
- 
--	if (!map_is_reuse_compat(map, pin_fd)) {
-+	if (!map_is_reuse_compat(obj, map, pin_fd)) {
- 		pr_warn("couldn't reuse pinned map at '%s': parameter mismatch\n",
- 			map->pin_path);
- 		close(pin_fd);
- 		return -EINVAL;
- 	}
- 
--	err = bpf_map__reuse_fd(map, pin_fd);
-+	err = bpf_map__reuse_fd_safe(obj, map, pin_fd);
- 	if (err) {
- 		close(pin_fd);
- 		return err;
-@@ -4643,7 +4724,7 @@ bpf_object__create_maps(struct bpf_object *obj)
- 		map = &obj->maps[i];
- 
- 		if (map->pin_path) {
--			err = bpf_object__reuse_map(map);
-+			err = bpf_object__reuse_map(obj, map);
- 			if (err) {
- 				pr_warn("map '%s': error reusing pinned map\n",
- 					map->name);
--- 
-2.32.0
+Thoughts or feedback?=20
+
+Regards,
+Alan Jowett
+
 
