@@ -2,118 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB8B3BDFB9
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 01:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A6A3BDFCE
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 01:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhGFXXE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 19:23:04 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:42192 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhGFXXE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 19:23:04 -0400
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        by linux.microsoft.com (Postfix) with ESMTPSA id EEDBB20B8763;
-        Tue,  6 Jul 2021 16:20:24 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EEDBB20B8763
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1625613625;
-        bh=+B2RyBYE0y86L8yJkdHeDMZTG4ZuIZ21amffRovnID0=;
+        id S229753AbhGFXfj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 19:35:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229787AbhGFXfj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 19:35:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBE8E61CAD
+        for <bpf@vger.kernel.org>; Tue,  6 Jul 2021 23:32:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625614379;
+        bh=2A/iqbTmkdAizieLsPhAIeXb4cSMLlbN4lYgRl2C4Fk=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=i8+3otj2+n6kuZyF3CxQ3ICAGTAFbCGsxjhAichRnN5quDMAf7WJMNGGpTj+mFh6W
-         XnYk+qVNIWJXayNCBPdx7X0B3L/NVFf8F3OzroPT8pygwnI15nC6/pYEI6ieIS7cC6
-         fQw/OEkcRdvTzAtv/fSXOnkuUyC7083HO7zFdgow=
-Received: by mail-oi1-f179.google.com with SMTP id h9so1253019oih.4;
-        Tue, 06 Jul 2021 16:20:24 -0700 (PDT)
-X-Gm-Message-State: AOAM531CYhO4IwMRTEvjQ7SdI0hfu19EALz6XsjBcRqpOCzSwzRdByPs
-        mLfT7ALRX+Ub+3WwH6j97uyGFINR7mpSt98vDHs=
-X-Google-Smtp-Source: ABdhPJwvODCWG0AeXR+9oECO+x2o6a1FUtOPxOFl78LnDVCsndsRrY7L/qQ1u0pK80Ldg6T8UkI2OFAHz5YoRYK66/Y=
-X-Received: by 2002:a17:90a:650b:: with SMTP id i11mr22926182pjj.39.1625613613347;
- Tue, 06 Jul 2021 16:20:13 -0700 (PDT)
+        b=C7ySQ9UOfrcwjyHKHT5XDHfwNu20nw601GefQwxwLFP14YyIuvWt2FMVbxVxDKuy4
+         4YwWMjRp4H7fwD6/MfdZfEBwQqkIRMo2cGwgljL9X6WxVG7x6fc1MX/HojAw9Gk2tZ
+         VapAtLGDbdmCLXo6tOAycblJxl2GDy0hqu9FaEyk2nrxQJsEQTKr2JzR0jtzHk1AX2
+         EA+fjP7yNj0FC/iMRr1jROcos05v1rP5OIKzG4I2bKoA2nyRAye26yKdONdewYid6K
+         1aL4l+09wRxy2ah6fXkDlONuRNgTVBpksuS4XaUlVpNI5sBgZUUpcQQR6TYaMMLADw
+         7iasd1odsJVbQ==
+Received: by mail-lj1-f170.google.com with SMTP id s18so264758ljg.7
+        for <bpf@vger.kernel.org>; Tue, 06 Jul 2021 16:32:59 -0700 (PDT)
+X-Gm-Message-State: AOAM530QRva0UT/SlPuuShwOsSwMhrlAb/Vg/0IRdFF7waVQT/vTTnpr
+        tTW5Jpj6ae4Djt/cdzF3PIP5H4a0Qh7mdpd2KhU=
+X-Google-Smtp-Source: ABdhPJwIH/NfAipLAJRdH0ktL0D8C9MCZuVhDjSdDvpVQYYXcsKmiTAJPZQnzMqq/vNwwdBdTKJE74ovJ2qQ/tmgycI=
+X-Received: by 2002:a2e:b8ce:: with SMTP id s14mr5593349ljp.177.1625614378117;
+ Tue, 06 Jul 2021 16:32:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <20210702153947.7b44acdf@linux.microsoft.com> <20210706155131.GS22278@shell.armlinux.org.uk>
-In-Reply-To: <20210706155131.GS22278@shell.armlinux.org.uk>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Wed, 7 Jul 2021 01:19:37 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com>
-Message-ID: <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com>
-Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page pool
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20210706172619.579001-1-m@lambda.lt>
+In-Reply-To: <20210706172619.579001-1-m@lambda.lt>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 6 Jul 2021 16:32:46 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5nyaM5MNg=Q0ojLVQVsnyDrJNukB3WTQ+sk8t4etZiGA@mail.gmail.com>
+Message-ID: <CAPhsuW5nyaM5MNg=Q0ojLVQVsnyDrJNukB3WTQ+sk8t4etZiGA@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: fix reuse of pinned map on older kernel
+To:     Martynas Pumputis <m@lambda.lt>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        feng.tang@intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 5:51 PM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
+On Tue, Jul 6, 2021 at 10:24 AM Martynas Pumputis <m@lambda.lt> wrote:
 >
-> On Fri, Jul 02, 2021 at 03:39:47PM +0200, Matteo Croce wrote:
-> > On Wed, 30 Jun 2021 17:17:54 +0800
-> > Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> >
-> > > This patchset adds elevated refcnt support for page pool
-> > > and enable skb's page frag recycling based on page pool
-> > > in hns3 drvier.
-> > >
-> > > Yunsheng Lin (2):
-> > >   page_pool: add page recycling support based on elevated refcnt
-> > >   net: hns3: support skb's frag page recycling based on page pool
-> > >
-> > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
-> > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
-> > >  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
-> > >  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
-> > >  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
-> > >  include/linux/mm_types.h                           |   2 +-
-> > >  include/linux/skbuff.h                             |   4 +-
-> > >  include/net/page_pool.h                            |  30 ++-
-> > >  net/core/page_pool.c                               | 215
-> > > +++++++++++++++++---- 9 files changed, 285 insertions(+), 57
-> > > deletions(-)
-> > >
-> >
-> > Interesting!
-> > Unfortunately I'll not have access to my macchiatobin anytime soon, can
-> > someone test the impact, if any, on mvpp2?
+> When loading a BPF program with a pinned map, the loader checks whether
+> the pinned map can be reused, i.e. their properties match. To derive
+> such of the pinned map, the loader invokes BPF_OBJ_GET_INFO_BY_FD and
+> then does the comparison.
 >
-> I'll try to test. Please let me know what kind of testing you're
-> looking for (I haven't been following these patches, sorry.)
+> Unfortunately, on < 4.12 kernels the BPF_OBJ_GET_INFO_BY_FD is not
+> available, so loading the program fails with the following error:
 >
+>         libbpf: failed to get map info for map FD 5: Invalid argument
+>         libbpf: couldn't reuse pinned map at
+>                 '/sys/fs/bpf/tc/globals/cilium_call_policy': parameter
+>                 mismatch"
+>         libbpf: map 'cilium_call_policy': error reusing pinned map
+>         libbpf: map 'cilium_call_policy': failed to create:
+>                 Invalid argument(-22)
+>         libbpf: failed to load object 'bpf_overlay.o'
+>
+> To fix this, probe the kernel for BPF_OBJ_GET_INFO_BY_FD support. If it
+> doesn't support, then fallback to derivation of the map properties via
+> /proc/$PID/fdinfo/$MAP_FD.
+>
+> Signed-off-by: Martynas Pumputis <m@lambda.lt>
 
-A drop test or L2 routing will be enough.
-BTW I should have the macchiatobin back on friday.
+The code looks good to me. Except a checkpatch CHECK:
 
-Regards,
--- 
-per aspera ad upstream
+CHECK: Comparison to NULL could be written "!obj"
+#96: FILE: tools/lib/bpf/libbpf.c:3943:
++ if (obj == NULL || kernel_supports(obj, FEAT_OBJ_GET_INFO_BY_FD))
+
+Also, I think this should target bpf-next tree?
+
+Thanks,
+Song
