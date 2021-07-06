@@ -2,42 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7F33BCF28
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 13:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125973BCF2B
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 13:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbhGFL2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 07:28:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56654 "EHLO mail.kernel.org"
+        id S233394AbhGFL2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 07:28:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234156AbhGFLXv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:23:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA19D61CF6;
-        Tue,  6 Jul 2021 11:18:13 +0000 (UTC)
+        id S234823AbhGFLZG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:25:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C112C61D25;
+        Tue,  6 Jul 2021 11:19:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570294;
-        bh=0XRFg5hIq6dpQhf6aGNiDBR8wtXCngnhyGCW3ADbjSA=;
+        s=k20201202; t=1625570342;
+        bh=dtaz5WaHJMcuKrjLxqgKVd0VmEwxN7a/SQ8NSOvtu2E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I/SBOK4r4sJj2SL73IkYkBCghYPt7Moun1BR21+2T6lUageP0eWks4rxqS2zXgP1K
-         Bf8RASvsKmvBPnSFqh9qTx5sXxMmaDQDFQEezpmf+ZLiRfDqqxkChFxve2dgEQmnrn
-         HJW1HhA5VwoMzDN5cfMjLGFv3dqUvzn9p1WYNQk9xFU52DMElB2jQbiY92OFh33Msb
-         ar7PylZGsP+HXxaX+32/JxWk+0rPLQLjfvXiiWj9/7ADu22x5l+GjTmZC2BRzDl3/m
-         u0T3wrJ6tia+t5FJYBEobfiZeRnqh+yEnI+6LJQemAZS9XRKwof81zKHm3j9BOaC7s
-         NNks1vEFIkDnw==
+        b=F0nexKX+y+f3CeHJTzmRKQ9bRYROYpzQhswvlKykGfPn46g82Ucl1SZNEmdIB27n8
+         HaYWXUjHRCu5fvhe+kY2emuyYt/wRApBW75MpWgKjETBVWgS6LSbfRaHoDZ/4YUZz1
+         Rh/yuVa25i1Bevx8u5s0pzq4Tx7/JSnYbkH7iSAIrzyS5SsS6lHsv49cmQN5rSVews
+         mBbX7pw4/LMXzpb45WIpY0ePw5mJQZeioBuasew35dxWBaFFSi7zKKNMq4sfJMk7g9
+         qq6Vx3XAAcMTRkSyZxMMrmNaTKDFatuj2jpdPvosl64S4aRjesNZD0/kyvzH5tQYtK
+         HbMnoQE9eKlbw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rustam Kovhaev <rkovhaev@gmail.com>,
-        syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com,
+Cc:     Dongseok Yi <dseok.yi@samsung.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 183/189] bpf: Fix false positive kmemleak report in bpf_ringbuf_area_alloc()
-Date:   Tue,  6 Jul 2021 07:14:03 -0400
-Message-Id: <20210706111409.2058071-183-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 026/160] bpf: Check for BPF_F_ADJ_ROOM_FIXED_GSO when bpf_skb_change_proto
+Date:   Tue,  6 Jul 2021 07:16:12 -0400
+Message-Id: <20210706111827.2060499-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210706111409.2058071-1-sashal@kernel.org>
-References: <20210706111409.2058071-1-sashal@kernel.org>
+In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
+References: <20210706111827.2060499-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -46,108 +44,119 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Dongseok Yi <dseok.yi@samsung.com>
 
-[ Upstream commit ccff81e1d028bbbf8573d3364a87542386c707bf ]
+[ Upstream commit fa7b83bf3b156c767f3e4a25bbf3817b08f3ff8e ]
 
-kmemleak scans struct page, but it does not scan the page content. If we
-allocate some memory with kmalloc(), then allocate page with alloc_page(),
-and if we put kmalloc pointer somewhere inside that page, kmemleak will
-report kmalloc pointer as a false positive.
+In the forwarding path GRO -> BPF 6 to 4 -> GSO for TCP traffic, the
+coalesced packet payload can be > MSS, but < MSS + 20.
 
-We can instruct kmemleak to scan the memory area by calling kmemleak_alloc()
-and kmemleak_free(), but part of struct bpf_ringbuf is mmaped to user space,
-and if struct bpf_ringbuf changes we would have to revisit and review size
-argument in kmemleak_alloc(), because we do not want kmemleak to scan the
-user space memory. Let's simplify things and use kmemleak_not_leak() here.
+bpf_skb_proto_6_to_4() will upgrade the MSS and it can be > the payload
+length. After then tcp_gso_segment checks for the payload length if it
+is <= MSS. The condition is causing the packet to be dropped.
 
-For posterity, also adding additional prior analysis from Andrii:
+tcp_gso_segment():
+        [...]
+        mss = skb_shinfo(skb)->gso_size;
+        if (unlikely(skb->len <= mss))
+                goto out;
+        [...]
 
-  I think either kmemleak or syzbot are misreporting this. I've added a
-  bunch of printks around all allocations performed by BPF ringbuf. [...]
-  On repro side I get these two warnings:
+Allow to upgrade/downgrade MSS only when BPF_F_ADJ_ROOM_FIXED_GSO is
+not set.
 
-  [vmuser@archvm bpf]$ sudo ./repro
-  BUG: memory leak
-  unreferenced object 0xffff88810d538c00 (size 64):
-    comm "repro", pid 2140, jiffies 4294692933 (age 14.540s)
-    hex dump (first 32 bytes):
-      00 af 19 04 00 ea ff ff c0 ae 19 04 00 ea ff ff  ................
-      80 ae 19 04 00 ea ff ff c0 29 2e 04 00 ea ff ff  .........)......
-    backtrace:
-      [<0000000077bfbfbd>] __bpf_map_area_alloc+0x31/0xc0
-      [<00000000587fa522>] ringbuf_map_alloc.cold.4+0x48/0x218
-      [<0000000044d49e96>] __do_sys_bpf+0x359/0x1d90
-      [<00000000f601d565>] do_syscall_64+0x2d/0x40
-      [<0000000043d3112a>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-  BUG: memory leak
-  unreferenced object 0xffff88810d538c80 (size 64):
-    comm "repro", pid 2143, jiffies 4294699025 (age 8.448s)
-    hex dump (first 32 bytes):
-      80 aa 19 04 00 ea ff ff 00 ab 19 04 00 ea ff ff  ................
-      c0 ab 19 04 00 ea ff ff 80 44 28 04 00 ea ff ff  .........D(.....
-    backtrace:
-      [<0000000077bfbfbd>] __bpf_map_area_alloc+0x31/0xc0
-      [<00000000587fa522>] ringbuf_map_alloc.cold.4+0x48/0x218
-      [<0000000044d49e96>] __do_sys_bpf+0x359/0x1d90
-      [<00000000f601d565>] do_syscall_64+0x2d/0x40
-      [<0000000043d3112a>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-  Note that both reported leaks (ffff88810d538c80 and ffff88810d538c00)
-  correspond to pages array bpf_ringbuf is allocating and tracking properly
-  internally. Note also that syzbot repro doesn't close FD of created BPF
-  ringbufs, and even when ./repro itself exits with error, there are still
-  two forked processes hanging around in my system. So clearly ringbuf maps
-  are alive at that point. So reporting any memory leak looks weird at that
-  point, because that memory is being used by active referenced BPF ringbuf.
-
-  It's also a question why repro doesn't clean up its forks. But if I do a
-  `pkill repro`, I do see that all the allocated memory is /properly/ cleaned
-  up [and the] "leaks" are deallocated properly.
-
-  BTW, if I add close() right after bpf() syscall in syzbot repro, I see that
-  everything is immediately deallocated, like designed. And no memory leak
-  is reported. So I don't think the problem is anywhere in bpf_ringbuf code,
-  rather in the leak detection and/or repro itself.
-
-Reported-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-[ Daniel: also included analysis from Andrii to the commit log ]
+Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/CAEf4BzYk+dqs+jwu6VKXP-RttcTEGFe+ySTGWT9CRNkagDiJVA@mail.gmail.com
-Link: https://lore.kernel.org/lkml/YNTAqiE7CWJhOK2M@nuc10
-Link: https://lore.kernel.org/lkml/20210615101515.GC26027@arm.com
-Link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
-Link: https://lore.kernel.org/bpf/20210626181156.1873604-1-rkovhaev@gmail.com
+Acked-by: Willem de Bruijn <willemb@google.com>
+Link: https://lore.kernel.org/bpf/1620804453-57566-1-git-send-email-dseok.yi@samsung.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/ringbuf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/core/filter.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index 84b3b35fc0d0..9e0c10c6892a 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -8,6 +8,7 @@
- #include <linux/vmalloc.h>
- #include <linux/wait.h>
- #include <linux/poll.h>
-+#include <linux/kmemleak.h>
- #include <uapi/linux/btf.h>
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 52f4359efbd2..849b08350a39 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3238,7 +3238,7 @@ static int bpf_skb_net_hdr_pop(struct sk_buff *skb, u32 off, u32 len)
+ 	return ret;
+ }
  
- #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
-@@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
- 	rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
- 		  VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
- 	if (rb) {
-+		kmemleak_not_leak(pages);
- 		rb->pages = pages;
- 		rb->nr_pages = nr_pages;
- 		return rb;
+-static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
++static int bpf_skb_proto_4_to_6(struct sk_buff *skb, u64 flags)
+ {
+ 	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
+ 	u32 off = skb_mac_header_len(skb);
+@@ -3267,7 +3267,9 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
+ 		}
+ 
+ 		/* Due to IPv6 header, MSS needs to be downgraded. */
+-		skb_decrease_gso_size(shinfo, len_diff);
++		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
++			skb_decrease_gso_size(shinfo, len_diff);
++
+ 		/* Header must be checked, and gso_segs recomputed. */
+ 		shinfo->gso_type |= SKB_GSO_DODGY;
+ 		shinfo->gso_segs = 0;
+@@ -3279,7 +3281,7 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
+ 	return 0;
+ }
+ 
+-static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
++static int bpf_skb_proto_6_to_4(struct sk_buff *skb, u64 flags)
+ {
+ 	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
+ 	u32 off = skb_mac_header_len(skb);
+@@ -3308,7 +3310,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+ 		}
+ 
+ 		/* Due to IPv4 header, MSS can be upgraded. */
+-		skb_increase_gso_size(shinfo, len_diff);
++		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
++			skb_increase_gso_size(shinfo, len_diff);
++
+ 		/* Header must be checked, and gso_segs recomputed. */
+ 		shinfo->gso_type |= SKB_GSO_DODGY;
+ 		shinfo->gso_segs = 0;
+@@ -3320,17 +3324,17 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+ 	return 0;
+ }
+ 
+-static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
++static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto, u64 flags)
+ {
+ 	__be16 from_proto = skb->protocol;
+ 
+ 	if (from_proto == htons(ETH_P_IP) &&
+ 	      to_proto == htons(ETH_P_IPV6))
+-		return bpf_skb_proto_4_to_6(skb);
++		return bpf_skb_proto_4_to_6(skb, flags);
+ 
+ 	if (from_proto == htons(ETH_P_IPV6) &&
+ 	      to_proto == htons(ETH_P_IP))
+-		return bpf_skb_proto_6_to_4(skb);
++		return bpf_skb_proto_6_to_4(skb, flags);
+ 
+ 	return -ENOTSUPP;
+ }
+@@ -3340,7 +3344,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
+ {
+ 	int ret;
+ 
+-	if (unlikely(flags))
++	if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO)))
+ 		return -EINVAL;
+ 
+ 	/* General idea is that this helper does the basic groundwork
+@@ -3360,7 +3364,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
+ 	 * that. For offloads, we mark packet as dodgy, so that headers
+ 	 * need to be verified first.
+ 	 */
+-	ret = bpf_skb_proto_xlat(skb, proto);
++	ret = bpf_skb_proto_xlat(skb, proto, flags);
+ 	bpf_compute_data_pointers(skb);
+ 	return ret;
+ }
 -- 
 2.30.2
 
