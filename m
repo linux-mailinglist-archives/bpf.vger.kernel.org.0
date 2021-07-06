@@ -2,135 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4360C3BD922
-	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 16:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F97C3BD894
+	for <lists+bpf@lfdr.de>; Tue,  6 Jul 2021 16:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbhGFO6C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Jul 2021 10:58:02 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6429 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbhGFO6B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:58:01 -0400
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GK3vQ6Qspz76rF;
-        Tue,  6 Jul 2021 21:54:26 +0800 (CST)
-Received: from [10.174.178.171] (10.174.178.171) by
- dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 6 Jul 2021 21:57:53 +0800
-Subject: Re: [PATCH v4 bpf-next 1/9] bpf: Introduce bpf timers.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-team@fb.com>
-References: <20210701192044.78034-1-alexei.starovoitov@gmail.com>
- <20210701192044.78034-2-alexei.starovoitov@gmail.com>
-From:   "luwei (O)" <luwei32@huawei.com>
-Message-ID: <bcdccd37-6372-859f-824e-c96250361904@huawei.com>
-Date:   Tue, 6 Jul 2021 21:57:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232892AbhGFOpF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Jul 2021 10:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231979AbhGFOnx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Jul 2021 10:43:53 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398F2C08EC38
+        for <bpf@vger.kernel.org>; Tue,  6 Jul 2021 07:41:14 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id g25so2950977vss.3
+        for <bpf@vger.kernel.org>; Tue, 06 Jul 2021 07:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JTSN/TsZ42ihyFJIr7SrTpDTYHBxd5pPWJlGP+shcyw=;
+        b=YAK+YCFdhvDT27LvdTUG0jEZsORIgDDD1T1cNq5wMoOogkZ4FrhJge5A4Cx5NHW/j/
+         tlnqS8u76bv04yyu8b0Fo0rTNn4lNJShq1gtKsW6bWGNUb7+jqDauxhVpZ8eO38MCRkS
+         o+4DqskC3HE8YdB0nYrwkUiQafHsLRRB+2IogRDM7saPS3ZijLB6rkRyyY5PF2VjMiCC
+         N67du1djLw4xcL7Y50ia2FC51dcVvA3ePfTMX2YefWPQ80hqprwq5Fh3aPO7EUvW8OD0
+         jFe8zRKSO8/OAw/VE8I0DIEOpQYGapTdX2vzo+qN5lUFUxb0HUukDPDIGyYyQWAhm66s
+         P1tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JTSN/TsZ42ihyFJIr7SrTpDTYHBxd5pPWJlGP+shcyw=;
+        b=IpdSZ599f6v0LI9HiVe+VRUqpMT1pcozTmegunyC/8o1AFbae3j/gcnGgISBWh96aj
+         H/1RbKFMOo95D+0VWCl1gBAzmhAS5af2tP3ZIH2/GRtTSYMRqW8iq4uEx/lmrL+1pt6H
+         cP5Gc9OQ6AB3ZLChX1UhiFbPiTvGeGSUq+JAKFCoUck9DPyci3UZBkmIxIceugK3EJ4q
+         Tt5OCZU+7i5QBVVucMx9mxC925dgFVzIC9uPzqApcnq2N1nb/a5RfT9r73wQGMRa1E/B
+         6zZB1/LyhmLQU4n/qaTBQ9a1ZOxVc5FBnY8VujVNpwKIdn+OQFiNhxSA2bkTKcVojuLi
+         mYww==
+X-Gm-Message-State: AOAM530i02UZ5a/+43ZR8d5PkzQBChFjjZ42bjSiGb4yPY7giF0JmEPh
+        NpHjRE9CTKyWrU7abEu69Toq9kkq0Ws1mvFI/SmVnQ==
+X-Google-Smtp-Source: ABdhPJw/aK0Qk0RnZ6WI52y3rp230jVwtgYhkwbx8aS/wBE4hQmIpJ8D0FLgvjVDorBlpsEN4ImUxrnLulBTYwhJetc=
+X-Received: by 2002:a67:f7c8:: with SMTP id a8mr9683316vsp.16.1625582473140;
+ Tue, 06 Jul 2021 07:41:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210701192044.78034-2-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.171]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
-X-CFilter-Loop: Reflected
+References: <20210705231912.532186-1-phind.uet@gmail.com>
+In-Reply-To: <20210705231912.532186-1-phind.uet@gmail.com>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Tue, 6 Jul 2021 10:40:56 -0400
+Message-ID: <CADVnQy=vjHrBB=cD7FNedUMi6pOagEovO=H1no3A27fK9-yQAA@mail.gmail.com>
+Subject: Re: [PATCH v6] tcp: fix tcp_init_transfer() to not reset icsk_ca_initialized
+To:     Nguyen Dinh Phi <phind.uet@gmail.com>
+Cc:     yhs@fb.com, edumazet@google.com, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, ycheng@google.com, yyd@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Jul 5, 2021 at 7:19 PM Nguyen Dinh Phi <phind.uet@gmail.com> wrote:
+>
+> This commit fixes a bug (found by syzkaller) that could cause spurious
+> double-initializations for congestion control modules, which could cause
+> memory leaks or other problems for congestion control modules (like CDG)
+> that allocate memory in their init functions.
+>
+> The buggy scenario constructed by syzkaller was something like:
+>
+> (1) create a TCP socket
+> (2) initiate a TFO connect via sendto()
+> (3) while socket is in TCP_SYN_SENT, call setsockopt(TCP_CONGESTION),
+>     which calls:
+>        tcp_set_congestion_control() ->
+>          tcp_reinit_congestion_control() ->
+>            tcp_init_congestion_control()
+> (4) receive ACK, connection is established, call tcp_init_transfer(),
+>     set icsk_ca_initialized=0 (without first calling cc->release()),
+>     call tcp_init_congestion_control() again.
+>
+> Note that in this sequence tcp_init_congestion_control() is called
+> twice without a cc->release() call in between. Thus, for CC modules
+> that allocate memory in their init() function, e.g, CDG, a memory leak
+> may occur. The syzkaller tool managed to find a reproducer that
+> triggered such a leak in CDG.
+>
+> The bug was introduced when that commit 8919a9b31eb4 ("tcp: Only init
+> congestion control if not initialized already")
+> introduced icsk_ca_initialized and set icsk_ca_initialized to 0 in
+> tcp_init_transfer(), missing the possibility for a sequence like the
+> one above, where a process could call setsockopt(TCP_CONGESTION) in
+> state TCP_SYN_SENT (i.e. after the connect() or TFO open sendmsg()),
+> which would call tcp_init_congestion_control(). It did not intend to
+> reset any initialization that the user had already explicitly made;
+> it just missed the possibility of that particular sequence (which
+> syzkaller managed to find).
+>
+> Fixes: 8919a9b31eb4 ("tcp: Only init congestion control if not initialized already")
+> Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+> Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+> ---
+> V2:     - Modify the Subject line.
+>         - Adjust the commit message.
+>         - Add Fixes: tag.
+> V3:     - Fix netdev/verify_fixes format error.
+> V4:     - Add blamed authors to receiver list.
+> V5:     - Add comment about the congestion control initialization.
+> V6:     - Fix typo in commit message.
+>  net/ipv4/tcp_input.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> index 7d5e59f688de..84c70843b404 100644
+> --- a/net/ipv4/tcp_input.c
+> +++ b/net/ipv4/tcp_input.c
+> @@ -5922,8 +5922,8 @@ void tcp_init_transfer(struct sock *sk, int bpf_op, struct sk_buff *skb)
+>                 tp->snd_cwnd = tcp_init_cwnd(tp, __sk_dst_get(sk));
+>         tp->snd_cwnd_stamp = tcp_jiffies32;
+>
+> -       icsk->icsk_ca_initialized = 0;
+>         bpf_skops_established(sk, bpf_op, skb);
+> +       /* Initialize congestion control unless BPF initialized it already: */
+>         if (!icsk->icsk_ca_initialized)
+>                 tcp_init_congestion_control(sk);
+>         tcp_init_buffer_space(sk);
+> --
 
-在 2021/7/2 3:20 AM, Alexei Starovoitov 写道:
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Introduce 'struct bpf_timer { __u64 :64; __u64 :64; };' that can be embedded
-> in hash/array/lru maps as a regular field and helpers to operate on it:
->
-> // Initialize the timer.
-> // First 4 bits of 'flags' specify clockid.
-> // Only CLOCK_MONOTONIC, CLOCK_REALTIME, CLOCK_BOOTTIME are allowed.
-> long bpf_timer_init(struct bpf_timer *timer, struct bpf_map *map, int flags);
->
-> // Configure the timer to call 'callback_fn' static function.
-> long bpf_timer_set_callback(struct bpf_timer *timer, void *callback_fn);
->
-> // Arm the timer to expire 'nsec' nanoseconds from the current time.
-> long bpf_timer_start(struct bpf_timer *timer, u64 nsec, u64 flags);
->
-> // Cancel the timer and wait for callback_fn to finish if it was running.
-> long bpf_timer_cancel(struct bpf_timer *timer);
->
-[...]
-> +static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
-> +{
-> +	struct bpf_hrtimer *t = container_of(hrtimer, struct bpf_hrtimer, timer);
-> +	struct bpf_map *map = t->map;
-> +	void *value = t->value;
-> +	struct bpf_timer_kern *timer = value + map->timer_off;
-> +	struct bpf_prog *prog;
-> +	void *callback_fn;
-> +	void *key;
-> +	u32 idx;
-> +	int ret;
-> +
-> +	/* The triple underscore bpf_spin_lock is a direct call
-> +	 * to BPF_CALL_1(bpf_spin_lock) which does irqsave.
-> +	 */
-> +	____bpf_spin_lock(&timer->lock);
-> +	/* callback_fn and prog need to match. They're updated together
-> +	 * and have to be read under lock.
-> +	 */
-> +	prog = t->prog;
-> +	callback_fn = t->callback_fn;
-> +
-> +	/* wrap bpf subprog invocation with prog->refcnt++ and -- to make
-> +	 * sure that refcnt doesn't become zero when subprog is executing.
-> +	 * Do it under lock to make sure that bpf_timer_start doesn't drop
-> +	 * prev prog refcnt to zero before timer_cb has a chance to bump it.
-> +	 */
-> +	bpf_prog_inc(prog);
-> +	____bpf_spin_unlock(&timer->lock);
-> +
-> +	/* bpf_timer_cb() runs in hrtimer_run_softirq. It doesn't migrate and
-> +	 * cannot be preempted by another bpf_timer_cb() on the same cpu.
-> +	 * Remember the timer this callback is servicing to prevent
-> +	 * deadlock if callback_fn() calls bpf_timer_cancel() on the same timer.
-> +	 */
-> +	this_cpu_write(hrtimer_running, t);
-> +	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
-> +		struct bpf_array *array = container_of(map, struct bpf_array, map);
-> +
-> +		/* compute the key */
-> +		idx = ((char *)value - array->value) / array->elem_size;
-> +		key = &idx;
-> +	} else { /* hash or lru */
-> +		key = value - round_up(map->key_size, 8);
-> +	}
-> +
-> +	ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
-> +					 (u64)(long)key,
-> +					 (u64)(long)value, 0, 0);
-> +	WARN_ON(ret != 0); /* Next patch moves this check into the verifier */
-> +	bpf_prog_put(prog);
-> +
-> +	this_cpu_write(hrtimer_running, NULL);
-> +	return HRTIMER_NORESTART;
-> +}
-> +
-Your patch is awesome, and I tried your example and it works, my 
-call_back() is called after a certained time.  But  I am confued that 
-the bpf_timer_cb() function only returns HRTIMER_NORESTART,
+Acked-by: Neal Cardwell <ncardwell@google.com>
+Tested-by: Neal Cardwell <ncardwell@google.com>
 
-how to trigger a periodic task, that means I want to call my call_back() 
-periodically, not just for one time ?
+Looks good to me.  Thanks for the fix!
 
-[...]
-
--- 
-Best Regards,
-Lu Wei
-
+neal
