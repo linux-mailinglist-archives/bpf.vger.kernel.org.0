@@ -2,115 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA813BEC65
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 18:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8153BEC99
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 18:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbhGGQk7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Jul 2021 12:40:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59890 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229519AbhGGQk6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Jul 2021 12:40:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625675898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DBW1CRiM/N3so8fZaqeN8+dxCKVMvKUaeu+cUDDm810=;
-        b=dD0laxGsyPC5X0U9DM/06ajgdZNzOuLZQIh6MMMCLtwi5GbmCwJ6/eLzjMAt1KO9wQXNXI
-        +8ZX48JivFi0Z6Eu+RPcGeXVxHgZNUHY4ByDiY8HF+j3lq4RckeO7P8i3wTBwVXx736+Rw
-        Xx78go7KglfJTdKAIapCm3WC3rG9OiY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-52-L85zix-yPrSTy4HgdgyIwQ-1; Wed, 07 Jul 2021 12:38:16 -0400
-X-MC-Unique: L85zix-yPrSTy4HgdgyIwQ-1
-Received: by mail-ed1-f69.google.com with SMTP id p19-20020aa7c4d30000b0290394bdda6d9cso1674416edr.21
-        for <bpf@vger.kernel.org>; Wed, 07 Jul 2021 09:38:16 -0700 (PDT)
+        id S230200AbhGGQxi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Jul 2021 12:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230262AbhGGQxh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Jul 2021 12:53:37 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F11C061760
+        for <bpf@vger.kernel.org>; Wed,  7 Jul 2021 09:50:57 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id q16so2609052qke.10
+        for <bpf@vger.kernel.org>; Wed, 07 Jul 2021 09:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+l8T0NV1W2EFm1dKAG471xyxn7DWyeb0DjrbpB/+e3k=;
+        b=FeKmsw2+/cti+7XaCDgvJURDocUATJdLYv3FDD/2Y1khq8vDyglm6gIN1jBFXwBgwB
+         oEsuqrSJn0o6PZ8XKKantmakJcS42as18I5GSOfewmfqycZ2tZ483gndigPuq7tThC48
+         5WU0Fq9Hktr8c4EVqVIc3H/cWvsOicXQf41e8uUGuymx2Mg8tX9d+W+oIL2wiLSLR9ju
+         rOeukSo28QD43WY+hVMr1piMVGhyI3SkWXx/no5+P2IKQNiK83UgnF9Iuo20AovmFKDX
+         50dvBf1FoQKCXKQjZCIx1Jq+aI5DzJLa3MJy9crg7qMnSOscw/+RJsJdEA2QB9Zh+H8k
+         awTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=DBW1CRiM/N3so8fZaqeN8+dxCKVMvKUaeu+cUDDm810=;
-        b=pDlrmeo+XJBnrxSEFf7/aOWhRVULG/UERuPjvoZJ3j+3wnB+jLDhy0sowF+rPTxuGq
-         PWSOU3myn9dQDEgAo/VKk+xbRatZnciR1MeUR05mxw+JHeWNzVduFI0i4oOiGTOsJQxk
-         plJ5/RABtakRZtU9R6iUo6gEVxKu1OLEJja0oRwMSff99EQqfvijpj6H+gjiiRpJ1Q4C
-         sh88NzFzPwz75JcKgmYU8vuMiWhQ5sE7B1Y9T8/RwPqvYT1500lBzX1UkoTeqoC16rzr
-         rLkrTo4lq6bhWg6YAs9cGKK+IKsCGeHJbNCkBqrbkjq5I3N1WNJXT0DiTo4tR7zcvYI+
-         jn3Q==
-X-Gm-Message-State: AOAM530kREoDNPCFtql6KiEk+ME0CvZ5FONgP3f3kuZhi4fDA9ZcXtwF
-        LP4Nx57sLwHVAQDxb3PsKgsaJ9X+f5+Tx6zMxTdWkhAYXup3CM5nlZJXD7OCUWanKFdDW20Tm3G
-        e8Yyy+E0vrRWX
-X-Received: by 2002:a17:906:2b0c:: with SMTP id a12mr17557660ejg.429.1625675895787;
-        Wed, 07 Jul 2021 09:38:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyge9/mUDkZz73CJs0xxkPc0yDh08pMoNf3q9j71TnM8YePtaeEEZtGPsb8hnThkB/gOtKWHw==
-X-Received: by 2002:a17:906:2b0c:: with SMTP id a12mr17557634ejg.429.1625675895601;
-        Wed, 07 Jul 2021 09:38:15 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id t27sm7136628eje.86.2021.07.07.09.38.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 09:38:14 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com,
-        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "Lobakin, Alexandr" <alexandr.lobakin@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "saeed@kernel.org" <saeed@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
-Subject: Re: A look into XDP hints for AF_XDP
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Desouza, Ederson" <ederson.desouza@intel.com>
-References: <be4583429b45d618e592585c35eed5f1c113ed68.camel@intel.com>
- <20210624215411.79324c9d@carbon>
- <adfc8f598e5de10fa40a4e791a1e8722edae1136.camel@intel.com>
- <22999687621ecba7281a905a3dbbc148fee12581.camel@intel.com>
- <CAADnVQ+7mJhWzFR45n8RsFmo9M7UmumVRTQ7k+jH=fTr-5A4gA@mail.gmail.com>
-Message-ID: <e05c1241-fdd7-19ae-26b4-cd4088057963@redhat.com>
-Date:   Wed, 7 Jul 2021 18:38:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+l8T0NV1W2EFm1dKAG471xyxn7DWyeb0DjrbpB/+e3k=;
+        b=U5ene9mO8Qfj8ByB+e4dXZBrWn/bjeOoBAVrCJJQGTRwDL6xMvUCCxmN4F86sQfb2X
+         mmv29hjwZHd9WgPy4FpFopLB4iwATroabHgIYXB97NY4leJxc+1k9p+eSm3R40/KDUSb
+         rX9fim4WCWKMset5FmqGsc7xGX3YdKRyia1+vh5qt+6WG1cCYLJKOynB+YuZUUPmy4hd
+         3dSQEMxuJ8CHOFo0uHMOYu0hZWGZ0lRhagq34ccnkIVVXBrrxABbyHn3sxGjqxtDzo+3
+         WcwdBR/e0Q9mCl5QYCCcC6jk64ehRWhQ4/c0Y+/S7q6Q3g3In5x0dOd76NSrqOmjrhRy
+         n0zg==
+X-Gm-Message-State: AOAM531zivtw4hevX6+q3kViIcs/cnnaSXF5CDD9Y0VzgVhLVyY2HAdW
+        YukNrPRJclyfmUuTB08/p8HNY93CRnPHpQTSzNhS2w==
+X-Google-Smtp-Source: ABdhPJz27A76SeAyJWGygXJLAWImPup40+dr2a2Qng83jiPEyrMFJhB2OOcqXf5MT8M+UbL3ZLlBgKHZhBYaKRgrBL4=
+X-Received: by 2002:a37:c52:: with SMTP id 79mr18962846qkm.295.1625676656506;
+ Wed, 07 Jul 2021 09:50:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+7mJhWzFR45n8RsFmo9M7UmumVRTQ7k+jH=fTr-5A4gA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <20210702153947.7b44acdf@linux.microsoft.com> <20210706155131.GS22278@shell.armlinux.org.uk>
+ <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com>
+In-Reply-To: <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Wed, 7 Jul 2021 18:50:49 +0200
+Message-ID: <CAPv3WKdQ5jYtMyZuiKshXhLjcf9b+7Dm2Lt2cjE=ATDe+n9A5g@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page pool
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        feng.tang@intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 25/06/2021 00.39, Alexei Starovoitov wrote:
-> On Thu, Jun 24, 2021 at 3:18 PM Desouza, Ederson
-> <ederson.desouza@intel.com> wrote:
->> Wait - it may be done in user space by libbpf, but it needs the
->> instrumented object code. It won't work for pure user space
->> applications, like those which use AF_XDP. Unless we're going to build
->> them in a special way, like we do for the kernel side of BPF
->> applications.
-> It can be made to work. See my reply to Magnus.
-> It's not a lot of code to make that happen.
-
-I agree with Alexei, it will not be a lot of code to interpret the BTF 
-info in userspace.
-
-In userspace AF_XDP code, we could simply decode the offset of e.g. 
-member named "rxhash32" and validate that the expected size is 32 bit (4 
-bytes). Then we store the offset associated with rxhash32 for a given 
-BTF-ID. When AF_XDP program see BTF-ID it can lookup the offset of 
-rxhash32 and move those 4-bytes into a variable for rxhash32.
+Hi,
 
 
-Implementation details (sorry to complicate this slightly): Because 
-metadata area grows with a negative offset seen from ctx->data, and 
-AF_XDP descriptor don't know the size of metadata area (like XDP does). 
-Then the offset we store (e.g. associated with rxhash32) need to be 
-converted to a negative offset from packet ctx->data start.
+=C5=9Br., 7 lip 2021 o 01:20 Matteo Croce <mcroce@linux.microsoft.com> napi=
+sa=C5=82(a):
+>
+> On Tue, Jul 6, 2021 at 5:51 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Fri, Jul 02, 2021 at 03:39:47PM +0200, Matteo Croce wrote:
+> > > On Wed, 30 Jun 2021 17:17:54 +0800
+> > > Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> > >
+> > > > This patchset adds elevated refcnt support for page pool
+> > > > and enable skb's page frag recycling based on page pool
+> > > > in hns3 drvier.
+> > > >
+> > > > Yunsheng Lin (2):
+> > > >   page_pool: add page recycling support based on elevated refcnt
+> > > >   net: hns3: support skb's frag page recycling based on page pool
+> > > >
+> > > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
+> > > >  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
+> > > >  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
+> > > >  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
+> > > >  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
+> > > >  include/linux/mm_types.h                           |   2 +-
+> > > >  include/linux/skbuff.h                             |   4 +-
+> > > >  include/net/page_pool.h                            |  30 ++-
+> > > >  net/core/page_pool.c                               | 215
+> > > > +++++++++++++++++---- 9 files changed, 285 insertions(+), 57
+> > > > deletions(-)
+> > > >
+> > >
+> > > Interesting!
+> > > Unfortunately I'll not have access to my macchiatobin anytime soon, c=
+an
+> > > someone test the impact, if any, on mvpp2?
+> >
+> > I'll try to test. Please let me know what kind of testing you're
+> > looking for (I haven't been following these patches, sorry.)
+> >
+>
+> A drop test or L2 routing will be enough.
+> BTW I should have the macchiatobin back on friday.
 
+I have a 10G packet generator connected to 10G ports of CN913x-DB - I
+will stress mvpp2 in l2 forwarding early next week (I'm mostly AFK
+this until Monday).
 
---Jesper
-
-
+Best regards,
+Marcin
