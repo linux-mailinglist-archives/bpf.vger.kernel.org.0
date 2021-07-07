@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636763BF192
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 23:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280FF3BF194
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 23:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbhGGVvU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Jul 2021 17:51:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25258 "EHLO
+        id S233067AbhGGVv2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Jul 2021 17:51:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58202 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232996AbhGGVvS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Jul 2021 17:51:18 -0400
+        by vger.kernel.org with ESMTP id S233051AbhGGVv2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 7 Jul 2021 17:51:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625694516;
+        s=mimecast20190719; t=1625694526;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XyCTtNsvJM23bTJlhCXcXFu90hTwq9G3m+Uc2FcCDhw=;
-        b=Se9zk1X8A3xV3LpnfZm66kVx8CDKosItrTUc5YEKUDGr8igVt18wHgL0zljSHbBQxSq1a/
-        dCSn7LeVJiEya86nYLzWUSU2CqWTSQUtYVkesjEggeKMtEKE9ofbrgtLF6v5697Qq2GYpN
-        J2mQwptqLNCqa/4KGlheUD79kdq3cKw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-XyNtHVkoNR-ZhVOQu4YK_g-1; Wed, 07 Jul 2021 17:48:35 -0400
-X-MC-Unique: XyNtHVkoNR-ZhVOQu4YK_g-1
-Received: by mail-wm1-f70.google.com with SMTP id t12-20020a7bc3cc0000b02901f290c9c44eso1533875wmj.7
-        for <bpf@vger.kernel.org>; Wed, 07 Jul 2021 14:48:35 -0700 (PDT)
+        bh=Yu/yssvroh5wN9vZzKT4DxZ0/5KDe3VlIF6FttuA20I=;
+        b=Olwck9iyluT/kl0MsYLZviPeqc12v6Wm9Xqf02Z5L9KDJI6WYMUO1qFSAzkCRAYuoD7HRH
+        Pm/B/YYZ74NTDVofV2KSt6u+91RGC0Cahtl4UWZD/yHQabbr/CVKLqylPAPC37x9jb7iHe
+        QUlZGiQTfe4gx+yNKkcUQys5EMaCDjc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-TMfgLiKSNSy8BFmuh6YO5g-1; Wed, 07 Jul 2021 17:48:45 -0400
+X-MC-Unique: TMfgLiKSNSy8BFmuh6YO5g-1
+Received: by mail-wm1-f71.google.com with SMTP id z4-20020a1ce2040000b02901ee8d8e151eso3020604wmg.1
+        for <bpf@vger.kernel.org>; Wed, 07 Jul 2021 14:48:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XyCTtNsvJM23bTJlhCXcXFu90hTwq9G3m+Uc2FcCDhw=;
-        b=p+kDaiFNVe8PWhWwkgXV21pdN74nu3LAmQz0tgEX8QMyyFEzJDy4Asn5bc4wLPO2X7
-         aoSZrcAtGARBWLU7bFD8WptJ9jGs7EaIhqNEiu1+PkN76IcTEwZcl2kUwn4628q7sYw0
-         gIdIrN72AJcBBMr1wj6dmr2lU/a+Vh5Vw1LCcL9idDa8qypD++6YyWGs+9F+wVVTCeze
-         kXLQVynUxOFV3Q216AviTezKEeGp0kprBfOlQQKFNL52MgcNQV+nWAPDBTiHKlxoFoRd
-         fUXahJlS5r0seOlQvSF38hzoUdlJo/9pGBLePdlYUK34hYSfogL093i+tbsRqfQw9VOp
-         Sadg==
-X-Gm-Message-State: AOAM530WCe0WyTOitzwIVA7SxsSwBPlduN9w/g+pN+Y4C+S5n2zNfE7Z
-        +M6t/ZNhTE59WwxY5/ajQ2kCNRvLtMLGBEXSsWLQKT9dSc/FG9lEJz4kGj01tQ8rX7zp6Qm6uFL
-        wRe6zGUFH7VNK
-X-Received: by 2002:adf:a2db:: with SMTP id t27mr29810081wra.272.1625694514725;
-        Wed, 07 Jul 2021 14:48:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy1NKGIS5pSSuMCbb3wlNDchZjdi7A4xHRDEuiUKRnEl86QJ3yOKStzcLekLUeKf1S8O2RVww==
-X-Received: by 2002:adf:a2db:: with SMTP id t27mr29810063wra.272.1625694514514;
-        Wed, 07 Jul 2021 14:48:34 -0700 (PDT)
+        bh=Yu/yssvroh5wN9vZzKT4DxZ0/5KDe3VlIF6FttuA20I=;
+        b=cYCu/GFiOnz7/V9MahWCT6w6OwjW8HwpxUUdzDwY1wTjCQrEBNOSBdu8X8z+Czw3G+
+         uRBmL2RSQ/DEpbw2vhoRh686o1iD2mhyfdPCMco/Hxn4rJsBBBxL2wOm6OLFTPIB03Nx
+         ATCb/a3LlggCWeSRVaxZjYyJOBpCJVycFI7v0B+5QNS/nsQo+KEI64Bpd2b17erY5QUj
+         eB00Q1Xy1ZTlWkl3cjX3KVhy7DMgxGeYOpalqplzqB0M4JXv1mo+koUozzWtaskebD6P
+         Mo6e/lL5SKtVn6eUWSws6rI+9NXUgPtJLWhmJRlafI31k9NbqTf+5aBMOf8+GYwkI4+i
+         yVPg==
+X-Gm-Message-State: AOAM531d5XT0ifXlEbxAPYbCMepd4IwU1oPXk0mZ2RYledPiSP/KFvLv
+        qh6jSZWCHmp/XPOj/y9/JSbUqFOWF306FtsXHVuuGwYmSEcctnZrlfO+ya4kUAczzOH/TflUyKG
+        9/XcGoOx+pVQ6
+X-Received: by 2002:a5d:638b:: with SMTP id p11mr30691602wru.380.1625694524795;
+        Wed, 07 Jul 2021 14:48:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJycPz+sXvZJjhr8Xj/sy2ZBxPlZ6jAR/5pNIkKBzJPvo5FZIjuvJ/z1RZhekC6aT943k9yvPQ==
+X-Received: by 2002:a5d:638b:: with SMTP id p11mr30691594wru.380.1625694524675;
+        Wed, 07 Jul 2021 14:48:44 -0700 (PDT)
 Received: from krava.redhat.com ([185.153.78.55])
-        by smtp.gmail.com with ESMTPSA id p9sm150545wrx.59.2021.07.07.14.48.31
+        by smtp.gmail.com with ESMTPSA id o19sm7365480wmc.12.2021.07.07.14.48.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 14:48:34 -0700 (PDT)
+        Wed, 07 Jul 2021 14:48:44 -0700 (PDT)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -62,9 +62,9 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         KP Singh <kpsingh@chromium.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCHv3 bpf-next 4/7] bpf: Add bpf_get_func_ip helper for kprobe programs
-Date:   Wed,  7 Jul 2021 23:47:48 +0200
-Message-Id: <20210707214751.159713-5-jolsa@kernel.org>
+Subject: [PATCHv3 bpf-next 5/7] selftests/bpf: Add test for bpf_get_func_ip helper
+Date:   Wed,  7 Jul 2021 23:47:49 +0200
+Message-Id: <20210707214751.159713-6-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210707214751.159713-1-jolsa@kernel.org>
 References: <20210707214751.159713-1-jolsa@kernel.org>
@@ -74,102 +74,133 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding bpf_get_func_ip helper for BPF_PROG_TYPE_KPROBE programs,
-so it's now possible to call bpf_get_func_ip from both kprobe and
-kretprobe programs.
-
-Taking the caller's address from 'struct kprobe::addr', which is
-defined for both kprobe and kretprobe.
+Adding test for bpf_get_func_ip helper for fentry, fexit,
+kprobe, kretprobe and fmod_ret programs.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/uapi/linux/bpf.h       |  2 +-
- kernel/bpf/verifier.c          |  2 ++
- kernel/trace/bpf_trace.c       | 17 +++++++++++++++++
- tools/include/uapi/linux/bpf.h |  2 +-
- 4 files changed, 21 insertions(+), 2 deletions(-)
+ .../bpf/prog_tests/get_func_ip_test.c         | 42 +++++++++++++
+ .../selftests/bpf/progs/get_func_ip_test.c    | 62 +++++++++++++++++++
+ 2 files changed, 104 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_func_ip_test.c
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 83e87ffdbb6e..4894f99a1993 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -4783,7 +4783,7 @@ union bpf_attr {
-  *
-  * u64 bpf_get_func_ip(void *ctx)
-  * 	Description
-- * 		Get address of the traced function (for tracing programs).
-+ * 		Get address of the traced function (for tracing and kprobe programs).
-  * 	Return
-  * 		Address of the traced function.
-  */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index f975a3aa9368..79eb9d81a198 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5979,6 +5979,8 @@ static int has_get_func_ip(struct bpf_verifier_env *env)
- 			return -ENOTSUPP;
- 		}
- 		return 0;
-+	} else if (type == BPF_PROG_TYPE_KPROBE) {
-+		return 0;
- 	}
- 
- 	verbose(env, "func %s#%d not supported for program type %d\n",
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 9edd3b1a00ad..55acf56b0c3a 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -17,6 +17,7 @@
- #include <linux/error-injection.h>
- #include <linux/btf_ids.h>
- #include <linux/bpf_lsm.h>
-+#include <linux/kprobes.h>
- 
- #include <net/bpf_sk_storage.h>
- 
-@@ -961,6 +962,20 @@ static const struct bpf_func_proto bpf_get_func_ip_proto_tracing = {
- 	.arg1_type	= ARG_PTR_TO_CTX,
- };
- 
-+BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
-+{
-+	struct kprobe *kp = kprobe_running();
+diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+new file mode 100644
+index 000000000000..06d34f566bbb
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+@@ -0,0 +1,42 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include "get_func_ip_test.skel.h"
 +
-+	return kp ? (u64) kp->addr : 0;
++void test_get_func_ip_test(void)
++{
++	struct get_func_ip_test *skel = NULL;
++	__u32 duration = 0, retval;
++	int err, prog_fd, i;
++	__u64 *result;
++
++	skel = get_func_ip_test__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open_and_load"))
++		goto cleanup;
++
++	err = get_func_ip_test__attach(skel);
++	if (!ASSERT_OK(err, "get_func_ip_test__attach"))
++		goto cleanup;
++
++	prog_fd = bpf_program__fd(skel->progs.test1);
++	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
++				NULL, NULL, &retval, &duration);
++	ASSERT_OK(err, "test_run");
++	ASSERT_EQ(retval, 0, "test_run");
++
++	prog_fd = bpf_program__fd(skel->progs.fmod_ret_test);
++	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
++				NULL, NULL, &retval, &duration);
++
++	ASSERT_OK(err, "test_run");
++
++	result = (__u64 *)skel->bss;
++	for (i = 0; i < sizeof(*skel->bss) / sizeof(__u64); i++) {
++		if (!ASSERT_EQ(result[i], 1, "fentry_result"))
++			break;
++	}
++
++	get_func_ip_test__detach(skel);
++
++cleanup:
++	get_func_ip_test__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+new file mode 100644
+index 000000000000..8ca54390d2b1
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+@@ -0,0 +1,62 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++extern const void bpf_fentry_test1 __ksym;
++extern const void bpf_fentry_test2 __ksym;
++extern const void bpf_fentry_test3 __ksym;
++extern const void bpf_fentry_test4 __ksym;
++extern const void bpf_modify_return_test __ksym;
++
++__u64 test1_result = 0;
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(test1, int a)
++{
++	__u64 addr = bpf_get_func_ip(ctx);
++
++	test1_result = (const void *) addr == &bpf_fentry_test1;
++	return 0;
 +}
 +
-+static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe = {
-+	.func		= bpf_get_func_ip_kprobe,
-+	.gpl_only	= true,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_CTX,
-+};
++__u64 test2_result = 0;
++SEC("fexit/bpf_fentry_test2")
++int BPF_PROG(test2, int a)
++{
++	__u64 addr = bpf_get_func_ip(ctx);
 +
- const struct bpf_func_proto *
- bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
-@@ -1092,6 +1107,8 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_override_return:
- 		return &bpf_override_return_proto;
- #endif
-+	case BPF_FUNC_get_func_ip:
-+		return &bpf_get_func_ip_proto_kprobe;
- 	default:
- 		return bpf_tracing_func_proto(func_id, prog);
- 	}
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 83e87ffdbb6e..4894f99a1993 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -4783,7 +4783,7 @@ union bpf_attr {
-  *
-  * u64 bpf_get_func_ip(void *ctx)
-  * 	Description
-- * 		Get address of the traced function (for tracing programs).
-+ * 		Get address of the traced function (for tracing and kprobe programs).
-  * 	Return
-  * 		Address of the traced function.
-  */
++	test2_result = (const void *) addr == &bpf_fentry_test2;
++	return 0;
++}
++
++__u64 test3_result = 0;
++SEC("kprobe/bpf_fentry_test3")
++int test3(struct pt_regs *ctx)
++{
++	__u64 addr = bpf_get_func_ip(ctx);
++
++	test3_result = (const void *) addr == &bpf_fentry_test3;
++	return 0;
++}
++
++__u64 test4_result = 0;
++SEC("kretprobe/bpf_fentry_test4")
++int BPF_KRETPROBE(test4)
++{
++	__u64 addr = bpf_get_func_ip(ctx);
++
++	test4_result = (const void *) addr == &bpf_fentry_test4;
++	return 0;
++}
++
++__u64 test5_result = 0;
++SEC("fmod_ret/bpf_modify_return_test")
++int BPF_PROG(fmod_ret_test, int a, int *b, int ret)
++{
++	__u64 addr = bpf_get_func_ip(ctx);
++
++	test5_result = (const void *) addr == &bpf_modify_return_test;
++	return ret;
++}
 -- 
 2.31.1
 
