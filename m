@@ -2,99 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637EB3BEEB7
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 20:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58B03BEFFB
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 21:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhGGSbL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Jul 2021 14:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
+        id S230394AbhGGTFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Jul 2021 15:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbhGGSbF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Jul 2021 14:31:05 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7293FC061764;
-        Wed,  7 Jul 2021 11:28:22 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id i4so4672770ybe.2;
-        Wed, 07 Jul 2021 11:28:22 -0700 (PDT)
+        with ESMTP id S229956AbhGGTFy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Jul 2021 15:05:54 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B16FC06175F
+        for <bpf@vger.kernel.org>; Wed,  7 Jul 2021 12:03:14 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id t15so4257755wry.11
+        for <bpf@vger.kernel.org>; Wed, 07 Jul 2021 12:03:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VK1b4T+tdxLj0ZaLZLl27Y238eANKisrNhi/wvZNAG0=;
-        b=c+gd0uM455Z5mJVonXFgsTe8dnzKXZqgjhsDfaDk98+xKhm1V/FETfwxBDUcSBeQ/Y
-         alcEQYAIrFiiAHT741iN/VM35WV0zi/Z1KwCKTFZ7NinPMkURdhMQfx/gupYfjMdxCEN
-         z1abS5/XscvX05GlmChkEba9sZkZCQqb8RpUhrqSD+xQ3ZfZDNU1DnZcXrkfta7wh+V/
-         qvKrA6KlAygZH68ZIc3bdzBvbZdJB8pHWICdmDAQWafHva2qDWr6kvqywDa+D7Hl36vR
-         9cMWNoD5HCCbJ2S7WNVTt42nlUQ7VGxffaKKcY4WB62hwK/avAOi++P1BEO7daQNzUT2
-         LRLg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gEyVsUHVabbCcurt1vqr+nKmr7tjD0Zle1ugJOsxNk8=;
+        b=uQahgciwZnRHDS26dth70zA8+WBNEzYXuwzc5GVRJBSrJhp07jCDpwzSWiUiptb2xj
+         7cdrZCMoJaRDHDN5jl+6M3lZynZVuiOBQkMz4ZFxna6AQ2fmmt3NoX2BtkPno285C5Qw
+         02Rsz/SXQFpkQsz5wvsk6J2s8UlXFa3qb6dsebpiSGYpSXMfyI0NScRUnMx3wA5+3Wlc
+         CP9d3VQn8Zie43uo08Vg+N4sjAXt4UjVIUwqUSt0L6kfkiHBqSF9XtEn/ueEmIsCh9Xi
+         8XFnLAamPMICjrEtTWKoHF0iJRdn1t7BJmVvRBDpJW01CQqYM8C6/WMnpEUZ+9E3RpOY
+         fBYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VK1b4T+tdxLj0ZaLZLl27Y238eANKisrNhi/wvZNAG0=;
-        b=ukGh/pgHE8mnpZEYf86z+xpXAXFm1r3UOh+xOF0dWImc7SOA5DsuTEBGqG2kyhx8OY
-         MjeHJelmwgnzF5W4ySR6kbx2RypQWsPFoC2LQ4M1dV1CoNQ13h0XgSFr9UldT7IyaPrT
-         aJMycqnQt601Pzb55SRd9DEl61m8EwpJT6hm9MmeCZzazH8feM4jGJRU02ttl2N58mCX
-         wSKG93QB6u+rUUZH1LpurNVj14Dz5gYdYark+5ZmeNWiS3o1GeOI7lam9C097OFRmAmG
-         nZvk00K+K/kN/lkvHRfb4Ac3UOqgBDds4sHTWxEci9F/t1enhafNtKvXLGoEUjYLZeZR
-         GqNQ==
-X-Gm-Message-State: AOAM533SqofKj9y/WZnPVIdzdqf3/k5pUtq/vutmKi6tRjLi6Pv8unXX
-        rqFRa/ALWC+7XCMJ5XWmoBnqiTCpYNsKec5Gdu0=
-X-Google-Smtp-Source: ABdhPJxEZ9a60B15EkYK6EsPieQQ3WOyERQAF+OLp2bWcEh9iRZIzH1BUe5bI9A0Suj4Iy+dwtNl+Fi3V9C7QE8PWGA=
-X-Received: by 2002:a25:b741:: with SMTP id e1mr34963002ybm.347.1625682501624;
- Wed, 07 Jul 2021 11:28:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <162399992186.506599.8457763707951687195.stgit@devnote2> <162399994018.506599.10332627573727646767.stgit@devnote2>
-In-Reply-To: <162399994018.506599.10332627573727646767.stgit@devnote2>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Jul 2021 11:28:10 -0700
-Message-ID: <CAEf4BzY1D7NsrBwt3nLFRbaESb7b5pR9arLhrg8OmOAfxi+kaw@mail.gmail.com>
-Subject: Re: [PATCH -tip v8 02/13] kprobes: treewide: Replace
- arch_deref_entry_point() with dereference_symbol_descriptor()
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gEyVsUHVabbCcurt1vqr+nKmr7tjD0Zle1ugJOsxNk8=;
+        b=qqfkiixx4FDZNATWX+RtFhfdXfbHK9lC0EE1bUrWVT8lNZzWnsPCkS2z/hbaAE5080
+         Pi+E8ti/mUyVWGybFr5zEPhNwjC0t0Wd9/zvmyvounXZLS9vpsF7o4OkHCUoCPF0Jeug
+         PU5VxSg+Erwgt7i7Jej3oNQpqKgDW/zBiRbUbt8ZdJ82DIP8v593fGhx90nVqiXAINpj
+         KzWN1dpDStfCMgfHWdFVmdzJSoOEIbHVFCTdutoEDZ/JWzl6JgQy7tIgU95NQCqNPok+
+         xNGiF0it7o9hQtuW6MPT8ZAoAn9eY/TBamj1OhLw/g3TTrMLVPYahK7XK5UcUxkEb3vS
+         U4xw==
+X-Gm-Message-State: AOAM5336JXHl2aj+fTQeO+Aw4ezUc5UJZWOBlIeyurezJ+1BrgbpxPdA
+        tbZgmio1f3AvCd0KYw2zxY1cQA==
+X-Google-Smtp-Source: ABdhPJySfCSiQ5cTbbS6d9OTSSfjP3HkNHiqbjLKAzqbl35lVyffDcd81DxCDMSy6xGV26L8R9f8Pg==
+X-Received: by 2002:a5d:61d1:: with SMTP id q17mr30439214wrv.162.1625684592806;
+        Wed, 07 Jul 2021 12:03:12 -0700 (PDT)
+Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
+        by smtp.gmail.com with ESMTPSA id c12sm23742825wrr.90.2021.07.07.12.03.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 12:03:12 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 22:03:08 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, Marcin Wojtas <mw@semihalf.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        hawk@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, peterx@redhat.com, Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, mcroce@microsoft.com,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, Kevin Hao <haokexin@gmail.com>,
+        nogikh@google.com, Marco Elver <elver@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
+ based on elevated refcnt
+Message-ID: <YOX6bPEL0cq8CgPG@enceladus>
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Ueyc8BqjkdTVC_c-Upn-ghNeahYQrWJtQSqxoqN7VvMWA@mail.gmail.com>
+ <29403911-bc26-dd86-83b8-da3c1784d087@huawei.com>
+ <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 12:05 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> Replace arch_deref_entry_point() with dereference_symbol_descriptor()
-> because those are doing same thing.
->
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Tested-by: Andrii Nakryik <andrii@kernel.org>
+> > Hi, Alexander
+> >
+> > Thanks for detailed reviewing.
+> >
 
-Hi Masami,
+Likewise!
+I'll have a look on the entire conversation in a few days...
 
-If you are going to post v9 anyway, can you please fix up my name, it
-should be "Andrii Nakryiko", thanks!
+> > >
+> > > So this isn't going to work with the current recycling logic. The
+> > > expectation there is that we can safely unmap the entire page as soon
+> > > as the reference count is greater than 1.
+> >
+> > Yes, the expectation is changed to we can always recycle the page
+> > when the last user has dropped the refcnt that has given to it when
+> > the page is not pfmemalloced.
+> >
+> > The above expectation is based on that the last user will always
+> > call page_pool_put_full_page() in order to do the recycling or do
+> > the resource cleanup(dma unmaping..etc).
+> >
+> > As the skb_free_head() and skb_release_data() have both checked the
+> > skb->pp_recycle to call the page_pool_put_full_page() if needed, I
+> > think we are safe for most case, the one case I am not so sure above
+> > is the rx zero copy, which seems to also bump up the refcnt before
+> > mapping the page to user space, we might need to ensure rx zero copy
+> > is not the last user of the page or if it is the last user, make sure
+> > it calls page_pool_put_full_page() too.
+> 
+> Yes, but the skb->pp_recycle value is per skb, not per page. So my
+> concern is that carrying around that value can be problematic as there
+> are a number of possible cases where the pages might be
+> unintentionally recycled. All it would take is for a packet to get
+> cloned a few times and then somebody starts using pskb_expand_head and
+> you would have multiple cases, possibly simultaneously, of entities
+> trying to free the page. I just worry it opens us up to a number of
+> possible races.
 
-> ---
->  Changes in v6:
->   - Use dereference_symbol_descriptor() so that it can handle address in
->     modules correctly.
-> ---
->  arch/ia64/kernel/kprobes.c    |    5 -----
->  arch/powerpc/kernel/kprobes.c |   11 -----------
->  include/linux/kprobes.h       |    1 -
->  kernel/kprobes.c              |    7 +------
->  lib/error-inject.c            |    3 ++-
->  5 files changed, 3 insertions(+), 24 deletions(-)
->
+Maybe I missde something, but I thought the cloned SKBs would never trigger
+the recycling path, since they are protected by the atomic dataref check in
+skb_release_data(). What am I missing?
 
 [...]
+
+Thanks
+/Ilias
