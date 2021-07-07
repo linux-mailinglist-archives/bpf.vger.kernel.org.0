@@ -2,155 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52983BE1CC
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 06:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D500D3BE1D9
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 06:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhGGEGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Jul 2021 00:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhGGEGV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Jul 2021 00:06:21 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8B5C061574;
-        Tue,  6 Jul 2021 21:03:41 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id a16so1045697ybt.8;
-        Tue, 06 Jul 2021 21:03:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JpJPvzTMXqbU6WWCnPrJiuNQm9s8oHY0iAkh3Y/2RpQ=;
-        b=VAwHfJSXEz6OBHzR0j9Nrqx3iF5wwdQ1uZ8znEv8feOhJsNc6hdhxcpi4H9Bes0NNM
-         fHWyE6U3m/uDy12r/uuaDbs+s7t3oXjhFV3h0V9dAx0qKXOPCJX50iXPAonUUIgAUKvQ
-         UXW7O1vZXvF9c94TQtSm80Dxc1iqexQxGHsdVIxSMg1gaRntey0t7g0EnG3NJmsa1Zzh
-         +z5q4YVMKUXwvoMQ5PD+ciu1j1HmPwh+p20jDjcW4lAZQJD1LKShI9BqoewWJDjVAeX1
-         BTtpfJuijJMgmEiSC5BLdOlnYVGMvhjvi4MibGPgNnx4SKRdoCxfKBDbNQMyJWCrQ19Q
-         t5bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JpJPvzTMXqbU6WWCnPrJiuNQm9s8oHY0iAkh3Y/2RpQ=;
-        b=HDCSjxqY7e/G3LjXfp/zQnrhAYcI6hS9Xb0a5mouVkAkFyHAlx+5uZjBGZzTjYCzxp
-         qFPF3bbF6EXFNdtxSSmuFDUtGBLmP4n0q7TBDMzIpVLNDymHDqtVPrABire75OZHreZ8
-         Ho0VpYsgkmElLZv/B1ktarmTYMcu0WWlFKPDohqBpq2wKsEmkbaOEt0QS4uIOvMxqqIE
-         mQgv+7Ukrm7VC/8ORL71Rwqhzlwo5UOSjkYPFoGx2yHJuRBqbsWIbc/UFaGGgz9wp7Xv
-         xRPbnkiIYENdES9U45WoBB4gfWNHbOTm6wQjk3JswfexTGY8G2wrywCC+ss9MntbnYec
-         O11w==
-X-Gm-Message-State: AOAM530fWjqzgaGZVE8mrAJFoYpMMEGsWnzb5NWLnidHZp0Q3Ag9JMaX
-        xxT75wfqMPh0qkEvjguWxt7irf+ueZid03XfADU=
-X-Google-Smtp-Source: ABdhPJw+vXKt/L8p149KnPuK0fFSPNjrl/B6Yj0zCBGJb4SCOzxhcdAbVBYCOgc66srqjkfcgT+KL+DzMAioXqmLRRs=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr28896708ybu.403.1625630620354;
- Tue, 06 Jul 2021 21:03:40 -0700 (PDT)
+        id S230034AbhGGEKC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Jul 2021 00:10:02 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1352 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230024AbhGGEKB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 7 Jul 2021 00:10:01 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16744259002258;
+        Wed, 7 Jul 2021 00:06:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=GFeJKiJWa7bQJv3rBT5hH61E7T3/C9ZSWX5cnfGt7fY=;
+ b=eIto6F8W2FoYX25iQ0G1IR3ztldnrTJuYRdA7kRRABPUjOEdttC3WGyYAtW3gLElVBNs
+ 8nWLgsBieM35Ue8VyqwUk4KG3fvr8Rtew65LNYIpIg1PV3zYdAd+d8uwb31h631o3/m9
+ 6B0r9ivFFUkBSfoUJAoR1FHaBH2FvcwGcnNDB1OIy6Wii7DzZiBoUUsFcC67OHU/lHo5
+ wGtRIDX5duZAaab9CElORMZFKHtecTCO2gb3YOsHBtR5AhCbQdeJMzGhf7YWxWSNC78e
+ N0oVYtg0LGy/fNcsOUovttemxLjGCpZrNJHZNIDxoObEyGGfOSB7udtTEZJeY7nzhos5 7A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mc15n29e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 00:06:46 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 167446qY002647;
+        Wed, 7 Jul 2021 00:06:46 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39mc15n28r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 00:06:46 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16742s95009581;
+        Wed, 7 Jul 2021 04:06:44 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 39jfh8sh1w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Jul 2021 04:06:44 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16746f7V20054332
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Jul 2021 04:06:41 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 177BCAE064;
+        Wed,  7 Jul 2021 04:06:41 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EABD0AE055;
+        Wed,  7 Jul 2021 04:06:34 +0000 (GMT)
+Received: from [9.199.33.242] (unknown [9.199.33.242])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Jul 2021 04:06:34 +0000 (GMT)
+Subject: Re: [PATCH 4/4] bpf powerpc: Add addr > TASK_SIZE_MAX explicit check
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     naveen.n.rao@linux.ibm.com, mpe@ellerman.id.au, ast@kernel.org,
+        daniel@iogearbox.net, songliubraving@fb.com,
+        netdev@vger.kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kpsingh@kernel.org, paulus@samba.org,
+        sandipan@linux.ibm.com, yhs@fb.com, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kafai@fb.com,
+        linux-kernel@vger.kernel.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+References: <20210706073211.349889-1-ravi.bangoria@linux.ibm.com>
+ <20210706073211.349889-5-ravi.bangoria@linux.ibm.com>
+ <74f55f12-c7da-a06d-c3a5-6869b907e3f6@csgroup.eu>
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Message-ID: <8c4fb89e-626e-fd0d-5703-e3916924785a@linux.ibm.com>
+Date:   Wed, 7 Jul 2021 09:36:33 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210706174409.15001-1-vjsanjay@gmail.com> <b87ad042-eaf0-d1ac-6760-b3c92439655d@fb.com>
- <CAEf4BzZidvzFjw=m3zEmnrVhNYhrmy1pV-XgAfxMvgrb8Snw8w@mail.gmail.com> <CAPhsuW4EeY9CHE73Sy6zdteLhj6G-f+M9jSxrPuXpE81tPZoeA@mail.gmail.com>
-In-Reply-To: <CAPhsuW4EeY9CHE73Sy6zdteLhj6G-f+M9jSxrPuXpE81tPZoeA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 6 Jul 2021 21:03:29 -0700
-Message-ID: <CAEf4BzaFSmpzin-ukmfQcS8+cHYZ_QwNe5u1eATLb_Omn6Wgog@mail.gmail.com>
-Subject: Re: [PATCH] tools/runqslower: use __state instead of state
-To:     Song Liu <song@kernel.org>
-Cc:     Yonghong Song <yhs@fb.com>, SanjayKumar J <vjsanjay@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <74f55f12-c7da-a06d-c3a5-6869b907e3f6@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: PwGFivFaXsb3nk0x2dNo-AfGBlnVCkyB
+X-Proofpoint-GUID: pEoMI7pagvFrmIKaTZwYxAqfCIUbkP6E
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-07_01:2021-07-06,2021-07-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ phishscore=0 impostorscore=0 mlxscore=0 spamscore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107070020
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 4:11 PM Song Liu <song@kernel.org> wrote:
->
-> On Tue, Jul 6, 2021 at 3:05 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Jul 6, 2021 at 11:26 AM Yonghong Song <yhs@fb.com> wrote:
-> > >
-> > >
-> > >
-> > > On 7/6/21 10:44 AM, SanjayKumar J wrote:
-> > > >       task->state is renamed to task->__state in task_struct
-> > >
-> > > Could you add a reference to
-> > >    2f064a59a11f ("sched: Change task_struct::state")
-> > > which added this change?
-> > >
-> > > I think this should go to bpf tree as the change is in linus tree now.
-> > > Could you annotate the tag as "[PATCH bpf]" ("[PATCH bpf v2]")?
-> > >
-> > > Please align comments to the left without margins.
-> > >
-> > > >
-> > > >       Signed-off-by: SanjayKumar J <vjsanjay@gmail.com>
-> > >
-> > > This Singed-off-by is not needed.
-> > >
-> > > You can add my Ack in the next revision:
-> > > Acked-by: Yonghong Song <yhs@fb.com>
-> > >
-> > > >
-> > > > Signed-off-by: SanjayKumar J <vjsanjay@gmail.com>
-> > > > ---
-> > > >   tools/bpf/runqslower/runqslower.bpf.c | 2 +-
-> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
-> > > > index 645530ca7e98..ab9353f2fd46 100644
-> > > > --- a/tools/bpf/runqslower/runqslower.bpf.c
-> > > > +++ b/tools/bpf/runqslower/runqslower.bpf.c
-> > > > @@ -74,7 +74,7 @@ int handle__sched_switch(u64 *ctx)
-> > > >       u32 pid;
-> > > >
-> > > >       /* ivcsw: treat like an enqueue event and store timestamp */
-> > > > -     if (prev->state == TASK_RUNNING)
-> > > > +     if (prev->__state == TASK_RUNNING)
-> > >
-> > > Currently, runqslower.bpf.c uses vmlinux.h.
-> > > I am thinking to use bpf_core_field_exists(), but we need to
-> > > single out task_struct structure from vmlinux.h
-> > > with both state and __state fields, we could make it work
-> > > by *changes* like
-> > >
-> > > #define task_struct task_struct_orig
-> > > #include "vmlinux.h"
-> > > #undef task_struct
-> > >
-> > > struct task_struct {
-> > >     ... state;
-> > >     ... __state;
-> > > ...
-> > > };
-> >
-> >
-> > no need for such surgery, recommended way is to use ___suffix to
-> > declare incompatible struct definition:
-> >
-> > struct task_struct___old {
-> >     int state;
-> > };
-> >
-> > Then do casting in BPF code. We don't have to do it in kernel tree's
-> > runqslower, but we'll definitely have to do that for libbpf-tools'
-> > runqslower and runqlat.
->
-> Question on this topic: state and __state are of different sizes here. IIUC,
-> bpf_core_types_are_compat() does allow size mismatch. But it may cause
-> problems in some cases, no? For example, would some combination make
-> task->state return 32 extra bits from another field and cause confusion?
 
-In this case it's two different fields, long state vs int __state, so
-there is no confusion, you'd be using either one or another. But even
-if it was the same field and its type changed from long to int, libbpf
-will still try to accommodate that. Worst case,
-BPF_CORE_READ_BITFIELD() is able to read any bitfield or integer
-field, regardless of its size.
+>> @@ -763,6 +771,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>>           /* dst = *(u16 *)(ul) (src + off) */
+>>           case BPF_LDX | BPF_MEM | BPF_H:
+>>           case BPF_LDX | BPF_PROBE_MEM | BPF_H:
+>> +            if (BPF_MODE(code) == BPF_PROBE_MEM) {
+>> +                EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
+>> +                PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
+>> +                EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
+>> +                PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
+>> +                EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+>> +                PPC_JMP((ctx->idx + 2) * 4);
+>> +            }
+> 
+> That code seems strictly identical to the previous one and the next one.
+> Can you refactor in a function ?
 
->
-> Thanks,
-> Song
+I'll check this.
+
+> 
+>>               EMIT(PPC_RAW_LHZ(dst_reg, src_reg, off));
+>>               if (insn_is_zext(&insn[i + 1]))
+>>                   addrs[++i] = ctx->idx * 4;
+>> @@ -773,6 +789,14 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>>           /* dst = *(u32 *)(ul) (src + off) */
+>>           case BPF_LDX | BPF_MEM | BPF_W:
+>>           case BPF_LDX | BPF_PROBE_MEM | BPF_W:
+>> +            if (BPF_MODE(code) == BPF_PROBE_MEM) {
+>> +                EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
+>> +                PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
+>> +                EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
+>> +                PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
+>> +                EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+>> +                PPC_JMP((ctx->idx + 2) * 4);
+>> +            }
+>>               EMIT(PPC_RAW_LWZ(dst_reg, src_reg, off));
+>>               if (insn_is_zext(&insn[i + 1]))
+>>                   addrs[++i] = ctx->idx * 4;
+>> @@ -783,6 +807,20 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>>           /* dst = *(u64 *)(ul) (src + off) */
+>>           case BPF_LDX | BPF_MEM | BPF_DW:
+>>           case BPF_LDX | BPF_PROBE_MEM | BPF_DW:
+>> +            if (BPF_MODE(code) == BPF_PROBE_MEM) {
+>> +                EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], src_reg, off));
+>> +                PPC_LI64(b2p[TMP_REG_2], TASK_SIZE_MAX);
+>> +                EMIT(PPC_RAW_CMPLD(b2p[TMP_REG_1], b2p[TMP_REG_2]));
+>> +                if (off % 4)
+> 
+> That test is worth a comment.
+
+(off % 4) test is based on how PPC_BPF_LL() emits instruction.
+
+> 
+> And I'd prefer
+> 
+>      if (off & 3) {
+>          PPC_BCC(COND_GT, (ctx->idx + 5) * 4);
+>          EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+>          PPC_JMP((ctx->idx + 3) * 4);
+>      } else {
+>          PPC_BCC(COND_GT, (ctx->idx + 4) * 4);
+>          EMIT(PPC_RAW_XOR(dst_reg, dst_reg, dst_reg));
+>          PPC_JMP((ctx->idx + 2) * 4);
+>      }
+
+Yes this is neat.
+
+Thanks for the review,
+Ravi
