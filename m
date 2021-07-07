@@ -2,135 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117F43BED3C
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 19:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637EB3BEEB7
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 20:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhGGRnP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Jul 2021 13:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
+        id S231365AbhGGSbL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Jul 2021 14:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhGGRnO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Jul 2021 13:43:14 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AA7C061574;
-        Wed,  7 Jul 2021 10:40:34 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so2119795pjo.3;
-        Wed, 07 Jul 2021 10:40:34 -0700 (PDT)
+        with ESMTP id S231561AbhGGSbF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Jul 2021 14:31:05 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7293FC061764;
+        Wed,  7 Jul 2021 11:28:22 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id i4so4672770ybe.2;
+        Wed, 07 Jul 2021 11:28:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BgQbhoVbzjmNN3b9sj7N5Nl4gKvJ3MMVqvNXk5zHkNo=;
-        b=bR47LD94Ihmmn+syU7HUJyHuGzItCzlwySdmlkOYI/yLYpYVon7pXNMaOD9WbOvGHh
-         SqeGoAWtPadPUZwLG9LePULyOje+tqo/OgSzMDdJii1uZfPbqeFYEmEqpHBNywGAbqHy
-         2iQt545mtIRNxxSdHd+w2YoLimLHvy+w6F2IHU8lAiQmJenx3+5YoqnFpXT13tHetrgy
-         dlzio48/8UmsOvEgsEkA+FcqO5LKFg6wjaBPvsL9Tq+yM5THIWAKi3BkCdR5u6sX/GJd
-         fT44xrPMKQbzunyhJl/zp8JqGkmruuVmLoS7qEzyjp8Frx+5bbCDFVaAl7M64v6s00ZW
-         AvJQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VK1b4T+tdxLj0ZaLZLl27Y238eANKisrNhi/wvZNAG0=;
+        b=c+gd0uM455Z5mJVonXFgsTe8dnzKXZqgjhsDfaDk98+xKhm1V/FETfwxBDUcSBeQ/Y
+         alcEQYAIrFiiAHT741iN/VM35WV0zi/Z1KwCKTFZ7NinPMkURdhMQfx/gupYfjMdxCEN
+         z1abS5/XscvX05GlmChkEba9sZkZCQqb8RpUhrqSD+xQ3ZfZDNU1DnZcXrkfta7wh+V/
+         qvKrA6KlAygZH68ZIc3bdzBvbZdJB8pHWICdmDAQWafHva2qDWr6kvqywDa+D7Hl36vR
+         9cMWNoD5HCCbJ2S7WNVTt42nlUQ7VGxffaKKcY4WB62hwK/avAOi++P1BEO7daQNzUT2
+         LRLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BgQbhoVbzjmNN3b9sj7N5Nl4gKvJ3MMVqvNXk5zHkNo=;
-        b=gCKAnK3WON5XurRZqYDx9wOnbeXoA/Ex/DUaMpDSSfwXsVBqePqxb+pB7hFXMYYgDF
-         ndhjKAmkFv/qeXDKFQkkgIm33wPilhvYoaP6/sC55SLd9i0RLdgwxiXPww0nrqSOhXf9
-         v4m5W1ztoZLI6AlJzloEIwfRl8HHMjuVkXvjbaLE/atuqpqZPb1NpYdG85TwYOmR6OZj
-         Dvj75rxC15efXLXpBTrSkAAZLJboVCH4JA9eiIjqg9Tzm8hftqKBIvCHFRh26xpaFmwx
-         x7NooOoGL/Y0ilZ+UhvlorigrfPNSAimfO135gXqIML45mJyO0HsDXwCL5+YzQdPYA0r
-         yJeA==
-X-Gm-Message-State: AOAM530cfpUmeVr6avTyOrfKpqVibjmGXxlRR2bmpzB2hMs1dfVebp5z
-        6029MfSQnYQ4G4StTtlgduE=
-X-Google-Smtp-Source: ABdhPJzCIAIXmtoc+TgNyipWd2WVTKXNqNE0xipLQsdFFIQOXHcVtnOxk+x8AeC7NNPt4aWeARXzww==
-X-Received: by 2002:a17:90a:948b:: with SMTP id s11mr28015165pjo.139.1625679633694;
-        Wed, 07 Jul 2021 10:40:33 -0700 (PDT)
-Received: from BALT-UROY.maxlinear.com ([202.8.116.91])
-        by smtp.gmail.com with ESMTPSA id r26sm15555376pfq.191.2021.07.07.10.40.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 10:40:33 -0700 (PDT)
-From:   UjjaL Roy <royujjal@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] docs: bpf: Added more extension example
-Date:   Wed,  7 Jul 2021 23:10:22 +0530
-Message-Id: <20210707174022.517-1-royujjal@gmail.com>
-X-Mailer: git-send-email 2.31.1.windows.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VK1b4T+tdxLj0ZaLZLl27Y238eANKisrNhi/wvZNAG0=;
+        b=ukGh/pgHE8mnpZEYf86z+xpXAXFm1r3UOh+xOF0dWImc7SOA5DsuTEBGqG2kyhx8OY
+         MjeHJelmwgnzF5W4ySR6kbx2RypQWsPFoC2LQ4M1dV1CoNQ13h0XgSFr9UldT7IyaPrT
+         aJMycqnQt601Pzb55SRd9DEl61m8EwpJT6hm9MmeCZzazH8feM4jGJRU02ttl2N58mCX
+         wSKG93QB6u+rUUZH1LpurNVj14Dz5gYdYark+5ZmeNWiS3o1GeOI7lam9C097OFRmAmG
+         nZvk00K+K/kN/lkvHRfb4Ac3UOqgBDds4sHTWxEci9F/t1enhafNtKvXLGoEUjYLZeZR
+         GqNQ==
+X-Gm-Message-State: AOAM533SqofKj9y/WZnPVIdzdqf3/k5pUtq/vutmKi6tRjLi6Pv8unXX
+        rqFRa/ALWC+7XCMJ5XWmoBnqiTCpYNsKec5Gdu0=
+X-Google-Smtp-Source: ABdhPJxEZ9a60B15EkYK6EsPieQQ3WOyERQAF+OLp2bWcEh9iRZIzH1BUe5bI9A0Suj4Iy+dwtNl+Fi3V9C7QE8PWGA=
+X-Received: by 2002:a25:b741:: with SMTP id e1mr34963002ybm.347.1625682501624;
+ Wed, 07 Jul 2021 11:28:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <162399992186.506599.8457763707951687195.stgit@devnote2> <162399994018.506599.10332627573727646767.stgit@devnote2>
+In-Reply-To: <162399994018.506599.10332627573727646767.stgit@devnote2>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 7 Jul 2021 11:28:10 -0700
+Message-ID: <CAEf4BzY1D7NsrBwt3nLFRbaESb7b5pR9arLhrg8OmOAfxi+kaw@mail.gmail.com>
+Subject: Re: [PATCH -tip v8 02/13] kprobes: treewide: Replace
+ arch_deref_entry_point() with dereference_symbol_descriptor()
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "Roy, UjjaL" <royujjal@gmail.com>
+On Fri, Jun 18, 2021 at 12:05 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Replace arch_deref_entry_point() with dereference_symbol_descriptor()
+> because those are doing same thing.
+>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Tested-by: Andrii Nakryik <andrii@kernel.org>
 
-After reading this document observed that for new users it is
-hard to find an example of "extension" easily.
+Hi Masami,
 
-So, added a new heading for extensions for better readability.
-Now, the new readers can easily identify "extension" examples.
-Also, added one more example of filtering interface index.
+If you are going to post v9 anyway, can you please fix up my name, it
+should be "Andrii Nakryiko", thanks!
 
-Signed-off-by: Roy, UjjaL <royujjal@gmail.com>
----
- Documentation/networking/filter.rst | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+> ---
+>  Changes in v6:
+>   - Use dereference_symbol_descriptor() so that it can handle address in
+>     modules correctly.
+> ---
+>  arch/ia64/kernel/kprobes.c    |    5 -----
+>  arch/powerpc/kernel/kprobes.c |   11 -----------
+>  include/linux/kprobes.h       |    1 -
+>  kernel/kprobes.c              |    7 +------
+>  lib/error-inject.c            |    3 ++-
+>  5 files changed, 3 insertions(+), 24 deletions(-)
+>
 
-diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-index 3e2221f4abe4..5f13905b12e0 100644
---- a/Documentation/networking/filter.rst
-+++ b/Documentation/networking/filter.rst
-@@ -320,13 +320,6 @@ Examples for low-level BPF:
-   ret #-1
-   drop: ret #0
- 
--**(Accelerated) VLAN w/ id 10**::
--
--  ld vlan_tci
--  jneq #10, drop
--  ret #-1
--  drop: ret #0
--
- **icmp random packet sampling, 1 in 4**::
- 
-   ldh [12]
-@@ -358,6 +351,22 @@ Examples for low-level BPF:
-   bad: ret #0             /* SECCOMP_RET_KILL_THREAD */
-   good: ret #0x7fff0000   /* SECCOMP_RET_ALLOW */
- 
-+Examples for low-level BPF extension:
-+
-+**Packet for interface index 13**::
-+
-+  ld ifidx
-+  jneq #13, drop
-+  ret #-1
-+  drop: ret #0
-+
-+**(Accelerated) VLAN w/ id 10**::
-+
-+  ld vlan_tci
-+  jneq #10, drop
-+  ret #-1
-+  drop: ret #0
-+
- The above example code can be placed into a file (here called "foo"), and
- then be passed to the bpf_asm tool for generating opcodes, output that xt_bpf
- and cls_bpf understands and can directly be loaded with. Example with above
--- 
-2.17.1
-
+[...]
