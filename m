@@ -2,92 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4BC3BE8A1
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 15:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E193BE8C6
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 15:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbhGGNQi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Jul 2021 09:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbhGGNQe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Jul 2021 09:16:34 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449AEC06175F;
-        Wed,  7 Jul 2021 06:13:53 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id u25so2602994ljj.11;
-        Wed, 07 Jul 2021 06:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=h25gHlOngZgr86BE+CbM0uJNam8WoUfeVATamHxArOw=;
-        b=RXO8ymGzxfsEu2ttOuCke4ohRTFXlQktxVetUEhdx57MFwf10ngGBTlPxdiFhb0UPA
-         d85N0+HjCqAtlB0gyYnX9x3LgBuuCgBQ5eUmHpQccGDD/mtjP7PJylSCjRKwloD4qmkq
-         dXccUP8RutEDTXrcbFGnVYugRklUFengVt4OycsGn7ajbWLD6i4CGd5IVAylnrJBvyU5
-         hBScKyc/y1syBXpAZzEB7L1g25kcpcesreYJ9eZwLu+rZd7XUnR5KgE7mLVSX6QZsvLN
-         mQXAMekNo5pezEPncekDFxQ4VFNJZXg5ny+r2EWWZbb4vpVQM6o13ai69fP6eoLHaman
-         zKMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=h25gHlOngZgr86BE+CbM0uJNam8WoUfeVATamHxArOw=;
-        b=BeiCrMYK2fvhmi6G8UGzlqJHTHN/CrYxBLPL0JQD46T/0KUno54P1Faqj4Cz6sQd3/
-         Pzvd4+F1aS0kWRnrNaKUJUqeYYOB/bKsI1SJ1dVO+sHFVlTN0cCxIcQbKgJ5g561vGaG
-         4hmcKkYaGtGxsctgaCSWvGHeks+tbv8fWeo5edqQyWd0Igsbk9ERfABpBUoNh8DOQJ79
-         Nx5PAmSDGvF9CvBBIr0GaWiT1v30dcu5O/KVGBit4K19OnL8+l1t4K1Kht5h27xGrkb1
-         PbR/epJ1IGjqwvxiyIDf4YuTOKEHd64b0vBEbumXf5qPiDtH6qQaGnIERmRDHHDms2iH
-         ED/w==
-X-Gm-Message-State: AOAM531aDomzKjVjNbuoslbm5V5VfHamUHRxgfsWlTR/L/t+MPPlvfgh
-        zzOtxq2EN8zqv8bMJQw48DdX35rQCXbNHHCE1Q==
-X-Google-Smtp-Source: ABdhPJzC/+0kPktq84jrmOss4dX9lnay2HQ5PHuUtkFZew4yP9+HtEs4QL/0WJNnnChbVBT46ecUeA==
-X-Received: by 2002:a2e:b804:: with SMTP id u4mr2728465ljo.312.1625663631378;
-        Wed, 07 Jul 2021 06:13:51 -0700 (PDT)
-Received: from localhost.localdomain ([89.42.43.188])
-        by smtp.gmail.com with ESMTPSA id u9sm1423571lfm.127.2021.07.07.06.13.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 06:13:50 -0700 (PDT)
-From:   Jussi Maki <joamaki@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, j.vosburgh@gmail.com,
-        andy@greyhouse.net, vfalico@gmail.com, andrii@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        Jussi Maki <joamaki@gmail.com>, toke@redhat.com
-Subject: [PATCH bpf-next v3 5/5] net: core: Allow netdev_lower_get_next_private_rcu in bh context
-Date:   Wed,  7 Jul 2021 11:25:51 +0000
-Message-Id: <20210707112551.9782-6-joamaki@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210707112551.9782-1-joamaki@gmail.com>
-References: <20210609135537.1460244-1-joamaki@gmail.com>
- <20210707112551.9782-1-joamaki@gmail.com>
+        id S231528AbhGGNcK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Jul 2021 09:32:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231357AbhGGNcJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Jul 2021 09:32:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C59160D07;
+        Wed,  7 Jul 2021 13:29:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625664569;
+        bh=5r0H24J6y+tSw0QazP/TcXzQ2gQzcMt1BZjeoEwGo2Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Qim8foHGFlqwraQb2h1SwhnqBL0PrPz55T05poQFYYFfBWDm8Efi/22zvSvzea3WI
+         mh7aCRtegrQ2kX0MAvHRbRmXWif3E6OPX4ju1ugXLfrAembNgxRnsgTPQ+b7TarGsG
+         W++BfjV0kgY2VFOapCrQWfg/FkRCa0HTi7Cki9cB5gNtJMJAipww8FVXsKu3bJVhUG
+         2siWtnfFxS7a7XZhpvdbbWiySiCac1MWWALto4kNGm3Q7+3UQdSMnFpuSBJatrFHLV
+         w52vBtWrhpdQPokt+sbWSYtNlEpgMKdMpbrw4sUB0hZP6rySvZXX9GpFjjaikLsDp+
+         3vzC7Uv/8ChCQ==
+Date:   Wed, 7 Jul 2021 22:29:25 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        wuqiang.matt@bytedance.com
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-Id: <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
+In-Reply-To: <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162400002631.506599.2413605639666466945.stgit@devnote2>
+        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+        <20210706004257.9e282b98f447251a380f658f@kernel.org>
+        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+        <20210706111136.7c5e9843@oasis.local.home>
+        <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+        <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
+        <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
+        <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For the XDP bonding slave lookup to work in the NAPI poll context
-in which the redudant rcu_read_lock() has been removed we have to
-follow the same approach as in [1] and modify the WARN_ON to also
-check rcu_read_lock_bh_held().
+On Wed, 7 Jul 2021 19:45:30 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=694cea395fded425008e93cd90cfdf7a451674af
+> On Wed, 7 Jul 2021 12:20:57 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
+> > 
+> > > I actually don't want to keep this feature because no one use it.
+> > > (only systemtap needs it?)
+> > 
+> > Yeah, you mentioned systemtap, but since that's out-of-tree I don't
+> > care. Their problem.
 
-Signed-off-by: Jussi Maki <joamaki@gmail.com>
----
- net/core/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah, maybe it is not hard to update.
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 05aac85b2bbc..27f95aeddc59 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -7569,7 +7569,7 @@ void *netdev_lower_get_next_private_rcu(struct net_device *dev,
- {
- 	struct netdev_adjacent *lower;
- 
--	WARN_ON_ONCE(!rcu_read_lock_held());
-+	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held());
- 
- 	lower = list_entry_rcu((*iter)->next, struct netdev_adjacent, list);
- 
+> > 
+> > > Anyway, if we keep the idea-level compatibility (not code level),
+> > > what we need is 'void *data' in the struct kretprobe_instance.
+> > > User who needs it can allocate their own instance data for their
+> > > kretprobes when initialising it and sets in their entry handler.
+> > > 
+> > > Then we can have a simple kretprobe_instance.
+> > 
+> > When would you do the alloc? When installing the retprobe, but that
+> > might be inside the allocator, which means you can't call the allocator
+> > etc.. :-)
+> 
+> Yes, so the user may need to allocate a pool right before register_kretprobe().
+> (whether per-kretprobe or per-task or global pool, that is user's choice.)
+> 
+> > 
+> > If we look at struct ftrace_ret_stack, it has a few fixed function
+> > fields. The calltime one is all that is needed for the kretprobe
+> > example code.
+> 
+> kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
+> stores callee function address in 'kretprobe::kp.addr'), a return
+> address and a frame pointer (*).
+
+Oops, I forgot to add "void *data" for storing user data.
+
+Thank you,
+
 -- 
-2.27.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
