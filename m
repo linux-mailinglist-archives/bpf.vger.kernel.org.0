@@ -2,107 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E193BE8C6
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 15:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C47CF3BE8E9
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 15:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbhGGNcK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Jul 2021 09:32:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231357AbhGGNcJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Jul 2021 09:32:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C59160D07;
-        Wed,  7 Jul 2021 13:29:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625664569;
-        bh=5r0H24J6y+tSw0QazP/TcXzQ2gQzcMt1BZjeoEwGo2Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Qim8foHGFlqwraQb2h1SwhnqBL0PrPz55T05poQFYYFfBWDm8Efi/22zvSvzea3WI
-         mh7aCRtegrQ2kX0MAvHRbRmXWif3E6OPX4ju1ugXLfrAembNgxRnsgTPQ+b7TarGsG
-         W++BfjV0kgY2VFOapCrQWfg/FkRCa0HTi7Cki9cB5gNtJMJAipww8FVXsKu3bJVhUG
-         2siWtnfFxS7a7XZhpvdbbWiySiCac1MWWALto4kNGm3Q7+3UQdSMnFpuSBJatrFHLV
-         w52vBtWrhpdQPokt+sbWSYtNlEpgMKdMpbrw4sUB0hZP6rySvZXX9GpFjjaikLsDp+
-         3vzC7Uv/8ChCQ==
-Date:   Wed, 7 Jul 2021 22:29:25 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        wuqiang.matt@bytedance.com
-Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
- entry
-Message-Id: <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
-In-Reply-To: <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
-        <162400002631.506599.2413605639666466945.stgit@devnote2>
-        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
-        <20210706004257.9e282b98f447251a380f658f@kernel.org>
-        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
-        <20210706111136.7c5e9843@oasis.local.home>
-        <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
-        <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
-        <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
-        <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231542AbhGGNln (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Jul 2021 09:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231357AbhGGNln (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Jul 2021 09:41:43 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3661AC061574
+        for <bpf@vger.kernel.org>; Wed,  7 Jul 2021 06:39:03 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id a6so3514509ioe.0
+        for <bpf@vger.kernel.org>; Wed, 07 Jul 2021 06:39:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=user-agent:mime-version:message-id:in-reply-to:references:date:from
+         :to:cc:subject;
+        bh=cYEtjynVeNKy8n7/FJu26STUQHmlWuNHGzV9+GgWKbU=;
+        b=TM242lrWyhOHv/qypHDH8tsCc0LwTeLQyBAcoMJb8ba1W5mAKi2QTPL1sfJuwLASa5
+         4/7gbz5Vh46tapLL9exp6sqaHJQ9lEN+nCCnOS7gYMnwfA337Bd0JbNsJWSbAZKUdrxX
+         GscJlnVO29nQKB43l2EGAY4C5tOTZxJFU/UqVrd+1Z/IXoQAKxMmzTWudy9Inji6p9bE
+         024PYTFqe05AT4mGTafjaWOiF97G7IAl60pSaxDj0gyztXKBTkKLM6mCqIQmI9bKZINY
+         MxW3LxqPtbKr7+FqxaH1AYUD8hiW6tcUaylDNJUxG0+6WDQyQZ0wWmSaiRUK89Ro83Bu
+         UPRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:user-agent:mime-version:message-id:in-reply-to
+         :references:date:from:to:cc:subject;
+        bh=cYEtjynVeNKy8n7/FJu26STUQHmlWuNHGzV9+GgWKbU=;
+        b=jGKpWGDglSo5/vSS5LDrfL3dQAk0NBBk4AuWJg1ULnbbBMwb8rflqv0MHM01m3Vbev
+         KtkI74k8bVkl6LOOUyDRfsTw1dzMy7RFC4x0pveus6QeJ90YOzrtS8wWAsA/EqHzcMAI
+         FvGB4Uh7RbU9CPMjLLrJvYhB1d5NhFs8TW2244ZryurNZhJw9O2CYXCYfjL6T6gsF5WI
+         34/V3AYP59dEDZbovh+7tZ9ko0PZhcx61OsAyoQKdvXbnhMvf2Je4GVg7X9yaIUvh9il
+         dPhsWEHgWppTk1hvIwGKlzeSRzMJW0KUApsMIAtGWszgGu6ezv4B5JNbapblDQ2tgG5o
+         +taQ==
+X-Gm-Message-State: AOAM532HKv4s7xVz9ZaRwJvA49GcQPHznJikiX+ead7dCy94nFbclY/v
+        q9PMSNmrwniOOVjUTdNefg==
+X-Google-Smtp-Source: ABdhPJxZuLIKnkNXFqY6gPY2+1KhuJOa5ennelckg8G9u/W6qtj9hO7hhTW8sAVJVdcsL6jk40amGQ==
+X-Received: by 2002:a05:6602:1219:: with SMTP id y25mr4759050iot.23.1625665142699;
+        Wed, 07 Jul 2021 06:39:02 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id q7sm2535451ioi.34.2021.07.07.06.39.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 06:39:02 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 8923B27C005B;
+        Wed,  7 Jul 2021 09:39:01 -0400 (EDT)
+Received: from imap10 ([10.202.2.60])
+  by compute3.internal (MEProxy); Wed, 07 Jul 2021 09:39:01 -0400
+X-ME-Sender: <xms:da7lYE9e6-sH9VyprmpODphc_SeBDejOPfcBvlR7dUqAtRwhav8u1Q>
+    <xme:da7lYMs9vKTAtwGLVRhcgUBZGtUCWjA1MULa4aJSUzjJML_F30YS2u_9H20EzX7KF
+    SYLgd3N1lYJt4H1Wnk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtddvgdeihecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepofgfggfkjghffffhvffutgesthdtre
+    dtreerjeenucfhrhhomhepfdftrghfrggvlhcuffgrvhhiugcuvfhinhhotghofdcuoehr
+    rghfrggvlhguthhinhhotghosehgmhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpe
+    eltdetleefkeejledvleeijeefhfekueffieetuddtleeufeekhfevtdffieegueenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghfrggvlh
+    guthhinhhotghoodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduuddvheei
+    heeltdegqddvheehkeejleefiedqrhgrfhgrvghlughtihhnohgtoheppehgmhgrihhlrd
+    gtohhmseduvdefmhgrihhlrdhorhhg
+X-ME-Proxy: <xmx:da7lYKAJLzyTNTXhj0NcKKcbLcWRyHxch5UyOrYYWq4mUesnMWwggA>
+    <xmx:da7lYEdFEMf2npMnGRdcmajB6mq7_rZBOklzt0GVoIqFXPWz24RMRw>
+    <xmx:da7lYJMN4wsCcUzlKkfEn5ttZ5ZYLeI85RmfEW8A73pODpm2UNyGbQ>
+    <xmx:da7lYAY_wJkMSWkxAmXxMp5PhmGysCB7eqlgEkHDgDHaYS-kveAMLw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 4E5564E00C3; Wed,  7 Jul 2021 09:39:01 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-531-g1160beca77-fm-20210705.001-g1160beca
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-Id: <d63ac37d-585a-46a7-b262-76e827a382c5@www.fastmail.com>
+In-Reply-To: <20210625044459.1249282-1-rafaeldtinoco@gmail.com>
+References: <CAEf4BzYQcD8vrTkXSgwBVGhRKvSWM6KyNc07QthK+=60+vUf8w@mail.gmail.com>
+ <20210625044459.1249282-1-rafaeldtinoco@gmail.com>
+Date:   Wed, 07 Jul 2021 10:38:40 -0300
+From:   "Rafael David Tinoco" <rafaeldtinoco@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii.nakryiko@gmail.com
+Subject: =?UTF-8?Q?Re:_[PATCH_bpf-next_v3]_libbpf:_introduce_legacy_kprobe_events?=
+ =?UTF-8?Q?_support?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 7 Jul 2021 19:45:30 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> On Wed, 7 Jul 2021 12:20:57 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
+On Fri, Jun 25, 2021, at 01:44, Rafael David Tinoco wrote:
+> Allow kprobe tracepoint events creation through legacy interface, as the
+> kprobe dynamic PMUs support, used by default, was only created in v4.17.
 > 
-> > On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
-> > 
-> > > I actually don't want to keep this feature because no one use it.
-> > > (only systemtap needs it?)
-> > 
-> > Yeah, you mentioned systemtap, but since that's out-of-tree I don't
-> > care. Their problem.
-
-Yeah, maybe it is not hard to update.
-
-> > 
-> > > Anyway, if we keep the idea-level compatibility (not code level),
-> > > what we need is 'void *data' in the struct kretprobe_instance.
-> > > User who needs it can allocate their own instance data for their
-> > > kretprobes when initialising it and sets in their entry handler.
-> > > 
-> > > Then we can have a simple kretprobe_instance.
-> > 
-> > When would you do the alloc? When installing the retprobe, but that
-> > might be inside the allocator, which means you can't call the allocator
-> > etc.. :-)
+> This enables CO.RE support for older kernels.
 > 
-> Yes, so the user may need to allocate a pool right before register_kretprobe().
-> (whether per-kretprobe or per-task or global pool, that is user's choice.)
-> 
-> > 
-> > If we look at struct ftrace_ret_stack, it has a few fixed function
-> > fields. The calltime one is all that is needed for the kretprobe
-> > example code.
-> 
-> kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
-> stores callee function address in 'kretprobe::kp.addr'), a return
-> address and a frame pointer (*).
+> Signed-off-by: Rafael David Tinoco <rafaeldtinoco@gmail.com>
 
-Oops, I forgot to add "void *data" for storing user data.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+ping
