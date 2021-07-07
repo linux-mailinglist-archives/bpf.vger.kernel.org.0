@@ -2,276 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D087D3BE685
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 12:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4296C3BE898
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 15:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhGGKsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Jul 2021 06:48:25 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:58009 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230354AbhGGKsY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Jul 2021 06:48:24 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 8E51C32004E7;
-        Wed,  7 Jul 2021 06:45:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 07 Jul 2021 06:45:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=spe32FZRmT1bOTG/e
-        CuW5GLUkc5hSUB1VHOlRpBR5J4=; b=ITQyheFxIhOp8qWfTaTVGfGjSVH+A4A/u
-        LbsRL+Qn1Dtko+GJay1OUlRFHNrdQmQc0KqquVzhZs9V584/DsDGYpDNM8Y9Dc6T
-        bXBYxB9soejNxMaRdmOO4gq1M4oNh5kOmJDv0ilOqn9PCz5zvnldp/Tr/YLOQ2k8
-        yfnDQud/k0G12dVcuQQ8u/3SPR1D3Y+RMwlCnDbzI6HIwqYa9cQ10D45obFsTsJD
-        n5FRgGL1yA2qhnqFV9qOFhLs7AjWJ6M8Sq2c7ETRWLGTrxHLtYe1VpReF+4eiirm
-        HfeSvocZSSEMhjnB9FVcm5xTFxKrXwcBAV/TLcQV94Dbf1LPhV9yQ==
-X-ME-Sender: <xms:14XlYJdv8cQ2W874v2IFFkBk5x3NZz293W24izhAyYN2oi9j3_B_Rw>
-    <xme:14XlYHNJON6v6D2Sjp_99CJOREcwucwjI3c5GwREBrSdo98zAwayhuxI2W2fJZz3T
-    R8-yZBAzDTECsQEemA>
-X-ME-Received: <xmr:14XlYCjwWJfr-HmUcAU24IJ9cqhVbQCOb9M-8uLSbIQl_9tsHeY94zoTzYFkefJCPP9mlg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtddvgdefudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeforghrthihnhgrshcurfhumhhpuhhtihhsuceomheslhgrmhgsuggr
-    rdhltheqnecuggftrfgrthhtvghrnhepuefhfedvheelieduhedvveeiffdtleehieduue
-    ehjeejtdekuddvtdffheeuleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepmheslhgrmhgsuggrrdhlth
-X-ME-Proxy: <xmx:14XlYC-dZbK2iIRPJtRvXcJsoCEAoYRx5gsAOi4BdUXQkThNQQuQ0A>
-    <xmx:14XlYFvrEybjEmFdhbgIhtJyCJndttaACJ8VnFdC7X7hj7UhVsxfAw>
-    <xmx:14XlYBGUuX76MLYskg64fBxRmQS2NGbAQsJA_haigKjSvqsMShwA7g>
-    <xmx:2IXlYO7osI1Sfg169MNdvQevCHDCqZP4ne75dzmOdZOySwpCbmNjKQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 Jul 2021 06:45:42 -0400 (EDT)
-From:   Martynas Pumputis <m@lambda.lt>
+        id S231693AbhGGNQa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Jul 2021 09:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhGGNQ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Jul 2021 09:16:29 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A601DC061574;
+        Wed,  7 Jul 2021 06:13:47 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id p16so4014447lfc.5;
+        Wed, 07 Jul 2021 06:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=NwHzmYM5uEjwUcFDkSDotLPD1CEM6aH0VuObqbX+j/s=;
+        b=qijBIqnPJUA9x0brYERYwX5lQyf2RpM2mBw7DRfWCbNp529Ru/FOPcS0I4KP69i5Pi
+         CIFCZ3I3iWjVqr0vH3K8ytt105IESt2BohQxjsnypmPtLNQ7bGkDvWVpRTef1xt0GUsC
+         XxAPgJ4e4UjukDY2if5v8dFn9WgJVUpozu9tv5CeESfX+DnEu+OiPx7THtoXgK2jP3AE
+         FiA+wpvflNyKva0uIfSxqjIrVmQ/qMCoQPCMlG/1Du9j+UqfgVN/7YXfDyFYyYlTbx9r
+         ZadVZGy/HYolAp3b3CVIqPb4ybfib1qTwSxwReIGB/XXBmJ/VWGmuQva5msM8ugNTdij
+         Coag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=NwHzmYM5uEjwUcFDkSDotLPD1CEM6aH0VuObqbX+j/s=;
+        b=MZIqboxA2bSTeyRJP8BtIoUhSSMIMNsaR05c51k5w/2W4GEXQBydqZkME5T3GUKwPJ
+         wCIKvVM9K1ka95afLA50WQvpmBCM6hyvQywRgKjoyowsfQhhjW6l5NoHzkc9K1wq/Dls
+         RcDsMLIUI/QrKL+B2PlOtkOwAImIOJ7RGc+y9YhnNei+GXYn4fJhPicqO3o9RSsmWKM2
+         wCKmNPrXf/Z9qdO4mWhWCbn6lR2Z2tuWMNMrJ6MLFdTVd9aiEXwVSZBYNiRjpZV+F/Gs
+         IlVbo6fXbSiAM1TmnrR7CLpCWIoVQXqsw9OLgZHsGbN8uubOVkGjUgDKTVdrdvnVDLNG
+         FpPg==
+X-Gm-Message-State: AOAM533S4+XkrettpFUMWJLs4l6a3r9qYZEqiqiUEPYK43MwaNXbGPSF
+        pJv1nn0Wkez9vNfUUcjEtem89wm0j8uMtNqTlA==
+X-Google-Smtp-Source: ABdhPJyDldqjJOPt3wVsJaxm5PPKNTuKV9GtmMGJ9HBY6+jnyqv7evMdIgJvHq/HhPezADlBMWjWfQ==
+X-Received: by 2002:a05:6512:550:: with SMTP id h16mr19278323lfl.636.1625663625620;
+        Wed, 07 Jul 2021 06:13:45 -0700 (PDT)
+Received: from localhost.localdomain ([89.42.43.188])
+        by smtp.gmail.com with ESMTPSA id u9sm1423571lfm.127.2021.07.07.06.13.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 06:13:44 -0700 (PDT)
+From:   Jussi Maki <joamaki@gmail.com>
 To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        m@lambda.lt
-Subject: [PATCH v2 bpf] libbpf: fix reuse of pinned map on older kernel
-Date:   Wed,  7 Jul 2021 12:47:36 +0200
-Message-Id: <20210707104736.637312-1-m@lambda.lt>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, j.vosburgh@gmail.com,
+        andy@greyhouse.net, vfalico@gmail.com, andrii@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        Jussi Maki <joamaki@gmail.com>
+Subject: [PATCH bpf-next v3 0/5] XDP bonding support
+Date:   Wed,  7 Jul 2021 11:25:46 +0000
+Message-Id: <20210707112551.9782-1-joamaki@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210609135537.1460244-1-joamaki@gmail.com>
+References: <20210609135537.1460244-1-joamaki@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When loading a BPF program with a pinned map, the loader checks whether
-the pinned map can be reused, i.e. their properties match. To derive
-such of the pinned map, the loader invokes BPF_OBJ_GET_INFO_BY_FD and
-then does the comparison.
+This patchset introduces XDP support to the bonding driver.
 
-Unfortunately, on < 4.12 kernels the BPF_OBJ_GET_INFO_BY_FD is not
-available, so loading the program fails with the following error:
+The motivation for this change is to enable use of bonding (and
+802.3ad) in hairpinning L4 load-balancers such as [1] implemented with
+XDP and also to transparently support bond devices for projects that
+use XDP given most modern NICs have dual port adapters.  An alternative
+to this approach would be to implement 802.3ad in user-space and
+implement the bonding load-balancing in the XDP program itself, but
+is rather a cumbersome endeavor in terms of slave device management
+(e.g. by watching netlink) and requires separate programs for native
+vs bond cases for the orchestrator. A native in-kernel implementation
+overcomes these issues and provides more flexibility.
 
-	libbpf: failed to get map info for map FD 5: Invalid argument
-	libbpf: couldn't reuse pinned map at
-		'/sys/fs/bpf/tc/globals/cilium_call_policy': parameter
-		mismatch"
-	libbpf: map 'cilium_call_policy': error reusing pinned map
-	libbpf: map 'cilium_call_policy': failed to create:
-		Invalid argument(-22)
-	libbpf: failed to load object 'bpf_overlay.o'
+Below are benchmark results done on two machines with 100Gbit
+Intel E810 (ice) NIC and with 32-core 3970X on sending machine, and
+16-core 3950X on receiving machine. 64 byte packets were sent with
+pktgen-dpdk at full rate. Two issues [2, 3] were identified with the
+ice driver, so the tests were performed with iommu=off and patch [2]
+applied. Additionally the bonding round robin algorithm was modified
+to use per-cpu tx counters as high CPU load (50% vs 10%) and high rate
+of cache misses were caused by the shared rr_tx_counter. Fix for this
+has been already merged into net-next. The statistics were collected 
+using "sar -n dev -u 1 10".
 
-To fix this, probe the kernel for BPF_OBJ_GET_INFO_BY_FD support. If it
-doesn't support, then fallback to derivation of the map properties via
-/proc/$PID/fdinfo/$MAP_FD.
+ -----------------------|  CPU  |--| rxpck/s |--| txpck/s |----
+ without patch (1 dev):
+   XDP_DROP:              3.15%      48.6Mpps
+   XDP_TX:                3.12%      18.3Mpps     18.3Mpps
+   XDP_DROP (RSS):        9.47%      116.5Mpps
+   XDP_TX (RSS):          9.67%      25.3Mpps     24.2Mpps
+ -----------------------
+ with patch, bond (1 dev):
+   XDP_DROP:              3.14%      46.7Mpps
+   XDP_TX:                3.15%      13.9Mpps     13.9Mpps
+   XDP_DROP (RSS):        10.33%     117.2Mpps
+   XDP_TX (RSS):          10.64%     25.1Mpps     24.0Mpps
+ -----------------------
+ with patch, bond (2 devs):
+   XDP_DROP:              6.27%      92.7Mpps
+   XDP_TX:                6.26%      17.6Mpps     17.5Mpps
+   XDP_DROP (RSS):       11.38%      117.2Mpps
+   XDP_TX (RSS):         14.30%      28.7Mpps     27.4Mpps
+ --------------------------------------------------------------
 
-Signed-off-by: Martynas Pumputis <m@lambda.lt>
+RSS: Receive Side Scaling, e.g. the packets were sent to a range of
+destination IPs.
+
+[1]: https://cilium.io/blog/2021/05/20/cilium-110#standalonelb
+[2]: https://lore.kernel.org/bpf/20210601113236.42651-1-maciej.fijalkowski@intel.com/T/#t
+[3]: https://lore.kernel.org/bpf/CAHn8xckNXci+X_Eb2WMv4uVYjO2331UWB2JLtXr_58z0Av8+8A@mail.gmail.com/
+
+Patch 1 prepares bond_xmit_hash for hashing xdp_buff's.
+Patch 2 adds hooks to implement redirection after bpf prog run.
+Patch 3 implements the hooks in the bonding driver. 
+Patch 4 modifies devmap to properly handle EXCLUDE_INGRESS with a slave device.
+Patch 5 fixes an issue related to recent cleanup of rcu_read_lock in XDP context.
+
+v2->v3:
+- Address Jay's comment to properly exclude upper devices with EXCLUDE_INGRESS
+  when there are deeper nesting involved. Now all upper devices are excluded.
+- Refuse to enslave devices that already have XDP programs loaded and refuse to
+  load XDP programs to slave devices. Earlier one could have a XDP program loaded
+  and after enslaving and loading another program onto the bond device the xdp_state
+  of the enslaved device would be pointing at an old program.
+- Adapt netdev_lower_get_next_private_rcu so it can be called in the XDP context.
+
+v1->v2:
+- Split up into smaller easier to review patches and address cosmetic 
+  review comments.
+- Drop the INDIRECT_CALL optimization as it showed little improvement in tests.
+- Drop the rr_tx_counter patch as that has already been merged into net-next.
+- Separate the test suite into another patch set. This will follow later once a
+  patch set from Magnus Karlsson is merged and provides test utilities that can
+  be reused for XDP bonding tests. v2 contains no major functional changes and
+  was tested with the test suite included in v1.
+  (https://lore.kernel.org/bpf/202106221509.kwNvAAZg-lkp@intel.com/T/#m464146d47299125d5868a08affd6d6ce526dfad1)
+
 ---
- tools/lib/bpf/libbpf.c | 103 +++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 92 insertions(+), 11 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ac882e1..f3daed3 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -193,6 +193,8 @@ enum kern_feature_id {
- 	FEAT_MODULE_BTF,
- 	/* BTF_KIND_FLOAT support */
- 	FEAT_BTF_FLOAT,
-+	/* BPF_OBJ_GET_INFO_BY_FD support */
-+	FEAT_OBJ_GET_INFO_BY_FD,
- 	__FEAT_CNT,
- };
- 
-@@ -3920,14 +3922,54 @@ static int bpf_map_find_btf_info(struct bpf_object *obj, struct bpf_map *map)
- 	return 0;
- }
- 
--int bpf_map__reuse_fd(struct bpf_map *map, int fd)
-+static int bpf_get_map_info_from_fdinfo(int fd, struct bpf_map_info *info)
-+{
-+	char file[PATH_MAX], buff[4096];
-+	FILE *fp;
-+	__u32 val;
-+	int err;
-+
-+	snprintf(file, sizeof(file), "/proc/%d/fdinfo/%d", getpid(), fd);
-+	memset(info, 0, sizeof(*info));
-+
-+	fp = fopen(file, "r");
-+	if (!fp) {
-+		err = -errno;
-+		pr_warn("failed to open %s: %d. No procfs support?\n", file,
-+			err);
-+		return err;
-+	}
-+
-+	while (fgets(buff, sizeof(buff), fp)) {
-+		if (sscanf(buff, "map_type:\t%u", &val) == 1)
-+			info->type = val;
-+		else if (sscanf(buff, "key_size:\t%u", &val) == 1)
-+			info->key_size = val;
-+		else if (sscanf(buff, "value_size:\t%u", &val) == 1)
-+			info->value_size = val;
-+		else if (sscanf(buff, "max_entries:\t%u", &val) == 1)
-+			info->max_entries = val;
-+		else if (sscanf(buff, "map_flags:\t%i", &val) == 1)
-+			info->map_flags = val;
-+	}
-+
-+	fclose(fp);
-+
-+	return 0;
-+}
-+
-+static int bpf_map__reuse_fd_safe(struct bpf_object *obj, struct bpf_map *map,
-+				  int fd)
- {
- 	struct bpf_map_info info = {};
- 	__u32 len = sizeof(info);
- 	int new_fd, err;
- 	char *new_name;
- 
--	err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+	if (!obj || kernel_supports(obj, FEAT_OBJ_GET_INFO_BY_FD))
-+		err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+	else
-+		err = bpf_get_map_info_from_fdinfo(fd, &info);
- 	if (err)
- 		return libbpf_err(err);
- 
-@@ -3974,6 +4016,11 @@ err_free_new_name:
- 	return libbpf_err(err);
- }
- 
-+int bpf_map__reuse_fd(struct bpf_map *map, int fd)
-+{
-+	return bpf_map__reuse_fd_safe(NULL, map, fd);
-+}
-+
- __u32 bpf_map__max_entries(const struct bpf_map *map)
- {
- 	return map->def.max_entries;
-@@ -4320,6 +4367,27 @@ static int probe_module_btf(void)
- 	return !err;
- }
- 
-+static int probe_kern_bpf_get_info_by_fd(void)
-+{
-+	int fd, err;
-+	__u32 len;
-+	struct bpf_map_info info;
-+	struct bpf_create_map_attr attr = {
-+		.map_type = BPF_MAP_TYPE_ARRAY,
-+		.key_size = sizeof(int),
-+		.value_size = sizeof(int),
-+		.max_entries = 1,
-+	};
-+
-+	fd = bpf_create_map_xattr(&attr);
-+	if (fd < 0)
-+		return 0;
-+
-+	err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+	close(fd);
-+	return !err;
-+}
-+
- enum kern_feature_result {
- 	FEAT_UNKNOWN = 0,
- 	FEAT_SUPPORTED = 1,
-@@ -4370,6 +4438,9 @@ static struct kern_feature_desc {
- 	[FEAT_BTF_FLOAT] = {
- 		"BTF_KIND_FLOAT support", probe_kern_btf_float,
- 	},
-+	[FEAT_OBJ_GET_INFO_BY_FD] = {
-+		"BPF_OBJ_GET_INFO_BY_FD support", probe_kern_bpf_get_info_by_fd,
-+	},
- };
- 
- static bool kernel_supports(const struct bpf_object *obj, enum kern_feature_id feat_id)
-@@ -4398,7 +4469,8 @@ static bool kernel_supports(const struct bpf_object *obj, enum kern_feature_id f
- 	return READ_ONCE(feat->res) == FEAT_SUPPORTED;
- }
- 
--static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
-+static bool map_is_reuse_compat(struct bpf_object *obj,
-+				const struct bpf_map *map, int map_fd)
- {
- 	struct bpf_map_info map_info = {};
- 	char msg[STRERR_BUFSIZE];
-@@ -4406,10 +4478,19 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
- 
- 	map_info_len = sizeof(map_info);
- 
--	if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
--		pr_warn("failed to get map info for map FD %d: %s\n",
--			map_fd, libbpf_strerror_r(errno, msg, sizeof(msg)));
--		return false;
-+	if (kernel_supports(obj, FEAT_OBJ_GET_INFO_BY_FD)) {
-+		if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
-+			pr_warn("failed to get map info for map FD %d: %s\n",
-+				map_fd,
-+				libbpf_strerror_r(errno, msg, sizeof(msg)));
-+			return false;
-+		}
-+	} else {
-+		if (bpf_get_map_info_from_fdinfo(map_fd, &map_info)) {
-+			pr_warn("failed to get map info for fdinfo: %s\n",
-+				libbpf_strerror_r(errno, msg, sizeof(msg)));
-+			return false;
-+		}
- 	}
- 
- 	return (map_info.type == map->def.type &&
-@@ -4420,7 +4501,7 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
- }
- 
- static int
--bpf_object__reuse_map(struct bpf_map *map)
-+bpf_object__reuse_map(struct bpf_object *obj, struct bpf_map *map)
- {
- 	char *cp, errmsg[STRERR_BUFSIZE];
- 	int err, pin_fd;
-@@ -4440,14 +4521,14 @@ bpf_object__reuse_map(struct bpf_map *map)
- 		return err;
- 	}
- 
--	if (!map_is_reuse_compat(map, pin_fd)) {
-+	if (!map_is_reuse_compat(obj, map, pin_fd)) {
- 		pr_warn("couldn't reuse pinned map at '%s': parameter mismatch\n",
- 			map->pin_path);
- 		close(pin_fd);
- 		return -EINVAL;
- 	}
- 
--	err = bpf_map__reuse_fd(map, pin_fd);
-+	err = bpf_map__reuse_fd_safe(obj, map, pin_fd);
- 	if (err) {
- 		close(pin_fd);
- 		return err;
-@@ -4643,7 +4724,7 @@ bpf_object__create_maps(struct bpf_object *obj)
- 		map = &obj->maps[i];
- 
- 		if (map->pin_path) {
--			err = bpf_object__reuse_map(map);
-+			err = bpf_object__reuse_map(obj, map);
- 			if (err) {
- 				pr_warn("map '%s': error reusing pinned map\n",
- 					map->name);
+Jussi Maki (5):
+  net: bonding: Refactor bond_xmit_hash for use with xdp_buff
+  net: core: Add support for XDP redirection to slave device
+  net: bonding: Add XDP support to the bonding driver
+  devmap: Exclude XDP broadcast to master device
+  net: core: Allow netdev_lower_get_next_private_rcu in bh context
+
+ drivers/net/bonding/bond_main.c | 450 ++++++++++++++++++++++++++++----
+ include/linux/filter.h          |  13 +-
+ include/linux/netdevice.h       |   6 +
+ include/net/bonding.h           |   1 +
+ kernel/bpf/devmap.c             |  67 ++++-
+ net/core/dev.c                  |  11 +-
+ net/core/filter.c               |  25 ++
+ 7 files changed, 504 insertions(+), 69 deletions(-)
+
 -- 
-2.32.0
+2.27.0
 
