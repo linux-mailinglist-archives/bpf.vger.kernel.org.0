@@ -2,447 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0123BF0F9
-	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 22:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CC43BF111
+	for <lists+bpf@lfdr.de>; Wed,  7 Jul 2021 22:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhGGUqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Jul 2021 16:46:11 -0400
-Received: from mga03.intel.com ([134.134.136.65]:2140 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231172AbhGGUqF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Jul 2021 16:46:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10037"; a="209424745"
-X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
-   d="scan'208";a="209424745"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 13:43:24 -0700
-X-IronPort-AV: E=Sophos;i="5.84,221,1620716400"; 
-   d="scan'208";a="457619747"
-Received: from jmcmilla-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.8.152])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2021 13:43:23 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v2 6/6] tools/tdx: Add a sample attestation user app
-Date:   Wed,  7 Jul 2021 13:42:49 -0700
-Message-Id: <20210707204249.3046665-7-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S230474AbhGGUzZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Jul 2021 16:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhGGUzZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Jul 2021 16:55:25 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C80C061574;
+        Wed,  7 Jul 2021 13:52:44 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id b13so5331915ybk.4;
+        Wed, 07 Jul 2021 13:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Sk8sHu6LCd2EXAfBmiWFJrRWB8lEE1Gj41aKiaDQM8M=;
+        b=IeNuCJJp9EceruFg/UtNe/J+C+vGnrAAXxtxF0a29KPcNHcffU3owIxVBqcArpI7vc
+         T/SGJA1iooGK46dgHVKnAiN42fEB1ZnJNw2+qb5MDYVoMQxKlc2BeLs5S7NEM21rz+OW
+         58waRJ+T8wLhKzooBNsq33aWZ9/yEKDTpOsSMAII27J/c7zCDNSNavLw2642J6TrtNPM
+         2giOI0BCwIBoCs+zxlYn5tt0lYuRklOnseWEM8/hDf27zo7nHIN6CGkvBMUhRUp3eAng
+         1Fufm/SjQAdQzeo/ZB9QZbvfJuhHIk9ek27MtHLt/tSa/VGatsaMkQ2c2Yr2Q1PeIy2D
+         ynbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Sk8sHu6LCd2EXAfBmiWFJrRWB8lEE1Gj41aKiaDQM8M=;
+        b=foOoBqoJ4C7Uvb6B94+6ZF26ptGWIWgd9hYADOtrJ90jBWLbucatv5kwMVrPmoyMMa
+         CS3SrYHnaasBQW2a4hswF0opxBlOMimyxY59Xhz494eYzNdNg502rZDLA1VvATnrmqRO
+         IFCul7oECshMv+XRXO8O/aFJPR8jdkYHTiJj/jyvNukYztsarDfotGFSGufp4FTD8AhK
+         cGkh2LfYZNWo/xBUZwX7x13rAMLzezm4OZgFv2sTnq6y5rCKny4bgqB22E9o+/1BqcRZ
+         j4/OrAcHTExW4OnYaaZkdfZlnJb82IeNfzg+pM8Dpsa/psZyU7GZMQzPX5uQfYwYarPw
+         qKJw==
+X-Gm-Message-State: AOAM530v7jn3HJbR3r2Kv0rvtSCut5OtYdZ4nO6NNLfpyQKO5IlRD+pG
+        oDOvN34u4UWzn4TxnefRZMeWjpv0Zo3IfVud+rA=
+X-Google-Smtp-Source: ABdhPJyBSIXwel6YwRDisY/XdfX9ohxrKOhqrd6iG8lRYS3BKYhBicfPBRmYGXQKj+RWQMulNGJCA+iWIo+8VdNDOD0=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr34854535ybo.230.1625691163601;
+ Wed, 07 Jul 2021 13:52:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1624507409-114522-1-git-send-email-chengshuyi@linux.alibaba.com>
+In-Reply-To: <1624507409-114522-1-git-send-email-chengshuyi@linux.alibaba.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 7 Jul 2021 13:52:32 -0700
+Message-ID: <CAEf4BzaGjEC4t1OefDo11pj2-HfNy0BLhs_G2UREjRNTmb2u=A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Introduce 'custom_btf_path' to 'bpf_obj_open_opts'.
+To:     Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This application uses the misc device /dev/tdx-attest to get TDREPORT
-from the TDX Module or request quote from the VMM.
+On Wed, Jun 23, 2021 at 9:04 PM Shuyi Cheng
+<chengshuyi@linux.alibaba.com> wrote:
+>
+> In order to enable the older kernel to use the CO-RE feature, load the
+> vmlinux btf of the specified path.
+>
+> Learn from Andrii's comments in [0], add the custom_btf_path parameter
+> to bpf_obj_open_opts, you can directly use the skeleton's
+> <objname>_bpf__open_opts function to pass in the custom_btf_path
+> parameter.
+>
+> Prior to this, there was also a developer who provided a patch with
+> similar functions. It is a pity that the follow-up did not continue to
+> advance. See [1].
+>
+>         [0]https://lore.kernel.org/bpf/CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com/#t
+>         [1]https://yhbt.net/lore/all/CAEf4Bzbgw49w2PtowsrzKQNcxD4fZRE6AKByX-5-dMo-+oWHHA@mail.gmail.com/
+>
+> Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 23 ++++++++++++++++++++---
+>  tools/lib/bpf/libbpf.h |  6 +++++-
+>  2 files changed, 25 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 1e04ce7..518b19f 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -509,6 +509,8 @@ struct bpf_object {
+>         void *priv;
+>         bpf_object_clear_priv_t clear_priv;
+>
+> +       char *custom_btf_path;
+> +
+>         char path[];
+>  };
+>  #define obj_elf_valid(o)       ((o)->efile.elf)
+> @@ -2679,8 +2681,15 @@ static int bpf_object__load_vmlinux_btf(struct bpf_object *obj, bool force)
+>         if (!force && !obj_needs_vmlinux_btf(obj))
+>                 return 0;
+>
+> -       obj->btf_vmlinux = libbpf_find_kernel_btf();
+> -       err = libbpf_get_error(obj->btf_vmlinux);
+> +       if (obj->custom_btf_path) {
+> +               obj->btf_vmlinux = btf__parse(obj->custom_btf_path, NULL);
+> +               err = libbpf_get_error(obj->btf_vmlinux);
+> +               pr_debug("loading custom vmlinux BTF '%s': %d\n", obj->custom_btf_path, err);
+> +       } else {
+> +               obj->btf_vmlinux = libbpf_find_kernel_btf();
+> +               err = libbpf_get_error(obj->btf_vmlinux);
+> +       }
 
-It tests following attestation features:
 
-  - Get report using TDX_CMD_GET_TDREPORT IOCTL.
-  - Using report data request quote from VMM using TDX_CMD_GEN_QUOTE IOCTL.
-  - Get the quote size using TDX_CMD_GET_QUOTE_SIZE IOCTL.
+I think it will be more flexible to treat custom_btf as an vmlinux BTF
+override, just like [1] did. I can see how in some situations users
+might want to treat this custom BTF as either a replacement of vmlinux
+BTF or as an augmentation of vmlinux BTF for the purpose of extra
+custom CO-RE relocations (e.g., something along the XDP hints that
+were discussed recently). For now it's probably enough to implement
+"custom BTF is a replacement for vmlinux BTF" policy and, if
+necessary, add "custom BTF is in addition to vmlinux BTF" later with
+extra opts flag/field.
 
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
- tools/Makefile                     |  13 +-
- tools/tdx/Makefile                 |  19 +++
- tools/tdx/attest/.gitignore        |   2 +
- tools/tdx/attest/Makefile          |  24 +++
- tools/tdx/attest/tdx-attest-test.c | 232 +++++++++++++++++++++++++++++
- 5 files changed, 284 insertions(+), 6 deletions(-)
- create mode 100644 tools/tdx/Makefile
- create mode 100644 tools/tdx/attest/.gitignore
- create mode 100644 tools/tdx/attest/Makefile
- create mode 100644 tools/tdx/attest/tdx-attest-test.c
+Keep in mind that this custom BTF is only useful for BPF CO-RE
+relocation. Any other kernel feature relying on vmlinux BTF (e.g.,
+fentry) won't work with custom BTF because it expects correct BTF type
+IDs.
 
-diff --git a/tools/Makefile b/tools/Makefile
-index 7e9d34ddd74c..5d68084511cb 100644
---- a/tools/Makefile
-+++ b/tools/Makefile
-@@ -30,6 +30,7 @@ help:
- 	@echo '  selftests              - various kernel selftests'
- 	@echo '  bootconfig             - boot config tool'
- 	@echo '  spi                    - spi tools'
-+	@echo '  tdx                    - TDX related test tools'
- 	@echo '  tmon                   - thermal monitoring and tuning tool'
- 	@echo '  tracing                - misc tracing tools'
- 	@echo '  turbostat              - Intel CPU idle stats and freq reporting tool'
-@@ -65,7 +66,7 @@ acpi: FORCE
- cpupower: FORCE
- 	$(call descend,power/$@)
- 
--cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing: FORCE
-+cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing tdx: FORCE
- 	$(call descend,$@)
- 
- bpf/%: FORCE
-@@ -104,7 +105,7 @@ all: acpi cgroup cpupower gpio hv firewire liblockdep \
- 		perf selftests bootconfig spi turbostat usb \
- 		virtio vm bpf x86_energy_perf_policy \
- 		tmon freefall iio objtool kvm_stat wmi \
--		pci debugging tracing
-+		pci debugging tracing tdx
- 
- acpi_install:
- 	$(call descend,power/$(@:_install=),install)
-@@ -112,7 +113,7 @@ acpi_install:
- cpupower_install:
- 	$(call descend,power/$(@:_install=),install)
- 
--cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install:
-+cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install tdx_install:
- 	$(call descend,$(@:_install=),install)
- 
- liblockdep_install:
-@@ -139,7 +140,7 @@ install: acpi_install cgroup_install cpupower_install gpio_install \
- 		virtio_install vm_install bpf_install x86_energy_perf_policy_install \
- 		tmon_install freefall_install objtool_install kvm_stat_install \
- 		wmi_install pci_install debugging_install intel-speed-select_install \
--		tracing_install
-+		tracing_install tdx_install
- 
- acpi_clean:
- 	$(call descend,power/acpi,clean)
-@@ -147,7 +148,7 @@ acpi_clean:
- cpupower_clean:
- 	$(call descend,power/cpupower,clean)
- 
--cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean:
-+cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean tdx_clean:
- 	$(call descend,$(@:_clean=),clean)
- 
- liblockdep_clean:
-@@ -186,6 +187,6 @@ clean: acpi_clean cgroup_clean cpupower_clean hv_clean firewire_clean \
- 		vm_clean bpf_clean iio_clean x86_energy_perf_policy_clean tmon_clean \
- 		freefall_clean build_clean libbpf_clean libsubcmd_clean liblockdep_clean \
- 		gpio_clean objtool_clean leds_clean wmi_clean pci_clean firmware_clean debugging_clean \
--		intel-speed-select_clean tracing_clean
-+		intel-speed-select_clean tracing_clean tdx_clean
- 
- .PHONY: FORCE
-diff --git a/tools/tdx/Makefile b/tools/tdx/Makefile
-new file mode 100644
-index 000000000000..e2564557d463
---- /dev/null
-+++ b/tools/tdx/Makefile
-@@ -0,0 +1,19 @@
-+# SPDX-License-Identifier: GPL-2.0
-+include ../scripts/Makefile.include
-+
-+all: attest
-+
-+clean: attest_clean
-+
-+install: attest_install
-+
-+attest:
-+	$(call descend,attest)
-+
-+attest_install:
-+	$(call descend,attest,install)
-+
-+attest_clean:
-+	$(call descend,attest,clean)
-+
-+.PHONY: all install clean attest latency_install latency_clean
-diff --git a/tools/tdx/attest/.gitignore b/tools/tdx/attest/.gitignore
-new file mode 100644
-index 000000000000..5f819a8a6c49
---- /dev/null
-+++ b/tools/tdx/attest/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+tdx-attest-test
-diff --git a/tools/tdx/attest/Makefile b/tools/tdx/attest/Makefile
-new file mode 100644
-index 000000000000..bf47ba718386
---- /dev/null
-+++ b/tools/tdx/attest/Makefile
-@@ -0,0 +1,24 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Makefile for vm tools
-+#
-+VAR_CFLAGS := $(shell pkg-config --cflags libtracefs 2>/dev/null)
-+VAR_LDLIBS := $(shell pkg-config --libs libtracefs 2>/dev/null)
-+
-+TARGETS = tdx-attest-test
-+CFLAGS = -static -Wall -Wextra -g -O2 $(VAR_CFLAGS)
-+LDFLAGS = -lpthread $(VAR_LDLIBS)
-+
-+all: $(TARGETS)
-+
-+%: %.c
-+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
-+
-+clean:
-+	$(RM) tdx-attest-test
-+
-+prefix ?= /usr/local
-+sbindir ?= ${prefix}/sbin
-+
-+install: all
-+	install -d $(DESTDIR)$(sbindir)
-+	install -m 755 -p $(TARGETS) $(DESTDIR)$(sbindir)
-diff --git a/tools/tdx/attest/tdx-attest-test.c b/tools/tdx/attest/tdx-attest-test.c
-new file mode 100644
-index 000000000000..7634ec6a084c
---- /dev/null
-+++ b/tools/tdx/attest/tdx-attest-test.c
-@@ -0,0 +1,232 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * tdx-attest-test.c - utility to test TDX attestation feature.
-+ *
-+ * Copyright (C) 2020 - 2021 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-+ *
-+ */
-+
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
-+#include <sys/ioctl.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <stdio.h>
-+#include <ctype.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <limits.h>
-+#include <stdbool.h>
-+#include <getopt.h>
-+#include <stdint.h> /* uintmax_t */
-+#include <sys/mman.h>
-+#include <unistd.h> /* sysconf */
-+#include <time.h>
-+
-+#include "../../../include/uapi/misc/tdx.h"
-+
-+#define devname		"/dev/tdx-attest"
-+
-+#define HEX_DUMP_SIZE	16
-+#define MAX_ROW_SIZE	70
-+
-+#define ATTESTATION_TEST_BIN_VERSION "0.1"
-+
-+struct tdx_attest_args {
-+	bool is_dump_data;
-+	bool is_get_tdreport;
-+	bool is_get_quote_size;
-+	bool is_gen_quote;
-+	bool debug_mode;
-+	char *out_file;
-+};
-+
-+static void print_hex_dump(const char *title, const char *prefix_str,
-+			   const void *buf, int len)
-+{
-+	const __u8 *ptr = buf;
-+	int i, rowsize = HEX_DUMP_SIZE;
-+
-+	if (!len || !buf)
-+		return;
-+
-+	printf("\t\t%s", title);
-+
-+	for (i = 0; i < len; i++) {
-+		if (!(i % rowsize))
-+			printf("\n%s%.8x:", prefix_str, i);
-+		printf(" %.2x", ptr[i])
-+	}
-+
-+	printf("\n");
-+}
-+
-+static void gen_report_data(__u8 *report_data, bool dump_data)
-+{
-+	int i;
-+
-+	srand(time(NULL));
-+
-+	for (i = 0; i < TDX_REPORT_DATA_LEN; i++)
-+		report_data[i] = rand();
-+
-+	if (dump_data)
-+		print_hex_dump("\n\t\tTDX report data\n", " ",
-+			       report_data, TDX_REPORT_DATA_LEN);
-+}
-+
-+static int get_tdreport(int devfd, bool dump_data, __u8 *report_data)
-+{
-+	__u8 tdrdata[TDX_TDREPORT_LEN] = {0};
-+	int ret;
-+
-+	if (!report_data)
-+		report_data = tdrdata;
-+
-+	gen_report_data(report_data, dump_data);
-+
-+	ret = ioctl(devfd, TDX_CMD_GET_TDREPORT, report_data);
-+	if (ret) {
-+		printf("TDX_CMD_GET_TDREPORT ioctl() %d failed\n", ret);
-+		return -EIO;
-+	}
-+
-+	if (dump_data)
-+		print_hex_dump("\n\t\tTDX tdreport data\n", " ", report_data,
-+			       TDX_TDREPORT_LEN);
-+
-+	return 0;
-+}
-+
-+static __u64 get_quote_size(int devfd)
-+{
-+	int ret;
-+	__u64 quote_size;
-+
-+	ret = ioctl(devfd, TDX_CMD_GET_QUOTE_SIZE, &quote_size);
-+	if (ret) {
-+		printf("TDX_CMD_GET_QUOTE_SIZE ioctl() %d failed\n", ret);
-+		return -EIO;
-+	}
-+
-+	printf("Quote size: %lld\n", quote_size);
-+
-+	return quote_size;
-+}
-+
-+static int gen_quote(int devfd, bool dump_data)
-+{
-+	__u8 *quote_data;
-+	__u64 quote_size;
-+	int ret;
-+
-+	quote_size = get_quote_size(devfd);
-+
-+	quote_data = malloc(sizeof(char) * quote_size);
-+	if (!quote_data) {
-+		printf("%s queue data alloc failed\n", devname);
-+		return -ENOMEM;
-+	}
-+
-+	ret = get_tdreport(devfd, dump_data, quote_data);
-+	if (ret) {
-+		printf("TDX_CMD_GET_TDREPORT ioctl() %d failed\n", ret);
-+		goto done;
-+	}
-+
-+	ret = ioctl(devfd, TDX_CMD_GEN_QUOTE, quote_data);
-+	if (ret) {
-+		printf("TDX_CMD_GEN_QUOTE ioctl() %d failed\n", ret);
-+		goto done;
-+	}
-+
-+	print_hex_dump("\n\t\tTDX Quote MMIO data\n", " ", quote_data,
-+		       quote_size);
-+
-+done:
-+	free(quote_data);
-+
-+	return ret;
-+}
-+
-+static void usage(void)
-+{
-+	puts("\nUsage:\n");
-+	puts("tdx_attest [options] \n");
-+
-+	puts("Attestation device test utility.");
-+
-+	puts("\nOptions:\n");
-+	puts(" -d, --dump                Dump tdreport/tdquote data");
-+	puts(" -r, --get-tdreport        Get TDREPORT data");
-+	puts(" -g, --gen-quote           Generate TDQUOTE");
-+	puts(" -s, --get-quote-size      Get TDQUOTE size");
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int ret, devfd;
-+	struct tdx_attest_args args = {0};
-+
-+	static const struct option longopts[] = {
-+		{ "dump",           no_argument,       NULL, 'd' },
-+		{ "get-tdreport",   required_argument, NULL, 'r' },
-+		{ "gen-quote",      required_argument, NULL, 'g' },
-+		{ "gen-quote-size", required_argument, NULL, 's' },
-+		{ "version",        no_argument,       NULL, 'V' },
-+		{ NULL,             0, NULL, 0 }
-+	};
-+
-+	while ((ret = getopt_long(argc, argv, "hdrgsV", longopts,
-+				  NULL)) != -1) {
-+		switch (ret) {
-+		case 'd':
-+			args.is_dump_data = true;
-+			break;
-+		case 'r':
-+			args.is_get_tdreport = true;
-+			break;
-+		case 'g':
-+			args.is_gen_quote = true;
-+			break;
-+		case 's':
-+			args.is_get_quote_size = true;
-+			break;
-+		case 'h':
-+			usage();
-+			return 0;
-+		case 'V':
-+			printf("Version: %s\n", ATTESTATION_TEST_BIN_VERSION);
-+			return 0;
-+		default:
-+			printf("Invalid options\n");
-+			usage();
-+			return -EINVAL;
-+		}
-+	}
-+
-+	devfd = open(devname, O_RDWR | O_SYNC);
-+	if (devfd < 0) {
-+		printf("%s open() failed\n", devname);
-+		return -ENODEV;
-+	}
-+
-+	if (args.is_get_quote_size)
-+		get_quote_size(devfd);
-+
-+	if (args.is_get_tdreport)
-+		get_tdreport(devfd, args.is_dump_data, NULL);
-+
-+	if (args.is_gen_quote)
-+		gen_quote(devfd, args.is_dump_data);
-+
-+	close(devfd);
-+
-+	return 0;
-+}
--- 
-2.25.1
 
+> +
+>         if (err) {
+>                 pr_warn("Error loading vmlinux BTF: %d\n", err);
+>                 obj->btf_vmlinux = NULL;
+> @@ -7554,7 +7563,7 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
+>  __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
+>                    const struct bpf_object_open_opts *opts)
+>  {
+> -       const char *obj_name, *kconfig;
+> +       const char *obj_name, *kconfig, *tmp_btf_path;
+>         struct bpf_program *prog;
+>         struct bpf_object *obj;
+>         char tmp_name[64];
+> @@ -7584,6 +7593,13 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
+>         obj = bpf_object__new(path, obj_buf, obj_buf_sz, obj_name);
+>         if (IS_ERR(obj))
+>                 return obj;
+> +
+> +       tmp_btf_path = OPTS_GET(opts, custom_btf_path, NULL);
+> +       if (tmp_btf_path && strlen(tmp_btf_path) < PATH_MAX) {
+
+if strlen() is >= PATH_MAX you'll just silently ignore it? We should
+either truncate silently (because PATH_MAX is totally reasonable
+assumption) or error out.
+
+> +               obj->custom_btf_path = strdup(tmp_btf_path);
+> +               if (!obj->custom_btf_path)
+> +                       return ERR_PTR(-ENOMEM);
+> +       }
+>
+>         kconfig = OPTS_GET(opts, kconfig, NULL);
+>         if (kconfig) {
+> @@ -8702,6 +8718,7 @@ void bpf_object__close(struct bpf_object *obj)
+>         for (i = 0; i < obj->nr_maps; i++)
+>                 bpf_map__destroy(&obj->maps[i]);
+>
+> +       zfree(&obj->custom_btf_path);
+>         zfree(&obj->kconfig);
+>         zfree(&obj->externs);
+>         obj->nr_extern = 0;
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 6e61342..16e0f01 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -94,8 +94,12 @@ struct bpf_object_open_opts {
+>          * system Kconfig for CONFIG_xxx externs.
+>          */
+>         const char *kconfig;
+> +       /* Specify the path of vmlinux btf to facilitate the use of CO-RE features
+> +        * in the old kernel.
+> +        */
+> +       char *custom_btf_path;
+>  };
+> -#define bpf_object_open_opts__last_field kconfig
+> +#define bpf_object_open_opts__last_field custom_btf_path
+>
+>  LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
+>  LIBBPF_API struct bpf_object *
+> --
+> 1.8.3.1
+>
