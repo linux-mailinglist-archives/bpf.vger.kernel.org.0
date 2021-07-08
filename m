@@ -2,171 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72AE3BF6B3
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 10:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002333BF6CD
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 10:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhGHIIQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 04:08:16 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:52874 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229851AbhGHIIP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 8 Jul 2021 04:08:15 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0Uf6Ao1u_1625731532;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Uf6Ao1u_1625731532)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 08 Jul 2021 16:05:32 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S230522AbhGHITO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 04:19:14 -0400
+Received: from mga09.intel.com ([134.134.136.24]:46664 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230414AbhGHITO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Jul 2021 04:19:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="209427698"
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="209427698"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 01:16:32 -0700
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="487463340"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.111]) ([10.239.13.111])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 01:16:27 -0700
+Subject: Re: [PATCH v2 1/6] x86/tdx: Add TDREPORT TDX Module call support
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
-        bpf@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>
-Subject: [PATCH net] xdp, net: fix use-after-free in bpf_xdp_link_release
-Date:   Thu,  8 Jul 2021 16:05:32 +0800
-Message-Id: <20210708080532.74526-1-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.0
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210707204249.3046665-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <d9aac97c-aa08-de9f-fa44-91b7dde61ce3@intel.com>
+Date:   Thu, 8 Jul 2021 16:16:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210707204249.3046665-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The problem occurs between dev_get_by_index() and dev_xdp_attach_link().
-At this point in time, the xdp link will not be released automatically
-when dev is deleted. In this way, when xdp link is released, dev will
-still be accessed, but dev has been released.
+On 7/8/2021 4:42 AM, Kuppuswamy Sathyanarayanan wrote:
+> The TDX Guest-Host Communication Interface (GHCI) includes a module
+> call (TDREPORT TDCALL) that a guest can make to acquire a copy of the
+> attestation data that it needs to verify its trustworthiness.
+> 
+> Add a wrapper function tdx_mcall_tdreport() that makes the module
+> call to get this data.
+> 
+> See GHCI section 2.4.5 "TDCALL [TDG.MR.REPORT] leaf" for additional
+> details.
+> 
+> [Xiaoyao: Proposed error code fix]
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+>   arch/x86/include/asm/tdx.h |  2 ++
+>   arch/x86/kernel/tdx.c      | 33 +++++++++++++++++++++++++++++++++
+>   2 files changed, 35 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+> index 48927fac9e12..4f1b5c14a09b 100644
+> --- a/arch/x86/include/asm/tdx.h
+> +++ b/arch/x86/include/asm/tdx.h
+> @@ -96,6 +96,8 @@ extern int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
+>   
+>   bool tdg_filter_enabled(void);
+>   
+> +int tdx_mcall_tdreport(u64 data, u64 reportdata);
+> +
+>   /*
+>    * To support I/O port access in decompressor or early kernel init
+>    * code, since #VE exception handler cannot be used, use paravirt
+> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+> index f76af7661046..0f797803f4c8 100644
+> --- a/arch/x86/kernel/tdx.c
+> +++ b/arch/x86/kernel/tdx.c
+> @@ -23,6 +23,7 @@
+>   /* TDX Module call Leaf IDs */
+>   #define TDINFO				1
+>   #define TDGETVEINFO			3
+> +#define TDREPORT			4
+>   #define TDACCEPTPAGE			6
+>   
+>   /* TDX hypercall Leaf IDs */
+> @@ -30,6 +31,11 @@
+>   
+>   /* TDX Module call error codes */
+>   #define TDX_PAGE_ALREADY_ACCEPTED       0x8000000000000001
+> +#define TDCALL_RETURN_CODE_MASK		0xFFFFFFFF00000000
+> +#define TDCALL_OPERAND_BUSY		0x8000020000000000
+> +#define TDCALL_INVALID_OPERAND		0x8000000000000000
+> +#define TDCALL_RETURN_CODE(a)		((a) & TDCALL_RETURN_CODE_MASK)
+> +
+>   
+>   #define VE_IS_IO_OUT(exit_qual)		(((exit_qual) & 8) ? 0 : 1)
+>   #define VE_GET_IO_SIZE(exit_qual)	(((exit_qual) & 7) + 1)
+> @@ -139,6 +145,33 @@ static bool tdg_perfmon_enabled(void)
+>   	return td_info.attributes & BIT(63);
+>   }
+>   
+> +/*
+> + * tdx_mcall_tdreport() - Generate TDREPORT_STRUCT using TDCALL.
+> + *
+> + * @data        : Physical address of 1024B aligned data to store
+> + *                TDREPORT_STRUCT.
+> + * @reportdata  : Physical address of 64B aligned report data
+> + *
+> + * return 0 on success or failure error number.
+> + */
+> +int tdx_mcall_tdreport(u64 data, u64 reportdata)
+> +{
+> +	u64 ret;
+> +
+> +	if (!data || !reportdata || !prot_guest_has(PR_GUEST_TDX))
+> +		return -EINVAL;
+> +
+> +	ret = __trace_tdx_module_call(TDREPORT, data, reportdata, 0, 0, NULL);
+> +
+> +	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
+> +		return -EINVAL;
+> +	else if (TDCALL_RETURN_CODE(ret) == TDCALL_OPERAND_BUSY)
+> +		return -EBUSY;
 
-[   45.966867] BUG: KASAN: use-after-free in bpf_xdp_link_release+0x3b8/0x3d0
-[   45.967619] Read of size 8 at addr ffff00000f9980c8 by task a.out/732
-[   45.968297]
-[   45.968502] CPU: 1 PID: 732 Comm: a.out Not tainted 5.13.0+ #22
-[   45.969222] Hardware name: linux,dummy-virt (DT)
-[   45.969795] Call trace:
-[   45.970106]  dump_backtrace+0x0/0x4c8
-[   45.970564]  show_stack+0x30/0x40
-[   45.970981]  dump_stack_lvl+0x120/0x18c
-[   45.971470]  print_address_description.constprop.0+0x74/0x30c
-[   45.972182]  kasan_report+0x1e8/0x200
-[   45.972659]  __asan_report_load8_noabort+0x2c/0x50
-[   45.973273]  bpf_xdp_link_release+0x3b8/0x3d0
-[   45.973834]  bpf_link_free+0xd0/0x188
-[   45.974315]  bpf_link_put+0x1d0/0x218
-[   45.974790]  bpf_link_release+0x3c/0x58
-[   45.975291]  __fput+0x20c/0x7e8
-[   45.975706]  ____fput+0x24/0x30
-[   45.976117]  task_work_run+0x104/0x258
-[   45.976609]  do_notify_resume+0x894/0xaf8
-[   45.977121]  work_pending+0xc/0x328
-[   45.977575]
-[   45.977775] The buggy address belongs to the page:
-[   45.978369] page:fffffc00003e6600 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4f998
-[   45.979522] flags: 0x7fffe0000000000(node=0|zone=0|lastcpupid=0x3ffff)
-[   45.980349] raw: 07fffe0000000000 fffffc00003e6708 ffff0000dac3c010 0000000000000000
-[   45.981309] raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-[   45.982259] page dumped because: kasan: bad access detected
-[   45.982948]
-[   45.983153] Memory state around the buggy address:
-[   45.983753]  ffff00000f997f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[   45.984645]  ffff00000f998000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   45.985533] >ffff00000f998080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   45.986419]                                               ^
-[   45.987112]  ffff00000f998100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   45.988006]  ffff00000f998180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[   45.988895] ==================================================================
-[   45.989773] Disabling lock debugging due to kernel taint
-[   45.990552] Kernel panic - not syncing: panic_on_warn set ...
-[   45.991166] CPU: 1 PID: 732 Comm: a.out Tainted: G    B             5.13.0+ #22
-[   45.991929] Hardware name: linux,dummy-virt (DT)
-[   45.992448] Call trace:
-[   45.992753]  dump_backtrace+0x0/0x4c8
-[   45.993208]  show_stack+0x30/0x40
-[   45.993627]  dump_stack_lvl+0x120/0x18c
-[   45.994113]  dump_stack+0x1c/0x34
-[   45.994530]  panic+0x3a4/0x7d8
-[   45.994930]  end_report+0x194/0x198
-[   45.995380]  kasan_report+0x134/0x200
-[   45.995850]  __asan_report_load8_noabort+0x2c/0x50
-[   45.996453]  bpf_xdp_link_release+0x3b8/0x3d0
-[   45.997007]  bpf_link_free+0xd0/0x188
-[   45.997474]  bpf_link_put+0x1d0/0x218
-[   45.997942]  bpf_link_release+0x3c/0x58
-[   45.998429]  __fput+0x20c/0x7e8
-[   45.998833]  ____fput+0x24/0x30
-[   45.999247]  task_work_run+0x104/0x258
-[   45.999731]  do_notify_resume+0x894/0xaf8
-[   46.000236]  work_pending+0xc/0x328
-[   46.000697] SMP: stopping secondary CPUs
-[   46.001226] Dumping ftrace buffer:
-[   46.001663]    (ftrace buffer empty)
-[   46.002110] Kernel Offset: disabled
-[   46.002545] CPU features: 0x00000001,23202c00
-[   46.003080] Memory Limit: none
+Sorry I guess I didn't state it clearly during internal review.
 
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
----
- net/core/dev.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+I suggest something like this
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index c253c2aafe97..f7aba3108016 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -9684,14 +9684,17 @@ int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- 	struct net_device *dev;
- 	int err, fd;
- 
-+	rtnl_lock();
- 	dev = dev_get_by_index(net, attr->link_create.target_ifindex);
--	if (!dev)
-+	if (!dev) {
-+		rtnl_unlock();
- 		return -EINVAL;
-+	}
- 
- 	link = kzalloc(sizeof(*link), GFP_USER);
- 	if (!link) {
- 		err = -ENOMEM;
--		goto out_put_dev;
-+		goto unlock_put_dev;
- 	}
- 
- 	bpf_link_init(&link->link, BPF_LINK_TYPE_XDP, &bpf_xdp_link_lops, prog);
-@@ -9701,10 +9704,9 @@ int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- 	err = bpf_link_prime(&link->link, &link_primer);
- 	if (err) {
- 		kfree(link);
--		goto out_put_dev;
-+		goto unlock_put_dev;
- 	}
- 
--	rtnl_lock();
- 	err = dev_xdp_attach_link(dev, NULL, link);
- 	rtnl_unlock();
- 
-@@ -9718,6 +9720,9 @@ int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- 	dev_put(dev);
- 	return fd;
- 
-+unlock_put_dev:
-+	rtnl_unlock();
-+
- out_put_dev:
- 	dev_put(dev);
- 	return err;
--- 
-2.31.0
+if (ret != TDCALL_SUCCESS) {
+	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
+		return -EINVAL;
+	else if (TDCALL_RETURN_CODE(ret) == TDCALL_OPERAND_BUSY)
+		return -EBUSY;
+	else
+		return -EFAULT; //I'm not sure if -EFAULT is proper.
+}
+
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(tdx_mcall_tdreport);
+> +
+>   static void tdg_get_info(void)
+>   {
+>   	u64 ret;
+> 
 
