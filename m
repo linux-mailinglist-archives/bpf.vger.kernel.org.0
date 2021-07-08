@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8773C19F5
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 21:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FB13C1A01
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 21:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhGHTlf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 15:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        id S230265AbhGHTpY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 15:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbhGHTle (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Jul 2021 15:41:34 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA28C061574;
-        Thu,  8 Jul 2021 12:38:51 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id ie21so4377637pjb.0;
-        Thu, 08 Jul 2021 12:38:51 -0700 (PDT)
+        with ESMTP id S229631AbhGHTpY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Jul 2021 15:45:24 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAAC8C061574;
+        Thu,  8 Jul 2021 12:42:42 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso4647914pjp.2;
+        Thu, 08 Jul 2021 12:42:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HEnWv7IGu0HtSK3XxPSRHi3prPm/smZKLsp7ziczGIE=;
-        b=UVPDHuxeP9EZ0wOBSxJk2IRxUBwEaymnZdwNwU25WiogOZqKOPe4+x6tfxb4EeNIFe
-         8keTEz0IfET86FMc8kgadUdq0zWOh0GQa2HYA2C9TEIXJM6ShCNkWWoTqOU9SotU64AT
-         3JR6ZwA+caJV2hdgtiyVk9OiMpmutNTVpXHYbqzc7359YEU0LQyulGwgiW+zxS4ar9nE
-         HwT44rU7wRRSLI7vnfVFFnfDr9+1lcv1WPrAuaqserYiwrXTvelw+qBC6Xc6EN0VdhNq
-         1isfUdPjNeCFKxqkWP1uEQAFMgfXxruSyBs6KryQbXAx51m1dZFcJjPPp5bP5SRW8VIc
-         6X/w==
+        bh=VRyUFVyM+1PtPWGdrDqxIdoGIUAtfYcU5TF/ZJeIGdY=;
+        b=K+71OXQbZzjvwpADqUfCXwjRDGikk9QyGPTnf7dyrszRxNhQn0quHQoVGfoIRH89n1
+         wG/xT2GTmgFTkPrZQdhVkp6NU6waHk7hDD7MqhByQxVpeG9nBjhIL8n0f2L1Ju03tBCK
+         UlMKr07a8LKyRTtR0fyz9C3XLAo29IQIlkYbnYl960GMGVXni/HwVxjUVg4Zdn8rW6ZZ
+         W33mtt2QZHdQNKmror6qe6E8nPkvlVO1hZ8ZtbF2hCmtjRYpCd/B5FbwWtdSXaX6u6a4
+         lRNPky4oSCAiW4REo90yJZnxNDll3SyhPU4hgCg7IxfZbZ2OFjKMBvNuLFp2jnWy3b95
+         wthw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HEnWv7IGu0HtSK3XxPSRHi3prPm/smZKLsp7ziczGIE=;
-        b=akyvo7ffPfzYeVizrnIgl3BoV3Gev4AvkcQBcJSG+Ld+aDVcsprFy4xE+pccBLL59R
-         hZ6F41dsC2NMw+kmQBy7LZpK+LVecPyRH7tFSoeHQ7oIaH4DxtTljdbOjJU4MV/7z2Gv
-         zmbi4VP5ccRjOd/7BhsDqDsz/WryuB33NKjR0BdLKb+4xnHKaF7OPt0QN/uaVDx6aVEW
-         ITuegdlSnb13DkAyGjQlSxmSDe3RguwpfY3kEq8mMVY7v5XgpvMEhAngeYytJ1T8JJN5
-         bUw5VCG8OTsSxQHlB5plsUompff5cjPW1EhtmB3eJ55uxecaRX+nty15ku71tpM7UoQv
-         JBfw==
-X-Gm-Message-State: AOAM531FjhEaMxX9LaPmWkCSVE0jAb2FSZXWk/YaZwldvAHdCcEWkqUf
-        0DJMs0D78CH1aa0NZ9HwdGYpP/MddX0a0cQQ3sE=
-X-Google-Smtp-Source: ABdhPJzD/ue07JAuFdrTSZLf90HnbyOJHZ0RO/RGSuLWTEZfXYOsrNhCj4pSpekVrA+Q3PGJchhGtGN4Qdo0raxIx34=
-X-Received: by 2002:a17:902:e801:b029:129:478c:4b3c with SMTP id
- u1-20020a170902e801b0290129478c4b3cmr27562867plg.64.1625773131490; Thu, 08
- Jul 2021 12:38:51 -0700 (PDT)
+        bh=VRyUFVyM+1PtPWGdrDqxIdoGIUAtfYcU5TF/ZJeIGdY=;
+        b=tEihM5yUxmlSwfSv//cZXKq7JxHBMkR91P7wefqsWjaAaFFWkEs0yw5LrfpSWEgpPL
+         WJQK/1JRRplkbbVOuMNoDtS+hE3ZGMYpoz3UUa1cbaADd0RgIov0mNKSUWspyo4GAZER
+         EOq7WgYSd8E83c0KHfYJ79EcBi2t4trsWBIgZt7N+q07Y6WEifwc1sDIO51oDKksu/2x
+         ocrYwWD+CCDEoTS1ntrtatr3Ly98szvoXOMQ71J2GoL4k1m0ENKReqMNixEuLQDTRmhj
+         091fBYXr1es4YMHIQ/2ylqPfWU+m9j5S50OtoQCBCYwFHytp+2Z9y0nU45EyRY3YZsui
+         Ui3A==
+X-Gm-Message-State: AOAM5328mf8JVh47ZdxDRAv8U6phovXIvE8eR9UgV1bc7pgfUr88eo/3
+        5Wa3FLCtFqhL40yhZkj8GfLhIZnHe18gzw3ZV+c=
+X-Google-Smtp-Source: ABdhPJxlntUNox9k4TFdJV7qGTp0seYSllSJza3CzSsuC45rODdxpGEEveV/psf3oTVhiFBdzSn1dQPRDy2kdSKn3Lk=
+X-Received: by 2002:a17:903:2309:b029:12a:965b:333 with SMTP id
+ d9-20020a1709032309b029012a965b0333mr2740702plh.31.1625773362262; Thu, 08 Jul
+ 2021 12:42:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210706163150.112591-1-john.fastabend@gmail.com> <20210706163150.112591-2-john.fastabend@gmail.com>
-In-Reply-To: <20210706163150.112591-2-john.fastabend@gmail.com>
+References: <20210706163150.112591-1-john.fastabend@gmail.com> <20210706163150.112591-3-john.fastabend@gmail.com>
+In-Reply-To: <20210706163150.112591-3-john.fastabend@gmail.com>
 From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 8 Jul 2021 12:38:40 -0700
-Message-ID: <CAM_iQpWXDY=YeNS_Kn6eWZc-0MHF3Cr0fwFzGESYvtOJt0eD0A@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 1/2] bpf, sockmap: fix potential memory leak on
- unlikely error case
+Date:   Thu, 8 Jul 2021 12:42:31 -0700
+Message-ID: <CAM_iQpWL586pETHuxp+2FzwF-QLA0P3Vcthc74Rwx7uZf6LNKQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 2/2] bpf, sockmap: sk_prot needs inuse_idx set for
+ proc stats
 To:     John Fastabend <john.fastabend@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,11 +64,32 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Jul 6, 2021 at 9:31 AM John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> If skb_linearize is needed and fails we could leak a msg on the error
-> handling. To fix ensure we kfree the msg block before returning error.
-> Found during code review.
+> Proc socket stats use sk_prot->inuse_idx value to record inuse sock stats.
+> We currently do not set this correctly from sockmap side. The result is
+> reading sock stats '/proc/net/sockstat' gives incorrect values. The
+> socket counter is incremented correctly, but because we don't set the
+> counter correctly when we replace sk_prot we may omit the decrement.
+>
+> Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  net/core/sock_map.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index 60decd6420ca..27bdf768aa8c 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -185,10 +185,19 @@ static void sock_map_unref(struct sock *sk, void *link_raw)
+>
+>  static int sock_map_init_proto(struct sock *sk, struct sk_psock *psock)
+>  {
+> +       int err;
+> +#ifdef CONFIG_PROC_FS
+> +       int idx = sk->sk_prot->inuse_idx;
+> +#endif
 
-sk_psock_skb_ingress_self() also needs the same fix, right?
-Other than this, it looks good to me.
+A nit: Reverse XMAS tree declaration style is preferred for networking
+subsystem.
 
 Thanks.
