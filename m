@@ -2,147 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7918F3C1592
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 17:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6673C15C5
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 17:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbhGHPEO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 11:04:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31416 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229738AbhGHPEN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 8 Jul 2021 11:04:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625756491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E8Pcfl0gqcPBUL1m77+/3iyVOTtd5zHFsGGjer4gKVM=;
-        b=WGJqOsa7brJFzASvRzyf0fbmxObFI1YHUpOC81ysGOhYZu1rJkAZVE29sPFNidbIIzznlg
-        ul1U3hovWND0yG29/iNT6veAj3ghcY9pVLcIsSuFgV5ZbV5flyacfu3WlTQGT7VE4qkdVK
-        yTmuowTtw1cFpI8xwRqZvqCc7oMH9NA=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-ljqMO5AENUasQm_IkmstKw-1; Thu, 08 Jul 2021 11:01:30 -0400
-X-MC-Unique: ljqMO5AENUasQm_IkmstKw-1
-Received: by mail-ej1-f71.google.com with SMTP id ci2-20020a1709072662b02904ce09e83b00so1964405ejc.23
-        for <bpf@vger.kernel.org>; Thu, 08 Jul 2021 08:01:29 -0700 (PDT)
+        id S231891AbhGHPUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 11:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231815AbhGHPUU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Jul 2021 11:20:20 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E307C061760
+        for <bpf@vger.kernel.org>; Thu,  8 Jul 2021 08:17:38 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id k16-20020a05600c1c90b02901f4ed0fcfe7so4268741wms.5
+        for <bpf@vger.kernel.org>; Thu, 08 Jul 2021 08:17:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kBPZZuZvA3tt1Y2+1kdETFXSvF82J/FThyL+t3rVwqw=;
+        b=ghEZp4HqH5M8BPY7MnbLF8QXha1ILfbDe7kImumABs6BdQqHQIZVxJpuk9aQtSECdr
+         yp+pT2e3mEv1kJiPNaYkD32YhyqMBFHBJFBet3GKIJjbzccCsjZMPJ58+0Sp3wqnszeq
+         o3c5uh33T9/ppR6K4cVWz+5a9YWhB9nn0YkZvRvalvf8eTTG7ya6+IdO50h6YheHYUm/
+         To5tfKOzUHnCzIUDeNIjr9n9MeoMa4hhr+a4JyplCqXo0l9cd5MyYNEoGGruwYmXx4/L
+         G9A1Zho7uTlu5l7sl3jKD8vWlm7dN8u0YddEYnAV8Cp342Q6fZnTunse978bFnuralb/
+         0PIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=E8Pcfl0gqcPBUL1m77+/3iyVOTtd5zHFsGGjer4gKVM=;
-        b=o56OzkEIyDH/F0HKwxB4QwRHN8YZcXDsG1yf/FWVI1dBdjRnFqXZqlU9yeI9P9bqkc
-         BbVFSmJFEVXArWX6NRy7IyvvswWVbcBaJRjTdWFCw4w2waMo/nSr2No0OmsxrSnTyfMg
-         ysEh9UWuLG865pWu93n3licYDJDo5HR7LMueapPMQIzwAr3eXmldsN7X/KOdj0Dh0gUz
-         R/UUao/gOhFBx1eFhqn4yQiuS4Awh18G0epAy8ixwenqW1nSoksRzOwmSr/6UQqcyZa/
-         GFBpC/iFoAJebLs4QceELpvmFufyj8obSlZ49q0FVetuAV6oG6Bc6ntXvAPoZpqLeaYL
-         E5cA==
-X-Gm-Message-State: AOAM532CdYt68eXpkZfBiq6B/6Rd5/69vdCRPeaPuLr/o1sU8VSCbUTD
-        MGJ/l57DEWLqWqIGRCboFesOCJggkLnKXTcY1RmeOPtDm1fDp0KkHDiZW6b2fSmRn2kkjlSAq2k
-        SgLeSosgbNxXq
-X-Received: by 2002:a05:6402:5114:: with SMTP id m20mr39449688edd.174.1625756488387;
-        Thu, 08 Jul 2021 08:01:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVe3QcMnua09KrtS6j9ghQdTNnNsWXXqcnb7UF7RBgyKCh0bps7sn+LHuMXy+lJO7qC+uU6g==
-X-Received: by 2002:a05:6402:5114:: with SMTP id m20mr39449626edd.174.1625756487864;
-        Thu, 08 Jul 2021 08:01:27 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id s4sm1407503edu.49.2021.07.08.08.01.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kBPZZuZvA3tt1Y2+1kdETFXSvF82J/FThyL+t3rVwqw=;
+        b=nNxKeEt3epPcc0NJ0CeSidveCcfLrpXrBzgIFacA/070unBailYq3a2ZMnGlatejn0
+         LfVrsjFcwc+rob895qCjPLIK5Fx1m4pJZcDSM7AXgsLNsVhuxXbhWp0YUkBpaZG3+hG8
+         OAv7XKyGGRo7zmcxOXFJ1WJAf5WO9oSCqCT390le5Ux19KI9cYgCnxtuNXV2om2BhXOG
+         q1FLbECgwR2eVLW1+qDiS928iyroXWnxsB/WU24naVUbK3K5E/eAwIWLTiC0uffx1O7d
+         Fx99rnZSj9CuiNNz31UPpExoyCPWY8B9Gz7H7F5I2J39tQBA2xqPyAoCvR38N/M0BfHX
+         w8fA==
+X-Gm-Message-State: AOAM530mDTaoGhDMopeh0kSQyVKPK4L2vi9wjJuREPp979YU1lRbZ3rz
+        kDMEMTKMdD+L1ig30ztCqpQEDQ==
+X-Google-Smtp-Source: ABdhPJxKGpc6uxlNFMBk8m5VVO35VgRe6qPMY9jKKrgSUzZeI1Kb/2c6VrhDeH8TBjdkbgZ4eVR8Lw==
+X-Received: by 2002:a05:600c:ad6:: with SMTP id c22mr9432875wmr.63.1625757456924;
+        Thu, 08 Jul 2021 08:17:36 -0700 (PDT)
+Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
+        by smtp.gmail.com with ESMTPSA id w9sm2251919wmc.19.2021.07.08.08.17.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 08:01:27 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 911F5180733; Thu,  8 Jul 2021 17:01:26 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Martynas Pumputis <m@lambda.lt>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Thu, 08 Jul 2021 08:17:36 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 18:17:32 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, Marcin Wojtas <mw@semihalf.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        hawk@kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf] libbpf: fix reuse of pinned map on older kernel
-In-Reply-To: <41795594-5d66-e17e-095c-cc4cdc84a017@lambda.lt>
-References: <20210706172619.579001-1-m@lambda.lt>
- <CAEf4BzbCAO=hjA=hSh9QXN3C79xOmM0=Cc0H1gZnhm6LdDz9Sw@mail.gmail.com>
- <41795594-5d66-e17e-095c-cc4cdc84a017@lambda.lt>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 08 Jul 2021 17:01:26 +0200
-Message-ID: <87sg0ovohl.fsf@toke.dk>
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, peterx@redhat.com, Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, mcroce@microsoft.com,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, Kevin Hao <haokexin@gmail.com>,
+        nogikh@google.com, Marco Elver <elver@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
+ based on elevated refcnt
+Message-ID: <YOcXDISpR7Cf+eZG@enceladus>
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Ueyc8BqjkdTVC_c-Upn-ghNeahYQrWJtQSqxoqN7VvMWA@mail.gmail.com>
+ <29403911-bc26-dd86-83b8-da3c1784d087@huawei.com>
+ <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
+ <YOX6bPEL0cq8CgPG@enceladus>
+ <CAKgT0UfPFbAptXMJ4BQyeAadaxyHfkKRfeiwhrVMwafNEM_0cw@mail.gmail.com>
+ <YOcKASZ9Bp0/cz1d@enceladus>
+ <CAKgT0UfJuvdkccr=SXWNUaGx7y5nUHFL-E9g3qi4sagY_jWUUQ@mail.gmail.com>
+ <YOcQyKt6i+UeMzSS@enceladus>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOcQyKt6i+UeMzSS@enceladus>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martynas Pumputis <m@lambda.lt> writes:
+> > >
+> > > > > > >
+> > >
+> > > [...]
+> > >
+> > > > > > > The above expectation is based on that the last user will always
+> > > > > > > call page_pool_put_full_page() in order to do the recycling or do
+> > > > > > > the resource cleanup(dma unmaping..etc).
+> > > > > > >
+> > > > > > > As the skb_free_head() and skb_release_data() have both checked the
+> > > > > > > skb->pp_recycle to call the page_pool_put_full_page() if needed, I
+> > > > > > > think we are safe for most case, the one case I am not so sure above
+> > > > > > > is the rx zero copy, which seems to also bump up the refcnt before
+> > > > > > > mapping the page to user space, we might need to ensure rx zero copy
+> > > > > > > is not the last user of the page or if it is the last user, make sure
+> > > > > > > it calls page_pool_put_full_page() too.
+> > > > > >
+> > > > > > Yes, but the skb->pp_recycle value is per skb, not per page. So my
+> > > > > > concern is that carrying around that value can be problematic as there
+> > > > > > are a number of possible cases where the pages might be
+> > > > > > unintentionally recycled. All it would take is for a packet to get
+> > > > > > cloned a few times and then somebody starts using pskb_expand_head and
+> > > > > > you would have multiple cases, possibly simultaneously, of entities
+> > > > > > trying to free the page. I just worry it opens us up to a number of
+> > > > > > possible races.
+> > > > >
+> > > > > Maybe I missde something, but I thought the cloned SKBs would never trigger
+> > > > > the recycling path, since they are protected by the atomic dataref check in
+> > > > > skb_release_data(). What am I missing?
+> > > >
+> > > > Are you talking about the head frag? So normally a clone wouldn't
+> > > > cause an issue because the head isn't changed. In the case of the
+> > > > head_frag we should be safe since pskb_expand_head will just kmalloc
+> > > > the new head and clears head_frag so it won't trigger
+> > > > page_pool_return_skb_page on the head_frag since the dataref just goes
+> > > > from 2 to 1.
+> > > >
+> > > > The problem is that pskb_expand_head memcopies the page frags over and
+> > > > takes a reference on the pages. At that point you would have two skbs
+> > > > both pointing to the same set of pages and each one ready to call
+> > > > page_pool_return_skb_page on the pages at any time and possibly racing
+> > > > with the other.
+> > >
+> > > Ok let me make sure I get the idea properly.
+> > > When pskb_expand_head is called, the new dataref will be 1, but the
+> > > head_frag will be set to 0, in which case the recycling code won't be
+> > > called for that skb.
+> > > So you are mostly worried about a race within the context of
+> > > pskb_expand_skb() between copying the frags, releasing the previous head
+> > > and preparing the new one (on a cloned skb)?
+> > 
+> > The race is between freeing the two skbs. So the original and the
+> > clone w/ the expanded head will have separate instances of the page. I
+> > am pretty certain there is a race if the two of them start trying to
+> > free the page frags at the same time.
+> > 
+> 
+> Right, I completely forgot calling __skb_frag_unref() before releasing the
+> head ...
+> You are right, this will be a race.  Let me go back to the original mail
+> thread and see what we can do
+> 
 
-> On 7/8/21 12:58 AM, Andrii Nakryiko wrote:
->> On Tue, Jul 6, 2021 at 10:24 AM Martynas Pumputis <m@lambda.lt> wrote:
->>>
->>> When loading a BPF program with a pinned map, the loader checks whether
->>> the pinned map can be reused, i.e. their properties match. To derive
->>> such of the pinned map, the loader invokes BPF_OBJ_GET_INFO_BY_FD and
->>> then does the comparison.
->>>
->>> Unfortunately, on < 4.12 kernels the BPF_OBJ_GET_INFO_BY_FD is not
->>> available, so loading the program fails with the following error:
->>>
->>>          libbpf: failed to get map info for map FD 5: Invalid argument
->>>          libbpf: couldn't reuse pinned map at
->>>                  '/sys/fs/bpf/tc/globals/cilium_call_policy': parameter
->>>                  mismatch"
->>>          libbpf: map 'cilium_call_policy': error reusing pinned map
->>>          libbpf: map 'cilium_call_policy': failed to create:
->>>                  Invalid argument(-22)
->>>          libbpf: failed to load object 'bpf_overlay.o'
->>>
->>> To fix this, probe the kernel for BPF_OBJ_GET_INFO_BY_FD support. If it
->>> doesn't support, then fallback to derivation of the map properties via
->>> /proc/$PID/fdinfo/$MAP_FD.
->>>
->>> Signed-off-by: Martynas Pumputis <m@lambda.lt>
->>> ---
->>>   tools/lib/bpf/libbpf.c | 103 +++++++++++++++++++++++++++++++++++++++++++++------
->>>   1 file changed, 92 insertions(+), 11 deletions(-)
->>>
->> 
->> [...]
->> 
->>> @@ -4406,10 +4478,19 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
->>>
->>>          map_info_len = sizeof(map_info);
->>>
->>> -       if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
->>> -               pr_warn("failed to get map info for map FD %d: %s\n",
->>> -                       map_fd, libbpf_strerror_r(errno, msg, sizeof(msg)));
->>> -               return false;
->>> +       if (kernel_supports(obj, FEAT_OBJ_GET_INFO_BY_FD)) {
->> 
->> why not just try bpf_obj_get_info_by_fd() first, and if it fails
->> always fallback to bpf_get_map_info_from_fdinfo(). No need to do
->> feature detection. This will cut down on the amount of code without
->> any regression in behavior. More so, it will actually now be
->> consistent and good behavior in case of bpf_map__reuse_fd() where we
->> don't have obj. WDYT?
->
-> I was thinking about it, but then decided to use the kernel probing 
-> instead. The reasoning was the following:
->
-> 1) For programs with many pinned maps we would issue many failing 
-> BPF_OBJ_GET_INFO_BY_FD calls (instead of a single one) which might 
-> hinder the performance.
+What do you think about resetting pp_recycle bit on pskb_expand_head()?
+If my memory serves me right Eric wanted that from the beginning. Then the
+cloned/expanded SKB won't trigger the recycling.  If that skb hits the free
+path first, we'll end up recycling the fragments eventually.  If the
+original one goes first, we'll just unmap the page(s) and freeing the cloned
+one will free all the remaining buffers.
 
-"Might" hinder the performance? Did you measure this? We're usually
-talking (at most) dozens of maps per object file, not thousands; also,
-this would only be incurred if the initial call actually fails (i.e., on
-old kernels).
-
-> 2) A canonical way in libbpf to detect features is via kernel_supports() 
-> and friends, so I didn't want to diverge there.
->
-> Re bpf_map__reuse_fd(), if we are OK to break the API before libbpf 
-> v1.0, then we could extend bpf_map__reuse_fd() to accept the obj. 
-> However, this would break some consumers of the lib, e.g., iproute2 [1].
-
-IMO, this does not sound like something worth breaking the API
-compatibility for...
-
--Toke
-
+Regards
+Ilias
+> Thanks!
+> /Ilias
+> > Thanks,
+> > 
+> > - Alex
