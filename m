@@ -2,218 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9183BFA06
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 14:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0773C13DA
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 15:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhGHM2Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 08:28:16 -0400
-Received: from mga04.intel.com ([192.55.52.120]:5492 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229795AbhGHM2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:28:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="207671291"
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="207671291"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 05:25:34 -0700
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="498406860"
-Received: from unknown (HELO localhost.localdomain) ([10.102.102.63])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 05:25:32 -0700
-Date:   Thu, 8 Jul 2021 04:32:37 -0400
-From:   Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net
-Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
-Message-ID: <YOa4JVEp20JolOp4@localhost.localdomain>
-References: <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch>
- <20210528180214.3b427837@carbon>
- <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
- <8735u3dv2l.fsf@toke.dk>
- <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
- <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <YNGU4GhL8fZ0ErzS@localhost.localdomain>
- <874kdqqfnm.fsf@toke.dk>
- <YNLxtsasQSv+YR1w@localhost.localdomain>
- <87mtrfmoyh.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87mtrfmoyh.fsf@toke.dk>
+        id S231423AbhGHNKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 09:10:16 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:37254 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230080AbhGHNKP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 8 Jul 2021 09:10:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Uf7.lIJ_1625749643;
+Received: from localhost(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0Uf7.lIJ_1625749643)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 08 Jul 2021 21:07:31 +0800
+From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Subject: [PATCH bpf-next v2] libbpf: Introduce 'btf_custom_path' to 'bpf_obj_open_opts'.
+Date:   Thu,  8 Jul 2021 21:07:02 +0800
+Message-Id: <1625749622-119334-1-git-send-email-chengshuyi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 02:23:02PM +0200, Toke Høiland-Jørgensen wrote:
-> Michal Swiatkowski <michal.swiatkowski@linux.intel.com> writes:
-> 
-> > On Tue, Jun 22, 2021 at 01:53:33PM +0200, Toke Høiland-Jørgensen wrote:
-> >> Michal Swiatkowski <michal.swiatkowski@linux.intel.com> writes:
-> >> 
-> >> > On Wed, Jun 02, 2021 at 09:18:37AM -0700, Jakub Kicinski wrote:
-> >> >> On Tue, 01 Jun 2021 17:22:51 -0700 John Fastabend wrote:
-> >> >> > > If we do this, the BPF program obviously needs to know which fields are
-> >> >> > > valid and which are not. AFAICT you're proposing that this should be
-> >> >> > > done out-of-band (i.e., by the system administrator manually ensuring
-> >> >> > > BPF program config fits system config)? I think there are a couple of
-> >> >> > > problems with this:
-> >> >> > > 
-> >> >> > > - It requires the system admin to coordinate device config with all of
-> >> >> > >   their installed XDP applications. This is error-prone, especially as
-> >> >> > >   the number of applications grows (say if different containers have
-> >> >> > >   different XDP programs installed on their virtual devices).  
-> >> >> > 
-> >> >> > A complete "system" will need to be choerent. If I forward into a veth
-> >> >> > device the orchestration component needs to ensure program sending
-> >> >> > bits there is using the same format the program installed there expects.
-> >> >> > 
-> >> >> > If I tailcall/fentry into another program that program the callee and
-> >> >> > caller need to agree on the metadata protocol.
-> >> >> > 
-> >> >> > I don't see any way around this. Someone has to manage the network.
-> >> >> 
-> >> >> FWIW I'd like to +1 Toke's concerns.
-> >> >> 
-> >> >> In large deployments there won't be a single arbiter. Saying there 
-> >> >> is seems to contradict BPF maintainers' previous stand which lead 
-> >> >> to addition of bpf_links for XDP.
-> >> >> 
-> >> >> In practical terms person rolling out an NTP config change may not 
-> >> >> be aware that in some part of the network some BPF program expects
-> >> >> descriptor not to contain time stamps. Besides features may depend 
-> >> >> or conflict so the effects of feature changes may not be obvious 
-> >> >> across multiple drivers in a heterogeneous environment.
-> >> >> 
-> >> >> IMO guarding from obvious mis-configuration provides obvious value.
-> >> >
-> >> > Hi,
-> >> >
-> >> > Thanks for a lot of usefull information about CO-RE. I have read
-> >> > recommended articles, but still don't understand everything, so sorry if
-> >> > my questions are silly.
-> >> >
-> >> > As introduction, I wrote small XDP example using CO-RE (autogenerated
-> >> > vmlinux.h and getting rid of skeleton etc.) based on runqslower
-> >> > implementation. Offset reallocation of hints works great, I built CO-RE
-> >> > application, added new field to hints struct, changed struct layout and
-> >> > without rebuilding application everything still works fine. Is it worth
-> >> > to add XDP sample using CO-RE in kernel or this isn't good place for
-> >> > this kind of sample?
-> >> >
-> >> > First question not stricte related to hints. How to get rid of #define
-> >> > and macro when I am using generated vmlinux.h? For example I wanted to
-> >> > use htons macro and ethtype definition. They are located in headers that
-> >> > also contains few struct definition. Because of that I have redefinition
-> >> > error when I am trying to include them (redefinition in vmlinux.h and
-> >> > this included file). What can I do with this besides coping definitions
-> >> > to bpf code?
-> >> 
-> >> One way is to only include the structs you actually need from vmlinux.h.
-> >> You can even prune struct members, since CO-RE works just fine with
-> >> partial struct definitions as long as the member names match.
-> >> 
-> >> Jesper has an example on how to handle this here:
-> >> https://github.com/netoptimizer/bpf-examples/blob/ktrace01-CO-RE.public/headers/vmlinux_local.h
-> >> 
-> >
-> > I see, thanks, I will take a look at other examples.
-> >
-> >> > I defined hints struct in driver code, is it right place for that? All
-> >> > vendors will define their own hints struct or the idea is to have one
-> >> > big hints struct with flags informing about availability of each fields?
-> >> >
-> >> > For me defining it in driver code was easier because I can have used
-> >> > module btf to generate vmlinux.h with hints struct inside. However this
-> >> > break portability if other vendors will have different struct name etc,
-> >> > am I right?
-> >> 
-> >> I would expect the easiest is for drivers to just define their own
-> >> structs and maybe have some infrastructure in the core to let userspace
-> >> discover the right BTF IDs to use for a particular netdev. However, as
-> >> you say it's not going to work if every driver just invents their own
-> >> field names, so we'll need to coordinate somehow. We could do this by
-> >> convention, though, it'll need manual intervention to make sure the
-> >> semantics of identically-named fields match anyway.
-> >> 
-> >> Cf the earlier discussion with how many BTF IDs each driver might
-> >> define, I think we *also* need a way to have flags that specify which
-> >> fields of a given BTF ID are currently used; and having some common
-> >> infrastructure for that would be good...
-> >> 
-> >
-> > Sounds good. 
-> >
-> > Sorry, but I feel that I don't fully understand the idea. Correct me if
-> > I am wrong:
-> >
-> > In building CO-RE application step we can defined big struct with
-> > all possible fields or even empty struct (?) and use
-> > bpf_core_field_exists. 
-> >
-> > bpf_core_field_exists will be resolve before loading program by libbpf
-> > code. In normal case libbpf will look for btf with hints name in vmlinux
-> > of running kernel and do offset rewrite and exsistence check. But as the
-> > same hints struct will be define in multiple modules we want to add more
-> > logic to libbpf to discover correct BTF ID based on netdev on which program
-> > will be loaded?
-> 
-> I would expect that the program would decide ahead-of-time which BTF IDs
-> it supports, by something like including the relevant structs from
-> vmlinux.h. And then we need the BTF ID encoded into the packet metadata
-> as well, so that it is possible to check at run-time which driver the
-> packet came from (since a packet can be redirected, so you may end up
-> having to deal with multiple formats in the same XDP program).
-> 
-> Which would allow you to write code like:
-> 
-> if (ctx->has_driver_meta) {
->   /* this should be at a well-known position, like first (or last) in meta area */
->   __u32 *meta_btf_id = ctx->data_meta;
->   
->   if (*meta_btf_id == BTF_ID_MLX5) {
->     struct meta_mlx5 *meta = ctx->data_meta;
->     /* do something with meta */
->   } else if (meta_btf_id == BTF_ID_I40E) {
->     struct meta_i40e *meta = ctx->data_meta;
->     /* do something with meta */
->   } /* etc */
-> }
-> 
-> and libbpf could do relocations based on the different meta structs,
-> even removing the code for the ones that don't exist on the running
-> kernel.
+In order to enable the older kernel to use the CO-RE feature, load the
+vmlinux btf of the specified path.
 
-This looks nice. In this case we need defintions of struct meta_mlx5 and
-struct meta_i40e at build time. How are we going to deliver this to bpf
-core app? This will be available in /sys/kernel/btf/mlx5 and
-/sys/kernel/btf/i40e (if drivers are loaded). Should we dump this to
-vmlinux.h? Or a developer of the xdp program should add this definition
-to his code?
+Learn from Andrii's comments in [0], add the btf_custom_path parameter
+to bpf_obj_open_opts, you can directly use the skeleton's
+<objname>_bpf__open_opts function to pass in the btf_custom_path
+parameter.
 
-Maybe create another /sys/kernel/btf/hints with vmlinux and hints from
-all drivers which support hints?
+Prior to this, there was also a developer who provided a patch with
+similar functions. It is a pity that the follow-up did not continue to
+advance. See [1].
 
-Previously in this thread someone mentioned this ___ use case in libbpf
-and proposed creating something like mega xdp hints structure with all
-available fields across all drivers. As I understand this could solve
-the problem about defining correct structure at build time. But how will
-it work when there will be more than one structures with the same name
-before ___? I mean:
-struct xdp_hints___mega defined only in core app
-struct xdp_hints___mlx5 available when mlx5 driver is loaded
-struct xdp_hints___i40e available when i40e driver is loaded
+	[0]https://lore.kernel.org/bpf/CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com/#t
+	[1]https://yhbt.net/lore/all/CAEf4Bzbgw49w2PtowsrzKQNcxD4fZRE6AKByX-5-dMo-+oWHHA@mail.gmail.com/
 
-When there will be only one driver loaded should libbpf do correct
-reallocation of fields? What will happen when both of the drivers are
-loaded?
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
+---
+v1: https://lore.kernel.org/bpf/CAEf4BzaGjEC4t1OefDo11pj2-HfNy0BLhs_G2UREjRNTmb2u=A@mail.gmail.com/t/#m4d9f7c6761fbd2b436b5dfe491cd864b70225804
+v1->v2:
+-- Change custom_btf_path to btf_custom_path.
+-- If the length of btf_custom_path of bpf_obj_open_opts is too long, 
+   return ERR_PTR(-ENAMETOOLONG).
+-- Add `custom BTF is in addition to vmlinux BTF`
+   with btf_custom_path field.
 
-> 
-> -Toke
-> 
+ tools/lib/bpf/libbpf.c | 27 ++++++++++++++++++++++++---
+ tools/lib/bpf/libbpf.h |  6 +++++-
+ 2 files changed, 29 insertions(+), 4 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 1e04ce7..aed156c 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -494,6 +494,10 @@ struct bpf_object {
+ 	struct btf *btf;
+ 	struct btf_ext *btf_ext;
+ 
++	/* custom BTF is in addition to vmlinux BTF (i.e., Use the CO-RE
++	 * feature in the old kernel).
++	 */
++	char *btf_custom_path;
+ 	/* Parse and load BTF vmlinux if any of the programs in the object need
+ 	 * it at load time.
+ 	 */
+@@ -2679,8 +2683,15 @@ static int bpf_object__load_vmlinux_btf(struct bpf_object *obj, bool force)
+ 	if (!force && !obj_needs_vmlinux_btf(obj))
+ 		return 0;
+ 
+-	obj->btf_vmlinux = libbpf_find_kernel_btf();
+-	err = libbpf_get_error(obj->btf_vmlinux);
++	if (obj->btf_custom_path) {
++		obj->btf_vmlinux = btf__parse(obj->btf_custom_path, NULL);
++		err = libbpf_get_error(obj->btf_vmlinux);
++		pr_debug("loading custom vmlinux BTF '%s': %d\n", obj->btf_custom_path, err);
++	} else {
++		obj->btf_vmlinux = libbpf_find_kernel_btf();
++		err = libbpf_get_error(obj->btf_vmlinux);
++	}
++
+ 	if (err) {
+ 		pr_warn("Error loading vmlinux BTF: %d\n", err);
+ 		obj->btf_vmlinux = NULL;
+@@ -7554,7 +7565,7 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
+ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
+ 		   const struct bpf_object_open_opts *opts)
+ {
+-	const char *obj_name, *kconfig;
++	const char *obj_name, *kconfig, *btf_tmp_path;
+ 	struct bpf_program *prog;
+ 	struct bpf_object *obj;
+ 	char tmp_name[64];
+@@ -7584,6 +7595,15 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
+ 	obj = bpf_object__new(path, obj_buf, obj_buf_sz, obj_name);
+ 	if (IS_ERR(obj))
+ 		return obj;
++
++	btf_tmp_path = OPTS_GET(opts, btf_custom_path, NULL);
++	if (btf_tmp_path) {
++		if (strlen(btf_tmp_path) >= PATH_MAX)
++			return ERR_PTR(-ENAMETOOLONG);
++		obj->btf_custom_path = strdup(btf_tmp_path);
++		if (!obj->btf_custom_path)
++			return ERR_PTR(-ENOMEM);
++	}
+ 
+ 	kconfig = OPTS_GET(opts, kconfig, NULL);
+ 	if (kconfig) {
+@@ -8702,6 +8722,7 @@ void bpf_object__close(struct bpf_object *obj)
+ 	for (i = 0; i < obj->nr_maps; i++)
+ 		bpf_map__destroy(&obj->maps[i]);
+ 
++	zfree(&obj->btf_custom_path);
+ 	zfree(&obj->kconfig);
+ 	zfree(&obj->externs);
+ 	obj->nr_extern = 0;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6e61342..5002d1f 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -94,8 +94,12 @@ struct bpf_object_open_opts {
+ 	 * system Kconfig for CONFIG_xxx externs.
+ 	 */
+ 	const char *kconfig;
++	/* custom BTF is in addition to vmlinux BTF (i.e., Use the CO-RE
++	 * feature in the old kernel).
++	 */
++	char *btf_custom_path;
+ };
+-#define bpf_object_open_opts__last_field kconfig
++#define bpf_object_open_opts__last_field btf_custom_path
+ 
+ LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
+ LIBBPF_API struct bpf_object *
+-- 
+1.8.3.1
+
