@@ -2,71 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834CA3C1827
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 19:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C403C19AA
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 21:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbhGHReS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 13:34:18 -0400
-Received: from smtprelay0231.hostedemail.com ([216.40.44.231]:47278 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229469AbhGHReS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 8 Jul 2021 13:34:18 -0400
-X-Greylist: delayed 358 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Jul 2021 13:34:17 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave06.hostedemail.com (Postfix) with ESMTP id 93C0D8017105
-        for <bpf@vger.kernel.org>; Thu,  8 Jul 2021 17:25:39 +0000 (UTC)
-Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id D35CB101C1B76;
-        Thu,  8 Jul 2021 17:25:36 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 8EF8D2EBF98;
-        Thu,  8 Jul 2021 17:25:33 +0000 (UTC)
-Message-ID: <5f054b8ea1057f1485f8af3546b45bdfd0c21acb.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Follow scripts/spdxcheck.py's switch to
- python3
-From:   Joe Perches <joe@perches.com>
-To:     Vincent Pelletier <plr.vincent@gmail.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        id S229594AbhGHTRS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 15:17:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhGHTRR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Jul 2021 15:17:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FE046143F;
+        Thu,  8 Jul 2021 19:14:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625771675;
+        bh=bz8Nw2UsTARfBh4O5eANMEUJxwSoES20lehw6GKPMDI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EGX/N2DyVR/lWsY4Asj9I3IMSKHr7pQrJzkS2UqOvFjnlbRxYMBa9qh9pdHyykydZ
+         4YB/M0pUCPqlCOTW7ocMg1ZwYDURhIiUuZH4dGCnbh6UFUSoiWtrG7/bG44o1rfiOP
+         ZPnjt+WHhLm8zCseRTNDVfrJcMjDfN3mOgwSGOgI3qL9M8WAdHv0KIJHJSSFjoxfcE
+         7sJq/MeT0j0Le0URFPUJ3KY+wkhLGcL1blK6hDOuUS/y1gl6FvQG4iRh/w0iy1s/NM
+         9o363VnvJFero6Z4sTzq6Mdad3cahkAbVLbSczGH/h0wZRwVely6eDUbxFzJmbZD47
+         TyvCkCdY+bfjQ==
+Received: by mail-lf1-f41.google.com with SMTP id f30so18345899lfj.1;
+        Thu, 08 Jul 2021 12:14:35 -0700 (PDT)
+X-Gm-Message-State: AOAM530gbM0hB5tVGi9XiqFzai/pfGXQit3o0zHC3tHXaj+Hv1q1IiWg
+        0fNkKSPNkn+2zOQVTXXu1NePev9PfHQvV2Y9tdE=
+X-Google-Smtp-Source: ABdhPJzLrjcE/kx4lv2a2xRFhxdgPyTqAZL9YJddyxzHJ43s2Nt5GjOqS+S7xLgDQHl3reyKdbF8OZ7bMhhGu85etbc=
+X-Received: by 2002:ac2:5c0d:: with SMTP id r13mr24449296lfp.438.1625771673910;
+ Thu, 08 Jul 2021 12:14:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210708080409.73525-1-xuanzhuo@linux.alibaba.com>
+ <c314bdcc-06fc-c869-5ad8-a74173a1e6f1@redhat.com> <f52ae16f-ee2b-c691-311a-51824c2d87e9@gmail.com>
+In-Reply-To: <f52ae16f-ee2b-c691-311a-51824c2d87e9@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 8 Jul 2021 12:14:22 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5fR71O7FoeGaXpboAiJhQaYT+GAxgZ-h4Ue_CHGE0OgA@mail.gmail.com>
+Message-ID: <CAPhsuW5fR71O7FoeGaXpboAiJhQaYT+GAxgZ-h4Ue_CHGE0OgA@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix for BUG: kernel NULL pointer dereference,
+ address: 0000000000000000
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Date:   Thu, 08 Jul 2021 10:25:32 -0700
-In-Reply-To: <73dca402670be1e7a8adf139621dafd0dfa03191.1625740121.git.plr.vincent@gmail.com>
-References: <73dca402670be1e7a8adf139621dafd0dfa03191.1625740121.git.plr.vincent@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.28
-X-Stat-Signature: w88jg7r4gbmxmjyi3ggqc3oj66wpn44r
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: 8EF8D2EBF98
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18dGaW6l34mXYSU4/K7kkBKrXFusda6k2w=
-X-HE-Tag: 1625765133-768542
+        KP Singh <kpsingh@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Abaci <abaci@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        David Ahern <dsahern@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2021-07-08 at 10:29 +0000, Vincent Pelletier wrote:
-> Since commit d0259c42abff ("spdxcheck.py: Use Python 3") spdxcheck.py
-> expects to be run using python3. "python" may still be a python2 alias.
-> Instead, obey scripts/spdxcheck.py's shebang by executing it without
-> pre-selecting an interpreter.
-> Also, test python3 presence in path.
+On Thu, Jul 8, 2021 at 7:45 AM David Ahern <dsahern@gmail.com> wrote:
+>
+> On 7/8/21 4:26 AM, Jesper Dangaard Brouer wrote:
+> >
+> > Thanks for catching this.
+> >
+> > Cc: Ahern, are you okay with disabling this for the
+> > bpf_prog_test_run_xdp() infra?
+>
+> yes.
+>
+> >
+> > I don't think the selftests/bpf (e.g. prog_tests/xdp_devmap_attach.c)
+> > use the bpf_prog_test_run, right?
+> >
+> > Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>
+>
+> Acked-by: David Ahern <dsahern@kernel.org>
 
-Thanks, but already done. See:
-
-commit f9363b31d769245cb7ec8a660460800d4b466911
-Author: Guenter Roeck <linux@roeck-us.net>
-Date:   Wed Jun 30 18:56:19 2021 -0700
-
-    checkpatch: scripts/spdxcheck.py now requires python3
-
-
+Acked-by: Song Liu <songliubraving@fb.com>
