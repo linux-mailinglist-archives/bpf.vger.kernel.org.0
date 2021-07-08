@@ -2,66 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910BA3C1A9D
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 22:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2624A3C1AA8
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 22:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhGHUl7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 16:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
+        id S230335AbhGHUpR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 16:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbhGHUl6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Jul 2021 16:41:58 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBCCC061574;
-        Thu,  8 Jul 2021 13:39:15 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id q2so9788787iot.11;
-        Thu, 08 Jul 2021 13:39:15 -0700 (PDT)
+        with ESMTP id S230238AbhGHUpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Jul 2021 16:45:16 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87DAC061574;
+        Thu,  8 Jul 2021 13:42:33 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id w1so5979800ilg.10;
+        Thu, 08 Jul 2021 13:42:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=c6gagiw90tH2rjIzHfPvJXOduAFDPhRqwu04EI2P9G4=;
-        b=GU5e8d4KVB4Ibd0bC/K/BXQw6FG9JOmXzqRvZhXwSqW3uQYfGrEHM+R1r8h4GZFpiA
-         vVblnYz75FXsYXSRa8mckqJGIseBYRTi0F0BrTw9o0jJp/c+/ltG3vgO9cvJwJ1ARzSl
-         XQh2IecjGAFErSAxgAPesYgw42T7HPZFUz7y3TOoLRXgn8MtuQSXE6muGHH32Uc6Xc65
-         jOjcSEhlgA9OwrPGsvGjkgH+sUDOmNPg4DGQo13sJeRcWHXzwt0yR/0Q+c2NjcmU9FME
-         aah7K6CKUmCySxiuZpoTxBtlgHkGJqOt0ubq0BsrX/Ikxv1fTLGiNAjtxEuD4pJUO6HX
-         r0Lg==
+        bh=mcRsSmxEOFOrcrZe9XK0I7V82WeLfiBYyU2jR/XHrcU=;
+        b=DbKo04gTazWy3ShCL3LD1QhRTLtu4dfxUN6oeNbVX1Q73HxHUkdIL0vtpNpuHieq17
+         NkZKTt0FJdadJl+vRV0YIGiqLKXWJnqbn/YoBaj1uAePX/VDiwh8B9cYlUebgdNt32Ai
+         bbNuOmjyyyo9qUl604XYPGshQ+UVGueNnPr1h3yLskCY7AOE5wK5jGQvA0xTngBlpqbt
+         IBkaurZIORU2JNnhPklJKi3t7Zg9mdEogqB+CjQplIz18XcQcRoRzfR+TaGaudoU8xOV
+         Mc5QLeN5vbje5wpvhOmP853IkWf2z1/6E+FryqsWSuXpgwOXt5F4oF9zGRGKyop6xp/E
+         bZRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=c6gagiw90tH2rjIzHfPvJXOduAFDPhRqwu04EI2P9G4=;
-        b=meNVcVorYGbFIisUCJX9YJnC/B7aKYOr8g/AbQgeUs2wBf3RXLzPj5llbWNji/agC5
-         XffWSgjzOIIYaSJdrYC4fx2Jlg74ZcqTVOXwMN1312k0dBVjahd8PoZLoMGG7Jop6cuX
-         p2QASJ5TyuDtRRzXrG9uF3Ih51C0w3/xQDeDj/q+LhnNN6Aa1NlJqoiaBFfhGkbV5PKN
-         a8dlAbjZHZ9SAXBZg7mNvmpcTvSiZZq+5V/D3wpsrUiPllUU3F+CMIhWjukYUEgKN/i+
-         IYItFvaPaAsWN+FCyEutZjG5EjhQQuCILlQO6R3JANYDFxdeqNLFGY+3B1POUkwRc44Z
-         64Zw==
-X-Gm-Message-State: AOAM533L8d5ecRLp8fSdr86n/UoC4ADNGveYA06D1WtZl5ZQ1efZFqfD
-        C+M14MfzdmW+G2Jo6ijyF1RuvkD3PwO2Ew==
-X-Google-Smtp-Source: ABdhPJy+ViBaw90/0xFm8oyZMYHOYpTbHCbt/CKMKVLAYCcb1yEGQ+rb180UWlyDk6b3FAmAA2WnBw==
-X-Received: by 2002:a02:8521:: with SMTP id g30mr28654360jai.113.1625776753192;
-        Thu, 08 Jul 2021 13:39:13 -0700 (PDT)
+        bh=mcRsSmxEOFOrcrZe9XK0I7V82WeLfiBYyU2jR/XHrcU=;
+        b=FwgJ7VaDclD+9IV9SjlcgOfkmNP+oUJxMfJ+dwDymWWjebHSR2I/DUUNMjEHVyHKTO
+         KZp0Ojk3BfjuK+7pLnv64nx+tJJ4eoepY0+8jlRGQP3xR5ucz8BmTtziKhTGGw/ePNYC
+         GzRm61IsZPLiXAoi3g0rsQOPYWTGvaR56RxMms9xBWOFJ35VCQfQrpLoMNiZu6FEAaqa
+         2l6tmSOt63wJzniAZXUcaCBEEt4mnzc4TnuOp/22yviU4DoJGOgzQ8I0fmWhf6HweEgU
+         eq2+eUkjg9hOaQCnQLoUnNnQrloSA5/nDFlrAXg9J8mhjoIKqor9dLNvLmkteD2SakrY
+         BByQ==
+X-Gm-Message-State: AOAM530VpRhRfED8BywQEjl0GL2cbe3O15f8TRUTh/fqtwe/e17Z8U2u
+        zGEXWd+oPTFyaDQx+p/yWj4=
+X-Google-Smtp-Source: ABdhPJwW/yCqcxYvBn6Ez8ztOngxBPEiblGnu56OtP/zsVgT4u27pXhfOK1/aDLDMMpVFM0G1dMYPQ==
+X-Received: by 2002:a05:6e02:ecb:: with SMTP id i11mr21519384ilk.40.1625776953266;
+        Thu, 08 Jul 2021 13:42:33 -0700 (PDT)
 Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id h10sm1732926ioe.43.2021.07.08.13.39.10
+        by smtp.gmail.com with ESMTPSA id h11sm1844754ilc.1.2021.07.08.13.42.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 13:39:12 -0700 (PDT)
-Date:   Thu, 08 Jul 2021 13:39:04 -0700
+        Thu, 08 Jul 2021 13:42:32 -0700 (PDT)
+Date:   Thu, 08 Jul 2021 13:42:25 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
-Message-ID: <60e76268e64fc_653a42085b@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAM_iQpWXDY=YeNS_Kn6eWZc-0MHF3Cr0fwFzGESYvtOJt0eD0A@mail.gmail.com>
-References: <20210706163150.112591-1-john.fastabend@gmail.com>
- <20210706163150.112591-2-john.fastabend@gmail.com>
- <CAM_iQpWXDY=YeNS_Kn6eWZc-0MHF3Cr0fwFzGESYvtOJt0eD0A@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 1/2] bpf, sockmap: fix potential memory leak on
- unlikely error case
+        Network Development <netdev@vger.kernel.org>
+Message-ID: <60e76331bf27e_653a42085@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAADnVQLUDh1vJGc8sC2_uaY2uEQU_DeHdaMbNx9VhOMbSH-Ezg@mail.gmail.com>
+References: <20210707223848.14580-1-john.fastabend@gmail.com>
+ <20210707223848.14580-3-john.fastabend@gmail.com>
+ <CAADnVQLUDh1vJGc8sC2_uaY2uEQU_DeHdaMbNx9VhOMbSH-Ezg@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] bpf: selftest to verify mixing bpf2bpf calls
+ and tailcalls with insn patch
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -70,23 +70,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> On Tue, Jul 6, 2021 at 9:31 AM John Fastabend <john.fastabend@gmail.com> wrote:
+Alexei Starovoitov wrote:
+> On Wed, Jul 7, 2021 at 3:39 PM John Fastabend <john.fastabend@gmail.com> wrote:
 > >
-> > If skb_linearize is needed and fails we could leak a msg on the error
-> > handling. To fix ensure we kfree the msg block before returning error.
-> > Found during code review.
+> > -static volatile int count;
+> > +int count = 0;
+> > +int noise = 0;
+> > +
+> > +__always_inline int subprog_noise(void)
+> > +{
+> > +       __u32 key = 0;
+> > +
+> > +       bpf_printk("hello noisy subprog %d\n", key);
+> > +       bpf_map_lookup_elem(&nop_table, &key);
+> > +       return 0;
+> > +}
 > 
-> sk_psock_skb_ingress_self() also needs the same fix, right?
+> This selftest patch I had to apply manually due to conflicts.
+> I've also removed the noisy printk before pushing.
 
-Yep.
+Thanks! I had the printk there to verify the code was actually
+being run, but forgot to remove it before submitting.
 
-> Other than this, it looks good to me.
+> I verified that I saw the spam before removing it.
 
-I'll do another spin to get the other one as well. Mind as well
-fix both cases at once.
+Great.
 
-> 
-> Thanks.
-
-
+> The patch 1 looks great. Thanks a lot for the fix.
