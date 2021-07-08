@@ -2,86 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C403C19AA
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 21:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8773C19F5
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 21:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbhGHTRS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 15:17:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhGHTRR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Jul 2021 15:17:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FE046143F;
-        Thu,  8 Jul 2021 19:14:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625771675;
-        bh=bz8Nw2UsTARfBh4O5eANMEUJxwSoES20lehw6GKPMDI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EGX/N2DyVR/lWsY4Asj9I3IMSKHr7pQrJzkS2UqOvFjnlbRxYMBa9qh9pdHyykydZ
-         4YB/M0pUCPqlCOTW7ocMg1ZwYDURhIiUuZH4dGCnbh6UFUSoiWtrG7/bG44o1rfiOP
-         ZPnjt+WHhLm8zCseRTNDVfrJcMjDfN3mOgwSGOgI3qL9M8WAdHv0KIJHJSSFjoxfcE
-         7sJq/MeT0j0Le0URFPUJ3KY+wkhLGcL1blK6hDOuUS/y1gl6FvQG4iRh/w0iy1s/NM
-         9o363VnvJFero6Z4sTzq6Mdad3cahkAbVLbSczGH/h0wZRwVely6eDUbxFzJmbZD47
-         TyvCkCdY+bfjQ==
-Received: by mail-lf1-f41.google.com with SMTP id f30so18345899lfj.1;
-        Thu, 08 Jul 2021 12:14:35 -0700 (PDT)
-X-Gm-Message-State: AOAM530gbM0hB5tVGi9XiqFzai/pfGXQit3o0zHC3tHXaj+Hv1q1IiWg
-        0fNkKSPNkn+2zOQVTXXu1NePev9PfHQvV2Y9tdE=
-X-Google-Smtp-Source: ABdhPJzLrjcE/kx4lv2a2xRFhxdgPyTqAZL9YJddyxzHJ43s2Nt5GjOqS+S7xLgDQHl3reyKdbF8OZ7bMhhGu85etbc=
-X-Received: by 2002:ac2:5c0d:: with SMTP id r13mr24449296lfp.438.1625771673910;
- Thu, 08 Jul 2021 12:14:33 -0700 (PDT)
+        id S230292AbhGHTlf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 15:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhGHTle (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Jul 2021 15:41:34 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA28C061574;
+        Thu,  8 Jul 2021 12:38:51 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id ie21so4377637pjb.0;
+        Thu, 08 Jul 2021 12:38:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HEnWv7IGu0HtSK3XxPSRHi3prPm/smZKLsp7ziczGIE=;
+        b=UVPDHuxeP9EZ0wOBSxJk2IRxUBwEaymnZdwNwU25WiogOZqKOPe4+x6tfxb4EeNIFe
+         8keTEz0IfET86FMc8kgadUdq0zWOh0GQa2HYA2C9TEIXJM6ShCNkWWoTqOU9SotU64AT
+         3JR6ZwA+caJV2hdgtiyVk9OiMpmutNTVpXHYbqzc7359YEU0LQyulGwgiW+zxS4ar9nE
+         HwT44rU7wRRSLI7vnfVFFnfDr9+1lcv1WPrAuaqserYiwrXTvelw+qBC6Xc6EN0VdhNq
+         1isfUdPjNeCFKxqkWP1uEQAFMgfXxruSyBs6KryQbXAx51m1dZFcJjPPp5bP5SRW8VIc
+         6X/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HEnWv7IGu0HtSK3XxPSRHi3prPm/smZKLsp7ziczGIE=;
+        b=akyvo7ffPfzYeVizrnIgl3BoV3Gev4AvkcQBcJSG+Ld+aDVcsprFy4xE+pccBLL59R
+         hZ6F41dsC2NMw+kmQBy7LZpK+LVecPyRH7tFSoeHQ7oIaH4DxtTljdbOjJU4MV/7z2Gv
+         zmbi4VP5ccRjOd/7BhsDqDsz/WryuB33NKjR0BdLKb+4xnHKaF7OPt0QN/uaVDx6aVEW
+         ITuegdlSnb13DkAyGjQlSxmSDe3RguwpfY3kEq8mMVY7v5XgpvMEhAngeYytJ1T8JJN5
+         bUw5VCG8OTsSxQHlB5plsUompff5cjPW1EhtmB3eJ55uxecaRX+nty15ku71tpM7UoQv
+         JBfw==
+X-Gm-Message-State: AOAM531FjhEaMxX9LaPmWkCSVE0jAb2FSZXWk/YaZwldvAHdCcEWkqUf
+        0DJMs0D78CH1aa0NZ9HwdGYpP/MddX0a0cQQ3sE=
+X-Google-Smtp-Source: ABdhPJzD/ue07JAuFdrTSZLf90HnbyOJHZ0RO/RGSuLWTEZfXYOsrNhCj4pSpekVrA+Q3PGJchhGtGN4Qdo0raxIx34=
+X-Received: by 2002:a17:902:e801:b029:129:478c:4b3c with SMTP id
+ u1-20020a170902e801b0290129478c4b3cmr27562867plg.64.1625773131490; Thu, 08
+ Jul 2021 12:38:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210708080409.73525-1-xuanzhuo@linux.alibaba.com>
- <c314bdcc-06fc-c869-5ad8-a74173a1e6f1@redhat.com> <f52ae16f-ee2b-c691-311a-51824c2d87e9@gmail.com>
-In-Reply-To: <f52ae16f-ee2b-c691-311a-51824c2d87e9@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 8 Jul 2021 12:14:22 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5fR71O7FoeGaXpboAiJhQaYT+GAxgZ-h4Ue_CHGE0OgA@mail.gmail.com>
-Message-ID: <CAPhsuW5fR71O7FoeGaXpboAiJhQaYT+GAxgZ-h4Ue_CHGE0OgA@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: fix for BUG: kernel NULL pointer dereference,
- address: 0000000000000000
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20210706163150.112591-1-john.fastabend@gmail.com> <20210706163150.112591-2-john.fastabend@gmail.com>
+In-Reply-To: <20210706163150.112591-2-john.fastabend@gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 8 Jul 2021 12:38:40 -0700
+Message-ID: <CAM_iQpWXDY=YeNS_Kn6eWZc-0MHF3Cr0fwFzGESYvtOJt0eD0A@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 1/2] bpf, sockmap: fix potential memory leak on
+ unlikely error case
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Abaci <abaci@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        David Ahern <dsahern@kernel.org>
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 8, 2021 at 7:45 AM David Ahern <dsahern@gmail.com> wrote:
+On Tue, Jul 6, 2021 at 9:31 AM John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> On 7/8/21 4:26 AM, Jesper Dangaard Brouer wrote:
-> >
-> > Thanks for catching this.
-> >
-> > Cc: Ahern, are you okay with disabling this for the
-> > bpf_prog_test_run_xdp() infra?
->
-> yes.
->
-> >
-> > I don't think the selftests/bpf (e.g. prog_tests/xdp_devmap_attach.c)
-> > use the bpf_prog_test_run, right?
-> >
-> > Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
->
->
-> Acked-by: David Ahern <dsahern@kernel.org>
+> If skb_linearize is needed and fails we could leak a msg on the error
+> handling. To fix ensure we kfree the msg block before returning error.
+> Found during code review.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+sk_psock_skb_ingress_self() also needs the same fix, right?
+Other than this, it looks good to me.
+
+Thanks.
