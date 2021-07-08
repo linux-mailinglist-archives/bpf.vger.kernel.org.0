@@ -2,99 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A9D3C1568
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 16:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FF13C1577
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 16:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbhGHOri (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 10:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
+        id S231836AbhGHOxh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 10:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbhGHOrh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Jul 2021 10:47:37 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42909C061574;
-        Thu,  8 Jul 2021 07:44:54 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id i5-20020a9d68c50000b02904b41fa91c97so1663520oto.5;
-        Thu, 08 Jul 2021 07:44:54 -0700 (PDT)
+        with ESMTP id S231779AbhGHOxg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Jul 2021 10:53:36 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA96C061574
+        for <bpf@vger.kernel.org>; Thu,  8 Jul 2021 07:50:54 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id j34so4257641wms.5
+        for <bpf@vger.kernel.org>; Thu, 08 Jul 2021 07:50:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=F/Awx1Vy2NafahXTtsnNysIQcjAXLo83SmFI5Ze6190=;
-        b=X2HAfGRyLnWiW354cxtjdeOSW0l6EWAOj897IYPhwDEhXdfBMBMWpcB2mbsHD5eYrB
-         2OLCQSwEme5sQ3zVp765w11BYdfcLRw1xklWreudoB44N8eJPTkehIXRu8hl5RDQYYIO
-         CxCzIBsQSY/eY5J24DarPG0ysUvF4/z2LatfGLLp14pL4lJ4e4Toc9xrVwufBidIOmAH
-         NJU8cEdCSpk7yHCBgQqVEzMYX8n7Q7E3KtafPenOfIKsSiiz17p3qJ6ussakPQzehhWv
-         gMvaC0gmhSIgm6yG8CieDX4M+3y6qdrEtr7MT5zUtmiBDgtKb7ej5XYZb0y+s745jW9l
-         fU7w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CqegNe6afZGuoA4ywYbhhiljd9BmDBRgWgf3bipzZ9M=;
+        b=eRboreH6uMXG79fmStphyJ2LlPkFebtxMpNadeQcr3k39zdBPZGcolc2j8avyIYUfM
+         nEGl4M/aM7NrllJnSilRi1U1v4TIVMys3+ZNIDwgmNTqZAX9ZQQyFlQTsVyTQenojoQi
+         RCpI/w9UtfsDw7C3+3WuELXPOBq3hZQ1FAMG1Stil4BhxcFXl/z6qvxKYeBwZ2ojyDBH
+         hFaWznS8E3zqiEekYF13MlsqHYpOfRZAMa8OHALRbhAoqVMMtbGbaSojvfzx7pwf/ULg
+         y5817lHF4YEg/4eXG6X0vht8yWb4r03fMCDJA3nYbhJX7jXy0lBU7M3ACjiHB4G27mXc
+         7jaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F/Awx1Vy2NafahXTtsnNysIQcjAXLo83SmFI5Ze6190=;
-        b=DX7t6zTeS9kth/BBLF5vIXADQBAPMK1hp7orkGp/Z62zI5NwnwgIMPUL1AUiWC/wLa
-         ay+4SqsZtE3Lsuv36fRHok2DCSKCZEQg7wfzsjOk1ML6bOZM0b317O43wBkEtNzK0Jea
-         lky7Z2JTbfBEYVQiZl5+G6t6w5UkUToFfEAuBZibyjifcYpwZ04jZoyLpF5bm6bGP9T1
-         zmhh9yL/r1Of8/mX+uJH1K4k5Ym9bAVZBSxCdr/6qLBjTqYnp0Tnr7mkaIhEVrN35oQd
-         0rW45vRj+Bt5K3ieunfqwBRmVMJVXtsDvNOtaR6wMt3nb3wf5T7ryUaHaKKIZXqlAYXj
-         VyEQ==
-X-Gm-Message-State: AOAM530C9OtSipeOl/toCrZeoKTdcyW5adpElEbZuxSpqPsDudb69KoM
-        MarL2ytc0we9tuvjvmuWCcw=
-X-Google-Smtp-Source: ABdhPJy3WMsXEufiA4YpxDjQhZcklIxgAuYy6pYCM8r86lpKnwJ1fUfkwTBPLIP57e+XI4Ufveg/8w==
-X-Received: by 2002:a05:6830:2497:: with SMTP id u23mr6996108ots.344.1625755493710;
-        Thu, 08 Jul 2021 07:44:53 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.38])
-        by smtp.googlemail.com with ESMTPSA id m1sm522039otl.0.2021.07.08.07.44.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jul 2021 07:44:52 -0700 (PDT)
-Subject: Re: [PATCH bpf] bpf: fix for BUG: kernel NULL pointer dereference,
- address: 0000000000000000
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>, bpf@vger.kernel.org
-Cc:     brouer@redhat.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CqegNe6afZGuoA4ywYbhhiljd9BmDBRgWgf3bipzZ9M=;
+        b=bBPf/KKp+1a3RgKosZF6nX5flc7W+rASdiuGQ12nBPnLNNrPIoFYYZY+lrfF2zX3gV
+         MyAqYv/Sarzs/o5TTfnKFpSU+mscNg9Dx0FEoF0CCZ4tFBhhzVj4IIvlTCUJgyczrtt3
+         g6nOus/zTxCPbCgbSPyrwgjYYbBK29hVdnMNrzWFSYvddCEJI9Q8+9T9oCSEx9QJ1tF/
+         QhABGa3m2OfRhdR8tINaYkDjQFWTVduSf87/5JaOrbZh1lB7JcR5X6yfOgpQPFWdx5PQ
+         RwoMVil6oiNQZKA4PphheXlmbZmJn4HeUoRFcf6VYI0TnwHHpdj4SAkW6F/oDgysGfJS
+         nylQ==
+X-Gm-Message-State: AOAM531sQQFxoOJnG2z+JXtwk7btVpdkIOjqnX27i6xvR+YGMxq5nWhz
+        MXODEX/9WqLVdenptE51H7WjBQ==
+X-Google-Smtp-Source: ABdhPJxcRn/Mt1uXH48Enuc4Y6DewGso6ByL2CifNQe65iSmHfopTFxnZRQp5SorWOz60B2Wrns8QA==
+X-Received: by 2002:a1c:7308:: with SMTP id d8mr4228688wmb.20.1625755853497;
+        Thu, 08 Jul 2021 07:50:53 -0700 (PDT)
+Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
+        by smtp.gmail.com with ESMTPSA id o3sm1483595wrm.5.2021.07.08.07.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jul 2021 07:50:52 -0700 (PDT)
+Date:   Thu, 8 Jul 2021 17:50:48 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, Marcin Wojtas <mw@semihalf.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        hawk@kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        David Ahern <dsahern@kernel.org>
-References: <20210708080409.73525-1-xuanzhuo@linux.alibaba.com>
- <c314bdcc-06fc-c869-5ad8-a74173a1e6f1@redhat.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <f52ae16f-ee2b-c691-311a-51824c2d87e9@gmail.com>
-Date:   Thu, 8 Jul 2021 08:44:48 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, peterx@redhat.com, Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, mcroce@microsoft.com,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, Kevin Hao <haokexin@gmail.com>,
+        nogikh@google.com, Marco Elver <elver@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next RFC 1/2] page_pool: add page recycling support
+ based on elevated refcnt
+Message-ID: <YOcQyKt6i+UeMzSS@enceladus>
+References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
+ <1625044676-12441-2-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Ueyc8BqjkdTVC_c-Upn-ghNeahYQrWJtQSqxoqN7VvMWA@mail.gmail.com>
+ <29403911-bc26-dd86-83b8-da3c1784d087@huawei.com>
+ <CAKgT0UcGDYcuZRXX1MaFAzzBySu3R4_TSdC6S0cyS7Ppt_dNng@mail.gmail.com>
+ <YOX6bPEL0cq8CgPG@enceladus>
+ <CAKgT0UfPFbAptXMJ4BQyeAadaxyHfkKRfeiwhrVMwafNEM_0cw@mail.gmail.com>
+ <YOcKASZ9Bp0/cz1d@enceladus>
+ <CAKgT0UfJuvdkccr=SXWNUaGx7y5nUHFL-E9g3qi4sagY_jWUUQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c314bdcc-06fc-c869-5ad8-a74173a1e6f1@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UfJuvdkccr=SXWNUaGx7y5nUHFL-E9g3qi4sagY_jWUUQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/8/21 4:26 AM, Jesper Dangaard Brouer wrote:
+On Thu, Jul 08, 2021 at 07:24:57AM -0700, Alexander Duyck wrote:
+> On Thu, Jul 8, 2021 at 7:21 AM Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+> >
+> > > > > >
+> >
+> > [...]
+> >
+> > > > > > The above expectation is based on that the last user will always
+> > > > > > call page_pool_put_full_page() in order to do the recycling or do
+> > > > > > the resource cleanup(dma unmaping..etc).
+> > > > > >
+> > > > > > As the skb_free_head() and skb_release_data() have both checked the
+> > > > > > skb->pp_recycle to call the page_pool_put_full_page() if needed, I
+> > > > > > think we are safe for most case, the one case I am not so sure above
+> > > > > > is the rx zero copy, which seems to also bump up the refcnt before
+> > > > > > mapping the page to user space, we might need to ensure rx zero copy
+> > > > > > is not the last user of the page or if it is the last user, make sure
+> > > > > > it calls page_pool_put_full_page() too.
+> > > > >
+> > > > > Yes, but the skb->pp_recycle value is per skb, not per page. So my
+> > > > > concern is that carrying around that value can be problematic as there
+> > > > > are a number of possible cases where the pages might be
+> > > > > unintentionally recycled. All it would take is for a packet to get
+> > > > > cloned a few times and then somebody starts using pskb_expand_head and
+> > > > > you would have multiple cases, possibly simultaneously, of entities
+> > > > > trying to free the page. I just worry it opens us up to a number of
+> > > > > possible races.
+> > > >
+> > > > Maybe I missde something, but I thought the cloned SKBs would never trigger
+> > > > the recycling path, since they are protected by the atomic dataref check in
+> > > > skb_release_data(). What am I missing?
+> > >
+> > > Are you talking about the head frag? So normally a clone wouldn't
+> > > cause an issue because the head isn't changed. In the case of the
+> > > head_frag we should be safe since pskb_expand_head will just kmalloc
+> > > the new head and clears head_frag so it won't trigger
+> > > page_pool_return_skb_page on the head_frag since the dataref just goes
+> > > from 2 to 1.
+> > >
+> > > The problem is that pskb_expand_head memcopies the page frags over and
+> > > takes a reference on the pages. At that point you would have two skbs
+> > > both pointing to the same set of pages and each one ready to call
+> > > page_pool_return_skb_page on the pages at any time and possibly racing
+> > > with the other.
+> >
+> > Ok let me make sure I get the idea properly.
+> > When pskb_expand_head is called, the new dataref will be 1, but the
+> > head_frag will be set to 0, in which case the recycling code won't be
+> > called for that skb.
+> > So you are mostly worried about a race within the context of
+> > pskb_expand_skb() between copying the frags, releasing the previous head
+> > and preparing the new one (on a cloned skb)?
 > 
-> Thanks for catching this.
+> The race is between freeing the two skbs. So the original and the
+> clone w/ the expanded head will have separate instances of the page. I
+> am pretty certain there is a race if the two of them start trying to
+> free the page frags at the same time.
 > 
-> Cc: Ahern, are you okay with disabling this for the
-> bpf_prog_test_run_xdp() infra?
 
-yes.
+Right, I completely forgot calling __skb_frag_unref() before releasing the
+head ...
+You are right, this will be a race.  Let me go back to the original mail
+thread and see what we can do
 
+Thanks!
+/Ilias
+> Thanks,
 > 
-> I don't think the selftests/bpf (e.g. prog_tests/xdp_devmap_attach.c)
-> use the bpf_prog_test_run, right?
-> 
-> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-
-
-Acked-by: David Ahern <dsahern@kernel.org>
+> - Alex
