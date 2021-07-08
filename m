@@ -2,148 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FAB3BF946
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 13:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9183BFA06
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 14:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhGHLqM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 07:46:12 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:55753 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231675AbhGHLqL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 8 Jul 2021 07:46:11 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 317623200805;
-        Thu,  8 Jul 2021 07:43:28 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 08 Jul 2021 07:43:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=JUw1JsfRBrjaToRjX9X3aoMvT/SRoL277ys6OSnnZ
-        CQ=; b=Z7d9mVO0J3+DVVOx/3niwYnU9vuBRDCyGnRAlXnJJocohGjDMt21xHS6n
-        5IiyGagQUrzxuhFPvMEu7RNvaQnh8JRCPp+RD/0hBOA+ajBg+XpRPaDVjwi+qXjK
-        ALxwZK+HoGzdGkSlXIB1/X2lZD4B9Km36HBN2Xg9OcvbftUZAcCqaBdVgSSv5nJu
-        LIlywmcSdevQc+l6adqSz4MBKVocMQTuTaUIFdjIZACOLHLpIhc7rM5QKAUNZ94T
-        o/MiTBRLVpfQSUPRdRzjoidUvPG0Ks4UUf0eDqfJ908x3cwwRDicbAE6M2kFlboH
-        /j1h8x48ddeFkChSLBppH2KX+GIKQ==
-X-ME-Sender: <xms:3uTmYFtWn_56Ta-I53eH6cooA1Guvf_ig7HYc7xSKVIM9N07cXpqyQ>
-    <xme:3uTmYOeiR1-1uRG8pRmbKTAHuK9x_USqhg-l7Mj_Vga4a_piIY0F-vwgEJb3b0pqS
-    Z8XprV_l9XFrxQ7MBk>
-X-ME-Received: <xmr:3uTmYIw-MGTv3B-JWe5kKX4NAyEfVL8fo2nYHxgRnBv76DdPHUzMRLegPNeGdDSWvV3aabc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtdeggdegvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpeforghrthih
-    nhgrshcurfhumhhpuhhtihhsuceomheslhgrmhgsuggrrdhltheqnecuggftrfgrthhtvg
-    hrnhepteetkeduteehkeelhfelueefhedtjeelteefheelvdegueegiefhleeuffffgfel
-    necuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmsehlrghmsggurgdrlhht
-X-ME-Proxy: <xmx:3uTmYMPVr1bCIXTYfVR3XhOUL3rMLaVEw34rsJV_MChIBSUFkjG2JQ>
-    <xmx:3uTmYF_68kilrlm1og_d9qJzfwiXgaUkSs3LdXrZc9PPokCdkNJR1w>
-    <xmx:3uTmYMWQ4A56aQ-chD7pY3pDFfUqtEvtCXX-Php1WJLi5KxAakRBkQ>
-    <xmx:3-TmYHJUWT5J-MUaNz3elI6eqx5O5-sM5cModr1JS01lFDHnQDOwWg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 8 Jul 2021 07:43:24 -0400 (EDT)
-Subject: Re: [PATCH bpf] libbpf: fix reuse of pinned map on older kernel
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <20210706172619.579001-1-m@lambda.lt>
- <CAEf4BzbCAO=hjA=hSh9QXN3C79xOmM0=Cc0H1gZnhm6LdDz9Sw@mail.gmail.com>
-From:   Martynas Pumputis <m@lambda.lt>
-Message-ID: <41795594-5d66-e17e-095c-cc4cdc84a017@lambda.lt>
-Date:   Thu, 8 Jul 2021 13:45:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230376AbhGHM2Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 08:28:16 -0400
+Received: from mga04.intel.com ([192.55.52.120]:5492 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229795AbhGHM2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Jul 2021 08:28:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="207671291"
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="207671291"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 05:25:34 -0700
+X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
+   d="scan'208";a="498406860"
+Received: from unknown (HELO localhost.localdomain) ([10.102.102.63])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 05:25:32 -0700
+Date:   Thu, 8 Jul 2021 04:32:37 -0400
+From:   Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net
+Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
+Message-ID: <YOa4JVEp20JolOp4@localhost.localdomain>
+References: <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch>
+ <20210528180214.3b427837@carbon>
+ <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
+ <8735u3dv2l.fsf@toke.dk>
+ <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
+ <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <YNGU4GhL8fZ0ErzS@localhost.localdomain>
+ <874kdqqfnm.fsf@toke.dk>
+ <YNLxtsasQSv+YR1w@localhost.localdomain>
+ <87mtrfmoyh.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbCAO=hjA=hSh9QXN3C79xOmM0=Cc0H1gZnhm6LdDz9Sw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87mtrfmoyh.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 7/8/21 12:58 AM, Andrii Nakryiko wrote:
-> On Tue, Jul 6, 2021 at 10:24 AM Martynas Pumputis <m@lambda.lt> wrote:
->>
->> When loading a BPF program with a pinned map, the loader checks whether
->> the pinned map can be reused, i.e. their properties match. To derive
->> such of the pinned map, the loader invokes BPF_OBJ_GET_INFO_BY_FD and
->> then does the comparison.
->>
->> Unfortunately, on < 4.12 kernels the BPF_OBJ_GET_INFO_BY_FD is not
->> available, so loading the program fails with the following error:
->>
->>          libbpf: failed to get map info for map FD 5: Invalid argument
->>          libbpf: couldn't reuse pinned map at
->>                  '/sys/fs/bpf/tc/globals/cilium_call_policy': parameter
->>                  mismatch"
->>          libbpf: map 'cilium_call_policy': error reusing pinned map
->>          libbpf: map 'cilium_call_policy': failed to create:
->>                  Invalid argument(-22)
->>          libbpf: failed to load object 'bpf_overlay.o'
->>
->> To fix this, probe the kernel for BPF_OBJ_GET_INFO_BY_FD support. If it
->> doesn't support, then fallback to derivation of the map properties via
->> /proc/$PID/fdinfo/$MAP_FD.
->>
->> Signed-off-by: Martynas Pumputis <m@lambda.lt>
->> ---
->>   tools/lib/bpf/libbpf.c | 103 +++++++++++++++++++++++++++++++++++++++++++++------
->>   1 file changed, 92 insertions(+), 11 deletions(-)
->>
+On Thu, Jun 24, 2021 at 02:23:02PM +0200, Toke Høiland-Jørgensen wrote:
+> Michal Swiatkowski <michal.swiatkowski@linux.intel.com> writes:
 > 
-> [...]
+> > On Tue, Jun 22, 2021 at 01:53:33PM +0200, Toke Høiland-Jørgensen wrote:
+> >> Michal Swiatkowski <michal.swiatkowski@linux.intel.com> writes:
+> >> 
+> >> > On Wed, Jun 02, 2021 at 09:18:37AM -0700, Jakub Kicinski wrote:
+> >> >> On Tue, 01 Jun 2021 17:22:51 -0700 John Fastabend wrote:
+> >> >> > > If we do this, the BPF program obviously needs to know which fields are
+> >> >> > > valid and which are not. AFAICT you're proposing that this should be
+> >> >> > > done out-of-band (i.e., by the system administrator manually ensuring
+> >> >> > > BPF program config fits system config)? I think there are a couple of
+> >> >> > > problems with this:
+> >> >> > > 
+> >> >> > > - It requires the system admin to coordinate device config with all of
+> >> >> > >   their installed XDP applications. This is error-prone, especially as
+> >> >> > >   the number of applications grows (say if different containers have
+> >> >> > >   different XDP programs installed on their virtual devices).  
+> >> >> > 
+> >> >> > A complete "system" will need to be choerent. If I forward into a veth
+> >> >> > device the orchestration component needs to ensure program sending
+> >> >> > bits there is using the same format the program installed there expects.
+> >> >> > 
+> >> >> > If I tailcall/fentry into another program that program the callee and
+> >> >> > caller need to agree on the metadata protocol.
+> >> >> > 
+> >> >> > I don't see any way around this. Someone has to manage the network.
+> >> >> 
+> >> >> FWIW I'd like to +1 Toke's concerns.
+> >> >> 
+> >> >> In large deployments there won't be a single arbiter. Saying there 
+> >> >> is seems to contradict BPF maintainers' previous stand which lead 
+> >> >> to addition of bpf_links for XDP.
+> >> >> 
+> >> >> In practical terms person rolling out an NTP config change may not 
+> >> >> be aware that in some part of the network some BPF program expects
+> >> >> descriptor not to contain time stamps. Besides features may depend 
+> >> >> or conflict so the effects of feature changes may not be obvious 
+> >> >> across multiple drivers in a heterogeneous environment.
+> >> >> 
+> >> >> IMO guarding from obvious mis-configuration provides obvious value.
+> >> >
+> >> > Hi,
+> >> >
+> >> > Thanks for a lot of usefull information about CO-RE. I have read
+> >> > recommended articles, but still don't understand everything, so sorry if
+> >> > my questions are silly.
+> >> >
+> >> > As introduction, I wrote small XDP example using CO-RE (autogenerated
+> >> > vmlinux.h and getting rid of skeleton etc.) based on runqslower
+> >> > implementation. Offset reallocation of hints works great, I built CO-RE
+> >> > application, added new field to hints struct, changed struct layout and
+> >> > without rebuilding application everything still works fine. Is it worth
+> >> > to add XDP sample using CO-RE in kernel or this isn't good place for
+> >> > this kind of sample?
+> >> >
+> >> > First question not stricte related to hints. How to get rid of #define
+> >> > and macro when I am using generated vmlinux.h? For example I wanted to
+> >> > use htons macro and ethtype definition. They are located in headers that
+> >> > also contains few struct definition. Because of that I have redefinition
+> >> > error when I am trying to include them (redefinition in vmlinux.h and
+> >> > this included file). What can I do with this besides coping definitions
+> >> > to bpf code?
+> >> 
+> >> One way is to only include the structs you actually need from vmlinux.h.
+> >> You can even prune struct members, since CO-RE works just fine with
+> >> partial struct definitions as long as the member names match.
+> >> 
+> >> Jesper has an example on how to handle this here:
+> >> https://github.com/netoptimizer/bpf-examples/blob/ktrace01-CO-RE.public/headers/vmlinux_local.h
+> >> 
+> >
+> > I see, thanks, I will take a look at other examples.
+> >
+> >> > I defined hints struct in driver code, is it right place for that? All
+> >> > vendors will define their own hints struct or the idea is to have one
+> >> > big hints struct with flags informing about availability of each fields?
+> >> >
+> >> > For me defining it in driver code was easier because I can have used
+> >> > module btf to generate vmlinux.h with hints struct inside. However this
+> >> > break portability if other vendors will have different struct name etc,
+> >> > am I right?
+> >> 
+> >> I would expect the easiest is for drivers to just define their own
+> >> structs and maybe have some infrastructure in the core to let userspace
+> >> discover the right BTF IDs to use for a particular netdev. However, as
+> >> you say it's not going to work if every driver just invents their own
+> >> field names, so we'll need to coordinate somehow. We could do this by
+> >> convention, though, it'll need manual intervention to make sure the
+> >> semantics of identically-named fields match anyway.
+> >> 
+> >> Cf the earlier discussion with how many BTF IDs each driver might
+> >> define, I think we *also* need a way to have flags that specify which
+> >> fields of a given BTF ID are currently used; and having some common
+> >> infrastructure for that would be good...
+> >> 
+> >
+> > Sounds good. 
+> >
+> > Sorry, but I feel that I don't fully understand the idea. Correct me if
+> > I am wrong:
+> >
+> > In building CO-RE application step we can defined big struct with
+> > all possible fields or even empty struct (?) and use
+> > bpf_core_field_exists. 
+> >
+> > bpf_core_field_exists will be resolve before loading program by libbpf
+> > code. In normal case libbpf will look for btf with hints name in vmlinux
+> > of running kernel and do offset rewrite and exsistence check. But as the
+> > same hints struct will be define in multiple modules we want to add more
+> > logic to libbpf to discover correct BTF ID based on netdev on which program
+> > will be loaded?
 > 
->> @@ -4406,10 +4478,19 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
->>
->>          map_info_len = sizeof(map_info);
->>
->> -       if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
->> -               pr_warn("failed to get map info for map FD %d: %s\n",
->> -                       map_fd, libbpf_strerror_r(errno, msg, sizeof(msg)));
->> -               return false;
->> +       if (kernel_supports(obj, FEAT_OBJ_GET_INFO_BY_FD)) {
+> I would expect that the program would decide ahead-of-time which BTF IDs
+> it supports, by something like including the relevant structs from
+> vmlinux.h. And then we need the BTF ID encoded into the packet metadata
+> as well, so that it is possible to check at run-time which driver the
+> packet came from (since a packet can be redirected, so you may end up
+> having to deal with multiple formats in the same XDP program).
 > 
-> why not just try bpf_obj_get_info_by_fd() first, and if it fails
-> always fallback to bpf_get_map_info_from_fdinfo(). No need to do
-> feature detection. This will cut down on the amount of code without
-> any regression in behavior. More so, it will actually now be
-> consistent and good behavior in case of bpf_map__reuse_fd() where we
-> don't have obj. WDYT?
+> Which would allow you to write code like:
+> 
+> if (ctx->has_driver_meta) {
+>   /* this should be at a well-known position, like first (or last) in meta area */
+>   __u32 *meta_btf_id = ctx->data_meta;
+>   
+>   if (*meta_btf_id == BTF_ID_MLX5) {
+>     struct meta_mlx5 *meta = ctx->data_meta;
+>     /* do something with meta */
+>   } else if (meta_btf_id == BTF_ID_I40E) {
+>     struct meta_i40e *meta = ctx->data_meta;
+>     /* do something with meta */
+>   } /* etc */
+> }
+> 
+> and libbpf could do relocations based on the different meta structs,
+> even removing the code for the ones that don't exist on the running
+> kernel.
 
-I was thinking about it, but then decided to use the kernel probing 
-instead. The reasoning was the following:
+This looks nice. In this case we need defintions of struct meta_mlx5 and
+struct meta_i40e at build time. How are we going to deliver this to bpf
+core app? This will be available in /sys/kernel/btf/mlx5 and
+/sys/kernel/btf/i40e (if drivers are loaded). Should we dump this to
+vmlinux.h? Or a developer of the xdp program should add this definition
+to his code?
 
-1) For programs with many pinned maps we would issue many failing 
-BPF_OBJ_GET_INFO_BY_FD calls (instead of a single one) which might 
-hinder the performance.
-2) A canonical way in libbpf to detect features is via kernel_supports() 
-and friends, so I didn't want to diverge there.
+Maybe create another /sys/kernel/btf/hints with vmlinux and hints from
+all drivers which support hints?
 
-Re bpf_map__reuse_fd(), if we are OK to break the API before libbpf 
-v1.0, then we could extend bpf_map__reuse_fd() to accept the obj. 
-However, this would break some consumers of the lib, e.g., iproute2 [1].
+Previously in this thread someone mentioned this ___ use case in libbpf
+and proposed creating something like mega xdp hints structure with all
+available fields across all drivers. As I understand this could solve
+the problem about defining correct structure at build time. But how will
+it work when there will be more than one structures with the same name
+before ___? I mean:
+struct xdp_hints___mega defined only in core app
+struct xdp_hints___mlx5 available when mlx5 driver is loaded
+struct xdp_hints___i40e available when i40e driver is loaded
 
-Anyway, if you think that we can ignore 1) and 2), then I'm happy to 
-change. Also, I'm going to submit to bpf-next.
-
-[1]: 
-https://github.com/shemminger/iproute2/blob/v5.11.0/lib/bpf_libbpf.c#L98
+When there will be only one driver loaded should libbpf do correct
+reallocation of fields? What will happen when both of the drivers are
+loaded?
 
 > 
-> 
->> +               if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
->> +                       pr_warn("failed to get map info for map FD %d: %s\n",
->> +                               map_fd,
->> +                               libbpf_strerror_r(errno, msg, sizeof(msg)));
->> +                       return false;
->> +               }
-> 
-> [...]
+> -Toke
 > 
