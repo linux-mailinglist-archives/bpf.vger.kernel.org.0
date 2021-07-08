@@ -2,343 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002613BF37E
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 03:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667C83BF3E1
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 04:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhGHBVk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Jul 2021 21:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
+        id S230184AbhGHCOJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Jul 2021 22:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbhGHBVi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Jul 2021 21:21:38 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E23C06175F;
-        Wed,  7 Jul 2021 18:18:56 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id p14-20020a17090ad30eb02901731c776526so2538330pju.4;
-        Wed, 07 Jul 2021 18:18:56 -0700 (PDT)
+        with ESMTP id S230173AbhGHCOI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Jul 2021 22:14:08 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CEEC061574;
+        Wed,  7 Jul 2021 19:11:27 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id q10so4030013pfj.12;
+        Wed, 07 Jul 2021 19:11:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=WCM0qUYaCgBYrhbOFp35Di1REgdmWKUNaHQD3eXE5yY=;
-        b=JhzmZ1HTtgnrRj/jekqq8jXS8t1nmoVJN1uRXhX1uyLgO1nYujhohEq+MV290HR61j
-         xLFLaoDWaH+kt4mivymIVGrFqq/esnnfiL3I57bZchfqpo1sfnBoGgv6M8h+2jikpjGR
-         0IubxruLepB5JRzkym52pdX8zhasGKgxDEhBQUbvoaSW14mPA1v3GSBOGDCBZSA5Y63/
-         fGvBYd38b7/XeLevUQhP6zR10GMTKbLl4dKZZpU1H/zk5gMkNkIqew6KDVEJaOnm/rRP
-         ORpotVS00XT5Hx8pX9+mEUH7i8u3SubJMTnrYqcbeTMMSKPGXyaDokzR8paH2R2SJeiW
-         bcXw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=316L5rfChZHhgSmIsa/mv70DJZD3Iupb/gjN06zoayI=;
+        b=CxL2vIKyB+heXsV3W+GzKGxtZG9oWQJ2esT6mMWs7TjKAe6Iun6crYP2cbm3Vpfp1n
+         8uky0MfjSGNI4hh8cBteEsPC47McDA3FUdDaA9D4O99axPqM+41R2GnsnlpfEE2eZysQ
+         4PbFxInS7pU9HpO8sio8jtFjMYkOwDmwX2+xn6RypDoPw+TypQZ7tOwRIxVkIEP5apDD
+         qQVT59ci0G73mgQ7s94OfCSv1pMnGqIw9l60XuxoAW4rFNn580urMI7048qJrEj99uhb
+         6SiGxGkfqmVtxtq8rcuRqyDNYpZ0onVxR69cwXot1mm8UNVpQorfgOIj52Od4LULixZN
+         LVww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=WCM0qUYaCgBYrhbOFp35Di1REgdmWKUNaHQD3eXE5yY=;
-        b=pnbN7CMMHs/gvpSKbp6eivRG/7EPIY6yvgKaKd6eN6nxDSIHgwuYPhw9o1fJ6yXXJJ
-         pdvGtmsA41vbBfBFZC0+JHUcBakGu+em1uAZG9WlcnSZV4NOlMty6z/44D80TGqfzeoy
-         9ipdX/cB6YFmEtjsxWV0rUsRR3jDdwHcWDxTJjSDrjiQxmJ6axdEbufVJ38SkOBrWwoG
-         CX9kWAsYZUW8gJnboqR8zSH0ab7zb5AVVenKTzLgj1lZlivHKtIYnnJnyEGElwIzKF02
-         O1POPlXEJ7CK/MTEr86EJavSfavNGX+ZL9/bTKNwFVJIHawYKY7pMs1hX9LaM/XDZfRg
-         LaLQ==
-X-Gm-Message-State: AOAM530o/05HDlEdhmj8TGz4vyR23vWw4ZUod9GhC4uumcXObtJyoB0l
-        DHqJVFSLvRMrpWDtYdNeC3E=
-X-Google-Smtp-Source: ABdhPJz2fRwRc8+xbkhDN9nu3D+Ahud/FpDZpR7p9/aqYB3dWAD4bKUmKz1SixVVqK+0cZ6kUSkJKA==
-X-Received: by 2002:a17:902:edc6:b029:129:a9a8:67fa with SMTP id q6-20020a170902edc6b0290129a9a867famr9794346plk.38.1625707135777;
-        Wed, 07 Jul 2021 18:18:55 -0700 (PDT)
-Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:9f4e])
-        by smtp.gmail.com with ESMTPSA id d20sm417450pfn.219.2021.07.07.18.18.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Jul 2021 18:18:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=316L5rfChZHhgSmIsa/mv70DJZD3Iupb/gjN06zoayI=;
+        b=jeA9qNy0qvU/7PdqZ5CUd9+MrcCDXn8JMPPOKodZf+CTufvJCkfLiGxf2SU1/vtlH5
+         cQ2W+Y+auB7DaBNeP4/X29uZSElKq9sHBY20XKsd9lAY5p3YicB9VMybYBuRG7g7DaBQ
+         dLS1vbG2UGH4b7hu15MsAJ1A2H6CC565OJWMovP7c8uIgqgMeV3UIOP4cXbA7x5u4qeQ
+         DJSOaMZXbtGXGP6d2yOXS80FTUzo5g3qnyhq9Dmm1kWwzEJBu/vx/wrfVLmOKnUMtpWt
+         7i+dhO/8qvtKLFoopYi/8GXKmWC9QiXHRXFhMorUUF6mY427SOhaH637+VWvi2vbkKSq
+         otTw==
+X-Gm-Message-State: AOAM533a7POHpRDjY3LYSZR/NxX6jaWLtt7v8eMkS/Ze23KLKZ8NAPdE
+        a9Je3d4NIe8UQowI7X4fco4=
+X-Google-Smtp-Source: ABdhPJzcBxviwBOUhyWGhl7CoXwV1ndXf2osWEb4ceQH79KTYwfxQlrB5yKfq3sl/Lrrab5qCkNCiQ==
+X-Received: by 2002:a62:cd44:0:b029:316:643c:1ee3 with SMTP id o65-20020a62cd440000b0290316643c1ee3mr28744366pfg.5.1625710287335;
+        Wed, 07 Jul 2021 19:11:27 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:9f4e])
+        by smtp.gmail.com with ESMTPSA id u23sm636960pgk.38.2021.07.07.19.11.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 19:11:26 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 19:11:23 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v5 bpf-next 11/11] selftests/bpf: Add a test with bpf_timer in inner map.
-Date:   Wed,  7 Jul 2021 18:18:33 -0700
-Message-Id: <20210708011833.67028-12-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.13.5
-In-Reply-To: <20210708011833.67028-1-alexei.starovoitov@gmail.com>
-References: <20210708011833.67028-1-alexei.starovoitov@gmail.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: Re: [PATCHv3 bpf-next 3/7] bpf: Add bpf_get_func_ip helper for
+ tracing programs
+Message-ID: <20210708021123.w4smo42jml57iowl@ast-mbp.dhcp.thefacebook.com>
+References: <20210707214751.159713-1-jolsa@kernel.org>
+ <20210707214751.159713-4-jolsa@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707214751.159713-4-jolsa@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Wed, Jul 07, 2021 at 11:47:47PM +0200, Jiri Olsa wrote:
+>  
+> +static bool allow_get_func_ip_tracing(struct bpf_verifier_env *env)
+> +{
+> +	return env->prog->jit_requested && IS_ENABLED(CONFIG_X86_64);
 
-Check that map-in-map supports bpf timers.
+Why does it have to be gated by 'jited && x86_64' ?
+It's gated by bpf trampoline and it's only implemented on x86_64 so far.
+The trampoline has plenty of features. I would expect bpf trampoline
+for arm64 to implement all of them. If not the func_ip would be just
+one of the trampoline features that couldn't be implemented and at that
+time we'd need a flag mask of a sort, but I'd rather push of feature
+equivalence between trampoline implementations.
 
-Check that indirect "recursion" of timer callbacks works:
-timer_cb1() { bpf_timer_set_callback(timer_cb2); }
-timer_cb2() { bpf_timer_set_callback(timer_cb1); }
+Then jited part also doesn't seem to be necessary.
+The trampoline passed pointer to a stack in R1.
+Interpreter should deal with BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8) insn
+the same way and it should work, since trampoline prepared it.
+What did I miss?
 
-Check that
-  bpf_map_release
-    htab_free_prealloced_timers
-      bpf_timer_cancel_and_free
-        hrtimer_cancel
-works while timer cb is running.
-"while true; do ./test_progs -t timer_mim; done"
-is a great stress test. It caught missing timer cancel in htab->extra_elems.
+> +static int has_get_func_ip(struct bpf_verifier_env *env)
+> +{
+> +	enum bpf_attach_type eatype = env->prog->expected_attach_type;
+> +	enum bpf_prog_type type = resolve_prog_type(env->prog);
+> +	int func_id = BPF_FUNC_get_func_ip;
+> +
+> +	if (type == BPF_PROG_TYPE_TRACING) {
+> +		if (eatype != BPF_TRACE_FENTRY && eatype != BPF_TRACE_FEXIT &&
+> +		    eatype != BPF_MODIFY_RETURN) {
+> +			verbose(env, "func %s#%d supported only for fentry/fexit/fmod_ret programs\n",
+> +				func_id_name(func_id), func_id);
+> +			return -ENOTSUPP;
+> +		}
+> +		if (!allow_get_func_ip_tracing(env)) {
+> +			verbose(env, "func %s#%d for tracing programs supported only for JITed x86_64\n",
+> +				func_id_name(func_id), func_id);
+> +			return -ENOTSUPP;
+> +		}
+> +		return 0;
+> +	}
+> +
+> +	verbose(env, "func %s#%d not supported for program type %d\n",
+> +		func_id_name(func_id), func_id, type);
+> +	return -ENOTSUPP;
+> +}
+> +
+>  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  			     int *insn_idx_p)
+>  {
+> @@ -6225,6 +6256,12 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  	if (func_id == BPF_FUNC_get_stackid || func_id == BPF_FUNC_get_stack)
+>  		env->prog->call_get_stack = true;
+>  
+> +	if (func_id == BPF_FUNC_get_func_ip) {
+> +		if (has_get_func_ip(env))
+> +			return -ENOTSUPP;
+> +		env->prog->call_get_func_ip = true;
+> +	}
+> +
+>  	if (changes_data)
+>  		clear_all_pkt_pointers(env);
+>  	return 0;
+> @@ -12369,6 +12406,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>  {
+>  	struct bpf_prog *prog = env->prog;
+>  	bool expect_blinding = bpf_jit_blinding_enabled(prog);
+> +	enum bpf_prog_type prog_type = resolve_prog_type(prog);
+>  	struct bpf_insn *insn = prog->insnsi;
+>  	const struct bpf_func_proto *fn;
+>  	const int insn_cnt = prog->len;
+> @@ -12702,6 +12740,21 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>  			continue;
+>  		}
+>  
+> +		/* Implement bpf_get_func_ip inline. */
+> +		if (prog_type == BPF_PROG_TYPE_TRACING &&
+> +		    insn->imm == BPF_FUNC_get_func_ip) {
+> +			/* Load IP address from ctx - 8 */
+> +			insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8);
+> +
+> +			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, 1);
+> +			if (!new_prog)
+> +				return -ENOMEM;
+> +
+> +			env->prog = prog = new_prog;
+> +			insn      = new_prog->insnsi + i + delta;
+> +			continue;
+> +		}
+> +
+>  patch_call_imm:
+>  		fn = env->ops->get_func_proto(insn->imm, env->prog);
+>  		/* all functions that have prototype and verifier allowed
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 64bd2d84367f..9edd3b1a00ad 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -948,6 +948,19 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+>  	.arg5_type	= ARG_ANYTHING,
+>  };
+>  
+> +BPF_CALL_1(bpf_get_func_ip_tracing, void *, ctx)
+> +{
+> +	/* Stub, the helper call is inlined in the program. */
+> +	return 0;
+> +}
 
-timer_mim_reject.c is a negative test that checks
-that timer<->map mismatch is prevented.
-
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- .../selftests/bpf/prog_tests/timer_mim.c      | 69 +++++++++++++++
- tools/testing/selftests/bpf/progs/timer_mim.c | 88 +++++++++++++++++++
- .../selftests/bpf/progs/timer_mim_reject.c    | 74 ++++++++++++++++
- 3 files changed, 231 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/timer_mim.c
- create mode 100644 tools/testing/selftests/bpf/progs/timer_mim.c
- create mode 100644 tools/testing/selftests/bpf/progs/timer_mim_reject.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer_mim.c b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
-new file mode 100644
-index 000000000000..f5acbcbe33a4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
-@@ -0,0 +1,69 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include <test_progs.h>
-+#include "timer_mim.skel.h"
-+#include "timer_mim_reject.skel.h"
-+
-+static int timer_mim(struct timer_mim *timer_skel)
-+{
-+	__u32 duration = 0, retval;
-+	__u64 cnt1, cnt2;
-+	int err, prog_fd, key1 = 1;
-+
-+	err = timer_mim__attach(timer_skel);
-+	if (!ASSERT_OK(err, "timer_attach"))
-+		return err;
-+
-+	prog_fd = bpf_program__fd(timer_skel->progs.test1);
-+	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
-+				NULL, NULL, &retval, &duration);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(retval, 0, "test_run");
-+	timer_mim__detach(timer_skel);
-+
-+	/* check that timer_cb[12] are incrementing 'cnt' */
-+	cnt1 = READ_ONCE(timer_skel->bss->cnt);
-+	usleep(200); /* 100 times more than interval */
-+	cnt2 = READ_ONCE(timer_skel->bss->cnt);
-+	ASSERT_GT(cnt2, cnt1, "cnt");
-+
-+	ASSERT_EQ(timer_skel->bss->err, 0, "err");
-+	/* check that code paths completed */
-+	ASSERT_EQ(timer_skel->bss->ok, 1 | 2, "ok");
-+
-+	close(bpf_map__fd(timer_skel->maps.inner_htab));
-+	err = bpf_map_delete_elem(bpf_map__fd(timer_skel->maps.outer_arr), &key1);
-+	ASSERT_EQ(err, 0, "delete inner map");
-+
-+	/* check that timer_cb[12] are no longer running */
-+	cnt1 = READ_ONCE(timer_skel->bss->cnt);
-+	usleep(200);
-+	cnt2 = READ_ONCE(timer_skel->bss->cnt);
-+	ASSERT_EQ(cnt2, cnt1, "cnt");
-+
-+	return 0;
-+}
-+
-+void test_timer_mim(void)
-+{
-+	struct timer_mim_reject *timer_reject_skel = NULL;
-+	libbpf_print_fn_t old_print_fn = NULL;
-+	struct timer_mim *timer_skel = NULL;
-+	int err;
-+
-+	old_print_fn = libbpf_set_print(NULL);
-+	timer_reject_skel = timer_mim_reject__open_and_load();
-+	libbpf_set_print(old_print_fn);
-+	if (!ASSERT_ERR_PTR(timer_reject_skel, "timer_reject_skel_load"))
-+		goto cleanup;
-+
-+	timer_skel = timer_mim__open_and_load();
-+	if (!ASSERT_OK_PTR(timer_skel, "timer_skel_load"))
-+		goto cleanup;
-+
-+	err = timer_mim(timer_skel);
-+	ASSERT_OK(err, "timer_mim");
-+cleanup:
-+	timer_mim__destroy(timer_skel);
-+	timer_mim_reject__destroy(timer_reject_skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/timer_mim.c b/tools/testing/selftests/bpf/progs/timer_mim.c
-new file mode 100644
-index 000000000000..2fee7ab105ef
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/timer_mim.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include <linux/bpf.h>
-+#include <time.h>
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_tcp_helpers.h"
-+
-+char _license[] SEC("license") = "GPL";
-+struct hmap_elem {
-+	int pad; /* unused */
-+	struct bpf_timer timer;
-+};
-+
-+struct inner_map {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 1024);
-+	__type(key, int);
-+	__type(value, struct hmap_elem);
-+} inner_htab SEC(".maps");
-+
-+#define ARRAY_KEY 1
-+#define HASH_KEY 1234
-+
-+struct outer_arr {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, 2);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+	__array(values, struct inner_map);
-+} outer_arr SEC(".maps") = {
-+	.values = { [ARRAY_KEY] = &inner_htab },
-+};
-+
-+__u64 err;
-+__u64 ok;
-+__u64 cnt;
-+
-+static int timer_cb1(void *map, int *key, struct hmap_elem *val);
-+
-+static int timer_cb2(void *map, int *key, struct hmap_elem *val)
-+{
-+	cnt++;
-+	bpf_timer_set_callback(&val->timer, timer_cb1);
-+	if (bpf_timer_start(&val->timer, 1000, 0))
-+		err |= 1;
-+	ok |= 1;
-+	return 0;
-+}
-+
-+/* callback for inner hash map */
-+static int timer_cb1(void *map, int *key, struct hmap_elem *val)
-+{
-+	cnt++;
-+	bpf_timer_set_callback(&val->timer, timer_cb2);
-+	if (bpf_timer_start(&val->timer, 1000, 0))
-+		err |= 2;
-+	/* Do a lookup to make sure 'map' and 'key' pointers are correct */
-+	bpf_map_lookup_elem(map, key);
-+	ok |= 2;
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(test1, int a)
-+{
-+	struct hmap_elem init = {};
-+	struct bpf_map *inner_map;
-+	struct hmap_elem *val;
-+	int array_key = ARRAY_KEY;
-+	int hash_key = HASH_KEY;
-+
-+	inner_map = bpf_map_lookup_elem(&outer_arr, &array_key);
-+	if (!inner_map)
-+		return 0;
-+
-+	bpf_map_update_elem(inner_map, &hash_key, &init, 0);
-+	val = bpf_map_lookup_elem(inner_map, &hash_key);
-+	if (!val)
-+		return 0;
-+
-+	bpf_timer_init(&val->timer, inner_map, CLOCK_MONOTONIC);
-+	if (bpf_timer_set_callback(&val->timer, timer_cb1))
-+		err |= 4;
-+	if (bpf_timer_start(&val->timer, 0, 0))
-+		err |= 8;
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/timer_mim_reject.c b/tools/testing/selftests/bpf/progs/timer_mim_reject.c
-new file mode 100644
-index 000000000000..5d648e3d8a41
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/timer_mim_reject.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include <linux/bpf.h>
-+#include <time.h>
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_tcp_helpers.h"
-+
-+char _license[] SEC("license") = "GPL";
-+struct hmap_elem {
-+	int pad; /* unused */
-+	struct bpf_timer timer;
-+};
-+
-+struct inner_map {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 1024);
-+	__type(key, int);
-+	__type(value, struct hmap_elem);
-+} inner_htab SEC(".maps");
-+
-+#define ARRAY_KEY 1
-+#define ARRAY_KEY2 2
-+#define HASH_KEY 1234
-+
-+struct outer_arr {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, 2);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+	__array(values, struct inner_map);
-+} outer_arr SEC(".maps") = {
-+	.values = { [ARRAY_KEY] = &inner_htab },
-+};
-+
-+__u64 err;
-+__u64 ok;
-+__u64 cnt;
-+
-+/* callback for inner hash map */
-+static int timer_cb(void *map, int *key, struct hmap_elem *val)
-+{
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(test1, int a)
-+{
-+	struct hmap_elem init = {};
-+	struct bpf_map *inner_map, *inner_map2;
-+	struct hmap_elem *val;
-+	int array_key = ARRAY_KEY;
-+	int array_key2 = ARRAY_KEY2;
-+	int hash_key = HASH_KEY;
-+
-+	inner_map = bpf_map_lookup_elem(&outer_arr, &array_key);
-+	if (!inner_map)
-+		return 0;
-+
-+	inner_map2 = bpf_map_lookup_elem(&outer_arr, &array_key2);
-+	if (!inner_map2)
-+		return 0;
-+	bpf_map_update_elem(inner_map, &hash_key, &init, 0);
-+	val = bpf_map_lookup_elem(inner_map, &hash_key);
-+	if (!val)
-+		return 0;
-+
-+	bpf_timer_init(&val->timer, inner_map2, CLOCK_MONOTONIC);
-+	if (bpf_timer_set_callback(&val->timer, timer_cb))
-+		err |= 4;
-+	if (bpf_timer_start(&val->timer, 0, 0))
-+		err |= 8;
-+	return 0;
-+}
--- 
-2.30.2
-
+may be add a WARN in here that it should never be executed ?
+Or may be add an actual implementation:
+ return ((u64 *)ctx)[-1];
+and check that it works without inlining by the verifier?
