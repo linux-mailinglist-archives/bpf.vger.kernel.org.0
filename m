@@ -2,55 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002333BF6CD
-	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 10:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7341C3BF863
+	for <lists+bpf@lfdr.de>; Thu,  8 Jul 2021 12:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbhGHITO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 04:19:14 -0400
-Received: from mga09.intel.com ([134.134.136.24]:46664 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230414AbhGHITO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Jul 2021 04:19:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10038"; a="209427698"
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="209427698"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 01:16:32 -0700
-X-IronPort-AV: E=Sophos;i="5.84,222,1620716400"; 
-   d="scan'208";a="487463340"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.111]) ([10.239.13.111])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 01:16:27 -0700
-Subject: Re: [PATCH v2 1/6] x86/tdx: Add TDREPORT TDX Module call support
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
+        id S231460AbhGHK3q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 06:29:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21593 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231332AbhGHK3q (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 8 Jul 2021 06:29:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625740024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7b+gK1u8OddsQzlfM4KOfl+yHtsKYVBG7gIrhWLwCzw=;
+        b=QJHekYATgg2BRfI90l+gxedky3tRQ5DSdFd0ZzPcgxBVeYHA4hHZ0oi0lIV9OYEsZmuDUD
+        N/e6EtWOM89PedNtPVlHXIPMsYEpk/rv4vpGFHWPFA8o8dCfynli16hxgdNQ+0EDBH0PYB
+        sapp2F7RfgxWoQcKy7r9NXbGzejDAZU=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-MymG-zM1MQa4CMoAyCBIvQ-1; Thu, 08 Jul 2021 06:27:03 -0400
+X-MC-Unique: MymG-zM1MQa4CMoAyCBIvQ-1
+Received: by mail-ej1-f71.google.com with SMTP id rl7-20020a1709072167b02904f7606bd58fso1187982ejb.11
+        for <bpf@vger.kernel.org>; Thu, 08 Jul 2021 03:27:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7b+gK1u8OddsQzlfM4KOfl+yHtsKYVBG7gIrhWLwCzw=;
+        b=OabKUhTp3kqS0bTyvTrLqjFsOB/AQLh0zTwRxuVl/goR8wnB8Yg9JiIwoSOX2vlDje
+         APBZfvaMNYDrcVrfCLWrp2SbxD0QuwBZAIhhPkTaLD66iXNLH4vkoQKfTq/7xRUW7QO2
+         PF5XPIq+ZYxqjmrC7eSwIqp911GPZNLqAfuf6H055LJoyVQ5fANBg+ImA8Q8ksPtWhti
+         929UI56PnjfSav6WGc71RTvCDft+i+DwSSK2ocYIqGbQJVEOWuYq7EzVjbS0vPtWnjdQ
+         iDtsDSSQwlu+jjnGwVkZayKJ/kjgPm49a5I1oucSRBLQ5HoAeN9/AV9dIYfv8rEIeJ+F
+         3TRA==
+X-Gm-Message-State: AOAM533vv3Yx+lZISHWWxl6RJZWybbbAhajXGSrm4Qof1O5J5gm+GtSU
+        8ECk/vHt7QCpVsODuvv51XQWY/Nt3pP0Dlqkq9BRH9A/ezZ4vJcp/+bhPYIPve+GfE+5mTQtGSj
+        /n5T95FV74mNg
+X-Received: by 2002:a05:6402:2044:: with SMTP id bc4mr8615877edb.307.1625740021145;
+        Thu, 08 Jul 2021 03:27:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRiACTdB39EMuyE4YQ39O4HkA5JS4syjBD27Gq8yV6rFYvY3wch0cui/0tyPYI96H9MDU5gA==
+X-Received: by 2002:a05:6402:2044:: with SMTP id bc4mr8615849edb.307.1625740020951;
+        Thu, 08 Jul 2021 03:27:00 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id a25sm40186edr.21.2021.07.08.03.26.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jul 2021 03:27:00 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210707204249.3046665-2-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <d9aac97c-aa08-de9f-fa44-91b7dde61ce3@intel.com>
-Date:   Thu, 8 Jul 2021 16:16:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        David Ahern <dsahern@kernel.org>
+Subject: Re: [PATCH bpf] bpf: fix for BUG: kernel NULL pointer dereference,
+ address: 0000000000000000
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, bpf@vger.kernel.org
+References: <20210708080409.73525-1-xuanzhuo@linux.alibaba.com>
+Message-ID: <c314bdcc-06fc-c869-5ad8-a74173a1e6f1@redhat.com>
+Date:   Thu, 8 Jul 2021 12:26:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210707204249.3046665-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20210708080409.73525-1-xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -58,109 +83,108 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/8/2021 4:42 AM, Kuppuswamy Sathyanarayanan wrote:
-> The TDX Guest-Host Communication Interface (GHCI) includes a module
-> call (TDREPORT TDCALL) that a guest can make to acquire a copy of the
-> attestation data that it needs to verify its trustworthiness.
+
+Thanks for catching this.
+
+Cc: Ahern, are you okay with disabling this for the 
+bpf_prog_test_run_xdp() infra?
+
+I don't think the selftests/bpf (e.g. prog_tests/xdp_devmap_attach.c) 
+use the bpf_prog_test_run, right?
+
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+On 08/07/2021 10.04, Xuan Zhuo wrote:
+> These two types of xdp prog(BPF_XDP_DEVMAP, BPF_XDP_CPUMAP) will not be
+> executed directly in the driver, we should not directly run these two
+> XDP progs here. To run these two situations, there must be some special
+> preparations, otherwise it may cause kernel exceptions.
 > 
-> Add a wrapper function tdx_mcall_tdreport() that makes the module
-> call to get this data.
+> For more reference dev_xdp_attach().
 > 
-> See GHCI section 2.4.5 "TDCALL [TDG.MR.REPORT] leaf" for additional
-> details.
+> [   46.982479] BUG: kernel NULL pointer dereference, address: 0000000000000000
+> [   46.984295] #PF: supervisor read access in kernel mode
+> [   46.985777] #PF: error_code(0x0000) - not-present page
+> [   46.987227] PGD 800000010dca4067 P4D 800000010dca4067 PUD 10dca6067 PMD 0
+> [   46.989201] Oops: 0000 [#1] SMP PTI
+> [   46.990304] CPU: 7 PID: 562 Comm: a.out Not tainted 5.13.0+ #44
+> [   46.992001] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/24
+> [   46.995113] RIP: 0010:___bpf_prog_run+0x17b/0x1710
+> [   46.996586] Code: 49 03 14 cc e8 76 f6 fe ff e9 ad fe ff ff 0f b6 43 01 48 0f bf 4b 02 48 83 c3 08 89 c2 83 e0 0f c0 ea 04 02
+> [   47.001562] RSP: 0018:ffffc900005afc58 EFLAGS: 00010246
+> [   47.003115] RAX: 0000000000000000 RBX: ffffc9000023f068 RCX: 0000000000000000
+> [   47.005163] RDX: 0000000000000000 RSI: 0000000000000079 RDI: ffffc900005afc98
+> [   47.007135] RBP: 0000000000000000 R08: ffffc9000023f048 R09: c0000000ffffdfff
+> [   47.009171] R10: 0000000000000001 R11: ffffc900005afb40 R12: ffffc900005afc98
+> [   47.011172] R13: 0000000000000001 R14: 0000000000000001 R15: ffffffff825258a8
+> [   47.013244] FS:  00007f04a5207580(0000) GS:ffff88842fdc0000(0000) knlGS:0000000000000000
+> [   47.015705] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   47.017475] CR2: 0000000000000000 CR3: 0000000100182005 CR4: 0000000000770ee0
+> [   47.019558] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   47.021595] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   47.023574] PKRU: 55555554
+> [   47.024571] Call Trace:
+> [   47.025424]  __bpf_prog_run32+0x32/0x50
+> [   47.026296]  ? printk+0x53/0x6a
+> [   47.027066]  ? ktime_get+0x39/0x90
+> [   47.027895]  bpf_test_run.cold.28+0x23/0x123
+> [   47.028866]  ? printk+0x53/0x6a
+> [   47.029630]  bpf_prog_test_run_xdp+0x149/0x1d0
+> [   47.030649]  __sys_bpf+0x1305/0x23d0
+> [   47.031482]  __x64_sys_bpf+0x17/0x20
+> [   47.032316]  do_syscall_64+0x3a/0x80
+> [   47.033165]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   47.034254] RIP: 0033:0x7f04a51364dd
+> [   47.035133] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 48
+> [   47.038768] RSP: 002b:00007fff8f9fc518 EFLAGS: 00000213 ORIG_RAX: 0000000000000141
+> [   47.040344] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f04a51364dd
+> [   47.041749] RDX: 0000000000000048 RSI: 0000000020002a80 RDI: 000000000000000a
+> [   47.043171] RBP: 00007fff8f9fc530 R08: 0000000002049300 R09: 0000000020000100
+> [   47.044626] R10: 0000000000000004 R11: 0000000000000213 R12: 0000000000401070
+> [   47.046088] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> [   47.047579] Modules linked in:
+> [   47.048318] CR2: 0000000000000000
+> [   47.049120] ---[ end trace 7ad34443d5be719a ]---
+> [   47.050273] RIP: 0010:___bpf_prog_run+0x17b/0x1710
+> [   47.051343] Code: 49 03 14 cc e8 76 f6 fe ff e9 ad fe ff ff 0f b6 43 01 48 0f bf 4b 02 48 83 c3 08 89 c2 83 e0 0f c0 ea 04 02
+> [   47.054943] RSP: 0018:ffffc900005afc58 EFLAGS: 00010246
+> [   47.056068] RAX: 0000000000000000 RBX: ffffc9000023f068 RCX: 0000000000000000
+> [   47.057522] RDX: 0000000000000000 RSI: 0000000000000079 RDI: ffffc900005afc98
+> [   47.058961] RBP: 0000000000000000 R08: ffffc9000023f048 R09: c0000000ffffdfff
+> [   47.060390] R10: 0000000000000001 R11: ffffc900005afb40 R12: ffffc900005afc98
+> [   47.061803] R13: 0000000000000001 R14: 0000000000000001 R15: ffffffff825258a8
+> [   47.063249] FS:  00007f04a5207580(0000) GS:ffff88842fdc0000(0000) knlGS:0000000000000000
+> [   47.065070] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   47.066307] CR2: 0000000000000000 CR3: 0000000100182005 CR4: 0000000000770ee0
+> [   47.067747] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   47.069217] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   47.070652] PKRU: 55555554
+> [   47.071318] Kernel panic - not syncing: Fatal exception
+> [   47.072854] Kernel Offset: disabled
+> [   47.073683] ---[ end Kernel panic - not syncing: Fatal exception ]---
 > 
-> [Xiaoyao: Proposed error code fix]
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Reported-by: Abaci <abaci@linux.alibaba.com>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 > ---
->   arch/x86/include/asm/tdx.h |  2 ++
->   arch/x86/kernel/tdx.c      | 33 +++++++++++++++++++++++++++++++++
->   2 files changed, 35 insertions(+)
+>   net/bpf/test_run.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
 > 
-> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> index 48927fac9e12..4f1b5c14a09b 100644
-> --- a/arch/x86/include/asm/tdx.h
-> +++ b/arch/x86/include/asm/tdx.h
-> @@ -96,6 +96,8 @@ extern int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index aa47af349ba8..17227e0b277b 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -701,6 +701,12 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+>   	void *data;
+>   	int ret;
 >   
->   bool tdg_filter_enabled(void);
->   
-> +int tdx_mcall_tdreport(u64 data, u64 reportdata);
-> +
->   /*
->    * To support I/O port access in decompressor or early kernel init
->    * code, since #VE exception handler cannot be used, use paravirt
-> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-> index f76af7661046..0f797803f4c8 100644
-> --- a/arch/x86/kernel/tdx.c
-> +++ b/arch/x86/kernel/tdx.c
-> @@ -23,6 +23,7 @@
->   /* TDX Module call Leaf IDs */
->   #define TDINFO				1
->   #define TDGETVEINFO			3
-> +#define TDREPORT			4
->   #define TDACCEPTPAGE			6
->   
->   /* TDX hypercall Leaf IDs */
-> @@ -30,6 +31,11 @@
->   
->   /* TDX Module call error codes */
->   #define TDX_PAGE_ALREADY_ACCEPTED       0x8000000000000001
-> +#define TDCALL_RETURN_CODE_MASK		0xFFFFFFFF00000000
-> +#define TDCALL_OPERAND_BUSY		0x8000020000000000
-> +#define TDCALL_INVALID_OPERAND		0x8000000000000000
-> +#define TDCALL_RETURN_CODE(a)		((a) & TDCALL_RETURN_CODE_MASK)
-> +
->   
->   #define VE_IS_IO_OUT(exit_qual)		(((exit_qual) & 8) ? 0 : 1)
->   #define VE_GET_IO_SIZE(exit_qual)	(((exit_qual) & 7) + 1)
-> @@ -139,6 +145,33 @@ static bool tdg_perfmon_enabled(void)
->   	return td_info.attributes & BIT(63);
->   }
->   
-> +/*
-> + * tdx_mcall_tdreport() - Generate TDREPORT_STRUCT using TDCALL.
-> + *
-> + * @data        : Physical address of 1024B aligned data to store
-> + *                TDREPORT_STRUCT.
-> + * @reportdata  : Physical address of 64B aligned report data
-> + *
-> + * return 0 on success or failure error number.
-> + */
-> +int tdx_mcall_tdreport(u64 data, u64 reportdata)
-> +{
-> +	u64 ret;
-> +
-> +	if (!data || !reportdata || !prot_guest_has(PR_GUEST_TDX))
+> +	if (prog->expected_attach_type == BPF_XDP_DEVMAP)
 > +		return -EINVAL;
 > +
-> +	ret = __trace_tdx_module_call(TDREPORT, data, reportdata, 0, 0, NULL);
-> +
-> +	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
+> +	if (prog->expected_attach_type == BPF_XDP_CPUMAP)
 > +		return -EINVAL;
-> +	else if (TDCALL_RETURN_CODE(ret) == TDCALL_OPERAND_BUSY)
-> +		return -EBUSY;
-
-Sorry I guess I didn't state it clearly during internal review.
-
-I suggest something like this
-
-if (ret != TDCALL_SUCCESS) {
-	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
-		return -EINVAL;
-	else if (TDCALL_RETURN_CODE(ret) == TDCALL_OPERAND_BUSY)
-		return -EBUSY;
-	else
-		return -EFAULT; //I'm not sure if -EFAULT is proper.
-}
-
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(tdx_mcall_tdreport);
 > +
->   static void tdg_get_info(void)
->   {
->   	u64 ret;
-> 
+>   	if (kattr->test.ctx_in || kattr->test.ctx_out)
+>   		return -EINVAL;
+>   
 
