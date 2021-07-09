@@ -2,128 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C3E3C28C2
-	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 19:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 331773C29C8
+	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 21:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhGIR4g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Jul 2021 13:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbhGIR4g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Jul 2021 13:56:36 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3472C0613E5
-        for <bpf@vger.kernel.org>; Fri,  9 Jul 2021 10:53:51 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id x70so2353407oif.11
-        for <bpf@vger.kernel.org>; Fri, 09 Jul 2021 10:53:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zLxkdjtVusv/ZmQVZ4iCLZGlL3DhiDtN/24rpl5e9Po=;
-        b=Jmk1KrT22esMTDMff/q6gPRxlNbpUbpgVRB1K+3sDxuP5iODhBehyJkqZZwUlJQbuQ
-         S+nGj3hq5eHLabJQYXTtK+bN8/jbECHYh11ecNkNW0egWIjwHBm6z0e7zfRUwyscl9Aq
-         uc677BDPkScv188hYaXwCJ+GYspslGu2LTAJ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zLxkdjtVusv/ZmQVZ4iCLZGlL3DhiDtN/24rpl5e9Po=;
-        b=i35CTMyQbIRLDfWU30c7/sZnPmAnl7gP9nXiqLfZr8t+4Hu0JlPINHbK01XhiErlbf
-         MuQhbsomYPCb9NtNy5zW5FgaXah8bKgzvodaFvs+gvoKP6imAh6gjaAjQooWyuHCeLhh
-         0BmqN9gQsIW9A3Omx4bqANxzeQfBlN51AWfgRSYwUhihqXCkzNnZnY1WSN3KuXNrQSog
-         5WX0Mqh+YUMWI1LWDnEeYqkOgOjZCd622uRHEI37Qa8sdstP577OeYbIyIQtP8lPwkhb
-         8uihX2GCsw1B4orveTD59nJta9OcF/yUeRZxfQkNIBMg70potjCnIPPMNIVqbHy/86OA
-         /Arg==
-X-Gm-Message-State: AOAM532KlT38fcmr1YrUzfnADwmK0qLllaRWqzNolIpPownMK3w8K64U
-        gKIZhi1T+BJjrWc+R+EiJ/wdRA==
-X-Google-Smtp-Source: ABdhPJz/je1iuU/YrUgYW4DcEYCmE1xjTe7nIC9RIVYpmmX/Hp+ZLbdYnL+b9U8qP5uenBT9NmMUtg==
-X-Received: by 2002:aca:5714:: with SMTP id l20mr134179oib.74.1625853231331;
-        Fri, 09 Jul 2021 10:53:51 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id q13sm1133896oov.6.2021.07.09.10.53.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jul 2021 10:53:50 -0700 (PDT)
-Subject: Re: [PATCHv2] selftests: Use kselftest skip code for skipped tests
-To:     Po-Hsu Lin <po-hsu.lin@canonical.com>,
-        linux-kselftest@vger.kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        shuah <shuah@kernel.org>, ast@kernel.org,
-        Petr Machata <petrm@nvidia.com>, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
-        nikolay@nvidia.com, gnault@redhat.com, vladimir.oltean@nxp.com,
-        idosch@nvidia.com, baowen.zheng@corigine.com, danieller@nvidia.com,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210525113316.25416-1-po-hsu.lin@canonical.com>
- <87y2c1swnz.fsf@nvidia.com>
- <CAMy_GT_4dqEuSfUGND9GTBxGORcwf480-a46Z=J736YHo2RkDA@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <1f4e4c5a-9544-3339-0aef-1f0889e4a422@linuxfoundation.org>
-Date:   Fri, 9 Jul 2021 11:53:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229503AbhGITq0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Jul 2021 15:46:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhGITq0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Jul 2021 15:46:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 779BE613C5;
+        Fri,  9 Jul 2021 19:43:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625859822;
+        bh=ew3oJpBlC50NwRBuQF1i5T45r/21kLCR/MatGmU8eyI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XPrZRmzJoyOUJw1vcICLqTEk9iZKZgwK5AWknpP7ZKlAcv0AFeAYMT6uSypKVvOym
+         C7cOA9LEFdZ5IMrmZ41K6j1rTqOS1chJjIiDNZOrjpS4HH5TOcDkzfEsbIdB33OX0j
+         uukuHQ8CbP4ZCzRD7nHOG1nR8UgrAui0tsqs4GnDbX+34AKsgzNYcd1Iik49+cpSFe
+         oL1olqtMEILB4o8OzVyv0iHkHjYnjf27GMhboHW/TO+WaZRvBkGeJr4SqSBlSwe+oA
+         4G8r2anjfbSGEydcuoq11MzLUccCViMxqgXISiXoYEfu9J38+SNBk0haqeXIYThnOi
+         8XrBJGL4p+nEg==
+Date:   Fri, 9 Jul 2021 12:43:40 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
+        bpf@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>
+Subject: Re: [PATCH net v2] xdp, net: fix use-after-free in
+ bpf_xdp_link_release
+Message-ID: <20210709124340.44bafef1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210709025525.107314-1-xuanzhuo@linux.alibaba.com>
+References: <20210709025525.107314-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMy_GT_4dqEuSfUGND9GTBxGORcwf480-a46Z=J736YHo2RkDA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/7/21 10:18 PM, Po-Hsu Lin wrote:
-> On Wed, May 26, 2021 at 4:54 PM Petr Machata <petrm@nvidia.com> wrote:
->>
->>
->> Po-Hsu Lin <po-hsu.lin@canonical.com> writes:
->>
->>> There are several test cases still using exit 0 when they need to be
->>> skipped. Use kselftest framework skip code instead so it can help us
->>> to distinguish the proper return status.
->>>
->>> Criterion to filter out what should be fixed in selftests directory:
->>>    grep -r "exit 0" -B1 | grep -i skip
->>>
->>> This change might cause some false-positives if people are running
->>> these test scripts directly and only checking their return codes,
->>> which will change from 0 to 4. However I think the impact should be
->>> small as most of our scripts here are already using this skip code.
->>> And there will be no such issue if running them with the kselftest
->>> framework.
->>>
->>> V2: router_mpath_nh.sh and outer_mpath_nh_res.sh sources lib.sh,
->>> there is no need to assign ksft_skip value in these two.
->>>
->>> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
->>
->> I want to note that defining ksft_skip=4 in every test separately is the
->> current practice. I agree with Willem (in a parallel thread) that this
->> stuff should live in a library of its own, but there is none currently.
->> When there is, it looks like the conversion would be mechanical.
->>
->> Which is to say, IMHO this patch makes sense on its own as an
->> incremental improvement.
->>
->> Reviewed-by: Petr Machata <petrm@nvidia.com>
+On Fri,  9 Jul 2021 10:55:25 +0800 Xuan Zhuo wrote:
+> The problem occurs between dev_get_by_index() and dev_xdp_attach_link().
+> At this point, dev_xdp_uninstall() is called. Then xdp link will not be
+> detached automatically when dev is released. But link->dev already
+> points to dev, when xdp link is released, dev will still be accessed,
+> but dev has been released.
 > 
-> Hello folks,
-> any other comment on this patch? Or if I should break this down to
-> smaller patches for different suites in kselftests?
-> Thanks!
-> PHLin
+> dev_get_by_index()        |
+> link->dev = dev           |
+>                           |      rtnl_lock()
+>                           |      unregister_netdevice_many()
+>                           |          dev_xdp_uninstall()
+>                           |      rtnl_unlock()
+> rtnl_lock();              |
+> dev_xdp_attach_link()     |
+> rtnl_unlock();            |
+>                           |      netdev_run_todo() // dev released
+> bpf_xdp_link_release()    |
+>     /* access dev.        |
+>        use-after-free */  |
 > 
+> This patch adds a check of dev->reg_state in dev_xdp_attach_link(). If
+> dev has been called release, it will return -EINVAL.
 
-Yes plase, break them into individual patches.
+Please make sure to include a Fixes tag.
 
-Breaking this into individual patches makes it easier to pull them
-in and allows us handle dependencies better.
+I must say I prefer something closet to v1. Maybe put the if
+in the callee? Making ndo calls to unregistered netdevs is 
+not legit, it will be confusing for a person reading this 
+code to have to search callees to find where unregistered 
+netdevs are rejected.
 
-thanks,
--- Shuah
+> Reported-by: Abaci <abaci@linux.alibaba.com>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index c253c2aafe97..63c9a46ca853 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -9544,6 +9544,10 @@ static int dev_xdp_attach_link(struct net_device *dev,
+>  			       struct netlink_ext_ack *extack,
+>  			       struct bpf_xdp_link *link)
+>  {
+> +	/* ensure the dev state is ok */
+> +	if (dev->reg_state != NETREG_REGISTERED)
+> +		return -EINVAL;
+> +
+>  	return dev_xdp_attach(dev, extack, link, NULL, NULL, link->flags);
+>  }
