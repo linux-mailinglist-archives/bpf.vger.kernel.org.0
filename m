@@ -2,193 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C7C3C1F78
-	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 08:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEC23C1FCB
+	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 09:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhGIGpT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Jul 2021 02:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
+        id S230324AbhGIHDN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Jul 2021 03:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhGIGpT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Jul 2021 02:45:19 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFCEC0613E5
-        for <bpf@vger.kernel.org>; Thu,  8 Jul 2021 23:42:36 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id f17so10635313wrt.6
-        for <bpf@vger.kernel.org>; Thu, 08 Jul 2021 23:42:36 -0700 (PDT)
+        with ESMTP id S229954AbhGIHDN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Jul 2021 03:03:13 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA1CC0613DD;
+        Fri,  9 Jul 2021 00:00:30 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id c28so20781159lfp.11;
+        Fri, 09 Jul 2021 00:00:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qHTJW5H6d8k1HLBDdIQvlDQXDDtk1CFz9cW6t5rpE/8=;
-        b=IK9aCN5uHz9KtOTLg7kb2t0QBUHcIAFh8YomVEodFtnIIwpUnREF3l0BptA3PHC3oL
-         TObNSVCoFPH3aAU/H7OZu0tffSMn7GsoxLpvXfeHX4jomEibMItEHuOyU0vYRRIRnXCl
-         nSusf0VqBDq5QeA7RPwIDLiwqLmtbCddCvcy1ID/hdUW6hF3Kq1ccgNXTP35IoVzkKc8
-         YLSdDgwYW/+EwWILNtKFzGQZ0yOjsBrR1f6hmQxU+T+0+E8nDwCN2WBOuoX1ZTUOc0CD
-         m9KdD8A4KcRLX/IFqm9rtg+fziNjoLVeOo4j2YL49RBQprUhMMRjQ6iMRm0H5FX77dHi
-         M+Ag==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UMuCvwIEyC2/SQfkOhMDs6Rgn07ioKFQMFhgb6LDuUk=;
+        b=bfYFMG6telRFvQWphNcx50h6aUNzvO7reACm8NSchtbMdoSp749e4XXqg4tpzflU6O
+         +oUomqRSz81MYkbhPraMPLo8RwIa20XZdJUa13+d0SHCVPiXpjqhrW/fu7cc72dRZ20x
+         bU6yBj0e1gJvs9vc874M3FV28rUWyzh/ANXfaNNS6CTr9KsQnGZnfDxwmDKz9VAx+279
+         cupj7pO8fRjCHnwywElMRkXuVLGmw4+UYvpwjYSEf7rPowbkjxyLGAoobpMbWs4AA+S2
+         DFebUY1j4YmPTJC55JlFoKGOs549ZhqexaByB+YBuTfOTqt0HuT1b+vt06ty0kpqZjFj
+         UEzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qHTJW5H6d8k1HLBDdIQvlDQXDDtk1CFz9cW6t5rpE/8=;
-        b=o7RMuK114ey62/s6DIGMgMaxZPvSiGynwYvb6wNhyrxS/ALX+Jiga9VE6rC+r8AuFY
-         N91wuQL0YCoZD6OOSxiRLMq1+yKwVylI3Q9aH11ae2nv7pcTXHlY+33u1Phrs2butSEB
-         z35eJhWKB7YdMjzkYJxR93JAFVWBqclygJ3GxDK+fyTLe2ztKnilize6bXcb7HAcnYvJ
-         M+cys3bd/O6DYsSVwZAU7uClF7A74e07i+JzHOfj8AY35wGWTDnXN0YOUU7cVTfepOvQ
-         yQ0x1EAY0gi/epF1YUO1KdL1WDNZIwMOquH+k+PRYMHvDDqPvAjeJZsPX7oDxi0pm7Mx
-         lE6w==
-X-Gm-Message-State: AOAM533/CmxyActu5yz4Ri1qIfEaciNvCSkO0Gn6qDAkoZGtYWolPDmw
-        YZt3LVZPvHAuYFWkri9OTrqwYg==
-X-Google-Smtp-Source: ABdhPJyKEIo3G0BYLSLpp46ldKF1ju300cAigaG5ONCI4bb6N2wbBQHOaZMHiAtN1lc5eYDd1qsW3w==
-X-Received: by 2002:a05:6000:1104:: with SMTP id z4mr40349565wrw.164.1625812954610;
-        Thu, 08 Jul 2021 23:42:34 -0700 (PDT)
-Received: from enceladus (ppp-94-66-242-227.home.otenet.gr. [94.66.242.227])
-        by smtp.gmail.com with ESMTPSA id p5sm4458335wrd.25.2021.07.08.23.42.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jul 2021 23:42:34 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 09:42:30 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Sven Auhagen <sven.auhagen@voleatech.de>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        feng.tang@intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH net-next RFC 0/2] add elevated refcnt support for page
- pool
-Message-ID: <YOfv1vHcZPBvyfaN@enceladus>
-References: <1625044676-12441-1-git-send-email-linyunsheng@huawei.com>
- <20210702153947.7b44acdf@linux.microsoft.com>
- <20210706155131.GS22278@shell.armlinux.org.uk>
- <CAFnufp1hM6WRDigAsSfM94yneRhkmxBoGG7NxRUkbfTR2WQvyA@mail.gmail.com>
- <CAPv3WKdQ5jYtMyZuiKshXhLjcf9b+7Dm2Lt2cjE=ATDe+n9A5g@mail.gmail.com>
- <CAFnufp0NaPSkMQC-3ne49FL3Ak+UV0a7QoXELvVuMzBR4+GZ_g@mail.gmail.com>
- <14a92860-67cc-b2ac-efba-dd482f03204b@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UMuCvwIEyC2/SQfkOhMDs6Rgn07ioKFQMFhgb6LDuUk=;
+        b=dpJEkXo23Zp843VlVMlgqMP4U3n9fk0JczpLRCgP3tMYQacJmYYHxpxrka74yUAFAv
+         y1Xdi1NpuBpaW0CBpxTagEeplugQFJk1yG4Qs3XnrHAPpEJvcnwW+vtSR5AethXckiD1
+         cDJypd0eVPV875rSeu8gMTYlNn0vajq9a37ZAhCOVf8O2FeZYpNIYwo1g8yC5e587hnl
+         mWLqfSLfMP3d9byPkeIft16Gqa5NfGDE28TmvTHT7I4TU/xypbiLl2V8c+BcE/GA6kKU
+         1iBR4wb/4osXcHiZ0cD45UTsnCdeC7bW19HsLhR4J8SgrnaLzwKZLVdIpayGQEENuq8n
+         9fOw==
+X-Gm-Message-State: AOAM533CHr5nKJDb/66aO/I9mAmDqhy4D+UQp8U00UKi7Bm00htq5bkH
+        FB5V4fhFlEmzQSd2i1OnuvG1Cxf72ouvLtvXZXw=
+X-Google-Smtp-Source: ABdhPJwxdWDFz/OQSnLV0gQ9tFMg7AvoBCqz6X4xk2DtvOu3ofKDTSgSijrutwMyOWzMq6Y5hdzrzEvvyzrNMUXrOfA=
+X-Received: by 2002:a19:5016:: with SMTP id e22mr24852606lfb.539.1625814027686;
+ Fri, 09 Jul 2021 00:00:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14a92860-67cc-b2ac-efba-dd482f03204b@huawei.com>
+References: <20210708011833.67028-1-alexei.starovoitov@gmail.com>
+ <20210708011833.67028-5-alexei.starovoitov@gmail.com> <20210709015119.l5kxp5kao24bjft7@kafai-mbp.dhcp.thefacebook.com>
+ <20210709035223.s2ni6phkdajhdg2i@ast-mbp.dhcp.thefacebook.com> <20210709060442.55py42lmbwfzd4zx@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210709060442.55py42lmbwfzd4zx@kafai-mbp.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 9 Jul 2021 00:00:16 -0700
+Message-ID: <CAADnVQKUEsW8kF4iJP_RF07wX2z06wz9yJ1h-CY9si70XzhsDA@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 04/11] bpf: Add map side support for bpf timers.
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 02:40:02PM +0800, Yunsheng Lin wrote:
-> On 2021/7/9 12:15, Matteo Croce wrote:
-> > On Wed, Jul 7, 2021 at 6:50 PM Marcin Wojtas <mw@semihalf.com> wrote:
-> >>
-> >> Hi,
-> >>
-> >>
-> >> ??r., 7 lip 2021 o 01:20 Matteo Croce <mcroce@linux.microsoft.com> napisa??(a):
-> >>>
-> >>> On Tue, Jul 6, 2021 at 5:51 PM Russell King (Oracle)
-> >>> <linux@armlinux.org.uk> wrote:
-> >>>>
-> >>>> On Fri, Jul 02, 2021 at 03:39:47PM +0200, Matteo Croce wrote:
-> >>>>> On Wed, 30 Jun 2021 17:17:54 +0800
-> >>>>> Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> >>>>>
-> >>>>>> This patchset adds elevated refcnt support for page pool
-> >>>>>> and enable skb's page frag recycling based on page pool
-> >>>>>> in hns3 drvier.
-> >>>>>>
-> >>>>>> Yunsheng Lin (2):
-> >>>>>>   page_pool: add page recycling support based on elevated refcnt
-> >>>>>>   net: hns3: support skb's frag page recycling based on page pool
-> >>>>>>
-> >>>>>>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    |  79 +++++++-
-> >>>>>>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |   3 +
-> >>>>>>  drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   1 +
-> >>>>>>  drivers/net/ethernet/marvell/mvneta.c              |   6 +-
-> >>>>>>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   2 +-
-> >>>>>>  include/linux/mm_types.h                           |   2 +-
-> >>>>>>  include/linux/skbuff.h                             |   4 +-
-> >>>>>>  include/net/page_pool.h                            |  30 ++-
-> >>>>>>  net/core/page_pool.c                               | 215
-> >>>>>> +++++++++++++++++---- 9 files changed, 285 insertions(+), 57
-> >>>>>> deletions(-)
-> >>>>>>
-> >>>>>
-> >>>>> Interesting!
-> >>>>> Unfortunately I'll not have access to my macchiatobin anytime soon, can
-> >>>>> someone test the impact, if any, on mvpp2?
-> >>>>
-> >>>> I'll try to test. Please let me know what kind of testing you're
-> >>>> looking for (I haven't been following these patches, sorry.)
-> >>>>
-> >>>
-> >>> A drop test or L2 routing will be enough.
-> >>> BTW I should have the macchiatobin back on friday.
-> >>
-> >> I have a 10G packet generator connected to 10G ports of CN913x-DB - I
-> >> will stress mvpp2 in l2 forwarding early next week (I'm mostly AFK
-> >> this until Monday).
-> >>
-> > 
-> > I managed to to a drop test on mvpp2. Maybe there is a slowdown but
-> > it's below the measurement uncertainty.
-> > 
-> > Perf top before:
-> > 
-> > Overhead  Shared O  Symbol
-> >    8.48%  [kernel]  [k] page_pool_put_page
-> >    2.57%  [kernel]  [k] page_pool_refill_alloc_cache
-> >    1.58%  [kernel]  [k] page_pool_alloc_pages
-> >    0.75%  [kernel]  [k] page_pool_return_skb_page
-> > 
-> > after:
-> > 
-> > Overhead  Shared O  Symbol
-> >    8.34%  [kernel]  [k] page_pool_put_page
-> >    4.52%  [kernel]  [k] page_pool_return_skb_page
-> >    4.42%  [kernel]  [k] page_pool_sub_bias
-> >    3.16%  [kernel]  [k] page_pool_alloc_pages
-> >    2.43%  [kernel]  [k] page_pool_refill_alloc_cache
-> 
-> Hi, Matteo
-> Thanks for the testing.
-> it seems you have adapted the mvpp2 driver to use the new frag
-> API for page pool, There is one missing optimization for XDP case,
-> the page is always returned to the pool->ring regardless of the
-> context of page_pool_put_page() for elevated refcnt case.
-> 
-> Maybe adding back that optimization will close some gap of the above
-> performance difference if the drop is happening in softirq context.
-> 
+On Thu, Jul 8, 2021 at 11:04 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Thu, Jul 08, 2021 at 08:52:23PM -0700, Alexei Starovoitov wrote:
+> > On Thu, Jul 08, 2021 at 06:51:19PM -0700, Martin KaFai Lau wrote:
+> > > > +
+> > > >  /* Called when map->refcnt goes to zero, either from workqueue or from syscall */
+> > > >  static void array_map_free(struct bpf_map *map)
+> > > >  {
+> > > > @@ -382,6 +402,7 @@ static void array_map_free(struct bpf_map *map)
+> > > >   if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY)
+> > > >           bpf_array_free_percpu(array);
+> > > >
+> > > > + array_map_free_timers(map);
+> > > array_map_free() is called when map->refcnt reached 0.
+> > > By then, map->usercnt should have reached 0 before
+> > > and array_map_free_timers() should have already been called,
+> > > so no need to call it here again?  The same goes for hashtab.
+> >
+> > Not sure it's that simple.
+> > Currently map->usercnt > 0 check is done for bpf_timer_set_callback only,
+> > because prog refcnting is what matters to usercnt and map_release_uref scheme.
+> > bpf_map_init doesn't have this check because there is no circular dependency
+> > prog->map->timer->prog to worry about.
+> > So after usercnt reached zero the prog can still do bpf_timer_init.
+> Ah. right. missed the bpf_timer_init().
+>
+> > I guess we can add usercnt > 0 to bpf_timer_init as well.
+> > Need to think whether it's enough and the race between atomic64_read(usercnt)
+> > and atomic64_dec_and_test(usercnt) is addressed the same way as the race
+> > in set_callback and cancel_and_free. So far looks like it. Hmm.
+> hmm... right, checking usercnt > 0 seems ok.
+> When usercnt is 0, it may be better to also error out instead of allocating
+> a timer that cannot be used.
+>
+> I was mostly thinking avoiding changes in map_free could make future map
+> support a little easier.
 
-I think what Matteo did was a pure netstack test.  We'll need testing on
-both XDP and normal network cases to be able to figure out the exact
-impact.
+ok. let me try with usercnt>0 in bpf_timer_init.
 
-Thanks
-/Ilias
-> > 
-> > Regards,
-> > 
+> >
+> > >
+> > > > +static void htab_free_malloced_timers(struct bpf_htab *htab)
+> > > > +{
+> > > > + int i;
+> > > > +
+> > > > + rcu_read_lock();
+> > > > + for (i = 0; i < htab->n_buckets; i++) {
+> > > > +         struct hlist_nulls_head *head = select_bucket(htab, i);
+> > > > +         struct hlist_nulls_node *n;
+> > > > +         struct htab_elem *l;
+> > > > +
+> > > > +         hlist_nulls_for_each_entry(l, n, head, hash_node)
+> > > May be put rcu_read_lock/unlock() in the loop and do a
+> > > cond_resched() in case the hashtab is large.
+> Just recalled cond_resched_rcu() may be cleaner, like:
+>
+> static void htab_free_malloced_timers(struct bpf_htab *htab)
+> {
+>         int i;
+>
+>         rcu_read_lock();
+>         for (i = 0; i < htab->n_buckets; i++) {
+>                 /* ... */
+>                 hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
+>                         check_and_free_timer(htab, l);
+>                 cond_resched_rcu();
+
+ahh. I didn't know about this flavor. Will give it a shot.
+Thanks!
+
+>         }
+>         rcu_read_unlock();
+> }
+>
