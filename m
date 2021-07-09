@@ -2,84 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADECC3C265E
-	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 16:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219533C26A8
+	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 17:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbhGIO6T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Jul 2021 10:58:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231972AbhGIO6T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Jul 2021 10:58:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47D0661242;
-        Fri,  9 Jul 2021 14:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625842536;
-        bh=Q2WG2NG1T89ViRXSnVoTpzh42KcKP8D2yuxnM2NHFLk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fBhhIzyyAoLntM8rT07BquH3igKKEvTX2kQj+DWRV+X4ADbvirwhloSDGtaFij3Ik
-         n17gc+bDJLT826iPEC1EWuvqRvCH4uTMUj18U/KoZVMyraHebRg6vZE1E6ZsycgDxE
-         RN9bo82HHDyppAnO5bYXlUmWHG0lKG6k8rCKSkJlVXyMHSLmjTsgqdLkIU5cHsOUfK
-         O+fpPhhJ1l/y3pxcuOe/DreJxFv53TURXVuN91GnShGLXnBLhwtp5LfJ18rwDDSoSa
-         SAP2UWPWvCRCqxEcolzKaWZGu4fCA2RLPRWf3M98wCU2DctHXgUbVGzyvTPo8CH30j
-         QG9NG40CposHw==
-Date:   Fri, 9 Jul 2021 23:55:31 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 10/13] x86/kprobes: Push a fake return address
- at kretprobe_trampoline
-Message-Id: <20210709235531.527d5cbb59c5669eed885b32@kernel.org>
-In-Reply-To: <YOLAFswnvyNReMmI@gmail.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
-        <162400001661.506599.5153975410607447958.stgit@devnote2>
-        <YOLAFswnvyNReMmI@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232244AbhGIPPz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Jul 2021 11:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232053AbhGIPPy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Jul 2021 11:15:54 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA56C0613DD;
+        Fri,  9 Jul 2021 08:13:10 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id q18so23919295lfc.7;
+        Fri, 09 Jul 2021 08:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+55UwqLAyfgxZBZ1Kggno0sqWKaYls4/rhJTUFXZyOs=;
+        b=VnyDWFyLsgBcqq7dw8b1LLLrF8WEwEUHgmVhHHNmrD7FmHlqiHR+zAeG1n04MHWUbQ
+         MVhaNyJOUcZOpvorCUoIViNwyRk0dUS/6MkD8CQ6N3gwF0nVhC1LonNKwMxlazr2Q8OM
+         V1aU+UUDI0Oseo0MX/8BfRXWliPXD3vd2ECezbZiFYObgGfsSTRTVmSLrpwuNJj5aItx
+         yoxFHBwfiT70iylX2MF+QdsLUw3EMsVzV0VmLpDNLioYSVLqUXfC1/GRIVfDMZLwLTxX
+         akGgqXEaMzLhcPqtoZLwk3GO9dii6ruKu2TGQykd+hYWazY33MnKYc0sNytca/9/R9vF
+         9FZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+55UwqLAyfgxZBZ1Kggno0sqWKaYls4/rhJTUFXZyOs=;
+        b=gPyYSTeA5wsi2yNmlpzQw9WJIl8jeVbaYgFt7YefykMy/D3pYmTtxQgMNM/Jh2zs0N
+         zqPTNuM9ah2hMmiuNwM3p37szLEZgfIhOKtXHloHpoLo208M50ZJxcP25uoqk+xnj5xN
+         AOmzFc3/XgPaD56RaFVlZH+vn6AsePhfkRJCMm8/xEvIKGsuHiyGwVqmqJxoAE3MMqTP
+         aqf7aPYjemRWifmW+Ruk7BvEkovoY56q3t/I2m3Q36jbHZ7unClOutxz/Olpnwe22bF7
+         v7j4OeVaXhZ6rksByzstMBbyUMqU55HRnETUVQsFDyiYGqVtiaGipNJPW967SciVca2l
+         CXDQ==
+X-Gm-Message-State: AOAM532dij0XqNyyVbOQ0AfYFpGKGvVQi3N3P5GN/yJwsfwrujq4ieii
+        tFMED3/eaPP/sihZavNlRmSZxW/GzY8No14T1IM=
+X-Google-Smtp-Source: ABdhPJzfv85bnaHLaXptF5KvlQ6DnYHAtUF7rDk4Ei56144wGrcjflLnhmtknP2s4rZSQOGGahiZRc3IhRUH9SvxI/o=
+X-Received: by 2002:a05:6512:3f1a:: with SMTP id y26mr30033434lfa.540.1625843588459;
+ Fri, 09 Jul 2021 08:13:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210707043811.5349-1-hefengqing@huawei.com> <20210707043811.5349-4-hefengqing@huawei.com>
+ <CAPhsuW7ssFzvS5-kdZa3tY-2EJk8QUdVpQCJYVBr+vD11JzrsQ@mail.gmail.com>
+ <1c5b393d-6848-3d10-30cf-7063a331f76c@huawei.com> <CAADnVQJ0Q0dLVs5UM-CyJe90N+KHomccAy-S_LOOARa9nXkXsA@mail.gmail.com>
+ <bc75c9c5-7479-5021-58ea-ed8cf53fb331@huawei.com>
+In-Reply-To: <bc75c9c5-7479-5021-58ea-ed8cf53fb331@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 9 Jul 2021 08:12:57 -0700
+Message-ID: <CAADnVQJ2DnoC07XLki_=xPti7V=wH153tQb1bowP+xdLwn580w@mail.gmail.com>
+Subject: Re: [bpf-next 3/3] bpf: Fix a use after free in bpf_check()
+To:     He Fengqing <hefengqing@huawei.com>
+Cc:     Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 5 Jul 2021 10:17:26 +0200
-Ingo Molnar <mingo@kernel.org> wrote:
+On Fri, Jul 9, 2021 at 4:11 AM He Fengqing <hefengqing@huawei.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2021/7/8 11:09, Alexei Starovoitov =E5=86=99=E9=81=93:
+> > On Wed, Jul 7, 2021 at 8:00 PM He Fengqing <hefengqing@huawei.com> wrot=
+e:
+> >>
+> >> Ok, I will change this in next version.
+> >
+> > before you spam the list with the next version
+> > please explain why any of these changes are needed?
+> > I don't see an explanation in the patches and I don't see a bug in the =
+code.
+> > Did you check what is the prog clone ?
+> > When is it constructed? Why verifier has anything to do with it?
+> > .
+> >
+>
+>
+> I'm sorry, I didn't describe these errors clearly.
+>
+> bpf_check(bpf_verifier_env)
+>      |
+>      |->do_misc_fixups(env)
+>      |    |
+>      |    |->bpf_patch_insn_data(env)
+>      |    |    |
+>      |    |    |->bpf_patch_insn_single(env->prog)
+>      |    |    |    |
+>      |    |    |    |->bpf_prog_realloc(env->prog)
+>      |    |    |    |    |
+>      |    |    |    |    |->construct new_prog
+>      |    |    |    |    |    free old_prog(env->prog)
+>      |    |    |    |    |
+>      |    |    |    |    |->return new_prog;
+>      |    |    |    |
+>      |    |    |    |->return new_prog;
+>      |    |    |
+>      |    |    |->adjust_insn_aux_data
+>      |    |    |    |
+>      |    |    |    |->return ENOMEM;
+>      |    |    |
+>      |    |    |->return NULL;
+>      |    |
+>      |    |->return ENOMEM;
+>
+> bpf_verifier_env->prog had been freed in bpf_prog_realloc function.
+>
+>
+> There are two errors here, the first is memleak in the
+> bpf_patch_insn_data function, and the second is use after free in the
+> bpf_check function.
+>
+> memleak in bpf_patch_insn_data:
+>
+> Look at the call chain above, if adjust_insn_aux_data function return
+> ENOMEM, bpf_patch_insn_data will return NULL, but we do not free the
+> new_prog.
+>
+> So in the patch 2, before bpf_patch_insn_data return NULL, we free the
+> new_prog.
+>
+> use after free in bpf_check:
+>
+> If bpf_patch_insn_data function return NULL, we will not assign new_prog
+> to the bpf_verifier_env->prog, but bpf_verifier_env->prog has been freed
+> in the bpf_prog_realloc function. Then in bpf_check function, we will
+> use bpf_verifier_env->prog after do_misc_fixups function.
+>
+> In the patch 3, I added a free_old parameter to bpf_prog_realloc, in
+> this scenario we don't free old_prog. Instead, we free it in the
+> do_misc_fixups function when bpf_patch_insn_data return a valid new_prog.
 
-> 
-> * Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > +	/* Replace fake return address with real one. */
-> > +	*frame_pointer = kretprobe_trampoline_handler(regs, frame_pointer);
-> > +	/*
-> > +	 * Move flags to sp so that kretprobe_trapmoline can return
-> > +	 * right after popf.
-> 
-> What is a trapmoline?
-
-This means kretprobe_trampoline() code.
-
-> 
-> Also, in the x86 code we capitalize register and instruction names so that 
-> they are more distinctive and easier to read in the flow of English text.
-
-OK, let me update it.
-
-Thank you,
-
-> 
-> Thanks,
-> 
-> 	Ingo
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks for explaining.
+Why not to make adjust_insn_aux_data() in bpf_patch_insn_data() first then?
+Just changing the order will resolve both issues, no?
