@@ -2,258 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7844D3C1FE0
-	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 09:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C071F3C2281
+	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 12:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhGIHQf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Jul 2021 03:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhGIHQe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Jul 2021 03:16:34 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEE9C0613DD;
-        Fri,  9 Jul 2021 00:13:50 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 59-20020a9d0ac10000b0290462f0ab0800so8503001otq.11;
-        Fri, 09 Jul 2021 00:13:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jr4ogZHqQ7zRi1sMqa0R1O1+zw4sLaP6ohLoK1fMMDA=;
-        b=n/DHTtUXSVuzF1Xnos9aimqdfW9QH7aIknywhLk6BxVNxLEmmnwqQoz+lGE66ZE8iq
-         1RCNT/IjdnE751iaxx45aHSfvJZd497Kmh5FWEHusd+H97AeXAMi/EuAeQsiKUp55NOs
-         1c8tzG8bYjTyOAKkcFArMs8w3A70fwFRuiAn+Yv+FOgi3ISW+WZkYrbSLL5C3cwC2gQp
-         YKArlmO0sGBDCR8r1CH1tuVi/yTrVWOxPTzGnN3vrI6p7Zg+2oaLRZMbIn5D1bnqgCWd
-         3ym7tlzQOQv7iJ0ZDWtywzjlilUWjKNnbmWdE1xUZ4b5lDzZ4rcrcBvzmicsx41qiVRI
-         GAQw==
+        id S229877AbhGIK76 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Jul 2021 06:59:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50256 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229641AbhGIK75 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 9 Jul 2021 06:59:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1625828233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b71dsvuhM/MuSpSEdi3HWQCFWv1P+zj4aFXLcIGVUF8=;
+        b=KFwYoPjZynMw7hAHZf32EJwS2Zs9Pj6PO1NlJqKvnUoYrb4hO0KYmC1pAmcaQ/WEmLKDKp
+        r2SYlmFx7zjLLEbvgsg7RHT/IujqgUrW1QVzlDQSwxAFLGTVBbDv21TtNF/FNBvD0OFMSZ
+        nmTmlSoKguWru+6Qiv8wek3Uy0zFd/g=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-DZHSWWbhN7OTgzv-QtS6Iw-1; Fri, 09 Jul 2021 06:57:12 -0400
+X-MC-Unique: DZHSWWbhN7OTgzv-QtS6Iw-1
+Received: by mail-ed1-f72.google.com with SMTP id ee46-20020a056402292eb02903a1187e547cso2320767edb.0
+        for <bpf@vger.kernel.org>; Fri, 09 Jul 2021 03:57:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jr4ogZHqQ7zRi1sMqa0R1O1+zw4sLaP6ohLoK1fMMDA=;
-        b=uPyJEDyTRCPMqjxB4Vt91VVVVdknEEqypwq8uYdtlVC8afG008sZZBLbmYobadZbmV
-         Rb4vU3jNDnWhU7k9bDbwUz2VReL/dTZ0JFHKfsDIQkaWQmhEhOfT6xf5I76RKuNyMjr8
-         duCHzCFTiO1eITPmWle1HFLXSWaQBsLmUP1+dt1iLiw77Zrf379Jhp2YZe7MWvgsjihB
-         DGFnHUQg7xSGexdUVSKL2c3eq1NNkwK5WjIVSS4e0IGm6ii7Aq072aJKSN3Ew2M8CtRy
-         eQMyraMOnUzBwrcw6Czx/53r1ddTyvoAMtLlV4hhQGEv37A/zAvIHdogyUFQzOMpitPI
-         MWvA==
-X-Gm-Message-State: AOAM531qf6yIddVxPLLMgOVOlkEXL2TG8HcQJK4gbAcL1BujxC9X0xKl
-        6cfgn5qJ2/XqJ20rLk4L9Uv2sqwPJQwsG+Fva08=
-X-Google-Smtp-Source: ABdhPJwXx9Y+ZgogxjgcXleD8BNl4B2h14hUIQAR+6xkzT6s1p9jrtncqLVmpcjytbyarhg742wb/HcJfm6otgmpsnI=
-X-Received: by 2002:a05:6830:160c:: with SMTP id g12mr517364otr.118.1625814829931;
- Fri, 09 Jul 2021 00:13:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=b71dsvuhM/MuSpSEdi3HWQCFWv1P+zj4aFXLcIGVUF8=;
+        b=du6fgaZQ/moMmTVkFwEfD6PX9/+/2mexmx0WN/KnWOEfh01KvNTzbndK+c98pPXekS
+         m0aaixJ95kgFo3H/CMObE6lLD1wWPTi5BnwBCBWoyKR5B1Dr7a+s+4cVWX3ZlKidxiM3
+         D0w295PEEmhAFtpuKPyNv7OBvDkP8vN2M/9u9/Ui+FmRtD56+yTbAlcDy0wqFKKlqr4E
+         c5AyWcpcNeOAHrGtw47Dk0KXHkNgeaN8DUtDHJXo4HIpmyu8GCVernL7/ooSoNvyY5rF
+         t4WpY59RjC1AUEaTtdYpDnnrXSg2PR6mKglG3VfDZLVMR1RoP4sAXZ8nYNG//OnZflyG
+         KKRQ==
+X-Gm-Message-State: AOAM532QNcn0XLtXQbahZ8zCz3uMwn5VH4101WLgFFT1oMGfVdFhPINY
+        JDtXDx1uFArxN3woV1TYmgdobeE6Q9q0rDXUhAttFhg1SaQC6MZcZ/sYTzZYOtflC00gzb8tD4x
+        eDNOKz+hZXFKr
+X-Received: by 2002:a05:6402:3488:: with SMTP id v8mr45471124edc.312.1625828231187;
+        Fri, 09 Jul 2021 03:57:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzcEgzt9SmaoJQBSMRg9i/ruS++CGfVRuSpQBsbjW43pdyCjJyZ7uJA/mr0TlmnGQqyl/k7ow==
+X-Received: by 2002:a05:6402:3488:: with SMTP id v8mr45471075edc.312.1625828230805;
+        Fri, 09 Jul 2021 03:57:10 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id gh15sm2210649ejb.46.2021.07.09.03.57.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jul 2021 03:57:09 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 83D12180733; Fri,  9 Jul 2021 12:57:08 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net
+Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
+In-Reply-To: <YOa4JVEp20JolOp4@localhost.localdomain>
+References: <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch>
+ <20210528180214.3b427837@carbon>
+ <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
+ <8735u3dv2l.fsf@toke.dk>
+ <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
+ <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <YNGU4GhL8fZ0ErzS@localhost.localdomain> <874kdqqfnm.fsf@toke.dk>
+ <YNLxtsasQSv+YR1w@localhost.localdomain> <87mtrfmoyh.fsf@toke.dk>
+ <YOa4JVEp20JolOp4@localhost.localdomain>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 09 Jul 2021 12:57:08 +0200
+Message-ID: <8735snvjp7.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20210707094133.24597-1-kerneljasonxing@gmail.com>
-In-Reply-To: <20210707094133.24597-1-kerneljasonxing@gmail.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Fri, 9 Jul 2021 15:13:14 +0800
-Message-ID: <CAL+tcoCc+r96Bv8aDXTwY5h_OYTz8sHxdpPW7OuNfdDz+ssYYg@mail.gmail.com>
-Subject: Re: [PATCH net] i40e: introduce pseudo number of cpus for compatibility
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        anthony.l.nguyen@intel.com, David Miller <davem@davemloft.net>,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Oh, one more thing I missed in the last email is that all the failures
-are happening on the combination of X722 10GbE and 1GbE. So the value
-of @num_tx_qp  the driver fetches is 384 while the value is 768
-without x722 1GbE.
+Michal Swiatkowski <michal.swiatkowski@linux.intel.com> writes:
 
-I get that information back here:
-$ lspci | grep -i ether
-5a:00.0 Ethernet controller: Intel Corporation Ethernet Connection
-X722 for 10GbE SFP+ (rev 09)
-5a:00.1 Ethernet controller: Intel Corporation Ethernet Connection
-X722 for 10GbE SFP+ (rev 09)
-5a:00.2 Ethernet controller: Intel Corporation Ethernet Connection
-X722 for 1GbE (rev 09)
-5a:00.3 Ethernet controller: Intel Corporation Ethernet Connection
-X722 for 1GbE (rev 09)
+>> I would expect that the program would decide ahead-of-time which BTF IDs
+>> it supports, by something like including the relevant structs from
+>> vmlinux.h. And then we need the BTF ID encoded into the packet metadata
+>> as well, so that it is possible to check at run-time which driver the
+>> packet came from (since a packet can be redirected, so you may end up
+>> having to deal with multiple formats in the same XDP program).
+>> 
+>> Which would allow you to write code like:
+>> 
+>> if (ctx->has_driver_meta) {
+>>   /* this should be at a well-known position, like first (or last) in meta area */
+>>   __u32 *meta_btf_id = ctx->data_meta;
+>>   
+>>   if (*meta_btf_id == BTF_ID_MLX5) {
+>>     struct meta_mlx5 *meta = ctx->data_meta;
+>>     /* do something with meta */
+>>   } else if (meta_btf_id == BTF_ID_I40E) {
+>>     struct meta_i40e *meta = ctx->data_meta;
+>>     /* do something with meta */
+>>   } /* etc */
+>> }
+>> 
+>> and libbpf could do relocations based on the different meta structs,
+>> even removing the code for the ones that don't exist on the running
+>> kernel.
+>
+> This looks nice. In this case we need defintions of struct meta_mlx5 and
+> struct meta_i40e at build time. How are we going to deliver this to bpf
+> core app? This will be available in /sys/kernel/btf/mlx5 and
+> /sys/kernel/btf/i40e (if drivers are loaded). Should we dump this to
+> vmlinux.h? Or a developer of the xdp program should add this definition
+> to his code?
 
-I know it's really stupid to control the number of online cpus, but
-finding a good way only to limit the @alloc_queue_pairs is not easy to
-go. So could someone point out a better way to fix this issue and take
-care of some relatively old nics with the number of cpus increasing?
+Well, if the driver just defines the struct, the BTF for it will be
+automatically part of the driver module BTF. BPF program developers
+would need to include this in their programs somehow (similar to how
+you'll need to get the type definitions from vmlinux.h today to use
+CO-RE); how they do this is up to them. Since this is a compile-time
+thing it will probably depend on the project (for instance, BCC includes
+a copy of vmlinux.h in their source tree, but you can also just pick out
+the structs you need).
 
-Thanks,
-Jason
+> Maybe create another /sys/kernel/btf/hints with vmlinux and hints from
+> all drivers which support hints?
 
-On Wed, Jul 7, 2021 at 5:41 PM <kerneljasonxing@gmail.com> wrote:
+It may be useful to have a way for the kernel to export all the hints
+currently loaded, so libbpf can just use that when relocating. The
+problem of course being that this will only include drivers that are
+actually loaded, so users need to make sure to load all their network
+drivers before loading any XDP programs. I think it would be better if
+the loader could discover all modules *available* on the system, but I'm
+not sure if there's a good way to do that.
+
+> Previously in this thread someone mentioned this ___ use case in libbpf
+> and proposed creating something like mega xdp hints structure with all
+> available fields across all drivers. As I understand this could solve
+> the problem about defining correct structure at build time. But how will
+> it work when there will be more than one structures with the same name
+> before ___? I mean:
+> struct xdp_hints___mega defined only in core app
+> struct xdp_hints___mlx5 available when mlx5 driver is loaded
+> struct xdp_hints___i40e available when i40e driver is loaded
 >
-> From: Jason Xing <xingwanli@kuaishou.com>
->
-> The kernel will crash when loading xdpdrv with more than 64 cores and
-> Intel X722. Last time I submitted the fix (commit: 4e39a072a), but it only
-> solves the similar issue if the machine has less than 64 cores.
->
-> Crash log:
-> [305797.917411] Using feature eBPF/xdp.
-> [305798.054336] i40e 0000:1a:00.0: failed to get tracking for 256 queues
-> for VSI 0 err -12
-> [305798.055448] i40e 0000:1a:00.0: setup of MAIN VSI failed
-> [305798.056130] i40e 0000:1a:00.0: can't remove VEB 160 with 0 VSIs left
-> [305798.056856] BUG: unable to handle kernel NULL pointer dereference at
-> 0000000000000000
-> [305798.061190] RIP: 0010:i40e_xdp+0xae/0x110 [i40e]
-> [305798.075139] Call Trace:
-> [305798.075666]  dev_xdp_install+0x4f/0x70
-> [305798.076253]  dev_change_xdp_fd+0x11f/0x230
-> [305798.085182]  do_setlink+0xac7/0xe70
-> [305798.086344]  rtnl_newlink+0x72d/0x850
->
-> Here's how to reproduce:
-> 1) prepare one machine shipped with more than 64 cores and Intel X722
-> 10G.
-> 2) # mount bpffs -t bpf /sys/fs/bpf
-> 3) # ip link set dev eth01 xdpdrv obj ./bpf_xdp.o sec from-netdev
->
-> The reason is that the allocation of @rss_size_max is too large and then
-> affects the value of @vsi->alloc_queue_pairs which is 64. Later, if we
-> load the xdpdrv, it will reinit the vsi and assign double of the older
-> value to @alloc_queue_pairs which triggers the failure of finding the
-> lump.
->
-> We cannot simply add the limit of calculating @rss_size_max because
-> @pf->num_lan_qps will pick up the maximum (say, the number of cpus).
-> In fact, we don't need to allocate too many resources in accordance with
-> the number of cpus. It's limited by the hardware itself. So I introduce
-> the pseudo number of cpus to replace the real number to avoid the
-> unbalance.
->
-> After applying this feature, the machine with X722 nic will only use 64
-> cores no mather how large the number of cpus. The pseudo number
-> actually depends on @num_tx_qp.
->
-> Fixes: 41c445ff0f48 ("i40e: main driver core")
-> Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-> ---
->  drivers/net/ethernet/intel/i40e/i40e_main.c | 47 +++++++++++++++++++++++------
->  1 file changed, 38 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> index 861e59a..26de518 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> @@ -100,6 +100,35 @@ static int i40e_get_capabilities(struct i40e_pf *pf,
->  static struct workqueue_struct *i40e_wq;
->
->  /**
-> + * i40e_pseudo_num_online_cpus - use as possible as what we can use actually
-> + * @pf: board private structure
-> + *
-> + * We mignt not use all the cores because some old nics are not compatible
-> + * with the machine which has a large number of cores, say, 128 cores
-> + * combined with X722 nic.
-> + *
-> + * We should avoid this situation where the number of core is too large
-> + * while the nic is a little bit old. Therefore, we have to limit the
-> + * actual number of cpus we can use by adding the calculation of parameters
-> + * of the hardware.
-> + *
-> + * The algorithm is violent and shrink the number exponentially, so that we
-> + * make sure that the driver can work definitely.
-> + */
-> +static u16 i40e_pseudo_num_online_cpus(struct i40e_pf *pf)
-> +{
-> +       u32 limit;
-> +       u16 pow;
-> +
-> +       limit = pf->hw.func_caps.num_tx_qp / 3;
-> +       pow = roundup_pow_of_two(num_online_cpus());
-> +       while (pow >= limit)
-> +               pow = rounddown_pow_of_two(pow - 1);
-> +
-> +       return pow;
-> +}
-> +
-> +/**
->   * i40e_allocate_dma_mem_d - OS specific memory alloc for shared code
->   * @hw:   pointer to the HW structure
->   * @mem:  ptr to mem struct to fill out
-> @@ -11395,7 +11424,7 @@ static int i40e_init_msix(struct i40e_pf *pf)
->          * will use any remaining vectors to reach as close as we can to the
->          * number of online CPUs.
->          */
-> -       cpus = num_online_cpus();
-> +       cpus = i40e_pseudo_num_online_cpus(pf);
->         pf->num_lan_msix = min_t(int, cpus, vectors_left / 2);
->         vectors_left -= pf->num_lan_msix;
->
-> @@ -11457,7 +11486,7 @@ static int i40e_init_msix(struct i40e_pf *pf)
->          * the number of vectors for num_lan_msix to be at most 50% of the
->          * available vectors, to allow for other features. Now, we add back
->          * the remaining vectors. However, we ensure that the total
-> -        * num_lan_msix will not exceed num_online_cpus(). To do this, we
-> +        * num_lan_msix will not exceed i40e_pseudo_num_online_cpus(). To do this, we
->          * calculate the number of vectors we can add without going over the
->          * cap of CPUs. For systems with a small number of CPUs this will be
->          * zero.
-> @@ -12102,7 +12131,7 @@ int i40e_reconfig_rss_queues(struct i40e_pf *pf, int queue_count)
->         if (!(pf->flags & I40E_FLAG_RSS_ENABLED))
->                 return 0;
->
-> -       queue_count = min_t(int, queue_count, num_online_cpus());
-> +       queue_count = min_t(int, queue_count, i40e_pseudo_num_online_cpus(pf));
->         new_rss_size = min_t(int, queue_count, pf->rss_size_max);
->
->         if (queue_count != vsi->num_queue_pairs) {
-> @@ -12348,13 +12377,13 @@ static int i40e_sw_init(struct i40e_pf *pf)
->                                  pf->hw.func_caps.num_tx_qp);
->
->         /* find the next higher power-of-2 of num cpus */
-> -       pow = roundup_pow_of_two(num_online_cpus());
-> +       pow = roundup_pow_of_two(i40e_pseudo_num_online_cpus(pf));
->         pf->rss_size_max = min_t(int, pf->rss_size_max, pow);
->
->         if (pf->hw.func_caps.rss) {
->                 pf->flags |= I40E_FLAG_RSS_ENABLED;
->                 pf->alloc_rss_size = min_t(int, pf->rss_size_max,
-> -                                          num_online_cpus());
-> +                                          i40e_pseudo_num_online_cpus(pf));
->         }
->
->         /* MFP mode enabled */
-> @@ -12446,16 +12475,16 @@ static int i40e_sw_init(struct i40e_pf *pf)
->             pf->hw.aq.fw_maj_ver >= 6)
->                 pf->hw_features |= I40E_HW_PTP_L4_CAPABLE;
->
-> -       if (pf->hw.func_caps.vmdq && num_online_cpus() != 1) {
-> +       if (pf->hw.func_caps.vmdq && i40e_pseudo_num_online_cpus(pf) != 1) {
->                 pf->num_vmdq_vsis = I40E_DEFAULT_NUM_VMDQ_VSI;
->                 pf->flags |= I40E_FLAG_VMDQ_ENABLED;
->                 pf->num_vmdq_qps = i40e_default_queues_per_vmdq(pf);
->         }
->
-> -       if (pf->hw.func_caps.iwarp && num_online_cpus() != 1) {
-> +       if (pf->hw.func_caps.iwarp && i40e_pseudo_num_online_cpus(pf) != 1) {
->                 pf->flags |= I40E_FLAG_IWARP_ENABLED;
->                 /* IWARP needs one extra vector for CQP just like MISC.*/
-> -               pf->num_iwarp_msix = (int)num_online_cpus() + 1;
-> +               pf->num_iwarp_msix = (int)i40e_pseudo_num_online_cpus(pf) + 1;
->         }
->         /* Stopping FW LLDP engine is supported on XL710 and X722
->          * starting from FW versions determined in i40e_init_adminq.
-> @@ -14805,7 +14834,7 @@ static void i40e_determine_queue_usage(struct i40e_pf *pf)
->                 }
->
->                 /* limit lan qps to the smaller of qps, cpus or msix */
-> -               q_max = max_t(int, pf->rss_size_max, num_online_cpus());
-> +               q_max = max_t(int, pf->rss_size_max, i40e_pseudo_num_online_cpus(pf));
->                 q_max = min_t(int, q_max, pf->hw.func_caps.num_tx_qp);
->                 q_max = min_t(int, q_max, pf->hw.func_caps.num_msix_vectors);
->                 pf->num_lan_qps = q_max;
-> --
-> 1.8.3.1
->
+> When there will be only one driver loaded should libbpf do correct
+> reallocation of fields? What will happen when both of the drivers are
+> loaded?
+
+I think we definitely need to make this easy for developers so they
+don't have to go and manually track down the driver structs and write
+the disambiguation code etc. I.e., the example code I included above
+that checks the frame BTF ID and does the loading based on it should be
+auto-generated. We already have some precedence for auto-generated code
+in vmlinux.h and the bpftool skeletons. So maybe we could have a command
+like 'bpftool gen_xdp_meta <fields>' which would go and lookup all the
+available driver structs and generate a code helper function that will
+extract the driver structs and generate the loader code? So that if,
+say, you're interested in rxhash and tstamp you could do:
+
+bpftool gen_xdp_meta rxhash tstamp > my_meta.h
+
+which would then produce my_meta.h with content like:
+
+struct my_meta { /* contains fields specified on the command line */
+  u32 rxhash;
+  u32 tstamp;
+}
+
+struct meta_mlx5 {/*generated from kernel BTF */};
+struct meta_i40e {/*generated from kernel BTF */};
+
+static inline int get_xdp_meta(struct xdp_md *ctx, struct my_meta *meta)
+{
+ if (ctx->has_driver_meta) {
+   /* this should be at a well-known position, like first (or last) in meta area */
+   __u32 *meta_btf_id = ctx->data_meta;
+   
+   if (*meta_btf_id == BTF_ID_MLX5) {
+     struct meta_mlx5 *meta = ctx->data_meta;
+     my_meta->rxhash = meta->rxhash;
+     my_meta->tstamp = meta->tstamp;
+     return 0;
+   } else if (meta_btf_id == BTF_ID_I40E) {
+     struct meta_i40e *meta = ctx->data_meta;
+     my_meta->rxhash = meta->rxhash;
+     my_meta->tstamp = meta->tstamp;
+     return 0;
+   } /* etc */
+ }
+ return -ENOENT;
+}
+
+
+-Toke
+
