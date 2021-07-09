@@ -2,80 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8473C1CD4
-	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 02:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1C33C1D28
+	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 03:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbhGIAl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Jul 2021 20:41:26 -0400
-Received: from mga06.intel.com ([134.134.136.31]:16188 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhGIAl0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Jul 2021 20:41:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="270737872"
-X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
-   d="scan'208";a="270737872"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 17:38:42 -0700
-X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
-   d="scan'208";a="458088979"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.178.170]) ([10.212.178.170])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 17:38:41 -0700
+        id S230004AbhGIBkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Jul 2021 21:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhGIBkV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Jul 2021 21:40:21 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8A4C061574
+        for <bpf@vger.kernel.org>; Thu,  8 Jul 2021 18:37:38 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d12so7284116pfj.2
+        for <bpf@vger.kernel.org>; Thu, 08 Jul 2021 18:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bZFu0LDbG95B1yaNBJ4fOjmqr6d8M46HMHg6GLetGXU=;
+        b=xiDZEEYxruTTfQgL3aJXGO59DvjtJZObMOjVhV0sWjDcj17iafQLkdUmxo1ZSTVmqq
+         hOhBbHdS08z+NS/vzPxqGEGqVYPRgWJvkts85BPJvK8rc4qls93ozI7b1mU3D7ftHLHa
+         lRKvHtMRK4ld+oh1MKjaF/wv5C2u6ht+OCwoYTFE0Nq+8PdRMSesPZdnr6LAMjefcfT3
+         PDyrqH9mqO3aR2xv1s3hlxGss1SvpmSTTWaPeiSi5TGztoIA2Tc6OTHduB81a3alI0+t
+         q1S9FpPVXSCUKoPVBguy200hSUDzhWXhtiQuTEaC8ZSgb+CDluoxriqvXGDMKvrxhKfk
+         LixQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bZFu0LDbG95B1yaNBJ4fOjmqr6d8M46HMHg6GLetGXU=;
+        b=bMdQaSCj0m28liM2MZNiCI1F131t7TwhmUUu45q1CjyvzfgNK0tyachz3NtT+AzBws
+         sNbx02ECN7aLPeHWI1dl7ygD91PXnKgWIXhNiCqDwGpvCLIcYKXoceEY76dLcQrm/JdZ
+         F6JXUmtiZMqPnVCLHJcUqIhMCLruVZireRaiBIqDpNJHF1Wad8kFfu7txSSRKpWJIy8v
+         osxmyuKlkmz6XoTTwCLpuNu+kJTIrjgZWLiD3d//PRaWqK2iqdECKQ8ZqvxX7upuicUq
+         zc04fPZPlaD1TWa9LGP7m54Wqoo3aP5FGVVaTwLJYrGPTrEF1UxR0+iYwqq9iWLzJHl0
+         80rg==
+X-Gm-Message-State: AOAM532UkaY4BhFhTvthxTx07MLk5qmfS7UeHpHWPZXUksn0ut8bPyKX
+        MbmKdEmZuSFilG07twjyhWbO1vFR+cgcS9INLEFaZg==
+X-Google-Smtp-Source: ABdhPJxuJg/c8OhWhs8F8A3S/ckvZ0rDfon+3bRcdZtYFFx8C5h1oj5aEYTfw4sblldln9EwK8T/S11b0MOw0hSvnBQ=
+X-Received: by 2002:a05:6a00:22c4:b029:323:4955:a5d3 with SMTP id
+ f4-20020a056a0022c4b02903234955a5d3mr17330045pfj.31.1625794657827; Thu, 08
+ Jul 2021 18:37:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210707204249.3046665-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAPcyv4h8SaVL_QGLv1DT0JuoyKmSBvxJQw0aamMuzarexaU7VA@mail.gmail.com>
+ <24d8fd58-36c1-0e89-4142-28f29e2c434b@linux.intel.com> <CAPcyv4heA8gps2K_ckUV1gGJdjGeB+5dOSntS=TREEX5-0rtwQ@mail.gmail.com>
+ <4972fc1a-1ffb-2b6d-e764-471210df96a3@linux.intel.com>
+In-Reply-To: <4972fc1a-1ffb-2b6d-e764-471210df96a3@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 8 Jul 2021 18:37:26 -0700
+Message-ID: <CAPcyv4gwsT4rJzemkofk6SP5cAp9=nr5T6vtu+i6wTbU91R_Bg@mail.gmail.com>
 Subject: Re: [PATCH v2 5/6] platform/x86: intel_tdx_attest: Add TDX Guest
  attestation interface driver
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
         <sathyanarayanan.kuppuswamy@linux.intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
         Hans de Goede <hdegoede@redhat.com>,
         Mark Gross <mgross@linux.intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
         Kirill Shutemov <kirill.shutemov@linux.intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210707204249.3046665-6-sathyanarayanan.kuppuswamy@linux.intel.com>
- <06c85c19-e16c-3121-ed47-075cfa779b67@kernel.org>
- <169451ef-e8f6-5a07-f47a-61eaa085b4ef@intel.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <ce0feeec-a949-35f8-3010-b0d69acbbc2e@linux.intel.com>
-Date:   Thu, 8 Jul 2021 17:38:41 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <169451ef-e8f6-5a07-f47a-61eaa085b4ef@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-> Expensive and permanently fractures the direct map.
+On Thu, Jul 8, 2021 at 5:36 PM Andi Kleen <ak@linux.intel.com> wrote:
 >
-> I'm struggling to figure out why the direct map is even touched here.
-I think Sathya did it this way because the TD interface requires a 
-physical address.
-> Why not just use a vmalloc area mapping?  You really just need *a*
-> decrypted mapping to the page.  You don't need to make *every* mapping
-> to the page decrypted.
+>
+> On 7/8/2021 5:20 PM, Dan Williams wrote:
+> >
+> > If you have a lock would TDX KVM even notice that its parallel
+> > requests are being handled serially? I.e. even if they said "yes,
+> > multiple requests may happen in parallel", until it becomes an actual
+> > latency problem in practice it's not clear that this generous use of
+> > resources is justified.
+> The worst case usage is 2 pages * file descriptor. There are lots of
+> other ways to use that much and more memory for each file descriptor.
+>
+> >
+> > Scratch that... this driver already has the attestation_lock! So, it's
+> > already the case that only one thread can be attesting at a time. The
+> > per-file buffer is unecessary.
+>
+> But then you couldn't free the buffer. So it would be leaked forever for
+> likely only one attestation.
+>
+> Not sure what problem you're trying to solve here.
 
-Yes it would be possible to use vmap() on the page and only set the vmap 
-encrypted by passing the right flags directly.
+One allocation for the life of the driver that can have its direct map
+permissions changed rather than an allocation per-file descriptor and
+fragmenting the direct map.
 
-That would avoid breaking up the direct mapping.
+> > keyutils supports generating and passing blobs into and out of the
+> > kernel with a handle associated to those blobs. This driver adds a TDX
+> > way to pass blobs into and out of the kernel. If Linux grows other
+> > TDX-like attestation requirements in the future (e.g. PCI SPDM) should
+> > each of those invent their own user ABI for passing blobs around?
+>
+> The TDX blobs are different than any blobs that keyutils supports today.
+> The TDX operations are different too.
+>
+> TDREPORT doesn't even involve any keys, it's just attestation reports.
+>
+> keyutils today nothing related to attestation.
+>
+> I just don't see any commonality. If there was commonality it would be
+> more with the TPM interface, but TDX attestation is different enough
+> that it also isn't feasible to directly convert it into TPM operation
+> (apart from standard TPM being a beast that you better avoid as much as
+> possible anyways)
+>
 
-
--Andi
-
-
+Ok. I'll leave that alone for TDX, but I still have my eyes on
+keyutils for aspects of PCI SPDM.
