@@ -2,149 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219533C26A8
-	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 17:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CDD3C26DA
+	for <lists+bpf@lfdr.de>; Fri,  9 Jul 2021 17:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbhGIPPz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Jul 2021 11:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbhGIPPy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Jul 2021 11:15:54 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA56C0613DD;
-        Fri,  9 Jul 2021 08:13:10 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id q18so23919295lfc.7;
-        Fri, 09 Jul 2021 08:13:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+55UwqLAyfgxZBZ1Kggno0sqWKaYls4/rhJTUFXZyOs=;
-        b=VnyDWFyLsgBcqq7dw8b1LLLrF8WEwEUHgmVhHHNmrD7FmHlqiHR+zAeG1n04MHWUbQ
-         MVhaNyJOUcZOpvorCUoIViNwyRk0dUS/6MkD8CQ6N3gwF0nVhC1LonNKwMxlazr2Q8OM
-         V1aU+UUDI0Oseo0MX/8BfRXWliPXD3vd2ECezbZiFYObgGfsSTRTVmSLrpwuNJj5aItx
-         yoxFHBwfiT70iylX2MF+QdsLUw3EMsVzV0VmLpDNLioYSVLqUXfC1/GRIVfDMZLwLTxX
-         akGgqXEaMzLhcPqtoZLwk3GO9dii6ruKu2TGQykd+hYWazY33MnKYc0sNytca/9/R9vF
-         9FZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+55UwqLAyfgxZBZ1Kggno0sqWKaYls4/rhJTUFXZyOs=;
-        b=gPyYSTeA5wsi2yNmlpzQw9WJIl8jeVbaYgFt7YefykMy/D3pYmTtxQgMNM/Jh2zs0N
-         zqPTNuM9ah2hMmiuNwM3p37szLEZgfIhOKtXHloHpoLo208M50ZJxcP25uoqk+xnj5xN
-         AOmzFc3/XgPaD56RaFVlZH+vn6AsePhfkRJCMm8/xEvIKGsuHiyGwVqmqJxoAE3MMqTP
-         aqf7aPYjemRWifmW+Ruk7BvEkovoY56q3t/I2m3Q36jbHZ7unClOutxz/Olpnwe22bF7
-         v7j4OeVaXhZ6rksByzstMBbyUMqU55HRnETUVQsFDyiYGqVtiaGipNJPW967SciVca2l
-         CXDQ==
-X-Gm-Message-State: AOAM532dij0XqNyyVbOQ0AfYFpGKGvVQi3N3P5GN/yJwsfwrujq4ieii
-        tFMED3/eaPP/sihZavNlRmSZxW/GzY8No14T1IM=
-X-Google-Smtp-Source: ABdhPJzfv85bnaHLaXptF5KvlQ6DnYHAtUF7rDk4Ei56144wGrcjflLnhmtknP2s4rZSQOGGahiZRc3IhRUH9SvxI/o=
-X-Received: by 2002:a05:6512:3f1a:: with SMTP id y26mr30033434lfa.540.1625843588459;
- Fri, 09 Jul 2021 08:13:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210707043811.5349-1-hefengqing@huawei.com> <20210707043811.5349-4-hefengqing@huawei.com>
- <CAPhsuW7ssFzvS5-kdZa3tY-2EJk8QUdVpQCJYVBr+vD11JzrsQ@mail.gmail.com>
- <1c5b393d-6848-3d10-30cf-7063a331f76c@huawei.com> <CAADnVQJ0Q0dLVs5UM-CyJe90N+KHomccAy-S_LOOARa9nXkXsA@mail.gmail.com>
- <bc75c9c5-7479-5021-58ea-ed8cf53fb331@huawei.com>
-In-Reply-To: <bc75c9c5-7479-5021-58ea-ed8cf53fb331@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 9 Jul 2021 08:12:57 -0700
-Message-ID: <CAADnVQJ2DnoC07XLki_=xPti7V=wH153tQb1bowP+xdLwn580w@mail.gmail.com>
-Subject: Re: [bpf-next 3/3] bpf: Fix a use after free in bpf_check()
-To:     He Fengqing <hefengqing@huawei.com>
-Cc:     Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S232288AbhGIPe2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Jul 2021 11:34:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232248AbhGIPe2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Jul 2021 11:34:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E700F613C1;
+        Fri,  9 Jul 2021 15:31:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625844704;
+        bh=EJGDTErqhFfO+4+vO3fnUq+RuTjIL8rzCpz3Xvt7RAg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nAuK98c1w4esf+28ABqRQMXZ/TSLSo9cs01eDTxLDD0GrdE4WUkH+DmwMCQUdYjlJ
+         wdNRiLZJvshUGJUkF+BBUz6X9Bd9mOwMhoyy3LxVlWM7eHfVVLpCOtly+/JM8DupTL
+         85Pl0hown2YU/9o/yw/N+1LWRZnglUVckqA4YW8yukfeZGkO1fWC+VLyDny/h+lHNX
+         HGM9eG0HFYOyCFpSyxraIk6ozDWDBAVCLqRkU2t2KxJASRnz4Q9zE+tdKUnV68/NQD
+         x0BWRQq6fHp0I8QnjnQntzO4ArOqSNuvEQ+gi2g20UhdcNLGqD0slG59NtV5nX1LY7
+         lbDQ1y6yAOYvw==
+Date:   Sat, 10 Jul 2021 00:31:40 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 05/13] x86/kprobes: Add UNWIND_HINT_FUNC on
+ kretprobe_trampoline code
+Message-Id: <20210710003140.8e561ad33d42f9ac78de6a15@kernel.org>
+In-Reply-To: <YOK8pzp8B2V+1EaU@gmail.com>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162399996966.506599.810050095040575221.stgit@devnote2>
+        <YOK8pzp8B2V+1EaU@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 9, 2021 at 4:11 AM He Fengqing <hefengqing@huawei.com> wrote:
->
->
->
-> =E5=9C=A8 2021/7/8 11:09, Alexei Starovoitov =E5=86=99=E9=81=93:
-> > On Wed, Jul 7, 2021 at 8:00 PM He Fengqing <hefengqing@huawei.com> wrot=
-e:
-> >>
-> >> Ok, I will change this in next version.
-> >
-> > before you spam the list with the next version
-> > please explain why any of these changes are needed?
-> > I don't see an explanation in the patches and I don't see a bug in the =
-code.
-> > Did you check what is the prog clone ?
-> > When is it constructed? Why verifier has anything to do with it?
-> > .
-> >
->
->
-> I'm sorry, I didn't describe these errors clearly.
->
-> bpf_check(bpf_verifier_env)
->      |
->      |->do_misc_fixups(env)
->      |    |
->      |    |->bpf_patch_insn_data(env)
->      |    |    |
->      |    |    |->bpf_patch_insn_single(env->prog)
->      |    |    |    |
->      |    |    |    |->bpf_prog_realloc(env->prog)
->      |    |    |    |    |
->      |    |    |    |    |->construct new_prog
->      |    |    |    |    |    free old_prog(env->prog)
->      |    |    |    |    |
->      |    |    |    |    |->return new_prog;
->      |    |    |    |
->      |    |    |    |->return new_prog;
->      |    |    |
->      |    |    |->adjust_insn_aux_data
->      |    |    |    |
->      |    |    |    |->return ENOMEM;
->      |    |    |
->      |    |    |->return NULL;
->      |    |
->      |    |->return ENOMEM;
->
-> bpf_verifier_env->prog had been freed in bpf_prog_realloc function.
->
->
-> There are two errors here, the first is memleak in the
-> bpf_patch_insn_data function, and the second is use after free in the
-> bpf_check function.
->
-> memleak in bpf_patch_insn_data:
->
-> Look at the call chain above, if adjust_insn_aux_data function return
-> ENOMEM, bpf_patch_insn_data will return NULL, but we do not free the
-> new_prog.
->
-> So in the patch 2, before bpf_patch_insn_data return NULL, we free the
-> new_prog.
->
-> use after free in bpf_check:
->
-> If bpf_patch_insn_data function return NULL, we will not assign new_prog
-> to the bpf_verifier_env->prog, but bpf_verifier_env->prog has been freed
-> in the bpf_prog_realloc function. Then in bpf_check function, we will
-> use bpf_verifier_env->prog after do_misc_fixups function.
->
-> In the patch 3, I added a free_old parameter to bpf_prog_realloc, in
-> this scenario we don't free old_prog. Instead, we free it in the
-> do_misc_fixups function when bpf_patch_insn_data return a valid new_prog.
+On Mon, 5 Jul 2021 10:02:47 +0200
+Ingo Molnar <mingo@kernel.org> wrote:
 
-Thanks for explaining.
-Why not to make adjust_insn_aux_data() in bpf_patch_insn_data() first then?
-Just changing the order will resolve both issues, no?
+> 
+> * Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > From: Josh Poimboeuf <jpoimboe@redhat.com>
+> > 
+> > Add UNWIND_HINT_FUNC on kretporbe_trampoline code so that ORC
+> > information is generated on the kretprobe_trampoline correctly.
+> 
+> What is a 'kretporbe'?
+
+Oops, it's a typo.
+
+> 
+> > Note that when the CONFIG_FRAME_POINTER=y, since the
+> > kretprobe_trampoline skips updating frame pointer, the stack frame
+> > of the kretprobe_trampoline seems non-standard. So this marks it
+> > is STACK_FRAME_NON_STANDARD() and undefine UNWIND_HINT_FUNC.
+> 
+> What does 'marks it is' mean?
+
+Sorry, I meant, this marks the kretprobe_trampoline as non-standard
+stack frame by STACK_FRAME_NON_STANDARD().
+
+> 
+> 'undefine' UNWIND_HINT_FUNC?
+> 
+> Doesn't the patch do the exact opposite:
+> 
+>   > +#define UNWIND_HINT_FUNC \
+>   > +	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
+> 
+> But it does undefine it in a specific spot:
+
+Yes, if you think this is not correct way, what about the following?
+
+#ifdef CONFIG_FRAME_POINTER
+STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
+#define KRETPROBE_UNWIND_HINT_FUNC
+#else
+#define KRETPROBE_UNWIND_HINT_FUNC	UNWIND_HINT_FUNC
+#endif
+
+
+> > Anyway, with the frame pointer, FP unwinder can unwind the stack
+> > frame correctly without that hint.
+> > 
+> > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > Tested-by: Andrii Nakryik <andrii@kernel.org>
+> 
+> I have to say these changelogs are very careless.
+
+Sorry for inconvenience...
+
+> 
+> > +#else
+> > +
+> 
+> In headers, in longer CPP blocks, please always mark the '#else' branch 
+> with what it is the else branch of.
+
+OK.
+
+> 
+> See the output of:
+> 
+>    kepler:~/tip> git grep '#else' arch/x86/include/asm/ | head
+
+Thanks for the hint!
+
+> 
+> > +#ifdef CONFIG_FRAME_POINTER
+> > +/*
+> > + * kretprobe_trampoline skips updating frame pointer. The frame pointer
+> > + * saved in trampoline_handler points to the real caller function's
+> > + * frame pointer. Thus the kretprobe_trampoline doesn't seems to have a
+> > + * standard stack frame with CONFIG_FRAME_POINTER=y.
+> > + * Let's mark it non-standard function. Anyway, FP unwinder can correctly
+> > + * unwind without the hint.
+> 
+> s/doesn't seems to have a standard stack frame
+>  /doesn't have a standard stack frame
+> 
+> There's nothing 'seems' about the situation - it's a non-standard function 
+> entry and stack frame situation, and the unwinder needs to know about it.
+
+OK.
+
+> 
+> > +STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
+> > +#undef UNWIND_HINT_FUNC
+> > +#define UNWIND_HINT_FUNC
+> > +#endif
+> >  /*
+> >   * When a retprobed function returns, this code saves registers and
+> >   * calls trampoline_handler() runs, which calls the kretprobe's handler.
+> > @@ -1031,6 +1044,7 @@ asm(
+> >  	/* We don't bother saving the ss register */
+> >  #ifdef CONFIG_X86_64
+> >  	"	pushq %rsp\n"
+> > +	UNWIND_HINT_FUNC
+> >  	"	pushfq\n"
+> >  	SAVE_REGS_STRING
+> >  	"	movq %rsp, %rdi\n"
+> > @@ -1041,6 +1055,7 @@ asm(
+> >  	"	popfq\n"
+> >  #else
+> >  	"	pushl %esp\n"
+> > +	UNWIND_HINT_FUNC
+> >  	"	pushfl\n"
+> >  	SAVE_REGS_STRING
+> >  	"	movl %esp, %eax\n"
+> 
+> Why not provide an appropriate annotation method in <asm/unwind_hints.h>, 
+> so that other future code can use it too instead of reinventing the wheel?
+
+Would you mean we should define the UNWIND_HINT_FUNC as a macro
+which depends on CONFIG_FRAME_POINTER, in <asm/unwind_hints.h>?
+
+Josh, what would you think?
+
+Thank you,
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
