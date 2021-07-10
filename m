@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176493C3641
-	for <lists+bpf@lfdr.de>; Sat, 10 Jul 2021 21:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0307F3C3653
+	for <lists+bpf@lfdr.de>; Sat, 10 Jul 2021 21:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhGJTEz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Jul 2021 15:04:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56593 "EHLO
+        id S229725AbhGJT1X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Jul 2021 15:27:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53803 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230134AbhGJTEy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 10 Jul 2021 15:04:54 -0400
+        by vger.kernel.org with ESMTP id S229599AbhGJT1X (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 10 Jul 2021 15:27:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1625943728;
+        s=mimecast20190719; t=1625945077;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=WY2G4cBLrLCEOZ7o93bnRE51RtVPXt+mCwJHsXQT/sk=;
-        b=XXTZkcvHZkq1so90VDRAz0j+m4P+ZCdDIse+eHWthPDjt++jhDdeUMf3YkIGHpCQBNTQB0
-        vSTFufMDopBvItrDeYaiEuHUYVj6+tWPQ3yr1ZMK2+yRK4HwrMv2QQC9kk2h0SBFlJjinU
-        LUK5/BC64MjIko5pAPrQQ+p/rKlcdp0=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-8B-id3m6PxCHXU6u6wePlg-1; Sat, 10 Jul 2021 15:02:07 -0400
-X-MC-Unique: 8B-id3m6PxCHXU6u6wePlg-1
-Received: by mail-qk1-f198.google.com with SMTP id 72-20020a37084b0000b02903b4fb87a336so9787695qki.23
-        for <bpf@vger.kernel.org>; Sat, 10 Jul 2021 12:02:07 -0700 (PDT)
+        bh=nRNmgWFE2tnoZRp6zNRhltOEmrGrbsSTJkaXswq9W80=;
+        b=ICoimJkEBfgTcfnklY/giIIHQM0+aRRASQy/gpI3NrT3TdNvyjjlBy/QowvBDZnYqtTeLI
+        l01ILxMK9sQ9GHsKcc0AeASc8KZ2UCZVXYCmWMxvAzF0dOmIfyAUZUbSpx1fVI5n5cjTF1
+        iD6zp1ywTG3i/XR4g+Ziuz43jHOcrbU=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-CcZb40xTNnGP_tknfrCzQQ-1; Sat, 10 Jul 2021 15:24:36 -0400
+X-MC-Unique: CcZb40xTNnGP_tknfrCzQQ-1
+Received: by mail-oi1-f198.google.com with SMTP id i133-20020acab88b0000b0290240dce28bb8so9416393oif.2
+        for <bpf@vger.kernel.org>; Sat, 10 Jul 2021 12:24:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=WY2G4cBLrLCEOZ7o93bnRE51RtVPXt+mCwJHsXQT/sk=;
-        b=AkTBw5PhOBAm+DwwRKySMbxJ33klU9at8Qe0DfAER/IFyzBLu7XJeTpoeTwf52ny8e
-         Sx2CxZHjxStNsMFrLYmqLdIPy3EajmQZkVyzpxYTTaRr60nICJJqeUoXCzQHNgmFMfjy
-         673hpjRudFqlN+ieaBQQuwoZ3EQYZR026lOxq+JHaXV6WSXnAFdLJ/pqLE3SulhHRrTX
-         EIuTlBl2DJl/m3FA1LLqcKwlcUcdsUXTWU0nMzyIlapYoRwpH6137QaT5JmrfVqLKAMX
-         zkGzeCFo7PVCCjm2C4/dQA9VquauA/vrF23KxuqfH7HzK/Aq7EWlshav8McyI+XpVI0I
-         iFow==
-X-Gm-Message-State: AOAM5302am6NQHprES1rHaFa8gXc1iPxwmQ0zoTEF7i8ljMlwaPs4UMy
-        X2H78lcxrwRmUpfolN12gRDo0sVkuuiHLGT1OHW90k/F0s/VJC6gXQHo2Kek3wGGwNjXlflEAy5
-        GuIyo3IuFIBke
-X-Received: by 2002:a05:620a:109a:: with SMTP id g26mr9206583qkk.25.1625943726999;
-        Sat, 10 Jul 2021 12:02:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJztUJiZ/ZNUppr/6J4ZCg3hmaNYpwXWSc+GqtgxVLS57QtktubXhbB9VGMXm/96TlpSOgzoDw==
-X-Received: by 2002:a05:620a:109a:: with SMTP id g26mr9206558qkk.25.1625943726757;
-        Sat, 10 Jul 2021 12:02:06 -0700 (PDT)
+        bh=nRNmgWFE2tnoZRp6zNRhltOEmrGrbsSTJkaXswq9W80=;
+        b=AAWys2VKHqaThy0oWsZGJjijRnJAqJiqw5BSlFlzgCv2poxlY13lj/mpur2IVfBnDJ
+         B+rZscaU4QkT6L7SW1A1+j+x2MnJ5nf8ZvwRYdpfyX44f2uYd4gFupW+syhjrH2bAHeD
+         UnrXb7iqwQRwY+iZjetvQcnLuLUdaaDXuXoFHcKC6m5PtTl3iJo6KsHc0BvrZK5DBVPa
+         LZSI4V6txzUYAQR/y0N47XSdYeY0PT8NxskOQ1ad3cxF+z5kXqfbYfe7HSkpiPoLaezG
+         mos06YeTopCJJ7GSEclBQlGKqcw48ruSn5+pd0+Du/JyeSvPIIhZXlAswaRXXCMbBUnH
+         oSwQ==
+X-Gm-Message-State: AOAM5332j9wyLvox1W8qarxopu7hZsoyTyl7zwkD3DwfTxk4Aj0X3g1u
+        achnxPTitu5xN+ybnrTA9etUsXTboFZHNAlinKp5rSdK1xoJ0bq+Xa0Lnz/btZIQpkkrcrkegx0
+        5vfeAtmkU43UX
+X-Received: by 2002:a05:6808:208a:: with SMTP id s10mr4471721oiw.97.1625945075775;
+        Sat, 10 Jul 2021 12:24:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz6kAn54z8yV+qVOMdVTMNE4oEPeAO1ygF2PHbv1jV7pZwgBekWPRTCzyHlv3bqX1K/Cjmoaw==
+X-Received: by 2002:a05:6808:208a:: with SMTP id s10mr4471700oiw.97.1625945075571;
+        Sat, 10 Jul 2021 12:24:35 -0700 (PDT)
 Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id 5sm3597556qtb.22.2021.07.10.12.02.04
+        by smtp.gmail.com with ESMTPSA id t21sm1943667otl.29.2021.07.10.12.24.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Jul 2021 12:02:06 -0700 (PDT)
-Date:   Sat, 10 Jul 2021 12:01:43 -0700
+        Sat, 10 Jul 2021 12:24:35 -0700 (PDT)
+Date:   Sat, 10 Jul 2021 12:24:33 -0700
 From:   Josh Poimboeuf <jpoimboe@redhat.com>
 To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -62,83 +62,77 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         yhs@fb.com, linux-ia64@vger.kernel.org,
         Abhishek Sagar <sagar.abhishek@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 05/13] x86/kprobes: Add UNWIND_HINT_FUNC on
- kretprobe_trampoline code
-Message-ID: <20210710190143.lrcsyal2ggubv43v@treble>
+Subject: [PATCH 1/2] objtool: Add frame-pointer-specific function ignore
+Message-ID: <20210710192433.x5cgjsq2ksvaqnss@treble>
 References: <162399992186.506599.8457763707951687195.stgit@devnote2>
  <162399996966.506599.810050095040575221.stgit@devnote2>
  <YOK8pzp8B2V+1EaU@gmail.com>
  <20210710003140.8e561ad33d42f9ac78de6a15@kernel.org>
  <20210710104104.3a270168811ac38420093276@kernel.org>
+ <20210710190143.lrcsyal2ggubv43v@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210710104104.3a270168811ac38420093276@kernel.org>
+In-Reply-To: <20210710190143.lrcsyal2ggubv43v@treble>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 10:41:04AM +0900, Masami Hiramatsu wrote:
-> Hi Ingo and Josh,
-> 
-> On Sat, 10 Jul 2021 00:31:40 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > > > +STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
-> > > > +#undef UNWIND_HINT_FUNC
-> > > > +#define UNWIND_HINT_FUNC
-> > > > +#endif
-> > > >  /*
-> > > >   * When a retprobed function returns, this code saves registers and
-> > > >   * calls trampoline_handler() runs, which calls the kretprobe's handler.
-> > > > @@ -1031,6 +1044,7 @@ asm(
-> > > >  	/* We don't bother saving the ss register */
-> > > >  #ifdef CONFIG_X86_64
-> > > >  	"	pushq %rsp\n"
-> > > > +	UNWIND_HINT_FUNC
-> > > >  	"	pushfq\n"
-> > > >  	SAVE_REGS_STRING
-> > > >  	"	movq %rsp, %rdi\n"
-> > > > @@ -1041,6 +1055,7 @@ asm(
-> > > >  	"	popfq\n"
-> > > >  #else
-> > > >  	"	pushl %esp\n"
-> > > > +	UNWIND_HINT_FUNC
-> > > >  	"	pushfl\n"
-> > > >  	SAVE_REGS_STRING
-> > > >  	"	movl %esp, %eax\n"
-> > > 
-> > > Why not provide an appropriate annotation method in <asm/unwind_hints.h>, 
-> > > so that other future code can use it too instead of reinventing the wheel?
-> 
-> I think I got what you meant. Let me summarize the issue.
-> 
-> In case of CONFIG_FRAME_POINTER=n, it is OK just adding UNWIND_HINT_FUNC.
-> 
-> In case of CONFIG_FRAME_POINTER=y, without STACK_FRAME_NON_STANDARD(),
-> the objtool complains that a CALL instruction without the frame pointer.
-> ---
->   arch/x86/kernel/kprobes/core.o: warning: objtool: __kretprobe_trampoline()+0x25: call without frame pointer save/setup
-> ---
-> 
-> If we just add STACK_FRAME_NON_STANDARD() with UNWIND_HINT_FUNC macro,
-> the objtool complains that non-standard function has unwind hint.
-> ---
-> arch/x86/kernel/kprobes/core.o: warning: objtool: __kretprobe_trampoline()+0x1: BUG: why am I validating an ignored function?
+Add a CONFIG_FRAME_POINTER-specific version of
+STACK_FRAME_NON_STANDARD() for the case where a function is
+intentionally missing frame pointer setup, but otherwise needs
+objtool/ORC coverage when frame pointers are disabled.
 
-I'm thinking this latter warning indicates an objtool bug (as the BUG
-warning claims).  If a function is ignored with
-STACK_FRAME_NON_STANDARD() then objtool should probably also ignore its
-hints.  Then we should be able to get rid of the #undef/#ifdef
-UNWIND_HINT_FUNC silliness.
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ include/linux/objtool.h       | 11 +++++++++++
+ tools/include/linux/objtool.h | 11 +++++++++++
+ 2 files changed, 22 insertions(+)
 
-The other warning is correct and STACK_FRAME_NON_STANDARD() still needs
-to be behind '#ifdef CONFIG_FRAME_POINTER' since the function is missing
-a frame pointer.  So maybe we can make a STACK_FRAME_NON_STANDARD_FP()
-or similar.
-
-I'll post a few patches.
-
+diff --git a/include/linux/objtool.h b/include/linux/objtool.h
+index 7e72d975cb76..c9575ed91052 100644
+--- a/include/linux/objtool.h
++++ b/include/linux/objtool.h
+@@ -66,6 +66,17 @@ struct unwind_hint {
+ 	static void __used __section(".discard.func_stack_frame_non_standard") \
+ 		*__func_stack_frame_non_standard_##func = func
+ 
++/*
++ * STACK_FRAME_NON_STANDARD_FP() is a frame-pointer-specific function ignore
++ * for the case where a function is intentionally missing frame pointer setup,
++ * but otherwise needs objtool/ORC coverage when frame pointers are disabled.
++ */
++#ifdef CONFIG_FRAME_POINTER
++#define STACK_FRAME_NON_STANDARD_FP(func) STACK_FRAME_NON_STANDARD(func)
++#else
++#define STACK_FRAME_NON_STANDARD_FP(func)
++#endif
++
+ #else /* __ASSEMBLY__ */
+ 
+ /*
+diff --git a/tools/include/linux/objtool.h b/tools/include/linux/objtool.h
+index 7e72d975cb76..c9575ed91052 100644
+--- a/tools/include/linux/objtool.h
++++ b/tools/include/linux/objtool.h
+@@ -66,6 +66,17 @@ struct unwind_hint {
+ 	static void __used __section(".discard.func_stack_frame_non_standard") \
+ 		*__func_stack_frame_non_standard_##func = func
+ 
++/*
++ * STACK_FRAME_NON_STANDARD_FP() is a frame-pointer-specific function ignore
++ * for the case where a function is intentionally missing frame pointer setup,
++ * but otherwise needs objtool/ORC coverage when frame pointers are disabled.
++ */
++#ifdef CONFIG_FRAME_POINTER
++#define STACK_FRAME_NON_STANDARD_FP(func) STACK_FRAME_NON_STANDARD(func)
++#else
++#define STACK_FRAME_NON_STANDARD_FP(func)
++#endif
++
+ #else /* __ASSEMBLY__ */
+ 
+ /*
 -- 
-Josh
+2.31.1
 
