@@ -2,92 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5713C3585
-	for <lists+bpf@lfdr.de>; Sat, 10 Jul 2021 18:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC373C35A7
+	for <lists+bpf@lfdr.de>; Sat, 10 Jul 2021 19:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbhGJQaO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Jul 2021 12:30:14 -0400
-Received: from smtprelay0252.hostedemail.com ([216.40.44.252]:35202 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229452AbhGJQaO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 10 Jul 2021 12:30:14 -0400
-Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 3C9BB181D3025;
-        Sat, 10 Jul 2021 16:27:28 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id 1F0D3240236;
-        Sat, 10 Jul 2021 16:27:24 +0000 (UTC)
-Message-ID: <dd3ec20d371703c121a18e91908ab8faa76c852d.camel@perches.com>
-Subject: Re: [PATCH -tip 6/6] kprobes: Use bool type for functions which
- returns boolean value
-From:   Joe Perches <joe@perches.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>, X86 ML <x86@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 10 Jul 2021 09:27:22 -0700
-In-Reply-To: <162592897337.1158485.13933847832718343850.stgit@devnote2>
-References: <162592891873.1158485.768824457210707916.stgit@devnote2>
-         <162592897337.1158485.13933847832718343850.stgit@devnote2>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S229746AbhGJQ6K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Jul 2021 12:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhGJQ6K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Jul 2021 12:58:10 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A86C0613DD;
+        Sat, 10 Jul 2021 09:55:23 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id i20so23024475ejw.4;
+        Sat, 10 Jul 2021 09:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wFOGf0fHXSe0uYH1tmI6V0veKuGmSA46Np9pjLsOr6k=;
+        b=vYfZROn7ptBqkU3Im7OlwsNbe/A2Gh3aliTChdfXPR3HHyB3RQdZXuaH/u1YLJLAqb
+         YZFhdLcpfF0SrC0yZ2QCXChwsYwest+lwWRQnWfLK1hB1R7198ESuok07s177eyVAdWN
+         AGW5fYKM9GWzOi/M6+b68CPq/NCpWBe8+G9CCLimRRzulDt8pccOPon4wEwxDIorI4Pi
+         3SBUVyOav/Wdq+GFKw1Vryp+qtRc2JBKCSo6Zby7Y7BFx4e8GlyqwcdKi314+TOt/RNQ
+         LuMlBhxKBGwXAMs/By/irykQ7bYBaLSLx7GrUiMZpma09hTy4LCiJGfHTgZxckWrX7bL
+         7KDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wFOGf0fHXSe0uYH1tmI6V0veKuGmSA46Np9pjLsOr6k=;
+        b=PHb6FOLLx6vAs7lv4ZRNUx7ZO0TeDOeMBsA1ZrBVWZHYpm5IMpxIoP6i06IGgfaExn
+         /Nbhnr81r1FULAKtwxoOZ4mLO5e9m0ppV40pp/FqlJX2z6jjDjCRCAGBEcFSXjXfWcOS
+         IbtyvOY8zmJPUj1xYjUUKE6dotEcScuxpW6pSYdWRJlKXaftuK30NtB1DmGZ5T23LX0u
+         ZZe/83usY/26bkTx1ONejbDfdgI5vlAleSNtP4KkvhlgankB3/XqLTY925RmFiRsQAOD
+         Cbic7yZ8AhyScv8T9WF+R0ex5onupIp4AclJ0TxU2EPkBWK6WI1LWaR00tgXmG0kK0ac
+         ESQg==
+X-Gm-Message-State: AOAM530N/Rse/AkNo1qo8lUQSdo1H/MYg5wcby/ySxLipiDtwMVZGwD4
+        cuSXyEJtlLrzz6qs1mQDOtHaL8kREvVT1cGSzCs=
+X-Google-Smtp-Source: ABdhPJxxt9ODBsxBDJLnHxPdf/hDZpSZAa+uRdNkcG6qKfOlipYLs/GxUeR682DoS7+WWT3ZyRlwTrWTwAthPpVKyNQ=
+X-Received: by 2002:a17:907:1ca4:: with SMTP id nb36mr43839266ejc.33.1625936122151;
+ Sat, 10 Jul 2021 09:55:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 1F0D3240236
-X-Spam-Status: No, score=1.59
-X-Stat-Signature: g7d5ey6794yc3adwpqbjf4sfbzj4aa8s
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18NhvQmIVgwou9EnrL7AsJoLwMB4STNfdM=
-X-HE-Tag: 1625934444-490807
+References: <1625903002-31619-1-git-send-email-linyunsheng@huawei.com> <1625903002-31619-3-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <1625903002-31619-3-git-send-email-linyunsheng@huawei.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Sat, 10 Jul 2021 09:55:10 -0700
+Message-ID: <CAKgT0UcRqRcj_zewRUH4Qe-AP_ykArK0hu76kcw2xjtvkTw07g@mail.gmail.com>
+Subject: Re: [PATCH rfc v2 2/5] page_pool: add interface for getting and
+ setting pagecnt_bias
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2021-07-10 at 23:56 +0900, Masami Hiramatsu wrote:
-> Use the 'bool' type instead of 'int' for the functions which
-> returns a boolean value, because this makes clear that those
-> functions don't return any error code.
-[]
-> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-[]
-> @@ -104,25 +104,25 @@ struct kprobe {
->  #define KPROBE_FLAG_FTRACE	8 /* probe is using ftrace */
->  
-> 
->  /* Has this kprobe gone ? */
-> -static inline int kprobe_gone(struct kprobe *p)
-> +static inline bool kprobe_gone(struct kprobe *p)
->  {
->  	return p->flags & KPROBE_FLAG_GONE;
->  }
+On Sat, Jul 10, 2021 at 12:44 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> As suggested by Alexander, "A DMA mapping should be page
+> aligned anyway so the lower 12 bits would be reserved 0",
+> so it might make more sense to repurpose the lower 12 bits
+> of the dma address to store the pagecnt_bias for elevated
+> refcnt case in page pool.
+>
+> As newly added page_pool_get_pagecnt_bias() may be called
+> outside of the softirq context, so annotate the access to
+> page->dma_addr[0] with READ_ONCE() and WRITE_ONCE().
+>
+> Other three interfaces using page->dma_addr[0] is only called
+> in the softirq context during normal rx processing, hopefully
+> the barrier in the rx processing will ensure the correct order
+> between getting and setting pagecnt_bias.
+>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+>  include/net/page_pool.h | 24 ++++++++++++++++++++++--
+>  1 file changed, 22 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index 8d7744d..5746f17 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -200,7 +200,7 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+>
+>  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+>  {
+> -       dma_addr_t ret = page->dma_addr[0];
+> +       dma_addr_t ret = READ_ONCE(page->dma_addr[0]) & PAGE_MASK;
+>         if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>                 ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
+>         return ret;
+> @@ -208,11 +208,31 @@ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+>
+>  static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+>  {
+> -       page->dma_addr[0] = addr;
+> +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
+> +
+> +       dma_addr_0 &= ~PAGE_MASK;
+> +       dma_addr_0 |= (addr & PAGE_MASK);
 
-This change would also allow the removal of the !! from:
+So rather than doing all this testing and clearing it would probably
+be better to add a return value to the function and do something like:
 
-kernel/trace/trace_kprobe.c:104:        return !!(kprobe_gone(&tk->rp.kp));
----
- kernel/trace/trace_kprobe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+if (WARN_ON(dma_addr_0 & ~PAGE_MASK))
+    return -1;
 
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index ea6178cb5e334..c6e0345a44e94 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -101,7 +101,7 @@ static nokprobe_inline unsigned long trace_kprobe_offset(struct trace_kprobe *tk
- 
- static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
- {
--	return !!(kprobe_gone(&tk->rp.kp));
-+	return kprobe_gone(&tk->rp.kp);
- }
- 
- static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+That way you could have page_pool_dma_map unmap, free the page, and
+return false indicating that the DMA mapping failed with a visible
+error in the event that our expectionat that the dma_addr is page
+aligned is ever violated.
 
+> +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
+> +
+>         if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>                 page->dma_addr[1] = upper_32_bits(addr);
+>  }
+>
+> +static inline int page_pool_get_pagecnt_bias(struct page *page)
+> +{
+> +       return (READ_ONCE(page->dma_addr[0]) & ~PAGE_MASK);
 
+You don't need the parenthesis around the READ_ONCE and PAGE_MASK.
+
+> +}
+> +
+> +static inline void page_pool_set_pagecnt_bias(struct page *page, int bias)
+> +{
+> +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
+> +
+> +       dma_addr_0 &= PAGE_MASK;
+> +       dma_addr_0 |= (bias & ~PAGE_MASK);
+> +
+> +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
+> +}
+> +
+>  static inline bool is_page_pool_compiled_in(void)
+>  {
+>  #ifdef CONFIG_PAGE_POOL
+> --
+> 2.7.4
+>
