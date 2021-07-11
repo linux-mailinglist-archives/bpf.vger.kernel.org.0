@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32913C3B0D
-	for <lists+bpf@lfdr.de>; Sun, 11 Jul 2021 09:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D203C3B10
+	for <lists+bpf@lfdr.de>; Sun, 11 Jul 2021 09:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhGKHhu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Jul 2021 03:37:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51482 "EHLO mail.kernel.org"
+        id S231948AbhGKHiK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Jul 2021 03:38:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229665AbhGKHhu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Jul 2021 03:37:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CB2C611F2;
-        Sun, 11 Jul 2021 07:34:59 +0000 (UTC)
+        id S229544AbhGKHiJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Jul 2021 03:38:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 461E361351;
+        Sun, 11 Jul 2021 07:35:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625988904;
-        bh=WBITSPMuY2SOSls7QrDZOVrbCRn44hMD3p0v4j9HBsQ=;
+        s=k20201202; t=1625988923;
+        bh=x8PNEapkwMCeHyZetcn1xOe4EMON80ikLqdwyrQ85HA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aWp1708QnYsUOvNJ0e/gaQjZVUp/++gNlIY4d/l8TMy/ckIBrgsUvh55feZ4ZlDBI
-         nXW39PCFkh4wVXR/DXy0M73iTRpq35pDfHpxGhLjtNwxpojvw20FabhtCel1RZpXxT
-         1CfjE9ZgVcm/Mx+EsjsuAqlhZvv1txuqhGewO154mtWRG/S3zpEi6h12y1rscKXvVK
-         bYeQdlXur6h9f1m0iSfmIquhib+Ox+csdnFXNbf6WitDfIHw2OoDcjZp0F6gPBfZ6C
-         6ECHeROQSgMf0bxtrJ6L7wOXzlvEG+8Dr6P670jGPbVIXNXxqUiSm9RaOO4VS5gJAr
-         YgoAGZp7uv5EQ==
+        b=uCw7n7OQeUdc23v4gERqzhW0b1mQaU/9f866PamBKFed7DmyKYDdX2vJSBmOOVAck
+         MTdlQvGeJhSWBjZsfIc74jdaZ0KmbRkeumisc6UVsChvwNWoav89a/fqU9vDIK8eSk
+         JqUsmy2QGt6mv3L19QwQSbW+klPQW7Rl6BH46EE5x8U5Qb0dPXcg++ppXh0cGtS099
+         3i5Le+AF5iV+M/Gso6HEjz8RscV6aU2aP9Lf9VWeJNV3xFlClPMkdwcln6/4odw/6H
+         kLjS/tLug5+HPRsBl1DgMousNO+NKumJLphAEJ2U15Vgjt/sKv4lcAxCRPOqshthHN
+         CUyuYIKeINAWg==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
@@ -37,9 +37,9 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Abhishek Sagar <sagar.abhishek@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Joe Perches <joe@perches.com>
-Subject: [PATCH -tip v2 4/6] kprobes: Add assertions for required lock
-Date:   Sun, 11 Jul 2021 16:34:51 +0900
-Message-Id: <162598889162.1222130.17913793574099353559.stgit@devnote2>
+Subject: [PATCH -tip v2 5/6] kprobes: treewide: Use 'kprobe_opcode_t *' for the code address in get_optimized_kprobe()
+Date:   Sun, 11 Jul 2021 16:35:09 +0900
+Message-Id: <162598890928.1222130.10593002740256697428.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <162598881438.1222130.11530594038964049135.stgit@devnote2>
 References: <162598881438.1222130.11530594038964049135.stgit@devnote2>
@@ -51,107 +51,131 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add assertions for required locks instead of comment it
-so that the lockdep can inspect locks automatically.
+Since get_optimized_kprobe() is only used inside kprobes,
+it doesn't need to use 'unsigned long' type for 'addr' parameter.
+Make it use 'kprobe_opcode_t *' for the 'addr' parameter and
+subsequent call of arch_within_optimized_kprobe() also should use
+'kprobe_opcode_t *'.
+
+Note that MAX_OPTIMIZED_LENGTH and RELATIVEJUMP_SIZE are defined
+by byte-size, but the size of 'kprobe_opcode_t' depends on the
+architecture. Therefore, we must be careful when calculating
+addresses using those macros.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- kernel/kprobes.c |   19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ arch/arm/probes/kprobes/opt-arm.c |    7 ++++---
+ arch/powerpc/kernel/optprobes.c   |    6 +++---
+ arch/x86/kernel/kprobes/opt.c     |    6 +++---
+ include/linux/kprobes.h           |    2 +-
+ kernel/kprobes.c                  |   10 +++++-----
+ 5 files changed, 16 insertions(+), 15 deletions(-)
 
+diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
+index c78180172120..dbef34ed933f 100644
+--- a/arch/arm/probes/kprobes/opt-arm.c
++++ b/arch/arm/probes/kprobes/opt-arm.c
+@@ -347,10 +347,11 @@ void arch_unoptimize_kprobes(struct list_head *oplist,
+ }
+ 
+ int arch_within_optimized_kprobe(struct optimized_kprobe *op,
+-				unsigned long addr)
++				 kprobe_opcode_t *addr)
+ {
+-	return ((unsigned long)op->kp.addr <= addr &&
+-		(unsigned long)op->kp.addr + RELATIVEJUMP_SIZE > addr);
++	return (op->kp.addr <= addr &&
++		op->kp.addr + (RELATIVEJUMP_SIZE / sizeof(kprobe_opcode_t)) > addr);
++
+ }
+ 
+ void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
+diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optprobes.c
+index c79899abcec8..325ba544883c 100644
+--- a/arch/powerpc/kernel/optprobes.c
++++ b/arch/powerpc/kernel/optprobes.c
+@@ -301,8 +301,8 @@ void arch_unoptimize_kprobes(struct list_head *oplist, struct list_head *done_li
+ 	}
+ }
+ 
+-int arch_within_optimized_kprobe(struct optimized_kprobe *op, unsigned long addr)
++int arch_within_optimized_kprobe(struct optimized_kprobe *op, kprobe_opcode_t *addr)
+ {
+-	return ((unsigned long)op->kp.addr <= addr &&
+-		(unsigned long)op->kp.addr + RELATIVEJUMP_SIZE > addr);
++	return (op->kp.addr <= addr &&
++		op->kp.addr + (RELATIVEJUMP_SIZE / sizeof(kprobe_opcode_t)) > addr);
+ }
+diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
+index 71425ebba98a..b4a54a52aa59 100644
+--- a/arch/x86/kernel/kprobes/opt.c
++++ b/arch/x86/kernel/kprobes/opt.c
+@@ -367,10 +367,10 @@ int arch_check_optimized_kprobe(struct optimized_kprobe *op)
+ 
+ /* Check the addr is within the optimized instructions. */
+ int arch_within_optimized_kprobe(struct optimized_kprobe *op,
+-				 unsigned long addr)
++				 kprobe_opcode_t *addr)
+ {
+-	return ((unsigned long)op->kp.addr <= addr &&
+-		(unsigned long)op->kp.addr + op->optinsn.size > addr);
++	return (op->kp.addr <= addr &&
++		op->kp.addr + op->optinsn.size > addr);
+ }
+ 
+ /* Free optimized instruction slot */
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 3d02917c837b..bb6d1e72a943 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -329,7 +329,7 @@ extern void arch_unoptimize_kprobes(struct list_head *oplist,
+ 				    struct list_head *done_list);
+ extern void arch_unoptimize_kprobe(struct optimized_kprobe *op);
+ extern int arch_within_optimized_kprobe(struct optimized_kprobe *op,
+-					unsigned long addr);
++					kprobe_opcode_t *addr);
+ 
+ extern void opt_pre_handler(struct kprobe *p, struct pt_regs *regs);
+ 
 diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index e5e1400072c8..a99fd840b5c9 100644
+index a99fd840b5c9..e30c639fe2cc 100644
 --- a/kernel/kprobes.c
 +++ b/kernel/kprobes.c
-@@ -959,11 +959,13 @@ int proc_kprobes_optimization_handler(struct ctl_table *table, int write,
- }
- #endif /* CONFIG_SYSCTL */
- 
--/* Put a breakpoint for a probe. Must be called with 'text_mutex' locked. */
-+/* Put a breakpoint for a probe. */
- static void __arm_kprobe(struct kprobe *p)
+@@ -485,15 +485,15 @@ static int kprobe_queued(struct kprobe *p)
+  * Return an optimized kprobe whose optimizing code replaces
+  * instructions including 'addr' (exclude breakpoint).
+  */
+-static struct kprobe *get_optimized_kprobe(unsigned long addr)
++static struct kprobe *get_optimized_kprobe(kprobe_opcode_t *addr)
  {
- 	struct kprobe *_p;
+ 	int i;
+ 	struct kprobe *p = NULL;
+ 	struct optimized_kprobe *op;
  
-+	lockdep_assert_held(&text_mutex);
-+
+ 	/* Don't check i == 0, since that is a breakpoint case. */
+-	for (i = 1; !p && i < MAX_OPTIMIZED_LENGTH; i++)
+-		p = get_kprobe((void *)(addr - i));
++	for (i = 1; !p && i < MAX_OPTIMIZED_LENGTH / sizeof(kprobe_opcode_t); i++)
++		p = get_kprobe(addr - i);
+ 
+ 	if (p && kprobe_optready(p)) {
+ 		op = container_of(p, struct optimized_kprobe, kp);
+@@ -967,7 +967,7 @@ static void __arm_kprobe(struct kprobe *p)
+ 	lockdep_assert_held(&text_mutex);
+ 
  	/* Find the overlapping optimized kprobes. */
- 	_p = get_optimized_kprobe((unsigned long)p->addr);
+-	_p = get_optimized_kprobe((unsigned long)p->addr);
++	_p = get_optimized_kprobe(p->addr);
  	if (unlikely(_p))
-@@ -974,11 +976,13 @@ static void __arm_kprobe(struct kprobe *p)
- 	optimize_kprobe(p);	/* Try to optimize (add kprobe to a list) */
- }
- 
--/* Remove the breakpoint of a probe. Must be called with 'text_mutex' locked. */
-+/* Remove the breakpoint of a probe. */
- static void __disarm_kprobe(struct kprobe *p, bool reopt)
- {
- 	struct kprobe *_p;
- 
-+	lockdep_assert_held(&text_mutex);
-+
- 	/* Try to unoptimize */
- 	unoptimize_kprobe(p, kprobes_all_disarmed);
- 
-@@ -1056,12 +1060,13 @@ static int prepare_kprobe(struct kprobe *p)
- 	return arch_prepare_kprobe_ftrace(p);
- }
- 
--/* Caller must lock 'kprobe_mutex' */
- static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 			       int *cnt)
- {
- 	int ret = 0;
- 
-+	lockdep_assert_held(&kprobe_mutex);
-+
- 	ret = ftrace_set_filter_ip(ops, (unsigned long)p->addr, 0, 0);
- 	if (WARN_ONCE(ret < 0, "Failed to arm kprobe-ftrace at %pS (error %d)\n", p->addr, ret))
- 		return ret;
-@@ -1093,12 +1098,13 @@ static int arm_kprobe_ftrace(struct kprobe *p)
- 		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
- }
- 
--/* Caller must lock 'kprobe_mutex'. */
- static int __disarm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 				  int *cnt)
- {
- 	int ret = 0;
- 
-+	lockdep_assert_held(&kprobe_mutex);
-+
- 	if (*cnt == 1) {
- 		ret = unregister_ftrace_function(ops);
- 		if (WARN(ret < 0, "Failed to unregister kprobe-ftrace (error %d)\n", ret))
-@@ -1138,7 +1144,6 @@ static inline int disarm_kprobe_ftrace(struct kprobe *p)
- }
- #endif
- 
--/* Arm a kprobe with 'text_mutex'. */
- static int arm_kprobe(struct kprobe *kp)
- {
- 	if (unlikely(kprobe_ftrace(kp)))
-@@ -1153,7 +1158,6 @@ static int arm_kprobe(struct kprobe *kp)
- 	return 0;
- }
- 
--/* Disarm a kprobe with 'text_mutex'. */
- static int disarm_kprobe(struct kprobe *kp, bool reopt)
- {
- 	if (unlikely(kprobe_ftrace(kp)))
-@@ -1696,12 +1700,13 @@ static int aggr_kprobe_disabled(struct kprobe *ap)
- 	return 1;
- }
- 
--/* Disable one kprobe: Make sure called under 'kprobe_mutex' is locked. */
- static struct kprobe *__disable_kprobe(struct kprobe *p)
- {
- 	struct kprobe *orig_p;
- 	int ret;
- 
-+	lockdep_assert_held(&kprobe_mutex);
-+
- 	/* Get an original kprobe for return */
- 	orig_p = __get_valid_kprobe(p);
- 	if (unlikely(orig_p == NULL))
+ 		/* Fallback to unoptimized kprobe */
+ 		unoptimize_kprobe(_p, true);
+@@ -989,7 +989,7 @@ static void __disarm_kprobe(struct kprobe *p, bool reopt)
+ 	if (!kprobe_queued(p)) {
+ 		arch_disarm_kprobe(p);
+ 		/* If another kprobe was blocked, re-optimize it. */
+-		_p = get_optimized_kprobe((unsigned long)p->addr);
++		_p = get_optimized_kprobe(p->addr);
+ 		if (unlikely(_p) && reopt)
+ 			optimize_kprobe(_p);
+ 	}
 
