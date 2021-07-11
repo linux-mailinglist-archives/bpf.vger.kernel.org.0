@@ -2,124 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71D03C3D3B
-	for <lists+bpf@lfdr.de>; Sun, 11 Jul 2021 16:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500F83C3D63
+	for <lists+bpf@lfdr.de>; Sun, 11 Jul 2021 16:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbhGKOMB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Jul 2021 10:12:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232544AbhGKOMA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Jul 2021 10:12:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C7EE61156;
-        Sun, 11 Jul 2021 14:09:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626012554;
-        bh=i2fNzSjVsNS7h5czCODLDyPYDvbmFr0lvLFj67DgUho=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AH/UnpLXKJqBzTKfaPEPvgAFQbwrjI/ubNwdP4j8ChqB6Vb/rAIATXv/NqnImWz4K
-         sZ+lOMp407S3ym1dvHf7rCvYggASAeQlGNuY9Rau0fgVKjA6mMOyjLJqFPGWVAyARd
-         vmHwVw3SjMas3CZibt1oUT+M4kz9P1Lkz3EbYpwjeUFdMMeR1wW7oGB7O444NFWFMm
-         BIBEKy4QGXiOO9j/Z9qM2lP2kVFERtNbx1vdFsjTHXjWx9Y2uLh+I5hKoPpgWt5MhO
-         4bI7ThCIsfTDzHt99iawJP/Kf3MIsHxWj0roiAmKhO1ON6yo9AmYlVM+G0UgCzkntd
-         eqf3YHN7Fm7Lw==
-Date:   Sun, 11 Jul 2021 23:09:09 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Matt Wu <wuqiang.matt@bytedance.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
- entry
-Message-Id: <20210711230909.dac1ff010a94831d5e9c25cd@kernel.org>
-In-Reply-To: <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
-References: <162399992186.506599.8457763707951687195.stgit@devnote2>
-        <162400002631.506599.2413605639666466945.stgit@devnote2>
-        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
-        <20210706004257.9e282b98f447251a380f658f@kernel.org>
-        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
-        <20210706111136.7c5e9843@oasis.local.home>
-        <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
-        <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
-        <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
-        <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
-        <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
-        <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233374AbhGKOuy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Jul 2021 10:50:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20155 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233371AbhGKOuy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 11 Jul 2021 10:50:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626014887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sgdys5iPg6wbkjWewjIY9i4QMskjqyv3n0Knxnjyej0=;
+        b=U5bW3yKGpDcGXmv0ZADCQ1IpbYJB7JAgc2ZYNbKjZIALJVJ3UJ5Jg0c9CTcAgFFdgvmb7F
+        LRlocW/HbQubHqxbxK5iLe3Lq8kK6gO5W8sC5SlUU8OYZEH+rl2yvU2/h5Z0Y8ZfbbQEDv
+        eJuHKWv0PylQbPcs8R9BJNn3M5MjrKE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-as6nKppQOuqT0aWMzm9yGw-1; Sun, 11 Jul 2021 10:48:05 -0400
+X-MC-Unique: as6nKppQOuqT0aWMzm9yGw-1
+Received: by mail-ed1-f69.google.com with SMTP id j25-20020aa7ca590000b029039c88110440so8332598edt.15
+        for <bpf@vger.kernel.org>; Sun, 11 Jul 2021 07:48:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Sgdys5iPg6wbkjWewjIY9i4QMskjqyv3n0Knxnjyej0=;
+        b=YDEFlOv9e5S+2NSynqpHfEwy/yTFnx/8KCM1dflm4TiENdkb6urb3YHfO09CGKeYJ8
+         V4TawoPD8HatTu+IMdPq254eXNcO0aFxAACWwuLjZRrnt1B/h9kN4QbnIb1IbL+OfNN5
+         H3+4VxnoGfhQALpRHksMhmil2+gwJW+fg13lHdRakRDNdde9Hc2Mi5OpJlFRbS3vSSYf
+         b9Tp1knoWjS6Uj7eXudu2Xe/JTbLYx5X6Luz80iwvmHEBaXQUip7nGJY2M1IbXbWAoO9
+         //GFUvY5pc1afoeheR2w50DErh9sTBJlgUyVY/f6qDItQzk7Ww81wvp1p+AD0G60vjju
+         ecIw==
+X-Gm-Message-State: AOAM530VblKhxYK5kcukVJaEcEg5cNWsuLTv9sC8CpFhQFjIZwCh7FVI
+        7oFFl+rPCC+KSFec+LwIgDa6Mt2k9J2+zV3F1RIgPgkSonCDL8Vr1s03AQuwNdE4nKGIOGXizEz
+        lZHb3c5eNpTGE
+X-Received: by 2002:a17:906:4551:: with SMTP id s17mr10913012ejq.26.1626014884683;
+        Sun, 11 Jul 2021 07:48:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyGWDmZi1hvVjtt6uwRHOfu+Q23TC5jE2YxihaGfMzLC/Q+x603fLRqAC8+oo509HTH689aOQ==
+X-Received: by 2002:a17:906:4551:: with SMTP id s17mr10912999ejq.26.1626014884479;
+        Sun, 11 Jul 2021 07:48:04 -0700 (PDT)
+Received: from krava ([5.171.250.127])
+        by smtp.gmail.com with ESMTPSA id k14sm6334314edq.79.2021.07.11.07.48.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Jul 2021 07:48:04 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 16:48:00 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: Re: [PATCHv3 bpf-next 3/7] bpf: Add bpf_get_func_ip helper for
+ tracing programs
+Message-ID: <YOsEoLogYRy7TiJg@krava>
+References: <20210707214751.159713-1-jolsa@kernel.org>
+ <20210707214751.159713-4-jolsa@kernel.org>
+ <20210708021123.w4smo42jml57iowl@ast-mbp.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708021123.w4smo42jml57iowl@ast-mbp.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 7 Jul 2021 22:42:47 +0800
-Matt Wu <wuqiang.matt@bytedance.com> wrote:
-
-> On 2021/7/7 PM9:29, Masami Hiramatsu wrote:
-> > On Wed, 7 Jul 2021 19:45:30 +0900
-> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > 
-> >> On Wed, 7 Jul 2021 12:20:57 +0200
-> >> Peter Zijlstra <peterz@infradead.org> wrote:
-> >>
-> >>> On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
-> >>>
-> >>>> I actually don't want to keep this feature because no one use it.
-> >>>> (only systemtap needs it?)
-> >>>
-> >>> Yeah, you mentioned systemtap, but since that's out-of-tree I don't
-> >>> care. Their problem.
-> > 
-> > Yeah, maybe it is not hard to update.
-> > 
-> >>>
-> >>>> Anyway, if we keep the idea-level compatibility (not code level),
-> >>>> what we need is 'void *data' in the struct kretprobe_instance.
-> >>>> User who needs it can allocate their own instance data for their
-> >>>> kretprobes when initialising it and sets in their entry handler.
-> >>>>
-> >>>> Then we can have a simple kretprobe_instance.
-> >>>
-> >>> When would you do the alloc? When installing the retprobe, but that
-> >>> might be inside the allocator, which means you can't call the allocator
-> >>> etc.. :-)
-> >>
-> >> Yes, so the user may need to allocate a pool right before register_kretprobe().
-> >> (whether per-kretprobe or per-task or global pool, that is user's choice.)
-> >>
-> >>>
-> >>> If we look at struct ftrace_ret_stack, it has a few fixed function
-> >>> fields. The calltime one is all that is needed for the kretprobe
-> >>> example code.
-> >>
-> >> kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
-> >> stores callee function address in 'kretprobe::kp.addr'), a return
-> >> address and a frame pointer (*).
-> >  > Oops, I forgot to add "void *data" for storing user data.
-> > 
+On Wed, Jul 07, 2021 at 07:11:23PM -0700, Alexei Starovoitov wrote:
+> On Wed, Jul 07, 2021 at 11:47:47PM +0200, Jiri Olsa wrote:
+> >  
+> > +static bool allow_get_func_ip_tracing(struct bpf_verifier_env *env)
+> > +{
+> > +	return env->prog->jit_requested && IS_ENABLED(CONFIG_X86_64);
 > 
-> Should use "struct kretprobe_holder *rph", since "struct kretprobe" belongs
-> to 3rd-party module (which might be unloaded any time).
+> Why does it have to be gated by 'jited && x86_64' ?
+> It's gated by bpf trampoline and it's only implemented on x86_64 so far.
+> The trampoline has plenty of features. I would expect bpf trampoline
+> for arm64 to implement all of them. If not the func_ip would be just
+> one of the trampoline features that couldn't be implemented and at that
+> time we'd need a flag mask of a sort, but I'd rather push of feature
+> equivalence between trampoline implementations.
 
-Good catch. Yes, instead of 'struct kretprobe', we need to use the holder.
+ok, check for trampoline's prog types should be enough
 
-> User's own pool might not work if the module can be unloaded. Better manage
-> the pool in kretprobe_holder, which needs no changes from user side.
+> 
+> Then jited part also doesn't seem to be necessary.
+> The trampoline passed pointer to a stack in R1.
+> Interpreter should deal with BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1, -8) insn
+> the same way and it should work, since trampoline prepared it.
+> What did I miss?
 
-No, since the 'data' will be only refered from user handler. If the kretprobe
-is released, then the kretprobe_holder will clear the refernce to the 'struct
-kretprobe'. Then, the user handler is never called. No one access the 'data'.
+ah right.. will remove that
 
-Thank you,
+SNIP
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 64bd2d84367f..9edd3b1a00ad 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -948,6 +948,19 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+> >  	.arg5_type	= ARG_ANYTHING,
+> >  };
+> >  
+> > +BPF_CALL_1(bpf_get_func_ip_tracing, void *, ctx)
+> > +{
+> > +	/* Stub, the helper call is inlined in the program. */
+> > +	return 0;
+> > +}
+> 
+> may be add a WARN in here that it should never be executed ?
+> Or may be add an actual implementation:
+>  return ((u64 *)ctx)[-1];
+> and check that it works without inlining by the verifier?
+> 
+
+sure, but having tracing program with this helper, it will be
+always inlined, right? I can't see how it could be skipped
+
+thanks,
+jirka
+
