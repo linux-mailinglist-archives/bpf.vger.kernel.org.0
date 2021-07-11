@@ -2,105 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B471A3C39D3
-	for <lists+bpf@lfdr.de>; Sun, 11 Jul 2021 03:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F190B3C39D6
+	for <lists+bpf@lfdr.de>; Sun, 11 Jul 2021 03:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhGKB3R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Jul 2021 21:29:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhGKB3R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Jul 2021 21:29:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C3F961278;
-        Sun, 11 Jul 2021 01:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625966791;
-        bh=PV9N7JnYv9F98KCENyu3s5fMBWIhEK3SUc/c5d6y7v8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=g1TllhmIQ9ljDTRH9sWoeexIgYLsX6dEtnqqIKX8KawgDfOGy8Z7ETKuuofy40dsv
-         JmGHt3VEM2gen4OW0A9RLAAxRwXz3cjuneBakkonYtMx5FCHjJsAzq00OPbOl8Gu1u
-         0QUB3OC8V9J7DS1ZPaw3z+4lBialGPinQzmPzwErTNqbOwomDz//38Ho3GtC5/ftGM
-         la4cAF5zvsRoNX80JDeuYIIGtoxRec+O92+FG49RoXH1dSQBSIiZiVanYW6E0hhLLK
-         cmh9u9Bk4T1ZXc5u7seYbGBgxCTN1QByTWZD1U/YNTxr5lEQo17nIrMyvikATJOScT
-         6vcp1Uq2wx1TA==
-Date:   Sun, 11 Jul 2021 10:26:27 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH -tip 6/6] kprobes: Use bool type for functions which
- returns boolean value
-Message-Id: <20210711102627.aacd375107225da46473e2ee@kernel.org>
-In-Reply-To: <dd3ec20d371703c121a18e91908ab8faa76c852d.camel@perches.com>
-References: <162592891873.1158485.768824457210707916.stgit@devnote2>
-        <162592897337.1158485.13933847832718343850.stgit@devnote2>
-        <dd3ec20d371703c121a18e91908ab8faa76c852d.camel@perches.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S230497AbhGKBaK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Jul 2021 21:30:10 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:8780 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229640AbhGKBaK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 10 Jul 2021 21:30:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UfKzX5f_1625966840;
+Received: from B-39YZML7H-2200.local(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0UfKzX5f_1625966840)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 11 Jul 2021 09:27:20 +0800
+Subject: Re: [PATCH bpf-next v3 2/2] libbpf: Fix the possible memory leak
+ caused by obj->kconfig
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <1625798873-55442-1-git-send-email-chengshuyi@linux.alibaba.com>
+ <1625798873-55442-3-git-send-email-chengshuyi@linux.alibaba.com>
+ <20210710144248.GA1931@kadam>
+From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Message-ID: <03eac45f-cc30-f9d3-ab36-892e5757e01b@linux.alibaba.com>
+Date:   Sun, 11 Jul 2021 09:27:20 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210710144248.GA1931@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 10 Jul 2021 09:27:22 -0700
-Joe Perches <joe@perches.com> wrote:
 
-> On Sat, 2021-07-10 at 23:56 +0900, Masami Hiramatsu wrote:
-> > Use the 'bool' type instead of 'int' for the functions which
-> > returns a boolean value, because this makes clear that those
-> > functions don't return any error code.
-> []
-> > diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-> []
-> > @@ -104,25 +104,25 @@ struct kprobe {
-> >  #define KPROBE_FLAG_FTRACE	8 /* probe is using ftrace */
-> >  
-> > 
-> >  /* Has this kprobe gone ? */
-> > -static inline int kprobe_gone(struct kprobe *p)
-> > +static inline bool kprobe_gone(struct kprobe *p)
-> >  {
-> >  	return p->flags & KPROBE_FLAG_GONE;
-> >  }
+
+On 7/10/21 10:42 PM, Dan Carpenter wrote:
+> On Fri, Jul 09, 2021 at 10:47:53AM +0800, Shuyi Cheng wrote:
+>> When obj->kconfig is NULL, ERR_PTR(-ENOMEM) should not be returned
+>> directly, err=-ENOMEM should be set, and then goto out.
+>>
 > 
-> This change would also allow the removal of the !! from:
+> The commit message needs to say what the problem is that the patch is
+> fixing.  Here is a better commit message:
 > 
-> kernel/trace/trace_kprobe.c:104:        return !!(kprobe_gone(&tk->rp.kp));
-
-Good catch! OK, I'll update 
-
-Thank you,
-
-> ---
->  kernel/trace/trace_kprobe.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> [PATCH bpf-next v3 2/2] libbpf: Fix the possible memory leak on error
 > 
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index ea6178cb5e334..c6e0345a44e94 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -101,7 +101,7 @@ static nokprobe_inline unsigned long trace_kprobe_offset(struct trace_kprobe *tk
->  
->  static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
->  {
-> -	return !!(kprobe_gone(&tk->rp.kp));
-> +	return kprobe_gone(&tk->rp.kp);
->  }
->  
->  static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+> If the strdup() fails then we need to call bpf_object__close(obj) to
+> avoid a resource leak.
 > 
+> Add a Fixes tag as well.
+
+Agree, Thanks.
+
+After Andrii reviews the patch, I will resend a new patch.
+
+regards,
+Shuyi
+
 > 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> regards,
+> dan carpenter
+> 
