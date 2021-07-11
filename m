@@ -2,160 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70CD3C3D0A
-	for <lists+bpf@lfdr.de>; Sun, 11 Jul 2021 15:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71D03C3D3B
+	for <lists+bpf@lfdr.de>; Sun, 11 Jul 2021 16:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhGKNj6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Jul 2021 09:39:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49670 "EHLO mail.kernel.org"
+        id S233014AbhGKOMB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Jul 2021 10:12:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233186AbhGKNj4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Jul 2021 09:39:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65A55613BE;
-        Sun, 11 Jul 2021 13:37:07 +0000 (UTC)
+        id S232544AbhGKOMA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Jul 2021 10:12:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C7EE61156;
+        Sun, 11 Jul 2021 14:09:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626010629;
-        bh=EA+8ZaxGT189GQkRT4MyyUpyFhpU0OscBHCXHquT7pY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hW8laBCQicDcEORU6dyr71h2iympcLwMkxaYXh2gF4hBiiqrxPjPFdeDGUktIQwrb
-         7F6F6tE529ATwn0o+XEC0q2c9oQX4h/EJBbDgU1vdv86J17r/YLkgaJlcMOikhOEEP
-         Z+QEH8M1Qjd05Ac18Yz8V1RXJU9CotL5EVZpJYc7yPYyjc1HAhra+dsxYE+xd7KClg
-         nnmpHmj7QQAG4x6Ym4i+TdYaRDhcdJavl3jp+rLWn9KicE7qRv40xPO9q6/cCO1Lg6
-         KmkDTBajyv0eEgNyjz5uZLrLS5nJxrdYJoygHC2JCqa75oRtpXqcJxp5b5nlu6Ka86
-         sHrBu6aVNN5sg==
+        s=k20201202; t=1626012554;
+        bh=i2fNzSjVsNS7h5czCODLDyPYDvbmFr0lvLFj67DgUho=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AH/UnpLXKJqBzTKfaPEPvgAFQbwrjI/ubNwdP4j8ChqB6Vb/rAIATXv/NqnImWz4K
+         sZ+lOMp407S3ym1dvHf7rCvYggASAeQlGNuY9Rau0fgVKjA6mMOyjLJqFPGWVAyARd
+         vmHwVw3SjMas3CZibt1oUT+M4kz9P1Lkz3EbYpwjeUFdMMeR1wW7oGB7O444NFWFMm
+         BIBEKy4QGXiOO9j/Z9qM2lP2kVFERtNbx1vdFsjTHXjWx9Y2uLh+I5hKoPpgWt5MhO
+         4bI7ThCIsfTDzHt99iawJP/Kf3MIsHxWj0roiAmKhO1ON6yo9AmYlVM+G0UgCzkntd
+         eqf3YHN7Fm7Lw==
+Date:   Sun, 11 Jul 2021 23:09:09 +0900
 From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
+To:     Matt Wu <wuqiang.matt@bytedance.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
         Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
         bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
         ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
         Abhishek Sagar <sagar.abhishek@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH -tip v9 14/14] x86/kprobes: Fixup return address in generic trampoline handler
-Date:   Sun, 11 Jul 2021 22:37:06 +0900
-Message-Id: <162601062597.1318837.16157770826588124346.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162601048053.1318837.1550594515476777588.stgit@devnote2>
-References: <162601048053.1318837.1550594515476777588.stgit@devnote2>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-Id: <20210711230909.dac1ff010a94831d5e9c25cd@kernel.org>
+In-Reply-To: <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162400002631.506599.2413605639666466945.stgit@devnote2>
+        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+        <20210706004257.9e282b98f447251a380f658f@kernel.org>
+        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+        <20210706111136.7c5e9843@oasis.local.home>
+        <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+        <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
+        <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
+        <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
+        <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
+        <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In x86, the fake return address on the stack saved by
-__kretprobe_trampoline() will be replaced with the real return
-address after returning from trampoline_handler(). Before fixing
-the return address, the real return address can be found in the
-'current->kretprobe_instances'.
+On Wed, 7 Jul 2021 22:42:47 +0800
+Matt Wu <wuqiang.matt@bytedance.com> wrote:
 
-However, since there is a window between updating the
-'current->kretprobe_instances' and fixing the address on the stack,
-if an interrupt happens at that timing and the interrupt handler
-does stacktrace, it may fail to unwind because it can not get
-the correct return address from 'current->kretprobe_instances'.
+> On 2021/7/7 PM9:29, Masami Hiramatsu wrote:
+> > On Wed, 7 Jul 2021 19:45:30 +0900
+> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > 
+> >> On Wed, 7 Jul 2021 12:20:57 +0200
+> >> Peter Zijlstra <peterz@infradead.org> wrote:
+> >>
+> >>> On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
+> >>>
+> >>>> I actually don't want to keep this feature because no one use it.
+> >>>> (only systemtap needs it?)
+> >>>
+> >>> Yeah, you mentioned systemtap, but since that's out-of-tree I don't
+> >>> care. Their problem.
+> > 
+> > Yeah, maybe it is not hard to update.
+> > 
+> >>>
+> >>>> Anyway, if we keep the idea-level compatibility (not code level),
+> >>>> what we need is 'void *data' in the struct kretprobe_instance.
+> >>>> User who needs it can allocate their own instance data for their
+> >>>> kretprobes when initialising it and sets in their entry handler.
+> >>>>
+> >>>> Then we can have a simple kretprobe_instance.
+> >>>
+> >>> When would you do the alloc? When installing the retprobe, but that
+> >>> might be inside the allocator, which means you can't call the allocator
+> >>> etc.. :-)
+> >>
+> >> Yes, so the user may need to allocate a pool right before register_kretprobe().
+> >> (whether per-kretprobe or per-task or global pool, that is user's choice.)
+> >>
+> >>>
+> >>> If we look at struct ftrace_ret_stack, it has a few fixed function
+> >>> fields. The calltime one is all that is needed for the kretprobe
+> >>> example code.
+> >>
+> >> kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
+> >> stores callee function address in 'kretprobe::kp.addr'), a return
+> >> address and a frame pointer (*).
+> >  > Oops, I forgot to add "void *data" for storing user data.
+> > 
+> 
+> Should use "struct kretprobe_holder *rph", since "struct kretprobe" belongs
+> to 3rd-party module (which might be unloaded any time).
 
-This will eliminate that window by fixing the return address
-right before updating 'current->kretprobe_instances'.
+Good catch. Yes, instead of 'struct kretprobe', we need to use the holder.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Andrii Nakryiko <andrii@kernel.org>
----
- Changes in v9:
-  - Fixes the changelog. This can eliminate the window.
-  - Add more comment how it works.
- Changes in v7:
-  - Add a prototype for arch_kretprobe_fixup_return()
----
- arch/x86/kernel/kprobes/core.c |   18 ++++++++++++++++--
- include/linux/kprobes.h        |    3 +++
- kernel/kprobes.c               |   11 +++++++++++
- 3 files changed, 30 insertions(+), 2 deletions(-)
+> User's own pool might not work if the module can be unloaded. Better manage
+> the pool in kretprobe_holder, which needs no changes from user side.
 
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 7e1111c19605..fce99e249d61 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -1065,6 +1065,16 @@ NOKPROBE_SYMBOL(__kretprobe_trampoline);
-  */
- STACK_FRAME_NON_STANDARD_FP(__kretprobe_trampoline);
- 
-+/* This is called from kretprobe_trampoline_handler(). */
-+void arch_kretprobe_fixup_return(struct pt_regs *regs,
-+				 kprobe_opcode_t *correct_ret_addr)
-+{
-+	unsigned long *frame_pointer = &regs->sp + 1;
-+
-+	/* Replace fake return address with real one. */
-+	*frame_pointer = (unsigned long)correct_ret_addr;
-+}
-+
- /*
-  * Called from __kretprobe_trampoline
-  */
-@@ -1082,8 +1092,12 @@ __used __visible void trampoline_handler(struct pt_regs *regs)
- 	regs->sp += sizeof(long);
- 	frame_pointer = &regs->sp + 1;
- 
--	/* Replace fake return address with real one. */
--	*frame_pointer = kretprobe_trampoline_handler(regs, frame_pointer);
-+	/*
-+	 * The return address at 'frame_pointer' is recovered by the
-+	 * arch_kretprobe_fixup_return() which called from the
-+	 * kretprobe_trampoline_handler().
-+	 */
-+	kretprobe_trampoline_handler(regs, frame_pointer);
- 
- 	/*
- 	 * Copy FLAGS to 'pt_regs::sp' so that __kretprobe_trapmoline()
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 4715a67d39fc..bfd73263496e 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -188,6 +188,9 @@ extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
- 				   struct pt_regs *regs);
- extern int arch_trampoline_kprobe(struct kprobe *p);
- 
-+void arch_kretprobe_fixup_return(struct pt_regs *regs,
-+				 kprobe_opcode_t *correct_ret_addr);
-+
- void __kretprobe_trampoline(void);
- /*
-  * Since some architecture uses structured function pointer,
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index e7c75725934b..ab861b4bd6dd 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1909,6 +1909,15 @@ unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
- }
- NOKPROBE_SYMBOL(kretprobe_find_ret_addr);
- 
-+void __weak arch_kretprobe_fixup_return(struct pt_regs *regs,
-+					kprobe_opcode_t *correct_ret_addr)
-+{
-+	/*
-+	 * Do nothing by default. Please fill this to update the fake return
-+	 * address on the stack with the correct one on each arch if possible.
-+	 */
-+}
-+
- unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 					     void *frame_pointer)
- {
-@@ -1954,6 +1963,8 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 		first = first->next;
- 	}
- 
-+	arch_kretprobe_fixup_return(regs, correct_ret_addr);
-+
- 	/* Unlink all nodes for this frame. */
- 	first = current->kretprobe_instances.first;
- 	current->kretprobe_instances.first = node->next;
+No, since the 'data' will be only refered from user handler. If the kretprobe
+is released, then the kretprobe_holder will clear the refernce to the 'struct
+kretprobe'. Then, the user handler is never called. No one access the 'data'.
 
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
