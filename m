@@ -2,59 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E10E3C3D67
-	for <lists+bpf@lfdr.de>; Sun, 11 Jul 2021 16:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07853C3D69
+	for <lists+bpf@lfdr.de>; Sun, 11 Jul 2021 16:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbhGKOvK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Jul 2021 10:51:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40637 "EHLO
+        id S233433AbhGKOvU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Jul 2021 10:51:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43880 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233398AbhGKOvK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 11 Jul 2021 10:51:10 -0400
+        by vger.kernel.org with ESMTP id S233427AbhGKOvU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 11 Jul 2021 10:51:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626014903;
+        s=mimecast20190719; t=1626014913;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=l1Gd6x6S4H50o7BryE+xUHOXRSufSSPrCcsP3hzMefY=;
-        b=Phu1ikbZuaDCSdVfun1Sqkvmf/xlC5KIE3Kju5XxFLzBVVcl9cJ/7djdUJnoDyF5KDsi+v
-        mdBmIqJ+bCQ0+72aNejXiB7SqPkWUM8Nll3l4xK7p6Kkxks2z8XgrbADYDjeNz7AgNQgHt
-        7NZW9pMhNz6/hP4YLMoWVDZKY598+wU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-163-k8ND_cVeP923Ge0wL2o8ag-1; Sun, 11 Jul 2021 10:48:22 -0400
-X-MC-Unique: k8ND_cVeP923Ge0wL2o8ag-1
-Received: by mail-ed1-f71.google.com with SMTP id p13-20020a05640210cdb029039560ff6f46so8343709edu.17
-        for <bpf@vger.kernel.org>; Sun, 11 Jul 2021 07:48:22 -0700 (PDT)
+        bh=r4tbdpPuJ7aFid3Z3C7Kd9g0f7uB0rGzz41nOS5bFO0=;
+        b=UvNNGCkukEpipJKzEDrZ+2YTllqsw12lb3bXduXVFGAA+C4pGnKzvOuWLUujy63cPuhIQu
+        PpAOKZehYZbo7ytMv3lAureGI2bemM07QF9nHGszYuimKdBtDZXt39kdXa3YTZa7Geehzy
+        CVuTqQL57gkOc8sXcjVQV+atT7mhYkU=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-e1wS1uhUNHWV2-IHEHV3NQ-1; Sun, 11 Jul 2021 10:48:31 -0400
+X-MC-Unique: e1wS1uhUNHWV2-IHEHV3NQ-1
+Received: by mail-ed1-f69.google.com with SMTP id bx13-20020a0564020b4db02903a02214fad8so6187079edb.1
+        for <bpf@vger.kernel.org>; Sun, 11 Jul 2021 07:48:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=l1Gd6x6S4H50o7BryE+xUHOXRSufSSPrCcsP3hzMefY=;
-        b=Orrstn8mNQP9ll8pUFTOm3FuAvTkKyJCM1hqOtA4ZAvSmQjBq5cdbCkKVObnXhup0r
-         DIsKVp+MCZ3JDV0nzKLNgAp5Mein2LqTpntQ3KXkJeQzsd0rkq5TNIMKrjpMfuE6t+Cj
-         rykukjmx2rXMYGYP39M5olVt6QixAgNOuKVj4KuKRgzDANBx8Cml5b/5GViwv1no5QXL
-         weYwYXNC98qYMN2gdALbUvR+ie0dB0fbr1WtHGH+Tta1F8OP+uAivWQHyNQwmxHtpo0F
-         HtTOwxT8O0jIwE8UPA96n7SjmvLzap+kaLG0INq6fbcpbu+jefNrRsQIEE7xipxi2JE7
-         Jmcg==
-X-Gm-Message-State: AOAM531qZG9DzACbdT2oQ4rWmtlPOrfcBc32+zPokCKz6jg/dCb6OG8J
-        Y+1IA/va2FxlK2CLqMRVNa3B4qPg8J+7k3wY+KG7qoMU8pNBdbkxrVIBzgm7XEKp7sRLY5pE1+P
-        0fp9ln3US7Aen
-X-Received: by 2002:aa7:dc0c:: with SMTP id b12mr60332831edu.105.1626014901249;
-        Sun, 11 Jul 2021 07:48:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHBCrpGCL0NIkOSK4B89oWuCzH4krk+sh3ocb71/fj8wTf3DQaGfhkPH77/RtBFdaUKNO/iQ==
-X-Received: by 2002:aa7:dc0c:: with SMTP id b12mr60332807edu.105.1626014901063;
-        Sun, 11 Jul 2021 07:48:21 -0700 (PDT)
+        bh=r4tbdpPuJ7aFid3Z3C7Kd9g0f7uB0rGzz41nOS5bFO0=;
+        b=bp0pw20i8DLU3EDg2Q012K/vW+YlIZl0Yzm6ytAN7MvvBA6wc1lLe6wVO1xh04GVan
+         FXYrd0b4qPb7g2GIQnpoWKAGkpep/YieOms8ro8o236qRBB8PJoCv3ycGgZMh6Jor94U
+         bT7B8Ly8rBjH98u5ZzpfN2blkBOSvQnqoRZZXtZnzhB40XPz5yiO/cu1qA2Zrr5KgjG3
+         UGQNF5oom+YCGNEHWhdlNd3VPLTMqwMfShnpVM2+L/YlS2D/rlq0heXtSiCpMKiz2k8l
+         VZkzcBTrPNUak4tASTGzMtOMtxKuWIAJSAUFT0fBM+mt8H2lFcR7srx39kNgV6nSh1oP
+         eAcA==
+X-Gm-Message-State: AOAM5337hxl8QlxRNr+xZp7sq7bRJVV4RxtlEm+wnakeOkMvJNoo0ypN
+        KNI7adT19FUQdoNs0rYKXwNjeWX+FEwvfsL/YZpE3N/ZTJTFFB4Hrq2iVwzQ4+hDopAgvD0HW65
+        YHvFtX4gqVuS4
+X-Received: by 2002:a17:906:d8da:: with SMTP id re26mr18411001ejb.205.1626014910088;
+        Sun, 11 Jul 2021 07:48:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxhWlIrGnG/YKxjM+TflGS3u4xGiFRJEL3/ELDokGJoTSPWjmkungMF93TjkIU3oeajoufgPw==
+X-Received: by 2002:a17:906:d8da:: with SMTP id re26mr18410993ejb.205.1626014909988;
+        Sun, 11 Jul 2021 07:48:29 -0700 (PDT)
 Received: from krava ([5.171.250.127])
-        by smtp.gmail.com with ESMTPSA id s7sm5349378ejd.88.2021.07.11.07.48.19
+        by smtp.gmail.com with ESMTPSA id x13sm5082800ejv.64.2021.07.11.07.48.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 07:48:20 -0700 (PDT)
-Date:   Sun, 11 Jul 2021 16:48:17 +0200
+        Sun, 11 Jul 2021 07:48:29 -0700 (PDT)
+Date:   Sun, 11 Jul 2021 16:48:26 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
@@ -62,85 +64,72 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         KP Singh <kpsingh@chromium.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCHv3 bpf-next 7/7] selftests/bpf: Add test for
- bpf_get_func_ip in kprobe+offset probe
-Message-ID: <YOsEsb1sMasi1WyR@krava>
+Subject: Re: [PATCHv3 bpf-next 3/7] bpf: Add bpf_get_func_ip helper for
+ tracing programs
+Message-ID: <YOsEusl1MLaVJuF/@krava>
 References: <20210707214751.159713-1-jolsa@kernel.org>
- <20210707214751.159713-8-jolsa@kernel.org>
- <CAEf4Bzb9DTtGWubdEgMYirWLT-AiYbU2LfB-cSpGNzk6L0z8Kg@mail.gmail.com>
+ <20210707214751.159713-4-jolsa@kernel.org>
+ <CAEf4BzaF5Y6gbineUd-WLvbZQMSbR3v4j3zct3Qyq31OzWNnwA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4Bzb9DTtGWubdEgMYirWLT-AiYbU2LfB-cSpGNzk6L0z8Kg@mail.gmail.com>
+In-Reply-To: <CAEf4BzaF5Y6gbineUd-WLvbZQMSbR3v4j3zct3Qyq31OzWNnwA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 05:18:49PM -0700, Andrii Nakryiko wrote:
-> On Wed, Jul 7, 2021 at 2:54 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Wed, Jul 07, 2021 at 05:06:17PM -0700, Andrii Nakryiko wrote:
+> On Wed, Jul 7, 2021 at 2:53 PM Jiri Olsa <jolsa@redhat.com> wrote:
 > >
-> > Adding test for bpf_get_func_ip in kprobe+ofset probe.
-> 
-> typo: offset
-> 
-> > Because of the offset value it's arch specific, adding
-> > it only for x86_64 architecture.
-> 
-> I'm not following, you specified +0x5 offset explicitly, why is this
-> arch-specific?
-
-I need some instruction offset != 0 in the traced function,
-x86_64's fentry jump is 5 bytes, other archs will be different
-
-> 
+> > Adding bpf_get_func_ip helper for BPF_PROG_TYPE_TRACING programs,
+> > specifically for all trampoline attach types.
 > >
+> > The trampoline's caller IP address is stored in (ctx - 8) address.
+> > so there's no reason to actually call the helper, but rather fixup
+> > the call instruction and return [ctx - 8] value directly (suggested
+> > by Alexei).
+> >
+> > [fixed has_get_func_ip wrong return type]
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  .../testing/selftests/bpf/progs/get_func_ip_test.c  | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
+> >  include/uapi/linux/bpf.h       |  7 +++++
+> >  kernel/bpf/verifier.c          | 53 ++++++++++++++++++++++++++++++++++
+> >  kernel/trace/bpf_trace.c       | 15 ++++++++++
+> >  tools/include/uapi/linux/bpf.h |  7 +++++
+> >  4 files changed, 82 insertions(+)
 > >
-> > diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > index 8ca54390d2b1..e8a9428a0ea3 100644
-> > --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > @@ -10,6 +10,7 @@ extern const void bpf_fentry_test2 __ksym;
-> >  extern const void bpf_fentry_test3 __ksym;
-> >  extern const void bpf_fentry_test4 __ksym;
-> >  extern const void bpf_modify_return_test __ksym;
-> > +extern const void bpf_fentry_test6 __ksym;
+> 
+> [...]
+> 
+> >  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >                              int *insn_idx_p)
+> >  {
+> > @@ -6225,6 +6256,12 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> >         if (func_id == BPF_FUNC_get_stackid || func_id == BPF_FUNC_get_stack)
+> >                 env->prog->call_get_stack = true;
 > >
-> >  __u64 test1_result = 0;
-> >  SEC("fentry/bpf_fentry_test1")
-> > @@ -60,3 +61,15 @@ int BPF_PROG(fmod_ret_test, int a, int *b, int ret)
-> >         test5_result = (const void *) addr == &bpf_modify_return_test;
-> >         return ret;
-> >  }
-> > +
-> > +#ifdef __x86_64__
-> > +__u64 test6_result = 0;
+> > +       if (func_id == BPF_FUNC_get_func_ip) {
+> > +               if (has_get_func_ip(env))
 > 
-> see, and you just forgot to update the user-space part of the test to
-> even check test6_result...
-> 
-> please group variables together and do explicit ASSERT_EQ
+> from has_xxx name I'd expect it returns true/false, so this reads
+> super confusing. check_get_func_ip would be a bit more consistent with
+> other cases like this (still reads confusing to me, but that's ok)
 
-right.. will change
+ok, will change
 
-thanks,
 jirka
 
 > 
-> > +SEC("kprobe/bpf_fentry_test6+0x5")
-> > +int test6(struct pt_regs *ctx)
-> > +{
-> > +       __u64 addr = bpf_get_func_ip(ctx);
+> > +                       return -ENOTSUPP;
+> > +               env->prog->call_get_func_ip = true;
+> > +       }
 > > +
-> > +       test6_result = (const void *) addr == &bpf_fentry_test6 + 5;
-> > +       return 0;
-> > +}
-> > +#endif
-> > --
-> > 2.31.1
-> >
+> >         if (changes_data)
+> >                 clear_all_pkt_pointers(env);
+> >         return 0;
+> 
+> [...]
 > 
 
