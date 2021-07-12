@@ -2,107 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2233C5D96
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 15:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E243C5EB1
+	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 17:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234156AbhGLNsY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Jul 2021 09:48:24 -0400
-Received: from relay.sw.ru ([185.231.240.75]:51760 "EHLO relay.sw.ru"
+        id S235287AbhGLPCw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Jul 2021 11:02:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233162AbhGLNsY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Jul 2021 09:48:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=oVLqaRerUNUUvBWSQ6/QuqbFXlum72VBI6Uq+5WdkfI=; b=KybgMFAQyGKZhipKOoJ
-        fT3l+z0yF8GlQFcALPUlq55hkj7cOiVE7/R1Ilwl5hiYUGKHqJF5JF5ofSvCgFtCVfggVXY9eH/A0
-        mNVZ7aT+drha3qA0f3BJtSDMU23w8ByIiRRCjFd78f7VyTWjFW9PtQRwnQQD98MI3edCMkGSh9Q=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m2vy2-003iEA-Ly; Mon, 12 Jul 2021 16:27:26 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH NET 7/7] bpf: use pskb_realloc_headroom in bpf_out_neigh_v4/6
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <74e90fba-df9f-5078-13de-41df54d2b257@virtuozzo.com>
- <cover.1626093470.git.vvs@virtuozzo.com>
-Message-ID: <5396c84f-81c3-8097-2504-61e4654b7f92@virtuozzo.com>
-Date:   Mon, 12 Jul 2021 16:27:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233784AbhGLPCw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Jul 2021 11:02:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id F1EE261167;
+        Mon, 12 Jul 2021 15:00:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626102004;
+        bh=mljpCQRGjQpLsHXqAqpOZUrcMlrjdQpqcBhjcHIhIro=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ChgPGyHMVfQB1wm2/Pz7Qnh0tI1qsjb3fsqb/D0vtrGIAZt+4FrOPkMWR1RvgQb5n
+         YuYQktBP6R1FlVOFLA9OdJ6Itx1cV7JpN0c5fBRadw18IwH61TDk1XjRyWsYdml2Ir
+         xv6OMML1qxcJ7Tqb7xeEkYbYkdGDLew/MDpeN8SBNgbJmrziaR5m8wbX8gatTtRURr
+         Zq5q34QoqEqYZS5QLpnoYUligQafQuM55eDpzHSMSUpLdVE5548p4r2ZZILg7T9fmk
+         lOB3+CoIkyfPNHC7QFe7kuBvramu7hoZlDytRCyYMkMsUWmfRVPOofuZcC+6hSzI+N
+         vjeY6Q3UfJMJg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E4C9F609CD;
+        Mon, 12 Jul 2021 15:00:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <cover.1626093470.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] doc/af_xdp: fix bind flags option typo
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162610200393.12678.17305655891966604853.git-patchwork-notify@kernel.org>
+Date:   Mon, 12 Jul 2021 15:00:03 +0000
+References: <1656fdf94704e9e735df0f8b97667d8f26dd098b.1625550240.git.baruch@tkos.co.il>
+In-Reply-To: <1656fdf94704e9e735df0f8b97667d8f26dd098b.1625550240.git.baruch@tkos.co.il>
+To:     Baruch Siach <baruch@tkos.co.il>
+Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Unlike skb_realloc_headroom, new helper pskb_realloc_headroom
-does not allocate a new skb if possible.
+Hello:
 
-Additionally this patch replaces commonly used dereferencing with variables.
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- net/core/filter.c | 22 ++++------------------
- 1 file changed, 4 insertions(+), 18 deletions(-)
+On Tue,  6 Jul 2021 08:44:00 +0300 you wrote:
+> Use 'XDP_ZEROCOPY' as this options is named in if_xdp.h.
+> 
+> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> ---
+>  Documentation/networking/af_xdp.rst | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 65ab4e2..cf6cd93 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2179,17 +2179,10 @@ static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb,
- 	skb->tstamp = 0;
- 
- 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
--		struct sk_buff *skb2;
-+		skb = pskb_realloc_headroom(skb, hh_len);
- 
--		skb2 = skb_realloc_headroom(skb, hh_len);
--		if (unlikely(!skb2)) {
--			kfree_skb(skb);
-+		if (!skb)
- 			return -ENOMEM;
--		}
--		if (skb->sk)
--			skb_set_owner_w(skb2, skb->sk);
--		consume_skb(skb);
--		skb = skb2;
- 	}
- 
- 	rcu_read_lock_bh();
-@@ -2286,17 +2279,10 @@ static int bpf_out_neigh_v4(struct net *net, struct sk_buff *skb,
- 	skb->tstamp = 0;
- 
- 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
--		struct sk_buff *skb2;
-+		skb = pskb_realloc_headroom(skb, hh_len);
- 
--		skb2 = skb_realloc_headroom(skb, hh_len);
--		if (unlikely(!skb2)) {
--			kfree_skb(skb);
-+		if (!skb)
- 			return -ENOMEM;
--		}
--		if (skb->sk)
--			skb_set_owner_w(skb2, skb->sk);
--		consume_skb(skb);
--		skb = skb2;
- 	}
- 
- 	rcu_read_lock_bh();
--- 
-1.8.3.1
+Here is the summary with links:
+  - doc/af_xdp: fix bind flags option typo
+    https://git.kernel.org/bpf/bpf/c/f35e0cc25280
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
