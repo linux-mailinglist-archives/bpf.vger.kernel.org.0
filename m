@@ -2,195 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCFA3C41E4
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 05:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDCD3C435D
+	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 06:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhGLDdt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Jul 2021 23:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232507AbhGLDds (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Jul 2021 23:33:48 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D68C0613DD;
-        Sun, 11 Jul 2021 20:31:00 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id dj21so5797005edb.0;
-        Sun, 11 Jul 2021 20:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7DJb5zdwKGROhdoFv50zrkRCj7TCgmob56fldHVm5S0=;
-        b=Mrxmr3EqqmDfeBXsY/V6WelqqFHbuM8zDFZYRCJH3gyKJkVblxSqOy+ww5QdwWzTNc
-         on2CdsaKKx3wRn/tuwpTHm8qZ32lBAbgvUbhLPLuf1itXF2P4u+UcduaNUm/DxVqvHQr
-         UpkTLIkbfKlYKfYWBn1yIr6yYDacQswmm40WuYjigD0SHCAes/Arh35UlM3mNC127957
-         OzTobS+E1jzEHnEngMItx6ffcqe/r5jQNQ4J0qyQxR+jPpM+W605KXyBH3mvqdKCUbG9
-         4z/bozNkX6cFZOnyCOp8KAADZUfMXtUEaFXiMLJx7x6Vim+klVNvmw7rz5Af0qbbL0t5
-         0C1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7DJb5zdwKGROhdoFv50zrkRCj7TCgmob56fldHVm5S0=;
-        b=qiwacmlXsQGLa3HELdNAkg/jiW1gypc30Z56itoellvC05nyJbdYEXw/rkQC8RjQ6l
-         K6uYG323SaxtC3IDb9JuX8SD7Bmh9T75bpgW8A8l2ywDbH4OgxL9h3kevJPbG2QhcwpC
-         Eb/AwEGEM5yxnvLjrXBnclLKEKlhadwuT7SIlz/6LS9YlMrQSGB//m5SUcl5NY9RDqME
-         x6EMju6MdAgneJgVgR7ZhxIdI6OMhoFbKTXTKNtwpY/uE1G1m+ewPAXADKrWKKZU+Hsk
-         4uoCQZpz6KS6N8zSB4XAQMBkf2RcTN5trImM3YgLMVlikn1ej30iQqlclrM9lyzggTfA
-         gN0Q==
-X-Gm-Message-State: AOAM533IeUz7cSQkJq8NvgP7+tvJ2ouN0Ak94T9pkq3v2l0hMVqm6I7a
-        5pDQNLK1yuPUpG5tha2yJRKepWG30Upz4Vu7mw4=
-X-Google-Smtp-Source: ABdhPJzpyHVnSetWPQB1vOrZPwkuLJUCJ1fCgdR2DAxxSBVu/6hBhBgsDda06lZIxceY0kN3GSLboeqUnJ2Fdqjtdto=
-X-Received: by 2002:a05:6402:3089:: with SMTP id de9mr9201653edb.69.1626060658742;
- Sun, 11 Jul 2021 20:30:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <1625903002-31619-1-git-send-email-linyunsheng@huawei.com>
- <1625903002-31619-4-git-send-email-linyunsheng@huawei.com>
- <CAKgT0Udnb_KgHyWiwxDF+r+DkytgZd4CQJz4QR85JpinhZAJzw@mail.gmail.com> <d45619d1-5235-9dd4-77aa-497fa1115c80@huawei.com>
-In-Reply-To: <d45619d1-5235-9dd4-77aa-497fa1115c80@huawei.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Sun, 11 Jul 2021 20:30:47 -0700
-Message-ID: <CAKgT0Uf1FJrg515QuTk9bB4t3R+5GvnONyEVR_eKYk-OMun_DA@mail.gmail.com>
-Subject: Re: [PATCH rfc v2 3/5] page_pool: add page recycling support based on
- elevated refcnt
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, hawk@kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230122AbhGLFAJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Jul 2021 01:00:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229466AbhGLFAH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Jul 2021 01:00:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1505D61002;
+        Mon, 12 Jul 2021 04:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626065839;
+        bh=wek7Lg+gEUiI0p9dlXIpd8rDDzx0LeNoaZz9spJdp9I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SPy9cLxK82M+h5ADrF48eUB8iZ3vxrYFHQlsCMvqrPrJ1unvW1gIEsZc984SchNOP
+         WiIWjk1gugxd4503cCH7Cdnl1hxVUU+n/ry5yoHb3ZYUTqAKymuVCejFzYZoMDK20J
+         EFdJG6/cLDpFv3t/jznG02qZ+rbk8l/u+i4pgF4Iu2+Rlyoemr8+Uc12XKrpCyVB/D
+         4Urklv53mVyuk5qEt/axl3hGwpfduhHIz0P3i9JiPT7+is821kBxwMYaPwx2BKU8Db
+         dTS91vrKtj2/89VSqt7oILOlzaQoEbc4tyOMq/wJIjBsMASwPQz8zN10OnP5IhIkOi
+         hIJnC6aqFBHnA==
+Date:   Mon, 12 Jul 2021 13:57:15 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Matt Wu <wuqiang.matt@bytedance.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v8 11/13] x86/unwind: Recover kretprobe trampoline
+ entry
+Message-Id: <20210712135715.756a60a1c9bee17689cf3f30@kernel.org>
+In-Reply-To: <9c160404-ad6d-816a-93ed-91bb6e7c26a9@bytedance.com>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+        <162400002631.506599.2413605639666466945.stgit@devnote2>
+        <YOLurg5mGHdBc+fz@hirez.programming.kicks-ass.net>
+        <20210706004257.9e282b98f447251a380f658f@kernel.org>
+        <YOQMV8uE/2bVkPOY@hirez.programming.kicks-ass.net>
+        <20210706111136.7c5e9843@oasis.local.home>
+        <YOVj2VoyrcOvJfEB@hirez.programming.kicks-ass.net>
+        <20210707191510.cb48ca4a20f0502ce6c46508@kernel.org>
+        <YOWACec65qVdTD1y@hirez.programming.kicks-ass.net>
+        <20210707194530.766a9c8364f3b2d7714ca590@kernel.org>
+        <20210707222925.87ecc1391d0ab61db3d8398e@kernel.org>
+        <3fc578e0-5b26-6067-d026-5b5d230d6720@bytedance.com>
+        <20210711230909.dac1ff010a94831d5e9c25cd@kernel.org>
+        <9c160404-ad6d-816a-93ed-91bb6e7c26a9@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 7:06 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2021/7/11 1:31, Alexander Duyck wrote:
-> > On Sat, Jul 10, 2021 at 12:44 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> > <snip>
-> >> @@ -419,6 +471,20 @@ static __always_inline struct page *
-> >>  __page_pool_put_page(struct page_pool *pool, struct page *page,
-> >>                      unsigned int dma_sync_size, bool allow_direct)
-> >>  {
-> >> +       int bias = page_pool_get_pagecnt_bias(page);
-> >> +
-> >> +       /* Handle the elevated refcnt case first */
-> >> +       if (bias) {
-> >> +               /* It is not the last user yet */
-> >> +               if (!page_pool_bias_page_recyclable(page, bias))
-> >> +                       return NULL;
-> >> +
-> >> +               if (likely(!page_is_pfmemalloc(page)))
-> >> +                       goto recyclable;
-> >> +               else
-> >> +                       goto unrecyclable;
-> >> +       }
-> >> +
-> >
-> > So this part is still broken. Anything that takes a reference to the
-> > page and holds it while this is called will cause it to break. For
-> > example with the recent fixes we put in place all it would take is a
-> > skb_clone followed by pskb_expand_head and this starts leaking memory.
->
-> Ok, it seems the fix is confilcting with the expectation this patch is
-> based, which is "the last user will always call page_pool_put_full_page()
-> in order to do the recycling or do the resource cleanup(dma unmaping..etc)
-> and freeing.".
->
-> As the user of the new skb after skb_clone() and pskb_expand_head() is
-> not aware of that their frag page may still be in the page pool after
-> the fix?
+On Sun, 11 Jul 2021 23:28:49 +0800
+Matt Wu <wuqiang.matt@bytedance.com> wrote:
 
-No it isn't the fix that is conflicting. It is the fundamental
-assumption that is flawed.
+> On 2021/7/11 PM10:09, Masami Hiramatsu wrote:
+> > On Wed, 7 Jul 2021 22:42:47 +0800
+> > Matt Wu <wuqiang.matt@bytedance.com> wrote:
+> > 
+> >> On 2021/7/7 PM9:29, Masami Hiramatsu wrote:
+> >>> On Wed, 7 Jul 2021 19:45:30 +0900
+> >>> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >>>
+> >>>> On Wed, 7 Jul 2021 12:20:57 +0200
+> >>>> Peter Zijlstra <peterz@infradead.org> wrote:
+> >>>>
+> >>>>> On Wed, Jul 07, 2021 at 07:15:10PM +0900, Masami Hiramatsu wrote:
+> >>>>>
+> >>>>>> I actually don't want to keep this feature because no one use it.
+> >>>>>> (only systemtap needs it?)
+> >>>>>
+> >>>>> Yeah, you mentioned systemtap, but since that's out-of-tree I don't
+> >>>>> care. Their problem.
+> >>>
+> >>> Yeah, maybe it is not hard to update.
+> >>>
+> >>>>>
+> >>>>>> Anyway, if we keep the idea-level compatibility (not code level),
+> >>>>>> what we need is 'void *data' in the struct kretprobe_instance.
+> >>>>>> User who needs it can allocate their own instance data for their
+> >>>>>> kretprobes when initialising it and sets in their entry handler.
+> >>>>>>
+> >>>>>> Then we can have a simple kretprobe_instance.
+> >>>>>
+> >>>>> When would you do the alloc? When installing the retprobe, but that
+> >>>>> might be inside the allocator, which means you can't call the allocator
+> >>>>> etc.. :-)
+> >>>>
+> >>>> Yes, so the user may need to allocate a pool right before register_kretprobe().
+> >>>> (whether per-kretprobe or per-task or global pool, that is user's choice.)
+> >>>>
+> >>>>>
+> >>>>> If we look at struct ftrace_ret_stack, it has a few fixed function
+> >>>>> fields. The calltime one is all that is needed for the kretprobe
+> >>>>> example code.
+> >>>>
+> >>>> kretprobe consumes 3 fields, a pointer to 'struct kretprobe' (which
+> >>>> stores callee function address in 'kretprobe::kp.addr'), a return
+> >>>> address and a frame pointer (*).
+> >>>   > Oops, I forgot to add "void *data" for storing user data.
+> >>>
+> >>
+> >> Should use "struct kretprobe_holder *rph", since "struct kretprobe" belongs
+> >> to 3rd-party module (which might be unloaded any time).
+> > 
+> > Good catch. Yes, instead of 'struct kretprobe', we need to use the holder.
+> > 
+> >> User's own pool might not work if the module can be unloaded. Better manage
+> >> the pool in kretprobe_holder, which needs no changes from user side.
+> > 
+> > No, since the 'data' will be only refered from user handler. If the kretprobe
+> > is released, then the kretprobe_holder will clear the refernce to the 'struct
+> > kretprobe'. Then, the user handler is never called. No one access the 'data'.
+> 
+> Indeed, there is no race of "data" accessing, since unregister_kretprobes()
+> is taking care of it.
+> 
+> This implementation just increases the complexity of caller to keep track
+> of all allocated instances and release them after unregistration.
 
-We cannot guarantee that some other entity will not take a reference
-on the page. In order for this to work you have to guarantee that no
-other entity will use get_page/put_page on this page while you are
-using it.
+Yes, but user can manage it with an array of pointers (or directly allocate
+an array of their desired data). Not hard to track it in that case.
 
-This is the reason why all the other implementations that do
-pagecnt_bias always remove the leftover count once they are done with
-the page. What was throwing me off before is that I was assuming you
-were doing that somewhere and you weren't. Instead this patch
-effectively turned the page count into a ticket lock of sorts and the
-problem is this approach only works as long as no other entities can
-take a reference on the page.
+> But guys are likely to use kmalloc in pre-handler and kfree in post-handler,
+> which will lead to memory leaks.
 
-> >
-> > One of the key bits in order for pagecnt_bias to work is that you have
-> > to deduct the bias once there are no more parties using it. Otherwise
-> > you leave the reference count artificially inflated and the page will
-> > never be freed. It works fine for the single producer single consumer
-> > case but once you introduce multiple consumers this is going to fall
-> > apart.
->
-> It seems we have diffferent understanding about consumer, I treat the
-> above user of new skb after skb_clone() and pskb_expand_head() as the
-> consumer of the page pool too, so that new skb should keep the recycle
-> bit in order for that to happen.
+I will note "do not allocate memory inside kprobe handler" on manual.
+I think that's all what we need. We cannot stop someone shooting their feet
+especially in the kernel...
 
-The problem is updating pskb_expand_head to call
-page_pool_return_skb_page still wouldn't resolve the issue. The
-fundamental assumption is flawed that the thread holding the skb will
-always be the last one to free the page.
+Thank you,
 
-> If the semantic is "the new user of a page should not be handled by page
-> pool if page pool is not aware of the new user(the new user is added by
-> calling page allocator API instead of calling the page pool API, like the
-> skb_clone() and pskb_expand_head() above) ", I suppose I am ok with that
-> semantic too as long as the above semantic is aligned with the people
-> involved.
-
-The bigger issue is that this use of the page_ref_count violates how
-the page struct is meant to be used. The count is meant to be atomic
-and capable of getting to 0. The fact that we are now leaving the bias
-floating is going to introduce a number of issues.
-
-> Also, it seems _refcount and dma_addr in "struct page" is in the same cache
-> line, which means there is already cache line bouncing already between _refcount
-> and dma_addr updating, so it may makes senses to only use bias to indicate
-> number of the page pool user for a page, instead of using "bias - page_ref_count",
-> as the page_ref_count is not reliable if somebody is using the page allocator API
-> directly.
->
-> And the trick part seems to be how to make the bias atomic for allocating and
-> freeing.
-
-What we end up essentially needing to do is duplicate that
-page_ref_count as a page_frag_count and just leave the original
-page_ref_count at 1. If we do that and then just decrement that new
-count instead it would allow us to defer the unmapping/recycling and
-we just fall back into the original path when we finally hit 0.
-
-The only limitation then is the fact that we would be looking at
-potentially 2 atomic operations in the worst case if we release the
-page as you would need one to get the frag_count to 0, and then
-another to decrement the ref_count. For the standard case that would
-work about the same as what you already had though, as you were
-already having to perform an atomic_dec_and_test on the page_ref_count
-anyway.
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
