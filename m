@@ -2,268 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAAE3C5BF9
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 14:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5173C5CAE
+	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 14:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhGLMUN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Jul 2021 08:20:13 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11265 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233903AbhGLMUH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:20:07 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GNjL53JHkz1CJ3N;
-        Mon, 12 Jul 2021 20:11:41 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Jul 2021 20:17:16 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Jul 2021 20:17:16 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
-        <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [PATCH rfc v3 4/4] net: hns3: support skb's frag page recycling based on page pool
-Date:   Mon, 12 Jul 2021 20:16:35 +0800
-Message-ID: <1626092196-44697-5-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1626092196-44697-1-git-send-email-linyunsheng@huawei.com>
-References: <1626092196-44697-1-git-send-email-linyunsheng@huawei.com>
+        id S234132AbhGLM5x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Jul 2021 08:57:53 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:40985 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234098AbhGLM5x (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Jul 2021 08:57:53 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id A53D15C01A8;
+        Mon, 12 Jul 2021 08:55:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 12 Jul 2021 08:55:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Eaqf+mQPb0CqgNn2L
+        8o/sO7Y2ipNcfWsZn6yLFoG/dc=; b=npunvrrrpVqGisHITrAbWtCK4GGr1G4GY
+        6tPhpPIyxjnSRp1N4DIQE5TfC3lxiBVcjX2otGkt6qnrYaNSNKsR9EZWPMWufP4Q
+        GhHptBq/1R31Wcbx50DoKOEflRq1fydQ0EtBU8kabz20jLclg9SXOymVt5uJkbXt
+        Ti9im6Exlj9qptjSWBJ/fCQoJFq03SGXmAlouTTRegiL5z+qSjYchwNv2TQGsN5F
+        ACzekPuCOuBmhClpFiO4qt5NopI9gUIAN1I1WwRZHQB6p0mKAi2lMh7VbnCCsbSX
+        yABqajnx+UBX6JBW2bj2QKv8uTr1TOB0di+CAM73wBIbHSJcz6VEA==
+X-ME-Sender: <xms:pjvsYHTB85nQn4k32lMyR4DmaNPFoMrbZ60Qtt4p0i14DLBWjP_CZA>
+    <xme:pjvsYIyyfcMqtvAjP_9GRm93uk9TUAoWJgS6lMZfI35VOKxVzp3ELEgbPS5sg1-ut
+    HBEEvLV1uowgKLHmkE>
+X-ME-Received: <xmr:pjvsYM0lXyMICXVtrmpRlJe36xz4obC9N1F3eIBbWxy7KMK0yb2efIx3UXD_mK2eMcOofA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgdehjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeforghrthihnhgrshcurfhumhhpuhhtihhsuceomheslhgrmhgsuggr
+    rdhltheqnecuggftrfgrthhtvghrnhepuefhfedvheelieduhedvveeiffdtleehieduue
+    ehjeejtdekuddvtdffheeuleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepmheslhgrmhgsuggrrdhlth
+X-ME-Proxy: <xmx:pjvsYHCyWG-Uf5V1Th-vmvethyx5USdkGCAivM_q2EqL4uME5qWl2g>
+    <xmx:pjvsYAhemPSCxRWesX-PlRMj4cUEOmggOf3-iMOzlnlEBGs-EY2OcA>
+    <xmx:pjvsYLrVoSk4n9kgF5903U-8I-SIzJKK-i9bJhKTtkubhESkJ4K6mw>
+    <xmx:pzvsYDsk_nVmgYPsNGZ_LB_Qbk6IE4xr8QOHCx0YYWc3wHOz7xP8Hw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 12 Jul 2021 08:55:00 -0400 (EDT)
+From:   Martynas Pumputis <m@lambda.lt>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        m@lambda.lt
+Subject: [PATCH v2 bpf-next] libbpf: fix reuse of pinned map on older kernel
+Date:   Mon, 12 Jul 2021 14:55:51 +0200
+Message-Id: <20210712125552.58705-1-m@lambda.lt>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds skb's frag page recycling support based on
-the elevated refcnt support in page pool.
+When loading a BPF program with a pinned map, the loader checks whether
+the pinned map can be reused, i.e. their properties match. To derive
+such of the pinned map, the loader invokes BPF_OBJ_GET_INFO_BY_FD and
+then does the comparison.
 
-The performance improves above 10~20% with IOMMU disabled.
-The performance improves about 200% when IOMMU is enabled
-and iperf server shares the same cpu with irq/NAPI.
+Unfortunately, on < 4.12 kernels the BPF_OBJ_GET_INFO_BY_FD is not
+available, so loading the program fails with the following error:
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+	libbpf: failed to get map info for map FD 5: Invalid argument
+	libbpf: couldn't reuse pinned map at
+		'/sys/fs/bpf/tc/globals/cilium_call_policy': parameter
+		mismatch"
+	libbpf: map 'cilium_call_policy': error reusing pinned map
+	libbpf: map 'cilium_call_policy': failed to create:
+		Invalid argument(-22)
+	libbpf: failed to load object 'bpf_overlay.o'
+
+To fix this, fallback to derivation of the map properties via
+/proc/$PID/fdinfo/$MAP_FD if BPF_OBJ_GET_INFO_BY_FD fails with EINVAL,
+which can be used as an indicator that the kernel doesn't support
+the latter.
+
+Signed-off-by: Martynas Pumputis <m@lambda.lt>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 79 +++++++++++++++++++++++--
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |  3 +
- 2 files changed, 77 insertions(+), 5 deletions(-)
+ tools/lib/bpf/libbpf.c | 48 +++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 45 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index cdb5f14..c799129 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -3205,6 +3205,21 @@ static int hns3_alloc_buffer(struct hns3_enet_ring *ring,
- 	unsigned int order = hns3_page_order(ring);
- 	struct page *p;
- 
-+	if (ring->page_pool) {
-+		p = page_pool_dev_alloc_frag(ring->page_pool,
-+					     &cb->page_offset,
-+					     hns3_buf_size(ring));
-+		if (unlikely(!p))
-+			return -ENOMEM;
-+
-+		cb->priv = p;
-+		cb->buf = page_address(p);
-+		cb->dma = page_pool_get_dma_addr(p);
-+		cb->type = DESC_TYPE_FRAG;
-+		cb->reuse_flag = 0;
-+		return 0;
-+	}
-+
- 	p = dev_alloc_pages(order);
- 	if (!p)
- 		return -ENOMEM;
-@@ -3227,8 +3242,12 @@ static void hns3_free_buffer(struct hns3_enet_ring *ring,
- 	if (cb->type & (DESC_TYPE_SKB | DESC_TYPE_BOUNCE_HEAD |
- 			DESC_TYPE_BOUNCE_ALL | DESC_TYPE_SGL_SKB))
- 		napi_consume_skb(cb->priv, budget);
--	else if (!HNAE3_IS_TX_RING(ring) && cb->pagecnt_bias)
--		__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
-+	else if (!HNAE3_IS_TX_RING(ring)) {
-+		if (cb->type & DESC_TYPE_PAGE && cb->pagecnt_bias)
-+			__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
-+		else if (cb->type & DESC_TYPE_FRAG)
-+			page_pool_put_full_page(ring->page_pool, cb->priv, false);
-+	}
- 	memset(cb, 0, sizeof(*cb));
- }
- 
-@@ -3315,7 +3334,7 @@ static int hns3_alloc_and_map_buffer(struct hns3_enet_ring *ring,
- 	int ret;
- 
- 	ret = hns3_alloc_buffer(ring, cb);
--	if (ret)
-+	if (ret || ring->page_pool)
- 		goto out;
- 
- 	ret = hns3_map_buffer(ring, cb);
-@@ -3337,7 +3356,8 @@ static int hns3_alloc_and_attach_buffer(struct hns3_enet_ring *ring, int i)
- 	if (ret)
- 		return ret;
- 
--	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
-+					 ring->desc_cb[i].page_offset);
- 
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 1e04ce724240..a952acd6cd77 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3894,6 +3894,42 @@ static int bpf_map_find_btf_info(struct bpf_object *obj, struct bpf_map *map)
  	return 0;
  }
-@@ -3367,7 +3387,8 @@ static void hns3_replace_buffer(struct hns3_enet_ring *ring, int i,
- {
- 	hns3_unmap_buffer(ring, &ring->desc_cb[i]);
- 	ring->desc_cb[i] = *res_cb;
--	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
-+					 ring->desc_cb[i].page_offset);
- 	ring->desc[i].rx.bd_base_info = 0;
- }
  
-@@ -3539,6 +3560,12 @@ static void hns3_nic_reuse_page(struct sk_buff *skb, int i,
- 	u32 frag_size = size - pull_len;
- 	bool reused;
- 
-+	if (ring->page_pool) {
-+		skb_add_rx_frag(skb, i, desc_cb->priv, frag_offset,
-+				frag_size, truesize);
-+		return;
-+	}
-+
- 	/* Avoid re-using remote or pfmem page */
- 	if (unlikely(!dev_page_is_reusable(desc_cb->priv)))
- 		goto out;
-@@ -3856,6 +3883,9 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
- 		/* We can reuse buffer as-is, just make sure it is reusable */
- 		if (dev_page_is_reusable(desc_cb->priv))
- 			desc_cb->reuse_flag = 1;
-+		else if (desc_cb->type & DESC_TYPE_FRAG)
-+			page_pool_put_full_page(ring->page_pool, desc_cb->priv,
-+						false);
- 		else /* This page cannot be reused so discard it */
- 			__page_frag_cache_drain(desc_cb->priv,
- 						desc_cb->pagecnt_bias);
-@@ -3863,6 +3893,10 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
- 		hns3_rx_ring_move_fw(ring);
- 		return 0;
- 	}
-+
-+	if (ring->page_pool)
-+		skb_mark_for_recycle(skb);
-+
- 	u64_stats_update_begin(&ring->syncp);
- 	ring->stats.seg_pkt_cnt++;
- 	u64_stats_update_end(&ring->syncp);
-@@ -3901,6 +3935,10 @@ static int hns3_add_frag(struct hns3_enet_ring *ring)
- 					    "alloc rx fraglist skb fail\n");
- 				return -ENXIO;
- 			}
-+
-+			if (ring->page_pool)
-+				skb_mark_for_recycle(new_skb);
-+
- 			ring->frag_num = 0;
- 
- 			if (ring->tail_skb) {
-@@ -4705,6 +4743,29 @@ static void hns3_put_ring_config(struct hns3_nic_priv *priv)
- 	priv->ring = NULL;
- }
- 
-+static void hns3_alloc_page_pool(struct hns3_enet_ring *ring)
++static int bpf_get_map_info_from_fdinfo(int fd, struct bpf_map_info *info)
 +{
-+	struct page_pool_params pp_params = {
-+		.flags = PP_FLAG_DMA_MAP | PP_FLAG_PAGE_FRAG,
-+		.order = hns3_page_order(ring),
-+		.pool_size = ring->desc_num * hns3_buf_size(ring) / PAGE_SIZE,
-+		.nid = dev_to_node(ring_to_dev(ring)),
-+		.dev = ring_to_dev(ring),
-+		.dma_dir = DMA_FROM_DEVICE,
-+		.offset = 0,
-+		.max_len = 0,
-+	};
++	char file[PATH_MAX], buff[4096];
++	FILE *fp;
++	__u32 val;
++	int err;
 +
-+	ring->page_pool = page_pool_create(&pp_params);
-+	if (IS_ERR(ring->page_pool)) {
-+		dev_warn(ring_to_dev(ring), "page pool creation failed: %ld\n",
-+			 PTR_ERR(ring->page_pool));
-+		ring->page_pool = NULL;
-+	} else {
-+		dev_info(ring_to_dev(ring), "page pool creation succeeded\n");
++	snprintf(file, sizeof(file), "/proc/%d/fdinfo/%d", getpid(), fd);
++	memset(info, 0, sizeof(*info));
++
++	fp = fopen(file, "r");
++	if (!fp) {
++		err = -errno;
++		pr_warn("failed to open %s: %d. No procfs support?\n", file,
++			err);
++		return err;
 +	}
++
++	while (fgets(buff, sizeof(buff), fp)) {
++		if (sscanf(buff, "map_type:\t%u", &val) == 1)
++			info->type = val;
++		else if (sscanf(buff, "key_size:\t%u", &val) == 1)
++			info->key_size = val;
++		else if (sscanf(buff, "value_size:\t%u", &val) == 1)
++			info->value_size = val;
++		else if (sscanf(buff, "max_entries:\t%u", &val) == 1)
++			info->max_entries = val;
++		else if (sscanf(buff, "map_flags:\t%i", &val) == 1)
++			info->map_flags = val;
++	}
++
++	fclose(fp);
++
++	return 0;
 +}
 +
- static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
+ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
  {
- 	int ret;
-@@ -4724,6 +4785,8 @@ static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
- 		goto out_with_desc_cb;
+ 	struct bpf_map_info info = {};
+@@ -3902,6 +3938,8 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
+ 	char *new_name;
  
- 	if (!HNAE3_IS_TX_RING(ring)) {
-+		hns3_alloc_page_pool(ring);
-+
- 		ret = hns3_alloc_ring_buffers(ring);
- 		if (ret)
- 			goto out_with_desc;
-@@ -4764,6 +4827,12 @@ void hns3_fini_ring(struct hns3_enet_ring *ring)
- 		devm_kfree(ring_to_dev(ring), tx_spare);
- 		ring->tx_spare = NULL;
+ 	err = bpf_obj_get_info_by_fd(fd, &info, &len);
++	if (err && errno == EINVAL)
++		err = bpf_get_map_info_from_fdinfo(fd, &info);
+ 	if (err)
+ 		return libbpf_err(err);
+ 
+@@ -4381,12 +4419,16 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
+ 	struct bpf_map_info map_info = {};
+ 	char msg[STRERR_BUFSIZE];
+ 	__u32 map_info_len;
++	int err;
+ 
+ 	map_info_len = sizeof(map_info);
+ 
+-	if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
+-		pr_warn("failed to get map info for map FD %d: %s\n",
+-			map_fd, libbpf_strerror_r(errno, msg, sizeof(msg)));
++	err = bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len);
++	if (err && errno == EINVAL)
++		err = bpf_get_map_info_from_fdinfo(map_fd, &map_info);
++	if (err) {
++		pr_warn("failed to get map info for map FD %d: %s\n", map_fd,
++			libbpf_strerror_r(errno, msg, sizeof(msg)));
+ 		return false;
  	}
-+
-+	if (!HNAE3_IS_TX_RING(ring) && ring->page_pool) {
-+		page_pool_destroy(ring->page_pool);
-+		ring->page_pool = NULL;
-+		dev_info(ring_to_dev(ring), "page pool destroyed\n");
-+	}
- }
  
- static int hns3_buf_size2type(u32 buf_size)
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index 15af3d9..115c0ce 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -6,6 +6,7 @@
- 
- #include <linux/dim.h>
- #include <linux/if_vlan.h>
-+#include <net/page_pool.h>
- 
- #include "hnae3.h"
- 
-@@ -307,6 +308,7 @@ enum hns3_desc_type {
- 	DESC_TYPE_BOUNCE_ALL		= 1 << 3,
- 	DESC_TYPE_BOUNCE_HEAD		= 1 << 4,
- 	DESC_TYPE_SGL_SKB		= 1 << 5,
-+	DESC_TYPE_FRAG			= 1 << 6,
- };
- 
- struct hns3_desc_cb {
-@@ -451,6 +453,7 @@ struct hns3_enet_ring {
- 	struct hnae3_queue *tqp;
- 	int queue_index;
- 	struct device *dev; /* will be used for DMA mapping of descriptors */
-+	struct page_pool *page_pool;
- 
- 	/* statistic */
- 	struct ring_stats stats;
 -- 
-2.7.4
+2.32.0
 
