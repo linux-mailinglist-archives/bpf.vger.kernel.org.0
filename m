@@ -2,86 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B035A3C606C
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 18:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98473C6075
+	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 18:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233691AbhGLQ1l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Jul 2021 12:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233719AbhGLQ1l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Jul 2021 12:27:41 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F44C0613E8
-        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 09:24:52 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 37so18809253pgq.0
-        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 09:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IvjUIjPNpa0I941SNlmHBcYhl5QkXjKCaZ/ONhaJN8g=;
-        b=iUFFvWTDlqUF0nRBLVbGisvBhz3uwYj/hmElSlcdGmvXk6INZ8OV2rhwTdC940Lt0m
-         MN5oDs/yKnTKwArbeTj27FgMRa4aUutdZ036nBIieUSD/MUkjwVzLVdyULGJJNM9QGiC
-         SWXKXweD/hXealhKXgWXkMAZsCNzzOkCewETRRzR1XSH/mG/42e4O6kaxuCrs8Ucd1y5
-         XUcy+W8XbOO+bmXPzTbY2EjcLpbgn+8C0WtYHXS9TXx26peaOAFgaMk3S2aa4HKBOUGO
-         Je7Cr4oY7wlq2NhK6eNd9HHXlbqP2wOiUwS6Tp/DMGZNQqr1WUZORIDqSPf6AM4GmFVK
-         VfBA==
+        id S233455AbhGLQ3T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Jul 2021 12:29:19 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:37389 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233417AbhGLQ3S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Jul 2021 12:29:18 -0400
+Received: by mail-il1-f200.google.com with SMTP id h11-20020a056e021b8bb029020d99b97ad3so1263282ili.4
+        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 09:26:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IvjUIjPNpa0I941SNlmHBcYhl5QkXjKCaZ/ONhaJN8g=;
-        b=fdcR65/xL2iZDYmD1r5ZorTFfqBIzGZcglvX5ZZjyvljKJebCsgKxgAlprTF/RVgRu
-         Y3tmQrBLp9+21+tMiOASXJazCD6YTxHHUpWxNTH8XS4bLTvonbwLHzFyAcp3naM01GS+
-         Odz34X9Wo85F3nMkXeFef92srh0Zt7MVAlkxjfvYLiurc6XCDVrlbg6fPqYoA8qy5Nf7
-         RFa2OrK98cTCfOWP4q+Eg+5jvDeupInEkX3TEobmpJbPkMsL4VFc3fPRCmBGI8V0DXga
-         tEx5LSunOaUT3jQPZ66e7Z0mJFN/BWT1gS7KOe+4YwU3aqXL+zqdhCcMV+Qu7893K+Gl
-         WtkQ==
-X-Gm-Message-State: AOAM533Nh9H0Rj1a1QEgbgr9p9Oi1CUrB7lEwzORmx62T3m6mdEcsTbT
-        SzUi9Sl5WU1Xkjllfw+ZJM818pL3MMZtrA==
-X-Google-Smtp-Source: ABdhPJywWiIEFgtQNkrIHMwnnIKtNs+GjqUfXQRCE9MxWnNb32YiQrlj/fTsh8x7N4W6vG62VT2VPQ==
-X-Received: by 2002:aa7:9e9e:0:b029:32a:fa43:1c with SMTP id p30-20020aa79e9e0000b029032afa43001cmr63859pfq.24.1626107092225;
-        Mon, 12 Jul 2021 09:24:52 -0700 (PDT)
-Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id x30sm2871551pfh.126.2021.07.12.09.24.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 09:24:51 -0700 (PDT)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     yhs@fb.com, andriin@fb.com, jolsa@kernel.org, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next] bpf: Expose bpf_d_path helper to vfs_read/vfs_write
-Date:   Tue, 13 Jul 2021 00:24:24 +0800
-Message-Id: <20210712162424.2034006-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=4WmLl9sar0KG32KTwYBrvHvudDAjKtCa0YXSnCWoUEs=;
+        b=CTIc5fiePAyz/ObTVUguQPIR/6p5MH0g3aqBEVL6LfZTHjqce6W5yAwWkGSTL7kqNE
+         TQ55iXqjvFbECwKHiDXxgJauR58KP7frgL24iuK/hHW4ZzK/vzvhZKNS8tUnKIO1Ixjq
+         OLZN3yAz84GUDf7kvpvRmh/9iKgQ+cFCUu2gNo3HLIqB3BCbvwNfBfmWyaOMCvTcDFi4
+         Gp8TPlHi30IIp9HrQI5gUs87JyJwH6RxxRHzXXgmn41IxlL7sAmHv5UWcBQ2rUVi0c2I
+         zrIR83J8wK4NMMA4ch4CFuqI76byBlzOeFM0o7oxIjd3sgx6DmW5gWw2kuHY2pfgZ/nH
+         7flg==
+X-Gm-Message-State: AOAM532vXDGgjEjCEck1vcC1y55AfQzTSBRwHzk0ESua6TKp280Q2uvf
+        +v6e4cq3JuD9Ss/ZsjSPf5jjrRL4JHVcRSNk9lbaQINXT5pT
+X-Google-Smtp-Source: ABdhPJz2oWohMp9ubXhpP3+Y6V4BHQVDp8755cx8hJGgi9jtaRUyQwlAQpRkC5/qYUOeZeShvMshMC+OQLvfQc8trb6EV53NUax7
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:bf0b:: with SMTP id z11mr40068923ilh.60.1626107189971;
+ Mon, 12 Jul 2021 09:26:29 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 09:26:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006cd48405c6ef954b@google.com>
+Subject: [syzbot] general protection fault in bpf_lru_pop_free
+From:   syzbot <syzbot+529a4d631f26ba0e43b5@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add vfs_read and vfs_write to bpf_d_path allowlist.
-This will help tools like IOVisor's filetop to get
-full file path.
+Hello,
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    a080cdcc Merge branch 'bpf: support input xdp_md context i..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13ba01e2300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4cb84363d46e9fc3
+dashboard link: https://syzkaller.appspot.com/bug?extid=529a4d631f26ba0e43b5
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+529a4d631f26ba0e43b5@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 0 PID: 3913 Comm: syz-executor.1 Tainted: G        W         5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__list_add_valid+0x22/0xa0 lib/list_debug.c:23
+Code: cd cc cc cc cc cc cc cc 48 b8 00 00 00 00 00 fc ff df 41 54 49 89 d4 55 48 89 fd 48 8d 7a 08 48 83 ec 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 50 49 8b 54 24 08 48 39 f2 0f 85 ae 1c 16 05 48 b8
+RSP: 0018:ffffc90001cdfa50 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: ffff88802bd14cd8 RCX: ffffc9001831b000
+RDX: 0000000000000001 RSI: ffffe8ffffc69280 RDI: 0000000000000008
+RBP: ffff88802bd14cc0 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff818adf47 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffff88802951381c R15: ffff88802bd14cc0
+FS:  00007f52cf552700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 00000000308de000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Call Trace:
+ __list_add include/linux/list.h:67 [inline]
+ list_add include/linux/list.h:86 [inline]
+ __local_list_add_pending kernel/bpf/bpf_lru_list.c:357 [inline]
+ bpf_common_lru_pop_free kernel/bpf/bpf_lru_list.c:452 [inline]
+ bpf_lru_pop_free+0x588/0x16d0 kernel/bpf/bpf_lru_list.c:499
+ prealloc_lru_pop+0x26/0x90 kernel/bpf/hashtab.c:264
+ htab_lru_map_update_elem+0x157/0x7b0 kernel/bpf/hashtab.c:1102
+ bpf_map_update_value.isra.0+0x6df/0x8d0 kernel/bpf/syscall.c:206
+ generic_map_update_batch+0x3cf/0x560 kernel/bpf/syscall.c:1371
+ bpf_map_do_batch+0x3d5/0x510 kernel/bpf/syscall.c:4076
+ __sys_bpf+0x1da7/0x5390 kernel/bpf/syscall.c:4533
+ __do_sys_bpf kernel/bpf/syscall.c:4573 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4571 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4571
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f52cf552188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 000000000056c038 RCX: 00000000004665d9
+RDX: 0000000000000038 RSI: 0000000020000200 RDI: 000000000000001a
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c038
+R13: 00007ffe08b5b5ef R14: 00007f52cf552300 R15: 0000000000022000
+Modules linked in:
+---[ end trace c58f4ed9330ab605 ]---
+RIP: 0010:__list_add_valid+0x22/0xa0 lib/list_debug.c:23
+Code: cd cc cc cc cc cc cc cc 48 b8 00 00 00 00 00 fc ff df 41 54 49 89 d4 55 48 89 fd 48 8d 7a 08 48 83 ec 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 50 49 8b 54 24 08 48 39 f2 0f 85 ae 1c 16 05 48 b8
+RSP: 0018:ffffc90001cdfa50 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: ffff88802bd14cd8 RCX: ffffc9001831b000
+RDX: 0000000000000001 RSI: ffffe8ffffc69280 RDI: 0000000000000008
+RBP: ffff88802bd14cc0 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff818adf47 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffff88802951381c R15: ffff88802bd14cc0
+FS:  00007f52cf552700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 00000000308de000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+
+
 ---
- kernel/trace/bpf_trace.c | 2 ++
- 1 file changed, 2 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 64bd2d84367f..6d3f951f38c5 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -861,6 +861,8 @@ BTF_ID(func, vfs_fallocate)
- BTF_ID(func, dentry_open)
- BTF_ID(func, vfs_getattr)
- BTF_ID(func, filp_close)
-+BTF_ID(func, vfs_read)
-+BTF_ID(func, vfs_write)
- BTF_SET_END(btf_allowlist_d_path)
- 
- static bool bpf_d_path_allowed(const struct bpf_prog *prog)
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
