@@ -2,28 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB033C5A1C
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 13:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8003C5AE0
+	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 13:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379966AbhGLJb0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Jul 2021 05:31:26 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:6916 "EHLO
+        id S233472AbhGLKmb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Jul 2021 06:42:31 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6917 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379931AbhGLJbZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Jul 2021 05:31:25 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GNddp0G6lz7BZL;
-        Mon, 12 Jul 2021 17:25:02 +0800 (CST)
+        with ESMTP id S233445AbhGLKma (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Jul 2021 06:42:30 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GNgCq4szZz7BcH;
+        Mon, 12 Jul 2021 18:36:07 +0800 (CST)
 Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Jul 2021 17:28:33 +0800
+ 15.1.2176.2; Mon, 12 Jul 2021 18:39:39 +0800
 Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
  (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 12 Jul
- 2021 17:28:33 +0800
-Subject: Re: [Linuxarm] [PATCH rfc v3 3/4] page_pool: add page recycling
- support based on elevated refcnt
+ 2021 18:39:38 +0800
+Subject: Re: [Linuxarm] [PATCH rfc v3 0/4] add frag page support in page pool
 From:   Yunsheng Lin <linyunsheng@huawei.com>
 To:     <davem@davemloft.net>, <kuba@kernel.org>
 CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
@@ -43,265 +42,62 @@ CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
         <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
 References: <1626081581-54524-1-git-send-email-linyunsheng@huawei.com>
- <1626081581-54524-5-git-send-email-linyunsheng@huawei.com>
-Message-ID: <7342ad1a-f272-f599-2ce4-e8019acbcbcb@huawei.com>
-Date:   Mon, 12 Jul 2021 17:28:32 +0800
+Message-ID: <22579591-606c-9967-42e5-fcfe18875026@huawei.com>
+Date:   Mon, 12 Jul 2021 18:39:38 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
  Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <1626081581-54524-5-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <1626081581-54524-1-git-send-email-linyunsheng@huawei.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
+X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
  dggpemm500005.china.huawei.com (7.185.36.74)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Please ignore this one, the title name has been changed to:
-"page_pool: add frag page recycling support in page pool".
+Please ignore this patch set, will send out a new series
+without duplicated patch 3 and fix a bug for a corner case.
 
 On 2021/7/12 17:19, Yunsheng Lin wrote:
-> Currently page pool only support page recycling only when
-> there is only one user of the page, and the split page
-> reusing implemented in the most driver can not use the
-> page pool as bing-pong way of reusing requires the elevated
-> refcnt support.
+> This patchset adds frag page support in page pool and
+> enable skb's page frag recycling based on page pool in
+> hns3 drvier.
 > 
-> Those reusing or recycling has below limitations:
-> 1. page from page pool can only be used be one user in order
->    for the page recycling to happen.
-> 2. Bing-pong way of reusing in most driver does not support
->    multi desc using different part of the same page in order
->    to save memory.
+> RFC v3:
+> 1. Implement the semantic of "page recycling only wait for the
+>    page pool user instead of all user of a page" 
+> 2. Support the frag allocation of different sizes
+> 3. Merge patch 4 & 5 to one patch as it does not make sense to
+>    use page_pool_dev_alloc_pages() API directly with elevated
+>    refcnt.
+> 4. other minor comment suggested by Alexander.
 > 
-> So add elevated refcnt support in page pool to in order to
-> overcome the above limitation.
+> RFC v2:
+> 1. Split patch 1 to more reviewable one.
+> 2. Repurpose the lower 12 bits of the dma address to store the
+>    pagecnt_bias as suggested by Alexander.
+> 3. support recycling to pool->alloc for elevated refcnt case
+>    too.
 > 
-> This is a preparation to support allocating page frag in page
-> pool.
 > 
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
->  include/net/page_pool.h |  22 ++++++++-
->  net/core/page_pool.c    | 121 ++++++++++++++++++++++++++++++++++++++++++------
->  2 files changed, 129 insertions(+), 14 deletions(-)
+> Yunsheng Lin (4):
+>   page_pool: keep pp info as long as page pool owns the page
+>   page_pool: add interface for getting and setting pagecnt_bias
+>   page_pool: add frag page recycling support in page pool
+>   net: hns3: support skb's frag page recycling based on page pool
 > 
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index 84cd972..d9a736f 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -45,7 +45,10 @@
->  					* Please note DMA-sync-for-CPU is still
->  					* device driver responsibility
->  					*/
-> -#define PP_FLAG_ALL		(PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV)
-> +#define PP_FLAG_PAGE_FRAG	BIT(2)	/* for page frag feature */
-> +#define PP_FLAG_ALL		(PP_FLAG_DMA_MAP |\
-> +				 PP_FLAG_DMA_SYNC_DEV |\
-> +				 PP_FLAG_PAGE_FRAG)
->  
->  /*
->   * Fast allocation side cache array/stack
-> @@ -88,6 +91,9 @@ struct page_pool {
->  	unsigned long defer_warn;
->  
->  	u32 pages_state_hold_cnt;
-> +	unsigned int frag_offset;
-> +	int frag_bias;
-> +	struct page *frag_page;
->  
->  	/*
->  	 * Data structure for allocation side
-> @@ -137,6 +143,20 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
->  	return page_pool_alloc_pages(pool, gfp);
->  }
->  
-> +struct page *page_pool_alloc_frag(struct page_pool *pool,
-> +				  unsigned int *offset,
-> +				  unsigned int size,
-> +				  gfp_t gfp);
-> +
-> +static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
-> +						    unsigned int *offset,
-> +						    unsigned int size)
-> +{
-> +	gfp_t gfp = (GFP_ATOMIC | __GFP_NOWARN);
-> +
-> +	return page_pool_alloc_frag(pool, offset, size, gfp);
-> +}
-> +
->  /* get the stored dma direction. A driver might decide to treat this locally and
->   * avoid the extra cache line from page_pool to determine the direction
->   */
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 1abefc6..9f518dc 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -24,6 +24,8 @@
->  #define DEFER_TIME (msecs_to_jiffies(1000))
->  #define DEFER_WARN_INTERVAL (60 * HZ)
->  
-> +#define BIAS_MAX	(PAGE_SIZE - 1)
-> +
->  static int page_pool_init(struct page_pool *pool,
->  			  const struct page_pool_params *params)
->  {
-> @@ -304,6 +306,33 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
->  	return page;
->  }
->  
-> +/* nr could be negative */
-> +static int page_pool_atomic_add_bias(struct page *page, int nr)
-> +{
-> +	unsigned long *bias_ptr = page_pool_pagecnt_bias_ptr(page);
-> +	unsigned long old_bias = READ_ONCE(*bias_ptr);
-> +	unsigned long new_bias;
-> +
-> +	do {
-> +		int bias = (int)(old_bias & ~PAGE_MASK);
-> +
-> +		/* Warn when page_pool_dev_alloc_pages() is called
-> +		 * with PP_FLAG_PAGE_FRAG flag in driver.
-> +		 */
-> +		WARN_ON(!bias);
-> +
-> +		/* already the last user */
-> +		if (!(bias + nr))
-> +			return 0;
-> +
-> +		new_bias = old_bias + nr;
-> +	} while (!try_cmpxchg(bias_ptr, &old_bias, new_bias));
-> +
-> +	WARN_ON((new_bias & PAGE_MASK) != (old_bias & PAGE_MASK));
-> +
-> +	return new_bias & ~PAGE_MASK;
-> +}
-> +
->  /* For using page_pool replace: alloc_pages() API calls, but provide
->   * synchronization guarantee for allocation side.
->   */
-> @@ -425,6 +454,11 @@ static __always_inline struct page *
->  __page_pool_put_page(struct page_pool *pool, struct page *page,
->  		     unsigned int dma_sync_size, bool allow_direct)
->  {
-> +	/* It is not the last user for the page frag case */
-> +	if (pool->p.flags & PP_FLAG_PAGE_FRAG &&
-> +	    page_pool_atomic_add_bias(page, -1))
-> +		return NULL;
-> +
->  	/* This allocator is optimized for the XDP mode that uses
->  	 * one-frame-per-page, but have fallbacks that act like the
->  	 * regular page allocator APIs.
-> @@ -448,19 +482,7 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
->  		/* Page found as candidate for recycling */
->  		return page;
->  	}
-> -	/* Fallback/non-XDP mode: API user have elevated refcnt.
-> -	 *
-> -	 * Many drivers split up the page into fragments, and some
-> -	 * want to keep doing this to save memory and do refcnt based
-> -	 * recycling. Support this use case too, to ease drivers
-> -	 * switching between XDP/non-XDP.
-> -	 *
-> -	 * In-case page_pool maintains the DMA mapping, API user must
-> -	 * call page_pool_put_page once.  In this elevated refcnt
-> -	 * case, the DMA is unmapped/released, as driver is likely
-> -	 * doing refcnt based recycle tricks, meaning another process
-> -	 * will be invoking put_page.
-> -	 */
-> +
->  	/* Do not replace this with page_pool_return_page() */
->  	page_pool_release_page(pool, page);
->  	put_page(page);
-> @@ -517,6 +539,77 @@ void page_pool_put_page_bulk(struct page_pool *pool, void **data,
->  }
->  EXPORT_SYMBOL(page_pool_put_page_bulk);
->  
-> +/* When BIAS_RESERVE to avoid frag page being recycled back to
-> + * page pool while the frag page is still in pool->frag_page
-> + * waiting for more user. As minimum align size for DMA seems to
-> + * be 32, so we support max size of 2047 * 32 for 4K page size.
-> + */
-> +#define BIAS_RESERVE		((int)(BIAS_MAX / 2 + 1))
-> +#define BIAS_NEGATIVE_RESERVE	(0 - BIAS_RESERVE)
-> +
-> +static struct page *page_pool_drain_frag(struct page_pool *pool,
-> +					 struct page *page)
-> +{
-> +	/* page pool is not the last user */
-> +	if (page_pool_atomic_add_bias(page, pool->frag_bias +
-> +				      BIAS_NEGATIVE_RESERVE))
-> +		return NULL;
-> +	else
-> +		return page;
-> +}
-> +
-> +static void page_pool_free_frag(struct page_pool *pool)
-> +{
-> +	struct page *page = pool->frag_page;
-> +
-> +	if (!page ||
-> +	    page_pool_atomic_add_bias(page, pool->frag_bias +
-> +				      BIAS_NEGATIVE_RESERVE))
-> +		return;
-> +
-> +	page_pool_return_page(pool, page);
-> +	pool->frag_page = NULL;
-> +}
-> +
-> +struct page *page_pool_alloc_frag(struct page_pool *pool,
-> +				  unsigned int *offset,
-> +				  unsigned int size,
-> +				  gfp_t gfp)
-> +{
-> +	unsigned int max_size = PAGE_SIZE << pool->p.order;
-> +	unsigned int frag_offset = pool->frag_offset;
-> +	struct page *frag_page = pool->frag_page;
-> +
-> +	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
-> +		    size > max_size))
-> +		return NULL;
-> +
-> +	size = ALIGN(size, dma_get_cache_alignment());
-> +
-> +	if (frag_page && frag_offset + size > max_size)
-> +		frag_page = page_pool_drain_frag(pool, frag_page);
-> +
-> +	if (!frag_page) {
-> +		frag_page = page_pool_alloc_pages(pool, gfp);
-> +		if (unlikely(!frag_page)) {
-> +			pool->frag_page = NULL;
-> +			return NULL;
-> +		}
-> +
-> +		pool->frag_page = frag_page;
-> +		pool->frag_bias = 0;
-> +		frag_offset = 0;
-> +		page_pool_set_pagecnt_bias(frag_page, BIAS_RESERVE);
-> +	}
-> +
-> +	pool->frag_bias++;
-> +	*offset = frag_offset;
-> +	pool->frag_offset = frag_offset + size;
-> +
-> +	return frag_page;
-> +}
-> +EXPORT_SYMBOL(page_pool_alloc_frag);
-> +
->  static void page_pool_empty_ring(struct page_pool *pool)
->  {
->  	struct page *page;
-> @@ -622,6 +715,8 @@ void page_pool_destroy(struct page_pool *pool)
->  	if (!page_pool_put(pool))
->  		return;
->  
-> +	page_pool_free_frag(pool);
-> +
->  	if (!page_pool_release(pool))
->  		return;
->  
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c |  79 ++++++++++++-
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |   3 +
+>  drivers/net/ethernet/marvell/mvneta.c           |   6 +-
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |   2 +-
+>  drivers/net/ethernet/ti/cpsw.c                  |   2 +-
+>  drivers/net/ethernet/ti/cpsw_new.c              |   2 +-
+>  include/linux/skbuff.h                          |   4 +-
+>  include/net/page_pool.h                         |  58 +++++++--
+>  net/core/page_pool.c                            | 150 +++++++++++++++++++++---
+>  9 files changed, 262 insertions(+), 44 deletions(-)
 > 
