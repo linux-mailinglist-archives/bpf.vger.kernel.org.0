@@ -2,102 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68A53C57CC
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 12:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FA43C5867
+	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 13:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358852AbhGLIhk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Jul 2021 04:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377495AbhGLIgB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Jul 2021 04:36:01 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64C7C0612FB;
-        Mon, 12 Jul 2021 01:31:07 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id x16so15686657pfa.13;
-        Mon, 12 Jul 2021 01:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=USZiAAsnNcmx97R7p1M6PzM3se8C57lt9HYxN0V6Qcc=;
-        b=nvP+/a5+jVKWMsXjzHgZAxWI7uuGev/9/hYI2pyS812qZBb67A6fFrDSIJV4U39e1t
-         oo3ncUvbPQo/vZkBRCE6n2p5+sRpwBaRlWERd17F4ef1jXACYADGrLqlXqD9T56jqS03
-         4R9R8ud3J7125ui7qBBBTlNAMeVzYFQyPETpnnqDLisqSA3o6VAqdZKJX/QImk8M8h0D
-         7SY4U0HFwTfELBctlQohvEty+YKB8q4nPgln7C3YGIQiGmTvEj4yHidktz7ybydgeHjc
-         TCOnM9TKlYpzDEl+21af8DiiXImbagGDJhzzQdIfBPHHylQw/mxUL0gTR+Ng8Bq/ppah
-         Py6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=USZiAAsnNcmx97R7p1M6PzM3se8C57lt9HYxN0V6Qcc=;
-        b=tIrJGrjajg/MyglbnksmI76j+LFGFbeeqz4IQBAvRmrHAWdSugahg140O64E0AC34L
-         /qqWdTFzCRRQ7exNOZODmGpMD0hUaOHE3/sWIQtx+8g1s/hiBRP3+Kt1m7Vhs/hVeZNx
-         sZYjlUFULyrzN/70F7B8c/vzGFRxXdSzZm96Wrld5yq/q2grw3D9p8mG/exwCXC9spOI
-         U8TR4MqQjdTDomhCi/cxfWrymagOGObJLoyCoFBXlGluDLwPWWfgThWxiGwcPonpnF01
-         KcsmTs5rU8h5SO190tsMs4dN8QeN3tJ5jrU9jj/pX6WGhd4Z+u0H3+Ic7d2XhFzNuGe6
-         TfvQ==
-X-Gm-Message-State: AOAM531B0rR0bCWy2ZMakUOpyBWBvzK8IGhIwLT7lt3drTKUfsciByun
-        G60nN3DqUbWpHAMikr3r8sEF7BMezVn6D4yc2G0=
-X-Google-Smtp-Source: ABdhPJycqFu8SXQ7kbd6Rwqxf4o8DNaLb2XVL4awwvXXUR3sR4jqJjtpCVD5oivruxCHNMyRZ7tBfTqNQMR53EcvLeY=
-X-Received: by 2002:a63:383:: with SMTP id 125mr47405385pgd.208.1626078667214;
- Mon, 12 Jul 2021 01:31:07 -0700 (PDT)
+        id S1356242AbhGLIrU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Jul 2021 04:47:20 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:41342
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350023AbhGLIpU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Jul 2021 04:45:20 -0400
+X-Greylist: delayed 461 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Jul 2021 04:45:20 EDT
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id D9AEB40325;
+        Mon, 12 Jul 2021 08:34:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1626078888;
+        bh=Pzh4dpmLwQ8NXTWOU/AqP/Io9WI9Fmjor6J5jI85EO0=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=SE/XbkgzHSQIP+rm00RAY7rkDNB4P1AZ0BxglE+wU9yj8Bo1qx+U8WoxuE9loYbW2
+         din6bNOnctHusKV5Ts344LcS4cNGjez01//8ZHCU1f9hvo/XNLmUgKiKMpxJjcBJZ3
+         JLzrLV7Bd+R+Oka5aKhnIo/WOeMeGRUgc6V+ZlL5K2hL2pZZqjGLx94AYOjZeoT/qn
+         5xVGvupiXxZ/QKO4I4Tz85TTgiwHY2FK5qjeIIj6czpTYuhFm/901KHU6dp1m/c7vX
+         Om13gXg4ianchA/iOqBhXrWSaiFSN/Sm+7IFnKgx2rKB+dGZ1S+hts0XzrA3kmAVxI
+         vU3nS2OEQ5eiA==
+From:   Colin King <colin.king@canonical.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] perf tools: Fix spelling mistake "falied" -> "failed"
+Date:   Mon, 12 Jul 2021 09:34:48 +0100
+Message-Id: <20210712083448.26317-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1656fdf94704e9e735df0f8b97667d8f26dd098b.1625550240.git.baruch@tkos.co.il>
-In-Reply-To: <1656fdf94704e9e735df0f8b97667d8f26dd098b.1625550240.git.baruch@tkos.co.il>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 12 Jul 2021 10:30:56 +0200
-Message-ID: <CAJ8uoz1+-DX=sKDjKnqDuHAW1x7bmszpYyZQZB6cT7nJ951Nxw@mail.gmail.com>
-Subject: Re: [PATCH] doc/af_xdp: fix bind flags option typo
-To:     Baruch Siach <baruch@tkos.co.il>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 7:50 AM Baruch Siach <baruch@tkos.co.il> wrote:
->
-> Use 'XDP_ZEROCOPY' as this options is named in if_xdp.h.
->
-> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-> ---
->  Documentation/networking/af_xdp.rst | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+From: Colin Ian King <colin.king@canonical.com>
 
-Thanks Baruch! Sorry for the delay. Been on vacation for a week.
+There is a spelling mistake in a pr_err error message. Fix it.
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ tools/perf/util/bpf_counter_cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
-> index 42576880aa4a..60b217b436be 100644
-> --- a/Documentation/networking/af_xdp.rst
-> +++ b/Documentation/networking/af_xdp.rst
-> @@ -243,8 +243,8 @@ Configuration Flags and Socket Options
->  These are the various configuration flags that can be used to control
->  and monitor the behavior of AF_XDP sockets.
->
-> -XDP_COPY and XDP_ZERO_COPY bind flags
-> --------------------------------------
-> +XDP_COPY and XDP_ZEROCOPY bind flags
-> +------------------------------------
->
->  When you bind to a socket, the kernel will first try to use zero-copy
->  copy. If zero-copy is not supported, it will fall back on using copy
-> @@ -252,7 +252,7 @@ mode, i.e. copying all packets out to user space. But if you would
->  like to force a certain mode, you can use the following flags. If you
->  pass the XDP_COPY flag to the bind call, the kernel will force the
->  socket into copy mode. If it cannot use copy mode, the bind call will
-> -fail with an error. Conversely, the XDP_ZERO_COPY flag will force the
-> +fail with an error. Conversely, the XDP_ZEROCOPY flag will force the
->  socket into zero-copy mode or fail.
->
->  XDP_SHARED_UMEM bind flag
-> --
-> 2.30.2
->
+diff --git a/tools/perf/util/bpf_counter_cgroup.c b/tools/perf/util/bpf_counter_cgroup.c
+index 89aa5e71db1a..4139b4deee77 100644
+--- a/tools/perf/util/bpf_counter_cgroup.c
++++ b/tools/perf/util/bpf_counter_cgroup.c
+@@ -266,7 +266,7 @@ static int bperf_cgrp__read(struct evsel *evsel)
+ 		idx = evsel->core.idx;
+ 		err = bpf_map_lookup_elem(reading_map_fd, &idx, values);
+ 		if (err) {
+-			pr_err("bpf map lookup falied: idx=%u, event=%s, cgrp=%s\n",
++			pr_err("bpf map lookup failed: idx=%u, event=%s, cgrp=%s\n",
+ 			       idx, evsel__name(evsel), evsel->cgrp->name);
+ 			goto out;
+ 		}
+-- 
+2.31.1
+
