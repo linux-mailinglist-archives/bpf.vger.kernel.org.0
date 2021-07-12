@@ -2,144 +2,449 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E757F3C6535
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 22:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C54F3C66AE
+	for <lists+bpf@lfdr.de>; Tue, 13 Jul 2021 01:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhGLVAg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Jul 2021 17:00:36 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48496 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhGLVAg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Jul 2021 17:00:36 -0400
-Received: from 65.47.5.85.dynamic.wline.res.cust.swisscom.ch ([85.5.47.65] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1m32zn-0007U0-4f; Mon, 12 Jul 2021 22:57:43 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, andrii@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf] bpf: Fix tail_call_reachable rejection for interpreter when jit failed
-Date:   Mon, 12 Jul 2021 22:57:35 +0200
-Message-Id: <618c34e3163ad1a36b1e82377576a6081e182f25.1626123173.git.daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S231898AbhGLXJQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 12 Jul 2021 19:09:16 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64488 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231205AbhGLXJQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Jul 2021 19:09:16 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16CN5kv8026782
+        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 16:06:27 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 39rscn2h03-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 16:06:27 -0700
+Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 16:06:25 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 40EE13D405A0; Mon, 12 Jul 2021 16:06:19 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <linux-kernel@vger.kernel.org>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH v2 bpf-next] bpf: add ambient BPF runtime context stored in current
+Date:   Mon, 12 Jul 2021 16:06:15 -0700
+Message-ID: <20210712230615.3525979-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: QTm2J_rKfoCC8koeBknf3VzCbPPZS6AB
+X-Proofpoint-ORIG-GUID: QTm2J_rKfoCC8koeBknf3VzCbPPZS6AB
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26229/Mon Jul 12 13:09:43 2021)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-12_14:2021-07-12,2021-07-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 adultscore=0 impostorscore=0 clxscore=1015 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107120158
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-During testing of f263a81451c1 ("bpf: Track subprog poke descriptors correctly
-and fix use-after-free") under various failure conditions, for example, when
-jit_subprogs() fails and tries to clean up the program to be run under the
-interpreter, we ran into the following freeze:
+b910eaaaa4b8 ("bpf: Fix NULL pointer dereference in bpf_get_local_storage()
+helper") fixed the problem with cgroup-local storage use in BPF by
+pre-allocating per-CPU array of 8 cgroup storage pointers to accommodate
+possible BPF program preemptions and nested executions.
 
-  [...]
-  #127/8 tailcall_bpf2bpf_3:FAIL
-  [...]
-  [   92.041251] BUG: KASAN: slab-out-of-bounds in ___bpf_prog_run+0x1b9d/0x2e20
-  [   92.042408] Read of size 8 at addr ffff88800da67f68 by task test_progs/682
-  [   92.043707]
-  [   92.044030] CPU: 1 PID: 682 Comm: test_progs Tainted: G   O   5.13.0-53301-ge6c08cb33a30-dirty #87
-  [   92.045542] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-  [   92.046785] Call Trace:
-  [   92.047171]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.047773]  ? __bpf_prog_run_args32+0x8b/0xb0
-  [   92.048389]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.049019]  ? ktime_get+0x117/0x130
-  [...] // few hundred [similar] lines more
-  [   92.659025]  ? ktime_get+0x117/0x130
-  [   92.659845]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.660738]  ? __bpf_prog_run_args32+0x8b/0xb0
-  [   92.661528]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.662378]  ? print_usage_bug+0x50/0x50
-  [   92.663221]  ? print_usage_bug+0x50/0x50
-  [   92.664077]  ? bpf_ksym_find+0x9c/0xe0
-  [   92.664887]  ? ktime_get+0x117/0x130
-  [   92.665624]  ? kernel_text_address+0xf5/0x100
-  [   92.666529]  ? __kernel_text_address+0xe/0x30
-  [   92.667725]  ? unwind_get_return_address+0x2f/0x50
-  [   92.668854]  ? ___bpf_prog_run+0x15d4/0x2e20
-  [   92.670185]  ? ktime_get+0x117/0x130
-  [   92.671130]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.672020]  ? __bpf_prog_run_args32+0x8b/0xb0
-  [   92.672860]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.675159]  ? ktime_get+0x117/0x130
-  [   92.677074]  ? lock_is_held_type+0xd5/0x130
-  [   92.678662]  ? ___bpf_prog_run+0x15d4/0x2e20
-  [   92.680046]  ? ktime_get+0x117/0x130
-  [   92.681285]  ? __bpf_prog_run32+0x6b/0x90
-  [   92.682601]  ? __bpf_prog_run64+0x90/0x90
-  [   92.683636]  ? lock_downgrade+0x370/0x370
-  [   92.684647]  ? mark_held_locks+0x44/0x90
-  [   92.685652]  ? ktime_get+0x117/0x130
-  [   92.686752]  ? lockdep_hardirqs_on+0x79/0x100
-  [   92.688004]  ? ktime_get+0x117/0x130
-  [   92.688573]  ? __cant_migrate+0x2b/0x80
-  [   92.689192]  ? bpf_test_run+0x2f4/0x510
-  [   92.689869]  ? bpf_test_timer_continue+0x1c0/0x1c0
-  [   92.690856]  ? rcu_read_lock_bh_held+0x90/0x90
-  [   92.691506]  ? __kasan_slab_alloc+0x61/0x80
-  [   92.692128]  ? eth_type_trans+0x128/0x240
-  [   92.692737]  ? __build_skb+0x46/0x50
-  [   92.693252]  ? bpf_prog_test_run_skb+0x65e/0xc50
-  [   92.693954]  ? bpf_prog_test_run_raw_tp+0x2d0/0x2d0
-  [   92.694639]  ? __fget_light+0xa1/0x100
-  [   92.695162]  ? bpf_prog_inc+0x23/0x30
-  [   92.695685]  ? __sys_bpf+0xb40/0x2c80
-  [   92.696324]  ? bpf_link_get_from_fd+0x90/0x90
-  [   92.697150]  ? mark_held_locks+0x24/0x90
-  [   92.698007]  ? lockdep_hardirqs_on_prepare+0x124/0x220
-  [   92.699045]  ? finish_task_switch+0xe6/0x370
-  [   92.700072]  ? lockdep_hardirqs_on+0x79/0x100
-  [   92.701233]  ? finish_task_switch+0x11d/0x370
-  [   92.702264]  ? __switch_to+0x2c0/0x740
-  [   92.703148]  ? mark_held_locks+0x24/0x90
-  [   92.704155]  ? __x64_sys_bpf+0x45/0x50
-  [   92.705146]  ? do_syscall_64+0x35/0x80
-  [   92.706953]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
-  [...]
+While this seems to work good in practice, it introduces new and unnecessary
+failure mode in which not all BPF programs might be executed if we fail to
+find an unused slot for cgroup storage, however unlikely it is. It might also
+not be so unlikely when/if we allow sleepable cgroup BPF programs in the
+future.
 
-Turns out that the program rejection from e411901c0b77 ("bpf: allow for tailcalls
-in BPF subprograms for x64 JIT") is buggy since env->prog->aux->tail_call_reachable
-is never true. Commit ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall
-handling in JIT") added a tracker into check_max_stack_depth() which propagates
-the tail_call_reachable condition throughout the subprograms. This info is then
-assigned to the subprogram's func[i]->aux->tail_call_reachable. However, in the
-case of the rejection check upon JIT failure, env->prog->aux->tail_call_reachable
-is used. func[0]->aux->tail_call_reachable which represents the main program's
-information did not propagate this to the outer env->prog->aux, though. Add this
-propagation into check_max_stack_depth() where it needs to belong so that the
-check can be done reliably.
+Further, the way that cgroup storage is implemented as ambiently-available
+property during entire BPF program execution is a convenient way to pass extra
+information to BPF program and helpers without requiring user code to pass
+around extra arguments explicitly. So it would be good to have a generic
+solution that can allow implementing this without arbitrary restrictions.
+Ideally, such solution would work for both preemptable and sleepable BPF
+programs in exactly the same way.
 
-Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
-Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64 JIT")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Co-developed-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+This patch introduces such solution, bpf_run_ctx. It adds one pointer field
+(bpf_ctx) to task_struct. This field is maintained by BPF_PROG_RUN family of
+macros in such a way that it always stays valid throughout BPF program
+execution. BPF program preemption is handled by remembering previous
+current->bpf_ctx value locally while executing nested BPF program and
+restoring old value after nested BPF program finishes. This is handled by two
+helper functions, bpf_set_run_ctx() and bpf_reset_run_ctx(), which are
+supposed to be used before and after BPF program runs, respectively.
+
+Restoring old value of the pointer handles preemption, while bpf_run_ctx
+pointer being a property of current task_struct naturally solves this problem
+for sleepable BPF programs by "following" BPF program execution as it is
+scheduled in and out of CPU. It would even allow CPU migration of BPF
+programs, even though it's not currently allowed by BPF infra.
+
+This patch cleans up cgroup local storage handling as a first application. The
+design itself is generic, though, with bpf_run_ctx being an empty struct that
+is supposed to be embedded into a specific struct for a given BPF program type
+(bpf_cg_run_ctx in this case). Follow up patches are planned that will expand
+this mechanism for other uses within tracing BPF programs.
+
+To verify that this change doesn't revert the fix to the original cgroup
+storage issue, I ran the same repro as in the original report ([0]) and didn't
+get any problems. Replacing bpf_reset_run_ctx(old_run_ctx) with
+bpf_reset_run_ctx(NULL) triggers the issue pretty quickly (so repro does work).
+
+  [0] https://lore.kernel.org/bpf/YEEvBUiJl2pJkxTd@krava/
+
+Cc: Yonghong Song <yhs@fb.com>
+Fixes: b910eaaaa4b8 ("bpf: Fix NULL pointer dereference in bpf_get_local_storage() helper")
+Acked-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/verifier.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 42a4063de7cd..9de3c9c3267c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3677,6 +3677,8 @@ static int check_max_stack_depth(struct bpf_verifier_env *env)
- 	if (tail_call_reachable)
- 		for (j = 0; j < frame; j++)
- 			subprog[ret_prog[j]].tail_call_reachable = true;
-+	if (subprog[0].tail_call_reachable)
-+		env->prog->aux->tail_call_reachable = true;
+v1->v2:
+  - moved bpf_set_run_ctx() and bpf_reset_run_ctx() to
+    #ifdef CONFIG_BPF_SYSCALL guarded region;
+
+ include/linux/bpf-cgroup.h | 54 --------------------------------------
+ include/linux/bpf.h        | 54 ++++++++++++++++++++++++--------------
+ include/linux/sched.h      |  3 +++
+ kernel/bpf/helpers.c       | 16 ++++-------
+ kernel/bpf/local_storage.c |  3 ---
+ kernel/fork.c              |  1 +
+ net/bpf/test_run.c         | 23 ++++++++--------
+ 7 files changed, 54 insertions(+), 100 deletions(-)
+
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 8b77d08d4b47..a74cd1c3bd87 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -27,19 +27,6 @@ struct task_struct;
+ extern struct static_key_false cgroup_bpf_enabled_key[MAX_BPF_ATTACH_TYPE];
+ #define cgroup_bpf_enabled(type) static_branch_unlikely(&cgroup_bpf_enabled_key[type])
  
- 	/* end of for() loop means the last insn of the 'subprog'
- 	 * was reached. Doesn't matter whether it was JA or EXIT
+-#define BPF_CGROUP_STORAGE_NEST_MAX	8
+-
+-struct bpf_cgroup_storage_info {
+-	struct task_struct *task;
+-	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE];
+-};
+-
+-/* For each cpu, permit maximum BPF_CGROUP_STORAGE_NEST_MAX number of tasks
+- * to use bpf cgroup storage simultaneously.
+- */
+-DECLARE_PER_CPU(struct bpf_cgroup_storage_info,
+-		bpf_cgroup_storage_info[BPF_CGROUP_STORAGE_NEST_MAX]);
+-
+ #define for_each_cgroup_storage_type(stype) \
+ 	for (stype = 0; stype < MAX_BPF_CGROUP_STORAGE_TYPE; stype++)
+ 
+@@ -172,44 +159,6 @@ static inline enum bpf_cgroup_storage_type cgroup_storage_type(
+ 	return BPF_CGROUP_STORAGE_SHARED;
+ }
+ 
+-static inline int bpf_cgroup_storage_set(struct bpf_cgroup_storage
+-					 *storage[MAX_BPF_CGROUP_STORAGE_TYPE])
+-{
+-	enum bpf_cgroup_storage_type stype;
+-	int i, err = 0;
+-
+-	preempt_disable();
+-	for (i = 0; i < BPF_CGROUP_STORAGE_NEST_MAX; i++) {
+-		if (unlikely(this_cpu_read(bpf_cgroup_storage_info[i].task) != NULL))
+-			continue;
+-
+-		this_cpu_write(bpf_cgroup_storage_info[i].task, current);
+-		for_each_cgroup_storage_type(stype)
+-			this_cpu_write(bpf_cgroup_storage_info[i].storage[stype],
+-				       storage[stype]);
+-		goto out;
+-	}
+-	err = -EBUSY;
+-	WARN_ON_ONCE(1);
+-
+-out:
+-	preempt_enable();
+-	return err;
+-}
+-
+-static inline void bpf_cgroup_storage_unset(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < BPF_CGROUP_STORAGE_NEST_MAX; i++) {
+-		if (unlikely(this_cpu_read(bpf_cgroup_storage_info[i].task) != current))
+-			continue;
+-
+-		this_cpu_write(bpf_cgroup_storage_info[i].task, NULL);
+-		return;
+-	}
+-}
+-
+ struct bpf_cgroup_storage *
+ cgroup_storage_lookup(struct bpf_cgroup_storage_map *map,
+ 		      void *key, bool locked);
+@@ -487,9 +436,6 @@ static inline int cgroup_bpf_prog_query(const union bpf_attr *attr,
+ 	return -EINVAL;
+ }
+ 
+-static inline int bpf_cgroup_storage_set(
+-	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE]) { return 0; }
+-static inline void bpf_cgroup_storage_unset(void) {}
+ static inline int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux,
+ 					    struct bpf_map *map) { return 0; }
+ static inline struct bpf_cgroup_storage *bpf_cgroup_storage_alloc(
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 4afbff308ca3..de51275a0548 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1111,38 +1111,40 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
+ 			struct bpf_prog *include_prog,
+ 			struct bpf_prog_array **new_array);
+ 
++struct bpf_run_ctx {};
++
++struct bpf_cg_run_ctx {
++	struct bpf_run_ctx run_ctx;
++	struct bpf_prog_array_item *prog_item;
++};
++
+ /* BPF program asks to bypass CAP_NET_BIND_SERVICE in bind. */
+ #define BPF_RET_BIND_NO_CAP_NET_BIND_SERVICE			(1 << 0)
+ /* BPF program asks to set CN on the packet. */
+ #define BPF_RET_SET_CN						(1 << 0)
+ 
+-/* For BPF_PROG_RUN_ARRAY_FLAGS and __BPF_PROG_RUN_ARRAY,
+- * if bpf_cgroup_storage_set() failed, the rest of programs
+- * will not execute. This should be a really rare scenario
+- * as it requires BPF_CGROUP_STORAGE_NEST_MAX number of
+- * preemptions all between bpf_cgroup_storage_set() and
+- * bpf_cgroup_storage_unset() on the same cpu.
+- */
+ #define BPF_PROG_RUN_ARRAY_FLAGS(array, ctx, func, ret_flags)		\
+ 	({								\
+ 		struct bpf_prog_array_item *_item;			\
+ 		struct bpf_prog *_prog;					\
+ 		struct bpf_prog_array *_array;				\
++		struct bpf_run_ctx *old_run_ctx;			\
++		struct bpf_cg_run_ctx run_ctx;				\
+ 		u32 _ret = 1;						\
+ 		u32 func_ret;						\
+ 		migrate_disable();					\
+ 		rcu_read_lock();					\
+ 		_array = rcu_dereference(array);			\
+ 		_item = &_array->items[0];				\
++		old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);	\
+ 		while ((_prog = READ_ONCE(_item->prog))) {		\
+-			if (unlikely(bpf_cgroup_storage_set(_item->cgroup_storage)))	\
+-				break;					\
++			run_ctx.prog_item = _item;			\
+ 			func_ret = func(_prog, ctx);			\
+ 			_ret &= (func_ret & 1);				\
+-			*(ret_flags) |= (func_ret >> 1);			\
+-			bpf_cgroup_storage_unset();			\
++			*(ret_flags) |= (func_ret >> 1);		\
+ 			_item++;					\
+ 		}							\
++		bpf_reset_run_ctx(old_run_ctx);				\
+ 		rcu_read_unlock();					\
+ 		migrate_enable();					\
+ 		_ret;							\
+@@ -1153,6 +1155,8 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
+ 		struct bpf_prog_array_item *_item;	\
+ 		struct bpf_prog *_prog;			\
+ 		struct bpf_prog_array *_array;		\
++		struct bpf_run_ctx *old_run_ctx;	\
++		struct bpf_cg_run_ctx run_ctx;		\
+ 		u32 _ret = 1;				\
+ 		migrate_disable();			\
+ 		rcu_read_lock();			\
+@@ -1160,17 +1164,13 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
+ 		if (unlikely(check_non_null && !_array))\
+ 			goto _out;			\
+ 		_item = &_array->items[0];		\
+-		while ((_prog = READ_ONCE(_item->prog))) {		\
+-			if (!set_cg_storage) {			\
+-				_ret &= func(_prog, ctx);	\
+-			} else {				\
+-				if (unlikely(bpf_cgroup_storage_set(_item->cgroup_storage)))	\
+-					break;			\
+-				_ret &= func(_prog, ctx);	\
+-				bpf_cgroup_storage_unset();	\
+-			}				\
++		old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);\
++		while ((_prog = READ_ONCE(_item->prog))) {	\
++			run_ctx.prog_item = _item;	\
++			_ret &= func(_prog, ctx);	\
+ 			_item++;			\
+ 		}					\
++		bpf_reset_run_ctx(old_run_ctx);		\
+ _out:							\
+ 		rcu_read_unlock();			\
+ 		migrate_enable();			\
+@@ -1253,6 +1253,20 @@ static inline void bpf_enable_instrumentation(void)
+ 	migrate_enable();
+ }
+ 
++static inline struct bpf_run_ctx *bpf_set_run_ctx(struct bpf_run_ctx *new_ctx)
++{
++	struct bpf_run_ctx *old_ctx;
++
++	old_ctx = current->bpf_ctx;
++	current->bpf_ctx = new_ctx;
++	return old_ctx;
++}
++
++static inline void bpf_reset_run_ctx(struct bpf_run_ctx *old_ctx)
++{
++	current->bpf_ctx = old_ctx;
++}
++
+ extern const struct file_operations bpf_map_fops;
+ extern const struct file_operations bpf_prog_fops;
+ extern const struct file_operations bpf_iter_fops;
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index ec8d07d88641..c64119aa2e60 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -42,6 +42,7 @@ struct backing_dev_info;
+ struct bio_list;
+ struct blk_plug;
+ struct bpf_local_storage;
++struct bpf_run_ctx;
+ struct capture_control;
+ struct cfs_rq;
+ struct fs_struct;
+@@ -1379,6 +1380,8 @@ struct task_struct {
+ #ifdef CONFIG_BPF_SYSCALL
+ 	/* Used by BPF task local storage */
+ 	struct bpf_local_storage __rcu	*bpf_storage;
++	/* Used for BPF run context */
++	struct bpf_run_ctx		*bpf_ctx;
+ #endif
+ 
+ #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 62cf00383910..3d05674f4f85 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -383,8 +383,6 @@ const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto = {
+ };
+ 
+ #ifdef CONFIG_CGROUP_BPF
+-DECLARE_PER_CPU(struct bpf_cgroup_storage_info,
+-		bpf_cgroup_storage_info[BPF_CGROUP_STORAGE_NEST_MAX]);
+ 
+ BPF_CALL_2(bpf_get_local_storage, struct bpf_map *, map, u64, flags)
+ {
+@@ -393,17 +391,13 @@ BPF_CALL_2(bpf_get_local_storage, struct bpf_map *, map, u64, flags)
+ 	 * verifier checks that its value is correct.
+ 	 */
+ 	enum bpf_cgroup_storage_type stype = cgroup_storage_type(map);
+-	struct bpf_cgroup_storage *storage = NULL;
++	struct bpf_cgroup_storage *storage;
++	struct bpf_cg_run_ctx *ctx;
+ 	void *ptr;
+-	int i;
+ 
+-	for (i = 0; i < BPF_CGROUP_STORAGE_NEST_MAX; i++) {
+-		if (unlikely(this_cpu_read(bpf_cgroup_storage_info[i].task) != current))
+-			continue;
+-
+-		storage = this_cpu_read(bpf_cgroup_storage_info[i].storage[stype]);
+-		break;
+-	}
++	/* get current cgroup storage from BPF run context */
++	ctx = container_of(current->bpf_ctx, struct bpf_cg_run_ctx, run_ctx);
++	storage = ctx->prog_item->cgroup_storage[stype];
+ 
+ 	if (stype == BPF_CGROUP_STORAGE_SHARED)
+ 		ptr = &READ_ONCE(storage->buf)->data[0];
+diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
+index bd11db9774c3..1ef12f320a9b 100644
+--- a/kernel/bpf/local_storage.c
++++ b/kernel/bpf/local_storage.c
+@@ -11,9 +11,6 @@
+ 
+ #ifdef CONFIG_CGROUP_BPF
+ 
+-DEFINE_PER_CPU(struct bpf_cgroup_storage_info,
+-	       bpf_cgroup_storage_info[BPF_CGROUP_STORAGE_NEST_MAX]);
+-
+ #include "../cgroup/cgroup-internal.h"
+ 
+ #define LOCAL_STORAGE_CREATE_FLAG_MASK					\
+diff --git a/kernel/fork.c b/kernel/fork.c
+index bc94b2cc5995..e8b41e212110 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2083,6 +2083,7 @@ static __latent_entropy struct task_struct *copy_process(
+ #endif
+ #ifdef CONFIG_BPF_SYSCALL
+ 	RCU_INIT_POINTER(p->bpf_storage, NULL);
++	p->bpf_ctx = NULL;
+ #endif
+ 
+ 	/* Perform scheduler related setup. Assign this task to a CPU. */
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index cda8375bbbaf..8d46e2962786 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -88,17 +88,19 @@ static bool bpf_test_timer_continue(struct bpf_test_timer *t, u32 repeat, int *e
+ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
+ 			u32 *retval, u32 *time, bool xdp)
+ {
+-	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = { NULL };
++	struct bpf_prog_array_item item = {.prog = prog};
++	struct bpf_run_ctx *old_ctx;
++	struct bpf_cg_run_ctx run_ctx;
+ 	struct bpf_test_timer t = { NO_MIGRATE };
+ 	enum bpf_cgroup_storage_type stype;
+ 	int ret;
+ 
+ 	for_each_cgroup_storage_type(stype) {
+-		storage[stype] = bpf_cgroup_storage_alloc(prog, stype);
+-		if (IS_ERR(storage[stype])) {
+-			storage[stype] = NULL;
++		item.cgroup_storage[stype] = bpf_cgroup_storage_alloc(prog, stype);
++		if (IS_ERR(item.cgroup_storage[stype])) {
++			item.cgroup_storage[stype] = NULL;
+ 			for_each_cgroup_storage_type(stype)
+-				bpf_cgroup_storage_free(storage[stype]);
++				bpf_cgroup_storage_free(item.cgroup_storage[stype]);
+ 			return -ENOMEM;
+ 		}
+ 	}
+@@ -107,22 +109,19 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
+ 		repeat = 1;
+ 
+ 	bpf_test_timer_enter(&t);
++	old_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+ 	do {
+-		ret = bpf_cgroup_storage_set(storage);
+-		if (ret)
+-			break;
+-
++		run_ctx.prog_item = &item;
+ 		if (xdp)
+ 			*retval = bpf_prog_run_xdp(prog, ctx);
+ 		else
+ 			*retval = BPF_PROG_RUN(prog, ctx);
+-
+-		bpf_cgroup_storage_unset();
+ 	} while (bpf_test_timer_continue(&t, repeat, &ret, time));
++	bpf_reset_run_ctx(old_ctx);
+ 	bpf_test_timer_leave(&t);
+ 
+ 	for_each_cgroup_storage_type(stype)
+-		bpf_cgroup_storage_free(storage[stype]);
++		bpf_cgroup_storage_free(item.cgroup_storage[stype]);
+ 
+ 	return ret;
+ }
 -- 
-2.21.0
+2.30.2
 
