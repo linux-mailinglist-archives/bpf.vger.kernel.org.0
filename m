@@ -2,174 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B897A3C614D
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 18:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2E33C6159
+	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 19:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbhGLRBd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Jul 2021 13:01:33 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:55294 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232710AbhGLRBd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 12 Jul 2021 13:01:33 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 16CGtxkM007933
-        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 09:58:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=facebook;
- bh=3Y/h1e9+vZgPe6o7sigLh3gqYaOVWBmnpx3f95YD2eI=;
- b=XQMi8AProB8LhEplgOsUx0VJgyFzVYrTsG/+Yogz2ePCZE06zbugCqK3aDToinp+PjQ7
- EDj/py/X7Zq2tok8lqZrvUGM8QbIvQIIofKIlt6B7JcbMJenmjnDYZsLrGty4xlPQ2Tn
- 2hg7LkbxYE6xZKHPULuM5F8JofUDyvfjDwM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 39rsbn87ba-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 09:58:44 -0700
-Received: from intmgw002.06.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Jul 2021 09:58:40 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 2A7F14AE63AD; Mon, 12 Jul 2021 09:58:32 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH bpf-next v2] libbpf: fix compilation errors on ubuntu 16.04
-Date:   Mon, 12 Jul 2021 09:58:32 -0700
-Message-ID: <20210712165832.1833460-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-X-Proofpoint-GUID: rrZYkxEyhMWjHeHqAiK7btr3ezruDSKG
-X-Proofpoint-ORIG-GUID: rrZYkxEyhMWjHeHqAiK7btr3ezruDSKG
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-12_09:2021-07-12,2021-07-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- suspectscore=0 mlxlogscore=856 clxscore=1015 mlxscore=0 malwarescore=0
- bulkscore=0 adultscore=0 spamscore=0 phishscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107120126
-X-FB-Internal: deliver
+        id S234208AbhGLRFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Jul 2021 13:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233910AbhGLRFf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Jul 2021 13:05:35 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BFCC0613DD;
+        Mon, 12 Jul 2021 10:02:47 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e13so20317742ilc.1;
+        Mon, 12 Jul 2021 10:02:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=irpRnrsbtCZ01nJfbjB7c7/Wua+y1vAzJ01ZP5BX9aY=;
+        b=UgfNk6iLdzSd3jH55URZflkUxRwg0muGNRIXToGflqVEJBQ+BL9fRqqnVeTaTkPWef
+         dvMRAVnQ2siGKluJH2cSGVgVqz4qc5IHrBw6mrj9emYddrZP2amLfGKvakJKnjJeHPx2
+         3xzT4JWbcCcD2/Y8Q9espFMNSvBdpfTz9a83TBHkCeTo+cfyJOkMFcBe4FhKu4MFp7pE
+         HxKVnkxhBmaAPJXcGXCwyxu34NystssCKr5KLItvHq77prFbhHxx2WMkDki2COdYkV0u
+         daFvm3AWOYIzn3O1BYlrjXB1oSlQNXDnv32lPQHo2CuAAgoO/fO3hXahnj/4vApWeLTE
+         W7dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=irpRnrsbtCZ01nJfbjB7c7/Wua+y1vAzJ01ZP5BX9aY=;
+        b=rSCkkbR5dVjPP13Pxm0ErmsMj4zlhxl8si8eV/GOfUQGu9sNP0nNHfQSiUiz1HpTjM
+         5240Iwt91LRXhgQzTQnJTIgwn/sBZ0f0fMTRjlR8KUUcPlTpkeqOGysS03AYH2PSbpDN
+         D2tUN44CAS3I3Pa4pgWovVPge2CJ4IwG02QmwtDCCJNawjO2Xr780MOCxMv+2gBdER1b
+         a5X9HDYhUQEjWsyvPEiO7f951QbOQ9ccg0jdDQN1cuXNq4eqMHnzhjmH/EytbNfbVYIv
+         Ndm+aulDUF92W81nLjePs6m8AKgzk3oggBh8f33513r63trtbTCZGZ2bEhpdNw5Rpnt9
+         DH4Q==
+X-Gm-Message-State: AOAM533GZMruOKE0if/5nrIxdjzU3LnlgvWzpOK4dYysalOKeccZyP4J
+        b+hlLE+Oe1YEAALV/Ud4miU=
+X-Google-Smtp-Source: ABdhPJwR6AV1tJGjvQz6ErALMlqBPkpebabhPS8lsOGMuFUlDv/wDd3P4P2nB30vGz2QbJCYusXI5A==
+X-Received: by 2002:a05:6e02:52:: with SMTP id i18mr38672914ilr.108.1626109366510;
+        Mon, 12 Jul 2021 10:02:46 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id n5sm8802564ilo.78.2021.07.12.10.02.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 10:02:45 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 10:02:39 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>
+Message-ID: <60ec75af43d1d_29dcc2085f@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210704190252.11866-1-xiyou.wangcong@gmail.com>
+References: <20210704190252.11866-1-xiyou.wangcong@gmail.com>
+Subject: RE: [PATCH bpf-next v5 00/11] sockmap: add sockmap support for unix
+ datagram socket
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-libbpf is used as a submodule in bcc.
-When importing latest libbpf repo in bcc, I observed the
-following compilation errors when compiling on ubuntu 16.04.
-  .../netlink.c:416:23: error: =E2=80=98TC_H_CLSACT=E2=80=99 undeclared (=
-first use in this function)
-     *parent =3D TC_H_MAKE(TC_H_CLSACT,
-                         ^
-  .../netlink.c:418:9: error: =E2=80=98TC_H_MIN_INGRESS=E2=80=99 undeclar=
-ed (first use in this function)
-           TC_H_MIN_INGRESS : TC_H_MIN_EGRESS);
-           ^
-  .../netlink.c:418:28: error: =E2=80=98TC_H_MIN_EGRESS=E2=80=99 undeclar=
-ed (first use in this function)
-           TC_H_MIN_INGRESS : TC_H_MIN_EGRESS);
-                              ^
-  .../netlink.c: In function =E2=80=98__get_tc_info=E2=80=99:
-  .../netlink.c:522:11: error: =E2=80=98TCA_BPF_ID=E2=80=99 undeclared (f=
-irst use in this function)
-    if (!tbb[TCA_BPF_ID])
-             ^
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> This is the last patchset of the original large patchset. In the
+> previous patchset, a new BPF sockmap program BPF_SK_SKB_VERDICT
+> was introduced and UDP began to support it too. In this patchset,
+> we add BPF_SK_SKB_VERDICT support to Unix datagram socket, so that
+> we can finally splice Unix datagram socket and UDP socket. Please
+> check each patch description for more details.
+> 
+> To see the big picture, the previous patchsets are available here:
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=1e0ab70778bd86a90de438cc5e1535c115a7c396
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=89d69c5d0fbcabd8656459bc8b1a476d6f1efee4
+> 
+> and this patchset is available here:
+> https://github.com/congwang/linux/tree/sockmap3
 
-In ubuntu 16.04, TCA_BPF_* enumerator looks like below
-  enum {
-	TCA_BPF_UNSPEC,
-	TCA_BPF_ACT,
-	...
-	TCA_BPF_NAME,
-	TCA_BPF_FLAGS,
-	__TCA_BPF_MAX,
-  };
-  #define TCA_BPF_MAX	(__TCA_BPF_MAX - 1)
-while in latest bpf-next, the enumerator looks like
-  enum {
-	TCA_BPF_UNSPEC,
-	...
-	TCA_BPF_FLAGS,
-	TCA_BPF_FLAGS_GEN,
-	TCA_BPF_TAG,
-	TCA_BPF_ID,
-	__TCA_BPF_MAX,
-  };
+LGTM Thanks. One nit around kfree of packets but its not specific
+to this series and I have a proposed fix coming shortly so no
+reason to hold this up.
 
-In this patch, TCA_BPF_ID is defined as a macro with proper value and thi=
-s
-works regardless of whether TCA_BPF_ID is defined in uapi header or not.
-
-I also added a comparison "TCA_BPF_MAX < TCA_BPF_ID" in function __get_tc=
-_info()
-such that if the compare result if true, returns -EOPNOTSUPP. This is use=
-d to
-prevent otherwise array overflows:
-  .../netlink.c:538:10: warning: array subscript is above array bounds [-=
-Warray-bounds]
-    if (!tbb[TCA_BPF_ID])
-            ^
-
-Fixes: 715c5ce454a6 ("libbpf: Add low level TC-BPF management API")
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/lib/bpf/netlink.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-Changelog:
-  v1 -> v2:
-    - gcc 8.3 doesn't like macro condition
-        (__TCA_BPF_MAX - 1) <=3D 10
-      where __TCA_BPF_MAX is an enumerator value.
-      So define TCA_BPF_ID macro without macro condition.
-
-diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-index 39f25e09b51e..e00660e0b87a 100644
---- a/tools/lib/bpf/netlink.c
-+++ b/tools/lib/bpf/netlink.c
-@@ -22,6 +22,24 @@
- #define SOL_NETLINK 270
- #endif
-=20
-+#ifndef TC_H_CLSACT
-+#define TC_H_CLSACT TC_H_INGRESS
-+#endif
-+
-+#ifndef TC_H_MIN_INGRESS
-+#define TC_H_MIN_INGRESS 0xFFF2U
-+#endif
-+
-+#ifndef TC_H_MIN_EGRESS
-+#define TC_H_MIN_EGRESS 0xFFF3U
-+#endif
-+
-+/* TCA_BPF_ID is an enumerate value in uapi/linux/pkt_cls.h.
-+ * Declare it as a macro here so old system can still work
-+ * without TCA_BPF_ID defined in pkt_cls.h.
-+ */
-+#define TCA_BPF_ID 11
-+
- typedef int (*libbpf_dump_nlmsg_t)(void *cookie, void *msg, struct nlatt=
-r **tb);
-=20
- typedef int (*__dump_nlmsg_t)(struct nlmsghdr *nlmsg, libbpf_dump_nlmsg_=
-t,
-@@ -504,6 +522,8 @@ static int __get_tc_info(void *cookie, struct tcmsg *=
-tc, struct nlattr **tb,
- 		return -EINVAL;
- 	if (!tb[TCA_OPTIONS])
- 		return NL_CONT;
-+	if (TCA_BPF_MAX < TCA_BPF_ID)
-+		return -EOPNOTSUPP;
-=20
- 	libbpf_nla_parse_nested(tbb, TCA_BPF_MAX, tb[TCA_OPTIONS], NULL);
- 	if (!tbb[TCA_BPF_ID])
---=20
-2.30.2
-
+Acked-by: John Fastabend <john.fastabend@gmail.com>
