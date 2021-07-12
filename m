@@ -2,233 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0103C61C2
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 19:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFB93C61E6
+	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 19:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234973AbhGLRXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Jul 2021 13:23:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35455 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234856AbhGLRXk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 12 Jul 2021 13:23:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626110452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GTa3P9ZWFrJfV2ObKCtTAuiG3I+N8Ir5qQrelfNdXg4=;
-        b=Dq8tVSyxBYrF/i+jc+6IVNDjmN44NmMIcz7J7GcDFG6DQxgYIW3QjINNWcTANhM3p82l5v
-        K5JjnyKzvRhyoMsqOeUjOUJQW81UFh+oKbl+yN6fqK7tHV3Ma8SS9XWz+FrxedVCr/LTdJ
-        WRs+7hpbtwEbMUd9y6JTojyxxbD11pU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-E-i7qJVMO366FeE3vUMbAg-1; Mon, 12 Jul 2021 13:20:51 -0400
-X-MC-Unique: E-i7qJVMO366FeE3vUMbAg-1
-Received: by mail-wr1-f72.google.com with SMTP id j6-20020adff5460000b029013c7749ad05so5121442wrp.8
-        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 10:20:50 -0700 (PDT)
+        id S235733AbhGLRbb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Jul 2021 13:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235724AbhGLRba (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Jul 2021 13:31:30 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7789DC0613DD
+        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 10:28:41 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id x10so4842333ion.9
+        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 10:28:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=6HX/mySYBAGOkvad/RP/sdVeJoPaO1pmR4d6ELHs21g=;
+        b=W0BXPoTtHFh0KRmOcG3tJ1tJVq4/RuKCmrO/ZR/FCFp2mr+80Q7JSrN0zMYpkLVGkB
+         tOBUuBxw4TAIRKuDdPqK/5U5Vgjk8KsNYvkgOQt7rEimJzIyseTOKatwkOIYTbpfTx51
+         z4YXr8EmC2J1SmdHS2hODIlj15YrNfsipqhAwUqEZuokXphqfQ0Snpn0TI4O7kbHJVJ9
+         BbQhp6EJIsxIjXAuy8YxqaY/lFtFp6RwNX9a2tgemaFPxMqH+iUzuSZqt16VxzaOo8sC
+         w/sJK04NDLuj95GM6ZTCiEC/0auG/lyvqVwVtSYXVFKInmq0JU+vsxXc6DKjrjymBdXA
+         Q8jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GTa3P9ZWFrJfV2ObKCtTAuiG3I+N8Ir5qQrelfNdXg4=;
-        b=ZTjluDaBnykGQjkQ73SkCJDUo/+hc0AYXwyjp/LT2XSzjCS7kMfe6aNBjS/3DFQ4Wo
-         M8IuN/R1N5/zIH5IeqKpMgtKKZqsEVDb3KGtchUFcmEnvPARoof7YuZZFjvh2TWds07K
-         bz5Yg7DwXBM/M64F9EqGFkABTiCO5m5Rm/g2H6XmWBARtwQrq7so3W06nQw0qRNbJbkF
-         Z4gxpSZVEhQ7/w4qulaAgUzDEkihehkIqKIEhc7V6Nr97GaASlzarjRW1QftwO0zdfqZ
-         xiS30YIqHYzMkWr2USgVoRlaIiiOeqnHfogsKECuxLxRoL8YLX27xNZcbwRy29Ff2Cob
-         WcAA==
-X-Gm-Message-State: AOAM531qRJze8VorNdmL58g3HW32Gsn5Gvyt3tzQJPz/UNsas5+N1F06
-        KyXsgdvO9Y93SRxxv+f+FfB+3ObV6UUYMH7j++eNHcJVqh1CJXquVqo6OTsd7nlaiqhWWFkJX5C
-        d9DX5S2HRrbSxNvO77c3RZNiKV7d/yKsCiu3Ip19lAGEedpgDxMGv4BTEcXrwCaE=
-X-Received: by 2002:adf:facf:: with SMTP id a15mr59290wrs.39.1626110449746;
-        Mon, 12 Jul 2021 10:20:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+d/U8vl8SdYAtGo2IkkoAiNENGSESyGiWUbqzEMUERbu/JIM77t4J+I7Z2Njn7zh2uPwhcw==
-X-Received: by 2002:adf:facf:: with SMTP id a15mr59222wrs.39.1626110449396;
-        Mon, 12 Jul 2021 10:20:49 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id w15sm567272wmi.3.2021.07.12.10.20.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Jul 2021 10:20:48 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, hawk@kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH rfc v3 2/4] page_pool: add interface for getting and
- setting pagecnt_bias
-To:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>
-References: <1626092196-44697-1-git-send-email-linyunsheng@huawei.com>
- <1626092196-44697-3-git-send-email-linyunsheng@huawei.com>
- <CAKgT0Uf1W1H_0jK+zTDHdQnpa-dFSfcAtANqhPTJyZ21VeGmjg@mail.gmail.com>
-Message-ID: <2d9a3d29-8e6b-8462-c410-6b7fd4518c9d@redhat.com>
-Date:   Mon, 12 Jul 2021 19:20:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAKgT0Uf1W1H_0jK+zTDHdQnpa-dFSfcAtANqhPTJyZ21VeGmjg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=6HX/mySYBAGOkvad/RP/sdVeJoPaO1pmR4d6ELHs21g=;
+        b=E3pusDDZg/+K72qLp2Itk93zaxDGTfh/iBPWYysj6YiV6dMiUKzFdnFFSSmoeEMzBP
+         NXgwbNcFGh0YOM4S2jcnzYb5bDwuk4xnmhcsMQjUMZfaJ9mt/4gVX3Ed+x9JNUOQAP5s
+         SXhhoeGXW8unXuvv9+NQDSoKD343EMLIXiifk6U2Nu7rzXyyfoo+xu9sl0Z7eYlgmQz9
+         EGkR77AJnbsAY9v+sYohiQIJwvBzLn0IhCwVuqIju8AEExMnITiDDFQEJNW+7AeamPjM
+         veGnBHXHkg9A1lu2so2joHRMcHIAyukLCjl4wSjDvZoyGKxZmBAovxhSKFoxAGKqb9tr
+         P5Yg==
+X-Gm-Message-State: AOAM531zKo/99zMkdLPa+Bt4RTIjly+FOzmD8sTlhIoPhnpSBHOEqF2V
+        5/BWVXuYK4ZnTBtcAkoQVP8=
+X-Google-Smtp-Source: ABdhPJxpVzzwwMf+D2VliCc4raepO9FT9ExYZ7zfxuhQpKa6IhWP9NzcwGvtzoAW69cfFCRZ2FcNCA==
+X-Received: by 2002:a5e:980c:: with SMTP id s12mr42350ioj.128.1626110920798;
+        Mon, 12 Jul 2021 10:28:40 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id t15sm8191302ile.28.2021.07.12.10.28.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 10:28:40 -0700 (PDT)
+Date:   Mon, 12 Jul 2021 10:28:33 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Message-ID: <60ec7bc1a4537_29dcc208e7@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210712165832.1833460-1-yhs@fb.com>
+References: <20210712165832.1833460-1-yhs@fb.com>
+Subject: RE: [PATCH bpf-next v2] libbpf: fix compilation errors on ubuntu
+ 16.04
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Yonghong Song wrote:
+> libbpf is used as a submodule in bcc.
+> When importing latest libbpf repo in bcc, I observed the
+> following compilation errors when compiling on ubuntu 16.04.
+>   .../netlink.c:416:23: error: =E2=80=98TC_H_CLSACT=E2=80=99 undeclared=
+ (first use in this function)
+>      *parent =3D TC_H_MAKE(TC_H_CLSACT,
+>                          ^
+>   .../netlink.c:418:9: error: =E2=80=98TC_H_MIN_INGRESS=E2=80=99 undecl=
+ared (first use in this function)
+>            TC_H_MIN_INGRESS : TC_H_MIN_EGRESS);
+>            ^
+>   .../netlink.c:418:28: error: =E2=80=98TC_H_MIN_EGRESS=E2=80=99 undecl=
+ared (first use in this function)
+>            TC_H_MIN_INGRESS : TC_H_MIN_EGRESS);
+>                               ^
+>   .../netlink.c: In function =E2=80=98__get_tc_info=E2=80=99:
+>   .../netlink.c:522:11: error: =E2=80=98TCA_BPF_ID=E2=80=99 undeclared =
+(first use in this function)
+>     if (!tbb[TCA_BPF_ID])
+>              ^
+> =
 
+> In ubuntu 16.04, TCA_BPF_* enumerator looks like below
+>   enum {
+> 	TCA_BPF_UNSPEC,
+> 	TCA_BPF_ACT,
+> 	...
+> 	TCA_BPF_NAME,
+> 	TCA_BPF_FLAGS,
+> 	__TCA_BPF_MAX,
+>   };
+>   #define TCA_BPF_MAX	(__TCA_BPF_MAX - 1)
+> while in latest bpf-next, the enumerator looks like
+>   enum {
+> 	TCA_BPF_UNSPEC,
+> 	...
+> 	TCA_BPF_FLAGS,
+> 	TCA_BPF_FLAGS_GEN,
+> 	TCA_BPF_TAG,
+> 	TCA_BPF_ID,
+> 	__TCA_BPF_MAX,
+>   };
+> =
 
-On 12/07/2021 18.02, Alexander Duyck wrote:
-> On Mon, Jul 12, 2021 at 5:17 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> As suggested by Alexander, "A DMA mapping should be page
->> aligned anyway so the lower 12 bits would be reserved 0",
->> so it might make more sense to repurpose the lower 12 bits
->> of the dma address to store the pagecnt_bias for frag page
->> support in page pool.
->>
->> As newly added page_pool_get_pagecnt_bias() may be called
->> outside of the softirq context, so annotate the access to
->> page->dma_addr[0] with READ_ONCE() and WRITE_ONCE().
->>
->> And page_pool_get_pagecnt_bias_ptr() is added to implement
->> the pagecnt_bias atomic updating when a page is passsed to
->> the user.
->>
->> Other three interfaces using page->dma_addr[0] is only called
->> in the softirq context during normal rx processing, hopefully
->> the barrier in the rx processing will ensure the correct order
->> between getting and setting pagecnt_bias.
->>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> ---
->>   include/net/page_pool.h | 29 +++++++++++++++++++++++++++--
->>   net/core/page_pool.c    |  8 +++++++-
->>   2 files changed, 34 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
->> index 8d7744d..84cd972 100644
->> --- a/include/net/page_pool.h
->> +++ b/include/net/page_pool.h
->> @@ -200,17 +200,42 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->>
->>   static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
->>   {
->> -       dma_addr_t ret = page->dma_addr[0];
->> +       dma_addr_t ret = READ_ONCE(page->dma_addr[0]) & PAGE_MASK;
->>          if (sizeof(dma_addr_t) > sizeof(unsigned long))
->>                  ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
->>          return ret;
->>   }
->>
->> -static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
->> +static inline bool page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
->>   {
->> +       if (WARN_ON(addr & ~PAGE_MASK))
->> +               return false;
->> +
->>          page->dma_addr[0] = addr;
->>          if (sizeof(dma_addr_t) > sizeof(unsigned long))
->>                  page->dma_addr[1] = upper_32_bits(addr);
->> +
->> +       return true;
->> +}
->> +
-> 
-> Rather than making this a part of the check here it might make more
-> sense to pull this out and perform the WARN_ON after the check for
-> dma_mapping_error.
+> In this patch, TCA_BPF_ID is defined as a macro with proper value and t=
+his
+> works regardless of whether TCA_BPF_ID is defined in uapi header or not=
+.
+> =
 
-I need to point out that I don't like WARN_ON and BUG_ON code in 
-fast-path code, because compiler adds 'ud2' assembler instructions that 
-influences the instruction-cache fetching in the CPU.  Yes, I have seen 
-a measuresable impact from this before.
+> I also added a comparison "TCA_BPF_MAX < TCA_BPF_ID" in function __get_=
+tc_info()
+> such that if the compare result if true, returns -EOPNOTSUPP. This is u=
+sed to
+> prevent otherwise array overflows:
+>   .../netlink.c:538:10: warning: array subscript is above array bounds =
+[-Warray-bounds]
+>     if (!tbb[TCA_BPF_ID])
+>             ^
+> =
 
+> Fixes: 715c5ce454a6 ("libbpf: Add low level TC-BPF management API")
+> Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  tools/lib/bpf/netlink.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> =
 
-> Also it occurs to me that we only really have to do this in the case
-> where dma_addr_t is larger than the size of a long. Otherwise we could
-> just have the code split things so that dma_addr[0] is the dma_addr
-> and dma_addr[1] is our pagecnt_bias value in which case we could
-> probably just skip the check.
+> Changelog:
+>   v1 -> v2:
+>     - gcc 8.3 doesn't like macro condition
+>         (__TCA_BPF_MAX - 1) <=3D 10
+>       where __TCA_BPF_MAX is an enumerator value.
+>       So define TCA_BPF_ID macro without macro condition.
+> =
 
-The dance to get 64-bit DMA addr on 32-bit systems is rather ugly and 
-confusing, sadly.  We could take advantage of this, I just hope this 
-will not make it uglier.
+> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+> index 39f25e09b51e..e00660e0b87a 100644
+> --- a/tools/lib/bpf/netlink.c
+> +++ b/tools/lib/bpf/netlink.c
+> @@ -22,6 +22,24 @@
+>  #define SOL_NETLINK 270
+>  #endif
+>  =
 
+> +#ifndef TC_H_CLSACT
+> +#define TC_H_CLSACT TC_H_INGRESS
+> +#endif
+> +
+> +#ifndef TC_H_MIN_INGRESS
+> +#define TC_H_MIN_INGRESS 0xFFF2U
+> +#endif
+> +
+> +#ifndef TC_H_MIN_EGRESS
+> +#define TC_H_MIN_EGRESS 0xFFF3U
+> +#endif
+> +
+> +/* TCA_BPF_ID is an enumerate value in uapi/linux/pkt_cls.h.
+> + * Declare it as a macro here so old system can still work
+> + * without TCA_BPF_ID defined in pkt_cls.h.
+> + */
+> +#define TCA_BPF_ID 11
+> +
+>  typedef int (*libbpf_dump_nlmsg_t)(void *cookie, void *msg, struct nla=
+ttr **tb);
+>  =
 
->> +static inline int page_pool_get_pagecnt_bias(struct page *page)
->> +{
->> +       return READ_ONCE(page->dma_addr[0]) & ~PAGE_MASK;
->> +}
->> +
->> +static inline unsigned long *page_pool_pagecnt_bias_ptr(struct page *page)
->> +{
->> +       return page->dma_addr;
->> +}
->> +
->> +static inline void page_pool_set_pagecnt_bias(struct page *page, int bias)
->> +{
->> +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
->> +
->> +       dma_addr_0 &= PAGE_MASK;
->> +       dma_addr_0 |= bias;
->> +
->> +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
->>   }
->>
->>   static inline bool is_page_pool_compiled_in(void)
->> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->> index 78838c6..1abefc6 100644
->> --- a/net/core/page_pool.c
->> +++ b/net/core/page_pool.c
->> @@ -198,7 +198,13 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
->>          if (dma_mapping_error(pool->p.dev, dma))
->>                  return false;
->>
-> 
-> So instead of adding to the function below you could just add your
-> WARN_ON check here with the unmapping call.
-> 
->> -       page_pool_set_dma_addr(page, dma);
->> +       if (unlikely(!page_pool_set_dma_addr(page, dma))) {
->> +               dma_unmap_page_attrs(pool->p.dev, dma,
->> +                                    PAGE_SIZE << pool->p.order,
->> +                                    pool->p.dma_dir,
->> +                                    DMA_ATTR_SKIP_CPU_SYNC);
->> +               return false;
->> +       }
->>
->>          if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
->>                  page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
->> --
->> 2.7.4
->>
-> 
+>  typedef int (*__dump_nlmsg_t)(struct nlmsghdr *nlmsg, libbpf_dump_nlms=
+g_t,
+> @@ -504,6 +522,8 @@ static int __get_tc_info(void *cookie, struct tcmsg=
+ *tc, struct nlattr **tb,
+>  		return -EINVAL;
+>  	if (!tb[TCA_OPTIONS])
+>  		return NL_CONT;
+> +	if (TCA_BPF_MAX < TCA_BPF_ID)
+> +		return -EOPNOTSUPP;
 
+I'm a bit confused here. Generally what I want to have happen is compilat=
+ion
+to work always and then runtime to detect the errors. So when I compile m=
+y
+libs on machine A and run it on machine B it does what I expect. This see=
+ms
+like a bit of an ugly workaround to me. I would expect the user should
+update the uapi?
+
+Or should we (maybe just libbpf git repo?) include the defines needed? Th=
+e
+change here seems likely to cause issues where someone compiles on old
+kernel then tries to run it later on newer kernel and is confused when th=
+ey
+get EOPNOTSUPP.
+
+Did I miss something? What if we just include the enum directly and
+wrap in ifndef? This is how I've dealt with these dependencies on
+other libs/apps.
+
+>  =
+
+>  	libbpf_nla_parse_nested(tbb, TCA_BPF_MAX, tb[TCA_OPTIONS], NULL);
+>  	if (!tbb[TCA_BPF_ID])
+> -- =
+
+> 2.30.2
+> =
