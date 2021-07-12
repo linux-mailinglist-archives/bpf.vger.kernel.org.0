@@ -2,95 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7975C3C6391
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 21:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AA13C6399
+	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 21:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhGLTWt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Jul 2021 15:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233522AbhGLTWs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Jul 2021 15:22:48 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30ED2C0613DD
-        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 12:20:00 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id h6so24106071iok.6
-        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 12:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=pIIm6AbmXiD/vyg2Vgajl2emWX7yF6AJRac9cHRTd6Q=;
-        b=s5m1LxE17nMwkM6UWjjsXnkrVOUmD9ElW7LHZQYwlErg92PwO0mFHJ8j3XTzEYXEXp
-         vaysQw3SmmqGI+9Hy8cm9Cefpuv5/YKH+kIKfWwmMYvFfLtnAD56H49xUSi++L8wbv1T
-         XvxcBCfuR2cmWczjfK1YkmeeICLyAIvXtKDttHkkFujwJQC/KzHbheWZIfTW3HSj0gOT
-         IqA1Sc3qOeMg0kTw+vJcTr/nCHyveYsDIsuiE8x6C8UbWkJkowz7K7tLffVZ6sWmc5Mz
-         irxFZLSV24SiXRmxhnb3bYtjcb1S15K8M6MeOHSGe0YD47NLcENbYZk89GI6SmbBM9fp
-         Hf4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=pIIm6AbmXiD/vyg2Vgajl2emWX7yF6AJRac9cHRTd6Q=;
-        b=U7k+agWwTYe+4MZ1I3zmc8pzf5o8SqPXoVkXsZ5TPkWsX2brvhaqUaMMvEBFllCpPh
-         PwukqGcflLRVDfFNYhx4hjvwP4nXv9QBHSp++s9/Mkllj3PxTqUxKrOoMgukG85eSMJh
-         Jn2n8yAbmxrViTL+VppBfmPxbCLClu0SH6OyElNBaVzzBb6qmimiOP6GVh48jnRgd3gX
-         jHEj0PyuKpaIs9UzkcQdNiUFySF8YkQyfy4znZ/fg41zVxRvFSZzJu8x8Y+xjwM84Buq
-         PxrUlD3Kou7eVt27ejCdNlxCvkl+T3QOvwamxZ95ilOmD8Z79grjTmy9EoAhXsznVfzQ
-         SXJw==
-X-Gm-Message-State: AOAM530Q36OZ0hT8kWHRyRUBR16GPmB4pU2euVNWlj3/2kER81JnTfdY
-        cC1EdA2MJK9JdVuHvxY5wf4VLVoKp9Et8g==
-X-Google-Smtp-Source: ABdhPJxNaWXHa/dHfxHgLsteFUC3y3sYURWbtsBC4a1ZB+EhQ77I3jiE6IzKxazoRu+FtVRZ4OesSg==
-X-Received: by 2002:a6b:d109:: with SMTP id l9mr380724iob.122.1626117599712;
-        Mon, 12 Jul 2021 12:19:59 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id b3sm8388183ilm.73.2021.07.12.12.19.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 12:19:59 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 12:19:52 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Martynas Pumputis <m@lambda.lt>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        m@lambda.lt
-Message-ID: <60ec95d89c590_50e1d208fc@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210712125552.58705-1-m@lambda.lt>
-References: <20210712125552.58705-1-m@lambda.lt>
-Subject: RE: [PATCH v2 bpf-next] libbpf: fix reuse of pinned map on older
- kernel
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S236299AbhGLTXw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Jul 2021 15:23:52 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5836 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234944AbhGLTXv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Jul 2021 15:23:51 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16CJE4tD030700
+        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 12:21:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=UAAezNFLEH4x1ONLEHgNL646rA8fzaw9Su10l3zRVbc=;
+ b=aOmghXJvzJonxGCzm/BhCOHlKp/sKNlt8EIaa2rTq88O/lBuj2ChPvtCKpJVx9BZmigt
+ ZCKMjn6NBDV1Gedjx5nKq7e2vm+ramUIF7kg0jo25qMrdQDe9Wj1GacJyfWHaebNBdog
+ gSYUcZGh24kJ8dP8SF4eBIDptYE2WW9D/4w= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 39q92y4568-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 12:21:02 -0700
+Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 12:20:59 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id F05834AF8858; Mon, 12 Jul 2021 12:20:55 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: [PATCH bpf-next v3] libbpf: fix compilation errors on ubuntu 16.04
+Date:   Mon, 12 Jul 2021 12:20:55 -0700
+Message-ID: <20210712192055.2547468-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-Proofpoint-GUID: mvS7r13frc8WUvhfcpuhwZN3H1gup6O0
+X-Proofpoint-ORIG-GUID: mvS7r13frc8WUvhfcpuhwZN3H1gup6O0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-12_11:2021-07-12,2021-07-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ impostorscore=0 malwarescore=0 spamscore=0 suspectscore=0 phishscore=0
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 mlxlogscore=901
+ adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107120137
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martynas Pumputis wrote:
-> When loading a BPF program with a pinned map, the loader checks whether
-> the pinned map can be reused, i.e. their properties match. To derive
-> such of the pinned map, the loader invokes BPF_OBJ_GET_INFO_BY_FD and
-> then does the comparison.
-> 
-> Unfortunately, on < 4.12 kernels the BPF_OBJ_GET_INFO_BY_FD is not
-> available, so loading the program fails with the following error:
-> 
-> 	libbpf: failed to get map info for map FD 5: Invalid argument
-> 	libbpf: couldn't reuse pinned map at
-> 		'/sys/fs/bpf/tc/globals/cilium_call_policy': parameter
-> 		mismatch"
-> 	libbpf: map 'cilium_call_policy': error reusing pinned map
-> 	libbpf: map 'cilium_call_policy': failed to create:
-> 		Invalid argument(-22)
-> 	libbpf: failed to load object 'bpf_overlay.o'
-> 
-> To fix this, fallback to derivation of the map properties via
-> /proc/$PID/fdinfo/$MAP_FD if BPF_OBJ_GET_INFO_BY_FD fails with EINVAL,
-> which can be used as an indicator that the kernel doesn't support
-> the latter.
-> 
-> Signed-off-by: Martynas Pumputis <m@lambda.lt>
-> ---
+libbpf is used as a submodule in bcc.
+When importing latest libbpf repo in bcc, I observed the
+following compilation errors when compiling on ubuntu 16.04.
+  .../netlink.c:416:23: error: =E2=80=98TC_H_CLSACT=E2=80=99 undeclared (=
+first use in this function)
+     *parent =3D TC_H_MAKE(TC_H_CLSACT,
+                         ^
+  .../netlink.c:418:9: error: =E2=80=98TC_H_MIN_INGRESS=E2=80=99 undeclar=
+ed (first use in this function)
+           TC_H_MIN_INGRESS : TC_H_MIN_EGRESS);
+           ^
+  .../netlink.c:418:28: error: =E2=80=98TC_H_MIN_EGRESS=E2=80=99 undeclar=
+ed (first use in this function)
+           TC_H_MIN_INGRESS : TC_H_MIN_EGRESS);
+                              ^
+  .../netlink.c: In function =E2=80=98__get_tc_info=E2=80=99:
+  .../netlink.c:522:11: error: =E2=80=98TCA_BPF_ID=E2=80=99 undeclared (f=
+irst use in this function)
+    if (!tbb[TCA_BPF_ID])
+             ^
 
-LGTM.
+In ubuntu 16.04, TCA_BPF_* enumerator looks like below
+  enum {
+	TCA_BPF_UNSPEC,
+	TCA_BPF_ACT,
+	...
+	TCA_BPF_NAME,
+	TCA_BPF_FLAGS,
+	__TCA_BPF_MAX,
+  };
+  #define TCA_BPF_MAX	(__TCA_BPF_MAX - 1)
+while in latest bpf-next, the enumerator looks like
+  enum {
+	TCA_BPF_UNSPEC,
+	...
+	TCA_BPF_FLAGS,
+	TCA_BPF_FLAGS_GEN,
+	TCA_BPF_TAG,
+	TCA_BPF_ID,
+	__TCA_BPF_MAX,
+  };
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+In this patch, TCA_BPF_ID is defined as a macro with proper value and thi=
+s
+works regardless of whether TCA_BPF_ID is defined in uapi header or not.
+TCA_BPF_MAX is also adjusted in a similar way.
+
+Fixes: 715c5ce454a6 ("libbpf: Add low level TC-BPF management API")
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/lib/bpf/netlink.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+Changelog:
+  v2 -> v3:
+    - define/redefine TCA_BPF_MAX based on latest uapi header.
+      this enables to remove the v2 check "TCA_BPF_MAX < TCA_BPF_ID"
+      in __get_tc_info() which may cause -EOPNOTSUPP error
+      if the library is compiled in old system and used in
+      newer system.
+     =20
+  v1 -> v2:
+    - gcc 8.3 doesn't like macro condition
+        (__TCA_BPF_MAX - 1) <=3D 10
+      where __TCA_BPF_MAX is an enumerator value.
+      So define TCA_BPF_ID macro without macro condition.
+
+diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+index 39f25e09b51e..37cb6b50f4b3 100644
+--- a/tools/lib/bpf/netlink.c
++++ b/tools/lib/bpf/netlink.c
+@@ -22,6 +22,29 @@
+ #define SOL_NETLINK 270
+ #endif
+=20
++#ifndef TC_H_CLSACT
++#define TC_H_CLSACT TC_H_INGRESS
++#endif
++
++#ifndef TC_H_MIN_INGRESS
++#define TC_H_MIN_INGRESS 0xFFF2U
++#endif
++
++#ifndef TC_H_MIN_EGRESS
++#define TC_H_MIN_EGRESS 0xFFF3U
++#endif
++
++/* TCA_BPF_ID is an enumerator value in uapi/linux/pkt_cls.h.
++ * Declare it as a macro here so old system can still work
++ * without TCA_BPF_ID defined in pkt_cls.h.
++ */
++#define TCA_BPF_ID 11
++
++#ifdef TCA_BPF_MAX
++#undef TCA_BPF_MAX
++#endif
++#define TCA_BPF_MAX 11
++
+ typedef int (*libbpf_dump_nlmsg_t)(void *cookie, void *msg, struct nlatt=
+r **tb);
+=20
+ typedef int (*__dump_nlmsg_t)(struct nlmsghdr *nlmsg, libbpf_dump_nlmsg_=
+t,
+--=20
+2.30.2
+
