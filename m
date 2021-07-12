@@ -2,244 +2,264 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38DA3C64E1
-	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 22:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4023C64FE
+	for <lists+bpf@lfdr.de>; Mon, 12 Jul 2021 22:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbhGLUZb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Jul 2021 16:25:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60984 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232008AbhGLUZb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 12 Jul 2021 16:25:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626121361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QLVajR1p0RtrxcjNuIlLy6HV0BPtmRAaoUU0t0wKSj8=;
-        b=BwSkLvngTDuEQNXFLFdaMPC2P1UdcWie5ciMIUGd83sJsLB8uIMwx1VCMUtUjBiISTWaoE
-        jJAdY+EeY9VDhzpE/gvdQc4ICI1jrucA+mlQqXrQsFDNMJExfLnNLC3wV4DX8eiDTsj0oM
-        kIFJk8KCs5i7VFfwcUxwHzGaLJwd1do=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-melJrMcDO9uVRLW-P7gcwA-1; Mon, 12 Jul 2021 16:22:40 -0400
-X-MC-Unique: melJrMcDO9uVRLW-P7gcwA-1
-Received: by mail-ej1-f70.google.com with SMTP id sd15-20020a170906ce2fb0290512261c5475so1764017ejb.13
-        for <bpf@vger.kernel.org>; Mon, 12 Jul 2021 13:22:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QLVajR1p0RtrxcjNuIlLy6HV0BPtmRAaoUU0t0wKSj8=;
-        b=hht4x08MCskzm5CagW937TanKl8/Nk6zhX/V2w8TQkWEmYlji0zG4/5uSHrLVAJAxO
-         CINGBvKGYjfU0XXHaRzNxDKV39P3BqkkMglCxDAbMC+l2h0rUhJN67OA3wtL5eU5yVSk
-         n/GC8Qe5K5gqwR09Tbq7ZgwAU2wzQzXbI/Q7T8t4pJ8xEbM1GHzoUZPmN+3HKpWVhIqh
-         Tli7mbobtKh6BRkBrY2q8TgPavNnMIZGYZziXXfHMrp/EF2UMt1M+UubrAtQfQdEmFf0
-         IA43RHSMfgaZtLWs6RAGY5lR+jxvPZqpcUvoVH3BT6lFIOgL+S3n1XGTSMSFrKWYv8gS
-         bo5A==
-X-Gm-Message-State: AOAM530yP+yaiHiBhMzSYz9ZwRO7PA80/cG38CvKyfsASNMuamj2BPyf
-        4lrMmmx0n0tCxOvL/fmpFe6SUCM5ANc8QtTVCAyO1TSqE4r1o4J9hgE59b9SvJkewcWGtJrcQPr
-        nxfEZQcfBfdPV
-X-Received: by 2002:a05:6402:3481:: with SMTP id v1mr802360edc.235.1626121359123;
-        Mon, 12 Jul 2021 13:22:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqEXqlAY4g3B27LW7S0tQ+Fm1et1P2D+DhGlhmCGcYwwhpKPtMDCX8rdwfPUhnx5QACKfhIg==
-X-Received: by 2002:a05:6402:3481:: with SMTP id v1mr802341edc.235.1626121358872;
-        Mon, 12 Jul 2021 13:22:38 -0700 (PDT)
-Received: from localhost (net-188-216-29-9.cust.vodafonedsl.it. [188.216.29.9])
-        by smtp.gmail.com with ESMTPSA id q9sm6976661ejf.70.2021.07.12.13.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jul 2021 13:22:38 -0700 (PDT)
-Date:   Mon, 12 Jul 2021 22:22:34 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexander.duyck@gmail.com,
-        brouer@redhat.com, echaudro@redhat.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH bpf-next 2/2] net: xdp: add xdp_update_skb_shared_info
- utility routine
-Message-ID: <YOykin2acwjMjfRj@lore-desk>
-References: <cover.1625828537.git.lorenzo@kernel.org>
- <16f4244f5a506143f5becde501f1ecb120255b42.1625828537.git.lorenzo@kernel.org>
- <60ec8dfeb42aa_50e1d20857@john-XPS-13-9370.notmuch>
+        id S230215AbhGLUc6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Jul 2021 16:32:58 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16976 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230058AbhGLUc5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Jul 2021 16:32:57 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16CKDrbc017622;
+        Mon, 12 Jul 2021 13:29:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=WbnTTatR8pK7foG2kaMU335gaDgCHH4Gbe5kRFk7BG8=;
+ b=iuQS4iZUYDpze6Evs+RENs1nA35Mn8WMV+tiuch7m1h/hjt8wAwwptit8I78T0OgHsff
+ FHNKuQ5pL0H7hQLkTSnFqLbLJxyDFbi+GTGdT4eLX4TmjQhiEUi7wHcva3eGxZinLtgp
+ gqHk+n5BA0W19KNoKwQFhua3NxHJ7zTnRg4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 39rscn1nxd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 12 Jul 2021 13:29:55 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Jul 2021 13:29:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fXWIqR1k5NcZxVKYbYtVTqV2jUWtgUxhP3TaJu7TvnfCDRt5WpA79e5t15lyQohgPwmX6qk/pBfrUQe+b8+Y0MityGrk+IdE7OulU+++xf6V/aesd+HDhVWUGvqZPzbVfaSrPQUEUesXajAcITsRls5afkvxZBNc0b/PlzYUca16x8TTfEtnbrihbCre1qn16MZTRFpYDG4M9LddeTuFTKh/wDEZMh69mYm4jc55eitQ/1hl8JvfU1wU7J/9MsoypYY/7QBS941mLD0xl3TTo14h4GaAIiI2x2qJinckvzO9Wm9fd5x1E6DK4T8ogUAt1oJ5voBIIjBqQ9s/5r3OEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WbnTTatR8pK7foG2kaMU335gaDgCHH4Gbe5kRFk7BG8=;
+ b=QfR11/XAkK/KKBoEoLuyhoGK9JT73LBfDmJJRdMF88S7RiIyxjkk+4bGFbUmWkjcylOt2XHRKEE4fqwoSWl/PZkkItP3jsdaitprCPsf2qFDoF0gTET6vlr90i9UMl8fVmvKfOi23puCaAdJZL0GaUb5qy84c0ps2JrhW8/efzIP/M/n3aJpud3w2FHlWKSpFQl8RgcT+s1eRJXKu3HS8nY+TiYTSTmoxYbi40zKGw+5UP4tsnwixmyBi5LzJKAkX/97vHPUi6jMpHBEGpzDGudJYsT2pkXwhXISZ6kz7EbWuZB69JuOaz2tNzgoKnY/+AygC4l4pAgBz0ERdhPKag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR1501MB4096.namprd15.prod.outlook.com (2603:10b6:805:53::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.23; Mon, 12 Jul
+ 2021 20:29:51 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4308.027; Mon, 12 Jul 2021
+ 20:29:51 +0000
+Subject: Re: [PATCH bpf-next v3] libbpf: fix compilation errors on ubuntu
+ 16.04
+To:     Daniel Borkmann <daniel@iogearbox.net>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20210712192055.2547468-1-yhs@fb.com>
+ <de4d44a7-32a9-e558-3c42-ed983f355320@iogearbox.net>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <05ccc682-8994-6c81-4cad-9e8e27593121@fb.com>
+Date:   Mon, 12 Jul 2021 13:29:49 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <de4d44a7-32a9-e558-3c42-ed983f355320@iogearbox.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR03CA0252.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Zn+z8MWS16IBtto7"
-Content-Disposition: inline
-In-Reply-To: <60ec8dfeb42aa_50e1d20857@john-XPS-13-9370.notmuch>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c1::1156] (2620:10d:c090:400::5:9a8b) by SJ0PR03CA0252.namprd03.prod.outlook.com (2603:10b6:a03:3a0::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Mon, 12 Jul 2021 20:29:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5cc420d1-ef16-4d58-b824-08d94573cd37
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB4096:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB40969C5C129920134FF336E5D3159@SN6PR1501MB4096.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 51wpOIEoeHAgLA7PfzSddsqKPraZzWmbbMEfY+fEfRwFyjsAVmAmVDBCfT/RyO8pi18NgWW7jAHVVXRHWwbKUB1N2jJYRFoQJ+a5VRUliFVs2Q9OmLjDB1OKStqTD6EhaZspH2DbA7DSWD7xx/TJgrCpAXWY5sOuCkwbk9iw2e1b2r3Vszc4e9l9cUpue0ah9eFrqF7sDxPW5B44CtJ6t6CbK9XOzfKa/YjMcXvIcx1mrDqkUzjROuxVycpus/zww3nRRBFMiregXcd18L9tMR/MP1vtS9L+bcoSyw6sDA/toD6M7AGjq5zdiLJxPrsvASZUUoe/bApQUfInWRncPpVwhPDoP6w66gThp9ebCoAD64+Q37XRj+AuZMrRUIOcKmQn7eqxODmjaV+d3fhnOnP/lYDqF1+ZouUgL4//T7B0BXTB5OFPM1KwZFitYmxwNMdxRxU0hgpYQlFhrfq5J3XsfoEMkI3yUw1vhFIYfUKd/+dVg7MEocqFj9zyvU2n9+4vemCvAnk+1GkqvzbBoHqOBubFQTYmKhxmm2vfcw3c1kY9uAi2o8w0sKtNJG1pgj0l/g4gZLvpn2gtLRbcXd4LvYDxMoF024DI2fXQ8Rij4gPVryBffeC6yv9QQmNqkuWxwTFpjBKPV+5k3g7Nk2GA4Bh0g85K5zNLNOoXHx50fad1EQZNoNwMSkz+W1j84+PiiLcz8iOoUiiUfERnO/4lfIFWqX9Q71SM09STf60=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(39860400002)(366004)(346002)(52116002)(8936002)(8676002)(38100700002)(54906003)(66556008)(36756003)(2616005)(66946007)(66476007)(316002)(478600001)(31686004)(6486002)(186003)(86362001)(31696002)(4326008)(53546011)(5660300002)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bkNPamVoSUJ6TEpaK25JTGVKbVlkMFIwdTNNUTg2dHBrbWNxdTFTLzN4UGhK?=
+ =?utf-8?B?ZjBEWFB4T29CYmhTalhrcG0ybjNlelU5U0ZoVWZZTmorWHg3TVJ5M21xU3A2?=
+ =?utf-8?B?L3RVYVJaV1R2LzdrWWNsRElSeWtWODhpOFJRZjBEVWVZb2xjUmJNWU4yN0Y2?=
+ =?utf-8?B?OU92aHB4YzA4M2huWGEvS3psUklrVjhYaGpxdHJLV3JOM3NScU4xZU5wWEdw?=
+ =?utf-8?B?bElMNGVhMGh4Zm5POXh1bmZRSmp1dG11aEc0SHJ5MEJVZzVhZnRNRy9OWVJp?=
+ =?utf-8?B?U3k1VzdvVEVTa0k2YnVBVHdNbU96dXlIVUdxalFORWNVcG5tN2NleFN5bkZF?=
+ =?utf-8?B?b2ZoNXorczN6MW9GUVZGNitONXhUNlRtSGlTaGU0dlErb00vOUNWdFkzN3Vp?=
+ =?utf-8?B?UVVFWkJTVmg2blRJZGVybVdOQUY3VHpUaDFkTkFJWkpKYjRXQ1VyaWlDbUI0?=
+ =?utf-8?B?Rk11SUpUU2pHa0RpNlp2WVlkbCtvM0tJNjl1ZzRQUGlCbWZ1dnliNXgxMmFs?=
+ =?utf-8?B?a2IySFFsTzk1OStXQWNXbmxIVVhRb2MrVlEwQmJZcnd5dTVyWDJBL3R5akdy?=
+ =?utf-8?B?cXduTkI1K2dQdURSRm83ZThwWHJ4OXNyaVgwUkFWb3VmbkZCdm1rVFI4cEc1?=
+ =?utf-8?B?MzNsTlM5ZmRJR2VpNFE4K09FYjMwb3lFTmYxZ3huR2NJR0NmM0xOOHNLUmFo?=
+ =?utf-8?B?dlE2amhVUEViZ2VnZmVzNU9wd2RTUUdxU2hCUE8wR0pkcitTdW9LL255TEFu?=
+ =?utf-8?B?dUxUME5WZnd3eHExdTVtdWNJcUlpVXc5MEJYdUJnY3RNSk5VeGVJNXF0ZCsy?=
+ =?utf-8?B?T1JJYkxIb3hIZWNZL2VhMmlyN1VDNWo1bHhhMFFycUN0dUxsaURKK0hZeVRo?=
+ =?utf-8?B?RzdpK0pvUTRKSFZIaEhnWHdYNXQ5M01VM21Mb0s3UVhSVEJNRVFtTnliRVA2?=
+ =?utf-8?B?aTNOdTY4OUZwTTUzaG16ZGhmOCtHS2MvQnRvbXFQUGtldE1OUm5PZS9WNDlN?=
+ =?utf-8?B?N1NPbXk0WTI4ditlK3Vsdm5zeGJaUzJYSWNIaTlOZURXWE1PSzVBaU05S1ZE?=
+ =?utf-8?B?UWIvVkhnU24vM2Evbzd4NGF6akhaYWxobW1leks1dlRwWGNweU9PYmhqSVBH?=
+ =?utf-8?B?NDloUTk4SmVtd0JHaGNiZUlyNFEvSkdJSWtadDVhTkdjcXU0K1lNUFQ0Y3FK?=
+ =?utf-8?B?NXl5eXVvc1NrMzd4V0l5aEVxbWtlenBQZVJWTU9BdjdHMDU1SDFUQmw4SWlJ?=
+ =?utf-8?B?NHpGRFhuWWtWL1FuQ0wxVlJ2V09jTEJ4N1dNR0N3cld6Tmc0TTgzWE9yWUY4?=
+ =?utf-8?B?L0QvQmVOdjdoM2dPYWpIVTR5L1Q1aGlzT2ozU0tLTTdLdGFDMTRCdk5sNFN0?=
+ =?utf-8?B?MjlDeGtGa3VHRkNmQmhVb3dJR2F1NWlzV05vVFlTa25iUmo0bTQ3UnVuWnNT?=
+ =?utf-8?B?MFo1WHRoSFhnZlZvU0dlaUM0Y3psYjlxOUk1aFUrZnJ6R1RRMnd6b0s5M1Fp?=
+ =?utf-8?B?eVlsUzJmK2VkL1M5UTF4Tlk0MnFQaFFiMzdCOThkeTBDMExnR1AvVFMwTjdn?=
+ =?utf-8?B?VlRsNzEydEk1eSt0OUJtU28xT0hSZGhCRWRKOXluMm53SkQyUTVBbDhsNStu?=
+ =?utf-8?B?ckM4dXlka3FnK29QTlZta2ZuOWhIeFdTQ2xpQ3grVXFJSVBSTG5TTHlYV09V?=
+ =?utf-8?B?bE9scmNvOVVKK1lsbzM4c2cxOU1zK3F4RmJiVGJ4QW9DRDRLTWR1dVlocWJ5?=
+ =?utf-8?B?SGl1MC9RSTJnc2xDMkh6b2NubkFlWGxnMGZuOWZsTld1a3dyVnluSDZTU3Vv?=
+ =?utf-8?Q?SICh6ttBO/+XPt19aTYeCcngP7T6eoUvSCXLQ=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5cc420d1-ef16-4d58-b824-08d94573cd37
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2021 20:29:51.7031
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QGeV9wtnpVH09Swen19qjma4yFkAcX67P+6fTO5xWlS3op3qq/a9T6uWLCbLyNL/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB4096
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: d1Kl2mp4GrCB_pwzyQBYi85bq9s14wu7
+X-Proofpoint-ORIG-GUID: d1Kl2mp4GrCB_pwzyQBYi85bq9s14wu7
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-12_11:2021-07-12,2021-07-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 adultscore=0 impostorscore=0 clxscore=1015 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107120141
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
---Zn+z8MWS16IBtto7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-> Lorenzo Bianconi wrote:
-> > Introduce xdp_update_skb_shared_info routine to update frags array
-> > metadata from a given xdp_buffer/xdp_frame. We do not need to reset
-> > frags array since it is already initialized by the driver.
-> > Rely on xdp_update_skb_shared_info in mvneta driver.
->=20
-> Some more context here would really help. I had to jump into the mvneta
-> driver to see what is happening.
+On 7/12/21 12:26 PM, Daniel Borkmann wrote:
+> On 7/12/21 9:20 PM, Yonghong Song wrote:
+>> libbpf is used as a submodule in bcc.
+>> When importing latest libbpf repo in bcc, I observed the
+>> following compilation errors when compiling on ubuntu 16.04.
+>>    .../netlink.c:416:23: error: ‘TC_H_CLSACT’ undeclared (first use in 
+>> this function)
+>>       *parent = TC_H_MAKE(TC_H_CLSACT,
+>>                           ^
+>>    .../netlink.c:418:9: error: ‘TC_H_MIN_INGRESS’ undeclared (first 
+>> use in this function)
+>>             TC_H_MIN_INGRESS : TC_H_MIN_EGRESS);
+>>             ^
+>>    .../netlink.c:418:28: error: ‘TC_H_MIN_EGRESS’ undeclared (first 
+>> use in this function)
+>>             TC_H_MIN_INGRESS : TC_H_MIN_EGRESS);
+>>                                ^
+>>    .../netlink.c: In function ‘__get_tc_info’:
+>>    .../netlink.c:522:11: error: ‘TCA_BPF_ID’ undeclared (first use in 
+>> this function)
+>>      if (!tbb[TCA_BPF_ID])
+>>               ^
+>>
+>> In ubuntu 16.04, TCA_BPF_* enumerator looks like below
+>>    enum {
+>>     TCA_BPF_UNSPEC,
+>>     TCA_BPF_ACT,
+>>     ...
+>>     TCA_BPF_NAME,
+>>     TCA_BPF_FLAGS,
+>>     __TCA_BPF_MAX,
+>>    };
+>>    #define TCA_BPF_MAX    (__TCA_BPF_MAX - 1)
+>> while in latest bpf-next, the enumerator looks like
+>>    enum {
+>>     TCA_BPF_UNSPEC,
+>>     ...
+>>     TCA_BPF_FLAGS,
+>>     TCA_BPF_FLAGS_GEN,
+>>     TCA_BPF_TAG,
+>>     TCA_BPF_ID,
+>>     __TCA_BPF_MAX,
+>>    };
+>>
+>> In this patch, TCA_BPF_ID is defined as a macro with proper value and 
+>> this
+>> works regardless of whether TCA_BPF_ID is defined in uapi header or not.
+>> TCA_BPF_MAX is also adjusted in a similar way.
+>>
+>> Fixes: 715c5ce454a6 ("libbpf: Add low level TC-BPF management API")
+>> Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>> ---
+>>   tools/lib/bpf/netlink.c | 23 +++++++++++++++++++++++
+>>   1 file changed, 23 insertions(+)
+>>
+>> Changelog:
+>>    v2 -> v3:
+>>      - define/redefine TCA_BPF_MAX based on latest uapi header.
+>>        this enables to remove the v2 check "TCA_BPF_MAX < TCA_BPF_ID"
+>>        in __get_tc_info() which may cause -EOPNOTSUPP error
+>>        if the library is compiled in old system and used in
+>>        newer system.
+>>    v1 -> v2:
+>>      - gcc 8.3 doesn't like macro condition
+>>          (__TCA_BPF_MAX - 1) <= 10
+>>        where __TCA_BPF_MAX is an enumerator value.
+>>        So define TCA_BPF_ID macro without macro condition.
+>>
+>> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+>> index 39f25e09b51e..37cb6b50f4b3 100644
+>> --- a/tools/lib/bpf/netlink.c
+>> +++ b/tools/lib/bpf/netlink.c
+>> @@ -22,6 +22,29 @@
+>>   #define SOL_NETLINK 270
+>>   #endif
+>> +#ifndef TC_H_CLSACT
+>> +#define TC_H_CLSACT TC_H_INGRESS
+>> +#endif
+>> +
+>> +#ifndef TC_H_MIN_INGRESS
+>> +#define TC_H_MIN_INGRESS 0xFFF2U
+>> +#endif
+>> +
+>> +#ifndef TC_H_MIN_EGRESS
+>> +#define TC_H_MIN_EGRESS 0xFFF3U
+>> +#endif
+>> +
+>> +/* TCA_BPF_ID is an enumerator value in uapi/linux/pkt_cls.h.
+>> + * Declare it as a macro here so old system can still work
+>> + * without TCA_BPF_ID defined in pkt_cls.h.
+>> + */
+>> +#define TCA_BPF_ID 11
+>> +
+>> +#ifdef TCA_BPF_MAX
+>> +#undef TCA_BPF_MAX
+>> +#endif
+>> +#define TCA_BPF_MAX 11
+>> +
+>>   typedef int (*libbpf_dump_nlmsg_t)(void *cookie, void *msg, struct 
+>> nlattr **tb);
+>>   typedef int (*__dump_nlmsg_t)(struct nlmsghdr *nlmsg, 
+>> libbpf_dump_nlmsg_t,
+>>
+> 
+> See 49a249c38726 ("tools/bpftool: copy a few net uapi headers to tools 
+> directory").
+> If this is not included from tools/lib/bpf/ then it would need fixing 
+> from Makefile
+> side.
 
-Hi John,
+Thanks, Daniel. Yes, the pkt_cls.h and pkt_sched.h are in kernel 
+tools/include/uapi/linux directory. But these two files are not
+in libbpf repo and hence system header files are used.
 
-ack, you are right. I will add more context next time. Sorry for the noise.
+I will submit a patch to libbpf to fix the issue.
 
->=20
-> So as I read this we have a loop processing the descriptor in
-> mvneta_rx_swbm()
->=20
->  mvneta_rx_swbm()
->    while (rx_proc < budget && rx_proc < rx_todo) {
->      if (rx_status & MVNETA_RXD_FIRST_DESC) ...
->      else {
->        mvneta_swbm_add_rx_fragment()
->      }
->      ..
->      if (!rx_status & MVNETA_RXD_LAST_DESC)
->          continue;
->      ..
->      if (xdp_prog)
->        mvneta_run_xdp(...)
->    }
->=20
-> roughly looking like above. First question, do you ever hit
-> !MVNETA_RXD_LAST_DESC today? I assume this is avoided by hardware
-> setup when XDP is enabled, otherwise _run_xdp() would be
-> broken correct? Next question, given last descriptor bit
-> logic whats the condition to hit the code added in this patch?
-> wouldn't we need more than 1 descriptor and then we would
-> skip the xdp_run... sorry lost me and its probably easier
-> to let you give the flow vs spending an hour trying to
-> track it down.
-
-I will point it out in the new commit log, but this is a preliminary patch =
-for
-xdp multi-buff support. In the current codebase xdp_update_skb_shared_info()
-is run just when the NIC is not running in XDP mode (please note
-mvneta_swbm_add_rx_fragment() is run even if xdp_prog is NULL).
-When we add xdp multi-buff support, xdp_update_skb_shared_info() will run e=
-ven
-in XDP mode since we will remove the MTU constraint.
-
-In the current codebsae the following condition can occur in non-XDP mode if
-the packet is split on 3 or more descriptors (e.g. MTU 9000):
-
-if (!(rx_status & MVNETA_RXD_LAST_DESC))
-   continue;
-
->=20
-> But, in theory as you handle a hardware discriptor you can build
-> up a set of pages using them to create a single skb rather than a
-> skb per descriptor. But don't we know if pfmemalloc should be
-> done while we are building the frag list? Can't se just set it
-> vs this for loop in xdp_update_skb_shared_info(),
-
-I added pfmemalloc code in xdp_update_skb_shared_info() in order to reuse it
-for the xdp_redirect use-case (e.g. whenever we redirect a xdp multi-buff
-in a veth or in a cpumap). I have a pending patch where I am using
-xdp_update_skb_shared_info in __xdp_build_skb_from_frame().
-
->=20
-> > +	for (i =3D 0; i < nr_frags; i++) {
-> > +		struct page *page =3D skb_frag_page(&sinfo->frags[i]);
-> > +
-> > +		page =3D compound_head(page);
-> > +		if (page_is_pfmemalloc(page)) {
-> > +			skb->pfmemalloc =3D true;
-> > +			break;
-> > +		}
-> > +	}
-> > +}
->=20
-> ...
->=20
-> > diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethern=
-et/marvell/mvneta.c
-> > index 361bc4fbe20b..abf2e50880e0 100644
-> > --- a/drivers/net/ethernet/marvell/mvneta.c
-> > +++ b/drivers/net/ethernet/marvell/mvneta.c
-> > @@ -2294,18 +2294,29 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port =
-*pp,
-> >  	rx_desc->buf_phys_addr =3D 0;
-> > =20
-> >  	if (data_len > 0 && xdp_sinfo->nr_frags < MAX_SKB_FRAGS) {
-> > -		skb_frag_t *frag =3D &xdp_sinfo->frags[xdp_sinfo->nr_frags++];
-> > +		skb_frag_t *frag =3D &xdp_sinfo->frags[xdp_sinfo->nr_frags];
-> > =20
-> >  		skb_frag_off_set(frag, pp->rx_offset_correction);
-> >  		skb_frag_size_set(frag, data_len);
-> >  		__skb_frag_set_page(frag, page);
-> > +		/* We don't need to reset pp_recycle here. It's already set, so
-> > +		 * just mark fragments for recycling.
-> > +		 */
-> > +		page_pool_store_mem_info(page, rxq->page_pool);
-> > +
-> > +		/* first fragment */
-> > +		if (!xdp_sinfo->nr_frags)
-> > +			xdp_sinfo->gso_type =3D *size;
->=20
-> Would be nice to also change 'int size' -> 'unsigned int size' so the
-> types matched. Presumably you really can't have a negative size.
->=20
-
-ack
-
-> Also how about giving gso_type a better name. xdp_sinfo->size maybe?
-
-I did it in this way in order to avoid adding a union in skb_shared_info.
-What about adding an inline helper to set/get it? e.g.
-
-static inline u32 xdp_get_data_len(struct skb_shared_info *sinfo)
-{
-    return sinfo->gso_type;
-}
-
-static inline void xdp_set_data_len(struct skb_shared_info *sinfo, u32 data=
-len)
-{
-    sinfo->gso_type =3D datalen;
-}
-
-Regards,
-Lorenzo
-
->=20
->=20
-> > +		xdp_sinfo->nr_frags++;
-> > =20
-> >  		/* last fragment */
-> >  		if (len =3D=3D *size) {
-> >  			struct skb_shared_info *sinfo;
-> > =20
-> >  			sinfo =3D xdp_get_shared_info_from_buff(xdp);
-> > +			sinfo->xdp_frags_tsize =3D xdp_sinfo->nr_frags * PAGE_SIZE;
-> >  			sinfo->nr_frags =3D xdp_sinfo->nr_frags;
-> > +			sinfo->gso_type =3D xdp_sinfo->gso_type;
-> >  			memcpy(sinfo->frags, xdp_sinfo->frags,
-> >  			       sinfo->nr_frags * sizeof(skb_frag_t));
-> >  		}
->=20
+> 
 > Thanks,
-> John
->=20
-
---Zn+z8MWS16IBtto7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYOykiAAKCRA6cBh0uS2t
-rEE8APwNM04D/W+zHhHwuPtCDbsKIY77qSQYWFUXZWRQ0Ji0zAD6AlzHnSol1aA9
-KGjvchrxRBy/2W1QMWBoJdC27cCbPA4=
-=JMAG
------END PGP SIGNATURE-----
-
---Zn+z8MWS16IBtto7--
-
+> Daniel
