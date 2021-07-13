@@ -2,155 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225873C6AA4
-	for <lists+bpf@lfdr.de>; Tue, 13 Jul 2021 08:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DAF3C6AA9
+	for <lists+bpf@lfdr.de>; Tue, 13 Jul 2021 08:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhGMGhk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Jul 2021 02:37:40 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11269 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233374AbhGMGhk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Jul 2021 02:37:40 -0400
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GP9hM0MtRz1CJNh
-        for <bpf@vger.kernel.org>; Tue, 13 Jul 2021 14:29:07 +0800 (CST)
-Received: from [10.174.178.171] (10.174.178.171) by
- dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 13 Jul 2021 14:34:43 +0800
-To:     <bpf@vger.kernel.org>
-From:   "luwei (O)" <luwei32@huawei.com>
-Subject: Ask for help about bpf map
-Message-ID: <5aebe6f4-ca0d-4f64-8ee6-b68c58675271@huawei.com>
-Date:   Tue, 13 Jul 2021 14:34:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233310AbhGMGlo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Jul 2021 02:41:44 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14074 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232908AbhGMGlo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Jul 2021 02:41:44 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GP9qp6GhTzbbwx;
+        Tue, 13 Jul 2021 14:35:34 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 14:38:51 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 13 Jul
+ 2021 14:38:50 +0800
+Subject: Re: [PATCH rfc v3 2/4] page_pool: add interface for getting and
+ setting pagecnt_bias
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+CC:     Alexander Duyck <alexander.duyck@gmail.com>, <brouer@redhat.com>,
+        "David Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Russell King - ARM Linux" <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Will Deacon" <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Vlastimil Babka" <vbabka@suse.cz>, <fenghua.yu@intel.com>,
+        <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "Alexander Lobakin" <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, <wenxu@ucloud.cn>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        <kpsingh@kernel.org>, <andrii@kernel.org>,
+        "Martin KaFai Lau" <kafai@fb.com>, <songliubraving@fb.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <1626092196-44697-1-git-send-email-linyunsheng@huawei.com>
+ <1626092196-44697-3-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Uf1W1H_0jK+zTDHdQnpa-dFSfcAtANqhPTJyZ21VeGmjg@mail.gmail.com>
+ <2d9a3d29-8e6b-8462-c410-6b7fd4518c9d@redhat.com>
+ <YOyFAkahxxMKNeGb@enceladus>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <b217802f-368f-2d7d-d216-6614305acfa2@huawei.com>
+Date:   Tue, 13 Jul 2021 14:38:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.171]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
+In-Reply-To: <YOyFAkahxxMKNeGb@enceladus>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, List:
+On 2021/7/13 2:08, Ilias Apalodimas wrote:
+> [...]
+>>>> +static inline bool page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+>>>>   {
+>>>> +       if (WARN_ON(addr & ~PAGE_MASK))
+>>>> +               return false;
+>>>> +
+>>>>          page->dma_addr[0] = addr;
+>>>>          if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>>>>                  page->dma_addr[1] = upper_32_bits(addr);
+>>>> +
+>>>> +       return true;
+>>>> +}
+>>>> +
+>>>
+>>> Rather than making this a part of the check here it might make more
+>>> sense to pull this out and perform the WARN_ON after the check for
+>>> dma_mapping_error.
+>>
+>> I need to point out that I don't like WARN_ON and BUG_ON code in fast-path
+>> code, because compiler adds 'ud2' assembler instructions that influences the
+>> instruction-cache fetching in the CPU.  Yes, I have seen a measuresable
+>> impact from this before.
+>>
+>>
+>>> Also it occurs to me that we only really have to do this in the case
+>>> where dma_addr_t is larger than the size of a long. Otherwise we could
+>>> just have the code split things so that dma_addr[0] is the dma_addr
+>>> and dma_addr[1] is our pagecnt_bias value in which case we could
+>>> probably just skip the check.
+>>
+>> The dance to get 64-bit DMA addr on 32-bit systems is rather ugly and
+>> confusing, sadly.  We could take advantage of this, I just hope this will
+>> not make it uglier.
+> 
+> Note here that we can only use this because dma_addr is not aliased to
+> compound page anymore (after the initial page_pool recycling patchset). 
+> We must keep this in mind if we even restructure struct page.
+> 
+> Can we do something more radical for this? The 64/32 bit dance is only
+> there for 32 bit systems with 64 bit dma.  Since the last time we asked
+> about this no one seemed to care about these, and I really doubt we'll get
+> an ethernet driver for them (that needs recycling....), can we *only* support 
+> frag allocation and recycling for 'normal' systems? We could always just r
+> e-purpose dma_addr[1] for those.
 
-       I am a beginner about bpf and working on XDP now. I meet a 
-problem and feel difficult to figure it out.
+Will define a macro for "sizeof(dma_addr_t) > sizeof(unsigned long)" to
+decide whether to use the dma_addr[1], hopefully the compiler will optimize
+out the unused code in a specific system.
 
-       In my following codes, I use two ways to define my_map: in SEC 
-maps and SEC .maps respectively. When I load the xdp_kern.o file,
+> 
+> Regards
+> /Ilias
+> 
+>>
+>>
+>>>> +static inline int page_pool_get_pagecnt_bias(struct page *page)
+>>>> +{
+>>>> +       return READ_ONCE(page->dma_addr[0]) & ~PAGE_MASK;
+>>>> +}
+>>>> +
+>>>> +static inline unsigned long *page_pool_pagecnt_bias_ptr(struct page *page)
+>>>> +{
+>>>> +       return page->dma_addr;
+>>>> +}
+>>>> +
+>>>> +static inline void page_pool_set_pagecnt_bias(struct page *page, int bias)
+>>>> +{
+>>>> +       unsigned long dma_addr_0 = READ_ONCE(page->dma_addr[0]);
+>>>> +
+>>>> +       dma_addr_0 &= PAGE_MASK;
+>>>> +       dma_addr_0 |= bias;
+>>>> +
+>>>> +       WRITE_ONCE(page->dma_addr[0], dma_addr_0);
+>>>>   }
+>>>>
+>>>>   static inline bool is_page_pool_compiled_in(void)
+>>>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>>>> index 78838c6..1abefc6 100644
+>>>> --- a/net/core/page_pool.c
+>>>> +++ b/net/core/page_pool.c
+>>>> @@ -198,7 +198,13 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
+>>>>          if (dma_mapping_error(pool->p.dev, dma))
+>>>>                  return false;
+>>>>
+>>>
+>>> So instead of adding to the function below you could just add your
+>>> WARN_ON check here with the unmapping call.
 
-It has different results. The way I load is: ip link set dev ens3 xdp 
-obj xdp1_kern.o sec xdp1.
+Ok.
 
-       when I define my_map using SEC maps, it loads successfully but 
-fails to load using SEC .maps, it reports:
-
-"
-
-[12] TYPEDEF __u32 type_id=13
-[13] INT unsigned int size=4 bits_offset=0 nr_bits=32 encoding=(none)
-[14] FUNC_PROTO (anon) return=2 args=(10 ctx)
-[15] FUNC xdp_prog1 type_id=14
-[16] INT char size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
-[17] ARRAY (anon) type_id=16 index_type_id=4 nr_elems=4
-[18] VAR _license type_id=17 linkage=1
-[19] DATASEC .maps size=0 vlen=1 size == 0
-
-
-Prog section 'xdp1' rejected: Permission denied (13)!
-  - Type:         6
-  - Instructions: 9 (0 over limit)
-  - License:      GPL
-
-Verifier analysis:
-
-0: (b7) r1 = 0
-1: (63) *(u32 *)(r10 -4) = r1
-last_idx 1 first_idx 0
-regs=2 stack=0 before 0: (b7) r1 = 0
-2: (bf) r2 = r10
-3: (07) r2 += -4
-4: (18) r1 = 0x0
-6: (85) call bpf_map_lookup_elem#1
-R1 type=inv expected=map_ptr
-processed 6 insns (limit 1000000) max_states_per_insn 0 total_states 0 
-peak_states 0 mark_read 0
-
-Error fetching program/map!
-
-"
-
-I tried to search google, and only found the following page:
-
-https://stackoverflow.com/questions/67553794/what-is-variable-attribute-sec-means
-
-Does anyone meet the same problem or help to explain this or provide me 
-some suggestions ? Thanks !
-
-
-=== xdp1_kern.c ===
-
-#define KBUILD_MODNAME "foo"
-#include <uapi/linux/bpf.h>
-#include <linux/time.h>
-#include <linux/in.h>
-#include <linux/if_ether.h>
-#include <linux/if_packet.h>
-#include <linux/if_vlan.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <bpf/bpf_helpers.h>
-
-struct {
-     __uint(type, BPF_MAP_TYPE_HASH);
-     __uint(max_entries, 1024);
-     __type(key, int);
-     __type(value, int);
-} my_map SEC(".maps");
-
-#if 0
-#define PIN_GLOBAL_NS           2
-struct bpf_elf_map {
-         __u32 type;
-         __u32 size_key;
-         __u32 size_value;
-         __u32 max_elem;
-         __u32 flags;
-         __u32 id;
-         __u32 pinning;
-};
-
-struct bpf_elf_map SEC("maps") my_map = {
-         .type = BPF_MAP_TYPE_HASH,
-         .size_key = sizeof(int),
-         .size_value = sizeof(int),
-         .pinning        = PIN_GLOBAL_NS,
-         .max_elem = 65535,
-};
-#endif
-
-SEC("xdp1")
-int xdp_prog1(struct xdp_md *ctx)
-{
-     int key = 0;
-     struct map_elem *val;
-
-     val = bpf_map_lookup_elem(&my_map, &key);
-     if (val) {
-         return XDP_PASS;
-     }
-
-     return XDP_PASS;
-}
-
-char _license[] SEC("license") = "GPL";
-
--- 
-Best Regards,
-Lu Wei
-
+>>>
+>>>> -       page_pool_set_dma_addr(page, dma);
+>>>> +       if (unlikely(!page_pool_set_dma_addr(page, dma))) {
+>>>> +               dma_unmap_page_attrs(pool->p.dev, dma,
+>>>> +                                    PAGE_SIZE << pool->p.order,
+>>>> +                                    pool->p.dma_dir,
+>>>> +                                    DMA_ATTR_SKIP_CPU_SYNC);
+>>>> +               return false;
+>>>> +       }
+>>>>
+>>>>          if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+>>>>                  page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+>>>> --
+>>>> 2.7.4
+>>>>
+>>>
+>>
+> .
+> 
