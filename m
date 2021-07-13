@@ -2,171 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36F53C71EC
-	for <lists+bpf@lfdr.de>; Tue, 13 Jul 2021 16:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2293C7381
+	for <lists+bpf@lfdr.de>; Tue, 13 Jul 2021 17:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236720AbhGMOR6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Jul 2021 10:17:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24917 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236636AbhGMOR5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 13 Jul 2021 10:17:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626185707;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mLkk+cKF9D7a7EE6O0W6DpvhUQ4QSgIqQQqruwzRfZk=;
-        b=SW+JeY5UtbVpKtqSD8zKIG3u3w1Z8eN8qNRlxMV0EMnANXB4QuOgKc5ghoK9GmxlmpT0Em
-        iAiSN27K1dAUQ+cgEDRw7tuDweJNZ5IvXtz8tckzmWcNerA4ONZnhXzf/mxh9+vvtC7Dkr
-        fZ8LLGVT+MeWVcyYvp1H8ifyJlJjqgE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-185-j6gAGg3VPLuQdYqDRUzDig-1; Tue, 13 Jul 2021 10:15:06 -0400
-X-MC-Unique: j6gAGg3VPLuQdYqDRUzDig-1
-Received: by mail-wr1-f72.google.com with SMTP id j6-20020adff5460000b029013c7749ad05so6484337wrp.8
-        for <bpf@vger.kernel.org>; Tue, 13 Jul 2021 07:15:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mLkk+cKF9D7a7EE6O0W6DpvhUQ4QSgIqQQqruwzRfZk=;
-        b=Ls06BMZhLQ4NX3VPs25IvKv5IHftSpoBcNjaYQ2vhjtusEdJQZmAmxRKp8tepV4SaS
-         h0pVyn97dSmh3OoJqbiOOqPBxZO7ppU8Mqh/qnvRVpo7Z48wwLB5QY/SzqKBkTWAtFqG
-         ghmRVwzuTpRnnnV+AyUjdvUka7menYpEK+YS6F8bpcgv1uUAdpGcKlz6gemvaVbWRF5H
-         LvNCrQjjlCT5PwdOl4r/4o5E4qcngxvBeAk3SbJ+G+dC0FjTveoE/fLnPEhB2sdGriZc
-         Tp6faIr4c+xziodgcV+HXYN4Imq4W+jbsPoE1zNlW/3/pg50V4Ta0aoRWlaWeDmH5zYf
-         yiXw==
-X-Gm-Message-State: AOAM532f1r3sw3v10K03+ZotK70oR+8Nd8SQI0p54MaUW6HLNUpWBxlm
-        CRRNcjWK6TAUI1gkPycIb7My9/L+Z2u/SQUdF2yunhq+rVuf1Klcci7Ijdr1iqzaBVvP8D5W5n0
-        Q5vvUhAHEz5fv
-X-Received: by 2002:adf:e581:: with SMTP id l1mr5936193wrm.116.1626185704903;
-        Tue, 13 Jul 2021 07:15:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWfXidFyPQHiMoamF/HVX5qiODoBJ6g82KbS2BIxWa8E53bpU6nmqRtih3iZfLh97h1om3dA==
-X-Received: by 2002:adf:e581:: with SMTP id l1mr5936160wrm.116.1626185704755;
-        Tue, 13 Jul 2021 07:15:04 -0700 (PDT)
-Received: from krava ([5.171.236.3])
-        by smtp.gmail.com with ESMTPSA id o14sm12078342wrj.66.2021.07.13.07.15.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 07:15:04 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 16:15:00 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCHv3 bpf-next 7/7] selftests/bpf: Add test for
- bpf_get_func_ip in kprobe+offset probe
-Message-ID: <YO2f5HFFjeG26R8f@krava>
-References: <20210707214751.159713-1-jolsa@kernel.org>
- <20210707214751.159713-8-jolsa@kernel.org>
- <CAEf4Bzb9DTtGWubdEgMYirWLT-AiYbU2LfB-cSpGNzk6L0z8Kg@mail.gmail.com>
- <YOsEsb1sMasi1WyR@krava>
- <CAEf4BzYQfe6-UngVn=kTE9gg6Gc7HFdDQ2NGX7p0+uuO27RETA@mail.gmail.com>
+        id S236932AbhGMPtl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Jul 2021 11:49:41 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43140 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237061AbhGMPtl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 13 Jul 2021 11:49:41 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16DFjU1W018475;
+        Tue, 13 Jul 2021 08:46:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=10J7h0rC/IQ5JtwMT5mFoHGtdSxG5DSMJ9rjgtluz6E=;
+ b=SLyGNC0X+boAq4aOx4wFxeerlxb/PS6ga995PvYAP0XdAL8kEdw3b0Or4M1RpZzPhz5q
+ 9l8c5Hg0J87xX+IRPa/F+rMEZeEGYtZ+jBuu2RYxhVYO4+XdYrtHoDbQ+DsW8XAiBR/h
+ +4RMayu5FM18v7EIK6iYtbcXpfejQsT+bv4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 39rsx1pvny-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 13 Jul 2021 08:46:50 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Jul 2021 08:46:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WJL3DtIRgfWMZijcCvoGI59hksyisiUlVszs/WWEyKYlYFrMuHnk51dkeJFNvPl0N3kRARBYBzF0MKALFUmQatVlO9vgH2Q5N/KB70zLRz7hndFVg9qPvPcSjPoRgeN9O3tOJodIfZM987q7OP9zuRbhwlb0lC/Rj4wcnlxr5AxKVWW2DUmewXK/jClZ/c/4kCRfutnqx/DV265cDWpIFDH3fCfNWzCzFGPUPa7bKqXxcRDVDrX1dpNuur7+4rHM379H/Bd3wlzs55upHsDKgUh1ADH3XC3GXQqDm93O4cf4szPlwG4IBd5xCHn6HPrtU26iFBoTYlcQYyJhlS3vSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=10J7h0rC/IQ5JtwMT5mFoHGtdSxG5DSMJ9rjgtluz6E=;
+ b=T2nxvAOc5opgDdc//rB7vZ5ps3Dy1cLk34rmClAT+S/wrDXBkFsQsjxXybknqsKeBvQHbtHyMEYPH8NXROHpZq8mB14mSmobuLdDHeao/7ZK3p9raR863wjiJwZcp79lh87IrwjS1FHh5h29+WW64dgjpG/0zy7lgVdDTIMPWwev0hGIrDo6ec5OiG4gm3WIBRx9aBQMuFWjooou9KKnN1cDx6c0gVYoCJ/iLBEdRfg9YKwah0hOVyU0rBkNLT9cIj2dvm5tR28fgNswa1bTAIlCvEQ7nCxPQMrWdUoirz9cjbwttGHzqCbWfRCZSS2T/vvyHHbOnszpM4+7zQrRNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4808.namprd15.prod.outlook.com (2603:10b6:806:1e3::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Tue, 13 Jul
+ 2021 15:46:39 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4308.027; Tue, 13 Jul 2021
+ 15:46:39 +0000
+Subject: Re: R1 invalid mem access 'inv'
+To:     Vincent Li <vincent.mc.li@gmail.com>
+CC:     <bpf@vger.kernel.org>
+References: <c43bc0a9-9eca-44df-d0c7-7865f448cc24@gmail.com>
+ <92121d33-4a45-b27a-e3cd-e54232924583@fb.com>
+ <79e4924c-e581-47dd-875c-6fd72e85dfac@gmail.com>
+ <6c6b765d-1d8e-671c-c0a9-97b44c04862c@fb.com>
+ <85caf3b3-868-7085-f4df-89df7930ad9b@gmail.com>
+ <ce2ea7e8-0443-3e78-6cf8-d3105f729646@fb.com>
+ <64cd3e3e-3b6-52b2-f176-9075f4804b7a@gmail.com>
+ <497fc0fe-8036-8b79-2c6e-495f2a7b0ae@gmail.com>
+ <CAK3+h2xv-EZH9afEymGqKdwHozHHu=XHJYKispFSixYxz7YVLQ@mail.gmail.com>
+ <CAK3+h2zW5ZgnXu0_iMHUMLxmgVd2EAoRFuwAEKVkJwOnxSp56g@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <efbbc4bc-5513-82d4-4f00-28c690653509@fb.com>
+Date:   Tue, 13 Jul 2021 08:46:36 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
+In-Reply-To: <CAK3+h2zW5ZgnXu0_iMHUMLxmgVd2EAoRFuwAEKVkJwOnxSp56g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+X-ClientProxiedBy: SJ0PR13CA0154.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c7::9) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c1::1156] (2620:10d:c090:400::5:a0d4) by SJ0PR13CA0154.namprd13.prod.outlook.com (2603:10b6:a03:2c7::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.10 via Frontend Transport; Tue, 13 Jul 2021 15:46:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bc58049d-cf66-44bf-a76d-08d946156732
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4808:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB4808DAEB96C2F43CAD721FACD3149@SA1PR15MB4808.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:619;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dlJnq5N/pveoYKml81fuNyTVdcTzD4oBxiS32TjU5MbV+OjDNf+n12gICVBqdKv3+mMbPYOR+nS0LWou9BquuKZX3Ddzu33fwHAmtFR0AsJA0Uzaoc1DHU2Llv8RJAibhQhMo60XZSIFwasPIWsLoqNWkh6VMb70c56wTzjaUBpvnUSMGgvdNJuvht0GGSfL0cCUXL9YIsH/TiiR2wdQ7Xly/jIcHreS24lXX28HZpmVEsCfo06UjhRXbZcyuWPQ/WempGTytn/UolTySzlViuXhFMrf4U5iTJPggy/vDkHuaFDk4UYfTUqrtlX+djXPG+gXlLmiKJV30hE5rptLwdYRPUNyQ14RPxaDn7qpJOKGthh9/liEgx1yjL7fxJTBdxtglBzSfQraEcn6WNwYbom0mMXJ1NaACCUDOet9cLJ+5x8A0nh3geZmh8HdC2J87dv5lCPzQwV6tiK+h2Adjin3Tk66QVsln1XQr2I4rM0Q8yM9Zj/IWKx2ecWoUz2muOF5P4qnzdJzKy2aRTp0ZkQ6avbdv6KwTwLBllQSwEOu65C3sUYZ4rKlSSdpoQFEZIpZsGzAPwqV7cTErcRfMPUIQOtQULmsxnQaV4WNGzr+xGCvVua+wxQpJBJRl4bnTKb+NNsmf0+HjSdqLbHjamNxzb/A69Y0Ihy+W4r0Vwp+hdVvKMw8BM9jiQhYITtV6uh2XS6OSvK3N2fn0DJVnCX5gNEUMRe4IlgVBXHSwXVqoKp+/Lmh+gH/P7+iqSksATyeSol9SjPFZhXjTb64rl+0vhnBI3QgIBRC/5ipO48A00e6zuHCOZhdVJl7i4OvpW+BcGZFfmuTp5E1XRy5441glqebotJmotE0YL17/AE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39860400002)(136003)(396003)(376002)(31686004)(186003)(8936002)(86362001)(6486002)(4326008)(31696002)(38100700002)(8676002)(5660300002)(53546011)(2906002)(316002)(83380400001)(52116002)(66946007)(66476007)(66556008)(36756003)(966005)(6916009)(478600001)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eVFJalRTejVaNDEzYUF6NWYyT3d0R2EyY3BUZEV2L0pQRzNOSHZLWnRGK1d0?=
+ =?utf-8?B?UXlSRkpRWmdlOUJKNGZqaUkrdXQvcnhjdnZEamIvaWo3eVRiT21hTGQ5ZlM0?=
+ =?utf-8?B?YWJSc0FTTGZkYkNnV0RZQ29JKzQrU1FMVjlpczhHUFI2UXI0U1NZbmI4dTFu?=
+ =?utf-8?B?MEo0dE5jK3NOcXo2UW9zN1RjV1ljTXY5L1cyVVJDdGliSUZEeTRsY0xBVlg1?=
+ =?utf-8?B?Z0txdHBPbDJPNUMxTTRNNEo0VFFuR2svbXhHNlRMWFV6eXhhOERkaGRkUHJU?=
+ =?utf-8?B?QitqRUFCZEFUSFNVZmdUQXpBcEFnNXB5VDNaWGdWaWRnaVNGMHBGaXJRVjVo?=
+ =?utf-8?B?RksyODQxeEttajVJd2tqNjN5QTRrVXB2cXQ2VjZYYTVJQTBZWWdOR2k1c2wz?=
+ =?utf-8?B?RmJ2ODJZc3hrajhxSU9KMTFsU1JGYXZaLzFyV3lRL1pPTjBCbjlpeGwrbC9G?=
+ =?utf-8?B?Y3FrZ0pMRGRQZjRXV1ZyRDAvZTIrRDZIWWUyUVRzUWsvd3Y3OGtPQU8zazlo?=
+ =?utf-8?B?M2g2RXcxMXN0QXhuRDBiblV3ejZGUXduaVl2NFZZSzNzVXU0a1dKYWhMYUR4?=
+ =?utf-8?B?Y1o5Q0JQRkZMcitjazIwcHNLSkFVM0dPalRKUUcwdGlGRS9TY0ltclpSSURU?=
+ =?utf-8?B?RTFvclNWV0xvbXd1OFBIWlUwa1NkaVVFYytpZ3FZTFBvU1k5M3p0VkRoQ0xv?=
+ =?utf-8?B?L3VWRDhaNUlFekw3bEVndjMwMVdiL0hkRW9DTExkMXpBVm9JRUwrZDR1SHRQ?=
+ =?utf-8?B?ZGU1REZwcnNMaXExZm5aR1lsQUp6TGpGN3RtUStJODJ4dHRsMlpwaTdTaGtZ?=
+ =?utf-8?B?ZjB6ZkFJN1hlM0dNYWkyRDA2RUpqcjdNbWk2RkM3bSttVmFqd0ZIQnZSNVI1?=
+ =?utf-8?B?Z0ZqNGUya2w2UWNLdU5pcWJXTEliQmh4TEtscWt3cHhuaVoxVStUdzFFM2RY?=
+ =?utf-8?B?V3NReTZQcnBwZ05UV01vdmd6TkM5TFVST2pER0JtaDNJa2htRGJHWHUxTXhL?=
+ =?utf-8?B?ZmNxQzNjYm1ITTJHL1hhK0M0V3pDbjBjOCtTU09yVEJ5RnQ0YjQ4WHFiQjk3?=
+ =?utf-8?B?cU5OdGlLN01NaEdKMENQSDZoRjZsQ1JFMUI1ZVhTVWYxeGVHK25uRkUrdm40?=
+ =?utf-8?B?NzdBT3VrNkxXaUxUWFFCNmkxdlBwR2R1aGk2V1paemhSMFd2YWtsaDBFeEJV?=
+ =?utf-8?B?T2FKKzhoSDZIdTBvV2xZNkVIOXUzR0o3MTlEcHAyNHQvc0ZURUcrYXlYRG9W?=
+ =?utf-8?B?K2NlQmdvQTdZUTE5MTJ0cjJpbXZ5RjBlZnE1MVZFVmJaTDltY1dOTFRjRTNT?=
+ =?utf-8?B?Q1BPdE82TzJXWkVmSFpCRm90NG5hbUc0WnRtbTJtdms5VzRmcDE4VHNIUlRL?=
+ =?utf-8?B?VnhnM2tFMld6Y2xWVXlJT2N1dmxrN3RmNDhkMmwwaFhxWGNtK0Y0cjRqcDhh?=
+ =?utf-8?B?Z0tVSVFSWGZERGtjN0FPeU16cGtaUE92YWREVHpzVjNqL2dBa2J5MDFXYmh6?=
+ =?utf-8?B?RGxjdjhIM054STg1M0lFT0VSM3FEOS8wd3hZS2xQK3k2N2ZJUWpHd0RYVGlU?=
+ =?utf-8?B?NWpqNTVyNVhIVmgxRU5qNVJFZ1cxS0FrWVVic0ROWEdHdXVTUG5uUnJQeVBs?=
+ =?utf-8?B?SHBCRENiRCtJSzRCSGwwV2dRSnJVVHZHaTFJc0dqYTlVd2NSSFJJOUd1MWxD?=
+ =?utf-8?B?QURmUHE3aUdwVDAxL3AxTkxOOGZFVks2R2cxTml2eGZiWjhXWnR1VC9nVEg5?=
+ =?utf-8?B?NUdQY0RmRWs3Ri9KcGJFMEF4N25VTzM2ek5rS2VrWUxvd2ZqRmVjcUw1QkZ3?=
+ =?utf-8?B?eGhERUw4RU44bVdlQ0VKUT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc58049d-cf66-44bf-a76d-08d946156732
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2021 15:46:39.1005
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VqIlehwEBIk73E4nY0iqM/f2PPEzXM/UMy5HXrP/3nCEohIRkACxPM1vX5PVdDOg
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4808
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: Kn9orDg4d_v7hn3H3HSlHcZH3D30MUiX
+X-Proofpoint-ORIG-GUID: Kn9orDg4d_v7hn3H3HSlHcZH3D30MUiX
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYQfe6-UngVn=kTE9gg6Gc7HFdDQ2NGX7p0+uuO27RETA@mail.gmail.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-13_08:2021-07-13,2021-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ priorityscore=1501 clxscore=1015 spamscore=0 mlxlogscore=956
+ impostorscore=0 adultscore=0 malwarescore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2107130101
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 04:32:25PM -0700, Andrii Nakryiko wrote:
-> On Sun, Jul 11, 2021 at 7:48 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Wed, Jul 07, 2021 at 05:18:49PM -0700, Andrii Nakryiko wrote:
-> > > On Wed, Jul 7, 2021 at 2:54 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > Adding test for bpf_get_func_ip in kprobe+ofset probe.
-> > >
-> > > typo: offset
-> > >
-> > > > Because of the offset value it's arch specific, adding
-> > > > it only for x86_64 architecture.
-> > >
-> > > I'm not following, you specified +0x5 offset explicitly, why is this
-> > > arch-specific?
-> >
-> > I need some instruction offset != 0 in the traced function,
-> > x86_64's fentry jump is 5 bytes, other archs will be different
+
+
+On 7/12/21 4:38 PM, Vincent Li wrote:
+> Hi Yonghong,
 > 
-> Right, ok. I don't see an easy way to detect this offset, but the
-> #ifdef __x86_64__ detection doesn't work because we are compiling with
-> -target bpf. Please double-check that it actually worked in the first
-> place.
+> 
+> 
+> On Fri, Jun 18, 2021 at 12:58 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+>>
+>> Hi Yonghong,
+>>
+>> I attached the full verifier log and BPF bytecode just in case it is
+>> obvious to you, if it is not, that is ok. I tried to make sense out of
+>> it and I failed due to my limited knowledge about BPF :)
+>>
+> 
+> I followed your clue on investigating how fp-200=pkt changed to
+> fp-200=inv in https://github.com/cilium/cilium/issues/16517#issuecomment-873522146
+> with previous attached complete bpf verifier log and bpf bytecode, it
+> eventually comes to following
+> 
+> 0000000000004948 :
+>      2345: bf a3 00 00 00 00 00 00 r3 = r10
+>      2346: 07 03 00 00 d0 ff ff ff r3 += -48
+>      2347: b7 08 00 00 06 00 00 00 r8 = 6
+> ; return ctx_store_bytes(ctx, off, mac, ETH_ALEN, 0);
+>      2348: bf 61 00 00 00 00 00 00 r1 = r6
+>      2349: b7 02 00 00 00 00 00 00 r2 = 0
+>      2350: b7 04 00 00 06 00 00 00 r4 = 6
+>      2351: b7 05 00 00 00 00 00 00 r5 = 0
+>      2352: 85 00 00 00 09 00 00 00 call 9
+>      2353: 67 00 00 00 20 00 00 00 r0 <<= 32
+>      2354: c7 00 00 00 20 00 00 00 r0 s>>= 32
+> ; if (eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0)
+>      2355: c5 00 54 00 00 00 00 00 if r0 s< 0 goto +84
+> 
+> my new code is eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0;
+> that is what i copied from other part of cilium code, eth_store_daddr
+> is:
+> 
+> static __always_inline int eth_store_daddr(struct __ctx_buff *ctx,
+> 
+>                                             const __u8 *mac, int off)
+> {
+> #if !CTX_DIRECT_WRITE_OK
+>          return eth_store_daddr_aligned(ctx, mac, off);
+> #else
+> ......
+> }
+> 
+> and eth_store_daddr_aligned is
+> 
+> static __always_inline int eth_store_daddr_aligned(struct __ctx_buff *ctx,
+> 
+>                                                     const __u8 *mac, int off)
+> {
+>          return ctx_store_bytes(ctx, off, mac, ETH_ALEN, 0);
+> }
+> 
+> Joe  from Cilium raised an interesting question on why the compiler
+> put ctx_store_bytes() before  if (eth_store_daddr(ctx, (__u8 *)
+> &vtep_mac.addr, 0) < 0),
+> that seems to have  fp-200=pkt changed to fp-200=inv, and indeed if I
+> skip the eth_store_daddr_aligned call, the issue is resolved, do you
+> have clue on why compiler does that?
 
-ugh, right
+This is expected. After inlining, you got
+    if (ctx_store_bytes(...) < 0) ...
+
+So you need to do
+    ctx_store_bytes(...)
+first and then do the if condition.
+
+Looking at the issue at https://github.com/cilium/cilium/issues/16517,
+the reason seems due to xdp_store_bytes/skb_store_bytes.
+When these helpers write some data into the stack based buffer, they
+invalidate some stack contents. I don't know whether it is a false
+postive case or not, i.e., the verifier invalidates the wrong stack
+location conservatively. This needs further investigation.
+
 
 > 
-> I think a better way would be to have test6 defined unconditionally in
-> BPF code, but then disable loading test6 program on anything but
-> x86_64 platform at runtime with bpf_program__set_autoload(false).
-
-great, I did not know about this function, will be easier
-
-thanks,
-jirka
-
+> I have more follow-up in https://github.com/cilium/cilium/issues/16517
+> if you are interested to know the full picture.
 > 
-> >
-> > >
-> > > >
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >  .../testing/selftests/bpf/progs/get_func_ip_test.c  | 13 +++++++++++++
-> > > >  1 file changed, 13 insertions(+)
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > > index 8ca54390d2b1..e8a9428a0ea3 100644
-> > > > --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > > +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > > @@ -10,6 +10,7 @@ extern const void bpf_fentry_test2 __ksym;
-> > > >  extern const void bpf_fentry_test3 __ksym;
-> > > >  extern const void bpf_fentry_test4 __ksym;
-> > > >  extern const void bpf_modify_return_test __ksym;
-> > > > +extern const void bpf_fentry_test6 __ksym;
-> > > >
-> > > >  __u64 test1_result = 0;
-> > > >  SEC("fentry/bpf_fentry_test1")
-> > > > @@ -60,3 +61,15 @@ int BPF_PROG(fmod_ret_test, int a, int *b, int ret)
-> > > >         test5_result = (const void *) addr == &bpf_modify_return_test;
-> > > >         return ret;
-> > > >  }
-> > > > +
-> > > > +#ifdef __x86_64__
-> > > > +__u64 test6_result = 0;
-> > >
-> > > see, and you just forgot to update the user-space part of the test to
-> > > even check test6_result...
-> > >
-> > > please group variables together and do explicit ASSERT_EQ
-> >
-> > right.. will change
-> >
-> > thanks,
-> > jirka
-> >
-> > >
-> > > > +SEC("kprobe/bpf_fentry_test6+0x5")
-> > > > +int test6(struct pt_regs *ctx)
-> > > > +{
-> > > > +       __u64 addr = bpf_get_func_ip(ctx);
-> > > > +
-> > > > +       test6_result = (const void *) addr == &bpf_fentry_test6 + 5;
-> > > > +       return 0;
-> > > > +}
-> > > > +#endif
-> > > > --
-> > > > 2.31.1
-> > > >
-> > >
-> >
+> Appreciate it very much if you have time to look at it :)
 > 
-
+> Vincent
+> 
