@@ -2,125 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB06C3C7585
-	for <lists+bpf@lfdr.de>; Tue, 13 Jul 2021 19:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174753C767D
+	for <lists+bpf@lfdr.de>; Tue, 13 Jul 2021 20:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhGMRKl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Jul 2021 13:10:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27478 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229500AbhGMRKk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 13 Jul 2021 13:10:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626196070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ionxxLJP+uSFDPajUVpEpY9G+XEot0E9PEb32IhyWQY=;
-        b=QG30y+QZFb2zXi7M57JdrWdFWPvDIrQ0PpbNSEzEtQYJgMuKjVlC2hqtPRGmBrI0qtphVO
-        g8UzegMz0K2vvq8llrEz87AVlof/zIC9050Er1UQBKhJyC8TlSY95X9aiYVCdXI37YeUE5
-        MIxtQ02RDXZJ7gR0pw4mjZpskMA4n10=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-O1H534MHOKCTpUdDxU0Niw-1; Tue, 13 Jul 2021 13:07:48 -0400
-X-MC-Unique: O1H534MHOKCTpUdDxU0Niw-1
-Received: by mail-ed1-f72.google.com with SMTP id f20-20020a0564020054b0290395573bbc17so12234646edu.19
-        for <bpf@vger.kernel.org>; Tue, 13 Jul 2021 10:07:48 -0700 (PDT)
+        id S229771AbhGMSgA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Jul 2021 14:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229478AbhGMSf7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Jul 2021 14:35:59 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28ECFC0613DD
+        for <bpf@vger.kernel.org>; Tue, 13 Jul 2021 11:33:08 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id gb6so43233127ejc.5
+        for <bpf@vger.kernel.org>; Tue, 13 Jul 2021 11:33:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:subject:cc:from:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=mEi0R5Tc0vHRfKtwtLkvXfDbKbF151cHEPpvfJf3atQ=;
+        b=iw4SpqGomN4e2B7nEFSH2+bs1ZoJzT5HLI7RTTqacejUEHML3Y56wXF1f5qajZAI1a
+         OosSPZmnniWOFTUe4XEXZvcDyr1nJD2j8qx0ZhztsjZ5DQ6buw1Okj0g7+WcNYlb9fZd
+         GNuIhltrJlPeULP9g6nd9BHAvlg33LyfDxOAd1SHPIQ0cZvZoKPFbDy2B+ybLqi3vuMc
+         sg2z/tI/9R+GW61YoBAgz6ckG/tZVaL6bINxz4dvukbpGcc0GyEuD20lmhf7MSHeHFwy
+         0xF9sLymJPpG+57AGwdV1cI2momwE337mbwISBUkCZQrDRSsrkZl+8cKB6Z3UTtoAOuT
+         6DJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=ionxxLJP+uSFDPajUVpEpY9G+XEot0E9PEb32IhyWQY=;
-        b=RwsMEa/OA/pK6u8RKtQsrprWcLzn0i3sF981MPTUuZPLg7Ucw3v0OHUtsti7VAQElI
-         O3qTGfgbZCJrOElKLxWQcYdYYcJKoIfTwJNrZ5HtyoqNGYCQgGOjt/jtrVaX1TD8jo1l
-         oeBWMFVLexwnHs0V6tK5vmAOjxnyILr8WkpHZRUOJ6RsQKPbmqJzq00aeg08mO7T3KOj
-         EfKpWFj25QNKVpuO0V+t3ZPxiNIPjajjMEw9+wJsvOooA9PhhVBorXBVBo80R7p5i9g5
-         p0wuH5ww7VdyXF93CVszIO1nN9n/noCm8Yi/RHIIojlxNOeUm9WSrNl87ymjLQ091iZu
-         huLg==
-X-Gm-Message-State: AOAM530Ls9URgtD8VkpQfWUom0Bv69hndykrApdGHV1GfR1to8KzpKNW
-        5K6xGvufMMb+2OSr5h3Ub3qBxNrQ5fbVZhyktS1Z02eUYkxHaJPklVI0YrjvKJ06b+kzinWGFtl
-        gi8tcaE0dK9S7
-X-Received: by 2002:aa7:d942:: with SMTP id l2mr6327083eds.235.1626196067659;
-        Tue, 13 Jul 2021 10:07:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJweAwx1M0p7Csk29oHTHdowr3Tu/FQ3euKOopaSX6uSU9IPkGBHCBBSrIikg7pWPT1zDcB6hg==
-X-Received: by 2002:aa7:d942:: with SMTP id l2mr6327055eds.235.1626196067455;
-        Tue, 13 Jul 2021 10:07:47 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id q23sm9915123edt.22.2021.07.13.10.07.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 10:07:46 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id CC6CD1804B7; Tue, 13 Jul 2021 19:07:45 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        "luwei (O)" <luwei32@huawei.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        David Ahern <dahern@digitalocean.com>
-Subject: Re: Ask for help about bpf map
-In-Reply-To: <CAEf4BzZpSo8Kqz8mgPdbWTTVLqJ1AgE429_KHTiXgEVpbT97Yw@mail.gmail.com>
-References: <5aebe6f4-ca0d-4f64-8ee6-b68c58675271@huawei.com>
- <CAEf4BzZpSo8Kqz8mgPdbWTTVLqJ1AgE429_KHTiXgEVpbT97Yw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 13 Jul 2021 19:07:45 +0200
-Message-ID: <8735sidtwe.fsf@toke.dk>
+        h=x-gm-message-state:to:subject:cc:from:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=mEi0R5Tc0vHRfKtwtLkvXfDbKbF151cHEPpvfJf3atQ=;
+        b=e1a3CCrJBCbd37+FdUsXxUyJ4z3QrC+ajKxPP3s93f+ToiDiT5IACnWv6hXXVh1Ew6
+         biCrRxhfvqJBnYSq9hd/RnxsQ9JYcB/obpXVkTTnb71yTgpmUbqHI+IGaSWUlGEFs62a
+         yJ7kjMLTMGXM1G5/t8WhDphIndKDYxaq1up9GC5s5EruVWi9cDBb9cKGhKtMDQB9vsc7
+         SrQ9cH9R9eL98MwOZ/d3N+l1TzLZUqOdgixWoFYmMyXMpobEk0LoO0KOzGWfNBOGx013
+         Qxw8puglNhpu1n50dzrDgcGRNScDAj1nxWQ21kLHXmAwJDj9YyiQoe9FPLNFSDoPh/Pg
+         ykbQ==
+X-Gm-Message-State: AOAM532fz+zuYU4SvEgma40+cLW0xZAK7aYQe6CJG9vvup2eCs0nVavu
+        DTtWnN8e3QErIpC80S0xEzg=
+X-Google-Smtp-Source: ABdhPJyVYxDugkU8B49f2j7GWhknPU5yoj3BOILAj5VvV7kp/29L+21M3VKz10BEskRcquxiHoVyJA==
+X-Received: by 2002:a17:906:d977:: with SMTP id rp23mr7273635ejb.512.1626201186583;
+        Tue, 13 Jul 2021 11:33:06 -0700 (PDT)
+Received: from [192.168.2.75] (host-95-232-75-128.retail.telecomitalia.it. [95.232.75.128])
+        by smtp.gmail.com with ESMTPSA id kb12sm8562185ejc.35.2021.07.13.11.33.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jul 2021 11:33:05 -0700 (PDT)
+To:     bpf@vger.kernel.org
+Subject: [PATCH bpf-next 1/2] tools/lib/bpf: bpf_program__insns allow to
+ retrieve insns in libbpf
+Cc:     ast@kernel.org, daniel@iogearbox.net
+From:   Lorenzo Fontana <fontanalorenz@gmail.com>
+Message-ID: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
+Date:   Tue, 13 Jul 2021 20:33:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+This allows consumers of libbpf to iterate trough the insns
+of a program without loading it first directly after the ELF parsing.
 
-> On Mon, Jul 12, 2021 at 11:35 PM luwei (O) <luwei32@huawei.com> wrote:
->>
->> Hi, List:
->>
->>        I am a beginner about bpf and working on XDP now. I meet a
->> problem and feel difficult to figure it out.
->>
->>        In my following codes, I use two ways to define my_map: in SEC
->> maps and SEC .maps respectively. When I load the xdp_kern.o file,
->>
->> It has different results. The way I load is: ip link set dev ens3 xdp
->> obj xdp1_kern.o sec xdp1.
->>
->>        when I define my_map using SEC maps, it loads successfully but
->> fails to load using SEC .maps, it reports:
->>
->> "
->>
->> [12] TYPEDEF __u32 type_id=13
->> [13] INT unsigned int size=4 bits_offset=0 nr_bits=32 encoding=(none)
->> [14] FUNC_PROTO (anon) return=2 args=(10 ctx)
->> [15] FUNC xdp_prog1 type_id=14
->> [16] INT char size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
->> [17] ARRAY (anon) type_id=16 index_type_id=4 nr_elems=4
->> [18] VAR _license type_id=17 linkage=1
->> [19] DATASEC .maps size=0 vlen=1 size == 0
->>
->>
->> Prog section 'xdp1' rejected: Permission denied (13)!
->>   - Type:         6
->>   - Instructions: 9 (0 over limit)
->>   - License:      GPL
->>
->> Verifier analysis:
->>
->> 0: (b7) r1 = 0
->> 1: (63) *(u32 *)(r10 -4) = r1
->> last_idx 1 first_idx 0
->> regs=2 stack=0 before 0: (b7) r1 = 0
->> 2: (bf) r2 = r10
->> 3: (07) r2 += -4
->> 4: (18) r1 = 0x0
->
-> this shouldn't be 0x0.
->
-> I suspect you have an old iproute2 which doesn't yet use libbpf to
-> load BPF programs, so .maps definition is not yet supported. cc'ing
-> netdev@vger, David and Toke
+Being able to do that is useful to create tooling that can show
+the structure of a BPF program using libbpf without having to
+parse the ELF separately.
 
-That would be my guess as well; what's the output of 'ip -V'?
+Usage:
+  struct bpf_insn *insn;
+  insn = bpf_program__insns(prog);
 
--Toke
+Signed-off-by: Lorenzo Fontana <fontanalorenz@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 5 +++++
+ tools/lib/bpf/libbpf.h | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 1e04ce724240..67d51531f6b6 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8866,6 +8866,11 @@ void *bpf_program__priv(const struct bpf_program *prog)
+ 	return prog ? prog->priv : libbpf_err_ptr(-EINVAL);
+ }
+ 
++struct bpf_insn *bpf_program__insns(const struct bpf_program *prog)
++{
++	return prog ? prog->insns : libbpf_err_ptr(-EINVAL);
++}
++
+ void bpf_program__set_ifindex(struct bpf_program *prog, __u32 ifindex)
+ {
+ 	prog->prog_ifindex = ifindex;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6e61342ba56c..e4a1c98ae6d9 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -195,6 +195,7 @@ typedef void (*bpf_program_clear_priv_t)(struct bpf_program *, void *);
+ LIBBPF_API int bpf_program__set_priv(struct bpf_program *prog, void *priv,
+ 				     bpf_program_clear_priv_t clear_priv);
+ 
++LIBBPF_API struct bpf_insn *bpf_program__insns(const struct bpf_program *prog);
+ LIBBPF_API void *bpf_program__priv(const struct bpf_program *prog);
+ LIBBPF_API void bpf_program__set_ifindex(struct bpf_program *prog,
+ 					 __u32 ifindex);
+-- 
+2.32.0
 
