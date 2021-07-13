@@ -2,117 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5FE3C785F
-	for <lists+bpf@lfdr.de>; Tue, 13 Jul 2021 22:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4580D3C79D2
+	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 00:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236098AbhGMVBg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Jul 2021 17:01:36 -0400
-Received: from relay.sw.ru ([185.231.240.75]:56872 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235060AbhGMVBf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Jul 2021 17:01:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=Zrmp38HLQSSBOIHCzrhOGN2I10/GGB7t9iYmdElr2i4=; b=oMb4Zx3XkPrKaEbUyM5
-        Wje5X6G4fTPCuW8lq2suLGXW4TgOCp3OBmHH00y2+c8S2v3SusR25Qn+9XuCa5+lRKj94uTuhRNP/
-        iXlyHbEjI3G1wn0S0pYAjM0i8kU7eYZurzXkFfp9sddH2FQI/V2+x06yB+T2hZ8RISMH1qTvwjw=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m3PUJ-003san-IH; Tue, 13 Jul 2021 23:58:43 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH NET v2 7/7] bpf: use skb_expand_head in bpf_out_neigh_v4/6
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <55c9e2ae-b060-baa2-460c-90eb3e9ded5c@virtuozzo.com>
- <cover.1626206993.git.vvs@virtuozzo.com>
-Message-ID: <47012e92-9978-cab1-68e4-9565ebe96994@virtuozzo.com>
-Date:   Tue, 13 Jul 2021 23:58:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235423AbhGMWzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Jul 2021 18:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235417AbhGMWzN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Jul 2021 18:55:13 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCD4C0613DD
+        for <bpf@vger.kernel.org>; Tue, 13 Jul 2021 15:52:21 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id e1-20020a9d63c10000b02904b8b87ecc43so546720otl.4
+        for <bpf@vger.kernel.org>; Tue, 13 Jul 2021 15:52:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=DbFxyJ5fz+Bjfd/iwLOaFLVLz6hTsOV4ZxO3NO+i11k=;
+        b=rsnHo/0Ir9seCXAhG8FefaTmoeNZWX9Aq2g3niOofNmKNeHQqi260B8FMSny92Idmv
+         WrbyKP6V0oY2PmEoXSKfya+nY/xi0YCo01CRr5LI0Nc6Wv+54Wi4dkebTY5RzpRbnETj
+         dnXIspxohDKq3ikBZ10jfLzZszEHCD+ogXBPZjzW0gsL5THCftZ/qcvnQ9TyK4ToLZby
+         vXOPk4tsSsfUPhUofCkZAw1lO50Hc2MMtPnzWl02+0CTbK8XcjZN6h8JgnldzZDTnkvo
+         AOyn41GN5sejHon8TE3VuSmdnbz7d4s635UjhUEtG8R4X5Bhi+iLii69RDNw7hfewR+I
+         W7tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=DbFxyJ5fz+Bjfd/iwLOaFLVLz6hTsOV4ZxO3NO+i11k=;
+        b=RxvK8/Hj/tlejCNMzjsnarhfykYbSfjetdxNZkOGIRiiJoBCS2pjCNSSfIuhw8ZGaM
+         fcNyjtX0Mw7ImTVTyX7EAKEBz5V/tuH1sZRSy4REtGX9m8O6mXTR33SOqNA+Qz46jV3B
+         gg0ShqMtuuKlHs+s3ga3MEgDqvsOTYuhbvncCDvnYcuwxAar1s5fpWxI/ppJmTzP/Zj4
+         Tt8eBG2P9VGMpudknBNETXK5sbJ61x+oTqooMFS7zS8HH9YuRz9L0K/taoVtYTBtb9xv
+         gs8yb3dcymiiEQpMEpqsoLTgBGLL3eWyRCEZA1DBjheVXgxi0A8E2A/8txhtGl0LOKXz
+         +B/A==
+X-Gm-Message-State: AOAM532Vxqx1YpMRXLJI4Y6dvjOKO12kfcw2Wn0KyrPziyN27IXU0YyH
+        qBWipHlaocDusadfUK28GC0SomtzHadkq0be2EM=
+X-Google-Smtp-Source: ABdhPJysMqhfM0BZOOgGOy8drOuc7uytjDnyrHA7yNSBF2KulwiKtT/aedXAUYovZYNseE9OpqkLWOpnu+Rx8zdCUwA=
+X-Received: by 2002:a9d:4105:: with SMTP id o5mr5504704ote.20.1626216740985;
+ Tue, 13 Jul 2021 15:52:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cover.1626206993.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a9d:5e01:0:0:0:0:0 with HTTP; Tue, 13 Jul 2021 15:52:20
+ -0700 (PDT)
+Reply-To: michaelrachid7@gmail.com
+From:   Michael Rachid <geleanor650@gmail.com>
+Date:   Tue, 13 Jul 2021 23:52:20 +0100
+Message-ID: <CAD5dpsXE1FJfMPKbfVTdN9xRTBxN9MOQrXD8-bZnEaTVd4a+GA@mail.gmail.com>
+Subject: Proposal
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Unlike skb_realloc_headroom, new helper skb_expand_head
-does not allocate a new skb if possible.
+Dear friend,
 
-Additionally this patch replaces commonly used dereferencing with variables.
+I write to inform you about a business
+proposal I have which I would like to handle with you. Fifty Five
+million dollars
+is involved. Be rest assured that everything is legal and risk free.
+Kindly indicate your interest.
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- net/core/filter.c | 27 +++++----------------------
- 1 file changed, 5 insertions(+), 22 deletions(-)
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 65ab4e2..25a6950 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2179,17 +2179,9 @@ static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb,
- 	skb->tstamp = 0;
- 
- 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
--		struct sk_buff *skb2;
--
--		skb2 = skb_realloc_headroom(skb, hh_len);
--		if (unlikely(!skb2)) {
--			kfree_skb(skb);
-+		skb = skb_expand_head(skb, hh_len);
-+		if (!skb)
- 			return -ENOMEM;
--		}
--		if (skb->sk)
--			skb_set_owner_w(skb2, skb->sk);
--		consume_skb(skb);
--		skb = skb2;
- 	}
- 
- 	rcu_read_lock_bh();
-@@ -2213,8 +2205,7 @@ static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb,
- 	}
- 	rcu_read_unlock_bh();
- 	if (dst)
--		IP6_INC_STATS(dev_net(dst->dev),
--			      ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
-+		IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
- out_drop:
- 	kfree_skb(skb);
- 	return -ENETDOWN;
-@@ -2286,17 +2277,9 @@ static int bpf_out_neigh_v4(struct net *net, struct sk_buff *skb,
- 	skb->tstamp = 0;
- 
- 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
--		struct sk_buff *skb2;
--
--		skb2 = skb_realloc_headroom(skb, hh_len);
--		if (unlikely(!skb2)) {
--			kfree_skb(skb);
-+		skb = skb_expand_head(skb, hh_len);
-+		if (!skb)
- 			return -ENOMEM;
--		}
--		if (skb->sk)
--			skb_set_owner_w(skb2, skb->sk);
--		consume_skb(skb);
--		skb = skb2;
- 	}
- 
- 	rcu_read_lock_bh();
--- 
-1.8.3.1
-
+Michael Rachid.
