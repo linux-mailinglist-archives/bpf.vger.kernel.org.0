@@ -2,266 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA41F3C82E3
-	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 12:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1355D3C8442
+	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 14:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239139AbhGNKca (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Jul 2021 06:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239096AbhGNKc1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Jul 2021 06:32:27 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839EEC061765
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 03:29:36 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id g19so2322625ybe.11
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 03:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ggejrFIHU4IU1zUZ09RQHXUpmIfLwxhtZeNfhpEhkw0=;
-        b=LfZvYfzouybIJIZ2GnjkLMwv3EUsmnGzVsIuKMfbs/zU0etPUMavJTsV/OeUqU4DXi
-         kwNlvU7ySI3RPtbzTTWYBU53LaEhIwJ/TOdwt2VA4R9liVPoM1ZIWuZd5BDvMbkq9ps5
-         sqqFuszv/QfBE+ExD6PjAVhl3W4YUBUOMM1YWylHFrB1VD2gesv2wJ/2+03KDJV3WO9o
-         332S9aXP46aR1GaFtJBiRhmfCAlB3ZYATQbg2SxoHF5aSYFnJmUQCgkQMjbDiKwbVjQP
-         MIKdbFw+G85tRyoLLP0KSIJo0QrSPvoINOpUsktGKbk5mSezmUNu/3jQVb6wgJInMv2/
-         uT5A==
+        id S239291AbhGNMKL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Jul 2021 08:10:11 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:50754 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239284AbhGNMKL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Jul 2021 08:10:11 -0400
+Received: by mail-il1-f199.google.com with SMTP id w8-20020a056e021c88b02902095727d18dso979171ill.17
+        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 05:07:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ggejrFIHU4IU1zUZ09RQHXUpmIfLwxhtZeNfhpEhkw0=;
-        b=a9yZUN07pjxnBUFuNMLX3oiXqUv0g6DYucIBVbJMcAfiqd16N7lci/k3MUge8lCNs4
-         vjOPw2/6Fh0K7iqiUn7IMnD4hBpefkt6XV9d5g1wLdNY+ablc2/c4j+Tnz9bh6osmPYP
-         SPoYCYkcYhgPiN9JDgEFBcqZo9IzmBjlnOX2WIEKXdJMGRk3w+FzraP7Y7ef7Xfv8PGg
-         NbBVdMXqG4thGnc0kKFVDLcP7syHLuAm5Ri29/2OQ//f1yFosQAvV1pTCwZZh4cMF/HX
-         ZxDJ0jeB3lRZkrMmyDl2SDDg9FqyshnqG9Nsg/oatS0U72YLPXJHOAehdrm/TRPkOjLr
-         DoBg==
-X-Gm-Message-State: AOAM531kfZWeJ7DhxAjpF/+1lmPlMNMWRE51XpqM8xmVh32Bpe2fNKIQ
-        g5rZBP8r1xJAU4sIlrUm0DNHCikVnSMQHYH1NFalpQ==
-X-Google-Smtp-Source: ABdhPJwohQQfGujAxrjDnl/WzZ7yPW3sL98NAebnW7oqyg68J8JI4cEvHL8KAYJscK8ikkCta38YZuBlDiOPCy5NZ0c=
-X-Received: by 2002:a25:fc1c:: with SMTP id v28mr12809647ybd.408.1626258575771;
- Wed, 14 Jul 2021 03:29:35 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=PcjvOVN6qCyIv1/fl9MgyXde4qoSrkYo4xHcDWPqJyE=;
+        b=JFcd15m+29Jtby4ZQLt1YQeqf4kBl+UiokQNQVk6CR5bx0QydJSaEl6r+w+tp+XpVW
+         JEQZID+NLoPm5uinYe7lxzXtg12XUuBb6NZ+rFB8Q8vuBs2mlo477h34Ep/D0pv0oA4h
+         zr/TZsRCQJ5RHLBmagxH+G1skj2a2WHYxsxlGyHoveTIXYyDlqI6DVZfdk0j2Fb5PlIi
+         KR6cXYl513uwmoqtx+7DPbX3sRNp6kEZN+Sw5hfEoHrJ59E+kAvNQYh+wlXYXagDP0BR
+         Z0rOFc8/48aIX0W+5YH2bAWBjgKCdR3X7Wbf/SsznWD58zfWUZk6quDLboUedqnCv3xy
+         ElEw==
+X-Gm-Message-State: AOAM530YzszGpbuMIH8c6pXYoIjv/iXeTFmx7wh8GvkmGPKTnXAQZJz/
+        wW+mV8TwVCAiT1aDoZcqH4F9a0r1MaCue9r5mUXIGdYEQmC+
+X-Google-Smtp-Source: ABdhPJz57yC1sHnIwLiEslTVL3igJLY28gGHjev9aTUb9D8ixma2il2Ss92QcCo6YP5rfZ1y0dfYGQLFAbtKdjPfTY1FQFu5gVw9
 MIME-Version: 1.0
-References: <1626255285-5079-1-git-send-email-linyunsheng@huawei.com>
- <1626255285-5079-3-git-send-email-linyunsheng@huawei.com> <79d9e41c-6433-efe1-773a-4f5e91e8de0f@redhat.com>
-In-Reply-To: <79d9e41c-6433-efe1-773a-4f5e91e8de0f@redhat.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Wed, 14 Jul 2021 13:28:55 +0300
-Message-ID: <CAC_iWj+HrRBtscrgR041OJov9MtaKnosw=w8A0L3tBx5e=Cguw@mail.gmail.com>
-Subject: Re: [PATCH rfc v5 2/4] page_pool: add interface to manipulate frag
- count in page pool
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+X-Received: by 2002:a05:6638:25c7:: with SMTP id u7mr4155293jat.26.1626264439681;
+ Wed, 14 Jul 2021 05:07:19 -0700 (PDT)
+Date:   Wed, 14 Jul 2021 05:07:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003cf65205c71432d0@google.com>
+Subject: [syzbot] WARNING in vmap_pages_range_noflush
+From:   syzbot <syzbot+4f4d23fa0b2b2bb23e38@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 14 Jul 2021 at 13:18, Jesper Dangaard Brouer <jbrouer@redhat.com> wrote:
->
->
->
-> On 14/07/2021 11.34, Yunsheng Lin wrote:
-> > As suggested by Alexander, "A DMA mapping should be page
-> > aligned anyway so the lower 12 bits would be reserved 0",
-> > so it might make more sense to repurpose the lower 12 bits
-> > of the dma address to store the frag count for frag page
-> > support in page pool for 32 bit systems with 64 bit dma,
-> > which should be rare those days.
->
-> Do we have any real driver users with 32-bit arch and 64-bit DMA, that
-> want to use this new frag-count system you are adding to page_pool?
->
-> This "lower 12-bit use" complicates the code we need to maintain
-> forever. My guess is that it is never used, but we need to update and
-> maintain it, and it will never be tested.
->
-> Why don't you simply reject using page_pool flag PP_FLAG_PAGE_FRAG
-> during setup of the page_pool for this case?
->
->   if ((pool->p.flags & PP_FLAG_PAGE_FRAG) &&
->       (sizeof(dma_addr_t) > sizeof(unsigned long)))
->     goto reject-setup;
->
+Hello,
 
-+1
+syzbot found the following issue on:
 
->
-> > For normal system, the dma_addr[1] in 'struct page' is not
-> > used, so we can reuse one of the dma_addr for storing frag
-> > count, which means how many frags this page might be splited
-> > to.
-> >
-> > The PAGE_POOL_DMA_USE_PP_FRAG_COUNT macro is added to decide
-> > where to store the frag count, as the "sizeof(dma_addr_t) >
-> > sizeof(unsigned long)" is false for most systems those days,
-> > so hopefully the compiler will optimize out the unused code
-> > for those systems.
-> >
-> > The newly added page_pool_set_frag_count() should be called
-> > before the page is passed to any user. Otherwise, call the
-> > newly added page_pool_atomic_sub_frag_count_return().
-> >
-> > Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> > ---
-> >   include/linux/mm_types.h |  8 +++++--
-> >   include/net/page_pool.h  | 54 ++++++++++++++++++++++++++++++++++++++++++------
-> >   net/core/page_pool.c     | 10 +++++++++
-> >   3 files changed, 64 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > index d33d97c..82bcbb0 100644
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -103,11 +103,15 @@ struct page {
-> >                       unsigned long pp_magic;
-> >                       struct page_pool *pp;
-> >                       unsigned long _pp_mapping_pad;
-> > +                     atomic_long_t pp_frag_count;
-> >                       /**
-> >                        * @dma_addr: might require a 64-bit value on
-> > -                      * 32-bit architectures.
-> > +                      * 32-bit architectures, if so, store the lower 32
-> > +                      * bits in pp_frag_count, and a DMA mapping should
-> > +                      * be page aligned, so the frag count can be stored
-> > +                      * in lower 12 bits for 4K page size.
-> >                        */
-> > -                     unsigned long dma_addr[2];
-> > +                     unsigned long dma_addr;
-> >               };
-> >               struct {        /* slab, slob and slub */
-> >                       union {
-> > diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> > index 8d7744d..ef449c2 100644
-> > --- a/include/net/page_pool.h
-> > +++ b/include/net/page_pool.h
-> > @@ -198,19 +198,61 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
-> >       page_pool_put_full_page(pool, page, true);
-> >   }
-> >
-> > +#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT      \
-> > +                     (sizeof(dma_addr_t) > sizeof(unsigned long))
-> > +
-> >   static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
-> >   {
-> > -     dma_addr_t ret = page->dma_addr[0];
-> > -     if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> > -             ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
-> > +     dma_addr_t ret = page->dma_addr;
-> > +
-> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-> > +             ret <<= 32;
-> > +             ret |= atomic_long_read(&page->pp_frag_count) & PAGE_MASK;
-> > +     }
-> > +
-> >       return ret;
-> >   }
-> >
-> >   static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
-> >   {
-> > -     page->dma_addr[0] = addr;
-> > -     if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> > -             page->dma_addr[1] = upper_32_bits(addr);
-> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-> > +             atomic_long_set(&page->pp_frag_count, addr & PAGE_MASK);
-> > +             addr >>= 32;
-> > +     }
-> > +
-> > +     page->dma_addr = addr;
-> > +}
-> > +
-> > +static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
-> > +                                                       long nr)
-> > +{
-> > +     long frag_count = atomic_long_read(&page->pp_frag_count);
-> > +     long ret;
-> > +
-> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-> > +             if ((frag_count & ~PAGE_MASK) == nr)
-> > +                     return 0;
-> > +
-> > +             ret = atomic_long_sub_return(nr, &page->pp_frag_count);
-> > +             WARN_ON((ret & PAGE_MASK) != (frag_count & PAGE_MASK));
-> > +             ret &= ~PAGE_MASK;
-> > +     } else {
-> > +             if (frag_count == nr)
-> > +                     return 0;
-> > +
-> > +             ret = atomic_long_sub_return(nr, &page->pp_frag_count);
-> > +             WARN_ON(ret < 0);
-> > +     }
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static inline void page_pool_set_frag_count(struct page *page, long nr)
-> > +{
-> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
-> > +             nr |= atomic_long_read(&page->pp_frag_count) & PAGE_MASK;
-> > +
-> > +     atomic_long_set(&page->pp_frag_count, nr);
-> >   }
-> >
-> >   static inline bool is_page_pool_compiled_in(void)
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index 78838c6..0082f33 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -198,6 +198,16 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
-> >       if (dma_mapping_error(pool->p.dev, dma))
-> >               return false;
-> >
-> > +     if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
-> > +         WARN_ON(pool->p.flags & PP_FLAG_PAGE_FRAG &&
-> > +                 dma & ~PAGE_MASK)) {
-> > +             dma_unmap_page_attrs(pool->p.dev, dma,
-> > +                                  PAGE_SIZE << pool->p.order,
-> > +                                  pool->p.dma_dir,
-> > +                                  DMA_ATTR_SKIP_CPU_SYNC);
-> > +             return false;
-> > +     }
-> > +
-> >       page_pool_set_dma_addr(page, dma);
-> >
-> >       if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> >
->
+HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1528f19c300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=90b227e3653ac0d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=4f4d23fa0b2b2bb23e38
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4f4d23fa0b2b2bb23e38@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pte_range mm/vmalloc.c:448 [inline]
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pud_range mm/vmalloc.c:489 [inline]
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_small_pages_range_noflush mm/vmalloc.c:529 [inline]
+WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_range_noflush+0x653/0x8c0 mm/vmalloc.c:558
+Modules linked in:
+CPU: 0 PID: 21050 Comm: syz-executor.3 Not tainted 5.13.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:vmap_pages_pte_range mm/vmalloc.c:448 [inline]
+RIP: 0010:vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
+RIP: 0010:vmap_pages_pud_range mm/vmalloc.c:489 [inline]
+RIP: 0010:vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
+RIP: 0010:vmap_small_pages_range_noflush mm/vmalloc.c:529 [inline]
+RIP: 0010:vmap_pages_range_noflush+0x653/0x8c0 mm/vmalloc.c:558
+Code: c5 ff 4c 89 f8 48 ba 00 00 00 00 00 fc ff df 48 c1 e8 03 80 3c 10 00 0f 85 62 02 00 00 49 8b 1f e9 6d fd ff ff e8 4d 37 c5 ff <0f> 0b 41 bc f4 ff ff ff e9 62 ff ff ff e8 3b 37 c5 ff 31 ff 48 89
+RSP: 0018:ffffc900025979b8 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: ffff888000100220 RCX: ffffc9000f762000
+RDX: 0000000000040000 RSI: ffffffff81af8783 RDI: 0000000000000003
+RBP: ffffea0002472c00 R08: 0000000000000000 R09: ffffffff90a01847
+R10: ffffffff81af85bf R11: 0000000000000001 R12: ffffc9002ac00000
+R13: 0000070700000000 R14: ffffc9002aa44000 R15: 8000000000000163
+FS:  00007f4f610c4700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000544038 CR3: 000000001eaa7000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ vmap_pages_range mm/vmalloc.c:592 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2861 [inline]
+ __vmalloc_node_range+0x659/0x960 mm/vmalloc.c:2947
+ __bpf_map_area_alloc+0xd5/0x150 kernel/bpf/syscall.c:311
+ queue_stack_map_alloc+0xf0/0x1d0 kernel/bpf/queue_stack_maps.c:76
+ find_and_alloc_map kernel/bpf/syscall.c:127 [inline]
+ map_create+0x4a0/0x14c0 kernel/bpf/syscall.c:833
+ __sys_bpf+0x8bc/0x4750 kernel/bpf/syscall.c:4451
+ __do_sys_bpf kernel/bpf/syscall.c:4573 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4571 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4571
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f4f610c4188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000040 RSI: 00000000200001c0 RDI: 0000000000000000
+RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffff9d98a9f R14: 00007f4f610c4300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
