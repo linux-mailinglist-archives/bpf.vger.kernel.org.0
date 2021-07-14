@@ -2,64 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409DC3C7A91
-	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 02:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAF43C7A92
+	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 02:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237033AbhGNAan (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Jul 2021 20:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39432 "EHLO
+        id S237047AbhGNAbl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Jul 2021 20:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237022AbhGNAan (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Jul 2021 20:30:43 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF542C0613DD
-        for <bpf@vger.kernel.org>; Tue, 13 Jul 2021 17:27:51 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e2so8490424ilu.5
-        for <bpf@vger.kernel.org>; Tue, 13 Jul 2021 17:27:51 -0700 (PDT)
+        with ESMTP id S237022AbhGNAbk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Jul 2021 20:31:40 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7666FC0613DD;
+        Tue, 13 Jul 2021 17:28:49 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id e13so25072358ilc.1;
+        Tue, 13 Jul 2021 17:28:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=0ogzIjfu8RHZZ1KmbxAqBf4mddcvtrKOnk/j+D06Q/c=;
-        b=WK5xWlKIVl23wruMyqYxOU/4G1Kyi4LCN5vHKx5tzSQAL/bEFNX432Er/pyLTj+Mu7
-         H6FlOOI3dSTz8hxsZfaSlA60urusW1iBX9fB4NwN0lT5kwEUj/6XxUf9fpbXbmWH//Me
-         /vbdKmhxhLrAjTZN+oUl4Q86vFQM7yt1IsJ8dc8ywDp6vOGouu/8uuSDtcuwUKU/O8/+
-         B7kssjKcIBTHGD9g8GNXzEDkIE+TLXiIbP2UBgD8FNYY0cSSyjnMEXjSmyz/iOpHqGyG
-         pJyKvcaXiUEhlTjagEL8mPM+mvEu6sbFTUKQg5ng5xCFc/7lQ+9tnQe8iCHuR/O2Ps0D
-         nfFQ==
+        bh=QWbZes5QbFd0MwfWv9N6qIvmhMsKWpBoX63AfMSiYPs=;
+        b=K4EW5ZFmrq+THr266sv9kfxWEt4BBOfHSbvrb2M3DjrWIi8K8Xg2ObamL6EqEJPFu6
+         3q/XUIQqA2Uc/D5GYN/WDeC1Y1ZYDu9yBJ5GzO3OCvKR2vhlH8zAjawBkqtNo1D7lP2I
+         veBH58H/vjUFCAW2zvXBwzcgzmS+hIhYUjveU8EWKD+Uoel1G0VABZhf8zm5EaK6mdLX
+         ZKuEeWuFzhLSEOnz01DWU0OOWf3EaLspDW+3I0MizqzLI5bjIB/nEgodOpYpvQU13Acq
+         Qt4llpp581yHfMeQ9XuSrN0YFjWcpJbhua1Ohj1nuluPkH48GIry9bqru8mAhiM0mT9h
+         7r1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=0ogzIjfu8RHZZ1KmbxAqBf4mddcvtrKOnk/j+D06Q/c=;
-        b=fjBK5WbcxlBOl++FvhL/eXqw3R6aAVLHHd1SUwq9ELGhntbjUe1YqBKoSxbifMITX8
-         w26+r/Xo4L07LruEGUfF9RJcBkFxMl0Bz6ZHkrDYu2TaJ5FZO8soiWqVo6hOZsAXqx6p
-         NkCfk4gKS5J0IbashQIrVFNCec1Yjk+LjJPjWQtuvUY0LTotiKo4t9Ulim8oVAxJI9U7
-         W3LWa5/wjiYfgH24yiq/eCCyi4XgjvCR7t4i7HpUbri568qG1dIzMJeQlkzcELdlmsR/
-         6MKeOiNAToHR4i1yONpdJqdDLvVPGgrgF8njAPtbth5R7knaq+iRrLueNkXy/4Ysw2cR
-         JSpw==
-X-Gm-Message-State: AOAM532msuNTxOP8RjsNnD9k1Dwcm3uSdCItJj3SPbB+TCrO0XOgKbpH
-        PRSJYFyJmit/JHuJkbcqr3o=
-X-Google-Smtp-Source: ABdhPJx7CyhFosLTdjQni7Hob22QYSAwcIW3pf27YNNbN7nMrLcIf/Stckw42iFoUZrN7DBeq1Q16g==
-X-Received: by 2002:a92:ddd1:: with SMTP id d17mr4543085ilr.46.1626222471280;
-        Tue, 13 Jul 2021 17:27:51 -0700 (PDT)
+        bh=QWbZes5QbFd0MwfWv9N6qIvmhMsKWpBoX63AfMSiYPs=;
+        b=N8lVJh8jkRJeIs2MiIpAfMMgxkBlZvfCn0pjcFQFa1pbOwscdlvYzqP3HfB9zZPy4T
+         bUZGCSdehDbOCTnomaJSiNOEy85pNxr26tzJM9LGl1XodDl9CGLvVs4vOOQEdz3s7VBZ
+         oJTLuH4fM/Klg186TPQeKawHc14Wca1orhtutRr88wZR02Du423WGKeF5eSRp/CjgxEt
+         xVElqW2hy1NynF5QCnIq869avGITabJgTmUQDZ2kewkDfFLsNWf2dqWNTRYLTudzLeRL
+         nm0/QpWCrcuc8E3X7D34mkUcZPO4f70ID2sGfmbQXQ7YIqJSY0Tn1frJIfOT8agWIXB9
+         vohQ==
+X-Gm-Message-State: AOAM532+J40gFGuWd3yoNQq5n2xQKO1ETtysIQyWt87JbBIkTdgPj8Vk
+        LMw+L2FzAKH0w8dCX7BJQ7w=
+X-Google-Smtp-Source: ABdhPJyXU4CJal/owQcRW57+aurpX5bIbC0upZFs+kQULAlTPE3ARtssi3wWfD5mX1r9MRiFMRxcGQ==
+X-Received: by 2002:a92:8e03:: with SMTP id c3mr5024475ild.167.1626222528967;
+        Tue, 13 Jul 2021 17:28:48 -0700 (PDT)
 Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id x10sm324591ilu.33.2021.07.13.17.27.49
+        by smtp.gmail.com with ESMTPSA id l11sm253079ios.8.2021.07.13.17.28.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jul 2021 17:27:50 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 17:27:43 -0700
+        Tue, 13 Jul 2021 17:28:47 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 17:28:42 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Tobias Klauser <tklauser@distanz.ch>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>
-Message-ID: <60ee2f7f9f787_196e2208d5@john-XPS-13-9370.notmuch>
-In-Reply-To: <CA+FuTSes3Lr0yGTc6GHGzgfPz4w6ReP_vnMKn=OeVhWgcpcOqA@mail.gmail.com>
-References: <20210713102719.8890-1-tklauser@distanz.ch>
- <CA+FuTSes3Lr0yGTc6GHGzgfPz4w6ReP_vnMKn=OeVhWgcpcOqA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: remove unused variable in
- tc_tunnel prog
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Message-ID: <60ee2fba31b05_196e22082a@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210713074401.475209-1-jakub@cloudflare.com>
+References: <20210713074401.475209-1-jakub@cloudflare.com>
+Subject: RE: [PATCH bpf] bpf, sockmap, udp: sk_prot needs inuse_idx set for
+ proc stats
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -68,20 +69,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Willem de Bruijn wrote:
-> On Tue, Jul 13, 2021 at 12:27 PM Tobias Klauser <tklauser@distanz.ch> wrote:
-> >
-> > The variable buf is unused since commit 005edd16562b ("selftests/bpf:
-> > convert bpf tunnel test to BPF_ADJ_ROOM_MAC"). Remove it to fix the
-> > following warning:
-> >
-> >     test_tc_tunnel.c:531:7: warning: unused variable 'buf' [-Wunused-variable]
-> >
-> > Fixes: 005edd16562b ("selftests/bpf: convert bpf tunnel test to BPF_ADJ_ROOM_MAC")
-> > Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+Jakub Sitnicki wrote:
+> Proc socket stats use sk_prot->inuse_idx value to record inuse sock stats.
+> We currently do not set this correctly from sockmap side. The result is
+> reading sock stats '/proc/net/sockstat' gives incorrect values. The
+> socket counter is incremented correctly, but because we don't set the
+> counter correctly when we replace sk_prot we may omit the decrement.
 > 
-> Acked-by: Willem de Bruijn <willemb@google.com>
+> To get the correct inuse_idx value move the core_initcall that initializes
+> the udp proto handlers to late_initcall. This way it is initialized after
+> UDP has the chance to assign the inuse_idx value from the register protocol
+> handler.
 > 
-> Thanks for the fix, Tobias.
+> Fixes: 5e21bb4e8125 ("bpf, test: fix NULL pointer dereference on invalid expected_attach_type")
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> ---
+> 
+> Missing bit from John's fix [1].
+> 
+> [1] https://lore.kernel.org/bpf/20210712195546.423990-1-john.fastabend@gmail.com/T/#mba9e0b6aa8dd0c01d7421a084c62ec93c9eea764
+> 
+
+Yep. Thanks.
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
