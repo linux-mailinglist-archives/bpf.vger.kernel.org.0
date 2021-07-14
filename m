@@ -2,152 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BF53C81FD
-	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 11:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2D23C81A6
+	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 11:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238904AbhGNJsC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Jul 2021 05:48:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35403 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238917AbhGNJsC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 14 Jul 2021 05:48:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626255910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZN3a1tvndTSdC7YsooBDBFTgb7MR0oz3akD0iS1avfE=;
-        b=UHjzfvzWl9ExW2XTfoR19g13E/VIPrL74CEMuD2dzXUzOXt7++XBxF0Ih2du1U5AWaaeA/
-        NEbf79NzWklqzGNtjcKLDcCYoLiV0IX3bmH+WIdFupObhD1fGUxL1aVIkqbDPW5BI+Si80
-        cgkd0Lk4TjnqZoZ+oTsCwPmLevc7RbY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-384-wcBXSp0_NGOoN06sPUlHAQ-1; Wed, 14 Jul 2021 05:45:09 -0400
-X-MC-Unique: wcBXSp0_NGOoN06sPUlHAQ-1
-Received: by mail-wr1-f69.google.com with SMTP id y15-20020a5d614f0000b029013cd60e9baaso1218080wrt.7
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 02:45:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZN3a1tvndTSdC7YsooBDBFTgb7MR0oz3akD0iS1avfE=;
-        b=X/GP4iDpm2Hx21YY9cBfzI3FENIJz6zlGi6/cR3jpzpcbfXKmcaUrigZHpRfKNJOG2
-         2bAiuATwBO7g4augmefGfw841mBQjjxXowkBiWUwl6ULHCPdQWK5MJR4F2S/yV2LTr5t
-         UDKeKhfNOTkUt7cQl6h7Rg/ItsoCMdvHFx98NQykwv2QVBbA4pqwMXVo1yVb4EIL+0ZV
-         B9Z0H3oW6YHdhGtOo/T8CnuK/+FYOWNV+XUG0ZkET36iGS75ZKkT6ZtVBOmwUxR/lSX2
-         yskqmC08iL/MSEaNgI013yS5Dt3PCtvoAfvRHtE57hFs3cdV7zk9L/rI5ruz8C4O4e5B
-         /GKQ==
-X-Gm-Message-State: AOAM530FBPMoOzGeHtWevDUhjuiWmzjixS9WhktDezGlxzE2nfB1qaPQ
-        Wt5qb4VepJlo5tmwqpxBTha5VBRdd0yJQVjbbai7gUtBELJPPiPW/t/wyrj4SHXhyfpcte2LSb0
-        aAuAZNEh1ivpd
-X-Received: by 2002:a5d:64aa:: with SMTP id m10mr11766433wrp.351.1626255908344;
-        Wed, 14 Jul 2021 02:45:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyLVyxjqH+zKP2iLuw7jWabuqEbAAePGdeqkySMndl6Fvplu9NljgNilCAW5cz7H5MlpEdX0w==
-X-Received: by 2002:a5d:64aa:: with SMTP id m10mr11766409wrp.351.1626255908218;
-        Wed, 14 Jul 2021 02:45:08 -0700 (PDT)
-Received: from krava.redhat.com ([5.171.203.6])
-        by smtp.gmail.com with ESMTPSA id o18sm1953328wrx.21.2021.07.14.02.45.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 02:45:07 -0700 (PDT)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCHv4 bpf-next 8/8] selftests/bpf: Add test for bpf_get_func_ip in kprobe+offset probe
-Date:   Wed, 14 Jul 2021 11:44:00 +0200
-Message-Id: <20210714094400.396467-9-jolsa@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210714094400.396467-1-jolsa@kernel.org>
-References: <20210714094400.396467-1-jolsa@kernel.org>
+        id S238779AbhGNJgC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Jul 2021 05:36:02 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:6924 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238337AbhGNJgC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:36:02 -0400
+Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GPsf71mxFz7BlB;
+        Wed, 14 Jul 2021 17:29:35 +0800 (CST)
+Received: from k03.huawei.com (10.67.174.111) by
+ dggeme751-chm.china.huawei.com (10.3.19.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 17:33:08 +0800
+From:   He Fengqing <hefengqing@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>
+CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [bpf-next, v2] bpf: verifier: Fix potential memleak and UAF in bpf verifier
+Date:   Wed, 14 Jul 2021 10:18:15 +0000
+Message-ID: <20210714101815.164322-1-hefengqing@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.111]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme751-chm.china.huawei.com (10.3.19.97)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding test for bpf_get_func_ip in kprobe+ofset probe.
-Because of the offset value it's arch specific, enabling
-the new test only for x86_64 architecture.
+In bpf_patch_insn_data(), we first use the bpf_patch_insn_single() to
+insert new instructions, then use adjust_insn_aux_data() to adjust
+insn_aux_data. If the old env->prog have no enough room for new inserted
+instructions, we use bpf_prog_realloc to construct new_prog and free the
+old env->prog.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+There have two errors here. First, if adjust_insn_aux_data() return
+ENOMEM, we should free the new_prog. Second, if adjust_insn_aux_data()
+return ENOMEM, bpf_patch_insn_data() will return NULL, and env->prog has
+been freed in bpf_prog_realloc, but we will use it in bpf_check().
+
+So in this patch, we make the adjust_insn_aux_data() never fails. In
+bpf_patch_insn_data(), we first pre-malloc memory for the new
+insn_aux_data, then call bpf_patch_insn_single() to insert new
+instructions, at last call adjust_insn_aux_data() to adjust
+insn_aux_data.
+
+Fixes: 8041902dae52 ("bpf: adjust insn_aux_data when patching insns")
+
+Signed-off-by: He Fengqing <hefengqing@huawei.com>
+
+  v1->v2:
+    pre-malloc memory for new insn_aux_data first, then
+    adjust_insn_aux_data() will never fails.
 ---
- .../bpf/prog_tests/get_func_ip_test.c          | 18 ++++++++++++++++--
- .../selftests/bpf/progs/get_func_ip_test.c     | 11 +++++++++++
- 2 files changed, 27 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-index 8bb18a8d31a0..088b3653610d 100644
---- a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-@@ -8,10 +8,21 @@ void test_get_func_ip_test(void)
- 	__u32 duration = 0, retval;
- 	int err, prog_fd;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index be38bb930bf1..07cf791510f1 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11425,10 +11425,11 @@ static void convert_pseudo_ld_imm64(struct bpf_verifier_env *env)
+  * insni[off, off + cnt).  Adjust corresponding insn_aux_data by copying
+  * [0, off) and [off, end) to new locations, so the patched range stays zero
+  */
+-static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+-				struct bpf_prog *new_prog, u32 off, u32 cnt)
++static void adjust_insn_aux_data(struct bpf_verifier_env *env,
++				 struct bpf_insn_aux_data *new_data,
++				 struct bpf_prog *new_prog, u32 off, u32 cnt)
+ {
+-	struct bpf_insn_aux_data *new_data, *old_data = env->insn_aux_data;
++	struct bpf_insn_aux_data *old_data = env->insn_aux_data;
+ 	struct bpf_insn *insn = new_prog->insnsi;
+ 	u32 old_seen = old_data[off].seen;
+ 	u32 prog_len;
+@@ -11441,12 +11442,9 @@ static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+ 	old_data[off].zext_dst = insn_has_def32(env, insn + off + cnt - 1);
  
--	skel = get_func_ip_test__open_and_load();
--	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open_and_load"))
-+	skel = get_func_ip_test__open();
-+	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open"))
- 		return;
- 
-+	/* test6 is x86_64 specifc because of the instruction
-+	 * offset, disabling it for all other archs
-+	 */
-+#ifndef __x86_64__
-+	bpf_program__set_autoload(skel->progs.test6, false);
-+#endif
+ 	if (cnt == 1)
+-		return 0;
++		return;
+ 	prog_len = new_prog->len;
+-	new_data = vzalloc(array_size(prog_len,
+-				      sizeof(struct bpf_insn_aux_data)));
+-	if (!new_data)
+-		return -ENOMEM;
 +
-+	err = get_func_ip_test__load(skel);
-+	if (!ASSERT_OK(err, "get_func_ip_test__load"))
-+		goto cleanup;
-+
- 	err = get_func_ip_test__attach(skel);
- 	if (!ASSERT_OK(err, "get_func_ip_test__attach"))
- 		goto cleanup;
-@@ -33,6 +44,9 @@ void test_get_func_ip_test(void)
- 	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
- 	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
- 	ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
-+#ifdef __x86_64__
-+	ASSERT_EQ(skel->bss->test6_result, 1, "test6_result");
-+#endif
- 
- cleanup:
- 	get_func_ip_test__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-index ba3e107b52dd..acd587b6e859 100644
---- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-+++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-@@ -10,6 +10,7 @@ extern const void bpf_fentry_test2 __ksym;
- extern const void bpf_fentry_test3 __ksym;
- extern const void bpf_fentry_test4 __ksym;
- extern const void bpf_modify_return_test __ksym;
-+extern const void bpf_fentry_test6 __ksym;
- 
- __u64 test1_result = 0;
- SEC("fentry/bpf_fentry_test1")
-@@ -60,3 +61,13 @@ int BPF_PROG(test5, int a, int *b, int ret)
- 	test5_result = (const void *) addr == &bpf_modify_return_test;
- 	return ret;
+ 	memcpy(new_data, old_data, sizeof(struct bpf_insn_aux_data) * off);
+ 	memcpy(new_data + off + cnt - 1, old_data + off,
+ 	       sizeof(struct bpf_insn_aux_data) * (prog_len - off - cnt + 1));
+@@ -11457,7 +11455,7 @@ static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+ 	}
+ 	env->insn_aux_data = new_data;
+ 	vfree(old_data);
+-	return 0;
++	return;
  }
+ 
+ static void adjust_subprog_starts(struct bpf_verifier_env *env, u32 off, u32 len)
+@@ -11492,6 +11490,14 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
+ 					    const struct bpf_insn *patch, u32 len)
+ {
+ 	struct bpf_prog *new_prog;
++	struct bpf_insn_aux_data *new_data = NULL;
 +
-+__u64 test6_result = 0;
-+SEC("kprobe/bpf_fentry_test6+0x5")
-+int test6(struct pt_regs *ctx)
-+{
-+	__u64 addr = bpf_get_func_ip(ctx);
++	if (len > 1) {
++		new_data = vzalloc(array_size(env->prog->len + len - 1,
++					      sizeof(struct bpf_insn_aux_data)));
++		if (!new_data)
++			return NULL;
++	}
+ 
+ 	new_prog = bpf_patch_insn_single(env->prog, off, patch, len);
+ 	if (IS_ERR(new_prog)) {
+@@ -11499,10 +11505,12 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
+ 			verbose(env,
+ 				"insn %d cannot be patched due to 16-bit range\n",
+ 				env->insn_aux_data[off].orig_idx);
++		if (new_data)
++			vfree(new_data);
 +
-+	test6_result = (const void *) addr == &bpf_fentry_test6 + 5;
-+	return 0;
-+}
+ 		return NULL;
+ 	}
+-	if (adjust_insn_aux_data(env, new_prog, off, len))
+-		return NULL;
++	adjust_insn_aux_data(env, new_data, new_prog, off, len);
+ 	adjust_subprog_starts(env, off, len);
+ 	adjust_poke_descs(new_prog, off, len);
+ 	return new_prog;
 -- 
-2.31.1
+2.25.1
 
