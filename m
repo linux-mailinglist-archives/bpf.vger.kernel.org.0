@@ -2,112 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB533C7ACD
-	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 03:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBA53C7B26
+	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 03:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237283AbhGNBIX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Jul 2021 21:08:23 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6812 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237288AbhGNBIW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Jul 2021 21:08:22 -0400
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GPfKz5z3nzXpcc;
-        Wed, 14 Jul 2021 08:59:51 +0800 (CST)
-Received: from [10.174.178.171] (10.174.178.171) by
- dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+        id S237241AbhGNBuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Jul 2021 21:50:18 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11297 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhGNBuS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Jul 2021 21:50:18 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GPgHh6H3Zz8scx;
+        Wed, 14 Jul 2021 09:42:56 +0800 (CST)
+Received: from localhost.localdomain (10.175.103.91) by
+ dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 14 Jul 2021 09:05:28 +0800
-Subject: Re: Ask for help about bpf map
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        David Ahern <dahern@digitalocean.com>
-References: <5aebe6f4-ca0d-4f64-8ee6-b68c58675271@huawei.com>
- <CAEf4BzZpSo8Kqz8mgPdbWTTVLqJ1AgE429_KHTiXgEVpbT97Yw@mail.gmail.com>
- <8735sidtwe.fsf@toke.dk>
-From:   "luwei (O)" <luwei32@huawei.com>
-Message-ID: <d1f47a24-6328-5121-3a1f-5a102444e50c@huawei.com>
-Date:   Wed, 14 Jul 2021 09:05:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ 15.1.2176.2; Wed, 14 Jul 2021 09:47:24 +0800
+From:   Wei Li <liwei391@huawei.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <huawei.libin@huawei.com>
+Subject: [PATCH] perf trace: Update cmd string table to decode sys_bpf first arg
+Date:   Wed, 14 Jul 2021 09:50:00 +0800
+Message-ID: <20210714015000.2844867-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <8735sidtwe.fsf@toke.dk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.171]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I have updated the iproute2 according this page: 
-https://github.com/cilium/cilium/issues/7446
+As 'enum bpf_cmd' has been extended a lot, update the cmd string table to
+decode sys_bpf first arg clearly in perf-trace.
 
-Now I use this version of iproute2: https://github.com/shemminger/iproute2
+Signed-off-by: Wei Li <liwei391@huawei.com>
+---
+ tools/perf/builtin-trace.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-The version of iproute2 is 5.11, and the kernel version is 5.13(the 
-latest version).
-
-
-在 2021/7/14 1:07 AM, Toke Høiland-Jørgensen 写道:
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
->> On Mon, Jul 12, 2021 at 11:35 PM luwei (O) <luwei32@huawei.com> wrote:
->>> Hi, List:
->>>
->>>         I am a beginner about bpf and working on XDP now. I meet a
->>> problem and feel difficult to figure it out.
->>>
->>>         In my following codes, I use two ways to define my_map: in SEC
->>> maps and SEC .maps respectively. When I load the xdp_kern.o file,
->>>
->>> It has different results. The way I load is: ip link set dev ens3 xdp
->>> obj xdp1_kern.o sec xdp1.
->>>
->>>         when I define my_map using SEC maps, it loads successfully but
->>> fails to load using SEC .maps, it reports:
->>>
->>> "
->>>
->>> [12] TYPEDEF __u32 type_id=13
->>> [13] INT unsigned int size=4 bits_offset=0 nr_bits=32 encoding=(none)
->>> [14] FUNC_PROTO (anon) return=2 args=(10 ctx)
->>> [15] FUNC xdp_prog1 type_id=14
->>> [16] INT char size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
->>> [17] ARRAY (anon) type_id=16 index_type_id=4 nr_elems=4
->>> [18] VAR _license type_id=17 linkage=1
->>> [19] DATASEC .maps size=0 vlen=1 size == 0
->>>
->>>
->>> Prog section 'xdp1' rejected: Permission denied (13)!
->>>    - Type:         6
->>>    - Instructions: 9 (0 over limit)
->>>    - License:      GPL
->>>
->>> Verifier analysis:
->>>
->>> 0: (b7) r1 = 0
->>> 1: (63) *(u32 *)(r10 -4) = r1
->>> last_idx 1 first_idx 0
->>> regs=2 stack=0 before 0: (b7) r1 = 0
->>> 2: (bf) r2 = r10
->>> 3: (07) r2 += -4
->>> 4: (18) r1 = 0x0
->> this shouldn't be 0x0.
->>
->> I suspect you have an old iproute2 which doesn't yet use libbpf to
->> load BPF programs, so .maps definition is not yet supported. cc'ing
->> netdev@vger, David and Toke
-> That would be my guess as well; what's the output of 'ip -V'?
->
-> -Toke
->
-> .
-
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 7ec18ff57fc4..17bc6284a93e 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -707,7 +707,15 @@ static size_t syscall_arg__scnprintf_char_array(char *bf, size_t size, struct sy
+ 
+ static const char *bpf_cmd[] = {
+ 	"MAP_CREATE", "MAP_LOOKUP_ELEM", "MAP_UPDATE_ELEM", "MAP_DELETE_ELEM",
+-	"MAP_GET_NEXT_KEY", "PROG_LOAD",
++	"MAP_GET_NEXT_KEY", "PROG_LOAD", "OBJ_PIN", "OBJ_GET", "PROG_ATTACH",
++	"PROG_DETACH", "PROG_TEST_RUN", "PROG_GET_NEXT_ID", "MAP_GET_NEXT_ID",
++	"PROG_GET_FD_BY_ID", "MAP_GET_FD_BY_ID", "OBJ_GET_INFO_BY_FD",
++	"PROG_QUERY", "RAW_TRACEPOINT_OPEN", "BTF_LOAD", "BTF_GET_FD_BY_ID",
++	"TASK_FD_QUERY", "MAP_LOOKUP_AND_DELETE_ELEM", "MAP_FREEZE",
++	"BTF_GET_NEXT_ID", "MAP_LOOKUP_BATCH", "MAP_LOOKUP_AND_DELETE_BATCH",
++	"MAP_UPDATE_BATCH", "MAP_DELETE_BATCH", "LINK_CREATE", "LINK_UPDATE",
++	"LINK_GET_FD_BY_ID", "LINK_GET_NEXT_ID", "ENABLE_STATS", "ITER_CREATE",
++	"LINK_DETACH", "PROG_BIND_MAP",
+ };
+ static DEFINE_STRARRAY(bpf_cmd, "BPF_");
+ 
 -- 
-Best Regards,
-Lu Wei
+2.25.1
 
