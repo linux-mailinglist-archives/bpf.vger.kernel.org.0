@@ -2,78 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BFC3C8909
-	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 18:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1FD3C890A
+	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 18:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhGNQz0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Jul 2021 12:55:26 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:38779 "EHLO
+        id S230376AbhGNQz3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Jul 2021 12:55:29 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:43109 "EHLO
         out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229617AbhGNQzZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 14 Jul 2021 12:55:25 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1B3E25C0085;
-        Wed, 14 Jul 2021 12:52:33 -0400 (EDT)
+        by vger.kernel.org with ESMTP id S229617AbhGNQz3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 14 Jul 2021 12:55:29 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5F0195C0140;
+        Wed, 14 Jul 2021 12:52:37 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 14 Jul 2021 12:52:33 -0400
+  by compute6.internal (MEProxy); Wed, 14 Jul 2021 12:52:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=WQkid/bagTG63j635
-        23iTPfwy44fvlX2HogWXyYuSBs=; b=haveMH+2JrmZmrg76mexWknv29Fi4RLKC
-        hlUXOJZNP+fGjosRym9dg886nLDJuICv+C6qMT+w2bB7IHd+tLy+aGzL/6Yp94e3
-        AjU/BfSNrqpH3RY9JHiYSQ4plNNxfozfbzVnZgJZ51lkICjYUWP5QH14JwoxV9+x
-        iMi463qxHs7g2CWTgvKYDrJkZGNT+0TQGOmZlmOgucqYxDoLEslzn0cdVD55lrkC
-        NLVCPYQnHFq2UHCuoQFPIo71RXQuih16aC1HHVRFbgMPmp1Mmn/28hCOePg4Y86y
-        EWzmYheOdgsXoJ9SDpx2D2g16FjqJQoYwg/LNqvSxLPSygxAmLw3w==
-X-ME-Sender: <xms:TxbvYIxxIhbdtmPZpdcNorR2kB-YMk4FScNDJcPD8CGraNynz1epIw>
-    <xme:TxbvYMQ8tLuIbNDGAJwRkc3_mflVnWOOfLMm7RtoeC6IdulPRQSRWdYB389yrLKXF
-    3jz6AIznMB84m17alg>
-X-ME-Received: <xmr:TxbvYKVPZs6Uoy8dJsTKT-Kou683E71JbsWBfzt0hJzm5fNReXcbZ39K5P_hupQHsVVKyQ>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=sLHf2FGTj0fqJAd1kANoWfoDR5oW8f8b6GIXB2ywFRU=; b=fhdeEEu1
+        dXZnEWLzpuEXjRyXiG76kKGf22Z4HntYuED/4chJmFKWPfheQWxx9RRFSEqrk0mH
+        LS90aeKZziw5oEUZqgV/4xy/KYcnsc4H2lL3PH1tSccU/O9Ebe6CHD+4awLEY3tj
+        YuztWjoVl6lMgQXg1G8AHwWeXta6ZnAW1+N4aDHPKMufLy7jxp7I3s5jxBnZd4fX
+        rm2hUxgCo/MGG+jcx+h4t7gvCkQkiQs3vzOyg+3Vyo6sxOzaLfGMGwieAu+0Si6H
+        BMkeq0blm+Po65A221A1p4roEKH5d9fRF3r9VhqEF/3xBLjHVfQK4Xbv5YRw7j9O
+        sKYf+++bSrcUlg==
+X-ME-Sender: <xms:VRbvYCd6e1Mcjm8PjSR6Y-7ACp0Q8F5JkSMfn6ZTTzqblCJdJs7K9Q>
+    <xme:VRbvYMMoPDGB9AE59_z3A0ewj2vMDO1uDse9LinYxt1QjOJ0mqr9z-XDB7cViOHZf
+    FH_gdLpCSKtICPI61g>
+X-ME-Received: <xmr:VRbvYDjlYKjEi4a_HTPc8T_HaTLmtyGrrL2SFrUyzb73C_c_VJRbFJoUsmCw0Ow1gzXQ1w>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudekgddutddvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomhepofgrrhhthihnrghsucfruhhmphhuthhishcuoehmsehlrghmsggu
-    rgdrlhhtqeenucggtffrrghtthgvrhhnpeekudehtdegieeijeegffeuieehveegjeeigf
-    ekudejiefgtdehtdevhfevfeegvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmheslhgrmh
-    gsuggrrdhlth
-X-ME-Proxy: <xmx:TxbvYGiTHZR_-L6rTQ8_c7474BJikrfqfPh0KDjFsRcsz5HPOMtpUQ>
-    <xmx:TxbvYKD3KvObLgksnRPOKXUztFWkF6ovOQd3s1RhzLpIZ3Luu4e57w>
-    <xmx:TxbvYHLLK6x_kMmBnv1Ql5ZDdxJ6APC6YROwdBMm4_jRnJqICLfcuA>
-    <xmx:URbvYNNYQe-iLbtfuP7gh6-WgdRwmVtVzHSr6_JZ8XJrXjn-EdxqAw>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+    dtredttdenucfhrhhomhepofgrrhhthihnrghsucfruhhmphhuthhishcuoehmsehlrghm
+    sggurgdrlhhtqeenucggtffrrghtthgvrhhnpedtffffgeffjeeiheeuvdfhkeejvefhie
+    dufeekffekueeuhfelvdetjeeiteduvdenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehmsehlrghmsggurgdrlhht
+X-ME-Proxy: <xmx:VRbvYP9UtePQkCt5_whHXiWF9XX118ZzG_C-X7C1m0cD_2y6Fe7TSQ>
+    <xmx:VRbvYOsO6pcKN2uLd-7ut4sgBlgBbelQPhNRApYBXi7GkklFHJsBBQ>
+    <xmx:VRbvYGEYmgMRJWwkmMstNmlZ9jR37zMcQNPpWPjgxBkNERoGn5mqFA>
+    <xmx:VRbvYH7uMc527WadcU4G08Ztp7c3hi9JdEheJFNl6NL3KeNEF3SkUw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 14 Jul 2021 12:52:30 -0400 (EDT)
+ 14 Jul 2021 12:52:36 -0400 (EDT)
 From:   Martynas Pumputis <m@lambda.lt>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         m@lambda.lt
-Subject: [PATCH bpf 0/2] libbpf: fix inner map removal in bpf_object__create_map
-Date:   Wed, 14 Jul 2021 18:54:38 +0200
-Message-Id: <20210714165440.472566-1-m@lambda.lt>
+Subject: [PATCH bpf 1/2] libbpf: fix removal of inner map in bpf_object__create_map
+Date:   Wed, 14 Jul 2021 18:54:39 +0200
+Message-Id: <20210714165440.472566-2-m@lambda.lt>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210714165440.472566-1-m@lambda.lt>
+References: <20210714165440.472566-1-m@lambda.lt>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set fixes the removal of a BTF-defined inner map if the
-creation of the outer map has failed. This was identified by Andrii
-in [1].
+If creating an outer map of a BTF-defined map-in-map fails (via
+bpf_object__create_map()), then the previously created its inner map
+won't be destroyed.
 
-[1]: https://lore.kernel.org/bpf/CAEf4BzYaQsD6NaEUij6ttDeKYP7oEB0=c0D9_xdAKw6FYb7h1g@mail.gmail.com/
+Fix this by ensuring that the destroy routines are not bypassed in the
+case of a failure.
 
-Martynas Pumputis (2):
-  libbpf: fix removal of inner map in bpf_object__create_map
-  selftests/bpf: check inner map deletion
+Fixes: 646f02ffdd49c ("libbpf: Add BTF-defined map-in-map support")
+Reported-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Martynas Pumputis <m@lambda.lt>
+---
+ tools/lib/bpf/libbpf.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
- tools/lib/bpf/libbpf.c                        |  5 +-
- .../bpf/progs/test_map_in_map_invalid.c       | 27 +++++++++
- tools/testing/selftests/bpf/test_maps.c       | 58 ++++++++++++++++++-
- 3 files changed, 87 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_map_in_map_invalid.c
-
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6f5e2757bb3c..1a840e81ea0a 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4479,6 +4479,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+ {
+ 	struct bpf_create_map_attr create_attr;
+ 	struct bpf_map_def *def = &map->def;
++	int ret = 0;
+ 
+ 	memset(&create_attr, 0, sizeof(create_attr));
+ 
+@@ -4561,7 +4562,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+ 	}
+ 
+ 	if (map->fd < 0)
+-		return -errno;
++		ret = -errno;
+ 
+ 	if (bpf_map_type__is_map_in_map(def->type) && map->inner_map) {
+ 		if (obj->gen_loader)
+@@ -4570,7 +4571,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+ 		zfree(&map->inner_map);
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int init_map_slots(struct bpf_object *obj, struct bpf_map *map)
 -- 
 2.32.0
 
