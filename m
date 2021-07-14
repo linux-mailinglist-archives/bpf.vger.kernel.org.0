@@ -2,128 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5F13C7FF4
-	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 10:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3ED43C81B0
+	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 11:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238214AbhGNI0q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Jul 2021 04:26:46 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11275 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhGNI0q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Jul 2021 04:26:46 -0400
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GPr3q12g9z1CJkt;
-        Wed, 14 Jul 2021 16:18:15 +0800 (CST)
-Received: from [10.174.178.171] (10.174.178.171) by
- dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 14 Jul 2021 16:23:52 +0800
-Subject: Re: Ask for help about bpf map
-From:   "luwei (O)" <luwei32@huawei.com>
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        David Ahern <dahern@digitalocean.com>
-References: <5aebe6f4-ca0d-4f64-8ee6-b68c58675271@huawei.com>
- <CAEf4BzZpSo8Kqz8mgPdbWTTVLqJ1AgE429_KHTiXgEVpbT97Yw@mail.gmail.com>
- <8735sidtwe.fsf@toke.dk> <d1f47a24-6328-5121-3a1f-5a102444e50c@huawei.com>
- <26db412c-a8b7-6d37-844f-7909a0c5744b@huawei.com>
-Message-ID: <189e4437-bb2c-2573-be96-0d6776feb5dd@huawei.com>
-Date:   Wed, 14 Jul 2021 16:23:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238430AbhGNJiT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Jul 2021 05:38:19 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:11302 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238189AbhGNJiT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Jul 2021 05:38:19 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GPsgj0MNmz8skT;
+        Wed, 14 Jul 2021 17:30:57 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 17:35:25 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Jul 2021 17:35:25 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
+        <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
+        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
+        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
+        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH rfc v5 0/4] add frag page support in page pool
+Date:   Wed, 14 Jul 2021 17:34:41 +0800
+Message-ID: <1626255285-5079-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <26db412c-a8b7-6d37-844f-7909a0c5744b@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.171]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii and toke,
+This patchset adds frag page support in page pool and
+enable skb's page frag recycling based on page pool in
+hns3 drvier.
 
-     I have sovled this issue. The reason is that my iproute2 does not 
-support libbpf, once I compile iproute2 with libbpf, it works. Thanks 
-for reply!
+RFC v5:
+1. Rename dma_addr[0] to pp_frag_count and adjust codes
+   according to the rename.
 
-在 2021/7/14 10:02 AM, luwei (O) 写道:
-> I tried 5.13 version in this page: 
-> https://git.kernel.org/pub/scm/network/iproute2/iproute2.git , still 
-> failed with the same error.
->
-> 在 2021/7/14 9:05 AM, luwei (O) 写道:
->> I have updated the iproute2 according this page: 
->> https://github.com/cilium/cilium/issues/7446
->>
->> Now I use this version of iproute2: 
->> https://github.com/shemminger/iproute2
->>
->> The version of iproute2 is 5.11, and the kernel version is 5.13(the 
->> latest version).
->>
->>
->> 在 2021/7/14 1:07 AM, Toke Høiland-Jørgensen 写道:
->>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>>
->>>> On Mon, Jul 12, 2021 at 11:35 PM luwei (O) <luwei32@huawei.com> wrote:
->>>>> Hi, List:
->>>>>
->>>>>         I am a beginner about bpf and working on XDP now. I meet a
->>>>> problem and feel difficult to figure it out.
->>>>>
->>>>>         In my following codes, I use two ways to define my_map: in 
->>>>> SEC
->>>>> maps and SEC .maps respectively. When I load the xdp_kern.o file,
->>>>>
->>>>> It has different results. The way I load is: ip link set dev ens3 xdp
->>>>> obj xdp1_kern.o sec xdp1.
->>>>>
->>>>>         when I define my_map using SEC maps, it loads successfully 
->>>>> but
->>>>> fails to load using SEC .maps, it reports:
->>>>>
->>>>> "
->>>>>
->>>>> [12] TYPEDEF __u32 type_id=13
->>>>> [13] INT unsigned int size=4 bits_offset=0 nr_bits=32 encoding=(none)
->>>>> [14] FUNC_PROTO (anon) return=2 args=(10 ctx)
->>>>> [15] FUNC xdp_prog1 type_id=14
->>>>> [16] INT char size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
->>>>> [17] ARRAY (anon) type_id=16 index_type_id=4 nr_elems=4
->>>>> [18] VAR _license type_id=17 linkage=1
->>>>> [19] DATASEC .maps size=0 vlen=1 size == 0
->>>>>
->>>>>
->>>>> Prog section 'xdp1' rejected: Permission denied (13)!
->>>>>    - Type:         6
->>>>>    - Instructions: 9 (0 over limit)
->>>>>    - License:      GPL
->>>>>
->>>>> Verifier analysis:
->>>>>
->>>>> 0: (b7) r1 = 0
->>>>> 1: (63) *(u32 *)(r10 -4) = r1
->>>>> last_idx 1 first_idx 0
->>>>> regs=2 stack=0 before 0: (b7) r1 = 0
->>>>> 2: (bf) r2 = r10
->>>>> 3: (07) r2 += -4
->>>>> 4: (18) r1 = 0x0
->>>> this shouldn't be 0x0.
->>>>
->>>> I suspect you have an old iproute2 which doesn't yet use libbpf to
->>>> load BPF programs, so .maps definition is not yet supported. cc'ing
->>>> netdev@vger, David and Toke
->>> That would be my guess as well; what's the output of 'ip -V'?
->>>
->>> -Toke
->>>
->>> .
->>
+RFC v4:
+1. Use the dma_addr[1] to store bias.
+2. Default to a pagecnt_bias of PAGE_SIZE - 1.
+3. other minor comment suggested by Alexander.
+
+RFC v3:
+1. Implement the semantic of "page recycling only wait for the
+   page pool user instead of all user of a page"
+2. Support the frag allocation of different sizes
+3. Merge patch 4 & 5 to one patch as it does not make sense to
+   use page_pool_dev_alloc_pages() API directly with elevated
+   refcnt.
+4. other minor comment suggested by Alexander.
+
+RFC v2:
+1. Split patch 1 to more reviewable one.
+2. Repurpose the lower 12 bits of the dma address to store the
+   pagecnt_bias as suggested by Alexander.
+3. support recycling to pool->alloc for elevated refcnt case
+   too.
+
+Yunsheng Lin (4):
+  page_pool: keep pp info as long as page pool owns the page
+  page_pool: add interface to manipulate frag count in page pool
+  page_pool: add frag page recycling support in page pool
+  net: hns3: support skb's frag page recycling based on page pool
+
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c |  82 +++++++++++++-
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |   3 +
+ drivers/net/ethernet/marvell/mvneta.c           |   6 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |   2 +-
+ drivers/net/ethernet/ti/cpsw.c                  |   2 +-
+ drivers/net/ethernet/ti/cpsw_new.c              |   2 +-
+ include/linux/mm_types.h                        |   8 +-
+ include/linux/skbuff.h                          |   4 +-
+ include/net/page_pool.h                         |  83 +++++++++++---
+ net/core/page_pool.c                            | 140 +++++++++++++++++++++---
+ 10 files changed, 283 insertions(+), 49 deletions(-)
+
 -- 
-Best Regards,
-Lu Wei
+2.7.4
 
