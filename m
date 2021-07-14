@@ -2,122 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1355D3C8442
-	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 14:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0863A3C8499
+	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 14:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239291AbhGNMKL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Jul 2021 08:10:11 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:50754 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239284AbhGNMKL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:10:11 -0400
-Received: by mail-il1-f199.google.com with SMTP id w8-20020a056e021c88b02902095727d18dso979171ill.17
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 05:07:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=PcjvOVN6qCyIv1/fl9MgyXde4qoSrkYo4xHcDWPqJyE=;
-        b=JFcd15m+29Jtby4ZQLt1YQeqf4kBl+UiokQNQVk6CR5bx0QydJSaEl6r+w+tp+XpVW
-         JEQZID+NLoPm5uinYe7lxzXtg12XUuBb6NZ+rFB8Q8vuBs2mlo477h34Ep/D0pv0oA4h
-         zr/TZsRCQJ5RHLBmagxH+G1skj2a2WHYxsxlGyHoveTIXYyDlqI6DVZfdk0j2Fb5PlIi
-         KR6cXYl513uwmoqtx+7DPbX3sRNp6kEZN+Sw5hfEoHrJ59E+kAvNQYh+wlXYXagDP0BR
-         Z0rOFc8/48aIX0W+5YH2bAWBjgKCdR3X7Wbf/SsznWD58zfWUZk6quDLboUedqnCv3xy
-         ElEw==
-X-Gm-Message-State: AOAM530YzszGpbuMIH8c6pXYoIjv/iXeTFmx7wh8GvkmGPKTnXAQZJz/
-        wW+mV8TwVCAiT1aDoZcqH4F9a0r1MaCue9r5mUXIGdYEQmC+
-X-Google-Smtp-Source: ABdhPJz57yC1sHnIwLiEslTVL3igJLY28gGHjev9aTUb9D8ixma2il2Ss92QcCo6YP5rfZ1y0dfYGQLFAbtKdjPfTY1FQFu5gVw9
+        id S239346AbhGNMon (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Jul 2021 08:44:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231356AbhGNMon (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Jul 2021 08:44:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D417F613BE;
+        Wed, 14 Jul 2021 12:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626266512;
+        bh=QmkEEw5HPjaeIwBl2KuFwiuPeDWX0r9aAoveov6ob6s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dF3T7ABlSNn0ySBp9984CdkyROyEHLo2b+X+zbXx5gSq1GpW0Qlv0dHAdSGEr1I7x
+         HjBj3bt6jxkSHJRynGrV9a0/KILOiTR1WzuscA6BotC9qb3DOJBrIILJuzwt6txtYw
+         thJTZlHXxYgrpnecQ6FU0IhCqxtItazfS+WvWNhqhEi/9HdyNm+qnQuPr57W12m/R4
+         oikSIKLoNsjo12jt0wYI+MGnhv5tiAPfptOnUa+CCOblAGpk5SYfTfZ4XBoHdLWzzx
+         GHccKGn6KfhQtej1/D15JDUJ4q5YMJw+U757WjVGD0sumB7SSg3DmNqeSH90mbfMDj
+         89VA/b9z0XK1w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id DF318403F2; Wed, 14 Jul 2021 09:41:48 -0300 (-03)
+Date:   Wed, 14 Jul 2021 09:41:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Wei Li <liwei391@huawei.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, huawei.libin@huawei.com
+Subject: Re: [PATCH] perf trace: Update cmd string table to decode sys_bpf
+ first arg
+Message-ID: <YO7bjJ6Es+Y7j0K4@kernel.org>
+References: <20210714015000.2844867-1-liwei391@huawei.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:25c7:: with SMTP id u7mr4155293jat.26.1626264439681;
- Wed, 14 Jul 2021 05:07:19 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 05:07:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003cf65205c71432d0@google.com>
-Subject: [syzbot] WARNING in vmap_pages_range_noflush
-From:   syzbot <syzbot+4f4d23fa0b2b2bb23e38@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210714015000.2844867-1-liwei391@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Em Wed, Jul 14, 2021 at 09:50:00AM +0800, Wei Li escreveu:
+> As 'enum bpf_cmd' has been extended a lot, update the cmd string table to
+> decode sys_bpf first arg clearly in perf-trace.
 
-syzbot found the following issue on:
+I'll apply this, as it improves what we have right now, but the plan is
+to use BTF for this, see how pahole can get all that from
+/sys/kernel/btf/vmlinux:
 
-HEAD commit:    3dbdb38e Merge branch 'for-5.14' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1528f19c300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=90b227e3653ac0d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=4f4d23fa0b2b2bb23e38
+⬢[acme@toolbox perf]$ pahole bpf_cmd
+enum bpf_cmd {
+	BPF_MAP_CREATE                  = 0,
+	BPF_MAP_LOOKUP_ELEM             = 1,
+	BPF_MAP_UPDATE_ELEM             = 2,
+	BPF_MAP_DELETE_ELEM             = 3,
+	BPF_MAP_GET_NEXT_KEY            = 4,
+	BPF_PROG_LOAD                   = 5,
+	BPF_OBJ_PIN                     = 6,
+	BPF_OBJ_GET                     = 7,
+	BPF_PROG_ATTACH                 = 8,
+	BPF_PROG_DETACH                 = 9,
+	BPF_PROG_TEST_RUN               = 10,
+	BPF_PROG_GET_NEXT_ID            = 11,
+	BPF_MAP_GET_NEXT_ID             = 12,
+	BPF_PROG_GET_FD_BY_ID           = 13,
+	BPF_MAP_GET_FD_BY_ID            = 14,
+	BPF_OBJ_GET_INFO_BY_FD          = 15,
+	BPF_PROG_QUERY                  = 16,
+	BPF_RAW_TRACEPOINT_OPEN         = 17,
+	BPF_BTF_LOAD                    = 18,
+	BPF_BTF_GET_FD_BY_ID            = 19,
+	BPF_TASK_FD_QUERY               = 20,
+	BPF_MAP_LOOKUP_AND_DELETE_ELEM  = 21,
+	BPF_MAP_FREEZE                  = 22,
+	BPF_BTF_GET_NEXT_ID             = 23,
+	BPF_MAP_LOOKUP_BATCH            = 24,
+	BPF_MAP_LOOKUP_AND_DELETE_BATCH = 25,
+	BPF_MAP_UPDATE_BATCH            = 26,
+	BPF_MAP_DELETE_BATCH            = 27,
+	BPF_LINK_CREATE                 = 28,
+	BPF_LINK_UPDATE                 = 29,
+	BPF_LINK_GET_FD_BY_ID           = 30,
+	BPF_LINK_GET_NEXT_ID            = 31,
+	BPF_ENABLE_STATS                = 32,
+	BPF_ITER_CREATE                 = 33,
+	BPF_LINK_DETACH                 = 34,
+	BPF_PROG_BIND_MAP               = 35,
+};
+⬢[acme@toolbox perf]$
+ 
+> Signed-off-by: Wei Li <liwei391@huawei.com>
+> ---
+>  tools/perf/builtin-trace.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> index 7ec18ff57fc4..17bc6284a93e 100644
+> --- a/tools/perf/builtin-trace.c
+> +++ b/tools/perf/builtin-trace.c
+> @@ -707,7 +707,15 @@ static size_t syscall_arg__scnprintf_char_array(char *bf, size_t size, struct sy
+>  
+>  static const char *bpf_cmd[] = {
+>  	"MAP_CREATE", "MAP_LOOKUP_ELEM", "MAP_UPDATE_ELEM", "MAP_DELETE_ELEM",
+> -	"MAP_GET_NEXT_KEY", "PROG_LOAD",
+> +	"MAP_GET_NEXT_KEY", "PROG_LOAD", "OBJ_PIN", "OBJ_GET", "PROG_ATTACH",
+> +	"PROG_DETACH", "PROG_TEST_RUN", "PROG_GET_NEXT_ID", "MAP_GET_NEXT_ID",
+> +	"PROG_GET_FD_BY_ID", "MAP_GET_FD_BY_ID", "OBJ_GET_INFO_BY_FD",
+> +	"PROG_QUERY", "RAW_TRACEPOINT_OPEN", "BTF_LOAD", "BTF_GET_FD_BY_ID",
+> +	"TASK_FD_QUERY", "MAP_LOOKUP_AND_DELETE_ELEM", "MAP_FREEZE",
+> +	"BTF_GET_NEXT_ID", "MAP_LOOKUP_BATCH", "MAP_LOOKUP_AND_DELETE_BATCH",
+> +	"MAP_UPDATE_BATCH", "MAP_DELETE_BATCH", "LINK_CREATE", "LINK_UPDATE",
+> +	"LINK_GET_FD_BY_ID", "LINK_GET_NEXT_ID", "ENABLE_STATS", "ITER_CREATE",
+> +	"LINK_DETACH", "PROG_BIND_MAP",
+>  };
+>  static DEFINE_STRARRAY(bpf_cmd, "BPF_");
+>  
+> -- 
+> 2.25.1
+> 
 
-Unfortunately, I don't have any reproducer for this issue yet.
+-- 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4f4d23fa0b2b2bb23e38@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pte_range mm/vmalloc.c:448 [inline]
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_pud_range mm/vmalloc.c:489 [inline]
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_small_pages_range_noflush mm/vmalloc.c:529 [inline]
-WARNING: CPU: 0 PID: 21050 at mm/vmalloc.c:448 vmap_pages_range_noflush+0x653/0x8c0 mm/vmalloc.c:558
-Modules linked in:
-CPU: 0 PID: 21050 Comm: syz-executor.3 Not tainted 5.13.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:vmap_pages_pte_range mm/vmalloc.c:448 [inline]
-RIP: 0010:vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
-RIP: 0010:vmap_pages_pud_range mm/vmalloc.c:489 [inline]
-RIP: 0010:vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
-RIP: 0010:vmap_small_pages_range_noflush mm/vmalloc.c:529 [inline]
-RIP: 0010:vmap_pages_range_noflush+0x653/0x8c0 mm/vmalloc.c:558
-Code: c5 ff 4c 89 f8 48 ba 00 00 00 00 00 fc ff df 48 c1 e8 03 80 3c 10 00 0f 85 62 02 00 00 49 8b 1f e9 6d fd ff ff e8 4d 37 c5 ff <0f> 0b 41 bc f4 ff ff ff e9 62 ff ff ff e8 3b 37 c5 ff 31 ff 48 89
-RSP: 0018:ffffc900025979b8 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffff888000100220 RCX: ffffc9000f762000
-RDX: 0000000000040000 RSI: ffffffff81af8783 RDI: 0000000000000003
-RBP: ffffea0002472c00 R08: 0000000000000000 R09: ffffffff90a01847
-R10: ffffffff81af85bf R11: 0000000000000001 R12: ffffc9002ac00000
-R13: 0000070700000000 R14: ffffc9002aa44000 R15: 8000000000000163
-FS:  00007f4f610c4700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000544038 CR3: 000000001eaa7000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- vmap_pages_range mm/vmalloc.c:592 [inline]
- __vmalloc_area_node mm/vmalloc.c:2861 [inline]
- __vmalloc_node_range+0x659/0x960 mm/vmalloc.c:2947
- __bpf_map_area_alloc+0xd5/0x150 kernel/bpf/syscall.c:311
- queue_stack_map_alloc+0xf0/0x1d0 kernel/bpf/queue_stack_maps.c:76
- find_and_alloc_map kernel/bpf/syscall.c:127 [inline]
- map_create+0x4a0/0x14c0 kernel/bpf/syscall.c:833
- __sys_bpf+0x8bc/0x4750 kernel/bpf/syscall.c:4451
- __do_sys_bpf kernel/bpf/syscall.c:4573 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4571 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4571
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4f610c4188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
-RDX: 0000000000000040 RSI: 00000000200001c0 RDI: 0000000000000000
-RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffff9d98a9f R14: 00007f4f610c4300 R15: 0000000000022000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+- Arnaldo
