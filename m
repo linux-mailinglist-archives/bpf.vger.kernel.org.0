@@ -2,115 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1787F3C85DE
-	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 16:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F69B3C864E
+	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 16:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239447AbhGNOSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Jul 2021 10:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
+        id S232100AbhGNOtZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Jul 2021 10:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239453AbhGNOSo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Jul 2021 10:18:44 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B37C06175F
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 07:15:52 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id l17-20020a05600c1d11b029021f84fcaf75so4021349wms.1
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 07:15:52 -0700 (PDT)
+        with ESMTP id S231977AbhGNOtZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Jul 2021 10:49:25 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13293C06175F;
+        Wed, 14 Jul 2021 07:46:32 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id go30so3734696ejc.8;
+        Wed, 14 Jul 2021 07:46:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mUCBpk5CyiIy6Bvb2NbvqDJflK7m0z2f3UFX/XqbowU=;
-        b=RAYn8/FyE0vDqn1+um4/dz8OvsCxr3xK8V0y/cH7AFK8aH+gE18yp3X0EcDEfpSPoc
-         KTky/k9y28lPJmzcxhzKgAi8aJUsdbOLvGAVl6MnEMEB1Btovt0aGlKZYMQBXsQHVG2g
-         Q/zTCmD1iytWlKFNoCsm0zOzBxqDLR88Z0uZJmWdxCMK+DujzcTCA566SpjqTBHxUqsI
-         cKHXwn97FRXHi7+T4zBYII3biel0jV0TizP04thyvHsHeGWuctfdMr5pCJOdWamJgwn1
-         wntfJYFam8/DLeKRtRtpk94h3nbCDC9ehAQvzAB3RctJBt/znjQPu3nKlErKEi7mvDq7
-         4cFA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jmnbKaeHY43auiwf/DJpFy/yehvSWlUJXGgTgX78hTk=;
+        b=X48xVSzqMOxd9X+khEzyTkk+2q6TnzjLet7Hjup7n7vZ4tQ+UbAb23MF4d6CvWqsJW
+         YGXDu1RK+/MvfyXzMFnNL7Z+Uwrj+ErGDVZeFqB/y2juOr/P+C8gZsCaATnpcjN4fi+Z
+         6saa2ZfyAwxfdfaUeJr4Th3GPpktbWBQK/XN6U7SeRzfArMJTQSyAgGtSFb5RUw3bohp
+         C2fL7TTLpC0gfbg2wu29vPp5lar5Noqu2/EFAX2HlYJ9qYaSPLxM8xwobkn72sKAYAzq
+         VG2sULjsAiyIf6CRA8k6NArXXKQs3NDKyWbSL68r3RTQhqKmYbSeHOAuGVk7hnvym5cV
+         NwVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mUCBpk5CyiIy6Bvb2NbvqDJflK7m0z2f3UFX/XqbowU=;
-        b=XYn0CnUlEPGES5/rSnorat6gX3/nmDiQn96wbKiefwxOO33cO+URiW22BgrQDgMEKR
-         2+g6rx7sCWHb2EmNXF8AyJVMWJsVyEoOf6q9zdHd+OEDiZ+t9lqCCgxLbxbaLsFazkWS
-         ZzIGdJNZt06ALxsmrU4zXq4yZ1MINAw152MoOhKTxEBxUnl9TdjmYkuWhzmWEWG8X9Q0
-         XUO+YOSPgwLqkzjFB73IdQpSX9qsWS9j4LnwtQsMyy4B2IyEEh5Hlx4P1nyJpWbgztmf
-         jAz/C3gnfAoPiL4Wi/QJRCgx7eywRzEO3khzZT1AP2//AAdQeEcwnX2naYiYjs145v7W
-         qr4g==
-X-Gm-Message-State: AOAM532ExvkV84yQz2r0nmhjsr7cOKy7ys6aJ1cC+Hqwhb+hNUhnNOdG
-        qnvlgemCU/GQ5G9/2yZNmtWjGA==
-X-Google-Smtp-Source: ABdhPJyj3j4nBjWxbdPwSLusLHVQgftz8JotKj/8bOPJqJh0mVBKnenv5b0+bmlA5F65Nne5T1f5vA==
-X-Received: by 2002:a7b:c147:: with SMTP id z7mr2175067wmi.110.1626272151231;
-        Wed, 14 Jul 2021 07:15:51 -0700 (PDT)
-Received: from localhost.localdomain ([149.86.90.174])
-        by smtp.gmail.com with ESMTPSA id a207sm6380037wme.27.2021.07.14.07.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 07:15:50 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 6/6] tools: bpftool: support dumping split BTF by id
-Date:   Wed, 14 Jul 2021 15:15:32 +0100
-Message-Id: <20210714141532.28526-7-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210714141532.28526-1-quentin@isovalent.com>
-References: <20210714141532.28526-1-quentin@isovalent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jmnbKaeHY43auiwf/DJpFy/yehvSWlUJXGgTgX78hTk=;
+        b=gR0Rz2aJPe3g9qr7MajWPULRUNlKm1f/aRO0741bhnwNWhh5OJzRCPEqgcbd2I3YNV
+         pYKloe5FFb8TuPeb9Pkn5rLSHI7HlwuK1Er/EKViVHug0UAsJ6hr8NDLOPwwUEIMJkh1
+         6PFlGKXXvzclZjEqVIutbgGLaWybWkKsoT+Lmb7btDCHUGOPi9wxwLBgwN5Rt6yCNP3L
+         ztyEeKTHoMRX3XbSBpRch3CLTMcWEonhp8DGRVNiGXwUAxTmjLAaNe8aEyvsATzQm9Wu
+         fW5Qt43n0o3DOKArLxJ4qnpNSHyRjow/UWgPDpBR/XF4oUuoKFZsf5JeTIvinHB2nREd
+         zesg==
+X-Gm-Message-State: AOAM533DpD8UunBkyd2uW8z8O9mf2fwisZAgcgDew4aohFizL31cQQ6u
+        IR4PlqGo8x1B2knRaRXNQfFrR12kepyriArxYfQ=
+X-Google-Smtp-Source: ABdhPJzMT6CwpM7xMbhSoLInIM9EY+2bBrzCXMJN3RjfYNDiZAE1VXuCklrd2QwE147vNkfmxVzqJSZ64aHAPnOck8Y=
+X-Received: by 2002:a17:907:3d94:: with SMTP id he20mr5064713ejc.473.1626273990557;
+ Wed, 14 Jul 2021 07:46:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1626255285-5079-1-git-send-email-linyunsheng@huawei.com>
+ <1626255285-5079-3-git-send-email-linyunsheng@huawei.com> <79d9e41c-6433-efe1-773a-4f5e91e8de0f@redhat.com>
+In-Reply-To: <79d9e41c-6433-efe1-773a-4f5e91e8de0f@redhat.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 14 Jul 2021 07:46:19 -0700
+Message-ID: <CAKgT0UcDxSmMqCGvrWeYFiKNsxWXskF+pUhKQVCC6totduUyDQ@mail.gmail.com>
+Subject: Re: [PATCH rfc v5 2/4] page_pool: add interface to manipulate frag
+ count in page pool
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Split BTF objects are typically BTF objects for kernel modules, which
-are incrementally built on top of kernel BTF instead of redefining all
-kernel symbols they need. We can use bpftool with its -B command-line
-option to dump split BTF objects. It works well when the handle provided
-for the BTF object to dump is a "path" to the BTF object, typically
-under /sys/kernel/btf, because bpftool internally calls
-btf__parse_split() which can take a "base_btf" pointer and resolve the
-BTF reconstruction (although in that case, the "-B" option is
-unnecessary because bpftool performs autodetection).
+On Wed, Jul 14, 2021 at 3:18 AM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
+>
+>
+>
+> On 14/07/2021 11.34, Yunsheng Lin wrote:
+> > As suggested by Alexander, "A DMA mapping should be page
+> > aligned anyway so the lower 12 bits would be reserved 0",
+> > so it might make more sense to repurpose the lower 12 bits
+> > of the dma address to store the frag count for frag page
+> > support in page pool for 32 bit systems with 64 bit dma,
+> > which should be rare those days.
+>
+> Do we have any real driver users with 32-bit arch and 64-bit DMA, that
+> want to use this new frag-count system you are adding to page_pool?
+>
+> This "lower 12-bit use" complicates the code we need to maintain
+> forever. My guess is that it is never used, but we need to update and
+> maintain it, and it will never be tested.
+>
+> Why don't you simply reject using page_pool flag PP_FLAG_PAGE_FRAG
+> during setup of the page_pool for this case?
+>
+>   if ((pool->p.flags & PP_FLAG_PAGE_FRAG) &&
+>       (sizeof(dma_addr_t) > sizeof(unsigned long)))
+>     goto reject-setup;
+>
+>
 
-However, it did not work so far when passing the BTF object through its
-id, because bpftool would call btf__get_from_id() which did not provide
-a way to pass a "base_btf" pointer.
+That sounds good to me if we want to go that route. It would simplify
+this quite a bit since essentially we could just drop these if blocks.
 
-In other words, the following works:
+Thanks.
 
-    # bpftool btf dump file /sys/kernel/btf/i2c_smbus -B /sys/kernel/btf/vmlinux
-
-But this was not possible:
-
-    # bpftool btf dump id 6 -B /sys/kernel/btf/vmlinux
-
-The libbpf API has recently changed, and btf__get_from_id() has been
-deprecated in favour of btf__load_from_kernel_by_id() and its version
-with support for split BTF, btf__load_from_kernel_by_id_split(). Let's
-update bpftool to make it able to dump the BTF object in the second case
-as well.
-
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/bpf/bpftool/btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 2296e8eba0ff..b77a59225f5b 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -580,7 +580,7 @@ static int do_dump(int argc, char **argv)
- 	}
- 
- 	if (!btf) {
--		err = btf__load_from_kernel_by_id(btf_id, &btf);
-+		err = btf__load_from_kernel_by_id_split(btf_id, &btf, base_btf);
- 		if (err) {
- 			p_err("get btf by id (%u): %s", btf_id, strerror(err));
- 			goto done;
--- 
-2.30.2
-
+- Alex
