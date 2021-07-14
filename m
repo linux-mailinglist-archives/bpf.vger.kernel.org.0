@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BFD3C81FB
-	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 11:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BF53C81FD
+	for <lists+bpf@lfdr.de>; Wed, 14 Jul 2021 11:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238906AbhGNJry (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Jul 2021 05:47:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44401 "EHLO
+        id S238904AbhGNJsC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Jul 2021 05:48:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35403 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238869AbhGNJry (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 14 Jul 2021 05:47:54 -0400
+        by vger.kernel.org with ESMTP id S238917AbhGNJsC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 14 Jul 2021 05:48:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626255902;
+        s=mimecast20190719; t=1626255910;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FDtmaDB4kqS4wOcww/6mdOWXrjUXzfE502+dL3peCCs=;
-        b=Cea+fuGCc+pXw6u+5p1PMr/XMhYLmUEznsomEIdA5Ulr5Ld90fvAula9l6ENFls2ifzD2t
-        dpuSvwUQ1D30NMz1PjSzMPYu9NdVAFkmT2yA2qqKU6Ozosqx4KjGtzOS3xqXSE1LoCJwT1
-        n+zQgiL8XfsNK095olNnPKOTsy7xSHk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-aDm-k0nXMvmKjOAqNg0Iwg-1; Wed, 14 Jul 2021 05:45:01 -0400
-X-MC-Unique: aDm-k0nXMvmKjOAqNg0Iwg-1
-Received: by mail-wr1-f70.google.com with SMTP id m9-20020a0560000089b02901362e1cd6a3so1190912wrx.13
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 02:45:01 -0700 (PDT)
+        bh=ZN3a1tvndTSdC7YsooBDBFTgb7MR0oz3akD0iS1avfE=;
+        b=UHjzfvzWl9ExW2XTfoR19g13E/VIPrL74CEMuD2dzXUzOXt7++XBxF0Ih2du1U5AWaaeA/
+        NEbf79NzWklqzGNtjcKLDcCYoLiV0IX3bmH+WIdFupObhD1fGUxL1aVIkqbDPW5BI+Si80
+        cgkd0Lk4TjnqZoZ+oTsCwPmLevc7RbY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-wcBXSp0_NGOoN06sPUlHAQ-1; Wed, 14 Jul 2021 05:45:09 -0400
+X-MC-Unique: wcBXSp0_NGOoN06sPUlHAQ-1
+Received: by mail-wr1-f69.google.com with SMTP id y15-20020a5d614f0000b029013cd60e9baaso1218080wrt.7
+        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 02:45:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FDtmaDB4kqS4wOcww/6mdOWXrjUXzfE502+dL3peCCs=;
-        b=KhSyc9waFImqOwCDd4olgpQSWzaUnwlV5Nm9XU2I4CwAEB7GInjjjPSXiJxHiwyyib
-         +gnxA/o0jFaSa/roMqFbVO5z5Am6FJA5SwMc1ToB8er7fGeBNcX5SYpMQkf7vg8yWCT2
-         W0U/63kcRATc9opF53NzpzuA1ZtdljtfPYPCkbL/XWD/wMzo8tM0SvSDGtUuVly9W/9u
-         y0Nw+Ug9VNSBbHwy7GvxlCqCSoyrv9pLVfRYyCBc5GrMpZj8EQej2Kbpvs8p7rcchyIj
-         L71uSs9Mqi1oKczw6LPP//rcu3hFsD7ggQkXfJbsXbIPRxuK94F6dIF2KiQcnBEcYFeE
-         +a9A==
-X-Gm-Message-State: AOAM532NIMKUuldIKDIT5LjnzdrZz61uitffuy6kJtyp3dkOxtqDFzN6
-        nl8RcVH8M4dqtuLu3/r1Xs91TJgEe1YiRbJPupgvUYWln3+ycGiStGtdCSWPGEeRDJjwGM2eSmz
-        THh1KMtzIidxH
-X-Received: by 2002:a5d:4c87:: with SMTP id z7mr11733052wrs.405.1626255900310;
-        Wed, 14 Jul 2021 02:45:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxsX2PRzSqZC/fziGlaaGD8QqV4nNw/LBU9k/sV45C+e6beEAn1vHoY0xIAGZK32lnnmXF69w==
-X-Received: by 2002:a5d:4c87:: with SMTP id z7mr11733030wrs.405.1626255900114;
-        Wed, 14 Jul 2021 02:45:00 -0700 (PDT)
+        bh=ZN3a1tvndTSdC7YsooBDBFTgb7MR0oz3akD0iS1avfE=;
+        b=X/GP4iDpm2Hx21YY9cBfzI3FENIJz6zlGi6/cR3jpzpcbfXKmcaUrigZHpRfKNJOG2
+         2bAiuATwBO7g4augmefGfw841mBQjjxXowkBiWUwl6ULHCPdQWK5MJR4F2S/yV2LTr5t
+         UDKeKhfNOTkUt7cQl6h7Rg/ItsoCMdvHFx98NQykwv2QVBbA4pqwMXVo1yVb4EIL+0ZV
+         B9Z0H3oW6YHdhGtOo/T8CnuK/+FYOWNV+XUG0ZkET36iGS75ZKkT6ZtVBOmwUxR/lSX2
+         yskqmC08iL/MSEaNgI013yS5Dt3PCtvoAfvRHtE57hFs3cdV7zk9L/rI5ruz8C4O4e5B
+         /GKQ==
+X-Gm-Message-State: AOAM530FBPMoOzGeHtWevDUhjuiWmzjixS9WhktDezGlxzE2nfB1qaPQ
+        Wt5qb4VepJlo5tmwqpxBTha5VBRdd0yJQVjbbai7gUtBELJPPiPW/t/wyrj4SHXhyfpcte2LSb0
+        aAuAZNEh1ivpd
+X-Received: by 2002:a5d:64aa:: with SMTP id m10mr11766433wrp.351.1626255908344;
+        Wed, 14 Jul 2021 02:45:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLVyxjqH+zKP2iLuw7jWabuqEbAAePGdeqkySMndl6Fvplu9NljgNilCAW5cz7H5MlpEdX0w==
+X-Received: by 2002:a5d:64aa:: with SMTP id m10mr11766409wrp.351.1626255908218;
+        Wed, 14 Jul 2021 02:45:08 -0700 (PDT)
 Received: from krava.redhat.com ([5.171.203.6])
-        by smtp.gmail.com with ESMTPSA id c12sm2108345wrr.90.2021.07.14.02.44.58
+        by smtp.gmail.com with ESMTPSA id o18sm1953328wrx.21.2021.07.14.02.45.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 02:44:59 -0700 (PDT)
+        Wed, 14 Jul 2021 02:45:07 -0700 (PDT)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -62,9 +62,9 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         KP Singh <kpsingh@chromium.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCHv4 bpf-next 7/8] libbpf: Allow specification of "kprobe/function+offset"
-Date:   Wed, 14 Jul 2021 11:43:59 +0200
-Message-Id: <20210714094400.396467-8-jolsa@kernel.org>
+Subject: [PATCHv4 bpf-next 8/8] selftests/bpf: Add test for bpf_get_func_ip in kprobe+offset probe
+Date:   Wed, 14 Jul 2021 11:44:00 +0200
+Message-Id: <20210714094400.396467-9-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210714094400.396467-1-jolsa@kernel.org>
 References: <20210714094400.396467-1-jolsa@kernel.org>
@@ -74,82 +74,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alan Maguire <alan.maguire@oracle.com>
+Adding test for bpf_get_func_ip in kprobe+ofset probe.
+Because of the offset value it's arch specific, enabling
+the new test only for x86_64 architecture.
 
-kprobes can be placed on most instructions in a function, not
-just entry, and ftrace and bpftrace support the function+offset
-notification for probe placement.  Adding parsing of func_name
-into func+offset to bpf_program__attach_kprobe() allows the
-user to specify
-
-SEC("kprobe/bpf_fentry_test5+0x6")
-
-...for example, and the offset can be passed to perf_event_open_probe()
-to support kprobe attachment.
-
-[jolsa: changed original code to use bpf_program__attach_kprobe_opts
-and use dynamic allocation in sscanf]
-
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+ .../bpf/prog_tests/get_func_ip_test.c          | 18 ++++++++++++++++--
+ .../selftests/bpf/progs/get_func_ip_test.c     | 11 +++++++++++
+ 2 files changed, 27 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index d93a6f9408d1..abe6d4842bb0 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10348,6 +10348,7 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+index 8bb18a8d31a0..088b3653610d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+@@ -8,10 +8,21 @@ void test_get_func_ip_test(void)
+ 	__u32 duration = 0, retval;
+ 	int err, prog_fd;
  
- struct bpf_program_attach_kprobe_opts {
- 	bool retprobe;
-+	unsigned long offset;
- };
+-	skel = get_func_ip_test__open_and_load();
+-	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open_and_load"))
++	skel = get_func_ip_test__open();
++	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open"))
+ 		return;
  
- static struct bpf_link*
-@@ -10360,7 +10361,7 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
- 	int pfd, err;
- 
- 	pfd = perf_event_open_probe(false /* uprobe */, opts->retprobe, func_name,
--				    0 /* offset */, -1 /* pid */);
-+				    opts->offset, -1 /* pid */);
- 	if (pfd < 0) {
- 		pr_warn("prog '%s': failed to create %s '%s' perf event: %s\n",
- 			prog->name, opts->retprobe ? "kretprobe" : "kprobe", func_name,
-@@ -10394,12 +10395,31 @@ static struct bpf_link *attach_kprobe(const struct bpf_sec_def *sec,
- 				      struct bpf_program *prog)
- {
- 	struct bpf_program_attach_kprobe_opts opts;
-+	unsigned long offset = 0;
-+	struct bpf_link *link;
- 	const char *func_name;
-+	char *func;
-+	int n, err;
- 
- 	func_name = prog->sec_name + sec->len;
- 	opts.retprobe = strcmp(sec->sec, "kretprobe/") == 0;
- 
--	return bpf_program__attach_kprobe_opts(prog, func_name, &opts);
-+	n = sscanf(func_name, "%m[a-zA-Z0-9_.]+%lx", &func, &offset);
-+	if (n < 1) {
-+		err = -EINVAL;
-+		pr_warn("kprobe name is invalid: %s\n", func_name);
-+		return libbpf_err_ptr(err);
-+	}
-+	if (opts.retprobe && offset != 0) {
-+		err = -EINVAL;
-+		pr_warn("kretprobes do not support offset specification\n");
-+		return libbpf_err_ptr(err);
-+	}
++	/* test6 is x86_64 specifc because of the instruction
++	 * offset, disabling it for all other archs
++	 */
++#ifndef __x86_64__
++	bpf_program__set_autoload(skel->progs.test6, false);
++#endif
 +
-+	opts.offset = offset;
-+	link = bpf_program__attach_kprobe_opts(prog, func, &opts);
-+	free(func);
-+	return link;
- }
++	err = get_func_ip_test__load(skel);
++	if (!ASSERT_OK(err, "get_func_ip_test__load"))
++		goto cleanup;
++
+ 	err = get_func_ip_test__attach(skel);
+ 	if (!ASSERT_OK(err, "get_func_ip_test__attach"))
+ 		goto cleanup;
+@@ -33,6 +44,9 @@ void test_get_func_ip_test(void)
+ 	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
+ 	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
+ 	ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
++#ifdef __x86_64__
++	ASSERT_EQ(skel->bss->test6_result, 1, "test6_result");
++#endif
  
- struct bpf_link *bpf_program__attach_uprobe(struct bpf_program *prog,
+ cleanup:
+ 	get_func_ip_test__destroy(skel);
+diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+index ba3e107b52dd..acd587b6e859 100644
+--- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
++++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+@@ -10,6 +10,7 @@ extern const void bpf_fentry_test2 __ksym;
+ extern const void bpf_fentry_test3 __ksym;
+ extern const void bpf_fentry_test4 __ksym;
+ extern const void bpf_modify_return_test __ksym;
++extern const void bpf_fentry_test6 __ksym;
+ 
+ __u64 test1_result = 0;
+ SEC("fentry/bpf_fentry_test1")
+@@ -60,3 +61,13 @@ int BPF_PROG(test5, int a, int *b, int ret)
+ 	test5_result = (const void *) addr == &bpf_modify_return_test;
+ 	return ret;
+ }
++
++__u64 test6_result = 0;
++SEC("kprobe/bpf_fentry_test6+0x5")
++int test6(struct pt_regs *ctx)
++{
++	__u64 addr = bpf_get_func_ip(ctx);
++
++	test6_result = (const void *) addr == &bpf_fentry_test6 + 5;
++	return 0;
++}
 -- 
 2.31.1
 
