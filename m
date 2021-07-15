@@ -2,158 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBE83CAE88
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 23:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E753CAEB0
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 23:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhGOVeR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 17:34:17 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34422 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhGOVeR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Jul 2021 17:34:17 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id DFB1C1FE67;
-        Thu, 15 Jul 2021 21:31:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626384681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cUZtmIRUhRXL4ZC3IEZvDFbgGC5uJU4F1xXHT7dE/hM=;
-        b=VXBZDfJ1QUYv+tCshjxauzGHRqeHTSDTm4wiu0NFyr1hugbLdda+b3Y82ZabuSldvnFj4P
-        JMljTyMQYEP0Ot8Tde4SQz4kqtC9KlIQcA+HvzmRpq4xIJFXuLUt3ggGi1k863eoDN8QwU
-        vzJWF2sW5x64NScnd3qYLSPU6SEdZew=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626384681;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cUZtmIRUhRXL4ZC3IEZvDFbgGC5uJU4F1xXHT7dE/hM=;
-        b=XPIYGTv7/zJgP3aZ21crRRP5sCr3xffRiCfCyDNGG5Qc1pW0TZTjiKT2qg0F3AmZb+UUcO
-        ZmrlXSHgx1fahPBw==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C8976A3B9C;
-        Thu, 15 Jul 2021 21:31:21 +0000 (UTC)
-Date:   Thu, 15 Jul 2021 23:31:20 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        Michael Petlan <mpetlan@redhat.com>
-Subject: Re: [RFT] Testing 1.22
-Message-ID: <20210715213120.GJ24916@kitsune.suse.cz>
-References: <YK+41f972j25Z1QQ@kernel.org>
+        id S229794AbhGOVnT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 17:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbhGOVnR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:43:17 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AA1C061760
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 14:40:22 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id r135so11522887ybc.0
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 14:40:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R1QetJwIGlZUtMvW7mRb7kP22XfUNHvIsgJDu3F1GBs=;
+        b=LHifkOl2yd2a9YS6NNk1gT3yD6Cf4G1MfTuw7uLLu7iMbgEcmJEezaWYEIPZLVXujB
+         hCMXRez79QbfFH2tGfuDLVfcasJF6SMNiI6z2UH8+QIJDEVixXSqcYcLiK9RVraAvpaS
+         4zdRUaLGv0QzAYZ7zp+wKcgEZiUNfisYYdwlyJgJGyLx7SAu92LpxFjYXMhROryEoV6k
+         3KuCefKchpbFJ3JwPCYjWTiHZms0lltM6KrDbOsWJ/mMnozZ5Kmo5FVwtyVGygEg7twR
+         jXsAP1snHPDOx2llrb9vEyFA81ZzLujxTJWYWTRjS0o8J2kQBYc39/eoOypxbRfFuw5I
+         2Yxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R1QetJwIGlZUtMvW7mRb7kP22XfUNHvIsgJDu3F1GBs=;
+        b=coXGgJi6mUamEiQWAFT9TJHHbmsDldrvT/jHfH6x1/6eeK0qr2DkzjYNRot87mwfJO
+         TgTFGBgPkOSpKstxOtJCTTsmEGtAmbMPa5fV3Csz1ERFEeJWA3e+dHnIEv9Q9QLsqAbp
+         MyiamLSc3Ott03WPDpxayjhqKB1/pigPTCdg2sILPqtqhUtHdEhZ/Jf3CmKj40KC9mgr
+         sK8Qfa507grCuNHTOR83ckKF7zaQH6LYL/4crjSS1BBILkcArA/l2XqndyErxC20Kx/J
+         t8U/qxi5HcOzMbxoeA2JaDxTRnfrK/7YotOpGpjlfCILD/w1qXTkHbRmTYLZ4wJtpSKN
+         PZ/w==
+X-Gm-Message-State: AOAM5323gBRJNSI7eImZT54A7FvkXA5S3Mo1zQJlEFON+eH+W57nMmR4
+        MrFQqzisds5miBhsIm5HDnIEmtZ7tNxY/cK391Y=
+X-Google-Smtp-Source: ABdhPJxxY6I7dJLhTxTSEK75e7Rn+cyQdcjZfviZvZXA4r9kzdWEg4fTMgemLVU+95FbhS4TRezdLzwBxKzxESpXkVE=
+X-Received: by 2002:a25:b741:: with SMTP id e1mr8393588ybm.347.1626385221925;
+ Thu, 15 Jul 2021 14:40:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK+41f972j25Z1QQ@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
+In-Reply-To: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 15 Jul 2021 14:40:06 -0700
+Message-ID: <CAEf4BzaMcWGt+eqEqQdpJ_s5Zv80ziCA+vo5fa5HmaZmwBvh6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] tools/lib/bpf: bpf_program__insns allow to
+ retrieve insns in libbpf
+To:     Lorenzo Fontana <fontanalorenz@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Tue, Jul 13, 2021 at 11:34 AM Lorenzo Fontana
+<fontanalorenz@gmail.com> wrote:
+>
+> This allows consumers of libbpf to iterate trough the insns
+> of a program without loading it first directly after the ELF parsing.
+>
+> Being able to do that is useful to create tooling that can show
+> the structure of a BPF program using libbpf without having to
+> parse the ELF separately.
+>
 
-when building with system libbpf I get:
+So I wonder how useful is getting raw BPF instructions before libbpf
+processed them and resolved map references, subprogram calls, etc?
+You'll have lots of zeroes or meaningless constants in ldimm64
+instructions, etc. I always felt that being able to get instructions
+after libbpf processed them is more useful. The problem is that
+currently libbpf frees prog->insns after successful bpf_program__load.
+There is one extra (advanced) scenario where having those instructions
+preserved after load would be really nice -- cloning BPF program (I
+had use case for fentry/fexit). So the question is whether we should
+just leave those prog->insns around until the object is closed or not?
+And if we do, should bpftool dump instructions before or after load?
+Let's see what folks think.
 
-[   40s] make[1]: Nothing to be done for 'preinstall'.
-[   40s] make[1]: Leaving directory '/home/abuild/rpmbuild/BUILD/dwarves-1.21+git175.1ef87b2/build'
-[   40s] Install the project...
-[   40s] /usr/bin/cmake -P cmake_install.cmake
-[   40s] -- Install configuration: "RelWithDebInfo"
-[   40s] -- Installing: /home/abuild/rpmbuild/BUILDROOT/dwarves-1.21+git175.1ef87b2-15.1.ppc64le/usr/bin/codiff
-[   40s] CMake Error at cmake_install.cmake:63 (file):
-[   40s]   file RPATH_CHANGE could not write new RPATH:
-[   40s] 
-[   40s]     
-[   40s] 
-[   40s]   to the file:
-[   40s] 
-[   40s]     /home/abuild/rpmbuild/BUILDROOT/dwarves-1.21+git175.1ef87b2-15.1.ppc64le/usr/bin/codiff
-[   40s] 
-[   40s]   The current RUNPATH is:
-[   40s] 
-[   40s]     /home/abuild/rpmbuild/BUILD/dwarves-1.21+git175.1ef87b2/build:
-[   40s] 
-[   40s]   which does not contain:
-[   40s] 
-[   40s]     /usr/local/lib64:/home/abuild/rpmbuild/BUILD/dwarves-1.21+git175.1ef87b2/build:
-[   40s] 
-[   40s]   as was expected.
-[   40s] 
-[   40s] 
-[   40s] make: *** [Makefile:74: install] Error 1
-[   40s] make: Leaving directory '/home/abuild/rpmbuild/BUILD/dwarves-1.21+git175.1ef87b2/build'
-[   40s] error: Bad exit status from /var/tmp/rpm-tmp.OaGNX4 (%install)
+> Usage:
+>   struct bpf_insn *insn;
+>   insn = bpf_program__insns(prog);
+>
+> Signed-off-by: Lorenzo Fontana <fontanalorenz@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 5 +++++
+>  tools/lib/bpf/libbpf.h | 1 +
+>  2 files changed, 6 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 1e04ce724240..67d51531f6b6 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -8866,6 +8866,11 @@ void *bpf_program__priv(const struct bpf_program *prog)
+>         return prog ? prog->priv : libbpf_err_ptr(-EINVAL);
+>  }
+>
+> +struct bpf_insn *bpf_program__insns(const struct bpf_program *prog)
 
-This is not a problem with embedded libbpf.
+Definitely needs to be const, we don't want anyone accidentally to
+modify it (though it's C and they can always force they way, but
+that's a separate issue)
 
-Using system libbpf seems to be new in 1.22
+> +{
+> +       return prog ? prog->insns : libbpf_err_ptr(-EINVAL);
+> +}
+> +
+>  void bpf_program__set_ifindex(struct bpf_program *prog, __u32 ifindex)
+>  {
+>         prog->prog_ifindex = ifindex;
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 6e61342ba56c..e4a1c98ae6d9 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -195,6 +195,7 @@ typedef void (*bpf_program_clear_priv_t)(struct bpf_program *, void *);
+>  LIBBPF_API int bpf_program__set_priv(struct bpf_program *prog, void *priv,
+>                                      bpf_program_clear_priv_t clear_priv);
+>
+> +LIBBPF_API struct bpf_insn *bpf_program__insns(const struct bpf_program *prog);
 
-Thanks
+BTW, I find bpf_program__size() is very ambiguous (is it number of
+bytes or number of instructions)? I'd also add bpf_program__insn_cnt()
+in the same patch.
 
-Michal
+And as Quentin mentioned, you need to update libbpf.map (and please
+keep everything alphabetically sorted).
 
-On Thu, May 27, 2021 at 12:20:53PM -0300, Arnaldo Carvalho de Melo wrote:
-> Hi guys,
-> 
-> 	Its important to have 1.22 out of the door ASAP, so please clone
-> what is in tmp.master and report your results.
-> 
-> 	To make it super easy:
-> 
-> [acme@quaco pahole]$ cd /tmp
-> [acme@quaco tmp]$ git clone git://git.kernel.org/pub/scm/devel/pahole/pahole.git
-> Cloning into 'pahole'...
-> remote: Enumerating objects: 6510, done.
-> remote: Total 6510 (delta 0), reused 0 (delta 0), pack-reused 6510
-> Receiving objects: 100% (6510/6510), 1.63 MiB | 296.00 KiB/s, done.
-> Resolving deltas: 100% (4550/4550), done.
-> [acme@quaco tmp]$ cd pahole/
-> [acme@quaco pahole]$ git checkout origin/tmp.master
-> Note: switching to 'origin/tmp.master'.
-> 
-> You are in 'detached HEAD' state. You can look around, make experimental
-> changes and commit them, and you can discard any commits you make in this
-> state without impacting any branches by switching back to a branch.
-> 
-> If you want to create a new branch to retain commits you create, you may
-> do so (now or later) by using -c with the switch command. Example:
-> 
->   git switch -c <new-branch-name>
-> 
-> Or undo this operation with:
-> 
->   git switch -
-> 
-> Turn off this advice by setting config variable advice.detachedHead to false
-> 
-> HEAD is now at 0d17503db0580a66 btf_encoder: fix and complete filtering out zero-sized per-CPU variables
-> [acme@quaco pahole]$ git log --oneline -5
-> 0d17503db0580a66 (HEAD, origin/tmp.master) btf_encoder: fix and complete filtering out zero-sized per-CPU variables
-> fb418f9d8384d3a9 dwarves: Make handling of NULL by destructos consistent
-> f049fe9ebf7aa9c2 dutil: Make handling of NULL by destructos consistent
-> 1512ab8ab6fe76a9 pahole: Make handling of NULL by destructos consistent
-> 1105b7dad2d0978b elf_symtab: Use zfree() where applicable
-> [acme@quaco pahole]$ mkdir build
-> [acme@quaco pahole]$ cd build
-> [acme@quaco build]$ cmake ..
-> <SNIP>
-> -- Build files have been written to: /tmp/pahole/build
-> [acme@quaco build]$ cd ..
-> [acme@quaco pahole]$ make -j8 -C build
-> make: Entering directory '/tmp/pahole/build'
-> <SNIP>
-> [100%] Built target pahole
-> make[1]: Leaving directory '/tmp/pahole/build'
-> make: Leaving directory '/tmp/pahole/build'
-> [acme@quaco pahole]$
-> 
-> Then make sure build/pahole is in your path and try your workloads.
-> 
-> Jiri, Michael, if you could run your tests with this, that would be awesome,
-> 
-> Thanks in advance!
-> 
-> - Arnaldo
+>  LIBBPF_API void *bpf_program__priv(const struct bpf_program *prog);
+>  LIBBPF_API void bpf_program__set_ifindex(struct bpf_program *prog,
+>                                          __u32 ifindex);
+> --
+> 2.32.0
+>
