@@ -2,86 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370F13C96EE
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 06:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F533C97A8
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 06:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232572AbhGOEL7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 00:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
+        id S237805AbhGOEsE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 00:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhGOEL6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Jul 2021 00:11:58 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CEBC06175F
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 21:09:06 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id i5so7430659lfe.2
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 21:09:06 -0700 (PDT)
+        with ESMTP id S237239AbhGOEsE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 00:48:04 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF6BC06175F
+        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 21:45:11 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id f30so7566357lfj.1
+        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 21:45:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=4Gs9vJw/+dYcphNpbIIlmg0+5uBWdEfH2u8t1plP4s4=;
-        b=SjGgvNcm0gvb9VCUQ2PKkRwohT0PnkpWfFU8atTumWiWbz+ilylm67f5DNT5O23MOP
-         2RyPyxVWS5XWtvIRyGunoVrFrNlFR40YacDZYgL/bTiCpkajRQdOawujzw86OHuWASIr
-         zs2Htgv0rf5KLkGy1ztNgOftTIsgDGBfiy/GXz9objoDE94NXFIZZIDhZCbGrUEl5zKa
-         lthZaKqXdmmj4Ipxpdc0cn7nUGv+HjxBU0iGUavNa1R1JxaVX6DbBRu0t2L9/i6Hjn7W
-         q7a+uXnxKZ6KR2NClSoZP2+8snZr2xSh+qmoaokIejlL3ZD49WYtPpdWzs9hg/v7Eu7o
-         N8PA==
+         :cc:content-transfer-encoding;
+        bh=dbs+6nEmTEdrEA0NncGSU82hIr21Uag+EkHJQ1HaunI=;
+        b=cfE13DaVbKB4UsEKoTkWehvYavXOM8qQ7qVWAHyA+dL+BuTMMDA5nFMtX1QZG7nsQW
+         lRWnJycpM1MoVBvnZQMHkLYPCCy16OC9PNU1NyBjcFTAxnbELRNOM0KqaUzzcySr3lMx
+         nI2ASrM+YrpsO5KC0uomqcH5KiiyLXW49waVRVpJx5x0Modee9p1FKjo8XNVC4dDRbiP
+         n6ohaLgE37necMXM102Uyl3xqj5jHPiZU53FPPePxUX6tpVedmXfaWBXTPBQJ9miZTzV
+         oW93N4Q/s/SSs7OLvd1DdSOmAm1Q7z1jiAEspAZlndo6bvFKPmiZUC/y3mCs2siEDPk9
+         JPFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=4Gs9vJw/+dYcphNpbIIlmg0+5uBWdEfH2u8t1plP4s4=;
-        b=VNH5Hiz+RCy4Rys7LdrLLc1K9aFf+3x9Rq7s9xreofsPcHYoAYzGORP4tw3kZcEUtv
-         uwYlSpPWetp+uWk2/mljH2KSp1YWOimEkzLmHRzZS92htfrvhxZdB8hHfb5jLdXKAtgm
-         jKG3NBatmveefBD8M8bj2iUXeldh49dylIMpnoJcJc+IP9b0tPCxtn9dsYVMSVCSrIQV
-         aUg+RwNE01JvqiLv+pYioCjGEHHM/qRif7lTCJPb4GZdIH2Lll3IbmI24TMEiIP5sob7
-         edEL96ntVzUQxPjqLopDZPkLkrBV3/u2J7fxm6uQ05+nU+7RFbTUh5Lg9ydOHwz4aQtj
-         ydHQ==
-X-Gm-Message-State: AOAM53319mcbTkPQ3nDQPg/j2SW5Jn9QS1DLTbBJ3JJhRZ3ofBRadje+
-        G0E4D2xR815PQzpdDUGBHgkqaSDm9GOZ64Upohk=
-X-Google-Smtp-Source: ABdhPJz7WPuQgqUmko5yjuxAgzHsB13SqNLb66TeLhOHZ3EkFuS5Z6xgkJK44U6P1w49Q92tPytjGHgF/8K0dut+Ph4=
-X-Received: by 2002:ac2:5ddb:: with SMTP id x27mr1475484lfq.539.1626322144425;
- Wed, 14 Jul 2021 21:09:04 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dbs+6nEmTEdrEA0NncGSU82hIr21Uag+EkHJQ1HaunI=;
+        b=IA3QuaO7m59hdJbm2uWkI4mehzzjRfkBt1mfdcy2XYmFfA09eJHwnaOQR5QoAxy3c0
+         0gYlMXxh03zgxzv0T8Q19crsHWve1h8z559vybvNoETITDmSAc8MA+3hKxk0ZASHxCfu
+         V12ajs+gNDnbg7moswnYGmvgryt/vVB3N2EJbY3mQPZkiV42OMEG41vESO9t2D03Lb6q
+         VVSe6OGyPKes8EoFm9a4QabAAAJcodnszGCVHMh/snHrUemo0M/b2SIK35NMlGIm4A3L
+         u0vnYEcU48xyApSIcIYDvULFW4n0wsTF1LFlDL3sRCDPOWYV8UHRG6VjvD4K7MTZdsAO
+         5qyw==
+X-Gm-Message-State: AOAM531ZcRDhND8H4lHbspvTqmw+fWsniwgIDGyTaBGxUiLje+/a/oJK
+        VKmkL38pQTJQ85Gt9YsBl0T5TOJeTrOlG8nVS58=
+X-Google-Smtp-Source: ABdhPJygscTUrXyI5jp40NYXz1KxzzeoMirN14k0Y0Uu9bHtoNhcVNHVBYnMp9AGHBvTGCxie5MBZGvIYSGHcLbLCzw=
+X-Received: by 2002:a05:6512:3138:: with SMTP id p24mr1657422lfd.214.1626324310012;
+ Wed, 14 Jul 2021 21:45:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJg8tTyEfS35qGuDj2yCyLkGi4V+_0Comw_dO7qnJUzJQD1t0w@mail.gmail.com>
-In-Reply-To: <CAJg8tTyEfS35qGuDj2yCyLkGi4V+_0Comw_dO7qnJUzJQD1t0w@mail.gmail.com>
+References: <CH2PR21MB1430287CC594A28B1FC473EAFA1B9@CH2PR21MB1430.namprd21.prod.outlook.com>
+In-Reply-To: <CH2PR21MB1430287CC594A28B1FC473EAFA1B9@CH2PR21MB1430.namprd21.prod.outlook.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 14 Jul 2021 21:08:53 -0700
-Message-ID: <CAADnVQKMKavv84V3UoFdGA_dvOu6PhMLiHyuhDk8VcUQTse-UQ@mail.gmail.com>
-Subject: Re: modified BPF backend, a request for consideration
-To:     Dmitri Makarov <dmitri@solana.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Wed, 14 Jul 2021 21:44:58 -0700
+Message-ID: <CAADnVQ+ETbQgF2j=RqgzKYjzNCp_XLCswSLwyE6BqttwF=GSOA@mail.gmail.com>
+Subject: Re: Signing of BPF programs as root delegation
+To:     Alan Jowett <Alan.Jowett@microsoft.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 7:58 PM Dmitri Makarov <dmitri@solana.com> wrote:
+On Tue, Jul 6, 2021 at 10:30 AM Alan Jowett <Alan.Jowett@microsoft.com> wro=
+te:
 >
-> Hi Alexei,
+> BPF folks,
 >
-> I work on an llvm-based compiler with modified BPF backend. Our changes a=
-re incompatible with the BPF verifier. However, I added a target feature th=
-at isolates our changes from the main BPF backend. My organization is inter=
-ested in integrating our changes into the main llvm repository to simplify =
-keeping our llvm-based toolchain updated with the new llvm releases. I real=
-ize our changes are not interesting for BPF maintainers/code owners, but wo=
-uld you maybe consider some path for accepting our modified BPF Target if i=
-t's not affecting the main (and only) BPF Target?  What would be your recom=
-mendation for us to move forward with this?
+> Quick question: Has anyone considered using signing of BPF programs as co=
+mpromise between completely denying non-root from loading eBPF programs and=
+ permitting non-root to load any eBPF programs?
+>
+> Problem statement:
+> A large set of security issues have arisen because of permitting non-root=
+ to verify and load eBPF programs into the kernel. These range from Specter=
+ style speculative load side channel attacks to verification failures. The =
+desire exists to permit programs that use eBPF to run as non-root as an eff=
+ort to run with least privilege, but this conflicts with the desire to limi=
+t eBPF program loading to root only.
+>
+> Proposal:
+> Enable signing enforcement of eBPF programs (https://lwn.net/Articles/853=
+489/) and permit root to set a policy that permits non-root to only load eB=
+PF programs signed by root. This would allow root to delegate permission to=
+ load specific eBPF programs to a non-root entity while continuing to block=
+ loading of arbitrary eBPF programs. Root could then verify the provenance =
+of eBPF programs and then sign them only if they are from a safe source and=
+ have been compiled with appropriate speculative load hardening. This appro=
+ach would appear to give the benefits of least privilege while also control=
+ling what is loaded into the kernel address space.
+>
+> Background:
+> The eBPF for Windows (https://github.com/microsoft/ebpf-for-windows) team=
+ is exploring security hardening options and one of the options on the tabl=
+e is to use signing to restrict loading of eBPF programs to those designate=
+d as trusted. The desire exists to maintain a similar security model on all=
+ platforms on which eBPF is supported, hence reaching out to you folks.
+>
+> Thoughts or feedback?
 
-It's hard to say without looking at the changes.
-For example, new instructions, optimization passes, custom debug-info are a=
-ll
-within scope of what can be added. The verifier might not understand
-these things today,
-but if it fits the path where BPF ISA might end up in the future we can com=
-e up
-with a way to land it.
-So please submit a diff for llvm repo and cc these folks.
+In general it all makes sense to me.
+The only confusing bit is "signed by root". I don't think such model
+exists today.
+At least for bpf programs the idea was to follow a signing process mostly
+similar to kernel module signing. The user that signed it is not
+recorded in the signature.
+Whoever has the key can sign it.
+The kernel would verify the signature from the key ring.
+The questions would be whether bpf needs its own key ring or not.
+Some folks proposed to delegate the final decision to another bpf prog.
+Like the kernel would verify the signature, but things like key ring
+and what to do
+with validation outcome would be delegated to a special prog.
+In such case an unpriv process loading progs that are signed with a certain=
+ key
+could be allowed to proceed even when progs are of tracing type.
+The libbpf-tools and pre-compiled bpftrace scripts would benefit.
+I think it would fit exactly to what you're proposing.
+These details need to be worked out, of course.
