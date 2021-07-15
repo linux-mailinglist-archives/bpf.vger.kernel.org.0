@@ -2,141 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1B23CAE59
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 23:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBE83CAE88
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 23:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhGOVJL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 15 Jul 2021 17:09:11 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28582 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229666AbhGOVJD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 15 Jul 2021 17:09:03 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16FL5hu5027688
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 14:06:10 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 39sx7fask8-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 14:06:10 -0700
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 14:06:08 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 8B7AC3D405AC; Thu, 15 Jul 2021 14:06:03 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <davem@davemloft.net>
-CC:     <kuba@kernel.org>, <daniel@iogearbox.net>, <ast@kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <andrii@kernel.org>
-Subject: pull-request: bpf 2021-07-15
-Date:   Thu, 15 Jul 2021 14:06:03 -0700
-Message-ID: <20210715210603.276717-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: VzHXWB71eDVK4SOzX4uf-ov3diODPSjX
-X-Proofpoint-GUID: VzHXWB71eDVK4SOzX4uf-ov3diODPSjX
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S230139AbhGOVeR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 17:34:17 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34422 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhGOVeR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 17:34:17 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DFB1C1FE67;
+        Thu, 15 Jul 2021 21:31:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1626384681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cUZtmIRUhRXL4ZC3IEZvDFbgGC5uJU4F1xXHT7dE/hM=;
+        b=VXBZDfJ1QUYv+tCshjxauzGHRqeHTSDTm4wiu0NFyr1hugbLdda+b3Y82ZabuSldvnFj4P
+        JMljTyMQYEP0Ot8Tde4SQz4kqtC9KlIQcA+HvzmRpq4xIJFXuLUt3ggGi1k863eoDN8QwU
+        vzJWF2sW5x64NScnd3qYLSPU6SEdZew=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1626384681;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cUZtmIRUhRXL4ZC3IEZvDFbgGC5uJU4F1xXHT7dE/hM=;
+        b=XPIYGTv7/zJgP3aZ21crRRP5sCr3xffRiCfCyDNGG5Qc1pW0TZTjiKT2qg0F3AmZb+UUcO
+        ZmrlXSHgx1fahPBw==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C8976A3B9C;
+        Thu, 15 Jul 2021 21:31:21 +0000 (UTC)
+Date:   Thu, 15 Jul 2021 23:31:20 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        Michael Petlan <mpetlan@redhat.com>
+Subject: Re: [RFT] Testing 1.22
+Message-ID: <20210715213120.GJ24916@kitsune.suse.cz>
+References: <YK+41f972j25Z1QQ@kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-15_15:2021-07-14,2021-07-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
- malwarescore=0 adultscore=0 mlxlogscore=911 priorityscore=1501
- clxscore=1015 mlxscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107150139
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YK+41f972j25Z1QQ@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+Hello,
 
-The following pull-request contains BPF updates for your *net* tree.
+when building with system libbpf I get:
 
-We've added 9 non-merge commits during the last 5 day(s) which contain
-a total of 9 files changed, 37 insertions(+), 15 deletions(-).
+[   40s] make[1]: Nothing to be done for 'preinstall'.
+[   40s] make[1]: Leaving directory '/home/abuild/rpmbuild/BUILD/dwarves-1.21+git175.1ef87b2/build'
+[   40s] Install the project...
+[   40s] /usr/bin/cmake -P cmake_install.cmake
+[   40s] -- Install configuration: "RelWithDebInfo"
+[   40s] -- Installing: /home/abuild/rpmbuild/BUILDROOT/dwarves-1.21+git175.1ef87b2-15.1.ppc64le/usr/bin/codiff
+[   40s] CMake Error at cmake_install.cmake:63 (file):
+[   40s]   file RPATH_CHANGE could not write new RPATH:
+[   40s] 
+[   40s]     
+[   40s] 
+[   40s]   to the file:
+[   40s] 
+[   40s]     /home/abuild/rpmbuild/BUILDROOT/dwarves-1.21+git175.1ef87b2-15.1.ppc64le/usr/bin/codiff
+[   40s] 
+[   40s]   The current RUNPATH is:
+[   40s] 
+[   40s]     /home/abuild/rpmbuild/BUILD/dwarves-1.21+git175.1ef87b2/build:
+[   40s] 
+[   40s]   which does not contain:
+[   40s] 
+[   40s]     /usr/local/lib64:/home/abuild/rpmbuild/BUILD/dwarves-1.21+git175.1ef87b2/build:
+[   40s] 
+[   40s]   as was expected.
+[   40s] 
+[   40s] 
+[   40s] make: *** [Makefile:74: install] Error 1
+[   40s] make: Leaving directory '/home/abuild/rpmbuild/BUILD/dwarves-1.21+git175.1ef87b2/build'
+[   40s] error: Bad exit status from /var/tmp/rpm-tmp.OaGNX4 (%install)
 
-The main changes are:
+This is not a problem with embedded libbpf.
 
-1) Fix NULL pointer dereference in BPF_TEST_RUN for BPF_XDP_DEVMAP and
-   BPF_XDP_CPUMAP programs, from Xuan Zhuo.
+Using system libbpf seems to be new in 1.22
 
-2) Fix use-after-free of net_device in XDP bpf_link, from Xuan Zhuo.
+Thanks
 
-3) Follow-up fix to subprog poke descriptor use-after-free problem, from
-   Daniel Borkmann and John Fastabend.
+Michal
 
-4) Fix out-of-range array access in s390 BPF JIT backend, from Colin Ian King.
-
-5) Fix memory leak in BPF sockmap, from John Fastabend.
-
-6) Fix for sockmap to prevent proc stats reporting bug, from John Fastabend
-   and Jakub Sitnicki.
-
-7) Fix NULL pointer dereference in bpftool, from Tobias Klauser.
-
-8) AF_XDP documentation fixes, from Baruch Siach.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Abaci, Andrii Nakryiko, Cong Wang, David Ahern, Dust Li, Ilya 
-Leoshkevich, Jesper Dangaard Brouer, John Fastabend, Maciej Fijalkowski, 
-Magnus Karlsson, Quentin Monnet, Roman Gushchin, Song Liu
-
-----------------------------------------------------------------
-
-The following changes since commit a5de4be0aaaa66a2fa98e8a33bdbed3bd0682804:
-
-  net: phy: marvell10g: fix differentiation of 88X3310 from 88X3340 (2021-07-11 10:02:33 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to d444b06e40855219ef38b5e9286db16d435f06dc:
-
-  bpftool: Check malloc return value in mount_bpffs_for_pin (2021-07-15 20:01:36 +0200)
-
-----------------------------------------------------------------
-Baruch Siach (1):
-      doc, af_xdp: Fix bind flags option typo
-
-Colin Ian King (1):
-      s390/bpf: Perform r1 range checking before accessing jit->seen_reg[r1]
-
-Daniel Borkmann (1):
-      bpf: Fix tail_call_reachable rejection for interpreter when jit failed
-
-Jakub Sitnicki (1):
-      bpf, sockmap, udp: sk_prot needs inuse_idx set for proc stats
-
-John Fastabend (2):
-      bpf, sockmap: Fix potential memory leak on unlikely error case
-      bpf, sockmap, tcp: sk_prot needs inuse_idx set for proc stats
-
-Tobias Klauser (1):
-      bpftool: Check malloc return value in mount_bpffs_for_pin
-
-Xuan Zhuo (2):
-      bpf, test: fix NULL pointer dereference on invalid expected_attach_type
-      xdp, net: Fix use-after-free in bpf_xdp_link_release
-
- Documentation/networking/af_xdp.rst |  6 +++---
- arch/s390/net/bpf_jit_comp.c        |  2 +-
- kernel/bpf/verifier.c               |  2 ++
- net/bpf/test_run.c                  |  3 +++
- net/core/dev.c                      | 14 ++++++++++----
- net/core/skmsg.c                    | 16 +++++++++++-----
- net/ipv4/tcp_bpf.c                  |  2 +-
- net/ipv4/udp_bpf.c                  |  2 +-
- tools/bpf/bpftool/common.c          |  5 +++++
- 9 files changed, 37 insertions(+), 15 deletions(-)
+On Thu, May 27, 2021 at 12:20:53PM -0300, Arnaldo Carvalho de Melo wrote:
+> Hi guys,
+> 
+> 	Its important to have 1.22 out of the door ASAP, so please clone
+> what is in tmp.master and report your results.
+> 
+> 	To make it super easy:
+> 
+> [acme@quaco pahole]$ cd /tmp
+> [acme@quaco tmp]$ git clone git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+> Cloning into 'pahole'...
+> remote: Enumerating objects: 6510, done.
+> remote: Total 6510 (delta 0), reused 0 (delta 0), pack-reused 6510
+> Receiving objects: 100% (6510/6510), 1.63 MiB | 296.00 KiB/s, done.
+> Resolving deltas: 100% (4550/4550), done.
+> [acme@quaco tmp]$ cd pahole/
+> [acme@quaco pahole]$ git checkout origin/tmp.master
+> Note: switching to 'origin/tmp.master'.
+> 
+> You are in 'detached HEAD' state. You can look around, make experimental
+> changes and commit them, and you can discard any commits you make in this
+> state without impacting any branches by switching back to a branch.
+> 
+> If you want to create a new branch to retain commits you create, you may
+> do so (now or later) by using -c with the switch command. Example:
+> 
+>   git switch -c <new-branch-name>
+> 
+> Or undo this operation with:
+> 
+>   git switch -
+> 
+> Turn off this advice by setting config variable advice.detachedHead to false
+> 
+> HEAD is now at 0d17503db0580a66 btf_encoder: fix and complete filtering out zero-sized per-CPU variables
+> [acme@quaco pahole]$ git log --oneline -5
+> 0d17503db0580a66 (HEAD, origin/tmp.master) btf_encoder: fix and complete filtering out zero-sized per-CPU variables
+> fb418f9d8384d3a9 dwarves: Make handling of NULL by destructos consistent
+> f049fe9ebf7aa9c2 dutil: Make handling of NULL by destructos consistent
+> 1512ab8ab6fe76a9 pahole: Make handling of NULL by destructos consistent
+> 1105b7dad2d0978b elf_symtab: Use zfree() where applicable
+> [acme@quaco pahole]$ mkdir build
+> [acme@quaco pahole]$ cd build
+> [acme@quaco build]$ cmake ..
+> <SNIP>
+> -- Build files have been written to: /tmp/pahole/build
+> [acme@quaco build]$ cd ..
+> [acme@quaco pahole]$ make -j8 -C build
+> make: Entering directory '/tmp/pahole/build'
+> <SNIP>
+> [100%] Built target pahole
+> make[1]: Leaving directory '/tmp/pahole/build'
+> make: Leaving directory '/tmp/pahole/build'
+> [acme@quaco pahole]$
+> 
+> Then make sure build/pahole is in your path and try your workloads.
+> 
+> Jiri, Michael, if you could run your tests with this, that would be awesome,
+> 
+> Thanks in advance!
+> 
+> - Arnaldo
