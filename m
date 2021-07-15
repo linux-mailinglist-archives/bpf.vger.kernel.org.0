@@ -2,160 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D133F3C9C5E
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 12:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB883C9C79
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 12:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241113AbhGOKHl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 06:07:41 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:44529 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241116AbhGOKHk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 15 Jul 2021 06:07:40 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 674183200989;
-        Thu, 15 Jul 2021 06:04:45 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 15 Jul 2021 06:04:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=g2VA3jMO9HgRtkLbT/YGIryDzAVKPLHZaTLQTOHPS
-        3s=; b=ZKt+oAe/LfWjX8vuzIui7HGMrSC0yEVuTe68Jj2/UBop5ZgjIJE8L+aFG
-        yTmb7EaTVesMXtLw76m3mxsAAg51xvBTeGFAiblUy3co41ewgqxWgmKk4EO+t63a
-        q3yikJi6AXFVAiwbaLhY2KKPA3PZR3I/2dj02Wwu8iPgXSvPLPuTw6j5VS4nPyZo
-        vGWieU0qm4U3UDxImCOp2lpsA/FSxSBNVDyEOc5JQ0vKXTnQonaTHZzSkKhPD/Ys
-        RQ1HxaHYF4sAGQ1UpVemDoJaXxXIcvcps4a8wtj7fhz+eASCa9/rDuFf8f2zjNOh
-        jqEfQSTsKA/AWYV3KgWlSL9wZElEg==
-X-ME-Sender: <xms:OwjwYAZNPBRqdIqsRA8eIYwzg5a4ssJxtY8eqra_56B7fRoMQFWheg>
-    <xme:OwjwYLZLXkgqGZmY8m-daALVe-lYS2sURP555n3sYob3M_kdqYSX9ELzvFLQGlF2e
-    ALc7FViYqixxHoJc5s>
-X-ME-Received: <xmr:OwjwYK8YVB--JiGnvsg8_SGR6TrYCWt6uMqILFjt8W1ZC23CQ14jIAd0IU0uQ84C2rSddbQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtgddugecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpeforghrthih
-    nhgrshcurfhumhhpuhhtihhsuceomheslhgrmhgsuggrrdhltheqnecuggftrfgrthhtvg
-    hrnhepvddukeekueetieffteeltedukeeuveeugfelfffhgfdvkeejkeekgffhleffkeel
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmsehlrghmsggurgdrlhht
-X-ME-Proxy: <xmx:OwjwYKooM62xD0JaB9IPEzDjAEbiLIjGX-fwqQfA0hDaZStBl6jkbQ>
-    <xmx:OwjwYLrQTNonw5iJa4J3CbsU5L3HoRHSOBH9piQKYw2T6UMOOQ45Qg>
-    <xmx:OwjwYISXmi6Ecq8twT2JZtm7QSfJcg4QUUIUZf4a7JBh1Z4MFY_W6Q>
-    <xmx:PQjwYC17N0cGEDXl5z8IczW7LTKvsmHrroc5Aeky2T6kdDI-01KwSg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 15 Jul 2021 06:04:41 -0400 (EDT)
-Subject: Re: [PATCH bpf 1/2] libbpf: fix removal of inner map in
- bpf_object__create_map
-To:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-References: <20210714165440.472566-1-m@lambda.lt>
- <20210714165440.472566-2-m@lambda.lt>
- <60ef818f81c18_5a0c120898@john-XPS-13-9370.notmuch>
-From:   Martynas Pumputis <m@lambda.lt>
-Message-ID: <f3aff467-7dbb-5aed-d3f8-32af62bcc53f@lambda.lt>
-Date:   Thu, 15 Jul 2021 12:06:53 +0200
+        id S241231AbhGOKPd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 06:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233489AbhGOKPd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 06:15:33 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3BDC06175F
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 03:12:40 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id l6so3397090wmq.0
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 03:12:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CHboCMPa0noGTp43ghSeaxA/2+JfGKkbAyG3uY4v+h8=;
+        b=efrKELc5FmrrjhQ6qQ6/NWH3CLOu1vf0l7wC27KHlywSzimWurCcTsaq9DGuYOZNTq
+         ZmVrsle3ov5DbWqy5yIJPYonYZLvq3xd2baVy4PYXQMkc5ZF5TcCp3b7j5B7KP40D6HP
+         7DEPT+5v8LJEB4pBkJCLRhQZFYiDcLkl/UlShD581B21/W+dubCECzlv0Wuu51RSeziz
+         d5XrmXrARU7YXTJznuqQqChXNVUgotkPw4LsLjO0rWeLIhsGod/kTuq6FYQx21NMqy3Q
+         +QcG9Le8P6eVZPjVi76ls38o1bRribvv91TtyP1WtpsPOAS/9d3WetsufNeo9lBIYeKA
+         BoKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CHboCMPa0noGTp43ghSeaxA/2+JfGKkbAyG3uY4v+h8=;
+        b=TkBEi7xnY8DE+66AMBDpk5rbfjYFjmqlNoYiF4pkv1ESdYWi2I6oy5h2u1HrxDxmAZ
+         IkMSIEUXRdiNoMerWmDRuQ1iYfuUOXVMi97MxZ2R0SvMhBO0j1cFMde7fMRpo2KLl9YV
+         KJHoynuUO8wBYFr03FgqI8zEAO4q2tIcSrCg6HERq4Hgnq1rz6LwyAnl36XfG4Fwf5ki
+         sCAKQpYy/7WIIAeDBCAt5Ps+KYfKD/5nuEZlxSzXZgotIivU7Jfw3rA+a/OBUOyW53aJ
+         qcLcAlL05albjlNXw+mIxgwpK1bEYeahG0WHc0wmAh8yJfElD6ungIdgplGjCzIJJbrS
+         wAWQ==
+X-Gm-Message-State: AOAM533eUpC12Ka0IEV5ulhYkzzetJpKSiPF1UGFYQPziCtWh+H5Xo/T
+        3OYeSQOdu0/zHa8fe6IAKHIZ9Q==
+X-Google-Smtp-Source: ABdhPJyVIryR/acM4TV7SmvDZB14OvVpl6D1BJnU7/3mWK9N77CkI5agC8tjQ52EvsXTRBPV0xd2Xg==
+X-Received: by 2002:a7b:cb13:: with SMTP id u19mr3634232wmj.122.1626343958636;
+        Thu, 15 Jul 2021 03:12:38 -0700 (PDT)
+Received: from [192.168.1.8] ([149.86.88.136])
+        by smtp.gmail.com with ESMTPSA id s1sm7937205wmj.8.2021.07.15.03.12.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jul 2021 03:12:38 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 1/2] tools/lib/bpf: bpf_program__insns allow to
+ retrieve insns in libbpf
+To:     Lorenzo Fontana <fontanalorenz@gmail.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net
+References: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <54e477a7-459a-40be-b34e-3e2e0a75c75a@isovalent.com>
+Date:   Thu, 15 Jul 2021 11:12:37 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <60ef818f81c18_5a0c120898@john-XPS-13-9370.notmuch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+2021-07-13 20:33 UTC+0200 ~ Lorenzo Fontana <fontanalorenz@gmail.com>
+> This allows consumers of libbpf to iterate trough the insns
+> of a program without loading it first directly after the ELF parsing.
+> 
+> Being able to do that is useful to create tooling that can show
+> the structure of a BPF program using libbpf without having to
+> parse the ELF separately.
+> 
+> Usage:
+>   struct bpf_insn *insn;
+>   insn = bpf_program__insns(prog);
+> 
+> Signed-off-by: Lorenzo Fontana <fontanalorenz@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 5 +++++
+>  tools/lib/bpf/libbpf.h | 1 +
+>  2 files changed, 6 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 1e04ce724240..67d51531f6b6 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -8866,6 +8866,11 @@ void *bpf_program__priv(const struct bpf_program *prog)
+>  	return prog ? prog->priv : libbpf_err_ptr(-EINVAL);
+>  }
+>  
+> +struct bpf_insn *bpf_program__insns(const struct bpf_program *prog)
+> +{
+> +	return prog ? prog->insns : libbpf_err_ptr(-EINVAL);
+> +}
+> +
+>  void bpf_program__set_ifindex(struct bpf_program *prog, __u32 ifindex)
+>  {
+>  	prog->prog_ifindex = ifindex;
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 6e61342ba56c..e4a1c98ae6d9 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -195,6 +195,7 @@ typedef void (*bpf_program_clear_priv_t)(struct bpf_program *, void *);
+>  LIBBPF_API int bpf_program__set_priv(struct bpf_program *prog, void *priv,
+>  				     bpf_program_clear_priv_t clear_priv);
+>  
+> +LIBBPF_API struct bpf_insn *bpf_program__insns(const struct bpf_program *prog);
+>  LIBBPF_API void *bpf_program__priv(const struct bpf_program *prog);
+>  LIBBPF_API void bpf_program__set_ifindex(struct bpf_program *prog,
+>  					 __u32 ifindex);
+> 
 
+If you make it part of the API, the new function should also have an
+entry in tools/lib/bpf/libbpf.map.
 
-On 7/15/21 2:30 AM, John Fastabend wrote:
-> Martynas Pumputis wrote:
->> If creating an outer map of a BTF-defined map-in-map fails (via
->> bpf_object__create_map()), then the previously created its inner map
->> won't be destroyed.
->>
->> Fix this by ensuring that the destroy routines are not bypassed in the
->> case of a failure.
->>
->> Fixes: 646f02ffdd49c ("libbpf: Add BTF-defined map-in-map support")
->> Reported-by: Andrii Nakryiko <andrii@kernel.org>
->> Signed-off-by: Martynas Pumputis <m@lambda.lt>
->> ---
->>   tools/lib/bpf/libbpf.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 6f5e2757bb3c..1a840e81ea0a 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -4479,6 +4479,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->>   {
->>   	struct bpf_create_map_attr create_attr;
->>   	struct bpf_map_def *def = &map->def;
->> +	int ret = 0;
->>   
->>   	memset(&create_attr, 0, sizeof(create_attr));
->>   
->> @@ -4561,7 +4562,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->>   	}
->>   
->>   	if (map->fd < 0)
->> -		return -errno;
->> +		ret = -errno;
->>   
-> 
-> I'm trying to track this down, not being overly familiar with this bit of
-> code.
-> 
-> We entered bpf_object__create_map with map->inner_map potentially set and
-> then here we are going to zfree(&map->inner_map). I'm trying to track
-> down if this is problematic, I guess not? But seems like we could
-> also free a map here that we didn't create from this call in the above
-> logic.
-> 
-
-Keep in mind that we free the inner map anyway if the creation of the 
-outer map was successful. Also, we don't try to recreate the map if any 
-of the steps has failed. So I think it should not be problematic.
-
-
->>   	if (bpf_map_type__is_map_in_map(def->type) && map->inner_map) {
-> 
->          if (bpf_map_type__is_map_in_map(def->type) && map->inner_map) {
->                  if (obj->gen_loader)
->                          map->inner_map->fd = -1;
->                  bpf_map__destroy(map->inner_map);
->                  zfree(&map->inner_map);
->          }
-> 
-> 
-> Also not sure here, sorry didn't have time to follow too thoroughly
-> will check again later. But, the 'map->inner_map->fd = -1' is going to
-> cause bpf_map__destroy to bypass the close(fd) as I understand it.
-> So are we leaking an fd if the inner_map->fd is coming from above
-> create? Or maybe never happens because obj->gen_loader is NULL?
-
-I think in the case of obj->gen_loader, we don't need to close the FD of 
-any map, as the creation of maps will happen at a later stage in the 
-kernel: 
-https://lore.kernel.org/bpf/20210514003623.28033-15-alexei.starovoitov@gmail.com/.
-
-> 
-> Thanks!
-> 
-> 
->>   		if (obj->gen_loader)
->> @@ -4570,7 +4571,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->>   		zfree(&map->inner_map);
->>   	}
->>   
->> -	return 0;
->> +	return ret;
->>   }
->>   
->>   static int init_map_slots(struct bpf_object *obj, struct bpf_map *map)
->> -- 
->> 2.32.0
->>
-> 
-> 
+Quentin
