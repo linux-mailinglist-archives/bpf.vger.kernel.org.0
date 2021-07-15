@@ -2,122 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A42C3C96AA
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 05:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370F13C96EE
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 06:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbhGODxA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Jul 2021 23:53:00 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15014 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbhGODw7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Jul 2021 23:52:59 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GQL034H72zbcqP;
-        Thu, 15 Jul 2021 11:46:43 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Jul 2021 11:49:57 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 15 Jul
- 2021 11:49:57 +0800
-Subject: Re: [PATCH rfc v5 2/4] page_pool: add interface to manipulate frag
- count in page pool
-To:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-CC:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <fenghua.yu@intel.com>,
-        <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        "Feng Tang" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        "Willem de Bruijn" <willemb@google.com>, <wenxu@ucloud.cn>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, <nogikh@google.com>,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        <kpsingh@kernel.org>, <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, <songliubraving@fb.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <1626255285-5079-1-git-send-email-linyunsheng@huawei.com>
- <1626255285-5079-3-git-send-email-linyunsheng@huawei.com>
- <79d9e41c-6433-efe1-773a-4f5e91e8de0f@redhat.com>
- <CAKgT0UcDxSmMqCGvrWeYFiKNsxWXskF+pUhKQVCC6totduUyDQ@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <73ef1add-01df-7783-7982-da9e59c26330@huawei.com>
-Date:   Thu, 15 Jul 2021 11:49:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S232572AbhGOEL7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 00:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231666AbhGOEL6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 00:11:58 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CEBC06175F
+        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 21:09:06 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id i5so7430659lfe.2
+        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 21:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=4Gs9vJw/+dYcphNpbIIlmg0+5uBWdEfH2u8t1plP4s4=;
+        b=SjGgvNcm0gvb9VCUQ2PKkRwohT0PnkpWfFU8atTumWiWbz+ilylm67f5DNT5O23MOP
+         2RyPyxVWS5XWtvIRyGunoVrFrNlFR40YacDZYgL/bTiCpkajRQdOawujzw86OHuWASIr
+         zs2Htgv0rf5KLkGy1ztNgOftTIsgDGBfiy/GXz9objoDE94NXFIZZIDhZCbGrUEl5zKa
+         lthZaKqXdmmj4Ipxpdc0cn7nUGv+HjxBU0iGUavNa1R1JxaVX6DbBRu0t2L9/i6Hjn7W
+         q7a+uXnxKZ6KR2NClSoZP2+8snZr2xSh+qmoaokIejlL3ZD49WYtPpdWzs9hg/v7Eu7o
+         N8PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=4Gs9vJw/+dYcphNpbIIlmg0+5uBWdEfH2u8t1plP4s4=;
+        b=VNH5Hiz+RCy4Rys7LdrLLc1K9aFf+3x9Rq7s9xreofsPcHYoAYzGORP4tw3kZcEUtv
+         uwYlSpPWetp+uWk2/mljH2KSp1YWOimEkzLmHRzZS92htfrvhxZdB8hHfb5jLdXKAtgm
+         jKG3NBatmveefBD8M8bj2iUXeldh49dylIMpnoJcJc+IP9b0tPCxtn9dsYVMSVCSrIQV
+         aUg+RwNE01JvqiLv+pYioCjGEHHM/qRif7lTCJPb4GZdIH2Lll3IbmI24TMEiIP5sob7
+         edEL96ntVzUQxPjqLopDZPkLkrBV3/u2J7fxm6uQ05+nU+7RFbTUh5Lg9ydOHwz4aQtj
+         ydHQ==
+X-Gm-Message-State: AOAM53319mcbTkPQ3nDQPg/j2SW5Jn9QS1DLTbBJ3JJhRZ3ofBRadje+
+        G0E4D2xR815PQzpdDUGBHgkqaSDm9GOZ64Upohk=
+X-Google-Smtp-Source: ABdhPJz7WPuQgqUmko5yjuxAgzHsB13SqNLb66TeLhOHZ3EkFuS5Z6xgkJK44U6P1w49Q92tPytjGHgF/8K0dut+Ph4=
+X-Received: by 2002:ac2:5ddb:: with SMTP id x27mr1475484lfq.539.1626322144425;
+ Wed, 14 Jul 2021 21:09:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UcDxSmMqCGvrWeYFiKNsxWXskF+pUhKQVCC6totduUyDQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <CAJg8tTyEfS35qGuDj2yCyLkGi4V+_0Comw_dO7qnJUzJQD1t0w@mail.gmail.com>
+In-Reply-To: <CAJg8tTyEfS35qGuDj2yCyLkGi4V+_0Comw_dO7qnJUzJQD1t0w@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 14 Jul 2021 21:08:53 -0700
+Message-ID: <CAADnVQKMKavv84V3UoFdGA_dvOu6PhMLiHyuhDk8VcUQTse-UQ@mail.gmail.com>
+Subject: Re: modified BPF backend, a request for consideration
+To:     Dmitri Makarov <dmitri@solana.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/7/14 22:46, Alexander Duyck wrote:
-> On Wed, Jul 14, 2021 at 3:18 AM Jesper Dangaard Brouer
-> <jbrouer@redhat.com> wrote:
->>
->>
->>
->> On 14/07/2021 11.34, Yunsheng Lin wrote:
->>> As suggested by Alexander, "A DMA mapping should be page
->>> aligned anyway so the lower 12 bits would be reserved 0",
->>> so it might make more sense to repurpose the lower 12 bits
->>> of the dma address to store the frag count for frag page
->>> support in page pool for 32 bit systems with 64 bit dma,
->>> which should be rare those days.
->>
->> Do we have any real driver users with 32-bit arch and 64-bit DMA, that
->> want to use this new frag-count system you are adding to page_pool?
->>
->> This "lower 12-bit use" complicates the code we need to maintain
->> forever. My guess is that it is never used, but we need to update and
->> maintain it, and it will never be tested.
->>
->> Why don't you simply reject using page_pool flag PP_FLAG_PAGE_FRAG
->> during setup of the page_pool for this case?
->>
->>   if ((pool->p.flags & PP_FLAG_PAGE_FRAG) &&
->>       (sizeof(dma_addr_t) > sizeof(unsigned long)))
->>     goto reject-setup;
->>
->>
-> 
-> That sounds good to me if we want to go that route. It would simplify
-> this quite a bit since essentially we could just drop these if blocks.
+On Wed, Jul 14, 2021 at 7:58 PM Dmitri Makarov <dmitri@solana.com> wrote:
+>
+> Hi Alexei,
+>
+> I work on an llvm-based compiler with modified BPF backend. Our changes a=
+re incompatible with the BPF verifier. However, I added a target feature th=
+at isolates our changes from the main BPF backend. My organization is inter=
+ested in integrating our changes into the main llvm repository to simplify =
+keeping our llvm-based toolchain updated with the new llvm releases. I real=
+ize our changes are not interesting for BPF maintainers/code owners, but wo=
+uld you maybe consider some path for accepting our modified BPF Target if i=
+t's not affecting the main (and only) BPF Target?  What would be your recom=
+mendation for us to move forward with this?
 
-Ok, let's wait for a few day to see if there is anyone with 32-bit arch
-and 64-bit DMA system care enough to use the frag-count support in the page
-pool.
-
-> 
-> Thanks.
-> 
-> - Alex
-> .
-> 
+It's hard to say without looking at the changes.
+For example, new instructions, optimization passes, custom debug-info are a=
+ll
+within scope of what can be added. The verifier might not understand
+these things today,
+but if it fits the path where BPF ISA might end up in the future we can com=
+e up
+with a way to land it.
+So please submit a diff for llvm repo and cc these folks.
