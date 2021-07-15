@@ -2,76 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BAE3CA153
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 17:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492D53CA15A
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 17:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238765AbhGOPUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 11:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbhGOPUJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Jul 2021 11:20:09 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEE9C06175F
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 08:17:16 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id f8-20020a1c1f080000b029022d4c6cfc37so4970931wmf.5
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 08:17:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8se7NGdlzzSrT0d355yuhAfvmmfXUCts5f7vp3eEJrk=;
-        b=O9COXFr0NnQmTNwirLGlajW7p5tGYzcVqIYheFPZWbCeFdZO9icKJuF4S/PBBd6c+7
-         1t/6DkaXXNKHa5v61dWvhITaPxXF602Do3BU4a9g7hY3VPqTpkN+d8XuPP3IipapHVU1
-         UPuzphExoAVTM6Gfs5aH4ySkk+5oNuJK97IuZYvjXZdZ8K2n6l9quBD/Iuy5T1Nfi5U5
-         63DkM7Wn7S7CMEwxsX5GVloYXOz8XkMJt0FVY3rq1wSNPs9DWfEw9vixofcZGag7MUEm
-         /5x8llKwmMPZHupGso6woaUYu/AQehy0XvNwzAqCEarZrxvRh6YVXU6hnynbHCErAN7P
-         Kq5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8se7NGdlzzSrT0d355yuhAfvmmfXUCts5f7vp3eEJrk=;
-        b=pz17J5O0il5NP4b4d9zLXFlv0mgDk2HnQt5pI6+nAZ3heN4M0jJBY3wTgs2OA1/Fx6
-         y9WkrpQUn/3Vq3G3jWij7E2+ajH+99IbeEYAMpuLXsKkUlxtQdw3srAqtYjAvWUoEyZf
-         43IYQYGGGrPkbIMtTjFMlsZCBUFFZ/wuFBZsAdaadvK96C9fpnixTig6bj+5jslPq1pE
-         LWIrpeVzehKZMw4we4mrK/XRWooGUXYvez7ynbao6V32F+CMTl08SFGCNJqFJowjZtVY
-         GyC3Zz1SQoYTlDTcqA15aEtUrv7b0+FKbHLs1WM/WRMPaoPSDUjKZ/Siwpv7Mt2Ik9md
-         jSyw==
-X-Gm-Message-State: AOAM530EawWua1rp5OPp0Q0QUEvg1lLVQBosKZV7pMsQWAEOtUQHzxZx
-        lmmF8qdd8gK2zM7rJxpZcGyQNA==
-X-Google-Smtp-Source: ABdhPJzwRIO6JM0geRsYAlJN036kCJGJ+FzO7CdxM1sFAb21lQNs5Em2y5dUjmO2Kjy1RpRMGMpehA==
-X-Received: by 2002:a1c:80cd:: with SMTP id b196mr11096120wmd.179.1626362234827;
-        Thu, 15 Jul 2021 08:17:14 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.80.45])
-        by smtp.gmail.com with ESMTPSA id n5sm25506wrp.80.2021.07.15.08.17.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 08:17:14 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] bpftool: Check malloc return value in
- mount_bpffs_for_pin
-To:     Tobias Klauser <tklauser@distanz.ch>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S238427AbhGOPWc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 11:22:32 -0400
+Received: from mga01.intel.com ([192.55.52.88]:37631 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238380AbhGOPWb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 11:22:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="232393404"
+X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
+   d="scan'208";a="232393404"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 08:19:12 -0700
+X-IronPort-AV: E=Sophos;i="5.84,242,1620716400"; 
+   d="scan'208";a="495513685"
+Received: from bmookkia-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.123.85])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2021 08:19:11 -0700
+Subject: Re: [PATCH v2 6/6] tools/tdx: Add a sample attestation user app
+To:     Mian Yousaf Kaukab <ykaukab@suse.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Roman Gushchin <guro@fb.com>
-References: <20210715110609.29364-1-tklauser@distanz.ch>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <30aeaa97-d72b-54cf-7e5b-b72964f12a80@isovalent.com>
-Date:   Thu, 15 Jul 2021 16:17:13 +0100
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210707204249.3046665-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210707204249.3046665-7-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210715083635.GA112769@suse.de>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <a7757efc-cb62-013f-8976-427b354ff0f1@linux.intel.com>
+Date:   Thu, 15 Jul 2021 08:19:08 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210715110609.29364-1-tklauser@distanz.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+In-Reply-To: <20210715083635.GA112769@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-07-15 13:06 UTC+0200 ~ Tobias Klauser <tklauser@distanz.ch>
-> Fixes: 49a086c201a9 ("bpftool: implement prog load command")
-> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+
+On 7/15/21 1:36 AM, Mian Yousaf Kaukab wrote:
+> In tdg_attest_ioctl() TDX_CMD_GEN_QUOTE case is calling
+> tdx_mcall_tdreport() same as TDX_CMD_GET_TDREPORT case. Then what is
+> the point of calling get_tdreport() here? Do you mean to call
+> gen_report_data()?
+
+Yes, I also noticed this issue and fixed the attestation driver to
+to get TDREPORT data as input to get TDQUOTE.
+
+I will be posting the fixed version of attestation driver today.
+
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
