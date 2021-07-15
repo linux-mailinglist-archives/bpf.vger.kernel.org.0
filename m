@@ -2,120 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB883C9C79
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 12:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FE93C9C7C
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 12:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241231AbhGOKPd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 06:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233489AbhGOKPd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Jul 2021 06:15:33 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3BDC06175F
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 03:12:40 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id l6so3397090wmq.0
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 03:12:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CHboCMPa0noGTp43ghSeaxA/2+JfGKkbAyG3uY4v+h8=;
-        b=efrKELc5FmrrjhQ6qQ6/NWH3CLOu1vf0l7wC27KHlywSzimWurCcTsaq9DGuYOZNTq
-         ZmVrsle3ov5DbWqy5yIJPYonYZLvq3xd2baVy4PYXQMkc5ZF5TcCp3b7j5B7KP40D6HP
-         7DEPT+5v8LJEB4pBkJCLRhQZFYiDcLkl/UlShD581B21/W+dubCECzlv0Wuu51RSeziz
-         d5XrmXrARU7YXTJznuqQqChXNVUgotkPw4LsLjO0rWeLIhsGod/kTuq6FYQx21NMqy3Q
-         +QcG9Le8P6eVZPjVi76ls38o1bRribvv91TtyP1WtpsPOAS/9d3WetsufNeo9lBIYeKA
-         BoKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CHboCMPa0noGTp43ghSeaxA/2+JfGKkbAyG3uY4v+h8=;
-        b=TkBEi7xnY8DE+66AMBDpk5rbfjYFjmqlNoYiF4pkv1ESdYWi2I6oy5h2u1HrxDxmAZ
-         IkMSIEUXRdiNoMerWmDRuQ1iYfuUOXVMi97MxZ2R0SvMhBO0j1cFMde7fMRpo2KLl9YV
-         KJHoynuUO8wBYFr03FgqI8zEAO4q2tIcSrCg6HERq4Hgnq1rz6LwyAnl36XfG4Fwf5ki
-         sCAKQpYy/7WIIAeDBCAt5Ps+KYfKD/5nuEZlxSzXZgotIivU7Jfw3rA+a/OBUOyW53aJ
-         qcLcAlL05albjlNXw+mIxgwpK1bEYeahG0WHc0wmAh8yJfElD6ungIdgplGjCzIJJbrS
-         wAWQ==
-X-Gm-Message-State: AOAM533eUpC12Ka0IEV5ulhYkzzetJpKSiPF1UGFYQPziCtWh+H5Xo/T
-        3OYeSQOdu0/zHa8fe6IAKHIZ9Q==
-X-Google-Smtp-Source: ABdhPJyVIryR/acM4TV7SmvDZB14OvVpl6D1BJnU7/3mWK9N77CkI5agC8tjQ52EvsXTRBPV0xd2Xg==
-X-Received: by 2002:a7b:cb13:: with SMTP id u19mr3634232wmj.122.1626343958636;
-        Thu, 15 Jul 2021 03:12:38 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.88.136])
-        by smtp.gmail.com with ESMTPSA id s1sm7937205wmj.8.2021.07.15.03.12.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 03:12:38 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 1/2] tools/lib/bpf: bpf_program__insns allow to
- retrieve insns in libbpf
-To:     Lorenzo Fontana <fontanalorenz@gmail.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net
-References: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <54e477a7-459a-40be-b34e-3e2e0a75c75a@isovalent.com>
-Date:   Thu, 15 Jul 2021 11:12:37 +0100
+        id S233489AbhGOKR7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 06:17:59 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:41455 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231979AbhGOKR7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 15 Jul 2021 06:17:59 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id A29073200975;
+        Thu, 15 Jul 2021 06:15:05 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 15 Jul 2021 06:15:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=PBwikTtPtQp3Q1SJgia8ov61KYOrQzB7p5bFm7cbs
+        iw=; b=Sr0ejUl3U2AkMPrrwtaXg5r/dLKEQpJ6sfiJTX86CTxmzMlQ8cYzKLpPj
+        Atye7MeBsEUlh+ROFmKpoiykuzwSVEH+Susd/Gsxga3DJXgHSerlmdj9pUneNpNx
+        DgIjA7bnYYkjK882jf4zcXW27QtkPuTvsfdl8QZ1HkXt6u3reH1dVKmFK2R0gBKo
+        eHRP2JpR0z/Pxe0sSMaB9xERJquSazopD2ur62LJwKPclHYVsnesNJBs0I6NKxad
+        wrj6MuMlI0DZACK+4h1jGkhyONlxiguI+YW3QmziHZKyWe/HzYBF+4qnoNkHTrCi
+        03jxZ9pyC66fdCGnjaKxcEP432K5g==
+X-ME-Sender: <xms:pwrwYLb23-lDC8cZs7tRyI8cHJWjI0XmX-Q2uONJzFvJD6yxMlghZw>
+    <xme:pwrwYKarwVdHNmilw8GM-DE6h7lnpDPpElf9ZxjOBQ1YQfghu7XdQu_00E1tPX09S
+    0eFAlhLrOZuz5GUG5M>
+X-ME-Received: <xmr:pwrwYN-RFYZNJeMbbpeTj_sVsKd5zRcQThMcRN2GIhYBmfolyeHoBz84Ahyj-8v6WSwx1Kw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtgdduhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpeforghrthih
+    nhgrshcurfhumhhpuhhtihhsuceomheslhgrmhgsuggrrdhltheqnecuggftrfgrthhtvg
+    hrnheptdffkeelgeegheduieeiffefudefgfduuefhjefftddtteehveeludduteduffdv
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmheslh
+    grmhgsuggrrdhlth
+X-ME-Proxy: <xmx:pwrwYBritJjwlP6q-_DFbK7qpGPrEjCZIByB_3opb8oCpe6hhnyi7A>
+    <xmx:pwrwYGplY8CqPD-fd0TIt8vrhSwFjHYdaqvXxgVyuAeacx-eBHzMyg>
+    <xmx:pwrwYHQGDiIKnIQWQHWGp7LzbGTgyB163w7IjQGDuwq4yl7jVwQDwA>
+    <xmx:qQrwYJVGPfq5F3611GwA5zWzMWSgG7YlWn4pnrPgpdSDKAGryIQvgg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 15 Jul 2021 06:15:02 -0400 (EDT)
+Subject: Re: [PATCH bpf] libbpf: fix race when pinning maps in parallel
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Joe Stringer <joe@wand.net.nz>
+References: <20210705190926.222119-1-m@lambda.lt>
+ <CAEf4BzaHCgNSfoEVXkBweycHtVj2MKBBH45aZy+FM-BTjSJ3kA@mail.gmail.com>
+ <4f2a546f-8d78-df2e-69eb-75055ff4137d@lambda.lt>
+ <CAEf4BzYaQsD6NaEUij6ttDeKYP7oEB0=c0D9_xdAKw6FYb7h1g@mail.gmail.com>
+From:   Martynas Pumputis <m@lambda.lt>
+Message-ID: <b716a52c-0a94-9de1-b3fe-51e00540e964@lambda.lt>
+Date:   Thu, 15 Jul 2021 12:17:14 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+In-Reply-To: <CAEf4BzYaQsD6NaEUij6ttDeKYP7oEB0=c0D9_xdAKw6FYb7h1g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-07-13 20:33 UTC+0200 ~ Lorenzo Fontana <fontanalorenz@gmail.com>
-> This allows consumers of libbpf to iterate trough the insns
-> of a program without loading it first directly after the ELF parsing.
-> 
-> Being able to do that is useful to create tooling that can show
-> the structure of a BPF program using libbpf without having to
-> parse the ELF separately.
-> 
-> Usage:
->   struct bpf_insn *insn;
->   insn = bpf_program__insns(prog);
-> 
-> Signed-off-by: Lorenzo Fontana <fontanalorenz@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 5 +++++
->  tools/lib/bpf/libbpf.h | 1 +
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 1e04ce724240..67d51531f6b6 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -8866,6 +8866,11 @@ void *bpf_program__priv(const struct bpf_program *prog)
->  	return prog ? prog->priv : libbpf_err_ptr(-EINVAL);
->  }
->  
-> +struct bpf_insn *bpf_program__insns(const struct bpf_program *prog)
-> +{
-> +	return prog ? prog->insns : libbpf_err_ptr(-EINVAL);
-> +}
-> +
->  void bpf_program__set_ifindex(struct bpf_program *prog, __u32 ifindex)
->  {
->  	prog->prog_ifindex = ifindex;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 6e61342ba56c..e4a1c98ae6d9 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -195,6 +195,7 @@ typedef void (*bpf_program_clear_priv_t)(struct bpf_program *, void *);
->  LIBBPF_API int bpf_program__set_priv(struct bpf_program *prog, void *priv,
->  				     bpf_program_clear_priv_t clear_priv);
->  
-> +LIBBPF_API struct bpf_insn *bpf_program__insns(const struct bpf_program *prog);
->  LIBBPF_API void *bpf_program__priv(const struct bpf_program *prog);
->  LIBBPF_API void bpf_program__set_ifindex(struct bpf_program *prog,
->  					 __u32 ifindex);
-> 
 
-If you make it part of the API, the new function should also have an
-entry in tools/lib/bpf/libbpf.map.
 
-Quentin
+On 7/8/21 10:33 PM, Andrii Nakryiko wrote:
+> On Thu, Jul 8, 2021 at 8:50 AM Martynas Pumputis <m@lambda.lt> wrote:
+>>
+>>
+>>
+>> On 7/8/21 12:38 AM, Andrii Nakryiko wrote:
+>>> On Mon, Jul 5, 2021 at 12:08 PM Martynas Pumputis <m@lambda.lt> wrote:
+>>>>
+>>>> When loading in parallel multiple programs which use the same to-be
+>>>> pinned map, it is possible that two instances of the loader will call
+>>>> bpf_object__create_maps() at the same time. If the map doesn't exist
+>>>> when both instances call bpf_object__reuse_map(), then one of the
+>>>> instances will fail with EEXIST when calling bpf_map__pin().
+>>>>
+>>>> Fix the race by retrying creating a map if bpf_map__pin() returns
+>>>> EEXIST. The fix is similar to the one in iproute2: e4c4685fd6e4 ("bpf:
+>>>> Fix race condition with map pinning").
+>>>>
+>>>> Cc: Joe Stringer <joe@wand.net.nz>
+>>>> Signed-off-by: Martynas Pumputis <m@lambda.lt>
+>>>> ---
+>>>>    tools/lib/bpf/libbpf.c | 8 +++++++-
+>>>>    1 file changed, 7 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>>>> index 1e04ce724240..7a31c7c3cd21 100644
+>>>> --- a/tools/lib/bpf/libbpf.c
+>>>> +++ b/tools/lib/bpf/libbpf.c
+>>>> @@ -4616,10 +4616,12 @@ bpf_object__create_maps(struct bpf_object *obj)
+>>>>           char *cp, errmsg[STRERR_BUFSIZE];
+>>>>           unsigned int i, j;
+>>>>           int err;
+>>>> +       bool retried = false;
+>>>
+>>> retried has to be reset for each map, so just move it inside the for
+>>> loop? you can also generalize it to retry_cnt (> 1 attempts) to allow
+>>> for more extreme cases of multiple loaders fighting very heavily
+>>
+>> If we move "retried = false" to inside the loop, then there is no need
+>> for retry_cnt. Single retry for each map should be enough to resolve the
+>> race. In any case, I'm going to move "retried = false", as you suggested.
+> 
+> Right, I was originally thinking about the case where already pinned
+> map might get unpinned. But then subsequently rejected the idea of
+> re-creating the map :) So single retry should do.
+> 
+>>
+>>>
+>>>>
+>>>>           for (i = 0; i < obj->nr_maps; i++) {
+>>>>                   map = &obj->maps[i];
+>>>>
+>>>> +retry:
+>>>>                   if (map->pin_path) {
+>>>>                           err = bpf_object__reuse_map(map);
+>>>>                           if (err) {
+>>>> @@ -4660,9 +4662,13 @@ bpf_object__create_maps(struct bpf_object *obj)
+>>>>                   if (map->pin_path && !map->pinned) {
+>>>>                           err = bpf_map__pin(map, NULL);
+>>>>                           if (err) {
+>>>> +                               zclose(map->fd);
+>>>> +                               if (!retried && err == EEXIST) {
+>>>
+>>> so I'm also wondering... should we commit at this point to trying to
+>>> pin and not attempt to re-create the map? I'm worried that
+>>> bpf_object__create_map() is not designed and tested to be called
+>>> multiple times for the same bpf_map, but it's technically possible for
+>>> it to be called multiple times in this scenario. Check the inner map
+>>
+>> Good call. I'm going to add "if (retried && map->fd < 0) { return
+>> -ENOENT; }" after the "if (map->pinned) { err = bpf_object__reuse_map()
+>> ... }" statement. This should prevent from invoking
+>> bpf_object__create_map() multiple times.
+>>
+>>> creation scenario, for example (btw, I think there is a bug in
+>>> bpf_object__create_map clean up for inner map, care to take a look at
+>>> that as well?).
+>>
+>> In the case of the inner map, it should be destroyed inside
+>> bpf_object__create_map() after a successful BPF_MAP_CREATE. So AFAIU,
+>> there should be no need for the cleanup. Or do I miss something?
+> 
+> But if outer map creation fails, we won't do
+> bpf_map__destroy(map->inner_map);, which is one bug. And then with
+> your retry logic we also don't clean up the internal state of the
+> bpf_map, which is another one. It would be good to add a self-test
+> simulating such situations (e.g., by specifying wrong key_size for
+> outer_map, but correct inner_map definition). Not sure how to reliably
+> simulate this pinning race, though.
+> 
+> Can you please add at least the first test case?
+
+Yep, I've sent the patch with a test case for the first bug. Thanks for 
+explaining.
+
+Anyway, regarding the proposed retry, I think the safest approach is to 
+bail before invoking bpf_object__create_map() for the second time (when 
+we retry). This would avoid any issues with idempotence of 
+bpf_object__create_map() and should solve most of the cases (except when 
+a map gets unpinned before the retry, but I expect this to be a very 
+unusual and rare situation).
+
+> 
+>>
+>>>
+>>> So unless we want to allow map re-creation if (in a highly unlikely
+>>> scenario) someone already unpinned the other instance, I'd say we
+>>> should just bpf_map__pin() here directly, maybe in a short loop to
+>>> allow for a few attempts.
+>>>
+>>>> +                                       retried = true;
+>>>> +                                       goto retry;
+>>>> +                               }
+>>>>                                   pr_warn("map '%s': failed to auto-pin at '%s': %d\n",
+>>>>                                           map->name, map->pin_path, err);
+>>>> -                               zclose(map->fd);
+>>>>                                   goto err_out;
+>>>>                           }
+>>>>                   }
+>>>> --
+>>>> 2.32.0
+>>>>
