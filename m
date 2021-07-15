@@ -2,196 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1943C9C3D
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 11:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D133F3C9C5E
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 12:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240624AbhGOJ6k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 05:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhGOJ6k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Jul 2021 05:58:40 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CC5C06175F
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 02:55:47 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id f17so6966539wrt.6
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 02:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QrEkh4TuE8YIGp1GEeL6M7jA+cvF+saL8niZXpeoUCM=;
-        b=mVnqrZC8f1gk1otC+arM3lJvqQMAh/r4E5YiwKPbWFe0Ix/pMucqSXvupq61JW+tPs
-         Pf5yYFVw17iJhdbvrzfPJvX8TJpIjqb+lvGDFtP3wsdzQJDEEPl3M8/cbvmgRv6u+v/a
-         kk6nmOBH0XSZRBBbyQoG1gJHmR1SEpUZYGUWOM0QoYZm6j2qbkyrZ7H/ffGA2pW/XwbW
-         dMNPnBAZO7tA5juK5ow4tEfP6WIgWVn/PTFFr6QaFUUTEJube2PrTAr68uxiAXXDuWnQ
-         0NYMxpdhj5nwOKiGE+mGrCKFzW1qEvM4V8PYt0u6dI2yvxwShHko6riOSAdS/2Vl+JoP
-         Lh1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QrEkh4TuE8YIGp1GEeL6M7jA+cvF+saL8niZXpeoUCM=;
-        b=OmH3pSmYkeNtg3aPeWFmF0YxiI+UQBOqw1+LcqGWfzSkmU/tTj6vaZGf5Q3sszkn1s
-         WZGrWQ/4uB1fTDeZcArpkfX8wK4nwUgu947D6m7Vdo625SXrjfFTlrnh85rnIyfX5XQ3
-         D9FGkkpJ9Ph4lGYxA0rbjB3Cr6aChPIzTI+49opt67pqo3ZBomKOBvm+1LHPyZg2ZHz4
-         PPKTGHWndLcMJfAdTTgTZgs4+IBytLO3Iz+aMXsaL3z8Qjyrt0gC6ofjItga15cUrbnh
-         bewsxwZMePzpdMqlr6qOccDaTDy/8G1N1r0GXa04iRFTxadZSV7oiCQiyeZBFLXpxuFc
-         cwZA==
-X-Gm-Message-State: AOAM531VvcdjXnonhEIv6wf1bbHy+DQGxbSFiQQ1lwYP+zHdujNEMJp7
-        Cej+Bp7ApWRturA2RcOTLmYSmw==
-X-Google-Smtp-Source: ABdhPJy7XFbOg6qtWZe6/olIas+Mj0HwPL4TFSJiU65txKv0eGxWzVIFjS9ulCzJRWbGXRbzPrXxbA==
-X-Received: by 2002:a5d:4bc4:: with SMTP id l4mr4369907wrt.67.1626342945510;
-        Thu, 15 Jul 2021 02:55:45 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.88.136])
-        by smtp.gmail.com with ESMTPSA id p12sm3776905wma.19.2021.07.15.02.55.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jul 2021 02:55:45 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 2/2] tools/bpf/bpftool: xlated dump from ELF file
- directly
-To:     Lorenzo Fontana <fontanalorenz@gmail.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net,
-        John Fastabend <john.fastabend@gmail.com>,
-        "liwei (GF)" <liwei391@huawei.com>
-References: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
- <f01efeef-9653-0f5f-b76e-d37597ba08d5@gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <0f28c24b-0d82-da71-0fe0-8c92cd6f306d@isovalent.com>
-Date:   Thu, 15 Jul 2021 10:55:44 +0100
+        id S241113AbhGOKHl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 06:07:41 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:44529 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241116AbhGOKHk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 15 Jul 2021 06:07:40 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 674183200989;
+        Thu, 15 Jul 2021 06:04:45 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 15 Jul 2021 06:04:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=g2VA3jMO9HgRtkLbT/YGIryDzAVKPLHZaTLQTOHPS
+        3s=; b=ZKt+oAe/LfWjX8vuzIui7HGMrSC0yEVuTe68Jj2/UBop5ZgjIJE8L+aFG
+        yTmb7EaTVesMXtLw76m3mxsAAg51xvBTeGFAiblUy3co41ewgqxWgmKk4EO+t63a
+        q3yikJi6AXFVAiwbaLhY2KKPA3PZR3I/2dj02Wwu8iPgXSvPLPuTw6j5VS4nPyZo
+        vGWieU0qm4U3UDxImCOp2lpsA/FSxSBNVDyEOc5JQ0vKXTnQonaTHZzSkKhPD/Ys
+        RQ1HxaHYF4sAGQ1UpVemDoJaXxXIcvcps4a8wtj7fhz+eASCa9/rDuFf8f2zjNOh
+        jqEfQSTsKA/AWYV3KgWlSL9wZElEg==
+X-ME-Sender: <xms:OwjwYAZNPBRqdIqsRA8eIYwzg5a4ssJxtY8eqra_56B7fRoMQFWheg>
+    <xme:OwjwYLZLXkgqGZmY8m-daALVe-lYS2sURP555n3sYob3M_kdqYSX9ELzvFLQGlF2e
+    ALc7FViYqixxHoJc5s>
+X-ME-Received: <xmr:OwjwYK8YVB--JiGnvsg8_SGR6TrYCWt6uMqILFjt8W1ZC23CQ14jIAd0IU0uQ84C2rSddbQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtgddugecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpeforghrthih
+    nhgrshcurfhumhhpuhhtihhsuceomheslhgrmhgsuggrrdhltheqnecuggftrfgrthhtvg
+    hrnhepvddukeekueetieffteeltedukeeuveeugfelfffhgfdvkeejkeekgffhleffkeel
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmsehlrghmsggurgdrlhht
+X-ME-Proxy: <xmx:OwjwYKooM62xD0JaB9IPEzDjAEbiLIjGX-fwqQfA0hDaZStBl6jkbQ>
+    <xmx:OwjwYLrQTNonw5iJa4J3CbsU5L3HoRHSOBH9piQKYw2T6UMOOQ45Qg>
+    <xmx:OwjwYISXmi6Ecq8twT2JZtm7QSfJcg4QUUIUZf4a7JBh1Z4MFY_W6Q>
+    <xmx:PQjwYC17N0cGEDXl5z8IczW7LTKvsmHrroc5Aeky2T6kdDI-01KwSg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 15 Jul 2021 06:04:41 -0400 (EDT)
+Subject: Re: [PATCH bpf 1/2] libbpf: fix removal of inner map in
+ bpf_object__create_map
+To:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+References: <20210714165440.472566-1-m@lambda.lt>
+ <20210714165440.472566-2-m@lambda.lt>
+ <60ef818f81c18_5a0c120898@john-XPS-13-9370.notmuch>
+From:   Martynas Pumputis <m@lambda.lt>
+Message-ID: <f3aff467-7dbb-5aed-d3f8-32af62bcc53f@lambda.lt>
+Date:   Thu, 15 Jul 2021 12:06:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <f01efeef-9653-0f5f-b76e-d37597ba08d5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+In-Reply-To: <60ef818f81c18_5a0c120898@john-XPS-13-9370.notmuch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-07-13 20:35 UTC+0200 ~ Lorenzo Fontana <fontanalorenz@gmail.com>
-> bpftool can dump an xlated or jitted representation
-> of the programs already loaded into the kernel.
-> That capability is very useful for understanding what
-> are the instructions the kernel will execute for that program.
+
+
+On 7/15/21 2:30 AM, John Fastabend wrote:
+> Martynas Pumputis wrote:
+>> If creating an outer map of a BTF-defined map-in-map fails (via
+>> bpf_object__create_map()), then the previously created its inner map
+>> won't be destroyed.
+>>
+>> Fix this by ensuring that the destroy routines are not bypassed in the
+>> case of a failure.
+>>
+>> Fixes: 646f02ffdd49c ("libbpf: Add BTF-defined map-in-map support")
+>> Reported-by: Andrii Nakryiko <andrii@kernel.org>
+>> Signed-off-by: Martynas Pumputis <m@lambda.lt>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 6f5e2757bb3c..1a840e81ea0a 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -4479,6 +4479,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>>   {
+>>   	struct bpf_create_map_attr create_attr;
+>>   	struct bpf_map_def *def = &map->def;
+>> +	int ret = 0;
+>>   
+>>   	memset(&create_attr, 0, sizeof(create_attr));
+>>   
+>> @@ -4561,7 +4562,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>>   	}
+>>   
+>>   	if (map->fd < 0)
+>> -		return -errno;
+>> +		ret = -errno;
+>>   
 > 
-> However, sometimes the verifier does not load the program and
-> one cannot use this feature until changes are made to make the
-> verifier happy again.
+> I'm trying to track this down, not being overly familiar with this bit of
+> code.
 > 
-> This patch reuses the same dump function to dump the program
-> from an ELF file directly instead of loading the instructions
-> from a loaded file descriptor. In this way, the user
-> can use all the bpftool features for "xlated" without loading.
-> 
-> In particular, the "visual" command is very useful when combined
-> to this because the dot graph makes easy to spot bad instruction
-> sequences.
-> 
-> Usage:
-> 
->   bpftool prog dump xlated elf program.o
-
-Hi Lorenzo,
-
-"elf" is not a bad keyword, but seeing that we use "file" for dumping
-BTF from ELF object files with "bpftool btf dump file foo.o", I'd rather
-have the same keyword here, for consistency.
-
-> 
-> It also works with the other commands like 'visual' to print
-> an dot representation of the program.
-> 
->   bpftool prog dump xlated elf program.o visual
-> 
-> Signed-off-by: Lorenzo Fontana <fontanalorenz@gmail.com>
-> ---
->  tools/bpf/bpftool/common.c | 15 ++++++++++++---
->  tools/bpf/bpftool/main.h   |  2 +-
->  tools/bpf/bpftool/prog.c   | 26 +++++++++++++++++++++++---
->  3 files changed, 36 insertions(+), 7 deletions(-)
+> We entered bpf_object__create_map with map->inner_map potentially set and
+> then here we are going to zfree(&map->inner_map). I'm trying to track
+> down if this is problematic, I guess not? But seems like we could
+> also free a map here that we didn't create from this call in the above
+> logic.
 > 
 
-> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-> index c1cf29798b99..f4e426d03b4a 100644
-> --- a/tools/bpf/bpftool/main.h
-> +++ b/tools/bpf/bpftool/main.h
+Keep in mind that we free the inner map anyway if the creation of the 
+outer map was successful. Also, we don't try to recreate the map if any 
+of the steps has failed. So I think it should not be problematic.
 
-> @@ -787,7 +787,10 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
->  static int do_dump(int argc, char **argv)
->  {
->  	struct bpf_prog_info_linear *info_linear;
-> +	struct bpf_object *obj;
-> +	struct bpf_program *prog;
->  	char *filepath = NULL;
-> +	char *elf_filepath = NULL;
->  	bool opcodes = false;
->  	bool visual = false;
->  	enum dump_mode mode;
 
-Nit: Could you preserve the reverse-Christmas-tree order for the
-declarations?
+>>   	if (bpf_map_type__is_map_in_map(def->type) && map->inner_map) {
+> 
+>          if (bpf_map_type__is_map_in_map(def->type) && map->inner_map) {
+>                  if (obj->gen_loader)
+>                          map->inner_map->fd = -1;
+>                  bpf_map__destroy(map->inner_map);
+>                  zfree(&map->inner_map);
+>          }
+> 
+> 
+> Also not sure here, sorry didn't have time to follow too thoroughly
+> will check again later. But, the 'map->inner_map->fd = -1' is going to
+> cause bpf_map__destroy to bypass the close(fd) as I understand it.
+> So are we leaking an fd if the inner_map->fd is coming from above
+> create? Or maybe never happens because obj->gen_loader is NULL?
 
-> @@ -817,7 +820,8 @@ static int do_dump(int argc, char **argv)
->  		p_err("mem alloc failed");
->  		return -1;
->  	}
-> -	nb_fds = prog_parse_fds(&argc, &argv, &fds);
-> +	elf_filepath = malloc(sizeof(char) * PATH_MAX);
-> +	nb_fds = prog_parse_fds(&argc, &argv, &fds, &elf_filepath);
->  	if (nb_fds < 1)
->  		goto exit_free;
->  
-> @@ -849,7 +853,6 @@ static int do_dump(int argc, char **argv)
->  		linum = true;
->  		NEXT_ARG();
->  	}
-> -
->  	if (argc) {
->  		usage();
->  		goto exit_close;
-> @@ -866,9 +869,26 @@ static int do_dump(int argc, char **argv)
->  	arrays |= 1UL << BPF_PROG_INFO_LINE_INFO;
->  	arrays |= 1UL << BPF_PROG_INFO_JITED_LINE_INFO;
->  
-> +	if (elf_filepath != NULL) {
+I think in the case of obj->gen_loader, we don't need to close the FD of 
+any map, as the creation of maps will happen at a later stage in the 
+kernel: 
+https://lore.kernel.org/bpf/20210514003623.28033-15-alexei.starovoitov@gmail.com/.
 
-It would normally be just "if (elf_filepath) {". Checkpatch complains
-about it, by the way.
-
-But you don't want to enter here just if elf_filepath is non-NULL,
-because you always malloc it (whether the "elf" keyword was passed or
-not), so your pointer is always non-NULL if there's no allocation error.
-This means that you always enter the block, and it breaks the command
-for dumping instructions for loaded programs. You need another check.
-
-Also before this block, we may also want to error out with a better
-message error if the user attempts to dump "jited" instructions from an
-ELF file? Right now bpftool simply answers "no instructions returned",
-which is not very indicative of why it fails.
-
-And since the block does not use the "arrays" variable necessary for
-bpf_program__get_prog_info_linear(), it could be moved a bit higher,
-right after the argument parsing.
-
-> +		obj = bpf_object__open(elf_filepath); 
-> +		if (libbpf_get_error(obj)) {
-> +			p_err("ERROR: opening BPF object file failed");
-> +			return 0;
-> +		}
-> +
-> +		bpf_object__for_each_program(prog, obj) {
-> +			struct bpf_prog_info pinfo;
-
-Checkpatch complains about a missing blank line here after the
-declaration, and about a few other things, please make sure to address it.
-
-In addition to the documentation (.../Documentation/bpftool-prog.rst)
-and the help message (although we don't want to change HELP_SPEC_PROGRAM
-directly, as it is used in many context where the new handle does not
-apply) as reported by John and Wei, can you please update the bash
-completion (.../bash-completion/bpftool)?
-
-The patch is a nice addition to bpftool, thanks for this work!
-Quentin
+> 
+> Thanks!
+> 
+> 
+>>   		if (obj->gen_loader)
+>> @@ -4570,7 +4571,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>>   		zfree(&map->inner_map);
+>>   	}
+>>   
+>> -	return 0;
+>> +	return ret;
+>>   }
+>>   
+>>   static int init_map_slots(struct bpf_object *obj, struct bpf_map *map)
+>> -- 
+>> 2.32.0
+>>
+> 
+> 
