@@ -2,83 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB013C9884
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 07:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2683C98B2
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 08:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235462AbhGOFv5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 01:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
+        id S231166AbhGOGPK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 02:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhGOFv5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Jul 2021 01:51:57 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA465C06175F
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 22:49:04 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id p186so5052527iod.13
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 22:49:04 -0700 (PDT)
+        with ESMTP id S230332AbhGOGPK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 02:15:10 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E01C06175F
+        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 23:12:18 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id h6so5143486iok.6
+        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 23:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=+YuORpriXKWUOqaLUO0QYAPlWHiXrkjZSayNgaNvPJU=;
-        b=th+IjOcwU4wVH/52hbAeTnyp5n2WWQne71/pKbryoILPp7RB4A9gYAZBGxy7JPjscu
-         uOSalqF+3lOTbfgIw+b1A+Vq6j2tpU7bwxphm9CYTw+AodGmOP1d4A/tGZCnsCsRcoyS
-         0uUWBOVfaHLpBcQ+9aST5pVdvavU6Dp5rMUWmreFdbVC7ZUh3XhzgpONpnDT6VGCHKtF
-         iW+6kKIhJ+rMMxk9yNES0xBAG2qRAvHGoZJ1c/CBFNwz+++MTcRBSdJ209qpXrPuu86W
-         DSvOvKpiv2Y4CLm4sXHs3nFrZ5nG92xIYEQSHHeEijOT0V2U7khslHcP7toVgnTMGoQO
-         RLAA==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=oW7Xv/O7UWqMynCKzoi0z86ZCtp38NcOhyTidi4CqGQ=;
+        b=Yg1GOj66ou6kZO3H8TuGb97Rd3Qm+C0BZ+N6ehwuecyXNC3tB7joKc47wsPdMZ0Ros
+         9gMocYROvrWiwf0DPsWhe1vwY0ML6qJ8gJ/1DWiAXeV4AmZXQjRt3UOh4XhzqLXbn/Z5
+         Ui2TkSSq/ghRTV/GPrAvOtP59gPsKkTij7eZ7B+1u7+Szw/rnX9F/LoTKwmxigf90T0A
+         rGjlw6wSdcl5Hmpi+Hu5SKdw0jXH7qmJEit2bfrNxYIrZLnlY8lFGW3IIkpJtCgbnFsL
+         xHNZSzwvHxU8ZK+96aB7dIEfZeIoGWkt7jXcgL7MKJD8nWY8/nm6jCrvaqWZUq5k9b0A
+         647A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=+YuORpriXKWUOqaLUO0QYAPlWHiXrkjZSayNgaNvPJU=;
-        b=XMf7eXuuYZ5mSjKrNrZhN1oXxnPL09PNc6XEBQLG8lgNV6ojYmIzS7/kWJ8R9CM9bT
-         JIqQKkEBGfflCSgnapVnBW70uXOy6dN1ivIXU6ndi96k+qpIWbXsa1oTfTelXS8sgyAU
-         kAPdSl7jmx19OEOe1Rp8XQBEIScwnId+BHWk524A9yrGukIOdtBcxMyjWcW2hLCpJWd6
-         NUdzDHl+yms4JgI1hlczKDBC8hjd6oDMPLA5zbnLvcFYTq9W0Cza1Uc8z0lgvN2unMMW
-         R1lYvUdy9pvjvwdMjgdrAROX1GZ8sHlBPQJFa3umSe1LgKx9wLZH2UVWljnaC+BBX9HM
-         /5Lw==
-X-Gm-Message-State: AOAM533Ed1dGsHfI5SP2j+29RPLVv7je8/UrP+/dSReur/XmdVQmX4Ud
-        mMIw8+rGKL9MYVaNv9IqtMA=
-X-Google-Smtp-Source: ABdhPJwIyQad6HlnigNQnnfLBDu1G7sQUyE3Qzd3q3gVb2aMD8W0mi/1UwruxFF+yJkcX8xi6B6nEA==
-X-Received: by 2002:a6b:ef01:: with SMTP id k1mr1756815ioh.102.1626328144306;
-        Wed, 14 Jul 2021 22:49:04 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id x9sm2336805iov.45.2021.07.14.22.49.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 22:49:03 -0700 (PDT)
-Date:   Wed, 14 Jul 2021 22:48:56 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Lorenzo Fontana <fontanalorenz@gmail.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net
-Message-ID: <60efcc48c4de0_5a0c1208e@john-XPS-13-9370.notmuch>
-In-Reply-To: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
-References: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
-Subject: RE: [PATCH bpf-next 1/2] tools/lib/bpf: bpf_program__insns allow to
- retrieve insns in libbpf
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=oW7Xv/O7UWqMynCKzoi0z86ZCtp38NcOhyTidi4CqGQ=;
+        b=aoVEh4SHPnzzVeuNEoeDULulbAaIEQ1UiIrm2Rt7torhlW+50d7L//owgaavdNLutg
+         YJ/LIiHsyZ8nzv+1+/z61KTEulaUrCofL6HxLEV92+ZjBkFo5nZuy4joR9xrhXfxfjXL
+         JsG3VMdvRqBfAN4BlU0Tbp+/Zd7O548WSoGw1k9jVQtBw6bz3x5HtT8X5zK+BQIZiiiz
+         9PUwEiY2MjXPIMJkO2bvD6Lwpmzz0v2vX2COM8aHTjwadTDwxiaiYumaRLLQOOUzQDFC
+         1ndxgWvP4ljM/9O5PMhbprqXCQ1Qci5A9Foo7qB/dSpi9JcA7WzDN6BF2HsdeeM79tsN
+         3WTQ==
+X-Gm-Message-State: AOAM533Y8EPtl2onLqfqc7rVpF+EsQYr49sMmGg9JHj6SKxVR/xOKOCL
+        tXa31KelxwNY+3dCi6hrCffk63pAbogguXdlFbX5oR9HYEE=
+X-Google-Smtp-Source: ABdhPJxTQdEMYvgEDM9uUWrVJzsUjuAcyYCJba4mrmlGdUBQC5pe9ezXA0ZTwsHQ9S4OIzAdhOkvMdyN7TvOhTgsu6s=
+X-Received: by 2002:a5d:9958:: with SMTP id v24mr1902414ios.4.1626329537696;
+ Wed, 14 Jul 2021 23:12:17 -0700 (PDT)
+MIME-Version: 1.0
+From:   Tony Ambardar <tony.ambardar@gmail.com>
+Date:   Wed, 14 Jul 2021 23:12:08 -0700
+Message-ID: <CAPGftE-EhKHK3D10+X0xfoG139Y2EnuohfAGZZi+SH1Bd0-jAw@mail.gmail.com>
+Subject: Verifier bug on MIPS32/Kernel 5.13.1, test_verifier "access skb
+ fields ok"
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Fontana wrote:
-> This allows consumers of libbpf to iterate trough the insns
-> of a program without loading it first directly after the ELF parsing.
-> 
-> Being able to do that is useful to create tooling that can show
-> the structure of a BPF program using libbpf without having to
-> parse the ELF separately.
-> 
-> Usage:
->   struct bpf_insn *insn;
->   insn = bpf_program__insns(prog);
-> 
-> Signed-off-by: Lorenzo Fontana <fontanalorenz@gmail.com>
-> ---
+Hello Daniel, Alexei, Andrii,
 
-Seems reasonable to me. Couple comments on the 2/2 patch.
+While testing my MIPS32 BPF JIT implementation, I encountered the
+following verifier log message:
+     "verifier bug. zext_dst is set, but no reg is defined"
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Hopefully the details below will be helpful to you, but let me know if
+more is needed.
+
+Thanks,
+Tony
+
+===============================
+
+root@OpenWrt:~# uname -a
+Linux OpenWrt 5.13.1 #0 SMP Thu Jul 8 00:12:04 2021 mips GNU/Linux
+root@OpenWrt:~# sysctl net.core.bpf_jit_enable=1
+net.core.bpf_jit_enable = 1
+root@OpenWrt:~# ./test_verifier_eb -v 277 277
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 2652 at kernel/bpf/verifier.c:11826 bpf_check+0x1b48/0x27d4
+[  153.342806] Modules linked in: pppoe ppp_async pppox ppp_generic
+iptable_nat ipt_REJECT xt_time xt_tcpudp xt_tcpmss xt_statistic
+xt_state xt_recent xt_nat xt_multiport xt_mark xt_mac xt_limit
+xt_length xt_hl xt_helper xt_ecn xt_dscp xt_conntrack xt_connmark
+xt_connlimit xt_connbytes xt_comment xt_TCPMSS xt_REDIRECT
+xt_MASQUERADE xt_LOG xt_HL xt_FLOWOFFLOAD xt_DSCP xt_CT xt_CLASSIFY
+slhc sch_mqprio sch_cake pcnet32 nf_reject_ipv4 nf_nat nf_log_syslog
+nf_flow_table nf_conntrack_netlink nf_conncount iptable_raw
+iptable_mangle iptable_filter ipt_ECN ip_tables crc_ccitt cls_flower
+act_vlan pktgen sch_teql sch_sfq sch_red sch_prio sch_pie sch_multiq
+sch_gred sch_fq sch_dsmark sch_codel em_text em_nbyte em_meta em_cmp
+act_simple act_police act_pedit act_ipt act_csum libcrc32c em_ipset
+cls_bpf act_bpf act_ctinfo act_connmark nf_conntrack nf_defrag_ipv6
+nf_defrag_ipv4 sch_tbf sch_ingress sch_htb sch_hfsc em_u32 cls_u32
+cls_tcindex cls_route cls_matchall cls_fw cls_flow cls_basic
+act_skbedit
+[  153.344320]  act_mirred act_gact xt_set ip_set_list_set
+ip_set_hash_netportnet ip_set_hash_netport ip_set_hash_netnet
+ip_set_hash_netiface ip_set_hash_net ip_set_hash_mac
+ip_set_hash_ipportnet ip_set_hash_ipportip ip_set_hash_ipport
+ip_set_hash_ipmark ip_set_hash_ip ip_set_bitmap_port
+ip_set_bitmap_ipmac ip_set_bitmap_ip ip_set nfnetlink ip6table_mangle
+ip6table_filter ip6_tables ip6t_REJECT x_tables nf_reject_ipv6 ifb
+dummy netlink_diag mii
+CPU: 0 PID: 2652 Comm: test_verifier_e Tainted: G        W         5.13.1 #0
+Stack : 00000001 c1544000 83466000 80192454 809a0000 00000004 00000000 00000000
+        8374bb94 80d40000 82a1a484 80c1d5cb 80959230 00000001 8374bb38 8288c780
+        00000000 00000000 80959230 8374b9d0 ffffefff 80c89c34 00000000 00000000
+        00000000 d6730959 00000000 00055d61 00000001 80cc0000 00000000 80960000
+        00000009 00002e32 00000001 c1544000 00000018 80603e88 00000000 80d40000
+        ...
+Call Trace:
+[<80108cd0>] show_stack+0x28/0xf0
+[<80590740>] dump_stack+0xa4/0xe0
+[<80137298>] __warn+0xdc/0x110
+[<80137328>] warn_slowpath_fmt+0x5c/0xac
+[<802558ac>] bpf_check+0x1b48/0x27d4
+[<80239e28>] bpf_prog_load+0x5a8/0xa4c
+[<8023c2c0>] __do_sys_bpf+0x3e0/0x20b8
+[<80114490>] syscall_common+0x34/0x58
+
+---[ end trace 96a5d750c3c76985 ]---
+#277/u access skb fields ok FAIL
+Failed to load prog 'Bad address'!
+verifier bug. zext_dst is set, but no reg is defined
+processed 46 insns (limit 1000000) max_states_per_insn 0 total_states
+5 peak_states 5 mark_read 2
+#277/p access skb fields ok , verifier log:
+processed 14 insns (limit 1000000) max_states_per_insn 0 total_states
+1 peak_states 1 mark_read 1
+OK
+Summary: 1 PASSED, 0 SKIPPED, 1 FAILED
