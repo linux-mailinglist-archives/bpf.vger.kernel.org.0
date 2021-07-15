@@ -2,210 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EFB3C9A33
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 10:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BC13C9ABB
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 10:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234069AbhGOINI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 04:13:08 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:11279 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231655AbhGOINI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Jul 2021 04:13:08 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GQRjZ12X6z1CGsb;
-        Thu, 15 Jul 2021 16:04:34 +0800 (CST)
-Received: from [10.174.179.211] (10.174.179.211) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 15 Jul 2021 16:10:12 +0800
-Subject: Re: [PATCH bpf-next 2/2] tools/bpf/bpftool: xlated dump from ELF file
- directly
-To:     Lorenzo Fontana <fontanalorenz@gmail.com>, <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>
-References: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com>
- <f01efeef-9653-0f5f-b76e-d37597ba08d5@gmail.com>
-From:   "liwei (GF)" <liwei391@huawei.com>
-Message-ID: <16fde9ff-c8d9-78fd-d71b-26f56ce364ef@huawei.com>
-Date:   Thu, 15 Jul 2021 16:10:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S240271AbhGOIiI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 04:38:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42612 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232114AbhGOIiH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 15 Jul 2021 04:38:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626338114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yi9obYV2IFRXQcU5OjCWyacMaSnPkoEY5XTUowFAJiA=;
+        b=QY3UlvQKTFBw7KtnAyfarbb15LRCTHoH0yTuLS9YPQRTjQN5a8D67n5VSzZCQBrSaIVlB9
+        4QSS62jW02RiTVBCtFix4bPKuNiWm0dg+zWehbW0ZDRKrrsjzUKkb6iF4PotkLuK1pqvHj
+        LPcHAETy0pkz7ZqV9MFbPY2yfjGqu+w=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-164-e0JQIuAQNoG7_CohV1XzfA-1; Thu, 15 Jul 2021 04:35:13 -0400
+X-MC-Unique: e0JQIuAQNoG7_CohV1XzfA-1
+Received: by mail-wr1-f69.google.com with SMTP id k3-20020a5d52430000b0290138092aea94so2971291wrc.20
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 01:35:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yi9obYV2IFRXQcU5OjCWyacMaSnPkoEY5XTUowFAJiA=;
+        b=OiToqXENqadaKgiPBMsZyhM0gIUsZ341dYIMsfE/Hb06jB09p7t4qb0kp8JsdsAeak
+         aq8gHZlFN4pXDUEhJ16ThpFn0dNDUvP06/9qF+lZ18AgNK5BJm4MB8Zwzw+OUFkBM1/J
+         8lhfVnCXVTLHfW2lxmzhsqL+7W9zrksYXGLSZN+o8TAScSVd1lB5itpa3LmskSh2t865
+         fbwPZbfD20C36s/STqtfp7pWzu2CtFiQgrT7T0GEdXX76A55o4VtXS9gw0j4xto4ZPga
+         uhr9DTpTTuHDSuZPTYtxYrgGzqIjFtkYFRzldYqY3SSMz+u1aP/shXY9hILwfJw2CMV2
+         GtBg==
+X-Gm-Message-State: AOAM532VLc59o2XwE6CIFXcCbRnyP9NMdHCLK9XF0KL9/8/BcI7dtsIz
+        lssVHnzEv6iJuQQouIMqs9tJXFDLreywZPl8VxHM7HMLJKs4NqhiwdraV082ntLWwdj8se68U3V
+        VTNMiicYDkHLlWgBjErTS0JJi8+b/hujvoYL9ocHa7+CVaHaNCHqrvL0OCioB6BU=
+X-Received: by 2002:a5d:50c7:: with SMTP id f7mr4007250wrt.126.1626338111427;
+        Thu, 15 Jul 2021 01:35:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzOcHackGTT36UUmS+7YRBiz7L/liYJnRUoJLQrhvcqPYVpB5MzgW5RyeKFX9AYIL0Pg+nx6Q==
+X-Received: by 2002:a5d:50c7:: with SMTP id f7mr4007203wrt.126.1626338111178;
+        Thu, 15 Jul 2021 01:35:11 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id d10sm5342281wro.43.2021.07.15.01.35.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jul 2021 01:35:10 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Zhang Qiang <Qiang.Zhang@windriver.com>,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH 4/4] Revert "mm/page_alloc: make should_fail_alloc_page()
+ static"
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>, acme@kernel.org,
+        Jiri Olsa <jolsa@redhat.com>
+References: <20210713152100.10381-1-mgorman@techsingularity.net>
+ <20210713152100.10381-5-mgorman@techsingularity.net>
+ <fb642720-b651-e93f-4656-7042493efba8@nvidia.com>
+Message-ID: <5db9011e-9b52-b415-70b6-c7ee1b01436b@redhat.com>
+Date:   Thu, 15 Jul 2021 10:35:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <f01efeef-9653-0f5f-b76e-d37597ba08d5@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.211]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+In-Reply-To: <fb642720-b651-e93f-4656-7042493efba8@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Cc. Jiri Olsa + Arnaldo
+
+On 14/07/2021 09.06, John Hubbard wrote:
+> On 7/13/21 8:21 AM, Mel Gorman wrote:
+>> From: Matteo Croce <mcroce@microsoft.com>
+>>
+>> This reverts commit f7173090033c70886d925995e9dfdfb76dbb2441.
+>>
+>> Fix an unresolved symbol error when CONFIG_DEBUG_INFO_BTF=y:
+>>
+>>    LD      vmlinux
+>>    BTFIDS  vmlinux
+>> FAILED unresolved symbol should_fail_alloc_page
+>> make: *** [Makefile:1199: vmlinux] Error 255
+>> make: *** Deleting file 'vmlinux'
+> 
+> Yes! I ran into this yesterday. Your patch fixes this build failure
+> for me, so feel free to add:
+> 
+> Tested-by: John Hubbard <jhubbard@nvidia.com>
+> 
+> 
+> However, I should add that I'm still seeing another build failure, after
+> fixing the above:
+> 
+> LD      vmlinux
+> BTFIDS  vmlinux
+> FAILED elf_update(WRITE): no error
+
+This elf_update(WRITE) error is new to me.
+
+> make: *** [Makefile:1176: vmlinux] Error 255
+> make: *** Deleting file 'vmlinux'
+
+It is annoying that vmlinux is deleted in this case, because I usually 
+give Jiri the output from 'resolve_btfids -v' on vmlinux.
+
+  $ ./tools/bpf/resolve_btfids/resolve_btfids -v vmlinux.failed
+
+You can do:
+$ git diff
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 3b261b0f74f0..02dec10a7d75 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -302,7 +302,8 @@ cleanup()
+         rm -f .tmp_symversions.lds
+         rm -f .tmp_vmlinux*
+         rm -f System.map
+-       rm -f vmlinux
++       # rm -f vmlinux
++       mv vmlinux vmlinux.failed
+         rm -f vmlinux.o
+  }
 
 
-On 2021/7/14 2:35, Lorenzo Fontana wrote:
-> bpftool can dump an xlated or jitted representation
-> of the programs already loaded into the kernel.
-> That capability is very useful for understanding what
-> are the instructions the kernel will execute for that program.
 > 
-> However, sometimes the verifier does not load the program and
-> one cannot use this feature until changes are made to make the
-> verifier happy again.
 > 
-> This patch reuses the same dump function to dump the program
-> from an ELF file directly instead of loading the instructions
-> from a loaded file descriptor. In this way, the user
-> can use all the bpftool features for "xlated" without loading.
-> 
-> In particular, the "visual" command is very useful when combined
-> to this because the dot graph makes easy to spot bad instruction
-> sequences.
-> 
-> Usage:
-> 
->   bpftool prog dump xlated elf program.o
-> 
-> It also works with the other commands like 'visual' to print
-> an dot representation of the program.
-> 
->   bpftool prog dump xlated elf program.o visual
-> 
-> Signed-off-by: Lorenzo Fontana <fontanalorenz@gmail.com>
-> ---
->  tools/bpf/bpftool/common.c | 15 ++++++++++++---
->  tools/bpf/bpftool/main.h   |  2 +-
->  tools/bpf/bpftool/prog.c   | 26 +++++++++++++++++++++++---
->  3 files changed, 36 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-> index 1828bba19020..b28d15505705 100644
-> --- a/tools/bpf/bpftool/common.c
-> +++ b/tools/bpf/bpftool/common.c
-> @@ -703,7 +703,7 @@ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
->  	return -1;
->  }
->  
-> -int prog_parse_fds(int *argc, char ***argv, int **fds)
-> +int prog_parse_fds(int *argc, char ***argv, int **fds, char **elf_filepath)
->  {
->  	if (is_prefix(**argv, "id")) {
->  		unsigned int id;
-> @@ -763,9 +763,18 @@ int prog_parse_fds(int *argc, char ***argv, int **fds)
->  		if ((*fds)[0] < 0)
->  			return -1;
->  		return 1;
-> +	} else if (is_prefix(**argv, "elf")) {
-> +		NEXT_ARGP();
-> +		if (!argc) {
-> +			p_err("expected ELF file path");
-> +			return -1;
-> +		}
-> +		*elf_filepath = **argv;
-> +		NEXT_ARGP();
-> +		return 1;
->  	}
->  
-> -	p_err("expected 'id', 'tag', 'name' or 'pinned', got: '%s'?", **argv);
-> +	p_err("expected 'id', 'tag', 'name', 'elf' or 'pinned', got: '%s'?", **argv);
+> ...and un-setting CONFIG_DEBUG_INFO_BTF makes that disappear. Maybe someone
+> who is understands the BTFIDS build step can shed some light on that; I'm
+> not there yet. :)
 
-Should we update the 'HELP_SPEC_PROGRAM' info as well?
+I'm just a user/consume of output from the BTFIDS build step, I think 
+Jiri Olsa own the tool resolve_btfids, and ACME pahole.  I've hit a 
+number of issues in the past that Jiri and ACME help resolve quickly.
+The most efficient solution I've found was to upgrade pahole to a newer 
+version.
 
-Thanks,
-Wei
+What version of pahole does your build system have?
 
->  	return -1;
->  }
->  
-> @@ -779,7 +788,7 @@ int prog_parse_fd(int *argc, char ***argv)
->  		p_err("mem alloc failed");
->  		return -1;
->  	}
-> -	nb_fds = prog_parse_fds(argc, argv, &fds);
-> +	nb_fds = prog_parse_fds(argc, argv, &fds, NULL);
->  	if (nb_fds != 1) {
->  		if (nb_fds > 1) {
->  			p_err("several programs match this handle");
-> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-> index c1cf29798b99..f4e426d03b4a 100644
-> --- a/tools/bpf/bpftool/main.h
-> +++ b/tools/bpf/bpftool/main.h
-> @@ -187,7 +187,7 @@ int do_iter(int argc, char **argv) __weak;
->  
->  int parse_u32_arg(int *argc, char ***argv, __u32 *val, const char *what);
->  int prog_parse_fd(int *argc, char ***argv);
-> -int prog_parse_fds(int *argc, char ***argv, int **fds);
-> +int prog_parse_fds(int *argc, char ***argv, int **fds, char **elf_filepath);
->  int map_parse_fd(int *argc, char ***argv);
->  int map_parse_fds(int *argc, char ***argv, int **fds);
->  int map_parse_fd_and_info(int *argc, char ***argv, void *info, __u32 *info_len);
-> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-> index cc48726740ad..04fa9a83ef7e 100644
-> --- a/tools/bpf/bpftool/prog.c
-> +++ b/tools/bpf/bpftool/prog.c
-> @@ -537,7 +537,7 @@ static int do_show_subset(int argc, char **argv)
->  		p_err("mem alloc failed");
->  		return -1;
->  	}
-> -	nb_fds = prog_parse_fds(&argc, &argv, &fds);
-> +	nb_fds = prog_parse_fds(&argc, &argv, &fds, NULL);
->  	if (nb_fds < 1)
->  		goto exit_free;
->  
-> @@ -787,7 +787,10 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
->  static int do_dump(int argc, char **argv)
->  {
->  	struct bpf_prog_info_linear *info_linear;
-> +	struct bpf_object *obj;
-> +	struct bpf_program *prog;
->  	char *filepath = NULL;
-> +	char *elf_filepath = NULL;
->  	bool opcodes = false;
->  	bool visual = false;
->  	enum dump_mode mode;
-> @@ -817,7 +820,8 @@ static int do_dump(int argc, char **argv)
->  		p_err("mem alloc failed");
->  		return -1;
->  	}
-> -	nb_fds = prog_parse_fds(&argc, &argv, &fds);
-> +	elf_filepath = malloc(sizeof(char) * PATH_MAX);
-> +	nb_fds = prog_parse_fds(&argc, &argv, &fds, &elf_filepath);
->  	if (nb_fds < 1)
->  		goto exit_free;
->  
-> @@ -849,7 +853,6 @@ static int do_dump(int argc, char **argv)
->  		linum = true;
->  		NEXT_ARG();
->  	}
-> -
->  	if (argc) {
->  		usage();
->  		goto exit_close;
-> @@ -866,9 +869,26 @@ static int do_dump(int argc, char **argv)
->  	arrays |= 1UL << BPF_PROG_INFO_LINE_INFO;
->  	arrays |= 1UL << BPF_PROG_INFO_JITED_LINE_INFO;
->  
-> +	if (elf_filepath != NULL) {
-> +		obj = bpf_object__open(elf_filepath); 
-> +		if (libbpf_get_error(obj)) {
-> +			p_err("ERROR: opening BPF object file failed");
-> +			return 0;
-> +		}
-> +
-> +		bpf_object__for_each_program(prog, obj) {
-> +			struct bpf_prog_info pinfo;
-> +			pinfo.xlated_prog_insns = ptr_to_u64(bpf_program__insns(prog));
-> +			pinfo.xlated_prog_len = bpf_program__size(prog);
-> +			err = prog_dump(&pinfo, mode, filepath, opcodes, visual, linum);
-> +		}
-> +		return 0;
-> +	}
-> +
->  	if (json_output && nb_fds > 1)
->  		jsonw_start_array(json_wtr);	/* root array */
->  	for (i = 0; i < nb_fds; i++) {
-> +		printf("uno\n");
->  		info_linear = bpf_program__get_prog_info_linear(fds[i], arrays);
->  		if (IS_ERR_OR_NULL(info_linear)) {
->  			p_err("can't get prog info: %s", strerror(errno));
-> 
+What is your GCC version?
+
+--Jesper
+
