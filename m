@@ -2,83 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8383C9574
-	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 03:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329743C9597
+	for <lists+bpf@lfdr.de>; Thu, 15 Jul 2021 03:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhGOBQX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Jul 2021 21:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41156 "EHLO
+        id S234532AbhGOBcZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Jul 2021 21:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbhGOBQX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Jul 2021 21:16:23 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B660C06175F
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 18:13:30 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id y7so5781857ljm.1
-        for <bpf@vger.kernel.org>; Wed, 14 Jul 2021 18:13:30 -0700 (PDT)
+        with ESMTP id S231186AbhGOBcY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Jul 2021 21:32:24 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D385C06175F;
+        Wed, 14 Jul 2021 18:29:32 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id f30so318370lfv.10;
+        Wed, 14 Jul 2021 18:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=q5WK73N+1TmCFciFbz07KbM1H2tub03EqHNVkUSA4bU=;
-        b=lwae6qeM3NJ4Z0WVuMuHkU3wHtAIKXhtL+gJ/hJ4+fz2sHKDwZANLbH7ycj1+6oFhI
-         fXaOtBuNH70iuzDO6gU64sHT76LyzmatxElLLdmMWE6v4lo4DbQ3HITIrAtC1GUzMCW4
-         7ALguA4Qf3ps1fWMiaHvJjmbDawH2vrI3FOybvQN17cXjXW0PcuiY11ZWMLPvn2jdz/9
-         B9ziRc3C8Vag52BfII5rYT1L1wQdBXMV1lJIaTydeT8QHycYwc8ykMQEWR8bUdGS9Cak
-         oPe0FvkfZ0Ocvetqx9AOoYnlZU0Vzf6I/H/lX02BAlZ0RcIKv8OpFAQTU4LSzdciCtIo
-         8AXg==
+        bh=aIrqZksIMmPKofo2YI/CM7Y7uhVjsm4m1d1A6psKmus=;
+        b=mIpaOtawBkufa1V984ifB1DmHJfImu0BJojRWJkJBVIELK7OtIS6yPSkK9l4Kgydt2
+         QfO9A+v0KdItiGyXnt8CYiiPDM5DILxo+2HkL+kMLacq3j44FTGDHjsM2D2UtrDX/A5l
+         LU+qAHfEXnaTzpodns90isa87u8xlgp3Yd6TE8CYiRjLUmza3wxZJ3ab2dIwPLiXw7s7
+         AdYtWtoSFJST9EgbN89gEBB/N37RNvfAob96RQD8xREKHbeRRcyi37+cEHZCUKHoRCmD
+         1NPeicerZAh07W77DLL9liXkoksB3pyMWJWOXC45zK7RBF0RR90XrKraDfDbqwIU+dzU
+         WxZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=q5WK73N+1TmCFciFbz07KbM1H2tub03EqHNVkUSA4bU=;
-        b=BQsbPDRkbZmOKYdRUUk95sVYz+y/2IUh0K8ykYof6uGEx/R1CmM5g2ru48NpcM6Bkn
-         pQRrNyqqLChSJgDgUrsZkrQptJIB1BdLmF2gyMlESDnpAhbV6v0FRZIgONujD05iPOIz
-         1oNi3p5sLtz51+wbfIlF5ZKojuwoWr7kAmx+nl1OrhLc4iZTLfI2JpHvUU/UWgJGUxCy
-         1pgNeQvJXWmzlEYgdSJWF93z9VAWI03y0/ua5z37lMzzWIxNERJUCx8NL/bUmqjQqXZ8
-         gSXxJ/NzWSF/9qxLM8kL1siZ/X5MHoV+tCs79VEXxmIIcgIzGJfAPWgwEoVPtv5cAbtt
-         W5bQ==
-X-Gm-Message-State: AOAM530c+d2K42EU5Mty7ISBFJg7mMq7qaFH7i07FMM7gfcvFf/oBNFm
-        ghXrXYTRmCj2Sgt5kK671x0wLIOSAse2ocGJWxc=
-X-Google-Smtp-Source: ABdhPJw6K5nf75Q3p8MFScYzR2ShyZqP/Key/diTIrBtP1XvoKB3xq3eF5NjtQZtKUcx5ClQYrXWRHSEbDM/Se2AIhk=
-X-Received: by 2002:a2e:b5d6:: with SMTP id g22mr550819ljn.236.1626311608553;
- Wed, 14 Jul 2021 18:13:28 -0700 (PDT)
+        bh=aIrqZksIMmPKofo2YI/CM7Y7uhVjsm4m1d1A6psKmus=;
+        b=rEtCaagZTPkkEFkii3qmmAyqMbWZH/xJHtud/fWOZON377VwSfUfbtdVQhVDYkK3PH
+         vGjMj8fj/ruoD2cA7kkRnviAJT+klCxBDajBpPpWzelYaEpoJWGpusmb48DOu77iIwHD
+         Vm9jD2thk9Fx1H2qMoKauZ4QOOEUjh+WkrOBW+vGDTVAltygAGeh193xTdchm9nuiX+7
+         BmLLN0WBwkhbukIs24Kebjx0xaOEBO0785gPDDkrqeKm0qxZ8EVdEQ12yEVBjrUfcMpJ
+         DvSKZvVZ3mUnAXIIkjX98eAKsGxkbSnic+Yv0YfJY6AgpASF3iHcfAR/PTpQaq1UO1MV
+         Upsw==
+X-Gm-Message-State: AOAM5313D8CYnLid9vQ39fDQHUa0cjSDshPH2zwv7GdOIMKWrO31c5AH
+        VEgML4ag7LFeUamd7t5jPJWKG/DBT7zWLEXEcd8=
+X-Google-Smtp-Source: ABdhPJzDIjPSjLiWhjxguWs3PQ2THFuULszYyA9uI2koytQD9ThtzsaXxepgOTFdas99lMUhOhnblbyKoZBlqx1qvDQ=
+X-Received: by 2002:a05:6512:3f9a:: with SMTP id x26mr765428lfa.75.1626312570545;
+ Wed, 14 Jul 2021 18:29:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210714124317.67526-1-kuniyu@amazon.co.jp> <20210714174013.oksmjoc5l5bq4b5o@kafai-mbp.dhcp.thefacebook.com>
- <60ef772a443e3_5a0c120884@john-XPS-13-9370.notmuch>
-In-Reply-To: <60ef772a443e3_5a0c120884@john-XPS-13-9370.notmuch>
+References: <20210701200535.1033513-1-kafai@fb.com>
+In-Reply-To: <20210701200535.1033513-1-kafai@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 14 Jul 2021 18:13:17 -0700
-Message-ID: <CAADnVQLQChxC_UQnaoYLoOwMdt=_zuvCH=2z3hkQD+pmm2ZLSg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Fix a typo of reuseport map in bpf.h.
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 14 Jul 2021 18:29:19 -0700
+Message-ID: <CAADnVQ+Y4YFoctqKjFMgx1OXknAttup10npCEc1d1kjrQVp40w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/8] bpf: Allow bpf tcp iter to do bpf_(get|set)sockopt
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        bpf <bpf@vger.kernel.org>
+        Eric Dumazet <edumazet@google.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Yuchung Cheng <ycheng@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 4:45 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Thu, Jul 1, 2021 at 1:05 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> Martin KaFai Lau wrote:
-> > On Wed, Jul 14, 2021 at 09:43:17PM +0900, Kuniyuki Iwashima wrote:
-> > > Fix s/BPF_MAP_TYPE_REUSEPORT_ARRAY/BPF_MAP_TYPE_REUSEPORT_SOCKARRAY/ typo
-> > > in bpf.h.
-> > >
-> > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > It could be bpf-next.
-> >
-> > Fixes: 2dbb9b9e6df6 ("bpf: Introduce BPF_PROG_TYPE_SK_REUSEPORT")
-> > Acked-by: Martin KaFai Lau <kafai@fb.com>
+> This set is to allow bpf tcp iter to call bpf_(get|set)sockopt.
 >
-> LGTM with fixes and bpf-next.
+> With bpf-tcp-cc, new algo rollout happens more often.  Instead of
+> restarting the applications to pick up the new tcp-cc, this set
+> allows the bpf tcp iter to call bpf_(get|set)sockopt(TCP_CONGESTION).
+> It is not limited to TCP_CONGESTION, the bpf tcp iter can call
+> bpf_(get|set)sockopt() with other options.  The bpf tcp iter can read
+> into all the fields of a tcp_sock, so there is a lot of flexibility
+> to select the desired sk to do setsockopt(), e.g. it can test for
+> TCP_LISTEN only and leave the established connections untouched,
+> or check the addr/port, or check the current tcp-cc name, ...etc.
 >
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Patch 1-4 are some cleanup and prep work in the tcp and bpf seq_file.
+>
+> Patch 5 is to have the tcp seq_file iterate on the
+> port+addr lhash2 instead of the port only listening_hash.
+...
+>  include/linux/bpf.h                           |   8 +
+>  include/net/inet_hashtables.h                 |   6 +
+>  include/net/tcp.h                             |   1 -
+>  kernel/bpf/bpf_iter.c                         |  22 +
+>  kernel/trace/bpf_trace.c                      |   7 +-
+>  net/core/filter.c                             |  34 ++
+>  net/ipv4/tcp_ipv4.c                           | 410 ++++++++++++++----
 
-Applied. Thanks
+Eric,
+
+Could you please review this set where it touches inet bits?
+I've looked a few times and it all looks fine to me, but I'm no expert
+in those parts.
