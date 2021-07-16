@@ -2,100 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED673CB090
-	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 03:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43353CB093
+	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 03:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbhGPBwF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 21:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        id S230388AbhGPByU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 21:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhGPBwF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Jul 2021 21:52:05 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3A9C06175F;
-        Thu, 15 Jul 2021 18:49:10 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id u14so11872812ljh.0;
-        Thu, 15 Jul 2021 18:49:10 -0700 (PDT)
+        with ESMTP id S230297AbhGPByT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 21:54:19 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B01C06175F
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 18:51:24 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id q16so13347848lfa.5
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 18:51:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ooSnDnaRR1y2Zt84zTUnLEoZAoDuRHyWJmkvYjQARyY=;
-        b=IjXqonnTm4PDZn+/7269i0JJN00zVfCYtT+x/4bKk5lHWl6H5aMSAElprq580/8juE
-         1xAU6nQEqlEJ4zLpw30X+OIdNxFDMU/QssAqZS17eJVhNhUChK+M5eqjkFhiuEx56Qit
-         8WuWx6fCJkCEYULYt0U3ZeSvaIVn3r/6PBinfskma7puk1fJiUqoxDPsYk1PDNAXjqAy
-         OXSLWnRJ9+8fzTJ1f+bIlfG+rZuHpwAi46638Tq+lOTFjaAyu0e6cuS/A/BwFiUMFDT+
-         gfK81TdTELwrCZuNwvh6UruV2CK0dI0zkp2qQ1pm5ZAf9hTC8JAbj6sxLAMt4CLDAyKv
-         od9A==
+        bh=hWCsW3gRHTktR8SbYQ9MH1bcIy0RPBNbJeb6suvazPY=;
+        b=aNaa9SSnc48vWNR+2EC9k5Wc/52xTh8QIoPyg1fouLfZxWhbRSr3Sza+6VRnlXSdGw
+         sjZF1rbNgmLUTfL1saYppkOuzSGO6jLEhjVMRiqS3ERdaLvjuD3weA+rRSndcgn1fHNL
+         qbiZ8KJaiZUQsrYhCbV9CIFPmWC1bK/0mgPuEQybb99h88BvNw+QnR2U/T5F9mZByKEs
+         y90OeBH7J4v74/mg7qQ5d7cgvnHeHMkoShrCwyvucYX4O7X23hBinmnBNBhh9vY2dgNP
+         Rv1YTJC/xpkU6NVJihLj7S/XNLGc8NqvTzs+3lm8XIHvFR62FWfnFo/pGWaa58C+r/7k
+         6QmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ooSnDnaRR1y2Zt84zTUnLEoZAoDuRHyWJmkvYjQARyY=;
-        b=bjPR3oSMfVrRx4fNUYoYFvUOm7YSkCtZUfR0Fq/YYbbEnXXkj73MLK+lWPzDgaCXoF
-         8R5OmBYsPAtGWRqbN3/XXqWprlgdRfV11DUNpJTRBMr4VBkATtDUO/WiQuJUXQk7ZzB6
-         T9diuuBchlkd82Nk1fyoW/pRG5KMI+vUrBX+giEvYLUqNrh1RQxizqrYSH77ZyPM4J80
-         yXSzhZJMSlausR1BOnHPRaCbPih60aqGDUJqQ7icvlpYmn/qBpLAlCBE1yV3ezL0IM7U
-         WHX6pFbD79UBgQFtPWYRx5LZAgplmssVfQm/SqpedMuXyDME+wj0YiZzdt1S6u5uxLKD
-         Fmtw==
-X-Gm-Message-State: AOAM531B10goftB/KdZsiIYicQcKI1kZXBNXPr1daprCSP9QzTfEfLSG
-        5QSQE6aUMrNURrCalEZNe6837k9WYdkUooovSXc=
-X-Google-Smtp-Source: ABdhPJxi3dW8s9VnSn6wSkvqXocXr6SGUM/bv49mLVpSdhOBoP9wU1TO0PiTIvxstkaRLHqVWXlHEwgRD2k/i8mNXVw=
-X-Received: by 2002:a2e:a887:: with SMTP id m7mr2877598ljq.236.1626400148732;
- Thu, 15 Jul 2021 18:49:08 -0700 (PDT)
+        bh=hWCsW3gRHTktR8SbYQ9MH1bcIy0RPBNbJeb6suvazPY=;
+        b=I0TKPPD+eILpXgfM0Esw3Kh0PAo+r/3jNcqUI6KcAoaI+5JUlKP2q7K5D/ea6ZdcXD
+         vpu/up6ZVO3KMcafoT+QPlzeB2ZZ+JGU/B/jC21Djacy1Nsjas8HbNe1adosccauZ8bV
+         eJHJs4WTFHpma2yoTnS73iqh2lXRvuX5mDi9Ct8SKmZdLT9Ub4cChpPApGb4PZlxk8ej
+         IMTCPynFyZQfYRq4BpQkpgKB/k0jUMQ1pL1hKkjKe1E//2yrX4yDsJlcgfnQMlTYtezQ
+         N7UY1kbLXX5ltty5VbFeXzdDv9D5KKza4hmhYB4MF7UYc3mHJQTahwMdh3p7oIocfU7p
+         OAtw==
+X-Gm-Message-State: AOAM533cxz2uU4KuxfpasqTOZ9QGfIXNnpVfPgdaDWUJpoypdvEtWXdK
+        g1PNCiAyATwqvDMdHzmxc3yFYBf5gQYS31K5uuo=
+X-Google-Smtp-Source: ABdhPJzJu0qh5qE/ugMmA5DzykyJYbomR+Ysta8/StkW+j/Y5zfqxMEQHGPG4rIHhH1hws5QVQzjm3FiaK4KZwLUA2g=
+X-Received: by 2002:a05:6512:3138:: with SMTP id p24mr5780017lfd.214.1626400282753;
+ Thu, 15 Jul 2021 18:51:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <royujjal@gmail.com> <20210712173723.1597-1-royujjal@gmail.com> <60ee2dc76ac1c_196e22088d@john-XPS-13-9370.notmuch>
-In-Reply-To: <60ee2dc76ac1c_196e22088d@john-XPS-13-9370.notmuch>
+References: <aa97c776-9a82-9acc-fb13-dd082fdcaa61@gmail.com> <CAEf4BzaMcWGt+eqEqQdpJ_s5Zv80ziCA+vo5fa5HmaZmwBvh6A@mail.gmail.com>
+In-Reply-To: <CAEf4BzaMcWGt+eqEqQdpJ_s5Zv80ziCA+vo5fa5HmaZmwBvh6A@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 15 Jul 2021 18:48:57 -0700
-Message-ID: <CAADnVQJ=DoRDcVkaXmY3EmNdLoO7gq1mkJOn5G=00wKH8qUtZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-nxt] Documentation/bpf: Add heading and example for
- extensions in filter.rst
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     "Roy, UjjaL" <royujjal@gmail.com>, Song Liu <song@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, BPF <bpf@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Date:   Thu, 15 Jul 2021 18:51:11 -0700
+Message-ID: <CAADnVQKH2ViNN6QQJR3Fzo2+k+GmVu=nwAREPjuLZ6_HS8-XMg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] tools/lib/bpf: bpf_program__insns allow to
+ retrieve insns in libbpf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Lorenzo Fontana <fontanalorenz@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 5:20 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Thu, Jul 15, 2021 at 2:40 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Roy, UjjaL wrote:
-> > [1] https://www.kernel.org/doc/html/latest/bpf/
+> On Tue, Jul 13, 2021 at 11:34 AM Lorenzo Fontana
+> <fontanalorenz@gmail.com> wrote:
 > >
-> > Add new heading for extensions to make it more readable. Also, add one
-> > more example of filtering interface index for better understanding.
+> > This allows consumers of libbpf to iterate trough the insns
+> > of a program without loading it first directly after the ELF parsing.
 > >
-> > Signed-off-by: Roy, UjjaL <royujjal@gmail.com>
-> > Acked-by: Song Liu <songliubraving@fb.com>
+> > Being able to do that is useful to create tooling that can show
+> > the structure of a BPF program using libbpf without having to
+> > parse the ELF separately.
+> >
 >
-> Looks OK to me. I thought the original was readable without the header, but
-> if it helps someone seems easy enough to do.
->
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> So I wonder how useful is getting raw BPF instructions before libbpf
+> processed them and resolved map references, subprogram calls, etc?
+> You'll have lots of zeroes or meaningless constants in ldimm64
+> instructions, etc. I always felt that being able to get instructions
+> after libbpf processed them is more useful. The problem is that
+> currently libbpf frees prog->insns after successful bpf_program__load.
+> There is one extra (advanced) scenario where having those instructions
+> preserved after load would be really nice -- cloning BPF program (I
+> had use case for fentry/fexit). So the question is whether we should
+> just leave those prog->insns around until the object is closed or not?
+> And if we do, should bpftool dump instructions before or after load?
+> Let's see what folks think.
 
-I cannot figure out how to apply this patch, because I see:
-Applying: Documentation/bpf: Add heading and example for extensions in
-filter.rst
-fatal: empty ident name (for <>) not allowed
-
-Any idea?
+Same here. I understand the desire, but the approach to expose half baked
+instructions isn't addressing the need.
