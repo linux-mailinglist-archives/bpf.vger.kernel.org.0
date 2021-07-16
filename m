@@ -2,164 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349403CB074
-	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 03:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC883CB08A
+	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 03:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhGPBgy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 21:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
+        id S230480AbhGPBrZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 21:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhGPBgy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Jul 2021 21:36:54 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8754C06175F
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 18:33:58 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id x17so10768318edd.12
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 18:33:58 -0700 (PDT)
+        with ESMTP id S230388AbhGPBrZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 21:47:25 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2514C06175F
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 18:44:29 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id e20so11773317ljn.8
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 18:44:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hqfPm7n9mmtUNCMqhLdtt5OcRXG3sToNZqhH1obngdI=;
-        b=HfFKCzZJxKfJZE8FqNCvFimsxJrisrrjPU1E6VOoFN6mBzBEaiG48d10/BpEM+/0EB
-         bgu3X59JpgajFyzxyprGoQPZkVA+UYJvTjRfWraGPPLoBM01VpNFTtV1fAekO5eMP+qb
-         AWCbCp+zaVMJw43XcWGK7WasLq4bxyVwsvtaLa0qArfhn5FtFjZFt87pA64NAh1lB+0v
-         NoxsXvvmlXbHWmyQXM3huyEXDGhe8MYb/p/R+HDEaOlWoUCDDaVkIu05Vx+aIb7n/4AZ
-         9aKH34idSuDEFPDChqCjK0YgnDOJ1t9G1yp3htZ7EXXS+8sSJKgWdpfJ8tpCb+dDIgBd
-         Jg0g==
+        bh=SbeLt1g8PnOQyihVzpInCmeQYo221ZAknhTTPVAXAU4=;
+        b=aYKHAHEUM180UYAkxO6jUAgkTAoLoFSEQIpb2uoFAqWeKIbo+QPD0zqd40fDYTMaSa
+         EA/xykK27xczml7ikfxp+HtfLCrFBzLu8Dvspubvz5ONJl2jnfFZ4zaj34oL88/ZsSRn
+         I33RsSs6PS5A3gV0sDCCEeS7QyIi/pHw2D+rnfv/50WfOqcw66ysMJOYz8FqRlDph+Qt
+         rM/Jz0XMGOj8MFjCrSu8ePLiTMVGY+jxeDxlO3ALYq7OZc6jlxsvPQ+ETs+V8t8fCKJ1
+         BTAlcoN0rSX8BsJ0R1dy/dgFZfKGDwGiMk2HugTV7o9uumeut7ySa1UhYsYE5HnC969Q
+         h/5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hqfPm7n9mmtUNCMqhLdtt5OcRXG3sToNZqhH1obngdI=;
-        b=pRoM27xSfyQU2ciQnW+Zczxt6Wz+cgEfCiJjIN3xrUHS7JjV3faSBGwdGybU/RGOmf
-         0KXtDAWOZ4gj7sL/C68qDq2csf0uvS65F24Gx5fnj++4HR53veipnVX4uP4KmVcRIsSk
-         IrH2QaMSR/JCL+0IKNRNhSeAn/0Q935yFy4uSi8xku1M70pVzK61KP6j3F4yPok8Zlza
-         xWvjXkJeniFvtrA2MH1Yv2ZnERwntgyYC0CQM4kvEz6gfrACigrO+rCOh3Wpj9W6NDGF
-         20SM8vaF+xOX7gsNZAqxDOnBX/4GyA3NpWKbrtNAd4biPHYAFwSoCRl3l6WD+OXkNKaH
-         XH/g==
-X-Gm-Message-State: AOAM5306RvOV278lZqCdZaq2v3LKg78E/tgcAtzNv7U/rDuAinZV7ItP
-        DzPLxqP0a5XOUCOllLF3QLNJ4qAl3pxTjrpOKmY=
-X-Google-Smtp-Source: ABdhPJxwF5VdZbAb68dJQqfpxobBGE11zqB3bR2+oUFnfOO//D1vxYzZU+MIJkIwC1GBoXbVBDybPNJd/FulvskL3qs=
-X-Received: by 2002:aa7:c7c2:: with SMTP id o2mr11181468eds.166.1626399237409;
- Thu, 15 Jul 2021 18:33:57 -0700 (PDT)
+        bh=SbeLt1g8PnOQyihVzpInCmeQYo221ZAknhTTPVAXAU4=;
+        b=ks7/ItaQ5Y8mavZCfr7okM6gOUBh9G9HHbBK3kd9T7/aaYfHjjNwP/atkzknTuJmK/
+         qNzDadbDQaRPpGAWaLlmS1uxMt9yh7c14Gj+AfnZGUIvE3P+ZE8UlZ808dSozpGLr1FN
+         gLgkJmj1IHAhYqLk+c1lVK/pWDR/nz1YDLMOKxeJPoRrb1G/Q2pQJGOuW+HOvwmVN8wP
+         JrK7MDAF4McTmsXopkzPucuNrK+s8HHYakqTvHHhBVYulDfatKNRLqvhF7tx/uae404W
+         A+sRUDhCcteqmhxUWN9tQYipS1rhMsQOR1Tla+iM3sOQRmadiAxWuLa5avCYuUO8Efnb
+         DdkA==
+X-Gm-Message-State: AOAM530nUkLBl54cmcVui5xoK4WN+bDanFL68n2XP1mrfwCuVCF7105+
+        InuWv3g+Tzqt0zULUHtIOD50WO1mgQ69cS49pro=
+X-Google-Smtp-Source: ABdhPJwNgwyFvlb1gousH5AjH7potp0ZYmWzvcH1Z7puVwRQckujZJTJ3UxbUeGPRqQV7Y05IjmK0ALoWweqI0kFIsc=
+X-Received: by 2002:a2e:3214:: with SMTP id y20mr6649518ljy.486.1626399868280;
+ Thu, 15 Jul 2021 18:44:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <c43bc0a9-9eca-44df-d0c7-7865f448cc24@gmail.com>
- <92121d33-4a45-b27a-e3cd-e54232924583@fb.com> <79e4924c-e581-47dd-875c-6fd72e85dfac@gmail.com>
- <6c6b765d-1d8e-671c-c0a9-97b44c04862c@fb.com> <85caf3b3-868-7085-f4df-89df7930ad9b@gmail.com>
- <ce2ea7e8-0443-3e78-6cf8-d3105f729646@fb.com> <64cd3e3e-3b6-52b2-f176-9075f4804b7a@gmail.com>
- <497fc0fe-8036-8b79-2c6e-495f2a7b0ae@gmail.com> <CAK3+h2xv-EZH9afEymGqKdwHozHHu=XHJYKispFSixYxz7YVLQ@mail.gmail.com>
- <CAK3+h2zW5ZgnXu0_iMHUMLxmgVd2EAoRFuwAEKVkJwOnxSp56g@mail.gmail.com> <efbbc4bc-5513-82d4-4f00-28c690653509@fb.com>
-In-Reply-To: <efbbc4bc-5513-82d4-4f00-28c690653509@fb.com>
-From:   Vincent Li <vincent.mc.li@gmail.com>
-Date:   Thu, 15 Jul 2021 18:33:46 -0700
-Message-ID: <CAK3+h2xP0_9WgqDbfRC-rzkOSv2FKKsNjHmPvTFy9xALwgw3AA@mail.gmail.com>
-Subject: Re: R1 invalid mem access 'inv'
+References: <20210712162424.2034006-1-hengqi.chen@gmail.com>
+ <60ec94013acd1_50e1d2081@john-XPS-13-9370.notmuch> <6f42985e-063e-205b-820e-6bad600caf54@fb.com>
+In-Reply-To: <6f42985e-063e-205b-820e-6bad600caf54@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 15 Jul 2021 18:44:16 -0700
+Message-ID: <CAADnVQL9X7xrLKa5_tfgzAnEjPckz0jaWozAH+oNKz3=tZ6r=Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Expose bpf_d_path helper to vfs_read/vfs_write
 To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Hengqi Chen <hengqi.chen@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks Yonghong for looking into this.
-
-On Tue, Jul 13, 2021 at 8:46 AM Yonghong Song <yhs@fb.com> wrote:
+On Wed, Jul 14, 2021 at 5:55 PM Yonghong Song <yhs@fb.com> wrote:
 >
 >
 >
-> On 7/12/21 4:38 PM, Vincent Li wrote:
-> > Hi Yonghong,
-> >
-> >
-> >
-> > On Fri, Jun 18, 2021 at 12:58 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> On 7/12/21 12:12 PM, John Fastabend wrote:
+> > Hengqi Chen wrote:
+> >> Add vfs_read and vfs_write to bpf_d_path allowlist.
+> >> This will help tools like IOVisor's filetop to get
+> >> full file path.
 > >>
-> >> Hi Yonghong,
+> >> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> >> ---
+> >
+> > As I understand it dpath helper is allowed as long as we
+> > are not in NMI/interrupt context, so these should be fine
+> > to add.
+> >
+> > Acked-by: John Fastabend <john.fastabend@gmail.com>
+>
+> The corresponding bcc discussion thread is here:
+>    https://github.com/iovisor/bcc/issues/3527
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
+>
+> >
+> >>   kernel/trace/bpf_trace.c | 2 ++
+> >>   1 file changed, 2 insertions(+)
 > >>
-> >> I attached the full verifier log and BPF bytecode just in case it is
-> >> obvious to you, if it is not, that is ok. I tried to make sense out of
-> >> it and I failed due to my limited knowledge about BPF :)
-> >>
-> >
-> > I followed your clue on investigating how fp-200=pkt changed to
-> > fp-200=inv in https://github.com/cilium/cilium/issues/16517#issuecomment-873522146
-> > with previous attached complete bpf verifier log and bpf bytecode, it
-> > eventually comes to following
-> >
-> > 0000000000004948 :
-> >      2345: bf a3 00 00 00 00 00 00 r3 = r10
-> >      2346: 07 03 00 00 d0 ff ff ff r3 += -48
-> >      2347: b7 08 00 00 06 00 00 00 r8 = 6
-> > ; return ctx_store_bytes(ctx, off, mac, ETH_ALEN, 0);
-> >      2348: bf 61 00 00 00 00 00 00 r1 = r6
-> >      2349: b7 02 00 00 00 00 00 00 r2 = 0
-> >      2350: b7 04 00 00 06 00 00 00 r4 = 6
-> >      2351: b7 05 00 00 00 00 00 00 r5 = 0
-> >      2352: 85 00 00 00 09 00 00 00 call 9
-> >      2353: 67 00 00 00 20 00 00 00 r0 <<= 32
-> >      2354: c7 00 00 00 20 00 00 00 r0 s>>= 32
-> > ; if (eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0)
-> >      2355: c5 00 54 00 00 00 00 00 if r0 s< 0 goto +84
-> >
-> > my new code is eth_store_daddr(ctx, (__u8 *) &vtep_mac.addr, 0) < 0;
-> > that is what i copied from other part of cilium code, eth_store_daddr
-> > is:
-> >
-> > static __always_inline int eth_store_daddr(struct __ctx_buff *ctx,
-> >
-> >                                             const __u8 *mac, int off)
-> > {
-> > #if !CTX_DIRECT_WRITE_OK
-> >          return eth_store_daddr_aligned(ctx, mac, off);
-> > #else
-> > ......
-> > }
-> >
-> > and eth_store_daddr_aligned is
-> >
-> > static __always_inline int eth_store_daddr_aligned(struct __ctx_buff *ctx,
-> >
-> >                                                     const __u8 *mac, int off)
-> > {
-> >          return ctx_store_bytes(ctx, off, mac, ETH_ALEN, 0);
-> > }
-> >
-> > Joe  from Cilium raised an interesting question on why the compiler
-> > put ctx_store_bytes() before  if (eth_store_daddr(ctx, (__u8 *)
-> > &vtep_mac.addr, 0) < 0),
-> > that seems to have  fp-200=pkt changed to fp-200=inv, and indeed if I
-> > skip the eth_store_daddr_aligned call, the issue is resolved, do you
-> > have clue on why compiler does that?
->
-> This is expected. After inlining, you got
->     if (ctx_store_bytes(...) < 0) ...
->
-> So you need to do
->     ctx_store_bytes(...)
-> first and then do the if condition.
->
+> >> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> >> index 64bd2d84367f..6d3f951f38c5 100644
+> >> --- a/kernel/trace/bpf_trace.c
+> >> +++ b/kernel/trace/bpf_trace.c
+> >> @@ -861,6 +861,8 @@ BTF_ID(func, vfs_fallocate)
+> >>   BTF_ID(func, dentry_open)
+> >>   BTF_ID(func, vfs_getattr)
+> >>   BTF_ID(func, filp_close)
+> >> +BTF_ID(func, vfs_read)
+> >> +BTF_ID(func, vfs_write)
+> >>   BTF_SET_END(btf_allowlist_d_path)
 
-I got workaround which is not to use eth_store_daddr_aligned, but use
-__builtin_memcpy() according to
-cilium commit 9c857217834 (bpf: optimized memcpy/memzero with dw-wide copies)
-
-> Looking at the issue at https://github.com/cilium/cilium/issues/16517,
-> the reason seems due to xdp_store_bytes/skb_store_bytes.
-> When these helpers write some data into the stack based buffer, they
-> invalidate some stack contents. I don't know whether it is a false
-> postive case or not, i.e., the verifier invalidates the wrong stack
-> location conservatively. This needs further investigation.
->
-glad to know it is not something silly that I am doing, hope it can be
-figured out eventually someday :)
-
->
-> >
-> > I have more follow-up in https://github.com/cilium/cilium/issues/16517
-> > if you are interested to know the full picture.
-> >
-> > Appreciate it very much if you have time to look at it :)
-> >
-> > Vincent
-> >
+That feels incomplete.
+I know we can add more later, but why these two and not vfs_readv ?
+security_file_permission should probably be added as well ?
+Along with all sys_* entry points ?
