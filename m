@@ -2,275 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B013CAFA6
-	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 01:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBBB3CB002
+	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 02:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbhGOXaE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 19:30:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48679 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231995AbhGOXaD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 15 Jul 2021 19:30:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626391628;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w9epcCncX7pIRpKtwldnqCbWmt/pqBMs8IQPo5QzMxo=;
-        b=V/ccfcrDf6GNcYcVdRsYXWYIWetw8+VRlQCDJWLumDhBsf7AOyAAXX5jAu1jhBG7tsxTyD
-        2RJ3/0YQoLpnF0pbloWJkUEEIMJmNSOQ4kDhXE6fAOJhpz6ryqXRNJF3jePhWdVecekEcE
-        gpRI+bIgXIJy4M0dxSokkNb6keMEd9w=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-fjABnvhcNqypF81-P3pmNQ-1; Thu, 15 Jul 2021 19:27:07 -0400
-X-MC-Unique: fjABnvhcNqypF81-P3pmNQ-1
-Received: by mail-ed1-f70.google.com with SMTP id m21-20020a50ef150000b029039c013d5b80so3958736eds.7
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 16:27:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w9epcCncX7pIRpKtwldnqCbWmt/pqBMs8IQPo5QzMxo=;
-        b=euye5OnCfRSOf8nVsTqxwWyrYWaIrTFn52dThYGga6yhJKceJi2el35Z0XEQ9iJDl9
-         J7ptfliRfHzTDhoLGQ78WFoqmvBkNIhu05cviPchxTH2C1SbgWyaSoNJQHbJO5c+S/Pr
-         WsjSgpYEeWhdZiLE74SutAEHYhWIHTt6hlDLX+00QxD9iN8zjvXBkpga1dzEZu+8ZOrI
-         G2sIx7NppXMzv3gD0h/KZ5fqSpIzjvKj3B9H5Zz0TVDumxt/0boHXKfNM1V24+uLkOzV
-         /N+Lm9GTZU71LyeeWzA5gW5WPvsImm7iWj2DgL/juBLQThhVC+VOQeO27JG+Okzbymvu
-         ZAZQ==
-X-Gm-Message-State: AOAM530blwRZjhldzIT0ufogl9CTQgZtRXBEQIQ+W+LGplbAIvAdYwWf
-        AgaKAdCCZLGRIRlyvphKXKoAFYm2dPivCG0XLLuaYy8DIKTjSDEvH6iwyKbFJ07Nu5ln5FgYVKy
-        qvyRxpvNqyrT9
-X-Received: by 2002:a17:906:55cd:: with SMTP id z13mr7878559ejp.99.1626391626085;
-        Thu, 15 Jul 2021 16:27:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxo2D82Sxy6qGjmM6T4PXF6XSGLBWA0ZKMQWB8WdNW78ZtARAsQEs5j87nnXNnNM1lYewGtVg==
-X-Received: by 2002:a17:906:55cd:: with SMTP id z13mr7878538ejp.99.1626391625865;
-        Thu, 15 Jul 2021 16:27:05 -0700 (PDT)
-Received: from localhost (net-188-216-29-9.cust.vodafonedsl.it. [188.216.29.9])
-        by smtp.gmail.com with ESMTPSA id m12sm2311265ejd.21.2021.07.15.16.27.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jul 2021 16:27:05 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 01:27:01 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexander.duyck@gmail.com,
-        brouer@redhat.com, echaudro@redhat.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH bpf-next 2/2] net: xdp: add xdp_update_skb_shared_info
- utility routine
-Message-ID: <YPDERccoAaRRlydI@lore-desk>
-References: <cover.1625828537.git.lorenzo@kernel.org>
- <16f4244f5a506143f5becde501f1ecb120255b42.1625828537.git.lorenzo@kernel.org>
- <60ec8dfeb42aa_50e1d20857@john-XPS-13-9370.notmuch>
- <YOykin2acwjMjfRj@lore-desk>
- <60ef76e5d2379_5a0c12081c@john-XPS-13-9370.notmuch>
+        id S232818AbhGPAIJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 20:08:09 -0400
+Received: from mail-bn8nam11on2083.outbound.protection.outlook.com ([40.107.236.83]:19488
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230425AbhGPAHm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 20:07:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ab7WfYbGjVSbxE/Z1P8Fol5eaXDeuU1slj6OsxchH6S1WXakdKSYQx9HJavJZJ+/aZ6VleYAazxR93oIhAm4wYuKCvPoNSxUSdFUXQbGAcTeMH+n5d0ao6gFqpgWWkybH68jFJvoFyuqX5Q7Nc6WvHUJpZrprcmiq9TlFn5Y2oSO/nKzkoFD/T7dgJTyQZeffZJRNqJdRxlHfpOyCa75HH0hQGJvxFdB+FUyp838+NUkPIw3HOT21W0uDRikYRJ4iTcXfW7zEofVqhnbW6UyMRaYKySnie4Wwtm7crd5+D+xhDA6KLYZ8dISVbixZSLxIUTBb8IbfHupxlQGCv/Bdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0Re5Bc92d6m/Rf7XezquGMbDE3PnIciLxGBjLmJegDA=;
+ b=Oyb4riZp2rfj//0NN6uJ4f0XzQTXG9o47g1iPXGbINqpuNnum+5c58wVYShEMNw7XVt5EloAI4I2JGba7ECtm6wvgeKqicmWoIsYKtO3UBjzkwVLsU8rv/G/PXXCzv609jye0PX9kRveUJNAMg7cO90rahYNUrA3kEeYc8Af6QkDiDUAVuFW3hB0XB6QfAq+hjStkuH4lER5qU5fw2eVNy3Q1FOr3nAfnuw4e6tew/euO9yJECgA4gUcvehK3QEEGN5ygsdup9Z3G1cQyEvVV+kR+YohKfymHLl3BXKw5P6fucHOpng99kVwaW5Z4wrnJ1pCXj6jnEhqYO0JYqlOtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0Re5Bc92d6m/Rf7XezquGMbDE3PnIciLxGBjLmJegDA=;
+ b=igAb36YE0oAfJfqRJB3Jqcb5BFUUkXEhR8fHpZ3EPbft249ORysBXdIo5V8LAhvl9taZdDsE33IweznrK9agzosgGu0whkEF4vE7Vhp5Yi5D0Wlh5tE8dYXs4zguDqIvUDXkF1LWD2DEVzGuZsIrz9YPNrMBwfsD8NAGz2ZaZmnf4NHFpzP2YQod9ppLDC0zpuWanZe7quxVmX3ziOe8iUeZ2Kq8ayESeLSI2bgLu+49GLrc1Qta3vAwArBrfH60v9rC/6TvhRFjwJdWFJ9XV97tio4h2Qhxe8+2Z7HQxfw8BwUyzAtg9qYIetXtKiuugs4TpC7CYBooF5YpDxfafQ==
+Received: from DM6PR02CA0100.namprd02.prod.outlook.com (2603:10b6:5:1f4::41)
+ by CY4PR12MB1592.namprd12.prod.outlook.com (2603:10b6:910:d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21; Fri, 16 Jul
+ 2021 00:04:44 +0000
+Received: from DM6NAM11FT027.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:1f4:cafe::95) by DM6PR02CA0100.outlook.office365.com
+ (2603:10b6:5:1f4::41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Fri, 16 Jul 2021 00:04:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT027.mail.protection.outlook.com (10.13.172.205) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 00:04:44 +0000
+Received: from [10.2.84.248] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Jul
+ 2021 00:04:43 +0000
+Subject: Re: [PATCH 4/4] Revert "mm/page_alloc: make should_fail_alloc_page()
+ static"
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>, <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+CC:     <brouer@redhat.com>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Zhang Qiang <Qiang.Zhang@windriver.com>,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20210713152100.10381-1-mgorman@techsingularity.net>
+ <20210713152100.10381-5-mgorman@techsingularity.net>
+ <fb642720-b651-e93f-4656-7042493efba8@nvidia.com>
+ <5db9011e-9b52-b415-70b6-c7ee1b01436b@redhat.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <90251cd2-7c4c-9d2f-668f-c2168da7ac9c@nvidia.com>
+Date:   Thu, 15 Jul 2021 17:04:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FAWGCPAtKe2MqBX0"
-Content-Disposition: inline
-In-Reply-To: <60ef76e5d2379_5a0c12081c@john-XPS-13-9370.notmuch>
+In-Reply-To: <5db9011e-9b52-b415-70b6-c7ee1b01436b@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fc20e589-3f3e-4954-d8f5-08d947ed5100
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1592:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB159291D7954C11661B57E9A4A8119@CY4PR12MB1592.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3JBnd/XIXu3M0CeHs7CA2HMgc9KUNVjO2tTZBBJIQ5zaCPuusaLsIZcPV5+Jl5pXENm82T29Y8KGnScBqn8UCzEEGcuKZxb3V744qAL88SlZ8TtiIAMVORtgOkmJwqRinhI/OruL8GnKP/wGuxINw0P5MgUXk4jsSZVMBgUQzJErzfC73CYM2AYHC4cJPxXWA0tWsboIZv85rU6sLnmGBh4mzhqBzbFEPfUtJxQzu/YrWQIaFg3QPaICk/nkyMkvJleddhVIMTPbpnM22d7psXeKpH7aJTAC0yi6vh1pW5WuDnOjnpC3CM7fhfcLak7T+Abk9R1yNWLR0aecEanuV/35kocnxZ16vt6MhhKqlWJXiJazC/kwaHo4+Idhtvku5mEisVfrLnT3bLmezXINZH7kVrjHQI/WgR40Z5ofGxrkmpoRsAypF7EWHaoA4otsmD9omTNxXtuRayWHk0sBRuNXT0L4xMWW2JGS7ow8vRzGwK6IoCxpiGVDeLdC8WPqvydXIcP8U8NdsF0jV4yh1pf5Q0jYve6KVw05WiXulRbpO9RQqTcLC/5O9RAFLNGLJ/PKy72/sgq21YzS8AK5pC7COmmV4wHuaby62iWiGzdA4YBrS26VyalMGCaAwoFbPEbe+hMuhlZ6aNv7xvAK2cbbRU/1YBYfigjbsHe2FOEspnCtHc0UtkV6LRCISiD9oKW7rdj26IsEAWY/jlRvpWm9n5hrxRhpvNw2De7u5rkICVeMDSdp4Id7iFQdGYuZTyu6lCKEadVxoRQocTgryh5qOAGPOQh59lpyv25OcsA=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(136003)(346002)(36840700001)(46966006)(110136005)(356005)(336012)(426003)(2616005)(316002)(7416002)(82740400003)(36756003)(34020700004)(36860700001)(54906003)(478600001)(7636003)(16576012)(4326008)(31696002)(82310400003)(8676002)(8936002)(70586007)(31686004)(2906002)(36906005)(83380400001)(70206006)(5660300002)(16526019)(47076005)(186003)(26005)(86362001)(43740500002)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 00:04:44.0297
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc20e589-3f3e-4954-d8f5-08d947ed5100
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT027.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1592
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+...
+>> LD      vmlinux
+>> BTFIDS  vmlinux
+>> FAILED elf_update(WRITE): no error
+> 
+> This elf_update(WRITE) error is new to me.
+> 
+>> make: *** [Makefile:1176: vmlinux] Error 255
+>> make: *** Deleting file 'vmlinux'
+> 
+> It is annoying that vmlinux is deleted in this case, because I usually give Jiri the output from 
+> 'resolve_btfids -v' on vmlinux.
+> 
+>   $ ./tools/bpf/resolve_btfids/resolve_btfids -v vmlinux.failed
+> 
+> You can do:
+> $ git diff
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index 3b261b0f74f0..02dec10a7d75 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -302,7 +302,8 @@ cleanup()
+>          rm -f .tmp_symversions.lds
+>          rm -f .tmp_vmlinux*
+>          rm -f System.map
+> -       rm -f vmlinux
+> +       # rm -f vmlinux
+> +       mv vmlinux vmlinux.failed
+>          rm -f vmlinux.o
+>   }
+> 
+> 
+>>
+>>
+>> ...and un-setting CONFIG_DEBUG_INFO_BTF makes that disappear. Maybe someone
+>> who is understands the BTFIDS build step can shed some light on that; I'm
+>> not there yet. :)
+> 
+> I'm just a user/consume of output from the BTFIDS build step, I think Jiri Olsa own the tool 
+> resolve_btfids, and ACME pahole.  I've hit a number of issues in the past that Jiri and ACME help 
+> resolve quickly.
+> The most efficient solution I've found was to upgrade pahole to a newer version.
+> 
+> What version of pahole does your build system have?
+> 
+> What is your GCC version?
+> 
 
---FAWGCPAtKe2MqBX0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just a quick answer first on the versions: this is an up to date Arch Linux system:
 
-> Lorenzo Bianconi wrote:
-> > > Lorenzo Bianconi wrote:
-> > > > Introduce xdp_update_skb_shared_info routine to update frags array
-> > > > metadata from a given xdp_buffer/xdp_frame. We do not need to reset
-> > > > frags array since it is already initialized by the driver.
-> > > > Rely on xdp_update_skb_shared_info in mvneta driver.
-> > >=20
-> > > Some more context here would really help. I had to jump into the mvne=
-ta
-> > > driver to see what is happening.
-> >=20
-> > Hi John,
-> >=20
-> > ack, you are right. I will add more context next time. Sorry for the no=
-ise.
-> >=20
-> > >=20
-> > > So as I read this we have a loop processing the descriptor in
-> > > mvneta_rx_swbm()
-> > >=20
-> > >  mvneta_rx_swbm()
-> > >    while (rx_proc < budget && rx_proc < rx_todo) {
-> > >      if (rx_status & MVNETA_RXD_FIRST_DESC) ...
-> > >      else {
-> > >        mvneta_swbm_add_rx_fragment()
-> > >      }
-> > >      ..
-> > >      if (!rx_status & MVNETA_RXD_LAST_DESC)
-> > >          continue;
-> > >      ..
-> > >      if (xdp_prog)
-> > >        mvneta_run_xdp(...)
-> > >    }
-> > >=20
-> > > roughly looking like above. First question, do you ever hit
-> > > !MVNETA_RXD_LAST_DESC today? I assume this is avoided by hardware
-> > > setup when XDP is enabled, otherwise _run_xdp() would be
-> > > broken correct? Next question, given last descriptor bit
-> > > logic whats the condition to hit the code added in this patch?
-> > > wouldn't we need more than 1 descriptor and then we would
-> > > skip the xdp_run... sorry lost me and its probably easier
-> > > to let you give the flow vs spending an hour trying to
-> > > track it down.
-> >=20
-> > I will point it out in the new commit log, but this is a preliminary pa=
-tch for
-> > xdp multi-buff support. In the current codebase xdp_update_skb_shared_i=
-nfo()
-> > is run just when the NIC is not running in XDP mode (please note
-> > mvneta_swbm_add_rx_fragment() is run even if xdp_prog is NULL).
-> > When we add xdp multi-buff support, xdp_update_skb_shared_info() will r=
-un even
-> > in XDP mode since we will remove the MTU constraint.
-> >=20
-> > In the current codebsae the following condition can occur in non-XDP mo=
-de if
-> > the packet is split on 3 or more descriptors (e.g. MTU 9000):
-> >=20
-> > if (!(rx_status & MVNETA_RXD_LAST_DESC))
-> >    continue;
->=20
-> But, as is there is no caller of xdp_update_skb_shared_info() so
-> I think we should move the these two patches into the series with
-> the multibuf support.
+gcc: 11.1.0
+pahole: 1.21
 
-mvneta is currently using it building the skb in mvneta_swbm_build_skb()
-running in non-xdp mode but I am fine merging this series in the
-multi-buff one.
+I'll try to get the other step done later this evening.
 
->=20
-> >=20
-> > >=20
-> > > But, in theory as you handle a hardware discriptor you can build
-> > > up a set of pages using them to create a single skb rather than a
-> > > skb per descriptor. But don't we know if pfmemalloc should be
-> > > done while we are building the frag list? Can't se just set it
-> > > vs this for loop in xdp_update_skb_shared_info(),
-> >=20
-> > I added pfmemalloc code in xdp_update_skb_shared_info() in order to reu=
-se it
-> > for the xdp_redirect use-case (e.g. whenever we redirect a xdp multi-bu=
-ff
-> > in a veth or in a cpumap). I have a pending patch where I am using
-> > xdp_update_skb_shared_info in __xdp_build_skb_from_frame().
->=20
-> OK, but it adds an extra for loop and the related overhead. Can
-> we avoid this overhead and just set it from where we first
-> know we have a compound page. Or carry some bit through and
-> do a simpler check,
->=20
->  if (pfmemalloc_needed) skb->pfmemalloc =3D true;
->=20
-> I guess in the case here its building the skb so performance is maybe
-> not as critical, but if it gets used in the redirect case then we
-> shouldn't be doing unnecessary for loops.
-
-doing so every driver will need to take care of it building the xdp_buff.
-Does it work to do it since probably multi-buff is not critical for
-performance?
-In order to support xdp_redirect we need to save this info in
-xdp_buff/xdp_frame, maybe in the flag field added in xdp multi-buff series.
-
->=20
-> >=20
-> > >=20
-> > > > +	for (i =3D 0; i < nr_frags; i++) {
-> > > > +		struct page *page =3D skb_frag_page(&sinfo->frags[i]);
-> > > > +
-> > > > +		page =3D compound_head(page);
-> > > > +		if (page_is_pfmemalloc(page)) {
-> > > > +			skb->pfmemalloc =3D true;
-> > > > +			break;
-> > > > +		}
-> > > > +	}
-> > > > +}
-> > >=20
-> > > ...
-> > >=20
-> > > > diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/et=
-hernet/marvell/mvneta.c
-> > > > index 361bc4fbe20b..abf2e50880e0 100644
-> > > > --- a/drivers/net/ethernet/marvell/mvneta.c
-> > > > +++ b/drivers/net/ethernet/marvell/mvneta.c
-> > > > @@ -2294,18 +2294,29 @@ mvneta_swbm_add_rx_fragment(struct mvneta_p=
-ort *pp,
-> > > >  	rx_desc->buf_phys_addr =3D 0;
-> > > > =20
-> > > >  	if (data_len > 0 && xdp_sinfo->nr_frags < MAX_SKB_FRAGS) {
-> > > > -		skb_frag_t *frag =3D &xdp_sinfo->frags[xdp_sinfo->nr_frags++];
-> > > > +		skb_frag_t *frag =3D &xdp_sinfo->frags[xdp_sinfo->nr_frags];
-> > > > =20
-> > > >  		skb_frag_off_set(frag, pp->rx_offset_correction);
-> > > >  		skb_frag_size_set(frag, data_len);
-> > > >  		__skb_frag_set_page(frag, page);
-> > > > +		/* We don't need to reset pp_recycle here. It's already set, so
-> > > > +		 * just mark fragments for recycling.
-> > > > +		 */
-> > > > +		page_pool_store_mem_info(page, rxq->page_pool);
-> > > > +
-> > > > +		/* first fragment */
-> > > > +		if (!xdp_sinfo->nr_frags)
-> > > > +			xdp_sinfo->gso_type =3D *size;
-> > >=20
-> > > Would be nice to also change 'int size' -> 'unsigned int size' so the
-> > > types matched. Presumably you really can't have a negative size.
-> > >=20
-> >=20
-> > ack
-> >=20
-> > > Also how about giving gso_type a better name. xdp_sinfo->size maybe?
-> >=20
-> > I did it in this way in order to avoid adding a union in skb_shared_inf=
-o.
-> > What about adding an inline helper to set/get it? e.g.
->=20
-> What was wrong with the union?
-
-Alex requested to use gso_* fields already there (the union was in the prev=
-ious
-version I sent).
-
-Regards,
-Lorenzo
-
->=20
-> >=20
-> > static inline u32 xdp_get_data_len(struct skb_shared_info *sinfo)
-> > {
-> >     return sinfo->gso_type;
-> > }
-> >=20
-> > static inline void xdp_set_data_len(struct skb_shared_info *sinfo, u32 =
-datalen)
-> > {
-> >     sinfo->gso_type =3D datalen;
-> > }
-> >=20
-> > Regards,
-> > Lorenzo
->=20
-
---FAWGCPAtKe2MqBX0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYPDEQwAKCRA6cBh0uS2t
-rDF/AQCYsZJhONbBM9aRXq4M6+nqcTk2AoqFKaghrzcowmwYwwEAzvQXsuVaDvYU
-BIixs2QgtsAsvA3fwHDAjjXfOFNEWQU=
-=Xa+N
------END PGP SIGNATURE-----
-
---FAWGCPAtKe2MqBX0--
-
+thanks,
+-- 
+John Hubbard
+NVIDIA
