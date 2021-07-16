@@ -2,148 +2,485 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DF93CB22F
-	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 08:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DC43CB271
+	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 08:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhGPGHI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Jul 2021 02:07:08 -0400
-Received: from mail-dm6nam12on2075.outbound.protection.outlook.com ([40.107.243.75]:27744
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230088AbhGPGHI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Jul 2021 02:07:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gNgrjQZ/9Ss7qB3J99+QFVRbswRSEe8hG254N9Y0ug8hv+oml4fgYMdRMmzg6WwrqQX8kLh2ZHN/lrPEi+tS71YcAE39CskTiDKoYrQ4UEWL1ny983NUfRiwQVXTR438C0BZ0uDsOWmf8k48KiO6EWoF/2IcRANotCEbMWnw7CWRvh8xVaFvUXH8Gv2rkbMFQxfsPHg/z1cT1sqvKbC7h3wHBHfOZ6AIwc6GWKpSCeTY1kMP+FbTB6Qd9joRN3YTZBMwuinNUVgb5b+WY7jcPb03s8bVBS6m4Ys92w2We+CoipaQbs9r/x4hKoqkx+x2I79fmJPYxzKVDjtJX6ZS7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iLhktzHBfsCaCAPy8z6BkHfGkInqBBpIaQglocH47+o=;
- b=gU1csZ2MwcsmSVr4RLmANDpXfyNBhNVWNiSHJVdkIAv6wtj+1NvNjfi7sZ/fNoXwx+pPH5hyHDBViynioqS4a0dfvrpdaPIUWod1fr1raBGkynuGNQ310l72Wd0M3oPkQ7OzXGG9pns6BYEZeIVQd9WmK4BHkj+G7PgTeTdHp3l2Yd4hJGFgGSeX8Wpcok/hZoL7DPI9SLwwySnizRBaHDwCaIWY4FqDCYWoq/tEjjYGVoZn/lfHscKESJOtzBSEumk/KFLOHZ5ofYyoLNIkSyLzvimJbjDqL2kXxQ6li7Hb/J+o33YDz+HQYfXlHw4NK6XIehK6pG2eRQJNwVYvyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iLhktzHBfsCaCAPy8z6BkHfGkInqBBpIaQglocH47+o=;
- b=P9i0q7YGV7BKeSNUERnp7n13bLUrZYVoqUC4mpgzjNbfIPrtO/swMjBLHVn6UgzAZNkd/rkzQekqw9Dx5WNHwUr8Fo+2nHogvYiWOaIRV6SdwaUnuANVfnJfGq4zHQBXuthaLTRJ6VZHHLp3GmQm/9uW/WJp2T9xOsI5ClgmGbZ7MjjfII8j92gGvuXfaGjC0tDht7u7Hi9ZYzEC/35lMR7VhiX8nnYxpEAFvYz3aIjUoky3IXhDTJ15kM5Mrl0tXbVspY0A04U0qz0iKM6lT9W+G2DmyrV3SCv36eLyCByH+8pZ+ve13huoZqgpeIXXTZxpJ1j8g/PbUnmbsKgHRA==
-Received: from BN6PR22CA0030.namprd22.prod.outlook.com (2603:10b6:404:37::16)
- by DM4PR12MB5342.namprd12.prod.outlook.com (2603:10b6:5:39f::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Fri, 16 Jul
- 2021 06:04:13 +0000
-Received: from BN8NAM11FT038.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:37:cafe::8d) by BN6PR22CA0030.outlook.office365.com
- (2603:10b6:404:37::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
- Transport; Fri, 16 Jul 2021 06:04:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT038.mail.protection.outlook.com (10.13.176.246) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 06:04:12 +0000
-Received: from [10.2.84.248] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Jul
- 2021 06:04:11 +0000
-Subject: Re: [PATCH 4/4] Revert "mm/page_alloc: make should_fail_alloc_page()
- static"
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>, <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-CC:     <brouer@redhat.com>,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Zhang Qiang <Qiang.Zhang@windriver.com>,
-        Yanfei Xu <yanfei.xu@windriver.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <20210713152100.10381-1-mgorman@techsingularity.net>
- <20210713152100.10381-5-mgorman@techsingularity.net>
- <fb642720-b651-e93f-4656-7042493efba8@nvidia.com>
- <5db9011e-9b52-b415-70b6-c7ee1b01436b@redhat.com>
- <90251cd2-7c4c-9d2f-668f-c2168da7ac9c@nvidia.com>
-Message-ID: <75085fb8-83ae-0f18-af51-df43b5f1a77c@nvidia.com>
-Date:   Thu, 15 Jul 2021 23:04:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234795AbhGPG1e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Jul 2021 02:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231778AbhGPG1e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Jul 2021 02:27:34 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B537DC06175F;
+        Thu, 15 Jul 2021 23:24:39 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id v189so13167306ybg.3;
+        Thu, 15 Jul 2021 23:24:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jGS4dF7m9YDt22ikGrh6m9rzlAwRnBZR1vnLjkEPK5w=;
+        b=KX3ZskpEwK74b6eW1Nr1uOMVv5scaWrcAXpmj0bAlZfBShdgKwY6GCiiYOMcr1WMva
+         ep2yBxtiDq+aEUjxWTHM+Fnf6PCV8ZdCFEQOUN+W++qlvEBrjORFRhqywuXwgcJcHr3Y
+         ooxn+RR3G34Ruuq3YoGAFImvwwhay3/Gk6myxBnOdEFSY/8DBj/f6nv2QjiaWjohPXy9
+         B71SAI3pTjk488qN9RUgGZlqYUIW4e6baRhE+Mjv4HcPxpMLkHT2m+tth3GVomck4F5B
+         Z0vLqjRTCiyCbcwbYIvmOTrAceAKeZar0xEv6RSVkCUEJ/bxX6RNYtQmK5oUbvfCZ3yy
+         m6Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jGS4dF7m9YDt22ikGrh6m9rzlAwRnBZR1vnLjkEPK5w=;
+        b=mYvLOZBEQAn53ZJsvw33cyIXYbEnEM3uNYr9V5Lu4BeR07fTN7dBCk+IfDr/qdmT0I
+         veALkdW4QRnl2xAYMFDRnfDcvMSdLjlEcakgyDjU8O8XaTyeHf0nGeDgA6kGNNmbzSeK
+         QzsRwos4qI6mRStIaPSxQJv2+PAAUMFNOmylE2ewB83xhw/9YL6hQMcCpuQXseUbGifv
+         zRKdFs02Lrg4xctk1aSZojQuGKCg0UJbvRSWxDcjgtmbIlhuPRmD0QzHf+gHdo8UEsv8
+         e9FsIrHlkPpNAkG8+gyOk0w67T6WCLDHNUTPDi3U5xRC/XtU8+vSgxEiZ7SKhKb75ODy
+         m3hA==
+X-Gm-Message-State: AOAM530QtbjN3DfzbJwYeQIdTu4s0ptVFMGIyLEuVU//qUqAbKMhYJwV
+        LGjxrwUyOoywfL8CqBvM3W/ekM7udwPcFtA5c/Q=
+X-Google-Smtp-Source: ABdhPJx1G/sRQ4KcwuM+gpkEptlm7rdty7QUL51M1yvjQNDSupnDjXlRDm1m0cuQe3+Rm1D+uWEep6PtALfs+H5nsa4=
+X-Received: by 2002:a25:bd09:: with SMTP id f9mr10634302ybk.27.1626416678914;
+ Thu, 15 Jul 2021 23:24:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <90251cd2-7c4c-9d2f-668f-c2168da7ac9c@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8c828cfd-1f86-43dd-087f-08d9481f88eb
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5342:
-X-Microsoft-Antispam-PRVS: <DM4PR12MB5342EA855998A372A9E8F7D0A8119@DM4PR12MB5342.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UsGKDrftDV12GHNxCrmMt9IXz/Q+y2PrcIO38xqiwQQeCphNeXuMooEY98Jpvy2FACQ6a+PW7aIdwqGFNf4wcAEy6d4L75UXyzTLF208YRjv7u6Vkcgxrq9TJDaCt0/qVj7b/vWGmJoUUL9nOgJ1rviOISrEcgKglYfGoUgADkOtmFKH88S6+pALqRQ8xixlHPgQvUht/hxVMhP5pzKPU4StzBjswaUJk94mugNzCJu7dNXgRaPlRP2Z8xaA/um0SOwYwOUk1evMkqEkutYs2jJBF9SHebprQBC1/amEu2AOIZ3XjUzGDS2N2f4M7dfOgNSPt3TAjckNqM6PovQjuspzdFPHGvfO8g86qhvEfOQKt+fYmwK3XUvRHG+sF4jVgpDI+ooGOOltmw5PFNfA34w5U/h9WY37g7GltazUA1OtVmBzySqlrnnJRz8Nwnm9Xkx8Ew6SHRlP3GZ/jLM2etVE6xTOpbxKvUuE8HQp3eWM0Wyh2ACs7FpqzwKsJDgv5dEnwPUbrn3PVAupCCoQN1Z5JobJN7SY8BXbsICrMFv7yiyy79t+KvIwcY+PPv+0l4eQhz8XJKq+A7+C9J7jjfDHlxAHahpwhovXDfe6rTtKGh/lZEv4Saq5hB0xZ2atu+zQceBkmIw0gXPlvbtq0CX/yR91mf4sdHyBpRC5NT09l7OwGt5QFSRHjs9O2iAkHND42fWw9HhR41PdvYrI9W90f/ecAu/Cgb2IpTR/hE22Y8VvCIZxOnKGWeZuS1oRlU1wleY1oSnuPaW9yC2NI6Q5mMGbUcGz7Wi8J7Eie0M=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(346002)(136003)(46966006)(36840700001)(47076005)(86362001)(8936002)(186003)(16526019)(54906003)(478600001)(5660300002)(70206006)(70586007)(26005)(8676002)(16576012)(36906005)(7416002)(2906002)(110136005)(356005)(36756003)(336012)(2616005)(426003)(4326008)(7636003)(83380400001)(82740400003)(36860700001)(316002)(31686004)(31696002)(82310400003)(53546011)(34020700004)(2101003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 06:04:12.6207
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c828cfd-1f86-43dd-087f-08d9481f88eb
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT038.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5342
+References: <1626362126-27775-1-git-send-email-alan.maguire@oracle.com> <1626362126-27775-2-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1626362126-27775-2-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 15 Jul 2021 23:24:27 -0700
+Message-ID: <CAEf4Bza6B_ekadS5-1G1TEWMQTZTvDUBX0Pbvq5hhzN2Duz1dw@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 1/3] libbpf: BTF dumper support for typed data
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/15/21 5:04 PM, John Hubbard wrote:
-...
->>> ...and un-setting CONFIG_DEBUG_INFO_BTF makes that disappear. Maybe someone
->>> who is understands the BTFIDS build step can shed some light on that; I'm
->>> not there yet. :)
->>
->> I'm just a user/consume of output from the BTFIDS build step, I think Jiri Olsa own the tool 
->> resolve_btfids, and ACME pahole.  I've hit a number of issues in the past that Jiri and ACME help 
->> resolve quickly.
->> The most efficient solution I've found was to upgrade pahole to a newer version.
->>
->> What version of pahole does your build system have?
->>
->> What is your GCC version?
->>
-> 
-> Just a quick answer first on the versions: this is an up to date Arch Linux system:
-> 
-> gcc: 11.1.0
-> pahole: 1.21
-> 
-> I'll try to get the other step done later this evening.
+On Thu, Jul 15, 2021 at 8:15 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> Add a BTF dumper for typed data, so that the user can dump a typed
+> version of the data provided.
+>
+> The API is
+>
+> int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+>                              void *data, size_t data_sz,
+>                              const struct btf_dump_type_data_opts *opts);
+>
+> ...where the id is the BTF id of the data pointed to by the "void *"
+> argument; for example the BTF id of "struct sk_buff" for a
+> "struct skb *" data pointer.  Options supported are
+>
+>  - a starting indent level (indent_lvl)
+>  - a user-specified indent string which will be printed once per
+>    indent level; if NULL, tab is chosen but any string <= 32 chars
+>    can be provided.
+>  - a set of boolean options to control dump display, similar to those
+>    used for BPF helper bpf_snprintf_btf().  Options are
+>         - compact : omit newlines and other indentation
+>         - skip_names: omit member names
+>         - emit_zeroes: show zero-value members
+>
+> Default output format is identical to that dumped by bpf_snprintf_btf(),
+> for example a "struct sk_buff" representation would look like this:
+>
+> struct sk_buff){
+>         (union){
+>                 (struct){
+>                         .next = (struct sk_buff *)0xffffffffffffffff,
+>                         .prev = (struct sk_buff *)0xffffffffffffffff,
+>                 (union){
+>                         .dev = (struct net_device *)0xffffffffffffffff,
+>                         .dev_scratch = (long unsigned int)18446744073709551615,
+>                 },
+>         },
+> ...
+>
+> If the data structure is larger than the *data_sz*
+> number of bytes that are available in *data*, as much
+> of the data as possible will be dumped and -E2BIG will
+> be returned.  This is useful as tracers will sometimes
+> not be able to capture all of the data associated with
+> a type; for example a "struct task_struct" is ~16k.
+> Being able to specify that only a subset is available is
+> important for such cases.  On success, the amount of data
+> dumped is returned.
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
 
-...and...I've lost the repro completely. The only thing I changed was that I
-attempted to update pahole. This caused Arch Linux reinstall pahole, claiming
-that 1.21 is already the current version.
+Ok, this looks great. I think I found a few residual problems, so
+please see comments below and address them. But I'm inclined to land
+this patch set as is because it's in a good shape already, and it is
+pretty, so it's hard and time-consuming to weed through minor (at this
+point) changes between versions. So please send follow-up patch(es)
+with fixes. Hopefully soon enough before the libbpf release. Thanks a
+lot for working on this and persevering, this is a great API!
 
-It acts as if there was something wrong with the pahole installation. This
-seems unlikely, given that the system is merely on a routine update schedule.
-However, that's the data I have.
+I'll apply a patch set to bpf-next when it will open up for new patches. Thanks.
 
-If it ever comes up again I'll be able to run resolve_btfids, using your
-steps here, so thanks for posting those!
+>  tools/lib/bpf/btf.h      |  19 ++
+>  tools/lib/bpf/btf_dump.c | 819 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  tools/lib/bpf/libbpf.map |   1 +
+>  3 files changed, 834 insertions(+), 5 deletions(-)
+
+I also wanted to call out this ^^ versus:
+
+a) initial kernel-sharing version:
+
+  >  18 files changed, 3236 insertions(+), 1319 deletions(-)
+
+b) initial libbpf-only version:
+
+  >  6 files changed, 1251 insertions(+), 3 deletions(-)
+
+And the API actually gained in supported features and correctness.
+
+>
+
+[...]
+
+> +
+> +union float_data {
+> +       long double ld;
+> +       double d;
+> +       float f;
+> +};
+
+clever
+
+> +
+> +static int btf_dump_float_data(struct btf_dump *d,
+> +                              const struct btf_type *t,
+> +                              __u32 type_id,
+> +                              const void *data)
+> +{
+> +       const union float_data *flp = data;
+> +       union float_data fl;
+> +       int sz = t->size;
+> +
+> +       /* handle unaligned data; copy to local union */
+> +       if (((uintptr_t)data) % sz) {
+> +               memcpy(&fl, data, sz);
+> +               flp = &fl;
+> +       }
+> +
+> +       switch (sz) {
+> +       case 16:
+> +               btf_dump_type_values(d, "%Lf", flp->ld);
+> +               break;
+> +       case 8:
+> +               btf_dump_type_values(d, "%lf", flp->d);
+> +               break;
+> +       case 4:
+> +               btf_dump_type_values(d, "%f", flp->f);
+> +               break;
+> +       default:
+> +               pr_warn("unexpected size %d for id [%u]\n", sz, type_id);
+> +               return -EINVAL;
+> +       }
+> +       return 0;
+> +}
+> +
+
+[...]
+
+> +
+> +static int btf_dump_array_data(struct btf_dump *d,
+> +                              const struct btf_type *t,
+> +                              __u32 id,
+> +                              const void *data)
+> +{
+> +       const struct btf_array *array = btf_array(t);
+> +       const struct btf_type *elem_type;
+> +       __u32 i, elem_size = 0, elem_type_id;
+> +       bool is_array_member;
+> +
+> +       elem_type_id = array->type;
+> +       elem_type = skip_mods_and_typedefs(d->btf, elem_type_id, NULL);
+> +       elem_size = btf__resolve_size(d->btf, elem_type_id);
+> +       if (elem_size <= 0) {
+> +               pr_warn("unexpected elem size %d for array type [%u]\n", elem_size, id);
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (btf_is_int(elem_type)) {
+> +               /*
+> +                * BTF_INT_CHAR encoding never seems to be set for
+> +                * char arrays, so if size is 1 and element is
+> +                * printable as a char, we'll do that.
+> +                */
+> +               if (elem_size == 1)
+> +                       d->typed_dump->is_array_char = true;
+> +       }
+> +
+> +       /* note that we increment depth before calling btf_dump_print() below;
+> +        * this is intentional.  btf_dump_data_newline() will not print a
+> +        * newline for depth 0 (since this leaves us with trailing newlines
+> +        * at the end of typed display), so depth is incremented first.
+> +        * For similar reasons, we decrement depth before showing the closing
+> +        * parenthesis.
+> +        */
+> +       d->typed_dump->depth++;
+> +       btf_dump_printf(d, "[%s", btf_dump_data_newline(d));
+> +
+> +       /* may be a multidimensional array, so store current "is array member"
+> +        * status so we can restore it correctly later.
+> +        */
+> +       is_array_member = d->typed_dump->is_array_member;
+> +       d->typed_dump->is_array_member = true;
+> +       for (i = 0; i < array->nelems; i++, data += elem_size) {
+> +               if (d->typed_dump->is_array_terminated)
+> +                       break;
+
+I suspect this logic breaks for multi-dimensional char arrays. Please
+check and add follow-up tests and fixes, no need to address that in
+this patch set, you've suffered enough.
 
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+> +               btf_dump_dump_type_data(d, NULL, elem_type, elem_type_id, data, 0, 0);
+> +       }
+> +       d->typed_dump->is_array_member = is_array_member;
+> +       d->typed_dump->depth--;
+> +       btf_dump_data_pfx(d);
+> +       btf_dump_type_values(d, "]");
+> +
+> +       return 0;
+> +}
+> +
+> +static int btf_dump_struct_data(struct btf_dump *d,
+> +                               const struct btf_type *t,
+> +                               __u32 id,
+> +                               const void *data)
+> +{
+> +       const struct btf_member *m = btf_members(t);
+> +       __u16 n = btf_vlen(t);
+> +       int i, err;
+> +
+> +       /* note that we increment depth before calling btf_dump_print() below;
+> +        * this is intentional.  btf_dump_data_newline() will not print a
+> +        * newline for depth 0 (since this leaves us with trailing newlines
+> +        * at the end of typed display), so depth is incremented first.
+> +        * For similar reasons, we decrement depth before showing the closing
+> +        * parenthesis.
+> +        */
+
+ah, ok, I see. I sort of randomly stumbled on this from a purely
+aesthetic reasons, but I'm happy we clarified this because it's
+completely non-obvious
+
+> +       d->typed_dump->depth++;
+> +       btf_dump_printf(d, "{%s", btf_dump_data_newline(d));
+> +
+> +       for (i = 0; i < n; i++, m++) {
+> +               const struct btf_type *mtype;
+> +               const char *mname;
+> +               __u32 moffset;
+> +               __u8 bit_sz;
+> +
+> +               mtype = btf__type_by_id(d->btf, m->type);
+> +               mname = btf_name_of(d, m->name_off);
+> +               moffset = btf_member_bit_offset(t, i);
+> +
+> +               bit_sz = btf_member_bitfield_size(t, i);
+> +               err = btf_dump_dump_type_data(d, mname, mtype, m->type, data + moffset / 8,
+> +                                             moffset % 8, bit_sz);
+> +               if (err < 0)
+> +                       return err;
+> +       }
+> +       d->typed_dump->depth--;
+> +       btf_dump_data_pfx(d);
+> +       btf_dump_type_values(d, "}");
+> +       return err;
+> +}
+> +
+> +static int btf_dump_ptr_data(struct btf_dump *d,
+> +                             const struct btf_type *t,
+> +                             __u32 id,
+> +                             const void *data)
+> +{
+> +       btf_dump_type_values(d, "%p", *(void **)data);
+
+Wait, you fixed pointer zero checking logic and misaligned reads for
+ints/floats, but none of that for actually printing pointers?...
+Please send a follow-up fix.
+
+> +       return 0;
+> +}
+> +
+> +static int btf_dump_get_enum_value(struct btf_dump *d,
+> +                                  const struct btf_type *t,
+> +                                  const void *data,
+> +                                  __u32 id,
+> +                                  __s64 *value)
+> +{
+> +       int sz = t->size;
+> +
+> +       /* handle unaligned enum value */
+> +       if (((uintptr_t)data) % sz) {
+
+nit: probably worth a small helper with obvious name to avoid extra
+comments and all those ((()))
+
+> +               *value = (__s64)btf_dump_bitfield_get_data(d, t, data, 0, 0);
+> +               return 0;
+> +       }
+
+[...]
+
+> +               elem_type_id = array->type;
+> +               elem_size = btf__resolve_size(d->btf, elem_type_id);
+> +               elem_type = skip_mods_and_typedefs(d->btf, elem_type_id, NULL);
+> +
+> +               ischar = btf_is_int(elem_type) && elem_size == 1;
+> +
+> +               /* check all elements; if _any_ element is nonzero, all
+> +                * of array is displayed.  We make an exception however
+> +                * for char arrays where the first element is 0; these
+> +                * are considered zeroed also, even if later elements are
+> +                * non-zero because the string is terminated.
+> +                */
+> +               for (i = 0; i < array->nelems; i++) {
+> +                       if (i == 0 && ischar && *(char *)data == 0)
+> +                               return -ENODATA;
+
+same here, this might be too aggressive for something like char a[2][10] ?
+
+> +                       err = btf_dump_type_data_check_zero(d, elem_type,
+> +                                                           elem_type_id,
+> +                                                           data +
+> +                                                           (i * elem_size),
+> +                                                           bits_offset, 0);
+> +                       if (err != -ENODATA)
+> +                               return err;
+> +               }
+> +               return -ENODATA;
+> +       }
+> +       case BTF_KIND_STRUCT:
+> +       case BTF_KIND_UNION: {
+> +               const struct btf_member *m = btf_members(t);
+> +               __u16 n = btf_vlen(t);
+> +
+> +               /* if any struct/union member is non-zero, the struct/union
+> +                * is considered non-zero and dumped.
+> +                */
+> +               for (i = 0; i < n; i++, m++) {
+> +                       const struct btf_type *mtype;
+> +                       __u32 moffset;
+> +
+> +                       mtype = btf__type_by_id(d->btf, m->type);
+> +                       moffset = btf_member_bit_offset(t, i);
+> +
+> +                       /* btf_int_bits() does not store member bitfield size;
+> +                        * bitfield size needs to be stored here so int display
+> +                        * of member can retrieve it.
+> +                        */
+> +                       bit_sz = btf_member_bitfield_size(t, i);
+> +                       err = btf_dump_type_data_check_zero(d, mtype, m->type, data + moffset / 8,
+> +                                                           moffset % 8, bit_sz);
+> +                       if (err != ENODATA)
+> +                               return err;
+> +               }
+> +               return -ENODATA;
+> +       }
+> +       case BTF_KIND_ENUM:
+> +               if (btf_dump_get_enum_value(d, t, data, id, &value))
+> +                       return 0;
+
+why not propagating error here?
+
+> +               if (value == 0)
+> +                       return -ENODATA;
+> +               return 0;
+> +       default:
+> +               return 0;
+> +       }
+> +}
+> +
+
+[...]
+
+> +       case BTF_KIND_ARRAY:
+> +               err = btf_dump_array_data(d, t, id, data);
+> +               break;
+> +       case BTF_KIND_STRUCT:
+> +       case BTF_KIND_UNION:
+> +               err = btf_dump_struct_data(d, t, id, data);
+> +               break;
+> +       case BTF_KIND_ENUM:
+> +               /* handle bitfield and int enum values */
+> +               if (bit_sz) {
+> +                       unsigned __int128 print_num;
+> +                       __s64 enum_val;
+> +
+> +                       print_num = btf_dump_bitfield_get_data(d, t, data, bits_offset, bit_sz);
+> +                       enum_val = (__s64)print_num;
+> +                       err = btf_dump_enum_data(d, t, id, &enum_val);
+
+this is broken on big-endian, no? Basically almost always it will be
+printing either 0, -1 or 0xffffffff?..
+
+> +               } else
+> +                       err = btf_dump_enum_data(d, t, id, data);
+> +               break;
+> +       case BTF_KIND_VAR:
+> +               err = btf_dump_var_data(d, t, id, data);
+> +               break;
+> +       case BTF_KIND_DATASEC:
+> +               err = btf_dump_datasec_data(d, t, id, data);
+> +               break;
+> +       default:
+> +               pr_warn("unexpected kind [%u] for id [%u]\n",
+> +                       BTF_INFO_KIND(t->info), id);
+> +               return -EINVAL;
+> +       }
+> +       if (err < 0)
+> +               return err;
+> +       return size;
+> +}
+> +
+> +int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
+> +                            const void *data, size_t data_sz,
+> +                            const struct btf_dump_type_data_opts *opts)
+> +{
+> +       const struct btf_type *t;
+> +       int ret;
+> +
+> +       if (!OPTS_VALID(opts, btf_dump_type_data_opts))
+> +               return libbpf_err(-EINVAL);
+> +
+> +       t = btf__type_by_id(d->btf, id);
+> +       if (!t)
+> +               return libbpf_err(-ENOENT);
+> +
+> +       d->typed_dump = calloc(1, sizeof(struct btf_dump_data));
+
+just realized this doesn't have to be calloc()'ed, it can be on the
+stack zero-initialized variable; feel free to switch in the follow up
+as well
+
+> +       if (!d->typed_dump)
+> +               return libbpf_err(-ENOMEM);
+
+then we won't need to handle this at all
+
+> +
+> +       d->typed_dump->data_end = data + data_sz;
+> +       d->typed_dump->indent_lvl = OPTS_GET(opts, indent_level, 0);
+> +       /* default indent string is a tab */
+> +       if (!opts->indent_str)
+> +               d->typed_dump->indent_str[0] = '\t';
+
+[...]
