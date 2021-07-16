@@ -2,248 +2,245 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283453CB0C0
-	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 04:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B2E3CB0F1
+	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 05:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbhGPCYr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Jul 2021 22:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
+        id S233456AbhGPDI2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Jul 2021 23:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231700AbhGPCYr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Jul 2021 22:24:47 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61E7C06175F;
-        Thu, 15 Jul 2021 19:21:51 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id s18so8529847pgg.8;
-        Thu, 15 Jul 2021 19:21:51 -0700 (PDT)
+        with ESMTP id S231230AbhGPDI1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Jul 2021 23:08:27 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5594C06175F;
+        Thu, 15 Jul 2021 20:05:32 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id p3so6969004ilg.8;
+        Thu, 15 Jul 2021 20:05:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2pV3nEuJ7NoXTPCXF39gw1r9HV1mDGqymnukc1rbFgM=;
-        b=s+guN07dGX4//tJ7te8oDHmKvek4UVeY1DM6mz1oTP5pTpoDjqDLUgT9cWzvn7EKma
-         /AoF+b/AEUgDdxnA/Pc77YcEcJXfaYk94o/V6PCua0HPURSp72gm2h4c0Nhz3owxl6BN
-         q9+QQJhOuRkhqw74M7Px3f4NQzWxm2QM5EeyIVchBQ0Y7EQBAaIOkW4hNtnU3FvoEi2E
-         F/aJDXe8rdTz5zVYyZZdyTzH1ONRwxQvaceP7ypnt5NBlStGWR579eAaRhTSXI7ddBNx
-         T7vCYXnQ63F5NhXpAyZUP9J9R5Rh8TQ3zG2knZgw7bFRfroOTz8z77WGimzTGII0We8h
-         s6qA==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=PJ+hw8PNlTC++kFX4h3HnS0saGGkW8SyWcDurX2bA2I=;
+        b=Z/nijpNtzsXrHv2DieRSSyJnis7h+yuY5QAY8HbdY4r7S/lIi+Fp9HyQ589oJFIYZa
+         hb32LpQZJvyxnyzaPnodowB1bS6SaJ8lquDyPPxH8lLf1Brs7qyJFORZl9DecDm0KDS4
+         MPGXBDI6ULM8pYtw0NyJb5AwaveDwYKbzpE4LOP0NelSZWHp0sWZJPk53HfxmxSWzy0O
+         8YvOcf+x4MwcZboBa8L79KH2KQi4wo4R4XaAVtSSYXxePtyuSWTFjzW7ga9fO0CU7dco
+         nc7zhd4jGA7g5+bEOpi7jtJmp1fz1JcLARe05liItS0hor76ytQKaQqH9L1BBDc0pZAw
+         1B3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2pV3nEuJ7NoXTPCXF39gw1r9HV1mDGqymnukc1rbFgM=;
-        b=tSPkzLqgWil3x4+U9YlSeGW8Cpe6oq9wcE5ZWaWHFIYvj1y9VkYix0oeENcllAyEAP
-         JbPiXsyiEWe9y7YXE7OTQXDkVN6iv3tlMhhziO7FIWxl2KkXEyfxP1v1oKecjlrSVVef
-         547ziZ8B/ixVC7glConQjKyoLtJruOBj0RuGb1AYBSQlw8OvoVDwUl+LH5p1MIRSkCF/
-         G53bvxd9Fw062JrXm0HQuW5WrrHEoJ2wX2Tt3oVJ8UH2cWNydClrrIKKv367KztIXawn
-         JpnMtKz2Mi+atqKEfBnw6Z3sUS04RIYs/gt7GCkXAgBa2jkEHffJkRjJxrcQ/76Fq0Lu
-         89aA==
-X-Gm-Message-State: AOAM533IFlm7GwOzNZiVTcpDFPlF9AbfajFa3aPqMgstloqXBDCfFh8Y
-        M0L41BKBTytuVexG8xOI702kF0P8iDA=
-X-Google-Smtp-Source: ABdhPJzsi+89b67Cx2S1aHDpODs3RScis3rtiI2KmH8F+pNZyg7NJM32xnLaM38EihpAsCYlfPF1ZA==
-X-Received: by 2002:a05:6a00:d5f:b029:32c:7264:2f65 with SMTP id n31-20020a056a000d5fb029032c72642f65mr7788687pfv.40.1626402111143;
-        Thu, 15 Jul 2021 19:21:51 -0700 (PDT)
-Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:608c])
-        by smtp.gmail.com with ESMTPSA id y9sm7234786pfa.197.2021.07.15.19.21.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Jul 2021 19:21:50 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: pull-request: bpf-next 2021-07-15
-Date:   Thu, 15 Jul 2021 19:21:47 -0700
-Message-Id: <20210716022147.82990-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=PJ+hw8PNlTC++kFX4h3HnS0saGGkW8SyWcDurX2bA2I=;
+        b=sNQWBXQz0QqR0lLBwYrt/0OekSSNCXhvQkcEHbF9oXiMK2NCBYYswBIJxnKeSvVWUN
+         6VZWnFk2zbQbo9A3S1PWCVfR+2EHouWmNHrPcpO7xfkdie1u7Ve4OIc+UeHedvPAoMNu
+         eDa8sffWGjevPFFg6NhJUrxPneJrRAl84qjeuEKza/WUtHFiEtZjLFPOTAEGSoDgqVa+
+         8iYwxkvSWV1hdj7miyASZy8usbRD4xxUxmZs8rQg4IG3x+jDBTpkBJago5q7TnxhWZ9U
+         9BN5BxcU9pKYH+FHADeMUuYhm1Q9HPSrP9eEejAR1E5u5Upc6Undih24x9J/TmQ7vusH
+         biVQ==
+X-Gm-Message-State: AOAM5338dyssGr7rxviCmItTnV3sZZ0zptlSm5jJAV+qMGZNKlHzt0vo
+        72s9EyXBE76QiEa1tt0x0eU=
+X-Google-Smtp-Source: ABdhPJzI59q+bcNrSUqquKWTrD8sgXKjaOW4Spla1keUh6SKvBGH6+zLO27U9AxqmUvIQoumpoPFDQ==
+X-Received: by 2002:a92:509:: with SMTP id q9mr4715951ile.239.1626404732169;
+        Thu, 15 Jul 2021 20:05:32 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id m26sm4316479ioo.23.2021.07.15.20.05.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jul 2021 20:05:31 -0700 (PDT)
+Date:   Thu, 15 Jul 2021 20:05:24 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, alexander.duyck@gmail.com,
+        brouer@redhat.com, echaudro@redhat.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Message-ID: <60f0f774378fe_2a57208e5@john-XPS-13-9370.notmuch>
+In-Reply-To: <YPDERccoAaRRlydI@lore-desk>
+References: <cover.1625828537.git.lorenzo@kernel.org>
+ <16f4244f5a506143f5becde501f1ecb120255b42.1625828537.git.lorenzo@kernel.org>
+ <60ec8dfeb42aa_50e1d20857@john-XPS-13-9370.notmuch>
+ <YOykin2acwjMjfRj@lore-desk>
+ <60ef76e5d2379_5a0c12081c@john-XPS-13-9370.notmuch>
+ <YPDERccoAaRRlydI@lore-desk>
+Subject: Re: [PATCH bpf-next 2/2] net: xdp: add xdp_update_skb_shared_info
+ utility routine
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+Lorenzo Bianconi wrote:
+> > Lorenzo Bianconi wrote:
+> > > > Lorenzo Bianconi wrote:
+> > > > > Introduce xdp_update_skb_shared_info routine to update frags array
+> > > > > metadata from a given xdp_buffer/xdp_frame. We do not need to reset
+> > > > > frags array since it is already initialized by the driver.
+> > > > > Rely on xdp_update_skb_shared_info in mvneta driver.
+> > > > 
+> > > > Some more context here would really help. I had to jump into the mvneta
+> > > > driver to see what is happening.
+> > > 
+> > > Hi John,
+> > > 
+> > > ack, you are right. I will add more context next time. Sorry for the noise.
+> > > 
+> > > > 
+> > > > So as I read this we have a loop processing the descriptor in
+> > > > mvneta_rx_swbm()
+> > > > 
+> > > >  mvneta_rx_swbm()
+> > > >    while (rx_proc < budget && rx_proc < rx_todo) {
+> > > >      if (rx_status & MVNETA_RXD_FIRST_DESC) ...
+> > > >      else {
+> > > >        mvneta_swbm_add_rx_fragment()
+> > > >      }
+> > > >      ..
+> > > >      if (!rx_status & MVNETA_RXD_LAST_DESC)
+> > > >          continue;
+> > > >      ..
+> > > >      if (xdp_prog)
+> > > >        mvneta_run_xdp(...)
+> > > >    }
+> > > > 
+> > > > roughly looking like above. First question, do you ever hit
+> > > > !MVNETA_RXD_LAST_DESC today? I assume this is avoided by hardware
+> > > > setup when XDP is enabled, otherwise _run_xdp() would be
+> > > > broken correct? Next question, given last descriptor bit
+> > > > logic whats the condition to hit the code added in this patch?
+> > > > wouldn't we need more than 1 descriptor and then we would
+> > > > skip the xdp_run... sorry lost me and its probably easier
+> > > > to let you give the flow vs spending an hour trying to
+> > > > track it down.
+> > > 
+> > > I will point it out in the new commit log, but this is a preliminary patch for
+> > > xdp multi-buff support. In the current codebase xdp_update_skb_shared_info()
+> > > is run just when the NIC is not running in XDP mode (please note
+> > > mvneta_swbm_add_rx_fragment() is run even if xdp_prog is NULL).
+> > > When we add xdp multi-buff support, xdp_update_skb_shared_info() will run even
+> > > in XDP mode since we will remove the MTU constraint.
+> > > 
+> > > In the current codebsae the following condition can occur in non-XDP mode if
+> > > the packet is split on 3 or more descriptors (e.g. MTU 9000):
+> > > 
+> > > if (!(rx_status & MVNETA_RXD_LAST_DESC))
+> > >    continue;
+> > 
+> > But, as is there is no caller of xdp_update_skb_shared_info() so
+> > I think we should move the these two patches into the series with
+> > the multibuf support.
+> 
+> mvneta is currently using it building the skb in mvneta_swbm_build_skb()
+> running in non-xdp mode but I am fine merging this series in the
+> multi-buff one.
 
-The following pull-request contains BPF updates for your *net-next* tree.
+My preference is to add it where it will be used. So in the multi-buf
+series.
 
-We've added 45 non-merge commits during the last 15 day(s) which contain
-a total of 52 files changed, 3122 insertions(+), 384 deletions(-).
+> 
+> > 
+> > > 
+> > > > 
+> > > > But, in theory as you handle a hardware discriptor you can build
+> > > > up a set of pages using them to create a single skb rather than a
+> > > > skb per descriptor. But don't we know if pfmemalloc should be
+> > > > done while we are building the frag list? Can't se just set it
+> > > > vs this for loop in xdp_update_skb_shared_info(),
+> > > 
+> > > I added pfmemalloc code in xdp_update_skb_shared_info() in order to reuse it
+> > > for the xdp_redirect use-case (e.g. whenever we redirect a xdp multi-buff
+> > > in a veth or in a cpumap). I have a pending patch where I am using
+> > > xdp_update_skb_shared_info in __xdp_build_skb_from_frame().
+> > 
+> > OK, but it adds an extra for loop and the related overhead. Can
+> > we avoid this overhead and just set it from where we first
+> > know we have a compound page. Or carry some bit through and
+> > do a simpler check,
+> > 
+> >  if (pfmemalloc_needed) skb->pfmemalloc = true;
+> > 
+> > I guess in the case here its building the skb so performance is maybe
+> > not as critical, but if it gets used in the redirect case then we
+> > shouldn't be doing unnecessary for loops.
+> 
+> doing so every driver will need to take care of it building the xdp_buff.
+> Does it work to do it since probably multi-buff is not critical for
+> performance?
 
-The main changes are:
+OK, but I think we need to improve performance in some of the 100Gbps
+drivers. Work is in progress so any thing that has potential to slow
+things down again I want to call out. I agree this might be OK and
+only matters for nr_frags case.
 
-1) Introduce bpf timers, from Alexei.
+> In order to support xdp_redirect we need to save this info in
+> xdp_buff/xdp_frame, maybe in the flag field added in xdp multi-buff series.
 
-2) Add sockmap support for unix datagram socket, from Cong.
+Yeah I think that would work better if possible.
 
-3) Fix potential memleak and UAF in the verifier, from He.
+> 
+> > 
+> > > 
+> > > > 
+> > > > > +	for (i = 0; i < nr_frags; i++) {
+> > > > > +		struct page *page = skb_frag_page(&sinfo->frags[i]);
+> > > > > +
+> > > > > +		page = compound_head(page);
+> > > > > +		if (page_is_pfmemalloc(page)) {
+> > > > > +			skb->pfmemalloc = true;
+> > > > > +			break;
+> > > > > +		}
+> > > > > +	}
+> > > > > +}
+> > > > 
+> > > > ...
+> > > > 
+> > > > > diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> > > > > index 361bc4fbe20b..abf2e50880e0 100644
+> > > > > --- a/drivers/net/ethernet/marvell/mvneta.c
+> > > > > +++ b/drivers/net/ethernet/marvell/mvneta.c
+> > > > > @@ -2294,18 +2294,29 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
+> > > > >  	rx_desc->buf_phys_addr = 0;
+> > > > >  
+> > > > >  	if (data_len > 0 && xdp_sinfo->nr_frags < MAX_SKB_FRAGS) {
+> > > > > -		skb_frag_t *frag = &xdp_sinfo->frags[xdp_sinfo->nr_frags++];
+> > > > > +		skb_frag_t *frag = &xdp_sinfo->frags[xdp_sinfo->nr_frags];
+> > > > >  
+> > > > >  		skb_frag_off_set(frag, pp->rx_offset_correction);
+> > > > >  		skb_frag_size_set(frag, data_len);
+> > > > >  		__skb_frag_set_page(frag, page);
+> > > > > +		/* We don't need to reset pp_recycle here. It's already set, so
+> > > > > +		 * just mark fragments for recycling.
+> > > > > +		 */
+> > > > > +		page_pool_store_mem_info(page, rxq->page_pool);
+> > > > > +
+> > > > > +		/* first fragment */
+> > > > > +		if (!xdp_sinfo->nr_frags)
+> > > > > +			xdp_sinfo->gso_type = *size;
+> > > > 
+> > > > Would be nice to also change 'int size' -> 'unsigned int size' so the
+> > > > types matched. Presumably you really can't have a negative size.
+> > > > 
+> > > 
+> > > ack
+> > > 
+> > > > Also how about giving gso_type a better name. xdp_sinfo->size maybe?
+> > > 
+> > > I did it in this way in order to avoid adding a union in skb_shared_info.
+> > > What about adding an inline helper to set/get it? e.g.
+> > 
+> > What was wrong with the union?
+> 
+> Alex requested to use gso_* fields already there (the union was in the previous
+> version I sent).
 
-4) Add bpf_get_func_ip helper, from Jiri.
+@Alex, I think you were just saying union the gso_size field not the
+tskey field.  Anyways its a fairly small nit on my side I don't care
+much either way.
 
-5) Improvements to generic XDP mode, from Kumar.
-
-6) Support for passing xdp_md to XDP programs in bpf_prog_run, from Zvi.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Andrii Nakryiko, Jesper Dangaard Brouer, John Fastabend, Martin KaFai 
-Lau, Masami Hiramatsu, Song Liu, Toke Høiland-Jørgensen, Willem de 
-Bruijn, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit 5e437416ff66981d8154687cfdf7de50b1d82bfc:
-
-  Merge branch 'dsa-mv88e6xxx-topaz-fixes' (2021-07-01 11:51:36 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
-
-for you to fetch changes up to c50524ec4e3ad97d7d963268abd859c6413fbeb4:
-
-  Merge branch 'sockmap: add sockmap support for unix datagram socket' (2021-07-15 18:17:51 -0700)
-
-----------------------------------------------------------------
-Alan Maguire (1):
-      libbpf: Allow specification of "kprobe/function+offset"
-
-Alexei Starovoitov (16):
-      Merge branch 'bpf: support input xdp_md context in BPF_PROG_TEST_RUN'
-      Merge branch 'Generic XDP improvements'
-      bpf: Sync tools/include/uapi/linux/bpf.h
-      bpf: Prepare bpf_prog_put() to be called from irq context.
-      bpf: Factor out bpf_spin_lock into helpers.
-      bpf: Introduce bpf timers.
-      bpf: Add map side support for bpf timers.
-      bpf: Prevent pointer mismatch in bpf_timer_init.
-      bpf: Remember BTF of inner maps.
-      bpf: Relax verifier recursion check.
-      bpf: Implement verifier support for validation of async callbacks.
-      bpf: Teach stack depth check about async callbacks.
-      selftests/bpf: Add bpf_timer test.
-      selftests/bpf: Add a test with bpf_timer in inner map.
-      Merge branch 'Add bpf_get_func_ip helper'
-      Merge branch 'sockmap: add sockmap support for unix datagram socket'
-
-Cong Wang (11):
-      sock_map: Relax config dependency to CONFIG_NET
-      sock_map: Lift socket state restriction for datagram sockets
-      af_unix: Implement ->read_sock() for sockmap
-      af_unix: Set TCP_ESTABLISHED for datagram sockets too
-      af_unix: Add a dummy ->close() for sockmap
-      af_unix: Implement ->psock_update_sk_prot()
-      af_unix: Implement unix_dgram_bpf_recvmsg()
-      selftests/bpf: Factor out udp_socketpair()
-      selftests/bpf: Factor out add_to_sockmap()
-      selftests/bpf: Add a test case for unix sockmap
-      selftests/bpf: Add test cases for redirection between udp and unix
-
-Daniel Borkmann (1):
-      Merge branch 'bpf-timers'
-
-He Fengqing (1):
-      bpf: Fix potential memleak and UAF in the verifier.
-
-Jesper Dangaard Brouer (1):
-      samples/bpf: xdp_redirect_cpu_user: Cpumap qsize set larger default
-
-Jiri Olsa (7):
-      bpf, x86: Store caller's ip in trampoline stack
-      bpf: Enable BPF_TRAMP_F_IP_ARG for trampolines with call_get_func_ip
-      bpf: Add bpf_get_func_ip helper for tracing programs
-      bpf: Add bpf_get_func_ip helper for kprobe programs
-      selftests/bpf: Add test for bpf_get_func_ip helper
-      libbpf: Add bpf_program__attach_kprobe_opts function
-      selftests/bpf: Add test for bpf_get_func_ip in kprobe+offset probe
-
-Kumar Kartikeya Dwivedi (5):
-      net: core: Split out code to run generic XDP prog
-      bitops: Add non-atomic bitops for pointers
-      bpf: cpumap: Implement generic cpumap
-      bpf: devmap: Implement devmap prog execution for generic XDP
-      bpf: Tidy xdp attach selftests
-
-Kuniyuki Iwashima (1):
-      bpf: Fix a typo of reuseport map in bpf.h.
-
-Martynas Pumputis (1):
-      libbpf: Fix reuse of pinned map on older kernel
-
-Tobias Klauser (1):
-      selftests/bpf: Remove unused variable in tc_tunnel prog
-
-Zvi Effron (4):
-      bpf: Add function for XDP meta data length check
-      bpf: Support input xdp_md context in BPF_PROG_TEST_RUN
-      bpf: Support specifying ingress via xdp_md context in BPF_PROG_TEST_RUN
-      selftests/bpf: Add test for xdp_md context in BPF_PROG_TEST_RUN
-
- MAINTAINERS                                        |   1 +
- arch/x86/net/bpf_jit_comp.c                        |  19 +
- include/linux/bitops.h                             |  50 +++
- include/linux/bpf.h                                | 100 +++--
- include/linux/bpf_verifier.h                       |  19 +-
- include/linux/btf.h                                |   1 +
- include/linux/filter.h                             |   3 +-
- include/linux/netdevice.h                          |   2 +
- include/linux/skbuff.h                             |  10 +-
- include/linux/typecheck.h                          |   9 +
- include/net/af_unix.h                              |  12 +
- include/net/xdp.h                                  |   5 +
- include/uapi/linux/bpf.h                           |  85 ++++-
- kernel/bpf/Kconfig                                 |   2 +-
- kernel/bpf/arraymap.c                              |  21 ++
- kernel/bpf/btf.c                                   |  77 +++-
- kernel/bpf/cpumap.c                                | 116 +++++-
- kernel/bpf/devmap.c                                |  49 ++-
- kernel/bpf/hashtab.c                               | 105 +++++-
- kernel/bpf/helpers.c                               | 340 ++++++++++++++++-
- kernel/bpf/local_storage.c                         |   4 +-
- kernel/bpf/map_in_map.c                            |   8 +
- kernel/bpf/syscall.c                               |  53 ++-
- kernel/bpf/trampoline.c                            |  12 +-
- kernel/bpf/verifier.c                              | 379 ++++++++++++++++++-
- kernel/trace/bpf_trace.c                           |  33 +-
- net/bpf/test_run.c                                 | 109 +++++-
- net/core/Makefile                                  |   2 -
- net/core/dev.c                                     | 103 +++---
- net/core/filter.c                                  |  10 +-
- net/core/sock_map.c                                |  22 +-
- net/ipv4/udp_bpf.c                                 |   1 -
- net/unix/Makefile                                  |   1 +
- net/unix/af_unix.c                                 |  85 ++++-
- net/unix/unix_bpf.c                                | 122 +++++++
- samples/bpf/xdp_redirect_cpu_user.c                |  22 +-
- scripts/bpf_doc.py                                 |   2 +
- tools/include/uapi/linux/bpf.h                     |  85 ++++-
- tools/lib/bpf/libbpf.c                             | 104 +++++-
- .../selftests/bpf/prog_tests/get_func_ip_test.c    |  53 +++
- .../selftests/bpf/prog_tests/sockmap_listen.c      | 406 +++++++++++++++++----
- tools/testing/selftests/bpf/prog_tests/timer.c     |  55 +++
- tools/testing/selftests/bpf/prog_tests/timer_mim.c |  69 ++++
- .../bpf/prog_tests/xdp_context_test_run.c          | 105 ++++++
- .../selftests/bpf/prog_tests/xdp_cpumap_attach.c   |  43 +--
- .../selftests/bpf/prog_tests/xdp_devmap_attach.c   |  39 +-
- .../testing/selftests/bpf/progs/get_func_ip_test.c |  73 ++++
- tools/testing/selftests/bpf/progs/test_tc_tunnel.c |   1 -
- .../bpf/progs/test_xdp_context_test_run.c          |  20 +
- tools/testing/selftests/bpf/progs/timer.c          | 297 +++++++++++++++
- tools/testing/selftests/bpf/progs/timer_mim.c      |  88 +++++
- .../testing/selftests/bpf/progs/timer_mim_reject.c |  74 ++++
- 52 files changed, 3122 insertions(+), 384 deletions(-)
- create mode 100644 net/unix/unix_bpf.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/timer.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/timer_mim.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
- create mode 100644 tools/testing/selftests/bpf/progs/get_func_ip_test.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
- create mode 100644 tools/testing/selftests/bpf/progs/timer.c
- create mode 100644 tools/testing/selftests/bpf/progs/timer_mim.c
- create mode 100644 tools/testing/selftests/bpf/progs/timer_mim_reject.c
+> 
+> Regards,
+> Lorenzo
