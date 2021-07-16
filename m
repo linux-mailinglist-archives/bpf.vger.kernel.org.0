@@ -2,144 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879FD3CB1BA
-	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 06:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEC23CB1E7
+	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 07:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhGPE5E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Jul 2021 00:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
+        id S232300AbhGPFaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Jul 2021 01:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhGPE5E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Jul 2021 00:57:04 -0400
+        with ESMTP id S231961AbhGPFaS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Jul 2021 01:30:18 -0400
 Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09664C06175F;
-        Thu, 15 Jul 2021 21:54:09 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id v189so12872274ybg.3;
-        Thu, 15 Jul 2021 21:54:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F16C06175F
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 22:27:23 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id p22so12952117yba.7
+        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 22:27:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rQzix+JFYmfW/cepcI4Z8ROSEcKPRKu53+WeoqkDB7A=;
-        b=jwefsGN2q3DMczJLbwqAjnfzjHEHa+7foEN6u4d0o+x+dLX6z5C5DJTjOIq61znv1e
-         nVbrL/7csPQwxRKBvA8T62c8AqnUHH3OQ5geAtgYhkpMgEbblfVYiAGEz4nf/a8djYW0
-         FALLZ+nBBqb+dJdGp4ffvY9si5KCyXXHITXs7qktzWLpDvOPJP11bEvExB2zkOU5otya
-         9kB7wIqxcmQNoovVh4PguWVk/nTwiF3x1PpUObw4FMPY+iIgqF0r+LosGfvr3g0mSBEV
-         OSawvw3QW/dSA33Z5K2zA8QZDapU5vplUfyP144Le+h/3+WSRDPFFnh0jJR7K3o+wI7n
-         7PdA==
+        bh=TzJeOtPHmlRopsF1+ghLfMXFj1WSu1KHEXkAoClDTWk=;
+        b=ihzOc3tQvDZbLyoDwYA+ByMURRbB9QHv9IxQ101sYthHdPhQsmHKOGptOIbc0kHYLi
+         0qyYZ+Mup6q8ktA2UCxzgFeVzKoShd7Z73d6vIovH37+aie0b6x7EJYgJYttVIaQuApi
+         pLB8K3CTLct3rsGCf5l7Z7WZxuSejdGHE8Iv2LWfhmUoyHWlXI9x8hc382W5dG6VX5F/
+         GmU4iQJoZMbjdXjqh5qHsNnjzWJjpXeU7Ls58UJPrGLee0Dhoy+NRYhggeGFXhqJlWNU
+         oWJRTclS+6OZg4mD00/tz9ITZ8HQcPleolKedCD6EsRhPnazAh/Kz8mbwaGS8fAvlKfA
+         RJfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rQzix+JFYmfW/cepcI4Z8ROSEcKPRKu53+WeoqkDB7A=;
-        b=jni9f/+WyR//G+F2p+28Uyv6o8DKEq8jFD1Md71YI3HL1/KblfVL+a5+B8HxvgYKLS
-         OG63Y4/BnFZcyAixpWx3y+i13o2yAwab6YxceJT8GSsGYoXXpm7mgjzZ7a0mSsaSIix4
-         mCnj0GS56jmHooGq1XwJ2MaJomZpTGyXtD5qgHrA8cqO5LeorHEVRuQTz7b5obce65ra
-         cLITfxjO5UfusW+Ym2S2EmNVFqEqRtzjTMM0PvNyj4551xtOdw9QX3x5gOdeeW5avoz/
-         UlcMxqG/M7jF+BiSvAYiOYPmbW1IH/nHRsDfY4p6B2CPI7zVmc8HL4swcytCzwPHBHlS
-         2ItA==
-X-Gm-Message-State: AOAM531mTOYVB3AEHgBP+7EUBSxKokXsPFPQ1J0EGUIGolSKUTqRd4H3
-        u0e/C7WTx4uqNK1ZcCjnu05DzH++U0Py57Iwz98=
-X-Google-Smtp-Source: ABdhPJzxj03IKaFa2qBgy45NtGwiSCFknimKCkKQAgrRypH9ACZQrA7xbGpcnh6EO3VGHtqS5jpn+5b6b7HNLZ2eOf8=
-X-Received: by 2002:a25:d349:: with SMTP id e70mr10212952ybf.510.1626411248254;
- Thu, 15 Jul 2021 21:54:08 -0700 (PDT)
+        bh=TzJeOtPHmlRopsF1+ghLfMXFj1WSu1KHEXkAoClDTWk=;
+        b=GxMBu4AaRobLkK6uMEHd1hQ8RgNzEouacvf9h8qCaX26/OtIoFai+s+sZkbKrurmsC
+         qAOigmHm2dMB5jjZHZp6MAN40V6deKlwrdzT9/kQ6eBKeBksOeOBYQ1YzV7lfCjbAK5b
+         gSB+552lM0eruCajT/FGHHVBGNzPoegnAopniOObZwzePBkirfP5zr5sHJMnBkArRq/S
+         W1EdboVk82OAn8OBG2GmfEYyfAPrauYz2eGMSKwzD2RwFHXc1FhsxOrh8CEO7XDGPXCb
+         yoHLf+uuBGgZ5N1pYF2eU/GruyBh9Gv2/6TS8DqEVbVJh/ck9KLvKaKSFvn7fo/BrVa9
+         LtTQ==
+X-Gm-Message-State: AOAM531W/p8bko+bNWlBevw7XRPZRgJBs8fIQ5nsyKk7s858XXIT/1YU
+        eoWzwp2BTWdUYkra237oS+8j0cGA9eyDWkNpY+4j5qbOKTj7qw==
+X-Google-Smtp-Source: ABdhPJzgd6MVt2o04nRwoaDwUIJhSKQwH6RaJzqmqNvkQvlQjKDyCXrldBoKdumLswRNqljtv483o21FOMUhx9ZP79I=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr10281551ybu.403.1626413242604;
+ Thu, 15 Jul 2021 22:27:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <1626180159-112996-1-git-send-email-chengshuyi@linux.alibaba.com> <1626180159-112996-4-git-send-email-chengshuyi@linux.alibaba.com>
-In-Reply-To: <1626180159-112996-4-git-send-email-chengshuyi@linux.alibaba.com>
+References: <20210714165440.472566-1-m@lambda.lt> <20210714165440.472566-2-m@lambda.lt>
+In-Reply-To: <20210714165440.472566-2-m@lambda.lt>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 15 Jul 2021 21:53:57 -0700
-Message-ID: <CAEf4BzZY6WeSmox6zwxM1-jfWkaomK-3R4+W6M4tg5J=Ti9ARQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: Switches existing
- selftests to using open_opts for custom BTF
-To:     Shuyi Cheng <chengshuyi@linux.alibaba.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 15 Jul 2021 22:27:11 -0700
+Message-ID: <CAEf4BzbNpqkDGfprj_hH-=3zZNxZ7SkEsCRZnb5==6vfAoXt8w@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] libbpf: fix removal of inner map in bpf_object__create_map
+To:     Martynas Pumputis <m@lambda.lt>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 5:43 AM Shuyi Cheng
-<chengshuyi@linux.alibaba.com> wrote:
+On Wed, Jul 14, 2021 at 9:52 AM Martynas Pumputis <m@lambda.lt> wrote:
 >
-> This patch mainly replaces the bpf_object_load_attr of
-> the core_autosize.c and core_reloc.c files with bpf_object_open_opts.
+> If creating an outer map of a BTF-defined map-in-map fails (via
+> bpf_object__create_map()), then the previously created its inner map
+> won't be destroyed.
 >
-> Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
+> Fix this by ensuring that the destroy routines are not bypassed in the
+> case of a failure.
+>
+> Fixes: 646f02ffdd49c ("libbpf: Add BTF-defined map-in-map support")
+> Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Martynas Pumputis <m@lambda.lt>
 > ---
->  .../selftests/bpf/prog_tests/core_autosize.c       | 22 ++++++++---------
->  .../testing/selftests/bpf/prog_tests/core_reloc.c  | 28 ++++++++++------------
->  2 files changed, 24 insertions(+), 26 deletions(-)
+>  tools/lib/bpf/libbpf.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/core_autosize.c b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-> index 981c251..d163342 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-> @@ -54,7 +54,7 @@ void test_core_autosize(void)
->         int err, fd = -1, zero = 0;
->         int char_id, short_id, int_id, long_long_id, void_ptr_id, id;
->         struct test_core_autosize* skel = NULL;
-> -       struct bpf_object_load_attr load_attr = {};
-> +       struct bpf_object_open_opts open_opts = {};
->         struct bpf_program *prog;
->         struct bpf_map *bss_map;
->         struct btf *btf = NULL;
-> @@ -125,9 +125,11 @@ void test_core_autosize(void)
->         fd = -1;
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 6f5e2757bb3c..1a840e81ea0a 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4479,6 +4479,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>  {
+>         struct bpf_create_map_attr create_attr;
+>         struct bpf_map_def *def = &map->def;
+> +       int ret = 0;
 >
->         /* open and load BPF program with custom BTF as the kernel BTF */
-> -       skel = test_core_autosize__open();
-> +       open_opts.btf_custom_path = btf_file;
-> +       open_opts.sz = sizeof(struct bpf_object_open_opts);
-> +       skel = test_core_autosize__open_opts(&open_opts);
->         if (!ASSERT_OK_PTR(skel, "skel_open"))
-> -               return;
-> +               goto cleanup;
+>         memset(&create_attr, 0, sizeof(create_attr));
 >
->         /* disable handle_signed() for now */
->         prog = bpf_object__find_program_by_name(skel->obj, "handle_signed");
-> @@ -135,9 +137,7 @@ void test_core_autosize(void)
->                 goto cleanup;
->         bpf_program__set_autoload(prog, false);
+> @@ -4561,7 +4562,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>         }
 >
-> -       load_attr.obj = skel->obj;
-> -       load_attr.target_btf_path = btf_file;
-> -       err = bpf_object__load_xattr(&load_attr);
-> +       err = bpf_object__load(skel->obj);
->         if (!ASSERT_OK(err, "prog_load"))
->                 goto cleanup;
->
-> @@ -204,13 +204,13 @@ void test_core_autosize(void)
->         skel = NULL;
->
->         /* now re-load with handle_signed() enabled, it should fail loading */
-> -       skel = test_core_autosize__open();
-> +       open_opts.btf_custom_path = btf_file;
-> +       open_opts.sz = sizeof(struct bpf_object_open_opts);
+>         if (map->fd < 0)
+> -               return -errno;
+> +               ret = -errno;
 
-For opts structs libbpf provides DECLARE_LIBBPF_OPTS macro for their
-initialization which zeroes the struct out and sets its sz
-automatically. So I'll switch to using that instead. All the rest
-looks good.
+Oh, isn't this a complicated function, eh? I stared at the code for a
+while until I understood the whole idea with map->inner_map handling
+there.
 
-> +       skel = test_core_autosize__open_opts(&opts);
->         if (!ASSERT_OK_PTR(skel, "skel_open"))
-> -               return;
-> +               goto cleanup;
->
-> -       load_attr.obj = skel->obj;
-> -       load_attr.target_btf_path = btf_file;
-> -       err = bpf_object__load_xattr(&load_attr);
-> +       err = bpf_object__load(skel);
->         if (!ASSERT_ERR(err, "bad_prog_load"))
->                 goto cleanup;
->
+I think your change is correct, I'd just love you to consolidate all
+those "int err" definitions, and use just one throughout this
+function. It will clean up two other if() blocks, and in this case
+"err" name is more appropriate, because it always is <= 0.
 
-[...]
+>
+>         if (bpf_map_type__is_map_in_map(def->type) && map->inner_map) {
+>                 if (obj->gen_loader)
+> @@ -4570,7 +4571,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>                 zfree(&map->inner_map);
+>         }
+>
+> -       return 0;
+> +       return ret;
+>  }
+>
+>  static int init_map_slots(struct bpf_object *obj, struct bpf_map *map)
+> --
+> 2.32.0
+>
