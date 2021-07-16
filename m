@@ -2,159 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B383CB1F6
-	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 07:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DF93CB22F
+	for <lists+bpf@lfdr.de>; Fri, 16 Jul 2021 08:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234174AbhGPFiR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Jul 2021 01:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234222AbhGPFiQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Jul 2021 01:38:16 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4616C06175F
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 22:35:21 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id b13so13000345ybk.4
-        for <bpf@vger.kernel.org>; Thu, 15 Jul 2021 22:35:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l7xaa3FpOVkgtkSDgQcTacyNa2IVr4ihhiD9U/1cBAY=;
-        b=Opk3nkolxtZ+zunORSTJQ2adXwBNtVqV8mdo4RqlovIbzWyd2ViJfpsq53jEqJ6D9r
-         YVP3xfALhF0ZwKSWxRMOk0ym5EYLYe8s/LLVADe23NHa0Oe3NyEheXx+QzB6A07gwr+l
-         FfTtUMYQWFYvuViclvEl6rbFu3UBrAJl2DQvUtig9JOnkW7wt4Y1Iyj5dLh4nO55QyCv
-         AIrHAlUlJFN5mhXvSV8Fu4EvFegXvrZ0CaevA3lOJIjykQAbpPkGpxhUiNEXDYNCIysu
-         N3xNc47NTk05SbgJA6b/+de2HSmDbb5amfUmKZ8+AabQ52AtcIjQuNlSD5prgVMI4dQw
-         I+JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l7xaa3FpOVkgtkSDgQcTacyNa2IVr4ihhiD9U/1cBAY=;
-        b=eesiTfE43AEUv8ZLMKxqSAJYAxynzlQkYJs+Z6OveFf0puaj6iq4NzuH+yY+ZSsL2g
-         Wlz/94JPOklaQhIGAsQIHU1KQTotvBgD8y1gPbSWKNyIW4/ex0vPKnFtWrzVVsEF52lY
-         sLg9AgSKUAFV737iMOSAtsPTrk0ijTpWrw/bxfuLEVmL/0uC/NQjICVo1ANLwNKSortD
-         yDh7k3OyY4ziYOEkN9BZpMgpS9oEpl2GPEkbKHHJy9D9DuL/OeOGKDofPxmtN9IbduCf
-         Sf542m6tAXITJtwN/XT1salKoeOKddwVKIKJyZtwfFfQPpDUR3SB8AZsiiSwu5QJ/Ee8
-         N34w==
-X-Gm-Message-State: AOAM530c8AGffeYwXZkwXBq/8awA+q+f+QrYWhOSD5HZ7uwscHogfhAA
-        Cq6/ONZLH8caiW/cQmFfJKMggllZydtfiFd4GVE=
-X-Google-Smtp-Source: ABdhPJxHzqk8nlghl/vBkMWrk+3d1PFrPzaJuz/VXTF9w8iLsK5XIOehgzowavgh7mUmNvE7FelAxKm4BgtP3Wn6rt4=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr10753213ybo.230.1626413721118;
- Thu, 15 Jul 2021 22:35:21 -0700 (PDT)
+        id S233293AbhGPGHI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Jul 2021 02:07:08 -0400
+Received: from mail-dm6nam12on2075.outbound.protection.outlook.com ([40.107.243.75]:27744
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230088AbhGPGHI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Jul 2021 02:07:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gNgrjQZ/9Ss7qB3J99+QFVRbswRSEe8hG254N9Y0ug8hv+oml4fgYMdRMmzg6WwrqQX8kLh2ZHN/lrPEi+tS71YcAE39CskTiDKoYrQ4UEWL1ny983NUfRiwQVXTR438C0BZ0uDsOWmf8k48KiO6EWoF/2IcRANotCEbMWnw7CWRvh8xVaFvUXH8Gv2rkbMFQxfsPHg/z1cT1sqvKbC7h3wHBHfOZ6AIwc6GWKpSCeTY1kMP+FbTB6Qd9joRN3YTZBMwuinNUVgb5b+WY7jcPb03s8bVBS6m4Ys92w2We+CoipaQbs9r/x4hKoqkx+x2I79fmJPYxzKVDjtJX6ZS7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iLhktzHBfsCaCAPy8z6BkHfGkInqBBpIaQglocH47+o=;
+ b=gU1csZ2MwcsmSVr4RLmANDpXfyNBhNVWNiSHJVdkIAv6wtj+1NvNjfi7sZ/fNoXwx+pPH5hyHDBViynioqS4a0dfvrpdaPIUWod1fr1raBGkynuGNQ310l72Wd0M3oPkQ7OzXGG9pns6BYEZeIVQd9WmK4BHkj+G7PgTeTdHp3l2Yd4hJGFgGSeX8Wpcok/hZoL7DPI9SLwwySnizRBaHDwCaIWY4FqDCYWoq/tEjjYGVoZn/lfHscKESJOtzBSEumk/KFLOHZ5ofYyoLNIkSyLzvimJbjDqL2kXxQ6li7Hb/J+o33YDz+HQYfXlHw4NK6XIehK6pG2eRQJNwVYvyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iLhktzHBfsCaCAPy8z6BkHfGkInqBBpIaQglocH47+o=;
+ b=P9i0q7YGV7BKeSNUERnp7n13bLUrZYVoqUC4mpgzjNbfIPrtO/swMjBLHVn6UgzAZNkd/rkzQekqw9Dx5WNHwUr8Fo+2nHogvYiWOaIRV6SdwaUnuANVfnJfGq4zHQBXuthaLTRJ6VZHHLp3GmQm/9uW/WJp2T9xOsI5ClgmGbZ7MjjfII8j92gGvuXfaGjC0tDht7u7Hi9ZYzEC/35lMR7VhiX8nnYxpEAFvYz3aIjUoky3IXhDTJ15kM5Mrl0tXbVspY0A04U0qz0iKM6lT9W+G2DmyrV3SCv36eLyCByH+8pZ+ve13huoZqgpeIXXTZxpJ1j8g/PbUnmbsKgHRA==
+Received: from BN6PR22CA0030.namprd22.prod.outlook.com (2603:10b6:404:37::16)
+ by DM4PR12MB5342.namprd12.prod.outlook.com (2603:10b6:5:39f::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Fri, 16 Jul
+ 2021 06:04:13 +0000
+Received: from BN8NAM11FT038.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:37:cafe::8d) by BN6PR22CA0030.outlook.office365.com
+ (2603:10b6:404:37::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
+ Transport; Fri, 16 Jul 2021 06:04:12 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT038.mail.protection.outlook.com (10.13.176.246) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4331.21 via Frontend Transport; Fri, 16 Jul 2021 06:04:12 +0000
+Received: from [10.2.84.248] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Jul
+ 2021 06:04:11 +0000
+Subject: Re: [PATCH 4/4] Revert "mm/page_alloc: make should_fail_alloc_page()
+ static"
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>, <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+CC:     <brouer@redhat.com>,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Zhang Qiang <Qiang.Zhang@windriver.com>,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20210713152100.10381-1-mgorman@techsingularity.net>
+ <20210713152100.10381-5-mgorman@techsingularity.net>
+ <fb642720-b651-e93f-4656-7042493efba8@nvidia.com>
+ <5db9011e-9b52-b415-70b6-c7ee1b01436b@redhat.com>
+ <90251cd2-7c4c-9d2f-668f-c2168da7ac9c@nvidia.com>
+Message-ID: <75085fb8-83ae-0f18-af51-df43b5f1a77c@nvidia.com>
+Date:   Thu, 15 Jul 2021 23:04:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210714165440.472566-1-m@lambda.lt> <20210714165440.472566-3-m@lambda.lt>
-In-Reply-To: <20210714165440.472566-3-m@lambda.lt>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 15 Jul 2021 22:35:10 -0700
-Message-ID: <CAEf4BzbP6Dr0GWavhV-MUqdFe1rB_A_criwHB_=yS_yGuoc1oQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] selftests/bpf: check inner map deletion
-To:     Martynas Pumputis <m@lambda.lt>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <90251cd2-7c4c-9d2f-668f-c2168da7ac9c@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8c828cfd-1f86-43dd-087f-08d9481f88eb
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5342:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5342EA855998A372A9E8F7D0A8119@DM4PR12MB5342.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UsGKDrftDV12GHNxCrmMt9IXz/Q+y2PrcIO38xqiwQQeCphNeXuMooEY98Jpvy2FACQ6a+PW7aIdwqGFNf4wcAEy6d4L75UXyzTLF208YRjv7u6Vkcgxrq9TJDaCt0/qVj7b/vWGmJoUUL9nOgJ1rviOISrEcgKglYfGoUgADkOtmFKH88S6+pALqRQ8xixlHPgQvUht/hxVMhP5pzKPU4StzBjswaUJk94mugNzCJu7dNXgRaPlRP2Z8xaA/um0SOwYwOUk1evMkqEkutYs2jJBF9SHebprQBC1/amEu2AOIZ3XjUzGDS2N2f4M7dfOgNSPt3TAjckNqM6PovQjuspzdFPHGvfO8g86qhvEfOQKt+fYmwK3XUvRHG+sF4jVgpDI+ooGOOltmw5PFNfA34w5U/h9WY37g7GltazUA1OtVmBzySqlrnnJRz8Nwnm9Xkx8Ew6SHRlP3GZ/jLM2etVE6xTOpbxKvUuE8HQp3eWM0Wyh2ACs7FpqzwKsJDgv5dEnwPUbrn3PVAupCCoQN1Z5JobJN7SY8BXbsICrMFv7yiyy79t+KvIwcY+PPv+0l4eQhz8XJKq+A7+C9J7jjfDHlxAHahpwhovXDfe6rTtKGh/lZEv4Saq5hB0xZ2atu+zQceBkmIw0gXPlvbtq0CX/yR91mf4sdHyBpRC5NT09l7OwGt5QFSRHjs9O2iAkHND42fWw9HhR41PdvYrI9W90f/ecAu/Cgb2IpTR/hE22Y8VvCIZxOnKGWeZuS1oRlU1wleY1oSnuPaW9yC2NI6Q5mMGbUcGz7Wi8J7Eie0M=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(346002)(136003)(46966006)(36840700001)(47076005)(86362001)(8936002)(186003)(16526019)(54906003)(478600001)(5660300002)(70206006)(70586007)(26005)(8676002)(16576012)(36906005)(7416002)(2906002)(110136005)(356005)(36756003)(336012)(2616005)(426003)(4326008)(7636003)(83380400001)(82740400003)(36860700001)(316002)(31686004)(31696002)(82310400003)(53546011)(34020700004)(2101003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 06:04:12.6207
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c828cfd-1f86-43dd-087f-08d9481f88eb
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT038.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5342
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 9:52 AM Martynas Pumputis <m@lambda.lt> wrote:
->
-> Add a test case to check whether an unsuccessful creation of an outer
-> map of a BTF-defined map-in-map destroys the inner map.
->
-> As bpf_object__create_map() is a static function, we cannot just call it
-> from the test case and then check whether a map accessible via
-> map->inner_map_fd has been removed. Instead, we iterate over all maps
-> and check whether the map "$MAP_NAME.inner" does not exist.
->
-> Signed-off-by: Martynas Pumputis <m@lambda.lt>
-> ---
->  .../bpf/progs/test_map_in_map_invalid.c       | 27 +++++++++
->  tools/testing/selftests/bpf/test_maps.c       | 58 ++++++++++++++++++-
->  2 files changed, 84 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_map_in_map_invalid.c
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_map_in_map_invalid.c b/tools/testing/selftests/bpf/progs/test_map_in_map_invalid.c
-> new file mode 100644
-> index 000000000000..03601779e4ed
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_map_in_map_invalid.c
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Isovalent, Inc. */
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +struct inner {
-> +       __uint(type, BPF_MAP_TYPE_ARRAY);
-> +       __type(key, __u32);
-> +       __type(value, int);
-> +       __uint(max_entries, 4);
-> +};
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-> +       __uint(max_entries, 0); /* This will make map creation to fail */
-> +       __uint(key_size, sizeof(__u32));
-> +       __array(values, struct inner);
-> +} mim SEC(".maps");
-> +
-> +SEC("xdp_noop")
-> +int xdp_noop0(struct xdp_md *ctx)
-> +{
-> +       return XDP_PASS;
-> +}
-> +
-> +int _version SEC("version") = 1;
+On 7/15/21 5:04 PM, John Hubbard wrote:
+...
+>>> ...and un-setting CONFIG_DEBUG_INFO_BTF makes that disappear. Maybe someone
+>>> who is understands the BTFIDS build step can shed some light on that; I'm
+>>> not there yet. :)
+>>
+>> I'm just a user/consume of output from the BTFIDS build step, I think Jiri Olsa own the tool 
+>> resolve_btfids, and ACME pahole.  I've hit a number of issues in the past that Jiri and ACME help 
+>> resolve quickly.
+>> The most efficient solution I've found was to upgrade pahole to a newer version.
+>>
+>> What version of pahole does your build system have?
+>>
+>> What is your GCC version?
+>>
+> 
+> Just a quick answer first on the versions: this is an up to date Arch Linux system:
+> 
+> gcc: 11.1.0
+> pahole: 1.21
+> 
+> I'll try to get the other step done later this evening.
 
-please don't add new uses of version, it's completely unnecessary on
-modern kernels
+...and...I've lost the repro completely. The only thing I changed was that I
+attempted to update pahole. This caused Arch Linux reinstall pahole, claiming
+that 1.21 is already the current version.
 
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-> index 30cbf5d98f7d..48f6c6dfd188 100644
-> --- a/tools/testing/selftests/bpf/test_maps.c
-> +++ b/tools/testing/selftests/bpf/test_maps.c
-> @@ -1153,12 +1153,16 @@ static void test_sockmap(unsigned int tasks, void *data)
->  }
->
->  #define MAPINMAP_PROG "./test_map_in_map.o"
-> +#define MAPINMAP_INVALID_PROG "./test_map_in_map_invalid.o"
->  static void test_map_in_map(void)
->  {
->         struct bpf_object *obj;
->         struct bpf_map *map;
->         int mim_fd, fd, err;
->         int pos = 0;
-> +       struct bpf_map_info info = {};
-> +       __u32 len = sizeof(info);
-> +       __u32 id = 0;
->
->         obj = bpf_object__open(MAPINMAP_PROG);
->
-> @@ -1229,10 +1233,62 @@ static void test_map_in_map(void)
->
->         close(fd);
->         bpf_object__close(obj);
-> +
-> +
-> +       /* Test that failing bpf_object__create_map() destroys the inner map */
-> +
-> +       obj = bpf_object__open(MAPINMAP_INVALID_PROG);
+It acts as if there was something wrong with the pahole installation. This
+seems unlikely, given that the system is merely on a routine update schedule.
+However, that's the data I have.
 
-you didn't check bpf_object__open() succeeded here...
+If it ever comes up again I'll be able to run resolve_btfids, using your
+steps here, so thanks for posting those!
 
-> +
-> +       map = bpf_object__find_map_by_name(obj, "mim");
 
-... and crash will happen here on error
-
-> +       if (!map) {
-> +               printf("Failed to load array of maps from test prog\n");
-> +               goto out_map_in_map;
-> +       }
-> +
-
-[...]
+thanks,
+-- 
+John Hubbard
+NVIDIA
