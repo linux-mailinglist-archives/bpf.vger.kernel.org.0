@@ -2,130 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65123CC088
-	for <lists+bpf@lfdr.de>; Sat, 17 Jul 2021 03:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF383CC091
+	for <lists+bpf@lfdr.de>; Sat, 17 Jul 2021 03:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhGQBmz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Jul 2021 21:42:55 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:53472 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231772AbhGQBmz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 16 Jul 2021 21:42:55 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=chengshuyi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Ug.Dp-t_1626485996;
-Received: from B-39YZML7H-2200.local(mailfrom:chengshuyi@linux.alibaba.com fp:SMTPD_---0Ug.Dp-t_1626485996)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 17 Jul 2021 09:39:57 +0800
-Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: Switches existing
- selftests to using open_opts for custom BTF
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        id S232592AbhGQBpH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Jul 2021 21:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232010AbhGQBpG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Jul 2021 21:45:06 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D530C06175F;
+        Fri, 16 Jul 2021 18:42:11 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id v189so17831178ybg.3;
+        Fri, 16 Jul 2021 18:42:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lWv8W7IFc+a2CnOV8gMR6VMz6xdeyuN4PkKvoPSBlHg=;
+        b=arzUIJBxXc79w4urqNEHl2DGZ7km83bSmiaot8JVicMdLObWxpiKPiORMDNjMoJGV9
+         XvFibhkQ34l6HYckcO3djh7CMKX9kYdHPWnPJ7tN3bMW0H8L3BJseTnIwRW2rMCP0LM+
+         lD59YG7nkw3ZQbFS+pzgunC8ySlw3+lr1ZTirZE8B48uF66878+zHNyGXt5J8CCsakfU
+         K2xjKgEsQiyvgFCCxUOMCYry5Nepoew3sATygPlHkYKxgQTAU+QhBdCT7gGeSBi5FXOO
+         y98uBLXiP55H+3m5gH9eA9hyFq5mEf/q9+z05EEHwEZl7uTx6Z7Dm6n6ByS82Hpu63cL
+         Wy0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lWv8W7IFc+a2CnOV8gMR6VMz6xdeyuN4PkKvoPSBlHg=;
+        b=pQ85rs8CAcbqFcR1WNOIVQL82qqjYLUanH725/62K28TotVY/0nphTTLc9DIPELxQB
+         lcJPJhMrUTOOWB6VadXenHqk98F5+uGaqz01ky2nxwqUqicGICYIMhduuSywt2rDedLk
+         UPIiScAAEapot2bwv7ZdxWEW8pBJnHW4H02p2ZCKmsTcRr821vI2TTYUx6Ml0hahSefg
+         aQrl0tHHDLF5LfeoGDMUepYAcT0rtujkTPuRvOyMkRjEP/MOCejx3R4MayVz1A9U1LC8
+         a9XM+0PqxAZ0eeAzqR7rdor+lQCFb97lEJkLkxfCq85y6khzGBIhDawJ6XzpYIaGq4O1
+         ndOA==
+X-Gm-Message-State: AOAM531A5I9AOtFNNZOCnlSDmPpYnmny3WsCTAhQ5h00NllFH6GrfQIL
+        PWYGlUjeXlSLaZ3EeRCBYuUa4QH6Y7wpHKihTro=
+X-Google-Smtp-Source: ABdhPJy6HfYoPPKD0E8AFvv4QzCicUsLwx37ZqbF+QvVYpJIxqOBajuG7xTcNGu7Ih+Uk+SElO/SPDAeViKBKO5IMGA=
+X-Received: by 2002:a25:b203:: with SMTP id i3mr16618078ybj.260.1626486130413;
+ Fri, 16 Jul 2021 18:42:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210714094400.396467-1-jolsa@kernel.org> <20210714094400.396467-7-jolsa@kernel.org>
+In-Reply-To: <20210714094400.396467-7-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 16 Jul 2021 18:41:59 -0700
+Message-ID: <CAEf4Bzbk-nyenpc86jtEShset_ZSkapvpy3fG2gYKZEOY7uAQg@mail.gmail.com>
+Subject: Re: [PATCHv4 bpf-next 6/8] libbpf: Add bpf_program__attach_kprobe_opts
+ function
+To:     Jiri Olsa <jolsa@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-References: <1626180159-112996-1-git-send-email-chengshuyi@linux.alibaba.com>
- <1626180159-112996-4-git-send-email-chengshuyi@linux.alibaba.com>
- <CAEf4Bza3X410=1ryu4xZ+5ST2=69CB9BDusBrLMX=VSsXtnuDQ@mail.gmail.com>
-From:   Shuyi Cheng <chengshuyi@linux.alibaba.com>
-Message-ID: <7400a2b2-1e1e-0981-3966-43492305534c@linux.alibaba.com>
-Date:   Sat, 17 Jul 2021 09:39:56 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAEf4Bza3X410=1ryu4xZ+5ST2=69CB9BDusBrLMX=VSsXtnuDQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Jul 14, 2021 at 2:45 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> Adding bpf_program__attach_kprobe_opts that does the same
+> as bpf_program__attach_kprobe, but takes opts argument.
+>
+> Currently opts struct holds just retprobe bool, but we will
+> add new field in following patch.
+>
+> The function is not exported, so there's no need to add
+> size to the struct bpf_program_attach_kprobe_opts for now.
 
+Why not exported? Please use a proper _opts struct just like others
+(e.g., bpf_object_open_opts) and add is as a public API, it's a useful
+addition. We are going to have a similar structure for attach_uprobe,
+btw. Please send a follow up patch.
 
-On 7/17/21 4:27 AM, Andrii Nakryiko wrote:
-> On Tue, Jul 13, 2021 at 5:43 AM Shuyi Cheng
-> <chengshuyi@linux.alibaba.com> wrote:
->>
->> This patch mainly replaces the bpf_object_load_attr of
->> the core_autosize.c and core_reloc.c files with bpf_object_open_opts.
->>
->> Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
->> ---
->>   .../selftests/bpf/prog_tests/core_autosize.c       | 22 ++++++++---------
->>   .../testing/selftests/bpf/prog_tests/core_reloc.c  | 28 ++++++++++------------
->>   2 files changed, 24 insertions(+), 26 deletions(-)
->>
-> 
-> So I applied this, but it's obvious you haven't bothered even
-> *building* selftests, because it had at least one compilation warning
-> and one compilation *error*, not building test_progs at all. I've
-> noted stuff I fixed (and still remember) below. I understand it might
-> be your first kernel contribution, but it's not acceptable to submit
-> patches that don't build. Next time please be more thorough.
-> 
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/lib/bpf/libbpf.c | 34 +++++++++++++++++++++++++---------
+>  1 file changed, 25 insertions(+), 9 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 88b99401040c..d93a6f9408d1 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -10346,19 +10346,24 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+>         return pfd;
+>  }
+>
+> -struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
+> -                                           bool retprobe,
+> -                                           const char *func_name)
+> +struct bpf_program_attach_kprobe_opts {
 
-I'm very sorry, it was my fault. Although I learned a lot from libbpf, 
-there is still a lot to learn and improve. Thank you very much for your 
-advice and the very powerful libbpf.
+when you make it part of libbpf API, let's call it something shorter,
+like bpf_kprobe_opts, maybe? And later we'll have bpf_uprobe_opts for
+uprobes. Short and unambiguous.
 
-regards,
-Shuyi
+> +       bool retprobe;
+> +};
+> +
+> +static struct bpf_link*
+> +bpf_program__attach_kprobe_opts(struct bpf_program *prog,
+> +                               const char *func_name,
+> +                               struct bpf_program_attach_kprobe_opts *opts)
+>  {
+>         char errmsg[STRERR_BUFSIZE];
+>         struct bpf_link *link;
+>         int pfd, err;
+>
 
-> [...]
-> 
->>
->> -       load_attr.obj = skel->obj;
->> -       load_attr.target_btf_path = btf_file;
->> -       err = bpf_object__load_xattr(&load_attr);
->> +       err = bpf_object__load(skel);
-> 
-> This didn't compile outright, because it should have been
-> test_core_autosize__load(skel).
-> 
->>          if (!ASSERT_ERR(err, "bad_prog_load"))
->>                  goto cleanup;
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
->> index d02e064..10eb2407 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
->> @@ -816,7 +816,7 @@ static size_t roundup_page(size_t sz)
->>   void test_core_reloc(void)
->>   {
->>          const size_t mmap_sz = roundup_page(sizeof(struct data));
->> -       struct bpf_object_load_attr load_attr = {};
->> +       struct bpf_object_open_opts open_opts = {};
->>          struct core_reloc_test_case *test_case;
->>          const char *tp_name, *probe_name;
->>          int err, i, equal;
->> @@ -846,9 +846,17 @@ void test_core_reloc(void)
->>                                  continue;
->>                  }
->>
->> -               obj = bpf_object__open_file(test_case->bpf_obj_file, NULL);
->> +               if (test_case->btf_src_file) {
->> +                       err = access(test_case->btf_src_file, R_OK);
->> +                       if (!ASSERT_OK(err, "btf_src_file"))
->> +                               goto cleanup;
->> +               }
->> +
->> +               open_opts.btf_custom_path = test_case->btf_src_file;
-> 
-> This was reporting a valid warning about dropping const modifier. For
-> good reason, becyase btf_custom_path in open_opts should have been
-> `const char *`, I fixed that.
-> 
->> +               open_opts.sz = sizeof(struct bpf_object_open_opts);
->> +               obj = bpf_object__open_file(test_case->bpf_obj_file, &open_opts);
->>                  if (!ASSERT_OK_PTR(obj, "obj_open"))
->> -                       continue;
->> +                       goto cleanup;
->>
->>                  probe_name = "raw_tracepoint/sys_enter";
->>                  tp_name = "sys_enter";
-> 
-> [...]
-> 
+[...]
