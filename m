@@ -2,170 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6333CC690
-	for <lists+bpf@lfdr.de>; Sun, 18 Jul 2021 00:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C039C3CC8BC
+	for <lists+bpf@lfdr.de>; Sun, 18 Jul 2021 13:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhGQWGp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Jul 2021 18:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35748 "EHLO
+        id S232685AbhGRLUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Jul 2021 07:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhGQWGp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Jul 2021 18:06:45 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33A4C061762;
-        Sat, 17 Jul 2021 15:03:47 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id nd37so21041239ejc.3;
-        Sat, 17 Jul 2021 15:03:47 -0700 (PDT)
+        with ESMTP id S232319AbhGRLUE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Jul 2021 07:20:04 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A841C061762
+        for <bpf@vger.kernel.org>; Sun, 18 Jul 2021 04:17:06 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id m83so13604582pfd.0
+        for <bpf@vger.kernel.org>; Sun, 18 Jul 2021 04:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IWdaGFPzrQtxwDMoSrykP9DB3UY/nGQkXWNBfMY4IEw=;
-        b=JAA1cgbQ81iA7FqwA27Ls0FDhBGKSFgIHMIPnhstTzhyDO0nRgbG5GwtAfFLymfgJ8
-         k7PcyANNT5qRv7nz/MwnMatiwlVBmhHkx3ZBm93x4/QnKKrfJAyH/Vzo66dntgiYiRfF
-         wskDs0IQvzxv/BFcqPD7mIAK1StJkcVWuiIUKQ0ZlePCntQlGYs1iREiBz890zt0dS5M
-         xQo2kJ3pLpHxU+WjcxWZ3/hSAWlMdx8iHv8OhcaBzQw0C2p1UXGNRK5V8R2/Wam/AS3b
-         q/gytkrXBv1MLrajKTCbZKmB2q5dlGWgqlBRe3bAxptPG5bnE6fjqj2zMGzedbTQOLyb
-         /RVw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=o5gJprJS9tz1N1WNSkZShrZesDlian+uuw7WJnpw4Mg=;
+        b=Dh87DzrRw6bIYBSazf1PYEQuEG631uTuj5z5T1vQ1pBPyZ+7DIxCNTs+l3TtSjdz9e
+         spCsIshxgoRQKx/V3qG/QSf2FZFesaswZIGUSd1fH4NCqBeLXV6paa/TB5H2Jyr1C0yA
+         p0ZaK60uo9ocvvgsY/31x/QuSTrxv5cJrg5SKn53cd2N6LKkEVQxprak/kXYaXiVeYW2
+         puYmekzZveB6Ks0hIP0JgQocbtyiT1/KpN9vAxkLF7SeJzitpBth+2gaG4ZSltjcxeuy
+         5GzbAw4PrZcHEMBbnTkLQhAgiZdXZuZ73xa43sL3iC4qgw6vlEhWHoSnvSZkYtpQx0FS
+         yckA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IWdaGFPzrQtxwDMoSrykP9DB3UY/nGQkXWNBfMY4IEw=;
-        b=ZIUHObc4unVMPYCj++Cj3Q531fvTcgnGVrS9DMRKwpe/P1sXIb2a01Y8IkyXVLMxiA
-         +sXOHBF+jiL4DJeKHjU65xtwTrsyu28VyrcidoUtHbFXmXyiCty6zoTtvdCr04N/Qp5G
-         AqFYE7fEXmIRZoMkODQnO0YeAlLIGQYqEnsv/Gfmjj3U8pt6B00C0CZ6+KUUqkWMMjD/
-         W5xyzPPHuVvNrEi4sssVU9fzehilYm0wxpWZuXuBylPlT8kFE1XZjqLi6y+4sfEYHJb8
-         VK2sSthpEs6TPQ93ktQIrkv7rnME8Q346J2PXbpI0TWswQ+kMgWfhGUjZMwBggODSKbC
-         gxnQ==
-X-Gm-Message-State: AOAM530ZlRcOsNG5yQkeas8fhXXDMIRV/EHNbTWis2Rq1H3Jc+YfJkwc
-        jUUU8mKKZccwDC/QtcsNdAQTDgcnpAaVulwAaQw=
-X-Google-Smtp-Source: ABdhPJx/bVG/+f5cDTG05pqgwjT03uO1ugT+RxTJWMohEj0lWYMRyNe7JoX+RDdelc3oMjl53YYOLyE9X6VklhSWw4c=
-X-Received: by 2002:a17:907:7203:: with SMTP id dr3mr19141903ejc.52.1626559426168;
- Sat, 17 Jul 2021 15:03:46 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=o5gJprJS9tz1N1WNSkZShrZesDlian+uuw7WJnpw4Mg=;
+        b=N3tmA2nhZZ81vJMKdrOr++mX83CTbGbYl9D99b0QjCtd6eKOtWvIgv5yB3nuMgA0c6
+         PN+tyPA2/3q8PRdEDRdjj7ekhavxrFrZFqVu1TM6HP8S7CGFA0gbcdXnV07fe5AewCfI
+         DYJNOlgcSFihLzD5zHOT4pC0+EcW8e+sebj7riDzVBtvjU9WmUG5jNGpoxnc/z1VLC8m
+         menItc02PfSC4Ip6V0kPtxVvIMy7mJsAhcvdgCKDmkeP3RyZeD55aU0LMJbLjrICWqFJ
+         5k+t4eZW+6PdEEAahT0Crt0CA/tJ07PX7qcMJhN7nktCW8jeyDDANFmwDv4OP0MghRnD
+         j9ag==
+X-Gm-Message-State: AOAM533SKYfWEUIW1h/0xmZLTNTgGoyssORvSLyPeikP2dpEivaSRXkg
+        r1UjLW/LoAh0G95gEBC7/hQ=
+X-Google-Smtp-Source: ABdhPJxNNPQN31zhHEZwMRwTxyJYkWprPfo30zXEz7rgq5sYpjGSwe7HMGxcGYg/B5pDATv0ObtWbA==
+X-Received: by 2002:a62:880c:0:b029:327:8e12:853a with SMTP id l12-20020a62880c0000b02903278e12853amr20482230pfd.74.1626607025323;
+        Sun, 18 Jul 2021 04:17:05 -0700 (PDT)
+Received: from [0.0.0.0] ([150.109.126.7])
+        by smtp.gmail.com with ESMTPSA id w145sm5247672pfc.39.2021.07.18.04.17.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Jul 2021 04:17:04 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] bpf: Expose bpf_d_path helper to
+ vfs_read/vfs_write
+To:     Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>
+References: <20210712162424.2034006-1-hengqi.chen@gmail.com>
+ <60ec94013acd1_50e1d2081@john-XPS-13-9370.notmuch>
+ <6f42985e-063e-205b-820e-6bad600caf54@fb.com>
+ <CAADnVQL9X7xrLKa5_tfgzAnEjPckz0jaWozAH+oNKz3=tZ6r=Q@mail.gmail.com>
+ <a4faf9ec-ba94-13d1-d2e1-7710902450d7@fb.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+Message-ID: <0e31606e-7f7e-f29d-3905-086dfd487726@gmail.com>
+Date:   Sun, 18 Jul 2021 19:17:01 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210713005645.8565-1-zhouzhouyi@gmail.com> <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
- <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
- <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1> <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
- <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1> <CAABZP2xDNtjZew=Rr7QvEDX7jnVCcE+JFpSDxiQ4yNPUE6kj-g@mail.gmail.com>
- <20210715180941.GK4397@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210715180941.GK4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Sun, 18 Jul 2021 06:03:34 +0800
-Message-ID: <CAABZP2wuWtGAGRqWJb3Gewm5VLZdZ_C=LRZsFbaG3jcQabO3qA@mail.gmail.com>
-Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-To:     paulmck@kernel.org
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, apw@canonical.com,
-        joe@perches.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        mingo@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a4faf9ec-ba94-13d1-d2e1-7710902450d7@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Paul
-During the research, I found a already existing tool to detect
-undefined Kconfig macro:
-scripts/checkkconfigsymbols.py. It is marvellous!
+On 7/18/21 12:43 AM, Yonghong Song wrote:
+> 
+> 
+> On 7/15/21 6:44 PM, Alexei Starovoitov wrote:
+>> On Wed, Jul 14, 2021 at 5:55 PM Yonghong Song <yhs@fb.com> wrote:
+>>>
+>>>
+>>>
+>>> On 7/12/21 12:12 PM, John Fastabend wrote:
+>>>> Hengqi Chen wrote:
+>>>>> Add vfs_read and vfs_write to bpf_d_path allowlist.
+>>>>> This will help tools like IOVisor's filetop to get
+>>>>> full file path.
+>>>>>
+>>>>> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+>>>>> ---
+>>>>
+>>>> As I understand it dpath helper is allowed as long as we
+>>>> are not in NMI/interrupt context, so these should be fine
+>>>> to add.
+>>>>
+>>>> Acked-by: John Fastabend <john.fastabend@gmail.com>
+>>>
+>>> The corresponding bcc discussion thread is here:
+>>>     https://github.com/iovisor/bcc/issues/3527
+>>>
+>>> Acked-by: Yonghong Song <yhs@fb.com>
+>>>
+>>>>
+>>>>>    kernel/trace/bpf_trace.c | 2 ++
+>>>>>    1 file changed, 2 insertions(+)
+>>>>>
+>>>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>>>>> index 64bd2d84367f..6d3f951f38c5 100644
+>>>>> --- a/kernel/trace/bpf_trace.c
+>>>>> +++ b/kernel/trace/bpf_trace.c
+>>>>> @@ -861,6 +861,8 @@ BTF_ID(func, vfs_fallocate)
+>>>>>    BTF_ID(func, dentry_open)
+>>>>>    BTF_ID(func, vfs_getattr)
+>>>>>    BTF_ID(func, filp_close)
+>>>>> +BTF_ID(func, vfs_read)
+>>>>> +BTF_ID(func, vfs_write)
+>>>>>    BTF_SET_END(btf_allowlist_d_path)
+>>
+>> That feels incomplete.
+>> I know we can add more later, but why these two and not vfs_readv ?
+>> security_file_permission should probably be added as well ?
+>> Along with all sys_* entry points ?
+> 
+> The first argument of bpf_d_path is "struct path *, path"
+> which needs to be a BTF_ID w.r.t. verifier.
+> 
+> I think maybe we should target the common kernel functions which
+> has "struct path *" or "struct file *" arguments?
+> 
+> vfs_readv and security_file_permission or other possible candidates
+> are not added since there are no use case for those yet. But agree
+> that adding some vfs_* calls and security_file* options are a good
+> call since they could be used in a different situation and adding
+> them may save another kernel patch.
+> 
+> The syscall entry points typically only contains fd. Although
+> bpf program might hack to do something to convert fd to a file,
+> I still think this is a unlikely use case.
 
-By invoking ./scripts/checkkconfigsymbols.py > /tmp/log, I found
-following possibly undefined Kconfig macros
-which may need our attention:
+Thanks for the review and suggestions.
 
-PREEMPT_LOCK
-Referencing files: include/linux/lockdep_types.h
+I will send a v2 for review.
 
-PREEMT_DYNAMIC
-Referencing files: kernel/entry/common.c
-
-TREE_PREEMPT_RCU
-Referencing files: arch/sh/configs/sdk7786_defconfig
-
-RCU_CPU_STALL_INFO
-Referencing files: arch/xtensa/configs/nommu_kc705_defconfig
-
-RCU_NOCB_CPU_ALL
-Referencing files:
-Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-
-RCU_TORTURE_TESTS
-Referencing files: kernel/rcu/rcutorture.c
-
-and finally the macro which drive me to do this research
-
-TASKS_RCU_TRACE
-Referencing files: include/linux/rcupdate.h, kernel/rcu/tree_plugin.h
-
-On Fri, Jul 16, 2021 at 2:09 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Thu, Jul 15, 2021 at 04:45:04PM +0800, Zhouyi Zhou wrote:
-> > On Thu, Jul 15, 2021 at 11:51 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Wed, Jul 14, 2021 at 12:44:36PM +0800, Zhouyi Zhou wrote:
-> > > > On Tue, Jul 13, 2021 at 11:19 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > >
-> > > > > On Tue, Jul 13, 2021 at 06:18:12AM -0700, Paul E. McKenney wrote:
-> > > > > > On Tue, Jul 13, 2021 at 09:09:04AM -0400, Mathieu Desnoyers wrote:
-> > > > > > > ----- On Jul 13, 2021, at 12:16 AM, paulmck paulmck@kernel.org wrote:
-> > > > > > >
-> > > > > > > > On Tue, Jul 13, 2021 at 08:56:45AM +0800, zhouzhouyi@gmail.com wrote:
-> > > > > > > >> From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > > > > >>
-> > > > > > > >> Hi Paul,
-> > > > > > > >>
-> > > > > > > >> During my studying of RCU, I did a grep in the kernel source tree.
-> > > > > > > >> I found there are 3 places where the macro name CONFIG_TASKS_RCU_TRACE
-> > > > > > > >> should be CONFIG_TASKS_TRACE_RCU instead.
-> > > > > > > >>
-> > > > > > > >> Without memory fencing, the idle/userspace task inspection may not
-> > > > > > > >> be so accurate.
-> > > > > > > >>
-> > > > > > > >> Thanks for your constant encouragement for my studying.
-> > > > > > > >>
-> > > > > > > >> Best Wishes
-> > > > > > > >> Zhouyi
-> > > > > > > >>
-> > > > > > > >> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> > > > > > > >
-> > > > > > > > Good eyes, and those could cause real bugs, so thank you!
-> > > > > > >
-> > > > > > > Hi Paul,
-> > > > > > >
-> > > > > > > This makes me wonder: what is missing testing-wise in rcutorture to
-> > > > > > > catch those issues with testing before they reach mainline ?
-> > > > > >
-> > > > > > My guess:  Running on weakly ordered architectures.  ;-)
-> > > > >
-> > > > > And another guess:  A tool that identifies use of Kconfig options
-> > > > > that are not defined in any Kconfig* file.
-> > > > Based on Paul's second guess ;-),  I did a small research, and I think
-> > > > the best answer is to modify scripts/checkpatch.pl. We modify checkpatch.pl
-> > > > to identify use of Kconfig options that are not defined in any Kconfig* file.
-> > > >
-> > > > As I am a C/C++ programmer, I would be glad to take some time to learn
-> > > > perl (checkpatch is implented in perl) first if no other volunteer is
-> > > > about to do it ;-)
-> > >
-> > > I haven't heard anyone else volunteer.  ;-)
-> > >
-> > > Others might have opinions on where best to implement these checks,
-> > > but I must confess that I have not given it much thought.
-> > I recklessly cc the maintainers of checkpatch.pl without your
-> > permission to see others' opion,
-> > and I begin to study perl at the same time, after all, learning
-> > something is always good ;-)
->
-> Works for me!
->
->                                                         Thanx, Paul
-Best Wishes
-Zhouyi
+Thanks,
+Hengqi
