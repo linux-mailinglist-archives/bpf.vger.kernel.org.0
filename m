@@ -2,139 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72D43CCAEA
-	for <lists+bpf@lfdr.de>; Sun, 18 Jul 2021 23:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC3B3CCB2D
+	for <lists+bpf@lfdr.de>; Sun, 18 Jul 2021 23:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbhGRVdb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Jul 2021 17:33:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
+        id S231222AbhGRV5k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Jul 2021 17:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232459AbhGRVda (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Jul 2021 17:33:30 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC456C061762;
-        Sun, 18 Jul 2021 14:30:31 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id r135so24613097ybc.0;
-        Sun, 18 Jul 2021 14:30:31 -0700 (PDT)
+        with ESMTP id S229585AbhGRV5k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Jul 2021 17:57:40 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5BEC061762;
+        Sun, 18 Jul 2021 14:54:41 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id r135so24677190ybc.0;
+        Sun, 18 Jul 2021 14:54:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IlvWyDGxD9tWgU/FomNaOA1mZxQ0zxCTG62cnhWUquM=;
-        b=Gdj50dY5VcPs48R7bq2KSt1+H35bk6T2ODn/0BZXmh3A1nS/F17UCdEtyjNBYBlgG/
-         rwJcmUuUDj8sewzMKilnyjW8ljsGJR0Iy3kI8fMvFxtQRqjjTFHtqnsqQNPCPnWvfjyV
-         K/ZLj4UXQToZW9rlZXH4xuJ2UkpUfMdCQhIgRon6MO9//Kce9j6Wq+2DyHrgMxrmzJrL
-         j/2tF6g0osBUK7KIz4DW2b396TtjKt0eRXqyB6XCwgF6Bgjd2/U6t0BQIlxunuKrZc/G
-         z0mHBjCzzLgDy+H/eKELU65aHAUOYUcPUorvDJCqmNXPukZ+E4cii4rzZdRqjDmWT8fj
-         DLbA==
+         :cc:content-transfer-encoding;
+        bh=9j1NWnlbjiSB+YS5FOue9N8gotu/EDm4p2Vpx7w+TB0=;
+        b=JdBncGJcVy1N7d6pyHtdLvzJFtv/elzIMW9Ke0j/aQQbVu4ob/Rk+4/oZOKI8I95mX
+         GUkkTJNDEm5+njVW9GQBOnN/Lx5d/cqYM8zILEj0ZGeDvQdRxez2Hl2TkToP++M2jOkV
+         ZQ5NdKJNoJ1eStj49EI3coroBtFXjNlKYOfjAV7iPeJwCnirxjMY+1x8i8YRbaKyJ3p8
+         GuV1cDPRbEJpBILS9Uez9X+htfGKzG5xfRPVuJdl+flhTyc0ytMYna6CJoCmaG4SFolM
+         5u/Lrk4tN/pVJliV4Xxhf9MJG/trbQgwmI7L3R8sqaPLsW7c8pAjr94Wi3gITHdsViZu
+         cuIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IlvWyDGxD9tWgU/FomNaOA1mZxQ0zxCTG62cnhWUquM=;
-        b=rioBNc9a7YNAOp/f8knMTL9PX2AWeUSxAIOONkxA6h52zWJMxjpVC5kpI9pIVKboLI
-         zCv3GQZfz/cOatbaY4wP2Sqzh792oaW3yGRztyktyB3hBn+pU9d8sqzBm7sFAi/KNhzR
-         ukvjBSycfHxMV69sZqbPV/ax7svDj/U9gRePi+NG9YL/DRwZ1Fv/LkPnDklYFQKZe77H
-         VRt8chRsrGWa3T6jHJrFyUA9VzaoHJoBK0tKfwsnaHI/ypMzmv+8pG+1hLatxIGFHH5x
-         qodTD/SBXinJ9FkhsLnI6DJSlohVvS2FVC+f/RETBLYRjoBvCncvlCpcesqus2wktMoE
-         D/sA==
-X-Gm-Message-State: AOAM531nwqHNqskhpDG9cnGnCOnGoFEDRTytulkOLogf84rYnjybWpxk
-        Ov0WXFsobSUOhtWQPz4NM4T5losXxq6CY4LDgzE=
-X-Google-Smtp-Source: ABdhPJy4M4IUM4nYo8+Pohr4pHTdkI2TRZHzehqwDfDmScZXlkox/fCELKiA5J2KnkxdZLgoppiwsg29R3KTlygK9Fg=
-X-Received: by 2002:a25:3787:: with SMTP id e129mr26059448yba.459.1626643831141;
- Sun, 18 Jul 2021 14:30:31 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9j1NWnlbjiSB+YS5FOue9N8gotu/EDm4p2Vpx7w+TB0=;
+        b=iipsfF0SBdLR8jau3R7YfIdxCSCpUKMB1LLVXOVJ0VQF+jMWaigPIMDAIvsT2v0IOb
+         2xBVLVhb4MWACujUFUENbYbnbUtagmulydJyqsfAWgJrzUNT9mJ/3bgowC2rYpOkjJMO
+         izpWWiCMAuOqSvX4z2rc0Mmm+fMpeU/tpVnKqeeYHw/Stz6vKiJo0lI+QZ17WHiny3xn
+         XtPSf+Dsq2t+mlC9+BZzuIlmcF+dWSoiHKQMq2F3ZSHYePkcsxkkZ/2QW2ANqg2vHju9
+         oSCTTWPWnYDJJhFftVfk7F/9tL/+doUBniepG8a3D/38USLMbW1Xy4i2D6FaaaK8ZKm0
+         KhTQ==
+X-Gm-Message-State: AOAM530C23Oh+VMrXDqgXS+i7id+lCi5YipU0tClPBCBL6l4ktNCGqSg
+        kJbsadQhhNUcibtdXfHVUC6iaw/DeqEVbbIrBSc=
+X-Google-Smtp-Source: ABdhPJxi9hEYY1Rma5JOio9CxD2CjVJXBqV9KgzBDkgfXMP6dHpl4SMScCNq367PiaagDX0X3Xso89Tdw96kXOCK7TQ=
+X-Received: by 2002:a25:bd09:: with SMTP id f9mr27126985ybk.27.1626645280871;
+ Sun, 18 Jul 2021 14:54:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210714094400.396467-1-jolsa@kernel.org> <20210714094400.396467-7-jolsa@kernel.org>
- <CAEf4Bzbk-nyenpc86jtEShset_ZSkapvpy3fG2gYKZEOY7uAQg@mail.gmail.com> <YPSBs51JR5cWVuc1@krava>
-In-Reply-To: <YPSBs51JR5cWVuc1@krava>
+References: <20210718065039.15627-1-msuchanek@suse.de> <c621c6c6-ad2d-5ce0-3f8c-014daf7cad64@iogearbox.net>
+ <20210718193655.GP24916@kitsune.suse.cz>
+In-Reply-To: <20210718193655.GP24916@kitsune.suse.cz>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 18 Jul 2021 14:30:20 -0700
-Message-ID: <CAEf4BzajXLe7Yx+r024A9bhaR6Dwy+t+n2sqA=8NXQ9m0sp1mQ@mail.gmail.com>
-Subject: Re: [PATCHv4 bpf-next 6/8] libbpf: Add bpf_program__attach_kprobe_opts
- function
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Sun, 18 Jul 2021 14:54:29 -0700
+Message-ID: <CAEf4Bza4Fd4vnJLHYKN_VE3=hcLSnxUN-YMN4iv=B5h+y+wCdg@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Remove from kernel tree.
+To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>
+        KP Singh <kpsingh@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-riscv@lists.infradead.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 12:32 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Sun, Jul 18, 2021 at 12:36 PM Michal Such=C3=A1nek <msuchanek@suse.de> w=
+rote:
 >
-> On Fri, Jul 16, 2021 at 06:41:59PM -0700, Andrii Nakryiko wrote:
-> > On Wed, Jul 14, 2021 at 2:45 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> On Sun, Jul 18, 2021 at 09:04:16PM +0200, Daniel Borkmann wrote:
+> > On 7/18/21 8:50 AM, Michal Suchanek wrote:
+> > > libbpf shipped by the kernel is outdated and has problems. Remove it.
 > > >
-> > > Adding bpf_program__attach_kprobe_opts that does the same
-> > > as bpf_program__attach_kprobe, but takes opts argument.
+> > > Current version of libbpf is available at
 > > >
-> > > Currently opts struct holds just retprobe bool, but we will
-> > > add new field in following patch.
-> > >
-> > > The function is not exported, so there's no need to add
-> > > size to the struct bpf_program_attach_kprobe_opts for now.
-> >
-> > Why not exported? Please use a proper _opts struct just like others
-> > (e.g., bpf_object_open_opts) and add is as a public API, it's a useful
-> > addition. We are going to have a similar structure for attach_uprobe,
-> > btw. Please send a follow up patch.
->
-> there's no outside user.. ok
+> > > https://github.com/libbpf/libbpf
 
-because there is no API :) I've seen people asking about the ability
-to attach to kprobe+offset in some PRs.
+This patch made me day :) libbpf sources in the kernel tree is *the
+source* of libbpf. Quoting Details section ([0]) of libbpf README:
+
+  Details
+
+  This is a mirror of bpf-next Linux source tree's tools/lib/bpf
+directory plus its supporting header files.
+
+  All the gory details of syncing can be found in scripts/sync-kernel.sh sc=
+ript.
+
+  Some header files in this repo (include/linux/*.h) are reduced
+versions of their counterpart files at bpf-next's
+tools/include/linux/*.h to make compilation successful.
+
+> > >
+> > > Link: https://lore.kernel.org/bpf/b07015ebd7bbadb06a95a5105d9f6b4ed58=
+17b2f.camel@debian.org/
+> > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> >
+> > NAK, I'm not applying any of this. If there are issues, then fix them. =
+If
+>
+> They are fixed in the github version.
+>
+> > you would have checked tools/lib/bpf/ git history, you would have found
+> > that libbpf is under active development in the upstream kernel tree and
+>
+> So is the github version.
+
+See above, Github is a projection of the kernel sources. Yes, Makefile
+here and on Github are different, but that's by necessity. We do ask
+all distros to package libbpf from the Github version, but there are
+kernel projects (bpftool, perf, selftests) using libbpf from the
+kernel sources themselves.
 
 >
-> >
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c | 34 +++++++++++++++++++++++++---------
-> > >  1 file changed, 25 insertions(+), 9 deletions(-)
-> > >
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index 88b99401040c..d93a6f9408d1 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -10346,19 +10346,24 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
-> > >         return pfd;
-> > >  }
-> > >
-> > > -struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
-> > > -                                           bool retprobe,
-> > > -                                           const char *func_name)
-> > > +struct bpf_program_attach_kprobe_opts {
-> >
-> > when you make it part of libbpf API, let's call it something shorter,
-> > like bpf_kprobe_opts, maybe? And later we'll have bpf_uprobe_opts for
-> > uprobes. Short and unambiguous.
+> > you could have spared yourself this patch.
 >
-> ok
+> You could have spared me a lot of problems if there was only one source
+> for libbpf.
 >
-> jirka
+> Can't you BPF people agree on one place to develop the library?
+
+We can. We did. We even wrote that down. And we do develop libbpf in
+one place, here. Github repo only accepts PRs for Github Makefile and
+various parts of CI process which is Github-specific.
+
 >
-> >
-> > > +       bool retprobe;
-> > > +};
-> > > +
-> > > +static struct bpf_link*
-> > > +bpf_program__attach_kprobe_opts(struct bpf_program *prog,
-> > > +                               const char *func_name,
-> > > +                               struct bpf_program_attach_kprobe_opts *opts)
-> > >  {
-> > >         char errmsg[STRERR_BUFSIZE];
-> > >         struct bpf_link *link;
-> > >         int pfd, err;
-> > >
-> >
-> > [...]
-> >
+> Thanks
 >
+> Michal
