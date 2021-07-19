@@ -2,103 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207623CF09A
-	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 02:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F403CF099
+	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 02:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356489AbhGSXcF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Jul 2021 19:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
+        id S240158AbhGSXcL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Jul 2021 19:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441829AbhGSWN7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Jul 2021 18:13:59 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E84DC0613E2;
-        Mon, 19 Jul 2021 15:38:44 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id i18so30064313yba.13;
-        Mon, 19 Jul 2021 15:38:44 -0700 (PDT)
+        with ESMTP id S1391379AbhGSW0L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Jul 2021 18:26:11 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE70C0610CF
+        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 15:58:42 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id p22so30232774yba.7
+        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 15:58:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=u/XSG6dq9OeEcEy+GhvGwryPQ+F5MJvOFL55kd1WEkw=;
-        b=OS5ilh6+BPNDLSzV/Axz463Dm0cYBb8ezVU2yJDdLZuOWEkaH0olJ2N9c9A0key2Jk
-         uRPhKz2eu4J+4aSDOX/CFoswVemidnU+FCyuQQWcA+U18H8rtl1QTT8/5LjUoMAX4y2p
-         Dn1S+dc4fS9NSMGaWeu7o2ww+7l/Rqj+nn1QLflS5bbRnQKzVJ2OJxFZ++OQ51CP9Zb8
-         eBhAbudEcs+6n9pB5pkdYNkdX8VY1V6W1FuHOrBoIId/qgK5a5Mij9yK/9SlZUDH75Rv
-         Ps1rofSa4yTPl6qQgQgC/+kiCQBgoAzWih8oMu1MKhezwN9DRv2wCfkID9riQQqv98RJ
-         PHrw==
+        bh=In4vAXf0YMUsYCOzHvW3y8PXvW5JTmoItXJtcPBdR28=;
+        b=tOWsvcSG5uTxa1fwD45waDZqGcTDqsOBtzdF2QwHl0rKWaP4HpL6UuzxipJ00Zk2mw
+         oUufLZwGw7M6yRnTeQKq3vf7cMTvlnzPjSS6UpbmnKaVxVmDLjHhinIJ0JIpSQ3IF52I
+         s/aLFy2S3FnI2nrdH4aS93oUsCUSghgGD3yP7q8FSgdHQqfhKf1PvTtajqFsd32LMYEh
+         IlSDhrRE4+oxCC1igZNvDC+u9NYcZ8Yi5C8lepp4x+M0lHZcWbvUYiFTaf/Li6eAXJlO
+         MXJYr5JPzOkwl9Dd9hRsD7zKfgdPXCM4oWWWtI1z4CfYWoW+IbZQ/m5stiaXyZhiXpyF
+         NkkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=u/XSG6dq9OeEcEy+GhvGwryPQ+F5MJvOFL55kd1WEkw=;
-        b=l66/grW5pm6OT6wYhYcc+AZVgUBqKxhloGqO3O83Wg7IDKi+R00MhmZmdeTWrerreP
-         r5tzyi/NrZcv7iQeePecyGU+FKanp6BSQGUOXGqLpxOJaBaG7HJf166txSNgT48Wiq+c
-         4I4+B78DyGkThq2EvEZXpv5AmUNKfV1K/kDAb8WBZu3LZls7xcVkJFeviBUEaNCFbnif
-         Ck2hB44xU5xbVgQmvZj0xqp7Z3V59g2V6ZtwFBPkxmk9h1hP8FvmQt6gXnkFqAKyJFvC
-         JOw+DFab9BZBsqWT+SFU0urcsFveFWUhO1ddZjglS7MkbxOZyJNzcfNdeYY/kGqkWbtA
-         7oDA==
-X-Gm-Message-State: AOAM533YN0MMdqXF9SrDqCZNKHow0dqk/ObzxgWBIUjoHO51x+/aOK2+
-        RMvpWtZla/2tdsVzPOWgZxgGZxnXvlmRhz+3XLA=
-X-Google-Smtp-Source: ABdhPJxvL0X9TE5c2NqGpr/D3oSc9/WcqLpQuNzoTbeV3CrU803dXo3/4+cHEe/IAXT6uwR3bcTrtErUiiYaxs6BQME=
-X-Received: by 2002:a25:1ec4:: with SMTP id e187mr33893473ybe.425.1626734323512;
- Mon, 19 Jul 2021 15:38:43 -0700 (PDT)
+        bh=In4vAXf0YMUsYCOzHvW3y8PXvW5JTmoItXJtcPBdR28=;
+        b=a+YslSnLHwQa2/4pXmu4K5qiLx9IshCvYtvyASocf0gHGH+RxgTmk46jNqNO0fkYpr
+         0nQnO89OYxhCpV4EGVtbVqEX/x3Yrn+4heU/rh6gkheHK90zGD35wgAbY5V5LTfBJb24
+         2heZ/a18JRNPds7D/PbBepsuW7wufzJSM/f+YGNtpzwqRySDkjeLqYQrC6OFYraZT7+a
+         C7Dl3KKPF08f10dv0TuxXxS7OO4HuuezPO3L43hAWiXelpNSgpGqN7Nes59/dkPYI2v2
+         TIA1vERNeZOu9Bt94UWKmURLj866yY7YkMpt26LyR9ihQvOTOZG524QTwCKBUokM8D3K
+         mY3A==
+X-Gm-Message-State: AOAM5316It8Bkg8XyNqi8vHJKMCqQxlMf6oY5vA8Sx7QOQISDEfQBq+u
+        e9fm56beBF+peqqJnGJ49YY7YMAM9goTRuA9roWATyA6SKQ=
+X-Google-Smtp-Source: ABdhPJwCx4kQjzD7+fPgNzpap41XXzHL2jSwj2D3xoucWNXRczCZTfmuvPjfKODW9IbXmCvMOUpR94NlPOp8OEVlF58=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr35321568ybo.230.1626735521982;
+ Mon, 19 Jul 2021 15:58:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <1626730889-5658-1-git-send-email-alan.maguire@oracle.com> <1626730889-5658-2-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1626730889-5658-2-git-send-email-alan.maguire@oracle.com>
+References: <20210719173838.423148-1-m@lambda.lt> <20210719173838.423148-2-m@lambda.lt>
+In-Reply-To: <20210719173838.423148-2-m@lambda.lt>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 19 Jul 2021 15:38:32 -0700
-Message-ID: <CAEf4BzYUf_zgmJQ_3z=oYAiGOypYsAhvoaePQMB34P==4EOLbg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] libbpf: avoid use of __int128 in typed dump display
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 19 Jul 2021 15:58:30 -0700
+Message-ID: <CAEf4BzbjVdG57QuhvpxAuq8qz+T3+DbP28_CpF2Y4v1AmwkDKw@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] libbpf: fix removal of inner map in bpf_object__create_map
+To:     Martynas Pumputis <m@lambda.lt>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 2:41 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Mon, Jul 19, 2021 at 10:36 AM Martynas Pumputis <m@lambda.lt> wrote:
 >
-> __int128 is not supported for some 32-bit platforms (arm and i386).
-> __int128 was used in carrying out computations on bitfields which
-> aid display, but the same calculations could be done with __u64
-> with the small effect of not supporting 128-bit bitfields.
+> If creating an outer map of a BTF-defined map-in-map fails (via
+> bpf_object__create_map()), then the previously created its inner map
+> won't be destroyed.
 >
-> With these changes, a big-endian issue with casting 128-bit integers
-> to 64-bit for enum bitfields is solved also, as we now use 64-bit
-> integers for bitfield calculations.
+> Fix this by ensuring that the destroy routines are not bypassed in the
+> case of a failure.
 >
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> Fixes: 646f02ffdd49c ("libbpf: Add BTF-defined map-in-map support")
+> Reported-by: Andrii Nakryiko <andrii@kernel.org>
+
+Please preserve received acks between versions (unless some
+significant changes happen between versions invalidating the original
+ack):
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+Thanks, applied (with few adjustments) to bpf-next, given we lived
+with this bug for a long while and no one ever noticed/reported it
+(and BPF map will be cleaned up when the process exits anyway).
+Keeping it in bpf-next will make it easier for follow-up patches
+changing/enhancing bpf_map__create_map() and will avoid merge
+conflicts down the line.
+
+> Signed-off-by: Martynas Pumputis <m@lambda.lt>
 > ---
-
-Changes look good to me, thanks. But they didn't appear in patchworks
-yet so I can't easily test and apply them. It might be because of
-patchworks delay or due to a very long CC list. Try trimming the cc
-list down and re-submit?
-
-Also, while I agree that supporting 128-bit bitfields isn't important,
-I wonder if we should warn/error on that (instead of shifting by
-negative amount and reporting some garbage value), what do you think?
-Is there one place in the code where we can error out early if the
-type actually has bitfield with > 64 bits? I'd prefer to keep
-btf_dump_bitfield_get_data() itself non-failing though.
-
-
->  tools/lib/bpf/btf_dump.c | 62 +++++++++++++++++++++++++++---------------------
->  1 file changed, 35 insertions(+), 27 deletions(-)
+>  tools/lib/bpf/libbpf.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
 >
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 6f5e2757bb3c..dde521366579 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4479,6 +4479,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>  {
+>         struct bpf_create_map_attr create_attr;
+>         struct bpf_map_def *def = &map->def;
+> +       int err = 0;
+>
+>         memset(&create_attr, 0, sizeof(create_attr));
+>
+> @@ -4521,8 +4522,6 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>
+>         if (bpf_map_type__is_map_in_map(def->type)) {
+>                 if (map->inner_map) {
+> -                       int err;
+> -
+>                         err = bpf_object__create_map(obj, map->inner_map, true);
+>                         if (err) {
+>                                 pr_warn("map '%s': failed to create inner map: %d\n",
+> @@ -4547,7 +4546,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>         if (map->fd < 0 && (create_attr.btf_key_type_id ||
+>                             create_attr.btf_value_type_id)) {
+>                 char *cp, errmsg[STRERR_BUFSIZE];
+> -               int err = -errno;
 
-[...]
+needed empty line here
+
+
+> +               err = -errno;
+>
+>                 cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
+>                 pr_warn("Error in bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n",
+> @@ -4560,8 +4559,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>                 map->fd = bpf_create_map_xattr(&create_attr);
+>         }
+>
+> -       if (map->fd < 0)
+> -               return -errno;
+> +       err = map->fd < 0 ? -errno : 0;
+>
+>         if (bpf_map_type__is_map_in_map(def->type) && map->inner_map) {
+>                 if (obj->gen_loader)
+> @@ -4570,7 +4568,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>                 zfree(&map->inner_map);
+>         }
+>
+> -       return 0;
+> +       return err;
+>  }
+>
+>  static int init_map_slots(struct bpf_object *obj, struct bpf_map *map)
+> --
+> 2.32.0
+>
