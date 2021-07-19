@@ -2,68 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BCF3CCCE3
-	for <lists+bpf@lfdr.de>; Mon, 19 Jul 2021 06:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4408D3CCF8B
+	for <lists+bpf@lfdr.de>; Mon, 19 Jul 2021 11:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbhGSEOV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Jul 2021 00:14:21 -0400
-Received: from out0.migadu.com ([94.23.1.103]:57585 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhGSEOV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Jul 2021 00:14:21 -0400
+        id S235282AbhGSIRp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Jul 2021 04:17:45 -0400
+Received: from mail-lf1-f41.google.com ([209.85.167.41]:44004 "EHLO
+        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235018AbhGSIRo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Jul 2021 04:17:44 -0400
+Received: by mail-lf1-f41.google.com with SMTP id f30so22405256lfv.10
+        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 01:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1k48KCcy3y6vIAdtOHWsq+O6aGKfc6p+OZyi1Vzkxdg=;
+        b=Q1WubCmk3c2vuY8XLCwB23Tv9+DQkdc9eL4l+yn1NMuxC3edJzvGuvOWVENS38btuO
+         ohj0f8EU306raJZ+26SBlCyu60z8Y2kC50BBDWUUyEyJQRI7HhQsDqKqddH0sSoaSR2Q
+         9u2TsPp4vLtJa8iObupi8nnCPkV819nrXkUNU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1k48KCcy3y6vIAdtOHWsq+O6aGKfc6p+OZyi1Vzkxdg=;
+        b=jdZw4zH/j7H3ghNDxV9a2WmgWmUd0LBRfqCo8KsCX2wjTXCtvcRphFvkBDZir0Z48l
+         zqfmKo/smnRf5E6c5uoTsPk3HMZGVtHi9pnIy0vKFxPPFH5iBDt2ZSC955CMTrW7dYga
+         0DkHaJ8Am0kVg20lkXZNy3IyPWEEg6cPesDAoH337p4dH/5pJfHS8smzc2nztkwYxGWZ
+         a6FM6lA2MEiiyuH2Hdxy0bXp9RjHKHpbr8pqhDt4CT3P3Io96Zb3oI1RJvVHkOQTVDKZ
+         1z+1NcZA8R7Ihw029LUwImkrdOQgAJMNnJ9a4Shfbiy2Zvp/BfoeZ1Q+LhwtZzq3UsLj
+         gv5w==
+X-Gm-Message-State: AOAM5314G1Q2laP/PSZxoq8C8LrbUHWbYteaAHDtrjLyP7vEzQZBIqzD
+        yCSlWR9oH7lzWfCBXTMyV1PYhVqDiTCRYwoEyzVUDPECclE=
+X-Google-Smtp-Source: ABdhPJxEJdcVR2SXhjQ85qLADGoRKOtqMfEnuajiHT1qzvYAz+LOuUxDG7SZyMA1wek8uSFNLIMCe2o/NUwyOgoL4gE=
+X-Received: by 2002:a05:6512:22d3:: with SMTP id g19mr12501835lfu.171.1626684540314;
+ Mon, 19 Jul 2021 01:49:00 -0700 (PDT)
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1626667876;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X887XloIo9SII0WY1sOK9vWk+QX7vdRRNpkirRR+QVw=;
-        b=pF5jcvo+c40T8+T/8AZ/MvAHyXizo84Td/QLI68OkGmKpgttDzKgU9O7y9dC1DW1TvqT2+
-        Kw9yf5Dqb+n2ouGckREsXVhZRpz8ZkOEUB+n67nG26biBwb2uhGaqOc8q93mFqxL3FK1cT
-        RBSmg0BHVeOxeEnzLQFMpQdXy8UIyNM=
-Date:   Mon, 19 Jul 2021 04:11:15 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yajun.deng@linux.dev
-Message-ID: <01896ade8ce4ad062de5cb63a1d09707@linux.dev>
-Subject: Re: bpf selftest tc_bpf failed with latest bpf-next
-To:     "Yonghong Song" <yhs@fb.com>, "bpf" <bpf@vger.kernel.org>,
-        "Kumar Kartikeya Dwivedi" <memxor@gmail.com>
-In-Reply-To: <536141f3-f76a-67d7-a081-c518919efd05@fb.com>
-References: <536141f3-f76a-67d7-a081-c518919efd05@fb.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+References: <20210716100452.113652-1-lmb@cloudflare.com> <CAEf4BzauzWhNag0z31krN_MTZTGLynAJvkh_7P3yLQCx5XLTAg@mail.gmail.com>
+ <7854fbef-8ea5-5396-6369-99eef1dcccaa@iogearbox.net>
+In-Reply-To: <7854fbef-8ea5-5396-6369-99eef1dcccaa@iogearbox.net>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 19 Jul 2021 09:48:48 +0100
+Message-ID: <CACAyw99ArX_oP17f4CeYBsjOXuK+E==6PkTBVQqSVnLzqi3P=Q@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix OOB read when printing XDP link fdinfo
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-July 19, 2021 3:29 AM, "Yonghong Song" <yhs@fb.com> wrote:=0A=0A> The bpf=
- selftest tc_bpf failed with latest bpf-next. The following is the comman=
-d to run and the=0A> result:=0A> =0A> $ ./test_progs -n 132=0A> [ 40.9475=
-71] bpf_testmod: loading out-of-tree module taints kernel.=0A> test_tc_bp=
-f:PASS:test_tc_bpf__open_and_load 0 nsec=0A> test_tc_bpf:PASS:bpf_tc_hook=
-_create(BPF_TC_INGRESS) 0 nsec=0A> test_tc_bpf:PASS:bpf_tc_hook_create in=
-valid hook.attach_point 0 nsec=0A> test_tc_bpf_basic:PASS:bpf_obj_get_inf=
-o_by_fd 0 nsec=0A> test_tc_bpf_basic:PASS:bpf_tc_attach 0 nsec=0A> test_t=
-c_bpf_basic:PASS:handle set 0 nsec=0A> test_tc_bpf_basic:PASS:priority se=
-t 0 nsec=0A> test_tc_bpf_basic:PASS:prog_id set 0 nsec=0A> test_tc_bpf_ba=
-sic:PASS:bpf_tc_attach replace mode 0 nsec=0A> test_tc_bpf_basic:PASS:bpf=
-_tc_query 0 nsec=0A> test_tc_bpf_basic:PASS:handle set 0 nsec=0A> test_tc=
-_bpf_basic:PASS:priority set 0 nsec=0A> test_tc_bpf_basic:PASS:prog_id se=
-t 0 nsec=0A> libbpf: Kernel error message: Failed to send filter delete n=
-otification=0A> test_tc_bpf_basic:FAIL:bpf_tc_detach unexpected error: -3=
- (errno 3)=0A> test_tc_bpf:FAIL:test_tc_internal ingress unexpected error=
-: -3 (errno 3)=0A> #132 tc_bpf:FAIL=0A> =0A> The failure seems due to the=
- commit=0A> cfdf0d9ae75b ("rtnetlink: use nlmsg_notify() in rtnetlink_sen=
-d()")=0A> =0A> Without the above commit, rtnetlink_send() will return 0 e=
-ven if=0A> netlink_broadcast() (called by rtnetlink_send())=0A> returns a=
-n error. The above commit makes it return=0A> an error code if netlink_br=
-oadcast() failed.=0A> =0A> Such a rtnetlink_send() return value change im=
-pacted the return value=0A> for tfilter_del_notify(), in sched/cls_api.c,=
- in the above test.=0A> Previously return 0, now return -3 (-ESRCH), caus=
-ing the test failure.=0A> =0A> I am not sure what is the proper solution =
-to address this.=0A> Should we just adjust test, or kernel change is also=
- needed?=0A=0AThanks report that, I'll route a patch to fix this in next =
-submit.=0A> =0A> Kumar, Yajun, could you take a look?
+On Fri, 16 Jul 2021 at 22:01, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 7/16/21 10:43 PM, Andrii Nakryiko wrote:
+> > On Fri, Jul 16, 2021 at 3:05 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >>
+> >> We got the following UBSAN report on one of our testing machines:
+> >>
+> >>      ================================================================================
+> >>      UBSAN: array-index-out-of-bounds in kernel/bpf/syscall.c:2389:24
+> >>      index 6 is out of range for type 'char *[6]'
+> >>      CPU: 43 PID: 930921 Comm: systemd-coredum Tainted: G           O      5.10.48-cloudflare-kasan-2021.7.0 #1
+> >>      Hardware name: <snip>
+> >>      Call Trace:
+> >>       dump_stack+0x7d/0xa3
+> >>       ubsan_epilogue+0x5/0x40
+> >>       __ubsan_handle_out_of_bounds.cold+0x43/0x48
+> >>       ? seq_printf+0x17d/0x250
+> >>       bpf_link_show_fdinfo+0x329/0x380
+> >>       ? bpf_map_value_size+0xe0/0xe0
+> >>       ? put_files_struct+0x20/0x2d0
+> >>       ? __kasan_kmalloc.constprop.0+0xc2/0xd0
+> >>       seq_show+0x3f7/0x540
+> >>       seq_read_iter+0x3f8/0x1040
+> >>       seq_read+0x329/0x500
+> >>       ? seq_read_iter+0x1040/0x1040
+> >>       ? __fsnotify_parent+0x80/0x820
+> >>       ? __fsnotify_update_child_dentry_flags+0x380/0x380
+> >>       vfs_read+0x123/0x460
+> >>       ksys_read+0xed/0x1c0
+> >>       ? __x64_sys_pwrite64+0x1f0/0x1f0
+> >>       do_syscall_64+0x33/0x40
+> >>       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> >>      <snip>
+> >>      ================================================================================
+> >>      ================================================================================
+> >>      UBSAN: object-size-mismatch in kernel/bpf/syscall.c:2384:2
+> >>
+> >>  From the report, we can infer that some array access in bpf_link_show_fdinfo at index 6
+> >> is out of bounds. The obvious candidate is bpf_link_type_strs[BPF_LINK_TYPE_XDP] with
+> >> BPF_LINK_TYPE_XDP == 6. It turns out that BPF_LINK_TYPE_XDP is missing from bpf_types.h
+> >> and therefore doesn't have an entry in bpf_link_type_strs:
+> >>
+> >>      pos:        0
+> >>      flags:      02000000
+> >>      mnt_id:     13
+> >>      link_type:  (null)
+> >>      link_id:    4
+> >>      prog_tag:   bcf7977d3b93787c
+> >>      prog_id:    4
+> >>      ifindex:    1
+> >>
+> >> Fixes: aa8d3a716b59 ("bpf, xdp: Add bpf_link-based XDP attachment API")
+> >> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> >> ---
+> >
+> > Well, oops. Thanks for the fix!
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+> > It would be great to have a compilation error for something like this.
+> > I wonder if we can do something to detect this going forward?
+> >
+> >>   include/linux/bpf_types.h | 1 +
+> >>   1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> >> index a9db1eae6796..be95f2722ad9 100644
+> >> --- a/include/linux/bpf_types.h
+> >> +++ b/include/linux/bpf_types.h
+> >> @@ -135,3 +135,4 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
+> >>   #ifdef CONFIG_NET
+> >>   BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
+> >>   #endif
+> >> +BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
+>
+> Lorenz, does this compile when you don't have CONFIG_NET configured? I would assume
+> this needs to go right below the netns one depending on CONFIG_NET.. at least the
+> bpf_xdp_link_lops are in net/core/dev.c which is only built under CONFIG_NET.
+
+It does compile, since the only use of the macro is to stringify a
+link type for fdinfo. I'll move it into CONFIG_NET to be consistent
+with netdev though.
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
