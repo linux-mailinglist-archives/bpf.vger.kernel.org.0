@@ -2,220 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5383CD471
-	for <lists+bpf@lfdr.de>; Mon, 19 Jul 2021 14:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64F03CD4DC
+	for <lists+bpf@lfdr.de>; Mon, 19 Jul 2021 14:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236864AbhGSLb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Jul 2021 07:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236828AbhGSLb1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Jul 2021 07:31:27 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A47CC061767
-        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 04:27:03 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id t3so23597495edc.7
-        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 05:12:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/UU/c96xB2XnsKcImXrMAG0NX8G+S47OMuRsfPPQPuI=;
-        b=CK1gkwphNUpnV7qz0pEiNQPARKls7lgV4k0YhHtRviZNNNf9pduPYAm6rasO2Z4JYq
-         yCfq8C7eKnhN+sLicDffhTPpp6ANXP4DqCoi59AQthWxFpsbTPcmXNQxiSf4zkbTW0pW
-         K3aY/qy6QxN6TUQ+ylVmRuiz2j60u5w0PKO//4WhJzkw8/BP/YMkgXaltIlAxAr5v94A
-         fKQ0wT14If3pjD//EisFpRLYUCGqpzt6ZOREOCfMTFpNyAAbyVqgTwrKeuMjTSC4anJJ
-         Vb2nRPBLSF9PjEe+M0s5mDp+DlyqqAgbMhs3l4NUalgsijVHBhCBnMXqQ6NfFE39Zzyf
-         K6dQ==
+        id S231533AbhGSL55 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Jul 2021 07:57:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58470 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231388AbhGSL54 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 19 Jul 2021 07:57:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626698316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9xnPevyU/vinvxm9fpLnz13ttiz6/qE1ToIVXogNE+c=;
+        b=QL2zVu247E78B49KAcVCgdg3/m7/kirPBGBNy7AwqvZPURjmJceSUnN2mVKGVvjLfj1VEW
+        sxpL0AfKrgH4wsLIamBqvl/jp4s/gjU/IAd5ExphklIXhJcGT+ZMM2nRRcUfopvArjNJuG
+        enn3IGfe5EwCCYRWpwWt8FNRRt/LAgo=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-598-DyOpQBITPvWR1rDbiCb7ow-1; Mon, 19 Jul 2021 08:38:35 -0400
+X-MC-Unique: DyOpQBITPvWR1rDbiCb7ow-1
+Received: by mail-ej1-f70.google.com with SMTP id sd15-20020a170906ce2fb0290512261c5475so5308606ejb.13
+        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 05:38:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/UU/c96xB2XnsKcImXrMAG0NX8G+S47OMuRsfPPQPuI=;
-        b=EpG77JFQFtqFl8Ac4ljjV3k7XgOvv+9BXs3wqvGxuYRrlWxzjH97PgH2NE3ZtaQ/0W
-         mBl65ixlQTeW2AvZ1UUJwoyU7Y2iMiTL0qc4BruoOTbou7FkfDFZVzFen+U7pfw/CCB9
-         A1S2vK1VCTmdG8AxwRCm+1OKYpXJZhRImGKW0FzXg5jPYjrrZCVpFX8HE82+rnWBufJ3
-         KFNwI4gGQPaW8aIgC42qtEAfvQlC8GgIN6U+I7zMNdf1FX5lEL+96R68HayZ0pKCLBkj
-         taox9C7QibiUy3JNpo7Sz8cDLbpFsBr8OswcIwa0jLWlcjco+8UxdpFyEB/1KT0U6Ovt
-         yXbQ==
-X-Gm-Message-State: AOAM532kDXOnCC6ihoE/5H3vDjOHRilprr66xHVfA8Y+0IRrqgE4ABQI
-        YJW/RwcLsd69OaztWY4yPFkJrd2+UZNMhWBE9rxWkQ==
-X-Google-Smtp-Source: ABdhPJxzmls3MdY2v2rmmBRiXXunC11WlDfin6gHks3OmV5v5L2L+bdoxTg7/Z6IALIyVbWP7RXCTZMIZTIgJWrEzIY=
-X-Received: by 2002:a05:6402:152:: with SMTP id s18mr33808453edu.221.1626696725478;
- Mon, 19 Jul 2021 05:12:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=9xnPevyU/vinvxm9fpLnz13ttiz6/qE1ToIVXogNE+c=;
+        b=r05b71CevRKnrTpIsVn2Rwq3APnvADlqAQv7V2a3hcCRE+TEfeoLQhrHyYpQ8DyzqU
+         UTpziJjQplK8leQO4+XZ3mqWlnJgSZi5Gj4Yo4LBhweymQN82Mo1DFSeucnb3UhWiTm5
+         TmgWouvrV2rb8VTgnHOlpO9c8qrQQkCobL2bkfQhJj8dzHrlkA+ZXzKUfm/D9Mu0NbyY
+         2XOTHiDP6GrDBII4rilu4VbWNUGsGdrsWKDo8G5Fo7r6fSMgZtT4yMyUik+Ml/3UmiXp
+         IzxhUXN+WiNRS3oUAS1YC4PKCgj6Xi3/IGRIhIlOU8wrEtEHrUztStKIk63b0zkA7+Hn
+         8P3g==
+X-Gm-Message-State: AOAM530IG1vlUXmdsKgmus4FPRbf29FdqQxL8LZisUoAOa87KDSbq8ty
+        bVL1j+rj/7Gfq7qtxM+M3GH0XIp/CzXYmwXfg+t+jHE59oeNkK9u71nefynxyMEBeHH0nqmFsuf
+        wp4YgpUjmGTpK
+X-Received: by 2002:a05:6402:692:: with SMTP id f18mr34700411edy.327.1626698313963;
+        Mon, 19 Jul 2021 05:38:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnczeyvEpOgLXM/x4GwI3PK+KqvUJeavIe9mVLcwzRkXbCNtd51hBnv/Dbxxr24TjaxK5HTQ==
+X-Received: by 2002:a05:6402:692:: with SMTP id f18mr34700397edy.327.1626698313850;
+        Mon, 19 Jul 2021 05:38:33 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id d18sm5856039ejr.50.2021.07.19.05.38.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 05:38:33 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 506F7180065; Mon, 19 Jul 2021 14:38:32 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     "luwei (O)" <luwei32@huawei.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        David Ahern <dahern@digitalocean.com>
+Subject: Re: Ask for help about bpf map
+In-Reply-To: <6b659192-5133-981e-0c43-7ca1120edd9c@huawei.com>
+References: <5aebe6f4-ca0d-4f64-8ee6-b68c58675271@huawei.com>
+ <CAEf4BzZpSo8Kqz8mgPdbWTTVLqJ1AgE429_KHTiXgEVpbT97Yw@mail.gmail.com>
+ <8735sidtwe.fsf@toke.dk> <d1f47a24-6328-5121-3a1f-5a102444e50c@huawei.com>
+ <26db412c-a8b7-6d37-844f-7909a0c5744b@huawei.com>
+ <189e4437-bb2c-2573-be96-0d6776feb5dd@huawei.com>
+ <CAADnVQJYhtpEcvvYfozxiPdUJqcZiJxbmT2KuOC6uQdC1VWZVw@mail.gmail.com>
+ <6b659192-5133-981e-0c43-7ca1120edd9c@huawei.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 19 Jul 2021 14:38:32 +0200
+Message-ID: <87wnpmtr5j.fsf@toke.dk>
 MIME-Version: 1.0
-References: <1626362126-27775-1-git-send-email-alan.maguire@oracle.com> <1626362126-27775-2-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1626362126-27775-2-git-send-email-alan.maguire@oracle.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 19 Jul 2021 17:41:53 +0530
-Message-ID: <CA+G9fYtqga+zMop8Ae3+fa1ENP2T8fwfFfwWmvfRWZSYB7cPDw@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 1/3] libbpf: BTF dumper support for typed data
-To:     Alan Maguire <alan.maguire@oracle.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john.fastabend@gmail.com, kpsingh@kernel.org, morbo@google.com,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 15 Jul 2021 at 20:46, Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> Add a BTF dumper for typed data, so that the user can dump a typed
-> version of the data provided.
->
-> The API is
->
-> int btf_dump__dump_type_data(struct btf_dump *d, __u32 id,
->                              void *data, size_t data_sz,
->                              const struct btf_dump_type_data_opts *opts);
->
-> ...where the id is the BTF id of the data pointed to by the "void *"
-> argument; for example the BTF id of "struct sk_buff" for a
-> "struct skb *" data pointer.  Options supported are
->
->  - a starting indent level (indent_lvl)
->  - a user-specified indent string which will be printed once per
->    indent level; if NULL, tab is chosen but any string <= 32 chars
->    can be provided.
->  - a set of boolean options to control dump display, similar to those
->    used for BPF helper bpf_snprintf_btf().  Options are
->         - compact : omit newlines and other indentation
->         - skip_names: omit member names
->         - emit_zeroes: show zero-value members
->
-> Default output format is identical to that dumped by bpf_snprintf_btf(),
-> for example a "struct sk_buff" representation would look like this:
->
-> struct sk_buff){
->         (union){
->                 (struct){
->                         .next = (struct sk_buff *)0xffffffffffffffff,
->                         .prev = (struct sk_buff *)0xffffffffffffffff,
->                 (union){
->                         .dev = (struct net_device *)0xffffffffffffffff,
->                         .dev_scratch = (long unsigned int)18446744073709551615,
->                 },
->         },
-> ...
->
-> If the data structure is larger than the *data_sz*
-> number of bytes that are available in *data*, as much
-> of the data as possible will be dumped and -E2BIG will
-> be returned.  This is useful as tracers will sometimes
-> not be able to capture all of the data associated with
-> a type; for example a "struct task_struct" is ~16k.
-> Being able to specify that only a subset is available is
-> important for such cases.  On success, the amount of data
-> dumped is returned.
->
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  tools/lib/bpf/btf.h      |  19 ++
->  tools/lib/bpf/btf_dump.c | 819 ++++++++++++++++++++++++++++++++++++++++++++++-
->  tools/lib/bpf/libbpf.map |   1 +
->  3 files changed, 834 insertions(+), 5 deletions(-)
+"luwei (O)" <luwei32@huawei.com> writes:
 
-<trim>
+> Andrii and Toke inspired me. You are right, the libbpf version should be included in -V output
+> , but not mine. I searched google and found this page: https://www.spinics.net/lists/netdev/msg700482.html
+> , according which I re-compiled iproute2 and it works.
 
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index 5dc6b517..929cf93 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
+Did the libbpf version appear in the output of 'ip -V' after you
+recompiled and enabled it? It does in mine:
 
+$ ./ip/ip -V
+ip utility, iproute2-5.13.0, libbpf 0.4.0
 
-Following perf build errors noticed on i386 and arm 32-bit architectures on
-linux next 20210719 tag with gcc-11.
+-Toke
 
-metadata:
---------------
-   git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-   git_short_log: 08076eab6fef ( Add linux-next specific files for 20210719 )
-   toolchain: gcc-11
-   target_arch: arm and i386
-
-
-> +static void btf_dump_int128(struct btf_dump *d,
-> +                           const struct btf_type *t,
-> +                           const void *data)
-> +{
-> +       __int128 num = *(__int128 *)data;
-
-
-btf_dump.c: In function 'btf_dump_int128':
-btf_dump.c:1559:9: error: expected expression before '__int128'
- 1559 |         __int128 num = *(__int128 *)data;
-      |         ^~~~~~~~
-btf_dump.c:1561:14: error: 'num' undeclared (first use in this function)
- 1561 |         if ((num >> 64) == 0)
-      |              ^~~
-btf_dump.c:1561:14: note: each undeclared identifier is reported only
-once for each function it appears in
-btf_dump.c: At top level:
-btf_dump.c:1568:17: error: '__int128' is not supported on this target
- 1568 | static unsigned __int128 btf_dump_bitfield_get_data(struct btf_dump *d,
-      |                 ^~~~~~~~
-btf_dump.c: In function 'btf_dump_bitfield_get_data':
-btf_dump.c:1576:18: error: '__int128' is not supported on this target
- 1576 |         unsigned __int128 num = 0, ret;
-      |                  ^~~~~~~~
-btf_dump.c: In function 'btf_dump_bitfield_check_zero':
-btf_dump.c:1608:9: error: expected expression before '__int128'
- 1608 |         __int128 check_num;
-      |         ^~~~~~~~
-btf_dump.c:1610:9: error: 'check_num' undeclared (first use in this function)
- 1610 |         check_num = btf_dump_bitfield_get_data(d, t, data,
-bits_offset, bit_sz);
-      |         ^~~~~~~~~
-btf_dump.c: In function 'btf_dump_bitfield_data':
-btf_dump.c:1622:18: error: '__int128' is not supported on this target
- 1622 |         unsigned __int128 print_num;
-      |                  ^~~~~~~~
-btf_dump.c: In function 'btf_dump_dump_type_data':
-btf_dump.c:2212:34: error: '__int128' is not supported on this target
- 2212 |                         unsigned __int128 print_num;
-      |                                  ^~~~~~~~
-
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-reference build link,
-build: https://builds.tuxbuild.com/1vWeCpIox9EoV35c80bwOvU9nbb/
-config: https://builds.tuxbuild.com/1vWeCpIox9EoV35c80bwOvU9nbb/config
-
-
-steps to reproduce:
----------------------
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-
-tuxmake --runtime podman --target-arch arm --toolchain gcc-11
---kconfig defconfig --kconfig-add
-https://builds.tuxbuild.com/1vWeCpIox9EoV35c80bwOvU9nbb/config
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
