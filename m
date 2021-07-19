@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318C03CE9A0
-	for <lists+bpf@lfdr.de>; Mon, 19 Jul 2021 19:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE59D3CE9A2
+	for <lists+bpf@lfdr.de>; Mon, 19 Jul 2021 19:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344700AbhGSQ6U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Jul 2021 12:58:20 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:53819 "EHLO
+        id S244147AbhGSQ61 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Jul 2021 12:58:27 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:54129 "EHLO
         out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346639AbhGSQ4H (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 19 Jul 2021 12:56:07 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4906F5C0056;
-        Mon, 19 Jul 2021 13:36:46 -0400 (EDT)
+        by vger.kernel.org with ESMTP id S1346757AbhGSQ4O (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 19 Jul 2021 12:56:14 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id EBC615C006D;
+        Mon, 19 Jul 2021 13:36:50 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 19 Jul 2021 13:36:46 -0400
+  by compute6.internal (MEProxy); Mon, 19 Jul 2021 13:36:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=FFfCVZVrwpemUdxqqYH0VyK4IO4CmiuPK9o5/d0I1mw=; b=Ucrs+TJ6
-        E9ikhlfwzuYr1BVxGPKk321tkHgbFih6il7kajSxZMdT+HSOP/yKL+EeVu0scRI+
-        rufX++v9Ar4jLok9WLfJj2KPrSQIAw5WCrT/dbmnRMb5LsDnhsAFgeWL5Hpg88DB
-        qwqH0ikMRdSICJjbUiqYb1KpY94nVMNsKcU9reCOoOUaAb16GsjehR5+9PHTLUBt
-        Ror6rGQwbiuAqkjkq1wiXTCrdpFmkOUXlynm0qhJCz4YUfHPBOYcJL0giYQWteDe
-        l+uE9QPyNmRpBF9cy0s6cGMM3N/KB09+Hf9oohP17+niaBCsPIjg0RkUhRUEaYV6
-        +CatE13pDzmMkw==
-X-ME-Sender: <xms:Lrj1YMmcoeyI0eKo_1fxJR-mSOE1xvVL3Nt4keo2mCfwRW2hI_X8LA>
-    <xme:Lrj1YL1z7hLDErFAfCcNf5AwoM-za7-H0xUY4G96eeaPETSp9xCGPMdSQXEHKsYiM
-    wGKK-zPEvLeOrxr30M>
-X-ME-Received: <xmr:Lrj1YKptH9vMRKTrE4CwYD-vSiVAXga7ymSgvGtUNi8GoSTNncFGo2tQSoIK9kCdFu2mww>
+        fm3; bh=kuUA+sN8pgkWl6lvQTuie/Fh2xszQ+viTeTarlODegM=; b=t63ZsMiL
+        tefmUfQg0+LZEOtn7W4yO/O7eqRqvwQO1LQxNSAtWCuyK8VIeVSImzTxARDRdpCY
+        cZcRzwdkgrInPpAXdRwfDSFI89DeYnuEu07ZM3iGt2LTChTyXzd9EPS118TPGAVi
+        oEffpymOkFpOOC2vEeHNB753bU3UD3HFwGyDY13ZRjJW6s6qjMO4bnC/BSJcRoGK
+        XraM2zOwZ0dGyVa9JbloeFQDyPJ5t1NDlPQTBhZ4I3wzwXK+oQOSLX31euVRT9fb
+        E9YD6k2U01slDYb5J6GCPE6PQ+RxdPH8j/zFHF0CLa02KmMHVUxXir0I9XglTom2
+        /qKF4r/W++xjuw==
+X-ME-Sender: <xms:Mrj1YEFUHqWdH9RoSO56Mxnx3z63dmbXcSUkoNJgMJjGJGl3mFRTTg>
+    <xme:Mrj1YNVhft_c7ZFCqJdhTStS8UpXDK-Lq4xLf8xfgAB0BxiS6hZ5WZ21nAklGTyYU
+    SKoxQihpUZ_Ay0EPrM>
+X-ME-Received: <xmr:Mrj1YOJdcZJtMftdKCtoZxI1LRnzfqpRzClITj5hEjwxYibqq8qmL2kgH-cT0pGgHRxEFQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfedtgdduuddvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -38,19 +38,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfedtgdduuddvucetufdoteggod
     sggurgdrlhhtqeenucggtffrrghtthgvrhhnpedtffffgeffjeeiheeuvdfhkeejvefhie
     dufeekffekueeuhfelvdetjeeiteduvdenucevlhhushhtvghrufhiiigvpedtnecurfgr
     rhgrmhepmhgrihhlfhhrohhmpehmsehlrghmsggurgdrlhht
-X-ME-Proxy: <xmx:Lrj1YInZg1I-SyTU6XMwQ3DERzfgtV1badB3joaaDvqy8U3GLIi8LA>
-    <xmx:Lrj1YK15JCys37Hfgr5CZlAO36A0zyp1SAwIuaIcRdmvOXRbPd9pOA>
-    <xmx:Lrj1YPvYO0M_nn8PnZrbm5mOWWg1lpa9NQaMnLlRYI_yJUe_RVpl7A>
-    <xmx:Lrj1YIAvEh6ybOeMCcL0LkQSJt88LoHBqywzYUp_xbG1UKIYOgN4BQ>
+X-ME-Proxy: <xmx:Mrj1YGFx2QGzQpdR4jHAWA3dEbvfI4zfPaUgBXnAFOFwutobknJ6hQ>
+    <xmx:Mrj1YKUwIgXpNF6Oq-MdtXVp7kYZavS0sFabzVTlB2MLhoorAnzYfQ>
+    <xmx:Mrj1YJOQRVb0DsMa_M2iTfKbe03dgjATH-nZDzxNrEA_hPL8UQFqDQ>
+    <xmx:Mrj1YHjNQiXGd7GA9UiUuqHeDig4bGe46ypgjPVPW9B2_8N_J5qJ9A>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 19 Jul 2021 13:36:44 -0400 (EDT)
+ 19 Jul 2021 13:36:48 -0400 (EDT)
 From:   Martynas Pumputis <m@lambda.lt>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         m@lambda.lt
-Subject: [PATCH bpf 1/2] libbpf: fix removal of inner map in bpf_object__create_map
-Date:   Mon, 19 Jul 2021 19:38:37 +0200
-Message-Id: <20210719173838.423148-2-m@lambda.lt>
+Subject: [PATCH bpf 2/2] selftests/bpf: check inner map deletion
+Date:   Mon, 19 Jul 2021 19:38:38 +0200
+Message-Id: <20210719173838.423148-3-m@lambda.lt>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210719173838.423148-1-m@lambda.lt>
 References: <20210719173838.423148-1-m@lambda.lt>
@@ -60,69 +60,144 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If creating an outer map of a BTF-defined map-in-map fails (via
-bpf_object__create_map()), then the previously created its inner map
-won't be destroyed.
+Add a test case to check whether an unsuccessful creation of an outer
+map of a BTF-defined map-in-map destroys the inner map.
 
-Fix this by ensuring that the destroy routines are not bypassed in the
-case of a failure.
+As bpf_object__create_map() is a static function, we cannot just call it
+from the test case and then check whether a map accessible via
+map->inner_map_fd has been closed. Instead, we iterate over all maps and
+check whether the map "$MAP_NAME.inner" does not exist.
 
-Fixes: 646f02ffdd49c ("libbpf: Add BTF-defined map-in-map support")
-Reported-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Martynas Pumputis <m@lambda.lt>
 ---
- tools/lib/bpf/libbpf.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ .../bpf/progs/test_map_in_map_invalid.c       | 26 ++++++++
+ tools/testing/selftests/bpf/test_maps.c       | 64 ++++++++++++++++++-
+ 2 files changed, 89 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_map_in_map_invalid.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6f5e2757bb3c..dde521366579 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4479,6 +4479,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
- {
- 	struct bpf_create_map_attr create_attr;
- 	struct bpf_map_def *def = &map->def;
-+	int err = 0;
- 
- 	memset(&create_attr, 0, sizeof(create_attr));
- 
-@@ -4521,8 +4522,6 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
- 
- 	if (bpf_map_type__is_map_in_map(def->type)) {
- 		if (map->inner_map) {
--			int err;
--
- 			err = bpf_object__create_map(obj, map->inner_map, true);
- 			if (err) {
- 				pr_warn("map '%s': failed to create inner map: %d\n",
-@@ -4547,7 +4546,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
- 	if (map->fd < 0 && (create_attr.btf_key_type_id ||
- 			    create_attr.btf_value_type_id)) {
- 		char *cp, errmsg[STRERR_BUFSIZE];
--		int err = -errno;
-+		err = -errno;
- 
- 		cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
- 		pr_warn("Error in bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n",
-@@ -4560,8 +4559,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
- 		map->fd = bpf_create_map_xattr(&create_attr);
- 	}
- 
--	if (map->fd < 0)
--		return -errno;
-+	err = map->fd < 0 ? -errno : 0;
- 
- 	if (bpf_map_type__is_map_in_map(def->type) && map->inner_map) {
- 		if (obj->gen_loader)
-@@ -4570,7 +4568,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
- 		zfree(&map->inner_map);
- 	}
- 
--	return 0;
-+	return err;
+diff --git a/tools/testing/selftests/bpf/progs/test_map_in_map_invalid.c b/tools/testing/selftests/bpf/progs/test_map_in_map_invalid.c
+new file mode 100644
+index 000000000000..2918caea1e3d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_map_in_map_invalid.c
+@@ -0,0 +1,26 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2021 Isovalent, Inc. */
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++struct inner {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, __u32);
++	__type(value, int);
++	__uint(max_entries, 4);
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
++	__uint(max_entries, 0); /* This will make map creation to fail */
++	__uint(key_size, sizeof(__u32));
++	__array(values, struct inner);
++} mim SEC(".maps");
++
++SEC("xdp_noop")
++int xdp_noop0(struct xdp_md *ctx)
++{
++	return XDP_PASS;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 30cbf5d98f7d..d4184dde04df 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -1153,12 +1153,16 @@ static void test_sockmap(unsigned int tasks, void *data)
  }
  
- static int init_map_slots(struct bpf_object *obj, struct bpf_map *map)
+ #define MAPINMAP_PROG "./test_map_in_map.o"
++#define MAPINMAP_INVALID_PROG "./test_map_in_map_invalid.o"
+ static void test_map_in_map(void)
+ {
+ 	struct bpf_object *obj;
+ 	struct bpf_map *map;
+ 	int mim_fd, fd, err;
+ 	int pos = 0;
++	struct bpf_map_info info = {};
++	__u32 len = sizeof(info);
++	__u32 id = 0;
+ 
+ 	obj = bpf_object__open(MAPINMAP_PROG);
+ 
+@@ -1229,10 +1233,68 @@ static void test_map_in_map(void)
+ 
+ 	close(fd);
+ 	bpf_object__close(obj);
++
++
++	/* Test that failing bpf_object__create_map() destroys the inner map */
++
++	obj = bpf_object__open(MAPINMAP_INVALID_PROG);
++	err = libbpf_get_error(obj);
++	if (err) {
++		printf("Failed to load %s program: %d %d",
++		       MAPINMAP_INVALID_PROG, err, errno);
++		goto out_map_in_map;
++	}
++
++	map = bpf_object__find_map_by_name(obj, "mim");
++	if (!map) {
++		printf("Failed to load array of maps from test prog\n");
++		goto out_map_in_map;
++	}
++
++	err = bpf_object__load(obj);
++	if (!err) {
++		printf("Loading obj supposed to fail\n");
++		goto out_map_in_map;
++	}
++
++	/* Iterate over all maps to check whether the internal map
++	 * ("mim.internal") has been destroyed.
++	 */
++	while (true) {
++		err = bpf_map_get_next_id(id, &id);
++		if (err) {
++			if (errno == ENOENT)
++				break;
++			printf("Failed to get next map: %d", errno);
++			goto out_map_in_map;
++		}
++
++		fd = bpf_map_get_fd_by_id(id);
++		if (fd < 0) {
++			if (errno == ENOENT)
++				continue;
++			printf("Failed to get map by id %u: %d", id, errno);
++			goto out_map_in_map;
++		}
++
++		err = bpf_obj_get_info_by_fd(fd, &info, &len);
++		if (err) {
++			printf("Failed to get map info by fd %d: %d", fd,
++			       errno);
++			goto out_map_in_map;
++		}
++
++		if (!strcmp(info.name, "mim.inner")) {
++			printf("Inner map mim.inner was not destroyed\n");
++			goto out_map_in_map;
++		}
++	}
++
+ 	return;
+ 
+ out_map_in_map:
+-	close(fd);
++	if (fd >= 0)
++		close(fd);
+ 	exit(1);
+ }
+ 
 -- 
 2.32.0
 
