@@ -2,80 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882063CF1F3
-	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 04:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D9C3CF2C1
+	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 05:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235860AbhGTBf6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Jul 2021 21:35:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241853AbhGTB1E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Jul 2021 21:27:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C3EC61164;
-        Tue, 20 Jul 2021 02:07:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626746861;
-        bh=r5wSh0N4B6XoXmmj5VoGs+TOmUC23WqLrxAwPTMxhoQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=OBWz8xXpkqJGSA8ojBaW0KwNmW7OQyIdOvwR3SaOz64AUscnJJqspPyQ+ILyM0Hli
-         8CnpSqb8pMhHw2n4RozPYP9v69Z2i11mXUfVV+zBA70Y5kMSe0THk640gSjSrqgxFX
-         oBBZJRIAfbt33d0Tv79cCnsxBpyXjwv1VZirwa8b5hJ04TFpFjh3cqCo5HQkNAsQvF
-         bwZLO7aHRGVVpjxkA2cjrwUBdipSA29QMZ3XWX6FgevtDDkaBAEuPSBRmUJZ9yMalN
-         5jltaLsOX3aRzqLcqX2rDMGnvQ/4Q+BRGsdHGkWH70yvFxVoGiLehnvhz7pRGyrtmt
-         YbyXQGBBLd4wA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 67CFC5C06CA; Mon, 19 Jul 2021 19:07:41 -0700 (PDT)
-Date:   Mon, 19 Jul 2021 19:07:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, apw@canonical.com,
-        joe@perches.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        mingo@kernel.org
-Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-Message-ID: <20210720020741.GD4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
- <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1>
- <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
- <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2xDNtjZew=Rr7QvEDX7jnVCcE+JFpSDxiQ4yNPUE6kj-g@mail.gmail.com>
- <20210715180941.GK4397@paulmck-ThinkPad-P17-Gen-1>
- <CAABZP2wuWtGAGRqWJb3Gewm5VLZdZ_C=LRZsFbaG3jcQabO3qA@mail.gmail.com>
- <20210718210854.GP4397@paulmck-ThinkPad-P17-Gen-1>
- <de4785f8-8a9f-c32e-7642-d5bb08bff343@infradead.org>
+        id S1346782AbhGTC51 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Jul 2021 22:57:27 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7399 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347110AbhGTC4A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Jul 2021 22:56:00 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GTPRs6n7lz7x0b;
+        Tue, 20 Jul 2021 11:32:57 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 11:36:30 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 11:36:30 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
+        <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
+        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
+        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
+        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH rfc v6 0/4] add frag page support in page pool
+Date:   Tue, 20 Jul 2021 11:35:41 +0800
+Message-ID: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de4785f8-8a9f-c32e-7642-d5bb08bff343@infradead.org>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 06:39:17PM -0700, Randy Dunlap wrote:
-> On 7/18/21 2:08 PM, Paul E. McKenney wrote:
-> > On Sun, Jul 18, 2021 at 06:03:34AM +0800, Zhouyi Zhou wrote:
-> >> Hi Paul
-> >> During the research, I found a already existing tool to detect
-> >> undefined Kconfig macro:
-> >> scripts/checkkconfigsymbols.py. It is marvellous!
-> > 
-> > Nice!  Maybe I should add this to torture.sh.
-> 
-> Paul, I believe that subsystems should take care of themselves,
-> so you can do that for RCU, e.g., but at the same time, I think that
-> some CI should be running that script (and other relevant scripts)
-> on the entire kernel tree and reporting problems that are found.
+This patchset adds frag page support in page pool and
+enable skb's page frag recycling based on page pool in
+hns3 drvier.
 
-Even better!  ;-)
+RFC v6:
+1. Disable frag page support in system 32-bit arch and
+   64-bit DMA.
 
-							Thanx, Paul
+RFC v5:
+1. Rename dma_addr[0] to pp_frag_count and adjust codes
+   according to the rename.
+
+RFC v4:
+1. Use the dma_addr[1] to store bias.
+2. Default to a pagecnt_bias of PAGE_SIZE - 1.
+3. other minor comment suggested by Alexander.
+
+RFC v3:
+1. Implement the semantic of "page recycling only wait for the
+   page pool user instead of all user of a page"
+2. Support the frag allocation of different sizes
+3. Merge patch 4 & 5 to one patch as it does not make sense to
+   use page_pool_dev_alloc_pages() API directly with elevated
+   refcnt.
+4. other minor comment suggested by Alexander.
+
+RFC v2:
+1. Split patch 1 to more reviewable one.
+2. Repurpose the lower 12 bits of the dma address to store the
+   pagecnt_bias as suggested by Alexander.
+3. support recycling to pool->alloc for elevated refcnt case
+   too.
+
+Yunsheng Lin (4):
+  page_pool: keep pp info as long as page pool owns the page
+  page_pool: add interface to manipulate frag count in page pool
+  page_pool: add frag page recycling support in page pool
+  net: hns3: support skb's frag page recycling based on page pool
+
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c |  82 +++++++++++++++--
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |   3 +
+ drivers/net/ethernet/marvell/mvneta.c           |   6 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |   2 +-
+ drivers/net/ethernet/ti/cpsw.c                  |   2 +-
+ drivers/net/ethernet/ti/cpsw_new.c              |   2 +-
+ include/linux/mm_types.h                        |  18 ++--
+ include/linux/skbuff.h                          |   4 +-
+ include/net/page_pool.h                         |  65 +++++++++++---
+ net/core/page_pool.c                            | 112 +++++++++++++++++++++++-
+ 10 files changed, 257 insertions(+), 39 deletions(-)
+
+-- 
+2.7.4
+
