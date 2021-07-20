@@ -2,141 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732313D03D2
-	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 23:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5C33D0513
+	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 01:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhGTUnE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Jul 2021 16:43:04 -0400
-Received: from mga18.intel.com ([134.134.136.126]:1142 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234287AbhGTUly (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Jul 2021 16:41:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10051"; a="198601041"
-X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
-   d="scan'208";a="198601041"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 14:22:18 -0700
-X-IronPort-AV: E=Sophos;i="5.84,256,1620716400"; 
-   d="scan'208";a="469903732"
-Received: from kvadariv-mobl1.amr.corp.intel.com (HELO [10.212.155.118]) ([10.212.155.118])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2021 14:22:17 -0700
-Subject: Re: [PATCH v3 5/6] platform/x86: intel_tdx_attest: Add TDX Guest
- attestation interface driver
-To:     Andi Kleen <ak@linux.intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210720045552.2124688-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210720045552.2124688-6-sathyanarayanan.kuppuswamy@linux.intel.com>
- <eddc318e-e9c9-546d-6cff-b3c40062aecd@intel.com>
- <4c43dfe4-e44b-9d6d-b012-63790bb47b19@linux.intel.com>
- <52caa0e2-d3da-eef0-da5f-e83cc54c133c@intel.com>
- <4f8dc9dd-0dbc-bff9-570b-0d20f673d3f0@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <bd001b63-403f-b60b-7ca1-28573c8d843b@intel.com>
-Date:   Tue, 20 Jul 2021 14:22:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233296AbhGTWbQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Jul 2021 18:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233502AbhGTWas (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Jul 2021 18:30:48 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D15C0613DE
+        for <bpf@vger.kernel.org>; Tue, 20 Jul 2021 16:11:15 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id hc15so433441ejc.4
+        for <bpf@vger.kernel.org>; Tue, 20 Jul 2021 16:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0J4Kjzrympnf9Wt7ZCuovmlD6MDwpBP3vMPXhqXkxvw=;
+        b=eqd+dnBT8WYqDFmI4jRUZp3mFVwGp/fP2kh0p0aaQ9ZiokbqGMpHJJbN5z5kZCTqAf
+         1zLLMBslGqON9D6jU1fLmnolXXmwuXlayGKdL0ShtUqym1qzwkIzXJ3F7ayTP/qLvfBf
+         GIw1poysuQH/2GIPelOQS+QP9FJ5iRJVFN685/S8InLRsIfE3oe3n7Al7ySpLIO/biNp
+         QJZRbDAn+cuPlu/B7uA4oL+5FRIoDvi5NvE606R3DOxiEMOotytOiwMrOGr5mOyy2529
+         215zpYxeYxjBsnl7eZ8MEgR/7XVoCijrN9bmac4SuigWc/fMaClmEmvWf+nQyJJkp3gE
+         pbjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0J4Kjzrympnf9Wt7ZCuovmlD6MDwpBP3vMPXhqXkxvw=;
+        b=qT6WOTg0AgiMyIxCllfGjnMk2lE5svNx7agnQNQSfC27b49E0zUMh9Wijx5eZuGLYD
+         ilOycCllcLs81N0Of3Qt1fpS3QAJHQfVyuDsaOiVsuQBP7k1QPs8xV55RiT4LNTD64Oj
+         bI9BITIAL3D6TasYGbP3Fn+dH48svbMMzZJWh9Js7PV6+ZIWMCHeWYlWRs/DkjY6qxCT
+         JT5rCXh83JawMxu8sJQ/L+cXkLkinKSUhmfmpGyH6ebcDBsNCkpDaMDUMTcXdlKPa4es
+         Keex2ub6t7oONNtSA2buTKU23dYbRz/FxC4JBUwdGpMOd0aozOgKa7+dC1ce/Xph8X92
+         JZLw==
+X-Gm-Message-State: AOAM531EFf+AmB+6Kw7UUpHS2TjdMW5y1uCbkEK63gTZCqdhQOicAFKn
+        KsdlxfM9VUC3dq+JBWX+EFNh9Q==
+X-Google-Smtp-Source: ABdhPJx6AUAHwvdF+gGk4HFgGaqNKgSH2AfedcPduYs2qxmlOe/W+sDBexvtsAImHk9B7+nZlhVIgQ==
+X-Received: by 2002:a17:906:4551:: with SMTP id s17mr34310633ejq.26.1626822673724;
+        Tue, 20 Jul 2021 16:11:13 -0700 (PDT)
+Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
+        by smtp.gmail.com with ESMTPSA id d10sm9778303edh.62.2021.07.20.16.11.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jul 2021 16:11:13 -0700 (PDT)
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+To:     Tony.Ambardar@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, tsbogend@alpha.franken.de, paulburton@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-mips@vger.kernel.org, ddaney@caviumnetworks.com,
+        luke.r.nels@gmail.com, fancer.lancer@gmail.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Subject: [RFC PATCH 0/2] mips: bpf: An eBPF JIT implementation for 32-bit MIPS
+Date:   Wed, 21 Jul 2021 01:10:34 +0200
+Message-Id: <20210720231036.3740924-1-johan.almbladh@anyfinetworks.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <4f8dc9dd-0dbc-bff9-570b-0d20f673d3f0@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/20/21 2:16 PM, Andi Kleen wrote:
-> On 7/20/2021 10:59 AM, Dave Hansen wrote:
->> On 7/20/21 10:52 AM, Kuppuswamy, Sathyanarayanan wrote:
->>>> Why does this need to use the page allocator directly?
->> ^^ You didn't address this question.
-> 
-> The address needs to be naturally aligned, and I'm not sure all slab
-> allocators guarantee 64 byte alignment. So using the page allocator
-> seems to be safer. I guess a comment would be good.
+Hello!
 
-The documentation
+I have been working on this JIT during last couple of weeks, following
+my initial questions and thoughs around this in April ("Completing eBPF
+JIT support for MIPS32"). Perhaps I should have been clearer that I
+intended to add the missing functionality, but when I received no response,
+no activity on the subject since 2019, and with MIPS the company switching
+to RISC-V, I frankly did not think anyone else was interested. I was not
+aware that Tony was working on the same thing. Anyway, here it goes.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/core-api/memory-allocation.rst#n146
+This is an implementation of an eBPF JIT for MIPS I-V and MIPS32. The
+implementation supports all 32-bit and 64-bit ALU and JMP operations,
+including the recently-added atomics. 64-bit div/mod and 64-bit atomics
+are implemented using function calls to math64 and atomic64 functions,
+respectively. All 32-bit operations are implemented natively by the JIT.
 
-claims:
+The implemention is intended to provide good ALU32 performance, and
+completeness for ALU64 instructions so it never has to fall back to the
+interpreter. Care has also been taken to make the code as simple and
+clean as possible. Complex and input-sensitive logic that is hard to
+test has intentionally been avoided, especially for ALU64 operations.
+The JIT relies on the verifier to do more complex analysis such as
+explicit zero-extension.
 
-> The address of a chunk allocated with `kmalloc` is aligned to at least
-> ARCH_KMALLOC_MINALIGN bytes.  For sizes which are a power of two, the
-> alignment is also guaranteed to be at least the respective size.
+Relation to the MIPS64 JIT
+==========================
+The decision to not extend the existing MIPS64 JIT with 32-bit support
+was made for the following reasons.
 
-This is another case where care in coding these things up, writing good
-changelogs and expressing assumptions in comments can save
-back-and-forth from a reviewer.
+First, the 64-bit JIT is already very complex. It contains its own static
+analyzer for doing zero- and sign-extensions on 32-bit values. That is
+complexity not needed for the 32-bit JIT.
 
-Imagine if this had been:
+Second, the 32-bit JIT has more in common with other 32-bit JITs, say, ARM,
+than MIPS64. The register mapping will be different. ALU32 operations are
+different. ALU64 operations are different. JMP/JMP32 operations are different.
+What is native word size and easy on one is emulated and difficult on the
+other, and vice-versa.
 
-	/*
-	 * tdreport_data needs to be 64-byte aligned.
-	 * Full page alignment is more than enough.
-	 */
-	tdreport_data = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 0);
-	if (!tdreport_data) {
-		ret = -ENOMEM;
-		goto failed;
-	}
+There may of course be utility code that can be shared between the two
+JITs, but as a whole the 32-bit and 64-bit JITs are likely easier to
+test and maintain as separate, dedicated implementations rather than as
+one big JIT that needs to handle a super-set of the combined omplexity.
+
+Register mapping
+================
+All 64-bit eBPF registers are mapped to native 32-bit MIPS register pairs,
+and does not use any stack scratch space for register swapping. This means
+that all eBPF register data is kept in CPU registers all the time, which
+is good for performance of course. It also simplifies the register management
+a lot and reduces the hunger for temporary registers since we do not have
+to move data around.
+
+Native register pairs are ordered according to CPU endianness, following the
+O32 calling convention for passing 64-bit arguments and return values. The
+eBPF return value, arguments and callee-saved registers are mapped to their
+native MIPS equivalents.
+
+Since the 32 highest bits in the eBPF FP (frame pointer) register are
+always zero, only one general-purpose register is actually needed for the
+mapping. The MIPS fp register is used for this purpose. The high bits are
+mapped to MIPS register r0. This saves us one CPU register, which is much
+needed for temporaries, while still allowing us to treat the R10 (FP)
+register just like any other eBPF register in the JIT.
+
+The MIPS gp (global pointer) and at (assembler temporary) registers are
+used as internal temporary registers for constant blinding. CPU registers
+t6-t9 are used internally by the JIT when constructing more complex 64-bit
+operations. This is precisely what is needed - two registers to store an
+immediate operand value, and two more as scratch registers to perform the
+operation.
+
+The register mapping is shown below.
+
+    R0 - $v1, $v0   return value
+    R1 - $a1, $a0   argument 1, passed in registers
+    R2 - $a3, $a2   argument 2, passed in registers
+    R3 - $t1, $t0   argument 3, passed on stack
+    R4 - $t3, $t2   argument 4, passed on stack
+    R5 - $t4, $t3   argument 5, passed on stack
+    R6 - $s1, $s0   callee-saved
+    R7 - $s3, $s2   callee-saved
+    R8 - $s5, $s4   callee-saved
+    R9 - $s7, $s6   callee-saved
+    FP - $r0, $fp   32-bit frame pointer
+    AX - $gp, $at   constant-blinding
+         $t6 - $t9  unallocated, JIT temporaries
+
+Jump offsets
+============
+The JIT tries to map all conditional JMP operations to MIPS conditional
+PC-relative branches. The MIPS branch offset field is 18 bits, in bytes,
+which is equivalent to the eBPF 16-bit instruction offset. However, since
+the JIT may emit more than one CPU instruction per eBPF instruction, the
+value may overflow the field width. If that happens, the JIT converts the
+long conditional jump to a short PC-relative branch with the condition
+inverted, jumping over a long unconditional absolute jmp (ja).
+
+This conversion will change the instruction offset mapping used for jumps,
+and may in turn result in more branch offset overflows. The JIT therefore
+dry-runs the translation until no more branches are converted and the
+offsets do not change anymore. There is an upper bound on this of course,
+and if the JIT hits that limit, the last two iterations are run with all
+branches being converted.
+
+Testing
+=======
+The implementation has been verified with the BPF test suite on QEMU,
+emulating MIPS32r2 in big and little endian configurations. It has also
+been verified on a MIPS 24Kc CPU (MT7628 SoC, little endian). The MIPS
+I-V variants that exist for some operations has been verified "manually"
+by forcing fallback to pre-r1 instructions only. As of this writing, the
+BPF test suite JITs all tests successfully.
+
+    test_bpf: Summary: 378 PASSED, 0 FAILED, [366/366 JIT'ed]
+
+During the development of this JIT, several new tests were added to the
+test suite in order to test corner cases inherent to 32-bit JITs, tail
+calls and also to actually trigger the branch conversion handling. That
+is another patch set, though.
+
+Cheers,
+Johan
+
+Johan Almbladh (2):
+  mips: bpf: add eBPF JIT for 32-bit MIPS
+  mips: bpf: enable 32-bit eBPF JIT
+
+ arch/mips/Kconfig           |    5 +-
+ arch/mips/net/Makefile      |    7 +-
+ arch/mips/net/ebpf_jit_32.c | 2207 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 2216 insertions(+), 3 deletions(-)
+ create mode 100644 arch/mips/net/ebpf_jit_32.c
+
+-- 
+2.25.1
+
