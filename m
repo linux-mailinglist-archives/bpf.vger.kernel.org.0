@@ -2,317 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C6E3CF15D
-	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 03:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D98F3CF195
+	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 03:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238364AbhGTAqx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Jul 2021 20:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
+        id S240373AbhGTBDG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Jul 2021 21:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349771AbhGTAoe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Jul 2021 20:44:34 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A143C061766
-        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 18:25:13 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id r135so30646955ybc.0
-        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 18:25:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YLvWvlKerKN/PpfL9EIgNV4785R1sfDRbOdMox+npUU=;
-        b=DwsUCOwekW3fza3KbT7lxe8XqDEF7C/f9vPMvi+MUTBECImNHDM1eLjZsSsMjs3lHY
-         vO8FeMaD8XFWUf+x+MEJUqnL6KMYNEQ3KAYFeGjhx6wYrsh4xmUV4og848LDUDv68Sg0
-         EKYOuJ19TS7SeOeC+Owu/rdxkEIdEnD6GFbSKAHzEOUV7EOf9W9LHZMLTo6IchCOKN9b
-         YtvnOleGt2M7jEjxkZTJHk79WCmexnhvciE7KemF1B1PIsppy903bwA9o5cP48dDybxK
-         dxvUYN2GjgOEMDW5pFCp5T8KlOLgBjeKYi7B4Wwk37hR7reqis9TEdvvZICkrscziZn0
-         spwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YLvWvlKerKN/PpfL9EIgNV4785R1sfDRbOdMox+npUU=;
-        b=MmDO4QsQSnkFFHD6CH+btEh895djrnfdgZLhUSHHoDQ+mRaG/5fdUWwlAjL99DfgOW
-         1S7k2D9KYp8AwaZt4UGSgYpnFl0+ozHn9NpKhEwg6rnHEO342W8IyiO8sgrVp82ghOkx
-         Ch1SG4gpIhrzkQ3MkCMcWStYcCJDFTwQc72s0KO3M3Ej5iePjq1eImopxc93oV0jgTXX
-         iq6SyoiA5YCzUww2JVJ6/yOwghn0huQrbthjd80J3cODRyeF1DjK7xrcOLCeWvH4aFlG
-         GZrOo5lwx78LjjTBiJYGKGlM6rpxQshDaW2X323T+v12JZ5+9R8wWcKbRRy5g6uUBa9y
-         laAg==
-X-Gm-Message-State: AOAM532st2x1SNjGtdK/RpFbp8ad2fFMu1yVdOMJVtGFp5I/UKFxMVZK
-        Ot/YxhTrSTirwVglem/4rI7C1BvgLb9c40O0R1vaWQ==
-X-Google-Smtp-Source: ABdhPJzdI2ew3B4feRkdm3Kq318MpXiNBhw1kRz499Q2dOsn9U4ydh4yZ79kwQWZsb4BCBwlzspzyfPPdXjF8W0LI+c=
-X-Received: by 2002:a25:dc4d:: with SMTP id y74mr37638308ybe.289.1626744312348;
- Mon, 19 Jul 2021 18:25:12 -0700 (PDT)
+        with ESMTP id S238685AbhGTA7i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Jul 2021 20:59:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2596AC061767;
+        Mon, 19 Jul 2021 18:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=VPslFF/zeZEn4JJOEfZN5MEgA42KT6C8T7MZnexgON8=; b=kS6uL8x4SfuJQcn28GfFZN3joa
+        nydiNdvKdcQhwKwzRBH3jo154/gB2yr+6O7GTp8pt/aqn6PelFCC6+9SKXK6zyRGsTHqfKxAzYhpI
+        3rD/xiPufvdUI+q0d8ufOpVtjaQpw8Hutp7XR+chfZTUjB4iWpj6QpVKaALRDzAxVWziIZBzLULjw
+        OBiIMCnvRiYvhRlIoeKsT+TnxeVkAMMTPlOuT6330SR+CvI/H4CpLwvT7/j5TTfwocQe+kOOPfGf1
+        uvsqbc1ouZ0oTMGYVEdPgN2AkfmKie+JcX5nPSf6drVpmtARzv4yXB21tfbegTMUmnYr8C1uw/zlr
+        ZsfhUYFw==;
+Received: from [2601:1c0:6280:3f0::aefb]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5ej9-00Ba0z-KP; Tue, 20 Jul 2021 01:39:19 +0000
+Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
+To:     paulmck@kernel.org, Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        rostedt <rostedt@goodmis.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, apw@canonical.com,
+        joe@perches.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        mingo@kernel.org
+References: <20210713005645.8565-1-zhouzhouyi@gmail.com>
+ <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
+ <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
+ <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
+ <20210715035149.GI4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2xDNtjZew=Rr7QvEDX7jnVCcE+JFpSDxiQ4yNPUE6kj-g@mail.gmail.com>
+ <20210715180941.GK4397@paulmck-ThinkPad-P17-Gen-1>
+ <CAABZP2wuWtGAGRqWJb3Gewm5VLZdZ_C=LRZsFbaG3jcQabO3qA@mail.gmail.com>
+ <20210718210854.GP4397@paulmck-ThinkPad-P17-Gen-1>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <de4785f8-8a9f-c32e-7642-d5bb08bff343@infradead.org>
+Date:   Mon, 19 Jul 2021 18:39:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <cover.1625970383.git.Tony.Ambardar@gmail.com>
-In-Reply-To: <cover.1625970383.git.Tony.Ambardar@gmail.com>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Tue, 20 Jul 2021 03:25:01 +0200
-Message-ID: <CAM1=_QR-siQtH_qE1uj4J_xw-jWwcRZrLL2hxK462HOwDV1f8A@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v1 00/14] MIPS: eBPF: refactor code, add
- MIPS32 JIT
-To:     Tony Ambardar <tony.ambardar@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-mips@vger.kernel.org,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        David Daney <ddaney@caviumnetworks.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210718210854.GP4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Tony,
+On 7/18/21 2:08 PM, Paul E. McKenney wrote:
+> On Sun, Jul 18, 2021 at 06:03:34AM +0800, Zhouyi Zhou wrote:
+>> Hi Paul
+>> During the research, I found a already existing tool to detect
+>> undefined Kconfig macro:
+>> scripts/checkkconfigsymbols.py. It is marvellous!
+> 
+> Nice!  Maybe I should add this to torture.sh.
+> 
 
-I am glad that there are more people interested in having a JIT for
-MIPS32. We seem to have been working in parallel on the same thing
-though. I sent a summary on the state of the MIPS32 JIT on the
-linux-mips list a couple of months ago, asking for feedback on the
-best way to complete it. When I received no response, I started to
-work on a MIPS32 JIT implementation myself. I'll be glad to share what
-I have got so we can work together on this.
+Paul, I believe that subsystems should take care of themselves,
+so you can do that for RCU, e.g., but at the same time, I think that
+some CI should be running that script (and other relevant scripts)
+on the entire kernel tree and reporting problems that are found.
 
-When I dug deeper into the 64-bit JIT code, I realised that a lot of
-fundamental things such as 32-bit register mappings were completely
-missing. Most of 32-bit operations were unimplemented. The code is
-also quite complex already, so adding full 32-bit hardware support
-into the mix did not seem like a good idea. I am sure there is some
-common code that can be factored out and re-used, but I do think the
-64-bit and 32-bit JITs would be better off as two different
-implementations.
+-- 
+~Randy
 
-My 32-bit implementation is now complete and I am currently testing
-it. Test suite output below. What remains to be tested is tail calls.
-
-test_bpf: Summary: 676 PASSED, 0 FAILED, [664/664 JIT'ed]
-Tested with kernel 5.14 on MIPS32r2 big-endian and little-endian under QEMU.
-Also tested with kernel 5.4 on MIPS 24KEc (MT7628) physical hardware.
-(I have added a lot of new tests in the eBPF test suite during the JIT
-development, which explains the higher count)
-
-The implementation supports both 32-bit and 64-bit eBPF instructions,
-including all atomic operations. 64-bit atomics and div/mod are
-implemented as function calls to atomic64 functions, while 32-bit
-variants are implemented natively by the JIT.
-
-Register mapping
-=================
-My 32-bit implementation maps all 64-bit eBPF registers to native
-32-bit MIPS registers. In addition, there are four temporary 32-bit
-registers available, which is precisely what is needed for doing the
-more complex ALU64 operations. This means that the JIT does not use
-any stack scratch space for registers. It should be a good thing from
-a performance perspective. The register mapping is as follows.
-
-R0: v0,v1 (return)
-R1-R2: a0-a3 (args passed in registers)
-R3-R5: t0-t5 (args passed on stack)
-R6-R9: s0-s7 (callee-saved)
-R10: r0,fp (frame pointer)
-AX: gp,at (constant blinding)
-Temp: t6-t9
-
-To squeeze out enough MIPS registers for the eBPF mapping I had to
-make a few unusual choices. First,  I use the at (assembler temporary)
-register, which should be fine because the JIT is the assembler. I
-also use use the gp (global pointer) register. It is callee-saved, so
-I save it on stack and restore it in the epilogue. The eBPF frame
-pointer R10 is mapped to fp, also callee-saved, and r0. The latter is
-always zero, but on a 32-bit architecture it will also be used to
-"store" zeros, so it should be perfectly fine for the 32-bit JIT.
-According to the ISA documentation r0 is valid both as a source and a
-destination operand.
-
-The complete register mapping simplifies the code since we get rid of
-all the swapping to/from the stack scratch space.
-
-I have been focusing on the code the last couple of weeks so I didn't
-see your email until now. I am sure that this comes as much of a
-surprise to you as it did to me. Anyway, can send a patch with my JIT
-implementation tomorrow.
-
-Cheers,
-Johan
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-On Mon, Jul 12, 2021 at 2:35 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
->
-> Greetings!
->
-> This patch series adds an eBPF JIT for MIPS32. The approach taken first
-> updates existing code to support MIPS64/MIPS32 systems, then refactors
-> source into a common core and dependent MIPS64 JIT, and finally adds a
-> MIPS32 eBPF JIT implementation using the common framework.
->
-> Compared to writing a standalone MIPS32 JIT, this approach has benefits
-> for long-term maintainability, but has taken much longer than expected.
-> This RFC posting is intended to share progress, gather feedback, and
-> raise some questions with BPF and MIPS experts (which I'll cover later).
->
->
-> Code Overview
-> =============
->
-> The initial code updates and refactoring exposed a number of problems in
-> the existing MIPS64 JIT, which the first several patches fix. Patch #11
-> updates common code to support MIPS64/MIPS32 operation. Patch #12
-> separates the common core from the MIPS64 JIT code. Patch #13 adds a
-> needed MIPS32 uasm opcode, while patch #14 adds the MIPS32 eBPF JIT.
->
-> On MIPS32, 64-bit BPF registers are mapped to 32-bit register pairs, and
-> all 64-bit operations are built on 32-bit subregister ops. The MIPS32
-> tailcall counter is stored on the stack however. Notable changes from the
-> MIPS64 JIT include:
->
->   * BPF_JMP32: implement all conditionals
->   * BPF_JMP | JSET | BPF_K: drop bbit insns only usable on MIPS64 Octeon
->
-> Since MIPS32 does not include 64-bit div/mod or atomic opcodes, these BPF
-> insns are implemented by directly calling the built-in kernel functions:
-> (with thanks to Luke Nelson for posting similar code online)
->
->   * BPF_STX   | BPF_DW  | BPF_XADD
->   * BPF_ALU64 | BPF_DIV | BPF_X
->   * BPF_ALU64 | BPF_DIV | BPF_K
->   * BPF_ALU64 | BPF_MOD | BPF_X
->   * BPF_ALU64 | BPF_MOD | BPF_K
->
->
-> Testing
-> =======
->
-> Testing used LTS kernel 5.10.x and stable 5.13.x running under QEMU.
-> The test suite included the 'test_bpf' module and 'test_verifier' from
-> kselftests. Using 'test_progs' from kselftests is too difficult in general
-> since cross-compilation depends on libbpf/bpftool, which does not support
-> cross-endian builds.
->
-> The matrix of test configurations executed for this series covered the
-> expected register sizes, MIPS ISA releases, and JIT settings:
->
->   WORDSIZE={64-bit,32-bit} x ISA={R2,R6} x JIT={off,on,hardened}
->
-> On MIPS32BE and MIPS32LE there was general parity between the results of
-> interpreter vs. JIT-backed tests with respect to the numbers of PASSED,
-> SKIPPED, and FAILED tests. The same was also true of MIPS64 retesting.
->
-> For example, the results below on MIPS32 are typical. Note that skipped
-> tests 854 and 855 are "scale" tests which result in OOM on the QEMU malta
-> MIPS32 test systems.
->
->   root@OpenWrt:~# sysctl net.core.bpf_jit_enable=1
->   root@OpenWrt:~# modprobe test_bpf
->   ...
->   test_bpf: Summary: 378 PASSED, 0 FAILED, [366/366 JIT'ed]
->   root@OpenWrt:~# ./test_verifier 0 853
->   ...
->   Summary: 1127 PASSED, 0 SKIPPED, 89 FAILED
->   root@OpenWrt:~# ./test_verifier 855 1149
->   ...
->   Summary: 408 PASSED, 7 SKIPPED, 53 FAILED
->
->
-> Open Questions
-> ==============
->
-> 1. As seen in the patch series, the static analysis used by the MIPS64 JIT
-> tends to be fragile in the face of verifier, insn and patching changes.
-> After tracking down and fixing several related bugs, I wonder if it were
-> better to remove the static analysis and leave things more robust and
-> maintainable going forward.
->
-> Paul, Thomas, David, what are your views? Do you have thoughts on how best
-> to do this?
->
-> Would it be possible to replace the static analysis by accessing verifier
-> analysis results from a JIT? Daniel, Alexei, or Andrii?
->
->
-> 2. The series tries to correctly handle tailcall counter across bpf2bpf
-> and tailcalls, and it would be nice to properly support mixing these,
-> but this is still a WIP for me. Much of what I've read seems very specific
-> to the x86_64 JIT. Is there a good summary of the required changes for a
-> JIT in general?
->
-> Note: I built a MIPS32LE 'test_progs' after some horrible, ugly hacking,
-> and the 'tailcall' tests pass but the 'tailcall_bpf2bpf' tests fail
-> cryptically. I can send a log and strace if someone helpful could kindly
-> take a look. Is there an alternative, good standalone test available?
->
->
->
-> Possible Next Steps
-> ===================
->
-> 1. Implementing the new BPF_ATOMIC insns *should* be straightforward
-> on MIPS32. I'm less certain of MIPS64 given the static analysis and
-> related zext/sext logic.
->
-> 2. The BPF_JMP32 class is another big gap on MIPS64. Has anyone looked at
-> this before? It also ties to the static analysis, but on first glance
-> appears feasible.
->
->
->
-> Thanks in advance for any feedback or suggestions!
->
->
-> Tony Ambardar (14):
->   MIPS: eBPF: support BPF_TAIL_CALL in JIT static analysis
->   MIPS: eBPF: mask 32-bit index for tail calls
->   MIPS: eBPF: fix BPF_ALU|ARSH handling in JIT static analysis
->   MIPS: eBPF: support BPF_JMP32 in JIT static analysis
->   MIPS: eBPF: fix system hang with verifier dead-code patching
->   MIPS: eBPF: fix JIT static analysis hang with bounded loops
->   MIPS: eBPF: fix MOD64 insn on R6 ISA
->   MIPS: eBPF: support long jump for BPF_JMP|EXIT
->   MIPS: eBPF: drop src_reg restriction in BPF_LD|BPF_DW|BPF_IMM
->   MIPS: eBPF: improve and clarify enum 'which_ebpf_reg'
->   MIPS: eBPF: add core support for 32/64-bit systems
->   MIPS: eBPF: refactor common MIPS64/MIPS32 functions and headers
->   MIPS: uasm: Enable muhu opcode for MIPS R6
->   MIPS: eBPF: add MIPS32 JIT
->
->  Documentation/admin-guide/sysctl/net.rst |    6 +-
->  Documentation/networking/filter.rst      |    6 +-
->  arch/mips/Kconfig                        |    4 +-
->  arch/mips/include/asm/uasm.h             |    1 +
->  arch/mips/mm/uasm-mips.c                 |    4 +-
->  arch/mips/mm/uasm.c                      |    3 +-
->  arch/mips/net/Makefile                   |    8 +-
->  arch/mips/net/ebpf_jit.c                 | 1935 ----------------------
->  arch/mips/net/ebpf_jit.h                 |  295 ++++
->  arch/mips/net/ebpf_jit_comp32.c          | 1241 ++++++++++++++
->  arch/mips/net/ebpf_jit_comp64.c          |  987 +++++++++++
->  arch/mips/net/ebpf_jit_core.c            | 1118 +++++++++++++
->  12 files changed, 3663 insertions(+), 1945 deletions(-)
->  delete mode 100644 arch/mips/net/ebpf_jit.c
->  create mode 100644 arch/mips/net/ebpf_jit.h
->  create mode 100644 arch/mips/net/ebpf_jit_comp32.c
->  create mode 100644 arch/mips/net/ebpf_jit_comp64.c
->  create mode 100644 arch/mips/net/ebpf_jit_core.c
->
-> --
-> 2.25.1
->
