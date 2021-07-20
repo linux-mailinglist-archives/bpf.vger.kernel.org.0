@@ -2,324 +2,317 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDF43CF0D9
-	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 02:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C6E3CF15D
+	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 03:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbhGSX6Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Jul 2021 19:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
+        id S238364AbhGTAqx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Jul 2021 20:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378444AbhGSXhQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Jul 2021 19:37:16 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB5BC08EBB4
-        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 17:10:59 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id p22so30434184yba.7
-        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 17:10:59 -0700 (PDT)
+        with ESMTP id S1349771AbhGTAoe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Jul 2021 20:44:34 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A143C061766
+        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 18:25:13 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id r135so30646955ybc.0
+        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 18:25:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f1LYlveBFicZVaUr3iwPelkh8/Tvyo0xDy3WLV4VFjo=;
-        b=hUTYDAFLIToK0AwXh12zl66SyppQ46A0nJ6YnE5agpBZw2aTeBPInt6TwfiyvTBEQ3
-         aqXjMDVgBo86u/IUdtATjp4VUVDDkEhJ7N3xSjSFaOu4vHUQALUXbk2BqcfyX0CJNKah
-         aRzGVxv5MKBlucsxMHH9iqDLwG1YQ/sutBIa9NAWObQ8mCR+5ldaepmMlD7HZiBRfKoc
-         n12/98FmzIdhNtC+p7/d97UNcyJIN+zpymTWLx8/9eNxAQdLMZTc4OM4AXyiEScnD2/u
-         dxHnakKrxSd3JngV9+wmXbSiMVEm+ENiuzqKJV1NkKaXr8O7Ox9wLg1Ao89wwutm0eop
-         fLZw==
+        bh=YLvWvlKerKN/PpfL9EIgNV4785R1sfDRbOdMox+npUU=;
+        b=DwsUCOwekW3fza3KbT7lxe8XqDEF7C/f9vPMvi+MUTBECImNHDM1eLjZsSsMjs3lHY
+         vO8FeMaD8XFWUf+x+MEJUqnL6KMYNEQ3KAYFeGjhx6wYrsh4xmUV4og848LDUDv68Sg0
+         EKYOuJ19TS7SeOeC+Owu/rdxkEIdEnD6GFbSKAHzEOUV7EOf9W9LHZMLTo6IchCOKN9b
+         YtvnOleGt2M7jEjxkZTJHk79WCmexnhvciE7KemF1B1PIsppy903bwA9o5cP48dDybxK
+         dxvUYN2GjgOEMDW5pFCp5T8KlOLgBjeKYi7B4Wwk37hR7reqis9TEdvvZICkrscziZn0
+         spwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f1LYlveBFicZVaUr3iwPelkh8/Tvyo0xDy3WLV4VFjo=;
-        b=Co3CW8BU7bPxrSlZtS1Wn+44YakMxgTac/GT/0YG0/8m0T1NyS2IiVAUwFMhgU9T44
-         TOL1c4KGFdPcUJ1sgctZHqzYxCJwMMj7sdd172V7bd+O9vSDCOmqzECFXZE1Z9A81J6t
-         fW6YSUt00UrOcFdgK98eHADaqB2HtMTfWCd8Le0DQ0zOq03XU09b+Do8vhx33W8HuKvK
-         THA65k2iypT/MAL2dm+SbmRYLhP8Ct9yuKTq5xxd4vRNV3wiXMcQHBiXBhCpKyLxn3Ve
-         kmKq8NvyNk4S7h5C3lFH7P954ZYOxBWGuh/1UgrY/6L8T4S4onskAy44ORS1q9Ci9WBt
-         gyZw==
-X-Gm-Message-State: AOAM533ZUxawBEMoETItJkV1GX9qsI4yGDx6fAEnEVmVvGVz88bdkF+Q
-        VROK8OK/rGm6fwBrNiSciIshQtoLxOj2fNTf54k=
-X-Google-Smtp-Source: ABdhPJxoP7BRlWrlzYtic0NVj5MHg3JLqabgAklvBUU9yg2c9KcRIs7BzYh1Ntd2gzdaBgMKWkw5Q3yX3vzkVtpnbt0=
-X-Received: by 2002:a25:d349:: with SMTP id e70mr35013467ybf.510.1626739858699;
- Mon, 19 Jul 2021 17:10:58 -0700 (PDT)
+        bh=YLvWvlKerKN/PpfL9EIgNV4785R1sfDRbOdMox+npUU=;
+        b=MmDO4QsQSnkFFHD6CH+btEh895djrnfdgZLhUSHHoDQ+mRaG/5fdUWwlAjL99DfgOW
+         1S7k2D9KYp8AwaZt4UGSgYpnFl0+ozHn9NpKhEwg6rnHEO342W8IyiO8sgrVp82ghOkx
+         Ch1SG4gpIhrzkQ3MkCMcWStYcCJDFTwQc72s0KO3M3Ej5iePjq1eImopxc93oV0jgTXX
+         iq6SyoiA5YCzUww2JVJ6/yOwghn0huQrbthjd80J3cODRyeF1DjK7xrcOLCeWvH4aFlG
+         GZrOo5lwx78LjjTBiJYGKGlM6rpxQshDaW2X323T+v12JZ5+9R8wWcKbRRy5g6uUBa9y
+         laAg==
+X-Gm-Message-State: AOAM532st2x1SNjGtdK/RpFbp8ad2fFMu1yVdOMJVtGFp5I/UKFxMVZK
+        Ot/YxhTrSTirwVglem/4rI7C1BvgLb9c40O0R1vaWQ==
+X-Google-Smtp-Source: ABdhPJzdI2ew3B4feRkdm3Kq318MpXiNBhw1kRz499Q2dOsn9U4ydh4yZ79kwQWZsb4BCBwlzspzyfPPdXjF8W0LI+c=
+X-Received: by 2002:a25:dc4d:: with SMTP id y74mr37638308ybe.289.1626744312348;
+ Mon, 19 Jul 2021 18:25:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4BzYQcD8vrTkXSgwBVGhRKvSWM6KyNc07QthK+=60+vUf8w@mail.gmail.com>
- <20210625044459.1249282-1-rafaeldtinoco@gmail.com> <CAEf4BzYz4BJp8beyoKD03ao4PuvuDg+QpMszeJSGrqPC==JoGw@mail.gmail.com>
- <701c5dea-2db9-4df8-888b-9e10c854afc3@www.fastmail.com>
-In-Reply-To: <701c5dea-2db9-4df8-888b-9e10c854afc3@www.fastmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 19 Jul 2021 17:10:47 -0700
-Message-ID: <CAEf4BzaVrMcLe-0FowM1upkRfBePnJiksmc3vfKvbAFFUFscoA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] libbpf: introduce legacy kprobe events support
-To:     Rafael David Tinoco <rafaeldtinoco@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
+References: <cover.1625970383.git.Tony.Ambardar@gmail.com>
+In-Reply-To: <cover.1625970383.git.Tony.Ambardar@gmail.com>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Tue, 20 Jul 2021 03:25:01 +0200
+Message-ID: <CAM1=_QR-siQtH_qE1uj4J_xw-jWwcRZrLL2hxK462HOwDV1f8A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v1 00/14] MIPS: eBPF: refactor code, add
+ MIPS32 JIT
+To:     Tony Ambardar <tony.ambardar@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-mips@vger.kernel.org,
+        Hassan Naveed <hnaveed@wavecomp.com>,
+        David Daney <ddaney@caviumnetworks.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 6:59 PM Rafael David Tinoco
-<rafaeldtinoco@gmail.com> wrote:
->
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -10007,6 +10007,10 @@ struct bpf_link {
-> > >         char *pin_path;         /* NULL, if not pinned */
-> > >         int fd;                 /* hook FD, -1 if not applicable */
-> > >         bool disconnected;
-> > > +       struct {
-> > > +               char *name;
-> > > +               bool retprobe;
-> > > +       } legacy;
-> >
-> > we shouldn't extend common bpf_link with kprobe-specific parts. We
-> > used to have something like this (for other use cases):
-> >
-> > struct bpf_link_kprobe {
-> >     struct bpf_link link;
-> >     char *legacy_name;
-> >     bool is_retprobe;
-> > };
->
-> would this:
->
-> struct bpf_link {
->     int (*detach)(struct bpf_link *link);
->     int (*destroy)(struct bpf_link *link);
->     char *pin_path;
->     int fd;
->     bool disconnected;
-> };
->
-> struct bpf_link_kprobe {
->     char *legacy_name;
->     bool is_retprobe;
->     struct bpf_link *link;
-> };
->
-> be ok ?
+Hi Tony,
 
-No.
+I am glad that there are more people interested in having a JIT for
+MIPS32. We seem to have been working in parallel on the same thing
+though. I sent a summary on the state of the MIPS32 JIT on the
+linux-mips list a couple of months ago, asking for feedback on the
+best way to complete it. When I received no response, I started to
+work on a MIPS32 JIT implementation myself. I'll be glad to share what
+I have got so we can work together on this.
 
->
-> > And then internally do container_of() to "cast" struct bpf_link to
-> > struct bpf_link_kprobe. External API should still operate on struct
-> > bpf_link everywhere.
->
-> and what about this:
->
-> static struct bpf_link*
-> bpf_program__attach_kprobe_opts(struct bpf_program *prog,
->                                 const char *func_name,
->                                 struct bpf_program_attach_kprobe_opts *opts)
-> {
->         char errmsg[STRERR_BUFSIZE];
->         struct bpf_link_kprobe *kplink;
->         int pfd, err;
->         bool legacy;
->
->         legacy = determine_kprobe_legacy();
->         if (!legacy) {
->                 pfd = perf_event_open_probe(false /* uprobe */,
->                                             opts->retprobe,
->                                             func_name,
->                                             0 /* offset */,
->                                             -1 /* pid */);
->         } else {
->                 pfd = perf_event_open_kprobe_legacy(opts->retprobe,
->                                                     func_name,
->                                                     0 /* offset */,
->                                                     -1 /* pid */);
->         }
->         if (pfd < 0) {
->                 pr_warn("prog '%s': failed to create %s '%s' perf event: %s\n",
->                         prog->name, opts->retprobe ? "kretprobe" : "kprobe", func_name,
->                         libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
->                 return libbpf_err_ptr(pfd);
->         }
->         kplink = calloc(1, sizeof(struct bpf_link_kprobe));
->         if (!kplink)
->                 return libbpf_err_ptr(-ENOMEM);
->         kplink->link = bpf_program__attach_perf_event(prog, pfd);
->         err = libbpf_get_error(link);
->         if (err) {
->                 free(kplink);
->                 close(pfd);
->                 pr_warn("prog '%s': failed to attach to %s '%s': %s\n",
->                         prog->name, opts->retprobe ? "kretprobe" : "kprobe", func_name,
->                         libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
->                 return libbpf_err_ptr(err);
->         }
->         if (legacy) {
->                 kplink->legacy_name = strdup(func_name);
->                 kplink->is_retprobe = opts->retprobe;
->         }
->
->         return kplink->link;
-> }
->
-> And use this 'kplink->link' pointer as the bpf_link pointer for all kprobe
-> functions. For the detachment we would have something like:
->
-> static int bpf_link__detach_perf_event(struct bpf_link *link) {
->         struct bpf_link *const *plink;
->         struct bpf_link_kprobe *kplink;
->         int err;
->
->         plink = (struct bpf_link *const *) link;
->         kplink = container_of(plink, struct bpf_link_kprobe, link);
+When I dug deeper into the 64-bit JIT code, I realised that a lot of
+fundamental things such as 32-bit register mappings were completely
+missing. Most of 32-bit operations were unimplemented. The code is
+also quite complex already, so adding full 32-bit hardware support
+into the mix did not seem like a good idea. I am sure there is some
+common code that can be factored out and re-used, but I do think the
+64-bit and 32-bit JITs would be better off as two different
+implementations.
 
-Did you check if this works? Also how that could ever even work for
-non-kprobe but perf_event-based cases, like tracepoint? And why are we
-even discussing these "alternatives"? What's wrong with the way I
-proposed earlier? For container_of() to work you have to do it the way
-I described in my previous email with one struct being embedded in
-another one.
+My 32-bit implementation is now complete and I am currently testing
+it. Test suite output below. What remains to be tested is tail calls.
 
->         err = ioctl(link->fd, PERF_EVENT_IOC_DISABLE, 0);
->         if (err)
->                 err = -errno;
->         close(link->fd);
->         if (kplink) {
->                 remove_kprobe_event_legacy(kplink->legacy_name, kplink->is_retprobe);
->                 free(kplink->legacy_name);
->                 free(kplink);
->         }
->
->         return libbpf_err(err);
-> }
->
-> for the bpf_link__detach_perf_event(): This would also clean the container at
-> the detachment. (Next comment talks about having this here versus having a
-> legacy kprobe detachment callback).
->
-> [snip]
->
-> > >  static int bpf_link__detach_perf_event(struct bpf_link *link)
-> > >  {
-> > >         int err;
-> > > @@ -10152,6 +10197,12 @@ static int bpf_link__detach_perf_event(struct bpf_link *link)
-> > >                 err = -errno;
-> > >
-> > >         close(link->fd);
-> > > +
-> > > +       if (link->legacy.name) {
-> > > +               remove_kprobe_event_legacy(link->legacy.name, link->legacy.retprobe);
-> > > +               free(link->legacy.name);
-> > > +       }
-> >
-> > instead of this check in bpf_link__detach_perf_event, attach_kprobe
-> > should install its own bpf_link__detach_kprobe_legacy callback
->
-> attach_kprobe_opts() could pass a pointer to link->detach->callback through the
-> opts I suppose (or now, the kplink->link->detach->callback). This way the
-> default would still be bpf_link__detach_perf_event() but we could create a
-> function bpf_link__detach_perf_event_legacy_kprobe() with what was previously
-> showed (about kplink freeing). This is not needed with the version showed
-> before the [snip] though.
->
-> > > +static int perf_event_open_probe_legacy(bool uprobe, bool retprobe, const char *name,
-> > > +                                       uint64_t offset, int pid)
-> >
-> > you are not using offset here, let's pass it into
-> > add_kprobe_event_legacy and use it when attaching as "p:kprobes/%s
-> > %s+123" in poke_kprobe_events? There are separate patches that are
-> > adding ability to attach kprobe at offset, so let's support that
-> > (internally) from the get go for legacy case as well.
-> >
-> > also, it's not generic perf_event_open, it's specifically kprobe, so
-> > let's call it with kprobe in the name (e.g., kprobe_open_legacy or
-> > something)
->
-> I'm calling it now perf_event_open_kprobe_legacy() and it calls:
->
-> static inline int add_kprobe_event_legacy(const char *name, bool retprobe, uint64_t offset)
-> {
->         return poke_kprobe_events(true, name, retprobe, offset);
-> }
->
-> and then we set {kprobes/kretprobes}/funcname_pid, also supporting offset:
->
-> static int poke_kprobe_events(bool add, const char *name, bool retprobe, uint64_t offset) {
->         int fd, ret = 0;
->         char cmd[192] = {}, probename[128] = {}, probefunc[128] = {};
->         const char *file = "/sys/kernel/debug/tracing/kprobe_events";
->
->         if (retprobe)
->                 ret = snprintf(probename, sizeof(probename), "kretprobes/%s_libbpf_%u", name, getpid());
->         else
->                 ret = snprintf(probename, sizeof(probename), "kprobes/%s_libbpf_%u", name, getpid());
->         if (offset)
->                 ret = snprintf(probefunc, sizeof(probefunc), "%s+%lu", name, offset);
->         if (ret)
->                 return -EINVAL;
->         if (add) {
->                 snprintf(cmd, sizeof(cmd), "%c:%s %s",
->                                  retprobe ? 'r' : 'p',
->                                  probename,
->                          offset ? probefunc : name);
->         } else {
->                 snprintf(cmd, sizeof(cmd), "-:%s", probename);
->         }
->         fd = open(file, O_WRONLY | O_APPEND, 0);
->         if (!fd)
->                 return -errno;
->         ret = write(fd, cmd, strlen(cmd));
->         if (ret)
->                 ret = -errno;
->         close(fd);
->
->         return ret;
-> }
->
-> [snip]
->
-> > > +               pfd = perf_event_open_probe(false /* uprobe */,
-> > > +                                           retprobe, func_name,
-> > > +                                            0 /* offset */,
-> > > +                                           -1 /* pid */);
-> > > +       else
-> > > +               pfd = perf_event_open_probe_legacy(false /* uprobe */,
-> > > +                                           retprobe, func_name,
-> > > +                                            0 /* offset */,
-> > > +                                           -1 /* pid */);
-> > >         if (pfd < 0) {
-> > >                 pr_warn("prog '%s': failed to create %s '%s' perf event: %s\n",
-> > >                         prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
-> >
-> > we can't use bpf_program__attach_perf_event as is now, because we need
-> > to allocate a different struct bpf_link_kprobe.
->
-> We could do the container encapsulation using heap in
-> bpf_program_attach_kprobe_opts() or attach_kprobe() like I'm showing here, no ?
->
-> ...
->         kplink = calloc(1, sizeof(struct bpf_link_kprobe));
->         if (!kplink)
->                 return libbpf_err_ptr(-ENOMEM);
->         kplink->link = bpf_program__attach_perf_event(prog, pfd);
-> ...
->
-> and then free all this structure (bpf_link and its encapsulation at the
-> detachment, like said previously also). This way we don't have to change
-> bpf_program__attach_perf_event() which would continue to serve
-> bpf_program__attach_tracepoint() and bpf_program__attach_uprobe() unmodified.
-> This way, kprobe would have a container for all cases and uprobe and tracepoint
-> could have a container in the future if needed.
->
-> > Let's extract the
-> > PERF_EVENT_IOC_SET_BPF and PERF_EVENT_IOC_ENABLE logic into a helper
-> > and use it from both bpf_program__attach_perf_event and
-> > bpf_program__attach_kprobe. It's actually good because we can check
-> > silly errors (like prog_fd < 0) before we create perf_event FD now.
->
-> Okay, but I'm considering this orthogonal to what you said previously (on
-> changing bpf_program__attach_perf_event). UNLESS you really prefer me to do the
-> container allocation in bpf_program__attach_perf_event() but then we would have
-> to free the container in all detachments (kprobe, tracepoint and uprobe) as it
-> couldn't be placed in stack (or it would eventually be lost, no ?).
+test_bpf: Summary: 676 PASSED, 0 FAILED, [664/664 JIT'ed]
+Tested with kernel 5.14 on MIPS32r2 big-endian and little-endian under QEMU.
+Also tested with kernel 5.4 on MIPS 24KEc (MT7628) physical hardware.
+(I have added a lot of new tests in the eBPF test suite during the JIT
+development, which explains the higher count)
 
-container will be different for kprobe/uprobe and
-tracepoint/perf_event. So allocation has to happen separately from
-PERF_EVENT_IOC_SET_BPF and PERF_EVENT_IOC_ENABLE.
+The implementation supports both 32-bit and 64-bit eBPF instructions,
+including all atomic operations. 64-bit atomics and div/mod are
+implemented as function calls to atomic64 functions, while 32-bit
+variants are implemented natively by the JIT.
+
+Register mapping
+=================
+My 32-bit implementation maps all 64-bit eBPF registers to native
+32-bit MIPS registers. In addition, there are four temporary 32-bit
+registers available, which is precisely what is needed for doing the
+more complex ALU64 operations. This means that the JIT does not use
+any stack scratch space for registers. It should be a good thing from
+a performance perspective. The register mapping is as follows.
+
+R0: v0,v1 (return)
+R1-R2: a0-a3 (args passed in registers)
+R3-R5: t0-t5 (args passed on stack)
+R6-R9: s0-s7 (callee-saved)
+R10: r0,fp (frame pointer)
+AX: gp,at (constant blinding)
+Temp: t6-t9
+
+To squeeze out enough MIPS registers for the eBPF mapping I had to
+make a few unusual choices. First,  I use the at (assembler temporary)
+register, which should be fine because the JIT is the assembler. I
+also use use the gp (global pointer) register. It is callee-saved, so
+I save it on stack and restore it in the epilogue. The eBPF frame
+pointer R10 is mapped to fp, also callee-saved, and r0. The latter is
+always zero, but on a 32-bit architecture it will also be used to
+"store" zeros, so it should be perfectly fine for the 32-bit JIT.
+According to the ISA documentation r0 is valid both as a source and a
+destination operand.
+
+The complete register mapping simplifies the code since we get rid of
+all the swapping to/from the stack scratch space.
+
+I have been focusing on the code the last couple of weeks so I didn't
+see your email until now. I am sure that this comes as much of a
+surprise to you as it did to me. Anyway, can send a patch with my JIT
+implementation tomorrow.
+
+Cheers,
+Johan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+On Mon, Jul 12, 2021 at 2:35 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
+>
+> Greetings!
+>
+> This patch series adds an eBPF JIT for MIPS32. The approach taken first
+> updates existing code to support MIPS64/MIPS32 systems, then refactors
+> source into a common core and dependent MIPS64 JIT, and finally adds a
+> MIPS32 eBPF JIT implementation using the common framework.
+>
+> Compared to writing a standalone MIPS32 JIT, this approach has benefits
+> for long-term maintainability, but has taken much longer than expected.
+> This RFC posting is intended to share progress, gather feedback, and
+> raise some questions with BPF and MIPS experts (which I'll cover later).
+>
+>
+> Code Overview
+> =============
+>
+> The initial code updates and refactoring exposed a number of problems in
+> the existing MIPS64 JIT, which the first several patches fix. Patch #11
+> updates common code to support MIPS64/MIPS32 operation. Patch #12
+> separates the common core from the MIPS64 JIT code. Patch #13 adds a
+> needed MIPS32 uasm opcode, while patch #14 adds the MIPS32 eBPF JIT.
+>
+> On MIPS32, 64-bit BPF registers are mapped to 32-bit register pairs, and
+> all 64-bit operations are built on 32-bit subregister ops. The MIPS32
+> tailcall counter is stored on the stack however. Notable changes from the
+> MIPS64 JIT include:
+>
+>   * BPF_JMP32: implement all conditionals
+>   * BPF_JMP | JSET | BPF_K: drop bbit insns only usable on MIPS64 Octeon
+>
+> Since MIPS32 does not include 64-bit div/mod or atomic opcodes, these BPF
+> insns are implemented by directly calling the built-in kernel functions:
+> (with thanks to Luke Nelson for posting similar code online)
+>
+>   * BPF_STX   | BPF_DW  | BPF_XADD
+>   * BPF_ALU64 | BPF_DIV | BPF_X
+>   * BPF_ALU64 | BPF_DIV | BPF_K
+>   * BPF_ALU64 | BPF_MOD | BPF_X
+>   * BPF_ALU64 | BPF_MOD | BPF_K
+>
+>
+> Testing
+> =======
+>
+> Testing used LTS kernel 5.10.x and stable 5.13.x running under QEMU.
+> The test suite included the 'test_bpf' module and 'test_verifier' from
+> kselftests. Using 'test_progs' from kselftests is too difficult in general
+> since cross-compilation depends on libbpf/bpftool, which does not support
+> cross-endian builds.
+>
+> The matrix of test configurations executed for this series covered the
+> expected register sizes, MIPS ISA releases, and JIT settings:
+>
+>   WORDSIZE={64-bit,32-bit} x ISA={R2,R6} x JIT={off,on,hardened}
+>
+> On MIPS32BE and MIPS32LE there was general parity between the results of
+> interpreter vs. JIT-backed tests with respect to the numbers of PASSED,
+> SKIPPED, and FAILED tests. The same was also true of MIPS64 retesting.
+>
+> For example, the results below on MIPS32 are typical. Note that skipped
+> tests 854 and 855 are "scale" tests which result in OOM on the QEMU malta
+> MIPS32 test systems.
+>
+>   root@OpenWrt:~# sysctl net.core.bpf_jit_enable=1
+>   root@OpenWrt:~# modprobe test_bpf
+>   ...
+>   test_bpf: Summary: 378 PASSED, 0 FAILED, [366/366 JIT'ed]
+>   root@OpenWrt:~# ./test_verifier 0 853
+>   ...
+>   Summary: 1127 PASSED, 0 SKIPPED, 89 FAILED
+>   root@OpenWrt:~# ./test_verifier 855 1149
+>   ...
+>   Summary: 408 PASSED, 7 SKIPPED, 53 FAILED
+>
+>
+> Open Questions
+> ==============
+>
+> 1. As seen in the patch series, the static analysis used by the MIPS64 JIT
+> tends to be fragile in the face of verifier, insn and patching changes.
+> After tracking down and fixing several related bugs, I wonder if it were
+> better to remove the static analysis and leave things more robust and
+> maintainable going forward.
+>
+> Paul, Thomas, David, what are your views? Do you have thoughts on how best
+> to do this?
+>
+> Would it be possible to replace the static analysis by accessing verifier
+> analysis results from a JIT? Daniel, Alexei, or Andrii?
+>
+>
+> 2. The series tries to correctly handle tailcall counter across bpf2bpf
+> and tailcalls, and it would be nice to properly support mixing these,
+> but this is still a WIP for me. Much of what I've read seems very specific
+> to the x86_64 JIT. Is there a good summary of the required changes for a
+> JIT in general?
+>
+> Note: I built a MIPS32LE 'test_progs' after some horrible, ugly hacking,
+> and the 'tailcall' tests pass but the 'tailcall_bpf2bpf' tests fail
+> cryptically. I can send a log and strace if someone helpful could kindly
+> take a look. Is there an alternative, good standalone test available?
+>
+>
+>
+> Possible Next Steps
+> ===================
+>
+> 1. Implementing the new BPF_ATOMIC insns *should* be straightforward
+> on MIPS32. I'm less certain of MIPS64 given the static analysis and
+> related zext/sext logic.
+>
+> 2. The BPF_JMP32 class is another big gap on MIPS64. Has anyone looked at
+> this before? It also ties to the static analysis, but on first glance
+> appears feasible.
+>
+>
+>
+> Thanks in advance for any feedback or suggestions!
+>
+>
+> Tony Ambardar (14):
+>   MIPS: eBPF: support BPF_TAIL_CALL in JIT static analysis
+>   MIPS: eBPF: mask 32-bit index for tail calls
+>   MIPS: eBPF: fix BPF_ALU|ARSH handling in JIT static analysis
+>   MIPS: eBPF: support BPF_JMP32 in JIT static analysis
+>   MIPS: eBPF: fix system hang with verifier dead-code patching
+>   MIPS: eBPF: fix JIT static analysis hang with bounded loops
+>   MIPS: eBPF: fix MOD64 insn on R6 ISA
+>   MIPS: eBPF: support long jump for BPF_JMP|EXIT
+>   MIPS: eBPF: drop src_reg restriction in BPF_LD|BPF_DW|BPF_IMM
+>   MIPS: eBPF: improve and clarify enum 'which_ebpf_reg'
+>   MIPS: eBPF: add core support for 32/64-bit systems
+>   MIPS: eBPF: refactor common MIPS64/MIPS32 functions and headers
+>   MIPS: uasm: Enable muhu opcode for MIPS R6
+>   MIPS: eBPF: add MIPS32 JIT
+>
+>  Documentation/admin-guide/sysctl/net.rst |    6 +-
+>  Documentation/networking/filter.rst      |    6 +-
+>  arch/mips/Kconfig                        |    4 +-
+>  arch/mips/include/asm/uasm.h             |    1 +
+>  arch/mips/mm/uasm-mips.c                 |    4 +-
+>  arch/mips/mm/uasm.c                      |    3 +-
+>  arch/mips/net/Makefile                   |    8 +-
+>  arch/mips/net/ebpf_jit.c                 | 1935 ----------------------
+>  arch/mips/net/ebpf_jit.h                 |  295 ++++
+>  arch/mips/net/ebpf_jit_comp32.c          | 1241 ++++++++++++++
+>  arch/mips/net/ebpf_jit_comp64.c          |  987 +++++++++++
+>  arch/mips/net/ebpf_jit_core.c            | 1118 +++++++++++++
+>  12 files changed, 3663 insertions(+), 1945 deletions(-)
+>  delete mode 100644 arch/mips/net/ebpf_jit.c
+>  create mode 100644 arch/mips/net/ebpf_jit.h
+>  create mode 100644 arch/mips/net/ebpf_jit_comp32.c
+>  create mode 100644 arch/mips/net/ebpf_jit_comp64.c
+>  create mode 100644 arch/mips/net/ebpf_jit_core.c
+>
+> --
+> 2.25.1
+>
