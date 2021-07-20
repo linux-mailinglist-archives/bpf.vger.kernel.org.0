@@ -2,82 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A743CF7E3
-	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 12:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD7B3CFA17
+	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 15:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhGTJux (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Jul 2021 05:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237735AbhGTJqq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Jul 2021 05:46:46 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05973C061766
-        for <bpf@vger.kernel.org>; Tue, 20 Jul 2021 03:27:24 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso1291413wmc.1
-        for <bpf@vger.kernel.org>; Tue, 20 Jul 2021 03:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=rX65FkhH+runkAdpmro2t/pfk/k6mjZsrM+ki2qYx3g=;
-        b=f1h8c0NQNl2SWH+GpPorq7Fu7mLoeDAvzPvISlbwAfniKdtR3Jhkn7XM1Rf+wbgqfs
-         doOlMH1ZF/42lkD/apAdLvSblz6uzukiMS7MSI1CiXeoc+ZXvJdWIsdqLmE34c1OUCCz
-         RJVyXPLCfnFJTLv/DkCC/10tmA/56VKn5GYB4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=rX65FkhH+runkAdpmro2t/pfk/k6mjZsrM+ki2qYx3g=;
-        b=tEtECeUeo5uRIWd/k6nWIN8F3vi7lnTq5dJh23AlRzx8bwQ1MvtJokAO8wrDUo0lO3
-         IGPqIxCXkc8LaHvrySVlqH3tluoyfAYGY1iXS6QAtYhkSdV+dMAYafEX0o/8T/WhQBDQ
-         wRsM2J4FH9h5G9jdf8sscSCY8GvTUcKGIvZ9wTl5f4qZ6qxq7ypyqJRHCVmEcsWB9P/7
-         TIbl2cp9DzxBArebvcgpMC5kGH5gMbsneikk8mypoR4sb6oFjZiCr2Zz9CZFsXN2kevo
-         yxN8FlKJC3C0tKwnbwMlUoErGFmsVsOryuColUnjoVGn4NkucohYqnHy07jzMlCWPEAB
-         herw==
-X-Gm-Message-State: AOAM533gowVbYzTLpJxkeQ1PhNnUSkjkxym7PsFqJa4l2BWKCDwlArLL
-        RY1tjsR0/3eNPbDKX+zQFzdjTw==
-X-Google-Smtp-Source: ABdhPJwWMHxekz8/dtwQkLgCe5B9Z3ch1mEGtemRgoUpK6NV6EFYQkoeQH7hNbZXRkQIR2d8Yd8ylQ==
-X-Received: by 2002:a7b:c4cb:: with SMTP id g11mr21303180wmk.40.1626776843490;
-        Tue, 20 Jul 2021 03:27:23 -0700 (PDT)
-Received: from cloudflare.com (79.191.183.149.ipv4.supernova.orange.pl. [79.191.183.149])
-        by smtp.gmail.com with ESMTPSA id u16sm28028569wrw.36.2021.07.20.03.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 03:27:23 -0700 (PDT)
-References: <20210719214834.125484-1-john.fastabend@gmail.com>
- <20210719214834.125484-2-john.fastabend@gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     daniel@iogearbox.net, xiyou.wangcong@gmail.com,
-        alexei.starovoitov@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf 1/3] bpf, sockmap: zap ingress queues after stopping
- strparser
-In-reply-to: <20210719214834.125484-2-john.fastabend@gmail.com>
-Date:   Tue, 20 Jul 2021 12:27:22 +0200
-Message-ID: <87v955qnzp.fsf@cloudflare.com>
+        id S234766AbhGTM0L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Jul 2021 08:26:11 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:11458 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238412AbhGTMZR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Jul 2021 08:25:17 -0400
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GTf4n4qbszcgM4;
+        Tue, 20 Jul 2021 21:02:17 +0800 (CST)
+Received: from [10.174.178.171] (10.174.178.171) by
+ dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 20 Jul 2021 21:05:39 +0800
+Subject: Re: Ask for help about bpf map
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        David Ahern <dahern@digitalocean.com>
+References: <5aebe6f4-ca0d-4f64-8ee6-b68c58675271@huawei.com>
+ <CAEf4BzZpSo8Kqz8mgPdbWTTVLqJ1AgE429_KHTiXgEVpbT97Yw@mail.gmail.com>
+ <8735sidtwe.fsf@toke.dk> <d1f47a24-6328-5121-3a1f-5a102444e50c@huawei.com>
+ <26db412c-a8b7-6d37-844f-7909a0c5744b@huawei.com>
+ <189e4437-bb2c-2573-be96-0d6776feb5dd@huawei.com>
+ <CAADnVQJYhtpEcvvYfozxiPdUJqcZiJxbmT2KuOC6uQdC1VWZVw@mail.gmail.com>
+ <6b659192-5133-981e-0c43-7ca1120edd9c@huawei.com> <87wnpmtr5j.fsf@toke.dk>
+From:   "luwei (O)" <luwei32@huawei.com>
+Message-ID: <beb37418-4518-100a-5b1b-e036be6f71b6@huawei.com>
+Date:   Tue, 20 Jul 2021 21:05:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <87wnpmtr5j.fsf@toke.dk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.171]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 11:48 PM CEST, John Fastabend wrote:
-> We don't want strparser to run and pass skbs into skmsg handlers when
-> the psock is null. We just sk_drop them in this case. When removing
-> a live socket from map it means extra drops that we do not need to
-> incur. Move the zap below strparser close to avoid this condition.
->
-> This way we stop the stream parser first stopping it from processing
-> packets and then delete the psock.
->
-> Fixes: a136678c0bdbb ("bpf: sk_msg, zap ingress queue on psock down")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
+It's very strange, in my virtual host, it is:
 
-To confirm my understanding - the extra drops can happen because
-currently we are racing to clear SK_PSOCK_TX_ENABLED flag in
-sk_psock_drop with sk_psock_verdict_apply, which checks the flag before
-pushing skb onto psock->ingress_skb queue (or possibly straight into
-psock->ingress_msg queue on no redirect).
+$ ip -V
+
+ip utility, iproute2-5.11.0
+
+
+but in my physical host:
+
+$ ip -V
+ip utility, iproute2-5.11.0, libbpf 0.5.0
+
+
+I compiled iproute2 in the same way as I mentioned previously, and the 
+kernel versions are both 5.13 (in fact the same code) .
+
+
+在 2021/7/19 8:38 PM, Toke Høiland-Jørgensen 写道:
+> "luwei (O)" <luwei32@huawei.com> writes:
+>
+>> Andrii and Toke inspired me. You are right, the libbpf version should be included in -V output
+>> , but not mine. I searched google and found this page: https://www.spinics.net/lists/netdev/msg700482.html
+>> , according which I re-compiled iproute2 and it works.
+> Did the libbpf version appear in the output of 'ip -V' after you
+> recompiled and enabled it? It does in mine:
+>
+> $ ./ip/ip -V
+> ip utility, iproute2-5.13.0, libbpf 0.4.0
+>
+> -Toke
+>
+> .
+
+-- 
+Best Regards,
+Lu Wei
+
