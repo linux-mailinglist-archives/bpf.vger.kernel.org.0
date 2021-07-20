@@ -2,34 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D98F3CF195
-	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 03:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882063CF1F3
+	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 04:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240373AbhGTBDG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Jul 2021 21:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238685AbhGTA7i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Jul 2021 20:59:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2596AC061767;
-        Mon, 19 Jul 2021 18:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=VPslFF/zeZEn4JJOEfZN5MEgA42KT6C8T7MZnexgON8=; b=kS6uL8x4SfuJQcn28GfFZN3joa
-        nydiNdvKdcQhwKwzRBH3jo154/gB2yr+6O7GTp8pt/aqn6PelFCC6+9SKXK6zyRGsTHqfKxAzYhpI
-        3rD/xiPufvdUI+q0d8ufOpVtjaQpw8Hutp7XR+chfZTUjB4iWpj6QpVKaALRDzAxVWziIZBzLULjw
-        OBiIMCnvRiYvhRlIoeKsT+TnxeVkAMMTPlOuT6330SR+CvI/H4CpLwvT7/j5TTfwocQe+kOOPfGf1
-        uvsqbc1ouZ0oTMGYVEdPgN2AkfmKie+JcX5nPSf6drVpmtARzv4yXB21tfbegTMUmnYr8C1uw/zlr
-        ZsfhUYFw==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m5ej9-00Ba0z-KP; Tue, 20 Jul 2021 01:39:19 +0000
-Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
-To:     paulmck@kernel.org, Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        id S235860AbhGTBf6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Jul 2021 21:35:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241853AbhGTB1E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Jul 2021 21:27:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C3EC61164;
+        Tue, 20 Jul 2021 02:07:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626746861;
+        bh=r5wSh0N4B6XoXmmj5VoGs+TOmUC23WqLrxAwPTMxhoQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=OBWz8xXpkqJGSA8ojBaW0KwNmW7OQyIdOvwR3SaOz64AUscnJJqspPyQ+ILyM0Hli
+         8CnpSqb8pMhHw2n4RozPYP9v69Z2i11mXUfVV+zBA70Y5kMSe0THk640gSjSrqgxFX
+         oBBZJRIAfbt33d0Tv79cCnsxBpyXjwv1VZirwa8b5hJ04TFpFjh3cqCo5HQkNAsQvF
+         bwZLO7aHRGVVpjxkA2cjrwUBdipSA29QMZ3XWX6FgevtDDkaBAEuPSBRmUJZ9yMalN
+         5jltaLsOX3aRzqLcqX2rDMGnvQ/4Q+BRGsdHGkWH70yvFxVoGiLehnvhz7pRGyrtmt
+         YbyXQGBBLd4wA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 67CFC5C06CA; Mon, 19 Jul 2021 19:07:41 -0700 (PDT)
+Date:   Mon, 19 Jul 2021 19:07:41 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Josh Triplett <josh@joshtriplett.org>,
         rostedt <rostedt@goodmis.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -40,9 +40,10 @@ Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
         mingo@kernel.org
-References: <20210713005645.8565-1-zhouzhouyi@gmail.com>
- <20210713041607.GU4397@paulmck-ThinkPad-P17-Gen-1>
- <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
+Subject: Re: [PATCH] RCU: Fix macro name CONFIG_TASKS_RCU_TRACE
+Message-ID: <20210720020741.GD4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <520385500.15226.1626181744332.JavaMail.zimbra@efficios.com>
  <20210713131812.GV4397@paulmck-ThinkPad-P17-Gen-1>
  <20210713151908.GW4397@paulmck-ThinkPad-P17-Gen-1>
  <CAABZP2zO6WpaYW33V_Di5naxr1TRm0tokCmTZahDuXmRupxd=A@mail.gmail.com>
@@ -51,35 +52,30 @@ References: <20210713005645.8565-1-zhouzhouyi@gmail.com>
  <20210715180941.GK4397@paulmck-ThinkPad-P17-Gen-1>
  <CAABZP2wuWtGAGRqWJb3Gewm5VLZdZ_C=LRZsFbaG3jcQabO3qA@mail.gmail.com>
  <20210718210854.GP4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <de4785f8-8a9f-c32e-7642-d5bb08bff343@infradead.org>
-Date:   Mon, 19 Jul 2021 18:39:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ <de4785f8-8a9f-c32e-7642-d5bb08bff343@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210718210854.GP4397@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de4785f8-8a9f-c32e-7642-d5bb08bff343@infradead.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/18/21 2:08 PM, Paul E. McKenney wrote:
-> On Sun, Jul 18, 2021 at 06:03:34AM +0800, Zhouyi Zhou wrote:
->> Hi Paul
->> During the research, I found a already existing tool to detect
->> undefined Kconfig macro:
->> scripts/checkkconfigsymbols.py. It is marvellous!
+On Mon, Jul 19, 2021 at 06:39:17PM -0700, Randy Dunlap wrote:
+> On 7/18/21 2:08 PM, Paul E. McKenney wrote:
+> > On Sun, Jul 18, 2021 at 06:03:34AM +0800, Zhouyi Zhou wrote:
+> >> Hi Paul
+> >> During the research, I found a already existing tool to detect
+> >> undefined Kconfig macro:
+> >> scripts/checkkconfigsymbols.py. It is marvellous!
+> > 
+> > Nice!  Maybe I should add this to torture.sh.
 > 
-> Nice!  Maybe I should add this to torture.sh.
-> 
+> Paul, I believe that subsystems should take care of themselves,
+> so you can do that for RCU, e.g., but at the same time, I think that
+> some CI should be running that script (and other relevant scripts)
+> on the entire kernel tree and reporting problems that are found.
 
-Paul, I believe that subsystems should take care of themselves,
-so you can do that for RCU, e.g., but at the same time, I think that
-some CI should be running that script (and other relevant scripts)
-on the entire kernel tree and reporting problems that are found.
+Even better!  ;-)
 
--- 
-~Randy
-
+							Thanx, Paul
