@@ -2,275 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600763CF2BF
-	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 05:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52A43CF314
+	for <lists+bpf@lfdr.de>; Tue, 20 Jul 2021 06:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347260AbhGTC5Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Jul 2021 22:57:24 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:12278 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347107AbhGTC4A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Jul 2021 22:56:00 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GTPQh5K0tz7vYq;
-        Tue, 20 Jul 2021 11:31:56 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 11:36:31 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Jul 2021 11:36:31 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
-        <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [PATCH rfc v6 4/4] net: hns3: support skb's frag page recycling based on page pool
-Date:   Tue, 20 Jul 2021 11:35:45 +0800
-Message-ID: <1626752145-27266-5-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
-References: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
-MIME-Version: 1.0
+        id S1345685AbhGTDib (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Jul 2021 23:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245445AbhGTDgz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Jul 2021 23:36:55 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4276DC0613DF
+        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 21:16:34 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id a7so18037154iln.6
+        for <bpf@vger.kernel.org>; Mon, 19 Jul 2021 21:16:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=user-agent:mime-version:message-id:in-reply-to:references:date:from
+         :to:cc:subject;
+        bh=0tQss4tGfn4OQIzt1lN20MAOzzsntRq7ZNCJXJ/tuZM=;
+        b=Z8cveZ6SpzniE8rU45nsU6Yr+p7sUDcnDdhdNQjF6f6JJPzZmP59lSsUD71/9qp5OM
+         lOVvTY+k5XSk9WNrdWk9Nl1WqRE1U55gTJPykJRbrwsleq1+b9lnXhM4+gqixRsZYQtA
+         lpRluc5gcmY8JL2xbRsyN8kgCjQbjLY5vyIKTFr6tHe824dshqd9tnKo7n1YDUuYrtp4
+         zghYUm1llYfhMIRPGBxIcVdJ590i82de3fOU8oSxDh8Bci14q7qM9BBqgRXoBOKxZYRa
+         6nZuj0+BL9kf2xPObmrku+DAoJ0WlBYvSDMSL2jxgO8EDfdcqcB9MSifoCkfMEav/rTg
+         8XaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:user-agent:mime-version:message-id:in-reply-to
+         :references:date:from:to:cc:subject;
+        bh=0tQss4tGfn4OQIzt1lN20MAOzzsntRq7ZNCJXJ/tuZM=;
+        b=XYEZH2IfAFZmkPBCnDMUhUhkhoPKLxbgUsn1aeJUB8EvxMGdHhmlFkA2nqu9ErpAnj
+         lRAs2NMcTxzSYWOXJDTWRllpnjO3dD0945lCC9cAFZRuVVbR9YT//fnz6ljPMQtdmPIV
+         4aaCpAK2eJ+zYfiGMi5ClJfw6GwcpC7rZe9yhEetl9msgc6H7AumxHbwbt+aonGUMvrr
+         hZuG2zTRYzZhvKRN8HRCrthJ3ik6UlSCanuyKkzfBYcGIqGwGC6+ifCAbhdtWeNjzbvY
+         Hgr6CgvoBzhuOS6Xq628rFsyCqNS40/+3JlwwFp+bpdJvD4heD8YlFHoiOrn8qA6B2lL
+         wQHw==
+X-Gm-Message-State: AOAM533doJjui4MgMjNh8YoKmBMK9w5W/XFHmS76KnXNjU4WxIsi6Vm/
+        n31c4SG/T7AoMBmUdNIhKA==
+X-Google-Smtp-Source: ABdhPJyc5ixekBI9ZX0KWnyy2nTb78YBclc5UNGVsQwxvbaegUzayMZue5p1IKNxXqMQjbm6zKgzMg==
+X-Received: by 2002:a92:7303:: with SMTP id o3mr19641340ilc.36.1626754593717;
+        Mon, 19 Jul 2021 21:16:33 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id w21sm11343024iol.52.2021.07.19.21.16.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jul 2021 21:16:33 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 47F9C27C0054;
+        Tue, 20 Jul 2021 00:16:32 -0400 (EDT)
+Received: from imap10 ([10.202.2.60])
+  by compute3.internal (MEProxy); Tue, 20 Jul 2021 00:16:32 -0400
+X-ME-Sender: <xms:H072YF4cTNJT09LzvJiGYI4CtnGrK-A_eEz-bQUWUGU10Xs0Wy5_mw>
+    <xme:H072YC6kgt4NfI0DhjHoKjRhb0GEema_ZkdNYmayCYAxk04P3XMY0SEL0mbK4uUt4
+    GVAcoEAxqmMPxGzZYI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfedugdejfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftfgrfhgr
+    vghlucffrghvihguucfvihhnohgtohdfuceorhgrfhgrvghlughtihhnohgtohesghhmrg
+    hilhdrtghomheqnecuggftrfgrthhtvghrnhepledtteelfeekjeelvdelieejfefhkeeu
+    ffeitedutdelueefkefhvedtffeigeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomheprhgrfhgrvghlughtihhnohgtohdomhgvshhmthhprghu
+    thhhphgvrhhsohhnrghlihhthidqudduvdehieehledtgedqvdehheekjeelfeeiqdhrrg
+    hfrggvlhguthhinhhotghopeepghhmrghilhdrtghomhesuddvfehmrghilhdrohhrgh
+X-ME-Proxy: <xmx:H072YMeT6VIl2_j1vDk031MNZyelhulX0DI2MHBa3wt0LxSg7E30sg>
+    <xmx:H072YOIhkDpfoD-hHbDgTN5bq70IRHAUhU7SWT4mwlN2AAGMz55Qqw>
+    <xmx:H072YJI9a-JPlUMyxMKs_nyQ0K_4El3xXVWP54HVVcTjiOxpfwxQRw>
+    <xmx:IE72YMnuOY8cZPX8dMeEvtw401UtlIyN4usUT6iiWyn0v4_Um3kYgQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id DCC064E00F5; Tue, 20 Jul 2021 00:16:31 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-533-gf73e617b8a-fm-20210712.002-gf73e617b
+Mime-Version: 1.0
+Message-Id: <0487b7af-bd8c-4a83-94ed-eb26cca90fb9@www.fastmail.com>
+In-Reply-To: <CAEf4BzaVrMcLe-0FowM1upkRfBePnJiksmc3vfKvbAFFUFscoA@mail.gmail.com>
+References: <CAEf4BzYQcD8vrTkXSgwBVGhRKvSWM6KyNc07QthK+=60+vUf8w@mail.gmail.com>
+ <20210625044459.1249282-1-rafaeldtinoco@gmail.com>
+ <CAEf4BzYz4BJp8beyoKD03ao4PuvuDg+QpMszeJSGrqPC==JoGw@mail.gmail.com>
+ <701c5dea-2db9-4df8-888b-9e10c854afc3@www.fastmail.com>
+ <CAEf4BzaVrMcLe-0FowM1upkRfBePnJiksmc3vfKvbAFFUFscoA@mail.gmail.com>
+Date:   Tue, 20 Jul 2021 01:16:11 -0300
+From:   "Rafael David Tinoco" <rafaeldtinoco@gmail.com>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Subject: =?UTF-8?Q?Re:_[PATCH_bpf-next_v3]_libbpf:_introduce_legacy_kprobe_events?=
+ =?UTF-8?Q?_support?=
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds skb's frag page recycling support based on
-the frag page support in page pool.
+> >         plink = (struct bpf_link *const *) link;
+> >         kplink = container_of(plink, struct bpf_link_kprobe, link);
+> 
+> Did you check if this works? Also how that could ever even work for
+> non-kprobe but perf_event-based cases, like tracepoint? And why are we
+> even discussing these "alternatives"? What's wrong with the way I
+> proposed earlier? For container_of() to work you have to do it the way
+> I described in my previous email with one struct being embedded in
+> another one.
 
-The performance improves above 10~20% for single thread iperf
-TCP flow with IOMMU disabled when iperf server and irq/NAPI
-have a different CPU.
+Nevermind. Sorry for the noise. I'll do the container encapsulation like
+you said so. I was being lazy and trying to find a way to change just the
+kprobes path instead of thinking in the overall project.
 
-The performance improves about 135%(14Gbit to 33Gbit) for single
-thread iperf TCP flow IOMMU is in strict mode and iperf server
-shares the same cpu with irq/NAPI.
-
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 82 +++++++++++++++++++++++--
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |  3 +
- 2 files changed, 80 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index cdb5f14..f3f9b13 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -3205,6 +3205,21 @@ static int hns3_alloc_buffer(struct hns3_enet_ring *ring,
- 	unsigned int order = hns3_page_order(ring);
- 	struct page *p;
- 
-+	if (ring->page_pool) {
-+		p = page_pool_dev_alloc_frag(ring->page_pool,
-+					     &cb->page_offset,
-+					     hns3_buf_size(ring));
-+		if (unlikely(!p))
-+			return -ENOMEM;
-+
-+		cb->priv = p;
-+		cb->buf = page_address(p);
-+		cb->dma = page_pool_get_dma_addr(p);
-+		cb->type = DESC_TYPE_FRAG;
-+		cb->reuse_flag = 0;
-+		return 0;
-+	}
-+
- 	p = dev_alloc_pages(order);
- 	if (!p)
- 		return -ENOMEM;
-@@ -3227,8 +3242,13 @@ static void hns3_free_buffer(struct hns3_enet_ring *ring,
- 	if (cb->type & (DESC_TYPE_SKB | DESC_TYPE_BOUNCE_HEAD |
- 			DESC_TYPE_BOUNCE_ALL | DESC_TYPE_SGL_SKB))
- 		napi_consume_skb(cb->priv, budget);
--	else if (!HNAE3_IS_TX_RING(ring) && cb->pagecnt_bias)
--		__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
-+	else if (!HNAE3_IS_TX_RING(ring)) {
-+		if (cb->type & DESC_TYPE_PAGE && cb->pagecnt_bias)
-+			__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
-+		else if (cb->type & DESC_TYPE_FRAG)
-+			page_pool_put_full_page(ring->page_pool, cb->priv,
-+						false);
-+	}
- 	memset(cb, 0, sizeof(*cb));
- }
- 
-@@ -3315,7 +3335,7 @@ static int hns3_alloc_and_map_buffer(struct hns3_enet_ring *ring,
- 	int ret;
- 
- 	ret = hns3_alloc_buffer(ring, cb);
--	if (ret)
-+	if (ret || ring->page_pool)
- 		goto out;
- 
- 	ret = hns3_map_buffer(ring, cb);
-@@ -3337,7 +3357,8 @@ static int hns3_alloc_and_attach_buffer(struct hns3_enet_ring *ring, int i)
- 	if (ret)
- 		return ret;
- 
--	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
-+					 ring->desc_cb[i].page_offset);
- 
- 	return 0;
- }
-@@ -3367,7 +3388,8 @@ static void hns3_replace_buffer(struct hns3_enet_ring *ring, int i,
- {
- 	hns3_unmap_buffer(ring, &ring->desc_cb[i]);
- 	ring->desc_cb[i] = *res_cb;
--	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
-+					 ring->desc_cb[i].page_offset);
- 	ring->desc[i].rx.bd_base_info = 0;
- }
- 
-@@ -3539,6 +3561,12 @@ static void hns3_nic_reuse_page(struct sk_buff *skb, int i,
- 	u32 frag_size = size - pull_len;
- 	bool reused;
- 
-+	if (ring->page_pool) {
-+		skb_add_rx_frag(skb, i, desc_cb->priv, frag_offset,
-+				frag_size, truesize);
-+		return;
-+	}
-+
- 	/* Avoid re-using remote or pfmem page */
- 	if (unlikely(!dev_page_is_reusable(desc_cb->priv)))
- 		goto out;
-@@ -3856,6 +3884,9 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
- 		/* We can reuse buffer as-is, just make sure it is reusable */
- 		if (dev_page_is_reusable(desc_cb->priv))
- 			desc_cb->reuse_flag = 1;
-+		else if (desc_cb->type & DESC_TYPE_FRAG)
-+			page_pool_put_full_page(ring->page_pool, desc_cb->priv,
-+						false);
- 		else /* This page cannot be reused so discard it */
- 			__page_frag_cache_drain(desc_cb->priv,
- 						desc_cb->pagecnt_bias);
-@@ -3863,6 +3894,10 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
- 		hns3_rx_ring_move_fw(ring);
- 		return 0;
- 	}
-+
-+	if (ring->page_pool)
-+		skb_mark_for_recycle(skb);
-+
- 	u64_stats_update_begin(&ring->syncp);
- 	ring->stats.seg_pkt_cnt++;
- 	u64_stats_update_end(&ring->syncp);
-@@ -3901,6 +3936,10 @@ static int hns3_add_frag(struct hns3_enet_ring *ring)
- 					    "alloc rx fraglist skb fail\n");
- 				return -ENXIO;
- 			}
-+
-+			if (ring->page_pool)
-+				skb_mark_for_recycle(new_skb);
-+
- 			ring->frag_num = 0;
- 
- 			if (ring->tail_skb) {
-@@ -4705,6 +4744,31 @@ static void hns3_put_ring_config(struct hns3_nic_priv *priv)
- 	priv->ring = NULL;
- }
- 
-+static void hns3_alloc_page_pool(struct hns3_enet_ring *ring)
-+{
-+	struct page_pool_params pp_params = {
-+		.flags = PP_FLAG_DMA_MAP | PP_FLAG_PAGE_FRAG |
-+				PP_FLAG_DMA_SYNC_DEV,
-+		.order = hns3_page_order(ring),
-+		.pool_size = ring->desc_num * hns3_buf_size(ring) /
-+				(PAGE_SIZE << hns3_page_order(ring)),
-+		.nid = dev_to_node(ring_to_dev(ring)),
-+		.dev = ring_to_dev(ring),
-+		.dma_dir = DMA_FROM_DEVICE,
-+		.offset = 0,
-+		.max_len = PAGE_SIZE << hns3_page_order(ring),
-+	};
-+
-+	ring->page_pool = page_pool_create(&pp_params);
-+	if (IS_ERR(ring->page_pool)) {
-+		dev_warn(ring_to_dev(ring), "page pool creation failed: %ld\n",
-+			 PTR_ERR(ring->page_pool));
-+		ring->page_pool = NULL;
-+	} else {
-+		dev_info(ring_to_dev(ring), "page pool creation succeeded\n");
-+	}
-+}
-+
- static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
- {
- 	int ret;
-@@ -4724,6 +4788,8 @@ static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
- 		goto out_with_desc_cb;
- 
- 	if (!HNAE3_IS_TX_RING(ring)) {
-+		hns3_alloc_page_pool(ring);
-+
- 		ret = hns3_alloc_ring_buffers(ring);
- 		if (ret)
- 			goto out_with_desc;
-@@ -4764,6 +4830,12 @@ void hns3_fini_ring(struct hns3_enet_ring *ring)
- 		devm_kfree(ring_to_dev(ring), tx_spare);
- 		ring->tx_spare = NULL;
- 	}
-+
-+	if (!HNAE3_IS_TX_RING(ring) && ring->page_pool) {
-+		page_pool_destroy(ring->page_pool);
-+		ring->page_pool = NULL;
-+		dev_info(ring_to_dev(ring), "page pool destroyed\n");
-+	}
- }
- 
- static int hns3_buf_size2type(u32 buf_size)
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index 15af3d9..115c0ce 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -6,6 +6,7 @@
- 
- #include <linux/dim.h>
- #include <linux/if_vlan.h>
-+#include <net/page_pool.h>
- 
- #include "hnae3.h"
- 
-@@ -307,6 +308,7 @@ enum hns3_desc_type {
- 	DESC_TYPE_BOUNCE_ALL		= 1 << 3,
- 	DESC_TYPE_BOUNCE_HEAD		= 1 << 4,
- 	DESC_TYPE_SGL_SKB		= 1 << 5,
-+	DESC_TYPE_FRAG			= 1 << 6,
- };
- 
- struct hns3_desc_cb {
-@@ -451,6 +453,7 @@ struct hns3_enet_ring {
- 	struct hnae3_queue *tqp;
- 	int queue_index;
- 	struct device *dev; /* will be used for DMA mapping of descriptors */
-+	struct page_pool *page_pool;
- 
- 	/* statistic */
- 	struct ring_stats stats;
--- 
-2.7.4
-
+Sorry again, will come up with what you said in the first place. 
