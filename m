@@ -2,178 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119DA3D10CE
-	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 16:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451723D10DA
+	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 16:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239161AbhGUN0E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Jul 2021 09:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238207AbhGUN0D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:26:03 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1CEC0613CF;
-        Wed, 21 Jul 2021 07:06:39 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id nd37so3465578ejc.3;
-        Wed, 21 Jul 2021 07:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DAmDYxmMpDWNNKS5PvAQ9jk+GlaX2ZHizzSfKKpr7c8=;
-        b=rXlo5cDc2o6TPVIi9/5jj1a+i7h8oobVBPBUNHATW692zK7YfztPZGksFVsfKh7JNx
-         ZbkN/OVKpEtRDgMSuxaxE4fU1QXp9L8uneQYXYOzeSOTeiCWutG7dPa0I4dseec8LqNA
-         dKuGDz+WThWoIi2CckjuIQItS4V+eFFCHv6rVFuqOjVS7VuiPIHH3bLCAJDon/fSJRW7
-         XxU2EWJWUaewXCj3VNtp3zuVLeyC6HMKW0Z2c9V2Ros6wDdgtmwjc0ZgG7PMGfpITEUp
-         56vI/zVuQO4bLQEYHpPzIeFhH5S7KusrKp2CZBbHb76pvYbzqfgKLgxhs4jeKeDzVON4
-         fOyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DAmDYxmMpDWNNKS5PvAQ9jk+GlaX2ZHizzSfKKpr7c8=;
-        b=LeLD1SDHZIiQgs6On067sgsQAvjiEwNflSWCTuKF0XopabwCgR4/vo/1f8V/lP4zhK
-         1ygwPmp2KE5zepyxJiJPvtXLi5BDnfyeOZn7k+/7XfY6QOA2Uutjd82ZHFnsHkmGAwyK
-         d5ISWN/StYTrdx1e1ua3IWHEX7CX/3cVkeREUvWXOUFNIVZjJSYzQ95iaDpLQQ1ezawa
-         KYW9LuO944a8nPFF4YN+teW8rKUBTzHV87m08Rod+3ZfMRXauobuEV6rD3ZEYKeB0Y2g
-         0GL/DPd82C0cwIHKTKXN/BceAaeaLQ3nh7mfkRAfxGJqADUgzz/8oYoS3qRhs549veVz
-         S1vw==
-X-Gm-Message-State: AOAM530cpo17/5oTGJ7RCVUR3cFgmkeuAw0FrQvVp5ktL2XV6GP5+84d
-        CND5htiw7nqBzBi1wKB9WWRNBPY5sv35POcw52c=
-X-Google-Smtp-Source: ABdhPJzkczMR/KPGmaX7A1pCqBxTELfqlO5UbE+O/JtIXbXCT8oik3eChBfIqJizfo2mOlWUXZx+cvPK50XkAoFsgLc=
-X-Received: by 2002:a17:907:397:: with SMTP id ss23mr37918535ejb.470.1626876397998;
- Wed, 21 Jul 2021 07:06:37 -0700 (PDT)
+        id S237556AbhGUN1W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Jul 2021 09:27:22 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:36947 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237966AbhGUN1W (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 21 Jul 2021 09:27:22 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7A97A5C0180;
+        Wed, 21 Jul 2021 10:07:58 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 21 Jul 2021 10:07:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=X+kxKKorTwnhM1KRH
+        4GRU37BfUAFlQFSCjr16g94J44=; b=O1lBi+xPGl2iLCK5TtLiNrm28pnkv6RUs
+        aY6waW3V8P84uTBpVM03eR0qkZuPa83objJCS7th7PyS/2J6JZwQBc5yb/jyBcWF
+        ctfO8XNUK5r8G0i00+R+8mFekPuLZG7UkMog6P2Foys+0JqZ7zwvzpmfJzIq43NM
+        hk2ZZ1DvHbIm5NlYw/PnCJfZkz7WNZxirNBfeVlU7ksturNNZWHs5TXYJfpQTo+g
+        FU/ZTiQfb19G+9mjkCi76eLeJMruYBHf8QHcm6Vvdq3vPyC0n7gI6d52qqVEnUSn
+        Djutn+DJOQLBxPiC4/yAxD5q2bQAQapntAlS8Z7KOcl8kigbFjDMg==
+X-ME-Sender: <xms:PSr4YHIFavijpwK0R8FT0-tav_jpF5CIwNEnCuDpeUztJRZl-JV0mg>
+    <xme:PSr4YLLZFi_800Xxhbo8DtMZliKpvtCOZfLx6iK2kuDhgtlwzaQA75W1tMXM_tAo5
+    h6JBiovdeyKePm6YKg>
+X-ME-Received: <xmr:PSr4YPv0yJd1t5FkYoz39H8dpzYrWQmTV4P26rZZOhQ3nWzLBDLf2seN39BzEdWhqsUxSg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeeggdeiiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeforghrthihnhgrshcurfhumhhpuhhtihhsuceomheslhgrmhgsuggr
+    rdhltheqnecuggftrfgrthhtvghrnhepuefhfedvheelieduhedvveeiffdtleehieduue
+    ehjeejtdekuddvtdffheeuleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepmheslhgrmhgsuggrrdhlth
+X-ME-Proxy: <xmx:PSr4YAY98fIZO6AfETAZLbNN1MHOMUquHpyHNTyjl570CyK9op_GoQ>
+    <xmx:PSr4YOYjVt_7hDkav--XSVZjqRLWXOUpPNxWR_Lmx6e6TkZ1gVsS1Q>
+    <xmx:PSr4YECJ3IgmYdVdymTWwOP3tzplvQOd3-9tnG_nN1ChTTX3xt_niA>
+    <xmx:Pir4YNmHbxGZaeE1hYe-eOqciFbRpfzrxfDqizskj0vEmQO8TQ67Ow>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 21 Jul 2021 10:07:55 -0400 (EDT)
+From:   Martynas Pumputis <m@lambda.lt>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        m@lambda.lt
+Subject: [PATCH bpf-next] selftests/bpf: Mute expected invalid map creation error msg
+Date:   Wed, 21 Jul 2021 16:09:41 +0200
+Message-Id: <20210721140941.563175-1-m@lambda.lt>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
- <1626752145-27266-3-git-send-email-linyunsheng@huawei.com>
- <CAKgT0Uf=WbpngDPQ1V0X+XSJbZ91=cuaz8r_J96=BrXg01PJFA@mail.gmail.com> <92e68f4e-49a4-568c-a281-2865b54a146e@huawei.com>
-In-Reply-To: <92e68f4e-49a4-568c-a281-2865b54a146e@huawei.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 21 Jul 2021 07:06:26 -0700
-Message-ID: <CAKgT0UfwiBowGN+ctqoFZ6qaQAUp-0uGJeukk4OHOEOOfbrEWw@mail.gmail.com>
-Subject: Re: [PATCH rfc v6 2/4] page_pool: add interface to manipulate frag
- count in page pool
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, hawk@kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 1:15 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2021/7/20 23:43, Alexander Duyck wrote:
-> > On Mon, Jul 19, 2021 at 8:36 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> >>
-> >> For 32 bit systems with 64 bit dma, dma_addr[1] is used to
-> >> store the upper 32 bit dma addr, those system should be rare
-> >> those days.
-> >>
-> >> For normal system, the dma_addr[1] in 'struct page' is not
-> >> used, so we can reuse dma_addr[1] for storing frag count,
-> >> which means how many frags this page might be splited to.
-> >>
-> >> In order to simplify the page frag support in the page pool,
-> >> the PAGE_POOL_DMA_USE_PP_FRAG_COUNT macro is added to indicate
-> >> the 32 bit systems with 64 bit dma, and the page frag support
-> >> in page pool is disabled for such system.
-> >>
-> >> The newly added page_pool_set_frag_count() is called to reserve
-> >> the maximum frag count before any page frag is passed to the
-> >> user. The page_pool_atomic_sub_frag_count_return() is called
-> >> when user is done with the page frag.
-> >>
-> >> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> >> ---
-> >>  include/linux/mm_types.h | 18 +++++++++++++-----
-> >>  include/net/page_pool.h  | 41 ++++++++++++++++++++++++++++++++++-------
-> >>  net/core/page_pool.c     |  4 ++++
-> >>  3 files changed, 51 insertions(+), 12 deletions(-)
-> >>
-> >
-> > <snip>
-> >
-> >> +static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
-> >> +                                                         long nr)
-> >> +{
-> >> +       long frag_count = atomic_long_read(&page->pp_frag_count);
-> >> +       long ret;
-> >> +
-> >> +       if (frag_count == nr)
-> >> +               return 0;
-> >> +
-> >> +       ret = atomic_long_sub_return(nr, &page->pp_frag_count);
-> >> +       WARN_ON(ret < 0);
-> >> +       return ret;
-> >>  }
-> >>
-> >
-> > So this should just be an atomic_long_sub_return call. You should get
-> > rid of the atomic_long_read portion of this as it can cover up
-> > reference count errors.
->
-> atomic_long_sub_return() is used to avoid one possible cache bouncing and
-> barrrier caused by the last user.
+Previously, the newly introduced test case in test_map_in_map(), which
+checks whether the inner map is destroyed after unsuccessful creation of
+the outer map, logged the following harmless and expected error:
 
-I assume you mean "atomic_long_read()" here.
+    libbpf: map 'mim': failed to create: Invalid argument(-22) libbpf:
+    failed to load object './test_map_in_map_invalid.o'
 
-> You are right that that may cover up the reference count errors. How about
-> something like below:
->
-> static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
->                                                           long nr)
-> {
-> #ifdef CONFIG_DEBUG_PAGE_REF
->         long ret = atomic_long_sub_return(nr, &page->pp_frag_count);
->
->         WARN_ON(ret < 0);
->
->         return ret;
-> #else
->         if (atomic_long_read(&page->pp_frag_count) == nr)
->                 return 0;
->
->         return atomic_long_sub_return(nr, &page->pp_frag_count);
-> #end
-> }
->
-> Or any better suggestion?
+To avoid any possible confusion, mute the logging during loading of the
+prog.
 
-So the one thing I might change would be to make it so that you only
-do the atomic_long_read if nr is a constant via __builtin_constant_p.
-That way you would be performing the comparison in
-__page_pool_put_page and in the cases of freeing or draining the
-page_frags you would be using the atomic_long_sub_return which should
-be paths where you would not expect it to match or that are slowpath
-anyway.
+Fixes: 08f71a1e39a1 ("selftests/bpf: Check inner map deletion")
+Reported-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Martynas Pumputis <m@lambda.lt>
+---
+ tools/testing/selftests/bpf/test_maps.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Also I would keep the WARN_ON in both paths just to be on the safe side.
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 5a8e069e64fa..14cea869235b 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -1163,6 +1163,7 @@ static void test_map_in_map(void)
+ 	struct bpf_map_info info = {};
+ 	__u32 len = sizeof(info);
+ 	__u32 id = 0;
++	libbpf_print_fn_t old_print_fn;
+ 
+ 	obj = bpf_object__open(MAPINMAP_PROG);
+ 
+@@ -1250,12 +1251,16 @@ static void test_map_in_map(void)
+ 		goto out_map_in_map;
+ 	}
+ 
++	old_print_fn = libbpf_set_print(NULL);
++
+ 	err = bpf_object__load(obj);
+ 	if (!err) {
+ 		printf("Loading obj supposed to fail\n");
+ 		goto out_map_in_map;
+ 	}
+ 
++	libbpf_set_print(old_print_fn);
++
+ 	/* Iterate over all maps to check whether the internal map
+ 	 * ("mim.internal") has been destroyed.
+ 	 */
+-- 
+2.32.0
+
