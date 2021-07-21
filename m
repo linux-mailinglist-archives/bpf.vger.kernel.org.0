@@ -2,111 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8513D195D
-	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 23:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5B03D1978
+	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 23:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhGUVFT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Jul 2021 17:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhGUVFT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Jul 2021 17:05:19 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A63FC061575;
-        Wed, 21 Jul 2021 14:45:54 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id i18so5263100yba.13;
-        Wed, 21 Jul 2021 14:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ewxhe9y6zg8nseS9oPR72pbHVzU7RY2gNLP01JypPQI=;
-        b=IpK5CVT8ixclg3F7w0aN2H1KbagZ0kgcQdWAxkiW20vt4/yNQ/V+4+uILc7UYzD5A7
-         7zvhThTy9UCZkqgNabIfsrYrGvhvPBxbp0rIy8FNOdYbMdwDvU5Rx+Dclk0tq59F0464
-         PV1RsMiNla0v4YMEI3mRrtMfnzmdtQkzqkO9V7jRux2mvOfYby8OaM4aVRZNrFp5peon
-         BNgYMKIaoRhqqMXcbhnJj2YRfaIx2FmzuqzUPAAHB3NZNLJ6AKjyDGVrA4HH4Ht8CjQw
-         WT04NSoR6J7nv0oUs5aKUqFNbiE2CbkyQ08X04KQNlQyhqOMn3bAfHQQKd/0hZUoeCzI
-         LpbQ==
+        id S229716AbhGUVRj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Jul 2021 17:17:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43647 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229921AbhGUVRi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 21 Jul 2021 17:17:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626904694;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Siz/P5D/M03bAys99ZaIKAlUV73f5y7wfF/yizEdY04=;
+        b=UCBaOOXR7K3P9tqA24seebQDA7NIuvSMMYKe6O/rKnP6PrnOpbHGBlRthvuSuXkoWRXYtW
+        ow9tppzZAMsPJDjCKVhWUMO8sugk/WRWJ1oKUlHJLvBdTCgPBJLpd2dhH1N082WJxo0V/H
+        6Wn+8n32PgC2lz997EqRBcL8iIW65tQ=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-RH4wUb0CMf6uPb6m6jXUug-1; Wed, 21 Jul 2021 17:58:12 -0400
+X-MC-Unique: RH4wUb0CMf6uPb6m6jXUug-1
+Received: by mail-ej1-f70.google.com with SMTP id rl7-20020a1709072167b02904f7606bd58fso1296315ejb.11
+        for <bpf@vger.kernel.org>; Wed, 21 Jul 2021 14:58:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ewxhe9y6zg8nseS9oPR72pbHVzU7RY2gNLP01JypPQI=;
-        b=BQECWsun0SB4RC2t2lgSj3aYl5hXFJJy/gjSlLa5vfrY71uw6CvXfpC1D85MF59e0u
-         zrWzGvtEIiGL6jS57e7r7QVPJQ6qA5h1ovkZmgG29mJkJAs55qd0NLzO1DKaR7fCO3IP
-         l+IYNBTy9dVdRMgMUQ3p5pNET5ypiL1HNpSqfkIWjEv90ScMpeliT05TEHcEkdageP4n
-         zNivRJrxVBz+qZAGcjkcLk3aXIy7kx8eUhsDh/kExyBlIoR6P5/0Oq5pdOJhX8sKDrfx
-         x8+qQjZ8ZZcSJOGSDb9jdCYurUEcI3yyFkDwOJaVJsalPoswzygy5eZfnem+wCoEgAPC
-         yJ0A==
-X-Gm-Message-State: AOAM532tpMSbo4FMNhisYAvDECVMWjeyNrZz0idblGMafKZ0T2NN93V8
-        7TImsKd9wVM3Ur5JETGN15AJzxT6ldIB2Q0jlxo=
-X-Google-Smtp-Source: ABdhPJzcksmfd3+9Uv5UZrxjxWZ9b2lOCdWQQM/swpTRGd1Y36WP8U1h33Y9HvQr2NQpgBLJW7/NkTGnIQFXHxH7Bls=
-X-Received: by 2002:a25:cdc7:: with SMTP id d190mr9727865ybf.425.1626903953596;
- Wed, 21 Jul 2021 14:45:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210721212007.3876595-1-arnd@kernel.org>
-In-Reply-To: <20210721212007.3876595-1-arnd@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 21 Jul 2021 14:45:42 -0700
-Message-ID: <CAEf4BzavhrBKZHKpZctJt=K=8A0f77qr_W0OdPjqCNgDshjFog@mail.gmail.com>
-Subject: Re: [PATCH net-next] bpf: fix pointer cast warning
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Siz/P5D/M03bAys99ZaIKAlUV73f5y7wfF/yizEdY04=;
+        b=PUG7030Q09gVs2gUdAglEPhDFRTH2l6eHPTES1iLRkEzV0vJKs4VYHXQyJ8bsL59JD
+         Hy9NhUjMaJ/OBwN/abBJn02zoO2toL0KVNTuzAgrJ8gZ3HYId6GmzZJog8n/OBLLMvws
+         rGvUBeeBfUAIBsOI7TtImgbMAroXRt/0ZlVPswIuXfKlvFFng3cR0rPzh9GfZiRvAWRa
+         zy47j5lDhtqPdMhu3RO8iSUGybyhLEAYAHsw1xyJaVk1iXXSYCy2DPnuTMYnXtsUCVXz
+         6vfbIJl4e52GbLaPxp/9Pqy2osrR+pG3USZaohPHPaTmC/5tGtylB6JOH0g4YyF3Thp9
+         17DQ==
+X-Gm-Message-State: AOAM530t7izVvSNGybUtx3wQzS8enJUksguK9qW01RaOshqyzZI761Q3
+        O2hA4ePdcqs2td4m8LvNnU8O8ESbVytYZw7v1nvPP+esbcxefswZHgX846bW6zd1vLwZp+VaZt8
+        D7zHYJL1bysHl
+X-Received: by 2002:a05:6402:1396:: with SMTP id b22mr24377552edv.380.1626904691575;
+        Wed, 21 Jul 2021 14:58:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzITIPYeAo63PJ0MDgStSYALzx9ZaL9PNYQW33NTSP+hHHmPMbJx43mSxQAcRshbyH8THRzfA==
+X-Received: by 2002:a05:6402:1396:: with SMTP id b22mr24377531edv.380.1626904691430;
+        Wed, 21 Jul 2021 14:58:11 -0700 (PDT)
+Received: from krava.cust.in.nbox.cz ([83.240.60.59])
+        by smtp.gmail.com with ESMTPSA id kb12sm8763228ejc.35.2021.07.21.14.58.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 14:58:11 -0700 (PDT)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf-next 0/3] libbpf: Export bpf_program__attach_kprobe_opts function
+Date:   Wed, 21 Jul 2021 23:58:07 +0200
+Message-Id: <20210721215810.889975-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 2:20 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> kp->addr is a pointer, so it cannot be cast directly to a 'u64'
-> when it gets interpreted as an integer value:
->
-> kernel/trace/bpf_trace.c: In function '____bpf_get_func_ip_kprobe':
-> kernel/trace/bpf_trace.c:968:21: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
->   968 |         return kp ? (u64) kp->addr : 0;
->
-> Use the uintptr_t type instead.
->
-> Fixes: 9ffd9f3ff719 ("bpf: Add bpf_get_func_ip helper for kprobe programs")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
+hi,
+making bpf_program__attach_kprobe_opts function exported,
+and other fixes suggested by Andrii in recent review [1][2].
 
-I'll take this through the bpf-next tree, if no one objects. Thanks for the fix!
+thanks,
+jirka
 
 
->  kernel/trace/bpf_trace.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 0de09f068697..a428d1ef0085 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -965,7 +965,7 @@ BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
->  {
->         struct kprobe *kp = kprobe_running();
->
-> -       return kp ? (u64) kp->addr : 0;
-> +       return kp ? (uintptr_t)kp->addr : 0;
->  }
->
->  static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe = {
-> --
-> 2.29.2
->
+[1] https://lore.kernel.org/bpf/CAEf4BzYELMgTv_RhW7qWNgOYc_mCyh8-VX0FUYabi_TU3OiGKw@mail.gmail.com/
+[2] https://lore.kernel.org/bpf/CAEf4Bzbk-nyenpc86jtEShset_ZSkapvpy3fG2gYKZEOY7uAQg@mail.gmail.com/
+
+---
+Jiri Olsa (3):
+      libbpf: Fix func leak in attach_kprobe
+      libbpf: Allow decimal offset for kprobes
+      libbpf: Export bpf_program__attach_kprobe_opts function
+
+ tools/lib/bpf/libbpf.c                                    | 34 +++++++++++++++++++---------------
+ tools/lib/bpf/libbpf.h                                    | 14 ++++++++++++++
+ tools/lib/bpf/libbpf.map                                  |  1 +
+ tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c |  2 ++
+ tools/testing/selftests/bpf/progs/get_func_ip_test.c      | 11 +++++++++++
+ 5 files changed, 47 insertions(+), 15 deletions(-)
+
