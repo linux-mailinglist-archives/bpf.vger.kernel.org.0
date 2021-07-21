@@ -2,103 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6513D050D
-	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 01:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173AD3D0610
+	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 02:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233517AbhGTWbA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Jul 2021 18:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47586 "EHLO
+        id S230308AbhGTX16 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Jul 2021 19:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbhGTWas (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Jul 2021 18:30:48 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEDEC0613E4
-        for <bpf@vger.kernel.org>; Tue, 20 Jul 2021 16:11:18 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id ee25so55650edb.5
-        for <bpf@vger.kernel.org>; Tue, 20 Jul 2021 16:11:18 -0700 (PDT)
+        with ESMTP id S230164AbhGTX1u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Jul 2021 19:27:50 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909CAC061574;
+        Tue, 20 Jul 2021 17:08:25 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id j73so284391pge.1;
+        Tue, 20 Jul 2021 17:08:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=05UtSVUfKwNTMLK78kxEDJTAm/yjx7xPuTWlYyH+t/c=;
-        b=UlNCyepq3YNi/Kw+KK8GYcy3l5nsx1v3ozrHuSxjnXErTlZDtwCoaV/FgPdcgBmzia
-         VIEkZ6gQK9eK2RMEDCeyxb0b2PFJX1KBaEN7dMdOZXtrVEeTv6Lf0y1YwzFMiXxgbAKj
-         dQbTjzOf9qzz6tZ3R6FfQt+Mm6vAA2cW8zHfcZs3Eaz/ONm5ARUDf45QLEMUyNcALwrm
-         nH9pHMy8QNzlk3+JuBHq8uAyj+28P7OZmaAvnEl1Gy7MnA1/7ZxJ8Asyd+0SfrcTJQ2j
-         o+SUSR8gbXfB/srzXk7mlGZYd7sHZ19daXBZQG3NFtSCkP1Lne96rYm/SphysqF0fm6u
-         URQQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XD+5w5d0nOB9HAnbrEPa07AhJ1PdtZ8e4Xmaj/6HQss=;
+        b=kJEAV6UouwUwSMFYLIK4L7bSOwlAIolxUiQtLqrrB+6J+Q8kFbKIIxMyYGIsxnRrCP
+         pMe6Ofv2hZMIpv5bSK6r8aHYwFjK9xuYLxBryjQ6zif7+2gfO4JzWGk8seswtCiUGHSW
+         Gxa85GPN/qIZeuGXckTXhXuozlWUhsugwpNsVqJ69vl3sl6tCYhg5TXvRIVG5fez8eOY
+         ihW1gXD+XiXkSGw1YGTaOVhyoerhYsYK5n7NHzhtlWPj2fq+XTLITySjYkU41EdNBYAJ
+         OkzT4t+J04p8aPTaNmL08FvV760zCthKJo2s8tuNnhTpASn+aMFNBbH/AFhjjBtYkRU6
+         gaLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=05UtSVUfKwNTMLK78kxEDJTAm/yjx7xPuTWlYyH+t/c=;
-        b=paQ4yOj/2w99aq9hB4BW+BY7rmpc5NT2K42a9VEdVWtJp8hc7M6Ac8dWuaTQOnq5wG
-         cncnp+96Fo9YiyhiKhRUOdLLbkTW14nFVP+YbPvxoEF2jZbzy2GTXanXCKT4TW/+kHk3
-         VNyeYIOb+9mLHYsAQ7f+84Vh1YYutnXb8TnzegIKgq+qg92BOVjFEQfR97Y2uKZ4p09A
-         IcCn3iiqME4z6nVpFoWZio+r/xIVk4pB+XKRjbWr2suuVb8U/RnTmt+8hbQjB6BDCmkl
-         3rNfy2ZzQOn/MM9mK+Smf9RjgTWQVP+VHmZ/I5XY6PINfeZDi6u34iZz84yJ0pyroGRk
-         0yDw==
-X-Gm-Message-State: AOAM5302/8eN0BZCItq9yWdlIDe2pHh9A5BFPqkZROT716i4t1m5S0bV
-        oIGyEUYBZbrXPHPOw47dl+shsQ==
-X-Google-Smtp-Source: ABdhPJxY7YQG1OXTKCtnfRO9H7Hx79q5mTZtQLmCTGEfR5d0b1KFC1KJhs/O37hkZUTpcTxJUAhKiw==
-X-Received: by 2002:aa7:dd8d:: with SMTP id g13mr44261821edv.336.1626822676896;
-        Tue, 20 Jul 2021 16:11:16 -0700 (PDT)
-Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
-        by smtp.gmail.com with ESMTPSA id d10sm9778303edh.62.2021.07.20.16.11.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jul 2021 16:11:16 -0700 (PDT)
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-To:     Tony.Ambardar@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, tsbogend@alpha.franken.de, paulburton@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-mips@vger.kernel.org, ddaney@caviumnetworks.com,
-        luke.r.nels@gmail.com, fancer.lancer@gmail.com, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Subject: [RFC PATCH 2/2] mips: bpf: enable 32-bit eBPF JIT
-Date:   Wed, 21 Jul 2021 01:10:36 +0200
-Message-Id: <20210720231036.3740924-3-johan.almbladh@anyfinetworks.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210720231036.3740924-1-johan.almbladh@anyfinetworks.com>
-References: <20210720231036.3740924-1-johan.almbladh@anyfinetworks.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XD+5w5d0nOB9HAnbrEPa07AhJ1PdtZ8e4Xmaj/6HQss=;
+        b=Tkn9ZnJhJyKAe8aMahw813gIMXYkLh5ticnor7Vq+DF+DzQKL9DmkMSADnKpbn25TL
+         uEysv1WB3TqvEZLHdJZ3lhot9Xcrvez/7GCmcBvj2eCsE36/ziWgSg/g/6wf2Uc/iCbg
+         srocXelE0IGF5mJIgFlnqPgXrN6I3M81Kcy/Hmsx1Fz86MhoXiziEJxO1xyYA/CdzcrY
+         Pb6fP3u/bWa+sGoxrLPJmLkmQlF+okKBPqySL7fBKCmLhfzrOQXLJfax+T8BvC3qCWk9
+         fw668aNnki418RXASiKHf/tY7fbvA52td20yj7yYPrHRjrhovJefdMQtV7R0CChYVqfk
+         jz7Q==
+X-Gm-Message-State: AOAM533IKa05o/n0aPuyagQrol2n/676SZA00M553cDaJWFgtk8LzTr3
+        2Q2Hp/K1zfCphwQlzcDSEmpnJZ4AHjs=
+X-Google-Smtp-Source: ABdhPJzRYbviZGkvTVWQgRFPZkgYCOC/8S/Cjf5x4oO992CAfD6fAoA3vidVMw/glul0EEM9I7xbeQ==
+X-Received: by 2002:a63:d84b:: with SMTP id k11mr33313928pgj.372.1626826105067;
+        Tue, 20 Jul 2021 17:08:25 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([2620:10d:c090:500::6:4ad3])
+        by smtp.gmail.com with ESMTPSA id o91sm3830168pjo.15.2021.07.20.17.08.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Jul 2021 17:08:24 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH bpf-next 0/4] libbpf: Move CO-RE logic into separate file.
+Date:   Tue, 20 Jul 2021 17:08:18 -0700
+Message-Id: <20210721000822.40958-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch enables the new 32-bit eBPF JIT for MIPS. It also disables
-the old cBPF JIT to so cBPF programs are converted to use the new JIT.
+From: Alexei Starovoitov <ast@kernel.org>
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
----
- arch/mips/Kconfig | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Split CO-RE processing logic from libbpf into separate file
+with an interface that doesn't dependend on libbpf internal details.
+As the next step relo_core.c will be compiled with libbpf and with the kernel.
+The _internal_ interface between libbpf/CO-RE and kernel/CO-RE will be:
+int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
+			     int insn_idx,
+			     const struct bpf_core_relo *relo,
+			     int relo_idx,
+			     const struct btf *local_btf,
+			     struct bpf_core_cand_list *cands);
+where bpf_core_relo and bpf_core_cand_list are simple types
+prepared by kernel and libbpf.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index cee6087cd686..b87184bf18df 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -55,7 +55,6 @@ config MIPS
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if CPU_SUPPORTS_HUGEPAGES
- 	select HAVE_ASM_MODVERSIONS
--	select HAVE_CBPF_JIT if !64BIT && !CPU_MICROMIPS
- 	select HAVE_CONTEXT_TRACKING
- 	select HAVE_TIF_NOHZ
- 	select HAVE_C_RECORDMCOUNT
-@@ -63,7 +62,9 @@ config MIPS
- 	select HAVE_DEBUG_STACKOVERFLOW
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
--	select HAVE_EBPF_JIT if 64BIT && !CPU_MICROMIPS && TARGET_ISA_REV >= 2
-+	select HAVE_EBPF_JIT if ((32BIT && TARGET_ISA_REV <= 5) || \
-+	                         (64BIT && TARGET_ISA_REV >= 2)) && \
-+	                        !CPU_MICROMIPS
- 	select HAVE_EXIT_THREAD
- 	select HAVE_FAST_GUP
- 	select HAVE_FTRACE_MCOUNT_RECORD
+Though diff stat shows a lot of lines inserted/deleted they are moved lines.
+Pls review with diff.colorMoved.
+
+Alexei Starovoitov (4):
+  libbpf: Cleanup the layering between CORE and bpf_program.
+  libbpf: Split bpf_core_apply_relo() into bpf_program indepdent helper.
+  libbpf: Move CO-RE types into relo_core.h.
+  libbpf: Split CO-RE logic into relo_core.c.
+
+ tools/lib/bpf/Build             |    2 +-
+ tools/lib/bpf/libbpf.c          | 1344 +------------------------------
+ tools/lib/bpf/libbpf_internal.h |   81 +-
+ tools/lib/bpf/relo_core.c       | 1326 ++++++++++++++++++++++++++++++
+ tools/lib/bpf/relo_core.h       |  102 +++
+ 5 files changed, 1473 insertions(+), 1382 deletions(-)
+ create mode 100644 tools/lib/bpf/relo_core.c
+ create mode 100644 tools/lib/bpf/relo_core.h
+
 -- 
-2.25.1
+2.30.2
 
