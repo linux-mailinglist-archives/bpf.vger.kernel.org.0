@@ -2,114 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8EF3D144E
-	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 18:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE723D15D4
+	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 20:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhGUP6T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Jul 2021 11:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231958AbhGUP6R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Jul 2021 11:58:17 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059AAC061575
-        for <bpf@vger.kernel.org>; Wed, 21 Jul 2021 09:38:54 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id u1so2891749wrs.1
-        for <bpf@vger.kernel.org>; Wed, 21 Jul 2021 09:38:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=qUp/hbe9LbIcAazlkz7Tc/uHNcSrR5NC/lxU1KgZVXk=;
-        b=Z9Y8ZluN9wBZoRUhS/Ki597CyB4ritDT9tYSCg4ThTsTJEARZBlgbSv0W3sgLhcvYD
-         GVnGT14AAlOEJdwb/Dtm1T/QnyIb+3lNFsYDsOvdmYIHuHoADWsIm45hHP1oftMpdsc0
-         LF1BOPihLuflhqwLAiwj2bXiCGk2vs9Ny4n8g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=qUp/hbe9LbIcAazlkz7Tc/uHNcSrR5NC/lxU1KgZVXk=;
-        b=pHr8C6ThBWnWpOyHF0CVhqBMmHMvI2ccP2AK+/mFRP4i8xu4FozvuVg0qbwTbifHgw
-         RLU6S3SsrtSd491XmKCcouIl4n9Abe6bDn4OUaN3mjcwgR2G/X7yyawI5J9PZ2O4hhc4
-         nnfYAm0rO7k/eYgtzl5kMB6NOos3n2Q7kndiyDXeweGW8CDWrJldSzOW5Mlbk4xtrT+V
-         Rw2K/eR686BSPZEdmZ+UxRhJzfYG8qbeNcIO2LpvBO/8pQxRrWe64mrGgPLQ8aE9o0e2
-         eTGM/0EF7esoF3S/nPuaBmysTjbUzraLJVJ+bk0Y5iKGvMyBWy68PHMNADP2g9FOYuU/
-         32dQ==
-X-Gm-Message-State: AOAM532uagSCos2uHw6gQr1O71VaOFMTkJ12d2yMKAErm8CRkayugySL
-        tbBOX8pTpZmGhb6OFHTk33QwcA==
-X-Google-Smtp-Source: ABdhPJxzadLuuDAP25k4CLQBeMAWjFLJERpvFEPZvgUWeVLVBz+RbsTURmB6iCxIOMjmoQDGegBxkw==
-X-Received: by 2002:a5d:568d:: with SMTP id f13mr44124982wrv.380.1626885532635;
-        Wed, 21 Jul 2021 09:38:52 -0700 (PDT)
-Received: from cloudflare.com (79.191.186.228.ipv4.supernova.orange.pl. [79.191.186.228])
-        by smtp.gmail.com with ESMTPSA id o19sm389685wmc.12.2021.07.21.09.38.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 09:38:52 -0700 (PDT)
-References: <20210719214834.125484-1-john.fastabend@gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
+        id S230314AbhGURWA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Jul 2021 13:22:00 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63414 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237549AbhGURV4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 21 Jul 2021 13:21:56 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16LHuSR5012361;
+        Wed, 21 Jul 2021 11:02:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=14aQEGZceoLqvQo1mhLspgQ9mRU8tz/xeITvEPjJGNg=;
+ b=h7yvFBMg3FzAhFLF7fZO8YbU7HXCcw2Ed5dAEZf8+mmQPitiXp/7/CHDO1QtAWIfuEAP
+ Q3VzfRPe/p+RbBFWKiJWYRwmccmuFjwX9Z5vAIoo/PCMV5Gn3G+hCeUbBgQgdWxNsytp
+ KXCNcbaX1FlvF/RgPgMHTv1lWen7qGM/o04= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 39x1xdqfve-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 21 Jul 2021 11:02:18 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 21 Jul 2021 11:02:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nWqG/ZUHuUt6iswr62pFKYsulrGkTaZfmSoZqdFIeZCWJh7hrUijgxkf1gBB9SLyCghluw1R6+BPZUx9qPPK8FntDEryCwFKk2wpYoVydWINx6Ll0OAb0DP0IEctBA5aof3nVbGzRT79ULC8Vjj9qoMvwDIxv1ntQazBcF9LmGJtgulq8AKRU1Cpx/wnA5MMeGXBWbs49T83vJpre+jEKf0gIQArgsU8/VCHFoWyqE0D5q40u6s3F4TdPk+x+Nmoxkuj75njJTZCycOkDsHBk3MkpNrxn2yWdX+7mjLF8TRmzDBnLh5ervefBoqKT4ClTBEMkA2tgXONynCfNvLuxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=14aQEGZceoLqvQo1mhLspgQ9mRU8tz/xeITvEPjJGNg=;
+ b=BhIoymIAmQDENkvqsERpbwxIdkO3BXl0UZOc9EM5w9O/nP2ZN9mtsyu7d63BmXxDZN9Ow2yKi6YG7FmggwcKeY8kXeeWz1k5P09R97ZYVRpOGBkYpfJI9Auns6b4gOwC9dOOsSTW12xg2sbbRbbWvSip40cHLkO7iXNww6Q4hX6NhpwN6KGNzBXSjxo2I9x28cgznFYHu/pX7kFzIj9qIDzn6K/WoZnH7FkPy2srD5u8mStyABLfBU1iKSHdjBaMYLOQj6c7MRtu6fBYNKwk+9vnc9vLq739w1DUXeIS3fpjhRJGuuhjBuEiYSW3R0I8hGbeNK7/Qp/LwUkEyLVlKQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by SN7PR15MB4173.namprd15.prod.outlook.com (2603:10b6:806:10f::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Wed, 21 Jul
+ 2021 18:02:15 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::1b5:fa51:a2b9:28f]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::1b5:fa51:a2b9:28f%9]) with mapi id 15.20.4331.034; Wed, 21 Jul 2021
+ 18:02:15 +0000
+Date:   Wed, 21 Jul 2021 11:02:11 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
 To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     daniel@iogearbox.net, xiyou.wangcong@gmail.com,
-        alexei.starovoitov@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf 0/3] sockmap fixes picked up by stress tests
-In-reply-to: <20210719214834.125484-1-john.fastabend@gmail.com>
-Date:   Wed, 21 Jul 2021 18:38:51 +0200
-Message-ID: <87r1frr59g.fsf@cloudflare.com>
+CC:     <jakub@cloudflare.com>, <daniel@iogearbox.net>,
+        <xiyou.wangcong@gmail.com>, <alexei.starovoitov@gmail.com>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf 3/3] bpf, sockmap: fix memleak on ingress msg enqueue
+Message-ID: <20210721180211.xvdxuhmb56scmag2@kafai-mbp.dhcp.thefacebook.com>
+References: <20210719214834.125484-1-john.fastabend@gmail.com>
+ <20210719214834.125484-4-john.fastabend@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210719214834.125484-4-john.fastabend@gmail.com>
+X-ClientProxiedBy: MN2PR20CA0016.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::29) To SA1PR15MB5016.namprd15.prod.outlook.com
+ (2603:10b6:806:1db::19)
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:ed14) by MN2PR20CA0016.namprd20.prod.outlook.com (2603:10b6:208:e8::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24 via Frontend Transport; Wed, 21 Jul 2021 18:02:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 35e71bdb-2ae8-4cf5-8d2c-08d94c71ac4e
+X-MS-TrafficTypeDiagnostic: SN7PR15MB4173:
+X-Microsoft-Antispam-PRVS: <SN7PR15MB4173CDAAC0908FE763C061DAD5E39@SN7PR15MB4173.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o+YPR2C3C8nw+zFL/nxmi2NCs9K8F3UeHCUlNxcEpcALfDiPGeTLK3+7Jxi/sTCAmutVA1YbbHdTlYq8Y1UpWEDz3kWht2tzU59n4tQ2ax1OUjlt0+fhLv+P0ohMfOttVRzw4Aq0GuqwT4qvzZWI2Yl4KHFS6g3azrad6YmcdrZ7+HQV1QZZkNpNectDXp+z5e8/FQ8Bn0ZSgpqgV81+Pb4PsMm5mchTa6BMKYA9XUarh5N2mgan76QpTaXFcMTqAIsJkeyjt/wHVRZAxDyU0g5dchoY7edQRwfrDmeAesu9L30GT3p+EcZB66WbrfUInjN5sp4AWr8Q+FZC+H/i5AOzCCaM/fs+/uyevZ14JiRC57dPtJxHH6diBKjMG79+ehcRDwTyt6K44gRn8gyHuKe40QYNS4lHSf/TW+Ino+xk167fLzq/rx7wkAxgGcfpm/FK3Aio4mVso4Im8nxUcnezGKsYv/am29z3ORjzZFOB01Sgi1meaBeYq4V6NwDE6VcRii6e96UMvzbDtDODrOLIRgZlximIhG6wrao9QVYWXvE68BXYIA7+gZ8pqWREp9bFP2vKmJvp0H15sj2gqsO32PJMYBWktox4zHXCe1Ydf279gEqpiXjEeoBRDEHJL9XXD2n8XuIwBgrG2xOOTQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(39860400002)(396003)(136003)(8936002)(6666004)(4326008)(5660300002)(6916009)(9686003)(2906002)(1076003)(55016002)(8676002)(38100700002)(66556008)(66946007)(316002)(86362001)(66476007)(7696005)(186003)(52116002)(83380400001)(6506007)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Uoh0Ecxpu2h0zZef0+ewI/nw8Xmy5qT60L2z+C/XsbeclHo44hWWfApW9DbC?=
+ =?us-ascii?Q?cWRo6isFXyuqmmskaz4ZU043x11fo9A0OeKtvTQrXG50txeS/h2atJqGcds7?=
+ =?us-ascii?Q?X3KDfa0eFTvISurJeJCCOgM46Ej+wr9pJMDwzyY0rwUArf3ijz1cwFgeoUqu?=
+ =?us-ascii?Q?LqUnIUMigB6PwyOA/zTta/AZmabj1xzfZ7lJ4VoJk+7xMydgYLVqP2GK+t+9?=
+ =?us-ascii?Q?w4S/QR4XYlr4jaQqN18eE7fL3Y3yjczEPysQqTqGUSMyCJNMgQtu2GQ7SVdJ?=
+ =?us-ascii?Q?PaV6sdWcn1rglgjWyIAQPgvg54cs67R3xGwoLg8myRQTZqdd0s7YSYTvKVhl?=
+ =?us-ascii?Q?YG8fEY7lmQrGnmFwbi1W7fUdxVFNntLRHQB2BFxRx4dxauk86FLqtuD/nrRe?=
+ =?us-ascii?Q?ao84bHHYnLNJ8+oUHnFJB64jvMm98SE703DOQz31l34pXWiEyEUux/YP1SfN?=
+ =?us-ascii?Q?WzpfK5KrgGYGxtIBjthq76L/YvPQBfb4PMrS6i3WVMfXHMzaIVhGKlQ5slIZ?=
+ =?us-ascii?Q?XXBUIjv77JQg51r2sKVIMQdioEV5KwGyUxEbODZxbp9afOddK7IZyH6y3vcZ?=
+ =?us-ascii?Q?G/nKzUP+EzPYReJb+c3hqrNXzwffIl8YWj+ZSIg9B7v2VdurgulQ5nB1xikf?=
+ =?us-ascii?Q?VjKsKneH7DheCjXF03auOrbCouMWPDQXR9NU5Qm1/By4qfJx2fWIBzV/GAmb?=
+ =?us-ascii?Q?xeF3qYSX3kdsR9t6cB4DK44GSMkMvXu1Z0VZvB1zbkwcdMex+umDpfOnWLN/?=
+ =?us-ascii?Q?yAcZjwPP3N9+x55cV/USEGPOSZAj13Uic0i42HTCGLyHf2AhwAAtZigLcFGn?=
+ =?us-ascii?Q?FS3F0i0jbA1gcFl/FvVNE2T+XKDhUneFgFV6M/r8UQvoU4kOxuC7r2kq3mmR?=
+ =?us-ascii?Q?pHIBI8otn6E/EosgFhceEwoEf644Zbj5IqYuPZlpCQu/lcEw/m9p5O6BExqT?=
+ =?us-ascii?Q?hVTvo4CSiuq/yyvnonn5LLmmKv7D69rZ0KXorzW05SQ3AG2oAGHgAUeSMHfN?=
+ =?us-ascii?Q?Oi7ZSJ/ZrBobr/PgbqNFEmCDEeTC8I5Rj7puXn3Fdu2WFu7KzU+EaDzo6xJB?=
+ =?us-ascii?Q?u8z0Og8uP9PQbODwpEcRVcjthZ1e93rmg36B3D3HA72JyJSX3jAeR01qtrcn?=
+ =?us-ascii?Q?lBagTGC6KIcS5BN/+poWLZAk2DyTpeMjZGDQ3tzPbMphTwaL4uTRy5zht5ju?=
+ =?us-ascii?Q?dITI4picZyBbAawQZ/TWCoQY9WtbWTQzL5widjlYETyjta6DPf22c1PHkNHC?=
+ =?us-ascii?Q?bXGnsXTpD/yvTQg4ACAjamPPFnZcKE3VYXR4n9WaMdMOr5ATJHVZh19BfIqC?=
+ =?us-ascii?Q?o11L408McyvoJFERCzkhrr8PoFEeK06PUd1FA4ntQ7b80w=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35e71bdb-2ae8-4cf5-8d2c-08d94c71ac4e
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2021 18:02:15.8148
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: b5qR4NB+f0iaoA9CB/IHvXjrT6LpvlVTAnABwwHN69fMtUvWmAkDVqjc1vlnBfsE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB4173
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: tfk3YsTzjVnFHFDU7Nev2SjJqrCk4xeG
+X-Proofpoint-GUID: tfk3YsTzjVnFHFDU7Nev2SjJqrCk4xeG
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-21_10:2021-07-21,2021-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
+ malwarescore=0 phishscore=0 priorityscore=1501 mlxscore=0 bulkscore=0
+ mlxlogscore=999 impostorscore=0 lowpriorityscore=0 adultscore=0
+ suspectscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107210106
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 11:48 PM CEST, John Fastabend wrote:
-> Running stress tests with recent patch to remove an extra lock in sockmap
-> resulted in a couple new issues popping up. It seems only one of them
-> is actually related to the patch:
->
-> 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
->
-> The other two issues had existed long before, but I guess the timing
-> with the serialization we had before was too tight to get any of
-> our tests or deployments to hit it.
->
-> With attached series stress testing sockmap+TCP with workloads that
-> create lots of short-lived connections no more splats like below were
-> seen on upstream bpf branch.
->
-> [224913.935822] WARNING: CPU: 3 PID: 32100 at net/core/stream.c:208 sk_stream_kill_queues+0x212/0x220
-> [224913.935841] Modules linked in: fuse overlay bpf_preload x86_pkg_temp_thermal intel_uncore wmi_bmof squashfs sch_fq_codel efivarfs ip_tables x_tables uas xhci_pci ixgbe mdio xfrm_algo xhci_hcd wmi
-> [224913.935897] CPU: 3 PID: 32100 Comm: fgs-bench Tainted: G          I       5.14.0-rc1alu+ #181
-> [224913.935908] Hardware name: Dell Inc. Precision 5820 Tower/002KVM, BIOS 1.9.2 01/24/2019
-> [224913.935914] RIP: 0010:sk_stream_kill_queues+0x212/0x220
-> [224913.935923] Code: 8b 83 20 02 00 00 85 c0 75 20 5b 5d 41 5c 41 5d 41 5e 41 5f c3 48 89 df e8 2b 11 fe ff eb c3 0f 0b e9 7c ff ff ff 0f 0b eb ce <0f> 0b 5b 5d 41 5c 41 5d 41 5e 41 5f c3 90 0f 1f 44 00 00 41 57 41
-> [224913.935932] RSP: 0018:ffff88816271fd38 EFLAGS: 00010206
-> [224913.935941] RAX: 0000000000000ae8 RBX: ffff88815acd5240 RCX: dffffc0000000000
-> [224913.935948] RDX: 0000000000000003 RSI: 0000000000000ae8 RDI: ffff88815acd5460
-> [224913.935954] RBP: ffff88815acd5460 R08: ffffffff955c0ae8 R09: fffffbfff2e6f543
-> [224913.935961] R10: ffffffff9737aa17 R11: fffffbfff2e6f542 R12: ffff88815acd5390
-> [224913.935967] R13: ffff88815acd5480 R14: ffffffff98d0c080 R15: ffffffff96267500
-> [224913.935974] FS:  00007f86e6bd1700(0000) GS:ffff888451cc0000(0000) knlGS:0000000000000000
-> [224913.935981] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [224913.935988] CR2: 000000c0008eb000 CR3: 00000001020e0005 CR4: 00000000003706e0
-> [224913.935994] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [224913.936000] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [224913.936007] Call Trace:
-> [224913.936016]  inet_csk_destroy_sock+0xba/0x1f0
-> [224913.936033]  __tcp_close+0x620/0x790
-> [224913.936047]  tcp_close+0x20/0x80
-> [224913.936056]  inet_release+0x8f/0xf0
-> [224913.936070]  __sock_release+0x72/0x120
->
-> John Fastabend (3):
->   bpf, sockmap: zap ingress queues after stopping strparser
->   bpf, sockmap: on cleanup we additionally need to remove cached skb
->   bpf, sockmap: fix memleak on ingress msg enqueue
->
+On Mon, Jul 19, 2021 at 02:48:34PM -0700, John Fastabend wrote:
+> If backlog handler is running during a tear down operation we may enqueue
+> data on the ingress msg queue while tear down is trying to free it.
+> 
+>  sk_psock_backlog()
+>    sk_psock_handle_skb()
+>      skb_psock_skb_ingress()
+>        sk_psock_skb_ingress_enqueue()
+>          sk_psock_queue_msg(psock,msg)
+>                                            spin_lock(ingress_lock)
+>                                             sk_psock_zap_ingress()
+>                                              _sk_psock_purge_ingerss_msg()
+>                                               _sk_psock_purge_ingress_msg()
+>                                             -- free ingress_msg list --
+>                                            spin_unlock(ingress_lock)
+>            spin_lock(ingress_lock)
+>            list_add_tail(msg,ingress_msg) <- entry on list with no on
+s/on/one/
+
+>                                              left to free it.
+>            spin_unlock(ingress_lock)
+> 
+> To fix we only enqueue from backlog if the ENABLED bit is set. The tear
+> down logic clears the bit with ingress_lock set so we wont enqueue the
+> msg in the last step.
+> 
+> Fixes: 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
 >  include/linux/skmsg.h | 54 ++++++++++++++++++++++++++++---------------
->  net/core/skmsg.c      | 37 +++++++++++++++++++++--------
->  2 files changed, 62 insertions(+), 29 deletions(-)
+>  net/core/skmsg.c      |  6 -----
+>  2 files changed, 35 insertions(+), 25 deletions(-)
+> 
+> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> index 96f319099744..883638888f93 100644
+> --- a/include/linux/skmsg.h
+> +++ b/include/linux/skmsg.h
+> @@ -285,11 +285,45 @@ static inline struct sk_psock *sk_psock(const struct sock *sk)
+>  	return rcu_dereference_sk_user_data(sk);
+>  }
+>  
+> +static inline void sk_psock_set_state(struct sk_psock *psock,
+> +				      enum sk_psock_state_bits bit)
+> +{
+> +	set_bit(bit, &psock->state);
+> +}
+> +
+> +static inline void sk_psock_clear_state(struct sk_psock *psock,
+> +					enum sk_psock_state_bits bit)
+> +{
+> +	clear_bit(bit, &psock->state);
+> +}
+> +
+> +static inline bool sk_psock_test_state(const struct sk_psock *psock,
+> +				       enum sk_psock_state_bits bit)
+> +{
+> +	return test_bit(bit, &psock->state);
+> +}
+> +
+> +static void sock_drop(struct sock *sk, struct sk_buff *skb)
+inline
 
-Except for the uninitialized memory read reported by 0-day CI, this
-series LGTM. Feel free to add my stamp to v2:
-
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+> +{
+> +	sk_drops_add(sk, skb);
+> +	kfree_skb(skb);
+> +}
+> +
+> +static inline void drop_sk_msg(struct sk_psock *psock, struct sk_msg *msg)
+> +{
+> +	if (msg->skb)
+> +		sock_drop(psock->sk, msg->skb);
+> +	kfree(msg);
+> +}
+> +
+>  static inline void sk_psock_queue_msg(struct sk_psock *psock,
+>  				      struct sk_msg *msg)
+>  {
+>  	spin_lock_bh(&psock->ingress_lock);
+> -	list_add_tail(&msg->list, &psock->ingress_msg);
+> +        if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED))
+Indentation is off.
