@@ -2,155 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8533D0A83
-	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 10:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304F83D0B48
+	for <lists+bpf@lfdr.de>; Wed, 21 Jul 2021 11:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235562AbhGUHis (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Jul 2021 03:38:48 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:12282 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236341AbhGUHfH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Jul 2021 03:35:07 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GV7Z021S8z7wb4;
-        Wed, 21 Jul 2021 16:10:48 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 21 Jul 2021 16:15:24 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 21 Jul
- 2021 16:15:23 +0800
-Subject: Re: [PATCH rfc v6 2/4] page_pool: add interface to manipulate frag
- count in page pool
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-CC:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, "Salil Mehta" <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Will Deacon" <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Vlastimil Babka" <vbabka@suse.cz>, <fenghua.yu@intel.com>,
-        <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "Alexander Lobakin" <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, <wenxu@ucloud.cn>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, <nogikh@google.com>,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        <kpsingh@kernel.org>, <andrii@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>, <songliubraving@fb.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
- <1626752145-27266-3-git-send-email-linyunsheng@huawei.com>
- <CAKgT0Uf=WbpngDPQ1V0X+XSJbZ91=cuaz8r_J96=BrXg01PJFA@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <92e68f4e-49a4-568c-a281-2865b54a146e@huawei.com>
-Date:   Wed, 21 Jul 2021 16:15:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
-MIME-Version: 1.0
-In-Reply-To: <CAKgT0Uf=WbpngDPQ1V0X+XSJbZ91=cuaz8r_J96=BrXg01PJFA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+        id S236396AbhGUIWA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Jul 2021 04:22:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235143AbhGUINs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Jul 2021 04:13:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCD5061029;
+        Wed, 21 Jul 2021 08:42:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626856982;
+        bh=zaxBgl0zmqFoRCTU1TKbNY9Ob5tCMwIxamYH6mVMFV8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LG0eVYN12xOURN7r0bA3jJ7dGpw6SpSOR7sqA+lH7bme3QHLolqgA5zAzqch+nu3x
+         zYgRbEk2OzWL0uVLFKCk4/kgy8z0jQpK/tcBYiw13cFSR86sZA93nWU078G2HuH6oy
+         rvqswbeX+wuCupd+z8FqCIWX9QGHbmhm0pjoUmahPDcy5YSqOPUDq513sljul05OE8
+         VwwJl42IvVDviDvRyYsLw573rDW1lGXu87vAM+m5lCPgXrYIYf4SjYCz6MucYQ/p6F
+         13lQ2lQ8tC0H1F+ZUFKDQprGCfwQpCS4KhafHjFrX0ljrHBXGOJfyGZLnc0glgeW3+
+         L1pZzXedGEysQ==
+Date:   Wed, 21 Jul 2021 17:42:58 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH -tip v2 0/6] kprobes: treewide: Clean up kprobe code
+Message-Id: <20210721174258.0fc04b1ab8d8c3ebcba6295e@kernel.org>
+In-Reply-To: <162598881438.1222130.11530594038964049135.stgit@devnote2>
+References: <162598881438.1222130.11530594038964049135.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/7/20 23:43, Alexander Duyck wrote:
-> On Mon, Jul 19, 2021 at 8:36 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> For 32 bit systems with 64 bit dma, dma_addr[1] is used to
->> store the upper 32 bit dma addr, those system should be rare
->> those days.
->>
->> For normal system, the dma_addr[1] in 'struct page' is not
->> used, so we can reuse dma_addr[1] for storing frag count,
->> which means how many frags this page might be splited to.
->>
->> In order to simplify the page frag support in the page pool,
->> the PAGE_POOL_DMA_USE_PP_FRAG_COUNT macro is added to indicate
->> the 32 bit systems with 64 bit dma, and the page frag support
->> in page pool is disabled for such system.
->>
->> The newly added page_pool_set_frag_count() is called to reserve
->> the maximum frag count before any page frag is passed to the
->> user. The page_pool_atomic_sub_frag_count_return() is called
->> when user is done with the page frag.
->>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> ---
->>  include/linux/mm_types.h | 18 +++++++++++++-----
->>  include/net/page_pool.h  | 41 ++++++++++++++++++++++++++++++++++-------
->>  net/core/page_pool.c     |  4 ++++
->>  3 files changed, 51 insertions(+), 12 deletions(-)
->>
+Hi,
+
+On Sun, 11 Jul 2021 16:33:34 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Hi,
 > 
-> <snip>
+> Here is the 2nd series of patches to cleanup the kprobes code. Previous
+> version is here.
 > 
->> +static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
->> +                                                         long nr)
->> +{
->> +       long frag_count = atomic_long_read(&page->pp_frag_count);
->> +       long ret;
->> +
->> +       if (frag_count == nr)
->> +               return 0;
->> +
->> +       ret = atomic_long_sub_return(nr, &page->pp_frag_count);
->> +       WARN_ON(ret < 0);
->> +       return ret;
->>  }
->>
+>  https://lore.kernel.org/bpf/162592891873.1158485.768824457210707916.stgit@devnote2/
 > 
-> So this should just be an atomic_long_sub_return call. You should get
-> rid of the atomic_long_read portion of this as it can cover up
-> reference count errors.
+> This version is just add a cleanup of trace_kprobes to the [6/6], thanks
+> Joe to find it out!
 
-atomic_long_sub_return() is used to avoid one possible cache bouncing and
-barrrier caused by the last user.
+Does anyone have any comments? Or should I make a pull request for this change?
 
-You are right that that may cover up the reference count errors. How about
-something like below:
+Thank you,
 
-static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
-							  long nr)
-{
-#ifdef CONFIG_DEBUG_PAGE_REF
-	long ret = atomic_long_sub_return(nr, &page->pp_frag_count);
-
-	WARN_ON(ret < 0);
-
-	return ret;
-#else
-	if (atomic_long_read(&page->pp_frag_count) == nr)
-		return 0;
-
-	return atomic_long_sub_return(nr, &page->pp_frag_count);
-#end
-}
-
-Or any better suggestion?
-
-
-> .
 > 
+> 
+> Thank you,
+> 
+> ---
+> 
+> Masami Hiramatsu (6):
+>       kprobes: treewide: Cleanup the error messages for kprobes
+>       kprobes: Fix coding style issues
+>       kprobes: Use IS_ENABLED() instead of kprobes_built_in()
+>       kprobes: Add assertions for required lock
+>       kprobes: treewide: Use 'kprobe_opcode_t *' for the code address in get_optimized_kprobe()
+>       kprobes: Use bool type for functions which returns boolean value
+> 
+> 
+>  arch/arm/probes/kprobes/core.c     |    4 
+>  arch/arm/probes/kprobes/opt-arm.c  |    7 -
+>  arch/arm64/kernel/probes/kprobes.c |    5 -
+>  arch/csky/kernel/probes/kprobes.c  |   10 +
+>  arch/mips/kernel/kprobes.c         |   11 +
+>  arch/powerpc/kernel/optprobes.c    |    6 -
+>  arch/riscv/kernel/probes/kprobes.c |   11 +
+>  arch/s390/kernel/kprobes.c         |    4 
+>  arch/x86/kernel/kprobes/opt.c      |    6 -
+>  include/linux/kprobes.h            |   64 +++----
+>  kernel/kprobes.c                   |  315 +++++++++++++++++++-----------------
+>  kernel/trace/trace_kprobe.c        |    2 
+>  12 files changed, 227 insertions(+), 218 deletions(-)
+> 
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
