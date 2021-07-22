@@ -2,196 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFECE3D1F9D
-	for <lists+bpf@lfdr.de>; Thu, 22 Jul 2021 10:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA0A3D21EA
+	for <lists+bpf@lfdr.de>; Thu, 22 Jul 2021 12:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhGVH1U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Jul 2021 03:27:20 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:12237 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbhGVH1U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Jul 2021 03:27:20 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GVlKT0Jr1z1CMYv;
-        Thu, 22 Jul 2021 16:02:05 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 16:07:49 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 22 Jul
- 2021 16:07:49 +0800
-Subject: Re: [PATCH rfc v6 2/4] page_pool: add interface to manipulate frag
- count in page pool
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-CC:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, "Salil Mehta" <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Will Deacon" <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Vlastimil Babka" <vbabka@suse.cz>, <fenghua.yu@intel.com>,
-        <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "Alexander Lobakin" <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, <wenxu@ucloud.cn>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, <nogikh@google.com>,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        <kpsingh@kernel.org>, <andrii@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>, <songliubraving@fb.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
- <1626752145-27266-3-git-send-email-linyunsheng@huawei.com>
- <CAKgT0Uf=WbpngDPQ1V0X+XSJbZ91=cuaz8r_J96=BrXg01PJFA@mail.gmail.com>
- <92e68f4e-49a4-568c-a281-2865b54a146e@huawei.com>
- <CAKgT0UfwiBowGN+ctqoFZ6qaQAUp-0uGJeukk4OHOEOOfbrEWw@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <fffae41f-b0a3-3c43-491f-096d31ba94ca@huawei.com>
-Date:   Thu, 22 Jul 2021 16:07:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S230479AbhGVJdv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Jul 2021 05:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230367AbhGVJdu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Jul 2021 05:33:50 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D5EC061575
+        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 03:14:25 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id go30so7568869ejc.8
+        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 03:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=o/vyMP1jVs4gcQJMyYNogSkDkyiN1hvhWkhIaERfqpA=;
+        b=bTW4VizRgZ9eoP0UC38XHDstg6hT1NHCRSDKE6XwsIIaQ8FnYrj6oC+MnV1CLCUHWx
+         HKycFPa5tnCGF382JCGO7BDBp13bpgNn/oyTBnsQEtkgTgtqoJF/9YchGs7qAJNsBdfC
+         gA7xF4zuUmFe0qs8OF6PdzUq+NUSuN0o+CIGeVu9ocqsd00UDgbkr6OD2q0noPeY9ihX
+         Zw1L7kpWoorDJ8r/ClLlTbPTSNg3voyhiYikIX1owJ4nlnisHRvAPGxfl6Jb1AX93kw6
+         e2v7jEB5FRCl1jrBXCDV2Zu0yZMPQ/B2m1c3LyrpCjwI4Ys6+Rfve5Nf5FEFRH7vUqxU
+         0LaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=o/vyMP1jVs4gcQJMyYNogSkDkyiN1hvhWkhIaERfqpA=;
+        b=NZLa1FpweQHMHCwtc5ObOjyIYHB27FOEw/XYrW9BCxzydkHipvRherBPZRiUsilACC
+         J4nJ7sDAg2uuKBDR8RhwYr3nKab2za52fD4EP2mGY3yEfLf7Yjllw9FLNKZppvXcNSzw
+         npEoGGEKCzEXNUrHqqwg6gHc831YYurSo+56l8L6YfkKHVgjt6830d7H1FbR3hsfbg78
+         o1By7iCIQFHBCJwPTjYd7w/YJdaGtue5Vzou9ngvs9BcEQBWtEfutspbg0e0dUt4rFMQ
+         vN3VS/2hbDYkZlP1g1t3F9eL9eMq9ZCfNcZ1Z/T3/hfN5epWhJAC+XACIN6Ii8Uwpl4u
+         LUyQ==
+X-Gm-Message-State: AOAM533B4z0IeWJuN7OT3j9pcPpe1XBe3vDcAnz47Ec45B/gLzFAvSJV
+        Uvwlg7e0owWt3XHMzK1GtiWPRW12ESxHP386iAw=
+X-Google-Smtp-Source: ABdhPJxxXQkaFFaPOqYwHW3G1hLGZjH0DHwTvzRwKu7gUlJpWlWMivtlNXN1ZvDuUOU1f4Z42Cn8tJ7PXOmFP/KcGj4=
+X-Received: by 2002:a17:906:d961:: with SMTP id rp1mr9315603ejb.68.1626948863562;
+ Thu, 22 Jul 2021 03:14:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UfwiBowGN+ctqoFZ6qaQAUp-0uGJeukk4OHOEOOfbrEWw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210719151753.399227-1-hengqi.chen@gmail.com>
+In-Reply-To: <20210719151753.399227-1-hengqi.chen@gmail.com>
+From:   Yaniv Agman <yanivagman@gmail.com>
+Date:   Thu, 22 Jul 2021 13:15:11 +0300
+Message-ID: <CAMy7=ZUB36TL-8PmtJ_Nm48PFmdjSBVLYXWKyFiqm6QCOYZrMA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: expose bpf_d_path helper to vfs_* and
+ security_* functions
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Yonghong Song <yhs@fb.com>, john.fastabend@gmail.com,
+        jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/7/21 22:06, Alexander Duyck wrote:
-> On Wed, Jul 21, 2021 at 1:15 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2021/7/20 23:43, Alexander Duyck wrote:
->>> On Mon, Jul 19, 2021 at 8:36 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>>
->>>> For 32 bit systems with 64 bit dma, dma_addr[1] is used to
->>>> store the upper 32 bit dma addr, those system should be rare
->>>> those days.
->>>>
->>>> For normal system, the dma_addr[1] in 'struct page' is not
->>>> used, so we can reuse dma_addr[1] for storing frag count,
->>>> which means how many frags this page might be splited to.
->>>>
->>>> In order to simplify the page frag support in the page pool,
->>>> the PAGE_POOL_DMA_USE_PP_FRAG_COUNT macro is added to indicate
->>>> the 32 bit systems with 64 bit dma, and the page frag support
->>>> in page pool is disabled for such system.
->>>>
->>>> The newly added page_pool_set_frag_count() is called to reserve
->>>> the maximum frag count before any page frag is passed to the
->>>> user. The page_pool_atomic_sub_frag_count_return() is called
->>>> when user is done with the page frag.
->>>>
->>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>>> ---
->>>>  include/linux/mm_types.h | 18 +++++++++++++-----
->>>>  include/net/page_pool.h  | 41 ++++++++++++++++++++++++++++++++++-------
->>>>  net/core/page_pool.c     |  4 ++++
->>>>  3 files changed, 51 insertions(+), 12 deletions(-)
->>>>
->>>
->>> <snip>
->>>
->>>> +static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
->>>> +                                                         long nr)
->>>> +{
->>>> +       long frag_count = atomic_long_read(&page->pp_frag_count);
->>>> +       long ret;
->>>> +
->>>> +       if (frag_count == nr)
->>>> +               return 0;
->>>> +
->>>> +       ret = atomic_long_sub_return(nr, &page->pp_frag_count);
->>>> +       WARN_ON(ret < 0);
->>>> +       return ret;
->>>>  }
->>>>
->>>
->>> So this should just be an atomic_long_sub_return call. You should get
->>> rid of the atomic_long_read portion of this as it can cover up
->>> reference count errors.
->>
->> atomic_long_sub_return() is used to avoid one possible cache bouncing and
->> barrrier caused by the last user.
-> 
-> I assume you mean "atomic_long_read()" here.
+=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=91=D7=
+=B3, 19 =D7=91=D7=99=D7=95=D7=9C=D7=99 2021 =D7=91-18:43 =D7=9E=D7=90=D7=AA=
+ =E2=80=AAHengqi Chen=E2=80=AC=E2=80=8F
+<=E2=80=AAhengqi.chen@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+>
+> Add vfs_* and security_* to bpf_d_path allowlist, so that we can use
+> bpf_d_path helper to extract full file path from these functions'
+> `struct path *` and `struct file *` arguments. This will help tools
+> like IOVisor's filetop[2]/filelife to get full file path.
+>
+> Changes since v1: [1]
+>  - Alexei and Yonghong suggested that bpf_d_path helper could also
+>    apply to vfs_* and security_file_* kernel functions. Added them.
+>
+> [1] https://lore.kernel.org/bpf/20210712162424.2034006-1-hengqi.chen@gmai=
+l.com/
+> [2] https://github.com/iovisor/bcc/issues/3527
+>
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  kernel/trace/bpf_trace.c | 50 ++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 48 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 08906007306d..c784f3c7143f 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -850,16 +850,62 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *,=
+ buf, u32, sz)
+>  BTF_SET_START(btf_allowlist_d_path)
+>  #ifdef CONFIG_SECURITY
+>  BTF_ID(func, security_file_permission)
+> -BTF_ID(func, security_inode_getattr)
+>  BTF_ID(func, security_file_open)
+> +BTF_ID(func, security_file_ioctl)
+> +BTF_ID(func, security_file_free)
+> +BTF_ID(func, security_file_alloc)
+> +BTF_ID(func, security_file_lock)
+> +BTF_ID(func, security_file_fcntl)
+> +BTF_ID(func, security_file_set_fowner)
+> +BTF_ID(func, security_file_receive)
+> +BTF_ID(func, security_inode_getattr)
+>  #endif
+>  #ifdef CONFIG_SECURITY_PATH
+>  BTF_ID(func, security_path_truncate)
+> +BTF_ID(func, security_path_notify)
+> +BTF_ID(func, security_path_unlink)
+> +BTF_ID(func, security_path_mkdir)
+> +BTF_ID(func, security_path_rmdir)
+> +BTF_ID(func, security_path_mknod)
+> +BTF_ID(func, security_path_symlink)
+> +BTF_ID(func, security_path_link)
+> +BTF_ID(func, security_path_rename)
+> +BTF_ID(func, security_path_chmod)
+> +BTF_ID(func, security_path_chown)
+> +BTF_ID(func, security_path_chroot)
+>  #endif
+>  BTF_ID(func, vfs_truncate)
+>  BTF_ID(func, vfs_fallocate)
+> -BTF_ID(func, dentry_open)
+>  BTF_ID(func, vfs_getattr)
+> +BTF_ID(func, vfs_fadvise)
+> +BTF_ID(func, vfs_fchmod)
+> +BTF_ID(func, vfs_fchown)
+> +BTF_ID(func, vfs_open)
+> +BTF_ID(func, vfs_setpos)
+> +BTF_ID(func, vfs_llseek)
+> +BTF_ID(func, vfs_read)
+> +BTF_ID(func, vfs_write)
+> +BTF_ID(func, vfs_iocb_iter_read)
+> +BTF_ID(func, vfs_iter_read)
+> +BTF_ID(func, vfs_readv)
+> +BTF_ID(func, vfs_iocb_iter_write)
+> +BTF_ID(func, vfs_iter_write)
+> +BTF_ID(func, vfs_writev)
+> +BTF_ID(func, vfs_copy_file_range)
+> +BTF_ID(func, vfs_getattr_nosec)
+> +BTF_ID(func, vfs_ioctl)
+> +BTF_ID(func, vfs_fsync_range)
+> +BTF_ID(func, vfs_fsync)
+> +BTF_ID(func, vfs_utimes)
+> +BTF_ID(func, vfs_statfs)
+> +BTF_ID(func, vfs_dedupe_file_range_one)
+> +BTF_ID(func, vfs_dedupe_file_range)
+> +BTF_ID(func, vfs_clone_file_range)
+> +BTF_ID(func, vfs_cancel_lock)
+> +BTF_ID(func, vfs_test_lock)
+> +BTF_ID(func, vfs_setlease)
+> +BTF_ID(func, vfs_lock_file)
+> +BTF_ID(func, dentry_open)
+>  BTF_ID(func, filp_close)
+>  BTF_SET_END(btf_allowlist_d_path)
+>
+> --
+> 2.25.1
+>
 
-Yes, sorry for the confusion.
+Thanks for opening this PR!
+I was looking for a way to do that in a tool I develop (Tracee), and
+had to implement this functionality by myself:
+https://github.com/aquasecurity/tracee/blob/main/tracee-ebpf/tracee/tracee.=
+bpf.c#L1494
 
-> 
->> You are right that that may cover up the reference count errors. How about
->> something like below:
->>
->> static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
->>                                                           long nr)
->> {
->> #ifdef CONFIG_DEBUG_PAGE_REF
->>         long ret = atomic_long_sub_return(nr, &page->pp_frag_count);
->>
->>         WARN_ON(ret < 0);
->>
->>         return ret;
->> #else
->>         if (atomic_long_read(&page->pp_frag_count) == nr)
->>                 return 0;
->>
->>         return atomic_long_sub_return(nr, &page->pp_frag_count);
->> #end
->> }
->>
->> Or any better suggestion?
-> 
-> So the one thing I might change would be to make it so that you only
-> do the atomic_long_read if nr is a constant via __builtin_constant_p.
-> That way you would be performing the comparison in
-> __page_pool_put_page and in the cases of freeing or draining the
-> page_frags you would be using the atomic_long_sub_return which should
-> be paths where you would not expect it to match or that are slowpath
-> anyway.
-> 
-> Also I would keep the WARN_ON in both paths just to be on the safe side.
+Maybe It's too much to ask, but I wonder if it will be possible to add
+other functions to this allowlist.
+Currently, other than vfs_write(v), and security_file_open, we also
+need it for security_sb_mount and security_bprm_check.
+For security_bprm_check() we extract the path from bprm->file->f_path.
+Actually, any securty_* function that has a struct argument from which
+it is possible to reach a path struct is a possible candidate for us.
+In addition to this, we also use it for the sched_process_exec
+tracepoint, but I'm not sure if adding a tracepoint is related here,
+as it is not exactly a function.
 
-If I understand it correctly, we should change it as below, right?
-
-static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
-							  long nr)
-{
-	long ret;
-
-	/* As suggested by Alexander, atomic_long_read() may cover up the
-	 * reference count errors, so avoid calling atomic_long_read() in
-	 * the cases of freeing or draining the page_frags, where we would
-	 * not expect it to match or that are slowpath anyway.
-	 */
-	if (__builtin_constant_p(nr) &&
-	    atomic_long_read(&page->pp_frag_count) == nr)
-		return 0;
-
-	ret = atomic_long_sub_return(nr, &page->pp_frag_count);
-	WARN_ON(ret < 0);
-	return ret;
-}
-
-
-> .
-> 
+Yaniv
