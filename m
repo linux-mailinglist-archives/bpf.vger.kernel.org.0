@@ -2,106 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D533D1EC2
-	for <lists+bpf@lfdr.de>; Thu, 22 Jul 2021 09:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFECE3D1F9D
+	for <lists+bpf@lfdr.de>; Thu, 22 Jul 2021 10:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhGVGef (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Jul 2021 02:34:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33232 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229715AbhGVGef (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 22 Jul 2021 02:34:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626938110;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HbeaBbCKHLyJ4xr48Gzl+y+Ld5Xe5na7a5Nw+NIBfBE=;
-        b=dLA4PE71qi0Ph3I/uqZL7ISZYd23yn+XqCocdn8FUcI4riojHKf95LnNgnhnE2Rx75QE/x
-        NDiWubRJJuikNs5L4siUtq+0aIsjFxmZzxx9E2oLgaTjcWGopQAenklwvWiTX4LV7UVQKk
-        Ox9C5fxiSeo7R0UbtYBJqOisI9htlvY=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-zUjsOISPMOSZCfaWcx4Tig-1; Thu, 22 Jul 2021 03:15:09 -0400
-X-MC-Unique: zUjsOISPMOSZCfaWcx4Tig-1
-Received: by mail-ej1-f70.google.com with SMTP id m7-20020a1709061ec7b0290549bc29d4d7so1498988ejj.20
-        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 00:15:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HbeaBbCKHLyJ4xr48Gzl+y+Ld5Xe5na7a5Nw+NIBfBE=;
-        b=S2of2+GuoLPC+9h014sJfC64ad+6qmQl4aoV4BfD2LEbigMTnXiXbvJWa61c7hVXcn
-         6/wBHSjEDUZ1uxKjXSlMoMRdXU7Vz1UqHTCVnVJP7RmWiCM+wzmQs9bFE/4/9vwkIijS
-         BhJBc/KB1XKTcx8ug8pQI9cY1M8SjSbYRQKp3wIQjtVyzrYJwYRFEzagdT5/v9G4XxxU
-         NG5nJL6VIuk0OkzQ05qEFhGzRJAdRWzM8BPFhfS6/b8waMqVA+Bnl2QgOIEZrmHIkIYF
-         oJ8PZcgMCS1/T+A9D9u+2IdPp6JkqNwvJn3l1Wx+UtFvi8QxLkb7LAU2fLLLWbQwzNmC
-         4BsQ==
-X-Gm-Message-State: AOAM530Tfl1tOgHKne130syoNgFcZbHRGNp4iEUy2nFSD0GKr27EWUom
-        xX1gHX0B4jvn1OGT5nM54nHSSYuJy9N1HCFx5lbSSmyH1d1Z6XW6DGNJiN2BBSv3IeuChNET6Xn
-        QvmcvVLLLGbFT
-X-Received: by 2002:a17:906:f11:: with SMTP id z17mr42752662eji.385.1626938108186;
-        Thu, 22 Jul 2021 00:15:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxy6xfgeset5dZus4WoJj5fvONkpQK/Ym4JM4fnth0Ivfcf1Q/QMLHjsq53HiTg5oXsndk2Ug==
-X-Received: by 2002:a17:906:f11:: with SMTP id z17mr42752647eji.385.1626938108042;
-        Thu, 22 Jul 2021 00:15:08 -0700 (PDT)
-Received: from krava ([83.240.60.59])
-        by smtp.gmail.com with ESMTPSA id lw1sm8064787ejb.92.2021.07.22.00.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 00:15:07 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 09:15:05 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S230144AbhGVH1U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Jul 2021 03:27:20 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:12237 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230100AbhGVH1U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Jul 2021 03:27:20 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GVlKT0Jr1z1CMYv;
+        Thu, 22 Jul 2021 16:02:05 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 16:07:49 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 22 Jul
+ 2021 16:07:49 +0800
+Subject: Re: [PATCH rfc v6 2/4] page_pool: add interface to manipulate frag
+ count in page pool
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, "Salil Mehta" <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCH bpf-next 1/3] libbpf: Fix func leak in attach_kprobe
-Message-ID: <YPka+SuGAQAAhez/@krava>
-References: <20210721215810.889975-1-jolsa@kernel.org>
- <20210721215810.889975-2-jolsa@kernel.org>
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Will Deacon" <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Vlastimil Babka" <vbabka@suse.cz>, <fenghua.yu@intel.com>,
+        <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "Alexander Lobakin" <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, <wenxu@ucloud.cn>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        <kpsingh@kernel.org>, <andrii@kernel.org>,
+        "Martin KaFai Lau" <kafai@fb.com>, <songliubraving@fb.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
+ <1626752145-27266-3-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Uf=WbpngDPQ1V0X+XSJbZ91=cuaz8r_J96=BrXg01PJFA@mail.gmail.com>
+ <92e68f4e-49a4-568c-a281-2865b54a146e@huawei.com>
+ <CAKgT0UfwiBowGN+ctqoFZ6qaQAUp-0uGJeukk4OHOEOOfbrEWw@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <fffae41f-b0a3-3c43-491f-096d31ba94ca@huawei.com>
+Date:   Thu, 22 Jul 2021 16:07:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210721215810.889975-2-jolsa@kernel.org>
+In-Reply-To: <CAKgT0UfwiBowGN+ctqoFZ6qaQAUp-0uGJeukk4OHOEOOfbrEWw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 11:58:08PM +0200, Jiri Olsa wrote:
-> Adding missing free for func pointer in attach_kprobe function.
+On 2021/7/21 22:06, Alexander Duyck wrote:
+> On Wed, Jul 21, 2021 at 1:15 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2021/7/20 23:43, Alexander Duyck wrote:
+>>> On Mon, Jul 19, 2021 at 8:36 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>
+>>>> For 32 bit systems with 64 bit dma, dma_addr[1] is used to
+>>>> store the upper 32 bit dma addr, those system should be rare
+>>>> those days.
+>>>>
+>>>> For normal system, the dma_addr[1] in 'struct page' is not
+>>>> used, so we can reuse dma_addr[1] for storing frag count,
+>>>> which means how many frags this page might be splited to.
+>>>>
+>>>> In order to simplify the page frag support in the page pool,
+>>>> the PAGE_POOL_DMA_USE_PP_FRAG_COUNT macro is added to indicate
+>>>> the 32 bit systems with 64 bit dma, and the page frag support
+>>>> in page pool is disabled for such system.
+>>>>
+>>>> The newly added page_pool_set_frag_count() is called to reserve
+>>>> the maximum frag count before any page frag is passed to the
+>>>> user. The page_pool_atomic_sub_frag_count_return() is called
+>>>> when user is done with the page frag.
+>>>>
+>>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>>> ---
+>>>>  include/linux/mm_types.h | 18 +++++++++++++-----
+>>>>  include/net/page_pool.h  | 41 ++++++++++++++++++++++++++++++++++-------
+>>>>  net/core/page_pool.c     |  4 ++++
+>>>>  3 files changed, 51 insertions(+), 12 deletions(-)
+>>>>
+>>>
+>>> <snip>
+>>>
+>>>> +static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+>>>> +                                                         long nr)
+>>>> +{
+>>>> +       long frag_count = atomic_long_read(&page->pp_frag_count);
+>>>> +       long ret;
+>>>> +
+>>>> +       if (frag_count == nr)
+>>>> +               return 0;
+>>>> +
+>>>> +       ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+>>>> +       WARN_ON(ret < 0);
+>>>> +       return ret;
+>>>>  }
+>>>>
+>>>
+>>> So this should just be an atomic_long_sub_return call. You should get
+>>> rid of the atomic_long_read portion of this as it can cover up
+>>> reference count errors.
+>>
+>> atomic_long_sub_return() is used to avoid one possible cache bouncing and
+>> barrrier caused by the last user.
 > 
+> I assume you mean "atomic_long_read()" here.
 
-and of course..
+Yes, sorry for the confusion.
 
-Fixes: a2488b5f483f ("libbpf: Allow specification of "kprobe/function+offset"")
-
-jirka
-
-> Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/lib/bpf/libbpf.c | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 4c153c379989..d46c2dd37be2 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10431,6 +10431,7 @@ static struct bpf_link *attach_kprobe(const struct bpf_sec_def *sec,
->  		return libbpf_err_ptr(err);
->  	}
->  	if (opts.retprobe && offset != 0) {
-> +		free(func);
->  		err = -EINVAL;
->  		pr_warn("kretprobes do not support offset specification\n");
->  		return libbpf_err_ptr(err);
-> -- 
-> 2.31.1
+>> You are right that that may cover up the reference count errors. How about
+>> something like below:
+>>
+>> static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+>>                                                           long nr)
+>> {
+>> #ifdef CONFIG_DEBUG_PAGE_REF
+>>         long ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+>>
+>>         WARN_ON(ret < 0);
+>>
+>>         return ret;
+>> #else
+>>         if (atomic_long_read(&page->pp_frag_count) == nr)
+>>                 return 0;
+>>
+>>         return atomic_long_sub_return(nr, &page->pp_frag_count);
+>> #end
+>> }
+>>
+>> Or any better suggestion?
 > 
+> So the one thing I might change would be to make it so that you only
+> do the atomic_long_read if nr is a constant via __builtin_constant_p.
+> That way you would be performing the comparison in
+> __page_pool_put_page and in the cases of freeing or draining the
+> page_frags you would be using the atomic_long_sub_return which should
+> be paths where you would not expect it to match or that are slowpath
+> anyway.
+> 
+> Also I would keep the WARN_ON in both paths just to be on the safe side.
 
+If I understand it correctly, we should change it as below, right?
+
+static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+							  long nr)
+{
+	long ret;
+
+	/* As suggested by Alexander, atomic_long_read() may cover up the
+	 * reference count errors, so avoid calling atomic_long_read() in
+	 * the cases of freeing or draining the page_frags, where we would
+	 * not expect it to match or that are slowpath anyway.
+	 */
+	if (__builtin_constant_p(nr) &&
+	    atomic_long_read(&page->pp_frag_count) == nr)
+		return 0;
+
+	ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+	WARN_ON(ret < 0);
+	return ret;
+}
+
+
+> .
+> 
