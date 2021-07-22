@@ -2,81 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17FC3D2733
-	for <lists+bpf@lfdr.de>; Thu, 22 Jul 2021 18:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6A73D278A
+	for <lists+bpf@lfdr.de>; Thu, 22 Jul 2021 18:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhGVPVl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Jul 2021 11:21:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23818 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229536AbhGVPVk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 22 Jul 2021 11:21:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626969734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hva5vELoleu80vnwOXHVIvlXrtyMK1gEcb1LP/Bg0sE=;
-        b=bAnTDh+Hjca4lSkK79TBCWCIinFPRduZdWTnv5Erqd2+EUfUVBbHxJEAHcGmJS0baYhSCS
-        NX7nfTUI9oFM3UNfFoQKNQ6TCn7lodM3fs0c6Kj/PglJsMDQYKZAfhOcDWt63Qkt0n1+Ov
-        boI5tJe3YJ1CTXJfpuh/xI9MI0Yja3k=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-kagHvGxTM2284Tn88QqWTw-1; Thu, 22 Jul 2021 12:02:13 -0400
-X-MC-Unique: kagHvGxTM2284Tn88QqWTw-1
-Received: by mail-ed1-f70.google.com with SMTP id v2-20020a50c4020000b02903a6620f87feso3007652edf.18
-        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 09:02:12 -0700 (PDT)
+        id S229659AbhGVPp7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Jul 2021 11:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhGVPp6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:45:58 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9243C061575
+        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 09:26:32 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id d2so6615638wrn.0
+        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 09:26:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=94cu1D5No3gfVI9OcvJFuMZX9xg9a5Nq+Cs5jv48lvY=;
+        b=iI2UZgMaxElnBiZeAhP/JJtJKgMuvixxxJrRh7gcke87CDF8ZWxJlEB8UGO3rdGpL1
+         sfNVuNVAPkD6KTgGMNemodvw8RM6fReVOAqoXwZEG7mSTNGeUnntbzWPZ4/9q07nql+/
+         HHQDFHtlIJc1oFPce0ObSuZcqaNSzOf8X3VY/VUTPP/CH0/1Er2curIECZ5bhtsgcsZV
+         qbmqCaia9CfYTw2EJMPTw5nRC8g2TCNvM6FKLpodwLHaMQJGl8PMat/t2T7dGVFvOemm
+         7kHbXakqKdLpoBFii9OvpK4m89D2QhHFixrHXhHSaGltGQDGq5yoEqcJQa4k3AOaJwgk
+         DlDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Hva5vELoleu80vnwOXHVIvlXrtyMK1gEcb1LP/Bg0sE=;
-        b=KJOgifmiXs41EoxXNmUlckV8qBxnroqrD/n9LwaJ3Rtqjo3ZplFRqLFGVcB0oLTBVh
-         UfkUv2YbKNah9c18CnO+S9g9Mif+haX4zQQrFNZnQH9jywJobjXIcl/P4QmonGy7cZyg
-         q15h77oCH8o7+6PUyk2iGs/a8zKmfd2PSQI4Ii6t0IAFUN4jAiO8GCog5i/gxxJTjolN
-         HSRu5dIdO/WZ0/GjBLpmnUxm73ifUR2xTyDngeh3Uk6HbJDZ1swbTRp9ZXhkJSRc3sRH
-         bj5IJKUkNwDBg/UaMCBG04ClIvHD4ys0FiFVMRDqufuLShd4S8G5wlvnaqTU5GjibIba
-         gFgA==
-X-Gm-Message-State: AOAM533UWRc9rxw8+DHRmgmPjyMOkWIfJpDoRC40U47xItrYoyK6EAmN
-        8NCt90kwBTMLwDV3RpAuzFzLSzpphd25aefrhJ/389216pH3wRvAQUq0k0zKFRnjhY0asm937/M
-        hALyRgb17QU8M
-X-Received: by 2002:a17:906:254b:: with SMTP id j11mr565404ejb.187.1626969731816;
-        Thu, 22 Jul 2021 09:02:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJycmiIAoSzdAdAmayQM6GAkHX69bNZ/yHswCVn44aXv8niWoNvdHHOcE4YQwu0ybKadbnu5gg==
-X-Received: by 2002:a17:906:254b:: with SMTP id j11mr565376ejb.187.1626969731460;
-        Thu, 22 Jul 2021 09:02:11 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id jp26sm9743574ejb.28.2021.07.22.09.02.10
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=94cu1D5No3gfVI9OcvJFuMZX9xg9a5Nq+Cs5jv48lvY=;
+        b=UnFjw3C9CFfdodpNNgSsxLGHryn/4joqcVFQrw1O2Fp/70cbjqTDs1Nm08tmak9cCB
+         W3clmYPWTg9daUxUbVOnpLomRJTbxyxZcZzv+LSWv0dFSZQJvHf4yXIAZEGcDjinCmr1
+         n3T833xs22mH/0Oo7QufgpuzRKP4sCNKkpX1b2gXx5T3dBzU5kZvsHsnxQY99U/cyFQ3
+         xmG4PA1ZE+l3rvvzFwP0HJjnOOseD1cDDSNDEKKCROSHho1k5h0ie9Xc/ejVSwBl5LJ8
+         2qWgAbFSrHi0WUjA9BNuzOSnCCiguNV8SBZEpgEwnWRutcVlUVhLxVH0Pex3KzWFmq9c
+         ZQVA==
+X-Gm-Message-State: AOAM530xHpAxA200HhJYk2OuJXkd4Y4mh9mFct4vLJpJ8Z2QE4Gkb6X0
+        +ewhWXSBS+vJilNHPDantB2EzKly/mdR
+X-Google-Smtp-Source: ABdhPJyPi0p/o5p576dh4ZJh3UJxRJza6+ierlIBZx1anxuEo0EcR+WfncFKHRpyvEET4tQGvfUcNw==
+X-Received: by 2002:a5d:457b:: with SMTP id a27mr805296wrc.280.1626971191035;
+        Thu, 22 Jul 2021 09:26:31 -0700 (PDT)
+Received: from localhost.localdomain (bzq-233-168-31-62.red.bezeqint.net. [31.168.233.62])
+        by smtp.gmail.com with ESMTPSA id o14sm2793454wmq.31.2021.07.22.09.26.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 09:02:10 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id DADC718031E; Thu, 22 Jul 2021 18:02:09 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 0/4] libbpf: Move CO-RE logic into separate file.
-In-Reply-To: <20210721000822.40958-1-alexei.starovoitov@gmail.com>
-References: <20210721000822.40958-1-alexei.starovoitov@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 22 Jul 2021 18:02:09 +0200
-Message-ID: <871r7q8hha.fsf@toke.dk>
+        Thu, 22 Jul 2021 09:26:30 -0700 (PDT)
+From:   Tal Lossos <tallossos@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, Tal Lossos <tallossos@gmail.com>
+Subject: [PATCH bpf-next] libbpf: Remove deprecated bpf_object__find_map_by_offset
+Date:   Thu, 22 Jul 2021 19:25:26 +0300
+Message-Id: <20210722162526.32444-1-tallossos@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Removing bpf_object__find_map_by_offset as part of the effort to move
+towards a v1.0 for libbpf: https://github.com/libbpf/libbpf/issues/302.
 
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Split CO-RE processing logic from libbpf into separate file
-> with an interface that doesn't dependend on libbpf internal details.
-> As the next step relo_core.c will be compiled with libbpf and with the kernel.
+Signed-off-by: Tal Lossos <tallossos@gmail.com>
+---
+ tools/lib/bpf/libbpf.c   | 6 ------
+ tools/lib/bpf/libbpf.h   | 7 -------
+ tools/lib/bpf/libbpf.map | 1 -
+ 3 files changed, 14 deletions(-)
 
-Interesting! What's the use case for having it in the kernel as well? :)
-
--Toke
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 4c153c379989..6b021b893579 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9956,12 +9956,6 @@ bpf_object__find_map_fd_by_name(const struct bpf_object *obj, const char *name)
+ 	return bpf_map__fd(bpf_object__find_map_by_name(obj, name));
+ }
+ 
+-struct bpf_map *
+-bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset)
+-{
+-	return libbpf_err_ptr(-ENOTSUP);
+-}
+-
+ long libbpf_get_error(const void *ptr)
+ {
+ 	if (!IS_ERR_OR_NULL(ptr))
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6b08c1023609..1de34b315277 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -422,13 +422,6 @@ bpf_object__find_map_by_name(const struct bpf_object *obj, const char *name);
+ LIBBPF_API int
+ bpf_object__find_map_fd_by_name(const struct bpf_object *obj, const char *name);
+ 
+-/*
+- * Get bpf_map through the offset of corresponding struct bpf_map_def
+- * in the BPF object file.
+- */
+-LIBBPF_API struct bpf_map *
+-bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset);
+-
+ LIBBPF_API struct bpf_map *
+ bpf_map__next(const struct bpf_map *map, const struct bpf_object *obj);
+ #define bpf_object__for_each_map(pos, obj)		\
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 5bfc10722647..220d22b73b9c 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -38,7 +38,6 @@ LIBBPF_0.0.1 {
+ 		bpf_object__btf_fd;
+ 		bpf_object__close;
+ 		bpf_object__find_map_by_name;
+-		bpf_object__find_map_by_offset;
+ 		bpf_object__find_program_by_title;
+ 		bpf_object__kversion;
+ 		bpf_object__load;
+-- 
+2.27.0
 
