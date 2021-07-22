@@ -2,84 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7230D3D264C
-	for <lists+bpf@lfdr.de>; Thu, 22 Jul 2021 16:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFD63D2677
+	for <lists+bpf@lfdr.de>; Thu, 22 Jul 2021 17:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbhGVOOP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Jul 2021 10:14:15 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:60692 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhGVONw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:13:52 -0400
+        id S232520AbhGVObC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Jul 2021 10:31:02 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:8941 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232328AbhGVObC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Jul 2021 10:31:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1626965667; x=1658501667;
+  s=amazon201209; t=1626966698; x=1658502698;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DiE62y6EAG8RCk8KyorSc4tTd/WOy3cYzu/SgE8mgA0=;
-  b=qHaRnzQW9A5gQFzuxZaPDfaS8NV40t0NHwW0r7IC1NqBYQ+o3fIwgr5E
-   quk3APmnYh2Jl1GLDPbQ5bGYTQxPtD72c8SVdjje7dPm2UpR+cIcbQSvJ
-   DRUIgK4bMbHDnys+6ZMNp0gg57ibIyNvpryEVhPkumj8UCDBcVSL8iw6R
-   Q=;
+  bh=SO+pVmb17xrM3XvsP22uN+y1O5FVOJnzeiQSmT8FMAY=;
+  b=VbeqBWJKwPuhStY6B9z3oZPY2gXuuI60M75FtPJ/zn2rZ7a4XNebBI/N
+   WdUHPCqSQA21C6uYDkFgTfpA5niaoyZAWFM6fmkdiasuB7/97Sf0xIDm9
+   /vG4EeuDH49d/135P0XX2MtOCOotvn1WJzETzjfuMOpkTCsTe1IsIssRU
+   s=;
 X-IronPort-AV: E=Sophos;i="5.84,261,1620691200"; 
-   d="scan'208";a="128619845"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-76e0922c.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 22 Jul 2021 14:54:25 +0000
+   d="scan'208";a="147393204"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 22 Jul 2021 15:08:35 +0000
 Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-76e0922c.us-west-2.amazon.com (Postfix) with ESMTPS id D9153E2A38;
-        Thu, 22 Jul 2021 14:54:22 +0000 (UTC)
+        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id A2512A1E15;
+        Thu, 22 Jul 2021 15:08:31 +0000 (UTC)
 Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
  EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 22 Jul 2021 14:54:21 +0000
+ id 15.0.1497.23; Thu, 22 Jul 2021 15:08:31 +0000
 Received: from 88665a182662.ant.amazon.com (10.43.160.66) by
  EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 22 Jul 2021 14:54:17 +0000
+ id 15.0.1497.23; Thu, 22 Jul 2021 15:08:14 +0000
 From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
 To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <edumazet@google.com>, <kernel-team@fb.com>,
-        <ncardwell@google.com>, <netdev@vger.kernel.org>,
-        <ycheng@google.com>, <yhs@fb.com>, <kuniyu@amazon.co.jp>
-Subject: Re: [PATCH v2 bpf-next 0/8] bpf: Allow bpf tcp iter to do bpf_(get|set)sockopt
-Date:   Thu, 22 Jul 2021 23:53:41 +0900
-Message-ID: <20210722145341.72566-1-kuniyu@amazon.co.jp>
+CC:     <kuniyu@amazon.co.jp>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <edumazet@google.com>,
+        <kernel-team@fb.com>, <ncardwell@google.com>,
+        <netdev@vger.kernel.org>, <ycheng@google.com>, <yhs@fb.com>
+Subject: Re: [PATCH v2 bpf-next 1/8] tcp: seq_file: Avoid skipping sk during tcp_seek_last_pos
+Date:   Fri, 23 Jul 2021 00:08:10 +0900
+Message-ID: <20210722150810.74315-1-kuniyu@amazon.co.jp>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210701200535.1033513-1-kafai@fb.com>
-References: <20210701200535.1033513-1-kafai@fb.com>
+In-Reply-To: <20210722141637.68161-1-kuniyu@amazon.co.jp>
+References: <20210722141637.68161-1-kuniyu@amazon.co.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [10.43.160.66]
-X-ClientProxiedBy: EX13D23UWA003.ant.amazon.com (10.43.160.194) To
+X-ClientProxiedBy: EX13D23UWC002.ant.amazon.com (10.43.162.22) To
  EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Thu, 1 Jul 2021 13:05:35 -0700
-> This set is to allow bpf tcp iter to call bpf_(get|set)sockopt.
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Date:   Thu, 22 Jul 2021 23:16:37 +0900
+> From:   Martin KaFai Lau <kafai@fb.com>
+> Date:   Thu, 1 Jul 2021 13:05:41 -0700
+> > st->bucket stores the current bucket number.
+> > st->offset stores the offset within this bucket that is the sk to be
+> > seq_show().  Thus, st->offset only makes sense within the same
+> > st->bucket.
+> > 
+> > These two variables are an optimization for the common no-lseek case.
+> > When resuming the seq_file iteration (i.e. seq_start()),
+> > tcp_seek_last_pos() tries to continue from the st->offset
+> > at bucket st->bucket.
+> > 
+> > However, it is possible that the bucket pointed by st->bucket
+> > has changed and st->offset may end up skipping the whole st->bucket
+> > without finding a sk.  In this case, tcp_seek_last_pos() currently
+> > continues to satisfy the offset condition in the next (and incorrect)
+> > bucket.  Instead, regardless of the offset value, the first sk of the
+> > next bucket should be returned.  Thus, "bucket == st->bucket" check is
+> > added to tcp_seek_last_pos().
+> > 
+> > The chance of hitting this is small and the issue is a decade old,
+> > so targeting for the next tree.
 > 
-> With bpf-tcp-cc, new algo rollout happens more often.  Instead of
-> restarting the applications to pick up the new tcp-cc, this set
-> allows the bpf tcp iter to call bpf_(get|set)sockopt(TCP_CONGESTION).
-> It is not limited to TCP_CONGESTION, the bpf tcp iter can call
-> bpf_(get|set)sockopt() with other options.  The bpf tcp iter can read
-> into all the fields of a tcp_sock, so there is a lot of flexibility
-> to select the desired sk to do setsockopt(), e.g. it can test for
-> TCP_LISTEN only and leave the established connections untouched,
-> or check the addr/port, or check the current tcp-cc name, ...etc.
+> Multiple read()s or lseek()+read() can call tcp_seek_last_pos().
 > 
-> Patch 1-4 are some cleanup and prep work in the tcp and bpf seq_file.
+> IIUC, the problem happens when the sockets placed before the last shown
+> socket in the list are closed between some read()s or lseek() and read().
 > 
-> Patch 5 is to have the tcp seq_file iterate on the
-> port+addr lhash2 instead of the port only listening_hash.
+> I think there is still a case where bucket is valid but offset is invalid:
 > 
-> Patch 6 is to have the bpf tcp iter doing batching which
-> then allows lock_sock.  lock_sock is needed for setsockopt.
+>   listening_hash[1] -> sk1 -> sk2 -> sk3 -> nulls
+>   listening_hash[2] -> sk4 -> sk5 -> nulls
 > 
-> Patch 7 allows the bpf tcp iter to call bpf_(get|set)sockopt.
+>   read(/proc/net/tcp)
+>     end up with sk2
+> 
+>   close(sk1)
+> 
+>   listening_hash[1] -> sk2 -> sk3 -> nulls
+>   listening_hash[2] -> sk4 -> sk5 -> nulls
+> 
+>   read(/proc/net/tcp) (resume)
+>     offset = 2
+> 
+>     listening_get_next() returns sk2
+> 
+>     while (offset--)
+>       1st loop listening_get_next() returns sk3 (bucket == st->bucket)
+>       2nd loop listening_get_next() returns sk4 (bucket != st->bucket)
+> 
+>     show() starts from sk4
+> 
+>     only is sk3 skipped, but should be shown.
 
-I have a comment on the first patch, but the series looks good to me.
+Sorry, this example is wrong.
+We can handle this properly by testing bucket != st->bucket.
 
-Acked-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+In the case below, we cannot check if the offset is valid or not by testing
+the bucket.
+
+  listening_hash[1] -> sk1 -> sk2 -> sk3 -> sk4 -> nulls
+
+  read(/proc/net/tcp)
+    end up with sk2
+
+  close(sk1)
+
+  listening_hash[1] -> sk2 -> sk3 -> sk4 -> nulls
+
+  read(/proc/net/tcp) (resume)
+    offset = 2
+
+    listening_get_first() returns sk2
+
+    while (offset--)
+      1st loop listening_get_next() returns sk3 (bucket == st->bucket)
+      2nd loop listening_get_next() returns sk4 (bucket == st->bucket)
+
+    show() starts from sk4
+
+    only is sk3 skipped, but should be shown.
+
+
+> 
+> In listening_get_next(), we can check if we passed through sk2, but this
+> does not work well if sk2 itself is closed... then there are no way to
+> check the offset is valid or not.
+> 
+> Handling this may be too much though, what do you think ?
+> 
