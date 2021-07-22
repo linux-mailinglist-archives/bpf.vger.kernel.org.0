@@ -2,169 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEE43D2F7B
-	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 00:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5413D3091
+	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 01:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhGVV0E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Jul 2021 17:26:04 -0400
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:45411 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbhGVV0E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Jul 2021 17:26:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1626991599; x=1658527599;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=/9PIWzOI8QOovn6TxUzvAwaFD5zwIopfMKXHGp/8x04=;
-  b=aSz2zQRIchqVOZ540QPK52tDfwsc4YWTHczasYJHmvao0i1ZwEg/xuMx
-   WHM6CWfn5UpLBKUtSj3SRboQGT0uO67IT3bdaT1rFmaUzuvxKFeS5HEdU
-   qvGt5BEfhiJZjgHVvIp57i+8sc3uHrb6GQsCR/FhG8zcoLXOzEJaOZ7dI
-   E=;
-X-IronPort-AV: E=Sophos;i="5.84,262,1620691200"; 
-   d="scan'208";a="945656428"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 22 Jul 2021 22:06:37 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 64B8B2836C6;
-        Thu, 22 Jul 2021 22:06:34 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 22 Jul 2021 22:06:33 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.160.90) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 22 Jul 2021 22:06:29 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <edumazet@google.com>, <kernel-team@fb.com>, <kuniyu@amazon.co.jp>,
-        <ncardwell@google.com>, <netdev@vger.kernel.org>,
-        <ycheng@google.com>, <yhs@fb.com>
-Subject: Re: [PATCH v2 bpf-next 1/8] tcp: seq_file: Avoid skipping sk during tcp_seek_last_pos
-Date:   Fri, 23 Jul 2021 07:06:26 +0900
-Message-ID: <20210722220626.15150-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210722214256.ncuz6k5bjt4vgru6@kafai-mbp.dhcp.thefacebook.com>
-References: <20210722214256.ncuz6k5bjt4vgru6@kafai-mbp.dhcp.thefacebook.com>
+        id S232632AbhGVXJ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Jul 2021 19:09:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232550AbhGVXJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Jul 2021 19:09:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E860F60EB6;
+        Thu, 22 Jul 2021 23:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626997804;
+        bh=I8UIiCevCR4u91FO0lQ/dfU0HqumVRTmrXG6r8JmeKc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=sHRz57t1Ouo4i1IcHzBGKonw3/DzO+/ZIkz00GtI8+wZoMp8O5bLG/n8kEDkJEJvc
+         uigaaV/lIcDHHGGpsdf3l5jXr6TQziPUepmmQNfM7UZap4J5eDvbKHdknRAD10PXv9
+         nzrBxH199k4F3FCNUxONhjqEitwq9q9+y6afZ4INySSJQJJqUaV83a3YQbfC3QBDJt
+         Txyeh0wUccO9evlIfjp5z51i18gUcoHm4fNz6j/3DTsWRf6mg4UU088WJcH4gPIrMU
+         Ms4QCJ/IuDC6YpGfJm++1DRFKFIXuK+42Cn9zmvbALQQSak7eGKK5bJkAioEzIEenC
+         HLRXhZxIQQ/PQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DC57B60726;
+        Thu, 22 Jul 2021 23:50:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.90]
-X-ClientProxiedBy: EX13D39UWB004.ant.amazon.com (10.43.161.148) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+Subject: Re: [PATCH] bpf: remove redundant intiialization of variable stype
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162699780389.9644.9613532501307738267.git-patchwork-notify@kernel.org>
+Date:   Thu, 22 Jul 2021 23:50:03 +0000
+References: <20210721115630.109279-1-colin.king@canonical.com>
+In-Reply-To: <20210721115630.109279-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Thu, 22 Jul 2021 14:42:56 -0700
-> On Fri, Jul 23, 2021 at 12:08:10AM +0900, Kuniyuki Iwashima wrote:
-> > From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > Date:   Thu, 22 Jul 2021 23:16:37 +0900
-> > > From:   Martin KaFai Lau <kafai@fb.com>
-> > > Date:   Thu, 1 Jul 2021 13:05:41 -0700
-> > > > st->bucket stores the current bucket number.
-> > > > st->offset stores the offset within this bucket that is the sk to be
-> > > > seq_show().  Thus, st->offset only makes sense within the same
-> > > > st->bucket.
-> > > > 
-> > > > These two variables are an optimization for the common no-lseek case.
-> > > > When resuming the seq_file iteration (i.e. seq_start()),
-> > > > tcp_seek_last_pos() tries to continue from the st->offset
-> > > > at bucket st->bucket.
-> > > > 
-> > > > However, it is possible that the bucket pointed by st->bucket
-> > > > has changed and st->offset may end up skipping the whole st->bucket
-> > > > without finding a sk.  In this case, tcp_seek_last_pos() currently
-> > > > continues to satisfy the offset condition in the next (and incorrect)
-> > > > bucket.  Instead, regardless of the offset value, the first sk of the
-> > > > next bucket should be returned.  Thus, "bucket == st->bucket" check is
-> > > > added to tcp_seek_last_pos().
-> > > > 
-> > > > The chance of hitting this is small and the issue is a decade old,
-> > > > so targeting for the next tree.
-> > > 
-> > > Multiple read()s or lseek()+read() can call tcp_seek_last_pos().
-> > > 
-> > > IIUC, the problem happens when the sockets placed before the last shown
-> > > socket in the list are closed between some read()s or lseek() and read().
-> > > 
-> > > I think there is still a case where bucket is valid but offset is invalid:
-> > > 
-> > >   listening_hash[1] -> sk1 -> sk2 -> sk3 -> nulls
-> > >   listening_hash[2] -> sk4 -> sk5 -> nulls
-> > > 
-> > >   read(/proc/net/tcp)
-> > >     end up with sk2
-> > > 
-> > >   close(sk1)
-> > > 
-> > >   listening_hash[1] -> sk2 -> sk3 -> nulls
-> > >   listening_hash[2] -> sk4 -> sk5 -> nulls
-> > > 
-> > >   read(/proc/net/tcp) (resume)
-> > >     offset = 2
-> > > 
-> > >     listening_get_next() returns sk2
-> > > 
-> > >     while (offset--)
-> > >       1st loop listening_get_next() returns sk3 (bucket == st->bucket)
-> > >       2nd loop listening_get_next() returns sk4 (bucket != st->bucket)
-> > > 
-> > >     show() starts from sk4
-> > > 
-> > >     only is sk3 skipped, but should be shown.
-> > 
-> > Sorry, this example is wrong.
-> > We can handle this properly by testing bucket != st->bucket.
-> > 
-> > In the case below, we cannot check if the offset is valid or not by testing
-> > the bucket.
-> > 
-> >   listening_hash[1] -> sk1 -> sk2 -> sk3 -> sk4 -> nulls
-> > 
-> >   read(/proc/net/tcp)
-> >     end up with sk2
-> > 
-> >   close(sk1)
-> > 
-> >   listening_hash[1] -> sk2 -> sk3 -> sk4 -> nulls
-> > 
-> >   read(/proc/net/tcp) (resume)
-> >     offset = 2
-> > 
-> >     listening_get_first() returns sk2
-> > 
-> >     while (offset--)
-> >       1st loop listening_get_next() returns sk3 (bucket == st->bucket)
-> >       2nd loop listening_get_next() returns sk4 (bucket == st->bucket)
-> > 
-> >     show() starts from sk4
-> > 
-> >     only is sk3 skipped, but should be shown.
-> > 
-> > 
-> > > 
-> > > In listening_get_next(), we can check if we passed through sk2, but this
-> > > does not work well if sk2 itself is closed... then there are no way to
-> > > check the offset is valid or not.
-> > > 
-> > > Handling this may be too much though, what do you think ?
-> There will be cases that misses sk after releasing
-> the bucket lock (and then things changed).  For example,
-> another case could be sk_new is added to the head of the bucket,
-> although it could arguably be treated as a legit miss since
-> "cat /proc/net/tcp" has already been in-progress.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Wed, 21 Jul 2021 12:56:30 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> The chance of hitting m->buf limit and that bucket gets changed should be slim.
-> If there is use case such that lhash2 (already hashed by port+addr) is still
-> having a large bucket (e.g. many SO_REUSEPORT), it will be a better problem
-> to solve first.  imo, remembering sk2 to solve the "cat /proc/net/tcp" alone
-> does not worth it.
-
-That makes sense.
-Thank you for explaining!
-
-
+> The variable stype is being initialized with a value that is never
+> read, it is being updated later on. The assignment is redundant and
+> can be removed.
 > 
-> Thanks for the review!
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - bpf: remove redundant intiialization of variable stype
+    https://git.kernel.org/bpf/bpf-next/c/724f17b7d45d
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
