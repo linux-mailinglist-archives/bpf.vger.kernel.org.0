@@ -2,69 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF9A3D2488
-	for <lists+bpf@lfdr.de>; Thu, 22 Jul 2021 15:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC5F3D24E5
+	for <lists+bpf@lfdr.de>; Thu, 22 Jul 2021 15:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhGVMpK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Jul 2021 08:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231938AbhGVMpK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Jul 2021 08:45:10 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED29C061575;
-        Thu, 22 Jul 2021 06:25:44 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id c12so5946670wrt.3;
-        Thu, 22 Jul 2021 06:25:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mUWOLWbYCSm/rovP4uz4q3GcAfsEzycZgM+L6hPpGFg=;
-        b=EIxJy7jjP0STE+V3GvZWU20nV7ZQP2swdueNX9dYT6kHAw5kyu3Q8wNQiLG5URECrD
-         4gTN+2+YvYwlhpDKAg9z1gIwZ1LIDozV4Xb4pffpVXsQuOnfy/ZHE6wNDOkQbsT1WGxZ
-         z/GlALooEBWQ2TUC39jKNMw4cUxEDfb3Fk+g2cDQkoj1yOFy6A+nhiZ9xHUn/JgvDuDI
-         hhY96yTsVeRaMpBbiGyALUoEINIKcxKEo8ngh4C/Ll5zjkyfN/y+2sOCJmbO/7fhABcu
-         BRFqKsbOqxSQbb6YcoDyjKIRSeItTStUb/WM7NmCFFCrsT/8I/9uFVuLPNLWf7stS9ga
-         tZsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mUWOLWbYCSm/rovP4uz4q3GcAfsEzycZgM+L6hPpGFg=;
-        b=VapU02edkncV4/rSC8CrxsZPrXWJuqOTlVF4sg3t+/+ONoDQQCYVUZyGe0xMrTpJg8
-         BLfkKk5Tg4nCtIKuyEG/wWGD3EmgkxFH/yoBlFCBNlkIIgXl8Cgh8Yqy272Y1NxKQaMP
-         tVG2KWbc5Y5tGua/d3WnIalJ3LFHqh5X7d9kl5MGbpz21mSn+a2gv3mJVMnJdhO4klqW
-         GIjCmRnzTsxH/ZixvZpggGdl9wQccMmBAR5Zm+YGFDasv0LOXJIBVSFzLwHI7sd4VI//
-         sG1cBm3zFRqx7mas7bXF7PRu24c25QuJYsy8kKZEGSDgGb/Mr0nZaqb/cKu5OBKs2Vze
-         Nk8g==
-X-Gm-Message-State: AOAM531NHAHkQORyI6aCeBFMB3ukOeI32DL8kA+J0/iEmH7L6fTKzQu3
-        TQfUAt3xXJNo7VtpuYhtlmo=
-X-Google-Smtp-Source: ABdhPJxG1T9BimqH1Y6ye74RcGmbgFWMNsXM8Qw7GFgDiDc8BcL/Npnl1z5cb7PFtG0VbUSHhMPLbg==
-X-Received: by 2002:a5d:6189:: with SMTP id j9mr49525750wru.196.1626960342240;
-        Thu, 22 Jul 2021 06:25:42 -0700 (PDT)
-Received: from [10.0.0.18] ([37.168.21.168])
-        by smtp.gmail.com with ESMTPSA id d29sm36583975wrb.63.2021.07.22.06.25.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 06:25:41 -0700 (PDT)
-Subject: Re: [PATCH v2 bpf-next 0/8] bpf: Allow bpf tcp iter to do
- bpf_(get|set)sockopt
-To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S232064AbhGVNNT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Jul 2021 09:13:19 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:40139 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231925AbhGVNNT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 22 Jul 2021 09:13:19 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 85A465C00C8;
+        Thu, 22 Jul 2021 09:53:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 22 Jul 2021 09:53:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=vGXdf02shvAw6KrjYJEpiTQeeEXeTzWC1DC0yls+Z
+        Mk=; b=BCAujHUf20HnQ4Tt8XYakF8rIfJawQTvoCu+OmJEfpwG54mObPO6q4sEb
+        B7YvuYxnXSEoSgQ7Htd4EgodMG58V25nxB3aNpk3QAOMa1ILu5eb6B4DJk7uyaZR
+        NG+CHKRe7ht+m95gqzaRa6uBFmyI8nXpQZeCHP6DoubSdl/88XLUxpF4O2iINGAU
+        FjP9Y5y8/iBfebceP/5hlrN7ijrbY5mxjusG2+WaWipBCaQDbDOrZwqEyg07KmKi
+        R4zPmySTUzv/heBfoYvqH16MqTVhuRi1JyCuXxfTMNm8jFOtNjd4xV0dEE8aa/5I
+        nfTzVbO6bAaKg7VBICLjnO0A/QtwA==
+X-ME-Sender: <xms:b3j5YLjpfAWjVHiudxwQVJFb2B9O_-zsKRqOZOW7LwQhJayo0ibB9w>
+    <xme:b3j5YIDvwN1yhvbufb4ZxhjMw3-cQ1ZJxp5kgqceJEb5cLk0zexLofCkVArBdi0Pg
+    xpwr_82MU0GZ46fAdk>
+X-ME-Received: <xmr:b3j5YLFRs4NH1_uQc0rneyv-NAesWDY5GK2_-EpXT8dQz5deE8Fg2MH9wgFQRHAOnpgvHnc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeeigdeikecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpeforghrthih
+    nhgrshcurfhumhhpuhhtihhsuceomheslhgrmhgsuggrrdhltheqnecuggftrfgrthhtvg
+    hrnhepteetkeduteehkeelhfelueefhedtjeelteefheelvdegueegiefhleeuffffgfel
+    necuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmsehlrghmsggurgdrlhht
+X-ME-Proxy: <xmx:b3j5YIQ6zkAAfprj0yCGk3g_bbMKDPSYvN6GZa0vwXlJ8rS23yu6BQ>
+    <xmx:b3j5YIxGVYaYEjDuT5FEVEUKOAqEU7rDUcD3OCUTuOx0V19X1d0Kag>
+    <xmx:b3j5YO5tp8G78PNuwtSb_j6-pTQXHKlZ7TktK0nTIUwb4SKPm4GNVA>
+    <xmx:cXj5YE9j6o6LJRekg-RRfk5a7w6bvA2A7PYQSiLFo5-OQr7m4Cl3-w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 22 Jul 2021 09:53:50 -0400 (EDT)
+Subject: Re: [PATCH bpf] libbpf: fix race when pinning maps in parallel
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>, kernel-team@fb.com,
-        Neal Cardwell <ncardwell@google.com>, netdev@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>, Yuchung Cheng <ycheng@google.com>
-References: <20210701200535.1033513-1-kafai@fb.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <d5ffdaf5-08e5-2b28-d891-73d507bae5fa@gmail.com>
-Date:   Thu, 22 Jul 2021 15:25:39 +0200
+        Andrii Nakryiko <andrii@kernel.org>,
+        Joe Stringer <joe@wand.net.nz>
+References: <20210705190926.222119-1-m@lambda.lt>
+ <CAEf4BzaHCgNSfoEVXkBweycHtVj2MKBBH45aZy+FM-BTjSJ3kA@mail.gmail.com>
+ <4f2a546f-8d78-df2e-69eb-75055ff4137d@lambda.lt>
+ <CAEf4BzYaQsD6NaEUij6ttDeKYP7oEB0=c0D9_xdAKw6FYb7h1g@mail.gmail.com>
+From:   Martynas Pumputis <m@lambda.lt>
+Message-ID: <ec9e63d5-70d3-819e-5107-f2ecaa8f8b54@lambda.lt>
+Date:   Thu, 22 Jul 2021 15:56:07 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210701200535.1033513-1-kafai@fb.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAEf4BzYaQsD6NaEUij6ttDeKYP7oEB0=c0D9_xdAKw6FYb7h1g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -73,53 +71,129 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 7/1/21 10:05 PM, Martin KaFai Lau wrote:
-> This set is to allow bpf tcp iter to call bpf_(get|set)sockopt.
+On 7/8/21 10:33 PM, Andrii Nakryiko wrote:
+> On Thu, Jul 8, 2021 at 8:50 AM Martynas Pumputis <m@lambda.lt> wrote:
+>>
+>>
+>>
+>> On 7/8/21 12:38 AM, Andrii Nakryiko wrote:
+>>> On Mon, Jul 5, 2021 at 12:08 PM Martynas Pumputis <m@lambda.lt> wrote:
+>>>>
+>>>> When loading in parallel multiple programs which use the same to-be
+>>>> pinned map, it is possible that two instances of the loader will call
+>>>> bpf_object__create_maps() at the same time. If the map doesn't exist
+>>>> when both instances call bpf_object__reuse_map(), then one of the
+>>>> instances will fail with EEXIST when calling bpf_map__pin().
+>>>>
+>>>> Fix the race by retrying creating a map if bpf_map__pin() returns
+>>>> EEXIST. The fix is similar to the one in iproute2: e4c4685fd6e4 ("bpf:
+>>>> Fix race condition with map pinning").
+>>>>
+>>>> Cc: Joe Stringer <joe@wand.net.nz>
+>>>> Signed-off-by: Martynas Pumputis <m@lambda.lt>
+>>>> ---
+>>>>    tools/lib/bpf/libbpf.c | 8 +++++++-
+>>>>    1 file changed, 7 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>>>> index 1e04ce724240..7a31c7c3cd21 100644
+>>>> --- a/tools/lib/bpf/libbpf.c
+>>>> +++ b/tools/lib/bpf/libbpf.c
+>>>> @@ -4616,10 +4616,12 @@ bpf_object__create_maps(struct bpf_object *obj)
+>>>>           char *cp, errmsg[STRERR_BUFSIZE];
+>>>>           unsigned int i, j;
+>>>>           int err;
+>>>> +       bool retried = false;
+>>>
+>>> retried has to be reset for each map, so just move it inside the for
+>>> loop? you can also generalize it to retry_cnt (> 1 attempts) to allow
+>>> for more extreme cases of multiple loaders fighting very heavily
+>>
+>> If we move "retried = false" to inside the loop, then there is no need
+>> for retry_cnt. Single retry for each map should be enough to resolve the
+>> race. In any case, I'm going to move "retried = false", as you suggested.
 > 
-> With bpf-tcp-cc, new algo rollout happens more often.  Instead of
-> restarting the applications to pick up the new tcp-cc, this set
-> allows the bpf tcp iter to call bpf_(get|set)sockopt(TCP_CONGESTION).
-> It is not limited to TCP_CONGESTION, the bpf tcp iter can call
-> bpf_(get|set)sockopt() with other options.  The bpf tcp iter can read
-> into all the fields of a tcp_sock, so there is a lot of flexibility
-> to select the desired sk to do setsockopt(), e.g. it can test for
-> TCP_LISTEN only and leave the established connections untouched,
-> or check the addr/port, or check the current tcp-cc name, ...etc.
+> Right, I was originally thinking about the case where already pinned
+> map might get unpinned. But then subsequently rejected the idea of
+> re-creating the map :) So single retry should do.
 > 
-> Patch 1-4 are some cleanup and prep work in the tcp and bpf seq_file.
+>>
+>>>
+>>>>
+>>>>           for (i = 0; i < obj->nr_maps; i++) {
+>>>>                   map = &obj->maps[i];
+>>>>
+>>>> +retry:
+>>>>                   if (map->pin_path) {
+>>>>                           err = bpf_object__reuse_map(map);
+>>>>                           if (err) {
+>>>> @@ -4660,9 +4662,13 @@ bpf_object__create_maps(struct bpf_object *obj)
+>>>>                   if (map->pin_path && !map->pinned) {
+>>>>                           err = bpf_map__pin(map, NULL);
+>>>>                           if (err) {
+>>>> +                               zclose(map->fd);
+>>>> +                               if (!retried && err == EEXIST) {
+>>>
+>>> so I'm also wondering... should we commit at this point to trying to
+>>> pin and not attempt to re-create the map? I'm worried that
+>>> bpf_object__create_map() is not designed and tested to be called
+>>> multiple times for the same bpf_map, but it's technically possible for
+>>> it to be called multiple times in this scenario. Check the inner map
+>>
+>> Good call. I'm going to add "if (retried && map->fd < 0) { return
+>> -ENOENT; }" after the "if (map->pinned) { err = bpf_object__reuse_map()
+>> ... }" statement. This should prevent from invoking
+>> bpf_object__create_map() multiple times.
+>>
+>>> creation scenario, for example (btw, I think there is a bug in
+>>> bpf_object__create_map clean up for inner map, care to take a look at
+>>> that as well?).
+>>
+>> In the case of the inner map, it should be destroyed inside
+>> bpf_object__create_map() after a successful BPF_MAP_CREATE. So AFAIU,
+>> there should be no need for the cleanup. Or do I miss something?
 > 
-> Patch 5 is to have the tcp seq_file iterate on the
-> port+addr lhash2 instead of the port only listening_hash.
-> 
-> Patch 6 is to have the bpf tcp iter doing batching which
-> then allows lock_sock.  lock_sock is needed for setsockopt.
-> 
-> Patch 7 allows the bpf tcp iter to call bpf_(get|set)sockopt.
-> 
-> v2:
-> - Use __GFP_NOWARN in patch 6
-> - Add bpf_getsockopt() in patch 7 to give a symmetrical user experience.
->   selftest in patch 8 is changed to also cover bpf_getsockopt().
-> - Remove CAP_NET_ADMIN check in patch 7. Tracing bpf prog has already
->   required CAP_SYS_ADMIN or CAP_PERFMON.
-> - Move some def macros to bpf_tracing_net.h in patch 8
-> 
-> Martin KaFai Lau (8):
->   tcp: seq_file: Avoid skipping sk during tcp_seek_last_pos
->   tcp: seq_file: Refactor net and family matching
->   bpf: tcp: seq_file: Remove bpf_seq_afinfo from tcp_iter_state
->   tcp: seq_file: Add listening_get_first()
->   tcp: seq_file: Replace listening_hash with lhash2
->   bpf: tcp: bpf iter batching and lock_sock
->   bpf: tcp: Support bpf_(get|set)sockopt in bpf tcp iter
->   bpf: selftest: Test batching and bpf_(get|set)sockopt in bpf tcp iter
+> But if outer map creation fails, we won't do
+> bpf_map__destroy(map->inner_map);, which is one bug. And then with
+> your retry logic we also don't clean up the internal state of the
+> bpf_map, which is another one. It would be good to add a self-test
+> simulating such situations (e.g., by specifying wrong key_size for
+> outer_map, but correct inner_map definition). Not sure how to reliably
+> simulate this pinning race, though.
 
-For the whole series :
+Regarding the second case (i.e., not cleaning up the internal state), I 
+think no additional cleanup is needed with this patch [1] (main diff 
+from prev vsn is that we call bpf_object__map_create() only once).
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+The relevant calls are the following:
 
-Sorry for the delay.
+- bpf_object__create_map(): map->inner_map is destroyed anyway after a 
+successful call, map->fd is closed if pinning fails.
+- bpf_object__populate_internal_map(): created map elements will be 
+destroyed upon close(map->fd).
+- init_map_slots(): slots are freed after their initialization.
 
-BTW, it seems weird for new BPF features to use /proc/net "legacy"
-infrastructure and update it.
+[1]: https://gist.github.com/brb/fff66e47586373fdc1fe39b88175036c
 
+> 
+> Can you please add at least the first test case?
+> 
+>>
+>>>
+>>> So unless we want to allow map re-creation if (in a highly unlikely
+>>> scenario) someone already unpinned the other instance, I'd say we
+>>> should just bpf_map__pin() here directly, maybe in a short loop to
+>>> allow for a few attempts.
+>>>
+>>>> +                                       retried = true;
+>>>> +                                       goto retry;
+>>>> +                               }
+>>>>                                   pr_warn("map '%s': failed to auto-pin at '%s': %d\n",
+>>>>                                           map->name, map->pin_path, err);
+>>>> -                               zclose(map->fd);
+>>>>                                   goto err_out;
+>>>>                           }
+>>>>                   }
+>>>> --
+>>>> 2.32.0
+>>>>
