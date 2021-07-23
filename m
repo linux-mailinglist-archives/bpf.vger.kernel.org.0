@@ -2,189 +2,298 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06833D30AD
-	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 02:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47173D30E5
+	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 02:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbhGVXeM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Jul 2021 19:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38660 "EHLO
+        id S232682AbhGVXra (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Jul 2021 19:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232787AbhGVXeI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Jul 2021 19:34:08 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F69FC061575
-        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 17:14:42 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id t186so8158326ybf.2
-        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 17:14:42 -0700 (PDT)
+        with ESMTP id S232762AbhGVXrR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Jul 2021 19:47:17 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59F6C061575
+        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 17:27:50 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id 10-20020a0562140d0ab02902ea7953f97fso618489qvh.22
+        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 17:27:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CHJH5c9B6WYweioonEdOW0lhsr+fwKwl9h4lA9WawaA=;
-        b=pOckPTksVlp+b0DxGP7yLE52xRjhAx00DJkKXcSUbGbE4Kk1Y6yRdfuFLt3GW9MAtK
-         sW0ltBDzcNgng+ce5siAVY9QpY6kBXlPlVnxSG/JHPdRIOIYsH1ZK+8jIqZpy4aF1pU0
-         R595eJ1bv+wXJhA/wjXX0CHR1/19LwWbP+/AUJf7hA1ba8pIeANxLuFkfghFT51VtR/A
-         JKwWgdTCo/mqfClY0Cf/Je/7FhPJ7cQPGJq4KkZcRtGkanVzZX9BkcGNHFgWIcrwPUD2
-         WvvRCH1J1nobW2tPasO2svYgvkdYvfEBW8iUWfKD7NIJoozFO5VoUVtw4R9OIbKh1FSa
-         P4lg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=KaaKO6JSuYlU48c7gu61DViYcF3DfebwjsMEkD6F6Do=;
+        b=k7Yq2lZyuqV5/XONJUNkIw7Lh4tA19200eZsXHrqLyn1+ZW2DO77ZcweTrfUrVyC61
+         wCuqg9KXPNnp43tvuhXZZeozNiaF8tB+6omRfVtOPaK3jtjP56S+1uNjjiRV1DiTQjUi
+         EuWWKZyw3vnmTc8qzI1myXA++aYhyq+LSRqppB4qLbSFb+H+0tcum8XvkQo7lf4qdh/D
+         0b/lsaLhqhQH0/SgCs18sTyiMv5asP6qc1/nNIYSCQ3GtjOt77pAw92/lT5z01Tmhbbv
+         A/28yEBjcNX2Zf76Kh4uGlAviaeM0lu3JBqyF5z88J5+hDl4rxm3dUjr/r7qIV8Fo7ia
+         UY2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CHJH5c9B6WYweioonEdOW0lhsr+fwKwl9h4lA9WawaA=;
-        b=F6o+YPXUPhrT1ORbCEL12SBZfczM/ODul75lf+TcJ19S8a5ynXD9l/kx+uh1N0uDic
-         1Bt5qwUN9qDcsXjr0mxCfyR2OlfR6C+GHZJuzlJbueHySkhENXYA1nQvRRA25DsJsW1+
-         ergur8PruhzgXZM5lVDVTJA793vHUwOksItNgq8WnD2Kiq0kfknbWGgH3MBr65Bicuot
-         5qrzTrwTxm8Ebx2rzBTP7fx+39ZRyPhOI3OmGzpjsKHRUjr3uecfQMovozPBXI5SjAd8
-         vQ2vb/j1o85BS2xjgD8S1uSd+8G6WtI0YGTfSybe/EAEtrv6/+Lbin1vOpyu3TVPFzpU
-         sGbw==
-X-Gm-Message-State: AOAM53292EaiW/f9ZpHfs8AAXGiqiSbA5BsAp5zPmSyyuv/FEHagW4iB
-        +yXX8JMSM0dqroQeLrK/3P1ysJA1hZ6Hm3Hd5us=
-X-Google-Smtp-Source: ABdhPJy7HuJco1ADRnSuAxoTZleGuqG9xq9Scus6uZotz9VTb84diCKAO+OmwNcknsVbwMB5yBn4V6llsSfTwqscORA=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr2975879ybo.230.1626999281795;
- Thu, 22 Jul 2021 17:14:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210719151753.399227-1-hengqi.chen@gmail.com>
- <CAEf4BzborEP9oEa9VHkMnWFozXHOdVRf9BbbdNYOT5PEX6cdcQ@mail.gmail.com> <bf75e892-80f9-da10-599a-c89043a5a9e8@gmail.com>
-In-Reply-To: <bf75e892-80f9-da10-599a-c89043a5a9e8@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 22 Jul 2021 17:14:30 -0700
-Message-ID: <CAEf4BzYYg4WM-Sh8GKyNB-j+KXSHsCBRTxe96HQ1uah6JSkuoQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: expose bpf_d_path helper to vfs_* and
- security_* functions
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=KaaKO6JSuYlU48c7gu61DViYcF3DfebwjsMEkD6F6Do=;
+        b=tRGOaqAYlmBlx/CGdwYomlXCNPCcNc3w2ZWWt3JcJI2wSbhS14OV0B+sPoortqitSF
+         E+LKkr4SafDXKKJ+hZFqW3aKxMEV4zJ1rEUwPl5Z+IZp9JA1KmwIisTGHt8zKXskKv79
+         igWWZvyYSAnJPTVeB/f1V8s68yFRGd8tbFKi5dzTvGERXERGHoqYsVX9jrkh5y2EbsZv
+         XkajB6ebTwop3E8Ono4Bd3cEIfSUK0KxYpQeEkad7wCaM+95+iB+5RbuUUGyu67eBmhI
+         Ee/ns8Z07xNWg8Sy62o0wgvx4NkeNh6+WChXP6EwL7ym8wnggNwJgjLDu9PX4v/9T64z
+         ifoA==
+X-Gm-Message-State: AOAM531qldYWecMUL3e69GWgqpU1kakdQQw085YO/kREeaibd2TCaQl0
+        zWhBBpmJMG9HyflhWWDPiur4D9k=
+X-Google-Smtp-Source: ABdhPJzVY2paVqN56+UYMkJ6kbNfAcD978jAXGSvhBUZzdBpGCo+lzgcLXTWmGXytQxwowAhU/74byc=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:2a74:6a64:2627:e4ab])
+ (user=sdf job=sendgmr) by 2002:a05:6214:1021:: with SMTP id
+ k1mr2640636qvr.4.1627000069825; Thu, 22 Jul 2021 17:27:49 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 17:27:47 -0700
+Message-Id: <20210723002747.3668098-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH bpf-next] bpf: increase supported cgroup storage value size
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 10:01 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->
->
->
-> On 2021/7/20 3:02 AM, Andrii Nakryiko wrote:
-> > On Mon, Jul 19, 2021 at 8:18 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
-> >>
-> >> Add vfs_* and security_* to bpf_d_path allowlist, so that we can use
-> >> bpf_d_path helper to extract full file path from these functions'
-> >> `struct path *` and `struct file *` arguments. This will help tools
-> >> like IOVisor's filetop[2]/filelife to get full file path.
-> >>
-> >> Changes since v1: [1]
-> >>  - Alexei and Yonghong suggested that bpf_d_path helper could also
-> >>    apply to vfs_* and security_file_* kernel functions. Added them.
-> >>
-> >> [1] https://lore.kernel.org/bpf/20210712162424.2034006-1-hengqi.chen@gmail.com/
-> >> [2] https://github.com/iovisor/bcc/issues/3527
-> >>
-> >> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> >> ---
-> >>  kernel/trace/bpf_trace.c | 50 ++++++++++++++++++++++++++++++++++++++--
-> >>  1 file changed, 48 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> >> index 08906007306d..c784f3c7143f 100644
-> >> --- a/kernel/trace/bpf_trace.c
-> >> +++ b/kernel/trace/bpf_trace.c
-> >> @@ -850,16 +850,62 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
-> >>  BTF_SET_START(btf_allowlist_d_path)
-> >>  #ifdef CONFIG_SECURITY
-> >>  BTF_ID(func, security_file_permission)
-> >> -BTF_ID(func, security_inode_getattr)
-> >>  BTF_ID(func, security_file_open)
-> >> +BTF_ID(func, security_file_ioctl)
-> >> +BTF_ID(func, security_file_free)
-> >> +BTF_ID(func, security_file_alloc)
-> >> +BTF_ID(func, security_file_lock)
-> >> +BTF_ID(func, security_file_fcntl)
-> >> +BTF_ID(func, security_file_set_fowner)
-> >> +BTF_ID(func, security_file_receive)
-> >> +BTF_ID(func, security_inode_getattr)
-> >>  #endif
-> >>  #ifdef CONFIG_SECURITY_PATH
-> >>  BTF_ID(func, security_path_truncate)
-> >> +BTF_ID(func, security_path_notify)
-> >> +BTF_ID(func, security_path_unlink)
-> >> +BTF_ID(func, security_path_mkdir)
-> >> +BTF_ID(func, security_path_rmdir)
-> >> +BTF_ID(func, security_path_mknod)
-> >> +BTF_ID(func, security_path_symlink)
-> >> +BTF_ID(func, security_path_link)
-> >> +BTF_ID(func, security_path_rename)
-> >> +BTF_ID(func, security_path_chmod)
-> >> +BTF_ID(func, security_path_chown)
-> >> +BTF_ID(func, security_path_chroot)
-> >>  #endif
-> >>  BTF_ID(func, vfs_truncate)
-> >>  BTF_ID(func, vfs_fallocate)
-> >> -BTF_ID(func, dentry_open)
-> >>  BTF_ID(func, vfs_getattr)
-> >> +BTF_ID(func, vfs_fadvise)
-> >> +BTF_ID(func, vfs_fchmod)
-> >> +BTF_ID(func, vfs_fchown)
-> >> +BTF_ID(func, vfs_open)
-> >> +BTF_ID(func, vfs_setpos)
-> >> +BTF_ID(func, vfs_llseek)
-> >> +BTF_ID(func, vfs_read)
-> >> +BTF_ID(func, vfs_write)
-> >> +BTF_ID(func, vfs_iocb_iter_read)
-> >> +BTF_ID(func, vfs_iter_read)
-> >> +BTF_ID(func, vfs_readv)
-> >> +BTF_ID(func, vfs_iocb_iter_write)
-> >> +BTF_ID(func, vfs_iter_write)
-> >> +BTF_ID(func, vfs_writev)
-> >> +BTF_ID(func, vfs_copy_file_range)
-> >> +BTF_ID(func, vfs_getattr_nosec)
-> >> +BTF_ID(func, vfs_ioctl)
-> >> +BTF_ID(func, vfs_fsync_range)
-> >> +BTF_ID(func, vfs_fsync)
-> >> +BTF_ID(func, vfs_utimes)
-> >> +BTF_ID(func, vfs_statfs)
-> >> +BTF_ID(func, vfs_dedupe_file_range_one)
-> >> +BTF_ID(func, vfs_dedupe_file_range)
-> >> +BTF_ID(func, vfs_clone_file_range)
-> >> +BTF_ID(func, vfs_cancel_lock)
-> >> +BTF_ID(func, vfs_test_lock)
-> >> +BTF_ID(func, vfs_setlease)
-> >> +BTF_ID(func, vfs_lock_file)
-> >> +BTF_ID(func, dentry_open)
-> >>  BTF_ID(func, filp_close)
-> >>  BTF_SET_END(btf_allowlist_d_path)
-> >>
-> >
-> > Before we lend this expanded list of allowed functions, I think we
-> > should address an issue that comes up from time to time with .BTF_ids.
-> > Sometimes the referenced function can be changed from global to static
-> > and get inlined by the compiler, and thus disappears from BTF
-> > altogether. This will result in kernel build failure causing a lot of
-> > confusion, because the change might be done by people unfamiliar with
-> > the BTF_ID() stuff and not even aware of it.
-> >
->
-> Thanks for the detailed background.
-> I was able to reproduce this kernel build failure.
->
-> > This came up a few times before and it's frustrating for everyone
-> > involved. Before we proceed with extending the list further, let's
-> > teach resolve_btfids to warn on such missing function (so that we are
-> > at least aware) but otherwise ignore it (probably leaving ID as zero,
-> > but let's also confirm that all the users of BTF_ID() stuff handle
-> > those zeros correctly).
-> >
->
-> Do you mean that resolve_btfids should be updated to emit warning messages
-> instead of aborting the build process ?
+Current max cgroup storage value size is 4k (PAGE_SIZE). The other local
+storages accept up to 64k (BPF_LOCAL_STORAGE_MAX_VALUE_SIZE). Let's align
+max cgroup value size with the other storages.
 
-Yes. Just double-check that unresolved BTF IDs are filled out as zeros
-and don't break anything.
+For percpu, the max is 32k (PCPU_MIN_UNIT_SIZE) because percpu
+allocator is not happy about larger values.
 
->
-> >> --
-> >> 2.25.1
-> >>
+netcnt test is extended to exercise those maximum values
+(non-percpu max size is close to, but not real max).
+
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ kernel/bpf/local_storage.c                    | 12 +++++-
+ tools/testing/selftests/bpf/netcnt_common.h   | 38 +++++++++++++++----
+ .../testing/selftests/bpf/progs/netcnt_prog.c | 29 +++++++-------
+ tools/testing/selftests/bpf/test_netcnt.c     | 25 +++++++-----
+ 4 files changed, 73 insertions(+), 31 deletions(-)
+
+diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
+index 7ed2a14dc0de..a276da74c20a 100644
+--- a/kernel/bpf/local_storage.c
++++ b/kernel/bpf/local_storage.c
+@@ -1,6 +1,7 @@
+ //SPDX-License-Identifier: GPL-2.0
+ #include <linux/bpf-cgroup.h>
+ #include <linux/bpf.h>
++#include <linux/bpf_local_storage.h>
+ #include <linux/btf.h>
+ #include <linux/bug.h>
+ #include <linux/filter.h>
+@@ -284,8 +285,17 @@ static int cgroup_storage_get_next_key(struct bpf_map *_map, void *key,
+ static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
+ {
+ 	int numa_node = bpf_map_attr_numa_node(attr);
++	__u32 max_value_size = PCPU_MIN_UNIT_SIZE;
+ 	struct bpf_cgroup_storage_map *map;
+ 
++	/* percpu is bound by PCPU_MIN_UNIT_SIZE, non-percu
++	 * is the same as other local storages.
++	 */
++	if (attr->map_type == BPF_MAP_TYPE_CGROUP_STORAGE)
++		max_value_size = BPF_LOCAL_STORAGE_MAX_VALUE_SIZE;
++
++	BUILD_BUG_ON(PCPU_MIN_UNIT_SIZE > BPF_LOCAL_STORAGE_MAX_VALUE_SIZE);
++
+ 	if (attr->key_size != sizeof(struct bpf_cgroup_storage_key) &&
+ 	    attr->key_size != sizeof(__u64))
+ 		return ERR_PTR(-EINVAL);
+@@ -293,7 +303,7 @@ static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
+ 	if (attr->value_size == 0)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	if (attr->value_size > PAGE_SIZE)
++	if (attr->value_size > max_value_size)
+ 		return ERR_PTR(-E2BIG);
+ 
+ 	if (attr->map_flags & ~LOCAL_STORAGE_CREATE_FLAG_MASK ||
+diff --git a/tools/testing/selftests/bpf/netcnt_common.h b/tools/testing/selftests/bpf/netcnt_common.h
+index 81084c1c2c23..dfcf184ff713 100644
+--- a/tools/testing/selftests/bpf/netcnt_common.h
++++ b/tools/testing/selftests/bpf/netcnt_common.h
+@@ -6,19 +6,43 @@
+ 
+ #define MAX_PERCPU_PACKETS 32
+ 
++/* sizeof(struct bpf_local_storage_elem):
++ *
++ * It really is about 128 bytes, but allocate more to account for possible
++ * layout changes, different architectures, etc.
++ * It will wrap up to PAGE_SIZE internally anyway.
++ */
++#define SIZEOF_BPF_LOCAL_STORAGE_ELEM		256
++
++/* Try to estimate kernel's BPF_LOCAL_STORAGE_MAX_VALUE_SIZE: */
++#define BPF_LOCAL_STORAGE_MAX_VALUE_SIZE	(0xFFFF - \
++						 SIZEOF_BPF_LOCAL_STORAGE_ELEM)
++
++#define PCPU_MIN_UNIT_SIZE			32768
++
+ struct percpu_net_cnt {
+-	__u64 packets;
+-	__u64 bytes;
++	union {
++		struct {
++			__u64 packets;
++			__u64 bytes;
+ 
+-	__u64 prev_ts;
++			__u64 prev_ts;
+ 
+-	__u64 prev_packets;
+-	__u64 prev_bytes;
++			__u64 prev_packets;
++			__u64 prev_bytes;
++		} val;
++		__u8 data[PCPU_MIN_UNIT_SIZE];
++	};
+ };
+ 
+ struct net_cnt {
+-	__u64 packets;
+-	__u64 bytes;
++	union {
++		struct {
++			__u64 packets;
++			__u64 bytes;
++		} val;
++		__u8 data[BPF_LOCAL_STORAGE_MAX_VALUE_SIZE];
++	};
+ };
+ 
+ #endif
+diff --git a/tools/testing/selftests/bpf/progs/netcnt_prog.c b/tools/testing/selftests/bpf/progs/netcnt_prog.c
+index d071adf178bd..4b0884239892 100644
+--- a/tools/testing/selftests/bpf/progs/netcnt_prog.c
++++ b/tools/testing/selftests/bpf/progs/netcnt_prog.c
+@@ -34,34 +34,35 @@ int bpf_nextcnt(struct __sk_buff *skb)
+ 	cnt = bpf_get_local_storage(&netcnt, 0);
+ 	percpu_cnt = bpf_get_local_storage(&percpu_netcnt, 0);
+ 
+-	percpu_cnt->packets++;
+-	percpu_cnt->bytes += skb->len;
++	percpu_cnt->val.packets++;
++	percpu_cnt->val.bytes += skb->len;
+ 
+-	if (percpu_cnt->packets > MAX_PERCPU_PACKETS) {
+-		__sync_fetch_and_add(&cnt->packets,
+-				     percpu_cnt->packets);
+-		percpu_cnt->packets = 0;
++	if (percpu_cnt->val.packets > MAX_PERCPU_PACKETS) {
++		__sync_fetch_and_add(&cnt->val.packets,
++				     percpu_cnt->val.packets);
++		percpu_cnt->val.packets = 0;
+ 
+-		__sync_fetch_and_add(&cnt->bytes,
+-				     percpu_cnt->bytes);
+-		percpu_cnt->bytes = 0;
++		__sync_fetch_and_add(&cnt->val.bytes,
++				     percpu_cnt->val.bytes);
++		percpu_cnt->val.bytes = 0;
+ 	}
+ 
+ 	ts = bpf_ktime_get_ns();
+-	dt = ts - percpu_cnt->prev_ts;
++	dt = ts - percpu_cnt->val.prev_ts;
+ 
+ 	dt *= MAX_BPS;
+ 	dt /= NS_PER_SEC;
+ 
+-	if (cnt->bytes + percpu_cnt->bytes - percpu_cnt->prev_bytes < dt)
++	if (cnt->val.bytes + percpu_cnt->val.bytes -
++	    percpu_cnt->val.prev_bytes < dt)
+ 		ret = 1;
+ 	else
+ 		ret = 0;
+ 
+ 	if (dt > REFRESH_TIME_NS) {
+-		percpu_cnt->prev_ts = ts;
+-		percpu_cnt->prev_packets = cnt->packets;
+-		percpu_cnt->prev_bytes = cnt->bytes;
++		percpu_cnt->val.prev_ts = ts;
++		percpu_cnt->val.prev_packets = cnt->val.packets;
++		percpu_cnt->val.prev_bytes = cnt->val.bytes;
+ 	}
+ 
+ 	return !!ret;
+diff --git a/tools/testing/selftests/bpf/test_netcnt.c b/tools/testing/selftests/bpf/test_netcnt.c
+index a7b9a69f4fd5..1138765406a5 100644
+--- a/tools/testing/selftests/bpf/test_netcnt.c
++++ b/tools/testing/selftests/bpf/test_netcnt.c
+@@ -33,11 +33,11 @@ static int bpf_find_map(const char *test, struct bpf_object *obj,
+ 
+ int main(int argc, char **argv)
+ {
+-	struct percpu_net_cnt *percpu_netcnt;
++	struct percpu_net_cnt *percpu_netcnt = NULL;
+ 	struct bpf_cgroup_storage_key key;
++	struct net_cnt *netcnt = NULL;
+ 	int map_fd, percpu_map_fd;
+ 	int error = EXIT_FAILURE;
+-	struct net_cnt netcnt;
+ 	struct bpf_object *obj;
+ 	int prog_fd, cgroup_fd;
+ 	unsigned long packets;
+@@ -52,6 +52,12 @@ int main(int argc, char **argv)
+ 		goto err;
+ 	}
+ 
++	netcnt = malloc(sizeof(*netcnt));
++	if (!netcnt) {
++		printf("Not enough memory for non-per-cpu area\n");
++		goto err;
++	}
++
+ 	if (bpf_prog_load(BPF_PROG, BPF_PROG_TYPE_CGROUP_SKB,
+ 			  &obj, &prog_fd)) {
+ 		printf("Failed to load bpf program\n");
+@@ -96,7 +102,7 @@ int main(int argc, char **argv)
+ 		goto err;
+ 	}
+ 
+-	if (bpf_map_lookup_elem(map_fd, &key, &netcnt)) {
++	if (bpf_map_lookup_elem(map_fd, &key, netcnt)) {
+ 		printf("Failed to lookup cgroup storage\n");
+ 		goto err;
+ 	}
+@@ -109,17 +115,17 @@ int main(int argc, char **argv)
+ 	/* Some packets can be still in per-cpu cache, but not more than
+ 	 * MAX_PERCPU_PACKETS.
+ 	 */
+-	packets = netcnt.packets;
+-	bytes = netcnt.bytes;
++	packets = netcnt->val.packets;
++	bytes = netcnt->val.bytes;
+ 	for (cpu = 0; cpu < nproc; cpu++) {
+-		if (percpu_netcnt[cpu].packets > MAX_PERCPU_PACKETS) {
++		if (percpu_netcnt[cpu].val.packets > MAX_PERCPU_PACKETS) {
+ 			printf("Unexpected percpu value: %llu\n",
+-			       percpu_netcnt[cpu].packets);
++			       percpu_netcnt[cpu].val.packets);
+ 			goto err;
+ 		}
+ 
+-		packets += percpu_netcnt[cpu].packets;
+-		bytes += percpu_netcnt[cpu].bytes;
++		packets += percpu_netcnt[cpu].val.packets;
++		bytes += percpu_netcnt[cpu].val.bytes;
+ 	}
+ 
+ 	/* No packets should be lost */
+@@ -142,6 +148,7 @@ int main(int argc, char **argv)
+ err:
+ 	cleanup_cgroup_environment();
+ 	free(percpu_netcnt);
++	free(netcnt);
+ 
+ out:
+ 	return error;
+-- 
+2.32.0.432.gabb21c7263-goog
+
