@@ -2,140 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C682B3D3BEE
-	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 16:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A0D3D3CCE
+	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 17:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235424AbhGWOBp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Jul 2021 10:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
+        id S235619AbhGWPLM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Jul 2021 11:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235446AbhGWOBF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Jul 2021 10:01:05 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D256C06175F
-        for <bpf@vger.kernel.org>; Fri, 23 Jul 2021 07:41:38 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id o12so1186043vst.3
-        for <bpf@vger.kernel.org>; Fri, 23 Jul 2021 07:41:38 -0700 (PDT)
+        with ESMTP id S235582AbhGWPLL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Jul 2021 11:11:11 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C931EC061575;
+        Fri, 23 Jul 2021 08:51:43 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id f26so3029855ybj.5;
+        Fri, 23 Jul 2021 08:51:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QYvY+XhdaONmNJqIdtIWP2uZhDH4cq0nyTKOr5KXpcA=;
-        b=MDxBtakUlOTGgvrQ2utW1Vr5Nqd33Y1wJXMCCoGL+WbciqW9/W1+ZLRS9Qd3hGNvdQ
-         uAL+CNDhdzw1yzrJq9Ls2NW4vOFAPdWJkRJyeOPsR7ewj35HjsaDbUmoqmMaHfb7HjMr
-         OwLprACYBVA7ap4iG7ebj69If6wkp3S6C8yvFsKPXyYRQoK6kqxBFdpGKZ43tv5e2dkc
-         1wOYElrlJhiM3nvxDKiCUAE3/TMuQx15qj7qPfX2/Tgm9sgArQsXB7OhLJtIKB1jgJfZ
-         rGzoH09q7IevDycjwWZSQk9IS7DL3hI2guwn4fWDiyLklJP/DLbBge34uxK95BTP9kUc
-         jPNQ==
+         :cc:content-transfer-encoding;
+        bh=vGxm0m2zr2iL2AsZWqmBCKIVJzF2ol8DfG9XrOwNFNo=;
+        b=ZHbRBjU1IU1/PjcekQLq6qji7InSIp6EgJ2cCQxX7ZF0X7Y38Jk/PN8eOIahU6stut
+         nQLCWNHcwjkENQ0K4VW4NQGkiBXH+vEbMJkLX03YyOCh4jQvQ0rVr/v1Yg9V8h6Uv2Oh
+         yWOrg/v7uTIoJPZ43842v59LFvgbo7b9w8+ZTzTSu1vlejAB082ZUh7UfJimxJ2zRCBd
+         LWdPL3TPv/lyVwKmTxVDB9SIBiG2c5F4x4FWw3RE9uHn90gYuD4RRXC12aMlZr8jUaFH
+         lI9LCyXyIPGS6Ke6/EGYm99ncO63w9BfTo+WaibdhfhC/1vzFYImRggPGPODKandOlRg
+         8Iaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QYvY+XhdaONmNJqIdtIWP2uZhDH4cq0nyTKOr5KXpcA=;
-        b=RP1ylm4O4bKHHD/o3Qv/EhXYD9Tlqq486LCX2vwR1ID7muX5tOBpdefij69J0//xSv
-         a7FTmDRROzZ4PPRQodYc52RPUnBb+yAmqMORE4iYjO0m15tuLHMmmtafU/2ebBO8j+j9
-         TpQVVc885v1QumjEJpLPYU8yYxTfZ3qlyYzfojpokzfgKomUiRSibzDZB/DYDBTw1l83
-         XEdPnHHpYUDw0kFP9+BalyIw/7qf3/HO+eD3oWx1yN4Hxtl2ae+mGskM3Y9Ac7dga2AS
-         nieuZoXMN//NjL2ufW4O9jkmGNBtamFJcktkgr6KQa3bZig3VBERxYPOkcOVGZMWkK/S
-         w/FQ==
-X-Gm-Message-State: AOAM531ijsonNX6X9iFUxdgehaeE2AainQk8g2r+iWgKNx1qTR8ItK6z
-        9KX6yq4pvtSeP2WtIIMvUDlJaFV+ay8Eco9WIgURsA==
-X-Google-Smtp-Source: ABdhPJwYaqcoBml1n53zNZii+AbHYg7H0TgkoHSLYeBbNWfSodyiWl9Q9RhE9OE0SJ2fE5yRIcnl1/iVijveMoU+ACQ=
-X-Received: by 2002:a05:6102:232f:: with SMTP id b15mr4209490vsa.44.1627051297024;
- Fri, 23 Jul 2021 07:41:37 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vGxm0m2zr2iL2AsZWqmBCKIVJzF2ol8DfG9XrOwNFNo=;
+        b=Le8UKwXOEDViUf0/3Ff73tyvUqLjnrEMFBo841efSKyztK6Trk6xiAj4Uu4eGi8VHm
+         yCNvsPvZrzYGZw3JibTOTGtzl7lC31+xpzqnrg8mHaeiMWs6lkWs45geaCgQhUT049TI
+         yzcMquirLXOWgK4UkbmaCoUDXugWG3dB1olmqh0iNo/gzFeCFqjrJl8dVKEMQqLlGyz7
+         5uKinVnUs9GIWfz0A9bm3W5HymcFER49+V44Z7JQySM3cVqZxfF31kS4f9ggixGwT6gg
+         YdmCsQjVJe8AV4x+/PQyabzefblvDJQcf+0Pl96AbzoLjj2ZANgP24/9PNKl/E/81HFa
+         mebg==
+X-Gm-Message-State: AOAM5323Bni9IwfDZTm6aoAVbhgPyH8A4ArWXQMbtHcRQSidnOdh5Daf
+        Sn/B6rcNP4zWOYCBeud4h6HGowRDOmcf2ruAfTU=
+X-Google-Smtp-Source: ABdhPJxzNnXSk5H00e7g6d6WpRaC5Oe/BSqnLiFgbzA2BqCv4rYhnE3e8WpvH3DbTAaEON+jjI+OiiD9g02UKNvRDxY=
+X-Received: by 2002:a25:cdc7:: with SMTP id d190mr6958546ybf.425.1627055503113;
+ Fri, 23 Jul 2021 08:51:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210723093938.49354-1-zeil@yandex-team.ru>
-In-Reply-To: <20210723093938.49354-1-zeil@yandex-team.ru>
-From:   Neal Cardwell <ncardwell@google.com>
-Date:   Fri, 23 Jul 2021 10:41:20 -0400
-Message-ID: <CADVnQykVQhT_4f2CV6cAqx_oFvQ-vvq-S0Pnw0a6cnXFuJnPpg@mail.gmail.com>
-Subject: Re: [PATCH] tcp: use rto_min value from socket in retransmits timeout
-To:     Dmitry Yakunin <zeil@yandex-team.ru>
-Cc:     kafai@fb.com, edumazet@google.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, dmtrmonakhov@yandex-team.ru,
-        Yuchung Cheng <ycheng@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>
+References: <20210721153808.6902-1-quentin@isovalent.com> <CAEf4Bzb30BNeLgio52OrxHk2VWfKitnbNUnO0sAXZTA94bYfmg@mail.gmail.com>
+ <CAEf4BzZZXx28w1y_6xfsue91c_7whvHzMhKvbSnsQRU4yA+RwA@mail.gmail.com> <82e61e60-e2e9-f42d-8e49-bbe416b7513d@isovalent.com>
+In-Reply-To: <82e61e60-e2e9-f42d-8e49-bbe416b7513d@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 23 Jul 2021 08:51:32 -0700
+Message-ID: <CAEf4BzYpCr=Vdfc3moaapQqBxYV3SKfD72s0F=FAh_zLzSqxqA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/5] libbpf: rename btf__get_from_id() and
+ btf__load() APIs, support split BTF
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-.(On Fri, Jul 23, 2021 at 5:41 AM Dmitry Yakunin <zeil@yandex-team.ru> wrote:
+On Fri, Jul 23, 2021 at 2:58 AM Quentin Monnet <quentin@isovalent.com> wrot=
+e:
 >
-> Commit ca584ba07086 ("tcp: bpf: Add TCP_BPF_RTO_MIN for bpf_setsockopt")
-> adds ability to set rto_min value on socket less then default TCP_RTO_MIN.
-> But retransmits_timed_out() function still uses TCP_RTO_MIN and
-> tcp_retries{1,2} sysctls don't work properly for tuned socket values.
+> 2021-07-22 19:45 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > On Thu, Jul 22, 2021 at 5:58 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >>
+> >> On Wed, Jul 21, 2021 at 8:38 AM Quentin Monnet <quentin@isovalent.com>=
+ wrote:
+> >>>
+> >>> As part of the effort to move towards a v1.0 for libbpf [0], this set
+> >>> improves some confusing function names related to BTF loading from an=
+d to
+> >>> the kernel:
+> >>>
+> >>> - btf__load() becomes btf__load_into_kernel().
+> >>> - btf__get_from_id becomes btf__load_from_kernel_by_id().
+> >>> - A new version btf__load_from_kernel_by_id_split() extends the forme=
+r to
+> >>>   add support for split BTF.
+> >>>
+> >>> The old functions are not removed or marked as deprecated yet, there
+> >>> should be in a future libbpf version.
+> >>
+> >> Oh, and I was thinking about this whole deprecation having to be done
+> >> in two steps. It's super annoying to keep track of that. Ideally, we'd
+> >> have some macro that can mark API deprecated "in the future", when
+> >> actual libbpf version is >=3D to defined version. So something like
+> >> this:
+> >>
+> >> LIBBPF_DEPRECATED_AFTER(V(0,5), "API that will be marked deprecated in=
+ v0.6")
+> >
+> > Better:
+> >
+> > LIBBPF_DEPRECATED_SINCE(0, 6, "API that will be marked deprecated in v0=
+.6")
 >
-> Fixes: ca584ba07086 ("tcp: bpf: Add TCP_BPF_RTO_MIN for bpf_setsockopt")
-> Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
-> Acked-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-> ---
->  net/ipv4/tcp_timer.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+> I was considering a very advanced feature called =E2=80=9Copening a new G=
+itHub
+
+Someone gotta track and ping people at the right time even with
+issues, so yeah, it's suboptimal.
+
+> issue=E2=80=9D to track this :). But the macro game sounds interesting, I=
+'ll
+> look into it for next version.
 >
-> diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-> index 20cf4a9..66c4b97 100644
-> --- a/net/ipv4/tcp_timer.c
-> +++ b/net/ipv4/tcp_timer.c
-> @@ -199,12 +199,13 @@ static unsigned int tcp_model_timeout(struct sock *sk,
->   *  @boundary: max number of retransmissions
->   *  @timeout:  A custom timeout value.
->   *             If set to 0 the default timeout is calculated and used.
-> - *             Using TCP_RTO_MIN and the number of unsuccessful retransmits.
-> + *             Using icsk_rto_min value from socket or RTAX_RTO_MIN from route
-> + *             and the number of unsuccessful retransmits.
->   *
->   * The default "timeout" value this function can calculate and use
->   * is equivalent to the timeout of a TCP Connection
->   * after "boundary" unsuccessful, exponentially backed-off
-> - * retransmissions with an initial RTO of TCP_RTO_MIN.
-> + * retransmissions with an initial RTO of icsk_rto_min or RTAX_RTO_MIN.
->   */
->  static bool retransmits_timed_out(struct sock *sk,
->                                   unsigned int boundary,
-> @@ -217,7 +218,7 @@ static bool retransmits_timed_out(struct sock *sk,
+> One nit with LIBBPF_DEPRECATED_SINCE() is that the warning mentions a
+> version (here v0.6) that we are unsure will exist (say we jump from v0.5
+> to v1.0). But I don't suppose that's a real issue.
+
+There will always be a +0.1 version just to get deprecation activated.
+This is for the reason I explained: we add replacement API in 0.X, but
+can mark deprecated API in 0.(X+1), so we won't skip it, even if we
+have to wait 2 extra months before 1.0. So I wouldn't worry about
+this.
+
 >
->         start_ts = tcp_sk(sk)->retrans_stamp;
->         if (likely(timeout == 0)) {
-> -               unsigned int rto_base = TCP_RTO_MIN;
-> +               unsigned int rto_base = tcp_rto_min(sk);
->
->                 if ((1 << sk->sk_state) & (TCPF_SYN_SENT | TCPF_SYN_RECV))
->                         rto_base = tcp_timeout_init(sk);
-> --
-
-I would argue strenuously against this. We tried the approach in this
-patch at Google years ago, but we had to revert that approach and go
-back to using TCP_RTO_MIN as the baseline for the computation, because
-using the custom tcp_rto_min(sk) caused serious reliability problems.
-
-The behavior in this patch causes various serious reliability problems
-because the retransmits_timed_out() computation is used for various
-timeout decisions that determine how long a connection tries to
-retransmit something before deciding the path is bad and/or giving up
-and closing the connection. Here are a few of the problems this
-causes:
-
-(1) The biggest one is probably orphan retries. By default
-tcp_orphan_retries() uses a retry count of 8. But if your min_rto is
-5ms (used at Google for many years), then the 8 retries means an
-orphaned connection (whose fd is no longer held by a process, but is
-still established) only lasts for 1.275 seconds before giving up and
-closing. This means that connectivity problems longer than 1.275
-seconds (extremely common with cellular links) are not tolerated for
-such connections; the connections often do not receive the data they
-were supposed to receive.
-
-(2) TCP_RETR1 /sysctl_tcp_retries1, used for __dst_negative_advice(),
-also has big problems. Even with a min_rto as big as 20ms, on a route
-with 150ms RTT, the approach in this patch will cause
-retransmits_timed_out() to return true upon the 1st RTO timer firing,
-even though TCP_RETR1 is 3.
-
-(3) TCP_RETR2 /sysctl_tcp_retries2, with a default of 15, used for
-regular connection retry lifetimes, also has a massive decrease in
-robustness, due to falling from  109 minutes with a 200ms RTO, to
-about 2.7 minutes with a min_rto of 5ms.
-
-neal
+> Thanks for the feedback!
+> Quentin
