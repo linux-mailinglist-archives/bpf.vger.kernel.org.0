@@ -2,144 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7DC3D3F1A
-	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 19:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287DD3D4202
+	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 23:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhGWRE3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Jul 2021 13:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbhGWRE2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Jul 2021 13:04:28 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DB3C061575
-        for <bpf@vger.kernel.org>; Fri, 23 Jul 2021 10:45:01 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id o1so3204486wrp.5
-        for <bpf@vger.kernel.org>; Fri, 23 Jul 2021 10:45:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MHsr1AcjnBRoKC9p4VaeLXl6X6BB2o9O0KPoR23uJXI=;
-        b=f2+hr251a8pSwPCgr4O5RshIAei5r6DN/hrzWzEdkoTUCoaUzDZaeiB+XuhXPwhpQc
-         62zyJobVCaGC38hilodh3/i8S2dm8c4jGYVmA3RVz/61Jf13lSW/N0H9MBbeYdtgWWSL
-         DcjoGFPPnZ9JuAt2qIGE+CgwPGwKmvG0/LrEiwbfNC0qZv7k7I8p1REvX497Rel8OYZt
-         m98ypMiDWMJBflPOPzGzkP8igw6NCGvHq1AmlkAiEiYrnlkuDapBDfTSt/ta6Cz/vX9i
-         1td/mjXWkafmQmNXGbhPzRMz2CLL7k/sYV2lj5oTLt3gDGFig0xY5UQf69bybMBUmvse
-         R9uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MHsr1AcjnBRoKC9p4VaeLXl6X6BB2o9O0KPoR23uJXI=;
-        b=bPNjwUj28xN0GJ/mfXsIbM0ELMytwhtz5OFgqI6ZFjn6nFI0dMSgY5Gdsxja08E9/C
-         bWjXwh9EjidWJ+ekZ5vEbvxE8vTQX84R3GEqoESHVckhktoA4JtAmHdYTsiZ8h56qY1m
-         PMiRi9zM+3CVjRVdyTjye6QtypRC+9QT4jyn98CTt168c12BM5JjiKDMbZWzxJdDUhin
-         rjY8QgVLPufhS4NVcnuyy+xlrTae7u01BlL9a1twKnZfKZ4U+rAqVI7lU4+1i8Y/TVQU
-         ku2Vbh2plJuEVt4KAWhBgFe7texZ07TDX/lQnaNJPVMyHU2J68YsegbytrkxDJaHq7dD
-         N+/A==
-X-Gm-Message-State: AOAM531l9Vt4toawOSlwM1a5OkTcrY6akeqP10FrnXdT/F3T/3YLZKkK
-        F28AMzgwukzHdB3JnishPHOhQw==
-X-Google-Smtp-Source: ABdhPJwAtesOopb37ndouBoLUqAxzqoSIBSYW90SBmasZTCqm0wo/yRARypXK1PcPHFG39aVG+f8PA==
-X-Received: by 2002:a5d:63d1:: with SMTP id c17mr2460161wrw.328.1627062300583;
-        Fri, 23 Jul 2021 10:45:00 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.71.195])
-        by smtp.gmail.com with ESMTPSA id p11sm1847374wre.83.2021.07.23.10.44.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 10:44:59 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v2 2/5] libbpf: rename btf__get_from_id() as
- btf__load_from_kernel_by_id()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-References: <20210721153808.6902-1-quentin@isovalent.com>
- <20210721153808.6902-3-quentin@isovalent.com>
- <CAEf4BzZqEZLt0_qgmniY-hqgEg7q0ur0Z5U0r8KFTwSz=2StSg@mail.gmail.com>
- <88d3cd19-5985-ad73-5f23-4f6f7d1b1be2@isovalent.com>
- <CAEf4BzY4jVKN=3CdaLU1WOekGbT915dweNx0R4KMrW8U7E20cw@mail.gmail.com>
- <004ebf5f-bac1-117b-e833-2f5ef6df0b4b@isovalent.com>
- <CAEf4BzZAW_n=tgCNvsDY83FRL37DY_wODfhp+XNr6DA7C3A1qw@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <552493f9-179d-9a02-d5e7-5f78b56a18c3@isovalent.com>
-Date:   Fri, 23 Jul 2021 18:44:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S229535AbhGWUf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Jul 2021 16:35:26 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9118 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229461AbhGWUfZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 23 Jul 2021 16:35:25 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16NLDQ5H017416
+        for <bpf@vger.kernel.org>; Fri, 23 Jul 2021 14:15:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
+ date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=UaSWY5FKWamMhzACX4HcliR3fNvwOvAkEY6XjP4Qbo4=;
+ b=hKPhf6fhqNBzlDJbikzn+1Dxh57L27C6lMDGXFTzFdCMQvxAHYEKxjzLZPzy92HW1puK
+ 7XGOFYqUGsQu3M35VfE7MBf3F5aQZctPg5UzTZeNh0d8P8zEbJBRPoUjgM11QEX7ZZ+s
+ BgSrvvP0YRqNKpt9jYLJDAARV/+w5YdN19I= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 39yeddyy6e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 23 Jul 2021 14:15:58 -0700
+Received: from intmgw002.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 23 Jul 2021 14:15:56 -0700
+Received: by devvm2776.vll0.facebook.com (Postfix, from userid 364226)
+        id D56F55DF16E; Fri, 23 Jul 2021 14:15:53 -0700 (PDT)
+From:   Evgeniy Litvinenko <evgeniyl@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+Subject: [PATCH bpf-next] libbpf: Add bpf_map__pin_path function
+Date:   Fri, 23 Jul 2021 14:15:16 -0700
+Message-ID: <20210723211516.533088-1-evgeniyl@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: uAKY9A36VYXb_qN3EMHq55rZOury2dmK
+X-Proofpoint-GUID: uAKY9A36VYXb_qN3EMHq55rZOury2dmK
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZAW_n=tgCNvsDY83FRL37DY_wODfhp+XNr6DA7C3A1qw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-23_10:2021-07-23,2021-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ malwarescore=0 phishscore=0 clxscore=1011 priorityscore=1501 mlxscore=0
+ suspectscore=0 mlxlogscore=701 bulkscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107230129
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-07-23 10:18 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Fri, Jul 23, 2021 at 9:13 AM Quentin Monnet <quentin@isovalent.com> wrote:
->>
->> 2021-07-23 08:54 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
->>> On Fri, Jul 23, 2021 at 2:31 AM Quentin Monnet <quentin@isovalent.com> wrote:
->>>>
->>>> 2021-07-22 17:39 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
->>>>> On Wed, Jul 21, 2021 at 8:38 AM Quentin Monnet <quentin@isovalent.com> wrote:
->>>>>>
->>>>>> Rename function btf__get_from_id() as btf__load_from_kernel_by_id() to
->>>>>> better indicate what the function does. Change the new function so that,
->>>>>> instead of requiring a pointer to the pointer to update and returning
->>>>>> with an error code, it takes a single argument (the id of the BTF
->>>>>> object) and returns the corresponding pointer. This is more in line with
->>>>>> the existing constructors.
->>>>>>
->>>>>> The other tools calling the deprecated btf__get_from_id() function will
->>>>>> be updated in a future commit.
->>>>>>
->>>>>> References:
->>>>>>
->>>>>> - https://github.com/libbpf/libbpf/issues/278
->>>>>> - https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#btfh-apis
->>>>>>
->>
->>>>>> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->>>>>> index 7e0de560490e..6654bdee7ad7 100644
->>>>>> --- a/tools/lib/bpf/btf.c
->>>>>> +++ b/tools/lib/bpf/btf.c
->>>>>> @@ -1383,21 +1383,30 @@ struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf)
->>>>>>         return btf;
->>>>>>  }
->>>>>>
->>>>>> +struct btf *btf__load_from_kernel_by_id(__u32 id)
->>>>>> +{
->>>>>> +       struct btf *btf;
->>>>>> +       int btf_fd;
->>>>>> +
->>>>>> +       btf_fd = bpf_btf_get_fd_by_id(id);
->>>>>> +       if (btf_fd < 0)
->>>>>> +               return ERR_PTR(-errno);
->>>>>
->>>>> please use libbpf_err_ptr() for consistency, see
->>>>> bpf_object__open_mem() for an example
->>>>
->>>> I can do that, but I'll need to uncouple btf__get_from_id() from the new
->>>> function. If it calls btf__load_from_kernel_by_id() and
->>>> LIBBPF_STRICT_CLEAN_PTRS is set, it would change its return value.
->>>
->>> No it won't, if libbpf_get_error() is used right after the API call.
->>
->> But we cannot be sure that users currently call libbpf_get_error() after
->> btf__get_from_id()? I'm fine if we assume they do (users currently
->> selecting the CLEAN_PTRS are probably savvy enough to call it I guess),
->> I'll update as you suggest.
-> 
-> I think you are still confused.
+Add bpf_map__pin_path, so that the inconsistently named
+bpf_map__get_pin_path can be deprecated later. This is part of the
+effort towards libbpf v1.0: https://github.com/libbpf/libbpf/issues/307
 
-OK, I think I was.
-I'm not arguing against the contract, but I thought your suggestion
-would introduce a change in btf__get_from_id()'s behaviour. Reading
-again through the code and your explanations, there should be no change
-indeed, I just misunderstood in the first place. Apologies, and thanks
-for your patience :). I'll prepare v3 soon.
+Also, add a selftest for the new function.
 
-Quentin
+Signed-off-by: Evgeniy Litvinenko <evgeniyl@fb.com>
+---
+ tools/lib/bpf/libbpf.c                           | 5 +++++
+ tools/lib/bpf/libbpf.h                           | 1 +
+ tools/lib/bpf/libbpf.map                         | 1 +
+ tools/testing/selftests/bpf/prog_tests/pinning.c | 9 +++++++++
+ 4 files changed, 16 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index e595816b8b76..82df478dea12 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8511,6 +8511,11 @@ const char *bpf_map__get_pin_path(const struct bpf_m=
+ap *map)
+ 	return map->pin_path;
+ }
+=20
++const char *bpf_map__pin_path(const struct bpf_map *map)
++{
++        return map->pin_path;
++}
++
+ bool bpf_map__is_pinned(const struct bpf_map *map)
+ {
+ 	return map->pinned;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 9ec6b7244889..1271d99bb7aa 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -499,6 +499,7 @@ LIBBPF_API bool bpf_map__is_offload_neutral(const struc=
+t bpf_map *map);
+ LIBBPF_API bool bpf_map__is_internal(const struct bpf_map *map);
+ LIBBPF_API int bpf_map__set_pin_path(struct bpf_map *map, const char *path=
+);
+ LIBBPF_API const char *bpf_map__get_pin_path(const struct bpf_map *map);
++LIBBPF_API const char *bpf_map__pin_path(const struct bpf_map *map);
+ LIBBPF_API bool bpf_map__is_pinned(const struct bpf_map *map);
+ LIBBPF_API int bpf_map__pin(struct bpf_map *map, const char *path);
+ LIBBPF_API int bpf_map__unpin(struct bpf_map *map, const char *path);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 887d372a3f27..c240d488eb5e 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -371,6 +371,7 @@ LIBBPF_0.4.0 {
+ LIBBPF_0.5.0 {
+ 	global:
+ 		bpf_map__initial_value;
++		bpf_map__pin_path;
+ 		bpf_map_lookup_and_delete_elem_flags;
+ 		bpf_program__attach_kprobe_opts;
+ 		bpf_object__gen_loader;
+diff --git a/tools/testing/selftests/bpf/prog_tests/pinning.c b/tools/testi=
+ng/selftests/bpf/prog_tests/pinning.c
+index fcf54b3a1dd0..d4b953ae3407 100644
+--- a/tools/testing/selftests/bpf/prog_tests/pinning.c
++++ b/tools/testing/selftests/bpf/prog_tests/pinning.c
+@@ -125,6 +125,10 @@ void test_pinning(void)
+ 	if (CHECK(err, "pin maps", "err %d errno %d\n", err, errno))
+ 		goto out;
+=20
++	/* get pinning path */
++	if (!ASSERT_STREQ(bpf_map__pin_path(map), pinpath, "get pin path"))
++		goto out;
++
+ 	/* set pinning path of other map and re-pin all */
+ 	map =3D bpf_object__find_map_by_name(obj, "nopinmap");
+ 	if (CHECK(!map, "find map", "NULL map"))
+@@ -134,6 +138,11 @@ void test_pinning(void)
+ 	if (CHECK(err, "set pin path", "err %d errno %d\n", err, errno))
+ 		goto out;
+=20
++	/* get pinning path after set */
++	if (!ASSERT_STREQ(bpf_map__pin_path(map), custpinpath,
++			  "get pin path after set"))
++		goto out;
++
+ 	/* should only pin the one unpinned map */
+ 	err =3D bpf_object__pin_maps(obj, NULL);
+ 	if (CHECK(err, "pin maps", "err %d errno %d\n", err, errno))
+--=20
+2.30.2
+
