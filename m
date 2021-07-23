@@ -2,95 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB6E3D3219
-	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 05:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032BC3D3226
+	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 05:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbhGWCZ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Jul 2021 22:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
+        id S233454AbhGWCcH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Jul 2021 22:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233368AbhGWCZ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Jul 2021 22:25:57 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A31C061575;
-        Thu, 22 Jul 2021 20:06:30 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id w17so170589ybl.11;
-        Thu, 22 Jul 2021 20:06:30 -0700 (PDT)
+        with ESMTP id S233368AbhGWCcG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Jul 2021 22:32:06 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990ADC061575
+        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 20:12:39 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id v46so275307ybi.3
+        for <bpf@vger.kernel.org>; Thu, 22 Jul 2021 20:12:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LZXY42YBEngbYJDDiDOrHLr/szJYXhTWzKVS5ihVIug=;
-        b=n+dYLGKG0sbGUV4QHQ78inYVsafxHvAZt3ibq7ber69yMYVbECitEOydacpk2RPQC0
-         NX/8u6RrUcS+bhsZVcSueF2zKpFOmRyg/8GIlnG8+fDZDdS2PigriAjoby5PTAOyBMY+
-         2k+b3+NGKeiolCDgqas7tNednhAP/oV1qW3g1uXVQTewxLsi8v8Ql/vsoxveJQUOxiFE
-         W8zuYNI+vNE8Shke1rSHxX4v/zq6awPZQCmhtpf909aAhKLp4rsHNXfzlPVPSc5QqRDX
-         x3mrfhm+3GFWUvUZBZxMDZWxOpEwl6kjiob0CVUCGLN9Jz/XFeaiqnJzkd8E9zNTYiwi
-         RNVA==
+        bh=t/5Vs+a5tgpuXaytQELaR1MJ5pesNUM19bsSeStgrEM=;
+        b=K5enKrQE5OXTlMnmKtmNamTBSLzkW0D4E94CMDDNTMNkMvds+cFKIrOw4VutQyw1y9
+         ii83LzeUQ3XO+N1kwW+9JV3H1f3r/vrr8V/WQss5JoXIbMdQL5vxDgdZ3DD20+FQsG8X
+         WGSwp9WL4zDIllbTrhfoR3g708Drbz+kmhNeByL+m7UV45QejH8gYC2nFAqxWx6GUMtm
+         J4HbC4zGjsT3XYqSfhsy0ZBtZJ+PBIj9gPHCnKrmZw/1/8GTaj9GFv8Kn+b6Vnw1xnWE
+         UxuB8vzIqby/sUUS4kk0oV3t7ijJP+UIy/ooObic00BZn1aXBHVzHECx6dh3PG3mESzJ
+         8Vzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LZXY42YBEngbYJDDiDOrHLr/szJYXhTWzKVS5ihVIug=;
-        b=XDIFMA+jpNAtiUHTszZ1sOsnqzpgucitc1Qo+wLlEguoQhBqtQpMeX9dJEC55mXyTZ
-         hTmYdiPU6x7L88TCAHvBOgZn2eTPnuiFVhXTv5j4UFku0NEaS7GBQmtsErPmxnBW0aS4
-         k/8IAN84Zec5gkiizV9oN5Avs/wwBaGXpBby++Z4LjleQwPEnEDKAvLFn96RdVtNUOe4
-         6khfywsbvhObLsXUBDBu9aln24S+DVEG+DeuhZFNsu6I9PYlwnmzzYlMFkBB7IPGZDpY
-         q8UVdyInP2Ec8alBKYBVtD97ZSbHQhVMChiQXfRQ/EQXOX2e8KzKNzBnrU5RrA1EPdsc
-         zJKg==
-X-Gm-Message-State: AOAM530Do9c7/xFrq7zfsNL0UdbTS1qiTlKaDuTtfy4R6Hrd2mhyaO91
-        2Fh9NB8a5vuk/xBALqDztmx06sYMLDsfn5cYQA8=
-X-Google-Smtp-Source: ABdhPJxX/leaTPqfcczErJqdEkClGoic1yAeJpux/0bd8bQ7tv//ORqoR1u89f++Sv70H9smmrdTJSCw6YxlEYjFpAk=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr3583599ybu.403.1627009589802;
- Thu, 22 Jul 2021 20:06:29 -0700 (PDT)
+        bh=t/5Vs+a5tgpuXaytQELaR1MJ5pesNUM19bsSeStgrEM=;
+        b=EEAz7xBFERNaCpZAVRZlacNFqKFgai6LahTEWCYaBd42uESSamxQK26aWy8O5fkqzm
+         Zh05yknWPxR9aTjLds9CyBIOT8SQJDkl+5KFiOHz0HtTdh9qn09wI75YuS/7ja4V6wOv
+         q70Kp0kHHVFnbvpHdWOPW6isYn3wxbwI0z5dbnmeP/MEY990GNMb51sqmjaw7O+z+o9m
+         /+tOfUzdHMeida4oMkGGA4xYb3JDj6k7im7ru1CP8OcEYCRYlH91QkGo4QSyNrSzKZDQ
+         J3jhcZ2dXbSZj67uxEy7WhAkfkQl7dDAF/K4BL+t4jNCPudB1JeLpGmO74v7Iuj0SPgr
+         K4fg==
+X-Gm-Message-State: AOAM533ZjWAjBGBYq/gNL9K7U4RoR8Pu5UBGwjzxGr5W9L5blEQFvkGG
+        lOomp7HbLGkdMPuhtqTkUOz3PEtmWueIGze32Fw=
+X-Google-Smtp-Source: ABdhPJzbGvWIhCB2B7YKn76JfdP9YAxFPyEMcUhuHhIVJQg0uwjyOMkyf2jcpKbzikjVYBye7dXfAuSgJHyLyECILME=
+X-Received: by 2002:a25:b741:: with SMTP id e1mr3645106ybm.347.1627009958960;
+ Thu, 22 Jul 2021 20:12:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210721215810.889975-1-jolsa@kernel.org> <20210721215810.889975-4-jolsa@kernel.org>
-In-Reply-To: <20210721215810.889975-4-jolsa@kernel.org>
+References: <20210722162526.32444-1-tallossos@gmail.com>
+In-Reply-To: <20210722162526.32444-1-tallossos@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 22 Jul 2021 20:06:18 -0700
-Message-ID: <CAEf4BzadLVhNV4Ub+DsRn38dfBUFRM9=t8e7-GP1qMU6DmHVmQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] libbpf: Export bpf_program__attach_kprobe_opts
- function
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>
+Date:   Thu, 22 Jul 2021 20:12:28 -0700
+Message-ID: <CAEf4BzaJwBQvDhAYie-xSjQzUggr7FZVyVoa0X25TcfYxnWT=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Remove deprecated bpf_object__find_map_by_offset
+To:     Tal Lossos <tallossos@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 2:58 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Thu, Jul 22, 2021 at 9:26 AM Tal Lossos <tallossos@gmail.com> wrote:
 >
-> Exporting bpf_program__attach_kprobe_opts function.
-
-I've updated all commits to use more customary imperative language
-("export" instead of "exporting", "add" instead of "adding"). Also
-fixed a few styling issues and changed the order of kprobe_opts field
-(offset first, bool retprobe next), so that we don't have unnecessary
-internal padding.
-
-Pushed to bpf-next, thanks!
-
+> Removing bpf_object__find_map_by_offset as part of the effort to move
+> towards a v1.0 for libbpf: https://github.com/libbpf/libbpf/issues/302.
 >
-> Renaming bpf_program_attach_kprobe_opts to bpf_kprobe_opts
-> and adding 'sz' field for forward/backward compatiblity.
->
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Tal Lossos <tallossos@gmail.com>
 > ---
->  tools/lib/bpf/libbpf.c   | 31 +++++++++++++++++--------------
->  tools/lib/bpf/libbpf.h   | 14 ++++++++++++++
->  tools/lib/bpf/libbpf.map |  1 +
->  3 files changed, 32 insertions(+), 14 deletions(-)
->
 
-[...]
+Thanks for helping with the libbpf 1.0 effort! But we shouldn't be
+removing APIs until right before 1.0 release, otherwise we are
+breaking backwards compatibility guarantees. So this will have to wait
+until then (even though I don't believe anyone is using
+bpf_object__find_map_by_offset() in the wild).
+
+>  tools/lib/bpf/libbpf.c   | 6 ------
+>  tools/lib/bpf/libbpf.h   | 7 -------
+>  tools/lib/bpf/libbpf.map | 1 -
+>  3 files changed, 14 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 4c153c379989..6b021b893579 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -9956,12 +9956,6 @@ bpf_object__find_map_fd_by_name(const struct bpf_object *obj, const char *name)
+>         return bpf_map__fd(bpf_object__find_map_by_name(obj, name));
+>  }
+>
+> -struct bpf_map *
+> -bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset)
+> -{
+> -       return libbpf_err_ptr(-ENOTSUP);
+> -}
+> -
+>  long libbpf_get_error(const void *ptr)
+>  {
+>         if (!IS_ERR_OR_NULL(ptr))
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 6b08c1023609..1de34b315277 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -422,13 +422,6 @@ bpf_object__find_map_by_name(const struct bpf_object *obj, const char *name);
+>  LIBBPF_API int
+>  bpf_object__find_map_fd_by_name(const struct bpf_object *obj, const char *name);
+>
+> -/*
+> - * Get bpf_map through the offset of corresponding struct bpf_map_def
+> - * in the BPF object file.
+> - */
+> -LIBBPF_API struct bpf_map *
+> -bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset);
+> -
+>  LIBBPF_API struct bpf_map *
+>  bpf_map__next(const struct bpf_map *map, const struct bpf_object *obj);
+>  #define bpf_object__for_each_map(pos, obj)             \
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 5bfc10722647..220d22b73b9c 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -38,7 +38,6 @@ LIBBPF_0.0.1 {
+>                 bpf_object__btf_fd;
+>                 bpf_object__close;
+>                 bpf_object__find_map_by_name;
+> -               bpf_object__find_map_by_offset;
+
+we can't retroactively modify libbpf.map for already released
+versions. I think once we are ready for libbpf 1.0 we'll just dump all
+the non-deleted APIs into a LIBBPF_1.0.0 section without inheriting
+from the last 0.x version.
+
+>                 bpf_object__find_program_by_title;
+>                 bpf_object__kversion;
+>                 bpf_object__load;
+> --
+> 2.27.0
+>
