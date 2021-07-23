@@ -2,121 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D5E3D3284
-	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 05:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141063D3593
+	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 09:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233859AbhGWDRM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Jul 2021 23:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233720AbhGWDQ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Jul 2021 23:16:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ACCC60ED7;
-        Fri, 23 Jul 2021 03:57:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627012653;
-        bh=XtMkpLHRLWK+zAm2LioxcOrroipcW2wChBIfA5L+Rxw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tgj1wjOepIFw4XR4aHV/JdjjLjhmq+S6cO85G+W6ff6p4yf0ELohAAmDe/NqfpyDk
-         prKlRu97Bi6daIt3TrPNXVbnExSvT6y9yTLALKwGfeZngFN5zV+M1qLEkmHttxlnBl
-         WEpKC08Zq25c6wEB4KxBcEuqoZzVqkwov7TuRHsFai46qy5GoO6eg0PNUBYc9vLd6G
-         zGlxsE+65cblYSYjelTyhf4Nmn4sSBbBfWXGpmxblscYm557soJggC/5xO3igpK4Oc
-         Ycjz+CIQKVJ+kA99Z7nYtWbFGo6KHgNYp8Y6J3O3lxYurbLjhQaLm4TDshegzOkfs2
-         R8ITKTdxdhhjw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 09/19] sfc: ensure correct number of XDP queues
-Date:   Thu, 22 Jul 2021 23:57:10 -0400
-Message-Id: <20210723035721.531372-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210723035721.531372-1-sashal@kernel.org>
-References: <20210723035721.531372-1-sashal@kernel.org>
+        id S233694AbhGWHDG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Jul 2021 03:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234124AbhGWHDE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Jul 2021 03:03:04 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA28C06175F
+        for <bpf@vger.kernel.org>; Fri, 23 Jul 2021 00:43:37 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id a6so569909edv.11
+        for <bpf@vger.kernel.org>; Fri, 23 Jul 2021 00:43:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r4mVr82TAyJrGTu2iYSH9ZMwjS+O3g2Vuf3k2y8lPww=;
+        b=DcrFmM9Tdq123mFlfAnVS5IVzMKtonQZday3grN3gZUOK+PUXfSin0YhO627pGl5qm
+         zUbaWOn/wt8kUm+XIPgRFWC4wXcZjl7DwiwDfl/5T1L02ZvTyRpSuQZKan//MeoVqsXg
+         1iLgA10EQHjeLxsVxmQIVS/Y9XyLSvHVm3PX1V7DUcfZ3pMbT5g6CFR56HV+IKth9y+w
+         wZxgAjk0IlTFV5oXHYxvGJlKhDFMBeWE8iKoRtziMrcBybRWsYBQ7DYA40QltNZtcB4k
+         PmEaxop/8iHfz2B6qKdDa31/S4sBhu/U7a88l3T4hwm/7t6j5i4gmwK/f59TgwJ7ZWdz
+         m9cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r4mVr82TAyJrGTu2iYSH9ZMwjS+O3g2Vuf3k2y8lPww=;
+        b=DnU7zmmukaxoh0j0XLTiwOyjJDaI5SnvUEfVK4QZxFgca/VCDbrNcZaaFu5MWOmjY7
+         baYNT42icuR8pi2rCvTaV2uhkPqQBzUv5j+XaugTOm6b2UsPVaMfJAqVrPJcElsThSwy
+         KJQu/i+tuaur3jnBrB7RNdEgvynMJ64swze/mJnEXlpmpifo9lBv4DpTF8RRIWWTFZSa
+         fx04A/OwidV3vPF5tP4uieP2WdqXl+ZtHNQqejNTbVDwpS1dIoq6LnnrT19d3yoatTw+
+         c7Ct8O+CT8dF016tMXsaN5e0hc1nfRHB862lOboU0Opcxcc+WPzGl1cR4nZ+Q2itS4CB
+         10Wg==
+X-Gm-Message-State: AOAM532CPUvwqoHrfsX223zByPFlMYbRfA39B2wXz9botKo3S8fsG2ZM
+        zcyc7XrYerVJVMAOx27KsFGuWo1+Lq/r
+X-Google-Smtp-Source: ABdhPJxCzP50uXSlj33el1DImsNbLt6NkeiKzOpkGka3X+PiCXPgrW80RBsdQUeFreLauLXZjEgHKA==
+X-Received: by 2002:a05:6402:22aa:: with SMTP id cx10mr4077020edb.0.1627026215980;
+        Fri, 23 Jul 2021 00:43:35 -0700 (PDT)
+Received: from localhost.localdomain ([89.237.108.124])
+        by smtp.gmail.com with ESMTPSA id d22sm10595277ejj.47.2021.07.23.00.43.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 00:43:35 -0700 (PDT)
+From:   Tal Lossos <tallossos@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, Tal Lossos <tallossos@gmail.com>
+Subject: [PATCH bpf-next v2] libbpf: Remove deprecated bpf_object__find_map_by_offset
+Date:   Fri, 23 Jul 2021 10:43:22 +0300
+Message-Id: <20210723074323.55193-1-tallossos@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Íñigo Huguet <ihuguet@redhat.com>
+Removing bpf_object__find_map_by_offset as part of the effort to move
+towards a v1.0 for libbpf: https://github.com/libbpf/libbpf/issues/302.
 
-[ Upstream commit 788bc000d4c2f25232db19ab3a0add0ba4e27671 ]
-
-Commit 99ba0ea616aa ("sfc: adjust efx->xdp_tx_queue_count with the real
-number of initialized queues") intended to fix a problem caused by a
-round up when calculating the number of XDP channels and queues.
-However, this was not the real problem. The real problem was that the
-number of XDP TX queues had been reduced to half in
-commit e26ca4b53582 ("sfc: reduce the number of requested xdp ev queues"),
-but the variable xdp_tx_queue_count had remained the same.
-
-Once the correct number of XDP TX queues is created again in the
-previous patch of this series, this also can be reverted since the error
-doesn't actually exist.
-
-Only in the case that there is a bug in the code we can have different
-values in xdp_queue_number and efx->xdp_tx_queue_count. Because of this,
-and per Edward Cree's suggestion, I add instead a WARN_ON to catch if it
-happens again in the future.
-
-Note that the number of allocated queues can be higher than the number
-of used ones due to the round up, as explained in the existing comment
-in the code. That's why we also have to stop increasing xdp_queue_number
-beyond efx->xdp_tx_queue_count.
-
-Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Tal Lossos <tallossos@gmail.com>
 ---
- drivers/net/ethernet/sfc/efx_channels.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ tools/lib/bpf/libbpf.c | 6 ------
+ tools/lib/bpf/libbpf.h | 7 -------
+ 2 files changed, 13 deletions(-)
 
-diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
-index a3ca406a3561..bea0b27baf4b 100644
---- a/drivers/net/ethernet/sfc/efx_channels.c
-+++ b/drivers/net/ethernet/sfc/efx_channels.c
-@@ -891,18 +891,20 @@ int efx_set_channels(struct efx_nic *efx)
- 			if (efx_channel_is_xdp_tx(channel)) {
- 				efx_for_each_channel_tx_queue(tx_queue, channel) {
- 					tx_queue->queue = next_queue++;
--					netif_dbg(efx, drv, efx->net_dev, "Channel %u TXQ %u is XDP %u, HW %u\n",
--						  channel->channel, tx_queue->label,
--						  xdp_queue_number, tx_queue->queue);
-+
- 					/* We may have a few left-over XDP TX
- 					 * queues owing to xdp_tx_queue_count
- 					 * not dividing evenly by EFX_MAX_TXQ_PER_CHANNEL.
- 					 * We still allocate and probe those
- 					 * TXQs, but never use them.
- 					 */
--					if (xdp_queue_number < efx->xdp_tx_queue_count)
-+					if (xdp_queue_number < efx->xdp_tx_queue_count) {
-+						netif_dbg(efx, drv, efx->net_dev, "Channel %u TXQ %u is XDP %u, HW %u\n",
-+							  channel->channel, tx_queue->label,
-+							  xdp_queue_number, tx_queue->queue);
- 						efx->xdp_tx_queues[xdp_queue_number] = tx_queue;
--					xdp_queue_number++;
-+						xdp_queue_number++;
-+					}
- 				}
- 			} else {
- 				efx_for_each_channel_tx_queue(tx_queue, channel) {
-@@ -914,8 +916,7 @@ int efx_set_channels(struct efx_nic *efx)
- 			}
- 		}
- 	}
--	if (xdp_queue_number)
--		efx->xdp_tx_queue_count = xdp_queue_number;
-+	WARN_ON(xdp_queue_number != efx->xdp_tx_queue_count);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 4c153c379989..6b021b893579 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9956,12 +9956,6 @@ bpf_object__find_map_fd_by_name(const struct bpf_object *obj, const char *name)
+ 	return bpf_map__fd(bpf_object__find_map_by_name(obj, name));
+ }
  
- 	rc = netif_set_real_num_tx_queues(efx->net_dev, efx->n_tx_channels);
- 	if (rc)
+-struct bpf_map *
+-bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset)
+-{
+-	return libbpf_err_ptr(-ENOTSUP);
+-}
+-
+ long libbpf_get_error(const void *ptr)
+ {
+ 	if (!IS_ERR_OR_NULL(ptr))
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6b08c1023609..1de34b315277 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -422,13 +422,6 @@ bpf_object__find_map_by_name(const struct bpf_object *obj, const char *name);
+ LIBBPF_API int
+ bpf_object__find_map_fd_by_name(const struct bpf_object *obj, const char *name);
+ 
+-/*
+- * Get bpf_map through the offset of corresponding struct bpf_map_def
+- * in the BPF object file.
+- */
+-LIBBPF_API struct bpf_map *
+-bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset);
+-
+ LIBBPF_API struct bpf_map *
+ bpf_map__next(const struct bpf_map *map, const struct bpf_object *obj);
+ #define bpf_object__for_each_map(pos, obj)		\
 -- 
-2.30.2
+2.27.0
 
