@@ -2,219 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575C73D37B8
-	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 11:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329233D37D3
+	for <lists+bpf@lfdr.de>; Fri, 23 Jul 2021 11:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234113AbhGWIur (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Jul 2021 04:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51292 "EHLO
+        id S230453AbhGWJAv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Jul 2021 05:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234084AbhGWIur (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:50:47 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E80BC061575
-        for <bpf@vger.kernel.org>; Fri, 23 Jul 2021 02:31:20 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id z8so1617754wru.7
-        for <bpf@vger.kernel.org>; Fri, 23 Jul 2021 02:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ULEN3AF9y2KBfuSZET2D57IROuZfXaP5RAdmvwCafsQ=;
-        b=OhpfGXZM9pyr07U9oikG8sZ8qa4lJe+DnSyMwCwxeM2LdOA1OtVArihKt5uXzQV9W3
-         bIbXGGElH7gHM1sewzEtZyHlpY/jtLjTKkfcwGpJAGsZKK13QKh4oFW/VxArpyWJxwCD
-         UQ5T/b5WApWXXuh8YXRPVtmfnj4Fba5tdgH7PD+pFSVFAwNnkE7i2fWSRtDEYVxNjqvN
-         DGy3F8wscXMtDm2muIOCgfkVCc0gzmHArZUQ6TC9RUQ/NnA8A7c7EtGFFgrAxz/qtvhg
-         cAp3AWn/oSqTbrQRkg/OOI/PcHarROs7MFUYvKTHd0mJJkhN73JesygbpREkpdZ6wvCE
-         KC8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ULEN3AF9y2KBfuSZET2D57IROuZfXaP5RAdmvwCafsQ=;
-        b=jx6mv0igVxebPk6usuuat6KATaZxuW5HAnvg+sXeExiOQ1TYvD3wDEHX+q/jbi0hhR
-         utxT5pvew6S4yWc0sTmGf9G0z2YUsRemjGCII2nt4Df5IM2CIZc0LGT3xuNIMgkGyG4J
-         iPGSPd1XczcgfJT3hJEWYDlm/J5eFMf0WngZL5F0OzetpCNThDAKu25oj0/UayxW+o00
-         orbcSCXU9VRBMowKn/ph5pbC/XsBihsbiwXf7z+JJshTWscUBSQnRjvVn09VoHY1jCjj
-         zdL2M2x0557IuE+7I6ggm/s1JKlrB42NhNE4jTH5KdPqJRf/6f0kaBohdy1yqLuv9MIQ
-         2SYg==
-X-Gm-Message-State: AOAM5308l+OeylQolIABGr7A1Bammchftps1ntP1JMK6PITbARxWQFNu
-        6im7ybn0Z+heAUK/zPlzxTznJA==
-X-Google-Smtp-Source: ABdhPJxgh6pxnRcnHBhLb1rPmzNOcdIbhacj+NE08wUryBm7Ulk0nVYCxvklUbWQObfU6xiomwA/eQ==
-X-Received: by 2002:adf:d84b:: with SMTP id k11mr202405wrl.135.1627032679155;
-        Fri, 23 Jul 2021 02:31:19 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.77.94])
-        by smtp.gmail.com with ESMTPSA id g138sm32616967wmg.32.2021.07.23.02.31.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 02:31:18 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v2 2/5] libbpf: rename btf__get_from_id() as
- btf__load_from_kernel_by_id()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-References: <20210721153808.6902-1-quentin@isovalent.com>
- <20210721153808.6902-3-quentin@isovalent.com>
- <CAEf4BzZqEZLt0_qgmniY-hqgEg7q0ur0Z5U0r8KFTwSz=2StSg@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <88d3cd19-5985-ad73-5f23-4f6f7d1b1be2@isovalent.com>
-Date:   Fri, 23 Jul 2021 10:31:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        with ESMTP id S230397AbhGWJAv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Jul 2021 05:00:51 -0400
+X-Greylist: delayed 94 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 23 Jul 2021 02:41:25 PDT
+Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC6DC061575;
+        Fri, 23 Jul 2021 02:41:25 -0700 (PDT)
+Received: from iva8-d077482f1536.qloud-c.yandex.net (iva8-d077482f1536.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:2f26:0:640:d077:482f])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 78A512E198D;
+        Fri, 23 Jul 2021 12:39:46 +0300 (MSK)
+Received: from iva8-5ba4ca89b0c6.qloud-c.yandex.net (iva8-5ba4ca89b0c6.qloud-c.yandex.net [2a02:6b8:c0c:a8ae:0:640:5ba4:ca89])
+        by iva8-d077482f1536.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id CFZnpdw2zJ-dj088eSL;
+        Fri, 23 Jul 2021 12:39:46 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1627033186; bh=sN7C3HUF4CT+oTysV0poD5qgCG15k/0i+3fQFTFO4/g=;
+        h=Cc:Message-Id:Date:Subject:To:From;
+        b=T3UVjrlXrr5EuXmpA4sw/4UHQY2svfo/tAZ+huXCiNvoGKSWOu0XLt2XzQUqxDYIs
+         hyN13AkNO5uviZfr2yKUIj1FlrsxUgpVM9LZrPeeamENX2o/JMEWfsQzB8YAfDLCn7
+         k+4p9DrsGrgbl9JICokJpx5aUIjQQqaoVcBZOB+Y=
+Authentication-Results: iva8-d077482f1536.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from 172.31.93.162-vpn.dhcp.yndx.net (172.31.93.162-vpn.dhcp.yndx.net [172.31.93.162])
+        by iva8-5ba4ca89b0c6.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id oTYqu3ggUK-dj2urJdf;
+        Fri, 23 Jul 2021 12:39:45 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Dmitry Yakunin <zeil@yandex-team.ru>
+To:     kafai@fb.com, edumazet@google.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     dmtrmonakhov@yandex-team.ru
+Subject: [PATCH] tcp: use rto_min value from socket in retransmits timeout
+Date:   Fri, 23 Jul 2021 12:39:38 +0300
+Message-Id: <20210723093938.49354-1-zeil@yandex-team.ru>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZqEZLt0_qgmniY-hqgEg7q0ur0Z5U0r8KFTwSz=2StSg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-07-22 17:39 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Wed, Jul 21, 2021 at 8:38 AM Quentin Monnet <quentin@isovalent.com> wrote:
->>
->> Rename function btf__get_from_id() as btf__load_from_kernel_by_id() to
->> better indicate what the function does. Change the new function so that,
->> instead of requiring a pointer to the pointer to update and returning
->> with an error code, it takes a single argument (the id of the BTF
->> object) and returns the corresponding pointer. This is more in line with
->> the existing constructors.
->>
->> The other tools calling the deprecated btf__get_from_id() function will
->> be updated in a future commit.
->>
->> References:
->>
->> - https://github.com/libbpf/libbpf/issues/278
->> - https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#btfh-apis
->>
->> v2:
->> - Instead of a simple renaming, change the new function to make it
->>   return the pointer to the btf struct.
->> - API v0.5.0 instead of v0.6.0.
-> 
-> We generally keep such version changes to cover letters. It keeps each
-> individual commit clean and collects full history in the cover letter
-> which becomes a body of merge commit when the whole patch set is
-> applied. For next revision please consolidate the history in the cover
-> letter. Thanks!
+Commit ca584ba07086 ("tcp: bpf: Add TCP_BPF_RTO_MIN for bpf_setsockopt")
+adds ability to set rto_min value on socket less then default TCP_RTO_MIN.
+But retransmits_timed_out() function still uses TCP_RTO_MIN and
+tcp_retries{1,2} sysctls don't work properly for tuned socket values.
 
-OK will do.
-I've seen other folks detailing the changes on individual patches, and
-done so in the past, although it's true the current trend is to have it
-in the cover letter (and I understand the motivation).
+Fixes: ca584ba07086 ("tcp: bpf: Add TCP_BPF_RTO_MIN for bpf_setsockopt")
+Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
+Acked-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+---
+ net/ipv4/tcp_timer.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-> 
->>
->> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
->> Acked-by: John Fastabend <john.fastabend@gmail.com>
->> ---
->>  tools/lib/bpf/btf.c      | 25 +++++++++++++++++--------
->>  tools/lib/bpf/btf.h      |  1 +
->>  tools/lib/bpf/libbpf.c   |  5 +++--
->>  tools/lib/bpf/libbpf.map |  1 +
->>  4 files changed, 22 insertions(+), 10 deletions(-)
->>
->> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->> index 7e0de560490e..6654bdee7ad7 100644
->> --- a/tools/lib/bpf/btf.c
->> +++ b/tools/lib/bpf/btf.c
->> @@ -1383,21 +1383,30 @@ struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf)
->>         return btf;
->>  }
->>
->> +struct btf *btf__load_from_kernel_by_id(__u32 id)
->> +{
->> +       struct btf *btf;
->> +       int btf_fd;
->> +
->> +       btf_fd = bpf_btf_get_fd_by_id(id);
->> +       if (btf_fd < 0)
->> +               return ERR_PTR(-errno);
-> 
-> please use libbpf_err_ptr() for consistency, see
-> bpf_object__open_mem() for an example
+diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+index 20cf4a9..66c4b97 100644
+--- a/net/ipv4/tcp_timer.c
++++ b/net/ipv4/tcp_timer.c
+@@ -199,12 +199,13 @@ static unsigned int tcp_model_timeout(struct sock *sk,
+  *  @boundary: max number of retransmissions
+  *  @timeout:  A custom timeout value.
+  *             If set to 0 the default timeout is calculated and used.
+- *             Using TCP_RTO_MIN and the number of unsuccessful retransmits.
++ *             Using icsk_rto_min value from socket or RTAX_RTO_MIN from route
++ *             and the number of unsuccessful retransmits.
+  *
+  * The default "timeout" value this function can calculate and use
+  * is equivalent to the timeout of a TCP Connection
+  * after "boundary" unsuccessful, exponentially backed-off
+- * retransmissions with an initial RTO of TCP_RTO_MIN.
++ * retransmissions with an initial RTO of icsk_rto_min or RTAX_RTO_MIN.
+  */
+ static bool retransmits_timed_out(struct sock *sk,
+ 				  unsigned int boundary,
+@@ -217,7 +218,7 @@ static bool retransmits_timed_out(struct sock *sk,
+ 
+ 	start_ts = tcp_sk(sk)->retrans_stamp;
+ 	if (likely(timeout == 0)) {
+-		unsigned int rto_base = TCP_RTO_MIN;
++		unsigned int rto_base = tcp_rto_min(sk);
+ 
+ 		if ((1 << sk->sk_state) & (TCPF_SYN_SENT | TCPF_SYN_RECV))
+ 			rto_base = tcp_timeout_init(sk);
+-- 
+2.7.4
 
-I can do that, but I'll need to uncouple btf__get_from_id() from the new
-function. If it calls btf__load_from_kernel_by_id() and
-LIBBPF_STRICT_CLEAN_PTRS is set, it would change its return value.
-
-> 
->> +
->> +       btf = btf_get_from_fd(btf_fd, NULL);
->> +       close(btf_fd);
->> +
->> +       return libbpf_ptr(btf);
->> +}
->> +
->>  int btf__get_from_id(__u32 id, struct btf **btf)
->>  {
->>         struct btf *res;
->> -       int err, btf_fd;
->> +       int err;
->>
->>         *btf = NULL;
->> -       btf_fd = bpf_btf_get_fd_by_id(id);
->> -       if (btf_fd < 0)
->> -               return libbpf_err(-errno);
->> -
->> -       res = btf_get_from_fd(btf_fd, NULL);
->> +       res = btf__load_from_kernel_by_id(id);
->>         err = libbpf_get_error(res);
->>
->> -       close(btf_fd);
->> -
->>         if (err)
->>                 return libbpf_err(err);
->>
->> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
->> index fd8a21d936ef..3db9446bc133 100644
->> --- a/tools/lib/bpf/btf.h
->> +++ b/tools/lib/bpf/btf.h
->> @@ -68,6 +68,7 @@ LIBBPF_API const void *btf__get_raw_data(const struct btf *btf, __u32 *size);
->>  LIBBPF_API const char *btf__name_by_offset(const struct btf *btf, __u32 offset);
->>  LIBBPF_API const char *btf__str_by_offset(const struct btf *btf, __u32 offset);
->>  LIBBPF_API int btf__get_from_id(__u32 id, struct btf **btf);
->> +LIBBPF_API struct btf *btf__load_from_kernel_by_id(__u32 id);
-> 
-> let's move this definition to after btf__parse() to keep all
-> "constructors" together (we can move btf__get_from_id() there for
-> completeness as well, I suppose).
-
-I thought about that but wasn't sure, OK will do.
-
-> 
->>  LIBBPF_API int btf__get_map_kv_tids(const struct btf *btf, const char *map_name,
->>                                     __u32 expected_key_size,
->>                                     __u32 expected_value_size,
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 242e97892043..eff005b1eba1 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -9576,8 +9576,8 @@ static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd)
->>  {
->>         struct bpf_prog_info_linear *info_linear;
->>         struct bpf_prog_info *info;
->> -       struct btf *btf = NULL;
->>         int err = -EINVAL;
->> +       struct btf *btf;
->>
->>         info_linear = bpf_program__get_prog_info_linear(attach_prog_fd, 0);
->>         err = libbpf_get_error(info_linear);
->> @@ -9591,7 +9591,8 @@ static int libbpf_find_prog_btf_id(const char *name, __u32 attach_prog_fd)
->>                 pr_warn("The target program doesn't have BTF\n");
->>                 goto out;
->>         }
->> -       if (btf__get_from_id(info->btf_id, &btf)) {
->> +       btf = btf__load_from_kernel_by_id(info->btf_id);
->> +       if (libbpf_get_error(btf)) {
-> 
-> there seems to be a bug in existing code and you are keeping it. On
-> error err will be 0. Let's fix it. Same for above if (!info->btf_id),
-> please fix that as well while you are at it.
-
-Oh right, I saw that err was initialised at -EINVAL and did not notice
-it was changed for the info_linear. I'll address it.
