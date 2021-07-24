@@ -2,96 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4863D484F
-	for <lists+bpf@lfdr.de>; Sat, 24 Jul 2021 17:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370733D48B5
+	for <lists+bpf@lfdr.de>; Sat, 24 Jul 2021 19:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhGXOlK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Jul 2021 10:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55222 "EHLO
+        id S229667AbhGXQXY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Jul 2021 12:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhGXOlJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 24 Jul 2021 10:41:09 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB14C061575;
-        Sat, 24 Jul 2021 08:21:40 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id a20so6780959plm.0;
-        Sat, 24 Jul 2021 08:21:40 -0700 (PDT)
+        with ESMTP id S229530AbhGXQXY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Jul 2021 12:23:24 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B02C061575
+        for <bpf@vger.kernel.org>; Sat, 24 Jul 2021 10:03:54 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id u12so5752058eds.2
+        for <bpf@vger.kernel.org>; Sat, 24 Jul 2021 10:03:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YO+3D7atNziJ00YoEqVQ4u+r3Pt08MtNO7aczD+MpIs=;
-        b=sWfQx2byWQ2XbJr/7AlVtlK+ZHLARyzVkDMrboDJKFf+GGtHlDyNOcUH9Fz6pW0BxK
-         HFl8sBcz84XqB8IoGhvXpwJhdrr/g019BHk/B+geRKW4CFa3ah9x1+sugScKHyKYQFtd
-         dGW4HhjyROkKhkDAb0YWhwwNkiR+olAKeHNL0Ih1bkxKm8z2NG+WAhCmvFFJtsDEjaKe
-         LWztnqEFO1lT6ynyvimLd3hricLi+OCSm21JgErch+qkRmDeSKqNH7Gp6bX5/1lqw/FN
-         /kuA1yNVR82ztAuIty/5EAUykzj9HjJfLSxV3Hi4ZvsDPqv+CavIroHhZ3BtM0vcRv42
-         1rig==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=fvvzSkrxynUlYRtuZiPjXihIfM7iW9pBn/vgaIiTrxQ=;
+        b=JtVSmfrygVJ6YkOFZeTUHiCiz8OXNlcZ1HAVMDx7X4UtNEg2ukDiI/KYhDwEBYQt6g
+         41AznrhI1IYRIvA6ssdrB1SLkE9DSVmaCzXHAHN/b26YpcvB4K236SKrxLEMagcaPMuq
+         IwB5xW6lo+sB0zPpZlVJAXQlV3Rvt2FamweYZUxIynuU7Z/qB5YO15f2ygChkkzcRG2y
+         E5WWoF5/fEYjCBXGRJukglaHXO/8tqhxqFgeLX6rsRVpMabMl1tKcZFPl8cXMP1iVUfg
+         fwMS2/AUAipNWvme/A6lTYIHaPzEolZ9GnGi5n9Kud3PhcuuXLGo+Z5gFCxuNs2geRmv
+         gcEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YO+3D7atNziJ00YoEqVQ4u+r3Pt08MtNO7aczD+MpIs=;
-        b=HiB23Om8ijLcMUnOrCGsgQX5WV/7Grujxu9VQFYbN4tjqYMDDuHY6+RoUzV7ILXaMB
-         gDoUgTNpP1HEhZMC1/Hntupih61x+0GExaDEdAzTkMld3+1sjuzOWU6zcgbJ/s62tduX
-         dmtTP1eaJUR3oE23c0Of6EUinSewOF8tkiytovphTPtdeP/POTjbEzuG1bpWVD/m6qTX
-         dNAfl19GuhCEl6P7P4lZtH1lmQrTmW/hfUiR/6vRfi9THRZpn0I1OD/DxaX3Ic36+E8M
-         sCT4AjO+FWXkcAdrYJCq0/4WpKe1OwCsFN1XMUl77MJgw2QMx5Bo1+oR/b+28SnJt5Bm
-         0tkA==
-X-Gm-Message-State: AOAM53189qe22pcRYzKL0HEPjLYEPOqTRV0Zk2hDFwE0qYuo+6EM1FCi
-        IoLBZSi/QVKN0ucWsCANmBE=
-X-Google-Smtp-Source: ABdhPJy16SLT3P10eQ03C9l87/erJd/C/uV7Tf0YFLXDviZnwUZE/S9GPDy+jKPj3Vp4SB9zFA/Ykg==
-X-Received: by 2002:a63:1551:: with SMTP id 17mr10016420pgv.76.1627140099737;
-        Sat, 24 Jul 2021 08:21:39 -0700 (PDT)
-Received: from localhost.localdomain ([182.209.58.45])
-        by smtp.gmail.com with ESMTPSA id w22sm36682527pfu.50.2021.07.24.08.21.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 08:21:39 -0700 (PDT)
-From:   Juhee Kang <claudiajkang@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [bpf-next 2/2] samples: bpf: Add the omitted xdp samples to .gitignore
-Date:   Sat, 24 Jul 2021 15:21:24 +0000
-Message-Id: <20210724152124.9762-2-claudiajkang@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210724152124.9762-1-claudiajkang@gmail.com>
-References: <20210724152124.9762-1-claudiajkang@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=fvvzSkrxynUlYRtuZiPjXihIfM7iW9pBn/vgaIiTrxQ=;
+        b=JadMhFlVXhJo9Tt9BaSAlQOb0+pCi+qUQubuvn7+awSyxDXGq3oTtT2szyJdjx2b2u
+         916YB67E0bKV7/dIrX4hhg5CG0ETwSaiYmPm5HzHzVBQRnbgH3xtv6mgerMbnAPR4q0P
+         INgAYMmP29R54A16/CA5SZO7Ye/kEeXhq+dApB44nH5f2fQoWGcSxVkGYYHfvSrHE0Cz
+         1PWPCzd6frmZYnH1breFiB63XRXws1I8SI/71+yeK6iLW/+RwIeWTNbnhxbnZQtuV3Gy
+         xl0LAYujbOBGKFwRD/scBKRDqumtzA0ixRvhEJaLBG4S9c5pLfbcp7goXin+1RtBAOd1
+         BBMA==
+X-Gm-Message-State: AOAM533oDoOHnvXkApjUuJtsL3Uw+XNUT0sjmoaa5MY8tTfD+LeUPQpg
+        COi83MZogikd/CLx26FRZiOTVziGPIgCUaXlAdmWGIby
+X-Google-Smtp-Source: ABdhPJwr81TZmD7fBoQ7tMNL2PkUR8N0Q6LVbDizbyfheGRmi8iaIvSxZC5m6ay8YDNvmVS+pELLTO73i2N7X75EzTA=
+X-Received: by 2002:a05:6402:60e:: with SMTP id n14mr12107987edv.363.1627146233367;
+ Sat, 24 Jul 2021 10:03:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <a1ae15c8-f43c-c382-a7e0-10d3fedb6a@gmail.com>
+In-Reply-To: <a1ae15c8-f43c-c382-a7e0-10d3fedb6a@gmail.com>
+From:   Vincent Li <vincent.mc.li@gmail.com>
+Date:   Sat, 24 Jul 2021 10:03:42 -0700
+Message-ID: <CAK3+h2z+V1VNiGsNPHsyLZqdTwEsWMF9QnXZT2mi30dkb2xBXA@mail.gmail.com>
+Subject: Re: Prog section rejected: Argument list too long (7)!
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There are recently added xdp samples (xdp_redirect_map_multi and
-xdpsock_ctrl_proc) which are not managed by .gitignore.
+On Fri, Jul 23, 2021 at 7:17 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+>
+>
+> Hi BPF experts,
+>
+> I have a cilium PR https://github.com/cilium/cilium/pull/16916 that
+> failed to pass verifier in kernel 4.19, the error is like:
+>
+> level=warning msg="Prog section '2/7' rejected: Argument list too long
+> (7)!" subsys=datapath-loader
+> level=warning msg=" - Type:         3" subsys=datapath-loader
+> level=warning msg=" - Attach Type:  0" subsys=datapath-loader
+> level=warning msg=" - Instructions: 4578 (482 over limit)"
+> subsys=datapath-loader
+> level=warning msg=" - License:      GPL" subsys=datapath-loader
+> level=warning subsys=datapath-loader
+> level=warning msg="Verifier analysis:" subsys=datapath-loader
+> level=warning subsys=datapath-loader
+> level=warning msg="Error filling program arrays!" subsys=datapath-loader
+> level=warning msg="Unable to load program" subsys=datapath-loader
+>
+> then I tried to run the PR locally in my dev machine with custom upstream
+> kernel version, I narrowed the issue down to between upstream kernel
+> version 5.7 and 5.8, in 5.7, it failed with:
 
-This commit adds these files to .gitignore.
+I further narrow it down to between 5.7 and 5.8-rc1 release, but still
+no clue which commits in 5.8-rc1 resolved the issue
 
-Signed-off-by: Juhee Kang <claudiajkang@gmail.com>
----
- samples/bpf/.gitignore | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/samples/bpf/.gitignore b/samples/bpf/.gitignore
-index 0b9548ea8477..fcba217f0ae2 100644
---- a/samples/bpf/.gitignore
-+++ b/samples/bpf/.gitignore
-@@ -45,11 +45,13 @@ xdp_monitor
- xdp_redirect
- xdp_redirect_cpu
- xdp_redirect_map
-+xdp_redirect_map_multi
- xdp_router_ipv4
- xdp_rxq_info
- xdp_sample_pkts
- xdp_tx_iptunnel
- xdpsock
-+xdpsock_ctrl_proc
- xsk_fwd
- testfile.img
- hbm_out.log
--- 
-2.27.0
-
+>
+> level=warning msg="processed 50 insns (limit 1000000) max_states_per_insn
+> 0 total_states 1 peak_states 1 mark_read 1" subsys=datapath-loader
+> level=warning subsys=datapath-loader
+> level=warning msg="Log buffer too small to dump verifier log 16777215
+> bytes (9 tries)!" subsys=datapath-loader
+> level=warning msg="Error filling program arrays!" subsys=datapath-loader
+> level=warning msg="Unable to load program" subsys=datapath-loader
+>
+> 5.8 works fine.
+>
+> What difference between 5.7 and 5.8 to cause this verifier problem, I
+> tried to git log v5.7..v5.8 kernel/bpf/verifier, I could not see commits
+> that would make the difference with my limited BPF knowledge. Any clue
+> would be appreciated!
+>
+> Thanks
+>
+> Vincent
+>
