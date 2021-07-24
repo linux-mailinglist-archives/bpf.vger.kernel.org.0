@@ -2,128 +2,290 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3123D461B
-	for <lists+bpf@lfdr.de>; Sat, 24 Jul 2021 09:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFAC3D47CA
+	for <lists+bpf@lfdr.de>; Sat, 24 Jul 2021 15:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbhGXHG6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Jul 2021 03:06:58 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:43875 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234390AbhGXHG5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 24 Jul 2021 03:06:57 -0400
-Received: by mail-io1-f69.google.com with SMTP id d7-20020a6b6e070000b02904c0978ed194so3524754ioh.10
-        for <bpf@vger.kernel.org>; Sat, 24 Jul 2021 00:47:30 -0700 (PDT)
+        id S230513AbhGXM0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Jul 2021 08:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231965AbhGXM0n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Jul 2021 08:26:43 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20FCC061575;
+        Sat, 24 Jul 2021 06:07:14 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id 185so5799526iou.10;
+        Sat, 24 Jul 2021 06:07:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=b0ZzR6fiqRiD/cltc2lY1W8laj4GvgghSAggbN2haIg=;
+        b=Rh6cw+16BmMJgW7m+jCGYmnMxxbGX+2w7QDor338jkIkhvcRzKxhTUN+eOOsQh9wNt
+         nHipR/468L/GaqC6CO8KW4TSIO0jReC6HXCfSAv06dJsMaxCFjmfiD95WpkWYR2cJBqa
+         BNs7+B73EYlLobxslREBzyRTnZeDmzly9HmKhGX7bk3WtjDEU5nqEboN9d7zB7+LOcP/
+         IIYwuYN+b+f9N/a0Ydv6SaB56DTurYoP+R3jGJILXFi1TvR45IjysYJ0ElMqZGCRVmdc
+         oYnqy14Dbhdozi6o5/OaY+BfDX64HcJnjt+wMR24wT9ySAsm26p+3TCnk3SPcAj3mnUw
+         0bEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=4XG3PYSleC8EliCRO9+aVPrJ5jiqCH3K7OK1Vx67Dpw=;
-        b=eYWk2DVFEwrxXNWCUyzQfXFRpuoxfQKbeXIo3sFUm9iTiwTLWWRxQPhMDIx0R4ypl2
-         EF1bOYGCb3sUB6pXi1ZMKjXwlhZm3v3xIQzFU4NBty+we50yeGiwh1la6n7lpw9gkMDi
-         /oFAW+MkNoQiOFBj8CrAO3VejezzemklZMe/SAg6NQlliYk1b0Cs1tFRtkX1jQcouArL
-         OV5fa+BqXCCt50/BZycEp0BRwyniyg9gv51alRdMQbER6BN/wu5PSDctSbYYdC89DowZ
-         lFsBZLHrJi7jcyhnF4LKaYYo6Vn5ci/p7JEKGzV4gN5z3e7vibm4teuFS4VOT4HzkNmR
-         JZSQ==
-X-Gm-Message-State: AOAM531iL7BAiR+N7XkEwf8dsAy6n59xrIKVuz3xloVvUIv3gMuyarNS
-        lAHKeY3MoPMeHrFHC/eVUWqs73peYtLMR8oClN9vitaa7ImB
-X-Google-Smtp-Source: ABdhPJwt5vSsnNiOYajOEOhq70lFbdplj8PE/SqfAm3S8a9QfkRD3CwKgLlrlXRWjgy2JwqKF4cOzbO+9lP7NwH2HMgQx1tgBGcM
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=b0ZzR6fiqRiD/cltc2lY1W8laj4GvgghSAggbN2haIg=;
+        b=BvYjfO6zs7pWoq9Ho7HbQNcodP/N5uxbhgLqDFYNEjygE3O6UGcgNMHTMmp7+9WX7b
+         37e4/NEgcQBa7tEXc+nEzaVYKqNaLqMwY5mQ0n6RJgIzbtvL7IvMitLh8qM5EiDMVB5U
+         U5vxwFBoa6snTa25yxnDJr+s25BgA4JC+Nrk6nmYfJJCqurR3djB/ssKmfHoV1uq0P1i
+         ABiFQYMRO8sAG8lhC2qZyJjh4nWMHZDJq9E5yzvduhOmAPnXG/stZkRqLdYYnRPdRyHY
+         oyB5A5c5IAtiVwgC3ooF0KWszuA4UCoSzyMYBa7bnx/p2EZeq2G4i0IPtjizLRCfaTmD
+         +xBA==
+X-Gm-Message-State: AOAM533ENavOr5EsSiS8rGX0m+SjKtBfdijuB+dj6WOrLQJABIEh2YyV
+        XsBaSV2j0AooP2GZmX1pmMw=
+X-Google-Smtp-Source: ABdhPJzQOfPM5RCK11XYOKZhwHPRTvWKDjhGYMbDkTP3yRzLqoEHClq8TLIGzE4D9OKxdeVLlQ/lsQ==
+X-Received: by 2002:a6b:7901:: with SMTP id i1mr7553138iop.41.1627132034272;
+        Sat, 24 Jul 2021 06:07:14 -0700 (PDT)
+Received: from ip-172-31-30-86.us-east-2.compute.internal (ec2-18-117-247-94.us-east-2.compute.amazonaws.com. [18.117.247.94])
+        by smtp.gmail.com with ESMTPSA id l9sm9597066iln.12.2021.07.24.06.07.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 24 Jul 2021 06:07:13 -0700 (PDT)
+Date:   Sat, 24 Jul 2021 13:07:09 +0000
+From:   Yunsheng Lin <yunshenglin0825@gmail.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH rfc v6 2/4] page_pool: add interface to manipulate frag
+ count in page pool
+Message-ID: <20210724130709.GA1461@ip-172-31-30-86.us-east-2.compute.internal>
+References: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
+ <1626752145-27266-3-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Uf=WbpngDPQ1V0X+XSJbZ91=cuaz8r_J96=BrXg01PJFA@mail.gmail.com>
+ <92e68f4e-49a4-568c-a281-2865b54a146e@huawei.com>
+ <CAKgT0UfwiBowGN+ctqoFZ6qaQAUp-0uGJeukk4OHOEOOfbrEWw@mail.gmail.com>
+ <fffae41f-b0a3-3c43-491f-096d31ba94ca@huawei.com>
+ <CAKgT0UcBgo0Ex=x514qGeLvppJr-0vqx9ZngAFDTwugjtKUrOA@mail.gmail.com>
+ <41283c5f-2f58-7fa7-e8fe-a91207a57353@huawei.com>
+ <CAKgT0Ud+PRzz7mgX1dru1=i3TDiaGOoyhg7vp6cz+3NzVFZf+A@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2f09:: with SMTP id q9mr6846237iow.196.1627112849887;
- Sat, 24 Jul 2021 00:47:29 -0700 (PDT)
-Date:   Sat, 24 Jul 2021 00:47:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006d5cab05c7d9bb87@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in bpf_get_current_cgroup_id
-From:   syzbot <syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKgT0Ud+PRzz7mgX1dru1=i3TDiaGOoyhg7vp6cz+3NzVFZf+A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, Jul 23, 2021 at 09:08:00AM -0700, Alexander Duyck wrote:
+> On Fri, Jul 23, 2021 at 4:12 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >
+> > On 2021/7/22 23:18, Alexander Duyck wrote:
+> > >>>
+> > >>>> You are right that that may cover up the reference count errors. How about
+> > >>>> something like below:
+> > >>>>
+> > >>>> static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+> > >>>>                                                           long nr)
+> > >>>> {
+> > >>>> #ifdef CONFIG_DEBUG_PAGE_REF
+> > >>>>         long ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+> > >>>>
+> > >>>>         WARN_ON(ret < 0);
+> > >>>>
+> > >>>>         return ret;
+> > >>>> #else
+> > >>>>         if (atomic_long_read(&page->pp_frag_count) == nr)
+> > >>>>                 return 0;
+> > >>>>
+> > >>>>         return atomic_long_sub_return(nr, &page->pp_frag_count);
+> > >>>> #end
+> > >>>> }
+> > >>>>
+> > >>>> Or any better suggestion?
+> > >>>
+> > >>> So the one thing I might change would be to make it so that you only
+> > >>> do the atomic_long_read if nr is a constant via __builtin_constant_p.
+> > >>> That way you would be performing the comparison in
+> > >>> __page_pool_put_page and in the cases of freeing or draining the
+> > >>> page_frags you would be using the atomic_long_sub_return which should
+> > >>> be paths where you would not expect it to match or that are slowpath
+> > >>> anyway.
+> > >>>
+> > >>> Also I would keep the WARN_ON in both paths just to be on the safe side.
+> > >>
+> > >> If I understand it correctly, we should change it as below, right?
+> > >>
+> > >> static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+> > >>                                                           long nr)
+> > >> {
+> > >>         long ret;
+> > >>
+> > >>         /* As suggested by Alexander, atomic_long_read() may cover up the
+> > >>          * reference count errors, so avoid calling atomic_long_read() in
+> > >>          * the cases of freeing or draining the page_frags, where we would
+> > >>          * not expect it to match or that are slowpath anyway.
+> > >>          */
+> > >>         if (__builtin_constant_p(nr) &&
+> > >>             atomic_long_read(&page->pp_frag_count) == nr)
+> > >>                 return 0;
+> > >>
+> > >>         ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+> > >>         WARN_ON(ret < 0);
+> > >>         return ret;
+> > >> }
+> > >
+> > > Yes, that is what I had in mind.
+> > >
+> > > One thought I had for a future optimization is that we could look at
+> > > reducing the count by 1 so that we could essentially combine the
+> > > non-frag and frag cases.Then instead of testing for 1 we would test
+> > > for 0 at thee start of the function and test for < 0 to decide if we
+> > > want to free it or not instead of testing for 0. With that we can
+> > > essentially reduce the calls to the WARN_ON since we should only have
+> > > one case where we actually return a value < 0, and we can then check
+> > > to see if we overshot -1 which would be the WARN_ON case.
+> > >
+> > > With that a value of 0 instead of 1 would indicate page frag is not in
+> > > use for the page *AND/OR* that the page has reached the state where
+> > > there are no other frags present so the page can be recycled. In
+> > > effect it would allow us to mix page frags and no frags within the
+> > > same pool. The added bonus would be we could get rid of the check for
+> > > PP_FLAG_PAGE_FRAG flag check in the __page_pool_put_page function and
+> > > replace it with a check for PAGE_POOL_DMA_USE_PP_FRAG_COUNT since we
+> > > cannot read frag_count in that case.
+> >
+> > Let's leave it for a future optimization.
+> > I am not sure if there is use case to support both frag page and non-frag
+> > page for the same page pool. If there is, maybe we can use "page->pp_frag_count
+> > > 0" to indicate that the page is frag page, and "page->pp_frag_count == 0"
+> > to indicate that the page is non-frag page, so that we can support frag page and
+> > non-frag page for the same page pool instead of disabling non-frag page support
+> > when PP_FLAG_PAGE_FRAG flag is set, which might be conflit with the above
+> > optimization?
+> 
+> As far as use case I can see a number of potential uses. For example
+> in the case of drivers that do something like a header/data split I
+> could see potentially having the header pages be frags while the data
+> pages being 4K blocks. Basically the big optimization of the count ==
+> 1/0/nr case is that you aren't increasing/decreasing the count and it
+> is immediately being recycled/reused. So in such a case being able to
+> add frag count some pages, and not to others would likely be quite
+> useful.
 
-syzbot found the following issue on:
+I am not sure how the header/data split is implemented in hw, but it
+seems the driver is not able to tell which desc will be filled with
+header or data in advance, so it might need to allocate 4K block for
+all desc?
 
-HEAD commit:    d6371c76e20d bpf: Fix OOB read when printing XDP link fdinfo
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=146597f2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6da37c7627210105
-dashboard link: https://syzkaller.appspot.com/bug?extid=7ee5c2c09c284495371f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126b7c40300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1616cf6a300000
+> 
+> Basically by shifting the pool values by 1 you can have both in the
+> same pool with little issue. However the big change is that instead of
+> testing for count = nr it would end up being pp_frag_count = nr - 1.
+> So in the case of the standard page pool pages being freed or the last
+> frag you would be looking at pp_frag_count = 0. In addition we can
+> mask the WARN_ON overhead as you would be using -1 as the point to
+> free so you would only have to perform the WARN_ON check for the last
+> frag instead of every frag.
 
-The issue was bisected to:
+Yes, it seems doable.
 
-commit 79a7f8bdb159d9914b58740f3d31d602a6e4aca8
-Author: Alexei Starovoitov <ast@kernel.org>
-Date:   Fri May 14 00:36:03 2021 +0000
+> 
+> > Also, I am prototyping the tx recycling based on page pool in order to see
+> > if there is any value supporting the tx recycling.
+> 
+> Just to clarify here when you say Tx recycling you are talking about
+> socket to netdev correct? Just want to be certain since the netdev to
+> netdev case should already have recycling for page pool pages as long
+> as it follows a 1<->1 path.
 
-    bpf: Introduce bpf_sys_bpf() helper and program type.
+Yes, the above Tx recycling meant socket to netdev.
+Also, the above "netdev to netdev" only meant XDP now, but not the IP
+forwarding path in the network stack, right?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a73112300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16a73112300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12a73112300000
+> 
+> > As the busypoll has enable the one-to-one relation between NAPI and sock,
+> > and there is one-to-one relation between NAPI and page pool, perhaps it make
+> > senses that we use page pool to recycle the tx page too?
+> >
+> > There are possibly below problems when doing that as I am aware of now:
+> > 1. busypoll is for rx, and tx may not be using the same queue as rx even if
+> >    there are *technically* the same flow， so I am not sure it is ok to use
+> >    busypoll infrastructure to get the page pool ptr for a specific sock.
+> >
+> > 2. There may be multi socks using the same page pool ptr to allocate page for
+> >    multi flow, so we can not assume the same NAPI polling protection as rx,
+> >    which might mean we can only use the recyclable page from pool->ring under the
+> >    r->consumer_lock protection.
+> >
+> > 3. Right now tcp_sendmsg_locked() use sk_page_frag_refill() to refill the page
+> >    frag for tcp xmit, when implementing a similar sk_page_pool_frag_refill()
+> >    based on page pool, I found that tcp coalesce in tcp_mtu_probe() and
+> >    tcp fragment in tso_fragment() might mess with the page_ref_count directly.
+> >
+> > As the above the problem I am aware of(I believe there are other problems I am not
+> > aware of yet), I am not sure if the tcp tx page recycling based on page pool is
+> > doable or not, I would like to hear about your opinion about tcp tx recycling support
+> > based on page pool first, in case it is a dead end to support that.
+> 
+> I'm honestly not sure there is much there to gain. Last I knew TCP was
+> using order 3 pages for transmitting and as a result the overhead for
+> the pages should already be greatly reduced. In addition one of the
+> main reasons for page_pool  is the fact that the device has to DMA map
+> the page and that can have very high overhead on systems with an
+> IOMMU.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
-Fixes: 79a7f8bdb159 ("bpf: Introduce bpf_sys_bpf() helper and program type.")
+Yes, avoiding the IOMMU overhead is the main gain. and "order 3 pages"
+seems to be disabled on defaut?
 
-=============================
-WARNING: suspicious RCU usage
-5.14.0-rc1-syzkaller #0 Not tainted
------------------------------
-include/linux/cgroup.h:481 suspicious rcu_dereference_check() usage!
+> 
+> Rather than trying to reuse the devices page pool it might make more
+> sense to see if you couldn't have TCP just use some sort of circular
+> buffer of memory that is directly mapped for the device that it is
+> going to be transmitting to. Essentially what you would be doing is
+> creating a pre-mapped page and would need to communicate that the
+> memory is already mapped for the device you want to send it to so that
+> it could skip that step.
 
-other info that might help us debug this:
+IIUC sk_page_frag_refill() is already doing a similar reusing as the
+rx reusing implemented in most driver except for the not pre-mapping
+part.
 
+And it seems that even if we pre-map the page and communicate that the
+memory is already mapped to the driver, it is likely that we will not
+be able to reuse the page when the circular buffer is not big enough
+or tx completion/tcp ack is not happening quickly enough, which might
+means unmapping/deallocating old circular buffer and allocating/mapping
+new circular buffer.
 
-rcu_scheduler_active = 2, debug_locks = 1
-no locks held by syz-executor499/8468.
+Using page pool we might be able to alleviate the above problem as it
+does for rx?
 
-stack backtrace:
-CPU: 1 PID: 8468 Comm: syz-executor499 Not tainted 5.14.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- task_css_set include/linux/cgroup.h:481 [inline]
- task_dfl_cgroup include/linux/cgroup.h:550 [inline]
- ____bpf_get_current_cgroup_id kernel/bpf/helpers.c:356 [inline]
- bpf_get_current_cgroup_id+0x1ce/0x210 kernel/bpf/helpers.c:354
- bpf_prog_08c4887f705f20b8+0x10/0x824
- bpf_dispatcher_nop_func include/linux/bpf.h:687 [inline]
- bpf_prog_run_pin_on_cpu include/linux/filter.h:624 [inline]
- bpf_prog_test_run_syscall+0x2cf/0x5f0 net/bpf/test_run.c:954
- bpf_prog_test_run kernel/bpf/syscall.c:3207 [inline]
- __sys_bpf+0x1993/0x53b0 kernel/bpf/syscall.c:4487
- __do_sys_bpf kernel/bpf/syscall.c:4573 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4571 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4571
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x44d6a9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 01 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f32119dd318 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004cb3e8 RCX: 000000000044d6a9
-RDX: 0000000000000048 RSI: 0000000020000500 RDI: 000000000000000a
-RBP: 00000000004cb3e0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 656c6c616b7a7973
-R13: 00007ffeb7672e8f R14: 00007f32119dd400 R15: 0000000000022000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
