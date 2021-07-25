@@ -2,35 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF7A3D4F28
-	for <lists+bpf@lfdr.de>; Sun, 25 Jul 2021 19:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D81693D4F25
+	for <lists+bpf@lfdr.de>; Sun, 25 Jul 2021 19:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhGYQ6z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 25 Jul 2021 12:58:55 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9700 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231189AbhGYQ6y (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 25 Jul 2021 12:58:54 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16PHYpiZ022037
-        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 10:39:24 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a0ewrwr03-1
+        id S230515AbhGYQ6x convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sun, 25 Jul 2021 12:58:53 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8920 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230110AbhGYQ6w (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 25 Jul 2021 12:58:52 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16PHYlN6024435
+        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 10:39:22 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a0gpw5gq2-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 10:39:24 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 10:39:22 -0700
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 25 Jul 2021 10:39:23 -0700
+ 15.1.2176.2; Sun, 25 Jul 2021 10:39:20 -0700
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 7A8B93D405B6; Sun, 25 Jul 2021 10:39:15 -0700 (PDT)
+        id 872233D405B6; Sun, 25 Jul 2021 10:39:17 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH bpf-next 10/14] libbpf: add user_ctx support to bpf_link_create() API
-Date:   Sun, 25 Jul 2021 10:38:41 -0700
-Message-ID: <20210725173845.2593626-11-andrii@kernel.org>
+        Peter Zijlstra <peterz@infradead.org>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>
+Subject: [PATCH bpf-next 11/14] libbpf: add user_ctx to perf_event, kprobe, uprobe, and tp attach APIs
+Date:   Sun, 25 Jul 2021 10:38:42 -0700
+Message-ID: <20210725173845.2593626-12-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210725173845.2593626-1-andrii@kernel.org>
 References: <20210725173845.2593626-1-andrii@kernel.org>
@@ -38,165 +39,345 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: J-3CYbjrGT42nKa8PX1kYRHYMT-FSNa5
-X-Proofpoint-ORIG-GUID: J-3CYbjrGT42nKa8PX1kYRHYMT-FSNa5
+X-Proofpoint-GUID: 6T0vP1V4fetpsB5xxXLSMIhn0qU1LvaY
+X-Proofpoint-ORIG-GUID: 6T0vP1V4fetpsB5xxXLSMIhn0qU1LvaY
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-07-25_05:2021-07-23,2021-07-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- malwarescore=0 spamscore=0 suspectscore=0 adultscore=0 mlxscore=0
- bulkscore=0 clxscore=1015 mlxlogscore=999 priorityscore=1501 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107250126
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 impostorscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107250126
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add ability to specify user_ctx value when creating BPF perf link with
-bpf_link_create() low-level API.
+Wire through user_ctx for all attach APIs that use perf_event_open under the
+hood:
+  - for kprobes, extend existing bpf_kprobe_opts with user_ctx field;
+  - for perf_event, uprobe, and tracepoint APIs, add their _opts variants and
+    pass user_ctx through opts.
 
-Given BPF_LINK_CREATE command is growing and keeps getting new fields that are
-specific to the type of BPF_LINK, extend libbpf side of bpf_link_create() API
-and corresponding OPTS struct to accomodate such changes. Add extra checks to
-prevent using incompatible/unexpected combinations of fields.
+For kernel that don't support BPF_LINK_CREATE for perf_events, and thus
+user_ctx is not supported either, return error and log warning for user.
 
+Cc: Rafael David Tinoco <rafaeldtinoco@gmail.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/bpf.c             | 32 +++++++++++++++++++++++++-------
- tools/lib/bpf/bpf.h             |  8 +++++++-
- tools/lib/bpf/libbpf_internal.h | 32 ++++++++++++++++++++++----------
- 3 files changed, 54 insertions(+), 18 deletions(-)
+ tools/lib/bpf/libbpf.c   | 78 +++++++++++++++++++++++++++++++++-------
+ tools/lib/bpf/libbpf.h   | 71 +++++++++++++++++++++++++++++-------
+ tools/lib/bpf/libbpf.map |  3 ++
+ 3 files changed, 127 insertions(+), 25 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 86dcac44f32f..8dcbee80ced7 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -684,8 +684,13 @@ int bpf_link_create(int prog_fd, int target_fd,
- 	iter_info_len = OPTS_GET(opts, iter_info_len, 0);
- 	target_btf_id = OPTS_GET(opts, target_btf_id, 0);
- 
--	if (iter_info_len && target_btf_id)
--		return libbpf_err(-EINVAL);
-+	/* validate we don't have unexpected combinations of non-zero fields */
-+	if (iter_info_len || target_btf_id) {
-+		if (iter_info_len && target_btf_id)
-+			return libbpf_err(-EINVAL);
-+		if (!OPTS_ZEROED(opts, target_btf_id))
-+			return libbpf_err(-EINVAL);
-+	}
- 
- 	memset(&attr, 0, sizeof(attr));
- 	attr.link_create.prog_fd = prog_fd;
-@@ -693,14 +698,27 @@ int bpf_link_create(int prog_fd, int target_fd,
- 	attr.link_create.attach_type = attach_type;
- 	attr.link_create.flags = OPTS_GET(opts, flags, 0);
- 
--	if (iter_info_len) {
--		attr.link_create.iter_info =
--			ptr_to_u64(OPTS_GET(opts, iter_info, (void *)0));
--		attr.link_create.iter_info_len = iter_info_len;
--	} else if (target_btf_id) {
-+	if (target_btf_id) {
- 		attr.link_create.target_btf_id = target_btf_id;
-+		goto proceed;
- 	}
- 
-+	switch (attach_type) {
-+	case BPF_TRACE_ITER:
-+		attr.link_create.iter_info = ptr_to_u64(OPTS_GET(opts, iter_info, (void *)0));
-+		attr.link_create.iter_info_len = iter_info_len;
-+		break;
-+	case BPF_PERF_EVENT:
-+		attr.link_create.perf_event.user_ctx = OPTS_GET(opts, perf_event.user_ctx, 0);
-+		if (!OPTS_ZEROED(opts, perf_event))
-+			return libbpf_err(-EINVAL);
-+		break;
-+	default:
-+		if (!OPTS_ZEROED(opts, flags))
-+			return libbpf_err(-EINVAL);
-+		break;
-+	}
-+proceed:
- 	fd = sys_bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
- 	return libbpf_err_errno(fd);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 682e7aa8f90b..5836d3627ba6 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -10274,12 +10274,16 @@ static void bpf_link_perf_dealloc(struct bpf_link *link)
+ 	free(perf_link);
  }
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 4f758f8f50cd..49d5d08c3832 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -177,8 +177,14 @@ struct bpf_link_create_opts {
- 	union bpf_iter_link_info *iter_info;
- 	__u32 iter_info_len;
- 	__u32 target_btf_id;
-+	union {
-+		struct {
-+			__u64 user_ctx;
-+		} perf_event;
-+	};
-+	size_t :0;
- };
--#define bpf_link_create_opts__last_field target_btf_id
-+#define bpf_link_create_opts__last_field perf_event
  
- LIBBPF_API int bpf_link_create(int prog_fd, int target_fd,
- 			       enum bpf_attach_type attach_type,
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 016ca7cb4f8a..e371188c8f87 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -195,6 +195,17 @@ void *libbpf_add_mem(void **data, size_t *cap_cnt, size_t elem_sz,
- 		     size_t cur_cnt, size_t max_cnt, size_t add_cnt);
- int libbpf_ensure_mem(void **data, size_t *cap_cnt, size_t elem_sz, size_t need_cnt);
+-struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog, int pfd)
++struct bpf_link *bpf_program__attach_perf_event_opts(struct bpf_program *prog, int pfd,
++						     const struct bpf_perf_event_opts *opts)
+ {
+ 	char errmsg[STRERR_BUFSIZE];
+ 	struct bpf_link_perf *link;
+ 	int prog_fd, link_fd = -1, err;
  
-+static inline bool libbpf_is_mem_zeroed(const char *p, ssize_t len)
++	if (!OPTS_VALID(opts, bpf_perf_event_opts))
++		return libbpf_err_ptr(-EINVAL);
++
+ 	if (pfd < 0) {
+ 		pr_warn("prog '%s': invalid perf event FD %d\n",
+ 			prog->name, pfd);
+@@ -10300,7 +10304,10 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog, int pf
+ 	link->perf_event_fd = pfd;
+ 
+ 	if (kernel_supports(prog->obj, FEAT_PERF_LINK)) {
+-		link_fd = bpf_link_create(prog_fd, pfd, BPF_PERF_EVENT, NULL);
++		DECLARE_LIBBPF_OPTS(bpf_link_create_opts, link_opts,
++			.perf_event.user_ctx = OPTS_GET(opts, user_ctx, 0));
++
++		link_fd = bpf_link_create(prog_fd, pfd, BPF_PERF_EVENT, &link_opts);
+ 		if (link_fd < 0) {
+ 			err = -errno;
+ 			pr_warn("prog '%s': failed to create BPF link for perf_event FD %d: %d (%s)\n",
+@@ -10310,6 +10317,12 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog, int pf
+ 		}
+ 		link->link.fd = link_fd;
+ 	} else {
++		if (OPTS_GET(opts, user_ctx, 0)) {
++			pr_warn("prog '%s': user context value is not supported\n", prog->name);
++			err = -EOPNOTSUPP;
++			goto err_out;
++		}
++
+ 		if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, prog_fd) < 0) {
+ 			err = -errno;
+ 			pr_warn("prog '%s': failed to attach to perf_event FD %d: %s\n",
+@@ -10336,6 +10349,11 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog, int pf
+ 	return libbpf_err_ptr(err);
+ }
+ 
++struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog, int pfd)
 +{
-+	while (len > 0) {
-+		if (*p)
-+			return false;
-+		p++;
-+		len--;
-+	}
-+	return true;
++	return bpf_program__attach_perf_event_opts(prog, pfd, NULL);
 +}
 +
- static inline bool libbpf_validate_opts(const char *opts,
- 					size_t opts_sz, size_t user_sz,
- 					const char *type_name)
-@@ -203,16 +214,9 @@ static inline bool libbpf_validate_opts(const char *opts,
- 		pr_warn("%s size (%zu) is too small\n", type_name, user_sz);
- 		return false;
- 	}
--	if (user_sz > opts_sz) {
--		size_t i;
--
--		for (i = opts_sz; i < user_sz; i++) {
--			if (opts[i]) {
--				pr_warn("%s has non-zero extra bytes\n",
--					type_name);
--				return false;
--			}
--		}
-+	if (!libbpf_is_mem_zeroed(opts + opts_sz, (ssize_t)user_sz - opts_sz)) {
-+		pr_warn("%s has non-zero extra bytes\n", type_name);
-+		return false;
- 	}
- 	return true;
- }
-@@ -232,6 +236,14 @@ static inline bool libbpf_validate_opts(const char *opts,
- 			(opts)->field = value;	\
- 	} while (0)
+ /*
+  * this function is expected to parse integer in the range of [0, 2^31-1] from
+  * given file using scanf format string fmt. If actual parsed value is
+@@ -10444,8 +10462,9 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+ struct bpf_link *
+ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
+ 				const char *func_name,
+-				struct bpf_kprobe_opts *opts)
++				const struct bpf_kprobe_opts *opts)
+ {
++	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
+ 	char errmsg[STRERR_BUFSIZE];
+ 	struct bpf_link *link;
+ 	unsigned long offset;
+@@ -10457,6 +10476,7 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
  
-+#define OPTS_ZEROED(opts, last_nonzero_field)				      \
-+({									      \
-+	ssize_t __off = offsetofend(typeof(*(opts)), last_nonzero_field);     \
-+	!(opts) || libbpf_is_mem_zeroed((const void *)opts + __off,	      \
-+					(opts)->sz - __off);		      \
-+})
+ 	retprobe = OPTS_GET(opts, retprobe, false);
+ 	offset = OPTS_GET(opts, offset, 0);
++	pe_opts.user_ctx = OPTS_GET(opts, user_ctx, 0);
+ 
+ 	pfd = perf_event_open_probe(false /* uprobe */, retprobe, func_name,
+ 				    offset, -1 /* pid */);
+@@ -10466,7 +10486,7 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
+ 			libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
+ 		return libbpf_err_ptr(pfd);
+ 	}
+-	link = bpf_program__attach_perf_event(prog, pfd);
++	link = bpf_program__attach_perf_event_opts(prog, pfd, &pe_opts);
+ 	err = libbpf_get_error(link);
+ 	if (err) {
+ 		close(pfd);
+@@ -10521,14 +10541,22 @@ static struct bpf_link *attach_kprobe(const struct bpf_sec_def *sec,
+ 	return link;
+ }
+ 
+-struct bpf_link *bpf_program__attach_uprobe(struct bpf_program *prog,
+-					    bool retprobe, pid_t pid,
+-					    const char *binary_path,
+-					    size_t func_offset)
++LIBBPF_API struct bpf_link *
++bpf_program__attach_uprobe_opts(struct bpf_program *prog, pid_t pid,
++				const char *binary_path, size_t func_offset,
++				const struct bpf_uprobe_opts *opts)
+ {
++	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
+ 	char errmsg[STRERR_BUFSIZE];
+ 	struct bpf_link *link;
+ 	int pfd, err;
++	bool retprobe;
 +
++	if (!OPTS_VALID(opts, bpf_uprobe_opts))
++		return libbpf_err_ptr(-EINVAL);
 +
- int parse_cpu_mask_str(const char *s, bool **mask, int *mask_sz);
- int parse_cpu_mask_file(const char *fcpu, bool **mask, int *mask_sz);
- int libbpf__load_raw_btf(const char *raw_types, size_t types_len,
++	retprobe = OPTS_GET(opts, retprobe, false);
++	pe_opts.user_ctx = OPTS_GET(opts, user_ctx, 0);
+ 
+ 	pfd = perf_event_open_probe(true /* uprobe */, retprobe,
+ 				    binary_path, func_offset, pid);
+@@ -10539,7 +10567,7 @@ struct bpf_link *bpf_program__attach_uprobe(struct bpf_program *prog,
+ 			libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
+ 		return libbpf_err_ptr(pfd);
+ 	}
+-	link = bpf_program__attach_perf_event(prog, pfd);
++	link = bpf_program__attach_perf_event_opts(prog, pfd, &pe_opts);
+ 	err = libbpf_get_error(link);
+ 	if (err) {
+ 		close(pfd);
+@@ -10552,6 +10580,16 @@ struct bpf_link *bpf_program__attach_uprobe(struct bpf_program *prog,
+ 	return link;
+ }
+ 
++struct bpf_link *bpf_program__attach_uprobe(struct bpf_program *prog,
++					    bool retprobe, pid_t pid,
++					    const char *binary_path,
++					    size_t func_offset)
++{
++	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts, .retprobe = retprobe);
++
++	return bpf_program__attach_uprobe_opts(prog, pid, binary_path, func_offset, &opts);
++}
++
+ static int determine_tracepoint_id(const char *tp_category,
+ 				   const char *tp_name)
+ {
+@@ -10602,14 +10640,21 @@ static int perf_event_open_tracepoint(const char *tp_category,
+ 	return pfd;
+ }
+ 
+-struct bpf_link *bpf_program__attach_tracepoint(struct bpf_program *prog,
+-						const char *tp_category,
+-						const char *tp_name)
++struct bpf_link *bpf_program__attach_tracepoint_opts(struct bpf_program *prog,
++						     const char *tp_category,
++						     const char *tp_name,
++						     const struct bpf_tracepoint_opts *opts)
+ {
++	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
+ 	char errmsg[STRERR_BUFSIZE];
+ 	struct bpf_link *link;
+ 	int pfd, err;
+ 
++	if (!OPTS_VALID(opts, bpf_tracepoint_opts))
++		return libbpf_err_ptr(-EINVAL);
++
++	pe_opts.user_ctx = OPTS_GET(opts, user_ctx, 0);
++
+ 	pfd = perf_event_open_tracepoint(tp_category, tp_name);
+ 	if (pfd < 0) {
+ 		pr_warn("prog '%s': failed to create tracepoint '%s/%s' perf event: %s\n",
+@@ -10617,7 +10662,7 @@ struct bpf_link *bpf_program__attach_tracepoint(struct bpf_program *prog,
+ 			libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
+ 		return libbpf_err_ptr(pfd);
+ 	}
+-	link = bpf_program__attach_perf_event(prog, pfd);
++	link = bpf_program__attach_perf_event_opts(prog, pfd, &pe_opts);
+ 	err = libbpf_get_error(link);
+ 	if (err) {
+ 		close(pfd);
+@@ -10629,6 +10674,13 @@ struct bpf_link *bpf_program__attach_tracepoint(struct bpf_program *prog,
+ 	return link;
+ }
+ 
++struct bpf_link *bpf_program__attach_tracepoint(struct bpf_program *prog,
++						const char *tp_category,
++						const char *tp_name)
++{
++	return bpf_program__attach_tracepoint_opts(prog, tp_category, tp_name, NULL);
++}
++
+ static struct bpf_link *attach_tp(const struct bpf_sec_def *sec,
+ 				  struct bpf_program *prog)
+ {
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 1271d99bb7aa..85d336bcb510 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -104,17 +104,6 @@ struct bpf_object_open_opts {
+ };
+ #define bpf_object_open_opts__last_field btf_custom_path
+ 
+-struct bpf_kprobe_opts {
+-	/* size of this struct, for forward/backward compatiblity */
+-	size_t sz;
+-	/* function's offset to install kprobe to */
+-	unsigned long offset;
+-	/* kprobe is return probe */
+-	bool retprobe;
+-	size_t :0;
+-};
+-#define bpf_kprobe_opts__last_field retprobe
+-
+ LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
+ LIBBPF_API struct bpf_object *
+ bpf_object__open_file(const char *path, const struct bpf_object_open_opts *opts);
+@@ -255,24 +244,82 @@ LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
+ 
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach(struct bpf_program *prog);
++
++struct bpf_perf_event_opts {
++	/* size of this struct, for forward/backward compatiblity */
++	size_t sz;
++	/* custom user-provided value fetchable through bpf_get_user_ctx() */
++	__u64 user_ctx;
++};
++#define bpf_perf_event_opts__last_field user_ctx
++
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach_perf_event(struct bpf_program *prog, int pfd);
++
++LIBBPF_API struct bpf_link *
++bpf_program__attach_perf_event_opts(struct bpf_program *prog, int pfd,
++				    const struct bpf_perf_event_opts *opts);
++
++struct bpf_kprobe_opts {
++	/* size of this struct, for forward/backward compatiblity */
++	size_t sz;
++	/* custom user-provided value fetchable through bpf_get_user_ctx() */
++	__u64 user_ctx;
++	/* function's offset to install kprobe to */
++	unsigned long offset;
++	/* kprobe is return probe */
++	bool retprobe;
++	size_t :0;
++};
++#define bpf_kprobe_opts__last_field retprobe
++
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach_kprobe(struct bpf_program *prog, bool retprobe,
+ 			   const char *func_name);
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
+                                 const char *func_name,
+-                                struct bpf_kprobe_opts *opts);
++                                const struct bpf_kprobe_opts *opts);
++
++struct bpf_uprobe_opts {
++	/* size of this struct, for forward/backward compatiblity */
++	size_t sz;
++	/* custom user-provided value fetchable through bpf_get_user_ctx() */
++	__u64 user_ctx;
++	/* uprobe is return probe, invoked at function return time */
++	bool retprobe;
++	size_t :0;
++};
++#define bpf_uprobe_opts__last_field retprobe
++
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach_uprobe(struct bpf_program *prog, bool retprobe,
+ 			   pid_t pid, const char *binary_path,
+ 			   size_t func_offset);
++LIBBPF_API struct bpf_link *
++bpf_program__attach_uprobe_opts(struct bpf_program *prog, pid_t pid,
++				const char *binary_path, size_t func_offset,
++				const struct bpf_uprobe_opts *opts);
++
++struct bpf_tracepoint_opts {
++	/* size of this struct, for forward/backward compatiblity */
++	size_t sz;
++	/* custom user-provided value fetchable through bpf_get_user_ctx() */
++	__u64 user_ctx;
++};
++#define bpf_tracepoint_opts__last_field user_ctx
++
+ LIBBPF_API struct bpf_link *
+ bpf_program__attach_tracepoint(struct bpf_program *prog,
+ 			       const char *tp_category,
+ 			       const char *tp_name);
+ LIBBPF_API struct bpf_link *
++bpf_program__attach_tracepoint_opts(struct bpf_program *prog,
++				    const char *tp_category,
++				    const char *tp_name,
++				    const struct bpf_tracepoint_opts *opts);
++
++LIBBPF_API struct bpf_link *
+ bpf_program__attach_raw_tracepoint(struct bpf_program *prog,
+ 				   const char *tp_name);
+ LIBBPF_API struct bpf_link *
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index c240d488eb5e..a156f012e23d 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -374,6 +374,9 @@ LIBBPF_0.5.0 {
+ 		bpf_map__pin_path;
+ 		bpf_map_lookup_and_delete_elem_flags;
+ 		bpf_program__attach_kprobe_opts;
++		bpf_program__attach_perf_event_opts;
++		bpf_program__attach_tracepoint_opts;
++		bpf_program__attach_uprobe_opts;
+ 		bpf_object__gen_loader;
+ 		btf_dump__dump_type_data;
+ 		libbpf_set_strict_mode;
 -- 
 2.30.2
 
