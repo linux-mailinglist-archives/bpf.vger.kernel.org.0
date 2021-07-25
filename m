@@ -2,211 +2,346 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7613D4E4A
-	for <lists+bpf@lfdr.de>; Sun, 25 Jul 2021 17:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE763D4ECC
+	for <lists+bpf@lfdr.de>; Sun, 25 Jul 2021 18:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhGYOmn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Jul 2021 10:42:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
+        id S230193AbhGYQIv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Jul 2021 12:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhGYOmc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Jul 2021 10:42:32 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF40FC0613D3
-        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 08:22:42 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id c11so8612094plg.11
-        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 08:22:42 -0700 (PDT)
+        with ESMTP id S229545AbhGYQIu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 25 Jul 2021 12:08:50 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E348C061757;
+        Sun, 25 Jul 2021 09:49:20 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id he41so12502657ejc.6;
+        Sun, 25 Jul 2021 09:49:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=DKPf+sLAtl+Jfu5xFH1HFSHWQjyJHMuLfqwJAAL9V1I=;
-        b=RyEF3kEmCv6XYQYzOk9r4eMC1hnA7PQbkoewT10+Q0kx0XiYjfNnh9LxGxMhjt0Ao3
-         LFr2NXoWgNeJr1799Rv99nFH/7Itva34ZF+o30/+SWQofzOCYpgaWZdJ4XIRqJCpC6BW
-         hZvTPp4oDUTiVZ+UWsP1PViGMxMG9hkVcDvZQhun5SSOa0rGT+TRIijsm8mXrp3KkXCF
-         iknEvzYNzyJ/HET/hi8bbtmI6efD8XO8pMLnexqACbrEj3/DjTBjg/VrtyGYWcbFr8I4
-         U0Ezyjua82gIsnWJopXIvoZyFytBqwFU+yFR3iSyL9ELOfSlXYjy4+tEEDUsyxC1wYyU
-         9x2A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hvEIHu9m+4gLaoFby3qd9OS7/wPiO71TcYfZFfPn4mQ=;
+        b=fhuyGmWrmb3ZSDZs//q9/Z7yIRtUlxhkS26soEPbAG7Ao1UsaS3mm+ObByBN+CuD3d
+         xO+hATjkl+ChFoZ6ywSg/t71mnFI+8RlxIX2EspHHrD6wOi4OcB4i2X/9bFAI9E7X4vX
+         U7hlhPJ6HVYjtXHG3GgpEYt20GHMxlD1p+WSwhoqsi8zRxcE3uu0YIYVWva7oVwSPb9S
+         5ur4aiC2py0eRl2R6A+iGUcIx2KiWyJ+aXUkE1MYi5MFHuh1NGgy6mq076bU1cctPFKq
+         r3ZvuCJ0i/Zj0LpU1ej0vXgyxMFUF0633IIsvBwv24IzbIYjXinySYFOZORlWnESWYUa
+         /HhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=DKPf+sLAtl+Jfu5xFH1HFSHWQjyJHMuLfqwJAAL9V1I=;
-        b=DvUPtP3MAnwtd4QjQgRs92k0lZC4zCVR9nwoJaCMK2FqL1blqS+xDFCk/6OURyB5+I
-         sHnzkUu5PNO1a3KhxJy+5UTW811gr12QaVSYCbezKAT4+qkXF2fYiB3PAZsTdK8vRDWj
-         HHL9HTjP/HKyK59WeVJi6amBi3N82S0VqNoJVlpYnuEA7LBJ5wIDu0uRSAexdcbi1YBX
-         i+cwWg2AE7KM6lxYNWYJ7Q/oo36SbqmSr3RPeCAdLcKADCfrucsqsfQ/AmrAF0wr6p17
-         VBWYgPhGskA31/+tIq/XakcZDqPqK8gwZQOX6idybX8TQuuHsP/6YBNwgPOoxl02Omur
-         IoBg==
-X-Gm-Message-State: AOAM530ZTfXJl4YLca3UCCv4i8PAeMcNT9m+03KNM94auMG5SPSquG4P
-        imVn1u3A6mM6q/4wy47KUz0=
-X-Google-Smtp-Source: ABdhPJy1PKgJrkJ/6dTi/mhiUBvSQgOcXDh1RqcAmUlzKS6z4+iGRUdghfryDBDee67AO8kbAufVQw==
-X-Received: by 2002:a65:63cf:: with SMTP id n15mr14179579pgv.392.1627226561465;
-        Sun, 25 Jul 2021 08:22:41 -0700 (PDT)
-Received: from sea-l-00054165.olympus.f5net.com (c-73-19-16-93.hsd1.wa.comcast.net. [73.19.16.93])
-        by smtp.gmail.com with ESMTPSA id b21sm39354466pfo.64.2021.07.25.08.22.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Jul 2021 08:22:40 -0700 (PDT)
-From:   Vincent Li <vincent.mc.li@gmail.com>
-X-Google-Original-From: Vincent Li <vli@gmail.com>
-Date:   Sun, 25 Jul 2021 08:22:39 -0700 (PDT)
-To:     Vincent Li <vincent.mc.li@gmail.com>
-cc:     bpf@vger.kernel.org
-Subject: Re: Prog section rejected: Argument list too long (7)!
-In-Reply-To: <8af534e8-c327-a76-c4b5-ba2ae882b3ae@gmail.com>
-Message-ID: <7ba1fa1f-be6-1fa2-1877-12f7b707b65@gmail.com>
-References: <a1ae15c8-f43c-c382-a7e0-10d3fedb6a@gmail.com> <CAK3+h2z+V1VNiGsNPHsyLZqdTwEsWMF9QnXZT2mi30dkb2xBXA@mail.gmail.com> <8af534e8-c327-a76-c4b5-ba2ae882b3ae@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hvEIHu9m+4gLaoFby3qd9OS7/wPiO71TcYfZFfPn4mQ=;
+        b=j52vWaDCil+j8YiWoVKcQumRsHzDKmR9naXTb596z576tvoWK7AjM1ep3rXC5I9/51
+         IoWuzEAPhwTvmGOKe8JwUkhgTkVx1rOn6vR9JKiK13lan/eDJn5GpDhTkaH7kN9+TFeK
+         h0tEsfICJwzwQDzmF7V0NDSRzl6A7GK9Us2YfrLDqNbPNUocCbR3/1Z2sonr0gElT9xc
+         2aDcY/x/ID36GtcmIF2ERR0S/WROAxSvNLAYfcxvQRwyCfqq1glZ4pISToYoIAbgdb2v
+         mGj7XLPEWEan4or+CD5fjBbdZJWROpMtEINTYIVG88gGdri9S8ycb0Q871xmzTfKt1kg
+         h5pQ==
+X-Gm-Message-State: AOAM530u2G0pI68ijy5kTfQp+/aySdd3q9ToKxza4OFMaTtsR7Inq7iW
+        smGL5B6oq8Y6SE0twGSQ25K7KqbVxVAG+Fhp0XU=
+X-Google-Smtp-Source: ABdhPJwG/6qaZBOHkS7VH2KywX0OvjVflrwBj6QUjp2jB4HcCrljIi2GRQo8ZSYXxzTEvUkh1nGk1Cink/RiXbbZiQk=
+X-Received: by 2002:a17:907:e9e:: with SMTP id ho30mr13917105ejc.114.1627231758859;
+ Sun, 25 Jul 2021 09:49:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
+ <1626752145-27266-3-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Uf=WbpngDPQ1V0X+XSJbZ91=cuaz8r_J96=BrXg01PJFA@mail.gmail.com>
+ <92e68f4e-49a4-568c-a281-2865b54a146e@huawei.com> <CAKgT0UfwiBowGN+ctqoFZ6qaQAUp-0uGJeukk4OHOEOOfbrEWw@mail.gmail.com>
+ <fffae41f-b0a3-3c43-491f-096d31ba94ca@huawei.com> <CAKgT0UcBgo0Ex=x514qGeLvppJr-0vqx9ZngAFDTwugjtKUrOA@mail.gmail.com>
+ <41283c5f-2f58-7fa7-e8fe-a91207a57353@huawei.com> <CAKgT0Ud+PRzz7mgX1dru1=i3TDiaGOoyhg7vp6cz+3NzVFZf+A@mail.gmail.com>
+ <20210724130709.GA1461@ip-172-31-30-86.us-east-2.compute.internal>
+In-Reply-To: <20210724130709.GA1461@ip-172-31-30-86.us-east-2.compute.internal>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Sun, 25 Jul 2021 09:49:07 -0700
+Message-ID: <CAKgT0UckhFhvmsjNhBM6tX_EUn12NCn--puJkwVUGitk9yZedw@mail.gmail.com>
+Subject: Re: [PATCH rfc v6 2/4] page_pool: add interface to manipulate frag
+ count in page pool
+To:     Yunsheng Lin <yunshenglin0825@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, Jul 24, 2021 at 6:07 AM Yunsheng Lin <yunshenglin0825@gmail.com> wr=
+ote:
+>
+> On Fri, Jul 23, 2021 at 09:08:00AM -0700, Alexander Duyck wrote:
+> > On Fri, Jul 23, 2021 at 4:12 AM Yunsheng Lin <linyunsheng@huawei.com> w=
+rote:
+> > >
+> > > On 2021/7/22 23:18, Alexander Duyck wrote:
+> > > >>>
+> > > >>>> You are right that that may cover up the reference count errors.=
+ How about
+> > > >>>> something like below:
+> > > >>>>
+> > > >>>> static inline long page_pool_atomic_sub_frag_count_return(struct=
+ page *page,
+> > > >>>>                                                           long n=
+r)
+> > > >>>> {
+> > > >>>> #ifdef CONFIG_DEBUG_PAGE_REF
+> > > >>>>         long ret =3D atomic_long_sub_return(nr, &page->pp_frag_c=
+ount);
+> > > >>>>
+> > > >>>>         WARN_ON(ret < 0);
+> > > >>>>
+> > > >>>>         return ret;
+> > > >>>> #else
+> > > >>>>         if (atomic_long_read(&page->pp_frag_count) =3D=3D nr)
+> > > >>>>                 return 0;
+> > > >>>>
+> > > >>>>         return atomic_long_sub_return(nr, &page->pp_frag_count);
+> > > >>>> #end
+> > > >>>> }
+> > > >>>>
+> > > >>>> Or any better suggestion?
+> > > >>>
+> > > >>> So the one thing I might change would be to make it so that you o=
+nly
+> > > >>> do the atomic_long_read if nr is a constant via __builtin_constan=
+t_p.
+> > > >>> That way you would be performing the comparison in
+> > > >>> __page_pool_put_page and in the cases of freeing or draining the
+> > > >>> page_frags you would be using the atomic_long_sub_return which sh=
+ould
+> > > >>> be paths where you would not expect it to match or that are slowp=
+ath
+> > > >>> anyway.
+> > > >>>
+> > > >>> Also I would keep the WARN_ON in both paths just to be on the saf=
+e side.
+> > > >>
+> > > >> If I understand it correctly, we should change it as below, right?
+> > > >>
+> > > >> static inline long page_pool_atomic_sub_frag_count_return(struct p=
+age *page,
+> > > >>                                                           long nr)
+> > > >> {
+> > > >>         long ret;
+> > > >>
+> > > >>         /* As suggested by Alexander, atomic_long_read() may cover=
+ up the
+> > > >>          * reference count errors, so avoid calling atomic_long_re=
+ad() in
+> > > >>          * the cases of freeing or draining the page_frags, where =
+we would
+> > > >>          * not expect it to match or that are slowpath anyway.
+> > > >>          */
+> > > >>         if (__builtin_constant_p(nr) &&
+> > > >>             atomic_long_read(&page->pp_frag_count) =3D=3D nr)
+> > > >>                 return 0;
+> > > >>
+> > > >>         ret =3D atomic_long_sub_return(nr, &page->pp_frag_count);
+> > > >>         WARN_ON(ret < 0);
+> > > >>         return ret;
+> > > >> }
+> > > >
+> > > > Yes, that is what I had in mind.
+> > > >
+> > > > One thought I had for a future optimization is that we could look a=
+t
+> > > > reducing the count by 1 so that we could essentially combine the
+> > > > non-frag and frag cases.Then instead of testing for 1 we would test
+> > > > for 0 at thee start of the function and test for < 0 to decide if w=
+e
+> > > > want to free it or not instead of testing for 0. With that we can
+> > > > essentially reduce the calls to the WARN_ON since we should only ha=
+ve
+> > > > one case where we actually return a value < 0, and we can then chec=
+k
+> > > > to see if we overshot -1 which would be the WARN_ON case.
+> > > >
+> > > > With that a value of 0 instead of 1 would indicate page frag is not=
+ in
+> > > > use for the page *AND/OR* that the page has reached the state where
+> > > > there are no other frags present so the page can be recycled. In
+> > > > effect it would allow us to mix page frags and no frags within the
+> > > > same pool. The added bonus would be we could get rid of the check f=
+or
+> > > > PP_FLAG_PAGE_FRAG flag check in the __page_pool_put_page function a=
+nd
+> > > > replace it with a check for PAGE_POOL_DMA_USE_PP_FRAG_COUNT since w=
+e
+> > > > cannot read frag_count in that case.
+> > >
+> > > Let's leave it for a future optimization.
+> > > I am not sure if there is use case to support both frag page and non-=
+frag
+> > > page for the same page pool. If there is, maybe we can use "page->pp_=
+frag_count
+> > > > 0" to indicate that the page is frag page, and "page->pp_frag_count=
+ =3D=3D 0"
+> > > to indicate that the page is non-frag page, so that we can support fr=
+ag page and
+> > > non-frag page for the same page pool instead of disabling non-frag pa=
+ge support
+> > > when PP_FLAG_PAGE_FRAG flag is set, which might be conflit with the a=
+bove
+> > > optimization?
+> >
+> > As far as use case I can see a number of potential uses. For example
+> > in the case of drivers that do something like a header/data split I
+> > could see potentially having the header pages be frags while the data
+> > pages being 4K blocks. Basically the big optimization of the count =3D=
+=3D
+> > 1/0/nr case is that you aren't increasing/decreasing the count and it
+> > is immediately being recycled/reused. So in such a case being able to
+> > add frag count some pages, and not to others would likely be quite
+> > useful.
+>
+> I am not sure how the header/data split is implemented in hw, but it
+> seems the driver is not able to tell which desc will be filled with
+> header or data in advance, so it might need to allocate 4K block for
+> all desc?
 
+It all depends on the hardware config. In theory you could have
+anything from a single use for a page to multiple uses for a page in
+the case of headers and/or packets being small. The overhead for
+adding/removing the frag count could end up being more than what is
+needed if the page is only used once. That is why I was thinking it
+might make sense to allow both to coexist in the same pool.
 
+> >
+> > Basically by shifting the pool values by 1 you can have both in the
+> > same pool with little issue. However the big change is that instead of
+> > testing for count =3D nr it would end up being pp_frag_count =3D nr - 1=
+.
+> > So in the case of the standard page pool pages being freed or the last
+> > frag you would be looking at pp_frag_count =3D 0. In addition we can
+> > mask the WARN_ON overhead as you would be using -1 as the point to
+> > free so you would only have to perform the WARN_ON check for the last
+> > frag instead of every frag.
+>
+> Yes, it seems doable.
+>
+> >
+> > > Also, I am prototyping the tx recycling based on page pool in order t=
+o see
+> > > if there is any value supporting the tx recycling.
+> >
+> > Just to clarify here when you say Tx recycling you are talking about
+> > socket to netdev correct? Just want to be certain since the netdev to
+> > netdev case should already have recycling for page pool pages as long
+> > as it follows a 1<->1 path.
+>
+> Yes, the above Tx recycling meant socket to netdev.
+> Also, the above "netdev to netdev" only meant XDP now, but not the IP
+> forwarding path in the network stack, right?
+>
+> >
+> > > As the busypoll has enable the one-to-one relation between NAPI and s=
+ock,
+> > > and there is one-to-one relation between NAPI and page pool, perhaps =
+it make
+> > > senses that we use page pool to recycle the tx page too?
+> > >
+> > > There are possibly below problems when doing that as I am aware of no=
+w:
+> > > 1. busypoll is for rx, and tx may not be using the same queue as rx e=
+ven if
+> > >    there are *technically* the same flow=EF=BC=8C so I am not sure it=
+ is ok to use
+> > >    busypoll infrastructure to get the page pool ptr for a specific so=
+ck.
+> > >
+> > > 2. There may be multi socks using the same page pool ptr to allocate =
+page for
+> > >    multi flow, so we can not assume the same NAPI polling protection =
+as rx,
+> > >    which might mean we can only use the recyclable page from pool->ri=
+ng under the
+> > >    r->consumer_lock protection.
+> > >
+> > > 3. Right now tcp_sendmsg_locked() use sk_page_frag_refill() to refill=
+ the page
+> > >    frag for tcp xmit, when implementing a similar sk_page_pool_frag_r=
+efill()
+> > >    based on page pool, I found that tcp coalesce in tcp_mtu_probe() a=
+nd
+> > >    tcp fragment in tso_fragment() might mess with the page_ref_count =
+directly.
+> > >
+> > > As the above the problem I am aware of(I believe there are other prob=
+lems I am not
+> > > aware of yet), I am not sure if the tcp tx page recycling based on pa=
+ge pool is
+> > > doable or not, I would like to hear about your opinion about tcp tx r=
+ecycling support
+> > > based on page pool first, in case it is a dead end to support that.
+> >
+> > I'm honestly not sure there is much there to gain. Last I knew TCP was
+> > using order 3 pages for transmitting and as a result the overhead for
+> > the pages should already be greatly reduced. In addition one of the
+> > main reasons for page_pool  is the fact that the device has to DMA map
+> > the page and that can have very high overhead on systems with an
+> > IOMMU.
+>
+> Yes, avoiding the IOMMU overhead is the main gain. and "order 3 pages"
+> seems to be disabled on defaut?
+>
+> >
+> > Rather than trying to reuse the devices page pool it might make more
+> > sense to see if you couldn't have TCP just use some sort of circular
+> > buffer of memory that is directly mapped for the device that it is
+> > going to be transmitting to. Essentially what you would be doing is
+> > creating a pre-mapped page and would need to communicate that the
+> > memory is already mapped for the device you want to send it to so that
+> > it could skip that step.
+>
+> IIUC sk_page_frag_refill() is already doing a similar reusing as the
+> rx reusing implemented in most driver except for the not pre-mapping
+> part.
+>
+> And it seems that even if we pre-map the page and communicate that the
+> memory is already mapped to the driver, it is likely that we will not
+> be able to reuse the page when the circular buffer is not big enough
+> or tx completion/tcp ack is not happening quickly enough, which might
+> means unmapping/deallocating old circular buffer and allocating/mapping
+> new circular buffer.
+>
+> Using page pool we might be able to alleviate the above problem as it
+> does for rx?
 
-On Sat, 24 Jul 2021, Vincent Li wrote:
-
-> 
-> 
-> On Sat, 24 Jul 2021, Vincent Li wrote:
-> 
-> > On Fri, Jul 23, 2021 at 7:17 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
-> > >
-> > >
-> > > Hi BPF experts,
-> > >
-> > > I have a cilium PR https://github.com/cilium/cilium/pull/16916 that
-> > > failed to pass verifier in kernel 4.19, the error is like:
-> > >
-> > > level=warning msg="Prog section '2/7' rejected: Argument list too long
-> > > (7)!" subsys=datapath-loader
-> > > level=warning msg=" - Type:         3" subsys=datapath-loader
-> > > level=warning msg=" - Attach Type:  0" subsys=datapath-loader
-> > > level=warning msg=" - Instructions: 4578 (482 over limit)"
-> > > subsys=datapath-loader
-> > > level=warning msg=" - License:      GPL" subsys=datapath-loader
-> > > level=warning subsys=datapath-loader
-> > > level=warning msg="Verifier analysis:" subsys=datapath-loader
-> > > level=warning subsys=datapath-loader
-> > > level=warning msg="Error filling program arrays!" subsys=datapath-loader
-> > > level=warning msg="Unable to load program" subsys=datapath-loader
-> > >
-> > > then I tried to run the PR locally in my dev machine with custom upstream
-> > > kernel version, I narrowed the issue down to between upstream kernel
-> > > version 5.7 and 5.8, in 5.7, it failed with:
-> > 
-> > I further narrow it down to between 5.7 and 5.8-rc1 release, but still
-> > no clue which commits in 5.8-rc1 resolved the issue
-> > 
-> > >
-> > > level=warning msg="processed 50 insns (limit 1000000) max_states_per_insn
-> > > 0 total_states 1 peak_states 1 mark_read 1" subsys=datapath-loader
-> > > level=warning subsys=datapath-loader
-> > > level=warning msg="Log buffer too small to dump verifier log 16777215
-> > > bytes (9 tries)!" subsys=datapath-loader
-> > > level=warning msg="Error filling program arrays!" subsys=datapath-loader
-> > > level=warning msg="Unable to load program" subsys=datapath-loader
-> > >
-> > > 5.8 works fine.
-> > >
-> > > What difference between 5.7 and 5.8 to cause this verifier problem, I
-> > > tried to git log v5.7..v5.8 kernel/bpf/verifier, I could not see commits
-> > > that would make the difference with my limited BPF knowledge. Any clue
-> > > would be appreciated!
-> 
-> I have git bisected to this commit:
-> 
-> # first fixed commit: [6f8a57ccf8511724e6f48d732cb2940889789ab2] bpf: Make 
-> verifier log more relevant by default
-
-both the cilium github PR test and my local dev machine PR test has the 
-verbose set, for example, my local test has:
-
-diff --git a/pkg/datapath/loader/netlink.go 
-b/pkg/datapath/loader/netlink.go
-index 381e1fbc8..00015eabc 100644
---- a/pkg/datapath/loader/netlink.go
-+++ b/pkg/datapath/loader/netlink.go
-@@ -106,7 +106,7 @@ func replaceDatapath(ctx context.Context, ifName, 
-objPath, progSec, progDirectio
-                loaderProg = "tc"
-                args = []string{"filter", "replace", "dev", ifName, 
-progDirection,
-                        "prio", "1", "handle", "1", "bpf", "da", "obj", 
-objPath,
--                       "sec", progSec,
-+                       "sec", progSec, "verbose",
-                }
-        }
-        cmd = exec.CommandContext(ctx, loaderProg, 
-args...).WithFilters(libbpfFixupMsg)
-
-if I remove the "verbose" change, and run the Cilium agent without 
-kernel commit 6f8a57ccf8, the problem is gone, it seems commit 6f8a57ccf8 
-is related
-
-> 
-> this commit looks only dealing with log, accidently fixed the PR issue I 
-> have? my PR use __bpf_memcpy_builtin() to rewrite the tunnel inner packet 
-> destination MAC address, somehow related?
-> 
-> [root@centos-dev bpf-next]# git bisect log
-> git bisect start '--term-new=fixed' '--term-old=unfixed'
-> # fixed: [b3a9e3b9622ae10064826dccb4f7a52bd88c7407] Linux 5.8-rc1
-> git bisect fixed b3a9e3b9622ae10064826dccb4f7a52bd88c7407
-> # unfixed: [3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162] Linux 5.7
-> git bisect unfixed 3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162
-> # fixed: [ee01c4d72adffb7d424535adf630f2955748fa8b] Merge branch 'akpm' 
-> (patches from Andrew)
-> git bisect fixed ee01c4d72adffb7d424535adf630f2955748fa8b
-> # unfixed: [16d91548d1057691979de4686693f0ff92f46000] Merge tag 
-> 'xfs-5.8-merge-8' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux
-> git bisect unfixed 16d91548d1057691979de4686693f0ff92f46000
-> # fixed: [098205f3c688885394ed1f670a6a7cb4a58728a3] Merge branch '1GbE' of 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jkirsher/next-queue
-> git bisect fixed 098205f3c688885394ed1f670a6a7cb4a58728a3
-> # fixed: [da1a782a7140fab22f2dfe8453d7b73c786d73de] net: ipa: kill 
-> ipa_cmd_dma_task_32b_addr_add()
-> git bisect fixed da1a782a7140fab22f2dfe8453d7b73c786d73de
-> # unfixed: [aa8a6ee3e3fc4001e952de37660fe71826da8189] docs: networking: 
-> convert team.txt to ReST
-> git bisect unfixed aa8a6ee3e3fc4001e952de37660fe71826da8189
-> # unfixed: [5b95dea31636ce93660930d16172fe75589b2e70] Merge branch 
-> 'net-smc-extent-buffer-mapping-and-port-handling'
-> git bisect unfixed 5b95dea31636ce93660930d16172fe75589b2e70
-> # fixed: [3316d50905f0e551d4786767d827589960a8cb83] bnxt_en: Split HW ring 
-> statistics strings into RX and TX parts.
-> git bisect fixed 3316d50905f0e551d4786767d827589960a8cb83
-> # fixed: [c321022244708aec4675de4f032ef1ba9ff0c640] selftests/bpf: Test 
-> allowed maps for bpf_sk_select_reuseport
-> git bisect fixed c321022244708aec4675de4f032ef1ba9ff0c640
-> # fixed: [50325b1761e31ad17d252e795af72a9af8c5a7d7] bpftool: Expose 
-> attach_type-to-string array to non-cgroup code
-> git bisect fixed 50325b1761e31ad17d252e795af72a9af8c5a7d7
-> # fixed: [8c1b2bf16d5944cd5c3a8a72e24ed9e22360c1af] bpf, cgroup: Remove 
-> unused exports
-> git bisect fixed 8c1b2bf16d5944cd5c3a8a72e24ed9e22360c1af
-> # unfixed: [6f3f65d80dac8f2bafce2213005821fccdce194c] net: bpf: Allow TC 
-> programs to call BPF_FUNC_skb_change_head
-> git bisect unfixed 6f3f65d80dac8f2bafce2213005821fccdce194c
-> # fixed: [6f8a57ccf8511724e6f48d732cb2940889789ab2] bpf: Make verifier log 
-> more relevant by default
-> git bisect fixed 6f8a57ccf8511724e6f48d732cb2940889789ab2
-> # unfixed: [0a05861f80fe7d4dcfdabcc98d9854947573e072] xsk: Fix typo in 
-> xsk_umem_consume_tx and xsk_generic_xmit comments
-> git bisect unfixed 0a05861f80fe7d4dcfdabcc98d9854947573e072
-> # unfixed: [71d19214776e61b33da48f7c1b46e522c7f78221] bpf: add 
-> bpf_ktime_get_boot_ns()
-> git bisect unfixed 71d19214776e61b33da48f7c1b46e522c7f78221
-> # first fixed commit: [6f8a57ccf8511724e6f48d732cb2940889789ab2] bpf: Make 
-> verifier log more relevant by default
-> 
-> 
-> > >
-> > > Thanks
-> > >
-> > > Vincent
-> > >
-> > 
-> 
+I would say that instead of looking at going straight for the page
+pool it might make more sense to look at seeing if we can coalesce the
+DMA mapping of the pages first at the socket layer rather than trying
+to introduce the overhead for the page pool. In the case of sockets we
+already have the destructors that are called when the memory is freed,
+so instead of making sockets use page pool it might make more sense to
+extend the socket buffer allocation/freeing to incorporate bulk
+mapping and unmapping of pages to optimize the socket Tx path in the
+32K page case.
