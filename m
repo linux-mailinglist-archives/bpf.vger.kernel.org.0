@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490083D4E15
+	by mail.lfdr.de (Postfix) with ESMTP id 91F603D4E16
 	for <lists+bpf@lfdr.de>; Sun, 25 Jul 2021 16:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhGYNib (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S230029AbhGYNib (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Sun, 25 Jul 2021 09:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhGYNiV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Jul 2021 09:38:21 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF862C061757
-        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 07:18:51 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so15955000pja.5
-        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 07:18:51 -0700 (PDT)
+        with ESMTP id S231156AbhGYNiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 25 Jul 2021 09:38:25 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641F6C061760
+        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 07:18:55 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id e21so4073249pla.5
+        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 07:18:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mZ0BAaAcHRJOfV2V/eJh8net1ldlY2knOYn3v6tRuTM=;
-        b=FoiM4rRXuJU/Mt2hw1nJE8N1j85IW4KrRe0n4jetnYM2JvXFTkSGcq75ynBn3Afdun
-         wnvXpsUfBPvyNsMz5OaUA5QG4FkKIcoRqGi22wCH5P59CHpMcT5hwsyIeXvr9qW00Wqf
-         2WBfEARU0XSRxYzSVGfgFkOm+7hj1y+6X43tMFImrdQk6Sj1DVBLvl6MIOjALWUEX3me
-         bQ94yYnemP1bHyiHSifJ6/ByjS1tkfwZOG1etyHrDh/yqXbXEhovPAdCtWpTzMkSLOAj
-         T2FazszGU7bbX53C4VR88Fbu+xOTAaTSbjJdpcazKUjrjZl1WqvNvSv+ebi0MO8xhyNh
-         E6Fg==
+        bh=wEIKTTc5JxEPZ1DCVyJ/UFx8Lf0W22ikzKKyZOb413Q=;
+        b=dJFFu/BbCPb5OSuUTXUzwQWuMFUBqqfcewPdHDt5IeU2VFyDbMz25AeWgL59xEXEcA
+         PoDfOFZ6IbbQC+AhOXEApAe7u0Po6V8pHYYFERv7AeDUTTphN2ZEL3ZIvvOekhzEqc32
+         Y8v51XniHnwwg2V/VU1RBfltW8Nvesub8+lYxeNBSoK1b5tK8QU7aJLJoDrQcdQ2+UwA
+         VQoNfBEis2g2JN1kg3fZpAxSua8AEcMQ+ZvV4KawIi3h0oaex9BFuRFUCza6GA7N8n/4
+         DhEnnqGZ0gOvAGEFjR7EkHgYaUUyK74v4/NHufqWsCk6hVjKhBUknqp6rdv3EfBwaWkC
+         6yZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mZ0BAaAcHRJOfV2V/eJh8net1ldlY2knOYn3v6tRuTM=;
-        b=PphdN3Ojb86lajW1XA8P7up/eLYROaUBW9Z/LXnatr318hLkIvk3nWo04lMObl6lBa
-         B81OY31Mi/IT88snE3lhgpK3KpvRygsV95jMMpOiiiWaGqOmDYyT0vNy1zMN1FW5zYo5
-         9qfNVhhljpJcVyoHYY3ON1glVwuqEfVlZUxesWU8++ck5r/BUH3K80wE9xIIbuvoodMa
-         QW5Hrfwvla4dJQIg04naSPmZTVPNxEX4FC5ZhV9c33hEyFmnyZViGzFy3E/4Qn14ydPe
-         Iua3n3uqVT7hXPg/tyDEaDJ8UOejv1W/0ONTnfr/upUMvs8Iju/xkNz5jaOfq8o9NT1w
-         ANwg==
-X-Gm-Message-State: AOAM530P3NWdU4ciK/xhrapKBFu184dTtoj4paNSrgMQlRoG0ClLKgim
-        1UicIdnLATGblfFxcYOHwcUTWGwVkVjQFA==
-X-Google-Smtp-Source: ABdhPJxUeitwsYOR0gvUdRaIP1KOmq4gcPmY+n96J3n5vPS96RboeRQpXOzpvObV1N9bbAQk3tZsiQ==
-X-Received: by 2002:a63:67c5:: with SMTP id b188mr13896761pgc.333.1627222731281;
-        Sun, 25 Jul 2021 07:18:51 -0700 (PDT)
+        bh=wEIKTTc5JxEPZ1DCVyJ/UFx8Lf0W22ikzKKyZOb413Q=;
+        b=bwSYtVoZxjRYIXB/dnqD81/zIA3RhGZ6nDcHJwDnZjTNWWB9u3vzuzGnlGgGsBzipY
+         kGY1M7HntmTphEUEPvjs0J2+s3OWoGz7pfiAh8ybKCnoAuVFPlmkJxOnHkabBonmDor/
+         3eCcWlHX8mKZ/3rEwhUMilIge0l3eIsKJt8eyleiCNozQjz+38mZex2h+MxVXGBdSvac
+         q44NLgc5u701z67mrXG+lNCaPPNTlpeJLtjgRLd2ooBMcbyiiAC426gs6QrXYaP7WFV/
+         Xu1azTpojKuQUK3RK87k4GMPbRDlwIC0JXjFykePPZ58HrDGX5xvhCKXJzEBm0al2Sjx
+         omMw==
+X-Gm-Message-State: AOAM5332qhXkqEHGoE5jNI60Aw43HVqmz6oSC++nwNAlSLi7wXHBTijd
+        mb73+TA55jzbJjaU9+79eNfUtyX+iCHX3Q==
+X-Google-Smtp-Source: ABdhPJzJxGTraJOu71UCQncEWH0ri+R+/r2avjNBJ3rZS776Br6IYWlIYBXaCaz9Ke2SN4lV25t9BA==
+X-Received: by 2002:a63:1648:: with SMTP id 8mr13856657pgw.140.1627222734857;
+        Sun, 25 Jul 2021 07:18:54 -0700 (PDT)
 Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id q17sm48055188pgd.39.2021.07.25.07.18.49
+        by smtp.gmail.com with ESMTPSA id q17sm48055188pgd.39.2021.07.25.07.18.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Jul 2021 07:18:51 -0700 (PDT)
+        Sun, 25 Jul 2021 07:18:54 -0700 (PDT)
 From:   Hengqi Chen <hengqi.chen@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, jolsa@kernel.org,
         yanivagman@gmail.com, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next 1/2] tools/resolve_btfids: emit warnings and patch zero id for missing symbols
-Date:   Sun, 25 Jul 2021 22:18:13 +0800
-Message-Id: <20210725141814.2000828-2-hengqi.chen@gmail.com>
+Subject: [PATCH bpf-next 2/2] bpf: expose bpf_d_path helper to vfs_* and security_* functions
+Date:   Sun, 25 Jul 2021 22:18:14 +0800
+Message-Id: <20210725141814.2000828-3-hengqi.chen@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210725141814.2000828-1-hengqi.chen@gmail.com>
 References: <20210725141814.2000828-1-hengqi.chen@gmail.com>
@@ -64,68 +64,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kernel functions referenced by .BTF_ids may changed from global to static
-and get inlined and thus disappears from BTF. This causes kernel build
-failure when resolve_btfids do id patch for symbols in .BTF_ids in vmlinux.
-Update resolve_btfids to emit warning messages and patch zero id for missing
-symbols instead of aborting kernel build process.
+Add vfs_* and security_* to bpf_d_path allowlist, so that we can use
+bpf_d_path helper to extract full file path from these functions'
+`struct path *` and `struct file *` arguments. This will help tools
+like IOVisor's filetop[2]/filelife to get full file path.
 
 Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 ---
- tools/bpf/resolve_btfids/main.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ kernel/trace/bpf_trace.c | 52 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 50 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index 3ad9301b0f00..3ea19e33250d 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -291,7 +291,7 @@ static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
- 	sh->sh_addralign = expected;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index c5e0b6a64091..355777b5bf63 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -850,16 +850,64 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
+ BTF_SET_START(btf_allowlist_d_path)
+ #ifdef CONFIG_SECURITY
+ BTF_ID(func, security_file_permission)
+-BTF_ID(func, security_inode_getattr)
+ BTF_ID(func, security_file_open)
++BTF_ID(func, security_file_ioctl)
++BTF_ID(func, security_file_free)
++BTF_ID(func, security_file_alloc)
++BTF_ID(func, security_file_lock)
++BTF_ID(func, security_file_fcntl)
++BTF_ID(func, security_file_set_fowner)
++BTF_ID(func, security_file_receive)
++BTF_ID(func, security_inode_getattr)
++BTF_ID(func, security_sb_mount)
++BTF_ID(func, security_bprm_check)
+ #endif
+ #ifdef CONFIG_SECURITY_PATH
+ BTF_ID(func, security_path_truncate)
++BTF_ID(func, security_path_notify)
++BTF_ID(func, security_path_unlink)
++BTF_ID(func, security_path_mkdir)
++BTF_ID(func, security_path_rmdir)
++BTF_ID(func, security_path_mknod)
++BTF_ID(func, security_path_symlink)
++BTF_ID(func, security_path_link)
++BTF_ID(func, security_path_rename)
++BTF_ID(func, security_path_chmod)
++BTF_ID(func, security_path_chown)
++BTF_ID(func, security_path_chroot)
+ #endif
+ BTF_ID(func, vfs_truncate)
+ BTF_ID(func, vfs_fallocate)
+-BTF_ID(func, dentry_open)
+ BTF_ID(func, vfs_getattr)
++BTF_ID(func, vfs_fadvise)
++BTF_ID(func, vfs_fchmod)
++BTF_ID(func, vfs_fchown)
++BTF_ID(func, vfs_open)
++BTF_ID(func, vfs_setpos)
++BTF_ID(func, vfs_llseek)
++BTF_ID(func, vfs_read)
++BTF_ID(func, vfs_write)
++BTF_ID(func, vfs_iocb_iter_read)
++BTF_ID(func, vfs_iter_read)
++BTF_ID(func, vfs_readv)
++BTF_ID(func, vfs_iocb_iter_write)
++BTF_ID(func, vfs_iter_write)
++BTF_ID(func, vfs_writev)
++BTF_ID(func, vfs_copy_file_range)
++BTF_ID(func, vfs_getattr_nosec)
++BTF_ID(func, vfs_ioctl)
++BTF_ID(func, vfs_fsync_range)
++BTF_ID(func, vfs_fsync)
++BTF_ID(func, vfs_utimes)
++BTF_ID(func, vfs_statfs)
++BTF_ID(func, vfs_dedupe_file_range_one)
++BTF_ID(func, vfs_dedupe_file_range)
++BTF_ID(func, vfs_clone_file_range)
++BTF_ID(func, vfs_cancel_lock)
++BTF_ID(func, vfs_test_lock)
++BTF_ID(func, vfs_setlease)
++BTF_ID(func, vfs_lock_file)
++BTF_ID(func, dentry_open)
+ BTF_ID(func, filp_close)
+ BTF_SET_END(btf_allowlist_d_path)
 
- 	if (gelf_update_shdr(scn, sh) == 0) {
--		printf("FAILED cannot update section header: %s\n",
-+		pr_err("FAILED cannot update section header: %s\n",
- 			elf_errmsg(-1));
- 		return -1;
- 	}
-@@ -317,6 +317,7 @@ static int elf_collect(struct object *obj)
-
- 	elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
- 	if (!elf) {
-+		close(fd);
- 		pr_err("FAILED cannot create ELF descriptor: %s\n",
- 			elf_errmsg(-1));
- 		return -1;
-@@ -484,7 +485,7 @@ static int symbols_resolve(struct object *obj)
- 	err = libbpf_get_error(btf);
- 	if (err) {
- 		pr_err("FAILED: load BTF from %s: %s\n",
--			obj->path, strerror(-err));
-+			obj->btf ?: obj->path, strerror(-err));
- 		return -1;
- 	}
-
-@@ -555,8 +556,7 @@ static int id_patch(struct object *obj, struct btf_id *id)
- 	int i;
-
- 	if (!id->id) {
--		pr_err("FAILED unresolved symbol %s\n", id->name);
--		return -EINVAL;
-+		pr_err("WARN: unresolved symbol %s\n", id->name);
- 	}
-
- 	for (i = 0; i < id->addr_cnt; i++) {
-@@ -734,8 +734,9 @@ int main(int argc, const char **argv)
-
- 	err = 0;
- out:
--	if (obj.efile.elf)
-+	if (obj.efile.elf) {
- 		elf_end(obj.efile.elf);
--	close(obj.efile.fd);
-+		close(obj.efile.fd);
-+	}
- 	return err;
- }
 --
 2.25.1
