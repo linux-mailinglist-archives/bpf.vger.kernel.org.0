@@ -2,174 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C2C3D50D7
-	for <lists+bpf@lfdr.de>; Mon, 26 Jul 2021 03:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D3D3D5147
+	for <lists+bpf@lfdr.de>; Mon, 26 Jul 2021 04:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbhGZAea (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Jul 2021 20:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhGZAe2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Jul 2021 20:34:28 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E36C061757
-        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 18:14:57 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id oz16so5457364ejc.7
-        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 18:14:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ryQYkrrVINVPbgH0gm34QxPZkbRVhRYAj4QW1cghauc=;
-        b=VdtZWk8aMBFYmIWggG20KY2E59KyrHo2A2S7G+MXYjYxTzO2hEbATVTXCjr9/5ZPhd
-         6oiX2fHYR27IAWoQ7LDjWcU3RNtczIKrbNaP/kO62BLFog1nCth/hJLfpR/iWu7Tp/4p
-         XLP/S5pmXr/I4RvzFta4cvsrbiaidX69HmYypLb8DxMHgiQcuvZfbU2ADtCq88DEzdhV
-         CxGBHVxiXvw5ZLKA0Q2ZJ2BJ6swHd9AqkI295et/dlMqqsRAGGh2VO24XHvA3Tzg9/8b
-         cN9U1TJTwyjYQHytlFNpuJa2OA6mLVBxnzCdcCyI5evX7aT3NqePObFU52NKqxgfdlbu
-         XBIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ryQYkrrVINVPbgH0gm34QxPZkbRVhRYAj4QW1cghauc=;
-        b=C2hwcjkx0m9ZFBSMs1LwPWD7b1Gez38ob6RegXjKmMUHt2tBhbHtNeH/nxaqGED0Ky
-         yuoRIBnJS3RWW+/9pJ/04gyPAr4CSzetLBolPtUf0xWv1bkXWELqjh5DBHDFmIJIZMNO
-         NvA6lCnGvXxQ/UtRpohv5xsOX90IrmyvzpDA5q1Cnco07dYF1RPbTaDUDTdQKmOvj9D1
-         UofNFD30Zx0EvxHGMniyUyZr34OZcNHJ9bNm86FdL9r/Sy9D3/FizA+basTGqIsErA4n
-         jil7oPQmavQed8HniDffNJFuDBuAceTlGOMZI5GHpQC0k7lIlNKDr5IkRxK3bxpa9KRR
-         sMIg==
-X-Gm-Message-State: AOAM53250MAPd8XnUTSRmRtYwoKxoBetsCVsOAhxHTiuRFvVgfMbSEJj
-        VraRyPK8CJd0deVzfwd+vtzHwQy8Sm70+Xxz0xU=
-X-Google-Smtp-Source: ABdhPJwa/w02ZS8ssFHzZHiGv1QjeagJT/5LSi1E2Gekm9p4eGKSphj5ag7wPeiYW/+J3zZowXXaqehesjxgnadN7QI=
-X-Received: by 2002:a17:907:1b1b:: with SMTP id mp27mr14542186ejc.538.1627262095635;
- Sun, 25 Jul 2021 18:14:55 -0700 (PDT)
+        id S231497AbhGZByL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Jul 2021 21:54:11 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2050 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231429AbhGZBx7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 25 Jul 2021 21:53:59 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16Q2VXP2001174;
+        Sun, 25 Jul 2021 19:34:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=Ps3JRr4ltCrZafZglL4kW61pDlWtMvw6H9wmoH1CWhw=;
+ b=nlcvOstwK7KacnTNp7/01SNtz5R87h/aHMg8j94vA3cltOEzdgMKfREkVHyGNML7P/vA
+ vKdz6080rsVETqBMSath7GKAr3Hw1kE6fOkz3Ad5EBilZaqSKuCLw/0/WRVubTsY4C0W
+ oPP1E0PuEeaXVCIYVgq0PEZF9njQWS0n880= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a0e6rq9k5-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 25 Jul 2021 19:34:15 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 25 Jul 2021 19:34:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SGU2GKUshshe7ZrWT/vo1kmiiqIaTaUtYvUf393Lin1ZrWtutR0wVwlROzcoUwp3mVrFDmrLO0dfKVHSku4ezkf6tO0WaB036eeEhErVInOqihYUDHHkNTN0alLmjDR4HheXexmqBZnZbBwAMqJYHBq/2ZHXXiyrezhsZIWAU4qg0jgTU050pHGgBQOK85ckmK6Vh/lysfmchP+a4SQkKzp6ksX4OPRKM9k2NpC5u9CoIm2dtour1b3cEzjinr8NPd4LARJmYxQZ8nUv2m5SJInpQYlgbY1y2xyUiEIFZ1HlbrOGtuZpgX4v/FU7hPXeXWnfDxCLjxXzcVupHe1LfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ps3JRr4ltCrZafZglL4kW61pDlWtMvw6H9wmoH1CWhw=;
+ b=W2UMXmsj5oVi6my8VzVeNGd4tt7xI30kExZc1snEUuJdC96P3J2qWvCE28Y5EkT9QFPU++tmS+HSGNUZZ6EXpMF5VSw3Rf5CgQIzwRYhu1ArxNRRMXS5hyWlo1q4QWCGNXpEKbYEtLAOxSYuY+Kmo+JxTBbYD6wYqQC2fJaGRgMut7s5m2HcEIMo6VNp6yD7es6fpDjjbNUriXRTdjabeMPLYQuHYWwPsW3ajc4MVx1rsijG6YKUrP5uRZcxM3xugjBZ5jR2BNL7s8f+ueFeQmRNa69niMMNYgBHsS0CxvP5dei77Cnu5wpyhvicMXbvWGncFsqBzG+ymjLE2UVrXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4417.namprd15.prod.outlook.com (2603:10b6:806:194::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Mon, 26 Jul
+ 2021 02:34:08 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4352.031; Mon, 26 Jul 2021
+ 02:34:08 +0000
+Subject: Re: [bpf-next 1/2] samples: bpf: Fix tracex7 error raised on the
+ missing argument
+To:     Juhee Kang <claudiajkang@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20210724152124.9762-1-claudiajkang@gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <6a73ed66-feb8-d85c-dfbe-4ae7005608db@fb.com>
+Date:   Sun, 25 Jul 2021 19:34:03 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+In-Reply-To: <20210724152124.9762-1-claudiajkang@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR08CA0037.namprd08.prod.outlook.com
+ (2603:10b6:300:c0::11) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-References: <a1ae15c8-f43c-c382-a7e0-10d3fedb6a@gmail.com> <CAK3+h2z+V1VNiGsNPHsyLZqdTwEsWMF9QnXZT2mi30dkb2xBXA@mail.gmail.com>
- <8af534e8-c327-a76-c4b5-ba2ae882b3ae@gmail.com> <7ba1fa1f-be6-1fa2-1877-12f7b707b65@gmail.com>
- <441e955a-0e2a-5956-2e91-e1fcaa4622aa@fb.com>
-In-Reply-To: <441e955a-0e2a-5956-2e91-e1fcaa4622aa@fb.com>
-From:   Vincent Li <vincent.mc.li@gmail.com>
-Date:   Sun, 25 Jul 2021 18:14:44 -0700
-Message-ID: <CAK3+h2w=CO8vvo_Td=w08zKxfko1DA96xk4fvCXvUA1wLZvOMA@mail.gmail.com>
-Subject: Re: Prog section rejected: Argument list too long (7)!
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::10b9] (2620:10d:c090:400::5:cf4) by MWHPR08CA0037.namprd08.prod.outlook.com (2603:10b6:300:c0::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24 via Frontend Transport; Mon, 26 Jul 2021 02:34:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a17c8e2e-24e0-4cc1-bef6-08d94fddd7d9
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4417:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB4417D7D7A2FB7CD83694ADFAD3E89@SA1PR15MB4417.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:883;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CmdImA8Znnzzj+RV3QNL+b9PwmdV4KInrtlyASli+RPvbZ0vqynXcb3Yj+q6eybXb7Kv3owVRVt1G4Y6i4bxVq53qHXmJOhwPfdox/DmtEcCTjaw5E3rrOPFAwllntEu4503JuExYNiL3OavUy978ZQrTzidUJ1YmIw0P2POUkbcowtQNlpe4Xojq0xdMmXUhiPhQwyojdra/oMtTFJSvlDl7mbW6am5l9KmMhVjaainiLn8RCKnG1q3UXAHSuWStYD1rFbwLZ09hl5th2QAEi1baEY+tBYY94ZQ6gw9PUbDvxcUTEC/HDUr67Vl2rqQmnjiofC3G+3nWEUFTOnkHJG9+VjWydYrqiNasCWgN8xU9ibTvENqQUvI4om+0vn+kUN2Reke66mCWw9kFQgH5prK1ORLFz7HdA4DtdPrA1oQg9jmdx1o+/3m+0xkn4JOGituDjSjMqK6LvDNhOFgV8CqYzZS0hziGtxm9wvmtqnpa1tOaan5j9M2cYfQzXCnWFsqc135qO7TC3SKzjAeLNIwCqPsRJ8MHqf/GxMx9w19LleWgWML35KqZrnX5H/aDcfjTSa+RiDA/a9nn68AB/A7zSCljaXeh8Tm2B6haT+bG0gGuJxy1kbfXssmTfKtR8R3zBC31NTPs8VB2HNmANQ/bs6CBdK8t6g1ye72A4K/wEQYdx1B+N87Jml9jtB4IfAL1M3RGvKWlkEUyPp4/mh9rS0AIzkpah4TPE957CQMdIjGfIKoRETvhE+EJLbv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(376002)(366004)(346002)(83380400001)(36756003)(6486002)(316002)(478600001)(5660300002)(2906002)(186003)(6666004)(66476007)(31686004)(38100700002)(53546011)(8936002)(8676002)(2616005)(4326008)(86362001)(110136005)(31696002)(66946007)(66556008)(52116002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZFR5UnQ0WDFFcnI4Vm55d0syZzlRb2d1dDk4RHYxK2ZuVWlVWFovTmRvZ012?=
+ =?utf-8?B?SHplTDI3MGpCcjFVQUZPOFI5SUNyeDBtbmxocEI3VGdxbmVxZy9NWksxMUpl?=
+ =?utf-8?B?YXhiZDh3MkUxK3ZRWmdvSFNTNXhWVksrZXR2cWdJZkozUmxkK0lzRFFZYlNT?=
+ =?utf-8?B?TU4wWS84VDlsRFcrMDBRWWUwTzVXcTc2TnhmWE9QLzhiSFRrRmVDenlRZjEy?=
+ =?utf-8?B?NjRUL2psY0RKTEdDVFZTMGNaNW12bElBaHBMSStMdlZUaWFDZlpNTXVHZkcr?=
+ =?utf-8?B?bm9vU1ozUVE0aWZWUVZjSTJLcUhJT05Od0xSL0p6eVJYZ0s0MDZhWjZaMzlq?=
+ =?utf-8?B?OTNERjlTYi94ZUtlNis2SGtpYjgySDljYTA2K3ZlMDZhcldUanAvbDZ0SUpy?=
+ =?utf-8?B?WXJxUkFZSHFDeStYK1Z1b09jenFEcUhzME1mQVlaNW9vTld2alRnV0g3cFc3?=
+ =?utf-8?B?dnBUc0tENHZpaExjbzdhdHZ2TnprbzQ3RjRFQWpOcXk3R1hQenFoZlEvWFIx?=
+ =?utf-8?B?MmVXajdlQUxXTHVheWF1eFJkOGJuekJNRDVtS21ub1AvR0ZhTldjYkpiR2N4?=
+ =?utf-8?B?bzJlUFh5UFVnZEJsUytFMDR1SXNmNjhmai80eWw4N05TS2xKZ1VIeXprblZT?=
+ =?utf-8?B?ZVRLM1A4NzFtUlZDRXJlbnd2MStLaUFRdUpDT1ZDNFlYTWpVamVSelkrTGhD?=
+ =?utf-8?B?SEF1elppYS9sRFZtT0dqQ3J6dDVTZHpHVWdyVDdnemVNSE1SMHRNS1krUUFq?=
+ =?utf-8?B?U2dkcG5ZaS9iK21DZHFOQmcwUCtKUWRtZng3NDF2U1VGaThMWnk0dTljOEZR?=
+ =?utf-8?B?QWRpNllDdXRBMFhFeWsweEtOZkVEVU1zcDRxOFc0cXVkS1dDZHJEd0VnWk4w?=
+ =?utf-8?B?VTdnMnhydjgweEpnbVA4eGdSaG15RUpKUllrMUgzTklWSmtwSjY3cjNGMEJ0?=
+ =?utf-8?B?ZHRBbjY5WWMyOHU5VXRVN0gzdEFBM1BTSlIrcEc1Q0sveUZ2ZGtSTjU2QVJD?=
+ =?utf-8?B?dCs5WkRiNWZZUitGRTdtK2I5bGkxSThBeEI4MFV5bVg4ZWJVMlBNZ0YzaFpR?=
+ =?utf-8?B?K1RZRzIzTlpuMmVpNW45UXlkbW82T0NXWjZWbU4wQ1N3YTF1aVJza3J5djZm?=
+ =?utf-8?B?bXZEREgxbk5xRTZuZzBaYnV2cTY3akwvY0s0V3JxN3hKeGFhZUYrcmk4RThH?=
+ =?utf-8?B?bjhHcUErT0ZRRERlSHFRdlEvNjUrUmJiU1BaUDVYSXhRa1YwUk55TVhWaEpy?=
+ =?utf-8?B?dHZFYmNzd0FwOTJiWFhtVnozbk51bDZOWUM1bHVGNmVJdGl0TkNDMlJtdEE3?=
+ =?utf-8?B?Vjk4akIrSmNkb25VSnJsMExqSGlucXNBZ0hJb1NLdWNaRXRIZUxJbEo5cVlr?=
+ =?utf-8?B?Y0dKVkxzMXg3VDVVSnFjanY4OVkwTjhSQ3ovUW5KQjJwSG12ZitjQjFWbTZa?=
+ =?utf-8?B?QmsyNnJpRmEvRVJsYXEyTUNZZ081SytmakpJN3dDOFk0ZHBBbHY0MGhBeEJx?=
+ =?utf-8?B?REVSRWhZMS9ydlFtSEwvaENNOThjcTZ1azlYOTNsSk5NUTZwZU04S2JFWEFV?=
+ =?utf-8?B?d0tLMmxNbzhhK3hiMmgwNUxpdWhTTTB2aUZwb1luR2h5eHF2U245WGFrenY4?=
+ =?utf-8?B?TXR5eHlnby9hOHhQeWsxQU03bTNaVm9nWEx2b3QzUkRXM09HUW1hUW1HS1l6?=
+ =?utf-8?B?WmFSUFpNT3pCVzVhaWtlSUhuZk84M3BjVkFWU2NIYjRUakswZExtb1FDVzJM?=
+ =?utf-8?B?RTd0TkY0MEJna3RqVi8xenhiZWZVN0ZUc0d3VFFNckNHbVVWRjlrNXF1TWJP?=
+ =?utf-8?B?YjhhSmFJRDVKcStiR2pWQT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a17c8e2e-24e0-4cc1-bef6-08d94fddd7d9
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2021 02:34:07.8883
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TIj5XenTviB5U2b4WVc0UgRcvSNvCxz+nJwAtpfhc1ZTAAnIq7ccGPSXYnvGwtj7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4417
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: psdvaEc7l-m7hEw80NZYJOXqh7Bnf4Ad
+X-Proofpoint-GUID: psdvaEc7l-m7hEw80NZYJOXqh7Bnf4Ad
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-25_08:2021-07-23,2021-07-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=826
+ suspectscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
+ clxscore=1011 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107260013
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 25, 2021 at 6:01 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 7/25/21 8:22 AM, Vincent Li wrote:
-> >
-> >
-> >
-> > On Sat, 24 Jul 2021, Vincent Li wrote:
-> >
-> >>
-> >>
-> >> On Sat, 24 Jul 2021, Vincent Li wrote:
-> >>
-> >>> On Fri, Jul 23, 2021 at 7:17 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
-> >>>>
-> >>>>
-> >>>> Hi BPF experts,
-> >>>>
-> >>>> I have a cilium PR https://github.com/cilium/cilium/pull/16916 that
-> >>>> failed to pass verifier in kernel 4.19, the error is like:
-> >>>>
-> >>>> level=warning msg="Prog section '2/7' rejected: Argument list too long
-> >>>> (7)!" subsys=datapath-loader
-> >>>> level=warning msg=" - Type:         3" subsys=datapath-loader
-> >>>> level=warning msg=" - Attach Type:  0" subsys=datapath-loader
-> >>>> level=warning msg=" - Instructions: 4578 (482 over limit)"
-> >>>> subsys=datapath-loader
-> >>>> level=warning msg=" - License:      GPL" subsys=datapath-loader
-> >>>> level=warning subsys=datapath-loader
-> >>>> level=warning msg="Verifier analysis:" subsys=datapath-loader
-> >>>> level=warning subsys=datapath-loader
-> >>>> level=warning msg="Error filling program arrays!" subsys=datapath-loader
-> >>>> level=warning msg="Unable to load program" subsys=datapath-loader
-> >>>>
-> >>>> then I tried to run the PR locally in my dev machine with custom upstream
-> >>>> kernel version, I narrowed the issue down to between upstream kernel
-> >>>> version 5.7 and 5.8, in 5.7, it failed with:
-> >>>
-> >>> I further narrow it down to between 5.7 and 5.8-rc1 release, but still
-> >>> no clue which commits in 5.8-rc1 resolved the issue
-> >>>
-> >>>>
-> >>>> level=warning msg="processed 50 insns (limit 1000000) max_states_per_insn
-> >>>> 0 total_states 1 peak_states 1 mark_read 1" subsys=datapath-loader
-> >>>> level=warning subsys=datapath-loader
-> >>>> level=warning msg="Log buffer too small to dump verifier log 16777215
-> >>>> bytes (9 tries)!" subsys=datapath-loader
->
-> The error message is "Log buffer too small to dump verifier log 16777215
-> bytes (9 tries)!".
->
-> Commit 6f8a57ccf8511724e6f48d732cb2940889789ab2 made the default log
-> much shorter. So it fixed the above log buffer too small issue.
->
-
-Thank you for the confirmation, after I remove 'verbose' log, indeed
-the problem went away for kernel 5.x- 5.8, but the
-"Prog section '2/7' rejected: Argument list too long.." issue
-persisted even after I remove the "verbose" logging
-for kernel version 4.19, any clue on that?
 
 
-> >>>> level=warning msg="Error filling program arrays!" subsys=datapath-loader
-> >>>> level=warning msg="Unable to load program" subsys=datapath-loader
-> >>>>
-> >>>> 5.8 works fine.
-> >>>>
-> >>>> What difference between 5.7 and 5.8 to cause this verifier problem, I
-> >>>> tried to git log v5.7..v5.8 kernel/bpf/verifier, I could not see commits
-> >>>> that would make the difference with my limited BPF knowledge. Any clue
-> >>>> would be appreciated!
-> >>
-> >> I have git bisected to this commit:
-> >>
-> >> # first fixed commit: [6f8a57ccf8511724e6f48d732cb2940889789ab2] bpf: Make
-> >> verifier log more relevant by default
-> >
-> > both the cilium github PR test and my local dev machine PR test has the
-> > verbose set, for example, my local test has:
-> >
-> > diff --git a/pkg/datapath/loader/netlink.go
-> > b/pkg/datapath/loader/netlink.go
-> > index 381e1fbc8..00015eabc 100644
-> > --- a/pkg/datapath/loader/netlink.go
-> > +++ b/pkg/datapath/loader/netlink.go
-> > @@ -106,7 +106,7 @@ func replaceDatapath(ctx context.Context, ifName,
-> > objPath, progSec, progDirectio
-> >                  loaderProg = "tc"
-> >                  args = []string{"filter", "replace", "dev", ifName,
-> > progDirection,
-> >                          "prio", "1", "handle", "1", "bpf", "da", "obj",
-> > objPath,
-> > -                       "sec", progSec,
-> > +                       "sec", progSec, "verbose",
-> >                  }
-> >          }
-> >          cmd = exec.CommandContext(ctx, loaderProg,
-> > args...).WithFilters(libbpfFixupMsg)
-> >
-> > if I remove the "verbose" change, and run the Cilium agent without
-> > kernel commit 6f8a57ccf8, the problem is gone, it seems commit 6f8a57ccf8
-> > is related
->
-> Remove "verbose" should work since the kernel won't do logging any more.
->
-> >
-> >>
-> >> this commit looks only dealing with log, accidently fixed the PR issue I
-> >> have? my PR use __bpf_memcpy_builtin() to rewrite the tunnel inner packet
-> >> destination MAC address, somehow related?
-> >>
->
-> [...]
+On 7/24/21 8:21 AM, Juhee Kang wrote:
+> The current behavior of 'tracex7' doesn't consist with other bpf samples
+> tracex{1..6}. Other samples do not require any argument to run with, but
+> tracex7 should be run with btrfs device argument. (it should be executed
+> with test_override_return.sh)
+> 
+> Currently, tracex7 doesn't have any description about how to run this
+> program and raises an unexpected error. And this result might be
+> confusing since users might not have a hunch about how to run this
+> program.
+> 
+>      // Current behavior
+>      # ./tracex7
+>      sh: 1: Syntax error: word unexpected (expecting ")")
+>      // Fixed behavior
+>      # ./tracex7
+>      ERROR: Run with the btrfs device argument!
+> 
+> In order to fix this error, this commit adds logic to report a message
+> and exit when running this program with a missing argument.
+> 
+> Additionally in test_override_return.sh, there is a problem with
+> multiple directory(tmpmnt) creation. So in this commit adds a line with
+> removing the directory with every execution.
+> 
+> Signed-off-by: Juhee Kang <claudiajkang@gmail.com>
+
+Acked-by: Yonghong Song <yhs@fb.com>
