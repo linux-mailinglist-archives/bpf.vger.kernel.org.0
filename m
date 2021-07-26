@@ -2,150 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1443D519E
-	for <lists+bpf@lfdr.de>; Mon, 26 Jul 2021 05:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975F53D5293
+	for <lists+bpf@lfdr.de>; Mon, 26 Jul 2021 06:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhGZDJO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Jul 2021 23:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52770 "EHLO
+        id S229482AbhGZEBS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Jul 2021 00:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbhGZDJO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Jul 2021 23:09:14 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E98C061757
-        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 20:49:42 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id u12so8787464eds.2
-        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 20:49:42 -0700 (PDT)
+        with ESMTP id S229469AbhGZEBS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Jul 2021 00:01:18 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DFEC061757
+        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 21:41:46 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id j1so11223912pjv.3
+        for <bpf@vger.kernel.org>; Sun, 25 Jul 2021 21:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ilOAMxuaikWA+pICJBet5a6sT1SOXKULzJ0Yr0GrSn8=;
-        b=KKNQA8ciIvmIByJ2d8A1nqymcp1wQDlmFnXNFovYdQ3roO/bJIZPx9IcKDZrPsjuKa
-         imZVle85Srbk3ThTE2g10SsZI5F0ktnbcd+VjTas7tUfmKrUt7UaE9YYc5tfqpC6+Tnd
-         PRlR1myAosnfLHcXGtx02oNaAGQy89T+WcioupRzylUsbAtml5YLCQ1pG8uFOEbob49r
-         isiM16P1WfxKYek7hWQax6iJGaAKkh0hmbrq/fkSL21i+zFRLm7kOv7sOyrastInSfyJ
-         +kio6f+wHTsHSD8RvOgzPOL6pJxpzacrlU+fBUtqesQ3Ix8l8FbkT9ya3xt/0oZpuPgI
-         8Gaw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xMrCLiuPhHZzcW1K/9ky6v5p3IK2AQZhC975NAMZe+I=;
+        b=Poh35TOFYHWiJG0Ywsue6vMq2gsL2hsTOo0i5P8IJ9pteDGMH+LAr5shwbsHHhXvJQ
+         Wi3+jGPcpzwKqi28XOmmDJ4X2SCCLMNtjUtvrh4AUzRv0MO4VWxI9qvOfC2DisxhDFSu
+         SeLrOsf0HIIGsfUrfxAoZLzQpTplB+kvvpiqK3BjoyIKoUKcPdV3gXIc88iJ3snOdKy/
+         lQ1zAlgupLE7ns3k89L6oq+k+3urqGBfMQJ6UFXdWUFs0MKoYZKif7KRG6NlNmJLdUPA
+         nPHbPFIZ/bQCE2DBvRY3XOv2cGdEgn/LWEobINtP8RMtKK2rM48y0XH3JWJ12GjfLA7e
+         CLaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ilOAMxuaikWA+pICJBet5a6sT1SOXKULzJ0Yr0GrSn8=;
-        b=qzMiDyQgLJBZIgoVA0LFy6Z9KbxqykRDcygp7S8I51RLD8jKHZVPwoa2fbgZOOSlKw
-         kxO0Z830M2Ll4NLZqOy4U1iSKcTUGAKJfK7H7Wb/aFaIfbttsazttfzCefanLtT/24LW
-         cf8g9LICaJQj+Oq7sKjD28/OV5Y9GDmhioEoUfAlyV1Jf9sNwqr7DYsRGfxr6q5d2VOd
-         DSf+bK7u6kVvUD2X9G/16eZ0bMK+nUNUpYjSptPmDmnFlXtg78QIrtGtOUW8P6S1WJ+1
-         XyXY9yKBMGnaaBJ5kZiwbbNuuHiJdgMzoMi9KOkCtQR9lCLT+1QHPo9J9MmmMg1/H4yQ
-         7xGw==
-X-Gm-Message-State: AOAM5338DbMMJLDVEo9i2gaNMHtYtvYSjM8LoSToMDByRV1SzsgEKx9q
-        E4gw62G5mXo1254oSOS8YoBWmLDEr5H9Dpi0VPk=
-X-Google-Smtp-Source: ABdhPJyynNq1oP2j6Cgaxl063RSRWpgItSjg/OyJijhuHT8flLfIWG0p6o9uWGLF7D5cV7D/FmVMmGGhjdCE4lo+6m8=
-X-Received: by 2002:a05:6402:60e:: with SMTP id n14mr19226567edv.363.1627271381325;
- Sun, 25 Jul 2021 20:49:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xMrCLiuPhHZzcW1K/9ky6v5p3IK2AQZhC975NAMZe+I=;
+        b=DIpR/plRxZCnoce7+7ZHIDKt6qCsWKSdeA7t3RQzU8LnmjazRkAKF9PYlJxuS/Y46h
+         nj0tn5AwC1mL8TUHjnab56aq4y+QCpugD9ne/2adNfapoRHq0qPwKj8mrpsgjZ05nSOs
+         5qSxD3lwjNSk1dSiAqvzEFWeUiRQdhG8iZbqVMSC9Nz3GA/WN7bsdK6POViIzhgfGQHe
+         j3m1AmZc197UVEWFynu4jB8mCycYrhQyaIX1yDLrHetg85UfIJU5sgloQFxhOTVZxk08
+         z+9wX9qLpWzBlCMjXwzL+EsVojcMRrxfyTk33YBloU/3SteJYEXYyyuFWjKZM0qIQi+F
+         U9Lg==
+X-Gm-Message-State: AOAM533+V6o6q8Y56/FOpowfIs9PhfwpvKxjW252xtD9+KgYwnhP+iBD
+        2wIqA9iXUw20ajKE4xmYTRE=
+X-Google-Smtp-Source: ABdhPJy3C4ElvQhBvD+ixn5y0DQE9nfjTvQPIxv3D3RgYVygXgsOtrO3Tg/dyggvJbLQRuCE21CYxQ==
+X-Received: by 2002:a63:9c5:: with SMTP id 188mr13061406pgj.187.1627274505064;
+        Sun, 25 Jul 2021 21:41:45 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.119])
+        by smtp.gmail.com with ESMTPSA id p17sm12546883pjg.54.2021.07.25.21.41.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Jul 2021 21:41:44 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 1/2] tools/resolve_btfids: emit warnings and
+ patch zero id for missing symbols
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        john.fastabend@gmail.com, jolsa@kernel.org, yanivagman@gmail.com
+References: <20210725141814.2000828-1-hengqi.chen@gmail.com>
+ <20210725141814.2000828-2-hengqi.chen@gmail.com>
+ <dde36573-f6b9-8570-0878-e313e771345a@fb.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+Message-ID: <95d1c440-bb99-13ad-0227-f9ab20a001f2@gmail.com>
+Date:   Mon, 26 Jul 2021 12:41:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <a1ae15c8-f43c-c382-a7e0-10d3fedb6a@gmail.com> <CAK3+h2z+V1VNiGsNPHsyLZqdTwEsWMF9QnXZT2mi30dkb2xBXA@mail.gmail.com>
- <8af534e8-c327-a76-c4b5-ba2ae882b3ae@gmail.com> <7ba1fa1f-be6-1fa2-1877-12f7b707b65@gmail.com>
- <441e955a-0e2a-5956-2e91-e1fcaa4622aa@fb.com> <CAK3+h2w=CO8vvo_Td=w08zKxfko1DA96xk4fvCXvUA1wLZvOMA@mail.gmail.com>
- <e1a2904f-1b43-e1a8-e20d-0449798274bb@fb.com>
-In-Reply-To: <e1a2904f-1b43-e1a8-e20d-0449798274bb@fb.com>
-From:   Vincent Li <vincent.mc.li@gmail.com>
-Date:   Sun, 25 Jul 2021 20:49:30 -0700
-Message-ID: <CAK3+h2z=qxzDm=-isjuM01n8Mt5NpoAHCkwHNzOWFXNMAczUdw@mail.gmail.com>
-Subject: Re: Prog section rejected: Argument list too long (7)!
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <dde36573-f6b9-8570-0878-e313e771345a@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 25, 2021 at 7:39 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 7/25/21 6:14 PM, Vincent Li wrote:
-> > On Sun, Jul 25, 2021 at 6:01 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 7/25/21 8:22 AM, Vincent Li wrote:
-> >>>
-> >>>
-> >>>
-> >>> On Sat, 24 Jul 2021, Vincent Li wrote:
-> >>>
-> >>>>
-> >>>>
-> >>>> On Sat, 24 Jul 2021, Vincent Li wrote:
-> >>>>
-> >>>>> On Fri, Jul 23, 2021 at 7:17 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>> Hi BPF experts,
-> >>>>>>
-> >>>>>> I have a cilium PR https://github.com/cilium/cilium/pull/16916 that
-> >>>>>> failed to pass verifier in kernel 4.19, the error is like:
-> >>>>>>
-> >>>>>> level=warning msg="Prog section '2/7' rejected: Argument list too long
-> >>>>>> (7)!" subsys=datapath-loader
-> >>>>>> level=warning msg=" - Type:         3" subsys=datapath-loader
-> >>>>>> level=warning msg=" - Attach Type:  0" subsys=datapath-loader
-> >>>>>> level=warning msg=" - Instructions: 4578 (482 over limit)"
-> >>>>>> subsys=datapath-loader
-> >>>>>> level=warning msg=" - License:      GPL" subsys=datapath-loader
-> >>>>>> level=warning subsys=datapath-loader
-> >>>>>> level=warning msg="Verifier analysis:" subsys=datapath-loader
-> >>>>>> level=warning subsys=datapath-loader
-> >>>>>> level=warning msg="Error filling program arrays!" subsys=datapath-loader
-> >>>>>> level=warning msg="Unable to load program" subsys=datapath-loader
-> >>>>>>
-> >>>>>> then I tried to run the PR locally in my dev machine with custom upstream
-> >>>>>> kernel version, I narrowed the issue down to between upstream kernel
-> >>>>>> version 5.7 and 5.8, in 5.7, it failed with:
-> >>>>>
-> >>>>> I further narrow it down to between 5.7 and 5.8-rc1 release, but still
-> >>>>> no clue which commits in 5.8-rc1 resolved the issue
-> >>>>>
-> >>>>>>
-> >>>>>> level=warning msg="processed 50 insns (limit 1000000) max_states_per_insn
-> >>>>>> 0 total_states 1 peak_states 1 mark_read 1" subsys=datapath-loader
-> >>>>>> level=warning subsys=datapath-loader
-> >>>>>> level=warning msg="Log buffer too small to dump verifier log 16777215
-> >>>>>> bytes (9 tries)!" subsys=datapath-loader
-> >>
-> >> The error message is "Log buffer too small to dump verifier log 16777215
-> >> bytes (9 tries)!".
-> >>
-> >> Commit 6f8a57ccf8511724e6f48d732cb2940889789ab2 made the default log
-> >> much shorter. So it fixed the above log buffer too small issue.
-> >>
-> >
-> > Thank you for the confirmation, after I remove 'verbose' log, indeed
-> > the problem went away for kernel 5.x- 5.8, but the
-> > "Prog section '2/7' rejected: Argument list too long.." issue
-> > persisted even after I remove the "verbose" logging
-> > for kernel version 4.19, any clue on that?
->
-> No, I don't.
->
-> You need to have detailed verifier log. In verifier, there are quite
-> some places which returns -E2BIG.
->
-I will do another round of bisect,  correct myself, the "The argument
-list too long" occurred in 5.1, but not in 5.2
 
-> >
-> >
-> >>>>>> level=warning msg="Error filling program arrays!" subsys=datapath-loader
-> >>>>>> level=warning msg="Unable to load program" subsys=datapath-loader
-> >>>>>>
-> >>>>>> 5.8 works fine.
-> >>>>>>
-> >>>>>> What difference between 5.7 and 5.8 to cause this verifier problem, I
-> >>>>>> tried to git log v5.7..v5.8 kernel/bpf/verifier, I could not see commits
-> >>>>>> that would make the difference with my limited BPF knowledge. Any clue
-> >>>>>> would be appreciated!
-> >>>>
-> >>>> I have git bisected to this commit:
+
+On 2021/7/26 11:32 AM, Yonghong Song wrote:
+> 
+> 
+> On 7/25/21 7:18 AM, Hengqi Chen wrote:
+>> Kernel functions referenced by .BTF_ids may changed from global to static
+>> and get inlined and thus disappears from BTF. This causes kernel build
+> 
+> the function could be renamed or removed too.
+> 
+>> failure when resolve_btfids do id patch for symbols in .BTF_ids in vmlinux.
+>> Update resolve_btfids to emit warning messages and patch zero id for missing
+>> symbols instead of aborting kernel build process.
+>>
+>> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> 
+> LGTM with one minor comment below.
+> 
+> Acked-by: Yonghong Song <yhs@fb.com>
+> 
+>> ---
+>>   tools/bpf/resolve_btfids/main.c | 13 +++++++------
+>>   1 file changed, 7 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+>> index 3ad9301b0f00..3ea19e33250d 100644
+>> --- a/tools/bpf/resolve_btfids/main.c
+>> +++ b/tools/bpf/resolve_btfids/main.c
+>> @@ -291,7 +291,7 @@ static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
+>>       sh->sh_addralign = expected;
+>>
+>>       if (gelf_update_shdr(scn, sh) == 0) {
+>> -        printf("FAILED cannot update section header: %s\n",
+>> +        pr_err("FAILED cannot update section header: %s\n",
+>>               elf_errmsg(-1));
+>>           return -1;
+>>       }
+>> @@ -317,6 +317,7 @@ static int elf_collect(struct object *obj)
+>>
+>>       elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
+>>       if (!elf) {
+>> +        close(fd);
+>>           pr_err("FAILED cannot create ELF descriptor: %s\n",
+>>               elf_errmsg(-1));
+>>           return -1;
+>> @@ -484,7 +485,7 @@ static int symbols_resolve(struct object *obj)
+>>       err = libbpf_get_error(btf);
+>>       if (err) {
+>>           pr_err("FAILED: load BTF from %s: %s\n",
+>> -            obj->path, strerror(-err));
+>> +            obj->btf ?: obj->path, strerror(-err));
+> 
+> Why you change "obj->path" to "obj->btf ?: obj->path"?
+> Note that obj->path cannot be NULL.
+
+The diff didn't see the whole picture. Let me quote it here:
+```
+btf = btf__parse(obj->btf ?: obj->path, NULL);
+err = libbpf_get_error(btf);
+if (err) {
+        pr_err("FAILED: load BTF from %s: %s\n",
+                obj->path, strerror(-err));
+        return -1;
+}
+```
+
+Because btf__parse parses either obj->btf or obj->path,
+I think the error message should reveal this.
+
+> 
+>>           return -1;
+>>       }
+>>
 > [...]
