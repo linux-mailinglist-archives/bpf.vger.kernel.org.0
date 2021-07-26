@@ -2,192 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1CA3D6594
-	for <lists+bpf@lfdr.de>; Mon, 26 Jul 2021 19:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5083D65DB
+	for <lists+bpf@lfdr.de>; Mon, 26 Jul 2021 19:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233535AbhGZQj7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Jul 2021 12:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
+        id S231479AbhGZQzP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Jul 2021 12:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235921AbhGZQjX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:39:23 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75264C0BB56C;
-        Mon, 26 Jul 2021 09:53:42 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id a13so12723451iol.5;
-        Mon, 26 Jul 2021 09:53:42 -0700 (PDT)
+        with ESMTP id S231248AbhGZQzP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Jul 2021 12:55:15 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A0AC061757
+        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 10:35:42 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id o5so17726528ejy.2
+        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 10:35:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TST9Evg7YSFkD3gtj7vE6ssLhHqcDOyzBWsiW3nAOtU=;
-        b=EtQVp/7xn4iOGk0sx21Sc6VgUSdHlqVsdJGC7DKW1MbFDrNgvJXlaou2doksWKup3y
-         ICQ1SleyQr9qCMMIEc1PhRzALxZzTjrXwWOGgN5LE8az6q/ugwVVKfs3imEN7QA+rAZd
-         3idQFzHsZS8dMl3+jgx7uz5aPaPfm6Uiqkhow0ghf5SMBBXy5prxaJjHvKBWpaKgDnEI
-         zjovrYuFnBfa4k47PEyG/lk7rlsU/tiheC/JRyVNLVFE1sSAjg9SsFCfvayiISWg1FA6
-         ZSTAXPeHoxStKzVN1Keq2ge23YNDzPO9HhHImWskxj78/7nb+SG18/gW+Qn8XUbVOs9J
-         08Pg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jWYryqPqaeokAftPRoukk0ARkpcE4AzaVLrtIEz6sC4=;
+        b=GcveJMQpbaFnSCNuFk/BOrotbsnPsBIVlEqQUhQD3JsJ3Ly0M5YlVmK0xIChWw9rbu
+         GLrwYFZwmFx68WdL1CSCYLwPInfVlchLpSL93DlSm87HEHgdSiB8aAT83Vp/d9Ba68B/
+         PSQ+bLALjclygphpmhFdogrpYeKyZpjCybg5cBmlSxc9bGBcR6p0yYSpIFw8QRH7J+vs
+         v20BNLo84hzcV9rU32Vxa0tiyXoHBh+iCnu0TEdwdeffrjL6AG/LZAsyM7HllxBgFRnn
+         vU8iRr7PqZG2whk1N3EEZzMagyZludn9WxhWD06fiBDCRfmLDleq4sJ9+2lQx/QR7V7C
+         iVmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TST9Evg7YSFkD3gtj7vE6ssLhHqcDOyzBWsiW3nAOtU=;
-        b=gchGfsaocSPgKsWMpJe6zx6bb3NvPup7wbzXwI0mGF6HXDPDEcHqABYjxMC0M/NVby
-         hqGlQBh5wagjh7eupzNuP/ZVSUNaDiaNeAALauxocd0Vp2B4oFmKlVFZhcELXMFE5P26
-         5SuarMv8NZ+ZJRr35Ikl0sBmrywy+JWyCi9PkXauwm0fSBoDAXpwECtuUcDvOvBN3PNF
-         Utt2owIlw0zNgf41pKCQjH6aHOQBPVo7Vw7WtPdu7rR/XGfPHgdJwncy0NjeR6LdMmft
-         tMUQhRJ3Jnbc8Kg9SSCHHztW4nWgWolqB1uXsjQzA+N+E0pvDB8U+Jp0jNWoD0HYpEKO
-         2BZg==
-X-Gm-Message-State: AOAM53177bSzhk4fAJyesNRP/791aXv+qTOfmgDVf45oUr4Ob7IGjJ2R
-        ocOME1kWcRWpu3ecyJYHthRtdmjrAoi5eg==
-X-Google-Smtp-Source: ABdhPJw1g0qO1f6KWN5aZ++YxD8UtDOSc7QJOoGlV3iBJakUdcthFmj7aaqnx22VRXz9jd9Jfbpipw==
-X-Received: by 2002:a05:6638:538:: with SMTP id j24mr17268989jar.59.1627318421937;
-        Mon, 26 Jul 2021 09:53:41 -0700 (PDT)
-Received: from john-XPS-13-9370.lan ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id r198sm254483ior.7.2021.07.26.09.53.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 09:53:41 -0700 (PDT)
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     jakub@cloudflare.com, daniel@iogearbox.net,
-        xiyou.wangcong@gmail.com, alexei.starovoitov@gmail.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        john.fastabend@gmail.com
-Subject: [PATCH bpf v2 3/3] bpf, sockmap: fix memleak on ingress msg enqueue
-Date:   Mon, 26 Jul 2021 09:53:04 -0700
-Message-Id: <20210726165304.1443836-4-john.fastabend@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210726165304.1443836-1-john.fastabend@gmail.com>
-References: <20210726165304.1443836-1-john.fastabend@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jWYryqPqaeokAftPRoukk0ARkpcE4AzaVLrtIEz6sC4=;
+        b=Bc8JGac8byo0ER7LQsmvdWSeK44qK3r8f97JegvbVESce/HVvQ1gRtWp9D6Mjeo5zn
+         yGdeiTmAFBKGNJgPZ6Fq/eclOxAOuELxC4rqz8oyneQS3+gpNpxad8LktUdJi1LBKGxl
+         aaQH5KvUMbJbEC2hw1J/yNTc849fNHVRENZLwqe1nF+6McEqSTUnFxtCysm2EUSvgR55
+         SiuJW3qmzr/HnkuTMuFyleWGfv3WHw8F1QKI/uoahD0zcDIt2LA9R6tLael5YXmrhnnr
+         KHAcFgi6yhpZwYHY5zvO7Dta6m21r1wC5cMqlSgNiGd3dYqFQOIAEaCv+ZRVo9mWZ2bT
+         Dt1w==
+X-Gm-Message-State: AOAM530I3ERc5ulxHz2Jw1bLP5q7WsG4iLoeh90u4SLzMwb8Ctk3/Q/C
+        HNcR3DjDAdOim5g7TO3N2njmj/QlphESVrpVWBs=
+X-Google-Smtp-Source: ABdhPJx2OgdULJWFGLsWkcALrrh+/Z/4J+nx+xVPAXvtzYuDLiab1pF9hBV2ceH+RCE0zofiLd68fnK5w56Tt8J0eds=
+X-Received: by 2002:a17:907:3e03:: with SMTP id hp3mr16224526ejc.183.1627320941275;
+ Mon, 26 Jul 2021 10:35:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <a1ae15c8-f43c-c382-a7e0-10d3fedb6a@gmail.com> <CAK3+h2z+V1VNiGsNPHsyLZqdTwEsWMF9QnXZT2mi30dkb2xBXA@mail.gmail.com>
+ <8af534e8-c327-a76-c4b5-ba2ae882b3ae@gmail.com> <7ba1fa1f-be6-1fa2-1877-12f7b707b65@gmail.com>
+ <441e955a-0e2a-5956-2e91-e1fcaa4622aa@fb.com> <CAK3+h2w=CO8vvo_Td=w08zKxfko1DA96xk4fvCXvUA1wLZvOMA@mail.gmail.com>
+ <e1a2904f-1b43-e1a8-e20d-0449798274bb@fb.com> <CAK3+h2z=qxzDm=-isjuM01n8Mt5NpoAHCkwHNzOWFXNMAczUdw@mail.gmail.com>
+In-Reply-To: <CAK3+h2z=qxzDm=-isjuM01n8Mt5NpoAHCkwHNzOWFXNMAczUdw@mail.gmail.com>
+From:   Vincent Li <vincent.mc.li@gmail.com>
+Date:   Mon, 26 Jul 2021 10:35:30 -0700
+Message-ID: <CAK3+h2yDOFAK8bNQu4Y_=O_QGQ3CrMd0NSrGahv3NXbJkDB92Q@mail.gmail.com>
+Subject: Re: Prog section rejected: Argument list too long (7)!
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If backlog handler is running during a tear down operation we may enqueue
-data on the ingress msg queue while tear down is trying to free it.
+On Sun, Jul 25, 2021 at 8:49 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+>
+> On Sun, Jul 25, 2021 at 7:39 PM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 7/25/21 6:14 PM, Vincent Li wrote:
+> > > On Sun, Jul 25, 2021 at 6:01 PM Yonghong Song <yhs@fb.com> wrote:
+> > >>
+> > >>
+> > >>
+> > >> On 7/25/21 8:22 AM, Vincent Li wrote:
+> > >>>
+> > >>>
+> > >>>
+> > >>> On Sat, 24 Jul 2021, Vincent Li wrote:
+> > >>>
+> > >>>>
+> > >>>>
+> > >>>> On Sat, 24 Jul 2021, Vincent Li wrote:
+> > >>>>
+> > >>>>> On Fri, Jul 23, 2021 at 7:17 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> > >>>>>>
+> > >>>>>>
+> > >>>>>> Hi BPF experts,
+> > >>>>>>
+> > >>>>>> I have a cilium PR https://github.com/cilium/cilium/pull/16916 that
+> > >>>>>> failed to pass verifier in kernel 4.19, the error is like:
+> > >>>>>>
+> > >>>>>> level=warning msg="Prog section '2/7' rejected: Argument list too long
+> > >>>>>> (7)!" subsys=datapath-loader
+> > >>>>>> level=warning msg=" - Type:         3" subsys=datapath-loader
+> > >>>>>> level=warning msg=" - Attach Type:  0" subsys=datapath-loader
+> > >>>>>> level=warning msg=" - Instructions: 4578 (482 over limit)"
+> > >>>>>> subsys=datapath-loader
+> > >>>>>> level=warning msg=" - License:      GPL" subsys=datapath-loader
+> > >>>>>> level=warning subsys=datapath-loader
+> > >>>>>> level=warning msg="Verifier analysis:" subsys=datapath-loader
+> > >>>>>> level=warning subsys=datapath-loader
+> > >>>>>> level=warning msg="Error filling program arrays!" subsys=datapath-loader
+> > >>>>>> level=warning msg="Unable to load program" subsys=datapath-loader
+> > >>>>>>
+> > >>>>>> then I tried to run the PR locally in my dev machine with custom upstream
+> > >>>>>> kernel version, I narrowed the issue down to between upstream kernel
+> > >>>>>> version 5.7 and 5.8, in 5.7, it failed with:
+> > >>>>>
+> > >>>>> I further narrow it down to between 5.7 and 5.8-rc1 release, but still
+> > >>>>> no clue which commits in 5.8-rc1 resolved the issue
+> > >>>>>
+> > >>>>>>
+> > >>>>>> level=warning msg="processed 50 insns (limit 1000000) max_states_per_insn
+> > >>>>>> 0 total_states 1 peak_states 1 mark_read 1" subsys=datapath-loader
+> > >>>>>> level=warning subsys=datapath-loader
+> > >>>>>> level=warning msg="Log buffer too small to dump verifier log 16777215
+> > >>>>>> bytes (9 tries)!" subsys=datapath-loader
+> > >>
+> > >> The error message is "Log buffer too small to dump verifier log 16777215
+> > >> bytes (9 tries)!".
+> > >>
+> > >> Commit 6f8a57ccf8511724e6f48d732cb2940889789ab2 made the default log
+> > >> much shorter. So it fixed the above log buffer too small issue.
+> > >>
+> > >
+> > > Thank you for the confirmation, after I remove 'verbose' log, indeed
+> > > the problem went away for kernel 5.x- 5.8, but the
+> > > "Prog section '2/7' rejected: Argument list too long.." issue
+> > > persisted even after I remove the "verbose" logging
+> > > for kernel version 4.19, any clue on that?
+> >
+> > No, I don't.
+> >
+> > You need to have detailed verifier log. In verifier, there are quite
+> > some places which returns -E2BIG.
+> >
+> I will do another round of bisect,  correct myself, the "The argument
+> list too long" occurred in 5.1, but not in 5.2
 
- sk_psock_backlog()
-   sk_psock_handle_skb()
-     skb_psock_skb_ingress()
-       sk_psock_skb_ingress_enqueue()
-         sk_psock_queue_msg(psock,msg)
-                                           spin_lock(ingress_lock)
-                                            sk_psock_zap_ingress()
-                                             _sk_psock_purge_ingerss_msg()
-                                              _sk_psock_purge_ingress_msg()
-                                            -- free ingress_msg list --
-                                           spin_unlock(ingress_lock)
-           spin_lock(ingress_lock)
-           list_add_tail(msg,ingress_msg) <- entry on list with no one
-                                             left to free it.
-           spin_unlock(ingress_lock)
+It looks to be this commit fixed the issue
+commit c04c0d2b968ac45d6ef020316808ef6c82325a82 (HEAD)
+Author: Alexei Starovoitov <ast@kernel.org>
+Date:   Mon Apr 1 21:27:45 2019 -0700
+    bpf: increase complexity limit and maximum program size
 
-To fix we only enqueue from backlog if the ENABLED bit is set. The tear
-down logic clears the bit with ingress_lock set so we wont enqueue the
-msg in the last step.
-
-Fixes: 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- include/linux/skmsg.h | 54 ++++++++++++++++++++++++++++---------------
- net/core/skmsg.c      |  6 -----
- 2 files changed, 35 insertions(+), 25 deletions(-)
-
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index 96f319099744..94b4b61ba775 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -285,11 +285,45 @@ static inline struct sk_psock *sk_psock(const struct sock *sk)
- 	return rcu_dereference_sk_user_data(sk);
- }
- 
-+static inline void sk_psock_set_state(struct sk_psock *psock,
-+				      enum sk_psock_state_bits bit)
-+{
-+	set_bit(bit, &psock->state);
-+}
-+
-+static inline void sk_psock_clear_state(struct sk_psock *psock,
-+					enum sk_psock_state_bits bit)
-+{
-+	clear_bit(bit, &psock->state);
-+}
-+
-+static inline bool sk_psock_test_state(const struct sk_psock *psock,
-+				       enum sk_psock_state_bits bit)
-+{
-+	return test_bit(bit, &psock->state);
-+}
-+
-+static void sock_drop(struct sock *sk, struct sk_buff *skb)
-+{
-+	sk_drops_add(sk, skb);
-+	kfree_skb(skb);
-+}
-+
-+static inline void drop_sk_msg(struct sk_psock *psock, struct sk_msg *msg)
-+{
-+	if (msg->skb)
-+		sock_drop(psock->sk, msg->skb);
-+	kfree(msg);
-+}
-+
- static inline void sk_psock_queue_msg(struct sk_psock *psock,
- 				      struct sk_msg *msg)
- {
- 	spin_lock_bh(&psock->ingress_lock);
--	list_add_tail(&msg->list, &psock->ingress_msg);
-+	if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED))
-+		list_add_tail(&msg->list, &psock->ingress_msg);
-+	else
-+		drop_sk_msg(psock, msg);
- 	spin_unlock_bh(&psock->ingress_lock);
- }
- 
-@@ -406,24 +440,6 @@ static inline void sk_psock_restore_proto(struct sock *sk,
- 		psock->psock_update_sk_prot(sk, psock, true);
- }
- 
--static inline void sk_psock_set_state(struct sk_psock *psock,
--				      enum sk_psock_state_bits bit)
--{
--	set_bit(bit, &psock->state);
--}
--
--static inline void sk_psock_clear_state(struct sk_psock *psock,
--					enum sk_psock_state_bits bit)
--{
--	clear_bit(bit, &psock->state);
--}
--
--static inline bool sk_psock_test_state(const struct sk_psock *psock,
--				       enum sk_psock_state_bits bit)
--{
--	return test_bit(bit, &psock->state);
--}
--
- static inline struct sk_psock *sk_psock_get(struct sock *sk)
- {
- 	struct sk_psock *psock;
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 036cdb33a94a..2d6249b28928 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -584,12 +584,6 @@ static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
- 	return sk_psock_skb_ingress(psock, skb);
- }
- 
--static void sock_drop(struct sock *sk, struct sk_buff *skb)
--{
--	sk_drops_add(sk, skb);
--	kfree_skb(skb);
--}
--
- static void sk_psock_skb_state(struct sk_psock *psock,
- 			       struct sk_psock_work_state *state,
- 			       struct sk_buff *skb,
--- 
-2.25.1
-
+>
+> > >
+> > >
+> > >>>>>> level=warning msg="Error filling program arrays!" subsys=datapath-loader
+> > >>>>>> level=warning msg="Unable to load program" subsys=datapath-loader
+> > >>>>>>
+> > >>>>>> 5.8 works fine.
+> > >>>>>>
+> > >>>>>> What difference between 5.7 and 5.8 to cause this verifier problem, I
+> > >>>>>> tried to git log v5.7..v5.8 kernel/bpf/verifier, I could not see commits
+> > >>>>>> that would make the difference with my limited BPF knowledge. Any clue
+> > >>>>>> would be appreciated!
+> > >>>>
+> > >>>> I have git bisected to this commit:
+> > [...]
