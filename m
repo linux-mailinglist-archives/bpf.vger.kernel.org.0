@@ -2,197 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374113D53BC
-	for <lists+bpf@lfdr.de>; Mon, 26 Jul 2021 09:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B513D5544
+	for <lists+bpf@lfdr.de>; Mon, 26 Jul 2021 10:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbhGZGf5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Jul 2021 02:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
+        id S232411AbhGZHiC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Jul 2021 03:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231941AbhGZGf4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:35:56 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D4BC061757
-        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 00:16:26 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so18390442pja.5
-        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 00:16:26 -0700 (PDT)
+        with ESMTP id S232307AbhGZHiB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Jul 2021 03:38:01 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D539CC061760
+        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 01:18:29 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id j2so8558437edp.11
+        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 01:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=18VgRJLcXMbMeTRcXljqhuDhjPm5NFNSqBV3zVlrLRM=;
-        b=CL5XEeo6+1ErA0ObG8mX8QbMEv7j2+EumP1CHn7Zoq8UWyIfZpuQ2UUI1rO2kHT9X3
-         UygjECO99dD6FghSAIuqfmXmvr3mBFhhWJW0WmtYS1g0g1aWmWcb1QvV6UKH2vbIT/pM
-         Na8SwlNVkEN+keSiONvbqg2Fa/EuURsKj9LrwHNkW0Ux8f0EASaZy2wfvxUHqhWs6hGb
-         U4chvhymFh7nHWOcHswAz/Be0CuDrlVI0ULXp8mZRcAZwENPt/tttyGrMsG7Q0wJKMj1
-         3nmiAyGCYq6RbXpGCwvZMGHkiUutpBP/pDLWzCLzto86SJKkpl8m3iWU9enG3Q+YU3eI
-         HXvA==
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pw8O2SexVmj1oy+pXNKPW9g3Q6JL7loQc3LgajuYwfQ=;
+        b=mgel/MKNBLUiEQymk3PCln9n51XavCwkcB7dNX40Gxjt/QFL7K9g90ljSZHasXP51c
+         eN4SPn2AnhYha3ZE/UT7FNmu01QvnRM/jC7TVogxs5eQSWOYdx3o5RTxYfqm6/6Ekx26
+         UosbE2P9UkGzdPn+0PKcGIjgFUt5QmsZ4sF2Pvxi1URuaPhKDNERV2C/h5VqVCIDb0Rw
+         jo9ws7DpuU6x6RAIDjiMQ0bpl4hTpzd3bCypyW0FK7Ebl3zzorEm0GE/pFAgABZ7HdyX
+         Rjm9Z5mb76agzwR0/qkPVsQAqB/zq5V91iiGUODFGEAoIoZNS17N0SauHbQVtBpncmWY
+         fjjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=18VgRJLcXMbMeTRcXljqhuDhjPm5NFNSqBV3zVlrLRM=;
-        b=BBmNOg5wauvcnmGwLZp1L24klXrwM/C+NNGBcbakEGeWBnYvOvB9IHCTEBQJFsOKrf
-         h9ioXEC7V5xRrsl/eSycALpdKCGWexuwBsoA48vqHnllgGpViO2IPhqEgaQ+HXWTT8zg
-         fTEkBRvy89nWtYUCqhTbvsnxdLYnnSOZyn/RKSxUY6AYM2UZJTEzTHZtmYyPhBXgoHJm
-         flXpcNJ3+0gyjLhAR5KlWiCmwKYim189NkbKYcF2/ZxPiG2mAluLUw232HbQEpig33c6
-         uVokgNibcTSpHAh1pum8kh3CYNcT6ZiC8l4WvYQQOAhIXxbv5VRR9JXQBWRfpWHFE53D
-         9e2w==
-X-Gm-Message-State: AOAM530DJ/aQhUPnWtmHPFJPSsLK1lrWL77Rh0RVgiAOBV3hMnJn4vye
-        r7Hgo5YKGRuUbt0vplr5tyI=
-X-Google-Smtp-Source: ABdhPJxo4x4P7OF2bEWlbyuALkK56ZLr3c26jQxQ+WLKn2qBCc7F4Cilbp3ouczb6z6Ot4Dp92JSAQ==
-X-Received: by 2002:a63:e046:: with SMTP id n6mr16892528pgj.15.1627283785726;
-        Mon, 26 Jul 2021 00:16:25 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.119])
-        by smtp.gmail.com with ESMTPSA id bk16sm34922017pjb.54.2021.07.26.00.16.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 00:16:25 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 2/2] bpf: expose bpf_d_path helper to vfs_* and
- security_* functions
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        john.fastabend@gmail.com, jolsa@kernel.org, yanivagman@gmail.com
-References: <20210725141814.2000828-1-hengqi.chen@gmail.com>
- <20210725141814.2000828-3-hengqi.chen@gmail.com>
- <3bfc8755-bd34-2ff1-698f-57ad046726c2@fb.com>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-Message-ID: <78894c4d-31e3-f200-b3ea-18371fa98cf6@gmail.com>
-Date:   Mon, 26 Jul 2021 15:16:23 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        bh=pw8O2SexVmj1oy+pXNKPW9g3Q6JL7loQc3LgajuYwfQ=;
+        b=NyJ4boUKuB7taLGGAkajhDHYOL9u4XZZv3sIpX7yzqHX4l7BOrKtzYraXvXod3sngq
+         TdnRuhCJDsV+ADw3cDb8+jYPdvtaL4mDikv+l2k91u84Scu4gsc0Nbgmo8b0KAHFaS7h
+         iI9wKixmOjO8GPd95TQouk9KhNiRx7bZ+wpnQwgAtleDGdp8czvvYnX8miLQYak+48WP
+         cdwKvKgy9O2SRbHSGICJ1W8o9qlL12B/MpmJnUaUJuOKWK78nzjsGF9vjIYoY3qaPErr
+         xF8V3GWBrf15CRFXIzG7dVW+RXC3EMufVQ+xFSUxT4CeM7FojUNd/c0ZZFGPZI99IvoX
+         c5Pg==
+X-Gm-Message-State: AOAM530auObNCRxBSsXsoVaRgREwQqwF87Drt9owwTLDQ1NlJJyc8cwe
+        zY9tkAYy/hKaDvjtBdiaBAsWOQ==
+X-Google-Smtp-Source: ABdhPJyTeWxBkuZ8Y0SP0X4gnCZ4bYKgSfQexFE7ZqHLrmApBgQheiLiIWdCQbMrqh8r9BkB0KMJGw==
+X-Received: by 2002:a05:6402:51c7:: with SMTP id r7mr20820640edd.150.1627287508447;
+        Mon, 26 Jul 2021 01:18:28 -0700 (PDT)
+Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
+        by smtp.gmail.com with ESMTPSA id q9sm13937539ejf.70.2021.07.26.01.18.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 01:18:28 -0700 (PDT)
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        Tony.Ambardar@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Subject: [RFC PATCH 00/14] bpf/tests: Extend the eBPF test suite
+Date:   Mon, 26 Jul 2021 10:17:24 +0200
+Message-Id: <20210726081738.1833704-1-johan.almbladh@anyfinetworks.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <3bfc8755-bd34-2ff1-698f-57ad046726c2@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Greetings,
 
+During my work with the 32-bit MIPS JIT implementation I also added a
+number of new test cases in the test_bpf kernel module. I found it
+valuable to be able to throughly test the JIT on a low level with
+minimum dependency on user space tooling. If you think it would be useful,
+I have prepared a patch set with my additions. I have verified it on
+x86_64 and i386, with/without JIT and JIT hardening. The interpreter
+passes all tests. The JITs do too, with one exception, see NOTE below.
+The result for the x86_64 JIT is summarized below.
 
-On 2021/7/26 2:20 PM, Yonghong Song wrote:
-> 
-> 
-> On 7/25/21 7:18 AM, Hengqi Chen wrote:
->> Add vfs_* and security_* to bpf_d_path allowlist, so that we can use
->> bpf_d_path helper to extract full file path from these functions'
->> `struct path *` and `struct file *` arguments. This will help tools
->> like IOVisor's filetop[2]/filelife to get full file path.
-> 
-> Please use bcc intead of IOVisor.
-> What is "[2]" in "filetop[2]"?
+    test_bpf: Summary: 577 PASSED, 0 FAILED, [565/565 JIT'ed]
+    test_bpf: test_tail_calls: Summary: 6 PASSED, 1 FAILED, [7/7 JIT'ed]
 
-OK. Some links are missed in the commit messages 
-and version number is not added to subject.
+I have inserted the new tests in the location where related tests are run,
+rather than putting them at the end. I have also tried to use the same
+description style as the surrounding tests. Below is a summary of the
+new tests.
 
-> 
->>
->> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> 
-> LGTM with minor comments below.
-> 
-> Acked-by: Yonghong Song <yhs@fb.com>
-> 
->> ---
->>   kernel/trace/bpf_trace.c | 52 ++++++++++++++++++++++++++++++++++++++--
->>   1 file changed, 50 insertions(+), 2 deletions(-)
->>
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index c5e0b6a64091..355777b5bf63 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -850,16 +850,64 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
->>   BTF_SET_START(btf_allowlist_d_path)
->>   #ifdef CONFIG_SECURITY
->>   BTF_ID(func, security_file_permission)
->> -BTF_ID(func, security_inode_getattr)
->>   BTF_ID(func, security_file_open)
->> +BTF_ID(func, security_file_ioctl)
->> +BTF_ID(func, security_file_free)
->> +BTF_ID(func, security_file_alloc)
->> +BTF_ID(func, security_file_lock)
->> +BTF_ID(func, security_file_fcntl)
->> +BTF_ID(func, security_file_set_fowner)
->> +BTF_ID(func, security_file_receive)
->> +BTF_ID(func, security_inode_getattr)
->> +BTF_ID(func, security_sb_mount)
->> +BTF_ID(func, security_bprm_check)
-> 
-> Here and also below "segments" (security_path_* functions, and
-> later vfs_*/dentry_open/filp_close functions),
-> maybe you can list functions with increasing alphabet order.
-> This will make it easy to check whether a particular function
-> exists or not and whether we miss anything.
-> 
-> There are more security_bprm_* functions, e.g.,
-> security_bprm_creds_from_file, security_bprm_committing_creds
-> and security_bprm_committed_creds.
-> These functions all have "struct linux_binprm *bprm"
-> parameters. Maybe we can add these few functions as well
-> in this round.
-> 
+* Operations not previously covered
+  JMP32, ALU32 ARSH, remaining ATOMIC operations including
+  XCHG and CMPXCHG.
 
-Thanks. Will send a v4 for review.
+* ALU operations with edge cases
+  32-bit JITs implement ALU64 operations with two 32-bit registers per
+  operand. Even "trivial" operations like bit shifts are non-trivial to
+  implement. Test different input values that may trigger different JIT
+  code paths. JITs may also implement BPF_K operations differently
+  depending on if the immediate fits the corresponding field width of the
+  native CPU instruction or not, so test that too.
 
->>   #endif
->>   #ifdef CONFIG_SECURITY_PATH
->>   BTF_ID(func, security_path_truncate)
->> +BTF_ID(func, security_path_notify)
->> +BTF_ID(func, security_path_unlink)
->> +BTF_ID(func, security_path_mkdir)
->> +BTF_ID(func, security_path_rmdir)
->> +BTF_ID(func, security_path_mknod)
->> +BTF_ID(func, security_path_symlink)
->> +BTF_ID(func, security_path_link)
->> +BTF_ID(func, security_path_rename)
->> +BTF_ID(func, security_path_chmod)
->> +BTF_ID(func, security_path_chown)
->> +BTF_ID(func, security_path_chroot)
->>   #endif
->>   BTF_ID(func, vfs_truncate)
->>   BTF_ID(func, vfs_fallocate)
->> -BTF_ID(func, dentry_open)
->>   BTF_ID(func, vfs_getattr)
->> +BTF_ID(func, vfs_fadvise)
->> +BTF_ID(func, vfs_fchmod)
->> +BTF_ID(func, vfs_fchown)
->> +BTF_ID(func, vfs_open)
->> +BTF_ID(func, vfs_setpos)
->> +BTF_ID(func, vfs_llseek)
->> +BTF_ID(func, vfs_read)
->> +BTF_ID(func, vfs_write)
->> +BTF_ID(func, vfs_iocb_iter_read)
->> +BTF_ID(func, vfs_iter_read)
->> +BTF_ID(func, vfs_readv)
->> +BTF_ID(func, vfs_iocb_iter_write)
->> +BTF_ID(func, vfs_iter_write)
->> +BTF_ID(func, vfs_writev)
->> +BTF_ID(func, vfs_copy_file_range)
->> +BTF_ID(func, vfs_getattr_nosec)
->> +BTF_ID(func, vfs_ioctl)
->> +BTF_ID(func, vfs_fsync_range)
->> +BTF_ID(func, vfs_fsync)
->> +BTF_ID(func, vfs_utimes)
->> +BTF_ID(func, vfs_statfs)
->> +BTF_ID(func, vfs_dedupe_file_range_one)
->> +BTF_ID(func, vfs_dedupe_file_range)
->> +BTF_ID(func, vfs_clone_file_range)
->> +BTF_ID(func, vfs_cancel_lock)
->> +BTF_ID(func, vfs_test_lock)
->> +BTF_ID(func, vfs_setlease)
->> +BTF_ID(func, vfs_lock_file)
-> 
-> I double checked that for the above three lock
-> related functions (vfs_cancel_lock, vfs_test_lock,
-> vfs_lock_file), I double checked d_path
-> does not use these locks, so we should be fine.
-> 
->> +BTF_ID(func, dentry_open)
->>   BTF_ID(func, filp_close)
->>   BTF_SET_END(btf_allowlist_d_path)
->>
->> -- 
->> 2.25.1
->>
+* Word order in load/store
+  The word order should follow endianness. Test that DW load/store
+  operations result in the expected word order in memory.
+
+* 32-bit eBPF argument zero extension
+  On a 32-bit JIT the eBPF argument is a 32-bit pointer. If passed in
+  a CPU register only one register in the mapped pair contains valid
+  data. Verify that value is properly zero-extended.
+
+* Long conditional jumps
+  Test to trigger the relative-to-absolute branch conversion in MIPS JITs,
+  when the PC-relative offset overflows the field width of the MIPS branch
+  instruction.
+
+* Tail calls
+  A new test suite to test tail calls. Also test error paths and TCC
+  limit.
+
+NOTE: There is a minor discrepancy between the interpreter and the
+(x86) JITs. With MAX_TAIL_CALL_CNT = 32, the interpreter seems to allow
+up to 33 tail calls, whereas the JITs stop at 32. This causes the max TCC
+test to fail for the JITs, since I used the interpreter as reference.
+Either we change the interpreter behavior, change the JITs, or relax the
+test to allow both behaviors.
+
+Let me know what you think.
+
+Cheers,
+Johan
+
+Johan Almbladh (14):
+  bpf/tests: add BPF_JMP32 test cases
+  bpf/tests: add BPF_MOV tests for zero and sign extension
+  bpf/tests: fix typos in test case descriptions
+  bpf/tests: add more tests of ALU32 and ALU64 bitwise operations
+  bpf/tests: add more ALU32 tests for BPF_LSH/RSH/ARSH
+  bpf/tests: add more BPF_LSH/RSH/ARSH tests for ALU64
+  bpf/tests: add more ALU64 BPF_MUL tests
+  bpf/tests: add tests for ALU operations implemented with function
+    calls
+  bpf/tests: add word-order tests for load/store of double words
+  bpf/tests: add branch conversion JIT test
+  bpf/tests: add test for 32-bit context pointer argument passing
+  bpf/tests: add tests for atomic operations
+  bpf/tests: add tests for BPF_CMPXCHG
+  bpf/tests: add tail call test suite
+
+ lib/test_bpf.c | 2732 +++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 2475 insertions(+), 257 deletions(-)
+
+-- 
+2.25.1
+
