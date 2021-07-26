@@ -2,146 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9540A3D69CF
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 00:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6903D69D6
+	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 00:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233463AbhGZWJZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Jul 2021 18:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60778 "EHLO
+        id S231731AbhGZWNm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Jul 2021 18:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233380AbhGZWJY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Jul 2021 18:09:24 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5411BC061757
-        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 15:49:52 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id x192so17573685ybe.0
-        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 15:49:52 -0700 (PDT)
+        with ESMTP id S231502AbhGZWNl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Jul 2021 18:13:41 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DF8C061757;
+        Mon, 26 Jul 2021 15:54:08 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id k65so12857801yba.13;
+        Mon, 26 Jul 2021 15:54:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=En4cdfSQAaaiPItfg3Kc9yjWGHLCniATF74AUkHAIf8=;
-        b=rXml6LrGneLAj0vFNEsfSLLg593BlgH3jJrg2CnIcGOnJDbW5TA7C8WoV4KIU5zgWg
-         5wNedPz6Z7VF2depmyPhbRY+QDOIud7VkPAhb36WjBeEDwMRU79gOWdmtJN3i8bA/pFR
-         Ku1fc0ewcs6UMDxfXweY0n3DUAtJZp/ZFkSAkQBxYVQn6wGU6xUwjUz2gJw5q1pq3dx0
-         bgPvtTMPD+4SfyWx/nmR7O0UXhjHRJJvBOwO6vwtoOjPC39UkfT0Lo3P39P6SGsEKSKH
-         Dku69tTPprqmUfiY5izzJwkP+RnbBz8hnzCrrsi/ddlZRPANJb2XGuGONw3WLw2AohNR
-         8MFQ==
+        bh=uzKTnoaykkm24mkJYes95tptC94OOB7GgT3faFsYOCM=;
+        b=ZR3VoaV/QTk8vOoF67+intQtk93JlT9vS+p14Z+/vZXQle7JeiRF3JdQcyC+13dyFR
+         g7QdlnbhfFzCukZKFNrPkIL38wGCCX+YXgU98nPN/YZ9OW/J69xCIHflfSffN3beao6W
+         e43sXV0MOyfqv0k1yQJ6t8wSl/HowdhehoIf8rBeAiWA1zB89vTuzK3BqhR3p0mH0it/
+         PZc+B/lL1OhsffId4VC3yhlMmnRLF3YQIsbaW2SWDkVV3c5SWp2+U5S5P2phUiFRTwG/
+         HCnLL7ydw6MPkGCJCNaOW0jh+ZLvWR7X0LWHiJPYE6jWWRUJTzxmB4lWVawfr/GU9kpO
+         1oXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=En4cdfSQAaaiPItfg3Kc9yjWGHLCniATF74AUkHAIf8=;
-        b=h5Xthz5WptwJI4+YPJv07DxjEVoMliy4kqI7ZOMBJ5H7vwNrCtyuxGMPi0gdMbCWqd
-         Azh507xyoTc7fvDLKJ0suZ6MV1dX3DGbDmRAXwfAHBNzIqSXK5DRwoJHWft/fFxaeE8t
-         jAm+s9r7QzwNO8p2b2QICLtD1liZpifXSrio7ybkDJqOZN59dQaL/9fe5C2ngA264Spx
-         banurDOPl7TU7h2b5HU6rs34Q3+yWi3wI81L4vgz4bN7Nux7H0jwSlrjNeU9fCNdU2yM
-         SIvBRlQER9EuN7zhwpu2mQcm2vU29EI2n6Yi+g7f9iS56G8bGa01leFFVj4tLs0+DSkz
-         +7yA==
-X-Gm-Message-State: AOAM531D/VwrVQVgetBr0Vw+4fm/m19LHNDJUxPUNhXMa7c9XiS0UZze
-        HUK/VjnymHbD8/6KApx9TkgJR68SuqhkHtloiAo=
-X-Google-Smtp-Source: ABdhPJyYpDBI0tAHKSx9qbayeZ4Kh7VCV6WFcBjvF8qFopW2cPjaxhYAQdaMB7wcugFFFqi8W3iAncAqQ1tRtX+iQzk=
-X-Received: by 2002:a25:cdc7:: with SMTP id d190mr26466696ybf.425.1627339791520;
- Mon, 26 Jul 2021 15:49:51 -0700 (PDT)
+        bh=uzKTnoaykkm24mkJYes95tptC94OOB7GgT3faFsYOCM=;
+        b=hp8e3nkRR8KN5mMmU8B9Qk+OUzKGXE7o9f4md3kOPk4/z8vM8KY2tPQfzZP/p3ROSs
+         gGHmqufnGLuOlcHu4CoqwUd3+tysCLHP6RcBHvz2W1iDNSqydAj7VOxHaNM/drFpkTyF
+         qSfg55yHBqqQ29LJbHO/ZRP0VmgFRSzsJN3n3gHgoFMivI+9SJnXvyAoZCFjgNAGom1Z
+         OPotAsqzywUHwngmdt6Xt8TuwtPFltSZNQCIeQY1oLj4E1SI43H0ektVBD1D4LxYaC6U
+         exYHnlIIMy/JWiZgTLUaroiXKF4r85an5dpT1Qh4zFuMe4fIUFuiyk1awSagKf9/wz5S
+         KtDA==
+X-Gm-Message-State: AOAM530rvtK3Q6nROOi5a639M+RRxA1HNOLn6qla82BlicifcRMUw3k3
+        Bv+CRTM6QvMvJ/17FHPjyyxU1lPVxEfxQ+9oc68=
+X-Google-Smtp-Source: ABdhPJxxt7ypXDDCBi/GW6AvYavtsoaaWZDYSEneE4vPBQDkkXASJ5lyJ8ohd/dr4Rsklo1F1tHp+GwwH5+Z1Gt6cKM=
+X-Received: by 2002:a25:a045:: with SMTP id x63mr16392226ybh.27.1627340048187;
+ Mon, 26 Jul 2021 15:54:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210724051256.1629110-1-hengqi.chen@gmail.com>
-In-Reply-To: <20210724051256.1629110-1-hengqi.chen@gmail.com>
+References: <20210726081738.1833704-1-johan.almbladh@anyfinetworks.com>
+In-Reply-To: <20210726081738.1833704-1-johan.almbladh@anyfinetworks.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 26 Jul 2021 15:49:40 -0700
-Message-ID: <CAEf4BzaZEny+3iu6ZGqAaY8QGE27TJoky=pzMcyg934_cJ3QTg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: add libbpf_load_vmlinux_btf/libbpf_load_module_btf
- APIs
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 26 Jul 2021 15:53:57 -0700
+Message-ID: <CAEf4BzYdvjz36K7=qYnfL6q=cX=ha27Ro2x6cV1X4hp22VEO=g@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/14] bpf/tests: Extend the eBPF test suite
+To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Tony Ambardar <Tony.Ambardar@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 10:13 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On Mon, Jul 26, 2021 at 1:18 AM Johan Almbladh
+<johan.almbladh@anyfinetworks.com> wrote:
 >
-> Add libbpf_load_vmlinux_btf/libbpf_load_module_btf APIs.
-> This is part of the libbpf v1.0. [1]
+> Greetings,
 >
-> [1] https://github.com/libbpf/libbpf/issues/280
-
-Saying it's part of libbpf 1.0 effort and given a link to Github PR is
-not really a sufficient commit message. Please expand on what you are
-doing in the patch and why.
-
+> During my work with the 32-bit MIPS JIT implementation I also added a
+> number of new test cases in the test_bpf kernel module. I found it
+> valuable to be able to throughly test the JIT on a low level with
+> minimum dependency on user space tooling. If you think it would be useful,
+> I have prepared a patch set with my additions. I have verified it on
+> x86_64 and i386, with/without JIT and JIT hardening. The interpreter
+> passes all tests. The JITs do too, with one exception, see NOTE below.
+> The result for the x86_64 JIT is summarized below.
 >
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->  tools/lib/bpf/btf.c      | 24 +++++++++++++++++++++++-
->  tools/lib/bpf/btf.h      |  2 ++
->  tools/lib/bpf/libbpf.c   |  8 ++++----
->  tools/lib/bpf/libbpf.map |  2 ++
->  4 files changed, 31 insertions(+), 5 deletions(-)
+>     test_bpf: Summary: 577 PASSED, 0 FAILED, [565/565 JIT'ed]
+>     test_bpf: test_tail_calls: Summary: 6 PASSED, 1 FAILED, [7/7 JIT'ed]
 >
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index b46760b93bb4..414e1c5635ef 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -4021,7 +4021,7 @@ static void btf_dedup_merge_hypot_map(struct btf_dedup *d)
->                  */
->                 if (d->hypot_adjust_canon)
->                         continue;
-> -
-> +
->                 if (t_kind == BTF_KIND_FWD && c_kind != BTF_KIND_FWD)
->                         d->map[t_id] = c_id;
+> I have inserted the new tests in the location where related tests are run,
+> rather than putting them at the end. I have also tried to use the same
+> description style as the surrounding tests. Below is a summary of the
+> new tests.
 >
-> @@ -4395,6 +4395,11 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
->   * data out of it to use for target BTF.
->   */
->  struct btf *libbpf_find_kernel_btf(void)
-> +{
-> +       return libbpf_load_vmlinux_btf();
-> +}
-> +
-> +struct btf *libbpf_load_vmlinux_btf(void)
->  {
->         struct {
->                 const char *path_fmt;
-> @@ -4440,6 +4445,23 @@ struct btf *libbpf_find_kernel_btf(void)
->         return libbpf_err_ptr(-ESRCH);
->  }
+> * Operations not previously covered
+>   JMP32, ALU32 ARSH, remaining ATOMIC operations including
+>   XCHG and CMPXCHG.
 >
-> +struct btf *libbpf_load_module_btf(const char *mod)
+> * ALU operations with edge cases
+>   32-bit JITs implement ALU64 operations with two 32-bit registers per
+>   operand. Even "trivial" operations like bit shifts are non-trivial to
+>   implement. Test different input values that may trigger different JIT
+>   code paths. JITs may also implement BPF_K operations differently
+>   depending on if the immediate fits the corresponding field width of the
+>   native CPU instruction or not, so test that too.
+>
+> * Word order in load/store
+>   The word order should follow endianness. Test that DW load/store
+>   operations result in the expected word order in memory.
+>
+> * 32-bit eBPF argument zero extension
+>   On a 32-bit JIT the eBPF argument is a 32-bit pointer. If passed in
+>   a CPU register only one register in the mapped pair contains valid
+>   data. Verify that value is properly zero-extended.
+>
+> * Long conditional jumps
+>   Test to trigger the relative-to-absolute branch conversion in MIPS JITs,
+>   when the PC-relative offset overflows the field width of the MIPS branch
+>   instruction.
+>
+> * Tail calls
+>   A new test suite to test tail calls. Also test error paths and TCC
+>   limit.
+>
+> NOTE: There is a minor discrepancy between the interpreter and the
+> (x86) JITs. With MAX_TAIL_CALL_CNT = 32, the interpreter seems to allow
+> up to 33 tail calls, whereas the JITs stop at 32. This causes the max TCC
 
-So we probably need to allow user to pre-load and re-use vmlinux BTF
-for efficiency, especially if they have some use-case to load a lot of
-BTFs.
+Given the intended case was to allow 32, let's fix up the interpreter
+to be in line with JITs?
 
-> +{
-> +       char path[80];
-> +       struct btf *base;
-> +       int err;
-> +
-> +       base = libbpf_load_vmlinux_btf();
-> +       err = libbpf_get_error(base);
-> +       if (err) {
-> +               pr_warn("Error loading vmlinux BTF: %d\n", err);
-> +               return base;
-
-libbpf_err_ptr() needs to be used here, pr_warn() could have destroyed
-errno already
-
-> +       }
-> +
-> +       snprintf(path, sizeof(path), "/sys/kernel/btf/%s", mod);
-> +       return btf__parse_split(path, base);
-
-so who's freeing base BTF in this case?
-
-> +}
-> +
->  int btf_type_visit_type_ids(struct btf_type *t, type_id_visit_fn visit, void *ctx)
->  {
->         int i, n, err;
-
-[...]
+> test to fail for the JITs, since I used the interpreter as reference.
+> Either we change the interpreter behavior, change the JITs, or relax the
+> test to allow both behaviors.
+>
+> Let me know what you think.
+>
+> Cheers,
+> Johan
+>
+> Johan Almbladh (14):
+>   bpf/tests: add BPF_JMP32 test cases
+>   bpf/tests: add BPF_MOV tests for zero and sign extension
+>   bpf/tests: fix typos in test case descriptions
+>   bpf/tests: add more tests of ALU32 and ALU64 bitwise operations
+>   bpf/tests: add more ALU32 tests for BPF_LSH/RSH/ARSH
+>   bpf/tests: add more BPF_LSH/RSH/ARSH tests for ALU64
+>   bpf/tests: add more ALU64 BPF_MUL tests
+>   bpf/tests: add tests for ALU operations implemented with function
+>     calls
+>   bpf/tests: add word-order tests for load/store of double words
+>   bpf/tests: add branch conversion JIT test
+>   bpf/tests: add test for 32-bit context pointer argument passing
+>   bpf/tests: add tests for atomic operations
+>   bpf/tests: add tests for BPF_CMPXCHG
+>   bpf/tests: add tail call test suite
+>
+>  lib/test_bpf.c | 2732 +++++++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 2475 insertions(+), 257 deletions(-)
+>
+> --
+> 2.25.1
+>
