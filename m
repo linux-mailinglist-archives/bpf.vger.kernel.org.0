@@ -2,69 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF163D6B79
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 03:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84FE3D6C37
+	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 04:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhG0AcP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Jul 2021 20:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
+        id S234519AbhG0CTH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Jul 2021 22:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231479AbhG0AcO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Jul 2021 20:32:14 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F64C061757
-        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 18:12:42 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id b1-20020a17090a8001b029017700de3903so1483903pjn.1
-        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 18:12:42 -0700 (PDT)
+        with ESMTP id S234491AbhG0CTG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Jul 2021 22:19:06 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9454C061757
+        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 19:59:33 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id c11so14055503plg.11
+        for <bpf@vger.kernel.org>; Mon, 26 Jul 2021 19:59:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5qmXa/hcXIxCYe084lwu8jX6+REyVQd0seK1gh4CDsc=;
-        b=gXYgBUf2yED4498GlhqXM6R3mbM3uHPwNa0hh9M62c/NonqMa5DK1z/HAAaij1XvEk
-         4bjQWQZkGFbcV3bbwBcQtc2t8t5b4DqO1wBSQB8WZhoSUrFiACagGuu5l5LcDHH8cyQJ
-         XlKwtY9hSte5Uj1yXvRb45tym1UhudQWV4qvyLAwW6fMJl2GfGj+nX8UsZoTvAYu/G24
-         jCTZBXmzEVlrDT+aIMDVzJZhsUREP56dsbLUZN22J+htzk3Nmi3hvJUG2CrDPvHjDZAb
-         Qv739VGpSGR9WIn0u6A0gOXnTfQohRzxon//fXWHo8tNm+jq8gYZre9IBky3/UZmQYfj
-         ZyEQ==
+        bh=tkaVodGxMMI2P6adzYIFFY6Kxd459Ol6RPpmO50MNIE=;
+        b=d9hXCpMDNoaIlKQrBSnRmWGEZYIo5ZeG8AST2iHLRhpCWAbwSgd34v4E9E0SF/9bOz
+         zdwC7zLcmZ2sH/OSA2GvJnUA8AfvQPhn+JZrFMNgtxF9FDAS3H7Mr/vJhvF8TP4G6oLQ
+         He3JQtwrAolzfDD/cMfjmZTWNoD8Zzm68Q/FICLg+eQlytGvrCvn/qTPRy52y4+KvWFP
+         IAZGgcaSdNyaQMSJOr68Z8/GFSU7SKdHKr3Vu4CEnSwrH6faJhMWbWji5QeI/zJzx9Bo
+         humcwspaUfOarBLusvbAJMRU7iSZysfmx+z+I39Y7lumDq+sZDNt84y7j3y5v3fR7Z0f
+         LCRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=5qmXa/hcXIxCYe084lwu8jX6+REyVQd0seK1gh4CDsc=;
-        b=W40cxI7MHS1HENRPfhbB3q9Ts0CCxM51016vE7lP4wq3Dgyab3etxArHHseFkaElBd
-         9OM01IqUZOnzmP/iO0rI5VI77WTIUn8UOPwujqjzvpDjVAwcMbiK6I0nJoMcBMchHhui
-         wWyHlD76B4wRZ4RqdcxX2dNq9us+s9aMQWajt7zJJeeHBkVDI49NwjksuMzB11eOzakj
-         CNPrrDSS43wKcsFvaN0iHsXrpdWnvJ8hWqBNAga2f6zKcsPqghiLDX4d4JmztaFSj7lJ
-         TAPiVADOBT2hu94XQzFuXMzBwZ9p98j+IiddxvHA1KBadK5kHYyzPCWOkjxiX8Uu35u1
-         yGfw==
-X-Gm-Message-State: AOAM533d4qbuQadbJvklF11siHSNy6/nvboblClB0WcIz7OQ/T474wtK
-        v+pJgw4E4QLlDfoxcCJtJ9o=
-X-Google-Smtp-Source: ABdhPJxs3CKx96v1IO9GW3YkSROPLrSpKODMa5a1kzmTb8sSaaYBNnDdy6RdfWmzCxzgZw+Rr8eOtQ==
-X-Received: by 2002:a63:f959:: with SMTP id q25mr21278198pgk.52.1627348361573;
-        Mon, 26 Jul 2021 18:12:41 -0700 (PDT)
-Received: from [0.0.0.0] ([150.109.126.7])
-        by smtp.gmail.com with ESMTPSA id gk5sm698890pjb.51.2021.07.26.18.12.39
+        bh=tkaVodGxMMI2P6adzYIFFY6Kxd459Ol6RPpmO50MNIE=;
+        b=hYpBbsnili2uf5uh+GZdMG5feVEkx+R1qQyYW/gTfjSuhbLhwlBhzFDcQxiEJ1dEtu
+         EgbzDia7PhdMFbm03Ra8GiyL4mqape3aF1Co8X0IqPRI7vaLzDBGFqvz9KzcbfGJJlCW
+         cjpEPOSpeaxunzyt1nlh5vzCUrAjA2TqC8nvz0XzX/HISlzmguuIXPDqlCG1VzST+Uu2
+         URYNsGEsE6LZUYj1U3z+dN2VD7LC2PGXRT70R7lfzmyVh58Q+9GGVvHPv3hO4yC81DnF
+         uXxhB+nPFJbjdwXJ9MzfapiDpDxTMtwGtduS8w1LiJWDSdEAK5gJguYHKjF7exdjTnhV
+         SIHQ==
+X-Gm-Message-State: AOAM5300rt8awLQjiOLXpz/LMD0MQEpg5aziX6EMsZAG7cLqxHtlFR+3
+        2fm0yl5LJHAvv9Qorbm/rqY=
+X-Google-Smtp-Source: ABdhPJwMAVs6aJHNqUEL/EEHioTz+jYwZDSQK4nvklkDek+wtrL+Wfur7sOAjwmezY79YkLrkC/GSA==
+X-Received: by 2002:a65:6704:: with SMTP id u4mr20964348pgf.406.1627354773430;
+        Mon, 26 Jul 2021 19:59:33 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.117])
+        by smtp.gmail.com with ESMTPSA id d2sm878970pjd.24.2021.07.26.19.59.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 18:12:41 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] libbpf: add
- libbpf_load_vmlinux_btf/libbpf_load_module_btf APIs
+        Mon, 26 Jul 2021 19:59:33 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 1/2] tools/resolve_btfids: emit warnings and
+ patch zero id for missing symbols
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>
-References: <20210724051256.1629110-1-hengqi.chen@gmail.com>
- <CAEf4BzaZEny+3iu6ZGqAaY8QGE27TJoky=pzMcyg934_cJ3QTg@mail.gmail.com>
+        john fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Yaniv Agman <yanivagman@gmail.com>
+References: <20210725141814.2000828-1-hengqi.chen@gmail.com>
+ <20210725141814.2000828-2-hengqi.chen@gmail.com>
+ <CAEf4BzaN50T=4sCDhXKMLNZPXJor6DVtOSoJ10NNxLU8kiOvBA@mail.gmail.com>
 From:   Hengqi Chen <hengqi.chen@gmail.com>
-Message-ID: <db11440c-c9ce-9007-9a03-7395d6facfe7@gmail.com>
-Date:   Tue, 27 Jul 2021 09:12:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Message-ID: <7089d476-8ab1-50b6-56fb-55026c992f3d@gmail.com>
+Date:   Tue, 27 Jul 2021 10:59:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzaZEny+3iu6ZGqAaY8QGE27TJoky=pzMcyg934_cJ3QTg@mail.gmail.com>
+In-Reply-To: <CAEf4BzaN50T=4sCDhXKMLNZPXJor6DVtOSoJ10NNxLU8kiOvBA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,105 +77,79 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 7/27/21 6:49 AM, Andrii Nakryiko wrote:
-> On Fri, Jul 23, 2021 at 10:13 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On 2021/7/27 4:16 AM, Andrii Nakryiko wrote:
+> On Sun, Jul 25, 2021 at 7:18 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 >>
->> Add libbpf_load_vmlinux_btf/libbpf_load_module_btf APIs.
->> This is part of the libbpf v1.0. [1]
->>
->> [1] https://github.com/libbpf/libbpf/issues/280
-> 
-> Saying it's part of libbpf 1.0 effort and given a link to Github PR is
-> not really a sufficient commit message. Please expand on what you are
-> doing in the patch and why.
-> 
-
-Will do.
-
+>> Kernel functions referenced by .BTF_ids may changed from global to static
+>> and get inlined and thus disappears from BTF. This causes kernel build
+>> failure when resolve_btfids do id patch for symbols in .BTF_ids in vmlinux.
+>> Update resolve_btfids to emit warning messages and patch zero id for missing
+>> symbols instead of aborting kernel build process.
 >>
 >> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 >> ---
->>  tools/lib/bpf/btf.c      | 24 +++++++++++++++++++++++-
->>  tools/lib/bpf/btf.h      |  2 ++
->>  tools/lib/bpf/libbpf.c   |  8 ++++----
->>  tools/lib/bpf/libbpf.map |  2 ++
->>  4 files changed, 31 insertions(+), 5 deletions(-)
+>>  tools/bpf/resolve_btfids/main.c | 13 +++++++------
+>>  1 file changed, 7 insertions(+), 6 deletions(-)
 >>
->> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->> index b46760b93bb4..414e1c5635ef 100644
->> --- a/tools/lib/bpf/btf.c
->> +++ b/tools/lib/bpf/btf.c
->> @@ -4021,7 +4021,7 @@ static void btf_dedup_merge_hypot_map(struct btf_dedup *d)
->>                  */
->>                 if (d->hypot_adjust_canon)
->>                         continue;
->> -
->> +
->>                 if (t_kind == BTF_KIND_FWD && c_kind != BTF_KIND_FWD)
->>                         d->map[t_id] = c_id;
+>> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+>> index 3ad9301b0f00..3ea19e33250d 100644
+>> --- a/tools/bpf/resolve_btfids/main.c
+>> +++ b/tools/bpf/resolve_btfids/main.c
+>> @@ -291,7 +291,7 @@ static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
+>>         sh->sh_addralign = expected;
 >>
->> @@ -4395,6 +4395,11 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
->>   * data out of it to use for target BTF.
->>   */
->>  struct btf *libbpf_find_kernel_btf(void)
->> +{
->> +       return libbpf_load_vmlinux_btf();
->> +}
->> +
->> +struct btf *libbpf_load_vmlinux_btf(void)
->>  {
->>         struct {
->>                 const char *path_fmt;
->> @@ -4440,6 +4445,23 @@ struct btf *libbpf_find_kernel_btf(void)
->>         return libbpf_err_ptr(-ESRCH);
->>  }
+>>         if (gelf_update_shdr(scn, sh) == 0) {
+>> -               printf("FAILED cannot update section header: %s\n",
+>> +               pr_err("FAILED cannot update section header: %s\n",
+>>                         elf_errmsg(-1));
+>>                 return -1;
+>>         }
+>> @@ -317,6 +317,7 @@ static int elf_collect(struct object *obj)
 >>
->> +struct btf *libbpf_load_module_btf(const char *mod)
+>>         elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
+>>         if (!elf) {
+>> +               close(fd);
+>>                 pr_err("FAILED cannot create ELF descriptor: %s\n",
+>>                         elf_errmsg(-1));
+>>                 return -1;
+>> @@ -484,7 +485,7 @@ static int symbols_resolve(struct object *obj)
+>>         err = libbpf_get_error(btf);
+>>         if (err) {
+>>                 pr_err("FAILED: load BTF from %s: %s\n",
+>> -                       obj->path, strerror(-err));
+>> +                       obj->btf ?: obj->path, strerror(-err));
+>>                 return -1;
+>>         }
+>>
+>> @@ -555,8 +556,7 @@ static int id_patch(struct object *obj, struct btf_id *id)
+>>         int i;
+>>
+>>         if (!id->id) {
+>> -               pr_err("FAILED unresolved symbol %s\n", id->name);
+>> -               return -EINVAL;
+>> +               pr_err("WARN: unresolved symbol %s\n", id->name);
 > 
-> So we probably need to allow user to pre-load and re-use vmlinux BTF
-> for efficiency, especially if they have some use-case to load a lot of
-> BTFs.
+> we should probably give a bit more information for people to get back
+> to us for this. For starters, maybe prefix the message with
+> "resolve_btfids:" so that people at least can grep something relevant?
 > 
 
-Should the API change to this ?
+OK, will do.
 
-struct btf *libbpf_load_module_btf(struct btf *base, const char *mod)
-
-It seems better for the use-case you mentioned.
-
->> +{
->> +       char path[80];
->> +       struct btf *base;
->> +       int err;
->> +
->> +       base = libbpf_load_vmlinux_btf();
->> +       err = libbpf_get_error(base);
->> +       if (err) {
->> +               pr_warn("Error loading vmlinux BTF: %d\n", err);
->> +               return base;
-> 
-> libbpf_err_ptr() needs to be used here, pr_warn() could have destroyed
-> errno already
-> 
-
-OK.
-
+>>         }
+>>
+>>         for (i = 0; i < id->addr_cnt; i++) {
+>> @@ -734,8 +734,9 @@ int main(int argc, const char **argv)
+>>
+>>         err = 0;
+>>  out:
+>> -       if (obj.efile.elf)
+>> +       if (obj.efile.elf) {
+>>                 elf_end(obj.efile.elf);
+>> -       close(obj.efile.fd);
+>> +               close(obj.efile.fd);
 >> +       }
->> +
->> +       snprintf(path, sizeof(path), "/sys/kernel/btf/%s", mod);
->> +       return btf__parse_split(path, base);
-> 
-> so who's freeing base BTF in this case?
-> 
-
-Sorry, missed that.
-But if we change the signature, then leave this to user.
-
->> +}
->> +
->>  int btf_type_visit_type_ids(struct btf_type *t, type_id_visit_fn visit, void *ctx)
->>  {
->>         int i, n, err;
-> 
-> [...]
-> 
+>>         return err;
+>>  }
+>> --
+>> 2.25.1
