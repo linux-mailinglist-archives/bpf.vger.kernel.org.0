@@ -2,166 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09AB3D7D1B
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 20:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DF63D7D50
+	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 20:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbhG0SKY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 14:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
+        id S229951AbhG0SSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Jul 2021 14:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhG0SKY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:10:24 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151EFC061757
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 11:10:24 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id v46so22165597ybi.3
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 11:10:24 -0700 (PDT)
+        with ESMTP id S229537AbhG0SSo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Jul 2021 14:18:44 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDAFC061757
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 11:18:44 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id v46so22203657ybi.3
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 11:18:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rK9N3EAPWM82ZhKvwlbuvxb98KASsTOYFcRvuE2FR14=;
-        b=H3Zf7VsnFBGxpovTgDvrKnlDOtA9GGb7mMA1BQksFa7QwhUFdRLViVXIbDnO0zgxEa
-         V3cHyoeVuV75ZsMo/rTmQaDjec+As/49opl1HxJqiF0fJAK5zWsKIsorn2NHjn3Z6cHv
-         T4sS4nqPt9amzyMR9C7dtI3nE7bjRj8yrFsQtow5gy9jI67nDx5F59mgJcrPahn91AxM
-         qf9XDUknVh4WDtjArlKfge7cf1dLnOgVYQ69OSHIe1pgI/pwDKbRkZEGptrAkbAj6LOl
-         LrkvVKpcEdiqypxKWMBV1+Nj9TBbe7ZfQA12pOtUZWuzEHps2lc80lF5QwzgLkLWdqtb
-         9ZIA==
+        bh=1lOlXM4GaKVfcD3q81JH70+kQoquDoRZh1zO3lKYLHU=;
+        b=jNoRbkC3G61V96PfzZT2+a///d18NeB5UYMQYWxqRts24OuSt9CjnPcRC05+AzESgU
+         fYSj2cJ9Px0zvlO60x92vsdB+K1ZM0vM8w/TzMCktVTK1oNcCu6+CWBIWJxwtkCO1Vb7
+         vEEzjkxaujFOzuuJH/Ki9/kiZyjYEaqmsSr3hGdTxI5L+BlRdI6gbP1pnMllPC3gxXIx
+         npuxlBr0/7DpCgFKIlc0zTUj4bv2C8gHL0Jh/bJXSxSjPs0NFwiDw4jHfiO11EBpBZJy
+         Z7y+6AdGowQQb91kDJvmteKCQoiJI99vUleaNjEEAD6E+0cmosPPpCNLoP1ch7VzkNHB
+         GacQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rK9N3EAPWM82ZhKvwlbuvxb98KASsTOYFcRvuE2FR14=;
-        b=BFqiWPMSHSiEG9FD7BterqkQDLEo6kzDuv39AMVMwXgQN6znibCZpkqUBrakvS5DsD
-         zYNkkd+IMdER8WWBecJ6J50vz1dganZC9wiKc8a3llRsSWh3adAKYQJ6a+6NiYTEqqWx
-         LF0npVOQIsjKjG4pRY1Oj+v0RDq1SyQ8YBjHrewOMNqENAhRaIc9G4GwfL/XAd9c9J6I
-         p8RMj488M7kWLrrS11cWQJ/S5ELB7h9JklL74FURLIxjx9isFF801EC1lPicp28Pf82w
-         XQwLq7y49Kf5B6M1cEi49pRArWW7qmwdNNkdvLIoQuS06r5n1APUHxUW6sEDMamYaCBx
-         /2dg==
-X-Gm-Message-State: AOAM530ZMM6/oHliiyk84/jDBWp3VRjeDORuQrCzk2McV5PyYY4M9akD
-        0yTctlurGlYVMuiHSfUZRncQeLdaL27SwH5ivc8=
-X-Google-Smtp-Source: ABdhPJyBBC2DPEGZsJrScyOSInQ7tTgfHHzTecjSLPNfHE6qSsEF+k7gDhj5DdIXAffdpqwYwqzO+JY4XSJBtRdfk6c=
-X-Received: by 2002:a25:2901:: with SMTP id p1mr21998400ybp.459.1627409423350;
- Tue, 27 Jul 2021 11:10:23 -0700 (PDT)
+        bh=1lOlXM4GaKVfcD3q81JH70+kQoquDoRZh1zO3lKYLHU=;
+        b=J9xHo5oD8vfT9qET5aPWCYmQRioGjy1FpUQ8LQIn0I9M+K2de6bFY//ndCDlqoLAUV
+         R2Z4ak0YPpRbFk47QrzqUrsIRYNIOR0lbsaXA56v70MmXXkjsmME6c0u+o6lQ5+7Cstf
+         D0R2jR0jhIsIKNls4H6O/ORg22km03qlkx2MQEZEJjhLHoDjAeYN3EGFJwIH7wgy1rHO
+         kBtHoZzk+Epg6TQSVBCoZO9ROtfF/l2/yZcc+bquRbcxGk96cOJNnJXjxhgJVV71IFWt
+         1h32euUQlq+ilEn/J0KiT2uwPnzig59jJd6lWnKcgKZJpq0QoHq0Mq1JMkMePLz83shO
+         X07Q==
+X-Gm-Message-State: AOAM532UODusAJHg9JByBLUEemE4SQ7ukMjYPeDXcPSXV5bggUyeHPjl
+        oURBYM7fT1bOnxqJDiFIWPD64WuO3NPFWSujGhs=
+X-Google-Smtp-Source: ABdhPJyfkGHXp7UEpjE8DmnzB86NOZDhn6gql00gFzym1sxQm2ryoqtfFzZm49sO67yYuRcaFXV5Rbk/XGfqaE9Nf/Q=
+X-Received: by 2002:a25:b203:: with SMTP id i3mr33470430ybj.260.1627409923978;
+ Tue, 27 Jul 2021 11:18:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1620763117.git.denis.salopek@sartura.hr> <CAEf4BzZ1ndGcnprF+zxVPiP2KpxEhbbm86WLjKtxycYgJSUM6Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ1ndGcnprF+zxVPiP2KpxEhbbm86WLjKtxycYgJSUM6Q@mail.gmail.com>
+References: <20210724051256.1629110-1-hengqi.chen@gmail.com>
+ <CAEf4BzaZEny+3iu6ZGqAaY8QGE27TJoky=pzMcyg934_cJ3QTg@mail.gmail.com> <db11440c-c9ce-9007-9a03-7395d6facfe7@gmail.com>
+In-Reply-To: <db11440c-c9ce-9007-9a03-7395d6facfe7@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Jul 2021 11:10:12 -0700
-Message-ID: <CAEf4BzZ6KVP4JdOgSadg6bEXyyTsf-rMxx_R-ioCnfU5mP8Luw@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next 0/3] Add lookup_and_delete_elem support to BPF
- hash map types
-To:     Denis Salopek <denis.salopek@sartura.hr>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Luka Oreskovic <luka.oreskovic@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
+Date:   Tue, 27 Jul 2021 11:18:32 -0700
+Message-ID: <CAEf4BzajGK2To6gS_u7DKXaPwcBKTSmChVHXZYRfvNk+377zoQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: add libbpf_load_vmlinux_btf/libbpf_load_module_btf
+ APIs
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        john fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 24, 2021 at 3:02 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Jul 26, 2021 at 6:12 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 >
-> On Tue, May 11, 2021 at 2:01 PM Denis Salopek <denis.salopek@sartura.hr> wrote:
+>
+>
+> On 7/27/21 6:49 AM, Andrii Nakryiko wrote:
+> > On Fri, Jul 23, 2021 at 10:13 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+> >>
+> >> Add libbpf_load_vmlinux_btf/libbpf_load_module_btf APIs.
+> >> This is part of the libbpf v1.0. [1]
+> >>
+> >> [1] https://github.com/libbpf/libbpf/issues/280
 > >
-> > This patch series extends the existing bpf_map_lookup_and_delete_elem()
-> > functionality with 4 more map types:
-> >  - BPF_MAP_TYPE_HASH,
-> >  - BPF_MAP_TYPE_PERCPU_HASH,
-> >  - BPF_MAP_TYPE_LRU_HASH and
-> >  - BPF_MAP_TYPE_LRU_PERCPU_HASH.
-> >
-> > Patch 1 adds most of its functionality and logic as well as
-> > documentation.
-> >
-> > As it was previously limited to only stacks and queues which do not
-> > support the BPF_F_LOCK flag, patch 2 enables its usage by adding a new
-> > libbpf API bpf_map_lookup_and_delete_elem_flags() based on the existing
-> > bpf_map_lookup_elem_flags().
-> >
-> > Patch 3 adds selftests for lookup_and_delete_elem().
-> >
-> > Changes in patch 1:
-> > v7: Minor formating nits, add Acked-by.
-> > v6: Remove unneeded flag check, minor code/format fixes.
-> > v5: Split patch to 3 patches. Extend BPF_MAP_LOOKUP_AND_DELETE_ELEM
-> > documentation with this changes.
-> > v4: Fix the return value for unsupported map types.
-> > v3: Add bpf_map_lookup_and_delete_elem_flags() and enable BPF_F_LOCK
-> > flag, change CHECKs to ASSERT_OKs, initialize variables to 0.
-> > v2: Add functionality for LRU/per-CPU, add test_progs tests.
-> >
-> > Changes in patch 2:
-> > v7: No change.
-> > v6: Add Acked-by.
-> > v5: Move to the newest libbpf version (0.4.0).
-> >
-> > Changes in patch 3:
-> > v7: Remove ASSERT_GE macro which is already added in some other commit,
-> > change ASSERT_OK to ASSERT_OK_PTR, add Acked-by.
-> > v6: Remove PERCPU macros, add ASSERT_GE macro to test_progs.h, remove
-> > leftover code.
-> > v5: Use more appropriate macros. Better check for changed value.
-> >
-> > Denis Salopek (3):
-> >   bpf: add lookup_and_delete_elem support to hashtab
-> >   bpf: extend libbpf with bpf_map_lookup_and_delete_elem_flags
-> >   selftests/bpf: add bpf_lookup_and_delete_elem tests
-> >
-
-Hey Denis,
-
-I've noticed a new failure for the tests you added:
-
-setup_prog:PASS:test_lookup_and_delete__open 0 nsec
-setup_prog:PASS:bpf_map__set_type 0 nsec
-setup_prog:PASS:bpf_map__set_max_entries 0 nsec
-setup_prog:PASS:test_lookup_and_delete__load 0 nsec
-setup_prog:PASS:bpf_map__fd 0 nsec
-test_lookup_and_delete_lru_hash:PASS:setup_prog 0 nsec
-fill_values:PASS:bpf_map_update_elem 0 nsec
-fill_values:PASS:bpf_map_update_elem 0 nsec
-test_lookup_and_delete_lru_hash:PASS:fill_values 0 nsec
-trigger_tp:PASS:test_lookup_and_delete__attach 0 nsec
-test_lookup_and_delete_lru_hash:PASS:trigger_tp 0 nsec
-test_lookup_and_delete_lru_hash:PASS:bpf_map_lookup_and_delete_elem 0 nsec
-test_lookup_and_delete_lru_hash:PASS:bpf_map_lookup_and_delete_elem 0 nsec
-test_lookup_and_delete_lru_hash:PASS:bpf_map_lookup_elem 0 nsec
-test_lookup_and_delete_lru_hash:FAIL:bpf_map_lookup_elem unexpected success: 0
-#67/3 lookup_and_delete_lru:FAIL
-
-I haven't seen this before, probably some timing assumptions or
-something. Can you please check and see if there is anything we can do
-to make the test more reliable?
-
-See https://app.travis-ci.com/github/kernel-patches/bpf/builds/233733889
-for the complete test run log. Thanks!
-
-
-> >  include/linux/bpf.h                           |   2 +
-> >  include/uapi/linux/bpf.h                      |  13 +
-> >  kernel/bpf/hashtab.c                          |  98 ++++++
-> >  kernel/bpf/syscall.c                          |  34 ++-
-> >  tools/include/uapi/linux/bpf.h                |  13 +
-> >  tools/lib/bpf/bpf.c                           |  13 +
-> >  tools/lib/bpf/bpf.h                           |   2 +
-> >  tools/lib/bpf/libbpf.map                      |   1 +
-> >  .../bpf/prog_tests/lookup_and_delete.c        | 288 ++++++++++++++++++
-> >  .../bpf/progs/test_lookup_and_delete.c        |  26 ++
-> >  tools/testing/selftests/bpf/test_lru_map.c    |   8 +
-> >  tools/testing/selftests/bpf/test_maps.c       |  17 ++
-> >  12 files changed, 511 insertions(+), 4 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
-> >
-> > --
-> > 2.26.2
+> > Saying it's part of libbpf 1.0 effort and given a link to Github PR is
+> > not really a sufficient commit message. Please expand on what you are
+> > doing in the patch and why.
 > >
 >
-> Patchbot is having a bad day...
+> Will do.
 >
-> Applied to bpf-next, thanks. Fixed up a small merge conflict in libbpf.map.
+> >>
+> >> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> >> ---
+> >>  tools/lib/bpf/btf.c      | 24 +++++++++++++++++++++++-
+> >>  tools/lib/bpf/btf.h      |  2 ++
+> >>  tools/lib/bpf/libbpf.c   |  8 ++++----
+> >>  tools/lib/bpf/libbpf.map |  2 ++
+> >>  4 files changed, 31 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> >> index b46760b93bb4..414e1c5635ef 100644
+> >> --- a/tools/lib/bpf/btf.c
+> >> +++ b/tools/lib/bpf/btf.c
+> >> @@ -4021,7 +4021,7 @@ static void btf_dedup_merge_hypot_map(struct btf_dedup *d)
+> >>                  */
+> >>                 if (d->hypot_adjust_canon)
+> >>                         continue;
+> >> -
+> >> +
+> >>                 if (t_kind == BTF_KIND_FWD && c_kind != BTF_KIND_FWD)
+> >>                         d->map[t_id] = c_id;
+> >>
+> >> @@ -4395,6 +4395,11 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
+> >>   * data out of it to use for target BTF.
+> >>   */
+> >>  struct btf *libbpf_find_kernel_btf(void)
+> >> +{
+> >> +       return libbpf_load_vmlinux_btf();
+> >> +}
+> >> +
+> >> +struct btf *libbpf_load_vmlinux_btf(void)
+> >>  {
+> >>         struct {
+> >>                 const char *path_fmt;
+> >> @@ -4440,6 +4445,23 @@ struct btf *libbpf_find_kernel_btf(void)
+> >>         return libbpf_err_ptr(-ESRCH);
+> >>  }
+> >>
+> >> +struct btf *libbpf_load_module_btf(const char *mod)
+> >
+> > So we probably need to allow user to pre-load and re-use vmlinux BTF
+> > for efficiency, especially if they have some use-case to load a lot of
+> > BTFs.
+> >
+>
+> Should the API change to this ?
+>
+> struct btf *libbpf_load_module_btf(struct btf *base, const char *mod)
+>
+> It seems better for the use-case you mentioned.
+
+Something like this, yeah. Let's put struct btf * as the last argument
+and module name as a first one, to follow the btf__parse_split()
+convention of having base_btf the last. And maybe let's call base a
+"vmlinux_btf", as in this case it's pretty specific that it's supposed
+to be the vmlinux BTF, not just any random BTF.
+
+>
+> >> +{
+> >> +       char path[80];
+> >> +       struct btf *base;
+> >> +       int err;
+> >> +
+> >> +       base = libbpf_load_vmlinux_btf();
+> >> +       err = libbpf_get_error(base);
+> >> +       if (err) {
+> >> +               pr_warn("Error loading vmlinux BTF: %d\n", err);
+> >> +               return base;
+> >
+> > libbpf_err_ptr() needs to be used here, pr_warn() could have destroyed
+> > errno already
+> >
+>
+> OK.
+>
+> >> +       }
+> >> +
+> >> +       snprintf(path, sizeof(path), "/sys/kernel/btf/%s", mod);
+> >> +       return btf__parse_split(path, base);
+> >
+> > so who's freeing base BTF in this case?
+> >
+>
+> Sorry, missed that.
+> But if we change the signature, then leave this to user.
+
+Right, that's what I was getting at. If we make vmlinux BTF
+non-optional, then user will have to own freeing it, just like we do
+that for other APIs w/ base BTF.
+
+>
+> >> +}
+> >> +
+> >>  int btf_type_visit_type_ids(struct btf_type *t, type_id_visit_fn visit, void *ctx)
+> >>  {
+> >>         int i, n, err;
+> >
+> > [...]
+> >
