@@ -2,234 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6F13D7F74
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 22:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B006E3D7F7E
+	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 22:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhG0Ur4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 16:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
+        id S231834AbhG0Utr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Jul 2021 16:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231950AbhG0Ur4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:47:56 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D441C061757
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 13:47:56 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id c5-20020a05620a2005b02903b8d1e253a9so62858qka.11
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 13:47:56 -0700 (PDT)
+        with ESMTP id S231135AbhG0Utq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Jul 2021 16:49:46 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EABC061757;
+        Tue, 27 Jul 2021 13:49:46 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id s19so199550ybc.6;
+        Tue, 27 Jul 2021 13:49:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rK2mGJnDB6D7HYXq4Z/iWMCNgueUnDRkkxXumKN3/ag=;
-        b=vnVRn2UWJwnbEQQTdbxxjEA3KMu6I05i9APyd0V6oo9vQB4jSuUQ/Y4o0UEcN9JAJs
-         QrUiCNNvD/fAjeYav6VPqjAI491XMNou8v9y2lBBGPT4iEo5mCaITLtRccwHyld2O6dW
-         WBt8S3vrwfXLry8Hv7K+qZjAF96ih48DZSYs5iwFFtnZKQc1PsblkO3KwR2Ec8BEaDx4
-         q+OuoXOCHCC3zuZmLAsfnyVXGuLA+Rd7ALXoLpV32k8TilNFLgX4mxG2QrjhwgObBC7J
-         FxjUBMOg/gjauBKU/NT7NnuzmVI+4KDL5pos75De7sYJdvcGG3URBe+faGUfmc+CvGzn
-         0NzA==
+        bh=Bas5UVt2W1vU/voQ8R2arXrfi794+5825d/MjT9oGMU=;
+        b=SzJnxA8uPLDM9y/lsjQu6zhSpPdKOt4k9U+G0Mqwi2xJ2ITJWj16hd3eRbRnqAp73G
+         Orj/9r7eIRcRUXad4KSfEeoQtFRwJzukm2f15XMMAevyX7FvkmaRMMSybhxJMEPx8kZ+
+         vaNytNMKTN8tjqVE05PWX0bQ1HXum55aSltR0sr99xYQuABfdu6xXOaapBJwTYVu7YGG
+         t/w8XTmRoW2WtSidKLl1JnmmS3hhSQ3kmSZS8Alq5/128d948xXJ+AdAPwgPoNaXAvsH
+         Se8c9KSDC/gTz5nCFQb8m5wC6EyxvGPaxaoueIX8T+Os/1BFTCEgzRfsMSNCaIdmlFbd
+         GrXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=rK2mGJnDB6D7HYXq4Z/iWMCNgueUnDRkkxXumKN3/ag=;
-        b=RMO8ws9OYbdm1WfOSH0ts6B2I77lFrbEIBjbZOWF9fCYAOjyXR9O5L3JxtJpiTx3/r
-         J0/kjlKBQ4GtxP1mEg7jcFu5pyKyFlOhYxlri3XgOOPXqedFqr+oX3w5BqKiLOGXDyBW
-         6E1xuZLWyDDHoeUOVI0dVox6K/+O4aF60eDjUBm0Rae0hp5B7miKrh5aEBWvwdlRt7aY
-         UJHuvRG1gzVByh5YPcb9mzI22SGPP4dk6IVq/PStzsoODjtMcsQseP9fXY2MuHDZ2dt7
-         Oms9RKEY5rWxhGLXdgZg79E8zYv2//0L00GDN5pDIzZgpUBo4ZhpXy9vLr6cNGj9OtUd
-         B2dg==
-X-Gm-Message-State: AOAM530qLfP5+1OKhzwwC/T9B0Cw7g8q1OIWWexakUZ6f90zKqUy9R62
-        pOMbesJIlH3Iwt6B14CnqGhCQBE=
-X-Google-Smtp-Source: ABdhPJzkGF2A/ii6lsAsocYTiCaN00o3fcNxA02uNNt7llq15B4HDt1RYvOAeEX5QwN9lfvf5JkbOhY=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:d295:8a87:15f8:cb7])
- (user=sdf job=sendgmr) by 2002:a05:6214:5186:: with SMTP id
- kl6mr24234101qvb.5.1627418875251; Tue, 27 Jul 2021 13:47:55 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 13:47:53 -0700
-In-Reply-To: <CAEf4BzaLc7rvUPquXnf+qxjrLSkCR21D7hj0HNVACmwNpgZvSw@mail.gmail.com>
-Message-Id: <YQBw+SLUQf0phOik@google.com>
-Mime-Version: 1.0
-References: <20210726230032.1806348-1-sdf@google.com> <CAEf4BzaLc7rvUPquXnf+qxjrLSkCR21D7hj0HNVACmwNpgZvSw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: increase supported cgroup storage value size
-From:   sdf@google.com
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bas5UVt2W1vU/voQ8R2arXrfi794+5825d/MjT9oGMU=;
+        b=rRU6HCkQ/6oKi1gZPU6I/T9QgAVRqTgzJCBJDfjoAbmApohKS+E2454gWYHt5Z10qk
+         cNVGnXPoxDIi+n97U3mDoUwj8EJTMMtrjz7p5A1acQDmnCfD4nC5llHMTxsqb1yOPDkv
+         u/inj/BJXn1L7tpcYNh4egv7f5/gPl0kdTWfUjCHuuJM4PB0wqGpzhiPhUzTNT+K0wm3
+         VSr6SSAtKcX4CNp/oFibr+dq9E/BSsQDoQKVoHzPUdxqsvWLqze9EpI8q2VtF6+WeOdO
+         bZ7xhWoclRDtSi6w7HNT0UCmIu1aVn9JrAQNcQa5G16sjHRqZ17hoB7U3OvZUH1F+tsS
+         72EA==
+X-Gm-Message-State: AOAM532yFo+ZeSdp5FPc3eoSpEk8fIb0E1gju0QLtK1Jf/0ZPfdkwGRJ
+        MFHRSH+2NqhjSgSYTiZr83N5XUX/qfqrF3y416Y=
+X-Google-Smtp-Source: ABdhPJwsVwCDwEkWiiktTxYYhAGcIBD1izumUyFEArPPnSOetxCYDx2HINmj79U6jrB12QPnEVvLl8LK2hja2ZWqDnE=
+X-Received: by 2002:a25:a045:: with SMTP id x63mr22905255ybh.27.1627418985491;
+ Tue, 27 Jul 2021 13:49:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210721153808.6902-1-quentin@isovalent.com> <CAEf4Bzb30BNeLgio52OrxHk2VWfKitnbNUnO0sAXZTA94bYfmg@mail.gmail.com>
+ <CAEf4BzZZXx28w1y_6xfsue91c_7whvHzMhKvbSnsQRU4yA+RwA@mail.gmail.com>
+ <82e61e60-e2e9-f42d-8e49-bbe416b7513d@isovalent.com> <CAEf4BzYpCr=Vdfc3moaapQqBxYV3SKfD72s0F=FAh_zLzSqxqA@mail.gmail.com>
+ <bb0d3640-c6da-a802-4794-50cd033119ac@isovalent.com>
+In-Reply-To: <bb0d3640-c6da-a802-4794-50cd033119ac@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 27 Jul 2021 13:49:34 -0700
+Message-ID: <CAEf4BzZ8wXhpRwPkBmH3i94oVea2BucC56PCK-0j4N_3gk29Ng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/5] libbpf: rename btf__get_from_id() and
+ btf__load() APIs, support split BTF
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/27, Andrii Nakryiko wrote:
-> On Mon, Jul 26, 2021 at 4:00 PM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > Current max cgroup storage value size is 4k (PAGE_SIZE). The other local
-> > storages accept up to 64k (BPF_LOCAL_STORAGE_MAX_VALUE_SIZE). Let's  
-> align
-> > max cgroup value size with the other storages.
-> >
-> > For percpu, the max is 32k (PCPU_MIN_UNIT_SIZE) because percpu
-> > allocator is not happy about larger values.
-> >
-> > netcnt test is extended to exercise those maximum values
-> > (non-percpu max size is close to, but not real max).
-> >
-> > v3:
-> > * refine SIZEOF_BPF_LOCAL_STORAGE_ELEM comment (Yonghong Song)
-> > * anonymous struct in percpu_net_cnt & net_cnt (Yonghong Song)
-> > * reorder free (Yonghong Song)
-> >
-> > v2:
-> > * cap max_value_size instead of BUILD_BUG_ON (Martin KaFai Lau)
-> >
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Cc: Yonghong Song <yhs@fb.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  kernel/bpf/local_storage.c                  | 11 +++++-
-> >  tools/testing/selftests/bpf/netcnt_common.h | 38 +++++++++++++++++----
-> >  tools/testing/selftests/bpf/test_netcnt.c   | 17 ++++++---
-> >  3 files changed, 53 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-> > index 7ed2a14dc0de..035e9e3a7132 100644
-> > --- a/kernel/bpf/local_storage.c
-> > +++ b/kernel/bpf/local_storage.c
-> > @@ -1,6 +1,7 @@
-> >  //SPDX-License-Identifier: GPL-2.0
-> >  #include <linux/bpf-cgroup.h>
-> >  #include <linux/bpf.h>
-> > +#include <linux/bpf_local_storage.h>
-> >  #include <linux/btf.h>
-> >  #include <linux/bug.h>
-> >  #include <linux/filter.h>
-> > @@ -283,9 +284,17 @@ static int cgroup_storage_get_next_key(struct  
-> bpf_map *_map, void *key,
-> >
-> >  static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
-> >  {
-> > +       __u32 max_value_size = BPF_LOCAL_STORAGE_MAX_VALUE_SIZE;
-> >         int numa_node = bpf_map_attr_numa_node(attr);
-> >         struct bpf_cgroup_storage_map *map;
-> >
-> > +       /* percpu is bound by PCPU_MIN_UNIT_SIZE, non-percu
-> > +        * is the same as other local storages.
-> > +        */
-> > +       if (attr->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)
-> > +               max_value_size = min_t(__u32, max_value_size,
-> > +                                      PCPU_MIN_UNIT_SIZE);
-> > +
-> >         if (attr->key_size != sizeof(struct bpf_cgroup_storage_key) &&
-> >             attr->key_size != sizeof(__u64))
-> >                 return ERR_PTR(-EINVAL);
-> > @@ -293,7 +302,7 @@ static struct bpf_map  
-> *cgroup_storage_map_alloc(union bpf_attr *attr)
-> >         if (attr->value_size == 0)
-> >                 return ERR_PTR(-EINVAL);
-> >
-> > -       if (attr->value_size > PAGE_SIZE)
-> > +       if (attr->value_size > max_value_size)
-> >                 return ERR_PTR(-E2BIG);
-> >
-> >         if (attr->map_flags & ~LOCAL_STORAGE_CREATE_FLAG_MASK ||
-> > diff --git a/tools/testing/selftests/bpf/netcnt_common.h  
-> b/tools/testing/selftests/bpf/netcnt_common.h
-> > index 81084c1c2c23..87f5b97e1932 100644
-> > --- a/tools/testing/selftests/bpf/netcnt_common.h
-> > +++ b/tools/testing/selftests/bpf/netcnt_common.h
-> > @@ -6,19 +6,43 @@
-> >
-> >  #define MAX_PERCPU_PACKETS 32
-> >
-> > +/* sizeof(struct bpf_local_storage_elem):
-> > + *
-> > + * It really is about 128 bytes on x86_64, but allocate more to  
-> account for
-> > + * possible layout changes, different architectures, etc.
-> > + * The kernel will wrap up to PAGE_SIZE internally anyway.
-> > + */
-> > +#define SIZEOF_BPF_LOCAL_STORAGE_ELEM          256
-> > +
-> > +/* Try to estimate kernel's BPF_LOCAL_STORAGE_MAX_VALUE_SIZE: */
-> > +#define BPF_LOCAL_STORAGE_MAX_VALUE_SIZE       (0xFFFF - \
-> > +                                                 
-> SIZEOF_BPF_LOCAL_STORAGE_ELEM)
-> > +
-> > +#define PCPU_MIN_UNIT_SIZE                     32768
-> > +
-> >  struct percpu_net_cnt {
-> > -       __u64 packets;
-> > -       __u64 bytes;
-> > +       union {
+On Tue, Jul 27, 2021 at 4:39 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> 2021-07-23 08:51 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > On Fri, Jul 23, 2021 at 2:58 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >>
+> >> 2021-07-22 19:45 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> >>> On Thu, Jul 22, 2021 at 5:58 PM Andrii Nakryiko
+> >>> <andrii.nakryiko@gmail.com> wrote:
+> >>>>
+> >>>> On Wed, Jul 21, 2021 at 8:38 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >>>>>
+> >>>>> As part of the effort to move towards a v1.0 for libbpf [0], this set
+> >>>>> improves some confusing function names related to BTF loading from and to
+> >>>>> the kernel:
+> >>>>>
+> >>>>> - btf__load() becomes btf__load_into_kernel().
+> >>>>> - btf__get_from_id becomes btf__load_from_kernel_by_id().
+> >>>>> - A new version btf__load_from_kernel_by_id_split() extends the former to
+> >>>>>   add support for split BTF.
+> >>>>>
+> >>>>> The old functions are not removed or marked as deprecated yet, there
+> >>>>> should be in a future libbpf version.
+> >>>>
+> >>>> Oh, and I was thinking about this whole deprecation having to be done
+> >>>> in two steps. It's super annoying to keep track of that. Ideally, we'd
+> >>>> have some macro that can mark API deprecated "in the future", when
+> >>>> actual libbpf version is >= to defined version. So something like
+> >>>> this:
+> >>>>
+> >>>> LIBBPF_DEPRECATED_AFTER(V(0,5), "API that will be marked deprecated in v0.6")
+> >>>
+> >>> Better:
+> >>>
+> >>> LIBBPF_DEPRECATED_SINCE(0, 6, "API that will be marked deprecated in v0.6")
+>
+> So I've been looking into this, and it's not _that_ simple to do. Unless
+> I missed something about preprocessing macros, I cannot bake a "#if" in
+> a "#define", to have the attribute printed if and only if the current
+> version is >= 0.6 in this example.
+>
+> I've come up with something, but it is not optimal because I have to
+> write a check and macros for each version number used with the
+> LIBBPF_DEPRECATED_SINCE macro. If we really wanted to automate that part
+> I guess we could generate a header with those macros from the Makefile
+> and include it in libbpf_common.h, but that does not really look much
+> cleaner to me.
 
-> so you have a struct with a single anonymous union inside, isn't that
-> right? Any problems with just making struct percpu_net_cnt into union
-> percpu_net_cnt?
-We'd have to s/struct/union/ everywhere in this case, not sure
-we want to add more churn? Seemed easier to do anonymous union+struct.
+Yeah, let's not add unnecessary code generation. It sucks, of course,
+that we can't do #ifdef inside a macro :(
 
-> > +               struct {
-> > +                       __u64 packets;
-> > +                       __u64 bytes;
-> >
-> > -       __u64 prev_ts;
-> > +                       __u64 prev_ts;
-> >
-> > -       __u64 prev_packets;
-> > -       __u64 prev_bytes;
-> > +                       __u64 prev_packets;
-> > +                       __u64 prev_bytes;
-> > +               };
-> > +               __u8 data[PCPU_MIN_UNIT_SIZE];
-> > +       };
-> >  };
-> >
-> >  struct net_cnt {
-> > -       __u64 packets;
-> > -       __u64 bytes;
-> > +       union {
+So it's either do something like what you did with defining
+version-specific macros, which is actually not too bad, because it's
+not like we have tons of those versions anyways.
 
-> similarly here
+LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__load_from_kernel_by_id instead")
+LIBBPF_API int btf__get_from_id(__u32 id, struct btf **btf);
 
-> > +               struct {
-> > +                       __u64 packets;
-> > +                       __u64 bytes;
-> > +               };
-> > +               __u8 data[BPF_LOCAL_STORAGE_MAX_VALUE_SIZE];
-> > +       };
-> >  };
-> >
-> >  #endif
-> > diff --git a/tools/testing/selftests/bpf/test_netcnt.c  
-> b/tools/testing/selftests/bpf/test_netcnt.c
-> > index a7b9a69f4fd5..372afccf2d17 100644
-> > --- a/tools/testing/selftests/bpf/test_netcnt.c
-> > +++ b/tools/testing/selftests/bpf/test_netcnt.c
-> > @@ -33,11 +33,11 @@ static int bpf_find_map(const char *test, struct  
-> bpf_object *obj,
-> >
-> >  int main(int argc, char **argv)
-> >  {
-> > -       struct percpu_net_cnt *percpu_netcnt;
-> > +       struct percpu_net_cnt *percpu_netcnt = NULL;
-> >         struct bpf_cgroup_storage_key key;
-> > +       struct net_cnt *netcnt = NULL;
-> >         int map_fd, percpu_map_fd;
-> >         int error = EXIT_FAILURE;
-> > -       struct net_cnt netcnt;
-> >         struct bpf_object *obj;
-> >         int prog_fd, cgroup_fd;
-> >         unsigned long packets;
-> > @@ -52,6 +52,12 @@ int main(int argc, char **argv)
-> >                 goto err;
-> >         }
-> >
-> > +       netcnt = malloc(sizeof(*netcnt));
+Alternatively, we can go with:
 
-> curious, was it too big to be just allocated on the stack? Isn't the
-> thread stack size much bigger than 64KB (at least by default)?
-I haven't tried really, I just moved it to malloc because it crossed
-some unconscious boundary for the 'stuff I allocate on the stack'.
-I can try it out if you prefer to keep it on the stack, let me know.
+#if LIBBPF_AT_OR_NEWER(0, 6)
+LIBBPF_DEPRECATED("use btf__load_from_kernel_by_id instead")
+#endif
+LIBBPF API int btf__get_from_id(__u32 id, struct btf **btf);
+
+I don't really dislike the second variant too much either, but
+LIBBPF_DEPRECATED_SINCE() reads nicer. Let's go with that. See some
+comments below about implementation.
+
+>
+> Here's my current code, below - does it correspond to what you had in
+> mind? Or did you think of something else?
+>
+> ------
+>
+> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+> index ec14aa725bb0..095d5dc30d50 100644
+> --- a/tools/lib/bpf/Makefile
+> +++ b/tools/lib/bpf/Makefile
+> @@ -8,6 +8,7 @@ LIBBPF_VERSION := $(shell \
+>         grep -oE '^LIBBPF_([0-9.]+)' libbpf.map | \
+>         sort -rV | head -n1 | cut -d'_' -f2)
+>  LIBBPF_MAJOR_VERSION := $(firstword $(subst ., ,$(LIBBPF_VERSION)))
+> +LIBBPF_MINOR_VERSION := $(firstword $(subst ., ,$(subst $(LIBBPF_MAJOR_VERSION)., ,$(LIBBPF_VERSION))))
+
+Given all this is for internal use, I'd instead define something like
+__LIBBPF_CURVER as an integer that is easy to compare against:
+
+#define __LIBBPF_CURVER (LIBBPF_MAJOR_VERSION * 100 +
+LIBBPF_MINOR_VERSION) * 100 + LIBBPF_PATCH_VERSION
+
+That will simplify some stuff below and is generally easier to use in
+code, if we will need this somewhere to use explicitly.
+
+>
+>  MAKEFLAGS += --no-print-directory
+>
+> @@ -86,6 +87,8 @@ override CFLAGS += -Werror -Wall
+>  override CFLAGS += $(INCLUDES)
+>  override CFLAGS += -fvisibility=hidden
+>  override CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+> +override CFLAGS += -DLIBBPF_MAJOR_VERSION=$(LIBBPF_MAJOR_VERSION)
+> +override CFLAGS += -DLIBBPF_MINOR_VERSION=$(LIBBPF_MINOR_VERSION)
+>
+>  # flags specific for shared library
+>  SHLIB_FLAGS := -DSHARED -fPIC
+> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> index cf8490f95641..8b6b5442dbd8 100644
+> --- a/tools/lib/bpf/btf.h
+> +++ b/tools/lib/bpf/btf.h
+> @@ -45,7 +45,8 @@ LIBBPF_API struct btf *btf__parse_raw(const char *path);
+>  LIBBPF_API struct btf *btf__parse_raw_split(const char *path, struct btf *base_btf);
+>  LIBBPF_API struct btf *btf__load_from_kernel_by_id(__u32 id);
+>  LIBBPF_API struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf);
+> -LIBBPF_API int btf__get_from_id(__u32 id, struct btf **btf);
+> +LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__load_from_kernel_by_id instead")
+
+nit: given how long those deprecations will be, let's keep them at a
+separate (first) line and keep LIBBPF_API near the function
+declaration itself
+
+> +int btf__get_from_id(__u32 id, struct btf **btf);
+>
+>  LIBBPF_API int btf__finalize_data(struct bpf_object *obj, struct btf *btf);
+>  LIBBPF_API int btf__load(struct btf *btf);
+> diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
+> index 947d8bd8a7bb..9ba9f8135dc8 100644
+> --- a/tools/lib/bpf/libbpf_common.h
+> +++ b/tools/lib/bpf/libbpf_common.h
+> @@ -17,6 +17,28 @@
+>
+>  #define LIBBPF_DEPRECATED(msg) __attribute__((deprecated(msg)))
+>
+> +#ifndef LIBBPF_DEPRECATED_SINCE
+
+why #ifndef conditional?
+
+> +#define __LIBBPF_VERSION_CHECK(major, minor) \
+> +       LIBBPF_MAJOR_VERSION > major || \
+> +               (LIBBPF_MAJOR_VERSION == major && LIBBPF_MINOR_VERSION >= minor)
+
+so we don't need this if we do __LIBBPF_CURVER
+
+> +
+> +/* Add checks for other versions below when planning deprecation of API symbols
+> + * with the LIBBPF_DEPRECATED_SINCE macro.
+> + */
+> +#if __LIBBPF_VERSION_CHECK(0, 6)
+> +#define __LIBBPF_MARK_DEPRECATED_0_6(X) X
+> +#else
+> +#define __LIBBPF_MARK_DEPRECATED_0_6(X)
+> +#endif
+> +
+> +#define __LIBBPF_DEPRECATED_SINCE(major, minor, msg) \
+> +       __LIBBPF_MARK_DEPRECATED_ ## major ## _ ## minor (LIBBPF_DEPRECATED("v" # major "." # minor "+, " msg))
+> +
+> +/* Mark a symbol as deprecated when libbpf version is >= {major}.{minor} */
+> +#define LIBBPF_DEPRECATED_SINCE(major, minor, msg) \
+> +       __LIBBPF_DEPRECATED_SINCE(major, minor, msg)
+
+Is it needed for some macro value concatenation magic to have this
+nested __LIBBPF_DEPRECATED_SINCE?
+
+> +#endif /* LIBBPF_DEPRECATED_SINCE */
+> +
+>  /* Helper macro to declare and initialize libbpf options struct
+>   *
+>   * This dance with uninitialized declaration, followed by memset to zero,
