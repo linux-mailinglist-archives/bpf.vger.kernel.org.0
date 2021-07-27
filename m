@@ -2,71 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09E03D71C7
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 11:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FDB3D746E
+	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 13:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236072AbhG0JPj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 05:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
+        id S231781AbhG0Lji (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Jul 2021 07:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235978AbhG0JPi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:15:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B74C061757
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 02:15:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MLxsHq5q4tdMm4dpBUsp3q/JMAdbuU0PQf/d2lpTyK8=; b=XXd3qCx5tOqDlArw3wykpe40Ee
-        GkruZ742rnb42ndECHwauU9PP5EM+hgKpsCAp2AkiRTuVdblMnPeV0QvYuceVO0tm61w8xomEbz5k
-        2MeAuRASH4lEP7FbH2euJq4jwlQtbVm2g56xwcaxlkIZ4edvP1hPkvLTFrk7D60C1zB6KmzohrCJl
-        ZSkWVPa9sHePET4suQM5N/pC8vlFJbIrmpXaztlJ7sKxPwRbI32puuYdhnBfNki0RDGS+QPY1HjCS
-        Ffx6McRl6Rayr1bBpwntJYzsHsDc+hGen6MVzQ585hal044mxoQ+q2ClIfRspIumPaRtq5XIH4RZW
-        8O3vNSDw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8J8m-00Erkj-VN; Tue, 27 Jul 2021 09:13:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 97ADE300279;
-        Tue, 27 Jul 2021 11:12:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8950E2C8D506F; Tue, 27 Jul 2021 11:12:44 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 11:12:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 04/14] bpf: implement minimal BPF perf link
-Message-ID: <YP/ODG1g0Z553x1I@hirez.programming.kicks-ass.net>
-References: <20210726161211.925206-1-andrii@kernel.org>
- <20210726161211.925206-5-andrii@kernel.org>
+        with ESMTP id S231758AbhG0Ljh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Jul 2021 07:39:37 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A86C061760
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 04:39:30 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id n12so11277536wrr.2
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 04:39:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=h2m8MDNRUeecSVOD85AOxrv5mxE54jWuAS006+0+LsA=;
+        b=SozljIC5zKcUuv56DIesOYSDJixp4GmrIaq4adqtdlCgI+a1Wo6IFZ5/eiDGk7u5jq
+         dVv43z+Q3pSdD+JaCAlbH+T+MJRpKgPRHY+vLtHZVK1l2prK6Rg5FGUMLKrzX+xlKEIH
+         cmNezPWC7h2SQULE7XE4QE79RO1oh6VWGciHScGB7T3TlS+lJl9xDDw4gaAjddaDN3zC
+         n5AQa7A9LX/WJriHRav/yFhnBrHYSyc9Ba3WzkU8swQTNK6S6+7oXeFrpr6AKQDVBVs1
+         PpTVTqxKFes8OnrMZa68ior1YtVvx5zeHvqH/EfV54lkFrs6iiwgUJn9/wv7+eGudTTN
+         sMdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h2m8MDNRUeecSVOD85AOxrv5mxE54jWuAS006+0+LsA=;
+        b=iTf3801G9eyyrweubtF2RJWX9WNxjeBlS1o3x5+0ZrbXsoRdSSD8swTK9TgXoH07zx
+         1eOfwKRri3bq5u+hb8dacVd2Fcj4DNoys2rmY313ZfA0NvwlImeLUOMEWNNxV441bV/m
+         qTECGP5omegseEyGX+1ZR+I6hbxfQNxUJUsPj1PIhpn0cqE2XOudf7l21knZOx4JMJh1
+         PqP36L+Gy0fTaxgag0j9HwHEtAPsVJm7ZHVTdY4RoyoTxI3iMVfDyxYgjnCDXG6OSjKv
+         BDDHwy58i7r/PmQ+Uu7UhiuhRWHdU4/yq4bJpUfAj9pz9B8IV1JiuR3dj0DEA9VSDoEu
+         OQgQ==
+X-Gm-Message-State: AOAM530aC1pow9xlU1Zp4S4fu/2j0XiZw0ki5wMQc3cNji5AEaOKkEBN
+        qp7KzfcDozRWdGYVn7CZw7pXBM7BjjJBCXNN
+X-Google-Smtp-Source: ABdhPJzOOIn5jRuwokNkhxUndOgzFs86Nej7c9EIpALDA/yA8fINtaoAKbYy/BgwmFpYSQ7rhnh5KQ==
+X-Received: by 2002:a5d:5685:: with SMTP id f5mr9343743wrv.369.1627385968948;
+        Tue, 27 Jul 2021 04:39:28 -0700 (PDT)
+Received: from [192.168.1.8] ([149.86.74.3])
+        by smtp.gmail.com with ESMTPSA id h15sm2804807wrq.88.2021.07.27.04.39.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 04:39:28 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v2 0/5] libbpf: rename btf__get_from_id() and
+ btf__load() APIs, support split BTF
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20210721153808.6902-1-quentin@isovalent.com>
+ <CAEf4Bzb30BNeLgio52OrxHk2VWfKitnbNUnO0sAXZTA94bYfmg@mail.gmail.com>
+ <CAEf4BzZZXx28w1y_6xfsue91c_7whvHzMhKvbSnsQRU4yA+RwA@mail.gmail.com>
+ <82e61e60-e2e9-f42d-8e49-bbe416b7513d@isovalent.com>
+ <CAEf4BzYpCr=Vdfc3moaapQqBxYV3SKfD72s0F=FAh_zLzSqxqA@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <bb0d3640-c6da-a802-4794-50cd033119ac@isovalent.com>
+Date:   Tue, 27 Jul 2021 12:39:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210726161211.925206-5-andrii@kernel.org>
+In-Reply-To: <CAEf4BzYpCr=Vdfc3moaapQqBxYV3SKfD72s0F=FAh_zLzSqxqA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 09:12:01AM -0700, Andrii Nakryiko wrote:
-> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-> index ad413b382a3c..8ac92560d3a3 100644
-> --- a/include/linux/trace_events.h
-> +++ b/include/linux/trace_events.h
-> @@ -803,6 +803,9 @@ extern void ftrace_profile_free_filter(struct perf_event *event);
->  void perf_trace_buf_update(void *record, u16 type);
->  void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp);
->  
-> +int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog);
-> +void perf_event_free_bpf_prog(struct perf_event *event);
-> +
->  void bpf_trace_run1(struct bpf_prog *prog, u64 arg1);
->  void bpf_trace_run2(struct bpf_prog *prog, u64 arg1, u64 arg2);
->  void bpf_trace_run3(struct bpf_prog *prog, u64 arg1, u64 arg2,
+2021-07-23 08:51 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Fri, Jul 23, 2021 at 2:58 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> 2021-07-22 19:45 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+>>> On Thu, Jul 22, 2021 at 5:58 PM Andrii Nakryiko
+>>> <andrii.nakryiko@gmail.com> wrote:
+>>>>
+>>>> On Wed, Jul 21, 2021 at 8:38 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>>>>
+>>>>> As part of the effort to move towards a v1.0 for libbpf [0], this set
+>>>>> improves some confusing function names related to BTF loading from and to
+>>>>> the kernel:
+>>>>>
+>>>>> - btf__load() becomes btf__load_into_kernel().
+>>>>> - btf__get_from_id becomes btf__load_from_kernel_by_id().
+>>>>> - A new version btf__load_from_kernel_by_id_split() extends the former to
+>>>>>   add support for split BTF.
+>>>>>
+>>>>> The old functions are not removed or marked as deprecated yet, there
+>>>>> should be in a future libbpf version.
+>>>>
+>>>> Oh, and I was thinking about this whole deprecation having to be done
+>>>> in two steps. It's super annoying to keep track of that. Ideally, we'd
+>>>> have some macro that can mark API deprecated "in the future", when
+>>>> actual libbpf version is >= to defined version. So something like
+>>>> this:
+>>>>
+>>>> LIBBPF_DEPRECATED_AFTER(V(0,5), "API that will be marked deprecated in v0.6")
+>>>
+>>> Better:
+>>>
+>>> LIBBPF_DEPRECATED_SINCE(0, 6, "API that will be marked deprecated in v0.6")
 
-Oh, I just noticed, is this the right header to put these in? Should
-this not go into include/linux/perf_event.h ?
+So I've been looking into this, and it's not _that_ simple to do. Unless
+I missed something about preprocessing macros, I cannot bake a "#if" in
+a "#define", to have the attribute printed if and only if the current
+version is >= 0.6 in this example.
+
+I've come up with something, but it is not optimal because I have to
+write a check and macros for each version number used with the
+LIBBPF_DEPRECATED_SINCE macro. If we really wanted to automate that part
+I guess we could generate a header with those macros from the Makefile
+and include it in libbpf_common.h, but that does not really look much
+cleaner to me.
+
+Here's my current code, below - does it correspond to what you had in
+mind? Or did you think of something else?
+
+------
+
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index ec14aa725bb0..095d5dc30d50 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -8,6 +8,7 @@ LIBBPF_VERSION := $(shell \
+ 	grep -oE '^LIBBPF_([0-9.]+)' libbpf.map | \
+ 	sort -rV | head -n1 | cut -d'_' -f2)
+ LIBBPF_MAJOR_VERSION := $(firstword $(subst ., ,$(LIBBPF_VERSION)))
++LIBBPF_MINOR_VERSION := $(firstword $(subst ., ,$(subst $(LIBBPF_MAJOR_VERSION)., ,$(LIBBPF_VERSION))))
+ 
+ MAKEFLAGS += --no-print-directory
+ 
+@@ -86,6 +87,8 @@ override CFLAGS += -Werror -Wall
+ override CFLAGS += $(INCLUDES)
+ override CFLAGS += -fvisibility=hidden
+ override CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
++override CFLAGS += -DLIBBPF_MAJOR_VERSION=$(LIBBPF_MAJOR_VERSION)
++override CFLAGS += -DLIBBPF_MINOR_VERSION=$(LIBBPF_MINOR_VERSION)
+ 
+ # flags specific for shared library
+ SHLIB_FLAGS := -DSHARED -fPIC
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index cf8490f95641..8b6b5442dbd8 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -45,7 +45,8 @@ LIBBPF_API struct btf *btf__parse_raw(const char *path);
+ LIBBPF_API struct btf *btf__parse_raw_split(const char *path, struct btf *base_btf);
+ LIBBPF_API struct btf *btf__load_from_kernel_by_id(__u32 id);
+ LIBBPF_API struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf);
+-LIBBPF_API int btf__get_from_id(__u32 id, struct btf **btf);
++LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__load_from_kernel_by_id instead")
++int btf__get_from_id(__u32 id, struct btf **btf);
+ 
+ LIBBPF_API int btf__finalize_data(struct bpf_object *obj, struct btf *btf);
+ LIBBPF_API int btf__load(struct btf *btf);
+diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
+index 947d8bd8a7bb..9ba9f8135dc8 100644
+--- a/tools/lib/bpf/libbpf_common.h
++++ b/tools/lib/bpf/libbpf_common.h
+@@ -17,6 +17,28 @@
+ 
+ #define LIBBPF_DEPRECATED(msg) __attribute__((deprecated(msg)))
+ 
++#ifndef LIBBPF_DEPRECATED_SINCE
++#define __LIBBPF_VERSION_CHECK(major, minor) \
++	LIBBPF_MAJOR_VERSION > major || \
++		(LIBBPF_MAJOR_VERSION == major && LIBBPF_MINOR_VERSION >= minor)
++
++/* Add checks for other versions below when planning deprecation of API symbols
++ * with the LIBBPF_DEPRECATED_SINCE macro.
++ */
++#if __LIBBPF_VERSION_CHECK(0, 6)
++#define __LIBBPF_MARK_DEPRECATED_0_6(X) X
++#else
++#define __LIBBPF_MARK_DEPRECATED_0_6(X)
++#endif
++
++#define __LIBBPF_DEPRECATED_SINCE(major, minor, msg) \
++	__LIBBPF_MARK_DEPRECATED_ ## major ## _ ## minor (LIBBPF_DEPRECATED("v" # major "." # minor "+, " msg))
++
++/* Mark a symbol as deprecated when libbpf version is >= {major}.{minor} */
++#define LIBBPF_DEPRECATED_SINCE(major, minor, msg) \
++	__LIBBPF_DEPRECATED_SINCE(major, minor, msg)
++#endif /* LIBBPF_DEPRECATED_SINCE */
++
+ /* Helper macro to declare and initialize libbpf options struct
+  *
+  * This dance with uninitialized declaration, followed by memset to zero,
