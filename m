@@ -2,159 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D933D764B
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 15:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C073D7834
+	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 16:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236976AbhG0N0n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 09:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
+        id S236730AbhG0OMi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Jul 2021 10:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237312AbhG0N0L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:26:11 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884A2C061799
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 06:26:11 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id t21so15619069plr.13
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 06:26:11 -0700 (PDT)
+        with ESMTP id S236609AbhG0OMh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Jul 2021 10:12:37 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF3BC061760
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 07:12:34 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id p5so10278655wro.7
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 07:12:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=opjptYABd9lTAjTURUlye+PGqKAxcZ0rcai12mEW6Gw=;
-        b=q7+kOBeo8gnXElVAaWQrnMCou/0GA5JCLDn+kUL8CsYabPADrf6EgdbVaZ8PH4PuB5
-         uAlSyYK1xtYnJgiPtZjXi1siZTfKU3ZaLvFz0pKooRx44/588cHoqDp3UiEFHF0Ip25o
-         UwOBDbJDh/ZXCYnU9qLAs0131QKfLlwZgJaXYs+UCjTAH44VYlLViKWNJs515Rlkvg3N
-         aHm1H9s6eS7aS0Mm3Kv2Y7l7Bb+4/1YTPQT7uIIXoBgpNNliAgIO66lmY4/5zNsjKHEX
-         pOXFGk9jX8L/eyloAXNHsSQgzOk3ussPtC5lCL6b+7UTDtw4kbnlK2vUCAmvbtfc4to3
-         4ZKw==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wxFe0uNWW9r8apP/FU5g02YgcMO4sIOQrIvQ0ldAwCE=;
+        b=tKqva2x/CG8NzNjWImVr+kujX/2pkcv6GBJov7A0FHrtTM+AWUaZg2RbsIt+2FlCm9
+         MzAOgq5MVu7g44j7ba+GmRwMWp8FsuxUIzw2wnBV/giol1NiN51RCQeb/dbT/KdDnbcN
+         xOM10soYVdAlqUz8jz9HAMYFBVicmcOR3rAcAyR3eVJocoqUN2Ei0IVTNdgM/RDIKr8G
+         xfDdwLzGJAEsvexyVUv4E2q3DnwYOgmYcTdfoKlH+zb4+LA36Y6VluffdgsH+KN89DNL
+         ZP2UaaUjHblc3whx0DDG85xV38HvCrZ0PgS9Oly7LyceGcyk6DUTkcSn995pXbHOt3s0
+         tf2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=opjptYABd9lTAjTURUlye+PGqKAxcZ0rcai12mEW6Gw=;
-        b=mib2KSUk8ZIjYend0IdJU5YX4TGIK0ixx+cFTLrryO2/Sg202hbV2Hr0QxezGO87oQ
-         5MBz4TGNKAH7CSK0i+iAHR54QfsVTsLiHGZ8/i33TfwUMmNTtR09wtNeFa31Qpt/Wse1
-         00YCO/eU8fAfHNnm+HIxeyDnYduPULY3iQAjfAV0qNADlSh++gjPeN7tRDI3DsKc9DBr
-         xychuYNumZKtbtpb8SR2JNAOqPwOKyf2yy7y88AV2zxmJrcyb8RgbQNLA91x74xcekhx
-         83JVpqaMshLWwXgLeUUipMq4HqbuqAl3yNMM6+R3DpC5RZbSxtBDaDm5Wu5BjCcyV9mO
-         7aug==
-X-Gm-Message-State: AOAM5322GweoUsU60ks7xd4WeF4Dp9EvYZ+lZZ7lQEsqyGe7I0TmdRFt
-        NJUZZ34uzVwwQwW9VLvVhuyNgdOZPR8rSQ==
-X-Google-Smtp-Source: ABdhPJw1TUtv5rzFWg/NskEXRsk04VpVWrme6IjRn0HrlqzVjVQf2jfO2aSJGRreBu/W6KzjNYvQWg==
-X-Received: by 2002:a63:84:: with SMTP id 126mr6652730pga.221.1627392371028;
-        Tue, 27 Jul 2021 06:26:11 -0700 (PDT)
-Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id l11sm2002892pfd.187.2021.07.27.06.26.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wxFe0uNWW9r8apP/FU5g02YgcMO4sIOQrIvQ0ldAwCE=;
+        b=strc2ciGq4h7NCg2gWFponYpe7wqJ7N3FGV700k7UWNE+3WDkl6sfPxHHU+vKz80bD
+         0x7Z2p/I4/QH4gksVS3n1+4SFM57Phh/tY1Y1UgrtXFEc93AFhCFDDhBhVWDLJPTs5AE
+         z3EdeYowBtDUR9bv9QC0VlX/W83i6+X3hGqu7RK5RAQC/W6pFhWmlib9dF8DofmChRDX
+         9I2IowzEiOEq5F74o3GBtcgW1HDUTUopcohyIFiwfCj1I4P8nYwoU9rNf3pTwr3mqB9u
+         h4kjiBLVpUiWMSaT3naLCYUuA5XT3JsE2FRTeaKRuPr9w1k40wLYmxeQlnWfYwAXA51O
+         FOlA==
+X-Gm-Message-State: AOAM532fPzOSLj/ZI6W9ueQ27khRV/KoL6+7749JdCxVkFPBpRFmtlg5
+        M4wkOoAE8ZshAHtTk5qk9JzWyw==
+X-Google-Smtp-Source: ABdhPJyo/1NSvfJMApolEVn/Cme3lrJZj6EUMJjCA+6U4kBT2iMR/FUJLcqUvmi6jmSG+c2lQdwkTg==
+X-Received: by 2002:a5d:64c8:: with SMTP id f8mr25032728wri.290.1627395152923;
+        Tue, 27 Jul 2021 07:12:32 -0700 (PDT)
+Received: from localhost.localdomain ([89.18.44.40])
+        by smtp.gmail.com with ESMTPSA id t1sm3403912wrm.42.2021.07.27.07.12.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 06:26:10 -0700 (PDT)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        yanivagman@gmail.com, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next v5 2/2] bpf: expose bpf_d_path helper to vfs_* and security_* functions
-Date:   Tue, 27 Jul 2021 21:25:32 +0800
-Message-Id: <20210727132532.2473636-3-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210727132532.2473636-1-hengqi.chen@gmail.com>
-References: <20210727132532.2473636-1-hengqi.chen@gmail.com>
+        Tue, 27 Jul 2021 07:12:32 -0700 (PDT)
+From:   Pavo Banicevic <pavo.banicevic@sartura.hr>
+To:     linux@armlinux.org.uk, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, ivan.khoronzhuk@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, matt.redfearn@mips.com,
+        mingo@kernel.org, dvlasenk@redhat.com, juraj.vijtiuk@sartura.hr,
+        robert.marko@sartura.hr, luka.perkov@sartura.hr,
+        jakov.petrina@sartura.hr
+Cc:     Pavo Banicevic <pavo.banicevic@sartura.hr>
+Subject: [PATCH 0/3] Address compilation of eBPF related software with clang compiler on arm architecture
+Date:   Tue, 27 Jul 2021 16:11:16 +0200
+Message-Id: <20210727141119.19812-1-pavo.banicevic@sartura.hr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add vfs_* and security_* to bpf_d_path allowlist, so that we can use
-bpf_d_path helper to extract full file path from these functions' arguments.
-This will help tools like BCC's filetop[1]/filelife to get full file path.
+This patchset is fixing compilation issues that are encountered in our usage of the Linux kernel.
 
-[1] https://github.com/iovisor/bcc/issues/3527
+Two patches are addressing compilation of eBPF related software with clang compiler on arm architecture.
+The third patch resolves compilation of the perf tool in this specific scenario.
 
-Acked-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- kernel/trace/bpf_trace.c | 60 +++++++++++++++++++++++++++++++++++++---
- 1 file changed, 56 insertions(+), 4 deletions(-)
+We are also interested in possible alternative approaches in fixing these compilation issues which could
+then be incorporated into the mainline.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index c5e0b6a64091..e7b24abcf3bf 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -849,18 +849,70 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
- 
- BTF_SET_START(btf_allowlist_d_path)
- #ifdef CONFIG_SECURITY
-+BTF_ID(func, security_bprm_check)
-+BTF_ID(func, security_bprm_committed_creds)
-+BTF_ID(func, security_bprm_committing_creds)
-+BTF_ID(func, security_bprm_creds_for_exec)
-+BTF_ID(func, security_bprm_creds_from_file)
-+BTF_ID(func, security_file_alloc)
-+BTF_ID(func, security_file_fcntl)
-+BTF_ID(func, security_file_free)
-+BTF_ID(func, security_file_ioctl)
-+BTF_ID(func, security_file_lock)
-+BTF_ID(func, security_file_open)
- BTF_ID(func, security_file_permission)
-+BTF_ID(func, security_file_receive)
-+BTF_ID(func, security_file_set_fowner)
- BTF_ID(func, security_inode_getattr)
--BTF_ID(func, security_file_open)
-+BTF_ID(func, security_sb_mount)
- #endif
- #ifdef CONFIG_SECURITY_PATH
-+BTF_ID(func, security_path_chmod)
-+BTF_ID(func, security_path_chown)
-+BTF_ID(func, security_path_chroot)
-+BTF_ID(func, security_path_link)
-+BTF_ID(func, security_path_mkdir)
-+BTF_ID(func, security_path_mknod)
-+BTF_ID(func, security_path_notify)
-+BTF_ID(func, security_path_rename)
-+BTF_ID(func, security_path_rmdir)
-+BTF_ID(func, security_path_symlink)
- BTF_ID(func, security_path_truncate)
-+BTF_ID(func, security_path_unlink)
- #endif
--BTF_ID(func, vfs_truncate)
--BTF_ID(func, vfs_fallocate)
- BTF_ID(func, dentry_open)
--BTF_ID(func, vfs_getattr)
- BTF_ID(func, filp_close)
-+BTF_ID(func, vfs_cancel_lock)
-+BTF_ID(func, vfs_clone_file_range)
-+BTF_ID(func, vfs_copy_file_range)
-+BTF_ID(func, vfs_dedupe_file_range)
-+BTF_ID(func, vfs_dedupe_file_range_one)
-+BTF_ID(func, vfs_fadvise)
-+BTF_ID(func, vfs_fallocate)
-+BTF_ID(func, vfs_fchmod)
-+BTF_ID(func, vfs_fchown)
-+BTF_ID(func, vfs_fsync)
-+BTF_ID(func, vfs_fsync_range)
-+BTF_ID(func, vfs_getattr)
-+BTF_ID(func, vfs_getattr_nosec)
-+BTF_ID(func, vfs_iocb_iter_read)
-+BTF_ID(func, vfs_iocb_iter_write)
-+BTF_ID(func, vfs_ioctl)
-+BTF_ID(func, vfs_iter_read)
-+BTF_ID(func, vfs_iter_write)
-+BTF_ID(func, vfs_llseek)
-+BTF_ID(func, vfs_lock_file)
-+BTF_ID(func, vfs_open)
-+BTF_ID(func, vfs_read)
-+BTF_ID(func, vfs_readv)
-+BTF_ID(func, vfs_setlease)
-+BTF_ID(func, vfs_setpos)
-+BTF_ID(func, vfs_statfs)
-+BTF_ID(func, vfs_test_lock)
-+BTF_ID(func, vfs_truncate)
-+BTF_ID(func, vfs_utimes)
-+BTF_ID(func, vfs_write)
-+BTF_ID(func, vfs_writev)
- BTF_SET_END(btf_allowlist_d_path)
- 
- static bool bpf_d_path_allowed(const struct bpf_prog *prog)
+Ivan Khoronzhuk (2):
+  arm: include: asm: swab: mask rev16 instruction for clang
+  arm: include: asm: unified: mask .syntax unified for clang
+
+Matt Redfearn (1):
+  include/uapi/linux/swab: Fix potentially missing __always_inline
+
+ arch/arm/include/asm/swab.h    | 3 +++
+ arch/arm/include/asm/unified.h | 4 +++-
+ include/uapi/linux/swab.h      | 2 +-
+ 3 files changed, 7 insertions(+), 2 deletions(-)
+
 -- 
-2.25.1
+2.32.0
 
