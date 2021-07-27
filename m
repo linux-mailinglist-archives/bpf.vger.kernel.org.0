@@ -2,163 +2,315 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2553D6D79
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 06:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E2A3D709D
+	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 09:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234856AbhG0Ecj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 00:32:39 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:61544 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234841AbhG0Ech (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 27 Jul 2021 00:32:37 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 16R4OgbK021012;
-        Mon, 26 Jul 2021 21:32:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=I6DKU7DtMgVhds/Ly5bhJM6nK62/oK9EbPNn2pTGuoA=;
- b=B0Wg4z+va3SJI6kP/OZMjRmrOuVyesYQcHMA8ygwUAtHfKJQLLAaJKlUlcj5VhpY72Zu
- i5jX0TTDy4XAvOAVzy9bVhzQyRiDRYeGnR1atXb+BXChccarnsOVfTI/DmvZQsvoIrbd
- bLYyYa665WW1Z2DPjQNPfqb3zo32q+AON9o= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3a23572evr-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 26 Jul 2021 21:32:22 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+        id S235807AbhG0HyL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Jul 2021 03:54:11 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16007 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235621AbhG0HyK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Jul 2021 03:54:10 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GYpr03QGFzZst8;
+        Tue, 27 Jul 2021 15:50:40 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 26 Jul 2021 21:32:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UCd2gnIoQ3g7L1vXRj1mQ3xB6wKk9kojv0qa1YnWeHrO8dhqgEpZpqKuY+nBuGkXQ9y80JnMfazgBVJzRHfNIlmc5MUF3U/DcQnKX1IiKJeFd3kzhazT6SfxajvP4WY5SNIgxWyeDZlagOMyH5uLN2FIQlarfN8Wrdg1pvQNqSXJuOGOpEUMm6HC4zGLTlngL4gTt5PB2mK+SEn7lzghwHAW0amhFiIf5XZBk9E3wOB8CbgBmcHyiiFsIVdUm0PmUP6/elBgkuy1VTcAA3jfQ47zP6L71jAxjI7b25LHz5FtwEbqN2FNcUC0nt0R3Lq5dUWYh4URo2FGep8XgYZHXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I6DKU7DtMgVhds/Ly5bhJM6nK62/oK9EbPNn2pTGuoA=;
- b=oahcp4Ss/SMSurnWbQFJTdZOFcmCBh+OcJTljkfv9K7lIaW4yEZ0pVQoNwhxTYonEOrAupObOlJi8vc2ZBjNmBOl2ig2v5kW0TCTj/8I3ghhhwFcwNnvlQa7ycjwWs9fZT0TMhPM76ys9xGVSOd4GlGTI7O8O2poOYcsd4W9S5tvdh7GHQu/XjCDnsWLEeb64catCKSSR8c6CzbUhrfJPo1sPaLDDyWu2TtcuQWmfDfVnlwtiRkOXRsnhdNVEvvNP4hz/VFl8FkZe9z4uiXiHlzYGLl0lJNGtTs8uGJDKASjWl5069UMGVFxtNwoMQ/yEoN3zyR3xQXMgL8UHZtQFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by SN7PR15MB4174.namprd15.prod.outlook.com (2603:10b6:806:101::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Tue, 27 Jul
- 2021 04:32:07 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::1b5:fa51:a2b9:28f]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::1b5:fa51:a2b9:28f%9]) with mapi id 15.20.4352.031; Tue, 27 Jul 2021
- 04:32:07 +0000
-Date:   Mon, 26 Jul 2021 21:32:05 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-CC:     <jakub@cloudflare.com>, <daniel@iogearbox.net>,
-        <xiyou.wangcong@gmail.com>, <alexei.starovoitov@gmail.com>,
-        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf v2 3/3] bpf, sockmap: fix memleak on ingress msg
- enqueue
-Message-ID: <20210727043205.24ldyis5g5yvg4mm@kafai-mbp.dhcp.thefacebook.com>
-References: <20210726165304.1443836-1-john.fastabend@gmail.com>
- <20210726165304.1443836-4-john.fastabend@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210726165304.1443836-4-john.fastabend@gmail.com>
-X-ClientProxiedBy: SJ0PR03CA0202.namprd03.prod.outlook.com
- (2603:10b6:a03:2ef::27) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+ 15.1.2176.2; Tue, 27 Jul 2021 15:54:07 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 27 Jul
+ 2021 15:54:07 +0800
+Subject: Re: [PATCH rfc v6 2/4] page_pool: add interface to manipulate frag
+ count in page pool
+To:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <yunshenglin0825@gmail.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, "Salil Mehta" <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Will Deacon" <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Vlastimil Babka" <vbabka@suse.cz>, <fenghua.yu@intel.com>,
+        <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "Alexander Lobakin" <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, <wenxu@ucloud.cn>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        <kpsingh@kernel.org>, <andrii@kernel.org>,
+        "Martin KaFai Lau" <kafai@fb.com>, <songliubraving@fb.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
+ <1626752145-27266-3-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Uf=WbpngDPQ1V0X+XSJbZ91=cuaz8r_J96=BrXg01PJFA@mail.gmail.com>
+ <92e68f4e-49a4-568c-a281-2865b54a146e@huawei.com>
+ <CAKgT0UfwiBowGN+ctqoFZ6qaQAUp-0uGJeukk4OHOEOOfbrEWw@mail.gmail.com>
+ <fffae41f-b0a3-3c43-491f-096d31ba94ca@huawei.com>
+ <CAKgT0UcBgo0Ex=x514qGeLvppJr-0vqx9ZngAFDTwugjtKUrOA@mail.gmail.com>
+ <41283c5f-2f58-7fa7-e8fe-a91207a57353@huawei.com>
+ <CAKgT0Ud+PRzz7mgX1dru1=i3TDiaGOoyhg7vp6cz+3NzVFZf+A@mail.gmail.com>
+ <20210724130709.GA1461@ip-172-31-30-86.us-east-2.compute.internal>
+ <CAKgT0UckhFhvmsjNhBM6tX_EUn12NCn--puJkwVUGitk9yZedw@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <75213c28-d586-3dfe-c2a7-738af9dd9864@huawei.com>
+Date:   Tue, 27 Jul 2021 15:54:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:5a67) by SJ0PR03CA0202.namprd03.prod.outlook.com (2603:10b6:a03:2ef::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17 via Frontend Transport; Tue, 27 Jul 2021 04:32:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bc61986d-1c65-44ab-9e45-08d950b77df0
-X-MS-TrafficTypeDiagnostic: SN7PR15MB4174:
-X-Microsoft-Antispam-PRVS: <SN7PR15MB41749E14E2E6EEEC8714302ED5E99@SN7PR15MB4174.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:586;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /BYfcft+CktPqI62Kd2jtu/GhvAeUoJgm1k+6Ou/Fb/vAQ+srWGVutRwkKH+E9rq8Azt/Trd05KnmwRqeqmA4q1HOv2udlI1l/jYTZjpgdkz6oEUwl/NlgpQJHEPmD71xPWLxjxuC4nJB1f/YMyyRGVxBfbD8q8gtgopae0xGfK5A4iLSMFRXPSr9glA2Jhx6GtqTbdTIZpcoZrqqFAAicpEmSkUxh+b4MNC7JCEVge4IZEuuI6u1gCavP+DFbWWKzLzbcFYWAfah5S5yh4Rf1mUs4Ce8s24eP5rAGXYdkDO1byYg0ZNVF88MCYneF1d0SNb+tb4XDsy3diPDXXuLSc/2k8BvA+hmK0CcMGVuy5UP9r0Pqe4rPNerTSNsXZAz46S5piP2g91K8bI5Ocr3UfOUNt0fLXXV8Z15qPt0MpzdlMfz29qBChGhwWNlLiFiSwa5pAQbTn2B+dHqZMzfNADTA+5QVUxrKHwnGxOlOTio/s55UmqH+9GitabJzRdXwNbQ2M3srF97S8OKiMO7RCtZ6kJMreHkOdqsRAD2zMlqmATQMW51KE142K5Mg4ov8XI1UIg4VlMvx2mmLyONmOYU2ekPoDQ8jk3qAJk0fNPypYF4AiObsfbSvriT3/yuBsi76pQWrcRkL64t9MAYQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(55016002)(186003)(86362001)(508600001)(316002)(38100700002)(6916009)(8676002)(5660300002)(8936002)(7696005)(52116002)(9686003)(66476007)(66556008)(6506007)(66946007)(4744005)(4326008)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JOjDhFqRagq56abPgE67gnfgcmiGtbOz1ErC6kkmsb0JZqbejZRK907fV6v4?=
- =?us-ascii?Q?SFSQzf+NJP4vOvSdvV/wnfTTHaeWWB4duRfW39R1IiqAaEavSO8yiutban2Z?=
- =?us-ascii?Q?sZJUZNLrtwFyxXIurjlUfNlu59tJXrzQQkvEPR7Ldif4uk90SKa3C0IX0AHu?=
- =?us-ascii?Q?wffj3sGAzpySJUR8uIpoBSsZ3yKKK37nToUYV3su5zx9tz2CLx/J1kCWxJGz?=
- =?us-ascii?Q?dI2qD3KW6gpvC14qIG5MLX20lTl/8yB/suEV2vf0nd2iBPlFJNpWRPU3/GLH?=
- =?us-ascii?Q?WB9lXfuA0+ioMVwqIBCOcRinLbIHlhSJnK1E1DjI/2YmvwkzDVKiyqRdiK/9?=
- =?us-ascii?Q?ko/e8ruOzJSc2T8QrvdK9mlXUtCE7FzT/8+M76hj59legW4pXvSeUCy0uxWh?=
- =?us-ascii?Q?d0xGrMYbn8sEr5jXQelc6b4C7pvAFjjgrAuUBVqzXTdOPnS9aYekq9slPOyr?=
- =?us-ascii?Q?tFFfbQy9r7Kc9NM4/9ij9M4egF1ebkXw7qPwSlx1u9d7qsdJDuMfaiviXIE5?=
- =?us-ascii?Q?XhBk9TwyP2bcCft9YmpYB4du4WhW9SQyq/uoXPJn9gZQKfPKSyY10dmtJRXQ?=
- =?us-ascii?Q?yEpp1AFJ9PxGsdAbRv1BFiCN/9gnP6F9Gurmu0pdBxJDUDch0XmdlD5IPWdm?=
- =?us-ascii?Q?xoYfxaaPpDtxYw8Ij2T+QCRXk7/zypvz2jSiJrJkB+VO3an2vzYMBnxyHJGh?=
- =?us-ascii?Q?r7DwFwjJ8Li7MIaT92vOwbT84bSSIn6WsgpswksgYy9GSNeD1zWm0n6u+jOY?=
- =?us-ascii?Q?A9zv0Tnhc1hQqd2N/XGlOfcki1BuOnJ8kKWkfzAzS7JFYdRL917vZMRK8DWM?=
- =?us-ascii?Q?z1dcctPmZGs/O8LXIboQYnHR3V5dKjAN7krC4pUIW9ox+OtcKgQOavXYfZ6Y?=
- =?us-ascii?Q?jFlELkl/sN4+0spvIEt3DFcnBuhU8o+Zuub+KRQAJRAM1LWYJr/Bx8A/SHcC?=
- =?us-ascii?Q?27J0qlkzJ3y+PRrFWA8C32Sa0QlxO1RT6gZSYHaosnKQ2i0T4piDg0bnwhRv?=
- =?us-ascii?Q?RuzEn3RPZP/6TrxvdLhXk+5Bm9sQ73XAb5irrtXrlWN4F5mbVsPH8M7fAol2?=
- =?us-ascii?Q?dMOGn+zgu5robf0l7m5rnQ79pWsWpJGjLVJatPSTyjOqjQ4VkpwFeaGn65IK?=
- =?us-ascii?Q?0WvroLwOnw02MLcCg9w18w7PvUWBArlkwO5AwvX2jbr17zmIpkY9GpEDErA7?=
- =?us-ascii?Q?kSt+/K7uKt2T+wVN15wBWSa0A+78szDzXa09eRPMzXyIQuwp0Sq7nvdz9/+A?=
- =?us-ascii?Q?/mfoBy0PluDwO45IpmmEKyUcabyykOaBqnzN2CkqiUOHa27ojD5h86I8D1b+?=
- =?us-ascii?Q?0wO5C/IU5mP8nIXp04lhmGKHrlQzxna7V0PLGpdZbPxrQw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc61986d-1c65-44ab-9e45-08d950b77df0
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2021 04:32:07.4502
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: okuCsYI0hcmWh2D/KWoXSLLdtm2tLNAUp/pMS3/PJ6b6/JJRwQqgoOEvPGGK68X2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB4174
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: mZS-eguFJ6pGa8D0034CQXhmkQOL65ZX
-X-Proofpoint-ORIG-GUID: mZS-eguFJ6pGa8D0034CQXhmkQOL65ZX
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-27_03:2021-07-26,2021-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- adultscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=745
- mlxscore=0 impostorscore=0 clxscore=1015 bulkscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107270024
-X-FB-Internal: deliver
+In-Reply-To: <CAKgT0UckhFhvmsjNhBM6tX_EUn12NCn--puJkwVUGitk9yZedw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 09:53:04AM -0700, John Fastabend wrote:
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -285,11 +285,45 @@ static inline struct sk_psock *sk_psock(const struct sock *sk)
->  	return rcu_dereference_sk_user_data(sk);
->  }
->  
-> +static inline void sk_psock_set_state(struct sk_psock *psock,
-> +				      enum sk_psock_state_bits bit)
-> +{
-> +	set_bit(bit, &psock->state);
-> +}
-> +
-> +static inline void sk_psock_clear_state(struct sk_psock *psock,
-> +					enum sk_psock_state_bits bit)
-> +{
-> +	clear_bit(bit, &psock->state);
-> +}
-> +
-> +static inline bool sk_psock_test_state(const struct sk_psock *psock,
-> +				       enum sk_psock_state_bits bit)
-> +{
-> +	return test_bit(bit, &psock->state);
-> +}
-> +
-> +static void sock_drop(struct sock *sk, struct sk_buff *skb)
-inline
+On 2021/7/26 0:49, Alexander Duyck wrote:
+> On Sat, Jul 24, 2021 at 6:07 AM Yunsheng Lin <yunshenglin0825@gmail.com> wrote:
+>>
+>> On Fri, Jul 23, 2021 at 09:08:00AM -0700, Alexander Duyck wrote:
+>>> On Fri, Jul 23, 2021 at 4:12 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>
+>>>> On 2021/7/22 23:18, Alexander Duyck wrote:
+>>>>>>>
+>>>>>>>> You are right that that may cover up the reference count errors. How about
+>>>>>>>> something like below:
+>>>>>>>>
+>>>>>>>> static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+>>>>>>>>                                                           long nr)
+>>>>>>>> {
+>>>>>>>> #ifdef CONFIG_DEBUG_PAGE_REF
+>>>>>>>>         long ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+>>>>>>>>
+>>>>>>>>         WARN_ON(ret < 0);
+>>>>>>>>
+>>>>>>>>         return ret;
+>>>>>>>> #else
+>>>>>>>>         if (atomic_long_read(&page->pp_frag_count) == nr)
+>>>>>>>>                 return 0;
+>>>>>>>>
+>>>>>>>>         return atomic_long_sub_return(nr, &page->pp_frag_count);
+>>>>>>>> #end
+>>>>>>>> }
+>>>>>>>>
+>>>>>>>> Or any better suggestion?
+>>>>>>>
+>>>>>>> So the one thing I might change would be to make it so that you only
+>>>>>>> do the atomic_long_read if nr is a constant via __builtin_constant_p.
+>>>>>>> That way you would be performing the comparison in
+>>>>>>> __page_pool_put_page and in the cases of freeing or draining the
+>>>>>>> page_frags you would be using the atomic_long_sub_return which should
+>>>>>>> be paths where you would not expect it to match or that are slowpath
+>>>>>>> anyway.
+>>>>>>>
+>>>>>>> Also I would keep the WARN_ON in both paths just to be on the safe side.
+>>>>>>
+>>>>>> If I understand it correctly, we should change it as below, right?
+>>>>>>
+>>>>>> static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+>>>>>>                                                           long nr)
+>>>>>> {
+>>>>>>         long ret;
+>>>>>>
+>>>>>>         /* As suggested by Alexander, atomic_long_read() may cover up the
+>>>>>>          * reference count errors, so avoid calling atomic_long_read() in
+>>>>>>          * the cases of freeing or draining the page_frags, where we would
+>>>>>>          * not expect it to match or that are slowpath anyway.
+>>>>>>          */
+>>>>>>         if (__builtin_constant_p(nr) &&
+>>>>>>             atomic_long_read(&page->pp_frag_count) == nr)
+>>>>>>                 return 0;
+>>>>>>
+>>>>>>         ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+>>>>>>         WARN_ON(ret < 0);
+>>>>>>         return ret;
+>>>>>> }
+>>>>>
+>>>>> Yes, that is what I had in mind.
+>>>>>
+>>>>> One thought I had for a future optimization is that we could look at
+>>>>> reducing the count by 1 so that we could essentially combine the
+>>>>> non-frag and frag cases.Then instead of testing for 1 we would test
+>>>>> for 0 at thee start of the function and test for < 0 to decide if we
+>>>>> want to free it or not instead of testing for 0. With that we can
+>>>>> essentially reduce the calls to the WARN_ON since we should only have
+>>>>> one case where we actually return a value < 0, and we can then check
+>>>>> to see if we overshot -1 which would be the WARN_ON case.
+>>>>>
+>>>>> With that a value of 0 instead of 1 would indicate page frag is not in
+>>>>> use for the page *AND/OR* that the page has reached the state where
+>>>>> there are no other frags present so the page can be recycled. In
+>>>>> effect it would allow us to mix page frags and no frags within the
+>>>>> same pool. The added bonus would be we could get rid of the check for
+>>>>> PP_FLAG_PAGE_FRAG flag check in the __page_pool_put_page function and
+>>>>> replace it with a check for PAGE_POOL_DMA_USE_PP_FRAG_COUNT since we
+>>>>> cannot read frag_count in that case.
+>>>>
+>>>> Let's leave it for a future optimization.
+>>>> I am not sure if there is use case to support both frag page and non-frag
+>>>> page for the same page pool. If there is, maybe we can use "page->pp_frag_count
+>>>>> 0" to indicate that the page is frag page, and "page->pp_frag_count == 0"
+>>>> to indicate that the page is non-frag page, so that we can support frag page and
+>>>> non-frag page for the same page pool instead of disabling non-frag page support
+>>>> when PP_FLAG_PAGE_FRAG flag is set, which might be conflit with the above
+>>>> optimization?
+>>>
+>>> As far as use case I can see a number of potential uses. For example
+>>> in the case of drivers that do something like a header/data split I
+>>> could see potentially having the header pages be frags while the data
+>>> pages being 4K blocks. Basically the big optimization of the count ==
+>>> 1/0/nr case is that you aren't increasing/decreasing the count and it
+>>> is immediately being recycled/reused. So in such a case being able to
+>>> add frag count some pages, and not to others would likely be quite
+>>> useful.
+>>
+>> I am not sure how the header/data split is implemented in hw, but it
+>> seems the driver is not able to tell which desc will be filled with
+>> header or data in advance, so it might need to allocate 4K block for
+>> all desc?
+> 
+> It all depends on the hardware config. In theory you could have
+> anything from a single use for a page to multiple uses for a page in
+> the case of headers and/or packets being small. The overhead for
+> adding/removing the frag count could end up being more than what is
+> needed if the page is only used once. That is why I was thinking it
+> might make sense to allow both to coexist in the same pool.
 
-> +{
-> +	sk_drops_add(sk, skb);
-> +	kfree_skb(skb);
-> +}
-> +
+I am agreed that there may be usecase of using both frag page and non-frag
+page of the same page pool. Let's leave it for now.
+
+> 
+>>>
+>>> Basically by shifting the pool values by 1 you can have both in the
+>>> same pool with little issue. However the big change is that instead of
+>>> testing for count = nr it would end up being pp_frag_count = nr - 1.
+>>> So in the case of the standard page pool pages being freed or the last
+>>> frag you would be looking at pp_frag_count = 0. In addition we can
+>>> mask the WARN_ON overhead as you would be using -1 as the point to
+>>> free so you would only have to perform the WARN_ON check for the last
+>>> frag instead of every frag.
+>>
+>> Yes, it seems doable.
+>>
+>>>
+>>>> Also, I am prototyping the tx recycling based on page pool in order to see
+>>>> if there is any value supporting the tx recycling.
+>>>
+>>> Just to clarify here when you say Tx recycling you are talking about
+>>> socket to netdev correct? Just want to be certain since the netdev to
+>>> netdev case should already have recycling for page pool pages as long
+>>> as it follows a 1<->1 path.
+>>
+>> Yes, the above Tx recycling meant socket to netdev.
+>> Also, the above "netdev to netdev" only meant XDP now, but not the IP
+>> forwarding path in the network stack, right?
+>>
+>>>
+>>>> As the busypoll has enable the one-to-one relation between NAPI and sock,
+>>>> and there is one-to-one relation between NAPI and page pool, perhaps it make
+>>>> senses that we use page pool to recycle the tx page too?
+>>>>
+>>>> There are possibly below problems when doing that as I am aware of now:
+>>>> 1. busypoll is for rx, and tx may not be using the same queue as rx even if
+>>>>    there are *technically* the same flow， so I am not sure it is ok to use
+>>>>    busypoll infrastructure to get the page pool ptr for a specific sock.
+>>>>
+>>>> 2. There may be multi socks using the same page pool ptr to allocate page for
+>>>>    multi flow, so we can not assume the same NAPI polling protection as rx,
+>>>>    which might mean we can only use the recyclable page from pool->ring under the
+>>>>    r->consumer_lock protection.
+>>>>
+>>>> 3. Right now tcp_sendmsg_locked() use sk_page_frag_refill() to refill the page
+>>>>    frag for tcp xmit, when implementing a similar sk_page_pool_frag_refill()
+>>>>    based on page pool, I found that tcp coalesce in tcp_mtu_probe() and
+>>>>    tcp fragment in tso_fragment() might mess with the page_ref_count directly.
+>>>>
+>>>> As the above the problem I am aware of(I believe there are other problems I am not
+>>>> aware of yet), I am not sure if the tcp tx page recycling based on page pool is
+>>>> doable or not, I would like to hear about your opinion about tcp tx recycling support
+>>>> based on page pool first, in case it is a dead end to support that.
+>>>
+>>> I'm honestly not sure there is much there to gain. Last I knew TCP was
+>>> using order 3 pages for transmitting and as a result the overhead for
+>>> the pages should already be greatly reduced. In addition one of the
+>>> main reasons for page_pool  is the fact that the device has to DMA map
+>>> the page and that can have very high overhead on systems with an
+>>> IOMMU.
+>>
+>> Yes, avoiding the IOMMU overhead is the main gain. and "order 3 pages"
+>> seems to be disabled on defaut?
+>>
+>>>
+>>> Rather than trying to reuse the devices page pool it might make more
+>>> sense to see if you couldn't have TCP just use some sort of circular
+>>> buffer of memory that is directly mapped for the device that it is
+>>> going to be transmitting to. Essentially what you would be doing is
+>>> creating a pre-mapped page and would need to communicate that the
+>>> memory is already mapped for the device you want to send it to so that
+>>> it could skip that step.
+>>
+>> IIUC sk_page_frag_refill() is already doing a similar reusing as the
+>> rx reusing implemented in most driver except for the not pre-mapping
+>> part.
+>>
+>> And it seems that even if we pre-map the page and communicate that the
+>> memory is already mapped to the driver, it is likely that we will not
+>> be able to reuse the page when the circular buffer is not big enough
+>> or tx completion/tcp ack is not happening quickly enough, which might
+>> means unmapping/deallocating old circular buffer and allocating/mapping
+>> new circular buffer.
+>>
+>> Using page pool we might be able to alleviate the above problem as it
+>> does for rx?
+> 
+> I would say that instead of looking at going straight for the page
+> pool it might make more sense to look at seeing if we can coalesce the
+> DMA mapping of the pages first at the socket layer rather than trying
+> to introduce the overhead for the page pool. In the case of sockets we
+> already have the destructors that are called when the memory is freed,
+> so instead of making sockets use page pool it might make more sense to
+> extend the socket buffer allocation/freeing to incorporate bulk
+> mapping and unmapping of pages to optimize the socket Tx path in the
+> 32K page case.
+
+I was able to enable tx recycling prototyping based on page pool to
+run some performance test, the performance improvement is about +20%
+（30Gbit -> 38Gbit） for single thread iperf tcp flow when IOMMU is in
+strict mode. And CPU usage descreases about 10% for four threads iperf
+tcp flow for line speed of 100Gbit when IOMMU is in strict mode.
+
+Looking at the prototyping code, I am agreed that it is a bit controversial
+to use the page pool for tx as the page pool is assuming NAPI polling
+protection for allocation side.
+
+So I will take a deeper look about your suggestion above to see how to
+implement it.
+
+Also, I am assuming the "destructors" means tcp_wfree() for TCP, right?
+It seems tcp_wfree() is mainly used to do memory accounting and free
+"struct sock" if necessary.
+I am not so familiar with socket layer to understand how the "destructors"
+will be helpful here, any detailed idea how to use "destructors" here?
+
+> .
+> 
