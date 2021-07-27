@@ -2,157 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1AE3D7F94
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 22:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDA93D80F7
+	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 23:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhG0U5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 16:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
+        id S233501AbhG0VKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Jul 2021 17:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhG0U5J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:57:09 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2BDC061757
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 13:57:08 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id a93so280120ybi.1
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 13:57:08 -0700 (PDT)
+        with ESMTP id S235573AbhG0VJh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Jul 2021 17:09:37 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA6DC061799
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 14:09:19 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id s19so294234ybc.6
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 14:09:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Zz3t9YEBgrEuR3D08dTQR8qBE6XsYirTeLozWo47liE=;
-        b=uWYqNXK8Evbuh0tgbKKYbLC2YXdynZLu321OKOe5FT9sBMdi4Qtw6Js7fgggPuoIlg
-         mOA47bcxaAgpTNEE57zJEjz/I4BueO4t44mY1wOdbzq/thzwU9+xi+EhljtRCoWvACuS
-         LuWM8GUQEoUMN1P11NkuDD5VQ+FOkbJNUGCokJ5O31CHzpnOyoveoAXG37PPCBrVy4gP
-         IsmmGiqP2HwYTSTDcmNuuLUGDR08bRCJboDJTb3l2MX514Jj76U3G1F1VVik9VdHpb5E
-         qIxZX3lVoKpUu9aM2Gpaqnmsy0i0XUVdGpnCN9NrFNryWoZ1bR8y2QjBIT94hvJk79FN
-         ORvg==
+        bh=VowmoBQHns5A8qcfJjwgHHmXQXhTeUi2UyOBeXLtGcM=;
+        b=GHAuCXp00N/K+taMMp5MuokVQqoaSGvyba790JXYmoI7mNY5T/saJbhBFQugfQgnux
+         VDQngSonc6gYdm/g/AStGQ34VCmtUvcUv4bcAHaLOwagGcD2SELJ2PhsCIiSSJ4eNcSQ
+         NrPkQ1r34cDOnXYcGlYcfa7kYBaf8JJSLH1zVlAYe5r7M21wunxYJnFgyHgkl6U+Zph4
+         sI03LUoUrwkQeHOo6bveKny9yLLW0fZ+bAjlTqfuEGtB6dhDO5q7Pg0+333SDI4Pvk1C
+         BC+xbqaUB5Gu3Xgw08btmpw2kJORDxnfcwfBA0LuiM+Dt+roOM6JKyXgYh+74D3a6HtI
+         jfEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Zz3t9YEBgrEuR3D08dTQR8qBE6XsYirTeLozWo47liE=;
-        b=UZKNw8Nxnhc/nmZSjWN9YjR6Gbs68SIWfu05Is/w+Zq23eH022PzgW9Ih2RJTcSEUS
-         nvIBNsnXrV4sOJ26BxwLx/0dcMmvJhtR6YtnKoc570jaf+lc1ZbTNzYJC11eF7ZiAnM6
-         yK5bEXYpkcboRM93TUa4kzPrBXJJLg2x56mwR2cT7Y7DJXamFm5S2jQSvW4Uxh4brAPD
-         RT5XAt7EMsL7ByTmgfyX3RLY91pTvDJU+kpJLn7RLUuw6VRD03ilpMWFL/Qw2bfx7a2X
-         WmzFqPiLHVeLrsLQSATtsQAQKHJmpywFlXoJq3epPZ5c7nrrnFoieJhYp9HdhddH/L4z
-         B9aw==
-X-Gm-Message-State: AOAM530ID6qvypFUBAHzcOM8pvUJMuGC5STeTXy6W9sAOzeRCs+K15wj
-        +3YxL0e7HTqlIPJAchhAgSXcwerXG1KhPoGS61Q=
-X-Google-Smtp-Source: ABdhPJwdM7JXtHu4NDsZjsXWmmGStmdvdyfmvznCbJSn1xY89yhInIXPT30mleovRc4JOCdiGiyoima66lCJqWT6FLA=
-X-Received: by 2002:a25:a045:: with SMTP id x63mr22940517ybh.27.1627419427764;
- Tue, 27 Jul 2021 13:57:07 -0700 (PDT)
+        bh=VowmoBQHns5A8qcfJjwgHHmXQXhTeUi2UyOBeXLtGcM=;
+        b=FFBP1zBPaGtsfH1hRQA5J4zvjQHKZfRlrmfhu4nypmTg3H7PXFLtlnhL5IhIJXDW/E
+         WDuUM8rf32o8sUZK5EY3qQ1Xgb7QQcGCtLU590yqfgHVms5A94TwUQbEr2wVuCDko6et
+         ZxkkGiaZj6Xzn2c6Xaj2nI/gkLkjDZ1/g2PvKT+7xAa0J/C6uFoL4Lbvhz0POdUOgBic
+         XInpZymRbLYQg6bjXtDvvtBO6Xz4J0zLHwxoVuGMxYj3hE3qhfwsVODlR5VAGOsgcaPb
+         k47+Z5kMIrwRFFsTg5XZ1xTS2gBD0A837bxJxXFrGP+eJZR2RRBm5XvPdLzkyYBzAgMQ
+         gjmg==
+X-Gm-Message-State: AOAM532ZarrgXTo8zXQ9Pj/DiX1+S9cPjKtZkHjbHsqO7vWLY3+veo7c
+        K8bsCIi/5WA/GWKlC9ThTvXejXlK2r3XAowj2Ng=
+X-Google-Smtp-Source: ABdhPJxcwadnx1kF5wo4npZsdcX6bmovpXIKc3E5N4JjnHSG0HpaZKob/+ZSspidqhm03AEsSm2VM3NTx04hKnMRS/Q=
+X-Received: by 2002:a25:6148:: with SMTP id v69mr12045964ybb.510.1627420158989;
+ Tue, 27 Jul 2021 14:09:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726161211.925206-1-andrii@kernel.org> <20210726161211.925206-5-andrii@kernel.org>
- <YQApAyKpMOSGYhSu@krava>
-In-Reply-To: <YQApAyKpMOSGYhSu@krava>
+References: <20210726161211.925206-1-andrii@kernel.org> <20210726161211.925206-6-andrii@kernel.org>
+ <YP/N1HR6GAanBd9m@hirez.programming.kicks-ass.net>
+In-Reply-To: <YP/N1HR6GAanBd9m@hirez.programming.kicks-ass.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Jul 2021 13:56:56 -0700
-Message-ID: <CAEf4BzZ5pVqSYU1NcSo0u2u2gn_o1qerytGtMmFsFyTG2c5=KA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 04/14] bpf: implement minimal BPF perf link
-To:     Jiri Olsa <jolsa@redhat.com>
+Date:   Tue, 27 Jul 2021 14:09:08 -0700
+Message-ID: <CAEf4BzZCOj_rQrUjLnvBNYTDCg6A_5mC7rBuBJxm0Lzr8F5-pg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 05/14] bpf: allow to specify user-provided
+ context value for BPF perf links
+To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 8:40 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Tue, Jul 27, 2021 at 2:14 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> On Mon, Jul 26, 2021 at 09:12:01AM -0700, Andrii Nakryiko wrote:
-> > Introduce a new type of BPF link - BPF perf link. This brings perf_event-based
-> > BPF program attachments (perf_event, tracepoints, kprobes, and uprobes) into
-> > the common BPF link infrastructure, allowing to list all active perf_event
-> > based attachments, auto-detaching BPF program from perf_event when link's FD
-> > is closed, get generic BPF link fdinfo/get_info functionality.
-> >
-> > BPF_LINK_CREATE command expects perf_event's FD as target_fd. No extra flags
-> > are currently supported.
-> >
-> > Force-detaching and atomic BPF program updates are not yet implemented, but
-> > with perf_event-based BPF links we now have common framework for this without
-> > the need to extend ioctl()-based perf_event interface.
-> >
-> > One interesting consideration is a new value for bpf_attach_type, which
-> > BPF_LINK_CREATE command expects. Generally, it's either 1-to-1 mapping from
-> > bpf_attach_type to bpf_prog_type, or many-to-1 mapping from a subset of
-> > bpf_attach_types to one bpf_prog_type (e.g., see BPF_PROG_TYPE_SK_SKB or
-> > BPF_PROG_TYPE_CGROUP_SOCK). In this case, though, we have three different
-> > program types (KPROBE, TRACEPOINT, PERF_EVENT) using the same perf_event-based
-> > mechanism, so it's many bpf_prog_types to one bpf_attach_type. I chose to
-> > define a single BPF_PERF_EVENT attach type for all of them and adjust
-> > link_create()'s logic for checking correspondence between attach type and
-> > program type.
-> >
-> > The alternative would be to define three new attach types (e.g., BPF_KPROBE,
-> > BPF_TRACEPOINT, and BPF_PERF_EVENT), but that seemed like unnecessary overkill
-> > and BPF_KPROBE will cause naming conflicts with BPF_KPROBE() macro, defined by
-> > libbpf. I chose to not do this to avoid unnecessary proliferation of
-> > bpf_attach_type enum values and not have to deal with naming conflicts.
-> >
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  include/linux/bpf_types.h      |   3 +
-> >  include/linux/trace_events.h   |   3 +
-> >  include/uapi/linux/bpf.h       |   2 +
-> >  kernel/bpf/syscall.c           | 105 ++++++++++++++++++++++++++++++---
-> >  kernel/events/core.c           |  10 ++--
-> >  tools/include/uapi/linux/bpf.h |   2 +
-> >  6 files changed, 112 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> > index a9db1eae6796..0a1ada7f174d 100644
-> > --- a/include/linux/bpf_types.h
-> > +++ b/include/linux/bpf_types.h
-> > @@ -135,3 +135,6 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
-> >  #ifdef CONFIG_NET
-> >  BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
+> On Mon, Jul 26, 2021 at 09:12:02AM -0700, Andrii Nakryiko wrote:
+> > Add ability for users to specify custom u64 value when creating BPF link for
+> > perf_event-backed BPF programs (kprobe/uprobe, perf_event, tracepoints).
+>
+> If I read this right, the value is dependent on the link, not the
+> program. In which case:
+
+You can see it both ways. BPF link in this (and at least few other
+cases) is just this invisible orchestrator of BPF program
+attachment/detachment. The underlying perf_event subsystem doesn't
+know about the existence of the BPF link at all. In the end, it's
+actually struct bpf_prog that is added to perf_event or into tp's
+bpf_prog_array list, and this user-provided value (bpf cookie per
+below) is associated with that particular attachment. So when we call
+trace_call_bpf() from tracepoint or kprobe/uprobe, there is no BPF
+link anywhere, it's just a list of bpf_prog_array_items, with bpf_prog
+pointer and associated user value. Note, exactly the same bpf_prog can
+be attached to another perf_event with a completely different cookie
+and that's expected and is fine.
+
+So in short, perf_event just needs to know about attaching/detaching
+bpf_prog pointer (and this cookie), it doesn't need to know about
+bpf_link. Everything is handled the same regardless if bpf_link is
+used to attach or ioctl(PERF_EVENT_IOC_SET_BPF).
+
+>
+> > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> > index 2d510ad750ed..97ab46802800 100644
+> > --- a/include/linux/perf_event.h
+> > +++ b/include/linux/perf_event.h
+> > @@ -762,6 +762,7 @@ struct perf_event {
+> >  #ifdef CONFIG_BPF_SYSCALL
+> >       perf_overflow_handler_t         orig_overflow_handler;
+> >       struct bpf_prog                 *prog;
+> > +     u64                             user_ctx;
 > >  #endif
-> > +#ifdef CONFIG_PERF_EVENTS
-> > +BPF_LINK_TYPE(BPF_LINK_TYPE_PERF_EVENT, perf)
-> > +#endif
+> >
+> >  #ifdef CONFIG_EVENT_TRACING
 > > diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-> > index ad413b382a3c..8ac92560d3a3 100644
+> > index 8ac92560d3a3..4543852f1480 100644
 > > --- a/include/linux/trace_events.h
 > > +++ b/include/linux/trace_events.h
-> > @@ -803,6 +803,9 @@ extern void ftrace_profile_free_filter(struct perf_event *event);
-> >  void perf_trace_buf_update(void *record, u16 type);
-> >  void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp);
+> > @@ -675,7 +675,7 @@ trace_trigger_soft_disabled(struct trace_event_file *file)
 > >
-> > +int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog);
-> > +void perf_event_free_bpf_prog(struct perf_event *event);
-> > +
-> >  void bpf_trace_run1(struct bpf_prog *prog, u64 arg1);
-> >  void bpf_trace_run2(struct bpf_prog *prog, u64 arg1, u64 arg2);
-> >  void bpf_trace_run3(struct bpf_prog *prog, u64 arg1, u64 arg2,
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 2db6925e04f4..00b1267ab4f0 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -993,6 +993,7 @@ enum bpf_attach_type {
-> >       BPF_SK_SKB_VERDICT,
-> >       BPF_SK_REUSEPORT_SELECT,
-> >       BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,
-> > +     BPF_PERF_EVENT,
-> >       __MAX_BPF_ATTACH_TYPE
-> >  };
+> >  #ifdef CONFIG_BPF_EVENTS
+> >  unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx);
+> > -int perf_event_attach_bpf_prog(struct perf_event *event, struct bpf_prog *prog);
+> > +int perf_event_attach_bpf_prog(struct perf_event *event, struct bpf_prog *prog, u64 user_ctx);
+>
+> This API would be misleading, because it is about setting the program.
+
+Answered above, here perf_event just provides a low-level internal API
+for attaching bpf_prog with associated value. BPF link is a
+higher-level invisible concept as far as perf_event is concerned.
+
+>
+> >  void perf_event_detach_bpf_prog(struct perf_event *event);
+> >  int perf_event_query_prog_array(struct perf_event *event, void __user *info);
+> >  int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog);
+>
+> > @@ -9966,6 +9968,7 @@ static int perf_event_set_bpf_handler(struct perf_event *event, struct bpf_prog
+> >       }
 > >
-> > @@ -1006,6 +1007,7 @@ enum bpf_link_type {
-> >       BPF_LINK_TYPE_ITER = 4,
-> >       BPF_LINK_TYPE_NETNS = 5,
-> >       BPF_LINK_TYPE_XDP = 6,
-> > +     BPF_LINK_TYPE_PERF_EVENT = 6,
+> >       event->prog = prog;
+> > +     event->user_ctx = user_ctx;
+> >       event->orig_overflow_handler = READ_ONCE(event->overflow_handler);
+> >       WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
+> >       return 0;
 >
-> hi, should be 7
+> Also, the name @user_ctx is a bit confusing. Would something like
+> @bpf_cookie or somesuch not be a better name?
+
+I struggled to come up with a good name, user_ctx was the best I could
+do. But I do like bpf_cookie for this, thank you! I'll switch the
+terminology in the next revision.
+
 >
+> Combined would it not make more sense to add something like:
+>
+> extern int perf_event_set_bpf_cookie(struct perf_event *event, u64 cookie);
 
-doh! Eagle eyes! Will fix, thanks :)
+Passing that user_ctx along the bpf_prog makes it clear that they go
+together and user_ctx is immutable once set. I don't actually plan to
+allow updating this cookie value.
 
-> jirka
+>
 >
