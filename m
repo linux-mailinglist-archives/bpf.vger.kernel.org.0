@@ -2,103 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AA33D7645
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 15:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17123D764C
+	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 15:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237067AbhG0N0K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 09:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        id S236888AbhG0N0p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Jul 2021 09:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236871AbhG0NZ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:25:57 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E318C061798
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 06:25:48 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id m1so17760162pjv.2
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 06:25:48 -0700 (PDT)
+        with ESMTP id S236903AbhG0N0C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:26:02 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C2BC0617A0
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 06:26:02 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id k1so15641761plt.12
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 06:26:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BbP1RAY7tPPAmP6oXhv/LhWIVi2YwFmp4iUHfkRkNek=;
-        b=ZKY2yrG0WQkwfdOaq6VdyCGSeNmgBbPfOAQcIbhSF90e12zQvNlRE5l4yVE6TA487H
-         Ao5D4itMeLwklPB8wY+uEzxbczuA3wHb0Rh6U9WdHUjjgo4x5uSp60WysNhhZFeR8itM
-         mNW2q2upPa/5sDLhKW2tPjR7Cx5mbABk/JLPFUsBcQqD6E+KXkWst8Prlv4Rx4oI64bg
-         y9IKIo5Gd7kiasCxG3w/AnCN4Tso6W/NktgG/uP/yfHTrg/Zl+A8mqsY/3wy+jnsJOP0
-         n7D5eM8UDRxJuztAMw/5w6p9T+U9pkxUFKjDfWJAj2tmoknanp3hHLXAEoVhBkLNP4gG
-         7C7A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=w0DZS25dqNWjln6apj95C/bElmocAC2rNL+DbbtPC48=;
+        b=glwmcTCaUbofxvceGZtvinhEW4tIV8M/d5MO+4RtpMQ2x2M3mvl2fJ1S/8YE6OqrhB
+         XTizafTB+xePqzWt5ZzArUV5rzrLEKGCNufwAvLugCCsBnq8qhFqyL0WknUtDIMivl8r
+         Q2AaW/UHdbUhTMazqDZFv8yVA+fSd2D9B2hXO56OUtOltkZclB+zX0Cog9sZDNFx90VZ
+         GMBhAZH7dj9MeTihzimZyrP+iNb9lbZMRj0YWshc1Wd0vKmVZUknfpysL3UkC8lcYzFR
+         mb6cw0DRKL912bz4vybE4zqLDRFcfjSpuuo21xkCENs//uO8Mjft2Afw0reFFUumNIz4
+         1asA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BbP1RAY7tPPAmP6oXhv/LhWIVi2YwFmp4iUHfkRkNek=;
-        b=KNpZDn2JxXOi36pvwMotl8TUvTIdSBjuJcor0Qave/o2EZ9OcmIaS7ObKz6p6k5EeD
-         24huumSongAv22VlMibh5nl+QpATBeY5Gs1pZXsXRw1iDlUUOuEAqWjQD8VoZMDpucmw
-         Tkzz6yhnNgefgasRQo9wp4ZLKASdEu3++XRABfn4tDK2B+ItgicHMmB4lX3moNjFKe5b
-         SP6yTyiqHi/rOnMvHU05sWq9lJIIDO8HXZGqIB0zxghK/mqjye334ba9GDuqN/0OWO+l
-         VJg8aQMBKgMHnC50iQ5xxYKvmvDFEyy44dtOtq8X4T+2Qbt7h4qS/fqrBBroZsx5uCVv
-         Rsew==
-X-Gm-Message-State: AOAM5321EVuWnG7oDR9IZ2KdscApceWGhynWtiR5Jx5Chl/+I8CnE9Mp
-        g3REnWNC2+m4Gyrq4uM9hh2ZeW4G41863Q==
-X-Google-Smtp-Source: ABdhPJzlLjoYZptJkOlqyAv7kzMLAdvVPCLteW2hQQmVeSQxxZk2UalQtiOSMWCar5eRB/EjxrXIQA==
-X-Received: by 2002:a17:902:b909:b029:12b:95e2:de65 with SMTP id bf9-20020a170902b909b029012b95e2de65mr18315336plb.45.1627392347865;
-        Tue, 27 Jul 2021 06:25:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=w0DZS25dqNWjln6apj95C/bElmocAC2rNL+DbbtPC48=;
+        b=QmAB2sHf4ZSTm/oYvwbfZFyWhjcsghLRowXbW+lkdS43nwwG96ON5f9mtNJ17SZmBc
+         7gMLSTOcLeRsYMmGyjX7/HwC9Fx5i9FqVK/8c7kASnpMoNlNMy6Wg40rX4/eIzfX1rpQ
+         pKzcywoytNxVa7o8FuVu0Xmde+T7VcDhYY8o4KWTdiGJe3N0AQ8piomkv49j16v6WoCV
+         nWb+zUf22pH3b+sySnW6hqxZMkY8id4rgGFdhZN7aNubP1rcIzEPCa8mxz3bDAuX8XmZ
+         NoGbqev3uETmCsUDqmp536x78COw8JKSsKFjx8WBZZjZ2pY4t7THVBZa73Z88eGQpdgi
+         G2MQ==
+X-Gm-Message-State: AOAM532ogP7U971qsM4inqhWsQG/9XFRIcobApw5Z7yyKGjtsTSxSTHT
+        soL15kqXmYffoKYhTSvwUj3EZnqKSiimqw==
+X-Google-Smtp-Source: ABdhPJyFZWy5z/AedWb84dZuaKh4v6nr0at0824H5TiuGlWmjUwWyZVeleWqrsgRGczH0tASR7oTHQ==
+X-Received: by 2002:a17:902:6b82:b029:120:3404:ce99 with SMTP id p2-20020a1709026b82b02901203404ce99mr18575538plk.49.1627392361455;
+        Tue, 27 Jul 2021 06:26:01 -0700 (PDT)
 Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id l11sm2002892pfd.187.2021.07.27.06.25.46
+        by smtp.gmail.com with ESMTPSA id l11sm2002892pfd.187.2021.07.27.06.25.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 06:25:47 -0700 (PDT)
+        Tue, 27 Jul 2021 06:26:01 -0700 (PDT)
 From:   Hengqi Chen <hengqi.chen@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, jolsa@kernel.org,
         yanivagman@gmail.com, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next v5 0/2] bpf: expand bpf_d_path helper allowlist
-Date:   Tue, 27 Jul 2021 21:25:30 +0800
-Message-Id: <20210727132532.2473636-1-hengqi.chen@gmail.com>
+Subject: [PATCH bpf-next v5 1/2] tools/resolve_btfids: emit warnings and patch zero id for missing symbols
+Date:   Tue, 27 Jul 2021 21:25:31 +0800
+Message-Id: <20210727132532.2473636-2-hengqi.chen@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210727132532.2473636-1-hengqi.chen@gmail.com>
+References: <20210727132532.2473636-1-hengqi.chen@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set adds more functions to bpf_d_path allowlist.
+Kernel functions referenced by .BTF_ids may be changed from global to static
+and get inlined or get renamed/removed, and thus disappears from BTF.
+This causes kernel build failure when resolve_btfids do id patch for symbols
+in .BTF_ids in vmlinux. Update resolve_btfids to emit warning messages and
+patch zero id for missing symbols instead of aborting kernel build process.
 
-Patch 1 is prep work which updates resolve_btfids to emit warnings
-on missing symbols instead of aborting kernel build process.
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+---
+ tools/bpf/resolve_btfids/main.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-Patch 2 expands bpf_d_path allowlist.
-
-Changes since v4: [4] 
- - Addressed Andrii's comments. Update warning message.
-
-Changes since v3: [3] 
- - Addressed Yonghong's comments. Sort allowlist and add security_bprm_*
-
-Changes since v2: [2] 
- - Andrii suggested that we should first address an issue of .BTF_ids
-   before adding more symbols to .BTF_ids. Fixed that.
- - Yaniv proposed adding security_sb_mount and security_bprm_check.
-   Added them.
-
-Changes since v1: [1] 
- - Alexei and Yonghong suggested that bpf_d_path helper could also
-   apply to vfs_* and security_file_* kernel functions. Added them.
-
-[1] https://lore.kernel.org/bpf/20210712162424.2034006-1-hengqi.chen@gmail.com/
-[2] https://lore.kernel.org/bpf/20210719151753.399227-1-hengqi.chen@gmail.com/
-[3] https://lore.kernel.org/bpf/20210725141814.2000828-3-hengqi.chen@gmail.com/
-[4] https://lore.kernel.org/bpf/20210725141814.2000828-2-hengqi.chen@gmail.com/
-
-Hengqi Chen (2):
-  tools/resolve_btfids: emit warnings and patch zero id for missing
-    symbols
-  bpf: expose bpf_d_path helper to vfs_* and security_* functions
-
- kernel/trace/bpf_trace.c        | 60 ++++++++++++++++++++++++++++++---
- tools/bpf/resolve_btfids/main.c | 13 +++----
- 2 files changed, 63 insertions(+), 10 deletions(-)
-
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 3ad9301b0f00..de6365b53c9c 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -291,7 +291,7 @@ static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
+ 	sh->sh_addralign = expected;
+ 
+ 	if (gelf_update_shdr(scn, sh) == 0) {
+-		printf("FAILED cannot update section header: %s\n",
++		pr_err("FAILED cannot update section header: %s\n",
+ 			elf_errmsg(-1));
+ 		return -1;
+ 	}
+@@ -317,6 +317,7 @@ static int elf_collect(struct object *obj)
+ 
+ 	elf = elf_begin(fd, ELF_C_RDWR_MMAP, NULL);
+ 	if (!elf) {
++		close(fd);
+ 		pr_err("FAILED cannot create ELF descriptor: %s\n",
+ 			elf_errmsg(-1));
+ 		return -1;
+@@ -484,7 +485,7 @@ static int symbols_resolve(struct object *obj)
+ 	err = libbpf_get_error(btf);
+ 	if (err) {
+ 		pr_err("FAILED: load BTF from %s: %s\n",
+-			obj->path, strerror(-err));
++			obj->btf ?: obj->path, strerror(-err));
+ 		return -1;
+ 	}
+ 
+@@ -555,8 +556,7 @@ static int id_patch(struct object *obj, struct btf_id *id)
+ 	int i;
+ 
+ 	if (!id->id) {
+-		pr_err("FAILED unresolved symbol %s\n", id->name);
+-		return -EINVAL;
++		pr_err("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
+ 	}
+ 
+ 	for (i = 0; i < id->addr_cnt; i++) {
+@@ -734,8 +734,9 @@ int main(int argc, const char **argv)
+ 
+ 	err = 0;
+ out:
+-	if (obj.efile.elf)
++	if (obj.efile.elf) {
+ 		elf_end(obj.efile.elf);
+-	close(obj.efile.fd);
++		close(obj.efile.fd);
++	}
+ 	return err;
+ }
 -- 
 2.25.1
 
