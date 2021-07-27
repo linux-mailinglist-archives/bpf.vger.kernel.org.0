@@ -2,145 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649383D81FD
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 23:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 572C93D824D
+	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 00:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhG0Vnx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 17:43:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
+        id S231599AbhG0WKv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Jul 2021 18:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhG0Vnw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:43:52 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F2DC061757;
-        Tue, 27 Jul 2021 14:43:51 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id k65so372447yba.13;
-        Tue, 27 Jul 2021 14:43:51 -0700 (PDT)
+        with ESMTP id S231814AbhG0WKv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Jul 2021 18:10:51 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9752DC061757;
+        Tue, 27 Jul 2021 15:10:50 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id d73so499785ybc.10;
+        Tue, 27 Jul 2021 15:10:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6u6wypJQeJmb/YfTyzmyqM0UJtBE0z6heRiSyMm9WoU=;
-        b=ZwLmxb1TgizpkLWoUujWJlH4yHyMAxPpF7B1gyLjsnAFVyvUuGAl/582R6EQnGqPOQ
-         VJYtZ96O+yh4aOftf1fjI0N6eZvizFHokQl/4bkWhB+9rqRhsyGGmpv9G+814ldsINAj
-         pyThT4+/GMqmDiOvzi4dFzQIx4EgR8ivUE3Mslc/vublLkMoY06AzGHLtFtp+OpfHEdj
-         oVCENJjFGcvOyn5yhHLqjMZF/Ki76bjYjNuy2tR7d871OX0zrCuRjGdkzoTxOUV5fnPa
-         +yTGMKCUtkW7tMrZqa5fM9Hxv267csgf/A1SsTF7O/y+Y4YEnKBOBy2fMZcrqzjybtbn
-         QKAw==
+        bh=4e5KPgwqpie2+fO0IyN0BfwYGfWe7NhxqAu2gbPE+CY=;
+        b=bZacNpkggHdLV3OW0wZ3cq1cqgBcngrHxPFWNqf8Zs1vxmrpyzSoHXOGQg6oSYE3IX
+         6HzG9F3I9yOqbbUa++xWYJljAzqXm8qb/gQwtgI16w0HOqpwpExY+0JewIsmMjMN6CNB
+         1He+Rw097TJo5Ush6zKq48qxV6AMDATZzVeplp/GIy0RsKg7EITlkrMd3/nVML5emHnd
+         iQ7F7oDCJPLTuejwg4E+OmLJMI2COOFCedQ0XYKCycJjgnIeA42oGDSb7vJQCLcExN+P
+         fZx2OxnyaeuoLyczmcx0AnKeoXrkZGqRDHb5nr3NiEZ/Ac8Uns9A/q0YRLow40OP/E0W
+         zxlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6u6wypJQeJmb/YfTyzmyqM0UJtBE0z6heRiSyMm9WoU=;
-        b=LM2m3zSBD9SMeY2IGMeapGx2RY+eAYw7JniIflNFA+BhloYPEaZXrtQXDOCSARviid
-         y9HOOOYWn/wBUkMm2418fmxF8vSaNGYn/Hv4bzfKIB0Tat1I5Tpb+OtZzLHpXTRTMNfm
-         5R7aCYzHq0V2oUAQeaqKHe+S3Ymj8sw+4b7u+IXJwYhnOs9IesTPpOxK4tEIzyCeisZ6
-         bPbkqzaaBRBVPnbWBiI7t1NactpHh6qoQRHBxEasOwsFizHhiXvKgFR5DSnwJhpzSeJ+
-         f+LRQkwDJiNJCm0eUnMB3vmWJqxuPTz+BhxKKbK9I6gJWte28JluUd7/Gw5CBgfxiYme
-         MXhQ==
-X-Gm-Message-State: AOAM532hMqMiNhPUjksmsIsZW6lk1eYsivBDsYyyEAGJe9VTmBXLnZf1
-        FJ42p7mLY4qdFogPrknPKYYdbqv6mVfahqD7eh8=
-X-Google-Smtp-Source: ABdhPJz2rkdMm/N4pD3+cl4Wyi4GGBdI0Z2R9PTOr2miyLr3QrjV5+sF/QXS2PdyG9pr1d9ANZ+DmXR8OPMsHNQSAJs=
-X-Received: by 2002:a25:cdc7:: with SMTP id d190mr32876992ybf.425.1627422230617;
- Tue, 27 Jul 2021 14:43:50 -0700 (PDT)
+        bh=4e5KPgwqpie2+fO0IyN0BfwYGfWe7NhxqAu2gbPE+CY=;
+        b=aqY5zyNb4rB6m1+zpSdMUFgt1sofIolvsaeKVXscV76I75gb72Ps7YpzxGfESI9FFM
+         BCmoBTUVjGlxfhq+t9RwnKGAlXw417cCe1U7hE50BY7oH853YLCtChfGWGgmNJmq+Grl
+         UN15tgpZ0Oe+4w5/EdlELsILRmwF9pn0ZeNo0VF4/y46dpBaswqwOf/3U91r1Am1Xa04
+         19YhPJLBptxOrWwb/s5hWR2Hcz7g8PHrSeVJBPOQN8zCa+foRwhKR/oEf81R/BuMjNBX
+         XKrKx97SyS+IhMBsIaxmS2lZycmzHErmp1uOqDHQTwpGgaeo3E1WNsKPmWf97DBc2lmu
+         0IWg==
+X-Gm-Message-State: AOAM531rqHaLyDTy724Hee91ibmShUGzpsHxsbqKXk7ellduvdpQa4H0
+        GhldDwKEOF2D5RVGLHBhe/JOuhy2obucmW7OYOs=
+X-Google-Smtp-Source: ABdhPJxuo51FKGB3+vdWsC47t2KnIl41MVLJWw8UDmt59BoR16a0skszeZze2ivcZwt3KPi/OrgocHyEA7q4lLUbwe4=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr34524345ybo.230.1627423849929;
+ Tue, 27 Jul 2021 15:10:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210727141119.19812-1-pavo.banicevic@sartura.hr>
- <20210727141119.19812-2-pavo.banicevic@sartura.hr> <CAKwvOdkwwXV9rN6bzRs_+hbq5thHNSbEtqwOZ7340a79=NqjSg@mail.gmail.com>
-In-Reply-To: <CAKwvOdkwwXV9rN6bzRs_+hbq5thHNSbEtqwOZ7340a79=NqjSg@mail.gmail.com>
+References: <20210727160500.1713554-1-john.fastabend@gmail.com> <20210727173713.qm24aiwli2bacrlm@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210727173713.qm24aiwli2bacrlm@kafai-mbp.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Jul 2021 14:43:39 -0700
-Message-ID: <CAEf4Bza2zZK2m4fmDUXKoURxMmUcfr8gvLR9wxF1vFPBmc2gHA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arm: include: asm: swab: mask rev16 instruction for clang
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Pavo Banicevic <pavo.banicevic@sartura.hr>,
-        Arnd Bergmann <arnd@linaro.org>, linux@armlinux.org.uk,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 27 Jul 2021 15:10:38 -0700
+Message-ID: <CAEf4BzbLiQ3o=ZipMu4GWYhnGEXg5wgSWP8ox7Hoy-+Zjt5LaA@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 0/3] sockmap fixes picked up by stress tests
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        matt.redfearn@mips.com, Ingo Molnar <mingo@kernel.org>,
-        dvlasenk@redhat.com, Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        robert.marko@sartura.hr, Luka Perkov <luka.perkov@sartura.hr>,
-        Jakov Petrina <jakov.petrina@sartura.hr>
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 10:53 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Tue, Jul 27, 2021 at 10:37 AM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Tue, Jul 27, 2021 at 7:12 AM Pavo Banicevic
-> <pavo.banicevic@sartura.hr> wrote:
+> On Tue, Jul 27, 2021 at 09:04:57AM -0700, John Fastabend wrote:
+> > Running stress tests with recent patch to remove an extra lock in sockmap
+> > resulted in a couple new issues popping up. It seems only one of them
+> > is actually related to the patch:
 > >
-> > From: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+> > 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
 > >
-> > The samples/bpf with clang -emit-llvm reuses linux headers to build
-> > bpf samples, and this w/a only for samples (samples/bpf/Makefile
-> > CLANG-bpf).
+> > The other two issues had existed long before, but I guess the timing
+> > with the serialization we had before was too tight to get any of
+> > our tests or deployments to hit it.
 > >
-> > It allows to build samples/bpf for arm bpf using clang.
-> > In another way clang -emit-llvm generates errors like:
+> > With attached series stress testing sockmap+TCP with workloads that
+> > create lots of short-lived connections no more splats like below were
+> > seen on upstream bpf branch.
 > >
-> > CLANG-bpf  samples/bpf/tc_l2_redirect_kern.o
-> > <inline asm>:1:2: error: invalid register/token name
-> > rev16 r3, r0
+> > [224913.935822] WARNING: CPU: 3 PID: 32100 at net/core/stream.c:208 sk_stream_kill_queues+0x212/0x220
+> > [224913.935841] Modules linked in: fuse overlay bpf_preload x86_pkg_temp_thermal intel_uncore wmi_bmof squashfs sch_fq_codel efivarfs ip_tables x_tables uas xhci_pci ixgbe mdio xfrm_algo xhci_hcd wmi
+> > [224913.935897] CPU: 3 PID: 32100 Comm: fgs-bench Tainted: G          I       5.14.0-rc1alu+ #181
+> > [224913.935908] Hardware name: Dell Inc. Precision 5820 Tower/002KVM, BIOS 1.9.2 01/24/2019
+> > [224913.935914] RIP: 0010:sk_stream_kill_queues+0x212/0x220
+> > [224913.935923] Code: 8b 83 20 02 00 00 85 c0 75 20 5b 5d 41 5c 41 5d 41 5e 41 5f c3 48 89 df e8 2b 11 fe ff eb c3 0f 0b e9 7c ff ff ff 0f 0b eb ce <0f> 0b 5b 5d 41 5c 41 5d 41 5e 41 5f c3 90 0f 1f 44 00 00 41 57 41
+> > [224913.935932] RSP: 0018:ffff88816271fd38 EFLAGS: 00010206
+> > [224913.935941] RAX: 0000000000000ae8 RBX: ffff88815acd5240 RCX: dffffc0000000000
+> > [224913.935948] RDX: 0000000000000003 RSI: 0000000000000ae8 RDI: ffff88815acd5460
+> > [224913.935954] RBP: ffff88815acd5460 R08: ffffffff955c0ae8 R09: fffffbfff2e6f543
+> > [224913.935961] R10: ffffffff9737aa17 R11: fffffbfff2e6f542 R12: ffff88815acd5390
+> > [224913.935967] R13: ffff88815acd5480 R14: ffffffff98d0c080 R15: ffffffff96267500
+> > [224913.935974] FS:  00007f86e6bd1700(0000) GS:ffff888451cc0000(0000) knlGS:0000000000000000
+> > [224913.935981] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [224913.935988] CR2: 000000c0008eb000 CR3: 00000001020e0005 CR4: 00000000003706e0
+> > [224913.935994] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [224913.936000] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [224913.936007] Call Trace:
+> > [224913.936016]  inet_csk_destroy_sock+0xba/0x1f0
+> > [224913.936033]  __tcp_close+0x620/0x790
+> > [224913.936047]  tcp_close+0x20/0x80
+> > [224913.936056]  inet_release+0x8f/0xf0
+> > [224913.936070]  __sock_release+0x72/0x120
 > >
-> > This decision is arguable, probably there is another way, but
-> > it doesn't have impact on samples/bpf, so it's easier just ignore
-> > it for clang, at least for now.
->
-> NACK
->
-> The way to fix these is to sort out the header includes, not turning
-> off arbitrary things that are used by the actual kernel build for 32b
-> ARM.
+> > v3: make sock_drop inline in skmsg.h
+> > v2: init skb to null and fix a space/tab issue. Added Jakub's acks.
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-Would it be too horrible to just get rid of `clang -emit-llvm` and use
-vmlinux.h (we don't need to do CO-RE, btw, just generate vmlinux.h
-from the matching kernel)? Kumar has already started moving in that
-direction in his recent patch set ([0]). Would that get rid of all
-these issues?
-
-  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=519281&state=*
-
-
->
-> >
-> > Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-> > ---
-> >  arch/arm/include/asm/swab.h | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/arch/arm/include/asm/swab.h b/arch/arm/include/asm/swab.h
-> > index c6051823048b..a9fd9cd33d5e 100644
-> > --- a/arch/arm/include/asm/swab.h
-> > +++ b/arch/arm/include/asm/swab.h
-> > @@ -25,8 +25,11 @@ static inline __attribute_const__ __u32 __arch_swahb32(__u32 x)
-> >         __asm__ ("rev16 %0, %1" : "=r" (x) : "r" (x));
-> >         return x;
-> >  }
-> > +
-> > +#ifndef __clang__
-> >  #define __arch_swahb32 __arch_swahb32
-> >  #define __arch_swab16(x) ((__u16)__arch_swahb32(x))
-> > +#endif
-> >
-> >  static inline __attribute_const__ __u32 __arch_swab32(__u32 x)
-> >  {
-> > --
-> > 2.32.0
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+Applied to bpf, thanks.
