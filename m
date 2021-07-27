@@ -2,116 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720A93D7CBD
-	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 19:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9223D7D06
+	for <lists+bpf@lfdr.de>; Tue, 27 Jul 2021 20:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbhG0Rzk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 13:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
+        id S230288AbhG0SCY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Jul 2021 14:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbhG0Rzj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Jul 2021 13:55:39 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F354DC061765
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 10:55:38 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id bp1so23232048lfb.3
-        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 10:55:38 -0700 (PDT)
+        with ESMTP id S229915AbhG0SCX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Jul 2021 14:02:23 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7254C061760
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 11:02:22 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id f26so18444827ybj.5
+        for <bpf@vger.kernel.org>; Tue, 27 Jul 2021 11:02:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/VbJOr8r6+EQm5drNSCNTr2Un9oLoU3QNaM6UXCSAXY=;
-        b=Q88+W4TPhALv2EnSzUJjE3G5Pp+HO1jOVYRzEbEKS85Cz286dMwg93wz05W1J5UIiY
-         YmYTttpvOcu/DCoTTAKO05a8f4NMrYqthqm0UuMVn8gwrstzKch8fJ6BSPwn9owADL9K
-         rLwdg3whbvqMJ0VJLqiNkVKpr8DpZenYe3qWv6UE/BEjN02lFAQxjA2iwEhGP9UgTy6t
-         OdGXPuvaCl5IgCfm9xj8fN1XzGD1/wfBwTZ3uZgqUwDhU8xg8+lAtksW5HNn21CBCojE
-         RSQx8W6/fIEPEYCpO7Nw0Fjw0OOkstInly5Ja2f6DwfA/aY6ZSBjLbXq3sSf9TMzZq3D
-         ILUQ==
+        bh=ThXtBGdLwxouqjUodnzfmW13LqQYqEOYVHm7x2AmAeM=;
+        b=Juurl1jL2CYcMGYyHaJJuT9gNww/TF5phCC0GqA+eNwRL/tVRZ0Z9VJkY4jzpczNNK
+         JCnHq6mTly0sGz/EPLz9U7kmOGsRAeVu7vvynaKzpyuCsHrs0gnKWf2raZNnQ7zVQD56
+         4idS+iIC3oSXirkH0JRtE8D8E2A9U7VgFxinJVZchfwGVjxPm+zuv0svtRIvMXbJTEnn
+         GC/Th4ks4v3kqxWli6pnUTlEXLBpWnSHJQ+LJUgLHtipUkYGPhrdGgumi3ujMS28uhPF
+         bn+kPtm8d4GBbuBTD8BpXGRUoGdPuGgDH+er2o72x5U34JveULKGRHRi0QrH3xYH6kVw
+         oNaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/VbJOr8r6+EQm5drNSCNTr2Un9oLoU3QNaM6UXCSAXY=;
-        b=hKXs2b3z+oaravMQqWqb1I3GquqQXAMPMiL9ZDYRSLacLoGwsQPrUILQXaY1zx+aIA
-         JU93fiHvhsVveIdHdMqs72TUEDB+u1u86x62AObyPDXrBmYoAkj4Qzk4WDCnXekWxuOy
-         ITGNk7LHRr9WCfX2W6jHxqRysISFvW78tCltLdktCJ9Y5Q+1xBmlQJ8tucjHhpwv5ixT
-         cm4wXoZT0lpyb2MGe8IEdPzxRUUZ0fL41+ZxZgWCI7z0PUitM6Gg0wrO5NdScBXWhaO6
-         eRBSaJGq+SqGlbYt3qJNdGcGWoHeUKnjIsk9Dc2JG/qBvwxjpVaXoY5ZxNbfUBVXiimQ
-         wtiA==
-X-Gm-Message-State: AOAM530/DvKF0tdas69WdvF4GyCN7yRZu1PhLheqxeqVfr/uotP0AYkg
-        MNihVllLnjJR21AAE8pt2Ju54ucyiTrxdrkapzQ79A==
-X-Google-Smtp-Source: ABdhPJw7Kvy1I8XM015PtKO5aI5LPLAX6DHWav5pbIxK4FytT12zgoEOZtRninu8Yhht40enV+rPk/HO2BRICkBlOTM=
-X-Received: by 2002:a05:6512:32aa:: with SMTP id q10mr16877203lfe.368.1627408537141;
- Tue, 27 Jul 2021 10:55:37 -0700 (PDT)
+        bh=ThXtBGdLwxouqjUodnzfmW13LqQYqEOYVHm7x2AmAeM=;
+        b=MSaz/cfOLlzV98eYykrygrQWIdnZK0orX0G9NYW4MDW0uXIcFWFMDcR/QNNUCWfoWF
+         EiYC8SRtOEG/sa7ZYcPzYhjZeU6LflSqZYoqbgHT/9PhezsN9na9KWGOUGSlUFFQ6iTe
+         mFZXxjDAxjLXKC2hWhcSFj1xcEv8vyBGuP81yc61CAE1/8ZPes77IOzTDAMt6aj8lUpi
+         IqV7OkzarMnWTX9OnCyWJUuWcI7kaAAUttI9CXEUWDZJH8UT9nOoC8OU7piDTJWDgNoO
+         XoeXKt8QwkoJKk08DLhOe2sqxklWYMC7ziS/SihyOWhSOP1yzeMwUOQDeyo4riGHWhl7
+         ENSw==
+X-Gm-Message-State: AOAM5328MPDOXt4Bjlb127KPJyHi2RArDFnwTGY/QvYclgEb60N9rZK4
+        mRaRutObjU57zjbXZLGZ72pcvoC7uF7lFf5a/nk=
+X-Google-Smtp-Source: ABdhPJyGGztbKk5r6i2ClJ8IxeEuKHP+qpiiNlTbQoZCzjyFnSXcYLLFS+aZPrgVFjTfBdNvZLMR4+2JYps/sQLmMCk=
+X-Received: by 2002:a25:b741:: with SMTP id e1mr33324293ybm.347.1627408941905;
+ Tue, 27 Jul 2021 11:02:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210727141119.19812-1-pavo.banicevic@sartura.hr> <20210727141119.19812-3-pavo.banicevic@sartura.hr>
-In-Reply-To: <20210727141119.19812-3-pavo.banicevic@sartura.hr>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Jul 2021 10:55:26 -0700
-Message-ID: <CAKwvOdmgSxx-7o6GKd0aLESQvGssteq_GkNFW11a4fatgVeZpA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm: include: asm: unified: mask .syntax unified for clang
-To:     Pavo Banicevic <pavo.banicevic@sartura.hr>
-Cc:     linux@armlinux.org.uk, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, nathan@kernel.org,
-        ivan.khoronzhuk@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        matt.redfearn@mips.com, mingo@kernel.org, dvlasenk@redhat.com,
-        juraj.vijtiuk@sartura.hr, robert.marko@sartura.hr,
-        luka.perkov@sartura.hr, jakov.petrina@sartura.hr
+References: <CAEf4BzaSN+aN5RV=anaGewGAmqOWJRZpHtSeMfYcJ2HZ98LqLQ@mail.gmail.com>
+ <20210708021727.5538-1-joamaki@gmail.com>
+In-Reply-To: <20210708021727.5538-1-joamaki@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 27 Jul 2021 11:02:10 -0700
+Message-ID: <CAEf4BzYqTgi1wmKnZsfpQbCL4vq35MtCNodx1FTOH=qx1oaP1A@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: Use ping6 only if available in tc_redirect
+To:     Jussi Maki <joamaki@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 7:12 AM Pavo Banicevic
-<pavo.banicevic@sartura.hr> wrote:
+On Mon, Jul 26, 2021 at 7:20 AM Jussi Maki <joamaki@gmail.com> wrote:
 >
-> From: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+> In the tc_redirect test only use ping6 if it's available and
+> otherwise fall back to using "ping -6".
 >
-> The samples/bpf reuses linux headers, with clang -emit-llvm,
-> so this w/a is only for samples/bpf (samples/bpf/Makefile CLANG-bpf).
->
-> It allows to build samples/bpf for arm on target board.
-> In another way clang -emit-llvm generates errors like:
->
-> <inline asm>:1:1: error: unknown directive
-> .syntax unified
->
-> I have verified it on clang 5, 6, 7, 8, 9, 10
-> as on native platform as for cross-compiling. This decision is
-> arguable, but it doesn't have impact on samples/bpf so it's easier
-> just ignore it for clang, at least for now...
-
-Did you test ARCH=arm kernel builds with Clang with this series applied?
-
->
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+> Signed-off-by: Jussi Maki <joamaki@gmail.com>
 > ---
->  arch/arm/include/asm/unified.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm/include/asm/unified.h b/arch/arm/include/asm/unified.h
-> index 1e2c3eb04353..8718f313e7c4 100644
-> --- a/arch/arm/include/asm/unified.h
-> +++ b/arch/arm/include/asm/unified.h
-> @@ -11,7 +11,9 @@
->  #if defined(__ASSEMBLY__)
->         .syntax unified
->  #else
-> -__asm__(".syntax unified");
-> +
-> +#ifndef __clang__
-> +       __asm__(".syntax unified");
->  #endif
->
->  #ifdef CONFIG_CPU_V7M
-> --
-> 2.32.0
+
+The tests weren't broken per se, they just required a more particular
+environment set up. So I consider this an improvement rather than bug
+fix and applied this to bpf-next, where it's much more important to
+have all the tests passing in an ongoing fashion. Thanks!
+
+>  .../selftests/bpf/prog_tests/tc_redirect.c    | 23 ++++++++++++++-----
+>  1 file changed, 17 insertions(+), 6 deletions(-)
 >
 
-
--- 
-Thanks,
-~Nick Desaulniers
+[...]
