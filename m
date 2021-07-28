@@ -2,112 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9258A3D9944
-	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 01:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229943D995E
+	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 01:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbhG1XJm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jul 2021 19:09:42 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:35733 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232143AbhG1XJm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 28 Jul 2021 19:09:42 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 6F2B7320094A;
-        Wed, 28 Jul 2021 19:09:39 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 28 Jul 2021 19:09:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=G4waoIhk41AWPXK4ZjIDKTU0Dl
-        X3UQm/vowYvkaU7gE=; b=cPT2sPy2R0BnFEKKrlQDYfMdjz+xuMEysxKw8ViKfR
-        dCJU+Whs1gX22hA8t3MDUTiiCTwzic/tpwa/nn5zDZDze9fziSpMJYTASTQym/jG
-        rC+iG+kC7HWyukcJFaLDrKvMMmjAkNuLU9+xTeUdMnkm36BaLBlLoOiWk2G/zMrs
-        29Fny9tYK+7HHG4PeQfoGKtJTCSMR6jl2m1iZgWzr+WnUgiNh3KcQXxfq4zERMJO
-        tCeS8ql0u2EIvUqlQ9nMNyfUttQ+aLtnZphUS+ujjUc7DtpBqyA0UxXXM640jxrc
-        IZXctxysE13x0zicAMcPcovUFDGVCuRKFAjOKyscBcDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=G4waoIhk41AWPXK4Z
-        jIDKTU0DlX3UQm/vowYvkaU7gE=; b=kiNyIwJnos8kaoGKEW5twmxhYMK+4CCqK
-        F0WA3K9btft9tImnab08C0fgHty9gd1fg7VQ5lv62TZNotFzCuB9flPHIV3cwcxy
-        HUz0MsrRBdiT+/dTiGL09Jjjhnj9xPXhP5myQUPYCBJ8GIqXcMX6v+SvfdUGRcr0
-        bLD7DzTrWeRn8ubOQXntHtbVRCWjG/SVnDqJqsci0AkHj8o0pnjs9JZg8W2sdM/x
-        wT1Dw1w13V/tdI3oFFInIZrtYyFK2aK8YUm53oNJeR95BpWE0XAh8MsblhHeqAaU
-        acR4mrMstCq1lzSHs6wAEGDuMBrjzN64wis5XKS26z38dt/3QNhhA==
-X-ME-Sender: <xms:suMBYfPKS0-mNJSRXWvEvx4qrOt8rDIHPm7w8ZRAEE0g3WfxyfEfBg>
-    <xme:suMBYZ_XlfWEsg0cTHl41M8hNYz9WhHwdjKYlPkerMXYpblOfBFAeNUpL6fpe_SOU
-    FAVRL2TUXOg4CpfHA>
-X-ME-Received: <xmr:suMBYeQAetCPr6MweCF9ojawFfIOSzpoecgPLz5cslaNJ-4u06J8TxH5ak09dE4McBK3prkabPLrL_IQYptFW41CrPtHG3peKg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedtgddugecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephffvuf
-    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhes
-    ugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepieffgfelvdffiedtleejvdetfe
-    efiedvfeehieevveejudeiiefgteeiveeiffffnecuvehluhhsthgvrhfuihiivgeptden
-    ucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:suMBYTul0i_xpP2LB40q4HNNUiPEtYHfI_Pw64Papjf4B56kDI_5hw>
-    <xmx:suMBYXcgy1WsR_AF2Hdb_boxQMzBK3UOVpYGC_UM88QEzwKU51UYwg>
-    <xmx:suMBYf1YQqeSBCLN-yfdRdh9-rO2Tnf9UKSpI2xJflZq6sb00vJryA>
-    <xmx:s-MBYYolV49jHH40tATSdpJjR0E_5E9uhHjMKBFTUMNOMw8fqcdkTQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 28 Jul 2021 19:09:38 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     andrii@kernel.org
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH bpf] bpf: Do not close un-owned FD 0 on errors
-Date:   Wed, 28 Jul 2021 16:09:21 -0700
-Message-Id: <5969bb991adedb03c6ae93e051fd2a00d293cf25.1627513670.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.31.1
+        id S232143AbhG1XU0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jul 2021 19:20:26 -0400
+Received: from www62.your-server.de ([213.133.104.62]:35348 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232105AbhG1XU0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Jul 2021 19:20:26 -0400
+Received: from [2a01:118f:54a:7f00:89b1:4cb8:1a49:dc0f] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1m8sqc-000Bg2-Hb; Thu, 29 Jul 2021 01:20:22 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, andrii.nakryiko@gmail.com,
+        ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2021-07-29
+Date:   Thu, 29 Jul 2021 01:20:21 +0200
+Message-Id: <20210728232021.17617-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26246/Wed Jul 28 10:18:40 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Before this patch, btf_new() was liable to close an arbitrary FD 0 if
-BTF parsing failed. This was because:
+Hi David, hi Jakub,
 
-* btf->fd was initialized to 0 through the calloc()
-* btf__free() (in the `done` label) closed any FDs >= 0
-* btf->fd is left at 0 if parsing fails
+The following pull-request contains BPF updates for your *net* tree.
 
-This issue was discovered on a system using libbpf v0.3 (without
-BTF_KIND_FLOAT support) but with a kernel that had BTF_KIND_FLOAT types
-in BTF. Thus, parsing fails.
+We've added 9 non-merge commits during the last 14 day(s) which contain
+a total of 20 files changed, 446 insertions(+), 138 deletions(-).
 
-While this patch technically doesn't fix any issues b/c upstream libbpf
-has BTF_KIND_FLOAT support, it'll help prevent issues in the future if
-more BTF types are added. It also allow the fix to be backported to
-older libbpf's.
+The main changes are:
 
-Fixes: 3289959b97ca ("libbpf: Support BTF loading and raw data output in both endianness")
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/lib/bpf/btf.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+1) Fix UBSAN out-of-bounds splat for showing XDP link fdinfo, from Lorenz Bauer.
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index b46760b93bb4..7ff3d5ce44f9 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -804,6 +804,7 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
- 	btf->nr_types = 0;
- 	btf->start_id = 1;
- 	btf->start_str_off = 0;
-+	btf->fd = -1;
- 
- 	if (base_btf) {
- 		btf->base_btf = base_btf;
-@@ -832,8 +833,6 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
- 	if (err)
- 		goto done;
- 
--	btf->fd = -1;
--
- done:
- 	if (err) {
- 		btf__free(btf);
--- 
-2.31.1
+2) Fix insufficient Spectre v4 mitigation in BPF runtime, from Daniel Borkmann,
+   Piotr Krysiuk and Benedict Schlueter.
 
+3) Batch of fixes for BPF sockmap found under stress testing, from John Fastabend.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexei Starovoitov, Jakub Sitnicki, Martin KaFai Lau
+
+----------------------------------------------------------------
+
+The following changes since commit 20192d9c9f6ae447c461285c915502ffbddf5696:
+
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf (2021-07-15 14:39:45 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 2039f26f3aca5b0e419b98f65dd36481337b86ee:
+
+  bpf: Fix leakage due to insufficient speculative store bypass mitigation (2021-07-29 00:27:52 +0200)
+
+----------------------------------------------------------------
+Andrii Nakryiko (1):
+      Merge branch 'sockmap fixes picked up by stress tests'
+
+Daniel Borkmann (5):
+      bpf: Remove superfluous aux sanitation on subprog rejection
+      bpf: Fix pointer arithmetic mask tightening under state pruning
+      bpf, selftests: Add test cases for pointer alu from multiple paths
+      bpf: Introduce BPF nospec instruction for mitigating Spectre v4
+      bpf: Fix leakage due to insufficient speculative store bypass mitigation
+
+John Fastabend (3):
+      bpf, sockmap: Zap ingress queues after stopping strparser
+      bpf, sockmap: On cleanup we additionally need to remove cached skb
+      bpf, sockmap: Fix memleak on ingress msg enqueue
+
+Lorenz Bauer (1):
+      bpf: Fix OOB read when printing XDP link fdinfo
+
+ arch/arm/net/bpf_jit_32.c                          |   3 +
+ arch/arm64/net/bpf_jit_comp.c                      |  13 ++
+ arch/mips/net/ebpf_jit.c                           |   3 +
+ arch/powerpc/net/bpf_jit_comp32.c                  |   6 +
+ arch/powerpc/net/bpf_jit_comp64.c                  |   6 +
+ arch/riscv/net/bpf_jit_comp32.c                    |   4 +
+ arch/riscv/net/bpf_jit_comp64.c                    |   4 +
+ arch/s390/net/bpf_jit_comp.c                       |   5 +
+ arch/sparc/net/bpf_jit_comp_64.c                   |   3 +
+ arch/x86/net/bpf_jit_comp.c                        |   7 +
+ arch/x86/net/bpf_jit_comp32.c                      |   6 +
+ include/linux/bpf_types.h                          |   1 +
+ include/linux/bpf_verifier.h                       |   3 +-
+ include/linux/filter.h                             |  15 ++
+ include/linux/skmsg.h                              |  54 +++--
+ kernel/bpf/core.c                                  |  19 +-
+ kernel/bpf/disasm.c                                |  16 +-
+ kernel/bpf/verifier.c                              | 148 +++++--------
+ net/core/skmsg.c                                   |  39 +++-
+ .../selftests/bpf/verifier/value_ptr_arith.c       | 229 +++++++++++++++++++++
+ 20 files changed, 446 insertions(+), 138 deletions(-)
