@@ -2,26 +2,26 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AB93D8965
-	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 10:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0333D8974
+	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 10:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235008AbhG1IHO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jul 2021 04:07:14 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:12324 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234508AbhG1IHO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Jul 2021 04:07:14 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GZR3673wVz7yfB;
-        Wed, 28 Jul 2021 16:02:26 +0800 (CST)
+        id S235313AbhG1IH1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jul 2021 04:07:27 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:12275 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235289AbhG1IHZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Jul 2021 04:07:25 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GZR1x6dsFz1CPkQ;
+        Wed, 28 Jul 2021 16:01:25 +0800 (CST)
 Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 28 Jul 2021 16:07:10 +0800
+ 15.1.2176.2; Wed, 28 Jul 2021 16:07:14 +0800
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 28 Jul 2021 16:07:09 +0800
+ 15.1.2176.2; Wed, 28 Jul 2021 16:07:13 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
@@ -29,12 +29,15 @@ To:     <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
         <ast@kernel.org>, <ryabinin.a.a@gmail.com>
 CC:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
         <paulus@samba.org>, Kefeng Wang <wangkefeng.wang@huawei.com>,
-        <linux-s390@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <bpf@vger.kernel.org>
-Subject: [PATCH v2 0/7] sections: Unify kernel sections range check and use
-Date:   Wed, 28 Jul 2021 16:13:13 +0800
-Message-ID: <20210728081320.20394-1-wangkefeng.wang@huawei.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Nathan Chancellor" <nathan@kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH v2 5/7] kallsyms: Rename is_kernel() and is_kernel_text()
+Date:   Wed, 28 Jul 2021 16:13:18 +0800
+Message-ID: <20210728081320.20394-6-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210728081320.20394-1-wangkefeng.wang@huawei.com>
+References: <20210728081320.20394-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -46,65 +49,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There are three head files(kallsyms.h, kernel.h and sections.h) which
-include the kernel sections range check, let's make some cleanup and
-unify them.
+The is_kernel[_text]() function check the address whether or not
+in kernel[_text] ranges, also they will check the address whether
+or not in gate area, so use better name.
 
-1. cleanup arch specific text/data check and fix address boundary check
-   in kallsyms.h
-2. make all the basic/core kernel range check function into sections.h
-3. update all the callers, and use the helper in sections.h to simplify
-   the code
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: bpf@vger.kernel.org
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 2 +-
+ include/linux/kallsyms.h    | 8 ++++----
+ kernel/cfi.c                | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-After this series, we have 5 APIs about kernel sections range check in
-sections.h
-
- * is_kernel_core_data()	--- come from core_kernel_data() in kernel.h
- * is_kernel_rodata()		--- already in sections.h
- * is_kernel_text()		--- come from kallsyms.h
- * is_kernel_inittext()		--- come from kernel.h and kallsyms.h
- * is_kernel()			--- come from kallsyms.h
-
-
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-arch@vger.kernel.org 
-Cc: iommu@lists.linux-foundation.org
-Cc: bpf@vger.kernel.org 
-
-v2:
-- add ACK/RW to patch2, and drop inappropriate fix tag
-- keep 'core' to check kernel data, suggestted by Steven Rostedt
-  <rostedt@goodmis.org>, rename is_kernel_data() to is_kernel_core_data()
-- drop patch8 which is merged
-- drop patch9 which is resend independently
-
-v1:
-https://lore.kernel.org/linux-arch/20210626073439.150586-1-wangkefeng.wang@huawei.com
-
-Kefeng Wang (7):
-  kallsyms: Remove arch specific text and data check
-  kallsyms: Fix address-checks for kernel related range
-  sections: Move and rename core_kernel_data() to is_kernel_core_data()
-  sections: Move is_kernel_inittext() into sections.h
-  kallsyms: Rename is_kernel() and is_kernel_text()
-  sections: Add new is_kernel() and is_kernel_text()
-  powerpc/mm: Use is_kernel_text() and is_kernel_inittext() helper
-
- arch/powerpc/mm/pgtable_32.c   |  7 +---
- arch/x86/kernel/unwind_orc.c   |  2 +-
- arch/x86/net/bpf_jit_comp.c    |  2 +-
- include/asm-generic/sections.h | 71 ++++++++++++++++++++++++++--------
- include/linux/kallsyms.h       | 21 +++-------
- include/linux/kernel.h         |  2 -
- kernel/cfi.c                   |  2 +-
- kernel/extable.c               | 33 ++--------------
- kernel/locking/lockdep.c       |  3 --
- kernel/trace/ftrace.c          |  2 +-
- mm/kasan/report.c              |  2 +-
- net/sysctl_net.c               |  2 +-
- 12 files changed, 72 insertions(+), 77 deletions(-)
-
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 333650b9372a..c87d0dd4370d 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -372,7 +372,7 @@ static int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+ 		       void *old_addr, void *new_addr)
+ {
+-	if (!is_kernel_text((long)ip) &&
++	if (!is_kernel_text_or_gate_area((long)ip) &&
+ 	    !is_bpf_text_address((long)ip))
+ 		/* BPF poking in modules is not supported */
+ 		return -EINVAL;
+diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
+index 8a9d329c927c..4f501ac9c2c2 100644
+--- a/include/linux/kallsyms.h
++++ b/include/linux/kallsyms.h
+@@ -24,14 +24,14 @@
+ struct cred;
+ struct module;
+ 
+-static inline int is_kernel_text(unsigned long addr)
++static inline int is_kernel_text_or_gate_area(unsigned long addr)
+ {
+ 	if ((addr >= (unsigned long)_stext && addr < (unsigned long)_etext))
+ 		return 1;
+ 	return in_gate_area_no_mm(addr);
+ }
+ 
+-static inline int is_kernel(unsigned long addr)
++static inline int is_kernel_or_gate_area(unsigned long addr)
+ {
+ 	if (addr >= (unsigned long)_stext && addr < (unsigned long)_end)
+ 		return 1;
+@@ -41,9 +41,9 @@ static inline int is_kernel(unsigned long addr)
+ static inline int is_ksym_addr(unsigned long addr)
+ {
+ 	if (IS_ENABLED(CONFIG_KALLSYMS_ALL))
+-		return is_kernel(addr);
++		return is_kernel_or_gate_area(addr);
+ 
+-	return is_kernel_text(addr) || is_kernel_inittext(addr);
++	return is_kernel_text_or_gate_area(addr) || is_kernel_inittext(addr);
+ }
+ 
+ static inline void *dereference_symbol_descriptor(void *ptr)
+diff --git a/kernel/cfi.c b/kernel/cfi.c
+index e17a56639766..e7d90eff4382 100644
+--- a/kernel/cfi.c
++++ b/kernel/cfi.c
+@@ -282,7 +282,7 @@ static inline cfi_check_fn find_check_fn(unsigned long ptr)
+ {
+ 	cfi_check_fn fn = NULL;
+ 
+-	if (is_kernel_text(ptr))
++	if (is_kernel_text_or_gate_area(ptr))
+ 		return __cfi_check;
+ 
+ 	/*
 -- 
 2.26.2
 
