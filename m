@@ -2,124 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A663D942D
-	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 19:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F1C3D94E6
+	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 20:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbhG1RXQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jul 2021 13:23:16 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16292 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229574AbhG1RXQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 28 Jul 2021 13:23:16 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SHDGNT018327
-        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 10:23:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=T27utM/zPFZAT6o0yE5+NYbVS0uSkV+QDl8gjijWliA=;
- b=ZBbWE0uiL2lWVMgziSQdQoJip3iVFzoEFdXRnd0fbGWrpId2Jy6ZuVm6tXh7gWNmvXWS
- hEUrnASSZZg4YxPvV9YXi1/OqlT4Bg83hSlmxxHuvgg80waDut2HyVSyJGZY+WMTAX7d
- MOpi+xvfNtnpVv74xLdTUjWK7RNFbnLs/UI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a2bfcb9g7-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 10:23:14 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 28 Jul 2021 10:23:09 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 4990D559B38F; Wed, 28 Jul 2021 10:23:07 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com>
-Subject: [PATCH bpf] bpf: fix rcu warning in bpf_prog_run_pin_on_cpu()
-Date:   Wed, 28 Jul 2021 10:23:07 -0700
-Message-ID: <20210728172307.1030271-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S231493AbhG1SBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jul 2021 14:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231760AbhG1SBY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Jul 2021 14:01:24 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DCAC0617A4
+        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 11:01:13 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id nb11so6012373ejc.4
+        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 11:01:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=riotgames.com; s=riotgames;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/MO1myk+oIo6b7WtOvt4qRY7WM2gouFRETzf85aAngQ=;
+        b=qxCUOqOSiIiqa1/UPibWvWOS1A8c5ob4j0sJHaaFQfHVRszEJfe8w+lZjAFkkJ/Znx
+         6ubaEUYeBLSHcmFYQlaxWqq97th7hwAaN+xRrd8PKkulsNV78jG/hsxxiOYyBxKpvIk+
+         quFHLXC/NtqFo+kZokdxIk2uNHCtV5soQzCfU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/MO1myk+oIo6b7WtOvt4qRY7WM2gouFRETzf85aAngQ=;
+        b=lu7EfUKWL43HRDWufpOpGVMPuFEWCOxWddiXeZsrRSHvDXserxjHU7kVhk45u4HeGA
+         ea5NLbMPP90mF48ax/6N+Cp2npyA6nJJAe2Yqn22Ert+hT5lzciYtvMZVER31VtgJqHy
+         5h1DqX6uhRPAuDbHjaBbU05wWkPJ6NssOBfHTU3xogNJX4wqRosQIvBg6TN1DgkPRygI
+         nkb81TgCvuqKrg4tHgrNtGfwyxfumZd7TSIYwWaM2Ba/PiK5PMRodgpDU1V8Gh9dxVCy
+         rjtSHOg0A+PkAj9wKbE2WePsOMhGFY0QBwTVevgIGZzRYCxJakk7IFwCoYzyGkdwzi4T
+         xpyg==
+X-Gm-Message-State: AOAM530NrrkZ5/E02gBXrc7Uxx1yDIEd9iXF+FnxWeA1uUPER2cv94yg
+        7+zdMEvn/6FyYAieI6sDEyi1Lk6qucPokjRMwWNyDQ==
+X-Google-Smtp-Source: ABdhPJyQJCrRAyCRnN1/A1ZecZyfNdDk8QNibSQCk4oweLYvAGVjkpDq1zIo7zp3lnwEg+SInZyMxRx3Ig14KHrcQqY=
+X-Received: by 2002:a17:906:828a:: with SMTP id h10mr650820ejx.15.1627495271884;
+ Wed, 28 Jul 2021 11:01:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: C6zvAiob9YrXA67weP94zbLURfYpdmc_
-X-Proofpoint-ORIG-GUID: C6zvAiob9YrXA67weP94zbLURfYpdmc_
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-28_08:2021-07-27,2021-07-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=860
- malwarescore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
- clxscore=1015 mlxscore=0 bulkscore=0 spamscore=0 suspectscore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2107280098
-X-FB-Internal: deliver
+References: <384aaee4.1b40.17aeb053a78.Coremail.chapterk93@163.com>
+In-Reply-To: <384aaee4.1b40.17aeb053a78.Coremail.chapterk93@163.com>
+From:   Zvi Effron <zeffron@riotgames.com>
+Date:   Wed, 28 Jul 2021 11:01:00 -0700
+Message-ID: <CAC1LvL11BVD38bnivBQMFnFdADe4SU5zNOutVco0pdnVXZCbcA@mail.gmail.com>
+Subject: Re: using "BPF_MAP_TYPE_DEVMAP" when pinning it to a global path
+To:     G <chapterk93@163.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot reported a RCU warning like below:
-  WARNING: suspicious RCU usage
-  ...
-  Call Trace:
-   __dump_stack lib/dump_stack.c:88 [inline]
-   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
-   task_css_set include/linux/cgroup.h:481 [inline]
-   task_dfl_cgroup include/linux/cgroup.h:550 [inline]
-   ____bpf_get_current_cgroup_id kernel/bpf/helpers.c:356 [inline]
-   bpf_get_current_cgroup_id+0x1ce/0x210 kernel/bpf/helpers.c:354
-   bpf_prog_08c4887f705f20b8+0x10/0x824
-   bpf_dispatcher_nop_func include/linux/bpf.h:687 [inline]
-   bpf_prog_run_pin_on_cpu include/linux/filter.h:624 [inline]
-   bpf_prog_test_run_syscall+0x2cf/0x5f0 net/bpf/test_run.c:954
-   bpf_prog_test_run kernel/bpf/syscall.c:3207 [inline]
-   __sys_bpf+0x1993/0x53b0 kernel/bpf/syscall.c:4487
+On Tue, Jul 27, 2021 at 8:05 PM G <chapterk93@163.com> wrote:
+>
+> Hi BPF Experts
+>
+> I'm having an issue with using "BPF_MAP_TYPE_DEVMAP" when pinning it to a global path for sharing with multiple programs.
+> I used iproute2 to load the program, the parameters for creating a map are as follows:
+> ----------------------------------------------------------------------------------
+>     struct bpf_elf_map BPFM_SEC_MAPS dev_map_test = {
+>         .type                = BPF_MAP_TYPE_DEVMAP,
+>         .size_key       = sizeof(int32),
+>         .size_value   = sizeof(int32),
+>         .max_elem   = 1,
+>         .flags               = 0,
+>         .pinning         = PIN_GLOBAL_NS,
+>     };
+> ----------------------------------------------------------------------------------
+>
+> Here I set the flags to 0, but the actual map is created with flags 0x80, so when the second program is loaded, map parameter check is incorrect.
+> When I tried to set the flags directly to 0x80, I failed with the parameter error `-EINVA`  when the first program was loaded
+> The general process for iproute2 to create a map with a pin tag is as follows:
+> -----------------------------------------------------------------------------------
+> bpf_map_attach
+> -> bpf_probe_pinned
+>     bpf_map_selfcheck_pinned
+>     -> bpf_derive_elf_map_from_fdinfo
+>          bpf_map_pin_report
+>          -> if (obj->flags != pin->flags)
+>                    fprintf(stderr, " - Flags:        %#x (obj) != %#x (pin)\n", obj->flags, pin->flags);
+> -----------------------------------------------------------------------------------
+>
+> I have tried to read the relevant kernel code :
+> -----------------------------------------------------------------------------------
+>     // kernel/bpf/devmap.c
+>     #define DEV_CREATE_FLAG_MASK \
+>          (BPF_F_NUMA_NODE | BPF_F_RDONLY | BPF_F_WRONLY)
+>
+>     static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
+>     {
+>        ...
+>         /* check sanity of attributes */
+>         if (attr->max_entries == 0 || attr->key_size != 4 ||
+>                 attr->value_size != 4 || attr->map_flags & ~DEV_CREATE_FLAG_MASK)
+>                 return -EINVAL;
+>
+>         /* Lookup returns a pointer straight to dev->ifindex, so make sure the
+>          * verifier prevents writes from the BPF side
+>          */
+>         attr->map_flags |= BPF_F_RDONLY_PROG;
+>         ...
+>     }
+> -----------------------------------------------------------------------------------
+>
+> At the time of check , it does not allow 0x80 to be set (DEV_CREATE_FLAG_MASK) , but then the code sets the 0x80 flag itself.
 
-The warning is introduced by Commit 79a7f8bdb159d
-("bpf: Introduce bpf_sys_bpf() helper and program type.").
-The rcu_read_lock/unlock() is missing when calling
-bpf_prog_run_pin_on_cpu().
+It looks like the kernel itself is setting the flags to 0x80 when it
+initializes a devmap[1]. (Note: BPF_PROG_READONLY is 0x80.[2])
 
-Previously, bpf_prog_run_pin_on_cpu() is simply BPF_PROG_RUN
-macro and if necessary functions using BPF_PROG_RUN all have proper
-rcu_read_lock/unlock() protections.
-Commit 3c58482a382ba ("bpf: Provide bpf_prog_run_pin_on_cpu() helper")
-added bpf_prog_run_pin_on_cpu() helper in order to add
-migrate_disable/enable() support.
-Commit 79a7f8bdb159d later called bpf_prog_run_pin_on_cpu()
-but didn't have rcu_read_lock/unlock() at the callsite which
-triggered the reason.
+I believe you do not need to worry about setting this flag when you call the
+BPF_MAP_CREATE syscall.
 
-I added rcu lock protection in bpf_prog_test_run_syscall()
-which fixed the issue. Alternatively, rcu lock protection
-could be added in bpf_prog_test_run_syscall() and some rcu
-lock protection in bpf_prog_test_run_syscall() callers
-can be removed. I feel the later is a bigger change for
-bpf tree. So I picked the simpler solution.
+[1] https://elixir.bootlin.com/linux/v5.13.5/source/kernel/bpf/devmap.c#L126
+[2] https://elixir.bootlin.com/linux/v5.13.5/source/include/uapi/linux/bpf.h#L1179
 
-Reported-by: syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
-Fixes: 79a7f8bdb159d ("bpf: Introduce bpf_sys_bpf() helper and program ty=
-pe.")
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- net/bpf/test_run.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 1cc75c811e24..a350b185d9d2 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -951,7 +951,10 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- 			goto out;
- 		}
- 	}
-+
-+	rcu_read_lock();
- 	retval =3D bpf_prog_run_pin_on_cpu(prog, ctx);
-+	rcu_read_unlock();
-=20
- 	if (copy_to_user(&uattr->test.retval, &retval, sizeof(u32))) {
- 		err =3D -EFAULT;
---=20
-2.30.2
-
+> So I'm not sure if we should allow 0x80 on the check here as well ? If anyone has suggestions please let me know, thanks.
+> -----------------------------------------------------------------------------------
+>     #define DEV_CREATE_FLAG_MASK \
+>          (BPF_F_NUMA_NODE | BPF_F_RDONLY | BPF_F_WRONLY | BPF_F_RDONLY_PROG)
+> -----------------------------------------------------------------------------------
+>
+> Best regards
+> W.Gao
