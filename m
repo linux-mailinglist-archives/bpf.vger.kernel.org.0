@@ -2,207 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDA93D9200
-	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 17:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D623D938A
+	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 18:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbhG1Pa3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jul 2021 11:30:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237386AbhG1PaX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:30:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45E9C60E09;
-        Wed, 28 Jul 2021 15:30:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627486221;
-        bh=PIqsog5NyWNsjfJR1/p+LBYEPaaETztUaGvYULuqchg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qb7mdUz+1ZA8KFD/hiref0KmbBrgAS2ARohAfQSNonAanQkMZvLh4ORl2CeTZADA1
-         7h0B+QfQUM4bsiW6EfEHNYPYdfm6nQZg0pbSe5wWDkw4+veVXUnJSqYBwdjb6uny1X
-         +JjIINArjAFPI2kt2/pzENtRhYeGf+efwWWLdyMLVnv7pmgNvJk00LO8liPqyiO9D4
-         m58WQV3S9HthRjgJgKRVhiTC6AtIT0VKEbzVzb2ygHpp97rOZ752Erh8uLL6mgf9uv
-         iWY30iRS2MuR8ccISTjkknoowwO7a+vHLmPvow/lENnM+JP1yEqZhZHCHZ3DE8QtAA
-         O3k0whmccHZsA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH -tip v3 6/6] kprobes: Use bool type for functions which returns boolean value
-Date:   Thu, 29 Jul 2021 00:30:16 +0900
-Message-Id: <162748621647.59465.13024630535790061152.stgit@devnote2>
+        id S229690AbhG1QsI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jul 2021 12:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhG1QsI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Jul 2021 12:48:08 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FCFC061757
+        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 09:48:06 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id x14so4085825edr.12
+        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 09:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=EfomRu8c6V1fahvhuLBzuVvQkkgH2iJnqviz3zz4Tos=;
+        b=Ud0PZOdDtj6w7Yx1+aKFZAXmmbfL/gJnF2Ra9F9Cy4EPW419uk8bDqVmSmmmO8mNui
+         X8xneiSj/T6BbxIj4VqO4uovHXuJlmGPyWwh09FmW9hj4EC2TyiAQTvRScJYusW+bE4e
+         JACr3ry8yy3ZdUeuYtqU8ZEytRST5Sm9GDKyI+tz+qdagETXYgYhxq9adQZiFNU69DRp
+         yHTveFI2qGXM3sBw2+DHaAyayUr3ZpN8gzLPOV/pARppR/4liiCh9Fc64u37/YfDXZzq
+         zMFYgOMe6OpYnXTEYZAKAvbiyxUG2oAc2lP1Aj8y4RVndU+T8Cmwmw7cpo3boHIB9Jso
+         CNAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=EfomRu8c6V1fahvhuLBzuVvQkkgH2iJnqviz3zz4Tos=;
+        b=beQ0+LQGwZdygw0OuqU2N4O1E6QIVsYelgqPzpWdd0KVvp5osKH6p3tJv0rZ9CN/de
+         D2yUk+knTR4+C36lDm8km8jlmXrd2qt6a9jvn8sMkhEqK0V7Z3dFrkemtt58P57N/DtN
+         xN5Byjr/DNlRCp1fV7lEqbnDnj4hvfHyKnlnqvnzH0/2gDUtg2woOhKY7r5ORTzLA/pd
+         pACkkzMaO4XbTD6qPouEIZ44qQ+9XSoZGQGepcKF7lfJOtB7+HBM9Bz3AEsriac+Azv+
+         Z3x9sccpbfSq6klLZhk2cKrmSHKL2DnsOvtzMz8+lxd1q27bJfXyYgEE0wF7Eyaee2aO
+         XADQ==
+X-Gm-Message-State: AOAM530sGQHFB4U1BoHSDxjz0hji9CCD+ZyiKKKh9ANcMVdYXjsAuCHj
+        rBBr0GOYdkFc3uFGrnXAZGrX4Q==
+X-Google-Smtp-Source: ABdhPJx2s99e8BoFNZ9ExaFW69V1ZKIuudpgtWLAWSF2ShSxUAKSVEHUGyfVpC1yJoUua0bRY7hxvg==
+X-Received: by 2002:a05:6402:d68:: with SMTP id ec40mr916872edb.344.1627490884920;
+        Wed, 28 Jul 2021 09:48:04 -0700 (PDT)
+Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
+        by smtp.gmail.com with ESMTPSA id c28sm86465ejc.102.2021.07.28.09.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 09:48:04 -0700 (PDT)
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        Tony.Ambardar@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Subject: [PATCH] bpf: Fix off-by-one in tail call count limiting
+Date:   Wed, 28 Jul 2021 18:47:41 +0200
+Message-Id: <20210728164741.350370-1-johan.almbladh@anyfinetworks.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162748615977.59465.13262421617578791515.stgit@devnote2>
-References: <162748615977.59465.13262421617578791515.stgit@devnote2>
-User-Agent: StGit/0.19
+In-Reply-To: <5afe26c6-7ab1-88ab-a3e0-eb007256a856@iogearbox.net>
+References: <5afe26c6-7ab1-88ab-a3e0-eb007256a856@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use the 'bool' type instead of 'int' for the functions which
-returns a boolean value, because this makes clear that those
-functions don't return any error code.
+Before, the interpreter allowed up to MAX_TAIL_CALL_CNT + 1 tail calls.
+Now precisely MAX_TAIL_CALL_CNT is allowed, which is in line with the
+behavior of the x86 JITs.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 ---
- Changes in v2:
-  - Fix trace_kprobe's kprobe_gone() too.
----
- include/linux/kprobes.h     |    8 ++++----
- kernel/kprobes.c            |   26 +++++++++++++-------------
- kernel/trace/trace_kprobe.c |    2 +-
- 3 files changed, 18 insertions(+), 18 deletions(-)
+ kernel/bpf/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 6a5995f334a0..0ba3f9e316d4 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -104,25 +104,25 @@ struct kprobe {
- #define KPROBE_FLAG_FTRACE	8 /* probe is using ftrace */
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 9b1577498373..67682b3afc84 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1559,7 +1559,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
  
- /* Has this kprobe gone ? */
--static inline int kprobe_gone(struct kprobe *p)
-+static inline bool kprobe_gone(struct kprobe *p)
- {
- 	return p->flags & KPROBE_FLAG_GONE;
- }
+ 		if (unlikely(index >= array->map.max_entries))
+ 			goto out;
+-		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
++		if (unlikely(tail_call_cnt >= MAX_TAIL_CALL_CNT))
+ 			goto out;
  
- /* Is this kprobe disabled ? */
--static inline int kprobe_disabled(struct kprobe *p)
-+static inline bool kprobe_disabled(struct kprobe *p)
- {
- 	return p->flags & (KPROBE_FLAG_DISABLED | KPROBE_FLAG_GONE);
- }
- 
- /* Is this kprobe really running optimized path ? */
--static inline int kprobe_optimized(struct kprobe *p)
-+static inline bool kprobe_optimized(struct kprobe *p)
- {
- 	return p->flags & KPROBE_FLAG_OPTIMIZED;
- }
- 
- /* Is this kprobe uses ftrace ? */
--static inline int kprobe_ftrace(struct kprobe *p)
-+static inline bool kprobe_ftrace(struct kprobe *p)
- {
- 	return p->flags & KPROBE_FLAG_FTRACE;
- }
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index b6f1dcf4bff3..8021bccb7770 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -198,8 +198,8 @@ kprobe_opcode_t *__get_insn_slot(struct kprobe_insn_cache *c)
- 	return slot;
- }
- 
--/* Return 1 if all garbages are collected, otherwise 0. */
--static int collect_one_slot(struct kprobe_insn_page *kip, int idx)
-+/* Return true if all garbages are collected, otherwise false. */
-+static bool collect_one_slot(struct kprobe_insn_page *kip, int idx)
- {
- 	kip->slot_used[idx] = SLOT_CLEAN;
- 	kip->nused--;
-@@ -223,9 +223,9 @@ static int collect_one_slot(struct kprobe_insn_page *kip, int idx)
- 			kip->cache->free(kip->insns);
- 			kfree(kip);
- 		}
--		return 1;
-+		return true;
- 	}
--	return 0;
-+	return false;
- }
- 
- static int collect_garbage_slots(struct kprobe_insn_cache *c)
-@@ -389,13 +389,13 @@ NOKPROBE_SYMBOL(get_kprobe);
- static int aggr_pre_handler(struct kprobe *p, struct pt_regs *regs);
- 
- /* Return true if 'p' is an aggregator */
--static inline int kprobe_aggrprobe(struct kprobe *p)
-+static inline bool kprobe_aggrprobe(struct kprobe *p)
- {
- 	return p->pre_handler == aggr_pre_handler;
- }
- 
- /* Return true if 'p' is unused */
--static inline int kprobe_unused(struct kprobe *p)
-+static inline bool kprobe_unused(struct kprobe *p)
- {
- 	return kprobe_aggrprobe(p) && kprobe_disabled(p) &&
- 	       list_empty(&p->list);
-@@ -455,7 +455,7 @@ static inline int kprobe_optready(struct kprobe *p)
- }
- 
- /* Return true if the kprobe is disarmed. Note: p must be on hash list */
--static inline int kprobe_disarmed(struct kprobe *p)
-+static inline bool kprobe_disarmed(struct kprobe *p)
- {
- 	struct optimized_kprobe *op;
- 
-@@ -469,16 +469,16 @@ static inline int kprobe_disarmed(struct kprobe *p)
- }
- 
- /* Return true if the probe is queued on (un)optimizing lists */
--static int kprobe_queued(struct kprobe *p)
-+static bool kprobe_queued(struct kprobe *p)
- {
- 	struct optimized_kprobe *op;
- 
- 	if (kprobe_aggrprobe(p)) {
- 		op = container_of(p, struct optimized_kprobe, kp);
- 		if (!list_empty(&op->list))
--			return 1;
-+			return true;
- 	}
--	return 0;
-+	return false;
- }
- 
- /*
-@@ -1678,7 +1678,7 @@ int register_kprobe(struct kprobe *p)
- EXPORT_SYMBOL_GPL(register_kprobe);
- 
- /* Check if all probes on the 'ap' are disabled. */
--static int aggr_kprobe_disabled(struct kprobe *ap)
-+static bool aggr_kprobe_disabled(struct kprobe *ap)
- {
- 	struct kprobe *kp;
- 
-@@ -1690,9 +1690,9 @@ static int aggr_kprobe_disabled(struct kprobe *ap)
- 			 * Since there is an active probe on the list,
- 			 * we can't disable this 'ap'.
- 			 */
--			return 0;
-+			return false;
- 
--	return 1;
-+	return true;
- }
- 
- static struct kprobe *__disable_kprobe(struct kprobe *p)
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index ea6178cb5e33..c6e0345a44e9 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -101,7 +101,7 @@ static nokprobe_inline unsigned long trace_kprobe_offset(struct trace_kprobe *tk
- 
- static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
- {
--	return !!(kprobe_gone(&tk->rp.kp));
-+	return kprobe_gone(&tk->rp.kp);
- }
- 
- static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+ 		tail_call_cnt++;
+-- 
+2.25.1
 
