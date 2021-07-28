@@ -2,130 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B843D843F
-	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 01:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652C13D85C9
+	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 04:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbhG0Xsp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 19:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
+        id S233325AbhG1CH5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Jul 2021 22:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232766AbhG0Xsp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Jul 2021 19:48:45 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98271C061757;
-        Tue, 27 Jul 2021 16:48:43 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id w17so835581ybl.11;
-        Tue, 27 Jul 2021 16:48:43 -0700 (PDT)
+        with ESMTP id S233260AbhG1CH4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Jul 2021 22:07:56 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2BBC061757;
+        Tue, 27 Jul 2021 19:07:54 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id c16so831100plh.7;
+        Tue, 27 Jul 2021 19:07:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jPRgbtGS6Pk9frO0T63mWMz81DzPxMuuTkI6I2qFqkE=;
-        b=Sf47/z3aiSLPyOftcCo2FmqTsmfyQR1RUOgoKIoZwkLdx5Q75xOhmJfo8BI6Vh3jQ1
-         meiWGIJkK1Q/ZaT9B/8+5K/xT6xa/X2knk6uuHzy6laZuALLVNYn9BKNssZNWd6lM7BN
-         KIfnf43CInjP21hwtjsOOYw9+9ZydeLafVnVD7am+TUiHITvHckh5ZEgrY/8ypXZmJQd
-         N/Y7mma9oxKjoWa7MXqdGwFQKxpFul+BNskHnzdl7DBzQG9lr217nLCz/lURFbyWl+fu
-         dQ90TPqC9WM6ochWbr/4rdMp/LvIuOwnFhO2Jtd7ntXWmYYnE9iv7o8ptMzBj22FZrTV
-         6IOQ==
+        bh=5mXMjFPqPwFYqgDq1yqkwzfqi2rFOlo0l2pItgAk0Ng=;
+        b=MdLIJXGQlUxFzYCyWYJRYBGi5eFuhpyYUtSmbbHTYV0IubJLEhICHBM+kQKOXcugaS
+         rJ9zFAFusLuHPGz0dHF7l0j2NLF4Tdp94IEiZ+ScPhrudkWYpe5h/luZzzMe8u/Z5z8k
+         fbnOmWmLitck4SSADPA3zeAKpb1To3Dkh1lpqX7Do1J0ogQFyQ+RTI2cEYjSpVW/j0l/
+         AdcBV7tT3LtcPNTM1HAhRQexmT0lrP/nplvwD+IcPjgksZ2QTOBvo9eZ7AEhx00LU4gL
+         6uJ9XsJoTBUJIxZ8IUyru8zMxCu8ka3soqsZVflM3U5Ek+J3Js1HiMz6e51zqoIWHY4f
+         Df/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jPRgbtGS6Pk9frO0T63mWMz81DzPxMuuTkI6I2qFqkE=;
-        b=HxmAU3QzWVi0n7qLF878adXQRgMwtquQdc5kKy9jCzVOAevhO73yNpMYVJnKtOXiwH
-         b2OSWb+MlcalGPf5RiQ2IwQxCQtUaqqO2ZGJqVRAYfglPAUTcfjFX24+TMlIAoK1pddO
-         10NzFRT2ZVA2/XwKhZJrUJ3IjUcMXN3xt/5xLN9/ng4nMFqbd/6I24CDjvEK2y/ObPP0
-         ctrgy9FBt4aVSq+JvXY9XhdFlLX26gIFi1adNUgpII2u0m1Kuo+SoDVoYSNGQZGLFGl8
-         w3KH8rwbve9lLanNdjPp+4kyRwiMM6x4kCgEHcQa1w7jRWzvR0rU5m0f5nGF0tabB7Yc
-         g9NQ==
-X-Gm-Message-State: AOAM533ckOuaC6QpXSB5iTpMT1u5p/7PlBCZvN/hP+GECqXAHgTSnU3/
-        trB3eb8GAnKSRtgkS1SMZAURrrwa+oDwOovZ2P4=
-X-Google-Smtp-Source: ABdhPJwSRcZQaSjVxUkwcOaUXHLCCfEqSleQTztCc/umt6maWUz1l2z3+XL6u1Vlz9T9EOOM3bINd6ZNi1XvvUiRLts=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr34957355ybo.230.1627429722884;
- Tue, 27 Jul 2021 16:48:42 -0700 (PDT)
+        bh=5mXMjFPqPwFYqgDq1yqkwzfqi2rFOlo0l2pItgAk0Ng=;
+        b=Uyhtp7dl23z09JC1aAF9mB+4SXMVRLYVNgdx+VyVCBt4fG3P49Yq/J/S9SV54qJWHR
+         OCkwXRv95mo8cc0c1qHuAEbTNR/RQ+D+XChVpPvO+smQLK0X+bT2pKbYR11IXyykFH4G
+         O2Dqrxp07wm/8rMYCTgkjxNwL75jr6GLMYNrCzMFKZhF2pEx+wB67gD70hM8K1TQVVk5
+         6ly+lepe9GMZlpH0c/ESHbX5GuIjFOBqBHEZTr2A/rwfQiogmgFRGYdLNNOPONER0RUR
+         Ky4lTFctjfZGkIlSAvgnSd0OjsE1RyVQGPs1/2ZJJwfF97DHjhOELqmhamgPFkoezzg9
+         muKw==
+X-Gm-Message-State: AOAM532mWKtk/eHMdKvJfGb9vveUYFwR1RtyL/0N0rDMaj5wj9pWdbe6
+        NQWaua52OpAJHKgh8luOkTNHzQitXoWX5Z+sGVU=
+X-Google-Smtp-Source: ABdhPJyPZXkdPgV465qK/iIZ6+cZ7aKV9G8U3swzQ+rDg0M1oNPMtKGj9dHG7T6zOPdzBZ+62F6s1uiYRvC544TCAm0=
+X-Received: by 2002:a05:6a00:26e5:b029:330:be3:cacd with SMTP id
+ p37-20020a056a0026e5b02903300be3cacdmr25949003pfw.78.1627438074471; Tue, 27
+ Jul 2021 19:07:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210727222335.4029096-1-sdf@google.com> <CAEf4BzZJOH1wbQ2BCjaqkYWtW406Oh+UyWt_wM9AtggabY46RQ@mail.gmail.com>
- <YQCV/9NtQvtOk0sW@google.com>
-In-Reply-To: <YQCV/9NtQvtOk0sW@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Jul 2021 16:48:31 -0700
-Message-ID: <CAEf4BzZ4e+pjWqyAj-MEVY2pJi8Eg35OrGUbqACaV_WLdM9C8A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4] bpf: increase supported cgroup storage value size
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20210727001252.1287673-1-jiang.wang@bytedance.com>
+ <20210727001252.1287673-3-jiang.wang@bytedance.com> <6100363add8a9_199a412089@john-XPS-13-9370.notmuch>
+In-Reply-To: <6100363add8a9_199a412089@john-XPS-13-9370.notmuch>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Tue, 27 Jul 2021 19:07:43 -0700
+Message-ID: <CAM_iQpVedTzRbf-bC7WuGMFYF=qnUxbnUdqJ9+FaxrTAn5DkTw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/5] af_unix: add unix_stream_proto for sockmap
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jiang Wang <jiang.wang@bytedance.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 4:25 PM <sdf@google.com> wrote:
->
-> On 07/27, Andrii Nakryiko wrote:
-> > On Tue, Jul 27, 2021 at 3:23 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > >
-> > > Current max cgroup storage value size is 4k (PAGE_SIZE). The other local
-> > > storages accept up to 64k (BPF_LOCAL_STORAGE_MAX_VALUE_SIZE). Let's
-> > align
-> > > max cgroup value size with the other storages.
-> > >
-> > > For percpu, the max is 32k (PCPU_MIN_UNIT_SIZE) because percpu
-> > > allocator is not happy about larger values.
-> > >
-> > > netcnt test is extended to exercise those maximum values
-> > > (non-percpu max size is close to, but not real max).
-> > >
-> > > v4:
-> > > * remove inner union (Andrii Nakryiko)
-> > > * keep net_cnt on the stack (Andrii Nakryiko)
-> > >
-> > > v3:
-> > > * refine SIZEOF_BPF_LOCAL_STORAGE_ELEM comment (Yonghong Song)
-> > > * anonymous struct in percpu_net_cnt & net_cnt (Yonghong Song)
-> > > * reorder free (Yonghong Song)
-> > >
-> > > v2:
-> > > * cap max_value_size instead of BUILD_BUG_ON (Martin KaFai Lau)
-> > >
-> > > Cc: Martin KaFai Lau <kafai@fb.com>
-> > > Cc: Yonghong Song <yhs@fb.com>
-> > > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > ---
->
-> > Added Martin's ack and applied to bpf-next. Please carry over received
-> > Acks between revisions.
-> Ah, sorry, forgot about it :-(
->
-> > It's also a good practice to separate selftest from the kernel (or
-> > libbpf) changes, unless kernel change doesn't immediately break
-> > selftest. Please consider doing that for the future.
-> I've actually seen some back and forth on this one. I used to split
-> them in the past (assuming it makes it easy to do the
-> backports/cherry-picks), but I remember at some point it was
-> suggested not to split them for small changes like this.
+On Tue, Jul 27, 2021 at 9:37 AM John Fastabend <john.fastabend@gmail.com> wrote:
+> Do we really need an unhash hook for unix_stream? I'm doing some testing
+> now to pull it out of TCP side as well. It seems to be an artifact of old
+> code that is no longer necessary. On TCP side at least just using close()
+> looks to be enough now.
 
-So we asked to split UAPI header sync for tools/include/ into a
-separate patch initially. But then I just improved libbpf's sync
-script to handle that regardless and we stopped asking for that. But
-the libbpf vs kernel vs selftests split was always (perhaps
-implicitly) advised. Personally, I've only had a few cases where
-selftest changes had to go in with kernel changes in the same patch to
-avoid breaking selftests. In all other cases it's cleaner to have them
-split out.
+How do you handle the disconnection from remote without ->unhash()?
 
->
-> Might be a good idea to document this (when and if to separate
-> libbpf/selftests)
-> on bpf_devel_QA.rst
->
-> > I also just noticed that test_netcnt isn't part of test_progs. It
-> > would be great to migrate it under the common test_progs
-> > infrastructure. We've been steadily moving towards that, but there are
-> > still a bunch of tests that are not run in CI.
-> SG, I might do a follow up on this one.
+For all stream sockets, we still only allow established sockets to stay
+in sockmap, which means we have to remove it if it is disconnected
+or closed.
 
-Sounds good, thanks!
+But it seems Jiang forgot to call ->unhash() when disconnecting.
+
+Thanks.
