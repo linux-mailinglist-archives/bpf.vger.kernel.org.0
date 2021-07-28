@@ -2,352 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AAD3D93E5
-	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 19:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A663D942D
+	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 19:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhG1RF7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jul 2021 13:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbhG1RFs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Jul 2021 13:05:48 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBA4C06179B
-        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 10:05:46 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id v21so5784526ejg.1
-        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 10:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZCZN43jWD2vq/l1OsMAXPbnAOZR2i3qxBbDBOhKuvZw=;
-        b=DuCrJsKBuypqmT6k6/pckBl6VrsGUvttIq1j0LlVRJYUz0UdaLgmaWvCwZEdevSQk/
-         tXISoLlq0w+APUt9rSLUjb6bZrgiVayuDwidUaU/gQGm9O+F5E8KAIR7q8d2yC7OamxF
-         c2DgRDYFyVrsM3O3ISy46QI/v6PnZGcbcDy4AEzaJWEYBqm/r+xSBUVCUhqsDYREkNWj
-         pTk2Cg7GwO+Ak12hDX9Gw7w7DUeSwfLE+nPeHkKLSVNumL9jN/BV+UFTu9NXeg+++w8f
-         lLJJIvjZGmxfxDf5c+kBFGdm7CbgtuRAtAt+OvkF5EwwBVgeHw7mXh6r1LoYEkkbNsHu
-         7E4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZCZN43jWD2vq/l1OsMAXPbnAOZR2i3qxBbDBOhKuvZw=;
-        b=JUx/XPfexVxbFgaqKwXTM2234mU2/VpsFOtjNfzfDZqfLb++LiYdW/bF4yOfaxFKLh
-         iDIQM0GNaHsDGGomTy534KHvd5rC5Vgees+lYzQ3ketlH5TMBwiwY6QQ1FUpHoOf0M1b
-         7jkMxS1iTR0xZetReUtlcDDKR4NwW9hqtWxUsyBjTla0KDYhSH15boxAGwNJ2AgmL+6Q
-         uzReaG1f4knfPn1jp+W0xGFnmLZIOoAXWM9wl1NYAhiEQCU/n9xh7KAOjnJkdyqOM7SO
-         q9f/RUNy1Dejw9AEWAAJ2eqsunQ0Ml4+uXBj8ndVdkWa0Jmw1EG8+rXUewn39S5u7nze
-         DuiA==
-X-Gm-Message-State: AOAM5313H5jxXuJQbUDqRV0aUd3wGHy9JV8PuwiyPwvaFAmerCGApYni
-        3ChMVT7jg0nWnrUR1iwQ3LqzcQ==
-X-Google-Smtp-Source: ABdhPJwdczx4mUDshXzCLeIiyhVoeUB3nVSaGH5jtctQva7JWfmKSMpjVChrqDK7BlspnwHAgcte/A==
-X-Received: by 2002:a17:906:c087:: with SMTP id f7mr417156ejz.487.1627491945178;
-        Wed, 28 Jul 2021 10:05:45 -0700 (PDT)
-Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
-        by smtp.gmail.com with ESMTPSA id bd24sm139349edb.56.2021.07.28.10.05.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 10:05:44 -0700 (PDT)
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        Tony.Ambardar@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 14/14] bpf/tests: Add tail call test suite
-Date:   Wed, 28 Jul 2021 19:05:02 +0200
-Message-Id: <20210728170502.351010-15-johan.almbladh@anyfinetworks.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210728170502.351010-1-johan.almbladh@anyfinetworks.com>
-References: <20210728170502.351010-1-johan.almbladh@anyfinetworks.com>
+        id S229515AbhG1RXQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jul 2021 13:23:16 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16292 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229574AbhG1RXQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 28 Jul 2021 13:23:16 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SHDGNT018327
+        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 10:23:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=T27utM/zPFZAT6o0yE5+NYbVS0uSkV+QDl8gjijWliA=;
+ b=ZBbWE0uiL2lWVMgziSQdQoJip3iVFzoEFdXRnd0fbGWrpId2Jy6ZuVm6tXh7gWNmvXWS
+ hEUrnASSZZg4YxPvV9YXi1/OqlT4Bg83hSlmxxHuvgg80waDut2HyVSyJGZY+WMTAX7d
+ MOpi+xvfNtnpVv74xLdTUjWK7RNFbnLs/UI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a2bfcb9g7-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 10:23:14 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Jul 2021 10:23:09 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 4990D559B38F; Wed, 28 Jul 2021 10:23:07 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com>
+Subject: [PATCH bpf] bpf: fix rcu warning in bpf_prog_run_pin_on_cpu()
+Date:   Wed, 28 Jul 2021 10:23:07 -0700
+Message-ID: <20210728172307.1030271-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: C6zvAiob9YrXA67weP94zbLURfYpdmc_
+X-Proofpoint-ORIG-GUID: C6zvAiob9YrXA67weP94zbLURfYpdmc_
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-28_08:2021-07-27,2021-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=860
+ malwarescore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
+ clxscore=1015 mlxscore=0 bulkscore=0 spamscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2107140000 definitions=main-2107280098
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-While BPF_CALL instructions were tested implicitly by the cBPF-to-eBPF
-translation, there has not been any tests for BPF_TAIL_CALL instructions.
-The new test suite includes tests for tail call chaining, tail call count
-tracking and error paths. It is mainly intended for JIT development and
-testing.
+syzbot reported a RCU warning like below:
+  WARNING: suspicious RCU usage
+  ...
+  Call Trace:
+   __dump_stack lib/dump_stack.c:88 [inline]
+   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+   task_css_set include/linux/cgroup.h:481 [inline]
+   task_dfl_cgroup include/linux/cgroup.h:550 [inline]
+   ____bpf_get_current_cgroup_id kernel/bpf/helpers.c:356 [inline]
+   bpf_get_current_cgroup_id+0x1ce/0x210 kernel/bpf/helpers.c:354
+   bpf_prog_08c4887f705f20b8+0x10/0x824
+   bpf_dispatcher_nop_func include/linux/bpf.h:687 [inline]
+   bpf_prog_run_pin_on_cpu include/linux/filter.h:624 [inline]
+   bpf_prog_test_run_syscall+0x2cf/0x5f0 net/bpf/test_run.c:954
+   bpf_prog_test_run kernel/bpf/syscall.c:3207 [inline]
+   __sys_bpf+0x1993/0x53b0 kernel/bpf/syscall.c:4487
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Reported-by: kernel test robot <lkp@intel.com>
+The warning is introduced by Commit 79a7f8bdb159d
+("bpf: Introduce bpf_sys_bpf() helper and program type.").
+The rcu_read_lock/unlock() is missing when calling
+bpf_prog_run_pin_on_cpu().
+
+Previously, bpf_prog_run_pin_on_cpu() is simply BPF_PROG_RUN
+macro and if necessary functions using BPF_PROG_RUN all have proper
+rcu_read_lock/unlock() protections.
+Commit 3c58482a382ba ("bpf: Provide bpf_prog_run_pin_on_cpu() helper")
+added bpf_prog_run_pin_on_cpu() helper in order to add
+migrate_disable/enable() support.
+Commit 79a7f8bdb159d later called bpf_prog_run_pin_on_cpu()
+but didn't have rcu_read_lock/unlock() at the callsite which
+triggered the reason.
+
+I added rcu lock protection in bpf_prog_test_run_syscall()
+which fixed the issue. Alternatively, rcu lock protection
+could be added in bpf_prog_test_run_syscall() and some rcu
+lock protection in bpf_prog_test_run_syscall() callers
+can be removed. I feel the later is a bigger change for
+bpf tree. So I picked the simpler solution.
+
+Reported-by: syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
+Fixes: 79a7f8bdb159d ("bpf: Introduce bpf_sys_bpf() helper and program ty=
+pe.")
+Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- lib/test_bpf.c | 249 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 249 insertions(+)
+ net/bpf/test_run.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index af5758151d0a..222d454b2ed4 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -8981,8 +8981,249 @@ static __init int test_bpf(void)
- 	return err_cnt ? -EINVAL : 0;
- }
- 
-+struct tail_call_test {
-+	const char *descr;
-+	struct bpf_insn insns[MAX_INSNS];
-+	int result;
-+	int stack_depth;
-+};
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 1cc75c811e24..a350b185d9d2 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -951,7 +951,10 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
+ 			goto out;
+ 		}
+ 	}
 +
-+/*
-+ * Magic marker used in test snippets for tail calls below.
-+ * BPF_LD/MOV to R2 and R2 with this immediate value is replaced
-+ * with the proper values by the test runner.
-+ */
-+#define TAIL_CALL_MARKER 0x7a11ca11
-+
-+/* Special offset to indicate a NULL call target */
-+#define TAIL_CALL_NULL 0x7fff
-+
-+#define TAIL_CALL(offset)			       \
-+	BPF_LD_IMM64(R2, TAIL_CALL_MARKER),	       \
-+	BPF_RAW_INSN(BPF_ALU | BPF_MOV | BPF_K, R3, 0, \
-+		     offset, TAIL_CALL_MARKER),	       \
-+	BPF_JMP_IMM(BPF_TAIL_CALL, 0, 0, 0)
-+
-+/*
-+ * Tail call tests. Each test case may call any other test in the table,
-+ * including itself, specified as a relative index offset from the calling
-+ * test. The index TAIL_CALL_NULL can be used to specify a NULL target
-+ * function to test the JIT error path.
-+ */
-+static struct tail_call_test tail_call_tests[] = {
-+	{
-+		"Tail call leaf",
-+		.insns = {
-+			BPF_ALU64_REG(BPF_MOV, R0, R1),
-+			BPF_ALU64_IMM(BPF_ADD, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 1,
-+	},
-+	{
-+		"Tail call 2",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_ADD, R1, 2),
-+			TAIL_CALL(-1),
-+			BPF_ALU64_IMM(BPF_MOV, R0, -1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 3,
-+	},
-+	{
-+		"Tail call 3",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_ADD, R1, 3),
-+			TAIL_CALL(-1),
-+			BPF_ALU64_IMM(BPF_MOV, R0, -1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 6,
-+	},
-+	{
-+		"Tail call 4",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_ADD, R1, 4),
-+			TAIL_CALL(-1),
-+			BPF_ALU64_IMM(BPF_MOV, R0, -1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 10,
-+	},
-+	{
-+		"Tail call error path, max count reached",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_ADD, R1, 1),
-+			BPF_ALU64_REG(BPF_MOV, R0, R1),
-+			TAIL_CALL(0),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = MAX_TAIL_CALL_CNT + 1,
-+	},
-+	{
-+		"Tail call error path, NULL target",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_MOV, R0, -1),
-+			TAIL_CALL(TAIL_CALL_NULL),
-+			BPF_ALU64_IMM(BPF_MOV, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 1,
-+	},
-+	{
-+		/* Must be the last test */
-+		"Tail call error path, index out of range",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_MOV, R0, -1),
-+			TAIL_CALL(1),    /* Index out of range */
-+			BPF_ALU64_IMM(BPF_MOV, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 1,
-+	},
-+};
-+
-+static void __init destroy_tail_call_tests(struct bpf_array *progs)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++)
-+		if (progs->ptrs[i])
-+			bpf_prog_free(progs->ptrs[i]);
-+	kfree(progs);
-+}
-+
-+static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
-+{
-+	struct bpf_array *progs;
-+	int ntests = ARRAY_SIZE(tail_call_tests);
-+	int which, err;
-+
-+	/* Allocate the table of programs to be used for tall calls */
-+	progs = kzalloc(sizeof(*progs) + (ntests + 1) * sizeof(progs->ptrs[0]),
-+			GFP_KERNEL);
-+	if (!progs)
-+		goto out_nomem;
-+
-+	/* Create all eBPF programs and populate the table */
-+	for (which = 0; which < ntests; which++) {
-+		struct tail_call_test *test = &tail_call_tests[which];
-+		struct bpf_prog *fp;
-+		int len, i;
-+
-+		/* Compute the number of program instructions */
-+		for (len = 0; len < MAX_INSNS; len++) {
-+			struct bpf_insn *insn = &test->insns[len];
-+
-+			if (len < MAX_INSNS - 1 &&
-+			    insn->code == (BPF_LD | BPF_DW | BPF_IMM))
-+				len++;
-+			if (insn->code == 0)
-+				break;
-+		}
-+
-+		/* Allocate and initialize the program */
-+		fp = bpf_prog_alloc(bpf_prog_size(len), 0);
-+		if (!fp)
-+			goto out_nomem;
-+
-+		fp->len = len;
-+		fp->type = BPF_PROG_TYPE_SOCKET_FILTER;
-+		fp->aux->stack_depth = test->stack_depth;
-+		memcpy(fp->insnsi, test->insns, len * sizeof(struct bpf_insn));
-+
-+		/* Relocate runtime tail call offsets and addresses */
-+		for (i = 0; i < len; i++) {
-+			struct bpf_insn *insn = &fp->insnsi[i];
-+			int target;
-+
-+			if (insn->imm != TAIL_CALL_MARKER)
-+				continue;
-+
-+			switch (insn->code) {
-+			case BPF_LD | BPF_DW | BPF_IMM:
-+				if (insn->dst_reg == R2) {
-+					insn[0].imm = (u32)(long)progs;
-+					insn[1].imm = ((u64)(long)progs) >> 32;
-+				}
-+				break;
-+
-+			case BPF_ALU | BPF_MOV | BPF_K:
-+			case BPF_ALU64 | BPF_MOV | BPF_K:
-+				if (insn->off == TAIL_CALL_NULL)
-+					target = ntests;
-+				else
-+					target = which + insn->off;
-+				if (insn->dst_reg == R3)
-+					insn->imm = target;
-+				break;
-+			}
-+		}
-+
-+		fp = bpf_prog_select_runtime(fp, &err);
-+		if (err)
-+			goto out_err;
-+
-+		progs->ptrs[which] = fp;
-+	}
-+
-+	/* The last entry contains a NULL program pointer */
-+	progs->map.max_entries = ntests + 1;
-+	*pprogs = progs;
-+	return 0;
-+
-+out_nomem:
-+	err = -ENOMEM;
-+
-+out_err:
-+	if (progs)
-+		destroy_tail_call_tests(progs);
-+	return err;
-+}
-+
-+static __init int test_tail_calls(struct bpf_array *progs)
-+{
-+	int i, err_cnt = 0, pass_cnt = 0;
-+	int jit_cnt = 0, run_cnt = 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
-+		struct tail_call_test *test = &tail_call_tests[i];
-+		struct bpf_prog *fp = progs->ptrs[i];
-+		u64 duration;
-+		int ret;
-+
-+		cond_resched();
-+
-+		pr_info("#%d %s ", i, test->descr);
-+		if (!fp) {
-+			err_cnt++;
-+			continue;
-+		}
-+		pr_cont("jited:%u ", fp->jited);
-+
-+		run_cnt++;
-+		if (fp->jited)
-+			jit_cnt++;
-+
-+		ret = __run_one(fp, NULL, MAX_TESTRUNS, &duration);
-+		if (ret == test->result) {
-+			pr_cont("%lld PASS", duration);
-+			pass_cnt++;
-+		} else {
-+			pr_cont("ret %d != %d FAIL", ret, test->result);
-+			err_cnt++;
-+		}
-+	}
-+
-+	pr_info("%s: Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed]\n",
-+		__func__, pass_cnt, err_cnt, jit_cnt, run_cnt);
-+
-+	return err_cnt ? -EINVAL : 0;
-+}
-+
- static int __init test_bpf_init(void)
- {
-+	struct bpf_array *progs = NULL;
- 	int ret;
- 
- 	ret = prepare_bpf_tests();
-@@ -8994,6 +9235,14 @@ static int __init test_bpf_init(void)
- 	if (ret)
- 		return ret;
- 
-+	ret = prepare_tail_call_tests(&progs);
-+	if (ret)
-+		return ret;
-+	ret = test_tail_calls(progs);
-+	destroy_tail_call_tests(progs);
-+	if (ret)
-+		return ret;
-+
- 	return test_skb_segment();
- }
- 
--- 
-2.25.1
++	rcu_read_lock();
+ 	retval =3D bpf_prog_run_pin_on_cpu(prog, ctx);
++	rcu_read_unlock();
+=20
+ 	if (copy_to_user(&uattr->test.retval, &retval, sizeof(u32))) {
+ 		err =3D -EFAULT;
+--=20
+2.30.2
 
