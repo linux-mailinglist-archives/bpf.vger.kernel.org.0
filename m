@@ -2,105 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8283B3D992A
-	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 00:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9258A3D9944
+	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 01:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhG1W7p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jul 2021 18:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbhG1W7o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Jul 2021 18:59:44 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680DDC061757;
-        Wed, 28 Jul 2021 15:59:39 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id u15-20020a05600c19cfb02902501bdb23cdso5512608wmq.0;
-        Wed, 28 Jul 2021 15:59:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k39DDalMzTShpUS7xTfsnHh2DrwwNvLFQeGw20Ks4sU=;
-        b=bMX3AHpR29KHfRWNM21RUKVBI9g88zD7R80s3ktuIHY5+NXXbLd4SBFF319thVdGmJ
-         Y4R9zHTqvm4zLogiMUdxqr+zk6IIl2nW73UyA4tuk/cGSUuDXSa/ba6AZAHUrp7uHFzf
-         EXbS5x6Ja1Z1T6D61GhxHhQAsqo29FZ8c6OkxPshDdpYAKd0Xb81nkh1tjpp7BtQC//g
-         DmL/TNurbK1Psg5riMfbn/5ysHbyaQ+Qx/ept89NQxmhXQPzYymy7FOnDluzrHFfDNI/
-         iQLwjJj8AtIqQbqhBvv+Wjhms6YWt6rvSYpAElUjHo1hapZ8r2dY8riijesbi3fJQ+YG
-         lNmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k39DDalMzTShpUS7xTfsnHh2DrwwNvLFQeGw20Ks4sU=;
-        b=ltv0dzjjJLy3poE4KIC6sDh6THSlOMp6G9Jvfkyda5yDakeCAPtTzL5Tv1mR3X2+pZ
-         KAT/Tgidw85UWMJ2oENVv2oFwM66vXD8wf+k2p+QX1PWbZTFK5sv5Ay2htVjtkILjyEP
-         io4n9A4OfhZjsdEN/MUSXBCNjC5avGQS/uCthjrz7fc08LP1HVIyNQ9K3zBmMhyjz07A
-         vm5uuv0teAnEJ303gE79WalwVqRJ3Lp/u9MceO8XuwT4hNgW9cmkJr7DXQSRd2iPoeOZ
-         v28dcsvJJiZ4ZORklE9KT8qb48EZNdDhD3j4XGjmiPyFUxTJxE3hdKQ7S+Gy/RmUCIuy
-         hwtQ==
-X-Gm-Message-State: AOAM533BZCKV9pRgPFLL1THayQxbrPRE7k38S4e2btN1k1TL0HI8uAAL
-        2Zp2nIvc07qAwOJ4F0LLML8=
-X-Google-Smtp-Source: ABdhPJyGtnZaI0lopAsxl0tTyhk+yqqNERVD1Zpj353mgyTZY/7WYWlsVd/FttUfdovBhRJPEQ2KuQ==
-X-Received: by 2002:a05:600c:1ca3:: with SMTP id k35mr11268958wms.174.1627513178039;
-        Wed, 28 Jul 2021 15:59:38 -0700 (PDT)
-Received: from rgo-tower.fritz.box ([2a02:8109:b5bf:a504:bde4:7833:8c39:986c])
-        by smtp.gmail.com with ESMTPSA id a8sm1326903wmj.8.2021.07.28.15.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 15:59:37 -0700 (PDT)
-From:   "=?UTF-8?q?Robin=20G=C3=B6gge?=" <r.goegge@googlemail.com>
-X-Google-Original-From: =?UTF-8?q?Robin=20G=C3=B6gge?= <r.goegge@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        =?UTF-8?q?Robin=20G=C3=B6gge?= <r.goegge@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH RESEND bpf] libbpf: fix probe for BPF_PROG_TYPE_CGROUP_SOCKOPT
-Date:   Thu, 29 Jul 2021 00:58:25 +0200
-Message-Id: <20210728225825.2357586-1-r.goegge@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S232169AbhG1XJm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jul 2021 19:09:42 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:35733 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232143AbhG1XJm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 28 Jul 2021 19:09:42 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 6F2B7320094A;
+        Wed, 28 Jul 2021 19:09:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 28 Jul 2021 19:09:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=G4waoIhk41AWPXK4ZjIDKTU0Dl
+        X3UQm/vowYvkaU7gE=; b=cPT2sPy2R0BnFEKKrlQDYfMdjz+xuMEysxKw8ViKfR
+        dCJU+Whs1gX22hA8t3MDUTiiCTwzic/tpwa/nn5zDZDze9fziSpMJYTASTQym/jG
+        rC+iG+kC7HWyukcJFaLDrKvMMmjAkNuLU9+xTeUdMnkm36BaLBlLoOiWk2G/zMrs
+        29Fny9tYK+7HHG4PeQfoGKtJTCSMR6jl2m1iZgWzr+WnUgiNh3KcQXxfq4zERMJO
+        tCeS8ql0u2EIvUqlQ9nMNyfUttQ+aLtnZphUS+ujjUc7DtpBqyA0UxXXM640jxrc
+        IZXctxysE13x0zicAMcPcovUFDGVCuRKFAjOKyscBcDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=G4waoIhk41AWPXK4Z
+        jIDKTU0DlX3UQm/vowYvkaU7gE=; b=kiNyIwJnos8kaoGKEW5twmxhYMK+4CCqK
+        F0WA3K9btft9tImnab08C0fgHty9gd1fg7VQ5lv62TZNotFzCuB9flPHIV3cwcxy
+        HUz0MsrRBdiT+/dTiGL09Jjjhnj9xPXhP5myQUPYCBJ8GIqXcMX6v+SvfdUGRcr0
+        bLD7DzTrWeRn8ubOQXntHtbVRCWjG/SVnDqJqsci0AkHj8o0pnjs9JZg8W2sdM/x
+        wT1Dw1w13V/tdI3oFFInIZrtYyFK2aK8YUm53oNJeR95BpWE0XAh8MsblhHeqAaU
+        acR4mrMstCq1lzSHs6wAEGDuMBrjzN64wis5XKS26z38dt/3QNhhA==
+X-ME-Sender: <xms:suMBYfPKS0-mNJSRXWvEvx4qrOt8rDIHPm7w8ZRAEE0g3WfxyfEfBg>
+    <xme:suMBYZ_XlfWEsg0cTHl41M8hNYz9WhHwdjKYlPkerMXYpblOfBFAeNUpL6fpe_SOU
+    FAVRL2TUXOg4CpfHA>
+X-ME-Received: <xmr:suMBYeQAetCPr6MweCF9ojawFfIOSzpoecgPLz5cslaNJ-4u06J8TxH5ak09dE4McBK3prkabPLrL_IQYptFW41CrPtHG3peKg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrhedtgddugecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephffvuf
+    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhes
+    ugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepieffgfelvdffiedtleejvdetfe
+    efiedvfeehieevveejudeiiefgteeiveeiffffnecuvehluhhsthgvrhfuihiivgeptden
+    ucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:suMBYTul0i_xpP2LB40q4HNNUiPEtYHfI_Pw64Papjf4B56kDI_5hw>
+    <xmx:suMBYXcgy1WsR_AF2Hdb_boxQMzBK3UOVpYGC_UM88QEzwKU51UYwg>
+    <xmx:suMBYf1YQqeSBCLN-yfdRdh9-rO2Tnf9UKSpI2xJflZq6sb00vJryA>
+    <xmx:s-MBYYolV49jHH40tATSdpJjR0E_5E9uhHjMKBFTUMNOMw8fqcdkTQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 28 Jul 2021 19:09:38 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     andrii@kernel.org
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH bpf] bpf: Do not close un-owned FD 0 on errors
+Date:   Wed, 28 Jul 2021 16:09:21 -0700
+Message-Id: <5969bb991adedb03c6ae93e051fd2a00d293cf25.1627513670.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch fixes the probe for BPF_PROG_TYPE_CGROUP_SOCKOPT,
-so the probe reports accurate results when used by e.g.
-bpftool.
+Before this patch, btf_new() was liable to close an arbitrary FD 0 if
+BTF parsing failed. This was because:
 
-Fixes: 4cdbfb59c44a ("libbpf: support sockopt hooks")
+* btf->fd was initialized to 0 through the calloc()
+* btf__free() (in the `done` label) closed any FDs >= 0
+* btf->fd is left at 0 if parsing fails
 
-Signed-off-by: Robin Gögge <r.goegge@gmail.com>
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+This issue was discovered on a system using libbpf v0.3 (without
+BTF_KIND_FLOAT support) but with a kernel that had BTF_KIND_FLOAT types
+in BTF. Thus, parsing fails.
+
+While this patch technically doesn't fix any issues b/c upstream libbpf
+has BTF_KIND_FLOAT support, it'll help prevent issues in the future if
+more BTF types are added. It also allow the fix to be backported to
+older libbpf's.
+
+Fixes: 3289959b97ca ("libbpf: Support BTF loading and raw data output in both endianness")
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- tools/lib/bpf/libbpf_probes.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/lib/bpf/btf.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-index ecaae2927ab8..cd8c703dde71 100644
---- a/tools/lib/bpf/libbpf_probes.c
-+++ b/tools/lib/bpf/libbpf_probes.c
-@@ -75,6 +75,9 @@ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
- 	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
- 		xattr.expected_attach_type = BPF_CGROUP_INET4_CONNECT;
- 		break;
-+	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
-+		xattr.expected_attach_type = BPF_CGROUP_GETSOCKOPT;
-+		break;
- 	case BPF_PROG_TYPE_SK_LOOKUP:
- 		xattr.expected_attach_type = BPF_SK_LOOKUP;
- 		break;
-@@ -104,7 +107,6 @@ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
- 	case BPF_PROG_TYPE_SK_REUSEPORT:
- 	case BPF_PROG_TYPE_FLOW_DISSECTOR:
- 	case BPF_PROG_TYPE_CGROUP_SYSCTL:
--	case BPF_PROG_TYPE_CGROUP_SOCKOPT:
- 	case BPF_PROG_TYPE_TRACING:
- 	case BPF_PROG_TYPE_STRUCT_OPS:
- 	case BPF_PROG_TYPE_EXT:
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index b46760b93bb4..7ff3d5ce44f9 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -804,6 +804,7 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
+ 	btf->nr_types = 0;
+ 	btf->start_id = 1;
+ 	btf->start_str_off = 0;
++	btf->fd = -1;
+ 
+ 	if (base_btf) {
+ 		btf->base_btf = base_btf;
+@@ -832,8 +833,6 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
+ 	if (err)
+ 		goto done;
+ 
+-	btf->fd = -1;
+-
+ done:
+ 	if (err) {
+ 		btf__free(btf);
 -- 
-2.25.1
+2.31.1
 
