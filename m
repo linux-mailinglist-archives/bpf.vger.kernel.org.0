@@ -2,93 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D333D85FF
-	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 05:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3B63D86E0
+	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 06:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbhG1DFi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Jul 2021 23:05:38 -0400
-Received: from m13111.mail.163.com ([220.181.13.111]:8857 "EHLO
-        m13111.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233406AbhG1DFc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Jul 2021 23:05:32 -0400
-X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Jul 2021 23:05:32 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=XXnc6
-        g4hwUJwe9gvz2cRmfixd35u5SL4JX5wfuGehTo=; b=Zms3DB4xv9TCGkg79ksw7
-        rw1s9ZJexjPyetR+NXSHTIMeuGAZIi1cFzwr0wTIhpE14O0lY8GP+2aNGCnxUDGE
-        bgB+ogdSXrcIh/CencymwY+H9Wr1r03TIzUpqLdzW4E6dVCHu27iI+Z91LVRT+0o
-        6zOQjnBmXutvvIuRzHfYSs=
-Received: from chapterk93$163.com ( [122.96.144.130] ) by
- ajax-webmail-wmsvr111 (Coremail) ; Wed, 28 Jul 2021 10:50:26 +0800 (CST)
-X-Originating-IP: [122.96.144.130]
-Date:   Wed, 28 Jul 2021 10:50:26 +0800 (CST)
-From:   G <chapterk93@163.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject:  using "BPF_MAP_TYPE_DEVMAP" when pinning it to a global path
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn 163com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        id S230041AbhG1EtR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jul 2021 00:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229814AbhG1EtQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Jul 2021 00:49:16 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D47C061757;
+        Tue, 27 Jul 2021 21:49:14 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id u20so1609911ljo.0;
+        Tue, 27 Jul 2021 21:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bWbRi1rMmK5hcUgOMCErZOOpaayl8qYdTbOgj40N92A=;
+        b=XxtLohpOSQF8FB06GYhe52yf2P6kyqltj5BdiXgnpGnrj/42X7y10Ok8jJa4mS+fAY
+         F1peZcGUa6uWOxNEV4xFctUuGv5EidCFtftYu1Fhrs/iU4SAkYCj3LlSJVIEijzVvciY
+         yoCmAOq/K+wb24Ui2jXRqDLcfm900yrmhaFx5iZQ+t54dbGzrCS2/uzM3BkIzRsHeNwe
+         n4D1pe9WdHya2N6ZJE/wsaxeYVrYYfBGqeKSCLfbMbhThxYEK0m8p0tLf0Gm+0xG9bwS
+         pLZ3Tc0i1KCb9NqUGqLXI0b9lgnIAppNairuFu0lcdygCyAS3T6WmYejKI4kTLSeuacL
+         8jQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bWbRi1rMmK5hcUgOMCErZOOpaayl8qYdTbOgj40N92A=;
+        b=JUUKzUmGRuiem8CzRDuxrs/JDD9SQ9pIkxPDNHhE/ztdXWrCAZZAOQtRfVpPAtcaKl
+         th2UojwynIbU5NRhAfdaKXybQ+nY/lLx2rotJUJUBEkx9FCY+50vpDbXQy0QMD5+LJn2
+         oriCc2RKSH/SBFOuuf17lPClpJLKIVnuZAacpZV4HiFBTl76/9zGTpeahMtmOTR1PZaw
+         FvuslO+9cUoxwncGghJRHRIFKTo4hVRooy/lwLDs+Ri03OgGs/tZcYTR2SbiljIPpYHm
+         FUm4cwPlMblo/Xtq2aKs/IunLziwQ7a7tK8d+IzJmOKwOD/FBIMxQmzjKs/ftk2EGDaT
+         4m7A==
+X-Gm-Message-State: AOAM532eCdq5Ilrizs3238n2XPccGQfVW6gLGESMPQPbt5d+xPhnZimu
+        EMStEGUReFhPXoSou14JS334hc5k3RVfFSeEB2M=
+X-Google-Smtp-Source: ABdhPJxqa27hXo4TlHher1pDVU8cEOZXuqFB2PBMQy/OZFFhzaaGgLidPy486YcJ6Qk8tm8fxq52Zy0Ta7aapDxcf+M=
+X-Received: by 2002:a2e:7817:: with SMTP id t23mr17374907ljc.486.1627447752902;
+ Tue, 27 Jul 2021 21:49:12 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <384aaee4.1b40.17aeb053a78.Coremail.chapterk93@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: b8GowAD3_0PyxQBh9KcCAQ--.15732W
-X-CM-SenderInfo: hfkd135hunmji6rwjhhfrp/1tbiqxLd4FUMaTYeNwAAsr
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+References: <20210721000822.40958-1-alexei.starovoitov@gmail.com> <CAEf4Bza3nAgUVdaP6sh9XG4oMdawCp55UeAB3Lgjf9opCw_UnA@mail.gmail.com>
+In-Reply-To: <CAEf4Bza3nAgUVdaP6sh9XG4oMdawCp55UeAB3Lgjf9opCw_UnA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 27 Jul 2021 21:49:01 -0700
+Message-ID: <CAADnVQ+4j1snfhygHh6=+y9-Rb52iKewP5qoQ54WX85kZN5qCg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/4] libbpf: Move CO-RE logic into separate file.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SGkgQlBGIEV4cGVydHMKCkknbSBoYXZpbmcgYW4gaXNzdWUgd2l0aCB1c2luZyAiQlBGX01BUF9U
-WVBFX0RFVk1BUCIgd2hlbiBwaW5uaW5nIGl0IHRvIGEgZ2xvYmFsIHBhdGggZm9yIHNoYXJpbmcg
-d2l0aCBtdWx0aXBsZSBwcm9ncmFtcy4KSSB1c2VkIGlwcm91dGUyIHRvIGxvYWQgdGhlIHByb2dy
-YW0sIHRoZSBwYXJhbWV0ZXJzIGZvciBjcmVhdGluZyBhIG1hcCBhcmUgYXMgZm9sbG93czoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogICAgc3RydWN0IGJwZl9lbGZfbWFwIEJQRk1fU0VDX01B
-UFMgZGV2X21hcF90ZXN0ID0geyAKICAgICAgICAudHlwZSAgICAgICAgICAgICAgICA9IEJQRl9N
-QVBfVFlQRV9ERVZNQVAsICAgICAgICAgICAgICAgICAgCiAgICAgICAgLnNpemVfa2V5ICAgICAg
-ID0gc2l6ZW9mKGludDMyKSwgICAgICAgICAgICAgICAgICAKICAgICAgICAuc2l6ZV92YWx1ZSAg
-ID0gc2l6ZW9mKGludDMyKSwgICAgICAgICAgICAgICAgICAKICAgICAgICAubWF4X2VsZW0gICA9
-IDEsICAgICAgICAgICAgICAgICAgCiAgICAgICAgLmZsYWdzICAgICAgICAgICAgICAgPSAwLCAg
-ICAgICAgICAgICAgICAgCiAgICAgICAgLnBpbm5pbmcgICAgICAgICA9IFBJTl9HTE9CQUxfTlMs
-ICAgICAgICAgICAgICAgICAgICAKICAgIH07IAotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpI
-ZXJlIEkgc2V0IHRoZSBmbGFncyB0byAwLCBidXQgdGhlIGFjdHVhbCBtYXAgaXMgY3JlYXRlZCB3
-aXRoIGZsYWdzIDB4ODAsIHNvIHdoZW4gdGhlIHNlY29uZCBwcm9ncmFtIGlzIGxvYWRlZCwgbWFw
-IHBhcmFtZXRlciBjaGVjayBpcyBpbmNvcnJlY3QuCldoZW4gSSB0cmllZCB0byBzZXQgdGhlIGZs
-YWdzIGRpcmVjdGx5IHRvIDB4ODAsIEkgZmFpbGVkIHdpdGggdGhlIHBhcmFtZXRlciBlcnJvciBg
-LUVJTlZBYCAgd2hlbiB0aGUgZmlyc3QgcHJvZ3JhbSB3YXMgbG9hZGVkClRoZSBnZW5lcmFsIHBy
-b2Nlc3MgZm9yIGlwcm91dGUyIHRvIGNyZWF0ZSBhIG1hcCB3aXRoIGEgcGluIHRhZyBpcyBhcyBm
-b2xsb3dzOgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpicGZfbWFwX2F0dGFjaAotPiBicGZf
-cHJvYmVfcGlubmVkCiAgICBicGZfbWFwX3NlbGZjaGVja19waW5uZWQKICAgIC0+IGJwZl9kZXJp
-dmVfZWxmX21hcF9mcm9tX2ZkaW5mbwogICAgICAgICBicGZfbWFwX3Bpbl9yZXBvcnQKICAgICAg
-ICAgLT4gaWYgKG9iai0+ZmxhZ3MgIT0gcGluLT5mbGFncykKCSAgICAgICAgICAgZnByaW50Zihz
-dGRlcnIsICIgLSBGbGFnczogICAgICAgICUjeCAob2JqKSAhPSAlI3ggKHBpbilcbiIsIG9iai0+
-ZmxhZ3MsIHBpbi0+ZmxhZ3MpOwotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKSSBoYXZlIHRy
-aWVkIHRvIHJlYWQgdGhlIHJlbGV2YW50IGtlcm5lbCBjb2RlIDoKLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KICAgIC8vIGtlcm5lbC9icGYvZGV2bWFwLmMKICAgICNkZWZpbmUgREVWX0NSRUFU
-RV9GTEFHX01BU0sgXAogICAgICAgICAoQlBGX0ZfTlVNQV9OT0RFIHwgQlBGX0ZfUkRPTkxZIHwg
-QlBGX0ZfV1JPTkxZKQoKICAgIHN0YXRpYyBpbnQgZGV2X21hcF9pbml0X21hcChzdHJ1Y3QgYnBm
-X2R0YWIgKmR0YWIsIHVuaW9uIGJwZl9hdHRyICphdHRyKQogICAgewogICAgICAgLi4uCiAgCS8q
-IGNoZWNrIHNhbml0eSBvZiBhdHRyaWJ1dGVzICovCiAgCWlmIChhdHRyLT5tYXhfZW50cmllcyA9
-PSAwIHx8IGF0dHItPmtleV9zaXplICE9IDQgfHwKICAgICAgCQlhdHRyLT52YWx1ZV9zaXplICE9
-IDQgfHwgYXR0ci0+bWFwX2ZsYWdzICYgfkRFVl9DUkVBVEVfRkxBR19NQVNLKQogICAgCQlyZXR1
-cm4gLUVJTlZBTDsKCiAgCS8qIExvb2t1cCByZXR1cm5zIGEgcG9pbnRlciBzdHJhaWdodCB0byBk
-ZXYtPmlmaW5kZXgsIHNvIG1ha2Ugc3VyZSB0aGUKICAgCSAqIHZlcmlmaWVyIHByZXZlbnRzIHdy
-aXRlcyBmcm9tIHRoZSBCUEYgc2lkZQogICAJICovCiAgCWF0dHItPm1hcF9mbGFncyB8PSBCUEZf
-Rl9SRE9OTFlfUFJPRzsKICAgICAgICAuLi4KICAgIH0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KCkF0IHRoZSB0aW1lIG9mIGNoZWNrICwgaXQgZG9lcyBub3QgYWxsb3cgMHg4MCB0byBiZSBz
-ZXQgKERFVl9DUkVBVEVfRkxBR19NQVNLKSAsIGJ1dCB0aGVuIHRoZSBjb2RlIHNldHMgdGhlIDB4
-ODAgZmxhZyBpdHNlbGYuClNvIEknbSBub3Qgc3VyZSBpZiB3ZSBzaG91bGQgYWxsb3cgMHg4MCBv
-biB0aGUgY2hlY2sgaGVyZSBhcyB3ZWxsID8gSWYgYW55b25lIGhhcyBzdWdnZXN0aW9ucyBwbGVh
-c2UgbGV0IG1lIGtub3csIHRoYW5rcy4KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KICAgICNk
-ZWZpbmUgREVWX0NSRUFURV9GTEFHX01BU0sgXAogICAgICAgICAoQlBGX0ZfTlVNQV9OT0RFIHwg
-QlBGX0ZfUkRPTkxZIHwgQlBGX0ZfV1JPTkxZIHwgQlBGX0ZfUkRPTkxZX1BST0cpCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tCiAKQmVzdCByZWdhcmRzClcuR2Fv
+On Mon, Jul 26, 2021 at 12:38 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Jul 20, 2021 at 5:08 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > Split CO-RE processing logic from libbpf into separate file
+> > with an interface that doesn't dependend on libbpf internal details.
+> > As the next step relo_core.c will be compiled with libbpf and with the kernel.
+> > The _internal_ interface between libbpf/CO-RE and kernel/CO-RE will be:
+> > int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
+> >                              int insn_idx,
+> >                              const struct bpf_core_relo *relo,
+> >                              int relo_idx,
+> >                              const struct btf *local_btf,
+> >                              struct bpf_core_cand_list *cands);
+> > where bpf_core_relo and bpf_core_cand_list are simple types
+> > prepared by kernel and libbpf.
+> >
+> > Though diff stat shows a lot of lines inserted/deleted they are moved lines.
+> > Pls review with diff.colorMoved.
+> >
+> > Alexei Starovoitov (4):
+> >   libbpf: Cleanup the layering between CORE and bpf_program.
+> >   libbpf: Split bpf_core_apply_relo() into bpf_program indepdent helper.
+> >   libbpf: Move CO-RE types into relo_core.h.
+> >   libbpf: Split CO-RE logic into relo_core.c.
+> >
+>
+> LGTM. Applied to bpf-next, fixed typo in patch 3 subject, and also
+> made few adjustments. Let me know if you object to any of them:
+>
+> 1. I felt like the original copyright year should be preserved when
+> moving code into a new file, so I've changed relo_core.h's year to
+> 2019. Hope that's fine.
+> 2. relo_core.c didn't have a Copyright line, so I added the /*
+> Copyright (c) 2019 Facebook */ as well.
+> 3. I trimmed down the list of #includes in core_relo.c, because most
+> of them were absolutely irrelevant and just preserved as-is from
+> libbpf.c Everything seems to compile just fine without those.
+
+Thanks! Much appreciate it.
+It was on my todo list. I lazily copy-pasted them to avoid
+accidental breakage on some archs that I don't have access to
+(since I didn't wait for the kernel build bot to process them before I
+sent them).
+fyi intel folks can include your private tree as well, so you'd have to respin
+your patches due to odd 32-bit build breakage. Just email them with
+your git tree location.
