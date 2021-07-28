@@ -2,345 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CBD3D9196
-	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 17:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1299C3D91D8
+	for <lists+bpf@lfdr.de>; Wed, 28 Jul 2021 17:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235551AbhG1POZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jul 2021 11:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235457AbhG1POZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:14:25 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E74C061757
-        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 08:14:22 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id bm25-20020a05620a1999b02903a9c3f8b89fso1835790qkb.2
-        for <bpf@vger.kernel.org>; Wed, 28 Jul 2021 08:14:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=xfZZ3ta3RJs39O7zEmblbC+9ILKgix6dlFzx9fhcN9A=;
-        b=DOykGsXbmCRZXB989DixJCtWtu4w+mCBGQLBPdIxOHUWwehn6GCCY2DqZDUvOEGk6h
-         y7xzPtCY/jTnUMRM1aFHYWcmdQVAvL2RLq4ksl/n8wwdugJs+IchFpUOyEcxvrwbt2iN
-         tgITLgZt9QClGRjc4ZAru2lkqVUaEqbEY3EuWCfsBrF+iuICaig08fcvSsH0vnU8kmC0
-         sXW/Y86dq0crJhhpj52DhTyXqsjAlUsE3daQnoKTAD+qlYm9tZS8axiyRQV5rM+QiG80
-         YS6tZKuk6tBK6uoUUENH+uEPw0aWUG2iBCV5HZV40bkqwZ3+RZjlsIn1Pmn54SohDG85
-         ACRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=xfZZ3ta3RJs39O7zEmblbC+9ILKgix6dlFzx9fhcN9A=;
-        b=ZIuNseuz8mK7aNthoCgP0ze2R68WDMITmZ6zrCWpExkC+6z1/WOXIrKO2g6w7uZJSj
-         pNP+S8j+XZgHZaoG/NOBfVmd8I3ErucvkDgAshkzKSa2hftFz4HBqMvYMAiNCBzGfkzv
-         B3wyoh8d82G0pSNLYS/Avwrg9vBkZLZDnkKiXPiNFdc2vj8XDf0IMyPBh7ddEWjjln1f
-         NQXBMemRLJlB8MJcbdBYS6/ie02Y1VZ5ibBX3e7n64x7JCt4c8gi+28nkVcxYPjmQd5F
-         ICkvdIcKU4GdEzwQOlmSvwDafjYjVjs7W4D8bhJyk7DhbidDaBVK2NWDi58qxb1J8CZ0
-         7d0g==
-X-Gm-Message-State: AOAM530WWSP7ktudMjIJyX5McaSQUSSfrXrpn92wWa3OD68CvbMwZa7t
-        d+2nwc9NSdpf9t0+MaDY4JPWp2U=
-X-Google-Smtp-Source: ABdhPJwH+S36DfWuafDinqDURszU2zYS5C6uYVP5FNsg5i1f93BBY8b+A+/xPbK5dWf5HZwvorwzCYg=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:35e0:b2c:7263:cba9])
- (user=sdf job=sendgmr) by 2002:a0c:ca09:: with SMTP id c9mr26901qvk.61.1627485261815;
- Wed, 28 Jul 2021 08:14:21 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 08:14:19 -0700
-Message-Id: <20210728151419.501183-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH bpf-next] selftests/bpf: move netcnt test under test_progs
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S235555AbhG1P2l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Jul 2021 11:28:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236793AbhG1P2l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Jul 2021 11:28:41 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED58260F91;
+        Wed, 28 Jul 2021 15:28:37 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 11:28:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <mingo@redhat.com>, <davem@davemloft.net>, <ast@kernel.org>,
+        <ryabinin.a.a@gmail.com>, <mpe@ellerman.id.au>,
+        <benh@kernel.crashing.org>, <paulus@samba.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Nathan Chancellor" <nathan@kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 5/7] kallsyms: Rename is_kernel() and
+ is_kernel_text()
+Message-ID: <20210728112836.289865f5@oasis.local.home>
+In-Reply-To: <20210728081320.20394-6-wangkefeng.wang@huawei.com>
+References: <20210728081320.20394-1-wangkefeng.wang@huawei.com>
+        <20210728081320.20394-6-wangkefeng.wang@huawei.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Rewrite to skel and ASSERT macros as well while we are at it.
+On Wed, 28 Jul 2021 16:13:18 +0800
+Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/Makefile          |   3 +-
- .../testing/selftests/bpf/prog_tests/netcnt.c |  93 +++++++++++
- tools/testing/selftests/bpf/test_netcnt.c     | 148 ------------------
- 3 files changed, 94 insertions(+), 150 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/netcnt.c
- delete mode 100644 tools/testing/selftests/bpf/test_netcnt.c
+> The is_kernel[_text]() function check the address whether or not
+> in kernel[_text] ranges, also they will check the address whether
+> or not in gate area, so use better name.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index f405b20c1e6c..2a58b7b5aea4 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -38,7 +38,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
- 	test_verifier_log test_dev_cgroup \
- 	test_sock test_sockmap get_cgroup_id_user \
- 	test_cgroup_storage \
--	test_netcnt test_tcpnotify_user test_sysctl \
-+	test_tcpnotify_user test_sysctl \
- 	test_progs-no_alu32
- 
- # Also test bpf-gcc, if present
-@@ -197,7 +197,6 @@ $(OUTPUT)/test_sockmap: cgroup_helpers.c
- $(OUTPUT)/test_tcpnotify_user: cgroup_helpers.c trace_helpers.c
- $(OUTPUT)/get_cgroup_id_user: cgroup_helpers.c
- $(OUTPUT)/test_cgroup_storage: cgroup_helpers.c
--$(OUTPUT)/test_netcnt: cgroup_helpers.c
- $(OUTPUT)/test_sock_fields: cgroup_helpers.c
- $(OUTPUT)/test_sysctl: cgroup_helpers.c
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/netcnt.c b/tools/testing/selftests/bpf/prog_tests/netcnt.c
-new file mode 100644
-index 000000000000..063a40d228b6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/netcnt.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <sys/sysinfo.h>
-+#include <test_progs.h>
-+#include "netcnt_prog.skel.h"
-+#include "netcnt_common.h"
-+
-+#define CG_NAME "/netcnt"
-+
-+void test_netcnt(void)
-+{
-+	union percpu_net_cnt *percpu_netcnt = NULL;
-+	struct bpf_cgroup_storage_key key;
-+	int map_fd, percpu_map_fd;
-+	struct netcnt_prog *skel;
-+	unsigned long packets;
-+	union net_cnt netcnt;
-+	unsigned long bytes;
-+	int cpu, nproc;
-+	int cg_fd = -1;
-+
-+	skel = netcnt_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "netcnt_prog__open_and_load"))
-+		return;
-+
-+	nproc = get_nprocs_conf();
-+	percpu_netcnt = malloc(sizeof(*percpu_netcnt) * nproc);
-+	if (!ASSERT_OK_PTR(percpu_netcnt, "malloc(percpu_netcnt)"))
-+		goto err;
-+
-+	cg_fd = test__join_cgroup(CG_NAME);
-+	if (!ASSERT_GE(cg_fd, 0, "test__join_cgroup"))
-+		goto err;
-+
-+	skel->links.bpf_nextcnt =
-+		bpf_program__attach_cgroup(skel->progs.bpf_nextcnt, cg_fd);
-+	if (!ASSERT_OK_PTR(skel->links.bpf_nextcnt,
-+			   "attach_cgroup(bpf_nextcnt)"))
-+		goto err;
-+
-+	if (system("which ping6 &>/dev/null") == 0)
-+		assert(!system("ping6 ::1 -c 10000 -f -q > /dev/null"));
-+	else
-+		assert(!system("ping -6 ::1 -c 10000 -f -q > /dev/null"));
-+
-+	map_fd = bpf_map__fd(skel->maps.netcnt);
-+	if (!ASSERT_GE(map_fd, 0, "bpf_map__fd(netcnt)"))
-+		goto err;
-+
-+	percpu_map_fd = bpf_map__fd(skel->maps.percpu_netcnt);
-+	if (!ASSERT_GE(percpu_map_fd, 0, "bpf_map__fd(percpu_netcnt)"))
-+		goto err;
-+
-+	if (!ASSERT_OK(bpf_map_get_next_key(map_fd, NULL, &key),
-+		       "bpf_map_get_next_key"))
-+		goto err;
-+
-+	if (!ASSERT_OK(bpf_map_lookup_elem(map_fd, &key, &netcnt),
-+		       "bpf_map_lookup_elem(netcnt)"))
-+		goto err;
-+
-+	if (!ASSERT_OK(bpf_map_lookup_elem(percpu_map_fd, &key,
-+					   &percpu_netcnt[0]),
-+		       "bpf_map_lookup_elem(percpu_netcnt)"))
-+		goto err;
-+
-+	/* Some packets can be still in per-cpu cache, but not more than
-+	 * MAX_PERCPU_PACKETS.
-+	 */
-+	packets = netcnt.packets;
-+	bytes = netcnt.bytes;
-+	for (cpu = 0; cpu < nproc; cpu++) {
-+		ASSERT_LE(percpu_netcnt[cpu].packets, MAX_PERCPU_PACKETS,
-+			  "MAX_PERCPU_PACKETS");
-+
-+		packets += percpu_netcnt[cpu].packets;
-+		bytes += percpu_netcnt[cpu].bytes;
-+	}
-+
-+	/* No packets should be lost */
-+	ASSERT_EQ(packets, 10000, "packets");
-+
-+	/* Let's check that bytes counter matches the number of packets
-+	 * multiplied by the size of ipv6 ICMP packet.
-+	 */
-+	ASSERT_EQ(bytes, packets * 104, "bytes");
-+
-+err:
-+	if (cg_fd != -1)
-+		close(cg_fd);
-+	free(percpu_netcnt);
-+	netcnt_prog__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/test_netcnt.c b/tools/testing/selftests/bpf/test_netcnt.c
-deleted file mode 100644
-index 4990a99e7381..000000000000
---- a/tools/testing/selftests/bpf/test_netcnt.c
-+++ /dev/null
-@@ -1,148 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <errno.h>
--#include <assert.h>
--#include <sys/sysinfo.h>
--#include <sys/time.h>
--
--#include <linux/bpf.h>
--#include <bpf/bpf.h>
--#include <bpf/libbpf.h>
--
--#include "cgroup_helpers.h"
--#include "bpf_rlimit.h"
--#include "netcnt_common.h"
--
--#define BPF_PROG "./netcnt_prog.o"
--#define TEST_CGROUP "/test-network-counters/"
--
--static int bpf_find_map(const char *test, struct bpf_object *obj,
--			const char *name)
--{
--	struct bpf_map *map;
--
--	map = bpf_object__find_map_by_name(obj, name);
--	if (!map) {
--		printf("%s:FAIL:map '%s' not found\n", test, name);
--		return -1;
--	}
--	return bpf_map__fd(map);
--}
--
--int main(int argc, char **argv)
--{
--	union percpu_net_cnt *percpu_netcnt;
--	struct bpf_cgroup_storage_key key;
--	int map_fd, percpu_map_fd;
--	int error = EXIT_FAILURE;
--	struct bpf_object *obj;
--	int prog_fd, cgroup_fd;
--	unsigned long packets;
--	union net_cnt netcnt;
--	unsigned long bytes;
--	int cpu, nproc;
--	__u32 prog_cnt;
--
--	nproc = get_nprocs_conf();
--	percpu_netcnt = malloc(sizeof(*percpu_netcnt) * nproc);
--	if (!percpu_netcnt) {
--		printf("Not enough memory for per-cpu area (%d cpus)\n", nproc);
--		goto err;
--	}
--
--	if (bpf_prog_load(BPF_PROG, BPF_PROG_TYPE_CGROUP_SKB,
--			  &obj, &prog_fd)) {
--		printf("Failed to load bpf program\n");
--		goto out;
--	}
--
--	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
--	if (cgroup_fd < 0)
--		goto err;
--
--	/* Attach bpf program */
--	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_INET_EGRESS, 0)) {
--		printf("Failed to attach bpf program");
--		goto err;
--	}
--
--	if (system("which ping6 &>/dev/null") == 0)
--		assert(!system("ping6 ::1 -c 10000 -f -q > /dev/null"));
--	else
--		assert(!system("ping -6 ::1 -c 10000 -f -q > /dev/null"));
--
--	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_INET_EGRESS, 0, NULL, NULL,
--			   &prog_cnt)) {
--		printf("Failed to query attached programs");
--		goto err;
--	}
--
--	map_fd = bpf_find_map(__func__, obj, "netcnt");
--	if (map_fd < 0) {
--		printf("Failed to find bpf map with net counters");
--		goto err;
--	}
--
--	percpu_map_fd = bpf_find_map(__func__, obj, "percpu_netcnt");
--	if (percpu_map_fd < 0) {
--		printf("Failed to find bpf map with percpu net counters");
--		goto err;
--	}
--
--	if (bpf_map_get_next_key(map_fd, NULL, &key)) {
--		printf("Failed to get key in cgroup storage\n");
--		goto err;
--	}
--
--	if (bpf_map_lookup_elem(map_fd, &key, &netcnt)) {
--		printf("Failed to lookup cgroup storage\n");
--		goto err;
--	}
--
--	if (bpf_map_lookup_elem(percpu_map_fd, &key, &percpu_netcnt[0])) {
--		printf("Failed to lookup percpu cgroup storage\n");
--		goto err;
--	}
--
--	/* Some packets can be still in per-cpu cache, but not more than
--	 * MAX_PERCPU_PACKETS.
--	 */
--	packets = netcnt.packets;
--	bytes = netcnt.bytes;
--	for (cpu = 0; cpu < nproc; cpu++) {
--		if (percpu_netcnt[cpu].packets > MAX_PERCPU_PACKETS) {
--			printf("Unexpected percpu value: %llu\n",
--			       percpu_netcnt[cpu].packets);
--			goto err;
--		}
--
--		packets += percpu_netcnt[cpu].packets;
--		bytes += percpu_netcnt[cpu].bytes;
--	}
--
--	/* No packets should be lost */
--	if (packets != 10000) {
--		printf("Unexpected packet count: %lu\n", packets);
--		goto err;
--	}
--
--	/* Let's check that bytes counter matches the number of packets
--	 * multiplied by the size of ipv6 ICMP packet.
--	 */
--	if (bytes != packets * 104) {
--		printf("Unexpected bytes count: %lu\n", bytes);
--		goto err;
--	}
--
--	error = 0;
--	printf("test_netcnt:PASS\n");
--
--err:
--	cleanup_cgroup_environment();
--	free(percpu_netcnt);
--
--out:
--	return error;
--}
--- 
-2.32.0.554.ge1b32706d8-goog
+Do you know what a gate area is?
 
+Because I believe gate area is kernel text, so the rename just makes it
+redundant and more confusing.
+
+-- Steve
