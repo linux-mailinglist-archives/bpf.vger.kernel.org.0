@@ -2,226 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184BA3D997A
-	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 01:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8559C3DD6F8
+	for <lists+bpf@lfdr.de>; Mon,  2 Aug 2021 15:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhG1Xcs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Jul 2021 19:32:48 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:25566 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232116AbhG1Xcr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 28 Jul 2021 19:32:47 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16SNPAcl023338;
-        Wed, 28 Jul 2021 16:32:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=qRfhfuJXwuS7SvDG5H+iFmE7/3dQ3mRhO8DtUKb6DQU=;
- b=Gsqc6gA8gWdnuT4wh2cwJSkcAVNZKxGGLuvXqhYyWbfApptETOJSwOXOO6v5IYnU+OvM
- 04wCqO6LWF4D73xOozR9TpjTzbOePq77zwMdbvRKFqfkLeZN99MUM/UyDAaAh9cmECH1
- r5nEjUH690bHC76lpuZjYFP5pZ1aSdkNvRk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a39ssjypa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 28 Jul 2021 16:32:32 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 28 Jul 2021 16:32:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oLrDnMMKeHdZvYnb6DInbVcTx6GBCetsj9V/yiDcYDPabpDZ2ALffIE5gdqj+ubQ2qCZ0ZJNlKfbO4/aj+2zPDR9lp6zwur2b/Q/6xiZIZsj73t4hdWweKbkOylsEj5hJLVmfgl1mgGCOaOsh0hES2Pg4LypSby/5prLsELrgMccFS7yV+/x8vKZ1RHe4xgsPzNrtjO6vZMyrLfn/XtQNTe+fqL8Fr0s5GpEDBUjXaauYgSwDtPKlJGBNrKqa+WtcJ0PvrgLmHmzzlD86h9hGSiuHN8nw4Es6vsGpsNxTb+YnzUKfI8nSCCfssWeWJ0rIdHEaeaDEfNszHB8XNsbFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qRfhfuJXwuS7SvDG5H+iFmE7/3dQ3mRhO8DtUKb6DQU=;
- b=boXEejajXbXgIEFOebwiq+RrkIeU6EnW1ASZs0GKq6GrR3O1rWdDVXJJ9G9OZtT47jcQYEsf0bHzAnP8FK6NUp8cLuj7DcuMnEEYy5KOEHa7LnrdBpuv1RDRGs6rnIj4tSUIZuu5QCv0wrD/eI0SiXmeqp+4whDV9xXIQQslrr6EozJg6Rok6Tj40kHx7AvXuPL8tpVCplU8lwJaNoPFgzIkz2vGmjlxIYSQaAcbHCA7CEIhXwkVgZZLM4lv1xW75z1tJnz870wC9xFbciLzixq83RFw+93vko7gZRwe5snOPlMcRObdJ8ChQblz0OT7jLxpqu63vxQYO3SXYNxYgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4869.namprd15.prod.outlook.com (2603:10b6:806:1d0::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20; Wed, 28 Jul
- 2021 23:32:30 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4373.021; Wed, 28 Jul 2021
- 23:32:29 +0000
-Subject: Re: [PATCH 07/14] bpf/tests: Add more ALU64 BPF_MUL tests
-To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
-CC:     <kafai@fb.com>, <songliubraving@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <Tony.Ambardar@gmail.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-References: <20210728170502.351010-1-johan.almbladh@anyfinetworks.com>
- <20210728170502.351010-8-johan.almbladh@anyfinetworks.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <cbff35ec-07ce-9c7d-4c29-66f2f780daa4@fb.com>
-Date:   Wed, 28 Jul 2021 16:32:27 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <20210728170502.351010-8-johan.almbladh@anyfinetworks.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0186.namprd03.prod.outlook.com
- (2603:10b6:a03:2ef::11) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c8::1398] (2620:10d:c090:400::5:8298) by SJ0PR03CA0186.namprd03.prod.outlook.com (2603:10b6:a03:2ef::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Wed, 28 Jul 2021 23:32:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6d6b60eb-7e96-4271-a774-08d9521ff75b
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4869:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA1PR15MB4869A0E0C17BBBD4BFC2CAE2D3EA9@SA1PR15MB4869.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:404;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 63YKFhwASX89pYrHFs9FZanwGkVcSd1Y8iPoILJFC3XKNI+yIX00d0TWAO7EO88xvF7Kk/ZVEzrXFAuGdvfgUIAMCU5xg3lL1V8zJWGliF4N5GrG8XrzRyw0tkiaYW5aB6AWWsz0Slc54bRwrBlKbgTiYRAnD6dDikzIk7o/Bnb+Mh80/wRFgOkz/cQkhFY8H53So2Yuc7QT8XAP/qjMlJ9QABr5Ay9ZTpifCqdD84hZtCjvk+ectBIdUVOFyoXGgUPdfDx4bqZll3w+RmI5t9HucM/2qmeysiJVr+wWcgE6yazYcsv90w8uYa8u36n6oFHgbetwOsvo+Cr0rC9JFzNApM4hQcxAIX1Is5fLoWSypCYQnSPVZ+QvwS+HplyoCJt1LfZMKgCkEbWwLhI1mFCk9XK4lIkPKO6prCj4A4RHzUYYqECUWhMGmX9onYvOTocXdyFxb9eShZz1dE9RmZDsxV7tO4OwSBU52nc8AWrqkFHvAlrCXcIHKmm9g86/18dCRmvjsgF4yi4W3kmJ8Mtys52npV7lOiqRmKlcwm0llkI1b6oeWC+KsvXTcCGxf5Pdgh6zW9YuWuuUqCULykpO59QVImU+lCHzdhKRh64alhk7bOST5Zw88TDu9I1+IVOLE8XheOnjwJPl6QYKiyx/AZQNvZ87CSsqTq6dacocIP1dhNjKV1ee44pNmK8Lut7c9/JrBLxD5RJi6JcUuTw7dHS48SDzMEXVxwUBjTQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(136003)(366004)(346002)(2906002)(186003)(316002)(38100700002)(478600001)(31686004)(2616005)(8936002)(8676002)(4326008)(31696002)(5660300002)(53546011)(86362001)(66476007)(6486002)(66946007)(52116002)(66556008)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dGxOZStMdVdrREdBRkNqMnNBT2t4ZEdJcGxvZXpFNHpVeE5aU200b2diSGtH?=
- =?utf-8?B?TDBEWUxEZm5NN0ptci9XRTFGN0RtZW9nbkh0Qk5rRjNMaFduVHZEVDRKNjky?=
- =?utf-8?B?eHBVOWVaL204NERZU3Q3QWYwdERIb09GMlFaU2VJa3RZWk0wa2tCd3FPeUsz?=
- =?utf-8?B?MzcyOTRjSUhMbktDd3dyQWJFVmZuWlZWeU4yLy8vTXp4Ung1NXZzdVBsdWZi?=
- =?utf-8?B?cVRtaTJ6S0RLcGxFS2VFbzI4QjQ1NHpDdm1weVZNSjVmWGRsNElmNlhaV0t0?=
- =?utf-8?B?ejlEb2lmTG53bm9vWUJaM0JiRE1odzllMzh5cVFMUVlJUVYzM0NObXJDM2dp?=
- =?utf-8?B?Q2dYR3c4a0U0c0lucVBZVFNQVHF6dE45ek1NKzQ1ODl2ZGEyR2xpb1ZWMEdX?=
- =?utf-8?B?OHdsdzZvWHo2SEFWbWFVOHhmK0lVL0xCUEhmSnVUYUlRVUJ4Nm85SXBUSElZ?=
- =?utf-8?B?Z1pyY2IwWkJVVlBRVGRzYjlVeWRqNWJSU1FicmdzKy9VOXVXaXcxUW95ditQ?=
- =?utf-8?B?d3l2UjY4TTFreXU1S25kczVnS2U4RmVrVzhRL0kzbWFSVVFSNXEyWENZd1dH?=
- =?utf-8?B?Z0VLdzVDaWUzUUVxajI3R0w2c1lCV04xYTZDbjc1bTF6U3p3ZitFSlZWaTBs?=
- =?utf-8?B?Umo2cDdPWkc0RWIwN1YyTW90bitzSzNrOVprOVhBNjZtYjhEeWVxRnY4SWVJ?=
- =?utf-8?B?RE9pZStsUS9DdldJWHVDUHRpTXFRRUsxV0x0U2VOOUtlTmZ4NG0zdVl3WUhE?=
- =?utf-8?B?dHF3ZlVuL29ZT1QrNTdjNFNtSkdaYzhwMTNQa01CMEY4T0lYY2grenVsTFNI?=
- =?utf-8?B?SlhmenJrV0x5bUp0UlpuZnJXTW8zVm93WVZncWpWcGhIczRDN3k5V1VranNn?=
- =?utf-8?B?bm5XOXVzY25ZN3JIWkRXc3RxSmhYWk5vNTZvQk5rdVFMQWdEdVVBZUU1Nkl6?=
- =?utf-8?B?MGRJVE5HYlh6UlVVa1dsNXNWUks2K3NYSlpCaE9aeGp5L3BZb2RucUZhbTFC?=
- =?utf-8?B?emtmT056QmdKSEFMM1BPelg0VVNjcXRYcnVwL2JFR1VCL2plcmFvY010dCti?=
- =?utf-8?B?NFBuOGZNMTNtUkRKbzJCRWJSVGxwQ2dNUkw0NVhNemNJTE0reDNQdWJURzJT?=
- =?utf-8?B?K1FQbHVTamZST3Bvd0dIRFJyajZLTGVkUTFrMEpkTDRtOFdQOFEwZHR2eFky?=
- =?utf-8?B?dVp0QWhTYkFUSWtTL2d3SS90UHNLb3IyMzdSUWpsUEhzWUxqNkdYYlFWM01t?=
- =?utf-8?B?dHIxTWVOYmdLRlBnanlEN0tnY3VuTE5GTElPWThwdldLajAzbTgwSS9UbUtR?=
- =?utf-8?B?T1NJSnJXNGZlWHU1KzNJZ2dEUzRHem11bWJiN0VzRXZDUkpPeE03VllIWTFj?=
- =?utf-8?B?cnV4YS9abmxMOWd5RTN4alhsUVpZQUxJVkMrbHR6ZU5CdmJVbXBXRGxnL0F5?=
- =?utf-8?B?UEtSYktRSlgxelZCRnlTKzM3Tzg1aFdHR28yNXBiOVREUzQrQ09VZGdMUnNm?=
- =?utf-8?B?NnlFR2JCbmhydXVuNm8vV1ZTMm9DaHdTV1ZEMS8xVmhsdmdpdEIxc0h4SG1E?=
- =?utf-8?B?VUcxd1NnSnZmb2c3c2FZaG44MHhGQ3c3WUJBMTVCRGdGU3YxSk1MQzh3TGNT?=
- =?utf-8?B?VWRBQzdTTVhSeFNyM1F1dW5WV3JJOERUd3NEWURrcVR3MGFuYTJ0bzlBUG1X?=
- =?utf-8?B?dnBRdmhIcTVaRTZGUFdpRU1qWjZuUTlJc3RRUmhYdzZBcnlzNjJobzcwalIy?=
- =?utf-8?B?NU5neG90bk9HaDQwZ3RpYmR3KzZZOFliMUFYVjFmdzFrTGR5WitaczE4Ymdi?=
- =?utf-8?B?QUJmd0VWSEpWK3JoQitEdz09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d6b60eb-7e96-4271-a774-08d9521ff75b
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2021 23:32:29.8527
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m/CYxJTBsORZ8U7T754QoFk3LwklmSGN9NWzmjKb/K9tlWW1YFEcEHEpoOAtH8U6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4869
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: eE0_r09bfB2acSxKA8SSvp6lcMXiCNDs
-X-Proofpoint-GUID: eE0_r09bfB2acSxKA8SSvp6lcMXiCNDs
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-28_12:2021-07-27,2021-07-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 bulkscore=0
- phishscore=0 adultscore=0 impostorscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 priorityscore=1501 spamscore=0 mlxlogscore=894
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107280121
-X-FB-Internal: deliver
+        id S233797AbhHBNYj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Aug 2021 09:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233686AbhHBNYi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Aug 2021 09:24:38 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F05C06175F;
+        Mon,  2 Aug 2021 06:24:28 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id m19so10424345wms.0;
+        Mon, 02 Aug 2021 06:24:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=r6VD1/MvCByyDBh3eD7A4b/2BBf18YnD+OBDx/y19hw=;
+        b=UyKFcVz804Q2ppFOal/On85bZoWxxUyz1jS/e1+luJKke5AilKwGaKBtoht6KkxRcU
+         8VPW7EevKVC4/HIloHb2F/lyQVsVSAjcrNKg48iCrCvdPiIY8Da3oZo3ZEo+FIIxDXt5
+         kHb48f9mv9VEa7SFwjubwJkRfceAFmIabbypgs3m7BlMKu/GuTNiV90ciCHpq4+yIgE/
+         dzNF59jQUDBLNjwLKJiH8vIyBitXuzjZykrRWkECBZKun1IN3D4lX+ufDAN4zTVLxmKW
+         yRZV97OlqNixxpyDEA3vnCddCeYPEf9xKQncMEDvCharVWm1jlVPoRrKdxZQv/tCi5gr
+         8+gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=r6VD1/MvCByyDBh3eD7A4b/2BBf18YnD+OBDx/y19hw=;
+        b=aVl6LP/oIclF/l20xnjwyou1mhxH7DOU9s9nJbmTY2Pbi/mBl7zhzcAeCjW9NylHnj
+         asrHo31otLspXpNJNoOcZvgcl3gSiQCAIfYWNM0/V+SDTRTG6/TbBtK/dDVcv65VSzMD
+         d9Y5F3WjwwqZ6iMOzyPRWjY++vwF3+MgNku1f9MvEi26grUa7r73ybpThJAaN6jGDWO/
+         Gg3UMNOUaMB2nE3J53t0bq92Q/6nc263wAChVrvK6Kag3Yg0oExlLPRufReh3ErBMzae
+         CZA5duqFnxy6TvXYf2HDMr3eBL+PvRTgih+ZAc6gD7VHmuziQOny4XXQLrh8QxB6EUWf
+         qvjA==
+X-Gm-Message-State: AOAM5317Oqvo4OPBzNR7C08JCLT7/pJPnTyLLaogM7Ll5w5vFY0d2aA+
+        I51ZFid6iscXHTNBsanIkzEl1cjFfROo
+X-Google-Smtp-Source: ABdhPJy/Tb+c6nc6wiqtXwPiJD9dUVUYg6jbdMSNln6xnNuSYOq1zraoFX0L3GdsC5EQYJWIo/qCzA==
+X-Received: by 2002:a05:600c:c9:: with SMTP id u9mr16891517wmm.146.1627910666560;
+        Mon, 02 Aug 2021 06:24:26 -0700 (PDT)
+Received: from localhost.localdomain ([77.109.191.101])
+        by smtp.gmail.com with ESMTPSA id o28sm11731404wra.71.2021.08.02.06.24.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 06:24:25 -0700 (PDT)
+From:   joamaki@gmail.com
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, daniel@iogearbox.net, j.vosburgh@gmail.com,
+        andy@greyhouse.net, vfalico@gmail.com, andrii@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com
+Subject: [PATCH bpf-next v4 0/6] XDP bonding support
+Date:   Wed, 28 Jul 2021 23:43:44 +0000
+Message-Id: <20210728234350.28796-1-joamaki@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210609135537.1460244-1-joamaki@gmail.com>
+References: <20210609135537.1460244-1-joamaki@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patchset introduces XDP support to the bonding driver.
+
+The motivation for this change is to enable use of bonding (and
+802.3ad) in hairpinning L4 load-balancers such as [1] implemented with
+XDP and also to transparently support bond devices for projects that
+use XDP given most modern NICs have dual port adapters.  An alternative
+to this approach would be to implement 802.3ad in user-space and
+implement the bonding load-balancing in the XDP program itself, but
+is rather a cumbersome endeavor in terms of slave device management
+(e.g. by watching netlink) and requires separate programs for native
+vs bond cases for the orchestrator. A native in-kernel implementation
+overcomes these issues and provides more flexibility.
+
+Below are benchmark results done on two machines with 100Gbit
+Intel E810 (ice) NIC and with 32-core 3970X on sending machine, and
+16-core 3950X on receiving machine. 64 byte packets were sent with
+pktgen-dpdk at full rate. Two issues [2, 3] were identified with the
+ice driver, so the tests were performed with iommu=off and patch [2]
+applied. Additionally the bonding round robin algorithm was modified
+to use per-cpu tx counters as high CPU load (50% vs 10%) and high rate
+of cache misses were caused by the shared rr_tx_counter. Fix for this
+has been already merged into net-next. The statistics were collected 
+using "sar -n dev -u 1 10".
+
+ -----------------------|  CPU  |--| rxpck/s |--| txpck/s |----
+ without patch (1 dev):
+   XDP_DROP:              3.15%      48.6Mpps
+   XDP_TX:                3.12%      18.3Mpps     18.3Mpps
+   XDP_DROP (RSS):        9.47%      116.5Mpps
+   XDP_TX (RSS):          9.67%      25.3Mpps     24.2Mpps
+ -----------------------
+ with patch, bond (1 dev):
+   XDP_DROP:              3.14%      46.7Mpps
+   XDP_TX:                3.15%      13.9Mpps     13.9Mpps
+   XDP_DROP (RSS):        10.33%     117.2Mpps
+   XDP_TX (RSS):          10.64%     25.1Mpps     24.0Mpps
+ -----------------------
+ with patch, bond (2 devs):
+   XDP_DROP:              6.27%      92.7Mpps
+   XDP_TX:                6.26%      17.6Mpps     17.5Mpps
+   XDP_DROP (RSS):       11.38%      117.2Mpps
+   XDP_TX (RSS):         14.30%      28.7Mpps     27.4Mpps
+ --------------------------------------------------------------
+
+RSS: Receive Side Scaling, e.g. the packets were sent to a range of
+destination IPs.
+
+[1]: https://cilium.io/blog/2021/05/20/cilium-110#standalonelb
+[2]: https://lore.kernel.org/bpf/20210601113236.42651-1-maciej.fijalkowski@intel.com/T/#t
+[3]: https://lore.kernel.org/bpf/CAHn8xckNXci+X_Eb2WMv4uVYjO2331UWB2JLtXr_58z0Av8+8A@mail.gmail.com/
+
+Patch 1 prepares bond_xmit_hash for hashing xdp_buff's.
+Patch 2 adds hooks to implement redirection after bpf prog run.
+Patch 3 implements the hooks in the bonding driver. 
+Patch 4 modifies devmap to properly handle EXCLUDE_INGRESS with a slave device.
+Patch 5 fixes an issue related to recent cleanup of rcu_read_lock in XDP context.
+Patch 6 adds tests
+
+v3->v4:
+- Add back the test suite, while removing the vmtest.sh modifications to kernel
+  config new that CONFIG_BONDING=y is set. Discussed with Magnus Karlsson that 
+  it makes sense right now to not reuse the code from xdpceiver.c for testing 
+  XDP bonding.
+
+v2->v3:
+- Address Jay's comment to properly exclude upper devices with EXCLUDE_INGRESS
+  when there are deeper nesting involved. Now all upper devices are excluded.
+- Refuse to enslave devices that already have XDP programs loaded and refuse to
+  load XDP programs to slave devices. Earlier one could have a XDP program loaded
+  and after enslaving and loading another program onto the bond device the xdp_state
+  of the enslaved device would be pointing at an old program.
+- Adapt netdev_lower_get_next_private_rcu so it can be called in the XDP context.
+
+v1->v2:
+- Split up into smaller easier to review patches and address cosmetic 
+  review comments.
+- Drop the INDIRECT_CALL optimization as it showed little improvement in tests.
+- Drop the rr_tx_counter patch as that has already been merged into net-next.
+- Separate the test suite into another patch set. This will follow later once a
+  patch set from Magnus Karlsson is merged and provides test utilities that can
+  be reused for XDP bonding tests. v2 contains no major functional changes and
+  was tested with the test suite included in v1.
+  (https://lore.kernel.org/bpf/202106221509.kwNvAAZg-lkp@intel.com/T/#m464146d47299125d5868a08affd6d6ce526dfad1)
+
+---
 
 
-On 7/28/21 10:04 AM, Johan Almbladh wrote:
-> This patch adds BPF_MUL tests for 64x32 and 64x64 multiply. Mainly
-> testing 32-bit JITs that implement ALU64 operations with two 32-bit
-> CPU registers per operand.
-> 
-> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-> ---
->   lib/test_bpf.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 48 insertions(+)
-> 
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index b930fa35b9ef..eb61088a674f 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -3051,6 +3051,31 @@ static struct bpf_test tests[] = {
->   		{ },
->   		{ { 0, 2147483647 } },
->   	},
-> +	{
-> +		"ALU64_MUL_X: 64x64 multiply, low word",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 0x0fedcba987654321LL),
-> +			BPF_LD_IMM64(R1, 0x123456789abcdef0LL),
-> +			BPF_ALU64_REG(BPF_MUL, R0, R1),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 0xe5618cf0 } }
-
-Same here. Maybe capture the true 64-bit R0 value?
-
-> +	},
-> +	{
-> +		"ALU64_MUL_X: 64x64 multiply, high word",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 0x0fedcba987654321LL),
-> +			BPF_LD_IMM64(R1, 0x123456789abcdef0LL),
-> +			BPF_ALU64_REG(BPF_MUL, R0, R1),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 0x2236d88f } }
-> +	},
->   	/* BPF_ALU | BPF_MUL | BPF_K */
->   	{
->   		"ALU_MUL_K: 2 * 3 = 6",
-> @@ -3161,6 +3186,29 @@ static struct bpf_test tests[] = {
->   		{ },
->   		{ { 0, 0x1 } },
->   	},
-> +	{
-> +		"ALU64_MUL_K: 64x32 multiply, low word",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 0x0123456789abcdefLL),
-> +			BPF_ALU64_IMM(BPF_MUL, R0, 0x12345678),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 0xe242d208 } }
-> +	},
-> +	{
-> +		"ALU64_MUL_K: 64x32 multiply, high word",
-> +		.u.insns_int = {
-> +			BPF_LD_IMM64(R0, 0x0123456789abcdefLL),
-> +			BPF_ALU64_IMM(BPF_MUL, R0, 0x12345678),
-> +			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-> +			BPF_EXIT_INSN(),
-> +		},
-> +		INTERNAL,
-> +		{ },
-> +		{ { 0, 0xc28f5c28 } }
-> +	},
->   	/* BPF_ALU | BPF_DIV | BPF_X */
->   	{
->   		"ALU_DIV_X: 6 / 2 = 3",
-> 
