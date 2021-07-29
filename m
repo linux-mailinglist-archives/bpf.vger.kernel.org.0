@@ -2,106 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341A03DAE79
-	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 23:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457C73DAEB1
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 00:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhG2VpD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 17:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbhG2VpD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Jul 2021 17:45:03 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9218DC061765
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 14:44:58 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id k65so12434433yba.13
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 14:44:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QfN3ktA8jhkYhK7fdUz27apvp5FlYi5C3WmJ0bDrG9s=;
-        b=YoOLnFDh52eSTuI/r7G74vGRJfDcL8vPuOWBl1+7K+Ma81lcsAN6SoAFGUWTA5D9UK
-         214lFTpPjJqxzgBLEeCAaBBroXuCi4wQlPiFRBmg+eYsyPovLLtMkhJjnLMp0BfvBYnb
-         Jx0o9yaHfERqyNKUzEqcMNOjBkDOW3MIODBp2AID5y+pZj4B6rWMAGOgiaclO4Pda+wZ
-         uYbd1QCcZP+ugMNfp4fBqam590EUQJIVc9x7pGaik9Pk8kT+6mtQj4mRG/eWpqDEHsMb
-         nhXETYsTOf6yub+BVtjHby8XojF8/HUhbZae4xlt4H7Nm28++y6QHtpz/pGvXgk4WCiu
-         qhWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QfN3ktA8jhkYhK7fdUz27apvp5FlYi5C3WmJ0bDrG9s=;
-        b=Y8ADh5X6zyNLsymfUGlViKidvLn7r6zQQK3ME669wH1s7SKQ3/I8pdJGO8vzrLhzG0
-         sIeVo9g+uit1ovFHz3tCSqyfFb8xw3rUubxOvAdFy7vu8gXcNCI0vRiJXWvge8dy07i6
-         2ZNb6MdAOO7RZ+3bad0x1hoyTdA+t3sojmR0qNuqA+IQgV8v30kmxq9D3luaKZerhSoI
-         XKxskd1yF1ufcxsXbMzNrqwzUFlh34Z+Wn2O7TUAyzaTrV6typG91SoFGUUXXqNZiP6f
-         +8wfzUIbAciYbJfNVqPNbLGKsZJQq3TuGsk1wG9qFHiKhJ5DBkJ5EqW+9tw5UPUPsRc7
-         9ABg==
-X-Gm-Message-State: AOAM533UZInb53A8w4kPaPPbbxFNAMj3i/KDic9YOiF3SNMc6/BdyuVW
-        rn0MoOgWIO5E3qVqYKLI+zIdQY8qrRSQdjRlWcI=
-X-Google-Smtp-Source: ABdhPJwa7jKb8/Hp+elQWS7GjzuLhqdx0fe7Fc2jKb/8reBnQ9p+j1lsqp7tQuNbXHt9qtQ1DRhFwxVAQdpalfEDJ9k=
-X-Received: by 2002:a25:2901:: with SMTP id p1mr9721741ybp.459.1627595097828;
- Thu, 29 Jul 2021 14:44:57 -0700 (PDT)
+        id S234255AbhG2WKJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jul 2021 18:10:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234158AbhG2WKJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Jul 2021 18:10:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AE8B260F5C;
+        Thu, 29 Jul 2021 22:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627596605;
+        bh=pVYpXqwLysQ/MDzD6y5CmFRhoMmyO13DtTEJ6hqOW1Y=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=frKti2a8mTAasHmdHrGZhQ9YAtrrUiznGJz5XddcUNh0tTrnS4TFlmPQN7H2A+9Sy
+         pcx4sE1M8SVmESkrdkObg4U0PCnxbt+kMOhTCTJLAJftY6O3beGdqvH7RJt+RVfHmM
+         DzTUkjauvJ5ATR35KNyjiGQa5h2KjYvRNtobMXfKx08kwZXBVE7GKKtDLQIb54X2Jv
+         YEGWXvTcHyBcPqG6SsEGRNHY9Tt1oSqAH6P9SCKrDQJajMtRRBVJYxVXGjJ5qWLxJy
+         p/KWxgnjk9DWBxWjRE+us48w7AW3rQK5ehc5R4ttjsUFn7BWCs4zE658rLrwhcNfdo
+         NyZpeBLwbA0RA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A2636609F7;
+        Thu, 29 Jul 2021 22:10:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210726141013.2239765-1-hengqi.chen@gmail.com>
-In-Reply-To: <20210726141013.2239765-1-hengqi.chen@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 29 Jul 2021 14:44:46 -0700
-Message-ID: <CAEf4BzZ-w9QES5AgNLt61crA8S1SZP3OoFM+d6eSbrphSiuJHQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/2] bpf: expand bpf_d_path helper allowlist
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Yaniv Agman <yanivagman@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] bpf: fix rcu warning in bpf_prog_run_pin_on_cpu()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162759660566.3171.3401866075961092975.git-patchwork-notify@kernel.org>
+Date:   Thu, 29 Jul 2021 22:10:05 +0000
+References: <20210728172307.1030271-1-yhs@fb.com>
+In-Reply-To: <20210728172307.1030271-1-yhs@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com,
+        syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 7:10 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->
-> This patch set adds more functions to bpf_d_path allowlist.
->
-> Patch 1 is prep work which updates resolve_btfids to emit warnings
-> on missing symbols instead of aborting kernel build process.
->
-> Patch 2 expands bpf_d_path allowlist.
->
-> Changes since v3: [3]
->  - Addressed Yonghong's comments. Sort allowlist and add security_bprm_*
->
-> Changes since v2: [2]
->  - Andrii suggested that we should first address an issue of .BTF_ids
->    before adding more symbols to .BTF_ids. Fixed that.
->  - Yaniv proposed adding security_sb_mount and security_bprm_check.
->    Added them.
->
-> Changes since v1: [1]
->  - Alexei and Yonghong suggested that bpf_d_path helper could also
->    apply to vfs_* and security_file_* kernel functions. Added them.
->
-> [1] https://lore.kernel.org/bpf/20210712162424.2034006-1-hengqi.chen@gmail.com/
-> [2] https://lore.kernel.org/bpf/20210719151753.399227-1-hengqi.chen@gmail.com/
-> [3] https://lore.kernel.org/bpf/20210725141814.2000828-3-hengqi.chen@gmail.com/
->
+Hello:
 
-I've applied the first patch to bpf-next. I'd like some more eyes on
-patch #2, so I'm leaving it up for review by others for a bit longer.
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-> Hengqi Chen (2):
->   tools/resolve_btfids: emit warnings and patch zero id for missing
->     symbols
->   bpf: expose bpf_d_path helper to vfs_* and security_* functions
->
->  kernel/trace/bpf_trace.c        | 60 ++++++++++++++++++++++++++++++---
->  tools/bpf/resolve_btfids/main.c | 13 +++----
->  2 files changed, 63 insertions(+), 10 deletions(-)
->
-> --
-> 2.25.1
->
+On Wed, 28 Jul 2021 10:23:07 -0700 you wrote:
+> syzbot reported a RCU warning like below:
+>   WARNING: suspicious RCU usage
+>   ...
+>   Call Trace:
+>    __dump_stack lib/dump_stack.c:88 [inline]
+>    dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+>    task_css_set include/linux/cgroup.h:481 [inline]
+>    task_dfl_cgroup include/linux/cgroup.h:550 [inline]
+>    ____bpf_get_current_cgroup_id kernel/bpf/helpers.c:356 [inline]
+>    bpf_get_current_cgroup_id+0x1ce/0x210 kernel/bpf/helpers.c:354
+>    bpf_prog_08c4887f705f20b8+0x10/0x824
+>    bpf_dispatcher_nop_func include/linux/bpf.h:687 [inline]
+>    bpf_prog_run_pin_on_cpu include/linux/filter.h:624 [inline]
+>    bpf_prog_test_run_syscall+0x2cf/0x5f0 net/bpf/test_run.c:954
+>    bpf_prog_test_run kernel/bpf/syscall.c:3207 [inline]
+>    __sys_bpf+0x1993/0x53b0 kernel/bpf/syscall.c:4487
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf] bpf: fix rcu warning in bpf_prog_run_pin_on_cpu()
+    https://git.kernel.org/bpf/bpf/c/8118b11cb603
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
