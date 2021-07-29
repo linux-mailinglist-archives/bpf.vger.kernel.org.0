@@ -2,117 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5573DA8D4
-	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 18:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34113DA906
+	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 18:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbhG2QU7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 12:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60900 "EHLO
+        id S230428AbhG2Q3o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jul 2021 12:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbhG2QUu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:20:50 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3D4C061796
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 09:20:47 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id b128so4082359wmb.4
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 09:20:47 -0700 (PDT)
+        with ESMTP id S229565AbhG2Q3o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Jul 2021 12:29:44 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3816C0613CF
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 09:29:40 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id b7so7668879wri.8
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 09:29:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z05HCoFLItaKC/XfP7RbKcIL37D0WS7BgQCbfiZH5KI=;
-        b=jxDgMroLj69sJyQunbHN90KUHo7cdp6vMQUQxOWZ+jYCfzJT6ntkMIVyueJFx+ll/Z
-         Fhcv0NlQ4qgMet/tBhdWBMIVKgLVUcrwEDbXH7jZ6X0yWP8a6wMvbEiZgavgDc4BI9jq
-         Sp+ftR+Ji7hd3ItCE15XF/kt5jCl2I3s5hO4BrePsK+i4bQGVtzmpJLB2mQH90Q0aokL
-         EPb001vVZDemV/bQgEIvphtnNKnna1cXChiw8hcz5I2aY1QvNxDQSzyrKKFWjQYZDD59
-         lKwCA0FH/+3ubxF6Bi97qw9csBI24IOg1faUaiCxfhUZ9seUOMxZjrWP6VY+c+5FAX2v
-         PqSw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M78Ftq0r5+Gxb4834D7jHiP+RomZ8457QnIJIRUgcOI=;
+        b=bKl7u3uaABVis3GH6fFOZjHTV255SrHgbHL/s1F0vYbV6E86Thhsqh/LtqJ/aYsRIO
+         DvouSR/Vo4Tz1MfMIwDpdKB9+U5T/rlXL305cDtb47xVZopCYLuq8I0NxZHEXj1RlevY
+         DrqorDn+fJ4AzOuaMcjUNkO+irniBAf7RFyt6/kozd+7JDLYgihbQE9+1hZHlE4kWLXe
+         wl6LCtCwLRw8kXLrLOoPsuRxeLHgY2/S5pV//nug9Zsa09zrVa3y5DeMrXnycZrJVmJC
+         aqao27l8Gu6ZdMbzDdTT8vLGCajym5PXCv/L9KQKPkEVnyvqKH1RZQDN8g0MEDEw03Ns
+         WHDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z05HCoFLItaKC/XfP7RbKcIL37D0WS7BgQCbfiZH5KI=;
-        b=bgq9c3FGHh0eGNeRiyNt1h0JboQYz02NqCzoO+eFE7X9A/ykhGz9sW8ozSePVm4O9w
-         aSynq2vn9yEL8YGZlJnwuKAZkngatlL0E+E9K9XcsL0aIIYc3VAy5zYdq/1AWrI2HOir
-         2m/hKSsXgoehNNDW4mPjlD6aWX36SqugG5M8Rq6n7mWvrhh5QattoZ0KWYWxCESRjdsD
-         FAWcraoRgXEjJMtFzgF4hBO7PWZdZ3agOAY/IUEOUvE+CzxhOAgNVludAD1Xy8VambPM
-         /+cDmnvLm4indU08Mq3skDdQ151/Vqpog85snGQmn2zzRCljp3D3CjUGNEshSENRoMQg
-         PDww==
-X-Gm-Message-State: AOAM5319ca6nsI2XTmaR+k/F8L/US5JXjs/eJUuqrUfJxGvFT9BoLt6o
-        NdDtIbj9ClzFjgokv03wKjZN8Q==
-X-Google-Smtp-Source: ABdhPJykEHbtQpATL57HjR8Hg3TNVxlkhYAggER0KgGdEua9vw102i45WLOE42KlioSBTXeekAAK9w==
-X-Received: by 2002:a05:600c:4fcf:: with SMTP id o15mr15389124wmq.116.1627575645838;
-        Thu, 29 Jul 2021 09:20:45 -0700 (PDT)
-Received: from localhost.localdomain ([149.86.66.250])
-        by smtp.gmail.com with ESMTPSA id c10sm3854853wmb.40.2021.07.29.09.20.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M78Ftq0r5+Gxb4834D7jHiP+RomZ8457QnIJIRUgcOI=;
+        b=KfrwxjZrqqprCncAfdJk/x3UbDTIh+G0q3QnCzZWGkhP1ymfNiMw1Pw1k+7cqozg7L
+         Ekx7A2H3FsQhrXc3p88ZpZQ9aPs1R5aIfOxz9pO84XmEYVWx2NySc0aZjdHi1n50mBrs
+         kHe+x/4dNOJS8EBlk7KBXqLx5JLmaqfIDQJ1l9CLd9QxZZRrFIgll6Kf2YTX8pA7oJ/0
+         rDwLc3QQ9HjVUe0Ady1EqKqV607GL0OxeF8vwk1kFKCEVvDydquoZt52FyKt4yenzGA8
+         u1PMUsTFyG5MvWLuPt5eGiQHL2aSLlSQP5ZJoIxBxIHJRV2d5GyFATzwkkCtqkzyGMEd
+         W96Q==
+X-Gm-Message-State: AOAM532IZZ6118OIJAmr2q0e9DQy7RcP/5BLBZbCfkzfKFQeCkeUvCJc
+        RBj9jwYB/RHqX5Nf69hfuHbzhQ==
+X-Google-Smtp-Source: ABdhPJw7A6f24FlktQs4TQ8AAtJWJ81ViKwRx8vCAUlitboMB5jLzVgaM2/IYj7APrdnRsCipMez7w==
+X-Received: by 2002:adf:ee4e:: with SMTP id w14mr5890955wro.15.1627576179314;
+        Thu, 29 Jul 2021 09:29:39 -0700 (PDT)
+Received: from localhost.localdomain ([149.86.75.13])
+        by smtp.gmail.com with ESMTPSA id 140sm3859331wmb.43.2021.07.29.09.29.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 09:20:45 -0700 (PDT)
+        Thu, 29 Jul 2021 09:29:38 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: [PATCH bpf-next v3 8/8] tools: bpftool: support dumping split BTF by id
-Date:   Thu, 29 Jul 2021 17:20:28 +0100
-Message-Id: <20210729162028.29512-9-quentin@isovalent.com>
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next 0/7] tools: bpftool: update, synchronise and
+Date:   Thu, 29 Jul 2021 17:29:25 +0100
+Message-Id: <20210729162932.30365-1-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210729162028.29512-1-quentin@isovalent.com>
-References: <20210729162028.29512-1-quentin@isovalent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Split BTF objects are typically BTF objects for kernel modules, which
-are incrementally built on top of kernel BTF instead of redefining all
-kernel symbols they need. We can use bpftool with its -B command-line
-option to dump split BTF objects. It works well when the handle provided
-for the BTF object to dump is a "path" to the BTF object, typically
-under /sys/kernel/btf, because bpftool internally calls
-btf__parse_split() which can take a "base_btf" pointer and resolve the
-BTF reconstruction (although in that case, the "-B" option is
-unnecessary because bpftool performs autodetection).
+To work with the different program types, map types, attach types etc.
+supported by eBPF, bpftool needs occasional updates to learn about the new
+features supported by the kernel. When such types translate into new
+keyword for the command line, updates are expected in several locations:
+typically, the help message displayed from bpftool itself, the manual page,
+and the bash completion file should be updated. The options used by the
+different commands for bpftool should also remain synchronised at those
+locations.
 
-However, it did not work so far when passing the BTF object through its
-id, because bpftool would call btf__get_from_id() which did not provide
-a way to pass a "base_btf" pointer.
+Several omissions have occurred in the past, and a number of types are
+still missing today. This set is an attempt to improve the situation. It
+brings up-to-date the lists of types or options in bpftool, and also adds a
+Python script to the BPF selftests to automatically check that most of
+these lists remain synchronised.
 
-In other words, the following works:
+Quentin Monnet (7):
+  tools: bpftool: slightly ease bash completion updates
+  selftests/bpf: check consistency between bpftool source, doc,
+    completion
+  tools: bpftool: complete and synchronise attach or map types
+  tools: bpftool: update and synchronise option list in doc and help msg
+  selftests/bpf: update bpftool's consistency script for checking
+    options
+  tools: bpftool: document and add bash completion for -L, -B options
+  tools: bpftool: complete metrics list in "bpftool prog profile" doc
 
-    # bpftool btf dump file /sys/kernel/btf/i2c_smbus -B /sys/kernel/btf/vmlinux
+ .../bpf/bpftool/Documentation/bpftool-btf.rst |  48 +-
+ .../bpftool/Documentation/bpftool-cgroup.rst  |   3 +-
+ .../bpftool/Documentation/bpftool-feature.rst |   2 +-
+ .../bpf/bpftool/Documentation/bpftool-gen.rst |   9 +-
+ .../bpftool/Documentation/bpftool-iter.rst    |   2 +
+ .../bpftool/Documentation/bpftool-link.rst    |   3 +-
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   3 +-
+ .../bpf/bpftool/Documentation/bpftool-net.rst |   2 +-
+ .../bpftool/Documentation/bpftool-perf.rst    |   2 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |  36 +-
+ .../Documentation/bpftool-struct_ops.rst      |   2 +-
+ tools/bpf/bpftool/Documentation/bpftool.rst   |  12 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |  69 ++-
+ tools/bpf/bpftool/btf.c                       |   3 +-
+ tools/bpf/bpftool/cgroup.c                    |   3 +-
+ tools/bpf/bpftool/common.c                    |  76 +--
+ tools/bpf/bpftool/feature.c                   |   1 +
+ tools/bpf/bpftool/gen.c                       |   3 +-
+ tools/bpf/bpftool/iter.c                      |   2 +
+ tools/bpf/bpftool/link.c                      |   3 +-
+ tools/bpf/bpftool/main.c                      |   3 +-
+ tools/bpf/bpftool/main.h                      |   3 +-
+ tools/bpf/bpftool/map.c                       |   5 +-
+ tools/bpf/bpftool/net.c                       |   1 +
+ tools/bpf/bpftool/perf.c                      |   5 +-
+ tools/bpf/bpftool/prog.c                      |   8 +-
+ tools/bpf/bpftool/struct_ops.c                |   2 +-
+ tools/testing/selftests/bpf/Makefile          |   1 +
+ .../selftests/bpf/test_bpftool_synctypes.py   | 586 ++++++++++++++++++
+ 29 files changed, 802 insertions(+), 96 deletions(-)
+ create mode 100755 tools/testing/selftests/bpf/test_bpftool_synctypes.py
 
-But this was not possible:
-
-    # bpftool btf dump id 6 -B /sys/kernel/btf/vmlinux
-
-The libbpf API has recently changed, and btf__get_from_id() has been
-deprecated in favour of btf__load_from_kernel_by_id() and its version
-with support for split BTF, btf__load_from_kernel_by_id_split(). Let's
-update bpftool to make it able to dump the BTF object in the second case
-as well.
-
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
----
- tools/bpf/bpftool/btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 9162a18e84c0..0ce3643278d4 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -580,7 +580,7 @@ static int do_dump(int argc, char **argv)
- 	}
- 
- 	if (!btf) {
--		btf = btf__load_from_kernel_by_id(btf_id);
-+		btf = btf__load_from_kernel_by_id_split(btf_id, base_btf);
- 		err = libbpf_get_error(btf);
- 		if (err) {
- 			p_err("get btf by id (%u): %s", btf_id, strerror(err));
 -- 
 2.30.2
 
