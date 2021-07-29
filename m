@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B313DAE10
-	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 23:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A613DAE2C
+	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 23:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233679AbhG2VSB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 17:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
+        id S230392AbhG2VV6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jul 2021 17:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233637AbhG2VR7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Jul 2021 17:17:59 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8077C0613C1
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 14:17:55 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id d73so12388467ybc.10
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 14:17:55 -0700 (PDT)
+        with ESMTP id S230344AbhG2VV6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Jul 2021 17:21:58 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C179AC0613C1
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 14:21:54 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id g76so12488490ybf.4
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 14:21:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QqBWIqayBDX161GQxlIzno8UqsPIvYyle7zuOlTkWDc=;
-        b=HspkJSVs/cSeZfLoPIj7exHLBN4F+URroBu7wdc9GkTCNrmogqO+5y6OR3rQO8xSP7
-         gsD4WgSKLJyEvCJ7+3ykABtUf0MaCZpeJp302vZP6HNwhnBdlouh9AzfAjaF5MNtRSwQ
-         jpevP5CT+DDYygWgXM3gIXZAPqcW3k/9tlUPsd+QmU3yyi8RWhsM/IOgnuoWy4X6+5Bq
-         wgfD0s0SnG6elkebpJz0RmnlcgHa4C0tZqHa6mo+223WeAy2WeAaWH+AX2e3VNHFtpsW
-         N0VWDrU+eyd7D59H0tHQxBdY4hCxp2RjgfbSiyxloytzPH6YtEVg6iSMT/S03bOKJRrk
-         qTfw==
+        bh=iVEUoIeXmIQWOzUJGGX4tSb3gJiqrMaFOO2m6Pc5kvA=;
+        b=AkIy2EM0oNkY12EMt/xwD5M2hIcWt3jNji03EE/cogOgyc4SsDUqKz5e5Xn6jh1yqh
+         SGeiAFzQ00MhordY46Hk0rCbWbUP8Qz8tQV+dVBvD10aMEZ8h6EpKXMke6p8ARrRuT89
+         2vA9cTQRrySJ9PRYFQxi/d/IzXN05XUBpk4+zeMwlBZE9XyzdcoNbBYWUaZ/r5OS56bX
+         HaeDmPqID0LEmNFkCmJykq6ZubGWzKmJ9UNWvSx44K+gRDaKXIK+Uj+IuCqOcOzt0Jxp
+         I9TpEwQTUvp4lOIjoDDmMMkGldqVB47FxaQQmoz/WdXalUXI7xFtOijBstbwy9Hup8lS
+         nbKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QqBWIqayBDX161GQxlIzno8UqsPIvYyle7zuOlTkWDc=;
-        b=BD/Ff+I81yYhk97EeVPwqRjWxK99w4zp5GO83hVJu/9vuMoIl6BNQRs+lo964Jaag0
-         vmOSTcYWYRvFuzZCdGW4b6tqTYlEPyhOmswqX0TbTTtR2c+XdSmYArDYYLS4ldr2VzRN
-         2XuPOeN4G/C9QhhM1Uixxzxo3hnL4B2xRte1g6cA6qqbDog4xzqFaHLNluknqzkaV/oW
-         36PhzS42iBBt4ANgaG/EGojpYA7dfxEzUu+bABL/zpR7P5YczkMbCm32nA7VXX1J3wdM
-         Oaw+hjbMQSJ29JXBZPVjN7r2rURspOpNtbsH1VexhF64uHPH2FORNG7PlnGjQVD/qFWU
-         QcSw==
-X-Gm-Message-State: AOAM532LkRrtwD83yjswFzBeS3pzR6DkpjBx58+Wa5B8RcJCS7kD762q
-        QejXvsxHBbjRthG3bQYQ3jUB4B743fStbV8iuQdZhg==
-X-Google-Smtp-Source: ABdhPJxyu8YlNj3Pu4b4MDO/kcOvIEgH8WyyO8NuUXSDgAEffPrVR/WIOL6t9WQcNB7K/FDPudE/IM8UQHWZhKUxz5w=
-X-Received: by 2002:a25:accf:: with SMTP id x15mr10073855ybd.63.1627593474889;
- Thu, 29 Jul 2021 14:17:54 -0700 (PDT)
+        bh=iVEUoIeXmIQWOzUJGGX4tSb3gJiqrMaFOO2m6Pc5kvA=;
+        b=Rb+Q6WRJghTXdi1PVssqc6AzePrb2LK4Gem8G3LOJ3Da/mnUgsnDC8q1I9T5n90vzB
+         d19wLHuwuGuBEap4q0xa4GOSnMYTydJ2YKwuOey3rer9R5SxHtEx+uEg0tt4QdprIopW
+         YdCD67UlzD7XjoChjoGiO0qd5mZsSd7r8yVv3esciptW4sAWTVayDviApevVcROgxLVi
+         MbxjXHY241hy2wfzLof/GWQaqrJ621HO6V2kxBUy9CmK2n4FPaS1iDRxLyLSXruNPdXN
+         AietsnmeGo0W4VcmAg+z3mNT3xSXcixLKWUidLJC+Wq96VC5kBSgVfs9umXmk0nZgdJV
+         XDmw==
+X-Gm-Message-State: AOAM533XRtwZybLtXIfnR4oxMB9CAlC44DyLlp3n5owBnyNRbCgvPU35
+        +NBjvw0JSUehMK9ts1WWSGYLPG9Pnbv7hQLBP864HA==
+X-Google-Smtp-Source: ABdhPJwCMBfWJ1aZm/KOEvRIjOmo+J+kQglOzLy5W/OF9TNRuwn5MaCMCsB5ahVbKQn/WVdYdaVFT2UWFZfkdqN5R+k=
+X-Received: by 2002:a25:ac18:: with SMTP id w24mr9861016ybi.289.1627593714088;
+ Thu, 29 Jul 2021 14:21:54 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210728170502.351010-1-johan.almbladh@anyfinetworks.com>
- <20210728170502.351010-9-johan.almbladh@anyfinetworks.com> <ba3656eb-500b-9f14-1c97-d27868f1c3e6@fb.com>
-In-Reply-To: <ba3656eb-500b-9f14-1c97-d27868f1c3e6@fb.com>
+ <20210728170502.351010-8-johan.almbladh@anyfinetworks.com> <cbff35ec-07ce-9c7d-4c29-66f2f780daa4@fb.com>
+In-Reply-To: <cbff35ec-07ce-9c7d-4c29-66f2f780daa4@fb.com>
 From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Thu, 29 Jul 2021 23:17:43 +0200
-Message-ID: <CAM1=_QQRuH2K3fMDJCYJuDtTmziqcmtcr31hQeQe-kCkXVC4gA@mail.gmail.com>
-Subject: Re: [PATCH 08/14] bpf/tests: Add tests for ALU operations implemented
- with function calls
+Date:   Thu, 29 Jul 2021 23:21:43 +0200
+Message-ID: <CAM1=_QQ6rUjANEKTPUadzMfP5zcxWimL8+YRjy=3eS0SZrwbpQ@mail.gmail.com>
+Subject: Re: [PATCH 07/14] bpf/tests: Add more ALU64 BPF_MUL tests
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -67,156 +66,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 1:52 AM Yonghong Song <yhs@fb.com> wrote:
-> > +             /*
-> > +              * Register (non-)clobbering test, in the case where a 32-bit
-> > +              * JIT implements complex ALU64 operations via function calls.
-> > +              */
-> > +             "INT: Register clobbering, R1 updated",
+On Thu, Jul 29, 2021 at 1:32 AM Yonghong Song <yhs@fb.com> wrote:
+> > @@ -3051,6 +3051,31 @@ static struct bpf_test tests[] = {
+> >               { },
+> >               { { 0, 2147483647 } },
+> >       },
+> > +     {
+> > +             "ALU64_MUL_X: 64x64 multiply, low word",
 > > +             .u.insns_int = {
-> > +                     BPF_ALU32_IMM(BPF_MOV, R0, 0),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R1, 123456789),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R2, 2),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R3, 3),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R4, 4),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R5, 5),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R6, 6),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R7, 7),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R8, 8),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R9, 9),
-> > +                     BPF_ALU64_IMM(BPF_DIV, R1, 123456789),
-> > +                     BPF_JMP_IMM(BPF_JNE, R0, 0, 10),
-> > +                     BPF_JMP_IMM(BPF_JNE, R1, 1, 9),
-> > +                     BPF_JMP_IMM(BPF_JNE, R2, 2, 8),
-> > +                     BPF_JMP_IMM(BPF_JNE, R3, 3, 7),
-> > +                     BPF_JMP_IMM(BPF_JNE, R4, 4, 6),
-> > +                     BPF_JMP_IMM(BPF_JNE, R5, 5, 5),
-> > +                     BPF_JMP_IMM(BPF_JNE, R6, 6, 4),
-> > +                     BPF_JMP_IMM(BPF_JNE, R7, 7, 3),
-> > +                     BPF_JMP_IMM(BPF_JNE, R8, 8, 2),
-> > +                     BPF_JMP_IMM(BPF_JNE, R9, 9, 1),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R0, 1),
+> > +                     BPF_LD_IMM64(R0, 0x0fedcba987654321LL),
+> > +                     BPF_LD_IMM64(R1, 0x123456789abcdef0LL),
+> > +                     BPF_ALU64_REG(BPF_MUL, R0, R1),
 > > +                     BPF_EXIT_INSN(),
 > > +             },
 > > +             INTERNAL,
 > > +             { },
-> > +             { { 0, 1 } }
-> > +     },
-> > +     {
-> > +             "INT: Register clobbering, R2 updated",
-> > +             .u.insns_int = {
-> > +                     BPF_ALU32_IMM(BPF_MOV, R0, 0),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R1, 1),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R2, 2 * 123456789),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R3, 3),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R4, 4),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R5, 5),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R6, 6),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R7, 7),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R8, 8),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R9, 9),
-> > +                     BPF_ALU64_IMM(BPF_DIV, R2, 123456789),
-> > +                     BPF_JMP_IMM(BPF_JNE, R0, 0, 10),
-> > +                     BPF_JMP_IMM(BPF_JNE, R1, 1, 9),
-> > +                     BPF_JMP_IMM(BPF_JNE, R2, 2, 8),
-> > +                     BPF_JMP_IMM(BPF_JNE, R3, 3, 7),
-> > +                     BPF_JMP_IMM(BPF_JNE, R4, 4, 6),
-> > +                     BPF_JMP_IMM(BPF_JNE, R5, 5, 5),
-> > +                     BPF_JMP_IMM(BPF_JNE, R6, 6, 4),
-> > +                     BPF_JMP_IMM(BPF_JNE, R7, 7, 3),
-> > +                     BPF_JMP_IMM(BPF_JNE, R8, 8, 2),
-> > +                     BPF_JMP_IMM(BPF_JNE, R9, 9, 1),
-> > +                     BPF_ALU32_IMM(BPF_MOV, R0, 1),
-> > +                     BPF_EXIT_INSN(),
-> > +             },
-> > +             INTERNAL,
-> > +             { },
-> > +             { { 0, 1 } }
-> > +     },
+> > +             { { 0, 0xe5618cf0 } }
 >
-> It looks like the above two tests, "R1 updated" and "R2 updated" should
-> be very similar and the only difference is one immediate is 123456789
-> and another is 2 * 123456789. But for generated code, they all just have
-> the final immediate. Could you explain what the difference in terms of
-> jit for the above two tests?
+> Same here. Maybe capture the true 64-bit R0 value?
 
-When a BPF_CALL instruction is executed, the eBPF assembler have
-already saved any caller-saved registers that must be preserved, put
-the arguments in R1-R5, and expects a return value in R0. It is just
-for the JIT to emit the call.
-
-Not so when an eBPF instruction is implemented by a function call,
-like ALU64 DIV in a 32-bit JIT. In this case, the function call is
-unexpected by the eBPF assembler, and must be invisible to it. Now the
-JIT must take care of saving all caller-saved registers on stack, put
-the operands in the right argument registers, put the return value in
-the destination register, and finally restore all caller-saved
-registers without overwriting the computed result.
-
-The test checks that all other registers retain their value after such
-a hidden function call. However, one register will contain the result.
-In order to verify that all registers are saved and restored properly,
-we must vary the destination and run it two times. It is not the
-result of the operation that its tested, it is absence of possible
-side effects.
-
-I can put a more elaborate description in the comment to explain this.
-
->
-> > +     {
-> > +             /*
-> > +              * Test 32-bit JITs that implement complex ALU64 operations as
-> > +              * function calls R0 = f(R1, R2), and must re-arrange operands.
-> > +              */
-> > +#define NUMER 0xfedcba9876543210ULL
-> > +#define DENOM 0x0123456789abcdefULL
-> > +             "ALU64_DIV X: Operand register permutations",
-> > +             .u.insns_int = {
-> > +                     /* R0 / R2 */
-> > +                     BPF_LD_IMM64(R0, NUMER),
-> > +                     BPF_LD_IMM64(R2, DENOM),
-> > +                     BPF_ALU64_REG(BPF_DIV, R0, R2),
-> > +                     BPF_JMP_IMM(BPF_JEQ, R0, NUMER / DENOM, 1),
-> > +                     BPF_EXIT_INSN(),
-> > +                     /* R1 / R0 */
-> > +                     BPF_LD_IMM64(R1, NUMER),
-> > +                     BPF_LD_IMM64(R0, DENOM),
-> > +                     BPF_ALU64_REG(BPF_DIV, R1, R0),
-> > +                     BPF_JMP_IMM(BPF_JEQ, R1, NUMER / DENOM, 1),
-> > +                     BPF_EXIT_INSN(),
-> > +                     /* R0 / R1 */
-> > +                     BPF_LD_IMM64(R0, NUMER),
-> > +                     BPF_LD_IMM64(R1, DENOM),
-> > +                     BPF_ALU64_REG(BPF_DIV, R0, R1),
-> > +                     BPF_JMP_IMM(BPF_JEQ, R0, NUMER / DENOM, 1),
-> > +                     BPF_EXIT_INSN(),
-> > +                     /* R2 / R0 */
-> > +                     BPF_LD_IMM64(R2, NUMER),
-> > +                     BPF_LD_IMM64(R0, DENOM),
-> > +                     BPF_ALU64_REG(BPF_DIV, R2, R0),
-> > +                     BPF_JMP_IMM(BPF_JEQ, R2, NUMER / DENOM, 1),
-> > +                     BPF_EXIT_INSN(),
-> > +                     /* R2 / R1 */
-> > +                     BPF_LD_IMM64(R2, NUMER),
-> > +                     BPF_LD_IMM64(R1, DENOM),
-> > +                     BPF_ALU64_REG(BPF_DIV, R2, R1),
-> > +                     BPF_JMP_IMM(BPF_JEQ, R2, NUMER / DENOM, 1),
-> > +                     BPF_EXIT_INSN(),
-> > +                     /* R1 / R2 */
-> > +                     BPF_LD_IMM64(R1, NUMER),
-> > +                     BPF_LD_IMM64(R2, DENOM),
-> > +                     BPF_ALU64_REG(BPF_DIV, R1, R2),
-> > +                     BPF_JMP_IMM(BPF_JEQ, R1, NUMER / DENOM, 1),
-> > +                     BPF_EXIT_INSN(),
-> > +                     BPF_LD_IMM64(R0, 1),
->
-> Do we need this BPF_LD_IMM64(R0, 1)?
-> First, if we have it, and next "BPF_ALU64_REG(BPF_DIV, R1, R1)"
-> generates incorrect value and exit and then you will get
-> exit value 1, which will signal the test success.
->
-> Second, if you don't have this R0 = 1, R0 will be DENOM
-> and you will be fine.
-
-Good catch! No, it should not be there. Maybe left from previous
-debugging, or a copy-and-paste error. I'll remove it.
+Same as the LSH/RSH/ARSH tests. Uses 32-bit shift to test high and low
+words in two runs.
