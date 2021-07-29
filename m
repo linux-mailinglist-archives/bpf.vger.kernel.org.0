@@ -2,134 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BADA3DAFB3
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 01:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09CA3DAFBE
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 01:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbhG2XIj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 19:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
+        id S232948AbhG2XQy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jul 2021 19:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhG2XIi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Jul 2021 19:08:38 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282D7C061765;
-        Thu, 29 Jul 2021 16:08:34 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id j77so10851359ybj.3;
-        Thu, 29 Jul 2021 16:08:34 -0700 (PDT)
+        with ESMTP id S229991AbhG2XQy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Jul 2021 19:16:54 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9223EC061765
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 16:16:49 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id k65so12755099yba.13
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 16:16:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OpGJywmBQN1vSXsTZJu4lRgLbPWeyylOKnTw/mPweSU=;
-        b=pw9PDwuuj2ULyst/CbdAxef421IzQBtd2sNnjJSg0mZL3Z7JLVJI2vvl5r274ScQNm
-         W9ZxbhKarkOf133YutNNG6TnRuQho7OPPj6OJ90DOVE0i/NyiQK/AV6uerib5sDqMlv3
-         mgAPthsFUncY/eKyYRVPPw4kxfvg2bzdrkCedMt0dtMtaRK/uQtRXbkss12+1m483DMs
-         TdRO3OlaLGHkVKqsgQsEttw2YW+acvhM6jCk6evuSZ/U5dWbL1F1BBVXDpUIVrJu5GE0
-         2LU3GOouxmR2yd6zKFcnmEgAjEqSYM2jBmdaJI8ydgLV29oGWeWfaX3QtZr8t2gDA71L
-         YLpA==
+        bh=iK2mtNwJ1bl7v708B7Woz6KhhwQcnLkGu8atb7KCvrU=;
+        b=ZQ7zic2NT1jZgNbDxfCa/7APNXQ3YOl9vL0ilD98bvISrsxaIC6NUfj/Rm78c6Zkvb
+         /EGvJZbj7vN6Z8LLs+e22UuTTMQZ5sZyP6YfLo3b3OlYCyoVA1biz1baMGX0iOSlGwOh
+         XEjTTWg0btuNqTOzk2PYS//NWBDKRD/6FmoAZBPeoWCbDBJu659U8p0XsX5/+JQc+sfH
+         oOON2gxvBY0d0fyMiEY22Vewhpuenrc+GETl0Hlix31kC3uafoFVcs59nsb1u7BqozFC
+         mROnEXf9sDMI1keGgvuzmaJUUuB4qXwar8lzuFR9WHf1TftWS9pLjvGZlQY+LFKvO+ew
+         D7Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OpGJywmBQN1vSXsTZJu4lRgLbPWeyylOKnTw/mPweSU=;
-        b=OP6rFZsNpBaFuKWWf0wBBHWbAJJiItwkePC8dvMbAFLDT862u7p7cEAe/E6mD9phVj
-         rCt2Ua0ZQ0e+xMAMLyo1eUGNrMVD+HAIeK8/dGCF8YSRNIX7N9VnroooTS0fTBxWxol0
-         +rIXAlnbY35zTScCkYcSoogezkYMzTM9SbecN08SXcz1WjGvozxXlXBFGzOccHkrGH+L
-         CGdRktPkN/EfNg+GOanOWpygUjPyzLEPwuj5tF6FHYP04WohthR6W+8yqT7I5sqC4aIn
-         KVPMFSov+jBVGIxgsgfsHssQM/Wbqv4D+7EAwP9FXfPFCF1B9aphJ3PTeKc/pqJvV+Fw
-         jsPg==
-X-Gm-Message-State: AOAM531LwnfF3BQg89B+nvpcPsL3oYuJT2zBTfbftsAexZYEBUPiC5iz
-        SoVxbXg1mUGShTBRrpeLCm/jDDDysurcuskbTTI=
-X-Google-Smtp-Source: ABdhPJwrI7ifqXpMgVoO0jxmjk/nk7N+HNsvvOz9npd+c/XZRuUfsCNRuP2sE+mSxhRBgGoSwD1w9b84AHemAJafPdQ=
-X-Received: by 2002:a25:cdc7:: with SMTP id d190mr9524409ybf.425.1627600113388;
- Thu, 29 Jul 2021 16:08:33 -0700 (PDT)
+        bh=iK2mtNwJ1bl7v708B7Woz6KhhwQcnLkGu8atb7KCvrU=;
+        b=i+iDLYYZEyMvLK2qyFFBaLTdzzuqiq/FsgyZwxhJdW3GbxtPguaYHAHG2r7l2nf4Mj
+         KlbhN9PR8aBK+1m0McE37UBJvLRJrQXB4pXfAC2g7Vy4XMVTed53Hog/4OO2EYspk9eC
+         +2Lm8j3M+4M9TQUwnODU3D2fKC4rLZD0MGO8B9g64PqnesHUPI4XcUh8F4FStVm5lFZn
+         bcnTHu6HN1nUaQZ+sTrJNN4E4ADaZzPx17TZLn+7x91unZH80g1XYPReW/rlDRAOvtUi
+         HvvsfvYEVJh/9MTbD6HsuiHVy92hiRW9hiqoxBewsqfYmMD80juzlZxhtcO20cgMOZ4R
+         baLQ==
+X-Gm-Message-State: AOAM532S7oHIFlUBM86WTlVu2XWogqm2MLyj8q2wlF/8be5QWXCwLm4Z
+        L99cfoPohxxbPnCbh2myFbw/8qSI220hsY5JLZkFy8T7WTk=
+X-Google-Smtp-Source: ABdhPJyKJt7LJzSMAPwy/m1ma0XqwrgV/cwOi+uFNcAahw6014lzZRtt6ZfFuTEJZb5wdC29cIKfAysHIv/1Nr0UPXQ=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr9660417ybu.403.1627600608879;
+ Thu, 29 Jul 2021 16:16:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210728151419.501183-1-sdf@google.com>
-In-Reply-To: <20210728151419.501183-1-sdf@google.com>
+References: <5969bb991adedb03c6ae93e051fd2a00d293cf25.1627513670.git.dxu@dxuuu.xyz>
+In-Reply-To: <5969bb991adedb03c6ae93e051fd2a00d293cf25.1627513670.git.dxu@dxuuu.xyz>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 29 Jul 2021 16:08:22 -0700
-Message-ID: <CAEf4BzZBcG=CDVrMVb4i6x90MvpPDOXhkoZ3rHUpx3+FMUE6NQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: move netcnt test under test_progs
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+Date:   Thu, 29 Jul 2021 16:16:37 -0700
+Message-ID: <CAEf4BzYU5Wq699DY8d8CLYy_YvLUkNCtzyAw9KTUyJdza_vg_w@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Do not close un-owned FD 0 on errors
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 8:14 AM Stanislav Fomichev <sdf@google.com> wrote:
+On Wed, Jul 28, 2021 at 4:09 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> Rewrite to skel and ASSERT macros as well while we are at it.
+> Before this patch, btf_new() was liable to close an arbitrary FD 0 if
+> BTF parsing failed. This was because:
 >
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> * btf->fd was initialized to 0 through the calloc()
+> * btf__free() (in the `done` label) closed any FDs >= 0
+> * btf->fd is left at 0 if parsing fails
+>
+> This issue was discovered on a system using libbpf v0.3 (without
+> BTF_KIND_FLOAT support) but with a kernel that had BTF_KIND_FLOAT types
+> in BTF. Thus, parsing fails.
+>
+> While this patch technically doesn't fix any issues b/c upstream libbpf
+> has BTF_KIND_FLOAT support, it'll help prevent issues in the future if
+> more BTF types are added. It also allow the fix to be backported to
+> older libbpf's.
+>
+> Fixes: 3289959b97ca ("libbpf: Support BTF loading and raw data output in both endianness")
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 > ---
 
-Thanks! Bonus points for skeleton and ASSERT_XXX! ;)
+Thanks! Applied to bpf. We should bite a bullet and make sure that
+libbpf itself never uses/allows FD 0 internally (by, say, dup()'ing FD
+0, if we happen to get it) and get rid of the -1 special initializers.
 
-In addition to Yonghong's comments, a few more below. Missed assert()s
-require a new revision, unfortunately.
-
->  tools/testing/selftests/bpf/Makefile          |   3 +-
->  .../testing/selftests/bpf/prog_tests/netcnt.c |  93 +++++++++++
->  tools/testing/selftests/bpf/test_netcnt.c     | 148 ------------------
-
-Usually there is .gitignore clean up as well.
-
->  3 files changed, 94 insertions(+), 150 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/netcnt.c
->  delete mode 100644 tools/testing/selftests/bpf/test_netcnt.c
+>  tools/lib/bpf/btf.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-
-[...]
-
-> +
-> +       skel->links.bpf_nextcnt =
-> +               bpf_program__attach_cgroup(skel->progs.bpf_nextcnt, cg_fd);
-> +       if (!ASSERT_OK_PTR(skel->links.bpf_nextcnt,
-> +                          "attach_cgroup(bpf_nextcnt)"))
-> +               goto err;
-> +
-> +       if (system("which ping6 &>/dev/null") == 0)
-
-see 4cda0c82a34b ("selftests/bpf: Use ping6 only if available in
-tc_redirect"), we should probably add some system() + ping -6/ping6
-wrapper into network_helpers.c and use that in at least all
-test_progs' tests.
-
-> +               assert(!system("ping6 ::1 -c 10000 -f -q > /dev/null"));
-> +       else
-> +               assert(!system("ping -6 ::1 -c 10000 -f -q > /dev/null"));
-
-no assert() please
-
-> +
-> +       map_fd = bpf_map__fd(skel->maps.netcnt);
-> +       if (!ASSERT_GE(map_fd, 0, "bpf_map__fd(netcnt)"))
-> +               goto err;
-> +
-> +       percpu_map_fd = bpf_map__fd(skel->maps.percpu_netcnt);
-> +       if (!ASSERT_GE(percpu_map_fd, 0, "bpf_map__fd(percpu_netcnt)"))
-> +               goto err;
-> +
-> +       if (!ASSERT_OK(bpf_map_get_next_key(map_fd, NULL, &key),
-> +                      "bpf_map_get_next_key"))
-
-it's ok to use all 100 characters if that helps keeps simple function
-invocations on the single line, so don't hesitate to do that
-
-> +               goto err;
-> +
-> +       if (!ASSERT_OK(bpf_map_lookup_elem(map_fd, &key, &netcnt),
-> +                      "bpf_map_lookup_elem(netcnt)"))
-> +               goto err;
-> +
-> +       if (!ASSERT_OK(bpf_map_lookup_elem(percpu_map_fd, &key,
-> +                                          &percpu_netcnt[0]),
-> +                      "bpf_map_lookup_elem(percpu_netcnt)"))
-> +               goto err;
-> +
-
-[...]
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index b46760b93bb4..7ff3d5ce44f9 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -804,6 +804,7 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
+>         btf->nr_types = 0;
+>         btf->start_id = 1;
+>         btf->start_str_off = 0;
+> +       btf->fd = -1;
+>
+>         if (base_btf) {
+>                 btf->base_btf = base_btf;
+> @@ -832,8 +833,6 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
+>         if (err)
+>                 goto done;
+>
+> -       btf->fd = -1;
+> -
+>  done:
+>         if (err) {
+>                 btf__free(btf);
+> --
+> 2.31.1
+>
