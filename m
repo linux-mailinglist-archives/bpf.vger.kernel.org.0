@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BD63DA5D0
-	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 16:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0E33DA5D2
+	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 16:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238762AbhG2OJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S238788AbhG2OJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Thu, 29 Jul 2021 10:09:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57374 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:57466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238877AbhG2OIF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:08:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB5B160EBD;
-        Thu, 29 Jul 2021 14:07:59 +0000 (UTC)
+        id S238907AbhG2OIO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:08:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5E9E6054E;
+        Thu, 29 Jul 2021 14:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627567682;
-        bh=b5f2P/y2shO+S47LUkQKIDybO3DPdanNyRLlemEbyJM=;
+        s=k20201202; t=1627567691;
+        bh=juSmhxL2xpDmE4nzcIHTKDR3pzJZ+yWbGObEWpwCpho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F6jIp4PSzC0dAghIWd5eNkMSkrKI9BWHTnI/eidIH/dRdhqlrInpzCbBCTH5Ghzjp
-         xdg9Pthx75BSCXcJ/JtZs5aKd5VXPX/l2jqdn+gyuL60ZIkA1Vr326u9/JtryhnWCM
-         vTDFOtFRzLoLgoao++F1nR90CpWmnzfOijJJGm2sb7LdNBbTQCrY8fQPxk7LlSmsH4
-         0p/3wVaCDRmFWmmDoV0Y9sxFvcQacRuBsUmFF0TLTUzs00Gn9H/8O/SU6Ss1wnwijO
-         0JuibN1Cdaa7mLHPX57nug8y8VdaMO5WLIeq6du4DYl0GrfAovDkUieWZOc1wL0iRA
-         uxXdo12iiNTCw==
+        b=U/r4jZz7MMU2GQQTq9kKdqHVYtEzg9Mg/h41ECc4eAFLxRsi0ku+hwkkBXkTS0MQ3
+         SOdXQtlGASdHr/bYpYKC3TJPLUNSP49XmxH3NEhuE5XPmTGo5JQh2CqqDjSFpnHB/6
+         wY9SCwIAdyUY5AWE0Uta/UulGOsDggmPqXKlL0lP9caxvaYf7XgUobiYrP7EEwpdh8
+         P6fbZOkIf2vLzM72F5+xIE6n1dqWIuYMFy1aUQSI3LJrx2Q1T9WRlMZhK9aGkFi0DP
+         1onyFn8/zTlsVHuwh3p0OHSr/yl55KNinq1P/iCVdsAs8RWDWG5spgsQcHeDU7ZGLa
+         +qZQR3bBRZsKw==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -36,9 +36,9 @@ Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
         yhs@fb.com, linux-ia64@vger.kernel.org,
         Abhishek Sagar <sagar.abhishek@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH -tip v10 13/16] x86/kprobes: Push a fake return address at kretprobe_trampoline
-Date:   Thu, 29 Jul 2021 23:07:58 +0900
-Message-Id: <162756767828.301564.16335053369674561101.stgit@devnote2>
+Subject: [PATCH -tip v10 14/16] x86/unwind: Recover kretprobe trampoline entry
+Date:   Thu, 29 Jul 2021 23:08:07 +0900
+Message-Id: <162756768739.301564.2736566582556662907.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <162756755600.301564.4957591913842010341.stgit@devnote2>
 References: <162756755600.301564.4957591913842010341.stgit@devnote2>
@@ -50,100 +50,177 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Change __kretprobe_trampoline() to push the address of the
-__kretprobe_trampoline() as a fake return address at the bottom
-of the stack frame. This fake return address will be replaced
-with the correct return address in the trampoline_handler().
+Since the kretprobe replaces the function return address with
+the kretprobe_trampoline on the stack, x86 unwinders can not
+continue the stack unwinding at that point, or record
+kretprobe_trampoline instead of correct return address.
 
-With this change, the ORC unwinder can check whether the return
-address is modified by kretprobes or not.
+To fix this issue, find the correct return address from task's
+kretprobe_instances as like as function-graph tracer does.
 
+With this fix, the unwinder can correctly unwind the stack
+from kretprobe event on x86, as below.
+
+           <...>-135     [003] ...1     6.722338: r_full_proxy_read_0: (vfs_read+0xab/0x1a0 <- full_proxy_read)
+           <...>-135     [003] ...1     6.722377: <stack trace>
+ => kretprobe_trace_func+0x209/0x2f0
+ => kretprobe_dispatcher+0x4a/0x70
+ => __kretprobe_trampoline_handler+0xca/0x150
+ => trampoline_handler+0x44/0x70
+ => kretprobe_trampoline+0x2a/0x50
+ => vfs_read+0xab/0x1a0
+ => ksys_read+0x5f/0xe0
+ => do_syscall_64+0x33/0x40
+ => entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+
+Reported-by: Daniel Xu <dxu@dxuuu.xyz>
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Tested-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- Changes in v9:
-  - Update changelog and comment.
-  - Remove unneeded type casting.
+  Changes in v9:
+   - Update comment so that it explains why the strange address passed
+     to unwind_recover_kretprobe().
+  Changes in v7:
+   - Remove superfluous #include <linux/kprobes.h>.
+  Changes in v5:
+   - Fix the case of interrupt happens on kretprobe_trampoline+0.
+  Changes in v3:
+   - Split out the kretprobe side patch
+   - Fix build error when CONFIG_KRETPROBES=n.
+  Changes in v2:
+   - Remove kretprobe wrapper functions from unwind_orc.c
+   - Do not fixup state->ip when unwinding with regs because
+     kretprobe fixup instruction pointer before calling handler.
 ---
- arch/x86/kernel/kprobes/core.c |   34 +++++++++++++++++++++++++---------
- 1 file changed, 25 insertions(+), 9 deletions(-)
+ arch/x86/include/asm/unwind.h  |   23 +++++++++++++++++++++++
+ arch/x86/kernel/unwind_frame.c |    3 +--
+ arch/x86/kernel/unwind_guess.c |    3 +--
+ arch/x86/kernel/unwind_orc.c   |   21 +++++++++++++++++----
+ 4 files changed, 42 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index d1436d7463fd..7e1111c19605 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -1022,28 +1022,33 @@ asm(
- 	".global __kretprobe_trampoline\n"
- 	".type __kretprobe_trampoline, @function\n"
- 	"__kretprobe_trampoline:\n"
--	/* We don't bother saving the ss register */
- #ifdef CONFIG_X86_64
--	"	pushq %rsp\n"
-+	/* Push a fake return address to tell the unwinder it's a kretprobe. */
-+	"	pushq $__kretprobe_trampoline\n"
- 	UNWIND_HINT_FUNC
-+	/* Save the 'sp - 8', this will be fixed later. */
-+	"	pushq %rsp\n"
- 	"	pushfq\n"
- 	SAVE_REGS_STRING
- 	"	movq %rsp, %rdi\n"
- 	"	call trampoline_handler\n"
--	/* Replace saved sp with true return address. */
--	"	movq %rax, 19*8(%rsp)\n"
- 	RESTORE_REGS_STRING
-+	/* In trampoline_handler(), 'regs->flags' is copied to 'regs->sp'. */
-+	"	addq $8, %rsp\n"
- 	"	popfq\n"
- #else
--	"	pushl %esp\n"
-+	/* Push a fake return address to tell the unwinder it's a kretprobe. */
-+	"	pushl $__kretprobe_trampoline\n"
- 	UNWIND_HINT_FUNC
-+	/* Save the 'sp - 4', this will be fixed later. */
-+	"	pushl %esp\n"
- 	"	pushfl\n"
- 	SAVE_REGS_STRING
- 	"	movl %esp, %eax\n"
- 	"	call trampoline_handler\n"
--	/* Replace saved sp with true return address. */
--	"	movl %eax, 15*4(%esp)\n"
- 	RESTORE_REGS_STRING
-+	/* In trampoline_handler(), 'regs->flags' is copied to 'regs->sp'. */
-+	"	addl $4, %esp\n"
- 	"	popfl\n"
+diff --git a/arch/x86/include/asm/unwind.h b/arch/x86/include/asm/unwind.h
+index 70fc159ebe69..fca2e783e3ce 100644
+--- a/arch/x86/include/asm/unwind.h
++++ b/arch/x86/include/asm/unwind.h
+@@ -4,6 +4,7 @@
+ 
+ #include <linux/sched.h>
+ #include <linux/ftrace.h>
++#include <linux/kprobes.h>
+ #include <asm/ptrace.h>
+ #include <asm/stacktrace.h>
+ 
+@@ -15,6 +16,7 @@ struct unwind_state {
+ 	unsigned long stack_mask;
+ 	struct task_struct *task;
+ 	int graph_idx;
++	struct llist_node *kr_cur;
+ 	bool error;
+ #if defined(CONFIG_UNWINDER_ORC)
+ 	bool signal, full_regs;
+@@ -99,6 +101,27 @@ void unwind_module_init(struct module *mod, void *orc_ip, size_t orc_ip_size,
+ 			void *orc, size_t orc_size) {}
  #endif
- 	"	ret\n"
-@@ -1063,8 +1068,10 @@ STACK_FRAME_NON_STANDARD_FP(__kretprobe_trampoline);
+ 
++static inline
++unsigned long unwind_recover_kretprobe(struct unwind_state *state,
++				       unsigned long addr, unsigned long *addr_p)
++{
++	return is_kretprobe_trampoline(addr) ?
++		kretprobe_find_ret_addr(state->task, addr_p, &state->kr_cur) :
++		addr;
++}
++
++/* Recover the return address modified by kretprobe and ftrace_graph. */
++static inline
++unsigned long unwind_recover_ret_addr(struct unwind_state *state,
++				     unsigned long addr, unsigned long *addr_p)
++{
++	unsigned long ret;
++
++	ret = ftrace_graph_ret_addr(state->task, &state->graph_idx,
++				    addr, addr_p);
++	return unwind_recover_kretprobe(state, ret, addr_p);
++}
++
  /*
-  * Called from __kretprobe_trampoline
-  */
--__used __visible void *trampoline_handler(struct pt_regs *regs)
-+__used __visible void trampoline_handler(struct pt_regs *regs)
- {
-+	unsigned long *frame_pointer;
-+
- 	/* fixup registers */
- 	regs->cs = __KERNEL_CS;
- #ifdef CONFIG_X86_32
-@@ -1072,8 +1079,17 @@ __used __visible void *trampoline_handler(struct pt_regs *regs)
- #endif
- 	regs->ip = (unsigned long)&__kretprobe_trampoline;
- 	regs->orig_ax = ~0UL;
-+	regs->sp += sizeof(long);
-+	frame_pointer = &regs->sp + 1;
-+
-+	/* Replace fake return address with real one. */
-+	*frame_pointer = kretprobe_trampoline_handler(regs, frame_pointer);
+  * This disables KASAN checking when reading a value from another task's stack,
+  * since the other task could be running on another CPU and could have poisoned
+diff --git a/arch/x86/kernel/unwind_frame.c b/arch/x86/kernel/unwind_frame.c
+index d7c44b257f7f..8e1c50c86e5d 100644
+--- a/arch/x86/kernel/unwind_frame.c
++++ b/arch/x86/kernel/unwind_frame.c
+@@ -240,8 +240,7 @@ static bool update_stack_state(struct unwind_state *state,
+ 	else {
+ 		addr_p = unwind_get_return_address_ptr(state);
+ 		addr = READ_ONCE_TASK_STACK(state->task, *addr_p);
+-		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
+-						  addr, addr_p);
++		state->ip = unwind_recover_ret_addr(state, addr, addr_p);
+ 	}
  
--	return (void *)kretprobe_trampoline_handler(regs, &regs->sp);
-+	/*
-+	 * Copy FLAGS to 'pt_regs::sp' so that __kretprobe_trapmoline()
-+	 * can do RET right after POPF.
-+	 */
-+	regs->sp = regs->flags;
+ 	/* Save the original stack pointer for unwind_dump(): */
+diff --git a/arch/x86/kernel/unwind_guess.c b/arch/x86/kernel/unwind_guess.c
+index c49f10ffd8cd..884d68a6e714 100644
+--- a/arch/x86/kernel/unwind_guess.c
++++ b/arch/x86/kernel/unwind_guess.c
+@@ -15,8 +15,7 @@ unsigned long unwind_get_return_address(struct unwind_state *state)
+ 
+ 	addr = READ_ONCE_NOCHECK(*state->sp);
+ 
+-	return ftrace_graph_ret_addr(state->task, &state->graph_idx,
+-				     addr, state->sp);
++	return unwind_recover_ret_addr(state, addr, state->sp);
  }
- NOKPROBE_SYMBOL(trampoline_handler);
+ EXPORT_SYMBOL_GPL(unwind_get_return_address);
  
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index a1202536fc57..e6f7592790af 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -534,9 +534,8 @@ bool unwind_next_frame(struct unwind_state *state)
+ 		if (!deref_stack_reg(state, ip_p, &state->ip))
+ 			goto err;
+ 
+-		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
+-						  state->ip, (void *)ip_p);
+-
++		state->ip = unwind_recover_ret_addr(state, state->ip,
++						    (unsigned long *)ip_p);
+ 		state->sp = sp;
+ 		state->regs = NULL;
+ 		state->prev_regs = NULL;
+@@ -549,7 +548,18 @@ bool unwind_next_frame(struct unwind_state *state)
+ 					 (void *)orig_ip);
+ 			goto err;
+ 		}
+-
++		/*
++		 * There is a small chance to interrupt at the entry of
++		 * __kretprobe_trampoline() where the ORC info doesn't exist.
++		 * That point is right after the RET to __kretprobe_trampoline()
++		 * which was modified return address.
++		 * At that point, the @addr_p of the unwind_recover_kretprobe()
++		 * (this has to point the address of the stack entry storing
++		 * the modified return address) must be "SP - (a stack entry)"
++		 * because SP is incremented by the RET.
++		 */
++		state->ip = unwind_recover_kretprobe(state, state->ip,
++				(unsigned long *)(state->sp - sizeof(long)));
+ 		state->regs = (struct pt_regs *)sp;
+ 		state->prev_regs = NULL;
+ 		state->full_regs = true;
+@@ -562,6 +572,9 @@ bool unwind_next_frame(struct unwind_state *state)
+ 					 (void *)orig_ip);
+ 			goto err;
+ 		}
++		/* See UNWIND_HINT_TYPE_REGS case comment. */
++		state->ip = unwind_recover_kretprobe(state, state->ip,
++				(unsigned long *)(state->sp - sizeof(long)));
+ 
+ 		if (state->full_regs)
+ 			state->prev_regs = state->regs;
 
