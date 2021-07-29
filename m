@@ -2,112 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09CA3DAFBE
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 01:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FA13DAFE3
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 01:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhG2XQy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 19:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhG2XQy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Jul 2021 19:16:54 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9223EC061765
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 16:16:49 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id k65so12755099yba.13
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 16:16:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iK2mtNwJ1bl7v708B7Woz6KhhwQcnLkGu8atb7KCvrU=;
-        b=ZQ7zic2NT1jZgNbDxfCa/7APNXQ3YOl9vL0ilD98bvISrsxaIC6NUfj/Rm78c6Zkvb
-         /EGvJZbj7vN6Z8LLs+e22UuTTMQZ5sZyP6YfLo3b3OlYCyoVA1biz1baMGX0iOSlGwOh
-         XEjTTWg0btuNqTOzk2PYS//NWBDKRD/6FmoAZBPeoWCbDBJu659U8p0XsX5/+JQc+sfH
-         oOON2gxvBY0d0fyMiEY22Vewhpuenrc+GETl0Hlix31kC3uafoFVcs59nsb1u7BqozFC
-         mROnEXf9sDMI1keGgvuzmaJUUuB4qXwar8lzuFR9WHf1TftWS9pLjvGZlQY+LFKvO+ew
-         D7Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iK2mtNwJ1bl7v708B7Woz6KhhwQcnLkGu8atb7KCvrU=;
-        b=i+iDLYYZEyMvLK2qyFFBaLTdzzuqiq/FsgyZwxhJdW3GbxtPguaYHAHG2r7l2nf4Mj
-         KlbhN9PR8aBK+1m0McE37UBJvLRJrQXB4pXfAC2g7Vy4XMVTed53Hog/4OO2EYspk9eC
-         +2Lm8j3M+4M9TQUwnODU3D2fKC4rLZD0MGO8B9g64PqnesHUPI4XcUh8F4FStVm5lFZn
-         bcnTHu6HN1nUaQZ+sTrJNN4E4ADaZzPx17TZLn+7x91unZH80g1XYPReW/rlDRAOvtUi
-         HvvsfvYEVJh/9MTbD6HsuiHVy92hiRW9hiqoxBewsqfYmMD80juzlZxhtcO20cgMOZ4R
-         baLQ==
-X-Gm-Message-State: AOAM532S7oHIFlUBM86WTlVu2XWogqm2MLyj8q2wlF/8be5QWXCwLm4Z
-        L99cfoPohxxbPnCbh2myFbw/8qSI220hsY5JLZkFy8T7WTk=
-X-Google-Smtp-Source: ABdhPJyKJt7LJzSMAPwy/m1ma0XqwrgV/cwOi+uFNcAahw6014lzZRtt6ZfFuTEJZb5wdC29cIKfAysHIv/1Nr0UPXQ=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr9660417ybu.403.1627600608879;
- Thu, 29 Jul 2021 16:16:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <5969bb991adedb03c6ae93e051fd2a00d293cf25.1627513670.git.dxu@dxuuu.xyz>
-In-Reply-To: <5969bb991adedb03c6ae93e051fd2a00d293cf25.1627513670.git.dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 29 Jul 2021 16:16:37 -0700
-Message-ID: <CAEf4BzYU5Wq699DY8d8CLYy_YvLUkNCtzyAw9KTUyJdza_vg_w@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Do not close un-owned FD 0 on errors
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S234461AbhG2Xf5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jul 2021 19:35:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229982AbhG2Xf4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Jul 2021 19:35:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4AC860EBC;
+        Thu, 29 Jul 2021 23:35:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627601753;
+        bh=n8vXKfkQDW3rFVcLORvUgHrpDNzrA+7HPOi7lDyleZI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=S6Xxp5UyEEmcLLPZmjYTbxng9VkMrmrxsoe1cvUEJJPpfbBxY6Y1pMqV525QWqPeO
+         kcilEXeq9LtfJ2ZMjJmJ4Kjo3v6ZH13w+dWDEjO3tBHc79fls0lc95dvTev+wOk22H
+         QDZApAqH7wXYZNoLG1QfdFdNqolFmqj3Kqhk9eY6ETyE3jn9o3gIa+Jh65pPPnWuCM
+         sNJEu+hsjlWGQFzfzBIF7xubiGgIPAYFnVnl7Sgc+FIGMsEQAJVLdN+ALYrUHnUnKb
+         6W9weOwM7nAee9tiPDxeyuio6q5sYM5xTpXFI8UbQKl02l9DToOjh39h5xDvcU+UkG
+         Kq9cw5nHznwyQ==
+Date:   Fri, 30 Jul 2021 08:35:49 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH -tip v10 00/16] kprobes: Fix stacktrace with kretprobes
+ on x86
+Message-Id: <20210730083549.4e36df1cba88e408dc60b031@kernel.org>
+In-Reply-To: <162756755600.301564.4957591913842010341.stgit@devnote2>
+References: <162756755600.301564.4957591913842010341.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 4:09 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Before this patch, btf_new() was liable to close an arbitrary FD 0 if
-> BTF parsing failed. This was because:
->
-> * btf->fd was initialized to 0 through the calloc()
-> * btf__free() (in the `done` label) closed any FDs >= 0
-> * btf->fd is left at 0 if parsing fails
->
-> This issue was discovered on a system using libbpf v0.3 (without
-> BTF_KIND_FLOAT support) but with a kernel that had BTF_KIND_FLOAT types
-> in BTF. Thus, parsing fails.
->
-> While this patch technically doesn't fix any issues b/c upstream libbpf
-> has BTF_KIND_FLOAT support, it'll help prevent issues in the future if
-> more BTF types are added. It also allow the fix to be backported to
-> older libbpf's.
->
-> Fixes: 3289959b97ca ("libbpf: Support BTF loading and raw data output in both endianness")
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
+On Thu, 29 Jul 2021 23:05:56 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Thanks! Applied to bpf. We should bite a bullet and make sure that
-libbpf itself never uses/allows FD 0 internally (by, say, dup()'ing FD
-0, if we happen to get it) and get rid of the -1 special initializers.
+> Hello,
+> 
+> This is the 10th version of the series to fix the stacktrace with kretprobe on x86.
+> 
+> The previous version is here;
+> 
+>  https://lore.kernel.org/bpf/162601048053.1318837.1550594515476777588.stgit@devnote2/
+> 
+> This version is rebased on top of new kprobes cleanup series(*1) and merging
+> Josh's objtool update series (*2)(*3) as [6/16] and [7/16].
+> 
+> (*1) https://lore.kernel.org/bpf/162748615977.59465.13262421617578791515.stgit@devnote2/
+> (*2) https://lore.kernel.org/bpf/20210710192433.x5cgjsq2ksvaqnss@treble/
+> (*3) https://lore.kernel.org/bpf/20210710192514.ghvksi3ozhez4lvb@treble/
+> 
+> Changes from v9:
+>  - Add Josh's objtool update patches with a build error fix as [6/16] and [7/16].
+>  - Add a API document for kretprobe_find_ret_addr() and check cur != NULL in [5/16].
+> 
+> With this series, unwinder can unwind stack correctly from ftrace as below;
+> 
+>   # cd /sys/kernel/debug/tracing
+>   # echo > trace
+>   # echo 1 > options/sym-offset
+>   # echo r vfs_read >> kprobe_events
+>   # echo r full_proxy_read >> kprobe_events
+>   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+>   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+>   # echo 1 > events/kprobes/enable
+>   # cat /sys/kernel/debug/kprobes/list
+> ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+> ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+>   # echo 0 > events/kprobes/enable
+>   # cat trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 3/3   #P:8
+> #
+> #                                _-----=> irqs-off
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| /     delay
+> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> #              | |         |   ||||      |         |
+>            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
+>            <...>-134     [007] ...1    16.185901: <stack trace>
+>  => kretprobe_trace_func+0x209/0x300
+>  => kretprobe_dispatcher+0x4a/0x70
+>  => __kretprobe_trampoline_handler+0xd4/0x170
+>  => trampoline_handler+0x43/0x60
+>  => kretprobe_trampoline+0x2a/0x50
+>  => vfs_read+0x98/0x180
+>  => ksys_read+0x5f/0xe0
+>  => do_syscall_64+0x37/0x90
+>  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+>            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
+> 
+> This shows the double return probes (vfs_read() and full_proxy_read()) on the stack
+> correctly unwinded. (vfs_read() returns to 'ksys_read+0x5f' and full_proxy_read()
+> returns to 'vfs_read+0x98')
+> 
+> This also changes the kretprobe behavisor a bit, now the instraction pointer in
+> the 'pt_regs' passed to kretprobe user handler is correctly set the real return
+> address. So user handlers can get it via instruction_pointer() API, and can use
+> stack_trace_save_regs().
+> 
+> You can also get this series from 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v9
 
->  tools/lib/bpf/btf.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index b46760b93bb4..7ff3d5ce44f9 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -804,6 +804,7 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
->         btf->nr_types = 0;
->         btf->start_id = 1;
->         btf->start_str_off = 0;
-> +       btf->fd = -1;
->
->         if (base_btf) {
->                 btf->base_btf = base_btf;
-> @@ -832,8 +833,6 @@ static struct btf *btf_new(const void *data, __u32 size, struct btf *base_btf)
->         if (err)
->                 goto done;
->
-> -       btf->fd = -1;
-> -
->  done:
->         if (err) {
->                 btf__free(btf);
-> --
-> 2.31.1
->
+Oops, this is of course 'kprobes/kretprobe-stackfix-v10'. And this branch includes above (*1) series.
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
