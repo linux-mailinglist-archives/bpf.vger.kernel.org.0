@@ -2,60 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5944A3DB002
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 01:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DFF3DB011
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 01:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234819AbhG2Xly (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 19:41:54 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7592 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229982AbhG2Xlx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Jul 2021 19:41:53 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TNcNEF024332
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 16:41:49 -0700
+        id S235149AbhG2X5u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jul 2021 19:57:50 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2496 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235124AbhG2X5u (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 29 Jul 2021 19:57:50 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16TNuaHg008884
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 16:57:46 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=r1GJa5WGkuF5qLD+WYQaSgIysHMX0eICQXhS22VudLk=;
- b=cmAOFB1UAglPWyq40VlNV4oFeJJeivcdobLNo6Zt0ZA3EdpNU4n41ofOay4TOt/Q6cXf
- 19IJ+1ZU/1bqacXqSQGwpnRPnk5hbYkmy4pgXGd1VVb8Ttjv7Smunj3RvwGdpoIJ3p8T
- bLu8wA1ifK9ZMQNJcJtaiFFHbOl2ticmuy4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a3bu9hhyw-1
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=OPgbM/D0/O6VHSW/WFNAM1kmnxsrOAlUmd1w7OSshfk=;
+ b=jg/2u8Zdlxb1Xcl38v5PNeqS4jzyqoJ7xwYwzFjNk7vNT8oGYcaiMHR7idXbbs1fwVPz
+ w89zI4V6zfcvQHIqO+DifGqWvRKYw4gSiI6B7DhOgEaNUEIKZYDDI+xvxbJVLKbIes43
+ RuOs93gRWlaps3klN9HF2uJHq7svdJe/EmQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a37bjkr12-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 16:41:49 -0700
-Received: from intmgw001.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 16:57:46 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 16:41:48 -0700
+ 15.1.2176.2; Thu, 29 Jul 2021 16:57:45 -0700
 Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id D5AE416E5182; Thu, 29 Jul 2021 16:41:39 -0700 (PDT)
+        id 2A32016E6C5C; Thu, 29 Jul 2021 16:57:41 -0700 (PDT)
 From:   Yucong Sun <fallentree@fb.com>
 To:     <bpf@vger.kernel.org>
-CC:     fallentree <fallentree@fb.com>
-Subject: [PATCH] libbpf: Add bpf_object__set_name(obj, name) api.
-Date:   Thu, 29 Jul 2021 16:41:19 -0700
-Message-ID: <20210729234119.840953-1-fallentree@fb.com>
+CC:     <sunyucong@gmail.com>, Yucong Sun <fallentree@fb.com>
+Subject: [PATCH v2 bpf-next] libbpf: Add bpf_object__set_name(obj, name) api.
+Date:   Thu, 29 Jul 2021 16:57:02 -0700
+Message-ID: <20210729235702.902593-1-fallentree@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210729234119.840953-1-fallentree@fb.com>
+References: <20210729234119.840953-1-fallentree@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 0E913klnaf-osP5ojClh4vZgE2kJIKV5
-X-Proofpoint-GUID: 0E913klnaf-osP5ojClh4vZgE2kJIKV5
+X-Proofpoint-GUID: Zptoc2CCAuCYLwRjghNlWHkIsZuTCLnw
+X-Proofpoint-ORIG-GUID: Zptoc2CCAuCYLwRjghNlWHkIsZuTCLnw
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-07-29_20:2021-07-29,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- lowpriorityscore=0 suspectscore=0 spamscore=0 malwarescore=0
- impostorscore=0 adultscore=0 mlxscore=0 bulkscore=0 clxscore=1011
- phishscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2107290143
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=969 impostorscore=0 clxscore=1015 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107290145
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
-
-From: fallentree <fallentree@fb.com>
 
 Tracking: libbpf/libbpf#291
 
