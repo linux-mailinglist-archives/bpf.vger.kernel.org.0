@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFB93DAE41
-	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 23:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADB03DAE49
+	for <lists+bpf@lfdr.de>; Thu, 29 Jul 2021 23:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhG2VYf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 17:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
+        id S234250AbhG2VYo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jul 2021 17:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234250AbhG2VYd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Jul 2021 17:24:33 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC75C0613D5
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 14:24:29 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id f13so8557574plj.2
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 14:24:29 -0700 (PDT)
+        with ESMTP id S234288AbhG2VYf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Jul 2021 17:24:35 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE99C06179B
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 14:24:31 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id q2so8500753plr.11
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 14:24:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fy4W4kxfm1nEa/wP5BP/bSa5cQo0Af6YA7BT7Ec+mmQ=;
-        b=ikgjwzsmkMQPs4IyIvSD237KNGoEwdukJ+CusdSPw/C/XXLTI6THmvcNGR8zzDr6Oa
-         HNQlUjK1LiHEVU9GFafVLcaOlh12bbfF7AMFcj1EJK4NhX8PaAS+6aJPa+05A1S5k+LZ
-         BM198dvIj8hyJERFEG4M2XS7cEzT44M+HzLsZRXthiHFETPdN2R/dDSQB0Jnb5ry7snM
-         Sh6HbA+8oDHU9pjT4LX4fLRrAf6oDOo44smRP4mIf4PXOgw9SeOnAuiQYVsIoJ+wp5P9
-         kbWar5u8Mwhl4RCB9KJwRF2cDva83fd+C3p5GMNqxHfNCPa+qKklO88QorKjS9jAzFuJ
-         KxPg==
+        bh=P804EkvFn0VAlLFLpkTDkQMHTFJyfBf84bJVijuk6QE=;
+        b=dC1o5JwNCalIc67spfo5hNab+Dt0qiaAvRdyb6QJWJjb7FGcopjbDBCsHQpNE2IaOe
+         UcEVgwF5tJrwHTYjVuYgX69nUh/EAgA4SBL3DvkM+uGmWDfL60Ia6T49V2eCKRaYz9xM
+         bKV7smjFUa/wIPtS6zGFAJZyXU4vq7XKInKyzN+iBHDec1qgD/LzaTnVZ0clUVkV/olz
+         XqAeR+893OZFQCSVTk6SLZZgnTLxQdeRB7tjaBcAmvj75Slckg1OLeuNLmhgtfDEVn8B
+         pwScqVVtKTN5mhtRFh6zHIivp35KrEGFaLif8+MhnB2cPgiOW8OIItL3UP1AR5XMl89L
+         diog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fy4W4kxfm1nEa/wP5BP/bSa5cQo0Af6YA7BT7Ec+mmQ=;
-        b=FQDEGYNYFDUggOpeyOxM2LWZX83fBK4QFWpZGYUCd+1NOjjp7zzZeItgNaa63+/2Mk
-         5HJUAoD2hdzlputrZcnW4WXFMny8/FfAJYgzoBugN0lXqJLns5Mk04NqYLuNJmFnzVmJ
-         u3wks1R8ico2SVHSolH2xTeiLeJE+niyrfQRkwTAMOhuiU9rZKipu60gqxQ8qjIz5V1e
-         1yIHnIn7H6wJN8offTUDtOQgVS+RrEntllFYVgg2wlwmB34Rdrlxwou/tCwiuN71ytGy
-         M0KOcMoAQUyuAgFwNMEszbCbgYxf+q3/iJUemcOvGtx2pRaQQ9cHjCgQCO2g7gcvnw76
-         37Vw==
-X-Gm-Message-State: AOAM532n0iTl7LCHOziDVK+KMYZoK2Mm26HzsVBGCpGOB484awPF1vp1
-        GLYvZeMpOKjJkQukkgEDnm+zRg==
-X-Google-Smtp-Source: ABdhPJxFg9UCgV2x5UYpkSdvPrTHGtB7dVmFbfgzEfaHpsMHxz3xc6n0MQoWpO9IlV1oUFp22pxIbQ==
-X-Received: by 2002:a17:90a:e7c4:: with SMTP id kb4mr16812257pjb.43.1627593869099;
-        Thu, 29 Jul 2021 14:24:29 -0700 (PDT)
+        bh=P804EkvFn0VAlLFLpkTDkQMHTFJyfBf84bJVijuk6QE=;
+        b=YzRVsNefB2EhhObqa66PSE1sxjFw4Kp+bsOWSgRjjwiBllftrCVD6FkUTrwn7nUXbB
+         dge8OafczirkwM1xDgu/WyBAQdBFReayqsvF84pSRApRf6EHVHpPS+jbmaXXxF2GIwG9
+         dzLcLb2LlsE5KcUDMS/FbrwN1Lv6s9xVxpW0MrgjiS3oH1vfN7MScU4MStLI3ebcWf2y
+         nxQx9+xdFKo9DSysRdM2ZlBJxc/CmHCdY56XXtIYuwqUJ5nDyKoeQrK3v5ChDfMQO1N/
+         UKBcV+4VI4C5qtWVrvSIi1y9Qzkh/MkQA+yxMfzsElSoPL/wYF8tDV5VdFJF5nh8XwMZ
+         xqcg==
+X-Gm-Message-State: AOAM531JbYcapZSk+ErThFdWyJfE859fjxjUV+xT5ku4IJOY8NPhdUbg
+        ky7yNCBJCzPQcwUpsEOfhl4JfA==
+X-Google-Smtp-Source: ABdhPJziHcTOM0HV/igPeyKZPBHiSrcNPd/zNJ5Eq2CehLSbnnVWlq3d+PFzXrcE/5iZ4h8SYCseWA==
+X-Received: by 2002:a17:902:9b87:b029:11e:7c15:a597 with SMTP id y7-20020a1709029b87b029011e7c15a597mr6542105plp.6.1627593871331;
+        Thu, 29 Jul 2021 14:24:31 -0700 (PDT)
 Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id c15sm4686258pfl.181.2021.07.29.14.24.27
+        by smtp.gmail.com with ESMTPSA id c15sm4686258pfl.181.2021.07.29.14.24.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 14:24:28 -0700 (PDT)
+        Thu, 29 Jul 2021 14:24:31 -0700 (PDT)
 From:   Jiang Wang <jiang.wang@bytedance.com>
 To:     netdev@vger.kernel.org
 Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
@@ -65,9 +65,9 @@ Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
         Johan Almbladh <johan.almbladh@anyfinetworks.com>,
         linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v2 4/5] selftest/bpf: change udp to inet in some function names
-Date:   Thu, 29 Jul 2021 21:24:00 +0000
-Message-Id: <20210729212402.1043211-5-jiang.wang@bytedance.com>
+Subject: [PATCH bpf-next v2 5/5] selftest/bpf: add new tests in sockmap for unix stream to tcp.
+Date:   Thu, 29 Jul 2021 21:24:01 +0000
+Message-Id: <20210729212402.1043211-6-jiang.wang@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210729212402.1043211-1-jiang.wang@bytedance.com>
 References: <20210729212402.1043211-1-jiang.wang@bytedance.com>
@@ -77,120 +77,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is to prepare for adding new unix stream tests.
-Mostly renames, also pass the socket types as an argument.
+Add two new test cases in sockmap tests, where unix stream is
+redirected to tcp and vice versa.
 
 Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
 Reviewed-by: Cong Wang <cong.wang@bytedance.com>
 Acked-by: John Fastabend <john.fastabend@gmail.com>
 ---
- .../selftests/bpf/prog_tests/sockmap_listen.c | 30 +++++++++++--------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+ .../selftests/bpf/prog_tests/sockmap_listen.c    | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 7a976d432..07ed8081f 100644
+index 07ed8081f..afa14fb66 100644
 --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
 +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -1692,14 +1692,14 @@ static void test_reuseport(struct test_sockmap_listen *skel,
- 	}
+@@ -1884,7 +1884,7 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
+ 	xclose(p0);
  }
  
--static int udp_socketpair(int family, int *s, int *c)
-+static int inet_socketpair(int family, int type, int *s, int *c)
+-static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
++static void inet_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
+ 					    struct bpf_map *inner_map, int family)
  {
- 	struct sockaddr_storage addr;
- 	socklen_t len;
- 	int p0, c0;
- 	int err;
- 
--	p0 = socket_loopback(family, SOCK_DGRAM | SOCK_NONBLOCK);
-+	p0 = socket_loopback(family, type | SOCK_NONBLOCK);
- 	if (p0 < 0)
- 		return p0;
- 
-@@ -1708,7 +1708,7 @@ static int udp_socketpair(int family, int *s, int *c)
- 	if (err)
- 		goto close_peer0;
- 
--	c0 = xsocket(family, SOCK_DGRAM | SOCK_NONBLOCK, 0);
-+	c0 = xsocket(family, type | SOCK_NONBLOCK, 0);
- 	if (c0 < 0) {
- 		err = c0;
- 		goto close_peer0;
-@@ -1747,10 +1747,10 @@ static void udp_redir_to_connected(int family, int sock_mapfd, int verd_mapfd,
- 
- 	zero_verdict_count(verd_mapfd);
- 
--	err = udp_socketpair(family, &p0, &c0);
-+	err = inet_socketpair(family, SOCK_DGRAM, &p0, &c0);
- 	if (err)
- 		return;
--	err = udp_socketpair(family, &p1, &c1);
-+	err = inet_socketpair(family, SOCK_DGRAM, &p1, &c1);
- 	if (err)
- 		goto close_cli0;
- 
-@@ -1825,7 +1825,7 @@ static void test_udp_redir(struct test_sockmap_listen *skel, struct bpf_map *map
- 	udp_skb_redir_to_connected(skel, map, family);
- }
- 
--static void udp_unix_redir_to_connected(int family, int sock_mapfd,
-+static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
- 					int verd_mapfd, enum redir_mode mode)
- {
- 	const char *log_prefix = redir_mode_str(mode);
-@@ -1843,7 +1843,7 @@ static void udp_unix_redir_to_connected(int family, int sock_mapfd,
- 		return;
- 	c0 = sfd[0], p0 = sfd[1];
- 
--	err = udp_socketpair(family, &p1, &c1);
-+	err = inet_socketpair(family, SOCK_DGRAM, &p1, &c1);
- 	if (err)
- 		goto close;
- 
-@@ -1897,14 +1897,16 @@ static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 		return;
- 
+ 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
+@@ -1899,9 +1899,13 @@ static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
  	skel->bss->test_ingress = false;
--	udp_unix_redir_to_connected(family, sock_map, verdict_map, REDIR_EGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
+ 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
+ 				    REDIR_EGRESS);
++	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
 +				    REDIR_EGRESS);
  	skel->bss->test_ingress = true;
--	udp_unix_redir_to_connected(family, sock_map, verdict_map, REDIR_INGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
+ 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
+ 				    REDIR_INGRESS);
++	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
 +				    REDIR_INGRESS);
  
  	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
  }
+@@ -1961,7 +1965,7 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
  
--static void unix_udp_redir_to_connected(int family, int sock_mapfd,
-+static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
- 					int verd_mapfd, enum redir_mode mode)
+ }
+ 
+-static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
++static void unix_inet_skb_redir_to_connected(struct test_sockmap_listen *skel,
+ 					    struct bpf_map *inner_map, int family)
  {
- 	const char *log_prefix = redir_mode_str(mode);
-@@ -1917,7 +1919,7 @@ static void unix_udp_redir_to_connected(int family, int sock_mapfd,
- 
- 	zero_verdict_count(verd_mapfd);
- 
--	err = udp_socketpair(family, &p0, &c0);
-+	err = inet_socketpair(family, SOCK_DGRAM, &p0, &c0);
- 	if (err)
- 		return;
- 
-@@ -1972,9 +1974,11 @@ static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 		return;
- 
+ 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
+@@ -1976,9 +1980,13 @@ static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
  	skel->bss->test_ingress = false;
--	unix_udp_redir_to_connected(family, sock_map, verdict_map, REDIR_EGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
+ 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
+ 				     REDIR_EGRESS);
++	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
 +				     REDIR_EGRESS);
  	skel->bss->test_ingress = true;
--	unix_udp_redir_to_connected(family, sock_map, verdict_map, REDIR_INGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
+ 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
+ 				     REDIR_INGRESS);
++	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
 +				     REDIR_INGRESS);
  
  	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
  }
+@@ -1994,8 +2002,8 @@ static void test_udp_unix_redir(struct test_sockmap_listen *skel, struct bpf_map
+ 	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name, __func__);
+ 	if (!test__start_subtest(s))
+ 		return;
+-	udp_unix_skb_redir_to_connected(skel, map, family);
+-	unix_udp_skb_redir_to_connected(skel, map, family);
++	inet_unix_skb_redir_to_connected(skel, map, family);
++	unix_inet_skb_redir_to_connected(skel, map, family);
+ }
+ 
+ static void run_tests(struct test_sockmap_listen *skel, struct bpf_map *map,
 -- 
 2.20.1
 
