@@ -2,112 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1E43DBFB9
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 22:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA5B3DC018
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 23:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhG3UXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 16:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbhG3UXU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 16:23:20 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F026C061765
-        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 13:23:14 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so22420004pjb.3
-        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 13:23:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L6GZwee3zFFPBRG9bG2No8hxtp9CFwbkFuUJbccfQD8=;
-        b=JOXZU0qKiHccvRmfAizmxvmud0U+2vK3GFGatspi4UhZRWN3JsNmy3MdrbFHbeAeJM
-         lrYOTe1Ho70mPMzYNS5JwA55FuwyRj13ksmPSMFGqIoJAG7CiU2s29g04sacltNidi8T
-         diHZAcffS23I++UNReWAA5HcM+Lw2yxQpJq1IYAcNSqzRadS936SgWQMcpaRzFoWb1Gd
-         Wy4I1H9xPQ5ofw2grKWdDE8R/sEVbt8Knnp5w29aydvkox2IWf5HPg+cM+xi1k6Y7XDI
-         f3/0udHVUmYlW2fHQqtQPgVoe7hqfWiDRLKBIo4Hl7KAYytUsRs+4MqhKifbRAvhCR1w
-         g1nA==
+        id S230310AbhG3VI1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 17:08:27 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:42982 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231645AbhG3VI0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 17:08:26 -0400
+Received: by mail-io1-f72.google.com with SMTP id l2-20020a6b7f020000b0290439ea50822eso6573053ioq.9
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 14:08:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L6GZwee3zFFPBRG9bG2No8hxtp9CFwbkFuUJbccfQD8=;
-        b=mk+6uZO7CqiInbipIU4WLBHDtvNQQf91hvBKVkNJbviyZbG89n4HZ4BIjRIeUeTzJ9
-         F/S/NH1M6R9gxH2URCKLUw+2zMu2R1+mXyW0plYrMhQTVLUbp57sdkZN77vqqg2Uq1hL
-         r9rejUTsjbs8c3Uuzfc2VATDhgB4pPP925qo0bZZ7Jg3BqxPhV6C8ROSo54gRb76K4Jy
-         T7KXDhbZQidKeefApcr3f45qFR3kQ+EZ/mlAn40XQrrXZccHHcBPqZyYpc97KqEdGmxc
-         Gs/I8x/Cc7sEOAvYOe4vBXtqT36QtfC2j4KbVagCGQsRUzdK2cClzZC8h2Ht44gmVzxw
-         MZGw==
-X-Gm-Message-State: AOAM5329FXm0jKEeeX3NN4/C+mfbURKdzDgZGXBnim/LjYDznCkvcQ5r
-        6nqZ1fbhMKxIi4KwpYv7sJuFAiNWmHeTGxbsXsfddw==
-X-Google-Smtp-Source: ABdhPJzqTNIRbw91KykDwe5YpS6CSO6GukDdkNVThVJ90gsI7hID/Uof2oiHLdFn5gxpJ1RoZDgN/n4fI8N7+AryPbw=
-X-Received: by 2002:a17:902:e551:b029:12b:7e4c:b34 with SMTP id
- n17-20020a170902e551b029012b7e4c0b34mr3977994plf.43.1627676594074; Fri, 30
- Jul 2021 13:23:14 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Ezra53fJ9ovAmRTj95ODS6/rqWMOlHrXy6SIWRBmIqE=;
+        b=lgdmCJybUJ3j+RA+/NCHc23rjrQekNEeLwSKYrfgYSaXL9vwuudB8o0Of5gLwY9EAA
+         eqGL6HEt8C5eGDTPJIGLsm3yHPIbztYkX35f4srnVpRCKYGjFvP4kDuaAiZCNvinOq0y
+         Ndm9lvcz/38t9l4Pq5YYvEtWAPQvkFucDTt/atCH9ZUPF+iZMy5706OLQIk5jyfjWKWq
+         aNhe8vOpuSajCG4SkwodapWKwx1tZnt02FFqHp2gfkylrbFFq5ZqJpDrFUVfqDPCv6J5
+         VfXlaVoj+s6xXy0mADFeF3Qdn/jXzfAE20DWCAlMMqh8+Z4tNklowD2KeivAOlO1MEZF
+         +1Hg==
+X-Gm-Message-State: AOAM531acMnugH0Jaqr/WjO29aymWHHKE2RWmrqcSixdP5rb/JMb7Iy9
+        T2ST8Esxt9uzwj+6WS6ickoBsj5QOSuKNYRRPTLN/7yeGySp
+X-Google-Smtp-Source: ABdhPJzl08nsf9LL1ms/XQOCdeiQ4I7sbo+awGg/+z9Et9Oq1oKi4pYR8FCGVHO56f5YYDc81cqWZ6nYq9ZQwmg9hDW9qmW4WLrc
 MIME-Version: 1.0
-References: <20210729162028.29512-1-quentin@isovalent.com> <CAEf4BzbrQOr8Z2oiywT-zPBEz9jbP9_6oJXOW28LdOaqAy8pLw@mail.gmail.com>
- <22d59def-51e7-2b98-61b6-b700e7de8ef6@isovalent.com> <CAEf4BzbjN+zjio3HPRkGLRgZpbLj9MUGLnXt1KDSsoOHB8_v3Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzbjN+zjio3HPRkGLRgZpbLj9MUGLnXt1KDSsoOHB8_v3Q@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Fri, 30 Jul 2021 21:23:02 +0100
-Message-ID: <CACdoK4KCbseLYzY2aqVM5KC0oXOwzE-5b3-g07uoeyJN4+r70g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/8] libbpf: rename btf__get_from_id() and
- btf__load() APIs, support split BTF
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+X-Received: by 2002:a05:6e02:528:: with SMTP id h8mr2849385ils.223.1627679300353;
+ Fri, 30 Jul 2021 14:08:20 -0700 (PDT)
+Date:   Fri, 30 Jul 2021 14:08:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008183f605c85d9e9c@google.com>
+Subject: [syzbot] memory leak in packet_sendmsg
+From:   syzbot <syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tannerlove@google.com,
+        willemb@google.com, xie.he.0141@gmail.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 30 Jul 2021 at 18:24, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+Hello,
 
-[...]
+syzbot found the following issue on:
 
-> > > The right approach will be to define
-> > > LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION in some sort of
-> > > auto-generated header, included from libbpf_common.h and installed as
-> > > part of libbpf package.
-> >
-> > So generating this header is easy. Installing it with the other headers
-> > is simple too. It becomes a bit trickier when we build outside of the
-> > directory (it seems I need to pass -I$(OUTPUT) to build libbpf).
->
-> Not sure why using the header is tricky. We auto-generate
-> bpf_helper_defs.h, which is included from bpf_helpers.h, which is
-> included in every single libbpf-using application. Works good with no
-> extra magic.
+HEAD commit:    ff1176468d36 Linux 5.14-rc3
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15057fa2300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4ebfe83ba9ca8666
+dashboard link: https://syzkaller.appspot.com/bug?extid=989efe781c74de1ddb54
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e54382300000
 
-bpf_helper_defs.h is the first thing I looked at, and I processed
-libbpf_version.h just like it. But there is a difference:
-bpf_helper_defs.h is _not_ included in libbpf itself, nor is it needed
-in bpftool at the bootstrap stage (it is only included from the eBPF
-skeletons for profiling or showing PIDs etc., which are compiled after
-libbpf). The version header is needed in both cases.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com
 
->
-> >
-> > The step I'm most struggling with at the moment is bpftool, which
-> > bootstraps a first version of itself before building libbpf, by looking
-> > at the headers directly in libbpf's directory. It means that the
-> > generated header with the version number has not yet been generated. Do
-> > you think it is worth changing bpftool's build steps to implement this
-> > deprecation helper?
->
-> If it doesn't do that already, bpftool should do `make install` for
-> libbpf, not just build. Install will put all the headers, generated or
-> otherwise, into a designated destination folder, which should be
-> passed as -I parameter. But that should be already happening due to
-> bpf_helper_defs.h.
+2021/07/26 20:48:07 executed programs: 1
+2021/07/26 20:48:13 executed programs: 3
+2021/07/26 20:48:19 executed programs: 5
+BUG: memory leak
+unreferenced object 0xffff88810f41be00 (size 232):
+  comm "dhclient", pid 4908, jiffies 4294938558 (age 1092.590s)
+  hex dump (first 32 bytes):
+    a0 6c 13 19 81 88 ff ff a0 6c 13 19 81 88 ff ff  .l.......l......
+    00 00 83 1a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff836e1e8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:414
+    [<ffffffff836ec6ba>] alloc_skb include/linux/skbuff.h:1112 [inline]
+    [<ffffffff836ec6ba>] alloc_skb_with_frags+0x6a/0x2b0 net/core/skbuff.c:6019
+    [<ffffffff836d9fa3>] sock_alloc_send_pskb+0x353/0x3c0 net/core/sock.c:2461
+    [<ffffffff83bf47a2>] packet_alloc_skb net/packet/af_packet.c:2864 [inline]
+    [<ffffffff83bf47a2>] packet_snd net/packet/af_packet.c:2959 [inline]
+    [<ffffffff83bf47a2>] packet_sendmsg+0xbd2/0x2500 net/packet/af_packet.c:3044
+    [<ffffffff836d0b46>] sock_sendmsg_nosec net/socket.c:703 [inline]
+    [<ffffffff836d0b46>] sock_sendmsg+0x56/0x80 net/socket.c:723
+    [<ffffffff836d0c67>] sock_write_iter+0xf7/0x180 net/socket.c:1056
+    [<ffffffff81564527>] call_write_iter include/linux/fs.h:2114 [inline]
+    [<ffffffff81564527>] new_sync_write+0x1d7/0x2b0 fs/read_write.c:518
+    [<ffffffff81567ba1>] vfs_write+0x351/0x400 fs/read_write.c:605
+    [<ffffffff81567f1b>] ksys_write+0x12b/0x160 fs/read_write.c:658
+    [<ffffffff843b18b5>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843b18b5>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-bpftool does not run "make install". It compiles libbpf passing
-"OUTPUT=$(LIBBPF_OUTPUT)", sets LIBBPF_PATH to the same directory, and
-then adds "-I$(LIBBPF_PATH)" for accessing bpf_helper_defs.h and compile
-its eBPF programs. It is possible to include libbpf_version.h the same
-way, but only after libbpf has been compiled, after the bootstrap.
+BUG: memory leak
+unreferenced object 0xffff8881019ce500 (size 232):
+  comm "kworker/1:1", pid 35, jiffies 4294938559 (age 1092.580s)
+  hex dump (first 32 bytes):
+    a0 d4 28 19 81 88 ff ff a0 d4 28 19 81 88 ff ff  ..(.......(.....
+    00 00 cb 03 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff836e1e8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:414
+    [<ffffffff836ec6ba>] alloc_skb include/linux/skbuff.h:1112 [inline]
+    [<ffffffff836ec6ba>] alloc_skb_with_frags+0x6a/0x2b0 net/core/skbuff.c:6019
+    [<ffffffff836d9fa3>] sock_alloc_send_pskb+0x353/0x3c0 net/core/sock.c:2461
+    [<ffffffff83b812d4>] mld_newpack+0x84/0x200 net/ipv6/mcast.c:1751
+    [<ffffffff83b814f3>] add_grhead+0xa3/0xc0 net/ipv6/mcast.c:1854
+    [<ffffffff83b82196>] add_grec+0x7b6/0x820 net/ipv6/mcast.c:1992
+    [<ffffffff83b84643>] mld_send_cr net/ipv6/mcast.c:2118 [inline]
+    [<ffffffff83b84643>] mld_ifc_work+0x273/0x750 net/ipv6/mcast.c:2655
+    [<ffffffff81262669>] process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
+    [<ffffffff81262f59>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2422
+    [<ffffffff8126c3b8>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-I'll look into updating the Makefile to compile and install libbpf
-before the bootstrap, when I have some time.
+BUG: memory leak
+unreferenced object 0xffff88810f41b300 (size 232):
+  comm "kworker/1:1", pid 35, jiffies 4294938624 (age 1091.930s)
+  hex dump (first 32 bytes):
+    a0 ac 3f 19 81 88 ff ff a0 ac 3f 19 81 88 ff ff  ..?.......?.....
+    00 00 cb 03 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff836e1e8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:414
+    [<ffffffff83b6d076>] alloc_skb include/linux/skbuff.h:1112 [inline]
+    [<ffffffff83b6d076>] ndisc_alloc_skb+0x56/0xe0 net/ipv6/ndisc.c:420
+    [<ffffffff83b7183a>] ndisc_send_ns+0xba/0x2f0 net/ipv6/ndisc.c:626
+    [<ffffffff83b48b13>] addrconf_dad_work+0x643/0x900 net/ipv6/addrconf.c:4119
+    [<ffffffff81262669>] process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
+    [<ffffffff81262f59>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2422
+    [<ffffffff8126c3b8>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+BUG: memory leak
+unreferenced object 0xffff88810dd97600 (size 232):
+  comm "softirq", pid 0, jiffies 4294938659 (age 1091.580s)
+  hex dump (first 32 bytes):
+    a0 fc fb 16 81 88 ff ff a0 fc fb 16 81 88 ff ff  ................
+    00 c0 84 03 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff836e1e8f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:414
+    [<ffffffff839f1aff>] alloc_skb include/linux/skbuff.h:1112 [inline]
+    [<ffffffff839f1aff>] __ip_append_data+0x12cf/0x1510 net/ipv4/ip_output.c:1109
+    [<ffffffff839f429d>] ip_append_data net/ipv4/ip_output.c:1327 [inline]
+    [<ffffffff839f429d>] ip_append_data net/ipv4/ip_output.c:1306 [inline]
+    [<ffffffff839f429d>] ip_send_unicast_reply+0x33d/0x550 net/ipv4/ip_output.c:1718
+    [<ffffffff83a33e6f>] tcp_v4_send_reset+0x3df/0x980 net/ipv4/tcp_ipv4.c:818
+    [<ffffffff83a37442>] tcp_v4_rcv+0xf22/0x1620 net/ipv4/tcp_ipv4.c:2116
+    [<ffffffff839e99b2>] ip_protocol_deliver_rcu+0x22/0x2c0 net/ipv4/ip_input.c:204
+    [<ffffffff839e9cc1>] ip_local_deliver_finish+0x71/0x90 net/ipv4/ip_input.c:231
+    [<ffffffff839e9e33>] NF_HOOK include/linux/netfilter.h:307 [inline]
+    [<ffffffff839e9e33>] NF_HOOK include/linux/netfilter.h:301 [inline]
+    [<ffffffff839e9e33>] ip_local_deliver+0x153/0x160 net/ipv4/ip_input.c:252
+    [<ffffffff839e9016>] dst_input include/net/dst.h:458 [inline]
+    [<ffffffff839e9016>] ip_sublist_rcv_finish+0x76/0x90 net/ipv4/ip_input.c:551
+    [<ffffffff839e9723>] ip_list_rcv_finish net/ipv4/ip_input.c:601 [inline]
+    [<ffffffff839e9723>] ip_sublist_rcv+0x293/0x340 net/ipv4/ip_input.c:609
+    [<ffffffff839ea126>] ip_list_rcv+0x1c6/0x1f0 net/ipv4/ip_input.c:644
+    [<ffffffff83713f01>] __netif_receive_skb_list_ptype net/core/dev.c:5541 [inline]
+    [<ffffffff83713f01>] __netif_receive_skb_list_core+0x2b1/0x360 net/core/dev.c:5589
+    [<ffffffff83714305>] __netif_receive_skb_list net/core/dev.c:5641 [inline]
+    [<ffffffff83714305>] netif_receive_skb_list_internal+0x355/0x4a0 net/core/dev.c:5751
+    [<ffffffff83715d52>] gro_normal_list net/core/dev.c:5905 [inline]
+    [<ffffffff83715d52>] gro_normal_list net/core/dev.c:5901 [inline]
+    [<ffffffff83715d52>] napi_complete_done+0xe2/0x2e0 net/core/dev.c:6627
+    [<ffffffff828eb89d>] virtqueue_napi_complete drivers/net/virtio_net.c:337 [inline]
+    [<ffffffff828eb89d>] virtnet_poll+0x52d/0x6a0 drivers/net/virtio_net.c:1546
+    [<ffffffff83715f8d>] __napi_poll+0x3d/0x290 net/core/dev.c:7047
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
