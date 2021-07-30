@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A3D3DB032
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 02:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAF93DB042
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 02:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235360AbhG3ATE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 20:19:04 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:30752 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235353AbhG3ASz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Jul 2021 20:18:55 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U0FF92001502
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 17:18:52 -0700
+        id S235323AbhG3AaL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jul 2021 20:30:11 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5390 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234931AbhG3AaI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 29 Jul 2021 20:30:08 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 16U0IOgI031722
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 17:30:02 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=CfNB9SCYB8X9SNrPb2YsMPnNFHGcsQGXuCHJuYkx5OI=;
- b=Pzyt/xaecuLztHm0RyH2edtSq+eTMwXuahoraBMqvKTEVvOcb2NHbylC2Ek+YzjsobLv
- 15dGsAQZr7r9LmxeKxfpaVUZL3on8d7MSxbdXcknuAvv6lWRnRaEoC1t0TvO4R1shrGb
- CtT28U6WONNOz+rPGYKK6oYdkSkMZSphB8s= 
+ bh=JzWSxDY/USo2d4AyANQ+8iHAgE9r65q/PqR6W1/eFUI=;
+ b=Mzh2B81NsrR+yb0GwzIpijrqFn2lJNzQri0orxHG+zCaun3HFJsjdsUAa5sNWnZGtQ/b
+ gJHsM/5keoR6DLD2cpT2SLs/7OaF5FvkjPicQsLCHJ1nlwExe4DwcGMKevu8xqHKWl+N
+ ixHT7l7LVwLGfO8Od/dMl2zf07e+K77unms= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a3vrtcem4-1
+        by m0001303.ppops.net with ESMTP id 3a39tr2py7-8
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 17:18:52 -0700
-Received: from intmgw003.48.prn1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 17:30:02 -0700
+Received: from intmgw001.27.prn2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 17:18:51 -0700
+ 15.1.2176.2; Thu, 29 Jul 2021 17:29:59 -0700
 Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id 9126B16E93A4; Thu, 29 Jul 2021 17:18:50 -0700 (PDT)
+        id A561416EA8F9; Thu, 29 Jul 2021 17:29:56 -0700 (PDT)
 From:   Yucong Sun <fallentree@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     <sunyucong@gmail.com>, Yucong Sun <fallentree@fb.com>
-Subject: [PATCH v3 bpf-next] libbpf: Add bpf_object__set_name(obj, name) api.
-Date:   Thu, 29 Jul 2021 17:18:01 -0700
-Message-ID: <20210730001801.994751-1-fallentree@fb.com>
+Subject: [PATCH v4 bpf-next] libbpf: Add bpf_object__set_name(obj, name) api.
+Date:   Thu, 29 Jul 2021 17:29:53 -0700
+Message-ID: <20210730002953.1045142-1-fallentree@fb.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210729235702.902593-1-fallentree@fb.com>
-References: <20210729235702.902593-1-fallentree@fb.com>
+In-Reply-To: <20210730001801.994751-1-fallentree@fb.com>
+References: <20210730001801.994751-1-fallentree@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: I11n6Xo0x8cvbXOvt4T3yKdej6Drzo8u
-X-Proofpoint-GUID: I11n6Xo0x8cvbXOvt4T3yKdej6Drzo8u
+X-Proofpoint-ORIG-GUID: r2Ha6KRFH_dRdX5L4RBCJd-2tVmapHjA
+X-Proofpoint-GUID: r2Ha6KRFH_dRdX5L4RBCJd-2tVmapHjA
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-07-29_20:2021-07-29,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- adultscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0
- clxscore=1015 lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ bulkscore=0 priorityscore=1501 mlxlogscore=951 malwarescore=0 phishscore=0
+ suspectscore=0 adultscore=0 impostorscore=0 clxscore=1015 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2107140000 definitions=main-2107300000
 X-FB-Internal: deliver
 Precedence: bulk
@@ -62,8 +62,9 @@ Tracking: libbpf/libbpf#291
 
 Signed-off-by: Yucong Sun <fallentree@fb.com>
 
---
+---
 
+V3 -> V4: handle obj is NULL case.
 V2 -> V3: fix code style errors
 ---
  tools/lib/bpf/libbpf.c                                 | 10 ++++++++++
@@ -73,7 +74,7 @@ V2 -> V3: fix code style errors
  4 files changed, 19 insertions(+)
 
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index a1ca6fb0c6d8..654fa638743f 100644
+index a1ca6fb0c6d8..a628e94a41a4 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
 @@ -7545,6 +7545,16 @@ const char *bpf_object__name(const struct bpf_obje=
@@ -81,9 +82,9 @@ ct *obj)
  	return obj ? obj->name : libbpf_err_ptr(-EINVAL);
  }
 =20
-+int bpf_object__set_name(struct bpf_object *obj, const char* name)
++int bpf_object__set_name(struct bpf_object *obj, const char *name)
 +{
-+	if (!name)
++	if (!obj || !name)
 +		return libbpf_err(-EINVAL);
 +
 +	strncpy(obj->name, name, sizeof(obj->name) - 1);
