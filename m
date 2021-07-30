@@ -2,170 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9DE3DC0CF
-	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 00:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A343DC0D5
+	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 00:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbhG3WLM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 18:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhG3WLK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 18:11:10 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7E8C06175F;
-        Fri, 30 Jul 2021 15:11:03 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id p145so3701274ybg.6;
-        Fri, 30 Jul 2021 15:11:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gy6aaEgXbSu9KGGga75zDYxnS5YDlkSnlw9hzsWsunM=;
-        b=mV6KsIc0y6NaIKGphIW9qdN2V4jvWlcl5lcxuZO0uXn56bX5F39P3uhlgPeXlJUnnF
-         HJ5tnVvy/nThjWkk+/kkANrCoPNw1uc+MSChjtlsEFCSH2PAARcKqYPiSq9C6aWMTyaJ
-         dSaDbnq9rSxiEaie65bHWXutObY0ggL+Qi9EtI1yKDzSr7/QPEqWcQGyVMN86wLlYJfP
-         ji5S3fTdeb0xrfiVgMZ7xpnMo7FbxGWP74mDAyiXoJm2yb2y80+SYBr3Avb+w7tLVEFH
-         X4a4qF7Y9KllYQFAGAI+CF97o5W2rF5S6/4NeQGcfKwib5q0DSzHlP+PqhplODEof/0N
-         xN5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gy6aaEgXbSu9KGGga75zDYxnS5YDlkSnlw9hzsWsunM=;
-        b=sp/ZGAW5zc0yKUuK4SqhLIwW9Qeoqw+Z579ONvucLlB8oqGPPNWTZ/h+SZ3ImMYW2U
-         qWwAWhGD7bHGQqlDA/f5dN7WNS1beBG0qOKTqRjeaWop5p/zzE4dGoFWkik8pcKR/faG
-         SVqPrlaC5mHKNvmbN0ULgPWE0WqiZrTN9MKfQccVb0WIBEdbdBTbXpn+DUl3MbBBDfX1
-         CsobSsM0gb/6xK5dWsb/b/Sq2sw0g9awP1UX8+8g/Durm1ach/CWQ4QfBWCK6nhOFPXe
-         ubEwhtvu7963JSkwIQtx8+haoin3xstj/GbBin2rpNPfVZ0pG/w9l/k0sYesb0xIkr4e
-         zL7A==
-X-Gm-Message-State: AOAM531U2gN9rYteOAezkhUWXw9gJ1MI4i0sCftbaPDOx00paGb9z7z0
-        dpeD4bABuOKHwKeQmdFirMEe0F8hw1Ux8jjq9jw=
-X-Google-Smtp-Source: ABdhPJzG9vVMPdcRjdMwNUw8pRO125bi5T58FNBkgMcoAxhCIM/15lkQP1EveBjxSMnIQdvcggxlXG9ASc1iKiXG7Zg=
-X-Received: by 2002:a5b:648:: with SMTP id o8mr6203976ybq.260.1627683062981;
- Fri, 30 Jul 2021 15:11:02 -0700 (PDT)
+        id S232431AbhG3WN2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 18:13:28 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3050 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229685AbhG3WNZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 30 Jul 2021 18:13:25 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16UM9Sv6001058;
+        Fri, 30 Jul 2021 15:13:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=d42rCPAZ8U6PNlE07hKRLwBfUx6U/Klu3z3wPk0rK/w=;
+ b=Dadp6/lF1UpvBHWn55NK4FCadoQQuwYxmUtAttKLQEt4GQxF5mg23hszKHZ7PMTFNhVk
+ /VRYM3lWJprRtLOs29WufztGkERMRWft9qFN1NmZKOqD81mBvs5sCaTleAoQT86U+atR
+ eSL73NW/4VLQNqxdk5twdwDTwHseFF87McU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a4bp05cmx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 30 Jul 2021 15:13:06 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 30 Jul 2021 15:13:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FXFBibmFKFQQRlX2Pwc0YtzPevR5ULekjdtgy3dkaelGReant59fhKSrHOFHvCsINXdpWNXpiMYDH0Vob4ToFUwQ3wogrLztgUli8/GSgDfvOf7p0lhITqLKAbQR0/TQGnYomWdVJMxD8NXt78zXPcYqIjCZgI9vg3QeOeimlgoxB40Z5Wlyv1t+hvLGXytp5NiAmwz4SQlZqpVgim2axhhUc102hW1e3X79OG7ELYDF/FZ82ExxyQkkWV917v7gH8aWjiaq45G2Ic7IRtt29isVTmjWvDkLdujy6WczX6pGkpWvFRyXlnh5Me7D3AJ3Icpdv1DdzQIY5Ab7l0vk5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d42rCPAZ8U6PNlE07hKRLwBfUx6U/Klu3z3wPk0rK/w=;
+ b=nI8a5+yP4c0zU3cw0UQcIRgCBu1uFri5hSWCRk/uZjLeuNCE7MlUTn4tblzRwK+obY6DL86uO6Xjcda6JomKleOYkePHfzWTRMzu6aPZnsDVn/R5CTY//YS8TILf42lrhLewO4bbrV4GVmfGrQGBviVNCzpQ0Gb1dFrWMJozqMMsF9/uIc0gPiuy5mPhYs5Yr+GkCnFvxq8MQ+jitzcjrp5SnzG+pBOIIAxpQalQ57c9fxqNfXM5nIeB8LAIjJTjaXTQbhcgFHhwuEAQN6GcEnUjqCObhzMxnnhwtCGA1Mc064wLy8K6juYZ/yCcdRHAt65uOScS2Ag+oLYhQTPwIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4339.namprd15.prod.outlook.com (2603:10b6:806:1ae::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Fri, 30 Jul
+ 2021 22:13:04 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4373.021; Fri, 30 Jul 2021
+ 22:13:04 +0000
+Subject: Re: [PATCH v3 bpf-next 06/14] bpf: add bpf_get_attach_cookie() BPF
+ helper to access bpf_cookie value
+To:     Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>, Peter Zijlstra <peterz@infradead.org>
+References: <20210730053413.1090371-1-andrii@kernel.org>
+ <20210730053413.1090371-7-andrii@kernel.org>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <2287af66-daeb-4017-276b-41a819f647a5@fb.com>
+Date:   Fri, 30 Jul 2021 15:13:01 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+In-Reply-To: <20210730053413.1090371-7-andrii@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR13CA0064.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c4::9) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-References: <20210729162932.30365-1-quentin@isovalent.com> <20210729162932.30365-7-quentin@isovalent.com>
- <CAEf4Bzb+s0f6ybq+qARTpe1wa2dOD_gweBd0kQAYh3cyx=N5mQ@mail.gmail.com> <4ad2073f-d528-788e-3222-85cd2c0fe5f9@isovalent.com>
-In-Reply-To: <4ad2073f-d528-788e-3222-85cd2c0fe5f9@isovalent.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Jul 2021 15:10:51 -0700
-Message-ID: <CAEf4BzZn5w-nR9kvD-zU-BMLMRK3-KFVRJbGEarXmvs0WBK6uw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/7] tools: bpftool: document and add bash
- completion for -L, -B options
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::1130] (2620:10d:c090:400::5:890f) by SJ0PR13CA0064.namprd13.prod.outlook.com (2603:10b6:a03:2c4::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.10 via Frontend Transport; Fri, 30 Jul 2021 22:13:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ebdef56f-e143-4d99-f571-08d953a7337f
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4339:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA1PR15MB43393AA9CDDCC235B5B521A3D3EC9@SA1PR15MB4339.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /E0nJuwBKxHi0SB4S425NMXITZ3kXwqbblWDZ7LiAun1j87tjRqeeY+etipwOXMW7ZpsnhWrs1ZjCKI0OHSKphHx5lJnxkJiZYXW2huLF5ucwqHXdl3L0ZIl/hzLZK193FAcSbfAjEySLe5xAAu2Ys2VnB9ewlSemS7LwhJjnVdMaIuJI+Dd0D0YsAV2648um/CmKcBRwr1wflToaGofx2dlhNSDy5O0a/5u+QsOji+TR9fNEAoDroCpekfk3e43FOH1m+A3okP8dQtiUFpFOVfJMDt7+8FGqot2yBevVuhGUnYuYPIQ8fyvLkfrIwOvYI0IpkNFbvEMrfjzZMwYQ74r1uSdaFmIqjD/R4Wpz+JK6u7tnUVSb0oPaW9KYugpmFsr92GIQ5inhzpP6h74l7GL4yqY1bgjl46PCxfGT+BmXO4Sx5Nfa5leM8F/ATOJZ0AGk1nltRDvp8zxawMJ3g1d4oxmfxboQ5lVW1xDJ0UuSIo+cOySkmMttTZnThElSNfOlfcRYnMZRrZ7swkYSLMXFCh4CK2znoeNqLaQ4cjkJmyCAJwfno+oVmXIyo/pubFANQ1Tg4uFZIU1k1+UURRzbiOEznzZDXmzTP8XLfORjhZtCofUzrnowM7E6y55ZYqfyDCq029kOsNY6H3vViGAvNJC2/dXdnnS5OFjpgchBd0DcxInqFWbSp+DdOLzSZafqHnwxGz6m0RTOUearePu6HNiQuu2iN2XoNKFzck=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(376002)(396003)(5660300002)(38100700002)(86362001)(31696002)(478600001)(2616005)(8936002)(316002)(52116002)(83380400001)(2906002)(31686004)(186003)(4326008)(53546011)(6486002)(66946007)(36756003)(66556008)(66476007)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WnhlVGsyaFZjeHhKbUxOM1YzK1hxN0hiZ2cyYzVHYWcwYXp0THZnZmd4bFlw?=
+ =?utf-8?B?enZ5ZHM1RjkwSHRWWFQwdUtEOHJsUC9JVDlNNEdxTXp4MzZTeU0zbUhnT1dV?=
+ =?utf-8?B?U2JNOXQrUy9LeFREYVZwbmN3cGpldXhGd1dsS2FpRG9pNWpRUiswd2xDVzhw?=
+ =?utf-8?B?c3E3ZWh4TlZDcEtqOWxUM0lXcHNmaWFjTktuS2FOcmJ5dkVFaWhreGJpblF6?=
+ =?utf-8?B?b0hGeWZhdHlXUCswNFFnN0wrcVFaR2NzeUk2YnNsVjVoVkJ5QTMxM2Y5cU4r?=
+ =?utf-8?B?Ry9hWmJlVTRyaTFsbHlGTW1VTUlya3JyelJrNDFza09wd21BNDNNb2hsNjhZ?=
+ =?utf-8?B?NXVFU1JncnA3dXc0NWdyY0t2eTFqMEh5dS8rSWtmdVZDMHBLUnZnWUNFNHlh?=
+ =?utf-8?B?MXdzbEYzVndyMDBYVHR2djRVNHdBT2NtdVhzTGxMaU5hQmJFWGY5dzd6MzBM?=
+ =?utf-8?B?ODhTNmZqUnVZM2dRdWxvdzRYWEhkdzU0TkxseVkreUlEV2hxS0N5Qkhrd2hO?=
+ =?utf-8?B?V0dFWkhpZjV0b095NHMrbEFubk5xMGhGMmRBMmpyQmozMjQrcFRjUnF0a3Zm?=
+ =?utf-8?B?VEIyZElmTUJsTXJBdW40cGNLbjlIWktYMlVWRzNydDJoWEdzSTRDdTJOM2oy?=
+ =?utf-8?B?dTIxSmVmdXczVHpRVi92U0wzSHJZbnlqV0J3V3NQb1dMWi9FNlE4ZmRTSWxj?=
+ =?utf-8?B?by9EL0FrVVU2dVFlWFhFenBNOXhRZDlPQ01mVm5Kak1sMW1zMWpUbDQ2NXE3?=
+ =?utf-8?B?ZDl3T2NQcmNEV1FydUNIbjVrVGxsWmlqVVd3ZW1HUStsTTJGWksvdEEyaWpa?=
+ =?utf-8?B?L3ZDMkN0bTJrd3luSHZ3UGg5eGl6bkxEaXdFTDB0TEtjWEF1bmhuVXY4Zkpu?=
+ =?utf-8?B?elNtcTk1TDNabURFeTdXL3dTYUcwWi9JU3oyb0tsY2x1aHdnL3lyMWt1SHF3?=
+ =?utf-8?B?T1orYU5uNkQxcTM3VjZ0cEZBWnRmemMwaFpjVjhXbXIwNHlHWnZQeFJRWWNr?=
+ =?utf-8?B?RzdSektmeWxHKy80NHVNakxtYUh3dU1jdktkTEo5WEVVRm01VG0xMUErWjlv?=
+ =?utf-8?B?Y2xvc2tBK1lMU29Td2VnaE9yOGtsS0V4UFVtTDlFWmVrS0hYWjhQY1RBN3Nz?=
+ =?utf-8?B?aGpZWDR2MzJWYWJlZFNIaVV2bnZKeEYxbW9GQSt1Yk55MmI2Q3drZTJGNmdH?=
+ =?utf-8?B?QmZrbGovRWUrV05uY3JQNFpkRkl5dm5HckYwY1JrR0N0L3JEcGYvZ3NsUCt0?=
+ =?utf-8?B?S2piK0hwMjVhRE1RMDFXdW5wWlhYd0hFaUU0Vld0RzVlcmJ3dmkzS29SU3dJ?=
+ =?utf-8?B?bGEzR2d2M0hCMDE2VnlGYkZadEJsV3l2ZE1wSWRsOFZvZzFuMmlGL1lkSHBv?=
+ =?utf-8?B?S1NUY1liSW8rdTY1cmUzSzR3QnR4VVAyeGZLbitqczVRenN6eThnUS80Ky85?=
+ =?utf-8?B?MFE5SnJGMzBpcnh6L3FlOXV3R3hqS0VVcGRDdUJpNzlwbmtQcmJ0aE94Z2J3?=
+ =?utf-8?B?MW1VWXU5MUxTcGY4b0J0WGZ5VHpJcTJkNlVIRjI2MTVnTk1VTHJjUEMvNDN0?=
+ =?utf-8?B?ZzJJb3JuQUFQRVFXMTJvV2Z2QmRraW10cm15MFBGYUFIdllDcThkU1BIT01t?=
+ =?utf-8?B?T004WElKYTc1UCtIVXpVZG5aTFRveUlCSmRxY1lIMFhEb2d1TzZtaklpSVh5?=
+ =?utf-8?B?TGt6ZmFvMHR4QURXRDQwcEZqVU9SczZ5bWNGTyswUnlwYUQyQ1oyY2lmcXV5?=
+ =?utf-8?B?MnJWYm5qeS9xb3RwVW9qenJjR3RYcVkvSUo5OVFvMVVaV3pEa0l0RlFOTU5h?=
+ =?utf-8?Q?4vEDb2DYRknzSx74R6lUHjUrtdW4lNnAosmn4=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ebdef56f-e143-4d99-f571-08d953a7337f
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 22:13:03.9532
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Si5EQhVyH4n/NfDkw8I1pMnxtRUXLxJ6DdVEEIie47zhr4pepLy0EvEZoLNgItmK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4339
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: E3BbTd2WsgD6YEgpoSGL-5TXBDa3-vXO
+X-Proofpoint-ORIG-GUID: E3BbTd2WsgD6YEgpoSGL-5TXBDa3-vXO
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-30_11:2021-07-30,2021-07-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ clxscore=1015 phishscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107300151
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 2:48 PM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> 2021-07-30 11:59 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > On Thu, Jul 29, 2021 at 9:29 AM Quentin Monnet <quentin@isovalent.com> wrote:
-> >>
-> >> The -L|--use-loader option for using loader programs when loading, or
-> >> when generating a skeleton, did not have any documentation or bash
-> >> completion. Same thing goes for -B|--base-btf, used to pass a path to a
-> >> base BTF object for split BTF such as BTF for kernel modules.
-> >>
-> >> This patch documents and adds bash completion for those options.
-> >>
-> >> Fixes: 75fa1777694c ("tools/bpftool: Add bpftool support for split BTF")
-> >> Fixes: d510296d331a ("bpftool: Use syscall/loader program in "prog load" and "gen skeleton" command.")
-> >> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> >> ---
-> >> Note: The second example with base BTF in the BTF man page assumes that
-> >> dumping split BTF when objects are passed by id is supported. Support is
-> >> currently pending review in another PR.
-> >> ---
-> >
-> > Not anymore :)
-> >
-> > [...]
-> >
-> >> @@ -73,6 +74,20 @@ OPTIONS
-> >>  =======
-> >>         .. include:: common_options.rst
-> >>
-> >> +       -B, --base-btf *FILE*
-> >> +                 Pass a base BTF object. Base BTF objects are typically used
-> >> +                 with BTF objects for kernel modules. To avoid duplicating
-> >> +                 all kernel symbols required by modules, BTF objects for
-> >> +                 modules are "split", they are built incrementally on top of
-> >> +                 the kernel (vmlinux) BTF object. So the base BTF reference
-> >> +                 should usually point to the kernel BTF.
-> >> +
-> >> +                 When the main BTF object to process (for example, the
-> >> +                 module BTF to dump) is passed as a *FILE*, bpftool attempts
-> >> +                 to autodetect the path for the base object, and passing
-> >> +                 this option is optional. When the main BTF object is passed
-> >> +                 through other handles, this option becomes necessary.
-> >> +
-> >>  EXAMPLES
-> >>  ========
-> >>  **# bpftool btf dump id 1226**
-> >> @@ -217,3 +232,34 @@ All the standard ways to specify map or program are supported:
-> >>  **# bpftool btf dump prog tag b88e0a09b1d9759d**
-> >>
-> >>  **# bpftool btf dump prog pinned /sys/fs/bpf/prog_name**
-> >> +
-> >> +|
-> >> +| **# bpftool btf dump file /sys/kernel/btf/i2c_smbus**
-> >> +| (or)
-> >> +| **# I2C_SMBUS_ID=$(bpftool btf show -p | jq '.[] | select(.name=="i2c_smbus").id')**
-> >> +| **# bpftool btf dump id ${I2C_SMBUS_ID} -B /sys/kernel/btf/vmlinux**
-> >> +
-> >> +::
-> >> +
-> >> +  [104848] STRUCT 'i2c_smbus_alert' size=40 vlen=2
-> >> +          'alert' type_id=393 bits_offset=0
-> >> +          'ara' type_id=56050 bits_offset=256
-> >> +  [104849] STRUCT 'alert_data' size=12 vlen=3
-> >> +          'addr' type_id=16 bits_offset=0
-> >> +          'type' type_id=56053 bits_offset=32
-> >> +          'data' type_id=7 bits_offset=64
-> >> +  [104850] PTR '(anon)' type_id=104848
-> >> +  [104851] PTR '(anon)' type_id=104849
-> >> +  [104852] FUNC 'i2c_register_spd' type_id=84745 linkage=static
-> >> +  [104853] FUNC 'smbalert_driver_init' type_id=1213 linkage=static
-> >> +  [104854] FUNC_PROTO '(anon)' ret_type_id=18 vlen=1
-> >> +          'ara' type_id=56050
-> >> +  [104855] FUNC 'i2c_handle_smbus_alert' type_id=104854 linkage=static
-> >> +  [104856] FUNC 'smbalert_remove' type_id=104854 linkage=static
-> >> +  [104857] FUNC_PROTO '(anon)' ret_type_id=18 vlen=2
-> >> +          'ara' type_id=56050
-> >> +          'id' type_id=56056
-> >> +  [104858] FUNC 'smbalert_probe' type_id=104857 linkage=static
-> >> +  [104859] FUNC 'smbalert_work' type_id=9695 linkage=static
-> >> +  [104860] FUNC 'smbus_alert' type_id=71367 linkage=static
-> >> +  [104861] FUNC 'smbus_do_alert' type_id=84827 linkage=static
-> >
-> > This reminded be that it would be awesome to support "format c"
-> > use-case for dumping split BTF in a more sane way. I.e., instead of
-> > dumping all types from base and split BTF, only dump necessary (used)
-> > forward declarations from base BTF, and then full C dump of only new
-> > types from the split (module) BTF. This will become more important as
-> > people will start using module BTF more. It's an interesting add-on to
-> > libbpf's btf_dumper functionality. Not sure how hard that would be,
-> > but I'd imagine it shouldn't require much changes.
-> >
-> > Just in case anyone wanted to challenge themselves with some more
-> > algorithmic patch for libbpf (*wink wink*)...
->
-> If you're addressing this to me, I'm not particularly looking for such
-> challenge at the moment :). In fact I already noted a few things that I
 
-Just brain dumping a bit, too many small things to keep in mind (or to
-keep track in various small TODO lists). Just thought maybe someone
-following along would be interested. Alan would come closest to
-knowing the internals of btf_dumper, so I'll CC him to try my luck ;)
-No pressure.
 
-> would like to fix or improve for bpftool, I will append this one to the
-> list. I should maybe start thinking of a tracker of some sort to list
-> and share this.
+On 7/29/21 10:34 PM, Andrii Nakryiko wrote:
+> Add new BPF helper, bpf_get_attach_cookie(), which can be used by BPF programs
+> to get access to a user-provided bpf_cookie value, specified during BPF
+> program attachment (BPF link creation) time.
+> 
+> Naming is hard, though. With the concept being named "BPF cookie", I've
+> considered calling the helper:
+>    - bpf_get_cookie() -- seems too unspecific and easily mistaken with socket
+>      cookie;
+>    - bpf_get_bpf_cookie() -- too much tautology;
+>    - bpf_get_link_cookie() -- would be ok, but while we create a BPF link to
+>      attach BPF program to BPF hook, it's still an "attachment" and the
+>      bpf_cookie is associated with BPF program attachment to a hook, not a BPF
+>      link itself. Technically, we could support bpf_cookie with old-style
+>      cgroup programs.So I ultimately rejected it in favor of
+>      bpf_get_attach_cookie().
+> 
+> Currently all perf_event-backed BPF program types support
+> bpf_get_attach_cookie() helper. Follow-up patches will add support for
+> fentry/fexit programs as well.
+> 
+> While at it, mark bpf_tracing_func_proto() as static to make it obvious that
+> it's only used from within the kernel/trace/bpf_trace.c.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+
+Acked-by: Yonghong Song <yhs@fb.com>
