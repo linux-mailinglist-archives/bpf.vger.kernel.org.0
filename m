@@ -2,179 +2,409 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55983DC0AD
-	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 00:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0E43DC0CE
+	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 00:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhG3WC7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 18:02:59 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9952 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230515AbhG3WC6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 30 Jul 2021 18:02:58 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16UM0wEw004614;
-        Fri, 30 Jul 2021 15:02:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=SX5BO2rqAfpiVH/qJEDndcniXKB9K9fKt4Hs8QFpy/A=;
- b=WUS+GeN88suZKqy1hPeehRbtWUcaIefsVcnjorKmWTELAA9xCCn5/8SejgNdVjGIDKNr
- TqjNQ16Bd5sOtXjbs/+sywD2VlvosjV4T0g2FB6VGnwtDELcnpXZgijQGTf25jOd2c16
- Pa2igeAGh2nxBEFUvOdBKCI7uWVYmbrZbmo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a491ce5jy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 30 Jul 2021 15:02:36 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 30 Jul 2021 15:02:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WhxZ/E6aJv3/83/CwhUlmriecbQSQdbSLDw7IboGlYBPzw5clzBtxp4wGow3eNOtg5x6+4fGxzZmucG9NCIrPmoi5ArYFuH0aRKRLL+mBGXndpTsH9kapPNNMQBNmpM6g3ag9zkpk/Fd6+lMRFaNwuEZzbfnr/+1YcAcwbM4w8HoPGj0VDnPnRPBtQ7JFFVHI/0te0V5lQgp7NH+tuNhul9Ftf1WChz5B6OhTOnKV4yn3cUIoL/2uZ4g318DoQUHIbFMZ1Y4XceozVVWtl9yVAM1OPAbIPwJMdk7XL+VjBz7oym3sbUoVHyZCmxdzCTh6EEmOFLLbvpdEOEjXBurUA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SX5BO2rqAfpiVH/qJEDndcniXKB9K9fKt4Hs8QFpy/A=;
- b=U/kdo6d0+PCIi4stnxY7GvLxEg3Qwb7tJxQNLEaX2fgxH2dJonVT1LzMuz/yLoA1wY4enUk6W3djbTpCDYTwk02ioBAGcRDnc0hlZkQA2zyysYWfRCnhLn5Y23P57ARMWIpHpXCU+BRmJQV4St7pXTwrRw72WqOYRVbOLiISrqdFrRi/zPGmz4UgsJHLk9muRWHeeAPGcMul2Jyi0KKkZ8KbBONFEydsr0JhKX059V5l1e/2bi2GnaeP+P9YBctj5HLcJ6UPqi0XLSs/lOjsWl1lBqYZsSqe6V2MfjBeGuPYsNCl/d/jtS49cUQdLKmzPuj6cFlgAxplH1zc0284sA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR1501MB2127.namprd15.prod.outlook.com (2603:10b6:805:2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20; Fri, 30 Jul
- 2021 22:02:35 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4373.021; Fri, 30 Jul 2021
- 22:02:35 +0000
-Subject: Re: [PATCH v3 bpf-next 05/14] bpf: allow to specify user-provided
- bpf_cookie for BPF perf links
-To:     Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <kernel-team@fb.com>, Peter Zijlstra <peterz@infradead.org>
-References: <20210730053413.1090371-1-andrii@kernel.org>
- <20210730053413.1090371-6-andrii@kernel.org>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <2cedfed1-2db8-31f5-b214-619701873dc0@fb.com>
-Date:   Fri, 30 Jul 2021 15:02:32 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <20210730053413.1090371-6-andrii@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0181.namprd13.prod.outlook.com
- (2603:10b6:a03:2c3::6) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        id S233104AbhG3WGm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 18:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232680AbhG3WGm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 18:06:42 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C807CC06175F
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 15:06:35 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id p145so3687154ybg.6
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 15:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fnxtEDbr0lw/93EuCcFcBfLnk0jp27VKXvX0F+QO0+0=;
+        b=ClWnrOan5eb2bs7eQq9BFVAOQLOGNfCaQirL8ITdtqUksN9RoxKCWWZAuI3Shdh9OQ
+         yYlmpqxKFQp9lapZt/uBU5t1CdiXCkOcTvKvfDMjz9RM/6A8fP1kvyB2VdftJZt+lWf1
+         uylFh9zwNGju0aJYkBo2zRzNSL2sIvAAqC0CLBcY8Ml9eJOZDvfUn9FKQRGfq8PEd3Kq
+         hrd8WZC7E6fz0WEcGCFpCoJfnXuzwEV9QjyjZcG0Oq5zREXpq+WpX/kal3ZgfubDijdb
+         i0y2Blzhqk/Ob/WhsPLZJGqQ1Ceg7FTbogb3pMcVHgIdd2hZnH+0HiWJrXQTahPqlxXC
+         nyaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fnxtEDbr0lw/93EuCcFcBfLnk0jp27VKXvX0F+QO0+0=;
+        b=TecK9VCN+CUyDQEJZhsitk9xjtFH61M3FT2a2cpMC67I8XULC6Hi4rOJdTWGLnCOEM
+         u8tmdn9fVK946FJ5Zrh6PrUUZFNNwHaLVDVgDyS/x7Ku1PJ6xIb93KGKLZJXgdFSRj8G
+         UoXFMX7936Rw3N406OHgVPaChN0Zr3aYg3nuBYNazUeLZo0OO8aMpyzdZUC7QMoNDto+
+         AfNZOp5uhc+bwmv7DVUfiLxi8850/MEBk7x84f8P7uq+F/A1EWLJCYRAlTGT0a1kUquq
+         OcOWAiCond64xMY5R80CV4jfb4KqBvQvp9ZL8AWzJ825c+ljqFlmn2qZRTJ3PqJKL0pq
+         cHPA==
+X-Gm-Message-State: AOAM5322wSH4f51ssRigoiESM/mAYVQUcVxQwoiSRTf8WlBLX73TGf+v
+        HqaL/WcqX921jJVXAR+gaYAj1nZKN4b3U0hTDvY=
+X-Google-Smtp-Source: ABdhPJw0fj4EAE7AB8WkIam/+R7ByzxaTyDfCavD2PDtW4RtH5WXAqDH+PcTWNZ5jkmC0Blpgpa3Q06O3Dh+nuPNUzk=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr5854910ybu.403.1627682794972;
+ Fri, 30 Jul 2021 15:06:34 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1130] (2620:10d:c090:400::5:890f) by SJ0PR13CA0181.namprd13.prod.outlook.com (2603:10b6:a03:2c3::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.10 via Frontend Transport; Fri, 30 Jul 2021 22:02:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f546ac75-3ac0-4834-4aa1-08d953a5bc8d
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2127:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB21279347F07ABE390E5EFEF2D3EC9@SN6PR1501MB2127.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CJjOLk+3o3ZyiEMb74Ih+ETIrjGEeluxM6B8WGUncsncNQF8uTUlZtchZMsQtsVliMW3uKJ48U1I0+gQq8h6fWMRyJ8HQLbaP7V5m1OAayiIpN5ow74HPXDd02vYWLOZq9ZYgbN3eSfYvng8CymN0tFqh5WjfQQc/EyEkNurqjlFPWaxYvXldB+TsOU0tV6L1wms/eRc3Iq48oU8R4lQimEmrjqtvjZioSDFfRraOEMf56yY7bgFlVw9+f+s4H9to76jRDln6BxilP6iQS6tWKU+HbuECqSs4iOMxYyoghZ4YIBbuWIz6ANRiRtjmC8sLWLIJ8C413TvL/Lml7Z4c1p6okdQ6OVZCG8ggahB1egqPXZdQ2lVo2GSZSBUTOOwkLdd9xiF0QD0L8umGPn2p75uX48xceuJK97gUsao/l8lFy3BFexBepbt6Tfu+PexMgTW5gw3TeEWPLgONLgRYPq6tYgbOe/qmNJqNKUuscCYoL9AS9778aqPQdcV/J6LfgDb4sjLP9UmoGNVpNvjW0rabrjQcUAHXrvYVBkrZwAO7ZeuDjOOkmK9aR6AiP/BMXJJtaO2O4R2sf3Nu+dl9XwQWzSkKJACdjHDE91hSvF1c1SWzuWn1kuJfhSONKhmPyn4Zfs9ja6fhUVOU3HqDVxAI8BqYI4oAhlxkgnDhfDA77/tVc2uRBj9oQQOAMf8GqjGZjght+Q3+NFSGJnl5Y8sKQNXWpqER5B9Eotymp8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(39860400002)(136003)(346002)(83380400001)(6486002)(86362001)(66556008)(53546011)(31696002)(52116002)(66946007)(478600001)(2906002)(5660300002)(8676002)(31686004)(36756003)(186003)(38100700002)(66476007)(316002)(8936002)(4326008)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q2pZWWlxRUM1OUFpajgzYXh3OFNxZWhxOVErdXdmeWl1eVk0dW1MelpNLzdo?=
- =?utf-8?B?T0MydXl2M3RLWXRYUHRFaWU2RFcrWWhCWmdJenVmR2RrWk0xb0VuU0pOci9O?=
- =?utf-8?B?MjVacVBVNGV1Y2VxUUtIVStNdFk1c0FIOVVydWxHeG95SWhObnFjbnhLVXhZ?=
- =?utf-8?B?Z3lSOEpESlpSd1QwL2xSeTNNcFNod3VjL0ZyY0hEMGVTcUVBN2kzNmdpMXpR?=
- =?utf-8?B?emxMc0ZMN0d0RXVsLzhzUUNuL0MzNkR6L1ZMaVAyY21mSHcrVDJzaU9CeFlP?=
- =?utf-8?B?M3YvL1VQZktoczB0a25XcDVyRVdyTVplSDhxZW92YmRkK04zQ24vM05VK3Vj?=
- =?utf-8?B?VUhucjVpbWc1elZ1UnVGdG1QOW1aanc5OFYrencyQzd1eWdIaCszbTR1RVFk?=
- =?utf-8?B?VmcrbGRReGZEeWlSL0ZDTVpxdWU5VU1SLzVZSHEzb2x4cEFUdmtpVHV2TzhP?=
- =?utf-8?B?akR0SzVIazBvZ0h2dU9tYnFTdkRXZGNERDZ1R2dpUlhFQ0lDNlI3MzZ4ckxI?=
- =?utf-8?B?T0QwRlBia09GMng4WEthRE85OHFMQ0tqTXpUVW1Ec3NNWFRVbDl5a0JmVTRZ?=
- =?utf-8?B?U1FYeU5PTTJlQy9pSmhaM05iejFUTVZudFBXRm1yWHdjZlZOUjFiZ1U3YXpz?=
- =?utf-8?B?NVQ2YkNic1c2aG9pUHlpMFlXREhHZGRrTHF6eFhaMVlFbWFsajJ1UUg0RmZp?=
- =?utf-8?B?ZzRvdGRuM1FmMmRFQXYwV0JGV0RVazBGNW04WGlRdHdFVlFUMTYzZjhrb2xi?=
- =?utf-8?B?OEkzTGVVdGczTldSWDlmRFAvUmQzQUZUV25NOHFtRFd2NHJvZEJUMkVWbnAr?=
- =?utf-8?B?Z3dFeHBxSUxOZ2xmNVNvam1FUk1RUzlTdWFtWVRITFA3akdqajJlOTZIbnRj?=
- =?utf-8?B?T1pXYlBqSFN2c2RsOVkrYkRDVmdiRmVsS2ZCeXFmaG1nMUtEVVFzNDNXN3Fw?=
- =?utf-8?B?ZE4zUTNrckVoWDYvTkpxVHBIZmFibEs5Rzh5QkprZzI3WFpGTktsTExhM2Vh?=
- =?utf-8?B?QlNWRWFkdk5KZHF0ZnJyS3lpOGQ4ZENDMGhoS0dTRmE5aGcydFNPRUhESGNE?=
- =?utf-8?B?YnVJdFJWa0JLeExZZkpHM3lEY0k5eXpCZGhGRWpZTlRoaGc4UFcxV0lidGxQ?=
- =?utf-8?B?VitRaGpucUdIcDdLSXpBRDlrL0Y3WThOYW1uZ1hBcWRaMTZLRGdDMDNZT0dV?=
- =?utf-8?B?OXlqQi9tQUtVbmpkclhNUHNiVnl3akhsS3hhWXFxeUlaeTY0UnhZeUpzeGsy?=
- =?utf-8?B?dysrQWFHZnd4WStLVmwrNmcrVGVTeFZoUnVQOG0zWGVJZzJtWldTOUo2QnFH?=
- =?utf-8?B?elJYcEl6Q05qR3hwUUR1cW9rbU1JaXNrUVdsb0JZNWdaMEN5UTVPcW5VNDJy?=
- =?utf-8?B?UmUvVmlEelFSU3lzWS9lL2RoSWVVVUF3RG1DS0c1UmxVcDVRN0FBUmdxcFVT?=
- =?utf-8?B?WCsvKytYT2pSYWdBcERXZVJyS0ZLRHhDTnpQZUNSMWlRZ3FzaUQ1QWttdXhF?=
- =?utf-8?B?MlpYUEM0cXNvQkVNRjlTaXg4MkEzZ1JHRDJlT3JneE5tODFyWW8wMDJZTmx5?=
- =?utf-8?B?eU9BbVBCdUFuclhwWEN0bmhCTkZldERxNEdqU2Rndmh3OVVMWVozZXM2NFhw?=
- =?utf-8?B?TU05dlcyeFl3cnVPUEhqWlN6ZXpjUm1XM3M2TW0zT0NXeW4xS0toUVlpZWhJ?=
- =?utf-8?B?ZE8xRXI3azVOUWROVWZ2MFZhVEVjYis1aDZNSTJxMlVWbXluaW5BUFZ0eHVj?=
- =?utf-8?B?K0FDdmtJLzhndnZmVlc2cUtCUFY2R2d6NmM1TithNXZ0dmZTa2p0RVkwVE8v?=
- =?utf-8?Q?pvzmBalE8vsrckfIu7ehWixMayZR/SfmYsvQg=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f546ac75-3ac0-4834-4aa1-08d953a5bc8d
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 22:02:34.9430
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Rk7jESxA9CHmeEeoGrzNnBcFIgHeUr+0ebSfFGGAjMUGTWp1IZ6dWQdoGc5882p2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2127
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: PUaZd4Zb1BcwpekRH0Zd43DJZFqd9fbw
-X-Proofpoint-GUID: PUaZd4Zb1BcwpekRH0Zd43DJZFqd9fbw
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-30_11:2021-07-30,2021-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
- malwarescore=0 impostorscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107300150
-X-FB-Internal: deliver
+References: <20210726161211.925206-1-andrii@kernel.org> <20210726161211.925206-6-andrii@kernel.org>
+ <138b1ab0-1d9c-7288-06bd-fbe29285fc4f@fb.com> <CAEf4Bzb39v5kz1Gc2YjNvGwN8kK8H2fSp1qvipie=ZLpuxRV6Q@mail.gmail.com>
+ <5ffd3338-fe76-2080-13a9-5102917a434a@fb.com> <CAEf4BzbR=m3Qusth-1JU_E5YMYaoxrNom9tS_pcArsHyiBD85w@mail.gmail.com>
+ <dc7489f5-724b-367e-400f-86d7ccf068d3@fb.com>
+In-Reply-To: <dc7489f5-724b-367e-400f-86d7ccf068d3@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 30 Jul 2021 15:06:23 -0700
+Message-ID: <CAEf4BzbLAoLhGnT9Q5OjVjjSROeZVrJ=Mu3F9sE8iSoymWjwAQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 05/14] bpf: allow to specify user-provided
+ context value for BPF perf links
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Jul 30, 2021 at 2:34 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 7/30/21 10:48 AM, Andrii Nakryiko wrote:
+> > On Thu, Jul 29, 2021 at 10:49 PM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >>
+> >>
+> >> On 7/29/21 9:31 PM, Andrii Nakryiko wrote:
+> >>> On Thu, Jul 29, 2021 at 11:00 AM Yonghong Song <yhs@fb.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 7/26/21 9:12 AM, Andrii Nakryiko wrote:
+> >>>>> Add ability for users to specify custom u64 value when creating BPF link for
+> >>>>> perf_event-backed BPF programs (kprobe/uprobe, perf_event, tracepoints).
+> >>>>>
+> >>>>> This is useful for cases when the same BPF program is used for attaching and
+> >>>>> processing invocation of different tracepoints/kprobes/uprobes in a generic
+> >>>>> fashion, but such that each invocation is distinguished from each other (e.g.,
+> >>>>> BPF program can look up additional information associated with a specific
+> >>>>> kernel function without having to rely on function IP lookups). This enables
+> >>>>> new use cases to be implemented simply and efficiently that previously were
+> >>>>> possible only through code generation (and thus multiple instances of almost
+> >>>>> identical BPF program) or compilation at runtime (BCC-style) on target hosts
+> >>>>> (even more expensive resource-wise). For uprobes it is not even possible in
+> >>>>> some cases to know function IP before hand (e.g., when attaching to shared
+> >>>>> library without PID filtering, in which case base load address is not known
+> >>>>> for a library).
+> >>>>>
+> >>>>> This is done by storing u64 user_ctx in struct bpf_prog_array_item,
+> >>>>> corresponding to each attached and run BPF program. Given cgroup BPF programs
+> >>>>> already use 2 8-byte pointers for their needs and cgroup BPF programs don't
+> >>>>> have (yet?) support for user_ctx, reuse that space through union of
+> >>>>> cgroup_storage and new user_ctx field.
+> >>>>>
+> >>>>> Make it available to kprobe/tracepoint BPF programs through bpf_trace_run_ctx.
+> >>>>> This is set by BPF_PROG_RUN_ARRAY, used by kprobe/uprobe/tracepoint BPF
+> >>>>> program execution code, which luckily is now also split from
+> >>>>> BPF_PROG_RUN_ARRAY_CG. This run context will be utilized by a new BPF helper
+> >>>>> giving access to this user context value from inside a BPF program. Generic
+> >>>>> perf_event BPF programs will access this value from perf_event itself through
+> >>>>> passed in BPF program context.
+> >>>>>
+> >>>>> Cc: Peter Zijlstra <peterz@infradead.org>
+> >>>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> >>>>> ---
+> >>>>>     drivers/media/rc/bpf-lirc.c    |  4 ++--
+> >>>>>     include/linux/bpf.h            | 16 +++++++++++++++-
+> >>>>>     include/linux/perf_event.h     |  1 +
+> >>>>>     include/linux/trace_events.h   |  6 +++---
+> >>>>>     include/uapi/linux/bpf.h       |  7 +++++++
+> >>>>>     kernel/bpf/core.c              | 29 ++++++++++++++++++-----------
+> >>>>>     kernel/bpf/syscall.c           |  2 +-
+> >>>>>     kernel/events/core.c           | 21 ++++++++++++++-------
+> >>>>>     kernel/trace/bpf_trace.c       |  8 +++++---
+> >>>>>     tools/include/uapi/linux/bpf.h |  7 +++++++
+> >>>>>     10 files changed, 73 insertions(+), 28 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
+> >>>>> index afae0afe3f81..7490494273e4 100644
+> >>>>> --- a/drivers/media/rc/bpf-lirc.c
+> >>>>> +++ b/drivers/media/rc/bpf-lirc.c
+> >>>>> @@ -160,7 +160,7 @@ static int lirc_bpf_attach(struct rc_dev *rcdev, struct bpf_prog *prog)
+> >>>>>                 goto unlock;
+> >>>>>         }
+> >>>>>
+> >>>>> -     ret = bpf_prog_array_copy(old_array, NULL, prog, &new_array);
+> >>>>> +     ret = bpf_prog_array_copy(old_array, NULL, prog, 0, &new_array);
+> >>>>>         if (ret < 0)
+> >>>>>                 goto unlock;
+> >>>>>
+> >>>> [...]
+> >>>>>     void bpf_trace_run1(struct bpf_prog *prog, u64 arg1);
+> >>>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >>>>> index 00b1267ab4f0..bc1fd54a8f58 100644
+> >>>>> --- a/include/uapi/linux/bpf.h
+> >>>>> +++ b/include/uapi/linux/bpf.h
+> >>>>> @@ -1448,6 +1448,13 @@ union bpf_attr {
+> >>>>>                                 __aligned_u64   iter_info;      /* extra bpf_iter_link_info */
+> >>>>>                                 __u32           iter_info_len;  /* iter_info length */
+> >>>>>                         };
+> >>>>> +                     struct {
+> >>>>> +                             /* black box user-provided value passed through
+> >>>>> +                              * to BPF program at the execution time and
+> >>>>> +                              * accessible through bpf_get_user_ctx() BPF helper
+> >>>>> +                              */
+> >>>>> +                             __u64           user_ctx;
+> >>>>> +                     } perf_event;
+> >>>>
+> >>>> Is it possible to fold this field into previous union?
+> >>>>
+> >>>>                    union {
+> >>>>                            __u32           target_btf_id;  /* btf_id of
+> >>>> target to attach to */
+> >>>>                            struct {
+> >>>>                                    __aligned_u64   iter_info;      /*
+> >>>> extra bpf_iter_link_info */
+> >>>>                                    __u32           iter_info_len;  /*
+> >>>> iter_info length */
+> >>>>                            };
+> >>>>                    };
+> >>>>
+> >>>>
+> >>>
+> >>> I didn't want to do it, because different types of BPF links will
+> >>> accept this user_ctx (or now bpf_cookie). And then we'll have to have
+> >>> different locations of that field for different types of links.
+> >>>
+> >>> For example, when/if we add this user_ctx to BPF iterator programs,
+> >>> having __u64 user_ctx in the same anonymous union will make it overlap
+> >>> with iter_info, which is a problem. So I want to have a link
+> >>> type-specific sections in LINK_CREATE command section, to allow the
+> >>> same field name at different locations.
+> >>>
+> >>> I actually think that we should put iter_info/iter_info_len into a
+> >>> named field, like this (also added user_ctx for bpf_iter link as a
+> >>> demonstration):
+> >>>
+> >>> struct {
+> >>>       __aligned_u64 info;
+> >>>       __u32         info_len;
+> >>>       __aligned_u64 user_ctx;  /* see how it's at a different offset
+> >>> than perf_event.user_ctx */
+> >>> } iter;
+> >>> struct {
+> >>>       __u64         user_ctx;
+> >>> } perf_event;
+> >>>
+> >>> (of course keeping already existing fields in anonymous struct for
+> >>> backwards compatibility)
+> >>
+> >> Okay, then since user_ctx may be used by many link types. How
+> >> about just with the field "user_ctx" without struct perf_event.
+> >
+> > I'd love to do it because it is indeed generic and common field, like
+> > target_fd. But I'm not sure what you are proposing below. Where
+> > exactly that user_ctx (now called bpf_cookie) goes in your example? I
+> > see few possible options that allow preserving ABI backwards
+> > compatibility. Let's see if you and everyone else likes any of those
+> > better. I'll use the full LINK_CREATE sub-struct definition from
+> > bpf_attr to make it clear. And to demonstrate how this can be extended
+> > to bpf_iter in the future, please note this part as this is an
+> > important aspect.
+> >
+> > 1. Full backwards compatibility and per-link type sections (my current
+> > approach):
+> >
+> >          struct { /* struct used by BPF_LINK_CREATE command */
+> >                  __u32           prog_fd;
+> >                  union {
+> >                          __u32           target_fd;
+> >                          __u32           target_ifindex;
+> >                  };
+> >                  __u32           attach_type;
+> >                  __u32           flags;
+> >                  union {
+> >                          __u32           target_btf_id;
+> >                          struct {
+> >                                  __aligned_u64   iter_info;
+> >                                  __u32           iter_info_len;
+> >                          };
+> >                          struct {
+> >                                  __u64           bpf_cookie;
+> >                          } perf_event;
+> >                          struct {
+> >                                  __aligned_u64   info;
+> >                                  __u32           info_len;
+> >                                  __aligned_u64   bpf_cookie;
+> >                          } iter;
+> >                 };
+> >          } link_create;
+> >
+> > The good property here is that we can keep easily extending link
+> > type-specific sections with extra fields where needed. For common
+> > stuff like bpf_cookie it's suboptimal because we'll need to duplicate
+> > field definition in each struct inside that union, but I think that's
+> > fine. From end-user point of view, they will know which type of link
+> > they are creating, so the use will be straightforward. This is why I
+> > went with this approach. But let's consider alternatives.
+> >
+> > 2. Non-backwards compatible layout but extra flag to specify that new
+> > field layout is used.
+> >
+> >          struct { /* struct used by BPF_LINK_CREATE command */
+> >                  __u32           prog_fd;
+> >                  union {
+> >                          __u32           target_fd;
+> >                          __u32           target_ifindex;
+> >                  };
+> >                  __u32           attach_type;
+> >                  __u32           flags; /* this will start supporting
+> > some new flag like BPF_F_LINK_CREATE_NEW */
+> >                  __u64           bpf_cookie; /* common field now */
+> >                  union { /* this parts is effectively deprecated now */
+> >                          __u32           target_btf_id;
+> >                          struct {
+> >                                  __aligned_u64   iter_info;
+> >                                  __u32           iter_info_len;
+> >                          };
+> >                          struct { /* this is new layout, but needs
+> > BPF_F_LINK_CREATE_NEW, at least for ext/ and bpf_iter/ programs */
+> >                              __u64       bpf_cookie;
+> >                              union {
+> >                                  struct {
+> >                                      __u32     target_btf_id;
+> >                                  } ext;
+> >                                  struct {
+> >                                      __aligned_u64 info;
+> >                                      __u32         info_len;
+> >                                  } iter;
+> >                              }
+> >                          }
+> >                  };
+> >          } link_create;
+> >
+> > This makes bpf_cookie a common field, but at least for EXT (freplace/)
+> > and ITER (bpf_iter/) links we need to specify extra flag to specify
+> > that we are not using iter_info/iter_info_len/target_btf_id. bpf_iter
+> > then will use iter.info and iter.info_len, and can use plain
+> > bpf_cookie.
+> >
+> > IMO, this is way too confusing and a maintainability nightmare.
+> >
+> > I'm trying to guess what you are proposing, I can read it two ways,
+> > but let me know if I missed something.
+> >
+> > 3. Just add bpf_cookie field before link type-specific section.
+> >
+> >          struct { /* struct used by BPF_LINK_CREATE command */
+> >                  __u32           prog_fd;
+> >                  union {
+> >                          __u32           target_fd;
+> >                          __u32           target_ifindex;
+> >                  };
+> >                  __u32           attach_type;
+> >                  __u32           flags;
+> >                  __u64           bpf_cookie;  // <<<<<<<<<< HERE
+> >                  union {
+> >                          __u32           target_btf_id;
+> >                          struct {
+> >                                  __aligned_u64   iter_info;
+> >                                  __u32           iter_info_len;
+> >                          };
+> >                  };
+> >          } link_create;
+> >
+> > This looks really nice and would be great, but that changes offsets
+> > for target_btf_id/iter_info/iter_info_len, so a no go. The only way to
+> > rectify this is what proposal #2 above does with an extra flag.
+> >
+> > 4. Add bpf_cookie after link-type specific part:
+> >
+> >          struct { /* struct used by BPF_LINK_CREATE command */
+> >                  __u32           prog_fd;
+> >                  union {
+> >                          __u32           target_fd;
+> >                          __u32           target_ifindex;
+> >                  };
+> >                  __u32           attach_type;
+> >                  __u32           flags;
+> >                  union {
+> >                          __u32           target_btf_id;
+> >                          struct {
+> >                                  __aligned_u64   iter_info;
+> >                                  __u32           iter_info_len;
+> >                          };
+> >                          struct {
+> >                  };
+> >                  __u64           bpf_cookie; // <<<<<<<<<<<<<<<<<< HERE
+> >          } link_create;
+> >
+> > This could work. But we are wasting 16 bytes currently used for
+> > target_btf_id/iter_info/iter_info_len. If we later need to do
+> > something link type-specific, we can add it to the existing union if
+> > we need <= 16 bytes, otherwise we'll need to start another union after
+> > bpf_cookie, splitting this into two link type-specific sections.
+> >
+> > Overall, this might work, especially assuming we won't need to extend
+> > iter-specific portions. But I really hate that we didn't do named
+> > structs inside that union (i.e., ext.target_btf_id and
+> > iter.info/iter.info_len) and I'd like to rectify that in the follow up
+> > patches with named structs duplicating existing field layout, but with
+> > proper naming. But splitting this LINK_CREATE bpf_attr part into two
+> > unions would make it hard and awkward in the future.
+> >
+> > So, thoughts? Did you have something else in mind that I missed?
+>
+> What I proposed is your option 4. Yes, in the future if there is there
+> are something we want to add to bpf iter, we can add to iter_info, so
+> it should not be an issue. Any other new link_type may utilized the same
+> union with
+>     struct {
+>        __aligned_u64  new_type_info;
+>        __u32          new_type_info_len;
+>     };
+> and this will put extensibility into new_type_info.
+> I know this may be a little bit hassle but it should work.
+>
 
+I see what you mean. With this extra pointer we shouldn't need more
+than 16 bytes per link type. That's unnecessary complication for a lot
+of simpler types of links, unfortunately, though definitely an option.
 
-On 7/29/21 10:34 PM, Andrii Nakryiko wrote:
-> Add ability for users to specify custom u64 value (bpf_cookie) when creating
-> BPF link for perf_event-backed BPF programs (kprobe/uprobe, perf_event,
-> tracepoints).
-> 
-> This is useful for cases when the same BPF program is used for attaching and
-> processing invocation of different tracepoints/kprobes/uprobes in a generic
-> fashion, but such that each invocation is distinguished from each other (e.g.,
-> BPF program can look up additional information associated with a specific
-> kernel function without having to rely on function IP lookups). This enables
-> new use cases to be implemented simply and efficiently that previously were
-> possible only through code generation (and thus multiple instances of almost
-> identical BPF program) or compilation at runtime (BCC-style) on target hosts
-> (even more expensive resource-wise). For uprobes it is not even possible in
-> some cases to know function IP before hand (e.g., when attaching to shared
-> library without PID filtering, in which case base load address is not known
-> for a library).
-> 
-> This is done by storing u64 bpf_cookie in struct bpf_prog_array_item,
-> corresponding to each attached and run BPF program. Given cgroup BPF programs
-> already use two 8-byte pointers for their needs and cgroup BPF programs don't
-> have (yet?) support for bpf_cookie, reuse that space through union of
-> cgroup_storage and new bpf_cookie field.
-> 
-> Make it available to kprobe/tracepoint BPF programs through bpf_trace_run_ctx.
-> This is set by BPF_PROG_RUN_ARRAY, used by kprobe/uprobe/tracepoint BPF
-> program execution code, which luckily is now also split from
-> BPF_PROG_RUN_ARRAY_CG. This run context will be utilized by a new BPF helper
-> giving access to this user-provided cookie value from inside a BPF program.
-> Generic perf_event BPF programs will access this value from perf_event itself
-> through passed in BPF program context.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+We could have also done approach #4 but maybe leave 16-32 bytes before
+bpf_cookie for the union, so that it's much less likely that we'll run
+out of space there. Not very clean either, so I don't know.
 
-Acked-by: Yonghong Song <yhs@fb.com>
+I'll keep it here for discussion for now, let's see if anyone has
+strong preferences and opinions.
+
+> Your option 1 should work too, which is what I proposed in the beginning
+> to put into the union and we can feel free to add bpf_cookie for each
+> individual link type. This is actually cleaner.
+
+Oh, you did? I must have misunderstood then. If you like approach #1,
+then it's what I'm doing right now, so let's keep it as is and let's
+see if anyone else has preferences.
+
+>
+> >
+> >
+> >> Sometime like
+> >>
+> >> __u64   user_ctx;
+> >>
+> >> instead of
+> >>
+> >> struct {
+> >>          __u64   user_ctx;
+> >> } perf_event;
+> >>
+> >>>
+> >>> I decided to not do that in this patch set, though, to not distract
+> >>> from the main goal. But I think we should avoid this shared field
+> >>> "namespace" across different link types going forward.
+> >>>
+> >>>
+> >>>>>                 };
+> >>>>>         } link_create;
+> >>>>>
+> >>>> [...]
