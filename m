@@ -2,143 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC3B3DBEB7
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 21:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D4C3DBEF5
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 21:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbhG3TGw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 15:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
+        id S230475AbhG3T1F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 15:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbhG3TGd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:06:33 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CBAC06175F;
-        Fri, 30 Jul 2021 12:06:27 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id d73so17581664ybc.10;
-        Fri, 30 Jul 2021 12:06:27 -0700 (PDT)
+        with ESMTP id S230335AbhG3T1D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 15:27:03 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FC4C06175F
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 12:26:58 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id p145so3088945ybg.6
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 12:26:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DS7G5Mp3ZiNksp4LFVx/s6HRXPteROUGuVXS0Qr++e0=;
-        b=N3gjS+PCkw7+HLiaQM9bONjBDWxPFtn/bLcvUMKkvToaR5zg6toBZjYU6ooIBp9qWu
-         fr3bLdy1uUmIInFEruA+6Vk+ocJN50WHsemnourZXQcV/jCOWAiBjbLeZDuIpF/6bXDC
-         zBxYacy7+ifzXRBdHBZMKYvE2gKcjaBbmm5jqeLUCqVQOs4k5rKWVv3PLA4Xyw5+Fc+y
-         K1tpK4F2RlifaF0t+LdD/3DwyrAtjXGwIekhWhuxkd1MWWZ66goZk+nPMQaiC+zooT89
-         oSuN3fLCp+4E8N59QUIzbyzrzwGvCL7jqWaT8Kh7W1LXiWkOZxTqtfyHxiSShdmTGrGT
-         VgRw==
+        bh=nOFajr7G7ynQh91Bpunjpsg8w2czzvlaeyCJusca3W0=;
+        b=pfdxtkXPvmQ9cWfWyvJQYH9yhNvPKWDYK5Urg4j3NmkXH51GZKDnQ4BZCAwXflyZX7
+         l5W6VIEzYxFtiKE7ujZsyLv9fLg0jm8b7JyeTVg97l6xiGsXgUUKdR0mv0NaLPfPV/UP
+         5iJu0llvcSScNNaLc4TjSECQ1XIGv3ygE8ln+aTia9uVs65h9kr9G3y0Hk2pK+1XdRTz
+         EgreqzMs0VYc9oYdKOnOk8dXZcIU6s5LhKTQDXy1LZP7y7d0D+NhFfgLyKKKR9uoh7WA
+         0hsqLcJy8wC+j8CJw5zpejZB2lBCpn9uPKPZvMwlVu/E2wIMhmfpAZHVqm5KeTSCuUzh
+         dNNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DS7G5Mp3ZiNksp4LFVx/s6HRXPteROUGuVXS0Qr++e0=;
-        b=q+s3s4A9vZZnKOd9ea4UwZI0FJnkiO2UL51jELo7+xWMQ5yMaCm2hitBhMr1KDGssh
-         2P36yBfvpqfdO7mLEnaS+qA52z1sSljpNZzv+/DQQFqYYxkgJBv4zOXsK+jMMq2/aonF
-         SWwTXbs86e769UV9f70p0AljMNEX3yqQeiev+f13NEX7C+VOIKWmQMUv9+BCMnYKWOFl
-         BO9LNLoIh08Eqsg4dEuK82z9B8IQ9b1DlzuTAQLUkA7jTkcn9YvT2ycOp9StCRJfasZv
-         0cz1msakOl5k2tHGBbG8VLhNM0D1shTmRQjhUv54rCMjyKcgvXwuWG8/vY4ABbmC9ugo
-         eVfQ==
-X-Gm-Message-State: AOAM5329tISGQu76kxjSsZmdwP3w5tRuP+sQ0MY1UErQZ0E7jKBR4KjL
-        sdZ/SP733BwZlrkc1ZpVzAnMN6QDlf1pFGD6FCk=
-X-Google-Smtp-Source: ABdhPJwx6YUyIqUyA76aHlsrSxLDW+qqB4FJkFynprjlMq8Ktz1xlVx0VtWpSuNWELHY3jPrej4HWuNbFlpzFBoUfgE=
-X-Received: by 2002:a25:6148:: with SMTP id v69mr4984982ybb.510.1627671986753;
- Fri, 30 Jul 2021 12:06:26 -0700 (PDT)
+        bh=nOFajr7G7ynQh91Bpunjpsg8w2czzvlaeyCJusca3W0=;
+        b=rCuwcjDI/g+E0KagUdziymvXtdv9qmK0zAhIXuq4mxPSBM+l76DATD8SvnqJN1tP7G
+         +S4daw81PrdY8tJ6CTuN8vthg/gTEz4bqB7K16rZonRLFKUXbQ1NNp8wIxG2Vdpc9Dju
+         vLM4t3FseNgx3r+M2xouNbzmqDCWUa6mM4MaQYfBEJIdl3tFL9Com2yjhse2jpAeUiXH
+         GVKAX5oEjDxOIab+K+BkeV9LbTMAwSgyeyPPz7fVG6codr5Tu/N7byDsR+ZCk8G0VFWr
+         H3L9wjGAitITkgs47vAUcdiFoBTxa05QM/HqMkNva6mH1/yT8ea+wPnZwpiJv/QTCLCm
+         BnBQ==
+X-Gm-Message-State: AOAM531ABJfUFTgFy6TPzWMRssjHnEajuK3euhnRn/desNrJ9O2yAJJk
+        S89n8C7AJr5I4Bir4wWa0aijX1EaipJS27IZc5U=
+X-Google-Smtp-Source: ABdhPJyQCWwAej1+GfHAn5Ni8txSTjxX0wU/mI97IgXOQ4XVFeekaqeu89dt8uaBB5mUemU0j56ZDvpJyObG48x+LU8=
+X-Received: by 2002:a25:6148:: with SMTP id v69mr5098446ybb.510.1627673218049;
+ Fri, 30 Jul 2021 12:26:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210729162932.30365-1-quentin@isovalent.com>
-In-Reply-To: <20210729162932.30365-1-quentin@isovalent.com>
+References: <20210730114012.494408-1-hengqi.chen@gmail.com>
+In-Reply-To: <20210730114012.494408-1-hengqi.chen@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Jul 2021 12:06:15 -0700
-Message-ID: <CAEf4BzbhmxAXUOoCr7wX-dqkzvQm0OMDLi+A+k6pFs=BCsDY=w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/7] tools: bpftool: update, synchronise and
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 30 Jul 2021 12:26:46 -0700
+Message-ID: <CAEf4BzbtPFEbme_KZQA+n-gCgC+xp-v+270BBCi+89smi6pzkA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] libbpf: add btf__load_vmlinux_btf/btf__load_module_btf
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        Martin Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 9:29 AM Quentin Monnet <quentin@isovalent.com> wrote:
+On Fri, Jul 30, 2021 at 4:40 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 >
-> To work with the different program types, map types, attach types etc.
-> supported by eBPF, bpftool needs occasional updates to learn about the new
-> features supported by the kernel. When such types translate into new
-> keyword for the command line, updates are expected in several locations:
-> typically, the help message displayed from bpftool itself, the manual page,
-> and the bash completion file should be updated. The options used by the
-> different commands for bpftool should also remain synchronised at those
-> locations.
+> Add two new APIs: btf__load_vmlinux_btf and btf__load_module_btf.
+> btf__load_vmlinux_btf is just an alias to the existing API named
+> libbpf_find_kernel_btf, rename to be more precisely and consistent
+> with existing BTF APIs. btf__load_module_btf can be used to load
+> module BTF, add it for completeness. These two APIs are useful for
+> implementing tracing tools and introspection tools. This is part
+> of the effort towards libbpf 1.0. [1]
 >
-> Several omissions have occurred in the past, and a number of types are
-> still missing today. This set is an attempt to improve the situation. It
-> brings up-to-date the lists of types or options in bpftool, and also adds a
-> Python script to the BPF selftests to automatically check that most of
-> these lists remain synchronised.
+> [1] https://github.com/libbpf/libbpf/issues/280
+
+I changed this to
+
+[0] Closes: https://github.com/libbpf/libbpf/issues/280
+
+which will close an associated Github issue when we sync sources to
+Github next time. Let's see how this works in practice.
+
 >
-> Quentin Monnet (7):
->   tools: bpftool: slightly ease bash completion updates
->   selftests/bpf: check consistency between bpftool source, doc,
->     completion
->   tools: bpftool: complete and synchronise attach or map types
->   tools: bpftool: update and synchronise option list in doc and help msg
->   selftests/bpf: update bpftool's consistency script for checking
->     options
->   tools: bpftool: document and add bash completion for -L, -B options
->   tools: bpftool: complete metrics list in "bpftool prog profile" doc
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+
+Thanks, applied to bpf-next. But please follow up with a selftest that
+would utilize this new module BTF API. It's good to have all APIs
+exercised regularly. Look at test_progs.
+
+>  tools/lib/bpf/btf.c      | 15 ++++++++++++++-
+>  tools/lib/bpf/btf.h      |  6 ++++--
+>  tools/lib/bpf/libbpf.c   |  4 ++--
+>  tools/lib/bpf/libbpf.map |  2 ++
+>  4 files changed, 22 insertions(+), 5 deletions(-)
 >
->  .../bpf/bpftool/Documentation/bpftool-btf.rst |  48 +-
->  .../bpftool/Documentation/bpftool-cgroup.rst  |   3 +-
->  .../bpftool/Documentation/bpftool-feature.rst |   2 +-
->  .../bpf/bpftool/Documentation/bpftool-gen.rst |   9 +-
->  .../bpftool/Documentation/bpftool-iter.rst    |   2 +
->  .../bpftool/Documentation/bpftool-link.rst    |   3 +-
->  .../bpf/bpftool/Documentation/bpftool-map.rst |   3 +-
->  .../bpf/bpftool/Documentation/bpftool-net.rst |   2 +-
->  .../bpftool/Documentation/bpftool-perf.rst    |   2 +-
->  .../bpftool/Documentation/bpftool-prog.rst    |  36 +-
->  .../Documentation/bpftool-struct_ops.rst      |   2 +-
->  tools/bpf/bpftool/Documentation/bpftool.rst   |  12 +-
->  tools/bpf/bpftool/bash-completion/bpftool     |  69 ++-
->  tools/bpf/bpftool/btf.c                       |   3 +-
->  tools/bpf/bpftool/cgroup.c                    |   3 +-
->  tools/bpf/bpftool/common.c                    |  76 +--
->  tools/bpf/bpftool/feature.c                   |   1 +
->  tools/bpf/bpftool/gen.c                       |   3 +-
->  tools/bpf/bpftool/iter.c                      |   2 +
->  tools/bpf/bpftool/link.c                      |   3 +-
->  tools/bpf/bpftool/main.c                      |   3 +-
->  tools/bpf/bpftool/main.h                      |   3 +-
->  tools/bpf/bpftool/map.c                       |   5 +-
->  tools/bpf/bpftool/net.c                       |   1 +
->  tools/bpf/bpftool/perf.c                      |   5 +-
->  tools/bpf/bpftool/prog.c                      |   8 +-
->  tools/bpf/bpftool/struct_ops.c                |   2 +-
->  tools/testing/selftests/bpf/Makefile          |   1 +
->  .../selftests/bpf/test_bpftool_synctypes.py   | 586 ++++++++++++++++++
->  29 files changed, 802 insertions(+), 96 deletions(-)
->  create mode 100755 tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index cafa4f6bd9b1..56e84583e283 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -4036,7 +4036,7 @@ static void btf_dedup_merge_hypot_map(struct btf_dedup *d)
+>                  */
+>                 if (d->hypot_adjust_canon)
+>                         continue;
+> -
+> +
+>                 if (t_kind == BTF_KIND_FWD && c_kind != BTF_KIND_FWD)
+>                         d->map[t_id] = c_id;
 >
+> @@ -4410,6 +4410,11 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
+>   * data out of it to use for target BTF.
+>   */
+>  struct btf *libbpf_find_kernel_btf(void)
+
+I switched this to __attribute__((alias("btf__load_vmlinux_btf"))); to
+match what Quentin did recently. Also moved comment above to be next
+to btf__load_vmlinux_btf.
+
+> +{
+> +       return btf__load_vmlinux_btf();
+> +}
+> +
+> +struct btf *btf__load_vmlinux_btf(void)
+>  {
+>         struct {
+>                 const char *path_fmt;
+
+[...]
+
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 5aca3686ca5e..a2f471950213 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -380,4 +380,6 @@ LIBBPF_0.5.0 {
+>                 btf__load_into_kernel;
+>                 btf_dump__dump_type_data;
+>                 libbpf_set_strict_mode;
+> +               btf__load_vmlinux_btf;
+> +               btf__load_module_btf;
+
+This list needs to be alphabetically sorted. I'll fix it up while
+applying, but please remember it for the future.
+
+>  } LIBBPF_0.4.0;
 > --
-> 2.30.2
+> 2.25.1
 >
-
-The patch set name ends abruptly at "synchronise and "... And what? I
-need to know :)
-
-Overall, it looks good, though I can't speak Python much, so I trust
-the script works and we'll fix whatever is necessary as we go. I had
-one small real nit about not re-formatting tons of existing lines for
-no good reason, let's keep Git blame a bit more useful.
-
-Also, it doesn't seem like you are actually calling a new script from
-selftests/bpf/Makefile, right? That's good, because otherwise any UAPI
-change in kernel header would require bpftool changes in the same
-patch. But once this lands, we should probably run this in
-kernel-patches CI ([0]) and, maybe, not sure, libbpf CI ([1]) as well.
-So please follow up with that as well afterwards, that way you won't
-be the only one nagging people about missed doc updates.
-
-  [0] https://github.com/kernel-patches/vmtest/tree/master/travis-ci/vmtest
-  [1] https://github.com/libbpf/libbpf/tree/master/travis-ci/vmtest
