@@ -2,151 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAF93DB042
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 02:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16AF3DB04C
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 02:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235323AbhG3AaL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 20:30:11 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5390 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234931AbhG3AaI (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Jul 2021 20:30:08 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 16U0IOgI031722
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 17:30:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=JzWSxDY/USo2d4AyANQ+8iHAgE9r65q/PqR6W1/eFUI=;
- b=Mzh2B81NsrR+yb0GwzIpijrqFn2lJNzQri0orxHG+zCaun3HFJsjdsUAa5sNWnZGtQ/b
- gJHsM/5keoR6DLD2cpT2SLs/7OaF5FvkjPicQsLCHJ1nlwExe4DwcGMKevu8xqHKWl+N
- ixHT7l7LVwLGfO8Od/dMl2zf07e+K77unms= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3a39tr2py7-8
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 17:30:02 -0700
-Received: from intmgw001.27.prn2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 17:29:59 -0700
-Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id A561416EA8F9; Thu, 29 Jul 2021 17:29:56 -0700 (PDT)
-From:   Yucong Sun <fallentree@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <sunyucong@gmail.com>, Yucong Sun <fallentree@fb.com>
-Subject: [PATCH v4 bpf-next] libbpf: Add bpf_object__set_name(obj, name) api.
-Date:   Thu, 29 Jul 2021 17:29:53 -0700
-Message-ID: <20210730002953.1045142-1-fallentree@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210730001801.994751-1-fallentree@fb.com>
-References: <20210730001801.994751-1-fallentree@fb.com>
+        id S231181AbhG3AcF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jul 2021 20:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhG3AcE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Jul 2021 20:32:04 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F80C061765;
+        Thu, 29 Jul 2021 17:32:01 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id w17so13036248ybl.11;
+        Thu, 29 Jul 2021 17:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kSHXomxxiy7ULxfcFDer3ChErdOp/OG3+LX3KVwPf1E=;
+        b=S1feKbsHTLGYMxrMndK8bCsUEcG5O8EypW88L+pKSIAS3WRbU++zi1Y17OtCbz1PjA
+         llli6J9BG8L9YWcJAeckIDrHj6MPLjEIVWnTnpzuXXwt/wZg3G6cbjgPrcL863pEKltg
+         r73iEwUg9ylYh4WJthlCGYu2VXZf9CCBxFI7BDVL4GMpThtdiGUi6NvJQVIW/5L+1dYO
+         cXWwXf60ByhCvQiRuTAyYjVgYakv742taIBtPRspglzMOMm+VeTO0Ld2SNCGZ3r7zG3D
+         8k+7xAYXGCtfcgc86HqXX7juKhwVgDLTnnfY6+gKpoGCgVEVx/8OwhbtCoxxsng+kpZN
+         LddQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kSHXomxxiy7ULxfcFDer3ChErdOp/OG3+LX3KVwPf1E=;
+        b=BgLX5Zoa6GheLQ9WxO4h5BhVQPbVBnC0dX+G6XJuTHtyb/y6OZ7FN/NFa9XWz+62Kc
+         kq7NEplmh8uy8s3TI36srpC++9kMLhvM+MxUmOC5H562Lqa6ULUjyoDmTaPSgnF8fih/
+         KnSXq9HehFkS5NkwO2dSu4ujVLkRKWvbUJsHq6A3UCf+5c9iUsEOZrjBXrEJflNwLuiR
+         5XdoZBWyJUcxc82bI0HaVZdOenmVQwpkbLhllOt5yLGmM4E3iUTJ6m8nLpleBNvPztjw
+         JEmwr/J+UUS3dRUFjRHsnCo11AyvXUlcm/7em0WKRUButk3YhXEzEGGhT2NkGto2zCv2
+         QvEQ==
+X-Gm-Message-State: AOAM532b33oDasjPGeC4zgF/W7kovnFu3mlV8V4CrKtU3CCMRidYEyis
+        qjgknt/PXEJmbUtFtjxiGmtpTmCCqHSckJ5rGy8=
+X-Google-Smtp-Source: ABdhPJzRInD3fZ2PiozXyWu4P5s3LYJUtB4ywm/OJPWd2OjZuMkMEnYeURXb1lbr58kHSKWEGUyfpJfD1lMMjPEGWvk=
+X-Received: by 2002:a25:b741:: with SMTP id e1mr10292028ybm.347.1627605120289;
+ Thu, 29 Jul 2021 17:32:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: r2Ha6KRFH_dRdX5L4RBCJd-2tVmapHjA
-X-Proofpoint-GUID: r2Ha6KRFH_dRdX5L4RBCJd-2tVmapHjA
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-29_20:2021-07-29,2021-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=951 malwarescore=0 phishscore=0
- suspectscore=0 adultscore=0 impostorscore=0 clxscore=1015 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107300000
-X-FB-Internal: deliver
+References: <20210729162028.29512-1-quentin@isovalent.com>
+In-Reply-To: <20210729162028.29512-1-quentin@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 29 Jul 2021 17:31:49 -0700
+Message-ID: <CAEf4BzbrQOr8Z2oiywT-zPBEz9jbP9_6oJXOW28LdOaqAy8pLw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/8] libbpf: rename btf__get_from_id() and
+ btf__load() APIs, support split BTF
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tracking: libbpf/libbpf#291
+On Thu, Jul 29, 2021 at 9:20 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> As part of the effort to move towards a v1.0 for libbpf [0], this set
+> improves some confusing function names related to BTF loading from and to
+> the kernel:
+>
+> - btf__load() becomes btf__load_into_kernel().
+> - btf__get_from_id becomes btf__load_from_kernel_by_id().
+> - A new version btf__load_from_kernel_by_id_split() extends the former to
+>   add support for split BTF.
+>
+> The old functions are marked for deprecation for the next minor version
+> (0.6) of libbpf.
+>
+> The last patch is a trivial change to bpftool to add support for dumping
+> split BTF objects by referencing them by their id (and not only by their
+> BTF path).
+>
+> [0] https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#btfh-apis
+>
+> v3:
+> - Use libbpf_err_ptr() in btf__load_from_kernel_by_id(), ERR_PTR() in
+>   bpftool's get_map_kv_btf().
+> - Move the definition of btf__load_from_kernel_by_id() closer to the
+>   btf__parse() group in btf.h (move the legacy function with it).
+> - Fix a bug on the return value in libbpf_find_prog_btf_id(), as a new
+>   patch.
+> - Move the btf__free() fixes to their own patch.
+> - Add "Fixes:" tags to relevant patches.
+> - Re-introduce deprecation (removed in v2) for the legacy functions, as a
+>   new macro LIBBPF_DEPRECATED_SINCE(major, minor, message).
+>
+> v2:
+> - Remove deprecation marking of legacy functions (patch 4/6 from v1).
+> - Make btf__load_from_kernel_by_id{,_split}() return the btf struct, adjust
+>   surrounding code and call btf__free() when missing.
+> - Add new functions to v0.5.0 API (and not v0.6.0).
+>
+> Quentin Monnet (8):
+>   libbpf: return non-null error on failures in libbpf_find_prog_btf_id()
+>   libbpf: rename btf__load() as btf__load_into_kernel()
+>   libbpf: rename btf__get_from_id() as btf__load_from_kernel_by_id()
+>   tools: free BTF objects at various locations
+>   tools: replace btf__get_from_id() with btf__load_from_kernel_by_id()
+>   libbpf: prepare deprecation of btf__get_from_id(), btf__load()
+>   libbpf: add split BTF support for btf__load_from_kernel_by_id()
+>   tools: bpftool: support dumping split BTF by id
+>
+>  tools/bpf/bpftool/btf.c                      |  8 ++---
+>  tools/bpf/bpftool/btf_dumper.c               |  6 ++--
+>  tools/bpf/bpftool/map.c                      | 14 ++++-----
+>  tools/bpf/bpftool/prog.c                     | 29 +++++++++++------
+>  tools/lib/bpf/Makefile                       |  3 ++
+>  tools/lib/bpf/btf.c                          | 33 ++++++++++++++------
+>  tools/lib/bpf/btf.h                          |  7 ++++-
+>  tools/lib/bpf/libbpf.c                       | 11 ++++---
+>  tools/lib/bpf/libbpf.map                     |  3 ++
+>  tools/lib/bpf/libbpf_common.h                | 19 +++++++++++
+>  tools/perf/util/bpf-event.c                  | 11 ++++---
+>  tools/perf/util/bpf_counter.c                | 12 +++++--
+>  tools/testing/selftests/bpf/prog_tests/btf.c |  4 ++-
+>  13 files changed, 113 insertions(+), 47 deletions(-)
+>
+> --
+> 2.30.2
+>
 
-Signed-off-by: Yucong Sun <fallentree@fb.com>
+I dropped patch #7 with deprecations and LIBBPF_DEPRECATED_SINCE and
+applied to bpf-next.
 
----
+Current LIBBPF_DEPRECATED_SINCE approach doesn't work (and you should
+have caught this when you built selftests/bpf, what happened there?).
+bpftool build generates warnings like this:
 
-V3 -> V4: handle obj is NULL case.
-V2 -> V3: fix code style errors
----
- tools/lib/bpf/libbpf.c                                 | 10 ++++++++++
- tools/lib/bpf/libbpf.h                                 |  1 +
- tools/lib/bpf/libbpf.map                               |  1 +
- .../selftests/bpf/prog_tests/reference_tracking.c      |  7 +++++++
- 4 files changed, 19 insertions(+)
+In file included from /data/users/andriin/linux/tools/lib/bpf/libbpf.h:20,
+                 from xlated_dumper.c:10:
+/data/users/andriin/linux/tools/lib/bpf/libbpf_common.h:22:23:
+warning: "LIBBPF_MAJOR_VERSION" is not defined, evaluates to 0
+[-Wundef]
+  __LIBBPF_GET_VERSION(LIBBPF_MAJOR_VERSION, LIBBPF_MINOR_VERSION)
+                       ^~~~~~~~~~~~~~~~~~~~
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index a1ca6fb0c6d8..a628e94a41a4 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7545,6 +7545,16 @@ const char *bpf_object__name(const struct bpf_obje=
-ct *obj)
- 	return obj ? obj->name : libbpf_err_ptr(-EINVAL);
- }
-=20
-+int bpf_object__set_name(struct bpf_object *obj, const char *name)
-+{
-+	if (!obj || !name)
-+		return libbpf_err(-EINVAL);
-+
-+	strncpy(obj->name, name, sizeof(obj->name) - 1);
-+
-+	return 0;
-+}
-+
- unsigned int bpf_object__kversion(const struct bpf_object *obj)
- {
- 	return obj ? obj->kern_version : 0;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 1271d99bb7aa..36a2946e3373 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -161,6 +161,7 @@ LIBBPF_API int bpf_object__load_xattr(struct bpf_obje=
-ct_load_attr *attr);
- LIBBPF_API int bpf_object__unload(struct bpf_object *obj);
-=20
- LIBBPF_API const char *bpf_object__name(const struct bpf_object *obj);
-+LIBBPF_API int bpf_object__set_name(struct bpf_object *obj, const char *=
-name);
- LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *ob=
-j);
- LIBBPF_API int bpf_object__set_kversion(struct bpf_object *obj, __u32 ke=
-rn_version);
-=20
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index c240d488eb5e..3c15aefeb6e0 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -377,4 +377,5 @@ LIBBPF_0.5.0 {
- 		bpf_object__gen_loader;
- 		btf_dump__dump_type_data;
- 		libbpf_set_strict_mode;
-+		bpf_object__set_name;
- } LIBBPF_0.4.0;
-diff --git a/tools/testing/selftests/bpf/prog_tests/reference_tracking.c =
-b/tools/testing/selftests/bpf/prog_tests/reference_tracking.c
-index de2688166696..4d3d0a4aec03 100644
---- a/tools/testing/selftests/bpf/prog_tests/reference_tracking.c
-+++ b/tools/testing/selftests/bpf/prog_tests/reference_tracking.c
-@@ -5,6 +5,7 @@ void test_reference_tracking(void)
- {
- 	const char *file =3D "test_sk_lookup_kern.o";
- 	const char *obj_name =3D "ref_track";
-+	const char *obj_name2 =3D "ref_track2";
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts,
- 		.object_name =3D obj_name,
- 		.relaxed_maps =3D true,
-@@ -23,6 +24,12 @@ void test_reference_tracking(void)
- 		  bpf_object__name(obj), obj_name))
- 		goto cleanup;
-=20
-+	bpf_object__set_name(obj, obj_name2);
-+	if (CHECK(strcmp(bpf_object__name(obj), obj_name2), "obj_name",
-+		  "wrong obj name '%s', expected '%s'\n",
-+		  bpf_object__name(obj), obj_name2))
-+		goto cleanup;
-+
- 	bpf_object__for_each_program(prog, obj) {
- 		const char *title;
-=20
---=20
-2.30.2
 
+And it makes total sense. LIBBPF_DEPRECATED_SINCE() assumes
+LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION is defined at compilation
+time of the *application that is using libbpf*, not just libbpf's
+compilation time. And that's clearly a bogus assumption which we can't
+and shouldn't make. The right approach will be to define
+LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION in some sort of
+auto-generated header, included from libbpf_common.h and installed as
+part of libbpf package.
+
+Anyways, I've removed all the LIBBPF_DEPRECATED_SINCE stuff and
+applied all the rest, as it looks good and is a useful addition. We
+should work some more on deprecation helpers, though.
