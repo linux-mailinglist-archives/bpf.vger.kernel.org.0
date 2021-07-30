@@ -2,104 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71503DB088
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 03:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338103DB211
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 06:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233599AbhG3BMJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 21:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
+        id S229477AbhG3EFY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 00:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhG3BMI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Jul 2021 21:12:08 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD371C061765
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 18:12:04 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id d10so7756749ils.7
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 18:12:04 -0700 (PDT)
+        with ESMTP id S229465AbhG3EFW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 00:05:22 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3E8C061765
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 21:05:17 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id w17so13690495ybl.11
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 21:05:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=user-agent:mime-version:message-id:in-reply-to:references:date:from
-         :to:cc:subject;
-        bh=+G5INvBXtpsTnJ8663d9AJrzVBu2gzBgrQlUeecvQjo=;
-        b=SJdfImQ8qACkcx2pChppINXTzPYiUI0vV1JVo4Dl1Ei6yQnE+YrSfAuNldTdcJD95D
-         lgWtphNUMQ6+NggMumuqyfcgG4lP+GpgTqkSZKKFKCdY1iJEgf/irTshdVSmDKoQUAFz
-         lA2vY6qyo8SRPCnDJ4TZ2z2zimZ/SMS3m+i9JR0U82ugQ3X/aEeswvpek7Z1K2bVzKCM
-         O/Zn+CGdWyIKPzvYXtkEKxhqA4O45Q7PEkeLL+U1yssBNlWTrHQJvf8g/W9Klz9rkjnp
-         c5lyJKR+h+oqzenfE9Mup4/uN6xzC0aFKrqo7NoiYqD1omxnIstii0SXpZkkVX5bt2pk
-         b9Fg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/VO2gvZ/2XxR8Q5nVE989ZeHni6iWN5rkYi1EgQqELo=;
+        b=LoWARcPt9LeZOnYSRfHG/APBDClJQPbmKJY9G2VSuRm96hSFZp6hJ4ClgFj81k5ek9
+         +q16vMbE/eSNBX+FUsWbB8Kkr1ZLOrF49fPJX6UoriXbEqcij2OJ5xUJ7rGCiMqNFQQS
+         qXoZhT/Tv4CObm21LA6Mt1vVkvcudTbEc706F7787YOSTmEH9UY3UliOeBorKL9UVx41
+         Ikru99GOP8fmnpjdCtQeO0LYl8xzBZlt5aMLALqfLxtxbOX6JjrBHlPtU6AvGHoRZcb/
+         c3dGxvQU5wJiat/8DYHukKrtPoh3k+7+SjbkZRm69Feot/Nk093KxSxcsoOYHxWF4dGB
+         z+gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:user-agent:mime-version:message-id:in-reply-to
-         :references:date:from:to:cc:subject;
-        bh=+G5INvBXtpsTnJ8663d9AJrzVBu2gzBgrQlUeecvQjo=;
-        b=Kq/u9ZDF9UqaSSKZplusJzI8XAOC0mrI5qc7O59HUPdoE9ZIsaP8A3wtMZ3K3DFvLf
-         JW/mw8n1JsPaYdwt5r34/GChZ72oL33WndVUbJESE8o2zMQyCD/SCCOIZ19iInY1Ots4
-         xZc7gheuFuzw+exJfnIL6T5vDbhgUiC3T+z90fT/l3ksW1gOrU0YmmgjaKRcSe5CTudD
-         GuYiahUUm9+9APDKMkKTV/I3qcB2OH1/0rp2S2Ze6kPAPUwwUV2y/fvSb9ZffSxY0NQz
-         rPqtm1DpS37mCvhuloWI1ncxU73XD9F9GAmbBgZSwlmagZ2sA/7r/KTdc59XGIk7LlUi
-         WV7Q==
-X-Gm-Message-State: AOAM530CoTqKMyheiiYgjRALz0x+7b5gKTHHh7a3TiJAmwnXg14CPzPB
-        l3NN1NgaItQ8QcJqy7cK31UTqfmn4A==
-X-Google-Smtp-Source: ABdhPJxllUHPiHLc/pSepNizFafhnfjgRFszTHl80Zh9xY5Nx7HHXcxG1HR/7GZXfUGyUMR61cQpQA==
-X-Received: by 2002:a92:ce49:: with SMTP id a9mr5758130ilr.195.1627607524147;
-        Thu, 29 Jul 2021 18:12:04 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id m184sm24690ioa.17.2021.07.29.18.12.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 18:12:03 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id B359F27C0054;
-        Thu, 29 Jul 2021 21:12:02 -0400 (EDT)
-Received: from imap10 ([10.202.2.60])
-  by compute3.internal (MEProxy); Thu, 29 Jul 2021 21:12:02 -0400
-X-ME-Sender: <xms:4lEDYQSULskRsLTNQrpDd44lxrR_qWqOSXwOJ9gZixwdn-9VDe6fMQ>
-    <xme:4lEDYdy5drWuq6O2ceW38it4jTjn6N8I_TvXKX4ytoa5ofLzBk94zVXcS3mCdbQhJ
-    azMoes7MUU6ct7Zq5Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheeggddvhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftfgrfhgr
-    vghlucffrghvihguucfvihhnohgtohdfuceorhgrfhgrvghlughtihhnohgtohesghhmrg
-    hilhdrtghomheqnecuggftrfgrthhtvghrnhepledtteelfeekjeelvdelieejfefhkeeu
-    ffeitedutdelueefkefhvedtffeigeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomheprhgrfhgrvghlughtihhnohgtohdomhgvshhmthhprghu
-    thhhphgvrhhsohhnrghlihhthidqudduvdehieehledtgedqvdehheekjeelfeeiqdhrrg
-    hfrggvlhguthhinhhotghopeepghhmrghilhdrtghomhesuddvfehmrghilhdrohhrgh
-X-ME-Proxy: <xmx:4lEDYd0iuQSp_Buu3LhyCGS7NnAimNxPL_NnFm843yN6oYOgSegwrw>
-    <xmx:4lEDYUDSxWYIURZU6bAfAg-d-aKPeFYnPLzdqSF5oye9KtY42KkPfw>
-    <xmx:4lEDYZjJYwwThr0ZXuuJis7Aqe9lVoM90t2F6syU1t3YtcaiTUw7Ag>
-    <xmx:4lEDYTfMTRLXGtu_ePUhMTRMCskhNoNsXAW6tp7PbGHUeY_QehrZ6w>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E21714E0315; Thu, 29 Jul 2021 21:12:01 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-545-g7a4eea542e-fm-20210727.001-g7a4eea54
-Mime-Version: 1.0
-Message-Id: <590eb5d6-c9e0-4cdf-919f-47b24b2c384a@www.fastmail.com>
-In-Reply-To: <20210726161211.925206-12-andrii@kernel.org>
-References: <20210726161211.925206-1-andrii@kernel.org>
- <20210726161211.925206-12-andrii@kernel.org>
-Date:   Thu, 29 Jul 2021 22:11:41 -0300
-From:   "Rafael David Tinoco" <rafaeldtinoco@gmail.com>
-To:     "Andrii Nakryiko" <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_bpf-next_11/14]_libbpf:_add_user=5Fctx_to_perf=5F?=
- =?UTF-8?Q?event,_kprobe,_uprobe,_and_tp_attach_APIs?=
-Content-Type: text/plain
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/VO2gvZ/2XxR8Q5nVE989ZeHni6iWN5rkYi1EgQqELo=;
+        b=PA6PXlaXIYFgpllFQFwjFn4YdbihbFukJEoP9xHb5HdzjkSSs6fUJsVHkmSIDZImv8
+         TfMf6t66J1dV4Ez94xLEEPevJhtj3YeoSY66wiQwAUPNcAx5vB+9JhRfLliB2qudfhib
+         QEwaP5b5tLZWW1gFkUQuHwFKWQVSiJg4qqvT2p6U31n0F8OJ5EWeFA7tUMLRuGdO0V5n
+         +qtyeHgCGLdirEwz1uhsEJsGOuQUKpa/pp1UqU6eNWymqYr2OLR1qqav3N39bJEYNJdO
+         dxXAncxm7Kio0sTz2zreWT/R4J7XtDGLDDcPa1Gtdt2CyoI9h0gSAxEOF/BuiGJSHzKr
+         /CKA==
+X-Gm-Message-State: AOAM5311HgT14ewCmr9y6vrk+JOL9t2N4PPKUlmmaKZqzJRtbPHooAbi
+        OtVjAT2OCAfF52Am3XEfhCYY/twP2lFJGC/wCjs=
+X-Google-Smtp-Source: ABdhPJzx/eulyTU5Y/5VAoaObraqF5yO35A4grGJ5xVfT9rorZt0S4Nyo3FcDUcx+3xfGfI85oHVgoYKixkQc1KgNFE=
+X-Received: by 2002:a25:cdc7:: with SMTP id d190mr562035ybf.425.1627617916360;
+ Thu, 29 Jul 2021 21:05:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210726161211.925206-1-andrii@kernel.org> <20210726161211.925206-2-andrii@kernel.org>
+ <92ed2fb3-6a69-415e-ca5e-fc516e38c60d@fb.com>
+In-Reply-To: <92ed2fb3-6a69-415e-ca5e-fc516e38c60d@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 29 Jul 2021 21:05:05 -0700
+Message-ID: <CAEf4Bzb12YosnTiKoTBt=cUCDzM5pSZpsg=bjC7XYyH9GOr2Qg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 01/14] bpf: refactor BPF_PROG_RUN into a function
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 26, 2021, at 13:12, Andrii Nakryiko wrote:
-> Wire through user_ctx for all attach APIs that use perf_event_open under the
-> hood:
->   - for kprobes, extend existing bpf_kprobe_opts with user_ctx field;
->   - for perf_event, uprobe, and tracepoint APIs, add their _opts variants and
->     pass user_ctx through opts.
-> 
-> For kernel that don't support BPF_LINK_CREATE for perf_events, and thus
-> user_ctx is not supported either, return error and log warning for user.
-> 
-> Cc: Rafael David Tinoco <rafaeldtinoco@gmail.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+On Thu, Jul 29, 2021 at 9:50 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 7/26/21 9:11 AM, Andrii Nakryiko wrote:
+> > Turn BPF_PROG_RUN into a proper always inlined function. No functional and
+> > performance changes are intended, but it makes it much easier to understand
+> > what's going on with how BPF programs are actually get executed. It's more
+> > obvious what types and callbacks are expected. Also extra () around input
+> > parameters can be dropped, as well as `__` variable prefixes intended to avoid
+> > naming collisions, which makes the code simpler to read and write.
+> >
+> > This refactoring also highlighted one possible issue. BPF_PROG_RUN is both
+> > a macro and an enum value (BPF_PROG_RUN == BPF_PROG_TEST_RUN). Turning
+> > BPF_PROG_RUN into a function causes naming conflict compilation error. So
+> > rename BPF_PROG_RUN into lower-case bpf_prog_run(), similar to
+> > bpf_prog_run_xdp(), bpf_prog_run_pin_on_cpu(), etc. To avoid unnecessary code
+> > churn across many networking calls to BPF_PROG_RUN, #define BPF_PROG_RUN as an
+> > alias to bpf_prog_run.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >   include/linux/filter.h | 58 +++++++++++++++++++++++++++---------------
+> >   1 file changed, 37 insertions(+), 21 deletions(-)
+> >
+> > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > index ba36989f711a..e59c97c72233 100644
+> > --- a/include/linux/filter.h
+> > +++ b/include/linux/filter.h
+> > @@ -585,25 +585,41 @@ struct sk_filter {
+> >
+> >   DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+> >
+> > -#define __BPF_PROG_RUN(prog, ctx, dfunc)     ({                      \
+> > -     u32 __ret;                                                      \
+> > -     cant_migrate();                                                 \
+> > -     if (static_branch_unlikely(&bpf_stats_enabled_key)) {           \
+> > -             struct bpf_prog_stats *__stats;                         \
+> > -             u64 __start = sched_clock();                            \
+> > -             __ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);   \
+> > -             __stats = this_cpu_ptr(prog->stats);                    \
+> > -             u64_stats_update_begin(&__stats->syncp);                \
+> > -             __stats->cnt++;                                         \
+> > -             __stats->nsecs += sched_clock() - __start;              \
+> > -             u64_stats_update_end(&__stats->syncp);                  \
+> > -     } else {                                                        \
+> > -             __ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);   \
+> > -     }                                                               \
+> > -     __ret; })
+> > -
+> > -#define BPF_PROG_RUN(prog, ctx)                                              \
+> > -     __BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nop_func)
+> > +typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
+> > +                                       const struct bpf_insn *insnsi,
+> > +                                       unsigned int (*bpf_func)(const void *,
+> > +                                                                const struct bpf_insn *));
+> > +
+> > +static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+> > +                                       const void *ctx,
+> > +                                       bpf_dispatcher_fn dfunc)
+> > +{
+> > +     u32 ret;
+> > +
+> > +     cant_migrate();
+> > +     if (static_branch_unlikely(&bpf_stats_enabled_key)) {
+> > +             struct bpf_prog_stats *stats;
+> > +             u64 start = sched_clock();
+> > +
+> > +             ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+> > +             stats = this_cpu_ptr(prog->stats);
+> > +             u64_stats_update_begin(&stats->syncp);
+> > +             stats->cnt++;
+> > +             stats->nsecs += sched_clock() - start;
+> > +             u64_stats_update_end(&stats->syncp);
+> > +     } else {
+> > +             ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+> > +     }
+> > +     return ret;
+> > +}
+> > +
+> > +static __always_inline u32 bpf_prog_run(const struct bpf_prog *prog, const void *ctx)
+> > +{
+> > +     return __bpf_prog_run(prog, ctx, bpf_dispatcher_nop_func);
+> > +}
+> > +
+> > +/* avoids name conflict with BPF_PROG_RUN enum definedi uapi/linux/bpf.h */
+> > +#define BPF_PROG_RUN bpf_prog_run
+> >
+> >   /*
+> >    * Use in preemptible and therefore migratable context to make sure that
+> > @@ -622,7 +638,7 @@ static inline u32 bpf_prog_run_pin_on_cpu(const struct bpf_prog *prog,
+> >       u32 ret;
+> >
+> >       migrate_disable();
+> > -     ret = __BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nop_func);
+> > +     ret = __bpf_prog_run(prog, ctx, bpf_dispatcher_nop_func);
+>
+> This can be replaced with bpf_prog_run(prog, ctx).
+>
 
-I think this one is fuzzy in v2. Checking them now for my purposes. Thanks for CC'ing.
+ok, sure
+
+> >       migrate_enable();
+> >       return ret;
+> >   }
+> > @@ -768,7 +784,7 @@ static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *prog,
+> >        * under local_bh_disable(), which provides the needed RCU protection
+> >        * for accessing map entries.
+> >        */
+> > -     return __BPF_PROG_RUN(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
+> > +     return __bpf_prog_run(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
+> >   }
+> >
+> >   void bpf_prog_change_xdp(struct bpf_prog *prev_prog, struct bpf_prog *prog);
+> >
