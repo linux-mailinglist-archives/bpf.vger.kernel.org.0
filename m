@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338103DB211
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 06:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B543DB22B
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 06:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbhG3EFY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 00:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
+        id S232466AbhG3EQb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 00:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhG3EFW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 00:05:22 -0400
+        with ESMTP id S231953AbhG3EQa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 00:16:30 -0400
 Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3E8C061765
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 21:05:17 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id w17so13690495ybl.11
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 21:05:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41685C061799
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 21:16:21 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id a93so13817457ybi.1
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 21:16:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/VO2gvZ/2XxR8Q5nVE989ZeHni6iWN5rkYi1EgQqELo=;
-        b=LoWARcPt9LeZOnYSRfHG/APBDClJQPbmKJY9G2VSuRm96hSFZp6hJ4ClgFj81k5ek9
-         +q16vMbE/eSNBX+FUsWbB8Kkr1ZLOrF49fPJX6UoriXbEqcij2OJ5xUJ7rGCiMqNFQQS
-         qXoZhT/Tv4CObm21LA6Mt1vVkvcudTbEc706F7787YOSTmEH9UY3UliOeBorKL9UVx41
-         Ikru99GOP8fmnpjdCtQeO0LYl8xzBZlt5aMLALqfLxtxbOX6JjrBHlPtU6AvGHoRZcb/
-         c3dGxvQU5wJiat/8DYHukKrtPoh3k+7+SjbkZRm69Feot/Nk093KxSxcsoOYHxWF4dGB
-         z+gA==
+        bh=QVjXW3adP72vmVWYxyqVezS73ajEOyd8TzW5S554rao=;
+        b=HAYYMJeRuHGEE/30M7hctiVUA+ztvNaDt0l/cpgunr9WlQKGNleG/LYZgjb9iFO1vw
+         SBx0x5vLPv3WRIavHx/NwsSnS1dD6wJcVclmV5IQKa4gkExezQyd5xSyyQHETA1WeqoS
+         4PV7vqczSsSZSTPM11uJ4+OReJKKDezP9Mlb2UAMgaxLV0Ty+8Fe1ZoUrr2MVQC1Zx0x
+         XM0/PPJGfPtLK+DItvxNlRBmNVwq/56C+1mst30JZKFmE1rhbCfladI1hF3qkN4I5NwZ
+         Ppkr6qRTiiIP8wOtWXWqk0vszM6lrei1tKUR5Jn8qDVfyATP92TE14B8aS7JQsDPrBrj
+         QS8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/VO2gvZ/2XxR8Q5nVE989ZeHni6iWN5rkYi1EgQqELo=;
-        b=PA6PXlaXIYFgpllFQFwjFn4YdbihbFukJEoP9xHb5HdzjkSSs6fUJsVHkmSIDZImv8
-         TfMf6t66J1dV4Ez94xLEEPevJhtj3YeoSY66wiQwAUPNcAx5vB+9JhRfLliB2qudfhib
-         QEwaP5b5tLZWW1gFkUQuHwFKWQVSiJg4qqvT2p6U31n0F8OJ5EWeFA7tUMLRuGdO0V5n
-         +qtyeHgCGLdirEwz1uhsEJsGOuQUKpa/pp1UqU6eNWymqYr2OLR1qqav3N39bJEYNJdO
-         dxXAncxm7Kio0sTz2zreWT/R4J7XtDGLDDcPa1Gtdt2CyoI9h0gSAxEOF/BuiGJSHzKr
-         /CKA==
-X-Gm-Message-State: AOAM5311HgT14ewCmr9y6vrk+JOL9t2N4PPKUlmmaKZqzJRtbPHooAbi
-        OtVjAT2OCAfF52Am3XEfhCYY/twP2lFJGC/wCjs=
-X-Google-Smtp-Source: ABdhPJzx/eulyTU5Y/5VAoaObraqF5yO35A4grGJ5xVfT9rorZt0S4Nyo3FcDUcx+3xfGfI85oHVgoYKixkQc1KgNFE=
-X-Received: by 2002:a25:cdc7:: with SMTP id d190mr562035ybf.425.1627617916360;
- Thu, 29 Jul 2021 21:05:16 -0700 (PDT)
+        bh=QVjXW3adP72vmVWYxyqVezS73ajEOyd8TzW5S554rao=;
+        b=htTb9t2HB+V+aok2BGYSPAaP+yvw+P3XQg+qDzNubeu5m6WahELB6BxdqXFniRef9H
+         E/6DICmoRJnuo+F2qZgIdMAR9pHE/0kYgXN6xcy4upt26fUkHVMyksYt0PqzcpfERgHM
+         m07Lw/D8gQQgZ4LUJo+B5bbrIaf7pJPQv4yUMMq3oec/yybNamLwexgcOP23x4D6KzuC
+         CdfXsUxjf4Zwff6z9sYGG3BAgYdEF/5f4K32LV9i/gI61+Zc/Mi6M2BqLqhTR7//bXIg
+         o/b9MjAZvHnFq3yRPoI2nLJBdM/A0GEvnHZFcY2qJ4WuN9MUBnjXeMbOyCy7KfyJ8wZX
+         mBSA==
+X-Gm-Message-State: AOAM532zYfGvFKN93/j0za50WG+uZEQcSGOKcUQLUdCeOSLeEbzon3QY
+        QlWpqcNOERvvv1k9D3BbOcZzNFaglK7SeFjqxyM=
+X-Google-Smtp-Source: ABdhPJwdJYMiPrmqV+fEiWE6QOwavEb0BL3xv0V83uX4HK2fsDw9ZznqVfRCZangSyWr3R29sCDysNlz9GyyAKTf0gw=
+X-Received: by 2002:a25:b741:: with SMTP id e1mr621794ybm.347.1627618580522;
+ Thu, 29 Jul 2021 21:16:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726161211.925206-1-andrii@kernel.org> <20210726161211.925206-2-andrii@kernel.org>
- <92ed2fb3-6a69-415e-ca5e-fc516e38c60d@fb.com>
-In-Reply-To: <92ed2fb3-6a69-415e-ca5e-fc516e38c60d@fb.com>
+References: <20210726161211.925206-1-andrii@kernel.org> <20210726161211.925206-5-andrii@kernel.org>
+ <6b61514f-3ab8-34bd-539f-e5ff8d769e77@fb.com>
+In-Reply-To: <6b61514f-3ab8-34bd-539f-e5ff8d769e77@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 29 Jul 2021 21:05:05 -0700
-Message-ID: <CAEf4Bzb12YosnTiKoTBt=cUCDzM5pSZpsg=bjC7XYyH9GOr2Qg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 01/14] bpf: refactor BPF_PROG_RUN into a function
+Date:   Thu, 29 Jul 2021 21:16:09 -0700
+Message-ID: <CAEf4BzYah9zEKiwygK_4=fqOWF7rDOXu3RH_7GLDYwn7Y7sR2A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 04/14] bpf: implement minimal BPF perf link
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -62,118 +62,204 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 9:50 AM Yonghong Song <yhs@fb.com> wrote:
+On Thu, Jul 29, 2021 at 10:36 AM Yonghong Song <yhs@fb.com> wrote:
 >
 >
 >
-> On 7/26/21 9:11 AM, Andrii Nakryiko wrote:
-> > Turn BPF_PROG_RUN into a proper always inlined function. No functional and
-> > performance changes are intended, but it makes it much easier to understand
-> > what's going on with how BPF programs are actually get executed. It's more
-> > obvious what types and callbacks are expected. Also extra () around input
-> > parameters can be dropped, as well as `__` variable prefixes intended to avoid
-> > naming collisions, which makes the code simpler to read and write.
+> On 7/26/21 9:12 AM, Andrii Nakryiko wrote:
+> > Introduce a new type of BPF link - BPF perf link. This brings perf_event-based
+> > BPF program attachments (perf_event, tracepoints, kprobes, and uprobes) into
+> > the common BPF link infrastructure, allowing to list all active perf_event
+> > based attachments, auto-detaching BPF program from perf_event when link's FD
+> > is closed, get generic BPF link fdinfo/get_info functionality.
 > >
-> > This refactoring also highlighted one possible issue. BPF_PROG_RUN is both
-> > a macro and an enum value (BPF_PROG_RUN == BPF_PROG_TEST_RUN). Turning
-> > BPF_PROG_RUN into a function causes naming conflict compilation error. So
-> > rename BPF_PROG_RUN into lower-case bpf_prog_run(), similar to
-> > bpf_prog_run_xdp(), bpf_prog_run_pin_on_cpu(), etc. To avoid unnecessary code
-> > churn across many networking calls to BPF_PROG_RUN, #define BPF_PROG_RUN as an
-> > alias to bpf_prog_run.
+> > BPF_LINK_CREATE command expects perf_event's FD as target_fd. No extra flags
+> > are currently supported.
 > >
+> > Force-detaching and atomic BPF program updates are not yet implemented, but
+> > with perf_event-based BPF links we now have common framework for this without
+> > the need to extend ioctl()-based perf_event interface.
+> >
+> > One interesting consideration is a new value for bpf_attach_type, which
+> > BPF_LINK_CREATE command expects. Generally, it's either 1-to-1 mapping from
+> > bpf_attach_type to bpf_prog_type, or many-to-1 mapping from a subset of
+> > bpf_attach_types to one bpf_prog_type (e.g., see BPF_PROG_TYPE_SK_SKB or
+> > BPF_PROG_TYPE_CGROUP_SOCK). In this case, though, we have three different
+> > program types (KPROBE, TRACEPOINT, PERF_EVENT) using the same perf_event-based
+> > mechanism, so it's many bpf_prog_types to one bpf_attach_type. I chose to
+> > define a single BPF_PERF_EVENT attach type for all of them and adjust
+> > link_create()'s logic for checking correspondence between attach type and
+> > program type.
+> >
+> > The alternative would be to define three new attach types (e.g., BPF_KPROBE,
+> > BPF_TRACEPOINT, and BPF_PERF_EVENT), but that seemed like unnecessary overkill
+> > and BPF_KPROBE will cause naming conflicts with BPF_KPROBE() macro, defined by
+> > libbpf. I chose to not do this to avoid unnecessary proliferation of
+> > bpf_attach_type enum values and not have to deal with naming conflicts.
+> >
+> > Cc: Peter Zijlstra <peterz@infradead.org>
 > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > > ---
-> >   include/linux/filter.h | 58 +++++++++++++++++++++++++++---------------
-> >   1 file changed, 37 insertions(+), 21 deletions(-)
+> >   include/linux/bpf_types.h      |   3 +
+> >   include/linux/trace_events.h   |   3 +
+> >   include/uapi/linux/bpf.h       |   2 +
+> >   kernel/bpf/syscall.c           | 105 ++++++++++++++++++++++++++++++---
+> >   kernel/events/core.c           |  10 ++--
+> >   tools/include/uapi/linux/bpf.h |   2 +
+> >   6 files changed, 112 insertions(+), 13 deletions(-)
 > >
-> > diff --git a/include/linux/filter.h b/include/linux/filter.h
-> > index ba36989f711a..e59c97c72233 100644
-> > --- a/include/linux/filter.h
-> > +++ b/include/linux/filter.h
-> > @@ -585,25 +585,41 @@ struct sk_filter {
+> > diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> > index a9db1eae6796..0a1ada7f174d 100644
+> > --- a/include/linux/bpf_types.h
+> > +++ b/include/linux/bpf_types.h
+> > @@ -135,3 +135,6 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
+> >   #ifdef CONFIG_NET
+> >   BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
+> >   #endif
+> > +#ifdef CONFIG_PERF_EVENTS
+> > +BPF_LINK_TYPE(BPF_LINK_TYPE_PERF_EVENT, perf)
+> > +#endif
+> > diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> > index ad413b382a3c..8ac92560d3a3 100644
+> > --- a/include/linux/trace_events.h
+> > +++ b/include/linux/trace_events.h
+> > @@ -803,6 +803,9 @@ extern void ftrace_profile_free_filter(struct perf_event *event);
+> >   void perf_trace_buf_update(void *record, u16 type);
+> >   void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp);
 > >
-> >   DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
-> >
-> > -#define __BPF_PROG_RUN(prog, ctx, dfunc)     ({                      \
-> > -     u32 __ret;                                                      \
-> > -     cant_migrate();                                                 \
-> > -     if (static_branch_unlikely(&bpf_stats_enabled_key)) {           \
-> > -             struct bpf_prog_stats *__stats;                         \
-> > -             u64 __start = sched_clock();                            \
-> > -             __ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);   \
-> > -             __stats = this_cpu_ptr(prog->stats);                    \
-> > -             u64_stats_update_begin(&__stats->syncp);                \
-> > -             __stats->cnt++;                                         \
-> > -             __stats->nsecs += sched_clock() - __start;              \
-> > -             u64_stats_update_end(&__stats->syncp);                  \
-> > -     } else {                                                        \
-> > -             __ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);   \
-> > -     }                                                               \
-> > -     __ret; })
-> > -
-> > -#define BPF_PROG_RUN(prog, ctx)                                              \
-> > -     __BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nop_func)
-> > +typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
-> > +                                       const struct bpf_insn *insnsi,
-> > +                                       unsigned int (*bpf_func)(const void *,
-> > +                                                                const struct bpf_insn *));
+> > +int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog);
+> > +void perf_event_free_bpf_prog(struct perf_event *event);
 > > +
-> > +static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
-> > +                                       const void *ctx,
-> > +                                       bpf_dispatcher_fn dfunc)
+> >   void bpf_trace_run1(struct bpf_prog *prog, u64 arg1);
+> >   void bpf_trace_run2(struct bpf_prog *prog, u64 arg1, u64 arg2);
+> >   void bpf_trace_run3(struct bpf_prog *prog, u64 arg1, u64 arg2,
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 2db6925e04f4..00b1267ab4f0 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -993,6 +993,7 @@ enum bpf_attach_type {
+> >       BPF_SK_SKB_VERDICT,
+> >       BPF_SK_REUSEPORT_SELECT,
+> >       BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,
+> > +     BPF_PERF_EVENT,
+> >       __MAX_BPF_ATTACH_TYPE
+> >   };
+> >
+> > @@ -1006,6 +1007,7 @@ enum bpf_link_type {
+> >       BPF_LINK_TYPE_ITER = 4,
+> >       BPF_LINK_TYPE_NETNS = 5,
+> >       BPF_LINK_TYPE_XDP = 6,
+> > +     BPF_LINK_TYPE_PERF_EVENT = 6,
+>
+> As Jiri has pointed out, BPF_LINK_TYPE_PERF_EVENT = 7.
+
+yep, fixed
+
+>
+> >
+> >       MAX_BPF_LINK_TYPE,
+> >   };
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 9a2068e39d23..80c03bedd6e6 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -2906,6 +2906,79 @@ static const struct bpf_link_ops bpf_raw_tp_link_lops = {
+> >       .fill_link_info = bpf_raw_tp_link_fill_link_info,
+> >   };
+> >
+> > +#ifdef CONFIG_PERF_EVENTS
+> > +struct bpf_perf_link {
+> > +     struct bpf_link link;
+> > +     struct file *perf_file;
+> > +};
+> > +
+> > +static void bpf_perf_link_release(struct bpf_link *link)
 > > +{
-> > +     u32 ret;
+> > +     struct bpf_perf_link *perf_link = container_of(link, struct bpf_perf_link, link);
+> > +     struct perf_event *event = perf_link->perf_file->private_data;
 > > +
-> > +     cant_migrate();
-> > +     if (static_branch_unlikely(&bpf_stats_enabled_key)) {
-> > +             struct bpf_prog_stats *stats;
-> > +             u64 start = sched_clock();
+> > +     perf_event_free_bpf_prog(event);
+> > +     fput(perf_link->perf_file);
+> > +}
 > > +
-> > +             ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-> > +             stats = this_cpu_ptr(prog->stats);
-> > +             u64_stats_update_begin(&stats->syncp);
-> > +             stats->cnt++;
-> > +             stats->nsecs += sched_clock() - start;
-> > +             u64_stats_update_end(&stats->syncp);
-> > +     } else {
-> > +             ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+> > +static void bpf_perf_link_dealloc(struct bpf_link *link)
+> > +{
+> > +     struct bpf_perf_link *perf_link = container_of(link, struct bpf_perf_link, link);
+> > +
+> > +     kfree(perf_link);
+> > +}
+> > +
+> > +static const struct bpf_link_ops bpf_perf_link_lops = {
+> > +     .release = bpf_perf_link_release,
+> > +     .dealloc = bpf_perf_link_dealloc,
+> > +};
+> > +
+> > +static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> > +{
+> > +     struct bpf_link_primer link_primer;
+> > +     struct bpf_perf_link *link;
+> > +     struct perf_event *event;
+> > +     struct file *perf_file;
+> > +     int err;
+> > +
+> > +     if (attr->link_create.flags)
+> > +             return -EINVAL;
+> > +
+> > +     perf_file = perf_event_get(attr->link_create.target_fd);
+> > +     if (IS_ERR(perf_file))
+> > +             return PTR_ERR(perf_file);
+> > +
+> > +     link = kzalloc(sizeof(*link), GFP_USER);
+>
+> add __GFP_NOWARN flag?
+
+I looked at few other bpf_link_alloc places in this file, they don't
+use NOWARN flag. I think the idea with NOWARN flag is to avoid memory
+alloc warnings when amount of allocated memory depends on
+user-specified parameter (like the size of the map value). In this
+case it's just a single fixed-size kernel object, so while users can
+create lots of them, each is fixed in size. It's similar as any other
+kernel object (e.g., struct file). So I think it's good as is.
+
+>
+> > +     if (!link) {
+> > +             err = -ENOMEM;
+> > +             goto out_put_file;
 > > +     }
-> > +     return ret;
-> > +}
+> > +     bpf_link_init(&link->link, BPF_LINK_TYPE_PERF_EVENT, &bpf_perf_link_lops, prog);
+> > +     link->perf_file = perf_file;
 > > +
-> > +static __always_inline u32 bpf_prog_run(const struct bpf_prog *prog, const void *ctx)
-> > +{
-> > +     return __bpf_prog_run(prog, ctx, bpf_dispatcher_nop_func);
-> > +}
+> > +     err = bpf_link_prime(&link->link, &link_primer);
+> > +     if (err) {
+> > +             kfree(link);
+> > +             goto out_put_file;
+> > +     }
 > > +
-> > +/* avoids name conflict with BPF_PROG_RUN enum definedi uapi/linux/bpf.h */
-> > +#define BPF_PROG_RUN bpf_prog_run
-> >
-> >   /*
-> >    * Use in preemptible and therefore migratable context to make sure that
-> > @@ -622,7 +638,7 @@ static inline u32 bpf_prog_run_pin_on_cpu(const struct bpf_prog *prog,
-> >       u32 ret;
-> >
-> >       migrate_disable();
-> > -     ret = __BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nop_func);
-> > +     ret = __bpf_prog_run(prog, ctx, bpf_dispatcher_nop_func);
+> > +     event = perf_file->private_data;
+> > +     err = perf_event_set_bpf_prog(event, prog);
+> > +     if (err) {
+> > +             bpf_link_cleanup(&link_primer);
 >
-> This can be replaced with bpf_prog_run(prog, ctx).
+> Do you need kfree(link) here?
+
+bpf_link_cleanup() will call kfree() in deferred fashion. This is due
+to bpf_link_prime() allocating anon_inode file internally, so it needs
+to be freed carefully and that's what bpf_link_cleanup() is for.
+
 >
-
-ok, sure
-
-> >       migrate_enable();
-> >       return ret;
-> >   }
-> > @@ -768,7 +784,7 @@ static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *prog,
-> >        * under local_bh_disable(), which provides the needed RCU protection
-> >        * for accessing map entries.
-> >        */
-> > -     return __BPF_PROG_RUN(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
-> > +     return __bpf_prog_run(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
-> >   }
+> > +             goto out_put_file;
+> > +     }
+> > +     /* perf_event_set_bpf_prog() doesn't take its own refcnt on prog */
+> > +     bpf_prog_inc(prog);
+> > +
+> > +     return bpf_link_settle(&link_primer);
+> > +
+> > +out_put_file:
+> > +     fput(perf_file);
+> > +     return err;
+> > +}
+> > +#endif /* CONFIG_PERF_EVENTS */
+> > +
+> >   #define BPF_RAW_TRACEPOINT_OPEN_LAST_FIELD raw_tracepoint.prog_fd
 > >
-> >   void bpf_prog_change_xdp(struct bpf_prog *prev_prog, struct bpf_prog *prog);
-> >
+> [...]
