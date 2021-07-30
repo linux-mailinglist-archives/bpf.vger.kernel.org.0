@@ -2,213 +2,370 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61B23DBDAC
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 19:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471423DBDE9
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 19:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhG3RYz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 13:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
+        id S229921AbhG3Rsz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 13:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbhG3RYy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 13:24:54 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C525EC06175F;
-        Fri, 30 Jul 2021 10:24:49 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id g76so17204624ybf.4;
-        Fri, 30 Jul 2021 10:24:49 -0700 (PDT)
+        with ESMTP id S229919AbhG3Rsx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 13:48:53 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD35DC06175F
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 10:48:47 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id p145so2650789ybg.6
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 10:48:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bmb9EdWI6i/F5TlygeZvpTKTNwNJ5JcjLeJNhgb3CPw=;
-        b=Jrf5/it2QZBRYAm9pE489VZv7NkWaHHosqg6SZw+xX5PTdofO/EzZGzi9T++0osCiM
-         H/n13DCEVgSlsX0gveSLpQtPulrYLorTQZYOPS2Ha8SzFCTX1PRMK+UA7f7lEocFyELe
-         FXq28ZccnEIbBhYXsFClAcyxxpF/rAK7GYkLgLrSPkh01JHZIlL6Q1pvvVgCk/K3rgW6
-         +xQaT1CaaOTG15uJuTjyfzSyFQWCgAlI1SpgurrZBOegUDY4tQts9+UxcjX6/n6IHBGe
-         rEsbxFB79+B0KXP7ChtaXxZzrMbPJTWZ2SWtv+SQTSDmew/e4aEdR+clcIOS/Lpn1Zvw
-         OSWg==
+        bh=aKLyr1l50VfQyyf9Ytyw/BBpWn9h2MXrchtHsrzk1Ig=;
+        b=j5F8aAOw6EFpjuqHUYGPI3zm9yH5KrZ8uxVMZuImxnBskWb1TZyIijlnVQTGwCdDNy
+         80QATTbq60iEm6Hnseg6G2+vlszLJ2PQgtNTMOQmdPkZDwvJbgjcgy70U/AnnGf1sQph
+         +yaPu5llA8sKHpRPLpZYjFTO7ivVxl5TF8b4ZdoDuWiMlETsqzdZ1AnVpsx8G2jWCrXY
+         VvhHzsGyAbGH9un6V7Rfc7apMq2HDOyK0iqRDzwL1OpwnZ+8NTi+1vT0ziThyA/XJsBm
+         HuOu3odDRN4Xe4xw9iEcBMEZ6Tr8SeBV9DO2WAhf6fiyqt96R7ZO0d3DkmguJ0JzvUkw
+         MU5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bmb9EdWI6i/F5TlygeZvpTKTNwNJ5JcjLeJNhgb3CPw=;
-        b=Z33NIVOQtPhlOryCpcP29SJMaD9BROGRbdugrHh9qzg3rbM2FRo1TzqBke7I0XL3bP
-         qwSl+BmtVUI+ZMmU1DpWlKxNZMe9bdL8wpguWHzZeJhoS3A/pSM6znLVKksHl2mexnMI
-         3M+32uDw9SPqASB3BLeNCw5BDJL/SkTbvK0s3vTR27Ht7Lr+C6ibVkzR2FSX8RotYH2v
-         QlFts/2dEMFYMuLVj7KeJDD51wa/GN5lRls31aTjMUvnKPtf4oktQ4zCdH9HWAXXsG0m
-         7MXAWGLFbVJv0eRC7W4JiVAHnVQjL1KDIDbhlMXErVSgcLbdUBlOuIkoUUPUT7U58i8Y
-         DJrA==
-X-Gm-Message-State: AOAM53260vgs4L8erGrAROb++ITZ+Ia67E1xQvxuVPL3uja8QTxQxYXX
-        SKErX4c70hwUdQ1X8arrW3+PCdyYxNL7y/xZTpI=
-X-Google-Smtp-Source: ABdhPJxh+ysByQewmkd/sX5zE14R6pUkzf9oqKklC829TmWk+lwifcbdCj5MNJFc7PMZp7xMpRezXMGC65w9DaTC/kc=
-X-Received: by 2002:a25:cdc7:: with SMTP id d190mr4455377ybf.425.1627665889010;
- Fri, 30 Jul 2021 10:24:49 -0700 (PDT)
+        bh=aKLyr1l50VfQyyf9Ytyw/BBpWn9h2MXrchtHsrzk1Ig=;
+        b=d1MWKTWAquClsHoOAWr0P/kq3GtPtG/3KLtbiYl6Ux4tdBLMTC1QwvD+XivMSy8l9o
+         Pib4uP2b+7O02szJ6KeiEYbTmlKQufmlyaf0xrGOoM1ym/Bc7r0422kaqMX2GGnQT6vY
+         PGvOcqRquRtpBihcS7OYQk5ysBWSuR8clvXoUt7/qucPzn4ifLm4WuNC3aLsvS5KvNha
+         hPv8Bonobl9DolED+NIfBzhvY1Zz8Wpao1DEeeBbAwE1eBT60mjsCmhcedMp1stE1YIP
+         PSzRz275DAJw0qiuJ0z1YkM4J8jLQ+PpvDibYlRmr4JfEp9JfwG9Tvkw9AgBoeIFcW/h
+         D60g==
+X-Gm-Message-State: AOAM531gmEMkC9QjlD+Z1bSKLKXI5ZB7aThhHAI5RX5j4tg7vRzI5KJQ
+        qSAdq0Tz8jQNaGERvgh2jYnSzp3GSRkyZly6eq4=
+X-Google-Smtp-Source: ABdhPJwuSkh+LvfS1LAF6eumPXHWavyk7oM0yOD7xNRnvduTXAp0KmSeIFsJ/D3gsGCBcLgiunk+ljkfpBfxwvd76bs=
+X-Received: by 2002:a25:cdc7:: with SMTP id d190mr4576155ybf.425.1627667326952;
+ Fri, 30 Jul 2021 10:48:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210729162028.29512-1-quentin@isovalent.com> <CAEf4BzbrQOr8Z2oiywT-zPBEz9jbP9_6oJXOW28LdOaqAy8pLw@mail.gmail.com>
- <22d59def-51e7-2b98-61b6-b700e7de8ef6@isovalent.com>
-In-Reply-To: <22d59def-51e7-2b98-61b6-b700e7de8ef6@isovalent.com>
+References: <20210726161211.925206-1-andrii@kernel.org> <20210726161211.925206-6-andrii@kernel.org>
+ <138b1ab0-1d9c-7288-06bd-fbe29285fc4f@fb.com> <CAEf4Bzb39v5kz1Gc2YjNvGwN8kK8H2fSp1qvipie=ZLpuxRV6Q@mail.gmail.com>
+ <5ffd3338-fe76-2080-13a9-5102917a434a@fb.com>
+In-Reply-To: <5ffd3338-fe76-2080-13a9-5102917a434a@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Jul 2021 10:24:38 -0700
-Message-ID: <CAEf4BzbjN+zjio3HPRkGLRgZpbLj9MUGLnXt1KDSsoOHB8_v3Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/8] libbpf: rename btf__get_from_id() and
- btf__load() APIs, support split BTF
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 30 Jul 2021 10:48:35 -0700
+Message-ID: <CAEf4BzbR=m3Qusth-1JU_E5YMYaoxrNom9tS_pcArsHyiBD85w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 05/14] bpf: allow to specify user-provided
+ context value for BPF perf links
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Kernel Team <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 8:23 AM Quentin Monnet <quentin@isovalent.com> wrote:
+On Thu, Jul 29, 2021 at 10:49 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> 2021-07-29 17:31 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > On Thu, Jul 29, 2021 at 9:20 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+>
+> On 7/29/21 9:31 PM, Andrii Nakryiko wrote:
+> > On Thu, Jul 29, 2021 at 11:00 AM Yonghong Song <yhs@fb.com> wrote:
 > >>
-> >> As part of the effort to move towards a v1.0 for libbpf [0], this set
-> >> improves some confusing function names related to BTF loading from and to
-> >> the kernel:
 > >>
-> >> - btf__load() becomes btf__load_into_kernel().
-> >> - btf__get_from_id becomes btf__load_from_kernel_by_id().
-> >> - A new version btf__load_from_kernel_by_id_split() extends the former to
-> >>   add support for split BTF.
 > >>
-> >> The old functions are marked for deprecation for the next minor version
-> >> (0.6) of libbpf.
+> >> On 7/26/21 9:12 AM, Andrii Nakryiko wrote:
+> >>> Add ability for users to specify custom u64 value when creating BPF link for
+> >>> perf_event-backed BPF programs (kprobe/uprobe, perf_event, tracepoints).
+> >>>
+> >>> This is useful for cases when the same BPF program is used for attaching and
+> >>> processing invocation of different tracepoints/kprobes/uprobes in a generic
+> >>> fashion, but such that each invocation is distinguished from each other (e.g.,
+> >>> BPF program can look up additional information associated with a specific
+> >>> kernel function without having to rely on function IP lookups). This enables
+> >>> new use cases to be implemented simply and efficiently that previously were
+> >>> possible only through code generation (and thus multiple instances of almost
+> >>> identical BPF program) or compilation at runtime (BCC-style) on target hosts
+> >>> (even more expensive resource-wise). For uprobes it is not even possible in
+> >>> some cases to know function IP before hand (e.g., when attaching to shared
+> >>> library without PID filtering, in which case base load address is not known
+> >>> for a library).
+> >>>
+> >>> This is done by storing u64 user_ctx in struct bpf_prog_array_item,
+> >>> corresponding to each attached and run BPF program. Given cgroup BPF programs
+> >>> already use 2 8-byte pointers for their needs and cgroup BPF programs don't
+> >>> have (yet?) support for user_ctx, reuse that space through union of
+> >>> cgroup_storage and new user_ctx field.
+> >>>
+> >>> Make it available to kprobe/tracepoint BPF programs through bpf_trace_run_ctx.
+> >>> This is set by BPF_PROG_RUN_ARRAY, used by kprobe/uprobe/tracepoint BPF
+> >>> program execution code, which luckily is now also split from
+> >>> BPF_PROG_RUN_ARRAY_CG. This run context will be utilized by a new BPF helper
+> >>> giving access to this user context value from inside a BPF program. Generic
+> >>> perf_event BPF programs will access this value from perf_event itself through
+> >>> passed in BPF program context.
+> >>>
+> >>> Cc: Peter Zijlstra <peterz@infradead.org>
+> >>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> >>> ---
+> >>>    drivers/media/rc/bpf-lirc.c    |  4 ++--
+> >>>    include/linux/bpf.h            | 16 +++++++++++++++-
+> >>>    include/linux/perf_event.h     |  1 +
+> >>>    include/linux/trace_events.h   |  6 +++---
+> >>>    include/uapi/linux/bpf.h       |  7 +++++++
+> >>>    kernel/bpf/core.c              | 29 ++++++++++++++++++-----------
+> >>>    kernel/bpf/syscall.c           |  2 +-
+> >>>    kernel/events/core.c           | 21 ++++++++++++++-------
+> >>>    kernel/trace/bpf_trace.c       |  8 +++++---
+> >>>    tools/include/uapi/linux/bpf.h |  7 +++++++
+> >>>    10 files changed, 73 insertions(+), 28 deletions(-)
+> >>>
+> >>> diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
+> >>> index afae0afe3f81..7490494273e4 100644
+> >>> --- a/drivers/media/rc/bpf-lirc.c
+> >>> +++ b/drivers/media/rc/bpf-lirc.c
+> >>> @@ -160,7 +160,7 @@ static int lirc_bpf_attach(struct rc_dev *rcdev, struct bpf_prog *prog)
+> >>>                goto unlock;
+> >>>        }
+> >>>
+> >>> -     ret = bpf_prog_array_copy(old_array, NULL, prog, &new_array);
+> >>> +     ret = bpf_prog_array_copy(old_array, NULL, prog, 0, &new_array);
+> >>>        if (ret < 0)
+> >>>                goto unlock;
+> >>>
+> >> [...]
+> >>>    void bpf_trace_run1(struct bpf_prog *prog, u64 arg1);
+> >>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >>> index 00b1267ab4f0..bc1fd54a8f58 100644
+> >>> --- a/include/uapi/linux/bpf.h
+> >>> +++ b/include/uapi/linux/bpf.h
+> >>> @@ -1448,6 +1448,13 @@ union bpf_attr {
+> >>>                                __aligned_u64   iter_info;      /* extra bpf_iter_link_info */
+> >>>                                __u32           iter_info_len;  /* iter_info length */
+> >>>                        };
+> >>> +                     struct {
+> >>> +                             /* black box user-provided value passed through
+> >>> +                              * to BPF program at the execution time and
+> >>> +                              * accessible through bpf_get_user_ctx() BPF helper
+> >>> +                              */
+> >>> +                             __u64           user_ctx;
+> >>> +                     } perf_event;
 > >>
-> >> The last patch is a trivial change to bpftool to add support for dumping
-> >> split BTF objects by referencing them by their id (and not only by their
-> >> BTF path).
+> >> Is it possible to fold this field into previous union?
 > >>
-> >> [0] https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#btfh-apis
+> >>                   union {
+> >>                           __u32           target_btf_id;  /* btf_id of
+> >> target to attach to */
+> >>                           struct {
+> >>                                   __aligned_u64   iter_info;      /*
+> >> extra bpf_iter_link_info */
+> >>                                   __u32           iter_info_len;  /*
+> >> iter_info length */
+> >>                           };
+> >>                   };
 > >>
-> >> v3:
-> >> - Use libbpf_err_ptr() in btf__load_from_kernel_by_id(), ERR_PTR() in
-> >>   bpftool's get_map_kv_btf().
-> >> - Move the definition of btf__load_from_kernel_by_id() closer to the
-> >>   btf__parse() group in btf.h (move the legacy function with it).
-> >> - Fix a bug on the return value in libbpf_find_prog_btf_id(), as a new
-> >>   patch.
-> >> - Move the btf__free() fixes to their own patch.
-> >> - Add "Fixes:" tags to relevant patches.
-> >> - Re-introduce deprecation (removed in v2) for the legacy functions, as a
-> >>   new macro LIBBPF_DEPRECATED_SINCE(major, minor, message).
-> >>
-> >> v2:
-> >> - Remove deprecation marking of legacy functions (patch 4/6 from v1).
-> >> - Make btf__load_from_kernel_by_id{,_split}() return the btf struct, adjust
-> >>   surrounding code and call btf__free() when missing.
-> >> - Add new functions to v0.5.0 API (and not v0.6.0).
-> >>
-> >> Quentin Monnet (8):
-> >>   libbpf: return non-null error on failures in libbpf_find_prog_btf_id()
-> >>   libbpf: rename btf__load() as btf__load_into_kernel()
-> >>   libbpf: rename btf__get_from_id() as btf__load_from_kernel_by_id()
-> >>   tools: free BTF objects at various locations
-> >>   tools: replace btf__get_from_id() with btf__load_from_kernel_by_id()
-> >>   libbpf: prepare deprecation of btf__get_from_id(), btf__load()
-> >>   libbpf: add split BTF support for btf__load_from_kernel_by_id()
-> >>   tools: bpftool: support dumping split BTF by id
-> >>
-> >>  tools/bpf/bpftool/btf.c                      |  8 ++---
-> >>  tools/bpf/bpftool/btf_dumper.c               |  6 ++--
-> >>  tools/bpf/bpftool/map.c                      | 14 ++++-----
-> >>  tools/bpf/bpftool/prog.c                     | 29 +++++++++++------
-> >>  tools/lib/bpf/Makefile                       |  3 ++
-> >>  tools/lib/bpf/btf.c                          | 33 ++++++++++++++------
-> >>  tools/lib/bpf/btf.h                          |  7 ++++-
-> >>  tools/lib/bpf/libbpf.c                       | 11 ++++---
-> >>  tools/lib/bpf/libbpf.map                     |  3 ++
-> >>  tools/lib/bpf/libbpf_common.h                | 19 +++++++++++
-> >>  tools/perf/util/bpf-event.c                  | 11 ++++---
-> >>  tools/perf/util/bpf_counter.c                | 12 +++++--
-> >>  tools/testing/selftests/bpf/prog_tests/btf.c |  4 ++-
-> >>  13 files changed, 113 insertions(+), 47 deletions(-)
-> >>
-> >> --
-> >> 2.30.2
 > >>
 > >
-> > I dropped patch #7 with deprecations and LIBBPF_DEPRECATED_SINCE and
-> > applied to bpf-next.
+> > I didn't want to do it, because different types of BPF links will
+> > accept this user_ctx (or now bpf_cookie). And then we'll have to have
+> > different locations of that field for different types of links.
 > >
-> > Current LIBBPF_DEPRECATED_SINCE approach doesn't work (and you should
-> > have caught this when you built selftests/bpf, what happened there?).
-> > bpftool build generates warnings like this:
+> > For example, when/if we add this user_ctx to BPF iterator programs,
+> > having __u64 user_ctx in the same anonymous union will make it overlap
+> > with iter_info, which is a problem. So I want to have a link
+> > type-specific sections in LINK_CREATE command section, to allow the
+> > same field name at different locations.
 > >
-> > In file included from /data/users/andriin/linux/tools/lib/bpf/libbpf.h:20,
-> >                  from xlated_dumper.c:10:
-> > /data/users/andriin/linux/tools/lib/bpf/libbpf_common.h:22:23:
-> > warning: "LIBBPF_MAJOR_VERSION" is not defined, evaluates to 0
-> > [-Wundef]
-> >   __LIBBPF_GET_VERSION(LIBBPF_MAJOR_VERSION, LIBBPF_MINOR_VERSION)
-> >                        ^~~~~~~~~~~~~~~~~~~~
+> > I actually think that we should put iter_info/iter_info_len into a
+> > named field, like this (also added user_ctx for bpf_iter link as a
+> > demonstration):
+> >
+> > struct {
+> >      __aligned_u64 info;
+> >      __u32         info_len;
+> >      __aligned_u64 user_ctx;  /* see how it's at a different offset
+> > than perf_event.user_ctx */
+> > } iter;
+> > struct {
+> >      __u64         user_ctx;
+> > } perf_event;
+> >
+> > (of course keeping already existing fields in anonymous struct for
+> > backwards compatibility)
 >
-> Apologies, I didn't realise the change would impact external applications.
+> Okay, then since user_ctx may be used by many link types. How
+> about just with the field "user_ctx" without struct perf_event.
 
-It doesn't matter, we expect everyone to compile selftest (just `make`
-in tools/testing/selftests/bpf) and run at least test_progs,
-preferably also test_maps and test_verifier. Especially with vmtest.sh
-script it's quite simple (once you get latest Clang and pahole
-compiled locally). We obviously have CI and maintainers as the last
-line of defense, but that should be the last line of defense, not the
-main line :)
+I'd love to do it because it is indeed generic and common field, like
+target_fd. But I'm not sure what you are proposing below. Where
+exactly that user_ctx (now called bpf_cookie) goes in your example? I
+see few possible options that allow preserving ABI backwards
+compatibility. Let's see if you and everyone else likes any of those
+better. I'll use the full LINK_CREATE sub-struct definition from
+bpf_attr to make it clear. And to demonstrate how this can be extended
+to bpf_iter in the future, please note this part as this is an
+important aspect.
 
+1. Full backwards compatibility and per-link type sections (my current
+approach):
+
+        struct { /* struct used by BPF_LINK_CREATE command */
+                __u32           prog_fd;
+                union {
+                        __u32           target_fd;
+                        __u32           target_ifindex;
+                };
+                __u32           attach_type;
+                __u32           flags;
+                union {
+                        __u32           target_btf_id;
+                        struct {
+                                __aligned_u64   iter_info;
+                                __u32           iter_info_len;
+                        };
+                        struct {
+                                __u64           bpf_cookie;
+                        } perf_event;
+                        struct {
+                                __aligned_u64   info;
+                                __u32           info_len;
+                                __aligned_u64   bpf_cookie;
+                        } iter;
+               };
+        } link_create;
+
+The good property here is that we can keep easily extending link
+type-specific sections with extra fields where needed. For common
+stuff like bpf_cookie it's suboptimal because we'll need to duplicate
+field definition in each struct inside that union, but I think that's
+fine. From end-user point of view, they will know which type of link
+they are creating, so the use will be straightforward. This is why I
+went with this approach. But let's consider alternatives.
+
+2. Non-backwards compatible layout but extra flag to specify that new
+field layout is used.
+
+        struct { /* struct used by BPF_LINK_CREATE command */
+                __u32           prog_fd;
+                union {
+                        __u32           target_fd;
+                        __u32           target_ifindex;
+                };
+                __u32           attach_type;
+                __u32           flags; /* this will start supporting
+some new flag like BPF_F_LINK_CREATE_NEW */
+                __u64           bpf_cookie; /* common field now */
+                union { /* this parts is effectively deprecated now */
+                        __u32           target_btf_id;
+                        struct {
+                                __aligned_u64   iter_info;
+                                __u32           iter_info_len;
+                        };
+                        struct { /* this is new layout, but needs
+BPF_F_LINK_CREATE_NEW, at least for ext/ and bpf_iter/ programs */
+                            __u64       bpf_cookie;
+                            union {
+                                struct {
+                                    __u32     target_btf_id;
+                                } ext;
+                                struct {
+                                    __aligned_u64 info;
+                                    __u32         info_len;
+                                } iter;
+                            }
+                        }
+                };
+        } link_create;
+
+This makes bpf_cookie a common field, but at least for EXT (freplace/)
+and ITER (bpf_iter/) links we need to specify extra flag to specify
+that we are not using iter_info/iter_info_len/target_btf_id. bpf_iter
+then will use iter.info and iter.info_len, and can use plain
+bpf_cookie.
+
+IMO, this is way too confusing and a maintainability nightmare.
+
+I'm trying to guess what you are proposing, I can read it two ways,
+but let me know if I missed something.
+
+3. Just add bpf_cookie field before link type-specific section.
+
+        struct { /* struct used by BPF_LINK_CREATE command */
+                __u32           prog_fd;
+                union {
+                        __u32           target_fd;
+                        __u32           target_ifindex;
+                };
+                __u32           attach_type;
+                __u32           flags;
+                __u64           bpf_cookie;  // <<<<<<<<<< HERE
+                union {
+                        __u32           target_btf_id;
+                        struct {
+                                __aligned_u64   iter_info;
+                                __u32           iter_info_len;
+                        };
+                };
+        } link_create;
+
+This looks really nice and would be great, but that changes offsets
+for target_btf_id/iter_info/iter_info_len, so a no go. The only way to
+rectify this is what proposal #2 above does with an extra flag.
+
+4. Add bpf_cookie after link-type specific part:
+
+        struct { /* struct used by BPF_LINK_CREATE command */
+                __u32           prog_fd;
+                union {
+                        __u32           target_fd;
+                        __u32           target_ifindex;
+                };
+                __u32           attach_type;
+                __u32           flags;
+                union {
+                        __u32           target_btf_id;
+                        struct {
+                                __aligned_u64   iter_info;
+                                __u32           iter_info_len;
+                        };
+                        struct {
+                };
+                __u64           bpf_cookie; // <<<<<<<<<<<<<<<<<< HERE
+        } link_create;
+
+This could work. But we are wasting 16 bytes currently used for
+target_btf_id/iter_info/iter_info_len. If we later need to do
+something link type-specific, we can add it to the existing union if
+we need <= 16 bytes, otherwise we'll need to start another union after
+bpf_cookie, splitting this into two link type-specific sections.
+
+Overall, this might work, especially assuming we won't need to extend
+iter-specific portions. But I really hate that we didn't do named
+structs inside that union (i.e., ext.target_btf_id and
+iter.info/iter.info_len) and I'd like to rectify that in the follow up
+patches with named structs duplicating existing field layout, but with
+proper naming. But splitting this LINK_CREATE bpf_attr part into two
+unions would make it hard and awkward in the future.
+
+So, thoughts? Did you have something else in mind that I missed?
+
+
+> Sometime like
+>
+> __u64   user_ctx;
+>
+> instead of
+>
+> struct {
+>         __u64   user_ctx;
+> } perf_event;
 >
 > >
-> > And it makes total sense. LIBBPF_DEPRECATED_SINCE() assumes
-> > LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION is defined at compilation
-> > time of the *application that is using libbpf*, not just libbpf's
-> > compilation time. And that's clearly a bogus assumption which we can't
-> > and shouldn't make. The right approach will be to define
-> > LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION in some sort of
-> > auto-generated header, included from libbpf_common.h and installed as
-> > part of libbpf package.
->
-> So generating this header is easy. Installing it with the other headers
-> is simple too. It becomes a bit trickier when we build outside of the
-> directory (it seems I need to pass -I$(OUTPUT) to build libbpf).
-
-Not sure why using the header is tricky. We auto-generate
-bpf_helper_defs.h, which is included from bpf_helpers.h, which is
-included in every single libbpf-using application. Works good with no
-extra magic.
-
->
-> The step I'm most struggling with at the moment is bpftool, which
-> bootstraps a first version of itself before building libbpf, by looking
-> at the headers directly in libbpf's directory. It means that the
-> generated header with the version number has not yet been generated. Do
-> you think it is worth changing bpftool's build steps to implement this
-> deprecation helper?
-
-If it doesn't do that already, bpftool should do `make install` for
-libbpf, not just build. Install will put all the headers, generated or
-otherwise, into a designated destination folder, which should be
-passed as -I parameter. But that should be already happening due to
-bpf_helper_defs.h.
-
->
-> Alternatively, wouldn't it make more sense to have a script in the
-> GitHub repo for libbpf, and to run it once during the release process of
-> a new version to update, say, the version number, or even the
-> deprecation status directly?
-
-I'd like to avoid extra manual steps that I or someone else will
-definitely forget from time to time. Again, taking bpf_helper_defs.h
-as a precedent. In the kernel repo we auto-generate it during build.
-But when we sync libbpf to Github, we copy and check-in
-bpf_helper_defs.h, so it's always available there (and will get
-installed on `make install` or during packaging). We should do the
-same for this new header (libbpf_version.h?).
-
->
+> > I decided to not do that in this patch set, though, to not distract
+> > from the main goal. But I think we should avoid this shared field
+> > "namespace" across different link types going forward.
 > >
-> > Anyways, I've removed all the LIBBPF_DEPRECATED_SINCE stuff and
-> > applied all the rest, as it looks good and is a useful addition.
->
-> Thanks.
-> Quentin
+> >
+> >>>                };
+> >>>        } link_create;
+> >>>
+> >> [...]
