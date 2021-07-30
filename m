@@ -2,178 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BBCB3DBDA5
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 19:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61B23DBDAC
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 19:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhG3RY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 13:24:29 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36124 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229958AbhG3RY3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 30 Jul 2021 13:24:29 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16UHLMr9032443;
-        Fri, 30 Jul 2021 10:24:08 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=YfVZERBDOX3Ln3DyACGxYl/JLNhBd4OrFUNXghgXJrg=;
- b=mh1unfK2MaBhaCMjbaEjVFSe0Bz3+gyer3WS6U06Z5OFuPZGD6PBu3R4PsUVf2/LAU4g
- upn5DrxZfg3NPQLqfROXpqnXt49ra8BJdWUP8FxkqR4SYwWWeSvho5MD48D729mDhbDg
- yKN2wP2YWKSjUPOXNltWMuBJVr4hPbYdXEU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a3vrthute-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 30 Jul 2021 10:24:08 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 30 Jul 2021 10:24:06 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EXFv5J705Gx5lu8mf3BzMZAbUubOyhsohWNk8jnKzcwrGLSdZLkDPx1xESwKJ85Kh+5kzmyE3MuB4XNQwxmdwXeZX6Xk3gC3UfZoFuESG4WICLhzyIV0nfQzchYLpYtgno50hgOo6vKj1CXGU4PJvSwmkvqNynb82x4dlz5GAknm8xTcXa0Mrm3FuPB+67hdTtsSJecC3yH2gcWbcfhPlTe0eXoS6X4XZCZN3SG4fUvewYSUFDTLAzCjYxGONeGFvVYNMiUOjQVZ0x91TeucnoD8flJfuZKpqqUNE/72MwK/gyKl/QkWHu6N9qmRwOqS4soFwEaT6Uh8+phu/TkH4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YfVZERBDOX3Ln3DyACGxYl/JLNhBd4OrFUNXghgXJrg=;
- b=dgYJ4S4mAicvUUxoM83ABCuofGIuX5jm+VO+Rm/M8H46Ht/U5WuRK1HMWef8nKcb0SCCIw17NMCAxsRrH2wRAfZGj5RSHwKVkr2er/veIptBAYzvuzjx7NrCTSgnIl8xohXCFqqYpeT9MvCqJTVS833dnLwjJSOTxrPOy1HQx0QH2xk9ZTx5mSxUIyoRO+61CyIwWgqwarBRC35R3HUfl5vtMovdfKWVucR6FOSusRQdx1QDUt/itP27pI0UnXyn9FPU+4PZ+46qq0FmKkyi5n3IndXKMh2XozkCnxMwtHLYGYj/rdDIR5XAyll2EuJIZ/wApar57CTHxBFPwWYJcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA0PR15MB4032.namprd15.prod.outlook.com (2603:10b6:806:81::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Fri, 30 Jul
- 2021 17:24:05 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4373.021; Fri, 30 Jul 2021
- 17:24:05 +0000
-Subject: Re: [PATCH v3 bpf-next 04/14] bpf: implement minimal BPF perf link
-To:     Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <kernel-team@fb.com>, Peter Zijlstra <peterz@infradead.org>
-References: <20210730053413.1090371-1-andrii@kernel.org>
- <20210730053413.1090371-5-andrii@kernel.org>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <b8a64a6f-0924-4367-c574-1c3302999f94@fb.com>
-Date:   Fri, 30 Jul 2021 10:24:02 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <20210730053413.1090371-5-andrii@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0007.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::12) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        id S229958AbhG3RYz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 13:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229773AbhG3RYy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 13:24:54 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C525EC06175F;
+        Fri, 30 Jul 2021 10:24:49 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id g76so17204624ybf.4;
+        Fri, 30 Jul 2021 10:24:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bmb9EdWI6i/F5TlygeZvpTKTNwNJ5JcjLeJNhgb3CPw=;
+        b=Jrf5/it2QZBRYAm9pE489VZv7NkWaHHosqg6SZw+xX5PTdofO/EzZGzi9T++0osCiM
+         H/n13DCEVgSlsX0gveSLpQtPulrYLorTQZYOPS2Ha8SzFCTX1PRMK+UA7f7lEocFyELe
+         FXq28ZccnEIbBhYXsFClAcyxxpF/rAK7GYkLgLrSPkh01JHZIlL6Q1pvvVgCk/K3rgW6
+         +xQaT1CaaOTG15uJuTjyfzSyFQWCgAlI1SpgurrZBOegUDY4tQts9+UxcjX6/n6IHBGe
+         rEsbxFB79+B0KXP7ChtaXxZzrMbPJTWZ2SWtv+SQTSDmew/e4aEdR+clcIOS/Lpn1Zvw
+         OSWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bmb9EdWI6i/F5TlygeZvpTKTNwNJ5JcjLeJNhgb3CPw=;
+        b=Z33NIVOQtPhlOryCpcP29SJMaD9BROGRbdugrHh9qzg3rbM2FRo1TzqBke7I0XL3bP
+         qwSl+BmtVUI+ZMmU1DpWlKxNZMe9bdL8wpguWHzZeJhoS3A/pSM6znLVKksHl2mexnMI
+         3M+32uDw9SPqASB3BLeNCw5BDJL/SkTbvK0s3vTR27Ht7Lr+C6ibVkzR2FSX8RotYH2v
+         QlFts/2dEMFYMuLVj7KeJDD51wa/GN5lRls31aTjMUvnKPtf4oktQ4zCdH9HWAXXsG0m
+         7MXAWGLFbVJv0eRC7W4JiVAHnVQjL1KDIDbhlMXErVSgcLbdUBlOuIkoUUPUT7U58i8Y
+         DJrA==
+X-Gm-Message-State: AOAM53260vgs4L8erGrAROb++ITZ+Ia67E1xQvxuVPL3uja8QTxQxYXX
+        SKErX4c70hwUdQ1X8arrW3+PCdyYxNL7y/xZTpI=
+X-Google-Smtp-Source: ABdhPJxh+ysByQewmkd/sX5zE14R6pUkzf9oqKklC829TmWk+lwifcbdCj5MNJFc7PMZp7xMpRezXMGC65w9DaTC/kc=
+X-Received: by 2002:a25:cdc7:: with SMTP id d190mr4455377ybf.425.1627665889010;
+ Fri, 30 Jul 2021 10:24:49 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1130] (2620:10d:c090:400::5:ca99) by SJ0PR05CA0007.namprd05.prod.outlook.com (2603:10b6:a03:33b::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.9 via Frontend Transport; Fri, 30 Jul 2021 17:24:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 60bf1f61-8f30-499c-d795-08d9537ed4e2
-X-MS-TrafficTypeDiagnostic: SA0PR15MB4032:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR15MB403256A5879AE126DD01F0B9D3EC9@SA0PR15MB4032.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: x0lrI9B1BSwTtu7sBC0n8U0oxnEviTEa9IAM/1w0ORKccgrHyVMn/d0TuxjHwrG9gyQxu74pFvNy5brhiQg9tsyL2qKeTgthxvWh5wh5mSrewqodD5J6H4Lpl87TPD6l3iqeKOxHVt9uOekcAGZN1Sl9diHvklUrQDwjHI+LXOLuQkfNLKm0B1ZhV1MPepXoTDzg6nGOwucgceeKEVxp4Yq0SZioWjl7I2aTbOin58YkmgSQuq5Wz+zGI7mfMB/S0TT/BL/YCq+qHRqSo1pTIPeWKzZ5Uk0VB6pWhVJGwtZzwbuwPgEAg5Tvc272EBCSsjHVif5oU5l+oJU2fon0zXnV+8roiqacpR1SvTJf1YnJPyEHBOX8ds2mdGKv6p9KU06k66aixGj2pI0bUHXoCNjmgg+8aKks8ZWs1kuTxbTfH9IerNLfdQuudade+41/UhjYI5qBvKYV7/zzOvf85+f5S9/LQX/UWF1nH7f2bageXncsf7BrzweIBxOiccNSX8mXbzheQcKKQjDc+DskFpFXm8pgUuQCKr3lk853113ujCG175/GIl4Gxo2vmG1cjvEna2O5XF01wf3gB4b/QdKFfEp7YTvUI0ZuHhyDMflYU2d0cDnsaNBuqwusFuWslbvY667aKk91f2fVxeGMEjjiQPmUbURRxRZntq/DDOV3RJFMW+onRS3JwMlOM/6SyYoU7PFBlyNWIzZnsDpwXRNGJXfV/0a7kXuEclWN8y0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(136003)(346002)(376002)(8676002)(2616005)(8936002)(478600001)(31696002)(66946007)(186003)(31686004)(2906002)(52116002)(66476007)(66556008)(38100700002)(83380400001)(36756003)(53546011)(6486002)(4326008)(5660300002)(316002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUJoS3BwcENhaStNZDZnRkRTWFRpTTNDcHM4RGtKcUJLdTkya21jc3hrL3F6?=
- =?utf-8?B?Y3VBL1JTcTZWR2xPSjFZdVVzemJnN3Bqc1RNa2NodnlrY2YrVzFONGhQUVgw?=
- =?utf-8?B?RWx3T2VyQXlPVHlyWGlvN0lxVC9XUUN4N0tTaHB1R2tIa2xiZ0YwYzhqcU0w?=
- =?utf-8?B?OGQrc0luaVZ2eFFVWTNkcnV0UVowa3Y5U2cyOGNXc01XRWwwV0VkS1pXVmIy?=
- =?utf-8?B?MkRhVzYzb1NMWE1zNnF6T1NVWnhVOEpDZmlPQisvZlc4bzV0NkQwS0ZnYnJS?=
- =?utf-8?B?SmtmdlN6elZiejcvNTZrVjVvMExxRUljNEdQazZIcXVvQ2J5Z1hGYlloYm1w?=
- =?utf-8?B?U1NmbXVJdWRDRVI2R0NzNG4vQkVsbFg0TnBZYkh3bm1TdlF3RWRLWTlQYTBR?=
- =?utf-8?B?RkJoSUxSREpOZFF4Qks5bGdUamRoSklLTGFHdHRQblBoZmxGTGxwTXVkM2p3?=
- =?utf-8?B?OTJWT3FSWlA2dDgzYU14STRiZzBEVkpQQm9LVHBGWXBpMEU4VGx2a3VkQ2VK?=
- =?utf-8?B?MS81QlVzVUNrdFNJVXdvK2w0bnlQcXl1T0ZZTU9KQVgrSWp1aFNKS3N4bXZq?=
- =?utf-8?B?RGZDVHczT1lLRkprNFNncUVKYlVLcHlQNm4raUIwMm1OK3h2U3JWdDhuQ1Qr?=
- =?utf-8?B?QU9ZVGZ4aE5ZcFFrMVVXVjZMUUxSaFp5OThsb2FzMFZZenZjOTZCamQzbERo?=
- =?utf-8?B?V2NwQy9mMmwwTTFEZTVjV2FKeWFXZHBma2FKZHY0ZW13L2tFcnk1UjhWYkVv?=
- =?utf-8?B?OWVSU1NwZysxT2VlUVlpQm9IbitIOVJFL1RjcjIreFRkdjdpczNJS01oQWxY?=
- =?utf-8?B?L0lUcFEvRG1NVmN5UG5vK0VLWGlON29iRzI2eUI3UGVtVGwyMDgrWnphRUZB?=
- =?utf-8?B?ODBzR3RTQ3E0enNYaUt3OFM5MWdNbDBPazhZVU5JWFB0R3dRa1dLVWo5VHpt?=
- =?utf-8?B?eTNaNytRUDV2d01HaFQzZW1US3dHRUprVk1rVFFpUTRweXhBMnJYNXNHb0g4?=
- =?utf-8?B?SjZGZ01taGFpRWpzYURtQzJiZEFSbnVMQjdyc1A3b0ovK1hCeGdWYmVrU2Z1?=
- =?utf-8?B?RDRHUG11ZzdaYnZGTnFsZ1NHQiswVXR6Q1VOcUo4OVFRYjVmbmdjMEY1NlFx?=
- =?utf-8?B?bSt6b2VRc1E0SWFrU01CMllkUEpjSUpGTmNLV1ZHdVdWd0tnWS9KY21RSngv?=
- =?utf-8?B?YWR4RjE4YUZvWGJQVXk3N1JxczhUTk14bGdjRk5LcjhEZVY4bWNDd28wN1Ny?=
- =?utf-8?B?d2xrNlordnV0M1BWaSs3VXNtM0p2QWtNd2U5QW9ZSjNIQm5JQW1UL3J2SEJx?=
- =?utf-8?B?LzlTZWo5NGM1aG56NVZWNS9CR1YzcHQ3NGJFNDNCMmpCdlQvV3RWd0thZVJu?=
- =?utf-8?B?YjNUMW9ETnB5U3Y0ZjZrNXBTcm50SDRWWVRNZWVFVitNS2tnYzNSQUVIc0Zx?=
- =?utf-8?B?cDhYaDJCQWR2Zm0rUWN6Uk93eVk5c1NYU25GblIyUDhlbkFLMEw4ODNmWElE?=
- =?utf-8?B?SmFUbzNreS9OK0xJVDQ0bEk0S1ZZcU1tRHJYN1RuOHB6VzgzQ1puVVpXQkhQ?=
- =?utf-8?B?ZUpXK0cyZVlaNHVXcWlyZ29jWG82d0RCZHA5c2xtK3pPdDZaZjZZSlZTeHU2?=
- =?utf-8?B?Y1BGMEFzSm9OVWFzVXBaMC93V2h5MVNZV1VramNUYWFXbXlxYk1SQ0tFaHR4?=
- =?utf-8?B?SmtKZDh6aDRHMFdhUU96K0xFczlTalNxaDZGL1VFLzM5eUdJTjQ3OFYxVER1?=
- =?utf-8?B?U1RhdWdGRm9QYlZoejRqYVNRQ0Q5QXRJOXV5V1A3dHJUYTcwSWRqK2R1dmNs?=
- =?utf-8?Q?nl7IGv3uqF6F4qynNjoalcFtkkklaDyzGHy+w=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60bf1f61-8f30-499c-d795-08d9537ed4e2
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 17:24:05.3925
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aK/ibvUMavw2tHvTYx1P2bWVE9FH5BQbkUNlw5rRM4RxQLfeMZyEUv0PdqHheYEz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB4032
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: dv8oC5ohYK4DKWaRmoGK9WzpgA3sNvM8
-X-Proofpoint-GUID: dv8oC5ohYK4DKWaRmoGK9WzpgA3sNvM8
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-30_11:2021-07-30,2021-07-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- adultscore=0 priorityscore=1501 mlxlogscore=905 impostorscore=0
- clxscore=1015 lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107300116
-X-FB-Internal: deliver
+References: <20210729162028.29512-1-quentin@isovalent.com> <CAEf4BzbrQOr8Z2oiywT-zPBEz9jbP9_6oJXOW28LdOaqAy8pLw@mail.gmail.com>
+ <22d59def-51e7-2b98-61b6-b700e7de8ef6@isovalent.com>
+In-Reply-To: <22d59def-51e7-2b98-61b6-b700e7de8ef6@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 30 Jul 2021 10:24:38 -0700
+Message-ID: <CAEf4BzbjN+zjio3HPRkGLRgZpbLj9MUGLnXt1KDSsoOHB8_v3Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/8] libbpf: rename btf__get_from_id() and
+ btf__load() APIs, support split BTF
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Jul 30, 2021 at 8:23 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> 2021-07-29 17:31 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > On Thu, Jul 29, 2021 at 9:20 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >>
+> >> As part of the effort to move towards a v1.0 for libbpf [0], this set
+> >> improves some confusing function names related to BTF loading from and to
+> >> the kernel:
+> >>
+> >> - btf__load() becomes btf__load_into_kernel().
+> >> - btf__get_from_id becomes btf__load_from_kernel_by_id().
+> >> - A new version btf__load_from_kernel_by_id_split() extends the former to
+> >>   add support for split BTF.
+> >>
+> >> The old functions are marked for deprecation for the next minor version
+> >> (0.6) of libbpf.
+> >>
+> >> The last patch is a trivial change to bpftool to add support for dumping
+> >> split BTF objects by referencing them by their id (and not only by their
+> >> BTF path).
+> >>
+> >> [0] https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#btfh-apis
+> >>
+> >> v3:
+> >> - Use libbpf_err_ptr() in btf__load_from_kernel_by_id(), ERR_PTR() in
+> >>   bpftool's get_map_kv_btf().
+> >> - Move the definition of btf__load_from_kernel_by_id() closer to the
+> >>   btf__parse() group in btf.h (move the legacy function with it).
+> >> - Fix a bug on the return value in libbpf_find_prog_btf_id(), as a new
+> >>   patch.
+> >> - Move the btf__free() fixes to their own patch.
+> >> - Add "Fixes:" tags to relevant patches.
+> >> - Re-introduce deprecation (removed in v2) for the legacy functions, as a
+> >>   new macro LIBBPF_DEPRECATED_SINCE(major, minor, message).
+> >>
+> >> v2:
+> >> - Remove deprecation marking of legacy functions (patch 4/6 from v1).
+> >> - Make btf__load_from_kernel_by_id{,_split}() return the btf struct, adjust
+> >>   surrounding code and call btf__free() when missing.
+> >> - Add new functions to v0.5.0 API (and not v0.6.0).
+> >>
+> >> Quentin Monnet (8):
+> >>   libbpf: return non-null error on failures in libbpf_find_prog_btf_id()
+> >>   libbpf: rename btf__load() as btf__load_into_kernel()
+> >>   libbpf: rename btf__get_from_id() as btf__load_from_kernel_by_id()
+> >>   tools: free BTF objects at various locations
+> >>   tools: replace btf__get_from_id() with btf__load_from_kernel_by_id()
+> >>   libbpf: prepare deprecation of btf__get_from_id(), btf__load()
+> >>   libbpf: add split BTF support for btf__load_from_kernel_by_id()
+> >>   tools: bpftool: support dumping split BTF by id
+> >>
+> >>  tools/bpf/bpftool/btf.c                      |  8 ++---
+> >>  tools/bpf/bpftool/btf_dumper.c               |  6 ++--
+> >>  tools/bpf/bpftool/map.c                      | 14 ++++-----
+> >>  tools/bpf/bpftool/prog.c                     | 29 +++++++++++------
+> >>  tools/lib/bpf/Makefile                       |  3 ++
+> >>  tools/lib/bpf/btf.c                          | 33 ++++++++++++++------
+> >>  tools/lib/bpf/btf.h                          |  7 ++++-
+> >>  tools/lib/bpf/libbpf.c                       | 11 ++++---
+> >>  tools/lib/bpf/libbpf.map                     |  3 ++
+> >>  tools/lib/bpf/libbpf_common.h                | 19 +++++++++++
+> >>  tools/perf/util/bpf-event.c                  | 11 ++++---
+> >>  tools/perf/util/bpf_counter.c                | 12 +++++--
+> >>  tools/testing/selftests/bpf/prog_tests/btf.c |  4 ++-
+> >>  13 files changed, 113 insertions(+), 47 deletions(-)
+> >>
+> >> --
+> >> 2.30.2
+> >>
+> >
+> > I dropped patch #7 with deprecations and LIBBPF_DEPRECATED_SINCE and
+> > applied to bpf-next.
+> >
+> > Current LIBBPF_DEPRECATED_SINCE approach doesn't work (and you should
+> > have caught this when you built selftests/bpf, what happened there?).
+> > bpftool build generates warnings like this:
+> >
+> > In file included from /data/users/andriin/linux/tools/lib/bpf/libbpf.h:20,
+> >                  from xlated_dumper.c:10:
+> > /data/users/andriin/linux/tools/lib/bpf/libbpf_common.h:22:23:
+> > warning: "LIBBPF_MAJOR_VERSION" is not defined, evaluates to 0
+> > [-Wundef]
+> >   __LIBBPF_GET_VERSION(LIBBPF_MAJOR_VERSION, LIBBPF_MINOR_VERSION)
+> >                        ^~~~~~~~~~~~~~~~~~~~
+>
+> Apologies, I didn't realise the change would impact external applications.
 
+It doesn't matter, we expect everyone to compile selftest (just `make`
+in tools/testing/selftests/bpf) and run at least test_progs,
+preferably also test_maps and test_verifier. Especially with vmtest.sh
+script it's quite simple (once you get latest Clang and pahole
+compiled locally). We obviously have CI and maintainers as the last
+line of defense, but that should be the last line of defense, not the
+main line :)
 
-On 7/29/21 10:34 PM, Andrii Nakryiko wrote:
-> Introduce a new type of BPF link - BPF perf link. This brings perf_event-based
-> BPF program attachments (perf_event, tracepoints, kprobes, and uprobes) into
-> the common BPF link infrastructure, allowing to list all active perf_event
-> based attachments, auto-detaching BPF program from perf_event when link's FD
-> is closed, get generic BPF link fdinfo/get_info functionality.
-> 
-> BPF_LINK_CREATE command expects perf_event's FD as target_fd. No extra flags
-> are currently supported.
-> 
-> Force-detaching and atomic BPF program updates are not yet implemented, but
-> with perf_event-based BPF links we now have common framework for this without
-> the need to extend ioctl()-based perf_event interface.
-> 
-> One interesting consideration is a new value for bpf_attach_type, which
-> BPF_LINK_CREATE command expects. Generally, it's either 1-to-1 mapping from
-> bpf_attach_type to bpf_prog_type, or many-to-1 mapping from a subset of
-> bpf_attach_types to one bpf_prog_type (e.g., see BPF_PROG_TYPE_SK_SKB or
-> BPF_PROG_TYPE_CGROUP_SOCK). In this case, though, we have three different
-> program types (KPROBE, TRACEPOINT, PERF_EVENT) using the same perf_event-based
-> mechanism, so it's many bpf_prog_types to one bpf_attach_type. I chose to
-> define a single BPF_PERF_EVENT attach type for all of them and adjust
-> link_create()'s logic for checking correspondence between attach type and
-> program type.
-> 
-> The alternative would be to define three new attach types (e.g., BPF_KPROBE,
-> BPF_TRACEPOINT, and BPF_PERF_EVENT), but that seemed like unnecessary overkill
-> and BPF_KPROBE will cause naming conflicts with BPF_KPROBE() macro, defined by
-> libbpf. I chose to not do this to avoid unnecessary proliferation of
-> bpf_attach_type enum values and not have to deal with naming conflicts.
-> 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> >
+> > And it makes total sense. LIBBPF_DEPRECATED_SINCE() assumes
+> > LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION is defined at compilation
+> > time of the *application that is using libbpf*, not just libbpf's
+> > compilation time. And that's clearly a bogus assumption which we can't
+> > and shouldn't make. The right approach will be to define
+> > LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION in some sort of
+> > auto-generated header, included from libbpf_common.h and installed as
+> > part of libbpf package.
+>
+> So generating this header is easy. Installing it with the other headers
+> is simple too. It becomes a bit trickier when we build outside of the
+> directory (it seems I need to pass -I$(OUTPUT) to build libbpf).
 
-Acked-by: Yonghong Song <yhs@fb.com>
+Not sure why using the header is tricky. We auto-generate
+bpf_helper_defs.h, which is included from bpf_helpers.h, which is
+included in every single libbpf-using application. Works good with no
+extra magic.
+
+>
+> The step I'm most struggling with at the moment is bpftool, which
+> bootstraps a first version of itself before building libbpf, by looking
+> at the headers directly in libbpf's directory. It means that the
+> generated header with the version number has not yet been generated. Do
+> you think it is worth changing bpftool's build steps to implement this
+> deprecation helper?
+
+If it doesn't do that already, bpftool should do `make install` for
+libbpf, not just build. Install will put all the headers, generated or
+otherwise, into a designated destination folder, which should be
+passed as -I parameter. But that should be already happening due to
+bpf_helper_defs.h.
+
+>
+> Alternatively, wouldn't it make more sense to have a script in the
+> GitHub repo for libbpf, and to run it once during the release process of
+> a new version to update, say, the version number, or even the
+> deprecation status directly?
+
+I'd like to avoid extra manual steps that I or someone else will
+definitely forget from time to time. Again, taking bpf_helper_defs.h
+as a precedent. In the kernel repo we auto-generate it during build.
+But when we sync libbpf to Github, we copy and check-in
+bpf_helper_defs.h, so it's always available there (and will get
+installed on `make install` or during packaging). We should do the
+same for this new header (libbpf_version.h?).
+
+>
+> >
+> > Anyways, I've removed all the LIBBPF_DEPRECATED_SINCE stuff and
+> > applied all the rest, as it looks good and is a useful addition.
+>
+> Thanks.
+> Quentin
