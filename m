@@ -2,223 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70243DBF10
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 21:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1E43DBFB9
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 22:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhG3TfA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 15:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        id S232113AbhG3UXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 16:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbhG3TfA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:35:00 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CB8C06175F;
-        Fri, 30 Jul 2021 12:34:55 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id z18so2890347ybg.8;
-        Fri, 30 Jul 2021 12:34:54 -0700 (PDT)
+        with ESMTP id S231865AbhG3UXU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 16:23:20 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F026C061765
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 13:23:14 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so22420004pjb.3
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 13:23:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=V8MdH2wjB2JpyJVI9OK1vdjPEtNwyNdoxYpO8ivKZ14=;
-        b=R6/h7MSSK4R1jU4gCvs62G379ZLLsXfUNGRROXQW5mMUpFHU5wOT7MncIPXoGPLuEk
-         HTFJuCA6UipscRKE521weYz0OqQ/UA4EixQ8bZUPe9foQLRn4C57gKR/GOZ5dYxWTxcq
-         tCLBlsRniCMUL2lRFiRQL83DjBzpFWM/d/5OwPruUpWunfvPtwpBkhChJoZEffKrctcz
-         GTc6lLkECYl/zgkK0GY9n4u+9KFwpPc6ffXuQym4AL8Yua9EYRNGppQabixchdc7rm+O
-         9xScwqIKLBTxCH6UX+PGszeDLraYnLhrUHDfFk0yJVDYa2vJFy/j+DPF9YlhxDOHeSWy
-         nc9A==
+        bh=L6GZwee3zFFPBRG9bG2No8hxtp9CFwbkFuUJbccfQD8=;
+        b=JOXZU0qKiHccvRmfAizmxvmud0U+2vK3GFGatspi4UhZRWN3JsNmy3MdrbFHbeAeJM
+         lrYOTe1Ho70mPMzYNS5JwA55FuwyRj13ksmPSMFGqIoJAG7CiU2s29g04sacltNidi8T
+         diHZAcffS23I++UNReWAA5HcM+Lw2yxQpJq1IYAcNSqzRadS936SgWQMcpaRzFoWb1Gd
+         Wy4I1H9xPQ5ofw2grKWdDE8R/sEVbt8Knnp5w29aydvkox2IWf5HPg+cM+xi1k6Y7XDI
+         f3/0udHVUmYlW2fHQqtQPgVoe7hqfWiDRLKBIo4Hl7KAYytUsRs+4MqhKifbRAvhCR1w
+         g1nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=V8MdH2wjB2JpyJVI9OK1vdjPEtNwyNdoxYpO8ivKZ14=;
-        b=ppLkJuGXuN8Y/JC9LuNXA1JxI82oTPSvLY0LkDNxOQ6OOfpIxQ28RhEpGcPmfR7tzR
-         mcBuqVWqmAYTKv5eFyZSy1XV+xOyBuxmYomy9KwlADmTYFGvUTjRCWMBCX+ZGp5oBhRJ
-         iEuvVq4Aw4VmJfVeNPjykiLo033kh89+IjbRdfD9AChFWVvPsfHGMmHSlnyINh6v/SSf
-         AfRlipRHT7pTaLO2JqbrSO38zPLswBJ+OrAF5dC87QmfIB/Fdb0VInmQRT6zMH9NjEaz
-         GgeSWbO8dbUFE42ED9V9/1pye1MWNT74XhookJABzphHzXewhsyQJzfVWtE46ai6tT7l
-         rhZw==
-X-Gm-Message-State: AOAM533D8B9IMe8qTTMWTVclXduw+EDfoDxF7yTOAmmggrUL6BlC/APH
-        5oahBseKO3HXrfstNNui5aWJSkKGV4il4yIqh5s=
-X-Google-Smtp-Source: ABdhPJx5cxr6mK/AozEPsCN3m4aeAUmhtz2oCJBwapQ2GAL4VQac5FuD3kH5u0rNQQUJ0Yqceo+x3EN08Yly5QnweNk=
-X-Received: by 2002:a25:cdc7:: with SMTP id d190mr5157604ybf.425.1627673694256;
- Fri, 30 Jul 2021 12:34:54 -0700 (PDT)
+        bh=L6GZwee3zFFPBRG9bG2No8hxtp9CFwbkFuUJbccfQD8=;
+        b=mk+6uZO7CqiInbipIU4WLBHDtvNQQf91hvBKVkNJbviyZbG89n4HZ4BIjRIeUeTzJ9
+         F/S/NH1M6R9gxH2URCKLUw+2zMu2R1+mXyW0plYrMhQTVLUbp57sdkZN77vqqg2Uq1hL
+         r9rejUTsjbs8c3Uuzfc2VATDhgB4pPP925qo0bZZ7Jg3BqxPhV6C8ROSo54gRb76K4Jy
+         T7KXDhbZQidKeefApcr3f45qFR3kQ+EZ/mlAn40XQrrXZccHHcBPqZyYpc97KqEdGmxc
+         Gs/I8x/Cc7sEOAvYOe4vBXtqT36QtfC2j4KbVagCGQsRUzdK2cClzZC8h2Ht44gmVzxw
+         MZGw==
+X-Gm-Message-State: AOAM5329FXm0jKEeeX3NN4/C+mfbURKdzDgZGXBnim/LjYDznCkvcQ5r
+        6nqZ1fbhMKxIi4KwpYv7sJuFAiNWmHeTGxbsXsfddw==
+X-Google-Smtp-Source: ABdhPJzqTNIRbw91KykDwe5YpS6CSO6GukDdkNVThVJ90gsI7hID/Uof2oiHLdFn5gxpJ1RoZDgN/n4fI8N7+AryPbw=
+X-Received: by 2002:a17:902:e551:b029:12b:7e4c:b34 with SMTP id
+ n17-20020a170902e551b029012b7e4c0b34mr3977994plf.43.1627676594074; Fri, 30
+ Jul 2021 13:23:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210729233645.4869-1-kuniyu@amazon.co.jp> <20210729233645.4869-3-kuniyu@amazon.co.jp>
-In-Reply-To: <20210729233645.4869-3-kuniyu@amazon.co.jp>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Jul 2021 12:34:43 -0700
-Message-ID: <CAEf4Bza6ac8B+PCHm9=-v4LpYW2E++dd1ur91MwHMjjcQS++wA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftest/bpf: Implement sample UNIX domain
- socket iterator program.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20210729162028.29512-1-quentin@isovalent.com> <CAEf4BzbrQOr8Z2oiywT-zPBEz9jbP9_6oJXOW28LdOaqAy8pLw@mail.gmail.com>
+ <22d59def-51e7-2b98-61b6-b700e7de8ef6@isovalent.com> <CAEf4BzbjN+zjio3HPRkGLRgZpbLj9MUGLnXt1KDSsoOHB8_v3Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzbjN+zjio3HPRkGLRgZpbLj9MUGLnXt1KDSsoOHB8_v3Q@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Date:   Fri, 30 Jul 2021 21:23:02 +0100
+Message-ID: <CACdoK4KCbseLYzY2aqVM5KC0oXOwzE-5b3-g07uoeyJN4+r70g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/8] libbpf: rename btf__get_from_id() and
+ btf__load() APIs, support split BTF
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 4:37 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
->
-> If there are no abstract sockets, this prog can output the same result
-> compared to /proc/net/unix.
->
->   # cat /sys/fs/bpf/unix | head -n 2
->   Num       RefCount Protocol Flags    Type St Inode Path
->   ffff9ab7122db000: 00000002 00000000 00010000 0001 01 10623 private/defer
->
->   # cat /proc/net/unix | head -n 2
->   Num       RefCount Protocol Flags    Type St Inode Path
->   ffff9ab7122db000: 00000002 00000000 00010000 0001 01 10623 private/defer
->
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> ---
->  .../selftests/bpf/prog_tests/bpf_iter.c       | 17 +++++
->  .../selftests/bpf/progs/bpf_iter_unix.c       | 75 +++++++++++++++++++
->  2 files changed, 92 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_unix.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> index 1f1aade56504..4746bac68d36 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> @@ -13,6 +13,7 @@
->  #include "bpf_iter_tcp6.skel.h"
->  #include "bpf_iter_udp4.skel.h"
->  #include "bpf_iter_udp6.skel.h"
-> +#include "bpf_iter_unix.skel.h"
->  #include "bpf_iter_test_kern1.skel.h"
->  #include "bpf_iter_test_kern2.skel.h"
->  #include "bpf_iter_test_kern3.skel.h"
-> @@ -313,6 +314,20 @@ static void test_udp6(void)
->         bpf_iter_udp6__destroy(skel);
->  }
->
-> +static void test_unix(void)
-> +{
-> +       struct bpf_iter_unix *skel;
-> +
-> +       skel = bpf_iter_unix__open_and_load();
-> +       if (CHECK(!skel, "bpf_iter_unix__open_and_load",
+On Fri, 30 Jul 2021 at 18:24, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-please use new ASSERT_PTR_OK() macro instead
+[...]
 
-> +                 "skeleton open_and_load failed\n"))
-> +               return;
-> +
-> +       do_dummy_read(skel->progs.dump_unix);
-> +
-> +       bpf_iter_unix__destroy(skel);
-> +}
-> +
->  /* The expected string is less than 16 bytes */
->  static int do_read_with_fd(int iter_fd, const char *expected,
->                            bool read_one_char)
-> @@ -1255,6 +1270,8 @@ void test_bpf_iter(void)
->                 test_udp4();
->         if (test__start_subtest("udp6"))
->                 test_udp6();
-> +       if (test__start_subtest("unix"))
-> +               test_unix();
->         if (test__start_subtest("anon"))
->                 test_anon_iter(false);
->         if (test__start_subtest("anon-read-one-char"))
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_unix.c b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-> new file mode 100644
-> index 000000000000..285ec2f7944d
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright Amazon.com Inc. or its affiliates. */
-> +#include "bpf_iter.h"
-> +#include "bpf_tracing_net.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_endian.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define __SO_ACCEPTCON         (1 << 16)
-> +#define UNIX_HASH_SIZE         256
-> +#define UNIX_ABSTRACT(unix_sk) (unix_sk->addr->hash < UNIX_HASH_SIZE)
-> +
-> +static long sock_i_ino(const struct sock *sk)
-> +{
-> +       const struct socket *sk_socket = sk->sk_socket;
-> +       const struct inode *inode;
-> +       unsigned long ino;
-> +
-> +       if (!sk_socket)
-> +               return 0;
-> +
-> +       inode = &container_of(sk_socket, struct socket_alloc, socket)->vfs_inode;
-> +       bpf_probe_read_kernel(&ino, sizeof(ino), &inode->i_ino);
-> +       return ino;
-> +}
-> +
-> +SEC("iter/unix")
-> +int dump_unix(struct bpf_iter__unix *ctx)
-> +{
-> +       struct unix_sock *unix_sk = ctx->unix_sk;
-> +       struct sock *sk = (struct sock *)unix_sk;
-> +       struct seq_file *seq;
-> +       __u32 seq_num;
-> +
-> +       if (!unix_sk)
-> +               return 0;
-> +
-> +       seq = ctx->meta->seq;
-> +       seq_num = ctx->meta->seq_num;
-> +       if (seq_num == 0)
-> +               BPF_SEQ_PRINTF(seq, "Num       RefCount Protocol Flags    "
-> +                              "Type St Inode Path\n");
-> +
-> +       BPF_SEQ_PRINTF(seq, "%pK: %08X %08X %08X %04X %02X %5lu",
-> +                      unix_sk,
-> +                      sk->sk_refcnt.refs.counter,
-> +                      0,
-> +                      sk->sk_state == TCP_LISTEN ? __SO_ACCEPTCON : 0,
-> +                      sk->sk_type,
-> +                      sk->sk_socket ?
-> +                      (sk->sk_state == TCP_ESTABLISHED ?
-> +                       SS_CONNECTED : SS_UNCONNECTED) :
-> +                      (sk->sk_state == TCP_ESTABLISHED ?
-> +                       SS_CONNECTING : SS_DISCONNECTING),
-
-nit: I'd keep these ternary operators on a single line for
-readability. Same for header PRINTF above.
-
-> +                      sock_i_ino(sk));
-> +
-> +       if (unix_sk->addr) {
-> +               if (UNIX_ABSTRACT(unix_sk))
-> +                       /* Abstract UNIX domain socket can contain '\0' in
-> +                        * the path, and it should be escaped.  However, it
-> +                        * requires loops and the BPF verifier rejects it.
-> +                        * So here, print only the escaped first byte to
-> +                        * indicate it is an abstract UNIX domain socket.
-> +                        * (See: unix_seq_show() and commit e7947ea770d0d)
-> +                        */
-> +                       BPF_SEQ_PRINTF(seq, " @");
-> +               else
-> +                       BPF_SEQ_PRINTF(seq, " %s", unix_sk->addr->name->sun_path);
-> +       }
-> +
-> +       BPF_SEQ_PRINTF(seq, "\n");
-> +
-> +       return 0;
-> +}
-> --
-> 2.30.2
+> > > The right approach will be to define
+> > > LIBBPF_MAJOR_VERSION/LIBBPF_MINOR_VERSION in some sort of
+> > > auto-generated header, included from libbpf_common.h and installed as
+> > > part of libbpf package.
+> >
+> > So generating this header is easy. Installing it with the other headers
+> > is simple too. It becomes a bit trickier when we build outside of the
+> > directory (it seems I need to pass -I$(OUTPUT) to build libbpf).
 >
+> Not sure why using the header is tricky. We auto-generate
+> bpf_helper_defs.h, which is included from bpf_helpers.h, which is
+> included in every single libbpf-using application. Works good with no
+> extra magic.
+
+bpf_helper_defs.h is the first thing I looked at, and I processed
+libbpf_version.h just like it. But there is a difference:
+bpf_helper_defs.h is _not_ included in libbpf itself, nor is it needed
+in bpftool at the bootstrap stage (it is only included from the eBPF
+skeletons for profiling or showing PIDs etc., which are compiled after
+libbpf). The version header is needed in both cases.
+
+>
+> >
+> > The step I'm most struggling with at the moment is bpftool, which
+> > bootstraps a first version of itself before building libbpf, by looking
+> > at the headers directly in libbpf's directory. It means that the
+> > generated header with the version number has not yet been generated. Do
+> > you think it is worth changing bpftool's build steps to implement this
+> > deprecation helper?
+>
+> If it doesn't do that already, bpftool should do `make install` for
+> libbpf, not just build. Install will put all the headers, generated or
+> otherwise, into a designated destination folder, which should be
+> passed as -I parameter. But that should be already happening due to
+> bpf_helper_defs.h.
+
+bpftool does not run "make install". It compiles libbpf passing
+"OUTPUT=$(LIBBPF_OUTPUT)", sets LIBBPF_PATH to the same directory, and
+then adds "-I$(LIBBPF_PATH)" for accessing bpf_helper_defs.h and compile
+its eBPF programs. It is possible to include libbpf_version.h the same
+way, but only after libbpf has been compiled, after the bootstrap.
+
+I'll look into updating the Makefile to compile and install libbpf
+before the bootstrap, when I have some time.
