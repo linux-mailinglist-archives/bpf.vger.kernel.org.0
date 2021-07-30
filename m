@@ -2,150 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FF03DB3FD
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 08:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8972B3DB445
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 09:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237735AbhG3Gyw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 02:54:52 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38412 "EHLO
+        id S237600AbhG3HJe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 03:09:34 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:5234 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237463AbhG3Gyv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 30 Jul 2021 02:54:51 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U6pQnm022485;
-        Thu, 29 Jul 2021 23:54:33 -0700
+        by vger.kernel.org with ESMTP id S230226AbhG3HJd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 30 Jul 2021 03:09:33 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U75HOt017082;
+        Fri, 30 Jul 2021 00:09:14 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=c/oeMI1S74/Re8mJPbugwDkCEfz9doSbXuovc4ZYpNw=;
- b=FtczgN/ETrIp1Hh5XGPTHY+55djQcFogFPj9soUfawj3hwenT5ndnDKEIO6a5+cJ3V9Z
- d+mCUBGn9VCg7V5/ys1rcvDqbp25zb3u02UTxEg5NXuQNNPna9dU0GF+In/37/73aUFO
- v7AvMGDFBjDSrCAqdbD+jHE480ig2KHWmp8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a491c91yv-1
+ bh=PnyGmCu9rBLZ9oKKIfcr4i1iExwV/uTH8K0sBzmDKrw=;
+ b=n98MQbwxrTnWlP8uOCRa6faz8Sg2KgXSS6TABezvHbb4/1sMo9IPWQibKZ/D2w8lz8uE
+ hdyN+gHS981/LB7RaQASaafwz3qh+Bpgxq5AqSYrj7OylqnNCPRqbzrE1WNvM3UYnP8Y
+ TrFe3uRhgWLxAdK2jKspuJRpfquuIIh3Ejc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a3vrteaex-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 29 Jul 2021 23:54:32 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+        Fri, 30 Jul 2021 00:09:14 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 23:54:31 -0700
+ 15.1.2176.2; Fri, 30 Jul 2021 00:09:13 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NCo5UEvsN5AeQ2f90g82LvUHY1ZfJaCABiTHzafxsEe9MCu6gn1QLfTVPMxlIvEvZqHtGA4VUeimoMlIfzjRHcGAesAm2rPU0tAQKvJM4ZOq0a8aFO2JigubyYeQciYtFp5qGeL/w4KtqYYs6yezhhHvDZhUnidv2h7SHV4bgJ1DmdtAwdPP9diHHxxyDKzNVBmR+RVnRUNj4X0hWcDmvCU2BQyLrUFD+nEYvhM2i/+KV98+NVL0PkA5pawNcegkyL1ZJyxlrJ8XMXL0lqantwqIwIndVXo+NuGOCqGWF+T9AtXBkKoDPnlUDtmhfPTdGHeLcc89Bc3t2611Ey4G9Q==
+ b=Kx3TFeIF4w4YZunsq14FXGNo/anSAgIqfRBk8iZBnkL1HrwAi2UKjmR4HUzkSNwXkHdXKKnasmYTeJnq21hLfRae8KbUKVXIZftx0E9LhfPma5EyzxSPP/3nWYkV46YAJM+ZVrGAfcEt4Xg15TwlyLZ5IDaQJi2uYCoBSwfc+gAxp20K0WJL/Z4mEn+Np9OaK5YhpkXrZVU/F7UmeYgMLp+6IJb2NrCaKcxpG8FXK6T4Xi6jbT43byAmpqFq/QGIdf+dEDt2CFqycQ2vULQ7aXmMeXareGVhik+iIxkaqO1G694zXygdJuJNc4GKAjymQ02yRn8PB28Tt/Fntjnbbw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c/oeMI1S74/Re8mJPbugwDkCEfz9doSbXuovc4ZYpNw=;
- b=JZuZngxKtbe8q3ioIUt4Qy6V7WVuA8SKvGuh+Ayc5pigkAIbU+hr6qtLN3uUdCqrMHI805d0mBO0B2UCcrFgIFNZKbaI815kdYMGaoB1NDgdt4pG+wmosuv4vugLqEQU/IT+8ScSs/ZL3kqGPAlpS0WtQrgEDL2i70im2XC2nbB/ck+ngxBVuhj5uDlDlhm8OkCWWzyvwKr8cA4WhY8rxu2RYyHNa86cMMlrvTWCd76uoc/h4sCDvr3hYROMJPLZWcmyGbeS5jnhhS+nnBpPNLXloWkbhGe7ds+IZkjwBGX7+lW2Zh94iJ1vvuXbBPHDkqhjgBOUuDMUqRO/38fT7g==
+ bh=PnyGmCu9rBLZ9oKKIfcr4i1iExwV/uTH8K0sBzmDKrw=;
+ b=iAx6NVTgJuZqfjLMTI91cm+w9+zJUe1F+FvlHcRH+QUKmdGx9zkDKocZyiOvP8DzNkxWdObZYHS0DeY7ZMGVD7fSgI5J1KY2WR6JSIJ8mmdFSdMfmiLwJmRhQMWjQFokKuT/UDYoaXyAtJ81muROE4cJu8eXl2n0PGkivX4F0YP3A7AyJe7X4jFdKhgU8NpOipoadz6EiQa98MsXsubuufzdZ5OfI9/h6DeGqHuqpiaCvRio4IjPsg0n3ikZkRmh8/FY0Iw3DJ7CZ7kV5h3I1drhXNsHlOHXWS5nxiFlY+BhUZ6pBlmTYfSZ1sn+RjCMp3iCv6StMTMQXNa02KFhaA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4386.namprd15.prod.outlook.com (2603:10b6:806:191::11) with
+ by SN6PR15MB2413.namprd15.prod.outlook.com (2603:10b6:805:1b::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Fri, 30 Jul
- 2021 06:54:30 +0000
+ 2021 07:09:11 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4373.021; Fri, 30 Jul 2021
- 06:54:30 +0000
-Subject: Re: [PATCH bpf-next 2/2] selftest/bpf: Implement sample UNIX domain
- socket iterator program.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-CC:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-References: <20210729233645.4869-1-kuniyu@amazon.co.jp>
- <20210729233645.4869-3-kuniyu@amazon.co.jp>
+ 07:09:11 +0000
+Subject: Re: [PATCH bpf-next 1/2] bpf: af_unix: Implement BPF iterator for
+ UNIX domain socket.
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <john.fastabend@gmail.com>, <kafai@fb.com>,
+        <kpsingh@kernel.org>, <kuba@kernel.org>, <kuni1840@gmail.com>,
+        <netdev@vger.kernel.org>, <songliubraving@fb.com>
+References: <bcdc1540-c957-51b8-2a94-1b350a1a5a6a@fb.com>
+ <20210730065359.43302-1-kuniyu@amazon.co.jp>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <0a16fcbb-1c17-dfe2-24b0-6f1d1e6a91bd@fb.com>
-Date:   Thu, 29 Jul 2021 23:54:26 -0700
+Message-ID: <65fa9a82-6e1b-da0f-9cad-9b26771980fd@fb.com>
+Date:   Fri, 30 Jul 2021 00:09:08 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <20210729233645.4869-3-kuniyu@amazon.co.jp>
+In-Reply-To: <20210730065359.43302-1-kuniyu@amazon.co.jp>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0042.namprd04.prod.outlook.com
- (2603:10b6:303:6a::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR03CA0336.namprd03.prod.outlook.com
+ (2603:10b6:a03:39c::11) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1130] (2620:10d:c090:400::5:1fa2) by MW4PR04CA0042.namprd04.prod.outlook.com (2603:10b6:303:6a::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.22 via Frontend Transport; Fri, 30 Jul 2021 06:54:28 +0000
+Received: from [IPv6:2620:10d:c085:21d6::1130] (2620:10d:c090:400::5:1fa2) by SJ0PR03CA0336.namprd03.prod.outlook.com (2603:10b6:a03:39c::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20 via Frontend Transport; Fri, 30 Jul 2021 07:09:10 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e49d58ff-9eb1-41e3-8df9-08d95326e119
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4386:
+X-MS-Office365-Filtering-Correlation-Id: 3328d127-1c5d-413c-9566-08d95328ee6f
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2413:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA1PR15MB438656732A3D9B1969D7674CD3EC9@SA1PR15MB4386.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SN6PR15MB2413F7F89D31AFCD6B4759BBD3EC9@SN6PR15MB2413.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:459;
+X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: d1FgpImXxwsQ7Nn7gM++oV3zdl5s1bg9AcZ0+QmuJ6PoCh5czB4SW2at/omQz/jBMF1xeE1t66MF1sBluwzVHeoBSiuijkORlIi2dnACxajMDPC3ry8uqXXkJ6ejaRMqLvJ27rP0FNQYEGiJjW0/1NF26hKd+eY/C37Ru1ZEWOakgQspZbYDYakwZS5dm4pC82pDdZrSVLgHxU/2HY6/j2IwfOxCdNPMBi6haP/aEhpIaYHm88UpAMxT+tdIQLmfI0bhPAlDPRC+IQEo/m97u7ka4/xeHkoLd2Umo26tt3/bSu65LmhwIx6d/ekTlKIuM5D2bJ1mESCvoVbC67dYPUKvxlgCmZSYNbu3UxXdwZXgui68baai6nlVfS6OdD+loc7XAh0hlZZvTKJ9cVyMFk8fJ8sGrqnS6F5qBYk+hVgL01cPO4gDZqbBTzcCyk7My38sAx1s0BBq/EYN2wW75l4GL9F2R9+OpZBmJiI3Qn/Rzmqt5/vWqdF9PcpKVRrRfTD1jbnXABpMwVWJyNHpW8ZQHId/gpngDPOWE58E7EQuJMbhJTrBkwlJmvu8hRIAaIdqCFRyaUaQV510y4q+FiVZdLUlZPoiA2rtn2oq3gQE2QMawtVDqn1M95j/zmLAFBUGkf+D9wTrX0m6r9LIhIxwfzIahEKYe9P7y9O9QenmMJ84Ke9pHFXK9QNuaNdlwTp/s570DU2z9a/f6MV/e+sHo+PIitV1ckLWcsK35JT9vO+ZXci1g0yaj/0ov4ua
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(376002)(39860400002)(346002)(5660300002)(54906003)(110136005)(86362001)(66556008)(66476007)(53546011)(66946007)(31696002)(8936002)(31686004)(478600001)(38100700002)(52116002)(186003)(2616005)(6486002)(4326008)(8676002)(2906002)(7416002)(921005)(83380400001)(316002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: +nPkkBCvUJXSgs29ssZizfVnwDbosleQBhDVNHlmjHlBYLAUQhXkqyaReaLTBHofQ9e9HJ3Q2ROwwVfiQNBxzaTCAYNaRz2A9BUvIlUXbE19jtW7EnoOMJr355m4C44jFxAiWE+7rbvhBm/k5m7fl6x4oS6qGXs9RTaoscY5cubwCyXr2DDl8aEbIYIClbpfi2tWvoG/EiygOaXH6BB4qth3v8G9gvm3kZvRpL5WhGzk2cDyrm2tX6y8feQtPa4jjJ5GX0ToGd6bjigdZcht+W4zEFFJecq8mCXoOjDp58/vzF5wuHzZQHMPSbxPkBpMb6NzwaSD+b1NkJD0t4DzuQOX3t0v8ecnpVhF1ij4C1FY+jORUyxjSs64TrRVIXjSzGIixzmfKCXrFqyi1TkwPSQhlce1LnxOKqhg3FRgVSr5QHWUAWldOrsU2wuI4OqAgA8/fHrJoZwO7FEAbLOOp7LFCplWgtPLTrVmGDSObHioqxUqEFIDlSuJnLmWOt/6kRpNFcElbHe+I1SezvORCsX5svW/cO80cDp93VkZplT6WBWXGzjHuc6WV0qLoAq6BhhLUFugfndndjn7vutztEkAd5Gb23DlPTeMA9LOoT8OdETpQLtn/HFK1NMP2t7UFMgVA49JAEb3XKC7mY2uIX9Kam+n3RMCI0DwAATpt/ROfAdwzg7G2n8ZdtNPvSp4BQ63vss6FpgzD2lSEOMZfCWosmPrMZd66xFOHmRw0lQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(508600001)(2616005)(66946007)(316002)(5660300002)(2906002)(8676002)(8936002)(6486002)(7416002)(66476007)(38100700002)(66556008)(6916009)(186003)(52116002)(31686004)(83380400001)(53546011)(31696002)(36756003)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WmZKbjU1cEo3YjEwRWhHcEdkRDFpVGtzOW5WcnBvVU56TmpnT1lqV3JOcElr?=
- =?utf-8?B?R0ZaMVJCWXBUUG1pUFhUVDN3NmFFUlhkYnFSOWoxVlNlM2VBTUZsako1YTBi?=
- =?utf-8?B?eUZ6aHFvY1dLVm5UZUJaY1ZtZ0ZRVkwySm81VEMzVDhwV3AwcXRWZzAxR1Vk?=
- =?utf-8?B?aURIcXdSQ29Wczk5Q3BWRlZ6SGc3dFpnemJVN2lDSS9mVDllMWw5VlYwTHRQ?=
- =?utf-8?B?NmhJOE5VY2hRaGMzNyt3SnM5RjhzenlOQTIyMjJwWlFSNlY4cHViaVhzN3cz?=
- =?utf-8?B?aUtsOWk4QkhyQU4zT0t5aWRsVXBrS0hYNnBCYkJQUThDdXlQMHFNSCtaVDVY?=
- =?utf-8?B?WFJ3NnI4UWJIK3dFRkp1UWh2eGNxekNXMmh5NXZTc3VLdnQ2RUNKQXE5UWF0?=
- =?utf-8?B?NU5HUHRpa1c4TXpHQTZqQVN2VGgxTXlPclYyelpNaFcwUEtzcTBJRHVEa3Zj?=
- =?utf-8?B?bXd5dUoxaERJOEhWWHNBeTNxSkhqc053V21VbjVFWWVVNmZIR2ZRRG1HNHph?=
- =?utf-8?B?bDIzRGdmaWZFMGQ2WElrUHRLeVVybWZpakltclR5QzdNRms1VGlrWFV1alJx?=
- =?utf-8?B?STB5ZkxnR2dhSU1sY01DYW4rcEtrdE5seTZ3TmNjSU8wTFRaaktCWTBtdUd1?=
- =?utf-8?B?VVNnZE9kMFBNWHc5NzJXVExwN3c5R3ZOVzEyTkg4M1ZHVE10NTFLWmJEait5?=
- =?utf-8?B?T0EvSUZEeDIvYkd4c3VZQ3Q2ZTA1aFJhQ0tRaXRqVDBUZHUwbkYxSWFsczBn?=
- =?utf-8?B?OUVFTE5Kd0dPTG5FaVF5RFV0NXdxTnFzaVpUZEpIR21sQ0M2bjQwK0J4dGxq?=
- =?utf-8?B?M1VPZ3JZRW1CbXBSU25SMmtRREZaZjRROGNlUFdJditVSWxxcG0zZkFGRXBV?=
- =?utf-8?B?aFVyenZVT1R0QVMwLzVjVzN1Z3lJT0xNWkFWeEJ3ZVMrVkwxMmNhdi9hdnor?=
- =?utf-8?B?UXhrRzcxOHd0K1BtNmpCWlEvNmk0eitsVVZIazBDWEpUUnZIWFREWG81Tkxu?=
- =?utf-8?B?OU91d3hzTE5uYVlDZXo3eEY0UEExVjVQcUpKSFJldEpVMEZsUmxXMXNaSjFj?=
- =?utf-8?B?UHYvTVQxVFgrSnN4VU1lNlRnbTdMN0ZUUmk5dUtVN1JoQWxlNDhweURUTXE2?=
- =?utf-8?B?cEpmOWFFK0kzT1lVYlJzK0gxbnFUNldkemNOMVZFbEhGeFJlcVNVS2U0THg5?=
- =?utf-8?B?cnliRzBWNTZoNnpMS0JKTHlzemZyTjBnLzlFTjlkOVNjTnZzbDBORUFzQW1s?=
- =?utf-8?B?NHJGSTZxeDllMHhJWWpqTmpvbDVrN002V1hWa1Rwc3FJcnQ0MlBDT2lMMGtk?=
- =?utf-8?B?L1pTWlVZMUZSdUhXdmt6ZlhzU1J3OEx1RU9KcXFOdUhXQzlCODFXSFpTV2Va?=
- =?utf-8?B?Zy9RSkcrRDBMblQyNGFNSyt5WUxLVjZLYzNkOFNzYkVWTjZnUGhUSDRRUWxy?=
- =?utf-8?B?MksxQVYrS21iK2tFeHhERVVTNk52dVkrb1BmeEN5MGthUTN1elkwUWgydkZu?=
- =?utf-8?B?NHpFeDVDTHV2cHloMSt2RzVlajJRQ3pIdXFhbjRhL1lyWU1ZRitaZUp2Tkx4?=
- =?utf-8?B?bmtFR2pZY04zZnhENzB4NjUrblVjNDJ3ZVI1YTRJbnFoR01jNUoxL3RaZXlS?=
- =?utf-8?B?d1BXZW1wTlRDN1JYcEZRVHNmM3I0ankrTDJ5VDVJeEU5b3J2TTVxSjgwcnU5?=
- =?utf-8?B?RlFBQW1BV280UmpFTThYMm82Z1Bqd2o5cVh3MTZWQnQ5dFpIRDRxY09ua2Jh?=
- =?utf-8?B?dVN1aEc0QVhMYUtKR3NsUXduNlRNUGxOSUdFTmxIMkx1ZWdMUmhVMTRncDRU?=
- =?utf-8?Q?fATeyCAzZvEItQ9epL55Wrl5DgW0E/+FuHhLs=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e49d58ff-9eb1-41e3-8df9-08d95326e119
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WmgxTDVNMDdrc05sSC8wNDg3N2ROK2o0QTF5WmRGRUJaeXF6RW1WcWF4aXNa?=
+ =?utf-8?B?YW51TVhKZFF1RkFIcFFCeXU3T3Y4T01kVEJNQXBDSTRndDA2ejB3b0w0Lzlw?=
+ =?utf-8?B?U1ZJbDY5K0NXSEhIQzBKM25scTdreGFwclQxZ2NKem41OXpBKy8yUjdTS1lh?=
+ =?utf-8?B?MnJnK21XdGRLSlRLY0dPcmt2Z2M3czl6MnNnUHg0Um85ck53NG9qSU0yaWgw?=
+ =?utf-8?B?TXB6ZXU3aEhBMGZIbkpBNGZrRTkrSTNjdXk5YzVKbHFyOEFwdDJlblFaRHlF?=
+ =?utf-8?B?cFpoUlp6RUF3QWthbnVqSFNLVFY2ZEhhbS9yRUNpL0QzMkhxVmZ4anAxT3NP?=
+ =?utf-8?B?djFaNzgxcmtXc25nMFg4TjdNcmtyaWRJMDlpczhLYThVeWMwY0RZbDNZR09x?=
+ =?utf-8?B?WmZwYjFXK0NWb292VU1tM1VKTko4ZlZnYVRhSHdxWk51TGV2SElkVU1rMk1U?=
+ =?utf-8?B?K21KTFVKNUhFcklQYUw5WTJTRUpvQmViZTNoVWpadHdjNnhJYmtkSkVqRjNx?=
+ =?utf-8?B?NTFUYk1Kam51dXFiK3JkK21OVGRpbEtPZW5LSnNtdUVlK3BPY053eTkyZFha?=
+ =?utf-8?B?ZHJOTVhiRXZTM1RqWEpTeWFZd1ZGaFpDVGRZZkc1UzRkMjZBNEQvV1E1TXU3?=
+ =?utf-8?B?Y3IyVUl0dUNtTCtudDI4L1hkbE9YbEJGcE9NWHg2blJDenJpRU1vN05tUC9v?=
+ =?utf-8?B?VGVWSlN4VUFRenhSd1hNSC9QVEJMUWpFdDlFcDFka0tSUVJ1WitIL1FicFo5?=
+ =?utf-8?B?Q3F4b0VwQ1JYalAvNW9rQlc4TzVnQWVSRGlFZkg5UGlRSnhDRk1WUkhoZWFp?=
+ =?utf-8?B?Wi9oYW5lNzFZNlhKRDM4bzBKRWtNMzl4M29rYmxtUzgvaGJ0a2UxbUp6NnMr?=
+ =?utf-8?B?OHhtK2RsWGtkSzd2RjVKVExscHRKdEVVamlSaUE5RzhwYW5JR1V4WjdVZzlt?=
+ =?utf-8?B?NVc2emVEUFd6Rkdvd2pPZVAvUFZVZ1kzY2VISnBvalgya2hyWmJ3OUh4U3Vz?=
+ =?utf-8?B?NGVvL2l1Q3IxeWVDUEIvYnlxQkc0T3VMM3d4blJmdTFoRm9VZVZUb3IyalVq?=
+ =?utf-8?B?WXRBVXlIbVBWcG1rK2pHakZhbXgxTkI3b2pNVk0xREV4THpBVXl4cVhnQmVp?=
+ =?utf-8?B?WmVLR3FBZWw1RjZwUEFYNUtVT3VMbklGRmprNER4L1I2YktLNGtqZDE3R05G?=
+ =?utf-8?B?ckNvQlRSN3lsdTVhSUZoM0xxN3JSWmlqY2NpTzAvalpoY0lwNlRtWCtTbjhX?=
+ =?utf-8?B?NThCdHdlbGlxZ3BraWIyVEZGREFKVENmcnB3dVR2OHRpejBRcVlhK1J3cUcy?=
+ =?utf-8?B?RjY3Q2VvQkQ0V1Y0TUgvekcrUzcvVlp4TW1IV2tkaFBadGZCNVNpcExkVDBC?=
+ =?utf-8?B?RUdMeHJHbXk3S1hDMUlya0FGQW01MXJDbGxTNTdTV3ZNeVdUWWRDVE9JSW1S?=
+ =?utf-8?B?MUp6aVp2eHBHclE2czN1R3dYNytjejh4RmRBMnZXRFdUT3NVKzA0RE1HYWFR?=
+ =?utf-8?B?djBkRXdZVG5CUzVmd3NLcTZKUzdHeXFTRmo1R21vbmtZSEZVb2o2NS9YSDNC?=
+ =?utf-8?B?S0svZG0wUE53YTczSHVFQWJEQjg1QnZDZzlmSXFENHE4OG04M0dRQ1RyMlFR?=
+ =?utf-8?B?K2xTUExaS0dTcWtCazlJVHVIbllkbGpuREx0MzBaeVpjUUJ1Z3g2UjVpUzhw?=
+ =?utf-8?B?cFFoL3VkR0ZHWmRtZlhNQ1VUdmE5UGtXaWZockhBSmp5WjdXcnM1RDMxcDFM?=
+ =?utf-8?B?c21pK2VETThTYUhGbEw3MVV1dG9XbVd0REJqaGQ0UnhWR3IwTHowTC8zMDJq?=
+ =?utf-8?Q?m8Py+TOYM+WaA0aVfM+naOe0rZGJjFFHkXVJU=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3328d127-1c5d-413c-9566-08d95328ee6f
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 06:54:30.1326
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 07:09:11.4902
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3vPz1P4+aiKxRIEkPb3ts6Ig1w4jXLwMOhB9rOIn04ZeyTedD8kwzcwuX/TGFu1B
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4386
+X-MS-Exchange-CrossTenant-UserPrincipalName: pDBWF9jKWyx+49wMu2yahLNVd/3pFHrs4Kfbv9BDU/NGAVhbfb0ahLooBnAyaM+J
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2413
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: hqDuK2oi8LRGDTVOBuTq7CJa6ChzKYFu
-X-Proofpoint-GUID: hqDuK2oi8LRGDTVOBuTq7CJa6ChzKYFu
+X-Proofpoint-ORIG-GUID: VoqwfkLkJvu9fugDeJa32zKv7tG9gAcs
+X-Proofpoint-GUID: VoqwfkLkJvu9fugDeJa32zKv7tG9gAcs
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-07-30_04:2021-07-29,2021-07-30 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
- malwarescore=0 impostorscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107300041
+ adultscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0
+ clxscore=1015 lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107300043
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -153,183 +144,118 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 7/29/21 4:36 PM, Kuniyuki Iwashima wrote:
-> If there are no abstract sockets, this prog can output the same result
-> compared to /proc/net/unix.
+On 7/29/21 11:53 PM, Kuniyuki Iwashima wrote:
+> From:   Yonghong Song <yhs@fb.com>
+> Date:   Thu, 29 Jul 2021 23:24:41 -0700
+>> On 7/29/21 4:36 PM, Kuniyuki Iwashima wrote:
+>>> This patch implements the BPF iterator for the UNIX domain socket.
+>>>
+>>> Currently, the batch optimization introduced for the TCP iterator in the
+>>> commit 04c7820b776f ("bpf: tcp: Bpf iter batching and lock_sock") is not
+>>> applied.  It will require replacing the big lock for the hash table with
+>>> small locks for each hash list not to block other processes.
+>>
+>> Thanks for the contribution. The patch looks okay except
+>> missing seq_ops->stop implementation, see below for more explanation.
+>>
+>>>
+>>> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+>>> ---
+>>>    include/linux/btf_ids.h |  3 +-
+>>>    net/unix/af_unix.c      | 78 +++++++++++++++++++++++++++++++++++++++++
+>>>    2 files changed, 80 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+>>> index 57890b357f85..bed4b9964581 100644
+>>> --- a/include/linux/btf_ids.h
+>>> +++ b/include/linux/btf_ids.h
+>>> @@ -172,7 +172,8 @@ extern struct btf_id_set name;
+>>>    	BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP_TW, tcp_timewait_sock)		\
+>>>    	BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP6, tcp6_sock)			\
+>>>    	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP, udp_sock)			\
+>>> -	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP6, udp6_sock)
+>>> +	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP6, udp6_sock)			\
+>>> +	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UNIX, unix_sock)
+>>>    
+>>>    enum {
+>>>    #define BTF_SOCK_TYPE(name, str) name,
+>>> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+>>> index 89927678c0dc..d45ad87e3a49 100644
+>>> --- a/net/unix/af_unix.c
+>>> +++ b/net/unix/af_unix.c
+>>> @@ -113,6 +113,7 @@
+>>>    #include <linux/security.h>
+>>>    #include <linux/freezer.h>
+>>>    #include <linux/file.h>
+>>> +#include <linux/btf_ids.h>
+>>>    
+>>>    #include "scm.h"
+>>>    
+>>> @@ -2935,6 +2936,49 @@ static const struct seq_operations unix_seq_ops = {
+>>>    	.stop   = unix_seq_stop,
+>>>    	.show   = unix_seq_show,
+>>>    };
+>>> +
+>>> +#ifdef CONFIG_BPF_SYSCALL
+>>> +struct bpf_iter__unix {
+>>> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
+>>> +	__bpf_md_ptr(struct unix_sock *, unix_sk);
+>>> +	uid_t uid __aligned(8);
+>>> +};
+>>> +
+>>> +static int unix_prog_seq_show(struct bpf_prog *prog, struct bpf_iter_meta *meta,
+>>> +			      struct unix_sock *unix_sk, uid_t uid)
+>>> +{
+>>> +	struct bpf_iter__unix ctx;
+>>> +
+>>> +	meta->seq_num--;  /* skip SEQ_START_TOKEN */
+>>> +	ctx.meta = meta;
+>>> +	ctx.unix_sk = unix_sk;
+>>> +	ctx.uid = uid;
+>>> +	return bpf_iter_run_prog(prog, &ctx);
+>>> +}
+>>> +
+>>> +static int bpf_iter_unix_seq_show(struct seq_file *seq, void *v)
+>>> +{
+>>> +	struct bpf_iter_meta meta;
+>>> +	struct bpf_prog *prog;
+>>> +	struct sock *sk = v;
+>>> +	uid_t uid;
+>>> +
+>>> +	if (v == SEQ_START_TOKEN)
+>>> +		return 0;
+>>> +
+>>> +	uid = from_kuid_munged(seq_user_ns(seq), sock_i_uid(sk));
+>>> +	meta.seq = seq;
+>>> +	prog = bpf_iter_get_info(&meta, false);
+>>> +	return unix_prog_seq_show(prog, &meta, v, uid);
+>>> +}
+>>> +
+>>> +static const struct seq_operations bpf_iter_unix_seq_ops = {
+>>> +	.start	= unix_seq_start,
+>>> +	.next	= unix_seq_next,
+>>> +	.stop	= unix_seq_stop,
+>>
+>> Although it is not required for /proc/net/unix, we should still
+>> implement bpf_iter version of seq_ops->stop here. The main purpose
+>> of bpf_iter specific seq_ops->stop is to call bpf program one
+>> more time after ALL elements have been traversed. Such
+>> functionality is implemented in all other bpf_iter variants.
 > 
->    # cat /sys/fs/bpf/unix | head -n 2
->    Num       RefCount Protocol Flags    Type St Inode Path
->    ffff9ab7122db000: 00000002 00000000 00010000 0001 01 10623 private/defer
+> Thanks for your review!
+> I will implement the extra call in the next spin.
 > 
->    # cat /proc/net/unix | head -n 2
->    Num       RefCount Protocol Flags    Type St Inode Path
->    ffff9ab7122db000: 00000002 00000000 00010000 0001 01 10623 private/defer
-> 
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> ---
->   .../selftests/bpf/prog_tests/bpf_iter.c       | 17 +++++
->   .../selftests/bpf/progs/bpf_iter_unix.c       | 75 +++++++++++++++++++
->   2 files changed, 92 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> index 1f1aade56504..4746bac68d36 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> @@ -13,6 +13,7 @@
->   #include "bpf_iter_tcp6.skel.h"
->   #include "bpf_iter_udp4.skel.h"
->   #include "bpf_iter_udp6.skel.h"
-> +#include "bpf_iter_unix.skel.h"
->   #include "bpf_iter_test_kern1.skel.h"
->   #include "bpf_iter_test_kern2.skel.h"
->   #include "bpf_iter_test_kern3.skel.h"
-> @@ -313,6 +314,20 @@ static void test_udp6(void)
->   	bpf_iter_udp6__destroy(skel);
->   }
->   
-> +static void test_unix(void)
-> +{
-> +	struct bpf_iter_unix *skel;
-> +
-> +	skel = bpf_iter_unix__open_and_load();
-> +	if (CHECK(!skel, "bpf_iter_unix__open_and_load",
-> +		  "skeleton open_and_load failed\n"))
-> +		return;
-> +
-> +	do_dummy_read(skel->progs.dump_unix);
-> +
-> +	bpf_iter_unix__destroy(skel);
-> +}
-> +
->   /* The expected string is less than 16 bytes */
->   static int do_read_with_fd(int iter_fd, const char *expected,
->   			   bool read_one_char)
-> @@ -1255,6 +1270,8 @@ void test_bpf_iter(void)
->   		test_udp4();
->   	if (test__start_subtest("udp6"))
->   		test_udp6();
-> +	if (test__start_subtest("unix"))
-> +		test_unix();
->   	if (test__start_subtest("anon"))
->   		test_anon_iter(false);
->   	if (test__start_subtest("anon-read-one-char"))
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_unix.c b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-> new file mode 100644
-> index 000000000000..285ec2f7944d
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright Amazon.com Inc. or its affiliates. */
-> +#include "bpf_iter.h"
+> Just out of curiosity, is there a specific use case for the last call?
 
-Could you add bpf_iter__unix to bpf_iter.h similar to bpf_iter__sockmap?
-The main purpose is to make test tolerating with old vmlinux.h.
+We don't have use cases for dumps similar to /proc/net/... etc.
+The original thinking is to permit in-kernel aggregation and the
+seq_ops->stop() bpf program will have an indication as the last
+bpf program invocation for the iterator at which point bpf program
+may wrap up aggregation and send/signal the result to user space.
+I am not sure whether people already used this feature or not, or
+people may have different way to do that (e.g., from user space
+directly checking map value if read() length is 0). But
+bpf seq_ops->stop() provides an in-kernel way for bpf program
+to respond to the end of iterating.
 
-> +#include "bpf_tracing_net.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_endian.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define __SO_ACCEPTCON		(1 << 16)
-> +#define UNIX_HASH_SIZE		256
-> +#define UNIX_ABSTRACT(unix_sk)	(unix_sk->addr->hash < UNIX_HASH_SIZE)
-
-Could you add the above three define's in bpf_tracing_net.h?
-We try to keep all these common defines in a common header for
-potential reusability.
-
-> +
-> +static long sock_i_ino(const struct sock *sk)
-> +{
-> +	const struct socket *sk_socket = sk->sk_socket;
-> +	const struct inode *inode;
-> +	unsigned long ino;
-> +
-> +	if (!sk_socket)
-> +		return 0;
-> +
-> +	inode = &container_of(sk_socket, struct socket_alloc, socket)->vfs_inode;
-> +	bpf_probe_read_kernel(&ino, sizeof(ino), &inode->i_ino);
-> +	return ino;
-> +}
-> +
-> +SEC("iter/unix")
-> +int dump_unix(struct bpf_iter__unix *ctx)
-> +{
-> +	struct unix_sock *unix_sk = ctx->unix_sk;
-> +	struct sock *sk = (struct sock *)unix_sk;
-> +	struct seq_file *seq;
-> +	__u32 seq_num;
-> +
-> +	if (!unix_sk)
-> +		return 0;
-> +
-> +	seq = ctx->meta->seq;
-> +	seq_num = ctx->meta->seq_num;
-> +	if (seq_num == 0)
-> +		BPF_SEQ_PRINTF(seq, "Num       RefCount Protocol Flags    "
-> +			       "Type St Inode Path\n");
-> +
-> +	BPF_SEQ_PRINTF(seq, "%pK: %08X %08X %08X %04X %02X %5lu",
-> +		       unix_sk,
-> +		       sk->sk_refcnt.refs.counter,
-> +		       0,
-> +		       sk->sk_state == TCP_LISTEN ? __SO_ACCEPTCON : 0,
-> +		       sk->sk_type,
-> +		       sk->sk_socket ?
-> +		       (sk->sk_state == TCP_ESTABLISHED ?
-> +			SS_CONNECTED : SS_UNCONNECTED) :
-> +		       (sk->sk_state == TCP_ESTABLISHED ?
-> +			SS_CONNECTING : SS_DISCONNECTING),
-> +		       sock_i_ino(sk));
-> +
-> +	if (unix_sk->addr) {
-> +		if (UNIX_ABSTRACT(unix_sk))
-> +			/* Abstract UNIX domain socket can contain '\0' in
-> +			 * the path, and it should be escaped.  However, it
-> +			 * requires loops and the BPF verifier rejects it.
-> +			 * So here, print only the escaped first byte to
-> +			 * indicate it is an abstract UNIX domain socket.
-> +			 * (See: unix_seq_show() and commit e7947ea770d0d)
-> +			 */
-> +			BPF_SEQ_PRINTF(seq, " @");
-> +		else
-> +			BPF_SEQ_PRINTF(seq, " %s", unix_sk->addr->name->sun_path);
-> +	}
-
-I looked at af_unix.c, for the above "if (unix_sk->addr) { ... }" code,
-the following is the kernel source code,
-
-                 if (u->addr) {  // under unix_table_lock here
-                         int i, len;
-                         seq_putc(seq, ' ');
-
-                         i = 0;
-                         len = u->addr->len - sizeof(short);
-                         if (!UNIX_ABSTRACT(s))
-                                 len--;
-                         else {
-                                 seq_putc(seq, '@');
-                                 i++;
-                         }
-                         for ( ; i < len; i++)
-                                 seq_putc(seq, u->addr->name->sun_path[i] ?:
-                                          '@');
-                 }
-
-It does not seem to match bpf program non UNIX_ABSTRACT case.
-I am not familiar with unix socket so it would be good if you can 
-explain a little more.
-
-For verifier issue with loops, do we have a maximum upper bound for 
-u->addr->len? If yes, does bounded loop work?
-
-> +
-> +	BPF_SEQ_PRINTF(seq, "\n");
-> +
-> +	return 0;
-> +}
 > 
