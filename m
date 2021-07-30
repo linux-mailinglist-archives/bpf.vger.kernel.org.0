@@ -2,189 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7FA3DB075
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 02:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71503DB088
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 03:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhG3A64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Jul 2021 20:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
+        id S233599AbhG3BMJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Jul 2021 21:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhG3A6z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Jul 2021 20:58:55 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B231C061765
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 17:58:50 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id a93so13194220ybi.1
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 17:58:50 -0700 (PDT)
+        with ESMTP id S229667AbhG3BMI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Jul 2021 21:12:08 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD371C061765
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 18:12:04 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id d10so7756749ils.7
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 18:12:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wpUXKTvcnP0OnYH60r148PIZ4bwmKiXkmW8xNA6/ZhQ=;
-        b=coWAKlzmF8R6UCQL721p8txIuwBsmFlpGMlrkOaDNuafSt9OP2EGb2SYF2mWB215GO
-         0NuJ6RBXLtqCAOEdygDPIS2STAhKoZAAGpVcXgxb6H2RI3U2X7hKyGujJilaZ1lHShhY
-         qbSSaVDctA6SI69R7XNPy2bDeG4M4eG75877Jk41fb1TCiR6J2vRxnFkxOriTajaRfk2
-         RVBLi/jbUPqyIl3ekgT4xghXoW4UfIMZfLKfPe0VJ85BuS5ofj+ZdyKo6+/cFNjR+Fr+
-         24PHjM8UvPZiI/d/K2vfkulb0eLJiDnIeaTdIoIpkpmwYzcB7GeWFJaVTi5Qinscytzk
-         ElKg==
+        h=user-agent:mime-version:message-id:in-reply-to:references:date:from
+         :to:cc:subject;
+        bh=+G5INvBXtpsTnJ8663d9AJrzVBu2gzBgrQlUeecvQjo=;
+        b=SJdfImQ8qACkcx2pChppINXTzPYiUI0vV1JVo4Dl1Ei6yQnE+YrSfAuNldTdcJD95D
+         lgWtphNUMQ6+NggMumuqyfcgG4lP+GpgTqkSZKKFKCdY1iJEgf/irTshdVSmDKoQUAFz
+         lA2vY6qyo8SRPCnDJ4TZ2z2zimZ/SMS3m+i9JR0U82ugQ3X/aEeswvpek7Z1K2bVzKCM
+         O/Zn+CGdWyIKPzvYXtkEKxhqA4O45Q7PEkeLL+U1yssBNlWTrHQJvf8g/W9Klz9rkjnp
+         c5lyJKR+h+oqzenfE9Mup4/uN6xzC0aFKrqo7NoiYqD1omxnIstii0SXpZkkVX5bt2pk
+         b9Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wpUXKTvcnP0OnYH60r148PIZ4bwmKiXkmW8xNA6/ZhQ=;
-        b=sAMvHPKDBPB/8Ujtbkbr63ITS8+bEnshXcnjTU9tAJVcucpPcVIDu7Hp/FXFKs3iH5
-         ce/+UO8PBna2lAdQwjhvZSwwRoagXfdEFBLHAPFFdI27k/if4dESp2d6mejafnqsSJJO
-         z+meACSqDsXXCZcIUumn0IfbAovGNljuicSLCYlazelY11m0Eva8f00/+YjKKEHPzh2i
-         3ufevzcsc6taeLbJZ5+YMUGOxGCuv8OFp5+EuvP2t8iPf6j3rzdpFoI2KsfdPyQeNA2O
-         cEqXm5bo7/cBjgq+h3wSMGIpyQX1i91xvCFqqDDRTupvP7wgjXCMQKtKg70AiBx1S0/K
-         iDGA==
-X-Gm-Message-State: AOAM530Ah0jGAC3L8Nr3XJNQMTFbukDD4ZJgoJfzIYYrvYyANjzfDci3
-        cCvUh0VIum7J1jz/TFJWaENgWT+BUlvrd+Tt71c=
-X-Google-Smtp-Source: ABdhPJwLWgINBziXHaP+NVjiQdl9jpY32qMrn7CM2aqVf7Nx/HycW0+jbt5W06U+los4MK53OlssvlKRDjmx5t1SHbw=
-X-Received: by 2002:a25:d691:: with SMTP id n139mr2052088ybg.27.1627606730166;
- Thu, 29 Jul 2021 17:58:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210730001801.994751-1-fallentree@fb.com> <20210730002953.1045142-1-fallentree@fb.com>
-In-Reply-To: <20210730002953.1045142-1-fallentree@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 29 Jul 2021 17:58:39 -0700
-Message-ID: <CAEf4Bzb-wgG8hy-ibfvyTssRPx301MSbKD2KOAoNiV0UKN4EiQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next] libbpf: Add bpf_object__set_name(obj, name) api.
-To:     Yucong Sun <fallentree@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, sunyucong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:user-agent:mime-version:message-id:in-reply-to
+         :references:date:from:to:cc:subject;
+        bh=+G5INvBXtpsTnJ8663d9AJrzVBu2gzBgrQlUeecvQjo=;
+        b=Kq/u9ZDF9UqaSSKZplusJzI8XAOC0mrI5qc7O59HUPdoE9ZIsaP8A3wtMZ3K3DFvLf
+         JW/mw8n1JsPaYdwt5r34/GChZ72oL33WndVUbJESE8o2zMQyCD/SCCOIZ19iInY1Ots4
+         xZc7gheuFuzw+exJfnIL6T5vDbhgUiC3T+z90fT/l3ksW1gOrU0YmmgjaKRcSe5CTudD
+         GuYiahUUm9+9APDKMkKTV/I3qcB2OH1/0rp2S2Ze6kPAPUwwUV2y/fvSb9ZffSxY0NQz
+         rPqtm1DpS37mCvhuloWI1ncxU73XD9F9GAmbBgZSwlmagZ2sA/7r/KTdc59XGIk7LlUi
+         WV7Q==
+X-Gm-Message-State: AOAM530CoTqKMyheiiYgjRALz0x+7b5gKTHHh7a3TiJAmwnXg14CPzPB
+        l3NN1NgaItQ8QcJqy7cK31UTqfmn4A==
+X-Google-Smtp-Source: ABdhPJxllUHPiHLc/pSepNizFafhnfjgRFszTHl80Zh9xY5Nx7HHXcxG1HR/7GZXfUGyUMR61cQpQA==
+X-Received: by 2002:a92:ce49:: with SMTP id a9mr5758130ilr.195.1627607524147;
+        Thu, 29 Jul 2021 18:12:04 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id m184sm24690ioa.17.2021.07.29.18.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 18:12:03 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id B359F27C0054;
+        Thu, 29 Jul 2021 21:12:02 -0400 (EDT)
+Received: from imap10 ([10.202.2.60])
+  by compute3.internal (MEProxy); Thu, 29 Jul 2021 21:12:02 -0400
+X-ME-Sender: <xms:4lEDYQSULskRsLTNQrpDd44lxrR_qWqOSXwOJ9gZixwdn-9VDe6fMQ>
+    <xme:4lEDYdy5drWuq6O2ceW38it4jTjn6N8I_TvXKX4ytoa5ofLzBk94zVXcS3mCdbQhJ
+    azMoes7MUU6ct7Zq5Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrheeggddvhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftfgrfhgr
+    vghlucffrghvihguucfvihhnohgtohdfuceorhgrfhgrvghlughtihhnohgtohesghhmrg
+    hilhdrtghomheqnecuggftrfgrthhtvghrnhepledtteelfeekjeelvdelieejfefhkeeu
+    ffeitedutdelueefkefhvedtffeigeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomheprhgrfhgrvghlughtihhnohgtohdomhgvshhmthhprghu
+    thhhphgvrhhsohhnrghlihhthidqudduvdehieehledtgedqvdehheekjeelfeeiqdhrrg
+    hfrggvlhguthhinhhotghopeepghhmrghilhdrtghomhesuddvfehmrghilhdrohhrgh
+X-ME-Proxy: <xmx:4lEDYd0iuQSp_Buu3LhyCGS7NnAimNxPL_NnFm843yN6oYOgSegwrw>
+    <xmx:4lEDYUDSxWYIURZU6bAfAg-d-aKPeFYnPLzdqSF5oye9KtY42KkPfw>
+    <xmx:4lEDYZjJYwwThr0ZXuuJis7Aqe9lVoM90t2F6syU1t3YtcaiTUw7Ag>
+    <xmx:4lEDYTfMTRLXGtu_ePUhMTRMCskhNoNsXAW6tp7PbGHUeY_QehrZ6w>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E21714E0315; Thu, 29 Jul 2021 21:12:01 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-545-g7a4eea542e-fm-20210727.001-g7a4eea54
+Mime-Version: 1.0
+Message-Id: <590eb5d6-c9e0-4cdf-919f-47b24b2c384a@www.fastmail.com>
+In-Reply-To: <20210726161211.925206-12-andrii@kernel.org>
+References: <20210726161211.925206-1-andrii@kernel.org>
+ <20210726161211.925206-12-andrii@kernel.org>
+Date:   Thu, 29 Jul 2021 22:11:41 -0300
+From:   "Rafael David Tinoco" <rafaeldtinoco@gmail.com>
+To:     "Andrii Nakryiko" <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_bpf-next_11/14]_libbpf:_add_user=5Fctx_to_perf=5F?=
+ =?UTF-8?Q?event,_kprobe,_uprobe,_and_tp_attach_APIs?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 5:31 PM Yucong Sun <fallentree@fb.com> wrote:
->
-> Tracking: libbpf/libbpf#291
+On Mon, Jul 26, 2021, at 13:12, Andrii Nakryiko wrote:
+> Wire through user_ctx for all attach APIs that use perf_event_open under the
+> hood:
+>   - for kprobes, extend existing bpf_kprobe_opts with user_ctx field;
+>   - for perf_event, uprobe, and tracepoint APIs, add their _opts variants and
+>     pass user_ctx through opts.
+> 
+> For kernel that don't support BPF_LINK_CREATE for perf_events, and thus
+> user_ctx is not supported either, return error and log warning for user.
+> 
+> Cc: Rafael David Tinoco <rafaeldtinoco@gmail.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Please provide a bit more elaborate commit summary. Just a link to
-libbpf Github PR isn't a good commit message. Please explain
-succinctly what is being added and why.
-
-As for the PR reference itself, please include the full link. You can
-use this form (which Quentin used pretty consistently already):
-
-Reference: https://github.com/libbpf/libbpf/issues/291
-
->
-> Signed-off-by: Yucong Sun <fallentree@fb.com>
->
-> ---
->
-> V3 -> V4: handle obj is NULL case.
-> V2 -> V3: fix code style errors
-> ---
->  tools/lib/bpf/libbpf.c                                 | 10 ++++++++++
->  tools/lib/bpf/libbpf.h                                 |  1 +
->  tools/lib/bpf/libbpf.map                               |  1 +
->  .../selftests/bpf/prog_tests/reference_tracking.c      |  7 +++++++
->  4 files changed, 19 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index a1ca6fb0c6d8..a628e94a41a4 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -7545,6 +7545,16 @@ const char *bpf_object__name(const struct bpf_object *obj)
->         return obj ? obj->name : libbpf_err_ptr(-EINVAL);
->  }
->
-> +int bpf_object__set_name(struct bpf_object *obj, const char *name)
-> +{
-> +       if (!obj || !name)
-> +               return libbpf_err(-EINVAL);
-
-I think we shouldn't be checking !obj in every bpf_object's API (even
-though we have a bunch of APIs like that). If user can't make sure
-they pass non-NULL proper pointer, it's fine for them to debug
-SIGSEGV.
-
-> +
-> +       strncpy(obj->name, name, sizeof(obj->name) - 1);
-
-let's do two extra checks:
-
-1. if bpf_object was already loaded, it's too late (maps were named
-with its name, etc), so error out in that case
-2. if provided name is too long, we can still truncate and set it, but
-let's also return -E2BIG maybe?
-
-BTW, static analyzers like to complain about strncpy not zero
-terminating, add extra obj->name[sizeof(obj->name) - 1] = '\0'; at the
-end to make them happier
-
-
-Also, please add selftest validating that this name is actually taken
-into account properly. First thing that comes to mind to check this
-would be .data/.rodata map names check, but look around the source
-code to see if there is something other that can be used as a check.
-
-
-> +
-> +       return 0;
-> +}
-> +
->  unsigned int bpf_object__kversion(const struct bpf_object *obj)
->  {
->         return obj ? obj->kern_version : 0;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 1271d99bb7aa..36a2946e3373 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -161,6 +161,7 @@ LIBBPF_API int bpf_object__load_xattr(struct bpf_object_load_attr *attr);
->  LIBBPF_API int bpf_object__unload(struct bpf_object *obj);
->
->  LIBBPF_API const char *bpf_object__name(const struct bpf_object *obj);
-> +LIBBPF_API int bpf_object__set_name(struct bpf_object *obj, const char *name);
->  LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *obj);
->  LIBBPF_API int bpf_object__set_kversion(struct bpf_object *obj, __u32 kern_version);
->
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index c240d488eb5e..3c15aefeb6e0 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -377,4 +377,5 @@ LIBBPF_0.5.0 {
->                 bpf_object__gen_loader;
->                 btf_dump__dump_type_data;
->                 libbpf_set_strict_mode;
-> +               bpf_object__set_name;
-
-please keep that list alphabetically sorted
-
->  } LIBBPF_0.4.0;
-> diff --git a/tools/testing/selftests/bpf/prog_tests/reference_tracking.c b/tools/testing/selftests/bpf/prog_tests/reference_tracking.c
-> index de2688166696..4d3d0a4aec03 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/reference_tracking.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/reference_tracking.c
-> @@ -5,6 +5,7 @@ void test_reference_tracking(void)
->  {
->         const char *file = "test_sk_lookup_kern.o";
->         const char *obj_name = "ref_track";
-> +       const char *obj_name2 = "ref_track2";
->         DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts,
->                 .object_name = obj_name,
->                 .relaxed_maps = true,
-> @@ -23,6 +24,12 @@ void test_reference_tracking(void)
->                   bpf_object__name(obj), obj_name))
->                 goto cleanup;
->
-> +       bpf_object__set_name(obj, obj_name2);
-> +       if (CHECK(strcmp(bpf_object__name(obj), obj_name2), "obj_name",
-> +                 "wrong obj name '%s', expected '%s'\n",
-> +                 bpf_object__name(obj), obj_name2))
-> +               goto cleanup;
-> +
-
-it's a bit too simple and doesn't test much. See how obj->name is used
-for naming maps (and maybe something else as well), and validate that
-it gets propagated properly
-
->         bpf_object__for_each_program(prog, obj) {
->                 const char *title;
->
-> --
-> 2.30.2
->
+I think this one is fuzzy in v2. Checking them now for my purposes. Thanks for CC'ing.
