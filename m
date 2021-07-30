@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9183DBE97
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 20:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC3B3DBEB7
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 21:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhG3S7y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 14:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
+        id S230513AbhG3TGw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 15:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbhG3S7x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 14:59:53 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D61C061765;
-        Fri, 30 Jul 2021 11:59:47 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id w17so17554899ybl.11;
-        Fri, 30 Jul 2021 11:59:47 -0700 (PDT)
+        with ESMTP id S230335AbhG3TGd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 15:06:33 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CBAC06175F;
+        Fri, 30 Jul 2021 12:06:27 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id d73so17581664ybc.10;
+        Fri, 30 Jul 2021 12:06:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZFbeNfI2nU7AsW9qEfUHsMABOtgY/7Lryi50VSLFBQk=;
-        b=gybo7tEyqQcQ7+j69DYO1K52mO3ZbmLSvptgOMmNFc2hn73E+VkRJ9XlBWoDJyTGeY
-         CsvSxHkVaHmQi4i0yfPocHd/seNC4aWUSPNjISk1Py0lxBoNaytjwTeo2OgFXydr2vIh
-         wAp7Tn+qyV965G063rB46h0a1VDA4oddbrLSFGiB64MRaShGhOokUyVEwBEhBCH0zu9a
-         lBLnAl00UypUl5ghqkiE9/3kecewpJokInmBleAdYIYgtiMGwv0pzh8VH4DqzzhXZVzI
-         iMBTs6Vmk2Q6/iGGfkaoC69jumo04d2z+w6NbGgytgpe3s700Z8c6Eqxxpfz10OYYzl8
-         vZPA==
+        bh=DS7G5Mp3ZiNksp4LFVx/s6HRXPteROUGuVXS0Qr++e0=;
+        b=N3gjS+PCkw7+HLiaQM9bONjBDWxPFtn/bLcvUMKkvToaR5zg6toBZjYU6ooIBp9qWu
+         fr3bLdy1uUmIInFEruA+6Vk+ocJN50WHsemnourZXQcV/jCOWAiBjbLeZDuIpF/6bXDC
+         zBxYacy7+ifzXRBdHBZMKYvE2gKcjaBbmm5jqeLUCqVQOs4k5rKWVv3PLA4Xyw5+Fc+y
+         K1tpK4F2RlifaF0t+LdD/3DwyrAtjXGwIekhWhuxkd1MWWZ66goZk+nPMQaiC+zooT89
+         oSuN3fLCp+4E8N59QUIzbyzrzwGvCL7jqWaT8Kh7W1LXiWkOZxTqtfyHxiSShdmTGrGT
+         VgRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZFbeNfI2nU7AsW9qEfUHsMABOtgY/7Lryi50VSLFBQk=;
-        b=sAJQgy0St9Mv0x4apab3QXGJkeWM43fmz6cS1btzK09KA7bKHW+xXoXFprfarptpA3
-         ERpqg5+p8jtpSg98B/f2tFhpixvGG0yMNALV0U/Z6XpA6AjlO5PwX+nIeUmy0Z11UFln
-         RYGGV5A8KgbUPNGlwyEwlpqwR1Q6MvcUDE/QBFGY9hBu5iPPlRJ2r+d6TKBHw572uiFT
-         iaZX6qx3ZQHVTTPSwISkYdgBQyrZnrcqwGHYGIFs+MgkUgQMRC4ii8QPsVH7PN/vjAYd
-         xeEjg8oLjXD77QquEffz+fqCdKCFALbPFgOy8Us3vkM4GsExm1b1KTfujMSbFHckoG4F
-         uQkw==
-X-Gm-Message-State: AOAM532bodPA3m74f75IzLZbOGD4PNZRuS2/lKJAQMpn7rWtH1w1op0Q
-        Uj63f87M81LetB3ApnEGGKn0RKI4/Cihe8gdKpw=
-X-Google-Smtp-Source: ABdhPJyUqPcCffoNBAOSVIjIdNI1o4U7sC5tJplKic0uWzpy+5mdzHWXS4HQkQtijgoFzwnlH9e6xRvIcNdqZWJFJvk=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr5220346ybo.230.1627671586877;
- Fri, 30 Jul 2021 11:59:46 -0700 (PDT)
+        bh=DS7G5Mp3ZiNksp4LFVx/s6HRXPteROUGuVXS0Qr++e0=;
+        b=q+s3s4A9vZZnKOd9ea4UwZI0FJnkiO2UL51jELo7+xWMQ5yMaCm2hitBhMr1KDGssh
+         2P36yBfvpqfdO7mLEnaS+qA52z1sSljpNZzv+/DQQFqYYxkgJBv4zOXsK+jMMq2/aonF
+         SWwTXbs86e769UV9f70p0AljMNEX3yqQeiev+f13NEX7C+VOIKWmQMUv9+BCMnYKWOFl
+         BO9LNLoIh08Eqsg4dEuK82z9B8IQ9b1DlzuTAQLUkA7jTkcn9YvT2ycOp9StCRJfasZv
+         0cz1msakOl5k2tHGBbG8VLhNM0D1shTmRQjhUv54rCMjyKcgvXwuWG8/vY4ABbmC9ugo
+         eVfQ==
+X-Gm-Message-State: AOAM5329tISGQu76kxjSsZmdwP3w5tRuP+sQ0MY1UErQZ0E7jKBR4KjL
+        sdZ/SP733BwZlrkc1ZpVzAnMN6QDlf1pFGD6FCk=
+X-Google-Smtp-Source: ABdhPJwx6YUyIqUyA76aHlsrSxLDW+qqB4FJkFynprjlMq8Ktz1xlVx0VtWpSuNWELHY3jPrej4HWuNbFlpzFBoUfgE=
+X-Received: by 2002:a25:6148:: with SMTP id v69mr4984982ybb.510.1627671986753;
+ Fri, 30 Jul 2021 12:06:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210729162932.30365-1-quentin@isovalent.com> <20210729162932.30365-7-quentin@isovalent.com>
-In-Reply-To: <20210729162932.30365-7-quentin@isovalent.com>
+References: <20210729162932.30365-1-quentin@isovalent.com>
+In-Reply-To: <20210729162932.30365-1-quentin@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Jul 2021 11:59:35 -0700
-Message-ID: <CAEf4Bzb+s0f6ybq+qARTpe1wa2dOD_gweBd0kQAYh3cyx=N5mQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/7] tools: bpftool: document and add bash
- completion for -L, -B options
+Date:   Fri, 30 Jul 2021 12:06:15 -0700
+Message-ID: <CAEf4BzbhmxAXUOoCr7wX-dqkzvQm0OMDLi+A+k6pFs=BCsDY=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/7] tools: bpftool: update, synchronise and
 To:     Quentin Monnet <quentin@isovalent.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -63,109 +62,83 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Jul 29, 2021 at 9:29 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> The -L|--use-loader option for using loader programs when loading, or
-> when generating a skeleton, did not have any documentation or bash
-> completion. Same thing goes for -B|--base-btf, used to pass a path to a
-> base BTF object for split BTF such as BTF for kernel modules.
+> To work with the different program types, map types, attach types etc.
+> supported by eBPF, bpftool needs occasional updates to learn about the new
+> features supported by the kernel. When such types translate into new
+> keyword for the command line, updates are expected in several locations:
+> typically, the help message displayed from bpftool itself, the manual page,
+> and the bash completion file should be updated. The options used by the
+> different commands for bpftool should also remain synchronised at those
+> locations.
 >
-> This patch documents and adds bash completion for those options.
+> Several omissions have occurred in the past, and a number of types are
+> still missing today. This set is an attempt to improve the situation. It
+> brings up-to-date the lists of types or options in bpftool, and also adds a
+> Python script to the BPF selftests to automatically check that most of
+> these lists remain synchronised.
 >
-> Fixes: 75fa1777694c ("tools/bpftool: Add bpftool support for split BTF")
-> Fixes: d510296d331a ("bpftool: Use syscall/loader program in "prog load" and "gen skeleton" command.")
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
-> Note: The second example with base BTF in the BTF man page assumes that
-> dumping split BTF when objects are passed by id is supported. Support is
-> currently pending review in another PR.
-> ---
-
-Not anymore :)
-
-[...]
-
-> @@ -73,6 +74,20 @@ OPTIONS
->  =======
->         .. include:: common_options.rst
+> Quentin Monnet (7):
+>   tools: bpftool: slightly ease bash completion updates
+>   selftests/bpf: check consistency between bpftool source, doc,
+>     completion
+>   tools: bpftool: complete and synchronise attach or map types
+>   tools: bpftool: update and synchronise option list in doc and help msg
+>   selftests/bpf: update bpftool's consistency script for checking
+>     options
+>   tools: bpftool: document and add bash completion for -L, -B options
+>   tools: bpftool: complete metrics list in "bpftool prog profile" doc
 >
-> +       -B, --base-btf *FILE*
-> +                 Pass a base BTF object. Base BTF objects are typically used
-> +                 with BTF objects for kernel modules. To avoid duplicating
-> +                 all kernel symbols required by modules, BTF objects for
-> +                 modules are "split", they are built incrementally on top of
-> +                 the kernel (vmlinux) BTF object. So the base BTF reference
-> +                 should usually point to the kernel BTF.
-> +
-> +                 When the main BTF object to process (for example, the
-> +                 module BTF to dump) is passed as a *FILE*, bpftool attempts
-> +                 to autodetect the path for the base object, and passing
-> +                 this option is optional. When the main BTF object is passed
-> +                 through other handles, this option becomes necessary.
-> +
->  EXAMPLES
->  ========
->  **# bpftool btf dump id 1226**
-> @@ -217,3 +232,34 @@ All the standard ways to specify map or program are supported:
->  **# bpftool btf dump prog tag b88e0a09b1d9759d**
+>  .../bpf/bpftool/Documentation/bpftool-btf.rst |  48 +-
+>  .../bpftool/Documentation/bpftool-cgroup.rst  |   3 +-
+>  .../bpftool/Documentation/bpftool-feature.rst |   2 +-
+>  .../bpf/bpftool/Documentation/bpftool-gen.rst |   9 +-
+>  .../bpftool/Documentation/bpftool-iter.rst    |   2 +
+>  .../bpftool/Documentation/bpftool-link.rst    |   3 +-
+>  .../bpf/bpftool/Documentation/bpftool-map.rst |   3 +-
+>  .../bpf/bpftool/Documentation/bpftool-net.rst |   2 +-
+>  .../bpftool/Documentation/bpftool-perf.rst    |   2 +-
+>  .../bpftool/Documentation/bpftool-prog.rst    |  36 +-
+>  .../Documentation/bpftool-struct_ops.rst      |   2 +-
+>  tools/bpf/bpftool/Documentation/bpftool.rst   |  12 +-
+>  tools/bpf/bpftool/bash-completion/bpftool     |  69 ++-
+>  tools/bpf/bpftool/btf.c                       |   3 +-
+>  tools/bpf/bpftool/cgroup.c                    |   3 +-
+>  tools/bpf/bpftool/common.c                    |  76 +--
+>  tools/bpf/bpftool/feature.c                   |   1 +
+>  tools/bpf/bpftool/gen.c                       |   3 +-
+>  tools/bpf/bpftool/iter.c                      |   2 +
+>  tools/bpf/bpftool/link.c                      |   3 +-
+>  tools/bpf/bpftool/main.c                      |   3 +-
+>  tools/bpf/bpftool/main.h                      |   3 +-
+>  tools/bpf/bpftool/map.c                       |   5 +-
+>  tools/bpf/bpftool/net.c                       |   1 +
+>  tools/bpf/bpftool/perf.c                      |   5 +-
+>  tools/bpf/bpftool/prog.c                      |   8 +-
+>  tools/bpf/bpftool/struct_ops.c                |   2 +-
+>  tools/testing/selftests/bpf/Makefile          |   1 +
+>  .../selftests/bpf/test_bpftool_synctypes.py   | 586 ++++++++++++++++++
+>  29 files changed, 802 insertions(+), 96 deletions(-)
+>  create mode 100755 tools/testing/selftests/bpf/test_bpftool_synctypes.py
 >
->  **# bpftool btf dump prog pinned /sys/fs/bpf/prog_name**
-> +
-> +|
-> +| **# bpftool btf dump file /sys/kernel/btf/i2c_smbus**
-> +| (or)
-> +| **# I2C_SMBUS_ID=$(bpftool btf show -p | jq '.[] | select(.name=="i2c_smbus").id')**
-> +| **# bpftool btf dump id ${I2C_SMBUS_ID} -B /sys/kernel/btf/vmlinux**
-> +
-> +::
-> +
-> +  [104848] STRUCT 'i2c_smbus_alert' size=40 vlen=2
-> +          'alert' type_id=393 bits_offset=0
-> +          'ara' type_id=56050 bits_offset=256
-> +  [104849] STRUCT 'alert_data' size=12 vlen=3
-> +          'addr' type_id=16 bits_offset=0
-> +          'type' type_id=56053 bits_offset=32
-> +          'data' type_id=7 bits_offset=64
-> +  [104850] PTR '(anon)' type_id=104848
-> +  [104851] PTR '(anon)' type_id=104849
-> +  [104852] FUNC 'i2c_register_spd' type_id=84745 linkage=static
-> +  [104853] FUNC 'smbalert_driver_init' type_id=1213 linkage=static
-> +  [104854] FUNC_PROTO '(anon)' ret_type_id=18 vlen=1
-> +          'ara' type_id=56050
-> +  [104855] FUNC 'i2c_handle_smbus_alert' type_id=104854 linkage=static
-> +  [104856] FUNC 'smbalert_remove' type_id=104854 linkage=static
-> +  [104857] FUNC_PROTO '(anon)' ret_type_id=18 vlen=2
-> +          'ara' type_id=56050
-> +          'id' type_id=56056
-> +  [104858] FUNC 'smbalert_probe' type_id=104857 linkage=static
-> +  [104859] FUNC 'smbalert_work' type_id=9695 linkage=static
-> +  [104860] FUNC 'smbus_alert' type_id=71367 linkage=static
-> +  [104861] FUNC 'smbus_do_alert' type_id=84827 linkage=static
-
-This reminded be that it would be awesome to support "format c"
-use-case for dumping split BTF in a more sane way. I.e., instead of
-dumping all types from base and split BTF, only dump necessary (used)
-forward declarations from base BTF, and then full C dump of only new
-types from the split (module) BTF. This will become more important as
-people will start using module BTF more. It's an interesting add-on to
-libbpf's btf_dumper functionality. Not sure how hard that would be,
-but I'd imagine it shouldn't require much changes.
-
-Just in case anyone wanted to challenge themselves with some more
-algorithmic patch for libbpf (*wink wink*)...
-
-
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-> index 709b93fe1da3..2ef2f2df0279 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-> @@ -12,7 +12,8 @@ SYNOPSIS
->
->         **bpftool** [*OPTIONS*] **gen** *COMMAND*
->
-> -       *OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] | { **-d** | **--debug** } }
-> +       *OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] | { **-d** | **--debug** } |
-> +               { **-L** | **--use-loader** } }
->
->         *COMMAND* := { **object** | **skeleton** | **help** }
+> --
+> 2.30.2
 >
 
-[...]
+The patch set name ends abruptly at "synchronise and "... And what? I
+need to know :)
+
+Overall, it looks good, though I can't speak Python much, so I trust
+the script works and we'll fix whatever is necessary as we go. I had
+one small real nit about not re-formatting tons of existing lines for
+no good reason, let's keep Git blame a bit more useful.
+
+Also, it doesn't seem like you are actually calling a new script from
+selftests/bpf/Makefile, right? That's good, because otherwise any UAPI
+change in kernel header would require bpftool changes in the same
+patch. But once this lands, we should probably run this in
+kernel-patches CI ([0]) and, maybe, not sure, libbpf CI ([1]) as well.
+So please follow up with that as well afterwards, that way you won't
+be the only one nagging people about missed doc updates.
+
+  [0] https://github.com/kernel-patches/vmtest/tree/master/travis-ci/vmtest
+  [1] https://github.com/libbpf/libbpf/tree/master/travis-ci/vmtest
