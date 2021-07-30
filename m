@@ -2,147 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D4C3DBEF5
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 21:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70243DBF10
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 21:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhG3T1F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 15:27:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
+        id S231163AbhG3TfA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 15:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbhG3T1D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 15:27:03 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FC4C06175F
-        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 12:26:58 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id p145so3088945ybg.6
-        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 12:26:58 -0700 (PDT)
+        with ESMTP id S230402AbhG3TfA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 15:35:00 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CB8C06175F;
+        Fri, 30 Jul 2021 12:34:55 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id z18so2890347ybg.8;
+        Fri, 30 Jul 2021 12:34:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nOFajr7G7ynQh91Bpunjpsg8w2czzvlaeyCJusca3W0=;
-        b=pfdxtkXPvmQ9cWfWyvJQYH9yhNvPKWDYK5Urg4j3NmkXH51GZKDnQ4BZCAwXflyZX7
-         l5W6VIEzYxFtiKE7ujZsyLv9fLg0jm8b7JyeTVg97l6xiGsXgUUKdR0mv0NaLPfPV/UP
-         5iJu0llvcSScNNaLc4TjSECQ1XIGv3ygE8ln+aTia9uVs65h9kr9G3y0Hk2pK+1XdRTz
-         EgreqzMs0VYc9oYdKOnOk8dXZcIU6s5LhKTQDXy1LZP7y7d0D+NhFfgLyKKKR9uoh7WA
-         0hsqLcJy8wC+j8CJw5zpejZB2lBCpn9uPKPZvMwlVu/E2wIMhmfpAZHVqm5KeTSCuUzh
-         dNNw==
+        bh=V8MdH2wjB2JpyJVI9OK1vdjPEtNwyNdoxYpO8ivKZ14=;
+        b=R6/h7MSSK4R1jU4gCvs62G379ZLLsXfUNGRROXQW5mMUpFHU5wOT7MncIPXoGPLuEk
+         HTFJuCA6UipscRKE521weYz0OqQ/UA4EixQ8bZUPe9foQLRn4C57gKR/GOZ5dYxWTxcq
+         tCLBlsRniCMUL2lRFiRQL83DjBzpFWM/d/5OwPruUpWunfvPtwpBkhChJoZEffKrctcz
+         GTc6lLkECYl/zgkK0GY9n4u+9KFwpPc6ffXuQym4AL8Yua9EYRNGppQabixchdc7rm+O
+         9xScwqIKLBTxCH6UX+PGszeDLraYnLhrUHDfFk0yJVDYa2vJFy/j+DPF9YlhxDOHeSWy
+         nc9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nOFajr7G7ynQh91Bpunjpsg8w2czzvlaeyCJusca3W0=;
-        b=rCuwcjDI/g+E0KagUdziymvXtdv9qmK0zAhIXuq4mxPSBM+l76DATD8SvnqJN1tP7G
-         +S4daw81PrdY8tJ6CTuN8vthg/gTEz4bqB7K16rZonRLFKUXbQ1NNp8wIxG2Vdpc9Dju
-         vLM4t3FseNgx3r+M2xouNbzmqDCWUa6mM4MaQYfBEJIdl3tFL9Com2yjhse2jpAeUiXH
-         GVKAX5oEjDxOIab+K+BkeV9LbTMAwSgyeyPPz7fVG6codr5Tu/N7byDsR+ZCk8G0VFWr
-         H3L9wjGAitITkgs47vAUcdiFoBTxa05QM/HqMkNva6mH1/yT8ea+wPnZwpiJv/QTCLCm
-         BnBQ==
-X-Gm-Message-State: AOAM531ABJfUFTgFy6TPzWMRssjHnEajuK3euhnRn/desNrJ9O2yAJJk
-        S89n8C7AJr5I4Bir4wWa0aijX1EaipJS27IZc5U=
-X-Google-Smtp-Source: ABdhPJyQCWwAej1+GfHAn5Ni8txSTjxX0wU/mI97IgXOQ4XVFeekaqeu89dt8uaBB5mUemU0j56ZDvpJyObG48x+LU8=
-X-Received: by 2002:a25:6148:: with SMTP id v69mr5098446ybb.510.1627673218049;
- Fri, 30 Jul 2021 12:26:58 -0700 (PDT)
+        bh=V8MdH2wjB2JpyJVI9OK1vdjPEtNwyNdoxYpO8ivKZ14=;
+        b=ppLkJuGXuN8Y/JC9LuNXA1JxI82oTPSvLY0LkDNxOQ6OOfpIxQ28RhEpGcPmfR7tzR
+         mcBuqVWqmAYTKv5eFyZSy1XV+xOyBuxmYomy9KwlADmTYFGvUTjRCWMBCX+ZGp5oBhRJ
+         iEuvVq4Aw4VmJfVeNPjykiLo033kh89+IjbRdfD9AChFWVvPsfHGMmHSlnyINh6v/SSf
+         AfRlipRHT7pTaLO2JqbrSO38zPLswBJ+OrAF5dC87QmfIB/Fdb0VInmQRT6zMH9NjEaz
+         GgeSWbO8dbUFE42ED9V9/1pye1MWNT74XhookJABzphHzXewhsyQJzfVWtE46ai6tT7l
+         rhZw==
+X-Gm-Message-State: AOAM533D8B9IMe8qTTMWTVclXduw+EDfoDxF7yTOAmmggrUL6BlC/APH
+        5oahBseKO3HXrfstNNui5aWJSkKGV4il4yIqh5s=
+X-Google-Smtp-Source: ABdhPJx5cxr6mK/AozEPsCN3m4aeAUmhtz2oCJBwapQ2GAL4VQac5FuD3kH5u0rNQQUJ0Yqceo+x3EN08Yly5QnweNk=
+X-Received: by 2002:a25:cdc7:: with SMTP id d190mr5157604ybf.425.1627673694256;
+ Fri, 30 Jul 2021 12:34:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210730114012.494408-1-hengqi.chen@gmail.com>
-In-Reply-To: <20210730114012.494408-1-hengqi.chen@gmail.com>
+References: <20210729233645.4869-1-kuniyu@amazon.co.jp> <20210729233645.4869-3-kuniyu@amazon.co.jp>
+In-Reply-To: <20210729233645.4869-3-kuniyu@amazon.co.jp>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Jul 2021 12:26:46 -0700
-Message-ID: <CAEf4BzbtPFEbme_KZQA+n-gCgC+xp-v+270BBCi+89smi6pzkA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] libbpf: add btf__load_vmlinux_btf/btf__load_module_btf
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 30 Jul 2021 12:34:43 -0700
+Message-ID: <CAEf4Bza6ac8B+PCHm9=-v4LpYW2E++dd1ur91MwHMjjcQS++wA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftest/bpf: Implement sample UNIX domain
+ socket iterator program.
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 4:40 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On Thu, Jul 29, 2021 at 4:37 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
 >
-> Add two new APIs: btf__load_vmlinux_btf and btf__load_module_btf.
-> btf__load_vmlinux_btf is just an alias to the existing API named
-> libbpf_find_kernel_btf, rename to be more precisely and consistent
-> with existing BTF APIs. btf__load_module_btf can be used to load
-> module BTF, add it for completeness. These two APIs are useful for
-> implementing tracing tools and introspection tools. This is part
-> of the effort towards libbpf 1.0. [1]
+> If there are no abstract sockets, this prog can output the same result
+> compared to /proc/net/unix.
 >
-> [1] https://github.com/libbpf/libbpf/issues/280
-
-I changed this to
-
-[0] Closes: https://github.com/libbpf/libbpf/issues/280
-
-which will close an associated Github issue when we sync sources to
-Github next time. Let's see how this works in practice.
-
+>   # cat /sys/fs/bpf/unix | head -n 2
+>   Num       RefCount Protocol Flags    Type St Inode Path
+>   ffff9ab7122db000: 00000002 00000000 00010000 0001 01 10623 private/defer
 >
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+>   # cat /proc/net/unix | head -n 2
+>   Num       RefCount Protocol Flags    Type St Inode Path
+>   ffff9ab7122db000: 00000002 00000000 00010000 0001 01 10623 private/defer
+>
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
 > ---
-
-Thanks, applied to bpf-next. But please follow up with a selftest that
-would utilize this new module BTF API. It's good to have all APIs
-exercised regularly. Look at test_progs.
-
->  tools/lib/bpf/btf.c      | 15 ++++++++++++++-
->  tools/lib/bpf/btf.h      |  6 ++++--
->  tools/lib/bpf/libbpf.c   |  4 ++--
->  tools/lib/bpf/libbpf.map |  2 ++
->  4 files changed, 22 insertions(+), 5 deletions(-)
+>  .../selftests/bpf/prog_tests/bpf_iter.c       | 17 +++++
+>  .../selftests/bpf/progs/bpf_iter_unix.c       | 75 +++++++++++++++++++
+>  2 files changed, 92 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_unix.c
 >
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index cafa4f6bd9b1..56e84583e283 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -4036,7 +4036,7 @@ static void btf_dedup_merge_hypot_map(struct btf_dedup *d)
->                  */
->                 if (d->hypot_adjust_canon)
->                         continue;
-> -
-> +
->                 if (t_kind == BTF_KIND_FWD && c_kind != BTF_KIND_FWD)
->                         d->map[t_id] = c_id;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> index 1f1aade56504..4746bac68d36 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> @@ -13,6 +13,7 @@
+>  #include "bpf_iter_tcp6.skel.h"
+>  #include "bpf_iter_udp4.skel.h"
+>  #include "bpf_iter_udp6.skel.h"
+> +#include "bpf_iter_unix.skel.h"
+>  #include "bpf_iter_test_kern1.skel.h"
+>  #include "bpf_iter_test_kern2.skel.h"
+>  #include "bpf_iter_test_kern3.skel.h"
+> @@ -313,6 +314,20 @@ static void test_udp6(void)
+>         bpf_iter_udp6__destroy(skel);
+>  }
 >
-> @@ -4410,6 +4410,11 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
->   * data out of it to use for target BTF.
->   */
->  struct btf *libbpf_find_kernel_btf(void)
-
-I switched this to __attribute__((alias("btf__load_vmlinux_btf"))); to
-match what Quentin did recently. Also moved comment above to be next
-to btf__load_vmlinux_btf.
-
+> +static void test_unix(void)
 > +{
-> +       return btf__load_vmlinux_btf();
+> +       struct bpf_iter_unix *skel;
+> +
+> +       skel = bpf_iter_unix__open_and_load();
+> +       if (CHECK(!skel, "bpf_iter_unix__open_and_load",
+
+please use new ASSERT_PTR_OK() macro instead
+
+> +                 "skeleton open_and_load failed\n"))
+> +               return;
+> +
+> +       do_dummy_read(skel->progs.dump_unix);
+> +
+> +       bpf_iter_unix__destroy(skel);
 > +}
 > +
-> +struct btf *btf__load_vmlinux_btf(void)
->  {
->         struct {
->                 const char *path_fmt;
+>  /* The expected string is less than 16 bytes */
+>  static int do_read_with_fd(int iter_fd, const char *expected,
+>                            bool read_one_char)
+> @@ -1255,6 +1270,8 @@ void test_bpf_iter(void)
+>                 test_udp4();
+>         if (test__start_subtest("udp6"))
+>                 test_udp6();
+> +       if (test__start_subtest("unix"))
+> +               test_unix();
+>         if (test__start_subtest("anon"))
+>                 test_anon_iter(false);
+>         if (test__start_subtest("anon-read-one-char"))
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_unix.c b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
+> new file mode 100644
+> index 000000000000..285ec2f7944d
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
+> @@ -0,0 +1,75 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright Amazon.com Inc. or its affiliates. */
+> +#include "bpf_iter.h"
+> +#include "bpf_tracing_net.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_endian.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +#define __SO_ACCEPTCON         (1 << 16)
+> +#define UNIX_HASH_SIZE         256
+> +#define UNIX_ABSTRACT(unix_sk) (unix_sk->addr->hash < UNIX_HASH_SIZE)
+> +
+> +static long sock_i_ino(const struct sock *sk)
+> +{
+> +       const struct socket *sk_socket = sk->sk_socket;
+> +       const struct inode *inode;
+> +       unsigned long ino;
+> +
+> +       if (!sk_socket)
+> +               return 0;
+> +
+> +       inode = &container_of(sk_socket, struct socket_alloc, socket)->vfs_inode;
+> +       bpf_probe_read_kernel(&ino, sizeof(ino), &inode->i_ino);
+> +       return ino;
+> +}
+> +
+> +SEC("iter/unix")
+> +int dump_unix(struct bpf_iter__unix *ctx)
+> +{
+> +       struct unix_sock *unix_sk = ctx->unix_sk;
+> +       struct sock *sk = (struct sock *)unix_sk;
+> +       struct seq_file *seq;
+> +       __u32 seq_num;
+> +
+> +       if (!unix_sk)
+> +               return 0;
+> +
+> +       seq = ctx->meta->seq;
+> +       seq_num = ctx->meta->seq_num;
+> +       if (seq_num == 0)
+> +               BPF_SEQ_PRINTF(seq, "Num       RefCount Protocol Flags    "
+> +                              "Type St Inode Path\n");
+> +
+> +       BPF_SEQ_PRINTF(seq, "%pK: %08X %08X %08X %04X %02X %5lu",
+> +                      unix_sk,
+> +                      sk->sk_refcnt.refs.counter,
+> +                      0,
+> +                      sk->sk_state == TCP_LISTEN ? __SO_ACCEPTCON : 0,
+> +                      sk->sk_type,
+> +                      sk->sk_socket ?
+> +                      (sk->sk_state == TCP_ESTABLISHED ?
+> +                       SS_CONNECTED : SS_UNCONNECTED) :
+> +                      (sk->sk_state == TCP_ESTABLISHED ?
+> +                       SS_CONNECTING : SS_DISCONNECTING),
 
-[...]
+nit: I'd keep these ternary operators on a single line for
+readability. Same for header PRINTF above.
 
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 5aca3686ca5e..a2f471950213 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -380,4 +380,6 @@ LIBBPF_0.5.0 {
->                 btf__load_into_kernel;
->                 btf_dump__dump_type_data;
->                 libbpf_set_strict_mode;
-> +               btf__load_vmlinux_btf;
-> +               btf__load_module_btf;
-
-This list needs to be alphabetically sorted. I'll fix it up while
-applying, but please remember it for the future.
-
->  } LIBBPF_0.4.0;
+> +                      sock_i_ino(sk));
+> +
+> +       if (unix_sk->addr) {
+> +               if (UNIX_ABSTRACT(unix_sk))
+> +                       /* Abstract UNIX domain socket can contain '\0' in
+> +                        * the path, and it should be escaped.  However, it
+> +                        * requires loops and the BPF verifier rejects it.
+> +                        * So here, print only the escaped first byte to
+> +                        * indicate it is an abstract UNIX domain socket.
+> +                        * (See: unix_seq_show() and commit e7947ea770d0d)
+> +                        */
+> +                       BPF_SEQ_PRINTF(seq, " @");
+> +               else
+> +                       BPF_SEQ_PRINTF(seq, " %s", unix_sk->addr->name->sun_path);
+> +       }
+> +
+> +       BPF_SEQ_PRINTF(seq, "\n");
+> +
+> +       return 0;
+> +}
 > --
-> 2.25.1
+> 2.30.2
 >
