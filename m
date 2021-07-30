@@ -2,210 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6344B3DB2C0
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 07:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623CE3DB2DC
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 07:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbhG3FXH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 01:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhG3FXH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 01:23:07 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0996EC061765
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 22:23:03 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so12730493pji.5
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 22:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oLWSV/ZYyYbOfxHVI474Gytzy7BuKYTbQ1F/xZKWAFA=;
-        b=iLLUHPD+imc20OkfoPCTqRNXG2FnEPPnDn7WBBG7GWRnzraqZjaFa9Gae4wDydikRC
-         cUDmIWqu29y8r+/xFRcsOL33dw9szVjQ3K721Ln2quky/hKkUob6QH2o4Ih4+wHg9ojY
-         eHoHVTRwNdQXw2p3g8UdPHaWUB4SJtSilXszjgPHHfBX5SL+pOOlXAd0hK6bzKsefojq
-         xsUfoNBSzn+hXGiAaXj+ARieiQYmRewkLIF3zkPs07YKQxTnEIeLJfQSbPHMf+Qcz8T9
-         GpP/PYPwdNJPFIi4mv2b5o9XdYiECh5AHe/PzVTl1GARPREZ4m7A/lZvC3CO7ked07mQ
-         h9kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oLWSV/ZYyYbOfxHVI474Gytzy7BuKYTbQ1F/xZKWAFA=;
-        b=QNJzwHj9KvQ1gBBENMWQMf9hkoOscEM69eCClzWyQ7/IJRtD4chymCi08PrewSSSKY
-         3/yJjCnw1H/T9ycvReOA25SflNt9rqPonDBsmGFwH4iRav45EZDWUjpeLbix3n1EQAdd
-         gWwLgQofwJqZIB57FuePC/AoMFMKtlLK+vsWDv8cCpj4NQ4CD0ZpouIWpjg6tEgTKQnO
-         TLgZk0DHcZqUXn35ZtgLX22Z5Tr5MVgUh9LDZXAU6NMo58uxJCGeg3HvLRVHsv8VI71b
-         F+EgHDDEvYgrlfQRSiaqTlsqFENJ0jjBVyJsaFCnDG6T6VC90xoAqYyFUk7wf30GMc58
-         MeYA==
-X-Gm-Message-State: AOAM532LRNJ+Car/wu5crnIl6lZ8Q+roj36e6+KO2tOykzL83bETzIB2
-        5n23QtWGTxPzpYpljjzpadw=
-X-Google-Smtp-Source: ABdhPJwCTVZ4KgI1I4e1WIRvW2QajbjiM+2Onc7AIkY4Jer6u2Y+NOVWJvFpxwE0Qor0A+deuNWhnA==
-X-Received: by 2002:aa7:864c:0:b029:34d:afdd:e70e with SMTP id a12-20020aa7864c0000b029034dafdde70emr1043997pfo.9.1627622582554;
-        Thu, 29 Jul 2021 22:23:02 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.114])
-        by smtp.gmail.com with ESMTPSA id bg8sm563344pjb.4.2021.07.29.22.23.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jul 2021 22:23:02 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v2] libbpf: add
- libbpf_load_vmlinux_btf/libbpf_load_module_btf APIs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>
-References: <20210728165525.19104-1-hengqi.chen@gmail.com>
- <CAEf4BzaejZHivWPPrWAEEDAiTM_HUDuB3v10HqsnYUUj+CshFA@mail.gmail.com>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-Message-ID: <1987f2c1-9759-229f-6e67-f68948a23079@gmail.com>
-Date:   Fri, 30 Jul 2021 13:22:59 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S236797AbhG3Fe2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 30 Jul 2021 01:34:28 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35020 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230149AbhG3Fe2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 30 Jul 2021 01:34:28 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U5UFDE006230
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 22:34:24 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a37bjn7q7-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 22:34:24 -0700
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 22:34:19 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 4CC023D405B3; Thu, 29 Jul 2021 22:34:16 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v3 bpf-next 00/14] BPF perf link and user-provided bpf_cookie
+Date:   Thu, 29 Jul 2021 22:33:59 -0700
+Message-ID: <20210730053413.1090371-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: W5RI-KDW-SSQc4KQ0GIIWZL9lkMqJjcB
+X-Proofpoint-ORIG-GUID: W5RI-KDW-SSQc4KQ0GIIWZL9lkMqJjcB
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzaejZHivWPPrWAEEDAiTM_HUDuB3v10HqsnYUUj+CshFA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-30_03:2021-07-29,2021-07-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107300032
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patch set implements an ability for users to specify custom black box u64
+value for each BPF program attachment, bpf_cookie, which is available to BPF
+program at runtime. This is a feature that's critically missing for cases when
+some sort of generic processing needs to be done by the common BPF program
+logic (or even exactly the same BPF program) across multiple BPF hooks (e.g.,
+many uniformly handled kprobes) and it's important to be able to distinguish
+between each BPF hook at runtime (e.g., for additional configuration lookup).
 
+Currently, something like that can be only achieved through:
+  - code-generation and BPF program cloning, which is very complicated and
+    unmaintainable;
+  - on-the-fly C code generation and further runtime compilation, which is
+    what BCC uses and allows to do pretty simply. The big downside is a very
+    heavy-weight Clang/LLVM dependency and inefficient memory usage (due to
+    many BPF program clones and the compilation process itself);
+  - in some cases (kprobes and sometimes uprobes) it's possible to do function
+    IP lookup to get function-specific configuration. This doesn't work for
+    all the cases (e.g., when attaching uprobes to shared libraries) and has
+    higher runtime overhead and additional programming complexity due to
+    BPF_MAP_TYPE_HASHMAP lookups. Up until recently, before bpf_get_func_ip()
+    BPF helper was added, it was also very complicated and unstable (API-wise)
+    to get traced function's IP from fentry/fexit and kretprobe.
 
-On 2021/7/30 5:35 AM, Andrii Nakryiko wrote:
-> On Wed, Jul 28, 2021 at 9:55 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->>
->> Add two new APIs: libbpf_load_vmlinux_btf/libbpf_load_module_btf.
->> libbpf_load_vmlinux_btf is just an alias to the existing API named
->> libbpf_find_kernel_btf, rename it to be more precisely.
->> libbpf_load_module_btf can be used to load module BTF, add it for
->> completeness. These two APIs are useful for implementing tracing
->> tools and introspection tools.
->> This is part of the efforts towards libbpf 1.0. [1]
->>
->> [1] https://github.com/libbpf/libbpf/issues/280
->>
->> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
->> ---
->>  tools/lib/bpf/btf.c      | 15 ++++++++++++++-
->>  tools/lib/bpf/btf.h      |  2 ++
->>  tools/lib/bpf/libbpf.c   |  4 ++--
->>  tools/lib/bpf/libbpf.map |  2 ++
->>  4 files changed, 20 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->> index b46760b93bb4..5f801739a1a2 100644
->> --- a/tools/lib/bpf/btf.c
->> +++ b/tools/lib/bpf/btf.c
->> @@ -4021,7 +4021,7 @@ static void btf_dedup_merge_hypot_map(struct btf_dedup *d)
->>                  */
->>                 if (d->hypot_adjust_canon)
->>                         continue;
->> -
->> +
->>                 if (t_kind == BTF_KIND_FWD && c_kind != BTF_KIND_FWD)
->>                         d->map[t_id] = c_id;
->>
->> @@ -4395,6 +4395,11 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
->>   * data out of it to use for target BTF.
->>   */
->>  struct btf *libbpf_find_kernel_btf(void)
->> +{
->> +       return libbpf_load_vmlinux_btf();
->> +}
->> +
->> +struct btf *libbpf_load_vmlinux_btf(void)
->>  {
->>         struct {
->>                 const char *path_fmt;
->> @@ -4440,6 +4445,14 @@ struct btf *libbpf_find_kernel_btf(void)
->>         return libbpf_err_ptr(-ESRCH);
->>  }
->>
->> +struct btf *libbpf_load_module_btf(const char *module_name, struct btf *vmlinux_btf)
-> 
-> In the light of Quentin's btf__load_from_kernel_by_id(), I'm now
-> wondering if it's better to keep the naming consistent as
-> btf__load_vmlinux_btf() and btf__load_module_btf()? And we should put
-> them after btf__parse() family of constructors, as just another set of
-> (special, but still) constructors. WDYT?
-> 
-> Sorry for a bit of back and forth...
-> 
-> Otherwise everything looks good, thanks.
-> 
+With libbpf and BPF CO-RE, runtime compilation is not an option, so to be able
+to build generic tracing tooling simply and efficiently, ability to provide
+additional bpf_cookie value for each *attachment* (as opposed to each BPF
+program) is extremely important. Two immediate users of this functionality are
+going to be libbpf-based USDT library (currently in development) and retsnoop
+([0]), but I'm sure more applications will come once users get this feature in
+their kernels.
 
-Thanks for the review. Will update as you suggested.
-Sometimes naming is the hardest part of programming, I am not good at that. :)
+To achieve above described, all perf_event-based BPF hooks are made available
+through a new BPF_LINK_TYPE_PERF_EVENT BPF link, which allows to use common
+LINK_CREATE command for program attachments and generally brings
+perf_event-based attachments into a common BPF link infrastructure.
 
-(BTW, Quentin's tweet led me to here)
+With that, LINK_CREATE gets ability to pass throught bpf_cookie value during
+link creation (BPF program attachment) time. bpf_get_attach_cookie() BPF
+helper is added to allow fetching this value at runtime from BPF program side.
+BPF cookie is stored either on struct perf_event itself and fetched from the
+BPF program context, or is passed through ambient BPF run context, added in
+c7603cfa04e7 ("bpf: Add ambient BPF runtime context stored in current").
 
->> +{
->> +       char path[80];
->> +
->> +       snprintf(path, sizeof(path), "/sys/kernel/btf/%s", module_name);
->> +       return btf__parse_split(path, vmlinux_btf);
->> +}
->> +
->>  int btf_type_visit_type_ids(struct btf_type *t, type_id_visit_fn visit, void *ctx)
->>  {
->>         int i, n, err;
->> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
->> index 374e9f15de2e..1abf94e3bd9e 100644
->> --- a/tools/lib/bpf/btf.h
->> +++ b/tools/lib/bpf/btf.h
->> @@ -90,6 +90,8 @@ LIBBPF_API __u32 btf_ext__func_info_rec_size(const struct btf_ext *btf_ext);
->>  LIBBPF_API __u32 btf_ext__line_info_rec_size(const struct btf_ext *btf_ext);
->>
->>  LIBBPF_API struct btf *libbpf_find_kernel_btf(void);
->> +LIBBPF_API struct btf *libbpf_load_vmlinux_btf(void);
->> +LIBBPF_API struct btf *libbpf_load_module_btf(const char *module_name, struct btf *vmlinux_btf);
-> 
-> as mentioned above, let's move these right after btf__parse() family,
-> so that all BTF constructor APIs are listed first.
-> 
+On the libbpf side of things, BPF perf link is utilized whenever is supported
+by the kernel instead of using PERF_EVENT_IOC_SET_BPF ioctl on perf_event FD.
+All the tracing attach APIs are extended with OPTS and bpf_cookie is passed
+through corresponding opts structs.
 
-Sure, will do.
+Last part of the patch set adds few self-tests utilizing new APIs.
 
->>
->>  LIBBPF_API int btf__find_str(struct btf *btf, const char *s);
->>  LIBBPF_API int btf__add_str(struct btf *btf, const char *s);
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index a1ca6fb0c6d8..321d8f4889af 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -2680,7 +2680,7 @@ static int bpf_object__load_vmlinux_btf(struct bpf_object *obj, bool force)
->>         if (!force && !obj_needs_vmlinux_btf(obj))
->>                 return 0;
->>
->> -       obj->btf_vmlinux = libbpf_find_kernel_btf();
->> +       obj->btf_vmlinux = libbpf_load_vmlinux_btf();
->>         err = libbpf_get_error(obj->btf_vmlinux);
->>         if (err) {
->>                 pr_warn("Error loading vmlinux BTF: %d\n", err);
->> @@ -8297,7 +8297,7 @@ int libbpf_find_vmlinux_btf_id(const char *name,
->>         struct btf *btf;
->>         int err;
->>
->> -       btf = libbpf_find_kernel_btf();
->> +       btf = libbpf_load_vmlinux_btf();
->>         err = libbpf_get_error(btf);
->>         if (err) {
->>                 pr_warn("vmlinux BTF is not found\n");
->> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
->> index c240d488eb5e..2088bdbc0f50 100644
->> --- a/tools/lib/bpf/libbpf.map
->> +++ b/tools/lib/bpf/libbpf.map
->> @@ -377,4 +377,6 @@ LIBBPF_0.5.0 {
->>                 bpf_object__gen_loader;
->>                 btf_dump__dump_type_data;
->>                 libbpf_set_strict_mode;
->> +               libbpf_load_vmlinux_btf;
->> +               libbpf_load_module_btf;
->>  } LIBBPF_0.4.0;
->> --
->> 2.25.1
->>
+There are also a few refactorings along the way to make things cleaner and
+easier to work with, both in kernel (BPF_PROG_RUN and BPF_PROG_RUN_ARRAY), and
+throughout libbpf and selftests.
+
+Follow-up patches will extend bpf_cookie to fentry/fexit programs.
+
+  [0] https://github.com/anakryiko/retsnoop
+
+Cc: Peter Zijlstra <peterz@infradead.org> # for perf_event changes
+
+v2->v3:
+  - user_ctx -> bpf_cookie, bpf_get_user_ctx -> bpf_get_attach_cookie (Peter);
+  - fix BPF_LINK_TYPE_PERF_EVENT value fix (Jiri);
+  - use bpf_prog_run() from bpf_prog_run_pin_on_cpu() (Yonghong);
+
+v1->v2:
+  - fix build failures on non-x86 arches by gating on CONFIG_PERF_EVENTS.
+
+Andrii Nakryiko (14):
+  bpf: refactor BPF_PROG_RUN into a function
+  bpf: refactor BPF_PROG_RUN_ARRAY family of macros into functions
+  bpf: refactor perf_event_set_bpf_prog() to use struct bpf_prog input
+  bpf: implement minimal BPF perf link
+  bpf: allow to specify user-provided bpf_cookie for BPF perf links
+  bpf: add bpf_get_attach_cookie() BPF helper to access bpf_cookie value
+  libbpf: re-build libbpf.so when libbpf.map changes
+  libbpf: remove unused bpf_link's destroy operation, but add dealloc
+  libbpf: use BPF perf link when supported by kernel
+  libbpf: add bpf_cookie support to bpf_link_create() API
+  libbpf: add bpf_cookie to perf_event, kprobe, uprobe, and tp attach
+    APIs
+  selftests/bpf: test low-level perf BPF link API
+  selftests/bpf: extract uprobe-related helpers into trace_helpers.{c,h}
+  selftests/bpf: add bpf_cookie selftests for high-level APIs
+
+ drivers/media/rc/bpf-lirc.c                   |   4 +-
+ include/linux/bpf.h                           | 206 ++++++++------
+ include/linux/bpf_types.h                     |   3 +
+ include/linux/filter.h                        |  63 +++--
+ include/linux/perf_event.h                    |   1 +
+ include/linux/trace_events.h                  |   7 +-
+ include/uapi/linux/bpf.h                      |  25 ++
+ kernel/bpf/cgroup.c                           |  32 +--
+ kernel/bpf/core.c                             |  29 +-
+ kernel/bpf/syscall.c                          | 105 +++++++-
+ kernel/events/core.c                          |  72 ++---
+ kernel/trace/bpf_trace.c                      |  45 +++-
+ tools/include/uapi/linux/bpf.h                |  25 ++
+ tools/lib/bpf/Makefile                        |  10 +-
+ tools/lib/bpf/bpf.c                           |  32 ++-
+ tools/lib/bpf/bpf.h                           |   8 +-
+ tools/lib/bpf/libbpf.c                        | 196 +++++++++++---
+ tools/lib/bpf/libbpf.h                        |  71 ++++-
+ tools/lib/bpf/libbpf.map                      |   3 +
+ tools/lib/bpf/libbpf_internal.h               |  32 ++-
+ .../selftests/bpf/prog_tests/attach_probe.c   |  61 +----
+ .../selftests/bpf/prog_tests/bpf_cookie.c     | 254 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/perf_link.c      |  89 ++++++
+ .../selftests/bpf/progs/test_bpf_cookie.c     |  85 ++++++
+ .../selftests/bpf/progs/test_perf_link.c      |  16 ++
+ tools/testing/selftests/bpf/trace_helpers.c   |  66 +++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   3 +
+ 27 files changed, 1230 insertions(+), 313 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_link.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_bpf_cookie.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_perf_link.c
+
+-- 
+2.30.2
+
