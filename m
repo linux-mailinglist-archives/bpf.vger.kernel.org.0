@@ -2,351 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476E13DBA25
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 16:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 025143DBBBC
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 17:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239025AbhG3ON4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 10:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
+        id S239142AbhG3PJW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 11:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238964AbhG3ON4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:13:56 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE6AC06175F
-        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 07:13:51 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id m12so6719250wru.12
-        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 07:13:51 -0700 (PDT)
+        with ESMTP id S239030AbhG3PJV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 11:09:21 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36935C06175F
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 08:09:17 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id ba4so2679395vsb.5
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 08:09:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=VMj4lEzuK/2ZH8kE6DIO76eVFZbDyUutvVbJ/5hI7/Y=;
-        b=KvmVgfwxCgSxLUrW648IOpcvvJmoI7yKKz2C3HlRgh/eTS/tZQ69QFZyg1a5F3IzYL
-         jJwaKmed3L/c1WBFq6hTxv2i+h6i8zbUYPTS6KSvgcnoNsDpsoBAeSDoHl4YrOs7VkYX
-         M9dmpSAaYtxkwGCGpkBGIaw/0pu+7Qnf60fZU=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j9/a7+t9MG8o7AYvrOOmnuKmHpvB+vlubq5mK0wGp/8=;
+        b=C3SCPd5UF67ci5jibg0YRSRub77HHgvJdWBeGoSB6jd3T2ywMBbeoaoQjZ/F/pwz+H
+         3A9dz07y+ZH1ob1Qaw1iMgBrGRYfRJzppB5KibnX/nkBBCKAPHtR3zQTkjqW8IFM00Zm
+         SwQBxWgLdjvG6jP6yzuTHswWeRhJsan2gOCS/6q6BDdHmQbQLuhEAF91erJRYSnEOZC4
+         ZVJnoYOeRuTeHo2ZBa5YngtcGmQ9hr2UIzWp5LWGSVxJt8XhiFHNFC3U7BQcQRjeVBMS
+         XGdGlbJfYEaMXFlRSKBbwnyCB0HwH+NMoOSALa5756svxR0cEunqcP4m2LfZQaqKymR0
+         2BQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=VMj4lEzuK/2ZH8kE6DIO76eVFZbDyUutvVbJ/5hI7/Y=;
-        b=DfXNXMDMCAuMN/l3Tg2Jpn8z0H6AU5/XI3UNmEVk9LZGYSXerdozIe6yr7I4ved5N+
-         LJR/hqLmxBJEhODEH7IY4Ph2htgy2zai6hujgIUKxqMFcK2esXEGU/ZesjOiXWRl7HzU
-         hsY24sNt+sF4mFNXhDarw2fHmjEpuJvNt9KdOjAF/TzKRSZaOr9Xxvm4vMd3TYA/opnF
-         tVZlv4n+0bJvRNnqdDXb2lIv0FovSclYrLVD9jUobvqrhqxT7g1mZHc/kx1BxqtYDusP
-         VeSA1anaVDaQwIczAYyMOroKXkKoVCnplwQRonFKJgG119ipNALBZk2DgPUzgj/DqVT7
-         /0vA==
-X-Gm-Message-State: AOAM530TIgcDYHN33xasj3DIXIkunxWJb5C4Xnaw4Up1Zk1Tq3ZWXBt1
-        /kVHVJMbTbaXDVS7VZ3954nn/w==
-X-Google-Smtp-Source: ABdhPJyGNdAqI/a6C47y738JLM/bKNbYZk2DWlAs6huHXNOiUBe5oWqbXhwWEhNYpEg+JV5qFRApAA==
-X-Received: by 2002:adf:f4ca:: with SMTP id h10mr3278632wrp.3.1627654429777;
-        Fri, 30 Jul 2021 07:13:49 -0700 (PDT)
-Received: from cloudflare.com (79.191.186.228.ipv4.supernova.orange.pl. [79.191.186.228])
-        by smtp.gmail.com with ESMTPSA id v6sm1838050wru.50.2021.07.30.07.13.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 07:13:48 -0700 (PDT)
-References: <20210729212402.1043211-1-jiang.wang@bytedance.com>
- <20210729212402.1043211-3-jiang.wang@bytedance.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Jiang Wang <jiang.wang@bytedance.com>
-Cc:     netdev@vger.kernel.org, cong.wang@bytedance.com,
-        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
-        chaiwen.cc@bytedance.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 2/5] af_unix: add unix_stream_proto for sockmap
-In-reply-to: <20210729212402.1043211-3-jiang.wang@bytedance.com>
-Date:   Fri, 30 Jul 2021 16:13:47 +0200
-Message-ID: <875ywropno.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j9/a7+t9MG8o7AYvrOOmnuKmHpvB+vlubq5mK0wGp/8=;
+        b=Ibr0pTbxgZs+aTGHHqMzNpm15U+xT66qWLEd8wP6Fx4REvjjhdIQrFM4OrEDljfJAi
+         z6Uo2xCUazdFhQl5JT6gh/Opl62XMERcF1Q8wD8+rlpsVy1gqCiMAymvBsehaALcWrS4
+         ViT11+bXa2jmv/I4uGq4znEPZaM2xCXRbfZyW4+iVw145aPYe4I+ulXxH+MPSAjwXJ+s
+         QcXy3EnQ0zrUWGdnW0tlqEVuPyZsgCdIaavYWQXi8bF4y6K68lL+lFFL8SEktWurPCKG
+         vwEJKqzZ+oWWUYhjcpZ2CrKtVDA3mvxdkAnyVdlghHOrYEjuzLaWbWDUx2T703O1IMmL
+         M6Hw==
+X-Gm-Message-State: AOAM530C3b2xtcmblUW3tMoW8AMfvNUOXWpEA+cncweJ6c4M2/HwNIi1
+        TyINW7wxb53GQKwwWGPpsCkJ4m0dZlGKTe6HtwWw/g==
+X-Google-Smtp-Source: ABdhPJzp6efxOCx5QZDJO5MdiYBIzr5/sIYpjHjbzSzv8LQevlDuh/P6B4sSDxBK2+A6raMuT5ejhS/WjG9VRUVnfB8=
+X-Received: by 2002:a67:3294:: with SMTP id y142mr2144185vsy.8.1627657756040;
+ Fri, 30 Jul 2021 08:09:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210723093938.49354-1-zeil@yandex-team.ru> <CADVnQykVQhT_4f2CV6cAqx_oFvQ-vvq-S0Pnw0a6cnXFuJnPpg@mail.gmail.com>
+ <E09A2DA0-A741-4566-B8C6-09C563546538@yandex-team.ru>
+In-Reply-To: <E09A2DA0-A741-4566-B8C6-09C563546538@yandex-team.ru>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Fri, 30 Jul 2021 11:08:59 -0400
+Message-ID: <CADVnQykFrPByw82NHm-L00cqhaSCuBNAmYbkkJ06SGNitqkxEw@mail.gmail.com>
+Subject: Re: [PATCH] tcp: use rto_min value from socket in retransmits timeout
+To:     Dmitry Yakunin <zeil@yandex-team.ru>
+Cc:     kafai@fb.com, edumazet@google.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, dmtrmonakhov@yandex-team.ru,
+        Yuchung Cheng <ycheng@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        mitradir@yandex-team.ru
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 11:23 PM CEST, Jiang Wang wrote:
-> Previously, sockmap for AF_UNIX protocol only supports
-> dgram type. This patch add unix stream type support, which
-> is similar to unix_dgram_proto. To support sockmap, dgram
-> and stream cannot share the same unix_proto anymore, because
-> they have different implementations, such as unhash for stream
-> type (which will remove closed or disconnected sockets from the map),
-> so rename unix_proto to unix_dgram_proto and add a new
-> unix_stream_proto.
+On Fri, Jul 30, 2021 at 8:37 AM Dmitry Yakunin <zeil@yandex-team.ru> wrote:
 >
-> Also implement stream related sockmap functions.
-> And add dgram key words to those dgram specific functions.
+> Hello, Neal!
 >
-> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-> Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-> ---
+> Thanks for your reply and explanations.
+>
+> I agree with all your points, about safe defaults for both timeouts
+> and the number of retries. But what the patch does is not changing the
+> defaults, it only provides a way to work with these values through
+> bpf, which is important in an environment that is way different from
+> cellular networks. For example in the modern DC the rto_min value
+> should correspond with real RTT, that definitely not 200ms.
 
-It seems that with commit c63829182c37 ("af_unix: Implement
-->psock_update_sk_prot()") we have enabled inserting dgram, stream, and
-seqpacket UNIX sockets into sockmap.
+It seems your patch and your analysis are conflating several different issues:
 
-After all, in ->map_update_elem we only check if
-sk->sk_prot->psock_update_sk_prot is set (sock_map_sk_is_suitable).
+(1) how long should rto_min be in datacenter environments?
+(2) for reliability/robustness, how long should TCP retry to transmit
+data before giving up?
+(2) should rto_min just correspond to the real RTT, or other factors
+(like delayed ACK timers)?
 
-Socket can be in listening, established or disconnected (TCP_CLOSE)
-state, that is before bind+listen/connect, or after connect(AF_UNSPEC).
+I am talking about the reliability/robustness cost of your proposal to
+tie custom reductions in (1) to automatic custom reductions in (2).
+(I'm not talking about safe defaults.)
 
-For connection-oriented socket types (stream, seqpacket) there's not
-much you can do with disconnected sockets. I think we should limit the
-allowed states to listening and established for UNIX domain, as we do
-for TCP.
+If BPF or routing table entries customize rto_min, then it's great for
+the rto_min knob to customize the RTO timer value to use a lower value
+in datacenters to speed up loss recovery (1) (as already happens).
 
-AFAIU we also seem to be already allowing redirect to connected stream
-(and dgram, and seqpacket) UNIX sockets. sock_map_redirect_allowed()
-checks only if a socket is in TCP_ESTABLISHED state for anything else
-than TCP. Not sure what it leads to, though.
+But just because you customize (1) does not imply that it is safe to
+massively reduce the answer to (2): it is not safe to cripple
+reliability/robustness by (as in your proposed patch) having the
+rto_min setting massively reduce the length of time that a TCP
+connection retries sending data before giving up and closing the
+connection.
 
-Is this change is also a fix in a sense?
+The problem caused by your proposal to have rto_min shorten the retry
+duration (e.g. a 5ms rto_min leading to only 1.275 seconds of retries)
+is a general problem of reliability/robustness, not specific to
+cellular paths. My point about cellular networks was just the most
+crisp example I could think of, to try to provide a clear and concrete
+example.
 
-[...]
+If you really think it's important for TCP connections to only retry
+sending data for 1.275 seconds, then can you please give an example of
+when this is important, and then please implement a separate
+customization mechanism for that, rather than forcing all Linux users
+of the rto_min mechanism to suffer the fallout from tying (1) to (2)?
 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index ae5fa4338..42f50ea7a 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -517,9 +517,15 @@ static bool sk_is_tcp(const struct sock *sk)
->  	       sk->sk_protocol == IPPROTO_TCP;
->  }
->
-> +static bool sk_is_unix_stream(const struct sock *sk)
-> +{
-> +	return sk->sk_type == SOCK_STREAM &&
-> +	       sk->sk_protocol == PF_UNIX;
-> +}
-> +
->  static bool sock_map_redirect_allowed(const struct sock *sk)
->  {
-> -	if (sk_is_tcp(sk))
-> +	if (sk_is_tcp(sk) || sk_is_unix_stream(sk))
->  		return sk->sk_state != TCP_LISTEN;
->  	else
->  		return sk->sk_state == TCP_ESTABLISHED;
-
-For the moment we can have TCP_CLOSE stream and seqpacket sockets in a
-sockmap . This means that the above allows redirecting to TCP_CLOSE
-connection-oriented sockets. sock_map_sk_state_allowed() needs an update
-for the this check to be effective. And we also need to account for
-seqpacket.
-
-
-> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> index 0ae3fc4c8..cfcd0d9e5 100644
-> --- a/net/unix/af_unix.c
-> +++ b/net/unix/af_unix.c
-> @@ -791,17 +791,35 @@ static void unix_close(struct sock *sk, long timeout)
->  	 */
->  }
->
-> -struct proto unix_proto = {
-> -	.name			= "UNIX",
-> +static void unix_unhash(struct sock *sk)
-> +{
-> +	/* Nothing to do here, unix socket does not need a ->unhash().
-> +	 * This is merely for sockmap.
-> +	 */
-> +}
-> +
-> +struct proto unix_dgram_proto = {
-> +	.name			= "UNIX-DGRAM",
->  	.owner			= THIS_MODULE,
->  	.obj_size		= sizeof(struct unix_sock),
->  	.close			= unix_close,
->  #ifdef CONFIG_BPF_SYSCALL
-> -	.psock_update_sk_prot	= unix_bpf_update_proto,
-> +	.psock_update_sk_prot	= unix_dgram_bpf_update_proto,
->  #endif
->  };
->
-> -static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
-> +struct proto unix_stream_proto = {
-> +	.name			= "UNIX-STREAM",
-> +	.owner			= THIS_MODULE,
-> +	.obj_size		= sizeof(struct unix_sock),
-> +	.close			= unix_close,
-> +	.unhash			= unix_unhash,
-> +#ifdef CONFIG_BPF_SYSCALL
-> +	.psock_update_sk_prot	= unix_stream_bpf_update_proto,
-> +#endif
-> +};
-> +
-> +static struct sock *unix_create1(struct net *net, struct socket *sock, int kern, int type)
->  {
->  	struct sock *sk = NULL;
->  	struct unix_sock *u;
-> @@ -810,7 +828,11 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
->  	if (atomic_long_read(&unix_nr_socks) > 2 * get_max_files())
->  		goto out;
->
-> -	sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_proto, kern);
-> +	if (type == SOCK_STREAM)
-> +		sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_stream_proto, kern);
-> +	else /*dgram and  seqpacket */
-> +		sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_dgram_proto, kern);
-> +
-
-Seqpacket also needs .unhash, right?
-
->  	if (!sk)
->  		goto out;
->
-> @@ -872,7 +894,7 @@ static int unix_create(struct net *net, struct socket *sock, int protocol,
->  		return -ESOCKTNOSUPPORT;
->  	}
->
-> -	return unix_create1(net, sock, kern) ? 0 : -ENOMEM;
-> +	return unix_create1(net, sock, kern, sock->type) ? 0 : -ENOMEM;
->  }
->
->  static int unix_release(struct socket *sock)
-> @@ -1286,7 +1308,7 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
->  	err = -ENOMEM;
->
->  	/* create new sock for complete connection */
-> -	newsk = unix_create1(sock_net(sk), NULL, 0);
-> +	newsk = unix_create1(sock_net(sk), NULL, 0, sock->type);
->  	if (newsk == NULL)
->  		goto out;
->
-> @@ -2214,7 +2236,7 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg, size_t si
->  	struct sock *sk = sock->sk;
->
->  #ifdef CONFIG_BPF_SYSCALL
-> -	if (sk->sk_prot != &unix_proto)
-> +	if (sk->sk_prot != &unix_dgram_proto)
->  		return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
->  					    flags & ~MSG_DONTWAIT, NULL);
->  #endif
-> @@ -2533,6 +2555,21 @@ static int unix_stream_read_actor(struct sk_buff *skb,
->  	return ret ?: chunk;
->  }
->
-> +int __unix_stream_recvmsg(struct sock *sk, struct msghdr *msg,
-> +			  size_t size, int flags)
-> +{
-> +	struct socket *sock = sk->sk_socket;
-
-Nit: This intermediate variable might be not needed.
-
-> +	struct unix_stream_read_state state = {
-> +		.recv_actor = unix_stream_read_actor,
-> +		.socket = sock,
-> +		.msg = msg,
-> +		.size = size,
-> +		.flags = flags
-> +	};
-> +
-> +	return unix_stream_read_generic(&state, true);
-> +}
-> +
->  static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
->  			       size_t size, int flags)
->  {
-> @@ -2544,6 +2581,13 @@ static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
->  		.flags = flags
->  	};
->
-> +	struct sock *sk = sock->sk;
-
-This will generate a warning if CONFIG_BPF_SYSCALL is unset.
-
-> +
-> +#ifdef CONFIG_BPF_SYSCALL
-> +	if (sk->sk_prot != &unix_stream_proto)
-> +		return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
-> +					    flags & ~MSG_DONTWAIT, NULL);
-> +#endif
->  	return unix_stream_read_generic(&state, true);
->  }
->
-> @@ -2605,6 +2649,7 @@ static int unix_shutdown(struct socket *sock, int mode)
->
->  		int peer_mode = 0;
->
-> +		other->sk_prot->unhash(other);
->  		if (mode&RCV_SHUTDOWN)
->  			peer_mode |= SEND_SHUTDOWN;
->  		if (mode&SEND_SHUTDOWN)
-> @@ -2613,8 +2658,10 @@ static int unix_shutdown(struct socket *sock, int mode)
->  		other->sk_shutdown |= peer_mode;
->  		unix_state_unlock(other);
->  		other->sk_state_change(other);
-> -		if (peer_mode == SHUTDOWN_MASK)
-> +		if (peer_mode == SHUTDOWN_MASK) {
->  			sk_wake_async(other, SOCK_WAKE_WAITD, POLL_HUP);
-> +			other->sk_state = TCP_CLOSE;
-> +		}
->  		else if (peer_mode & RCV_SHUTDOWN)
->  			sk_wake_async(other, SOCK_WAKE_WAITD, POLL_IN);
->  	}
-> @@ -2993,7 +3040,13 @@ static int __init af_unix_init(void)
->
->  	BUILD_BUG_ON(sizeof(struct unix_skb_parms) > sizeof_field(struct sk_buff, cb));
->
-> -	rc = proto_register(&unix_proto, 1);
-> +	rc = proto_register(&unix_dgram_proto, 1);
-> +	if (rc != 0) {
-> +		pr_crit("%s: Cannot create unix_sock SLAB cache!\n", __func__);
-> +		goto out;
-> +	}
-> +
-> +	rc = proto_register(&unix_stream_proto, 1);
->  	if (rc != 0) {
->  		pr_crit("%s: Cannot create unix_sock SLAB cache!\n", __func__);
->  		goto out;
-> @@ -3009,7 +3062,8 @@ static int __init af_unix_init(void)
->  static void __exit af_unix_exit(void)
->  {
->  	sock_unregister(PF_UNIX);
-> -	proto_unregister(&unix_proto);
-> +	proto_unregister(&unix_dgram_proto);
-> +	proto_unregister(&unix_stream_proto);
->  	unregister_pernet_subsys(&unix_net_ops);
->  }
->
-> diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
-> index db0cda29f..9067210d3 100644
-> --- a/net/unix/unix_bpf.c
-> +++ b/net/unix/unix_bpf.c
-> @@ -38,9 +38,18 @@ static int unix_msg_wait_data(struct sock *sk, struct sk_psock *psock,
->  	return ret;
->  }
->
-> -static int unix_dgram_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
-> -				  size_t len, int nonblock, int flags,
-> -				  int *addr_len)
-> +static int __unix_recvmsg(struct sock *sk, struct msghdr *msg,
-> +			   size_t len, int flags)
-> +{
-> +	if (sk->sk_type == SOCK_DGRAM)
-> +		return __unix_dgram_recvmsg(sk, msg, len, flags);
-> +	else
-> +		return __unix_stream_recvmsg(sk, msg, len, flags);
-> +}
-
-What about seqpacket? Looks like we should continue to delegate to
-__unix_dgram_recvmsg, as this is what unix_seqpacket_recvmsg does.
-
-> +
-> +static int unix_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
-> +			    size_t len, int nonblock, int flags,
-> +			    int *addr_len)
->  {
->  	struct unix_sock *u = unix_sk(sk);
->  	struct sk_psock *psock;
-
-[...]
+best regards,
+neal
