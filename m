@@ -2,435 +2,357 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A2E3DB2E9
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 07:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211803DB2EF
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 07:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236895AbhG3Fe4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 30 Jul 2021 01:34:56 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:41834 "EHLO
+        id S233424AbhG3Fmn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 01:42:43 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22372 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236850AbhG3Fez (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 30 Jul 2021 01:34:55 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U5VH27002664
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 22:34:51 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3a3vrtdwc4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 22:34:51 -0700
-Received: from intmgw001.05.ash7.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        by vger.kernel.org with ESMTP id S230162AbhG3Fmm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 30 Jul 2021 01:42:42 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U5etXk024334;
+        Thu, 29 Jul 2021 22:42:20 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=Z44zpIlr/oKYymiknl3iZS/+SYXUiuXl6xkNACnzccw=;
+ b=iALLIEN+mCtliSWRdju2+lwgOUATbE6dq7RdqTJb9vzcP3K1Q9dquaRn7UsV/E2fiJ3o
+ aHOEh6r+OAAVHVdoDM88BsQwxOzYI+i6IRLqdt+QctJWrNFI7UvKsAHu5bwcEpTzN05L
+ TCGHA1nSXLKpTSaG6DCzvEJXzKbken0kCtM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a491c8rnx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 29 Jul 2021 22:42:20 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 22:34:50 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id E20A53D405B3; Thu, 29 Jul 2021 22:34:44 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+ 15.1.2176.2; Thu, 29 Jul 2021 22:42:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GB7d+NB9VOKdCH25UzbAaxGvlUhNLoyjuTQQ+IdF2sPA/XX19YaxrRO2DoxuMMFDL528deN0ELFlg6SmFOAaDREKjGERIvJrsKqgsQkdudVCRoJiStFIOa/VyF1HKDqudkjKaNvBkDr8cYb8ay3qR/7RDbDef0En44UETs9u8l5bt+p2pW04wg5arHyPnjvWeNz3QaxEGVWTiNEXh0VgFdzbLFj4wlbT/qZk/zwCzQshH5nPeJcm2taYQ7++sGBpvHQbzUOas+mvBRaWwMKFAIUTDZu4eaVFTs7An+mLwkZXATNoJf0VkIF+D+le04lrOUcuYFqdjpVVX+1Ahp26JA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z44zpIlr/oKYymiknl3iZS/+SYXUiuXl6xkNACnzccw=;
+ b=lqpJl8td4U2rw7Q1mZHVKnA+N3ZbuIdGJttueyMK24qDvDD1EEPtSVL15PRAmcFlkiphYWMbBm4v85gkzyBLI88rUqpal0gTHLgmKKNMWdTwBci750ZQ7xFdOhH84fET5nfsaLNNnxqJc1jDBgYx3HgKDY7ynrMMNKFd7P4yUIXXej21ijPVfu0K6acVmwFNyQ4Jc+CYbMC6vNlqFiZXLGkhSxPpQpBKtgGvZNP0Aw8+Cu3OtgOxu9AF1wY5nOLISj6AhJ34A1uorlqHgEROduTiy+fBGiuCQxM1NHBqQOEhMqn0kDTopbbyvsnDFIdHFJ1Ut7FUzx8IgbUTh5UOuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB3822.namprd15.prod.outlook.com (2603:10b6:806:83::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Fri, 30 Jul
+ 2021 05:42:12 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4373.021; Fri, 30 Jul 2021
+ 05:42:12 +0000
+Subject: Re: [PATCH v2 bpf-next 04/14] bpf: implement minimal BPF perf link
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v3 bpf-next 14/14] selftests/bpf: add bpf_cookie selftests for high-level APIs
-Date:   Thu, 29 Jul 2021 22:34:13 -0700
-Message-ID: <20210730053413.1090371-15-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210730053413.1090371-1-andrii@kernel.org>
-References: <20210730053413.1090371-1-andrii@kernel.org>
+References: <20210726161211.925206-1-andrii@kernel.org>
+ <20210726161211.925206-5-andrii@kernel.org>
+ <6b61514f-3ab8-34bd-539f-e5ff8d769e77@fb.com>
+ <CAEf4BzYah9zEKiwygK_4=fqOWF7rDOXu3RH_7GLDYwn7Y7sR2A@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <52d2383f-38f2-1af2-731e-26b163c1fc28@fb.com>
+Date:   Thu, 29 Jul 2021 22:42:09 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+In-Reply-To: <CAEf4BzYah9zEKiwygK_4=fqOWF7rDOXu3RH_7GLDYwn7Y7sR2A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR13CA0130.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c6::15) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: LMfu2ZfY31hBGyRIz9NfRg8QPvoEMrQB
-X-Proofpoint-GUID: LMfu2ZfY31hBGyRIz9NfRg8QPvoEMrQB
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::1130] (2620:10d:c090:400::5:1fa2) by SJ0PR13CA0130.namprd13.prod.outlook.com (2603:10b6:a03:2c6::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.10 via Frontend Transport; Fri, 30 Jul 2021 05:42:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 42b8164e-960a-4f7f-ed3f-08d9531cc74b
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3822:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR15MB3822F5341E4FE60E4A5A69BFD3EC9@SA0PR15MB3822.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VG6KE+SDePjlTw44ko5PBa4ij0ZQWl2YoQsi7mzEODcjj7wVBM143EfD5KS8Q7iR/gm4jpQsSIE33o/vzqu1/HCYiA+C6i4B6G2T3j23tBeih0NjFlzG/Nl3O7vXV4WV9jbCvLdervfSOCjDQj1tXjUIDBkBsCoOMF4Ym6yVWczMUEw3F+CdH3ufQYyEYNUXqQkU3v536PzIweOVEIzfnxy7zFFKBkluwOOQAdnV75piJ79ARZMeuODkhYJqAelfDjPiWoMSp5SgBPM/fFnMFm2AahULw5OZeJnu+5lD+A4P+7n+9pCFBVD3+yxAZD1I1b8NIpDVyY9g2x4XOpKwmRAQcXfLYhcnKEyecggWp7qffE/C5XnnYUgktmuMjc8EBXlSjxJtAEBejRE85e21TQtmLRzZkDEfHBJ2wpY5DUZ4YiUJbtqJelWcGOiQAUhGtJ1hrwseHxGAfFUyMmGAIg6yrWsLooGwpbwLOyoVkI1ipu+7vV6fvCxKGqUl8HiKhfEIhfsLOH52xe/QAAXHePeH2ycZUP1nzg+YN85mfBfX8UcUJeIz+SpPyM3Cb6xdJyrduAa1eHRzWQEAiEDs5Vizp7uQboSe5WNs0URVTgSzVqBr8Hth0jYHQJMcwCe31DfGjSBQc9Ed4oEpcMRxCq/yVXPINy3de1ZQAZUT7G1jCYwwDYKz7Ddmzf+9K535XnqTw/fpiKvzGNKgMv6819UV3WwsAlU5o2dEf0/a+c0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(8676002)(31696002)(8936002)(316002)(5660300002)(54906003)(53546011)(86362001)(4326008)(83380400001)(508600001)(6916009)(6486002)(36756003)(38100700002)(66476007)(52116002)(66556008)(2616005)(2906002)(66946007)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WnpBbVZVQlpBT0VHZXFOcGRMWUp4MnZBMU94ZklqMzNSZG1yT0ZrcFZYNWpG?=
+ =?utf-8?B?eWk2N3JCSzgrb1d0MjloWWd3cVN5SEJKWjBnYW9iRTh0MlIvbjF2WksxYlJ1?=
+ =?utf-8?B?ODJlRCtrbk5jbVZBZjczS0svclgvNFZ6dTFtckhlV0piV0wwNVRjZ2xlajE5?=
+ =?utf-8?B?cndka3dLcVg0Ym96WElJeEh3Mms5Z0h5YW05dnNHREJ3bSthQ0hwUHJLditU?=
+ =?utf-8?B?MC9vNWg3aG5yVW9yUlN0NENvNU5zVERERnd4MkJWSjk1WWdlMkVic3QrRWk2?=
+ =?utf-8?B?OHpVYXJ1Y0NLNitOUXhKMUU2Z0hPRGNWbXYvMG1JQytGOG91cHRUaVZPa1d0?=
+ =?utf-8?B?Z1BzTFZidWVJdEpUZUxFa2xSdTIyYThxbmh2aDNIanJ1RXN2d05DMS9mOHVT?=
+ =?utf-8?B?aWE0Q3RKcXlkOHludjl5M05ZT0liU3ZHUXl5TExLMzVXN1htREs3RWhKOGVN?=
+ =?utf-8?B?WGJ5cUE3bjExZUVFUlVOekFoWGJGUytyeFR6ckJMTlo0RU5IdzhEbTc4cndQ?=
+ =?utf-8?B?dXQxbk9uNXNQSThTSFpCTlRFV2M0bHlzbXo4UFQ3Z0sxTGUxeFRJcEQzdFRy?=
+ =?utf-8?B?T3BWSjdIUm92dzgwZkdBMFZ5WmxIdlFtRVlVWExvOFQ1UU81cjUzU00zbHdU?=
+ =?utf-8?B?dWtQVTNjZERCU2x5RVE1T1JCUzlyaEtKVGpwcnkwY1kyN0Z5NjhzUm9PZUFn?=
+ =?utf-8?B?TXlUdmtidys4dUJkWFVRM3JMV0YxanBJTzM3VW9KbFBCR3lxSFlEWDBXcnhX?=
+ =?utf-8?B?S08zTk55Tnh2dUdYczlyeW1NRWhIald3SHR1MnJkUS8zcmgzOXRpU25YN1lQ?=
+ =?utf-8?B?RENsUWdwWXRsci8yTVNWRnN1ZTI3bXJhVVFvSnpFVXI2cVBTVkwyK3FhaHdm?=
+ =?utf-8?B?Z0FuNFpIZ1FxSlBPU3EzYWZIc0JxTnFTbXc3TGJtclBVZytiejl5N0VydkhX?=
+ =?utf-8?B?Sy9PZkVpOTk2VWVOWkp2V043ZUw4Vjk0bmRPL0ViWTBETkgvUmlXS3FubDJK?=
+ =?utf-8?B?QjhVR05KZEpST1k3dVIrUWNocHFYLzVtb0U5NTY5TkZSVWRqc2lNRXdUbVJv?=
+ =?utf-8?B?RVdkcEJhbjJXNVovZmJnOEtHSWgzT2Yyb1NuT0Q0ZDdRV1k4b2hHb0FnbDN6?=
+ =?utf-8?B?RkVJcTJxeSs1SjhsMGdROU11Z2R6bHBqQ1RYRmY2RnpFUWYzWTZhT25WcHMv?=
+ =?utf-8?B?eTZSWHhvQSs3NUJHRDRkQUoyMWwxa0VtYUdWT05hOW45amZnRURxK0NSaGdY?=
+ =?utf-8?B?b1pLRlpLN05idTRuRlhZRlA2eElsU05iU1U1OHQybmVwc000RXNIYmR1YWhS?=
+ =?utf-8?B?SStjT29UOUU0YjdHVlk2cmxHdnlQSlVXWEZYUjRLanlZZmxneGNWK2JzUm9V?=
+ =?utf-8?B?VE83UWdaZFYrMFFQUVE3Wm9UUTlEMG1sMmY1WGVYT0xJaUVoUXgrSlY2MWpx?=
+ =?utf-8?B?ZGNKQTRCNThjWDQ2Wkh2aXpEc3p4ZVBkc1V0b05FcXl2Z2xNNkE3SFhISEh3?=
+ =?utf-8?B?MG5JMkZ2cFM4T2ZUY252NlY0RG9wY0JRNW54a3NzNlpWamRwY2dtTTdaa1Nv?=
+ =?utf-8?B?cHJRVzVhK1ZnRUsyeFMyRHJZZmJYOUZEcmJnd3ZMeU05c3lLY3lNU1U0L3U3?=
+ =?utf-8?B?Mmx1M1BLRUIzNjVITkJMOEp4bmNqeGtGRDVPR1hHcVRnOGo4TEk4VnR1RGlw?=
+ =?utf-8?B?a0wwZEpZMjYrckZiNVRnT3I1Y3RKNW96YTRiNjUyZ2QzQSt2eDlFdVdVNzFr?=
+ =?utf-8?B?a1lONUl6dE9uNXJQM1p3R1BxaWhmM0s0ajgwOUEzRW01RFU0c1JQOFpsRlVa?=
+ =?utf-8?Q?Jw6Q1Cc23KWh9wSYlxWnxG5sO4nzi2mTg/P0M=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42b8164e-960a-4f7f-ed3f-08d9531cc74b
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jul 2021 05:42:11.9186
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Kx7zALHV0fJBvCXWsXL1tUzrqzEdfCtPSn2c6D1E5WFyDv+Lpy1ZsbMyX7KUsFa8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3822
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: MJ1LDLakO3aSlyyob3T2v4UN1N45x5VJ
+X-Proofpoint-GUID: MJ1LDLakO3aSlyyob3T2v4UN1N45x5VJ
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-07-30_03:2021-07-29,2021-07-30 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- adultscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0
- clxscore=1015 lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107300032
+ priorityscore=1501 mlxscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
+ malwarescore=0 impostorscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107300033
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftest with few subtests testing proper bpf_cookie usage.
 
-Kprobe and uprobe subtests are pretty straightforward and just validate that
-the same BPF program attached with different bpf_cookie will be triggered with
-those different bpf_cookie values.
 
-Tracepoint subtest is a bit more interesting, as it is the only
-perf_event-based BPF hook that shares bpf_prog_array between multiple
-perf_events internally. This means that the same BPF program can't be attached
-to the same tracepoint multiple times. So we have 3 identical copies. This
-arrangement allows to test bpf_prog_array_copy()'s handling of bpf_prog_array
-list manipulation logic when programs are attached and detached.  The test
-validates that bpf_cookie isn't mixed up and isn't lost during such list
-manipulations.
+On 7/29/21 9:16 PM, Andrii Nakryiko wrote:
+> On Thu, Jul 29, 2021 at 10:36 AM Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 7/26/21 9:12 AM, Andrii Nakryiko wrote:
+>>> Introduce a new type of BPF link - BPF perf link. This brings perf_event-based
+>>> BPF program attachments (perf_event, tracepoints, kprobes, and uprobes) into
+>>> the common BPF link infrastructure, allowing to list all active perf_event
+>>> based attachments, auto-detaching BPF program from perf_event when link's FD
+>>> is closed, get generic BPF link fdinfo/get_info functionality.
+>>>
+>>> BPF_LINK_CREATE command expects perf_event's FD as target_fd. No extra flags
+>>> are currently supported.
+>>>
+>>> Force-detaching and atomic BPF program updates are not yet implemented, but
+>>> with perf_event-based BPF links we now have common framework for this without
+>>> the need to extend ioctl()-based perf_event interface.
+>>>
+>>> One interesting consideration is a new value for bpf_attach_type, which
+>>> BPF_LINK_CREATE command expects. Generally, it's either 1-to-1 mapping from
+>>> bpf_attach_type to bpf_prog_type, or many-to-1 mapping from a subset of
+>>> bpf_attach_types to one bpf_prog_type (e.g., see BPF_PROG_TYPE_SK_SKB or
+>>> BPF_PROG_TYPE_CGROUP_SOCK). In this case, though, we have three different
+>>> program types (KPROBE, TRACEPOINT, PERF_EVENT) using the same perf_event-based
+>>> mechanism, so it's many bpf_prog_types to one bpf_attach_type. I chose to
+>>> define a single BPF_PERF_EVENT attach type for all of them and adjust
+>>> link_create()'s logic for checking correspondence between attach type and
+>>> program type.
+>>>
+>>> The alternative would be to define three new attach types (e.g., BPF_KPROBE,
+>>> BPF_TRACEPOINT, and BPF_PERF_EVENT), but that seemed like unnecessary overkill
+>>> and BPF_KPROBE will cause naming conflicts with BPF_KPROBE() macro, defined by
+>>> libbpf. I chose to not do this to avoid unnecessary proliferation of
+>>> bpf_attach_type enum values and not have to deal with naming conflicts.
+>>>
+>>> Cc: Peter Zijlstra <peterz@infradead.org>
+>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>>> ---
+>>>    include/linux/bpf_types.h      |   3 +
+>>>    include/linux/trace_events.h   |   3 +
+>>>    include/uapi/linux/bpf.h       |   2 +
+>>>    kernel/bpf/syscall.c           | 105 ++++++++++++++++++++++++++++++---
+>>>    kernel/events/core.c           |  10 ++--
+>>>    tools/include/uapi/linux/bpf.h |   2 +
+>>>    6 files changed, 112 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+>>> index a9db1eae6796..0a1ada7f174d 100644
+>>> --- a/include/linux/bpf_types.h
+>>> +++ b/include/linux/bpf_types.h
+>>> @@ -135,3 +135,6 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
+>>>    #ifdef CONFIG_NET
+>>>    BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
+>>>    #endif
+>>> +#ifdef CONFIG_PERF_EVENTS
+>>> +BPF_LINK_TYPE(BPF_LINK_TYPE_PERF_EVENT, perf)
+>>> +#endif
+>>> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+>>> index ad413b382a3c..8ac92560d3a3 100644
+>>> --- a/include/linux/trace_events.h
+>>> +++ b/include/linux/trace_events.h
+>>> @@ -803,6 +803,9 @@ extern void ftrace_profile_free_filter(struct perf_event *event);
+>>>    void perf_trace_buf_update(void *record, u16 type);
+>>>    void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp);
+>>>
+>>> +int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog);
+>>> +void perf_event_free_bpf_prog(struct perf_event *event);
+>>> +
+>>>    void bpf_trace_run1(struct bpf_prog *prog, u64 arg1);
+>>>    void bpf_trace_run2(struct bpf_prog *prog, u64 arg1, u64 arg2);
+>>>    void bpf_trace_run3(struct bpf_prog *prog, u64 arg1, u64 arg2,
+>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>> index 2db6925e04f4..00b1267ab4f0 100644
+>>> --- a/include/uapi/linux/bpf.h
+>>> +++ b/include/uapi/linux/bpf.h
+>>> @@ -993,6 +993,7 @@ enum bpf_attach_type {
+>>>        BPF_SK_SKB_VERDICT,
+>>>        BPF_SK_REUSEPORT_SELECT,
+>>>        BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,
+>>> +     BPF_PERF_EVENT,
+>>>        __MAX_BPF_ATTACH_TYPE
+>>>    };
+>>>
+>>> @@ -1006,6 +1007,7 @@ enum bpf_link_type {
+>>>        BPF_LINK_TYPE_ITER = 4,
+>>>        BPF_LINK_TYPE_NETNS = 5,
+>>>        BPF_LINK_TYPE_XDP = 6,
+>>> +     BPF_LINK_TYPE_PERF_EVENT = 6,
+>>
+>> As Jiri has pointed out, BPF_LINK_TYPE_PERF_EVENT = 7.
+> 
+> yep, fixed
+> 
+>>
+>>>
+>>>        MAX_BPF_LINK_TYPE,
+>>>    };
+>>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>>> index 9a2068e39d23..80c03bedd6e6 100644
+>>> --- a/kernel/bpf/syscall.c
+>>> +++ b/kernel/bpf/syscall.c
+>>> @@ -2906,6 +2906,79 @@ static const struct bpf_link_ops bpf_raw_tp_link_lops = {
+>>>        .fill_link_info = bpf_raw_tp_link_fill_link_info,
+>>>    };
+>>>
+>>> +#ifdef CONFIG_PERF_EVENTS
+>>> +struct bpf_perf_link {
+>>> +     struct bpf_link link;
+>>> +     struct file *perf_file;
+>>> +};
+>>> +
+>>> +static void bpf_perf_link_release(struct bpf_link *link)
+>>> +{
+>>> +     struct bpf_perf_link *perf_link = container_of(link, struct bpf_perf_link, link);
+>>> +     struct perf_event *event = perf_link->perf_file->private_data;
+>>> +
+>>> +     perf_event_free_bpf_prog(event);
+>>> +     fput(perf_link->perf_file);
+>>> +}
+>>> +
+>>> +static void bpf_perf_link_dealloc(struct bpf_link *link)
+>>> +{
+>>> +     struct bpf_perf_link *perf_link = container_of(link, struct bpf_perf_link, link);
+>>> +
+>>> +     kfree(perf_link);
+>>> +}
+>>> +
+>>> +static const struct bpf_link_ops bpf_perf_link_lops = {
+>>> +     .release = bpf_perf_link_release,
+>>> +     .dealloc = bpf_perf_link_dealloc,
+>>> +};
+>>> +
+>>> +static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>>> +{
+>>> +     struct bpf_link_primer link_primer;
+>>> +     struct bpf_perf_link *link;
+>>> +     struct perf_event *event;
+>>> +     struct file *perf_file;
+>>> +     int err;
+>>> +
+>>> +     if (attr->link_create.flags)
+>>> +             return -EINVAL;
+>>> +
+>>> +     perf_file = perf_event_get(attr->link_create.target_fd);
+>>> +     if (IS_ERR(perf_file))
+>>> +             return PTR_ERR(perf_file);
+>>> +
+>>> +     link = kzalloc(sizeof(*link), GFP_USER);
+>>
+>> add __GFP_NOWARN flag?
+> 
+> I looked at few other bpf_link_alloc places in this file, they don't
+> use NOWARN flag. I think the idea with NOWARN flag is to avoid memory
+> alloc warnings when amount of allocated memory depends on
+> user-specified parameter (like the size of the map value). In this
+> case it's just a single fixed-size kernel object, so while users can
+> create lots of them, each is fixed in size. It's similar as any other
+> kernel object (e.g., struct file). So I think it's good as is.
 
-Perf_event subtest validates that two BPF links can be created against the
-same perf_event (but not at the same time, only one BPF program can be
-attached to perf_event itself), and that for each we can specify different
-bpf_cookie value.
+That is fine. This is really a small struct, unlikely we have issues.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/bpf_cookie.c     | 254 ++++++++++++++++++
- .../selftests/bpf/progs/test_bpf_cookie.c     |  85 ++++++
- 2 files changed, 339 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_bpf_cookie.c
+> 
+>>
+>>> +     if (!link) {
+>>> +             err = -ENOMEM;
+>>> +             goto out_put_file;
+>>> +     }
+>>> +     bpf_link_init(&link->link, BPF_LINK_TYPE_PERF_EVENT, &bpf_perf_link_lops, prog);
+>>> +     link->perf_file = perf_file;
+>>> +
+>>> +     err = bpf_link_prime(&link->link, &link_primer);
+>>> +     if (err) {
+>>> +             kfree(link);
+>>> +             goto out_put_file;
+>>> +     }
+>>> +
+>>> +     event = perf_file->private_data;
+>>> +     err = perf_event_set_bpf_prog(event, prog);
+>>> +     if (err) {
+>>> +             bpf_link_cleanup(&link_primer);
+>>
+>> Do you need kfree(link) here?
+> 
+> bpf_link_cleanup() will call kfree() in deferred fashion. This is due
+> to bpf_link_prime() allocating anon_inode file internally, so it needs
+> to be freed carefully and that's what bpf_link_cleanup() is for.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-new file mode 100644
-index 000000000000..5eea3c3a40fe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -0,0 +1,254 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <sched.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
-+#include <test_progs.h>
-+#include "test_bpf_cookie.skel.h"
-+
-+static void kprobe_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
-+	struct bpf_link *link1 = NULL, *link2 = NULL;
-+	struct bpf_link *retlink1 = NULL, *retlink2 = NULL;
-+
-+	/* attach two kprobes */
-+	opts.bpf_cookie = 0x1;
-+	opts.retprobe = false;
-+	link1 = bpf_program__attach_kprobe_opts(skel->progs.handle_kprobe,
-+						 SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(link1, "link1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x2;
-+	opts.retprobe = false;
-+	link2 = bpf_program__attach_kprobe_opts(skel->progs.handle_kprobe,
-+						 SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(link2, "link2"))
-+		goto cleanup;
-+
-+	/* attach two kretprobes */
-+	opts.bpf_cookie = 0x10;
-+	opts.retprobe = true;
-+	retlink1 = bpf_program__attach_kprobe_opts(skel->progs.handle_kretprobe,
-+						    SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(retlink1, "retlink1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x20;
-+	opts.retprobe = true;
-+	retlink2 = bpf_program__attach_kprobe_opts(skel->progs.handle_kretprobe,
-+						    SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(retlink2, "retlink2"))
-+		goto cleanup;
-+
-+	/* trigger kprobe && kretprobe */
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->kprobe_res, 0x1 | 0x2, "kprobe_res");
-+	ASSERT_EQ(skel->bss->kretprobe_res, 0x10 | 0x20, "kretprobe_res");
-+
-+cleanup:
-+	bpf_link__destroy(link1);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(retlink1);
-+	bpf_link__destroy(retlink2);
-+}
-+
-+static void uprobe_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts);
-+	struct bpf_link *link1 = NULL, *link2 = NULL;
-+	struct bpf_link *retlink1 = NULL, *retlink2 = NULL;
-+	size_t uprobe_offset;
-+	ssize_t base_addr;
-+
-+	base_addr = get_base_addr();
-+	uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
-+
-+	/* attach two uprobes */
-+	opts.bpf_cookie = 0x100;
-+	opts.retprobe = false;
-+	link1 = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe, 0 /* self pid */,
-+						"/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(link1, "link1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x200;
-+	opts.retprobe = false;
-+	link2 = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe, -1 /* any pid */,
-+						"/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(link2, "link2"))
-+		goto cleanup;
-+
-+	/* attach two uretprobes */
-+	opts.bpf_cookie = 0x1000;
-+	opts.retprobe = true;
-+	retlink1 = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe, -1 /* any pid */,
-+						   "/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(retlink1, "retlink1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x2000;
-+	opts.retprobe = true;
-+	retlink2 = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe, 0 /* self pid */,
-+						   "/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(retlink2, "retlink2"))
-+		goto cleanup;
-+
-+	/* trigger uprobe && uretprobe */
-+	get_base_addr();
-+
-+	ASSERT_EQ(skel->bss->uprobe_res, 0x100 | 0x200, "uprobe_res");
-+	ASSERT_EQ(skel->bss->uretprobe_res, 0x1000 | 0x2000, "uretprobe_res");
-+
-+cleanup:
-+	bpf_link__destroy(link1);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(retlink1);
-+	bpf_link__destroy(retlink2);
-+}
-+
-+static void tp_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tracepoint_opts, opts);
-+	struct bpf_link *link1 = NULL, *link2 = NULL, *link3 = NULL;
-+
-+	/* attach first tp prog */
-+	opts.bpf_cookie = 0x10000;
-+	link1 = bpf_program__attach_tracepoint_opts(skel->progs.handle_tp1,
-+						    "syscalls", "sys_enter_nanosleep", &opts);
-+	if (!ASSERT_OK_PTR(link1, "link1"))
-+		goto cleanup;
-+
-+	/* attach second tp prog */
-+	opts.bpf_cookie = 0x20000;
-+	link2 = bpf_program__attach_tracepoint_opts(skel->progs.handle_tp2,
-+						    "syscalls", "sys_enter_nanosleep", &opts);
-+	if (!ASSERT_OK_PTR(link2, "link2"))
-+		goto cleanup;
-+
-+	/* trigger tracepoints */
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->tp_res, 0x10000 | 0x20000, "tp_res1");
-+
-+	/* now we detach first prog and will attach third one, which causes
-+	 * two internal calls to bpf_prog_array_copy(), shuffling
-+	 * bpf_prog_array_items around. We test here that we don't lose track
-+	 * of associated bpf_cookies.
-+	 */
-+	bpf_link__destroy(link1);
-+	link1 = NULL;
-+	kern_sync_rcu();
-+	skel->bss->tp_res = 0;
-+
-+	/* attach third tp prog */
-+	opts.bpf_cookie = 0x40000;
-+	link3 = bpf_program__attach_tracepoint_opts(skel->progs.handle_tp3,
-+						    "syscalls", "sys_enter_nanosleep", &opts);
-+	if (!ASSERT_OK_PTR(link3, "link3"))
-+		goto cleanup;
-+
-+	/* trigger tracepoints */
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->tp_res, 0x20000 | 0x40000, "tp_res2");
-+
-+cleanup:
-+	bpf_link__destroy(link1);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(link3);
-+}
-+
-+static void burn_cpu(void)
-+{
-+	volatile int j = 0;
-+	cpu_set_t cpu_set;
-+	int i, err;
-+
-+	/* generate some branches on cpu 0 */
-+	CPU_ZERO(&cpu_set);
-+	CPU_SET(0, &cpu_set);
-+	err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
-+	ASSERT_OK(err, "set_thread_affinity");
-+
-+	/* spin the loop for a while (random high number) */
-+	for (i = 0; i < 1000000; ++i)
-+		++j;
-+}
-+
-+static void pe_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, opts);
-+	struct bpf_link *link = NULL;
-+	struct perf_event_attr attr;
-+	int pfd = -1;
-+
-+	/* create perf event */
-+	memset(&attr, 0, sizeof(attr));
-+	attr.size = sizeof(attr);
-+	attr.type = PERF_TYPE_SOFTWARE;
-+	attr.config = PERF_COUNT_SW_CPU_CLOCK;
-+	attr.freq = 1;
-+	attr.sample_freq = 4000;
-+	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
-+	if (!ASSERT_GE(pfd, 0, "perf_fd"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x100000;
-+	link = bpf_program__attach_perf_event_opts(skel->progs.handle_pe, pfd, &opts);
-+	if (!ASSERT_OK_PTR(link, "link1"))
-+		goto cleanup;
-+
-+	burn_cpu(); /* trigger BPF prog */
-+
-+	ASSERT_EQ(skel->bss->pe_res, 0x100000, "pe_res1");
-+
-+	/* prevent bpf_link__destroy() closing pfd itself */
-+	bpf_link__disconnect(link);
-+	/* close BPF link's FD explicitly */
-+	close(bpf_link__fd(link));
-+	/* free up memory used by struct bpf_link */
-+	bpf_link__destroy(link);
-+	link = NULL;
-+	kern_sync_rcu();
-+	skel->bss->pe_res = 0;
-+
-+	opts.bpf_cookie = 0x200000;
-+	link = bpf_program__attach_perf_event_opts(skel->progs.handle_pe, pfd, &opts);
-+	if (!ASSERT_OK_PTR(link, "link2"))
-+		goto cleanup;
-+
-+	burn_cpu(); /* trigger BPF prog */
-+
-+	ASSERT_EQ(skel->bss->pe_res, 0x200000, "pe_res2");
-+
-+cleanup:
-+	close(pfd);
-+	bpf_link__destroy(link);
-+}
-+
-+void test_bpf_cookie(void)
-+{
-+	struct test_bpf_cookie *skel;
-+
-+	skel = test_bpf_cookie__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	skel->bss->my_tid = syscall(SYS_gettid);
-+
-+	if (test__start_subtest("kprobe"))
-+		kprobe_subtest(skel);
-+	if (test__start_subtest("uprobe"))
-+		uprobe_subtest(skel);
-+	if (test__start_subtest("tracepoint"))
-+		tp_subtest(skel);
-+	if (test__start_subtest("perf_event"))
-+		pe_subtest(skel);
-+
-+	test_bpf_cookie__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-new file mode 100644
-index 000000000000..2d3a7710e2ce
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+int my_tid;
-+
-+int kprobe_res;
-+int kprobe_multi_res;
-+int kretprobe_res;
-+int uprobe_res;
-+int uretprobe_res;
-+int tp_res;
-+int pe_res;
-+
-+static void update(void *ctx, int *res)
-+{
-+	if (my_tid != (u32)bpf_get_current_pid_tgid())
-+		return;
-+
-+	*res |= bpf_get_attach_cookie(ctx);
-+}
-+
-+SEC("kprobe/sys_nanosleep")
-+int handle_kprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &kprobe_res);
-+	return 0;
-+}
-+
-+SEC("kretprobe/sys_nanosleep")
-+int handle_kretprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &kretprobe_res);
-+	return 0;
-+}
-+
-+SEC("uprobe/trigger_func")
-+int handle_uprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &uprobe_res);
-+	return 0;
-+}
-+
-+SEC("uretprobe/trigger_func")
-+int handle_uretprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &uretprobe_res);
-+	return 0;
-+}
-+
-+/* bpf_prog_array, used by kernel internally to keep track of attached BPF
-+ * programs to a given BPF hook (e.g., for tracepoints) doesn't allow the same
-+ * BPF program to be attached multiple times. So have three identical copies
-+ * ready to attach to the same tracepoint.
-+ */
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int handle_tp1(struct pt_regs *ctx)
-+{
-+	update(ctx, &tp_res);
-+	return 0;
-+}
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int handle_tp2(struct pt_regs *ctx)
-+{
-+	update(ctx, &tp_res);
-+	return 0;
-+}
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int handle_tp3(void *ctx)
-+{
-+	update(ctx, &tp_res);
-+	return 1;
-+}
-+
-+SEC("perf_event")
-+int handle_pe(struct pt_regs *ctx)
-+{
-+	update(ctx, &pe_res);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.2
+Looking at the code again, I am able to figure out. Indeed,
+kfree(link) is called through file->release().
 
+> 
+>>
+>>> +             goto out_put_file;
+>>> +     }
+>>> +     /* perf_event_set_bpf_prog() doesn't take its own refcnt on prog */
+>>> +     bpf_prog_inc(prog);
+>>> +
+>>> +     return bpf_link_settle(&link_primer);
+>>> +
+>>> +out_put_file:
+>>> +     fput(perf_file);
+>>> +     return err;
+>>> +}
+>>> +#endif /* CONFIG_PERF_EVENTS */
+>>> +
+>>>    #define BPF_RAW_TRACEPOINT_OPEN_LAST_FIELD raw_tracepoint.prog_fd
+>>>
+>> [...]
