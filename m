@@ -2,177 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BD23DB4D5
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 10:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F953DB7ED
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 13:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhG3IFY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 04:05:24 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:31876 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbhG3IFY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 04:05:24 -0400
+        id S230299AbhG3Lk3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 07:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230157AbhG3Lk3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 07:40:29 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3230C061765
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 04:40:23 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so20308670pja.5
+        for <bpf@vger.kernel.org>; Fri, 30 Jul 2021 04:40:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1627632320; x=1659168320;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KAlOcCd82kniQYzTtnceru5A5CP47vZdJfURd1mMe8E=;
-  b=eP5ZHzGTaA/fLWTBunZ0pVmG1FjRQatVNuaa3oZsg/k5ExtcPGD8U6jz
-   8kWvRbSkgmBpP6s3bjrQ7GDN7GL7twSjLRBEq6qoLbfHNZhqj3WGeAFBc
-   Xo43JAfPAlPXXszwMPKedB06ObBsuSJI6xFS4oy5Q+JKg2C4eVYLvdGj8
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.84,281,1620691200"; 
-   d="scan'208";a="130453350"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 30 Jul 2021 08:05:18 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id F281622039E;
-        Fri, 30 Jul 2021 08:05:16 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Fri, 30 Jul 2021 08:05:16 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.161.229) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Fri, 30 Jul 2021 08:05:10 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <yhs@fb.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <john.fastabend@gmail.com>, <kafai@fb.com>,
-        <kpsingh@kernel.org>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <netdev@vger.kernel.org>,
-        <songliubraving@fb.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: af_unix: Implement BPF iterator for UNIX domain socket.
-Date:   Fri, 30 Jul 2021 17:05:05 +0900
-Message-ID: <20210730080505.48959-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <65fa9a82-6e1b-da0f-9cad-9b26771980fd@fb.com>
-References: <65fa9a82-6e1b-da0f-9cad-9b26771980fd@fb.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LBjSODnW2xscXNdIC1fGtYDW2oMbX16A41e/K4USwiE=;
+        b=QtNb2dZ8KL+0Sj3oKUivUGSvF7PyB7rFqMhJIIclO++6IVlcP4vvCyWR1k2DXxlv2n
+         ldMrJCGJpA4t6ucJGpgwGjIidv7o/ZFHhdtpcatBF7WfH+DkTU9y+lasOXQizRJaDuez
+         BhlaQ7aAlOfIGVtgW0ApDm+xnrqoQJ/KbgLRTwba7TzzLVnf7asjfsTKADZHS1K7KreG
+         cT3aHPdEzdxqF/yoY8rB/Jt2TzlWJ0aRzs85CIvt9tB4jKcuK2EKDgPYuzgBS0Pdg2DA
+         VJ0OXrHMCLu7udL2filZwY0kPI4DWh2hHQTL+jL/9C2eaozxbVhdA4CNgXtXUdK5kJn4
+         Yrgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LBjSODnW2xscXNdIC1fGtYDW2oMbX16A41e/K4USwiE=;
+        b=q6to+Dpr8MFWzBp6lCguDkE//KrJL9v7jvxUUwA6gFK+dLiN0F+FArPO0unS37r8eH
+         woVXGMEkiYrANfTwLvsfaS9+v8CBCO59QEbL8cBK0+8P9AifpJOGYVanQ4LR9HK+0wK0
+         3bYpbF3cEdvyzpAzjXHroG4uSfW03pLtms2lXHXNF1rQ+zB7JmmmaBV0MCw4fLUKaEAb
+         IJm7u50b9uBM15BmamB8zHh37xlypokIWJNuNPBzQ5Q4O5OtzYkHT6WJ5uThmbgETapt
+         v2S1ri1gFLbXz4hwc6mJ08UVW9Z5j9WX95IUs+rsSkQ6r1oZh3MSmJEY0/oUSgjKpzin
+         CAxA==
+X-Gm-Message-State: AOAM532eC6t6sK0+BuLy3MyLTr0diIzp5AR5gjKdtmWPnTf6+3T+hMPX
+        k7j8vBs/VBzISPACQ6zJ1m4cOpfK25STDQ==
+X-Google-Smtp-Source: ABdhPJwHzXN2LeuDrmn58q1Qt5pRj2TOtIb9rddqiMDF91g6IoiC4HQAV9Urav2INAodYhjevLWALQ==
+X-Received: by 2002:a17:90a:e2c8:: with SMTP id fr8mr2576678pjb.131.1627645223307;
+        Fri, 30 Jul 2021 04:40:23 -0700 (PDT)
+Received: from localhost.localdomain ([119.28.83.143])
+        by smtp.gmail.com with ESMTPSA id 20sm2793019pgg.36.2021.07.30.04.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 04:40:23 -0700 (PDT)
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kafai@fb.com,
+        hengqi.chen@gmail.com
+Subject: [PATCH bpf-next v3] libbpf: add btf__load_vmlinux_btf/btf__load_module_btf
+Date:   Fri, 30 Jul 2021 19:40:12 +0800
+Message-Id: <20210730114012.494408-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.229]
-X-ClientProxiedBy: EX13D19UWA001.ant.amazon.com (10.43.160.169) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Yonghong Song <yhs@fb.com>
-Date:   Fri, 30 Jul 2021 00:09:08 -0700
-> On 7/29/21 11:53 PM, Kuniyuki Iwashima wrote:
-> > From:   Yonghong Song <yhs@fb.com>
-> > Date:   Thu, 29 Jul 2021 23:24:41 -0700
-> >> On 7/29/21 4:36 PM, Kuniyuki Iwashima wrote:
-> >>> This patch implements the BPF iterator for the UNIX domain socket.
-> >>>
-> >>> Currently, the batch optimization introduced for the TCP iterator in the
-> >>> commit 04c7820b776f ("bpf: tcp: Bpf iter batching and lock_sock") is not
-> >>> applied.  It will require replacing the big lock for the hash table with
-> >>> small locks for each hash list not to block other processes.
-> >>
-> >> Thanks for the contribution. The patch looks okay except
-> >> missing seq_ops->stop implementation, see below for more explanation.
-> >>
-> >>>
-> >>> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> >>> ---
-> >>>    include/linux/btf_ids.h |  3 +-
-> >>>    net/unix/af_unix.c      | 78 +++++++++++++++++++++++++++++++++++++++++
-> >>>    2 files changed, 80 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> >>> index 57890b357f85..bed4b9964581 100644
-> >>> --- a/include/linux/btf_ids.h
-> >>> +++ b/include/linux/btf_ids.h
-> >>> @@ -172,7 +172,8 @@ extern struct btf_id_set name;
-> >>>    	BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP_TW, tcp_timewait_sock)		\
-> >>>    	BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP6, tcp6_sock)			\
-> >>>    	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP, udp_sock)			\
-> >>> -	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP6, udp6_sock)
-> >>> +	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP6, udp6_sock)			\
-> >>> +	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UNIX, unix_sock)
-> >>>    
-> >>>    enum {
-> >>>    #define BTF_SOCK_TYPE(name, str) name,
-> >>> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> >>> index 89927678c0dc..d45ad87e3a49 100644
-> >>> --- a/net/unix/af_unix.c
-> >>> +++ b/net/unix/af_unix.c
-> >>> @@ -113,6 +113,7 @@
-> >>>    #include <linux/security.h>
-> >>>    #include <linux/freezer.h>
-> >>>    #include <linux/file.h>
-> >>> +#include <linux/btf_ids.h>
-> >>>    
-> >>>    #include "scm.h"
-> >>>    
-> >>> @@ -2935,6 +2936,49 @@ static const struct seq_operations unix_seq_ops = {
-> >>>    	.stop   = unix_seq_stop,
-> >>>    	.show   = unix_seq_show,
-> >>>    };
-> >>> +
-> >>> +#ifdef CONFIG_BPF_SYSCALL
-> >>> +struct bpf_iter__unix {
-> >>> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-> >>> +	__bpf_md_ptr(struct unix_sock *, unix_sk);
-> >>> +	uid_t uid __aligned(8);
-> >>> +};
-> >>> +
-> >>> +static int unix_prog_seq_show(struct bpf_prog *prog, struct bpf_iter_meta *meta,
-> >>> +			      struct unix_sock *unix_sk, uid_t uid)
-> >>> +{
-> >>> +	struct bpf_iter__unix ctx;
-> >>> +
-> >>> +	meta->seq_num--;  /* skip SEQ_START_TOKEN */
-> >>> +	ctx.meta = meta;
-> >>> +	ctx.unix_sk = unix_sk;
-> >>> +	ctx.uid = uid;
-> >>> +	return bpf_iter_run_prog(prog, &ctx);
-> >>> +}
-> >>> +
-> >>> +static int bpf_iter_unix_seq_show(struct seq_file *seq, void *v)
-> >>> +{
-> >>> +	struct bpf_iter_meta meta;
-> >>> +	struct bpf_prog *prog;
-> >>> +	struct sock *sk = v;
-> >>> +	uid_t uid;
-> >>> +
-> >>> +	if (v == SEQ_START_TOKEN)
-> >>> +		return 0;
-> >>> +
-> >>> +	uid = from_kuid_munged(seq_user_ns(seq), sock_i_uid(sk));
-> >>> +	meta.seq = seq;
-> >>> +	prog = bpf_iter_get_info(&meta, false);
-> >>> +	return unix_prog_seq_show(prog, &meta, v, uid);
-> >>> +}
-> >>> +
-> >>> +static const struct seq_operations bpf_iter_unix_seq_ops = {
-> >>> +	.start	= unix_seq_start,
-> >>> +	.next	= unix_seq_next,
-> >>> +	.stop	= unix_seq_stop,
-> >>
-> >> Although it is not required for /proc/net/unix, we should still
-> >> implement bpf_iter version of seq_ops->stop here. The main purpose
-> >> of bpf_iter specific seq_ops->stop is to call bpf program one
-> >> more time after ALL elements have been traversed. Such
-> >> functionality is implemented in all other bpf_iter variants.
-> > 
-> > Thanks for your review!
-> > I will implement the extra call in the next spin.
-> > 
-> > Just out of curiosity, is there a specific use case for the last call?
-> 
-> We don't have use cases for dumps similar to /proc/net/... etc.
-> The original thinking is to permit in-kernel aggregation and the
-> seq_ops->stop() bpf program will have an indication as the last
-> bpf program invocation for the iterator at which point bpf program
-> may wrap up aggregation and send/signal the result to user space.
-> I am not sure whether people already used this feature or not, or
-> people may have different way to do that (e.g., from user space
-> directly checking map value if read() length is 0). But
-> bpf seq_ops->stop() provides an in-kernel way for bpf program
-> to respond to the end of iterating.
+Add two new APIs: btf__load_vmlinux_btf and btf__load_module_btf.
+btf__load_vmlinux_btf is just an alias to the existing API named
+libbpf_find_kernel_btf, rename to be more precisely and consistent
+with existing BTF APIs. btf__load_module_btf can be used to load
+module BTF, add it for completeness. These two APIs are useful for
+implementing tracing tools and introspection tools. This is part
+of the effort towards libbpf 1.0. [1]
 
-Aggregation, that makes sense.
-Thank you!
+[1] https://github.com/libbpf/libbpf/issues/280
+
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+---
+ tools/lib/bpf/btf.c      | 15 ++++++++++++++-
+ tools/lib/bpf/btf.h      |  6 ++++--
+ tools/lib/bpf/libbpf.c   |  4 ++--
+ tools/lib/bpf/libbpf.map |  2 ++
+ 4 files changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index cafa4f6bd9b1..56e84583e283 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -4036,7 +4036,7 @@ static void btf_dedup_merge_hypot_map(struct btf_dedup *d)
+ 		 */
+ 		if (d->hypot_adjust_canon)
+ 			continue;
+-		
++
+ 		if (t_kind == BTF_KIND_FWD && c_kind != BTF_KIND_FWD)
+ 			d->map[t_id] = c_id;
+ 
+@@ -4410,6 +4410,11 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
+  * data out of it to use for target BTF.
+  */
+ struct btf *libbpf_find_kernel_btf(void)
++{
++	return btf__load_vmlinux_btf();
++}
++
++struct btf *btf__load_vmlinux_btf(void)
+ {
+ 	struct {
+ 		const char *path_fmt;
+@@ -4455,6 +4460,14 @@ struct btf *libbpf_find_kernel_btf(void)
+ 	return libbpf_err_ptr(-ESRCH);
+ }
+ 
++struct btf *btf__load_module_btf(const char *module_name, struct btf *vmlinux_btf)
++{
++	char path[80];
++
++	snprintf(path, sizeof(path), "/sys/kernel/btf/%s", module_name);
++	return btf__parse_split(path, vmlinux_btf);
++}
++
+ int btf_type_visit_type_ids(struct btf_type *t, type_id_visit_fn visit, void *ctx)
+ {
+ 	int i, n, err;
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 596a42c8f4f5..6837dd116e87 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -44,6 +44,10 @@ LIBBPF_API struct btf *btf__parse_elf_split(const char *path, struct btf *base_b
+ LIBBPF_API struct btf *btf__parse_raw(const char *path);
+ LIBBPF_API struct btf *btf__parse_raw_split(const char *path, struct btf *base_btf);
+ 
++LIBBPF_API struct btf *libbpf_find_kernel_btf(void);
++LIBBPF_API struct btf *btf__load_vmlinux_btf(void);
++LIBBPF_API struct btf *btf__load_module_btf(const char *module_name, struct btf *vmlinux_btf);
++
+ LIBBPF_API struct btf *btf__load_from_kernel_by_id(__u32 id);
+ LIBBPF_API struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf);
+ LIBBPF_API int btf__get_from_id(__u32 id, struct btf **btf);
+@@ -93,8 +97,6 @@ int btf_ext__reloc_line_info(const struct btf *btf,
+ LIBBPF_API __u32 btf_ext__func_info_rec_size(const struct btf_ext *btf_ext);
+ LIBBPF_API __u32 btf_ext__line_info_rec_size(const struct btf_ext *btf_ext);
+ 
+-LIBBPF_API struct btf *libbpf_find_kernel_btf(void);
+-
+ LIBBPF_API int btf__find_str(struct btf *btf, const char *s);
+ LIBBPF_API int btf__add_str(struct btf *btf, const char *s);
+ LIBBPF_API int btf__add_type(struct btf *btf, const struct btf *src_btf,
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 313883179919..cb106e8c42cb 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -2680,7 +2680,7 @@ static int bpf_object__load_vmlinux_btf(struct bpf_object *obj, bool force)
+ 	if (!force && !obj_needs_vmlinux_btf(obj))
+ 		return 0;
+ 
+-	obj->btf_vmlinux = libbpf_find_kernel_btf();
++	obj->btf_vmlinux = btf__load_vmlinux_btf();
+ 	err = libbpf_get_error(obj->btf_vmlinux);
+ 	if (err) {
+ 		pr_warn("Error loading vmlinux BTF: %d\n", err);
+@@ -8297,7 +8297,7 @@ int libbpf_find_vmlinux_btf_id(const char *name,
+ 	struct btf *btf;
+ 	int err;
+ 
+-	btf = libbpf_find_kernel_btf();
++	btf = btf__load_vmlinux_btf();
+ 	err = libbpf_get_error(btf);
+ 	if (err) {
+ 		pr_warn("vmlinux BTF is not found\n");
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 5aca3686ca5e..a2f471950213 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -380,4 +380,6 @@ LIBBPF_0.5.0 {
+ 		btf__load_into_kernel;
+ 		btf_dump__dump_type_data;
+ 		libbpf_set_strict_mode;
++		btf__load_vmlinux_btf;
++		btf__load_module_btf;
+ } LIBBPF_0.4.0;
+-- 
+2.25.1
+
