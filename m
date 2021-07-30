@@ -2,181 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736583DB233
-	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 06:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F4C3DB267
+	for <lists+bpf@lfdr.de>; Fri, 30 Jul 2021 06:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229465AbhG3EYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Jul 2021 00:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
+        id S229644AbhG3Ebh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Jul 2021 00:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhG3EYK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Jul 2021 00:24:10 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106E3C0613C1
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 21:24:05 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id k65so13698802yba.13
-        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 21:24:05 -0700 (PDT)
+        with ESMTP id S229609AbhG3Ebh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Jul 2021 00:31:37 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BCCC061765
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 21:31:32 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id f26so13806618ybj.5
+        for <bpf@vger.kernel.org>; Thu, 29 Jul 2021 21:31:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JHg2OSXs2kvta8H1O6/BxrhtsssswTKvDoRl/otBSAE=;
-        b=Tc04u0nVEnFX19DnS29dVxjo+oGSSwu8bsoQvPuz4YrTJ9VOva3qVXVthx6D9HyM79
-         8HFZ7WgRZBcTwU0Vo6KZsSSznk9SHDXCvh1vaearx2P4Snq0b27Le6JgxMlwm6OjMb/3
-         wKkER8tJVyszIwIyhUcjgdXzrtW/ga1tQwHWvhWC8MCEL2iYMUKmpVJyDVj9/WYzfB4N
-         EmhMuuBVvpklh4luQpOrUdfpWgHY2tlCeOm3oDfM6HgwbdCjGnN1cDAO3v/5YjFRWiNH
-         h0aUzuHsagr60I+xg4dGZdXnWLU+KVUHdi5lRRlznU3/Ao41B32KHywbmiXFiE8gKdGP
-         brYg==
+        bh=7N/f7rU7kgtcvbGRa4UM+Bgvpd9uri83eErHORenl3Q=;
+        b=sAbR8buz46NHfQUvcn4e2PdzaEM88lBb+4LQK+dV/YtssQ6Wi+FK/SDVWdqW76DRx0
+         dHcQQ+kapa+0ffMbnai8JXFDJb3TPaZCjmkw6THbOZ1ByjgnZjBolh7jKNqqOf8Fz4xq
+         XNhOHayYZ9TfjysHOkshFU2ErVGrJ8JBqvGi1vWKxhS1YnVe3Km/LiddMlocgOR2DhUY
+         xLAEDM126ZK6qmQyOSI9PRryCzCV5AgTT4SHZ3UB64D6jlGGGiAMOXMvEfknzqiWT5ik
+         KWmLCL5aCFNaOgYut2pCRPeKxMX5mRuDVHpd9BdKAJGyysHeAkeL9rlT6JSSr1GFw8FJ
+         H4nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JHg2OSXs2kvta8H1O6/BxrhtsssswTKvDoRl/otBSAE=;
-        b=r99pnWLcIBsYj5MSCLGpw6Xjnx7XHWFv01Ic27WSj9XJRexz/vjiRMDxjjTrVG2mU7
-         OzjMhIz/YIxGyAC95I33ZosAm+38B8IWJSkFR2ou+0YxtmNzI8ELjEuWcXnO8WpXAlPk
-         thz2Xqpo+2Js9k7qwMPmL0XcYP+v5yMvGIq4ytuDhKcIpBPdbSG2HHafAC17QlvLPm7Q
-         ZwkDdEmDtjuY4+n6/cTVeXBf0+mohMJgw3f6ngVQODYwMAxdvl9BiHiD+6nKj+pnZEw0
-         0eX7DFCm4fzRWwm/nRUGJj3V7aYZwL2/F7RDlEf0fKgapIO0BmLAMYaerCgp94tye2pI
-         dnCA==
-X-Gm-Message-State: AOAM532+QFx/qeamAgcPqT+xsx3jp7Ndiga/uCnCKT27DeT9+V94Zsb4
-        JaqLOPx5xfuTo6hALELdNq6iyjaxnNySDnw/hvs=
-X-Google-Smtp-Source: ABdhPJxARu2m3ETZYOK5RhG6DrY0tKrG0YBnPZn7zrNHtGVtould5eTQqilMZqq9AB2AczE7rcumbQLWSlNw39UtA70=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr708734ybo.230.1627619044357;
- Thu, 29 Jul 2021 21:24:04 -0700 (PDT)
+        bh=7N/f7rU7kgtcvbGRa4UM+Bgvpd9uri83eErHORenl3Q=;
+        b=SvqiCHG22a0rbPcdGT6DfjOAHRpjZn7VK682UnDZ29Nb4UljVIEkn9wZ8MATTqmcPf
+         2TxLWiaIqNIbCkPXaJ6pxNP3jJyGV7kHbusWGTHsHhkwldcoo5YKpCjmdfiMTXcr7TSF
+         H+nCRtKTR/F6Wv+hyOdVg86b36FVXzfSk/LwCZPU1IjkfFxgPkss0DKzEbEsF+DDSAfE
+         WwA6r9ATCpwN5DtOc/p1bCtHGO3MuHtvZseKRUg/ybtPMmix7QkIiwla4kjsFqkwmBFm
+         +PIPUCgUXWd1gWly6bujLWLOz+6wPZrPqWrwMh9QaK/hl6f9tDd4MJBc3/yk7MKxTigP
+         cYqg==
+X-Gm-Message-State: AOAM533WpeXlSeDlmqPENRTkX8xiAh401YvRTkv0kXopb//HsIM2qqWe
+        /07qsgErrO/aBNeoZxQGdcThrMRrhMGn0RUxXsc=
+X-Google-Smtp-Source: ABdhPJxOXnAHKGEPYHjxYM6zfH/q6xogXI7oYxaqy64dAzuD7bMY/0dZ25Pmhbc6PpnUSogrr707uRzPgITXK7nE96c=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr660452ybu.403.1627619491361;
+ Thu, 29 Jul 2021 21:31:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726161211.925206-1-andrii@kernel.org> <20210726161211.925206-5-andrii@kernel.org>
- <YP/MG3ZTq+fmJ+YQ@hirez.programming.kicks-ass.net>
-In-Reply-To: <YP/MG3ZTq+fmJ+YQ@hirez.programming.kicks-ass.net>
+References: <20210726161211.925206-1-andrii@kernel.org> <20210726161211.925206-6-andrii@kernel.org>
+ <138b1ab0-1d9c-7288-06bd-fbe29285fc4f@fb.com>
+In-Reply-To: <138b1ab0-1d9c-7288-06bd-fbe29285fc4f@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 29 Jul 2021 21:23:53 -0700
-Message-ID: <CAEf4Bzbf2jnkXQ2pTksLse6CQjUeVHeBhhJoz9O4aSib+hhrkA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 04/14] bpf: implement minimal BPF perf link
-To:     Peter Zijlstra <peterz@infradead.org>
+Date:   Thu, 29 Jul 2021 21:31:20 -0700
+Message-ID: <CAEf4Bzb39v5kz1Gc2YjNvGwN8kK8H2fSp1qvipie=ZLpuxRV6Q@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 05/14] bpf: allow to specify user-provided
+ context value for BPF perf links
+To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Kernel Team <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 2:04 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Thu, Jul 29, 2021 at 11:00 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Mon, Jul 26, 2021 at 09:12:01AM -0700, Andrii Nakryiko wrote:
-> > Introduce a new type of BPF link - BPF perf link. This brings perf_event-based
-> > BPF program attachments (perf_event, tracepoints, kprobes, and uprobes) into
-> > the common BPF link infrastructure, allowing to list all active perf_event
-> > based attachments, auto-detaching BPF program from perf_event when link's FD
-> > is closed, get generic BPF link fdinfo/get_info functionality.
+>
+>
+> On 7/26/21 9:12 AM, Andrii Nakryiko wrote:
+> > Add ability for users to specify custom u64 value when creating BPF link for
+> > perf_event-backed BPF programs (kprobe/uprobe, perf_event, tracepoints).
 > >
-> > BPF_LINK_CREATE command expects perf_event's FD as target_fd. No extra flags
-> > are currently supported.
+> > This is useful for cases when the same BPF program is used for attaching and
+> > processing invocation of different tracepoints/kprobes/uprobes in a generic
+> > fashion, but such that each invocation is distinguished from each other (e.g.,
+> > BPF program can look up additional information associated with a specific
+> > kernel function without having to rely on function IP lookups). This enables
+> > new use cases to be implemented simply and efficiently that previously were
+> > possible only through code generation (and thus multiple instances of almost
+> > identical BPF program) or compilation at runtime (BCC-style) on target hosts
+> > (even more expensive resource-wise). For uprobes it is not even possible in
+> > some cases to know function IP before hand (e.g., when attaching to shared
+> > library without PID filtering, in which case base load address is not known
+> > for a library).
 > >
-> > Force-detaching and atomic BPF program updates are not yet implemented, but
-> > with perf_event-based BPF links we now have common framework for this without
-> > the need to extend ioctl()-based perf_event interface.
+> > This is done by storing u64 user_ctx in struct bpf_prog_array_item,
+> > corresponding to each attached and run BPF program. Given cgroup BPF programs
+> > already use 2 8-byte pointers for their needs and cgroup BPF programs don't
+> > have (yet?) support for user_ctx, reuse that space through union of
+> > cgroup_storage and new user_ctx field.
 > >
-> > One interesting consideration is a new value for bpf_attach_type, which
-> > BPF_LINK_CREATE command expects. Generally, it's either 1-to-1 mapping from
-> > bpf_attach_type to bpf_prog_type, or many-to-1 mapping from a subset of
-> > bpf_attach_types to one bpf_prog_type (e.g., see BPF_PROG_TYPE_SK_SKB or
-> > BPF_PROG_TYPE_CGROUP_SOCK). In this case, though, we have three different
-> > program types (KPROBE, TRACEPOINT, PERF_EVENT) using the same perf_event-based
-> > mechanism, so it's many bpf_prog_types to one bpf_attach_type. I chose to
-> > define a single BPF_PERF_EVENT attach type for all of them and adjust
-> > link_create()'s logic for checking correspondence between attach type and
-> > program type.
+> > Make it available to kprobe/tracepoint BPF programs through bpf_trace_run_ctx.
+> > This is set by BPF_PROG_RUN_ARRAY, used by kprobe/uprobe/tracepoint BPF
+> > program execution code, which luckily is now also split from
+> > BPF_PROG_RUN_ARRAY_CG. This run context will be utilized by a new BPF helper
+> > giving access to this user context value from inside a BPF program. Generic
+> > perf_event BPF programs will access this value from perf_event itself through
+> > passed in BPF program context.
 > >
-> > The alternative would be to define three new attach types (e.g., BPF_KPROBE,
-> > BPF_TRACEPOINT, and BPF_PERF_EVENT), but that seemed like unnecessary overkill
-> > and BPF_KPROBE will cause naming conflicts with BPF_KPROBE() macro, defined by
-> > libbpf. I chose to not do this to avoid unnecessary proliferation of
-> > bpf_attach_type enum values and not have to deal with naming conflicts.
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >   drivers/media/rc/bpf-lirc.c    |  4 ++--
+> >   include/linux/bpf.h            | 16 +++++++++++++++-
+> >   include/linux/perf_event.h     |  1 +
+> >   include/linux/trace_events.h   |  6 +++---
+> >   include/uapi/linux/bpf.h       |  7 +++++++
+> >   kernel/bpf/core.c              | 29 ++++++++++++++++++-----------
+> >   kernel/bpf/syscall.c           |  2 +-
+> >   kernel/events/core.c           | 21 ++++++++++++++-------
+> >   kernel/trace/bpf_trace.c       |  8 +++++---
+> >   tools/include/uapi/linux/bpf.h |  7 +++++++
+> >   10 files changed, 73 insertions(+), 28 deletions(-)
 > >
+> > diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
+> > index afae0afe3f81..7490494273e4 100644
+> > --- a/drivers/media/rc/bpf-lirc.c
+> > +++ b/drivers/media/rc/bpf-lirc.c
+> > @@ -160,7 +160,7 @@ static int lirc_bpf_attach(struct rc_dev *rcdev, struct bpf_prog *prog)
+> >               goto unlock;
+> >       }
+> >
+> > -     ret = bpf_prog_array_copy(old_array, NULL, prog, &new_array);
+> > +     ret = bpf_prog_array_copy(old_array, NULL, prog, 0, &new_array);
+> >       if (ret < 0)
+> >               goto unlock;
+> >
+> [...]
+> >   void bpf_trace_run1(struct bpf_prog *prog, u64 arg1);
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 00b1267ab4f0..bc1fd54a8f58 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1448,6 +1448,13 @@ union bpf_attr {
+> >                               __aligned_u64   iter_info;      /* extra bpf_iter_link_info */
+> >                               __u32           iter_info_len;  /* iter_info length */
+> >                       };
+> > +                     struct {
+> > +                             /* black box user-provided value passed through
+> > +                              * to BPF program at the execution time and
+> > +                              * accessible through bpf_get_user_ctx() BPF helper
+> > +                              */
+> > +                             __u64           user_ctx;
+> > +                     } perf_event;
 >
-> So I have no idea what all that means... I don't speak BPF. That said,
-> the patch doesn't look terrible.
+> Is it possible to fold this field into previous union?
 >
-> One little question below, but otherwise:
+>                  union {
+>                          __u32           target_btf_id;  /* btf_id of
+> target to attach to */
+>                          struct {
+>                                  __aligned_u64   iter_info;      /*
+> extra bpf_iter_link_info */
+>                                  __u32           iter_info_len;  /*
+> iter_info length */
+>                          };
+>                  };
 >
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 >
-> > +static void bpf_perf_link_release(struct bpf_link *link)
-> > +{
-> > +     struct bpf_perf_link *perf_link = container_of(link, struct bpf_perf_link, link);
-> > +     struct perf_event *event = perf_link->perf_file->private_data;
-> > +
-> > +     perf_event_free_bpf_prog(event);
-> > +     fput(perf_link->perf_file);
-> > +}
->
-> > +static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> > +{
-> > +     struct bpf_link_primer link_primer;
-> > +     struct bpf_perf_link *link;
-> > +     struct perf_event *event;
-> > +     struct file *perf_file;
-> > +     int err;
-> > +
-> > +     if (attr->link_create.flags)
-> > +             return -EINVAL;
-> > +
-> > +     perf_file = perf_event_get(attr->link_create.target_fd);
-> > +     if (IS_ERR(perf_file))
-> > +             return PTR_ERR(perf_file);
-> > +
-> > +     link = kzalloc(sizeof(*link), GFP_USER);
-> > +     if (!link) {
-> > +             err = -ENOMEM;
-> > +             goto out_put_file;
-> > +     }
-> > +     bpf_link_init(&link->link, BPF_LINK_TYPE_PERF_EVENT, &bpf_perf_link_lops, prog);
-> > +     link->perf_file = perf_file;
-> > +
-> > +     err = bpf_link_prime(&link->link, &link_primer);
-> > +     if (err) {
-> > +             kfree(link);
-> > +             goto out_put_file;
-> > +     }
-> > +
-> > +     event = perf_file->private_data;
-> > +     err = perf_event_set_bpf_prog(event, prog);
-> > +     if (err) {
-> > +             bpf_link_cleanup(&link_primer);
-> > +             goto out_put_file;
-> > +     }
-> > +     /* perf_event_set_bpf_prog() doesn't take its own refcnt on prog */
->
-> Is that otherwise expected? AFAICT the previous users of that function
-> were guaranteed the existance of the BPF program. But afaict there is
-> nothing that prevents perf_event_*_bpf_prog() from doing the addition
-> refcounting if that is more convenient.
 
-Sorry, I missed this on my last pass. Yes, it's expected. The general
-convention we use for BPF when passing bpf_prog (and bpf_map and other
-objects like that) is that the caller already has an incremented
-refcnt before calling callee. If callee succeeds, that refcnt is
-"transferred" into the caller (so callee doesn't increment it, caller
-doesn't put it). If callee errors out, caller is decrementing refcnt
-after necessary clean up, but callee does nothing. While asymmetrical,
-in practice it results in a simple and straightforward  error handling
-logic.
+I didn't want to do it, because different types of BPF links will
+accept this user_ctx (or now bpf_cookie). And then we'll have to have
+different locations of that field for different types of links.
 
-In this case bpf_perf_link_attach() assumes one refcnt from its
-caller, but if everything is ok and perf_event_set_bpf_prog()
-succeeds, we need to keep 2 refcnts: one for bpf_link and one for
-perf_event_set_bpf_prog() internally. So we just bump refcnt one extra
-time. I intentionally removed bpf_prog_put() from
-perf_event_set_bpf_prog() in the previous patch to make error handling
-uniform with the rest of the code and simpler overall.
+For example, when/if we add this user_ctx to BPF iterator programs,
+having __u64 user_ctx in the same anonymous union will make it overlap
+with iter_info, which is a problem. So I want to have a link
+type-specific sections in LINK_CREATE command section, to allow the
+same field name at different locations.
 
->
-> > +     bpf_prog_inc(prog);
-> > +
-> > +     return bpf_link_settle(&link_primer);
-> > +
-> > +out_put_file:
-> > +     fput(perf_file);
-> > +     return err;
-> > +}
+I actually think that we should put iter_info/iter_info_len into a
+named field, like this (also added user_ctx for bpf_iter link as a
+demonstration):
+
+struct {
+    __aligned_u64 info;
+    __u32         info_len;
+    __aligned_u64 user_ctx;  /* see how it's at a different offset
+than perf_event.user_ctx */
+} iter;
+struct {
+    __u64         user_ctx;
+} perf_event;
+
+(of course keeping already existing fields in anonymous struct for
+backwards compatibility)
+
+I decided to not do that in this patch set, though, to not distract
+from the main goal. But I think we should avoid this shared field
+"namespace" across different link types going forward.
+
+
+> >               };
+> >       } link_create;
+> >
+> [...]
