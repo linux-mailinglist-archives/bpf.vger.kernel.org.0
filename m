@@ -2,101 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6196F3DC80F
-	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 21:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6463DC8F4
+	for <lists+bpf@lfdr.de>; Sun,  1 Aug 2021 01:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231587AbhGaTuw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 31 Jul 2021 15:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231440AbhGaTuu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 31 Jul 2021 15:50:50 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273FFC0613D3;
-        Sat, 31 Jul 2021 12:50:43 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id w10so8988712qtj.3;
-        Sat, 31 Jul 2021 12:50:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ayu4vfMndlZW5WGCrw1rqSAOKk0P76YB/xav7o1Hf+4=;
-        b=Gr8FORc3YngmE8XFwKNWzyx7+LfvuctYkr6XFIFq4pL6UqJEJKNAzGdc7tbKIWiuon
-         Gt8LgM1PxZ+cY2N0VtpWYzPmbMYRI5P3wEDggePi8xnjdidQyqXcSOcsDTJvpiJk0nqV
-         KkO22ASLFjwzIxBNtJObYKMqLwI+iqlN4OhtglYBR2uwYmyemez3KCvdGKl+s8Rt1mLm
-         mruS9S/24lX2VetFUP4ddNX/ftTmDzgxaMXHTMsFWEQgjzNVVztcF6T+MNlrSncV8FqJ
-         I4Ab3qwvdlHXOKa3vMScxt6al7K7TmyypL/F4xvi/PxSR9UFUOmNdl1/jGWqDqz8KmqX
-         WiAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ayu4vfMndlZW5WGCrw1rqSAOKk0P76YB/xav7o1Hf+4=;
-        b=KnBICpUC1ojjWS9IZbOq6INQMxY/aYHFy/AymZZrh8gCBDlPXiFO0CNNfl/g9LXdwS
-         AKZBrO/LkHXVW1HqfurrvKWTIw4ITV/wI1iHMDphhxHmgco+QxT5ArgwZRxF5lGf9a12
-         imM+p7oeA/GM2dwCQsKG9ybYDWxKT4B//fIE4MLrnV3sLKoxiedLAMXSB3eRXi9LAABq
-         peo9fUDWlDtJe4PailLV53wuMKDQ9vsvjJvch/RQh3poZVo1AI58dzqxsOyAMOkshqol
-         Bik26U9OHZXQIhH+wgKrWRSTcICbYZc9+pmG8vpHKrUtq7TaMBtsyawFHagoHEP7rfUF
-         9ckg==
-X-Gm-Message-State: AOAM531dPigIdZB7+rMxeNG85nrFCw6KVOLLY6eVV0QHpa209AX+k5Rr
-        i14KiptTJ7WV4TENvzlcojmeAxXGyJc=
-X-Google-Smtp-Source: ABdhPJy1c04UXayGOUV1H6N2NwXEhgX84PdssGW4fAZRNCeCGj6Fjm5HG5ocZjv6CaPoT0Z60V3Ang==
-X-Received: by 2002:ac8:5401:: with SMTP id b1mr7700344qtq.112.1627761042160;
-        Sat, 31 Jul 2021 12:50:42 -0700 (PDT)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:6537:b4e6:3746:97a9])
-        by smtp.gmail.com with ESMTPSA id d129sm2984823qkf.136.2021.07.31.12.50.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 12:50:41 -0700 (PDT)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, jiang.wang@bytedance.com,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        id S229505AbhGaXd2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 31 Jul 2021 19:33:28 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47706 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229449AbhGaXd2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 31 Jul 2021 19:33:28 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16VNEBPb004686
+        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 16:33:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=HD3wSVNd3+9Z9Wo8mAqH6cUfUOmpG2rhej5gPge0ur4=;
+ b=j6QFbyukE0LpjiZIyD6r4qaLc05TZ1T5FfWIZN9BHD3Uzyul9k/FYC7sXnKEf9pNARqg
+ 14eSoex4tFePTMYMgyclEOr4+fxRRer+Q3z+vLLVsTkIAX0/+wm2ffl/8iIrI4llV92c
+ tG+j1yy3QoU/pN6VCfD2P/E9NGr0K69kXxY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a54bxjbb8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 16:33:21 -0700
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 31 Jul 2021 16:33:20 -0700
+Received: by devbig030.frc3.facebook.com (Postfix, from userid 158236)
+        id 5ADFF4B6972B; Sat, 31 Jul 2021 16:31:03 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <netdev@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [Patch bpf-next] unix_bpf: check socket type in unix_bpf_update_proto()
-Date:   Sat, 31 Jul 2021 12:50:38 -0700
-Message-Id: <20210731195038.8084-1-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH bpf-next 0/1] Refactor cgroup_bpf internals to use more specific attach_type
+Date:   Sat, 31 Jul 2021 16:30:55 -0700
+Message-ID: <20210731233056.850105-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: nynvp4lprXKMeCSkAn6wEFr--lOsfOx9
+X-Proofpoint-GUID: nynvp4lprXKMeCSkAn6wEFr--lOsfOx9
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-31_05:2021-07-30,2021-07-31 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=1 mlxscore=1 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 malwarescore=0
+ bulkscore=0 clxscore=1015 mlxlogscore=206 impostorscore=0 spamscore=1
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107310136
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+The cgroup_bpf struct has a few arrays (effective, progs, and flags) of
+size MAX_BPF_ATTACH_TYPE. These are meant to separate progs by their
+attach type, currently represented by the bpf_attach_type enum.
 
-As of now, only AF_UNIX datagram socket supports sockmap.
-But unix_proto is shared for all kinds of AF_UNIX sockets,
-so we have to check the socket type in
-unix_bpf_update_proto() to explicitly reject other types,
-otherwise they could be added into sockmap too.
+There are some bpf_attach_type values which are not valid attach types
+for cgroup bpf programs. Programs with these attach types will never be
+handled by cgroup_bpf_{attach,detach} and thus will never be held in
+cgroup_bpf structs. Even if such programs did make it into their
+reserved slot in those arrays, they would never be executed.
 
-Fixes: c63829182c37 ("af_unix: Implement ->psock_update_sk_prot()")
-Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- net/unix/unix_bpf.c | 3 +++
- 1 file changed, 3 insertions(+)
+Accordingly we can migrate to a new internal cgroup_bpf-specific enum
+for these arrays, saving some bytes per cgroup and making it more
+obvious which BPF programs belong there. netns_bpf_attach_type is an
+existing example of this pattern, let's do similar for cgroup_bpf.
 
-diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
-index 177e883f451e..20f53575b5c9 100644
---- a/net/unix/unix_bpf.c
-+++ b/net/unix/unix_bpf.c
-@@ -105,6 +105,9 @@ static void unix_bpf_check_needs_rebuild(struct proto *ops)
- 
- int unix_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
- {
-+	if (sk->sk_type != SOCK_DGRAM)
-+		return -EOPNOTSUPP;
-+
- 	if (restore) {
- 		sk->sk_write_space = psock->saved_write_space;
- 		WRITE_ONCE(sk->sk_prot, psock->sk_proto);
--- 
-2.27.0
+Dave Marchevsky (1):
+  bpf: migrate cgroup_bpf to internal cgroup_bpf_attach_type enum
+
+ include/linux/bpf-cgroup.h     | 200 +++++++++++++++++++++++----------
+ include/uapi/linux/bpf.h       |   2 +-
+ kernel/bpf/cgroup.c            | 154 +++++++++++++++----------
+ net/ipv4/af_inet.c             |   6 +-
+ net/ipv4/udp.c                 |   2 +-
+ net/ipv6/af_inet6.c            |   6 +-
+ net/ipv6/udp.c                 |   2 +-
+ tools/include/uapi/linux/bpf.h |   2 +-
+ 8 files changed, 243 insertions(+), 131 deletions(-)
+
+--=20
+2.30.2
 
