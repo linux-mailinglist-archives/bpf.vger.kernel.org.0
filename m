@@ -2,112 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B689C3DC651
-	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 16:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBC33DC69C
+	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 17:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhGaOdS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 31 Jul 2021 10:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
+        id S233271AbhGaPZi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 31 Jul 2021 11:25:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233108AbhGaOdS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 31 Jul 2021 10:33:18 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E6FC0613D3
-        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 07:33:11 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso18535880pjo.1
-        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 07:33:11 -0700 (PDT)
+        with ESMTP id S233035AbhGaPZh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 31 Jul 2021 11:25:37 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D38C06175F;
+        Sat, 31 Jul 2021 08:25:30 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id b6so19424393pji.4;
+        Sat, 31 Jul 2021 08:25:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p8waAPUBBhE73M4k8JLkClONjUvvZERERntzJH0x7kc=;
-        b=QviQMjL3u51xB2iny40UXAsjBm5GyOa9RQQqwlp3QGWeisPYPTjZxRa3tOsj9rSmk3
-         owDf+6c8XylF43tlFyV2fU1gpxLetNCRJ6SfWyfc8z89jBw3wGAzdsNc6FKDal6JWIyf
-         OKMMB1EsO0BNaLQOvb6nV/5e8YZZPIeTtkqV2DQgMg0IuNEanxT9eMUerAuBwS/J9nP7
-         aEqxM/w3cqZmifGNb+KBsC8J9xjkOZ5F87wIWrYkdLV1+0cz5Rli2lWxEGwcN2m79Nr2
-         Cn8cHnNxghh23NspZu5COu2KFe+pLOC/Bt6ooDjM0z+BOwUsEHXIpTrN6407ycEZmMx+
-         rcCg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hKFCzHrB92IWDlBqXaKAnSTYyGuxIzImIhnqt8i8hKs=;
+        b=uxpYsrCAo5ObrCQeiET17wsWl20sXpwMOtttRPFY4XnUjWos0dYZF/fd3RoOcUnyP+
+         G+BMuae8nHtbZzjx9a4XO1EhTr8Kp2e5GYOVrd53hUjRpC648JdvWLN4fBLFaRPwlVl8
+         3G4N0g2hodT1zR7MYpa/qKaHnrHG7bwrRtkgt6NcVDxperHI7Y0n2gX9689B3+63wzH2
+         Wpn+vKuV+FMgAlK0ufv32y8aSKSI66GR1VrkgwiL/Hblvlvt9+dcZgX28nE0bUXphk7a
+         IO6v7zxn8JtZa5Jxagx8/CfU12O24MMAiCWrsV7aqaijKriuS0l/KSQUi2hhJ+e4mtN9
+         T1hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p8waAPUBBhE73M4k8JLkClONjUvvZERERntzJH0x7kc=;
-        b=rm0kPGFXALd9h4OVFsFM3iqFErtFtxeZuT0Jq76zffTE6kAsR17woWtt7Etz/fiw/u
-         X+JhuH69yHLYCHLO60XxaMOZXHLFRsl9bYoz3fiFpei+g3ZEE94XBhvQpQDYRCIGdXux
-         VHTfWLBq+O6tzUBbCZisH2S1lX2gqDiAGiPt5jmCuMVKbw0zAkawqroUPjO7jKqVZVZn
-         jFS+Clx2/65Z/qngrAiLf457j+em/bGGBzLMbg4khx9pkOn3R4Nr0TKmic4faI2NCmQv
-         AzuS6mP5RBiHd//PzWMl3XwWUlHzFnjcykZ3U8DGakhFb0gxODv7IKcLIBIKPg0G0Vs9
-         6nyw==
-X-Gm-Message-State: AOAM530JL2F4xR8N0agPoubpE3MlZf44RHaByBymoXw1HalhAL3wXWbJ
-        MPxm9EW7OwF/wFUIqJn5hcMpFHXMh/YiVw==
-X-Google-Smtp-Source: ABdhPJyev52wHqRvi3huxUqphzEk6E6r8YARQxkYPFXYEZ2k5Aulqh4mMDzBM01HqJZekE6iMfXWrg==
-X-Received: by 2002:aa7:838a:0:b029:3b7:31a5:649c with SMTP id u10-20020aa7838a0000b02903b731a5649cmr835161pfm.44.1627741990547;
-        Sat, 31 Jul 2021 07:33:10 -0700 (PDT)
-Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id k5sm6219594pfu.142.2021.07.31.07.33.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hKFCzHrB92IWDlBqXaKAnSTYyGuxIzImIhnqt8i8hKs=;
+        b=R7J36E1LWNtlPgXna/HiJs3Ucn1tIwayLQjbqusaO5PKb9tL1QTWRKD2X2YQnK8zcl
+         W7b77MVEagRj6yUcb/HCyQY72gBR80qGogXMQSGbJxYpPEnw4WDYybMWtGxAcjFUOOc7
+         onGIrl+SK5FcfBZSnC8DHMolNJC/716QnHZmhXOoqKeI2Sw+OWsEa4R3vBJZ0v2HMY4w
+         /h79r84B5xnb6LXXk1653mMcHD3YsYlfwTaVY5owxZZhBPSAe13SLEqklO3LRSBhbfeS
+         sntLrnUrCRtZ9wKvB8IIK7NrcZSs9Zd1U8RbvrUHZLFEKFZLuXDSeOo5MSD05HnANzvg
+         P+8g==
+X-Gm-Message-State: AOAM531IZ5fA6uH0rkaklCp6yM47owFSz2ji41AXolozAKKXHcuewWCn
+        a/LMFmP4iTGrc5as6hBlJuY=
+X-Google-Smtp-Source: ABdhPJwDw4nikp5i8nOXC5fmKlUIzXVHt+eA8eKys39blLKLPDaW6zi13zF4Kt3Ad+jqkQei+s7rhw==
+X-Received: by 2002:a17:90a:f991:: with SMTP id cq17mr8419312pjb.150.1627745130240;
+        Sat, 31 Jul 2021 08:25:30 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d0bb:dc30:f309:2f53:5818])
+        by smtp.gmail.com with ESMTPSA id s193sm6442927pfc.183.2021.07.31.08.25.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 07:33:10 -0700 (PDT)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, hengqi.chen@gmail.com
-Subject: [PATCH] selftests/bpf: Test btf__load_vmlinux_btf/btf__load_module_btf APIs
-Date:   Sat, 31 Jul 2021 22:32:44 +0800
-Message-Id: <20210731143244.784959-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 31 Jul 2021 08:25:30 -0700 (PDT)
+Date:   Sat, 31 Jul 2021 20:55:23 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Matthew Cover <werekraken@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthew Cover <matthew.cover@stackpath.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] samples/bpf: xdp_redirect_cpu: Add
+ mprog-disable to optstring.
+Message-ID: <20210731152523.22syukzew6c7njjh@apollo.localdomain>
+References: <20210731005632.13228-1-matthew.cover@stackpath.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210731005632.13228-1-matthew.cover@stackpath.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test for btf__load_vmlinux_btf/btf__load_module_btf APIs. It first
-checks that if btrfs module BTF exists, if yes, load module BTF and
-check symbol existence.
+On Sat, Jul 31, 2021 at 06:26:32AM IST, Matthew Cover wrote:
+> Commit ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program
+> on cpumap") added the following option, but missed adding it to optstring:
+> - mprog-disable: disable loading XDP program on cpumap entries
+>
+> Add the missing option character.
+>
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- .../selftests/bpf/prog_tests/btf_module.c     | 31 +++++++++++++++++++
- 1 file changed, 31 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_module.c
+I made some changes in this area in [0], since the support was primarily to do
+redirection from the cpumap prog, so by default we don't install anything now
+and only do so if a redirection interface is specified (and use devmap instead).
+So this option won't be used anyway going forward (since we don't install a
+dummy XDP_PASS program anymore) if it gets accepted.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_module.c b/tools/testing/selftests/bpf/prog_tests/btf_module.c
-new file mode 100644
-index 000000000000..cad1314e3356
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_module.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Hengqi Chen */
-+
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+
-+static const char *module_path = "/sys/kernel/btf/btrfs";
-+static const char *module_name = "btrfs";
-+
-+void test_btf_module()
-+{
-+	struct btf *vmlinux_btf, *module_btf;
-+	__s32 type_id;
-+
-+	if (access(module_path, F_OK))
-+		return;
-+
-+	vmlinux_btf = btf__load_vmlinux_btf();
-+	if (!ASSERT_OK_PTR(vmlinux_btf, "could not load vmlinux BTF"))
-+		return;
-+
-+	module_btf = btf__load_module_btf(module_name, vmlinux_btf);
-+	if (!ASSERT_OK_PTR(module_btf, "could not load module BTF"))
-+		return;
-+
-+	type_id = btf__find_by_name(module_btf, "btrfs_file_open");
-+	ASSERT_GT(type_id, 0, "func btrfs_file_open not found");
-+
-+	btf__free(module_btf);
-+	btf__free(vmlinux_btf);
-+}
--- 
-2.30.2
+[0]: https://lore.kernel.org/bpf/20210728165552.435050-1-memxor@gmail.com
 
+PS: I can restore it again if this is something really used beyond redirecting
+to another device (i.e. with custom BPF programs). Any feedback would be helpful.
+
+> Fixes: ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program on cpumap")
+> Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
+> ---
+>  samples/bpf/xdp_redirect_cpu_user.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
+> index d3ecdc1..9e225c9 100644
+> --- a/samples/bpf/xdp_redirect_cpu_user.c
+> +++ b/samples/bpf/xdp_redirect_cpu_user.c
+> @@ -841,7 +841,7 @@ int main(int argc, char **argv)
+>  	memset(cpu, 0, n_cpus * sizeof(int));
+>
+>  	/* Parse commands line args */
+> -	while ((opt = getopt_long(argc, argv, "hSd:s:p:q:c:xzFf:e:r:m:",
+> +	while ((opt = getopt_long(argc, argv, "hSd:s:p:q:c:xzFf:e:r:m:n",
+>  				  long_options, &longindex)) != -1) {
+>  		switch (opt) {
+>  		case 'd':
+> --
+> 1.8.3.1
+>
+
+--
+Kartikeya
