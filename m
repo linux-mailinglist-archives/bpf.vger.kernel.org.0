@@ -2,170 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA08E3DC51A
-	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 10:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B689C3DC651
+	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 16:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhGaImy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 31 Jul 2021 04:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
+        id S233110AbhGaOdS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 31 Jul 2021 10:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhGaImx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 31 Jul 2021 04:42:53 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095E2C06175F
-        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 01:42:47 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso24263131pjq.2
-        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 01:42:47 -0700 (PDT)
+        with ESMTP id S233108AbhGaOdS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 31 Jul 2021 10:33:18 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E6FC0613D3
+        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 07:33:11 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso18535880pjo.1
+        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 07:33:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ya6qpBDBpPdbW/jalsSGQbO7/nqzaEsO0P+kfh35XMI=;
-        b=AEx5qVET7/8IT6hHcUclcWPoPjCvkWuReYY/sED1fcs/UkbqSylPC0Bprkg44w+npm
-         BhXs8exEQmqZVMm7JpDIbJ19UBHXqf42rRop4nlj+AmpQTsJHFoGLBGIlGU/821Zo3XX
-         LZO+hWnEX5QXmvvmB6T5WexldCPl+6shPClZNK/xmoXuNG3CVu5STvNdUDyF9iQbHO9+
-         JOhC1ejUPQHoMA46a6DtTFiE/RketLk+kVvK057RMgz9m058YZFB2As+8Aiu6gdosWHB
-         roO5UXtrdeePQC8xwbaHZVsCNzSsVwTzSKkHKcDsICyiSBm4pKym+UUnsSqcgNDuxp2B
-         wlJg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p8waAPUBBhE73M4k8JLkClONjUvvZERERntzJH0x7kc=;
+        b=QviQMjL3u51xB2iny40UXAsjBm5GyOa9RQQqwlp3QGWeisPYPTjZxRa3tOsj9rSmk3
+         owDf+6c8XylF43tlFyV2fU1gpxLetNCRJ6SfWyfc8z89jBw3wGAzdsNc6FKDal6JWIyf
+         OKMMB1EsO0BNaLQOvb6nV/5e8YZZPIeTtkqV2DQgMg0IuNEanxT9eMUerAuBwS/J9nP7
+         aEqxM/w3cqZmifGNb+KBsC8J9xjkOZ5F87wIWrYkdLV1+0cz5Rli2lWxEGwcN2m79Nr2
+         Cn8cHnNxghh23NspZu5COu2KFe+pLOC/Bt6ooDjM0z+BOwUsEHXIpTrN6407ycEZmMx+
+         rcCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ya6qpBDBpPdbW/jalsSGQbO7/nqzaEsO0P+kfh35XMI=;
-        b=OtCIfqQfGNvqmukb18K6sJz5obwiTVLR6VOdd2wfsyyKWEG2vGohvHK9Tpmk663ufl
-         u2LiCSp9WRJaXF1OgQDabO6KeewQS0W2APZ9DeFv3XPs3dl+LDuyxsv1WimnrGfPyEkX
-         sXVU2Sw/DSsx7GqDJ4je0EnPnM6n2/OBVKqnkRls8KZJA0nMFcDl+rRy61Ne2SH0ZLxm
-         iStdKRQxtHjeDDwgIvOHTzmdk7gUv8Nc1lzcSs60C25NkKsG9sfpDUpDk/3JKnD4CP4d
-         GNJbfnLFJlQUuSCdicguekMdM9b+nmqQ6B2/H5wvJueGmfiYVAcfcENN/daL9rFKN+Zu
-         8w0g==
-X-Gm-Message-State: AOAM533bO5VzFnO50uD1eMLvFKNqblUHHwzcWnNBpTQTNDK2LFnL+bVR
-        YG7WUOO7aj5SxC2Di3H6ELk=
-X-Google-Smtp-Source: ABdhPJyQiApjWTebFkY4H2ePf38iB/Ag2/b2jVcooyFiUCPpHKX8Zs5Y1QLPTSKkvmBX6CELo8UQmQ==
-X-Received: by 2002:a17:90a:fa14:: with SMTP id cm20mr7325067pjb.67.1627720966645;
-        Sat, 31 Jul 2021 01:42:46 -0700 (PDT)
-Received: from [0.0.0.0] ([150.109.126.7])
-        by smtp.gmail.com with ESMTPSA id y15sm5653691pga.34.2021.07.31.01.42.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 31 Jul 2021 01:42:46 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v3] libbpf: add
- btf__load_vmlinux_btf/btf__load_module_btf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>
-References: <20210730114012.494408-1-hengqi.chen@gmail.com>
- <CAEf4BzbtPFEbme_KZQA+n-gCgC+xp-v+270BBCi+89smi6pzkA@mail.gmail.com>
+        bh=p8waAPUBBhE73M4k8JLkClONjUvvZERERntzJH0x7kc=;
+        b=rm0kPGFXALd9h4OVFsFM3iqFErtFtxeZuT0Jq76zffTE6kAsR17woWtt7Etz/fiw/u
+         X+JhuH69yHLYCHLO60XxaMOZXHLFRsl9bYoz3fiFpei+g3ZEE94XBhvQpQDYRCIGdXux
+         VHTfWLBq+O6tzUBbCZisH2S1lX2gqDiAGiPt5jmCuMVKbw0zAkawqroUPjO7jKqVZVZn
+         jFS+Clx2/65Z/qngrAiLf457j+em/bGGBzLMbg4khx9pkOn3R4Nr0TKmic4faI2NCmQv
+         AzuS6mP5RBiHd//PzWMl3XwWUlHzFnjcykZ3U8DGakhFb0gxODv7IKcLIBIKPg0G0Vs9
+         6nyw==
+X-Gm-Message-State: AOAM530JL2F4xR8N0agPoubpE3MlZf44RHaByBymoXw1HalhAL3wXWbJ
+        MPxm9EW7OwF/wFUIqJn5hcMpFHXMh/YiVw==
+X-Google-Smtp-Source: ABdhPJyev52wHqRvi3huxUqphzEk6E6r8YARQxkYPFXYEZ2k5Aulqh4mMDzBM01HqJZekE6iMfXWrg==
+X-Received: by 2002:aa7:838a:0:b029:3b7:31a5:649c with SMTP id u10-20020aa7838a0000b02903b731a5649cmr835161pfm.44.1627741990547;
+        Sat, 31 Jul 2021 07:33:10 -0700 (PDT)
+Received: from localhost.localdomain ([119.28.83.143])
+        by smtp.gmail.com with ESMTPSA id k5sm6219594pfu.142.2021.07.31.07.33.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Jul 2021 07:33:10 -0700 (PDT)
 From:   Hengqi Chen <hengqi.chen@gmail.com>
-Message-ID: <b1da3641-81bf-8ffa-2210-c4fccd8e6e45@gmail.com>
-Date:   Sat, 31 Jul 2021 16:42:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, hengqi.chen@gmail.com
+Subject: [PATCH] selftests/bpf: Test btf__load_vmlinux_btf/btf__load_module_btf APIs
+Date:   Sat, 31 Jul 2021 22:32:44 +0800
+Message-Id: <20210731143244.784959-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbtPFEbme_KZQA+n-gCgC+xp-v+270BBCi+89smi6pzkA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Add test for btf__load_vmlinux_btf/btf__load_module_btf APIs. It first
+checks that if btrfs module BTF exists, if yes, load module BTF and
+check symbol existence.
 
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+---
+ .../selftests/bpf/prog_tests/btf_module.c     | 31 +++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_module.c
 
-On 7/31/21 3:26 AM, Andrii Nakryiko wrote:
-> On Fri, Jul 30, 2021 at 4:40 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->>
->> Add two new APIs: btf__load_vmlinux_btf and btf__load_module_btf.
->> btf__load_vmlinux_btf is just an alias to the existing API named
->> libbpf_find_kernel_btf, rename to be more precisely and consistent
->> with existing BTF APIs. btf__load_module_btf can be used to load
->> module BTF, add it for completeness. These two APIs are useful for
->> implementing tracing tools and introspection tools. This is part
->> of the effort towards libbpf 1.0. [1]
->>
->> [1] https://github.com/libbpf/libbpf/issues/280
-> 
-> I changed this to
-> 
-> [0] Closes: https://github.com/libbpf/libbpf/issues/280
-> 
-> which will close an associated Github issue when we sync sources to
-> Github next time. Let's see how this works in practice.
-> 
->>
->> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
->> ---
-> 
-> Thanks, applied to bpf-next. But please follow up with a selftest that
-> would utilize this new module BTF API. It's good to have all APIs
-> exercised regularly. Look at test_progs.
-> 
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_module.c b/tools/testing/selftests/bpf/prog_tests/btf_module.c
+new file mode 100644
+index 000000000000..cad1314e3356
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/btf_module.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2021 Hengqi Chen */
++
++#include <test_progs.h>
++#include <bpf/btf.h>
++
++static const char *module_path = "/sys/kernel/btf/btrfs";
++static const char *module_name = "btrfs";
++
++void test_btf_module()
++{
++	struct btf *vmlinux_btf, *module_btf;
++	__s32 type_id;
++
++	if (access(module_path, F_OK))
++		return;
++
++	vmlinux_btf = btf__load_vmlinux_btf();
++	if (!ASSERT_OK_PTR(vmlinux_btf, "could not load vmlinux BTF"))
++		return;
++
++	module_btf = btf__load_module_btf(module_name, vmlinux_btf);
++	if (!ASSERT_OK_PTR(module_btf, "could not load module BTF"))
++		return;
++
++	type_id = btf__find_by_name(module_btf, "btrfs_file_open");
++	ASSERT_GT(type_id, 0, "func btrfs_file_open not found");
++
++	btf__free(module_btf);
++	btf__free(vmlinux_btf);
++}
+-- 
+2.30.2
 
-Thanks, will do.
-
->>  tools/lib/bpf/btf.c      | 15 ++++++++++++++-
->>  tools/lib/bpf/btf.h      |  6 ++++--
->>  tools/lib/bpf/libbpf.c   |  4 ++--
->>  tools/lib/bpf/libbpf.map |  2 ++
->>  4 files changed, 22 insertions(+), 5 deletions(-)
->>
->> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->> index cafa4f6bd9b1..56e84583e283 100644
->> --- a/tools/lib/bpf/btf.c
->> +++ b/tools/lib/bpf/btf.c
->> @@ -4036,7 +4036,7 @@ static void btf_dedup_merge_hypot_map(struct btf_dedup *d)
->>                  */
->>                 if (d->hypot_adjust_canon)
->>                         continue;
->> -
->> +
->>                 if (t_kind == BTF_KIND_FWD && c_kind != BTF_KIND_FWD)
->>                         d->map[t_id] = c_id;
->>
->> @@ -4410,6 +4410,11 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
->>   * data out of it to use for target BTF.
->>   */
->>  struct btf *libbpf_find_kernel_btf(void)
-> 
-> I switched this to __attribute__((alias("btf__load_vmlinux_btf"))); to
-> match what Quentin did recently. Also moved comment above to be next
-> to btf__load_vmlinux_btf.
-> 
-
-OK, the alias attribute look nicer.
-
->> +{
->> +       return btf__load_vmlinux_btf();
->> +}
->> +
->> +struct btf *btf__load_vmlinux_btf(void)
->>  {
->>         struct {
->>                 const char *path_fmt;
-> 
-> [...]
-> 
->> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
->> index 5aca3686ca5e..a2f471950213 100644
->> --- a/tools/lib/bpf/libbpf.map
->> +++ b/tools/lib/bpf/libbpf.map
->> @@ -380,4 +380,6 @@ LIBBPF_0.5.0 {
->>                 btf__load_into_kernel;
->>                 btf_dump__dump_type_data;
->>                 libbpf_set_strict_mode;
->> +               btf__load_vmlinux_btf;
->> +               btf__load_module_btf;
-> 
-> This list needs to be alphabetically sorted. I'll fix it up while
-> applying, but please remember it for the future.
-> 
-
-Yeah, will keep this in mind.
-
->>  } LIBBPF_0.4.0;
->> --
->> 2.25.1
->>
