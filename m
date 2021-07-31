@@ -2,132 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FBC3DC7A0
-	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 20:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AE93DC7F1
+	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 21:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhGaSXs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 31 Jul 2021 14:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
+        id S229708AbhGaTVP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 31 Jul 2021 15:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhGaSXs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 31 Jul 2021 14:23:48 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2311C06175F;
-        Sat, 31 Jul 2021 11:23:40 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id c16so14930113plh.7;
-        Sat, 31 Jul 2021 11:23:40 -0700 (PDT)
+        with ESMTP id S229475AbhGaTVN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 31 Jul 2021 15:21:13 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDABC06175F;
+        Sat, 31 Jul 2021 12:21:06 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id a93so3682887ybi.1;
+        Sat, 31 Jul 2021 12:21:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s31dvzlOndczyqC7I9ua7q3/6A0z0TwToQuOswH2isQ=;
-        b=jfXx968p6L/Tp5dMoOb3/2H/WRRX1RVg/x0eGyG21Ybk48N3mzQN0lo9S6jrLS/M2B
-         zD4iiGl9zkmYkgL4oeFEfjjS6jTgZLjIlj7N2cOOSxy9ci249K2fVJN/FxRzmqEBxOAK
-         CDdy4NBde6QIwTPae453YaJKbG5E89/dxfXeFDgv+tT2iGKVxM+oNXPUBSqO4/Eiri+m
-         MoeCKKAYTI3EhNKa8xJ7alGEZPdqnoEOJpOHYTJIht0g2lcGaBXevUMghdhFv8nRdiLp
-         FRfn2tFvL+8cLaaVMZLHCCqNzVM+rOg9rvvuicgQTbtEqXrpDBjVzm+doBfhq6VIrHus
-         fgdg==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Ttmp4OOivBp9bZS6fgEbUJots40VMuPaq88U+9EAs3A=;
+        b=vOX4n3f6QnsgC49BrfeAX587TM0A1e0Q+AYDW+MWGOTO9fWVRw0ZpONxeHDlgoL10n
+         +xz/sYau3MVtrpB5eFInQsPNcwIXZy9BYGexD4/lASpJH6BBsU/zM33wNaQfrDG9XUBV
+         M3C6Boe14r3y4CmYO6IvAfK83o/7xId7JtJG6b7Xb2wHxE5QHOX1oyCGCf5vy33QxCjM
+         SZ8KRHlojJaxTDWY2ff0XFoI3uNEdDxovayAPqh8ybcpv3Gsfu7NLcDC9q8vF4FiiBfd
+         KtQW+819FR7KkjwZKWrFFUrs/EVzSLifjSEGaFabJLug3lZCvuNoOwasEzkDXEngN6vH
+         d+3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s31dvzlOndczyqC7I9ua7q3/6A0z0TwToQuOswH2isQ=;
-        b=pUvm6CfnccJYqF94tiAU9UnCMqMfaiKA+sE7LC3MkdwKYse/0tPlQNfZ85IQsEFdld
-         cdu4M0IuCQGEbkm5kPJnuermbMNc1VJ/6SrEtG4U5yqPEj+1qzugPY0FtMCLWnPjZwog
-         j4ZIUjJxFRlYArNqoptwwZPlSytcdTQYEoHzD4BOWCiTi8XsMyhu5bw6Dn43h0H1XvP4
-         z0JX5Podpx08Foz442tvHxKuci3T0BHF5HNQjKaxUBiAI8dDhTeZCMtRIk397FDWBwyo
-         s0+frSIH4OggG628+oY2ffeKZMLy15ckx92ln5q5j4tFl7Fbb4rf4uX8T0laQCe7fAs3
-         Q9WQ==
-X-Gm-Message-State: AOAM532xYPiLCkrFfjCte/pkr3XYmW1wOlrBC9+4IMyIEOe6mYqxe3uO
-        NRAwYQWNmV8EE/Dva8QfCU89iX8NHn8OQkh43m0=
-X-Google-Smtp-Source: ABdhPJyd5uYWYM/6Oz2qkfLgA/j5vxV90do1bGZRYow+nnjOUsHZ5VBXPnyGoWpRioxiWQRCbkvZK2lkPE/LpOQdeGI=
-X-Received: by 2002:a17:90a:e647:: with SMTP id ep7mr9407589pjb.145.1627755820271;
- Sat, 31 Jul 2021 11:23:40 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Ttmp4OOivBp9bZS6fgEbUJots40VMuPaq88U+9EAs3A=;
+        b=QdkqhlHZX5TQb42o85UqsiJwTQ5Fbf1qk0MQQX+oOtBTvfuQdSGK6I4QcnBz542vBj
+         vp3OHsYaFX0ZuO3qJ0yblgYCaetkOpJR5gv0CyVCKi0O75WQgvcTLWREGaBXn0vQPz3S
+         2PIu2CL0FLApZ/ZaTuKtrwhOoseMATPaTjtnw0s816uB5kztV30LjdBmN01+YPaP2Syo
+         DBft67Yuquxu5KLlNe0xz98M9gql6Iavc+N/47bgEVAD0YlA4x3nFUvkKZqaxq9M+a5U
+         Z8GY2ZlovOxXC7KCw0R8/rvJf5eKwBDh2zw1W5KKKbSwilUeBCQP9A2mTO/kHlpEqhi+
+         lUhA==
+X-Gm-Message-State: AOAM533CBu3mVHLD3heQ8hvsR7AWfvpya0z6bMn4LRahfLxAF3OE8U93
+        7qvtTrysBBUmH+pprMFDKGJDwl2E4yrDHR6klrY=
+X-Google-Smtp-Source: ABdhPJy9flxen+DNARdl8/1fuH8F9zg0Y9LdQ2nHrtYa+MtwS/YZKblzMVgYWnc75rz8iFATSxS+2NzoNxJ62+nn3aU=
+X-Received: by 2002:a25:bc02:: with SMTP id i2mr10281079ybh.98.1627759265293;
+ Sat, 31 Jul 2021 12:21:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210729212402.1043211-1-jiang.wang@bytedance.com>
- <20210729212402.1043211-3-jiang.wang@bytedance.com> <875ywropno.fsf@cloudflare.com>
-In-Reply-To: <875ywropno.fsf@cloudflare.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Sat, 31 Jul 2021 11:23:30 -0700
-Message-ID: <CAM_iQpVepKnEr_89XFiwH_8NBm12OUwT=H-AH8tbaESTpwaqMw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/5] af_unix: add unix_stream_proto for sockmap
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Jiang Wang <jiang.wang@bytedance.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "Cong Wang ." <cong.wang@bytedance.com>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Sat, 31 Jul 2021 20:20:29 +0100
+Message-ID: <CADVatmPShADZ0F133eS3KjeKj1ZjTNAQfy_QOoJVBan02wuR+Q@mail.gmail.com>
+Subject: memory leak in do_seccomp
+To:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 7:14 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Thu, Jul 29, 2021 at 11:23 PM CEST, Jiang Wang wrote:
-> > Previously, sockmap for AF_UNIX protocol only supports
-> > dgram type. This patch add unix stream type support, which
-> > is similar to unix_dgram_proto. To support sockmap, dgram
-> > and stream cannot share the same unix_proto anymore, because
-> > they have different implementations, such as unhash for stream
-> > type (which will remove closed or disconnected sockets from the map),
-> > so rename unix_proto to unix_dgram_proto and add a new
-> > unix_stream_proto.
-> >
-> > Also implement stream related sockmap functions.
-> > And add dgram key words to those dgram specific functions.
-> >
-> > Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-> > Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-> > ---
->
-> It seems that with commit c63829182c37 ("af_unix: Implement
-> ->psock_update_sk_prot()") we have enabled inserting dgram, stream, and
-> seqpacket UNIX sockets into sockmap.
->
-> After all, in ->map_update_elem we only check if
-> sk->sk_prot->psock_update_sk_prot is set (sock_map_sk_is_suitable).
+Hi All,
 
-Excellent point. I should check the sock type in unix_bpf_update_proto(),
-and will send a fix.
+We had been running syzkaller on v5.10.y and a "memory leak in
+do_seccomp" was being reported on it. I got some time to check that
+today and have managed to get a syzkaller
+reproducer. I dont have a C reproducer which I can share but I can use
+the syz-reproducer to reproduce this with next-20210730.
+The old report on v5.10.y is at
+https://elisa-builder-00.iol.unh.edu/syzkaller/report?id=f6ddd3b592f00e95f9cbd2e74f70a5b04b015c6f
 
->
-> Socket can be in listening, established or disconnected (TCP_CLOSE)
-> state, that is before bind+listen/connect, or after connect(AF_UNSPEC).
->
-> For connection-oriented socket types (stream, seqpacket) there's not
-> much you can do with disconnected sockets. I think we should limit the
-> allowed states to listening and established for UNIX domain, as we do
-> for TCP.
+BUG: memory leak
+unreferenced object 0xffff888019282c00 (size 512):
+  comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.841s)
+  hex dump (first 32 bytes):
+    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000762c0963>] do_seccomp+0x2d5/0x27d0
+    [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+    [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-I think we should use ->unhash() to remove those connection-oriented
-sockets, like TCP.
+BUG: memory leak
+unreferenced object 0xffffc900006b5000 (size 4096):
+  comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.841s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 05 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000854901e5>] __vmalloc_node_range+0x550/0x9a0
+    [<000000002686628f>] __vmalloc_node+0xb5/0x100
+    [<0000000004cbd298>] bpf_prog_alloc_no_stats+0x38/0x350
+    [<0000000009149728>] bpf_prog_alloc+0x24/0x170
+    [<000000000fe7f1e7>] bpf_prog_create_from_user+0xad/0x2e0
+    [<000000000c70eb02>] do_seccomp+0x325/0x27d0
+    [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+    [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
->
-> AFAIU we also seem to be already allowing redirect to connected stream
-> (and dgram, and seqpacket) UNIX sockets. sock_map_redirect_allowed()
-> checks only if a socket is in TCP_ESTABLISHED state for anything else
-> than TCP. Not sure what it leads to, though.
+BUG: memory leak
+unreferenced object 0xffff888026eb1000 (size 2048):
+  comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000072de7240>] bpf_prog_alloc_no_stats+0xeb/0x350
+    [<0000000009149728>] bpf_prog_alloc+0x24/0x170
+    [<000000000fe7f1e7>] bpf_prog_create_from_user+0xad/0x2e0
+    [<000000000c70eb02>] do_seccomp+0x325/0x27d0
+    [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+    [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-The goal is to keep all stream sockets like TCP, which only allows
-established ones to stay in sockmap. For dgram, any socket state is
-allowed to add to map but only established ones are allowed to redirect.
+BUG: memory leak
+unreferenced object 0xffff888014dddac0 (size 16):
+  comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
+  hex dump (first 16 bytes):
+    01 00 ca 08 80 88 ff ff c8 ef df 14 80 88 ff ff  ................
+  backtrace:
+    [<00000000c5d4ed93>] bpf_prog_store_orig_filter+0x7b/0x1e0
+    [<000000007cb21c2a>] bpf_prog_create_from_user+0x1c6/0x2e0
+    [<000000000c70eb02>] do_seccomp+0x325/0x27d0
+    [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+    [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-BTW, we do not have any intention to support Unix seqpacket socket
-or any seqpacket.
+BUG: memory leak
+unreferenced object 0xffff888014dfefc8 (size 8):
+  comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
+  hex dump (first 8 bytes):
+    06 00 00 00 ff ff ff 7f                          ........
+  backtrace:
+    [<00000000ee5550f8>] kmemdup+0x23/0x50
+    [<00000000f1acd067>] bpf_prog_store_orig_filter+0x103/0x1e0
+    [<000000007cb21c2a>] bpf_prog_create_from_user+0x1c6/0x2e0
+    [<000000000c70eb02>] do_seccomp+0x325/0x27d0
+    [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+    [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Thanks.
+Not sure if this has been already reported or not, but I will be happy
+to test if you have a fix for this.
+
+
+-- 
+Regards
+Sudip
