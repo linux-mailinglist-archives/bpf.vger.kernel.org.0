@@ -2,117 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0D03DC3DA
-	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 08:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA08E3DC51A
+	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 10:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbhGaGNY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 31 Jul 2021 02:13:24 -0400
-Received: from condef-04.nifty.com ([202.248.20.69]:51870 "EHLO
-        condef-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbhGaGNX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 31 Jul 2021 02:13:23 -0400
-X-Greylist: delayed 419 seconds by postgrey-1.27 at vger.kernel.org; Sat, 31 Jul 2021 02:13:22 EDT
-Received: from conssluserg-04.nifty.com ([10.126.8.83])by condef-04.nifty.com with ESMTP id 16V63FAC005419;
-        Sat, 31 Jul 2021 15:03:15 +0900
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 16V62rkF031113;
-        Sat, 31 Jul 2021 15:02:54 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 16V62rkF031113
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627711374;
-        bh=LWga7esoyndTXDvF0XQrO+vJSaL7iFQWmNBogYT4sq8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o9+5X1SvbKPA2o86uIvsZmNKz7uw3ZKipq2egDDNyfQXwyelhjvU/vkhbyAnsomP1
-         5k90nSNWCPkOokpYdxNV9xh8CcY6kQ35iP6HdLl9wubIhvlVOZTUq71HQdDkvAyK8q
-         HBICHZxRbtx7wkuoK7pg7QmDz8OA3mj7plkm01+n70w0+vDizjN21pwZNNs4ZBhVFc
-         gVi/0GRxgNpN/OT6c42x1SM6V7TX9vEgrMZbwnM5LfizxpqF3Sjc17/qXt6WKfdnqY
-         R3Mgt2d0hIVQuanDe4cKkC9BFLah6M2yjCWPCrPGkZ2m4r33etqmo8n/FgX52e7vUt
-         pTv1R8CueOVQw==
-X-Nifty-SrcIP: [209.85.216.41]
-Received: by mail-pj1-f41.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso17420195pjf.4;
-        Fri, 30 Jul 2021 23:02:54 -0700 (PDT)
-X-Gm-Message-State: AOAM530I4qVbIB0CrPpKUEzB6fncQPvhkcqBxO4iNZ0ETSRJZNm3/l5K
-        TR5TlMhSDPTRbSJ3QeGeVqxsxkULlh165lUPYMA=
-X-Google-Smtp-Source: ABdhPJzxLT+VYMsbrrrUfBrOvhroV7QceyySrzxnrMoK+CQLQXj71gGswBHbIPxUKhjhWKEfixEolyP5TyUd8ncd048=
-X-Received: by 2002:a05:6a00:26d0:b029:32d:7d40:5859 with SMTP id
- p16-20020a056a0026d0b029032d7d405859mr6056229pfw.76.1627711373301; Fri, 30
- Jul 2021 23:02:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210528180140.176257-1-masahiroy@kernel.org>
-In-Reply-To: <20210528180140.176257-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 31 Jul 2021 15:02:16 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
-Message-ID: <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
-Subject: Re: [PATCH] security: remove unneeded subdir-$(CONFIG_...)
-To:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        id S232370AbhGaImy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 31 Jul 2021 04:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229703AbhGaImx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 31 Jul 2021 04:42:53 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095E2C06175F
+        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 01:42:47 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso24263131pjq.2
+        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 01:42:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ya6qpBDBpPdbW/jalsSGQbO7/nqzaEsO0P+kfh35XMI=;
+        b=AEx5qVET7/8IT6hHcUclcWPoPjCvkWuReYY/sED1fcs/UkbqSylPC0Bprkg44w+npm
+         BhXs8exEQmqZVMm7JpDIbJ19UBHXqf42rRop4nlj+AmpQTsJHFoGLBGIlGU/821Zo3XX
+         LZO+hWnEX5QXmvvmB6T5WexldCPl+6shPClZNK/xmoXuNG3CVu5STvNdUDyF9iQbHO9+
+         JOhC1ejUPQHoMA46a6DtTFiE/RketLk+kVvK057RMgz9m058YZFB2As+8Aiu6gdosWHB
+         roO5UXtrdeePQC8xwbaHZVsCNzSsVwTzSKkHKcDsICyiSBm4pKym+UUnsSqcgNDuxp2B
+         wlJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ya6qpBDBpPdbW/jalsSGQbO7/nqzaEsO0P+kfh35XMI=;
+        b=OtCIfqQfGNvqmukb18K6sJz5obwiTVLR6VOdd2wfsyyKWEG2vGohvHK9Tpmk663ufl
+         u2LiCSp9WRJaXF1OgQDabO6KeewQS0W2APZ9DeFv3XPs3dl+LDuyxsv1WimnrGfPyEkX
+         sXVU2Sw/DSsx7GqDJ4je0EnPnM6n2/OBVKqnkRls8KZJA0nMFcDl+rRy61Ne2SH0ZLxm
+         iStdKRQxtHjeDDwgIvOHTzmdk7gUv8Nc1lzcSs60C25NkKsG9sfpDUpDk/3JKnD4CP4d
+         GNJbfnLFJlQUuSCdicguekMdM9b+nmqQ6B2/H5wvJueGmfiYVAcfcENN/daL9rFKN+Zu
+         8w0g==
+X-Gm-Message-State: AOAM533bO5VzFnO50uD1eMLvFKNqblUHHwzcWnNBpTQTNDK2LFnL+bVR
+        YG7WUOO7aj5SxC2Di3H6ELk=
+X-Google-Smtp-Source: ABdhPJyQiApjWTebFkY4H2ePf38iB/Ag2/b2jVcooyFiUCPpHKX8Zs5Y1QLPTSKkvmBX6CELo8UQmQ==
+X-Received: by 2002:a17:90a:fa14:: with SMTP id cm20mr7325067pjb.67.1627720966645;
+        Sat, 31 Jul 2021 01:42:46 -0700 (PDT)
+Received: from [0.0.0.0] ([150.109.126.7])
+        by smtp.gmail.com with ESMTPSA id y15sm5653691pga.34.2021.07.31.01.42.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 31 Jul 2021 01:42:46 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v3] libbpf: add
+ btf__load_vmlinux_btf/btf__load_module_btf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        Martin Lau <kafai@fb.com>
+References: <20210730114012.494408-1-hengqi.chen@gmail.com>
+ <CAEf4BzbtPFEbme_KZQA+n-gCgC+xp-v+270BBCi+89smi6pzkA@mail.gmail.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+Message-ID: <b1da3641-81bf-8ffa-2210-c4fccd8e6e45@gmail.com>
+Date:   Sat, 31 Jul 2021 16:42:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAEf4BzbtPFEbme_KZQA+n-gCgC+xp-v+270BBCi+89smi6pzkA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 29, 2021 at 3:02 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> All of these are unneeded. The directories to descend are specified
-> by obj-$(CONFIG_...).
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
 
-Ping?
+On 7/31/21 3:26 AM, Andrii Nakryiko wrote:
+> On Fri, Jul 30, 2021 at 4:40 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>>
+>> Add two new APIs: btf__load_vmlinux_btf and btf__load_module_btf.
+>> btf__load_vmlinux_btf is just an alias to the existing API named
+>> libbpf_find_kernel_btf, rename to be more precisely and consistent
+>> with existing BTF APIs. btf__load_module_btf can be used to load
+>> module BTF, add it for completeness. These two APIs are useful for
+>> implementing tracing tools and introspection tools. This is part
+>> of the effort towards libbpf 1.0. [1]
+>>
+>> [1] https://github.com/libbpf/libbpf/issues/280
+> 
+> I changed this to
+> 
+> [0] Closes: https://github.com/libbpf/libbpf/issues/280
+> 
+> which will close an associated Github issue when we sync sources to
+> Github next time. Let's see how this works in practice.
+> 
+>>
+>> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+>> ---
+> 
+> Thanks, applied to bpf-next. But please follow up with a selftest that
+> would utilize this new module BTF API. It's good to have all APIs
+> exercised regularly. Look at test_progs.
+> 
 
+Thanks, will do.
 
+>>  tools/lib/bpf/btf.c      | 15 ++++++++++++++-
+>>  tools/lib/bpf/btf.h      |  6 ++++--
+>>  tools/lib/bpf/libbpf.c   |  4 ++--
+>>  tools/lib/bpf/libbpf.map |  2 ++
+>>  4 files changed, 22 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+>> index cafa4f6bd9b1..56e84583e283 100644
+>> --- a/tools/lib/bpf/btf.c
+>> +++ b/tools/lib/bpf/btf.c
+>> @@ -4036,7 +4036,7 @@ static void btf_dedup_merge_hypot_map(struct btf_dedup *d)
+>>                  */
+>>                 if (d->hypot_adjust_canon)
+>>                         continue;
+>> -
+>> +
+>>                 if (t_kind == BTF_KIND_FWD && c_kind != BTF_KIND_FWD)
+>>                         d->map[t_id] = c_id;
+>>
+>> @@ -4410,6 +4410,11 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
+>>   * data out of it to use for target BTF.
+>>   */
+>>  struct btf *libbpf_find_kernel_btf(void)
+> 
+> I switched this to __attribute__((alias("btf__load_vmlinux_btf"))); to
+> match what Quentin did recently. Also moved comment above to be next
+> to btf__load_vmlinux_btf.
+> 
 
+OK, the alias attribute look nicer.
 
-> ---
->
->  security/Makefile | 11 -----------
->  1 file changed, 11 deletions(-)
->
-> diff --git a/security/Makefile b/security/Makefile
-> index 47e432900e24..18121f8f85cd 100644
-> --- a/security/Makefile
-> +++ b/security/Makefile
-> @@ -4,16 +4,6 @@
->  #
->
->  obj-$(CONFIG_KEYS)                     += keys/
-> -subdir-$(CONFIG_SECURITY_SELINUX)      += selinux
-> -subdir-$(CONFIG_SECURITY_SMACK)                += smack
-> -subdir-$(CONFIG_SECURITY_TOMOYO)        += tomoyo
-> -subdir-$(CONFIG_SECURITY_APPARMOR)     += apparmor
-> -subdir-$(CONFIG_SECURITY_YAMA)         += yama
-> -subdir-$(CONFIG_SECURITY_LOADPIN)      += loadpin
-> -subdir-$(CONFIG_SECURITY_SAFESETID)    += safesetid
-> -subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM) += lockdown
-> -subdir-$(CONFIG_BPF_LSM)               += bpf
-> -subdir-$(CONFIG_SECURITY_LANDLOCK)     += landlock
->
->  # always enable default capabilities
->  obj-y                                  += commoncap.o
-> @@ -36,5 +26,4 @@ obj-$(CONFIG_BPF_LSM)                 += bpf/
->  obj-$(CONFIG_SECURITY_LANDLOCK)                += landlock/
->
->  # Object integrity file lists
-> -subdir-$(CONFIG_INTEGRITY)             += integrity
->  obj-$(CONFIG_INTEGRITY)                        += integrity/
-> --
-> 2.27.0
->
+>> +{
+>> +       return btf__load_vmlinux_btf();
+>> +}
+>> +
+>> +struct btf *btf__load_vmlinux_btf(void)
+>>  {
+>>         struct {
+>>                 const char *path_fmt;
+> 
+> [...]
+> 
+>> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+>> index 5aca3686ca5e..a2f471950213 100644
+>> --- a/tools/lib/bpf/libbpf.map
+>> +++ b/tools/lib/bpf/libbpf.map
+>> @@ -380,4 +380,6 @@ LIBBPF_0.5.0 {
+>>                 btf__load_into_kernel;
+>>                 btf_dump__dump_type_data;
+>>                 libbpf_set_strict_mode;
+>> +               btf__load_vmlinux_btf;
+>> +               btf__load_module_btf;
+> 
+> This list needs to be alphabetically sorted. I'll fix it up while
+> applying, but please remember it for the future.
+> 
 
+Yeah, will keep this in mind.
 
--- 
-Best Regards
-Masahiro Yamada
+>>  } LIBBPF_0.4.0;
+>> --
+>> 2.25.1
+>>
