@@ -2,121 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBC33DC69C
-	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 17:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FBC3DC7A0
+	for <lists+bpf@lfdr.de>; Sat, 31 Jul 2021 20:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhGaPZi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 31 Jul 2021 11:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
+        id S229694AbhGaSXs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 31 Jul 2021 14:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233035AbhGaPZh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 31 Jul 2021 11:25:37 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D38C06175F;
-        Sat, 31 Jul 2021 08:25:30 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id b6so19424393pji.4;
-        Sat, 31 Jul 2021 08:25:30 -0700 (PDT)
+        with ESMTP id S229505AbhGaSXs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 31 Jul 2021 14:23:48 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2311C06175F;
+        Sat, 31 Jul 2021 11:23:40 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id c16so14930113plh.7;
+        Sat, 31 Jul 2021 11:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hKFCzHrB92IWDlBqXaKAnSTYyGuxIzImIhnqt8i8hKs=;
-        b=uxpYsrCAo5ObrCQeiET17wsWl20sXpwMOtttRPFY4XnUjWos0dYZF/fd3RoOcUnyP+
-         G+BMuae8nHtbZzjx9a4XO1EhTr8Kp2e5GYOVrd53hUjRpC648JdvWLN4fBLFaRPwlVl8
-         3G4N0g2hodT1zR7MYpa/qKaHnrHG7bwrRtkgt6NcVDxperHI7Y0n2gX9689B3+63wzH2
-         Wpn+vKuV+FMgAlK0ufv32y8aSKSI66GR1VrkgwiL/Hblvlvt9+dcZgX28nE0bUXphk7a
-         IO6v7zxn8JtZa5Jxagx8/CfU12O24MMAiCWrsV7aqaijKriuS0l/KSQUi2hhJ+e4mtN9
-         T1hw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s31dvzlOndczyqC7I9ua7q3/6A0z0TwToQuOswH2isQ=;
+        b=jfXx968p6L/Tp5dMoOb3/2H/WRRX1RVg/x0eGyG21Ybk48N3mzQN0lo9S6jrLS/M2B
+         zD4iiGl9zkmYkgL4oeFEfjjS6jTgZLjIlj7N2cOOSxy9ci249K2fVJN/FxRzmqEBxOAK
+         CDdy4NBde6QIwTPae453YaJKbG5E89/dxfXeFDgv+tT2iGKVxM+oNXPUBSqO4/Eiri+m
+         MoeCKKAYTI3EhNKa8xJ7alGEZPdqnoEOJpOHYTJIht0g2lcGaBXevUMghdhFv8nRdiLp
+         FRfn2tFvL+8cLaaVMZLHCCqNzVM+rOg9rvvuicgQTbtEqXrpDBjVzm+doBfhq6VIrHus
+         fgdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hKFCzHrB92IWDlBqXaKAnSTYyGuxIzImIhnqt8i8hKs=;
-        b=R7J36E1LWNtlPgXna/HiJs3Ucn1tIwayLQjbqusaO5PKb9tL1QTWRKD2X2YQnK8zcl
-         W7b77MVEagRj6yUcb/HCyQY72gBR80qGogXMQSGbJxYpPEnw4WDYybMWtGxAcjFUOOc7
-         onGIrl+SK5FcfBZSnC8DHMolNJC/716QnHZmhXOoqKeI2Sw+OWsEa4R3vBJZ0v2HMY4w
-         /h79r84B5xnb6LXXk1653mMcHD3YsYlfwTaVY5owxZZhBPSAe13SLEqklO3LRSBhbfeS
-         sntLrnUrCRtZ9wKvB8IIK7NrcZSs9Zd1U8RbvrUHZLFEKFZLuXDSeOo5MSD05HnANzvg
-         P+8g==
-X-Gm-Message-State: AOAM531IZ5fA6uH0rkaklCp6yM47owFSz2ji41AXolozAKKXHcuewWCn
-        a/LMFmP4iTGrc5as6hBlJuY=
-X-Google-Smtp-Source: ABdhPJwDw4nikp5i8nOXC5fmKlUIzXVHt+eA8eKys39blLKLPDaW6zi13zF4Kt3Ad+jqkQei+s7rhw==
-X-Received: by 2002:a17:90a:f991:: with SMTP id cq17mr8419312pjb.150.1627745130240;
-        Sat, 31 Jul 2021 08:25:30 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d0bb:dc30:f309:2f53:5818])
-        by smtp.gmail.com with ESMTPSA id s193sm6442927pfc.183.2021.07.31.08.25.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 08:25:30 -0700 (PDT)
-Date:   Sat, 31 Jul 2021 20:55:23 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Matthew Cover <werekraken@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s31dvzlOndczyqC7I9ua7q3/6A0z0TwToQuOswH2isQ=;
+        b=pUvm6CfnccJYqF94tiAU9UnCMqMfaiKA+sE7LC3MkdwKYse/0tPlQNfZ85IQsEFdld
+         cdu4M0IuCQGEbkm5kPJnuermbMNc1VJ/6SrEtG4U5yqPEj+1qzugPY0FtMCLWnPjZwog
+         j4ZIUjJxFRlYArNqoptwwZPlSytcdTQYEoHzD4BOWCiTi8XsMyhu5bw6Dn43h0H1XvP4
+         z0JX5Podpx08Foz442tvHxKuci3T0BHF5HNQjKaxUBiAI8dDhTeZCMtRIk397FDWBwyo
+         s0+frSIH4OggG628+oY2ffeKZMLy15ckx92ln5q5j4tFl7Fbb4rf4uX8T0laQCe7fAs3
+         Q9WQ==
+X-Gm-Message-State: AOAM532xYPiLCkrFfjCte/pkr3XYmW1wOlrBC9+4IMyIEOe6mYqxe3uO
+        NRAwYQWNmV8EE/Dva8QfCU89iX8NHn8OQkh43m0=
+X-Google-Smtp-Source: ABdhPJyd5uYWYM/6Oz2qkfLgA/j5vxV90do1bGZRYow+nnjOUsHZ5VBXPnyGoWpRioxiWQRCbkvZK2lkPE/LpOQdeGI=
+X-Received: by 2002:a17:90a:e647:: with SMTP id ep7mr9407589pjb.145.1627755820271;
+ Sat, 31 Jul 2021 11:23:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210729212402.1043211-1-jiang.wang@bytedance.com>
+ <20210729212402.1043211-3-jiang.wang@bytedance.com> <875ywropno.fsf@cloudflare.com>
+In-Reply-To: <875ywropno.fsf@cloudflare.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sat, 31 Jul 2021 11:23:30 -0700
+Message-ID: <CAM_iQpVepKnEr_89XFiwH_8NBm12OUwT=H-AH8tbaESTpwaqMw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/5] af_unix: add unix_stream_proto for sockmap
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Jiang Wang <jiang.wang@bytedance.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthew Cover <matthew.cover@stackpath.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] samples/bpf: xdp_redirect_cpu: Add
- mprog-disable to optstring.
-Message-ID: <20210731152523.22syukzew6c7njjh@apollo.localdomain>
-References: <20210731005632.13228-1-matthew.cover@stackpath.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210731005632.13228-1-matthew.cover@stackpath.com>
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 06:26:32AM IST, Matthew Cover wrote:
-> Commit ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program
-> on cpumap") added the following option, but missed adding it to optstring:
-> - mprog-disable: disable loading XDP program on cpumap entries
+On Fri, Jul 30, 2021 at 7:14 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> Add the missing option character.
+> On Thu, Jul 29, 2021 at 11:23 PM CEST, Jiang Wang wrote:
+> > Previously, sockmap for AF_UNIX protocol only supports
+> > dgram type. This patch add unix stream type support, which
+> > is similar to unix_dgram_proto. To support sockmap, dgram
+> > and stream cannot share the same unix_proto anymore, because
+> > they have different implementations, such as unhash for stream
+> > type (which will remove closed or disconnected sockets from the map),
+> > so rename unix_proto to unix_dgram_proto and add a new
+> > unix_stream_proto.
+> >
+> > Also implement stream related sockmap functions.
+> > And add dgram key words to those dgram specific functions.
+> >
+> > Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+> > Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+> > ---
 >
-
-I made some changes in this area in [0], since the support was primarily to do
-redirection from the cpumap prog, so by default we don't install anything now
-and only do so if a redirection interface is specified (and use devmap instead).
-So this option won't be used anyway going forward (since we don't install a
-dummy XDP_PASS program anymore) if it gets accepted.
-
-[0]: https://lore.kernel.org/bpf/20210728165552.435050-1-memxor@gmail.com
-
-PS: I can restore it again if this is something really used beyond redirecting
-to another device (i.e. with custom BPF programs). Any feedback would be helpful.
-
-> Fixes: ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program on cpumap")
-> Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
-> ---
->  samples/bpf/xdp_redirect_cpu_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> It seems that with commit c63829182c37 ("af_unix: Implement
+> ->psock_update_sk_prot()") we have enabled inserting dgram, stream, and
+> seqpacket UNIX sockets into sockmap.
 >
-> diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
-> index d3ecdc1..9e225c9 100644
-> --- a/samples/bpf/xdp_redirect_cpu_user.c
-> +++ b/samples/bpf/xdp_redirect_cpu_user.c
-> @@ -841,7 +841,7 @@ int main(int argc, char **argv)
->  	memset(cpu, 0, n_cpus * sizeof(int));
->
->  	/* Parse commands line args */
-> -	while ((opt = getopt_long(argc, argv, "hSd:s:p:q:c:xzFf:e:r:m:",
-> +	while ((opt = getopt_long(argc, argv, "hSd:s:p:q:c:xzFf:e:r:m:n",
->  				  long_options, &longindex)) != -1) {
->  		switch (opt) {
->  		case 'd':
-> --
-> 1.8.3.1
->
+> After all, in ->map_update_elem we only check if
+> sk->sk_prot->psock_update_sk_prot is set (sock_map_sk_is_suitable).
 
---
-Kartikeya
+Excellent point. I should check the sock type in unix_bpf_update_proto(),
+and will send a fix.
+
+>
+> Socket can be in listening, established or disconnected (TCP_CLOSE)
+> state, that is before bind+listen/connect, or after connect(AF_UNSPEC).
+>
+> For connection-oriented socket types (stream, seqpacket) there's not
+> much you can do with disconnected sockets. I think we should limit the
+> allowed states to listening and established for UNIX domain, as we do
+> for TCP.
+
+I think we should use ->unhash() to remove those connection-oriented
+sockets, like TCP.
+
+>
+> AFAIU we also seem to be already allowing redirect to connected stream
+> (and dgram, and seqpacket) UNIX sockets. sock_map_redirect_allowed()
+> checks only if a socket is in TCP_ESTABLISHED state for anything else
+> than TCP. Not sure what it leads to, though.
+
+The goal is to keep all stream sockets like TCP, which only allows
+established ones to stay in sockmap. For dgram, any socket state is
+allowed to add to map but only established ones are allowed to redirect.
+
+BTW, we do not have any intention to support Unix seqpacket socket
+or any seqpacket.
+
+Thanks.
