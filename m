@@ -2,191 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B627F3DCCBF
-	for <lists+bpf@lfdr.de>; Sun,  1 Aug 2021 18:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3694E3DCDE0
+	for <lists+bpf@lfdr.de>; Sun,  1 Aug 2021 23:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbhHAQsQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Aug 2021 12:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        id S230255AbhHAVKu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Aug 2021 17:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhHAQsP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Aug 2021 12:48:15 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D415FC06175F
-        for <bpf@vger.kernel.org>; Sun,  1 Aug 2021 09:48:06 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id t21so16860554plr.13
-        for <bpf@vger.kernel.org>; Sun, 01 Aug 2021 09:48:06 -0700 (PDT)
+        with ESMTP id S229759AbhHAVKt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Aug 2021 17:10:49 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96005C06175F;
+        Sun,  1 Aug 2021 14:10:40 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id a93so7263223ybi.1;
+        Sun, 01 Aug 2021 14:10:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=0CWBFU/df7D52R1rtNqUbfGY0GzICTPGIKR60t6R3iQ=;
-        b=Ua9oGGsIYu5t+AXvlyRd6HNXY15JQCCMIFPV5L+MHjfnvkvkdel7lyReAKgqOCu54j
-         uw+rCzhfzMbgWkEcRXGnt7+X1cuawNJJDqqIW+xBQDqjfJGLZXGqVJ0JcYHGsVoWerGE
-         N8fRLdPMrq0zjSUAMksktnfKzb+c3IWP1pI6KQGuXjJSjkRMIl2x+qgJCGQrreWZdWur
-         YzBE8KsX8kzPHnjPB46kYzQxrKlENzDmTNyeQ+rYQvTaODNQgH1JTSD6Z4r/R9snQPYL
-         GoyI09l/JfNNVnMuiE7xhJCJVXknKf+k1YcZufnphhU/A1PkaT82hGwIgFq8LltOfV67
-         q8YA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5cqE+6f5sJI5BDN/verR/h91s0qeLymynL8ETBEatK0=;
+        b=Nro+3TtfxnGb0lPkpzN2Mwk34JYNPXUG6LaT7Gf/HAwoHPsEwhNX5aYlo8XOT6M4iT
+         mKBXk040q6dlY+3YTCMqJ/trrtJwyyHI1s4eZMiXA/pWpdTKT9q83GM239M0yRqtz6yp
+         SJJ60YdubtEcYMtC284csMe+0HhXJTb4zwXT3fASKrf9dOyK+Tym7MwKz4fSBLBrma/Y
+         fVpkvOA0rZ/nMfYs38tcT3rZwxLK1aUZiIJAQejyyJ3kLBEjPSvLcM9DHBLjmpJ9FTi2
+         qDhQ18CQ/0+c20sOG/l3fBeDUfWQiO907aIOrZTF9+5w7vlMWutWYbs+Eeo9544g1rHF
+         fDtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=0CWBFU/df7D52R1rtNqUbfGY0GzICTPGIKR60t6R3iQ=;
-        b=bAI8rRmARYIpGZ9SKVkQLN/KRVcZ4MqfR4+UfR2/PJh6MePgNJ+okA3aIkx97A9sjA
-         ajhVx1jN3cWEUdSvznGWpeYOKcvgfVeiPyXgXcfeqBIwmkwGCQvC8fYI8eo/MPkPM2zW
-         D0unFHBIRfFOHMvYaCIo6A8aLlBfwxwNQe+qJfNTqDLUFGAxT+UGpwII5nXGQdzMDigY
-         bsZBOxRA1VhNzh03ZegvgLN3y0AwoPOd+CDO/CofNQG00xcYzKCzzfQNg2dIUdN4R7MX
-         j/ljvt6cRxz0l2dYj919HaUDqm6p193XsnJOQ3jJID10JMs9CvI7OyehIbg5XGF9+uOQ
-         ViwA==
-X-Gm-Message-State: AOAM533zxgm3oino1+OO/0D6E5dU3fm4C2Fzn01Di8VYWhwANSzy1fBH
-        KUCng+agCtPl6+p0XrPNFMJuBoVP8kZIiRWhyBKCX8hQpvfPlDUr
-X-Google-Smtp-Source: ABdhPJwfFXj+fWT2Qdg4coC+ZnhYLMnav2Bwaqc4JUwjb45jQgyCZigI/671Q5awWR7NPGUIguu9BRvEsUQ9igiOaGo=
-X-Received: by 2002:a17:90a:bd04:: with SMTP id y4mr13620281pjr.127.1627836486118;
- Sun, 01 Aug 2021 09:48:06 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5cqE+6f5sJI5BDN/verR/h91s0qeLymynL8ETBEatK0=;
+        b=JZakkigkbBsPHxhoPTLD+zqkK6k1uglvxtbMf2WTyeIlgGtdsIzzgrrmop6EldT9Nd
+         gq0fmQGKzhpJWtAQPe1b4mJWVQY58SdLSdNV6A9Idx4bbkygeIrj809RJQAs8QwC1CQL
+         CC6Cn7CMDgdKKXSjcsMfSQaRUdX0QsxzLqDmKW4SaMVcGx56xgN9kzsqKDcX49HONqLa
+         IzqsJvJQxN+BY9ZfbrZ02or+woJweQ603Qh1Uq2Pr+5brJYXXSc+NWapxpu+vyyaRgx/
+         fSQltaIR11+/Av7Q3DbU0DDzDa3QD1unRYTpb3h/yk6oXFccRw9KOoJSWBWzZpmkjDsW
+         5mtA==
+X-Gm-Message-State: AOAM531BCGf3L9T+OSfmvanEoKK5TIt27jIqI/LLtZqJnWB+JAUw+QRj
+        Z+rEEXHlsl9cclPCACw7NIs4XaCKLjZLpD2vYZU=
+X-Google-Smtp-Source: ABdhPJwo1gVgHC/X4QbKuGz+W7OF1P3orPa5UB6Jz2v3cyf28vWB5CtmDqlpxSaZadLKvvb8jx1OUUm85SdtqPXGLXo=
+X-Received: by 2002:a25:1546:: with SMTP id 67mr17077538ybv.331.1627852239100;
+ Sun, 01 Aug 2021 14:10:39 -0700 (PDT)
 MIME-Version: 1.0
-From:   =?UTF-8?B?6IyD5byA5Zac?= <fankaixi.li@bytedance.com>
-Date:   Mon, 2 Aug 2021 00:47:55 +0800
-Message-ID: <CAEEdnKGefYJtcPCX-yxzFCA6F2_vq7oNiHg8yR5A=8soTSc6MQ@mail.gmail.com>
-Subject: Failed to build bpf selftest testcases based on upstream master branch
-To:     bpf <bpf@vger.kernel.org>
-Cc:     daniel <daniel@iogearbox.net>, ast <ast@kernel.org>
+References: <CADVatmPShADZ0F133eS3KjeKj1ZjTNAQfy_QOoJVBan02wuR+Q@mail.gmail.com>
+ <202107311901.8CDF235F65@keescook>
+In-Reply-To: <202107311901.8CDF235F65@keescook>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Sun, 1 Aug 2021 22:10:03 +0100
+Message-ID: <CADVatmOt6Xy+is=1CBZFqExBT63EKhO37eCJ9hsvS5jy+-PMVg@mail.gmail.com>
+Subject: Re: memory leak in do_seccomp
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        alaaemadhossney.ae@gmail.com,
+        syzkaller <syzkaller@googlegroups.com>,
+        Jann Horn <jannh@google.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi all,
+Hi Kees,
 
-I failed to make bpf selftest testcases based on the upstream master
-branch. And I need help to fix it.
+On Sun, Aug 1, 2021 at 4:26 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Sat, Jul 31, 2021 at 08:20:29PM +0100, Sudip Mukherjee wrote:
+> > Hi All,
+> >
+> > We had been running syzkaller on v5.10.y and a "memory leak in
+> > do_seccomp" was being reported on it. I got some time to check that
+> > today and have managed to get a syzkaller
+> > reproducer. I dont have a C reproducer which I can share but I can use
+> > the syz-reproducer to reproduce this with next-20210730.
+> > The old report on v5.10.y is at
+> > https://elisa-builder-00.iol.unh.edu/syzkaller/report?id=f6ddd3b592f00e95f9cbd2e74f70a5b04b015c6f
+>
+> Thanks for the details!
+>
+> Is this the same as what syzbot saw here (with a C reproducer)?
+> https://syzkaller.appspot.com/bug?id=2809bb0ac77ad9aa3f4afe42d6a610aba594a987
 
-After installing the new kernel and modules,  I have tried following
-commands to build bpf testcases:
-"
-cd ~/dev/linux/tools/testing/selftests/bpf
-make
-"
+Looks similar but it says its fixed and I still get it with the
+reproducer I have.
 
-Then error message shows up as follows:
-"
-INSTALL bpftool
-  GEN      vmlinux.h
-  CLNG-BPF [test_maps] btf__core_reloc_primitives___err_non_ptr.o
-  CLNG-BPF [test_maps] test_global_data.o
-  CLNG-BPF [test_maps] test_global_func8.o
-  CLNG-BPF [test_maps] test_ksyms_btf_null_check.o
-  CLNG-BPF [test_maps] linked_funcs2.o
-  CLNG-BPF [test_maps] bpf_iter_test_kern5.o
-  CLNG-BPF [test_maps] test_static_linked2.o
-  CLNG-BPF [test_maps] test_global_func13.o
-  CLNG-BPF [test_maps] test_cls_redirect_subprogs.o
-  CLNG-BPF [test_maps] test_core_reloc_nesting.o
-  CLNG-BPF [test_maps] tailcall_bpf2bpf1.o
-  CLNG-BPF [test_maps] test_endian.o
-  CLNG-BPF [test_maps] test_cls_redirect.o
-  CLNG-BPF [test_maps] btf__core_reloc_type_based___incompat.o
-  CLNG-BPF [test_maps] test_btf_newkv.o
-  CLNG-BPF [test_maps] pyperf600.o
-  CLNG-BPF [test_maps] test_btf_nokv.o
-  CLNG-BPF [test_maps] atomics.o
-fatal error: error in backend: line 27: Invalid usage of the XADD return value
-PLEASE submit a bug report to https://bugs.llvm.org/ and include the
-crash backtrace, preprocessed source, and associated run script.
-Stack dump:
-0.        Program arguments: clang -g -D__TARGET_ARCH_x86
--mlittle-endian
--I/root/dev/linux/tools/testing/selftests/bpf/tools/include
--I/root/dev/linux/tools/testing/selftests/bpf
--I/root/dev/linux/tools/include/uapi
--I/root/dev/linux/tools/testing/selftests/usr/include -idirafter
-/usr/local/include -idirafter
-/usr/lib/llvm-11/lib/clang/11.1.0/include -idirafter
-/usr/include/x86_64-linux-gnu -idirafter /usr/include
--Wno-compare-distinct-pointer-types -DENABLE_ATOMICS_TESTS -O2 -target
-bpf -c progs/atomics.c -o
-/root/dev/linux/tools/testing/selftests/bpf/atomics.o -mcpu=v3
-1.        <eof> parser at end of file
-2.        Code generation
-3.        Running pass 'Function Pass Manager' on module 'progs/atomics.c'.
-4.        Running pass 'BPF PreEmit Checking' on function '@add'
- #0 0x00007f81ec29ee8f llvm::sys::PrintStackTrace(llvm::raw_ostream&)
-(/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xbbae8f)
- #1 0x00007f81ec29d200 llvm::sys::RunSignalHandlers()
-(/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xbb9200)
- #2 0x00007f81ec29e5dd llvm::sys::CleanupOnSignal(unsigned long)
-(/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xbba5dd)
- #3 0x00007f81ec1e6d2a (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xb02d2a)
- #4 0x00007f81ec1e6ccb (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xb02ccb)
- #5 0x00007f81ec299d4e (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xbb5d4e)
- #6 0x00000000004134f2 (/usr/lib/llvm-11/bin/clang+0x4134f2)
- #7 0x00007f81ec1f2d4f llvm::report_fatal_error(llvm::Twine const&,
-bool) (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xb0ed4f)
- #8 0x00007f81ec1f2e27 (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xb0ee27)
- #9 0x00007f81edd55595 (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0x2671595)
-#10 0x00007f81ec57339e
-llvm::MachineFunctionPass::runOnFunction(llvm::Function&)
-(/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xe8f39e)
-#11 0x00007f81ec3ae889
-llvm::FPPassManager::runOnFunction(llvm::Function&)
-(/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xcca889)
-#12 0x00007f81ec3b3eb3 llvm::FPPassManager::runOnModule(llvm::Module&)
-(/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xccfeb3)
-#13 0x00007f81ec3aeea0
-llvm::legacy::PassManagerImpl::run(llvm::Module&)
-(/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xccaea0)
-#14 0x00007f81ea068e96
-clang::EmitBackendOutput(clang::DiagnosticsEngine&,
-clang::HeaderSearchOptions const&, clang::CodeGenOptions const&,
-clang::TargetOptions const&, clang::LangOptions const&,
-llvm::DataLayout const&, llvm::Module*, clang::BackendAction,
-std::unique_ptr<llvm::raw_pwrite_stream,
-std::default_delete<llvm::raw_pwrite_stream> >)
-(/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x164de96)
-#15 0x00007f81ea329a36 (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x190ea36)
-#16 0x00007f81e93e9093 clang::ParseAST(clang::Sema&, bool, bool)
-(/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x9ce093)
-#17 0x00007f81ea9c9c38 clang::FrontendAction::Execute()
-(/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1faec38)
-#18 0x00007f81ea97ff11
-clang::CompilerInstance::ExecuteAction(clang::FrontendAction&)
-(/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1f64f11)
-#19 0x00007f81eaa2f6b0
-clang::ExecuteCompilerInvocation(clang::CompilerInstance*)
-(/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x20146b0)
-#20 0x00000000004131bf cc1_main(llvm::ArrayRef<char const*>, char
-const*, void*) (/usr/lib/llvm-11/bin/clang+0x4131bf)
-#21 0x00000000004115fe (/usr/lib/llvm-11/bin/clang+0x4115fe)
-#22 0x00007f81ea6a9a02 (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1c8ea02)
-#23 0x00007f81ec1e6cad
-llvm::CrashRecoveryContext::RunSafely(llvm::function_ref<void ()>)
-(/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xb02cad)
-#24 0x00007f81ea6a8f2f
-clang::driver::CC1Command::Execute(llvm::ArrayRef<llvm::Optional<llvm::StringRef>
->, std::__cxx11::basic_string<char, std::char_traits<char>,
-std::allocator<char> >*, bool*) const
-(/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1c8df2f)
-#25 0x00007f81ea680d5f
-clang::driver::Compilation::ExecuteCommand(clang::driver::Command
-const&, clang::driver::Command const*&) const
-(/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1c65d5f)
-#26 0x00007f81ea680f07
-clang::driver::Compilation::ExecuteJobs(clang::driver::JobList const&,
-llvm::SmallVectorImpl<std::pair<int, clang::driver::Command const*>
->&) const (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1c65f07)
-#27 0x00007f81ea694a7c
-clang::driver::Driver::ExecuteCompilation(clang::driver::Compilation&,
-llvm::SmallVectorImpl<std::pair<int, clang::driver::Command const*>
->&) (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1c79a7c)
-#28 0x00000000004110a3 main (/usr/lib/llvm-11/bin/clang+0x4110a3)
-#29 0x00007f81e855b09b __libc_start_main
-(/lib/x86_64-linux-gnu/libc.so.6+0x2409b)
-#30 0x000000000040e89a _start (/usr/lib/llvm-11/bin/clang+0x40e89a)
-make: *** [Makefile:470:
-/root/dev/linux/tools/testing/selftests/bpf/atomics.o] Error 1
-"
+>
+> I can't figure out what happened with the "Patch testing request" that
+> was made; there's no link?
 
-I am using a virtual machine with 8 cpus. The kernel and clang version are:
-"
-kernel: 5.14.0-rc3.bm.1-amd64 #4 SMP Sun Aug 1 23:28:24 CST 2021
-x86_64 GNU/Linux
-clang: Debian clang version
-11.1.0-++20210622113218+1fdec59bffc1-1~exp1~20210622213839.163
-"
+Looks like it has been merged with a566a9012acd ("seccomp: don't leak
+memory when filter install races")
+
+>
+> >
+> > BUG: memory leak
+> > unreferenced object 0xffff888019282c00 (size 512):
+> >   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.841s)
+> >   hex dump (first 32 bytes):
+> >     01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+> >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> >   backtrace:
+> >     [<00000000762c0963>] do_seccomp+0x2d5/0x27d0
+>
+> Can you run "./scripts/faddr2line do_seccomp+0x2d5/0x27d0" for this? I
+> expect it'll be:
+>         sfilter = kzalloc(sizeof(*sfilter), GFP_KERNEL | __GFP_NOWARN);
+
+Yes, it is from "(inlined by) seccomp_prepare_filter at kernel/seccomp.c:661".
+I did:
+$ scripts/faddr2line vmlinux do_seccomp+0x2d5/0x27d0
+do_seccomp+0x2d5/0x27d0:
+kmalloc at include/linux/slab.h:591
+(inlined by) kzalloc at include/linux/slab.h:721
+(inlined by) seccomp_prepare_filter at kernel/seccomp.c:661
+(inlined by) seccomp_prepare_user_filter at kernel/seccomp.c:703
+(inlined by) seccomp_set_mode_filter at kernel/seccomp.c:1852
+(inlined by) do_seccomp at kernel/seccomp.c:1972
+
+>
+> >     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
+> >     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+
+<snip>
+
+>
+> My best guess is there is some LISTENER refcount state we can get into
+> where all the processes die, but a reference is left alive.
+
+Will be happy to run any debug patch if you need.
+
+
+-- 
+Regards
+Sudip
