@@ -2,273 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965683DCA12
-	for <lists+bpf@lfdr.de>; Sun,  1 Aug 2021 07:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7090F3DCAC6
+	for <lists+bpf@lfdr.de>; Sun,  1 Aug 2021 10:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbhHAFLg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Aug 2021 01:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
+        id S231363AbhHAIiP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Aug 2021 04:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHAFLg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Aug 2021 01:11:36 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B13C06175F
-        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 22:11:28 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id c18so13640061qke.2
-        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 22:11:28 -0700 (PDT)
+        with ESMTP id S231139AbhHAIiO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Aug 2021 04:38:14 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6FDC0613D3
+        for <bpf@vger.kernel.org>; Sun,  1 Aug 2021 01:38:07 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id a201so7196993ybg.12
+        for <bpf@vger.kernel.org>; Sun, 01 Aug 2021 01:38:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tu+g1PbF2qC1dgZLK4PaRMVsVFJ5AJPHZu8bzgWwdLQ=;
-        b=rKreJpcwgWwT7Hcw8UF2wVDno4rrxsFCYBPz15FtPOTVU7C26i3kI08etquKI9owg2
-         GICv72vsr5msALS2lPo1mVFhV7lBF4wExvprEk6VeCp5O1TTocARMDhGp6UN6qt8DKmS
-         oHWoiyWhcvZZXjy2DOeUK0NBtR9CJV8aXx+kY74HzRztpzDgPznYMFgyqcjKkdIoM3RR
-         RWLRgHLPIwXRVTTGZirc+WP52k6tTDQqah/MYnB2lIhzmDdoFoEFv3JjXImx+QmbqBR7
-         5jFOVZ2h+IJ5y9XQshqGkx3qt2QR9PzTYjh+tJgeY+lKCtjLQQZgmTjM6iSkpBQS167o
-         DU0A==
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5QPw9P2mHV9SRfT9mFBRbmYkfKR2e0ffmj5E33flEDU=;
+        b=fr5te08v4BiKoAZXFuSi6iHSmfbPoJvM0I4sZcgP8kAIXE2rwccSqE+mq+hUYXS9WX
+         rn67NXwWrL33Qs9Qv7fKyleo6igmub3IvhpePIIMkIvekbEpyz2BYj5P5ETdofv83Pap
+         y3iK0stfzhBrn8q8YdYINp4o7cxbH80R8XLVrNQ8TDxVa5wPUzaWdbf8dpRy0ZgGzQuv
+         mzHf0WA53AqDGrZLuzumq3apLbRcbxkN8xYUrrEwtis4fUa1YFq1VPhruVF/pubIzTSb
+         jDGaRwxKwnrbD7o0GSu1l2HmIgyl2o9KQzbZ61Mase5M5GPI4ZtpN4IDeyrbQjMUApCs
+         H5BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tu+g1PbF2qC1dgZLK4PaRMVsVFJ5AJPHZu8bzgWwdLQ=;
-        b=j7MnkVhCZuhvzy03QM3Ef0/csvzwrHP/bTKkwaEOs1RQrR29iVjSdSvYwzMmF52S5h
-         y4agEtXxET/PJbkVYJdpCuv/t7FDyxXTy4lT2d1qmtBEFH8EepzSQwDVHjsyvp9ImCPH
-         wV2aJ7mB/oOzqNp1g0wncwFrQROcpdnSaORqBLqn3157t1LE3D/UjL7qe5F/sWu9uZb3
-         mmvunGdvh92S9ODKNN23lNLz6MZy2+af8u+R02uNgIjVZ2nLI6ZhjS4lm6YK/Jqm7Alq
-         OvR4lKr7JElesjUKLeJuumgPVKaYbLruAiHT+s7umDawxxtIeHIIRvx+RhBpeBPLm0q7
-         4Jvw==
-X-Gm-Message-State: AOAM530jAu2XEf3h2w6v1/Bg8cml2/HfvI5aB51Gf3l/0SdpTmhH671b
-        7UdDK0QcmVDWwmxCLlE9A8gAuV323TyM
-X-Google-Smtp-Source: ABdhPJzlR2tEP3e/ICtIF+fTdU412JvLwdFYg6p2TB3wOWSp0tfSGnu+XSVGpd8A1NTRcZUc8OH8Wg==
-X-Received: by 2002:ae9:e315:: with SMTP id v21mr9542362qkf.81.1627794687245;
-        Sat, 31 Jul 2021 22:11:27 -0700 (PDT)
-Received: from fujitsu.celeiro.cu ([191.177.175.120])
-        by smtp.gmail.com with ESMTPSA id h2sm3903345qkf.106.2021.07.31.22.11.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 22:11:26 -0700 (PDT)
-From:   Rafael David Tinoco <rafaeldtinoco@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     rafaeldtinoco@gmail.com, andrii.nakryiko@gmail.com
-Subject: [PATCH bpf-next v4] libbpf: introduce legacy kprobe events support
-Date:   Sun,  1 Aug 2021 02:11:23 -0300
-Message-Id: <20210801051123.3822498-1-rafaeldtinoco@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210730053413.1090371-1-andrii@kernel.org>
-References: <20210730053413.1090371-1-andrii@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5QPw9P2mHV9SRfT9mFBRbmYkfKR2e0ffmj5E33flEDU=;
+        b=ZsNHEzqGIuwt6eNMYX9fO3hfA2jWFBVrl+g3RP8QzkUNdsidjiN4xX2VNXJDj8oomM
+         zMzswafRY/MRmKTP5ZT0OJG++/gRYp0Ns5vqZrno0RdY9oe9u/c2zs3J0yb+gVBHnFm4
+         D7DpSGbuYn3ux2Tx4PMXtpjvL8ihcdVD2JZYMk1nSHzVkHvVBuwChVvLt/fpxvEaVW0N
+         7DO1Wg4rFdfL0c655rvUeh6JW+A3a1JIsl7Yz7V1T/rg806C6mCp7QIUiQva8Vb6POdf
+         EI1rY7OjYPOOAXHe5zXCAVqca8l7BaqIMSoWkF9H4R1q4ci2tmVYCHlGL6OXVx9K9hfi
+         QKGg==
+X-Gm-Message-State: AOAM530c2qB0wBkwRf9ymcZwaz5itIuQhfmXFxtR/Fal/9+f0AWPne3a
+        CNy6V6SkF+tKLO7es8TdY8EQ5uN1sum9p2lPuDh5fg==
+X-Google-Smtp-Source: ABdhPJy9082yDOS4ZoXkiJpr15XRYBklxa1rQNuoGQ8lFEVJ3U+oW0T16URjqvQrEntsthwYzphVjWrv7AETBeHpMjM=
+X-Received: by 2002:a25:e910:: with SMTP id n16mr13455255ybd.226.1627807086456;
+ Sun, 01 Aug 2021 01:38:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <5afe26c6-7ab1-88ab-a3e0-eb007256a856@iogearbox.net>
+ <20210728164741.350370-1-johan.almbladh@anyfinetworks.com>
+ <1503e9c4-7150-3244-4710-7b6b2d59e0da@fb.com> <CAM1=_QTQeTp7LF-XdrOG_qjKpPJ-oQ24kKnG_7MDSbA7LX+uoA@mail.gmail.com>
+ <CAEf4BzbYbSAqU91r8RzXWWR81mq9kwJ0=r8-1aRU1UaeDqxMeg@mail.gmail.com> <CAEf4BzZ1nNv12s-NJEayct5Yih_G6vNkEvFPst6dLcbhxWV_0g@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ1nNv12s-NJEayct5Yih_G6vNkEvFPst6dLcbhxWV_0g@mail.gmail.com>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Sun, 1 Aug 2021 10:37:55 +0200
+Message-ID: <CAM1=_QSKa7W9SL7oXWGEHLtWqCeFWp-jtGoqPp9=MxQwUGOjaQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix off-by-one in tail call count limiting
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Tony Ambardar <Tony.Ambardar@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow kprobe tracepoint events creation through legacy interface, as the
-kprobe dynamic PMUs support, used by default, was only created in v4.17.
+On Fri, Jul 30, 2021 at 12:48 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jul 29, 2021 at 3:29 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Jul 29, 2021 at 2:38 PM Johan Almbladh
+> > <johan.almbladh@anyfinetworks.com> wrote:
+> > >
+> > > On Wed, Jul 28, 2021 at 9:13 PM Yonghong Song <yhs@fb.com> wrote:
+> > > > I also checked arm/arm64 jit. I saw the following comments:
+> > > >
+> > > >          /* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+> > > >           *      goto out;
+> > > >           * tail_call_cnt++;
+> > > >           */
+> > > >
+> > > > Maybe we have this MAX_TAIL_CALL_CNT + 1 issue
+> > > > for arm/arm64 jit?
+> > >
+> > > That wouldn't be unreasonable. I don't have an arm or arm64 setup
+> > > available right now, but I can try to test it in qemu.
+> >
+> > On a brief check, there seems to be quite a mess in terms of the code
+> > and comments.
+> >
+> > E.g., in arch/x86/net/bpf_jit_comp32.c:
+> >
+> >         /*
+> >          * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+> >          *     goto out;
+> >          */
+> >
+> >                             ^^^^ here comment is wrong
+> >
+> >         [...]
+> >
+> >         /* cmp edx,hi */
+> >         EMIT3(0x83, add_1reg(0xF8, IA32_EBX), hi);
+> >         EMIT2(IA32_JNE, 3);
+> >         /* cmp ecx,lo */
+> >         EMIT3(0x83, add_1reg(0xF8, IA32_ECX), lo);
+> >
+> >         /* ja out */
+> >         EMIT2(IA32_JAE, jmp_label(jmp_label1, 2));
+> >
+> >         ^^^ JAE is >=, right? But the comment says JA.
+> >
+> >
+> > As for arch/x86/net/bpf_jit_comp.c, both comment and the code seem to
+> > do > MAX_TAIL_CALL_CNT, but you are saying JIT is correct. What am I
+> > missing?
+> >
+> > Can you please check all the places where MAX_TAIL_CALL_CNT is used
+> > throughout the code? Let's clean this up in one go.
+> >
+> > Also, given it's so easy to do this off-by-one error, can you please
+> > add a negative test validating that 33 tail calls are not allowed? I
+> > assume we have a positive test that allows exactly MAX_TAIL_CALL_CNT,
+> > but please double-check that as well.
+>
+> Ok, I see that you've added this in your bpf tests patch set. Please
+> consider, additionally, implementing a similar test as part of
+> selftests/bpf (specifically in test_progs). We run test_progs
+> continuously in CI for every incoming patch/patchset, so it has much
+> higher chances of capturing any regressions.
+>
+> I'm also thinking that this MAX_TAIL_CALL_CNT change should probably
+> go into the bpf-next tree. First, this off-by-one behavior was around
+> for a while and it doesn't cause serious issues, even if abused. But
+> on the other hand, it will make your tail call tests fail, when
+> applied into bpf-next without your change. So I think we should apply
+> both into bpf-next.
 
-After commit "bpf: implement minimal BPF perf link", it was allowed that
-some extra - to the link - information is accessed through container_of
-struct bpf_link. This allows the tracing perf event legacy name, and
-information whether it is a retprobe, to be saved outside bpf_link
-structure, which would not be optimal.
+I can confirm that the off-by-one behaviour is present on arm. Below
+is the test output running on qemu. Test #4 calls itself recursively
+and increments a counter each time, so the correct result should be 1
++ MAX_TAIL_CALL_CNT.
 
-This enables CO.RE support for older kernels.
+test_bpf: #0 Tail call leaf jited:1 71 PASS
+test_bpf: #1 Tail call 2 jited:1 134 PASS
+test_bpf: #2 Tail call 3 jited:1 164 PASS
+test_bpf: #3 Tail call 4 jited:1 257 PASS
+test_bpf: #4 Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
+test_bpf: #5 Tail call error path, NULL target jited:1 114 PASS
+test_bpf: #6 Tail call error path, index out of range jited:1 112 PASS
+test_bpf: test_tail_calls: Summary: 6 PASSED, 1 FAILED, [7/7 JIT'ed]
 
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Rafael David Tinoco <rafaeldtinoco@gmail.com>
----
- tools/lib/bpf/libbpf.c | 127 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 125 insertions(+), 2 deletions(-)
+The MAX_TAIL_CALL_CNT constant is referenced in the following JITs.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index e1b7b2b6618c..40037340a3e7 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8985,9 +8985,55 @@ int bpf_link__unpin(struct bpf_link *link)
- 	return 0;
- }
- 
-+static int poke_kprobe_events(bool add, const char *name, bool retprobe, uint64_t offset) {
-+	int fd, ret = 0;
-+	pid_t p = getpid();
-+	char cmd[192] = {}, probename[128] = {}, probefunc[128] = {};
-+	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
-+
-+	if (retprobe)
-+		snprintf(probename, sizeof(probename), "kretprobes/%s_libbpf_%u", name, p);
-+	else
-+		snprintf(probename, sizeof(probename), "kprobes/%s_libbpf_%u", name, p);
-+
-+	if (offset)
-+		snprintf(probefunc, sizeof(probefunc), "%s+%lu", name, offset);
-+
-+	if (add) {
-+		snprintf(cmd, sizeof(cmd), "%c:%s %s",
-+			 retprobe ? 'r' : 'p',
-+			 probename,
-+			 offset ? probefunc : name);
-+	} else {
-+		snprintf(cmd, sizeof(cmd), "-:%s", probename);
-+	}
-+
-+	fd = open(file, O_WRONLY | O_APPEND, 0);
-+	if (!fd)
-+		return -errno;
-+	ret = write(fd, cmd, strlen(cmd));
-+	if (ret < 0)
-+		ret = -errno;
-+	close(fd);
-+
-+	return ret;
-+}
-+
-+static inline int add_kprobe_event_legacy(const char *name, bool retprobe, uint64_t offset)
-+{
-+	return poke_kprobe_events(true, name, retprobe, offset);
-+}
-+
-+static inline int remove_kprobe_event_legacy(const char *name, bool retprobe)
-+{
-+	return poke_kprobe_events(false, name, retprobe, 0);
-+}
-+
- struct bpf_link_perf {
- 	struct bpf_link link;
- 	int perf_event_fd;
-+	char *legacy_name;
-+	bool is_retprobe;
- };
- 
- static int bpf_link_perf_detach(struct bpf_link *link)
-@@ -9002,6 +9048,10 @@ static int bpf_link_perf_detach(struct bpf_link *link)
- 		close(perf_link->perf_event_fd);
- 	close(link->fd);
- 
-+	/* legacy kprobe needs to be removed after perf event fd closure */
-+	if (perf_link->legacy_name)
-+		remove_kprobe_event_legacy(perf_link->legacy_name, perf_link->is_retprobe);
-+
- 	return libbpf_err(err);
- }
- 
-@@ -9009,6 +9059,9 @@ static void bpf_link_perf_dealloc(struct bpf_link *link)
- {
- 	struct bpf_link_perf *perf_link = container_of(link, struct bpf_link_perf, link);
- 
-+	if (perf_link->legacy_name)
-+		free(perf_link->legacy_name);
-+
- 	free(perf_link);
- }
- 
-@@ -9122,6 +9175,26 @@ static int parse_uint_from_file(const char *file, const char *fmt)
- 	return ret;
- }
- 
-+static bool determine_kprobe_legacy(void)
-+{
-+	const char *file = "/sys/bus/event_source/devices/kprobe/type";
-+
-+	return access(file, 0) == 0 ? false : true;
-+}
-+
-+static int determine_kprobe_perf_type_legacy(const char *func_name, bool is_retprobe)
-+{
-+	char file[192];
-+
-+	const char *fname = "/sys/kernel/debug/tracing/events/%s/%s_libbpf_%d/id";
-+
-+	snprintf(file, sizeof(file), fname,
-+		 is_retprobe ? "kretprobes" : "kprobes",
-+		 func_name, getpid());
-+
-+	return parse_uint_from_file(file, "%d\n");
-+}
-+
- static int determine_kprobe_perf_type(void)
- {
- 	const char *file = "/sys/bus/event_source/devices/kprobe/type";
-@@ -9197,6 +9270,41 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
- 	return pfd;
- }
- 
-+static int perf_event_kprobe_open_legacy(bool retprobe, const char *name, uint64_t offset, int pid)
-+{
-+	struct perf_event_attr attr = {};
-+	char errmsg[STRERR_BUFSIZE];
-+	int type, pfd, err;
-+
-+	err = add_kprobe_event_legacy(name, retprobe, offset);
-+	if (err < 0) {
-+		pr_warn("failed to add legacy kprobe event: %s\n",
-+			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-+		return err;
-+	}
-+	type = determine_kprobe_perf_type_legacy(name, retprobe);
-+	if (type < 0) {
-+		pr_warn("failed to determine legacy kprobe event id: %s\n",
-+			libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
-+		return type;
-+	}
-+	attr.size = sizeof(attr);
-+	attr.config = type;
-+	attr.type = PERF_TYPE_TRACEPOINT;
-+
-+	pfd = syscall(__NR_perf_event_open, &attr,
-+		      pid < 0 ? -1 : pid, /* pid */
-+		      pid == -1 ? 0 : -1, /* cpu */
-+		      -1 /* group_fd */,  PERF_FLAG_FD_CLOEXEC);
-+	if (pfd < 0) {
-+		err = -errno;
-+		pr_warn("legacy kprobe perf_event_open() failed: %s\n",
-+			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-+		return err;
-+	}
-+	return pfd;
-+}
-+
- struct bpf_link *
- bpf_program__attach_kprobe_opts(struct bpf_program *prog,
- 				const char *func_name,
-@@ -9208,6 +9316,7 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
- 	unsigned long offset;
- 	bool retprobe;
- 	int pfd, err;
-+	bool legacy;
- 
- 	if (!OPTS_VALID(opts, bpf_kprobe_opts))
- 		return libbpf_err_ptr(-EINVAL);
-@@ -9216,8 +9325,16 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
- 	offset = OPTS_GET(opts, offset, 0);
- 	pe_opts.user_ctx = OPTS_GET(opts, user_ctx, 0);
- 
--	pfd = perf_event_open_probe(false /* uprobe */, retprobe, func_name,
--				    offset, -1 /* pid */);
-+	legacy = determine_kprobe_legacy();
-+	if (!legacy) {
-+		pfd = perf_event_open_probe(false /* uprobe */,
-+					    retprobe, func_name,
-+					    offset, -1 /* pid */);
-+	} else {
-+		pfd = perf_event_kprobe_open_legacy(retprobe, func_name,
-+						    0 /* offset */,
-+						   -1 /* pid */);
-+	}
- 	if (pfd < 0) {
- 		pr_warn("prog '%s': failed to create %s '%s' perf event: %s\n",
- 			prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
-@@ -9233,6 +9350,12 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
- 			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
- 		return libbpf_err_ptr(err);
- 	}
-+	if (legacy) {
-+		struct bpf_link_perf *perf_link = container_of(link, struct bpf_link_perf, link);
-+		perf_link->legacy_name = strdup(func_name);
-+		perf_link->is_retprobe = retprobe;
-+	}
-+
- 	return link;
- }
- 
--- 
-2.30.2
+arch/arm64/net/bpf_jit_comp.c
+arch/arm/net/bpf_jit_32.c
+arch/mips/net/ebpf_jit.c
+arch/powerpc/net/bpf_jit_comp32.c
+arch/powerpc/net/bpf_jit_comp64.c
+arch/riscv/net/bpf_jit_comp32.c
+arch/riscv/net/bpf_jit_comp64.c
+arch/s390/net/bpf_jit_comp.c
+arch/sparc/net/bpf_jit_comp_64.c
+arch/x86/net/bpf_jit_comp32.c
+arch/x86/net/bpf_jit_comp.c
 
+The x86 JITs all pass the test, even though the comments are wrong.
+The comments can easily be fixed of course. For JITs that have the
+off-by-one behaviour, an easy fix would be to change all occurrences
+of MAX_TAIL_CALL_CNT to MAX_TAIL_CALL_CNT - 1. We must first know
+which JITs affected though.
+
+The fix is easy but setting up the test is hard. It took me quite some
+time to get the qemu/arm setup up and running. If the same has to be
+done for arm64, mips64, powerpc, powerpc64, riscv32, risc64, sparc and
+s390, I will need some help with this. If someone already has a
+working setup for any of the systems, the test can be performed on
+that.
+
+Or perhaps there is a better way to do this? If I implement a similar
+test in selftest/bpf, that would trigger the CI when the patch is
+submitted and we will see which JITs we need to fix.
+
+> On a related topic, please don't forget to include the target kernel
+> tree for your patches: [PATCH bpf] or [PATCH bpf-next].
+
+I'll add that! All patches I sent related to this are for the bpf-next tree.
+
+Johan
