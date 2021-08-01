@@ -2,194 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7090F3DCAC6
-	for <lists+bpf@lfdr.de>; Sun,  1 Aug 2021 10:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9572C3DCB24
+	for <lists+bpf@lfdr.de>; Sun,  1 Aug 2021 12:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhHAIiP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Aug 2021 04:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbhHAIiO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Aug 2021 04:38:14 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6FDC0613D3
-        for <bpf@vger.kernel.org>; Sun,  1 Aug 2021 01:38:07 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id a201so7196993ybg.12
-        for <bpf@vger.kernel.org>; Sun, 01 Aug 2021 01:38:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5QPw9P2mHV9SRfT9mFBRbmYkfKR2e0ffmj5E33flEDU=;
-        b=fr5te08v4BiKoAZXFuSi6iHSmfbPoJvM0I4sZcgP8kAIXE2rwccSqE+mq+hUYXS9WX
-         rn67NXwWrL33Qs9Qv7fKyleo6igmub3IvhpePIIMkIvekbEpyz2BYj5P5ETdofv83Pap
-         y3iK0stfzhBrn8q8YdYINp4o7cxbH80R8XLVrNQ8TDxVa5wPUzaWdbf8dpRy0ZgGzQuv
-         mzHf0WA53AqDGrZLuzumq3apLbRcbxkN8xYUrrEwtis4fUa1YFq1VPhruVF/pubIzTSb
-         jDGaRwxKwnrbD7o0GSu1l2HmIgyl2o9KQzbZ61Mase5M5GPI4ZtpN4IDeyrbQjMUApCs
-         H5BQ==
+        id S231477AbhHAKec (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Aug 2021 06:34:32 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:45592 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231470AbhHAKec (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Aug 2021 06:34:32 -0400
+Received: by mail-io1-f71.google.com with SMTP id g19-20020a5d8c930000b02904dd8a55bbd7so9449549ion.12
+        for <bpf@vger.kernel.org>; Sun, 01 Aug 2021 03:34:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5QPw9P2mHV9SRfT9mFBRbmYkfKR2e0ffmj5E33flEDU=;
-        b=ZsNHEzqGIuwt6eNMYX9fO3hfA2jWFBVrl+g3RP8QzkUNdsidjiN4xX2VNXJDj8oomM
-         zMzswafRY/MRmKTP5ZT0OJG++/gRYp0Ns5vqZrno0RdY9oe9u/c2zs3J0yb+gVBHnFm4
-         D7DpSGbuYn3ux2Tx4PMXtpjvL8ihcdVD2JZYMk1nSHzVkHvVBuwChVvLt/fpxvEaVW0N
-         7DO1Wg4rFdfL0c655rvUeh6JW+A3a1JIsl7Yz7V1T/rg806C6mCp7QIUiQva8Vb6POdf
-         EI1rY7OjYPOOAXHe5zXCAVqca8l7BaqIMSoWkF9H4R1q4ci2tmVYCHlGL6OXVx9K9hfi
-         QKGg==
-X-Gm-Message-State: AOAM530c2qB0wBkwRf9ymcZwaz5itIuQhfmXFxtR/Fal/9+f0AWPne3a
-        CNy6V6SkF+tKLO7es8TdY8EQ5uN1sum9p2lPuDh5fg==
-X-Google-Smtp-Source: ABdhPJy9082yDOS4ZoXkiJpr15XRYBklxa1rQNuoGQ8lFEVJ3U+oW0T16URjqvQrEntsthwYzphVjWrv7AETBeHpMjM=
-X-Received: by 2002:a25:e910:: with SMTP id n16mr13455255ybd.226.1627807086456;
- Sun, 01 Aug 2021 01:38:06 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=47KcKz4WmoeO48+LZQ2h16RP+E2fy2ebXX67GEn8Y5E=;
+        b=o1Vg058PLJsuonYL8W4kvIHX2uQ7HmpXFzvQMp9TACUMAHe4aKXf+48zv1YYs9775d
+         keIvYPG3FknztziToVjZD5Hg5nNdHlJPD65enwzxIg0fD84+55RCYrmFBit8qpPVSjSZ
+         8cD4gd8606MbaGEc+DMjSOS5KSMmAes/mVF28q9ksJYRBl/J4PnsOC2v7PDTTH4uqSXf
+         A8Ls4vh1FxO4+DFvZVwlOKzB3HPspbRAThRhmHtAcnolmQo+sa66v1J5bXoLkLyKT77U
+         BFKlog1u8+gWy8h4La3XuvDFvMExCpat23Cp2gmUVXn5sFsz7mNret/fL0v+OycaR13s
+         TRmQ==
+X-Gm-Message-State: AOAM5324IzYQoZnGTthu0ccG3QVr5IJHpJ+ID8cPm8oecWGvHUO99XTw
+        MEGh+PIuXjqWIbGlvyhEqhgSX+plCj02wZkH+SRPKSNoJa6Q
+X-Google-Smtp-Source: ABdhPJxsHaS2oHjQB1mYPEN/MH2N/WwPYMj2AKK565H1YFt3GrjQfjx7qT9GGHQbw7RDa7otbupK6OQVMe4MCzvIurzP0kF5JtYT
 MIME-Version: 1.0
-References: <5afe26c6-7ab1-88ab-a3e0-eb007256a856@iogearbox.net>
- <20210728164741.350370-1-johan.almbladh@anyfinetworks.com>
- <1503e9c4-7150-3244-4710-7b6b2d59e0da@fb.com> <CAM1=_QTQeTp7LF-XdrOG_qjKpPJ-oQ24kKnG_7MDSbA7LX+uoA@mail.gmail.com>
- <CAEf4BzbYbSAqU91r8RzXWWR81mq9kwJ0=r8-1aRU1UaeDqxMeg@mail.gmail.com> <CAEf4BzZ1nNv12s-NJEayct5Yih_G6vNkEvFPst6dLcbhxWV_0g@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ1nNv12s-NJEayct5Yih_G6vNkEvFPst6dLcbhxWV_0g@mail.gmail.com>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Sun, 1 Aug 2021 10:37:55 +0200
-Message-ID: <CAM1=_QSKa7W9SL7oXWGEHLtWqCeFWp-jtGoqPp9=MxQwUGOjaQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Fix off-by-one in tail call count limiting
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Tony Ambardar <Tony.Ambardar@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+X-Received: by 2002:a5d:9eda:: with SMTP id a26mr62677ioe.166.1627814064557;
+ Sun, 01 Aug 2021 03:34:24 -0700 (PDT)
+Date:   Sun, 01 Aug 2021 03:34:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000014105005c87cffdc@google.com>
+Subject: [syzbot] possible deadlock in br_ioctl_call
+From:   syzbot <syzbot+34fe5894623c4ab1b379@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 12:48 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Jul 29, 2021 at 3:29 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Jul 29, 2021 at 2:38 PM Johan Almbladh
-> > <johan.almbladh@anyfinetworks.com> wrote:
-> > >
-> > > On Wed, Jul 28, 2021 at 9:13 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > I also checked arm/arm64 jit. I saw the following comments:
-> > > >
-> > > >          /* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-> > > >           *      goto out;
-> > > >           * tail_call_cnt++;
-> > > >           */
-> > > >
-> > > > Maybe we have this MAX_TAIL_CALL_CNT + 1 issue
-> > > > for arm/arm64 jit?
-> > >
-> > > That wouldn't be unreasonable. I don't have an arm or arm64 setup
-> > > available right now, but I can try to test it in qemu.
-> >
-> > On a brief check, there seems to be quite a mess in terms of the code
-> > and comments.
-> >
-> > E.g., in arch/x86/net/bpf_jit_comp32.c:
-> >
-> >         /*
-> >          * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-> >          *     goto out;
-> >          */
-> >
-> >                             ^^^^ here comment is wrong
-> >
-> >         [...]
-> >
-> >         /* cmp edx,hi */
-> >         EMIT3(0x83, add_1reg(0xF8, IA32_EBX), hi);
-> >         EMIT2(IA32_JNE, 3);
-> >         /* cmp ecx,lo */
-> >         EMIT3(0x83, add_1reg(0xF8, IA32_ECX), lo);
-> >
-> >         /* ja out */
-> >         EMIT2(IA32_JAE, jmp_label(jmp_label1, 2));
-> >
-> >         ^^^ JAE is >=, right? But the comment says JA.
-> >
-> >
-> > As for arch/x86/net/bpf_jit_comp.c, both comment and the code seem to
-> > do > MAX_TAIL_CALL_CNT, but you are saying JIT is correct. What am I
-> > missing?
-> >
-> > Can you please check all the places where MAX_TAIL_CALL_CNT is used
-> > throughout the code? Let's clean this up in one go.
-> >
-> > Also, given it's so easy to do this off-by-one error, can you please
-> > add a negative test validating that 33 tail calls are not allowed? I
-> > assume we have a positive test that allows exactly MAX_TAIL_CALL_CNT,
-> > but please double-check that as well.
->
-> Ok, I see that you've added this in your bpf tests patch set. Please
-> consider, additionally, implementing a similar test as part of
-> selftests/bpf (specifically in test_progs). We run test_progs
-> continuously in CI for every incoming patch/patchset, so it has much
-> higher chances of capturing any regressions.
->
-> I'm also thinking that this MAX_TAIL_CALL_CNT change should probably
-> go into the bpf-next tree. First, this off-by-one behavior was around
-> for a while and it doesn't cause serious issues, even if abused. But
-> on the other hand, it will make your tail call tests fail, when
-> applied into bpf-next without your change. So I think we should apply
-> both into bpf-next.
+Hello,
 
-I can confirm that the off-by-one behaviour is present on arm. Below
-is the test output running on qemu. Test #4 calls itself recursively
-and increments a counter each time, so the correct result should be 1
-+ MAX_TAIL_CALL_CNT.
+syzbot found the following issue on:
 
-test_bpf: #0 Tail call leaf jited:1 71 PASS
-test_bpf: #1 Tail call 2 jited:1 134 PASS
-test_bpf: #2 Tail call 3 jited:1 164 PASS
-test_bpf: #3 Tail call 4 jited:1 257 PASS
-test_bpf: #4 Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
-test_bpf: #5 Tail call error path, NULL target jited:1 114 PASS
-test_bpf: #6 Tail call error path, index out of range jited:1 112 PASS
-test_bpf: test_tail_calls: Summary: 6 PASSED, 1 FAILED, [7/7 JIT'ed]
+HEAD commit:    3bdc70669eb2 Merge branch 'devlink-register'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11ee370a300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=914a8107c0ffdc14
+dashboard link: https://syzkaller.appspot.com/bug?extid=34fe5894623c4ab1b379
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=114398c6300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d6d61a300000
 
-The MAX_TAIL_CALL_CNT constant is referenced in the following JITs.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+34fe5894623c4ab1b379@syzkaller.appspotmail.com
 
-arch/arm64/net/bpf_jit_comp.c
-arch/arm/net/bpf_jit_32.c
-arch/mips/net/ebpf_jit.c
-arch/powerpc/net/bpf_jit_comp32.c
-arch/powerpc/net/bpf_jit_comp64.c
-arch/riscv/net/bpf_jit_comp32.c
-arch/riscv/net/bpf_jit_comp64.c
-arch/s390/net/bpf_jit_comp.c
-arch/sparc/net/bpf_jit_comp_64.c
-arch/x86/net/bpf_jit_comp32.c
-arch/x86/net/bpf_jit_comp.c
+netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+======================================================
+WARNING: possible circular locking dependency detected
+5.14.0-rc2-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor772/8460 is trying to acquire lock:
+ffffffff8d0a9608 (br_ioctl_mutex){+.+.}-{3:3}, at: br_ioctl_call+0x3b/0xa0 net/socket.c:1089
 
-The x86 JITs all pass the test, even though the comments are wrong.
-The comments can easily be fixed of course. For JITs that have the
-off-by-one behaviour, an easy fix would be to change all occurrences
-of MAX_TAIL_CALL_CNT to MAX_TAIL_CALL_CNT - 1. We must first know
-which JITs affected though.
+but task is already holding lock:
+ffffffff8d0cb568 (rtnl_mutex){+.+.}-{3:3}, at: dev_ioctl+0x1a7/0xee0 net/core/dev_ioctl.c:579
 
-The fix is easy but setting up the test is hard. It took me quite some
-time to get the qemu/arm setup up and running. If the same has to be
-done for arm64, mips64, powerpc, powerpc64, riscv32, risc64, sparc and
-s390, I will need some help with this. If someone already has a
-working setup for any of the systems, the test can be performed on
-that.
+which lock already depends on the new lock.
 
-Or perhaps there is a better way to do this? If I implement a similar
-test in selftest/bpf, that would trigger the CI when the patch is
-submitted and we will see which JITs we need to fix.
 
-> On a related topic, please don't forget to include the target kernel
-> tree for your patches: [PATCH bpf] or [PATCH bpf-next].
+the existing dependency chain (in reverse order) is:
 
-I'll add that! All patches I sent related to this are for the bpf-next tree.
+-> #1 (rtnl_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:959 [inline]
+       __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
+       register_netdev+0x11/0x50 net/core/dev.c:10474
+       br_add_bridge+0x97/0xf0 net/bridge/br_if.c:459
+       br_ioctl_stub+0x750/0x7f0 net/bridge/br_ioctl.c:390
+       br_ioctl_call+0x5e/0xa0 net/socket.c:1091
+       sock_ioctl+0x30c/0x640 net/socket.c:1185
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:1069 [inline]
+       __se_sys_ioctl fs/ioctl.c:1055 [inline]
+       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Johan
+-> #0 (br_ioctl_mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3051 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+       validate_chain kernel/locking/lockdep.c:3789 [inline]
+       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
+       lock_acquire kernel/locking/lockdep.c:5625 [inline]
+       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+       __mutex_lock_common kernel/locking/mutex.c:959 [inline]
+       __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
+       br_ioctl_call+0x3b/0xa0 net/socket.c:1089
+       dev_ifsioc+0xc1f/0xf60 net/core/dev_ioctl.c:382
+       dev_ioctl+0x1b9/0xee0 net/core/dev_ioctl.c:580
+       sock_do_ioctl+0x18b/0x210 net/socket.c:1128
+       sock_ioctl+0x2f1/0x640 net/socket.c:1231
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:1069 [inline]
+       __se_sys_ioctl fs/ioctl.c:1055 [inline]
+       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(rtnl_mutex);
+                               lock(br_ioctl_mutex);
+                               lock(rtnl_mutex);
+  lock(br_ioctl_mutex);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor772/8460:
+ #0: ffffffff8d0cb568 (rtnl_mutex){+.+.}-{3:3}, at: dev_ioctl+0x1a7/0xee0 net/core/dev_ioctl.c:579
+
+stack backtrace:
+CPU: 0 PID: 8460 Comm: syz-executor772 Not tainted 5.14.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
+ check_prev_add kernel/locking/lockdep.c:3051 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+ validate_chain kernel/locking/lockdep.c:3789 [inline]
+ __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ __mutex_lock_common kernel/locking/mutex.c:959 [inline]
+ __mutex_lock+0x12a/0x10a0 kernel/locking/mutex.c:1104
+ br_ioctl_call+0x3b/0xa0 net/socket.c:1089
+ dev_ifsioc+0xc1f/0xf60 net/core/dev_ioctl.c:382
+ dev_ioctl+0x1b9/0xee0 net/core/dev_ioctl.c:580
+ sock_do_ioctl+0x18b/0x210 net/socket.c:1128
+ sock_ioctl+0x2f1/0x640 net/socket.c:1231
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4431f9
+Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd0ab19648 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffd0ab19658 RCX: 00000000004431f9
+RDX: 0000000020000000 RSI: 00000000000089a2 RDI: 0000000000000004
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd0ab19660
+R13
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
