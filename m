@@ -2,292 +2,273 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7449E3DC96A
-	for <lists+bpf@lfdr.de>; Sun,  1 Aug 2021 05:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965683DCA12
+	for <lists+bpf@lfdr.de>; Sun,  1 Aug 2021 07:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhHAD0J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 31 Jul 2021 23:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
+        id S229491AbhHAFLg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Aug 2021 01:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbhHAD0I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 31 Jul 2021 23:26:08 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B73C06175F
-        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 20:26:00 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id b1-20020a17090a8001b029017700de3903so15687209pjn.1
-        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 20:26:00 -0700 (PDT)
+        with ESMTP id S229451AbhHAFLg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Aug 2021 01:11:36 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B13C06175F
+        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 22:11:28 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id c18so13640061qke.2
+        for <bpf@vger.kernel.org>; Sat, 31 Jul 2021 22:11:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3XR3Rna7Rr+9CL16uPJTtqZhFZ3n6mMMJSTweWOLXfo=;
-        b=H5qg3Rv7MU+P4vxEQBBg941EZz82TEbn+YLrXqAJYjPhYWhV7UUm6FSQhDPS/94SFQ
-         BBg1I1Tw2eXYkRdW7gLanO5HTB3oQl6I+FCnpIOlJfBBEhth03qDoYYFqLk0Nx4/3/j0
-         2txnkcrm3GXKTBF649x92vWh4fDiipIVK9heE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=tu+g1PbF2qC1dgZLK4PaRMVsVFJ5AJPHZu8bzgWwdLQ=;
+        b=rKreJpcwgWwT7Hcw8UF2wVDno4rrxsFCYBPz15FtPOTVU7C26i3kI08etquKI9owg2
+         GICv72vsr5msALS2lPo1mVFhV7lBF4wExvprEk6VeCp5O1TTocARMDhGp6UN6qt8DKmS
+         oHWoiyWhcvZZXjy2DOeUK0NBtR9CJV8aXx+kY74HzRztpzDgPznYMFgyqcjKkdIoM3RR
+         RWLRgHLPIwXRVTTGZirc+WP52k6tTDQqah/MYnB2lIhzmDdoFoEFv3JjXImx+QmbqBR7
+         5jFOVZ2h+IJ5y9XQshqGkx3qt2QR9PzTYjh+tJgeY+lKCtjLQQZgmTjM6iSkpBQS167o
+         DU0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3XR3Rna7Rr+9CL16uPJTtqZhFZ3n6mMMJSTweWOLXfo=;
-        b=c4+owN7K+H0i+FdV6xDwOExmcp4GVxaRKwg3CbpmtahtCBTL2dShU6Xj5bYy8i4ltc
-         EdycN+7v8aHimQ6rD2vELroK/4flZw9vXoNloVTjYPNhEdOLpPUNL7cAuNnZyqh4GDKl
-         0ruOXYJOwmpsjTgWDLHyxtj6dayclgQ5lOds9QQw7gUYg9VG51GQeBNz5iWKSaznV0x3
-         39jAIO6AMUK8HoBys//LEwXnQTehq+55sSC61SaEnMiOHu1iV4BY1vSsJo5lpjdaZO1u
-         yRX04ZLyy7hI4xxOKM5MA+8HgNgB1odguhxX8MTnzSOqNW9OkX2jpCDkwnptUdwehTK3
-         teQg==
-X-Gm-Message-State: AOAM531v0EFqJZgXIYLpM7ABhC20vdhd5pjHilHJhlqgnIp4Ds+zS8o4
-        fafpQB89d1043wl8SDoK8fc5cw==
-X-Google-Smtp-Source: ABdhPJztWny8qDLoF9aDrOGGwPEkUl8/lCnKXM6Yi4tE7zPw7q2cjlDL6++ccQRH4HMcKCFTQSzjiA==
-X-Received: by 2002:a62:584:0:b029:32e:3b57:a1c6 with SMTP id 126-20020a6205840000b029032e3b57a1c6mr10199216pff.13.1627788360124;
-        Sat, 31 Jul 2021 20:26:00 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r4sm6540476pjo.46.2021.07.31.20.25.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tu+g1PbF2qC1dgZLK4PaRMVsVFJ5AJPHZu8bzgWwdLQ=;
+        b=j7MnkVhCZuhvzy03QM3Ef0/csvzwrHP/bTKkwaEOs1RQrR29iVjSdSvYwzMmF52S5h
+         y4agEtXxET/PJbkVYJdpCuv/t7FDyxXTy4lT2d1qmtBEFH8EepzSQwDVHjsyvp9ImCPH
+         wV2aJ7mB/oOzqNp1g0wncwFrQROcpdnSaORqBLqn3157t1LE3D/UjL7qe5F/sWu9uZb3
+         mmvunGdvh92S9ODKNN23lNLz6MZy2+af8u+R02uNgIjVZ2nLI6ZhjS4lm6YK/Jqm7Alq
+         OvR4lKr7JElesjUKLeJuumgPVKaYbLruAiHT+s7umDawxxtIeHIIRvx+RhBpeBPLm0q7
+         4Jvw==
+X-Gm-Message-State: AOAM530jAu2XEf3h2w6v1/Bg8cml2/HfvI5aB51Gf3l/0SdpTmhH671b
+        7UdDK0QcmVDWwmxCLlE9A8gAuV323TyM
+X-Google-Smtp-Source: ABdhPJzlR2tEP3e/ICtIF+fTdU412JvLwdFYg6p2TB3wOWSp0tfSGnu+XSVGpd8A1NTRcZUc8OH8Wg==
+X-Received: by 2002:ae9:e315:: with SMTP id v21mr9542362qkf.81.1627794687245;
+        Sat, 31 Jul 2021 22:11:27 -0700 (PDT)
+Received: from fujitsu.celeiro.cu ([191.177.175.120])
+        by smtp.gmail.com with ESMTPSA id h2sm3903345qkf.106.2021.07.31.22.11.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jul 2021 20:25:59 -0700 (PDT)
-Date:   Sat, 31 Jul 2021 20:25:58 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        alaaemadhossney.ae@gmail.com, syzkaller@googlegroups.com,
-        Jann Horn <jannh@google.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: memory leak in do_seccomp
-Message-ID: <202107311901.8CDF235F65@keescook>
-References: <CADVatmPShADZ0F133eS3KjeKj1ZjTNAQfy_QOoJVBan02wuR+Q@mail.gmail.com>
+        Sat, 31 Jul 2021 22:11:26 -0700 (PDT)
+From:   Rafael David Tinoco <rafaeldtinoco@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     rafaeldtinoco@gmail.com, andrii.nakryiko@gmail.com
+Subject: [PATCH bpf-next v4] libbpf: introduce legacy kprobe events support
+Date:   Sun,  1 Aug 2021 02:11:23 -0300
+Message-Id: <20210801051123.3822498-1-rafaeldtinoco@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210730053413.1090371-1-andrii@kernel.org>
+References: <20210730053413.1090371-1-andrii@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADVatmPShADZ0F133eS3KjeKj1ZjTNAQfy_QOoJVBan02wuR+Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 08:20:29PM +0100, Sudip Mukherjee wrote:
-> Hi All,
-> 
-> We had been running syzkaller on v5.10.y and a "memory leak in
-> do_seccomp" was being reported on it. I got some time to check that
-> today and have managed to get a syzkaller
-> reproducer. I dont have a C reproducer which I can share but I can use
-> the syz-reproducer to reproduce this with next-20210730.
-> The old report on v5.10.y is at
-> https://elisa-builder-00.iol.unh.edu/syzkaller/report?id=f6ddd3b592f00e95f9cbd2e74f70a5b04b015c6f
+Allow kprobe tracepoint events creation through legacy interface, as the
+kprobe dynamic PMUs support, used by default, was only created in v4.17.
 
-Thanks for the details!
+After commit "bpf: implement minimal BPF perf link", it was allowed that
+some extra - to the link - information is accessed through container_of
+struct bpf_link. This allows the tracing perf event legacy name, and
+information whether it is a retprobe, to be saved outside bpf_link
+structure, which would not be optimal.
 
-Is this the same as what syzbot saw here (with a C reproducer)?
-https://syzkaller.appspot.com/bug?id=2809bb0ac77ad9aa3f4afe42d6a610aba594a987
+This enables CO.RE support for older kernels.
 
-I can't figure out what happened with the "Patch testing request" that
-was made; there's no link?
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Rafael David Tinoco <rafaeldtinoco@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 127 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 125 insertions(+), 2 deletions(-)
 
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888019282c00 (size 512):
->   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.841s)
->   hex dump (first 32 bytes):
->     01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<00000000762c0963>] do_seccomp+0x2d5/0x27d0
-
-Can you run "./scripts/faddr2line do_seccomp+0x2d5/0x27d0" for this? I
-expect it'll be:
-        sfilter = kzalloc(sizeof(*sfilter), GFP_KERNEL | __GFP_NOWARN);
-
->     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
->     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The "size 512" in your v5.10.y report is from seccomp_prepare_filter()
-(noted above). seccomp_prepare_filter() cleans up its error paths.
-
-> 
-> BUG: memory leak
-> unreferenced object 0xffffc900006b5000 (size 4096):
->   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.841s)
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 00 00 00 00 05 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<00000000854901e5>] __vmalloc_node_range+0x550/0x9a0
->     [<000000002686628f>] __vmalloc_node+0xb5/0x100
->     [<0000000004cbd298>] bpf_prog_alloc_no_stats+0x38/0x350
->     [<0000000009149728>] bpf_prog_alloc+0x24/0x170
->     [<000000000fe7f1e7>] bpf_prog_create_from_user+0xad/0x2e0
->     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
->     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
->     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Again, I'm curious about where do_seccomp+0x325/0x27d0 is for this, but
-the matching one in v5.10 shows:
-        ret = bpf_prog_create_from_user(&sfilter->prog, fprog,
-                                        seccomp_check_filter, save_orig);
-
-This and everything remaining below else has bpf_prog_create_from_user()
-in the allocation path.
-
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888026eb1000 (size 2048):
->   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<0000000072de7240>] bpf_prog_alloc_no_stats+0xeb/0x350
->     [<0000000009149728>] bpf_prog_alloc+0x24/0x170
->     [<000000000fe7f1e7>] bpf_prog_create_from_user+0xad/0x2e0
->     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
->     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
->     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888014dddac0 (size 16):
->   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
->   hex dump (first 16 bytes):
->     01 00 ca 08 80 88 ff ff c8 ef df 14 80 88 ff ff  ................
-
-These are two kernel pointers:
-	0xffff888008ca0001 (unaligned by 1 byte?!)
-	0xffff888014dfefc8
-
-Ah, no, this is from:
-
-struct sock_fprog_kern {
-        u16                     len;
-        struct sock_filter      *filter;
-};
-
-The "ca 08 80 88 ff ff" bytes are uninitialized padding. ;) "len" has
-a value of 1 (which matches the syzkaller reproducer args below of a
-single BPF instruction).
-
-        fp->orig_prog = kmalloc(sizeof(*fkprog), GFP_KERNEL);
-        if (!fp->orig_prog)
-                return -ENOMEM;
-
-        fkprog = fp->orig_prog;
-        fkprog->len = fprog->len;
-	...
-        fkprog->filter = kmemdup(fp->insns, fsize,
-                                 GFP_KERNEL | __GFP_NOWARN);
-
->   backtrace:
->     [<00000000c5d4ed93>] bpf_prog_store_orig_filter+0x7b/0x1e0
->     [<000000007cb21c2a>] bpf_prog_create_from_user+0x1c6/0x2e0
->     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
->     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
->     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888014dfefc8 (size 8):
->   comm "syz-executor.1", pid 7389, jiffies 4294761829 (age 17.842s)
->   hex dump (first 8 bytes):
->     06 00 00 00 ff ff ff 7f                          ........
-
-This contains a userspace (likely stack) pointer, and is referenced
-by the second pointer above. (i.e. kmemdup() above, but how have the
-contents become a user stack pointer?)
-
->   backtrace:
->     [<00000000ee5550f8>] kmemdup+0x23/0x50
->     [<00000000f1acd067>] bpf_prog_store_orig_filter+0x103/0x1e0
->     [<000000007cb21c2a>] bpf_prog_create_from_user+0x1c6/0x2e0
->     [<000000000c70eb02>] do_seccomp+0x325/0x27d0
->     [<0000000006e512d1>] do_syscall_64+0x3b/0x90
->     [<0000000094ae9ff8>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Not sure if this has been already reported or not, but I will be happy
-> to test if you have a fix for this.
-
-I was suspecting a missing error path free near bpf_prepare_filter()
-as called by bpf_prog_create_from_user() here:
-
-        /* bpf_prepare_filter() already takes care of freeing
-         * memory in case something goes wrong.
-         */
-        fp = bpf_prepare_filter(fp, trans);
-        if (IS_ERR(fp))
-                return PTR_ERR(fp);
-
-Since only seccomp and af_packet use bpf_prog_create_from_user(),
-and af_packet sets neither a "trans" callback nor save_orig. But if
-"trans" fails (due to some BPF instructions seccomp doesn't support),
-I'd expect this leak to be detected more often.
-
-bpf_prepare_filter() is documented as cleaning up allocations on failure,
-though I notice its cleanup differs from bpf_prog_create_from_user()'s,
-which uses __bpf_prog_free() instead of __bfp_prog_release(). But
-that should only make a difference for orig_prog getting freed,
-and bpf_prog_store_orig_filter() should already be freeing that on
-failures too.
-
-Similarly, bpf_migrate_filter() cleanups up on failure too, so this
-doesn't seem to be it:
-
-        if (!fp->jited)
-                fp = bpf_migrate_filter(fp);
-
-        return fp;
-
-So, I'm going to assume the missing free is somehow related to
-process management, since I see the Syzkaller reproducer mentions
-SECCOMP_SET_MODE_FILTER_LISTENER, fork(), and ptrace(). :)
-
-Quoting from the v5.10.y report:
-> # {Threaded:true Collide:true Repeat:true RepeatTimes:0 Procs:8 Slowdown:1 Sandbox:none Fault:false FaultCall:-1 FaultNth:0 Leak:true NetInjection:true NetDevices:true NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:false USB:true VhciInjection:false Wifi:false IEEE802154:false Sysctl:true UseTmpDir:true HandleSegv:true Repro:false Trace:false}
-> seccomp$SECCOMP_SET_MODE_FILTER_LISTENER(0x1, 0x0, &(0x7f0000000000)={0x1, &(0x7f0000000040)=[{0x6, 0x0, 0x0, 0x7fffffff}]})
-
-0x1 is SECCOMP_SET_MODE_FILTER
-0x0 is empty flags
-{0x6, 0x0, 0x0, 0x7fffffff} is
-	BPF_STMT(BPF_RET, SECCOMP_RET_ALLOW | 0xffff)
-
-For "SECCOMP_SET_MODE_FILTER_LISTENER", defined here:
-https://github.com/google/syzkaller/blob/master/sys/linux/seccomp.txt#L15
-I was expecting flags to include SECCOMP_FILTER_FLAG_NEW_LISTENER:
-	seccomp$SECCOMP_SET_MODE_FILTER_LISTENER(
-			op const[SECCOMP_SET_MODE_FILTER],
-			flags flags[seccomp_flags_listener],
-			arg ptr[in, sock_fprog]) fd_seccomp (breaks_returns)
-
-For the flags:
-
-	seccomp_flags_listener = SECCOMP_FILTER_FLAG_NEW_LISTENER,
-				 SECCOMP_FILTER_FLAG_LOG_LISTENER,
-				 SECCOMP_FILTER_FLAG_SPEC_ALLOW_LISTENER
-
-which is:
-
-	SECCOMP_FILTER_FLAG_LOG_LISTENER = 10
-	SECCOMP_FILTER_FLAG_NEW_LISTENER = 8
-	SECCOMP_FILTER_FLAG_SPEC_ALLOW = 4
-	SECCOMP_FILTER_FLAG_SPEC_ALLOW_LISTENER = 12
-
-How is flags 0 above? (Maybe I don't understand the syzkaller reproducer
-meaning fully?)
-
-> r0 = fork()
-> ptrace(0x10, r0)
-
-0x10 is PTRACE_ATTACH
-
-My best guess is there is some LISTENER refcount state we can get into
-where all the processes die, but a reference is left alive.
-
--Kees
-
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index e1b7b2b6618c..40037340a3e7 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8985,9 +8985,55 @@ int bpf_link__unpin(struct bpf_link *link)
+ 	return 0;
+ }
+ 
++static int poke_kprobe_events(bool add, const char *name, bool retprobe, uint64_t offset) {
++	int fd, ret = 0;
++	pid_t p = getpid();
++	char cmd[192] = {}, probename[128] = {}, probefunc[128] = {};
++	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
++
++	if (retprobe)
++		snprintf(probename, sizeof(probename), "kretprobes/%s_libbpf_%u", name, p);
++	else
++		snprintf(probename, sizeof(probename), "kprobes/%s_libbpf_%u", name, p);
++
++	if (offset)
++		snprintf(probefunc, sizeof(probefunc), "%s+%lu", name, offset);
++
++	if (add) {
++		snprintf(cmd, sizeof(cmd), "%c:%s %s",
++			 retprobe ? 'r' : 'p',
++			 probename,
++			 offset ? probefunc : name);
++	} else {
++		snprintf(cmd, sizeof(cmd), "-:%s", probename);
++	}
++
++	fd = open(file, O_WRONLY | O_APPEND, 0);
++	if (!fd)
++		return -errno;
++	ret = write(fd, cmd, strlen(cmd));
++	if (ret < 0)
++		ret = -errno;
++	close(fd);
++
++	return ret;
++}
++
++static inline int add_kprobe_event_legacy(const char *name, bool retprobe, uint64_t offset)
++{
++	return poke_kprobe_events(true, name, retprobe, offset);
++}
++
++static inline int remove_kprobe_event_legacy(const char *name, bool retprobe)
++{
++	return poke_kprobe_events(false, name, retprobe, 0);
++}
++
+ struct bpf_link_perf {
+ 	struct bpf_link link;
+ 	int perf_event_fd;
++	char *legacy_name;
++	bool is_retprobe;
+ };
+ 
+ static int bpf_link_perf_detach(struct bpf_link *link)
+@@ -9002,6 +9048,10 @@ static int bpf_link_perf_detach(struct bpf_link *link)
+ 		close(perf_link->perf_event_fd);
+ 	close(link->fd);
+ 
++	/* legacy kprobe needs to be removed after perf event fd closure */
++	if (perf_link->legacy_name)
++		remove_kprobe_event_legacy(perf_link->legacy_name, perf_link->is_retprobe);
++
+ 	return libbpf_err(err);
+ }
+ 
+@@ -9009,6 +9059,9 @@ static void bpf_link_perf_dealloc(struct bpf_link *link)
+ {
+ 	struct bpf_link_perf *perf_link = container_of(link, struct bpf_link_perf, link);
+ 
++	if (perf_link->legacy_name)
++		free(perf_link->legacy_name);
++
+ 	free(perf_link);
+ }
+ 
+@@ -9122,6 +9175,26 @@ static int parse_uint_from_file(const char *file, const char *fmt)
+ 	return ret;
+ }
+ 
++static bool determine_kprobe_legacy(void)
++{
++	const char *file = "/sys/bus/event_source/devices/kprobe/type";
++
++	return access(file, 0) == 0 ? false : true;
++}
++
++static int determine_kprobe_perf_type_legacy(const char *func_name, bool is_retprobe)
++{
++	char file[192];
++
++	const char *fname = "/sys/kernel/debug/tracing/events/%s/%s_libbpf_%d/id";
++
++	snprintf(file, sizeof(file), fname,
++		 is_retprobe ? "kretprobes" : "kprobes",
++		 func_name, getpid());
++
++	return parse_uint_from_file(file, "%d\n");
++}
++
+ static int determine_kprobe_perf_type(void)
+ {
+ 	const char *file = "/sys/bus/event_source/devices/kprobe/type";
+@@ -9197,6 +9270,41 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+ 	return pfd;
+ }
+ 
++static int perf_event_kprobe_open_legacy(bool retprobe, const char *name, uint64_t offset, int pid)
++{
++	struct perf_event_attr attr = {};
++	char errmsg[STRERR_BUFSIZE];
++	int type, pfd, err;
++
++	err = add_kprobe_event_legacy(name, retprobe, offset);
++	if (err < 0) {
++		pr_warn("failed to add legacy kprobe event: %s\n",
++			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		return err;
++	}
++	type = determine_kprobe_perf_type_legacy(name, retprobe);
++	if (type < 0) {
++		pr_warn("failed to determine legacy kprobe event id: %s\n",
++			libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
++		return type;
++	}
++	attr.size = sizeof(attr);
++	attr.config = type;
++	attr.type = PERF_TYPE_TRACEPOINT;
++
++	pfd = syscall(__NR_perf_event_open, &attr,
++		      pid < 0 ? -1 : pid, /* pid */
++		      pid == -1 ? 0 : -1, /* cpu */
++		      -1 /* group_fd */,  PERF_FLAG_FD_CLOEXEC);
++	if (pfd < 0) {
++		err = -errno;
++		pr_warn("legacy kprobe perf_event_open() failed: %s\n",
++			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		return err;
++	}
++	return pfd;
++}
++
+ struct bpf_link *
+ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
+ 				const char *func_name,
+@@ -9208,6 +9316,7 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
+ 	unsigned long offset;
+ 	bool retprobe;
+ 	int pfd, err;
++	bool legacy;
+ 
+ 	if (!OPTS_VALID(opts, bpf_kprobe_opts))
+ 		return libbpf_err_ptr(-EINVAL);
+@@ -9216,8 +9325,16 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
+ 	offset = OPTS_GET(opts, offset, 0);
+ 	pe_opts.user_ctx = OPTS_GET(opts, user_ctx, 0);
+ 
+-	pfd = perf_event_open_probe(false /* uprobe */, retprobe, func_name,
+-				    offset, -1 /* pid */);
++	legacy = determine_kprobe_legacy();
++	if (!legacy) {
++		pfd = perf_event_open_probe(false /* uprobe */,
++					    retprobe, func_name,
++					    offset, -1 /* pid */);
++	} else {
++		pfd = perf_event_kprobe_open_legacy(retprobe, func_name,
++						    0 /* offset */,
++						   -1 /* pid */);
++	}
+ 	if (pfd < 0) {
+ 		pr_warn("prog '%s': failed to create %s '%s' perf event: %s\n",
+ 			prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
+@@ -9233,6 +9350,12 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
+ 			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+ 		return libbpf_err_ptr(err);
+ 	}
++	if (legacy) {
++		struct bpf_link_perf *perf_link = container_of(link, struct bpf_link_perf, link);
++		perf_link->legacy_name = strdup(func_name);
++		perf_link->is_retprobe = retprobe;
++	}
++
+ 	return link;
+ }
+ 
 -- 
-Kees Cook
+2.30.2
+
