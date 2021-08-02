@@ -2,175 +2,411 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD24B3DDE27
-	for <lists+bpf@lfdr.de>; Mon,  2 Aug 2021 18:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71C03DDEAD
+	for <lists+bpf@lfdr.de>; Mon,  2 Aug 2021 19:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbhHBQ6g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Aug 2021 12:58:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31580 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232658AbhHBQ6f (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Aug 2021 12:58:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627923505;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fLtJMTV3XxU3KgnKFo51GqvkBw6b2sHrRuc+JcFDw+A=;
-        b=AdikwnAGI9E8i4fTc3z+35X5ArA3h1AjqoB3T4ZumUWARd+Yv4Uktud7Agf9VnnwjlE6p8
-        eSYiZ96Ybd7fEDYhl5cjf0PpIMrojc2yqCJAAkgg50kzMmxBAEA5chtY3cKVkhJpgwtvVC
-        9bjGT77k+P47gl3PZcHmfFaRI8EefgU=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-546-FHVFAd-HNSmvasuWQvO7Rw-1; Mon, 02 Aug 2021 12:58:24 -0400
-X-MC-Unique: FHVFAd-HNSmvasuWQvO7Rw-1
-Received: by mail-ej1-f71.google.com with SMTP id o16-20020a1709066010b0290593804ff1e1so3269543ejj.19
-        for <bpf@vger.kernel.org>; Mon, 02 Aug 2021 09:58:24 -0700 (PDT)
+        id S229551AbhHBRkG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Aug 2021 13:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229716AbhHBRkF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Aug 2021 13:40:05 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F302AC06175F
+        for <bpf@vger.kernel.org>; Mon,  2 Aug 2021 10:39:54 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id x5-20020a0569020505b0290592c25b8c59so1993954ybs.18
+        for <bpf@vger.kernel.org>; Mon, 02 Aug 2021 10:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=w+CHOlLR0wk12HK1n3MfzHXW9/G5oGNXdAfrSOnosh4=;
+        b=vVedRHD/d2ErzuYdcIkM/vP52T4TitUzsRz009pPzRkqXXgsW75W5260qBVDrWi6D2
+         FAaq22ybFimr7zGa5albdWh/2sOmGqgIelaenwPY19PkTCxlzgFGhBKHVgD2PQ6TvNQB
+         UdLYqKVZDwrBlOl+xdd9+KWUCLhyb9iXRR8lXA2yRIVtsQZsWpDsxcaD7OSDVaONTkPV
+         56ZEjkZH2rZA8891O060GiAhAEEdtIhB7BIfFwqEQHgZLr3mlDvkwShzFgKBXP9VSMnr
+         Hnd8W6VUZrdlFOMTPWNwxnrfUjNm2eIArkzarqGko28y4Jhz1lo9myC2nkhGEhD1lBe9
+         6v2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fLtJMTV3XxU3KgnKFo51GqvkBw6b2sHrRuc+JcFDw+A=;
-        b=irTQCoCc1nDLwvMyFxj2sTfEMwatwEtUX89zQyRY43W326W9vRXHbjE7JpW+kJ0sY3
-         6ChbTZPKh2nGGrXFHExsYlleTH1AjgsJpBNhMRdUFFxT3xjfBnIAOI/pxKLxdrqMwMM4
-         BZZmQLImFdOzCs5AIbQeqlz+FkDlQOcFC+hUImc54qYuG7MI25Eczvge9YkehmiJOgX4
-         vBJyobhyFRrIiSAJsQJRI+ha2Wek0SXUuumu55404FDIHtB8RhkfbOaJr3UEIapjLpbi
-         pOgd46HYuwjiH8P6RrKfzGXP47KsZptGMo1+7Osx8kQWAqjnIM7AWLXUzfjNekaEEB13
-         +0WA==
-X-Gm-Message-State: AOAM5318JsagdXY9rLndcOd7Uc+x81djXlPvtbC75OXTFC5kDa80yBTU
-        X1JfGzuu4H56rv+8VAqgT6yCbgZ/BKT5aiDsGfSJE6GGIZPq30MT2KPWDeGRWxZgdyOjyHrA7nB
-        g2PH0hsjxWRCi
-X-Received: by 2002:aa7:ccc1:: with SMTP id y1mr20337191edt.321.1627923503312;
-        Mon, 02 Aug 2021 09:58:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxATj21O1r3+lrhG39GL1DBPCTGKHsKjQ1WZRoae9Z7pfD25Idb0cd+cW5p1gKcyX1raoYWMw==
-X-Received: by 2002:aa7:ccc1:: with SMTP id y1mr20337179edt.321.1627923503167;
-        Mon, 02 Aug 2021 09:58:23 -0700 (PDT)
-Received: from redhat.com ([2.55.140.205])
-        by smtp.gmail.com with ESMTPSA id j8sm6402996edr.23.2021.08.02.09.58.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 09:58:21 -0700 (PDT)
-Date:   Mon, 2 Aug 2021 12:58:18 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Jason Wang <jasowang@redhat.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net v2 0/2] virtio-net: fix for build_skb()
-Message-ID: <20210802125720-mutt-send-email-mst@kernel.org>
-References: <20210601064000.66909-1-xuanzhuo@linux.alibaba.com>
- <20210601070610-mutt-send-email-mst@kernel.org>
- <20210730051643.54198a9e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730051643.54198a9e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=w+CHOlLR0wk12HK1n3MfzHXW9/G5oGNXdAfrSOnosh4=;
+        b=Y+rPZGVLWfsqQ354uO4BXOtEvxA5qtcb+r6w4j9ROwJ3sY9eIirQasWLi1lYGgJjlV
+         3MxAmW7qwWdZCbUkKcE5v4F0pn7X11Wj/ZHd6Sdr2tLWcMLHwHz9dudIo9ZcDuONFvg0
+         SvyWX6bVfDnOqbf4cYnTkU1D4lt30MCoAwziLpTZbhsJwFOt7KmUZUIOEWVLDFrsjKjZ
+         AxVBkCDSdydN10xTBBGEvrmNT2WjWhA0LBJVGoByVac1LB/zS3BXIjmHBxcLk/lKVGIv
+         lAHz5iy7BwvPgNkMV6kF5GRif7fiORD4xWV7jBxXn95XN0iCkOvKWiL9lpFmp8R0YwMw
+         j3xQ==
+X-Gm-Message-State: AOAM531bnt+zcYrOSIyY8JCJQrUWyubZ2yWjRYv2/vU4zK0xy22McQoV
+        KFRyJPDjUCq4AuAhl5pXYuJBvxM=
+X-Google-Smtp-Source: ABdhPJwabKAf7qqbSTbClfn2JQ15lqWxk2T5QMJsEtrE8vfSxWxhb46zPZzZRNsTV3RVWJFhizOaJqs=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:1ad9:b7d5:f1f4:b82e])
+ (user=sdf job=sendgmr) by 2002:a25:db43:: with SMTP id g64mr7972944ybf.443.1627925994212;
+ Mon, 02 Aug 2021 10:39:54 -0700 (PDT)
+Date:   Mon,  2 Aug 2021 10:39:51 -0700
+Message-Id: <20210802173951.2818349-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH bpf-next v2] selftests/bpf: move netcnt test under test_progs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 05:16:43AM -0700, Jakub Kicinski wrote:
-> On Tue, 1 Jun 2021 07:06:43 -0400 Michael S. Tsirkin wrote:
-> > On Tue, Jun 01, 2021 at 02:39:58PM +0800, Xuan Zhuo wrote:
-> > > #1 Fixed a serious error.
-> > > #2 Fixed a logical error, but this error did not cause any serious consequences.
-> > > 
-> > > The logic of this piece is really messy. Fortunately, my refactored patch can be
-> > > completed with a small amount of testing.  
-> > 
-> > Looks good, thanks!
-> > Also needed for stable I think.
-> > 
-> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> 
-> Just a heads up folks, looks like we ended up merging both this and the
-> net-next version of the patch set:
-> 
-> 8fb7da9e9907 virtio_net: get build_skb() buf by data ptr
-> 5c37711d9f27 virtio-net: fix for unable to handle page fault for address
-> 
-> and
-> 
-> 7bf64460e3b2 virtio-net: get build_skb() buf by data ptr
-> 6c66c147b9a4 virtio-net: fix for unable to handle page fault for address
-> 
-> Are you okay with the code as is or should we commit something like:
+Rewrite to skel and ASSERT macros as well while we are at it.
 
-Yes:
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+v2:
+- don't check result of bpf_map__fd (Yonghong Song)
+- remove from .gitignore (Andrii Nakryiko)
+- move ping_command into network_helpers (Andrii Nakryiko)
+- remove assert() (Andrii Nakryiko)
 
-Will you post this one then?
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/.gitignore        |   1 -
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ tools/testing/selftests/bpf/network_helpers.c |  12 ++
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../testing/selftests/bpf/prog_tests/netcnt.c |  82 ++++++++++
+ .../selftests/bpf/prog_tests/tc_redirect.c    |  12 --
+ tools/testing/selftests/bpf/test_netcnt.c     | 148 ------------------
+ 7 files changed, 96 insertions(+), 163 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/netcnt.c
+ delete mode 100644 tools/testing/selftests/bpf/test_netcnt.c
 
-
-> ---
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 56c3f8519093..74482a52f076 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -380,7 +380,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
->  				   struct page *page, unsigned int offset,
->  				   unsigned int len, unsigned int truesize,
->  				   bool hdr_valid, unsigned int metasize,
-> -				   bool whole_page)
-> +				   unsigned int headroom)
->  {
->  	struct sk_buff *skb;
->  	struct virtio_net_hdr_mrg_rxbuf *hdr;
-> @@ -398,28 +398,16 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
->  	else
->  		hdr_padded_len = sizeof(struct padded_vnet_hdr);
->  
-> -	/* If whole_page, there is an offset between the beginning of the
-> +	/* If headroom is not 0, there is an offset between the beginning of the
->  	 * data and the allocated space, otherwise the data and the allocated
->  	 * space are aligned.
->  	 *
->  	 * Buffers with headroom use PAGE_SIZE as alloc size, see
->  	 * add_recvbuf_mergeable() + get_mergeable_buf_len()
->  	 */
-> -	if (whole_page) {
-> -		/* Buffers with whole_page use PAGE_SIZE as alloc size,
-> -		 * see add_recvbuf_mergeable() + get_mergeable_buf_len()
-> -		 */
-> -		truesize = PAGE_SIZE;
-> -
-> -		/* page maybe head page, so we should get the buf by p, not the
-> -		 * page
-> -		 */
-> -		tailroom = truesize - len - offset_in_page(p);
-> -		buf = (char *)((unsigned long)p & PAGE_MASK);
-> -	} else {
-> -		tailroom = truesize - len;
-> -		buf = p;
-> -	}
-> +	truesize = headroom ? PAGE_SIZE : truesize;
-> +	tailroom = truesize - len - headroom;
-> +	buf = p - headroom;
->  
->  	len -= hdr_len;
->  	offset += hdr_padded_len;
-> @@ -978,7 +966,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->  				put_page(page);
->  				head_skb = page_to_skb(vi, rq, xdp_page, offset,
->  						       len, PAGE_SIZE, false,
-> -						       metasize, true);
-> +						       metasize,
-> +						       VIRTIO_XDP_HEADROOM);
->  				return head_skb;
->  			}
->  			break;
-> @@ -1029,7 +1018,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->  	rcu_read_unlock();
->  
->  	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
-> -			       metasize, !!headroom);
-> +			       metasize, headroom);
->  	curr_skb = head_skb;
->  
->  	if (unlikely(!curr_skb))
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index addcfd8b615e..433f8bef261e 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -23,7 +23,6 @@ test_skb_cgroup_id_user
+ test_cgroup_storage
+ test_flow_dissector
+ flow_dissector_load
+-test_netcnt
+ test_tcpnotify_user
+ test_libbpf
+ test_tcp_check_syncookie_user
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index f405b20c1e6c..2a58b7b5aea4 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -38,7 +38,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+ 	test_verifier_log test_dev_cgroup \
+ 	test_sock test_sockmap get_cgroup_id_user \
+ 	test_cgroup_storage \
+-	test_netcnt test_tcpnotify_user test_sysctl \
++	test_tcpnotify_user test_sysctl \
+ 	test_progs-no_alu32
+ 
+ # Also test bpf-gcc, if present
+@@ -197,7 +197,6 @@ $(OUTPUT)/test_sockmap: cgroup_helpers.c
+ $(OUTPUT)/test_tcpnotify_user: cgroup_helpers.c trace_helpers.c
+ $(OUTPUT)/get_cgroup_id_user: cgroup_helpers.c
+ $(OUTPUT)/test_cgroup_storage: cgroup_helpers.c
+-$(OUTPUT)/test_netcnt: cgroup_helpers.c
+ $(OUTPUT)/test_sock_fields: cgroup_helpers.c
+ $(OUTPUT)/test_sysctl: cgroup_helpers.c
+ 
+diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+index 26468a8f44f3..d6857683397f 100644
+--- a/tools/testing/selftests/bpf/network_helpers.c
++++ b/tools/testing/selftests/bpf/network_helpers.c
+@@ -310,3 +310,15 @@ int make_sockaddr(int family, const char *addr_str, __u16 port,
+ 	}
+ 	return -1;
+ }
++
++char *ping_command(int family)
++{
++	if (family == AF_INET6) {
++		/* On some systems 'ping' doesn't support IPv6, so use ping6 if it is present. */
++		if (!system("which ping6 >/dev/null 2>&1"))
++			return "ping6";
++		else
++			return "ping -6";
++	}
++	return "ping";
++}
+diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
+index d60bc2897770..c59a8f6d770b 100644
+--- a/tools/testing/selftests/bpf/network_helpers.h
++++ b/tools/testing/selftests/bpf/network_helpers.h
+@@ -46,5 +46,6 @@ int fastopen_connect(int server_fd, const char *data, unsigned int data_len,
+ 		     int timeout_ms);
+ int make_sockaddr(int family, const char *addr_str, __u16 port,
+ 		  struct sockaddr_storage *addr, socklen_t *len);
++char *ping_command(int family);
+ 
+ #endif
+diff --git a/tools/testing/selftests/bpf/prog_tests/netcnt.c b/tools/testing/selftests/bpf/prog_tests/netcnt.c
+new file mode 100644
+index 000000000000..6052046c60c2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/netcnt.c
+@@ -0,0 +1,82 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <sys/sysinfo.h>
++#include <test_progs.h>
++#include "network_helpers.h"
++#include "netcnt_prog.skel.h"
++#include "netcnt_common.h"
++
++#define CG_NAME "/netcnt"
++
++void test_netcnt(void)
++{
++	union percpu_net_cnt *percpu_netcnt = NULL;
++	struct bpf_cgroup_storage_key key;
++	int map_fd, percpu_map_fd;
++	struct netcnt_prog *skel;
++	unsigned long packets;
++	union net_cnt netcnt;
++	unsigned long bytes;
++	int cpu, nproc;
++	int cg_fd = -1;
++	char cmd[128];
++
++	skel = netcnt_prog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "netcnt_prog__open_and_load"))
++		return;
++
++	nproc = get_nprocs_conf();
++	percpu_netcnt = malloc(sizeof(*percpu_netcnt) * nproc);
++	if (!ASSERT_OK_PTR(percpu_netcnt, "malloc(percpu_netcnt)"))
++		goto err;
++
++	cg_fd = test__join_cgroup(CG_NAME);
++	if (!ASSERT_GE(cg_fd, 0, "test__join_cgroup"))
++		goto err;
++
++	skel->links.bpf_nextcnt = bpf_program__attach_cgroup(skel->progs.bpf_nextcnt, cg_fd);
++	if (!ASSERT_OK_PTR(skel->links.bpf_nextcnt,
++			   "attach_cgroup(bpf_nextcnt)"))
++		goto err;
++
++	snprintf(cmd, sizeof(cmd), "%s ::1 -c 10000 -f -q > /dev/null", ping_command(AF_INET6));
++	ASSERT_OK(system(cmd), cmd);
++
++	map_fd = bpf_map__fd(skel->maps.netcnt);
++	if (!ASSERT_OK(bpf_map_get_next_key(map_fd, NULL, &key), "bpf_map_get_next_key"))
++		goto err;
++
++	if (!ASSERT_OK(bpf_map_lookup_elem(map_fd, &key, &netcnt), "bpf_map_lookup_elem(netcnt)"))
++		goto err;
++
++	percpu_map_fd = bpf_map__fd(skel->maps.percpu_netcnt);
++	if (!ASSERT_OK(bpf_map_lookup_elem(percpu_map_fd, &key, &percpu_netcnt[0]),
++		       "bpf_map_lookup_elem(percpu_netcnt)"))
++		goto err;
++
++	/* Some packets can be still in per-cpu cache, but not more than
++	 * MAX_PERCPU_PACKETS.
++	 */
++	packets = netcnt.packets;
++	bytes = netcnt.bytes;
++	for (cpu = 0; cpu < nproc; cpu++) {
++		ASSERT_LE(percpu_netcnt[cpu].packets, MAX_PERCPU_PACKETS, "MAX_PERCPU_PACKETS");
++
++		packets += percpu_netcnt[cpu].packets;
++		bytes += percpu_netcnt[cpu].bytes;
++	}
++
++	/* No packets should be lost */
++	ASSERT_EQ(packets, 10000, "packets");
++
++	/* Let's check that bytes counter matches the number of packets
++	 * multiplied by the size of ipv6 ICMP packet.
++	 */
++	ASSERT_EQ(bytes, packets * 104, "bytes");
++
++err:
++	if (cg_fd != -1)
++		close(cg_fd);
++	free(percpu_netcnt);
++	netcnt_prog__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+index 932e4ee3f97c..e7201ba29ccd 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
++++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+@@ -390,18 +390,6 @@ static void test_tcp(int family, const char *addr, __u16 port)
+ 		close(client_fd);
+ }
+ 
+-static char *ping_command(int family)
+-{
+-	if (family == AF_INET6) {
+-		/* On some systems 'ping' doesn't support IPv6, so use ping6 if it is present. */
+-		if (!system("which ping6 >/dev/null 2>&1"))
+-			return "ping6";
+-		else
+-			return "ping -6";
+-	}
+-	return "ping";
+-}
+-
+ static int test_ping(int family, const char *addr)
+ {
+ 	SYS("ip netns exec " NS_SRC " %s " PING_ARGS " %s > /dev/null", ping_command(family), addr);
+diff --git a/tools/testing/selftests/bpf/test_netcnt.c b/tools/testing/selftests/bpf/test_netcnt.c
+deleted file mode 100644
+index 4990a99e7381..000000000000
+--- a/tools/testing/selftests/bpf/test_netcnt.c
++++ /dev/null
+@@ -1,148 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <assert.h>
+-#include <sys/sysinfo.h>
+-#include <sys/time.h>
+-
+-#include <linux/bpf.h>
+-#include <bpf/bpf.h>
+-#include <bpf/libbpf.h>
+-
+-#include "cgroup_helpers.h"
+-#include "bpf_rlimit.h"
+-#include "netcnt_common.h"
+-
+-#define BPF_PROG "./netcnt_prog.o"
+-#define TEST_CGROUP "/test-network-counters/"
+-
+-static int bpf_find_map(const char *test, struct bpf_object *obj,
+-			const char *name)
+-{
+-	struct bpf_map *map;
+-
+-	map = bpf_object__find_map_by_name(obj, name);
+-	if (!map) {
+-		printf("%s:FAIL:map '%s' not found\n", test, name);
+-		return -1;
+-	}
+-	return bpf_map__fd(map);
+-}
+-
+-int main(int argc, char **argv)
+-{
+-	union percpu_net_cnt *percpu_netcnt;
+-	struct bpf_cgroup_storage_key key;
+-	int map_fd, percpu_map_fd;
+-	int error = EXIT_FAILURE;
+-	struct bpf_object *obj;
+-	int prog_fd, cgroup_fd;
+-	unsigned long packets;
+-	union net_cnt netcnt;
+-	unsigned long bytes;
+-	int cpu, nproc;
+-	__u32 prog_cnt;
+-
+-	nproc = get_nprocs_conf();
+-	percpu_netcnt = malloc(sizeof(*percpu_netcnt) * nproc);
+-	if (!percpu_netcnt) {
+-		printf("Not enough memory for per-cpu area (%d cpus)\n", nproc);
+-		goto err;
+-	}
+-
+-	if (bpf_prog_load(BPF_PROG, BPF_PROG_TYPE_CGROUP_SKB,
+-			  &obj, &prog_fd)) {
+-		printf("Failed to load bpf program\n");
+-		goto out;
+-	}
+-
+-	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
+-	if (cgroup_fd < 0)
+-		goto err;
+-
+-	/* Attach bpf program */
+-	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_INET_EGRESS, 0)) {
+-		printf("Failed to attach bpf program");
+-		goto err;
+-	}
+-
+-	if (system("which ping6 &>/dev/null") == 0)
+-		assert(!system("ping6 ::1 -c 10000 -f -q > /dev/null"));
+-	else
+-		assert(!system("ping -6 ::1 -c 10000 -f -q > /dev/null"));
+-
+-	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_INET_EGRESS, 0, NULL, NULL,
+-			   &prog_cnt)) {
+-		printf("Failed to query attached programs");
+-		goto err;
+-	}
+-
+-	map_fd = bpf_find_map(__func__, obj, "netcnt");
+-	if (map_fd < 0) {
+-		printf("Failed to find bpf map with net counters");
+-		goto err;
+-	}
+-
+-	percpu_map_fd = bpf_find_map(__func__, obj, "percpu_netcnt");
+-	if (percpu_map_fd < 0) {
+-		printf("Failed to find bpf map with percpu net counters");
+-		goto err;
+-	}
+-
+-	if (bpf_map_get_next_key(map_fd, NULL, &key)) {
+-		printf("Failed to get key in cgroup storage\n");
+-		goto err;
+-	}
+-
+-	if (bpf_map_lookup_elem(map_fd, &key, &netcnt)) {
+-		printf("Failed to lookup cgroup storage\n");
+-		goto err;
+-	}
+-
+-	if (bpf_map_lookup_elem(percpu_map_fd, &key, &percpu_netcnt[0])) {
+-		printf("Failed to lookup percpu cgroup storage\n");
+-		goto err;
+-	}
+-
+-	/* Some packets can be still in per-cpu cache, but not more than
+-	 * MAX_PERCPU_PACKETS.
+-	 */
+-	packets = netcnt.packets;
+-	bytes = netcnt.bytes;
+-	for (cpu = 0; cpu < nproc; cpu++) {
+-		if (percpu_netcnt[cpu].packets > MAX_PERCPU_PACKETS) {
+-			printf("Unexpected percpu value: %llu\n",
+-			       percpu_netcnt[cpu].packets);
+-			goto err;
+-		}
+-
+-		packets += percpu_netcnt[cpu].packets;
+-		bytes += percpu_netcnt[cpu].bytes;
+-	}
+-
+-	/* No packets should be lost */
+-	if (packets != 10000) {
+-		printf("Unexpected packet count: %lu\n", packets);
+-		goto err;
+-	}
+-
+-	/* Let's check that bytes counter matches the number of packets
+-	 * multiplied by the size of ipv6 ICMP packet.
+-	 */
+-	if (bytes != packets * 104) {
+-		printf("Unexpected bytes count: %lu\n", bytes);
+-		goto err;
+-	}
+-
+-	error = 0;
+-	printf("test_netcnt:PASS\n");
+-
+-err:
+-	cleanup_cgroup_environment();
+-	free(percpu_netcnt);
+-
+-out:
+-	return error;
+-}
+-- 
+2.32.0.554.ge1b32706d8-goog
 
