@@ -2,152 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E863DE16A
-	for <lists+bpf@lfdr.de>; Mon,  2 Aug 2021 23:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CDC3DE1A5
+	for <lists+bpf@lfdr.de>; Mon,  2 Aug 2021 23:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbhHBVUB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Aug 2021 17:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38756 "EHLO
+        id S232777AbhHBV2x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Aug 2021 17:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233003AbhHBVTs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:19:48 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8734BC0613D5
-        for <bpf@vger.kernel.org>; Mon,  2 Aug 2021 14:19:38 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so890950pjb.2
-        for <bpf@vger.kernel.org>; Mon, 02 Aug 2021 14:19:38 -0700 (PDT)
+        with ESMTP id S232475AbhHBV2v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Aug 2021 17:28:51 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639EDC06175F
+        for <bpf@vger.kernel.org>; Mon,  2 Aug 2021 14:28:40 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id f22-20020a25b0960000b029055ed6ffbea6so20339722ybj.14
+        for <bpf@vger.kernel.org>; Mon, 02 Aug 2021 14:28:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=P804EkvFn0VAlLFLpkTDkQMHTFJyfBf84bJVijuk6QE=;
-        b=DdRM6RkLT2CfJXxydidDPFezCeqrJBYnZM2Q0qbNom/dxQQ9q2LuQiUbhbx7feGTdZ
-         G+X0GLsokPOXtXzc9i2rxbQ7afnk5Emfd46M//DX18f7pwkcxSP4MBDwqI6pfGsEAE+e
-         D3v8j47bG9k7r1EptkGUKTN/GJxRGVRY5f3nkaXfuPunCbMD6uHWFCsRephw4l6ZlgwI
-         eyBBXhOz6MYPBZe/xZrkDW4jRBNGT1aTSYsl9R87nZROAgoKkCTWcn3l6w+GHLezSvei
-         4Es7dqYf/Xt2h5ol0w2JbUkOwaYxcrZLfTOTQmI9GfB3YFwoZWCME4qADqJp01eWr+U3
-         bA8w==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ODkZ12y9VJZTq4nc4bH4DoKlUmZBSPQz81yAqgkg0eE=;
+        b=BzK32olg2iQlqF9m7iU2aJmAcx+SSv8kSnQpHpBwBtSKiDPgl+xTOZIQme7PJRZPqt
+         d0tb1n0PHNb/+lbOaMQdOVwSqnACyrc8qQg96jQz/Jexiteg3GZatc4ZTAq6396bA2pT
+         JxsBUfHwgiyhCwvI1AoL3eMhC7JZHF3xHzJSOFiyHuZiz7CN9Dng+fRiGy1XKsgTk5bd
+         t31/zlw6kiCfEwrGZwwkPruQj9C5BSRvK1kHw70wjfztxN7IbPZFTQyzCLiY42q4aDrd
+         58wgUukaugcs6rzm74Vw6ysOMQ5MyPx8tPVvpdLOCc7Laao2C21IiXA/4ER4dtSvZCoq
+         dK8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=P804EkvFn0VAlLFLpkTDkQMHTFJyfBf84bJVijuk6QE=;
-        b=CEMO7Ycs4JQeXsL54SiSi2qyQSlieT+cqjxvJIw6x+buDd3Q/Z5e+KKKpJMzgKysvi
-         0kLJp94lDcf4xVMHeDsHrwhS051kSIXzcY+jzW1C0554j8U9gXpzvvetyCiONUEiUf+e
-         54xOJ77cZ0WKju+iMXBMfYXO4QUGdeZexApyfIcAa40I18kfDBZcwusIdIbEIZWe+hzW
-         uuUPcvcKRXMZQW+pq82aDw/AVGHFYYgY0QkGzESCVe1yf+CV2H6Vj128E2l9ss0t02/8
-         0WzPp6NmEe9mEaqCZFlO5We5+EMR2HRmiVHUkvXqH3CZdqQ+SRQ33XjpJf3VdqdXuEtA
-         sPSw==
-X-Gm-Message-State: AOAM5315ca2o3bOqOXunb2BwsgG+e5a4sk+CEddloQiR/OInRfpiql8m
-        2g5sMRxfH9Dr4ebtf1rd+xyMTw==
-X-Google-Smtp-Source: ABdhPJz002j3RAze6d/+DEB4Us9NBfz/uKhtE5PjbnvPLunzjqVXQbanx8bEoFu316+v1nIW3IHl+g==
-X-Received: by 2002:a65:5c83:: with SMTP id a3mr217102pgt.287.1627939178084;
-        Mon, 02 Aug 2021 14:19:38 -0700 (PDT)
-Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id 10sm12949212pjc.41.2021.08.02.14.19.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 14:19:37 -0700 (PDT)
-From:   Jiang Wang <jiang.wang@bytedance.com>
-To:     netdev@vger.kernel.org
-Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ODkZ12y9VJZTq4nc4bH4DoKlUmZBSPQz81yAqgkg0eE=;
+        b=eIIfmiPMKArcXcprqP8YL3Pl0tsH+IZ8Tk+aAyAvTn3gAiIdCL/PhiX/3tYF34MmVa
+         IdLbNwX7yJXvrmWT1JtRh/i7T1SrJqm9AvhpySuNmwN/1jbUicPRZHpKBQ9KKM63j7m3
+         wZRgbUD9rE0MUklVeUGwCkkv/GbnDMSIZAmH3VO0p8BUQXKK3L/NRlkp6WjKc8QHIu8J
+         yCSuppEVoISQrfLh98DS7CBNwNGNa0XmRmXoYOIlzmSRxcnRjY4XzwBi/G5T7sRJfoaX
+         3Vvin7JhAdS2BzIeY/n9zZ62XggZTVZ8JeatHDehKOqY11X0ed0jaJVj5AktupBBtafa
+         enWg==
+X-Gm-Message-State: AOAM533WO4DylRvzEfWMh6t6ErNSp1BfpCF14oza+JPZLhzv+6rRqS93
+        gN2rIfvBvbXMLBhPL56EBQGKXbRRuUo=
+X-Google-Smtp-Source: ABdhPJzG5tGog1iLpbDVSPxQPFlC3Q++sFxIWR8R2zRBMb2yxEKRoqMaxnQx6waRy8j6zNNe6N7+vEe6ILI=
+X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:d458:19a6:9920:f320])
+ (user=haoluo job=sendgmr) by 2002:a25:a286:: with SMTP id c6mr22889747ybi.349.1627939719573;
+ Mon, 02 Aug 2021 14:28:39 -0700 (PDT)
+Date:   Mon,  2 Aug 2021 14:28:15 -0700
+Message-Id: <20210802212815.3488773-1-haoluo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH bpf-next] libbpf: support weak typed ksyms.
+From:   Hao Luo <haoluo@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v3 5/5] selftest/bpf: add new tests in sockmap for unix stream to tcp.
-Date:   Mon,  2 Aug 2021 21:19:09 +0000
-Message-Id: <20210802211912.116329-6-jiang.wang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210802211912.116329-1-jiang.wang@bytedance.com>
-References: <20210802211912.116329-1-jiang.wang@bytedance.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add two new test cases in sockmap tests, where unix stream is
-redirected to tcp and vice versa.
+Currently weak typeless ksyms have default value zero, when they don't
+exist in the kernel. However, weak typed ksyms are rejected by libbpf.
+This means that if a bpf object contains the declaration of a
+non-existing weak typed ksym, it will be rejected even if there is
+no program that references the symbol.
 
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+In fact, we could let them to pass the checks in libbpf and leave the
+object to be rejected by the bpf verifier. More specifically, upon
+seeing a weak typed symbol, libbpf can assign it a zero btf_id, which
+is associated to the type 'void'. The verifier expects the symbol to
+be BTF_VAR_KIND instead, therefore will reject loading.
+
+In practice, we often add new kernel symbols and roll out the kernel
+changes to fleet. And we want to release a single bpf object that can
+be loaded on both the new and the old kernels. Passing weak typed ksyms
+in libbpf allows us to do so as long as the programs that reference the
+new symbols are disabled on the old kernel.
+
+Signed-off-by: Hao Luo <haoluo@google.com>
 ---
- .../selftests/bpf/prog_tests/sockmap_listen.c    | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ tools/lib/bpf/libbpf.c                        | 17 +++++-
+ .../selftests/bpf/prog_tests/ksyms_btf.c      | 42 +++++++++++++
+ .../selftests/bpf/progs/test_ksyms_weak.c     | 60 +++++++++++++++++++
+ 3 files changed, 116 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_weak.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 07ed8081f..afa14fb66 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -1884,7 +1884,7 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
- 	xclose(p0);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index cb106e8c42cb..1cac02bfa599 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -6584,7 +6584,7 @@ static int bpf_object__read_kallsyms_file(struct bpf_object *obj)
  }
  
--static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+static void inet_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
+ static int find_ksym_btf_id(struct bpf_object *obj, const char *ksym_name,
+-			    __u16 kind, struct btf **res_btf,
++			    __u16 kind, bool is_weak, struct btf **res_btf,
+ 			    int *res_btf_fd)
  {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-@@ -1899,9 +1899,13 @@ static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	skel->bss->test_ingress = false;
- 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				    REDIR_EGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				    REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
- 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				    REDIR_INGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				    REDIR_INGRESS);
+ 	int i, id, btf_fd, err;
+@@ -6608,6 +6608,9 @@ static int find_ksym_btf_id(struct bpf_object *obj, const char *ksym_name,
+ 				break;
+ 		}
+ 	}
++	if (is_weak && id == -ENOENT)
++		return 0;
++
+ 	if (id <= 0) {
+ 		pr_warn("extern (%s ksym) '%s': failed to find BTF ID in kernel BTF(s).\n",
+ 			__btf_kind_str(kind), ksym_name);
+@@ -6627,11 +6630,19 @@ static int bpf_object__resolve_ksym_var_btf_id(struct bpf_object *obj,
+ 	const char *targ_var_name;
+ 	int id, btf_fd = 0, err;
+ 	struct btf *btf = NULL;
++	bool is_weak = ext->is_weak;
  
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
+-	id = find_ksym_btf_id(obj, ext->name, BTF_KIND_VAR, &btf, &btf_fd);
++	id = find_ksym_btf_id(obj, ext->name, BTF_KIND_VAR, is_weak, &btf, &btf_fd);
+ 	if (id < 0)
+ 		return id;
+ 
++	if (is_weak && id == 0) {
++		ext->is_set = true;
++		ext->ksym.kernel_btf_obj_fd = 0;
++		ext->ksym.kernel_btf_id = 0;
++		return 0;
++	}
++
+ 	/* find local type_id */
+ 	local_type_id = ext->ksym.type_id;
+ 
+@@ -6676,7 +6687,7 @@ static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
+ 
+ 	local_func_proto_id = ext->ksym.type_id;
+ 
+-	kfunc_id = find_ksym_btf_id(obj, ext->name, BTF_KIND_FUNC,
++	kfunc_id = find_ksym_btf_id(obj, ext->name, BTF_KIND_FUNC, false,
+ 				    &kern_btf, &kern_btf_fd);
+ 	if (kfunc_id < 0) {
+ 		pr_warn("extern (func ksym) '%s': not found in kernel BTF\n",
+diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
+index 67bebd324147..12a5e5ebcc3d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
++++ b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
+@@ -6,6 +6,7 @@
+ #include <bpf/btf.h>
+ #include "test_ksyms_btf.skel.h"
+ #include "test_ksyms_btf_null_check.skel.h"
++#include "test_ksyms_weak.skel.h"
+ 
+ static int duration;
+ 
+@@ -81,6 +82,44 @@ static void test_null_check(void)
+ 	test_ksyms_btf_null_check__destroy(skel);
  }
-@@ -1961,7 +1965,7 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
  
- }
- 
--static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+static void unix_inet_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
++static void test_weak_syms(void)
++{
++	struct test_ksyms_weak *skel;
++	struct test_ksyms_weak__data *data;
++
++	skel = test_ksyms_weak__open_and_load();
++	if (CHECK(skel, "skel_open_and_load",
++		  "unexpected load of a prog referencing non-existing ksyms\n")) {
++		test_ksyms_weak__destroy(skel);
++		return;
++	}
++
++	skel = test_ksyms_weak__open();
++	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
++		return;
++
++	bpf_program__set_autoload(skel->progs.fail_handler, false);
++	if (CHECK(test_ksyms_weak__load(skel), "skel_load", "failed to load skeleton\n"))
++		goto cleanup;
++
++	if (CHECK(test_ksyms_weak__attach(skel), "skel_attach", "failed to attach skeleton\n"))
++		goto cleanup;
++
++	/* trigger tracepoint */
++	usleep(1);
++
++	data = skel->data;
++	CHECK(data->out__existing_typed != 0, "existing_typed",
++	      "failed to reference an existing typed symbol\n");
++	CHECK(data->out__existing_typeless == -1, "existing_typeless",
++	      "failed to get the address of an existing typeless symbol\n");
++	CHECK(data->out__non_existing_typeless != 0, "non_existing_typeless",
++	      "non-existing typeless symbol does not default to zero\n");
++
++cleanup:
++	test_ksyms_weak__destroy(skel);
++}
++
+ void test_ksyms_btf(void)
  {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-@@ -1976,9 +1980,13 @@ static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	skel->bss->test_ingress = false;
- 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				     REDIR_EGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				     REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
- 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				     REDIR_INGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				     REDIR_INGRESS);
+ 	int percpu_datasec;
+@@ -105,4 +144,7 @@ void test_ksyms_btf(void)
  
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
+ 	if (test__start_subtest("null_check"))
+ 		test_null_check();
++
++	if (test__start_subtest("weak_ksyms"))
++		test_weak_syms();
  }
-@@ -1994,8 +2002,8 @@ static void test_udp_unix_redir(struct test_sockmap_listen *skel, struct bpf_map
- 	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name, __func__);
- 	if (!test__start_subtest(s))
- 		return;
--	udp_unix_skb_redir_to_connected(skel, map, family);
--	unix_udp_skb_redir_to_connected(skel, map, family);
-+	inet_unix_skb_redir_to_connected(skel, map, family);
-+	unix_inet_skb_redir_to_connected(skel, map, family);
- }
- 
- static void run_tests(struct test_sockmap_listen *skel, struct bpf_map *map,
+diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_weak.c b/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
+new file mode 100644
+index 000000000000..e956fdf3162c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_ksyms_weak.c
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Test weak ksyms.
++ *
++ * Copyright (c) 2021 Google
++ */
++
++#include "vmlinux.h"
++
++#include <bpf/bpf_helpers.h>
++
++int out__existing_typed = -1;
++__u64 out__existing_typeless = -1;
++
++__u64 out__non_existing_typeless = -1;
++__u64 out__non_existing_typed = -1;
++
++/* existing weak symbols */
++
++/* test existing weak symbols can be resolved. */
++extern const struct rq runqueues __ksym __weak; /* typed */
++extern const void bpf_prog_active __ksym __weak; /* typeless */
++
++
++/* non-existing weak symbols. */
++
++/* typeless symbols, default to zero. */
++extern const void bpf_link_fops1 __ksym __weak;
++
++/* typed symbols, fail verifier checks if referenced. */
++extern const int bpf_link_fops2 __ksym __weak;
++
++/* typed symbols, pass if not referenced. */
++extern const int bpf_link_fops3 __ksym __weak;
++
++SEC("raw_tp/sys_enter")
++int pass_handler(const void *ctx)
++{
++	/* tests existing symbols. */
++	struct rq *rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, 0);
++	if (rq)
++		out__existing_typed = rq->cpu;
++	out__existing_typeless = (__u64)&bpf_prog_active;
++
++	/* tests non-existing symbols. */
++	out__non_existing_typeless = (__u64)&bpf_link_fops1;
++
++	return 0;
++}
++
++SEC("raw_tp/sys_exit")
++int fail_handler(const void *ctx)
++{
++	/* tests non-existing symbols. */
++	out__non_existing_typed = (__u64)&bpf_link_fops2;
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
-2.20.1
+2.32.0.554.ge1b32706d8-goog
 
