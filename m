@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DA53DE157
-	for <lists+bpf@lfdr.de>; Mon,  2 Aug 2021 23:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC143DE15C
+	for <lists+bpf@lfdr.de>; Mon,  2 Aug 2021 23:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbhHBVTg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Aug 2021 17:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38672 "EHLO
+        id S232658AbhHBVTj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Aug 2021 17:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbhHBVTg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Aug 2021 17:19:36 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321DCC06175F
-        for <bpf@vger.kernel.org>; Mon,  2 Aug 2021 14:19:26 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so843052pja.5
-        for <bpf@vger.kernel.org>; Mon, 02 Aug 2021 14:19:26 -0700 (PDT)
+        with ESMTP id S232060AbhHBVTi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Aug 2021 17:19:38 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A092BC061764
+        for <bpf@vger.kernel.org>; Mon,  2 Aug 2021 14:19:28 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so1857942pjb.2
+        for <bpf@vger.kernel.org>; Mon, 02 Aug 2021 14:19:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aVBuXMfiCfWt5hdMv6zWGnMRg21pnjj7QA/tDQ0Y95Q=;
-        b=zKexeWwWDxfxwxGu+RH3nuqraBaI9t5GFDWnDdsIK9A8wW/PHdQCbYXtBS+bX3AXzy
-         UfeMiL8pZOQz8AvL8E5WZtzODhwG6dL9IN5ycqw6bPzBbpQMMvUhjGKqzemWKpg1eNVC
-         hEkqhLmPZFdpIiRREY8kIX1U0040YnX2NiW6Cyle1aASfV9rOuLJ6N+lYrUMKDgvxJjc
-         AZV5NnrKBOEQxG0aTMWQdMWIiVwSGKLdFis48uBClIFvUJRMStXKb9zGNWTRgzno4INn
-         x55npPu8PhasCvXe7BC5CLNaaY5YENt45917beKl7Prb7ulUg8l7dAAuC9IFrZYORFC2
-         rbvw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gB7YFrieIpmwVCmE7FizVML0zcWrHXYydeLPQdihUz4=;
+        b=S/pRWwTVzlbZMfxX44uINtBvykBVML7GHvPj/N/zYNtvYZgXV9ZcQPs8nnQci/OYJG
+         r+zMFXQi7GLtgEA72n4WC5TVz7Sh985DoEKIMnWvct7wmQqP2lBi9cFG74oFbLNn/vBW
+         mTctdwglEUz3DLAGCTiT1Ta57dY/ch+qyO6ISrc6FKrr2AtGvH+DCGcLxesLkz351FmB
+         4CK8hgIcKGjfD57stZ7SfTnu0v0yl9lZ7UhIsblOAHETz2OW1Bfgbv9vRO/DoIS1uVMX
+         leIXzZ2Zfmmv3TrujCvcGCYIKgNG2Ns+8CkJ80hIwDH2hng85ODddAqar6KY8ZFlDuNU
+         S7MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aVBuXMfiCfWt5hdMv6zWGnMRg21pnjj7QA/tDQ0Y95Q=;
-        b=Y/SvwifYj7ZSnYxgGyyg3pMa52//OItR38P179+7BViuJBohhZWUMx0kUgPy4vVZ1u
-         KNZKCSiRz0snJEbMAtBs0NHzvi+hSsojqqULarTPSZlL3Q3UY7owXFbQ3zrahZ0NFEUa
-         khCXLirDhM8BWlUcsyU4zBkiRYuPBTDZFdfP08IKLBm7pV0PwmVp3FRfelT6EqaQVIJ5
-         sjxJDcoc/sepnk7r2SD+K21n60+rWKH59ncIykzoQ4cH7OvpHY647f9K3XRkkFMoXmrW
-         0dtIDL2CCmv+S9T4Unx5MKCfTVrfIiBCUrhhpewu2862z8Dv8nvtz0y5oBSNi80y8Ect
-         ATVg==
-X-Gm-Message-State: AOAM532LoM2j50tN3ZagBx+ORqWGStoCUZFwfZ7fTiQVGcoRM7fILcgy
-        w/AhLJlCwhA/Gl3VtU/y9h9VFQ==
-X-Google-Smtp-Source: ABdhPJw5iuEF1I72i2Wlv49CHbTsllBAXTkInZEfpNrpHZpI8JXJHhz5DJQpobzibHM+k05k7kX1AQ==
-X-Received: by 2002:a17:902:cec2:b029:12c:bef0:ec4b with SMTP id d2-20020a170902cec2b029012cbef0ec4bmr3661093plg.74.1627939165685;
-        Mon, 02 Aug 2021 14:19:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gB7YFrieIpmwVCmE7FizVML0zcWrHXYydeLPQdihUz4=;
+        b=r59csscYTcno6QNlcVd99vViOIFkuxPenHb9xpjNWTYwpKBRJcItbSuhf1rsk8cy+S
+         BpS9CIMS3OOThDwyqiSStl6eB567+k0+a68tYKa2NXbSvHRUBs/f3yVeXmPAzrYvxEKr
+         4OMpkGb1BqkXBvZt2MAWLWFN7r9CZlG9cwOhAdt+BdMvQdCJKGBSPAZwJnG6ARtERIcL
+         Z5YdhcxqNe3Et7nHKH6XVaGV8fWPPk/qJhM9ucOSHUpR3XK3SXbkM/PXBmhC2JGHmR92
+         Nim2fHkp+5WQk2O9ZGMEU2Hf/ppJ19Vz4fv1EkbXUyFHV2xwa6caJ/HAl6XK1mWnte/3
+         +w/w==
+X-Gm-Message-State: AOAM531qoQHP8X4wrfglFKwq81GFUkfV7IOYIzi63eL0g8RVRZv+66Xy
+        +AA8VlIso8Kihb3Po8yOV6puFA==
+X-Google-Smtp-Source: ABdhPJwI66JYy/BibL9BT54xY85Hdzga6ldif9ry5yFD41JVVMqtj5dUpSFqUjrCpkLbfCqqe+E2rQ==
+X-Received: by 2002:a17:90a:bd92:: with SMTP id z18mr19229054pjr.195.1627939168194;
+        Mon, 02 Aug 2021 14:19:28 -0700 (PDT)
 Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id 10sm12949212pjc.41.2021.08.02.14.19.23
+        by smtp.gmail.com with ESMTPSA id 10sm12949212pjc.41.2021.08.02.14.19.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Aug 2021 14:19:25 -0700 (PDT)
+        Mon, 02 Aug 2021 14:19:27 -0700 (PDT)
 From:   Jiang Wang <jiang.wang@bytedance.com>
 To:     netdev@vger.kernel.org
 Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
@@ -65,47 +65,65 @@ Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
         Johan Almbladh <johan.almbladh@anyfinetworks.com>,
         linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v3 0/5] sockmap: add sockmap support for unix stream socket
-Date:   Mon,  2 Aug 2021 21:19:04 +0000
-Message-Id: <20210802211912.116329-1-jiang.wang@bytedance.com>
+Subject: [PATCH bpf-next v3 1/5] af_unix: add read_sock for stream socket types
+Date:   Mon,  2 Aug 2021 21:19:05 +0000
+Message-Id: <20210802211912.116329-2-jiang.wang@bytedance.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210802211912.116329-1-jiang.wang@bytedance.com>
+References: <20210802211912.116329-1-jiang.wang@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch series add support for unix stream type
-for sockmap. Sockmap already supports TCP, UDP,
-unix dgram types. The unix stream support is similar
-to unix dgram.
+To support sockmap for af_unix stream type, implement
+read_sock, which is similar to the read_sock for unix
+dgram sockets.
 
-Also add selftests for unix stream type in sockmap tests.
+Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+---
+ net/unix/af_unix.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-
-Jiang Wang (5):
-  af_unix: add read_sock for stream socket types
-  af_unix: add unix_stream_proto for sockmap
-  selftest/bpf: add tests for sockmap with unix stream type.
-  selftest/bpf: change udp to inet in some function names
-  selftest/bpf: add new tests in sockmap for unix stream to tcp.
-
- include/net/af_unix.h                         |  8 +-
- net/core/sock_map.c                           |  8 +-
- net/unix/af_unix.c                            | 86 ++++++++++++++---
- net/unix/unix_bpf.c                           | 96 ++++++++++++++-----
- .../selftests/bpf/prog_tests/sockmap_listen.c | 48 ++++++----
- 5 files changed, 193 insertions(+), 53 deletions(-)
-
-v1 -> v2 :
- - Call unhash in shutdown.
- - Clean up unix_create1 a bit.
- - Return -ENOTCONN if socket is not connected.
-
-v2 -> v3 :
- - check for stream type in update_proto
- - remove intermediate variable in __unix_stream_recvmsg
- - fix compile warning in unix_stream_recvmsg
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index 89927678c..0ae3fc4c8 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -672,6 +672,8 @@ static int unix_dgram_sendmsg(struct socket *, struct msghdr *, size_t);
+ static int unix_dgram_recvmsg(struct socket *, struct msghdr *, size_t, int);
+ static int unix_read_sock(struct sock *sk, read_descriptor_t *desc,
+ 			  sk_read_actor_t recv_actor);
++static int unix_stream_read_sock(struct sock *sk, read_descriptor_t *desc,
++				 sk_read_actor_t recv_actor);
+ static int unix_dgram_connect(struct socket *, struct sockaddr *,
+ 			      int, int);
+ static int unix_seqpacket_sendmsg(struct socket *, struct msghdr *, size_t);
+@@ -725,6 +727,7 @@ static const struct proto_ops unix_stream_ops = {
+ 	.shutdown =	unix_shutdown,
+ 	.sendmsg =	unix_stream_sendmsg,
+ 	.recvmsg =	unix_stream_recvmsg,
++	.read_sock =	unix_stream_read_sock,
+ 	.mmap =		sock_no_mmap,
+ 	.sendpage =	unix_stream_sendpage,
+ 	.splice_read =	unix_stream_splice_read,
+@@ -2311,6 +2314,15 @@ struct unix_stream_read_state {
+ 	unsigned int splice_flags;
+ };
+ 
++static int unix_stream_read_sock(struct sock *sk, read_descriptor_t *desc,
++				 sk_read_actor_t recv_actor)
++{
++	if (unlikely(sk->sk_state != TCP_ESTABLISHED))
++		return -ENOTCONN;
++
++	return unix_read_sock(sk, desc, recv_actor);
++}
++
+ static int unix_stream_read_generic(struct unix_stream_read_state *state,
+ 				    bool freezable)
+ {
 -- 
 2.20.1
 
