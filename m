@@ -2,411 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71C03DDEAD
-	for <lists+bpf@lfdr.de>; Mon,  2 Aug 2021 19:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836093DE0A2
+	for <lists+bpf@lfdr.de>; Mon,  2 Aug 2021 22:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbhHBRkG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Aug 2021 13:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
+        id S230095AbhHBU20 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Aug 2021 16:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhHBRkF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Aug 2021 13:40:05 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F302AC06175F
-        for <bpf@vger.kernel.org>; Mon,  2 Aug 2021 10:39:54 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id x5-20020a0569020505b0290592c25b8c59so1993954ybs.18
-        for <bpf@vger.kernel.org>; Mon, 02 Aug 2021 10:39:54 -0700 (PDT)
+        with ESMTP id S229729AbhHBU20 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Aug 2021 16:28:26 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36CBC06175F;
+        Mon,  2 Aug 2021 13:28:15 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id s48so7416348ybi.7;
+        Mon, 02 Aug 2021 13:28:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=w+CHOlLR0wk12HK1n3MfzHXW9/G5oGNXdAfrSOnosh4=;
-        b=vVedRHD/d2ErzuYdcIkM/vP52T4TitUzsRz009pPzRkqXXgsW75W5260qBVDrWi6D2
-         FAaq22ybFimr7zGa5albdWh/2sOmGqgIelaenwPY19PkTCxlzgFGhBKHVgD2PQ6TvNQB
-         UdLYqKVZDwrBlOl+xdd9+KWUCLhyb9iXRR8lXA2yRIVtsQZsWpDsxcaD7OSDVaONTkPV
-         56ZEjkZH2rZA8891O060GiAhAEEdtIhB7BIfFwqEQHgZLr3mlDvkwShzFgKBXP9VSMnr
-         Hnd8W6VUZrdlFOMTPWNwxnrfUjNm2eIArkzarqGko28y4Jhz1lo9myC2nkhGEhD1lBe9
-         6v2g==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5OBdrYHCR2iz+DqSPSaNd9BA4JxRK6omLxbpsNsVOGQ=;
+        b=cwsFRWRq8c3YWrIkGPxrp0CbLgM/2iwdRE4/q3TcBtIe1i/DdANGMROPuKKgiNpFuK
+         UZDXXczVsYCm2PCvPI4yipeY8HM2uwFb3bsjdJQqVNJEukYEtOxWaFsIE0nYnJ4ABcYg
+         pDT6gbaRD/PHXe7laGsf8tdgJd05soXNgkIEOY0F7yj2GRaYmruREB3pxzMB6Dw1GQ3J
+         NbUOvxQzH/EtHyD8OpbW4D1lTzBlu+ajqCQlAFBgAgKJQ3+Hnwb8tfQ9bJzYXPsB3rCy
+         jVk2AZYlxdao1cWjvpClgPPkQkJouaHxDSTRqJ9py3P/lGW0d74jeFH7mI1bE0w/aToY
+         chVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=w+CHOlLR0wk12HK1n3MfzHXW9/G5oGNXdAfrSOnosh4=;
-        b=Y+rPZGVLWfsqQ354uO4BXOtEvxA5qtcb+r6w4j9ROwJ3sY9eIirQasWLi1lYGgJjlV
-         3MxAmW7qwWdZCbUkKcE5v4F0pn7X11Wj/ZHd6Sdr2tLWcMLHwHz9dudIo9ZcDuONFvg0
-         SvyWX6bVfDnOqbf4cYnTkU1D4lt30MCoAwziLpTZbhsJwFOt7KmUZUIOEWVLDFrsjKjZ
-         AxVBkCDSdydN10xTBBGEvrmNT2WjWhA0LBJVGoByVac1LB/zS3BXIjmHBxcLk/lKVGIv
-         lAHz5iy7BwvPgNkMV6kF5GRif7fiORD4xWV7jBxXn95XN0iCkOvKWiL9lpFmp8R0YwMw
-         j3xQ==
-X-Gm-Message-State: AOAM531bnt+zcYrOSIyY8JCJQrUWyubZ2yWjRYv2/vU4zK0xy22McQoV
-        KFRyJPDjUCq4AuAhl5pXYuJBvxM=
-X-Google-Smtp-Source: ABdhPJwabKAf7qqbSTbClfn2JQ15lqWxk2T5QMJsEtrE8vfSxWxhb46zPZzZRNsTV3RVWJFhizOaJqs=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:1ad9:b7d5:f1f4:b82e])
- (user=sdf job=sendgmr) by 2002:a25:db43:: with SMTP id g64mr7972944ybf.443.1627925994212;
- Mon, 02 Aug 2021 10:39:54 -0700 (PDT)
-Date:   Mon,  2 Aug 2021 10:39:51 -0700
-Message-Id: <20210802173951.2818349-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH bpf-next v2] selftests/bpf: move netcnt test under test_progs
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>, Yonghong Song <yhs@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5OBdrYHCR2iz+DqSPSaNd9BA4JxRK6omLxbpsNsVOGQ=;
+        b=DMfRWmTZv7fr7EMWoUz7g3uWeCv0NbaK/WUXFkANJV0hzSYtAGdjCuTNUyMLg/O9Yf
+         N86zLNSCipqUOFHpUpv5UAWDKi7nSiLT2jnXjd/OXzMCs3Jn32lm6kwadQTd5GYhtEfn
+         bOMwEd3pxID/SCCxwk/R2OxmkZ37BZDxMN8h//FuScpBkLMHAX/rglPxaCKsVzHq9jPe
+         WaHLFrSdAbnXELr4AHkHOI++p5LVIvYoufPfr73+LRgXtpgdIe6No1Z1wdaWIIG5d6u3
+         2tc630EX4OhB6qTXna1AZEz6jny20AzCrmQ2qmyMeG1q9MSYlH8uVqkMnIU8nX7ib1dD
+         FjqQ==
+X-Gm-Message-State: AOAM530GZ0MvhEwA9AQ/FWKYXEy4JL9Wsu+mPqZxdk7ETsFtF0ZZgRPl
+        o9xKjE8fJgfLmqa5xKP56zmSCvXSqQZUaumPosw=
+X-Google-Smtp-Source: ABdhPJyv/KWy5Quy3JvOq/XJ1uaiM/9WxvM3x6FhZCP2LA4GSiXCZG2p2p7fVrgyamJ59XQeIRB9aoc0ZLsRIsolK+0=
+X-Received: by 2002:a25:6148:: with SMTP id v69mr22494287ybb.510.1627936094999;
+ Mon, 02 Aug 2021 13:28:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <5afe26c6-7ab1-88ab-a3e0-eb007256a856@iogearbox.net>
+ <20210728164741.350370-1-johan.almbladh@anyfinetworks.com>
+ <1503e9c4-7150-3244-4710-7b6b2d59e0da@fb.com> <CAM1=_QTQeTp7LF-XdrOG_qjKpPJ-oQ24kKnG_7MDSbA7LX+uoA@mail.gmail.com>
+ <CAEf4BzbYbSAqU91r8RzXWWR81mq9kwJ0=r8-1aRU1UaeDqxMeg@mail.gmail.com>
+ <CAEf4BzZ1nNv12s-NJEayct5Yih_G6vNkEvFPst6dLcbhxWV_0g@mail.gmail.com> <CAM1=_QSKa7W9SL7oXWGEHLtWqCeFWp-jtGoqPp9=MxQwUGOjaQ@mail.gmail.com>
+In-Reply-To: <CAM1=_QSKa7W9SL7oXWGEHLtWqCeFWp-jtGoqPp9=MxQwUGOjaQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 2 Aug 2021 13:28:03 -0700
+Message-ID: <CAEf4BzaheF_v0Z8ZCAT7mn31xscdgooF8bqRYgCYP01GE7GuaQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix off-by-one in tail call count limiting
+To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Tony Ambardar <Tony.Ambardar@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Rewrite to skel and ASSERT macros as well while we are at it.
+On Sun, Aug 1, 2021 at 1:38 AM Johan Almbladh
+<johan.almbladh@anyfinetworks.com> wrote:
+>
+> On Fri, Jul 30, 2021 at 12:48 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Jul 29, 2021 at 3:29 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Thu, Jul 29, 2021 at 2:38 PM Johan Almbladh
+> > > <johan.almbladh@anyfinetworks.com> wrote:
+> > > >
+> > > > On Wed, Jul 28, 2021 at 9:13 PM Yonghong Song <yhs@fb.com> wrote:
+> > > > > I also checked arm/arm64 jit. I saw the following comments:
+> > > > >
+> > > > >          /* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+> > > > >           *      goto out;
+> > > > >           * tail_call_cnt++;
+> > > > >           */
+> > > > >
+> > > > > Maybe we have this MAX_TAIL_CALL_CNT + 1 issue
+> > > > > for arm/arm64 jit?
+> > > >
+> > > > That wouldn't be unreasonable. I don't have an arm or arm64 setup
+> > > > available right now, but I can try to test it in qemu.
+> > >
+> > > On a brief check, there seems to be quite a mess in terms of the code
+> > > and comments.
+> > >
+> > > E.g., in arch/x86/net/bpf_jit_comp32.c:
+> > >
+> > >         /*
+> > >          * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+> > >          *     goto out;
+> > >          */
+> > >
+> > >                             ^^^^ here comment is wrong
+> > >
+> > >         [...]
+> > >
+> > >         /* cmp edx,hi */
+> > >         EMIT3(0x83, add_1reg(0xF8, IA32_EBX), hi);
+> > >         EMIT2(IA32_JNE, 3);
+> > >         /* cmp ecx,lo */
+> > >         EMIT3(0x83, add_1reg(0xF8, IA32_ECX), lo);
+> > >
+> > >         /* ja out */
+> > >         EMIT2(IA32_JAE, jmp_label(jmp_label1, 2));
+> > >
+> > >         ^^^ JAE is >=, right? But the comment says JA.
+> > >
+> > >
+> > > As for arch/x86/net/bpf_jit_comp.c, both comment and the code seem to
+> > > do > MAX_TAIL_CALL_CNT, but you are saying JIT is correct. What am I
+> > > missing?
+> > >
+> > > Can you please check all the places where MAX_TAIL_CALL_CNT is used
+> > > throughout the code? Let's clean this up in one go.
+> > >
+> > > Also, given it's so easy to do this off-by-one error, can you please
+> > > add a negative test validating that 33 tail calls are not allowed? I
+> > > assume we have a positive test that allows exactly MAX_TAIL_CALL_CNT,
+> > > but please double-check that as well.
+> >
+> > Ok, I see that you've added this in your bpf tests patch set. Please
+> > consider, additionally, implementing a similar test as part of
+> > selftests/bpf (specifically in test_progs). We run test_progs
+> > continuously in CI for every incoming patch/patchset, so it has much
+> > higher chances of capturing any regressions.
+> >
+> > I'm also thinking that this MAX_TAIL_CALL_CNT change should probably
+> > go into the bpf-next tree. First, this off-by-one behavior was around
+> > for a while and it doesn't cause serious issues, even if abused. But
+> > on the other hand, it will make your tail call tests fail, when
+> > applied into bpf-next without your change. So I think we should apply
+> > both into bpf-next.
+>
+> I can confirm that the off-by-one behaviour is present on arm. Below
+> is the test output running on qemu. Test #4 calls itself recursively
+> and increments a counter each time, so the correct result should be 1
+> + MAX_TAIL_CALL_CNT.
+>
+> test_bpf: #0 Tail call leaf jited:1 71 PASS
+> test_bpf: #1 Tail call 2 jited:1 134 PASS
+> test_bpf: #2 Tail call 3 jited:1 164 PASS
+> test_bpf: #3 Tail call 4 jited:1 257 PASS
+> test_bpf: #4 Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
+> test_bpf: #5 Tail call error path, NULL target jited:1 114 PASS
+> test_bpf: #6 Tail call error path, index out of range jited:1 112 PASS
+> test_bpf: test_tail_calls: Summary: 6 PASSED, 1 FAILED, [7/7 JIT'ed]
+>
+> The MAX_TAIL_CALL_CNT constant is referenced in the following JITs.
+>
+> arch/arm64/net/bpf_jit_comp.c
+> arch/arm/net/bpf_jit_32.c
+> arch/mips/net/ebpf_jit.c
+> arch/powerpc/net/bpf_jit_comp32.c
+> arch/powerpc/net/bpf_jit_comp64.c
+> arch/riscv/net/bpf_jit_comp32.c
+> arch/riscv/net/bpf_jit_comp64.c
+> arch/s390/net/bpf_jit_comp.c
+> arch/sparc/net/bpf_jit_comp_64.c
+> arch/x86/net/bpf_jit_comp32.c
+> arch/x86/net/bpf_jit_comp.c
+>
+> The x86 JITs all pass the test, even though the comments are wrong.
+> The comments can easily be fixed of course. For JITs that have the
+> off-by-one behaviour, an easy fix would be to change all occurrences
+> of MAX_TAIL_CALL_CNT to MAX_TAIL_CALL_CNT - 1. We must first know
+> which JITs affected though.
 
-v2:
-- don't check result of bpf_map__fd (Yonghong Song)
-- remove from .gitignore (Andrii Nakryiko)
-- move ping_command into network_helpers (Andrii Nakryiko)
-- remove assert() (Andrii Nakryiko)
+If you are going to fix ARM, please send a fix to comments for x86 as well.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/.gitignore        |   1 -
- tools/testing/selftests/bpf/Makefile          |   3 +-
- tools/testing/selftests/bpf/network_helpers.c |  12 ++
- tools/testing/selftests/bpf/network_helpers.h |   1 +
- .../testing/selftests/bpf/prog_tests/netcnt.c |  82 ++++++++++
- .../selftests/bpf/prog_tests/tc_redirect.c    |  12 --
- tools/testing/selftests/bpf/test_netcnt.c     | 148 ------------------
- 7 files changed, 96 insertions(+), 163 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/netcnt.c
- delete mode 100644 tools/testing/selftests/bpf/test_netcnt.c
+>
+> The fix is easy but setting up the test is hard. It took me quite some
+> time to get the qemu/arm setup up and running. If the same has to be
+> done for arm64, mips64, powerpc, powerpc64, riscv32, risc64, sparc and
+> s390, I will need some help with this. If someone already has a
+> working setup for any of the systems, the test can be performed on
+> that.
+>
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index addcfd8b615e..433f8bef261e 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -23,7 +23,6 @@ test_skb_cgroup_id_user
- test_cgroup_storage
- test_flow_dissector
- flow_dissector_load
--test_netcnt
- test_tcpnotify_user
- test_libbpf
- test_tcp_check_syncookie_user
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index f405b20c1e6c..2a58b7b5aea4 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -38,7 +38,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
- 	test_verifier_log test_dev_cgroup \
- 	test_sock test_sockmap get_cgroup_id_user \
- 	test_cgroup_storage \
--	test_netcnt test_tcpnotify_user test_sysctl \
-+	test_tcpnotify_user test_sysctl \
- 	test_progs-no_alu32
- 
- # Also test bpf-gcc, if present
-@@ -197,7 +197,6 @@ $(OUTPUT)/test_sockmap: cgroup_helpers.c
- $(OUTPUT)/test_tcpnotify_user: cgroup_helpers.c trace_helpers.c
- $(OUTPUT)/get_cgroup_id_user: cgroup_helpers.c
- $(OUTPUT)/test_cgroup_storage: cgroup_helpers.c
--$(OUTPUT)/test_netcnt: cgroup_helpers.c
- $(OUTPUT)/test_sock_fields: cgroup_helpers.c
- $(OUTPUT)/test_sysctl: cgroup_helpers.c
- 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 26468a8f44f3..d6857683397f 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -310,3 +310,15 @@ int make_sockaddr(int family, const char *addr_str, __u16 port,
- 	}
- 	return -1;
- }
-+
-+char *ping_command(int family)
-+{
-+	if (family == AF_INET6) {
-+		/* On some systems 'ping' doesn't support IPv6, so use ping6 if it is present. */
-+		if (!system("which ping6 >/dev/null 2>&1"))
-+			return "ping6";
-+		else
-+			return "ping -6";
-+	}
-+	return "ping";
-+}
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index d60bc2897770..c59a8f6d770b 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -46,5 +46,6 @@ int fastopen_connect(int server_fd, const char *data, unsigned int data_len,
- 		     int timeout_ms);
- int make_sockaddr(int family, const char *addr_str, __u16 port,
- 		  struct sockaddr_storage *addr, socklen_t *len);
-+char *ping_command(int family);
- 
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/netcnt.c b/tools/testing/selftests/bpf/prog_tests/netcnt.c
-new file mode 100644
-index 000000000000..6052046c60c2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/netcnt.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <sys/sysinfo.h>
-+#include <test_progs.h>
-+#include "network_helpers.h"
-+#include "netcnt_prog.skel.h"
-+#include "netcnt_common.h"
-+
-+#define CG_NAME "/netcnt"
-+
-+void test_netcnt(void)
-+{
-+	union percpu_net_cnt *percpu_netcnt = NULL;
-+	struct bpf_cgroup_storage_key key;
-+	int map_fd, percpu_map_fd;
-+	struct netcnt_prog *skel;
-+	unsigned long packets;
-+	union net_cnt netcnt;
-+	unsigned long bytes;
-+	int cpu, nproc;
-+	int cg_fd = -1;
-+	char cmd[128];
-+
-+	skel = netcnt_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "netcnt_prog__open_and_load"))
-+		return;
-+
-+	nproc = get_nprocs_conf();
-+	percpu_netcnt = malloc(sizeof(*percpu_netcnt) * nproc);
-+	if (!ASSERT_OK_PTR(percpu_netcnt, "malloc(percpu_netcnt)"))
-+		goto err;
-+
-+	cg_fd = test__join_cgroup(CG_NAME);
-+	if (!ASSERT_GE(cg_fd, 0, "test__join_cgroup"))
-+		goto err;
-+
-+	skel->links.bpf_nextcnt = bpf_program__attach_cgroup(skel->progs.bpf_nextcnt, cg_fd);
-+	if (!ASSERT_OK_PTR(skel->links.bpf_nextcnt,
-+			   "attach_cgroup(bpf_nextcnt)"))
-+		goto err;
-+
-+	snprintf(cmd, sizeof(cmd), "%s ::1 -c 10000 -f -q > /dev/null", ping_command(AF_INET6));
-+	ASSERT_OK(system(cmd), cmd);
-+
-+	map_fd = bpf_map__fd(skel->maps.netcnt);
-+	if (!ASSERT_OK(bpf_map_get_next_key(map_fd, NULL, &key), "bpf_map_get_next_key"))
-+		goto err;
-+
-+	if (!ASSERT_OK(bpf_map_lookup_elem(map_fd, &key, &netcnt), "bpf_map_lookup_elem(netcnt)"))
-+		goto err;
-+
-+	percpu_map_fd = bpf_map__fd(skel->maps.percpu_netcnt);
-+	if (!ASSERT_OK(bpf_map_lookup_elem(percpu_map_fd, &key, &percpu_netcnt[0]),
-+		       "bpf_map_lookup_elem(percpu_netcnt)"))
-+		goto err;
-+
-+	/* Some packets can be still in per-cpu cache, but not more than
-+	 * MAX_PERCPU_PACKETS.
-+	 */
-+	packets = netcnt.packets;
-+	bytes = netcnt.bytes;
-+	for (cpu = 0; cpu < nproc; cpu++) {
-+		ASSERT_LE(percpu_netcnt[cpu].packets, MAX_PERCPU_PACKETS, "MAX_PERCPU_PACKETS");
-+
-+		packets += percpu_netcnt[cpu].packets;
-+		bytes += percpu_netcnt[cpu].bytes;
-+	}
-+
-+	/* No packets should be lost */
-+	ASSERT_EQ(packets, 10000, "packets");
-+
-+	/* Let's check that bytes counter matches the number of packets
-+	 * multiplied by the size of ipv6 ICMP packet.
-+	 */
-+	ASSERT_EQ(bytes, packets * 104, "bytes");
-+
-+err:
-+	if (cg_fd != -1)
-+		close(cg_fd);
-+	free(percpu_netcnt);
-+	netcnt_prog__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-index 932e4ee3f97c..e7201ba29ccd 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-@@ -390,18 +390,6 @@ static void test_tcp(int family, const char *addr, __u16 port)
- 		close(client_fd);
- }
- 
--static char *ping_command(int family)
--{
--	if (family == AF_INET6) {
--		/* On some systems 'ping' doesn't support IPv6, so use ping6 if it is present. */
--		if (!system("which ping6 >/dev/null 2>&1"))
--			return "ping6";
--		else
--			return "ping -6";
--	}
--	return "ping";
--}
--
- static int test_ping(int family, const char *addr)
- {
- 	SYS("ip netns exec " NS_SRC " %s " PING_ARGS " %s > /dev/null", ping_command(family), addr);
-diff --git a/tools/testing/selftests/bpf/test_netcnt.c b/tools/testing/selftests/bpf/test_netcnt.c
-deleted file mode 100644
-index 4990a99e7381..000000000000
---- a/tools/testing/selftests/bpf/test_netcnt.c
-+++ /dev/null
-@@ -1,148 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <errno.h>
--#include <assert.h>
--#include <sys/sysinfo.h>
--#include <sys/time.h>
--
--#include <linux/bpf.h>
--#include <bpf/bpf.h>
--#include <bpf/libbpf.h>
--
--#include "cgroup_helpers.h"
--#include "bpf_rlimit.h"
--#include "netcnt_common.h"
--
--#define BPF_PROG "./netcnt_prog.o"
--#define TEST_CGROUP "/test-network-counters/"
--
--static int bpf_find_map(const char *test, struct bpf_object *obj,
--			const char *name)
--{
--	struct bpf_map *map;
--
--	map = bpf_object__find_map_by_name(obj, name);
--	if (!map) {
--		printf("%s:FAIL:map '%s' not found\n", test, name);
--		return -1;
--	}
--	return bpf_map__fd(map);
--}
--
--int main(int argc, char **argv)
--{
--	union percpu_net_cnt *percpu_netcnt;
--	struct bpf_cgroup_storage_key key;
--	int map_fd, percpu_map_fd;
--	int error = EXIT_FAILURE;
--	struct bpf_object *obj;
--	int prog_fd, cgroup_fd;
--	unsigned long packets;
--	union net_cnt netcnt;
--	unsigned long bytes;
--	int cpu, nproc;
--	__u32 prog_cnt;
--
--	nproc = get_nprocs_conf();
--	percpu_netcnt = malloc(sizeof(*percpu_netcnt) * nproc);
--	if (!percpu_netcnt) {
--		printf("Not enough memory for per-cpu area (%d cpus)\n", nproc);
--		goto err;
--	}
--
--	if (bpf_prog_load(BPF_PROG, BPF_PROG_TYPE_CGROUP_SKB,
--			  &obj, &prog_fd)) {
--		printf("Failed to load bpf program\n");
--		goto out;
--	}
--
--	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
--	if (cgroup_fd < 0)
--		goto err;
--
--	/* Attach bpf program */
--	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_INET_EGRESS, 0)) {
--		printf("Failed to attach bpf program");
--		goto err;
--	}
--
--	if (system("which ping6 &>/dev/null") == 0)
--		assert(!system("ping6 ::1 -c 10000 -f -q > /dev/null"));
--	else
--		assert(!system("ping -6 ::1 -c 10000 -f -q > /dev/null"));
--
--	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_INET_EGRESS, 0, NULL, NULL,
--			   &prog_cnt)) {
--		printf("Failed to query attached programs");
--		goto err;
--	}
--
--	map_fd = bpf_find_map(__func__, obj, "netcnt");
--	if (map_fd < 0) {
--		printf("Failed to find bpf map with net counters");
--		goto err;
--	}
--
--	percpu_map_fd = bpf_find_map(__func__, obj, "percpu_netcnt");
--	if (percpu_map_fd < 0) {
--		printf("Failed to find bpf map with percpu net counters");
--		goto err;
--	}
--
--	if (bpf_map_get_next_key(map_fd, NULL, &key)) {
--		printf("Failed to get key in cgroup storage\n");
--		goto err;
--	}
--
--	if (bpf_map_lookup_elem(map_fd, &key, &netcnt)) {
--		printf("Failed to lookup cgroup storage\n");
--		goto err;
--	}
--
--	if (bpf_map_lookup_elem(percpu_map_fd, &key, &percpu_netcnt[0])) {
--		printf("Failed to lookup percpu cgroup storage\n");
--		goto err;
--	}
--
--	/* Some packets can be still in per-cpu cache, but not more than
--	 * MAX_PERCPU_PACKETS.
--	 */
--	packets = netcnt.packets;
--	bytes = netcnt.bytes;
--	for (cpu = 0; cpu < nproc; cpu++) {
--		if (percpu_netcnt[cpu].packets > MAX_PERCPU_PACKETS) {
--			printf("Unexpected percpu value: %llu\n",
--			       percpu_netcnt[cpu].packets);
--			goto err;
--		}
--
--		packets += percpu_netcnt[cpu].packets;
--		bytes += percpu_netcnt[cpu].bytes;
--	}
--
--	/* No packets should be lost */
--	if (packets != 10000) {
--		printf("Unexpected packet count: %lu\n", packets);
--		goto err;
--	}
--
--	/* Let's check that bytes counter matches the number of packets
--	 * multiplied by the size of ipv6 ICMP packet.
--	 */
--	if (bytes != packets * 104) {
--		printf("Unexpected bytes count: %lu\n", bytes);
--		goto err;
--	}
--
--	error = 0;
--	printf("test_netcnt:PASS\n");
--
--err:
--	cleanup_cgroup_environment();
--	free(percpu_netcnt);
--
--out:
--	return error;
--}
--- 
-2.32.0.554.ge1b32706d8-goog
+Unfortunately, I myself have only x86-64 setup. libbpf
+CI/kernel-patches CI we use to run all tests are running selftests
+against x86-64 only as well. There was temporarily halted effort to
+add s390x support as well, but it's not done yet. No one yet
+volunteered to set up any other platforms and I don't know if that's
+possible and how hard it would be to do within Github Actions platform
+we are currently using.
 
+So in short, I understand the challenges of testing all those
+platforms and I don't really expect any single person to do all that
+work. I've applied your fix, please follow up with ARM and comment
+fixes.
+
+> Or perhaps there is a better way to do this? If I implement a similar
+> test in selftest/bpf, that would trigger the CI when the patch is
+> submitted and we will see which JITs we need to fix.
+
+The other nice benefit of implementing this in selftest/bpf, besides
+continuous testing, is that you write it in C, which allows you to
+express much more complicated logic more easily.
+
+>
+> > On a related topic, please don't forget to include the target kernel
+> > tree for your patches: [PATCH bpf] or [PATCH bpf-next].
+>
+> I'll add that! All patches I sent related to this are for the bpf-next tree.
+>
+> Johan
