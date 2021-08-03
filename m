@@ -2,224 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F973DF39E
-	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 19:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B9D3DF43C
+	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 19:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237764AbhHCRKo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Aug 2021 13:10:44 -0400
-Received: from mga14.intel.com ([192.55.52.115]:16898 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237732AbhHCRKn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Aug 2021 13:10:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="213466147"
-X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="213466147"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 10:10:22 -0700
-X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="521327165"
-Received: from shyamasr-mobl.amr.corp.intel.com ([10.209.65.83])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 10:10:20 -0700
-From:   Kishen Maloor <kishen.maloor@intel.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org, hawk@kernel.org,
-        magnus.karlsson@intel.com
-Cc:     Jithu Joseph <jithu.joseph@intel.com>
-Subject: [RFC bpf-next 5/5] samples/bpf/xdpsock_user.c: Launchtime/TXTIME API usage
-Date:   Tue,  3 Aug 2021 13:10:06 -0400
-Message-Id: <20210803171006.13915-6-kishen.maloor@intel.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20210803171006.13915-1-kishen.maloor@intel.com>
-References: <20210803171006.13915-1-kishen.maloor@intel.com>
+        id S238535AbhHCR7Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Aug 2021 13:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238536AbhHCR7X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Aug 2021 13:59:23 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE43C061757;
+        Tue,  3 Aug 2021 10:59:10 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id e25-20020a05600c4b99b0290253418ba0fbso2640090wmp.1;
+        Tue, 03 Aug 2021 10:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NdNGEZnkIReFGRbvKm7ES1u0aHYUQFB1OavFTkgaq4o=;
+        b=S86myK+6wWO63bssW2t/9Ng2YNvM1DFL4Vtdr/rDo2rs9MJXbhBWtfF2Ptepnkl6VS
+         guGewDmpFD+yPsGZ4dN+pr25yEMROllw1Q3F3fSxDMdorfBRyYAd3pv+HP3srtKgXPYB
+         2dVfriMo7iObMBviKv5rPusKHYi3ia6PFO78qIwpx9Emyh6UHM6cE8sgZEg911JJHjcB
+         tDcjkp7ntLiZBmpLd7pqtU88/TXcLXGvuGc8c/V072aaNuk5nKxLyzfF3ZXRaDgGZSZb
+         gpj4D6k80XJ38Vlntwq96OeXhrSPJ7HmhObzQ8z8z7YMAQ27VVTE9nqgQEp4u224Vt3s
+         0gwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NdNGEZnkIReFGRbvKm7ES1u0aHYUQFB1OavFTkgaq4o=;
+        b=cveeQTpR4LaPSyuCYqFzdoji0yAnj6dy2V5crAl2k+AH/kkOyps+7PL5qaEY54ho8m
+         IC3uiGRGedwF2aw64EQMFFkMps+F1/d4JSTXFWui01jfX2SI2ri2XrLNle7bpxuioaDL
+         wP3F/XVVdshqaP7GOmRb44+mBxo2+/9n+k/ovj98NRWG4sN1rzdNO57yngRjQ71B6C0R
+         /0ySytDjaPNKNvg2Mh33DFqouO/pGv8pWSqqyY5W8E2h2nwhcIi2ufv+KMJwe399TxNt
+         oVesdSCUByjGemMCauUv5vSa0qGDIBmFgJURdiJjYAo9hdQNZ+FTHLfCCa+/7/4gIXkg
+         96TA==
+X-Gm-Message-State: AOAM533axo4sPElS366IqZ0BhqFC5z9V6tOEQAu9ppPv7ztbcWb+Zpxt
+        RxRcTKnW99PNCsQxqC8VF4A0Clq6Q6MOaHnICQU=
+X-Google-Smtp-Source: ABdhPJzidk6XmSHAiRFyVpv/tKzpVGxZGGy99rtgjo6zlmzKZQOEf1GDLPy4rW24nhDKfEwMN+wcxw==
+X-Received: by 2002:a05:600c:35d6:: with SMTP id r22mr5504280wmq.41.1628013549063;
+        Tue, 03 Aug 2021 10:59:09 -0700 (PDT)
+Received: from [80.5.213.92] (cpc108963-cmbg20-2-0-cust347.5-4.cable.virginm.net. [80.5.213.92])
+        by smtp.gmail.com with ESMTPSA id l7sm13629417wmj.9.2021.08.03.10.59.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 10:59:08 -0700 (PDT)
+Subject: Re: [PATCH net-next 13/21] ethernet, sfc: convert to standard XDP
+ stats
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+ <20210803163641.3743-14-alexandr.lobakin@intel.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <f33f4662-5d35-6bda-d78b-b48e0b083d5d@gmail.com>
+Date:   Tue, 3 Aug 2021 18:59:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210803163641.3743-14-alexandr.lobakin@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jithu Joseph <jithu.joseph@intel.com>
+On 03/08/2021 17:36, Alexander Lobakin wrote:
+> Just like DPAA2 driver, EF{100,X} store XDP stats per-channel, but
+> present them as the sums across all channels.
+> Switch to the standard per-channel XDP stats. n_rx_xdp_bad_drops
+> goes as "general XDP errors", because driver uses just one counter
+> for all kinds of errors.
+> 
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
 
-Adds -L flag to the xdpsock commandline options. Using this
-in conjuction with "-t txonly" option exercises the
-Launchtime/Txtime APIs. These allows the application to specify
-when each packet should be transmitted by the NIC.
-
-Below is an example of how this option may be exercised:
-
-sudo xdpsock -i enp1s0  -t -q 1 -N -s 128 -z -L
-
-The above invocation would transmit  "batch_size" packets each spaced
-1us apart. The first packet in the batch is to be launched
-"LAUNCH_TIME_ADVANCE_NS" into the future and the remaining packets
-in the batch should be spaced 1us apart.
-
-Since launch-time enabled NICs would wait LAUNCH_TIME_ADVANCE_NS(500us)
-between batches of packets, the emphasis of this path is not throughput.
-
-Launch-time should be enabled for the chosen hardware queue using the
-appropriate tc qdisc command before starting the application and
-also NIC hardware clock should be synchronized to the system clock
-using a mechanism like phc2sys.
-
-Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
----
- samples/bpf/xdpsock_user.c | 64 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 60 insertions(+), 4 deletions(-)
-
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index 3fd2f6a0d1eb..a0fd3d5414ba 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -55,6 +55,9 @@
- 
- #define DEBUG_HEXDUMP 0
- 
-+#define LAUNCH_TIME_ADVANCE_NS (500000)
-+#define CLOCK_SYNC_DELAY (60)
-+
- typedef __u64 u64;
- typedef __u32 u32;
- typedef __u16 u16;
-@@ -99,6 +102,7 @@ static u32 opt_num_xsks = 1;
- static u32 prog_id;
- static bool opt_busy_poll;
- static bool opt_reduced_cap;
-+static bool opt_launch_time;
- 
- struct xsk_ring_stats {
- 	unsigned long rx_npkts;
-@@ -741,6 +745,8 @@ static inline u16 udp_csum(u32 saddr, u32 daddr, u32 len,
- 
- #define ETH_FCS_SIZE 4
- 
-+#define MD_SIZE (sizeof(struct xdp_user_tx_metadata))
-+
- #define PKT_HDR_SIZE (sizeof(struct ethhdr) + sizeof(struct iphdr) + \
- 		      sizeof(struct udphdr))
- 
-@@ -798,8 +804,10 @@ static void gen_eth_hdr_data(void)
- 
- static void gen_eth_frame(struct xsk_umem_info *umem, u64 addr)
- {
--	memcpy(xsk_umem__get_data(umem->buffer, addr), pkt_data,
--	       PKT_SIZE);
-+	if (opt_launch_time)
-+		memcpy(xsk_umem__get_data(umem->buffer, addr) + MD_SIZE, pkt_data, PKT_SIZE);
-+	else
-+		memcpy(xsk_umem__get_data(umem->buffer, addr), pkt_data, PKT_SIZE);
- }
- 
- static struct xsk_umem_info *xsk_configure_umem(void *buffer, u64 size)
-@@ -927,6 +935,7 @@ static struct option long_options[] = {
- 	{"irq-string", no_argument, 0, 'I'},
- 	{"busy-poll", no_argument, 0, 'B'},
- 	{"reduce-cap", no_argument, 0, 'R'},
-+	{"launch-time", no_argument, 0, 'L'},
- 	{0, 0, 0, 0}
- };
- 
-@@ -967,6 +976,7 @@ static void usage(const char *prog)
- 		"  -I, --irq-string	Display driver interrupt statistics for interface associated with irq-string.\n"
- 		"  -B, --busy-poll      Busy poll.\n"
- 		"  -R, --reduce-cap	Use reduced capabilities (cannot be used with -M)\n"
-+		"  -L, --launch-time	Toy example of launchtime using XDP\n"
- 		"\n";
- 	fprintf(stderr, str, prog, XSK_UMEM__DEFAULT_FRAME_SIZE,
- 		opt_batch_size, MIN_PKT_SIZE, MIN_PKT_SIZE,
-@@ -982,7 +992,7 @@ static void parse_command_line(int argc, char **argv)
- 	opterr = 0;
- 
- 	for (;;) {
--		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:xQaI:BR",
-+		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:xQaI:BRL",
- 				long_options, &option_index);
- 		if (c == -1)
- 			break;
-@@ -1087,6 +1097,9 @@ static void parse_command_line(int argc, char **argv)
- 		case 'R':
- 			opt_reduced_cap = true;
- 			break;
-+		case 'L':
-+			opt_launch_time = true;
-+			break;
- 		default:
- 			usage(basename(argv[0]));
- 		}
-@@ -1272,6 +1285,7 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
- {
- 	u32 idx;
- 	unsigned int i;
-+	u64 cur_ts, launch_time;
- 
- 	while (xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx) <
- 				      batch_size) {
-@@ -1280,10 +1294,28 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
- 			return;
- 	}
- 
-+	cur_ts = get_nsecs(CLOCK_TAI);
-+
- 	for (i = 0; i < batch_size; i++) {
- 		struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx,
- 								  idx + i);
--		tx_desc->addr = (*frame_nb + i) * opt_xsk_frame_size;
-+		if (opt_launch_time) {
-+			/*
-+			 * Direct the NIC to launch "batch_size" packets each spaced 1us apart.
-+			 * The below calculation specifies that the first packet in the batch
-+			 * is to be launched "LAUNCH_TIME_ADVANCE_NS" into the future and the
-+			 * remaining packets in the batch should be spaced 1us apart.
-+			 */
-+			launch_time = cur_ts + LAUNCH_TIME_ADVANCE_NS + (1000 * i);
-+			xsk_umem__set_md_txtime(xsk->umem->buffer,
-+						((*frame_nb + i) * opt_xsk_frame_size),
-+						launch_time);
-+			tx_desc->addr = (*frame_nb + i) * opt_xsk_frame_size + MD_SIZE;
-+			tx_desc->options = XDP_DESC_OPTION_METADATA;
-+		} else {
-+			tx_desc->addr = (*frame_nb + i) * opt_xsk_frame_size;
-+		}
-+
- 		tx_desc->len = PKT_SIZE;
- 	}
- 
-@@ -1293,6 +1325,16 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
- 	*frame_nb += batch_size;
- 	*frame_nb %= NUM_FRAMES;
- 	complete_tx_only(xsk, batch_size);
-+	if (opt_launch_time) {
-+		/*
-+		 * Hold the Tx loop until all the frames from this batch has been
-+		 * transmitted by the driver. This also ensures that all packets from
-+		 * this batch reach the driver ASAP before the proposed future launchtime
-+		 * becomes stale
-+		 */
-+		while (xsk->outstanding_tx)
-+			complete_tx_only(xsk, opt_batch_size);
-+	}
- }
- 
- static inline int get_batch_size(int pkt_cnt)
-@@ -1334,6 +1376,20 @@ static void tx_only_all(void)
- 		fds[0].events = POLLOUT;
- 	}
- 
-+	if (opt_launch_time) {
-+		/*
-+		 * For launch-time to be meaningful, the system clock and NIC h/w clock
-+		 * needs to be synchronized. Many NIC driver implementations resets the NIC
-+		 * during the bind operation in the XDP initialization flow path.
-+		 * The delay below is intended as a best case approach to hold off packet
-+		 * transmission till the syncronization is acheived.
-+		 */
-+		xsk_socket__enable_so_txtime(xsks[0]->xsk, true);
-+		printf("Waiting for %ds for the NIC clock to synchronize with the system clock\n",
-+		       CLOCK_SYNC_DELAY);
-+		sleep(CLOCK_SYNC_DELAY);
-+	}
-+
- 	while ((opt_pkt_count && pkt_cnt < opt_pkt_count) || !opt_pkt_count) {
- 		int batch_size = get_batch_size(pkt_cnt);
- 
--- 
-2.24.3 (Apple Git-128)
-
+Acked-by: Edward Cree <ecree.xilinx@gmail.com>
