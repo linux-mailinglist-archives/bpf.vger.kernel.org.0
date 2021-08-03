@@ -2,135 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A893DF345
-	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 18:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061663DF39C
+	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 19:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237494AbhHCQwc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Aug 2021 12:52:32 -0400
-Received: from mga04.intel.com ([192.55.52.120]:6624 "EHLO mga04.intel.com"
+        id S237759AbhHCRKn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Aug 2021 13:10:43 -0400
+Received: from mga14.intel.com ([192.55.52.115]:16898 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237457AbhHCQw3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:52:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="211868126"
+        id S237657AbhHCRKm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Aug 2021 13:10:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="213466132"
 X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="211868126"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 09:52:17 -0700
-X-ExtLoop1: 1
+   d="scan'208";a="213466132"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 10:10:16 -0700
 X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="585041756"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Aug 2021 09:52:07 -0700
-Received: from alobakin-mobl.ger.corp.intel.com (mszymcza-mobl.ger.corp.intel.com [10.213.25.231])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 173Gpg7B004325;
-        Tue, 3 Aug 2021 17:52:02 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Lukasz Czapnik <lukasz.czapnik@intel.com>,
-        Marcin Kubiak <marcin.kubiak@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Sameeh Jubran <sameehj@amazon.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jian Shen <shenjian15@huawei.com>,
-        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: [PATCH ethtool-next 5/5] man: mention XDP standard statistics in help and man page
-Date:   Tue,  3 Aug 2021 18:51:40 +0200
-Message-Id: <20210803165140.172-6-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210803165140.172-1-alexandr.lobakin@intel.com>
-References: <20210803165140.172-1-alexandr.lobakin@intel.com>
+   d="scan'208";a="521327092"
+Received: from shyamasr-mobl.amr.corp.intel.com ([10.209.65.83])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 10:10:15 -0700
+From:   Kishen Maloor <kishen.maloor@intel.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org, hawk@kernel.org,
+        magnus.karlsson@intel.com
+Cc:     Kishen Maloor <kishen.maloor@intel.com>
+Subject: [RFC bpf-next 0/5] SO_TXTIME support in AF_XDP
+Date:   Tue,  3 Aug 2021 13:10:01 -0400
+Message-Id: <20210803171006.13915-1-kishen.maloor@intel.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"xdp" is a new type of standard statistics landed in with Linux
-commit a9428aaed122 ("ethtool, stats: introduce standard XDP statistics").
-Mention it in the help text and the man page source.
+Background
 
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
----
- ethtool.8.in | 3 ++-
- ethtool.c    | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+This change adds kernel and userspace support for SO_TXTIME
+in AF_XDP to include a specific TXTIME (aka "Launch Time")
+with XDP frames issued from userspace XDP applications.
 
-diff --git a/ethtool.8.in b/ethtool.8.in
-index 6b7761849fca..7db0adebbdcf 100644
---- a/ethtool.8.in
-+++ b/ethtool.8.in
-@@ -245,6 +245,7 @@ ethtool \- query or control network driver and hardware settings
- .RB [\fBeth\-mac\fP]
- .RB [\fBeth\-ctrl\fP]
- .RB [\fBrmon\fP]
-+.RB [\fBxdp\fP]
- .RB ]
- .HP
- .B ethtool \-\-phy\-statistics
-@@ -673,7 +674,7 @@ naming of NIC- and driver-specific statistics across vendors.
- .B \fB\-\-all\-groups
- .E
- .TP
--.B \fB\-\-groups [\fBeth\-phy\fP] [\fBeth\-mac\fP] [\fBeth\-ctrl\fP] [\fBrmon\fP]
-+.B \fB\-\-groups [\fBeth\-phy\fP] [\fBeth\-mac\fP] [\fBeth\-ctrl\fP] [\fBrmon\fP] [\fBxdp\fP]
- Request groups of standard device statistics.
- .RE
- .TP
-diff --git a/ethtool.c b/ethtool.c
-index 33a0a492cb15..c1f1279bd9f0 100644
---- a/ethtool.c
-+++ b/ethtool.c
-@@ -5776,7 +5776,7 @@ static const struct option args[] = {
- 		.nlchk	= nl_gstats_chk,
- 		.nlfunc	= nl_gstats,
- 		.help	= "Show adapter statistics",
--		.xhelp	= "               [ --all-groups | --groups [eth-phy] [eth-mac] [eth-ctrl] [rmon] ]\n"
-+		.xhelp	= "               [ --all-groups | --groups [eth-phy] [eth-mac] [eth-ctrl] [rmon] [xdp] ]\n"
- 	},
- 	{
- 		.opts	= "--phy-statistics",
+This feature may be used in conjunction with application-based traffic
+shaping methods to delay less critical traffic and prioritize
+latency sensitive packets to meet a desired QoS.
+
+Implementation notes
+
+The timestamp is stored in the XDP metadata area and passed down
+to the NIC driver to configure the launch time.
+The timestamp is internally conveyed to the sk_buff destined to generic 
+mode NIC drivers. Alternatively, it may be read via a new Zero-Copy 
+driver API.
+
+The structure of XDP metadata that stores the TXTIME takes a form
+(Shown below) that is aligned to ongoing work in the community
+for describing XDP metadata using BTF:
+
+struct xdp_user_tx_metadata {
+        __u64 timestamp;
+        __u32 md_valid;
+        __u32 btf_id;
+};
+
+On the control path from userspace XDP applications, this change
+repurposes the SO_TXTIME socket option to harness this 
+feature, and adopts the above metadata struct for storing the TXTIME.
+
+The (libbpf) userspace API has been expanded with two helper functons:
+
+- int xsk_socket__enable_so_txtime(struct xsk_socket *xsk, bool enable)
+   
+   Sets the SO_TXTIME option on the AF_XDP socket (using setsockopt()).
+
+- void xsk_umem__set_md_txtime(void *umem_area, __u64 chunkAddr,
+                               __s64 txtime)
+   
+   Packages the application supplied TXTIME into the above md struct 
+   and stores it in the XDP metadata area, which precedes the XDP frame.
+
+In practice, a userspace XDP application must ensure the following:
+
+* Store the XDP packet at the location following the XDP metadata area:
+   uint8_t *pkt = xsk_umem__get_data(xsk.buffer, chunkAddr) +
+                                     sizeof(struct xdp_user_tx_metadata);
+
+* Correctly set the pkt addr in the TX descriptor:
+   tx_desc->addr = chunkAddr + sizeof(struct xdp_user_tx_metadata);
+
+* Signal the kernel that it included metadata by setting the TX 
+  descriptor options:
+   tx_desc->options = XDP_DESC_OPTION_METADATA;
+
+In the NIC driver, a new XSK Zero-Copy Driver API:
+s64 xsk_buff_get_txtime(struct xsk_buff_pool *pool, struct xdp_desc *desc)
+is used to retrieve and consume a Launch Time provided by the userspace XDP
+application.
+
+Accompanying the kernel and userspace changes are the following updates:
+
+* Launch Time support along the XDP ZC path in the IGC driver by exercising
+  the new XSK ZC driver API.
+
+* SO_TXTIME support in the xdpsock sample application to illustrate the
+  userspace API.
+
+Jithu Joseph (3):
+  igc: Launchtime support in XDP Tx ZC path
+  samples/bpf/xdpsock_user.c: Make get_nsecs() generic
+  samples/bpf/xdpsock_user.c: Launchtime/TXTIME API usage
+
+Kishen Maloor (2):
+  net: xdp: SO_TXTIME support in AF_XDP
+  libbpf: SO_TXTIME support in AF_XDP
+
+ drivers/net/ethernet/intel/igc/igc_main.c | 49 ++++++++++++++-
+ include/net/xdp_sock.h                    |  1 +
+ include/net/xdp_sock_drv.h                | 10 +++
+ include/net/xsk_buff_pool.h               |  1 +
+ include/uapi/linux/if_xdp.h               |  2 +
+ include/uapi/linux/xdp_md_std.h           | 14 +++++
+ net/xdp/xsk.c                             | 51 +++++++++++++++-
+ net/xdp/xsk.h                             |  2 +
+ net/xdp/xsk_buff_pool.c                   | 23 +++++++
+ net/xdp/xsk_queue.h                       |  4 +-
+ samples/bpf/xdpsock_user.c                | 74 ++++++++++++++++++++---
+ tools/include/uapi/linux/if_xdp.h         |  2 +
+ tools/include/uapi/linux/xdp_md_std.h     | 14 +++++
+ tools/lib/bpf/xsk.h                       | 27 ++++++++-
+ 14 files changed, 258 insertions(+), 16 deletions(-)
+ create mode 100644 include/uapi/linux/xdp_md_std.h
+ create mode 100644 tools/include/uapi/linux/xdp_md_std.h
+
 -- 
-2.31.1
+2.24.3 (Apple Git-128)
 
