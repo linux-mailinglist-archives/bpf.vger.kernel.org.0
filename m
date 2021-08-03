@@ -2,28 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6814E3DF336
-	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 18:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52D23DF33A
+	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 18:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbhHCQwZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Aug 2021 12:52:25 -0400
-Received: from mga18.intel.com ([134.134.136.126]:30464 "EHLO mga18.intel.com"
+        id S237433AbhHCQw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Aug 2021 12:52:26 -0400
+Received: from mga17.intel.com ([192.55.52.151]:64065 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237443AbhHCQwR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:52:17 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="200924744"
+        id S237446AbhHCQwW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:52:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="194016036"
 X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="200924744"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 09:52:05 -0700
+   d="scan'208";a="194016036"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 09:52:09 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="500887399"
+   d="scan'208";a="479592823"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga001.jf.intel.com with ESMTP; 03 Aug 2021 09:51:55 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 03 Aug 2021 09:51:59 -0700
 Received: from alobakin-mobl.ger.corp.intel.com (mszymcza-mobl.ger.corp.intel.com [10.213.25.231])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 173Gpg78004325;
-        Tue, 3 Aug 2021 17:51:50 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 173Gpg79004325;
+        Tue, 3 Aug 2021 17:51:54 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     Michal Kubecek <mkubecek@suse.cz>
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -74,9 +74,9 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         netdev@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: [PATCH ethtool-next 2/5] stats: factor out one stat field printing
-Date:   Tue,  3 Aug 2021 18:51:37 +0200
-Message-Id: <20210803165140.172-3-alexandr.lobakin@intel.com>
+Subject: [PATCH ethtool-next 3/5] stats: add support for per-channel statistics [blocks]
+Date:   Tue,  3 Aug 2021 18:51:38 +0200
+Message-Id: <20210803165140.172-4-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210803165140.172-1-alexandr.lobakin@intel.com>
 References: <20210803165140.172-1-alexandr.lobakin@intel.com>
@@ -86,95 +86,132 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Move the code that takes one stat field nlattr, validates and prints
-it in either stdout or JSON, into a separate function.
-It will later be reused by per-channel statistics printing.
+Treat ETHTOOL_A_STATS_GRP_STAT_BLOCK as a block of the standard
+stats for one channel and print them prefixed with "channel%u-".
+The index will be started from 0 and incremented automatically
+for each new attr of that type.
+This means that stats blocks should follow each other one by one
+according to their channel number, otherwise the output can mess
+up with the indices.
 
 Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
 ---
- netlink/stats.c | 53 +++++++++++++++++++++++++++++++------------------
- 1 file changed, 34 insertions(+), 19 deletions(-)
+ netlink/stats.c | 67 ++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 63 insertions(+), 4 deletions(-)
 
 diff --git a/netlink/stats.c b/netlink/stats.c
-index 9f609a4ec550..9d950b77d656 100644
+index 9d950b77d656..36a9dad97f15 100644
 --- a/netlink/stats.c
 +++ b/netlink/stats.c
-@@ -87,6 +87,36 @@ err_close_rmon:
+@@ -87,8 +87,8 @@ err_close_rmon:
  	return 1;
  }
  
-+static int parse_stat(const struct nlattr *attr, const char *grp_name,
-+		      const struct stringset *stat_str)
-+{
-+	const struct nlattr *stat;
-+	unsigned long long val;
-+	const char *name;
-+	unsigned int s;
-+	int ret;
+-static int parse_stat(const struct nlattr *attr, const char *grp_name,
+-		      const struct stringset *stat_str)
++static int parse_stat(const struct nlattr *attr, const char *ch_name,
++		      const char *grp_name, const struct stringset *stat_str)
+ {
+ 	const struct nlattr *stat;
+ 	unsigned long long val;
+@@ -108,8 +108,12 @@ static int parse_stat(const struct nlattr *attr, const char *grp_name,
+ 	if (!name || !name[0])
+ 		return 0;
+ 
+-	if (!is_json_context())
++	if (!is_json_context()) {
++		if (ch_name)
++			fprintf(stdout, "%s-", ch_name);
 +
-+	stat = mnl_attr_get_payload(attr);
-+	ret = mnl_attr_validate(stat, MNL_TYPE_U64);
-+	if (ret) {
-+		fprintf(stderr, "invalid kernel response - bad statistic entry\n");
-+		return 1;
+ 		fprintf(stdout, "%s-%s: ", grp_name, name);
++	}
+ 
+ 	val = mnl_attr_get_u64(stat);
+ 	print_u64(PRINT_ANY, name, "%llu\n", val);
+@@ -117,12 +121,62 @@ static int parse_stat(const struct nlattr *attr, const char *grp_name,
+ 	return 0;
+ }
+ 
++static int parse_one_block(const struct nlattr *block, const char *grp_name,
++			   const struct stringset *stat_str,
++			   unsigned int channel)
++{
++	char ch_name[ETH_GSTRING_LEN];
++	const struct nlattr *attr;
++
++	snprintf(ch_name, sizeof(ch_name), "channel%u", channel);
++	open_json_object(ch_name);
++
++	mnl_attr_for_each_nested(attr, block) {
++		if (mnl_attr_get_type(attr) != ETHTOOL_A_STATS_GRP_STAT ||
++		    parse_stat(attr, ch_name, grp_name, stat_str))
++			goto err_close_block;
 +	}
 +
-+	s = mnl_attr_get_type(stat);
-+	name = get_string(stat_str, s);
-+	if (!name || !name[0])
-+		return 0;
-+
-+	if (!is_json_context())
-+		fprintf(stdout, "%s-%s: ", grp_name, name);
-+
-+	val = mnl_attr_get_u64(stat);
-+	print_u64(PRINT_ANY, name, "%llu\n", val);
++	close_json_object();
 +
 +	return 0;
++
++err_close_block:
++	close_json_object();
++
++	return 1;
++}
++
++static int parse_blocks(const struct nlattr *grp, const char *grp_name,
++			const struct stringset *stat_str)
++{
++	const struct nlattr *attr;
++	unsigned int channel = 0;
++
++	open_json_array("per-channel", "");
++
++	mnl_attr_for_each_nested(attr, grp) {
++		if (mnl_attr_get_type(attr) == ETHTOOL_A_STATS_GRP_STAT_BLOCK &&
++		    parse_one_block(attr, grp_name, stat_str, channel++))
++			goto err_close_block;
++	}
++
++	close_json_array("");
++
++	return 0;
++
++err_close_block:
++	close_json_array("");
++
++	return 1;
 +}
 +
  static int parse_grp(struct nl_context *nlctx, const struct nlattr *grp,
  		     const struct stringset *std_str)
  {
-@@ -94,10 +124,9 @@ static int parse_grp(struct nl_context *nlctx, const struct nlattr *grp,
+ 	const struct nlattr *tb[ETHTOOL_A_STATS_GRP_SS_ID + 1] = {};
  	DECLARE_ATTR_TB_INFO(tb);
- 	bool hist_rx = false, hist_tx = false;
+-	bool hist_rx = false, hist_tx = false;
++	bool hist_rx = false, hist_tx = false, blocks = false;
  	const struct stringset *stat_str;
--	const struct nlattr *attr, *stat;
--	const char *std_name, *name;
--	unsigned int ss_id, id, s;
--	unsigned long long val;
-+	const struct nlattr *attr;
-+	unsigned int ss_id, id;
-+	const char *std_name;
- 	int ret;
- 
- 	ret = mnl_attr_parse_nested(grp, attr_cb, &tb_info);
-@@ -131,22 +160,8 @@ static int parse_grp(struct nl_context *nlctx, const struct nlattr *grp,
+ 	const struct nlattr *attr;
+ 	unsigned int ss_id, id;
+@@ -156,6 +210,9 @@ static int parse_grp(struct nl_context *nlctx, const struct nlattr *grp,
+ 		case ETHTOOL_A_STATS_GRP_HIST_TX:
+ 			hist_tx = true;
+ 			continue;
++		case ETHTOOL_A_STATS_GRP_STAT_BLOCK:
++			blocks = true;
++			continue;
+ 		default:
  			continue;
  		}
+@@ -170,6 +227,8 @@ static int parse_grp(struct nl_context *nlctx, const struct nlattr *grp,
+ 	if (hist_tx)
+ 		parse_rmon_hist(grp, std_name, "tx-pktsNtoM", "tx",
+ 				ETHTOOL_A_STATS_GRP_HIST_TX);
++	if (blocks)
++		parse_blocks(grp, std_name, stat_str);
  
--		stat = mnl_attr_get_payload(attr);
--		ret = mnl_attr_validate(stat, MNL_TYPE_U64);
--		if (ret) {
--			fprintf(stderr, "invalid kernel response - bad statistic entry\n");
-+		if (parse_stat(attr, NULL, std_name, stat_str))
- 			goto err_close_grp;
--		}
--		s = mnl_attr_get_type(stat);
--		name = get_string(stat_str, s);
--		if (!name || !name[0])
--			continue;
--
--		if (!is_json_context())
--			fprintf(stdout, "%s-%s: ", std_name, name);
--
--		val = mnl_attr_get_u64(stat);
--		print_u64(PRINT_ANY, name, "%llu\n", val);
- 	}
+ 	close_json_object();
  
- 	if (hist_rx)
 -- 
 2.31.1
 
