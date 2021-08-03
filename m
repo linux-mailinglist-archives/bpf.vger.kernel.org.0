@@ -2,28 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73D43DF30C
-	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 18:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2213DF311
+	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 18:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234751AbhHCQnG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Aug 2021 12:43:06 -0400
-Received: from mga01.intel.com ([192.55.52.88]:28280 "EHLO mga01.intel.com"
+        id S234599AbhHCQnW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Aug 2021 12:43:22 -0400
+Received: from mga12.intel.com ([192.55.52.136]:58212 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234675AbhHCQnE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Aug 2021 12:43:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="235674742"
+        id S234675AbhHCQnV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Aug 2021 12:43:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="193325463"
 X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="235674742"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 09:42:45 -0700
+   d="scan'208";a="193325463"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 09:42:59 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,292,1620716400"; 
-   d="scan'208";a="670509401"
+   d="scan'208";a="521318629"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Aug 2021 09:42:33 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 03 Aug 2021 09:42:48 -0700
 Received: from alobakin-mobl.ger.corp.intel.com (lkalica-MOBL.ger.corp.intel.com [10.213.13.182])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 173GgTIX032348;
-        Tue, 3 Aug 2021 17:42:29 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 173Ggihn032389;
+        Tue, 3 Aug 2021 17:42:44 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
@@ -74,9 +74,9 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         netdev@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: [PATCH net-next 20/21] virtio-net: convert to standard XDP stats
-Date:   Tue,  3 Aug 2021 18:42:28 +0200
-Message-Id: <20210803164228.4342-1-alexandr.lobakin@intel.com>
+Subject: [PATCH net-next 21/21] Documentation, ethtool-netlink: update standard statistics documentation
+Date:   Tue,  3 Aug 2021 18:42:43 +0200
+Message-Id: <20210803164243.4469-1-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210803163641.3743-1-alexandr.lobakin@intel.com>
 References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
@@ -86,100 +86,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that we have 1:1 correspondence between the driver XDP stats and
-the standard XDP stats, we can go forth and convert the driver to
-expose XDP statistics via our standard interface.
+Reflect the addition of the new standard XDP stats as well as of
+a new NL attribute.
 
 Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
 ---
- drivers/net/virtio_net.c | 52 ++++++++++++++++++++++++++++++++++------
- 1 file changed, 45 insertions(+), 7 deletions(-)
+ Documentation/networking/ethtool-netlink.rst | 45 +++++++++++++-------
+ 1 file changed, 30 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index acad099006cd..df1fe36cf089 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -101,8 +101,6 @@ struct virtnet_rq_stats {
- static const struct virtnet_stat_desc virtnet_sq_stats_desc[] = {
- 	{ "packets",		VIRTNET_SQ_STAT(packets) },
- 	{ "bytes",		VIRTNET_SQ_STAT(bytes) },
--	{ "xdp_xmit",		VIRTNET_SQ_STAT(xdp_xmit) },
--	{ "xdp_xmit_drops",	VIRTNET_SQ_STAT(xdp_xmit_drops) },
- 	{ "kicks",		VIRTNET_SQ_STAT(kicks) },
- };
+diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
+index c86628e6a235..d304a5361569 100644
+--- a/Documentation/networking/ethtool-netlink.rst
++++ b/Documentation/networking/ethtool-netlink.rst
+@@ -1415,21 +1415,26 @@ Request contents:
  
-@@ -110,11 +108,6 @@ static const struct virtnet_stat_desc virtnet_rq_stats_desc[] = {
- 	{ "packets",		VIRTNET_RQ_STAT(packets) },
- 	{ "bytes",		VIRTNET_RQ_STAT(bytes) },
- 	{ "drops",		VIRTNET_RQ_STAT(drops) },
--	{ "xdp_packets",	VIRTNET_RQ_STAT(xdp_packets) },
--	{ "xdp_tx",		VIRTNET_RQ_STAT(xdp_tx) },
--	{ "xdp_redirects",	VIRTNET_RQ_STAT(xdp_redirects) },
--	{ "xdp_drops",		VIRTNET_RQ_STAT(xdp_drops) },
--	{ "xdp_errors",		VIRTNET_RQ_STAT(xdp_errors) },
- 	{ "kicks",		VIRTNET_RQ_STAT(kicks) },
- };
+ Kernel response contents:
  
-@@ -2295,6 +2288,49 @@ static void virtnet_get_ethtool_stats(struct net_device *dev,
- 	}
- }
+- +-----------------------------------+--------+--------------------------------+
+- | ``ETHTOOL_A_STATS_HEADER``        | nested | reply header                   |
+- +-----------------------------------+--------+--------------------------------+
+- | ``ETHTOOL_A_STATS_GRP``           | nested | one or more group of stats     |
+- +-+---------------------------------+--------+--------------------------------+
+- | | ``ETHTOOL_A_STATS_GRP_ID``      | u32    | group ID - ``ETHTOOL_STATS_*`` |
+- +-+---------------------------------+--------+--------------------------------+
+- | | ``ETHTOOL_A_STATS_GRP_SS_ID``   | u32    | string set ID for names        |
+- +-+---------------------------------+--------+--------------------------------+
+- | | ``ETHTOOL_A_STATS_GRP_STAT``    | nested | nest containing a statistic    |
+- +-+---------------------------------+--------+--------------------------------+
+- | | ``ETHTOOL_A_STATS_GRP_HIST_RX`` | nested | histogram statistic (Rx)       |
+- +-+---------------------------------+--------+--------------------------------+
+- | | ``ETHTOOL_A_STATS_GRP_HIST_TX`` | nested | histogram statistic (Tx)       |
+- +-+---------------------------------+--------+--------------------------------+
++ +--------------------------------------+--------+-----------------------------+
++ | ``ETHTOOL_A_STATS_HEADER``           | nested | reply header                |
++ +--------------------------------------+--------+-----------------------------+
++ | ``ETHTOOL_A_STATS_GRP``              | nested | one or more group of stats  |
++ +-+------------------------------------+--------+-----------------------------+
++ | | ``ETHTOOL_A_STATS_GRP_ID``         | u32    | group ID -                  |
++ | |                                    |        | ``ETHTOOL_STATS_*``         |
++ +-+------------------------------------+--------+-----------------------------+
++ | | ``ETHTOOL_A_STATS_GRP_SS_ID``      | u32    | string set ID for names     |
++ +-+------------------------------------+--------+-----------------------------+
++ | | ``ETHTOOL_A_STATS_GRP_STAT``       | nested | nest containing a statistic |
++ +-+------------------------------------+--------+-----------------------------+
++ | | ``ETHTOOL_A_STATS_GRP_STAT_BLOCK`` | nested | block of stats per channel  |
++ +-+-+----------------------------------+--------+-----------------------------+
++ | | | ``ETHTOOL_A_STATS_GRP_STAT``     | nested | nest containing a statistic |
++ +-+-+----------------------------------+--------+-----------------------------+
++ | | ``ETHTOOL_A_STATS_GRP_HIST_RX``    | nested | histogram statistic (Rx)    |
++ +-+------------------------------------+--------+-----------------------------+
++ | | ``ETHTOOL_A_STATS_GRP_HIST_TX``    | nested | histogram statistic (Tx)    |
++ +-+------------------------------------+--------+-----------------------------+
  
-+static int virtnet_get_std_stats_channels(struct net_device *dev, u32 sset)
-+{
-+	const struct virtnet_info *vi = netdev_priv(dev);
-+
-+	switch (sset) {
-+	case ETH_SS_STATS_XDP:
-+		return vi->curr_queue_pairs;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static void virtnet_get_xdp_stats(struct net_device *dev,
-+				  struct ethtool_xdp_stats *xdp_stats)
-+{
-+	const struct virtnet_info *vi = netdev_priv(dev);
-+	u32 i;
-+
-+	for (i = 0; i < vi->curr_queue_pairs; i++) {
-+		const struct virtnet_rq_stats *rqs = &vi->rq[i].stats;
-+		const struct virtnet_sq_stats *sqs = &vi->sq[i].stats;
-+		struct ethtool_xdp_stats *iter = xdp_stats + i;
-+		u32 start;
-+
-+		do {
-+			start = u64_stats_fetch_begin_irq(&rqs->syncp);
-+
-+			iter->packets = rqs->xdp_packets;
-+			iter->tx = rqs->xdp_tx;
-+			iter->redirect = rqs->xdp_redirects;
-+			iter->drop = rqs->xdp_drops;
-+			iter->errors = rqs->xdp_errors;
-+		} while (u64_stats_fetch_retry_irq(&rqs->syncp, start));
-+
-+		do {
-+			start = u64_stats_fetch_begin_irq(&sqs->syncp);
-+
-+			iter->xmit = sqs->xdp_xmit;
-+			iter->xmit_drops = sqs->xdp_xmit_drops;
-+		} while (u64_stats_fetch_retry_irq(&sqs->syncp, start));
-+	}
-+}
-+
- static void virtnet_get_channels(struct net_device *dev,
- 				 struct ethtool_channels *channels)
- {
-@@ -2409,6 +2445,8 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
- 	.set_link_ksettings = virtnet_set_link_ksettings,
- 	.set_coalesce = virtnet_set_coalesce,
- 	.get_coalesce = virtnet_get_coalesce,
-+	.get_std_stats_channels = virtnet_get_std_stats_channels,
-+	.get_xdp_stats = virtnet_get_xdp_stats,
- };
+ Users specify which groups of statistics they are requesting via
+ the ``ETHTOOL_A_STATS_GROUPS`` bitset. Currently defined values are:
+@@ -1439,6 +1444,7 @@ the ``ETHTOOL_A_STATS_GROUPS`` bitset. Currently defined values are:
+  ETHTOOL_STATS_ETH_PHY  eth-phy  Basic IEEE 802.3 PHY statistics (30.3.2.1.*)
+  ETHTOOL_STATS_ETH_CTRL eth-ctrl Basic IEEE 802.3 MAC Ctrl statistics (30.3.3.*)
+  ETHTOOL_STATS_RMON     rmon     RMON (RFC 2819) statistics
++ ETHTOOL_STATS_XDP      xdp      XDP statistics
+  ====================== ======== ===============================================
  
- static void virtnet_freeze_down(struct virtio_device *vdev)
+ Each group should have a corresponding ``ETHTOOL_A_STATS_GRP`` in the reply.
+@@ -1451,6 +1457,10 @@ Statistics are added to the ``ETHTOOL_A_STATS_GRP`` nest under
+ single 8 byte (u64) attribute inside - the type of that attribute is
+ the statistic ID and the value is the value of the statistic.
+ Each group has its own interpretation of statistic IDs.
++Statistics can be folded into a consistent (non-broken with any other attr)
++sequence of blocks ``ETHTOOL_A_STATS_GRP_STAT_BLOCK``. This way they are
++treated by Ethtool as per-channel statistics, and are printed with the
++"channel%d-" prefix.
+ Attribute IDs correspond to strings from the string set identified
+ by ``ETHTOOL_A_STATS_GRP_SS_ID``. Complex statistics (such as RMON histogram
+ entries) are also listed inside ``ETHTOOL_A_STATS_GRP`` and do not have
+@@ -1479,6 +1489,11 @@ Low and high bounds are inclusive, for example:
+  etherStatsPkts512to1023Octets 512  1023
+  ============================= ==== ====
+ 
++Drivers which want to export global (per-device) XDP statistics should
++only implement ``get_xdp_stats`` callback. An additional one
++``get_std_stats_channels`` is needed if the driver exposes per-channel
++statistics.
++
+ PHC_VCLOCKS_GET
+ ===============
+ 
 -- 
 2.31.1
 
