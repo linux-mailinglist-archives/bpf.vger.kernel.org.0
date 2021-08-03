@@ -2,152 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCD13DEC7C
-	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 13:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 464C03DED27
+	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 13:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbhHCLnO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Aug 2021 07:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44970 "EHLO
+        id S235682AbhHCLs5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Aug 2021 07:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235886AbhHCLnH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Aug 2021 07:43:07 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B611C0617A5
-        for <bpf@vger.kernel.org>; Tue,  3 Aug 2021 04:42:55 -0700 (PDT)
+        with ESMTP id S235705AbhHCLsw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Aug 2021 07:48:52 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C748C03544A
+        for <bpf@vger.kernel.org>; Tue,  3 Aug 2021 04:46:32 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so3402125pjb.3
+        for <bpf@vger.kernel.org>; Tue, 03 Aug 2021 04:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2MFdlHfNN/2Kl0BX3g2w3qS4FMDL46x9PWSUeVhOQug=;
+        b=OAthuXW430lH7Eu/jdmtwPhe8U6kY30FANM9JTkGYE8aV1RufnyxurZmUCZCJKGuAA
+         WfnZUel6GBGg2atRZPdDArVYB1spjCIpPiMY0ZVkRP+VSrBlmdroN2J3LyicmJFuNtih
+         C9nZm30LMIbc5P0l9RxSsTr8JOrTArvxP07OTe4ovHWWQSwop0WIm+u/JaZhWIWVZzyS
+         gkzFoiiM54xdiaoXeirtBK6QPgNL9RJda5FYl1lkUOT8CQ5wMnLQ193xj22+59C8s3Um
+         vxaP2hvs0JRCfOwjNz5kT8FwT32hqKvFBE7wkyFs9GJJAqhGPLKApVRvdZ02fMj1Sdlv
+         X9Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2MFdlHfNN/2Kl0BX3g2w3qS4FMDL46x9PWSUeVhOQug=;
+        b=uZHtncuJTaLt90jI2xE1GGYitiUGX0wgOUnYE+PUaSAJ0ekgAC93mMe29t/FED5zDB
+         0s+5YekzwWtuNOmZWwbVaKr3NfBZl5RYMo+s/gDmYxc6N1enhxKpwhej6PWhsfRaLQVi
+         gBL/P7qM0pAdYobdgWexebbfcGfFqlCRfjNJzwVgkvafrXhJd1TVMwNIOp69d8JDu+yP
+         CDKyvgDuXHOPDcOYzY/leViWTct22yRwrXFFxUdQ3QWlZP1A2Bxp/HwJbL5uTrb+LN3j
+         PB/ukQkk/xSXdNjhbRhyef7QEqv7xZZeIrBp3SMLzBgY3m1hP4qTazgxKFrwFS44Q+Hx
+         vOxA==
+X-Gm-Message-State: AOAM533ZLxr5PGI9o/9n906XoyoGkqg8D0BpqUX/U7XNlKGSRtykbWE0
+        xhdPZiDCpEyNwu/tVKvZMDN7GJCW7UZSg5AQaB46tw==
+X-Google-Smtp-Source: ABdhPJxrsZEp+ga+x3wT1djHWqamSEpVaKfXomH0ICyHbWVakhxJk6m3ChppPLJ12otpEUaziWw4x7KEnlxZn6pp5mU=
+X-Received: by 2002:a17:903:308b:b029:12b:c7ec:998d with SMTP id
+ u11-20020a170903308bb029012bc7ec998dmr18146533plc.78.1627991191967; Tue, 03
+ Aug 2021 04:46:31 -0700 (PDT)
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1627990960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mGB6/xcegKXtu/8Ld2yXeGGGMgPGw4hVLuMWkPx0xWA=;
-        b=lPJixahyjboxxccmSjjwvbELc+00x19863ufi6jDOaNo3Ll2PPidOz8LJiXkKjq/Bh1C4F
-        tD4MksV49oDE9WdOkClbCvDjWGYvrS5KlWTkacmNv6v7CEvCV6uA062PwhWVziyWkWLlef
-        p+d+bgh76Dc5M8tmfjDoimFl6C4ut4w=
-Date:   Tue, 03 Aug 2021 11:42:39 +0000
-Content-Type: text/plain; charset="utf-8"
+References: <CAEEdnKGefYJtcPCX-yxzFCA6F2_vq7oNiHg8yR5A=8soTSc6MQ@mail.gmail.com>
+ <CAK3+h2yanFA2c0qgy80juvAVuueiTqFXqx5HNjzX9JCAKEJOzA@mail.gmail.com>
+In-Reply-To: <CAK3+h2yanFA2c0qgy80juvAVuueiTqFXqx5HNjzX9JCAKEJOzA@mail.gmail.com>
+From:   =?UTF-8?B?6IyD5byA5Zac?= <fankaixi.li@bytedance.com>
+Date:   Tue, 3 Aug 2021 19:46:21 +0800
+Message-ID: <CAEEdnKFc-=hrQAtUgwNgrxCwe2bPLTrQLN8pD_eBN1kWLt5wWA@mail.gmail.com>
+Subject: Re: [External] Re: Failed to build bpf selftest testcases based on
+ upstream master branch
+To:     Vincent Li <vincent.mc.li@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, daniel <daniel@iogearbox.net>,
+        ast <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yajun.deng@linux.dev
-Message-ID: <a37faefd6dcad9f01212d60f8bb32f4f@linux.dev>
-Subject: Re: [PATCH net-next] net: Modify sock_set_keepalive() for more
- scenarios
-To:     "kernel test robot" <lkp@intel.com>, davem@davemloft.net,
-        kuba@kernel.org, mathew.j.martineau@linux.intel.com,
-        matthieu.baerts@tessares.net, trond.myklebust@hammerspace.com,
-        anna.schumaker@netapp.com
-Cc:     kbuild-all@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        mptcp@lists.linux.dev
-In-Reply-To: <202108031929.b1AMeeUj-lkp@intel.com>
-References: <202108031929.b1AMeeUj-lkp@intel.com>
- <20210803082553.25194-1-yajun.deng@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The tcp_create_listen_sock() function was already dropped in commit <2dc6=
-b1158c28c3a5e86d162628810312f98d5e97> by Alexander Aring.=0A =0AAugust 3,=
- 2021 7:28 PM, "kernel test robot" <lkp@intel.com> wrote:=0A=0A> Hi Yajun=
-,=0A> =0A> Thank you for the patch! Yet something to improve:=0A> =0A> [a=
-uto build test ERROR on net-next/master]=0A> =0A> url:=0A> https://github=
-.com/0day-ci/linux/commits/Yajun-Deng/net-Modify-sock_set_keepalive-for-m=
-ore-scenarios=0A> 20210803-162757=0A> base: https://git.kernel.org/pub/sc=
-m/linux/kernel/git/davem/net-next.git=0A> 7cdd0a89ec70ce6a720171f1f7817ee=
-9502b134c=0A> config: m68k-allmodconfig (attached as .config)=0A> compile=
-r: m68k-linux-gcc (GCC) 10.3.0=0A> reproduce (this is a W=3D1 build):=0A>=
- wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.=
-cross -O ~/bin/make.cross=0A> chmod +x ~/bin/make.cross=0A> # https://git=
-hub.com/0day-ci/linux/commit/1dd4cca54718feb13bbafafb8104a414ddc49662=0A>=
- git remote add linux-review https://github.com/0day-ci/linux=0A> git fet=
-ch --no-tags linux-review=0A> Yajun-Deng/net-Modify-sock_set_keepalive-fo=
-r-more-scenarios/20210803-162757=0A> git checkout 1dd4cca54718feb13bbafaf=
-b8104a414ddc49662=0A> # save the attached .config to linux build tree=0A>=
- mkdir build_dir=0A> COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-10=
-.3.0 make.cross O=3Dbuild_dir ARCH=3Dm68k=0A> SHELL=3D/bin/bash fs/dlm/=
-=0A> =0A> If you fix the issue, kindly add following tag as appropriate=
-=0A> Reported-by: kernel test robot <lkp@intel.com>=0A> =0A> All errors (=
-new ones prefixed by >>):=0A> =0A> fs/dlm/lowcomms.c: In function 'tcp_cr=
-eate_listen_sock':=0A> =0A>>> fs/dlm/lowcomms.c:1359:2: error: too few ar=
-guments to function 'sock_set_keepalive'=0A> =0A> 1359 | sock_set_keepali=
-ve(sock->sk);=0A> | ^~~~~~~~~~~~~~~~~~=0A> In file included from fs/dlm/l=
-owcomms.c:46:=0A> include/net/sock.h:2775:6: note: declared here=0A> 2775=
- | void sock_set_keepalive(struct sock *sk, bool valbool);=0A> | ^~~~~~~~=
-~~~~~~~~~~=0A> =0A> vim +/sock_set_keepalive +1359 fs/dlm/lowcomms.c=0A> =
-=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-02 13=
-19=0A> d11ccd451b6556 fs/dlm/lowcomms.c Alexander Aring 2020-11-02 1320 /=
-* On error caller must run=0A> dlm_close_sock() for the=0A> d11ccd451b655=
-6 fs/dlm/lowcomms.c Alexander Aring 2020-11-02 1321 * listen connection s=
-ocket.=0A> d11ccd451b6556 fs/dlm/lowcomms.c Alexander Aring 2020-11-02 13=
-22 */=0A> d11ccd451b6556 fs/dlm/lowcomms.c Alexander Aring 2020-11-02 132=
-3 static int=0A> tcp_create_listen_sock(struct listen_connection *con,=0A=
-> ac33d071059557 fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-12-06 1324 =
-struct sockaddr_storage=0A> *saddr)=0A> fdda387f73947e fs/dlm/lowcomms-tc=
-p.c Patrick Caulfield 2006-11-02 1325 {=0A> fdda387f73947e fs/dlm/lowcomm=
-s-tcp.c Patrick Caulfield 2006-11-02 1326 struct socket *sock =3D NULL;=
-=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-02 13=
-27 int result =3D 0;=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Cau=
-lfield 2006-11-02 1328 int addr_len;=0A> fdda387f73947e fs/dlm/lowcomms-t=
-cp.c Patrick Caulfield 2006-11-02 1329=0A> 6ed7257b46709e fs/dlm/lowcomms=
-.c Patrick Caulfield 2007-04-17 1330 if (dlm_local_addr[0]->ss_family=0A>=
- =3D=3D AF_INET)=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfie=
-ld 2006-11-02 1331 addr_len =3D sizeof(struct=0A> sockaddr_in);=0A> fdda3=
-87f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-02 1332 else=0A=
-> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-02 1333 =
-addr_len =3D sizeof(struct=0A> sockaddr_in6);=0A> fdda387f73947e fs/dlm/l=
-owcomms-tcp.c Patrick Caulfield 2006-11-02 1334=0A> fdda387f73947e fs/dlm=
-/lowcomms-tcp.c Patrick Caulfield 2006-11-02 1335 /* Create a socket to=
-=0A> communicate with */=0A> eeb1bd5c40edb0 fs/dlm/lowcomms.c Eric W. Bie=
-derman 2015-05-08 1336 result =3D=0A> sock_create_kern(&init_net, dlm_loc=
-al_addr[0]->ss_family,=0A> eeb1bd5c40edb0 fs/dlm/lowcomms.c Eric W. Biede=
-rman 2015-05-08 1337 SOCK_STREAM, IPPROTO_TCP,=0A> &sock);=0A> fdda387f73=
-947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-02 1338 if (result <=
- 0) {=0A> 617e82e10ccf96 fs/dlm/lowcomms.c David Teigland 2007-04-26 1339=
- log_print("Can't create listening=0A> comms socket");=0A> fdda387f73947e=
- fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-02 1340 goto create_out;=
-=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-02 13=
-41 }=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-0=
-2 1342=0A> a5b7ab6352bfaa fs/dlm/lowcomms.c Alexander Aring 2020-06-26 13=
-43 sock_set_mark(sock->sk,=0A> dlm_config.ci_mark);=0A> a5b7ab6352bfaa fs=
-/dlm/lowcomms.c Alexander Aring 2020-06-26 1344=0A> cb2d45da81c86d fs/dlm=
-/lowcomms.c David Teigland 2010-11-12 1345 /* Turn off Nagle's algorithm =
-*/=0A> 12abc5ee7873a0 fs/dlm/lowcomms.c Christoph Hellwig 2020-05-28 1346=
- tcp_sock_set_nodelay(sock->sk);=0A> cb2d45da81c86d fs/dlm/lowcomms.c Dav=
-id Teigland 2010-11-12 1347=0A> b58f0e8f38c0a4 fs/dlm/lowcomms.c Christop=
-h Hellwig 2020-05-28 1348 sock_set_reuseaddr(sock->sk);=0A> 6ed7257b46709=
-e fs/dlm/lowcomms.c Patrick Caulfield 2007-04-17 1349=0A> d11ccd451b6556 =
-fs/dlm/lowcomms.c Alexander Aring 2020-11-02 1350 add_listen_sock(sock, c=
-on);=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-0=
-2 1351=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11=
--02 1352 /* Bind to our port */=0A> 68c817a1c4e21b fs/dlm/lowcomms-tcp.c =
-David Teigland 2007-01-09 1353 make_sockaddr(saddr,=0A> dlm_config.ci_tcp=
-_port, &addr_len);=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulf=
-ield 2006-11-02 1354 result =3D=0A> sock->ops->bind(sock, (struct sockadd=
-r *) saddr, addr_len);=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick C=
-aulfield 2006-11-02 1355 if (result < 0) {=0A> 617e82e10ccf96 fs/dlm/lowc=
-omms.c David Teigland 2007-04-26 1356 log_print("Can't bind to port %d",=
-=0A> dlm_config.ci_tcp_port);=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Pa=
-trick Caulfield 2006-11-02 1357 goto create_out;=0A> fdda387f73947e fs/dl=
-m/lowcomms-tcp.c Patrick Caulfield 2006-11-02 1358 }=0A> ce3d9544cecacd f=
-s/dlm/lowcomms.c Christoph Hellwig 2020-05-28 @1359 sock_set_keepalive(so=
-ck->sk);=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-=
-11-02 1360=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 200=
-6-11-02 1361 result =3D=0A> sock->ops->listen(sock, 5);=0A> fdda387f73947=
-e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-02 1362 if (result < 0)=
- {=0A> 617e82e10ccf96 fs/dlm/lowcomms.c David Teigland 2007-04-26 1363 lo=
-g_print("Can't listen on port=0A> %d", dlm_config.ci_tcp_port);=0A> fdda3=
-87f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006-11-02 1364 goto cr=
-eate_out;=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield 2006=
--11-02 1365 }=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfield =
-2006-11-02 1366=0A> d11ccd451b6556 fs/dlm/lowcomms.c Alexander Aring 2020=
--11-02 1367 return 0;=0A> d11ccd451b6556 fs/dlm/lowcomms.c Alexander Arin=
-g 2020-11-02 1368=0A> fdda387f73947e fs/dlm/lowcomms-tcp.c Patrick Caulfi=
-eld 2006-11-02 1369 create_out:=0A> d11ccd451b6556 fs/dlm/lowcomms.c Alex=
-ander Aring 2020-11-02 1370 return result;=0A> fdda387f73947e fs/dlm/lowc=
-omms-tcp.c Patrick Caulfield 2006-11-02 1371 }=0A> fdda387f73947e fs/dlm/=
-lowcomms-tcp.c Patrick Caulfield 2006-11-02 1372=0A> =0A> ---=0A> 0-DAY C=
-I Kernel Test Service, Intel Corporation=0A> https://lists.01.org/hyperki=
-tty/list/kbuild-all@lists.01.org
+Vincent Li <vincent.mc.li@gmail.com> =E4=BA=8E2021=E5=B9=B48=E6=9C=882=E6=
+=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=885:46=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Sun, Aug 1, 2021 at 9:48 AM =E8=8C=83=E5=BC=80=E5=96=9C <fankaixi.li@b=
+ytedance.com> wrote:
+> >
+> > Hi all,
+> >
+> > I failed to make bpf selftest testcases based on the upstream master
+> > branch. And I need help to fix it.
+> >
+> > After installing the new kernel and modules,  I have tried following
+> > commands to build bpf testcases:
+> > "
+> > cd ~/dev/linux/tools/testing/selftests/bpf
+> > make
+> > "
+> >
+> > Then error message shows up as follows:
+> > "
+> > INSTALL bpftool
+> >   GEN      vmlinux.h
+> >   CLNG-BPF [test_maps] btf__core_reloc_primitives___err_non_ptr.o
+> >   CLNG-BPF [test_maps] test_global_data.o
+> >   CLNG-BPF [test_maps] test_global_func8.o
+> >   CLNG-BPF [test_maps] test_ksyms_btf_null_check.o
+> >   CLNG-BPF [test_maps] linked_funcs2.o
+> >   CLNG-BPF [test_maps] bpf_iter_test_kern5.o
+> >   CLNG-BPF [test_maps] test_static_linked2.o
+> >   CLNG-BPF [test_maps] test_global_func13.o
+> >   CLNG-BPF [test_maps] test_cls_redirect_subprogs.o
+> >   CLNG-BPF [test_maps] test_core_reloc_nesting.o
+> >   CLNG-BPF [test_maps] tailcall_bpf2bpf1.o
+> >   CLNG-BPF [test_maps] test_endian.o
+> >   CLNG-BPF [test_maps] test_cls_redirect.o
+> >   CLNG-BPF [test_maps] btf__core_reloc_type_based___incompat.o
+> >   CLNG-BPF [test_maps] test_btf_newkv.o
+> >   CLNG-BPF [test_maps] pyperf600.o
+> >   CLNG-BPF [test_maps] test_btf_nokv.o
+> >   CLNG-BPF [test_maps] atomics.o
+> > fatal error: error in backend: line 27: Invalid usage of the XADD retur=
+n value
+> > PLEASE submit a bug report to https://bugs.llvm.org/ and include the
+> > crash backtrace, preprocessed source, and associated run script.
+> > Stack dump:
+> > 0.        Program arguments: clang -g -D__TARGET_ARCH_x86
+> > -mlittle-endian
+> > -I/root/dev/linux/tools/testing/selftests/bpf/tools/include
+> > -I/root/dev/linux/tools/testing/selftests/bpf
+> > -I/root/dev/linux/tools/include/uapi
+> > -I/root/dev/linux/tools/testing/selftests/usr/include -idirafter
+> > /usr/local/include -idirafter
+> > /usr/lib/llvm-11/lib/clang/11.1.0/include -idirafter
+> > /usr/include/x86_64-linux-gnu -idirafter /usr/include
+> > -Wno-compare-distinct-pointer-types -DENABLE_ATOMICS_TESTS -O2 -target
+> > bpf -c progs/atomics.c -o
+> > /root/dev/linux/tools/testing/selftests/bpf/atomics.o -mcpu=3Dv3
+> > 1.        <eof> parser at end of file
+> > 2.        Code generation
+> > 3.        Running pass 'Function Pass Manager' on module 'progs/atomics=
+.c'.
+> > 4.        Running pass 'BPF PreEmit Checking' on function '@add'
+> >  #0 0x00007f81ec29ee8f llvm::sys::PrintStackTrace(llvm::raw_ostream&)
+> > (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xbbae8f)
+> >  #1 0x00007f81ec29d200 llvm::sys::RunSignalHandlers()
+> > (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xbb9200)
+> >  #2 0x00007f81ec29e5dd llvm::sys::CleanupOnSignal(unsigned long)
+> > (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xbba5dd)
+> >  #3 0x00007f81ec1e6d2a (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xb02d2a)
+> >  #4 0x00007f81ec1e6ccb (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xb02ccb)
+> >  #5 0x00007f81ec299d4e (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xbb5d4e)
+> >  #6 0x00000000004134f2 (/usr/lib/llvm-11/bin/clang+0x4134f2)
+> >  #7 0x00007f81ec1f2d4f llvm::report_fatal_error(llvm::Twine const&,
+> > bool) (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xb0ed4f)
+> >  #8 0x00007f81ec1f2e27 (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xb0ee27)
+> >  #9 0x00007f81edd55595 (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0x2671595=
+)
+> > #10 0x00007f81ec57339e
+> > llvm::MachineFunctionPass::runOnFunction(llvm::Function&)
+> > (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xe8f39e)
+> > #11 0x00007f81ec3ae889
+> > llvm::FPPassManager::runOnFunction(llvm::Function&)
+> > (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xcca889)
+> > #12 0x00007f81ec3b3eb3 llvm::FPPassManager::runOnModule(llvm::Module&)
+> > (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xccfeb3)
+> > #13 0x00007f81ec3aeea0
+> > llvm::legacy::PassManagerImpl::run(llvm::Module&)
+> > (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xccaea0)
+> > #14 0x00007f81ea068e96
+> > clang::EmitBackendOutput(clang::DiagnosticsEngine&,
+> > clang::HeaderSearchOptions const&, clang::CodeGenOptions const&,
+> > clang::TargetOptions const&, clang::LangOptions const&,
+> > llvm::DataLayout const&, llvm::Module*, clang::BackendAction,
+> > std::unique_ptr<llvm::raw_pwrite_stream,
+> > std::default_delete<llvm::raw_pwrite_stream> >)
+> > (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x164de96)
+> > #15 0x00007f81ea329a36 (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x190e=
+a36)
+> > #16 0x00007f81e93e9093 clang::ParseAST(clang::Sema&, bool, bool)
+> > (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x9ce093)
+> > #17 0x00007f81ea9c9c38 clang::FrontendAction::Execute()
+> > (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1faec38)
+> > #18 0x00007f81ea97ff11
+> > clang::CompilerInstance::ExecuteAction(clang::FrontendAction&)
+> > (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1f64f11)
+> > #19 0x00007f81eaa2f6b0
+> > clang::ExecuteCompilerInvocation(clang::CompilerInstance*)
+> > (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x20146b0)
+> > #20 0x00000000004131bf cc1_main(llvm::ArrayRef<char const*>, char
+> > const*, void*) (/usr/lib/llvm-11/bin/clang+0x4131bf)
+> > #21 0x00000000004115fe (/usr/lib/llvm-11/bin/clang+0x4115fe)
+> > #22 0x00007f81ea6a9a02 (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1c8e=
+a02)
+> > #23 0x00007f81ec1e6cad
+> > llvm::CrashRecoveryContext::RunSafely(llvm::function_ref<void ()>)
+> > (/lib/x86_64-linux-gnu/libLLVM-11.so.1+0xb02cad)
+> > #24 0x00007f81ea6a8f2f
+> > clang::driver::CC1Command::Execute(llvm::ArrayRef<llvm::Optional<llvm::=
+StringRef>
+> > >, std::__cxx11::basic_string<char, std::char_traits<char>,
+> > std::allocator<char> >*, bool*) const
+> > (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1c8df2f)
+> > #25 0x00007f81ea680d5f
+> > clang::driver::Compilation::ExecuteCommand(clang::driver::Command
+> > const&, clang::driver::Command const*&) const
+> > (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1c65d5f)
+> > #26 0x00007f81ea680f07
+> > clang::driver::Compilation::ExecuteJobs(clang::driver::JobList const&,
+> > llvm::SmallVectorImpl<std::pair<int, clang::driver::Command const*>
+> > >&) const (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1c65f07)
+> > #27 0x00007f81ea694a7c
+> > clang::driver::Driver::ExecuteCompilation(clang::driver::Compilation&,
+> > llvm::SmallVectorImpl<std::pair<int, clang::driver::Command const*>
+> > >&) (/lib/x86_64-linux-gnu/libclang-cpp.so.11+0x1c79a7c)
+> > #28 0x00000000004110a3 main (/usr/lib/llvm-11/bin/clang+0x4110a3)
+> > #29 0x00007f81e855b09b __libc_start_main
+> > (/lib/x86_64-linux-gnu/libc.so.6+0x2409b)
+> > #30 0x000000000040e89a _start (/usr/lib/llvm-11/bin/clang+0x40e89a)
+> > make: *** [Makefile:470:
+> > /root/dev/linux/tools/testing/selftests/bpf/atomics.o] Error 1
+> > "
+> >
+> > I am using a virtual machine with 8 cpus. The kernel and clang version =
+are:
+> > "
+> > kernel: 5.14.0-rc3.bm.1-amd64 #4 SMP Sun Aug 1 23:28:24 CST 2021
+> > x86_64 GNU/Linux
+> > clang: Debian clang version
+> > 11.1.0-++20210622113218+1fdec59bffc1-1~exp1~20210622213839.163
+> > "
+>
+> I think I ran into same issue if I recall correctly, I downloaded
+> llvm-project 12.0.1 and follow the instruction in kernel
+> Documentation/bpf/bpf_devel_QA.rst
+>
+> "
+> Q: Got it, so how do I build LLVM manually anyway?
+> ....You need ninja, cmake and gcc-c++ as build requisites for LLVM.
+> Once you
+> have that set up, proceed with building the latest LLVM and clang
+> version
+> from the git repositories::
+>
+>     $ git clone https://github.com/llvm/llvm-project.git
+>      $ mkdir -p llvm-project/llvm/build
+>      $ cd llvm-project/llvm/build
+>      $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD=3D"BPF;X86" \
+>                 -DLLVM_ENABLE_PROJECTS=3D"clang"    \
+>                 -DCMAKE_BUILD_TYPE=3DRelease        \
+>                 -DLLVM_BUILD_RUNTIME=3DOFF
+>      $ ninja
+> "
+
+Thanks. I have tried on branch v5.10 and it works. I found some issues:
+1. On debian 10 default clang version is 7.0 which is not compatible.
+I need to update clang to newer version like clang 12. You could
+download newer version from clang repo.
+2.  After updating clang version, I need to rebuild kernel and install
+it. Then I could build bpf selftest cases successfully.
