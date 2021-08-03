@@ -2,134 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B973DE98B
-	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 11:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93723DE9D8
+	for <lists+bpf@lfdr.de>; Tue,  3 Aug 2021 11:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235024AbhHCJMy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Aug 2021 05:12:54 -0400
-Received: from mga05.intel.com ([192.55.52.43]:2987 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234953AbhHCJMx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Aug 2021 05:12:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10064"; a="299223835"
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="299223835"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 02:12:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,291,1620716400"; 
-   d="scan'208";a="418980991"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga006.jf.intel.com with ESMTP; 03 Aug 2021 02:12:40 -0700
-Received: from alobakin-mobl.ger.corp.intel.com (sputyrsk-MOBL2.ger.corp.intel.com [10.213.14.16])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1739CdaN009138;
-        Tue, 3 Aug 2021 10:12:39 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Ederson de Souza <ederson.desouza@intel.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        xdp-hints@xdp-project.net, bpf@vger.kernel.org
-Subject: Re: [[RFC xdp-hints] 00/16] XDP hints and AF_XDP support
-Date:   Tue,  3 Aug 2021 11:12:38 +0200
-Message-Id: <20210803091238.102-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210803010331.39453-1-ederson.desouza@intel.com>
-References: <20210803010331.39453-1-ederson.desouza@intel.com>
+        id S234816AbhHCJlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Aug 2021 05:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235204AbhHCJlW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Aug 2021 05:41:22 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4CCC0617BA;
+        Tue,  3 Aug 2021 02:40:23 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id db14so10282945qvb.10;
+        Tue, 03 Aug 2021 02:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eEM/WUlwtx4hf39m52l1JLiRl2wv7VkPd8bo9YRHmTw=;
+        b=lotxXYGxZ2Eyv9JyDkqQpsec5Y9QMObShmBvwV4m3BXxqtxVIOzAA2dEs10C4UTCRc
+         3rEcFxJg6qt/Y6F94PWLZc5V0ql7rKcr6ZTh1s9CF7Z1EckGZYlI7V3u+ToVCdAponWT
+         YuYnqFXT0xlXBRtuz4+koCBTCfo6zy8CTcYVObJLMKBRBU6PfHwmDhBxgKN8Xkxl+J3y
+         vd2Tlj72nhmHcjdBSOisHJvIj6hP4JD9UPSAYFup1clcambsYVrpsgLM9a5f/qDWWCuH
+         pfSLTLiI0Aro+U4RgPLVJJuVEmWvn2hM/BS1aqaqPKIHrfiNbBYMyJN7/9jmhQ+jUBUB
+         M9hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eEM/WUlwtx4hf39m52l1JLiRl2wv7VkPd8bo9YRHmTw=;
+        b=ges3W28YrmPPx8SxN5va1VeXsRh1BHBPSojYW82fOAipA8fN1oHPfoawZFEAmWrS/8
+         j8mvZM/ZIBqPxn+SfG37dkR7FPOIZl4ziXH/vEHMVdDxjrHbrwC0bZJuTysyZm36OMMF
+         qUENfqioPwRAJltKUB0sba0uMU7lZx1mleneoozvlkfhAFJSyObOOUTgTpgcVuJXWn+J
+         XkkadHft4RS14BY4kKOhSoMRSWxy1fGCHUkK3PYSLzrw9ghH7SjVkY1asWVPjPRZ593E
+         DpnDubRjC/nVWz8uAXffSYK7KwPeXJjYVY57TQvtRb4t0KesTH+mg6jt7W8rmCWWmPS1
+         5BRg==
+X-Gm-Message-State: AOAM530vU83wbYm7nPM/N7YYGvWnJEBAHmg7FrSqi4kCGx0n/0CqEFj0
+        yXXqhlypaOqG1sv8nNkQZkgHBLp0CRB+X3ieiA==
+X-Google-Smtp-Source: ABdhPJy4DPTwee4CM3c+Tm5owlyWgAPW1jiwL8X4xwkcuqyl1V5tPTwJEgY379JbJkAMxbG3omuDw5WxeoMyhjCHTR8=
+X-Received: by 2002:a0c:e8cc:: with SMTP id m12mr4709162qvo.7.1627983622698;
+ Tue, 03 Aug 2021 02:40:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210609135537.1460244-1-joamaki@gmail.com> <20210728234350.28796-1-joamaki@gmail.com>
+ <20210728234350.28796-7-joamaki@gmail.com> <CAEf4BzbcavnGdAjV-KjTrFg8bXWF=2qN1j67+09-CgS_Ub+4TQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbcavnGdAjV-KjTrFg8bXWF=2qN1j67+09-CgS_Ub+4TQ@mail.gmail.com>
+From:   Jussi Maki <joamaki@gmail.com>
+Date:   Tue, 3 Aug 2021 11:40:11 +0200
+Message-ID: <CAHn8xcmjVf+eajrZLhJtF-b-dLCnf--4KZ_Gm-H9Q_ZEOjzFag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 6/6] selftests/bpf: Add tests for XDP bonding
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, j.vosburgh@gmail.com,
+        Andy Gospodarek <andy@greyhouse.net>, vfalico@gmail.com,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ederson de Souza <ederson.desouza@intel.com>
-Date: Mon,  2 Aug 2021 18:03:15 -0700
+On Tue, Aug 3, 2021 at 2:19 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Mon, Aug 2, 2021 at 6:24 AM <joamaki@gmail.com> wrote:
+> >
+> > From: Jussi Maki <joamaki@gmail.com>
+> >
+> > Add a test suite to test XDP bonding implementation
+> > over a pair of veth devices.
+> >
+> > Signed-off-by: Jussi Maki <joamaki@gmail.com>
+> > ---
+>
+> Was there any reason not to use BPF skeleton in your new tests? And
+> also bpf_link-based XDP attachment instead of netlink-based?
 
-> While there's some work going on different aspects of the XDP hints, I'd like
-> to present and ask for comments on this patch series.
-> 
-> XDP hints/metadata is a way for the driver to transmit information regarding a
-> specific XDP frame along with the frame. Following current discussions and
-> based on top of Saeed's early patches, this series provides the XDP hints with
-> one (or two, depending on how you view it) use case: RX/TX timestamps for the
-> igc driver.
-> 
-> Keeping with Saeed's patches, to enable XDP hints usage, one has to first
-> enable it with bpftool like:
-> 
->   bpftool net xdp set dev <iface> md_btf on
-> 
-> >From the driver perspective, support for XDP hints is achieved by:
-> 
->  - Adding support for XDP_SETUP_MD_BTF operation, where it can register the BTF.
-> 
->  - Adding support for XDP_QUERY_MD_BTF so user space can retrieve the BTF id.
-> 
->  - Adding the relevant data to the metadata area of the XDP frame.
-> 
->     - One of this relevant data is the BTF id of the BTF in use.
-> 
-> In order to make use of the BPF CO-RE mechanism, this series makes the driver
-> name of the struct for the XDP hints be called `xdp_hints___<driver_name>` (in
-> this series, as I'm using igc driver, it becomes `xdp_hints___igc`). This
-> should help BPF programs, as they can simply refer to the struct as `xdp_hints`.
-> 
-> A common issue is how to standardize the names of the fields in the BTF. Here,
-> a series of macros is provided on the `include/net/xdp.h`, that goes by
-> `XDP_GENERIC_` prefixes. In there, the `btf_id` field was added, that needs
-> to be strategically positioned at the end of the struct. Also added are the
-> `rx_timestamp` and  `tx_timestamp` fields, as I believe they're generic as
-> well. The macros also provide `u32` and `u64` types. Besides, I also ended
-> up adding a `valid_map` field. It should help whoever is using the XDP hints
-> to be sure of what is valid in that hints. It also makes the driver life
-> simple, as it just uses a single struct and validates fields as it fills
-> them.
-> 
-> The BPF sample `xdp_sample_pkts` was modified to demonstrate the usage of XDP
-> hints on BPF programs. It's a very simple example, but it shows some nice
-> things about it. For instance, instead of getting the struct somehow before,
-> it uses CO-RE to simply name the XDP hint field it's interested in and
-> read it using `BPF_CORE_READ`. (I also tried to use `bpf_core_field_exists` to
-> make it even more dynamic, but couldn't get to build it. I mention why in the
-> example.)
-> 
-> Also, as much of my interest lies in the user space side, the one using
-> AF_XDP, to support it a few additional things were done.
-> 
-> Firstly, a new "driver info" is provided, to be obtained via
-> `ioctl(SIOCETHTOOL)`: "xdp_headroom". This is how much XDP headroom is
-> required by the driver. While not really important for the RX path (as the
-> driver already applies that headroom to the XDP frame), it's
-> important for the TX path, as here, it's the application responsibility to
-> factor in the XDP headroom area. (Note that the TX timestamp is obtained from
-> the XDP frame of the transmitted packet, when that frame goes back to the
-> completion queue.)
-> 
-> A series of helpers was also added to libbpf to help manage this headroom
-> area. They go by the prefix " xsk_umem__adjust_", to adjust consumer and
-> producer data and metadata.
-> 
-> In order to read the XDP hints from the memory, another series of helpers was
-> added. They read the BTF from the BTF id, and create a hashmap of the offsets
-> and sizes of the fields, that is then used to actually retrieve the data.
-> 
-> I modified the "xdpsock" example to show the use of XDP hints on the AF_XDP
-> world, along with the proposed API.
-> 
-> Finally, I know that Michal and Alexandr (and probably others that I don't
-> know) are working in this same front. This RFC is not to race any other work,
-> instead I hope it can help in the discussion of the best solution for the
-> XDP hints – and I truly think it brings value, specifically for the AF_XDP
-> usages.
-
-XDP Hints have been discussed on Netdev 0x15, and we kinda
-established the optimal way for doing it. This RFC's approach
-is not actual anymore.
-You could just write to me and request write perms on our open
-GitHub repo (which was mentioned here several times) for Hints
-to do things if not together, then in one place at least.
-I'll be off for two weeks since next Monday, Michal could get
-you into things if you decide to join after than point
-(if at all).
-
-Thanks,
-Al
+Not really. I used the existing xdp_redirect_multi test as basis and
+that used this approach. I'll give a go at changing this to use the
+BPF skeletons.
