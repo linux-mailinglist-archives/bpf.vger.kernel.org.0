@@ -2,259 +2,417 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C420B3E0792
-	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 20:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8663A3E09AE
+	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 22:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240236AbhHDS1Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Aug 2021 14:27:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238954AbhHDS1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:27:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDA7D60F14;
-        Wed,  4 Aug 2021 18:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628101632;
-        bh=qX1lhaiQeSq3+3tcanRpJ3hVzOymJ7+YhAfHcc+r34A=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=jxVdA+TLBO5yvWs08LvM/5h1EXF6fWvh7Hy7HFYuHDyaHydH3NhbPAISDWQe8K5oU
-         PuHce26phKTT74Jj0AhoeHXfIy9kqomoiV8aj8BPk148tn7J7P9lM3GQroO659yXCz
-         tpp+QBsD46AUqaxwWLO5G/HnCmMrtFrceDh3+RVa2Ek/lmOIOt2UsGu1H03EN3l0lA
-         xcyoFxPlH+Oo2X4oObgyWuMzsJ112ytM+c8dlC+x0PafGl08tkIplLfbgd9XOpsHfd
-         pwacoa1cccVLIhp86o5GUAve86wckFgJA6jgBKGLPxc/7a7dBZ84WQ7DJN6c3OIVWD
-         N/6pCpD4DI2cg==
-Message-ID: <11091d33ff7803257e38ee921e4ba9597acfccfc.camel@kernel.org>
-Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
- statistics
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
-        Tariq Toukan <ttoukan.linux@gmail.com>,
-        Tariq Toukan <tariqt@nvidia.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Lukasz Czapnik <lukasz.czapnik@intel.com>,
-        Marcin Kubiak <marcin.kubiak@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Sameeh Jubran <sameehj@amazon.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jian Shen <shenjian15@huawei.com>,
-        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Date:   Wed, 04 Aug 2021 11:27:09 -0700
-In-Reply-To: <d21933cb-9d24-9bdd-cf18-e5077796ddf7@gmail.com>
-References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
-         <20210803163641.3743-4-alexandr.lobakin@intel.com>
-         <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
-         <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <43e91ce1-0f82-5820-7cac-b42461a0311a@gmail.com>
-         <20210804094432.08d0fa86@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <d21933cb-9d24-9bdd-cf18-e5077796ddf7@gmail.com>
+        id S237864AbhHDUzl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Aug 2021 16:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237995AbhHDUzk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Aug 2021 16:55:40 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C43C0613D5
+        for <bpf@vger.kernel.org>; Wed,  4 Aug 2021 13:55:27 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id x5-20020a0569020505b0290592c25b8c59so4112516ybs.18
+        for <bpf@vger.kernel.org>; Wed, 04 Aug 2021 13:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=1e0S4DnKUJvlhdmbQUU0ywz8+b9MuvzdJQ/I1zDhCdU=;
+        b=H7/KwVhHPIS41UxqU+N4zLq+0JSpDkob4qOMHgIbMKRpafB/O01cJ5yKamgDzE+hVo
+         iBmj2Oa9vdi+Fqzoeu+QF1jvuw9bEsJD/KYOym0CpC1AFpvy2QzT5jwr7DyBPF446jAS
+         EUBD5cqh+cBaHKAiPGjUPavUMJh+vFY6zbzNhst2k0KPdFLjLQW6IADjnaHI4nUf8UG/
+         gm/gRKMgpCgAz3MEcUqTHplHlbl1QnkoXsJHTIVWiapdtEGnKMumjNwEFCamYZtbW5kV
+         DwKqy4rJgyY2uLvZiSnN0A08NEHv3M2GyFIWqtHYsSZ+WCXOp7y3I1LctyCIZri1nSao
+         DOUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=1e0S4DnKUJvlhdmbQUU0ywz8+b9MuvzdJQ/I1zDhCdU=;
+        b=S7AnNKa7EB+s1fgmmCleCVk/qm9o/Okpk6uy+VQ8OdHcEwVFEJrz71g94E4I/hFy+R
+         zmZ2zrqM6ZfouKGWe2r3JtFBdxVByafQMLCgpit7cV1ztUQVd92tSCLyHJZx/JPt0WLI
+         T40gHQCZc27I4aE8bxvDS1nTQ3fxgdpxP0/pwcF2G2jhllaQrJGaKprZYfx293C4kOPR
+         0w5uM/74HCBDDLjb+ihKITE8hJVOvPdzwmwDPb9O7MN39l878NEUTGpge5prx8rmcoGs
+         Q3RNC8wNKJ7Kt8dNcTnM9Yq6aKjcoylFs6GvOAY82VuFQXwTM7pQVRm88nBj7K9nRJ7T
+         Snwg==
+X-Gm-Message-State: AOAM5324oH2s7XFgtiSnvPnHdRxkTX5oBsFfTBDG2UhTkl9ENhD/vtDA
+        Jt6Q69PUpJDdvrTFmOhbui4JBh4=
+X-Google-Smtp-Source: ABdhPJyUfgX95yGI6MbafdBm8kZzq68xeapo7DX8i4QDvs3OwF1lrGQNRBURdFU0FF8X9UTts6Jz4RY=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:838b:f63a:12a:c444])
+ (user=sdf job=sendgmr) by 2002:a25:7cc3:: with SMTP id x186mr1599874ybc.227.1628110526921;
+ Wed, 04 Aug 2021 13:55:26 -0700 (PDT)
+Date:   Wed,  4 Aug 2021 13:55:24 -0700
+Message-Id: <20210804205524.3748709-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH bpf-next v3] selftests/bpf: move netcnt test under test_progs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>, Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2021-08-04 at 11:28 -0600, David Ahern wrote:
-> On 8/4/21 10:44 AM, Jakub Kicinski wrote:
-> > On Wed, 4 Aug 2021 10:17:56 -0600 David Ahern wrote:
-> > > On 8/4/21 6:36 AM, Jakub Kicinski wrote:
-> > > > > XDP is going to always be eBPF based ! why not just report
-> > > > > such stats
-> > > > > to a special BPF_MAP ? BPF stack can collect the stats from
-> > > > > the driver
-> > > > > and report them to this special MAP upon user request.  
-> > > > Do you mean replacing the ethtool-netlink / rtnetlink etc. with
-> > > > a new BPF_MAP? I don't think adding another category of uAPI
-> > > > thru 
-> > > > which netdevice stats are exposed would do much good :( Plus it
-> > > > doesn't address the "yet another cacheline" concern.
-> > > > 
-> > > > To my understanding the need for stats recognizes the fact that
-> > > > (in
-> > > > large organizations) fleet monitoring is done by different
-> > > > teams than
-> > > > XDP development. So XDP team may have all the stats they need,
-> > > > but the
-> > > > team doing fleet monitoring has no idea how to get to them.
-> > > > 
-> > > > To bridge the two worlds we need a way for the infra team to
-> > > > ask the
-> > > > XDP for well-defined stats. Maybe we should take a page from
-> > > > the BPF
-> > > > iterators book and create a program type for bridging the two
-> > > > worlds?
-> > > > Called by networking core when duping stats to extract from the
-> > > > existing BPF maps all the relevant stats and render them into a
-> > > > well
-> > > > known struct? Users' XDP design can still use a single per-cpu
-> > > > map with
-> > > > all the stats if they so choose, but there's a way to implement
-> > > > more
-> > > > optimal designs and still expose well-defined stats.
-> > > > 
-> > > > Maybe that's too complex, IDK.  
-> > > 
+Rewrite to skel and ASSERT macros as well while we are at it.
 
-The main question here, do we want the prog to count or driver ? 
-and the answer will lead to more questions :) :
+v3:
+- replace -f with -A to make it work with busybox ping.
+  -A is available on both busybox and iputils, from the man page:
+  On networks with low RTT this mode is essentially equivalent to
+  flood mode.
 
-1) will the prog/user need to access driver for driver only stats ? or
-driver shall report to a special program and all the collection and
-reporting is done in XDP/BPF internally .. 
-2) stats per prog/queue/cpu/interface ? 
-3) how to eventually report to user ethtool/ip -s/bpftool ?
+v2:
+- don't check result of bpf_map__fd (Yonghong Song)
+- remove from .gitignore (Andrii Nakryiko)
+- move ping_command into network_helpers (Andrii Nakryiko)
+- remove assert() (Andrii Nakryiko)
 
-too complex, IDK too .. :D
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/.gitignore        |   1 -
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ tools/testing/selftests/bpf/network_helpers.c |  12 ++
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../testing/selftests/bpf/prog_tests/netcnt.c |  82 ++++++++++
+ .../selftests/bpf/prog_tests/tc_redirect.c    |  12 --
+ tools/testing/selftests/bpf/test_netcnt.c     | 148 ------------------
+ 7 files changed, 96 insertions(+), 163 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/netcnt.c
+ delete mode 100644 tools/testing/selftests/bpf/test_netcnt.c
 
-
-> > > I was just explaining to someone internally how to get stats at
-> > > all of
-> > > the different points in the stack to track down reasons for
-> > > dropped packets:
-> > > 
-> > > ethtool -S for h/w and driver
-> > > tc -s for drops by the qdisc
-> > > /proc/net/softnet_stat for drops at the backlog layer
-> > > netstat -s for network and transport layer
-> > > 
-> > > yet another command and API just adds to the nightmare of
-> > > explaining and
-> > > understanding these stats.
-> > 
-> > Are you referring to RTM_GETSTATS when you say "yet another
-> > command"?
-> > RTM_GETSTATS exists and is used by offloads today.
-> > 
-> > I'd expect ip -s (-s) to be extended to run GETSTATS and display
-> > the xdp
-> > stats. (Not sure why ip -s was left out of your list :))
-> 
-> It's on my diagram, and yes, forgot to add it here.
-> 
-
-i think ip -s is a good place for "standard" driver based xdp stats.
-but as Jakub already explained, adding such driver mechanism is like
-making a statement that drivers must implement this.
-
-> > 
-> > > There is real value in continuing to use ethtool API for XDP
-> > > stats. Not
-> > > saying this reorg of the XDP stats is the right thing to do, only
-> > > that
-> > > the existing API has real user benefits.
-> > 
-> > RTM_GETSTATS is an existing API. New ethtool stats are intended to
-> > be HW
-> > stats. I don't want to go back to ethtool being a dumping ground
-> > for all
-> > stats because that's what the old interface encouraged.
-> 
-> driver stats are important too. e.g., mlx5's cache stats and per-
-> queue
-> stats.
-> 
-
-one could claim that mlx5 cache stats should move to page_pool and
-per_queue stats should move to the stack.
-
-> > 
-> > > Does anyone have data that shows bumping a properly implemented
-> > > counter
-> > > causes a noticeable performance degradation and if so by how
-> > > much? You
-> > > mention 'yet another cacheline' but collecting stats on stack and
-> > > incrementing the driver structs at the end of the napi loop
-> > > should not
-> > > have a huge impact versus the value the stats provide.
-> > 
-> > Not sure, maybe Jesper has some numbers. Maybe Intel folks do?
-> 
-
-A properly implemented counter that doesn't introduce new cache misses,
-will hardly show any measurable difference, the only way to measure is
-via instructions per packet.
-
-usually the way we implement counters in mlx5 is that if this is the
-fastest flow that we expect then we only increment the good counters
-"packet++/drop++/redirect++" any slower path should include counters to
-indicate the slower path and the effect of the new "slower" counters
-will still be negligible as we already are at a higher instructions per
-packet hence the slower path .. 
-
-the only time you measure a difference is when you introduce new
-counting on a counter-free flow, e.g page_pool ;)
-
-> I just ran some quick tests with my setup and measured about 1.2%
-> worst
-
-1.2% is a lot ! what was the test ? what is the change ?
-
-> case. Certainly not exhaustive. Perhaps Intel or Mellanox can provide
-> numbers for their high speed nics - e.g. ConnectX-6 and a saturated
-> host.
-> 
-
-let's define what are we testing first, there are multiple places we
-need to check, Tariq will be exploring transitioning mlx5 cache to
-page_pool with all the counters, maybe it is a good place to measure.. 
-
-> > 
-> > I'm just allergic to situations when there is a decision made and 
-> > then months later patches are posted disregarding the decision, 
-> > without analysis on why that decision was wrong. And while the
-> > maintainer who made the decision is on vacation.
-> > 
-> 
-> stats is one of the many sensitive topics. I have been consistent in
-> defending the need to use existing APIs and tooling and not relying
-> on
-> XDP program writers to add the relevant stats and then provide
-> whatever
-> tool is needed to extract and print them. Standardization for
-> fundamental analysis tools.
-
-
-
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index addcfd8b615e..433f8bef261e 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -23,7 +23,6 @@ test_skb_cgroup_id_user
+ test_cgroup_storage
+ test_flow_dissector
+ flow_dissector_load
+-test_netcnt
+ test_tcpnotify_user
+ test_libbpf
+ test_tcp_check_syncookie_user
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index f405b20c1e6c..2a58b7b5aea4 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -38,7 +38,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+ 	test_verifier_log test_dev_cgroup \
+ 	test_sock test_sockmap get_cgroup_id_user \
+ 	test_cgroup_storage \
+-	test_netcnt test_tcpnotify_user test_sysctl \
++	test_tcpnotify_user test_sysctl \
+ 	test_progs-no_alu32
+ 
+ # Also test bpf-gcc, if present
+@@ -197,7 +197,6 @@ $(OUTPUT)/test_sockmap: cgroup_helpers.c
+ $(OUTPUT)/test_tcpnotify_user: cgroup_helpers.c trace_helpers.c
+ $(OUTPUT)/get_cgroup_id_user: cgroup_helpers.c
+ $(OUTPUT)/test_cgroup_storage: cgroup_helpers.c
+-$(OUTPUT)/test_netcnt: cgroup_helpers.c
+ $(OUTPUT)/test_sock_fields: cgroup_helpers.c
+ $(OUTPUT)/test_sysctl: cgroup_helpers.c
+ 
+diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+index 26468a8f44f3..d6857683397f 100644
+--- a/tools/testing/selftests/bpf/network_helpers.c
++++ b/tools/testing/selftests/bpf/network_helpers.c
+@@ -310,3 +310,15 @@ int make_sockaddr(int family, const char *addr_str, __u16 port,
+ 	}
+ 	return -1;
+ }
++
++char *ping_command(int family)
++{
++	if (family == AF_INET6) {
++		/* On some systems 'ping' doesn't support IPv6, so use ping6 if it is present. */
++		if (!system("which ping6 >/dev/null 2>&1"))
++			return "ping6";
++		else
++			return "ping -6";
++	}
++	return "ping";
++}
+diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
+index d60bc2897770..c59a8f6d770b 100644
+--- a/tools/testing/selftests/bpf/network_helpers.h
++++ b/tools/testing/selftests/bpf/network_helpers.h
+@@ -46,5 +46,6 @@ int fastopen_connect(int server_fd, const char *data, unsigned int data_len,
+ 		     int timeout_ms);
+ int make_sockaddr(int family, const char *addr_str, __u16 port,
+ 		  struct sockaddr_storage *addr, socklen_t *len);
++char *ping_command(int family);
+ 
+ #endif
+diff --git a/tools/testing/selftests/bpf/prog_tests/netcnt.c b/tools/testing/selftests/bpf/prog_tests/netcnt.c
+new file mode 100644
+index 000000000000..6ede48bde91b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/netcnt.c
+@@ -0,0 +1,82 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <sys/sysinfo.h>
++#include <test_progs.h>
++#include "network_helpers.h"
++#include "netcnt_prog.skel.h"
++#include "netcnt_common.h"
++
++#define CG_NAME "/netcnt"
++
++void test_netcnt(void)
++{
++	union percpu_net_cnt *percpu_netcnt = NULL;
++	struct bpf_cgroup_storage_key key;
++	int map_fd, percpu_map_fd;
++	struct netcnt_prog *skel;
++	unsigned long packets;
++	union net_cnt netcnt;
++	unsigned long bytes;
++	int cpu, nproc;
++	int cg_fd = -1;
++	char cmd[128];
++
++	skel = netcnt_prog__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "netcnt_prog__open_and_load"))
++		return;
++
++	nproc = get_nprocs_conf();
++	percpu_netcnt = malloc(sizeof(*percpu_netcnt) * nproc);
++	if (!ASSERT_OK_PTR(percpu_netcnt, "malloc(percpu_netcnt)"))
++		goto err;
++
++	cg_fd = test__join_cgroup(CG_NAME);
++	if (!ASSERT_GE(cg_fd, 0, "test__join_cgroup"))
++		goto err;
++
++	skel->links.bpf_nextcnt = bpf_program__attach_cgroup(skel->progs.bpf_nextcnt, cg_fd);
++	if (!ASSERT_OK_PTR(skel->links.bpf_nextcnt,
++			   "attach_cgroup(bpf_nextcnt)"))
++		goto err;
++
++	snprintf(cmd, sizeof(cmd), "%s ::1 -A -c 10000 -q > /dev/null", ping_command(AF_INET6));
++	ASSERT_OK(system(cmd), cmd);
++
++	map_fd = bpf_map__fd(skel->maps.netcnt);
++	if (!ASSERT_OK(bpf_map_get_next_key(map_fd, NULL, &key), "bpf_map_get_next_key"))
++		goto err;
++
++	if (!ASSERT_OK(bpf_map_lookup_elem(map_fd, &key, &netcnt), "bpf_map_lookup_elem(netcnt)"))
++		goto err;
++
++	percpu_map_fd = bpf_map__fd(skel->maps.percpu_netcnt);
++	if (!ASSERT_OK(bpf_map_lookup_elem(percpu_map_fd, &key, &percpu_netcnt[0]),
++		       "bpf_map_lookup_elem(percpu_netcnt)"))
++		goto err;
++
++	/* Some packets can be still in per-cpu cache, but not more than
++	 * MAX_PERCPU_PACKETS.
++	 */
++	packets = netcnt.packets;
++	bytes = netcnt.bytes;
++	for (cpu = 0; cpu < nproc; cpu++) {
++		ASSERT_LE(percpu_netcnt[cpu].packets, MAX_PERCPU_PACKETS, "MAX_PERCPU_PACKETS");
++
++		packets += percpu_netcnt[cpu].packets;
++		bytes += percpu_netcnt[cpu].bytes;
++	}
++
++	/* No packets should be lost */
++	ASSERT_EQ(packets, 10000, "packets");
++
++	/* Let's check that bytes counter matches the number of packets
++	 * multiplied by the size of ipv6 ICMP packet.
++	 */
++	ASSERT_EQ(bytes, packets * 104, "bytes");
++
++err:
++	if (cg_fd != -1)
++		close(cg_fd);
++	free(percpu_netcnt);
++	netcnt_prog__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+index 932e4ee3f97c..e7201ba29ccd 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
++++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+@@ -390,18 +390,6 @@ static void test_tcp(int family, const char *addr, __u16 port)
+ 		close(client_fd);
+ }
+ 
+-static char *ping_command(int family)
+-{
+-	if (family == AF_INET6) {
+-		/* On some systems 'ping' doesn't support IPv6, so use ping6 if it is present. */
+-		if (!system("which ping6 >/dev/null 2>&1"))
+-			return "ping6";
+-		else
+-			return "ping -6";
+-	}
+-	return "ping";
+-}
+-
+ static int test_ping(int family, const char *addr)
+ {
+ 	SYS("ip netns exec " NS_SRC " %s " PING_ARGS " %s > /dev/null", ping_command(family), addr);
+diff --git a/tools/testing/selftests/bpf/test_netcnt.c b/tools/testing/selftests/bpf/test_netcnt.c
+deleted file mode 100644
+index 4990a99e7381..000000000000
+--- a/tools/testing/selftests/bpf/test_netcnt.c
++++ /dev/null
+@@ -1,148 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <assert.h>
+-#include <sys/sysinfo.h>
+-#include <sys/time.h>
+-
+-#include <linux/bpf.h>
+-#include <bpf/bpf.h>
+-#include <bpf/libbpf.h>
+-
+-#include "cgroup_helpers.h"
+-#include "bpf_rlimit.h"
+-#include "netcnt_common.h"
+-
+-#define BPF_PROG "./netcnt_prog.o"
+-#define TEST_CGROUP "/test-network-counters/"
+-
+-static int bpf_find_map(const char *test, struct bpf_object *obj,
+-			const char *name)
+-{
+-	struct bpf_map *map;
+-
+-	map = bpf_object__find_map_by_name(obj, name);
+-	if (!map) {
+-		printf("%s:FAIL:map '%s' not found\n", test, name);
+-		return -1;
+-	}
+-	return bpf_map__fd(map);
+-}
+-
+-int main(int argc, char **argv)
+-{
+-	union percpu_net_cnt *percpu_netcnt;
+-	struct bpf_cgroup_storage_key key;
+-	int map_fd, percpu_map_fd;
+-	int error = EXIT_FAILURE;
+-	struct bpf_object *obj;
+-	int prog_fd, cgroup_fd;
+-	unsigned long packets;
+-	union net_cnt netcnt;
+-	unsigned long bytes;
+-	int cpu, nproc;
+-	__u32 prog_cnt;
+-
+-	nproc = get_nprocs_conf();
+-	percpu_netcnt = malloc(sizeof(*percpu_netcnt) * nproc);
+-	if (!percpu_netcnt) {
+-		printf("Not enough memory for per-cpu area (%d cpus)\n", nproc);
+-		goto err;
+-	}
+-
+-	if (bpf_prog_load(BPF_PROG, BPF_PROG_TYPE_CGROUP_SKB,
+-			  &obj, &prog_fd)) {
+-		printf("Failed to load bpf program\n");
+-		goto out;
+-	}
+-
+-	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
+-	if (cgroup_fd < 0)
+-		goto err;
+-
+-	/* Attach bpf program */
+-	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_INET_EGRESS, 0)) {
+-		printf("Failed to attach bpf program");
+-		goto err;
+-	}
+-
+-	if (system("which ping6 &>/dev/null") == 0)
+-		assert(!system("ping6 ::1 -c 10000 -f -q > /dev/null"));
+-	else
+-		assert(!system("ping -6 ::1 -c 10000 -f -q > /dev/null"));
+-
+-	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_INET_EGRESS, 0, NULL, NULL,
+-			   &prog_cnt)) {
+-		printf("Failed to query attached programs");
+-		goto err;
+-	}
+-
+-	map_fd = bpf_find_map(__func__, obj, "netcnt");
+-	if (map_fd < 0) {
+-		printf("Failed to find bpf map with net counters");
+-		goto err;
+-	}
+-
+-	percpu_map_fd = bpf_find_map(__func__, obj, "percpu_netcnt");
+-	if (percpu_map_fd < 0) {
+-		printf("Failed to find bpf map with percpu net counters");
+-		goto err;
+-	}
+-
+-	if (bpf_map_get_next_key(map_fd, NULL, &key)) {
+-		printf("Failed to get key in cgroup storage\n");
+-		goto err;
+-	}
+-
+-	if (bpf_map_lookup_elem(map_fd, &key, &netcnt)) {
+-		printf("Failed to lookup cgroup storage\n");
+-		goto err;
+-	}
+-
+-	if (bpf_map_lookup_elem(percpu_map_fd, &key, &percpu_netcnt[0])) {
+-		printf("Failed to lookup percpu cgroup storage\n");
+-		goto err;
+-	}
+-
+-	/* Some packets can be still in per-cpu cache, but not more than
+-	 * MAX_PERCPU_PACKETS.
+-	 */
+-	packets = netcnt.packets;
+-	bytes = netcnt.bytes;
+-	for (cpu = 0; cpu < nproc; cpu++) {
+-		if (percpu_netcnt[cpu].packets > MAX_PERCPU_PACKETS) {
+-			printf("Unexpected percpu value: %llu\n",
+-			       percpu_netcnt[cpu].packets);
+-			goto err;
+-		}
+-
+-		packets += percpu_netcnt[cpu].packets;
+-		bytes += percpu_netcnt[cpu].bytes;
+-	}
+-
+-	/* No packets should be lost */
+-	if (packets != 10000) {
+-		printf("Unexpected packet count: %lu\n", packets);
+-		goto err;
+-	}
+-
+-	/* Let's check that bytes counter matches the number of packets
+-	 * multiplied by the size of ipv6 ICMP packet.
+-	 */
+-	if (bytes != packets * 104) {
+-		printf("Unexpected bytes count: %lu\n", bytes);
+-		goto err;
+-	}
+-
+-	error = 0;
+-	printf("test_netcnt:PASS\n");
+-
+-err:
+-	cleanup_cgroup_environment();
+-	free(percpu_netcnt);
+-
+-out:
+-	return error;
+-}
+-- 
+2.32.0.554.ge1b32706d8-goog
 
