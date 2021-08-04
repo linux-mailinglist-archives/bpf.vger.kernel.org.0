@@ -2,95 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6320B3E0A8E
-	for <lists+bpf@lfdr.de>; Thu,  5 Aug 2021 00:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CA33E0AC8
+	for <lists+bpf@lfdr.de>; Thu,  5 Aug 2021 01:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235316AbhHDWuz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Aug 2021 18:50:55 -0400
-Received: from www62.your-server.de ([213.133.104.62]:46792 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235323AbhHDWuy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:50:54 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mBPia-000Gcu-Dn; Thu, 05 Aug 2021 00:50:32 +0200
-Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mBPia-0004r6-3I; Thu, 05 Aug 2021 00:50:32 +0200
-Subject: Re: [PATCH bpf-next] samples/bpf: xdp_redirect_cpu: Add mprog-disable
- to optstring.
-To:     Matt Cover <werekraken@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthew Cover <matthew.cover@stackpath.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210731005632.13228-1-matthew.cover@stackpath.com>
- <20210731152523.22syukzew6c7njjh@apollo.localdomain>
- <CAGyo_hp2Uunp0_McN3J8MjSeF593thwiODfUaiE-u_NXArEDPg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4922e491-46c2-fa85-e10c-79b0ffe476c7@iogearbox.net>
-Date:   Thu, 5 Aug 2021 00:50:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S229987AbhHDXUS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Aug 2021 19:20:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229910AbhHDXUS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Aug 2021 19:20:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0725061029;
+        Wed,  4 Aug 2021 23:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628119205;
+        bh=P/GGs8hlIh48v0Ciq1huoL+JlgaeydT9wU8h0v0AKic=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=C+eTAB78oZjct6ke8KG1Yg3kg4H+Rx9b5adxSA+oSJBFUrjd5x4WkCUvQFyJBPcA+
+         QZ67oNgNBa0GTqTUPVICFjPbSZXMwXTN7k6S3lrI7uL8lLtGA8xPiIG/3xK2k6APSC
+         vRK1Bn/jzNELsDP2wevxdlwgEBSlHFxj0lQvymgvpzIScQ6j5f4+5e/dRYgzozmkjZ
+         Jn8ulXR0G0aGKTvKuy/BzW4iLPetorVRJ6vwKKk7NDMPUjyoKwiMMgG4rsr6ye5Nxa
+         02X1B0gzGTT8qOCK9LGe5Yo7unQjYUeRBSOmxhcmm79OpdgKnuMtJE9Erjj4lj53JR
+         4EAtxboAuZomw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F06E960A6A;
+        Wed,  4 Aug 2021 23:20:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAGyo_hp2Uunp0_McN3J8MjSeF593thwiODfUaiE-u_NXArEDPg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26253/Wed Aug  4 10:20:49 2021)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3] selftests/bpf: move netcnt test under test_progs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162811920498.26909.17665443585932522385.git-patchwork-notify@kernel.org>
+Date:   Wed, 04 Aug 2021 23:20:04 +0000
+References: <20210804205524.3748709-1-sdf@google.com>
+In-Reply-To: <20210804205524.3748709-1-sdf@google.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/4/21 7:57 PM, Matt Cover wrote:
-> On Sat, Jul 31, 2021 at 8:25 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
->>
->> On Sat, Jul 31, 2021 at 06:26:32AM IST, Matthew Cover wrote:
->>> Commit ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program
->>> on cpumap") added the following option, but missed adding it to optstring:
->>> - mprog-disable: disable loading XDP program on cpumap entries
->>>
->>> Add the missing option character.
->>
->> I made some changes in this area in [0], since the support was primarily to do
->> redirection from the cpumap prog, so by default we don't install anything now
->> and only do so if a redirection interface is specified (and use devmap instead).
->> So this option won't be used anyway going forward (since we don't install a
->> dummy XDP_PASS program anymore) if it gets accepted.
->>
->> [0]: https://lore.kernel.org/bpf/20210728165552.435050-1-memxor@gmail.com
->>
->> PS: I can restore it again if this is something really used beyond redirecting
->> to another device (i.e. with custom BPF programs). Any feedback would be helpful.
-> 
-> Hey Kartikeya. I happened to be looking through this code to get a
-> feel for using CPUMAP for custom steering (e.g. RSS on encapsulated
-> packets) in XDP and noticed the missing option character. Figured it
-> was worth doing a quick patch and test.
-> 
-> Unfortunately, I'm not able to say much on your changes as I'm still
-> getting familiarized with this code. It looks like your submission is
-> in need of a rebase; v3 has been marked "Changes Requested" in
-> patchwork [0]. As I see things, It'd be good to get this fix in there
-> for now, whether or not the code is removed later.
+Hello:
 
-Yeap, given this fix in here is tiny & valid either way, I took it in for now, and
-when Kartikeya's rework eventually drops the whole option, so be it. ;)
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-Applied, thanks!
+On Wed,  4 Aug 2021 13:55:24 -0700 you wrote:
+> Rewrite to skel and ASSERT macros as well while we are at it.
+> 
+> v3:
+> - replace -f with -A to make it work with busybox ping.
+>   -A is available on both busybox and iputils, from the man page:
+>   On networks with low RTT this mode is essentially equivalent to
+>   flood mode.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v3] selftests/bpf: move netcnt test under test_progs
+    https://git.kernel.org/bpf/bpf-next/c/372642ea83ff
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
