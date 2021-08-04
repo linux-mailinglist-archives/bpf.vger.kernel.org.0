@@ -2,217 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8877B3E06B0
-	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 19:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1523E06BE
+	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 19:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239836AbhHDRU5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Aug 2021 13:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        id S239919AbhHDR2w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Aug 2021 13:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239791AbhHDRU4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:20:56 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DD9C0613D5
-        for <bpf@vger.kernel.org>; Wed,  4 Aug 2021 10:20:42 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id u25so3680735oiv.5
-        for <bpf@vger.kernel.org>; Wed, 04 Aug 2021 10:20:42 -0700 (PDT)
+        with ESMTP id S239975AbhHDR2s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Aug 2021 13:28:48 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFE5C06179A;
+        Wed,  4 Aug 2021 10:28:33 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id a5-20020a05683012c5b029036edcf8f9a6so2337772otq.3;
+        Wed, 04 Aug 2021 10:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SsLjeKiLuliSZOE+wUaPOjaCl3gVgPx+PNBKHSFfAc0=;
-        b=hVC8CZtsjkFOsvIinLJF30LOuTeXy5igNSPk7hFv9p92XBKklcEs4hRIgS5etqqoyk
-         Ex95PKSsiEj/BIIpSYMCXBpJJqiH/5bSpUtu467tZBV8HYK5j+gEiLPcsWBFOX+A76Bz
-         JQ70k6t5f/6C/3n/OaC5HAKi3bKsajwSq0Tl1GgURhePM/VohVmGQ8oqkiXqAisNMjXn
-         eeHuS+zUQmQd6Fd1jtrlFXGp45uGhY89q+X9Iye1mtthZzGL2CodxGIT+vCYy9ESHOca
-         nzkl3F/QNRx10oWyG57E0AG0qj+C3s6cveoKrfI/8lgHfHl936IVjVr+tKTpkIlR6IYn
-         KIrA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1gu89wY9LreYODHlzcyea31Rq8lJ9lifCsibkahK734=;
+        b=twallvAmbFxBl9Z6qyLi8tqJmCVWfRSu/r/bTsFejuxvtLNsGrdH36quktEn8bDI+f
+         gDUiowVe2a0q9gRWDDvzbWNLcm0YPIHYtEcKjx3LWpHkjO1VMuXLmq1JGO8Wbh08dPuU
+         WijtEETtWIn8YQmPUOaTBpfBLNnFlD0us43hrTvzZe12eO8kkPqBTfFEMkP9SoZksxfw
+         mFpegkN7IiZ2ZzbSWutYBzy9TESGxJC5cr0ITIkkuyY+WPUbdtDzUlLPmjPuVt8jbTuc
+         TTlAd7VxK0h+dgZHGDQt/wHli10k0oluN271z2YqbNgFZ56E+kmYRNNR6KOq/mgAMO8A
+         NOyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SsLjeKiLuliSZOE+wUaPOjaCl3gVgPx+PNBKHSFfAc0=;
-        b=QIfr62Lx24R74MHppOrCTzSXmvXyul7iGOu3avC1fSu3H/TwX1/HfHmnI/+Bf/FA3D
-         OgxQt2vpZl+hy1K7hgBR8hzu71bTe3CtpWQNw3DHxeVyhSOyVU9JpGGddy8PyyMy39IS
-         pWMWaABZsfO20Ik/iIjQldtmR9YaTH2PRiRkJC4kIU1bncf0n5PjEjrsx+qlpTr7aRCM
-         cHAu+zx63Xaa0+aoTekWPfZ53hgBqGC9DLdA24tnPT3cAoRO7ioeSn0Lz+8aih6dZNEH
-         GrLAjz5gE/SFquyBkhMYAAuzslrMQBWTz2ho+IKkvMj8vqubIlvUfKr4dCN4yfChGcou
-         Z+4g==
-X-Gm-Message-State: AOAM530rnNjtZ9FSjsZXMG0B4UYhJV5VmDq7XHYrfnxr31ZIZ73rcorh
-        3uyliGZpeQm0h45KvmWy9IdtCUPa+TjuyxWiRjbW2g==
-X-Google-Smtp-Source: ABdhPJydHT8T09LV2c5tCC/zHhUe+u5O3+JdHKYpJP9RhhU+4ivVPQngJmG/KHsv0HSdDX7wN70cCyRdKW8apbASMIk=
-X-Received: by 2002:a05:6808:d53:: with SMTP id w19mr447537oik.48.1628097641355;
- Wed, 04 Aug 2021 10:20:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210802211912.116329-1-jiang.wang@bytedance.com>
- <20210802211912.116329-3-jiang.wang@bytedance.com> <87zgtxcfig.fsf@cloudflare.com>
-In-Reply-To: <87zgtxcfig.fsf@cloudflare.com>
-From:   "Jiang Wang ." <jiang.wang@bytedance.com>
-Date:   Wed, 4 Aug 2021 10:20:30 -0700
-Message-ID: <CAP_N_Z_c5CidNPdnaf=M=Vpm9-rJvODi+-5rZ0DNO+mwOpKJpw@mail.gmail.com>
-Subject: Re: Re: [PATCH bpf-next v3 2/5] af_unix: add unix_stream_proto for sockmap
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1gu89wY9LreYODHlzcyea31Rq8lJ9lifCsibkahK734=;
+        b=lFsm9OMPE2+KSGlQo5AGyDn+YvA+bC5TZqpbtHkrTvJOIrOoGhvNaPMSvCxPqMvFZt
+         M2b/pvyykxt+ITQbX+n2nqDCx3xNJPqNs64ZedD0OHiaOIah2qOK9sdO0n3k8Rk6BVcz
+         AkQckkoT4pf3lOqVCJZ1f6qR4Tcctlt/mJ0f5WoH6KhDD11hcr99XEYrBPtx77/w4YgA
+         2zEjtiyrR1VrYY52Uk2jAuTnjDUnFagacT+bsQfp5lA1U5nMhLU2+xFgd1wE21OnvF0s
+         83MF7+TFAo/UZDgrJSGWl16tfKdh1wsyQMdcq6S01b+Ai7N53blrUAHI3qPTzcKgZdXr
+         8y9g==
+X-Gm-Message-State: AOAM532cAm5HA4xAEnECrz0SQHscoAR5FHa1ZWQwyc+EoWLsKg1T8DWd
+        UL3xgAgLKZxtGCdLg1LaFKzy3IjdMxR2Og==
+X-Google-Smtp-Source: ABdhPJxfTJB+1amIiaMzKYuEzbZBRIy7VzQ7/+ItNJE/ANxFmOKfDrAXgp4L0cILRQmu/1zpKeW+wA==
+X-Received: by 2002:a9d:7550:: with SMTP id b16mr623424otl.309.1628098112834;
+        Wed, 04 Aug 2021 10:28:32 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.45])
+        by smtp.googlemail.com with ESMTPSA id r25sm418421oos.24.2021.08.04.10.28.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 10:28:32 -0700 (PDT)
+Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
+ statistics
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+ <20210803163641.3743-4-alexandr.lobakin@intel.com>
+ <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
+ <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <43e91ce1-0f82-5820-7cac-b42461a0311a@gmail.com>
+ <20210804094432.08d0fa86@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <d21933cb-9d24-9bdd-cf18-e5077796ddf7@gmail.com>
+Date:   Wed, 4 Aug 2021 11:28:28 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210804094432.08d0fa86@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 9:59 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Mon, Aug 02, 2021 at 11:19 PM CEST, Jiang Wang wrote:
->
-> [...]
->
-> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> > index ae5fa4338..42f50ea7a 100644
-> > --- a/net/core/sock_map.c
-> > +++ b/net/core/sock_map.c
-> > @@ -517,9 +517,15 @@ static bool sk_is_tcp(const struct sock *sk)
-> >              sk->sk_protocol == IPPROTO_TCP;
-> >  }
-> >
-> > +static bool sk_is_unix_stream(const struct sock *sk)
-> > +{
-> > +     return sk->sk_type == SOCK_STREAM &&
-> > +            sk->sk_protocol == PF_UNIX;
-> > +}
-> > +
-> >  static bool sock_map_redirect_allowed(const struct sock *sk)
-> >  {
-> > -     if (sk_is_tcp(sk))
-> > +     if (sk_is_tcp(sk) || sk_is_unix_stream(sk))
-> >               return sk->sk_state != TCP_LISTEN;
-> >       else
-> >               return sk->sk_state == TCP_ESTABLISHED;
->
-> Let me provide some context.
->
-> The reason why we check != TCP_LISTEN for TCP sockets is that we want to
-> allow redirect redirect to sockets that are about to transition from
-> TCP_SYN_RECV to TCP_ESTABLISHED, in addition to sockets already in
-> TCP_ESTABLISHED state.
->
-> That's because BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB callback happens when
-> socket is still in TCP_SYN_RECV state. With BPF sockops program, we can
-> insert such socket into a sockmap. Hence, there is a short window of
-> opportunity when we could redirect to a socket in TCP_SYN_RECV.
->
-> UNIX sockets can be only in TCP_{CLOSE,LISTEN,ESTABLISHED} state,
-> AFAIK. So it is sufficient to rely on the default == TCP_ESTABLISHED
-> check.
->
-Got it. Thanks for the explanation. I will change unix sockets to only
-check == TCP_ESTABLISHED condition.
+On 8/4/21 10:44 AM, Jakub Kicinski wrote:
+> On Wed, 4 Aug 2021 10:17:56 -0600 David Ahern wrote:
+>> On 8/4/21 6:36 AM, Jakub Kicinski wrote:
+>>>> XDP is going to always be eBPF based ! why not just report such stats
+>>>> to a special BPF_MAP ? BPF stack can collect the stats from the driver
+>>>> and report them to this special MAP upon user request.  
+>>> Do you mean replacing the ethtool-netlink / rtnetlink etc. with
+>>> a new BPF_MAP? I don't think adding another category of uAPI thru 
+>>> which netdevice stats are exposed would do much good :( Plus it 
+>>> doesn't address the "yet another cacheline" concern.
+>>>
+>>> To my understanding the need for stats recognizes the fact that (in
+>>> large organizations) fleet monitoring is done by different teams than
+>>> XDP development. So XDP team may have all the stats they need, but the
+>>> team doing fleet monitoring has no idea how to get to them.
+>>>
+>>> To bridge the two worlds we need a way for the infra team to ask the
+>>> XDP for well-defined stats. Maybe we should take a page from the BPF
+>>> iterators book and create a program type for bridging the two worlds?
+>>> Called by networking core when duping stats to extract from the
+>>> existing BPF maps all the relevant stats and render them into a well
+>>> known struct? Users' XDP design can still use a single per-cpu map with
+>>> all the stats if they so choose, but there's a way to implement more
+>>> optimal designs and still expose well-defined stats.
+>>>
+>>> Maybe that's too complex, IDK.  
+>>
+>> I was just explaining to someone internally how to get stats at all of
+>> the different points in the stack to track down reasons for dropped packets:
+>>
+>> ethtool -S for h/w and driver
+>> tc -s for drops by the qdisc
+>> /proc/net/softnet_stat for drops at the backlog layer
+>> netstat -s for network and transport layer
+>>
+>> yet another command and API just adds to the nightmare of explaining and
+>> understanding these stats.
+> 
+> Are you referring to RTM_GETSTATS when you say "yet another command"?
+> RTM_GETSTATS exists and is used by offloads today.
+> 
+> I'd expect ip -s (-s) to be extended to run GETSTATS and display the xdp
+> stats. (Not sure why ip -s was left out of your list :))
 
-> > diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> > index 0ae3fc4c8..9c1711c67 100644
-> > --- a/net/unix/af_unix.c
-> > +++ b/net/unix/af_unix.c
-> > @@ -791,17 +791,35 @@ static void unix_close(struct sock *sk, long timeout)
-> >        */
-> >  }
-> >
-> > -struct proto unix_proto = {
-> > -     .name                   = "UNIX",
-> > +static void unix_unhash(struct sock *sk)
-> > +{
-> > +     /* Nothing to do here, unix socket does not need a ->unhash().
-> > +      * This is merely for sockmap.
-> > +      */
-> > +}
-> > +
-> > +struct proto unix_dgram_proto = {
-> > +     .name                   = "UNIX-DGRAM",
-> > +     .owner                  = THIS_MODULE,
-> > +     .obj_size               = sizeof(struct unix_sock),
-> > +     .close                  = unix_close,
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +     .psock_update_sk_prot   = unix_dgram_bpf_update_proto,
-> > +#endif
-> > +};
-> > +
-> > +struct proto unix_stream_proto = {
-> > +     .name                   = "UNIX-STREAM",
-> >       .owner                  = THIS_MODULE,
-> >       .obj_size               = sizeof(struct unix_sock),
-> >       .close                  = unix_close,
-> > +     .unhash                 = unix_unhash,
-> >  #ifdef CONFIG_BPF_SYSCALL
-> > -     .psock_update_sk_prot   = unix_bpf_update_proto,
-> > +     .psock_update_sk_prot   = unix_stream_bpf_update_proto,
-> >  #endif
-> >  };
-> >
-> > -static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
-> > +static struct sock *unix_create1(struct net *net, struct socket *sock, int kern, int type)
-> >  {
-> >       struct sock *sk = NULL;
-> >       struct unix_sock *u;
-> > @@ -810,7 +828,11 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
-> >       if (atomic_long_read(&unix_nr_socks) > 2 * get_max_files())
-> >               goto out;
-> >
-> > -     sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_proto, kern);
-> > +     if (type == SOCK_STREAM)
-> > +             sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_stream_proto, kern);
-> > +     else /*dgram and  seqpacket */
-> > +             sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_dgram_proto, kern);
-> > +
-> >       if (!sk)
-> >               goto out;
-> >
-> > @@ -872,7 +894,7 @@ static int unix_create(struct net *net, struct socket *sock, int protocol,
-> >               return -ESOCKTNOSUPPORT;
-> >       }
-> >
-> > -     return unix_create1(net, sock, kern) ? 0 : -ENOMEM;
-> > +     return unix_create1(net, sock, kern, sock->type) ? 0 : -ENOMEM;
-> >  }
-> >
-> >  static int unix_release(struct socket *sock)
-> > @@ -1286,7 +1308,7 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
-> >       err = -ENOMEM;
-> >
-> >       /* create new sock for complete connection */
-> > -     newsk = unix_create1(sock_net(sk), NULL, 0);
-> > +     newsk = unix_create1(sock_net(sk), NULL, 0, sock->type);
-> >       if (newsk == NULL)
-> >               goto out;
-> >
-> > @@ -2214,7 +2236,7 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg, size_t si
-> >       struct sock *sk = sock->sk;
-> >
-> >  #ifdef CONFIG_BPF_SYSCALL
-> > -     if (sk->sk_prot != &unix_proto)
-> > +     if (sk->sk_prot != &unix_dgram_proto)
-> >               return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
-> >                                           flags & ~MSG_DONTWAIT, NULL);
-> >  #endif
->
->
-> KASAN might be unhappy about access to sk->sk_prot not annotated with
-> READ_ONCE. In unix_bpf we have WRITE_ONCE(sk->sk_prot, ...) [1]
->
-Got it.  Will check and add READ_ONCE if necessary.
+It's on my diagram, and yes, forgot to add it here.
 
-> [...]
->
-> [1] https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE#why-kernel-code-should-use-read_once-and-write_once-for-shared-memory-accesses
+> 
+>> There is real value in continuing to use ethtool API for XDP stats. Not
+>> saying this reorg of the XDP stats is the right thing to do, only that
+>> the existing API has real user benefits.
+> 
+> RTM_GETSTATS is an existing API. New ethtool stats are intended to be HW
+> stats. I don't want to go back to ethtool being a dumping ground for all
+> stats because that's what the old interface encouraged.
+
+driver stats are important too. e.g., mlx5's cache stats and per-queue
+stats.
+
+> 
+>> Does anyone have data that shows bumping a properly implemented counter
+>> causes a noticeable performance degradation and if so by how much? You
+>> mention 'yet another cacheline' but collecting stats on stack and
+>> incrementing the driver structs at the end of the napi loop should not
+>> have a huge impact versus the value the stats provide.
+> 
+> Not sure, maybe Jesper has some numbers. Maybe Intel folks do?
+
+I just ran some quick tests with my setup and measured about 1.2% worst
+case. Certainly not exhaustive. Perhaps Intel or Mellanox can provide
+numbers for their high speed nics - e.g. ConnectX-6 and a saturated host.
+
+> 
+> I'm just allergic to situations when there is a decision made and 
+> then months later patches are posted disregarding the decision, 
+> without analysis on why that decision was wrong. And while the
+> maintainer who made the decision is on vacation.
+> 
+
+stats is one of the many sensitive topics. I have been consistent in
+defending the need to use existing APIs and tooling and not relying on
+XDP program writers to add the relevant stats and then provide whatever
+tool is needed to extract and print them. Standardization for
+fundamental analysis tools.
