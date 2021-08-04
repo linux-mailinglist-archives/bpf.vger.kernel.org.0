@@ -2,41 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13163E09D3
-	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 23:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A263E0A75
+	for <lists+bpf@lfdr.de>; Thu,  5 Aug 2021 00:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237601AbhHDVFl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Aug 2021 17:05:41 -0400
-Received: from www62.your-server.de ([213.133.104.62]:35268 "EHLO
+        id S229743AbhHDWfQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Aug 2021 18:35:16 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45242 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237378AbhHDVFl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:05:41 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
+        with ESMTP id S229987AbhHDWfQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:35:16 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mBO4l-00080s-If; Wed, 04 Aug 2021 23:05:19 +0200
+        id 1mBPTZ-000Flc-LQ; Thu, 05 Aug 2021 00:35:01 +0200
 Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mBO4l-00027K-Ap; Wed, 04 Aug 2021 23:05:19 +0200
-Subject: Re: [PATCH bpf-next 0/3] tools: ksnoop: tracing kernel function
- entry/return with argument/return value display
-To:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
-        andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        quentin@isovalent.com, toke@redhat.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <1628025796-29533-1-git-send-email-alan.maguire@oracle.com>
+        id 1mBPTZ-000LaK-Dc; Thu, 05 Aug 2021 00:35:01 +0200
+Subject: Re: [PATCH bpf-next v5 2/2] bpf: expose bpf_d_path helper to vfs_*
+ and security_* functions
+To:     Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, yanivagman@gmail.com,
+        kpsingh@kernel.org
+References: <20210727132532.2473636-1-hengqi.chen@gmail.com>
+ <20210727132532.2473636-3-hengqi.chen@gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9fab5327-b629-c6bf-454c-dffe181e1cb1@iogearbox.net>
-Date:   Wed, 4 Aug 2021 23:05:18 +0200
+Message-ID: <ff963256-ea65-b8ba-05d0-fba3b03843d0@iogearbox.net>
+Date:   Thu, 5 Aug 2021 00:35:00 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <1628025796-29533-1-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <20210727132532.2473636-3-hengqi.chen@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,69 +45,112 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Alan,
-
-On 8/3/21 11:23 PM, Alan Maguire wrote:
-> Recent functionality added to libbpf [1] enables typed display of kernel
-> data structures; here that functionality is exploited to provide a
-> simple example of how a tracer can support deep argument/return value
-> inspection.  The intent is to provide a demonstration of these features
-> to help facilitate tracer adoption, while also providing a tool which
-> can be useful for kernel debugging.
-
-Thanks a lot for working on this tool, this looks _super useful_! Right now
-under tools/bpf/ we have bpftool and resolve_btfids as the two main tools,
-the latter used during kernel build, and the former evolving with the kernel
-together with libbpf. The runqslower in there was originally thought of as
-a single/small example tool to demo how to build stand-alone tracing tools
-with all the modern practices, though the latter has also been added to [0]
-(thus could be removed). I would rather love if you could add ksnoop for
-inclusion into bcc's libbpf-based tracing tooling suite under [0] as well
-which would be a better fit long term rather than kernel tree for the tool
-to evolve. We don't intend to add a stand-alone tooling collection under the
-tools/bpf/ long term since these can evolve better outside of kernel tree.
-
-Thanks a lot,
-Daniel
-
-   [0] https://github.com/iovisor/bcc/tree/master/libbpf-tools
-
-> Changes since RFC [2]:
+On 7/27/21 3:25 PM, Hengqi Chen wrote:
+> Add vfs_* and security_* to bpf_d_path allowlist, so that we can use
+> bpf_d_path helper to extract full file path from these functions' arguments.
+> This will help tools like BCC's filetop[1]/filelife to get full file path.
 > 
-> - In the RFC version, kernel data structures were string-ified in
->    BPF program context vi bpf_snprintf_btf(); Alexei pointed out that
->    it would be better to dump memory to userspace and let the
->    interpretation happen there.  btf_dump__dump_type_data() in libbpf
->    now supports this (Alexei, patch 1)
-> - Added the "stack mode" specification where we trace a specific set
->    of functions being called in order (though not necessarily directly).
->    This mode of tracing is useful when debugging issues with a specific
->    stack signature.
+> [1] https://github.com/iovisor/bcc/issues/3527
 > 
-> [1] https://lore.kernel.org/bpf/1626362126-27775-1-git-send-email-alan.maguire@oracle.com/
-> [2] https://lore.kernel.org/bpf/1609773991-10509-1-git-send-email-alan.maguire@oracle.com/
+> Acked-by: Yonghong Song <yhs@fb.com>
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>   kernel/trace/bpf_trace.c | 60 +++++++++++++++++++++++++++++++++++++---
+>   1 file changed, 56 insertions(+), 4 deletions(-)
 > 
-> Alan Maguire (3):
->    tools: ksnoop: kernel argument/return value tracing/display using BTF
->    tools: ksnoop: document ksnoop tracing of entry/return with value
->      display
->    tools: ksnoop: add .gitignore
-> 
->   tools/bpf/Makefile                        |  20 +-
->   tools/bpf/ksnoop/.gitignore               |   1 +
->   tools/bpf/ksnoop/Documentation/Makefile   |  58 ++
->   tools/bpf/ksnoop/Documentation/ksnoop.rst | 173 ++++++
->   tools/bpf/ksnoop/Makefile                 | 107 ++++
->   tools/bpf/ksnoop/ksnoop.bpf.c             | 391 +++++++++++++
->   tools/bpf/ksnoop/ksnoop.c                 | 890 ++++++++++++++++++++++++++++++
->   tools/bpf/ksnoop/ksnoop.h                 | 103 ++++
->   8 files changed, 1738 insertions(+), 5 deletions(-)
->   create mode 100644 tools/bpf/ksnoop/.gitignore
->   create mode 100644 tools/bpf/ksnoop/Documentation/Makefile
->   create mode 100644 tools/bpf/ksnoop/Documentation/ksnoop.rst
->   create mode 100644 tools/bpf/ksnoop/Makefile
->   create mode 100644 tools/bpf/ksnoop/ksnoop.bpf.c
->   create mode 100644 tools/bpf/ksnoop/ksnoop.c
->   create mode 100644 tools/bpf/ksnoop/ksnoop.h
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index c5e0b6a64091..e7b24abcf3bf 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -849,18 +849,70 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
+>   
+>   BTF_SET_START(btf_allowlist_d_path)
+>   #ifdef CONFIG_SECURITY
+> +BTF_ID(func, security_bprm_check)
+> +BTF_ID(func, security_bprm_committed_creds)
+> +BTF_ID(func, security_bprm_committing_creds)
+> +BTF_ID(func, security_bprm_creds_for_exec)
+> +BTF_ID(func, security_bprm_creds_from_file)
+> +BTF_ID(func, security_file_alloc)
+
+Did you actually try these out, e.g. attaching BPF progs invoking bpf_d_path() to all
+these, then generate some workload like kernel build for testing?
+
+I presume not, since something like security_file_alloc() would crash the kernel. Right
+before it's called in __alloc_file() we fetch a struct file from kmemcache, and only
+populate f->f_cred there. Most LSMs, for example, only populate their secblob through the
+callback. If you call bpf_d_path(&file->f_path, ...) with it, you'll crash in d_path()
+when path->dentry->d_op is checked.. given f->f_path is all zeroed structure at that
+point.
+
+Please do your due diligence and invest each of them manually, maybe the best way is
+to hack up small selftests for each enabled function that our CI can test run? Bit of a
+one-time effort, but at least it ensures that those additions are sane & checked.
+
+> +BTF_ID(func, security_file_fcntl)
+> +BTF_ID(func, security_file_free)
+> +BTF_ID(func, security_file_ioctl)
+> +BTF_ID(func, security_file_lock)
+> +BTF_ID(func, security_file_open)
+>   BTF_ID(func, security_file_permission)
+> +BTF_ID(func, security_file_receive)
+> +BTF_ID(func, security_file_set_fowner)
+>   BTF_ID(func, security_inode_getattr)
+> -BTF_ID(func, security_file_open)
+> +BTF_ID(func, security_sb_mount)
+>   #endif
+>   #ifdef CONFIG_SECURITY_PATH
+> +BTF_ID(func, security_path_chmod)
+> +BTF_ID(func, security_path_chown)
+> +BTF_ID(func, security_path_chroot)
+> +BTF_ID(func, security_path_link)
+> +BTF_ID(func, security_path_mkdir)
+> +BTF_ID(func, security_path_mknod)
+> +BTF_ID(func, security_path_notify)
+> +BTF_ID(func, security_path_rename)
+> +BTF_ID(func, security_path_rmdir)
+> +BTF_ID(func, security_path_symlink)
+>   BTF_ID(func, security_path_truncate)
+> +BTF_ID(func, security_path_unlink)
+>   #endif
+> -BTF_ID(func, vfs_truncate)
+> -BTF_ID(func, vfs_fallocate)
+>   BTF_ID(func, dentry_open)
+> -BTF_ID(func, vfs_getattr)
+>   BTF_ID(func, filp_close)
+> +BTF_ID(func, vfs_cancel_lock)
+> +BTF_ID(func, vfs_clone_file_range)
+> +BTF_ID(func, vfs_copy_file_range)
+> +BTF_ID(func, vfs_dedupe_file_range)
+> +BTF_ID(func, vfs_dedupe_file_range_one)
+> +BTF_ID(func, vfs_fadvise)
+> +BTF_ID(func, vfs_fallocate)
+> +BTF_ID(func, vfs_fchmod)
+> +BTF_ID(func, vfs_fchown)
+> +BTF_ID(func, vfs_fsync)
+> +BTF_ID(func, vfs_fsync_range)
+> +BTF_ID(func, vfs_getattr)
+> +BTF_ID(func, vfs_getattr_nosec)
+> +BTF_ID(func, vfs_iocb_iter_read)
+> +BTF_ID(func, vfs_iocb_iter_write)
+> +BTF_ID(func, vfs_ioctl)
+> +BTF_ID(func, vfs_iter_read)
+> +BTF_ID(func, vfs_iter_write)
+> +BTF_ID(func, vfs_llseek)
+> +BTF_ID(func, vfs_lock_file)
+> +BTF_ID(func, vfs_open)
+> +BTF_ID(func, vfs_read)
+> +BTF_ID(func, vfs_readv)
+> +BTF_ID(func, vfs_setlease)
+> +BTF_ID(func, vfs_setpos)
+> +BTF_ID(func, vfs_statfs)
+> +BTF_ID(func, vfs_test_lock)
+> +BTF_ID(func, vfs_truncate)
+> +BTF_ID(func, vfs_utimes)
+> +BTF_ID(func, vfs_write)
+> +BTF_ID(func, vfs_writev)
+>   BTF_SET_END(btf_allowlist_d_path)
+>   
+>   static bool bpf_d_path_allowed(const struct bpf_prog *prog)
 > 
 
