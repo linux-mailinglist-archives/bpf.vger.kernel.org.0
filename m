@@ -2,72 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01AB3DFB37
-	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 07:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABDE3DFBCE
+	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 09:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235362AbhHDFrw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Aug 2021 01:47:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235012AbhHDFrw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Aug 2021 01:47:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DBC260F35;
-        Wed,  4 Aug 2021 05:47:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628056060;
-        bh=1gdAXIFEnMmmgxkAapvaJqxB+Vq0F+z7XRSiH/DqABE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tz7FyKHQV1AMtEtC+epww0ohe2WtFEph3g6Spy1b5mz6khm47prW89VVSyRhfzjLx
-         zLL8g7wB+u3lOBUwnFnlTvcwO5Rce31LNm7Y2FCf9m2ayBQ3OimThsKKAYjcd1UfGg
-         ZbBF3shZ4a9z9/PD9t9KWy4ZX9tKc4Jh6lOawyhIY632toTDhbXharRkPINL7yN5K2
-         W1Q1/fhbHhhWSUStVToCEn0GdJkSINuFzgKPs7aw/UxAYXYHbw3VHmM4HYTZ+YeW8f
-         PQH8iwS1TCEc0ecbqa44NCMYCnN716BvnwG/qLR1ZvbSMx/sziwECBwy3c/6EACTb+
-         fBmSksFmmzZ4Q==
-Date:   Wed, 4 Aug 2021 08:47:36 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, mptcp@lists.linux.dev,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-s390@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH net-next v2] net: Modify sock_set_keepalive() for more
- scenarios
-Message-ID: <YQop+GhJcKICdwZ0@unreal>
-References: <20210804032856.4005-1-yajun.deng@linux.dev>
+        id S235291AbhHDHJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Aug 2021 03:09:43 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:36963 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235290AbhHDHJm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Aug 2021 03:09:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1628060971; x=1659596971;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Vf6Rg7oLPv3qq9V1+kVcgExSPcT2S4l7Ka57kMZ46xg=;
+  b=aKgcYEN3L+9OW7hWVOjtRTs2VHz8sRWsnKHeMYu1c6ofFvm/Joxn1hlX
+   V9MUW0gT0wkPnTEkWy20g3Q24VsSFP4sBF6T4UgZbM89t5pahrpm5kZml
+   RMvX7DvmFcLJncffC4SasAeiqDAbOJoji44Hn2Ut012Qg6fVRKSkWjSGK
+   k=;
+X-IronPort-AV: E=Sophos;i="5.84,293,1620691200"; 
+   d="scan'208";a="150194884"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 04 Aug 2021 07:09:31 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com (Postfix) with ESMTPS id 801C8A1D4C;
+        Wed,  4 Aug 2021 07:09:27 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Wed, 4 Aug 2021 07:09:26 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.161.175) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Wed, 4 Aug 2021 07:09:20 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+CC:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+Subject: [PATCH v3 bpf-next 0/2] BPF iterator for UNIX domain socket.
+Date:   Wed, 4 Aug 2021 16:08:49 +0900
+Message-ID: <20210804070851.97834-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804032856.4005-1-yajun.deng@linux.dev>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.175]
+X-ClientProxiedBy: EX13D17UWB001.ant.amazon.com (10.43.161.252) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 11:28:56AM +0800, Yajun Deng wrote:
-> Add 2nd parameter in sock_set_keepalive(), let the caller decide
-> whether to set. This can be applied to more scenarios.
-> 
-> v2:
->  - add the change in fs/dlm.
-> 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  fs/dlm/lowcomms.c     |  2 +-
->  include/net/sock.h    |  2 +-
->  net/core/filter.c     |  4 +---
->  net/core/sock.c       | 10 ++++------
->  net/mptcp/sockopt.c   |  4 +---
->  net/rds/tcp_listen.c  |  2 +-
->  net/smc/af_smc.c      |  2 +-
->  net/sunrpc/xprtsock.c |  2 +-
->  8 files changed, 11 insertions(+), 17 deletions(-)
+This patch set adds BPF iterator support for UNIX domain socket.  The first
+patch implements it and the second adds a selftest.
 
-1. Don't add changelogs in the commit messages and put them under --- marker.
-2. Add an explanation to the commit message WHY this change is necessary
-and HOW will it be used.
-3. Drop all your double NOT in front of values (!!val) and rely on C
-that casts int to bool naturally.
 
-Thanks
+Changelog:
+  v3:
+  - Export some functions for CONFIG_UNIX=m
+
+  v2:
+  https://lore.kernel.org/netdev/20210803011110.21205-1-kuniyu@amazon.co.jp/
+  - Implement bpf_iter specific seq_ops->stop()
+  - Add bpf_iter__unix in bpf_iter.h
+  - Move common definitions in selftest to bpf_tracing_net.h
+  - Include the code for abstract UNIX domain socket as comment in selftest
+  - Use ASSERT_OK_PTR() instead of CHECK()
+  - Make ternary operators on single line
+
+  v1:
+  https://lore.kernel.org/netdev/20210729233645.4869-1-kuniyu@amazon.co.jp/
+
+
+Kuniyuki Iwashima (2):
+  bpf: af_unix: Implement BPF iterator for UNIX domain socket.
+  selftest/bpf: Implement sample UNIX domain socket iterator program.
+
+ fs/proc/proc_net.c                            |  2 +
+ include/linux/btf_ids.h                       |  3 +-
+ kernel/bpf/bpf_iter.c                         |  3 +
+ net/core/filter.c                             |  1 +
+ net/unix/af_unix.c                            | 93 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 16 ++++
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |  8 ++
+ .../selftests/bpf/progs/bpf_iter_unix.c       | 86 +++++++++++++++++
+ .../selftests/bpf/progs/bpf_tracing_net.h     |  4 +
+ 9 files changed, 215 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_unix.c
+
+-- 
+2.30.2
+
