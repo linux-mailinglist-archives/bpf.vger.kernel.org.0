@@ -2,45 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AC93E0142
-	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 14:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036083E019F
+	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 15:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237569AbhHDMhG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Aug 2021 08:37:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237413AbhHDMhG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:37:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5D9B60E8D;
-        Wed,  4 Aug 2021 12:36:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628080613;
-        bh=vBpefUuV9lPRsEP836BJTZ6bfER+5hsJBPPFMvDOds8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BSpuy+9oxQBnoYzJOoSXbZG8vAm1B+S8OtdkUPiUtvHZ5j8rXSHuo1cz5S+eIpPwH
-         8tY0Pz9SFrVSHvW56DyPW7UudNz6jLBUug0H1SvFHzCgQNd+xep5hYVpshE25Qcihf
-         PXgJuTJ2WN11AC/sSgeqlpkg8AqpdcCoRb5TQF1SPUAplqFFGF7635d6/7f29nSMad
-         Z5RQ6zAwEZ2QfnVWwMz6QYbfHeToYEfPDzXfFUVWxrZC9I7wdIAMUDFDY7ODWpunjd
-         yqaSaR6eGF8oFmIAKnhRYMql4L+AG6oB2ghzShjJd1TaBkar9KNUcJ33vDRNXOOVBc
-         FVa1dZ/72AXIw==
-Date:   Wed, 4 Aug 2021 05:36:50 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S237843AbhHDNFv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Aug 2021 09:05:51 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:53286 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237577AbhHDNFv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Aug 2021 09:05:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1628082340; x=1659618340;
+  h=references:from:to:cc:in-reply-to:date:message-id:
+   mime-version:subject;
+  bh=6DQs4BJxZy5tiv1i8yLWpSEtKNltR4iXCeNhNIa5+Sg=;
+  b=PKOfmbq0NUc2Ow3w4cMLlBqRjUCkVlPuPaYbjxINUybqSwRAibfU04Rp
+   uyIkNlpiOxvBRQFzZzuyemTFVQDBWylZX459KTRqOSHU2/nPxpqD0rH5w
+   STMEeeuzOiFsgIYcuXUEpLA1kNNuujODLA8pN0t0yJplZAK4zclxOY3/p
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.84,294,1620691200"; 
+   d="scan'208";a="127110400"
+Subject: Re: [PATCH net-next 07/21] ethernet, ena: convert to standard XDP stats
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-397e131e.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 04 Aug 2021 13:05:28 +0000
+Received: from EX13D28EUC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-397e131e.us-west-2.amazon.com (Postfix) with ESMTPS id 0804AA0472;
+        Wed,  4 Aug 2021 13:05:24 +0000 (UTC)
+Received: from u570694869fb251.ant.amazon.com.amazon.com (10.43.161.229) by
+ EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Wed, 4 Aug 2021 13:05:04 +0000
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+ <20210803163641.3743-8-alexandr.lobakin@intel.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Shay Agroskin <shayagr@amazon.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Lukasz Czapnik <lukasz.czapnik@intel.com>,
         Marcin Kubiak <marcin.kubiak@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
+        "Michal Kubiak" <michal.kubiak@intel.com>,
         Michal Swiatkowski <michal.swiatkowski@intel.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Netanel Belgazal <netanel@amazon.com>,
+        "Netanel Belgazal" <netanel@amazon.com>,
         Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>,
+        "Guy Tzalik" <gtzalik@amazon.com>,
         Saeed Bishara <saeedb@amazon.com>,
         Ioana Ciornei <ioana.ciornei@nxp.com>,
         Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
         Marcin Wojtas <mw@semihalf.com>,
         Russell King <linux@armlinux.org.uk>,
         Edward Cree <ecree.xilinx@gmail.com>,
@@ -49,105 +60,139 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         Jason Wang <jasowang@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        "Andrii Nakryiko" <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
-        Shay Agroskin <shayagr@amazon.com>,
         Sameeh Jubran <sameehj@amazon.com>,
         Alexander Duyck <alexanderduyck@fb.com>,
         Danielle Ratson <danieller@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        "Ido Schimmel" <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        "Vladyslav Tarasiuk" <vladyslavt@nvidia.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
         Jian Shen <shenjian15@huawei.com>,
-        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        "Petr Vorel" <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
         Yangbo Lu <yangbo.lu@nxp.com>,
         Michal Kubecek <mkubecek@suse.cz>,
         Zheng Yongjun <zhengyongjun3@huawei.com>,
         Heiner Kallweit <hkallweit1@gmail.com>,
         YueHaibing <yuehaibing@huawei.com>,
         Johannes Berg <johannes@sipsolutions.net>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
- statistics
-Message-ID: <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
-References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
-        <20210803163641.3743-4-alexandr.lobakin@intel.com>
-        <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
+        <netdev@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>, <bpf@vger.kernel.org>
+In-Reply-To: <20210803163641.3743-8-alexandr.lobakin@intel.com>
+Date:   Wed, 4 Aug 2021 16:04:59 +0300
+Message-ID: <pj41zllf5hmkck.fsf@u570694869fb251.ant.amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; format=flowed
+X-Originating-IP: [10.43.161.229]
+X-ClientProxiedBy: EX13D22UWB004.ant.amazon.com (10.43.161.165) To
+ EX13D28EUC001.ant.amazon.com (10.43.164.4)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 03 Aug 2021 16:57:22 -0700 Saeed Mahameed wrote:
-> On Tue, 2021-08-03 at 13:49 -0700, Jakub Kicinski wrote:
-> > On Tue,=C2=A0 3 Aug 2021 18:36:23 +0200 Alexander Lobakin wrote: =20
-> > > Most of the driver-side XDP enabled drivers provide some statistics
-> > > on XDP programs runs and different actions taken (number of passes,
-> > > drops, redirects etc.). =20
-> >=20
-> > Could you please share the statistics to back that statement up?
-> > Having uAPI for XDP stats is pretty much making the recommendation=20
-> > that drivers should implement such stats. The recommendation from
-> > Alexei and others back in the day (IIRC) was that XDP programs should
-> > implement stats, not the drivers, to avoid duplication.
->=20
-> There are stats "mainly errors*"  that are not even visible or reported
-> to the user prog,=20
 
-Fair point, exceptions should not be performance critical.
+Alexander Lobakin <alexandr.lobakin@intel.com> writes:
 
-> for that i had an idea in the past to attach an
-> exception_bpf_prog provided by the user, where driver/stack will report
-> errors to this special exception_prog.
+>
+>
+>
+> Its 6 XDP per-channel counters align just fine with the standard
+> stats.
+> Drop them from the custom Ethtool statistics and expose to the
+> standard stats infra instead.
+>
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> ---
+>  drivers/net/ethernet/amazon/ena/ena_ethtool.c | 46 
+>  ++++++++++++++++---
+>  1 file changed, 40 insertions(+), 6 deletions(-)
 
-Or maybe we should turn trace_xdp_exception() into a call which
-unconditionally collects exception stats? I think we can reasonably
-expect the exception_bpf_prog to always be attached, right?
+Hi,
+thanks for making this patch. I like the idea of splitting stats 
+into a per-queue basis
 
-> > > Regarding that it's almost pretty the same across all the drivers
-> > > (which is obvious), we can implement some sort of "standardized"
-> > > statistics using Ethtool standard stats infra to eliminate a lot
-> > > of code and stringsets duplication, different approaches to count
-> > > these stats and so on. =20
-> >=20
-> > I'm not 100% sold on the fact that these should be ethtool stats.=20
-> > Why not rtnl_fill_statsinfo() stats? Current ethtool std stats are=20
-> > all pretty Ethernet specific, and all HW stats. Mixing HW and SW
-> > stats
-> > is what we're trying to get away from.
->=20
-> XDP is going to always be eBPF based ! why not just report such stats
-> to a special BPF_MAP ? BPF stack can collect the stats from the driver
-> and report them to this special MAP upon user request.
+>
+> diff --git a/drivers/net/ethernet/amazon/ena/ena_ethtool.c 
+> b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
+> index 851a198cec82..1b6563641575 100644
+> --- a/drivers/net/ethernet/amazon/ena/ena_ethtool.c
+> +++ b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
+> @@ -90,12 +90,6 @@ static const struct ena_stats 
+> ena_stats_rx_strings[] = {
+>         ENA_STAT_RX_ENTRY(bad_req_id),
+>         ENA_STAT_RX_ENTRY(empty_rx_ring),
+>         ENA_STAT_RX_ENTRY(csum_unchecked),
+> -       ENA_STAT_RX_ENTRY(xdp_aborted),
+> -       ENA_STAT_RX_ENTRY(xdp_drop),
+> -       ENA_STAT_RX_ENTRY(xdp_pass),
+> -       ENA_STAT_RX_ENTRY(xdp_tx),
+> -       ENA_STAT_RX_ENTRY(xdp_invalid),
+> -       ENA_STAT_RX_ENTRY(xdp_redirect),
+>
 
-Do you mean replacing the ethtool-netlink / rtnetlink etc. with
-a new BPF_MAP? I don't think adding another category of uAPI thru=20
-which netdevice stats are exposed would do much good :( Plus it=20
-doesn't address the "yet another cacheline" concern.
+The ena_stats_rx_strings array is (indirectly) accessed through 
+ena_get_stats() function which is used for both fetching ethtool 
+stats and
+for sharing the stats with the device in case of an error (through 
+ena_dump_stats_ex() function).
 
-To my understanding the need for stats recognizes the fact that (in
-large organizations) fleet monitoring is done by different teams than
-XDP development. So XDP team may have all the stats they need, but the
-team doing fleet monitoring has no idea how to get to them.
+The latter use is broken by removing the XDP specific stats from 
+ena_stats_rx_strings array.
 
-To bridge the two worlds we need a way for the infra team to ask the
-XDP for well-defined stats. Maybe we should take a page from the BPF
-iterators book and create a program type for bridging the two worlds?
-Called by networking core when duping stats to extract from the
-existing BPF maps all the relevant stats and render them into a well
-known struct? Users' XDP design can still use a single per-cpu map with
-all the stats if they so choose, but there's a way to implement more
-optimal designs and still expose well-defined stats.
+I can submit an adaptation for the new system later (similar to 
+mlx5) if you prefer
 
-Maybe that's too complex, IDK.
+thanks,
+Shay
+
+>  };
+>
+>  static const struct ena_stats ena_stats_ena_com_strings[] = {
+> @@ -324,6 +318,44 @@ static void ena_get_ethtool_strings(struct 
+> net_device *netdev,
+>         }
+>  }
+>
+> +static int ena_get_std_stats_channels(struct net_device 
+> *netdev, u32 sset)
+> +{
+> +       const struct ena_adapter *adapter = netdev_priv(netdev);
+> +
+> +       switch (sset) {
+> +       case ETH_SS_STATS_XDP:
+> +               return adapter->num_io_queues;
+> +       default:
+> +               return -EOPNOTSUPP;
+> +       }
+> +}
+> +
+> +static void ena_get_xdp_stats(struct net_device *netdev,
+> +                             struct ethtool_xdp_stats 
+> *xdp_stats)
+> +{
+> +       const struct ena_adapter *adapter = netdev_priv(netdev);
+> +       const struct u64_stats_sync *syncp;
+> +       const struct ena_stats_rx *stats;
+> +       struct ethtool_xdp_stats *iter;
+> +       u32 i;
+> +
+...
+>  {
+> @@ -916,6 +948,8 @@ static const struct ethtool_ops 
+> ena_ethtool_ops = {
+>         .get_tunable            = ena_get_tunable,
+>         .set_tunable            = ena_set_tunable,
+>         .get_ts_info            = ethtool_op_get_ts_info,
+> +       .get_std_stats_channels = ena_get_std_stats_channels,
+> +       .get_xdp_stats          = ena_get_xdp_stats,
+>  };
+>
+>  void ena_set_ethtool_ops(struct net_device *netdev)
+
