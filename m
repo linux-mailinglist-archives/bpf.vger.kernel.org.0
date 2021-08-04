@@ -2,144 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787DB3DF8AC
-	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 01:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439643DFA00
+	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 05:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233836AbhHCX5h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Aug 2021 19:57:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45720 "EHLO mail.kernel.org"
+        id S234907AbhHDD3e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Aug 2021 23:29:34 -0400
+Received: from out0.migadu.com ([94.23.1.103]:50271 "EHLO out0.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233734AbhHCX5h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Aug 2021 19:57:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2456860F45;
-        Tue,  3 Aug 2021 23:57:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628035045;
-        bh=Y98IZD9r0/9I1bvy4BdIP6VjyzQFWfmsVGhrrmzDDRc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=r31R5ozKzXHyvIH6vCt4dFW1dv/yowBvBlNe0KTqPOgL9f2iAoLsADk8OBJoHQzzG
-         re8mfCOcR98uGWtgR2d0bWL9NRsh7meVM1K8UxNVyOCcFsSVzcSFhmjqXv5lfbNgE5
-         f99a0+pOLjywwdSZ/xOYBRO5pIOjjwFGTWbPZnd7Mfs0wy54vrj2x7kBjHjGgfgdQP
-         0BjY0uAlswD8YNHjKi6eB8DvFFujpYgrQ3R3DNUXJfBhyhN9i7u5Amxh1ybDmOLuop
-         zNJs1ef7vqjrE/7aJ1O+hp0Ree3wEXio1PzHbz41oWoLc9wmfYNBuJeB81guBTbE2t
-         EipEQYo6grupA==
-Message-ID: <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
-Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
- statistics
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Lukasz Czapnik <lukasz.czapnik@intel.com>,
-        Marcin Kubiak <marcin.kubiak@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Sameeh Jubran <sameehj@amazon.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jian Shen <shenjian15@huawei.com>,
-        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Date:   Tue, 03 Aug 2021 16:57:22 -0700
-In-Reply-To: <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
-         <20210803163641.3743-4-alexandr.lobakin@intel.com>
-         <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        id S234861AbhHDD3b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Aug 2021 23:29:31 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1628047754;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zvfYYuqF2FHspYtQC1WvXSu+rBBu+KjB/5LBDoNtRT4=;
+        b=FzQTSyOQ2rGO9qwy0o7IpAgbTz+5sSPMs3uY0QXt4erSXgQRqyoNWlVuyN4C/rXYVw9tVg
+        0NE/iaz4WcOIznqjpX8v083yMFlbwDD88OWzGNBvs6FNIlazK3Vu7yA3oCN0Y4eJ6Hiih0
+        fjABO4ni6e7dK5W1t8uuLLDApcsdv4M=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
+Cc:     cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, mptcp@lists.linux.dev,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-s390@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH net-next v2] net: Modify sock_set_keepalive() for more scenarios
+Date:   Wed,  4 Aug 2021 11:28:56 +0800
+Message-Id: <20210804032856.4005-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2021-08-03 at 13:49 -0700, Jakub Kicinski wrote:
-> On Tue,  3 Aug 2021 18:36:23 +0200 Alexander Lobakin wrote:
-> > Most of the driver-side XDP enabled drivers provide some statistics
-> > on XDP programs runs and different actions taken (number of passes,
-> > drops, redirects etc.).
-> 
-> Could you please share the statistics to back that statement up?
-> Having uAPI for XDP stats is pretty much making the recommendation 
-> that drivers should implement such stats. The recommendation from
-> Alexei and others back in the day (IIRC) was that XDP programs should
-> implement stats, not the drivers, to avoid duplication.
-> 
+Add 2nd parameter in sock_set_keepalive(), let the caller decide
+whether to set. This can be applied to more scenarios.
 
-There are stats "mainly errors*"  that are not even visible or reported
-to the user prog, for that i had an idea in the past to attach an
-exception_bpf_prog provided by the user, where driver/stack will report
-errors to this special exception_prog.
+v2:
+ - add the change in fs/dlm.
 
-> > Regarding that it's almost pretty the same across all the drivers
-> > (which is obvious), we can implement some sort of "standardized"
-> > statistics using Ethtool standard stats infra to eliminate a lot
-> > of code and stringsets duplication, different approaches to count
-> > these stats and so on.
-> 
-> I'm not 100% sold on the fact that these should be ethtool stats. 
-> Why not rtnl_fill_statsinfo() stats? Current ethtool std stats are 
-> all pretty Ethernet specific, and all HW stats. Mixing HW and SW
-> stats
-> is what we're trying to get away from.
-> 
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ fs/dlm/lowcomms.c     |  2 +-
+ include/net/sock.h    |  2 +-
+ net/core/filter.c     |  4 +---
+ net/core/sock.c       | 10 ++++------
+ net/mptcp/sockopt.c   |  4 +---
+ net/rds/tcp_listen.c  |  2 +-
+ net/smc/af_smc.c      |  2 +-
+ net/sunrpc/xprtsock.c |  2 +-
+ 8 files changed, 11 insertions(+), 17 deletions(-)
 
-XDP is going to always be eBPF based ! why not just report such stats
-to a special BPF_MAP ? BPF stack can collect the stats from the driver
-and report them to this special MAP upon user request.
-
-> > These new 12 fields provided by the standard XDP stats should cover
-> > most, if not all, stats that might be interesting for collecting
-> > and
-> > tracking.
-> > Note that most NIC drivers keep XDP statistics on a per-channel
-> > basis, so this also introduces a new callback for getting a number
-> > of channels which a driver will provide stats for. If it's not
-> > implemented or returns 0, it means stats are global/device-wide.
-> 
-> Per-channel stats via std ethtool stats are not a good idea. Per
-> queue
-> stats must be via the queue netlink interface we keep talking about
-> for
-> ever but which doesn't seem to materialize. When stats are reported
-> via
-> a different interface than objects they pertain to matching stats,
-> objects and their lifetime becomes very murky.
-
+diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
+index 0ea9ae35da0b..5d748ce4d876 100644
+--- a/fs/dlm/lowcomms.c
++++ b/fs/dlm/lowcomms.c
+@@ -1356,7 +1356,7 @@ static int tcp_create_listen_sock(struct listen_connection *con,
+ 		log_print("Can't bind to port %d", dlm_config.ci_tcp_port);
+ 		goto create_out;
+ 	}
+-	sock_set_keepalive(sock->sk);
++	sock_set_keepalive(sock->sk, true);
+ 
+ 	result = sock->ops->listen(sock, 5);
+ 	if (result < 0) {
+diff --git a/include/net/sock.h b/include/net/sock.h
+index ff1be7e7e90b..0aae26159549 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -2772,7 +2772,7 @@ int sock_set_timestamping(struct sock *sk, int optname,
+ 
+ void sock_enable_timestamps(struct sock *sk);
+ void sock_no_linger(struct sock *sk);
+-void sock_set_keepalive(struct sock *sk);
++void sock_set_keepalive(struct sock *sk, bool valbool);
+ void sock_set_priority(struct sock *sk, u32 priority);
+ void sock_set_rcvbuf(struct sock *sk, int val);
+ void sock_set_mark(struct sock *sk, u32 val);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 6f493ef5bb14..c73caa53992e 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4752,9 +4752,7 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+ 			ret = sock_bindtoindex(sk, ifindex, false);
+ 			break;
+ 		case SO_KEEPALIVE:
+-			if (sk->sk_prot->keepalive)
+-				sk->sk_prot->keepalive(sk, valbool);
+-			sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
++			sock_set_keepalive(sk, !!valbool);
+ 			break;
+ 		case SO_REUSEPORT:
+ 			sk->sk_reuseport = valbool;
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 9671c32e6ef5..7041e6355ae1 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -892,12 +892,12 @@ int sock_set_timestamping(struct sock *sk, int optname,
+ 	return 0;
+ }
+ 
+-void sock_set_keepalive(struct sock *sk)
++void sock_set_keepalive(struct sock *sk, bool valbool)
+ {
+ 	lock_sock(sk);
+ 	if (sk->sk_prot->keepalive)
+-		sk->sk_prot->keepalive(sk, true);
+-	sock_valbool_flag(sk, SOCK_KEEPOPEN, true);
++		sk->sk_prot->keepalive(sk, valbool);
++	sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
+ 	release_sock(sk);
+ }
+ EXPORT_SYMBOL(sock_set_keepalive);
+@@ -1060,9 +1060,7 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 		break;
+ 
+ 	case SO_KEEPALIVE:
+-		if (sk->sk_prot->keepalive)
+-			sk->sk_prot->keepalive(sk, valbool);
+-		sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
++		sock_set_keepalive(sk, !!valbool);
+ 		break;
+ 
+ 	case SO_OOBINLINE:
+diff --git a/net/mptcp/sockopt.c b/net/mptcp/sockopt.c
+index 8c03afac5ca0..879b8381055c 100644
+--- a/net/mptcp/sockopt.c
++++ b/net/mptcp/sockopt.c
+@@ -81,9 +81,7 @@ static void mptcp_sol_socket_sync_intval(struct mptcp_sock *msk, int optname, in
+ 			sock_valbool_flag(ssk, SOCK_DBG, !!val);
+ 			break;
+ 		case SO_KEEPALIVE:
+-			if (ssk->sk_prot->keepalive)
+-				ssk->sk_prot->keepalive(ssk, !!val);
+-			sock_valbool_flag(ssk, SOCK_KEEPOPEN, !!val);
++			sock_set_keepalive(ssk, !!val);
+ 			break;
+ 		case SO_PRIORITY:
+ 			ssk->sk_priority = val;
+diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+index 09cadd556d1e..b69ebb3f424a 100644
+--- a/net/rds/tcp_listen.c
++++ b/net/rds/tcp_listen.c
+@@ -44,7 +44,7 @@ void rds_tcp_keepalive(struct socket *sock)
+ 	int keepidle = 5; /* send a probe 'keepidle' secs after last data */
+ 	int keepcnt = 5; /* number of unack'ed probes before declaring dead */
+ 
+-	sock_set_keepalive(sock->sk);
++	sock_set_keepalive(sock->sk, true);
+ 	tcp_sock_set_keepcnt(sock->sk, keepcnt);
+ 	tcp_sock_set_keepidle(sock->sk, keepidle);
+ 	/* KEEPINTVL is the interval between successive probes. We follow
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 898389611ae8..ad8f4302037f 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -68,7 +68,7 @@ static void smc_set_keepalive(struct sock *sk, int val)
+ {
+ 	struct smc_sock *smc = smc_sk(sk);
+ 
+-	smc->clcsock->sk->sk_prot->keepalive(smc->clcsock->sk, val);
++	sock_set_keepalive(smc->clcsock->sk, !!val);
+ }
+ 
+ static struct smc_hashinfo smc_v4_hashinfo = {
+diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
+index e573dcecdd66..306a332f8d28 100644
+--- a/net/sunrpc/xprtsock.c
++++ b/net/sunrpc/xprtsock.c
+@@ -2127,7 +2127,7 @@ static void xs_tcp_set_socket_timeouts(struct rpc_xprt *xprt,
+ 	spin_unlock(&xprt->transport_lock);
+ 
+ 	/* TCP Keepalive options */
+-	sock_set_keepalive(sock->sk);
++	sock_set_keepalive(sock->sk, true);
+ 	tcp_sock_set_keepidle(sock->sk, keepidle);
+ 	tcp_sock_set_keepintvl(sock->sk, keepidle);
+ 	tcp_sock_set_keepcnt(sock->sk, keepcnt);
+-- 
+2.32.0
 
