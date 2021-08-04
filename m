@@ -2,45 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1803E041C
-	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 17:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C933E04FD
+	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 17:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239001AbhHDPZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Aug 2021 11:25:34 -0400
-Received: from mga05.intel.com ([192.55.52.43]:52776 "EHLO mga05.intel.com"
+        id S239495AbhHDPx5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Aug 2021 11:53:57 -0400
+Received: from mga04.intel.com ([192.55.52.120]:1307 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238994AbhHDPZ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:25:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="299531340"
+        id S239692AbhHDPx4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Aug 2021 11:53:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="212087308"
 X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="299531340"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 08:25:14 -0700
+   d="scan'208";a="212087308"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 08:53:43 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="585490624"
+   d="scan'208";a="441798957"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Aug 2021 08:25:02 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 04 Aug 2021 08:53:34 -0700
 Received: from alobakin-mobl.ger.corp.intel.com (kswiecic-MOBL.ger.corp.intel.com [10.213.28.10])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 174FOvOo013258;
-        Wed, 4 Aug 2021 16:24:57 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 174FrTiQ022328;
+        Wed, 4 Aug 2021 16:53:29 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Shay Agroskin <shayagr@amazon.com>
+To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Lukasz Czapnik <lukasz.czapnik@intel.com>,
         Marcin Kubiak <marcin.kubiak@intel.com>,
-        "Michal Kubiak" <michal.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
         Michal Swiatkowski <michal.swiatkowski@intel.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        "Netanel Belgazal" <netanel@amazon.com>,
+        Netanel Belgazal <netanel@amazon.com>,
         Arthur Kiyanovski <akiyano@amazon.com>,
         Saeed Bishara <saeedb@amazon.com>,
         Ioana Ciornei <ioana.ciornei@nxp.com>,
         Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Marcin Wojtas <mw@semihalf.com>,
         Russell King <linux@armlinux.org.uk>,
         Edward Cree <ecree.xilinx@gmail.com>,
@@ -49,19 +48,21 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         Jason Wang <jasowang@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
         Alexander Duyck <alexanderduyck@fb.com>,
         Danielle Ratson <danieller@nvidia.com>,
-        "Ido Schimmel" <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
         Arnd Bergmann <arnd@arndb.de>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Jian Shen <shenjian15@huawei.com>,
-        "Petr Vorel" <petr.vorel@gmail.com>, Yangbo Lu <yangbo.lu@nxp.com>,
+        Petr Vorel <petr.vorel@gmail.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
         Michal Kubecek <mkubecek@suse.cz>,
         Zheng Yongjun <zhengyongjun3@huawei.com>,
         Heiner Kallweit <hkallweit1@gmail.com>,
@@ -70,126 +71,117 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         netdev@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 07/21] ethernet, ena: convert to standard XDP stats
-Date:   Wed,  4 Aug 2021 17:24:55 +0200
-Message-Id: <20210804152455.173-1-alexandr.lobakin@intel.com>
+Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP statistics
+Date:   Wed,  4 Aug 2021 17:53:27 +0200
+Message-Id: <20210804155327.337-1-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <pj41zllf5hmkck.fsf@u570694869fb251.ant.amazon.com>
-References: <20210803163641.3743-1-alexandr.lobakin@intel.com> <20210803163641.3743-8-alexandr.lobakin@intel.com> <pj41zllf5hmkck.fsf@u570694869fb251.ant.amazon.com>
+In-Reply-To: <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com> <20210803163641.3743-4-alexandr.lobakin@intel.com> <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org> <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Shay Agroskin <shayagr@amazon.com>
-Date: Wed, 4 Aug 2021 16:04:59 +0300
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Wed, 4 Aug 2021 05:36:50 -0700
 
-> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
-> 
-> >
-> >
-> >
-> > Its 6 XDP per-channel counters align just fine with the standard
-> > stats.
-> > Drop them from the custom Ethtool statistics and expose to the
-> > standard stats infra instead.
-> >
-> > Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> > ---
-> >  drivers/net/ethernet/amazon/ena/ena_ethtool.c | 46 
-> >  ++++++++++++++++---
-> >  1 file changed, 40 insertions(+), 6 deletions(-)
-> 
-> Hi,
-> thanks for making this patch. I like the idea of splitting stats 
-> into a per-queue basis
-> 
-> >
-> > diff --git a/drivers/net/ethernet/amazon/ena/ena_ethtool.c 
-> > b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> > index 851a198cec82..1b6563641575 100644
-> > --- a/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> > +++ b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> > @@ -90,12 +90,6 @@ static const struct ena_stats 
-> > ena_stats_rx_strings[] = {
-> >         ENA_STAT_RX_ENTRY(bad_req_id),
-> >         ENA_STAT_RX_ENTRY(empty_rx_ring),
-> >         ENA_STAT_RX_ENTRY(csum_unchecked),
-> > -       ENA_STAT_RX_ENTRY(xdp_aborted),
-> > -       ENA_STAT_RX_ENTRY(xdp_drop),
-> > -       ENA_STAT_RX_ENTRY(xdp_pass),
-> > -       ENA_STAT_RX_ENTRY(xdp_tx),
-> > -       ENA_STAT_RX_ENTRY(xdp_invalid),
-> > -       ENA_STAT_RX_ENTRY(xdp_redirect),
-> >
-> 
-> The ena_stats_rx_strings array is (indirectly) accessed through 
-> ena_get_stats() function which is used for both fetching ethtool 
-> stats and
-> for sharing the stats with the device in case of an error (through 
-> ena_dump_stats_ex() function).
-> 
-> The latter use is broken by removing the XDP specific stats from 
-> ena_stats_rx_strings array.
-> 
-> I can submit an adaptation for the new system later (similar to 
-> mlx5) if you prefer
+> On Tue, 03 Aug 2021 16:57:22 -0700 Saeed Mahameed wrote:
+> > On Tue, 2021-08-03 at 13:49 -0700, Jakub Kicinski wrote:
+> > > On Tue,  3 Aug 2021 18:36:23 +0200 Alexander Lobakin wrote:  
+> > > > Most of the driver-side XDP enabled drivers provide some statistics
+> > > > on XDP programs runs and different actions taken (number of passes,
+> > > > drops, redirects etc.).  
+> > > 
+> > > Could you please share the statistics to back that statement up?
+> > > Having uAPI for XDP stats is pretty much making the recommendation 
+> > > that drivers should implement such stats. The recommendation from
+> > > Alexei and others back in the day (IIRC) was that XDP programs should
+> > > implement stats, not the drivers, to avoid duplication.
 
-Feel free to either do that (I'll exclude this patch from that
-series then) or you can give me some little tips or examples or
-anything on how to improve this one, so ena would stay converted.
-Both ways are fine for me.
+Well, 20+ patches in the series with at least half of them is
+drivers conversion. Plus mlx5. Plus we'll about to land XDP
+statistics for all Intel drivers, just firstly need to get a
+common infra for them (the purpose of this series).
 
-> thanks,
-> Shay
+Also, introducing IEEE and rmon stats didn't make a statement that
+all drivers should really expose them, right?
+
+> > There are stats "mainly errors*"  that are not even visible or reported
+> > to the user prog, 
+
+Not really. Many drivers like to count the number of redirects,
+xdp_xmits and stuff (incl. mlx5). Nevertheless, these stats aren't
+the same as something you can get from inside an XDP prog, right.
+
+> Fair point, exceptions should not be performance critical.
+> 
+> > for that i had an idea in the past to attach an
+> > exception_bpf_prog provided by the user, where driver/stack will report
+> > errors to this special exception_prog.
+> 
+> Or maybe we should turn trace_xdp_exception() into a call which
+> unconditionally collects exception stats? I think we can reasonably
+> expect the exception_bpf_prog to always be attached, right?
+
+trace_xdp_exception() is again a error path, and would restrict us
+to have only "bad" statistics.
+
+> > > > Regarding that it's almost pretty the same across all the drivers
+> > > > (which is obvious), we can implement some sort of "standardized"
+> > > > statistics using Ethtool standard stats infra to eliminate a lot
+> > > > of code and stringsets duplication, different approaches to count
+> > > > these stats and so on.  
+> > > 
+> > > I'm not 100% sold on the fact that these should be ethtool stats. 
+> > > Why not rtnl_fill_statsinfo() stats? Current ethtool std stats are 
+> > > all pretty Ethernet specific, and all HW stats. Mixing HW and SW
+> > > stats
+> > > is what we're trying to get away from.
+
+I was trying to introduce as few functional changes as possible,
+including that all the current drivers expose XDP stats through
+Ethtool.
+I don't say it's a 100% optimal way, but lots of different scripts
+and monitoring tools are already based on this fact and there can
+be some negative impact. There'll be for sure due to that std stats
+is a bit different thing and different drivers count and name XDP
+stats differently (breh).
+
+BTW, I'm fine with rtnl xstats. A nice reminder, thanks. If there
+won't be much cons like "don't touch our Ethtool stats", I would
+prefer this one instead of Ethtool standard stats way.
+
+> > XDP is going to always be eBPF based ! why not just report such stats
+> > to a special BPF_MAP ? BPF stack can collect the stats from the driver
+> > and report them to this special MAP upon user request.
+> 
+> Do you mean replacing the ethtool-netlink / rtnetlink etc. with
+> a new BPF_MAP? I don't think adding another category of uAPI thru 
+> which netdevice stats are exposed would do much good :( Plus it 
+> doesn't address the "yet another cacheline" concern.
+
++ this makes obtaining/tracking the statistics much harder. For now,
+all you need is `ethtool -S devname` (mainline) or
+`ethtool -S devname --groups xdp` (this series), and obtaining rtnl
+xstats is just a different command to invoke. BPF_MAP-based stats
+are a completely different story then.
+
+> To my understanding the need for stats recognizes the fact that (in
+> large organizations) fleet monitoring is done by different teams than
+> XDP development. So XDP team may have all the stats they need, but the
+> team doing fleet monitoring has no idea how to get to them.
+> 
+> To bridge the two worlds we need a way for the infra team to ask the
+> XDP for well-defined stats. Maybe we should take a page from the BPF
+> iterators book and create a program type for bridging the two worlds?
+> Called by networking core when duping stats to extract from the
+> existing BPF maps all the relevant stats and render them into a well
+> known struct? Users' XDP design can still use a single per-cpu map with
+> all the stats if they so choose, but there's a way to implement more
+> optimal designs and still expose well-defined stats.
+> 
+> Maybe that's too complex, IDK.
 
 Thanks,
 Al
-
-> >  };
-> >
-> >  static const struct ena_stats ena_stats_ena_com_strings[] = {
-> > @@ -324,6 +318,44 @@ static void ena_get_ethtool_strings(struct 
-> > net_device *netdev,
-> >         }
-> >  }
-> >
-> > +static int ena_get_std_stats_channels(struct net_device 
-> > *netdev, u32 sset)
-> > +{
-> > +       const struct ena_adapter *adapter = netdev_priv(netdev);
-> > +
-> > +       switch (sset) {
-> > +       case ETH_SS_STATS_XDP:
-> > +               return adapter->num_io_queues;
-> > +       default:
-> > +               return -EOPNOTSUPP;
-> > +       }
-> > +}
-> > +
-> > +static void ena_get_xdp_stats(struct net_device *netdev,
-> > +                             struct ethtool_xdp_stats 
-> > *xdp_stats)
-> > +{
-> > +       const struct ena_adapter *adapter = netdev_priv(netdev);
-> > +       const struct u64_stats_sync *syncp;
-> > +       const struct ena_stats_rx *stats;
-> > +       struct ethtool_xdp_stats *iter;
-> > +       u32 i;
-> > +
-> ...
-> >  {
-> > @@ -916,6 +948,8 @@ static const struct ethtool_ops 
-> > ena_ethtool_ops = {
-> >         .get_tunable            = ena_get_tunable,
-> >         .set_tunable            = ena_set_tunable,
-> >         .get_ts_info            = ethtool_op_get_ts_info,
-> > +       .get_std_stats_channels = ena_get_std_stats_channels,
-> > +       .get_xdp_stats          = ena_get_xdp_stats,
-> >  };
-> >
-> >  void ena_set_ethtool_ops(struct net_device *netdev)
-> 
-> 
