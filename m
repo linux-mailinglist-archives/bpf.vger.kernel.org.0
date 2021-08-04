@@ -2,133 +2,259 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DD43E0704
-	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 19:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C420B3E0792
+	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 20:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239960AbhHDR5w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Aug 2021 13:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238270AbhHDR5v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:57:51 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA64C0613D5;
-        Wed,  4 Aug 2021 10:57:38 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id h9so4995798ejs.4;
-        Wed, 04 Aug 2021 10:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hv6OJITDeCO1wZKdd4Bk2dI2GTNw+Rm7uJdsjk0rDgo=;
-        b=nd+v3KM//dHdWrDKhud6dJZMizCqe82AyFfUAXfbklC67SZ7SkQbHka2kvZPF5O32c
-         f4lHUhq+MWmpzIaNWXad8zZN6ZOSl6wMM+dl1Q9k/hnTey2CQA/7+QAGKl9rQuPp5PWA
-         j0qzWiuL0f2FHlXU5Vbmo5qfzsRvwgZBWIByFBWq1dpqKxPcPyQQYsr11ru0XGg/gpT0
-         +2Qh1hNfG2oaJNNGWi3a9ZKeugrzDM/qb/85g0ZDzC21xkDOQ6a/FSVPjAjsXMuvY9HI
-         MmKtbEkQJI8/IiSdVeDdIMceK3KM4BgLoKjOq8N5Oy64CrVE+sNseSnLJn5k2vW89kOe
-         0S5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hv6OJITDeCO1wZKdd4Bk2dI2GTNw+Rm7uJdsjk0rDgo=;
-        b=TifzWw2HpePdKANokA9yxjrNNt0WbHiGyjArChmH2eSTozXTzhX0sIl4OKBmKEgY55
-         Lh2JinWzYg7VbRCMIdXqzqlN2awOwGhQpBQHUIEu5qYC3HBtliHIX6xfHYCNFGjUUpDb
-         s5cmGZkw74Ns3lDoh3Ade4mEc4Fsk7cle6CLD7csddMHowqN+/CJhCDECSd8YBMjOAw6
-         eqIxOTjnB9RMxi0QimQRTAho2pFbuj9IYK5NEf5u4C2Tt14j8AckBXOB1peZD/6T/MQG
-         jWc7I5uPWqR7FXjE2f3lDsBR2XHQvxFNSsAV8w61zovn0esI51I491c1QXFwguis41oi
-         Q+6w==
-X-Gm-Message-State: AOAM532rzqmlkywxtE0T38wrAV1MDjSdl5Lho/cNOo0NF13/mHuR85e+
-        2/tRGxbb/eRRhvgn/4IQzI9mlZR0TYoTzQdujGw=
-X-Google-Smtp-Source: ABdhPJxL85OILSymzCbF8NDSlvJ1b433gAjux2RGQTx2bblBUjdzk7XlKWDFXRV8lHl1rJS2FWnEEZ36hxhVx5ij48g=
-X-Received: by 2002:a17:906:fc0b:: with SMTP id ov11mr417955ejb.238.1628099857243;
- Wed, 04 Aug 2021 10:57:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210731005632.13228-1-matthew.cover@stackpath.com> <20210731152523.22syukzew6c7njjh@apollo.localdomain>
-In-Reply-To: <20210731152523.22syukzew6c7njjh@apollo.localdomain>
-From:   Matt Cover <werekraken@gmail.com>
-Date:   Wed, 4 Aug 2021 10:57:25 -0700
-Message-ID: <CAGyo_hp2Uunp0_McN3J8MjSeF593thwiODfUaiE-u_NXArEDPg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] samples/bpf: xdp_redirect_cpu: Add mprog-disable
- to optstring.
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S240236AbhHDS1Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Aug 2021 14:27:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238954AbhHDS1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Aug 2021 14:27:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDA7D60F14;
+        Wed,  4 Aug 2021 18:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628101632;
+        bh=qX1lhaiQeSq3+3tcanRpJ3hVzOymJ7+YhAfHcc+r34A=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=jxVdA+TLBO5yvWs08LvM/5h1EXF6fWvh7Hy7HFYuHDyaHydH3NhbPAISDWQe8K5oU
+         PuHce26phKTT74Jj0AhoeHXfIy9kqomoiV8aj8BPk148tn7J7P9lM3GQroO659yXCz
+         tpp+QBsD46AUqaxwWLO5G/HnCmMrtFrceDh3+RVa2Ek/lmOIOt2UsGu1H03EN3l0lA
+         xcyoFxPlH+Oo2X4oObgyWuMzsJ112ytM+c8dlC+x0PafGl08tkIplLfbgd9XOpsHfd
+         pwacoa1cccVLIhp86o5GUAve86wckFgJA6jgBKGLPxc/7a7dBZ84WQ7DJN6c3OIVWD
+         N/6pCpD4DI2cg==
+Message-ID: <11091d33ff7803257e38ee921e4ba9597acfccfc.camel@kernel.org>
+Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
+ statistics
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
+        Tariq Toukan <ttoukan.linux@gmail.com>,
+        Tariq Toukan <tariqt@nvidia.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthew Cover <matthew.cover@stackpath.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Date:   Wed, 04 Aug 2021 11:27:09 -0700
+In-Reply-To: <d21933cb-9d24-9bdd-cf18-e5077796ddf7@gmail.com>
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+         <20210803163641.3743-4-alexandr.lobakin@intel.com>
+         <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
+         <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <43e91ce1-0f82-5820-7cac-b42461a0311a@gmail.com>
+         <20210804094432.08d0fa86@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <d21933cb-9d24-9bdd-cf18-e5077796ddf7@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 8:25 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Sat, Jul 31, 2021 at 06:26:32AM IST, Matthew Cover wrote:
-> > Commit ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program
-> > on cpumap") added the following option, but missed adding it to optstring:
-> > - mprog-disable: disable loading XDP program on cpumap entries
-> >
-> > Add the missing option character.
-> >
->
-> I made some changes in this area in [0], since the support was primarily to do
-> redirection from the cpumap prog, so by default we don't install anything now
-> and only do so if a redirection interface is specified (and use devmap instead).
-> So this option won't be used anyway going forward (since we don't install a
-> dummy XDP_PASS program anymore) if it gets accepted.
->
-> [0]: https://lore.kernel.org/bpf/20210728165552.435050-1-memxor@gmail.com
->
-> PS: I can restore it again if this is something really used beyond redirecting
-> to another device (i.e. with custom BPF programs). Any feedback would be helpful.
+On Wed, 2021-08-04 at 11:28 -0600, David Ahern wrote:
+> On 8/4/21 10:44 AM, Jakub Kicinski wrote:
+> > On Wed, 4 Aug 2021 10:17:56 -0600 David Ahern wrote:
+> > > On 8/4/21 6:36 AM, Jakub Kicinski wrote:
+> > > > > XDP is going to always be eBPF based ! why not just report
+> > > > > such stats
+> > > > > to a special BPF_MAP ? BPF stack can collect the stats from
+> > > > > the driver
+> > > > > and report them to this special MAP upon user request.  
+> > > > Do you mean replacing the ethtool-netlink / rtnetlink etc. with
+> > > > a new BPF_MAP? I don't think adding another category of uAPI
+> > > > thru 
+> > > > which netdevice stats are exposed would do much good :( Plus it
+> > > > doesn't address the "yet another cacheline" concern.
+> > > > 
+> > > > To my understanding the need for stats recognizes the fact that
+> > > > (in
+> > > > large organizations) fleet monitoring is done by different
+> > > > teams than
+> > > > XDP development. So XDP team may have all the stats they need,
+> > > > but the
+> > > > team doing fleet monitoring has no idea how to get to them.
+> > > > 
+> > > > To bridge the two worlds we need a way for the infra team to
+> > > > ask the
+> > > > XDP for well-defined stats. Maybe we should take a page from
+> > > > the BPF
+> > > > iterators book and create a program type for bridging the two
+> > > > worlds?
+> > > > Called by networking core when duping stats to extract from the
+> > > > existing BPF maps all the relevant stats and render them into a
+> > > > well
+> > > > known struct? Users' XDP design can still use a single per-cpu
+> > > > map with
+> > > > all the stats if they so choose, but there's a way to implement
+> > > > more
+> > > > optimal designs and still expose well-defined stats.
+> > > > 
+> > > > Maybe that's too complex, IDK.  
+> > > 
 
-Hey Kartikeya. I happened to be looking through this code to get a
-feel for using CPUMAP for custom steering (e.g. RSS on encapsulated
-packets) in XDP and noticed the missing option character. Figured it
-was worth doing a quick patch and test.
+The main question here, do we want the prog to count or driver ? 
+and the answer will lead to more questions :) :
 
-Unfortunately, I'm not able to say much on your changes as I'm still
-getting familiarized with this code. It looks like your submission is
-in need of a rebase; v3 has been marked "Changes Requested" in
-patchwork [0]. As I see things, It'd be good to get this fix in there
-for now, whether or not the code is removed later.
+1) will the prog/user need to access driver for driver only stats ? or
+driver shall report to a special program and all the collection and
+reporting is done in XDP/BPF internally .. 
+2) stats per prog/queue/cpu/interface ? 
+3) how to eventually report to user ethtool/ip -s/bpftool ?
 
-[0]:https://patchwork.kernel.org/project/netdevbpf/patch/20210728165552.435050-9-memxor@gmail.com/
+too complex, IDK too .. :D
 
->
-> > Fixes: ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program on cpumap")
-> > Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
-> > ---
-> >  samples/bpf/xdp_redirect_cpu_user.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
-> > index d3ecdc1..9e225c9 100644
-> > --- a/samples/bpf/xdp_redirect_cpu_user.c
-> > +++ b/samples/bpf/xdp_redirect_cpu_user.c
-> > @@ -841,7 +841,7 @@ int main(int argc, char **argv)
-> >       memset(cpu, 0, n_cpus * sizeof(int));
-> >
-> >       /* Parse commands line args */
-> > -     while ((opt = getopt_long(argc, argv, "hSd:s:p:q:c:xzFf:e:r:m:",
-> > +     while ((opt = getopt_long(argc, argv, "hSd:s:p:q:c:xzFf:e:r:m:n",
-> >                                 long_options, &longindex)) != -1) {
-> >               switch (opt) {
-> >               case 'd':
-> > --
-> > 1.8.3.1
-> >
->
-> --
-> Kartikeya
+
+> > > I was just explaining to someone internally how to get stats at
+> > > all of
+> > > the different points in the stack to track down reasons for
+> > > dropped packets:
+> > > 
+> > > ethtool -S for h/w and driver
+> > > tc -s for drops by the qdisc
+> > > /proc/net/softnet_stat for drops at the backlog layer
+> > > netstat -s for network and transport layer
+> > > 
+> > > yet another command and API just adds to the nightmare of
+> > > explaining and
+> > > understanding these stats.
+> > 
+> > Are you referring to RTM_GETSTATS when you say "yet another
+> > command"?
+> > RTM_GETSTATS exists and is used by offloads today.
+> > 
+> > I'd expect ip -s (-s) to be extended to run GETSTATS and display
+> > the xdp
+> > stats. (Not sure why ip -s was left out of your list :))
+> 
+> It's on my diagram, and yes, forgot to add it here.
+> 
+
+i think ip -s is a good place for "standard" driver based xdp stats.
+but as Jakub already explained, adding such driver mechanism is like
+making a statement that drivers must implement this.
+
+> > 
+> > > There is real value in continuing to use ethtool API for XDP
+> > > stats. Not
+> > > saying this reorg of the XDP stats is the right thing to do, only
+> > > that
+> > > the existing API has real user benefits.
+> > 
+> > RTM_GETSTATS is an existing API. New ethtool stats are intended to
+> > be HW
+> > stats. I don't want to go back to ethtool being a dumping ground
+> > for all
+> > stats because that's what the old interface encouraged.
+> 
+> driver stats are important too. e.g., mlx5's cache stats and per-
+> queue
+> stats.
+> 
+
+one could claim that mlx5 cache stats should move to page_pool and
+per_queue stats should move to the stack.
+
+> > 
+> > > Does anyone have data that shows bumping a properly implemented
+> > > counter
+> > > causes a noticeable performance degradation and if so by how
+> > > much? You
+> > > mention 'yet another cacheline' but collecting stats on stack and
+> > > incrementing the driver structs at the end of the napi loop
+> > > should not
+> > > have a huge impact versus the value the stats provide.
+> > 
+> > Not sure, maybe Jesper has some numbers. Maybe Intel folks do?
+> 
+
+A properly implemented counter that doesn't introduce new cache misses,
+will hardly show any measurable difference, the only way to measure is
+via instructions per packet.
+
+usually the way we implement counters in mlx5 is that if this is the
+fastest flow that we expect then we only increment the good counters
+"packet++/drop++/redirect++" any slower path should include counters to
+indicate the slower path and the effect of the new "slower" counters
+will still be negligible as we already are at a higher instructions per
+packet hence the slower path .. 
+
+the only time you measure a difference is when you introduce new
+counting on a counter-free flow, e.g page_pool ;)
+
+> I just ran some quick tests with my setup and measured about 1.2%
+> worst
+
+1.2% is a lot ! what was the test ? what is the change ?
+
+> case. Certainly not exhaustive. Perhaps Intel or Mellanox can provide
+> numbers for their high speed nics - e.g. ConnectX-6 and a saturated
+> host.
+> 
+
+let's define what are we testing first, there are multiple places we
+need to check, Tariq will be exploring transitioning mlx5 cache to
+page_pool with all the counters, maybe it is a good place to measure.. 
+
+> > 
+> > I'm just allergic to situations when there is a decision made and 
+> > then months later patches are posted disregarding the decision, 
+> > without analysis on why that decision was wrong. And while the
+> > maintainer who made the decision is on vacation.
+> > 
+> 
+> stats is one of the many sensitive topics. I have been consistent in
+> defending the need to use existing APIs and tooling and not relying
+> on
+> XDP program writers to add the relevant stats and then provide
+> whatever
+> tool is needed to extract and print them. Standardization for
+> fundamental analysis tools.
+
+
+
+
