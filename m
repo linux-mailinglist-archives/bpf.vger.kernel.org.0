@@ -2,30 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C933E04FD
-	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 17:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393F53E05B9
+	for <lists+bpf@lfdr.de>; Wed,  4 Aug 2021 18:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239495AbhHDPx5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Aug 2021 11:53:57 -0400
-Received: from mga04.intel.com ([192.55.52.120]:1307 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239692AbhHDPx4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:53:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="212087308"
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="212087308"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 08:53:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="441798957"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga007.fm.intel.com with ESMTP; 04 Aug 2021 08:53:34 -0700
-Received: from alobakin-mobl.ger.corp.intel.com (kswiecic-MOBL.ger.corp.intel.com [10.213.28.10])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 174FrTiQ022328;
-        Wed, 4 Aug 2021 16:53:29 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Jakub Kicinski <kuba@kernel.org>
+        id S236060AbhHDQSQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Aug 2021 12:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229731AbhHDQSP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Aug 2021 12:18:15 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42463C0613D5;
+        Wed,  4 Aug 2021 09:18:02 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id f20-20020a9d6c140000b02904bb9756274cso2125817otq.6;
+        Wed, 04 Aug 2021 09:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qTPO93ek00ieZ4h1jlHx4mVRBJbxujN/y8xcY6o8WNU=;
+        b=vOGVqPRwQG7VOW4uzaSShTmRzf9UrbcW3jjG4dVkIXUL1wcy03pjQ09wMSRwifLbt+
+         jy/rgAtrflpyz0lrws8UHJ0Nqwq8VRfadft9DCEBJ/vcqBlajv4vVoNwcudF/nwLE0U4
+         M0+lrv+P4KOyOXqys4GGCGizOh4PoYmtiBnyK1fWx0xN9KwQ+eSiOyqQwN2oeXnxwZfK
+         T/DxACEFGQcBSrvukZlfizkVa44fLBsZdpfq7TGmgB+MMY8Iqw7J+ttwg3voOdqLB5ea
+         XDqq58WpHBme8e0+ByizWvBiVy71HFEMGpogvsZ4iXz48sEEqNB5Yq2fALwRlgAAE/Wg
+         2ixA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qTPO93ek00ieZ4h1jlHx4mVRBJbxujN/y8xcY6o8WNU=;
+        b=PxZMgZUcM4GYTLbTC7F32RcRCnkG2+ebrv6jpbwmeCgwFG1mkg2XvMo0cqVI7vyKva
+         ExnRplK1m1mgPkjoA1QR/HLASiJX6URvCZKTr0fwSqlkZy1P0e6K/yMV4X2XD9inJW1C
+         m070qd8N/npMY9B/xhsMh+fIh+STyby8/qnamXFRV8v3oz4fXFd6xArMaTdtmE/DdFHB
+         QpB4oGUlz0J3GlLpakf8gc0KbHQSVNG0ae4F9PmeFnPcT8QCmTrHf5iGbLJcz4/X3vFN
+         zbbjraU1rG4jPRCW9vJgl60Q27jg77eZlA760q0zdXDeXrK9Qh/vLDLkTZRgTYrzYHFb
+         e9iQ==
+X-Gm-Message-State: AOAM5308gb8tsIIq1DGzJYbSKQ4kPTHPNY13lQDf3WGWrsFRQkHHvAka
+        LA+gj9zj6gx33mu/w2lSm8TWAWdvcm6gXg==
+X-Google-Smtp-Source: ABdhPJwSKtdqMSiQmc6Z/AVzL+juoGVbxNK3lLBYUFOpDi9n6YEh0UcLX2VLGTRMpx9/Cpt8Q13SNg==
+X-Received: by 2002:a9d:d04:: with SMTP id 4mr386968oti.251.1628093880856;
+        Wed, 04 Aug 2021 09:18:00 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.45])
+        by smtp.googlemail.com with ESMTPSA id a7sm470157oti.47.2021.08.04.09.17.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 09:18:00 -0700 (PDT)
+Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
+ statistics
+To:     Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeed@kernel.org>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
@@ -36,6 +61,7 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         Jonathan Corbet <corbet@lwn.net>,
         Netanel Belgazal <netanel@amazon.com>,
         Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
         Saeed Bishara <saeedb@amazon.com>,
         Ioana Ciornei <ioana.ciornei@nxp.com>,
         Claudiu Manoil <claudiu.manoil@nxp.com>,
@@ -55,13 +81,15 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
         Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
         Alexander Duyck <alexanderduyck@fb.com>,
         Danielle Ratson <danieller@nvidia.com>,
         Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Andrew Morton <akpm@linux-foundation.org>,
         Jian Shen <shenjian15@huawei.com>,
-        Petr Vorel <petr.vorel@gmail.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
         Yangbo Lu <yangbo.lu@nxp.com>,
         Michal Kubecek <mkubecek@suse.cz>,
         Zheng Yongjun <zhengyongjun3@huawei.com>,
@@ -71,102 +99,34 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         netdev@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP statistics
-Date:   Wed,  4 Aug 2021 17:53:27 +0200
-Message-Id: <20210804155327.337-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210803163641.3743-1-alexandr.lobakin@intel.com> <20210803163641.3743-4-alexandr.lobakin@intel.com> <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org> <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+ <20210803163641.3743-4-alexandr.lobakin@intel.com>
+ <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
+ <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <43e91ce1-0f82-5820-7cac-b42461a0311a@gmail.com>
+Date:   Wed, 4 Aug 2021 10:17:56 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
-Date: Wed, 4 Aug 2021 05:36:50 -0700
-
-> On Tue, 03 Aug 2021 16:57:22 -0700 Saeed Mahameed wrote:
-> > On Tue, 2021-08-03 at 13:49 -0700, Jakub Kicinski wrote:
-> > > On Tue,  3 Aug 2021 18:36:23 +0200 Alexander Lobakin wrote:  
-> > > > Most of the driver-side XDP enabled drivers provide some statistics
-> > > > on XDP programs runs and different actions taken (number of passes,
-> > > > drops, redirects etc.).  
-> > > 
-> > > Could you please share the statistics to back that statement up?
-> > > Having uAPI for XDP stats is pretty much making the recommendation 
-> > > that drivers should implement such stats. The recommendation from
-> > > Alexei and others back in the day (IIRC) was that XDP programs should
-> > > implement stats, not the drivers, to avoid duplication.
-
-Well, 20+ patches in the series with at least half of them is
-drivers conversion. Plus mlx5. Plus we'll about to land XDP
-statistics for all Intel drivers, just firstly need to get a
-common infra for them (the purpose of this series).
-
-Also, introducing IEEE and rmon stats didn't make a statement that
-all drivers should really expose them, right?
-
-> > There are stats "mainly errors*"  that are not even visible or reported
-> > to the user prog, 
-
-Not really. Many drivers like to count the number of redirects,
-xdp_xmits and stuff (incl. mlx5). Nevertheless, these stats aren't
-the same as something you can get from inside an XDP prog, right.
-
-> Fair point, exceptions should not be performance critical.
-> 
-> > for that i had an idea in the past to attach an
-> > exception_bpf_prog provided by the user, where driver/stack will report
-> > errors to this special exception_prog.
-> 
-> Or maybe we should turn trace_xdp_exception() into a call which
-> unconditionally collects exception stats? I think we can reasonably
-> expect the exception_bpf_prog to always be attached, right?
-
-trace_xdp_exception() is again a error path, and would restrict us
-to have only "bad" statistics.
-
-> > > > Regarding that it's almost pretty the same across all the drivers
-> > > > (which is obvious), we can implement some sort of "standardized"
-> > > > statistics using Ethtool standard stats infra to eliminate a lot
-> > > > of code and stringsets duplication, different approaches to count
-> > > > these stats and so on.  
-> > > 
-> > > I'm not 100% sold on the fact that these should be ethtool stats. 
-> > > Why not rtnl_fill_statsinfo() stats? Current ethtool std stats are 
-> > > all pretty Ethernet specific, and all HW stats. Mixing HW and SW
-> > > stats
-> > > is what we're trying to get away from.
-
-I was trying to introduce as few functional changes as possible,
-including that all the current drivers expose XDP stats through
-Ethtool.
-I don't say it's a 100% optimal way, but lots of different scripts
-and monitoring tools are already based on this fact and there can
-be some negative impact. There'll be for sure due to that std stats
-is a bit different thing and different drivers count and name XDP
-stats differently (breh).
-
-BTW, I'm fine with rtnl xstats. A nice reminder, thanks. If there
-won't be much cons like "don't touch our Ethtool stats", I would
-prefer this one instead of Ethtool standard stats way.
-
-> > XDP is going to always be eBPF based ! why not just report such stats
-> > to a special BPF_MAP ? BPF stack can collect the stats from the driver
-> > and report them to this special MAP upon user request.
-> 
+On 8/4/21 6:36 AM, Jakub Kicinski wrote:
+>> XDP is going to always be eBPF based ! why not just report such stats
+>> to a special BPF_MAP ? BPF stack can collect the stats from the driver
+>> and report them to this special MAP upon user request.
 > Do you mean replacing the ethtool-netlink / rtnetlink etc. with
 > a new BPF_MAP? I don't think adding another category of uAPI thru 
 > which netdevice stats are exposed would do much good :( Plus it 
 > doesn't address the "yet another cacheline" concern.
-
-+ this makes obtaining/tracking the statistics much harder. For now,
-all you need is `ethtool -S devname` (mainline) or
-`ethtool -S devname --groups xdp` (this series), and obtaining rtnl
-xstats is just a different command to invoke. BPF_MAP-based stats
-are a completely different story then.
-
+> 
 > To my understanding the need for stats recognizes the fact that (in
 > large organizations) fleet monitoring is done by different teams than
 > XDP development. So XDP team may have all the stats they need, but the
@@ -183,5 +143,23 @@ are a completely different story then.
 > 
 > Maybe that's too complex, IDK.
 
-Thanks,
-Al
+I was just explaining to someone internally how to get stats at all of
+the different points in the stack to track down reasons for dropped packets:
+
+ethtool -S for h/w and driver
+tc -s for drops by the qdisc
+/proc/net/softnet_stat for drops at the backlog layer
+netstat -s for network and transport layer
+
+yet another command and API just adds to the nightmare of explaining and
+understanding these stats.
+
+There is real value in continuing to use ethtool API for XDP stats. Not
+saying this reorg of the XDP stats is the right thing to do, only that
+the existing API has real user benefits.
+
+Does anyone have data that shows bumping a properly implemented counter
+causes a noticeable performance degradation and if so by how much? You
+mention 'yet another cacheline' but collecting stats on stack and
+incrementing the driver structs at the end of the napi loop should not
+have a huge impact versus the value the stats provide.
