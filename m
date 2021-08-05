@@ -2,153 +2,248 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2891A3E16EF
-	for <lists+bpf@lfdr.de>; Thu,  5 Aug 2021 16:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B683E1714
+	for <lists+bpf@lfdr.de>; Thu,  5 Aug 2021 16:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241679AbhHEO1G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Aug 2021 10:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
+        id S241538AbhHEOi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Aug 2021 10:38:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241671AbhHEO1G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:27:06 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85066C061765
-        for <bpf@vger.kernel.org>; Thu,  5 Aug 2021 07:26:51 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id j1so9208061pjv.3
-        for <bpf@vger.kernel.org>; Thu, 05 Aug 2021 07:26:51 -0700 (PDT)
+        with ESMTP id S241467AbhHEOiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Aug 2021 10:38:25 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F323C061798
+        for <bpf@vger.kernel.org>; Thu,  5 Aug 2021 07:38:10 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id b133so9355378ybg.4
+        for <bpf@vger.kernel.org>; Thu, 05 Aug 2021 07:38:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4Z62VjdfuhZ7eaSPHHjKLEZ+eXOGVQq7qo6c+hqx5eo=;
-        b=VxkbNqNxmqK7N6+gir754s4mC/jo06fa/HBdjo8oOiKQyRvxubUoICA7wJdmeidP7s
-         AYadKd+PhX3wT6AJ3bNeOEWSaDz+dlz2UjDSLX13vPjkNc1DoEjY+nh2YcOqFTMI1qHW
-         olsAfWxrAIcydP8F3xkoZLv2QxTEv7o+UR0w4=
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=htbFxBlm5H2CaW5ZKJe0G5rdFCyGtiDV96Wm9JtZA8k=;
+        b=2EZfifMtisGFV7qsYQnFlMMHfpUx3fKzzRU9JYSYcHy0l+qMXtPswv26az7nbilEeX
+         mQhrBhXVoSbBiz/x7+sNTHoyvaSJM+xFCQbI1YfsO0o7zbPNUckKs0ISU+SaP5gkNinA
+         KMFRT/lF7sIZ66gnbZQCGdy4/X7T1i+77Co1wuux2qnuQRuu2qUR9vI69Zsc2gN+6wCb
+         ZsexZAWZSIPnqcO4xohxlaoEl8kBX817GxgTQHOKkTcNG+W9wIqk+/I5+q1I9498dl9y
+         sLhbFChFmddxpwdquwsVoJe2aE4TuI2XtvZx1cI/5/T2fpuSBuIUzNDKKD310MBrqo9v
+         qrJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4Z62VjdfuhZ7eaSPHHjKLEZ+eXOGVQq7qo6c+hqx5eo=;
-        b=sNylgjDxzGFhiN8nN24ncTCGLh/jXRpvYeVj2pL8OpFiW2WurMlREv72qvYZx6gFry
-         3ejbHdI/zpa4MsUn4Pywl7Nql3QbxfIFoqZYuSuA548Dj7Yd0AcvWpRfIKSYGFT8bZPB
-         E8F4rFKHxuYV5pCRfmkGO6P3PKCQkkV+QbQHfMfuZxAt3rvZ1eEn70hwF+uYKioo4qlA
-         nGtw6+MLBNbEMRQUG9O04btzrlqa9tsmxnoq2qdcb4Nx7u51284ddJSvOLshkC7C3KOV
-         WmJLd1pgfEKG4PHTYPSAwRRi1GV6mZjZPyLyonpWY4bqGb0yGtd9NSDN+JqWj3WNILBW
-         TvZw==
-X-Gm-Message-State: AOAM532C6/TFdk/Bevvzn5wqnM3HTFRp8t7h46WWAB7uVkCxyal1Pcwf
-        Xh8A/7s8ghr6hg/iGLD+Sci5Zw==
-X-Google-Smtp-Source: ABdhPJwZu5LjOvFgT6i3Po4/ZpUPMhEskn63XSLoGzDS+369QY0jKmg4fgfoE4G22vtrHrfiTnH1ww==
-X-Received: by 2002:a62:92d7:0:b029:3c4:d123:928e with SMTP id o206-20020a6292d70000b02903c4d123928emr5487876pfd.43.1628173611107;
-        Thu, 05 Aug 2021 07:26:51 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c136sm6893037pfc.53.2021.08.05.07.26.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 07:26:50 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 07:26:49 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=htbFxBlm5H2CaW5ZKJe0G5rdFCyGtiDV96Wm9JtZA8k=;
+        b=RbUBzDZnYvslS3otbfezp3pQdi+bNx6rxyjDv6V/4r7Zj1SV94N3C8o0UCKM2N8zel
+         4MQ8oIUu663GCID+P+a4suQhL775AqunipddPMQiF6NowkzsDKHa2yDi0hOfN9wEqoAA
+         1OC+LSgXHVG5prUtP7h2gsNcGaeXjt6UaxDey3wMw8ksvdkFxA6Jt5iV6uDEhuKRZAjm
+         9/2mBF+orwRE5QQvvNYzxnzsCh/LWrPF3deXtxqySf+AQb+tyP2wLASQwBPoEG2fRjUd
+         Bp6kTeQ2XSVGjoSATWI5lkKaZi+9A83lMDW00nAV88ijkpjt5t3PhE89P3qMvZDzCwpz
+         YDHg==
+X-Gm-Message-State: AOAM5318j3r2y77PGnS3Ph58t7BTif0mUkNt62tkKi2Zh3rayhdDq8ul
+        PBRaivu3zAS1QHdHX+a02rBcbB27lTYXCSmhxafQVQ==
+X-Google-Smtp-Source: ABdhPJzm3a+VuTBgwvmMqeSCazcLfpmsgdB9hmKK5+EBt4EAOCp1nVZeQqqs4e+HzA2y3oLajurjF8WgUOj/R2ao8Mo=
+X-Received: by 2002:a5b:587:: with SMTP id l7mr4889157ybp.208.1628174289346;
+ Thu, 05 Aug 2021 07:38:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <5afe26c6-7ab1-88ab-a3e0-eb007256a856@iogearbox.net>
+ <20210728164741.350370-1-johan.almbladh@anyfinetworks.com>
+ <1503e9c4-7150-3244-4710-7b6b2d59e0da@fb.com> <CAM1=_QTQeTp7LF-XdrOG_qjKpPJ-oQ24kKnG_7MDSbA7LX+uoA@mail.gmail.com>
+ <CAEf4BzbYbSAqU91r8RzXWWR81mq9kwJ0=r8-1aRU1UaeDqxMeg@mail.gmail.com>
+ <CAEf4BzZ1nNv12s-NJEayct5Yih_G6vNkEvFPst6dLcbhxWV_0g@mail.gmail.com>
+ <CAM1=_QSKa7W9SL7oXWGEHLtWqCeFWp-jtGoqPp9=MxQwUGOjaQ@mail.gmail.com> <CAEf4BzaheF_v0Z8ZCAT7mn31xscdgooF8bqRYgCYP01GE7GuaQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzaheF_v0Z8ZCAT7mn31xscdgooF8bqRYgCYP01GE7GuaQ@mail.gmail.com>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Thu, 5 Aug 2021 16:37:58 +0200
+Message-ID: <CAM1=_QQy=9gE=aULn5owSssh1H2Vu__X98xON6KGgC91BLkqJQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix off-by-one in tail call count limiting
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] bpf: Fix integer overflow involving bucket_size
-Message-ID: <202108050725.384AA3E0@keescook>
-References: <20210805140515.35630-1-th.yasumatsu@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805140515.35630-1-th.yasumatsu@gmail.com>
+        KP Singh <kpsingh@kernel.org>,
+        Tony Ambardar <Tony.Ambardar@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 11:05:15PM +0900, Tatsuhiko Yasumatsu wrote:
-> In __htab_map_lookup_and_delete_batch(), hash buckets are iterated over
-> to count the number of elements in each bucket (bucket_size).
-> If bucket_size is large enough, the multiplication to calculate
-> kvmalloc() size could overflow, resulting in out-of-bounds write
-> as reported by KASAN.
-> 
-> [...]
-> [  104.986052] BUG: KASAN: vmalloc-out-of-bounds in __htab_map_lookup_and_delete_batch+0x5ce/0xb60
-> [  104.986489] Write of size 4194224 at addr ffffc9010503be70 by task crash/112
-> [  104.986889]
-> [  104.987193] CPU: 0 PID: 112 Comm: crash Not tainted 5.14.0-rc4 #13
-> [  104.987552] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> [  104.988104] Call Trace:
-> [  104.988410]  dump_stack_lvl+0x34/0x44
-> [  104.988706]  print_address_description.constprop.0+0x21/0x140
-> [  104.988991]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
-> [  104.989327]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
-> [  104.989622]  kasan_report.cold+0x7f/0x11b
-> [  104.989881]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
-> [  104.990239]  kasan_check_range+0x17c/0x1e0
-> [  104.990467]  memcpy+0x39/0x60
-> [  104.990670]  __htab_map_lookup_and_delete_batch+0x5ce/0xb60
-> [  104.990982]  ? __wake_up_common+0x4d/0x230
-> [  104.991256]  ? htab_of_map_free+0x130/0x130
-> [  104.991541]  bpf_map_do_batch+0x1fb/0x220
-> [...]
-> 
-> In hashtable, if the elements' keys have the same jhash() value, the
-> elements will be put into the same bucket. By putting a lot of elements
-> into a single bucket, the value of bucket_size can be increased to
-> trigger the integer overflow.
-> 
-> Triggering the overflow is possible for both callers with CAP_SYS_ADMIN
-> and callers without CAP_SYS_ADMIN.
-> 
-> It will be trivial for a caller with CAP_SYS_ADMIN to intentionally
-> reach this overflow by enabling BPF_F_ZERO_SEED. As this flag will set
-> the random seed passed to jhash() to 0, it will be easy for the caller
-> to prepare keys which will be hashed into the same value, and thus put
-> all the elements into the same bucket.
-> 
-> If the caller does not have CAP_SYS_ADMIN, BPF_F_ZERO_SEED cannot be
-> used. However, it will be still technically possible to trigger the
-> overflow, by guessing the random seed value passed to jhash() (32bit)
-> and repeating the attempt to trigger the overflow. In this case,
-> the probability to trigger the overflow will be low and will take
-> a very long time.
-> 
-> Fix the integer overflow by casting 1 operand to u64.
-> 
-> Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
-> Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-> ---
->  kernel/bpf/hashtab.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 72c58cc516a3..e29283c3b17f 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -1565,8 +1565,8 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
->  	/* We cannot do copy_from_user or copy_to_user inside
->  	 * the rcu_read_lock. Allocate enough space here.
->  	 */
-> -	keys = kvmalloc(key_size * bucket_size, GFP_USER | __GFP_NOWARN);
-> -	values = kvmalloc(value_size * bucket_size, GFP_USER | __GFP_NOWARN);
-> +	keys = kvmalloc((u64)key_size * bucket_size, GFP_USER | __GFP_NOWARN);
-> +	values = kvmalloc((u64)value_size * bucket_size, GFP_USER | __GFP_NOWARN);
+On Mon, Aug 2, 2021 at 10:28 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sun, Aug 1, 2021 at 1:38 AM Johan Almbladh
+> <johan.almbladh@anyfinetworks.com> wrote:
+> >
+> > On Fri, Jul 30, 2021 at 12:48 AM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Thu, Jul 29, 2021 at 3:29 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Thu, Jul 29, 2021 at 2:38 PM Johan Almbladh
+> > > > <johan.almbladh@anyfinetworks.com> wrote:
+> > > > >
+> > > > > On Wed, Jul 28, 2021 at 9:13 PM Yonghong Song <yhs@fb.com> wrote:
+> > > > > > I also checked arm/arm64 jit. I saw the following comments:
+> > > > > >
+> > > > > >          /* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+> > > > > >           *      goto out;
+> > > > > >           * tail_call_cnt++;
+> > > > > >           */
+> > > > > >
+> > > > > > Maybe we have this MAX_TAIL_CALL_CNT + 1 issue
+> > > > > > for arm/arm64 jit?
+> > > > >
+> > > > > That wouldn't be unreasonable. I don't have an arm or arm64 setup
+> > > > > available right now, but I can try to test it in qemu.
+> > > >
+> > > > On a brief check, there seems to be quite a mess in terms of the code
+> > > > and comments.
+> > > >
+> > > > E.g., in arch/x86/net/bpf_jit_comp32.c:
+> > > >
+> > > >         /*
+> > > >          * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+> > > >          *     goto out;
+> > > >          */
+> > > >
+> > > >                             ^^^^ here comment is wrong
+> > > >
+> > > >         [...]
+> > > >
+> > > >         /* cmp edx,hi */
+> > > >         EMIT3(0x83, add_1reg(0xF8, IA32_EBX), hi);
+> > > >         EMIT2(IA32_JNE, 3);
+> > > >         /* cmp ecx,lo */
+> > > >         EMIT3(0x83, add_1reg(0xF8, IA32_ECX), lo);
+> > > >
+> > > >         /* ja out */
+> > > >         EMIT2(IA32_JAE, jmp_label(jmp_label1, 2));
+> > > >
+> > > >         ^^^ JAE is >=, right? But the comment says JA.
+> > > >
+> > > >
+> > > > As for arch/x86/net/bpf_jit_comp.c, both comment and the code seem to
+> > > > do > MAX_TAIL_CALL_CNT, but you are saying JIT is correct. What am I
+> > > > missing?
+> > > >
+> > > > Can you please check all the places where MAX_TAIL_CALL_CNT is used
+> > > > throughout the code? Let's clean this up in one go.
+> > > >
+> > > > Also, given it's so easy to do this off-by-one error, can you please
+> > > > add a negative test validating that 33 tail calls are not allowed? I
+> > > > assume we have a positive test that allows exactly MAX_TAIL_CALL_CNT,
+> > > > but please double-check that as well.
+> > >
+> > > Ok, I see that you've added this in your bpf tests patch set. Please
+> > > consider, additionally, implementing a similar test as part of
+> > > selftests/bpf (specifically in test_progs). We run test_progs
+> > > continuously in CI for every incoming patch/patchset, so it has much
+> > > higher chances of capturing any regressions.
+> > >
+> > > I'm also thinking that this MAX_TAIL_CALL_CNT change should probably
+> > > go into the bpf-next tree. First, this off-by-one behavior was around
+> > > for a while and it doesn't cause serious issues, even if abused. But
+> > > on the other hand, it will make your tail call tests fail, when
+> > > applied into bpf-next without your change. So I think we should apply
+> > > both into bpf-next.
+> >
+> > I can confirm that the off-by-one behaviour is present on arm. Below
+> > is the test output running on qemu. Test #4 calls itself recursively
+> > and increments a counter each time, so the correct result should be 1
+> > + MAX_TAIL_CALL_CNT.
+> >
+> > test_bpf: #0 Tail call leaf jited:1 71 PASS
+> > test_bpf: #1 Tail call 2 jited:1 134 PASS
+> > test_bpf: #2 Tail call 3 jited:1 164 PASS
+> > test_bpf: #3 Tail call 4 jited:1 257 PASS
+> > test_bpf: #4 Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
+> > test_bpf: #5 Tail call error path, NULL target jited:1 114 PASS
+> > test_bpf: #6 Tail call error path, index out of range jited:1 112 PASS
+> > test_bpf: test_tail_calls: Summary: 6 PASSED, 1 FAILED, [7/7 JIT'ed]
+> >
+> > The MAX_TAIL_CALL_CNT constant is referenced in the following JITs.
+> >
+> > arch/arm64/net/bpf_jit_comp.c
+> > arch/arm/net/bpf_jit_32.c
+> > arch/mips/net/ebpf_jit.c
+> > arch/powerpc/net/bpf_jit_comp32.c
+> > arch/powerpc/net/bpf_jit_comp64.c
+> > arch/riscv/net/bpf_jit_comp32.c
+> > arch/riscv/net/bpf_jit_comp64.c
+> > arch/s390/net/bpf_jit_comp.c
+> > arch/sparc/net/bpf_jit_comp_64.c
+> > arch/x86/net/bpf_jit_comp32.c
+> > arch/x86/net/bpf_jit_comp.c
+> >
+> > The x86 JITs all pass the test, even though the comments are wrong.
+> > The comments can easily be fixed of course. For JITs that have the
+> > off-by-one behaviour, an easy fix would be to change all occurrences
+> > of MAX_TAIL_CALL_CNT to MAX_TAIL_CALL_CNT - 1. We must first know
+> > which JITs affected though.
+>
+> If you are going to fix ARM, please send a fix to comments for x86 as well.
+>
+> >
+> > The fix is easy but setting up the test is hard. It took me quite some
+> > time to get the qemu/arm setup up and running. If the same has to be
+> > done for arm64, mips64, powerpc, powerpc64, riscv32, risc64, sparc and
+> > s390, I will need some help with this. If someone already has a
+> > working setup for any of the systems, the test can be performed on
+> > that.
+> >
+>
+> Unfortunately, I myself have only x86-64 setup. libbpf
+> CI/kernel-patches CI we use to run all tests are running selftests
+> against x86-64 only as well. There was temporarily halted effort to
+> add s390x support as well, but it's not done yet. No one yet
+> volunteered to set up any other platforms and I don't know if that's
+> possible and how hard it would be to do within Github Actions platform
+> we are currently using.
+>
+> So in short, I understand the challenges of testing all those
+> platforms and I don't really expect any single person to do all that
+> work. I've applied your fix, please follow up with ARM and comment
+> fixes.
 
-Please, no open-coded multiplication[1]. This should use kvmalloc_array()
-instead.
+Thanks! I will fix the ARM JIT and the comments, then submit an
+updated patch set for the test suite with changes after Yonghong's
+review.
 
--Kees
+My current test setup can easily cross-compile the kernel with busybox
+as userspace. However, getting it to run on QEMU has required some
+amount of detective work. Every platforms seems to be different in
+terms of what to boot (vmlinux, zImage, bzImage), how to boot it (dtb,
+bios, uBoot requirements) and QEMU vs Kconfig settings. Currently I
+can run i386, x86_64, MIPS, MIPS64 and ARM under QEMU. I can verify
+and if needed fix the JIT on some of the other platforms as well, if I
+can get it to run on QEMU with a reasonable effort. However, I cannot
+build for RISC-V since I don't have a toolchain for that. I build my
+toolchains with crosstool-ng using libmusl, and the latter does not
+currently support RISC-V.
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+As a side note, I think having a QEMU-compatible defconfig for each
+platform would make it easier to test arch-specific code. It could
+also be a first step towards fully automated arch-specific CI.
 
->  	if (!keys || !values) {
->  		ret = -ENOMEM;
->  		goto after_loop;
-> -- 
-> 2.25.1
-> 
+Sorry for being a bit slow to respond. I am currently travelling with
+only sporadic access to e-mail.
 
--- 
-Kees Cook
+>
+> > Or perhaps there is a better way to do this? If I implement a similar
+> > test in selftest/bpf, that would trigger the CI when the patch is
+> > submitted and we will see which JITs we need to fix.
+>
+> The other nice benefit of implementing this in selftest/bpf, besides
+> continuous testing, is that you write it in C, which allows you to
+> express much more complicated logic more easily.
+>
+> >
+> > > On a related topic, please don't forget to include the target kernel
+> > > tree for your patches: [PATCH bpf] or [PATCH bpf-next].
+> >
+> > I'll add that! All patches I sent related to this are for the bpf-next tree.
+> >
+> > Johan
