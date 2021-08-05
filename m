@@ -2,286 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFBE3E1375
-	for <lists+bpf@lfdr.de>; Thu,  5 Aug 2021 13:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9135A3E13A7
+	for <lists+bpf@lfdr.de>; Thu,  5 Aug 2021 13:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240773AbhHELGu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Aug 2021 07:06:50 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:13236 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240712AbhHELGm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:06:42 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GgQlX3ZXKz1CS4G;
-        Thu,  5 Aug 2021 19:06:16 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 19:06:23 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 19:06:23 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
-        <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <chenhao288@hisilicon.com>
-Subject: [PATCH net-next 4/4] net: hns3: support skb's frag page recycling based on page pool
-Date:   Thu, 5 Aug 2021 19:05:26 +0800
-Message-ID: <1628161526-29076-5-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628161526-29076-1-git-send-email-linyunsheng@huawei.com>
-References: <1628161526-29076-1-git-send-email-linyunsheng@huawei.com>
+        id S240910AbhHELPK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Aug 2021 07:15:10 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:37148 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240777AbhHELPJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Aug 2021 07:15:09 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 175BE2Fk017366;
+        Thu, 5 Aug 2021 11:14:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=ygDm9jETBzA5gCXRq2wO9HkKk3whkRXoMvqPuIuAS9w=;
+ b=CRPlivzveBIL0d/Ec/NEdJ6mzIJiJegzFJwmSoB2U/IlarvDoBbqugfO+5zTZaisP2lA
+ 0pbVrsStUIRXTfBqJJsP5XrElcVstysON8Kmy/+fJIOAy5w9/J4ec6t/smUJb+ESkbwE
+ XOk8MWzpFGdetnQp7G4n16bEOo8/uI1Je/QRA49p05NuDk0sOQpUCTF6ote03UQ2bLW+
+ qp3qDt9qGn4q0k5EDVYEVOqyjexczsTVpb05kU0sI3zOuBT2fU7KNvHuDINqFSNml/+a
+ bu6rUNBKqKCd4VYba4gLAnZsxzy1WrpbyS4bJI8wLGrykuUUQQy9Z0IJs1elzW/rqUeU SQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=ygDm9jETBzA5gCXRq2wO9HkKk3whkRXoMvqPuIuAS9w=;
+ b=eLIjNkNzJ83B45oKWR2X+rm4zOFys4VhS2ppKtsosl/Ydg6baYsyTxUKIPiJ4WO55hKZ
+ Qwb9G8Ye1p5PqXIK3ZwjkLJUBBpC29zAjZSbk7PBWyQ3tcwz7lY7iNPdH/sNKTvDbILt
+ 7x+Wfsq0jWKuWXXtGTqE2HgY0URl+NnivehPu9i18gLzj4MXTEovVOZpcR2aaG36VOhO
+ 9TxTrmABstDqHCggZEcHYo02Bj8FLYx0JPB+PXoD6vFApWsNOACZW4qxJ4cMe5zuYw3q
+ 9NSXMhm72gv3h6iemjQH2sIPId6/RtrI9KdhKQVd6PYjwQ53o5GsxznNKVzZSOwkadsi +g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a7wqua1js-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Aug 2021 11:14:38 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 175BAD4i097861;
+        Thu, 5 Aug 2021 11:14:37 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+        by aserp3030.oracle.com with ESMTP id 3a78d8ef1j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Aug 2021 11:14:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VzWvUJ9hjaBs+ektkUk9sojmxosUILr9YVpl3ctemd8IxObR6svmM1IWs4gQGxv7coal6ERmgbdABXoiDdhXqQOQCUX6j2pnPsy0tyy8+i91i5XdYGVoggQyZ7XaZv7cRlQba4TOW2ObhhtGjTDuyoWUwwT6ateR1wpFW2+A7CkFHO6bVkTvnZjhkRZlrDv5qr64NQALoT7h1PFtvouoWBjVC5ylnPKYyB1hC12dMtWjFYB6d3eDMcVGoXdcurohEd5b8saFRNY92zu1PJcdR0k5Ri8RD2cWy2qPJU2lJ/4sXfF5KDP1ux5hHK+kITzEfR6wJrV3Elzra/+h3qHUqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ygDm9jETBzA5gCXRq2wO9HkKk3whkRXoMvqPuIuAS9w=;
+ b=RkErUeSv5NBfbG1MFHV2fLJIMQPtMBSVPrAsDzr4eInYfkLgPbGAKnttSsJRLNOwGacn18tO7yi/Ly+f4NlNLXVFZfB8HI7hwH4bIfH6hGzvMrFHE2PgbdwW0zKvp1A4aUH2las+NH9AFRJjTCfL8YXSlCtB2o9WRrNiFHYMlU65jfygGg148K4Aod/DAsM2wOcUSrWlSischy7mXFuh5d1eNou67L4TNtkspU8EjxuEf2yRbg2y9CsQPNdrKzMhWiYov1uKdYl+clCbFcZcqjOh9b1wpXfRLaUDTfKjNH8u8MfRqWhaHSKTgRQoa9/h2lI0c48AkqAh8Fal/+BVyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ygDm9jETBzA5gCXRq2wO9HkKk3whkRXoMvqPuIuAS9w=;
+ b=EIV1PvC4KTP+xQBb5cKwHiB65cPhjHNgDQkQuUeIWZyygyukpAN7s7k7AILW07Vsy3en/Wi7n60k+ih8MTYbEFWhhSzVPw5f/TzfYo0ITUKtfBDBHfbCjCeqSzQE1UHpH/438HeEHx5pvGVxX4qnf0JGHWxgp3f/3FlnyCsNlSI=
+Authentication-Results: iogearbox.net; dkim=none (message not signed)
+ header.d=none;iogearbox.net; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by MN2PR10MB3168.namprd10.prod.outlook.com (2603:10b6:208:129::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15; Thu, 5 Aug
+ 2021 11:14:35 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::b899:276f:7d36:751c]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::b899:276f:7d36:751c%7]) with mapi id 15.20.4394.017; Thu, 5 Aug 2021
+ 11:14:35 +0000
+Date:   Thu, 5 Aug 2021 12:14:25 +0100 (IST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Daniel Borkmann <daniel@iogearbox.net>
+cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        quentin@isovalent.com, toke@redhat.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next 0/3] tools: ksnoop: tracing kernel function
+ entry/return with argument/return value display
+In-Reply-To: <9fab5327-b629-c6bf-454c-dffe181e1cb1@iogearbox.net>
+Message-ID: <alpine.LRH.2.23.451.2108051210470.19742@localhost>
+References: <1628025796-29533-1-git-send-email-alan.maguire@oracle.com> <9fab5327-b629-c6bf-454c-dffe181e1cb1@iogearbox.net>
+Content-Type: text/plain; charset=US-ASCII
+X-ClientProxiedBy: LO4P123CA0102.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:191::17) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (2a02:6900:8208:1848::16ae) by LO4P123CA0102.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:191::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Thu, 5 Aug 2021 11:14:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: aa88660f-86ff-45e7-f9d2-08d958023528
+X-MS-TrafficTypeDiagnostic: MN2PR10MB3168:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR10MB3168A496359C76F73BC1007BEFF29@MN2PR10MB3168.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vf9bN1pyaqyEo1weC7d13n8bnelM+lb8LiFEmbXSf8AYT/eobLY83shfifE7ZEj3IEaaJtPopzDkCoje1bpsv1WESVDptBuf26rtadysQRHhnhmuS8oNL8h1YHIRh6nOzVCjq2nM3zQlpyS/OF5wgjliDDQbtv6PRIrxse8Qrccj3dHycyDTDkpChOe9lmCUncIQydIoAbY2oPW/5b9teSt/jET15p6W35mAFyuzDAaeOFKqUBs7I+4g6EE5rqplci1+VZ7s2hck7m2MJ2CpZvCA7vz8uQW/GQUDSONx9GkVf8Jizy4KEKD3IVIEKtzRKLMxT3bPHgDhHeHTvVFWmvganRHOqKSVj0YknVabeoEefnbKCcTY0ReH4djH6tEunIg9VPqE/JkraP6sPVQkJ4+j0tV7CIxnp5SRD7QoefZpJss94mqkjho32oGEtfr71jhMkUgfGBectvz39e52Hsjp2iXERaJDTNqPpXcooWvekdV/Ue75VFMs1FEam/vL2PCSo4BiqdpT7KOQqlRJHm7jngsQJCt5evNb9V12kG6awznHCyfH7tX+Jrrw3lemdb59oT7rucqmFuihyXRsXb8sAKe1fLw3Wnva8RfpumNxzGZUK6w1MPaifEDP1SEcjvk8eJrJECojBS5bVbVRtQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(39860400002)(396003)(366004)(376002)(478600001)(8936002)(44832011)(4326008)(316002)(6506007)(8676002)(52116002)(38100700002)(186003)(6666004)(5660300002)(6916009)(53546011)(9686003)(86362001)(6486002)(6512007)(66556008)(33716001)(9576002)(66476007)(66946007)(2906002)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uZ/PksgAjIijOX3u/+6Zl2i5n+Su839Vn5YEQ6XToe77PPNIEKVn0jZ+OX78?=
+ =?us-ascii?Q?bO88offxdIu2pqIk1K5t7ZzwgHTsbAlDgHPeMBrxHm+CVf2kx62wajlWP/fz?=
+ =?us-ascii?Q?8XXCZbUIi/IuTYVVrqgUCJlZcYkDQIDtj7Xjh82apAzUbpziHiOsiIGwOKep?=
+ =?us-ascii?Q?q5qJ8BOnEFuTq0R/LJrpLjSVxaghwJn8eC1XgznoFdO3W5ncx2zh41Ys8X5v?=
+ =?us-ascii?Q?FFhNOHGxlzMz7LlpT7qTjnw2wHgVlujA6raeLk2sRmSCi9Z0Ck2W11WRpY93?=
+ =?us-ascii?Q?6ke2Q2L/5ArnUEbxLdFkJ/GatTl/P4QI7ohwkQIfpq1/HX6/E70ZB5qMBs+B?=
+ =?us-ascii?Q?7hYfN3PSb+FB/yqb4tA+22iR5ABLpoQjBGNwy4YkW0ZvnDf0lVUVRTjgZYjA?=
+ =?us-ascii?Q?8LJA5l/vxz95r5FaxxNHyLpfUK4s5RDCsQ5aPklIatceUPjbOEKiLp2fbKT0?=
+ =?us-ascii?Q?hax75xYO/6dK2uVdsloW67DMTWcS7Ar4+2A6K/6iOoxYLCl0WgS9e+ruJjJr?=
+ =?us-ascii?Q?OqT23v3g6jN43uHuRRXv65FRAbWvWttkhyHYk+GpILwaweM3aRFfBvjuOhA1?=
+ =?us-ascii?Q?N7eCEX0J2HtlzR06+nAk9zzto+svk6Au3X8EJ9H4DLbvmzTzUCzj1GSQNnmg?=
+ =?us-ascii?Q?h7ghmDlbWnaR462UNmAUCbHW/Z0FLB0prvostibvzZ0yIf+7wh3PFRTYYzoq?=
+ =?us-ascii?Q?c8J6iME3y5GSICNHpWj8z/UTPSD1C9eA5Y5Ub0J6EBNSV6ryJEHHp5VaNbNR?=
+ =?us-ascii?Q?h0iVuOgM+IehQO2T3TVmv5gLsFyc3l1aR7QCEJXo1euLAOIen/zU4ceuf1PW?=
+ =?us-ascii?Q?ksTDQmwCno04C3OF/VEctPxVfQ/8EjzdsRe5n3jj6SaGnyvXtKZyqLhIw15b?=
+ =?us-ascii?Q?KOFZptIO3L2mLf3MFNUgH4fX6nIgwon/hIJka0Huwm4OieOlTB4SOwyL1sTX?=
+ =?us-ascii?Q?9hnj1rxkNjoWGz5XJ5G86du2ggXkQMscS0kTcavbe77NqW1CfL6Y0z3l8qq9?=
+ =?us-ascii?Q?43c7BHqpIMjYeQnKRXQDLmmJ8mrRbv7ZkI7blnF6qrABA2j4vIb94NEaQuYK?=
+ =?us-ascii?Q?R61HkVYCcotdPNDU3xbVSuWlYz1yKT7gGacCB2IFP8sgEjgnrFlxZlAR5tpi?=
+ =?us-ascii?Q?RmYGp/8dHk/R5noNJ+THmV5ckfR/4wheFcezBWxX65grJFv3/3gZCND34HqG?=
+ =?us-ascii?Q?Ben6A6LhWbNeRBXIuiQhZ2fnPm02NAH/EU4VUVTWhGu5jhstdqs0x0TFqM+6?=
+ =?us-ascii?Q?zIenhXuOXJ14N6jgNNiH8tOm/3wlfVnpxeQlo95ORPm0YGZVe1PdcGlHIRR/?=
+ =?us-ascii?Q?tFd+UIKuH5Y3cXZJ9ZFAAcebb5cV45Rh4Js88eKEbGzr0g=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa88660f-86ff-45e7-f9d2-08d958023528
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2021 11:14:35.7311
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: J6p2S7ZwXYkE6PQRaArheSl3P3eXYbTCZKzJ3lCyJqJAVrKp4B9NfMyg0Zwtf+MwNuwtblNi8wi8ixqYT5u4Gg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3168
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10066 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108050068
+X-Proofpoint-GUID: AnQiOFRJqqOus3lDmlQciJrCvc08G2EN
+X-Proofpoint-ORIG-GUID: AnQiOFRJqqOus3lDmlQciJrCvc08G2EN
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds skb's frag page recycling support based on
-the frag page support in page pool.
 
-The performance improves above 10~20% for single thread iperf
-TCP flow with IOMMU disabled when iperf server and irq/NAPI
-have a different CPU.
+On Wed, 4 Aug 2021, Daniel Borkmann wrote:
 
-The performance improves about 135%(14Gbit to 33Gbit) for single
-thread iperf TCP flow IOMMU is in strict mode and iperf server
-shares the same cpu with irq/NAPI.
+> Hi Alan,
+> 
+> On 8/3/21 11:23 PM, Alan Maguire wrote:
+> > Recent functionality added to libbpf [1] enables typed display of kernel
+> > data structures; here that functionality is exploited to provide a
+> > simple example of how a tracer can support deep argument/return value
+> > inspection.  The intent is to provide a demonstration of these features
+> > to help facilitate tracer adoption, while also providing a tool which
+> > can be useful for kernel debugging.
+> 
+> Thanks a lot for working on this tool, this looks _super useful_! Right now
+> under tools/bpf/ we have bpftool and resolve_btfids as the two main tools,
+> the latter used during kernel build, and the former evolving with the kernel
+> together with libbpf. The runqslower in there was originally thought of as
+> a single/small example tool to demo how to build stand-alone tracing tools
+> with all the modern practices, though the latter has also been added to [0]
+> (thus could be removed). I would rather love if you could add ksnoop for
+> inclusion into bcc's libbpf-based tracing tooling suite under [0] as well
+> which would be a better fit long term rather than kernel tree for the tool
+> to evolve. We don't intend to add a stand-alone tooling collection under the
+> tools/bpf/ long term since these can evolve better outside of kernel tree.
+> 
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- drivers/net/ethernet/hisilicon/Kconfig          |  1 +
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 79 +++++++++++++++++++++++--
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |  3 +
- 3 files changed, 78 insertions(+), 5 deletions(-)
+Sounds good; I'll look into contributing the tool to bcc.
 
-diff --git a/drivers/net/ethernet/hisilicon/Kconfig b/drivers/net/ethernet/hisilicon/Kconfig
-index bb062b0..4e114f4 100644
---- a/drivers/net/ethernet/hisilicon/Kconfig
-+++ b/drivers/net/ethernet/hisilicon/Kconfig
-@@ -90,6 +90,7 @@ config HNS_ENET
- config HNS3
- 	tristate "Hisilicon Network Subsystem Support HNS3 (Framework)"
- 	depends on PCI
-+	select PAGE_POOL
- 	help
- 	  This selects the framework support for Hisilicon Network Subsystem 3.
- 	  This layer facilitates clients like ENET, RoCE and user-space ethernet
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index cdb5f14..90597fe 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -3205,6 +3205,21 @@ static int hns3_alloc_buffer(struct hns3_enet_ring *ring,
- 	unsigned int order = hns3_page_order(ring);
- 	struct page *p;
- 
-+	if (ring->page_pool) {
-+		p = page_pool_dev_alloc_frag(ring->page_pool,
-+					     &cb->page_offset,
-+					     hns3_buf_size(ring));
-+		if (unlikely(!p))
-+			return -ENOMEM;
-+
-+		cb->priv = p;
-+		cb->buf = page_address(p);
-+		cb->dma = page_pool_get_dma_addr(p);
-+		cb->type = DESC_TYPE_PP_FRAG;
-+		cb->reuse_flag = 0;
-+		return 0;
-+	}
-+
- 	p = dev_alloc_pages(order);
- 	if (!p)
- 		return -ENOMEM;
-@@ -3227,8 +3242,13 @@ static void hns3_free_buffer(struct hns3_enet_ring *ring,
- 	if (cb->type & (DESC_TYPE_SKB | DESC_TYPE_BOUNCE_HEAD |
- 			DESC_TYPE_BOUNCE_ALL | DESC_TYPE_SGL_SKB))
- 		napi_consume_skb(cb->priv, budget);
--	else if (!HNAE3_IS_TX_RING(ring) && cb->pagecnt_bias)
--		__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
-+	else if (!HNAE3_IS_TX_RING(ring)) {
-+		if (cb->type & DESC_TYPE_PAGE && cb->pagecnt_bias)
-+			__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
-+		else if (cb->type & DESC_TYPE_PP_FRAG)
-+			page_pool_put_full_page(ring->page_pool, cb->priv,
-+						false);
-+	}
- 	memset(cb, 0, sizeof(*cb));
- }
- 
-@@ -3315,7 +3335,7 @@ static int hns3_alloc_and_map_buffer(struct hns3_enet_ring *ring,
- 	int ret;
- 
- 	ret = hns3_alloc_buffer(ring, cb);
--	if (ret)
-+	if (ret || ring->page_pool)
- 		goto out;
- 
- 	ret = hns3_map_buffer(ring, cb);
-@@ -3337,7 +3357,8 @@ static int hns3_alloc_and_attach_buffer(struct hns3_enet_ring *ring, int i)
- 	if (ret)
- 		return ret;
- 
--	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
-+					 ring->desc_cb[i].page_offset);
- 
- 	return 0;
- }
-@@ -3367,7 +3388,8 @@ static void hns3_replace_buffer(struct hns3_enet_ring *ring, int i,
- {
- 	hns3_unmap_buffer(ring, &ring->desc_cb[i]);
- 	ring->desc_cb[i] = *res_cb;
--	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
-+					 ring->desc_cb[i].page_offset);
- 	ring->desc[i].rx.bd_base_info = 0;
- }
- 
-@@ -3539,6 +3561,12 @@ static void hns3_nic_reuse_page(struct sk_buff *skb, int i,
- 	u32 frag_size = size - pull_len;
- 	bool reused;
- 
-+	if (ring->page_pool) {
-+		skb_add_rx_frag(skb, i, desc_cb->priv, frag_offset,
-+				frag_size, truesize);
-+		return;
-+	}
-+
- 	/* Avoid re-using remote or pfmem page */
- 	if (unlikely(!dev_page_is_reusable(desc_cb->priv)))
- 		goto out;
-@@ -3856,6 +3884,9 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
- 		/* We can reuse buffer as-is, just make sure it is reusable */
- 		if (dev_page_is_reusable(desc_cb->priv))
- 			desc_cb->reuse_flag = 1;
-+		else if (desc_cb->type & DESC_TYPE_PP_FRAG)
-+			page_pool_put_full_page(ring->page_pool, desc_cb->priv,
-+						false);
- 		else /* This page cannot be reused so discard it */
- 			__page_frag_cache_drain(desc_cb->priv,
- 						desc_cb->pagecnt_bias);
-@@ -3863,6 +3894,10 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
- 		hns3_rx_ring_move_fw(ring);
- 		return 0;
- 	}
-+
-+	if (ring->page_pool)
-+		skb_mark_for_recycle(skb);
-+
- 	u64_stats_update_begin(&ring->syncp);
- 	ring->stats.seg_pkt_cnt++;
- 	u64_stats_update_end(&ring->syncp);
-@@ -3901,6 +3936,10 @@ static int hns3_add_frag(struct hns3_enet_ring *ring)
- 					    "alloc rx fraglist skb fail\n");
- 				return -ENXIO;
- 			}
-+
-+			if (ring->page_pool)
-+				skb_mark_for_recycle(new_skb);
-+
- 			ring->frag_num = 0;
- 
- 			if (ring->tail_skb) {
-@@ -4705,6 +4744,29 @@ static void hns3_put_ring_config(struct hns3_nic_priv *priv)
- 	priv->ring = NULL;
- }
- 
-+static void hns3_alloc_page_pool(struct hns3_enet_ring *ring)
-+{
-+	struct page_pool_params pp_params = {
-+		.flags = PP_FLAG_DMA_MAP | PP_FLAG_PAGE_FRAG |
-+				PP_FLAG_DMA_SYNC_DEV,
-+		.order = hns3_page_order(ring),
-+		.pool_size = ring->desc_num * hns3_buf_size(ring) /
-+				(PAGE_SIZE << hns3_page_order(ring)),
-+		.nid = dev_to_node(ring_to_dev(ring)),
-+		.dev = ring_to_dev(ring),
-+		.dma_dir = DMA_FROM_DEVICE,
-+		.offset = 0,
-+		.max_len = PAGE_SIZE << hns3_page_order(ring),
-+	};
-+
-+	ring->page_pool = page_pool_create(&pp_params);
-+	if (IS_ERR(ring->page_pool)) {
-+		dev_warn(ring_to_dev(ring), "page pool creation failed: %ld\n",
-+			 PTR_ERR(ring->page_pool));
-+		ring->page_pool = NULL;
-+	}
-+}
-+
- static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
- {
- 	int ret;
-@@ -4724,6 +4786,8 @@ static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
- 		goto out_with_desc_cb;
- 
- 	if (!HNAE3_IS_TX_RING(ring)) {
-+		hns3_alloc_page_pool(ring);
-+
- 		ret = hns3_alloc_ring_buffers(ring);
- 		if (ret)
- 			goto out_with_desc;
-@@ -4764,6 +4828,11 @@ void hns3_fini_ring(struct hns3_enet_ring *ring)
- 		devm_kfree(ring_to_dev(ring), tx_spare);
- 		ring->tx_spare = NULL;
- 	}
-+
-+	if (!HNAE3_IS_TX_RING(ring) && ring->page_pool) {
-+		page_pool_destroy(ring->page_pool);
-+		ring->page_pool = NULL;
-+	}
- }
- 
- static int hns3_buf_size2type(u32 buf_size)
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index 15af3d9..27809d6 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -6,6 +6,7 @@
- 
- #include <linux/dim.h>
- #include <linux/if_vlan.h>
-+#include <net/page_pool.h>
- 
- #include "hnae3.h"
- 
-@@ -307,6 +308,7 @@ enum hns3_desc_type {
- 	DESC_TYPE_BOUNCE_ALL		= 1 << 3,
- 	DESC_TYPE_BOUNCE_HEAD		= 1 << 4,
- 	DESC_TYPE_SGL_SKB		= 1 << 5,
-+	DESC_TYPE_PP_FRAG		= 1 << 6,
- };
- 
- struct hns3_desc_cb {
-@@ -451,6 +453,7 @@ struct hns3_enet_ring {
- 	struct hnae3_queue *tqp;
- 	int queue_index;
- 	struct device *dev; /* will be used for DMA mapping of descriptors */
-+	struct page_pool *page_pool;
- 
- 	/* statistic */
- 	struct ring_stats stats;
--- 
-2.7.4
+Thanks!
 
+Alan
