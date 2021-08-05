@@ -2,248 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B683E1714
-	for <lists+bpf@lfdr.de>; Thu,  5 Aug 2021 16:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2239B3E18CA
+	for <lists+bpf@lfdr.de>; Thu,  5 Aug 2021 17:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241538AbhHEOi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Aug 2021 10:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241467AbhHEOiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:38:25 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F323C061798
-        for <bpf@vger.kernel.org>; Thu,  5 Aug 2021 07:38:10 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id b133so9355378ybg.4
-        for <bpf@vger.kernel.org>; Thu, 05 Aug 2021 07:38:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=htbFxBlm5H2CaW5ZKJe0G5rdFCyGtiDV96Wm9JtZA8k=;
-        b=2EZfifMtisGFV7qsYQnFlMMHfpUx3fKzzRU9JYSYcHy0l+qMXtPswv26az7nbilEeX
-         mQhrBhXVoSbBiz/x7+sNTHoyvaSJM+xFCQbI1YfsO0o7zbPNUckKs0ISU+SaP5gkNinA
-         KMFRT/lF7sIZ66gnbZQCGdy4/X7T1i+77Co1wuux2qnuQRuu2qUR9vI69Zsc2gN+6wCb
-         ZsexZAWZSIPnqcO4xohxlaoEl8kBX817GxgTQHOKkTcNG+W9wIqk+/I5+q1I9498dl9y
-         sLhbFChFmddxpwdquwsVoJe2aE4TuI2XtvZx1cI/5/T2fpuSBuIUzNDKKD310MBrqo9v
-         qrJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=htbFxBlm5H2CaW5ZKJe0G5rdFCyGtiDV96Wm9JtZA8k=;
-        b=RbUBzDZnYvslS3otbfezp3pQdi+bNx6rxyjDv6V/4r7Zj1SV94N3C8o0UCKM2N8zel
-         4MQ8oIUu663GCID+P+a4suQhL775AqunipddPMQiF6NowkzsDKHa2yDi0hOfN9wEqoAA
-         1OC+LSgXHVG5prUtP7h2gsNcGaeXjt6UaxDey3wMw8ksvdkFxA6Jt5iV6uDEhuKRZAjm
-         9/2mBF+orwRE5QQvvNYzxnzsCh/LWrPF3deXtxqySf+AQb+tyP2wLASQwBPoEG2fRjUd
-         Bp6kTeQ2XSVGjoSATWI5lkKaZi+9A83lMDW00nAV88ijkpjt5t3PhE89P3qMvZDzCwpz
-         YDHg==
-X-Gm-Message-State: AOAM5318j3r2y77PGnS3Ph58t7BTif0mUkNt62tkKi2Zh3rayhdDq8ul
-        PBRaivu3zAS1QHdHX+a02rBcbB27lTYXCSmhxafQVQ==
-X-Google-Smtp-Source: ABdhPJzm3a+VuTBgwvmMqeSCazcLfpmsgdB9hmKK5+EBt4EAOCp1nVZeQqqs4e+HzA2y3oLajurjF8WgUOj/R2ao8Mo=
-X-Received: by 2002:a5b:587:: with SMTP id l7mr4889157ybp.208.1628174289346;
- Thu, 05 Aug 2021 07:38:09 -0700 (PDT)
+        id S242426AbhHEPyp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Aug 2021 11:54:45 -0400
+Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:2698 "EHLO
+        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235472AbhHEPyo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Aug 2021 11:54:44 -0400
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 175DxKEo010741;
+        Thu, 5 Aug 2021 08:54:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=PPS06212021;
+ bh=nB5ZhNFsOGKwn9pCRszEj1tFcgM5Djg6QhZY5ZLVbwk=;
+ b=DeizE5TEuwJ1sNsNNrA7e6YVjmRw1jcD1KGH2bcp4EW6wMndX4w4GKVy1UPS6XS914tJ
+ YTqAc3goN2ZHRvqRqUPSZqQCe6QjaaJejcl/52IF+88sX5u8Bk7MMCZS77m3RbkLdzm1
+ uoSIVpk2EiHdVexQ7gD9govY7OT7np5PdXuGJggScbFUoRIyhVzd4Re/CJpX6anijXqN
+ FmAOCrRyyznJ4QGWHb65ig0ra9T2uSBSd6hkYHA2MnSBAQFzYxo5AjY6XnCTDbat1pj0
+ baWO5gqt4OpopcRNUmpXlz2HL/YJvlTuPWVNyxAskVbk/2vjwYo/5GjZK+maGAUzSht+ rw== 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+        by mx0a-0064b401.pphosted.com with ESMTP id 3a800vrrb7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Aug 2021 08:54:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CkI2JfG8ju8F8C17vHjhO7IbL+QW5NZrN5ASyAfBs14yZiCUYEyGGGFtYQwmIWwkTIXuwsM5wT3ID5sNaddwrlQzNtZ5125VQ0Nty46jQ+eobeTiFgV+u/lVVhf04EQUaQAshVx6BqCBKMH5izLDTBkPlVDVT9Cyj2jMmetKMOfQQheLCscL01NWXKoYo56HYIshMwZ6aj71pKdevv4dOtjkvfMAArWp3qu2P1imM6dBxqPHKPQ3wH4MPOXS2+4BLo57btOZBX32AVFVDwYGM5hRx5s2DY+Bq3ygGEiWoIFKJ0VeCOgIEAd2WYawzA/eF4ZmJHGYYNJ2gByWb+ly9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nB5ZhNFsOGKwn9pCRszEj1tFcgM5Djg6QhZY5ZLVbwk=;
+ b=IKZmXh9dVwNr3lWGhopaXR+cjYkIqWG+QHj2JksgImo2bpcFfRIHReiCXkK0ASd1HiE9VwPPMsrKctt7mzIhchxi0MzSGfc0VZ8pebZJg3WzT3Mns5HCLg1jt6ZYup9nt3UJPIkydub/X+BW7wabyeBsI3b4ZUK/wKoh96rFpbjWJnQRls/jVACunfnxTnG56egaR4uQ+YQH+wz24v8ZycXphFECNNw8R1RgzrIWLgpZLA5Ygai7p4GL4W/0SeoSQtKA6HAr34nLQV59S2jqu0L0vazmFjtjAuROrNcZ4jhn8Rx64zhnpvJxzOChGv3jDklHbDAa/9z63uT2M5TwLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from DM4PR11MB5327.namprd11.prod.outlook.com (2603:10b6:5:392::22)
+ by DM5PR11MB1722.namprd11.prod.outlook.com (2603:10b6:3:f::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4394.15; Thu, 5 Aug 2021 15:54:01 +0000
+Received: from DM4PR11MB5327.namprd11.prod.outlook.com
+ ([fe80::ccb:2bce:6896:a0c3]) by DM4PR11MB5327.namprd11.prod.outlook.com
+ ([fe80::ccb:2bce:6896:a0c3%7]) with mapi id 15.20.4394.017; Thu, 5 Aug 2021
+ 15:54:01 +0000
+From:   Ovidiu Panait <ovidiu.panait@windriver.com>
+To:     stable@vger.kernel.org
+Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        john.fastabend@gmail.com, benedict.schlueter@rub.de,
+        piotras@gmail.com
+Subject: [PATCH 5.4 0/6] bpf: backport fixes for CVE-2021-33624
+Date:   Thu,  5 Aug 2021 18:53:37 +0300
+Message-Id: <20210805155343.3618696-1-ovidiu.panait@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: VI1PR0501CA0002.eurprd05.prod.outlook.com
+ (2603:10a6:800:92::12) To DM4PR11MB5327.namprd11.prod.outlook.com
+ (2603:10b6:5:392::22)
 MIME-Version: 1.0
-References: <5afe26c6-7ab1-88ab-a3e0-eb007256a856@iogearbox.net>
- <20210728164741.350370-1-johan.almbladh@anyfinetworks.com>
- <1503e9c4-7150-3244-4710-7b6b2d59e0da@fb.com> <CAM1=_QTQeTp7LF-XdrOG_qjKpPJ-oQ24kKnG_7MDSbA7LX+uoA@mail.gmail.com>
- <CAEf4BzbYbSAqU91r8RzXWWR81mq9kwJ0=r8-1aRU1UaeDqxMeg@mail.gmail.com>
- <CAEf4BzZ1nNv12s-NJEayct5Yih_G6vNkEvFPst6dLcbhxWV_0g@mail.gmail.com>
- <CAM1=_QSKa7W9SL7oXWGEHLtWqCeFWp-jtGoqPp9=MxQwUGOjaQ@mail.gmail.com> <CAEf4BzaheF_v0Z8ZCAT7mn31xscdgooF8bqRYgCYP01GE7GuaQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzaheF_v0Z8ZCAT7mn31xscdgooF8bqRYgCYP01GE7GuaQ@mail.gmail.com>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Thu, 5 Aug 2021 16:37:58 +0200
-Message-ID: <CAM1=_QQy=9gE=aULn5owSssh1H2Vu__X98xON6KGgC91BLkqJQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Fix off-by-one in tail call count limiting
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Tony Ambardar <Tony.Ambardar@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from otp-linux03.wrs.com (46.97.150.20) by VI1PR0501CA0002.eurprd05.prod.outlook.com (2603:10a6:800:92::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Thu, 5 Aug 2021 15:53:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ba6285fc-8a43-46b1-49fc-08d958293e70
+X-MS-TrafficTypeDiagnostic: DM5PR11MB1722:
+X-Microsoft-Antispam-PRVS: <DM5PR11MB1722E22B1D9A05B5DA7C947AFEF29@DM5PR11MB1722.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lY48jZP2vjVDQ/loFW4jgZlKm3VBl2LdF9MzmuZ+hAFQIK6D/eDwx0aEFTrQJdJkhJi3bKnZU3BHXeBKLFs2eeEBM3UmsIGhiktKsfMEOaxmdBx19k1osB2zy6qxO0oVrD1SIhGiYImS3+14Ix0AwNaG8MQPEQJA81Y9YtdQlENwZRkO8peW8pRkl/Z/HbauaxOz/gYZbOH486CHC4m/sOpjLbypfzVqWsv1wh/B8BEa2qKns/vbhdDE870TdKppjxBJTAC0RpB0nxElJ8HgmpYoEAr4+xreXh27iBwgg7KXrEDknVCoBSEj/hqYOO0VY4rA6/NMn+WU8SdAFC12P+q4UiGBfoiF6v86XpCD49Vwzfr5JRf7Z0Mq72/o/Hu1ygil6SpR/4eiqOvRUTVctd3dzvR2iZQdNz430RcTNQshzd9WsX5R7vSeST7u1kjlJNMveYW+wfVIcaVAX5Z/Z+ra4D2xS4VRAgGDFZIzYb0EvRZyO2ZBld6Zou/LmQOhq9mxKR6xqfBMqp8rq3PX/E/FPsOaVlH0qWYRFhfYDE5LPUFk/ukvJIPspuRwRO/0MIGCC88sBvj6HXzBcSuH/Lp0KMt/jMJrikp2771uLXkfxgHo6g3TX/mGM1/NpBkVIQXJrXQjTbKsJsAUs2zyp9P5kJ+mUOO45OJcz8UjmbrQFV1upEFcOO6meJmZATZQRQTpBer7qgCl3J05A15XwIUYK/+QxZmbae1HE7Gb9gxKmktJL2TRQpDknipqrUnkus1ZqGdGH2uRMXWyXowE6IubSHoidtjH0LXNlc68wyU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5327.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(376002)(366004)(346002)(136003)(478600001)(6506007)(6486002)(956004)(36756003)(966005)(2616005)(186003)(38100700002)(1076003)(8676002)(5660300002)(38350700002)(316002)(6512007)(8936002)(6666004)(2906002)(52116002)(83380400001)(66946007)(44832011)(26005)(4326008)(6916009)(66476007)(66556008)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?L7LuHHwXzbETkFsyc/JqTvTYWJbKe3qgIjQ98QvQz8pBKiiJ2oOE42MnLbQU?=
+ =?us-ascii?Q?u6NYCZORdRFQGaDdhFPVx/vul/tt7ZnaE4qOtw11SDCTmtBe/4YrA40g7VWp?=
+ =?us-ascii?Q?SlUcizmrkHd/Un3GzGHyfR03yJoTejX57aoXbhhDuVVpgWujGs3tM4i14Ot1?=
+ =?us-ascii?Q?zXKE6oSQFiUaa+kUalEXQadG2YmkkAb4R3A2VPEwNVIJN67GRRWMlHkCGtFg?=
+ =?us-ascii?Q?rCwD+G5mEr1fiLer6XwbvNGV1863EINwMbtvZHIHZ+NQNxs14C3h/DJWQi/Y?=
+ =?us-ascii?Q?MNQw1hfru0v21flEOH4XXY3Axf+5Sg2BmG/2wM1t8Fjl4QNYzgOLLan3A02F?=
+ =?us-ascii?Q?16wO6UrAQ94xsKhQQ8SG8HVZTYq6w0VKe/jrhpoOoMnQ4RxLEsnvOHrb/Joj?=
+ =?us-ascii?Q?DIHpHt+Os/X4AWdbPA000m0IXjl7M5S7faedeK165y1xVCP8/GWwC4AdMAK6?=
+ =?us-ascii?Q?P02L1x1zlB3rZpGrQjmNjBuGmXuQP7ezjRA0zOjSbm1R2zueDkU2xCFPzK+p?=
+ =?us-ascii?Q?qJ6jemNt+er/krUnoS6tBVpkjMhJyUUoOq0A4eBKK1LaDkkh4YRk4jfw5hBe?=
+ =?us-ascii?Q?9d2l1k8JWtTlhu2metZBcqX0qs1Q4/eyScCWTYjK3uUmpypRmd8Cunrz/q2Y?=
+ =?us-ascii?Q?O2ZBm95brWmXnfH/fRD5BfwPXmbq7DS38eAos5c9i4iDvz4qrElm5CptfBVJ?=
+ =?us-ascii?Q?bq1cGn3ydIfBxmEqk+4sJt574reGpJKsM26V/XZl0jmIiJWafWdDLOC6k+Rj?=
+ =?us-ascii?Q?wJekzQhEBuB7PkjrZlUX/NgPw5F3x4nd35kJPsh/BI3F5+qvjCYWSXaK7m9h?=
+ =?us-ascii?Q?wLDUVJ1NqoEth0hQc7IAcIms5kit7ahVfL74NCqywlu3CFR9op6lGNN2hs+A?=
+ =?us-ascii?Q?wZYEs2qyGHFJt3PCLjkn/fvjDMTxyujWo1p8txyRIqzg1tR+1rcHAxjmi21W?=
+ =?us-ascii?Q?u4N8sgfOadRd0BGQaCgDmcFrXUoThtxZoAnQOwi5INgfNdWdjSZICpGfrOev?=
+ =?us-ascii?Q?NhGWJDJaI/ohToxZk66v7034KYkriKnRznKCshhZlzW3glCQAottC82PRMkR?=
+ =?us-ascii?Q?dJK9k859ynuUAd9bgL1GaYUyy3lKhW9H47ezKFRjQAM9NZFoSH3UGAIIZShx?=
+ =?us-ascii?Q?y5OFLfg/t0tDoaTX4jd2PM2qVlEMFE+4EgqtReRU6z1SmvBwNoKMa/2NDAVN?=
+ =?us-ascii?Q?1p12/E+s2oMEgnXVYKaSPU1BtXF242YYyimMbfZMJ7oZSlI672TTtWVWOlZP?=
+ =?us-ascii?Q?RJXsxGJh07eLVVXyFmJJV8BYMIhXS1iIkKIHrwRfK5Msdkl2R0F7n4iOcW/C?=
+ =?us-ascii?Q?pR61heDzgMLyk2SyKGpkoTKo?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba6285fc-8a43-46b1-49fc-08d958293e70
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5327.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2021 15:54:01.4991
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4JiSZ6k7+VnGEf5q+ALxETcy5zoi5pHVLtUhoiOj6jdvV9GBqvv4vmBEZkvZX0o3VEuOYGRnXc2AZbemzv5aBerJwiZWo097swQ3qLW6xZk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1722
+X-Proofpoint-ORIG-GUID: zZAfSoH1X0ahZkyOLUPDmqrt7EGLNEnD
+X-Proofpoint-GUID: zZAfSoH1X0ahZkyOLUPDmqrt7EGLNEnD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-08-05_05,2021-08-05_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=773
+ spamscore=0 mlxscore=0 clxscore=1011 phishscore=0 lowpriorityscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108050097
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 10:28 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sun, Aug 1, 2021 at 1:38 AM Johan Almbladh
-> <johan.almbladh@anyfinetworks.com> wrote:
-> >
-> > On Fri, Jul 30, 2021 at 12:48 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Thu, Jul 29, 2021 at 3:29 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Thu, Jul 29, 2021 at 2:38 PM Johan Almbladh
-> > > > <johan.almbladh@anyfinetworks.com> wrote:
-> > > > >
-> > > > > On Wed, Jul 28, 2021 at 9:13 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > > > I also checked arm/arm64 jit. I saw the following comments:
-> > > > > >
-> > > > > >          /* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-> > > > > >           *      goto out;
-> > > > > >           * tail_call_cnt++;
-> > > > > >           */
-> > > > > >
-> > > > > > Maybe we have this MAX_TAIL_CALL_CNT + 1 issue
-> > > > > > for arm/arm64 jit?
-> > > > >
-> > > > > That wouldn't be unreasonable. I don't have an arm or arm64 setup
-> > > > > available right now, but I can try to test it in qemu.
-> > > >
-> > > > On a brief check, there seems to be quite a mess in terms of the code
-> > > > and comments.
-> > > >
-> > > > E.g., in arch/x86/net/bpf_jit_comp32.c:
-> > > >
-> > > >         /*
-> > > >          * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-> > > >          *     goto out;
-> > > >          */
-> > > >
-> > > >                             ^^^^ here comment is wrong
-> > > >
-> > > >         [...]
-> > > >
-> > > >         /* cmp edx,hi */
-> > > >         EMIT3(0x83, add_1reg(0xF8, IA32_EBX), hi);
-> > > >         EMIT2(IA32_JNE, 3);
-> > > >         /* cmp ecx,lo */
-> > > >         EMIT3(0x83, add_1reg(0xF8, IA32_ECX), lo);
-> > > >
-> > > >         /* ja out */
-> > > >         EMIT2(IA32_JAE, jmp_label(jmp_label1, 2));
-> > > >
-> > > >         ^^^ JAE is >=, right? But the comment says JA.
-> > > >
-> > > >
-> > > > As for arch/x86/net/bpf_jit_comp.c, both comment and the code seem to
-> > > > do > MAX_TAIL_CALL_CNT, but you are saying JIT is correct. What am I
-> > > > missing?
-> > > >
-> > > > Can you please check all the places where MAX_TAIL_CALL_CNT is used
-> > > > throughout the code? Let's clean this up in one go.
-> > > >
-> > > > Also, given it's so easy to do this off-by-one error, can you please
-> > > > add a negative test validating that 33 tail calls are not allowed? I
-> > > > assume we have a positive test that allows exactly MAX_TAIL_CALL_CNT,
-> > > > but please double-check that as well.
-> > >
-> > > Ok, I see that you've added this in your bpf tests patch set. Please
-> > > consider, additionally, implementing a similar test as part of
-> > > selftests/bpf (specifically in test_progs). We run test_progs
-> > > continuously in CI for every incoming patch/patchset, so it has much
-> > > higher chances of capturing any regressions.
-> > >
-> > > I'm also thinking that this MAX_TAIL_CALL_CNT change should probably
-> > > go into the bpf-next tree. First, this off-by-one behavior was around
-> > > for a while and it doesn't cause serious issues, even if abused. But
-> > > on the other hand, it will make your tail call tests fail, when
-> > > applied into bpf-next without your change. So I think we should apply
-> > > both into bpf-next.
-> >
-> > I can confirm that the off-by-one behaviour is present on arm. Below
-> > is the test output running on qemu. Test #4 calls itself recursively
-> > and increments a counter each time, so the correct result should be 1
-> > + MAX_TAIL_CALL_CNT.
-> >
-> > test_bpf: #0 Tail call leaf jited:1 71 PASS
-> > test_bpf: #1 Tail call 2 jited:1 134 PASS
-> > test_bpf: #2 Tail call 3 jited:1 164 PASS
-> > test_bpf: #3 Tail call 4 jited:1 257 PASS
-> > test_bpf: #4 Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
-> > test_bpf: #5 Tail call error path, NULL target jited:1 114 PASS
-> > test_bpf: #6 Tail call error path, index out of range jited:1 112 PASS
-> > test_bpf: test_tail_calls: Summary: 6 PASSED, 1 FAILED, [7/7 JIT'ed]
-> >
-> > The MAX_TAIL_CALL_CNT constant is referenced in the following JITs.
-> >
-> > arch/arm64/net/bpf_jit_comp.c
-> > arch/arm/net/bpf_jit_32.c
-> > arch/mips/net/ebpf_jit.c
-> > arch/powerpc/net/bpf_jit_comp32.c
-> > arch/powerpc/net/bpf_jit_comp64.c
-> > arch/riscv/net/bpf_jit_comp32.c
-> > arch/riscv/net/bpf_jit_comp64.c
-> > arch/s390/net/bpf_jit_comp.c
-> > arch/sparc/net/bpf_jit_comp_64.c
-> > arch/x86/net/bpf_jit_comp32.c
-> > arch/x86/net/bpf_jit_comp.c
-> >
-> > The x86 JITs all pass the test, even though the comments are wrong.
-> > The comments can easily be fixed of course. For JITs that have the
-> > off-by-one behaviour, an easy fix would be to change all occurrences
-> > of MAX_TAIL_CALL_CNT to MAX_TAIL_CALL_CNT - 1. We must first know
-> > which JITs affected though.
->
-> If you are going to fix ARM, please send a fix to comments for x86 as well.
->
-> >
-> > The fix is easy but setting up the test is hard. It took me quite some
-> > time to get the qemu/arm setup up and running. If the same has to be
-> > done for arm64, mips64, powerpc, powerpc64, riscv32, risc64, sparc and
-> > s390, I will need some help with this. If someone already has a
-> > working setup for any of the systems, the test can be performed on
-> > that.
-> >
->
-> Unfortunately, I myself have only x86-64 setup. libbpf
-> CI/kernel-patches CI we use to run all tests are running selftests
-> against x86-64 only as well. There was temporarily halted effort to
-> add s390x support as well, but it's not done yet. No one yet
-> volunteered to set up any other platforms and I don't know if that's
-> possible and how hard it would be to do within Github Actions platform
-> we are currently using.
->
-> So in short, I understand the challenges of testing all those
-> platforms and I don't really expect any single person to do all that
-> work. I've applied your fix, please follow up with ARM and comment
-> fixes.
+NOTE: the fixes were manually adjusted to apply to 5.4, so copying bpf@ to see
+if there are any concerns.
 
-Thanks! I will fix the ARM JIT and the comments, then submit an
-updated patch set for the test suite with changes after Yonghong's
-review.
+With this patchseries (applied on top of [1], which was not merged yet), all
+bpf verifier selftests pass:
+root@intel-x86-64:~# ./test_verifier
+...
+#1056/p XDP pkt read, pkt_meta' <= pkt_data, good access OK
+#1057/p XDP pkt read, pkt_meta' <= pkt_data, bad access 1 OK
+#1058/p XDP pkt read, pkt_meta' <= pkt_data, bad access 2 OK
+#1059/p XDP pkt read, pkt_data <= pkt_meta', good access OK
+#1060/p XDP pkt read, pkt_data <= pkt_meta', bad access 1 OK
+#1061/p XDP pkt read, pkt_data <= pkt_meta', bad access 2 OK
+Summary: 1571 PASSED, 0 SKIPPED, 0 FAILED
 
-My current test setup can easily cross-compile the kernel with busybox
-as userspace. However, getting it to run on QEMU has required some
-amount of detective work. Every platforms seems to be different in
-terms of what to boot (vmlinux, zImage, bzImage), how to boot it (dtb,
-bios, uBoot requirements) and QEMU vs Kconfig settings. Currently I
-can run i386, x86_64, MIPS, MIPS64 and ARM under QEMU. I can verify
-and if needed fix the JIT on some of the other platforms as well, if I
-can get it to run on QEMU with a reasonable effort. However, I cannot
-build for RISC-V since I don't have a toolchain for that. I build my
-toolchains with crosstool-ng using libmusl, and the latter does not
-currently support RISC-V.
+[1] https://lore.kernel.org/stable/20210804172001.3909228-2-ovidiu.panait@windriver.com/T/#u
 
-As a side note, I think having a QEMU-compatible defconfig for each
-platform would make it easier to test arch-specific code. It could
-also be a first step towards fully automated arch-specific CI.
+Daniel Borkmann (4):
+  bpf: Inherit expanded/patched seen count from old aux data
+  bpf: Do not mark insn as seen under speculative path verification
+  bpf: Fix leakage under speculation on mispredicted branches
+  bpf, selftests: Adjust few selftest outcomes wrt unreachable code
 
-Sorry for being a bit slow to respond. I am currently travelling with
-only sporadic access to e-mail.
+John Fastabend (2):
+  bpf: Test_verifier, add alu32 bounds tracking tests
+  bpf, selftests: Add a verifier test for assigning 32bit reg states to
+    64bit ones
 
->
-> > Or perhaps there is a better way to do this? If I implement a similar
-> > test in selftest/bpf, that would trigger the CI when the patch is
-> > submitted and we will see which JITs we need to fix.
->
-> The other nice benefit of implementing this in selftest/bpf, besides
-> continuous testing, is that you write it in C, which allows you to
-> express much more complicated logic more easily.
->
-> >
-> > > On a related topic, please don't forget to include the target kernel
-> > > tree for your patches: [PATCH bpf] or [PATCH bpf-next].
-> >
-> > I'll add that! All patches I sent related to this are for the bpf-next tree.
-> >
-> > Johan
+ kernel/bpf/verifier.c                         | 65 +++++++++++++++++--
+ tools/testing/selftests/bpf/test_verifier.c   |  2 +-
+ tools/testing/selftests/bpf/verifier/bounds.c | 65 +++++++++++++++++++
+ .../selftests/bpf/verifier/dead_code.c        |  2 +
+ tools/testing/selftests/bpf/verifier/jmp32.c  | 22 +++++++
+ tools/testing/selftests/bpf/verifier/jset.c   | 10 +--
+ tools/testing/selftests/bpf/verifier/unpriv.c |  2 +
+ .../selftests/bpf/verifier/value_ptr_arith.c  |  7 +-
+ 8 files changed, 160 insertions(+), 15 deletions(-)
+
+-- 
+2.25.1
+
