@@ -2,68 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441A03E2DC9
-	for <lists+bpf@lfdr.de>; Fri,  6 Aug 2021 17:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80583E2E1D
+	for <lists+bpf@lfdr.de>; Fri,  6 Aug 2021 18:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244689AbhHFPaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Aug 2021 11:30:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244675AbhHFPaV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:30:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 96F8F61179;
-        Fri,  6 Aug 2021 15:30:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628263805;
-        bh=8Jdbqr8SQtb4lL2oqOcHvBblUQb+FTIupDAtcPZ7EB4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=L5yC2aT7+SqLi0Za1bzKzicvb4DfcgdjgLrxNuJG4c8AW2vKANcsDz/B8Zj18MHam
-         2hopFznxWLWSX1TSJOBu0XqbA8S8H7YNe5AS0w2D7WJPkKMt7TjzWvnK5ZU4sW0pM6
-         pXKUvCGDKFkqzNB2YlgfNz30WhOCCySpMlYT0yzSrDDC4/sm/vYyAjntHxByZvtqgb
-         qJsXYnyoFvrhWOJ2F/ihvn1H9OefqOzc8bqpHBNAmnhagzDwyP8fqDcaKQZLsuq3zW
-         gLsija9T1OxDqQosaIqQnxOsFXa5GNW/nFM+9PaEPxwuITL7TazlE43mu8JaPAdGEN
-         d2AmdWOpkU1uQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8BD2260A7C;
-        Fri,  6 Aug 2021 15:30:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231811AbhHFQHT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Aug 2021 12:07:19 -0400
+Received: from www62.your-server.de ([213.133.104.62]:48628 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231778AbhHFQHT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Aug 2021 12:07:19 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mC2NB-0005KG-W4; Fri, 06 Aug 2021 18:07:02 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mC2NB-000Trc-Pk; Fri, 06 Aug 2021 18:07:01 +0200
+Subject: Re: [PATCH bpf-next 4/4] bpf: selftests: Add dctcp fallback test
+To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, kernel-team@fb.com,
+        netdev@vger.kernel.org
+References: <20210805050119.1349009-1-kafai@fb.com>
+ <20210805050144.1352078-1-kafai@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <217393dd-9af6-7e5c-3a02-630dde4b1280@iogearbox.net>
+Date:   Fri, 6 Aug 2021 18:07:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: rename reference_tracking BPF
- programs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162826380556.27843.6888227098570168634.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Aug 2021 15:30:05 +0000
-References: <20210805230734.437914-1-andrii@kernel.org>
-In-Reply-To: <20210805230734.437914-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
+In-Reply-To: <20210805050144.1352078-1-kafai@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26255/Fri Aug  6 10:24:06 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Thu, 5 Aug 2021 16:07:34 -0700 you wrote:
-> BPF programs for reference_tracking selftest use "fail_" prefix to notify that
-> they are expected to fail. This is really confusing and inconvenient when
-> trying to grep through test_progs output to find *actually* failed tests. So
-> rename the prefix from "fail_" to "err_".
+On 8/5/21 7:01 AM, Martin KaFai Lau wrote:
+> This patch makes the bpf_dctcp test to fallback to cubic by
+> using setsockopt(TCP_CONGESTION) when the tcp flow is not
+> ecn ready.
 > 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> It also checks setsockopt() is not available to release().
 > 
-> [...]
+> The settimeo() from the network_helpers.h is used, so the local
+> one is removed.
+> 
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+[...]
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_dctcp.c b/tools/testing/selftests/bpf/progs/bpf_dctcp.c
+> index fd42247da8b4..48df7ffbefdb 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_dctcp.c
+> +++ b/tools/testing/selftests/bpf/progs/bpf_dctcp.c
+> @@ -17,6 +17,9 @@
+>   
+>   char _license[] SEC("license") = "GPL";
+>   
+> +volatile const char fallback[TCP_CA_NAME_MAX];
+> +const char bpf_dctcp[] = "bpf_dctcp";
+> +char cc_res[TCP_CA_NAME_MAX];
+>   int stg_result = 0;
+>   
+>   struct {
+> @@ -57,6 +60,23 @@ void BPF_PROG(dctcp_init, struct sock *sk)
+>   	struct dctcp *ca = inet_csk_ca(sk);
+>   	int *stg;
+>   
+> +	if (!(tp->ecn_flags & TCP_ECN_OK) && fallback[0]) {
+> +		/* Switch to fallback */
+> +		bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
+> +			       (void *)fallback, sizeof(fallback));
+> +		/* Switch back to myself which the bpf trampoline
+> +		 * stopped calling dctcp_init recursively.
+> +		 */
+> +		bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
+> +			       (void *)bpf_dctcp, sizeof(bpf_dctcp));
+> +		/* Switch back to fallback */
+> +		bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
+> +			       (void *)fallback, sizeof(fallback));
+> +		bpf_getsockopt(sk, SOL_TCP, TCP_CONGESTION,
+> +			       (void *)cc_res, sizeof(cc_res));
+> +		return;
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: rename reference_tracking BPF programs
-    https://git.kernel.org/bpf/bpf-next/c/579345e7f219
+Is there a possibility where we later on instead of return refetch ca ptr via
+ca = inet_csk_ca(sk) and mangle its struct dctcp fields whereas we're actually
+messing with the new ca's internal fields (potentially crashing the kernel e.g.
+if there was a pointer in the private struct of the new ca that we'd be corrupting)?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+> +	}
+> +
+>   	ca->prior_rcv_nxt = tp->rcv_nxt;
+>   	ca->dctcp_alpha = min(dctcp_alpha_on_init, DCTCP_MAX_ALPHA);
+>   	ca->loss_cwnd = 0;
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_dctcp_release.c b/tools/testing/selftests/bpf/progs/bpf_dctcp_release.c
+> new file mode 100644
+> index 000000000000..d836f7c372f0
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_dctcp_release.c
+> @@ -0,0 +1,26 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Facebook */
+> +
+> +#include <stddef.h>
+> +#include <linux/bpf.h>
+> +#include <linux/types.h>
+> +#include <linux/stddef.h>
+> +#include <linux/tcp.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include "bpf_tcp_helpers.h"
+> +
+> +char _license[] SEC("license") = "GPL";
+> +const char cubic[] = "cubic";
+> +
+> +void BPF_STRUCT_OPS(dctcp_nouse_release, struct sock *sk)
+> +{
+> +	bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
+> +		       (void *)cubic, sizeof(cubic));
+> +}
+> +
+> +SEC(".struct_ops")
+> +struct tcp_congestion_ops dctcp_rel = {
+> +	.release	= (void *)dctcp_nouse_release,
+> +	.name		= "bpf_dctcp_rel",
+> +};
+> 
 
