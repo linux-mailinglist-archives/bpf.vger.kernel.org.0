@@ -2,123 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878A43E31D8
-	for <lists+bpf@lfdr.de>; Sat,  7 Aug 2021 00:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD9D3E31EB
+	for <lists+bpf@lfdr.de>; Sat,  7 Aug 2021 00:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239516AbhHFWks (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Aug 2021 18:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
+        id S237278AbhHFWux (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Aug 2021 18:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhHFWkr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Aug 2021 18:40:47 -0400
+        with ESMTP id S232199AbhHFWux (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Aug 2021 18:50:53 -0400
 Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAF3C0613CF;
-        Fri,  6 Aug 2021 15:40:30 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id j77so17858748ybj.3;
-        Fri, 06 Aug 2021 15:40:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E871C0613CF;
+        Fri,  6 Aug 2021 15:50:36 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id b133so17856488ybg.4;
+        Fri, 06 Aug 2021 15:50:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=80dsSfMEM2/OOVuLC4bXzv6yTdaVBrlMogH/dimQq7c=;
-        b=UgkXVhMHF42NXB0G8m59N2rpOqow5TPa2wT2EQme0kZo9PrYyPGqmzauMqOMwf/JFr
-         Hc+BjhwVdLMPLqy8BDcyGFE2F2UjDRrefsSnYCNUu7AZpAZpKTqwG6CufzCWMAb8thUD
-         EESHurRzwC0uHp4f83WM53KTVmeyJ4V7MRC7H8JO/IVgjGqsARF6HriuNE/bbYlpJru1
-         qq/7DGPOYXD97SYH0LRn7KcVW0cG1NNwcZoVnsUepWsksDACBZhI/81L+Byl7ySJdj6z
-         KOzke2s8ZkiLnbSlWOBGiUpwbzkRgvB2WTNIhswnppR+DiEkKFfzDo0g8WKo/wwz0W/9
-         KXfA==
+        bh=MeDIOzhvahu2/mWIuk2582Ex8e4vxrJQqvzWXFLkMAM=;
+        b=lF0gv4B6MTGOmvsUh3k+vlAavXQq2EQv72LNSc6KJ4i1zdU5/PiJEHNWP/QQ8Pbov3
+         2vZq7lqp4nw+0MQmzZ0F0/Buk4ytkWCLcdwik+bxhi2jaGmsPeznSUa49HX/4CuqMMLP
+         v6N3uSBc1t7uPmomoHLSaH4URZq6KGjk9nb8rMIYRudz7pFZViRZhzLsPVwQjSXGK/Bs
+         VMT7munniJUs/LlJMZjJQwWbVlz760T8ky1IkzF/ErhuOEQzTcZWqdYjFH19yTcfPGNf
+         QksDqJbvWvuIDa7ss5uMaYbIUGHLEnHzhOAGujsUwLUWlfR6yEVWtrFvjgDZUnTpL8H/
+         ro+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=80dsSfMEM2/OOVuLC4bXzv6yTdaVBrlMogH/dimQq7c=;
-        b=IZVAuHe5Y/gCiPgTaPd9EPGsptxieSgRXY74Cigbq5nBhWDkO1EInagCV0xeGmaS20
-         VisAp6fReng3F9olFYKs4S7qqBEBfiF22RU0wY7Jy2x9WjMr1uDyGUepQWhxZRjE2EWB
-         E9p5SuTPfQMxL6M/jdZmARl1WOUHIq4pWnst2TnYe1+qSpu43a1tDiayZh5+tMvyPtTL
-         6UVqRwkkkTkMSwDxdNYmqZjY5o8v2iA27Y1GiYq/WaRJKzPHMeKS0z9KGF30jMt6WEvc
-         PtaAYBCGYtr0JA0enwdEG6dD61gOLduS7zcUbFaXHiIr/R+AUaSSm3IzjYhCZjIGi4lh
-         PsjQ==
-X-Gm-Message-State: AOAM5338hbfxj522oQsOjsIRQAnci7WAylssVzMSjldtB7F33Xaw8Ubd
-        wRvLwlWpKmZ9jwtrao7eNePnyO3+GCO9WXlP/sA=
-X-Google-Smtp-Source: ABdhPJy5OB+B+A+EKSnk9A9ItdT3iGzq28Hxj4l3l0DOsGkBiUn+puLC9US3kS7+djXzqIgl8M4qK+nWpjPH58FBaFI=
-X-Received: by 2002:a25:2901:: with SMTP id p1mr15804127ybp.459.1628289629951;
- Fri, 06 Aug 2021 15:40:29 -0700 (PDT)
+        bh=MeDIOzhvahu2/mWIuk2582Ex8e4vxrJQqvzWXFLkMAM=;
+        b=YrQJEutXSPSJ8ZxEahOcJRzXz4jtjcpistfhTMZKDmJZYJaZcSU/u2Mj8dxRSHAeKA
+         RLCTrftvESvxBo1l85yyXjqUJ+smT5uB1caFxd48nHmk1Wob4KdYVNoDzsrHx3tCmybH
+         vxWv/11DR/M68MCWjKHjJe+R7165I3fFuUzc+K9qKVBEb+a6M7gICC5UR04Z2hKE/NRF
+         Nx/Ht9iZdgIkFQUPyimle2jHbzFfS7FZXH0+I9sDdrqd0BX9Eq4w504LTBzLsqpcf3HW
+         pqxQYj+ITo1aMY8Ft7GKwNjconZP9C7z7C5IMRz9QJN7xEb8kt8Ixynji12Je0tcimWP
+         sN4w==
+X-Gm-Message-State: AOAM532jDGdj2zEg8zEq9+S89N3c3VcQbEX4LgcXcv+OK2v0WojFNetd
+        CSKvpWw6P9M5pbH9yklenfMxFPdm+Hv1jNb1EW0=
+X-Google-Smtp-Source: ABdhPJyJEu5z4M66r6A5ETuR+2cAWSXA/5P6zOGqGPi00XJEiEjrPutqQSIVBSaXGC6tUfvzdotcgdf19uLyDOWFQW0=
+X-Received: by 2002:a25:cdc7:: with SMTP id d190mr15612476ybf.425.1628290235453;
+ Fri, 06 Aug 2021 15:50:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210802212815.3488773-1-haoluo@google.com>
-In-Reply-To: <20210802212815.3488773-1-haoluo@google.com>
+References: <20210609135537.1460244-1-joamaki@gmail.com> <20210731055738.16820-1-joamaki@gmail.com>
+ <20210731055738.16820-8-joamaki@gmail.com>
+In-Reply-To: <20210731055738.16820-8-joamaki@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 6 Aug 2021 15:40:19 -0700
-Message-ID: <CAEf4BzbRyf41ADFa==mT591Zh8FDOtNnm5LZQvu3X+SxmkoAew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: support weak typed ksyms.
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Date:   Fri, 6 Aug 2021 15:50:24 -0700
+Message-ID: <CAEf4BzZvojbuHseDbnqRUMAAfn-j4J+_3omWJw8=W6cTPmf0dw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 7/7] selftests/bpf: Add tests for XDP bonding
+To:     Jussi Maki <joamaki@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, j.vosburgh@gmail.com,
+        Andy Gospodarek <andy@greyhouse.net>, vfalico@gmail.com,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 2:29 PM Hao Luo <haoluo@google.com> wrote:
+On Thu, Aug 5, 2021 at 9:10 AM Jussi Maki <joamaki@gmail.com> wrote:
 >
-> Currently weak typeless ksyms have default value zero, when they don't
-> exist in the kernel. However, weak typed ksyms are rejected by libbpf.
-> This means that if a bpf object contains the declaration of a
-> non-existing weak typed ksym, it will be rejected even if there is
-> no program that references the symbol.
+> Add a test suite to test XDP bonding implementation
+> over a pair of veth devices.
 >
-> In fact, we could let them to pass the checks in libbpf and leave the
-> object to be rejected by the bpf verifier. More specifically, upon
-> seeing a weak typed symbol, libbpf can assign it a zero btf_id, which
-> is associated to the type 'void'. The verifier expects the symbol to
-> be BTF_VAR_KIND instead, therefore will reject loading.
->
-> In practice, we often add new kernel symbols and roll out the kernel
-> changes to fleet. And we want to release a single bpf object that can
-> be loaded on both the new and the old kernels. Passing weak typed ksyms
-> in libbpf allows us to do so as long as the programs that reference the
-> new symbols are disabled on the old kernel.
-
-How do you detect whether a given ksym is present or not? You check
-that from user-space and then use .rodata to turn off pieces of BPF
-logic? That's quite inconvenient. It would be great if these typed
-ksyms worked the same way as typeless ones:
-
-extern const int bpf_link_fops3 __ksym __weak;
-
-/* then in BPF program */
-
-if (&bpf_link_fops3) {
-   /* use bpf_link_fops3 */
-}
-
-
-I haven't tried, but I suspect it could be made to work if libbpf
-replaces corresponding ldimm64 instruction (with BTF ID) into a plain
-ldimm64 instruction loading 0 directly. That would allow the above
-check (and it would be known false to the verifier) to succeed without
-the verifier rejecting the BPF program. If actual use of non-existing
-typed symbol is not guarded properly, verifier would see that register
-is not PTR_TO_BTF_ID and wouldn't allow to use it for direct memory
-reads or passing it to BPF helpers.
-
-Have you considered such an approach?
-
-
-Separately, please use ASSERT_XXX() macros for tests, not plain
-CHECK()s. Thanks.
-
->
-> Signed-off-by: Hao Luo <haoluo@google.com>
+> Signed-off-by: Jussi Maki <joamaki@gmail.com>
 > ---
->  tools/lib/bpf/libbpf.c                        | 17 +++++-
->  .../selftests/bpf/prog_tests/ksyms_btf.c      | 42 +++++++++++++
->  .../selftests/bpf/progs/test_ksyms_weak.c     | 60 +++++++++++++++++++
->  3 files changed, 116 insertions(+), 3 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_weak.c
+>  .../selftests/bpf/prog_tests/xdp_bonding.c    | 520 ++++++++++++++++++
+>  1 file changed, 520 insertions(+)
 >
+
+I don't pretend to understand what's going on in this selftests, but
+it looks good from the generic selftest standpoint. One and half small
+issues below, please double-check (and probably fix the fd close
+issue).
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
 
 [...]
+
+> +
+> +/* Test the broadcast redirection using xdp_redirect_map_multi_prog and adding
+> + * all the interfaces to it and checking that broadcasting won't send the packet
+> + * to neither the ingress bond device (bond2) or its slave (veth2_1).
+> + */
+> +static void test_xdp_bonding_redirect_multi(struct skeletons *skeletons)
+> +{
+> +       static const char * const ifaces[] = {"bond2", "veth2_1", "veth2_2"};
+> +       int veth1_1_rx, veth1_2_rx;
+> +       int err;
+> +
+> +       if (bonding_setup(skeletons, BOND_MODE_ROUNDROBIN, BOND_XMIT_POLICY_LAYER23,
+> +                         BOND_ONE_NO_ATTACH))
+> +               goto out;
+> +
+> +
+> +       if (!ASSERT_OK(setns_by_name("ns_dst"), "could not set netns to ns_dst"))
+> +               goto out;
+> +
+> +       /* populate the devmap with the relevant interfaces */
+> +       for (int i = 0; i < ARRAY_SIZE(ifaces); i++) {
+> +               int ifindex = if_nametoindex(ifaces[i]);
+> +               int map_fd = bpf_map__fd(skeletons->xdp_redirect_multi_kern->maps.map_all);
+> +
+> +               if (!ASSERT_GT(ifindex, 0, "could not get interface index"))
+> +                       goto out;
+> +
+> +               err = bpf_map_update_elem(map_fd, &ifindex, &ifindex, 0);
+> +               if (!ASSERT_OK(err, "add interface to map_all"))
+> +                       goto out;
+> +       }
+> +
+> +       if (xdp_attach(skeletons,
+> +                      skeletons->xdp_redirect_multi_kern->progs.xdp_redirect_map_multi_prog,
+> +                      "bond2"))
+> +               goto out;
+> +
+> +       restore_root_netns();
+
+the "goto out" below might call restore_root_netns() again, is that ok?
+
+> +
+> +       if (send_udp_packets(BOND_MODE_ROUNDROBIN))
+> +               goto out;
+> +
+> +       veth1_1_rx = get_rx_packets("veth1_1");
+> +       veth1_2_rx = get_rx_packets("veth1_2");
+> +
+> +       ASSERT_EQ(veth1_1_rx, 0, "expected no packets on veth1_1");
+> +       ASSERT_GE(veth1_2_rx, NPACKETS, "expected packets on veth1_2");
+> +
+> +out:
+> +       restore_root_netns();
+> +       bonding_cleanup(skeletons);
+> +}
+> +
+
+[...]
+
+> +
+> +void test_xdp_bonding(void)
+> +{
+> +       libbpf_print_fn_t old_print_fn;
+> +       struct skeletons skeletons = {};
+> +       int i;
+> +
+> +       old_print_fn = libbpf_set_print(libbpf_debug_print);
+> +
+> +       root_netns_fd = open("/proc/self/ns/net", O_RDONLY);
+> +       if (!ASSERT_GE(root_netns_fd, 0, "open /proc/self/ns/net"))
+> +               goto out;
+> +
+> +       skeletons.xdp_dummy = xdp_dummy__open_and_load();
+> +       if (!ASSERT_OK_PTR(skeletons.xdp_dummy, "xdp_dummy__open_and_load"))
+> +               goto out;
+> +
+> +       skeletons.xdp_tx = xdp_tx__open_and_load();
+> +       if (!ASSERT_OK_PTR(skeletons.xdp_tx, "xdp_tx__open_and_load"))
+> +               goto out;
+> +
+> +       skeletons.xdp_redirect_multi_kern = xdp_redirect_multi_kern__open_and_load();
+> +       if (!ASSERT_OK_PTR(skeletons.xdp_redirect_multi_kern,
+> +                          "xdp_redirect_multi_kern__open_and_load"))
+> +               goto out;
+> +
+> +       if (!test__start_subtest("xdp_bonding_attach"))
+> +               test_xdp_bonding_attach(&skeletons);
+> +
+> +       for (i = 0; i < ARRAY_SIZE(bond_test_cases); i++) {
+> +               struct bond_test_case *test_case = &bond_test_cases[i];
+> +
+> +               if (!test__start_subtest(test_case->name))
+> +                       test_xdp_bonding_with_mode(
+> +                               &skeletons,
+> +                               test_case->mode,
+> +                               test_case->xmit_policy);
+> +       }
+> +
+> +       if (!test__start_subtest("xdp_bonding_redirect_multi"))
+> +               test_xdp_bonding_redirect_multi(&skeletons);
+> +
+> +out:
+> +       xdp_dummy__destroy(skeletons.xdp_dummy);
+> +       xdp_tx__destroy(skeletons.xdp_tx);
+> +       xdp_redirect_multi_kern__destroy(skeletons.xdp_redirect_multi_kern);
+> +
+> +       libbpf_set_print(old_print_fn);
+> +       if (root_netns_fd)
+
+technically, fd could be 0, so for fds we have if (fd >= 0)
+everywhere. Also, if open() above fails, root_netns_fd will be -1 and
+you'll still attempt to close it.
+
+> +               close(root_netns_fd);
+> +}
+> --
+> 2.17.1
+>
