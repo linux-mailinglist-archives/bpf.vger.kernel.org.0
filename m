@@ -2,90 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1233E3209
-	for <lists+bpf@lfdr.de>; Sat,  7 Aug 2021 01:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AE53E320F
+	for <lists+bpf@lfdr.de>; Sat,  7 Aug 2021 01:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245655AbhHFXKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Aug 2021 19:10:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230280AbhHFXKW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Aug 2021 19:10:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BA0DA61181;
-        Fri,  6 Aug 2021 23:10:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628291405;
-        bh=zpAvAegheNbvidt1OlQCsnlSHqMtKXL7j1rVL2Usmw0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Bz7SOizxksh/T177p6ds9j8/6Da2OREyVOrPyJwIAZPupZwH3je1RnhjMkJQ8XJ17
-         zw5q3XmVnlrHsV9l/2Po0zkm6Hu6bV2wWi9WfLOl2kvmhfvtrLExu+zFadfDB+85u3
-         qajtF45kq9/ZOF+HeUQVEqoj+WLznmbuUWWiGHAG99c9UapAMLGDd1qVaV1Do3pSJe
-         iqI3DaTS3ok628o3bXOEuVrH2rYMwSdyXO8FXl0qVRD+aL7n4WeZKcLfH5xJiYk8sT
-         qT9nwXvbH43zpFiKhM6n8H/QOnH9Yh1rXAsQq/evcMSIbwIpj9+PqcoYcuzDFXeD95
-         qIX92dQ6qeK3Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AEBC560A7C;
-        Fri,  6 Aug 2021 23:10:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231882AbhHFXPQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Aug 2021 19:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230280AbhHFXPQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Aug 2021 19:15:16 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB58C0613CF
+        for <bpf@vger.kernel.org>; Fri,  6 Aug 2021 16:15:00 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id c137so17608589ybf.5
+        for <bpf@vger.kernel.org>; Fri, 06 Aug 2021 16:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=khEElHuOI3DbPDFcMisbaPm5UlIpzLcnZqdY0D9rfns=;
+        b=VWi9Dh7Fy08OhpMpxXK2vGmlhuJXYkV7lH2SLXr4Q882bUEc+Snv0m1b8zUyvUlUK/
+         UArX1OA95er3Kbmv/2RfMlWedc6AagpnCfJOOFC3FflflyHDtPZzuSIl+78WiE1xp2AT
+         zvmGpBanFXJ3PEv7IhoxEEova4HExyvQ5lYJqtsj+nobUL1J0Hc596qQZcuPfropc8ex
+         Xjb+mvDGxylZZrCLlxxDbG8gWCcuWuRY2DJrD91B8kZ3DBTgss0xfVrZMem50vbev5fp
+         544gGlGY/z5UV9GfcFVTNoGxTsaH6iMYwPHe4P9TcaCC1MxtHAF4QYTEB7wYJN+h/fCL
+         n7lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=khEElHuOI3DbPDFcMisbaPm5UlIpzLcnZqdY0D9rfns=;
+        b=Gl0OGSaQO54YSpBnaOwvOGIltb/F6MSN6JiVd271M33BIgO1bLaCLTC6O+92H9U+cN
+         Vb0Xmmww3+W+lotGNkpSejBPepdiNz7A4uLRzhZ6orVic/BB9Jt7DEbTtRXtMu7qhO/p
+         W0w3RUPdKF6DXO2ZhRtmJS1tRGmI5+njOd31/7JfY00pdTt+xsfMaD+G0lDDsOfoyE2B
+         JAaakXaf1MboYQGjCupGsgtxYRkVVP1vBzvN3rPRsB74Wpwli+I6pstV82dow23zas15
+         6sVz/NeUcFbxbURY7GfDGeQjGBN5YwGE/YidRWaeqkEK3Mf0OKFD2q2baw32u1VUmF94
+         8FDQ==
+X-Gm-Message-State: AOAM532OL/YuHoINGZ2ltBUt9hV2+/KBcrG5A9S7QAPdZSJgoAjzQIv6
+        GqVx/cz7Bt0KNSVJwsoJmxiCBPLJ5naFWIdWHY4=
+X-Google-Smtp-Source: ABdhPJzgl27GvQ47lQDq/q0SUzPC8oQpEblVxEvBZVrw9kmyUM30lWZc+WVaLYa1sv0a9Oo8fj99Z7DuvikIR9y8PPo=
+X-Received: by 2002:a25:d691:: with SMTP id n139mr16650954ybg.27.1628291698484;
+ Fri, 06 Aug 2021 16:14:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] bpf: Fix integer overflow involving bucket_size
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162829140571.10198.14853046999783152739.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Aug 2021 23:10:05 +0000
-References: <20210806150419.109658-1-th.yasumatsu@gmail.com>
-In-Reply-To: <20210806150419.109658-1-th.yasumatsu@gmail.com>
-To:     Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210803010331.39453-1-ederson.desouza@intel.com> <20210803010331.39453-17-ederson.desouza@intel.com>
+In-Reply-To: <20210803010331.39453-17-ederson.desouza@intel.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 6 Aug 2021 16:14:47 -0700
+Message-ID: <CAEf4BzaqUTmVVkU1ANXLg-Dchuvc0DW9-Q1K6nz6uLNqzCRyuw@mail.gmail.com>
+Subject: Re: [[RFC xdp-hints] 16/16] samples/bpf: Show XDP hints usage
+To:     Ederson de Souza <ederson.desouza@intel.com>
+Cc:     xdp-hints@xdp-project.net, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, Aug 2, 2021 at 6:05 PM Ederson de Souza
+<ederson.desouza@intel.com> wrote:
+>
+> An example of how to retrieve XDP hints/metadata from an XDP frame. To
+> get the xdp_hints struct, one can use:
+>
+> $ bpftool net xdp show
+>   xdp:
+>   enp6s0(2) md_btf_id(44) md_btf_enabled(0)
+>
+> To get the BTF id, and then:
+>
+> $ bpftool btf dump id 44 format c > btf.h
+>
+> But, in this example, to demonstrate BTF and CORE features, a simpler
+> struct was defined, containing the only field used by the sample.
+>
+> A lowpoint is that it's not currently possible to use some CORE features
+> from "samples/bpf" directory, as those samples are currently built
+> without using "clang -target bpf". This way, it was not possible to use
+> "bpf_core_field_exists" macro to check, in runtime, the presence of a
+> given XDP hints field.
+> ---
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
+FYI, Kumar Kartikeya Dwivedi is adding vmlinux.h and CO-RE support to
+samples/bpf in [0].
 
-On Sat,  7 Aug 2021 00:04:18 +0900 you wrote:
-> In __htab_map_lookup_and_delete_batch(), hash buckets are iterated over
-> to count the number of elements in each bucket (bucket_size).
-> If bucket_size is large enough, the multiplication to calculate
-> kvmalloc() size could overflow, resulting in out-of-bounds write
-> as reported by KASAN.
-> 
-> [...]
-> [  104.986052] BUG: KASAN: vmalloc-out-of-bounds in __htab_map_lookup_and_delete_batch+0x5ce/0xb60
-> [  104.986489] Write of size 4194224 at addr ffffc9010503be70 by task crash/112
-> [  104.986889]
-> [  104.987193] CPU: 0 PID: 112 Comm: crash Not tainted 5.14.0-rc4 #13
-> [  104.987552] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> [  104.988104] Call Trace:
-> [  104.988410]  dump_stack_lvl+0x34/0x44
-> [  104.988706]  print_address_description.constprop.0+0x21/0x140
-> [  104.988991]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
-> [  104.989327]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
-> [  104.989622]  kasan_report.cold+0x7f/0x11b
-> [  104.989881]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
-> [  104.990239]  kasan_check_range+0x17c/0x1e0
-> [  104.990467]  memcpy+0x39/0x60
-> [  104.990670]  __htab_map_lookup_and_delete_batch+0x5ce/0xb60
-> [  104.990982]  ? __wake_up_common+0x4d/0x230
-> [  104.991256]  ? htab_of_map_free+0x130/0x130
-> [  104.991541]  bpf_map_do_batch+0x1fb/0x220
-> [...]
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2] bpf: Fix integer overflow involving bucket_size
-    https://git.kernel.org/bpf/bpf/c/ccd37ad9ef0a
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+  [0] https://lore.kernel.org/bpf/20210728165552.435050-1-memxor@gmail.com/
 
 
+>  samples/bpf/xdp_sample_pkts_kern.c | 21 +++++++++++++++++++++
+>  samples/bpf/xdp_sample_pkts_user.c |  4 +++-
+>  2 files changed, 24 insertions(+), 1 deletion(-)
+>
+
+[...]
