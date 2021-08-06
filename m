@@ -2,34 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F233E2476
-	for <lists+bpf@lfdr.de>; Fri,  6 Aug 2021 09:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69733E2487
+	for <lists+bpf@lfdr.de>; Fri,  6 Aug 2021 09:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241627AbhHFHuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Aug 2021 03:50:18 -0400
-Received: from relay.sw.ru ([185.231.240.75]:36248 "EHLO relay.sw.ru"
+        id S242209AbhHFHvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Aug 2021 03:51:04 -0400
+Received: from relay.sw.ru ([185.231.240.75]:36444 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241314AbhHFHuR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Aug 2021 03:50:17 -0400
+        id S242857AbhHFHvC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Aug 2021 03:51:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=tAY88asZF2lnIac1kxZ5VSRxDa9BzKen9bRoCOT7Gjs=; b=zkseI4wOADbNhRt5alS
-        B5g3WeSKk7ur7OiZAxAnCamSftCNQdOHSRrOswlqkaL85/C2t8RPpxbDDzKKyuH9DIpm3V+nhRZ71
-        dv5NOeZcdq8+g5OXFdix4fxmA/TgQ46mszHfFfupoo8VyAKig5QsCDgJNrBSdNhe4l/J9F6hEKo=;
+        :From; bh=rCy2NaJChVwaNZpi28B6dE5KboUh3ih3z6EATump7Xs=; b=Kjfd8vb3ikucAMwRVLW
+        BQkgfVrir5haBYl7dg0qjVmeSKY4yYT26BJcdkbDw1ci0mSGEacL/X7e0AJ2oHQCHuAN+Zom+3OdG
+        gI2JEpAZ2+QNPkIJ7lofMpoa8I2QzJz8jJay89tFF8x/4yfJp4VlUdUIJMqDigmRwZxzTcmi18Y=;
 Received: from [10.93.0.56]
         by relay.sw.ru with esmtp (Exim 4.94.2)
         (envelope-from <vvs@virtuozzo.com>)
-        id 1mBuc9-006aeP-QY; Fri, 06 Aug 2021 10:49:57 +0300
+        id 1mBucs-006agv-Mh; Fri, 06 Aug 2021 10:50:42 +0300
 From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH NET v4 1/7] skbuff: introduce skb_expand_head()
+Subject: [PATCH NET v4 7/7] bpf: use skb_expand_head in bpf_out_neigh_v4/6
 To:     "David S. Miller" <davem@davemloft.net>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         David Ahern <dsahern@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     netdev@vger.kernel.org, Joerg Reuter <jreuter@yaina.de>,
-        Ralf Baechle <ralf@linux-mips.org>, linux-hams@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -39,8 +37,8 @@ Cc:     netdev@vger.kernel.org, Joerg Reuter <jreuter@yaina.de>,
         Julian Wiedmann <jwi@linux.ibm.com>
 References: <ccce7edb-54dd-e6bf-1e84-0ec320d8886c@linux.ibm.com>
  <cover.1628235065.git.vvs@virtuozzo.com>
-Message-ID: <5290ec1e-72e5-06dc-4886-ffc5255a162a@virtuozzo.com>
-Date:   Fri, 6 Aug 2021 10:49:57 +0300
+Message-ID: <be52fba6-54c7-2163-dea9-aa198efca92f@virtuozzo.com>
+Date:   Fri, 6 Aug 2021 10:50:42 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
@@ -52,84 +50,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Like skb_realloc_headroom(), new helper increases headroom of specified skb.
-Unlike skb_realloc_headroom(), it does not allocate a new skb if possible;
-copies skb->sk on new skb when as needed and frees original skb in case
-of failures.
+Unlike skb_realloc_headroom, new helper skb_expand_head
+does not allocate a new skb if possible.
 
-This helps to simplify ip[6]_finish_output2() and a few other similar cases.
+Additionally this patch replaces commonly used dereferencing with variables.
 
 Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 ---
- include/linux/skbuff.h |  1 +
- net/core/skbuff.c      | 42 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 43 insertions(+)
+ net/core/filter.c | 27 +++++----------------------
+ 1 file changed, 5 insertions(+), 22 deletions(-)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index b2db9cd..ec8a783 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -1179,6 +1179,7 @@ static inline struct sk_buff *__pskb_copy(struct sk_buff *skb, int headroom,
- int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail, gfp_t gfp_mask);
- struct sk_buff *skb_realloc_headroom(struct sk_buff *skb,
- 				     unsigned int headroom);
-+struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom);
- struct sk_buff *skb_copy_expand(const struct sk_buff *skb, int newheadroom,
- 				int newtailroom, gfp_t priority);
- int __must_check skb_to_sgvec_nomark(struct sk_buff *skb, struct scatterlist *sg,
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index fc7942c..0c70b2b 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1786,6 +1786,48 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
- EXPORT_SYMBOL(skb_realloc_headroom);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index d70187c..9c2f434 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2179,17 +2179,9 @@ static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb,
+ 	skb->tstamp = 0;
  
- /**
-+ *	skb_expand_head - reallocate header of &sk_buff
-+ *	@skb: buffer to reallocate
-+ *	@headroom: needed headroom
-+ *
-+ *	Unlike skb_realloc_headroom, this one does not allocate a new skb
-+ *	if possible; copies skb->sk to new skb as needed
-+ *	and frees original skb in case of failures.
-+ *
-+ *	It expect increased headroom and generates warning otherwise.
-+ */
-+
-+struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
-+{
-+	int delta = headroom - skb_headroom(skb);
-+
-+	if (WARN_ONCE(delta <= 0,
-+		      "%s is expecting an increase in the headroom", __func__))
-+		return skb;
-+
-+	/* pskb_expand_head() might crash, if skb is shared */
-+	if (skb_shared(skb)) {
-+		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
-+
-+		if (likely(nskb)) {
-+			if (skb->sk)
-+				skb_set_owner_w(nskb, skb->sk);
-+			consume_skb(skb);
-+		} else {
-+			kfree_skb(skb);
-+		}
-+		skb = nskb;
-+	}
-+	if (skb &&
-+	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-+		kfree_skb(skb);
-+		skb = NULL;
-+	}
-+	return skb;
-+}
-+EXPORT_SYMBOL(skb_expand_head);
-+
-+/**
-  *	skb_copy_expand	-	copy and expand sk_buff
-  *	@skb: buffer to copy
-  *	@newheadroom: new free bytes at head
+ 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
+-		struct sk_buff *skb2;
+-
+-		skb2 = skb_realloc_headroom(skb, hh_len);
+-		if (unlikely(!skb2)) {
+-			kfree_skb(skb);
++		skb = skb_expand_head(skb, hh_len);
++		if (!skb)
+ 			return -ENOMEM;
+-		}
+-		if (skb->sk)
+-			skb_set_owner_w(skb2, skb->sk);
+-		consume_skb(skb);
+-		skb = skb2;
+ 	}
+ 
+ 	rcu_read_lock_bh();
+@@ -2213,8 +2205,7 @@ static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb,
+ 	}
+ 	rcu_read_unlock_bh();
+ 	if (dst)
+-		IP6_INC_STATS(dev_net(dst->dev),
+-			      ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
++		IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
+ out_drop:
+ 	kfree_skb(skb);
+ 	return -ENETDOWN;
+@@ -2286,17 +2277,9 @@ static int bpf_out_neigh_v4(struct net *net, struct sk_buff *skb,
+ 	skb->tstamp = 0;
+ 
+ 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
+-		struct sk_buff *skb2;
+-
+-		skb2 = skb_realloc_headroom(skb, hh_len);
+-		if (unlikely(!skb2)) {
+-			kfree_skb(skb);
++		skb = skb_expand_head(skb, hh_len);
++		if (!skb)
+ 			return -ENOMEM;
+-		}
+-		if (skb->sk)
+-			skb_set_owner_w(skb2, skb->sk);
+-		consume_skb(skb);
+-		skb = skb2;
+ 	}
+ 
+ 	rcu_read_lock_bh();
 -- 
 1.8.3.1
 
