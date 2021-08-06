@@ -2,206 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22603E298F
-	for <lists+bpf@lfdr.de>; Fri,  6 Aug 2021 13:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E6A3E2A61
+	for <lists+bpf@lfdr.de>; Fri,  6 Aug 2021 14:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245493AbhHFL30 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Aug 2021 07:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245371AbhHFL3Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:29:25 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A95C061798
-        for <bpf@vger.kernel.org>; Fri,  6 Aug 2021 04:29:09 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id zb12so9762874ejb.5
-        for <bpf@vger.kernel.org>; Fri, 06 Aug 2021 04:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YXx+nOl1QVL74KL2GRl8sbFxt/HrFTiUM9UC3bD45gc=;
-        b=RptZvUOA93wMwmxOUiriy4Sv13SVtsiLfIGrqbo+GEXUQb68RDWCr+AOhv3n2HP2Sl
-         RfrDITepafU94zmcJk03eCRU8FzrjMDp74ZBPd+pfR2KPm+OAjTfcJPBZaA8ly06IkmE
-         bVyseXmnFcKsNw2PTkuRKSE1Cgy1AV33S/a9crohtpNpnNUhWBxhXDrpD2ENMLG6Scd7
-         M5xyH7GnOrraLBqpLdAfjb0LszvficIyqpF7tbda0xkPJQFrGRhYLIuZTiVOQqOW/Rs7
-         EhtsCi8xRLqFWSE7lfSK6dPWC+V5bee6oojWsJjQD5gGcCl+SghJj/jC0VMBk2TVRwcr
-         1eJw==
+        id S1343596AbhHFMKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Aug 2021 08:10:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343591AbhHFMKh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 6 Aug 2021 08:10:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628251821;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iUX9tkPbPQoCHmRVVBakL5GihoDlnIvlBLjyIrxXxlQ=;
+        b=LAow66GmT3jca8v5qZWQ/6Tv7iZKzy0EI7aaO1SR8Msy7YiX8dml201kibDgynQZ+pTc+3
+        DjJnz0pq3KeSrjf/P7ow79rklmBRSgl7yVofPBnOjFl9IRM6bvf0N+xHjapehj7vYZ/blZ
+        STZZd4fwijkhpg9xeeMhp/4/1V2Nor8=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-NiBxf4YuNqejt3UEPqKENQ-1; Fri, 06 Aug 2021 08:10:20 -0400
+X-MC-Unique: NiBxf4YuNqejt3UEPqKENQ-1
+Received: by mail-ed1-f69.google.com with SMTP id c16-20020aa7d6100000b02903bc4c2a387bso357449edr.21
+        for <bpf@vger.kernel.org>; Fri, 06 Aug 2021 05:10:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YXx+nOl1QVL74KL2GRl8sbFxt/HrFTiUM9UC3bD45gc=;
-        b=VSAlWpqHIbmZCzaEq6fGX0hDkBlip9Uk70V9Vtr6dnhUkShyyuF39JZSp4FNsDUqEV
-         S0QylyGfq6xcU+1xEGetCw9nv8vn2Z9WkOkHSCCuwvD2ETsJml7OYWpoyeU+F2KnclXt
-         D9P5ssBdJLXUzVLzRFwqYA6WreIXHPncT8A7bgB7GaqEbEOkMt0bQvhpK6Jz9DU4YJsy
-         eVCd716oNJ5C52blpjdE6dtOCX8KXFE7vfcE1tcg/MpEQCILKrqhUfOlcF3jmiGegYRC
-         /9FVDx+UfykeqwVkc8rf0oPOojcf0UduM7MjExSj4emRLxGA6bD8vRjzM/2NC+2E7Nq3
-         iq5w==
-X-Gm-Message-State: AOAM531FL88FAcxEXpI2aX+sjH3wAJg9QNIf9pBCrT/7go8srEDIbRDo
-        vrO+GI9bdhFc+HA83SYDhepoZw==
-X-Google-Smtp-Source: ABdhPJw9ik8fkkTiU8Ms39IvV8KakDbFDyZa4YC9+hyDF6vYo2rM17a5Ccpjz/URVmcGb5jhoH8SfQ==
-X-Received: by 2002:a17:906:5799:: with SMTP id k25mr9283791ejq.110.1628249348548;
-        Fri, 06 Aug 2021 04:29:08 -0700 (PDT)
-Received: from gmail.com ([93.140.44.60])
-        by smtp.gmail.com with ESMTPSA id m9sm2783036ejn.91.2021.08.06.04.29.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 04:29:07 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 13:29:05 +0200
-From:   Denis Salopek <denis.salopek@sartura.hr>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Luka Oreskovic <luka.oreskovic@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH v7 bpf-next 0/3] Add lookup_and_delete_elem support to
- BPF hash map types
-Message-ID: <YQ0dAcuYWpiI3nOF@gmail.com>
-References: <cover.1620763117.git.denis.salopek@sartura.hr>
- <CAEf4BzZ1ndGcnprF+zxVPiP2KpxEhbbm86WLjKtxycYgJSUM6Q@mail.gmail.com>
- <CAEf4BzZ6KVP4JdOgSadg6bEXyyTsf-rMxx_R-ioCnfU5mP8Luw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iUX9tkPbPQoCHmRVVBakL5GihoDlnIvlBLjyIrxXxlQ=;
+        b=gomlnyB0Bqc37YwToqRdPFKePxEzsM0Cq/h//o9JwoY0bq3VEmslOxkFOIx+4Nt09S
+         SjRz8buuq3ra2w0dHUhfGrq7QT0b004uz7X2NIbM6eWTS1W9IL7n8hFnoQ0GWJ1zcApS
+         sNz17kSY2D/1Ed+4dOSPn93ApInmXvkRg5Sgmd/Fbp2YMrEZ5MXAFPa2T/hj35y/Cg6H
+         iMq45GSnDKgOzlCHvpoHFKxaBEidYXylCfA+0j4ePjmWblYJ4Gcqw5ur7tSMc0xtKSnf
+         PRJgb/5ISdkSNLYb4SY3cTGAS0gs1lC15Y1RpS9YeDZalJVF/Go8mXnUhuRyD/D4tibm
+         44DA==
+X-Gm-Message-State: AOAM531Vw8yj2AXyBvK0cfS/WlTz4ib3778KZopPw84hekLVsdtbdl6a
+        9aIFOVwOsyTXrOAvuKF0t6IeTGLQiX2ya7e0WQhn6YqHTf4drWPX1DEuEdKSvO3tVwoWIMsjkwm
+        lZLzqfHbS6yjl
+X-Received: by 2002:a17:906:190c:: with SMTP id a12mr9606616eje.141.1628251818749;
+        Fri, 06 Aug 2021 05:10:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxIy7pPE5neyynmuNk+K1t2AeMYsAbqvWPh61GejqqHO3cLZMf+XAD32NUXkg67Vn1gH2F8cw==
+X-Received: by 2002:a17:906:190c:: with SMTP id a12mr9606597eje.141.1628251818587;
+        Fri, 06 Aug 2021 05:10:18 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ov4sm2818048ejb.122.2021.08.06.05.10.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 05:10:18 -0700 (PDT)
+Subject: Re: [PATCH v4 0/7] Add TDX Guest Support (Attestation support)
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210806000946.2951441-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a9d0c7b3-31fa-b7d9-4631-7d0d44a7c848@redhat.com>
+Date:   Fri, 6 Aug 2021 14:10:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZ6KVP4JdOgSadg6bEXyyTsf-rMxx_R-ioCnfU5mP8Luw@mail.gmail.com>
+In-Reply-To: <20210806000946.2951441-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 11:10:12AM -0700, Andrii Nakryiko wrote:
-> On Mon, May 24, 2021 at 3:02 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, May 11, 2021 at 2:01 PM Denis Salopek <denis.salopek@sartura.hr> wrote:
-> > >
-> > > This patch series extends the existing bpf_map_lookup_and_delete_elem()
-> > > functionality with 4 more map types:
-> > >  - BPF_MAP_TYPE_HASH,
-> > >  - BPF_MAP_TYPE_PERCPU_HASH,
-> > >  - BPF_MAP_TYPE_LRU_HASH and
-> > >  - BPF_MAP_TYPE_LRU_PERCPU_HASH.
-> > >
-> > > Patch 1 adds most of its functionality and logic as well as
-> > > documentation.
-> > >
-> > > As it was previously limited to only stacks and queues which do not
-> > > support the BPF_F_LOCK flag, patch 2 enables its usage by adding a new
-> > > libbpf API bpf_map_lookup_and_delete_elem_flags() based on the existing
-> > > bpf_map_lookup_elem_flags().
-> > >
-> > > Patch 3 adds selftests for lookup_and_delete_elem().
-> > >
-> > > Changes in patch 1:
-> > > v7: Minor formating nits, add Acked-by.
-> > > v6: Remove unneeded flag check, minor code/format fixes.
-> > > v5: Split patch to 3 patches. Extend BPF_MAP_LOOKUP_AND_DELETE_ELEM
-> > > documentation with this changes.
-> > > v4: Fix the return value for unsupported map types.
-> > > v3: Add bpf_map_lookup_and_delete_elem_flags() and enable BPF_F_LOCK
-> > > flag, change CHECKs to ASSERT_OKs, initialize variables to 0.
-> > > v2: Add functionality for LRU/per-CPU, add test_progs tests.
-> > >
-> > > Changes in patch 2:
-> > > v7: No change.
-> > > v6: Add Acked-by.
-> > > v5: Move to the newest libbpf version (0.4.0).
-> > >
-> > > Changes in patch 3:
-> > > v7: Remove ASSERT_GE macro which is already added in some other commit,
-> > > change ASSERT_OK to ASSERT_OK_PTR, add Acked-by.
-> > > v6: Remove PERCPU macros, add ASSERT_GE macro to test_progs.h, remove
-> > > leftover code.
-> > > v5: Use more appropriate macros. Better check for changed value.
-> > >
-> > > Denis Salopek (3):
-> > >   bpf: add lookup_and_delete_elem support to hashtab
-> > >   bpf: extend libbpf with bpf_map_lookup_and_delete_elem_flags
-> > >   selftests/bpf: add bpf_lookup_and_delete_elem tests
-> > >
+Hi,
+
+On 8/6/21 2:09 AM, Kuppuswamy Sathyanarayanan wrote:
+> Hi All,
 > 
-> Hey Denis,
+> Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+> hosts and some physical attacks. VM guest with TDX support is called
+> as TD Guest.
 > 
-> I've noticed a new failure for the tests you added:
+> In TD Guest, the attestationÂ process is used to verify the 
+> trustworthiness of TD guest to the 3rd party servers. Such attestation
+> process is required by 3rd party servers before sending sensitive
+> information to TD guests. One usage example is to get encryption keys
+> from the key server for mounting the encrypted rootfs or secondary drive.
+>     
+> Following patches adds the attestation support to TDX guest which
+> includes attestation user interface driver, user agent example, and
+> related hypercall support.
 > 
-> setup_prog:PASS:test_lookup_and_delete__open 0 nsec
-> setup_prog:PASS:bpf_map__set_type 0 nsec
-> setup_prog:PASS:bpf_map__set_max_entries 0 nsec
-> setup_prog:PASS:test_lookup_and_delete__load 0 nsec
-> setup_prog:PASS:bpf_map__fd 0 nsec
-> test_lookup_and_delete_lru_hash:PASS:setup_prog 0 nsec
-> fill_values:PASS:bpf_map_update_elem 0 nsec
-> fill_values:PASS:bpf_map_update_elem 0 nsec
-> test_lookup_and_delete_lru_hash:PASS:fill_values 0 nsec
-> trigger_tp:PASS:test_lookup_and_delete__attach 0 nsec
-> test_lookup_and_delete_lru_hash:PASS:trigger_tp 0 nsec
-> test_lookup_and_delete_lru_hash:PASS:bpf_map_lookup_and_delete_elem 0 nsec
-> test_lookup_and_delete_lru_hash:PASS:bpf_map_lookup_and_delete_elem 0 nsec
-> test_lookup_and_delete_lru_hash:PASS:bpf_map_lookup_elem 0 nsec
-> test_lookup_and_delete_lru_hash:FAIL:bpf_map_lookup_elem unexpected success: 0
-> #67/3 lookup_and_delete_lru:FAIL
+> In this series, only following patches are in arch/x86 and are
+> intended for x86 maintainers review.
 > 
-> I haven't seen this before, probably some timing assumptions or
-> something. Can you please check and see if there is anything we can do
-> to make the test more reliable?
+> * x86/tdx: Add TDREPORT TDX Module call support
+> * x86/tdx: Add GetQuote TDX hypercall support
+> * x86/tdx: Add SetupEventNotifyInterrupt TDX hypercall support
 > 
-> See https://app.travis-ci.com/github/kernel-patches/bpf/builds/233733889
-> for the complete test run log. Thanks!
+> Patch titled "platform/x86: intel_tdx_attest: Add TDX Guest attestation
+> interface driver" adds the attestation driver support. This is supposed
+> to be reviewed by platform-x86 maintainers.
 
-Hello Andrii,
+Since the patches depend on each other I believe that it would be best
+if the entire series gets merged through the tip tree.
 
-I figured the LRU tests would go like this:
-1. We create LRU hash map with 2 elements.
-2. We fill both of those elements with a default value (1234) at keys 1
-and 2.
-3. We trigger the outside BPF program that sets the element at key 3 to
-a new value (4321). My initial presumption was that since the map is
-full, the new element will cause the 'oldest' one (key = 1) to be
-deleted and add the new one, leaving only keys 2 and 3 in the map.
-4. We lookup_and_delete the newly added element at key = 3 (so only key
-= 2 remains in the map).
-5. We check whether key = 3 exists in the map -> it shouldn't and it
-doesn't.
-6. We check whether key = 1 exists in the map -> it shouldn't, but it
-does.
+Here is my ack for patch 6/7 for that:
 
-So, the LRU test fails at the last check.
+Acked-by: Hans de Goede <hdegoede@redhat.com>
 
-The lookup_and_deleted element at key = 3 is really deleted, as the test
-gives us PASS (one line before FAIL), and as that is the point of this
-test, I guess we can just skip the last check for the deleted LRU
-element?
+Regards,
 
-The LRU_PERCPU test (which passes, by the way) does the same thing as
-the LRU test, so we can make the same changes on both of them, if you
-agree with the above.
+Hans
 
-Kind regards,
-Denis
 
 > 
+> Also, patch titled "tools/tdx: Add a sample attestation user app" adds
+> a testing app for attestation feature which needs review from
+> bpf@vger.kernel.org.
 > 
-> > >  include/linux/bpf.h                           |   2 +
-> > >  include/uapi/linux/bpf.h                      |  13 +
-> > >  kernel/bpf/hashtab.c                          |  98 ++++++
-> > >  kernel/bpf/syscall.c                          |  34 ++-
-> > >  tools/include/uapi/linux/bpf.h                |  13 +
-> > >  tools/lib/bpf/bpf.c                           |  13 +
-> > >  tools/lib/bpf/bpf.h                           |   2 +
-> > >  tools/lib/bpf/libbpf.map                      |   1 +
-> > >  .../bpf/prog_tests/lookup_and_delete.c        | 288 ++++++++++++++++++
-> > >  .../bpf/progs/test_lookup_and_delete.c        |  26 ++
-> > >  tools/testing/selftests/bpf/test_lru_map.c    |   8 +
-> > >  tools/testing/selftests/bpf/test_maps.c       |  17 ++
-> > >  12 files changed, 511 insertions(+), 4 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
-> > >
-> > > --
-> > > 2.26.2
-> > >
-> >
-> > Patchbot is having a bad day...
-> >
-> > Applied to bpf-next, thanks. Fixed up a small merge conflict in libbpf.map.
+> This series is the continuation of the following TDX patch series which
+> added basic TDX guest support.
+> 
+> [set 1, v5] - https://lore.kernel.org/patchwork/project/lkml/list/?seriesQ0805
+> [set 2, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?seriesQ0814
+> [set 3, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?seriesQ0816
+> [set 4, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?seriesQ0836
+> [set 5, v3] - https://lkml.org/lkml/2021/8/5/1195
+> 
+> Also please note that this series alone is not necessarily fully
+> functional.
+> 
+> You can find TDX related documents in the following link.
+> 
+> https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
+> 
+> Changes since v3:
+>  * Since the code added by patch titled "x86/tdx: Add tdg_debug_enabled()
+>    interface" is only used by other patches in this series, moved it here.
+>  * Rebased on top of Tom Lendacky's protected guest
+>    changes (https://lore.kernel.org/patchwork/cover/1468760/
+>  * Rest of the history is included in individual patches.
+> 
+> Changes since v2:
+>  * Rebased on top of v5.14-rc1.
+>  * Rest of the history is included in individual patches.
+> 
+> Changes since v1:
+>  * Included platform-x86 and test tool maintainers in recipient list.
+>  * Fixed commit log and comments in attestation driver as per Han's comments.
+> 
+> Kuppuswamy Sathyanarayanan (7):
+>   x86/tdx: Add tdg_debug_enabled() interface
+>   x86/tdx: Add TDREPORT TDX Module call support
+>   x86/tdx: Add GetQuote TDX hypercall support
+>   x86/tdx: Add SetupEventNotifyInterrupt TDX hypercall support
+>   x86/tdx: Add TDX Guest event notify interrupt vector support
+>   platform/x86: intel_tdx_attest: Add TDX Guest attestation interface
+>     driver
+>   tools/tdx: Add a sample attestation user app
+> 
+>  arch/x86/include/asm/hardirq.h                |   1 +
+>  arch/x86/include/asm/idtentry.h               |   4 +
+>  arch/x86/include/asm/irq_vectors.h            |   7 +-
+>  arch/x86/include/asm/tdx.h                    |   8 +
+>  arch/x86/kernel/irq.c                         |   7 +
+>  arch/x86/kernel/tdx.c                         | 140 +++++++++++
+>  drivers/platform/x86/intel/Kconfig            |   1 +
+>  drivers/platform/x86/intel/Makefile           |   1 +
+>  drivers/platform/x86/intel/tdx/Kconfig        |  13 +
+>  drivers/platform/x86/intel/tdx/Makefile       |   3 +
+>  .../platform/x86/intel/tdx/intel_tdx_attest.c | 212 ++++++++++++++++
+>  include/uapi/misc/tdx.h                       |  37 +++
+>  tools/Makefile                                |  13 +-
+>  tools/tdx/Makefile                            |  19 ++
+>  tools/tdx/attest/.gitignore                   |   2 +
+>  tools/tdx/attest/Makefile                     |  24 ++
+>  tools/tdx/attest/tdx-attest-test.c            | 232 ++++++++++++++++++
+>  17 files changed, 717 insertions(+), 7 deletions(-)
+>  create mode 100644 drivers/platform/x86/intel/tdx/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/tdx/Makefile
+>  create mode 100644 drivers/platform/x86/intel/tdx/intel_tdx_attest.c
+>  create mode 100644 include/uapi/misc/tdx.h
+>  create mode 100644 tools/tdx/Makefile
+>  create mode 100644 tools/tdx/attest/.gitignore
+>  create mode 100644 tools/tdx/attest/Makefile
+>  create mode 100644 tools/tdx/attest/tdx-attest-test.c
+> 
+
