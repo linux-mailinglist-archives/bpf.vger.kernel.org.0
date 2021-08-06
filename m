@@ -2,159 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246043E2A88
-	for <lists+bpf@lfdr.de>; Fri,  6 Aug 2021 14:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60283E2C76
+	for <lists+bpf@lfdr.de>; Fri,  6 Aug 2021 16:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343675AbhHFM3h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Aug 2021 08:29:37 -0400
-Received: from mail-bn8nam12on2117.outbound.protection.outlook.com ([40.107.237.117]:62433
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1343657AbhHFM3g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:29:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cTN+miyplTWnUiix3NiKMLu72Gx1BFA72hb3jUB5aDxheWtPqsm5UdTH4GTiLrdxsamW3dtQjNDZs0adTfbSvijI7N7ljlqNmRJcX6d6bjVgbroQ4bjPtzOw47yjPMXJuUmmwWuI9cY1tCuEC1j9jbxY0Qj5cxgWX4OBvTjK3F9s2GRMQoX9wPbkNI/hWXEZ6WEkuGW1bcgmYZYQnuMOFXx7uFsPCSFRxrZMayPUbEOzy/QIH/9Dipb9GNDecWl/g1qL0UwTyugS9uqLzA5/x6yy6rWl0EWBrjKKCOGwZdz0lgQMw5WIAvQFdx3HmXrj8NBSr6b2+eIE7ds8ivahmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u5THErndH4UgGQ1n0znk6dkwOCJVixIUEZUlsNnmjmE=;
- b=Md3vBSfSh0layxFCcdvxiBfQoMNz31bYQ7Ymd3mP/WZ09Lj19w8KRJVFofcFU9Jw5kAsbOIvaNOpJhUk8dO9NCKsiSImlGD6ldA7F6JqHDHD8au78KjqVZ/+jK/2wkAZueRIMa74s/7lF/wFFFkyRG+pZWSKuDFrrm/YS++e7q7hRPxoKpPg4s6BnkjJhzXwgAI3FHc5rF78MukJofAKsLtSlCUBgo5ihKRrBb1S0gqt3/7EuP0BuWlYxNOp0zw0eNTu6b/LOX5+JUv/YB+ItOTCG1ayLOlMURSy9oedPqx9BWg5dqkBzqiVSMV1gWNtO4S2t69RMPwZjc44uFyaJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
+        id S238752AbhHFOZz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Aug 2021 10:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238715AbhHFOZx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Aug 2021 10:25:53 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933B8C0613CF;
+        Fri,  6 Aug 2021 07:25:37 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id j1so16880829pjv.3;
+        Fri, 06 Aug 2021 07:25:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u5THErndH4UgGQ1n0znk6dkwOCJVixIUEZUlsNnmjmE=;
- b=svaZ2/DGd9bsY0tgdGcizEq59ylXf4N8cbZlYEMVpwawVjENDjdlJYK5g77kFxQLGQj746T724ZSKOjCXqqk97HXVNfdwYTacCcv5A4lYePRfHqB87IU7gsRdDVm6Obvbf2n4k8JeShnVWc79CJQEs1niqPbil7V2RdwlDE7qnA=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by PH0PR13MB4825.namprd13.prod.outlook.com (2603:10b6:510:99::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.7; Fri, 6 Aug
- 2021 12:29:19 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::cd1:e3ba:77fd:f4f3]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::cd1:e3ba:77fd:f4f3%9]) with mapi id 15.20.4373.023; Fri, 6 Aug 2021
- 12:29:19 +0000
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=q/j3Xb+QXNRlW1sZUNvztC5XQiybXR3PMONgEvC1s+k=;
+        b=Yk9bG9BIee00+d4vyRk0Y5K4ZO5QOEgv5x7gOJ9COavYzXJO+zCZYbE/lvP9UzqTZo
+         XY0IBIYNFYATpT3BuXN39IU35SxRcPQbafqa6KRgOk+7cFzxIK9MWWkCfZ/Tc7rXIoWj
+         euPScV02xmRsuKyMoQjjV1yCNgXfAlj3YOYFvCBVkDNS5ntnRd1Y/qqIq1385OaBUdap
+         ZXx4PTtZVXr0uzfhEiXTbU/I6hqJY3I6zYLjqitBtM9PJ8upOTYto2sWF0nB5be4vPzI
+         IQ/pqUJCVxy6T/SWWe3A9Aok2WHwbABWmMGTmFiiSZ3+8z8BXkQI7KVVuF4KlTVbagnQ
+         F8Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q/j3Xb+QXNRlW1sZUNvztC5XQiybXR3PMONgEvC1s+k=;
+        b=bNFn0YM7OqyhDnQr0RC0GWhJ8XUkcF2IpV27Lei+M/wGbq7F0n3im2qKmT6b8OMn5j
+         PS5bOgE2SolPtjEfLqPkNxMinXiEC7K8mif7B/lD6k14Crq7JiX5scMDsQdqI6TmTY4H
+         QPzS3wMzm+3AvMvcP13vQoauvRO8SZ3Ulpfgqzbzz0w2e0NBcS0UQx0FrZF2K8dZ6nUd
+         FsmBhd4PxiC7R3dJgn5FbR3vFhPAlBWakHOrUb+8Yr1RkHp6euxblmlgbBwBNkmve8AD
+         Rz9kyNLytSPCKPZ59V7qy1+0VMZV8bytkF7exDvAjZ/3WFSB0ByMzdEOdhEFTQzE3oS2
+         xd7Q==
+X-Gm-Message-State: AOAM530cGVKLmd/BTW08jmufJvu2WME+ZN1UfMpTRvKPIpTSf/ndSxVf
+        GWCXrM9ZtQifyi4idefgsCc=
+X-Google-Smtp-Source: ABdhPJxcFjX0A5zWaEjKiJb+3hMZHioagJWgs/KwFTj8HB+bbOoIUWO2YijQDuwlATUe7chMY1bfIQ==
+X-Received: by 2002:aa7:9117:0:b029:35c:4791:ff52 with SMTP id 23-20020aa791170000b029035c4791ff52mr10775088pfh.76.1628259937154;
+        Fri, 06 Aug 2021 07:25:37 -0700 (PDT)
+Received: from ty-ThinkPad-X280 ([240b:11:82a2:3000:e2d5:fd62:ea40:4dc4])
+        by smtp.gmail.com with ESMTPSA id f4sm12967400pgi.68.2021.08.06.07.25.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 07:25:36 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 23:25:32 +0900
+From:   Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        oss-drivers@corigine.com,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@corigine.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Simon Horman <simon.horman@corigine.com>
-Subject: [PATCH 2/2] samples/bpf: xdpsock: Remove forward declaration of ip_fast_csum()
-Date:   Fri,  6 Aug 2021 14:28:55 +0200
-Message-Id: <20210806122855.26115-3-simon.horman@corigine.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210806122855.26115-1-simon.horman@corigine.com>
-References: <20210806122855.26115-1-simon.horman@corigine.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM3PR07CA0141.eurprd07.prod.outlook.com
- (2603:10a6:207:8::27) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] bpf: Fix integer overflow involving bucket_size
+Message-ID: <20210806142532.GC87387@ty-ThinkPad-X280>
+References: <20210805140515.35630-1-th.yasumatsu@gmail.com>
+ <202108050725.384AA3E0@keescook>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from madeliefje.horms.nl (2001:982:7ed1:403:201:8eff:fe22:8fea) by AM3PR07CA0141.eurprd07.prod.outlook.com (2603:10a6:207:8::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.6 via Frontend Transport; Fri, 6 Aug 2021 12:29:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e636d855-ebdd-4b17-ea49-08d958d5d01b
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4825:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR13MB48257B5251268EB2F9BB4634E8F39@PH0PR13MB4825.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aFT/SqX2WFLX54Foi/YWvVOMX34Bx3RsmNuQll84jMP9y+pn/eGyCxx18G4L38GbmYJDwkKcRYbDw72ENMMMWfkUZ94tHDbCj5pHPcSJKODRUFnrS8viTMaJjv0SAdcvSm/w7i3OqwoouUxoQhm3noLooFlMzOp/GZASyz0fo8u5psr7aFrvmdkvSGCcWKa2epTvboi/C+qBkMT4j4vA810ARhW1GjoOkuPIYcrKm2yKPfEMAw1cZ7bEcAxHuXC3XDjBt0smjfg9wp5oxU52Xws1BjQEr7WamZTKF1yZhcvfSMLmfT5SDbx6eDUAk+CGKUOZLqtDAI9+ST/9FxsyVbXnE60DNADDcYCUKrnCeM9IVoqiz6jSzyhaQ07Cs+mYD9CrSjMbJerDazJ1yiIx1BljOMYzjQxePc2fnYpmt5YRgp4HyFRZzkRczGDfmO5SUsLfQbKv67fgd1jT0HmJLIJuipLe56q4Y6U455e8kdXlp4jJ4b6B5rI0mqLGeBE6DY+6KRKKR7lGi8d3bNWQesjZgkyMzP8Wn9/cBf2qvEMtgf2qB7r1AcVmTbjZhImY0AGaz6E6JoL5iTNEXG2rQ4ZdfiOzAFQd4fKyCbuE9tBpyykFUynA83hs1fZbx7L+LKY5j01tddm3g7qHxE2UwQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39840400004)(346002)(366004)(376002)(38100700002)(66574015)(6486002)(186003)(5660300002)(478600001)(4326008)(52116002)(6506007)(36756003)(86362001)(83380400001)(110136005)(107886003)(8936002)(54906003)(8676002)(66946007)(44832011)(66556008)(2616005)(66476007)(1076003)(6666004)(2906002)(6512007)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QWJpdDJBL1ZnY0RMY3c5TzNvbTRVdzc1UlhrL2p0ZmZHTGVLRVloaDNEQkRn?=
- =?utf-8?B?bjRGemZMY3ZqQkYrOWVhQUxqMkJwbDkrNnhtUkgrQWVNNXQvZFoxNmt3OS9l?=
- =?utf-8?B?YUsyM1JXZUdZQVdsVTB3Y0dPcUIvNXdZVlFPVkNmVWNoRGJUVXFNNjNQekps?=
- =?utf-8?B?K2xKS3FzZ3NqYm5ISmZqWnFtTmZZelljcWo2SXNUaXZ6Q2JIRE15ek9EWWVw?=
- =?utf-8?B?Z0FOUWpjNEtrRlUveFVUd0ZMTmkyZXRSQXNxWC9IczV3WXlEeXVrcXlaVUhW?=
- =?utf-8?B?TUgxZ0ZXYlFkTkQxS28vQzZ3R1l0YjIvUXpZbFJIUGhIaHJocFFuc25WYUNZ?=
- =?utf-8?B?cm9GQVFPa0dhUmlkVkl4Q0hHYnRIZUlYTmtIN1NtaHVDSzJabEFLbWJhLzNE?=
- =?utf-8?B?M3NnejE4Ym1SclpYdTFWeWhiZzNNU2JlY21XaFQ4bThMZWN1cVRDSDVnRmd5?=
- =?utf-8?B?YXFCbGkwMEpybU5CM0Q3M1ljWmtBd0lZbithbUM1elZYL3dxSzNzTWM4aW1r?=
- =?utf-8?B?bkh3Qzl6b0VZYlVDSWVPeWxkQkpzY1BaL1NGT2s0V25DczFFSlZlRWVoYUhn?=
- =?utf-8?B?anMzODhoaEJEQlFmMGlPK0wwVUpiRy9xdFR4YnovTkpaUUdsU2ZVYVdkeW9p?=
- =?utf-8?B?NlRRVkJpS1dYYmU2ZWRrVWJybmVLdWhKNlVIWDNrWS9GTnMvemdZbE0yNTdR?=
- =?utf-8?B?cmZFWFpzekN6azBRNWVjREVoWVpPK25MbzFiczJRUlUyYnlWd0RLVnN2K3I5?=
- =?utf-8?B?MWZrZWtzUUlxdG1hQ3RtTkt5WEExQ3J5bTByOFEzbjc0TWJibm4vY3JycVRU?=
- =?utf-8?B?OStyQU5QZzJMdnlVZ0ZJRlhMQ2lWWnJ5KzFNUzJQODFhdHU3VFJpT1NPek90?=
- =?utf-8?B?Q0JBMjFrdFFndWVid043aWVkbUVueVh4RndhUzR5ZFZZRDk1QVJvRTdNcjFX?=
- =?utf-8?B?VE9CSERSS3VFVGpPdFJOd01JSldFVVI0UVRicGxocE5Tb0NQYlUydVFrcjhV?=
- =?utf-8?B?TVcyRkhjRVk1Si91NXkrcE1Bd0FpZ1NYQUdmT2FQaXlPWTNBbjNXcW9KS3VT?=
- =?utf-8?B?TG1BMFQ1TUVkM2diWW9wRHBjOE1YUitJSmFweU91b3cyWVRBVzlJdDE3QXF6?=
- =?utf-8?B?b2JiYU1UVzlYOHRrK2haV2ZaQyt0UFVCZUV3dFYwN1pHNW1mZ1dtZjgwOWVP?=
- =?utf-8?B?cnRhTlZTdG5zY2RFRmYyeVdMbDd5OVowZk5sRVQzdlBnT3dDVGU1ZThFZFBy?=
- =?utf-8?B?bXcrU21rQlN0dExyMW5zcm1JbXlhbWZOMUVwRDNBVGU5NkdKZGpoNmFpSmFY?=
- =?utf-8?B?bjdGc3lzb0VqcmJrazRLQlY0MVpEZGZXQnRuQ1ZRMDRuYnJsSFI5SGphMDVC?=
- =?utf-8?B?RUI3TDljTkFjYnVwU1Ixdjc4OXpKTEViMjRWM2cxOUV2SGtOYTYvelBJSFUz?=
- =?utf-8?B?OFRmQzh0VUhja1BES1ZQNk15dXQwMVZZWHNLRHZEQU5qNmxZRGVuYVk3eWls?=
- =?utf-8?B?cHI3TEFsVjVWOHo5QTFlUzdDNFdlL0U4MFBqdTZoTVNLWkt1RVRlY1R6ZkZJ?=
- =?utf-8?B?MjcrT3ZyVndsbmdnMlh3UEV2MUg0WXlkTC9OekpKNFB0SnBHZ2x5WklVRTZa?=
- =?utf-8?B?OWduS3RKTFR1Vml0aXVIUzZBOTc2TzVLU0doZFNweTR1THN3bVluN1FIYnoy?=
- =?utf-8?B?TlpFUEJGUDRTbWlWU0NLQTN6Q2o0V0tJRXhRWGRDRThhRWM1aFloU1ZkUlJi?=
- =?utf-8?B?bTZIYzdYUkxwQm9TaU55dU11K05tRjdMeVZIYU9PK3lLSDEybVVrdFFDcTlw?=
- =?utf-8?B?djNvZTBDaS9HZjZwUXc4TFZadWNZd1lOWHh1eHB2TVFyY2pVMjRlN1ZQUDVJ?=
- =?utf-8?Q?phzsY2W8Yaf/6?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e636d855-ebdd-4b17-ea49-08d958d5d01b
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 12:29:19.4893
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2IGY2Bu5tSODeUPTW7hwgIJdJRzaIjtdxtf6bn4jZeN538+iXx38aTzLC5We3XHDQZjbkkCpf5HigKJJ3tenraKINQgxXVAalIEi0PGgMYU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB4825
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202108050725.384AA3E0@keescook>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Niklas Söderlund <niklas.soderlund@corigine.com>
+On Thu, Aug 05, 2021 at 07:26:49AM -0700, Kees Cook wrote:
+> On Thu, Aug 05, 2021 at 11:05:15PM +0900, Tatsuhiko Yasumatsu wrote:
+> > In __htab_map_lookup_and_delete_batch(), hash buckets are iterated over
+> > to count the number of elements in each bucket (bucket_size).
+> > If bucket_size is large enough, the multiplication to calculate
+> > kvmalloc() size could overflow, resulting in out-of-bounds write
+> > as reported by KASAN.
+> > 
+> > [...]
+> > [  104.986052] BUG: KASAN: vmalloc-out-of-bounds in __htab_map_lookup_and_delete_batch+0x5ce/0xb60
+> > [  104.986489] Write of size 4194224 at addr ffffc9010503be70 by task crash/112
+> > [  104.986889]
+> > [  104.987193] CPU: 0 PID: 112 Comm: crash Not tainted 5.14.0-rc4 #13
+> > [  104.987552] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+> > [  104.988104] Call Trace:
+> > [  104.988410]  dump_stack_lvl+0x34/0x44
+> > [  104.988706]  print_address_description.constprop.0+0x21/0x140
+> > [  104.988991]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
+> > [  104.989327]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
+> > [  104.989622]  kasan_report.cold+0x7f/0x11b
+> > [  104.989881]  ? __htab_map_lookup_and_delete_batch+0x5ce/0xb60
+> > [  104.990239]  kasan_check_range+0x17c/0x1e0
+> > [  104.990467]  memcpy+0x39/0x60
+> > [  104.990670]  __htab_map_lookup_and_delete_batch+0x5ce/0xb60
+> > [  104.990982]  ? __wake_up_common+0x4d/0x230
+> > [  104.991256]  ? htab_of_map_free+0x130/0x130
+> > [  104.991541]  bpf_map_do_batch+0x1fb/0x220
+> > [...]
+> > 
+> > In hashtable, if the elements' keys have the same jhash() value, the
+> > elements will be put into the same bucket. By putting a lot of elements
+> > into a single bucket, the value of bucket_size can be increased to
+> > trigger the integer overflow.
+> > 
+> > Triggering the overflow is possible for both callers with CAP_SYS_ADMIN
+> > and callers without CAP_SYS_ADMIN.
+> > 
+> > It will be trivial for a caller with CAP_SYS_ADMIN to intentionally
+> > reach this overflow by enabling BPF_F_ZERO_SEED. As this flag will set
+> > the random seed passed to jhash() to 0, it will be easy for the caller
+> > to prepare keys which will be hashed into the same value, and thus put
+> > all the elements into the same bucket.
+> > 
+> > If the caller does not have CAP_SYS_ADMIN, BPF_F_ZERO_SEED cannot be
+> > used. However, it will be still technically possible to trigger the
+> > overflow, by guessing the random seed value passed to jhash() (32bit)
+> > and repeating the attempt to trigger the overflow. In this case,
+> > the probability to trigger the overflow will be low and will take
+> > a very long time.
+> > 
+> > Fix the integer overflow by casting 1 operand to u64.
+> > 
+> > Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
+> > Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
+> > ---
+> >  kernel/bpf/hashtab.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > index 72c58cc516a3..e29283c3b17f 100644
+> > --- a/kernel/bpf/hashtab.c
+> > +++ b/kernel/bpf/hashtab.c
+> > @@ -1565,8 +1565,8 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+> >  	/* We cannot do copy_from_user or copy_to_user inside
+> >  	 * the rcu_read_lock. Allocate enough space here.
+> >  	 */
+> > -	keys = kvmalloc(key_size * bucket_size, GFP_USER | __GFP_NOWARN);
+> > -	values = kvmalloc(value_size * bucket_size, GFP_USER | __GFP_NOWARN);
+> > +	keys = kvmalloc((u64)key_size * bucket_size, GFP_USER | __GFP_NOWARN);
+> > +	values = kvmalloc((u64)value_size * bucket_size, GFP_USER | __GFP_NOWARN);
+> 
+> Please, no open-coded multiplication[1]. This should use kvmalloc_array()
+> instead.
+> 
+> -Kees
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> >  	if (!keys || !values) {
+> >  		ret = -ENOMEM;
+> >  		goto after_loop;
+> > -- 
+> > 2.25.1
+> > 
+> 
+> -- 
+> Kees Cook
+Thank you for pointing out.
+I'll modify the patch.
 
-There is a forward declaration of ip_fast_csum() just before its
-implementation, remove the unneeded forward declaration.
-
-While at it mark the implementation as static inline.
-
-Signed-off-by: Niklas Söderlund <niklas.soderlund@corigine.com>
-Reviewed-by: Louis Peens <louis.peens@corigine.com>
-Signed-off-by: Simon Horman <simon.horman@corigine.com>
----
- samples/bpf/xdpsock_user.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index 7c56a7a784e1..49d7a6ad7e39 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -651,15 +651,13 @@ static unsigned int do_csum(const unsigned char *buff, int len)
- 	return result;
- }
- 
--__sum16 ip_fast_csum(const void *iph, unsigned int ihl);
--
- /*
-  *	This is a version of ip_compute_csum() optimized for IP headers,
-  *	which always checksum on 4 octet boundaries.
-  *	This function code has been taken from
-  *	Linux kernel lib/checksum.c
-  */
--__sum16 ip_fast_csum(const void *iph, unsigned int ihl)
-+static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
- {
- 	return (__sum16)~do_csum(iph, ihl * 4);
- }
--- 
-2.20.1
-
+Regards,
+Tatsuhiko Yasumatsu
