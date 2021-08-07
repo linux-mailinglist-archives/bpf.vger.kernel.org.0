@@ -2,94 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE503E3234
-	for <lists+bpf@lfdr.de>; Sat,  7 Aug 2021 01:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99373E323D
+	for <lists+bpf@lfdr.de>; Sat,  7 Aug 2021 02:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhHFXvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Aug 2021 19:51:15 -0400
-Received: from www62.your-server.de ([213.133.104.62]:60630 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbhHFXvO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Aug 2021 19:51:14 -0400
-Received: from 65.47.5.85.dynamic.wline.res.cust.swisscom.ch ([85.5.47.65] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mC9c5-0005bv-JB; Sat, 07 Aug 2021 01:50:53 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: pull-request: bpf 2021-08-07
-Date:   Sat,  7 Aug 2021 01:50:52 +0200
-Message-Id: <20210806235052.16379-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S229632AbhHGAAW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Aug 2021 20:00:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229480AbhHGAAW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Aug 2021 20:00:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 07CE3611C5;
+        Sat,  7 Aug 2021 00:00:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628294406;
+        bh=4A+8Gdr0GxJ3QR/5/1CZG4CMQQjvAVlXL9P64LaMOPk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=njJIEcdqOWqzTq2iTeKDx9hkJsRsldn60uhN79Z0KVn+b1r7So+xeC4IxSnhz25W0
+         +vE0K/lcZy/OGitJSXScJo/ydp/9VSKSj65V5Xr702vnSPn89h2VK6zzRiNAXDTT+1
+         0OeDPomgL+IOkwucewBQbMx2qr6KEZrjOV5JB6xpvvKupAbX4g98Rv95wmdkoHghen
+         YZa6T3+PtvNf7MFqxaRLA3rQzDJzjkduVP673F+vBjfxWd7i+gVXZ+ucygeDhSXqFQ
+         jsjITMZcBEO//ha55dOhkiKfn+zjXNGUQXhsrsNNVtsphAz8Z/CBz0i39d1xfWCw+N
+         3x9iTdOipaqVA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EEBDC60A7C;
+        Sat,  7 Aug 2021 00:00:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26255/Fri Aug  6 10:24:06 2021)
+Subject: Re: [PATCH 0/2] samples/bpf: xdpsock: Minor enhancements
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162829440597.32097.9443934066485128574.git-patchwork-notify@kernel.org>
+Date:   Sat, 07 Aug 2021 00:00:05 +0000
+References: <20210806122855.26115-1-simon.horman@corigine.com>
+In-Reply-To: <20210806122855.26115-1-simon.horman@corigine.com>
+To:     Simon Horman <simon.horman@corigine.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        oss-drivers@corigine.com, niklas.soderlund@corigine.com,
+        louis.peens@corigine.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+Hello:
 
-The following pull-request contains BPF updates for your *net* tree.
+This series was applied to bpf/bpf-next.git (refs/heads/master):
 
-We've added 4 non-merge commits during the last 9 day(s) which contain
-a total of 4 files changed, 8 insertions(+), 7 deletions(-).
+On Fri,  6 Aug 2021 14:28:53 +0200 you wrote:
+> Hi,
+> 
+> this short series provides to minor enhancements to the
+> ample code in samples/bpf/xdpsock_user.c.
+> 
+> Each change is explained more fully in its own commit message.
+> 
+> [...]
 
-The main changes are:
+Here is the summary with links:
+  - [1/2] samples/bpf: xdpsock: Make the sample more useful outside the tree
+    https://git.kernel.org/bpf/bpf-next/c/29f24c43cbe0
+  - [2/2] samples/bpf: xdpsock: Remove forward declaration of ip_fast_csum()
+    https://git.kernel.org/bpf/bpf-next/c/f4700a62c271
 
-1) Fix integer overflow in htab's lookup + delete batch op, from Tatsuhiko Yasumatsu.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-2) Fix invalid fd 0 close in libbpf if BTF parsing failed, from Daniel Xu.
 
-3) Fix libbpf feature probe for BPF_PROG_TYPE_CGROUP_SOCKOPT, from Robin Gögge.
-
-4) Fix minor libbpf doc warning regarding code-block language, from Randy Dunlap.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Quentin Monnet, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit fc16a5322ee6c30ea848818722eee5d352f8d127:
-
-  Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf (2021-07-29 00:53:32 +0100)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to c4eb1f403243fc7bbb7de644db8587c03de36da6:
-
-  bpf: Fix integer overflow involving bucket_size (2021-08-07 01:39:22 +0200)
-
-----------------------------------------------------------------
-Daniel Xu (1):
-      libbpf: Do not close un-owned FD 0 on errors
-
-Randy Dunlap (1):
-      libbpf, doc: Eliminate warnings in libbpf_naming_convention
-
-Robin Gögge (1):
-      libbpf: Fix probe for BPF_PROG_TYPE_CGROUP_SOCKOPT
-
-Tatsuhiko Yasumatsu (1):
-      bpf: Fix integer overflow involving bucket_size
-
- Documentation/bpf/libbpf/libbpf_naming_convention.rst | 4 ++--
- kernel/bpf/hashtab.c                                  | 4 ++--
- tools/lib/bpf/btf.c                                   | 3 +--
- tools/lib/bpf/libbpf_probes.c                         | 4 +++-
- 4 files changed, 8 insertions(+), 7 deletions(-)
