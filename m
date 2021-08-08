@@ -2,140 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691A93E3269
-	for <lists+bpf@lfdr.de>; Sat,  7 Aug 2021 02:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089083E3A2D
+	for <lists+bpf@lfdr.de>; Sun,  8 Aug 2021 14:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbhHGAtS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Aug 2021 20:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
+        id S229882AbhHHMZK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Aug 2021 08:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhHGAtR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Aug 2021 20:49:17 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5F8C061798
-        for <bpf@vger.kernel.org>; Fri,  6 Aug 2021 17:49:01 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id yk17so17905182ejb.11
-        for <bpf@vger.kernel.org>; Fri, 06 Aug 2021 17:49:01 -0700 (PDT)
+        with ESMTP id S229608AbhHHMZJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 Aug 2021 08:25:09 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44641C061760;
+        Sun,  8 Aug 2021 05:24:50 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso2199627pjb.2;
+        Sun, 08 Aug 2021 05:24:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Eu2KDrXHGvsVvXrn9bGbtjdk99ZR9lKUyg7uD7JNdeI=;
-        b=sLNCfQlikbgidaRYypM6xT+/vzj0lEaHZZ0keFXpYJpaHE5WKKEo6eAzT8Oz8nigod
-         Guw+NL6MIGC4Uh4XBzkwtV3eDTawCy9QSKjzSZ9qcRQLOeH9AX1o2HhUfaRL12YOeAqO
-         AeqsbIls7MsCi7oNY4cDupYOgdP9njqCjDJvmofOwLgIyQ6A4WPUHevA0N6Iw+zEdM8k
-         WDAJ0X4KD3UIYgS0W2xpiMu4Cbtf3o+LRXHyKViCrKePSaieAvCpgL1Megaxi+l6n8GB
-         UxsQWdvAdaGsPObJx1579a9kOasj/8G1A3HFVVgRXOzPPpVGw/QABK+6y4ZNvofuD/iV
-         oFvQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=cfuHJ0F5XUnbjLf/uGbQtchTlybquzNv2LjZvYHovaU=;
+        b=USsNlW4N/ExtU2nKQ4XI1T/tWdGVpfGd0v58FTAoW/DhWZTLmU1N9c+TiWuyGugLq0
+         1vaqoVZ43ZGQGphih8FHD70uMGWesDs5su5/vBu6/H7neXnpw88ecy7G3aQ/sEBtOwGt
+         IlTxmVK6bzxwD1ZPnYQGThFLZqnWrF/DOTgWA5Qk+5qVGY/g2ZM0xJPSlctHQu9Uov0o
+         9eyxSGc+SKcErqwnorLd2M5NTRDWO3iOWoMPJa2jvtf53JCq0q04Cud3g/r4E/Hxo3Vq
+         7pZqjIilhqDpHhUDrVQsrOg+LAKDRGNR4hXL1zkr6+6PPANaJoJrMU3pJZKHyTyP/RzS
+         xobA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Eu2KDrXHGvsVvXrn9bGbtjdk99ZR9lKUyg7uD7JNdeI=;
-        b=Jqc2Rr0YCi3TpeE9KcASl0yLdF7ZylpHHXuLZPKYC+o4KkLlbHnNYz2DNT/O/gXgUi
-         IcUJjtWD1TDBsZb9WTGj3fdosspMsNhUYTLrhL51QrZAQxYFIZ3BySvX/qO6vbWySWjr
-         Z4a0wy+dK8gDgaQIc/SpaR7AqSEvOEmL817Nmxz7It5oQwJb0nSc0alfaMcMPV6wK6iZ
-         CB20LOl7Zc2VwGXahpPKySPnMK3CsmTqGXOfIhwMIT83ONo0r1vKTYn+O6sTOpULu3+i
-         JFiQDz+B46KaARubtUT52dfX3yvT2wShuiy9B1x9wi3NmwK8iMF4buTf7HpmVc9GIvYz
-         66QQ==
-X-Gm-Message-State: AOAM530tzf7EmOleDzxKFfX9jZRkvjh0TBovF+SrB5l9OenA8LsCPyJr
-        NWSzCY6rCKTDxOKSpAd49Z5nFIawPixco3YSRlkMHA==
-X-Google-Smtp-Source: ABdhPJxzShJkvcLMOoPjQWH38YxQcWttagk5u5GoybUhIMeRLnc27akzSm9m8CIqA/mw1vrcY83LIExF2vKFYks+Mmg=
-X-Received: by 2002:a17:906:14c8:: with SMTP id y8mr12295078ejc.475.1628297339478;
- Fri, 06 Aug 2021 17:48:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210802212815.3488773-1-haoluo@google.com> <CAEf4BzbRyf41ADFa==mT591Zh8FDOtNnm5LZQvu3X+SxmkoAew@mail.gmail.com>
-In-Reply-To: <CAEf4BzbRyf41ADFa==mT591Zh8FDOtNnm5LZQvu3X+SxmkoAew@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Fri, 6 Aug 2021 17:48:48 -0700
-Message-ID: <CA+khW7iC-kPhLmPa7=6rc-kY5E49znL8T1vat5-Uz+yYwBWsbw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: support weak typed ksyms.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cfuHJ0F5XUnbjLf/uGbQtchTlybquzNv2LjZvYHovaU=;
+        b=S1rVKGr+3acdjmV5n9vWNAE/d0/sZsGln0Py/eUpXT9v8wNQLb0htfqyEaw8qIImpN
+         MSg/+d14zpxXPJwPgxhB1VzoyHDY/h6Z0550weos9wmpkm/US47qdBBBtwbdxCxXjHrp
+         h1ZZxnvyEacoQ7kMoZILAQLeMYx9kGroLBr1PLK4+3YEniU6Ox+VmdkY7Ov2Dj1Ub9By
+         CuTmGCY74nAgIvFFjg0UKrEr5FeIgcnR343kU8g0cO5zOf6pFpvtdrdAldawucFgaBdd
+         468bYcKcj3vkhjOipeE/b92l39kRJCJ+bPxAmf1fFCSAmN0EmaUeuTz7WKM0ek0ty/ZK
+         A6Xw==
+X-Gm-Message-State: AOAM531Z3V+a7K3+6DfUaSJ0ltvRk/oFTPVojxkpKwmV5uNbAlYp1/2h
+        XGabAGP65Et2IfRFSphAOm8=
+X-Google-Smtp-Source: ABdhPJw5LKdxwqi9Lfzyt8FsJnFMBTOUX7sv3rKsPTpja/4BnQnUTBy+yntloS7peZkV6sYGP/1Few==
+X-Received: by 2002:a17:902:ced0:b029:12c:bebd:1efb with SMTP id d16-20020a170902ced0b029012cbebd1efbmr16803253plg.56.1628425489515;
+        Sun, 08 Aug 2021 05:24:49 -0700 (PDT)
+Received: from u18.mshome.net ([167.220.238.196])
+        by smtp.gmail.com with ESMTPSA id y8sm17346925pfe.162.2021.08.08.05.24.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Aug 2021 05:24:49 -0700 (PDT)
+From:   Muhammad Falak R Wani <falakreyaz@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Muhammad Falak R Wani <falakreyaz@gmail.com>
+Subject: [PATCH] samples: bpf: xdp1: remove duplicate code to find protocol
+Date:   Sun,  8 Aug 2021 17:54:11 +0530
+Message-Id: <20210808122411.10980-1-falakreyaz@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks for taking a look.
+The code to find h_vlan_encapsulated_proto is duplicated.
+Remove the extra block.
 
-On Fri, Aug 6, 2021 at 3:40 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Aug 2, 2021 at 2:29 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > Currently weak typeless ksyms have default value zero, when they don't
-> > exist in the kernel. However, weak typed ksyms are rejected by libbpf.
-> > This means that if a bpf object contains the declaration of a
-> > non-existing weak typed ksym, it will be rejected even if there is
-> > no program that references the symbol.
-> >
-> > In fact, we could let them to pass the checks in libbpf and leave the
-> > object to be rejected by the bpf verifier. More specifically, upon
-> > seeing a weak typed symbol, libbpf can assign it a zero btf_id, which
-> > is associated to the type 'void'. The verifier expects the symbol to
-> > be BTF_VAR_KIND instead, therefore will reject loading.
-> >
-> > In practice, we often add new kernel symbols and roll out the kernel
-> > changes to fleet. And we want to release a single bpf object that can
-> > be loaded on both the new and the old kernels. Passing weak typed ksyms
-> > in libbpf allows us to do so as long as the programs that reference the
-> > new symbols are disabled on the old kernel.
->
-> How do you detect whether a given ksym is present or not? You check
-> that from user-space and then use .rodata to turn off pieces of BPF
-> logic? That's quite inconvenient. It would be great if these typed
-> ksyms worked the same way as typeless ones:
->
-It's not by detect. In my use case, I can add a flag to the
-application to disable/enable loading a BPF program. Because we know
-at which kernel version a new symbol was introduced, we can coordinate
-the application flag with the kernel version to avoid the faulting
-code being loaded on an old kernel.
+Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
+---
+ samples/bpf/xdp1_kern.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-> extern const int bpf_link_fops3 __ksym __weak;
->
-> /* then in BPF program */
->
-> if (&bpf_link_fops3) {
->    /* use bpf_link_fops3 */
-> }
->
->
-> I haven't tried, but I suspect it could be made to work if libbpf
-> replaces corresponding ldimm64 instruction (with BTF ID) into a plain
-> ldimm64 instruction loading 0 directly. That would allow the above
-> check (and it would be known false to the verifier) to succeed without
-> the verifier rejecting the BPF program. If actual use of non-existing
-> typed symbol is not guarded properly, verifier would see that register
-> is not PTR_TO_BTF_ID and wouldn't allow to use it for direct memory
-> reads or passing it to BPF helpers.
->
-> Have you considered such an approach?
->
-I haven't thought about this approach. I just grabbed the quickest
-solution I can think of. Will follow your suggestion and see if it
-works.
+diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
+index 34b64394ed9c..a35e064d7726 100644
+--- a/samples/bpf/xdp1_kern.c
++++ b/samples/bpf/xdp1_kern.c
+@@ -57,15 +57,6 @@ int xdp_prog1(struct xdp_md *ctx)
+ 
+ 	h_proto = eth->h_proto;
+ 
+-	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
+-		struct vlan_hdr *vhdr;
+-
+-		vhdr = data + nh_off;
+-		nh_off += sizeof(struct vlan_hdr);
+-		if (data + nh_off > data_end)
+-			return rc;
+-		h_proto = vhdr->h_vlan_encapsulated_proto;
+-	}
+ 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
+ 		struct vlan_hdr *vhdr;
+ 
+-- 
+2.17.1
 
->
-> Separately, please use ASSERT_XXX() macros for tests, not plain
-> CHECK()s. Thanks.
->
-ACK.
-
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
-> >  tools/lib/bpf/libbpf.c                        | 17 +++++-
-> >  .../selftests/bpf/prog_tests/ksyms_btf.c      | 42 +++++++++++++
-> >  .../selftests/bpf/progs/test_ksyms_weak.c     | 60 +++++++++++++++++++
-> >  3 files changed, 116 insertions(+), 3 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_weak.c
-> >
->
-> [...]
