@@ -2,350 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7373E4267
-	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 11:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC973E42D7
+	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 11:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234343AbhHIJTc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 05:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58140 "EHLO
+        id S234658AbhHIJfb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 05:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234247AbhHIJTT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:19:19 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F2DC0617A1
-        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 02:18:57 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id f13so23491111edq.13
-        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 02:18:57 -0700 (PDT)
+        with ESMTP id S234634AbhHIJf3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 05:35:29 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207F5C0613D3
+        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 02:35:09 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id k9so6310775edr.10
+        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 02:35:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qh5pp/IyEkM2hhUUxfJuuWdSp19OeWYV2ofW35RBO4M=;
-        b=KjSbYgRqYIRStMRq6RTxbNNoxMousu3+tcqm62cwBqCoUNKiVSTT53o9N7bdMJSmwC
-         Xtlz2hT7stLk0kuRWDGcB0dHckOC2JEFWvJEeI46zQAsLgTKyaXssvyMKRUF9MvtJiuy
-         UX0MmE2jo3lEn0LHcZcgkUk97r2/fLG15Vfx224uHXAS7O745AeYcRmZ+aJ1KRjy1UGp
-         w57Azucxpb3OWmw0xoN/8xfqlXODEnp3a9wYaewvE7IkKCaZ/gubS9WQzOyFUDal7IpM
-         7GMfh+vJjv9t4+B+EcmYyH0tA8qHoZ+GucoKDQlrS4BYUWOkYXdrHIKgUncXFrsBRE25
-         ZowQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zwAAZtoe5JzXwMl3BpwlMJNUPbe45ZpYwTmRl3QO43w=;
+        b=zSx2RwzNsht4f2/bo6VzWdIj65matsW9qhjPPJO3ptc/WjUMzFzad9pwS74bs8z/Mp
+         OhhEkmbLQeK5okI4BmVTCWcL53vpJ936O9hAh7aS4qVo7QWsy5BQ9da+gju7Vab2MB4h
+         5PDAP8t1qehCi1ZYuBJ2nbn9BG6AdMVmrSF20afGRnwr8EshJqQkynsnyiqy/0mRgSMw
+         NODT7sKY4WEjQtwV9UUyASMN+eFtLAQ/MVhIHbKpBTmDMfu1pL0cCg3hapx7otqCpEbB
+         Mkq1GKvayRMAbDts5/7MPm+NvD1lS3h1Vby1rGnzxCOVxBS0VG7QfWw3xpp5jOQmKmHM
+         eWSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qh5pp/IyEkM2hhUUxfJuuWdSp19OeWYV2ofW35RBO4M=;
-        b=umKIIdyu2iN2joSNo2BD0rMASMeoEC8bRTLkmDWPDeEc1I8YmG+WAImvC5sSTvQai3
-         P1A9nbgeqnUx4A3eFJEmyZfC9sIa/rDV6jHZXtLU8bYt+TRB9yIXdFEA8tOTT1JosH3r
-         2GTAZ09tneMS0ZV/SU188WGAE5VOVSKJf3vJMHB4skxwiIsZOJnhpJ4V0Nv/bcNtZPw0
-         shPaHWNVD9x6iBHe2rgnbbUQ/gXWfmfSUZk2dB4QNTbG3/gehEy1NVMom0M16K1RdXsz
-         szDfFqFOEJcS3RkmQ373a459xP7WHO6+dNj4k7DiH2Ec2NIAzKalju4LvMh9epc3SgNq
-         SHmw==
-X-Gm-Message-State: AOAM530t37LxhofEaG+J4S1woe1s9bub1FeTwmTvAeOQuybnZNJXWQe9
-        ZZCjXx0GhML+tTNrgqTgboCP5w==
-X-Google-Smtp-Source: ABdhPJwMjluDz9erFV+SVhUrudfKCRlTRUpVsERhYpte6BBpVHFNVR+qnzfyt2tP1AghSLHtrOtyXQ==
-X-Received: by 2002:aa7:c952:: with SMTP id h18mr29101254edt.18.1628500736344;
-        Mon, 09 Aug 2021 02:18:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zwAAZtoe5JzXwMl3BpwlMJNUPbe45ZpYwTmRl3QO43w=;
+        b=ZIw5xwGBF5dklC88/k+WhUNgfwN3l7pinlGe1WUu7ghNBFcs8SheLMqqPW1WWf08qB
+         PuIJRVfxzec854JdJk1JtRkYoakL5RcsxHSi0xa9qzY9UN6WIHGCd1vUcpVEXHvLiJIP
+         XS8SGalt23VhWIfXmL+3mjK19ElT5kM1BjanCmrRwm32FLRHMp/kMqc2v5X7CTt8eNo5
+         5aG6/IHIRqb9QiAAjUORdU94g3KnrADLhiwOG23i/fZ6lWt8t6bwfeIJz0v+l2aeuuTI
+         oDdphM3U41af/RqRhek5lzvo08IFEHnWkx97hKjGz56KeFanL0mNzN6Wn7uIw/AJ5blR
+         PsRA==
+X-Gm-Message-State: AOAM5320JhawySVaKOW3xApQT+Jqh560I6Dvbud2allAyctOb4apJ0ZQ
+        uEh9V8ef7yNs5sxScrpASZ8w5A==
+X-Google-Smtp-Source: ABdhPJyVQTbfG9RhsYLnIylFbyKXtxpwHw5fl0AlD3S8iXZsHrnAongcdTGdp4UUnPg/Reiwo5lAUQ==
+X-Received: by 2002:a05:6402:440e:: with SMTP id y14mr28963676eda.38.1628501707726;
+        Mon, 09 Aug 2021 02:35:07 -0700 (PDT)
 Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
-        by smtp.gmail.com with ESMTPSA id dg24sm1234250edb.6.2021.08.09.02.18.55
+        by smtp.gmail.com with ESMTPSA id c8sm1989732ejp.124.2021.08.09.02.35.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 02:18:55 -0700 (PDT)
+        Mon, 09 Aug 2021 02:35:07 -0700 (PDT)
 From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org,
-        Tony.Ambardar@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        illusionist.neo@gmail.com, zlim.lnx@gmail.com,
+        paulburton@kernel.org, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, luke.r.nels@gmail.com, bjorn@kernel.org,
+        iii@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        davem@davemloft.net, udknight@gmail.com,
         Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Subject: [PATCH bpf-next v2 14/14] bpf/tests: Add tail call test suite
-Date:   Mon,  9 Aug 2021 11:18:29 +0200
-Message-Id: <20210809091829.810076-15-johan.almbladh@anyfinetworks.com>
+Subject: [PATCH bpf-next 0/7] Fix MAX_TAIL_CALL_CNT handling in eBPF JITs
+Date:   Mon,  9 Aug 2021 11:34:30 +0200
+Message-Id: <20210809093437.876558-1-johan.almbladh@anyfinetworks.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210809091829.810076-1-johan.almbladh@anyfinetworks.com>
-References: <20210809091829.810076-1-johan.almbladh@anyfinetworks.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-While BPF_CALL instructions were tested implicitly by the cBPF-to-eBPF
-translation, there has not been any tests for BPF_TAIL_CALL instructions.
-The new test suite includes tests for tail call chaining, tail call count
-tracking and error paths. It is mainly intended for JIT development and
-testing.
+A new test of tail call count limiting revealed that the interpreter
+did in fact allow up to MAX_TAIL_CALL_CNT + 1 tail calls, whereas the
+x86 JITs stopped at the intended MAX_TAIL_CALL_CNT. The interpreter was
+fixed in commit b61a28cf11d61f512172e673b8f8c4a6c789b425 ("bpf: Fix
+off-by-one in tail call count limiting"). This patch set fixes all
+arch-specific JITs except for RISC-V.
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
- lib/test_bpf.c | 248 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 248 insertions(+)
+For each of the affected JITs, the incorrect behaviour was verified
+by running the test_bpf test suite in QEMU. After the fixes, the JITs
+pass the tail call count limiting test.
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index d05fe7b4a9cb..44d8197bbffb 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -8989,8 +8989,248 @@ static __init int test_bpf(void)
- 	return err_cnt ? -EINVAL : 0;
- }
- 
-+struct tail_call_test {
-+	const char *descr;
-+	struct bpf_insn insns[MAX_INSNS];
-+	int result;
-+	int stack_depth;
-+};
-+
-+/*
-+ * Magic marker used in test snippets for tail calls below.
-+ * BPF_LD/MOV to R2 and R2 with this immediate value is replaced
-+ * with the proper values by the test runner.
-+ */
-+#define TAIL_CALL_MARKER 0x7a11ca11
-+
-+/* Special offset to indicate a NULL call target */
-+#define TAIL_CALL_NULL 0x7fff
-+
-+/* Special offset to indicate an out-of-range index */
-+#define TAIL_CALL_INVALID 0x7ffe
-+
-+#define TAIL_CALL(offset)			       \
-+	BPF_LD_IMM64(R2, TAIL_CALL_MARKER),	       \
-+	BPF_RAW_INSN(BPF_ALU | BPF_MOV | BPF_K, R3, 0, \
-+		     offset, TAIL_CALL_MARKER),	       \
-+	BPF_JMP_IMM(BPF_TAIL_CALL, 0, 0, 0)
-+
-+/*
-+ * Tail call tests. Each test case may call any other test in the table,
-+ * including itself, specified as a relative index offset from the calling
-+ * test. The index TAIL_CALL_NULL can be used to specify a NULL target
-+ * function to test the JIT error path. Similarly, the index TAIL_CALL_INVALID
-+ * results in a target index that is out of range.
-+ */
-+static struct tail_call_test tail_call_tests[] = {
-+	{
-+		"Tail call leaf",
-+		.insns = {
-+			BPF_ALU64_REG(BPF_MOV, R0, R1),
-+			BPF_ALU64_IMM(BPF_ADD, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 1,
-+	},
-+	{
-+		"Tail call 2",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_ADD, R1, 2),
-+			TAIL_CALL(-1),
-+			BPF_ALU64_IMM(BPF_MOV, R0, -1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 3,
-+	},
-+	{
-+		"Tail call 3",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_ADD, R1, 3),
-+			TAIL_CALL(-1),
-+			BPF_ALU64_IMM(BPF_MOV, R0, -1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 6,
-+	},
-+	{
-+		"Tail call 4",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_ADD, R1, 4),
-+			TAIL_CALL(-1),
-+			BPF_ALU64_IMM(BPF_MOV, R0, -1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 10,
-+	},
-+	{
-+		"Tail call error path, max count reached",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_ADD, R1, 1),
-+			BPF_ALU64_REG(BPF_MOV, R0, R1),
-+			TAIL_CALL(0),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = MAX_TAIL_CALL_CNT + 1,
-+	},
-+	{
-+		"Tail call error path, NULL target",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_MOV, R0, -1),
-+			TAIL_CALL(TAIL_CALL_NULL),
-+			BPF_ALU64_IMM(BPF_MOV, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 1,
-+	},
-+	{
-+		"Tail call error path, index out of range",
-+		.insns = {
-+			BPF_ALU64_IMM(BPF_MOV, R0, -1),
-+			TAIL_CALL(TAIL_CALL_INVALID),
-+			BPF_ALU64_IMM(BPF_MOV, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		.result = 1,
-+	},
-+};
-+
-+static void __init destroy_tail_call_tests(struct bpf_array *progs)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++)
-+		if (progs->ptrs[i])
-+			bpf_prog_free(progs->ptrs[i]);
-+	kfree(progs);
-+}
-+
-+static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
-+{
-+	int ntests = ARRAY_SIZE(tail_call_tests);
-+	struct bpf_array *progs;
-+	int which, err;
-+
-+	/* Allocate the table of programs to be used for tall calls */
-+	progs = kzalloc(sizeof(*progs) + (ntests + 1) * sizeof(progs->ptrs[0]),
-+			GFP_KERNEL);
-+	if (!progs)
-+		goto out_nomem;
-+
-+	/* Create all eBPF programs and populate the table */
-+	for (which = 0; which < ntests; which++) {
-+		struct tail_call_test *test = &tail_call_tests[which];
-+		struct bpf_prog *fp;
-+		int len, i;
-+
-+		/* Compute the number of program instructions */
-+		for (len = 0; len < MAX_INSNS; len++) {
-+			struct bpf_insn *insn = &test->insns[len];
-+
-+			if (len < MAX_INSNS - 1 &&
-+			    insn->code == (BPF_LD | BPF_DW | BPF_IMM))
-+				len++;
-+			if (insn->code == 0)
-+				break;
-+		}
-+
-+		/* Allocate and initialize the program */
-+		fp = bpf_prog_alloc(bpf_prog_size(len), 0);
-+		if (!fp)
-+			goto out_nomem;
-+
-+		fp->len = len;
-+		fp->type = BPF_PROG_TYPE_SOCKET_FILTER;
-+		fp->aux->stack_depth = test->stack_depth;
-+		memcpy(fp->insnsi, test->insns, len * sizeof(struct bpf_insn));
-+
-+		/* Relocate runtime tail call offsets and addresses */
-+		for (i = 0; i < len; i++) {
-+			struct bpf_insn *insn = &fp->insnsi[i];
-+
-+			if (insn->imm != TAIL_CALL_MARKER)
-+				continue;
-+
-+			switch (insn->code) {
-+			case BPF_LD | BPF_DW | BPF_IMM:
-+				insn[0].imm = (u32)(long)progs;
-+				insn[1].imm = ((u64)(long)progs) >> 32;
-+				break;
-+
-+			case BPF_ALU | BPF_MOV | BPF_K:
-+				if (insn->off == TAIL_CALL_NULL)
-+					insn->imm = ntests;
-+				else if (insn->off == TAIL_CALL_INVALID)
-+					insn->imm = ntests + 1;
-+				else
-+					insn->imm = which + insn->off;
-+				insn->off = 0;
-+			}
-+		}
-+
-+		fp = bpf_prog_select_runtime(fp, &err);
-+		if (err)
-+			goto out_err;
-+
-+		progs->ptrs[which] = fp;
-+	}
-+
-+	/* The last entry contains a NULL program pointer */
-+	progs->map.max_entries = ntests + 1;
-+	*pprogs = progs;
-+	return 0;
-+
-+out_nomem:
-+	err = -ENOMEM;
-+
-+out_err:
-+	if (progs)
-+		destroy_tail_call_tests(progs);
-+	return err;
-+}
-+
-+static __init int test_tail_calls(struct bpf_array *progs)
-+{
-+	int i, err_cnt = 0, pass_cnt = 0;
-+	int jit_cnt = 0, run_cnt = 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
-+		struct tail_call_test *test = &tail_call_tests[i];
-+		struct bpf_prog *fp = progs->ptrs[i];
-+		u64 duration;
-+		int ret;
-+
-+		cond_resched();
-+
-+		pr_info("#%d %s ", i, test->descr);
-+		if (!fp) {
-+			err_cnt++;
-+			continue;
-+		}
-+		pr_cont("jited:%u ", fp->jited);
-+
-+		run_cnt++;
-+		if (fp->jited)
-+			jit_cnt++;
-+
-+		ret = __run_one(fp, NULL, MAX_TESTRUNS, &duration);
-+		if (ret == test->result) {
-+			pr_cont("%lld PASS", duration);
-+			pass_cnt++;
-+		} else {
-+			pr_cont("ret %d != %d FAIL", ret, test->result);
-+			err_cnt++;
-+		}
-+	}
-+
-+	pr_info("%s: Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed]\n",
-+		__func__, pass_cnt, err_cnt, jit_cnt, run_cnt);
-+
-+	return err_cnt ? -EINVAL : 0;
-+}
-+
- static int __init test_bpf_init(void)
- {
-+	struct bpf_array *progs = NULL;
- 	int ret;
- 
- 	ret = prepare_bpf_tests();
-@@ -9002,6 +9242,14 @@ static int __init test_bpf_init(void)
- 	if (ret)
- 		return ret;
- 
-+	ret = prepare_tail_call_tests(&progs);
-+	if (ret)
-+		return ret;
-+	ret = test_tail_calls(progs);
-+	destroy_tail_call_tests(progs);
-+	if (ret)
-+		return ret;
-+
- 	return test_skb_segment();
- }
- 
+I have not been able to test the RISC-V JITs due to the lack of a
+working toolchain and QEMU setup. It is likely that the RISC-V JITs
+have the off-by-one behaviour too. I have not verfied any of the NIC JITs.
+
+Link: https://lore.kernel.org/bpf/20210728164741.350370-1-johan.almbladh@anyfinetworks.com/
+
+Johan Almbladh (7):
+  arm: bpf: Fix off-by-one in tail call count limiting
+  arm64: bpf: Fix off-by-one in tail call count limiting
+  powerpc: bpf: Fix off-by-one in tail call count limiting
+  s390: bpf: Fix off-by-one in tail call count limiting
+  sparc: bpf: Fix off-by-one in tail call count limiting
+  mips: bpf: Fix off-by-one in tail call count limiting
+  x86: bpf: Fix comments on tail call count limiting
+
+ arch/arm/net/bpf_jit_32.c         | 6 +++---
+ arch/arm64/net/bpf_jit_comp.c     | 4 ++--
+ arch/mips/net/ebpf_jit.c          | 4 ++--
+ arch/powerpc/net/bpf_jit_comp32.c | 4 ++--
+ arch/powerpc/net/bpf_jit_comp64.c | 4 ++--
+ arch/s390/net/bpf_jit_comp.c      | 6 +++---
+ arch/sparc/net/bpf_jit_comp_64.c  | 2 +-
+ arch/x86/net/bpf_jit_comp32.c     | 6 +++---
+ 8 files changed, 18 insertions(+), 18 deletions(-)
+
 -- 
 2.25.1
 
