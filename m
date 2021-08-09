@@ -2,111 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679333E490D
-	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 17:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919FA3E4AA5
+	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 19:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235637AbhHIPoN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 11:44:13 -0400
-Received: from www62.your-server.de ([213.133.104.62]:49910 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235329AbhHIPm0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Aug 2021 11:42:26 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mD7Pb-0008Yg-3E; Mon, 09 Aug 2021 17:41:59 +0200
-Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mD7Pa-000DNS-Jk; Mon, 09 Aug 2021 17:41:58 +0200
-Subject: Re: [PATCH bpf-next 7/7] x86: bpf: Fix comments on tail call count
- limiting
-To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>, ast@kernel.org,
-        andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        illusionist.neo@gmail.com, zlim.lnx@gmail.com,
-        paulburton@kernel.org, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, luke.r.nels@gmail.com, bjorn@kernel.org,
-        iii@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        davem@davemloft.net, udknight@gmail.com
-References: <20210809093437.876558-1-johan.almbladh@anyfinetworks.com>
- <20210809093437.876558-8-johan.almbladh@anyfinetworks.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <bab35321-9142-c51d-7244-438fc5a0efb9@iogearbox.net>
-Date:   Mon, 9 Aug 2021 17:41:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S233616AbhHIRRL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 13:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233472AbhHIRRK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 13:17:10 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54142C0613D3
+        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 10:16:50 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id a93so30947344ybi.1
+        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 10:16:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7vrua/5U2MCXhEKhyrjjQz1dlh/LhKcVbNZFfPWZtVY=;
+        b=Lo4KDQ2OZHLdi+no0i/kq/fr6d5FPcuXD890JUKg+bsmODQ4IlNU6YP+jXBc7pBve+
+         J6pc6hpI0nJTJERP0hZvEiSQbggvpYRfw2N8Ln/1rL6DIaIPMf98SL4nKHw01dQFiF/T
+         /JsxWKv4j6LHlJYgUr+fQnhJ+GvDUzXvQ/aBUy16F12u2OuIvwFA2EFFUlaxzOyntNkk
+         /KGG2TkqPfqVOFxOYCqDEsJ8PBZ1e7qYB56uwAux9WLY3zLOxz0buQCWPQ1CoIr3W6fO
+         9EQ1tVDPsrlOqoUXZrrMYdyalG+oamVgKpZTcMjcZ8Ezofq/kip71Qo661AsxVuIyzNq
+         Bmew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7vrua/5U2MCXhEKhyrjjQz1dlh/LhKcVbNZFfPWZtVY=;
+        b=Hec247Mjn5+AOuh39bCtlAeADyATthIAWQe5ftJHEN/r0v4Mqjcx4NCVvvAncgRmCp
+         Dj02EuLOw1KLr7BIkTNJWL1Mc/f/Kjm30XPPAvLljIpNhBCAW8SEYdodtfV8kAObASgD
+         hYYofI3WeXk5ORZ7xHtRwTQPTgaPh4j/kMK+R5bDnu19OmoZ8YtOoFRmKjNOEiAaq8iF
+         R89VUMAu9+u2QFWId6v9i02MVjMxiaN/tPFqphffw5bhOV2RNraGmC8+kRZfZUxiodaY
+         n/klUWias0iQvOmU037UhFwYEjyZSDUVvLVx+/X+KGG4v0qHZQwfEjiNiziCGpVTdVKS
+         DsgQ==
+X-Gm-Message-State: AOAM531FH2hRsEwSCysFwMqoU8kse6sOb3sDFj0HZqkF9iqHbo9NhnWu
+        WLwGGWyPD7k96HSsFzH/0p5h81/Dd/aL1g9FiOY=
+X-Google-Smtp-Source: ABdhPJyZQL/e7fGz/IRMxnrk/XP0lhacyVpmVXoUi9p68GTmrKEz2geFj/aYUwyLOIyh/GAZo5HvT6iNLlyiky/l0go=
+X-Received: by 2002:a25:d691:: with SMTP id n139mr33893168ybg.27.1628529408791;
+ Mon, 09 Aug 2021 10:16:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210809093437.876558-8-johan.almbladh@anyfinetworks.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26258/Mon Aug  9 10:18:46 2021)
+References: <20210809060310.1174777-1-yhs@fb.com> <20210809060320.1176782-1-yhs@fb.com>
+In-Reply-To: <20210809060320.1176782-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 9 Aug 2021 10:16:37 -0700
+Message-ID: <CAEf4BzZ4-L0KQX8b+hMQZrbAejva3i4ZE1ZrjVTh-yDyUQv7=Q@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] bpf: add missing bpf_read_[un]lock_trace() for
+ syscall program
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/9/21 11:34 AM, Johan Almbladh wrote:
-> Before, the comments in the 32-bit eBPF JIT claimed that up to
-> MAX_TAIL_CALL_CNT + 1 tail calls were allowed, when in fact the
-> implementation was using the correct limit of MAX_TAIL_CALL_CNT.
-> Now, the comments are in line with what the code actually does.
-> 
-> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+On Sun, Aug 8, 2021 at 11:03 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> Commit 79a7f8bdb159d ("bpf: Introduce bpf_sys_bpf() helper and program type.")
+> added support for syscall program, which is a sleepable program.
+> But the program run missed bpf_read_lock_trace()/bpf_read_unlock_trace(),
+> which is needed to ensure proper rcu callback invocations.
+> This patch added bpf_read_[un]lock_trace() properly.
+>
+> Fixes: 79a7f8bdb159d ("bpf: Introduce bpf_sys_bpf() helper and program type.")
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->   arch/x86/net/bpf_jit_comp32.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-> index 3bfda5f502cb..8db9ab11abda 100644
-> --- a/arch/x86/net/bpf_jit_comp32.c
-> +++ b/arch/x86/net/bpf_jit_comp32.c
-> @@ -1272,7 +1272,7 @@ static void emit_epilogue(u8 **pprog, u32 stack_depth)
->    * ... bpf_tail_call(void *ctx, struct bpf_array *array, u64 index) ...
->    *   if (index >= array->map.max_entries)
->    *     goto out;
-> - *   if (++tail_call_cnt > MAX_TAIL_CALL_CNT)
-> + *   if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
->    *     goto out;
->    *   prog = array->ptrs[index];
->    *   if (prog == NULL)
-> @@ -1307,7 +1307,7 @@ static void emit_bpf_tail_call(u8 **pprog)
->   	EMIT2(IA32_JBE, jmp_label(jmp_label1, 2));
->   
->   	/*
-> -	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
-> +	 * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
->   	 *     goto out;
->   	 */
->   	lo = (u32)MAX_TAIL_CALL_CNT;
-> @@ -1321,7 +1321,7 @@ static void emit_bpf_tail_call(u8 **pprog)
->   	/* cmp ecx,lo */
->   	EMIT3(0x83, add_1reg(0xF8, IA32_ECX), lo);
->   
-> -	/* ja out */
-> +	/* jae out */
->   	EMIT2(IA32_JAE, jmp_label(jmp_label1, 2));
 
-You have me confused here ... b61a28cf11d6 ("bpf: Fix off-by-one in tail call count
-limiting") from bpf-next says '[interpreter is now] in line with the behavior of the
-x86 JITs'. From the latter I assumed you implicitly refer to x86-64. Which one did you
-test specifically wrt the prior statement? It looks like x86-64 vs x86-32 differ:
+LGTM.
 
-   [...]
-   EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp - tcc_off] */
-   EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
-   EMIT2(X86_JA, OFFSET2);                   /* ja out */
-   EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
-   EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp - tcc_off], eax */
-   [...]
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-So it's ja vs jae ... unless I need more coffee? ;)
-
->   	/* add eax,0x1 */
-> 
-
+>  net/bpf/test_run.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index 1cc75c811e24..caa16bf30fb5 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/vmalloc.h>
+>  #include <linux/etherdevice.h>
+>  #include <linux/filter.h>
+> +#include <linux/rcupdate_trace.h>
+>  #include <linux/sched/signal.h>
+>  #include <net/bpf_sk_storage.h>
+>  #include <net/sock.h>
+> @@ -951,7 +952,10 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
+>                         goto out;
+>                 }
+>         }
+> +
+> +       rcu_read_lock_trace();
+>         retval = bpf_prog_run_pin_on_cpu(prog, ctx);
+> +       rcu_read_unlock_trace();
+>
+>         if (copy_to_user(&uattr->test.retval, &retval, sizeof(u32))) {
+>                 err = -EFAULT;
+> --
+> 2.30.2
+>
