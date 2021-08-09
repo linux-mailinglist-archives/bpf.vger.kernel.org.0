@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC973E42D7
-	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 11:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43ABA3E42D8
+	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 11:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234658AbhHIJfb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 05:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
+        id S234634AbhHIJfc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 05:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234634AbhHIJf3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:35:29 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207F5C0613D3
-        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 02:35:09 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id k9so6310775edr.10
-        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 02:35:09 -0700 (PDT)
+        with ESMTP id S234643AbhHIJfa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 05:35:30 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661C6C061798
+        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 02:35:10 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id z20so5034714ejf.5
+        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 02:35:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zwAAZtoe5JzXwMl3BpwlMJNUPbe45ZpYwTmRl3QO43w=;
-        b=zSx2RwzNsht4f2/bo6VzWdIj65matsW9qhjPPJO3ptc/WjUMzFzad9pwS74bs8z/Mp
-         OhhEkmbLQeK5okI4BmVTCWcL53vpJ936O9hAh7aS4qVo7QWsy5BQ9da+gju7Vab2MB4h
-         5PDAP8t1qehCi1ZYuBJ2nbn9BG6AdMVmrSF20afGRnwr8EshJqQkynsnyiqy/0mRgSMw
-         NODT7sKY4WEjQtwV9UUyASMN+eFtLAQ/MVhIHbKpBTmDMfu1pL0cCg3hapx7otqCpEbB
-         Mkq1GKvayRMAbDts5/7MPm+NvD1lS3h1Vby1rGnzxCOVxBS0VG7QfWw3xpp5jOQmKmHM
-         eWSw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OOjKYdZ56IxXdoddh6gT5LzULhq+XYbTvDzYpe88OIo=;
+        b=vh8Jsgh2G7NoqCxPcJvq2CcBOKUpX6sbGNCrktfTlKggrxMbxRfwrIFyRELsPPTT5+
+         L8h7YoO9fbeyvSg1sGrZvEc1o4qKaKwNyupBkQzTOc8evJ559OqpkUp4acXv78yKmJeN
+         QduLtlsVaPTKoerVl1Qdz6ZZ4Z5vW6npEJyX+VXvfU0MiNwe7iirU+WGPtcx1I5DTt4M
+         hn2Cr11+T5mueHpd3IwA/HUis33q/q7CxFFMJbLwo65aerYGnyTBLh8NsJI3SjOCq114
+         idvCnNbCGknR5s6Pzhq8Afz1zce3ZJUd9XoB9QbwRBUcBLEsMVFjwBhq8iPt1EHx8zZL
+         r1EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zwAAZtoe5JzXwMl3BpwlMJNUPbe45ZpYwTmRl3QO43w=;
-        b=ZIw5xwGBF5dklC88/k+WhUNgfwN3l7pinlGe1WUu7ghNBFcs8SheLMqqPW1WWf08qB
-         PuIJRVfxzec854JdJk1JtRkYoakL5RcsxHSi0xa9qzY9UN6WIHGCd1vUcpVEXHvLiJIP
-         XS8SGalt23VhWIfXmL+3mjK19ElT5kM1BjanCmrRwm32FLRHMp/kMqc2v5X7CTt8eNo5
-         5aG6/IHIRqb9QiAAjUORdU94g3KnrADLhiwOG23i/fZ6lWt8t6bwfeIJz0v+l2aeuuTI
-         oDdphM3U41af/RqRhek5lzvo08IFEHnWkx97hKjGz56KeFanL0mNzN6Wn7uIw/AJ5blR
-         PsRA==
-X-Gm-Message-State: AOAM5320JhawySVaKOW3xApQT+Jqh560I6Dvbud2allAyctOb4apJ0ZQ
-        uEh9V8ef7yNs5sxScrpASZ8w5A==
-X-Google-Smtp-Source: ABdhPJyVQTbfG9RhsYLnIylFbyKXtxpwHw5fl0AlD3S8iXZsHrnAongcdTGdp4UUnPg/Reiwo5lAUQ==
-X-Received: by 2002:a05:6402:440e:: with SMTP id y14mr28963676eda.38.1628501707726;
-        Mon, 09 Aug 2021 02:35:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OOjKYdZ56IxXdoddh6gT5LzULhq+XYbTvDzYpe88OIo=;
+        b=LMloM4roOm+oyyWjBSyq9VDBoUgkeY6dRvti46wRp8UBirzES1dw+JuHAN9Tkjn2aQ
+         uqWN601rDlvrsfBUgRaHFIQwwGrS2nCNjThujXRVQXMelMXTHNdAx5aJj5XtSyG90kcv
+         sM3gl3Ansq+KVgANhp1JsX4lQMqvopKy1jZvZjqp8ZaOe+npgWLJBILFoHl0GWLcjS5n
+         pNIR8l6+gP6Hahf6vyOAY5UmLnSyu3t0Me5phJ1FbxSJ60Euy49nIiUxh2zrGQ5NhW/s
+         0Dbpraa/BZJXPetNLsAi/B9hWyNlCPw6DNNa9DdKXd5ExQvDFRcVhIBzn9F1HtxCEavU
+         kSYQ==
+X-Gm-Message-State: AOAM530on/RC5DqPisa5tHXHVzo+oiqLEOoBQDeG7Gm5fArFGSSdE5zz
+        QSldJ5gETQMXW0dctylj6R+XtQ==
+X-Google-Smtp-Source: ABdhPJwhg7f58AKgn5rt8ouratg49c6RPKgI1rtqXIbF4oM0hO3q9Q9GtqLPX2lLO7wZe9l7ogPH+w==
+X-Received: by 2002:a17:906:aac7:: with SMTP id kt7mr2976221ejb.4.1628501709060;
+        Mon, 09 Aug 2021 02:35:09 -0700 (PDT)
 Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
-        by smtp.gmail.com with ESMTPSA id c8sm1989732ejp.124.2021.08.09.02.35.06
+        by smtp.gmail.com with ESMTPSA id c8sm1989732ejp.124.2021.08.09.02.35.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 02:35:07 -0700 (PDT)
+        Mon, 09 Aug 2021 02:35:08 -0700 (PDT)
 From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -58,52 +58,48 @@ Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         iii@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
         davem@davemloft.net, udknight@gmail.com,
         Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Subject: [PATCH bpf-next 0/7] Fix MAX_TAIL_CALL_CNT handling in eBPF JITs
-Date:   Mon,  9 Aug 2021 11:34:30 +0200
-Message-Id: <20210809093437.876558-1-johan.almbladh@anyfinetworks.com>
+Subject: [PATCH bpf-next 1/7] arm: bpf: Fix off-by-one in tail call count limiting
+Date:   Mon,  9 Aug 2021 11:34:31 +0200
+Message-Id: <20210809093437.876558-2-johan.almbladh@anyfinetworks.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210809093437.876558-1-johan.almbladh@anyfinetworks.com>
+References: <20210809093437.876558-1-johan.almbladh@anyfinetworks.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A new test of tail call count limiting revealed that the interpreter
-did in fact allow up to MAX_TAIL_CALL_CNT + 1 tail calls, whereas the
-x86 JITs stopped at the intended MAX_TAIL_CALL_CNT. The interpreter was
-fixed in commit b61a28cf11d61f512172e673b8f8c4a6c789b425 ("bpf: Fix
-off-by-one in tail call count limiting"). This patch set fixes all
-arch-specific JITs except for RISC-V.
+Before, the eBPF JIT allowed up to MAX_TAIL_CALL_CNT + 1 tail calls.
+Now, precisely MAX_TAIL_CALL_CNT is allowed, which is in line with the
+behaviour of the interpreter. Verified with the test_bpf test suite
+on qemu-system-arm.
 
-For each of the affected JITs, the incorrect behaviour was verified
-by running the test_bpf test suite in QEMU. After the fixes, the JITs
-pass the tail call count limiting test.
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+---
+ arch/arm/net/bpf_jit_32.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I have not been able to test the RISC-V JITs due to the lack of a
-working toolchain and QEMU setup. It is likely that the RISC-V JITs
-have the off-by-one behaviour too. I have not verfied any of the NIC JITs.
-
-Link: https://lore.kernel.org/bpf/20210728164741.350370-1-johan.almbladh@anyfinetworks.com/
-
-Johan Almbladh (7):
-  arm: bpf: Fix off-by-one in tail call count limiting
-  arm64: bpf: Fix off-by-one in tail call count limiting
-  powerpc: bpf: Fix off-by-one in tail call count limiting
-  s390: bpf: Fix off-by-one in tail call count limiting
-  sparc: bpf: Fix off-by-one in tail call count limiting
-  mips: bpf: Fix off-by-one in tail call count limiting
-  x86: bpf: Fix comments on tail call count limiting
-
- arch/arm/net/bpf_jit_32.c         | 6 +++---
- arch/arm64/net/bpf_jit_comp.c     | 4 ++--
- arch/mips/net/ebpf_jit.c          | 4 ++--
- arch/powerpc/net/bpf_jit_comp32.c | 4 ++--
- arch/powerpc/net/bpf_jit_comp64.c | 4 ++--
- arch/s390/net/bpf_jit_comp.c      | 6 +++---
- arch/sparc/net/bpf_jit_comp_64.c  | 2 +-
- arch/x86/net/bpf_jit_comp32.c     | 6 +++---
- 8 files changed, 18 insertions(+), 18 deletions(-)
-
+diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+index a951276f0547..200ae9d24205 100644
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -1180,12 +1180,12 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 
+ 	/* tmp2[0] = array, tmp2[1] = index */
+ 
+-	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	/* if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
+ 	 *	goto out;
+ 	 * tail_call_cnt++;
+ 	 */
+-	lo = (u32)MAX_TAIL_CALL_CNT;
+-	hi = (u32)((u64)MAX_TAIL_CALL_CNT >> 32);
++	lo = (u32)(MAX_TAIL_CALL_CNT - 1);
++	hi = (u32)((u64)(MAX_TAIL_CALL_CNT - 1) >> 32);
+ 	tc = arm_bpf_get_reg64(tcc, tmp, ctx);
+ 	emit(ARM_CMP_I(tc[0], hi), ctx);
+ 	_emit(ARM_COND_EQ, ARM_CMP_I(tc[1], lo), ctx);
 -- 
 2.25.1
 
