@@ -2,208 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B003E4BAD
-	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 20:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCA03E4BC6
+	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 20:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbhHISA4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 14:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36640 "EHLO
+        id S233761AbhHISDQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 14:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233736AbhHISAp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Aug 2021 14:00:45 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC899C0619E0
-        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 10:58:29 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id k65so31046788yba.13
-        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 10:58:29 -0700 (PDT)
+        with ESMTP id S234715AbhHISDG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 14:03:06 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0ADC061798
+        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 11:02:45 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id j77so31136239ybj.3
+        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 11:02:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DHj8bQUdLJA9TWiDO+5yLLYs8506ONGixdlp8YHKNg0=;
-        b=RiVObJYAq63/WaQPgpugleHZQQvz8RVezKZusj7/ub0RTDvSKL1KDK7YWyfckUSL4u
-         whBsp3ULkCE0lYe4XROZvX0BT844yQ/36tQgNKUDqIJkDP8979rdl8g+uBSkfxlkXxDh
-         3rs3SK4tCeKHKtQCn6/pWy8Z7Vzr6cNzmZuaBPUlR5l+liMSyGBaBaqaqOUdyfj/lywU
-         ZZKjW1DU4RvE+S7m9FCB90s+uCAGcs9Xus+/0gBdCS0ns9BNanN6ctbWcNQdXMubhlZO
-         XmzCmz6lktRx+Hx7G26pRZe/2jrV1YOp2OzKCZQtQlxgpzbnGf8Nv2jg+I9ITwfwmK/H
-         kXrA==
+        bh=wCA9J5vu8WLyWv9M/eqcckDReH23YeoLV3Y1DChmo+o=;
+        b=wI98ACsWg4xT9Gglnk4ST7e3TMDTVgxBvNZuzy/hd8dali5RgRFoi+KATnBUvm5TVR
+         ZFRS+Qmv7DC36yD/dDwOSLr7OLCNfD4iPcr5uRXRhwsCDz1RHNrirtJ67tCADtZdPJxa
+         8uIkYtcOT0BGVT6Hp7PcynYqjKBjgVYap8Cs8BShzeJqifHlvmo35DPf8ZTdJAkGCsXy
+         qnlGTMHoSbRbfObgr9nh1Orb+b+GgB0BzsoOOiVaRw3j/Ldv/+cAFnJuuWPIbLmBu7Jb
+         5TnHKY7IenANhEYHmGMbiBr15smw6uTQWqrkpi1OeA1iKXo5OENoG4oDY8tJeAY1uejR
+         C4iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DHj8bQUdLJA9TWiDO+5yLLYs8506ONGixdlp8YHKNg0=;
-        b=uL6ArlJVFbYEc25NJsLOsevzqe5wp2siThqL8LHjLoRfUrWjm+m1HGQDEp/cMEqZWR
-         ARgvXbsyICSxKK2wRW2RVTIFYWSMVTwTxf5W60oAhpHzZDsvSMGNnYRT1bi/TIUm3/tQ
-         M+rwboye03mA3lJTj6zafG1iNyZ7PTImkjsJwr/TdarYnj6RnqTnjumP/8tQnF+H6JW+
-         7VSGRYcehRzjUxlaH6wddzKq+6ZM0D+bdUh2jvUUf9pOCAfM3fOj5EZnuk5cnFdg5y9m
-         EZb+VH12QYovP1oAb8M2mfD5fE+mdlVC8ByYLww+HRxiRSnaKnKq4KhvoKiiVdzuT5UM
-         oZQA==
-X-Gm-Message-State: AOAM531f/Xs/fxRnTyfC1RTy/xdgTwdZ2993QiGfjL7KBdJqhZ34l+tY
-        MWPEnpqV8kIG/+9N1RxFH3VhhyXZnmkSUpTO0tw=
-X-Google-Smtp-Source: ABdhPJwhNLvfHHnPI1NDEtc/bIeNbdbG829uZQdC0ob28ONNsMEaKDBFjylgEabwRujqp6fRNHHbXDrSN0psvhBJf/o=
-X-Received: by 2002:a25:bb13:: with SMTP id z19mr34091968ybg.347.1628531909067;
- Mon, 09 Aug 2021 10:58:29 -0700 (PDT)
+        bh=wCA9J5vu8WLyWv9M/eqcckDReH23YeoLV3Y1DChmo+o=;
+        b=ZsCrSfBwqUgcxaK6KJP0v2+SdWEM6eZ62qIqOOalRPqk3wYB0s1tkywsE6Xo66gBjs
+         prNBFj3h27P82fKWNtAT4+05eH1Lt9P+2NI9mLwgn37MnxosOyM9kxOmgGwiTdzt3GTO
+         BJ9fK83o+xM9TFlETRIGfp6iMfshiaV3aKKDHNAk9pIk/F12Ah1k81fxbzWqex2+wC0N
+         2+yId3Ojc3imQM16uXvdbHvncjoTxxXtq0V/VCjdlgtiDVbzR49Ng+Qb+PFfMp6fb82I
+         GQB6Fvdr6eRe7HEGxCzGY01nWQCAAV/m79NAuOckClRZ7WJycb1tW3LQf9OTGPjaG4He
+         NIFw==
+X-Gm-Message-State: AOAM530i5CY9WagDzIs9fExFe0ngu1CtwmJT4M5bzKOkB7r3oTrhcFXG
+        E5oSggE3dNjc449lB3xCt8H3nqoConVq0l1S7YaAmg==
+X-Google-Smtp-Source: ABdhPJysW4mSdUWt1+hMvXh8Mh1uscgcXzXmr7qPvNtu/L+54sFiSyytNvFuO91P8+7yYO8Zg2qEJUSn05lyaYVYIhM=
+X-Received: by 2002:a5b:587:: with SMTP id l7mr32608213ybp.208.1628532164602;
+ Mon, 09 Aug 2021 11:02:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210809060310.1174777-1-yhs@fb.com> <20210809060315.1175802-1-yhs@fb.com>
- <CAEf4BzY+-v4NhMmHnr8agjWj6+O7O-J909+TM1HSZUE6WYifrA@mail.gmail.com> <0b299368-370f-2292-2ae6-e86a9bc9a240@fb.com>
-In-Reply-To: <0b299368-370f-2292-2ae6-e86a9bc9a240@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 9 Aug 2021 10:58:18 -0700
-Message-ID: <CAEf4BzaoLuTqp+c7HKmV98=v59xWRhAnCBJ8Ztt0=Vk6zavCVg@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 1/2] bpf: don't call bpf_get_current_[ancestor_]cgroup_id()
- in sleepable progs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20210809093437.876558-1-johan.almbladh@anyfinetworks.com>
+ <20210809093437.876558-8-johan.almbladh@anyfinetworks.com> <bab35321-9142-c51d-7244-438fc5a0efb9@iogearbox.net>
+In-Reply-To: <bab35321-9142-c51d-7244-438fc5a0efb9@iogearbox.net>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Mon, 9 Aug 2021 20:02:33 +0200
+Message-ID: <CAM1=_QRs3p+u3+QeJXdv8y=dP6NVKYLhozJeR0U6pOY4cqOUCg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 7/7] x86: bpf: Fix comments on tail call count limiting
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        illusionist.neo@gmail.com, zlim.lnx@gmail.com,
+        Paul Burton <paulburton@kernel.org>,
+        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
+        Luke Nelson <luke.r.nels@gmail.com>, bjorn@kernel.org,
+        iii@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        davem@davemloft.net, udknight@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 10:41 AM Yonghong Song <yhs@fb.com> wrote:
+On Mon, Aug 9, 2021 at 5:42 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
->
->
-> On 8/9/21 10:18 AM, Andrii Nakryiko wrote:
-> > On Sun, Aug 8, 2021 at 11:03 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >> Currently, if bpf_get_current_cgroup_id() or
-> >> bpf_get_current_ancestor_cgroup_id() helper is
-> >> called with sleepable programs e.g., sleepable
-> >> fentry/fmod_ret/fexit/lsm programs, a rcu warning
-> >> may appear. For example, if I added the following
-> >> hack to test_progs/test_lsm sleepable fentry program
-> >> test_sys_setdomainname:
-> >>
-> >>    --- a/tools/testing/selftests/bpf/progs/lsm.c
-> >>    +++ b/tools/testing/selftests/bpf/progs/lsm.c
-> >>    @@ -168,6 +168,10 @@ int BPF_PROG(test_sys_setdomainname, struct pt_regs *regs)
-> >>            int buf = 0;
-> >>            long ret;
-> >>
-> >>    +       __u64 cg_id = bpf_get_current_cgroup_id();
-> >>    +       if (cg_id == 1000)
-> >>    +               copy_test++;
-> >>    +
-> >>            ret = bpf_copy_from_user(&buf, sizeof(buf), ptr);
-> >>            if (len == -2 && ret == 0 && buf == 1234)
-> >>                    copy_test++;
-> >>
-> >> I will hit the following rcu warning:
-> >>
-> >>    include/linux/cgroup.h:481 suspicious rcu_dereference_check() usage!
-> >>    other info that might help us debug this:
-> >>      rcu_scheduler_active = 2, debug_locks = 1
-> >>      1 lock held by test_progs/260:
-> >>        #0: ffffffffa5173360 (rcu_read_lock_trace){....}-{0:0}, at: __bpf_prog_enter_sleepable+0x0/0xa0
-> >>      stack backtrace:
-> >>      CPU: 1 PID: 260 Comm: test_progs Tainted: G           O      5.14.0-rc2+ #176
-> >>      Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> >>      Call Trace:
-> >>        dump_stack_lvl+0x56/0x7b
-> >>        bpf_get_current_cgroup_id+0x9c/0xb1
-> >>        bpf_prog_a29888d1c6706e09_test_sys_setdomainname+0x3e/0x89c
-> >>        bpf_trampoline_6442469132_0+0x2d/0x1000
-> >>        __x64_sys_setdomainname+0x5/0x110
-> >>        do_syscall_64+0x3a/0x80
-> >>        entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >>
-> >> I can get similar warning using bpf_get_current_ancestor_cgroup_id() helper.
-> >> syzbot reported a similar issue in [1] for syscall program. Helper
-> >> bpf_get_current_cgroup_id() or bpf_get_current_ancestor_cgroup_id()
-> >> has the following callchain:
-> >>     task_dfl_cgroup
-> >>       task_css_set
-> >>         task_css_set_check
-> >> and we have
-> >>     #define task_css_set_check(task, __c)                                   \
-> >>             rcu_dereference_check((task)->cgroups,                          \
-> >>                     lockdep_is_held(&cgroup_mutex) ||                       \
-> >>                     lockdep_is_held(&css_set_lock) ||                       \
-> >>                     ((task)->flags & PF_EXITING) || (__c))
-> >> Since cgroup_mutex/css_set_lock is not held and the task
-> >> is not existing and rcu read_lock is not held, a warning
-> >> will be issued. Note that bpf sleepable program is protected by
-> >> rcu_read_lock_trace().
-> >>
-> >> To fix the issue, let us make these two helpers not available
-> >> to sleepable program. I marked the patch fixing 95b861a7935b
-> >> ("bpf: Allow bpf_get_current_ancestor_cgroup_id for tracing")
-> >> which added bpf_get_current_ancestor_cgroup_id() to
-> >> 5.14. I think backporting 5.14 is probably good enough as sleepable
-> >> progrems are not widely used.
-> >>
-> >> This patch should fix [1] as well since syscall program is a sleepable
-> >> program and bpf_get_current_cgroup_id() is not available to
-> >> syscall program any more.
-> >>
-> >>   [1] https://lore.kernel.org/bpf/0000000000006d5cab05c7d9bb87@google.com/
-> >>
-> >> Reported-by: syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
-> >> Fixes: 95b861a7935b ("bpf: Allow bpf_get_current_ancestor_cgroup_id for tracing")
-> >> Signed-off-by: Yonghong Song <yhs@fb.com>
-> >> ---
-> >>   kernel/trace/bpf_trace.c | 6 ++++--
-> >>   1 file changed, 4 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> >> index b4916ef388ad..eaa8a8ffbe46 100644
-> >> --- a/kernel/trace/bpf_trace.c
-> >> +++ b/kernel/trace/bpf_trace.c
-> >> @@ -1016,9 +1016,11 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> >>   #endif
-> >>   #ifdef CONFIG_CGROUPS
-> >>          case BPF_FUNC_get_current_cgroup_id:
-> >> -               return &bpf_get_current_cgroup_id_proto;
-> >> +               return prog->aux->sleepable ?
-> >> +                      NULL : &bpf_get_current_cgroup_id_proto;
-> >>          case BPF_FUNC_get_current_ancestor_cgroup_id:
-> >> -               return &bpf_get_current_ancestor_cgroup_id_proto;
-> >> +               return prog->aux->sleepable ?
-> >> +                      NULL : &bpf_get_current_ancestor_cgroup_id_proto;
+> On 8/9/21 11:34 AM, Johan Almbladh wrote:
+> > Before, the comments in the 32-bit eBPF JIT claimed that up to
+> > MAX_TAIL_CALL_CNT + 1 tail calls were allowed, when in fact the
+> > implementation was using the correct limit of MAX_TAIL_CALL_CNT.
+> > Now, the comments are in line with what the code actually does.
 > >
-> > This feels too extreme. I bet these helpers are as useful in sleepable
-> > BPF progs as they are in non-sleepable ones.
+> > Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> > ---
+> >   arch/x86/net/bpf_jit_comp32.c | 6 +++---
+> >   1 file changed, 3 insertions(+), 3 deletions(-)
 > >
-> > Why don't we just implement a variant of get_current_cgroup_id (and
-> > the ancestor variant as well) which takes that cgroup_mutex lock, and
-> > just pick the appropriate implementation. Wouldn't that work?
->
-> This may not work. e.g., for sleepable fentry program,
-> if the to-be-traced function is inside in cgroup_mutex, we will
-> have a deadlock.
-
-We can also do preempty_disable() + rcu_read_lock() inside the helper
-itself, no? I mean in the new "sleepable" variant.
-
->
-> Currently, affected program types are tracing/fentry.s,
-> tracing/fexit.s, tracing/fmod_ret.s, lsm.s and syscall.
-> For fmod_ret.s, lsm.s, they all have
-> some kind of predefined attachment/context, we might
-> be able to check all potential attachment points and
-> allow these two helpers when attachment point is not
-> surrounded by cgroup_mutex.
-
-I don't think it's feasible to know if any given attached kernel
-function can be called with cgroup_mutex taken. Static analysis will
-be too complicated and too restrictive. Runtime checks might be too
-expensive and/or not generic enough. But see above, we can do
-rcu_read_lock() inside the helper while preventing preemption, and it
-will behave the same way as if it was called from non-sleepable BPF
-prog.
-
-> For syscall program, we should be okay as it is
-> called with bpf_prog_test_run interface but I am
-> not sure why user wants a cgroup_id for that.
->
+> > diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+> > index 3bfda5f502cb..8db9ab11abda 100644
+> > --- a/arch/x86/net/bpf_jit_comp32.c
+> > +++ b/arch/x86/net/bpf_jit_comp32.c
+> > @@ -1272,7 +1272,7 @@ static void emit_epilogue(u8 **pprog, u32 stack_depth)
+> >    * ... bpf_tail_call(void *ctx, struct bpf_array *array, u64 index) ...
+> >    *   if (index >= array->map.max_entries)
+> >    *     goto out;
+> > - *   if (++tail_call_cnt > MAX_TAIL_CALL_CNT)
+> > + *   if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
+> >    *     goto out;
+> >    *   prog = array->ptrs[index];
+> >    *   if (prog == NULL)
+> > @@ -1307,7 +1307,7 @@ static void emit_bpf_tail_call(u8 **pprog)
+> >       EMIT2(IA32_JBE, jmp_label(jmp_label1, 2));
 > >
-> >>   #endif
-> >>          case BPF_FUNC_send_signal:
-> >>                  return &bpf_send_signal_proto;
-> >> --
-> >> 2.30.2
-> >>
+> >       /*
+> > -      * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+> > +      * if (tail_call_cnt >= MAX_TAIL_CALL_CNT)
+> >        *     goto out;
+> >        */
+> >       lo = (u32)MAX_TAIL_CALL_CNT;
+> > @@ -1321,7 +1321,7 @@ static void emit_bpf_tail_call(u8 **pprog)
+> >       /* cmp ecx,lo */
+> >       EMIT3(0x83, add_1reg(0xF8, IA32_ECX), lo);
+> >
+> > -     /* ja out */
+> > +     /* jae out */
+> >       EMIT2(IA32_JAE, jmp_label(jmp_label1, 2));
+>
+> You have me confused here ... b61a28cf11d6 ("bpf: Fix off-by-one in tail call count
+> limiting") from bpf-next says '[interpreter is now] in line with the behavior of the
+> x86 JITs'. From the latter I assumed you implicitly refer to x86-64. Which one did you
+> test specifically wrt the prior statement?
+
+I tested both the 64-bit and the 32-bit JITs with QEMU. Both passed,
+meaning that the tail call recursion stopped after 32 tail calls.
+However, the comments in the code indicated that it would allow one
+more call, and also said JA when it actually emitted JAE. This patch
+merely fixes the comments in the 32-bit JIT to match the code.
+
+> It looks like x86-64 vs x86-32 differ:
+>
+>    [...]
+>    EMIT2_off32(0x8B, 0x85, tcc_off);         /* mov eax, dword ptr [rbp - tcc_off] */
+>    EMIT3(0x83, 0xF8, MAX_TAIL_CALL_CNT);     /* cmp eax, MAX_TAIL_CALL_CNT */
+>    EMIT2(X86_JA, OFFSET2);                   /* ja out */
+>    EMIT3(0x83, 0xC0, 0x01);                  /* add eax, 1 */
+>    EMIT2_off32(0x89, 0x85, tcc_off);         /* mov dword ptr [rbp - tcc_off], eax */
+>    [...]
+>
+> So it's ja vs jae ... unless I need more coffee? ;)
+
+Yes, the x86-64 JIT is different. It also pass the test, but I do find
+the code and comments a bit confusing too. Since it pass the test, and
+the top-level comment correctly states the stop condition as
+++tail_call_cnt > MAX_TAIL_CALL_CNT, I left it at that.
+
+On a side note, I see that the x86-64 JIT also has a direct tail call
+code path which the other JITs don't seem to have. The tail call test
+only checks the indirect tail call code path.
+
+>
+> >       /* add eax,0x1 */
+> >
+>
