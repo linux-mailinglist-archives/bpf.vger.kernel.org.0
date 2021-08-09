@@ -2,125 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9EFC3E4E46
-	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 23:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AA83E4EAA
+	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 23:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236392AbhHIVJi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 17:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236386AbhHIVJh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Aug 2021 17:09:37 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07239C061796
-        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 14:09:17 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id p4so567381yba.3
-        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 14:09:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2eE5RnXn+nxyGtmIiOFEjc4NNh6LheMKV56ThPtd3TA=;
-        b=dnQa1OUhlQ4V4gtcGXqnb02y2Jr83661KI9NAGzRn3gE5zFJUxB70jLOyq38ewkRw9
-         1TdXjEokIYjJ811wTaOHrPUIuZvjAwaZkVWbU6bW70uojoB3gP0ByYG2j8F68B5jM/EG
-         730sNQFMQ1t7zPDO/ht3pYCzD8bkx8NvHK1SS8bHqjrpYTXrrz1QvfhVNiVLORPyUE7L
-         VpIN9/12LLAzbsVV9vqFPg+DjVTnJkc1aZoRRtGjN6aZUUV6HtIaGMXcBRUNPgrA0ANg
-         EKsuOvdUyBXqkbIUjIFfJrlSRI1EVu6mZZe9Y141FufuSTivAVSY6C44OaJHItEnehEK
-         h0uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2eE5RnXn+nxyGtmIiOFEjc4NNh6LheMKV56ThPtd3TA=;
-        b=QdGc9RPJ4Fff1GAAChIQ6dGwWBxeZ/55r5bztkeCUyrVsXXGfbgSjvs8s0I1bED3T0
-         HPjFEk/Uf8z8G8cEL2LpEss+dq/5nbS4KSbEZdfCgkF0hJWEtt+MjQuIxeMEjxyBawf9
-         LbrBeBeiJvQ/87RIbmjo/i7EMPZ6ff2Tqcn/zAtNTeWz51dzjikC11N1Esf7JCW9cut1
-         gtArLuXkZ/Clp8jYaYSqL6rJjr2/mslWcMTz7kfGxd73HNK7CZH66CdWaGRHb3YLIZqg
-         67poitizqN4Zxi5cBmWwa1jN+ui2kwFH2q1hXEYCeEOuWq2KF4IABrbtvmoRjgRilEKC
-         e1Fw==
-X-Gm-Message-State: AOAM533Yu32EuQzDXw8ERfEatfYGzMlKsOT2QH5KElM6mqqNepPPzooo
-        g7/Gb6CZPkC1SJV78atnOL0qgo8eA+3gFMuHSbkc6w==
-X-Google-Smtp-Source: ABdhPJx9eumFNGFQw6SMB8vCbwojQrEzVNo1c8lSOUWLuHlHUTCjfJzamxOYdz9XTmh5pGbNQFJVeabV5AaS8OVJ2WU=
-X-Received: by 2002:a25:cece:: with SMTP id x197mr32428631ybe.402.1628543356249;
- Mon, 09 Aug 2021 14:09:16 -0700 (PDT)
+        id S235001AbhHIVlu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 17:41:50 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:60482 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234846AbhHIVls (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 17:41:48 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDD1L-009NHX-Gh; Mon, 09 Aug 2021 21:41:19 +0000
+Date:   Mon, 9 Aug 2021 21:41:19 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Shoaib Rao <rao.shoaib@oracle.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        christian.brauner@ubuntu.com, cong.wang@bytedance.com,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jamorris@linux.microsoft.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, shuah@kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in
+ _copy_to_iter
+Message-ID: <YRGg/yTXTAL/1whP@zeniv-ca.linux.org.uk>
+References: <0000000000006bd0b305c914c3dc@google.com>
+ <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
+ <CACT4Y+bK61B3r5Rx150FwKt5WJ8T-q-X0nC-r=oH7x4ZU5vdVw@mail.gmail.com>
+ <e99cc036-2f83-ff9e-ea68-3eeb19bd4147@oracle.com>
+ <CACT4Y+bFLFg9WUiGWq=8ubKFug47=XNjqQJkTX3v1Hos0r+Z_A@mail.gmail.com>
+ <2901262f-1ba7-74c0-e5fc-394b65414d12@oracle.com>
+ <YRGKWP7/n7+st7Ko@zeniv-ca.linux.org.uk>
+ <YRGNIduUvw/kCLIU@zeniv-ca.linux.org.uk>
+ <c1ec22f6-ed3b-fe70-2c7e-38a534f01d2b@oracle.com>
 MIME-Version: 1.0
-References: <20210809093437.876558-1-johan.almbladh@anyfinetworks.com>
- <20210809093437.876558-5-johan.almbladh@anyfinetworks.com> <2f97353921497b8d603cd5fff05e136d4bfcb430.camel@linux.ibm.com>
-In-Reply-To: <2f97353921497b8d603cd5fff05e136d4bfcb430.camel@linux.ibm.com>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Mon, 9 Aug 2021 23:09:14 +0200
-Message-ID: <CAM1=_QSZhtvgpECnhpMwkdrfjV3UTMKTtRBnty58nM+Zgw2=Ug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/7] s390: bpf: Fix off-by-one in tail call count limiting
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        illusionist.neo@gmail.com, zlim.lnx@gmail.com,
-        Paul Burton <paulburton@kernel.org>,
-        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
-        Luke Nelson <luke.r.nels@gmail.com>, bjorn@kernel.org,
-        hca@linux.ibm.com, gor@linux.ibm.com, davem@davemloft.net,
-        udknight@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c1ec22f6-ed3b-fe70-2c7e-38a534f01d2b@oracle.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 2:24 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->
-> On Mon, 2021-08-09 at 11:34 +0200, Johan Almbladh wrote:
-> > Before, the eBPF JIT allowed up to MAX_TAIL_CALL_CNT + 1 tail calls.
-> > Now, precisely MAX_TAIL_CALL_CNT is allowed, which is in line with the
-> > behaviour of the interpreter. Verified with the test_bpf test suite
-> > on qemu-system-s390x.
-> >
-> > Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-> > ---
-> >  arch/s390/net/bpf_jit_comp.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/s390/net/bpf_jit_comp.c
-> > b/arch/s390/net/bpf_jit_comp.c
-> > index 88419263a89a..f6cdf13285ed 100644
-> > --- a/arch/s390/net/bpf_jit_comp.c
-> > +++ b/arch/s390/net/bpf_jit_comp.c
-> > @@ -1363,7 +1363,7 @@ static noinline int bpf_jit_insn(struct bpf_jit
-> > *jit, struct bpf_prog *fp,
-> >                                  jit->prg);
-> >
-> >                 /*
-> > -                * if (tail_call_cnt++ > MAX_TAIL_CALL_CNT)
-> > +                * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
-> >                  *         goto out;
-> >                  */
-> >
-> > @@ -1377,8 +1377,8 @@ static noinline int bpf_jit_insn(struct bpf_jit
-> > *jit, struct bpf_prog *fp,
-> >                 EMIT6_DISP_LH(0xeb000000, 0x00fa, REG_W1, REG_W0,
-> > REG_15, off);
-> >                 /* clij %w1,MAX_TAIL_CALL_CNT,0x2,out */
->
-> This comment needs to be updated as well.
->
-> >                 patch_2_clij = jit->prg;
-> > -               EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1,
-> > MAX_TAIL_CALL_CNT,
-> > -                                2, jit->prg);
-> > +               EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1,
-> > +                                MAX_TAIL_CALL_CNT - 1, 2, jit->prg);
-> >
-> >                 /*
-> >                  * prog = array->ptrs[index];
->
-> With that:
->
-> Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
->
+On Mon, Aug 09, 2021 at 01:37:08PM -0700, Shoaib Rao wrote:
 
-Fixing it. Thanks!
+> > +#if IS_ENABLED(CONFIG_AF_UNIX_OOB)
+> > +               mutex_lock(&u->iolock);
+> > +               unix_state_lock(sk);
+> > +
+> > +               err = unix_stream_recv_urg(state);
+> > +
+> > +               unix_state_unlock(sk);
+> > +               mutex_unlock(&u->iolock);
+> > +#endif
+> > 
+> > is 100% broken, since you *are* attempting to copy data to userland between
+> > spin_lock(&unix_sk(s)->lock) and spin_unlock(&unix_sk(s)->lock).
+> 
+> Yes, but why are we calling it unix_state_lock() why not
+> unix_state_spinlock() ?
+
+We'd never bothered with such naming conventions; keep in mind that
+locking rules can and do change from time to time, and encoding the
+nature of locking primitive into the name would result in tons of
+noise.
+
+> I have tons of experience doing kernel coding and you can never ever cover
+> everything, that is why I wanted to root cause the issue instead of just
+> turning off the check.
+> 
+> Imagine you or Eric make a mistake and break the kernel, how would you guys
+> feel if I were to write a similar email?
+
+Moderately embarrassed, at a guess, but what would that have to do with
+somebody pointing the bug out?  Bonehead mistakes happen, they are embarrassing
+no matter who catches them - trust me, it's no less unpleasant when you end
+up being one who finds your own bug months after it went into the tree.  Been
+there, done that...
+
+Since you asked, as far as my reactions normally go:
+	* I made a mistake that ended up screwing people over => can be
+hideously embarrassing, no matter what.  No cause for that in your case,
+AFAICS - it hadn't even gone into mainline yet.
+	* I made a dumb mistake that got caught (again, doesn't matter
+by whom) => unpleasant; shit happens (does it ever), but that's not
+a tragedy.  Ought to look for the ways to catch the same kind of mistakes
+and see if I have stepped into the same problem anywhere else - often
+enough the blind spots strike more than once.  If the method of catching
+the same kind of crap ends up being something like 'grep for <pattern>,
+manually check the instances to weed out the false positive'... might
+be worth running over the tree; often enough the blind spots are shared.
+Would be partially applicable in your case ("if using an unfamiliar locking
+helper, check what it does"), but not easily greppable.
+	* I kept looking at bug report, missing the relevant indicators
+despite the increasingly direct references to those by other people =>
+mildly embarrassing (possibly more than mildly, if that persists for long).
+Ought to get some coffee, wake up properly (if applicable, that is) and make
+notes for myself re what to watch out for.  Partially applicable here;
+I'm no telepath, but at a guess you missed the list of locks in the report
+_and_ missed repeated references to some spinlock being involved.
+Since the call chain had not (AFAICS) been missed, the question
+"which spinlock do they keep blathering about?" wouldn't have been hard.
+Might be useful to make note of, for the next time you have to deal with
+such reports.
+	* Somebody starts asking whether I bloody understand something
+trivial => figure out what does that have to do with the situation at
+hand, reply with the description of what I'd missed (again, quite possibly
+the answer will be "enough coffee") and move on to figuring out how to
+fix the damn bug.  Not exactly applicable here - the closest I can see
+is Eric's question regarding the difference between mutex and spinlock.
+In similar situation I'd go with something along the lines of "Sorry,
+hadn't spotted the spinlock in question"; your reply had been a bit
+more combative than that, but that's a matter of taste.  None of my
+postings would fit into that class, AFAICS...
+	* Somebody explains (in painful details) what's wrong with the
+code => more or less the same as above, only with less temptation (for
+me) to get defensive.  Reactions vary - some folks find it more offensive
+than the previous one, but essentially it's the same thing.
+
+	The above describes my reactions, in case it's not obvious -
+I'm not saying that everyone should react the same way, but you've
+asked how would I (or Eric) react in such-and-such case.  And I can't
+speak for Eric, obviously...
