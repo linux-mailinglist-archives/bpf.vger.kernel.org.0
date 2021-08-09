@@ -2,102 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCD33E3F82
-	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 08:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88983E409E
+	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 09:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbhHIGDo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 02:03:44 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:24612 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233045AbhHIGDn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 9 Aug 2021 02:03:43 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 17960ikl012022
-        for <bpf@vger.kernel.org>; Sun, 8 Aug 2021 23:03:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=8O7EPMKwcEVKq8CKQP/N2pk1SHhV6DidSADlVJXFVfY=;
- b=e0BArxBXNpatndZlmUEtAlW9Lc7BUZPMh4marOfecoTcIbVxE1UctG2M62kT/E0Z2Mkj
- adPdoOOFlWsmD0hHuWty3CpPtFkBnsvPnvY0e4mTFGmhhhBKt06fuMGCMs06Sm/D+hr6
- Z2DGn/+IuCtWCDpG8pWa38h0QJk58tgrc68= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3a9npdf3ax-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 08 Aug 2021 23:03:23 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 8 Aug 2021 23:03:22 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 638125CD4D78; Sun,  8 Aug 2021 23:03:20 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf v2 2/2] bpf: add missing bpf_read_[un]lock_trace() for syscall program
-Date:   Sun, 8 Aug 2021 23:03:20 -0700
-Message-ID: <20210809060320.1176782-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210809060310.1174777-1-yhs@fb.com>
-References: <20210809060310.1174777-1-yhs@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: eMkWb8nECcthqd6ZG011a2Y9hQ_kCSlT
-X-Proofpoint-ORIG-GUID: eMkWb8nECcthqd6ZG011a2Y9hQ_kCSlT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-09_01:2021-08-06,2021-08-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 adultscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 spamscore=0 priorityscore=1501 phishscore=0 mlxlogscore=809
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108090048
-X-FB-Internal: deliver
+        id S233163AbhHIHBW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 03:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233131AbhHIHBV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 03:01:21 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C8CC0613CF;
+        Mon,  9 Aug 2021 00:01:00 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id f3so4720162plg.3;
+        Mon, 09 Aug 2021 00:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=0xn3ZbqPT48Qgutw2euPm9KYmANN2Fb5eOs99RKHa2g=;
+        b=OiQiolbXBBg21BcB+jFcTqKHBF65SZt7UW4g9TyU7NTo3At8QSS9Y49DckMg+tISHQ
+         7aTRCmlio4qq4fgQtnM9LxAl+zCUnWy59WI25tU/qyiNUwVfVOX0AGzkt7YXCtrfQp4O
+         eQijjet6ZsCH8KbdpaBjwk3+LcgiDcU1Rk7LWvmeHgaQoLtkP+Qzv7QB0J865rDconzl
+         K+pOEk8DJp91Zj+S1Y2xD/VGXpFpqWP1w93y+3hZDoiAVpKSvyfTsJXAeZcBt4TL7TFd
+         Q3YZsDyABAUslsqwXFCE2wtLyqA8XxZLtx6pybySy1WcbV9z8Zsb73S6DzZrHGcJyRyM
+         6ofg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=0xn3ZbqPT48Qgutw2euPm9KYmANN2Fb5eOs99RKHa2g=;
+        b=rNg37sAoiB74oNU6Z/xbt8jWbhfCVUWz8GlViPdHDbbw2/5W4HyESwRWU9tSg4FGwV
+         WecMHD665I4ljCuRQvG0EtKfe9k/gvbHhAURMPf/LFLje3eOvg1TyhGxnwKo6baKrsM5
+         YMgjrFKrxeXIBT5oJD8sg7g064qJbeSPGr+N6UvkgR06ksqYxIqucy4zTl6Kujtq7ALV
+         pDtUcrOZ+o1+3xHga+ykVQYlI1wRlYsat319WFagYzRUBdqgmysxaZCs89n67vuV/R0h
+         fjBuOJbm5qyYDx6k+EycQeau57KIsZ6vPli1xbUVutSYJfuRCJLkWpqXaT3e2tAW03XA
+         46nQ==
+X-Gm-Message-State: AOAM5302qLSkr/5yScMKu9EtO0GEu5C9bIhGLSi6rV0Hu1r9hN2taZ5m
+        l1t3Vgf+wsFLB7MeXlet5jk=
+X-Google-Smtp-Source: ABdhPJxhcuCCQPGjmmyHGpv2DWq8jotYFUGzVA6dVcieOgSg+FCjCfe7/I8f08fl3ZTLCXzBKVnV1w==
+X-Received: by 2002:a17:90a:509:: with SMTP id h9mr12526469pjh.71.1628492459944;
+        Mon, 09 Aug 2021 00:00:59 -0700 (PDT)
+Received: from u18.mshome.net ([167.220.238.132])
+        by smtp.gmail.com with ESMTPSA id n11sm17316165pjf.17.2021.08.09.00.00.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 00:00:59 -0700 (PDT)
+From:   Muhammad Falak R Wani <falakreyaz@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Muhammad Falak R Wani <falakreyaz@gmail.com>
+Subject: [PATCH] samples: bpf: add an explict comment to handle nested vlan tagging.
+Date:   Mon,  9 Aug 2021 12:30:46 +0530
+Message-Id: <20210809070046.32142-1-falakreyaz@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 79a7f8bdb159d ("bpf: Introduce bpf_sys_bpf() helper and program ty=
-pe.")
-added support for syscall program, which is a sleepable program.
-But the program run missed bpf_read_lock_trace()/bpf_read_unlock_trace(),
-which is needed to ensure proper rcu callback invocations.
-This patch added bpf_read_[un]lock_trace() properly.
+A codeblock for handling nested vlan trips newbies into thinking it as
+duplicate code. Explicitly add a comment to clarify.
 
-Fixes: 79a7f8bdb159d ("bpf: Introduce bpf_sys_bpf() helper and program ty=
-pe.")
-Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
 ---
- net/bpf/test_run.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ samples/bpf/xdp1_kern.c | 2 ++
+ samples/bpf/xdp2_kern.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 1cc75c811e24..caa16bf30fb5 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -7,6 +7,7 @@
- #include <linux/vmalloc.h>
- #include <linux/etherdevice.h>
- #include <linux/filter.h>
-+#include <linux/rcupdate_trace.h>
- #include <linux/sched/signal.h>
- #include <net/bpf_sk_storage.h>
- #include <net/sock.h>
-@@ -951,7 +952,10 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
- 			goto out;
- 		}
+diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
+index 34b64394ed9c..f0c5d95084de 100644
+--- a/samples/bpf/xdp1_kern.c
++++ b/samples/bpf/xdp1_kern.c
+@@ -57,6 +57,7 @@ int xdp_prog1(struct xdp_md *ctx)
+ 
+ 	h_proto = eth->h_proto;
+ 
++	/* Handle VLAN tagged packet */
+ 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
+ 		struct vlan_hdr *vhdr;
+ 
+@@ -66,6 +67,7 @@ int xdp_prog1(struct xdp_md *ctx)
+ 			return rc;
+ 		h_proto = vhdr->h_vlan_encapsulated_proto;
  	}
-+
-+	rcu_read_lock_trace();
- 	retval =3D bpf_prog_run_pin_on_cpu(prog, ctx);
-+	rcu_read_unlock_trace();
-=20
- 	if (copy_to_user(&uattr->test.retval, &retval, sizeof(u32))) {
- 		err =3D -EFAULT;
---=20
-2.30.2
++	/* Handle double VLAN tagged packet */
+ 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
+ 		struct vlan_hdr *vhdr;
+ 
+diff --git a/samples/bpf/xdp2_kern.c b/samples/bpf/xdp2_kern.c
+index c787f4b49646..d8a64ab077b0 100644
+--- a/samples/bpf/xdp2_kern.c
++++ b/samples/bpf/xdp2_kern.c
+@@ -73,6 +73,7 @@ int xdp_prog1(struct xdp_md *ctx)
+ 
+ 	h_proto = eth->h_proto;
+ 
++	/* Handle VLAN tagged packet */
+ 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
+ 		struct vlan_hdr *vhdr;
+ 
+@@ -82,6 +83,7 @@ int xdp_prog1(struct xdp_md *ctx)
+ 			return rc;
+ 		h_proto = vhdr->h_vlan_encapsulated_proto;
+ 	}
++	/* Handle double VLAN tagged packet */
+ 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
+ 		struct vlan_hdr *vhdr;
+ 
+-- 
+2.17.1
 
