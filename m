@@ -2,120 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B88983E409E
-	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 09:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988B73E425B
+	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 11:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbhHIHBW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 03:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
+        id S234302AbhHIJTD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 05:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233131AbhHIHBV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Aug 2021 03:01:21 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C8CC0613CF;
-        Mon,  9 Aug 2021 00:01:00 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id f3so4720162plg.3;
-        Mon, 09 Aug 2021 00:01:00 -0700 (PDT)
+        with ESMTP id S234270AbhHIJTC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 05:19:02 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829B4C0613D3
+        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 02:18:42 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id f13so23490040edq.13
+        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 02:18:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=0xn3ZbqPT48Qgutw2euPm9KYmANN2Fb5eOs99RKHa2g=;
-        b=OiQiolbXBBg21BcB+jFcTqKHBF65SZt7UW4g9TyU7NTo3At8QSS9Y49DckMg+tISHQ
-         7aTRCmlio4qq4fgQtnM9LxAl+zCUnWy59WI25tU/qyiNUwVfVOX0AGzkt7YXCtrfQp4O
-         eQijjet6ZsCH8KbdpaBjwk3+LcgiDcU1Rk7LWvmeHgaQoLtkP+Qzv7QB0J865rDconzl
-         K+pOEk8DJp91Zj+S1Y2xD/VGXpFpqWP1w93y+3hZDoiAVpKSvyfTsJXAeZcBt4TL7TFd
-         Q3YZsDyABAUslsqwXFCE2wtLyqA8XxZLtx6pybySy1WcbV9z8Zsb73S6DzZrHGcJyRyM
-         6ofg==
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2iLuig7hnPNCo1xvz7ikUqKL/k0jIgrQqZ82ub8BSsk=;
+        b=yl/Mgq89zx7j/2AGO2xts4EqdU330mRhor87v6Hso/45vs8r6S8vblCBMJ3aCD6Z3a
+         zdHTEIzejOAc/7O57J2ZFq8DmnwEzOXd8N3jj1L46tx2veQKOVVbd5Zi6/pXypkyRJJt
+         tV3NvWWEYzJhA5y2LwdQelQs1e2ST3kLG52BmmNXHAXINoEvlLclPf4HC4iTKVIaBy9N
+         xbIXaOVNvz2VhLUNpW8DOfm7kZ7Eo5RGuW8I6kepiWVvhZitxI6rJRY/NkGpPUlE1Iqn
+         x7EvqO2hYQyIsWOPPnswoVUg89LqFWWjRbiqZ1ygKbXXiNImWhTqGfxu3NHRQJpG1sFi
+         rqYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=0xn3ZbqPT48Qgutw2euPm9KYmANN2Fb5eOs99RKHa2g=;
-        b=rNg37sAoiB74oNU6Z/xbt8jWbhfCVUWz8GlViPdHDbbw2/5W4HyESwRWU9tSg4FGwV
-         WecMHD665I4ljCuRQvG0EtKfe9k/gvbHhAURMPf/LFLje3eOvg1TyhGxnwKo6baKrsM5
-         YMgjrFKrxeXIBT5oJD8sg7g064qJbeSPGr+N6UvkgR06ksqYxIqucy4zTl6Kujtq7ALV
-         pDtUcrOZ+o1+3xHga+ykVQYlI1wRlYsat319WFagYzRUBdqgmysxaZCs89n67vuV/R0h
-         fjBuOJbm5qyYDx6k+EycQeau57KIsZ6vPli1xbUVutSYJfuRCJLkWpqXaT3e2tAW03XA
-         46nQ==
-X-Gm-Message-State: AOAM5302qLSkr/5yScMKu9EtO0GEu5C9bIhGLSi6rV0Hu1r9hN2taZ5m
-        l1t3Vgf+wsFLB7MeXlet5jk=
-X-Google-Smtp-Source: ABdhPJxhcuCCQPGjmmyHGpv2DWq8jotYFUGzVA6dVcieOgSg+FCjCfe7/I8f08fl3ZTLCXzBKVnV1w==
-X-Received: by 2002:a17:90a:509:: with SMTP id h9mr12526469pjh.71.1628492459944;
-        Mon, 09 Aug 2021 00:00:59 -0700 (PDT)
-Received: from u18.mshome.net ([167.220.238.132])
-        by smtp.gmail.com with ESMTPSA id n11sm17316165pjf.17.2021.08.09.00.00.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2iLuig7hnPNCo1xvz7ikUqKL/k0jIgrQqZ82ub8BSsk=;
+        b=ujcZ7ocenBKWz6kC2E87JW/jSBmzbIcUbYtjuHpb62e5fKkBiC6Q0QSENGVNkcrrNa
+         mN4iQhvgpeBEcbKqDZuXDk9+vvKuJVJggaDji3Z+lW7++LtusNXX1gMNzwm3CaplVqg7
+         41VK0pPvbiAS9ZuoSKYenUnNJr+T7TEfYnaT9D/oOj87ZTOl99ZKjin/ZSCo3JTilHQt
+         ljP08W0GTEmIZe97RNM6Hw/vQWrFFcMwe+G5iLCX2HMbDiqQ1C6se+bhtfgMnoF/8KJZ
+         qJFBKNNauUUkaOy0u0RHhdTr0lXf7iPHeGur0wBFzK5BAcenntnumCQtZfrbm38jU4JW
+         AFyg==
+X-Gm-Message-State: AOAM530+lLviJjm7Qz0cjwPsZ2+toIdVuhuYt5NkjbMsXaF82F1jtvrK
+        Pc8jS6czsu+mdRv/kaKodh03ZA==
+X-Google-Smtp-Source: ABdhPJyM6417e1uu4vi72bVZQuJXJP3ufWjrrwlLo1pCORv6IE1WOQDbIjskMq7aJWKdroYX4pQ8Sw==
+X-Received: by 2002:a05:6402:cb9:: with SMTP id cn25mr29185480edb.271.1628500721074;
+        Mon, 09 Aug 2021 02:18:41 -0700 (PDT)
+Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
+        by smtp.gmail.com with ESMTPSA id dg24sm1234250edb.6.2021.08.09.02.18.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Aug 2021 00:00:59 -0700 (PDT)
-From:   Muhammad Falak R Wani <falakreyaz@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Muhammad Falak R Wani <falakreyaz@gmail.com>
-Subject: [PATCH] samples: bpf: add an explict comment to handle nested vlan tagging.
-Date:   Mon,  9 Aug 2021 12:30:46 +0530
-Message-Id: <20210809070046.32142-1-falakreyaz@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 09 Aug 2021 02:18:40 -0700 (PDT)
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        Tony.Ambardar@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Subject: [PATCH bpf-next v2 00/14] bpf/tests: Extend the eBPF test suite
+Date:   Mon,  9 Aug 2021 11:18:15 +0200
+Message-Id: <20210809091829.810076-1-johan.almbladh@anyfinetworks.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A codeblock for handling nested vlan trips newbies into thinking it as
-duplicate code. Explicitly add a comment to clarify.
+This patch set extends the eBPF test suite in the test_bpf kernel module
+to add more extensive tests of corner cases and new tests for operations
+not previously covered.
 
-Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
----
- samples/bpf/xdp1_kern.c | 2 ++
- samples/bpf/xdp2_kern.c | 2 ++
- 2 files changed, 4 insertions(+)
+Link: https://lore.kernel.org/bpf/20210728170502.351010-1-johan.almbladh@anyfinetworks.com/
+Link: https://lore.kernel.org/bpf/20210726081738.1833704-1-johan.almbladh@anyfinetworks.com/
 
-diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
-index 34b64394ed9c..f0c5d95084de 100644
---- a/samples/bpf/xdp1_kern.c
-+++ b/samples/bpf/xdp1_kern.c
-@@ -57,6 +57,7 @@ int xdp_prog1(struct xdp_md *ctx)
- 
- 	h_proto = eth->h_proto;
- 
-+	/* Handle VLAN tagged packet */
- 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
- 		struct vlan_hdr *vhdr;
- 
-@@ -66,6 +67,7 @@ int xdp_prog1(struct xdp_md *ctx)
- 			return rc;
- 		h_proto = vhdr->h_vlan_encapsulated_proto;
- 	}
-+	/* Handle double VLAN tagged packet */
- 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
- 		struct vlan_hdr *vhdr;
- 
-diff --git a/samples/bpf/xdp2_kern.c b/samples/bpf/xdp2_kern.c
-index c787f4b49646..d8a64ab077b0 100644
---- a/samples/bpf/xdp2_kern.c
-+++ b/samples/bpf/xdp2_kern.c
-@@ -73,6 +73,7 @@ int xdp_prog1(struct xdp_md *ctx)
- 
- 	h_proto = eth->h_proto;
- 
-+	/* Handle VLAN tagged packet */
- 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
- 		struct vlan_hdr *vhdr;
- 
-@@ -82,6 +83,7 @@ int xdp_prog1(struct xdp_md *ctx)
- 			return rc;
- 		h_proto = vhdr->h_vlan_encapsulated_proto;
- 	}
-+	/* Handle double VLAN tagged packet */
- 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
- 		struct vlan_hdr *vhdr;
- 
+Changes since v1:
+ * Fixed bad jump offset in JMP32 tests that would cause a test
+   to pass in some cases when it should fail (1/14).
+ * Added comment explaining the purpose of the register clobbering
+   test case for ALU operations implemented with function calls (8/14).
+ * Fixed bug in test case that would cause it to pass in some cases
+   when it should fail (8/14).
+ * Added comment explaining the branch conversion test (10/14).
+ * Changed wording in commit message regarding 32-bit context
+   argument, /should/will/ (11/14).
+ * Removed unnecessary conditionals in tail call test setup (14/14).
+ * Set offset to 0 when preparing tail call instructions (14/14).
+ * Formatting fixes and cleanup in tail call suite (14/14).
+
+Johan Almbladh (14):
+  bpf/tests: Add BPF_JMP32 test cases
+  bpf/tests: Add BPF_MOV tests for zero and sign extension
+  bpf/tests: Fix typos in test case descriptions
+  bpf/tests: Add more tests of ALU32 and ALU64 bitwise operations
+  bpf/tests: Add more ALU32 tests for BPF_LSH/RSH/ARSH
+  bpf/tests: Add more BPF_LSH/RSH/ARSH tests for ALU64
+  bpf/tests: Add more ALU64 BPF_MUL tests
+  bpf/tests: Add tests for ALU operations implemented with function
+    calls
+  bpf/tests: Add word-order tests for load/store of double words
+  bpf/tests: Add branch conversion JIT test
+  bpf/tests: Add test for 32-bit context pointer argument passing
+  bpf/tests: Add tests for atomic operations
+  bpf/tests: Add tests for BPF_CMPXCHG
+  bpf/tests: Add tail call test suite
+
+ lib/test_bpf.c | 2743 +++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 2484 insertions(+), 259 deletions(-)
+
 -- 
-2.17.1
+2.25.1
 
