@@ -2,193 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3478D3E3D2A
-	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 01:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFC23E3D49
+	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 02:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhHHXii (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 8 Aug 2021 19:38:38 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:53175 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhHHXii (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 8 Aug 2021 19:38:38 -0400
-Received: by mail-io1-f69.google.com with SMTP id n22-20020a6bf6160000b0290520c8d13420so11638165ioh.19
-        for <bpf@vger.kernel.org>; Sun, 08 Aug 2021 16:38:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6Sls2ZePO2B7rK1frbRgJ99vGjzszT5eqt0ie+TyZh4=;
-        b=qvUr+0B++uZIxbYsh1PZLwLYIUNdCoUkWjKFPMOv7TO6WaK1HaR3nsCOozep9qnXwc
-         TcGi2YhEuZFx1l8Y1liqPnvYLk2uLYUMJEuy8ggoEsFXmlY+dIIbzut5SVlUhkjdO81v
-         0WocgpFA+ginncnKpSQqxGK5KTSKXZhqePMbf2mzv2qVN7TK03OXE/eQ6IIHw2gn4RD4
-         HdXsYKETyOQMsDDQfvD2o6qTuIchaw6+eRl531vZRveA3WQVLpeNB7aTrNjnYS88G/i5
-         XGse3NPH3ctK/+TWHCfGrmFa/pNpFy8++C0eJ63zSp3WRIGNZWvplrIFG+r0q0Bp+svN
-         0Z0Q==
-X-Gm-Message-State: AOAM5334Fv56jUlUrj7q4kili1NUeWin7G9x4f3sY3+6mbKMIJr5ATFR
-        nUymmPeXiJwfewlADp4YVuj3jtKrOb+X9BZ9l1sTLunDoLan
-X-Google-Smtp-Source: ABdhPJzDq0KkjK6Hn7ioKuW9SGjXRihEUKOaipf9eMWxxIETGIhosE/xhsxde+AokRZJxSiizlG2oXwC7MMWm60zZs2yAHMtKZYd
+        id S230071AbhHIACQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Aug 2021 20:02:16 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16148 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229903AbhHIACQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 8 Aug 2021 20:02:16 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 178NsjDP022379;
+        Sun, 8 Aug 2021 17:01:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=tX7ndVwz77R9XR7sZ8euhFAHXC2GR1N8gCiS84rLnbg=;
+ b=dc/mQnQMBhrKTXkXQHHVYKfW4KWxHkVkc+UZ9HxEPt4A5VrQepfduvDhZiRhJ//oahtV
+ K2KhW6BkhanDl/VX5uHPbTkLWc/XIoE28yrgWD3K4m3Hh4y7ETZJqLpHAiYLiu0aFilC
+ vBJDRB/Vio/IsHh2V0oS9nNS4rmznSJFEBg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3a9p7ne0db-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 08 Aug 2021 17:01:41 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 8 Aug 2021 17:01:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gERi3HDjrX0zZIEZ3Q1XDds2Vm4jfx/IF6Q60IfC61fvZ71QWoPQDFgkx8b+JwWY7KXSBWXbHa9QeRQG/POyDEN3WQ/jwmj6t/b69g/AsXiPVgr/+b7vtmtDc3PkWNLBvKNrV1SAsjIuI0S61pzSx22fWaWm235fniKTqBk7fmRm2zfuVXz1fSwmUj3WzYK7KOWNEDi2u4FlpBYVHMgL2kdh+G9bx1JtuLOvmG4gGWfQqFah0da4dEtmnkb92ZVSOXu+Z8C4a2qqpJ3cSyU8mBYioS1LxyzPClDplVoBmC5/2iXr7nGhmUbX1xnLxfcoiby6q9yjl8AQn/zB1TGUDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tX7ndVwz77R9XR7sZ8euhFAHXC2GR1N8gCiS84rLnbg=;
+ b=L5fh3ZQrMXGHUn8TvIex0y86nHcj0YyR7YKLvUyk4bqAZSJ8UHzOfxap0JasDKYOIvc2LRrLJuTS3PRvV3ElDesJ/U3V1xgRL/dFJT6o13QIfVziAt1RxEvxmkYhWs9ubtrSRbp/NSxFb9u2bZvdMrgx/mhSPkvm0neX1zEv+cYXEcbG+Fi8CD7s6nDUF+rtGokBp4HqS2m8gPr39ZfL1coj9acMnoARxmCnKY3HxCvdqjTq4GJpWrJuj7dMpankgPcsov0efEyYSI8Dv8WSKO/d1pVRZ+JTPrMuw5xuDrQ+aKz3P9gpcFWP+rnsZEiW34UegswQA+BpZ0oPSryNpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4386.namprd15.prod.outlook.com (2603:10b6:806:191::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15; Mon, 9 Aug
+ 2021 00:01:32 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4394.022; Mon, 9 Aug 2021
+ 00:01:32 +0000
+Subject: Re: [PATCH] samples: bpf: xdp1: remove duplicate code to find
+ protocol
+To:     Muhammad Falak Reyaz <falakreyaz@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210808122411.10980-1-falakreyaz@gmail.com>
+ <be9121ef-cea7-d3f9-b1cf-edd9e4e1a756@fb.com>
+ <CAOmbKqkYDXvMQntk39Ud-63G3ju+Kti2A8UFNodgJ6y1+4=AeA@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <4c897a6a-6f5e-b990-7c36-4258a26e1752@fb.com>
+Date:   Sun, 8 Aug 2021 17:01:29 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+In-Reply-To: <CAOmbKqkYDXvMQntk39Ud-63G3ju+Kti2A8UFNodgJ6y1+4=AeA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0167.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::22) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aa3:: with SMTP id l3mr453617ilv.299.1628465898703;
- Sun, 08 Aug 2021 16:38:18 -0700 (PDT)
-Date:   Sun, 08 Aug 2021 16:38:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006bd0b305c914c3dc@google.com>
-Subject: [syzbot] BUG: sleeping function called from invalid context in _copy_to_iter
-From:   syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        christian.brauner@ubuntu.com, cong.wang@bytedance.com,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        jamorris@linux.microsoft.com, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, rao.shoaib@oracle.com, shuah@kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c1::10d4] (2620:10d:c090:400::5:bbaa) by SJ0PR03CA0167.namprd03.prod.outlook.com (2603:10b6:a03:338::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Mon, 9 Aug 2021 00:01:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 60c8f012-263c-43e5-6686-08d95ac8d846
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4386:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA1PR15MB43869D63338FD63825EE88AFD3F69@SA1PR15MB4386.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wznPYjX1T62pX3Z1K5bfCTuYjyTVvXx6u7uM7NMWG6lln09PBatw4csMAfC2cSKlfmrjyL7ojqy4Uy3jXLJR+heHtXXdKSDm0b3F9IRCXhCDFp/bfZnq1oDIRQzpux+cgT+WTkWXTCUokp11QkH8Qj0qCI/mxQzy83BeJCV3JncD33sGxG4GkYuKXGfSCv00hCi4WJvi/2Z8VYU5ugtMEdDDJAU97opHvT/z0W+E+CSc7IUBhofcHhBA4xvmiAe/0mL4NUbjDDz53ohyPo20jKKYaYG9j7KPRTXB3q2/3nBFB10Td7qDy9WKcWlcXqUr1R4h4KrWyIA1T6VSv/OxHd9IOLF61VBTdfvWZOthniOdA7nKDAh+C74yVntc/7IhyWoiSVD2uSc1GwRxs/wnNuUrC2mCFw6xNV+zQtIrAn9FyV6UqKNq1TIYO0Brmc7suBsCSAcLyyamQQcKNczMPgt4HMTfVCSlwiU+JEe5rHxlxt0/Tjxuzrw6t3AI4TUb4u0AeVZQ+Cm3Ppitxt1HVxC92ry2Mztoi77DNqMiNYv4gke6nI3pUPEqL8f6tFCOzTOMIuY8jnAaSHLT21653NWvXvlZArh5EPLltPwcFAaSLzII9/XeZypxvQKqiuYQ0+ALvtQYcVt02jk5wxHEctlN7UwJ8Z+AEeUIAnvEMZTA621XLvFF8qAncUyB5Gs9yy+9xvfk/fzHsiUgxCViC5fRztOBZ78Hlk5RF2AaLuJbT//UEHyRQbSNBHM8s0ab
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(396003)(376002)(39860400002)(66556008)(38100700002)(53546011)(52116002)(66476007)(5660300002)(66946007)(6486002)(2906002)(186003)(83380400001)(36756003)(6916009)(8676002)(478600001)(2616005)(8936002)(54906003)(31686004)(4326008)(7416002)(316002)(86362001)(31696002)(37363002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RUZoRmJZM202QTRRMEF4WUxZeWo0QmgxS0NTRXB3U1ZrcDk1bENCcDMwVnE5?=
+ =?utf-8?B?Z3J4QmtCdlZJS3Y3aDdYVEcwaytueXdIRkdYd2wrdVhHY0dOVUEySDM1Wlls?=
+ =?utf-8?B?eFVNZGZVOEJhRWJ4NERrNFM4WVFOQkhiVjdJWmZoRFM5VjdWSGdJWlkvcWRM?=
+ =?utf-8?B?UGY5NGZyam9reGF2Ulh0NmRqelBKZkE3SG5HdzdKeUl0UnVmOC9QWHo2dUVS?=
+ =?utf-8?B?UHd6L3JFOC9CSkdCY1U0SCtHb3YvVml4RUZzSTcvRUNOaE5yaXhhNzhNbDJq?=
+ =?utf-8?B?NGVHN3BIeitENm5PSVhkSzltcThMZlcrUGpHc0x2OS9SZEVVN1NjNDk5Q1kv?=
+ =?utf-8?B?VnJYTEd5WlF1ZWx2QTQwOHNwQUJYaG1zSnBYc2tRN1lENWFGQmN4Wk1YN1lI?=
+ =?utf-8?B?ZHQydGtIK3VNS3lFTWwzSW5wZmk0WW43bUFWaGJQOFA2S0ZaNVBXWGRWWjZE?=
+ =?utf-8?B?Vk1wQ1BmQjVIamJWS3NKaVlUSnBPWXZvYXBjRm1EblZnSVpyazZtY3RGUDNW?=
+ =?utf-8?B?N0FMN0JQa3N1NlpYb1VJRnlRcmhsTERxSFRrdVZuYVJoM1ZzaFlNTUowR3FX?=
+ =?utf-8?B?RXdjMXlzSXR1Vy9iRFoxbEFPcjhDT1ZIYkc1MmY5REJGc3c3WVhWNHZ3T1hp?=
+ =?utf-8?B?TXh4ODU0QUFPZDdaUDVyblpZaVptZmF0SVBNWmlMenBUak1PSlJmSWM3YmVS?=
+ =?utf-8?B?azUxZ2pPdkpFbWQ2bFpHUm9RWU4wSGRzbVVSeUp1YWVORU11SFBzckhVUFZ3?=
+ =?utf-8?B?RlZDbzNhTHk2UWNZM1ppQWUrYXY0d1l3dE9jc2RXdnZ6Y1hrMmViZGw0clE0?=
+ =?utf-8?B?SmZubC9LRnVnWTUxOUl6T3BkN0NOT1hvclA5MzlmR2xlK1NCbmJvVFRWdUs5?=
+ =?utf-8?B?K3poMTRsR3ZMRGs5M0VDVlRoQXdTd0c5aWNkTGEzLzNKd0NQOUduanBXTHhl?=
+ =?utf-8?B?Z0ZNMkF2RlFXZzFDUUdvWnZLdUQyWHRvZ3k5NlU3ZE1iLzJ3Y3R6eWdrbjYr?=
+ =?utf-8?B?VkJoazkrZmJNNml4RHNLbDlhQ0p6VnE5U2MxbForK3Q0ZU83cXhTVXJaNlgw?=
+ =?utf-8?B?N00vS1B2dTZmN2tGaFFyM1gvR2xWdFlicVFtYUJYbFVuSGFYTUpHWUxabUlD?=
+ =?utf-8?B?U2o5Y2p3VC9la1hNb1crNVovMDRLcHpYcC9TdjFKK3J3bHBKakpTY3loY1lh?=
+ =?utf-8?B?MCtFem5uNGFHaXJuSGJJdWQ2dllhZ0Q4VzQzSXpaV1NOWnlMRkhlY3lVNjdn?=
+ =?utf-8?B?bnA3a1MvQ0xnYjFuc2VaZVRld1NjZ2NHUnZiWUFzZDRyZXpSUlNWbXFydEdC?=
+ =?utf-8?B?cDVSNVpXT0Jyd0wrM1lSMXpubFpKcGVzc205ZFVmWjA2RkJoOUVhY2syOWxR?=
+ =?utf-8?B?VWMwc1dYcmNGZkhtWGIxQXljSmt4YmZ6RC9Lc0d5RFExSmpGbmoyZkVoMFpk?=
+ =?utf-8?B?UVRab3pDTDB5ZzBZU2p2MTFuQVl4QmdxR2N2eU10bjBHazNjdjIzcE1QR0x2?=
+ =?utf-8?B?REV1Yno2MXJ0c3RVY1JQaHlhL0RVQWxWNjRqa1VVaTRpbXFPSkw5QkxoN2hU?=
+ =?utf-8?B?NVAyaG5qNFhlN2NnMW5aMXdSTGhXQ3RyRGhYOVJHNVVuMGFuQUgzL21iUXZB?=
+ =?utf-8?B?NWg4NmhxTzBzYmJVUVJTNlp3VlZGL3dUR2E4dUhmRmh4YWYraWJTRHRPVlQ4?=
+ =?utf-8?B?RUdVZ05ta0Z5a0ZZeTNkbWhCNTZYQXE0T25oaWxxVzVQTnhiYklOTEFnbUlp?=
+ =?utf-8?B?akVpbHV2YlEySUYvUWlaMjltdDBYY25CQ1pBR3RxZnFULzBRZzd6L2pXcC9z?=
+ =?utf-8?B?NGFVdEtyeGNTU3ZIQ2pvQT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60c8f012-263c-43e5-6686-08d95ac8d846
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 00:01:31.9826
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 62xyU90/UTV97h//o0tp41OxtIAxMd/ffM/+VTbS5f3ygkYbRtnRrn5ZXQR/dtVR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4386
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: rHKEH-ASB-Tw4fnpd76DCSziQO7e1pqT
+X-Proofpoint-ORIG-GUID: rHKEH-ASB-Tw4fnpd76DCSziQO7e1pqT
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-08_08:2021-08-06,2021-08-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 clxscore=1015
+ adultscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108080155
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    c2eecaa193ff pktgen: Remove redundant clone_skb override
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12e3a69e300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aba0c23f8230e048
-dashboard link: https://syzkaller.appspot.com/bug?extid=8760ca6c1ee783ac4abd
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15c5b104300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10062aaa300000
-
-The issue was bisected to:
-
-commit 314001f0bf927015e459c9d387d62a231fe93af3
-Author: Rao Shoaib <rao.shoaib@oracle.com>
-Date:   Sun Aug 1 07:57:07 2021 +0000
-
-    af_unix: Add OOB support
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10765f8e300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12765f8e300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14765f8e300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com
-Fixes: 314001f0bf92 ("af_unix: Add OOB support")
-
-BUG: sleeping function called from invalid context at lib/iov_iter.c:619
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 8443, name: syz-executor700
-2 locks held by syz-executor700/8443:
- #0: ffff888028fa0d00 (&u->iolock){+.+.}-{3:3}, at: unix_stream_read_generic+0x16c6/0x2190 net/unix/af_unix.c:2501
- #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
- #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: unix_stream_read_generic+0x16d0/0x2190 net/unix/af_unix.c:2502
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 1 PID: 8443 Comm: syz-executor700 Not tainted 5.14.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9154
- __might_fault+0x6e/0x180 mm/memory.c:5258
- _copy_to_iter+0x199/0x1600 lib/iov_iter.c:619
- copy_to_iter include/linux/uio.h:139 [inline]
- simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
- __skb_datagram_iter+0x10f/0x770 net/core/datagram.c:425
- skb_copy_datagram_iter+0x40/0x50 net/core/datagram.c:533
- skb_copy_datagram_msg include/linux/skbuff.h:3620 [inline]
- unix_stream_read_actor+0x78/0xc0 net/unix/af_unix.c:2701
- unix_stream_recv_urg net/unix/af_unix.c:2433 [inline]
- unix_stream_read_generic+0x17cd/0x2190 net/unix/af_unix.c:2504
- unix_stream_recvmsg+0xb1/0xf0 net/unix/af_unix.c:2717
- sock_recvmsg_nosec net/socket.c:944 [inline]
- sock_recvmsg net/socket.c:962 [inline]
- sock_recvmsg net/socket.c:958 [inline]
- ____sys_recvmsg+0x2c4/0x600 net/socket.c:2622
- ___sys_recvmsg+0x127/0x200 net/socket.c:2664
- do_recvmmsg+0x24d/0x6d0 net/socket.c:2758
- __sys_recvmmsg net/socket.c:2837 [inline]
- __do_sys_recvmmsg net/socket.c:2860 [inline]
- __se_sys_recvmmsg net/socket.c:2853 [inline]
- __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2853
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ef39
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffca8776d68 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
-RDX: 0000000000000700 RSI: 0000000020001140 RDI: 0000000000000004
-RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000007 R11: 0000000000000246 R12: 0000000000402fb0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-
-=============================
-[ BUG: Invalid wait context ]
-5.14.0-rc3-syzkaller #0 Tainted: G        W        
------------------------------
-syz-executor700/8443 is trying to lock:
-ffff8880212b6a28 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0xa3/0x180 mm/memory.c:5260
-other info that might help us debug this:
-context-{4:4}
-2 locks held by syz-executor700/8443:
- #0: ffff888028fa0d00 (&u->iolock){+.+.}-{3:3}, at: unix_stream_read_generic+0x16c6/0x2190 net/unix/af_unix.c:2501
- #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
- #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: unix_stream_read_generic+0x16d0/0x2190 net/unix/af_unix.c:2502
-stack backtrace:
-CPU: 1 PID: 8443 Comm: syz-executor700 Tainted: G        W         5.14.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- print_lock_invalid_wait_context kernel/locking/lockdep.c:4666 [inline]
- check_wait_context kernel/locking/lockdep.c:4727 [inline]
- __lock_acquire.cold+0x213/0x3ab kernel/locking/lockdep.c:4965
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __might_fault mm/memory.c:5261 [inline]
- __might_fault+0x106/0x180 mm/memory.c:5246
- _copy_to_iter+0x199/0x1600 lib/iov_iter.c:619
- copy_to_iter include/linux/uio.h:139 [inline]
- simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
- __skb_datagram_iter+0x10f/0x770 net/core/datagram.c:425
- skb_copy_datagram_iter+0x40/0x50 net/core/datagram.c:533
- skb_copy_datagram_msg include/linux/skbuff.h:3620 [inline]
- unix_stream_read_actor+0x78/0xc0 net/unix/af_unix.c:2701
- unix_stream_recv_urg net/unix/af_unix.c:2433 [inline]
- unix_stream_read_generic+0x17cd/0x2190 net/unix/af_unix.c:2504
- unix_stream_recvmsg+0xb1/0xf0 net/unix/af_unix.c:2717
- sock_recvmsg_nosec net/socket.c:944 [inline]
- sock_recvmsg net/socket.c:962 [inline]
- sock_recvmsg net/socket.c:958 [inline]
- ____sys_recvmsg+0x2c4/0x600 net/socket.c:2622
- ___sys_recvmsg+0x127/0x200 net/socket.c:2664
- do_recvmmsg+0x24d/0x6d0 net/socket.c:2758
- __sys_recvmmsg net/socket.c:2837 [inline]
- __do_sys_recvmmsg net/socket.c:2860 [inline]
- __se_sys_recvmmsg net/socket.c:2853 [inline]
- __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2853
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ef39
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffca8776d68 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
-RDX: 0000000000000700 RSI: 0000000020001140 RDI: 0000000000000004
-RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000007 R11: 0000000000000246 R12: 0000
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 8/8/21 10:19 AM, Muhammad Falak Reyaz wrote:
+> On Sun, Aug 8, 2021 at 10:23 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 8/8/21 5:24 AM, Muhammad Falak R Wani wrote:
+>>> The code to find h_vlan_encapsulated_proto is duplicated.
+>>> Remove the extra block.
+>>>
+>>> Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
+>>> ---
+>>>    samples/bpf/xdp1_kern.c | 9 ---------
+>>>    1 file changed, 9 deletions(-)
+>>>
+>>> diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
+>>> index 34b64394ed9c..a35e064d7726 100644
+>>> --- a/samples/bpf/xdp1_kern.c
+>>> +++ b/samples/bpf/xdp1_kern.c
+>>> @@ -57,15 +57,6 @@ int xdp_prog1(struct xdp_md *ctx)
+>>>
+>>>        h_proto = eth->h_proto;
+>>>
+>>> -     if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
+>>> -             struct vlan_hdr *vhdr;
+>>> -
+>>> -             vhdr = data + nh_off;
+>>> -             nh_off += sizeof(struct vlan_hdr);
+>>> -             if (data + nh_off > data_end)
+>>> -                     return rc;
+>>> -             h_proto = vhdr->h_vlan_encapsulated_proto;
+>>
+>> No. This is not a duplicate. The h_proto in the above line will be used
+>> in the below "if" condition.
+>>
+>>> -     }
+>>>        if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
+>>>                struct vlan_hdr *vhdr;
+>>>
+>>>
+> Apologies :(
+> I now realize, it could be double vlan encapsulated.
+> Would it make sense to add an explicit comment for newbies like me ?
+> I can send a patch, if it is okay.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+This is not the first time people sending a patch trying to remove this
+"duplicated" code. I think it is okay to send a patch with comments to 
+say this is intended to handle nested vlan, so we can save everybody's 
+time. Thanks.
+
+> 
+> -mfrw
+> 
