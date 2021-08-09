@@ -2,294 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDC23E4F54
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 00:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D17E33E4F61
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 00:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236788AbhHIWfQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 18:35:16 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9966 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230085AbhHIWfO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 9 Aug 2021 18:35:14 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 179MWSZQ020251;
-        Mon, 9 Aug 2021 15:34:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+        id S236797AbhHIWj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 18:39:26 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:37998 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234667AbhHIWjZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 9 Aug 2021 18:39:25 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179MXYl2002772;
+        Mon, 9 Aug 2021 22:38:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=VFn24ICRjL8kFbEr7FO8oApEtfw/BSdhnFrSsOXB4BU=;
- b=Y4sS6Y2C3PHLISISV1dMlklpziV61ud+5TcfGxiXBYGPyVMVZh9tuFhgrNxS7qkBTafk
- etj3r4xLevHCOuTSuuDYl8Ct86AcESP1m9adlhb/zhkT0ANxVfITsVlhNmJIkg3qO7kK
- 2H87gZjOfYhRXQxO7GLykzjBAEZnjeoLgw8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3ab6mmtkas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 09 Aug 2021 15:34:39 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 15:34:38 -0700
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=/CQLf0byCwfWfIOhzxJExSyRMDH1gXRSCLAztnXOiH0=;
+ b=OosESy4kEQ0GcgJ5Bx4Nv/rY3hwMSncERLOjHvMRx3LpGBYtrM4K/FH48Y8hEczwCGDf
+ W0gkLY7JKHXYMDM7KLFavIBmHVUGF77SOs7L3A4oq1JApO6gIvCQP9xYx5MLadUvB0zQ
+ RsIpMJzCiYyV4MvgsJs6IpftObtd9YdyO3Hdzet3uhSF8m0H9z8GuhTp1+/BvqRXfeu3
+ Oym26Q2j2KRwwFBcSo584RCvFExetOQaVfdNQsJTuNgfoDTByY6ZYZew2umIgmibUgjt
+ wS1J6jb/ThWwjC0Ga+OW7BBlTmgW6DGOWQjZSnJomNozRnZZ3FDyOGkjzVyjl3UcGgY/ lA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=/CQLf0byCwfWfIOhzxJExSyRMDH1gXRSCLAztnXOiH0=;
+ b=VvS/zuEhis8Xt4HJ3+xZ5VYWR1YkHXJOc4reRw87kwWaRZFDxdEBdfZwpmvFwK1OqSLF
+ xJrNxdkYAa4hGOwnpY0RxQOqYwQ+croGiB04Ndnqopn14GvnzyAcBrr1OhIrCzJ1+U+v
+ 992NnoeR/BYTuXJs+Lwg6IckWjnvIHGsI2ljNFv+aLSyiCJ/Znz193ELf5CyZvOYy25J
+ n93LBpDVsW8hKdmdEPgr6MaxtkFzs1f7oW8VnnOigcOdUPHccU6AQIsMggaqpffZfIen
+ ZyWM4OIlH9ueB5L0b3+pgGDp5pndN6lwGqITvFyan5K2lyllqckHKGfi0DVO/2YO25MI Ng== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3aav18jfya-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Aug 2021 22:38:36 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 179MaLuL183702;
+        Mon, 9 Aug 2021 22:38:35 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by aserp3020.oracle.com with ESMTP id 3a9vv3pbvj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Aug 2021 22:38:35 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BfDuJ6kPrSmX9bbjaOA75x4CJExovTPbKGXKDCaopLQaWpxwFmNR5IYn6+Jp2SYlw125w4dzd90JGeqmhr+6To6QcR4BwaSdXe1LfTK0IPdP4JT75/Ae4jJK7aGrBK0LVX9wwKBRAEQopH7SWAIsCd7Y/PaewRitJfQL5p6uHTxeHNPEjdTDCSW06Xr/yVkUivjk86NQWS4B8uC5Cl8RC/CflrcZGNE50NElA0L2YMIUQ5GURZmsFIjwtH9nuqQnt5UUEtylkzjfYJ1G1vD4yNtfOcHSLAGY9WLlYytxT+kBR6z8GaZ/eQ0uAnsXLv8N750bBu1fYtxK8U2TvF54aA==
+ b=iHj6w4VFGt1DhiUUxzzx9zWgxZOHpCiA1E01IA9+MncLIgvUHqGw4oarOFlrNqMIcdFaVENpnRTHK1SS2ChsX1eDV6hxH91xv4+PBVn3cRFh7wh3u7wObPkmet/rJCn+27TENNBAvXTS51uJ7SjufpHhoNtYOvEbifZohpqZdpKy1iF7HJYkVFKkzVgdV3FObMSdcajRbTVh+3WZQGO+mMdzek27RJJ0GulOV7+dpro7K6r/W6YnAitY4MyCteglJOR8VubvN+ON0bUx2k1vvGTOY4AbWbWC6WUHIaYTdX08/k/4lwKsu3Y4Y7FkY47u+5iwt7NF90qxrxCQv64BHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VFn24ICRjL8kFbEr7FO8oApEtfw/BSdhnFrSsOXB4BU=;
- b=Szb+vkKxhRp+iftSTiHRTwScQ9wpafscNEfGKEonf7eoQnRSBmdFutgKDHAEb9CiaNWe2ce2u1HoAQqVdvkWAYSAChz4Gpfs3i7HJIaKvkCIFPqV3+uV14/2eAc9ztfUuoTdmSfNP549QPuIccFb9ZGvbJf5jXyY2CiuU95YKw0cd+3xtfhH79kQpRMZ2pUlluXTdRtETpsqmGQ7IL12wa32BgIEKJKjCQQH2GDJTzl5lvDNmb8PdNXifATxXED9Y1G3fQJci3QnMkiduqX6mzOGAPSK2mEb5+J6Le2RjUttMI2X9bPAu58fVZvokYUaKrZx9XzwsS6pfUzPZzbPQQ==
+ bh=/CQLf0byCwfWfIOhzxJExSyRMDH1gXRSCLAztnXOiH0=;
+ b=MSgPmTA9KRBCFmEnJvhUn08+NhM0P68ddoeUBNLpX8iN43gPN5RWZlhs2mzEbHhMjY9s+pukf6ymuwY8NF2s1WQEJRonjwm7ya7LIk+BbjA8o7dxlEK8l2FougoabOj++neX8TcjZFu6hresFrgYsgF4+9wIh5ROQFphtqFsWvd1xfn5+DKw5psJoDOwC8oEmSxcmCBT7ZHIOuiFFzH8GZwTbUDehoHFtbhHot4b88MaCMxWpCyHWvFWL7Obn/tZtlxY+CBnJH/3aiXy/MrNUastMeTJhJKrzg/hs7Zx0TYwvVw9otA3vJ6Nzimw6jVVSd/IyDT/UvR/qSYQk1a9QA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: syzkaller.appspotmail.com; dkim=none (message not
- signed) header.d=none;syzkaller.appspotmail.com; dmarc=none action=none
- header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN7PR15MB4176.namprd15.prod.outlook.com (2603:10b6:806:10c::23) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/CQLf0byCwfWfIOhzxJExSyRMDH1gXRSCLAztnXOiH0=;
+ b=VMUz5OUKl4MDnZZgZL0R+jfV4WQcP893YTLJFyq0mkbFtlUE+tK9U5V/LwjVrowJ9HdO4q1alFPO9SwKvnkBhIFcnkIB3Q1w1D42+l+AkOsDsHFBO9XHr/4RDehs7j8/VHhp5TGEGcJWyFB8qGWwtFaUUR7CGDGqm3jlvU5FztU=
+Authentication-Results: fb.com; dkim=none (message not signed)
+ header.d=none;fb.com; dmarc=none action=none header.from=oracle.com;
+Received: from SJ0PR10MB4494.namprd10.prod.outlook.com (2603:10b6:a03:2d4::12)
+ by BYAPR10MB3269.namprd10.prod.outlook.com (2603:10b6:a03:155::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15; Mon, 9 Aug
- 2021 22:34:37 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
- 22:34:37 +0000
-Subject: Re: [PATCH bpf v2 1/2] bpf: don't call
- bpf_get_current_[ancestor_]cgroup_id() in sleepable progs
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        <syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com>
-References: <20210809060310.1174777-1-yhs@fb.com>
- <20210809060315.1175802-1-yhs@fb.com>
- <CAEf4BzY+-v4NhMmHnr8agjWj6+O7O-J909+TM1HSZUE6WYifrA@mail.gmail.com>
- <0b299368-370f-2292-2ae6-e86a9bc9a240@fb.com>
- <CAEf4BzaoLuTqp+c7HKmV98=v59xWRhAnCBJ8Ztt0=Vk6zavCVg@mail.gmail.com>
- <db0d54d5-8c11-54f1-45e2-0b85d5f02bd6@iogearbox.net>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <c02034f5-0849-f3aa-bb99-076f2a60d590@fb.com>
-Date:   Mon, 9 Aug 2021 15:34:34 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <db0d54d5-8c11-54f1-45e2-0b85d5f02bd6@iogearbox.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Mon, 9 Aug
+ 2021 22:38:32 +0000
+Received: from SJ0PR10MB4494.namprd10.prod.outlook.com
+ ([fe80::588f:a774:17de:1d1b]) by SJ0PR10MB4494.namprd10.prod.outlook.com
+ ([fe80::588f:a774:17de:1d1b%3]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
+ 22:38:32 +0000
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in
+ _copy_to_iter
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        christian.brauner@ubuntu.com, cong.wang@bytedance.com,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jamorris@linux.microsoft.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, shuah@kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <0000000000006bd0b305c914c3dc@google.com>
+ <0c106e6c-672f-474e-5815-97b65596139d@oracle.com>
+ <CACT4Y+bK61B3r5Rx150FwKt5WJ8T-q-X0nC-r=oH7x4ZU5vdVw@mail.gmail.com>
+ <e99cc036-2f83-ff9e-ea68-3eeb19bd4147@oracle.com>
+ <CACT4Y+bFLFg9WUiGWq=8ubKFug47=XNjqQJkTX3v1Hos0r+Z_A@mail.gmail.com>
+ <2901262f-1ba7-74c0-e5fc-394b65414d12@oracle.com>
+ <YRGKWP7/n7+st7Ko@zeniv-ca.linux.org.uk>
+ <YRGNIduUvw/kCLIU@zeniv-ca.linux.org.uk>
+ <c1ec22f6-ed3b-fe70-2c7e-38a534f01d2b@oracle.com>
+ <YRGg/yTXTAL/1whP@zeniv-ca.linux.org.uk>
+From:   Shoaib Rao <rao.shoaib@oracle.com>
+Message-ID: <bc2dfe6e-a8b0-dd1f-fc83-77f41fca60f5@oracle.com>
+Date:   Mon, 9 Aug 2021 15:38:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+In-Reply-To: <YRGg/yTXTAL/1whP@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-ClientProxiedBy: MWHPR18CA0046.namprd18.prod.outlook.com
- (2603:10b6:320:31::32) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+X-ClientProxiedBy: SJ0PR03CA0016.namprd03.prod.outlook.com
+ (2603:10b6:a03:33a::21) To SJ0PR10MB4494.namprd10.prod.outlook.com
+ (2603:10b6:a03:2d4::12)
+MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::1ad4] (2620:10d:c090:400::5:61de) by MWHPR18CA0046.namprd18.prod.outlook.com (2603:10b6:320:31::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Mon, 9 Aug 2021 22:34:36 +0000
+Received: from [IPv6:2606:b400:400:744d:8000::918] (2606:b400:8301:1010::16aa) by SJ0PR03CA0016.namprd03.prod.outlook.com (2603:10b6:a03:33a::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Mon, 9 Aug 2021 22:38:31 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 73ea353e-878f-4582-1204-08d95b85de8c
-X-MS-TrafficTypeDiagnostic: SN7PR15MB4176:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN7PR15MB417608CDF56322C516AD552DD3F69@SN7PR15MB4176.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 67836af4-8285-41ed-4612-08d95b866ab7
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3269:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB326955D8BE1C8218D73BCF7DEFF69@BYAPR10MB3269.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:146;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BsUryXrkQeIEEFEG/i2OyxFXf+EgcLFbCbsWELMJwnIuSduNSYRehLVr5YX1N6TAEOAZryG7vFby/+eqZ/LWnImzriVFgnxUfE+R1igWXx41dU7Hwo4lmWhjBL0sG3gwX3rz1ql+dsc7Fs7qYpkpEVWV5RseYeQvUg6f9ZGFN+52GCA6GHL5XprT7qLeW5OZw52tVB/QLiYd4Q8YjWu4NAjT3Ux5VxNS5ixYbpnTqJPuYP5o5U5tWirBk4040ZQcw4B70PhG2FAHFl1wRVo2tzG1P3CWoc7HhjWQ9TQJYPOwHTc96oV58zsJRjpICX1Rdt403Co0S0XcTt1QBEfbBDCCitAL18ACqqQFhES1OOSty+/FidCNxR5avAey9PUUOc7MZOeURmBl5digzyLy2PxFo5pGI6+SqI15ZBfww5DJtzYvC4EZER1udGIZmf/oNG12A5UAYBU31pM/XTuRvb8HJhpTbCF6UHwRZ1M2IVfcVE9/FXb1BqHckpCwN8sqUvkXKlRQ9Vcw9YsFFW4QL5oHQrGN4jGd2lY+t9NtAbdXFl7PNJsOhY28JCfmDzKbwHbuR1/GddECsybGG+ZXiT0XfT7K5kzI3RnhYiosqVnKT6ewH8BX3RmAC3V+T87mmRnYDnnitOe5PGtRKf+f0Mr1owkOpahFuMtbDD+KtvSGlI+V8uIAeUnDKBg3rVjYUpzJpImFOtigmZ9f49wRrCNWB/x/wbmvSGu+RzQxpiv5J46HxcvGoLQwrV6ecdkAPd83UX/VewbE9vLGOOl/gKzVXAA0fMmoMzPNgmauR1AoHSHhvd+sLFJrhzRIfB0N
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(39860400002)(396003)(83380400001)(86362001)(6486002)(31696002)(8676002)(186003)(966005)(4326008)(38100700002)(478600001)(2616005)(54906003)(66476007)(66556008)(2906002)(316002)(36756003)(8936002)(66946007)(53546011)(31686004)(110136005)(5660300002)(52116002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: oRSG20EGEFUY31l+q5BNqSGxNG1OM4DBwTASV+kbRrKEy+Bgox+ABSgDgsxVa8Yc2EXz/2ebvjjVLgz+lQyBeWDz5SpJBUYbMgJjFtn/HvSmQ3dK648dwSHSqRvzSLATb9GQdEbVJjROp0mULHcnUNvIJ5htGZsr8qEze9Vnmu1Ld82lW1kjW6rts4zGaP3pfJDDyNw73dmTG7YqN2A3QpvXstYONeJcSpVe59fK71cnfSt39rYQKeTl4t54oFkB7uvEUsPX01XWbm0lF64Cu5dOCmyn3y+dKPaft3o/SgncsA6sF+kdXXAAjYdJQjNtcz/HQLmLlVQAZ4/9R2kRqge7m3KnkXj7zsHZ0iCOFf0JOiSeVaeGTaIChSEFLTrYxBCywXHPgsR2TZ9x7crsfpSw+fYYvXICbrA3j5ZiBtGiR7x/DdMPs6rvstG2NcoS5yfpruLPOoXiALdh9zSWe9My1ZiRuuJllSMFQUWG5rg1bOpafO3nbMvZjBNbmzHEfKRyXNYv8VvVL5ctOZck4QIK3jvhNM3qX+J1t1VCKtPDokRLeX18JI+u6FmcX6pZqs0eDB42NFhglrXkUrLmcZLkoc3Ldhm4nepp6ajIPXeCwa1hNAWBNifYk+OklOC1dHFDulzgXcO7Yln/X5sjJ9v0llRa8Ywf+3JIse5uKRIhXI/vJKJDkEBv+s49SwIpl1JZuquyF5L2zaIpPwEhzppDotZKMIYzW+srysvvCbnz66z6M2gGY8qH9eot4pfp
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4494.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(366004)(136003)(39860400002)(7416002)(478600001)(53546011)(31696002)(5660300002)(8676002)(6916009)(66946007)(2906002)(2616005)(83380400001)(66476007)(66556008)(4326008)(31686004)(316002)(8936002)(86362001)(54906003)(186003)(38100700002)(6486002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UXpjblRhV1A1d2JtVnZvVGJqUDNweDdwcWh1dGNuSXZtbThjOHNQRjJmVzBG?=
- =?utf-8?B?L0VJTGpmNzdxMjFYcGhYMHRGUUtJMmtKdlJmcGVGQ1ZnZ2VvYmJZa0hia04y?=
- =?utf-8?B?L2pjSlQ4WDZHTml5RitCY1BsRGNkdzEzaHFDUG8wN081VjQyU3Jkd2x2SmVU?=
- =?utf-8?B?WVlqUHhFN2VZM2hMN2lGcHlJVmtwRU4xY1FzVG9ZdENlYUcweitNSXNBSFdi?=
- =?utf-8?B?M1hNOGRXK20vT3JqZDYvY3ZWZFlLWWdUR1JneW1PQ2dUUTFuU1JpaERsN2NJ?=
- =?utf-8?B?V1dUQWtjUytkaVNHOGhkV0NrSmxZdm1GZTB3Mkh5SFB6RkZhYStlOUxIaG9v?=
- =?utf-8?B?MEJrSTIxMkROM0JoZkxYQzBVYUtnZDdaR2tCSWk0b25rNWVSNitjMXIyRFlj?=
- =?utf-8?B?SWtwWVFsOEZaNGtjWmI1STlKZWZNZFNhUE5UNE5TNTZmYTNPOGRDVy9vWTFD?=
- =?utf-8?B?UGV3YTZScEsrTjhyNkhwa3NBUG82L2Mrak14aUd1NjUwRlpNZ2dwWE9LRStF?=
- =?utf-8?B?VzhrZGNvTWtJeEFlZjdrMExnU1Zhc2VERStiY3R2WnAvcmhxSmtlMG5QYWk0?=
- =?utf-8?B?KzJsTHhxS0pNRytmWjEwdkxoRjVPbVlvQmY5Tk8vMDFMaUV3TEpiUU0reDRq?=
- =?utf-8?B?bnh2dFFzOVRadjBpYmUrQm5QUkJUdDZhRytZRXdUUkNIbE5hMmk5YUl4SkxW?=
- =?utf-8?B?c05pNGlLMUZ2SHhCczcvVllGU3UrNW5GKzZveDJTUWc0VUdvbmQvT0hFd2Ez?=
- =?utf-8?B?VWFHU3lDTXErWSsycUlmSXpyRERuK3hJUE1HeTJnNW1oVDM3OVprTVNyRFV3?=
- =?utf-8?B?STZRNWdaMnhHVUpPQUJrUFBHRDdQdTNWemp1MWlWa2pwRFV5ZitXZ1lKcFIw?=
- =?utf-8?B?TjJNNzEySkZiQzNOdUIwNlFucy9XVEhYaU1uOFErOFh2NE0zNS8wRTlRVmpR?=
- =?utf-8?B?d0FsOWxxdFFXOTlNR1phU3hWRUdXNzJaN1JvRGJtMm9VTFF2alZtRDVXMUtj?=
- =?utf-8?B?ME0zRE8xVjVneW9XVUxSdkhzVUVSQlZFcVdnZmZEbDhBU0pyVWZSeVQ5TzRK?=
- =?utf-8?B?UjhWSzc3NkN4N21OWXVaWGltZkdUbWl0WFc2RzdMTXBid0prRnd1aXliVHY2?=
- =?utf-8?B?Mi9XTHJjajRKb2JWUFJpMDBzNUoyREowdmE3eEptZ2d2TFVXUzhMS1dNQzUv?=
- =?utf-8?B?VTdHd0ZjTFFMSERlSFAwd0orcU91UFJra2F5MjVpVVVBTXVUcHFqdmJYZ0dN?=
- =?utf-8?B?MWlFTmF2ODNRQnNvdytuN0grWGlvWmNncUFBT0lXcEs3U3pzKysyNzRmR0VR?=
- =?utf-8?B?OVFrcDNwS0FEMEFPWDkrV25reThXaEpCbCt0Qnh1MFRXYTVyWitjUmdGamFE?=
- =?utf-8?B?c3RpUUozcHhVRFZMc2dFb213MmpPMldWenlzRzNVMGk0K1pEYURpZzRSY2E5?=
- =?utf-8?B?R1IxSnhUeTNUVS91ZE5aOEJCNVN3K1BJNGYrSVBoN2pVTzROeUwvTGI5MjNk?=
- =?utf-8?B?UEpPRHc4YkxkN2NqREE3YkZYT2MxTzFKTm04RGUwcnJXY2dyMHovTG1SdFp5?=
- =?utf-8?B?YW1CMUs4YmVKRjd1a2p4bnM5SVlZNGgwMDh2SVZWMkhQaWFUT1crTzgxMzZs?=
- =?utf-8?B?bW9ZUVZwUldsSHNRSEtEeFZKRlZFK0UyMi9NMDEzVTBPNVlxNWNrN1pJZ3c2?=
- =?utf-8?B?S1I5VVB6N0ZXc1I0d1o4VEJ1bFJCLzUyK2JhbjBQTzZHSGZjMW1ET2h4ZUJt?=
- =?utf-8?B?eVM4QkxleS95NDdUZ1ZDeWNJdUF5RHdEVUVUcDQyTlJFTyt2aXNWRzlzRkFP?=
- =?utf-8?B?cE9FVURMaVFQOWowcFpwQT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73ea353e-878f-4582-1204-08d95b85de8c
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TFUxbU5XQWJVNlg0MXVCVStMcDkwMWU3TnJGZUQrcENhZmVyenNXdWtGa251?=
+ =?utf-8?B?cUNmaUgzQnVoNjF0ejVYUllTdUs1eGpaK3NqNGcvdWJLOTY1WmNLTkg5aFFX?=
+ =?utf-8?B?NzV3Tm1OOVZMZTQwUU9JOHVoUWs0RFE0Vkw4N1lUaGp2cFhxZjB3NDNWUVdD?=
+ =?utf-8?B?RnNzUnMrT0gxc2RMUElxVTMra0x3bHVaV2VWR29sNzRBcmxaYzBFYm5SWkJv?=
+ =?utf-8?B?R3VRT1NESFZEaGp5eWp0M3FmeGRzbTlRdWVlSHZnTTE0ZXd2dGdneWd0cnVP?=
+ =?utf-8?B?aU5LWk9QcjNwL01VNVRrRUphMEYxZ0lpZ095Vjd5ejlQbVVWWHlsTExaSGdn?=
+ =?utf-8?B?VEJHVFlZWFVwcDFmMFdiaXE0dEtIR3BwRkdRbVk2R2N2Tnc3TSthL1pZR0Fh?=
+ =?utf-8?B?VkUxaEozRm8wUnExcmlhblU3RVBDZVdpZnBOZmliWEFvNWFCWG1SQ25RZkF5?=
+ =?utf-8?B?Z1RtSDJSbEJGRFFrdGNHeEpma0h4cDNRWCsxUFcrUDMxdXBVNm9naEwrbU5S?=
+ =?utf-8?B?ekJwRVhPelNiaXgwUUNUbldhSEhyTndnTy9ibklFWUN3NkZHbjBwUjhVRzNq?=
+ =?utf-8?B?VXd6Y2x1U2pjRTJLKzIzUU5TWHR5MktSS3YzQ212TXVzUENQTGdEdkMzR3lZ?=
+ =?utf-8?B?UG1pUDE1WkNsQ1lvR0F5blN5Vk1zK3d3MDJBSGlCTFJtQ015emRWSzVEOC94?=
+ =?utf-8?B?RWd4Mmp3MXBCSHdOUFdYNml4Vm5vSmpoL0lhdzVwdzlJRlliVVdjcEVuK2Y0?=
+ =?utf-8?B?eDVKRUFDampiUE9iZnd5RUdYUGdydVhtSmUxWTdaelJyT3ZHblZWZGpWTkxz?=
+ =?utf-8?B?MmIwOHA1MVE1QzNLSlZMTGFVWTZIM2JocXVmeWZEZ2pPSU40bXNwdDd2d1h6?=
+ =?utf-8?B?dWlCTXc1bXliVVljNG1LOUQvb1RoQVVBZW82Nk5KVGFFRW1xUzFJV3lvcjB4?=
+ =?utf-8?B?ZTR2dk9VUm5YYTMxTzVYUHcxWEttcEY5YWJBbUtKdGs5cFJOUWIwUSt2b0ky?=
+ =?utf-8?B?cHJPV1BLQ1ZPQVVGM0FUWnZndUxmczBmM205VEU1N20yUG9WS2JFQkhWb0Rp?=
+ =?utf-8?B?dWw4RkV3VHNZMHh3Z0NORDhIcHRBbTNkSUZySXZxR2t2Y3JzNmxlZFVvTUR5?=
+ =?utf-8?B?RDQ1QTNzRFAvNTB0SVN6WEgvRGtZSTUwWml3Mm9KbHc5VGI0WTBsSytvdUZZ?=
+ =?utf-8?B?eEdZdWRwSHNyRU1qdW53Rlcwb3BOc0VNYVZpQnFTQkR6amhHS1VaTjA5bjlE?=
+ =?utf-8?B?QTdQY3RXT1RnTXA5dy83Y01GYWYrcURrVnNESllUcWM3SkdLZC9OU21CUmlH?=
+ =?utf-8?B?Z24vNWhOYjRDelhMT3Q4UDl4WFZGSjNHbUdzRlMxR2oyOE9od1pKOTM5SzFN?=
+ =?utf-8?B?OEFGU2gzdHRkRWZlb0JhRnlKSnVCcXBEQVlEcFJLUGpPNityVDJYOThSb0pL?=
+ =?utf-8?B?aDMzNFZMKy8xa0c2bnowM2VyUFZwdjdBa0JjU0RQeHgrWlJDb0Rnajk5NlJQ?=
+ =?utf-8?B?RmpCUHJoL21pUjFJd0tGT0VmWm9LZERsMVNOaVBud0FZb1IyVlhZN0o0RitP?=
+ =?utf-8?B?WHlhSHQ4bGlyKzJzQ09zdUthQzduVmJXS0tva29sWWpvZFNIOHM0akxkQ3Z0?=
+ =?utf-8?B?YVN4ZHV0TkhSUit3dDlMY1I1UmJqN3lZb3JXQTJweTJod1FiY2ZBcEx2ZkZE?=
+ =?utf-8?B?MVBGdkp1UWpJVUVwa05UWU5HRHA4QVY0MEFjL3pYbEJVWFhoTW5vY0RjRSsy?=
+ =?utf-8?B?czdJKzRTSzRiVnlXRzY0ZTZHeXU0dERWVWlTUUVJMHpQalZ1QklyM2JCemRk?=
+ =?utf-8?Q?XWdbFT0WGEWi9h9r+cy0Jpr+KtsnTUnyag3Tc=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67836af4-8285-41ed-4612-08d95b866ab7
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4494.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 22:34:37.4783
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2021 22:38:32.5330
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZSO/0vcX1bHjy/yYJ8ZizVoEwwIbGhb4tTO0qXAtPAWZdennH2zxnI4798Apywcx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB4176
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: FL869ixxMbvhIX7zgHPiY-OmmDrZdxBO
-X-Proofpoint-ORIG-GUID: FL869ixxMbvhIX7zgHPiY-OmmDrZdxBO
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-09_09:2021-08-06,2021-08-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- clxscore=1015 impostorscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0
- adultscore=0 priorityscore=1501 spamscore=0 bulkscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108090159
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-UserPrincipalName: TtcsVkq3q0J4SVVfALuukHAqWpQhpvK47uKempXBZ0/zkvRU0+5NWYZChR/R5MNeUg7nJw5vVuraHFBNkJUTTQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3269
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10071 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108090159
+X-Proofpoint-ORIG-GUID: m4XFGSSE5GcxlKD6ORgVufA9l2quTTaa
+X-Proofpoint-GUID: m4XFGSSE5GcxlKD6ORgVufA9l2quTTaa
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-
-On 8/9/21 1:29 PM, Daniel Borkmann wrote:
-> On 8/9/21 7:58 PM, Andrii Nakryiko wrote:
->> On Mon, Aug 9, 2021 at 10:41 AM Yonghong Song <yhs@fb.com> wrote:
->>> On 8/9/21 10:18 AM, Andrii Nakryiko wrote:
->>>> On Sun, Aug 8, 2021 at 11:03 PM Yonghong Song <yhs@fb.com> wrote:
->>>>>
->>>>> Currently, if bpf_get_current_cgroup_id() or
->>>>> bpf_get_current_ancestor_cgroup_id() helper is
->>>>> called with sleepable programs e.g., sleepable
->>>>> fentry/fmod_ret/fexit/lsm programs, a rcu warning
->>>>> may appear. For example, if I added the following
->>>>> hack to test_progs/test_lsm sleepable fentry program
->>>>> test_sys_setdomainname:
->>>>>
->>>>>     --- a/tools/testing/selftests/bpf/progs/lsm.c
->>>>>     +++ b/tools/testing/selftests/bpf/progs/lsm.c
->>>>>     @@ -168,6 +168,10 @@ int BPF_PROG(test_sys_setdomainname, 
->>>>> struct pt_regs *regs)
->>>>>             int buf = 0;
->>>>>             long ret;
->>>>>
->>>>>     +       __u64 cg_id = bpf_get_current_cgroup_id();
->>>>>     +       if (cg_id == 1000)
->>>>>     +               copy_test++;
->>>>>     +
->>>>>             ret = bpf_copy_from_user(&buf, sizeof(buf), ptr);
->>>>>             if (len == -2 && ret == 0 && buf == 1234)
->>>>>                     copy_test++;
->>>>>
->>>>> I will hit the following rcu warning:
->>>>>
->>>>>     include/linux/cgroup.h:481 suspicious rcu_dereference_check() 
->>>>> usage!
->>>>>     other info that might help us debug this:
->>>>>       rcu_scheduler_active = 2, debug_locks = 1
->>>>>       1 lock held by test_progs/260:
->>>>>         #0: ffffffffa5173360 (rcu_read_lock_trace){....}-{0:0}, at: 
->>>>> __bpf_prog_enter_sleepable+0x0/0xa0
->>>>>       stack backtrace:
->>>>>       CPU: 1 PID: 260 Comm: test_progs Tainted: G           O      
->>>>> 5.14.0-rc2+ #176
->>>>>       Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 
->>>>> rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->>>>>       Call Trace:
->>>>>         dump_stack_lvl+0x56/0x7b
->>>>>         bpf_get_current_cgroup_id+0x9c/0xb1
->>>>>         bpf_prog_a29888d1c6706e09_test_sys_setdomainname+0x3e/0x89c
->>>>>         bpf_trampoline_6442469132_0+0x2d/0x1000
->>>>>         __x64_sys_setdomainname+0x5/0x110
->>>>>         do_syscall_64+0x3a/0x80
->>>>>         entry_SYSCALL_64_after_hwframe+0x44/0xae
->>>>>
->>>>> I can get similar warning using 
->>>>> bpf_get_current_ancestor_cgroup_id() helper.
->>>>> syzbot reported a similar issue in [1] for syscall program. Helper
->>>>> bpf_get_current_cgroup_id() or bpf_get_current_ancestor_cgroup_id()
->>>>> has the following callchain:
->>>>>      task_dfl_cgroup
->>>>>        task_css_set
->>>>>          task_css_set_check
->>>>> and we have
->>>>>      #define task_css_set_check(task, 
->>>>> __c)                                   \
->>>>>              
->>>>> rcu_dereference_check((task)->cgroups,                          \
->>>>>                      lockdep_is_held(&cgroup_mutex) 
->>>>> ||                       \
->>>>>                      lockdep_is_held(&css_set_lock) 
->>>>> ||                       \
->>>>>                      ((task)->flags & PF_EXITING) || (__c))
->>>>> Since cgroup_mutex/css_set_lock is not held and the task
->>>>> is not existing and rcu read_lock is not held, a warning
->>>>> will be issued. Note that bpf sleepable program is protected by
->>>>> rcu_read_lock_trace().
->>>>>
->>>>> To fix the issue, let us make these two helpers not available
->>>>> to sleepable program. I marked the patch fixing 95b861a7935b
->>>>> ("bpf: Allow bpf_get_current_ancestor_cgroup_id for tracing")
->>>>> which added bpf_get_current_ancestor_cgroup_id() to
->>>>> 5.14. I think backporting 5.14 is probably good enough as sleepable
->>>>> progrems are not widely used.
->>>>>
->>>>> This patch should fix [1] as well since syscall program is a sleepable
->>>>> program and bpf_get_current_cgroup_id() is not available to
->>>>> syscall program any more.
->>>>>
->>>>>    [1] 
->>>>> https://lore.kernel.org/bpf/0000000000006d5cab05c7d9bb87@google.com/
->>>>>
->>>>> Reported-by: syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
->>>>> Fixes: 95b861a7935b ("bpf: Allow bpf_get_current_ancestor_cgroup_id 
->>>>> for tracing")
->>>>> Signed-off-by: Yonghong Song <yhs@fb.com>
->>>>> ---
->>>>>    kernel/trace/bpf_trace.c | 6 ++++--
->>>>>    1 file changed, 4 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->>>>> index b4916ef388ad..eaa8a8ffbe46 100644
->>>>> --- a/kernel/trace/bpf_trace.c
->>>>> +++ b/kernel/trace/bpf_trace.c
->>>>> @@ -1016,9 +1016,11 @@ bpf_tracing_func_proto(enum bpf_func_id 
->>>>> func_id, const struct bpf_prog *prog)
->>>>>    #endif
->>>>>    #ifdef CONFIG_CGROUPS
->>>>>           case BPF_FUNC_get_current_cgroup_id:
->>>>> -               return &bpf_get_current_cgroup_id_proto;
->>>>> +               return prog->aux->sleepable ?
->>>>> +                      NULL : &bpf_get_current_cgroup_id_proto;
->>>>>           case BPF_FUNC_get_current_ancestor_cgroup_id:
->>>>> -               return &bpf_get_current_ancestor_cgroup_id_proto;
->>>>> +               return prog->aux->sleepable ?
->>>>> +                      NULL : 
->>>>> &bpf_get_current_ancestor_cgroup_id_proto;
->>>>
->>>> This feels too extreme. I bet these helpers are as useful in sleepable
->>>> BPF progs as they are in non-sleepable ones.
->>>>
->>>> Why don't we just implement a variant of get_current_cgroup_id (and
->>>> the ancestor variant as well) which takes that cgroup_mutex lock, and
->>>> just pick the appropriate implementation. Wouldn't that work?
+On 8/9/21 2:41 PM, Al Viro wrote:
+> On Mon, Aug 09, 2021 at 01:37:08PM -0700, Shoaib Rao wrote:
+>
+>>> +#if IS_ENABLED(CONFIG_AF_UNIX_OOB)
+>>> +               mutex_lock(&u->iolock);
+>>> +               unix_state_lock(sk);
+>>> +
+>>> +               err = unix_stream_recv_urg(state);
+>>> +
+>>> +               unix_state_unlock(sk);
+>>> +               mutex_unlock(&u->iolock);
+>>> +#endif
 >>>
->>> This may not work. e.g., for sleepable fentry program,
->>> if the to-be-traced function is inside in cgroup_mutex, we will
->>> have a deadlock.
+>>> is 100% broken, since you *are* attempting to copy data to userland between
+>>> spin_lock(&unix_sk(s)->lock) and spin_unlock(&unix_sk(s)->lock).
+>> Yes, but why are we calling it unix_state_lock() why not
+>> unix_state_spinlock() ?
+> We'd never bothered with such naming conventions; keep in mind that
+> locking rules can and do change from time to time, and encoding the
+> nature of locking primitive into the name would result in tons of
+> noise.
+Rules/Order and Semantics can change, but naming IMHO helps out a lot. 
+There are certain OS's where spinlocks only spin for a bit after that 
+they block. However, they still are called spinlocks.
+>
+>> I have tons of experience doing kernel coding and you can never ever cover
+>> everything, that is why I wanted to root cause the issue instead of just
+>> turning off the check.
 >>
->> We can also do preempty_disable() + rcu_read_lock() inside the helper
->> itself, no? I mean in the new "sleepable" variant.
-> 
-> Yep, we do that for example in c5dbb89fc2ac ("bpf: Expose 
-> bpf_get_socket_cookie
-> to tracing programs") as well (the sock_gen_cookie() disables preemption).
+>> Imagine you or Eric make a mistake and break the kernel, how would you guys
+>> feel if I were to write a similar email?
+> Moderately embarrassed, at a guess, but what would that have to do with
+> somebody pointing the bug out?  Bonehead mistakes happen, they are embarrassing
+> no matter who catches them - trust me, it's no less unpleasant when you end
+> up being one who finds your own bug months after it went into the tree.  Been
+> there, done that...
+>
+> Since you asked, as far as my reactions normally go:
+> 	* I made a mistake that ended up screwing people over => can be
+> hideously embarrassing, no matter what.  No cause for that in your case,
+> AFAICS - it hadn't even gone into mainline yet.
+> 	* I made a dumb mistake that got caught (again, doesn't matter
+> by whom) => unpleasant; shit happens (does it ever), but that's not
+> a tragedy.  Ought to look for the ways to catch the same kind of mistakes
+> and see if I have stepped into the same problem anywhere else - often
+> enough the blind spots strike more than once.  If the method of catching
+> the same kind of crap ends up being something like 'grep for <pattern>,
+> manually check the instances to weed out the false positive'... might
+> be worth running over the tree; often enough the blind spots are shared.
+> Would be partially applicable in your case ("if using an unfamiliar locking
+> helper, check what it does"), but not easily greppable.
+> 	* I kept looking at bug report, missing the relevant indicators
+> despite the increasingly direct references to those by other people =>
+> mildly embarrassing (possibly more than mildly, if that persists for long).
+> Ought to get some coffee, wake up properly (if applicable, that is) and make
+> notes for myself re what to watch out for.  Partially applicable here;
+> I'm no telepath, but at a guess you missed the list of locks in the report
+> _and_ missed repeated references to some spinlock being involved.
+> Since the call chain had not (AFAICS) been missed, the question
+> "which spinlock do they keep blathering about?" wouldn't have been hard.
+> Might be useful to make note of, for the next time you have to deal with
+> such reports.
+> 	* Somebody starts asking whether I bloody understand something
+> trivial => figure out what does that have to do with the situation at
+> hand, reply with the description of what I'd missed (again, quite possibly
+> the answer will be "enough coffee") and move on to figuring out how to
+> fix the damn bug.  Not exactly applicable here - the closest I can see
+> is Eric's question regarding the difference between mutex and spinlock.
+> In similar situation I'd go with something along the lines of "Sorry,
+> hadn't spotted the spinlock in question"; your reply had been a bit
+> more combative than that, but that's a matter of taste.  None of my
+> postings would fit into that class, AFAICS...
+> 	* Somebody explains (in painful details) what's wrong with the
+> code => more or less the same as above, only with less temptation (for
+> me) to get defensive.  Reactions vary - some folks find it more offensive
+> than the previous one, but essentially it's the same thing.
+>
+> 	The above describes my reactions, in case it's not obvious -
+> I'm not saying that everyone should react the same way, but you've
+> asked how would I (or Eric) react in such-and-such case.  And I can't
+> speak for Eric, obviously...
 
-I think rcu_read_lock() is enough. For all the cases I mentioned in the 
-above, we already have migrate_disable(). Together with rcu_read_lock(),
-we should be okay. For non-sleepable programs (tracing,lsm), the helpers
-are protected with migrate_disable() and rcu_read_lock().
+Al,
 
-> 
-> Thanks,
-> Daniel
+I really appreciate the time you have taken to write the email. I agree 
+with what you have stated 99%. My displeasure is with the fact that when 
+I asked what conditions trigger this error (not familiar with the 
+checker), no one replied. As I said in the emails, I did suspect the 
+locks but did not have time to look at the definition, your email 
+arrived as I was looking at the definition. It would have been better 
+and polite to say, are you sure you are not holding a spinlock? Would 
+that not solve the issue? Why do we have to always assume that the other 
+person is not knowledgeable and inferior to us.
+
+Is there any documentation that lists possible reasons when the checker 
+points to an error?
+
+Thanks again for the email.
+
+Regards,
+
+Shoaib
+
+
