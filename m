@@ -2,40 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE753E4FB1
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 01:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E25873E4FFD
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 01:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236970AbhHIXAp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 19:00:45 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57736 "EHLO
+        id S233112AbhHIXbO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 19:31:14 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36060 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233933AbhHIXAo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Aug 2021 19:00:44 -0400
+        with ESMTP id S233018AbhHIXbO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 19:31:14 -0400
 Received: from sslproxy01.your-server.de ([78.46.139.224])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mDEFq-0007BB-D9; Tue, 10 Aug 2021 01:00:22 +0200
+        id 1mDEjL-0009y9-SO; Tue, 10 Aug 2021 01:30:51 +0200
 Received: from [85.5.47.65] (helo=linux.home)
         by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mDEFq-0009jx-7J; Tue, 10 Aug 2021 01:00:22 +0200
-Subject: Re: [PATCH v3 bpf-next 02/14] bpf: refactor BPF_PROG_RUN_ARRAY family
- of macros into functions
+        id 1mDEjL-000PKg-Kk; Tue, 10 Aug 2021 01:30:51 +0200
+Subject: Re: [PATCH v3 bpf-next 05/14] bpf: allow to specify user-provided
+ bpf_cookie for BPF perf links
 To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         ast@kernel.org
-Cc:     kernel-team@fb.com, Peter Zijlstra <peterz@infradead.org>,
-        Yonghong Song <yhs@fb.com>
+Cc:     kernel-team@fb.com, Peter Zijlstra <peterz@infradead.org>
 References: <20210730053413.1090371-1-andrii@kernel.org>
- <20210730053413.1090371-3-andrii@kernel.org>
+ <20210730053413.1090371-6-andrii@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <578a340e-1880-bea9-62c2-a028ca2fa321@iogearbox.net>
-Date:   Tue, 10 Aug 2021 01:00:21 +0200
+Message-ID: <5e026f3e-d94a-b8b0-8564-e16b73d6bbcc@iogearbox.net>
+Date:   Tue, 10 Aug 2021 01:30:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210730053413.1090371-3-andrii@kernel.org>
+In-Reply-To: <20210730053413.1090371-6-andrii@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,240 +45,141 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 7/30/21 7:34 AM, Andrii Nakryiko wrote:
-> Similar to BPF_PROG_RUN, turn BPF_PROG_RUN_ARRAY macros into proper functions
-> with all the same readability and maintainability benefits. Making them into
-> functions required shuffling around bpf_set_run_ctx/bpf_reset_run_ctx
-> functions. Also, explicitly specifying the type of the BPF prog run callback
-> required adjusting __bpf_prog_run_save_cb() to accept const void *, casted
-> internally to const struct sk_buff.
+> Add ability for users to specify custom u64 value (bpf_cookie) when creating
+> BPF link for perf_event-backed BPF programs (kprobe/uprobe, perf_event,
+> tracepoints).
 > 
-> Further, split out a cgroup-specific BPF_PROG_RUN_ARRAY_CG and
-> BPF_PROG_RUN_ARRAY_CG_FLAGS from the more generic BPF_PROG_RUN_ARRAY due to
-> the differences in bpf_run_ctx used for those two different use cases.
+> This is useful for cases when the same BPF program is used for attaching and
+> processing invocation of different tracepoints/kprobes/uprobes in a generic
+> fashion, but such that each invocation is distinguished from each other (e.g.,
+> BPF program can look up additional information associated with a specific
+> kernel function without having to rely on function IP lookups). This enables
+> new use cases to be implemented simply and efficiently that previously were
+> possible only through code generation (and thus multiple instances of almost
+> identical BPF program) or compilation at runtime (BCC-style) on target hosts
+> (even more expensive resource-wise). For uprobes it is not even possible in
+> some cases to know function IP before hand (e.g., when attaching to shared
+> library without PID filtering, in which case base load address is not known
+> for a library).
 > 
-> I think BPF_PROG_RUN_ARRAY_CG would benefit from further refactoring to accept
-> struct cgroup and enum bpf_attach_type instead of bpf_prog_array, fetching
-> cgrp->bpf.effective[type] and RCU-dereferencing it internally. But that
-> required including include/linux/cgroup-defs.h, which I wasn't sure is ok with
-> everyone.
+> This is done by storing u64 bpf_cookie in struct bpf_prog_array_item,
+> corresponding to each attached and run BPF program. Given cgroup BPF programs
+> already use two 8-byte pointers for their needs and cgroup BPF programs don't
+> have (yet?) support for bpf_cookie, reuse that space through union of
+> cgroup_storage and new bpf_cookie field.
 > 
-> The remaining generic BPF_PROG_RUN_ARRAY function will be extended to
-> pass-through user-provided context value in the next patch.
+> Make it available to kprobe/tracepoint BPF programs through bpf_trace_run_ctx.
+> This is set by BPF_PROG_RUN_ARRAY, used by kprobe/uprobe/tracepoint BPF
+> program execution code, which luckily is now also split from
+> BPF_PROG_RUN_ARRAY_CG. This run context will be utilized by a new BPF helper
+> giving access to this user-provided cookie value from inside a BPF program.
+> Generic perf_event BPF programs will access this value from perf_event itself
+> through passed in BPF program context.
 > 
-> Acked-by: Yonghong Song <yhs@fb.com>
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->   include/linux/bpf.h      | 187 +++++++++++++++++++++++----------------
->   include/linux/filter.h   |   5 +-
->   kernel/bpf/cgroup.c      |  32 +++----
->   kernel/trace/bpf_trace.c |   2 +-
->   4 files changed, 132 insertions(+), 94 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index c8cc09013210..9c44b56b698f 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1146,67 +1146,124 @@ struct bpf_run_ctx {};
->   
->   struct bpf_cg_run_ctx {
->   	struct bpf_run_ctx run_ctx;
-> -	struct bpf_prog_array_item *prog_item;
-> +	const struct bpf_prog_array_item *prog_item;
->   };
->   
-> +#ifdef CONFIG_BPF_SYSCALL
-> +static inline struct bpf_run_ctx *bpf_set_run_ctx(struct bpf_run_ctx *new_ctx)
-> +{
-> +	struct bpf_run_ctx *old_ctx;
-> +
-> +	old_ctx = current->bpf_ctx;
-> +	current->bpf_ctx = new_ctx;
-> +	return old_ctx;
-> +}
-> +
-> +static inline void bpf_reset_run_ctx(struct bpf_run_ctx *old_ctx)
-> +{
-> +	current->bpf_ctx = old_ctx;
-> +}
-> +#else /* CONFIG_BPF_SYSCALL */
-> +static inline struct bpf_run_ctx *bpf_set_run_ctx(struct bpf_run_ctx *new_ctx)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline void bpf_reset_run_ctx(struct bpf_run_ctx *old_ctx)
-> +{
-> +}
-> +#endif /* CONFIG_BPF_SYSCALL */
-
-nit, but either is fine..:
-
-static inline struct bpf_run_ctx *bpf_set_run_ctx(struct bpf_run_ctx *new_ctx)
-{
-	struct bpf_run_ctx *old_ctx = NULL;
-
-#ifdef CONFIG_BPF_SYSCALL
-	old_ctx = current->bpf_ctx;
-	current->bpf_ctx = new_ctx;
-#endif
-	return old_ctx;
-}
-
-static inline void bpf_reset_run_ctx(struct bpf_run_ctx *old_ctx)
-{
-#ifdef CONFIG_BPF_SYSCALL
-	current->bpf_ctx = old_ctx;
-#endif
-}
-
->   /* BPF program asks to bypass CAP_NET_BIND_SERVICE in bind. */
->   #define BPF_RET_BIND_NO_CAP_NET_BIND_SERVICE			(1 << 0)
->   /* BPF program asks to set CN on the packet. */
->   #define BPF_RET_SET_CN						(1 << 0)
->   
-> -#define BPF_PROG_RUN_ARRAY_FLAGS(array, ctx, func, ret_flags)		\
-> -	({								\
-> -		struct bpf_prog_array_item *_item;			\
-> -		struct bpf_prog *_prog;					\
-> -		struct bpf_prog_array *_array;				\
-> -		struct bpf_run_ctx *old_run_ctx;			\
-> -		struct bpf_cg_run_ctx run_ctx;				\
-> -		u32 _ret = 1;						\
-> -		u32 func_ret;						\
-> -		migrate_disable();					\
-> -		rcu_read_lock();					\
-> -		_array = rcu_dereference(array);			\
-> -		_item = &_array->items[0];				\
-> -		old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);	\
-> -		while ((_prog = READ_ONCE(_item->prog))) {		\
-> -			run_ctx.prog_item = _item;			\
-> -			func_ret = func(_prog, ctx);			\
-> -			_ret &= (func_ret & 1);				\
-> -			*(ret_flags) |= (func_ret >> 1);		\
-> -			_item++;					\
-> -		}							\
-> -		bpf_reset_run_ctx(old_run_ctx);				\
-> -		rcu_read_unlock();					\
-> -		migrate_enable();					\
-> -		_ret;							\
-> -	 })
-> -
-> -#define __BPF_PROG_RUN_ARRAY(array, ctx, func, check_non_null, set_cg_storage)	\
-> -	({						\
-> -		struct bpf_prog_array_item *_item;	\
-> -		struct bpf_prog *_prog;			\
-> -		struct bpf_prog_array *_array;		\
-> -		struct bpf_run_ctx *old_run_ctx;	\
-> -		struct bpf_cg_run_ctx run_ctx;		\
-> -		u32 _ret = 1;				\
-> -		migrate_disable();			\
-> -		rcu_read_lock();			\
-> -		_array = rcu_dereference(array);	\
-> -		if (unlikely(check_non_null && !_array))\
-> -			goto _out;			\
-> -		_item = &_array->items[0];		\
-> -		old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);\
-> -		while ((_prog = READ_ONCE(_item->prog))) {	\
-> -			run_ctx.prog_item = _item;	\
-> -			_ret &= func(_prog, ctx);	\
-> -			_item++;			\
-> -		}					\
-> -		bpf_reset_run_ctx(old_run_ctx);		\
-> -_out:							\
-> -		rcu_read_unlock();			\
-> -		migrate_enable();			\
-> -		_ret;					\
-> -	 })
-> +typedef u32 (*bpf_prog_run_fn)(const struct bpf_prog *prog, const void *ctx);
-> +
-> +static __always_inline u32
-> +BPF_PROG_RUN_ARRAY_CG_FLAGS(const struct bpf_prog_array __rcu *array_rcu,
-> +			    const void *ctx, bpf_prog_run_fn run_prog,
-> +			    u32 *ret_flags)
-> +{
-> +	const struct bpf_prog_array_item *item;
-> +	const struct bpf_prog *prog;
-> +	const struct bpf_prog_array *array;
-> +	struct bpf_run_ctx *old_run_ctx;
-> +	struct bpf_cg_run_ctx run_ctx;
-> +	u32 ret = 1;
-> +	u32 func_ret;
-> +
-> +	migrate_disable();
-> +	rcu_read_lock();
-> +	array = rcu_dereference(array_rcu);
-> +	item = &array->items[0];
-> +	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> +	while ((prog = READ_ONCE(item->prog))) {
-> +		run_ctx.prog_item = item;
-> +		func_ret = run_prog(prog, ctx);
-> +		ret &= (func_ret & 1);
-> +		*(ret_flags) |= (func_ret >> 1);
-> +		item++;
-> +	}
-> +	bpf_reset_run_ctx(old_run_ctx);
-> +	rcu_read_unlock();
-> +	migrate_enable();
-> +	return ret;
-> +}
-> +
-> +static __always_inline u32
-> +BPF_PROG_RUN_ARRAY_CG(const struct bpf_prog_array __rcu *array_rcu,
-> +		      const void *ctx, bpf_prog_run_fn run_prog)
-> +{
-> +	const struct bpf_prog_array_item *item;
-> +	const struct bpf_prog *prog;
-> +	const struct bpf_prog_array *array;
-> +	struct bpf_run_ctx *old_run_ctx;
-> +	struct bpf_cg_run_ctx run_ctx;
-> +	u32 ret = 1;
-> +
-> +	migrate_disable();
-> +	rcu_read_lock();
-> +	array = rcu_dereference(array_rcu);
-> +	item = &array->items[0];
-> +	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> +	while ((prog = READ_ONCE(item->prog))) {
-> +		run_ctx.prog_item = item;
-> +		ret &= run_prog(prog, ctx);
-> +		item++;
-> +	}
-> +	bpf_reset_run_ctx(old_run_ctx);
-> +	rcu_read_unlock();
-> +	migrate_enable();
-> +	return ret;
-> +}
-> +
-> +static __always_inline u32
-> +BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
-> +		   const void *ctx, bpf_prog_run_fn run_prog)
-> +{
-> +	const struct bpf_prog_array_item *item;
-> +	const struct bpf_prog *prog;
-> +	const struct bpf_prog_array *array;
-> +	u32 ret = 1;
-> +
-> +	migrate_disable();
-> +	rcu_read_lock();
-> +	array = rcu_dereference(array_rcu);
-> +	if (unlikely(!array))
-> +		goto out;
-> +	item = &array->items[0];
-> +	while ((prog = READ_ONCE(item->prog))) {
-> +		ret &= run_prog(prog, ctx);
-> +		item++;
-> +	}
-> +out:
-> +	rcu_read_unlock();
-> +	migrate_enable();
-> +	return ret;
-> +}
-
-Is there any way we could consolidate the above somewhat further and have things
-optimized out at compilation time, e.g. when const args are null/non-null? :/
-
->   /* To be used by __cgroup_bpf_run_filter_skb for EGRESS BPF progs
->    * so BPF programs can request cwr for TCP packets.
-> @@ -1235,7 +1292,7 @@ _out:							\
->   		u32 _flags = 0;				\
 [...]
+>   
+> +struct bpf_trace_run_ctx {
+> +	struct bpf_run_ctx run_ctx;
+> +	u64 bpf_cookie;
+> +};
+> +
+>   #ifdef CONFIG_BPF_SYSCALL
+>   static inline struct bpf_run_ctx *bpf_set_run_ctx(struct bpf_run_ctx *new_ctx)
+>   {
+> @@ -1247,6 +1256,8 @@ BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
+>   	const struct bpf_prog_array_item *item;
+>   	const struct bpf_prog *prog;
+>   	const struct bpf_prog_array *array;
+> +	struct bpf_run_ctx *old_run_ctx;
+> +	struct bpf_trace_run_ctx run_ctx;
+>   	u32 ret = 1;
+>   
+>   	migrate_disable();
+> @@ -1254,11 +1265,14 @@ BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
+>   	array = rcu_dereference(array_rcu);
+>   	if (unlikely(!array))
+>   		goto out;
+> +	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+>   	item = &array->items[0];
+>   	while ((prog = READ_ONCE(item->prog))) {
+> +		run_ctx.bpf_cookie = item->bpf_cookie;
+>   		ret &= run_prog(prog, ctx);
+>   		item++;
+>   	}
+> +	bpf_reset_run_ctx(old_run_ctx);
+>   out:
+>   	rcu_read_unlock();
+>   	migrate_enable();
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index 2d510ad750ed..fe156a8170aa 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -762,6 +762,7 @@ struct perf_event {
+>   #ifdef CONFIG_BPF_SYSCALL
+>   	perf_overflow_handler_t		orig_overflow_handler;
+>   	struct bpf_prog			*prog;
+> +	u64				bpf_cookie;
+>   #endif
+>   
+>   #ifdef CONFIG_EVENT_TRACING
+> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+> index 8ac92560d3a3..8e0631a4b046 100644
+> --- a/include/linux/trace_events.h
+> +++ b/include/linux/trace_events.h
+> @@ -675,7 +675,7 @@ trace_trigger_soft_disabled(struct trace_event_file *file)
+>   
+>   #ifdef CONFIG_BPF_EVENTS
+>   unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx);
+> -int perf_event_attach_bpf_prog(struct perf_event *event, struct bpf_prog *prog);
+> +int perf_event_attach_bpf_prog(struct perf_event *event, struct bpf_prog *prog, u64 bpf_cookie);
+>   void perf_event_detach_bpf_prog(struct perf_event *event);
+>   int perf_event_query_prog_array(struct perf_event *event, void __user *info);
+>   int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog);
+> @@ -692,7 +692,7 @@ static inline unsigned int trace_call_bpf(struct trace_event_call *call, void *c
+>   }
+>   
+>   static inline int
+> -perf_event_attach_bpf_prog(struct perf_event *event, struct bpf_prog *prog)
+> +perf_event_attach_bpf_prog(struct perf_event *event, struct bpf_prog *prog, u64 bpf_cookie)
+>   {
+>   	return -EOPNOTSUPP;
+>   }
+> @@ -803,7 +803,7 @@ extern void ftrace_profile_free_filter(struct perf_event *event);
+>   void perf_trace_buf_update(void *record, u16 type);
+>   void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp);
+>   
+> -int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog);
+> +int perf_event_set_bpf_prog(struct perf_event *event, struct bpf_prog *prog, u64 bpf_cookie);
+>   void perf_event_free_bpf_prog(struct perf_event *event);
+>   
+>   void bpf_trace_run1(struct bpf_prog *prog, u64 arg1);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 94fe8329b28f..63ee482d50e1 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1448,6 +1448,13 @@ union bpf_attr {
+>   				__aligned_u64	iter_info;	/* extra bpf_iter_link_info */
+>   				__u32		iter_info_len;	/* iter_info length */
+>   			};
+> +			struct {
+> +				/* black box user-provided value passed through
+> +				 * to BPF program at the execution time and
+> +				 * accessible through bpf_get_attach_cookie() BPF helper
+> +				 */
+> +				__u64		bpf_cookie;
+
+ From API PoV, should we just name this link_id to avoid confusion around gen_cookie_next()
+users? Do we expect other link types to implement similar mechanism? I'd think probably yes
+if the prog would be common and e.g. do htab lookups based on that opaque value.
+
+Is the 8b chosen given function IP fits, or is there a different rationale size-wise? Should
+this be of dynamic size to be more future proof, e.g. hidden map like in prog's global sections
+that libbpf sets up / prepopulates internally, but tied to link object instead?
+
+> +			} perf_event;
+>   		};
+>   	} link_create;
+>   
+Thanks,
+Daniel
