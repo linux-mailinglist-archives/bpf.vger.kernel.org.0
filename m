@@ -2,113 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D78E3E477D
-	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 16:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD4B3E4866
+	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 17:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234993AbhHIOZa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 10:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
+        id S235266AbhHIPM0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 11:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234987AbhHIOZ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Aug 2021 10:25:29 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AD5C0613D3;
-        Mon,  9 Aug 2021 07:25:08 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id bl13so3251151qvb.5;
-        Mon, 09 Aug 2021 07:25:08 -0700 (PDT)
+        with ESMTP id S235200AbhHIPM0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 11:12:26 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36685C0613D3
+        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 08:12:05 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id m36-20020a05600c3b24b02902e67543e17aso159935wms.0
+        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 08:12:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5yNSrZ9OgRElplEMES641bIq1GicFeBQVlnMIQt9msg=;
-        b=cr0QN7T9NuKMC8eoPx1PBtHNvm5/eJYg9W6w5gJV1PnPzXTr6B2T5WSF7VC5NV3aB1
-         wENS6iHRimQtYdPQ76nKMYo3szlnF3z7EKMXTDb5CgsxroPmzT7YAjUcMuOFb4hB/Oyp
-         f5rmOl+fJDA8XSuqUFRtd/7wPFiaVBcoXhJgswlfsK59SK684+o6lTawdb63X3QQ0CG7
-         HCsK5AZ79tC6LjPBeCMZVOrfetk+czZmH27AqikZWjpsTSspC7qXaS8jRqYwf5xZLpvk
-         Vh4tXo8lZHrI1TgOyjduJloM7SfRNa7YgAY//2y4qFKi6sOkoyQK5EWCN8DxNtSzixBp
-         f9wg==
+        d=cilium-io.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=YTIqNpWcR7ZSMh6S/6bEELgHeoLKVjnxKPs7OdYSS5g=;
+        b=kqSWT1bB6GUDcXZbZeE2jj3iMVYpveORHRCeZ1WEV1f8AmfTT/ZTYfaNO7HC0Y7QK7
+         +v6yyh5bylm3pWzzoYJvp6/8y3A1Z0agLKsVIvIHUwvdWQ7weN2RW230StSi//T8CKh1
+         JDpYtvOIeRFhSpmiH/dvBQyQY+OLjqwuJmrwBdcvZlbarVB9E5gqxxeVxJTo6EbpidWT
+         JwICG1wGLnUpLN5rRk/b08Dnd+g1GQx/fb0Rn4yoOCz1Rj10uApwYLrDx/AT3K88yHPQ
+         N+h5zFbwRIVPiaQzQCBVGIoiTPDdlinNFUkdtpr18KHYygfY1aTgDpmLdQ7iNbrfu7Yt
+         Uxhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5yNSrZ9OgRElplEMES641bIq1GicFeBQVlnMIQt9msg=;
-        b=gayPpcnc9IN1S4uZi7xUm78wBkdbSA0BeV3Yd9fWJ2vqOFmz0sC6AC5ROiiYwtaFol
-         RY21//5nPDjIv6vC4CR2yNnl8DwYyammRi3ozIN2Ul3J7qAh0r4gNjwBVGiUzetnnZ2y
-         RMuHoGjc+TFw9rZpV1Is1BsrUG8C2FmRgK1qh3lDXJu0KW7XVMrILw9tSouitfbjqhrv
-         fHC0yyPjWZm9kj/1f7iIvbNNxw8pOs+YqY7oH6gf4Lx42QkA/KdD7RTRp0tGwD/mzeLr
-         HNj+Aq77X1wjAsD043XJT9r1+jB57uLOULj72kpYH7o56mFG0peaXhmsTxZWBYRuQeQP
-         knZw==
-X-Gm-Message-State: AOAM530BnHKrtNtoaTRZ14IIYGce2BT1iE9+CCA4YmwphSz+IARi83oq
-        2pGQ78qpSlHpF18FwLy2TSXC51pFCk40d952mg==
-X-Google-Smtp-Source: ABdhPJw/Nuxtz1GLTUgwUnqx8Eh8xwqmbJ6TNzgXO/Ur3HhHjrTjIkVg09uyNDhlfNRxRid75ifP5h5n/pAWh/8ekdY=
-X-Received: by 2002:a05:6214:2482:: with SMTP id gi2mr2738564qvb.40.1628519107917;
- Mon, 09 Aug 2021 07:25:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=YTIqNpWcR7ZSMh6S/6bEELgHeoLKVjnxKPs7OdYSS5g=;
+        b=GIidKwAlXw5zWarF3DKvq0laR/wTtyYzcJV/74le3uFr8pYsPZB/bcJu8TPxg8JUEl
+         zmLX7l33KagZFNhE8kx7csmJ00Jbq3fJh9lORZDgEWWQzjOSoKTXRKSQXybcF0hqBtOV
+         xHd6UZSh/qd3uZxXwoWLY9d0TWvI5dKYbu/rK/RS+OtkpmM8EFezLzd0y7Y+eg4yzFvj
+         T7gkKCtPU5p4b0IzyyBbaENH/AjNaXV9wpeYyzzD/DwGaQ48ubOc4WA2I5kNPebiKU80
+         TCKK+XAL/RqYaJ/EZmtpaoGcOupQ5Ng3nOganbxHMQXjqZhiahVHvk0WWd2eTr4z9K5y
+         Lp1g==
+X-Gm-Message-State: AOAM531oiyE7aeQbfxmbLKCf++OxXK6uju2Y1CS8tGwQnpySYvDraHEL
+        hzhEPak+vonD6KAqbLB5KJ+Sp9IOHatW1yPmBw==
+X-Google-Smtp-Source: ABdhPJyRiZcaF3DQcMvhefli0Eav6fOgkQTEwCETCi/5V57S14PW/zxp6YzDu1zU70+J7rHgB8IEiQ==
+X-Received: by 2002:a05:600c:b52:: with SMTP id k18mr3070392wmr.46.1628521923746;
+        Mon, 09 Aug 2021 08:12:03 -0700 (PDT)
+Received: from Mem (2a01cb088160fc00b0c62f777661db06.ipv6.abo.wanadoo.fr. [2a01:cb08:8160:fc00:b0c6:2f77:7661:db06])
+        by smtp.gmail.com with ESMTPSA id r18sm2269590wrt.76.2021.08.09.08.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 08:12:03 -0700 (PDT)
+Date:   Mon, 9 Aug 2021 17:12:02 +0200
+From:   Paul Chaignon <paul@cilium.io>
+To:     bpf@vger.kernel.org
+Cc:     Yonghong Song <yhs@fb.com>, Martynas Pumputis <m@lambda.lt>
+Subject: R11 is invalid with LLVM 12 and later
+Message-ID: <20210809151202.GB1012999@Mem>
 MIME-Version: 1.0
-References: <20210609135537.1460244-1-joamaki@gmail.com> <20210731055738.16820-1-joamaki@gmail.com>
- <20210731055738.16820-8-joamaki@gmail.com> <CAEf4BzZvojbuHseDbnqRUMAAfn-j4J+_3omWJw8=W6cTPmf0dw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZvojbuHseDbnqRUMAAfn-j4J+_3omWJw8=W6cTPmf0dw@mail.gmail.com>
-From:   Jussi Maki <joamaki@gmail.com>
-Date:   Mon, 9 Aug 2021 16:24:56 +0200
-Message-ID: <CAHn8xcnBQhO_=YEO2cd_uCRYQDZkfQjW2r8aExu8=FYTi_=X5A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 7/7] selftests/bpf: Add tests for XDP bonding
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, j.vosburgh@gmail.com,
-        Andy Gospodarek <andy@greyhouse.net>, vfalico@gmail.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Aug 7, 2021 at 12:50 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Aug 5, 2021 at 9:10 AM Jussi Maki <joamaki@gmail.com> wrote:
-> >
-> > Add a test suite to test XDP bonding implementation
-> > over a pair of veth devices.
-> >
-> > Signed-off-by: Jussi Maki <joamaki@gmail.com>
-> > ---
-> >  .../selftests/bpf/prog_tests/xdp_bonding.c    | 520 ++++++++++++++++++
-> >  1 file changed, 520 insertions(+)
-> >
->
-> I don't pretend to understand what's going on in this selftests, but
-> it looks good from the generic selftest standpoint. One and half small
-> issues below, please double-check (and probably fix the fd close
-> issue).
+Hello,
 
-Thanks for the reviews!
+While trying to use LLVM 12.0.0 in Cilium, we've noticed that it can
+generate invalid BPF bytecode:
 
-> > +       if (xdp_attach(skeletons,
-> > +                      skeletons->xdp_redirect_multi_kern->progs.xdp_redirect_map_multi_prog,
-> > +                      "bond2"))
-> > +               goto out;
-> > +
-> > +       restore_root_netns();
->
-> the "goto out" below might call restore_root_netns() again, is that ok?
+    $ clang --version
+    Ubuntu clang version 12.0.0-++20210409092622+fa0971b87fb2-1~exp1~20210409193326.73
+    Target: x86_64-pc-linux-gnu
+    Thread model: posix
+    InstalledDir: /usr/bin
+    $ make -C bpf -j6 KERNEL=419
+    $ llvm-objdump -D -section=2/20 bpf/bpf_lxc.o | grep -i r11
+         171:   7b ba 18 ff 00 00 00 00 *(u64 *)(r10 - 232) = r11
+         436:   79 ab 18 ff 00 00 00 00 r11 = *(u64 *)(r10 - 232)
+         484:   bf 8b 00 00 00 00 00 00 r11 = r8
 
-Yep that's fine.
+That bytecode is of course rejected by the verifier:
 
-> > +       if (!test__start_subtest("xdp_bonding_redirect_multi"))
-> > +               test_xdp_bonding_redirect_multi(&skeletons);
-> > +
-> > +out:
-> > +       xdp_dummy__destroy(skeletons.xdp_dummy);
-> > +       xdp_tx__destroy(skeletons.xdp_tx);
-> > +       xdp_redirect_multi_kern__destroy(skeletons.xdp_redirect_multi_kern);
-> > +
-> > +       libbpf_set_print(old_print_fn);
-> > +       if (root_netns_fd)
->
-> technically, fd could be 0, so for fds we have if (fd >= 0)
-> everywhere. Also, if open() above fails, root_netns_fd will be -1 and
-> you'll still attempt to close it.
+    171: (7b) *(u64 *)(r10 -232) = r11
+    R11 is invalid
 
-Good catch. Daniel, could you fix this when applying to be "if
-(root_netns_fd >= 0)"?
+LLVM 12.0.1 and latest LLVM sources (e.g., commit 2b4a1d4b from today)
+have the same issue. We've bisected it to LLVM commit 552c6c23
+("PR44406: Follow behavior of array bound constant folding in more
+recent versions of GCC."), but that could just be the commit where
+the regression was exposed in Cilium's case.
+
+--
+Paul
