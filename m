@@ -2,140 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29623E458E
-	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 14:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D78E3E477D
+	for <lists+bpf@lfdr.de>; Mon,  9 Aug 2021 16:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235116AbhHIMZZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 08:25:25 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34232 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234427AbhHIMZY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 9 Aug 2021 08:25:24 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 179C4dTD120634;
-        Mon, 9 Aug 2021 08:24:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=BgVL1+G8Ey7SqGZEmnaIbENFNmXVn+5pmm36QbO8AKY=;
- b=GlLdTUyVPYQZ4WAoy++Xyu9sCz9fnXQYiSj0P67YoMcWR6LsCyAPfBkFEQU1FfJUhW+6
- UpDaLG5eqNTAx534Cgh/N7Dtcj5v8Rn9Gi7yxeY0UhpIJI+E4QmYCB3RfP83Yutobyys
- OTeHp3vwWXJZonJFQJUiyjXG5jZn4P34tJgEY6K3otgmxFoA5jwbQz5W/gY02BhAXQXK
- eJKWJ/fj7z6GmZH0wSI3dGaf0h/NOXmvWgV3TmypgX21NfmfNL4LDSyz+4vAoshwIya4
- mOJyFkv2kG43XzphoS6EWyUeBQ5ojsxnJoFcrv0qoWTa89k9WOrAbA/37L/kuUYNv+P/ EQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aax401u4e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Aug 2021 08:24:48 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 179C4hW0120939;
-        Mon, 9 Aug 2021 08:24:48 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aax401u3y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Aug 2021 08:24:47 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 179CMjlP013137;
-        Mon, 9 Aug 2021 12:24:46 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 3a9hehkjda-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Aug 2021 12:24:45 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 179CLW7w58458394
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 9 Aug 2021 12:21:32 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3C3FFA4059;
-        Mon,  9 Aug 2021 12:24:42 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6220AA4040;
-        Mon,  9 Aug 2021 12:24:41 +0000 (GMT)
-Received: from sig-9-145-77-113.uk.ibm.com (unknown [9.145.77.113])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  9 Aug 2021 12:24:41 +0000 (GMT)
-Message-ID: <2f97353921497b8d603cd5fff05e136d4bfcb430.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 4/7] s390: bpf: Fix off-by-one in tail call
- count limiting
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        illusionist.neo@gmail.com, zlim.lnx@gmail.com,
-        paulburton@kernel.org, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, luke.r.nels@gmail.com, bjorn@kernel.org,
-        hca@linux.ibm.com, gor@linux.ibm.com, davem@davemloft.net,
-        udknight@gmail.com
-Date:   Mon, 09 Aug 2021 14:24:41 +0200
-In-Reply-To: <20210809093437.876558-5-johan.almbladh@anyfinetworks.com>
-References: <20210809093437.876558-1-johan.almbladh@anyfinetworks.com>
-         <20210809093437.876558-5-johan.almbladh@anyfinetworks.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S234993AbhHIOZa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 10:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234987AbhHIOZ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 10:25:29 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AD5C0613D3;
+        Mon,  9 Aug 2021 07:25:08 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id bl13so3251151qvb.5;
+        Mon, 09 Aug 2021 07:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5yNSrZ9OgRElplEMES641bIq1GicFeBQVlnMIQt9msg=;
+        b=cr0QN7T9NuKMC8eoPx1PBtHNvm5/eJYg9W6w5gJV1PnPzXTr6B2T5WSF7VC5NV3aB1
+         wENS6iHRimQtYdPQ76nKMYo3szlnF3z7EKMXTDb5CgsxroPmzT7YAjUcMuOFb4hB/Oyp
+         f5rmOl+fJDA8XSuqUFRtd/7wPFiaVBcoXhJgswlfsK59SK684+o6lTawdb63X3QQ0CG7
+         HCsK5AZ79tC6LjPBeCMZVOrfetk+czZmH27AqikZWjpsTSspC7qXaS8jRqYwf5xZLpvk
+         Vh4tXo8lZHrI1TgOyjduJloM7SfRNa7YgAY//2y4qFKi6sOkoyQK5EWCN8DxNtSzixBp
+         f9wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5yNSrZ9OgRElplEMES641bIq1GicFeBQVlnMIQt9msg=;
+        b=gayPpcnc9IN1S4uZi7xUm78wBkdbSA0BeV3Yd9fWJ2vqOFmz0sC6AC5ROiiYwtaFol
+         RY21//5nPDjIv6vC4CR2yNnl8DwYyammRi3ozIN2Ul3J7qAh0r4gNjwBVGiUzetnnZ2y
+         RMuHoGjc+TFw9rZpV1Is1BsrUG8C2FmRgK1qh3lDXJu0KW7XVMrILw9tSouitfbjqhrv
+         fHC0yyPjWZm9kj/1f7iIvbNNxw8pOs+YqY7oH6gf4Lx42QkA/KdD7RTRp0tGwD/mzeLr
+         HNj+Aq77X1wjAsD043XJT9r1+jB57uLOULj72kpYH7o56mFG0peaXhmsTxZWBYRuQeQP
+         knZw==
+X-Gm-Message-State: AOAM530BnHKrtNtoaTRZ14IIYGce2BT1iE9+CCA4YmwphSz+IARi83oq
+        2pGQ78qpSlHpF18FwLy2TSXC51pFCk40d952mg==
+X-Google-Smtp-Source: ABdhPJw/Nuxtz1GLTUgwUnqx8Eh8xwqmbJ6TNzgXO/Ur3HhHjrTjIkVg09uyNDhlfNRxRid75ifP5h5n/pAWh/8ekdY=
+X-Received: by 2002:a05:6214:2482:: with SMTP id gi2mr2738564qvb.40.1628519107917;
+ Mon, 09 Aug 2021 07:25:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rwzRpzdXrjvRgHUtGzCzJIaoo0Nuon75
-X-Proofpoint-GUID: -vKr8Omei-mg5vPaDn2ubMCiF4c8BZ4W
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-09_04:2021-08-06,2021-08-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 spamscore=0
- impostorscore=0 clxscore=1011 mlxlogscore=999 malwarescore=0 mlxscore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108090093
+References: <20210609135537.1460244-1-joamaki@gmail.com> <20210731055738.16820-1-joamaki@gmail.com>
+ <20210731055738.16820-8-joamaki@gmail.com> <CAEf4BzZvojbuHseDbnqRUMAAfn-j4J+_3omWJw8=W6cTPmf0dw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZvojbuHseDbnqRUMAAfn-j4J+_3omWJw8=W6cTPmf0dw@mail.gmail.com>
+From:   Jussi Maki <joamaki@gmail.com>
+Date:   Mon, 9 Aug 2021 16:24:56 +0200
+Message-ID: <CAHn8xcnBQhO_=YEO2cd_uCRYQDZkfQjW2r8aExu8=FYTi_=X5A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 7/7] selftests/bpf: Add tests for XDP bonding
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, j.vosburgh@gmail.com,
+        Andy Gospodarek <andy@greyhouse.net>, vfalico@gmail.com,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2021-08-09 at 11:34 +0200, Johan Almbladh wrote:
-> Before, the eBPF JIT allowed up to MAX_TAIL_CALL_CNT + 1 tail calls.
-> Now, precisely MAX_TAIL_CALL_CNT is allowed, which is in line with the
-> behaviour of the interpreter. Verified with the test_bpf test suite
-> on qemu-system-s390x.
-> 
-> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-> ---
->  arch/s390/net/bpf_jit_comp.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/s390/net/bpf_jit_comp.c
-> b/arch/s390/net/bpf_jit_comp.c
-> index 88419263a89a..f6cdf13285ed 100644
-> --- a/arch/s390/net/bpf_jit_comp.c
-> +++ b/arch/s390/net/bpf_jit_comp.c
-> @@ -1363,7 +1363,7 @@ static noinline int bpf_jit_insn(struct bpf_jit
-> *jit, struct bpf_prog *fp,
->                                  jit->prg);
->  
->                 /*
-> -                * if (tail_call_cnt++ > MAX_TAIL_CALL_CNT)
-> +                * if (tail_call_cnt++ >= MAX_TAIL_CALL_CNT)
->                  *         goto out;
->                  */
->  
-> @@ -1377,8 +1377,8 @@ static noinline int bpf_jit_insn(struct bpf_jit
-> *jit, struct bpf_prog *fp,
->                 EMIT6_DISP_LH(0xeb000000, 0x00fa, REG_W1, REG_W0,
-> REG_15, off);
->                 /* clij %w1,MAX_TAIL_CALL_CNT,0x2,out */
+On Sat, Aug 7, 2021 at 12:50 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Aug 5, 2021 at 9:10 AM Jussi Maki <joamaki@gmail.com> wrote:
+> >
+> > Add a test suite to test XDP bonding implementation
+> > over a pair of veth devices.
+> >
+> > Signed-off-by: Jussi Maki <joamaki@gmail.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/xdp_bonding.c    | 520 ++++++++++++++++++
+> >  1 file changed, 520 insertions(+)
+> >
+>
+> I don't pretend to understand what's going on in this selftests, but
+> it looks good from the generic selftest standpoint. One and half small
+> issues below, please double-check (and probably fix the fd close
+> issue).
 
-This comment needs to be updated as well.
+Thanks for the reviews!
 
->                 patch_2_clij = jit->prg;
-> -               EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1,
-> MAX_TAIL_CALL_CNT,
-> -                                2, jit->prg);
-> +               EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1,
-> +                                MAX_TAIL_CALL_CNT - 1, 2, jit->prg);
->  
->                 /*
->                  * prog = array->ptrs[index];
+> > +       if (xdp_attach(skeletons,
+> > +                      skeletons->xdp_redirect_multi_kern->progs.xdp_redirect_map_multi_prog,
+> > +                      "bond2"))
+> > +               goto out;
+> > +
+> > +       restore_root_netns();
+>
+> the "goto out" below might call restore_root_netns() again, is that ok?
 
-With that:
+Yep that's fine.
 
-Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > +       if (!test__start_subtest("xdp_bonding_redirect_multi"))
+> > +               test_xdp_bonding_redirect_multi(&skeletons);
+> > +
+> > +out:
+> > +       xdp_dummy__destroy(skeletons.xdp_dummy);
+> > +       xdp_tx__destroy(skeletons.xdp_tx);
+> > +       xdp_redirect_multi_kern__destroy(skeletons.xdp_redirect_multi_kern);
+> > +
+> > +       libbpf_set_print(old_print_fn);
+> > +       if (root_netns_fd)
+>
+> technically, fd could be 0, so for fds we have if (fd >= 0)
+> everywhere. Also, if open() above fails, root_netns_fd will be -1 and
+> you'll still attempt to close it.
 
+Good catch. Daniel, could you fix this when applying to be "if
+(root_netns_fd >= 0)"?
