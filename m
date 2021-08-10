@@ -2,185 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C74A3E5054
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 02:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A22A3E5055
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 02:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235878AbhHJA0Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 20:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40222 "EHLO
+        id S235124AbhHJA2h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 20:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbhHJA0Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Aug 2021 20:26:25 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E8AC0613D3
-        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 17:26:03 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id z18so32922651ybg.8
-        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 17:26:03 -0700 (PDT)
+        with ESMTP id S231439AbhHJA2g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 20:28:36 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87322C0613D3
+        for <bpf@vger.kernel.org>; Mon,  9 Aug 2021 17:28:15 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id m193so32963945ybf.9
+        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 17:28:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=c1MtUS+GGUt7Eg7ls2aGrXGss6vhdIDcS/w4ObQjMto=;
-        b=dzsKAWhmTAK0K7Ggai0rjnRRjWM6lrfxD1mDjrc8K865ECxsQDalQaVGR47+10kFeU
-         Dz99z8e3gN5scjRZDrBN/NVllvvnEbyY1SmCkb6OqQ4C3LNnKUUBgpZZuTk78TA+L6d7
-         KlIkqX1uzX5hoqouPUussFmmIQn5WYEgREEiR52RgNK5oYnGTgLXJ94hCVOAlXaYpuu2
-         01Pmzl/oI9CuizuW2V8sCibp80e6XIUFSBDsGrlQ2nWs3kSW0WbMJSHF9vWJKWGqGv/Y
-         /SRYTmQWFyhj+d1KC8XlCv9HFbJd08yG0eMHgmvkQx6ICgn+VreTNUyhiICy7U2QRAEj
-         d8gw==
+        bh=bGXREVMCA1JCPJ6TQNkB/a/xgtfVSv8or6wTBzZNdnE=;
+        b=ZmeIMnlndOgdDRhXmgFoenIlPrHyg/SVUHUd/lzQJyvUxe4Mi+/VqzqXyV3Qp8kypb
+         i635mC2q4wodHBQCTMhZPOrK0HtMKZwUDd4r3Fuz6FffSdN3yqJ0bMEvcIpF/uH+k0B/
+         7ncuO7SVRAgqCeK+W1jciPSqjRc4UU/ktCX5ahDfBlfdQnfADXu8Q/OvJ2jVPtI4rb8K
+         NCqTMT6BIcSgHj8ZqAcCsnIYNxRc9lqkmvGJP0TAglgyidj5WQNiTPk5jDj9CY3sNOoq
+         0ZwXHfG/DbluBc/Gp+ot9lUZ886Q+ZkzvE0N4veTTGYM+tHgzvv2XnVw9s+OTYGLMzHv
+         y23Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=c1MtUS+GGUt7Eg7ls2aGrXGss6vhdIDcS/w4ObQjMto=;
-        b=KELzrjdUKqfoDarLwNn6LcEHVIlMELWRn7sGKOfn304C9xgSHzDmkYNeh9lYpb5iW3
-         JfHj7Jf8L2RcpW0HuFDKwL4g66LoXQDdSFHUDs5MxwRc0fSQNhFCfT4HTMhW5j5tW5J/
-         SCI90eJf2OdajjyTPml9FRtVnFT4wQwZFv14sgAYcaO7Ow9ADEphu9Ru9kR0KR5kK5ue
-         xW8r991F+epvY8VrIUAe4QfnkJK9eTCWid2xZPUPEH0Z5q694xguMAH5TvWQmJjTLQLy
-         ZT+Erb4KdEGMNsCEhU4dZ6kGg2bWIA9q+yxkSRAh0F1msrjCgDuJmLfcIkwnuBIQTvbU
-         oc0g==
-X-Gm-Message-State: AOAM531+QSW16vey3BLIJrqroezv4aNZShfCOFmhuMagMYK01r8imWuW
-        E6+nkWbmXqK3dm2X1CgPuv2Kf5NPfut5LVPP4Yo=
-X-Google-Smtp-Source: ABdhPJzs4OgtvUqcTmg/1vI8AGPwZO5BNzrTvbOo1zmPd8WFO5RKUBdiC5RQFZNSkh2DlcvaZzbeI2kjQr5kB1hk3WQ=
-X-Received: by 2002:a5b:648:: with SMTP id o8mr35720583ybq.260.1628555162838;
- Mon, 09 Aug 2021 17:26:02 -0700 (PDT)
+        bh=bGXREVMCA1JCPJ6TQNkB/a/xgtfVSv8or6wTBzZNdnE=;
+        b=UY2LMHj31NOp+fG2keUKs65QPbG1bdZG5Mg9yffxN2ca4DWrOyJgSV54TmF5t//aST
+         xB2Edxea6Z++QrcBJM4TwXmBEj7jnRS2HNRNyqDXGme7Yj4Th3g7gX004wU6CVoZWeIR
+         im67Mb14gwT7/Xn1Bjro5Y7DOydwJ8ZO8wRjHBB8+vAxqOZGm3MzZTP4Mfd49rCkSTKq
+         1KtaI/ksHulgmSyCJDKPlBEknkUYE2C9Mvdj5MDq3DEbcLunlhqnvNpf3Rrwakg6FT5m
+         BB+AQ2Kt9OTPDtv39c6kyJwmGfEowR4FFB8Z9LbY0Q3l2vZ1v5xXt6s+UHlzMOKUb33j
+         xqsQ==
+X-Gm-Message-State: AOAM533bvBob6qV3UrlAc4LIyQrRBpMikaN9MPsb5T1Kr8WVii6/0xXI
+        wfC4XHLBdyCDP7+kpdQWwHv2GYfQbi4MqRGmxX4=
+X-Google-Smtp-Source: ABdhPJwKnhTvJsW9joIFpoCwbwDINTdvDyhPRJqHDblRQwdi3UEZeJQUFR8s3R1hY/qZZt+aRMMLrHGkZcDpD0Xyj5M=
+X-Received: by 2002:a25:4091:: with SMTP id n139mr9759848yba.425.1628555294765;
+ Mon, 09 Aug 2021 17:28:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210809235141.1663247-1-yhs@fb.com> <20210809235146.1663522-1-yhs@fb.com>
-In-Reply-To: <20210809235146.1663522-1-yhs@fb.com>
+References: <20210730053413.1090371-1-andrii@kernel.org> <20210730053413.1090371-2-andrii@kernel.org>
+ <21246244-fa7e-700f-e767-3f9edf9e4c19@iogearbox.net>
+In-Reply-To: <21246244-fa7e-700f-e767-3f9edf9e4c19@iogearbox.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 9 Aug 2021 17:25:51 -0700
-Message-ID: <CAEf4BzYYzTPdD4so=pD-XmmdjN=JXxWj9LkwhK1qpbsEoP=sBg@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 1/2] bpf: add rcu read_lock in bpf_get_current_[ancestor_]cgroup_id()
- helpers
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Mon, 9 Aug 2021 17:28:03 -0700
+Message-ID: <CAEf4BzYGqb6HdAuBciauv-NZLBoVF4X8WdFXNKmKQ9hcZfSC3w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 01/14] bpf: refactor BPF_PROG_RUN into a function
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Kernel Team <kernel-team@fb.com>,
-        syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 4:51 PM Yonghong Song <yhs@fb.com> wrote:
+On Mon, Aug 9, 2021 at 3:43 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> Currently, if bpf_get_current_cgroup_id() or
-> bpf_get_current_ancestor_cgroup_id() helper is
-> called with sleepable programs e.g., sleepable
-> fentry/fmod_ret/fexit/lsm programs, a rcu warning
-> may appear. For example, if I added the following
-> hack to test_progs/test_lsm sleepable fentry program
-> test_sys_setdomainname:
+> On 7/30/21 7:34 AM, Andrii Nakryiko wrote:
+> > Turn BPF_PROG_RUN into a proper always inlined function. No functional and
+> > performance changes are intended, but it makes it much easier to understand
+> > what's going on with how BPF programs are actually get executed. It's more
+> > obvious what types and callbacks are expected. Also extra () around input
+> > parameters can be dropped, as well as `__` variable prefixes intended to avoid
+> > naming collisions, which makes the code simpler to read and write.
+> >
+> > This refactoring also highlighted one possible issue. BPF_PROG_RUN is both
+> > a macro and an enum value (BPF_PROG_RUN == BPF_PROG_TEST_RUN). Turning
+> > BPF_PROG_RUN into a function causes naming conflict compilation error. So
+> > rename BPF_PROG_RUN into lower-case bpf_prog_run(), similar to
+> > bpf_prog_run_xdp(), bpf_prog_run_pin_on_cpu(), etc. To avoid unnecessary code
+> > churn across many networking calls to BPF_PROG_RUN, #define BPF_PROG_RUN as an
+> > alias to bpf_prog_run.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 >
->   --- a/tools/testing/selftests/bpf/progs/lsm.c
->   +++ b/tools/testing/selftests/bpf/progs/lsm.c
->   @@ -168,6 +168,10 @@ int BPF_PROG(test_sys_setdomainname, struct pt_regs *regs)
->           int buf = 0;
->           long ret;
+> Change itself looks good, small nit below:
 >
->   +       __u64 cg_id = bpf_get_current_cgroup_id();
->   +       if (cg_id == 1000)
->   +               copy_test++;
->   +
->           ret = bpf_copy_from_user(&buf, sizeof(buf), ptr);
->           if (len == -2 && ret == 0 && buf == 1234)
->                   copy_test++;
+> > ---
+> >   include/linux/filter.h | 58 +++++++++++++++++++++++++++---------------
+> >   1 file changed, 37 insertions(+), 21 deletions(-)
+> >
+> > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > index ba36989f711a..18518e321ce4 100644
+> > --- a/include/linux/filter.h
+> > +++ b/include/linux/filter.h
+> > @@ -585,25 +585,41 @@ struct sk_filter {
+> >
+> >   DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+> >
+> > -#define __BPF_PROG_RUN(prog, ctx, dfunc)     ({                      \
+> > -     u32 __ret;                                                      \
+> > -     cant_migrate();                                                 \
+> > -     if (static_branch_unlikely(&bpf_stats_enabled_key)) {           \
+> > -             struct bpf_prog_stats *__stats;                         \
+> > -             u64 __start = sched_clock();                            \
+> > -             __ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);   \
+> > -             __stats = this_cpu_ptr(prog->stats);                    \
+> > -             u64_stats_update_begin(&__stats->syncp);                \
+> > -             __stats->cnt++;                                         \
+> > -             __stats->nsecs += sched_clock() - __start;              \
+> > -             u64_stats_update_end(&__stats->syncp);                  \
+> > -     } else {                                                        \
+> > -             __ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);   \
+> > -     }                                                               \
+> > -     __ret; })
+> > -
+> > -#define BPF_PROG_RUN(prog, ctx)                                              \
+> > -     __BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nop_func)
+> > +typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
+> > +                                       const struct bpf_insn *insnsi,
+> > +                                       unsigned int (*bpf_func)(const void *,
+> > +                                                                const struct bpf_insn *));
+> > +
+> > +static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+> > +                                       const void *ctx,
+> > +                                       bpf_dispatcher_fn dfunc)
+> > +{
+> > +     u32 ret;
+> > +
+> > +     cant_migrate();
+> > +     if (static_branch_unlikely(&bpf_stats_enabled_key)) {
+> > +             struct bpf_prog_stats *stats;
+> > +             u64 start = sched_clock();
+> > +
+> > +             ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+> > +             stats = this_cpu_ptr(prog->stats);
+> > +             u64_stats_update_begin(&stats->syncp);
+> > +             stats->cnt++;
+> > +             stats->nsecs += sched_clock() - start;
+> > +             u64_stats_update_end(&stats->syncp);
+> > +     } else {
+> > +             ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+> > +     }
+> > +     return ret;
+> > +}
+> > +
+> > +static __always_inline u32 bpf_prog_run(const struct bpf_prog *prog, const void *ctx)
+> > +{
+> > +     return __bpf_prog_run(prog, ctx, bpf_dispatcher_nop_func);
+> > +}
+> > +
+> > +/* avoids name conflict with BPF_PROG_RUN enum definedi uapi/linux/bpf.h */
 >
-> I will hit the following rcu warning:
+> (definedi)
 >
->   include/linux/cgroup.h:481 suspicious rcu_dereference_check() usage!
->   other info that might help us debug this:
->     rcu_scheduler_active = 2, debug_locks = 1
->     1 lock held by test_progs/260:
->       #0: ffffffffa5173360 (rcu_read_lock_trace){....}-{0:0}, at: __bpf_prog_enter_sleepable+0x0/0xa0
->     stack backtrace:
->     CPU: 1 PID: 260 Comm: test_progs Tainted: G           O      5.14.0-rc2+ #176
->     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->     Call Trace:
->       dump_stack_lvl+0x56/0x7b
->       bpf_get_current_cgroup_id+0x9c/0xb1
->       bpf_prog_a29888d1c6706e09_test_sys_setdomainname+0x3e/0x89c
->       bpf_trampoline_6442469132_0+0x2d/0x1000
->       __x64_sys_setdomainname+0x5/0x110
->       do_syscall_64+0x3a/0x80
->       entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> I can get similar warning using bpf_get_current_ancestor_cgroup_id() helper.
-> syzbot reported a similar issue in [1] for syscall program. Helper
-> bpf_get_current_cgroup_id() or bpf_get_current_ancestor_cgroup_id()
-> has the following callchain:
->    task_dfl_cgroup
->      task_css_set
->        task_css_set_check
-> and we have
->    #define task_css_set_check(task, __c)                                   \
->            rcu_dereference_check((task)->cgroups,                          \
->                    lockdep_is_held(&cgroup_mutex) ||                       \
->                    lockdep_is_held(&css_set_lock) ||                       \
->                    ((task)->flags & PF_EXITING) || (__c))
-> Since cgroup_mutex/css_set_lock is not held and the task
-> is not existing and rcu read_lock is not held, a warning
-> will be issued. Note that bpf sleepable program is protected by
-> rcu_read_lock_trace().
->
-> The above sleepable bpf programs are already protected
-> by migrate_disable(). Adding rcu_read_lock() in these
-> two helpers will silence the above warning.
-> I marked the patch fixing 95b861a7935b
-> ("bpf: Allow bpf_get_current_ancestor_cgroup_id for tracing")
-> which added bpf_get_current_ancestor_cgroup_id() to tracing programs
-> in 5.14. I think backporting 5.14 is probably good enough as sleepable
-> progrems are not widely used.
->
-> This patch should fix [1] as well since syscall program is a sleepable
-> program protected with migrate_disable().
->
->  [1] https://lore.kernel.org/bpf/0000000000006d5cab05c7d9bb87@google.com/
->
-> Reported-by: syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
-> Fixes: 95b861a7935b ("bpf: Allow bpf_get_current_ancestor_cgroup_id for tracing")
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
 
-LGTM, thanks!
+oops, will fix
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > +#define BPF_PROG_RUN bpf_prog_run
+>
+> Given the unfortunate conflict in BPF_PROG_RUN, can't we just toss the BPF_PROG_RUN to
+> bpf_prog_run altogether and bite the bullet once to remove it from the tree? (Same as the
+> other macro names in next patch.) There are a number of instances, but still to the extend
+> that it should be doable.
 
->  kernel/bpf/helpers.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
+Yeah, absolutely. I wasn't sure if you'd hate the renaming noise. I'll
+get rid of BPF_PROG_RUN macro in the next revision.
+
 >
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 62cf00383910..4567d2841133 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -353,7 +353,11 @@ const struct bpf_func_proto bpf_jiffies64_proto = {
->  #ifdef CONFIG_CGROUPS
->  BPF_CALL_0(bpf_get_current_cgroup_id)
->  {
-> -       struct cgroup *cgrp = task_dfl_cgroup(current);
-> +       struct cgroup *cgrp;
-> +
-> +       rcu_read_lock();
-> +       cgrp = task_dfl_cgroup(current);
-> +       rcu_read_unlock();
->
->         return cgroup_id(cgrp);
->  }
-> @@ -366,9 +370,13 @@ const struct bpf_func_proto bpf_get_current_cgroup_id_proto = {
->
->  BPF_CALL_1(bpf_get_current_ancestor_cgroup_id, int, ancestor_level)
->  {
-> -       struct cgroup *cgrp = task_dfl_cgroup(current);
-> +       struct cgroup *cgrp;
->         struct cgroup *ancestor;
->
-> +       rcu_read_lock();
-> +       cgrp = task_dfl_cgroup(current);
-> +       rcu_read_unlock();
-> +
->         ancestor = cgroup_ancestor(cgrp, ancestor_level);
->         if (!ancestor)
->                 return 0;
-> --
-> 2.30.2
+> >   /*
+> >    * Use in preemptible and therefore migratable context to make sure that
+> > @@ -622,7 +638,7 @@ static inline u32 bpf_prog_run_pin_on_cpu(const struct bpf_prog *prog,
+> >       u32 ret;
+> >
+> >       migrate_disable();
+> > -     ret = __BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nop_func);
+> > +     ret = bpf_prog_run(prog, ctx);
+> >       migrate_enable();
+> >       return ret;
+> >   }
+> > @@ -768,7 +784,7 @@ static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *prog,
+> >        * under local_bh_disable(), which provides the needed RCU protection
+> >        * for accessing map entries.
+> >        */
+> > -     return __BPF_PROG_RUN(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
+> > +     return __bpf_prog_run(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
+> >   }
+> >
+> >   void bpf_prog_change_xdp(struct bpf_prog *prev_prog, struct bpf_prog *prog);
+> >
 >
