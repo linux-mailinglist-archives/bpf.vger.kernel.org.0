@@ -2,109 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19B43E7D33
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 18:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2C83E7D56
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 18:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbhHJQK7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Aug 2021 12:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
+        id S231390AbhHJQTu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Aug 2021 12:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhHJQK6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:10:58 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ADBC0613C1
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 09:10:36 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id v24-20020a0568300918b02904f3d10c9742so19234516ott.4
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 09:10:36 -0700 (PDT)
+        with ESMTP id S229783AbhHJQTt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Aug 2021 12:19:49 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B2EC0613C1
+        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 09:19:27 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id w17so37119178ybl.11
+        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 09:19:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=STlAk/b/f0LpPovE74ryizrpNARzyKm/YpNaLA2VYmk=;
-        b=WWJ3DrwC9UPsJFB3gQkSK7Sh3ZYqw/yaUsZ04UbJqjX3DMNZx2ctCb4cZQRjClJcQq
-         vAEjPVArvE5jd64UsHbDM2JhW/yW2byAdOlQJj10UCfTSFViKtwr8caEQNk/lZCPb0Q1
-         H5tUrZs/YpwTiKXGiHMmyeetHRu/F/Sol2gizBRsRTQMlVxAoSq54UTRzaOTb2wY8+c4
-         fP5K5hI761bOPJYgj7qRIp6QfUpa6N2sVgFnXlWidBsFwWkiQeeFY8TgXskk3DIrIAGe
-         PN3EEpAbbK98sGG/ar36Qfqp1PWIsALvlEhfwUAA61oBH8EtB4IVNgsIUiS6rLJ7joPN
-         e6wQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DTAshqWohnpHiP/QTpw352MTDZGiGY9mk3gv6p4K7Y4=;
+        b=b2ohOF/mTEg4GAbExY14uF8Fw04VmQ/0oqpUy9hkdBXfKGZDIY8DTsdk5YCtYQreky
+         FB45O63lzrIdZHjMINiXDgjpc3CcCuEEI9YElYCj1CyCzI6NO2SJavA3n+gdOv3Ws0bZ
+         pkAtq3+N3xyCvKb7C7+9vxOvUs2OA79u6vt7llt5vHOzO8hAo0HflZQz8EJ5m7D4kP5b
+         /Icrd8bTs++pJLA3qzi7u9g0uTZPhNFqtEfN82Pc3TPSMya3ntwNfqsg/nTGQsuC2o9N
+         JULQjiDso9uAzREeYfYTmJDX2GxvLf5iaD077JvC586CL8w5elNb6GBqn7e1S67NTHHh
+         j22w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=STlAk/b/f0LpPovE74ryizrpNARzyKm/YpNaLA2VYmk=;
-        b=spK7eY+X/wCDSA0Ak6PX1ogMne6BSPsfiJKayF13BQH+rgfsLOaq9Ha7CrcZwY/Ni6
-         bh0z7sq6XS5e3yA3NbH2rQBaOoI5RnRgZ+7SZ7iBiK2aOPyb+3s6SJX/9nGKi0dwv78f
-         pxJNu1PS+lvGcf7yvyulMqrCml4rEgOttcvEJpwmje4bV09RrF77B5sVAmDMcDrTE3IX
-         leOfqU6WW6RkL0daOXwVZ7Kh6NFjqcT4kOY1Qb0iIpP6dWwIENrZtDM/Jf53LN5Nz3Zp
-         CcPY3LS9O5cd86sCnMm5aiu/5ff4a8A1f65HQl2GvkgltPMODMXzLF0NCkzfd8AiCQjD
-         LEeQ==
-X-Gm-Message-State: AOAM532Lsz1LJzuRtIe1N9tckFIv6UruF1ZmEVnP3ISwNjCSs7qL3eyQ
-        tWwSH5Whzxe45eu0iFqJw4jJhNUAOZggEJJmgfM=
-X-Google-Smtp-Source: ABdhPJys/r2b4EsochhkhhkWHiebtWu6nVYcQwuJ5nnz4o70Sms86zu4hqTwG3SebT31XsuaNHz8HmUDm4SQfM5mikQ=
-X-Received: by 2002:a05:6830:2469:: with SMTP id x41mr11719510otr.255.1628611835978;
- Tue, 10 Aug 2021 09:10:35 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DTAshqWohnpHiP/QTpw352MTDZGiGY9mk3gv6p4K7Y4=;
+        b=hJk8LiHq03pJoklLKj1dUhfGtc14hkU3IKYcY3kRSVg/Z3sW59UaA1bNN19wt6iglD
+         qAChL5gaj0slFvOpUyklPCt0tYNQEIIzSkQh5+EuqUy4intezKkdXwGVfGQ8GYJKl2pq
+         V4U7u/3ZMI56JcXfv2OTeuC+o426xjafWbFCu4zP7gCtJoXkCwwbXSIRem04zHfHgtdB
+         7uMN8HhDakQFZ2b8qryXKxviGiG6yGrr7C/Z303mOwD4uWLoCSnTGhCgBLXrVoOdqeCn
+         M89wB1qxEgDRBUshpoC13ovK/NkAWqR68vPtJ8QSab3h2WlVC/+3smAIdnXdsNW+USWW
+         cKlw==
+X-Gm-Message-State: AOAM5301ULaWgFTQtL77yuTKDAc8ByqIsH4xXv879t4hQ8pFb/1VcyLZ
+        SIOV7xQV4fkOzodzddq6Jw0/AoqbyqAIfl9lxHc=
+X-Google-Smtp-Source: ABdhPJzWRimijTCoAxNi43hBLBogqOZEmk47iTwKC4BQXWtkOD8eksdmZ+VavdQSPEdFQCzugHquy+/3I1HQStPArXs=
+X-Received: by 2002:a25:bb13:: with SMTP id z19mr41015118ybg.347.1628612366473;
+ Tue, 10 Aug 2021 09:19:26 -0700 (PDT)
 MIME-Version: 1.0
-Sender: dianakones50@gmail.com
-Received: by 2002:a9d:754b:0:0:0:0:0 with HTTP; Tue, 10 Aug 2021 09:10:34
- -0700 (PDT)
-From:   Mrs Francisca John Carlsen <franciscacarlsen20@gmail.com>
-Date:   Tue, 10 Aug 2021 17:10:34 +0100
-X-Google-Sender-Auth: KSI6CwKxkGsDJc7mMGEx1VdHSBU
-Message-ID: <CAB_sOi1eHrvaGHuzJG=jt7C=cLY7LZXUHJQADrSY1R-EsNnpCA@mail.gmail.com>
-Subject: Written From Hospital.
-To:     undisclosed-recipients:;
+References: <20210810001625.1140255-1-fallentree@fb.com> <20210810001625.1140255-3-fallentree@fb.com>
+In-Reply-To: <20210810001625.1140255-3-fallentree@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 10 Aug 2021 09:19:15 -0700
+Message-ID: <CAEf4BzaO-jZ3=T4rZb9gojrL2hUfBg=jqgrSQLZLOqR0M3WZtQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/5] Add glob matching for test selector in test_progs.
+To:     Yucong Sun <fallentree@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        sunyucong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Written From Hospital.
+On Mon, Aug 9, 2021 at 5:17 PM Yucong Sun <fallentree@fb.com> wrote:
+>
+> This patch adds glob matching to test selector, it accepts
+> simple glob pattern "*", "?", "[]" to match the test names to run.
 
-    I know that this message may be a very big surprise to you,
-Please do not feel disturbed for contacting  you in this regards, It
-was based on the critical health condition I find mine self.  My names
-are Mrs. Francisca John  Carlsen from Denmark wife of late Mr John
-Carlsen, a widow and I=E2=80=99m suffering from brain tumor disease and thi=
-s
-illness has gotten to a very bad stage, I married my husband for Ten
-years without any family members and no child.
+do we really need ? and []? I've been pretty happy so far in retsnoop
+with supporting just these patterns:
 
-My husband died after a brief illness that lasted for few  days. Since
-the death of my husband, I decided not to remarry again, When my late
-husband was alive he deposited the sum of ($11.000.000 Eleven million
-dollars.) with the Bank. Presently this money is still in bank. And My
- Doctor told me that I don't have much time to live because my illness
-has gotten to a very bad stage, Having known my condition,I decided to
-donate this fund to a good person that will utilize it the way i am
-going to instruct herein. I need a very honest and God fearing person
-who can claim this money and use it for Charity works, for orphanages,
-widows and also build schools for less privileges that will be named
-after my late husband if possible and to promote the word of God and
-the effort that the house of God is maintained.
+1. exact match ('abc')
+2. prefix match ('abc*')
+3. suffix match ('*abc')
+4. substring match ('*abc*')
 
-However all I need and required from you is your sincerity and ability
-to carry out the transaction successfully and fulfill my final wish in
-implementing the charitable project as it requires absolute trust and
-devotion without any failure and I will be glad to see that the bank
-finally release and transfer the fund into your bank account in your
-country even before I die here in the hospital, because my present
-health condition is very critical at the moment everything needs to be
-proccess rapidly as soon as possible.
+See [0] for a naive but simple implementation for that logic. So far
+with test_progs I've only needed two cases from the above: exact and
+substring matches. So I'm leaning towards keeping it simple, actually.
 
-It will be my pleasure to compensate you as my Investment
-Manager/Partner with 35 % percent of the total fund for your effort in
-handling the transaction, 5 % percent for any expenses or processing
-charges fee that will involve during this process while 60% of the
-fund will be Invested into the charity project there in your country
-for the mutual benefit of the orphans and the less privileges ones.
+But there is also an issue of backwards compatibility. People using
+`test_progs -t substr` are used to substring matching logic, so with
+this change you are breaking this, which will cause frustration, most
+probably. So maybe let's add a new parameter to specify these globs.
+E.g., maybe `-a <glob>` for whitelisting (allowlisting), and `-d
+<glob>` for blacklisting (denylisting)? Also, instead of parsing
+comma-separated lists as I did initially with -t, we should probably
+just allow multiple occurences of -a and -d:
 
-Meanwhile I am waiting for your prompt respond, if only you are
-interested for further details of the transaction and execution of
-this  humanitarian project for the glory and honor of God the merciful
-compassionate.
+./test_progs -a '*core*' -a '*linux' -d 'core_autosize'
 
-May God bless you and your family.
+will allow all CO-RE tests except autosize one, plus will admit
+vmlinux selftest.
 
-Best Regards,
-Mrs. Francisca John  Carlsen
+Also, keep in mind that there are subtests within some tests, and
+those should be matches with the same logic as well:
+
+./test_progs -a 'core_reloc/size*'
+
+should run:
+
+#32/58 size:OK
+#32/59 size___diff_sz:OK
+#32/60 size___err_ambiguous:OK
+
+
+It gets a bit trickier with globs for both test and subtest, e.g.
+'*core*/size*' -- should it match just core_reloc/size* tests as
+above? Or also core_retro, core_extern, etc tests even though they
+don't have subtests starting with 'size'? I'd say the latter is more
+desirable, but I haven't checked how hard that would be to support.
+
+
+  [0] https://github.com/anakryiko/retsnoop/blob/2e6217f7a82f421fcf3481cc401390605066ab26/src/mass_attacher.c#L982-L1015
+
+>
+> The glob matching function is copied from perf/util/string.c
+>
+> Signed-off-by: Yucong Sun <fallentree@fb.com>
+> ---
+>  tools/testing/selftests/bpf/test_progs.c | 94 +++++++++++++++++++++++-
+>  1 file changed, 92 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> index 74dde0af1592..c5bffd2e78ae 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -13,6 +13,96 @@
+>  #include <execinfo.h> /* backtrace */
+>  #include <linux/membarrier.h>
+>
+> +// Copied from perf/util/string.c
+> +
+> +/* Character class matching */
+> +static bool __match_charclass(const char *pat, char c, const char **npat)
+> +{
+> +       bool complement = false, ret = true;
+> +
+> +       if (*pat == '!') {
+> +               complement = true;
+> +               pat++;
+> +       }
+> +       if (*pat++ == c) /* First character is special */
+> +               goto end;
+> +
+> +       while (*pat && *pat != ']') { /* Matching */
+> +               if (*pat == '-' && *(pat + 1) != ']') { /* Range */
+> +                       if (*(pat - 1) <= c && c <= *(pat + 1))
+> +                               goto end;
+> +                       if (*(pat - 1) > *(pat + 1))
+> +                               goto error;
+> +                       pat += 2;
+> +               } else if (*pat++ == c)
+> +                       goto end;
+> +       }
+> +       if (!*pat)
+> +               goto error;
+> +       ret = false;
+> +
+> +end:
+> +       while (*pat && *pat != ']') /* Searching closing */
+> +               pat++;
+> +       if (!*pat)
+> +               goto error;
+> +       *npat = pat + 1;
+> +       return complement ? !ret : ret;
+> +
+> +error:
+> +       return false;
+> +}
+> +
+> +// Copied from perf/util/string.c
+> +/* Glob/lazy pattern matching */
+> +static bool __match_glob(const char *str, const char *pat, bool ignore_space,
+> +                        bool case_ins)
+> +{
+> +       while (*str && *pat && *pat != '*') {
+> +               if (ignore_space) {
+> +                       /* Ignore spaces for lazy matching */
+> +                       if (isspace(*str)) {
+> +                               str++;
+> +                               continue;
+> +                       }
+> +                       if (isspace(*pat)) {
+> +                               pat++;
+> +                               continue;
+> +                       }
+> +               }
+> +               if (*pat == '?') { /* Matches any single character */
+> +                       str++;
+> +                       pat++;
+> +                       continue;
+> +               } else if (*pat == '[') /* Character classes/Ranges */
+> +                       if (__match_charclass(pat + 1, *str, &pat)) {
+> +                               str++;
+> +                               continue;
+> +                       } else
+> +                               return false;
+> +               else if (*pat == '\\') /* Escaped char match as normal char */
+> +                       pat++;
+> +               if (case_ins) {
+> +                       if (tolower(*str) != tolower(*pat))
+> +                               return false;
+> +               } else if (*str != *pat)
+> +                       return false;
+> +               str++;
+> +               pat++;
+> +       }
+> +       /* Check wild card */
+> +       if (*pat == '*') {
+> +               while (*pat == '*')
+> +                       pat++;
+> +               if (!*pat) /* Tail wild card matches all */
+> +                       return true;
+> +               while (*str)
+> +                       if (__match_glob(str++, pat, ignore_space, case_ins))
+> +                               return true;
+> +       }
+> +       return !*str && !*pat;
+> +}
+> +
+>  #define EXIT_NO_TEST           2
+>  #define EXIT_ERR_SETUP_INFRA   3
+>
+> @@ -55,12 +145,12 @@ static bool should_run(struct test_selector *sel, int num, const char *name)
+>         int i;
+>
+>         for (i = 0; i < sel->blacklist.cnt; i++) {
+> -               if (strstr(name, sel->blacklist.strs[i]))
+> +               if (__match_glob(name, sel->blacklist.strs[i], false, false))
+>                         return false;
+>         }
+>
+>         for (i = 0; i < sel->whitelist.cnt; i++) {
+> -               if (strstr(name, sel->whitelist.strs[i]))
+> +               if (__match_glob(name, sel->whitelist.strs[i], false, false))
+>                         return true;
+>         }
+>
+> --
+> 2.30.2
+>
