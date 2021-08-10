@@ -2,86 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B113E5C18
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 15:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FAB3E5C72
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 16:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241838AbhHJNqj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Aug 2021 09:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240192AbhHJNqj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:46:39 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E146C0613D3;
-        Tue, 10 Aug 2021 06:46:17 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso5483138pjb.1;
-        Tue, 10 Aug 2021 06:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=XFUNA2K8RC/kl0wQXbCSDrKlNYmt5rM3BINLrAhJq1c=;
-        b=s6eSd1dzbwC1oLaT5aMLhUtowX+ptX+xsKfsqY4FA/cU7RPoVCwYEann6j3VVIgHm6
-         9ggfLdyB0oGZdua8y2TEyXYx0xHNiW/TzPpRXjLK+td4QNoN6g3KJWKZt9c0izJIvXI9
-         ROkJnlS3M4YSpAMGiGc7YYBGHVNCxv8RLgYcz7QRym2xgsL7DZebRGo1ygUYJl10F/YK
-         PCvfg3AE0VMn7xwVjv7MIPtjxe5mUCPHzcnfaaAQHTc3HvFuiaH5mjLhdTeA05ycpc8C
-         R/ZSljpx578YVKD8us6qdkhSZuBukKLTuq9PU0HI+JWt8Kc56hNSj/rC/Ssq7AP2JUQQ
-         QRmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=XFUNA2K8RC/kl0wQXbCSDrKlNYmt5rM3BINLrAhJq1c=;
-        b=NhOxyLxPnE3rC2Uq0xg0QsTpYzltwXq7Y3SVRtweOroYKEXOMTDN5QKrJel5YLDnQR
-         +gYn3+nFYJyr49KbvtPiUoRqmEGlditOCdxQ/RYQpdUvYQHuaIxU81iae4o7rmW7wiHd
-         NOUlc1pm3sEgNNfG+TBn731HGkskyrDSy2rmWTi1r3NNEnhMGQX1brgjMdjqhQN3EMNP
-         ZMnWfi6bbR4Yarhj/ORvL/1SyU1FAM9YC4/p8M15q0G0XWa3y8zsLY+q+5up+aJ55ixb
-         WMQb4MdPM2IX7tdgMqVBYoMZM6UFZhxe2qxUsxs2fQTTfPKf/3ceQx+d+ZWo2eV2hWig
-         wkKw==
-X-Gm-Message-State: AOAM533xuS/veJY4CjoGOuPWSXP+7fB1UzX6Db9Ty/R55eUW5gdq2VYu
-        r9H9m6DTJPMHc/FCVa0T7j0=
-X-Google-Smtp-Source: ABdhPJwpeexrI/iUcVe4J3dmfabPO7nLubQ0FfxghPxqL5jwVtDmeY+c3dOrQ9eVBPPX0LAwnoq4Pg==
-X-Received: by 2002:aa7:90c9:0:b029:307:49ca:dedd with SMTP id k9-20020aa790c90000b029030749cadeddmr23549200pfk.9.1628603176698;
-        Tue, 10 Aug 2021 06:46:16 -0700 (PDT)
-Received: from [10.178.0.62] ([85.203.23.37])
-        by smtp.gmail.com with ESMTPSA id 129sm19692587pfg.50.2021.08.10.06.46.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Aug 2021 06:46:16 -0700 (PDT)
-To:     john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, baijiaju1990@gmail.com
-From:   Tuo Li <islituo@gmail.com>
-Subject: [BUG] ipv6: possible null-pointer dereference in ip6_xmit()
-Message-ID: <2c434d4d-934f-f8d2-7f1f-af085fcfad26@gmail.com>
-Date:   Tue, 10 Aug 2021 21:46:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237076AbhHJOCY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Aug 2021 10:02:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236686AbhHJOCX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Aug 2021 10:02:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E06D9600CD;
+        Tue, 10 Aug 2021 14:01:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628604121;
+        bh=2X2FfQTItSOe1HgmV1lGWAz1F4CFriJWOSrHqlK+mdg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XrXAXflx3roisEZL9HRH0ZjFfJReCyJ1mEylsRBb5EJqwOEBQDikCNPcsR5mxsOCR
+         Z47lulbBJj+XDVCuJaI9QrsFNzqzcNO5TexLkzH+f8Hv0fP7OlbbPPId9KxbRIEnRc
+         JTOmfpZ5VscAPld2LX7GWP6w6PvsEX9itLX2nHzPjMhxohrrD/Ttsh+T8V/pGdm08R
+         GItYpvJYF1d73ZnKs2kIhhzdL331y14aLm0U0Qmp1NCSHvczDqMuaB0qGGD+hBZemq
+         hjacoUh8k0IsxNXqoDPpxu6+ect+9hqaRbytC/i2KcA11U9SSDSjbPPYS/8D0MNDyZ
+         4A2Pd7YuAO9ig==
+Date:   Tue, 10 Aug 2021 07:01:59 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     <davem@davemloft.net>, <alexander.duyck@gmail.com>,
+        <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <linuxarm@openeuler.org>, <yisen.zhuang@huawei.com>,
+        <salil.mehta@huawei.com>, <thomas.petazzoni@bootlin.com>,
+        <hawk@kernel.org>, <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
+        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
+        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
+        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <chenhao288@hisilicon.com>
+Subject: Re: [PATCH net-next v2 0/4] add frag page support in page pool
+Message-ID: <20210810070159.367e680e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
+References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, 6 Aug 2021 10:46:18 +0800 Yunsheng Lin wrote:
+> enable skb's page frag recycling based on page pool in
+> hns3 drvier.
 
-Our static analysis tool finds a possible null-pointer dereference in 
-ip6_output.c in Linux 5.14.0-rc3:
-
-The variable n is checked in:
-314:    if (np)
-
-This indicates that it can be NULL. If so, a null-pointer dereference 
-will occur
-in the called function ip6_autoflowlabel() at Line 320:
-252:    if (!np->autoflowlabel_set)
-
-I am not quite sure whether this possible null-pointer dereference is 
-real and how to fix it if it is real.
-Any feedback would be appreciated, thanks!
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-
-Best wishes,
-Tuo Li
+Applied, thanks!
