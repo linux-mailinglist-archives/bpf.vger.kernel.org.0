@@ -2,69 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9C03E7F2E
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 19:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5155E3E8019
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 19:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233924AbhHJRhl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Aug 2021 13:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233281AbhHJRgE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Aug 2021 13:36:04 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33DEC06179A
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 10:33:36 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id u13so30300191lje.5
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 10:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=y3BZ+wT7TMDVjM2/WQcyPOhYkG/NWjvDbJIsMqFI2RA=;
-        b=BggyEzSIpVznrhWTl8MIRAYEe15KlTxcMGseAQSFa7RDeDzVHxU4eSoETbmExnaLIE
-         zuq8OYsbcAC4TRTZpDVHuqOpZQ9IWzoDnFG9KE9Hgoh5GHNRpLrX7GaTa2Rlpi17Sa+7
-         wynv7o5vGtXcABH0YLjEMHBgYbVN4gwCCmMbmqM96vylTsH+XuSJQxB2T0aZ0px1WpyQ
-         RfAqEbEJWHwau3sZBSpHTPqcKq0lEWF+TZfP6Hoo/gEZtnmpQsbvRYpoOVsYPdrPzr7x
-         t3j+1ErMjanfyKX6UgQnU/AAqtfTm/Qksyzzn7HfgMwEBK6s4oZtKRsuVtciK72GKLQ3
-         6YUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=y3BZ+wT7TMDVjM2/WQcyPOhYkG/NWjvDbJIsMqFI2RA=;
-        b=lU4eRc55n19OI9QjV7zyqsB0xAjkFSqi9+UPJz/1Dgv1546Xz/La7/0/zsfrTjAVOL
-         ENE70Nw2jjXiXzQuZuAdGBFsDS4zZ/PIlYRrH/eu4gVmqKhfCZfqDfoQANlwtRgsDLRU
-         qoeRijDEF+VIQofSHcB+5Hnnx+5m6URidusC3SXlVokaI5aDZmAcIc4HmEVi/KKfHI9i
-         e/A2fl22cEpDv4+4D+HvDIpqVy2RfA/GLjYEr33dojPk+nREw3PTmCm0bFa2zRmvZCHG
-         LdaUFordUKxWHiYQGOcRgdK1npHxsIbqLRbk3hydjlKBLCCmyi7RbNCTdgX6mzZnZjZ5
-         B1sw==
-X-Gm-Message-State: AOAM531a3uJZq2tOgQV1ecTOCZ001e0IRkQJkWQpX9wgT1L/KG8D8GuG
-        4lmOCh1Mig/r0q2J4aeFucrSd+xeodtaLQZLWng=
-X-Google-Smtp-Source: ABdhPJxJzT1Kb5atT5yD66iaERNxaunOV6XJPdXL1z2OXUo9BKjwXZsRFKaZJQfJZWzQJ7vPYlv2A2MhcLNWOaJIEsQ=
-X-Received: by 2002:a2e:b61c:: with SMTP id r28mr13615658ljn.274.1628616814996;
- Tue, 10 Aug 2021 10:33:34 -0700 (PDT)
+        id S235917AbhHJRqM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Aug 2021 13:46:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234835AbhHJRnq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Aug 2021 13:43:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 018C26108C;
+        Tue, 10 Aug 2021 17:39:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628617154;
+        bh=x9H+NUxjrSY8iTRt4JN3h5bFREXqBinLLp8tASoNvC0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bTA5Eypuu0CjZPKnUSVtpWszH0KNkx0I13x4VPubdE4G+VwlpbfQ1GZyl1NaIpg7T
+         +sKvju1HcjQnf0GvQV3n7TuwKjyJ0Q+ukAclJ3ShBYwX7M4mkrQwIdCaryJZadqNzl
+         yIXeJ03nZYtJJTN4X9ZdzQ6xNg0MVvyItSf9VWB7smfmQHg+OHT+aCrktRCWAoTzNl
+         IPeVh0Jfta8IPHbZi68/qIKe4JXC60FZ+9IT7XH5bOu/7qznzxJYzHvGVemJPZUGDE
+         BPzk9KTxAkJT+XOHZtIy0HzuwO9YPEXsXY+z7mbAgf1gnPadY8D82hOOJHyYe1UT6U
+         B3pzq9I3G34fg==
+Date:   Tue, 10 Aug 2021 10:39:13 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, andrii.nakryiko@gmail.com, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: pull-request: bpf-next 2021-08-10
+Message-ID: <20210810103913.4f818328@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210810130038.16927-1-daniel@iogearbox.net>
+References: <20210810130038.16927-1-daniel@iogearbox.net>
 MIME-Version: 1.0
-Received: by 2002:ac2:5d2e:0:0:0:0:0 with HTTP; Tue, 10 Aug 2021 10:33:33
- -0700 (PDT)
-Reply-To: majidmuzaffar8@gmail.com
-From:   Majid Muzaffar <ing.abdullabin.rishid.me@gmail.com>
-Date:   Tue, 10 Aug 2021 20:33:33 +0300
-Message-ID: <CAFsu49W_3bbJbgEKV5RQo3TBRgLduTA-4EwS7hHkwcfSHSRrcg@mail.gmail.com>
-Subject: Proposal
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Salam alaikum,
+On Tue, 10 Aug 2021 15:00:38 +0200 Daniel Borkmann wrote:
+> 1) Native XDP support for bonding driver & related BPF selftests, from Ju=
+ssi Maki.
+>=20
+> 2) Large batch of new BPF JIT tests for test_bpf.ko that came out as a re=
+sult from
+>    32-bit MIPS JIT development, from Johan Almbladh.
+>=20
+> 3) Rewrite of netcnt BPF selftest and merge into test_progs, from Stanisl=
+av Fomichev.
+>=20
+> 4) Fix XDP bpf_prog_test_run infra after net to net-next merge, from Andr=
+ii Nakryiko.
+>=20
+> 5) Follow-up fix in unix_bpf_update_proto() to enforce socket type, from =
+Cong Wang.
+>=20
+> 6) Fix bpf-iter-tcp4 selftest to print the correct dest IP, from Jose Bla=
+nquicet.
+>=20
+> 7) Various misc BPF XDP sample improvements, from Niklas S=C3=B6derlund, =
+Matthew Cover,
+>    and Muhammad Falak R Wani.
 
-I am the investment officer of UAE based investment company who are
-ready to fund projects outside UAE, in the form of debt finance. We
-grant loan to both Corporate and private entities at a low interest
-rate of 3% ROI per annum. The terms are very flexible and interesting.
-Kindly revert back if you have projects that needs funding for further
-discussion and negotiation.
-
-Thanks
-
-investment officer
+Pulled, thanks!
