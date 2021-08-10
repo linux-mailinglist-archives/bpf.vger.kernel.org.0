@@ -2,68 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B753A3E58EE
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 13:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B893E5901
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 13:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238122AbhHJLU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Aug 2021 07:20:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237252AbhHJLU0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Aug 2021 07:20:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0C0CE60EBB;
-        Tue, 10 Aug 2021 11:20:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628594405;
-        bh=hwedIZTUGsa3SEjAxhAa5W23ygt2a2mYnoO9/Y0NCzo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=GD2JamTSOOtUAViYJVd4q2cSFMtY+TguTnvb3dhZpeH1tqV/cGatAM15ec7SAkw98
-         RLX4xWkOMdUJwuRYmO55aPgk6OQr4u3UprC15ZeE9m0XMxOqQ0xRxjoWX4fFdmNJGa
-         6eKSLDYyPlldCNe5oabl1/H8hmFlzCwb4+V1ij5xRKWDAb9JjupdnQmKiHk6HFG95A
-         e+dziFNe0Q6wMEbnrba4vWILtcPxy/YHQchIN8CVNT3OA7XTa0MioqYqiNCwIEHjqG
-         RUcrv7p8MzinXT/ty0d5LWb/14tot+GMnb2KlyJOZ6+bK5FvMlgPBZr18j6qyKefys
-         7tye4LrV9uKmA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F3B3460A3B;
-        Tue, 10 Aug 2021 11:20:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S237533AbhHJLXo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Aug 2021 07:23:44 -0400
+Received: from www62.your-server.de ([213.133.104.62]:55044 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229967AbhHJLXl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Aug 2021 07:23:41 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mDPql-0002eb-0E; Tue, 10 Aug 2021 13:23:15 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mDPqk-000Q1A-Qp; Tue, 10 Aug 2021 13:23:14 +0200
+Subject: Re: [PATCH v2 bpf-next 5/5] Record all failed tests and output after
+ the summary line.
+To:     Yucong Sun <fallentree@fb.com>, bpf@vger.kernel.org
+Cc:     andrii@kernel.org, sunyucong@gmail.com
+References: <20210810001625.1140255-1-fallentree@fb.com>
+ <20210810001625.1140255-6-fallentree@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1c6e9434-4bd4-ebf1-9ea9-f4439c8974be@iogearbox.net>
+Date:   Tue, 10 Aug 2021 13:23:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf: core: fix kernel-doc notation
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162859440499.8510.15547475703902558278.git-patchwork-notify@kernel.org>
-Date:   Tue, 10 Aug 2021 11:20:04 +0000
-References: <20210809215229.7556-1-rdunlap@infradead.org>
-In-Reply-To: <20210809215229.7556-1-rdunlap@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, bpf@vger.kernel.org
+In-Reply-To: <20210810001625.1140255-6-fallentree@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26259/Tue Aug 10 10:19:56 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (refs/heads/master):
-
-On Mon,  9 Aug 2021 14:52:29 -0700 you wrote:
-> Fix kernel-doc warnings in kernel/bpf/core.c (found by
-> scripts/kernel-doc and W=1 builds).
+On 8/10/21 2:16 AM, Yucong Sun wrote:
+> This patch records all failed tests and subtests during the run, output
+> them after the summary line, making it easier to identify failed tests
+> in the long output.
 > 
-> Correct a function name in a comment and add return descriptions
-> for 2 functions.
+> Signed-off-by: Yucong Sun <fallentree@fb.com>
+
+nit: please prefix all $subjects with e.g. 'bpf, selftests:'. for example, here should
+be 'bpf, selftests: Record all failed tests and output after the summary line' so it's
+more clear in the git log which subsystem is meant.
+
+> ---
+>   tools/testing/selftests/bpf/test_progs.c | 25 +++++++++++++++++++++++-
+>   tools/testing/selftests/bpf/test_progs.h |  2 ++
+>   2 files changed, 26 insertions(+), 1 deletion(-)
 > 
-> Fixes these kernel-doc warnings:
+> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> index 5cc808992b00..51a70031f07e 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -244,6 +244,11 @@ void test__end_subtest()
+>   	       test->test_num, test->subtest_num, test->subtest_name,
+>   	       sub_error_cnt ? "FAIL" : (test->skip_cnt ? "SKIP" : "OK"));
+>   
+> +	if (sub_error_cnt) {
+> +		fprintf(env.summary_errors, "#%d/%d %s: FAIL\n",
+> +			test->test_num, test->subtest_num, test->subtest_name);
+> +	}
+> +
+>   	if (sub_error_cnt)
+>   		env.fail_cnt++;
+>   	else if (test->skip_cnt == 0)
+> @@ -816,6 +821,10 @@ int main(int argc, char **argv)
+>   		.sa_flags = SA_RESETHAND,
+>   	};
+>   	int err, i;
+> +	/* record errors to print after summary line */
+> +	char *summary_errors_buf;
+> +	size_t summary_errors_cnt;
+> +
+>   
+
+nit: double newline
+
+>   	sigaction(SIGSEGV, &sigact, NULL);
+>   
+> @@ -823,6 +832,9 @@ int main(int argc, char **argv)
+>   	if (err)
+>   		return err;
+>   
+> +	env.summary_errors = open_memstream(
+> +		&summary_errors_buf, &summary_errors_cnt);
+
+Test for env.summary_errors being NULL missing.
+
+> +
+>   	err = cd_flavor_subdir(argv[0]);
+>   	if (err)
+>   		return err;
+> @@ -891,6 +903,11 @@ int main(int argc, char **argv)
+>   			test->test_num, test->test_name,
+>   			test->error_cnt ? "FAIL" : "OK");
+>   
+> +		if(test->error_cnt) {
+> +			fprintf(env.summary_errors, "#%d %s: FAIL\n",
+> +				test->test_num, test->test_name);
+> +		}
+> +
+>   		reset_affinity();
+>   		restore_netns();
+>   		if (test->need_cgroup_cleanup)
+> @@ -908,9 +925,14 @@ int main(int argc, char **argv)
+>   	if (env.list_test_names)
+>   		goto out;
+>   
+> -	fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
+> +	fprintf(stdout, "\nSummary: %d/%d PASSED, %d SKIPPED, %d FAILED\n\n",
+>   		env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
+>   
+> +	fclose(env.summary_errors);
+> +	if(env.fail_cnt) {
+> +		fprintf(stdout, "%s", summary_errors_buf);
+> +	}
+> +
+>   out:
+>   	free_str_set(&env.test_selector.blacklist);
+>   	free_str_set(&env.test_selector.whitelist);
+> @@ -919,6 +941,7 @@ int main(int argc, char **argv)
+>   	free_str_set(&env.subtest_selector.whitelist);
+>   	free(env.subtest_selector.num_set);
+>   	close(env.saved_netns_fd);
+> +	free(summary_errors_buf);
+>   
+>   	if (env.succ_cnt + env.fail_cnt + env.skip_cnt == 0)
+>   		return EXIT_NO_TEST;
+> diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+> index c8c2bf878f67..63f4e534c6e5 100644
+> --- a/tools/testing/selftests/bpf/test_progs.h
+> +++ b/tools/testing/selftests/bpf/test_progs.h
+> @@ -82,6 +82,8 @@ struct test_env {
+>   	int skip_cnt; /* skipped tests */
+>   
+>   	int saved_netns_fd;
+> +
+> +	FILE* summary_errors;
+
+nit: FILE *summary_errors;
+
+>   };
+>   
+>   extern struct test_env env;
 > 
-> [...]
-
-Here is the summary with links:
-  - bpf: core: fix kernel-doc notation
-    https://git.kernel.org/bpf/bpf/c/019d0454c617
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
 
