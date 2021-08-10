@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296583E8589
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 23:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF013E8587
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 23:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234794AbhHJVht convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 10 Aug 2021 17:37:49 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:58034 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234859AbhHJVho (ORCPT
+        id S234248AbhHJVhr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 10 Aug 2021 17:37:47 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58324 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234842AbhHJVho (ORCPT
         <rfc822;bpf@vger.kernel.org>); Tue, 10 Aug 2021 17:37:44 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 17ALYnZP023207
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 14:37:15 -0700
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17ALZVh4023445
+        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 14:37:12 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3abya40ydf-1
+        by mx0a-00082601.pphosted.com with ESMTP id 3abyqwrqw2-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 14:37:15 -0700
-Received: from intmgw001.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 14:37:12 -0700
+Received: from intmgw006.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 14:37:14 -0700
+ 15.1.2176.2; Tue, 10 Aug 2021 14:37:10 -0700
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 817ED3D405A0; Tue, 10 Aug 2021 14:37:03 -0700 (PDT)
+        id 8BF843D405A0; Tue, 10 Aug 2021 14:37:05 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v4 bpf-next 12/14] selftests/bpf: test low-level perf BPF link API
-Date:   Tue, 10 Aug 2021 14:36:32 -0700
-Message-ID: <20210810213634.272111-13-andrii@kernel.org>
+Subject: [PATCH v4 bpf-next 13/14] selftests/bpf: extract uprobe-related helpers into trace_helpers.{c,h}
+Date:   Tue, 10 Aug 2021 14:36:33 -0700
+Message-ID: <20210810213634.272111-14-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210810213634.272111-1-andrii@kernel.org>
 References: <20210810213634.272111-1-andrii@kernel.org>
@@ -39,147 +39,196 @@ Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: -gssRciWepKxQCVxiMFUEUcLdv0aRVrQ
-X-Proofpoint-ORIG-GUID: -gssRciWepKxQCVxiMFUEUcLdv0aRVrQ
+X-Proofpoint-GUID: -1X-PG-oIArLExDndN5FAH1f3jlEDW3x
+X-Proofpoint-ORIG-GUID: -1X-PG-oIArLExDndN5FAH1f3jlEDW3x
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-08-10_08:2021-08-10,2021-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- spamscore=0 priorityscore=1501 adultscore=0 clxscore=1015 malwarescore=0
- bulkscore=0 impostorscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
+ malwarescore=0 impostorscore=0 clxscore=1034 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2107140000 definitions=main-2108100142
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests utilizing low-level bpf_link_create() API to create perf BPF link.
+Extract two helpers used for working with uprobes into trace_helpers.{c,h} to
+be re-used between multiple uprobe-using selftests. Also rename get_offset()
+into more appropriate get_uprobe_offset().
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../selftests/bpf/prog_tests/perf_link.c      | 89 +++++++++++++++++++
- .../selftests/bpf/progs/test_perf_link.c      | 16 ++++
- 2 files changed, 105 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_link.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_perf_link.c
+ .../selftests/bpf/prog_tests/attach_probe.c   | 61 +----------------
+ tools/testing/selftests/bpf/trace_helpers.c   | 66 +++++++++++++++++++
+ tools/testing/selftests/bpf/trace_helpers.h   |  3 +
+ 3 files changed, 70 insertions(+), 60 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_link.c b/tools/testing/selftests/bpf/prog_tests/perf_link.c
-new file mode 100644
-index 000000000000..b1abd0c46607
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_link.c
-@@ -0,0 +1,89 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <sched.h>
-+#include <test_progs.h>
-+#include "test_perf_link.skel.h"
+diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+index ec11e20d2b92..e40b41c44f8b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
++++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+@@ -2,65 +2,6 @@
+ #include <test_progs.h>
+ #include "test_attach_probe.skel.h"
+ 
+-#if defined(__powerpc64__) && defined(_CALL_ELF) && _CALL_ELF == 2
+-
+-#define OP_RT_RA_MASK   0xffff0000UL
+-#define LIS_R2          0x3c400000UL
+-#define ADDIS_R2_R12    0x3c4c0000UL
+-#define ADDI_R2_R2      0x38420000UL
+-
+-static ssize_t get_offset(ssize_t addr, ssize_t base)
+-{
+-	u32 *insn = (u32 *) addr;
+-
+-	/*
+-	 * A PPC64 ABIv2 function may have a local and a global entry
+-	 * point. We need to use the local entry point when patching
+-	 * functions, so identify and step over the global entry point
+-	 * sequence.
+-	 *
+-	 * The global entry point sequence is always of the form:
+-	 *
+-	 * addis r2,r12,XXXX
+-	 * addi  r2,r2,XXXX
+-	 *
+-	 * A linker optimisation may convert the addis to lis:
+-	 *
+-	 * lis   r2,XXXX
+-	 * addi  r2,r2,XXXX
+-	 */
+-	if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
+-	     ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
+-	    ((*(insn + 1) & OP_RT_RA_MASK) == ADDI_R2_R2))
+-		return (ssize_t)(insn + 2) - base;
+-	else
+-		return addr - base;
+-}
+-#else
+-#define get_offset(addr, base) (addr - base)
+-#endif
+-
+-ssize_t get_base_addr() {
+-	size_t start, offset;
+-	char buf[256];
+-	FILE *f;
+-
+-	f = fopen("/proc/self/maps", "r");
+-	if (!f)
+-		return -errno;
+-
+-	while (fscanf(f, "%zx-%*x %s %zx %*[^\n]\n",
+-		      &start, buf, &offset) == 3) {
+-		if (strcmp(buf, "r-xp") == 0) {
+-			fclose(f);
+-			return start - offset;
+-		}
+-	}
+-
+-	fclose(f);
+-	return -EINVAL;
+-}
+-
+ void test_attach_probe(void)
+ {
+ 	int duration = 0;
+@@ -74,7 +15,7 @@ void test_attach_probe(void)
+ 	if (CHECK(base_addr < 0, "get_base_addr",
+ 		  "failed to find base addr: %zd", base_addr))
+ 		return;
+-	uprobe_offset = get_offset((size_t)&get_base_addr, base_addr);
++	uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
+ 
+ 	skel = test_attach_probe__open_and_load();
+ 	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index 1bbd1d9830c8..381dafce1d8f 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -136,3 +136,69 @@ void read_trace_pipe(void)
+ 		}
+ 	}
+ }
 +
-+static void burn_cpu(void)
++#if defined(__powerpc64__) && defined(_CALL_ELF) && _CALL_ELF == 2
++
++#define OP_RT_RA_MASK   0xffff0000UL
++#define LIS_R2          0x3c400000UL
++#define ADDIS_R2_R12    0x3c4c0000UL
++#define ADDI_R2_R2      0x38420000UL
++
++ssize_t get_uprobe_offset(const void *addr, ssize_t base)
 +{
-+	volatile int j = 0;
-+	cpu_set_t cpu_set;
-+	int i, err;
++	u32 *insn = (u32 *)(uintptr_t)addr;
 +
-+	/* generate some branches on cpu 0 */
-+	CPU_ZERO(&cpu_set);
-+	CPU_SET(0, &cpu_set);
-+	err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
-+	ASSERT_OK(err, "set_thread_affinity");
-+
-+	/* spin the loop for a while (random high number) */
-+	for (i = 0; i < 1000000; ++i)
-+		++j;
-+}
-+
-+void test_perf_link(void)
-+{
-+	struct test_perf_link *skel = NULL;
-+	struct perf_event_attr attr;
-+	int pfd = -1, link_fd = -1, err;
-+	int run_cnt_before, run_cnt_after;
-+	struct bpf_link_info info;
-+	__u32 info_len = sizeof(info);
-+
-+	/* create perf event */
-+	memset(&attr, 0, sizeof(attr));
-+	attr.size = sizeof(attr);
-+	attr.type = PERF_TYPE_SOFTWARE;
-+	attr.config = PERF_COUNT_SW_CPU_CLOCK;
-+	attr.freq = 1;
-+	attr.sample_freq = 4000;
-+	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
-+	if (!ASSERT_GE(pfd, 0, "perf_fd"))
-+		goto cleanup;
-+
-+	skel = test_perf_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	link_fd = bpf_link_create(bpf_program__fd(skel->progs.handler), pfd,
-+				  BPF_PERF_EVENT, NULL);
-+	if (!ASSERT_GE(link_fd, 0, "link_fd"))
-+		goto cleanup;
-+
-+	memset(&info, 0, sizeof(info));
-+	err = bpf_obj_get_info_by_fd(link_fd, &info, &info_len);
-+	if (!ASSERT_OK(err, "link_get_info"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(info.type, BPF_LINK_TYPE_PERF_EVENT, "link_type");
-+	ASSERT_GT(info.id, 0, "link_id");
-+	ASSERT_GT(info.prog_id, 0, "link_prog_id");
-+
-+	/* ensure we get at least one perf_event prog execution */
-+	burn_cpu();
-+	ASSERT_GT(skel->bss->run_cnt, 0, "run_cnt");
-+
-+	/* perf_event is still active, but we close link and BPF program
-+	 * shouldn't be executed anymore
++	/*
++	 * A PPC64 ABIv2 function may have a local and a global entry
++	 * point. We need to use the local entry point when patching
++	 * functions, so identify and step over the global entry point
++	 * sequence.
++	 *
++	 * The global entry point sequence is always of the form:
++	 *
++	 * addis r2,r12,XXXX
++	 * addi  r2,r2,XXXX
++	 *
++	 * A linker optimisation may convert the addis to lis:
++	 *
++	 * lis   r2,XXXX
++	 * addi  r2,r2,XXXX
 +	 */
-+	close(link_fd);
-+	link_fd = -1;
-+
-+	/* make sure there are no stragglers */
-+	kern_sync_rcu();
-+
-+	run_cnt_before = skel->bss->run_cnt;
-+	burn_cpu();
-+	run_cnt_after = skel->bss->run_cnt;
-+
-+	ASSERT_EQ(run_cnt_before, run_cnt_after, "run_cnt_before_after");
-+
-+cleanup:
-+	if (link_fd >= 0)
-+		close(link_fd);
-+	if (pfd >= 0)
-+		close(pfd);
-+	test_perf_link__destroy(skel);
++	if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
++	     ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
++	    ((*(insn + 1) & OP_RT_RA_MASK) == ADDI_R2_R2))
++		return (ssize_t)(insn + 2) - base;
++	else
++		return (uintptr_t)addr - base;
 +}
-diff --git a/tools/testing/selftests/bpf/progs/test_perf_link.c b/tools/testing/selftests/bpf/progs/test_perf_link.c
-new file mode 100644
-index 000000000000..c1db9fd98d0c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_perf_link.c
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
 +
-+int run_cnt = 0;
++#else
 +
-+SEC("perf_event")
-+int handler(struct pt_regs *ctx)
++ssize_t get_uprobe_offset(const void *addr, ssize_t base)
 +{
-+	__sync_fetch_and_add(&run_cnt, 1);
-+	return 0;
++	return (uintptr_t)addr - base;
 +}
 +
-+char _license[] SEC("license") = "GPL";
++#endif
++
++ssize_t get_base_addr(void)
++{
++	size_t start, offset;
++	char buf[256];
++	FILE *f;
++
++	f = fopen("/proc/self/maps", "r");
++	if (!f)
++		return -errno;
++
++	while (fscanf(f, "%zx-%*x %s %zx %*[^\n]\n",
++		      &start, buf, &offset) == 3) {
++		if (strcmp(buf, "r-xp") == 0) {
++			fclose(f);
++			return start - offset;
++		}
++	}
++
++	fclose(f);
++	return -EINVAL;
++}
+diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/selftests/bpf/trace_helpers.h
+index f62fdef9e589..3d9435b3dd3b 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.h
++++ b/tools/testing/selftests/bpf/trace_helpers.h
+@@ -18,4 +18,7 @@ int kallsyms_find(const char *sym, unsigned long long *addr);
+ 
+ void read_trace_pipe(void);
+ 
++ssize_t get_uprobe_offset(const void *addr, ssize_t base);
++ssize_t get_base_addr(void);
++
+ #endif
 -- 
 2.30.2
 
