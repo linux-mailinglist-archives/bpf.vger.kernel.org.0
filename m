@@ -2,198 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FD13E507F
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 03:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08A63E50DA
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 04:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234936AbhHJBEs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Aug 2021 21:04:48 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4300 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233683AbhHJBEr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 9 Aug 2021 21:04:47 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 17A14QD8013480
-        for <bpf@vger.kernel.org>; Mon, 9 Aug 2021 18:04:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=dFCsoSJwJIovvxd9pFKZGPG+pi7JC4/nLaTuso5Ajn8=;
- b=Vzfp7+xlVbRXXfv+I8Iktze3Uk9Y6Fp7hl5+ronJbMUPaNmhcWAPf5YpspuNuQAtQlDK
- 4EiLV7WWRrYKuDdIVK7wIPctdho1aHUhSdWheoihPC+jSf2wpBARZmceX71C4GflM5pj
- Qs9P76DOrNRQTkItcyZJGdiecs0jxjXD38k= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 3ab6mmu7tm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 09 Aug 2021 18:04:26 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 9 Aug 2021 18:04:17 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 9CC755D4D86F; Mon,  9 Aug 2021 18:04:13 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH bpf] bpf: fix potentially incorrect results with bpf_get_local_storage()
-Date:   Mon, 9 Aug 2021 18:04:13 -0700
-Message-ID: <20210810010413.1976277-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S237295AbhHJCFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Aug 2021 22:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231716AbhHJCFr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Aug 2021 22:05:47 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F0EC0613D3;
+        Mon,  9 Aug 2021 19:05:25 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id m3so563866qvu.0;
+        Mon, 09 Aug 2021 19:05:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KuVt9PHYRIz5+66SNd2Stv+PFCNrsJKcokgIDdxaj/c=;
+        b=sQK2Z4zrycE7fEfrxK/jVE63b/zaJjsrNt6zBeRZIIDTMcUqVb2rAPICJQnPdBobH+
+         c3I5y8GQ8WD4+WrjMKfTUvib+G7GL625o+nHfXqVRn8HdVQES0qPVyidfB4vDoQktPTJ
+         CPoISarhGAhMPP8r7Etvdsd7TQ6SAkT0f3SQ3Q2XjkD/2zU4k7dZVrS08wQLnOLUvbAG
+         8S1hjr+8jaUMBp/KjFIp4B+Dn5Xw+Kj9EzWSOcmyAyzCWxwBNX5Yf9/e4X91UGaEgbnS
+         MBqXoXhIs6UVD3mFtIdvLDMpjKNeBJc+se4lK+rmmtxARfLdBCFLTvvZgDYjs787PxPT
+         BRbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KuVt9PHYRIz5+66SNd2Stv+PFCNrsJKcokgIDdxaj/c=;
+        b=iNwaUVzSChvh7YIKZAdJ1MHxMDlD2eEol6WHjsJVyvjChjzjFyC18dOc0mb1/9x1Fx
+         MgCoT2j4rYl4GwV1JBQgDF++HVMTPvsm/0rNOy1eD8AcN5+TDYU0vxx9QyfJfTOm+0j2
+         GyOIWAJ0lBgZYE+Up1UnvYLEcGkwOYBONhOh7h3ZoSCoNhRXhlKIUhLfL82ER5IyewSi
+         DcL6Zz2wM5C6gnZVqQFc0SG6uriAJcHv23hRj0nv7VKG1GMzCkkgjI9a1p1tcT3MJccD
+         JmHPLxDqueRlDClfxGARj+2t6+looyVn5lOPP3Y2ha7WCwmaSXM1+roUf5+WN7PuFgF1
+         977A==
+X-Gm-Message-State: AOAM533v1XD8HccvsBSz6hBkxT7eAR4XDS1vo2iRVwj22MwqbnNOHozF
+        V4eTj+t34/VhAKz1spDcaqo=
+X-Google-Smtp-Source: ABdhPJwnDNjYD1TyHbf1fnY76k0BijNYuPSGpxkl1E+yvbdE9BKfS8Xeh4tF7tf3pLlkgeQr/SB0SA==
+X-Received: by 2002:a0c:e84a:: with SMTP id l10mr4478059qvo.3.1628561125092;
+        Mon, 09 Aug 2021 19:05:25 -0700 (PDT)
+Received: from localhost.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
+        by smtp.gmail.com with ESMTPSA id 70sm6353111qtb.20.2021.08.09.19.05.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Aug 2021 19:05:24 -0700 (PDT)
+From:   grantseltzer <grantseltzer@gmail.com>
+To:     andrii@kernel.org
+Cc:     bpf@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org,
+        grantseltzer <grantseltzer@gmail.com>
+Subject: [PATCH bpf-next v1] bpf: Reconfigure libbpf docs to remove unversioned API
+Date:   Mon,  9 Aug 2021 22:05:08 -0400
+Message-Id: <20210810020508.280639-1-grantseltzer@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: kcUNgLP0JmhfsYkyK0thutDMElGrhZCg
-X-Proofpoint-ORIG-GUID: kcUNgLP0JmhfsYkyK0thutDMElGrhZCg
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-09_09:2021-08-06,2021-08-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- clxscore=1015 impostorscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0
- adultscore=0 priorityscore=1501 spamscore=0 bulkscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108100005
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit b910eaaaa4b8 ("bpf: Fix NULL pointer dereference in
-bpf_get_local_storage() helper") fixed a bug for bpf_get_local_storage()
-helper so different tasks won't mess up with each other's
-percpu local storage.
+This removes the libbpf_api.rst file from the kernel documentation.
+The intention for this file was to pull documentation from comments
+above API functions in libbpf. However, due to limitations of the
+kernel documentation system, this API documentation could not be
+versioned, which is counterintuative to how users expect to use it.
+There is also currently no doc comments, making this a blank page.
 
-The percpu data contains 8 slots so it can hold up to 8 contexts
-(same or different tasks), for 8 different program runs,
-at the same time. This in general is sufficient. But our internal
-testing showed the following warning multiple times:
+Once the kernel comment documentation is actually contributed, it
+will still exist in the kernel repository, just in the code itself.
 
-  warning: WARNING: CPU: 13 PID: 41661 at include/linux/bpf-cgroup.h:193
-     __cgroup_bpf_run_filter_sock_ops+0x13e/0x180
-  RIP: 0010:__cgroup_bpf_run_filter_sock_ops+0x13e/0x180
-  <IRQ>
-   tcp_call_bpf.constprop.99+0x93/0xc0
-   tcp_conn_request+0x41e/0xa50
-   ? tcp_rcv_state_process+0x203/0xe00
-   tcp_rcv_state_process+0x203/0xe00
-   ? sk_filter_trim_cap+0xbc/0x210
-   ? tcp_v6_inbound_md5_hash.constprop.41+0x44/0x160
-   tcp_v6_do_rcv+0x181/0x3e0
-   tcp_v6_rcv+0xc65/0xcb0
-   ip6_protocol_deliver_rcu+0xbd/0x450
-   ip6_input_finish+0x11/0x20
-   ip6_input+0xb5/0xc0
-   ip6_sublist_rcv_finish+0x37/0x50
-   ip6_sublist_rcv+0x1dc/0x270
-   ipv6_list_rcv+0x113/0x140
-   __netif_receive_skb_list_core+0x1a0/0x210
-   netif_receive_skb_list_internal+0x186/0x2a0
-   gro_normal_list.part.170+0x19/0x40
-   napi_complete_done+0x65/0x150
-   mlx5e_napi_poll+0x1ae/0x680
-   __napi_poll+0x25/0x120
-   net_rx_action+0x11e/0x280
-   __do_softirq+0xbb/0x271
-   irq_exit_rcu+0x97/0xa0
-   common_interrupt+0x7f/0xa0
-   </IRQ>
-   asm_common_interrupt+0x1e/0x40
-  RIP: 0010:bpf_prog_1835a9241238291a_tw_egress+0x5/0xbac
-   ? __cgroup_bpf_run_filter_skb+0x378/0x4e0
-   ? do_softirq+0x34/0x70
-   ? ip6_finish_output2+0x266/0x590
-   ? ip6_finish_output+0x66/0xa0
-   ? ip6_output+0x6c/0x130
-   ? ip6_xmit+0x279/0x550
-   ? ip6_dst_check+0x61/0xd0
-  ...
+A seperate site is being spun up to generate documentaiton from those
+comments in a way in which it can be versioned properly.
 
-Using drgn to dump the percpu buffer contents showed that
-on this cpu slot 0 is still available but
-slots 1-7 are occupied and those tasks in slots 1-7 mostly don't exist
-any more. So we might have issues in bpf_cgroup_storage_unset().
+This also reconfigures the bpf documentation index page to make it
+easier to sync to the previously mentioned documentaiton site.
 
-Further debugging confirmed that there is a bug in bpf_cgroup_storage_uns=
-et().
-Currently, it tries to unset "current" slot with searching from the start=
-.
-So the following sequence is possible:
-  1. a task is running and claims slot 0
-  2. running bpf program is done, and it checked slot "0" has the "task"
-     and ready to reset it to NULL (not yet).
-  3. an interrupt happens, another bpf program runs and it claims slot 1
-     with the *same* task.
-  4. the unset() in interrupt context releases slot 0 since it matches "t=
-ask".
-  5. interrupt is done, the task in process context reset slot 0.
-
-At the end, slot 1 is not reset and the same process can continue to occu=
-py
-slots 2-7 and finally, when the above step 1-5 is repeated again, step 3 =
-bpf program
-won't be able to claim an empty slot and a warning will be issued.
-
-To fix the issue, for unset() function, we should traverse from the last =
-slot
-to the first. This way, the above issue can be avoided.
-
-The same reverse traversal should also be done in bpf_get_local_storage()=
- helper
-itself. Otherwise, incorrect local storage may be returned to bpf program=
-.
-
-Cc: Roman Gushchin <guro@fb.com>
-Fixes: b910eaaaa4b8 ("bpf: Fix NULL pointer dereference in bpf_get_local_=
-storage() helper")
-Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
 ---
- include/linux/bpf-cgroup.h | 4 ++--
- kernel/bpf/helpers.c       | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ Documentation/bpf/index.rst             | 10 +--------
+ Documentation/bpf/libbpf/libbpf_api.rst | 27 -------------------------
+ 2 files changed, 1 insertion(+), 36 deletions(-)
+ delete mode 100644 Documentation/bpf/libbpf/libbpf_api.rst
 
-This patch targets to bpf tree. In bpf-next,
-Andrii's c7603cfa04e7 ("bpf: Add ambient BPF runtime context stored in cu=
-rrent")
-should have fixed the issue too. I also okay with backporting Andrii's pa=
-tch
-to bpf tree if it is viable.
-
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 8b77d08d4b47..6c9b10d82c80 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -201,8 +201,8 @@ static inline void bpf_cgroup_storage_unset(void)
- {
- 	int i;
-=20
--	for (i =3D 0; i < BPF_CGROUP_STORAGE_NEST_MAX; i++) {
--		if (unlikely(this_cpu_read(bpf_cgroup_storage_info[i].task) !=3D curre=
-nt))
-+	for (i =3D BPF_CGROUP_STORAGE_NEST_MAX - 1; i >=3D 0; i--) {
-+		if (likely(this_cpu_read(bpf_cgroup_storage_info[i].task) !=3D current=
-))
- 			continue;
-=20
- 		this_cpu_write(bpf_cgroup_storage_info[i].task, NULL);
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 62cf00383910..9b3f16eee21f 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -397,8 +397,8 @@ BPF_CALL_2(bpf_get_local_storage, struct bpf_map *, m=
-ap, u64, flags)
- 	void *ptr;
- 	int i;
-=20
--	for (i =3D 0; i < BPF_CGROUP_STORAGE_NEST_MAX; i++) {
--		if (unlikely(this_cpu_read(bpf_cgroup_storage_info[i].task) !=3D curre=
-nt))
-+	for (i =3D BPF_CGROUP_STORAGE_NEST_MAX - 1; i >=3D 0; i--) {
-+		if (likely(this_cpu_read(bpf_cgroup_storage_info[i].task) !=3D current=
-))
- 			continue;
-=20
- 		storage =3D this_cpu_read(bpf_cgroup_storage_info[i].storage[stype]);
---=20
-2.30.2
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index baea6c2abba5..1ceb5d704a97 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -15,15 +15,7 @@ that goes into great technical depth about the BPF Architecture.
+ libbpf
+ ======
+ 
+-Libbpf is a userspace library for loading and interacting with bpf programs.
+-
+-.. toctree::
+-   :maxdepth: 1
+-
+-   libbpf/libbpf
+-   libbpf/libbpf_api
+-   libbpf/libbpf_build
+-   libbpf/libbpf_naming_convention
++Documentation/bpf/libbpf/libbpf.rst is a userspace library for loading and interacting with bpf programs.
+ 
+ BPF Type Format (BTF)
+ =====================
+diff --git a/Documentation/bpf/libbpf/libbpf_api.rst b/Documentation/bpf/libbpf/libbpf_api.rst
+deleted file mode 100644
+index f07eecd054da..000000000000
+--- a/Documentation/bpf/libbpf/libbpf_api.rst
++++ /dev/null
+@@ -1,27 +0,0 @@
+-.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+-
+-API
+-===
+-
+-This documentation is autogenerated from header files in libbpf, tools/lib/bpf
+-
+-.. kernel-doc:: tools/lib/bpf/libbpf.h
+-   :internal:
+-
+-.. kernel-doc:: tools/lib/bpf/bpf.h
+-   :internal:
+-
+-.. kernel-doc:: tools/lib/bpf/btf.h
+-   :internal:
+-
+-.. kernel-doc:: tools/lib/bpf/xsk.h
+-   :internal:
+-
+-.. kernel-doc:: tools/lib/bpf/bpf_tracing.h
+-   :internal:
+-
+-.. kernel-doc:: tools/lib/bpf/bpf_core_read.h
+-   :internal:
+-
+-.. kernel-doc:: tools/lib/bpf/bpf_endian.h
+-   :internal:
+\ No newline at end of file
+-- 
+2.31.1
 
