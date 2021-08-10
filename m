@@ -2,104 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7960A3E7D12
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 18:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19B43E7D33
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 18:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbhHJQDb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Aug 2021 12:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58226 "EHLO
+        id S229688AbhHJQK7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Aug 2021 12:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232973AbhHJQDU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:03:20 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1C5C0613C1
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 09:02:58 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id r72so18799099iod.6
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 09:02:58 -0700 (PDT)
+        with ESMTP id S229512AbhHJQK6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Aug 2021 12:10:58 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ADBC0613C1
+        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 09:10:36 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id v24-20020a0568300918b02904f3d10c9742so19234516ott.4
+        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 09:10:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6M6en2Ee71SR3RvluB6vGpwRU55s2fahqDIgqdFuyFU=;
-        b=YR01vciOlTLQsrWGxFi/90FRUlSCgcrv8sL4r/ciyCr+rf+kaFsOBBJdhkCHR4Eyf8
-         ztYGbp/AJhSBvwZU8CIDnbTwRvwZj/ZK2uQ3rqMh8xWkLl4S28ESLjWs8/Bts9TLi2vP
-         aGStE0H4/pit88ffAI4WDnfQ5zDSnvWkBZ9f3S/RcLVQFx2ZwzHL5RAFPsBnqXNGWtjl
-         tv1CyXzF2Hpydjca6cXSynC9tnPC8lv/w3AKoZ174O+n5ZuoJn8tMQ8HS//aSWn4wwTB
-         AawFLb/R8wI4SPV2oPzDur/Ru6Qav+OQl4XwvKTUHszXuVmpdoIB/1xZeKip6L2j2Lzz
-         cPwg==
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=STlAk/b/f0LpPovE74ryizrpNARzyKm/YpNaLA2VYmk=;
+        b=WWJ3DrwC9UPsJFB3gQkSK7Sh3ZYqw/yaUsZ04UbJqjX3DMNZx2ctCb4cZQRjClJcQq
+         vAEjPVArvE5jd64UsHbDM2JhW/yW2byAdOlQJj10UCfTSFViKtwr8caEQNk/lZCPb0Q1
+         H5tUrZs/YpwTiKXGiHMmyeetHRu/F/Sol2gizBRsRTQMlVxAoSq54UTRzaOTb2wY8+c4
+         fP5K5hI761bOPJYgj7qRIp6QfUpa6N2sVgFnXlWidBsFwWkiQeeFY8TgXskk3DIrIAGe
+         PN3EEpAbbK98sGG/ar36Qfqp1PWIsALvlEhfwUAA61oBH8EtB4IVNgsIUiS6rLJ7joPN
+         e6wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6M6en2Ee71SR3RvluB6vGpwRU55s2fahqDIgqdFuyFU=;
-        b=cPkhkucPyVlJBu+D52D2eVNF6bnZ+EL7dH/9TJvMbnT6mTHKSYR6mjQimK9W9PBGPD
-         QJpteBMHtxL8VuxrIzkK+7wTsgA6P6qyQjL3nG5e0u2vnH+9aBIC+LQoinc0oy6gCUzr
-         1LoQV1M+rDGW91Ka6FsbuygCjAEgDjZN9YRcz5LzVC4VUH0wAe2Bv6Inp2QI6HroyyUr
-         unDUC7oGdjrcTFzSNu6eUQy6yWiGFcbTpe0wglUuDP3n4QkwUfAkwfLvhOHWAxZJLnyM
-         qzAiQuVWJ8BxQNSWqoRvL883wt9fQAvjeZP4U0TkgdYHeegUxX7pzZFXY1Vt4EGyLdzf
-         vOWg==
-X-Gm-Message-State: AOAM530jx8frEoibRtSN2kFnLRI6A4o6xEKvDs0WiroYiH3dFEjXdW/X
-        FoYLcN5sVstcWP9kd54/j/9/lN5jFXkMnZqv7D0=
-X-Google-Smtp-Source: ABdhPJyDS1Hp6DCe6/+aLd4abpw71EF+PPgQ42wPC3XDgERhae4Szkk05EtDjBF8as5Xg6qwL6PiNOhqCsnySPSdYPg=
-X-Received: by 2002:a02:1d04:: with SMTP id 4mr2447825jaj.98.1628611378197;
- Tue, 10 Aug 2021 09:02:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=STlAk/b/f0LpPovE74ryizrpNARzyKm/YpNaLA2VYmk=;
+        b=spK7eY+X/wCDSA0Ak6PX1ogMne6BSPsfiJKayF13BQH+rgfsLOaq9Ha7CrcZwY/Ni6
+         bh0z7sq6XS5e3yA3NbH2rQBaOoI5RnRgZ+7SZ7iBiK2aOPyb+3s6SJX/9nGKi0dwv78f
+         pxJNu1PS+lvGcf7yvyulMqrCml4rEgOttcvEJpwmje4bV09RrF77B5sVAmDMcDrTE3IX
+         leOfqU6WW6RkL0daOXwVZ7Kh6NFjqcT4kOY1Qb0iIpP6dWwIENrZtDM/Jf53LN5Nz3Zp
+         CcPY3LS9O5cd86sCnMm5aiu/5ff4a8A1f65HQl2GvkgltPMODMXzLF0NCkzfd8AiCQjD
+         LEeQ==
+X-Gm-Message-State: AOAM532Lsz1LJzuRtIe1N9tckFIv6UruF1ZmEVnP3ISwNjCSs7qL3eyQ
+        tWwSH5Whzxe45eu0iFqJw4jJhNUAOZggEJJmgfM=
+X-Google-Smtp-Source: ABdhPJys/r2b4EsochhkhhkWHiebtWu6nVYcQwuJ5nnz4o70Sms86zu4hqTwG3SebT31XsuaNHz8HmUDm4SQfM5mikQ=
+X-Received: by 2002:a05:6830:2469:: with SMTP id x41mr11719510otr.255.1628611835978;
+ Tue, 10 Aug 2021 09:10:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210810001625.1140255-1-fallentree@fb.com> <20210810001625.1140255-2-fallentree@fb.com>
-In-Reply-To: <20210810001625.1140255-2-fallentree@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 Aug 2021 09:02:47 -0700
-Message-ID: <CAEf4BzbpZMiXicGDUzrh0dmgmNEbDzPCvSU=YkCNeu5UE128XQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/5] Skip loading bpf_testmod when using -l to
- list tests.
-To:     Yucong Sun <fallentree@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        sunyucong@gmail.com
+Sender: dianakones50@gmail.com
+Received: by 2002:a9d:754b:0:0:0:0:0 with HTTP; Tue, 10 Aug 2021 09:10:34
+ -0700 (PDT)
+From:   Mrs Francisca John Carlsen <franciscacarlsen20@gmail.com>
+Date:   Tue, 10 Aug 2021 17:10:34 +0100
+X-Google-Sender-Auth: KSI6CwKxkGsDJc7mMGEx1VdHSBU
+Message-ID: <CAB_sOi1eHrvaGHuzJG=jt7C=cLY7LZXUHJQADrSY1R-EsNnpCA@mail.gmail.com>
+Subject: Written From Hospital.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 5:17 PM Yucong Sun <fallentree@fb.com> wrote:
->
-> This patch remove bpf_testmod load test when using "-l", making output
-> cleaner.
->
-> Signed-off-by: Yucong Sun <fallentree@fb.com>
-> ---
->  tools/testing/selftests/bpf/test_progs.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> index 6f103106a39b..74dde0af1592 100644
-> --- a/tools/testing/selftests/bpf/test_progs.c
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -754,10 +754,12 @@ int main(int argc, char **argv)
->
->         save_netns();
->         stdio_hijack();
-> -       env.has_testmod = true;
-> -       if (load_bpf_testmod()) {
+Written From Hospital.
 
-could keep this to minimal changes by just doing
+    I know that this message may be a very big surprise to you,
+Please do not feel disturbed for contacting  you in this regards, It
+was based on the critical health condition I find mine self.  My names
+are Mrs. Francisca John  Carlsen from Denmark wife of late Mr John
+Carlsen, a widow and I=E2=80=99m suffering from brain tumor disease and thi=
+s
+illness has gotten to a very bad stage, I married my husband for Ten
+years without any family members and no child.
 
-if (!env.list_test_names && load_bpf_testmod()) { ... }
+My husband died after a brief illness that lasted for few  days. Since
+the death of my husband, I decided not to remarry again, When my late
+husband was alive he deposited the sum of ($11.000.000 Eleven million
+dollars.) with the Bank. Presently this money is still in bank. And My
+ Doctor told me that I don't have much time to live because my illness
+has gotten to a very bad stage, Having known my condition,I decided to
+donate this fund to a good person that will utilize it the way i am
+going to instruct herein. I need a very honest and God fearing person
+who can claim this money and use it for Charity works, for orphanages,
+widows and also build schools for less privileges that will be named
+after my late husband if possible and to promote the word of God and
+the effort that the house of God is maintained.
 
-env.has_testmod = true doesn't make difference for listing tests (and
-in the future we might want to assume that testmod is available to be
-able to list all tests and subtests, including those that depend on
-testmod).
+However all I need and required from you is your sincerity and ability
+to carry out the transaction successfully and fulfill my final wish in
+implementing the charitable project as it requires absolute trust and
+devotion without any failure and I will be glad to see that the bank
+finally release and transfer the fund into your bank account in your
+country even before I die here in the hospital, because my present
+health condition is very critical at the moment everything needs to be
+proccess rapidly as soon as possible.
 
-> -               fprintf(env.stderr, "WARNING! Selftests relying on bpf_testmod.ko will be skipped.\n");
-> -               env.has_testmod = false;
-> +       if (!env.list_test_names) {
-> +               env.has_testmod = true;
-> +               if (load_bpf_testmod()) {
-> +                       fprintf(env.stderr, "WARNING! Selftests relying on bpf_testmod.ko will be skipped.\n");
-> +                       env.has_testmod = false;
-> +               }
->         }
->         for (i = 0; i < prog_test_cnt; i++) {
->                 struct prog_test_def *test = &prog_test_defs[i];
-> --
-> 2.30.2
->
+It will be my pleasure to compensate you as my Investment
+Manager/Partner with 35 % percent of the total fund for your effort in
+handling the transaction, 5 % percent for any expenses or processing
+charges fee that will involve during this process while 60% of the
+fund will be Invested into the charity project there in your country
+for the mutual benefit of the orphans and the less privileges ones.
+
+Meanwhile I am waiting for your prompt respond, if only you are
+interested for further details of the transaction and execution of
+this  humanitarian project for the glory and honor of God the merciful
+compassionate.
+
+May God bless you and your family.
+
+Best Regards,
+Mrs. Francisca John  Carlsen
