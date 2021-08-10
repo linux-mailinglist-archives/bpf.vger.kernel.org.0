@@ -2,436 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31123E858E
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 23:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBEBC3E864E
+	for <lists+bpf@lfdr.de>; Wed, 11 Aug 2021 01:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbhHJVkW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 10 Aug 2021 17:40:22 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7682 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233625AbhHJVkW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 10 Aug 2021 17:40:22 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 17ALYm6s023095
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 14:39:59 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 3abya40yut-1
+        id S235227AbhHJXGF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Aug 2021 19:06:05 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:52594 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235196AbhHJXGE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 10 Aug 2021 19:06:04 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17AN4qsW001311
+        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 16:05:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=cRLN2SCUIpI92oa0bqAiVwsv2LhB6vz9N2CKM95wEL0=;
+ b=d6J5+ycELWdtkINXAKxiqmN7UDDreq8AB5nM5anVt3yxOTgakO5gUeKCBuwrp5WI8gQZ
+ Jxzj5+/43TQ2pGkQYEiuGmmiSNy7cfNf+IwTuuiJ2y6dXo0UjCaDFgRb3thWR9lPKejQ
+ dob6fo2xm/E25JVfTl4u+rFCCADr3/5dGAg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3abyfm1ag7-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 14:39:59 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 16:05:41 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 14:39:57 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 91D2B3D405A0; Tue, 10 Aug 2021 14:37:07 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v4 bpf-next 14/14] selftests/bpf: add bpf_cookie selftests for high-level APIs
-Date:   Tue, 10 Aug 2021 14:36:34 -0700
-Message-ID: <20210810213634.272111-15-andrii@kernel.org>
+ 15.1.2176.2; Tue, 10 Aug 2021 16:05:39 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 3CEE85DB0538; Tue, 10 Aug 2021 16:05:37 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com>
+Subject: [PATCH bpf v4] bpf: add rcu read_lock in bpf_get_current_[ancestor_]cgroup_id() helpers
+Date:   Tue, 10 Aug 2021 16:05:37 -0700
+Message-ID: <20210810230537.2864668-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210810213634.272111-1-andrii@kernel.org>
-References: <20210810213634.272111-1-andrii@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: T1_nMU_onnRZa4_pkXBnYr465LX56cQv
-X-Proofpoint-ORIG-GUID: T1_nMU_onnRZa4_pkXBnYr465LX56cQv
+X-Proofpoint-ORIG-GUID: fphMA-Y3oAteh5qx9q6TVBatYF-P1acO
+X-Proofpoint-GUID: fphMA-Y3oAteh5qx9q6TVBatYF-P1acO
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-08-10_08:2021-08-10,2021-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- spamscore=0 priorityscore=1501 adultscore=0 clxscore=1015 malwarescore=0
- bulkscore=0 impostorscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 adultscore=0 bulkscore=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 spamscore=0
  mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108100142
+ engine=8.12.0-2107140000 definitions=main-2108100152
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftest with few subtests testing proper bpf_cookie usage.
+Currently, if bpf_get_current_cgroup_id() or
+bpf_get_current_ancestor_cgroup_id() helper is
+called with sleepable programs e.g., sleepable
+fentry/fmod_ret/fexit/lsm programs, a rcu warning
+may appear. For example, if I added the following
+hack to test_progs/test_lsm sleepable fentry program
+test_sys_setdomainname:
 
-Kprobe and uprobe subtests are pretty straightforward and just validate that
-the same BPF program attached with different bpf_cookie will be triggered with
-those different bpf_cookie values.
+  --- a/tools/testing/selftests/bpf/progs/lsm.c
+  +++ b/tools/testing/selftests/bpf/progs/lsm.c
+  @@ -168,6 +168,10 @@ int BPF_PROG(test_sys_setdomainname, struct pt_regs =
+*regs)
+          int buf =3D 0;
+          long ret;
 
-Tracepoint subtest is a bit more interesting, as it is the only
-perf_event-based BPF hook that shares bpf_prog_array between multiple
-perf_events internally. This means that the same BPF program can't be attached
-to the same tracepoint multiple times. So we have 3 identical copies. This
-arrangement allows to test bpf_prog_array_copy()'s handling of bpf_prog_array
-list manipulation logic when programs are attached and detached.  The test
-validates that bpf_cookie isn't mixed up and isn't lost during such list
-manipulations.
+  +       __u64 cg_id =3D bpf_get_current_cgroup_id();
+  +       if (cg_id =3D=3D 1000)
+  +               copy_test++;
+  +
+          ret =3D bpf_copy_from_user(&buf, sizeof(buf), ptr);
+          if (len =3D=3D -2 && ret =3D=3D 0 && buf =3D=3D 1234)
+                  copy_test++;
 
-Perf_event subtest validates that two BPF links can be created against the
-same perf_event (but not at the same time, only one BPF program can be
-attached to perf_event itself), and that for each we can specify different
-bpf_cookie value.
+I will hit the following rcu warning:
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+  include/linux/cgroup.h:481 suspicious rcu_dereference_check() usage!
+  other info that might help us debug this:
+    rcu_scheduler_active =3D 2, debug_locks =3D 1
+    1 lock held by test_progs/260:
+      #0: ffffffffa5173360 (rcu_read_lock_trace){....}-{0:0}, at: __bpf_pro=
+g_enter_sleepable+0x0/0xa0
+    stack backtrace:
+    CPU: 1 PID: 260 Comm: test_progs Tainted: G           O      5.14.0-rc2=
++ #176
+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-=
+0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+    Call Trace:
+      dump_stack_lvl+0x56/0x7b
+      bpf_get_current_cgroup_id+0x9c/0xb1
+      bpf_prog_a29888d1c6706e09_test_sys_setdomainname+0x3e/0x89c
+      bpf_trampoline_6442469132_0+0x2d/0x1000
+      __x64_sys_setdomainname+0x5/0x110
+      do_syscall_64+0x3a/0x80
+      entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+I can get similar warning using bpf_get_current_ancestor_cgroup_id() helper.
+syzbot reported a similar issue in [1] for syscall program. Helper
+bpf_get_current_cgroup_id() or bpf_get_current_ancestor_cgroup_id()
+has the following callchain:
+   task_dfl_cgroup
+     task_css_set
+       task_css_set_check
+and we have
+   #define task_css_set_check(task, __c)                                   \
+           rcu_dereference_check((task)->cgroups,                          \
+                   lockdep_is_held(&cgroup_mutex) ||                       \
+                   lockdep_is_held(&css_set_lock) ||                       \
+                   ((task)->flags & PF_EXITING) || (__c))
+Since cgroup_mutex/css_set_lock is not held and the task
+is not existing and rcu read_lock is not held, a warning
+will be issued. Note that bpf sleepable program is protected by
+rcu_read_lock_trace().
+
+The above sleepable bpf programs are already protected
+by migrate_disable(). Adding rcu_read_lock() in these
+two helpers will silence the above warning.
+I marked the patch fixing 95b861a7935b
+("bpf: Allow bpf_get_current_ancestor_cgroup_id for tracing")
+which added bpf_get_current_ancestor_cgroup_id() to tracing programs
+in 5.14. I think backporting 5.14 is probably good enough as sleepable
+progrems are not widely used.
+
+This patch should fix [1] as well since syscall program is a sleepable
+program protected with migrate_disable().
+
+ [1] https://lore.kernel.org/bpf/0000000000006d5cab05c7d9bb87@google.com/
+
+Reported-by: syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
+Fixes: 95b861a7935b ("bpf: Allow bpf_get_current_ancestor_cgroup_id for tra=
+cing")
+Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- .../selftests/bpf/prog_tests/bpf_cookie.c     | 254 ++++++++++++++++++
- .../selftests/bpf/progs/test_bpf_cookie.c     |  85 ++++++
- 2 files changed, 339 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_bpf_cookie.c
+ kernel/bpf/helpers.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-new file mode 100644
-index 000000000000..5eea3c3a40fe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -0,0 +1,254 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <sched.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
-+#include <test_progs.h>
-+#include "test_bpf_cookie.skel.h"
+Changelog:
+  v3 -> v4:
+    - ensure rcu_read_lock() region enclosing all accesses to cgroup.
+  v2 -> v3:
+    - use rcu_read_lock() protection for
+      bpf_get_current_[ancestor_]cgroup_id() helper.
+  v1 -> v2:
+    - disallow bpf_get_current_[ancestor_]cgroup_id() helper.
+
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 7a97b2f4747d..55f83ea09dae 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -353,9 +353,15 @@ const struct bpf_func_proto bpf_jiffies64_proto =3D {
+ #ifdef CONFIG_CGROUPS
+ BPF_CALL_0(bpf_get_current_cgroup_id)
+ {
+-	struct cgroup *cgrp =3D task_dfl_cgroup(current);
++	struct cgroup *cgrp;
++	u64 cgrp_id;
+=20
+-	return cgroup_id(cgrp);
++	rcu_read_lock();
++	cgrp =3D task_dfl_cgroup(current);
++	cgrp_id =3D cgroup_id(cgrp);
++	rcu_read_unlock();
 +
-+static void kprobe_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
-+	struct bpf_link *link1 = NULL, *link2 = NULL;
-+	struct bpf_link *retlink1 = NULL, *retlink2 = NULL;
++	return cgrp_id;
+ }
+=20
+ const struct bpf_func_proto bpf_get_current_cgroup_id_proto =3D {
+@@ -366,13 +372,17 @@ const struct bpf_func_proto bpf_get_current_cgroup_id=
+_proto =3D {
+=20
+ BPF_CALL_1(bpf_get_current_ancestor_cgroup_id, int, ancestor_level)
+ {
+-	struct cgroup *cgrp =3D task_dfl_cgroup(current);
++	struct cgroup *cgrp;
+ 	struct cgroup *ancestor;
++	u64 cgrp_id;
+=20
++	rcu_read_lock();
++	cgrp =3D task_dfl_cgroup(current);
+ 	ancestor =3D cgroup_ancestor(cgrp, ancestor_level);
+-	if (!ancestor)
+-		return 0;
+-	return cgroup_id(ancestor);
++	cgrp_id =3D ancestor ? cgroup_id(ancestor) : 0;
++	rcu_read_unlock();
 +
-+	/* attach two kprobes */
-+	opts.bpf_cookie = 0x1;
-+	opts.retprobe = false;
-+	link1 = bpf_program__attach_kprobe_opts(skel->progs.handle_kprobe,
-+						 SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(link1, "link1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x2;
-+	opts.retprobe = false;
-+	link2 = bpf_program__attach_kprobe_opts(skel->progs.handle_kprobe,
-+						 SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(link2, "link2"))
-+		goto cleanup;
-+
-+	/* attach two kretprobes */
-+	opts.bpf_cookie = 0x10;
-+	opts.retprobe = true;
-+	retlink1 = bpf_program__attach_kprobe_opts(skel->progs.handle_kretprobe,
-+						    SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(retlink1, "retlink1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x20;
-+	opts.retprobe = true;
-+	retlink2 = bpf_program__attach_kprobe_opts(skel->progs.handle_kretprobe,
-+						    SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(retlink2, "retlink2"))
-+		goto cleanup;
-+
-+	/* trigger kprobe && kretprobe */
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->kprobe_res, 0x1 | 0x2, "kprobe_res");
-+	ASSERT_EQ(skel->bss->kretprobe_res, 0x10 | 0x20, "kretprobe_res");
-+
-+cleanup:
-+	bpf_link__destroy(link1);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(retlink1);
-+	bpf_link__destroy(retlink2);
-+}
-+
-+static void uprobe_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts);
-+	struct bpf_link *link1 = NULL, *link2 = NULL;
-+	struct bpf_link *retlink1 = NULL, *retlink2 = NULL;
-+	size_t uprobe_offset;
-+	ssize_t base_addr;
-+
-+	base_addr = get_base_addr();
-+	uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
-+
-+	/* attach two uprobes */
-+	opts.bpf_cookie = 0x100;
-+	opts.retprobe = false;
-+	link1 = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe, 0 /* self pid */,
-+						"/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(link1, "link1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x200;
-+	opts.retprobe = false;
-+	link2 = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe, -1 /* any pid */,
-+						"/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(link2, "link2"))
-+		goto cleanup;
-+
-+	/* attach two uretprobes */
-+	opts.bpf_cookie = 0x1000;
-+	opts.retprobe = true;
-+	retlink1 = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe, -1 /* any pid */,
-+						   "/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(retlink1, "retlink1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x2000;
-+	opts.retprobe = true;
-+	retlink2 = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe, 0 /* self pid */,
-+						   "/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(retlink2, "retlink2"))
-+		goto cleanup;
-+
-+	/* trigger uprobe && uretprobe */
-+	get_base_addr();
-+
-+	ASSERT_EQ(skel->bss->uprobe_res, 0x100 | 0x200, "uprobe_res");
-+	ASSERT_EQ(skel->bss->uretprobe_res, 0x1000 | 0x2000, "uretprobe_res");
-+
-+cleanup:
-+	bpf_link__destroy(link1);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(retlink1);
-+	bpf_link__destroy(retlink2);
-+}
-+
-+static void tp_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tracepoint_opts, opts);
-+	struct bpf_link *link1 = NULL, *link2 = NULL, *link3 = NULL;
-+
-+	/* attach first tp prog */
-+	opts.bpf_cookie = 0x10000;
-+	link1 = bpf_program__attach_tracepoint_opts(skel->progs.handle_tp1,
-+						    "syscalls", "sys_enter_nanosleep", &opts);
-+	if (!ASSERT_OK_PTR(link1, "link1"))
-+		goto cleanup;
-+
-+	/* attach second tp prog */
-+	opts.bpf_cookie = 0x20000;
-+	link2 = bpf_program__attach_tracepoint_opts(skel->progs.handle_tp2,
-+						    "syscalls", "sys_enter_nanosleep", &opts);
-+	if (!ASSERT_OK_PTR(link2, "link2"))
-+		goto cleanup;
-+
-+	/* trigger tracepoints */
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->tp_res, 0x10000 | 0x20000, "tp_res1");
-+
-+	/* now we detach first prog and will attach third one, which causes
-+	 * two internal calls to bpf_prog_array_copy(), shuffling
-+	 * bpf_prog_array_items around. We test here that we don't lose track
-+	 * of associated bpf_cookies.
-+	 */
-+	bpf_link__destroy(link1);
-+	link1 = NULL;
-+	kern_sync_rcu();
-+	skel->bss->tp_res = 0;
-+
-+	/* attach third tp prog */
-+	opts.bpf_cookie = 0x40000;
-+	link3 = bpf_program__attach_tracepoint_opts(skel->progs.handle_tp3,
-+						    "syscalls", "sys_enter_nanosleep", &opts);
-+	if (!ASSERT_OK_PTR(link3, "link3"))
-+		goto cleanup;
-+
-+	/* trigger tracepoints */
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->tp_res, 0x20000 | 0x40000, "tp_res2");
-+
-+cleanup:
-+	bpf_link__destroy(link1);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(link3);
-+}
-+
-+static void burn_cpu(void)
-+{
-+	volatile int j = 0;
-+	cpu_set_t cpu_set;
-+	int i, err;
-+
-+	/* generate some branches on cpu 0 */
-+	CPU_ZERO(&cpu_set);
-+	CPU_SET(0, &cpu_set);
-+	err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
-+	ASSERT_OK(err, "set_thread_affinity");
-+
-+	/* spin the loop for a while (random high number) */
-+	for (i = 0; i < 1000000; ++i)
-+		++j;
-+}
-+
-+static void pe_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, opts);
-+	struct bpf_link *link = NULL;
-+	struct perf_event_attr attr;
-+	int pfd = -1;
-+
-+	/* create perf event */
-+	memset(&attr, 0, sizeof(attr));
-+	attr.size = sizeof(attr);
-+	attr.type = PERF_TYPE_SOFTWARE;
-+	attr.config = PERF_COUNT_SW_CPU_CLOCK;
-+	attr.freq = 1;
-+	attr.sample_freq = 4000;
-+	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
-+	if (!ASSERT_GE(pfd, 0, "perf_fd"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x100000;
-+	link = bpf_program__attach_perf_event_opts(skel->progs.handle_pe, pfd, &opts);
-+	if (!ASSERT_OK_PTR(link, "link1"))
-+		goto cleanup;
-+
-+	burn_cpu(); /* trigger BPF prog */
-+
-+	ASSERT_EQ(skel->bss->pe_res, 0x100000, "pe_res1");
-+
-+	/* prevent bpf_link__destroy() closing pfd itself */
-+	bpf_link__disconnect(link);
-+	/* close BPF link's FD explicitly */
-+	close(bpf_link__fd(link));
-+	/* free up memory used by struct bpf_link */
-+	bpf_link__destroy(link);
-+	link = NULL;
-+	kern_sync_rcu();
-+	skel->bss->pe_res = 0;
-+
-+	opts.bpf_cookie = 0x200000;
-+	link = bpf_program__attach_perf_event_opts(skel->progs.handle_pe, pfd, &opts);
-+	if (!ASSERT_OK_PTR(link, "link2"))
-+		goto cleanup;
-+
-+	burn_cpu(); /* trigger BPF prog */
-+
-+	ASSERT_EQ(skel->bss->pe_res, 0x200000, "pe_res2");
-+
-+cleanup:
-+	close(pfd);
-+	bpf_link__destroy(link);
-+}
-+
-+void test_bpf_cookie(void)
-+{
-+	struct test_bpf_cookie *skel;
-+
-+	skel = test_bpf_cookie__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	skel->bss->my_tid = syscall(SYS_gettid);
-+
-+	if (test__start_subtest("kprobe"))
-+		kprobe_subtest(skel);
-+	if (test__start_subtest("uprobe"))
-+		uprobe_subtest(skel);
-+	if (test__start_subtest("tracepoint"))
-+		tp_subtest(skel);
-+	if (test__start_subtest("perf_event"))
-+		pe_subtest(skel);
-+
-+	test_bpf_cookie__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-new file mode 100644
-index 000000000000..2d3a7710e2ce
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+int my_tid;
-+
-+int kprobe_res;
-+int kprobe_multi_res;
-+int kretprobe_res;
-+int uprobe_res;
-+int uretprobe_res;
-+int tp_res;
-+int pe_res;
-+
-+static void update(void *ctx, int *res)
-+{
-+	if (my_tid != (u32)bpf_get_current_pid_tgid())
-+		return;
-+
-+	*res |= bpf_get_attach_cookie(ctx);
-+}
-+
-+SEC("kprobe/sys_nanosleep")
-+int handle_kprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &kprobe_res);
-+	return 0;
-+}
-+
-+SEC("kretprobe/sys_nanosleep")
-+int handle_kretprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &kretprobe_res);
-+	return 0;
-+}
-+
-+SEC("uprobe/trigger_func")
-+int handle_uprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &uprobe_res);
-+	return 0;
-+}
-+
-+SEC("uretprobe/trigger_func")
-+int handle_uretprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &uretprobe_res);
-+	return 0;
-+}
-+
-+/* bpf_prog_array, used by kernel internally to keep track of attached BPF
-+ * programs to a given BPF hook (e.g., for tracepoints) doesn't allow the same
-+ * BPF program to be attached multiple times. So have three identical copies
-+ * ready to attach to the same tracepoint.
-+ */
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int handle_tp1(struct pt_regs *ctx)
-+{
-+	update(ctx, &tp_res);
-+	return 0;
-+}
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int handle_tp2(struct pt_regs *ctx)
-+{
-+	update(ctx, &tp_res);
-+	return 0;
-+}
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int handle_tp3(void *ctx)
-+{
-+	update(ctx, &tp_res);
-+	return 1;
-+}
-+
-+SEC("perf_event")
-+int handle_pe(struct pt_regs *ctx)
-+{
-+	update(ctx, &pe_res);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
++	return cgrp_id;
+ }
+=20
+ const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto =3D {
+--=20
 2.30.2
 
