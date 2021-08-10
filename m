@@ -2,63 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398F23E5B51
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 15:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B113E5C18
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 15:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241292AbhHJNYX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Aug 2021 09:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
+        id S241838AbhHJNqj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Aug 2021 09:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241353AbhHJNYV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Aug 2021 09:24:21 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E760EC06179E
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 06:23:58 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id 75so3390411uav.8
-        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 06:23:58 -0700 (PDT)
+        with ESMTP id S240192AbhHJNqj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Aug 2021 09:46:39 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E146C0613D3;
+        Tue, 10 Aug 2021 06:46:17 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso5483138pjb.1;
+        Tue, 10 Aug 2021 06:46:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=2tvLhkad0w+Mh63WhnFJkmRFgYsLXsJmUqGVjzUAFIo=;
-        b=qJkL8fZ0S06Z0FQYNh/4MmhK7j+A3bS9xjmC8OhX22QJHec66aC0Yf4uxmFTWU4uq4
-         4zaEpRJNfTE5P16qMJLxRcIb0ytBzoINHrciZ16oueveU7FDwweNrhTU3c5UDo/z56b1
-         V6OdxuJ3tySYUYaZ04rAyM/uWtPYMenii8jy05cVXjVhDDgXkFHgaK2GOhpBsc52YFve
-         VL8iidod2m9w/QUkoClpuMrUGWkFzng1pEsZ+h9zY+IQVIYyQzRt6aNjeoljVsfoneAG
-         aU0zlSqRp6BET5jUs8EdKhkDPhg4/tsUe0YNuMP0A6vUsTut9Hk4K2nn2uiUPyEelDJr
-         VDiA==
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=XFUNA2K8RC/kl0wQXbCSDrKlNYmt5rM3BINLrAhJq1c=;
+        b=s6eSd1dzbwC1oLaT5aMLhUtowX+ptX+xsKfsqY4FA/cU7RPoVCwYEann6j3VVIgHm6
+         9ggfLdyB0oGZdua8y2TEyXYx0xHNiW/TzPpRXjLK+td4QNoN6g3KJWKZt9c0izJIvXI9
+         ROkJnlS3M4YSpAMGiGc7YYBGHVNCxv8RLgYcz7QRym2xgsL7DZebRGo1ygUYJl10F/YK
+         PCvfg3AE0VMn7xwVjv7MIPtjxe5mUCPHzcnfaaAQHTc3HvFuiaH5mjLhdTeA05ycpc8C
+         R/ZSljpx578YVKD8us6qdkhSZuBukKLTuq9PU0HI+JWt8Kc56hNSj/rC/Ssq7AP2JUQQ
+         QRmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=2tvLhkad0w+Mh63WhnFJkmRFgYsLXsJmUqGVjzUAFIo=;
-        b=LvLBxwLiAHAOD4lN4Muzj72F1LRKEXc+tsQUcj57phl8NJ2rNN8G7PiRKHToFB7KY0
-         TzT1dyitygy3fjRsv1UA/BzwKsb0ZhgT+62oUMT1VWGGDmIlEWYhKLsQZZDGQ4U6BNsz
-         NEnTF2gjWUmhDzxB9GpxlPXcStsECQi1+PfVLyJaO1q1Czqp15bhwCCNdwkOsQ22kCoG
-         1+HKpj0SDsoNvj0JKKp8PeXKvxDEh3/s1/P1G/ZthuPHq1yb3EtuWjrXnSd6RFlziR3/
-         DWQEgvBs0pDnCOReisxt6SMguG4Ub3E3NlwjFolzVF/amFZ16EiIJ9Lm9wwCh94ROX+X
-         FxQw==
-X-Gm-Message-State: AOAM531+sO0hdKy/+l0JyCrTCKR8EHPyDz/ezToIoN/L+bxOyrfkIWfN
-        NH2dCBFBzVEmbyGhRIdqyre0ZU7hlNePGUR9NAA=
-X-Google-Smtp-Source: ABdhPJzvLPSDVsAzGJ6P6qYZROOmnBdkR5scyeQ8xySEfopDOzsn96BkEsNJXYQk9ma1do3JY374g/deOX6n1CT3K3s=
-X-Received: by 2002:ab0:3b59:: with SMTP id o25mr9024839uaw.80.1628601838128;
- Tue, 10 Aug 2021 06:23:58 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=XFUNA2K8RC/kl0wQXbCSDrKlNYmt5rM3BINLrAhJq1c=;
+        b=NhOxyLxPnE3rC2Uq0xg0QsTpYzltwXq7Y3SVRtweOroYKEXOMTDN5QKrJel5YLDnQR
+         +gYn3+nFYJyr49KbvtPiUoRqmEGlditOCdxQ/RYQpdUvYQHuaIxU81iae4o7rmW7wiHd
+         NOUlc1pm3sEgNNfG+TBn731HGkskyrDSy2rmWTi1r3NNEnhMGQX1brgjMdjqhQN3EMNP
+         ZMnWfi6bbR4Yarhj/ORvL/1SyU1FAM9YC4/p8M15q0G0XWa3y8zsLY+q+5up+aJ55ixb
+         WMQb4MdPM2IX7tdgMqVBYoMZM6UFZhxe2qxUsxs2fQTTfPKf/3ceQx+d+ZWo2eV2hWig
+         wkKw==
+X-Gm-Message-State: AOAM533xuS/veJY4CjoGOuPWSXP+7fB1UzX6Db9Ty/R55eUW5gdq2VYu
+        r9H9m6DTJPMHc/FCVa0T7j0=
+X-Google-Smtp-Source: ABdhPJwpeexrI/iUcVe4J3dmfabPO7nLubQ0FfxghPxqL5jwVtDmeY+c3dOrQ9eVBPPX0LAwnoq4Pg==
+X-Received: by 2002:aa7:90c9:0:b029:307:49ca:dedd with SMTP id k9-20020aa790c90000b029030749cadeddmr23549200pfk.9.1628603176698;
+        Tue, 10 Aug 2021 06:46:16 -0700 (PDT)
+Received: from [10.178.0.62] ([85.203.23.37])
+        by smtp.gmail.com with ESMTPSA id 129sm19692587pfg.50.2021.08.10.06.46.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 06:46:16 -0700 (PDT)
+To:     john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, baijiaju1990@gmail.com
+From:   Tuo Li <islituo@gmail.com>
+Subject: [BUG] ipv6: possible null-pointer dereference in ip6_xmit()
+Message-ID: <2c434d4d-934f-f8d2-7f1f-af085fcfad26@gmail.com>
+Date:   Tue, 10 Aug 2021 21:46:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Sender: immeublesourou@gmail.com
-Received: by 2002:ab0:3903:0:0:0:0:0 with HTTP; Tue, 10 Aug 2021 06:23:57
- -0700 (PDT)
-From:   John Kumor <owo219901@gmail.com>
-Date:   Wed, 11 Aug 2021 01:23:57 +1200
-X-Google-Sender-Auth: yS3UzgPnn68wNDbf-hnce3gLnn0
-Message-ID: <CAHdg_cT_K-3CiTtG_z=2JyS3OA_ir2VvAFdLZYYHbPxjicSz0w@mail.gmail.com>
-Subject: Urgent
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-My dear,
-Greetings! I trust that all is well with you and your family. Did you
-receive my previous email?
-Regards
-John Kumor.
+Hello,
+
+Our static analysis tool finds a possible null-pointer dereference in 
+ip6_output.c in Linux 5.14.0-rc3:
+
+The variable n is checked in:
+314:    if (np)
+
+This indicates that it can be NULL. If so, a null-pointer dereference 
+will occur
+in the called function ip6_autoflowlabel() at Line 320:
+252:    if (!np->autoflowlabel_set)
+
+I am not quite sure whether this possible null-pointer dereference is 
+real and how to fix it if it is real.
+Any feedback would be appreciated, thanks!
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+
+Best wishes,
+Tuo Li
