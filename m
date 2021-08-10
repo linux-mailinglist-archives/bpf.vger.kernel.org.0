@@ -2,202 +2,589 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA9D3E857B
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 23:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D2F3E857D
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 23:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234514AbhHJVhJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 10 Aug 2021 17:37:09 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:11122 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234232AbhHJVhG (ORCPT
+        id S234232AbhHJVhK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 10 Aug 2021 17:37:10 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7872 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234347AbhHJVhG (ORCPT
         <rfc822;bpf@vger.kernel.org>); Tue, 10 Aug 2021 17:37:06 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17ALaTYL028664
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 17ALXWPE022981
         for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 14:36:43 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aby5v93b8-6
+        by m0001303.ppops.net with ESMTP id 3abyjnrtgb-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 14:36:43 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 14:36:41 -0700
+ 15.1.2176.2; Tue, 10 Aug 2021 14:36:42 -0700
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 8C5963D405A0; Tue, 10 Aug 2021 14:36:38 -0700 (PDT)
+        id 179693D405A0; Tue, 10 Aug 2021 14:36:40 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v4 bpf-next 00/14] BPF perf link and user-provided bpf_cookie
-Date:   Tue, 10 Aug 2021 14:36:20 -0700
-Message-ID: <20210810213634.272111-1-andrii@kernel.org>
+        Peter Zijlstra <peterz@infradead.org>,
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH v4 bpf-next 01/14] bpf: refactor BPF_PROG_RUN into a function
+Date:   Tue, 10 Aug 2021 14:36:21 -0700
+Message-ID: <20210810213634.272111-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210810213634.272111-1-andrii@kernel.org>
+References: <20210810213634.272111-1-andrii@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: uGt88mpKeUQaIZwJD0kIswXzYqt1wBDM
-X-Proofpoint-ORIG-GUID: uGt88mpKeUQaIZwJD0kIswXzYqt1wBDM
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-GUID: 5TGZ1ZaP2Dvwd8Y6Dk9jhfpQWfsbKngq
+X-Proofpoint-ORIG-GUID: 5TGZ1ZaP2Dvwd8Y6Dk9jhfpQWfsbKngq
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-08-10_08:2021-08-10,2021-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 bulkscore=0
- adultscore=0 suspectscore=0 impostorscore=0 phishscore=0 spamscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxscore=0 spamscore=0 priorityscore=1501 bulkscore=0 phishscore=0
+ impostorscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2107140000 definitions=main-2108100142
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set implements an ability for users to specify custom black box u64
-value for each BPF program attachment, bpf_cookie, which is available to BPF
-program at runtime. This is a feature that's critically missing for cases when
-some sort of generic processing needs to be done by the common BPF program
-logic (or even exactly the same BPF program) across multiple BPF hooks (e.g.,
-many uniformly handled kprobes) and it's important to be able to distinguish
-between each BPF hook at runtime (e.g., for additional configuration lookup).
+Turn BPF_PROG_RUN into a proper always inlined function. No functional and
+performance changes are intended, but it makes it much easier to understand
+what's going on with how BPF programs are actually get executed. It's more
+obvious what types and callbacks are expected. Also extra () around input
+parameters can be dropped, as well as `__` variable prefixes intended to avoid
+naming collisions, which makes the code simpler to read and write.
 
-The choice of restricting this to a fixed-size 8-byte u64 value is an explicit
-design decision. Making this configurable by users adds unnecessary complexity
-(extra memory allocations, extra complications on the verifier side to validate
-accesses to variable-sized data area) while not really opening up new
-possibilities. If user's use case requires storing more data per attachment,
-it's possible to use either global array, or ARRAY/HASHMAP BPF maps, where
-bpf_cookie would be used as an index into respective storage, populated by
-user-space code before creating BPF link. This gives user all the flexibility
-and control while keeping BPF verifier and BPF helper API simple.
+This refactoring also highlighted one extra issue. BPF_PROG_RUN is both
+a macro and an enum value (BPF_PROG_RUN == BPF_PROG_TEST_RUN). Turning
+BPF_PROG_RUN into a function causes naming conflict compilation error. So
+rename BPF_PROG_RUN into lower-case bpf_prog_run(), similar to
+bpf_prog_run_xdp(), bpf_prog_run_pin_on_cpu(), etc. All existing callers of
+BPF_PROG_RUN, the macro, are switched to bpf_prog_run() explicitly.
 
-Currently, similar functionality can only be achieved through:
-  - code-generation and BPF program cloning, which is very complicated and
-    unmaintainable;
-  - on-the-fly C code generation and further runtime compilation, which is
-    what BCC uses and allows to do pretty simply. The big downside is a very
-    heavy-weight Clang/LLVM dependency and inefficient memory usage (due to
-    many BPF program clones and the compilation process itself);
-  - in some cases (kprobes and sometimes uprobes) it's possible to do function
-    IP lookup to get function-specific configuration. This doesn't work for
-    all the cases (e.g., when attaching uprobes to shared libraries) and has
-    higher runtime overhead and additional programming complexity due to
-    BPF_MAP_TYPE_HASHMAP lookups. Up until recently, before bpf_get_func_ip()
-    BPF helper was added, it was also very complicated and unstable (API-wise)
-    to get traced function's IP from fentry/fexit and kretprobe.
+Acked-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ Documentation/networking/filter.rst      |  4 +-
+ drivers/media/rc/bpf-lirc.c              |  2 +-
+ drivers/net/ppp/ppp_generic.c            |  8 ++--
+ drivers/net/team/team_mode_loadbalance.c |  2 +-
+ include/linux/bpf.h                      |  2 +-
+ include/linux/filter.h                   | 61 ++++++++++++++----------
+ kernel/bpf/bpf_iter.c                    |  2 +-
+ kernel/bpf/cgroup.c                      | 16 +++----
+ kernel/bpf/core.c                        |  2 +-
+ kernel/bpf/trampoline.c                  |  2 +-
+ kernel/bpf/verifier.c                    |  2 +-
+ kernel/events/core.c                     |  2 +-
+ kernel/trace/bpf_trace.c                 |  4 +-
+ lib/test_bpf.c                           |  2 +-
+ net/bpf/test_run.c                       |  6 +--
+ net/core/filter.c                        |  4 +-
+ net/core/ptp_classifier.c                |  2 +-
+ net/netfilter/xt_bpf.c                   |  2 +-
+ net/sched/act_bpf.c                      |  4 +-
+ net/sched/cls_bpf.c                      |  4 +-
+ 20 files changed, 73 insertions(+), 60 deletions(-)
 
-With libbpf and BPF CO-RE, runtime compilation is not an option, so to be able
-to build generic tracing tooling simply and efficiently, ability to provide
-additional bpf_cookie value for each *attachment* (as opposed to each BPF
-program) is extremely important. Two immediate users of this functionality are
-going to be libbpf-based USDT library (currently in development) and retsnoop
-([0]), but I'm sure more applications will come once users get this feature in
-their kernels.
-
-To achieve above described, all perf_event-based BPF hooks are made available
-through a new BPF_LINK_TYPE_PERF_EVENT BPF link, which allows to use common
-LINK_CREATE command for program attachments and generally brings
-perf_event-based attachments into a common BPF link infrastructure.
-
-With that, LINK_CREATE gets ability to pass throught bpf_cookie value during
-link creation (BPF program attachment) time. bpf_get_attach_cookie() BPF
-helper is added to allow fetching this value at runtime from BPF program side.
-BPF cookie is stored either on struct perf_event itself and fetched from the
-BPF program context, or is passed through ambient BPF run context, added in
-c7603cfa04e7 ("bpf: Add ambient BPF runtime context stored in current").
-
-On the libbpf side of things, BPF perf link is utilized whenever is supported
-by the kernel instead of using PERF_EVENT_IOC_SET_BPF ioctl on perf_event FD.
-All the tracing attach APIs are extended with OPTS and bpf_cookie is passed
-through corresponding opts structs.
-
-Last part of the patch set adds few self-tests utilizing new APIs.
-
-There are also a few refactorings along the way to make things cleaner and
-easier to work with, both in kernel (BPF_PROG_RUN and BPF_PROG_RUN_ARRAY), and
-throughout libbpf and selftests.
-
-Follow-up patches will extend bpf_cookie to fentry/fexit programs.
-
-  [0] https://github.com/anakryiko/retsnoop
-
-Cc: Peter Zijlstra <peterz@infradead.org> # for perf_event changes
-
-v3->v4:
-  - get rid of BPF_PROG_RUN macro in favor of bpf_prog_run() (Daniel);
-  - move #ifdef CONFIG_BPF_SYSCALL check into bpf_set_run_ctx (Daniel);
-
-v2->v3:
-  - user_ctx -> bpf_cookie, bpf_get_user_ctx -> bpf_get_attach_cookie (Peter);
-  - fix BPF_LINK_TYPE_PERF_EVENT value fix (Jiri);
-  - use bpf_prog_run() from bpf_prog_run_pin_on_cpu() (Yonghong);
-
-v1->v2:
-  - fix build failures on non-x86 arches by gating on CONFIG_PERF_EVENTS.
-
-
-Andrii Nakryiko (14):
-  bpf: refactor BPF_PROG_RUN into a function
-  bpf: refactor BPF_PROG_RUN_ARRAY family of macros into functions
-  bpf: refactor perf_event_set_bpf_prog() to use struct bpf_prog input
-  bpf: implement minimal BPF perf link
-  bpf: allow to specify user-provided bpf_cookie for BPF perf links
-  bpf: add bpf_get_attach_cookie() BPF helper to access bpf_cookie value
-  libbpf: re-build libbpf.so when libbpf.map changes
-  libbpf: remove unused bpf_link's destroy operation, but add dealloc
-  libbpf: use BPF perf link when supported by kernel
-  libbpf: add bpf_cookie support to bpf_link_create() API
-  libbpf: add bpf_cookie to perf_event, kprobe, uprobe, and tp attach
-    APIs
-  selftests/bpf: test low-level perf BPF link API
-  selftests/bpf: extract uprobe-related helpers into trace_helpers.{c,h}
-  selftests/bpf: add bpf_cookie selftests for high-level APIs
-
- Documentation/networking/filter.rst           |   4 +-
- drivers/media/rc/bpf-lirc.c                   |   6 +-
- drivers/net/ppp/ppp_generic.c                 |   8 +-
- drivers/net/team/team_mode_loadbalance.c      |   2 +-
- include/linux/bpf.h                           | 200 ++++++++------
- include/linux/bpf_types.h                     |   3 +
- include/linux/filter.h                        |  66 +++--
- include/linux/perf_event.h                    |   1 +
- include/linux/trace_events.h                  |   7 +-
- include/uapi/linux/bpf.h                      |  25 ++
- kernel/bpf/bpf_iter.c                         |   2 +-
- kernel/bpf/cgroup.c                           |  32 +--
- kernel/bpf/core.c                             |  31 ++-
- kernel/bpf/syscall.c                          | 105 +++++++-
- kernel/bpf/trampoline.c                       |   2 +-
- kernel/bpf/verifier.c                         |   2 +-
- kernel/events/core.c                          |  74 ++---
- kernel/trace/bpf_trace.c                      |  47 +++-
- lib/test_bpf.c                                |   2 +-
- net/bpf/test_run.c                            |   6 +-
- net/core/filter.c                             |   4 +-
- net/core/ptp_classifier.c                     |   2 +-
- net/netfilter/xt_bpf.c                        |   2 +-
- net/sched/act_bpf.c                           |   4 +-
- net/sched/cls_bpf.c                           |   4 +-
- tools/include/uapi/linux/bpf.h                |  25 ++
- tools/lib/bpf/Makefile                        |  10 +-
- tools/lib/bpf/bpf.c                           |  32 ++-
- tools/lib/bpf/bpf.h                           |   8 +-
- tools/lib/bpf/libbpf.c                        | 196 +++++++++++---
- tools/lib/bpf/libbpf.h                        |  71 ++++-
- tools/lib/bpf/libbpf.map                      |   3 +
- tools/lib/bpf/libbpf_internal.h               |  32 ++-
- .../selftests/bpf/prog_tests/attach_probe.c   |  61 +----
- .../selftests/bpf/prog_tests/bpf_cookie.c     | 254 ++++++++++++++++++
- .../selftests/bpf/prog_tests/perf_link.c      |  89 ++++++
- .../selftests/bpf/progs/test_bpf_cookie.c     |  85 ++++++
- .../selftests/bpf/progs/test_perf_link.c      |  16 ++
- tools/testing/selftests/bpf/trace_helpers.c   |  66 +++++
- tools/testing/selftests/bpf/trace_helpers.h   |   3 +
- 40 files changed, 1249 insertions(+), 343 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_link.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_bpf_cookie.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_perf_link.c
-
+diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+index 5f13905b12e0..ce2b8e8bb9ab 100644
+--- a/Documentation/networking/filter.rst
++++ b/Documentation/networking/filter.rst
+@@ -638,8 +638,8 @@ extension, PTP dissector/classifier, and much more. They are all internally
+ converted by the kernel into the new instruction set representation and run
+ in the eBPF interpreter. For in-kernel handlers, this all works transparently
+ by using bpf_prog_create() for setting up the filter, resp.
+-bpf_prog_destroy() for destroying it. The macro
+-BPF_PROG_RUN(filter, ctx) transparently invokes eBPF interpreter or JITed
++bpf_prog_destroy() for destroying it. The function
++bpf_prog_run(filter, ctx) transparently invokes eBPF interpreter or JITed
+ code to run the filter. 'filter' is a pointer to struct bpf_prog that we
+ got from bpf_prog_create(), and 'ctx' the given context (e.g.
+ skb pointer). All constraints and restrictions from bpf_check_classic() apply
+diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
+index afae0afe3f81..bb5a9dc78f1b 100644
+--- a/drivers/media/rc/bpf-lirc.c
++++ b/drivers/media/rc/bpf-lirc.c
+@@ -217,7 +217,7 @@ void lirc_bpf_run(struct rc_dev *rcdev, u32 sample)
+ 	raw->bpf_sample = sample;
+ 
+ 	if (raw->progs)
+-		BPF_PROG_RUN_ARRAY(raw->progs, &raw->bpf_sample, BPF_PROG_RUN);
++		BPF_PROG_RUN_ARRAY(raw->progs, &raw->bpf_sample, bpf_prog_run);
+ }
+ 
+ /*
+diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
+index 216a9f4e9750..ffcf2ee3bcc6 100644
+--- a/drivers/net/ppp/ppp_generic.c
++++ b/drivers/net/ppp/ppp_generic.c
+@@ -1733,7 +1733,7 @@ ppp_send_frame(struct ppp *ppp, struct sk_buff *skb)
+ 		   a four-byte PPP header on each packet */
+ 		*(u8 *)skb_push(skb, 2) = 1;
+ 		if (ppp->pass_filter &&
+-		    BPF_PROG_RUN(ppp->pass_filter, skb) == 0) {
++		    bpf_prog_run(ppp->pass_filter, skb) == 0) {
+ 			if (ppp->debug & 1)
+ 				netdev_printk(KERN_DEBUG, ppp->dev,
+ 					      "PPP: outbound frame "
+@@ -1743,7 +1743,7 @@ ppp_send_frame(struct ppp *ppp, struct sk_buff *skb)
+ 		}
+ 		/* if this packet passes the active filter, record the time */
+ 		if (!(ppp->active_filter &&
+-		      BPF_PROG_RUN(ppp->active_filter, skb) == 0))
++		      bpf_prog_run(ppp->active_filter, skb) == 0))
+ 			ppp->last_xmit = jiffies;
+ 		skb_pull(skb, 2);
+ #else
+@@ -2457,7 +2457,7 @@ ppp_receive_nonmp_frame(struct ppp *ppp, struct sk_buff *skb)
+ 
+ 			*(u8 *)skb_push(skb, 2) = 0;
+ 			if (ppp->pass_filter &&
+-			    BPF_PROG_RUN(ppp->pass_filter, skb) == 0) {
++			    bpf_prog_run(ppp->pass_filter, skb) == 0) {
+ 				if (ppp->debug & 1)
+ 					netdev_printk(KERN_DEBUG, ppp->dev,
+ 						      "PPP: inbound frame "
+@@ -2466,7 +2466,7 @@ ppp_receive_nonmp_frame(struct ppp *ppp, struct sk_buff *skb)
+ 				return;
+ 			}
+ 			if (!(ppp->active_filter &&
+-			      BPF_PROG_RUN(ppp->active_filter, skb) == 0))
++			      bpf_prog_run(ppp->active_filter, skb) == 0))
+ 				ppp->last_recv = jiffies;
+ 			__skb_pull(skb, 2);
+ 		} else
+diff --git a/drivers/net/team/team_mode_loadbalance.c b/drivers/net/team/team_mode_loadbalance.c
+index 32aef8ac4a14..b095a4b4957b 100644
+--- a/drivers/net/team/team_mode_loadbalance.c
++++ b/drivers/net/team/team_mode_loadbalance.c
+@@ -197,7 +197,7 @@ static unsigned int lb_get_skb_hash(struct lb_priv *lb_priv,
+ 	fp = rcu_dereference_bh(lb_priv->fp);
+ 	if (unlikely(!fp))
+ 		return 0;
+-	lhash = BPF_PROG_RUN(fp, skb);
++	lhash = bpf_prog_run(fp, skb);
+ 	c = (char *) &lhash;
+ 	return c[0] ^ c[1] ^ c[2] ^ c[3];
+ }
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index c8cc09013210..968fea98087a 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1103,7 +1103,7 @@ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+ /* an array of programs to be executed under rcu_lock.
+  *
+  * Typical usage:
+- * ret = BPF_PROG_RUN_ARRAY(&bpf_prog_array, ctx, BPF_PROG_RUN);
++ * ret = BPF_PROG_RUN_ARRAY(&bpf_prog_array, ctx, bpf_prog_run);
+  *
+  * the structure returned by bpf_prog_array_alloc() should be populated
+  * with program pointers and the last pointer must be NULL.
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 1797e8506929..954373db20e7 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -600,25 +600,38 @@ struct sk_filter {
+ 
+ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+ 
+-#define __BPF_PROG_RUN(prog, ctx, dfunc)	({			\
+-	u32 __ret;							\
+-	cant_migrate();							\
+-	if (static_branch_unlikely(&bpf_stats_enabled_key)) {		\
+-		struct bpf_prog_stats *__stats;				\
+-		u64 __start = sched_clock();				\
+-		__ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);	\
+-		__stats = this_cpu_ptr(prog->stats);			\
+-		u64_stats_update_begin(&__stats->syncp);		\
+-		__stats->cnt++;						\
+-		__stats->nsecs += sched_clock() - __start;		\
+-		u64_stats_update_end(&__stats->syncp);			\
+-	} else {							\
+-		__ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);	\
+-	}								\
+-	__ret; })
+-
+-#define BPF_PROG_RUN(prog, ctx)						\
+-	__BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nop_func)
++typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
++					  const struct bpf_insn *insnsi,
++					  unsigned int (*bpf_func)(const void *,
++								   const struct bpf_insn *));
++
++static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
++					  const void *ctx,
++					  bpf_dispatcher_fn dfunc)
++{
++	u32 ret;
++
++	cant_migrate();
++	if (static_branch_unlikely(&bpf_stats_enabled_key)) {
++		struct bpf_prog_stats *stats;
++		u64 start = sched_clock();
++
++		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
++		stats = this_cpu_ptr(prog->stats);
++		u64_stats_update_begin(&stats->syncp);
++		stats->cnt++;
++		stats->nsecs += sched_clock() - start;
++		u64_stats_update_end(&stats->syncp);
++	} else {
++		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
++	}
++	return ret;
++}
++
++static __always_inline u32 bpf_prog_run(const struct bpf_prog *prog, const void *ctx)
++{
++	return __bpf_prog_run(prog, ctx, bpf_dispatcher_nop_func);
++}
+ 
+ /*
+  * Use in preemptible and therefore migratable context to make sure that
+@@ -637,7 +650,7 @@ static inline u32 bpf_prog_run_pin_on_cpu(const struct bpf_prog *prog,
+ 	u32 ret;
+ 
+ 	migrate_disable();
+-	ret = __BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nop_func);
++	ret = bpf_prog_run(prog, ctx);
+ 	migrate_enable();
+ 	return ret;
+ }
+@@ -742,7 +755,7 @@ static inline u32 __bpf_prog_run_save_cb(const struct bpf_prog *prog,
+ 		memset(cb_data, 0, sizeof(cb_saved));
+ 	}
+ 
+-	res = BPF_PROG_RUN(prog, skb);
++	res = bpf_prog_run(prog, skb);
+ 
+ 	if (unlikely(prog->cb_access))
+ 		memcpy(cb_data, cb_saved, sizeof(cb_saved));
+@@ -787,7 +800,7 @@ static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *prog,
+ 	 * under local_bh_disable(), which provides the needed RCU protection
+ 	 * for accessing map entries.
+ 	 */
+-	u32 act = __BPF_PROG_RUN(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
++	u32 act = __bpf_prog_run(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
+ 
+ 	if (static_branch_unlikely(&bpf_master_redirect_enabled_key)) {
+ 		if (act == XDP_TX && netif_is_bond_slave(xdp->rxq->dev))
+@@ -1440,7 +1453,7 @@ static inline bool bpf_sk_lookup_run_v4(struct net *net, int protocol,
+ 		};
+ 		u32 act;
+ 
+-		act = BPF_PROG_SK_LOOKUP_RUN_ARRAY(run_array, ctx, BPF_PROG_RUN);
++		act = BPF_PROG_SK_LOOKUP_RUN_ARRAY(run_array, ctx, bpf_prog_run);
+ 		if (act == SK_PASS) {
+ 			selected_sk = ctx.selected_sk;
+ 			no_reuseport = ctx.no_reuseport;
+@@ -1478,7 +1491,7 @@ static inline bool bpf_sk_lookup_run_v6(struct net *net, int protocol,
+ 		};
+ 		u32 act;
+ 
+-		act = BPF_PROG_SK_LOOKUP_RUN_ARRAY(run_array, ctx, BPF_PROG_RUN);
++		act = BPF_PROG_SK_LOOKUP_RUN_ARRAY(run_array, ctx, bpf_prog_run);
+ 		if (act == SK_PASS) {
+ 			selected_sk = ctx.selected_sk;
+ 			no_reuseport = ctx.no_reuseport;
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index 2e9d47bb40ff..b2ee45064e06 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -686,7 +686,7 @@ int bpf_iter_run_prog(struct bpf_prog *prog, void *ctx)
+ 
+ 	rcu_read_lock();
+ 	migrate_disable();
+-	ret = BPF_PROG_RUN(prog, ctx);
++	ret = bpf_prog_run(prog, ctx);
+ 	migrate_enable();
+ 	rcu_read_unlock();
+ 
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index b567ca46555c..0949b4cb8381 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1043,7 +1043,7 @@ int __cgroup_bpf_run_filter_sk(struct sock *sk,
+ 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+ 	int ret;
+ 
+-	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[type], sk, BPF_PROG_RUN);
++	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[type], sk, bpf_prog_run);
+ 	return ret == 1 ? 0 : -EPERM;
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
+@@ -1091,7 +1091,7 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 
+ 	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+ 	ret = BPF_PROG_RUN_ARRAY_FLAGS(cgrp->bpf.effective[type], &ctx,
+-				       BPF_PROG_RUN, flags);
++				       bpf_prog_run, flags);
+ 
+ 	return ret == 1 ? 0 : -EPERM;
+ }
+@@ -1121,7 +1121,7 @@ int __cgroup_bpf_run_filter_sock_ops(struct sock *sk,
+ 	int ret;
+ 
+ 	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[type], sock_ops,
+-				 BPF_PROG_RUN);
++				 bpf_prog_run);
+ 	return ret == 1 ? 0 : -EPERM;
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_ops);
+@@ -1140,7 +1140,7 @@ int __cgroup_bpf_check_dev_permission(short dev_type, u32 major, u32 minor,
+ 	rcu_read_lock();
+ 	cgrp = task_dfl_cgroup(current);
+ 	allow = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[type], &ctx,
+-				   BPF_PROG_RUN);
++				   bpf_prog_run);
+ 	rcu_read_unlock();
+ 
+ 	return !allow;
+@@ -1271,7 +1271,7 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
+ 
+ 	rcu_read_lock();
+ 	cgrp = task_dfl_cgroup(current);
+-	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[type], &ctx, BPF_PROG_RUN);
++	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[type], &ctx, bpf_prog_run);
+ 	rcu_read_unlock();
+ 
+ 	kfree(ctx.cur_val);
+@@ -1386,7 +1386,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 
+ 	lock_sock(sk);
+ 	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[BPF_CGROUP_SETSOCKOPT],
+-				 &ctx, BPF_PROG_RUN);
++				 &ctx, bpf_prog_run);
+ 	release_sock(sk);
+ 
+ 	if (!ret) {
+@@ -1496,7 +1496,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 
+ 	lock_sock(sk);
+ 	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[BPF_CGROUP_GETSOCKOPT],
+-				 &ctx, BPF_PROG_RUN);
++				 &ctx, bpf_prog_run);
+ 	release_sock(sk);
+ 
+ 	if (!ret) {
+@@ -1557,7 +1557,7 @@ int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
+ 	 */
+ 
+ 	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[BPF_CGROUP_GETSOCKOPT],
+-				 &ctx, BPF_PROG_RUN);
++				 &ctx, bpf_prog_run);
+ 	if (!ret)
+ 		return -EPERM;
+ 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index fe807b203a6f..e21f319bbe88 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1877,7 +1877,7 @@ static void bpf_prog_select_func(struct bpf_prog *fp)
+  *	@err: pointer to error variable
+  *
+  * Try to JIT eBPF program, if JIT is not available, use interpreter.
+- * The BPF program will be executed via BPF_PROG_RUN() macro.
++ * The BPF program will be executed via bpf_prog_run() function.
+  */
+ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
+ {
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index b2535acfe9db..fe1e857324e6 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -548,7 +548,7 @@ static void notrace inc_misses_counter(struct bpf_prog *prog)
+ 	u64_stats_update_end(&stats->syncp);
+ }
+ 
+-/* The logic is similar to BPF_PROG_RUN, but with an explicit
++/* The logic is similar to bpf_prog_run(), but with an explicit
+  * rcu_read_lock() and migrate_disable() which are required
+  * for the trampoline. The macro is split into
+  * call __bpf_prog_enter
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 5ea2238a6656..f5a0077c9981 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12383,7 +12383,7 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+ 		subprog_end = env->subprog_info[i + 1].start;
+ 
+ 		len = subprog_end - subprog_start;
+-		/* BPF_PROG_RUN doesn't call subprogs directly,
++		/* bpf_prog_run() doesn't call subprogs directly,
+ 		 * hence main prog stats include the runtime of subprogs.
+ 		 * subprogs don't have IDs and not reachable via prog_get_next_id
+ 		 * func[i]->stats will never be accessed and stays NULL
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 464917096e73..a2bfc6a0e6a4 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -9913,7 +9913,7 @@ static void bpf_overflow_handler(struct perf_event *event,
+ 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1))
+ 		goto out;
+ 	rcu_read_lock();
+-	ret = BPF_PROG_RUN(event->prog, &ctx);
++	ret = bpf_prog_run(event->prog, &ctx);
+ 	rcu_read_unlock();
+ out:
+ 	__this_cpu_dec(bpf_prog_active);
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index c5e0b6a64091..dfe5c720e858 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -124,7 +124,7 @@ unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
+ 	 * out of events when it was updated in between this and the
+ 	 * rcu_dereference() which is accepted risk.
+ 	 */
+-	ret = BPF_PROG_RUN_ARRAY_CHECK(call->prog_array, ctx, BPF_PROG_RUN);
++	ret = BPF_PROG_RUN_ARRAY_CHECK(call->prog_array, ctx, bpf_prog_run);
+ 
+  out:
+ 	__this_cpu_dec(bpf_prog_active);
+@@ -1815,7 +1815,7 @@ void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
+ {
+ 	cant_sleep();
+ 	rcu_read_lock();
+-	(void) BPF_PROG_RUN(prog, args);
++	(void) bpf_prog_run(prog, args);
+ 	rcu_read_unlock();
+ }
+ 
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index 44d8197bbffb..14716a4aadaf 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -8616,7 +8616,7 @@ static int __run_one(const struct bpf_prog *fp, const void *data,
+ 	start = ktime_get_ns();
+ 
+ 	for (i = 0; i < runs; i++)
+-		ret = BPF_PROG_RUN(fp, data);
++		ret = bpf_prog_run(fp, data);
+ 
+ 	finish = ktime_get_ns();
+ 	migrate_enable();
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 335e1d8c17f8..387282e422f0 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -115,7 +115,7 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
+ 		if (xdp)
+ 			*retval = bpf_prog_run_xdp(prog, ctx);
+ 		else
+-			*retval = BPF_PROG_RUN(prog, ctx);
++			*retval = bpf_prog_run(prog, ctx);
+ 	} while (bpf_test_timer_continue(&t, repeat, &ret, time));
+ 	bpf_reset_run_ctx(old_ctx);
+ 	bpf_test_timer_leave(&t);
+@@ -326,7 +326,7 @@ __bpf_prog_test_run_raw_tp(void *data)
+ 	struct bpf_raw_tp_test_run_info *info = data;
+ 
+ 	rcu_read_lock();
+-	info->retval = BPF_PROG_RUN(info->prog, info->ctx);
++	info->retval = bpf_prog_run(info->prog, info->ctx);
+ 	rcu_read_unlock();
+ }
+ 
+@@ -988,7 +988,7 @@ int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog, const union bpf_attr *kat
+ 	bpf_test_timer_enter(&t);
+ 	do {
+ 		ctx.selected_sk = NULL;
+-		retval = BPF_PROG_SK_LOOKUP_RUN_ARRAY(progs, ctx, BPF_PROG_RUN);
++		retval = BPF_PROG_SK_LOOKUP_RUN_ARRAY(progs, ctx, bpf_prog_run);
+ 	} while (bpf_test_timer_continue(&t, repeat, &ret, &duration));
+ 	bpf_test_timer_leave(&t);
+ 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 3aca07c44fad..5cf38e8886f1 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -114,7 +114,7 @@ EXPORT_SYMBOL_GPL(copy_bpf_fprog_from_user);
+  * Run the eBPF program and then cut skb->data to correct size returned by
+  * the program. If pkt_len is 0 we toss packet. If skb->len is smaller
+  * than pkt_len we keep whole skb->data. This is the socket level
+- * wrapper to BPF_PROG_RUN. It returns 0 if the packet should
++ * wrapper to bpf_prog_run. It returns 0 if the packet should
+  * be accepted or -EPERM if the packet should be tossed.
+  *
+  */
+@@ -10115,7 +10115,7 @@ struct sock *bpf_run_sk_reuseport(struct sock_reuseport *reuse, struct sock *sk,
+ 	enum sk_action action;
+ 
+ 	bpf_init_reuseport_kern(&reuse_kern, reuse, sk, skb, migrating_sk, hash);
+-	action = BPF_PROG_RUN(prog, &reuse_kern);
++	action = bpf_prog_run(prog, &reuse_kern);
+ 
+ 	if (action == SK_PASS)
+ 		return reuse_kern.selected_sk;
+diff --git a/net/core/ptp_classifier.c b/net/core/ptp_classifier.c
+index e33fde06d528..dd4cf01d1e0a 100644
+--- a/net/core/ptp_classifier.c
++++ b/net/core/ptp_classifier.c
+@@ -103,7 +103,7 @@ static struct bpf_prog *ptp_insns __read_mostly;
+ 
+ unsigned int ptp_classify_raw(const struct sk_buff *skb)
+ {
+-	return BPF_PROG_RUN(ptp_insns, skb);
++	return bpf_prog_run(ptp_insns, skb);
+ }
+ EXPORT_SYMBOL_GPL(ptp_classify_raw);
+ 
+diff --git a/net/netfilter/xt_bpf.c b/net/netfilter/xt_bpf.c
+index 13cf3f9b5938..849ac552a154 100644
+--- a/net/netfilter/xt_bpf.c
++++ b/net/netfilter/xt_bpf.c
+@@ -90,7 +90,7 @@ static bool bpf_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ {
+ 	const struct xt_bpf_info *info = par->matchinfo;
+ 
+-	return BPF_PROG_RUN(info->filter, skb);
++	return bpf_prog_run(info->filter, skb);
+ }
+ 
+ static bool bpf_mt_v1(const struct sk_buff *skb, struct xt_action_param *par)
+diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
+index 040807aa15b9..5c36013339e1 100644
+--- a/net/sched/act_bpf.c
++++ b/net/sched/act_bpf.c
+@@ -47,11 +47,11 @@ static int tcf_bpf_act(struct sk_buff *skb, const struct tc_action *act,
+ 	if (at_ingress) {
+ 		__skb_push(skb, skb->mac_len);
+ 		bpf_compute_data_pointers(skb);
+-		filter_res = BPF_PROG_RUN(filter, skb);
++		filter_res = bpf_prog_run(filter, skb);
+ 		__skb_pull(skb, skb->mac_len);
+ 	} else {
+ 		bpf_compute_data_pointers(skb);
+-		filter_res = BPF_PROG_RUN(filter, skb);
++		filter_res = bpf_prog_run(filter, skb);
+ 	}
+ 	if (skb_sk_is_prefetched(skb) && filter_res != TC_ACT_OK)
+ 		skb_orphan(skb);
+diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+index 3b472bafdc9d..df19a847829e 100644
+--- a/net/sched/cls_bpf.c
++++ b/net/sched/cls_bpf.c
+@@ -96,11 +96,11 @@ static int cls_bpf_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+ 			/* It is safe to push/pull even if skb_shared() */
+ 			__skb_push(skb, skb->mac_len);
+ 			bpf_compute_data_pointers(skb);
+-			filter_res = BPF_PROG_RUN(prog->filter, skb);
++			filter_res = bpf_prog_run(prog->filter, skb);
+ 			__skb_pull(skb, skb->mac_len);
+ 		} else {
+ 			bpf_compute_data_pointers(skb);
+-			filter_res = BPF_PROG_RUN(prog->filter, skb);
++			filter_res = bpf_prog_run(prog->filter, skb);
+ 		}
+ 
+ 		if (prog->exts_integrated) {
 -- 
 2.30.2
 
