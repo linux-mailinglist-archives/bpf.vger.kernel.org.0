@@ -2,121 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76DD3E7BBD
-	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 17:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7960A3E7D12
+	for <lists+bpf@lfdr.de>; Tue, 10 Aug 2021 18:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238666AbhHJPJj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Aug 2021 11:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
+        id S235538AbhHJQDb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Aug 2021 12:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234153AbhHJPJi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Aug 2021 11:09:38 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30E9C0613C1;
-        Tue, 10 Aug 2021 08:09:15 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id by4so11991005edb.0;
-        Tue, 10 Aug 2021 08:09:15 -0700 (PDT)
+        with ESMTP id S232973AbhHJQDU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Aug 2021 12:03:20 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1C5C0613C1
+        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 09:02:58 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id r72so18799099iod.6
+        for <bpf@vger.kernel.org>; Tue, 10 Aug 2021 09:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=b0qx+Njy5wjsGCuQs/S8necS9TJBtTm2vQbhGNR/470=;
-        b=vBUaA+wBZx7k0zK99Z5M1RUOkgwL5zB4o4VPs3s2zd5aTihdbBbL7ipiJNhBRsRDc2
-         kTeamPh8dFG8+jS8xSNDE2dCWTa2VE/7b1s3kTVUGK4haWpMEhLNYlqe6PEIB7DWFd4N
-         iTOwwoQ6Gb2/AUgFXDb8DECHgZgpXKneh9mXqScX6sbA5E1VXpnpnpUs9ZSWsmYJdyGw
-         Cna26VTRF1OJ1bRXEJI88unNERomiGhthbQE43tZgXc6weSs1UXCStv1YhAxnRUHq+TD
-         FfrkdqlFTOKXe5n9ss2iE2h9ekkNYAYv73irROfyntc07hMlUWc+XHiSARgnohDgSX7Q
-         +B2w==
+        bh=6M6en2Ee71SR3RvluB6vGpwRU55s2fahqDIgqdFuyFU=;
+        b=YR01vciOlTLQsrWGxFi/90FRUlSCgcrv8sL4r/ciyCr+rf+kaFsOBBJdhkCHR4Eyf8
+         ztYGbp/AJhSBvwZU8CIDnbTwRvwZj/ZK2uQ3rqMh8xWkLl4S28ESLjWs8/Bts9TLi2vP
+         aGStE0H4/pit88ffAI4WDnfQ5zDSnvWkBZ9f3S/RcLVQFx2ZwzHL5RAFPsBnqXNGWtjl
+         tv1CyXzF2Hpydjca6cXSynC9tnPC8lv/w3AKoZ174O+n5ZuoJn8tMQ8HS//aSWn4wwTB
+         AawFLb/R8wI4SPV2oPzDur/Ru6Qav+OQl4XwvKTUHszXuVmpdoIB/1xZeKip6L2j2Lzz
+         cPwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=b0qx+Njy5wjsGCuQs/S8necS9TJBtTm2vQbhGNR/470=;
-        b=mqnbC9u1Mf2/BnSf+xxfR9VPSqjkLklmBoIYyoh6xnM98b2Y9iRyNFsNnHyC983Im0
-         yciiqB6O+wv/9yex4NAfxgWxOlHu2iwqZVpPI3H3yXNnVKFsmnav08aLCNqnpq+9n0Lb
-         m//tKsP3BHySD74CJyNd/NZxZikXPPEJIazYgtMm/DQ2emTHCgCttbSUMedXH93F05Gm
-         inOKmTyLtCAbOeI3N4WI+9wDrKDwVwqnKmrKJiNRGoQqy0yfl94dKhsnW8Hs6QX3tJ2t
-         V4AiOzZqWPHztMBCvFWcWeDh9iI0DrA8cSodizM3Bse9bFRof9BU5vC9Q5seb+1Ligel
-         weSQ==
-X-Gm-Message-State: AOAM5300GzFzJmUbf9uGXWDHzpdn1Kwksmfpsfd6KAMSMABO4B3uHnYF
-        1A9gR5tNefI3EKyJTgTKTsaBuqjfIWr4j2lhuA8=
-X-Google-Smtp-Source: ABdhPJydan88txV3yl8ZL1SxjFwwVvw3reqBDkba+sbdJg9uHA5RPvb5fIVMLyZiO1LqS159akkkMYZtKyyX4ZcYoEA=
-X-Received: by 2002:a05:6402:5161:: with SMTP id d1mr5505826ede.50.1628608154430;
- Tue, 10 Aug 2021 08:09:14 -0700 (PDT)
+        bh=6M6en2Ee71SR3RvluB6vGpwRU55s2fahqDIgqdFuyFU=;
+        b=cPkhkucPyVlJBu+D52D2eVNF6bnZ+EL7dH/9TJvMbnT6mTHKSYR6mjQimK9W9PBGPD
+         QJpteBMHtxL8VuxrIzkK+7wTsgA6P6qyQjL3nG5e0u2vnH+9aBIC+LQoinc0oy6gCUzr
+         1LoQV1M+rDGW91Ka6FsbuygCjAEgDjZN9YRcz5LzVC4VUH0wAe2Bv6Inp2QI6HroyyUr
+         unDUC7oGdjrcTFzSNu6eUQy6yWiGFcbTpe0wglUuDP3n4QkwUfAkwfLvhOHWAxZJLnyM
+         qzAiQuVWJ8BxQNSWqoRvL883wt9fQAvjeZP4U0TkgdYHeegUxX7pzZFXY1Vt4EGyLdzf
+         vOWg==
+X-Gm-Message-State: AOAM530jx8frEoibRtSN2kFnLRI6A4o6xEKvDs0WiroYiH3dFEjXdW/X
+        FoYLcN5sVstcWP9kd54/j/9/lN5jFXkMnZqv7D0=
+X-Google-Smtp-Source: ABdhPJyDS1Hp6DCe6/+aLd4abpw71EF+PPgQ42wPC3XDgERhae4Szkk05EtDjBF8as5Xg6qwL6PiNOhqCsnySPSdYPg=
+X-Received: by 2002:a02:1d04:: with SMTP id 4mr2447825jaj.98.1628611378197;
+ Tue, 10 Aug 2021 09:02:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
- <20210810070159.367e680e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <1eb903a5-a954-e405-6088-9b9209703f5e@redhat.com> <20210810074306.6cbd1a73@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210810074306.6cbd1a73@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Tue, 10 Aug 2021 08:09:03 -0700
-Message-ID: <CAKgT0Uc7fRGDjQZf_pPNW2AN5yspkqTc8v9Sj8_zbBP_Tq1-gw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 0/4] add frag page support in page pool
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
-        thomas.petazzoni@bootlin.com, hawk@kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
-        guro@fb.com, Peter Xu <peterx@redhat.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
-        Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        chenhao288@hisilicon.com, Linux-MM <linux-mm@kvack.org>
+References: <20210810001625.1140255-1-fallentree@fb.com> <20210810001625.1140255-2-fallentree@fb.com>
+In-Reply-To: <20210810001625.1140255-2-fallentree@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 10 Aug 2021 09:02:47 -0700
+Message-ID: <CAEf4BzbpZMiXicGDUzrh0dmgmNEbDzPCvSU=YkCNeu5UE128XQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/5] Skip loading bpf_testmod when using -l to
+ list tests.
+To:     Yucong Sun <fallentree@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        sunyucong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 7:43 AM Jakub Kicinski <kuba@kernel.org> wrote:
+On Mon, Aug 9, 2021 at 5:17 PM Yucong Sun <fallentree@fb.com> wrote:
 >
-> On Tue, 10 Aug 2021 16:23:52 +0200 Jesper Dangaard Brouer wrote:
-> > On 10/08/2021 16.01, Jakub Kicinski wrote:
-> > > On Fri, 6 Aug 2021 10:46:18 +0800 Yunsheng Lin wrote:
-> > >> enable skb's page frag recycling based on page pool in
-> > >> hns3 drvier.
-> > >
-> > > Applied, thanks!
-> >
-> > I had hoped to see more acks / reviewed-by before this got applied.
-> > E.g. from MM-people as this patchset changes struct page and page_pool
-> > (that I'm marked as maintainer of).
+> This patch remove bpf_testmod load test when using "-l", making output
+> cleaner.
 >
-> Sorry, it was on the list for days and there were 7 or so prior
-> versions, I thought it was ripe. If possible, a note that review
-> will come would be useful.
+> Signed-off-by: Yucong Sun <fallentree@fb.com>
+> ---
+>  tools/testing/selftests/bpf/test_progs.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 >
-> > And I would have appreciated an reviewed-by credit to/from Alexander
-> > as he did a lot of work in the RFC patchset for the split-page tricks.
+> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> index 6f103106a39b..74dde0af1592 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -754,10 +754,12 @@ int main(int argc, char **argv)
 >
-> I asked him off-list, he said something I interpreted as "code is okay,
-> but the review tag is not coming".
+>         save_netns();
+>         stdio_hijack();
+> -       env.has_testmod = true;
+> -       if (load_bpf_testmod()) {
 
-Yeah, I ran out of feedback a revision or two ago and just haven't had
-a chance to go through and add my reviewed by. If you want feel free
-to add my reviewed by for the set.
+could keep this to minimal changes by just doing
 
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+if (!env.list_test_names && load_bpf_testmod()) { ... }
+
+env.has_testmod = true doesn't make difference for listing tests (and
+in the future we might want to assume that testmod is available to be
+able to list all tests and subtests, including those that depend on
+testmod).
+
+> -               fprintf(env.stderr, "WARNING! Selftests relying on bpf_testmod.ko will be skipped.\n");
+> -               env.has_testmod = false;
+> +       if (!env.list_test_names) {
+> +               env.has_testmod = true;
+> +               if (load_bpf_testmod()) {
+> +                       fprintf(env.stderr, "WARNING! Selftests relying on bpf_testmod.ko will be skipped.\n");
+> +                       env.has_testmod = false;
+> +               }
+>         }
+>         for (i = 0; i < prog_test_cnt; i++) {
+>                 struct prog_test_def *test = &prog_test_defs[i];
+> --
+> 2.30.2
+>
