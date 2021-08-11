@@ -2,183 +2,225 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C2E3E86AE
-	for <lists+bpf@lfdr.de>; Wed, 11 Aug 2021 01:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C92F3E876E
+	for <lists+bpf@lfdr.de>; Wed, 11 Aug 2021 02:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235567AbhHJXrc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Aug 2021 19:47:32 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46980 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235501AbhHJXrb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 10 Aug 2021 19:47:31 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17ANkmgc001619;
-        Tue, 10 Aug 2021 16:46:54 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=YLtYe+/cd8i27L54ShrA17+jVIR8QfpJ00M1FHcDAGc=;
- b=daVsg4ajGS/NRs62irP6dXUt0hGbkeZshp9l3eq2xQr75dTD1b4hQoISl72ds4DGyD5Q
- 8T0rVxo0zzeTPnDbnOWaTMYiqeCXGwvJY4XIOTq4SHLRI6Lrl3ZDUrt26KWps8SlHod4
- ZdG2RJqPFbh0ZSNa2/+s33DxQUIksUq/fW0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aby5v9q6j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 10 Aug 2021 16:46:53 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+        id S236108AbhHKAtf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Aug 2021 20:49:35 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8004 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235936AbhHKAtb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Aug 2021 20:49:31 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GkrmB1dCSzYnLV;
+        Wed, 11 Aug 2021 08:48:42 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 10 Aug 2021 16:46:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DoUDjnjvNt67i1D+aqVdOIRedQt8JBpMB70Wrz5LwgBE8CKyQ5vy6lbIjutOOMZFsEiLiDwbVFp1fE9w3ldhWkpiRt8U2EQ3Fwl3r14ssMJJXjnIb5anprQtrJCY4qvtrEkrZQkog29LEnJTUshnNA7drIUo2KTRaObIethktrOcrzgoHd99/KrEzQcQ+4jnkyyIxkLEvtAh6Ij2p+TtrZnUakJ9LjLZ6xTiBjiBjTUjbAmf7QDvwR19tvfbYq10WDNaFr408Ca0UxCQrOS2aDsa1/P99vRJXq7xtcCRa6/sLIM+3dZKOtFDNfIs27mkxq2WQskYdjcb5aMmE8QnXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y85xpa3i4Svx3jTih6o5jAUY3qbMaqeNqdcxvs2WM+c=;
- b=OhzWZiPVan7YwZhfaJW5dopWddX5l4ggFnGVmUhEUGA7a9+qcRLQBOR7aQMN3SUPasm6L7YcEWZ433FAIZgixBgDOtp/n87Pou6dO4cpvBPF/j+gxmOQBIWDsS2XoCh5lCjy7sC0RbKCC1G6bf3GHvOjsBoLPdakWKdoSUSC2ejyCvCtzN6mgFPPzjcjDSTq+mL3mMZ1zn359Z0rhMgk2m+qIoxt5fAjTm7z7/ZPs7Wc/NhMdbZBDPgOhAMAAYRaaIKpAlf7HKOEvQocM4m4Ai97p28U+g9VOJ9a7mzC2WDVLumhNSspFE8PklfJimA6+5T35Yw4F0Zzxq5z1J019Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA0PR15MB3903.namprd15.prod.outlook.com (2603:10b6:806:8a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Tue, 10 Aug
- 2021 23:46:52 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
- 23:46:52 +0000
-Subject: Re: [PATCH v4 bpf-next 3/3] selftest/bpf: Implement sample UNIX
- domain socket iterator program.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-CC:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-References: <20210810092807.13190-1-kuniyu@amazon.co.jp>
- <20210810092807.13190-4-kuniyu@amazon.co.jp>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <6ef818ee-ee75-b2f0-5532-7cc3fa4eb68e@fb.com>
-Date:   Tue, 10 Aug 2021 16:46:49 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <20210810092807.13190-4-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-X-ClientProxiedBy: SJ0PR03CA0152.namprd03.prod.outlook.com
- (2603:10b6:a03:338::7) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1572] (2620:10d:c090:400::5:d180) by SJ0PR03CA0152.namprd03.prod.outlook.com (2603:10b6:a03:338::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Tue, 10 Aug 2021 23:46:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e82c8372-be4a-4fa2-1123-08d95c5920d8
-X-MS-TrafficTypeDiagnostic: SA0PR15MB3903:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR15MB3903815CB17DC03747058D58D3F79@SA0PR15MB3903.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: f82g+i/c+nJTpvQcKGDsQSBzn+UuySaykdlk8VBgFJqDHp/xp9euXLcN7WFlT5VXOzpG8i1pCY4sE0An0d2OLyZQ0LIwgTZkSfQQtsr8LnV6pD6sAkfLP6VLL0f3Z5pb8v63u2qomxwbOAHEwSipNi3RLnhOTgVOoYKnJ5dwsvOmciogDizWtRC7iUe74OdRJe6nubrBfYzUOx4OrgZl+V/qjTOoLr5/vr87ufAxLULSpuEld27gaWfC7mjtQEsSpUvlcNXCDRjop9WVO1Cz+pKu3s22f7TmrnhEA0PX4ruU7YOsuoI1FtQLRkVo8TXC54lnYNz0sOdos+8rcjBBQkBwJGCzxSxvY6u7dbZbptL+Z04Z6X25lbsd4Cq8vaBHSoCzwk2PcNjBjdwCQsSU6kXsZBzuQCbADEQYJZPD0JsX4E2tvfROMXqO5XRxhkNMAhF5UJ8elWJlrnMnTJx4+LlPoEDKbFy9uqMoq3P2M/IHBzvQOptfSHKNQ/F19IyjpNz6GRrh0F2kJ5uoJo+06Ngi1nx5V3C0MnuQXiO3NngiMkFm7BkPeHgFOCUhT23om8jNv78gbY85JT4qhqhLVss4vRwK2luHl8IDoXb6spptIQG28AMvFAc32+AHHZROI+VMOsLdCIlFQY+3ACtaCw3i2J0Ny4GCWvC6on9TkYeTQbZksfFqG16bE7bjAD/1AMgz5lIjBoB7m8v3mPUXaefIcF0SmV+qjG8U+mkfkF2Y20KCLk5F4tJmGdD7tjb8sG8rlkD7V+Mt8VZEIk2l2fgljqrPzBma74cwu0RFgbABi3+2C4q/FwD0Y6j2XR5MqmoUifKdCpp/oTug0NmHkA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(66946007)(66556008)(66476007)(86362001)(36756003)(921005)(31696002)(2616005)(4326008)(2906002)(54906003)(8676002)(6486002)(110136005)(31686004)(316002)(7416002)(52116002)(508600001)(53546011)(186003)(8936002)(966005)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YkV5SDJFSCtlUWVkK2RJMGtrRHQ3UGtkZEg5TlZIYUFxZnpDMXRxVzVyQko4?=
- =?utf-8?B?amZ1SkRxVUNzVDVlQlQ4N0RuajU2YjVBOTN0OHRBSktNVFlpOGhBMzBaNmhi?=
- =?utf-8?B?cks1dGFDVjBOUnpXQjd4VjVsQ0NWTVBLVXorMUxORUZiUjNwTEE5RTNyZkNv?=
- =?utf-8?B?eVhkSks2ZmppczAzdE1tdlBhdmpTN3hyVmIwOG9XbUtLV3BMbWNJRUZ0clNP?=
- =?utf-8?B?bTRaSXZHRllQS243U09jRkt6ci85TXoyREpsYmFRWXZBSXhrMXFqdzNIWTVT?=
- =?utf-8?B?VzJ4RGZ4WU5CbDJCeTI4THlaZnowbWR3cWs0UEY3WDNhVVJOMzJMRWc1VkQ4?=
- =?utf-8?B?UmhoWTBiVmhSWkplVUMwNXJoOUFiMjlyWHA3cGJIbXNYcEcveHV2RGtYbHJJ?=
- =?utf-8?B?Y1pOcElUNTZ3VThkd2FDcy91YUJmWWRySFNNMFFzeXROSndYeUpSNy9iTVNI?=
- =?utf-8?B?emxxZ3ZSN0FnQVpFbXpseTRha2dxSEorWHFNRmszL3VPOE90Z1Y3RDM1M2RK?=
- =?utf-8?B?VTNDT2ZCMm5LR1FCMDI1Z0oxRnlFb2tqV0xSZ3JuS3l6T3dlaURNTVdsd2xo?=
- =?utf-8?B?cTJ6TXlSYy9oMWxMZC9rTUQ5dUJXRUtIeGlVUUNtbUZyWlNJdDN4cHhGU0RC?=
- =?utf-8?B?T3Q4RUozQmp5UW1DUUZGaFJWMWxFWm5vUUZaT0p3OGc5MVl2UDQrdEJqVnBH?=
- =?utf-8?B?V0ZhZUlCWWh2RUcrU2xxenBobzRLT0dYYTM1ZDBjRHlZdXBRU2t5QnNsUFBw?=
- =?utf-8?B?aUs1aGZBS0VRNHBGb2g5bHVjNzRrcS9zcjNOZlFLVEoxRDBlTDBKc1E1Mzh3?=
- =?utf-8?B?Q0NmdEJmVnZrcnRERTVUQ0N1YVNZcWZTYXEwRlVJc0VyTk8rWkJNQmhQVHhZ?=
- =?utf-8?B?bnZZQ0F5ODQvbGJ1WjdnZFVzdEtDMS83cU1HdTJaMU1iSkJ2V1Z1Y2xuVHBn?=
- =?utf-8?B?V3hLa3VxbG0rd3hDK051SHVibDd0TVJWQTQ0VC9LNXNJV0NrV3Vnd2ovc2RT?=
- =?utf-8?B?NDBrNGsyVWtGTHBnaXhEbXlRcE9abXphRHdrV0R4S0J1L2VSdFlLRVdzUmIr?=
- =?utf-8?B?c1RsVXZNNWpWaGVXTmJ6QmJ3OXZUK1BQQXZZbi8wd3hLWERhZnF6bEdDcVNq?=
- =?utf-8?B?dmpMWEo5M1RmWkdvZTZSUjNoYVB1N3dvUXlvL3NyNWVNRWluL2xseXRiaUhi?=
- =?utf-8?B?RWZPUElKSjF0Z0ZvM2hYVXVLTldaSE9LTi9GTHgvUVUvZ0ZCWkp5cFFudlZQ?=
- =?utf-8?B?MzRPelNidkVvVGQwUElJdk1CczNzM0J0Z1c0aXFXWWxoeWNsdVJrSTgwTlkr?=
- =?utf-8?B?YmRWQ0w4aXRzd2lBQkFpYUdXenBLY1A4cW5XYTlvcVVYL2JlRGJhdXdOa0M2?=
- =?utf-8?B?czFsSUhZUTY5M25YVXFoYldFdlVacE5qRk82WUFMQWRneVprTWJseEo2TGZC?=
- =?utf-8?B?QVo5aVozQ3p0a05iZ3czMTM2YVhKSWdSb0hKUDIySTZFdk56SVpXVjF0MzZn?=
- =?utf-8?B?aVAvN3hZSGcweWdvZGQwT0llYllPandWUU4wSnZRUFFtdVFJZTFBenp1TEo0?=
- =?utf-8?B?eVVlSjVLY0JpdWhvMTVPcDdFR3U1eVFidjJnRVlKN0xTOWllaWNydGdlanpl?=
- =?utf-8?B?NFN4a3BDYWFNY2JVTW5jV041NWo0TnRmTzM5aUJHS0QyM000dUloa2tlSGdm?=
- =?utf-8?B?eENwdU1sTDF4cUE5dGVDVEUyRlgrdmFidXkwM0JIWnNPSEN0dGpDdzI5d0lM?=
- =?utf-8?B?OWc3dVNMTDdqdGNWdjdjZTBzb3RoeVJ6VUNsVTIwczVoSm5PRERXMW9WN0Uw?=
- =?utf-8?Q?u884s/GQGKL099NUdN7Z0S/eKrI2aGmD1Q9Pc=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e82c8372-be4a-4fa2-1123-08d95c5920d8
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2021 23:46:52.3990
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8BbPWlpYohzd8s1xsmr1ziVfyxqzr7tzcTWUON3iLQHinxiz1vKah4ZJvpKCfcUi
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3903
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: 0imHxm5LdvveSwm22ResnbFDB7cS7Wyd
-X-Proofpoint-ORIG-GUID: 0imHxm5LdvveSwm22ResnbFDB7cS7Wyd
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+ 15.1.2176.2; Wed, 11 Aug 2021 08:48:56 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 11 Aug
+ 2021 08:48:56 +0800
+Subject: Re: [PATCH net-next v2 2/4] page_pool: add interface to manipulate
+ frag count in page pool
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <brouer@redhat.com>, <alexander.duyck@gmail.com>,
+        <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <linuxarm@openeuler.org>, <yisen.zhuang@huawei.com>,
+        <salil.mehta@huawei.com>, <thomas.petazzoni@bootlin.com>,
+        <hawk@kernel.org>, <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
+        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
+        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
+        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <chenhao288@hisilicon.com>, Linux-MM <linux-mm@kvack.org>
+References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
+ <1628217982-53533-3-git-send-email-linyunsheng@huawei.com>
+ <a3999ff2-2385-41a6-c3f5-ccd6cf67badf@redhat.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <6964895f-1bb8-00ef-acaa-7812367234cd@huawei.com>
+Date:   Wed, 11 Aug 2021 08:48:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-10_08:2021-08-10,2021-08-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 bulkscore=0
- adultscore=0 suspectscore=0 impostorscore=0 phishscore=0 spamscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=612 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108100155
-X-FB-Internal: deliver
+In-Reply-To: <a3999ff2-2385-41a6-c3f5-ccd6cf67badf@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 8/10/21 2:28 AM, Kuniyuki Iwashima wrote:
-> The iterator can output the same result compared to /proc/net/unix.
+On 2021/8/10 22:58, Jesper Dangaard Brouer wrote:
 > 
->    # cat /sys/fs/bpf/unix
->    Num       RefCount Protocol Flags    Type St Inode Path
->    ffff9ab7122db000: 00000002 00000000 00010000 0001 01 10623 private/defer
-
-There seems a misalignment between header line and data line.
-I know /proc/net/unix having this issue as well. But can we adjust 
-spacing in bpf program to make header/data properly aligned?
-
->    ffff9fca0023d000: 00000002 00000000 00000000 0001 01 11058 @Hello@World@
 > 
->    # cat /proc/net/unix
->    Num       RefCount Protocol Flags    Type St Inode Path
->    ffff9ab7122db000: 00000002 00000000 00010000 0001 01 10623 private/defer
->    ffff9fca0023d000: 00000002 00000000 00000000 0001 01 11058 @Hello@World@
+> On 06/08/2021 04.46, Yunsheng Lin wrote:
+>> For 32 bit systems with 64 bit dma, dma_addr[1] is used to
+>> store the upper 32 bit dma addr, those system should be rare
+>> those days.
+>>
+>> For normal system, the dma_addr[1] in 'struct page' is not
+>> used, so we can reuse dma_addr[1] for storing frag count,
+>> which means how many frags this page might be splited to.
+>>
+>> In order to simplify the page frag support in the page pool,
+>> the PAGE_POOL_DMA_USE_PP_FRAG_COUNT macro is added to indicate
+>> the 32 bit systems with 64 bit dma, and the page frag support
+>> in page pool is disabled for such system.
+>>
+>> The newly added page_pool_set_frag_count() is called to reserve
+>> the maximum frag count before any page frag is passed to the
+>> user. The page_pool_atomic_sub_frag_count_return() is called
+>> when user is done with the page frag.
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> ---
+>>   include/linux/mm_types.h | 18 +++++++++++++-----
+>>   include/net/page_pool.h  | 46 +++++++++++++++++++++++++++++++++++++++-------
+>>   net/core/page_pool.c     |  4 ++++
+>>   3 files changed, 56 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+>> index 52bbd2b..7f8ee09 100644
+>> --- a/include/linux/mm_types.h
+>> +++ b/include/linux/mm_types.h
+>> @@ -103,11 +103,19 @@ struct page {
+>>               unsigned long pp_magic;
+>>               struct page_pool *pp;
+>>               unsigned long _pp_mapping_pad;
+>> -            /**
+>> -             * @dma_addr: might require a 64-bit value on
+>> -             * 32-bit architectures.
+>> -             */
+>> -            unsigned long dma_addr[2];
+>> +            unsigned long dma_addr;
+>> +            union {
+>> +                /**
+>> +                 * dma_addr_upper: might require a 64-bit
+>> +                 * value on 32-bit architectures.
+>> +                 */
+>> +                unsigned long dma_addr_upper;
+>> +                /**
+>> +                 * For frag page support, not supported in
+>> +                 * 32-bit architectures with 64-bit DMA.
+>> +                 */
+>> +                atomic_long_t pp_frag_count;
+>> +            };
+>>           };
+>>           struct {    /* slab, slob and slub */
+>>               union {
+>> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+>> index 8d7744d..42e6997 100644
+>> --- a/include/net/page_pool.h
+>> +++ b/include/net/page_pool.h
+>> @@ -45,7 +45,10 @@
+>>                       * Please note DMA-sync-for-CPU is still
+>>                       * device driver responsibility
+>>                       */
+>> -#define PP_FLAG_ALL        (PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV)
+>> +#define PP_FLAG_PAGE_FRAG    BIT(2) /* for page frag feature */
+>> +#define PP_FLAG_ALL        (PP_FLAG_DMA_MAP |\
+>> +                 PP_FLAG_DMA_SYNC_DEV |\
+>> +                 PP_FLAG_PAGE_FRAG)
+>>     /*
+>>    * Fast allocation side cache array/stack
+>> @@ -198,19 +201,48 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+>>       page_pool_put_full_page(pool, page, true);
+>>   }
+>>   +#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT    \
+>> +        (sizeof(dma_addr_t) > sizeof(unsigned long))
+>> +
+>>   static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+>>   {
+>> -    dma_addr_t ret = page->dma_addr[0];
+>> -    if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>> -        ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
+>> +    dma_addr_t ret = page->dma_addr;
+>> +
+>> +    if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+>> +        ret |= (dma_addr_t)page->dma_addr_upper << 16 << 16;
 > 
-> Note that this prog requires the patch ([0]) for LLVM code gen.  Thanks to
-> Yonghong Song for analysing and fixing.
+> I find the macro name confusing.
 > 
-> [0] https://reviews.llvm.org/D107483
-> 
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> I think it would be easier to read the code, if it was called:
+>  PAGE_POOL_DMA_CANNOT_USE_PP_FRAG_COUNT
 
-LGTM. Thanks!
+Actually, there is a *DMA* in tha above macro, which means DMA
+addr uses the PP_FRAG_COUNT field.
+Perhaps PAGE_POOL_DMA_ADDR_UPPER_USE_PP_FRAG_COUNT is more obvious
+here?
 
-Acked-by: Yonghong Song <yhs@fb.com>
+> 
+>> +
+>>       return ret;
+>>   }
+>>     static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+>>   {
+>> -    page->dma_addr[0] = addr;
+>> -    if (sizeof(dma_addr_t) > sizeof(unsigned long))
+>> -        page->dma_addr[1] = upper_32_bits(addr);
+>> +    page->dma_addr = addr;
+>> +    if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+>> +        page->dma_addr_upper = upper_32_bits(addr);
+>> +}
+>> +
+>> +static inline void page_pool_set_frag_count(struct page *page, long nr)
+>> +{
+>> +    atomic_long_set(&page->pp_frag_count, nr);
+>> +}
+>> +
+>> +static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+>> +                              long nr)
+>> +{
+>> +    long ret;
+>> +
+>> +    /* As suggested by Alexander, atomic_long_read() may cover up the
+>> +     * reference count errors, so avoid calling atomic_long_read() in
+>> +     * the cases of freeing or draining the page_frags, where we would
+>> +     * not expect it to match or that are slowpath anyway.
+>> +     */
+>> +    if (__builtin_constant_p(nr) &&
+>> +        atomic_long_read(&page->pp_frag_count) == nr)
+>> +        return 0;
+>> +
+>> +    ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+>> +    WARN_ON(ret < 0);
+>> +    return ret;
+>>   }
+>>     static inline bool is_page_pool_compiled_in(void)
+>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+>> index 78838c6..68fab94 100644
+>> --- a/net/core/page_pool.c
+>> +++ b/net/core/page_pool.c
+>> @@ -67,6 +67,10 @@ static int page_pool_init(struct page_pool *pool,
+>>            */
+>>       }
+>>   +    if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+>> +        pool->p.flags & PP_FLAG_PAGE_FRAG)
+>> +        return -EINVAL;
+> 
+> I read this as: if the page_pool use pp_frag_count and have flag set, then it is invalid/no-allowed, which seems wrong.
+> 
+> I find this code more intuitive to read:
+> 
+>  +    if (PAGE_POOL_DMA_CANNOT_USE_PP_FRAG_COUNT &&
+>  +        pool->p.flags & PP_FLAG_PAGE_FRAG)
+>  +        return -EINVAL;
+> 
+> --Jesper
+> 
+> .
+> 
