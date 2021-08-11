@@ -2,159 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64583E97E6
-	for <lists+bpf@lfdr.de>; Wed, 11 Aug 2021 20:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7C03E9A27
+	for <lists+bpf@lfdr.de>; Wed, 11 Aug 2021 23:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhHKSr1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Aug 2021 14:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
+        id S231630AbhHKVDn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Aug 2021 17:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhHKSr0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:47:26 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDAA7C061765
-        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 11:47:02 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id z128so6518074ybc.10
-        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 11:47:02 -0700 (PDT)
+        with ESMTP id S231316AbhHKVDm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Aug 2021 17:03:42 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74E0C0613D3
+        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 14:03:18 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id s13so6598874oie.10
+        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 14:03:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cilium-io.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OYsp/urBj0q8R+SDZPazL4JPRcUMib51vL6fsU0fD8g=;
-        b=AiJ6L9aKdKoDpm58/nNLb0YYDASMA2ym0yBK8YMJ7q9tp4c7sjcOaYvnnvRMDeD0z+
-         F+HEMp1u0YsMkExK+4v6SLxVR/4wksqxriCp+rVUEm2rb9oz5ui5dB9fJ1B5Au2c/3Hy
-         WyAfvRnFHJa11Bb2xjcs8/tMQhvQasjlLu4/CGmvnk4+v769PuftFijywSz1RzvhnJhR
-         vHvzYD8Jx3xjqx1LCmQ4DHY2H4FXgzwrBXBcHCzapEPZiAjRr7ikv9WJozeRWO5yLlxX
-         Bd6k7kgfO7Wa4T/uf/GkQdGgTks8UwklT0unoEf2VZH5mA6hLSgjbG52kBzqTWFgKwFI
-         8l6w==
+        bh=wd6T0rEySA9LtvGGXNP1hlrCZYYYrgF6pB+h/IUB6C8=;
+        b=RlErA+tHdrMSqMClvTsJUgbvXB0rV7ky8wdTbS5Q0sW6EjVMsmbX4s+yIaznjrtBx3
+         4jokUKJ8seIjWdzi6B6Osq0xzbkF91l9CxHNG6CLjlG+EqoBuUaDwU+n/BOA/iOizqS5
+         +5x7M0ibB8Ft+iKeJMNPEpGdVnFB8fPOSFoIfj6WoRs7ZBo8vTiLeAZFqVD4bNlu9g+1
+         FBLO4dCe4JsQVVNpRV1sqsKMTXDtxFZ3/V486QfgcXkdKQXVrHAt3L2rRlOiQyyISYFb
+         c3QsRHtj/uLuuT5yaJnWVzWbQpx22MyONirLcXhOjZekJf1kL975amhnmKWekCNuFeU7
+         fSBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OYsp/urBj0q8R+SDZPazL4JPRcUMib51vL6fsU0fD8g=;
-        b=BpLc4kPsEKn4AdE+1UtQFQvcNhae2hUl3IWOTvjsRLoQEvlhe9iL/z7j2YI2NlR2um
-         3TvmgJ3qA0MZ3u6IU5FfEAhOMIhTMrUp7uuUCd8RjDAPYBv3BnxK3GZvhfLA/J/TnqRF
-         vzzQP3hd2XGp0YqGwamFZ+oxbP5BU3FGQS6fyp3wwpMmKLZL8xZfCLP0xBFeI8F7jns1
-         1vrthTt6NvStWSBAGyQBtb4OUQuAME7VcaGW97LzyzIPmz8VwUqoOgk0FgylyQ5ZOJDK
-         r9xjQ90NAgmOTqLoGm+NJHHHJVOvOCwqD8upMx3vcssRoTKtvdYcRccjOKScdADWEYfd
-         kg/g==
-X-Gm-Message-State: AOAM533YyZpkOnY8Y7vPlxCHRRI0dta1CxYrMYcBZSQXe5RMHD37r5CS
-        6tC7gHAOLokkRPDsJ4NhvFOAUs+WB7jsiDEo2Js=
-X-Google-Smtp-Source: ABdhPJzjgT+5tDzVOO28cgdovFdsBwaDoaQkhoAT5SFVmutVbZdJdoiz4OEiqNykZh5ugpHwpFViGAhyBWelk6hhpVo=
-X-Received: by 2002:a25:24cd:: with SMTP id k196mr5044868ybk.459.1628707622125;
- Wed, 11 Aug 2021 11:47:02 -0700 (PDT)
+        bh=wd6T0rEySA9LtvGGXNP1hlrCZYYYrgF6pB+h/IUB6C8=;
+        b=EFNk5ZDAWtaJmg1bKba+mvmiwGsxMNT/G8rO4xc9g+V+s3N4w8A41XmrRAwdJCmyFm
+         BH8neFBX7WWQsE1GKwVBu37fWKenifqValV4Q1u8AQbTXviifY5H8o012Qat+eT27DzR
+         YcOFSOyuBbspRpMx0cSwfdRF9cJrsFwxrGz7APp5pYcmjOr5KfCN0MgNMsA2UiI7gSUw
+         AHfEUzcRVjGLW/tP5u922PJSBNkGil3CdygJM1r+uXf6KzJaADMhsbdzHVkKSu58K3bs
+         Esbn9ZoR9YzRMN5ZVw1sCvxfTcgCNI0mE+TRKykvZIKxeCJd0KDrSa8ilU7kMxWwwoo4
+         /SuA==
+X-Gm-Message-State: AOAM533jN3BfykLCKungA72m/O2G7cjA16jiWiFD+/c52UhfnrBh6Wi4
+        QVNoVORGpA3ltRYhp/SQPazrIBxa31Vgq+kRwR3/xg==
+X-Google-Smtp-Source: ABdhPJzkHC2RzO8iBfAGGt3BqvnWFv2/4EzL/x8hdCnM69LLaLAkIyNDeHmOmlKNPvGssx6opPcx97/0mWeZLv2/8a0=
+X-Received: by 2002:a54:488c:: with SMTP id r12mr8583818oic.111.1628715798125;
+ Wed, 11 Aug 2021 14:03:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210810230537.2864668-1-yhs@fb.com>
-In-Reply-To: <20210810230537.2864668-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 11 Aug 2021 11:46:51 -0700
-Message-ID: <CAEf4BzbJgCHox451DA1p3KFNNyKMf1uomDOmPfdMK9zvbvgbgA@mail.gmail.com>
-Subject: Re: [PATCH bpf v4] bpf: add rcu read_lock in bpf_get_current_[ancestor_]cgroup_id()
- helpers
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20210402192823.bqwgipmky3xsucs5@ast-mbp> <20210402234500.by3wigegeluy5w7j@ast-mbp>
+ <CAM_iQpWf2aYbY=tKejb=nx7LWBLo1woTp-n4wOLhkUuDCz8u-Q@mail.gmail.com>
+ <20210412230151.763nqvaadrrg77kd@ast-mbp.dhcp.thefacebook.com>
+ <CAM_iQpWePmmpr0RKqCrQ=NPiGrq2Tx9OU9y3e4CTzFjvh5t47w@mail.gmail.com>
+ <CAADnVQLsmULxJYq9rHS4xyg=VAUeexJTh35vTWTVgjeqwX4D6g@mail.gmail.com>
+ <CAM_iQpVtxgZNeqh4_Pqftc3D163JnRvP3AZRuFrYNeyWLgVBVA@mail.gmail.com>
+ <CAADnVQLFehCeQRbwEQ9VM-=Y3V3es2Ze8gFPs6cZHwNH0Ct7vw@mail.gmail.com>
+ <CAM_iQpWDhoY_msU=AowHFq3N3OuQpvxd2ADP_Z+gxBfGduhrPA@mail.gmail.com>
+ <20210427020159.hhgyfkjhzjk3lxgs@ast-mbp.dhcp.thefacebook.com>
+ <CAM_iQpVE4XG7SPAVBmV2UtqUANg3X-1ngY7COYC03NrT6JkZ+g@mail.gmail.com>
+ <CAADnVQK9BgguVorziWgpMktLHuPCgEaKa4fz-KCfhcZtT46teQ@mail.gmail.com>
+ <CAM_iQpWBrxuT=Y3CbhxYpE5a+QSk-O=Vj4euegggXAAKTHRBqw@mail.gmail.com>
+ <CAOftzPh0cj_XRES8mrNWnyKFZDLpRez09NAofmu1F1JAZf43Cw@mail.gmail.com>
+ <ac30da98-97cd-c105-def8-972a8ec573d6@mojatatu.com> <e51f235e-f5b7-be64-2340-8e7575d69145@mojatatu.com>
+ <CAM_iQpX=Qk6GjxB=saTpbo4Oc1KBxK2tU5N==HO_LimiOEtoDA@mail.gmail.com>
+In-Reply-To: <CAM_iQpX=Qk6GjxB=saTpbo4Oc1KBxK2tU5N==HO_LimiOEtoDA@mail.gmail.com>
+From:   Joe Stringer <joe@cilium.io>
+Date:   Wed, 11 Aug 2021 14:03:07 -0700
+Message-ID: <CADa=RyyuVD5r9_95HTj_-hPq4AjN1RgrGcZsJssRjYfajY=6hQ@mail.gmail.com>
+Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Joe Stringer <joe@cilium.io>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Pedro Tammela <pctammela@mojatatu.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 4:05 PM Yonghong Song <yhs@fb.com> wrote:
->
-> Currently, if bpf_get_current_cgroup_id() or
-> bpf_get_current_ancestor_cgroup_id() helper is
-> called with sleepable programs e.g., sleepable
-> fentry/fmod_ret/fexit/lsm programs, a rcu warning
-> may appear. For example, if I added the following
-> hack to test_progs/test_lsm sleepable fentry program
-> test_sys_setdomainname:
->
->   --- a/tools/testing/selftests/bpf/progs/lsm.c
->   +++ b/tools/testing/selftests/bpf/progs/lsm.c
->   @@ -168,6 +168,10 @@ int BPF_PROG(test_sys_setdomainname, struct pt_regs *regs)
->           int buf = 0;
->           long ret;
->
->   +       __u64 cg_id = bpf_get_current_cgroup_id();
->   +       if (cg_id == 1000)
->   +               copy_test++;
->   +
->           ret = bpf_copy_from_user(&buf, sizeof(buf), ptr);
->           if (len == -2 && ret == 0 && buf == 1234)
->                   copy_test++;
->
-> I will hit the following rcu warning:
->
->   include/linux/cgroup.h:481 suspicious rcu_dereference_check() usage!
->   other info that might help us debug this:
->     rcu_scheduler_active = 2, debug_locks = 1
->     1 lock held by test_progs/260:
->       #0: ffffffffa5173360 (rcu_read_lock_trace){....}-{0:0}, at: __bpf_prog_enter_sleepable+0x0/0xa0
->     stack backtrace:
->     CPU: 1 PID: 260 Comm: test_progs Tainted: G           O      5.14.0-rc2+ #176
->     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->     Call Trace:
->       dump_stack_lvl+0x56/0x7b
->       bpf_get_current_cgroup_id+0x9c/0xb1
->       bpf_prog_a29888d1c6706e09_test_sys_setdomainname+0x3e/0x89c
->       bpf_trampoline_6442469132_0+0x2d/0x1000
->       __x64_sys_setdomainname+0x5/0x110
->       do_syscall_64+0x3a/0x80
->       entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> I can get similar warning using bpf_get_current_ancestor_cgroup_id() helper.
-> syzbot reported a similar issue in [1] for syscall program. Helper
-> bpf_get_current_cgroup_id() or bpf_get_current_ancestor_cgroup_id()
-> has the following callchain:
->    task_dfl_cgroup
->      task_css_set
->        task_css_set_check
-> and we have
->    #define task_css_set_check(task, __c)                                   \
->            rcu_dereference_check((task)->cgroups,                          \
->                    lockdep_is_held(&cgroup_mutex) ||                       \
->                    lockdep_is_held(&css_set_lock) ||                       \
->                    ((task)->flags & PF_EXITING) || (__c))
-> Since cgroup_mutex/css_set_lock is not held and the task
-> is not existing and rcu read_lock is not held, a warning
-> will be issued. Note that bpf sleepable program is protected by
-> rcu_read_lock_trace().
->
-> The above sleepable bpf programs are already protected
-> by migrate_disable(). Adding rcu_read_lock() in these
-> two helpers will silence the above warning.
-> I marked the patch fixing 95b861a7935b
-> ("bpf: Allow bpf_get_current_ancestor_cgroup_id for tracing")
-> which added bpf_get_current_ancestor_cgroup_id() to tracing programs
-> in 5.14. I think backporting 5.14 is probably good enough as sleepable
-> progrems are not widely used.
->
-> This patch should fix [1] as well since syscall program is a sleepable
-> program protected with migrate_disable().
->
->  [1] https://lore.kernel.org/bpf/0000000000006d5cab05c7d9bb87@google.com/
->
-> Reported-by: syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
-> Fixes: 95b861a7935b ("bpf: Allow bpf_get_current_ancestor_cgroup_id for tracing")
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  kernel/bpf/helpers.c | 22 ++++++++++++++++------
->  1 file changed, 16 insertions(+), 6 deletions(-)
->
-> Changelog:
->   v3 -> v4:
->     - ensure rcu_read_lock() region enclosing all accesses to cgroup.
+Hi folks, apparently I never clicked 'send' on this email, but if you
+wanted to continue the discussion I had some questions and thoughts.
 
-Applied to bpf, thanks!
+This is also an interesting enough topic that it may be worth
+considering to submit for the upcoming LPC Networking & BPF track
+(submission deadline is this Friday August 13, Conference dates 20-24
+September).
 
->   v2 -> v3:
->     - use rcu_read_lock() protection for
->       bpf_get_current_[ancestor_]cgroup_id() helper.
->   v1 -> v2:
->     - disallow bpf_get_current_[ancestor_]cgroup_id() helper.
+On Thu, May 13, 2021 at 7:53 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
 >
+> On Thu, May 13, 2021 at 11:46 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+> >
+> > On 2021-05-12 6:43 p.m., Jamal Hadi Salim wrote:
+> >
+> > >
+> > > Will run some tests tomorrow to see the effect of batching vs nobatch
+> > > and capture cost of syscalls and cpu.
+> > >
+> >
+> > So here are some numbers:
+> > Processor: Intel(R) Xeon(R) Gold 6230R CPU @ 2.10GHz
+> > This machine is very similar to where a real deployment
+> > would happen.
+> >
+> > Hyperthreading turned off so we can dedicate the core to the
+> > dumping process and Performance mode on, so no frequency scaling
+> > meddling.
+> > Tests were ran about 3 times each. Results eye-balled to make
+> > sure deviation was reasonable.
+> > 100% of the one core was used just for dumping during each run.
+>
+> I checked with Cilium users here at Bytedance, they actually observed
+> 100% CPU usage too.
 
-[...]
+Thanks for the feedback. Can you provide further details? For instance,
+
+* Which version of Cilium?
+* How long do you observe this 100% CPU usage?
+* What size CT map is in use?
+* How frequently do you intend for CT GC to run? (Do you use the
+default settings or are they mismatched with your requirements for
+some reason? If so can we learn more about the requirements/why?)
+* Do you have a threshold in mind that would be sufficient?
+
+If necessary we can take these discussions off-list if the details are
+sensitive but I'd prefer to continue the discussion here to have some
+public examples we can discuss & use to motivate future discussions.
+We can alternatively move the discussion to a Cilium GitHub issue if
+the tradeoffs are more about the userspace implementation rather than
+the kernel specifics, though I suspect some of the folks here would
+also like to follow along so I don't want to exclude the list from the
+discussion.
+
+FWIW I'm not inherently against a timer, in fact I've wondered for a
+while what kind of interesting things we could build with such
+support. At the same time, connection tracking entry management is a
+nuanced topic and it's easy to fix an issue in one area only to
+introduce a problem in another area.
+
+> >
+> > bpftool does linear retrieval whereas our tool does batch dumping.
+> > bpftool does print the dumped results, for our tool we just count
+> > the number of entries retrieved (cost would have been higher if
+> > we actually printed). In any case in the real setup there is
+> > a processing cost which is much higher.
+> >
+> > Summary is: the dumping is problematic costwise as the number of
+> > entries increase. While batching does improve things it doesnt
+> > solve our problem (Like i said we have upto 16M entries and most
+> > of the time we are dumping useless things)
+>
+> Thank you for sharing these numbers! Hopefully they could convince
+> people here to accept the bpf timer. I will include your use case and
+> performance number in my next update.
+
+Yes, Thanks Jamal for the numbers. It's very interesting, clearly
+batch dumping is far more efficient and we should enhance bpftool to
+take advantage of it where applicable.
+
+> Like i said we have upto 16M entries and most
+> of the time we are dumping useless things)
+
+I'm curious if there's a more intelligent way to figure out this
+'dumping useless things' aspect? I can see how timers would eliminate
+the cycles spent on the syscall aspect of this entirely (in favor of
+the timer handling logic which I'd guess is cheaper), but at some
+point if you're running certain logic on every entry in a map then of
+course it will scale linearly.
+
+The use case is different for the CT problem we discussed above, but
+if I look at the same question for the CT case, this is why I find LRU
+useful - rather than firing off a number of timers linear on the size
+of the map, the eviction logic is limited to the map insert rate,
+which itself can be governed and ratelimited by logic running in eBPF.
+The scan of the map then becomes less critical, so it can be run less
+frequently and alleviate the CPU usage question that way.
