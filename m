@@ -2,98 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7E43E919C
-	for <lists+bpf@lfdr.de>; Wed, 11 Aug 2021 14:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108033E9339
+	for <lists+bpf@lfdr.de>; Wed, 11 Aug 2021 16:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhHKMhb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Aug 2021 08:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhHKMhW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:37:22 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A17CC061799
-        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 05:36:58 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id q11so2821527wrr.9
-        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 05:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=vLy1Vn7jBZyaLX0Agp8iaSYDXRAQJFJPZZDH7bDt4Hg=;
-        b=snPjhpT9HrNnQFId6jnvsMs7NgWbwtqAl2Lc0zrAJUDEgLi942APShyRb1ATtocRfb
-         9wRoojWP1CeWDSW97XniV95vk1DqwIQOyu10RSgwWuB8mgwsOwwu3p8vJNyRiJlcO0ba
-         qMAt3wCFEpHEl05+G+QQM3LRvRqQS/acfTBkDCmPHE0TcLlFTDD3IMZIKEmChZ57klMQ
-         kBHLHexfDJKVlE8I8Fm9kKsp1bl4moEFvMsoRMkNlXzVi1OEXdHCr0vMwc1a6o8+0Whl
-         RIMDdon0/sjTKp2pwPBWVwMUyA3hiA2u/O4zaWPtJV3dZ5WBDLDxpzT7Zff0eBFqsSqV
-         lCNQ==
+        id S231904AbhHKOFm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Aug 2021 10:05:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60301 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231739AbhHKOFl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Aug 2021 10:05:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628690717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u+UwXrDdUvMVeVeP5V7tq2RnSOSZajczg7aig3TAtJw=;
+        b=LR7b3qyXIUivawaMJas+7EbdhEqirBTzgNvi35ZCpkr90S3Mi68sBLki6UzEMnhoRZuoNT
+        K78dajXm6g1h2xeoNpLYsod9lNFAk6bm6vgN0Km1wQrZcORr4VJz+f7p2QPyNnAt7niZQt
+        s64Iazc3OoyGTPuu9pyK4zk26LxDptw=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-524-zvgFjAywNYO_Y3o8IyHiaw-1; Wed, 11 Aug 2021 10:05:16 -0400
+X-MC-Unique: zvgFjAywNYO_Y3o8IyHiaw-1
+Received: by mail-qv1-f69.google.com with SMTP id w10-20020a0cfc4a0000b0290335dd22451dso1341720qvp.5
+        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 07:05:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=vLy1Vn7jBZyaLX0Agp8iaSYDXRAQJFJPZZDH7bDt4Hg=;
-        b=i/zdZLNvNNsIrkkC7MS1Ynk/7tf94ZJFkRq3DfPpeH1zMOVJdpfoPCE/gd+Vx/c5o/
-         TfP2nNA/Hr1s8KJM9Y/qP6iOfqY4LyEO95Kl9ikcsqYfqT1sD9X8fEK+vuGgnApc0+6A
-         QTnhPIEGQ0wmmNrL3TwVH5DNvYiKvNEAAGcMcgkOtGVsUfnKV9mwwsTdPq5lLnnSw3Ws
-         tKLhyQO+FW4cQ9jBj84p4TYFZ8RKFdyiao9o1Tgy6kduauPJMfUutCASsvX8oOcV/Ne0
-         YL4HYwxA24Gr2Q9RjuWjPUOV8KKjgLOCqG7oi9FL6bQrySe6wErWjxTIQpAGTQqmeI7q
-         wuOg==
-X-Gm-Message-State: AOAM532WN1qciUbOPgx/3vJ9RS1p15WTP7Cv4FBDd3taTOfEUSqbYLM7
-        poV2pAt1i2ryiJl/7K8l7qLx+8Do+Mjs
-X-Google-Smtp-Source: ABdhPJzSNgHhnJw2m8+zUVzUpiOg3er0joZTaBTqA8ZbQ2Anmr3xNibFLkP4tbxhsy8pS66xw1MYVA==
-X-Received: by 2002:adf:fc0d:: with SMTP id i13mr35405010wrr.276.1628685416610;
-        Wed, 11 Aug 2021 05:36:56 -0700 (PDT)
-Received: from localhost.localdomain ([77.109.191.101])
-        by smtp.gmail.com with ESMTPSA id b80sm482512wmb.38.2021.08.11.05.36.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 05:36:55 -0700 (PDT)
-From:   Jussi Maki <joamaki@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     daniel@iogearbox.net, Jussi Maki <joamaki@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: Fix running of XDP bonding tests
-Date:   Wed, 11 Aug 2021 12:36:27 +0000
-Message-Id: <20210811123627.20223-1-joamaki@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u+UwXrDdUvMVeVeP5V7tq2RnSOSZajczg7aig3TAtJw=;
+        b=hj+8Q9FXplTXYYN6JOy70ieYvH6zJq3ip+y3OTevCmwWNw+bogOvVkFofHC1rFaJip
+         z5TEHgdt/kyaDo7Q283F1F52elNOw9FRgK2zl34ktLsj++wi4g7YEzRfSbofDRrLK79y
+         HKeXVRaeyiWIuk86QFN5RFY9SsC3GpyAs+gwazDl9UXADQ7SUGVxl/DNcgL2XpaPR1dx
+         c/15s1D9riss1fojbxCMhwS6CaAisKGab4qlt0ZR2haFv0lzvDpY9ac+C1oHAUZd4ELd
+         5O23frnTyi3TVyrHK//8iR0JCPw/wQSwpdeMD6NGM9ug04tshHODdnn4TQDKmV0h+Xw3
+         3eAQ==
+X-Gm-Message-State: AOAM530oHRjzwiLTev3lnHtVL41ziErNwtr1DTGHSTBJTeAcNF/MqMwr
+        zA2ugfNMO7nQo24X+HmsdqoJgn3/MPSOxaR0lf4ravsrqjLavNrCZRl6cP1qoQo4eUcUUG9eQEY
+        r9BKRS5lF0WbG
+X-Received: by 2002:a37:9643:: with SMTP id y64mr32674337qkd.213.1628690715646;
+        Wed, 11 Aug 2021 07:05:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxCyP6IAxayqVXnCpyOW3A+Q4cpJNidAxOrcHuQ7RfdL9iiN6zS6fZT6rLuYZQ8u7eQLyhK4g==
+X-Received: by 2002:a37:9643:: with SMTP id y64mr32674294qkd.213.1628690715222;
+        Wed, 11 Aug 2021 07:05:15 -0700 (PDT)
+Received: from jtoppins.rdu.csb ([107.15.110.69])
+        by smtp.gmail.com with ESMTPSA id 18sm12894916qkm.128.2021.08.11.07.05.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 07:05:14 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v6 1/7] net: bonding: Refactor bond_xmit_hash for
+ use with xdp_buff
+To:     Jussi Maki <joamaki@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, j.vosburgh@gmail.com,
+        Andy Gospodarek <andy@greyhouse.net>, vfalico@gmail.com,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+References: <20210609135537.1460244-1-joamaki@gmail.com>
+ <20210731055738.16820-1-joamaki@gmail.com>
+ <20210731055738.16820-2-joamaki@gmail.com>
+ <2bb53e7c-0a2f-5895-3d8b-aa43fd03ff52@redhat.com>
+ <CAHn8xckOsLD463JW2rc1LhjjY0FQ-aRNqSif_SJ6GT9bAH7VqQ@mail.gmail.com>
+From:   Jonathan Toppins <jtoppins@redhat.com>
+Message-ID: <3b0657f0-d7ef-e568-57c2-0db41acea615@redhat.com>
+Date:   Wed, 11 Aug 2021 10:05:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <CAHn8xckOsLD463JW2rc1LhjjY0FQ-aRNqSif_SJ6GT9bAH7VqQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-An "innocent" cleanup in the last version of the XDP bonding
-patchset moved the "test__start_subtest" calls to the test
-main function, but I forgot to reverse the condition, which
-lead to all tests being skipped. Fix it.
+On 8/11/21 4:22 AM, Jussi Maki wrote:
+> Hi Jonathan,
+> 
+> Thanks for catching this. You're right, this will NULL deref if XDP
+> bonding is used with the VLAN_SRCMAC xmit policy. I think what
+> happened was that a very early version restricted the xmit policies
+> that were applicable, but it got dropped when this was refactored.
+> I'll look into this today and will add in support (or refuse) the
+> VLAN_SRCMAC xmit policy and extend the tests to cover this.
 
-Signed-off-by: Jussi Maki <joamaki@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/xdp_bonding.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+In support of some customer requests and to stop adding more and more 
+hashing policies I was looking at adding a custom policy that exposes a 
+bitfield so userspace can select which header items should be included 
+in the hash. I was looking at a flow dissector implementation to parse 
+the packet and then generate the hash from the flow data pulled. It 
+looks like the outer hashing functions as they exist now, 
+bond_xmit_hash() and bond_xmit_hash_xdp(), could make the correctly 
+formatted call to __skb_flow_dissect(). We would then pass around the 
+resultant struct flow_keys, or bonding specific one to add MAC header 
+parsing support, and it appears we could avoid making the actual hashing 
+functions know if they need to hash an sk_buff vs xdp_buff. What do you 
+think?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c b/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
-index 6b186b4238d0..370d220288a6 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
-@@ -493,20 +493,20 @@ void test_xdp_bonding(void)
- 			   "xdp_redirect_multi_kern__open_and_load"))
- 		goto out;
- 
--	if (!test__start_subtest("xdp_bonding_attach"))
-+	if (test__start_subtest("xdp_bonding_attach"))
- 		test_xdp_bonding_attach(&skeletons);
- 
- 	for (i = 0; i < ARRAY_SIZE(bond_test_cases); i++) {
- 		struct bond_test_case *test_case = &bond_test_cases[i];
- 
--		if (!test__start_subtest(test_case->name))
-+		if (test__start_subtest(test_case->name))
- 			test_xdp_bonding_with_mode(
- 				&skeletons,
- 				test_case->mode,
- 				test_case->xmit_policy);
- 	}
- 
--	if (!test__start_subtest("xdp_bonding_redirect_multi"))
-+	if (test__start_subtest("xdp_bonding_redirect_multi"))
- 		test_xdp_bonding_redirect_multi(&skeletons);
- 
- out:
--- 
-2.17.1
+-Jon
 
