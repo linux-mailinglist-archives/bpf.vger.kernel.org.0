@@ -2,181 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7C03E9A27
-	for <lists+bpf@lfdr.de>; Wed, 11 Aug 2021 23:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAF33E9A48
+	for <lists+bpf@lfdr.de>; Wed, 11 Aug 2021 23:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhHKVDn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Aug 2021 17:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
+        id S231881AbhHKVQ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Aug 2021 17:16:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231316AbhHKVDm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Aug 2021 17:03:42 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74E0C0613D3
-        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 14:03:18 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id s13so6598874oie.10
-        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 14:03:18 -0700 (PDT)
+        with ESMTP id S229589AbhHKVQ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Aug 2021 17:16:26 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919EBC061765;
+        Wed, 11 Aug 2021 14:16:02 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id z128so7330516ybc.10;
+        Wed, 11 Aug 2021 14:16:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cilium-io.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wd6T0rEySA9LtvGGXNP1hlrCZYYYrgF6pB+h/IUB6C8=;
-        b=RlErA+tHdrMSqMClvTsJUgbvXB0rV7ky8wdTbS5Q0sW6EjVMsmbX4s+yIaznjrtBx3
-         4jokUKJ8seIjWdzi6B6Osq0xzbkF91l9CxHNG6CLjlG+EqoBuUaDwU+n/BOA/iOizqS5
-         +5x7M0ibB8Ft+iKeJMNPEpGdVnFB8fPOSFoIfj6WoRs7ZBo8vTiLeAZFqVD4bNlu9g+1
-         FBLO4dCe4JsQVVNpRV1sqsKMTXDtxFZ3/V486QfgcXkdKQXVrHAt3L2rRlOiQyyISYFb
-         c3QsRHtj/uLuuT5yaJnWVzWbQpx22MyONirLcXhOjZekJf1kL975amhnmKWekCNuFeU7
-         fSBg==
+        bh=GZkNP8NyqlnwVDqWKFFyzCmyU4skD6RZY5F39npq1pU=;
+        b=OcLMBZUru52ljOOD/jfv/kO3sY7Y7qfxHxw4VMUhohUNPI30z5txn/ThnRko+HzePM
+         CInkXrGZaupTT4TE2hIPKMt3q65BVh4ziPzCjCGFp2pHopgnISlOblG/X7AfxNGH/fAY
+         oiakU8K3eF2HuORIToH10s91KLsdqLoyuCT1A+GMh0Zqjk+ls0mWT31zupUM4BQMROfY
+         cUTyfX/5POOZUkel/PLIo+N3Je0rdAaw9dqxYDEUtYlI+6ZFgAymiqOnrBEhw0zQaOCl
+         KYeTxhpKVuc975hOQYsHQwcO2wrMhTjS7+qaMEgufHpcBehtN8Fkw2IZCbJdSTvteT7U
+         qS9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wd6T0rEySA9LtvGGXNP1hlrCZYYYrgF6pB+h/IUB6C8=;
-        b=EFNk5ZDAWtaJmg1bKba+mvmiwGsxMNT/G8rO4xc9g+V+s3N4w8A41XmrRAwdJCmyFm
-         BH8neFBX7WWQsE1GKwVBu37fWKenifqValV4Q1u8AQbTXviifY5H8o012Qat+eT27DzR
-         YcOFSOyuBbspRpMx0cSwfdRF9cJrsFwxrGz7APp5pYcmjOr5KfCN0MgNMsA2UiI7gSUw
-         AHfEUzcRVjGLW/tP5u922PJSBNkGil3CdygJM1r+uXf6KzJaADMhsbdzHVkKSu58K3bs
-         Esbn9ZoR9YzRMN5ZVw1sCvxfTcgCNI0mE+TRKykvZIKxeCJd0KDrSa8ilU7kMxWwwoo4
-         /SuA==
-X-Gm-Message-State: AOAM533jN3BfykLCKungA72m/O2G7cjA16jiWiFD+/c52UhfnrBh6Wi4
-        QVNoVORGpA3ltRYhp/SQPazrIBxa31Vgq+kRwR3/xg==
-X-Google-Smtp-Source: ABdhPJzkHC2RzO8iBfAGGt3BqvnWFv2/4EzL/x8hdCnM69LLaLAkIyNDeHmOmlKNPvGssx6opPcx97/0mWeZLv2/8a0=
-X-Received: by 2002:a54:488c:: with SMTP id r12mr8583818oic.111.1628715798125;
- Wed, 11 Aug 2021 14:03:18 -0700 (PDT)
+        bh=GZkNP8NyqlnwVDqWKFFyzCmyU4skD6RZY5F39npq1pU=;
+        b=op8R20vb+ia9KaFcsugo1VqSIXnfcE0IVBjFcUIZd2SVtyc1JG3oDjRFDc7MFKxJQe
+         18NoP2im9zF7EeGrppSi3eSQ5WgbaPP0YfPIJxbJa7WAtMMCc1z4Iiv7MPUFD84Qr4L6
+         1/rVfrF2nFvMrbC4vRrW1+5V6GLmRvft2hut9Lzb/t38QfRzItgwIOppmHVFwTBk2q6/
+         TuPqbm8m34gNKO/dK0fU0wdN3bqkNgCQackISabgcp2z7c015NdtbWbC7iTHZ3zObgAV
+         mkyYmQL5YXJi3lYWFmFzm4UVkHyCJLGaBhCk26u/nfeurhJ0kEf+M79dyCmpawt2kv4i
+         pDUw==
+X-Gm-Message-State: AOAM533CUCYowiFkqROsC8Q9q9QSLRy/jep3hWo1smdO7YESYoMcRPDX
+        vLKmOA7tWQk9wyHzsjWvWC+6uEY3I10V1RlZ+mQ=
+X-Google-Smtp-Source: ABdhPJwnwRjMvrOd+6t0iTVhVcTvp6HfE9wFXhtrqwCcTzWPeMClYIsJATvweVwnBaVB9DtVfp6+Qwrbhjb7HR1RygQ=
+X-Received: by 2002:a5b:648:: with SMTP id o8mr18374ybq.260.1628716561821;
+ Wed, 11 Aug 2021 14:16:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210402192823.bqwgipmky3xsucs5@ast-mbp> <20210402234500.by3wigegeluy5w7j@ast-mbp>
- <CAM_iQpWf2aYbY=tKejb=nx7LWBLo1woTp-n4wOLhkUuDCz8u-Q@mail.gmail.com>
- <20210412230151.763nqvaadrrg77kd@ast-mbp.dhcp.thefacebook.com>
- <CAM_iQpWePmmpr0RKqCrQ=NPiGrq2Tx9OU9y3e4CTzFjvh5t47w@mail.gmail.com>
- <CAADnVQLsmULxJYq9rHS4xyg=VAUeexJTh35vTWTVgjeqwX4D6g@mail.gmail.com>
- <CAM_iQpVtxgZNeqh4_Pqftc3D163JnRvP3AZRuFrYNeyWLgVBVA@mail.gmail.com>
- <CAADnVQLFehCeQRbwEQ9VM-=Y3V3es2Ze8gFPs6cZHwNH0Ct7vw@mail.gmail.com>
- <CAM_iQpWDhoY_msU=AowHFq3N3OuQpvxd2ADP_Z+gxBfGduhrPA@mail.gmail.com>
- <20210427020159.hhgyfkjhzjk3lxgs@ast-mbp.dhcp.thefacebook.com>
- <CAM_iQpVE4XG7SPAVBmV2UtqUANg3X-1ngY7COYC03NrT6JkZ+g@mail.gmail.com>
- <CAADnVQK9BgguVorziWgpMktLHuPCgEaKa4fz-KCfhcZtT46teQ@mail.gmail.com>
- <CAM_iQpWBrxuT=Y3CbhxYpE5a+QSk-O=Vj4euegggXAAKTHRBqw@mail.gmail.com>
- <CAOftzPh0cj_XRES8mrNWnyKFZDLpRez09NAofmu1F1JAZf43Cw@mail.gmail.com>
- <ac30da98-97cd-c105-def8-972a8ec573d6@mojatatu.com> <e51f235e-f5b7-be64-2340-8e7575d69145@mojatatu.com>
- <CAM_iQpX=Qk6GjxB=saTpbo4Oc1KBxK2tU5N==HO_LimiOEtoDA@mail.gmail.com>
-In-Reply-To: <CAM_iQpX=Qk6GjxB=saTpbo4Oc1KBxK2tU5N==HO_LimiOEtoDA@mail.gmail.com>
-From:   Joe Stringer <joe@cilium.io>
-Date:   Wed, 11 Aug 2021 14:03:07 -0700
-Message-ID: <CADa=RyyuVD5r9_95HTj_-hPq4AjN1RgrGcZsJssRjYfajY=6hQ@mail.gmail.com>
-Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Joe Stringer <joe@cilium.io>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
+References: <20210810092807.13190-1-kuniyu@amazon.co.jp> <20210810092807.13190-3-kuniyu@amazon.co.jp>
+In-Reply-To: <20210810092807.13190-3-kuniyu@amazon.co.jp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 11 Aug 2021 14:15:50 -0700
+Message-ID: <CAEf4BzZBxA2+nNtbOVEyMXDG9i_3zfxm78=--ssjrX4ESC_ixA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/3] bpf: Support "%c" in bpf_bprintf_prepare().
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Pedro Tammela <pctammela@mojatatu.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi folks, apparently I never clicked 'send' on this email, but if you
-wanted to continue the discussion I had some questions and thoughts.
-
-This is also an interesting enough topic that it may be worth
-considering to submit for the upcoming LPC Networking & BPF track
-(submission deadline is this Friday August 13, Conference dates 20-24
-September).
-
-On Thu, May 13, 2021 at 7:53 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+On Tue, Aug 10, 2021 at 2:29 AM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
 >
-> On Thu, May 13, 2021 at 11:46 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
-> >
-> > On 2021-05-12 6:43 p.m., Jamal Hadi Salim wrote:
-> >
-> > >
-> > > Will run some tests tomorrow to see the effect of batching vs nobatch
-> > > and capture cost of syscalls and cpu.
-> > >
-> >
-> > So here are some numbers:
-> > Processor: Intel(R) Xeon(R) Gold 6230R CPU @ 2.10GHz
-> > This machine is very similar to where a real deployment
-> > would happen.
-> >
-> > Hyperthreading turned off so we can dedicate the core to the
-> > dumping process and Performance mode on, so no frequency scaling
-> > meddling.
-> > Tests were ran about 3 times each. Results eye-balled to make
-> > sure deviation was reasonable.
-> > 100% of the one core was used just for dumping during each run.
+> /proc/net/unix uses "%c" to print a single-byte character to escape '\0' in
+> the name of the abstract UNIX domain socket.  The following selftest uses
+> it, so this patch adds support for "%c".  Note that it does not support
+> wide character ("%lc" and "%llc") for simplicity.
 >
-> I checked with Cilium users here at Bytedance, they actually observed
-> 100% CPU usage too.
-
-Thanks for the feedback. Can you provide further details? For instance,
-
-* Which version of Cilium?
-* How long do you observe this 100% CPU usage?
-* What size CT map is in use?
-* How frequently do you intend for CT GC to run? (Do you use the
-default settings or are they mismatched with your requirements for
-some reason? If so can we learn more about the requirements/why?)
-* Do you have a threshold in mind that would be sufficient?
-
-If necessary we can take these discussions off-list if the details are
-sensitive but I'd prefer to continue the discussion here to have some
-public examples we can discuss & use to motivate future discussions.
-We can alternatively move the discussion to a Cilium GitHub issue if
-the tradeoffs are more about the userspace implementation rather than
-the kernel specifics, though I suspect some of the folks here would
-also like to follow along so I don't want to exclude the list from the
-discussion.
-
-FWIW I'm not inherently against a timer, in fact I've wondered for a
-while what kind of interesting things we could build with such
-support. At the same time, connection tracking entry management is a
-nuanced topic and it's easy to fix an issue in one area only to
-introduce a problem in another area.
-
-> >
-> > bpftool does linear retrieval whereas our tool does batch dumping.
-> > bpftool does print the dumped results, for our tool we just count
-> > the number of entries retrieved (cost would have been higher if
-> > we actually printed). In any case in the real setup there is
-> > a processing cost which is much higher.
-> >
-> > Summary is: the dumping is problematic costwise as the number of
-> > entries increase. While batching does improve things it doesnt
-> > solve our problem (Like i said we have upto 16M entries and most
-> > of the time we are dumping useless things)
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> ---
+>  kernel/bpf/helpers.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 >
-> Thank you for sharing these numbers! Hopefully they could convince
-> people here to accept the bpf timer. I will include your use case and
-> performance number in my next update.
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 15746f779fe1..6d3aaf94e9ac 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -907,6 +907,20 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+>                         tmp_buf += err;
+>                         num_spec++;
+>
+> +                       continue;
+> +               } else if (fmt[i] == 'c') {
 
-Yes, Thanks Jamal for the numbers. It's very interesting, clearly
-batch dumping is far more efficient and we should enhance bpftool to
-take advantage of it where applicable.
+you are adding new features to printk-like helpers, please add
+corresponding tests as well. I'm particularly curious how something
+like "% 9c" (which is now allowed, along with a few other unusual
+combinations) will work.
 
-> Like i said we have upto 16M entries and most
-> of the time we are dumping useless things)
-
-I'm curious if there's a more intelligent way to figure out this
-'dumping useless things' aspect? I can see how timers would eliminate
-the cycles spent on the syscall aspect of this entirely (in favor of
-the timer handling logic which I'd guess is cheaper), but at some
-point if you're running certain logic on every entry in a map then of
-course it will scale linearly.
-
-The use case is different for the CT problem we discussed above, but
-if I look at the same question for the CT case, this is why I find LRU
-useful - rather than firing off a number of timers linear on the size
-of the map, the eviction logic is limited to the map insert rate,
-which itself can be governed and ratelimited by logic running in eBPF.
-The scan of the map then becomes less critical, so it can be run less
-frequently and alleviate the CPU usage question that way.
+> +                       if (!tmp_buf)
+> +                               goto nocopy_fmt;
+> +
+> +                       if (tmp_buf_end == tmp_buf) {
+> +                               err = -ENOSPC;
+> +                               goto out;
+> +                       }
+> +
+> +                       *tmp_buf = raw_args[num_spec];
+> +                       tmp_buf++;
+> +                       num_spec++;
+> +
+>                         continue;
+>                 }
+>
+> --
+> 2.30.2
+>
