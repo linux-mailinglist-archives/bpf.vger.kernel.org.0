@@ -2,102 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E86D3E9B71
-	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 02:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E29F3E9B90
+	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 02:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhHLAAe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Aug 2021 20:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        id S233046AbhHLAUi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Aug 2021 20:20:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232704AbhHLAAd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Aug 2021 20:00:33 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65316C061765;
-        Wed, 11 Aug 2021 17:00:09 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id nt11so6342790pjb.2;
-        Wed, 11 Aug 2021 17:00:09 -0700 (PDT)
+        with ESMTP id S233019AbhHLAUh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Aug 2021 20:20:37 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CD5C0613D3
+        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 17:20:13 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id g21so6632338edb.4
+        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 17:20:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KgEdvsrca1SF5BWDushaiKJ06kC9hIpnUAyfu0HpOFc=;
-        b=B7VkmiO3h2XR7G2FVqaGzhMv0Ps38Udsf8F2g8R1NG7Pvhf+P+bINWGWULZtfpx1Dy
-         plQ9otZwDXIeW/ZVQyZtbRsgUhJE5XIAYMoPmJuDrse9IBrcnqTKA9JGwHlwWTIUvgUH
-         y4w4KZV9GZA40CBWma/k3Z0B0H3M5DQe16EluXTuK5G8bOH5JsZJcP+W2AwpAHewaHIt
-         OwLPNGc8oBpich8fe+E/Ibjd2Ze4bX5RNBZ8HZG4BRmiqUGxJ/crF5kcZkGxiB96pMX1
-         8JwVGxRHMGaNHACwT7exfKZ3is2m1gc/ltB2ksflk1LqbB5iJhz5m2eYDwwHn2YGz20C
-         AZUg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ciNF9W+39aU1KfligFkasbssAwUB87TjLFIi4sKfemM=;
+        b=Q/Xyt7pr8PpcaXXI/WFLYIo6GWhdgnu9a8MncUKdqxk0M22LyDtXUd3z/LHu59nN/J
+         m6K3luOTMFEC4mMuVZpMNTRm+nXFDSfoB2CfyAUWM5QqJ3hiGl6mD3TgAZJQP7YygeII
+         nVl9I4cljtvtT/v8yez9khnXaXZxHx59cjVs/Dtgp1MJRrQFormhC4G7JPJLDa6j9MuG
+         TwpEQOsWaOoxzWAfPaWFr7d2CCjHCo9HbZubwtUyP08dHHMJCAD3NDueMi4vlC6W7mVd
+         uyELL6eFzKCJGArr/s+PtcWbhiuJLBwdhtuTyPzdlg/d49T0Pb8b7ZRXAUNleX8sZajA
+         Em1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KgEdvsrca1SF5BWDushaiKJ06kC9hIpnUAyfu0HpOFc=;
-        b=hZQHRnfO5B39AfkTuH+rCy02fE2VUroq452v9D2z5D8IJDWxgFgMovNINlE4fZv+xd
-         39dcYpEJwpnZcSrVci6ovuJhXp07pr2Pj1y0LWbB1FMsSIEvCO35O85wFEP1OLVN5VJ+
-         DQN1NvSpFQjWS87VtA5CMpH0eS2lLqJgRSWP1/IlfrDXcbzc7Epg4SSxYcidNWUmh501
-         8VGDJ1C+Io8tXwNW7zYEBneGyBeTPvhWo7neia0pkl+fWTH8jz/xh9n9kWO7MjrklkwF
-         V4wARHjWzc3Vwr2bl6k1T4+2rr9rLAtZ0ON9+09UL2w/ehMRex1RgoZNJamOLFT/hGVO
-         voXw==
-X-Gm-Message-State: AOAM532+rqLh9iGG3LnQ7msyJ3326QTftt2zHE09uZGi84Uwmk4sVyWX
-        tOnNhUCF0LcHnP8xX7sDZL8td3Rr8CBBrAyF
-X-Google-Smtp-Source: ABdhPJxK4Nh5mOO6hzUscxWSTVLCtL+5kfxQU0/wJbk06HcMAQ5tA/jGj108pcu3I4KEs98kq18G8Q==
-X-Received: by 2002:a17:90b:3802:: with SMTP id mq2mr1215768pjb.19.1628726408807;
-        Wed, 11 Aug 2021 17:00:08 -0700 (PDT)
-Received: from localhost.localdomain (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
-        by smtp.gmail.com with ESMTPSA id g14sm762359pfr.31.2021.08.11.17.00.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 17:00:08 -0700 (PDT)
-From:   Nguyen Dinh Phi <phind.uet@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, edumazet@google.com, atenart@kernel.org,
-        alobakin@pm.me, weiwan@google.com, ap420073@gmail.com,
-        bjorn@kernel.org, memxor@gmail.com
-Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com
-Subject: [PATCH] net: drop skbs in napi->rx_list when removing the napi context.
-Date:   Thu, 12 Aug 2021 07:59:59 +0800
-Message-Id: <20210811235959.1099333-1-phind.uet@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ciNF9W+39aU1KfligFkasbssAwUB87TjLFIi4sKfemM=;
+        b=UOQvRRNf4UU3hDMN2n9x6MYwd40Lx4vlwDCkX2LRRfRnpPC/Y6TSsR5wHGU73cLBaV
+         SMAlZHoptfdqlsumuKYZV6DpuGefZpYKNB3qCZgeoSBjWTPZqkAEQvKcRoAJnhoh8AL1
+         ca114m0hxSpeNFIvfb6dxR6ylPRzDT8wGih9i7AUvYQufAoMGpCe0tHOs9oDqn5oCxRw
+         GRERlPo4RelmpwXWjOiBWFmMOiSy2K67X+ILQSRy5m+zrghY8Bhk74T393oYywX68R47
+         6SusfZ2qLbxzOzlfdNPTX1qkTVJUbWTfSC2ahMXilpQ4g1LVjUc5vaIR0D/nNUXnn0wT
+         ILIA==
+X-Gm-Message-State: AOAM532yO0Ll6rAVp09mOlIzlLRFE72/jAxe1zlKmk6Rpwww+5/i6eq9
+        cYQzdN1L/KjiZJmjjcd71OPXUpYeawFsd2iB9Mk1XQ==
+X-Google-Smtp-Source: ABdhPJybhf8Oq+5Fhh/V3kzdgpTQwfHdM36hP8tVVPUqorFzKOcI1KQIQKrl4yQdYp320z7ghsDvTyyKly2OFY6CMoc=
+X-Received: by 2002:a50:be81:: with SMTP id b1mr2032098edk.295.1628727611637;
+ Wed, 11 Aug 2021 17:20:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210811224036.2416308-1-haoluo@google.com> <CAEf4BzYX8Vg1YBHwGxj7cs+6FjsxnnYfxp1NKViZzO3nm=xudA@mail.gmail.com>
+In-Reply-To: <CAEf4BzYX8Vg1YBHwGxj7cs+6FjsxnnYfxp1NKViZzO3nm=xudA@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Wed, 11 Aug 2021 17:20:00 -0700
+Message-ID: <CA+khW7g0bkEWnakHw4x+=HQrGHthdCyhCtmGTVPD7ERheJCP2w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: support weak typed ksyms.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The napi->rx_list is used to hold the GRO_NORMAL skbs before passing
-them to the stack, these skbs only passed to stack at the flush time or
-when the list's weight matches the predefined condition. In case the
-rx_list contains pending skbs when we remove the napi context, we need
-to clean out this list, otherwise, a memory leak will happen.
+On Wed, Aug 11, 2021 at 4:41 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Aug 11, 2021 at 3:40 PM Hao Luo <haoluo@google.com> wrote:
+> >
+> > Currently weak typeless ksyms have default value zero, when they don't
+> > exist in the kernel. However, weak typed ksyms are rejected by libbpf
+> > if they can not be resolved. This means that if a bpf object contains
+> > the declaration of a nonexistent weak typed ksym, it will be rejected
+> > even if there is no program that references the symbol.
+> >
+> > Nonexistent weak typed ksyms can also default to zero just like
+> > typeless ones. This allows programs that access weak typed ksyms to be
+> > accepted by verifier, if the accesses are guarded. For example,
+> >
+> > extern const int bpf_link_fops3 __ksym __weak;
+> >
+> > /* then in BPF program */
+> >
+> > if (&bpf_link_fops3) {
+> >    /* use bpf_link_fops3 */
+> > }
+> >
+> > If actual use of nonexistent typed ksym is not guarded properly,
+> > verifier would see that register is not PTR_TO_BTF_ID and wouldn't
+> > allow to use it for direct memory reads or passing it to BPF helpers.
+> >
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > ---
+Thanks for taking a look! All the comments seem reasonable. Let me fix
+them, test and send a new version.
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Reported-by: syzbot+989efe781c74de1ddb54@syzkaller.appspotmail.com
----
- net/core/dev.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index b51e41d0a7fe..319fffc62ce6 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -7038,6 +7038,13 @@ void __netif_napi_del(struct napi_struct *napi)
- 	list_del_rcu(&napi->dev_list);
- 	napi_free_frags(napi);
-
-+	if (napi->rx_count) {
-+		struct sk_buff *skb, *n;
-+
-+		list_for_each_entry_safe(skb, n, &napi->rx_list, list)
-+			kfree_skb(skb);
-+	}
-+
- 	flush_gro_hash(napi);
- 	napi->gro_bitmask = 0;
-
---
-2.25.1
-
+> >  Changes since v1:
+> >   - Weak typed symbols default to zero, as suggested by Andrii.
+> >   - Use ASSERT_XXX() for tests.
+> >
+> >  tools/lib/bpf/libbpf.c                        | 17 ++++--
+> >  .../selftests/bpf/prog_tests/ksyms_btf.c      | 31 ++++++++++
+> >  .../selftests/bpf/progs/test_ksyms_weak.c     | 57 +++++++++++++++++++
+> >  3 files changed, 100 insertions(+), 5 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_weak.c
+> >
+[...]
