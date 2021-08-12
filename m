@@ -2,123 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279543E9FB2
-	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 09:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7963EA353
+	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 13:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbhHLHpM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Aug 2021 03:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234622AbhHLHpL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Aug 2021 03:45:11 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABA7C061798
-        for <bpf@vger.kernel.org>; Thu, 12 Aug 2021 00:44:46 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id u13so9265738lje.5
-        for <bpf@vger.kernel.org>; Thu, 12 Aug 2021 00:44:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=NyaJ++B2aCALocOuAObqcKcOAmgrUg5bGvDOtyDp6g4=;
-        b=ZThf3UyfBrydNivu27GZd40opCaeQrKBIniLPfKSbyGha3shvMTbgKqqfB6guaY3dJ
-         PafMyc+EzEh7XtQTuI49FbssnbIxYHMoWzHmrauxylPT9Mt46+FPpX5qNKGTqPd7ZKWe
-         ZzyWv8VH8ohL1nz7zPx6URcrfQSremb7EOZzc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=NyaJ++B2aCALocOuAObqcKcOAmgrUg5bGvDOtyDp6g4=;
-        b=lqv6vKFSAhOjQsVl0+HplUPWWzl/S+TryKPVG7+FdsHZul9elxAC5XuUpb2Hbkq9ZK
-         /7TdkFH4YLtB6VKjIRuiItGqN2kVDQDRxHBZhJ7e9iaTLlRfp/0L6fCFA2YlOkT8qXV/
-         TZZ1oy1zFDRmQJiJDvFTonU8CzAyfQEJrxR5c9cXlOHLvM+LeQSjjAJj+hjl8DFB/JtD
-         H9bncHAXJoeIyiwc960veehW1Q0zGqHggGLc+HNXRCHDm2jdTkXjtEu3/iOkEUnPwYsG
-         xW29G/L1CKHOSE+AV3WGLn9si1dbB/5JtikFiW0VJYxUubGNJ7sFQJp8LT3Px9gX7vet
-         r/kQ==
-X-Gm-Message-State: AOAM530TUgOuP7a+ImsgSaj83EhJKHM3Latq1OmzTKLrZ4frlD/MZjYn
-        KgZy+2HOEC9uytGqCFtmRis5rA==
-X-Google-Smtp-Source: ABdhPJwnv0ye2HmxRqyGrc5NOVLhwwSpA2xpRHBC2r3XU1dM5VlR9kdld9A5hu1c/6eVz7Y0b5wZ9Q==
-X-Received: by 2002:a05:651c:554:: with SMTP id q20mr2057331ljp.172.1628754284537;
-        Thu, 12 Aug 2021 00:44:44 -0700 (PDT)
-Received: from cloudflare.com ([2a01:110f:480d:6f00:ff34:bf12:ef2:5071])
-        by smtp.gmail.com with ESMTPSA id e21sm187097lfq.240.2021.08.12.00.44.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 00:44:43 -0700 (PDT)
-References: <20210809194742.1489985-1-jiang.wang@bytedance.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Jiang Wang <jiang.wang@bytedance.com>
-Cc:     netdev@vger.kernel.org, cong.wang@bytedance.com,
-        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
-        chaiwen.cc@bytedance.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v6 0/5] sockmap: add sockmap support for unix
- stream socket
-In-reply-to: <20210809194742.1489985-1-jiang.wang@bytedance.com>
-Date:   Thu, 12 Aug 2021 09:44:43 +0200
-Message-ID: <87v94bcdjo.fsf@cloudflare.com>
+        id S236673AbhHLLNF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Aug 2021 07:13:05 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53640 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236643AbhHLLNF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 12 Aug 2021 07:13:05 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CB4J3v059494;
+        Thu, 12 Aug 2021 07:12:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=8WLtM+aiLH565/fO6EvmwnlQJ/gopHxzEXJqF8sWfls=;
+ b=aXpTV88O0lk6pUwKrqYoJ/Tc+I/YSK7dF/WlR7nXRbWpHUMbPiQwAHVSoxOvC/0wkjGD
+ jmEs6inQSOpWtgC8ogO8KVkDaZ0/1f7UBP95kqjeUsy1KWTBOan6nBzaHph12oMHbOn4
+ mFczA91pnZSGayVKN7zkyslu3kMBexk8Dx3g3eZYHtvWK3MEplUNqoH7Zy78jcAqt5fI
+ f3jtue7ZczEiehwI3TaL85bwKChMrdXApTthN4yJUHvZQPRXtBpzNKRq1VCjdQF5tLDC
+ osAKIyumZqnfPfcradJcpYmEfoEfslVNO9mcmaTW8ybpE/cygvAK6SRBs96hoOnckfc2 ww== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3acctjaew2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Aug 2021 07:12:27 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17CB7fFW003714;
+        Thu, 12 Aug 2021 11:12:25 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 3abs2635k4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 12 Aug 2021 11:12:25 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17CBCLSV56951280
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Aug 2021 11:12:21 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F86FA4824;
+        Thu, 12 Aug 2021 11:12:21 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4F9B6A4817;
+        Thu, 12 Aug 2021 11:12:21 +0000 (GMT)
+Received: from vm.lan (unknown [9.145.77.113])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 12 Aug 2021 11:12:21 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next] bpf: Clear zext_dst of dead insns
+Date:   Thu, 12 Aug 2021 13:12:20 +0200
+Message-Id: <20210812111220.181824-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: llqswo0gRoC9tiujB14mW-EtPU4rs8QW
+X-Proofpoint-ORIG-GUID: llqswo0gRoC9tiujB14mW-EtPU4rs8QW
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-12_03:2021-08-11,2021-08-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ spamscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108120073
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 09:47 PM CEST, Jiang Wang wrote:
-> This patch series add support for unix stream type
-> for sockmap. Sockmap already supports TCP, UDP,
-> unix dgram types. The unix stream support is similar
-> to unix dgram.
->
-> Also add selftests for unix stream type in sockmap tests.
->
->
-> Jiang Wang (5):
->   af_unix: add read_sock for stream socket types
->   af_unix: add unix_stream_proto for sockmap
->   selftest/bpf: add tests for sockmap with unix stream type.
->   selftest/bpf: change udp to inet in some function names
->   selftest/bpf: add new tests in sockmap for unix stream to tcp.
->
->  include/net/af_unix.h                         |  8 +-
->  net/unix/af_unix.c                            | 91 +++++++++++++++---
->  net/unix/unix_bpf.c                           | 93 ++++++++++++++-----
->  .../selftests/bpf/prog_tests/sockmap_listen.c | 48 ++++++----
->  4 files changed, 187 insertions(+), 53 deletions(-)
->
-> v1 -> v2 :
->  - Call unhash in shutdown.
->  - Clean up unix_create1 a bit.
->  - Return -ENOTCONN if socket is not connected.
->
-> v2 -> v3 :
->  - check for stream type in update_proto
->  - remove intermediate variable in __unix_stream_recvmsg
->  - fix compile warning in unix_stream_recvmsg
->
-> v3 -> v4 :
->  - remove sk_is_unix_stream, just check TCP_ESTABLISHED for UNIX sockets.
->  - add READ_ONCE in unix_dgram_recvmsg
->  - remove type check in unix_stream_bpf_update_proto
->
-> v4 -> v5 :
->  - add two missing READ_ONCE for sk_prot.
->
-> v5 -> v6 :
->  - fix READ_ONCE by reading to a local variable first.
+"access skb fields ok" verifier test fails on s390 with the "verifier
+bug. zext_dst is set, but no reg is defined" message. The first insns
+of the test prog are:
 
-For the series:
+   0:	61 01 00 00 00 00 00 00 	ldxw %r0,[%r1+0]
+   8:	35 00 00 01 00 00 00 00 	jge %r0,0,1
+  10:	61 01 00 08 00 00 00 00 	ldxw %r0,[%r1+8]
 
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+and the 3rd one is dead (this does not look intentional to me, but this
+is a separate topic).
+
+sanitize_dead_code() converts dead insns into "ja -1", but keeps
+zext_dst. When opt_subreg_zext_lo32_rnd_hi32() tries to parse such
+an insn, it sees this discrepancy and bails. This problem can be seen
+only with JITs whose bpf_jit_needs_zext() returns true.
+
+Fix by clearning dead insns' zext_dst.
+
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ kernel/bpf/verifier.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 5ea2238a6656..e5f2b23bb7c9 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11955,6 +11955,7 @@ static void sanitize_dead_code(struct bpf_verifier_env *env)
+ 		if (aux_data[i].seen)
+ 			continue;
+ 		memcpy(insn + i, &trap, sizeof(trap));
++		aux_data[i].zext_dst = false;
+ 	}
+ }
+ 
+-- 
+2.31.1
+
