@@ -2,73 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A018E3E9BF5
-	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 03:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8590D3E9C27
+	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 04:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbhHLBgm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Aug 2021 21:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233020AbhHLBgl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Aug 2021 21:36:41 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61E0C061765
-        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 18:36:16 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id a201so846996vsd.3
-        for <bpf@vger.kernel.org>; Wed, 11 Aug 2021 18:36:16 -0700 (PDT)
+        id S233366AbhHLCP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Aug 2021 22:15:58 -0400
+Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:32248 "EHLO
+        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229851AbhHLCPz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Aug 2021 22:15:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=pzBzfCGH1lUAP5Nww0rTC/VlqE/I0ccF7XCQPd8J30w=;
-        b=E9LsvKT+4GhpVxRJbZBIZt/pyNMGk6OdYszv47tbOmxx60hcuIXv53iOM+TtX8KFv9
-         /KbPpsur6GsB0q4JHP1YynoAb1haM33EtgkZW3pQoWEKAgql6qdQIpRTmEAiccs2i6Fb
-         CMPAEIZh750djanNkq+AoDwg4tijj7JeBInyQhnVv42Bv87bISVBpnDSfLe73koVXqL2
-         pMC/ZfmDr7Nw2hkF1gU/pEh4Yzn3N8L3G7GBl+C5Y59MwKGbbizJuozb0eV8IyMOsuMH
-         yvmgtEFmh5XqqpedS2ao48Xn6DKeGF0vC/I/mULSr9aXZ+lCL6QGieN4WKPTdf5CTnEB
-         I3ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=pzBzfCGH1lUAP5Nww0rTC/VlqE/I0ccF7XCQPd8J30w=;
-        b=QHv0QrrylICfPMT2W2ffs77AZkVF8mguw7++GkPIf3KdwkPpHC67F64bin0THMAYHe
-         gX3dm+160kleJfhGJ1vQfu0WrfSs91B9ERqvL5IDQgdFtXCYua057nFJ5ebx/7s8q1n3
-         hA4FpVyB+aaXMiUEeNRP01EAN3Gh63LanpzKcM9T9YSRG0qK9j9FTDDW0BeJcJqBEubX
-         1i1I+6eOdznGbXaWUJBkijSKB2KLMmbjPnh6JryXuK2zOcNLPTBb1AXMT+Nc1py34tpd
-         M3nD6hq76CIxxzKrkviQByFeImu2rWCanv/MjzE+LhsrZMlOJFU2MhiNzwtW8Wvo0frQ
-         lH1A==
-X-Gm-Message-State: AOAM533hTsK53I5sL84kbGWRcfLYQu1Q0I17UYLynIuwLBt9Tqekxfjw
-        lMpAMTlTQzluYvflq6RKpPUx5etSol5FFZXJNZaL0gvQHUI=
-X-Google-Smtp-Source: ABdhPJyEdpO8l/b41gKvNQ4fjWD0gNzjeZP/+VSgiBWpKMH+SV75BpadM+1AUH4h0iCimU4Bvlk2vuuhB30nOz2JtEo=
-X-Received: by 2002:a67:b304:: with SMTP id a4mr1460134vsm.43.1628732175914;
- Wed, 11 Aug 2021 18:36:15 -0700 (PDT)
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1628734531; x=1660270531;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=RTy5lVmp/IOgnUGWV4V3jVdC4iVR+O644060Oaq+9s0=;
+  b=JOTT1tndk/ia+mKR0Dk2KlzpkUsiND2KKWWlRUXh7PZGqz+uwXEbwHUQ
+   Eezcch5xQPnE6C7bcFHClasYygkLtzFrFqrd/6tiJXldUkx0VEqEbpW5D
+   6sV/6r/x6usug5jRMVE5GSdA3VgMYj2/rwYxw0ZIUKghT85WpLz78oHBv
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.84,314,1620691200"; 
+   d="scan'208";a="18716084"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 12 Aug 2021 02:15:31 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com (Postfix) with ESMTPS id 6E254A0691;
+        Thu, 12 Aug 2021 02:15:30 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Thu, 12 Aug 2021 02:15:29 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.162.186) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Thu, 12 Aug 2021 02:15:24 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <andrii.nakryiko@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <john.fastabend@gmail.com>, <kafai@fb.com>,
+        <kpsingh@kernel.org>, <kuba@kernel.org>, <kuni1840@gmail.com>,
+        <kuniyu@amazon.co.jp>, <netdev@vger.kernel.org>,
+        <songliubraving@fb.com>, <yhs@fb.com>
+Subject: Re: [PATCH v4 bpf-next 2/3] bpf: Support "%c" in bpf_bprintf_prepare().
+Date:   Thu, 12 Aug 2021 11:15:21 +0900
+Message-ID: <20210812021521.91494-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAEf4BzZBxA2+nNtbOVEyMXDG9i_3zfxm78=--ssjrX4ESC_ixA@mail.gmail.com>
+References: <CAEf4BzZBxA2+nNtbOVEyMXDG9i_3zfxm78=--ssjrX4ESC_ixA@mail.gmail.com>
 MIME-Version: 1.0
-From:   Mohan Parthasarathy <mposdev21@gmail.com>
-Date:   Wed, 11 Aug 2021 18:36:05 -0700
-Message-ID: <CAL2pN5_4tPwhOxKu1g4YT3fEnzvhkQ0dLkP7-4RyUoEmPJiyVw@mail.gmail.com>
-Subject: libbpf attaching a raw socket
-To:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.186]
+X-ClientProxiedBy: EX13D45UWA002.ant.amazon.com (10.43.160.38) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 11 Aug 2021 14:15:50 -0700
+> On Tue, Aug 10, 2021 at 2:29 AM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+> >
+> > /proc/net/unix uses "%c" to print a single-byte character to escape '\0' in
+> > the name of the abstract UNIX domain socket.  The following selftest uses
+> > it, so this patch adds support for "%c".  Note that it does not support
+> > wide character ("%lc" and "%llc") for simplicity.
+> >
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> > ---
+> >  kernel/bpf/helpers.c | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
+> >
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 15746f779fe1..6d3aaf94e9ac 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -907,6 +907,20 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+> >                         tmp_buf += err;
+> >                         num_spec++;
+> >
+> > +                       continue;
+> > +               } else if (fmt[i] == 'c') {
+> 
+> you are adding new features to printk-like helpers, please add
+> corresponding tests as well. I'm particularly curious how something
+> like "% 9c" (which is now allowed, along with a few other unusual
+> combinations) will work.
 
-I looked in the samples and header files, but could not find an
-example for this. How does one convert this from bcc to libbpf. This
-is the userspace code.
+I see. I'll add a test.
+I'm now thinking of test like:
+  1. pin the bpf prog that outputs "% 9c" and other format strings.
+  2. read and validate it
 
-bpf = BPF(src_file = "socket_filter.c", debug=0)
-socket_filter = bpf.load_func("socket_filter", BPF.SOCKET_FILTER)
-BPF.attach_raw_socket(socket_filter, "eth2")
-socket_fd = socket_filter.sock
+Is there any related test ?
+and is there other complicated fomat strings to test ?
 
-I can do the following to set the type:
+Also, "% 9c" worked as is :)
 
-err = bpf_program__set_socket_filter(obj);
+---8<---
+$ sudo ./tools/bpftool/bpftool iter pin ./bpf_iter_unix.o /sys/fs/bpf/unix
+$ sudo cat /sys/fs/bpf/unix | head -n 1
+        a
+$ git diff
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_unix.c b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
+index ad397e2962cf..8a7d5aa4c054 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
+@@ -34,8 +34,10 @@ int dump_unix(struct bpf_iter__unix *ctx)
+ 
+        seq = ctx->meta->seq;
+        seq_num = ctx->meta->seq_num;
+-       if (seq_num == 0)
++       if (seq_num == 0) {
++               BPF_SEQ_PRINTF(seq, "% 9c\n", 'a');
+                BPF_SEQ_PRINTF(seq, "Num               RefCount Protocol Flags    Type St Inode    Path\n");
++       }
+ 
+        BPF_SEQ_PRINTF(seq, "%pK: %08X %08X %08X %04X %02X %8lu",
+                       unix_sk,
+---8<---
 
-Is there any sample I can follow or any header files where I can look
-for attaching a socket to the bpf code.
 
-Thanks
-Mohan
+
+> 
+> > +                       if (!tmp_buf)
+> > +                               goto nocopy_fmt;
+> > +
+> > +                       if (tmp_buf_end == tmp_buf) {
+> > +                               err = -ENOSPC;
+> > +                               goto out;
+> > +                       }
+> > +
+> > +                       *tmp_buf = raw_args[num_spec];
+> > +                       tmp_buf++;
+> > +                       num_spec++;
+> > +
+> >                         continue;
+> >                 }
+> >
+> > --
+> > 2.30.2
