@@ -2,107 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94ADD3EA765
-	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 17:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB083EA78F
+	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 17:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237933AbhHLPS5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Aug 2021 11:18:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42222 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237917AbhHLPS4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Aug 2021 11:18:56 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CF2dEm169911;
-        Thu, 12 Aug 2021 11:18:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=4G5/4s83oiiY4Nz+mchKFYvy0mEJckidQFhBnYq3ago=;
- b=YYVYkd7hi+3icHIt/gYE7KV7Q/emSs4y5S6Ms+I7QmcV2ri4VfIwA9G3WCWcvfmLgRFe
- gcWAXhMHRQRSU8BHkqHX36KI7VwxYC5y77kH0LzATymU/YJIMFFURWJpl5ZV86r4L0Mg
- lDEgoBdZU78KG+WayRdtmf+ohWhCQMvi8Gv4k+fO1TR9YqrBd8gx4RY1oE3knIMIc+dK
- TjmeMmRDMQkXgRSo2tgrCroIanbqFG9Yj8wpStIyPuipSwQifoxPGRZCVZNgGljh6eXT
- fmdpASevndPiSFq2Q2mBtas4qBN+YxE7r+2IBxCfR1q2w7kLxqojHzAi5g5g+cgRz+2v xw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ad0qy3s7c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 11:18:20 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17CFCNTl014968;
-        Thu, 12 Aug 2021 15:18:18 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 3acn76a5hb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 15:18:18 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17CFF0BJ23789900
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Aug 2021 15:15:00 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5992BA406F;
-        Thu, 12 Aug 2021 15:18:14 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0007DA405C;
-        Thu, 12 Aug 2021 15:18:13 +0000 (GMT)
-Received: from vm.lan (unknown [9.145.77.113])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Aug 2021 15:18:13 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf v3 2/2] selftests: bpf: test that dead ldx_w insns are accepted
-Date:   Thu, 12 Aug 2021 17:18:11 +0200
-Message-Id: <20210812151811.184086-3-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210812151811.184086-1-iii@linux.ibm.com>
-References: <20210812151811.184086-1-iii@linux.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Eh19lVGilFG-Q8yJ-gtdc4O-lIBbca0c
-X-Proofpoint-ORIG-GUID: Eh19lVGilFG-Q8yJ-gtdc4O-lIBbca0c
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-12_05:2021-08-12,2021-08-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0
- clxscore=1015 phishscore=0 impostorscore=0 mlxscore=0 bulkscore=0
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2108120098
+        id S238056AbhHLPam (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Aug 2021 11:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237862AbhHLPak (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Aug 2021 11:30:40 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D419FC0613D9
+        for <bpf@vger.kernel.org>; Thu, 12 Aug 2021 08:30:14 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id r32-20020a25ac60000000b00593ff08c28aso2312125ybd.5
+        for <bpf@vger.kernel.org>; Thu, 12 Aug 2021 08:30:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Ps9dtDx12941A9SQUJ+R+y8TpeyDNU6PScAxGT8aLeY=;
+        b=Pa5YlGdocqVh4d0WXzK8p83jRRi1hUFSP0z6YRA3+wgnOyMl4YpQKdQ/SgA3VnF2IB
+         YvkT0nhoZaqWRHaWGHz2aMjB1jK9xG+tllN88nohYh92lZcqmFpOSmNIHc4iW6qXasS6
+         hQgGEDcxLFIIXYXl8390H6SXrsRIBhTEQQi57PAH0+SH7ryXMUJJD9m2DT9TU6s67iG+
+         2hGRih958f2HURg6/U7yJjlbo89ei0VJdmI3CKt8vyJz5uRF7byGX+Gbd/8Fv+P5yxTG
+         duUrqqzaH/gcYxRm/I599FdIwycVw1iqks3ZiD5tUqvvwOXCGyt6wk1kEjZBm0JG8tys
+         aOAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Ps9dtDx12941A9SQUJ+R+y8TpeyDNU6PScAxGT8aLeY=;
+        b=RRX5oKB2sB3rMJmsxcMP6Wttt1Kinz2TcIIZeZ5cg7cXJfp5gWG5pX9gmxJtQsvwlg
+         kpHWUi1yghCL2k/YbsBhf0RsYnshhRtMNsf4850kvpgduqqTQp5wKwBTXxqwDvaXRIN4
+         /SR169eQOOI4Av7Zvn57DFWwyL5ObkTPJg0YWTciVNjS4HuWlx72unamuErMZZzTq+VL
+         nDALt8c8TDewBxlq4MEbK5UBvG5kSwtnt4JGvmZwHRZQPavtOSnzZYnmTuyJA1QktFAQ
+         ukAn44u1WLG8ISmHGiMfGVm2pn6yX9HuUiXYoPkZolkFJxQdW2Jlg/Nf1MSJYRtJTC23
+         Yc2w==
+X-Gm-Message-State: AOAM531iUWrC4GuXJFMHHt2iConM2f068xmTB6xhykiq/OxAwKKOGnt4
+        hzvKqaJ2YsHyHtsFgdx6/Zx+CYk=
+X-Google-Smtp-Source: ABdhPJyRfJgmI/klNckeumJ0NsjGjWad5oVhl5JDZVcLbW06bVXxq/+tlp3bKsW9kI4dpYEtWSq8GJQ=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:fa15:8621:e6d2:7ad4])
+ (user=sdf job=sendgmr) by 2002:a25:2489:: with SMTP id k131mr2717779ybk.103.1628782214123;
+ Thu, 12 Aug 2021 08:30:14 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 08:30:09 -0700
+Message-Id: <20210812153011.983006-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
+Subject: [PATCH bpf-next v2 0/2] bpf: Allow bpf_get_netns_cookie in BPF_PROG_TYPE_CGROUP_SOCKOPT
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Prevent regressions related to zero-extension metadata handling during
-dead code sanitization.
+We'd like to be able to identify netns from setsockopt hooks
+to be able to do the enforcement of some options only in the
+"initial" netns (to give users the ability to create clear/isolated
+sandboxes if needed without any enforcement by doing unshare(net)).
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/verifier/dead_code.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+v2:
+- add missing CONFIG_NET
 
-diff --git a/tools/testing/selftests/bpf/verifier/dead_code.c b/tools/testing/selftests/bpf/verifier/dead_code.c
-index 2c8935b3e65d..ee454327e5c6 100644
---- a/tools/testing/selftests/bpf/verifier/dead_code.c
-+++ b/tools/testing/selftests/bpf/verifier/dead_code.c
-@@ -159,3 +159,15 @@
- 	.result = ACCEPT,
- 	.retval = 2,
- },
-+{
-+	"dead code: zero extension",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_0, -4),
-+	BPF_JMP_IMM(BPF_JGE, BPF_REG_0, 0, 1),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_10, -4),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.retval = 0,
-+},
+Stanislav Fomichev (2):
+  bpf: Allow bpf_get_netns_cookie in BPF_PROG_TYPE_CGROUP_SOCKOPT
+  selftests/bpf: verify bpf_get_netns_cookie in
+    BPF_PROG_TYPE_CGROUP_SOCKOPT
+
+ kernel/bpf/cgroup.c                        | 19 ++++++++++++++++
+ tools/testing/selftests/bpf/verifier/ctx.c | 25 ++++++++++++++++++++++
+ 2 files changed, 44 insertions(+)
+
 -- 
-2.31.1
+2.33.0.rc1.237.g0d66db33f3-goog
 
