@@ -2,120 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957CD3EA72D
-	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 17:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11823EA753
+	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 17:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236997AbhHLPKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Aug 2021 11:10:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42364 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237682AbhHLPKE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Aug 2021 11:10:04 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CF3wXd161614;
-        Thu, 12 Aug 2021 11:09:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=C8E+QM2xwcm0ixap6NSYpO8bppkpkB4zb/AQw2TJmaI=;
- b=cJJBXknPxdf32Oh/7/BY8BAV2oKzHN03+WlVGgg+FG+ejlKV349iipeqJNXEHTHlpu6z
- 5e/w+29B2khkJ8Tdeik9f7JfOuJMSx/Pb/jhSr2KALdbHZTxbnMQWt5K8xfWDfP9MfbK
- MwJRCSZmOQqiqLECjdiqQU5eh2QZbhPK8RqV6abK2/1UxZLGCJvCN0um0UVO86dhBL2F
- 9JHSodjqMtHCtHbVfe2hOSNM6LGL35/HD/9uLmtMm2oZjc1uady1wJhnqv049/HvqJ1k
- b4m33pSZmFVeVn11wazvTmjDadMT8VVapEQ7i6wZQl5lEBgrltZn7czzetMMdhbtPERn WQ== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ad4hxk5mg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 11:09:27 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17CF51xd016834;
-        Thu, 12 Aug 2021 15:09:25 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 3acf0ktn3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 15:09:25 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17CF9L9v44368294
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Aug 2021 15:09:21 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 83C3652052;
-        Thu, 12 Aug 2021 15:09:21 +0000 (GMT)
-Received: from sig-9-145-77-113.uk.ibm.com (unknown [9.145.77.113])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 36C9D5204F;
-        Thu, 12 Aug 2021 15:09:21 +0000 (GMT)
-Message-ID: <ad395f50f2a717aefbdfafca042c34ae538ce40c.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf 2/2] selftests: bpf: test that dead ldx_w insns are
- accepted
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Date:   Thu, 12 Aug 2021 17:09:20 +0200
-In-Reply-To: <20210812140518.183178-3-iii@linux.ibm.com>
-References: <20210812140518.183178-1-iii@linux.ibm.com>
-         <20210812140518.183178-3-iii@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S236908AbhHLPRh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Aug 2021 11:17:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55342 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236638AbhHLPRh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 12 Aug 2021 11:17:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628781431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OtzAV9SznvxCWIUzoJ2pSaFsvZKJsWXzbdCtRj/OA38=;
+        b=AqrDGW2kJacXKLgShVsLiM0Kwx0QRHok3t8zwMF4pzs5MKbIQbvqRE+N9jqONIXROlKV5u
+        8toclFxyWXLAaasUCucT3lJr54aUmgctbFFP+p5eNs2kq7IEgEEi6k86PUga/pFgQUMDfb
+        IwOWT9SY77DlDzlKpFB7BDn9vjMNj1w=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-11-d6BQrUIgMNWUfiqBZ-oOcQ-1; Thu, 12 Aug 2021 11:17:09 -0400
+X-MC-Unique: d6BQrUIgMNWUfiqBZ-oOcQ-1
+Received: by mail-wm1-f70.google.com with SMTP id f6-20020a05600c1546b029025af999e04dso1929332wmg.7
+        for <bpf@vger.kernel.org>; Thu, 12 Aug 2021 08:17:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OtzAV9SznvxCWIUzoJ2pSaFsvZKJsWXzbdCtRj/OA38=;
+        b=dX0DRuyjr4aghTcyQfYOumoP480bLhH0AaK82oq3/gYNIB6Fr4f0s2flyJE4zo+6Rq
+         wyPu54EwdksvrGDmKzeovUI0NKd32/j9GTzXlaCCaJV6rlLHe5FFRe8lvebsTygIOjEY
+         TAJkc5kkfgn5WhlZRZyV/0fik+taouf2+QamQ+m/WtaSN5t5dmPR0xTd5wE4zfbRUDRG
+         VOWsTtpQHUXFE1QRmRmMXiV/2k9+7irtgfT4CaGWU4bnGJ7cIrSs0fANZ5JSUCHpiOKy
+         YByaeGRQ2y0nIPOefHlVioaXgztBkDpGa/kuYITD5GyySCgvsfqaVy6FvQHnxs47K159
+         B6VA==
+X-Gm-Message-State: AOAM5323leSvUYA+IwjO+109yE+/2QZXE/htIF9ws3Znqnv7CIpbD6Vi
+        S3CJrEWz5288emRZjNJWD8pmZ6HrZ2Yc8xjSKxogryc84dGSsUm4UI1CltZCY8YzudQMfSfEjZj
+        uTmR9TUYNdgzO
+X-Received: by 2002:a1c:f314:: with SMTP id q20mr16432154wmq.154.1628781428838;
+        Thu, 12 Aug 2021 08:17:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgfhiKemqhJFNdNUa30wfwm7+Gv9CMt1jDRYr/2UjeRviuk7iczgvP230DtcLFs6EBZY6k9A==
+X-Received: by 2002:a1c:f314:: with SMTP id q20mr16432109wmq.154.1628781428463;
+        Thu, 12 Aug 2021 08:17:08 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id k31sm2595939wms.31.2021.08.12.08.17.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 08:17:08 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com, alexander.duyck@gmail.com,
+        linux@armlinux.org.uk, mw@semihalf.com, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        ilias.apalodimas@linaro.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, akpm@linux-foundation.org,
+        peterz@infradead.org, will@kernel.org, willy@infradead.org,
+        vbabka@suse.cz, fenghua.yu@intel.com, guro@fb.com,
+        peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
+        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
+        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
+        elver@google.com, yhs@fb.com, kpsingh@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, chenhao288@hisilicon.com
+Subject: Re: [PATCH net-next v2 2/4] page_pool: add interface to manipulate
+ frag count in page pool
+To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        kuba@kernel.org
+References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
+ <1628217982-53533-3-git-send-email-linyunsheng@huawei.com>
+Message-ID: <d9bce937-1645-b209-a1d4-c7c0a6fcd1af@redhat.com>
+Date:   Thu, 12 Aug 2021 17:17:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: GmzDBPSO2lqzXXSGfji8hleu_iYVo3Vc
-X-Proofpoint-GUID: GmzDBPSO2lqzXXSGfji8hleu_iYVo3Vc
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-12_05:2021-08-12,2021-08-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 clxscore=1015 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108120098
+In-Reply-To: <1628217982-53533-3-git-send-email-linyunsheng@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2021-08-12 at 16:05 +0200, Ilya Leoshkevich wrote:
-> Prevent regressions related to zero-extension metadata handling during
-> dead code sanitization.
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  tools/testing/selftests/bpf/verifier/dead_code.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/verifier/dead_code.c
-> b/tools/testing/selftests/bpf/verifier/dead_code.c
-> index 2c8935b3e65d..c642138b7fc2 100644
-> --- a/tools/testing/selftests/bpf/verifier/dead_code.c
-> +++ b/tools/testing/selftests/bpf/verifier/dead_code.c
-> @@ -159,3 +159,16 @@
->         .result = ACCEPT,
->         .retval = 2,
->  },
+
+On 06/08/2021 04.46, Yunsheng Lin wrote:
+> +static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
+> +							  long nr)
 > +{
-> +       "dead code: zero extension",
-> +       .insns = {
-> +       BPF_MOV64_IMM(BPF_REG_0, 0),
-> +       BPF_JMP_IMM(BPF_JGE, BPF_REG_0, 0, 1),
-> +       BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_10, 0),
-> +       BPF_EXIT_INSN(),
-> +       },
-> +       .errstr_unpriv = "invalid read from stack R10 off=0 size=4",
-> +       .result_unpriv = REJECT,
-> +       .result = ACCEPT,
-> +       .retval = 0,
-> +},
+> +	long ret;
+> +
+> +	/* As suggested by Alexander, atomic_long_read() may cover up the
+> +	 * reference count errors, so avoid calling atomic_long_read() in
+> +	 * the cases of freeing or draining the page_frags, where we would
+> +	 * not expect it to match or that are slowpath anyway.
+> +	 */
+> +	if (__builtin_constant_p(nr) &&
+> +	    atomic_long_read(&page->pp_frag_count) == nr)
+> +		return 0;
+> +
+> +	ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+> +	WARN_ON(ret < 0);
 
-Please disregard this patch: the test does not fail in absence of the
-fix. What rather fails is:
+I worried about this WARN_ON() as it generates an 'ud2' instruction 
+which influence I-cache fetching.  But I have disassembled (objdump) the 
+page_pool.o binary and the ud2 gets placed last in the main function 
+page_pool_put_page() that use this inlined function.
+Thus, I assume this is not a problem :-)
 
-	BPF_MOV64_IMM(BPF_REG_0, 0),
-	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_0, -4),
-	BPF_JMP_IMM(BPF_JGE, BPF_REG_0, 0, 1),
-	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_10, -4),
-	BPF_EXIT_INSN(),
 
-The difference is that here the dead ldx_w is actually safe. I will
-send a v3 shortly (I also realized I forgot to tag this series with
-v2).
+> +	return ret;
 
