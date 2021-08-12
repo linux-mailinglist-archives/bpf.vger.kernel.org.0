@@ -2,75 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFDB3EA3FE
-	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 13:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F08CB3EA47C
+	for <lists+bpf@lfdr.de>; Thu, 12 Aug 2021 14:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236969AbhHLLrb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Aug 2021 07:47:31 -0400
-Received: from www62.your-server.de ([213.133.104.62]:53010 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236966AbhHLLra (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Aug 2021 07:47:30 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mE9As-0007T9-6D; Thu, 12 Aug 2021 13:47:02 +0200
-Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mE9Ar-000NuU-Uo; Thu, 12 Aug 2021 13:47:02 +0200
-Subject: Re: [PATCH bpf-next] bpf: Clear zext_dst of dead insns
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-References: <20210812111220.181824-1-iii@linux.ibm.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c98de343-2195-8c9d-2cea-32d17e3c78c7@iogearbox.net>
-Date:   Thu, 12 Aug 2021 13:47:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S237452AbhHLMUi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Aug 2021 08:20:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30173 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237467AbhHLMUB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 12 Aug 2021 08:20:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628770776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vKmC5YkDRzwBofq4XWda3KBrNPR0n6/8+JsVWcX9in4=;
+        b=TMDAydez17VxF2rJUUDrr5CACgjtKacHqa/71Y74IXKKc6p47+c25uBC78wnaCKuoHD9HF
+        lxBs9AhgTFfl6Xp8y5xbKJsPLkiMJqkaQYaNoDhlEVUVjv9tyf1oghgYSp6gEWQjVZxNjr
+        xfGy7ju3oBB9Rw/ELpeuegPODYVxJmo=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-6aoEDdnmNgKhoPivRTM46Q-1; Thu, 12 Aug 2021 08:19:34 -0400
+X-MC-Unique: 6aoEDdnmNgKhoPivRTM46Q-1
+Received: by mail-wr1-f72.google.com with SMTP id q11-20020a5d61cb0000b02901550c3fccb5so1762208wrv.14
+        for <bpf@vger.kernel.org>; Thu, 12 Aug 2021 05:19:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vKmC5YkDRzwBofq4XWda3KBrNPR0n6/8+JsVWcX9in4=;
+        b=WVjE1CFReTWqpYdy0esMy2Vpr7hm5Ep42E3r5296gnPJZJuaBylWfKbPibyNQ56Gqx
+         x3XLIZgILCeYDBdttOA3zOo6knpA/M+Nq8KDWEeatoNW3YBNx9zJwthz9wE5KH5t+uzN
+         mGpjzqDhrlfH/hxMqiIRUYFpkBtenhE7vuCQgURNB7l5k7VNXvbZwD5sngIer6Etr2PS
+         xklYAzkX2NfNGP4rSHq+O3DuLF0VIk1MnhwFdYdSalUlQe3IUx0xzNW1Oqy45gtz3Svc
+         ol09HNvE1AlfFw3lvUCpH6rs5cEgjIfzK0snMhhu4edlSaRnmtDiTdzW7IDk9X5ynIE3
+         6GyA==
+X-Gm-Message-State: AOAM531nRD76imzby8GHDnxlRIrEk1hkiRi40L9v+RU8C8JPpDLsLlNu
+        /qUkwPxxKoVkW68nspNf9AF9nGvQ1mGaNFfQH48S0dd6Qiot0IRm8fZImBEZeYBHDtfkTslIV6G
+        BPv7xF+TZRaTuSa8QzpTOhkVZFWF7pnzzLl1qafsrs0iJ8JMgsk9uDl2+Hi2D42k=
+X-Received: by 2002:adf:e5c5:: with SMTP id a5mr3643804wrn.120.1628770773627;
+        Thu, 12 Aug 2021 05:19:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyh3mpRx4+tSpvGMhZFyCMJkBTd2zX5gzQsxWqA2o8nGoya+6ffI+jOm3RdAsGVpKlF7gwyqQ==
+X-Received: by 2002:adf:e5c5:: with SMTP id a5mr3643715wrn.120.1628770773253;
+        Thu, 12 Aug 2021 05:19:33 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id z15sm2806100wrp.30.2021.08.12.05.19.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 05:19:32 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com, Saeed Mahameed <saeed@kernel.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Sameeh Jubran <sameehj@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
+ statistics
+To:     Jakub Kicinski <kuba@kernel.org>, David Ahern <dsahern@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+ <20210803163641.3743-4-alexandr.lobakin@intel.com>
+ <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
+ <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <43e91ce1-0f82-5820-7cac-b42461a0311a@gmail.com>
+ <20210804094432.08d0fa86@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Message-ID: <5653e19f-75fa-9a94-4b45-0cf110fd6e36@redhat.com>
+Date:   Thu, 12 Aug 2021 14:19:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210812111220.181824-1-iii@linux.ibm.com>
+In-Reply-To: <20210804094432.08d0fa86@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26261/Thu Aug 12 10:22:34 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hey Ilya,
 
-On 8/12/21 1:12 PM, Ilya Leoshkevich wrote:
-> "access skb fields ok" verifier test fails on s390 with the "verifier
-> bug. zext_dst is set, but no reg is defined" message. The first insns
-> of the test prog are:
+On 04/08/2021 18.44, Jakub Kicinski wrote:
+> On Wed, 4 Aug 2021 10:17:56 -0600 David Ahern wrote:
+>> On 8/4/21 6:36 AM, Jakub Kicinski wrote:
 > 
->     0:	61 01 00 00 00 00 00 00 	ldxw %r0,[%r1+0]
->     8:	35 00 00 01 00 00 00 00 	jge %r0,0,1
->    10:	61 01 00 08 00 00 00 00 	ldxw %r0,[%r1+8]
+>> Does anyone have data that shows bumping a properly implemented counter
+>> causes a noticeable performance degradation and if so by how much? You
+>> mention 'yet another cacheline' but collecting stats on stack and
+>> incrementing the driver structs at the end of the napi loop should not
+>> have a huge impact versus the value the stats provide.
 > 
-> and the 3rd one is dead (this does not look intentional to me, but this
-> is a separate topic).
-> 
-> sanitize_dead_code() converts dead insns into "ja -1", but keeps
-> zext_dst. When opt_subreg_zext_lo32_rnd_hi32() tries to parse such
-> an insn, it sees this discrepancy and bails. This problem can be seen
-> only with JITs whose bpf_jit_needs_zext() returns true.
-> 
-> Fix by clearning dead insns' zext_dst.
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Not sure, maybe Jesper has some numbers. Maybe Intel folks do?
 
-I presume this would rather be bpf tree material, no? Do you also have a
-Fixes tag I could add?
+(sorry, behind on emails after vacation ... just partly answering inside 
+this thread, not checking if you did a smart counter impl.).
 
-And one last small request: if this is not already covered by test_verifier
-selftest, could you add one along with the fix?
+I don't have exact numbers, but I hope Magnus (Intel) would be motivated 
+to validate performance degradation from this patchset.  As I know Intel 
+is hunting the DPDK numbers with AF_XDP-zc, where every last cycle *do* 
+count.
 
-Thanks a lot,
-Daniel
+My experience is that counters can easily hurt performance, without the 
+developers noticing the small degradation's.  As Ahern sketch out above 
+(stats on stack + end of napi loop update), I do believe that a smart 
+counter implementation is possible to hide this overhead (hopefully 
+completely in the CPUs pipeline slots).
+
+I do highly appreciate the effort to standardize the XDP stats!
+So, I do hope this can somehow move forward.
+
+--Jesper
+
