@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7A33EB87E
-	for <lists+bpf@lfdr.de>; Fri, 13 Aug 2021 17:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316EA3EB88E
+	for <lists+bpf@lfdr.de>; Fri, 13 Aug 2021 17:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241321AbhHMPOF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Aug 2021 11:14:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57162 "EHLO mail.kernel.org"
+        id S241364AbhHMPOi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Aug 2021 11:14:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241951AbhHMPNB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Aug 2021 11:13:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8C966112D;
-        Fri, 13 Aug 2021 15:12:33 +0000 (UTC)
+        id S241518AbhHMPND (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Aug 2021 11:13:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79110604D7;
+        Fri, 13 Aug 2021 15:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628867554;
-        bh=r/It5R4/yhQY6rvDBmpY0DcKcwXQ2ZWlt5AclDMwB+w=;
+        s=korg; t=1628867557;
+        bh=VNxknIKfYSQQmxgssS7CUnryBZ6l3ybkrZ/cff00abo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T8Uid0oLC0ezrRrlNdzllD1geSCeTQbNFgVvjHrTFnuAkhM+xIoXXwes5ECfM3jUr
-         pptTCv91BX0rgbNuIC3J+y0nfM+WhkN4uHotrnrEf7RbU/g7PnC3fxn+NyuAa5IcVk
-         Uh0EM8+j/vVWw6gWVtqpEnQyZmxty24FLVt2YEeA=
+        b=pEi+5NG46e/O7kBEOIS3cgs/rAK+PuLhQyL0QWmkMhLQQs/S4X6evC0IYPJm4AJpz
+         URudBM5AakVI5CpoeTJmlMWghPGp3YHD8kZnLhd9sCEIikZUf5f/6rPiwUOcGyhcXu
+         Xr0Q+/VPwMTWQOyELZadFE0O8LDM8QO8gvd9hjuo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -29,9 +29,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Piotr Krysiuk <piotras@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 03/11] bpf: Inherit expanded/patched seen count from old aux data
-Date:   Fri, 13 Aug 2021 17:07:10 +0200
-Message-Id: <20210813150520.181696817@linuxfoundation.org>
+Subject: [PATCH 4.19 04/11] bpf: Do not mark insn as seen under speculative path verification
+Date:   Fri, 13 Aug 2021 17:07:11 +0200
+Message-Id: <20210813150520.212635115@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210813150520.072304554@linuxfoundation.org>
 References: <20210813150520.072304554@linuxfoundation.org>
@@ -45,54 +45,72 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit d203b0fd863a2261e5d00b97f3d060c4c2a6db71 upstream.
+commit fe9a5ca7e370e613a9a75a13008a3845ea759d6e upstream.
 
-Instead of relying on current env->pass_cnt, use the seen count from the
-old aux data in adjust_insn_aux_data(), and expand it to the new range of
-patched instructions. This change is valid given we always expand 1:n
-with n>=1, so what applies to the old/original instruction needs to apply
-for the replacement as well.
+... in such circumstances, we do not want to mark the instruction as seen given
+the goal is still to jmp-1 rewrite/sanitize dead code, if it is not reachable
+from the non-speculative path verification. We do however want to verify it for
+safety regardless.
 
-Not relying on env->pass_cnt is a prerequisite for a later change where we
-want to avoid marking an instruction seen when verified under speculative
-execution path.
+With the patch as-is all the insns that have been marked as seen before the
+patch will also be marked as seen after the patch (just with a potentially
+different non-zero count). An upcoming patch will also verify paths that are
+unreachable in the non-speculative domain, hence this extension is needed.
 
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Reviewed-by: John Fastabend <john.fastabend@gmail.com>
 Reviewed-by: Benedict Schlueter <benedict.schlueter@rub.de>
 Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
 Acked-by: Alexei Starovoitov <ast@kernel.org>
-[OP: - declare old_data as bool instead of u32 (struct bpf_insn_aux_data.seen
-     is bool in 5.4)
-     - adjusted context for 4.19]
+[OP: - env->pass_cnt is not used in 4.19, so adjust sanitize_mark_insn_seen()
+       to assign "true" instead
+     - drop sanitize_insn_aux_data() comment changes, as the function is not
+       present in 4.19]
 Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c |   17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -5690,6 +5690,7 @@ static int adjust_insn_aux_data(struct b
- 				u32 off, u32 cnt)
- {
- 	struct bpf_insn_aux_data *new_data, *old_data = env->insn_aux_data;
-+	bool old_seen = old_data[off].seen;
- 	int i;
+@@ -2901,6 +2901,19 @@ do_sim:
+ 	return !ret ? REASON_STACK : 0;
+ }
  
- 	if (cnt == 1)
-@@ -5701,8 +5702,10 @@ static int adjust_insn_aux_data(struct b
- 	memcpy(new_data, old_data, sizeof(struct bpf_insn_aux_data) * off);
- 	memcpy(new_data + off + cnt - 1, old_data + off,
- 	       sizeof(struct bpf_insn_aux_data) * (prog_len - off - cnt + 1));
--	for (i = off; i < off + cnt - 1; i++)
--		new_data[i].seen = true;
-+	for (i = off; i < off + cnt - 1; i++) {
-+		/* Expand insni[off]'s seen count to the patched range. */
-+		new_data[i].seen = old_seen;
-+	}
- 	env->insn_aux_data = new_data;
- 	vfree(old_data);
- 	return 0;
++static void sanitize_mark_insn_seen(struct bpf_verifier_env *env)
++{
++	struct bpf_verifier_state *vstate = env->cur_state;
++
++	/* If we simulate paths under speculation, we don't update the
++	 * insn as 'seen' such that when we verify unreachable paths in
++	 * the non-speculative domain, sanitize_dead_code() can still
++	 * rewrite/sanitize them.
++	 */
++	if (!vstate->speculative)
++		env->insn_aux_data[env->insn_idx].seen = true;
++}
++
+ static int sanitize_err(struct bpf_verifier_env *env,
+ 			const struct bpf_insn *insn, int reason,
+ 			const struct bpf_reg_state *off_reg,
+@@ -5254,7 +5267,7 @@ static int do_check(struct bpf_verifier_
+ 		}
+ 
+ 		regs = cur_regs(env);
+-		env->insn_aux_data[env->insn_idx].seen = true;
++		sanitize_mark_insn_seen(env);
+ 
+ 		if (class == BPF_ALU || class == BPF_ALU64) {
+ 			err = check_alu_op(env, insn);
+@@ -5472,7 +5485,7 @@ process_bpf_exit:
+ 					return err;
+ 
+ 				env->insn_idx++;
+-				env->insn_aux_data[env->insn_idx].seen = true;
++				sanitize_mark_insn_seen(env);
+ 			} else {
+ 				verbose(env, "invalid BPF_LD mode\n");
+ 				return -EINVAL;
 
 
