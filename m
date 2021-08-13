@@ -2,166 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434F23EB4D8
-	for <lists+bpf@lfdr.de>; Fri, 13 Aug 2021 13:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B0A3EB727
+	for <lists+bpf@lfdr.de>; Fri, 13 Aug 2021 16:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240453AbhHMLuv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Aug 2021 07:50:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240426AbhHMLuv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Aug 2021 07:50:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D84B6109E;
-        Fri, 13 Aug 2021 11:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628855424;
-        bh=sb2BeUs+EdYXtkzmBkfivuB9XqFS6eMIn4b9huUVAyg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=smqCOf+yiR2GcdPqV5sEOIc7NRd+SP9YrPttS6L0xQGXGvqoagqziK3YWVtJrFL0s
-         PYAam0o91L6i691RIACbSa9Pqqc0Cez7IZlx2NbQ1r62uQql4k5U962Po/dKlACosL
-         GC9uvn/S29eo0iLLM4E5Opi+ITZg1Fe0xi/4jHSf4GmB7HQcwnyQWJ+4JEI+AzoXSL
-         YekXXZijMSTQV0CqjfhztBA9eY5PMatcK0805ToBQoRRhAjpgp4xQo1qk1fNlNoZH+
-         VLM7kDjuLM8r7kZoIxgZsT7Y7/PnIvCweUYhk9ZIIE1Z/QbZXQxwTjP08UwFgSwdf5
-         /LWxG1xTJ8c1g==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
-        echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: [PATCH v11 bpf-next 18/18] bpf: add bpf_xdp_adjust_data selftest
-Date:   Fri, 13 Aug 2021 13:47:59 +0200
-Message-Id: <5026e9756e7a065581f31eae240e99552417f7fb.1628854454.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1628854454.git.lorenzo@kernel.org>
-References: <cover.1628854454.git.lorenzo@kernel.org>
+        id S240915AbhHMO63 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Aug 2021 10:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240198AbhHMO61 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Aug 2021 10:58:27 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38D1C061756;
+        Fri, 13 Aug 2021 07:58:00 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id hv22-20020a17090ae416b0290178c579e424so16369767pjb.3;
+        Fri, 13 Aug 2021 07:58:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uIxYs8ZFxmYhiFq5p0PeX+N+Q5/J7OLXipqllrYK6/w=;
+        b=KlNdNHCLJby8KxhDbZnl2t/Zafi6negWcdlb43BmkLeo4NHBFMom3e6NtVjZdtpYEe
+         yNtVzsSSSqthLfESR3VzZ4mAG/nnst0f+xCbVslycdQrg26wEfOsMLEXHCoe2vcpf6q4
+         iEbdUGbK3nfKAI4wCA5ARvGcIyIMfUzC02pp4bV4FTMystCycl4dbQOtP0ME1G+npmIs
+         f8b4g8vgp6r8aJxxP6CqVFsjVcUgXnIputTqTuQN9sqkOJvYDDcfGHQZfO/jYoD2uB2Y
+         zCwREXGKHtaEAGJCUo+Tz3iYop0XxyQYrcYcAnK9Oo0E8DXgULcW4dACf+MmeY1CojTY
+         9k1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uIxYs8ZFxmYhiFq5p0PeX+N+Q5/J7OLXipqllrYK6/w=;
+        b=kSludYe2IbvjUj0slTukOs0DbrvcEWADloJlClY7Q6nFFilQkToGMu0rCv+52F+CnZ
+         Rdi7cDtLrwYmJ1rW7nWrn0JynU0X14ciGcAP/j0/P84Tl1xHI8RWXcs5+NXS272vSWat
+         Nhdb0ve2STvYsArJhjytw2RMWzQ5mrCPeOs53LRtVIMBBUTQUbp3+gIxo1ItlpchwC0+
+         wtjLhnN5MJAPa/t2Wr4XvXxDZo39VxNV/bMPO4FB0MIKiiSElBt60IwUj5kwgtkb9KgM
+         Jr7gO281pb+FxR445mFvF2uCns8gjl+03B8BpoO6puV1qmubfgsiYqJIFupzPLx4nfib
+         2sSw==
+X-Gm-Message-State: AOAM531MoZHTTvE+Ek6X7S3T01QwHdKlj7heQnjw1IxWx3GEnKKcJy9t
+        42rJA09/yPnLx7cr+AexKc0=
+X-Google-Smtp-Source: ABdhPJyllrJr859w1e7CFPpLuUHf91BE/yDxCU4yZvQ/rgU5UFKkgJzLNMBWsldljFxoNm5th5+VGA==
+X-Received: by 2002:aa7:9906:0:b029:3c7:a6a1:c73d with SMTP id z6-20020aa799060000b02903c7a6a1c73dmr2927697pff.1.1628866680387;
+        Fri, 13 Aug 2021 07:58:00 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id g14sm2903379pfr.31.2021.08.13.07.57.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Aug 2021 07:57:59 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH] net: in_irq() cleanup
+Date:   Fri, 13 Aug 2021 22:57:49 +0800
+Message-Id: <20210813145749.86512-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce kernel selftest for new bpf_xdp_adjust_data helper.
+Replace the obsolete and ambiguos macro in_irq() with new
+macro in_hardirq().
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
 ---
- .../bpf/prog_tests/xdp_adjust_data.c          | 55 +++++++++++++++++++
- .../bpf/progs/test_xdp_update_frags.c         | 41 ++++++++++++++
- 2 files changed, 96 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_adjust_data.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
+ include/linux/netdevice.h | 2 +-
+ net/core/bpf_sk_storage.c | 4 ++--
+ net/core/dev.c            | 2 +-
+ net/core/skbuff.c         | 6 +++---
+ net/nfc/rawsock.c         | 2 +-
+ 5 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_data.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_data.c
-new file mode 100644
-index 000000000000..a3e098b72fc9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_data.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+
-+void test_xdp_update_frag(void)
-+{
-+	const char *file = "./test_xdp_update_frags.o";
-+	__u32 duration, retval, size;
-+	struct bpf_object *obj;
-+	int err, prog_fd;
-+	__u8 *buf;
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-+	if (CHECK_FAIL(err))
-+		return;
-+
-+	buf = malloc(128);
-+	if (CHECK(!buf, "malloc()", "error:%s\n", strerror(errno)))
-+		return;
-+
-+	memset(buf, 0, 128);
-+
-+	err = bpf_prog_test_run(prog_fd, 1, buf, 128,
-+				buf, &size, &retval, &duration);
-+	free(buf);
-+
-+	CHECK(err || retval != XDP_DROP,
-+	      "128b", "err %d errno %d retval %d size %d\n",
-+	      err, errno, retval, size);
-+
-+	buf = malloc(9000);
-+	if (CHECK(!buf, "malloc()", "error:%s\n", strerror(errno)))
-+		return;
-+
-+	memset(buf, 0, 9000);
-+	buf[5000] = 0xaa; /* marker at offset 5000 (frag0) */
-+
-+	err = bpf_prog_test_run(prog_fd, 1, buf, 9000,
-+				buf, &size, &retval, &duration);
-+
-+	/* test_xdp_update_frags: buf[5000]: 0xaa -> 0xbb */
-+	CHECK(err || retval != XDP_PASS || buf[5000] != 0xbb,
-+	      "9000b", "err %d errno %d retval %d size %d\n",
-+	      err, errno, retval, size);
-+
-+	free(buf);
-+
-+	bpf_object__close(obj);
-+}
-+
-+void test_xdp_adjust_data(void)
-+{
-+	if (test__start_subtest("xdp_adjust_data"))
-+		test_xdp_update_frag();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c b/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
-new file mode 100644
-index 000000000000..c2d5772007f3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ */
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int _version SEC("version") = 1;
-+
-+SEC("xdp_adjust_frags")
-+int _xdp_adjust_frags(struct xdp_md *xdp)
-+{
-+	__u8 *data_end = (void *)(long)xdp->data_end;
-+	__u8 *data = (void *)(long)xdp->data;
-+	__u32 offset = 5000; /* marker offset */
-+	int base_offset, ret = XDP_DROP;
-+
-+	base_offset = bpf_xdp_adjust_data(xdp, offset);
-+	if (base_offset < 0 || base_offset > offset)
-+		return XDP_DROP;
-+
-+	data_end = (void *)(long)xdp->data_end;
-+	data = (void *)(long)xdp->data;
-+
-+	if (data + 1 > data_end)
-+		goto out;
-+
-+	if (*data != 0xaa) /* marker */
-+		goto out;
-+
-+	*data = 0xbb; /* update the marker */
-+	ret = XDP_PASS;
-+out:
-+	bpf_xdp_adjust_data(xdp, 0);
-+	return ret;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index eaf5bb008aa9..3edc793546e7 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3948,7 +3948,7 @@ void __dev_kfree_skb_any(struct sk_buff *skb, enum skb_free_reason reason);
+ /*
+  * It is not allowed to call kfree_skb() or consume_skb() from hardware
+  * interrupt context or with hardware interrupts being disabled.
+- * (in_irq() || irqs_disabled())
++ * (in_hardirq() || irqs_disabled())
+  *
+  * We provide four helpers that can be used in following contexts :
+  *
+diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+index f564f82e91d9..68d2cbf8331a 100644
+--- a/net/core/bpf_sk_storage.c
++++ b/net/core/bpf_sk_storage.c
+@@ -416,7 +416,7 @@ static bool bpf_sk_storage_tracing_allowed(const struct bpf_prog *prog)
+ BPF_CALL_4(bpf_sk_storage_get_tracing, struct bpf_map *, map, struct sock *, sk,
+ 	   void *, value, u64, flags)
+ {
+-	if (in_irq() || in_nmi())
++	if (in_hardirq() || in_nmi())
+ 		return (unsigned long)NULL;
+ 
+ 	return (unsigned long)____bpf_sk_storage_get(map, sk, value, flags);
+@@ -425,7 +425,7 @@ BPF_CALL_4(bpf_sk_storage_get_tracing, struct bpf_map *, map, struct sock *, sk,
+ BPF_CALL_2(bpf_sk_storage_delete_tracing, struct bpf_map *, map,
+ 	   struct sock *, sk)
+ {
+-	if (in_irq() || in_nmi())
++	if (in_hardirq() || in_nmi())
+ 		return -EPERM;
+ 
+ 	return ____bpf_sk_storage_delete(map, sk);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 8f1a47ad6781..b743b3702f40 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3190,7 +3190,7 @@ EXPORT_SYMBOL(__dev_kfree_skb_irq);
+ 
+ void __dev_kfree_skb_any(struct sk_buff *skb, enum skb_free_reason reason)
+ {
+-	if (in_irq() || irqs_disabled())
++	if (in_hardirq() || irqs_disabled())
+ 		__dev_kfree_skb_irq(skb, reason);
+ 	else
+ 		dev_kfree_skb(skb);
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index fc7942c0dddc..ba1cd7071ef0 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -156,7 +156,7 @@ void *__netdev_alloc_frag_align(unsigned int fragsz, unsigned int align_mask)
+ 	void *data;
+ 
+ 	fragsz = SKB_DATA_ALIGN(fragsz);
+-	if (in_irq() || irqs_disabled()) {
++	if (in_hardirq() || irqs_disabled()) {
+ 		nc = this_cpu_ptr(&netdev_alloc_cache);
+ 		data = page_frag_alloc_align(nc, fragsz, GFP_ATOMIC, align_mask);
+ 	} else {
+@@ -502,7 +502,7 @@ struct sk_buff *__netdev_alloc_skb(struct net_device *dev, unsigned int len,
+ 	if (sk_memalloc_socks())
+ 		gfp_mask |= __GFP_MEMALLOC;
+ 
+-	if (in_irq() || irqs_disabled()) {
++	if (in_hardirq() || irqs_disabled()) {
+ 		nc = this_cpu_ptr(&netdev_alloc_cache);
+ 		data = page_frag_alloc(nc, len, gfp_mask);
+ 		pfmemalloc = nc->pfmemalloc;
+@@ -724,7 +724,7 @@ void skb_release_head_state(struct sk_buff *skb)
+ {
+ 	skb_dst_drop(skb);
+ 	if (skb->destructor) {
+-		WARN_ON(in_irq());
++		WARN_ON(in_hardirq());
+ 		skb->destructor(skb);
+ 	}
+ #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+diff --git a/net/nfc/rawsock.c b/net/nfc/rawsock.c
+index 5e39640becdb..0ca214ab5aef 100644
+--- a/net/nfc/rawsock.c
++++ b/net/nfc/rawsock.c
+@@ -140,7 +140,7 @@ static void rawsock_data_exchange_complete(void *context, struct sk_buff *skb,
+ {
+ 	struct sock *sk = (struct sock *) context;
+ 
+-	BUG_ON(in_irq());
++	BUG_ON(in_hardirq());
+ 
+ 	pr_debug("sk=%p err=%d\n", sk, err);
+ 
 -- 
-2.31.1
+2.30.2
 
