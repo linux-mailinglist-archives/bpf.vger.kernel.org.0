@@ -2,105 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0203EBE8A
-	for <lists+bpf@lfdr.de>; Sat, 14 Aug 2021 01:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2183EBE8F
+	for <lists+bpf@lfdr.de>; Sat, 14 Aug 2021 01:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235606AbhHMXGH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Aug 2021 19:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
+        id S235059AbhHMXIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Aug 2021 19:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235428AbhHMXGF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Aug 2021 19:06:05 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7A1C061756
-        for <bpf@vger.kernel.org>; Fri, 13 Aug 2021 16:05:38 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id r14-20020a0c8d0e0000b02902e82df307f0so7744543qvb.4
-        for <bpf@vger.kernel.org>; Fri, 13 Aug 2021 16:05:38 -0700 (PDT)
+        with ESMTP id S235029AbhHMXIk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Aug 2021 19:08:40 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6433AC061756
+        for <bpf@vger.kernel.org>; Fri, 13 Aug 2021 16:08:13 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id z128so21681002ybc.10
+        for <bpf@vger.kernel.org>; Fri, 13 Aug 2021 16:08:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=0xr8nrUTTS+5d46OL567SQwU59+B4NtyiAMj6qZyKDg=;
-        b=ZaOHWqRTi3/SjpvxeDmFoegXYtWrKhQjl1B7ZdEh7P42R5k8qboZ7kKjtoEM4zuECQ
-         WU1F7llICxKOQM/f/eP2de5svU+pjZWAmm3LofFdACF7oGLp9CbTPSRVAt4Bm5m3wCEA
-         ETBBNNxM5KmocCAMMBbYX5OkpGezTPYbU6QZIJyewSYxZk2q2Ppzf9OFso4RGT8vS5vO
-         323J2g442DtLQ7lMz0Gva9T1XCkPaYl9TBL0k4NFT1rDONiEEiGXjeHIloOs4i/rdeZk
-         LnelfCMYUFhmOQDVJ02MXvHE8tvP/G2+aWt8EA55B+rzBshodyTGKBXF8cw2IQoo3276
-         H/bw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2PP666ZhMDVeem1jITvuuu1K1Z/WKPN5/d2cEq2cQ8k=;
+        b=RIgj6XNWJ7lzCBpoIk8lWdQC19tHNrV6EPmQlce+0vZqbEX7VYHMqFis4CCOYcSm8C
+         6pQAGdKgrskIxYn28QZX+9qgfOoBMWEUVtKuA6KLzhaN4X12yQ7WqUcFQbDEbgh+Y/4m
+         uxA/rLJxNr9Igaive+aSnJ/2O4ezZcQKh6OuDFGMz0xWFzGcqW0b/mnR5ffydXqNruyb
+         PFqRqtc5jFxKkKVAvU4U9p/57rZtxPvLYf9Y9vPwhEboYo3+UxKqX5xQbM+0gQm4vxOq
+         8UkaTVsDW9yrXW13WCDQTED3fhQ2EgJVlfBdlx7UBRHkydOYS+19+ZruLyplNl2vyp8Q
+         tAWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=0xr8nrUTTS+5d46OL567SQwU59+B4NtyiAMj6qZyKDg=;
-        b=pYdxxszGcerc6WZHDxUI0FRo4AxgS3otxJ/5tSu5hcxBhshN80wLfuZfGCjFTS6i+d
-         7SN8YxYoadI1ijdMKowMX+mZ6rqmd11xE1GtlO9FEFB1NUgvjdgX3PBtDB6QxiYIIhnO
-         L+4G0ojZF4TGwKvxwXCkCNus4C/lSECS83lE/Mdeezw1KT4eSPEuzicnH3a7HveTs2kL
-         rDUENvvQesJdjQNEkq0krRGaRknIF7Gpwn7bpw4+QjVc4CBqx430Qb1jB5s+Mezj2Gtb
-         wPwawoEdjRzTokke8ijdg8ypVeI7ZlA1ct2mrAOF2f3PE/TgotD61f1SrmRjt+dmJ0W1
-         rL2Q==
-X-Gm-Message-State: AOAM530Bt8KewCh1q23AjokdZp8M2YjKABXur7+OD2VOhVaTLMtV9iqA
-        Aea9equjf3W4dAvmKa4vM1DpLgU=
-X-Google-Smtp-Source: ABdhPJxMM2n8drgip6VNs5+SAbDoXZTQ0PI2bRFJ6gHuUMyRZlVi5D6QEqugvvYh639ySSNFY+LWWIs=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:f73:a375:cbb9:779b])
- (user=sdf job=sendgmr) by 2002:ad4:5aa1:: with SMTP id u1mr5008609qvg.2.1628895937374;
- Fri, 13 Aug 2021 16:05:37 -0700 (PDT)
-Date:   Fri, 13 Aug 2021 16:05:30 -0700
-In-Reply-To: <20210813230530.333779-1-sdf@google.com>
-Message-Id: <20210813230530.333779-3-sdf@google.com>
-Mime-Version: 1.0
-References: <20210813230530.333779-1-sdf@google.com>
-X-Mailer: git-send-email 2.33.0.rc1.237.g0d66db33f3-goog
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: verify bpf_get_netns_cookie in BPF_PROG_TYPE_CGROUP_SOCKOPT
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2PP666ZhMDVeem1jITvuuu1K1Z/WKPN5/d2cEq2cQ8k=;
+        b=nKn3y4TNNvr4m94gifxixNntr8M3mCip+sWc7T5lepCNo34m/WIGBUoXSUsAfpYHqb
+         Gldfx/acB+OSmNwYEc+yfpc5EgmJdGVrN/c6jF9utVcGmLW6oLzUxHarMUU03Po8JZqf
+         R+Y6M9sbnIOZw6gfwqqwmV73sMkeuMrETnjjm/rPOw1nVmwCbOHH6XO+KWED+AdNwqsD
+         v58Z8flw4bu4DEx9ym3Ju+1jNYG+zyGz2K62jUf3NDbVis/4xJarIq8T6J/vtMA1kTy2
+         cG/xuseo4QKPzZs9rWxJJmtdDaiO1IS2UYxubEjjCuDoPNj0h8o32F/B5EJPaI4qSpKQ
+         8kow==
+X-Gm-Message-State: AOAM530YfVYPw6scuBpK/NQJaK9CfJHkgqKb+K0fuaTfr0NfMO4fSMrI
+        kUtmnvAABNrasIw3g+QnP7Cxh6EuzqUJrzdq7l8=
+X-Google-Smtp-Source: ABdhPJwl8s0591lBJGA4PsAd2b5qp+NvcskLSZy4rb2cLtPCpAKLOPUI9xbkY37rzGel8pGeOLxuh4EBwvDHv/Z04C4=
+X-Received: by 2002:a25:bb13:: with SMTP id z19mr6461316ybg.347.1628896092749;
+ Fri, 13 Aug 2021 16:08:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <HE1PR83MB038015B1D19B02219FB1315BFBFA9@HE1PR83MB0380.EURPRD83.prod.outlook.com>
+ <bda97fe2-d8b5-2539-273e-275276947b49@fb.com>
+In-Reply-To: <bda97fe2-d8b5-2539-273e-275276947b49@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 13 Aug 2021 16:08:01 -0700
+Message-ID: <CAEf4BzaPAdRpQ7Pi-GxqRG1f_7+EmAZKu=FLNchO3EnnyFhrjg@mail.gmail.com>
+Subject: Re: signal/signal_deliver and bpf_send_signal()
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add extra calls to sockopt_sk.c.
+On Fri, Aug 13, 2021 at 10:20 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 8/13/21 2:57 AM, Kevin Sheldrake wrote:
+> > Hello
+> >
+> > I have a requirement to catch a specific signal hitting a specific proc=
+ess and to send it a SIGSTOP before that signal arrives.  This is so that t=
+he process can then be attached with ptrace(), but without the necessity of=
+ ptrace()ing the process continuously beforehand (due to performance and st=
+ability reasons).  I thought this might be possible with an eBPF program at=
+tached to a tracepoint.
+> >
+> > I attached a program to the signal/signal_deliver tracepoint and used b=
+pf_send_signal() to send the SIGSTOP but it didn't stop the process.  If I =
+sent SIGTERM or SIGHUP instead it worked as expected, just not SIGSTOP or S=
+IGTSTP.
+> >
+> > Sending a SIGSTOP prior to another signal (eg SIGSEGV) works from userl=
+and - the process stops and the other signal is queued.
+> >
+> > I'm guessing that the reason is that bpf_send_signal() adds the (non-st=
+ate transitioning) signal to the process signal queue, ignoring SIGSTOP, SI=
+GTSTP, SIGKILL, SIGCONT, but doesn't change the state of processes.  Can an=
+yone confirm if that is correct or if there's another possible reason that =
+bpf_send_signal seems to fail to send a SIGSTOP?  If so, is this documented=
+ anywhere?  Is there another way to do this with eBPF?
+>
+> Kernel has SIG_KERNEL_IGNORE_MASK like below
+>
+> #define SIG_KERNEL_IGNORE_MASK (\
+>          rt_sigmask(SIGCONT)   |  rt_sigmask(SIGCHLD)   | \
+>          rt_sigmask(SIGWINCH)  |  rt_sigmask(SIGURG)    )
+>
+> So SIGCONT will be ignored for bpf_send_signal() helper.
+>
+> For other signals e.g., SIGSTOP/SIGKILL, there are some comments saying
+> special processing might be needed. But I think they may still get
+> delivered. If you use signal/signal_deliver when SIGSEGV is delivered,
+> is it already too late to do bpf_send_signal() SIGSTOP since that
+> will be processed after SIGSEGV? Note that SIGSEGV is already delivered?
+>
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/progs/sockopt_sk.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Too lazy to read the code to know if this will work, but I'll ask
+anyway. Would it work to do fmod_ret BPF prog right on the entry point
+in the kernel where the signal is just starting to be processed, and
+ignoring SIGSEGV completely? Then doing send_signal(SIGSTOP), and then
+again for SIGSEGV?
 
-diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-index 8acdb99b5959..79c8139b63b8 100644
---- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-@@ -33,6 +33,14 @@ int _getsockopt(struct bpf_sockopt *ctx)
- 	__u8 *optval = ctx->optval;
- 	struct sockopt_sk *storage;
- 
-+	/* Make sure bpf_get_netns_cookie is callable.
-+	 */
-+	if (bpf_get_netns_cookie(NULL) == 0)
-+		return 0;
-+
-+	if (bpf_get_netns_cookie(ctx) == 0)
-+		return 0;
-+
- 	if (ctx->level == SOL_IP && ctx->optname == IP_TOS) {
- 		/* Not interested in SOL_IP:IP_TOS;
- 		 * let next BPF program in the cgroup chain or kernel
-@@ -123,6 +131,14 @@ int _setsockopt(struct bpf_sockopt *ctx)
- 	__u8 *optval = ctx->optval;
- 	struct sockopt_sk *storage;
- 
-+	/* Make sure bpf_get_netns_cookie is callable.
-+	 */
-+	if (bpf_get_netns_cookie(NULL) == 0)
-+		return 0;
-+
-+	if (bpf_get_netns_cookie(ctx) == 0)
-+		return 0;
-+
- 	if (ctx->level == SOL_IP && ctx->optname == IP_TOS) {
- 		/* Not interested in SOL_IP:IP_TOS;
- 		 * let next BPF program in the cgroup chain or kernel
--- 
-2.33.0.rc1.237.g0d66db33f3-goog
+So, intercept and cancel original signal, inject SIGSTOP, re-introduce
+original signal?
 
+> >
+> > Many thanks
+> >
+> > Kev
+> >
+> > --
+> > Kevin Sheldrake
+> > Microsoft Threat Intelligence Centre
+> >
