@@ -2,145 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFB93EAD5F
-	for <lists+bpf@lfdr.de>; Fri, 13 Aug 2021 00:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374A23EB2B7
+	for <lists+bpf@lfdr.de>; Fri, 13 Aug 2021 10:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhHLWtE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Aug 2021 18:49:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14204 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238417AbhHLWtE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Aug 2021 18:49:04 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CMbYpm009572;
-        Thu, 12 Aug 2021 18:48:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=r5VbE9AZLrl3NRrfWsDS4zNqPk35WaoV3XSLErVCPsI=;
- b=lr4oNSBObqngXskUikfMarHB76DJcseAi2qjpkIKHfDCMzqdfI3u0OrKS99CKU5h7uiP
- E2Hm72YXVjdwC9q8rVtXEkcGhberkxePvfz/8ZXWBNg6cSTvogeAKkEZju+m3f/TUEXP
- jFdK0uGb41ojHVPfysw/1pPlpuYTSpii2H5WB4Fiy3vgJcZKrvY0vO4WIyawj++FXdvF
- Q0zzH3x8SNQOy/mONSlsel6z0gaxpW3W7PxA+cX2lECzcqwit0O1DTuTeJyzE6eGreWA
- wCKQcmwVwJcNTtRD+wndFQ7jCg9/PSSA8D1YkFTFT2zYy1jORVB0jK86U7R/9hBn01vV iw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3accugavrt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 18:48:26 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17CMhEM3026379;
-        Thu, 12 Aug 2021 18:48:26 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3accugavrc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 18:48:26 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17CMlvH8014708;
-        Thu, 12 Aug 2021 22:48:23 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 3acn76aprw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Aug 2021 22:48:23 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17CMmKUQ55968060
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Aug 2021 22:48:20 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 29FA74C066;
-        Thu, 12 Aug 2021 22:48:20 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4EB14C052;
-        Thu, 12 Aug 2021 22:48:19 +0000 (GMT)
-Received: from vm.lan (unknown [9.145.77.113])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Aug 2021 22:48:19 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] selftests/bpf: Fix test_core_autosize on big-endian machines
-Date:   Fri, 13 Aug 2021 00:48:14 +0200
-Message-Id: <20210812224814.187460-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
+        id S238958AbhHMIj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Aug 2021 04:39:26 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:59973 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231127AbhHMIj0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 13 Aug 2021 04:39:26 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 901C1320093D;
+        Fri, 13 Aug 2021 04:38:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 13 Aug 2021 04:39:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=FwpYTJeWczzk92WbeGwsGqT0n98
+        uSC0n4iLI8iyzRhY=; b=NjtP0qlr2q3UY80ZNSCNIyoL415MnkNssm47laQPG21
+        mmgw87+uRVkpaJ1OQXFsdJEyQQPe8jWNIBD1uMy7mnKIJHZb6F0EJeNDikNyvJST
+        4eTQyyQPmq/HmaBiOku861SzyohZEYE9Q9i9JpudcKgpwFXBwqiX3LazVY0R9huC
+        2dbZKrCPbvGgyv79DaSiCHoI2EJeSy2CgT0A0ZWLCxJqnLak67A2CZ/1Y8+LoYsV
+        NyiWC46AZUAn1og4CnyYmRCN11b3KY1r64sgi88Ln3RIx2RyeBYZlfuWlg8vcoYj
+        3q8nIPZi8e3YDP2U95IvzS1Y+hT8WhS+a8P225Nw6iQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FwpYTJ
+        eWczzk92WbeGwsGqT0n98uSC0n4iLI8iyzRhY=; b=vaKdUS4USCID9qMUgytbOk
+        AKt1R2ar+bw6hYxcKX7+Gx+U4m7yIcvFGpR1CAtRHYkN3syJNW8OaRUEW452Eyvj
+        0iwQBPDFJPqTLi6qHnGA0vPHQzRXcaRcd6Rya0yP/FiOXnBoNHWDFH/wtc9enH+R
+        fvX4YxpBzqWUhWkjfUQD+zSpeQjBj34ONRgYLJJwmh5HuJnft4N3lK82vgF00y4h
+        S1UUjeBtfTWVz3PMelTNbOVYRdQlpe8mlqjGPZlrXJc9WsBFc+n8s8iVSiMea/3i
+        8OmEWohBGaVi7AFnTtH5SD7NNCN8MDHsfgQ4ASHBM36JQNCNyXK5FCmEOdI3cszw
+        ==
+X-ME-Sender: <xms:oi8WYWNGnUKLtiE1VNefuyqetReeLlkDLl8LVb0COgw5lA2RqgWB8Q>
+    <xme:oi8WYU8Gbq_UCsxhPi4cMnrhyEB729WSaXuAcoqkMLugmLSRUFulXgHHwhoHC93eX
+    0MxmxWJqLZNpg>
+X-ME-Received: <xmr:oi8WYdQBuNViHjXFtsha1JfIvHULjyldSCQvF_44MEhfmeGwY4o-OL3ofu0310d9dBjKX8KdA3GRYZjN9DPAvl7VoQlq_hB4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeehgddthecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
+    gtohhm
+X-ME-Proxy: <xmx:oi8WYWurUB0WHwoHdUGfNG_VyKKGxX65ErMQmgbwG_ordoByk8y9nw>
+    <xmx:oi8WYefiQgIbINFsKhgFw3Ynx0gRGj6WE4ZWQGw3zsQ9pDwKhYwcyg>
+    <xmx:oi8WYa3CMA47dnmt84t3Z5ZvxFoFV4RqHEkAGJcM601EVZqI8p2GMg>
+    <xmx:oy8WYd4IFwgaxXDYwMvK7PzrxKkrvY__NsSZ_fiUfwMPIFMeOTrTrQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 13 Aug 2021 04:38:58 -0400 (EDT)
+Date:   Fri, 13 Aug 2021 10:38:55 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Ovidiu Panait <ovidiu.panait@windriver.com>
+Cc:     stable@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 4.19 0/4] bpf: backport fixes for CVE-2021-33624
+Message-ID: <YRYvn51P2Or6deXs@kroah.com>
+References: <20210812170037.2370387-1-ovidiu.panait@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 2l8jHRU3Gt2J8hTXOT6Y47cmMH36MvV6
-X-Proofpoint-ORIG-GUID: YkLtJ7Se3DIbcKFw5PR-2LKw-CBs321v
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-12_06:2021-08-12,2021-08-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 spamscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0
- bulkscore=0 priorityscore=1501 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108120141
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210812170037.2370387-1-ovidiu.panait@windriver.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The "probed" part of test_core_autosize copies an integer using
-bpf_core_read() into an integer of a potentially different size.
-On big-endian machines a destination offset is required for this to
-produce a sensible result.
+On Thu, Aug 12, 2021 at 08:00:33PM +0300, Ovidiu Panait wrote:
+> NOTE: the fixes were manually adjusted to apply to 4.19, so copying bpf@ to see
+> if there are any concerns.
+> 
+> With this patchseries all bpf verifier selftests pass:
+> root@intel-x86-64:~# ./test_verifier
+> ...
+> #657/u pass modified ctx pointer to helper, 2 OK
+> #657/p pass modified ctx pointer to helper, 2 OK
+> #658/p pass modified ctx pointer to helper, 3 OK
+> #659/p mov64 src == dst OK
+> #660/p mov64 src != dst OK
+> #661/u calls: ctx read at start of subprog OK
+> #661/p calls: ctx read at start of subprog OK
+> Summary: 925 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Daniel Borkmann (4):
+>   bpf: Inherit expanded/patched seen count from old aux data
+>   bpf: Do not mark insn as seen under speculative path verification
+>   bpf: Fix leakage under speculation on mispredicted branches
+>   bpf, selftests: Adjust few selftest outcomes wrt unreachable code
 
-Fixes: 888d83b961f6 ("selftests/bpf: Validate libbpf's auto-sizing of LD/ST/STX instructions")
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- .../selftests/bpf/progs/test_core_autosize.c  | 20 ++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+All now queued up, thanks!
 
-diff --git a/tools/testing/selftests/bpf/progs/test_core_autosize.c b/tools/testing/selftests/bpf/progs/test_core_autosize.c
-index 44f5aa2e8956..9a7829c5e4a7 100644
---- a/tools/testing/selftests/bpf/progs/test_core_autosize.c
-+++ b/tools/testing/selftests/bpf/progs/test_core_autosize.c
-@@ -125,6 +125,16 @@ int handle_downsize(void *ctx)
- 	return 0;
- }
- 
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-+#define bpf_core_read_int bpf_core_read
-+#else
-+#define bpf_core_read_int(dst, sz, src) ({ \
-+	/* Prevent "subtraction from stack pointer prohibited" */ \
-+	volatile long __off = sizeof(*dst) - (sz); \
-+	bpf_core_read((char *)(dst) + __off, sz, src); \
-+})
-+#endif
-+
- SEC("raw_tp/sys_enter")
- int handle_probed(void *ctx)
- {
-@@ -132,23 +142,23 @@ int handle_probed(void *ctx)
- 	__u64 tmp;
- 
- 	tmp = 0;
--	bpf_core_read(&tmp, bpf_core_field_size(in->ptr), &in->ptr);
-+	bpf_core_read_int(&tmp, bpf_core_field_size(in->ptr), &in->ptr);
- 	ptr_probed = tmp;
- 
- 	tmp = 0;
--	bpf_core_read(&tmp, bpf_core_field_size(in->val1), &in->val1);
-+	bpf_core_read_int(&tmp, bpf_core_field_size(in->val1), &in->val1);
- 	val1_probed = tmp;
- 
- 	tmp = 0;
--	bpf_core_read(&tmp, bpf_core_field_size(in->val2), &in->val2);
-+	bpf_core_read_int(&tmp, bpf_core_field_size(in->val2), &in->val2);
- 	val2_probed = tmp;
- 
- 	tmp = 0;
--	bpf_core_read(&tmp, bpf_core_field_size(in->val3), &in->val3);
-+	bpf_core_read_int(&tmp, bpf_core_field_size(in->val3), &in->val3);
- 	val3_probed = tmp;
- 
- 	tmp = 0;
--	bpf_core_read(&tmp, bpf_core_field_size(in->val4), &in->val4);
-+	bpf_core_read_int(&tmp, bpf_core_field_size(in->val4), &in->val4);
- 	val4_probed = tmp;
- 
- 	return 0;
--- 
-2.31.1
-
+greg k-h
