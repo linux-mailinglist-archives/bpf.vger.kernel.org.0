@@ -2,102 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E1C3EBE68
-	for <lists+bpf@lfdr.de>; Sat, 14 Aug 2021 00:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477A43EBE7F
+	for <lists+bpf@lfdr.de>; Sat, 14 Aug 2021 01:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235305AbhHMW41 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Aug 2021 18:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
+        id S235478AbhHMXCW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Aug 2021 19:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235029AbhHMW4Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Aug 2021 18:56:25 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC31C061756
-        for <bpf@vger.kernel.org>; Fri, 13 Aug 2021 15:55:57 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id b132so5788411ybg.4
-        for <bpf@vger.kernel.org>; Fri, 13 Aug 2021 15:55:57 -0700 (PDT)
+        with ESMTP id S235484AbhHMXCW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Aug 2021 19:02:22 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6ED0C061756;
+        Fri, 13 Aug 2021 16:01:54 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id k11so21723137ybf.6;
+        Fri, 13 Aug 2021 16:01:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zE5T6vQMUaaAi0jFP80DEizpk6vLnduNg2lmlZQZ0D4=;
-        b=Mtuo8kCA6sAUV1BqHJMtMliD6mwS++GhqtbLK1kp9MOCHdbJPNh7vUZe7Mhc1txScP
-         tDRGbEqYKrTBv9tkQpwqCMnfqY4lSWRxbRr9a3pKKv6HjPa/5BuVJ2ODJYnajdw8dRqG
-         L5rDH1RRv/a1ibRaKJvnEvMW+HmLgCSJHbdwrQp0YWNutm9OmYIohi/Lz0qWns63+E1F
-         hZB69c9rkrs3J8V/JxXgF/PqaNIidjQER0G0NdrX636o54d1nYHYYDOlEIO14FVlak0X
-         4BrCqwylC7JNcvRz7rhcRxpdYhGjGJbJUveGMMhNDMYyxZKhJyvuDj3VsRX5yh04ovww
-         CpWg==
+        bh=T622aBx4EZBmiD+b+MJTaOcu0FTJ3ax/Qm2kvfKquR0=;
+        b=ujkwKJmKi2/xhPhwuIwrkaq27vitc0Fiw39McYNYDey79td+Pb/AhFIFWGR0HovTO6
+         ++yysIAKIgWh3TxrE8HGgZSLb4QhzCL/7C/ahfreN61tYtjl6kkY6mZuE/uOrglKjAm4
+         ZAEP/23Eiv5G43vy8wOTZvQbQ0+URsXitlBtZm41wazOcl9lbUckyO9NogMLoj+1XJhn
+         hu+pLAMyB+Cl4eqQKOBN215GlQTggSzul2p0nYtZpeX49fwMyc4OyrIr3V7cnMs9qB+C
+         itkBEh0NmMQ6FqrtXIp9H4pVeOog7pZ3WgurCMo6EHAIQpk0werofqy/s1Zk7/iVRxat
+         uNZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zE5T6vQMUaaAi0jFP80DEizpk6vLnduNg2lmlZQZ0D4=;
-        b=GIOiFK63l4BuRfNJ37oQLlVzmk8R6odhVU0nLICd3RO0SLPDYxoo/mzf2BTZ3x64on
-         hj5rmPHlEYE8rwDzFK4dNixl5+kVGHGbw6nT4iwX5WqBgXy9tmEnG/N2X6uu/538rCtv
-         tqJmRtihrFY1DoTlw5iCw46v6ekdVagmJExmEpmMlN15ynscYo4ocdnmpinR3sFRRA/m
-         BKxA7aT0DRX/PfCKJMIm2BZCaVEG5O2BTjTy3JwgHvsppJni2eFVtKyr4W9R+GR7ACDE
-         JM9bwBE8wIfL21z5t3T+gmta0MFqmoPuLKRDJz5CQUXWDkUflk4dWNIsHtoOqJYWy0Cc
-         9zlA==
-X-Gm-Message-State: AOAM533aBG8h340ACfrYgwAncoMPfkCAUSP+PQgJlybgOv3wV2zi81bf
-        6UMZJj3zOzeTSC4zRt7TKmAVbPYXGJvQlD7BIjU=
-X-Google-Smtp-Source: ABdhPJyRieIvK1xL3VugugVwI0QtZ1DcLqwyFb8y2ykG/okdwmBnVXcdX4aOAH6qMWKuIXQDj9drWpZDVedJWRpeyZA=
-X-Received: by 2002:a25:4091:: with SMTP id n139mr5896109yba.425.1628895356995;
- Fri, 13 Aug 2021 15:55:56 -0700 (PDT)
+        bh=T622aBx4EZBmiD+b+MJTaOcu0FTJ3ax/Qm2kvfKquR0=;
+        b=Pk8zjX1eo8sUlK4t5i9J2aLiJLHCg6uTLtF0IrMS0VkCFUBtN2nbNtyh9EOOKp1kx8
+         3xW5aGJACNEWOPkaXZYaQ1T6oCip11BTobt24zanfdPUMR2cZAq0uO50uPpqY83bh6iX
+         93GYjD1K5TkSzScAHzkv/USW3gmgMggcWp3+0E7YobpVZRndCeqVI0rUQnv6x6+kzm46
+         LwoBz506iew0lS//LK3Vo8m7iK04eqWGsbOhQpXph0AAZacF01xdgAP3Lmp8wS73NLzd
+         BjkpMud7qqaGXmklsmxktja+PLoxEOfAelvVvm3QEFO94JMrPfB2wXWeB32h+Fud7s7W
+         YhpQ==
+X-Gm-Message-State: AOAM530I4vxbv0cQsJaHA9jvqWH7cgpNlOtXSrZhbFYpqJHTWvnwVA5M
+        xXB6XFa1RZf5MmqviEe5ktMKXsWBHg/6aeEtymY=
+X-Google-Smtp-Source: ABdhPJyXy7fYqH1WC+CAl/xJtpt6LO0otCfDPKfVZV7eNKcCDKA/fhs+CDiXgD0C+Yo8m1IfPEiieJ8NqVpQ5wc5XN8=
+X-Received: by 2002:a25:5054:: with SMTP id e81mr5766366ybb.510.1628895714219;
+ Fri, 13 Aug 2021 16:01:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210808215914.weaqxmsqgvmtbvep@bigdesk>
-In-Reply-To: <20210808215914.weaqxmsqgvmtbvep@bigdesk>
+References: <20210812003819.2439037-1-haoluo@google.com>
+In-Reply-To: <20210812003819.2439037-1-haoluo@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 13 Aug 2021 15:55:45 -0700
-Message-ID: <CAEf4BzaQ05XwCCRSRRN7McdUU=fAj3N+QGWTJaJJMQJ041yPUw@mail.gmail.com>
-Subject: Re: Update percpu array from userspace?
-To:     Yadunandan Pillai <ytpillai@thesw4rm.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Fri, 13 Aug 2021 16:01:43 -0700
+Message-ID: <CAEf4Bzbhtty_XjpPxSjfe4zEHAfWuQ4th15eLgomT2BDHUQ7jw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] libbpf: support weak typed ksyms.
+To:     Hao Luo <haoluo@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Aug 8, 2021 at 3:12 PM Yadunandan Pillai <ytpillai@thesw4rm.com> wrote:
+On Wed, Aug 11, 2021 at 5:40 PM Hao Luo <haoluo@google.com> wrote:
 >
-> Hello,
+> Currently weak typeless ksyms have default value zero, when they don't
+> exist in the kernel. However, weak typed ksyms are rejected by libbpf
+> if they can not be resolved. This means that if a bpf object contains
+> the declaration of a nonexistent weak typed ksym, it will be rejected
+> even if there is no program that references the symbol.
 >
-> Conceptually, what would be the process behind updating a percpu map
-> from userspace? Looking up elements is fairly simple to digest. (For
-> example).
+> Nonexistent weak typed ksyms can also default to zero just like
+> typeless ones. This allows programs that access weak typed ksyms to be
+> accepted by verifier, if the accesses are guarded. For example,
+>
+> extern const int bpf_link_fops3 __ksym __weak;
+>
+> /* then in BPF program */
+>
+> if (&bpf_link_fops3) {
+>    /* use bpf_link_fops3 */
+> }
+>
+> If actual use of nonexistent typed ksym is not guarded properly,
+> verifier would see that register is not PTR_TO_BTF_ID and wouldn't
+> allow to use it for direct memory reads or passing it to BPF helpers.
+>
+> Signed-off-by: Hao Luo <haoluo@google.com>
+> ---
 
-It's symmetrical to lookup. You have to prepare an array of values,
-one for each possible CPU, and just pass that to bpf_map_update_elem()
-call. You cannot update individual CPU value, it's all of CPU values
-(for a given key, of course).
+Looks good, applied to bpf-next. For the future, please split libbpf
+and selftests changes into separate patches, it's nicer to have those
+logically separate.
 
+At some point we should probably also improve libbpf error reporting
+for such situations, for better user experience. We have a similar
+problem with CO-RE relocation, verifier doesn't know about those
+concepts, so verifier log is not very helpful, but libbpf can make
+sense out of it with some extra BPF verifier log parsing.
+
+> Changes since v2:
+>  - Move special handling and warning from find_ksym_btf_id() to
+>    bpf_object__resolve_ksym_var_btf_id().
+>  - Removed bpf_link_fops3 from tests since it's not used.
+>  - Separated variable declaration and statements.
 >
-> -------
+> Changes since v1:
+>  - Weak typed symbols default to zero, as suggested by Andrii.
+>  - Use ASSERT_XXX() for tests.
 >
-> int map_fd = bpf_create_map_name(
->         BPF_MAP_TYPE_PERCPU_ARRAY,
->         "map_name",
->         sizeof(__u32),
->         sizeof(__u32),
->         10,
->         0
-> );
->
-> int key = 4;
-> int values[nr_cpus];
->
-> bpf_map_lookup_elem(map_fd, &key, values);
->
-> -------
->
-> This gets the fifth element for each percpu array.
->
-> But how do you update the values in each percpu array from the
-> "values" array? If you can directly run bpf_map_update_elem() on the
-> file descriptor, does that mean that the updated value is automatically
-> replicated across all percpu arrays? What if you wanted to update a
-> specific percpu array?
+>  tools/lib/bpf/libbpf.c                        | 16 +++---
+>  .../selftests/bpf/prog_tests/ksyms_btf.c      | 31 ++++++++++
+>  .../selftests/bpf/progs/test_ksyms_weak.c     | 56 +++++++++++++++++++
+>  3 files changed, 96 insertions(+), 7 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_weak.c
 >
 
-Why don't you just try and see how it works? In this case, if you
-specify the same key (4), you'll update values (across all CPUs)
-corresponding to key=4.
+[...]
