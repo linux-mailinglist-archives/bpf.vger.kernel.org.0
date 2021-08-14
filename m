@@ -2,239 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE48C3EBF23
-	for <lists+bpf@lfdr.de>; Sat, 14 Aug 2021 03:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DDB3EBF74
+	for <lists+bpf@lfdr.de>; Sat, 14 Aug 2021 03:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235989AbhHNBB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Aug 2021 21:01:29 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:60653 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235870AbhHNBB2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Aug 2021 21:01:28 -0400
+        id S236200AbhHNB6N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Aug 2021 21:58:13 -0400
+Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:33696 "EHLO
+        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236320AbhHNB6N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Aug 2021 21:58:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1628902862; x=1660438862;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qedY7j3n4lJj1ou1ePjI/4MPlgHnzigr2lbey4ecztY=;
-  b=V3cte5+KubA0n7dBK6whHX2CpgSGCIJCjdLUtG9k1e3NwsQALSb+3ucv
-   nnwuDEXQMxYvAcKhjBq8LmGwxx213cPkiM0o0r6Ks4lqBvIMT6CKpFlyK
-   YxNxQiH5sTLXcurYLHEou0MJAb33JoJ5dd9YdcU8Pthak2nxTA5HpSIKT
-   E=;
+  s=amazon201209; t=1628906267; x=1660442267;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rWGa6VoVBJO0Tg7YabuMr7xq7VCnbE6WY5UBCs1lIDQ=;
+  b=AHir3tAvFGRZ6Yhw9COTsoqZTl3XMkHs3ZhgKjsRWyI2Wc1ZDuimlWUG
+   2WY/VIgXWI4AfA1EDlORdQ3BDRjpIn0hWUi6le96jd5/Wyn8rXl0+cdNu
+   89Qi2HLcHL1tnUZ9u++A16afxEgwMZZpGSsa073FYJfGsqmah6kEH962o
+   c=;
 X-IronPort-AV: E=Sophos;i="5.84,320,1620691200"; 
-   d="scan'208";a="141723220"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 14 Aug 2021 01:00:59 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id 8674F1A0939;
-        Sat, 14 Aug 2021 01:00:57 +0000 (UTC)
+   d="scan'208";a="19215681"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 14 Aug 2021 01:57:45 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id 6D8032407BE;
+        Sat, 14 Aug 2021 01:57:41 +0000 (UTC)
 Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Sat, 14 Aug 2021 01:00:56 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.161.187) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Sat, 14 Aug 2021 01:57:40 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.161.69) by
  EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Sat, 14 Aug 2021 01:00:45 +0000
+ id 15.0.1497.23; Sat, 14 Aug 2021 01:57:35 +0000
 From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <andrii.nakryiko@gmail.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <john.fastabend@gmail.com>, <kafai@fb.com>,
-        <kpsingh@kernel.org>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <netdev@vger.kernel.org>,
-        <songliubraving@fb.com>, <yhs@fb.com>
-Subject: Re: [PATCH v5 bpf-next 3/4] selftest/bpf: Implement sample UNIX domain socket iterator program.
-Date:   Sat, 14 Aug 2021 10:00:41 +0900
-Message-ID: <20210814010041.38316-1-kuniyu@amazon.co.jp>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+CC:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+Subject: [PATCH v6 bpf-next 0/4] BPF iterator for UNIX domain socket.
+Date:   Sat, 14 Aug 2021 10:57:14 +0900
+Message-ID: <20210814015718.42704-1-kuniyu@amazon.co.jp>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAEf4BzbVpqkXk4XiaXW=hTa6hwH3u8c2n8MruTNAKM5Y0XTjQg@mail.gmail.com>
-References: <CAEf4BzbVpqkXk4XiaXW=hTa6hwH3u8c2n8MruTNAKM5Y0XTjQg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.43.161.187]
-X-ClientProxiedBy: EX13D40UWC004.ant.amazon.com (10.43.162.175) To
+X-Originating-IP: [10.43.161.69]
+X-ClientProxiedBy: EX13D13UWB003.ant.amazon.com (10.43.161.233) To
  EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 13 Aug 2021 17:26:05 -0700
-> On Fri, Aug 13, 2021 at 5:21 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> >
-> > From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Date:   Fri, 13 Aug 2021 16:25:53 -0700
-> > > On Thu, Aug 12, 2021 at 9:46 AM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> > > >
-> > > > The iterator can output almost the same result compared to /proc/net/unix.
-> > > > The header line is aligned, and the Inode column uses "%8lu" because "%5lu"
-> > > > can be easily overflown.
-> > > >
-> > > >   # cat /sys/fs/bpf/unix
-> > > >   Num               RefCount Protocol Flags    Type St Inode    Path
-> > >
-> > > It's totally my OCD, but why the column name is not aligned with
-> > > values? I mean the "Inode" column. It's left aligned, but values
-> > > (numbers) are right-aligned? I'd fix that while applying, but I can't
-> > > apply due to selftests failures, so please take a look.
-> >
-> > Ah, honestly, I've felt something strange about the column... will fix it!
-> >
-> >
-> > >
-> > >
-> > > >   ffff963c06689800: 00000002 00000000 00010000 0001 01    18697 private/defer
-> > > >   ffff963c7c979c00: 00000002 00000000 00000000 0001 01   598245 @Hello@World@
-> > > >
-> > > >   # cat /proc/net/unix
-> > > >   Num       RefCount Protocol Flags    Type St Inode Path
-> > > >   ffff963c06689800: 00000002 00000000 00010000 0001 01 18697 private/defer
-> > > >   ffff963c7c979c00: 00000002 00000000 00000000 0001 01 598245 @Hello@World@
-> > > >
-> > > > Note that this prog requires the patch ([0]) for LLVM code gen.  Thanks to
-> > > > Yonghong Song for analysing and fixing.
-> > > >
-> > > > [0] https://reviews.llvm.org/D107483
-> > > >
-> > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > > > Acked-by: Yonghong Song <yhs@fb.com>
-> > > > ---
-> > >
-> > > This selftests breaks test_progs-no_alu32 ([0], the error log is super
-> > > long and can freeze browser; it looks like an infinite loop and BPF
-> > > verifier just keeps reporting it until it runs out of 1mln
-> > > instructions or something). Please check what's going on there, I
-> > > can't land it as it is right now.
-> > >
-> > >   [0] https://github.com/kernel-patches/bpf/runs/3326071112?check_suite_focus=true#step:6:124288
-> > >
-> > >
-> > > >  tools/testing/selftests/bpf/README.rst        | 38 +++++++++
-> > > >  .../selftests/bpf/prog_tests/bpf_iter.c       | 16 ++++
-> > > >  tools/testing/selftests/bpf/progs/bpf_iter.h  |  8 ++
-> > > >  .../selftests/bpf/progs/bpf_iter_unix.c       | 77 +++++++++++++++++++
-> > > >  .../selftests/bpf/progs/bpf_tracing_net.h     |  4 +
-> > > >  5 files changed, 143 insertions(+)
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-> > > >
-> > >
-> > > [...]
-> > >
-> > > > +                       /* The name of the abstract UNIX domain socket starts
-> > > > +                        * with '\0' and can contain '\0'.  The null bytes
-> > > > +                        * should be escaped as done in unix_seq_show().
-> > > > +                        */
-> > > > +                       int i, len;
-> > > > +
-> > >
-> > > no_alu32 variant probably isn't happy about using int for this, it
-> > > probably does << 32, >> 32 dance and loses track of actual value in
-> > > the loop. You can try using u64 instead.
-> >
-> > Sorry, I missed the no_alu32 test.
-> > Changing int to __u64 fixed the error, thanks!
-> >
-> >
-> > >
-> > > > +                       len = unix_sk->addr->len - sizeof(short);
-> > > > +
-> > > > +                       BPF_SEQ_PRINTF(seq, " @");
-> > > > +
-> > > > +                       /* unix_mkname() tests this upper bound. */
-> > > > +                       if (len < sizeof(struct sockaddr_un))
-> > > > +                               for (i = 1; i < len; i++)
-> > >
-> > > if you move above if inside the loop to break out of the loop, does it
-> > > change how Clang generates code?
-> > >
-> > > for (i = 1; i < len i++) {
-> > >     if (i >= sizeof(struct sockaddr_un))
-> > >         break;
-> > >     BPF_SEQ_PRINTF(...);
-> > > }
-> >
-> > Yes, but there seems little defference.
-> > Which is preferable?
-> >
-> > ---8<---
-> > before (for inside if) <- -> after (if inside loop)
-> >       96:       07 08 00 00 fe ff ff ff r8 += -2                          |     ;                       for (i = 1; i < len; i++) {
-> > ;                       if (len < sizeof(struct sockaddr_un))             |           97:       bf 81 00 00 00 00 00 00 r1 = r8
-> >       97:       25 08 10 00 6d 00 00 00 if r8 > 109 goto +16 <LBB0_21>    |           98:       07 01 00 00 fc ff ff ff r1 += -4
-> > ;                               for (i = 1; i < len; i++)                 |           99:       25 01 12 00 6b 00 00 00 if r1 > 107 goto +18 <LBB0_21>
-> >       98:       a5 08 0f 00 02 00 00 00 if r8 < 2 goto +15 <LBB0_21>      |          100:       07 08 00 00 fe ff ff ff r8 += -2
-> >       99:       b7 09 00 00 01 00 00 00 r9 = 1                            |          101:       b7 09 00 00 01 00 00 00 r9 = 1
-> >      100:       05 00 16 00 00 00 00 00 goto +22 <LBB0_18>                |          102:       b7 06 00 00 02 00 00 00 r6 = 2
-> >                                                                           |          103:       05 00 17 00 00 00 00 00 goto +23 <LBB0_17>
-> > ...
-> >      111:       85 00 00 00 7e 00 00 00 call 126                          |          113:       b4 05 00 00 08 00 00 00 w5 = 8
-> > ;                               for (i = 1; i < len; i++)                 |          114:       85 00 00 00 7e 00 00 00 call 126
-> >      112:       07 09 00 00 01 00 00 00 r9 += 1                           |     ;                       for (i = 1; i < len; i++) {
-> >      113:       ad 89 09 00 00 00 00 00 if r9 < r8 goto +9 <LBB0_18>      |          115:       25 08 02 00 6d 00 00 00 if r8 > 109 goto +2 <LBB0_21>
-> >                                                                           >          116:       07 09 00 00 01 00 00 00 r9 += 1
-> >                                                                           >     ;                       for (i = 1; i < len; i++) {
-> >                                                                           >          117:       ad 89 09 00 00 00 00 00 if r9 < r8 goto +9 <LBB0_17>
-> > ---8<---
-> >
-> 
-> Have you tried running the variant I proposed on Clang without
-> Yonghong's recent fix? I wonder if it works without that fix (not that
-> there is anything wrong about the fix, but if we can avoid depending
-> on it, it would be great).
+This patch set adds BPF iterator support for UNIX domain socket.  The first
+patch implements it, and the second adds "%c" support for BPF_SEQ_PRINTF().
 
-It was with the fix.
+Thanks to Yonghong Song for the fix [0] for the LLVM code gen.  The fix
+prevents the LLVM compiler from transforming the loop exit condition '<' to
+'!=', where the upper bound is not a constant.  The transformation leads
+the verifier to interpret it as an infinite loop.
 
-I rebuilt LLVM without the fix, then the if-inside-for code worked well :)
-There was no transformation from '<' to '!='.
+And thanks to Andrii Nakryiko for its workaround [1].
 
-I'll drop the change in README and respin with your suggestion soon.
-
----8<---
-; 			for (i = 1; i < len; i++) {
-      97:	bf 81 00 00 00 00 00 00	r1 = r8
-      98:	07 01 00 00 fc ff ff ff	r1 += -4
-      99:	25 01 12 00 6b 00 00 00	if r1 > 107 goto +18 <LBB0_21>
-     100:	07 08 00 00 fe ff ff ff	r8 += -2
-     101:	b7 09 00 00 01 00 00 00	r9 = 1
-     102:	b7 06 00 00 02 00 00 00	r6 = 2
-     103:	05 00 17 00 00 00 00 00	goto +23 <LBB0_17>
-...
-; 			for (i = 1; i < len; i++) {
-     115:	25 08 02 00 6d 00 00 00	if r8 > 109 goto +2 <LBB0_21>
-     116:	07 09 00 00 01 00 00 00	r9 += 1
-; 			for (i = 1; i < len; i++) {
-     117:	ad 89 09 00 00 00 00 00	if r9 < r8 goto +9 <LBB0_17>
----8<---
+[0] https://reviews.llvm.org/D107483
+[1] https://lore.kernel.org/netdev/CAEf4BzZ3sVx1m1mOCcPcuVPiY6cWEAO=6VGHDiXEs9ZVD-RoLg@mail.gmail.com/
 
 
-> 
-> >
-> > >
-> > >
-> > > > +                                       BPF_SEQ_PRINTF(seq, "%c",
-> > > > +                                                      unix_sk->addr->name->sun_path[i] ?:
-> > > > +                                                      '@');
-> > > > +               }
-> > > > +       }
-> > > > +
-> > > > +       BPF_SEQ_PRINTF(seq, "\n");
-> > > > +
-> > > > +       return 0;
-> > > > +}
-> > > > diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-> > > > index 3af0998a0623..eef5646ddb19 100644
-> > > > --- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-> > > > +++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-> > > > @@ -5,6 +5,10 @@
-> > > >  #define AF_INET                        2
-> > > >  #define AF_INET6               10
-> > > >
-> > > > +#define __SO_ACCEPTCON         (1 << 16)
-> > > > +#define UNIX_HASH_SIZE         256
-> > > > +#define UNIX_ABSTRACT(unix_sk) (unix_sk->addr->hash < UNIX_HASH_SIZE)
-> > > > +
-> > > >  #define SOL_TCP                        6
-> > > >  #define TCP_CONGESTION         13
-> > > >  #define TCP_CA_NAME_MAX                16
-> > > > --
-> > > > 2.30.2
+Changelog:
+  v6:
+  - Align the header "Inde" column
+  - Change int vars to __u64 not to break test_progs-no_alu32
+  - Move the if statement into the for loop not to depend on the fix [0]
+  - Drop the README change
+  - Modify "%c" positive test patterns
+
+  v5:
+  https://lore.kernel.org/netdev/20210812164557.79046-1-kuniyu@amazon.co.jp/
+  - Align header line of bpf_iter_unix.c
+  - Add test for "%c"
+
+  v4:
+  https://lore.kernel.org/netdev/20210810092807.13190-1-kuniyu@amazon.co.jp/
+  - Check IS_BUILTIN(CONFIG_UNIX)
+  - Support "%c" in BPF_SEQ_PRINTF()
+  - Uncomment the code to print the name of the abstract socket
+  - Mention the LLVM fix in README.rst
+  - Remove the 'aligned' attribute in bpf_iter.h
+  - Keep the format string on a single line
+
+  v3:
+  https://lore.kernel.org/netdev/20210804070851.97834-1-kuniyu@amazon.co.jp/
+  - Export some functions for CONFIG_UNIX=m
+
+  v2:
+  https://lore.kernel.org/netdev/20210803011110.21205-1-kuniyu@amazon.co.jp/
+  - Implement bpf_iter specific seq_ops->stop()
+  - Add bpf_iter__unix in bpf_iter.h
+  - Move common definitions in selftest to bpf_tracing_net.h
+  - Include the code for abstract UNIX domain socket as comment in selftest
+  - Use ASSERT_OK_PTR() instead of CHECK()
+  - Make ternary operators on single line
+
+  v1:
+  https://lore.kernel.org/netdev/20210729233645.4869-1-kuniyu@amazon.co.jp/
+
+
+Kuniyuki Iwashima (4):
+  bpf: af_unix: Implement BPF iterator for UNIX domain socket.
+  bpf: Support "%c" in bpf_bprintf_prepare().
+  selftest/bpf: Implement sample UNIX domain socket iterator program.
+  selftest/bpf: Extend the bpf_snprintf() test for "%c".
+
+ include/linux/btf_ids.h                       |  3 +-
+ kernel/bpf/helpers.c                          | 14 +++
+ net/unix/af_unix.c                            | 93 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 16 ++++
+ .../selftests/bpf/prog_tests/snprintf.c       |  4 +-
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |  8 ++
+ .../selftests/bpf/progs/bpf_iter_unix.c       | 80 ++++++++++++++++
+ .../selftests/bpf/progs/bpf_tracing_net.h     |  4 +
+ .../selftests/bpf/progs/test_snprintf.c       |  6 +-
+ 9 files changed, 223 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_unix.c
+
+-- 
+2.30.2
+
