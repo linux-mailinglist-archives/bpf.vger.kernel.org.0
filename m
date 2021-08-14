@@ -2,224 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAEB3EBEF8
-	for <lists+bpf@lfdr.de>; Sat, 14 Aug 2021 02:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBA53EBF05
+	for <lists+bpf@lfdr.de>; Sat, 14 Aug 2021 02:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235805AbhHNA0p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Aug 2021 20:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235776AbhHNA0o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Aug 2021 20:26:44 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC25C061756;
-        Fri, 13 Aug 2021 17:26:17 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id o126so13787426ybo.7;
-        Fri, 13 Aug 2021 17:26:17 -0700 (PDT)
+        id S235776AbhHNAho (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Aug 2021 20:37:44 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:40830 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235330AbhHNAhn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Aug 2021 20:37:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZoysL5lDfLKZ+wWbRS+l3epQ03ts/jCJh76pqNcdD48=;
-        b=Cpt0mHNLdfgtg3TtpzUCxAgqCRq5+1ViLV0JZoWtHfmYNIeHmijYps3VChf0HLMFZL
-         uaSr8YM+0MJLdfbQVgxqSM6AYCGhKW0jKPEUye2QimSXkHHXbgKZK/lhDUlhkXiXNMfr
-         RmQuzlL5hIcsOYDM6EtND9VdSe1Oc5s91mUQ7tT+REyigr4gMBXEm6ZOSEdCmAbi6Gy2
-         z7tmMmQfmewJ6vpeJq5zibx6GW9bVSk/euoCUQMp/oNOTgGrPTunJBp7W6C+LD2jjKXP
-         eJpUQIZ+ZeXWTeoOScUUV9QFWnjH42/H4pcHXjc+7CG17BjBA3fAkwfFDkAGG8tEep/n
-         qAHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZoysL5lDfLKZ+wWbRS+l3epQ03ts/jCJh76pqNcdD48=;
-        b=OmbEmQblhnxbCrc7G1Bl77h9qITjMomReRMn4yrWKsncascaqx7CoThzrYugiiii0f
-         z2Gr6g6ysUHAq10YBVkQ7dmpQBOzydV+VzC/RzdPoVbJ9SxHpFuAKJkxtLraX80xLC2T
-         yOLjNDv8fYZIk8GhGc/Q9b4WRaUGjXIAQqKkHALbxhsUfYpIcmO6x7dtBKoy2EtroUXF
-         +AlZW+cnps8OVGtCHWzjBJLm/yDFUvB1IHxvAtdiX7kFtSYB1CIc3v436PddgEXGfP60
-         psI/9DAZWydyuWNwBsf9Q5IfcnbPBsDM5qatDZy/rcZiDx5S64OeVwZ2oFl9bMMTn7BI
-         V2nw==
-X-Gm-Message-State: AOAM530AWbcxTibNW0H7XM5nLPJnRql7ExzoFrAY7e0NChhMNrAvWEBm
-        VP6hdsjyu2xN/YN0ULpiixIHemlTVS7OkT8GjWo=
-X-Google-Smtp-Source: ABdhPJyDoooqsgG36cAMj9eA/V02V86WgBcnBXv/KkrUh5Sp4rDXdwKPZgC/VSTivyYIJ8d2oNb2zfZOenmmu53m5Ak=
-X-Received: by 2002:a25:4941:: with SMTP id w62mr6313920yba.230.1628900776300;
- Fri, 13 Aug 2021 17:26:16 -0700 (PDT)
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1628901437; x=1660437437;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=n2QkQ7D6KKoz51nnNwOW9EfIdFiY+r+AIPJp/zvMp9U=;
+  b=Z74sHrJFgeOVNKc7XG0HcwqnDtia08RPDIXvYblhOIFWdCS0B2zEYiL6
+   0Tr0MMTVIu+tmzdg9wDL8GBIja/90edEXaEavqLI+KWKO50QmxOO9QpNT
+   442H4c0dHkzI41wEj/CjIm5jI6JmxBoBqousysfJ9P3UCzqG06NgMZ/0S
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.84,320,1620691200"; 
+   d="scan'208";a="19217705"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 14 Aug 2021 00:37:15 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id 78335A1E84;
+        Sat, 14 Aug 2021 00:37:11 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Sat, 14 Aug 2021 00:37:10 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.41) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Sat, 14 Aug 2021 00:37:05 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <andrii.nakryiko@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <john.fastabend@gmail.com>, <kafai@fb.com>,
+        <kpsingh@kernel.org>, <kuba@kernel.org>, <kuni1840@gmail.com>,
+        <kuniyu@amazon.co.jp>, <netdev@vger.kernel.org>,
+        <songliubraving@fb.com>, <yhs@fb.com>
+Subject: Re: [PATCH v5 bpf-next 4/4] selftest/bpf: Extend the bpf_snprintf() test for "%c".
+Date:   Sat, 14 Aug 2021 09:37:02 +0900
+Message-ID: <20210814003702.35395-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAEf4Bzb-Y5SRrS6VHpBbosUj1QU+76zo29KOJF9-GBoJKaZhCQ@mail.gmail.com>
+References: <CAEf4Bzb-Y5SRrS6VHpBbosUj1QU+76zo29KOJF9-GBoJKaZhCQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAEf4BzZ3sVx1m1mOCcPcuVPiY6cWEAO=6VGHDiXEs9ZVD-RoLg@mail.gmail.com>
- <20210814002101.33742-1-kuniyu@amazon.co.jp>
-In-Reply-To: <20210814002101.33742-1-kuniyu@amazon.co.jp>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 13 Aug 2021 17:26:05 -0700
-Message-ID: <CAEf4BzbVpqkXk4XiaXW=hTa6hwH3u8c2n8MruTNAKM5Y0XTjQg@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 3/4] selftest/bpf: Implement sample UNIX
- domain socket iterator program.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.41]
+X-ClientProxiedBy: EX13D11UWC002.ant.amazon.com (10.43.162.174) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 5:21 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
->
-> From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Date:   Fri, 13 Aug 2021 16:25:53 -0700
-> > On Thu, Aug 12, 2021 at 9:46 AM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> > >
-> > > The iterator can output almost the same result compared to /proc/net/unix.
-> > > The header line is aligned, and the Inode column uses "%8lu" because "%5lu"
-> > > can be easily overflown.
-> > >
-> > >   # cat /sys/fs/bpf/unix
-> > >   Num               RefCount Protocol Flags    Type St Inode    Path
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 13 Aug 2021 16:30:29 -0700
+> On Fri, Aug 13, 2021 at 4:28 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > It's totally my OCD, but why the column name is not aligned with
-> > values? I mean the "Inode" column. It's left aligned, but values
-> > (numbers) are right-aligned? I'd fix that while applying, but I can't
-> > apply due to selftests failures, so please take a look.
->
-> Ah, honestly, I've felt something strange about the column... will fix it!
->
->
-> >
-> >
-> > >   ffff963c06689800: 00000002 00000000 00010000 0001 01    18697 private/defer
-> > >   ffff963c7c979c00: 00000002 00000000 00000000 0001 01   598245 @Hello@World@
+> > On Thu, Aug 12, 2021 at 9:47 AM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
 > > >
-> > >   # cat /proc/net/unix
-> > >   Num       RefCount Protocol Flags    Type St Inode Path
-> > >   ffff963c06689800: 00000002 00000000 00010000 0001 01 18697 private/defer
-> > >   ffff963c7c979c00: 00000002 00000000 00000000 0001 01 598245 @Hello@World@
+> > > This patch adds a "positive" pattern for "%c", which intentionally uses a
+> > > __u32 value (0x64636261, "dbca") to print a single character "a".  If the
+> > > implementation went wrong, other 3 bytes might show up as the part of the
+> > > latter "%+05s".
 > > >
-> > > Note that this prog requires the patch ([0]) for LLVM code gen.  Thanks to
-> > > Yonghong Song for analysing and fixing.
-> > >
-> > > [0] https://reviews.llvm.org/D107483
+> > > Also, this patch adds two "negative" patterns for wide character.
 > > >
 > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > > Acked-by: Yonghong Song <yhs@fb.com>
 > > > ---
-> >
-> > This selftests breaks test_progs-no_alu32 ([0], the error log is super
-> > long and can freeze browser; it looks like an infinite loop and BPF
-> > verifier just keeps reporting it until it runs out of 1mln
-> > instructions or something). Please check what's going on there, I
-> > can't land it as it is right now.
-> >
-> >   [0] https://github.com/kernel-patches/bpf/runs/3326071112?check_suite_focus=true#step:6:124288
-> >
-> >
-> > >  tools/testing/selftests/bpf/README.rst        | 38 +++++++++
-> > >  .../selftests/bpf/prog_tests/bpf_iter.c       | 16 ++++
-> > >  tools/testing/selftests/bpf/progs/bpf_iter.h  |  8 ++
-> > >  .../selftests/bpf/progs/bpf_iter_unix.c       | 77 +++++++++++++++++++
-> > >  .../selftests/bpf/progs/bpf_tracing_net.h     |  4 +
-> > >  5 files changed, 143 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_unix.c
+> > >  tools/testing/selftests/bpf/prog_tests/snprintf.c | 4 +++-
+> > >  tools/testing/selftests/bpf/progs/test_snprintf.c | 7 ++++---
+> > >  2 files changed, 7 insertions(+), 4 deletions(-)
 > > >
-> >
-> > [...]
-> >
-> > > +                       /* The name of the abstract UNIX domain socket starts
-> > > +                        * with '\0' and can contain '\0'.  The null bytes
-> > > +                        * should be escaped as done in unix_seq_show().
-> > > +                        */
-> > > +                       int i, len;
-> > > +
-> >
-> > no_alu32 variant probably isn't happy about using int for this, it
-> > probably does << 32, >> 32 dance and loses track of actual value in
-> > the loop. You can try using u64 instead.
->
-> Sorry, I missed the no_alu32 test.
-> Changing int to __u64 fixed the error, thanks!
->
->
-> >
-> > > +                       len = unix_sk->addr->len - sizeof(short);
-> > > +
-> > > +                       BPF_SEQ_PRINTF(seq, " @");
-> > > +
-> > > +                       /* unix_mkname() tests this upper bound. */
-> > > +                       if (len < sizeof(struct sockaddr_un))
-> > > +                               for (i = 1; i < len; i++)
-> >
-> > if you move above if inside the loop to break out of the loop, does it
-> > change how Clang generates code?
-> >
-> > for (i = 1; i < len i++) {
-> >     if (i >= sizeof(struct sockaddr_un))
-> >         break;
-> >     BPF_SEQ_PRINTF(...);
-> > }
->
-> Yes, but there seems little defference.
-> Which is preferable?
->
-> ---8<---
-> before (for inside if) <- -> after (if inside loop)
->       96:       07 08 00 00 fe ff ff ff r8 += -2                          |     ;                       for (i = 1; i < len; i++) {
-> ;                       if (len < sizeof(struct sockaddr_un))             |           97:       bf 81 00 00 00 00 00 00 r1 = r8
->       97:       25 08 10 00 6d 00 00 00 if r8 > 109 goto +16 <LBB0_21>    |           98:       07 01 00 00 fc ff ff ff r1 += -4
-> ;                               for (i = 1; i < len; i++)                 |           99:       25 01 12 00 6b 00 00 00 if r1 > 107 goto +18 <LBB0_21>
->       98:       a5 08 0f 00 02 00 00 00 if r8 < 2 goto +15 <LBB0_21>      |          100:       07 08 00 00 fe ff ff ff r8 += -2
->       99:       b7 09 00 00 01 00 00 00 r9 = 1                            |          101:       b7 09 00 00 01 00 00 00 r9 = 1
->      100:       05 00 16 00 00 00 00 00 goto +22 <LBB0_18>                |          102:       b7 06 00 00 02 00 00 00 r6 = 2
->                                                                           |          103:       05 00 17 00 00 00 00 00 goto +23 <LBB0_17>
-> ...
->      111:       85 00 00 00 7e 00 00 00 call 126                          |          113:       b4 05 00 00 08 00 00 00 w5 = 8
-> ;                               for (i = 1; i < len; i++)                 |          114:       85 00 00 00 7e 00 00 00 call 126
->      112:       07 09 00 00 01 00 00 00 r9 += 1                           |     ;                       for (i = 1; i < len; i++) {
->      113:       ad 89 09 00 00 00 00 00 if r9 < r8 goto +9 <LBB0_18>      |          115:       25 08 02 00 6d 00 00 00 if r8 > 109 goto +2 <LBB0_21>
->                                                                           >          116:       07 09 00 00 01 00 00 00 r9 += 1
->                                                                           >     ;                       for (i = 1; i < len; i++) {
->                                                                           >          117:       ad 89 09 00 00 00 00 00 if r9 < r8 goto +9 <LBB0_17>
-> ---8<---
->
-
-Have you tried running the variant I proposed on Clang without
-Yonghong's recent fix? I wonder if it works without that fix (not that
-there is anything wrong about the fix, but if we can avoid depending
-on it, it would be great).
-
->
-> >
-> >
-> > > +                                       BPF_SEQ_PRINTF(seq, "%c",
-> > > +                                                      unix_sk->addr->name->sun_path[i] ?:
-> > > +                                                      '@');
-> > > +               }
-> > > +       }
-> > > +
-> > > +       BPF_SEQ_PRINTF(seq, "\n");
-> > > +
-> > > +       return 0;
-> > > +}
-> > > diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-> > > index 3af0998a0623..eef5646ddb19 100644
-> > > --- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-> > > +++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-> > > @@ -5,6 +5,10 @@
-> > >  #define AF_INET                        2
-> > >  #define AF_INET6               10
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> > > index dffbcaa1ec98..f77d7def7fed 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> > > @@ -19,7 +19,7 @@
+> > >  #define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
+> > >  #define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
 > > >
-> > > +#define __SO_ACCEPTCON         (1 << 16)
-> > > +#define UNIX_HASH_SIZE         256
-> > > +#define UNIX_ABSTRACT(unix_sk) (unix_sk->addr->hash < UNIX_HASH_SIZE)
-> > > +
-> > >  #define SOL_TCP                        6
-> > >  #define TCP_CONGESTION         13
-> > >  #define TCP_CA_NAME_MAX                16
+> > > -#define EXP_STR_OUT  "str1 longstr"
+> > > +#define EXP_STR_OUT  "str1         a longstr"
+> > >  #define EXP_STR_RET  sizeof(EXP_STR_OUT)
+> > >
+> > >  #define EXP_OVER_OUT "%over"
+> > > @@ -114,6 +114,8 @@ void test_snprintf_negative(void)
+> > >         ASSERT_ERR(load_single_snprintf("%"), "invalid specifier 3");
+> > >         ASSERT_ERR(load_single_snprintf("%12345678"), "invalid specifier 4");
+> > >         ASSERT_ERR(load_single_snprintf("%--------"), "invalid specifier 5");
+> > > +       ASSERT_ERR(load_single_snprintf("%lc"), "invalid specifier 6");
+> > > +       ASSERT_ERR(load_single_snprintf("%llc"), "invalid specifier 7");
+> > >         ASSERT_ERR(load_single_snprintf("\x80"), "non ascii character");
+> > >         ASSERT_ERR(load_single_snprintf("\x1"), "non printable character");
+> > >  }
+> > > diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
+> > > index e2ad26150f9b..afc2c583125b 100644
+> > > --- a/tools/testing/selftests/bpf/progs/test_snprintf.c
+> > > +++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
+> > > @@ -40,6 +40,7 @@ int handler(const void *ctx)
+> > >         /* Convenient values to pretty-print */
+> > >         const __u8 ex_ipv4[] = {127, 0, 0, 1};
+> > >         const __u8 ex_ipv6[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+> > > +       const __u32 chr1 = 0x64636261; /* dcba */
+> > >         static const char str1[] = "str1";
+> > >         static const char longstr[] = "longstr";
+> > >
+> > > @@ -59,9 +60,9 @@ int handler(const void *ctx)
+> > >         /* Kernel pointers */
+> > >         addr_ret = BPF_SNPRINTF(addr_out, sizeof(addr_out), "%pK %px %p",
+> > >                                 0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55);
+> > > -       /* Strings embedding */
+> > > -       str_ret  = BPF_SNPRINTF(str_out, sizeof(str_out), "%s %+05s",
+> > > -                               str1, longstr);
+> > > +       /* Strings and single-byte character embedding */
+> > > +       str_ret  = BPF_SNPRINTF(str_out, sizeof(str_out), "%s % 9c %+05s",
+> > > +                               str1, chr1, longstr);
+> 
+> Can you also add tests for %+2c, %-3c, %04c, %0c? Think outside the box ;)
+
+Sure.
+
+
+> > Why this hackery with __u32? You are making an endianness assumption
+> > (it will break on big-endian), and you'd never write real code like
+> > that. Just pass 'a', what's wrong with that?
+
+In my first implementation of "%c" support, I tried to support "%lc" and
+"%llc" also and reused the later int code.  Then just testing 'a' was ok,
+but it was wrong with the 0x64636261, three bytes of which showed up as
+part of the next %s.  So, I thought it would be better to test with int.
+But exactly it breaks the big-endian case, I'll just pass 'a'.
+
+
+> >
+> > >         /* Overflow */
+> > >         over_ret = BPF_SNPRINTF(over_out, sizeof(over_out), "%%overflow");
+> > >         /* Padding of fixed width numbers */
 > > > --
 > > > 2.30.2
 > > >
