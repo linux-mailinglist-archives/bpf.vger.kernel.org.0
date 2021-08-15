@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2A93EC7D7
-	for <lists+bpf@lfdr.de>; Sun, 15 Aug 2021 09:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA9E3EC7D8
+	for <lists+bpf@lfdr.de>; Sun, 15 Aug 2021 09:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235457AbhHOHHn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 15 Aug 2021 03:07:43 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6372 "EHLO
+        id S235480AbhHOHHo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sun, 15 Aug 2021 03:07:44 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15956 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235480AbhHOHHV (ORCPT
+        by vger.kernel.org with ESMTP id S235569AbhHOHHV (ORCPT
         <rfc822;bpf@vger.kernel.org>); Sun, 15 Aug 2021 03:07:21 -0400
 Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17F6xAAc026213
-        for <bpf@vger.kernel.org>; Sun, 15 Aug 2021 00:06:49 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aebnwbk5g-2
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17F6xqfg026562
+        for <bpf@vger.kernel.org>; Sun, 15 Aug 2021 00:06:51 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3aebnwbk5p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 15 Aug 2021 00:06:49 -0700
-Received: from intmgw006.03.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Sun, 15 Aug 2021 00:06:51 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 15 Aug 2021 00:06:47 -0700
+ 15.1.2176.2; Sun, 15 Aug 2021 00:06:50 -0700
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 3BC4C3D405A0; Sun, 15 Aug 2021 00:06:41 -0700 (PDT)
+        id 4AA8A3D405A0; Sun, 15 Aug 2021 00:06:43 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v5 bpf-next 15/16] libbpf: add uprobe ref counter offset support for USDT semaphores
-Date:   Sun, 15 Aug 2021 00:06:08 -0700
-Message-ID: <20210815070609.987780-16-andrii@kernel.org>
+Subject: [PATCH v5 bpf-next 16/16] selftests/bpf: add ref_ctr_offset selftests
+Date:   Sun, 15 Aug 2021 00:06:09 -0700
+Message-ID: <20210815070609.987780-17-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210815070609.987780-1-andrii@kernel.org>
 References: <20210815070609.987780-1-andrii@kernel.org>
@@ -39,8 +39,8 @@ Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: u8w56NKgmBYQTBuPSg2FExBMVcK3fui5
-X-Proofpoint-GUID: u8w56NKgmBYQTBuPSg2FExBMVcK3fui5
+X-Proofpoint-ORIG-GUID: 9kvXsFwqARqq-Q6wN1IlC-_aIhMlM8pJ
+X-Proofpoint-GUID: 9kvXsFwqARqq-Q6wN1IlC-_aIhMlM8pJ
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-08-15_02:2021-08-13,2021-08-15 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
@@ -53,100 +53,142 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When attaching to uprobes through perf subsystem, it's possible to specify
-offset of a so-called USDT semaphore, which is just a reference counted u16,
-used by kernel to keep track of how many tracers are attached to a given
-location. Support for this feature was added in [0], so just wire this through
-uprobe_opts. This is important to enable implementing USDT attachment and
-tracing through libbpf's bpf_program__attach_uprobe_opts() API.
+Extend attach_probe selftests to specify ref_ctr_offset for uprobe/uretprobe
+and validate that its value is incremented from zero.
 
-  [0] a6ca88b241d5 ("trace_uprobe: support reference counter in fd-based uprobe")
+Turns out that once uprobe is attached with ref_ctr_offset, uretprobe for the
+same location/function *has* to use ref_ctr_offset as well, otherwise
+perf_event_open() fails with -EINVAL. So this test uses ref_ctr_offset for
+both uprobe and uretprobe, even though for the purpose of test uprobe would be
+enough.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 17 +++++++++++++----
- tools/lib/bpf/libbpf.h |  4 ++++
- 2 files changed, 17 insertions(+), 4 deletions(-)
+ .../selftests/bpf/prog_tests/attach_probe.c   | 39 +++++++++++++------
+ tools/testing/selftests/bpf/trace_helpers.c   | 21 ++++++++++
+ tools/testing/selftests/bpf/trace_helpers.h   |  1 +
+ 3 files changed, 50 insertions(+), 11 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 62ce878cb8e0..88d8825fc6f6 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9152,13 +9152,19 @@ static int determine_uprobe_retprobe_bit(void)
- 	return parse_uint_from_file(file, "config:%d\n");
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+index e40b41c44f8b..bf307bb9e446 100644
+--- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
++++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+@@ -2,14 +2,18 @@
+ #include <test_progs.h>
+ #include "test_attach_probe.skel.h"
  
-+#define PERF_UPROBE_REF_CTR_OFFSET_BITS 32
-+#define PERF_UPROBE_REF_CTR_OFFSET_SHIFT 32
++/* this is how USDT semaphore is actually defined, except volatile modifier */
++volatile unsigned short uprobe_ref_ctr __attribute__((unused)) __attribute((section(".probes")));
 +
- static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
--				 uint64_t offset, int pid)
-+				 uint64_t offset, int pid, size_t ref_ctr_off)
+ void test_attach_probe(void)
  {
- 	struct perf_event_attr attr = {};
- 	char errmsg[STRERR_BUFSIZE];
- 	int type, pfd, err;
++	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
+ 	int duration = 0;
+ 	struct bpf_link *kprobe_link, *kretprobe_link;
+ 	struct bpf_link *uprobe_link, *uretprobe_link;
+ 	struct test_attach_probe* skel;
+ 	size_t uprobe_offset;
+-	ssize_t base_addr;
++	ssize_t base_addr, ref_ctr_offset;
  
-+	if (ref_ctr_off >= (1ULL << PERF_UPROBE_REF_CTR_OFFSET_BITS))
-+		return -EINVAL;
+ 	base_addr = get_base_addr();
+ 	if (CHECK(base_addr < 0, "get_base_addr",
+@@ -17,6 +21,10 @@ void test_attach_probe(void)
+ 		return;
+ 	uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
+ 
++	ref_ctr_offset = get_rel_offset((uintptr_t)&uprobe_ref_ctr);
++	if (!ASSERT_GE(ref_ctr_offset, 0, "ref_ctr_offset"))
++		return;
 +
- 	type = uprobe ? determine_uprobe_perf_type()
- 		      : determine_kprobe_perf_type();
- 	if (type < 0) {
-@@ -9181,6 +9187,7 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
- 	}
- 	attr.size = sizeof(attr);
- 	attr.type = type;
-+	attr.config |= (__u64)ref_ctr_off << PERF_UPROBE_REF_CTR_OFFSET_SHIFT;
- 	attr.config1 = ptr_to_u64(name); /* kprobe_func or uprobe_path */
- 	attr.config2 = offset;		 /* kprobe_addr or probe_offset */
+ 	skel = test_attach_probe__open_and_load();
+ 	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+ 		return;
+@@ -37,20 +45,28 @@ void test_attach_probe(void)
+ 		goto cleanup;
+ 	skel->links.handle_kretprobe = kretprobe_link;
  
-@@ -9219,7 +9226,7 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
- 	pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
+-	uprobe_link = bpf_program__attach_uprobe(skel->progs.handle_uprobe,
+-						 false /* retprobe */,
+-						 0 /* self pid */,
+-						 "/proc/self/exe",
+-						 uprobe_offset);
++	ASSERT_EQ(uprobe_ref_ctr, 0, "uprobe_ref_ctr_before");
++
++	uprobe_opts.retprobe = false;
++	uprobe_opts.ref_ctr_offset = ref_ctr_offset;
++	uprobe_link = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe,
++						      0 /* self pid */,
++						      "/proc/self/exe",
++						      uprobe_offset,
++						      &uprobe_opts);
+ 	if (!ASSERT_OK_PTR(uprobe_link, "attach_uprobe"))
+ 		goto cleanup;
+ 	skel->links.handle_uprobe = uprobe_link;
  
- 	pfd = perf_event_open_probe(false /* uprobe */, retprobe, func_name,
--				    offset, -1 /* pid */);
-+				    offset, -1 /* pid */, 0 /* ref_ctr_off */);
- 	if (pfd < 0) {
- 		pr_warn("prog '%s': failed to create %s '%s' perf event: %s\n",
- 			prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
-@@ -9289,6 +9296,7 @@ bpf_program__attach_uprobe_opts(struct bpf_program *prog, pid_t pid,
- 	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
- 	char errmsg[STRERR_BUFSIZE];
- 	struct bpf_link *link;
-+	size_t ref_ctr_off;
- 	int pfd, err;
- 	bool retprobe;
+-	uretprobe_link = bpf_program__attach_uprobe(skel->progs.handle_uretprobe,
+-						    true /* retprobe */,
+-						    -1 /* any pid */,
+-						    "/proc/self/exe",
+-						    uprobe_offset);
++	ASSERT_GT(uprobe_ref_ctr, 0, "uprobe_ref_ctr_after");
++
++	/* if uprobe uses ref_ctr, uretprobe has to use ref_ctr as well */
++	uprobe_opts.retprobe = true;
++	uprobe_opts.ref_ctr_offset = ref_ctr_offset;
++	uretprobe_link = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe,
++							 -1 /* any pid */,
++							 "/proc/self/exe",
++							 uprobe_offset, &uprobe_opts);
+ 	if (!ASSERT_OK_PTR(uretprobe_link, "attach_uretprobe"))
+ 		goto cleanup;
+ 	skel->links.handle_uretprobe = uretprobe_link;
+@@ -77,4 +93,5 @@ void test_attach_probe(void)
  
-@@ -9296,10 +9304,11 @@ bpf_program__attach_uprobe_opts(struct bpf_program *prog, pid_t pid,
- 		return libbpf_err_ptr(-EINVAL);
+ cleanup:
+ 	test_attach_probe__destroy(skel);
++	ASSERT_EQ(uprobe_ref_ctr, 0, "uprobe_ref_ctr_cleanup");
+ }
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index 381dafce1d8f..e7a19b04d4ea 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -202,3 +202,24 @@ ssize_t get_base_addr(void)
+ 	fclose(f);
+ 	return -EINVAL;
+ }
++
++ssize_t get_rel_offset(uintptr_t addr)
++{
++	size_t start, end, offset;
++	char buf[256];
++	FILE *f;
++
++	f = fopen("/proc/self/maps", "r");
++	if (!f)
++		return -errno;
++
++	while (fscanf(f, "%zx-%zx %s %zx %*[^\n]\n", &start, &end, buf, &offset) == 4) {
++		if (addr >= start && addr < end) {
++			fclose(f);
++			return (size_t)addr - start + offset;
++		}
++	}
++
++	fclose(f);
++	return -EINVAL;
++}
+diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/selftests/bpf/trace_helpers.h
+index 3d9435b3dd3b..d907b445524d 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.h
++++ b/tools/testing/selftests/bpf/trace_helpers.h
+@@ -20,5 +20,6 @@ void read_trace_pipe(void);
  
- 	retprobe = OPTS_GET(opts, retprobe, false);
-+	ref_ctr_off = OPTS_GET(opts, ref_ctr_offset, 0);
- 	pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
+ ssize_t get_uprobe_offset(const void *addr, ssize_t base);
+ ssize_t get_base_addr(void);
++ssize_t get_rel_offset(uintptr_t addr);
  
--	pfd = perf_event_open_probe(true /* uprobe */, retprobe,
--				    binary_path, func_offset, pid);
-+	pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
-+				    func_offset, pid, ref_ctr_off);
- 	if (pfd < 0) {
- 		pr_warn("prog '%s': failed to create %s '%s:0x%zx' perf event: %s\n",
- 			prog->name, retprobe ? "uretprobe" : "uprobe",
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 1f4a67285365..f177d897c5f7 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -284,6 +284,10 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
- struct bpf_uprobe_opts {
- 	/* size of this struct, for forward/backward compatiblity */
- 	size_t sz;
-+	/* offset of kernel reference counted USDT semaphore, added in
-+	 * a6ca88b241d5 ("trace_uprobe: support reference counter in fd-based uprobe")
-+	 */
-+	size_t ref_ctr_offset;
- 	/* custom user-provided value fetchable through bpf_get_attach_cookie() */
- 	__u64 bpf_cookie;
- 	/* uprobe is return probe, invoked at function return time */
+ #endif
 -- 
 2.30.2
 
