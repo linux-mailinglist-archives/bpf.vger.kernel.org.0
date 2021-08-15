@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE1C3EC7D6
+	by mail.lfdr.de (Postfix) with ESMTP id BA2A93EC7D7
 	for <lists+bpf@lfdr.de>; Sun, 15 Aug 2021 09:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236026AbhHOHHi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 15 Aug 2021 03:07:38 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:42526 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235457AbhHOHHU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 15 Aug 2021 03:07:20 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17F75B3U014360
-        for <bpf@vger.kernel.org>; Sun, 15 Aug 2021 00:06:48 -0700
+        id S235457AbhHOHHn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sun, 15 Aug 2021 03:07:43 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6372 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235480AbhHOHHV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 15 Aug 2021 03:07:21 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17F6xAAc026213
+        for <bpf@vger.kernel.org>; Sun, 15 Aug 2021 00:06:49 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3ae9vqc1we-3
+        by mx0a-00082601.pphosted.com with ESMTP id 3aebnwbk5g-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 15 Aug 2021 00:06:48 -0700
+        for <bpf@vger.kernel.org>; Sun, 15 Aug 2021 00:06:49 -0700
 Received: from intmgw006.03.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Sun, 15 Aug 2021 00:06:47 -0700
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 2EA963D405A0; Sun, 15 Aug 2021 00:06:39 -0700 (PDT)
+        id 3BC4C3D405A0; Sun, 15 Aug 2021 00:06:41 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v5 bpf-next 14/16] selftests/bpf: add bpf_cookie selftests for high-level APIs
-Date:   Sun, 15 Aug 2021 00:06:07 -0700
-Message-ID: <20210815070609.987780-15-andrii@kernel.org>
+Subject: [PATCH v5 bpf-next 15/16] libbpf: add uprobe ref counter offset support for USDT semaphores
+Date:   Sun, 15 Aug 2021 00:06:08 -0700
+Message-ID: <20210815070609.987780-16-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210815070609.987780-1-andrii@kernel.org>
 References: <20210815070609.987780-1-andrii@kernel.org>
@@ -39,399 +39,114 @@ Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: JB8lw8jd6c_7bjyYyaz38Ef-W4-phJHN
-X-Proofpoint-ORIG-GUID: JB8lw8jd6c_7bjyYyaz38Ef-W4-phJHN
+X-Proofpoint-ORIG-GUID: u8w56NKgmBYQTBuPSg2FExBMVcK3fui5
+X-Proofpoint-GUID: u8w56NKgmBYQTBuPSg2FExBMVcK3fui5
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-08-15_02:2021-08-13,2021-08-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 lowpriorityscore=0 phishscore=0
- bulkscore=0 suspectscore=0 impostorscore=0 mlxlogscore=999 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108150049
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ priorityscore=1501 malwarescore=0 phishscore=0 lowpriorityscore=0
+ adultscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999 suspectscore=0
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108150048
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftest with few subtests testing proper bpf_cookie usage.
+When attaching to uprobes through perf subsystem, it's possible to specify
+offset of a so-called USDT semaphore, which is just a reference counted u16,
+used by kernel to keep track of how many tracers are attached to a given
+location. Support for this feature was added in [0], so just wire this through
+uprobe_opts. This is important to enable implementing USDT attachment and
+tracing through libbpf's bpf_program__attach_uprobe_opts() API.
 
-Kprobe and uprobe subtests are pretty straightforward and just validate that
-the same BPF program attached with different bpf_cookie will be triggered with
-those different bpf_cookie values.
-
-Tracepoint subtest is a bit more interesting, as it is the only
-perf_event-based BPF hook that shares bpf_prog_array between multiple
-perf_events internally. This means that the same BPF program can't be attached
-to the same tracepoint multiple times. So we have 3 identical copies. This
-arrangement allows to test bpf_prog_array_copy()'s handling of bpf_prog_array
-list manipulation logic when programs are attached and detached.  The test
-validates that bpf_cookie isn't mixed up and isn't lost during such list
-manipulations.
-
-Perf_event subtest validates that two BPF links can be created against the
-same perf_event (but not at the same time, only one BPF program can be
-attached to perf_event itself), and that for each we can specify different
-bpf_cookie value.
+  [0] a6ca88b241d5 ("trace_uprobe: support reference counter in fd-based uprobe")
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../selftests/bpf/prog_tests/bpf_cookie.c     | 254 ++++++++++++++++++
- .../selftests/bpf/progs/test_bpf_cookie.c     |  85 ++++++
- 2 files changed, 339 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_bpf_cookie.c
+ tools/lib/bpf/libbpf.c | 17 +++++++++++++----
+ tools/lib/bpf/libbpf.h |  4 ++++
+ 2 files changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-new file mode 100644
-index 000000000000..5eea3c3a40fe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -0,0 +1,254 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <sched.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
-+#include <test_progs.h>
-+#include "test_bpf_cookie.skel.h"
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 62ce878cb8e0..88d8825fc6f6 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9152,13 +9152,19 @@ static int determine_uprobe_retprobe_bit(void)
+ 	return parse_uint_from_file(file, "config:%d\n");
+ }
+ 
++#define PERF_UPROBE_REF_CTR_OFFSET_BITS 32
++#define PERF_UPROBE_REF_CTR_OFFSET_SHIFT 32
 +
-+static void kprobe_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
-+	struct bpf_link *link1 = NULL, *link2 = NULL;
-+	struct bpf_link *retlink1 = NULL, *retlink2 = NULL;
+ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+-				 uint64_t offset, int pid)
++				 uint64_t offset, int pid, size_t ref_ctr_off)
+ {
+ 	struct perf_event_attr attr = {};
+ 	char errmsg[STRERR_BUFSIZE];
+ 	int type, pfd, err;
+ 
++	if (ref_ctr_off >= (1ULL << PERF_UPROBE_REF_CTR_OFFSET_BITS))
++		return -EINVAL;
 +
-+	/* attach two kprobes */
-+	opts.bpf_cookie = 0x1;
-+	opts.retprobe = false;
-+	link1 = bpf_program__attach_kprobe_opts(skel->progs.handle_kprobe,
-+						 SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(link1, "link1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x2;
-+	opts.retprobe = false;
-+	link2 = bpf_program__attach_kprobe_opts(skel->progs.handle_kprobe,
-+						 SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(link2, "link2"))
-+		goto cleanup;
-+
-+	/* attach two kretprobes */
-+	opts.bpf_cookie = 0x10;
-+	opts.retprobe = true;
-+	retlink1 = bpf_program__attach_kprobe_opts(skel->progs.handle_kretprobe,
-+						    SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(retlink1, "retlink1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x20;
-+	opts.retprobe = true;
-+	retlink2 = bpf_program__attach_kprobe_opts(skel->progs.handle_kretprobe,
-+						    SYS_NANOSLEEP_KPROBE_NAME, &opts);
-+	if (!ASSERT_OK_PTR(retlink2, "retlink2"))
-+		goto cleanup;
-+
-+	/* trigger kprobe && kretprobe */
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->kprobe_res, 0x1 | 0x2, "kprobe_res");
-+	ASSERT_EQ(skel->bss->kretprobe_res, 0x10 | 0x20, "kretprobe_res");
-+
-+cleanup:
-+	bpf_link__destroy(link1);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(retlink1);
-+	bpf_link__destroy(retlink2);
-+}
-+
-+static void uprobe_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts);
-+	struct bpf_link *link1 = NULL, *link2 = NULL;
-+	struct bpf_link *retlink1 = NULL, *retlink2 = NULL;
-+	size_t uprobe_offset;
-+	ssize_t base_addr;
-+
-+	base_addr = get_base_addr();
-+	uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
-+
-+	/* attach two uprobes */
-+	opts.bpf_cookie = 0x100;
-+	opts.retprobe = false;
-+	link1 = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe, 0 /* self pid */,
-+						"/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(link1, "link1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x200;
-+	opts.retprobe = false;
-+	link2 = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe, -1 /* any pid */,
-+						"/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(link2, "link2"))
-+		goto cleanup;
-+
-+	/* attach two uretprobes */
-+	opts.bpf_cookie = 0x1000;
-+	opts.retprobe = true;
-+	retlink1 = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe, -1 /* any pid */,
-+						   "/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(retlink1, "retlink1"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x2000;
-+	opts.retprobe = true;
-+	retlink2 = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe, 0 /* self pid */,
-+						   "/proc/self/exe", uprobe_offset, &opts);
-+	if (!ASSERT_OK_PTR(retlink2, "retlink2"))
-+		goto cleanup;
-+
-+	/* trigger uprobe && uretprobe */
-+	get_base_addr();
-+
-+	ASSERT_EQ(skel->bss->uprobe_res, 0x100 | 0x200, "uprobe_res");
-+	ASSERT_EQ(skel->bss->uretprobe_res, 0x1000 | 0x2000, "uretprobe_res");
-+
-+cleanup:
-+	bpf_link__destroy(link1);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(retlink1);
-+	bpf_link__destroy(retlink2);
-+}
-+
-+static void tp_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tracepoint_opts, opts);
-+	struct bpf_link *link1 = NULL, *link2 = NULL, *link3 = NULL;
-+
-+	/* attach first tp prog */
-+	opts.bpf_cookie = 0x10000;
-+	link1 = bpf_program__attach_tracepoint_opts(skel->progs.handle_tp1,
-+						    "syscalls", "sys_enter_nanosleep", &opts);
-+	if (!ASSERT_OK_PTR(link1, "link1"))
-+		goto cleanup;
-+
-+	/* attach second tp prog */
-+	opts.bpf_cookie = 0x20000;
-+	link2 = bpf_program__attach_tracepoint_opts(skel->progs.handle_tp2,
-+						    "syscalls", "sys_enter_nanosleep", &opts);
-+	if (!ASSERT_OK_PTR(link2, "link2"))
-+		goto cleanup;
-+
-+	/* trigger tracepoints */
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->tp_res, 0x10000 | 0x20000, "tp_res1");
-+
-+	/* now we detach first prog and will attach third one, which causes
-+	 * two internal calls to bpf_prog_array_copy(), shuffling
-+	 * bpf_prog_array_items around. We test here that we don't lose track
-+	 * of associated bpf_cookies.
+ 	type = uprobe ? determine_uprobe_perf_type()
+ 		      : determine_kprobe_perf_type();
+ 	if (type < 0) {
+@@ -9181,6 +9187,7 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+ 	}
+ 	attr.size = sizeof(attr);
+ 	attr.type = type;
++	attr.config |= (__u64)ref_ctr_off << PERF_UPROBE_REF_CTR_OFFSET_SHIFT;
+ 	attr.config1 = ptr_to_u64(name); /* kprobe_func or uprobe_path */
+ 	attr.config2 = offset;		 /* kprobe_addr or probe_offset */
+ 
+@@ -9219,7 +9226,7 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
+ 	pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
+ 
+ 	pfd = perf_event_open_probe(false /* uprobe */, retprobe, func_name,
+-				    offset, -1 /* pid */);
++				    offset, -1 /* pid */, 0 /* ref_ctr_off */);
+ 	if (pfd < 0) {
+ 		pr_warn("prog '%s': failed to create %s '%s' perf event: %s\n",
+ 			prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
+@@ -9289,6 +9296,7 @@ bpf_program__attach_uprobe_opts(struct bpf_program *prog, pid_t pid,
+ 	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, pe_opts);
+ 	char errmsg[STRERR_BUFSIZE];
+ 	struct bpf_link *link;
++	size_t ref_ctr_off;
+ 	int pfd, err;
+ 	bool retprobe;
+ 
+@@ -9296,10 +9304,11 @@ bpf_program__attach_uprobe_opts(struct bpf_program *prog, pid_t pid,
+ 		return libbpf_err_ptr(-EINVAL);
+ 
+ 	retprobe = OPTS_GET(opts, retprobe, false);
++	ref_ctr_off = OPTS_GET(opts, ref_ctr_offset, 0);
+ 	pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
+ 
+-	pfd = perf_event_open_probe(true /* uprobe */, retprobe,
+-				    binary_path, func_offset, pid);
++	pfd = perf_event_open_probe(true /* uprobe */, retprobe, binary_path,
++				    func_offset, pid, ref_ctr_off);
+ 	if (pfd < 0) {
+ 		pr_warn("prog '%s': failed to create %s '%s:0x%zx' perf event: %s\n",
+ 			prog->name, retprobe ? "uretprobe" : "uprobe",
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 1f4a67285365..f177d897c5f7 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -284,6 +284,10 @@ bpf_program__attach_kprobe_opts(struct bpf_program *prog,
+ struct bpf_uprobe_opts {
+ 	/* size of this struct, for forward/backward compatiblity */
+ 	size_t sz;
++	/* offset of kernel reference counted USDT semaphore, added in
++	 * a6ca88b241d5 ("trace_uprobe: support reference counter in fd-based uprobe")
 +	 */
-+	bpf_link__destroy(link1);
-+	link1 = NULL;
-+	kern_sync_rcu();
-+	skel->bss->tp_res = 0;
-+
-+	/* attach third tp prog */
-+	opts.bpf_cookie = 0x40000;
-+	link3 = bpf_program__attach_tracepoint_opts(skel->progs.handle_tp3,
-+						    "syscalls", "sys_enter_nanosleep", &opts);
-+	if (!ASSERT_OK_PTR(link3, "link3"))
-+		goto cleanup;
-+
-+	/* trigger tracepoints */
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->tp_res, 0x20000 | 0x40000, "tp_res2");
-+
-+cleanup:
-+	bpf_link__destroy(link1);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(link3);
-+}
-+
-+static void burn_cpu(void)
-+{
-+	volatile int j = 0;
-+	cpu_set_t cpu_set;
-+	int i, err;
-+
-+	/* generate some branches on cpu 0 */
-+	CPU_ZERO(&cpu_set);
-+	CPU_SET(0, &cpu_set);
-+	err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
-+	ASSERT_OK(err, "set_thread_affinity");
-+
-+	/* spin the loop for a while (random high number) */
-+	for (i = 0; i < 1000000; ++i)
-+		++j;
-+}
-+
-+static void pe_subtest(struct test_bpf_cookie *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, opts);
-+	struct bpf_link *link = NULL;
-+	struct perf_event_attr attr;
-+	int pfd = -1;
-+
-+	/* create perf event */
-+	memset(&attr, 0, sizeof(attr));
-+	attr.size = sizeof(attr);
-+	attr.type = PERF_TYPE_SOFTWARE;
-+	attr.config = PERF_COUNT_SW_CPU_CLOCK;
-+	attr.freq = 1;
-+	attr.sample_freq = 4000;
-+	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
-+	if (!ASSERT_GE(pfd, 0, "perf_fd"))
-+		goto cleanup;
-+
-+	opts.bpf_cookie = 0x100000;
-+	link = bpf_program__attach_perf_event_opts(skel->progs.handle_pe, pfd, &opts);
-+	if (!ASSERT_OK_PTR(link, "link1"))
-+		goto cleanup;
-+
-+	burn_cpu(); /* trigger BPF prog */
-+
-+	ASSERT_EQ(skel->bss->pe_res, 0x100000, "pe_res1");
-+
-+	/* prevent bpf_link__destroy() closing pfd itself */
-+	bpf_link__disconnect(link);
-+	/* close BPF link's FD explicitly */
-+	close(bpf_link__fd(link));
-+	/* free up memory used by struct bpf_link */
-+	bpf_link__destroy(link);
-+	link = NULL;
-+	kern_sync_rcu();
-+	skel->bss->pe_res = 0;
-+
-+	opts.bpf_cookie = 0x200000;
-+	link = bpf_program__attach_perf_event_opts(skel->progs.handle_pe, pfd, &opts);
-+	if (!ASSERT_OK_PTR(link, "link2"))
-+		goto cleanup;
-+
-+	burn_cpu(); /* trigger BPF prog */
-+
-+	ASSERT_EQ(skel->bss->pe_res, 0x200000, "pe_res2");
-+
-+cleanup:
-+	close(pfd);
-+	bpf_link__destroy(link);
-+}
-+
-+void test_bpf_cookie(void)
-+{
-+	struct test_bpf_cookie *skel;
-+
-+	skel = test_bpf_cookie__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	skel->bss->my_tid = syscall(SYS_gettid);
-+
-+	if (test__start_subtest("kprobe"))
-+		kprobe_subtest(skel);
-+	if (test__start_subtest("uprobe"))
-+		uprobe_subtest(skel);
-+	if (test__start_subtest("tracepoint"))
-+		tp_subtest(skel);
-+	if (test__start_subtest("perf_event"))
-+		pe_subtest(skel);
-+
-+	test_bpf_cookie__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-new file mode 100644
-index 000000000000..2d3a7710e2ce
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+int my_tid;
-+
-+int kprobe_res;
-+int kprobe_multi_res;
-+int kretprobe_res;
-+int uprobe_res;
-+int uretprobe_res;
-+int tp_res;
-+int pe_res;
-+
-+static void update(void *ctx, int *res)
-+{
-+	if (my_tid != (u32)bpf_get_current_pid_tgid())
-+		return;
-+
-+	*res |= bpf_get_attach_cookie(ctx);
-+}
-+
-+SEC("kprobe/sys_nanosleep")
-+int handle_kprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &kprobe_res);
-+	return 0;
-+}
-+
-+SEC("kretprobe/sys_nanosleep")
-+int handle_kretprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &kretprobe_res);
-+	return 0;
-+}
-+
-+SEC("uprobe/trigger_func")
-+int handle_uprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &uprobe_res);
-+	return 0;
-+}
-+
-+SEC("uretprobe/trigger_func")
-+int handle_uretprobe(struct pt_regs *ctx)
-+{
-+	update(ctx, &uretprobe_res);
-+	return 0;
-+}
-+
-+/* bpf_prog_array, used by kernel internally to keep track of attached BPF
-+ * programs to a given BPF hook (e.g., for tracepoints) doesn't allow the same
-+ * BPF program to be attached multiple times. So have three identical copies
-+ * ready to attach to the same tracepoint.
-+ */
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int handle_tp1(struct pt_regs *ctx)
-+{
-+	update(ctx, &tp_res);
-+	return 0;
-+}
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int handle_tp2(struct pt_regs *ctx)
-+{
-+	update(ctx, &tp_res);
-+	return 0;
-+}
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int handle_tp3(void *ctx)
-+{
-+	update(ctx, &tp_res);
-+	return 1;
-+}
-+
-+SEC("perf_event")
-+int handle_pe(struct pt_regs *ctx)
-+{
-+	update(ctx, &pe_res);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
++	size_t ref_ctr_offset;
+ 	/* custom user-provided value fetchable through bpf_get_attach_cookie() */
+ 	__u64 bpf_cookie;
+ 	/* uprobe is return probe, invoked at function return time */
 -- 
 2.30.2
 
