@@ -2,70 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21943EDF65
-	for <lists+bpf@lfdr.de>; Mon, 16 Aug 2021 23:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3953EDF72
+	for <lists+bpf@lfdr.de>; Mon, 16 Aug 2021 23:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbhHPVkj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Aug 2021 17:40:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229987AbhHPVkj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Aug 2021 17:40:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E67F760F39;
-        Mon, 16 Aug 2021 21:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629150006;
-        bh=kkqYGdS+bxZFR43v/vsQxRAK647tUeKqoUcTwYIxLnE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ifvc4la4E6+a5Aorpw1WQHb2UaICbqQXdMdlGTI2kns3lAhIg/WJT1uQtKmX9dIC3
-         ofyAXCbeRwwSTCwZZjw6kTRlvnNGq4apLhQUkxlaoKkqFw4t/NxvpZBivdyopn1p5e
-         PAxfo/9UwrGgektCic079xYaAKldNTUSoMXg5yhXK0F1fDAeH1iDPc5IuGcq2htUVq
-         6RtE6HUA/c1RX/yN5XxXQwD+4DpF1VdYBKS1ZTN17m6NiNO5XgLXUmu5GgJQcdpIIl
-         a9ipVSIaYnkMIc+UxeYyKw5gNPGX3XqpsYEE6BfPoi9zjAMFrkJJCha65cpKAuvGTW
-         rh7cKv+A0VAcQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D8769609CF;
-        Mon, 16 Aug 2021 21:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232897AbhHPVnz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Aug 2021 17:43:55 -0400
+Received: from www62.your-server.de ([213.133.104.62]:58442 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229987AbhHPVnz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Aug 2021 17:43:55 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mFkO9-000Gll-NU; Mon, 16 Aug 2021 23:43:21 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mFkO9-0009Js-Ie; Mon, 16 Aug 2021 23:43:21 +0200
+Subject: Re: [PATCH bpf-next] bpf: use kvmalloc in map_lookup_elem
+To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org
+References: <20210816164832.1743675-1-sdf@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1b3cb059-9ecb-a0c9-3c99-805788088d09@iogearbox.net>
+Date:   Mon, 16 Aug 2021 23:43:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] bpf, tests: Fix spelling mistake "shoft" -> "shift"
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162915000688.3631.14506994484111009318.git-patchwork-notify@kernel.org>
-Date:   Mon, 16 Aug 2021 21:40:06 +0000
-References: <20210815213950.47751-1-colin.king@canonical.com>
-In-Reply-To: <20210815213950.47751-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210816164832.1743675-1-sdf@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26265/Mon Aug 16 10:19:47 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Sun, 15 Aug 2021 22:39:50 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 8/16/21 6:48 PM, Stanislav Fomichev wrote:
+> Use kvmalloc/kvfree for temporary value when looking up a map.
+> kmalloc might not be sufficient for percpu maps where the value is big.
 > 
-> There is a spelling mistake in a literal string. Fix it.
+> Can be reproduced with netcnt test on qemu with "-smp 255".
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
->  lib/test_bpf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   kernel/bpf/syscall.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 9a2068e39d23..ae0b1c1c8ece 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1076,7 +1076,7 @@ static int map_lookup_elem(union bpf_attr *attr)
+>   	value_size = bpf_map_value_size(map);
+>   
+>   	err = -ENOMEM;
+> -	value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
+> +	value = kvmalloc(value_size, GFP_USER | __GFP_NOWARN);
+>   	if (!value)
+>   		goto free_key;
 
-Here is the summary with links:
-  - [next] bpf, tests: Fix spelling mistake "shoft" -> "shift"
-    https://git.kernel.org/bpf/bpf-next/c/1bda52f80471
+What about other cases like map_update_elem(), shouldn't they be adapted
+similarly?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Daniel
