@@ -2,98 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214F63EE03B
-	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 01:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83263EE041
+	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 01:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbhHPXKl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Aug 2021 19:10:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232618AbhHPXKk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Aug 2021 19:10:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BAA9C60F35;
-        Mon, 16 Aug 2021 23:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629155408;
-        bh=xrZgcaLptoQh7ZTztlfvoEJkFZ9Fms5H9PZazkxMHdg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Yptk4WdS9SgV0Lw1zaemhNIpfgoSjG55RUjlsuS4TyJ4FSfoHyAfQ16TvZ2Ini0zf
-         uJycFCnW1p5sTbSXaJYmgG73KDoe/Cfv992kZq/w2QEQ32Ak/qk8AtTU6Y0j0r/ot6
-         8MSKzIH24h3HTIJVHr5rMuRbBCSqDgNpIriGcJ+7FEvl/rD00ClCp9/rv/jxUQ3+IP
-         vY/3mMU/PEnYhkmbn8iDQper1nsVw2UM0V1dkJJCFvKLq2pjneC8TeXXbuSCRx3r8J
-         /+fM9sVxNouAFZbti25yzATzYxSOSQfdxGpnaf1rUDeAKP72pIzoLCahy/gIgvnczD
-         d+4dXSLodsKxQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AC132600AB;
-        Mon, 16 Aug 2021 23:10:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232693AbhHPXSC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Aug 2021 19:18:02 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43542 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232633AbhHPXSC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 16 Aug 2021 19:18:02 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17GNFE3h004413
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 16:17:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=F3apYiBck49hau8baDM4t6KBZICfVqSl2eQUWssm9Uo=;
+ b=cJhoBOsnZmMQJIXBU3LqpKqkS2sHZsJADp5f7yDNvPvuOkViscTvoJqXjARtEfOwo8PR
+ TDaKklrysdMOt18bisK95FCtna7nK102tTyHJCwLPQfPP2BuqycYIEUuFKf44QLOVmW1
+ xOus4sMaXwvmmnnxog+kKYCtZNHXTAWcnK8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3afj4d5ra1-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 16:17:29 -0700
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 16 Aug 2021 16:17:19 -0700
+Received: by devbig577.ftw3.facebook.com (Postfix, from userid 201728)
+        id 4AAB96DC616E; Mon, 16 Aug 2021 16:17:16 -0700 (PDT)
+From:   Prankur gupta <prankgup@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>, <prankur.07@gmail.com>
+Subject: [PATCH bpf-next 0/2] Add support for bpf_setsockopt and bpf_getsockopt from BPF setsockopt
+Date:   Mon, 16 Aug 2021 16:17:14 -0700
+Message-ID: <20210816231716.3824813-1-prankgup@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v5 bpf-next 00/16] BPF perf link and user-provided bpf_cookie
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162915540869.13624.15422048649808157567.git-patchwork-notify@kernel.org>
-Date:   Mon, 16 Aug 2021 23:10:08 +0000
-References: <20210815070609.987780-1-andrii@kernel.org>
-In-Reply-To: <20210815070609.987780-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, peterz@infradead.org
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: r4kTly9IAnOXlckWGzLrZlzWKKhlmNWb
+X-Proofpoint-ORIG-GUID: r4kTly9IAnOXlckWGzLrZlzWKKhlmNWb
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-16_09:2021-08-16,2021-08-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=958 bulkscore=0 adultscore=0 mlxscore=0
+ suspectscore=0 impostorscore=0 phishscore=0 spamscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108160144
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+This patch contains support to set and get socket options from setsockopt
+bpf program.
+This enables us to set multiple socket option when the user changes a
+particular socket option.
+Example use case, when the user sets the IPV6_TCLASS socket option we
+would also like to change the tcp-cc for that socket. We don't have any
+use case for calling bpf_setsockopt from supposedly read-only
+sys_getsockopt, so it is made available to BPF_CGROUP_SETSOCKOPT only.
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
+Prankur gupta (2):
+  bpf: Add support for {set|get} socket options from setsockopt BPF
+  selftests/bpf: Add test for {set|get} socket option from setsockopt
+    BPF program
 
-On Sun, 15 Aug 2021 00:05:53 -0700 you wrote:
-> This patch set implements an ability for users to specify custom black box u64
-> value for each BPF program attachment, bpf_cookie, which is available to BPF
-> program at runtime. This is a feature that's critically missing for cases when
-> some sort of generic processing needs to be done by the common BPF program
-> logic (or even exactly the same BPF program) across multiple BPF hooks (e.g.,
-> many uniformly handled kprobes) and it's important to be able to distinguish
-> between each BPF hook at runtime (e.g., for additional configuration lookup).
-> 
-> [...]
+ kernel/bpf/cgroup.c                           |  8 +++
+ tools/testing/selftests/bpf/bpf_tcp_helpers.h | 18 +++++
+ .../bpf/prog_tests/sockopt_qos_to_cc.c        | 70 +++++++++++++++++++
+ .../selftests/bpf/progs/sockopt_qos_to_cc.c   | 39 +++++++++++
+ 4 files changed, 135 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockopt_qos_to=
+_cc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c
 
-Here is the summary with links:
-  - [v5,bpf-next,01/16] bpf: refactor BPF_PROG_RUN into a function
-    https://git.kernel.org/bpf/bpf-next/c/fb7dd8bca013
-  - [v5,bpf-next,02/16] bpf: refactor BPF_PROG_RUN_ARRAY family of macros into functions
-    https://git.kernel.org/bpf/bpf-next/c/7d08c2c91171
-  - [v5,bpf-next,03/16] bpf: refactor perf_event_set_bpf_prog() to use struct bpf_prog input
-    https://git.kernel.org/bpf/bpf-next/c/652c1b17b85b
-  - [v5,bpf-next,04/16] bpf: implement minimal BPF perf link
-    https://git.kernel.org/bpf/bpf-next/c/b89fbfbb854c
-  - [v5,bpf-next,05/16] bpf: allow to specify user-provided bpf_cookie for BPF perf links
-    https://git.kernel.org/bpf/bpf-next/c/82e6b1eee6a8
-  - [v5,bpf-next,06/16] bpf: add bpf_get_attach_cookie() BPF helper to access bpf_cookie value
-    https://git.kernel.org/bpf/bpf-next/c/7adfc6c9b315
-  - [v5,bpf-next,07/16] libbpf: re-build libbpf.so when libbpf.map changes
-    https://git.kernel.org/bpf/bpf-next/c/61c7aa5020e9
-  - [v5,bpf-next,08/16] libbpf: remove unused bpf_link's destroy operation, but add dealloc
-    https://git.kernel.org/bpf/bpf-next/c/d88b71d4a916
-  - [v5,bpf-next,09/16] libbpf: use BPF perf link when supported by kernel
-    https://git.kernel.org/bpf/bpf-next/c/668ace0ea5ab
-  - [v5,bpf-next,10/16] libbpf: add bpf_cookie support to bpf_link_create() API
-    https://git.kernel.org/bpf/bpf-next/c/3ec84f4b1638
-  - [v5,bpf-next,11/16] libbpf: add bpf_cookie to perf_event, kprobe, uprobe, and tp attach APIs
-    https://git.kernel.org/bpf/bpf-next/c/47faff371755
-  - [v5,bpf-next,12/16] selftests/bpf: test low-level perf BPF link API
-    https://git.kernel.org/bpf/bpf-next/c/f36d3557a132
-  - [v5,bpf-next,13/16] selftests/bpf: extract uprobe-related helpers into trace_helpers.{c,h}
-    https://git.kernel.org/bpf/bpf-next/c/a549aaa67395
-  - [v5,bpf-next,14/16] selftests/bpf: add bpf_cookie selftests for high-level APIs
-    https://git.kernel.org/bpf/bpf-next/c/0a80cf67f34c
-  - [v5,bpf-next,15/16] libbpf: add uprobe ref counter offset support for USDT semaphores
-    https://git.kernel.org/bpf/bpf-next/c/5e3b8356de36
-  - [v5,bpf-next,16/16] selftests/bpf: add ref_ctr_offset selftests
-    https://git.kernel.org/bpf/bpf-next/c/4bd11e08e0bb
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+--=20
+2.30.2
 
