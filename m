@@ -2,108 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABD73EE011
-	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 00:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214F63EE03B
+	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 01:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbhHPWr0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Aug 2021 18:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232473AbhHPWrZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Aug 2021 18:47:25 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170E0C061764
-        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 15:46:53 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id i32-20020a25b2200000b02904ed415d9d84so18288878ybj.0
-        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 15:46:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=go5gEr/LK1ikMjcMOeCWMGgc9H7TA/C/hnBeQvGa1/s=;
-        b=uJYQ3qp1mzmZbNi0iFWt9KGYsrFJHOAvGNqOz5cdMFsESdKF13hc6bITYbqdtObkIk
-         Jovb8zjwNW1AQQcPumXP7YQZ/aUBE3jhZHbI54iCCj/BH2VH+6ZLx96KUplPv5n4NgFS
-         oHDovPjuhfCrhis55Bg45hZG8uBlTDBtT+lTnO40Jru5HlYYuD/liep1TKHoMd80KCh7
-         z7zG55c//RryYp4IL9UvcvYQimk05RVPMzQho+crhmShSUxvynVJy7tLhyErmCILhPOp
-         IIjzVBPlauf0JH6PWsJ28HCYlIPFcE5gMewWF9OWTfeZZQHi884txCrK41W3wGuHt2VC
-         7a+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=go5gEr/LK1ikMjcMOeCWMGgc9H7TA/C/hnBeQvGa1/s=;
-        b=lU6TArH5a9XOzSq1MbBl0tQv8lz9kBCLMbUFpdzRWr4sYVv+hDsPEzJuimS+XetBZU
-         RYbEcVco6+KU+97/SQpPcu9PWYNpnPh8qfMoyLPTKV8MivOK4gfmBuGiS8e/drJCpXcB
-         xVKxUhpiqGzGyvXMU2SwaH/LbjUhWEr0DqvKJsoEhEXbUez78cFKpWfYWGMTuPtlRtWC
-         tTsWfIpi+xxaQMwIQ+Tz1wsvZDg+K2uUO2hY6niNope/XBGAejGEVZL1cHwOJro8IJvS
-         dpa52dzld/sqzgqjZTNCAZLg4e4Gd9iBbXhjGqUPCCPEMDyZ1wOWfTGk18mPqbupRi5U
-         4vNg==
-X-Gm-Message-State: AOAM530izjcvyCDb4pCL+tSQpx+ICEz692U/SNOoyymbsuN56e6v32la
-        PVjycj2F5LL39/9wjJ1lBoxtpxY=
-X-Google-Smtp-Source: ABdhPJwO+8jkIUXp40zgAdtCUJmwbqGpOfo9f6s4gIzmSiABgsE2Tfyk6CI/XUbV93YAlWsS6yI4T5I=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:afa2:caa8:d56a:b355])
- (user=sdf job=sendgmr) by 2002:a25:c08a:: with SMTP id c132mr420862ybf.511.1629154012379;
- Mon, 16 Aug 2021 15:46:52 -0700 (PDT)
-Date:   Mon, 16 Aug 2021 15:46:50 -0700
-In-Reply-To: <CAEf4Bzb5A06ZP5k4uDwspBp7KfzY8n3=D7kr9K=6Xbf9cj4-Tw@mail.gmail.com>
-Message-Id: <YRrq2qqIJmY124mq@google.com>
-Mime-Version: 1.0
-References: <20210816164832.1743675-1-sdf@google.com> <1b3cb059-9ecb-a0c9-3c99-805788088d09@iogearbox.net>
- <CAEf4Bzb5A06ZP5k4uDwspBp7KfzY8n3=D7kr9K=6Xbf9cj4-Tw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: use kvmalloc in map_lookup_elem
-From:   sdf@google.com
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        id S232658AbhHPXKl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Aug 2021 19:10:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232618AbhHPXKk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Aug 2021 19:10:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id BAA9C60F35;
+        Mon, 16 Aug 2021 23:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629155408;
+        bh=xrZgcaLptoQh7ZTztlfvoEJkFZ9Fms5H9PZazkxMHdg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Yptk4WdS9SgV0Lw1zaemhNIpfgoSjG55RUjlsuS4TyJ4FSfoHyAfQ16TvZ2Ini0zf
+         uJycFCnW1p5sTbSXaJYmgG73KDoe/Cfv992kZq/w2QEQ32Ak/qk8AtTU6Y0j0r/ot6
+         8MSKzIH24h3HTIJVHr5rMuRbBCSqDgNpIriGcJ+7FEvl/rD00ClCp9/rv/jxUQ3+IP
+         vY/3mMU/PEnYhkmbn8iDQper1nsVw2UM0V1dkJJCFvKLq2pjneC8TeXXbuSCRx3r8J
+         /+fM9sVxNouAFZbti25yzATzYxSOSQfdxGpnaf1rUDeAKP72pIzoLCahy/gIgvnczD
+         d+4dXSLodsKxQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AC132600AB;
+        Mon, 16 Aug 2021 23:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v5 bpf-next 00/16] BPF perf link and user-provided bpf_cookie
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162915540869.13624.15422048649808157567.git-patchwork-notify@kernel.org>
+Date:   Mon, 16 Aug 2021 23:10:08 +0000
+References: <20210815070609.987780-1-andrii@kernel.org>
+In-Reply-To: <20210815070609.987780-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, peterz@infradead.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08/16, Andrii Nakryiko wrote:
-> On Mon, Aug 16, 2021 at 2:43 PM Daniel Borkmann <daniel@iogearbox.net>  
-> wrote:
-> >
-> > On 8/16/21 6:48 PM, Stanislav Fomichev wrote:
-> > > Use kvmalloc/kvfree for temporary value when looking up a map.
-> > > kmalloc might not be sufficient for percpu maps where the value is  
-> big.
-> > >
-> > > Can be reproduced with netcnt test on qemu with "-smp 255".
-> > >
-> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > ---
-> > >   kernel/bpf/syscall.c | 4 ++--
-> > >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > index 9a2068e39d23..ae0b1c1c8ece 100644
-> > > --- a/kernel/bpf/syscall.c
-> > > +++ b/kernel/bpf/syscall.c
-> > > @@ -1076,7 +1076,7 @@ static int map_lookup_elem(union bpf_attr *attr)
-> > >       value_size = bpf_map_value_size(map);
-> > >
-> > >       err = -ENOMEM;
-> > > -     value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
-> > > +     value = kvmalloc(value_size, GFP_USER | __GFP_NOWARN);
-> > >       if (!value)
-> > >               goto free_key;
-> >
-> > What about other cases like map_update_elem(), shouldn't they be adapted
-> > similarly?
+Hello:
 
-> And in the same vein (with keys potentially being big as well), should
-> we switch __bpf_copy_key() to use vmemdup_user() instead of
-> memdup_user()?
+This series was applied to bpf/bpf-next.git (refs/heads/master):
 
-Those are good questions :-)
+On Sun, 15 Aug 2021 00:05:53 -0700 you wrote:
+> This patch set implements an ability for users to specify custom black box u64
+> value for each BPF program attachment, bpf_cookie, which is available to BPF
+> program at runtime. This is a feature that's critically missing for cases when
+> some sort of generic processing needs to be done by the common BPF program
+> logic (or even exactly the same BPF program) across multiple BPF hooks (e.g.,
+> many uniformly handled kprobes) and it's important to be able to distinguish
+> between each BPF hook at runtime (e.g., for additional configuration lookup).
+> 
+> [...]
 
-I'm assuming that whatever is doing kmalloc on top of
-bpf_map_value_size() should definitely use kvmalloc since
-bpf_map_value_size() can blow up the value size. (will resend)
+Here is the summary with links:
+  - [v5,bpf-next,01/16] bpf: refactor BPF_PROG_RUN into a function
+    https://git.kernel.org/bpf/bpf-next/c/fb7dd8bca013
+  - [v5,bpf-next,02/16] bpf: refactor BPF_PROG_RUN_ARRAY family of macros into functions
+    https://git.kernel.org/bpf/bpf-next/c/7d08c2c91171
+  - [v5,bpf-next,03/16] bpf: refactor perf_event_set_bpf_prog() to use struct bpf_prog input
+    https://git.kernel.org/bpf/bpf-next/c/652c1b17b85b
+  - [v5,bpf-next,04/16] bpf: implement minimal BPF perf link
+    https://git.kernel.org/bpf/bpf-next/c/b89fbfbb854c
+  - [v5,bpf-next,05/16] bpf: allow to specify user-provided bpf_cookie for BPF perf links
+    https://git.kernel.org/bpf/bpf-next/c/82e6b1eee6a8
+  - [v5,bpf-next,06/16] bpf: add bpf_get_attach_cookie() BPF helper to access bpf_cookie value
+    https://git.kernel.org/bpf/bpf-next/c/7adfc6c9b315
+  - [v5,bpf-next,07/16] libbpf: re-build libbpf.so when libbpf.map changes
+    https://git.kernel.org/bpf/bpf-next/c/61c7aa5020e9
+  - [v5,bpf-next,08/16] libbpf: remove unused bpf_link's destroy operation, but add dealloc
+    https://git.kernel.org/bpf/bpf-next/c/d88b71d4a916
+  - [v5,bpf-next,09/16] libbpf: use BPF perf link when supported by kernel
+    https://git.kernel.org/bpf/bpf-next/c/668ace0ea5ab
+  - [v5,bpf-next,10/16] libbpf: add bpf_cookie support to bpf_link_create() API
+    https://git.kernel.org/bpf/bpf-next/c/3ec84f4b1638
+  - [v5,bpf-next,11/16] libbpf: add bpf_cookie to perf_event, kprobe, uprobe, and tp attach APIs
+    https://git.kernel.org/bpf/bpf-next/c/47faff371755
+  - [v5,bpf-next,12/16] selftests/bpf: test low-level perf BPF link API
+    https://git.kernel.org/bpf/bpf-next/c/f36d3557a132
+  - [v5,bpf-next,13/16] selftests/bpf: extract uprobe-related helpers into trace_helpers.{c,h}
+    https://git.kernel.org/bpf/bpf-next/c/a549aaa67395
+  - [v5,bpf-next,14/16] selftests/bpf: add bpf_cookie selftests for high-level APIs
+    https://git.kernel.org/bpf/bpf-next/c/0a80cf67f34c
+  - [v5,bpf-next,15/16] libbpf: add uprobe ref counter offset support for USDT semaphores
+    https://git.kernel.org/bpf/bpf-next/c/5e3b8356de36
+  - [v5,bpf-next,16/16] selftests/bpf: add ref_ctr_offset selftests
+    https://git.kernel.org/bpf/bpf-next/c/4bd11e08e0bb
 
-For __bpf_copy_key I'm less sure, but it might be a good idea as well.
-Let me try to look at bit more into it, but feels like there shouldn't
-be any downsides?
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
