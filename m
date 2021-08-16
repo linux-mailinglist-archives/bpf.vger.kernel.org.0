@@ -2,152 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836853EDD5E
-	for <lists+bpf@lfdr.de>; Mon, 16 Aug 2021 20:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10BB13EDD85
+	for <lists+bpf@lfdr.de>; Mon, 16 Aug 2021 21:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhHPSys (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Aug 2021 14:54:48 -0400
-Received: from mga18.intel.com ([134.134.136.126]:40800 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230384AbhHPSys (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Aug 2021 14:54:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="203074599"
-X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
-   d="scan'208";a="203074599"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 11:54:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
-   d="scan'208";a="423658813"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga003.jf.intel.com with ESMTP; 16 Aug 2021 11:54:12 -0700
-Date:   Mon, 16 Aug 2021 20:39:33 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     "Creeley, Brett" <brett.creeley@intel.com>
-Cc:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Lobakin, Alexandr" <alexandr.lobakin@intel.com>,
-        "joamaki@gmail.com" <joamaki@gmail.com>,
-        "toke@redhat.com" <toke@redhat.com>
-Subject: Re: [PATCH v5 intel-next 2/9] ice: move ice_container_type onto
- ice_ring_container
-Message-ID: <20210816183933.GA1521@ranger.igk.intel.com>
-References: <20210814140812.46632-1-maciej.fijalkowski@intel.com>
- <20210814140812.46632-3-maciej.fijalkowski@intel.com>
- <CO1PR11MB4835F0FDF2ABA2578B722095F5FD9@CO1PR11MB4835.namprd11.prod.outlook.com>
+        id S231320AbhHPTEX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Aug 2021 15:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229755AbhHPTEI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Aug 2021 15:04:08 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9A7C061764
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 12:03:37 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so334090pjr.1
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 12:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OQIDgHDinK9G6OVBaqwTHfY5KB000CBp6CpTZGMvcek=;
+        b=WY6mR6quoN2NpyDT0Cs4sZaNedYyZyWYZn7jL4roycAQ1Qc1jPq0YAcYZDJH/ybJld
+         QiUXHBTlLxAXmoJkMctv9/5GoophqAfiAUybaAGW8TcsfRUT2dzVp2Z5xFSQ2PRHzL2G
+         8H4MbrQOkNpPxPLcTRf69OPJcjLMcByxMlYsWOEStHoJ+NK6XPBxYvtAIn2C7CIn0DM0
+         eyLQjg9qBfZywYs19F19KCGSvZq8K0rB/FpWfwVXEdpQ6rupZ0ea9OGIfn1qd86zBQZM
+         IWDl+StJFsIe4ByBgiCZ4tqLVMX0RaltUDab7tEnyME18S8BDQ2GXg6Rzbk6z6OyvNOa
+         X0Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OQIDgHDinK9G6OVBaqwTHfY5KB000CBp6CpTZGMvcek=;
+        b=BuYhbG8VTIqU5IIkUFRLlSkBUieDceZzAWa7fTtQfZB3pWX90y33yBeIOO8rCxKjUK
+         LXTgMK/ogQibMt8XOPKoRjgKUKWR5W136tr5mwJZOYqoDXeEO7AoKeIw7NO66K7e2rKM
+         IBFJpWCuzefix7QMOMSa2WOl4XqRcISrJR+eHCxaBcqlpBZUFMO2+P+COqwJDfbfeXCN
+         0buQJeuh8QvGDvrtFuEqnYQjvX4hrz+m6bJdRcwdVENO14SsGBMTi9ot6fms52jYXUT6
+         jKN8+c12BvVMMzbhbLPNyjUWBbjgxyhZZv18gESZGRxecvtKe0H2Bu7VYjVbztkM7DMl
+         xd6A==
+X-Gm-Message-State: AOAM531u2hzCe3gy+aQ62eQHRIpjQmFHrDwqBNAKgEe/XIHlDMEv5vaj
+        nDVeu0k0oHYea907dozndMFptg==
+X-Google-Smtp-Source: ABdhPJzpUs4hGAe1udl/DE9Ky+AbUywHhNGuWdpShcgWqkdr1vSLVsikHzErghPFMfVjwOXtjwgzXw==
+X-Received: by 2002:a17:902:9a02:b029:118:307e:a9dd with SMTP id v2-20020a1709029a02b0290118307ea9ddmr223456plp.47.1629140615950;
+        Mon, 16 Aug 2021 12:03:35 -0700 (PDT)
+Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
+        by smtp.gmail.com with ESMTPSA id t30sm175845pgl.47.2021.08.16.12.03.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Aug 2021 12:03:35 -0700 (PDT)
+From:   Jiang Wang <jiang.wang@bytedance.com>
+To:     netdev@vger.kernel.org
+Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
+        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Rao Shoaib <rao.shoaib@oracle.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v7 0/5] sockmap: add sockmap support for unix stream socket
+Date:   Mon, 16 Aug 2021 19:03:19 +0000
+Message-Id: <20210816190327.2739291-1-jiang.wang@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CO1PR11MB4835F0FDF2ABA2578B722095F5FD9@CO1PR11MB4835.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 05:51:06PM +0100, Creeley, Brett wrote:
-> > -----Original Message-----
-> > From: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
-> > Sent: Saturday, August 14, 2021 7:08 AM
-> > To: intel-wired-lan@lists.osuosl.org
-> > Cc: netdev@vger.kernel.org; bpf@vger.kernel.org; davem@davemloft.net; Nguyen, Anthony L <anthony.l.nguyen@intel.com>;
-> > kuba@kernel.org; bjorn@kernel.org; Karlsson, Magnus <magnus.karlsson@intel.com>; Brandeburg, Jesse
-> > <jesse.brandeburg@intel.com>; Lobakin, Alexandr <alexandr.lobakin@intel.com>; joamaki@gmail.com; toke@redhat.com; Creeley,
-> > Brett <brett.creeley@intel.com>; Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
-> > Subject: [PATCH v5 intel-next 2/9] ice: move ice_container_type onto ice_ring_container
-> >
-> > Currently ice_container_type is scoped only for ice_ethtool.c. Next
-> > commit that will split the ice_ring struct onto Rx/Tx specific ring
-> > structs is going to also modify the type of linked list of rings that is
-> > within ice_ring_container. Therefore, the functions that are taking the
-> > ice_ring_container as an input argument will need to be aware of a ring
-> > type that will be looked up.
-> >
-> > Embed ice_container_type within ice_ring_container and initialize it
-> > properly when allocating the q_vectors.
-> >
-> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > ---
-> >  drivers/net/ethernet/intel/ice/ice_base.c    |  2 ++
-> >  drivers/net/ethernet/intel/ice/ice_ethtool.c | 36 ++++++++------------
-> >  drivers/net/ethernet/intel/ice/ice_txrx.h    |  6 ++++
-> >  3 files changed, 23 insertions(+), 21 deletions(-)
-> 
-> <snip>
-> 
-> > +enum ice_container_type {
-> > +     ICE_RX_CONTAINER,
-> > +     ICE_TX_CONTAINER,
-> > +};
-> > +
-> >  struct ice_ring_container {
-> >       /* head of linked-list of rings */
-> >       struct ice_ring *ring;
-> > @@ -347,6 +352,7 @@ struct ice_ring_container {
-> >       u16 itr_setting:13;
-> >       u16 itr_reserved:2;
-> >       u16 itr_mode:1;
-> > +     enum ice_container_type type;
-> 
-> It may not matter, but should you make sure
-> the size of "type" doesn't negativelly affect this
-> structure?
+This patch series add support for unix stream type
+for sockmap. Sockmap already supports TCP, UDP,
+unix dgram types. The unix stream support is similar
+to unix dgram.
 
-Seems that it doesn't matter.
-
-Before:
-struct ice_ring_container {
-        struct ice_ring *          ring;                 /*     0     8 */
-        struct dim                 dim;                  /*     8   120 */
-
-        /* XXX last struct has 2 bytes of padding */
-
-        /* --- cacheline 2 boundary (128 bytes) --- */
-        u16                        itr_idx;              /*   128     2 */
-        u16                        itr_setting:13;       /*   130: 0  2 */
-        u16                        itr_reserved:2;       /*   130:13  2 */
-        u16                        itr_mode:1;           /*   130:15  2 */
-
-        /* size: 136, cachelines: 3, members: 6 */
-        /* padding: 4 */
-        /* paddings: 1, sum paddings: 2 */
-        /* last cacheline: 8 bytes */
+Also add selftests for unix stream type in sockmap tests.
 
 
-After:
-struct ice_ring_container {
-        union {
-                struct ice_rx_ring * rx_ring;            /*     0     8 */
-                struct ice_tx_ring * tx_ring;            /*     0     8 */
-        };                                               /*     0     8 */
-        struct dim                 dim;                  /*     8   120 */
+Jiang Wang (5):
+  af_unix: add read_sock for stream socket types
+  af_unix: add unix_stream_proto for sockmap
+  selftest/bpf: add tests for sockmap with unix stream type.
+  selftest/bpf: change udp to inet in some function names
+  selftest/bpf: add new tests in sockmap for unix stream to tcp.
 
-        /* XXX last struct has 2 bytes of padding */
+ include/net/af_unix.h                         |  8 +-
+ net/core/sock_map.c                           |  1 +
+ net/unix/af_unix.c                            | 95 ++++++++++++++++---
+ net/unix/unix_bpf.c                           | 93 +++++++++++++-----
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 48 ++++++----
+ 5 files changed, 191 insertions(+), 54 deletions(-)
 
-        /* --- cacheline 2 boundary (128 bytes) --- */
-        u16                        itr_idx;              /*   128     2 */
-        u16                        itr_setting:13;       /*   130: 0  2 */
-        u16                        itr_reserved:2;       /*   130:13  2 */
-        u16                        itr_mode:1;           /*   130:15  2 */
-        enum ice_container_type    type;                 /*   132     4 */
+v1 -> v2 :
+ - Call unhash in shutdown.
+ - Clean up unix_create1 a bit.
+ - Return -ENOTCONN if socket is not connected.
 
-        /* size: 136, cachelines: 3, members: 7 */
-        /* paddings: 1, sum paddings: 2 */
-        /* last cacheline: 8 bytes */
+v2 -> v3 :
+ - check for stream type in update_proto
+ - remove intermediate variable in __unix_stream_recvmsg
+ - fix compile warning in unix_stream_recvmsg
 
-Still 3 cachelines and same sizes.
+v3 -> v4 :
+ - remove sk_is_unix_stream, just check TCP_ESTABLISHED for UNIX sockets.
+ - add READ_ONCE in unix_dgram_recvmsg
+ - remove type check in unix_stream_bpf_update_proto
 
+v4 -> v5 :
+ - add two missing READ_ONCE for sk_prot.
 
-> 
-> >  };
-> >
-> >  struct ice_coalesce_stored {
-> > --
-> > 2.20.1
-> 
+v5 -> v6 :
+ - fix READ_ONCE by reading to a local variable first.
+
+v6 -> v7 :
+ - fix the following compiler error when CONFIG_UNIX is m.
+   modpost: "sock_map_unhash" [net/unix/unix.ko] undefined!
+
+For the series:
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+-- 
+2.20.1
+
