@@ -2,126 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7C73ECDBE
-	for <lists+bpf@lfdr.de>; Mon, 16 Aug 2021 06:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7273ECF3A
+	for <lists+bpf@lfdr.de>; Mon, 16 Aug 2021 09:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbhHPEbN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Aug 2021 00:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40138 "EHLO
+        id S233909AbhHPHSV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Aug 2021 03:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbhHPEbN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Aug 2021 00:31:13 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F71C061764
-        for <bpf@vger.kernel.org>; Sun, 15 Aug 2021 21:30:41 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id 67so7045660uaq.4
-        for <bpf@vger.kernel.org>; Sun, 15 Aug 2021 21:30:41 -0700 (PDT)
+        with ESMTP id S233906AbhHPHSU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Aug 2021 03:18:20 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1D7C0613C1
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 00:17:49 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id c5so17895164ybn.5
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 00:17:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NePFxqSJ4koOwPTYZX78u0mK6tmFuDn3PPMt/c1ymF4=;
-        b=bXUN9JK4K6N8w5QMtVY6V6UpO24Wbu3046J0Xy5RB1XVv1UJsJlFw+8RG/wb55+8Nf
-         cjg7UZRqX1OYysRMjFNqOkinGsRCOAqAyaFaxN1uL9TxTooOEmWNqRYsggLHNy+0aLwi
-         Mf60RWLydqxGZZq+s9ekQncRb3iHsxaMq/8dKV666/GszUYimN7V2C7Tl0R9LOz259ug
-         Mr361HSaWa4KONAsKRKWZ7Aj24W+oKBNWcQmi1UsNvlFyr28KFB8GsS8CUpFZhKmTiXS
-         Vnej/YuE9VCHoO4xBaS9tq7R9jALaTNGnIfXKcAflaKyF3ZgYu+tcn2LxTEsYqWDvXJx
-         MRSQ==
+        bh=x/Um4v6+H1Vc3XRDP9shvIUiFu/lHKw2741uCC45oPQ=;
+        b=nsD1b7lgFyQOvCYz92rNf3KVvo/H/cUFVX26tJMlVruFAi0XLZKPpNKgYsx5Dt4Fdp
+         n5OhB5Gy5i0pFtvtSLgZ5ik9bDO1+f/jEQ0bBnsiMcN8wo/VkFVGgXUm3AZMlKjG/3YU
+         bZanvNqjrvxAeicMxNIXKQhdhxXz+VNhhLjv9Av6KgkX0V2qJhSmF5/4OjYl6x2eP4eb
+         PRvRthLtEwWIDeC9Ba7dE0LIr1z4adbckfBDi5LfhqfRexkDxg8nH8khGrUc7thm8aKE
+         SWl2ZH9XSAvKycHXqc0r9NnXA7/qtowkY6+xzD4f9JZvz8BDXLi8CdFZ0hNA7UM1U0rM
+         K1RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NePFxqSJ4koOwPTYZX78u0mK6tmFuDn3PPMt/c1ymF4=;
-        b=EsvdqC/d+IWdY+gYf7XVbVOTQowvz+hw7RS2tXf2hrgUqeoRvo4RR+fx8xeak/SXwW
-         7am4phFOWEwl+otM/81L0iQMJO5TaNTffKIdk9oAurfTOQQSTFKD9ruW/dk5v5qPxYif
-         eTO4lD15xVN/sWsr+6uzq06OIpYaakPDjIdXhJTCnLttli68Pn05lLfq5JsGwzhpY+KE
-         Q9+QdTDVlk84tbm6MMda1zHLSDxXf7G+BMFZNo6kWeCx/eQdnZjMnln0CAsO0LmtHi4Q
-         g7WyY6RsY4hJAu14CEUxmEEA8yuiwnGjaeIMJZJYTuPoJnQ+abgj0mQEsYnH9uQtSfc9
-         kT2w==
-X-Gm-Message-State: AOAM531WtQV3t+DU3umXjZtMz75YwGHxoU2pt0+yuIdw3HuGLATVBs08
-        MUrB99jTeQ/inaXsc3dMb0xuuDQoJghtCDssMZo=
-X-Google-Smtp-Source: ABdhPJwFR0P7slaSR8wuMsoQT2LUg4E0VmThZrWmggKXIiqWdYwnx70M3BK93mgTInOrpzNUPfpfzJPYteaiA9Me7Rs=
-X-Received: by 2002:ab0:249:: with SMTP id 67mr1732510uas.103.1629088240555;
- Sun, 15 Aug 2021 21:30:40 -0700 (PDT)
+        bh=x/Um4v6+H1Vc3XRDP9shvIUiFu/lHKw2741uCC45oPQ=;
+        b=kivGRGB/r8ed2Yv9VDI0AAYdhWmrWyj5x4qbKfottixEtWUgTW1SJY2kIAoxEO7Gs7
+         ggTNOPw3DjOgXGCGkyfHcKAplgZDf7UX5faXD2ohN9bHNko5GeGQ95ZrqacEjTxDk8YD
+         85I6LaUZgmp/ONHdPL5bQoVH+rCUOfsIYfKoxwutpBa9V0zD9ulQwIaJcbV171G4Ying
+         2PNNm2J/LX5vVoXoa6kn0LP2uD0MsY+SycGEnUPeZoNKGIzWB92Jgdut9rqSHmJTrB9D
+         yFEzKvT8Jno36PsBIVBj0uBXE5EC3YEvXvIT0XH7KivsA19scgoTH1JeSKQMhnev83Ly
+         BMlg==
+X-Gm-Message-State: AOAM530lgDtN1mSuyS7PLQrVG/6m+Q03yUjNk1PmMo55PxtORBI0tIRs
+        9U34IGYbthpjthwbkXEE4btTlVZaQxCLGFk94wNTcA==
+X-Google-Smtp-Source: ABdhPJzirGjYBB8YzqRlXB6XwsmXDEp+1CRFhcnCLW1p6gwIk+G8P+WY5vuJEu8ZzJxOQiagqN1kXilmhLKpYFrVQnw=
+X-Received: by 2002:a25:918c:: with SMTP id w12mr18817285ybl.226.1629098269008;
+ Mon, 16 Aug 2021 00:17:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAL2pN5_4tPwhOxKu1g4YT3fEnzvhkQ0dLkP7-4RyUoEmPJiyVw@mail.gmail.com>
- <b307c1c2-e770-8926-7b68-3a0e69c659b0@fb.com> <CAEf4BzYObyi3Mn6qh9vjhh-9dpyxWFzaaHgEOjZk3iKHWAzA8w@mail.gmail.com>
-In-Reply-To: <CAEf4BzYObyi3Mn6qh9vjhh-9dpyxWFzaaHgEOjZk3iKHWAzA8w@mail.gmail.com>
-From:   Mohan Parthasarathy <mposdev21@gmail.com>
-Date:   Sun, 15 Aug 2021 21:30:29 -0700
-Message-ID: <CAL2pN5-ynjixsGa=6PinNs68QGOVGmVYMSCbdSMp1oG-qfZoqw@mail.gmail.com>
-Subject: Re: libbpf attaching a raw socket
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20210809093437.876558-1-johan.almbladh@anyfinetworks.com> <CAO5pjwTWrC0_dzTbTHFPSqDwA56aVH+4KFGVqdq8=ASs0MqZGQ@mail.gmail.com>
+In-Reply-To: <CAO5pjwTWrC0_dzTbTHFPSqDwA56aVH+4KFGVqdq8=ASs0MqZGQ@mail.gmail.com>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Mon, 16 Aug 2021 09:17:55 +0200
+Message-ID: <CAM1=_QSMPF6s==K8rwD2=uGUjze-=S=iQuaKmFz28zM1nXUcRA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/7] Fix MAX_TAIL_CALL_CNT handling in eBPF JITs
+To:     Paul Chaignon <paul.chaignon@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, illusionist.neo@gmail.com,
+        zlim.lnx@gmail.com, Paul Burton <paulburton@kernel.org>,
+        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
+        Luke Nelson <luke.r.nels@gmail.com>, bjorn@kernel.org,
+        Ilya Leoshkevich <iii@linux.ibm.com>, hca@linux.ibm.com,
+        gor@linux.ibm.com, "David S. Miller" <davem@davemloft.net>,
+        udknight@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-
-I see examples both under
-
-- samples/bpf/sock*
--tools/testing/selftests/bpf/progs
-
-The programs under bpf seem to include bpf_legacy.h for load_byte etc.
-Is this still valid or this will go away in the future?
-
-Thanks
-Mohan
-
-On Fri, Aug 13, 2021 at 12:01 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Aug 12, 2021 at 6:37 PM Paul Chaignon <paul.chaignon@gmail.com> wrote:
+> On Mon, Aug 09, 2021 at 11:34:30AM +0200, Johan Almbladh wrote:
+> > A new test of tail call count limiting revealed that the interpreter
+> > did in fact allow up to MAX_TAIL_CALL_CNT + 1 tail calls, whereas the
+> > x86 JITs stopped at the intended MAX_TAIL_CALL_CNT. The interpreter was
+> > fixed in commit b61a28cf11d61f512172e673b8f8c4a6c789b425 ("bpf: Fix
+> > off-by-one in tail call count limiting"). This patch set fixes all
+> > arch-specific JITs except for RISC-V.
 >
-> On Fri, Aug 13, 2021 at 10:23 AM Yonghong Song <yhs@fb.com> wrote:
-> >
-> >
-> >
-> > On 8/11/21 6:36 PM, Mohan Parthasarathy wrote:
-> > > Hi,
-> > >
-> > > I looked in the samples and header files, but could not find an
-> > > example for this. How does one convert this from bcc to libbpf. This
-> > > is the userspace code.
-> > >
-> > > bpf = BPF(src_file = "socket_filter.c", debug=0)
-> > > socket_filter = bpf.load_func("socket_filter", BPF.SOCKET_FILTER)
-> > > BPF.attach_raw_socket(socket_filter, "eth2")
-> > > socket_fd = socket_filter.sock
-> > >
-> > > I can do the following to set the type:
-> > >
-> > > err = bpf_program__set_socket_filter(obj);
-> > >
-> > > Is there any sample I can follow or any header files where I can look
-> > > for attaching a socket to the bpf code.
-> >
-> > There are a few examples in linux/samples/bpf directory:
-> >
-> > [~/work/bpf-next/samples/bpf] grep SOCKET_F *.c
-> > cookie_uid_helper_example.c:    prog_fd =
-> > bpf_load_program(BPF_PROG_TYPE_SOCKET_FILTER, prog,
-> > fds_example.c:          return bpf_load_program(BPF_PROG_TYPE_SOCKET_FILTER,
-> > sockex1_user.c: if (bpf_prog_load(filename, BPF_PROG_TYPE_SOCKET_FILTER,
-> > sockex2_user.c: if (bpf_prog_load(filename, BPF_PROG_TYPE_SOCKET_FILTER,
-> > sock_example.c: prog_fd = bpf_load_program(BPF_PROG_TYPE_SOCKET_FILTER,
+> I'm a bit surprised by this because I had previously tested the tail
+> call limit of several JIT compilers and found it to be 33 (i.e.,
+> allowing chains of up to 34 programs). I've just extended a test program
+> I had to validate this again on the x86-64 JIT and found a limit of 33
+> tail calls again [1].
+
+Hmm, that was surprising. I have been working on a MIPS32 JIT, and as
+a part of that I have been extending the in-kernel test suite in
+lib/test_bpf.c. The additional tests include a suite for testing tail
+calls and associated error paths. The tests were merged to bpf-next
+[1].
+
+The tail call limit test is a very simple BPF program that increments
+R1, sets R0 to R1, and then calls itself again with a tail call. Since
+the program is called with R1=0, the return value R0 will then be 1 +
+number of tail calls executed. When I ran this on x86 I got the
+following result.
+
+Interpreter: 34
+x86_64 JIT: 33
+i386 JIT: 33
+
+So, the interpreter and the x86 JITs had different behaviours. It was
+then decided to change the interpreter to allow 32 tail calls to match
+the behaviour of the x86 JITs [2]. As a follow up on that, I tested
+the other JITs except RISC-V in the same way, and found that they too
+allowed one more tail call than the now-updated [3] interpreter. This
+patch set updates the behaviour of those JITs as well.
+
+[1] https://lore.kernel.org/bpf/20210809091829.810076-1-johan.almbladh@anyfinetworks.com/
+[2] https://lore.kernel.org/bpf/5afe26c6-7ab1-88ab-a3e0-eb007256a856@iogearbox.net/
+[3] b61a28cf1 ("bpf: Fix off-by-one in tail call count limiting")
+
+> Also note we had previously changed the RISC-V and MIPS JITs to allow up
+> to 33 tail calls [2, 3], for consistency with other JITs and with the
+> interpreter. We had decided to increase these two to 33 rather than
+> decrease the other JITs to 32 for backward compatibility, though that
+> probably doesn't matter much as I'd expect few people to actually use 33
+> tail calls :-)
+
+Right, the backwards compatibility aspect is a valid point. I don't
+think anyone would be near that limit though, :-) but still.
+
+Whether the limit is 32 or 33 really doesn't matter. My only concern
+here is that the limit should be the same across all JIT
+implementations and the interpreter. We could instead change the x86
+JITs and revert the interpreter change to let the limit be 33, if that
+would be a better solution.
+
+> 1 - https://github.com/pchaigno/tail-call-bench/commit/ae7887482985b4b1745c9b2ef7ff9ae506c82886
+> 2 - 96bc4432 ("bpf, riscv: Limit to 33 tail calls")
+> 3 - e49e6f6d ("bpf, mips: Limit to 33 tail calls")
 >
-> just please don't use bpf_load_program and bpf_prog_load, use proper
-> bpf_object APIs or BPF skeleton for loading programs.
->
-> > prog, insns_cnt,
 > >
-> > They should provide an example how to attach a socket_filter program
-> > to a socket.
+> > For each of the affected JITs, the incorrect behaviour was verified
+> > by running the test_bpf test suite in QEMU. After the fixes, the JITs
+> > pass the tail call count limiting test.
 >
-> You can probably also look at recently added bpf_tc_* APIs in
-> tools/testing/selftests/bpf/prog_tests/tc_bpf.c. I've CC'ed Kumar who
-> added those APIs recently.
->
+> If you are referring to test_tailcall_3 and its associated BPF program
+> tailcall3, then as far as I can tell, it checks that 33 tail calls are
+> allowed. The counter is incremented before each tail call except the
+> first one. The last tail call is rejected because we reach the limit, so
+> a counter value of 33 (as checked in the test code) means we've
+> successfully executed 33 tail calls.
+
+My test setup can build for all architectures included in this patch
+set and some more, and then boot the kernel in QEMU with a
+statically-linked busybox as userspace. I can easily run the kernel's
+BPF test suite on all those architectures, but since I don't have a
+full-fledged userspace I have not been able to run the selftests in
+the same way.
+
+We need to be able to determine what the tail call limit actually is
+for the different implementations. I don't understand why you get
+different results when testing from userspace compared to testing the
+JIT itself. Either one of the tests is faulty, or there is some other
+mechanism at play here.
+
+Johan
+
 > >
-> > >
-> > > Thanks
-> > > Mohan
-> > >
+> > I have not been able to test the RISC-V JITs due to the lack of a
+> > working toolchain and QEMU setup. It is likely that the RISC-V JITs
+> > have the off-by-one behaviour too. I have not verfied any of the NIC JITs.
+> >
+> > Link: https://lore.kernel.org/bpf/20210728164741.350370-1-johan.almbladh@anyfinetworks.com/
+> >
+> > Johan Almbladh (7):
+> >   arm: bpf: Fix off-by-one in tail call count limiting
+> >   arm64: bpf: Fix off-by-one in tail call count limiting
+> >   powerpc: bpf: Fix off-by-one in tail call count limiting
+> >   s390: bpf: Fix off-by-one in tail call count limiting
+> >   sparc: bpf: Fix off-by-one in tail call count limiting
+> >   mips: bpf: Fix off-by-one in tail call count limiting
+> >   x86: bpf: Fix comments on tail call count limiting
+> >
+> >  arch/arm/net/bpf_jit_32.c         | 6 +++---
+> >  arch/arm64/net/bpf_jit_comp.c     | 4 ++--
+> >  arch/mips/net/ebpf_jit.c          | 4 ++--
+> >  arch/powerpc/net/bpf_jit_comp32.c | 4 ++--
+> >  arch/powerpc/net/bpf_jit_comp64.c | 4 ++--
+> >  arch/s390/net/bpf_jit_comp.c      | 6 +++---
+> >  arch/sparc/net/bpf_jit_comp_64.c  | 2 +-
+> >  arch/x86/net/bpf_jit_comp32.c     | 6 +++---
+> >  8 files changed, 18 insertions(+), 18 deletions(-)
+> >
+> > --
+> > 2.25.1
+> >
