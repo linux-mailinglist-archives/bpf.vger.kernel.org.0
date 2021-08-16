@@ -2,155 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0464F3EDD8F
-	for <lists+bpf@lfdr.de>; Mon, 16 Aug 2021 21:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2943EDDE1
+	for <lists+bpf@lfdr.de>; Mon, 16 Aug 2021 21:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhHPTEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Aug 2021 15:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
+        id S229912AbhHPT26 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Aug 2021 15:28:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhHPTEd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Aug 2021 15:04:33 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A82C061764
-        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 12:04:01 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so275269pjn.4
-        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 12:04:01 -0700 (PDT)
+        with ESMTP id S229587AbhHPT25 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Aug 2021 15:28:57 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAA7C061764;
+        Mon, 16 Aug 2021 12:28:25 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id a126so6005021ybg.6;
+        Mon, 16 Aug 2021 12:28:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9iqwgQUcM7kXjxKmNPoKYxMsXr+XLcOB8+pWCUZkNe8=;
-        b=khVO0/QBba6vVfRXK6CkZDH6IA77BIoDB/of9b/WaqA/ZZPZl1jwp8lXh/+Q9THe6V
-         V23ugeQ+qALQrViS/23lb6hOfjAHcc0squ2h/uz2O7LHQ/302rXRyuELOzhqyxn+c4T9
-         j8moD3MPTNepuBCMSPp3I/b+AQVIivkGe3p16+tUDMrgjTHf04ImbH9UVN+b1Q3rgpHo
-         swIBWR/0bMgvUajEYIW+mIagnUh/qTMlgWEwnyTUW5Q2i/3lonVdgSFJfmg5GHcbXnAW
-         15kQuMYaDg3RFCZEg/tL3dYlEmpfkcJP6/xxNM5LMjTP22d3TsUsPGVC0SjzH4KvnCRq
-         yU1A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xOLGmKqsNdO/wte6QQWYwVypGu5lv1VOL9/PE5zzppg=;
+        b=CA8ZD7TZwOAQKDSljQp1zBOxEqZoagJClVN1p/JdDItiAz55JSE7fm2HxWdD4Mbqt2
+         fxChgYBx2PavugcoRDnjKuGMFoERQO9uubZC/oxrMywnQekamQULSdzvlRPVM/nuk7IQ
+         6/08gnUpiEl2ZPOW+E4SgC7EW5LST560WMEsDJIr5gKiUQ3ULI9LtO6YPh3bXMyoQ16z
+         F2tejZzoQw+s/yLqYDwhEMps9XJqgsQCE5KIBe2dTIjNZyZV3cYuLid/YaaW+Jtjxwb4
+         GwZ5o2FC5Zbs/ljInvQlxZbj9s5lspwZfZG8Jp/wfGQfxeJ0Fw553X/LhJgxj63KT8wv
+         vqWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9iqwgQUcM7kXjxKmNPoKYxMsXr+XLcOB8+pWCUZkNe8=;
-        b=jYOfXGxFyVwcG/9K15TG/QoBP6FqgRWR0RuJIj0VmJ5NvGnbGMFoIkskMjwgKOBA8f
-         Lruh6h+i9cD9iXnaKnyzVOQAOZGl8M4hHHwmXj3L+Cc+S/j659BDKqM7NDQbT4OGPdVc
-         ZTiePsDidcP838HOPExGrJN716Vw32mRLv1p01Ue+gNeDGfrtj7MpkGHuj9V1qdCi1Gc
-         gsTPlz18sn+sIN1YzYL9TEFIiL3hsF77KLDp7BdoFxJa6Oy28Ju7S2U8mx7bcex7lcel
-         OixvaXshJI5JgtQGt8HjsvGsohzxAQxt/SkOtor08Jk7KU1S6tVUnKNxa8T14W2M3tPi
-         5Q2Q==
-X-Gm-Message-State: AOAM532I1eEcTsnCGQmyY0SEJgmWwwSHYYctYQ3cQZo7UeFkes7gDrFe
-        3YRjIZSmHFDTfAFxg82yhPaITA==
-X-Google-Smtp-Source: ABdhPJwP5XilbEBiiT/DzuRXZWi9rskAyFkTjcs30yOIy91tKBHlgm9bKyxUDjsyXZOKf8fJ6dVUYQ==
-X-Received: by 2002:a17:902:9885:b0:12d:b795:f48e with SMTP id s5-20020a170902988500b0012db795f48emr259320plp.10.1629140641236;
-        Mon, 16 Aug 2021 12:04:01 -0700 (PDT)
-Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id t30sm175845pgl.47.2021.08.16.12.03.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Aug 2021 12:04:01 -0700 (PDT)
-From:   Jiang Wang <jiang.wang@bytedance.com>
-To:     netdev@vger.kernel.org
-Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Rao Shoaib <rao.shoaib@oracle.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v7 5/5] selftest/bpf: add new tests in sockmap for unix stream to tcp.
-Date:   Mon, 16 Aug 2021 19:03:24 +0000
-Message-Id: <20210816190327.2739291-6-jiang.wang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210816190327.2739291-1-jiang.wang@bytedance.com>
-References: <20210816190327.2739291-1-jiang.wang@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xOLGmKqsNdO/wte6QQWYwVypGu5lv1VOL9/PE5zzppg=;
+        b=b10Je8cUevDn+D5b/fy42wU+PhWG3Sli9fyj+09tT+ca3LifKGuNCeOHlwrzCtADN6
+         7VfaYB2AaqduAC/eBzGC6XZbbtIJHZ6mCBz6Od/+1kn1Uh4HajVJzRttAVax1mppTl2r
+         fhvs1FcOBaCV4hHJLyOWILRAzYZ8apdsm29xwy08Cr8k3r5hmy0fdg++EnXYWQwSh/1e
+         3tNgf9btw31KSxdyDaU+YtgH3A9oWNQy19lDoAZ9yS05V+Z1AJnr5jXUf7GkitVvw0Tv
+         8pzh5/VgggXCqK0hYs/FGH1qBSJ6Ezhhu3xEjmSpk54YNK5Qp+9tjDmNmX2gg8UZ9u6G
+         zHDw==
+X-Gm-Message-State: AOAM532rY6EBd7wlLS8PLwGRdLYgywBXAlli/xnCYT9Bz3uPWReh+Yhl
+        sUyGU07I1aq0Y9n0VuGVkBHl02YYurS1kKAc5og=
+X-Google-Smtp-Source: ABdhPJydaIx1EGJDFxukuEqSDWz/Sl0P7TDB1oBMX58voM9mT8n5uERM45Y3VwFbIt+do5gC9LOKUt5wbVPs/h9+9CQ=
+X-Received: by 2002:a25:d691:: with SMTP id n139mr23296265ybg.27.1629142105099;
+ Mon, 16 Aug 2021 12:28:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210815103610.27887-1-falakreyaz@gmail.com>
+In-Reply-To: <20210815103610.27887-1-falakreyaz@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 16 Aug 2021 12:28:14 -0700
+Message-ID: <CAEf4BzZ+3hM9oPxdXsxXRKJD2TCmpXPnkWz1LPnP7mDagprdyA@mail.gmail.com>
+Subject: Re: [PATCH] perflib: deprecate bpf_map__resize in favor of bpf_map_set_max_entries
+To:     Muhammad Falak R Wani <falakreyaz@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Yu Kuai <yukuai3@huawei.com>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add two new test cases in sockmap tests, where unix stream is
-redirected to tcp and vice versa.
+On Sun, Aug 15, 2021 at 3:36 AM Muhammad Falak R Wani
+<falakreyaz@gmail.com> wrote:
+>
+> As a part of libbpf 1.0 plan[0], this patch deprecates use of
+> bpf_map__resize in favour of bpf_map__set_max_entries.
+>
+> Reference: https://github.com/libbpf/libbpf/issues/304
+> [0]: https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#libbpfh-high-level-apis
+>
+> Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
+> ---
 
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c    | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+All looks good, there is an opportunity to simplify the code a bit (see below).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 07ed8081f9ae..afa14fb66f08 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -1884,7 +1884,7 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
- 	xclose(p0);
- }
- 
--static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+static void inet_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
- {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-@@ -1899,9 +1899,13 @@ static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	skel->bss->test_ingress = false;
- 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				    REDIR_EGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				    REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
- 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				    REDIR_INGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				    REDIR_INGRESS);
- 
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
- }
-@@ -1961,7 +1965,7 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
- 
- }
- 
--static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+static void unix_inet_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
- {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-@@ -1976,9 +1980,13 @@ static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	skel->bss->test_ingress = false;
- 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				     REDIR_EGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				     REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
- 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				     REDIR_INGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				     REDIR_INGRESS);
- 
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
- }
-@@ -1994,8 +2002,8 @@ static void test_udp_unix_redir(struct test_sockmap_listen *skel, struct bpf_map
- 	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name, __func__);
- 	if (!test__start_subtest(s))
- 		return;
--	udp_unix_skb_redir_to_connected(skel, map, family);
--	unix_udp_skb_redir_to_connected(skel, map, family);
-+	inet_unix_skb_redir_to_connected(skel, map, family);
-+	unix_inet_skb_redir_to_connected(skel, map, family);
- }
- 
- static void run_tests(struct test_sockmap_listen *skel, struct bpf_map *map,
--- 
-2.20.1
+Arnaldo, I assume you'll take this through your tree or you'd like us
+to take it through bpf-next?
 
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  tools/perf/util/bpf_counter.c        | 8 ++++----
+>  tools/perf/util/bpf_counter_cgroup.c | 8 ++++----
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> index ba0f20853651..ced2dac31dcf 100644
+> --- a/tools/perf/util/bpf_counter.c
+> +++ b/tools/perf/util/bpf_counter.c
+> @@ -127,9 +127,9 @@ static int bpf_program_profiler_load_one(struct evsel *evsel, u32 prog_id)
+>
+>         skel->rodata->num_cpu = evsel__nr_cpus(evsel);
+>
+> -       bpf_map__resize(skel->maps.events, evsel__nr_cpus(evsel));
+> -       bpf_map__resize(skel->maps.fentry_readings, 1);
+> -       bpf_map__resize(skel->maps.accum_readings, 1);
+> +       bpf_map__set_max_entries(skel->maps.events, evsel__nr_cpus(evsel));
+> +       bpf_map__set_max_entries(skel->maps.fentry_readings, 1);
+> +       bpf_map__set_max_entries(skel->maps.accum_readings, 1);
+>
+>         prog_name = bpf_target_prog_name(prog_fd);
+>         if (!prog_name) {
+> @@ -399,7 +399,7 @@ static int bperf_reload_leader_program(struct evsel *evsel, int attr_map_fd,
+>                 return -1;
+>         }
+>
+> -       bpf_map__resize(skel->maps.events, libbpf_num_possible_cpus());
+> +       bpf_map__set_max_entries(skel->maps.events, libbpf_num_possible_cpus());
+
+If you set max_entries to 0 (or just skip specifying it) for events
+map in util/bpf_skel/bperf_cgroup.bpf.c, you won't need to resize it,
+libbpf will automatically size it to number of possible CPUs.
+
+>         err = bperf_leader_bpf__load(skel);
+>         if (err) {
+>                 pr_err("Failed to load leader skeleton\n");
+> diff --git a/tools/perf/util/bpf_counter_cgroup.c b/tools/perf/util/bpf_counter_cgroup.c
+> index 89aa5e71db1a..cbc6c2bca488 100644
+> --- a/tools/perf/util/bpf_counter_cgroup.c
+> +++ b/tools/perf/util/bpf_counter_cgroup.c
+> @@ -65,14 +65,14 @@ static int bperf_load_program(struct evlist *evlist)
+>
+>         /* we need one copy of events per cpu for reading */
+>         map_size = total_cpus * evlist->core.nr_entries / nr_cgroups;
+> -       bpf_map__resize(skel->maps.events, map_size);
+> -       bpf_map__resize(skel->maps.cgrp_idx, nr_cgroups);
+> +       bpf_map__set_max_entries(skel->maps.events, map_size);
+> +       bpf_map__set_max_entries(skel->maps.cgrp_idx, nr_cgroups);
+>         /* previous result is saved in a per-cpu array */
+>         map_size = evlist->core.nr_entries / nr_cgroups;
+> -       bpf_map__resize(skel->maps.prev_readings, map_size);
+> +       bpf_map__set_max_entries(skel->maps.prev_readings, map_size);
+>         /* cgroup result needs all events (per-cpu) */
+>         map_size = evlist->core.nr_entries;
+> -       bpf_map__resize(skel->maps.cgrp_readings, map_size);
+> +       bpf_map__set_max_entries(skel->maps.cgrp_readings, map_size);
+>
+>         set_max_rlimit();
+>
+> --
+> 2.17.1
+>
