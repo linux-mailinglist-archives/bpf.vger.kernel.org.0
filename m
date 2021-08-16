@@ -2,96 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3257E3EDCA3
-	for <lists+bpf@lfdr.de>; Mon, 16 Aug 2021 19:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836853EDD5E
+	for <lists+bpf@lfdr.de>; Mon, 16 Aug 2021 20:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhHPRxk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Aug 2021 13:53:40 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:64790 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229613AbhHPRxj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 16 Aug 2021 13:53:39 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17GHjO7n011639
-        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 10:53:08 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=gh0hMspso3ZIONZHzFbSnSLpw2c28yYj+ffDv40dLfw=;
- b=mSH66c/NV6/4Aa0ATc7i0wd8SyjfFcfHYTMX9VBNwbfmZ40pBYPcO8nLQdk1F2ZXzl/M
- vpGacRa8GML6cIitad75F2+Xw4hy9OMtXctEYXDlFc0vrO59i4w9iQW6zophcSLHiILI
- eGv6Bc/Js5eBBaoTeRZViJQl2lVdV07UBiI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aftmjh28v-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 10:53:07 -0700
-Received: from intmgw003.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 16 Aug 2021 10:53:05 -0700
-Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id 3CBCE2246300; Mon, 16 Aug 2021 10:52:55 -0700 (PDT)
-From:   Yucong Sun <fallentree@fb.com>
-To:     <andrii@kernel.org>
-CC:     <sunyucong@gmail.com>, <bpf@vger.kernel.org>,
-        Yucong Sun <fallentree@fb.com>
-Subject: [PATCH v1 bpf] selftests/bpf: Add exponential backoff to map_update_retriable in test_maps
-Date:   Mon, 16 Aug 2021 10:52:50 -0700
-Message-ID: <20210816175250.296110-1-fallentree@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S231443AbhHPSys (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Aug 2021 14:54:48 -0400
+Received: from mga18.intel.com ([134.134.136.126]:40800 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230384AbhHPSys (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Aug 2021 14:54:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="203074599"
+X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
+   d="scan'208";a="203074599"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2021 11:54:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,326,1620716400"; 
+   d="scan'208";a="423658813"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga003.jf.intel.com with ESMTP; 16 Aug 2021 11:54:12 -0700
+Date:   Mon, 16 Aug 2021 20:39:33 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     "Creeley, Brett" <brett.creeley@intel.com>
+Cc:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "bjorn@kernel.org" <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Lobakin, Alexandr" <alexandr.lobakin@intel.com>,
+        "joamaki@gmail.com" <joamaki@gmail.com>,
+        "toke@redhat.com" <toke@redhat.com>
+Subject: Re: [PATCH v5 intel-next 2/9] ice: move ice_container_type onto
+ ice_ring_container
+Message-ID: <20210816183933.GA1521@ranger.igk.intel.com>
+References: <20210814140812.46632-1-maciej.fijalkowski@intel.com>
+ <20210814140812.46632-3-maciej.fijalkowski@intel.com>
+ <CO1PR11MB4835F0FDF2ABA2578B722095F5FD9@CO1PR11MB4835.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: 9k67aof18F57odQbpS0yv0DLeF7-nMaf
-X-Proofpoint-GUID: 9k67aof18F57odQbpS0yv0DLeF7-nMaf
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-16_06:2021-08-16,2021-08-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 clxscore=1015 bulkscore=0 lowpriorityscore=0
- mlxlogscore=748 mlxscore=0 impostorscore=0 phishscore=0 spamscore=0
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2108160113
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CO1PR11MB4835F0FDF2ABA2578B722095F5FD9@CO1PR11MB4835.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Using a fixed delay of 1ms is proven flaky in slow CPU environment, eg.  =
-github
-action CI system. This patch adds exponential backoff with a cap of 50ms,=
- to
-reduce the flakyness of the test.
+On Mon, Aug 16, 2021 at 05:51:06PM +0100, Creeley, Brett wrote:
+> > -----Original Message-----
+> > From: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
+> > Sent: Saturday, August 14, 2021 7:08 AM
+> > To: intel-wired-lan@lists.osuosl.org
+> > Cc: netdev@vger.kernel.org; bpf@vger.kernel.org; davem@davemloft.net; Nguyen, Anthony L <anthony.l.nguyen@intel.com>;
+> > kuba@kernel.org; bjorn@kernel.org; Karlsson, Magnus <magnus.karlsson@intel.com>; Brandeburg, Jesse
+> > <jesse.brandeburg@intel.com>; Lobakin, Alexandr <alexandr.lobakin@intel.com>; joamaki@gmail.com; toke@redhat.com; Creeley,
+> > Brett <brett.creeley@intel.com>; Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
+> > Subject: [PATCH v5 intel-next 2/9] ice: move ice_container_type onto ice_ring_container
+> >
+> > Currently ice_container_type is scoped only for ice_ethtool.c. Next
+> > commit that will split the ice_ring struct onto Rx/Tx specific ring
+> > structs is going to also modify the type of linked list of rings that is
+> > within ice_ring_container. Therefore, the functions that are taking the
+> > ice_ring_container as an input argument will need to be aware of a ring
+> > type that will be looked up.
+> >
+> > Embed ice_container_type within ice_ring_container and initialize it
+> > properly when allocating the q_vectors.
+> >
+> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > ---
+> >  drivers/net/ethernet/intel/ice/ice_base.c    |  2 ++
+> >  drivers/net/ethernet/intel/ice/ice_ethtool.c | 36 ++++++++------------
+> >  drivers/net/ethernet/intel/ice/ice_txrx.h    |  6 ++++
+> >  3 files changed, 23 insertions(+), 21 deletions(-)
+> 
+> <snip>
+> 
+> > +enum ice_container_type {
+> > +     ICE_RX_CONTAINER,
+> > +     ICE_TX_CONTAINER,
+> > +};
+> > +
+> >  struct ice_ring_container {
+> >       /* head of linked-list of rings */
+> >       struct ice_ring *ring;
+> > @@ -347,6 +352,7 @@ struct ice_ring_container {
+> >       u16 itr_setting:13;
+> >       u16 itr_reserved:2;
+> >       u16 itr_mode:1;
+> > +     enum ice_container_type type;
+> 
+> It may not matter, but should you make sure
+> the size of "type" doesn't negativelly affect this
+> structure?
 
-Signed-off-by: Yucong Sun <fallentree@fb.com>
----
- tools/testing/selftests/bpf/test_maps.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Seems that it doesn't matter.
 
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/self=
-tests/bpf/test_maps.c
-index 14cea869235b..ed92d56c19cf 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1400,11 +1400,16 @@ static void test_map_stress(void)
- static int map_update_retriable(int map_fd, const void *key, const void =
-*value,
- 				int flags, int attempts)
- {
-+	int delay =3D 1;
-+
- 	while (bpf_map_update_elem(map_fd, key, value, flags)) {
- 		if (!attempts || (errno !=3D EAGAIN && errno !=3D EBUSY))
- 			return -errno;
-=20
--		usleep(1);
-+		if (delay < 50)
-+			delay *=3D 2;
-+
-+		usleep(delay);
- 		attempts--;
- 	}
-=20
---=20
-2.30.2
+Before:
+struct ice_ring_container {
+        struct ice_ring *          ring;                 /*     0     8 */
+        struct dim                 dim;                  /*     8   120 */
 
+        /* XXX last struct has 2 bytes of padding */
+
+        /* --- cacheline 2 boundary (128 bytes) --- */
+        u16                        itr_idx;              /*   128     2 */
+        u16                        itr_setting:13;       /*   130: 0  2 */
+        u16                        itr_reserved:2;       /*   130:13  2 */
+        u16                        itr_mode:1;           /*   130:15  2 */
+
+        /* size: 136, cachelines: 3, members: 6 */
+        /* padding: 4 */
+        /* paddings: 1, sum paddings: 2 */
+        /* last cacheline: 8 bytes */
+
+
+After:
+struct ice_ring_container {
+        union {
+                struct ice_rx_ring * rx_ring;            /*     0     8 */
+                struct ice_tx_ring * tx_ring;            /*     0     8 */
+        };                                               /*     0     8 */
+        struct dim                 dim;                  /*     8   120 */
+
+        /* XXX last struct has 2 bytes of padding */
+
+        /* --- cacheline 2 boundary (128 bytes) --- */
+        u16                        itr_idx;              /*   128     2 */
+        u16                        itr_setting:13;       /*   130: 0  2 */
+        u16                        itr_reserved:2;       /*   130:13  2 */
+        u16                        itr_mode:1;           /*   130:15  2 */
+        enum ice_container_type    type;                 /*   132     4 */
+
+        /* size: 136, cachelines: 3, members: 7 */
+        /* paddings: 1, sum paddings: 2 */
+        /* last cacheline: 8 bytes */
+
+Still 3 cachelines and same sizes.
+
+
+> 
+> >  };
+> >
+> >  struct ice_coalesce_stored {
+> > --
+> > 2.20.1
+> 
