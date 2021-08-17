@@ -2,42 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C793EF016
-	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 18:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939723EF023
+	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 18:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbhHQQUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Aug 2021 12:20:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39950 "EHLO mail.kernel.org"
+        id S229699AbhHQQ0u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Aug 2021 12:26:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230329AbhHQQUO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Aug 2021 12:20:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7362D60FDA;
-        Tue, 17 Aug 2021 16:19:41 +0000 (UTC)
+        id S229518AbhHQQ0k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Aug 2021 12:26:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 986FB60F11;
+        Tue, 17 Aug 2021 16:26:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629217181;
-        bh=iUlO3PuGFNltUnMT3WDkXLiBGlayG2bvatslX30u5/Q=;
+        s=k20201202; t=1629217567;
+        bh=k0hboxp93Qz3WpPrRTXQkp9u+iM+tt+gVHJHQ1Yl6tE=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FMc1EjOmFu2ho4EYKLvznnMRTP9XqvazGbd0GSlDtI8gXyRfJVUE/VSBUkUw2Rb0Z
-         34oQugx+x+0tKgcVZSrqTjjJWKrtkLTf1+JZq8x/y6hlu7kgeUh1P732zT+lInXROf
-         mxVvIRszu9hdq8MR1hkiBFUuBUi82MK0v9AfhXBRF3G+CYsl91fmonb+c/ws12u/I/
-         c7j/GPToJ4amCnV8tFVQAYYXyG2LEowvZim4leStznNPbA/G47GRwnVzte//531mpT
-         jDPdjtyqiQXYXtD86mDv53TybSppvxypvrLFu7jA7PEuBoUMZeJnDRneMYwPL/9VaO
-         AJQ5a5eJjd44Q==
-Received: by mail-lf1-f48.google.com with SMTP id x27so42428477lfu.5;
-        Tue, 17 Aug 2021 09:19:41 -0700 (PDT)
-X-Gm-Message-State: AOAM530Avd6qimpF6gkXcoR53ObrFpwdEaRa+CoWZs8PF/shccINp42u
-        ld0xazQl4gIaIUis0gLl5YFZZxZ4qdHSi/+0ANg=
-X-Google-Smtp-Source: ABdhPJwxt+CYiX94xy4tpC44j6dME09jjH6K1B0m2gKcGRDsdK/IFUjLOuJFv9aJxSZhggHHTx5WuSzs8MfNIfdH8Jg=
-X-Received: by 2002:a05:6512:3b3:: with SMTP id v19mr3085875lfp.10.1629217179810;
- Tue, 17 Aug 2021 09:19:39 -0700 (PDT)
+        b=LEqhQqlCfolMHKtbG+W2vZdRYBB0Cs0G6fUsgPgbmDAtSti1hGMbi+uvE+LtcJHgh
+         GO8TpMw8jqcYvXne3o2ZLqeHzb6nxOri7if8+ftywvtraJrXP+ijhY7HB6DjEkqmVN
+         rPd3YU7p8+G85QIngZOKwEbEzE32KqwszVWhRJwe72r6hSCiMZ1lOReV0USuJbeADo
+         qYCaYZoW1nnaTEoZ1scLg1VPWNJRjmAiNs+lrMJf4GHm5/1r8DUYejcrz+xjRwHKtw
+         9/hJoILIPO1rdpIcdqX0REe/otrK51iimGTTmf0SbYqYTHPS2xKbRZd/ouyspxbp3s
+         VllUsBcymPywQ==
+Received: by mail-lj1-f173.google.com with SMTP id n6so33940062ljp.9;
+        Tue, 17 Aug 2021 09:26:07 -0700 (PDT)
+X-Gm-Message-State: AOAM530jUBkqXikZY8s8voqUIymkNWT8aI4/hzvD/r8JMBckJgiTBaJ+
+        9CFvE4LWeqMctcZV7af5EGJ1X3AA3AjtKfsThls=
+X-Google-Smtp-Source: ABdhPJxVncmL4LRbW0pqO7lluxTuMwxvNEIsS4b1i48FDkYcYBgfjPeDRPx07plm2fJHPZCRNVf5Po1KZQJoPGGvgNs=
+X-Received: by 2002:a2e:9953:: with SMTP id r19mr4006469ljj.270.1629217565975;
+ Tue, 17 Aug 2021 09:26:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210817154556.92901-1-sdf@google.com>
-In-Reply-To: <20210817154556.92901-1-sdf@google.com>
+References: <20210817154556.92901-1-sdf@google.com> <20210817154556.92901-2-sdf@google.com>
+In-Reply-To: <20210817154556.92901-2-sdf@google.com>
 From:   Song Liu <song@kernel.org>
-Date:   Tue, 17 Aug 2021 09:19:28 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7O+rC6gw_YQjDQbswWA5OSd+dE9EuuJ9pPyxnrsUv+ww@mail.gmail.com>
-Message-ID: <CAPhsuW7O+rC6gw_YQjDQbswWA5OSd+dE9EuuJ9pPyxnrsUv+ww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: use kvmalloc for map values in syscall
+Date:   Tue, 17 Aug 2021 09:25:55 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6E4CYheAAicsv8ZqYqRd4C6Kn4qkb1-ckCTP_Kw=bDVg@mail.gmail.com>
+Message-ID: <CAPhsuW6E4CYheAAicsv8ZqYqRd4C6Kn4qkb1-ckCTP_Kw=bDVg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: use kvmalloc for map keys in syscalls
 To:     Stanislav Fomichev <sdf@google.com>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -50,11 +50,8 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Aug 17, 2021 at 8:46 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> Use kvmalloc/kvfree for temporary value when manipulating a map via
-> syscall. kmalloc might not be sufficient for percpu maps where the value
-> is big (and further multiplied by hundreds of CPUs).
->
-> Can be reproduced with netcnt test on qemu with "-smp 255".
+> Same as previous patch but for the keys. memdup_bpfptr is renamed
+> to vmemdup_bpfptr (and converted to kvmalloc).
 >
 > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
