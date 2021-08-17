@@ -2,247 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53793EE541
-	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 05:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D9B3EE562
+	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 06:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237405AbhHQD53 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Aug 2021 23:57:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233832AbhHQD53 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Aug 2021 23:57:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FBAC60F35
-        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 03:56:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629172617;
-        bh=vYQ1Gs5BAVuDlnuQczJ0hjt0gPC6GmyatEzt7Ofb8FQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LPAIE+Y2HmGdDgZhx0U2OIxR2FtzCtVgJKTs0raQd14E22AsPU3xd54qqvhlKp6+L
-         S+wQ8978VThD2Cu5XeSJ7LOBkANKQ/siKtOk8pr73zFs1McgYL4pN0QL+WWnb2bAKN
-         ENe84r9VBLnHW0Y/KgekBzF0FWwKxCysnT4gEcBLFw1GXgWsjZ6TAvKUJ0W+qdaeVW
-         yHxVcOHmHNSFSd6rKt9CLl0wMr8kJTt+UN8KjZreuwFUmJD3EMUEd6mVyWsWY7jwHH
-         OYNgADev+R9jXMfdF6VbV5vtGrk/3H4sueZp34Kiih2XIxKlejI6gWVbdXBFHD35TF
-         QIf+kWYumAgqQ==
-Received: by mail-lf1-f41.google.com with SMTP id z2so38798518lft.1
-        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 20:56:57 -0700 (PDT)
-X-Gm-Message-State: AOAM532Dz9I4PzvtSc883/0NPl3Vt7tGHesmWKecw7ayCZJgGNqoL5Wm
-        FLChFGI7iztQX4dvZNPawh8SY6yKY5QfH5avRcw=
-X-Google-Smtp-Source: ABdhPJzUDeAtbD+p+it43oN/Cf0r1ZMVq8LzrzIyF0eYcTdBPqRxOp1S/oF0qc9828GkADLCee/mi09UxKLf3HsFPE8=
-X-Received: by 2002:ac2:58e5:: with SMTP id v5mr832925lfo.438.1629172615443;
- Mon, 16 Aug 2021 20:56:55 -0700 (PDT)
+        id S230011AbhHQEQM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Aug 2021 00:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229754AbhHQEQL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Aug 2021 00:16:11 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43029C061764
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 21:15:39 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id z128so36996971ybc.10
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 21:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pQzmmsYUE54Ko8luKf2zGqVAJIvH8oqDwsVyff17EzI=;
+        b=UrAFsyPZo8lXzavzXwbnUxDmZKSHM1dEyYxfj0RobS40k5tloORVmgTFNfNGW2JxGR
+         G0kB2koXRb/yMLON/1SJXjh8NseAEkhCJndIhnfnG4Lx1M3B5y/f2WtfEtOvAuc0kfJv
+         reMqtvpWMSPya9LDHYzcXD/1UagpDR4fkwk8shRAxyXgnZOOnRbd3lZHR1wOPw6IZalI
+         D+/9fOIrimTCn05tpKm7/NElmFnNX4UkEkFe9+BsquJsSml1HkA2cNfBJv24Jv3FSLmL
+         WbQsKYjpO0ZdkpRCHQe3ifZW9QE73qsNRkSmHkHa/eS5y0+Mk5zVW0AxoAT0i9js8myj
+         dTfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pQzmmsYUE54Ko8luKf2zGqVAJIvH8oqDwsVyff17EzI=;
+        b=eRtcYOvOlPIyVgx5k9Y6/1PZ8v1fbZ16KnVNgIvRklcS1WHgSX7UUAuawl/0wVqEO7
+         DEOx5liOGyIgQshwbNRBjQLfkJ0KzthIOFR9PleyFanxYscTcejZDLw9HANRnkukK9vQ
+         /5l7be2fj8TaT+hEG9JdwKkZwMWXBtaDib2tk1Kc9Wu4O+VsNINH5gCtMtKCiWUJQqRC
+         98p9Sj+FtzVnecBE46p4fnr5QXVCUKWI74alRlj3gawKBalPc7s15hAEG43H+QEUse3J
+         62cpMSxrcYXlJJoXejbRW+wpjgHojjKNBCGeuYKsIA9acoyjRnJpAzpPsU/Erz6hR28y
+         Gruw==
+X-Gm-Message-State: AOAM530ko1SQzttawRMMe+aqiah5xTogFoatGz+CcFifR/1YYdOMunWa
+        6fESHRIsVie44Ejwg+DcyYw4RDH97Amtdp2SXSA=
+X-Google-Smtp-Source: ABdhPJxZRZQ/2+WesQ3UdHBrFpQzu6dfPylYLgu/NkzZHR4VzPCll4CAQue48vLywvNvKw7YJMdNgnCMtwLalc8F3aU=
+X-Received: by 2002:a25:d691:: with SMTP id n139mr2007082ybg.27.1629173738537;
+ Mon, 16 Aug 2021 21:15:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210816231716.3824813-1-prankgup@fb.com> <20210816231716.3824813-3-prankgup@fb.com>
- <CAPhsuW4RDYVtnomkjgJs_1H_DSn2skcf7mmoxKkLE-bB38b+Kw@mail.gmail.com>
-In-Reply-To: <CAPhsuW4RDYVtnomkjgJs_1H_DSn2skcf7mmoxKkLE-bB38b+Kw@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 16 Aug 2021 20:56:44 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7p=yv0TUbCX2UR6+U-JfxL+GFxKW5_0Emzsc95qPEQ7Q@mail.gmail.com>
-Message-ID: <CAPhsuW7p=yv0TUbCX2UR6+U-JfxL+GFxKW5_0Emzsc95qPEQ7Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add test for {set|get} socket
- option from setsockopt BPF program
-To:     Prankur gupta <prankgup@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, prankur.07@gmail.com
+References: <20210816175250.296110-1-fallentree@fb.com> <CAPhsuW5NYMVRCmCXu=gJudfReYzMZqTUVUUWfH+U6FzVo=dWJQ@mail.gmail.com>
+ <CAJygYd2rF1UzD1fmWrJ=Rn2Aa43pRniLTtqVzLFpJdR2wVnSFQ@mail.gmail.com> <CAEf4Bzax+jq_67gzFM3G8K17_mUSvtBuBmXUHqx6Xk7SxFz+eQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bzax+jq_67gzFM3G8K17_mUSvtBuBmXUHqx6Xk7SxFz+eQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 16 Aug 2021 21:15:27 -0700
+Message-ID: <CAEf4BzZhFpgM2KcZXiCWiAoW=uYhxMtV=kBr9zJjb=er8Lu2Dg@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf] selftests/bpf: Add exponential backoff to
+ map_update_retriable in test_maps
+To:     "sunyucong@gmail.com" <sunyucong@gmail.com>
+Cc:     Song Liu <song@kernel.org>, Yucong Sun <fallentree@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 5:20 PM Song Liu <song@kernel.org> wrote:
+On Mon, Aug 16, 2021 at 7:19 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Mon, Aug 16, 2021 at 4:18 PM Prankur gupta <prankgup@fb.com> wrote:
+> On Mon, Aug 16, 2021 at 4:45 PM sunyucong@gmail.com <sunyucong@gmail.com> wrote:
 > >
-> > Adding selftests for new added functionality to call bpf_setsockopt and
-> > bpf_getsockopt from setsockopt BPF programs
+> > On Mon, Aug 16, 2021 at 4:28 PM Song Liu <song@kernel.org> wrote:
+> > >
+> > > On Mon, Aug 16, 2021 at 10:54 AM Yucong Sun <fallentree@fb.com> wrote:
+> > > >
+> > > > Using a fixed delay of 1ms is proven flaky in slow CPU environment, eg.  github
+> > > > action CI system. This patch adds exponential backoff with a cap of 50ms, to
+> > > > reduce the flakiness of the test.
+> > >
+> > > Do we have data showing how flaky the test is before and after this change?
 > >
-> > Signed-off-by: Prankur gupta <prankgup@fb.com>
-> > ---
-> >  tools/testing/selftests/bpf/bpf_tcp_helpers.h | 18 +++++
-> >  .../bpf/prog_tests/sockopt_qos_to_cc.c        | 70 +++++++++++++++++++
-> >  .../selftests/bpf/progs/sockopt_qos_to_cc.c   | 39 +++++++++++
-> >  3 files changed, 127 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c
+> > Before the change, on 2 CPU KVM on my laptop the test is perfectly
+> > fine, on Github action (2 emulated CPU) , it appeared to fail roughly
+> > 1 in 10 runs or even more frequently.
+> > After the change, it appears pretty robust both on my laptop and on
+> > github action, I ran the github action a couple times and it succeeded
+> > every time.
 > >
-> > diff --git a/tools/testing/selftests/bpf/bpf_tcp_helpers.h b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-> > index 029589c008c9..c9f9bdad60c7 100644
-> > --- a/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-> > +++ b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-> > @@ -12,6 +12,10 @@
-> >  SEC("struct_ops/"#name) \
-> >  BPF_PROG(name, args)
+> > >
+> > > >
+> > > > Signed-off-by: Yucong Sun <fallentree@fb.com>
+> > > > ---
+> > > >  tools/testing/selftests/bpf/test_maps.c | 7 ++++++-
+> > > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+> > > > index 14cea869235b..ed92d56c19cf 100644
+> > > > --- a/tools/testing/selftests/bpf/test_maps.c
+> > > > +++ b/tools/testing/selftests/bpf/test_maps.c
+> > > > @@ -1400,11 +1400,16 @@ static void test_map_stress(void)
+> > > >  static int map_update_retriable(int map_fd, const void *key, const void *value,
+> > > >                                 int flags, int attempts)
+> > > >  {
+> > > > +       int delay = 1;
+> > > > +
+> > > >         while (bpf_map_update_elem(map_fd, key, value, flags)) {
+> > > >                 if (!attempts || (errno != EAGAIN && errno != EBUSY))
+> > > >                         return -errno;
+> > > >
+> > > > -               usleep(1);
+> > > > +               if (delay < 50)
+> > > > +                       delay *= 2;
+> > > > +
+> > > > +               usleep(delay);
+> > >
+> > > It is a little weird that the delay times in microseconds are 2, 4, 8,
+> > > 16, 32, 64, 64, ...
+> > > Maybe just use rand()?
 > >
-> > +#ifndef SOL_TCP
-> > +#define SOL_TCP 6
-> > +#endif
-> > +
-> >  #define tcp_jiffies32 ((__u32)bpf_jiffies64())
-> >
-> >  struct sock_common {
-> > @@ -203,6 +207,20 @@ static __always_inline bool tcp_is_cwnd_limited(const struct sock *sk)
-> >         return !!BPF_CORE_READ_BITFIELD(tp, is_cwnd_limited);
-> >  }
-> >
-> > +static __always_inline bool tcp_cc_eq(const char *a, const char *b)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i = 0; i < TCP_CA_NAME_MAX; i++) {
-> > +               if (a[i] != b[i])
-> > +                       return false;
-> > +               if (!a[i])
-> > +                       break;
-> > +       }
-> > +
-> > +       return true;
-> > +}
+> > map_update_retriable is called by test_map_update() , which is being
+> > parallel executed in 1024 threads, so the lock contention is
+> > intentional, I think if we introduce randomness in the delay it kind
+> > of defeats the purpose of the test.
 >
-> IIUC, this is copied from bpf_iter_setsockopt.c. I think we should be
-> more careful with it
-> as this is a header. With current code,
+> Not really, the purpose of the test is to test a lot of concurrent
+> updates with some collisions. It doesn't matter if there is one
+> collision or 20. We will still get an initial collision (we only
+> usleep() after the initial attempt fails with EAGAIN or EBUSY) even
+> with randomized initial sleep *after* the first collision, but after
+> that we should make sure that test eventually completes, so for that
+> random initial delay is a good thing.
 >
->    tcp_cc_eq("ABC", "ABCD") = true;
->    tcp_cc_eq("ABCD", "ABC") = false;
+> I reworked the code a bit, added initial random delay between [0ms,
+> 5ms), and then actually capped delay under 50ms (it can't go to
+> >50ms). Note also that your code is actually working with microseconds
+> (usleep() takes microseconds), while commit was actually talking about
+> milliseconds.
 >
-> Is this expected?
+> Applied to bpf-next, thanks.
 
-Ooops, I misread the code. Please ignore the comment above.
+Fun, two out of three test runs now fail with (see [0], for an example):
+
+  error -16 16
+  test_maps: test_maps.c:1374: test_update_delete: Assertion `err == 0' failed.
+  test_maps: test_maps.c:1312: __run_parallel: Assertion `status == 0' failed.
+  ./libbpf/travis-ci/vmtest/run_selftests.sh: line 19:  1226 Aborted
+              ./test_maps
+
+
+Seems like we need the same trick for bpf_map_delete_elem() calls?..
+
+
+  [0] https://github.com/kernel-patches/bpf/pull/1632/checks?check_run_id=3345916773
 
 >
-> > +
-> >  extern __u32 tcp_slow_start(struct tcp_sock *tp, __u32 acked) __ksym;
-> >  extern void tcp_cong_avoid_ai(struct tcp_sock *tp, __u32 w, __u32 acked) __ksym;
+> > My original proposal is to just increase the attempts to 10X , Andrii
+> > proposed to use an exponential back-off, which is what I ended up
+> > implementing.
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c b/tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c
-> > new file mode 100644
-> > index 000000000000..6b53b3cb8dad
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c
-> > @@ -0,0 +1,70 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2021 Facebook */
-> > +#include <test_progs.h>
-> > +#include <netinet/tcp.h>
-> > +#include "sockopt_qos_to_cc.skel.h"
-> > +
-> > +static void run_setsockopt_test(int cg_fd, int sock_fd)
-> > +{
-> > +       socklen_t optlen;
-> > +       char cc[16]; /* TCP_CA_NAME_MAX */
-> > +       int buf;
-> > +       int err = -1;
-> nit: this err = -1 is not needed.
->
-> > +
-> > +       buf = 0x2D;
->
-> Please explain the test case in the commit log. Otherwise, it is not
-> easy to follow
-> the test case. For example, why we use 0x2d ('-'?) here?
->
-> > +       err = setsockopt(sock_fd, SOL_IPV6, IPV6_TCLASS, &buf, sizeof(buf));
-> > +       if (!ASSERT_OK(err, "setsockopt(sock_fd, IPV6_TCLASS)"))
-> > +               return;
-> > +
-> > +       /* Verify the setsockopt cc change */
-> > +       optlen = sizeof(cc);
-> > +       err = getsockopt(sock_fd, SOL_TCP, TCP_CONGESTION, cc, &optlen);
-> > +       if (!ASSERT_OK(err, "getsockopt(sock_fd, TCP_CONGESTION)"))
-> > +               return;
-> > +
-> > +       if (!ASSERT_STREQ(cc, "reno", "getsockopt(sock_fd, TCP_CONGESTION)"))
-> > +               return;
-> > +}
-> > +
-> > +void test_sockopt_qos_to_cc(void)
-> > +{
-> > +       struct sockopt_qos_to_cc *skel;
-> > +       char cc_cubic[16] = "cubic"; /* TCP_CA_NAME_MAX */
-> > +       int cg_fd = -1;
-> > +       int sock_fd = -1;
-> > +       int err;
-> > +
-> > +       cg_fd = test__join_cgroup("/sockopt_qos_to_cc");
-> > +       if (!ASSERT_GE(cg_fd, 0, "cg-join(sockopt_qos_to_cc)"))
-> > +               return;
-> > +
-> > +       skel = sockopt_qos_to_cc__open_and_load();
-> > +       if (!ASSERT_OK_PTR(skel, "skel"))
-> > +               goto done;
-> > +
-> > +       sock_fd = socket(AF_INET6, SOCK_STREAM, 0);
-> > +       if (!ASSERT_GE(sock_fd, 0, "v6 socket open"))
-> > +               goto done;
-> > +
-> > +       err = setsockopt(sock_fd, SOL_TCP, TCP_CONGESTION, &cc_cubic,
-> > +                        sizeof(cc_cubic));
-> > +       if (!ASSERT_OK(err, "setsockopt(sock_fd, TCP_CONGESTION)"))
-> > +               goto done;
-> > +
-> > +       skel->links.sockopt_qos_to_cc =
-> > +               bpf_program__attach_cgroup(skel->progs.sockopt_qos_to_cc,
-> > +                                          cg_fd);
-> > +       if (!ASSERT_OK_PTR(skel->links.sockopt_qos_to_cc,
-> > +                          "prog_attach(sockopt_qos_to_cc)"))
-> > +               goto done;
-> > +
-> > +       run_setsockopt_test(cg_fd, sock_fd);
-> > +
-> > +done:
-> > +       if (sock_fd != -1)
-> > +               close(sock_fd);
-> > +       if (cg_fd != -1)
-> > +               close(cg_fd);
-> > +       /* destroy can take null and error pointer */
-> > +       sockopt_qos_to_cc__destroy(skel);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c b/tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c
-> > new file mode 100644
-> > index 000000000000..1bce83b6e3a7
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c
-> > @@ -0,0 +1,39 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2021 Facebook */
-> > +#include <string.h>
-> > +#include <linux/tcp.h>
-> > +#include <netinet/in.h>
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include "bpf_tcp_helpers.h"
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > +
-> > +SEC("cgroup/setsockopt")
-> > +int sockopt_qos_to_cc(struct bpf_sockopt *ctx)
-> > +{
-> > +       void *optval_end = ctx->optval_end;
-> > +       int *optval = ctx->optval;
-> > +       char buf[TCP_CA_NAME_MAX];
-> > +       char cc_reno[TCP_CA_NAME_MAX] = "reno";
-> > +       char cc_cubic[TCP_CA_NAME_MAX] = "cubic";
-> > +
-> > +       if (ctx->level != SOL_IPV6 || ctx->optname != IPV6_TCLASS)
-> > +               return 1;
-> > +
-> > +       if (optval + 1 > optval_end)
-> > +               return 0; /* EPERM, bounds check */
-> > +
-> > +       if (bpf_getsockopt(ctx->sk, SOL_TCP, TCP_CONGESTION, &buf, sizeof(buf)))
-> > +               return 0;
-> > +
-> > +       if (!tcp_cc_eq(buf, cc_cubic))
-> > +               return 0;
-> > +
-> > +       if (*optval == 0x2d) {
-> > +               if (bpf_setsockopt(ctx->sk, SOL_TCP, TCP_CONGESTION, &cc_reno,
-> > +                               sizeof(cc_reno)))
-> > +                       return 0;
-> > +       }
-> > +       return 1;
-> > +}
-> > --
-> > 2.30.2
-> >
+> > >
+> > > Thanks,
+> > > Song
+> > >
+> > > >                 attempts--;
+> > > >         }
+> > > >
+> > > > --
+> > > > 2.30.2
+> > > >
