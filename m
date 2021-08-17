@@ -2,68 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DAD3EE169
-	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 02:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295123EE1EE
+	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 03:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237147AbhHQAkl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Aug 2021 20:40:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236610AbhHQAki (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Aug 2021 20:40:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BED5C60240;
-        Tue, 17 Aug 2021 00:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629160805;
-        bh=5vTwb3thMounKV5San9j43N96GxmOjUZsXOwFW4/U0w=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=J0zyB/QQ8dRbQEADWMPTQJbyPI6tp9lfUt/N/xLhrt5g3hynm/RB5aHJgGpWd+iEB
-         jLS342GBXXAP3/+zRndvYx+TV8Be5lwX/Z1egz+WALzyIerm/QZdRTTTg7ws6Ogsdl
-         P2+BqQ6wfPVal95XRW9YuWLXAUrKwMv1phqhTbcseCU6ePX5LVtFflvcCKJs7aAlcr
-         tHkQUC0Rw38tBYYhjmoxkmHNW66fYtggKSpF1MLY6iYH0LzYvdLyz+2Amv0Rb7bhm1
-         EG/4BmyZI4N8PjA+JtO43vCXSj6Rk5i/C2D9xV6g664TwZYAgdTIQIS8GqFQK3FlON
-         tsDnnnWfLO/xA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B2A4460989;
-        Tue, 17 Aug 2021 00:40:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233168AbhHQBDx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Aug 2021 21:03:53 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34330 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232974AbhHQBDw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 16 Aug 2021 21:03:52 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17H13KKl032531
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 18:03:20 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=+Udh3zFIRRPbJ55f7QBvetrSxxtKstFIyfhFPYdJ8wc=;
+ b=j0c4UX+MNi0TqOzb8yEutyDqKxVG3Tp02215zmFORTj7owgcjqsx3/kGYRg9O/6hHuBf
+ RS8liq4oRuIDuU2rcdkiXcsYyJ/g0C1STpqD+Rc35jwYCrq1U5tzp/U5fE3skLRdxcld
+ X0xnESbBxqv1l7vTLtwxeoxcbS3rziOA04o= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3afrcbmcd5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 18:03:20 -0700
+Received: from intmgw002.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 16 Aug 2021 18:03:18 -0700
+Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
+        id 5156322890B9; Mon, 16 Aug 2021 18:03:12 -0700 (PDT)
+From:   Yucong Sun <fallentree@fb.com>
+To:     <andrii@kernel.org>
+CC:     <sunyucong@gmail.com>, <bpf@vger.kernel.org>,
+        Yucong Sun <fallentree@fb.com>
+Subject: [PATCH v4 bpf-next 0/4] selftests/bpf: Improve the usability of
+Date:   Mon, 16 Aug 2021 18:03:06 -0700
+Message-ID: <20210817010310.2300741-1-fallentree@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v1] bpf: Reconfigure libbpf docs to remove
- unversioned API
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162916080572.22028.5435416406707924221.git-patchwork-notify@kernel.org>
-Date:   Tue, 17 Aug 2021 00:40:05 +0000
-References: <20210810020508.280639-1-grantseltzer@gmail.com>
-In-Reply-To: <20210810020508.280639-1-grantseltzer@gmail.com>
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     andrii@kernel.org, bpf@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: QtVdUE-kYoY9fSzwWDNZ7h3_kVp-OzOy
+X-Proofpoint-ORIG-GUID: QtVdUE-kYoY9fSzwWDNZ7h3_kVp-OzOy
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-16_09:2021-08-16,2021-08-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=771
+ suspectscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0 clxscore=1015
+ impostorscore=0 priorityscore=1501 bulkscore=0 phishscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108170005
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+This short series adds two new "-a", "-d" switch to test_progs,
+supporting exact string match, as well as '*' wildchar. It also cleans
+up the output to make it possible to generate allowlist/denylist using
+grep.
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+Yucong Sun (4):
+  selftests/bpf: skip loading bpf_testmod when using -l to list tests.
+  selftests/bpf: correctly display subtest skip status
+  selftests/bpf: also print test name in subtest status message
+  selftests/bpf: Support glob matching for test selector.
 
-On Mon,  9 Aug 2021 22:05:08 -0400 you wrote:
-> This removes the libbpf_api.rst file from the kernel documentation.
-> The intention for this file was to pull documentation from comments
-> above API functions in libbpf. However, due to limitations of the
-> kernel documentation system, this API documentation could not be
-> versioned, which is counterintuative to how users expect to use it.
-> There is also currently no doc comments, making this a blank page.
-> 
-> [...]
+ tools/testing/selftests/bpf/test_progs.c | 93 ++++++++++++++++++------
+ tools/testing/selftests/bpf/test_progs.h |  1 +
+ 2 files changed, 72 insertions(+), 22 deletions(-)
 
-Here is the summary with links:
-  - [bpf-next,v1] bpf: Reconfigure libbpf docs to remove unversioned API
-    https://git.kernel.org/bpf/bpf-next/c/bb57164920d7
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+--=20
+2.30.2
 
