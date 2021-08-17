@@ -2,143 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2313EEB96
-	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 13:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B1E3EEF03
+	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 17:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236674AbhHQL0M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Aug 2021 07:26:12 -0400
-Received: from mga07.intel.com ([134.134.136.100]:22522 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231515AbhHQL0L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Aug 2021 07:26:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10078"; a="279788857"
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="279788857"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2021 04:25:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,328,1620716400"; 
-   d="scan'208";a="449226687"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga007.fm.intel.com with ESMTP; 17 Aug 2021 04:25:31 -0700
-Date:   Tue, 17 Aug 2021 13:10:47 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Feng zhou <zhoufeng.zf@bytedance.com>
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        jeffrey.t.kirsher@intel.com, magnus.karlsson@intel.com,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        duanxiongchun@bytedance.com, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
-        zhengqi.arch@bytedance.com, wangdongdong.6@bytedance.com
-Subject: Re: [PATCH] ixgbe: Fix NULL pointer dereference in ixgbe_xdp_setup
-Message-ID: <20210817111047.GA8143@ranger.igk.intel.com>
-References: <20210817075407.11961-1-zhoufeng.zf@bytedance.com>
+        id S238150AbhHQPT3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Aug 2021 11:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237767AbhHQPTR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Aug 2021 11:19:17 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03453C061764
+        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 08:18:44 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id z18so40068006ybg.8
+        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 08:18:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jg67F8OOHQz+zTxn7kxABZfCNuvHaYBdiJ7+o96IIm0=;
+        b=JndUB9MzwCaUq2fnIcUQ0vnngbvmOjYgdVEJ6XWjOtpXMHHlD8C80FSPciOtUa7pmR
+         JHZZkvcpdy8vYwbrJxJEOTquCBen+IJ51XDmce8TnIZqB3MRkJFC0Hlx6eWaH9P+ndmH
+         APU4ERUdioSMc7xcDrtv00oYkZng71vQLeF+iZHl0Sqxu6gCYb/nV9aPILO+TRfVHOiw
+         FEePvBT+mfEa1YdxMHRaq1uIq6tSecaDiUs6wzHtUHfQSzZIuJ+Ms5Tz4lP9E2aR0Zas
+         VUwWaThH/mZzQ6Hg3nJYN8FXYhzfRxKm8R8uOW6hp22qHaTkoTMvgNzwg/NS4KGM2PVU
+         aMaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jg67F8OOHQz+zTxn7kxABZfCNuvHaYBdiJ7+o96IIm0=;
+        b=snkEKxM2jfjXHHO2SR+93bRtVd6r1BdLZ3ZalLkEYfw21P5lbsXMDEgp0jfcAnsiPB
+         x1APJjSgGTJCb40nXWSncdV7iemsWDz/rQ+ll+22hWsp2rzEucyFDmfqYxPizsk7/9nn
+         NJBP6D2X+psGq8S6JTGJWouH6wofPiCADBb5R091M3oqRxQgyTgRDTI7C04yjgub6/a5
+         TQyZV8cpVNk22+a9lnD2ky+GJuJ9fbILTkynl9rztY0P5eDWSM6PF5iXQtUgufzOC0a6
+         W0q9Cw4JiPc/tExBCEyWkaA3v0k4M1Sk9U0fKGac2R+TrtBIhiN2gacEF1HkRlzEktRz
+         YJDQ==
+X-Gm-Message-State: AOAM532rvmyBUkxLvri8xKm73vlY4JGAplPbST9j4dvRk5ey9rf41dlb
+        p5ujtKgdeugBPVQxYX00h1KfSFLsbfZgK5C7Ay4=
+X-Google-Smtp-Source: ABdhPJylCwm2a4+1hZXyDbGo1v/Q89/r/FljAPliMWY5sqbNNS7aAQG3JGMC4u2/D+OEdFlEYFu/9Q+8+/rETo05ANE=
+X-Received: by 2002:a25:cc52:: with SMTP id l79mr4930715ybf.459.1629213523317;
+ Tue, 17 Aug 2021 08:18:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817075407.11961-1-zhoufeng.zf@bytedance.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20210817045713.3307985-1-fallentree@fb.com>
+In-Reply-To: <20210817045713.3307985-1-fallentree@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 17 Aug 2021 08:18:32 -0700
+Message-ID: <CAEf4Bzbf--d1tVFe_9FjqPyXPEauJ89cP-LvO7jRhFqD6TqSPA@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf-next] selftests/bpf: Add exponential backoff to
+ map_delete_retriable in test_maps
+To:     Yucong Sun <fallentree@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, sunyucong@gmail.com,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 03:54:07PM +0800, Feng zhou wrote:
-> From: Feng Zhou <zhoufeng.zf@bytedance.com>
-> 
-> The ixgbe driver currently generates a NULL pointer dereference with
-> some machine (online cpus < 63). This is due to the fact that the
-> maximum value of num_xdp_queues is nr_cpu_ids. Code is in
-> "ixgbe_set_rss_queues"".
-
-That's a good catch, but we should fix set channels callback so that it
-will not allow a setting of queues to be higher than the
-num_online_cpus().
-
-Please also include the tree in the patch subject that you're directing
-the patch to.
-
-I'd be also thankful if you Cc me on Intel XDP related patches.
-Thanks!
-
-> 
-> Here's how the problem repeats itself:
-> Some machine (online cpus < 63), And user set num_queues to 63 through
-> ethtool. Code is in the "ixgbe_set_channels",
-> adapter->ring_feature[RING_F_FDIR].limit = count;
-> It becames 63.
-> When user use xdp, "ixgbe_set_rss_queues" will set queues num.
-> adapter->num_rx_queues = rss_i;
-> adapter->num_tx_queues = rss_i;
-> adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
-> And rss_i's value is from
-> f = &adapter->ring_feature[RING_F_FDIR];
-> rss_i = f->indices = f->limit;
-> So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
-> for (i = 0; i < adapter->num_rx_queues; i++)
-> 	if (adapter->xdp_ring[i]->xsk_umem)
-> lead to panic.
-> Call trace:
-> [exception RIP: ixgbe_xdp+368]
-> RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
-> RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
-> RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
-> RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
-> R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
-> R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
-> ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
->  7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
->  8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
->  9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
-> 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
-> 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
-> 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
-> 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
-> 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
-> 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
-> 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
-> 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
-> 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
-> 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
-> 
-> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
-> AF_XDP")
-> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+On Mon, Aug 16, 2021 at 9:57 PM Yucong Sun <fallentree@fb.com> wrote:
+>
+> Using a fixed delay of 1 microsecond has proven flaky in slow CPU environment,
+> e.g. Github Actions CI system. This patch adds exponential backoff with a cap
+> of 50ms to reduce the flakiness of the test. Initial delay is chosen at random
+> in the range [0ms, 5ms).
+>
+> Signed-off-by: Yucong Sun <fallentree@fb.com>
 > ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> index 14aea40da50f..5db496cc5070 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
->  	struct ixgbe_adapter *adapter = netdev_priv(dev);
->  	struct bpf_prog *old_prog;
->  	bool need_reset;
-> +	int num_queues;
->  
->  	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
->  		return -EINVAL;
-> @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
->  	/* Kick start the NAPI context if there is an AF_XDP socket open
->  	 * on that queue id. This so that receiving will start.
->  	 */
-> -	if (need_reset && prog)
-> -		for (i = 0; i < adapter->num_rx_queues; i++)
-> +	if (need_reset && prog) {
-> +		num_queues = min_t(int, adapter->num_rx_queues,
-> +			adapter->num_xdp_queues);
-> +		for (i = 0; i < num_queues; i++)
->  			if (adapter->xdp_ring[i]->xsk_pool)
->  				(void)ixgbe_xsk_wakeup(adapter->netdev, i,
->  						       XDP_WAKEUP_RX);
-> +	}
->  
->  	return 0;
->  }
-> -- 
-> 2.11.0
-> 
+
+Thanks for the fast follow-up! Applied to bpf-next. Let's see what
+pops up next :)
+
+>  tools/testing/selftests/bpf/test_maps.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+> index 2caf58b40d40..340695d5d652 100644
+> --- a/tools/testing/selftests/bpf/test_maps.c
+> +++ b/tools/testing/selftests/bpf/test_maps.c
+> @@ -1420,11 +1420,16 @@ static int map_update_retriable(int map_fd, const void *key, const void *value,
+>
+>  static int map_delete_retriable(int map_fd, const void *key, int attempts)
+>  {
+> +       int delay = rand() % MIN_DELAY_RANGE_US;
+> +
+>         while (bpf_map_delete_elem(map_fd, key)) {
+>                 if (!attempts || (errno != EAGAIN && errno != EBUSY))
+>                         return -errno;
+>
+> -               usleep(1);
+> +               if (delay <= MAX_DELAY_US / 2)
+> +                       delay *= 2;
+> +
+> +               usleep(delay);
+>                 attempts--;
+>         }
+>
+> --
+> 2.30.2
+>
