@@ -2,264 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6D73EF1F8
-	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 20:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C733EF22E
+	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 20:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbhHQShJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Aug 2021 14:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
+        id S232785AbhHQSqD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Aug 2021 14:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233545AbhHQShJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Aug 2021 14:37:09 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A642C061764
-        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 11:36:35 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id i8so101414ybt.7
-        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 11:36:35 -0700 (PDT)
+        with ESMTP id S230373AbhHQSqD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Aug 2021 14:46:03 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B71C061764
+        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 11:45:29 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id z18so136075ybg.8
+        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 11:45:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fe2m5+2u/+/nOJMRBhN3gv7rPBuah6+6HomXy7Ia3as=;
-        b=U09vQvzdK5/Psv1sIkS1DEKua7gkFAGcUdVHZXz7bxpMVotaoxj6/7p0nTyQpyMc8k
-         z6pQiobQ3aLDxd53pznjY4e/fnEr7SGwPiT95KhlrzhJxxetNDOS5f7zlMLKgMuxlDb2
-         y7+khmvIE2/2uYUpKh/dDa+GovYTwXdVJ5o31ORLnMCS+s2JPlgYbljxLh3lyqp5n5Bm
-         HL9p6pDTSdOsuNRbypVukLrxOa92sAJu5nc/LmioGr/z/QgOJN7kk/iz5HBmhWW74oMX
-         TR1cjZCLE+kx/fbOyM2CTCco4+vYqFKQ6c/4dPASYEvHCmTOjMfhTVdg3yBOmretZEp1
-         C6hA==
+        bh=Q+tInrvJ7CUYwlekzzJlKguhzAJobr/3oalPqDBs7G4=;
+        b=D0o3z17aVqMG4LSEiL8FoSZtSRFGui5xECGqWncG8ka+Vap+2SoZvH3OgygZ7tofm+
+         5A8qHsLq0IxjCWGFWBWfIJ2njBuivca6t2xV0cTqp0no9jZiNjWJlPYCRc/NoDexxo8R
+         ZCOHsiAqyQhDg8iVx3qPTwnu2e6RXWGxYEPz4fGMVgeh0srwneKauxcphX+/Q2BNa03U
+         jKmfNCQXhou/ZdL4oR25NN7z633sdBFDkxgsAhfQjYnWbPUv73eCFR6b0Lvydie3ApwJ
+         oehd6aTSGKh7d1WCU5dk78RlPrrBWX6AiIMh2d984pEO1Cr/iWPdnQ1CXFT+f2J3HaVl
+         zBDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fe2m5+2u/+/nOJMRBhN3gv7rPBuah6+6HomXy7Ia3as=;
-        b=A6pZx2yngJzgf+y+TbOhu1ICAgDnpEDTn5vEfz2no4BBY0Q0MCAxU+CEIjA9KEMGHS
-         0jBQttOvElW9kh9xFtSaMZUmZb0zLbQn6ffApT1KKdbbOmIsaZWjVQVSsl872A+nVO0e
-         eWWgOZp7MBJ74uDkrUlfJqikwcbCHtiSFh/7qartg+w28BpWd28v6iyHf2p6uCCc0xLF
-         //eIkg61InbSO92ob92b7A7OuI78pYf1hJWfPEVJeVgQ6RzaT0R2cGoY3oTkecrSk5ur
-         QHqyYGwGXQZGsb6t+c24IOhCD1ImH2nAw96yJBpAoQInJC+NWjqj6gldrdI0jKPqfKMJ
-         rpJQ==
-X-Gm-Message-State: AOAM533VpC9SUeBa1L2xT4MER9phUqIVzSA6Alm2KVm08LDX6d61VbI9
-        i9SGgtz/3TmMeV0YMm+S+wbp1tQ4RpH2r98rufA=
-X-Google-Smtp-Source: ABdhPJyzl22ShH/ci5YKcMHj+dqFp9ndgbc7FwhY+7Ov8vExeuJMG1ajOCCYwoyBXryGYSfErUwqgJU9Pko+c4FTt00=
-X-Received: by 2002:a25:bb13:: with SMTP id z19mr6251164ybg.347.1629225394891;
- Tue, 17 Aug 2021 11:36:34 -0700 (PDT)
+        bh=Q+tInrvJ7CUYwlekzzJlKguhzAJobr/3oalPqDBs7G4=;
+        b=korJeHXKPHw6nxGXaWxKWCwo1kmpwxjAKt0zFFSi7d1aLw37+E3o0SNLMqrC1SDuoT
+         hXeSqY8IwuhVULON4txGSRI4pWOjogT4GeQzocElXGcKIagKPx7pRz1OhbyfvQt5lnJq
+         Oh2I8PvNA8uclj+ssyw2beUwx5hEUYDQ3VE1WRr+uPFyclTE38oCITeVgkeOn1eAyoIJ
+         k/SxOWLlABG2y6wSF9cJwGkLCBI8Rl9mWBjMZPCGvjp0MluXioXDXo7hkNbi8j+6hvk6
+         Ziyv/EqiNRk7G4uPm6CHYb1VvCtebRCw1W3vYu3cfNmQPOSMRFJ8VkJ0N77bEQlWd5Zw
+         0KCQ==
+X-Gm-Message-State: AOAM531se6sV5bOMh4TZz0h+tz6IjiteJbfdcRMbjQP5wF9ehvyRTUB+
+        WlxJXiZQpOjO4mQLwIyD6TSWsPhAZEO8TsJvbGk=
+X-Google-Smtp-Source: ABdhPJytdPwi/W2kq94Hg44zLubU2zlTKnKN7UTL79x4lbwvUFE/Ytz0DuXqPd2jeXLB7MowFnCEnZVn+vuCEw77qwg=
+X-Received: by 2002:a25:bb13:: with SMTP id z19mr6295200ybg.347.1629225929059;
+ Tue, 17 Aug 2021 11:45:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210817044732.3263066-1-fallentree@fb.com> <20210817044732.3263066-5-fallentree@fb.com>
-In-Reply-To: <20210817044732.3263066-5-fallentree@fb.com>
+References: <20210817171958.2769074-1-yhs@fb.com> <20210817172009.2770161-1-yhs@fb.com>
+In-Reply-To: <20210817172009.2770161-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 17 Aug 2021 11:36:23 -0700
-Message-ID: <CAEf4BzYfbpBSn8aqUAm=pHNO_vp4n=A6p-CPgAKBhFmuGTueDA@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 4/4] selftests/bpf: Support glob matching for
- test selector.
-To:     Yucong Sun <fallentree@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, sunyucong@gmail.com,
-        bpf <bpf@vger.kernel.org>
+Date:   Tue, 17 Aug 2021 11:45:18 -0700
+Message-ID: <CAEf4BzbKJH6uyOCUswitC0VL+ayt9br15ppYdPE2JYxe6w_N_Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: fix flaky send_signal test
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 9:47 PM Yucong Sun <fallentree@fb.com> wrote:
+On Tue, Aug 17, 2021 at 10:20 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> This patch adds '-a' and '-d' arguments, support exact string match, as well as
-> using '*' wildcard in test/subtests selection. The old '-t' '-b' arguments
-> still supports partial string match, but they can't be used together yet.
+> libbpf CI has reported send_signal test is flaky although
+> I am not able to reproduce it in my local environment.
+> But I am able to reproduce with on-demand libbpf CI ([1]).
 >
-> This patach also adds support for mulitple '-a' '-d' '-t' '-b' arguments.
+> Through code analysis, the following is possible reason.
+> The failed subtest runs bpf program in softirq environment.
+> Since bpf_send_signal() only sends to a fork of "test_progs"
+> process. If the underlying current task is
+> not "test_progs", bpf_send_signal() will not be triggered
+> and the subtest will fail.
 >
-> Caveat: Same as the current substring matching mechanism, test and subtest
-> selector applies independently, 'a*/b*' will execute all tests matching "a*",
-> and with subtest name matching "b*", but tests matching "a*" that has no
-> subtests will also be executed.
+> To reduce the chances where the underlying process is not
+> the intended one, this patch boosted scheduling priority to
+> -20 (highest allowed by setpriority() call). And I did
+> 10 runs with on-demand libbpf CI with this patch and I
+> didn't observe any failures.
 >
-> Signed-off-by: Yucong Sun <fallentree@fb.com>
+>  [1] https://github.com/libbpf/libbpf/actions/workflows/ondemand.yml
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  tools/testing/selftests/bpf/test_progs.c | 72 +++++++++++++++++++-----
->  1 file changed, 58 insertions(+), 14 deletions(-)
+>  .../selftests/bpf/prog_tests/send_signal.c    | 33 +++++++++++++++----
+>  .../bpf/progs/test_send_signal_kern.c         |  3 +-
+>  2 files changed, 28 insertions(+), 8 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> index 90539b15b744..c34eb818f115 100644
-> --- a/tools/testing/selftests/bpf/test_progs.c
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -13,6 +13,28 @@
->  #include <execinfo.h> /* backtrace */
->  #include <linux/membarrier.h>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+> index 41e158ae888e..0701c97456da 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+> @@ -1,5 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include <test_progs.h>
+> +#include <sys/time.h>
+> +#include <sys/resource.h>
+>  #include "test_send_signal_kern.skel.h"
 >
-> +/* Adapted from perf/util/string.c */
-> +static bool glob_match(const char *str, const char *pat)
-> +{
-> +       while (*str && *pat && *pat != '*') {
-> +               if (*str != *pat)
-> +                       return false;
-> +               str++;
-> +               pat++;
-> +       }
-> +       /* Check wild card */
-> +       if (*pat == '*') {
-> +               while (*pat == '*')
-> +                       pat++;
-> +               if (!*pat) /* Tail wild card matches all */
-> +                       return true;
-> +               while (*str)
-> +                       if (glob_match(str++, pat))
-> +                               return true;
-> +       }
-> +       return !*str && !*pat;
-> +}
-> +
->  #define EXIT_NO_TEST           2
->  #define EXIT_ERR_SETUP_INFRA   3
->
-> @@ -55,12 +77,12 @@ static bool should_run(struct test_selector *sel, int num, const char *name)
->         int i;
->
->         for (i = 0; i < sel->blacklist.cnt; i++) {
-> -               if (strstr(name, sel->blacklist.strs[i]))
-> +               if (glob_match(name, sel->blacklist.strs[i]))
->                         return false;
->         }
->
->         for (i = 0; i < sel->whitelist.cnt; i++) {
-> -               if (strstr(name, sel->whitelist.strs[i]))
-> +               if (glob_match(name, sel->whitelist.strs[i]))
->                         return true;
->         }
->
-> @@ -450,6 +472,8 @@ enum ARG_KEYS {
->         ARG_VERBOSE = 'v',
->         ARG_GET_TEST_CNT = 'c',
->         ARG_LIST_TEST_NAMES = 'l',
-> +       ARG_TEST_NAME_GLOB_ALLOWLIST = 'a',
-> +       ARG_TEST_NAME_GLOB_DENYLIST = 'd',
->  };
->
->  static const struct argp_option opts[] = {
-> @@ -467,6 +491,10 @@ static const struct argp_option opts[] = {
->           "Get number of selected top-level tests " },
->         { "list", ARG_LIST_TEST_NAMES, NULL, 0,
->           "List test names that would run (without running them) " },
-> +       { "allow", ARG_TEST_NAME_GLOB_ALLOWLIST, "NAMES", 0,
-> +         "Run tests with name matching the pattern (support *)." },
-> +       { "deny", ARG_TEST_NAME_GLOB_DENYLIST, "NAMES", 0,
-> +         "Don't run tests with name matching the pattern (support *)." },
->         {},
->  };
->
-> @@ -491,7 +519,7 @@ static void free_str_set(const struct str_set *set)
->         free(set->strs);
+>  int sigusr1_received = 0;
+> @@ -10,7 +12,7 @@ static void sigusr1_handler(int signum)
 >  }
 >
-> -static int parse_str_list(const char *s, struct str_set *set)
-> +static int parse_str_list(const char *s, struct str_set *set, bool is_glob_pattern)
+>  static void test_send_signal_common(struct perf_event_attr *attr,
+> -                                   bool signal_thread)
+> +                                   bool signal_thread, bool allow_skip)
 >  {
->         char *input, *state = NULL, *next, **tmp, **strs = NULL;
->         int cnt = 0;
-> @@ -500,28 +528,38 @@ static int parse_str_list(const char *s, struct str_set *set)
->         if (!input)
->                 return -ENOMEM;
+>         struct test_send_signal_kern *skel;
+>         int pipe_c2p[2], pipe_p2c[2];
+> @@ -37,12 +39,23 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+>         }
 >
-> -       set->cnt = 0;
-> -       set->strs = NULL;
+>         if (pid == 0) {
+> +               int old_prio;
+> +
+>                 /* install signal handler and notify parent */
+>                 signal(SIGUSR1, sigusr1_handler);
+>
+>                 close(pipe_c2p[0]); /* close read */
+>                 close(pipe_p2c[1]); /* close write */
+>
+> +               /* boost with a high priority so we got a higher chance
+> +                * that if an interrupt happens, the underlying task
+> +                * is this process.
+> +                */
+> +               errno = 0;
+> +               old_prio = getpriority(PRIO_PROCESS, 0);
+> +               ASSERT_OK(errno, "getpriority");
+> +               ASSERT_OK(setpriority(PRIO_PROCESS, 0, -20), "setpriority");
+> +
+>                 /* notify parent signal handler is installed */
+>                 ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
+>
+> @@ -58,6 +71,9 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+>                 /* wait for parent notification and exit */
+>                 ASSERT_EQ(read(pipe_p2c[0], buf, 1), 1, "pipe_read");
+>
+> +               /* restore the old priority */
+> +               ASSERT_OK(setpriority(PRIO_PROCESS, 0, old_prio), "setpriority");
+> +
+>                 close(pipe_c2p[1]);
+>                 close(pipe_p2c[0]);
+>                 exit(0);
+> @@ -110,11 +126,16 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+>                 goto disable_pmu;
+>         }
+>
+> -       ASSERT_EQ(buf[0], '2', "incorrect result");
 > -
->         while ((next = strtok_r(state ? NULL : input, ",", &state))) {
->                 tmp = realloc(strs, sizeof(*strs) * (cnt + 1));
->                 if (!tmp)
->                         goto err;
->                 strs = tmp;
-> +               if (is_glob_pattern) {
-> +                       strs[cnt] = strdup(next);
-> +               } else {
-> +                       strs[cnt] = malloc(strlen(next) + 2 + 1);
-> +                       if (!strs[cnt])
-> +                               goto err;
-> +                       sprintf(strs[cnt], "*%s*", next);
-> +               }
+>         /* notify child safe to exit */
+>         ASSERT_EQ(write(pipe_p2c[1], buf, 1), 1, "pipe_write");
 >
-> -               strs[cnt] = strdup(next);
->                 if (!strs[cnt])
->                         goto err;
+> +       if (skel->bss->status == 0 && allow_skip) {
+> +               printf("%s:SKIP\n", __func__);
+> +               test__skip();
+> +       } else if (skel->bss->status != 1) {
+> +               ASSERT_EQ(buf[0], '2', "incorrect result");
+> +       }
+> +
+>  disable_pmu:
+>         close(pmu_fd);
+>  destroy_skel:
+> @@ -127,7 +148,7 @@ static void test_send_signal_common(struct perf_event_attr *attr,
 >
->                 cnt++;
->         }
->
-> -       set->cnt = cnt;
-> -       set->strs = (const char **)strs;
-> +       tmp = realloc(set->strs, sizeof(*strs) * (cnt + set->cnt));
-> +       if (!tmp)
-> +               goto err;
-> +       memcpy(tmp + set->cnt,  strs,  sizeof(*strs) * (cnt));
-> +       set->strs = (const char **)tmp;
-> +       set->cnt += cnt;
->         free(input);
-> +       free(strs);
->         return 0;
->  err:
-> -       free(strs);
-> +       if (strs)
-> +               free(strs);
-
-free(NULL) is noop, so no need to check if(strs)
-
-You also missed the need to free all those strdup()'ed strings, so I added
-
-for (i = 0; i < cnt; i++)
-    free(strs[i]);
-
-We didn't need it originally, because eventually we call
-free_str_set(), but in this case those strings will be leaked, because
-we don't assign strs to set->strs.
-
-BTW, a bit cleaner approach would be to just work on set->strs
-directly, and realloc()ing it as necessary, and only at the end
-updating set->cnt. You wouldn't need to memcpy and realloc one extra
-time at the end, and no need for that for + free loop. But it's fine
-the way it is as well.
-
-Applied to bpf-next, thanks a lot for the improvements.
-
->         free(input);
->         return -ENOMEM;
+>  static void test_send_signal_tracepoint(bool signal_thread)
+>  {
+> -       test_send_signal_common(NULL, signal_thread);
+> +       test_send_signal_common(NULL, signal_thread, false);
 >  }
-> @@ -553,29 +591,35 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
->                 }
->                 break;
->         }
-> +       case ARG_TEST_NAME_GLOB_ALLOWLIST:
->         case ARG_TEST_NAME: {
->                 char *subtest_str = strchr(arg, '/');
 >
->                 if (subtest_str) {
->                         *subtest_str = '\0';
->                         if (parse_str_list(subtest_str + 1,
-> -                                          &env->subtest_selector.whitelist))
-> +                                          &env->subtest_selector.whitelist,
-> +                                          key == ARG_TEST_NAME_GLOB_ALLOWLIST))
->                                 return -ENOMEM;
->                 }
-> -               if (parse_str_list(arg, &env->test_selector.whitelist))
-> +               if (parse_str_list(arg, &env->test_selector.whitelist,
-> +                                  key == ARG_TEST_NAME_GLOB_ALLOWLIST))
->                         return -ENOMEM;
->                 break;
->         }
-> +       case ARG_TEST_NAME_GLOB_DENYLIST:
->         case ARG_TEST_NAME_BLACKLIST: {
->                 char *subtest_str = strchr(arg, '/');
+>  static void test_send_signal_perf(bool signal_thread)
+> @@ -138,7 +159,7 @@ static void test_send_signal_perf(bool signal_thread)
+>                 .config = PERF_COUNT_SW_CPU_CLOCK,
+>         };
 >
->                 if (subtest_str) {
->                         *subtest_str = '\0';
->                         if (parse_str_list(subtest_str + 1,
-> -                                          &env->subtest_selector.blacklist))
-> +                                          &env->subtest_selector.blacklist,
-> +                                          key == ARG_TEST_NAME_GLOB_DENYLIST))
->                                 return -ENOMEM;
->                 }
-> -               if (parse_str_list(arg, &env->test_selector.blacklist))
-> +               if (parse_str_list(arg, &env->test_selector.blacklist,
-> +                                  key == ARG_TEST_NAME_GLOB_DENYLIST))
->                         return -ENOMEM;
->                 break;
+> -       test_send_signal_common(&attr, signal_thread);
+> +       test_send_signal_common(&attr, signal_thread, true);
+>  }
+>
+>  static void test_send_signal_nmi(bool signal_thread)
+> @@ -167,7 +188,7 @@ static void test_send_signal_nmi(bool signal_thread)
+>                 close(pmu_fd);
 >         }
+>
+> -       test_send_signal_common(&attr, signal_thread);
+> +       test_send_signal_common(&attr, signal_thread, true);
+>  }
+>
+>  void test_send_signal(void)
+> diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> index b4233d3efac2..59c05c422bbd 100644
+> --- a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> +++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+> @@ -18,8 +18,7 @@ static __always_inline int bpf_send_signal_test(void *ctx)
+>                         ret = bpf_send_signal_thread(sig);
+>                 else
+>                         ret = bpf_send_signal(sig);
+> -               if (ret == 0)
+> -                       status = 1;
+> +               status = (ret == 0) ? 1 : 2;
+
+This doesn't make sense to me. status == 0 is the default value, it
+will stay 0 even if nothing is triggered, no BPF program is called,
+etc.
+
+If we are doing the skipping of the test logic (which I'd honestly
+just not do right now to see if we actually fixed the test), then I'd
+set status = 3 for the case when signal was triggered, but the current
+task is not test_progs. And only skip test if we get status 3. That
+is, status 0 and status 2 are bad (either not triggered, or some error
+when sending signal), 1 is OK, 3 is SKIP.
+
+But really, skipping a test that we couldn't randomly run doesn't feel
+good. Can you please leave the priority boosting part and drop the
+skipping part for now?
+
+>         }
+>
+>         return 0;
 > --
 > 2.30.2
 >
