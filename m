@@ -2,84 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512503EE498
-	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 04:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53793EE541
+	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 05:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhHQCsQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Aug 2021 22:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbhHQCsQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Aug 2021 22:48:16 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DC1C061764
-        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 19:47:43 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id m193so36719040ybf.9
-        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 19:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xXvvHjMknDMoa1uY0kgWlDc/DO0w5lT1y2ZChMYCrqo=;
-        b=fCJi41/HaGwUaNZdd5l4HS5vDQ+vtGWdI1o+lFjj/VRvej7aep4Z+/oLcnqjHsGqxv
-         ex/psgjtD+CmTSf2Oz0D9pA9aiw2Twry3fyoPBai7hIjFm4yQJK+WIwYv4PdJRSyxELY
-         LkF3rV5kdqzxlPOiHaMJplIEfuMmlIhBSf1R/U+uILaW5eD0MxQJpvUv1kURivGHlB+D
-         z3Hevc3RCzrepW3mtZNs1EYeIEzmJYoq+pYEoG0atRRIdrILGVFeepDCZeF4jmMZjZNY
-         Uwx1CjAs/5yMzG6qP6O+EXAy0N9kAh/lU/5+JGzG8dbjbuqd4DMHY89c/gdtZRV9U1fu
-         ZHQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xXvvHjMknDMoa1uY0kgWlDc/DO0w5lT1y2ZChMYCrqo=;
-        b=AbXtIylJh5Ln9uDslVx9T/D9xDQqMmfOEB/jFksiHdDEKW8q3PhfIdxeJAGh6IMkEq
-         ri8blTY3s1I8YaEyAdy5FNMZG9xeE9SFbaBby2baZDbm/hk3rz0Uq9UfCcGdfs0ahSvG
-         Lh7vP+6AEUkUoCC/LmGpcy2djPI0CdjMUCipgnLP+u/dudLs/MuszfPK4VYRyPam9cQH
-         xIZ90vA3Z0/9MQzVIpEAbak+0ihWxTOo+x4W20xeIFA8Obk07SsD38EV20wUZamhQwlY
-         NBkARsWOAR3x+aHlb4+VXzrKVjiwpx9y80RFOAkZFGvIm65i4vbbZeB7ZRwc4qor9bHO
-         VC0A==
-X-Gm-Message-State: AOAM531qpizVdCx5QHwxVlU5rXN9Q9TvqDYJ9CTelvuGm3gGl1IydWM6
-        vAj+PDkDmhXEAVdzVxrgvPdA/Z15wwWOntzADb4=
-X-Google-Smtp-Source: ABdhPJxeHHuGuT0D7OleWWHUHX+m/OH/+URQHh97hzxWMIKteF1XHY7Gqo2Q7V5VpR3yt+oAVLSYf4T7OydDE63cCrE=
-X-Received: by 2002:a25:4091:: with SMTP id n139mr1531116yba.425.1629168463023;
- Mon, 16 Aug 2021 19:47:43 -0700 (PDT)
+        id S237405AbhHQD53 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Aug 2021 23:57:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233832AbhHQD53 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Aug 2021 23:57:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FBAC60F35
+        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 03:56:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629172617;
+        bh=vYQ1Gs5BAVuDlnuQczJ0hjt0gPC6GmyatEzt7Ofb8FQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LPAIE+Y2HmGdDgZhx0U2OIxR2FtzCtVgJKTs0raQd14E22AsPU3xd54qqvhlKp6+L
+         S+wQ8978VThD2Cu5XeSJ7LOBkANKQ/siKtOk8pr73zFs1McgYL4pN0QL+WWnb2bAKN
+         ENe84r9VBLnHW0Y/KgekBzF0FWwKxCysnT4gEcBLFw1GXgWsjZ6TAvKUJ0W+qdaeVW
+         yHxVcOHmHNSFSd6rKt9CLl0wMr8kJTt+UN8KjZreuwFUmJD3EMUEd6mVyWsWY7jwHH
+         OYNgADev+R9jXMfdF6VbV5vtGrk/3H4sueZp34Kiih2XIxKlejI6gWVbdXBFHD35TF
+         QIf+kWYumAgqQ==
+Received: by mail-lf1-f41.google.com with SMTP id z2so38798518lft.1
+        for <bpf@vger.kernel.org>; Mon, 16 Aug 2021 20:56:57 -0700 (PDT)
+X-Gm-Message-State: AOAM532Dz9I4PzvtSc883/0NPl3Vt7tGHesmWKecw7ayCZJgGNqoL5Wm
+        FLChFGI7iztQX4dvZNPawh8SY6yKY5QfH5avRcw=
+X-Google-Smtp-Source: ABdhPJzUDeAtbD+p+it43oN/Cf0r1ZMVq8LzrzIyF0eYcTdBPqRxOp1S/oF0qc9828GkADLCee/mi09UxKLf3HsFPE8=
+X-Received: by 2002:ac2:58e5:: with SMTP id v5mr832925lfo.438.1629172615443;
+ Mon, 16 Aug 2021 20:56:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210817010310.2300741-1-fallentree@fb.com>
-In-Reply-To: <20210817010310.2300741-1-fallentree@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 16 Aug 2021 19:47:32 -0700
-Message-ID: <CAEf4BzbKSFx7LNzM3MXCbCm-CSrNvgTbN5zzCXTQYPYi9Ts2SQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 0/4] selftests/bpf: Improve the usability of
-To:     Yucong Sun <fallentree@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, sunyucong@gmail.com,
-        bpf <bpf@vger.kernel.org>
+References: <20210816231716.3824813-1-prankgup@fb.com> <20210816231716.3824813-3-prankgup@fb.com>
+ <CAPhsuW4RDYVtnomkjgJs_1H_DSn2skcf7mmoxKkLE-bB38b+Kw@mail.gmail.com>
+In-Reply-To: <CAPhsuW4RDYVtnomkjgJs_1H_DSn2skcf7mmoxKkLE-bB38b+Kw@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 16 Aug 2021 20:56:44 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7p=yv0TUbCX2UR6+U-JfxL+GFxKW5_0Emzsc95qPEQ7Q@mail.gmail.com>
+Message-ID: <CAPhsuW7p=yv0TUbCX2UR6+U-JfxL+GFxKW5_0Emzsc95qPEQ7Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add test for {set|get} socket
+ option from setsockopt BPF program
+To:     Prankur gupta <prankgup@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, prankur.07@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 6:03 PM Yucong Sun <fallentree@fb.com> wrote:
+On Mon, Aug 16, 2021 at 5:20 PM Song Liu <song@kernel.org> wrote:
 >
-> This short series adds two new "-a", "-d" switch to test_progs,
-> supporting exact string match, as well as '*' wildchar. It also cleans
-> up the output to make it possible to generate allowlist/denylist using
-> grep.
+> On Mon, Aug 16, 2021 at 4:18 PM Prankur gupta <prankgup@fb.com> wrote:
+> >
+> > Adding selftests for new added functionality to call bpf_setsockopt and
+> > bpf_getsockopt from setsockopt BPF programs
+> >
+> > Signed-off-by: Prankur gupta <prankgup@fb.com>
+> > ---
+> >  tools/testing/selftests/bpf/bpf_tcp_helpers.h | 18 +++++
+> >  .../bpf/prog_tests/sockopt_qos_to_cc.c        | 70 +++++++++++++++++++
+> >  .../selftests/bpf/progs/sockopt_qos_to_cc.c   | 39 +++++++++++
+> >  3 files changed, 127 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/bpf_tcp_helpers.h b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
+> > index 029589c008c9..c9f9bdad60c7 100644
+> > --- a/tools/testing/selftests/bpf/bpf_tcp_helpers.h
+> > +++ b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
+> > @@ -12,6 +12,10 @@
+> >  SEC("struct_ops/"#name) \
+> >  BPF_PROG(name, args)
+> >
+> > +#ifndef SOL_TCP
+> > +#define SOL_TCP 6
+> > +#endif
+> > +
+> >  #define tcp_jiffies32 ((__u32)bpf_jiffies64())
+> >
+> >  struct sock_common {
+> > @@ -203,6 +207,20 @@ static __always_inline bool tcp_is_cwnd_limited(const struct sock *sk)
+> >         return !!BPF_CORE_READ_BITFIELD(tp, is_cwnd_limited);
+> >  }
+> >
+> > +static __always_inline bool tcp_cc_eq(const char *a, const char *b)
+> > +{
+> > +       int i;
+> > +
+> > +       for (i = 0; i < TCP_CA_NAME_MAX; i++) {
+> > +               if (a[i] != b[i])
+> > +                       return false;
+> > +               if (!a[i])
+> > +                       break;
+> > +       }
+> > +
+> > +       return true;
+> > +}
 >
+> IIUC, this is copied from bpf_iter_setsockopt.c. I think we should be
+> more careful with it
+> as this is a header. With current code,
+>
+>    tcp_cc_eq("ABC", "ABCD") = true;
+>    tcp_cc_eq("ABCD", "ABC") = false;
+>
+> Is this expected?
 
-You seem to have lost part of the cover letter subject line?
+Ooops, I misread the code. Please ignore the comment above.
 
-s/wildchar/wildcard/
-
-> Yucong Sun (4):
->   selftests/bpf: skip loading bpf_testmod when using -l to list tests.
->   selftests/bpf: correctly display subtest skip status
->   selftests/bpf: also print test name in subtest status message
->   selftests/bpf: Support glob matching for test selector.
 >
->  tools/testing/selftests/bpf/test_progs.c | 93 ++++++++++++++++++------
->  tools/testing/selftests/bpf/test_progs.h |  1 +
->  2 files changed, 72 insertions(+), 22 deletions(-)
+> > +
+> >  extern __u32 tcp_slow_start(struct tcp_sock *tp, __u32 acked) __ksym;
+> >  extern void tcp_cong_avoid_ai(struct tcp_sock *tp, __u32 w, __u32 acked) __ksym;
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c b/tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c
+> > new file mode 100644
+> > index 000000000000..6b53b3cb8dad
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c
+> > @@ -0,0 +1,70 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2021 Facebook */
+> > +#include <test_progs.h>
+> > +#include <netinet/tcp.h>
+> > +#include "sockopt_qos_to_cc.skel.h"
+> > +
+> > +static void run_setsockopt_test(int cg_fd, int sock_fd)
+> > +{
+> > +       socklen_t optlen;
+> > +       char cc[16]; /* TCP_CA_NAME_MAX */
+> > +       int buf;
+> > +       int err = -1;
+> nit: this err = -1 is not needed.
 >
-> --
-> 2.30.2
+> > +
+> > +       buf = 0x2D;
 >
+> Please explain the test case in the commit log. Otherwise, it is not
+> easy to follow
+> the test case. For example, why we use 0x2d ('-'?) here?
+>
+> > +       err = setsockopt(sock_fd, SOL_IPV6, IPV6_TCLASS, &buf, sizeof(buf));
+> > +       if (!ASSERT_OK(err, "setsockopt(sock_fd, IPV6_TCLASS)"))
+> > +               return;
+> > +
+> > +       /* Verify the setsockopt cc change */
+> > +       optlen = sizeof(cc);
+> > +       err = getsockopt(sock_fd, SOL_TCP, TCP_CONGESTION, cc, &optlen);
+> > +       if (!ASSERT_OK(err, "getsockopt(sock_fd, TCP_CONGESTION)"))
+> > +               return;
+> > +
+> > +       if (!ASSERT_STREQ(cc, "reno", "getsockopt(sock_fd, TCP_CONGESTION)"))
+> > +               return;
+> > +}
+> > +
+> > +void test_sockopt_qos_to_cc(void)
+> > +{
+> > +       struct sockopt_qos_to_cc *skel;
+> > +       char cc_cubic[16] = "cubic"; /* TCP_CA_NAME_MAX */
+> > +       int cg_fd = -1;
+> > +       int sock_fd = -1;
+> > +       int err;
+> > +
+> > +       cg_fd = test__join_cgroup("/sockopt_qos_to_cc");
+> > +       if (!ASSERT_GE(cg_fd, 0, "cg-join(sockopt_qos_to_cc)"))
+> > +               return;
+> > +
+> > +       skel = sockopt_qos_to_cc__open_and_load();
+> > +       if (!ASSERT_OK_PTR(skel, "skel"))
+> > +               goto done;
+> > +
+> > +       sock_fd = socket(AF_INET6, SOCK_STREAM, 0);
+> > +       if (!ASSERT_GE(sock_fd, 0, "v6 socket open"))
+> > +               goto done;
+> > +
+> > +       err = setsockopt(sock_fd, SOL_TCP, TCP_CONGESTION, &cc_cubic,
+> > +                        sizeof(cc_cubic));
+> > +       if (!ASSERT_OK(err, "setsockopt(sock_fd, TCP_CONGESTION)"))
+> > +               goto done;
+> > +
+> > +       skel->links.sockopt_qos_to_cc =
+> > +               bpf_program__attach_cgroup(skel->progs.sockopt_qos_to_cc,
+> > +                                          cg_fd);
+> > +       if (!ASSERT_OK_PTR(skel->links.sockopt_qos_to_cc,
+> > +                          "prog_attach(sockopt_qos_to_cc)"))
+> > +               goto done;
+> > +
+> > +       run_setsockopt_test(cg_fd, sock_fd);
+> > +
+> > +done:
+> > +       if (sock_fd != -1)
+> > +               close(sock_fd);
+> > +       if (cg_fd != -1)
+> > +               close(cg_fd);
+> > +       /* destroy can take null and error pointer */
+> > +       sockopt_qos_to_cc__destroy(skel);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c b/tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c
+> > new file mode 100644
+> > index 000000000000..1bce83b6e3a7
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c
+> > @@ -0,0 +1,39 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2021 Facebook */
+> > +#include <string.h>
+> > +#include <linux/tcp.h>
+> > +#include <netinet/in.h>
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include "bpf_tcp_helpers.h"
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > +
+> > +SEC("cgroup/setsockopt")
+> > +int sockopt_qos_to_cc(struct bpf_sockopt *ctx)
+> > +{
+> > +       void *optval_end = ctx->optval_end;
+> > +       int *optval = ctx->optval;
+> > +       char buf[TCP_CA_NAME_MAX];
+> > +       char cc_reno[TCP_CA_NAME_MAX] = "reno";
+> > +       char cc_cubic[TCP_CA_NAME_MAX] = "cubic";
+> > +
+> > +       if (ctx->level != SOL_IPV6 || ctx->optname != IPV6_TCLASS)
+> > +               return 1;
+> > +
+> > +       if (optval + 1 > optval_end)
+> > +               return 0; /* EPERM, bounds check */
+> > +
+> > +       if (bpf_getsockopt(ctx->sk, SOL_TCP, TCP_CONGESTION, &buf, sizeof(buf)))
+> > +               return 0;
+> > +
+> > +       if (!tcp_cc_eq(buf, cc_cubic))
+> > +               return 0;
+> > +
+> > +       if (*optval == 0x2d) {
+> > +               if (bpf_setsockopt(ctx->sk, SOL_TCP, TCP_CONGESTION, &cc_reno,
+> > +                               sizeof(cc_reno)))
+> > +                       return 0;
+> > +       }
+> > +       return 1;
+> > +}
+> > --
+> > 2.30.2
+> >
