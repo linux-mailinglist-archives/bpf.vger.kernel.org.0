@@ -2,212 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706693EF0C1
-	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 19:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC7F3EF0DC
+	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 19:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhHQRUq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Aug 2021 13:20:46 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57400 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229723AbhHQRUp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 17 Aug 2021 13:20:45 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17HHFpdD016053
-        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 10:20:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=XfJ/M/7C4X6dgMrXCDu6UKXGhPm3WNc2dLGETxt1qXc=;
- b=Fipy/cW44f2NLUTy4YmJiYCrX7X+znasU4FnBiUVGn4HBWw2fcVP/i166VSH6wUE3NlY
- c8uB8zRKnfoL7wl+SLy+tQ5n+W+hHq9DgwUvspWmK5hFmjH/wROIPfuQqpGGv9EjF30b
- uhPsu/Ll5kSw0FP7u7L2YPDwYh0kExbiGbk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aftr4qv9k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 10:20:11 -0700
-Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 17 Aug 2021 10:20:11 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id D86996063B94; Tue, 17 Aug 2021 10:20:09 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: fix flaky send_signal test
-Date:   Tue, 17 Aug 2021 10:20:09 -0700
-Message-ID: <20210817172009.2770161-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210817171958.2769074-1-yhs@fb.com>
-References: <20210817171958.2769074-1-yhs@fb.com>
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: 38W2CabjwxPVhq2lNJecDAZ3GHgcqhrp
-X-Proofpoint-GUID: 38W2CabjwxPVhq2lNJecDAZ3GHgcqhrp
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S230354AbhHQR0W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Aug 2021 13:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229716AbhHQR0V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Aug 2021 13:26:21 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD67C061764
+        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 10:25:48 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id z20so40128967ejf.5
+        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 10:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kx7QmZw4iZxxTYf+W99jsdNNiEagCc09H0bMfyWvOLk=;
+        b=EiCVMhVMMEH50tyNHAT22U+zvE8qtJJTfa+8IZcr17JlTvCpC9/G0t0KgjAdtxVWik
+         Nf+0zCw+Ulx1/fz3mxHZNxCxjPIF9ipB2+u7fBx47WGysW0wZhQ9gzKohCjfb4h8XIiJ
+         YthVI/myMEvxil9iSk6RUwsJZlJliqOtrPhwE96CE2M81JCjO573qqqMbSXTVfMGZkj8
+         A25PmZMoa6MYysR49mywQsXAEYhRXl3oujFD6kJ/aZrPvssWgej3o5BHlKdQoa1B0v1n
+         qKa2OwE0be6VrgnlHNav29zQI3RVg5ruoR8h01UmKpHFFKzVqtDIoOBQVGmcE+BSYsMg
+         +iuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kx7QmZw4iZxxTYf+W99jsdNNiEagCc09H0bMfyWvOLk=;
+        b=f+U2IOwJSrv+onRsJk1CAchJgNT3D94h52kbR6KN3VJO7ETSPDgZGglUsIVaXoae2G
+         0wG6dL5bIZHfwjWTThZocylbfAszLKPnBCo7eBhdykolsEbmgF6REuGcaRaGlj2Rfqyt
+         +48ejKMKkbG8puTnL4wbJgv3JrJcJXdvKLoPDMIEWffjidtotzvH6+NXDpNG74FARHH9
+         ajm7r67rKWORUsGhVno+5zy8I87qmbNQpst7Gr4R8+IxCNLide/E22Te/aNPnrrWwQJj
+         LB+G6s3w9KU+qgVRXx+q+0iuAUsI3Y+ddgZSl30lSJ7LvKzRNthXlcJhfxEcrCdTw4ZT
+         tWgg==
+X-Gm-Message-State: AOAM530LuZ91iP+FvCt8eNi0V0R1ycsHjzRBsihO0iqW+3fKwzhEwr8q
+        y4gFaKix+BYRu19QAmNd+yFm3Wbsr4fI+OgVbgrang==
+X-Google-Smtp-Source: ABdhPJzG1YjgkQ26eaK7xT9UeHxrZinjLOTZHIibPT7kojx65/n/eQs/LKmzdN1nvWSopOfZus5nKD2Fn03nCfISfsc=
+X-Received: by 2002:a17:906:388b:: with SMTP id q11mr5055729ejd.113.1629221146455;
+ Tue, 17 Aug 2021 10:25:46 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-17_06:2021-08-17,2021-08-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- adultscore=0 phishscore=0 mlxlogscore=999 bulkscore=0 lowpriorityscore=0
- suspectscore=0 mlxscore=0 impostorscore=0 priorityscore=1501 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108170108
-X-FB-Internal: deliver
+References: <20210812003819.2439037-1-haoluo@google.com> <CAEf4Bzbhtty_XjpPxSjfe4zEHAfWuQ4th15eLgomT2BDHUQ7jw@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbhtty_XjpPxSjfe4zEHAfWuQ4th15eLgomT2BDHUQ7jw@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 17 Aug 2021 10:25:35 -0700
+Message-ID: <CA+khW7i6KpzwB_U7KkYGnRoXfoYH9k5xU7qFmXcmymu+gmf8AQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] libbpf: support weak typed ksyms.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-libbpf CI has reported send_signal test is flaky although
-I am not able to reproduce it in my local environment.
-But I am able to reproduce with on-demand libbpf CI ([1]).
+On Fri, Aug 13, 2021 at 4:01 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Aug 11, 2021 at 5:40 PM Hao Luo <haoluo@google.com> wrote:
+> >
+> > Currently weak typeless ksyms have default value zero, when they don't
+> > exist in the kernel. However, weak typed ksyms are rejected by libbpf
+> > if they can not be resolved. This means that if a bpf object contains
+> > the declaration of a nonexistent weak typed ksym, it will be rejected
+> > even if there is no program that references the symbol.
+> >
+> > Nonexistent weak typed ksyms can also default to zero just like
+> > typeless ones. This allows programs that access weak typed ksyms to be
+> > accepted by verifier, if the accesses are guarded. For example,
+> >
+> > extern const int bpf_link_fops3 __ksym __weak;
+> >
+> > /* then in BPF program */
+> >
+> > if (&bpf_link_fops3) {
+> >    /* use bpf_link_fops3 */
+> > }
+> >
+> > If actual use of nonexistent typed ksym is not guarded properly,
+> > verifier would see that register is not PTR_TO_BTF_ID and wouldn't
+> > allow to use it for direct memory reads or passing it to BPF helpers.
+> >
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > ---
+>
+> Looks good, applied to bpf-next. For the future, please split libbpf
+> and selftests changes into separate patches, it's nicer to have those
+> logically separate.
+>
+> At some point we should probably also improve libbpf error reporting
+> for such situations, for better user experience. We have a similar
+> problem with CO-RE relocation, verifier doesn't know about those
+> concepts, so verifier log is not very helpful, but libbpf can make
+> sense out of it with some extra BPF verifier log parsing.
+>
 
-Through code analysis, the following is possible reason.
-The failed subtest runs bpf program in softirq environment.
-Since bpf_send_signal() only sends to a fork of "test_progs"
-process. If the underlying current task is
-not "test_progs", bpf_send_signal() will not be triggered
-and the subtest will fail.
+Thanks. Will split the tests in future.
 
-To reduce the chances where the underlying process is not
-the intended one, this patch boosted scheduling priority to
--20 (highest allowed by setpriority() call). And I did
-10 runs with on-demand libbpf CI with this patch and I
-didn't observe any failures.
 
- [1] https://github.com/libbpf/libbpf/actions/workflows/ondemand.yml
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/send_signal.c    | 33 +++++++++++++++----
- .../bpf/progs/test_send_signal_kern.c         |  3 +-
- 2 files changed, 28 insertions(+), 8 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/t=
-esting/selftests/bpf/prog_tests/send_signal.c
-index 41e158ae888e..0701c97456da 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -1,5 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
- #include "test_send_signal_kern.skel.h"
-=20
- int sigusr1_received =3D 0;
-@@ -10,7 +12,7 @@ static void sigusr1_handler(int signum)
- }
-=20
- static void test_send_signal_common(struct perf_event_attr *attr,
--				    bool signal_thread)
-+				    bool signal_thread, bool allow_skip)
- {
- 	struct test_send_signal_kern *skel;
- 	int pipe_c2p[2], pipe_p2c[2];
-@@ -37,12 +39,23 @@ static void test_send_signal_common(struct perf_event_a=
-ttr *attr,
- 	}
-=20
- 	if (pid =3D=3D 0) {
-+		int old_prio;
-+
- 		/* install signal handler and notify parent */
- 		signal(SIGUSR1, sigusr1_handler);
-=20
- 		close(pipe_c2p[0]); /* close read */
- 		close(pipe_p2c[1]); /* close write */
-=20
-+		/* boost with a high priority so we got a higher chance
-+		 * that if an interrupt happens, the underlying task
-+		 * is this process.
-+		 */
-+		errno =3D 0;
-+		old_prio =3D getpriority(PRIO_PROCESS, 0);
-+		ASSERT_OK(errno, "getpriority");
-+		ASSERT_OK(setpriority(PRIO_PROCESS, 0, -20), "setpriority");
-+
- 		/* notify parent signal handler is installed */
- 		ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
-=20
-@@ -58,6 +71,9 @@ static void test_send_signal_common(struct perf_event_att=
-r *attr,
- 		/* wait for parent notification and exit */
- 		ASSERT_EQ(read(pipe_p2c[0], buf, 1), 1, "pipe_read");
-=20
-+		/* restore the old priority */
-+		ASSERT_OK(setpriority(PRIO_PROCESS, 0, old_prio), "setpriority");
-+
- 		close(pipe_c2p[1]);
- 		close(pipe_p2c[0]);
- 		exit(0);
-@@ -110,11 +126,16 @@ static void test_send_signal_common(struct perf_event=
-_attr *attr,
- 		goto disable_pmu;
- 	}
-=20
--	ASSERT_EQ(buf[0], '2', "incorrect result");
--
- 	/* notify child safe to exit */
- 	ASSERT_EQ(write(pipe_p2c[1], buf, 1), 1, "pipe_write");
-=20
-+	if (skel->bss->status =3D=3D 0 && allow_skip) {
-+		printf("%s:SKIP\n", __func__);
-+		test__skip();
-+	} else if (skel->bss->status !=3D 1) {
-+		ASSERT_EQ(buf[0], '2', "incorrect result");
-+	}
-+
- disable_pmu:
- 	close(pmu_fd);
- destroy_skel:
-@@ -127,7 +148,7 @@ static void test_send_signal_common(struct perf_event_a=
-ttr *attr,
-=20
- static void test_send_signal_tracepoint(bool signal_thread)
- {
--	test_send_signal_common(NULL, signal_thread);
-+	test_send_signal_common(NULL, signal_thread, false);
- }
-=20
- static void test_send_signal_perf(bool signal_thread)
-@@ -138,7 +159,7 @@ static void test_send_signal_perf(bool signal_thread)
- 		.config =3D PERF_COUNT_SW_CPU_CLOCK,
- 	};
-=20
--	test_send_signal_common(&attr, signal_thread);
-+	test_send_signal_common(&attr, signal_thread, true);
- }
-=20
- static void test_send_signal_nmi(bool signal_thread)
-@@ -167,7 +188,7 @@ static void test_send_signal_nmi(bool signal_thread)
- 		close(pmu_fd);
- 	}
-=20
--	test_send_signal_common(&attr, signal_thread);
-+	test_send_signal_common(&attr, signal_thread, true);
- }
-=20
- void test_send_signal(void)
-diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/to=
-ols/testing/selftests/bpf/progs/test_send_signal_kern.c
-index b4233d3efac2..59c05c422bbd 100644
---- a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-@@ -18,8 +18,7 @@ static __always_inline int bpf_send_signal_test(void *ctx)
- 			ret =3D bpf_send_signal_thread(sig);
- 		else
- 			ret =3D bpf_send_signal(sig);
--		if (ret =3D=3D 0)
--			status =3D 1;
-+		status =3D (ret =3D=3D 0) ? 1 : 2;
- 	}
-=20
- 	return 0;
---=20
-2.30.2
-
+> > Changes since v2:
+> >  - Move special handling and warning from find_ksym_btf_id() to
+> >    bpf_object__resolve_ksym_var_btf_id().
+> >  - Removed bpf_link_fops3 from tests since it's not used.
+> >  - Separated variable declaration and statements.
+> >
+> > Changes since v1:
+> >  - Weak typed symbols default to zero, as suggested by Andrii.
+> >  - Use ASSERT_XXX() for tests.
+> >
+> >  tools/lib/bpf/libbpf.c                        | 16 +++---
+> >  .../selftests/bpf/prog_tests/ksyms_btf.c      | 31 ++++++++++
+> >  .../selftests/bpf/progs/test_ksyms_weak.c     | 56 +++++++++++++++++++
+> >  3 files changed, 96 insertions(+), 7 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_weak.c
+> >
+>
+> [...]
