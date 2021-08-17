@@ -2,101 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B1E3EEF03
-	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 17:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7593EEF05
+	for <lists+bpf@lfdr.de>; Tue, 17 Aug 2021 17:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238150AbhHQPT3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Aug 2021 11:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237767AbhHQPTR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Aug 2021 11:19:17 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03453C061764
-        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 08:18:44 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id z18so40068006ybg.8
-        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 08:18:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jg67F8OOHQz+zTxn7kxABZfCNuvHaYBdiJ7+o96IIm0=;
-        b=JndUB9MzwCaUq2fnIcUQ0vnngbvmOjYgdVEJ6XWjOtpXMHHlD8C80FSPciOtUa7pmR
-         JHZZkvcpdy8vYwbrJxJEOTquCBen+IJ51XDmce8TnIZqB3MRkJFC0Hlx6eWaH9P+ndmH
-         APU4ERUdioSMc7xcDrtv00oYkZng71vQLeF+iZHl0Sqxu6gCYb/nV9aPILO+TRfVHOiw
-         FEePvBT+mfEa1YdxMHRaq1uIq6tSecaDiUs6wzHtUHfQSzZIuJ+Ms5Tz4lP9E2aR0Zas
-         VUwWaThH/mZzQ6Hg3nJYN8FXYhzfRxKm8R8uOW6hp22qHaTkoTMvgNzwg/NS4KGM2PVU
-         aMaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jg67F8OOHQz+zTxn7kxABZfCNuvHaYBdiJ7+o96IIm0=;
-        b=snkEKxM2jfjXHHO2SR+93bRtVd6r1BdLZ3ZalLkEYfw21P5lbsXMDEgp0jfcAnsiPB
-         x1APJjSgGTJCb40nXWSncdV7iemsWDz/rQ+ll+22hWsp2rzEucyFDmfqYxPizsk7/9nn
-         NJBP6D2X+psGq8S6JTGJWouH6wofPiCADBb5R091M3oqRxQgyTgRDTI7C04yjgub6/a5
-         TQyZV8cpVNk22+a9lnD2ky+GJuJ9fbILTkynl9rztY0P5eDWSM6PF5iXQtUgufzOC0a6
-         W0q9Cw4JiPc/tExBCEyWkaA3v0k4M1Sk9U0fKGac2R+TrtBIhiN2gacEF1HkRlzEktRz
-         YJDQ==
-X-Gm-Message-State: AOAM532rvmyBUkxLvri8xKm73vlY4JGAplPbST9j4dvRk5ey9rf41dlb
-        p5ujtKgdeugBPVQxYX00h1KfSFLsbfZgK5C7Ay4=
-X-Google-Smtp-Source: ABdhPJylCwm2a4+1hZXyDbGo1v/Q89/r/FljAPliMWY5sqbNNS7aAQG3JGMC4u2/D+OEdFlEYFu/9Q+8+/rETo05ANE=
-X-Received: by 2002:a25:cc52:: with SMTP id l79mr4930715ybf.459.1629213523317;
- Tue, 17 Aug 2021 08:18:43 -0700 (PDT)
+        id S233057AbhHQPUj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Aug 2021 11:20:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhHQPUi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Aug 2021 11:20:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6128260FC3;
+        Tue, 17 Aug 2021 15:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629213605;
+        bh=LKheDKKKN7aU8/P++S4JpWLfPyMW9UI4gjKHVpN9ifo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KffSS1hv2J4CmrtJsEH+051ZqGfrz2bKqPclDu0ywue17zg4E+Zr2cSjooWWpAUmK
+         dT5FeRDPSdbdsWnGMsk7XZCzgUCOM3FX2PZUxnZwcbpLHVQMtoY4ayBpHn7k0M1cvA
+         DBXkpBkTkUfERAhRdQrmbD4E1UMGfH6hVFvgk2DV7x0W8ZzATvv9D+Hd2draMt7MCf
+         yjYfzyFlfRL971yK4I9HBANI8zWluFbBpldSJSUnTBdVCFPyWdfzYwKXiChbkDRdSn
+         Nt5vH9XEBnpAarE7ZfKS1M46PiSvJP7iWJrXGTey675G/FgIVSFSkq+BQmDT97UFdR
+         5zyUFNDTwyFVw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5581960A25;
+        Tue, 17 Aug 2021 15:20:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210817045713.3307985-1-fallentree@fb.com>
-In-Reply-To: <20210817045713.3307985-1-fallentree@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 17 Aug 2021 08:18:32 -0700
-Message-ID: <CAEf4Bzbf--d1tVFe_9FjqPyXPEauJ89cP-LvO7jRhFqD6TqSPA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH v1 bpf-next] selftests/bpf: Add exponential backoff to
  map_delete_retriable in test_maps
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162921360534.31680.4489138432474945294.git-patchwork-notify@kernel.org>
+Date:   Tue, 17 Aug 2021 15:20:05 +0000
+References: <20210817045713.3307985-1-fallentree@fb.com>
+In-Reply-To: <20210817045713.3307985-1-fallentree@fb.com>
 To:     Yucong Sun <fallentree@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, sunyucong@gmail.com,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     andrii@kernel.org, sunyucong@gmail.com, bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 9:57 PM Yucong Sun <fallentree@fb.com> wrote:
->
+Hello:
+
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Mon, 16 Aug 2021 21:57:13 -0700 you wrote:
 > Using a fixed delay of 1 microsecond has proven flaky in slow CPU environment,
 > e.g. Github Actions CI system. This patch adds exponential backoff with a cap
 > of 50ms to reduce the flakiness of the test. Initial delay is chosen at random
 > in the range [0ms, 5ms).
->
+> 
 > Signed-off-by: Yucong Sun <fallentree@fb.com>
-> ---
+> 
+> [...]
 
-Thanks for the fast follow-up! Applied to bpf-next. Let's see what
-pops up next :)
+Here is the summary with links:
+  - [v1,bpf-next] selftests/bpf: Add exponential backoff to map_delete_retriable in test_maps
+    https://git.kernel.org/bpf/bpf-next/c/857f75ea8457
 
->  tools/testing/selftests/bpf/test_maps.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-> index 2caf58b40d40..340695d5d652 100644
-> --- a/tools/testing/selftests/bpf/test_maps.c
-> +++ b/tools/testing/selftests/bpf/test_maps.c
-> @@ -1420,11 +1420,16 @@ static int map_update_retriable(int map_fd, const void *key, const void *value,
->
->  static int map_delete_retriable(int map_fd, const void *key, int attempts)
->  {
-> +       int delay = rand() % MIN_DELAY_RANGE_US;
-> +
->         while (bpf_map_delete_elem(map_fd, key)) {
->                 if (!attempts || (errno != EAGAIN && errno != EBUSY))
->                         return -errno;
->
-> -               usleep(1);
-> +               if (delay <= MAX_DELAY_US / 2)
-> +                       delay *= 2;
-> +
-> +               usleep(delay);
->                 attempts--;
->         }
->
-> --
-> 2.30.2
->
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
