@@ -2,99 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A7E3F002A
-	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 11:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6296F3F00A9
+	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 11:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhHRJRK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Aug 2021 05:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhHRJRK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:17:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39B9C061764;
-        Wed, 18 Aug 2021 02:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BA4/xVLnaIPuATSnRGf49DCaYMo1+WItwkXiR/2kQnw=; b=IErH/qBGGW6WOy8h0UdsdyzTJ/
-        KeDPtm007TIrgcS+9evjB+U+bYrdszrYhYll4O5sved0cQK6uQy8yiL8IP6VbF4jODyXcouUCW981
-        hzBsNCf8Z7DJ1v46Nc1Mb2wdqYTNgv3QBALB7RYr9VKkyoLonvi1RM8zHMrgCbo6kwRtTCoVZCjlG
-        /OAq9mktI6iecU7qVQbKZP3lEccE5DzM1In160sbEsYa1BnEm/vnJfNWcYfD7m0epk7NIA3uzIWK/
-        EEaqoVfQTL8LuTRQd3EINpHSP5A99QGVGY+zZmZwzqtUUbzNb48tGRz4CPKxutg00/ibXEq9KqmFn
-        N+mMK2MA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGHfm-003dFm-E3; Wed, 18 Aug 2021 09:15:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2169D30009A;
-        Wed, 18 Aug 2021 11:15:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 030E52027CE08; Wed, 18 Aug 2021 11:15:44 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 11:15:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mingo@redhat.com, kernel-team@fb.com,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [RFC] bpf: lbr: enable reading LBR from tracing bpf programs
-Message-ID: <YRzPwClswwxHXVHe@hirez.programming.kicks-ass.net>
-References: <20210818012937.2522409-1-songliubraving@fb.com>
+        id S232979AbhHRJh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Aug 2021 05:37:58 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8038 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234949AbhHRJg5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Aug 2021 05:36:57 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GqN733dvCzYnLv;
+        Wed, 18 Aug 2021 17:35:43 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 18 Aug 2021 17:36:07 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 18 Aug
+ 2021 17:36:06 +0800
+Subject: Re: [PATCH RFC 0/7] add socket to netdev page frag recycling support
+To:     Eric Dumazet <edumazet@google.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        "Tang, Feng" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        <mcroce@microsoft.com>, Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        <kpsingh@kernel.org>, "Andrii Nakryiko" <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        <chenhao288@hisilicon.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, <memxor@gmail.com>,
+        <linux@rempel-privat.de>, Antoine Tenart <atenart@kernel.org>,
+        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        <aahringo@redhat.com>, <ceggers@arri.de>, <yangbo.lu@nxp.com>,
+        "Florian Westphal" <fw@strlen.de>, <xiangxia.m.yue@gmail.com>,
+        linmiaohe <linmiaohe@huawei.com>, <hch@lst.de>
+References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
+ <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com>
+Date:   Wed, 18 Aug 2021 17:36:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818012937.2522409-1-songliubraving@fb.com>
+In-Reply-To: <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 06:29:37PM -0700, Song Liu wrote:
-> The typical way to access LBR is via hardware perf_event. For CPUs with
-> FREEZE_LBRS_ON_PMI support, PMI could capture reliable LBR. On the other
-> hand, LBR could also be useful in non-PMI scenario. For example, in
-> kretprobe or bpf fexit program, LBR could provide a lot of information
-> on what happened with the function.
+On 2021/8/18 16:57, Eric Dumazet wrote:
+> On Wed, Aug 18, 2021 at 5:33 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> This patchset adds the socket to netdev page frag recycling
+>> support based on the busy polling and page pool infrastructure.
 > 
-> In this RFC, we try to enable LBR for BPF program. This works like:
->   1. Create a hardware perf_event with PERF_SAMPLE_BRANCH_* on each CPU;
->   2. Call a new bpf helper (bpf_get_branch_trace) from the BPF program;
->   3. Before calling this bpf program, the kernel stops LBR on local CPU,
->      make a copy of LBR, and resumes LBR;
->   4. In the bpf program, the helper access the copy from #3.
+> I really do not see how this can scale to thousands of sockets.
 > 
-> Please see tools/testing/selftests/bpf/[progs|prog_tests]/get_call_trace.c
-> for a detailed example. Not that, this process is far from ideal, but it
-> allows quick prototype of this feature.
+> tcp_mem[] defaults to ~ 9 % of physical memory.
 > 
-> AFAICT, the biggest challenge here is that we are now sharing LBR in PMI
-> and out of PMI, which could trigger some interesting race conditions.
-> However, if we allow some level of missed/corrupted samples, this should
-> still be very useful.
-> 
-> Please share your thoughts and comments on this. Thanks in advance!
+> If you now run tests with thousands of sockets, their skbs will
+> consume Gigabytes
+> of memory on typical servers, now backed by order-0 pages (instead of
+> current order-3 pages)
+> So IOMMU costs will actually be much bigger.
 
-> +int bpf_branch_record_read(void)
-> +{
-> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-> +
-> +	intel_pmu_lbr_disable_all();
-> +	intel_pmu_lbr_read();
-> +	memcpy(this_cpu_ptr(&bpf_lbr_entries), cpuc->lbr_entries,
-> +	       sizeof(struct perf_branch_entry) * x86_pmu.lbr_nr);
-> +	*this_cpu_ptr(&bpf_lbr_cnt) = x86_pmu.lbr_nr;
-> +	intel_pmu_lbr_enable_all(false);
-> +	return 0;
-> +}
+As the page allocator support bulk allocating now, see:
+https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L252
 
-Urgghhh.. I so really hate BPF specials like this. Also, the PMI race
-you describe is because you're doing abysmal layer violations. If you'd
-have used perf_pmu_disable() that wouldn't have been a problem.
+if the DMA also support batch mapping/unmapping, maybe having a
+small-sized page pool for thousands of sockets may not be a problem?
+Christoph Hellwig mentioned the batch DMA operation support in below
+thread:
+https://www.spinics.net/lists/netdev/msg666715.html
 
-I'd much rather see a generic 'fake/inject' PMI facility, something that
-works across the board and isn't tied to x86/intel.
+if the batched DMA operation is supported, maybe having the
+page pool is mainly benefit the case of small number of socket?
+
+> 
+> Are we planning to use Gigabyte sized page pools for NIC ?
+> 
+> Have you tried instead to make TCP frags twice bigger ?
+
+Not yet.
+
+> This would require less IOMMU mappings.
+> (Note: This could require some mm help, since PAGE_ALLOC_COSTLY_ORDER
+> is currently 3, not 4)
+
+I am not familiar with mm yet, but I will take a look about that:)
+
+> 
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index a3eea6e0b30a7d43793f567ffa526092c03e3546..6b66b51b61be9f198f6f1c4a3d81b57fa327986a
+> 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -2560,7 +2560,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
+>         }
+>  }
+> 
+> -#define SKB_FRAG_PAGE_ORDER    get_order(32768)
+> +#define SKB_FRAG_PAGE_ORDER    get_order(65536)
+>  DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
+> 
+>  /**
+> 
+> 
+> 
+>>
