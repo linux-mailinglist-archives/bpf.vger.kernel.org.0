@@ -2,154 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629E73F0667
-	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 16:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0BFC3F07A2
+	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 17:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239578AbhHROUM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Aug 2021 10:20:12 -0400
-Received: from mga03.intel.com ([134.134.136.65]:46447 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239932AbhHROTE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:19:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="216365836"
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="216365836"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2021 07:18:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,330,1620716400"; 
-   d="scan'208";a="511215988"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga004.fm.intel.com with ESMTP; 18 Aug 2021 07:18:24 -0700
-Date:   Wed, 18 Aug 2021 16:03:30 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-Cc:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "toke@redhat.com" <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Lobakin, Alexandr" <alexandr.lobakin@intel.com>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Creeley, Brett" <brett.creeley@intel.com>,
-        "joamaki@gmail.com" <joamaki@gmail.com>
-Subject: Re: [PATCH v5 intel-next 0/9] XDP_TX improvements for ice
-Message-ID: <20210818140330.GA25189@ranger.igk.intel.com>
-References: <20210814140812.46632-1-maciej.fijalkowski@intel.com>
- <86e7bcc04d8211fe5796bd7ecbea9458a725ad03.camel@intel.com>
- <20210818075256.GA16780@ranger.igk.intel.com>
+        id S239837AbhHRPO3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Aug 2021 11:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239811AbhHRPO3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Aug 2021 11:14:29 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48075C0617AD;
+        Wed, 18 Aug 2021 08:13:54 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id l24so1811273qtj.4;
+        Wed, 18 Aug 2021 08:13:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PVCKykayEvXKVpNVfN4++L+SwCZYLayULNX7RQmbrok=;
+        b=oFN+Xg1BFqxHLaDXI3RvACmAAxzJAWNUJUkVNGUIDUmWy14DvyzCtds/hhqC+jda65
+         2MueVwL4IHg0PXBYigkmQeCoNSsf6dUAKz6SMpI34QIaeBx1qZ6lv33HkYM50f1fwrFd
+         UcfkVwkiLopgPONHy9CR+FlWTDtctU9HM6b03V1vGtcqcEsXLO7NlDgA+r2kjtQjLTY6
+         2i+yfbdllkzoBfNDBZuKn1Zb7Pi3JQ5WETID8qnVBr0ijo5KQIjSvocmqhhJNQ6+uluP
+         9mfpO45OF7WrDpxakuQdTfH3FNJUoNmzFnP9OS/KFoJ4FcgzpEWbGgl89pY0mCt4A1Ko
+         OgjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PVCKykayEvXKVpNVfN4++L+SwCZYLayULNX7RQmbrok=;
+        b=F2ImFBd65ngwtGnydXZbGOFiWG93oRbD3hNp2eEeKSo/IDMthtKH5YIPung+lmNLJM
+         /ECDH9NwBEZAywVaby5/Iplhpv6vkRQg7uT9s7NNnYQdjsvhFU9+VSw5gpLhYmqbbokC
+         ItHqbWXdY+xtAUggy+l/cT/ug4f558UWNMz0ks8nm9eXQRoq2SCnJniwlu55KlaJc8Zj
+         qtqQ8SUaFOBOsz51G6svgGUR5w1dh6DNdb0uHSSwB18BbtwoL55xmwfFCLq8ePunj/rL
+         TQx6guem45/UPaH4iuwLUuMOJetQbafx5FoQCOotViFug0X6ED761s5aVSEpzCG0wkEY
+         tdwg==
+X-Gm-Message-State: AOAM532FRiTCciM5CQDGLKze3csb0o9VqFzstRB+Y8/15S9nGcORCZkK
+        g8KZKU3ee8fBDPb6x2Se8q8=
+X-Google-Smtp-Source: ABdhPJyUdBH95XtiwZdV00IvNbeDrREQM77UQzy9t2JMppv6Pw/P7HvQn2y6HP/KedPEVWLuTgVjiA==
+X-Received: by 2002:ac8:53d6:: with SMTP id c22mr1287772qtq.38.1629299633413;
+        Wed, 18 Aug 2021 08:13:53 -0700 (PDT)
+Received: from localhost.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
+        by smtp.gmail.com with ESMTPSA id g12sm111556qtq.92.2021.08.18.08.13.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 08:13:52 -0700 (PDT)
+From:   grantseltzer <grantseltzer@gmail.com>
+To:     andrii@kernel.org
+Cc:     bpf@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org,
+        grantseltzer@gmail.com
+Subject: [PATCH] Rename libbpf documentation index file
+Date:   Wed, 18 Aug 2021 11:13:13 -0400
+Message-Id: <20210818151313.49992-1-grantseltzer@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818075256.GA16780@ranger.igk.intel.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 09:52:56AM +0200, Maciej Fijalkowski wrote:
-> On Tue, Aug 17, 2021 at 09:59:01PM +0100, Nguyen, Anthony L wrote:
-> > On Sat, 2021-08-14 at 16:08 +0200, Maciej Fijalkowski wrote:
-> > > With the v5, I think it's time for a proper change log.
-> > 
-> > This isn't applying to the Intel-wired-LAN tree. If you want it to go
-> > through there, could you base the patches on that tree?
-> 
-> Interestingly this is the first time that happens to me and I always based
-> my XDP related driver work on bpf-next.
-> 
-> iwl tree is some standalone tree or is it just the net-next ?
+From: Grant Seltzer <grantseltzer@gmail.com>
 
-Turns out that you have the switchdev set in your branch and it's not on
-net-next yet. I have adjusted my set on top of that code and sent a v6.
+This patch renames a documentation libbpf.rst to index.rst. In order
+for readthedocs to pick this file up and properly build the
+documentation site.
 
-> 
-> > 
-> > Also, looking at NIPA, it looks like patches 2 and 3 have kdoc issues.
-> 
-> Yeah I saw kdoc issue on patch 3 and wanted to ask you to fix this if you
-> would be applying that set but given that you're asking for a re-submit
-> i'll fix those by myself.
-> 
-> > 
-> > Thanks,
-> > Tony
-> > 
-> > > v4->v5:
-> > > * fix issues pointed by lkp; variables used for updating ring stats
-> > >   could be un-inited
-> > > * s/ice_ring/ice_rx_ring; it looks now symmetric given that we have
-> > >   ice_tx_ring struct dedicated for Tx ring
-> > > * go through the code and use ice_for_each_* macros; it was spotted
-> > > by
-> > >   Brett that there was a place around that code that this set is
-> > >   touching that was not using the ice_for_each_txq. Turned out that
-> > > there
-> > >   were more such places
-> > > * take care of coalesce related code; carry the info about type of
-> > > ring
-> > >   container in ice_ring_container
-> > > * pull out getting rid of @ring_active onto separate patch, as
-> > > suggested
-> > >   by Brett
-> > >
-> > > v3->v4:
-> > > * fix lkp issues;
-> > >
-> > > v2->v3:
-> > > * improve XDP_TX in a proper way
-> > > * split ice_ring
-> > > * propagate XDP ring pointer to Rx ring
-> > >
-> > > v1->v2:
-> > > * try to improve XDP_TX processing
-> > >
-> > > v4 :
-> > > https://lore.kernel.org/bpf/20210806095539.34423-1-maciej.fijalkowski@intel.com/
-> > > v3 :
-> > > https://lore.kernel.org/bpf/20210805230046.28715-1-maciej.fijalkowski@intel.com/
-> > > v2 :
-> > > https://lore.kernel.org/bpf/20210705164338.58313-1-maciej.fijalkowski@intel.com/
-> > > v1 :
-> > > https://lore.kernel.org/bpf/20210601113236.42651-1-maciej.fijalkowski@intel.com/
-> > >
-> > > Thanks!
-> > > Maciej
-> > >
-> > > Maciej Fijalkowski (9):
-> > >   ice: remove ring_active from ice_ring
-> > >   ice: move ice_container_type onto ice_ring_container
-> > >   ice: split ice_ring onto Tx/Rx separate structs
-> > >   ice: unify xdp_rings accesses
-> > >   ice: do not create xdp_frame on XDP_TX
-> > >   ice: propagate xdp_ring onto rx_ring
-> > >   ice: optimize XDP_TX workloads
-> > >   ice: introduce XDP_TX fallback path
-> > >   ice: make use of ice_for_each_* macros
-> > >
-> > >  drivers/net/ethernet/intel/ice/ice.h          |  41 +++-
-> > >  drivers/net/ethernet/intel/ice/ice_arfs.c     |   2 +-
-> > >  drivers/net/ethernet/intel/ice/ice_base.c     |  51 ++---
-> > >  drivers/net/ethernet/intel/ice/ice_base.h     |   8 +-
-> > >  drivers/net/ethernet/intel/ice/ice_dcb_lib.c  |   9 +-
-> > >  drivers/net/ethernet/intel/ice/ice_dcb_lib.h  |  10 +-
-> > >  drivers/net/ethernet/intel/ice/ice_ethtool.c  |  93 +++++----
-> > >  drivers/net/ethernet/intel/ice/ice_lib.c      |  88 +++++----
-> > >  drivers/net/ethernet/intel/ice/ice_lib.h      |   6 +-
-> > >  drivers/net/ethernet/intel/ice/ice_main.c     | 142 +++++++++-----
-> > >  drivers/net/ethernet/intel/ice/ice_ptp.c      |   2 +-
-> > >  drivers/net/ethernet/intel/ice/ice_ptp.h      |   4 +-
-> > >  drivers/net/ethernet/intel/ice/ice_trace.h    |  28 +--
-> > >  drivers/net/ethernet/intel/ice/ice_txrx.c     | 183 +++++++++++-----
-> > > --
-> > >  drivers/net/ethernet/intel/ice/ice_txrx.h     | 126 +++++++-----
-> > >  drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  98 ++++++++--
-> > >  drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  14 +-
-> > >  .../net/ethernet/intel/ice/ice_virtchnl_pf.c  |   2 +-
-> > >  drivers/net/ethernet/intel/ice/ice_xsk.c      |  70 ++++---
-> > >  drivers/net/ethernet/intel/ice/ice_xsk.h      |  20 +-
-> > >  20 files changed, 607 insertions(+), 390 deletions(-)
-> > >
+It also changes the title type of the ABI subsection in the
+naming convention doc. This is so that readthedocs doesn't treat this
+section as a seperate document.
+
+Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+---
+ Documentation/bpf/libbpf/{libbpf.rst => index.rst}    | 8 ++++++++
+ Documentation/bpf/libbpf/libbpf_naming_convention.rst | 2 +-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+ rename Documentation/bpf/libbpf/{libbpf.rst => index.rst} (75%)
+
+diff --git a/Documentation/bpf/libbpf/libbpf.rst b/Documentation/bpf/libbpf/index.rst
+similarity index 75%
+rename from Documentation/bpf/libbpf/libbpf.rst
+rename to Documentation/bpf/libbpf/index.rst
+index 1b1e61d5ead1..4f8adfc3ab83 100644
+--- a/Documentation/bpf/libbpf/libbpf.rst
++++ b/Documentation/bpf/libbpf/index.rst
+@@ -3,6 +3,14 @@
+ libbpf
+ ======
+ 
++For API documentation see the `versioned API documentation site <https://libbpf.readthedocs.io/en/latest/api.html>`_.
++
++.. toctree::
++   :maxdepth: 1
++
++   libbpf_naming_convention
++   libbpf_build
++
+ This is documentation for libbpf, a userspace library for loading and
+ interacting with bpf programs.
+ 
+diff --git a/Documentation/bpf/libbpf/libbpf_naming_convention.rst b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+index 6bf9c5ac7576..9c68d5014ff1 100644
+--- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst
++++ b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+@@ -69,7 +69,7 @@ functions. These can be mixed and matched. Note that these functions
+ are not reentrant for performance reasons.
+ 
+ ABI
+-==========
++---
+ 
+ libbpf can be both linked statically or used as DSO. To avoid possible
+ conflicts with other libraries an application is linked with, all
+-- 
+2.31.1
+
