@@ -2,189 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758563EFF2B
-	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 10:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61F63EFFA5
+	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 10:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239511AbhHRIbU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Aug 2021 04:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239512AbhHRIa7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:30:59 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD6DC0617A8
-        for <bpf@vger.kernel.org>; Wed, 18 Aug 2021 01:30:25 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id c4so1331640plh.7
-        for <bpf@vger.kernel.org>; Wed, 18 Aug 2021 01:30:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=jL/DkoxZCdzlNexUG7tJ6IG5zbZczoSvIVash/JCFrw=;
-        b=mjex+yt3nPZrktov1+DZ6Bq446vp3EnZsY5Rp2Z4n5iBYWDavjtfqeXt7QZMyuGeQx
-         dmQdu6z3qA1rLvrmaBhTr9RPti/HhOVCjaTV6tvJ/yTjU+xPSVxAQpRZvQwYAgUYofeO
-         mmH2cRgxyDimzxfU4p2xlVikV5Eqxe3uztSntLF0ehtUzbOzCC1Otex7gfri/ddagDJv
-         9dp7MYgwkA567XF/7ghDiEEu0ngZj6uWW6MzAqVr9yQGP+u2DQ2SwhCcZxAd6Jrq2EIp
-         +VMMflY5XYtq41M4/KXWx2ofrDQxrH8xbTuuekFqJwiPORh37Tltgjju+vkismI+2vhj
-         7XKw==
+        id S229904AbhHRIzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Aug 2021 04:55:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29377 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229549AbhHRIzf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Aug 2021 04:55:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629276900;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1Mh3RCcwqzsgQx5n6mOYP8qaEc3/zNsLw1ibiOhXN+A=;
+        b=c/sz25/sMJT2QiiL+vrz61rKiG6OH5jL3+PBmhyI3DWF26BqzZwm/+SI6Hinb/SkiKHj2r
+        sI/5e2r2AMQIOanwaU4rvyROOmsJ2A+UHKuYq89v4tcwfDWe7mTziJZyRLygK7uEt26d4v
+        k6BnGikOIv4IZv8bJWjTUk8hy3Tjf1I=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-43-tN5dnt7bPcCrblfzD-ZPOg-1; Wed, 18 Aug 2021 04:54:59 -0400
+X-MC-Unique: tN5dnt7bPcCrblfzD-ZPOg-1
+Received: by mail-wr1-f72.google.com with SMTP id q4-20020a05600000c400b00156d811312aso362625wrx.3
+        for <bpf@vger.kernel.org>; Wed, 18 Aug 2021 01:54:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=jL/DkoxZCdzlNexUG7tJ6IG5zbZczoSvIVash/JCFrw=;
-        b=detr3JrEG6YaQiMVmplZMldA2X2o61jyD6EQTcXSea6N71wcDzRYhcGSRlm2ByK44N
-         CqqgxCrdLPTjT8oG6Sg/6qhj3LK8CuSyf7i2RrmVGt2krUDWnfT+8kyiWE66JO7o2A4L
-         4ztjYaTtPH0z6Jc2Qp/FzyVHa37Xezo+AlsONXpdUnn3Vofu+AEFAYt+rBpAFKp54ZGg
-         5fQMTi40UjC9Jbyt39aPfZIQXUw8DKwAUpUBCzlY9ANVCWTplcwWIs6tNYgCQZiHNByW
-         3uZrGs5Y4BUJQuAXmYKQKYU4Lf5JYkpF37TpnXU/DWNn9dk1FNdI3jK6RMPt/bynlbhG
-         gGtg==
-X-Gm-Message-State: AOAM533LsstQYf3gvCg7pIIZjkmDW3uE9FaIWdk1K8LNCoSlayiMOaAo
-        NnUHip1kc7U/k32igiJ1+pZiXQ==
-X-Google-Smtp-Source: ABdhPJxad1KK36PAE+4ALDJhHQYzMsdq97PArLHgXYjcLRlD/AHutLCPOJ3acpkjSavyCEuDCIetRA==
-X-Received: by 2002:a17:90b:3007:: with SMTP id hg7mr8245674pjb.66.1629275424835;
-        Wed, 18 Aug 2021 01:30:24 -0700 (PDT)
-Received: from [10.254.37.14] ([139.177.225.244])
-        by smtp.gmail.com with ESMTPSA id 11sm5003086pfl.41.2021.08.18.01.30.18
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1Mh3RCcwqzsgQx5n6mOYP8qaEc3/zNsLw1ibiOhXN+A=;
+        b=iqXXsnm0/IydXgEwRP1BLRMLHuY8dlTS7C+3+92VJ4hcecXnIpDnjgrwk4HLGb++uP
+         cyTF1WNXJ/c57VVrf9hIR4NCOcSMof5fSgcKa1UTrYTBK9O8lH9W8Vozsk6Kf9VUUlfN
+         yH0mF8iE/g2RKsNYXj/8poIYhAFJwY4rLDvhe9R1GkwOtAlKYP85/Ddp2UVUgO0gmUbO
+         py1OftcqYalxFkHxOlSGZuA9/SXNTWVtSl1r7VBcF8LegMQPIqtFqTr2zHj6vnB2ZGee
+         0Vr9FkR1rIyyTj7oJHNxR/xB7YjeShFjd3MUsZ35E05sPj3vnxgbWBDYupd2pmv63N+B
+         L9Pg==
+X-Gm-Message-State: AOAM533ovz0tcSEGvai0XdG7AlHLEDUjeiiK5so9SxlVWuKHnLz97ri0
+        C/BG0UQ7GS7D7HW9y03EWOdfrtumUVkDwcMSmv0Fcg0979aprDMtsMPkzsFWiZP0U5S8Cri+pKp
+        bP4X0D6EF4SPF
+X-Received: by 2002:a5d:5409:: with SMTP id g9mr9536484wrv.409.1629276897783;
+        Wed, 18 Aug 2021 01:54:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxMZ8FqWVCmSPbAA7DTxHBjBs1Scwu/cPC2p1bEVif94hlv7Lhz4JAhFK/A451DPgJFIOChHQ==
+X-Received: by 2002:a5d:5409:: with SMTP id g9mr9536464wrv.409.1629276897616;
+        Wed, 18 Aug 2021 01:54:57 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id d4sm5240621wrz.35.2021.08.18.01.54.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Aug 2021 01:30:24 -0700 (PDT)
-Subject: Re: [External] Re: [PATCH] ixgbe: Fix NULL pointer dereference in
- ixgbe_xdp_setup
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, jeffrey.t.kirsher@intel.com,
-        magnus.karlsson@intel.com, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, duanxiongchun@bytedance.com,
-        songmuchun@bytedance.com, zhouchengming@bytedance.com,
-        chenying.kernel@bytedance.com, zhengqi.arch@bytedance.com,
-        wangdongdong.6@bytedance.com
-References: <20210817075407.11961-1-zhoufeng.zf@bytedance.com>
- <20210817111047.GA8143@ranger.igk.intel.com>
-From:   zhoufeng <zhoufeng.zf@bytedance.com>
-Message-ID: <5bddff53-9b78-99db-1d8e-23b3d38167a1@bytedance.com>
-Date:   Wed, 18 Aug 2021 16:30:15 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Wed, 18 Aug 2021 01:54:57 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com, Jithu Joseph <jithu.joseph@intel.com>
+Subject: Re: [RFC bpf-next 5/5] samples/bpf/xdpsock_user.c: Launchtime/TXTIME
+ API usage
+To:     Kishen Maloor <kishen.maloor@intel.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, hawk@kernel.org, magnus.karlsson@intel.com,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+References: <20210803171006.13915-1-kishen.maloor@intel.com>
+ <20210803171006.13915-6-kishen.maloor@intel.com>
+Message-ID: <4ea898db-563c-851b-c3da-9389abcb83ac@redhat.com>
+Date:   Wed, 18 Aug 2021 10:54:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210817111047.GA8143@ranger.igk.intel.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <20210803171006.13915-6-kishen.maloor@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
+On 03/08/2021 19.10, Kishen Maloor wrote:
+> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+> index 3fd2f6a0d1eb..a0fd3d5414ba 100644
+> --- a/samples/bpf/xdpsock_user.c
+> +++ b/samples/bpf/xdpsock_user.c
+[...]
+> @@ -741,6 +745,8 @@ static inline u16 udp_csum(u32 saddr, u32 daddr, u32 len,
+>   
+>   #define ETH_FCS_SIZE 4
+>   
+> +#define MD_SIZE (sizeof(struct xdp_user_tx_metadata))
+> +
+>   #define PKT_HDR_SIZE (sizeof(struct ethhdr) + sizeof(struct iphdr) + \
+>   		      sizeof(struct udphdr))
+>   
+> @@ -798,8 +804,10 @@ static void gen_eth_hdr_data(void)
+>   
+>   static void gen_eth_frame(struct xsk_umem_info *umem, u64 addr)
+>   {
+> -	memcpy(xsk_umem__get_data(umem->buffer, addr), pkt_data,
+> -	       PKT_SIZE);
+> +	if (opt_launch_time)
+> +		memcpy(xsk_umem__get_data(umem->buffer, addr) + MD_SIZE, pkt_data, PKT_SIZE);
+> +	else
+> +		memcpy(xsk_umem__get_data(umem->buffer, addr), pkt_data, PKT_SIZE);
+>   }
+>   
 
-ÔÚ 2021/8/17 ÏÂÎç7:10, Maciej Fijalkowski Ð´µÀ:
-> On Tue, Aug 17, 2021 at 03:54:07PM +0800, Feng zhou wrote:
->> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>
->> The ixgbe driver currently generates a NULL pointer dereference with
->> some machine (online cpus < 63). This is due to the fact that the
->> maximum value of num_xdp_queues is nr_cpu_ids. Code is in
->> "ixgbe_set_rss_queues"".
-> 
-> That's a good catch, but we should fix set channels callback so that it
-> will not allow a setting of queues to be higher than the
-> num_online_cpus().
-> 
-> Please also include the tree in the patch subject that you're directing
-> the patch to.
-> 
+I imagined that AF_XDP 'addr' would still point to the start of the 
+packet data, and that metadata area was access via a negative offset 
+from 'addr'.
 
-Ok, Besides it, I will add more code in "ixgbe_set_channels":
-/* verify the number of channels does not exceed num_online_cpus */
-if (count > num_online_cpus())
-	return -EINVAL;
-If user want set queues num to be higher than the num_online_cpus(),
-return error(-EINVAL).
+Maybe I misunderstood the code, but it looks like 'addr' 
+(xsk_umem__get_data(umem->buffer, addr)) points to metadata area, is 
+this correct?
 
-What do you think?
+(and to skip this the code does + MD_SIZE, before memcpy)
 
-> I'd be also thankful if you Cc me on Intel XDP related patches.
-> Thanks!
-> 
+One problem/challenge with AF_XDP is that we don't have room in struct 
+xdp_desc to store info on the size of the metadata area.  BjÃ¸rn came up 
+with the idea of having btf_id as last member (access able via minus 4 
+bytes), as this tells the kernel the size of metadata area.
 
-Ok, of course.
+Maybe you have come up with a better solution?
+(of making the metadata area size dynamic)
 
+--Jesper
 
->>
->> Here's how the problem repeats itself:
->> Some machine (online cpus < 63), And user set num_queues to 63 through
->> ethtool. Code is in the "ixgbe_set_channels",
->> adapter->ring_feature[RING_F_FDIR].limit = count;
->> It becames 63.
->> When user use xdp, "ixgbe_set_rss_queues" will set queues num.
->> adapter->num_rx_queues = rss_i;
->> adapter->num_tx_queues = rss_i;
->> adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
->> And rss_i's value is from
->> f = &adapter->ring_feature[RING_F_FDIR];
->> rss_i = f->indices = f->limit;
->> So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
->> for (i = 0; i < adapter->num_rx_queues; i++)
->> 	if (adapter->xdp_ring[i]->xsk_umem)
->> lead to panic.
->> Call trace:
->> [exception RIP: ixgbe_xdp+368]
->> RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
->> RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
->> RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
->> RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
->> R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
->> R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
->> ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
->>   7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
->>   8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
->>   9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
->> 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
->> 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
->> 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
->> 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
->> 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
->> 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
->> 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
->> 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
->> 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
->> 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
->>
->> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
->> AF_XDP")
->> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->> ---
->>   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 8 ++++++--
->>   1 file changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> index 14aea40da50f..5db496cc5070 100644
->> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
->>   	struct ixgbe_adapter *adapter = netdev_priv(dev);
->>   	struct bpf_prog *old_prog;
->>   	bool need_reset;
->> +	int num_queues;
->>   
->>   	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
->>   		return -EINVAL;
->> @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
->>   	/* Kick start the NAPI context if there is an AF_XDP socket open
->>   	 * on that queue id. This so that receiving will start.
->>   	 */
->> -	if (need_reset && prog)
->> -		for (i = 0; i < adapter->num_rx_queues; i++)
->> +	if (need_reset && prog) {
->> +		num_queues = min_t(int, adapter->num_rx_queues,
->> +			adapter->num_xdp_queues);
->> +		for (i = 0; i < num_queues; i++)
->>   			if (adapter->xdp_ring[i]->xsk_pool)
->>   				(void)ixgbe_xsk_wakeup(adapter->netdev, i,
->>   						       XDP_WAKEUP_RX);
->> +	}
->>   
->>   	return 0;
->>   }
->> -- 
->> 2.11.0
->>
