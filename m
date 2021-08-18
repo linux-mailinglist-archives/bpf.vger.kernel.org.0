@@ -2,171 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFF43F0DF0
-	for <lists+bpf@lfdr.de>; Thu, 19 Aug 2021 00:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F4E3F0E1D
+	for <lists+bpf@lfdr.de>; Thu, 19 Aug 2021 00:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234286AbhHRWMl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Aug 2021 18:12:41 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40366 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234106AbhHRWMl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 18 Aug 2021 18:12:41 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17ILtiMX016004
-        for <bpf@vger.kernel.org>; Wed, 18 Aug 2021 15:12:06 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=YRCJOXOmrraL7Asy37YkVGw0k+tDUt7YDR9xsiYnbAo=;
- b=oDxgDUeTWAiTWnxu1ItPZT64qHMuGs82bGNQNidZiWc163SF8aZAfeDuIq6DDOKeFuFx
- DQM13I2YhYIxJoTSuuchTUUbPjHQ9xQU45LdAm9r0qVjPKsZ6R0z64vov2L0VpG7khen
- SbW4ao58aA48mZhZJvaxaXlnadGBXWT/rPc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3agw6uw2ha-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 18 Aug 2021 15:12:06 -0700
-Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 18 Aug 2021 15:12:04 -0700
-Received: by devbig139.ftw2.facebook.com (Postfix, from userid 572249)
-        id 7CC0F150F32A; Wed, 18 Aug 2021 15:12:00 -0700 (PDT)
-From:   Andrey Ignatov <rdna@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>,
-        <dan.carpenter@oracle.com>, <kernel-team@fb.com>
-Subject: [PATCH bpf] bpf: Fix possible out of bound write in narrow load handling
-Date:   Wed, 18 Aug 2021 15:11:43 -0700
-Message-ID: <20210818221143.1004463-1-rdna@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: H0RdUwvdg5ClPvCmPCoLYvUARiHRbgTy
-X-Proofpoint-ORIG-GUID: H0RdUwvdg5ClPvCmPCoLYvUARiHRbgTy
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S234106AbhHRWZT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Aug 2021 18:25:19 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57914 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232456AbhHRWZS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:25:18 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mGTzG-000657-Ck; Thu, 19 Aug 2021 00:24:42 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mGTzG-0000BQ-75; Thu, 19 Aug 2021 00:24:42 +0200
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: use kvmalloc for map keys in
+ syscalls
+To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org
+References: <20210817154556.92901-1-sdf@google.com>
+ <20210817154556.92901-2-sdf@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <afd42427-f424-5f0d-360c-5fcdfc078704@iogearbox.net>
+Date:   Thu, 19 Aug 2021 00:24:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-18_07:2021-08-17,2021-08-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- impostorscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
- adultscore=0 clxscore=1015 priorityscore=1501 suspectscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108180134
-X-FB-Internal: deliver
+In-Reply-To: <20210817154556.92901-2-sdf@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26267/Wed Aug 18 10:21:27 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix a verifier bug found by smatch static checker in [0].
+On 8/17/21 5:45 PM, Stanislav Fomichev wrote:
+> Same as previous patch but for the keys. memdup_bpfptr is renamed
+> to vmemdup_bpfptr (and converted to kvmalloc).
+> 
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>   include/linux/bpfptr.h | 12 ++++++++++--
+>   kernel/bpf/syscall.c   | 34 +++++++++++++++++-----------------
+>   2 files changed, 27 insertions(+), 19 deletions(-)
+> 
+> diff --git a/include/linux/bpfptr.h b/include/linux/bpfptr.h
+> index 5cdeab497cb3..84eeffb4316a 100644
+> --- a/include/linux/bpfptr.h
+> +++ b/include/linux/bpfptr.h
+> @@ -62,9 +62,17 @@ static inline int copy_to_bpfptr_offset(bpfptr_t dst, size_t offset,
+>   	return copy_to_sockptr_offset((sockptr_t) dst, offset, src, size);
+>   }
+>   
+> -static inline void *memdup_bpfptr(bpfptr_t src, size_t len)
+> +static inline void *vmemdup_bpfptr(bpfptr_t src, size_t len)
 
-When narrow load is handled, one or two new instructions are added to
-insn_buf array, but before it was only checked that
+nit: should we just name it kvmemdup_bpfptr() in that case?
 
-	cnt >=3D ARRAY_SIZE(insn_buf)
+>   {
+> -	return memdup_sockptr((sockptr_t) src, len);
+> +	void *p = kvmalloc(len, GFP_USER | __GFP_NOWARN);
+> +
+> +	if (!p)
+> +		return ERR_PTR(-ENOMEM);
+> +	if (copy_from_sockptr(p, (sockptr_t) src, len)) {
 
-And it's safe to add a new instruction to insn_buf[cnt++] only once. The
-second try will lead to out of bound write. And this is what can happen
-if `shift` is set.
+Also, I think this one should rather use copy_from_bpfptr() here.
 
-Fix it by making sure that if the BPF_RSH instruction has to be added in
-addition to BPF_AND then there is enough space for two more instructions
-in insn_buf.
+> +		kvfree(p);
+> +		return ERR_PTR(-EFAULT);
+> +	}
+> +	return p;
+>   }
+>   
 
-The full report [0] is below:
-
-kernel/bpf/verifier.c:12304 convert_ctx_accesses() warn: offset 'cnt' incre=
-mented past end of array
-kernel/bpf/verifier.c:12311 convert_ctx_accesses() warn: offset 'cnt' incre=
-mented past end of array
-
-kernel/bpf/verifier.c
-    12282
-    12283 			insn->off =3D off & ~(size_default - 1);
-    12284 			insn->code =3D BPF_LDX | BPF_MEM | size_code;
-    12285 		}
-    12286
-    12287 		target_size =3D 0;
-    12288 		cnt =3D convert_ctx_access(type, insn, insn_buf, env->prog,
-    12289 					 &target_size);
-    12290 		if (cnt =3D=3D 0 || cnt >=3D ARRAY_SIZE(insn_buf) ||
-                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Bounds check.
-
-    12291 		    (ctx_field_size && !target_size)) {
-    12292 			verbose(env, "bpf verifier is misconfigured\n");
-    12293 			return -EINVAL;
-    12294 		}
-    12295
-    12296 		if (is_narrower_load && size < target_size) {
-    12297 			u8 shift =3D bpf_ctx_narrow_access_offset(
-    12298 				off, size, size_default) * 8;
-    12299 			if (ctx_field_size <=3D 4) {
-    12300 				if (shift)
-    12301 					insn_buf[cnt++] =3D BPF_ALU32_IMM(BPF_RSH,
-                                                         ^^^^^
-increment beyond end of array
-
-    12302 									insn->dst_reg,
-    12303 									shift);
---> 12304 				insn_buf[cnt++] =3D BPF_ALU32_IMM(BPF_AND, insn->dst_reg,
-                                                 ^^^^^
-out of bounds write
-
-    12305 								(1 << size * 8) - 1);
-    12306 			} else {
-    12307 				if (shift)
-    12308 					insn_buf[cnt++] =3D BPF_ALU64_IMM(BPF_RSH,
-    12309 									insn->dst_reg,
-    12310 									shift);
-    12311 				insn_buf[cnt++] =3D BPF_ALU64_IMM(BPF_AND, insn->dst_reg,
-                                        ^^^^^^^^^^^^^^^
-Same.
-
-    12312 								(1ULL << size * 8) - 1);
-    12313 			}
-    12314 		}
-    12315
-    12316 		new_prog =3D bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-    12317 		if (!new_prog)
-    12318 			return -ENOMEM;
-    12319
-    12320 		delta +=3D cnt - 1;
-    12321
-    12322 		/* keep walking new program and skip insns we just inserted */
-    12323 		env->prog =3D new_prog;
-    12324 		insn      =3D new_prog->insnsi + i + delta;
-    12325 	}
-    12326
-    12327 	return 0;
-    12328 }
-
-[0] https://lore.kernel.org/bpf/20210817050843.GA21456@kili/
-
-Fixes: 46f53a65d2de ("bpf: Allow narrow loads with offset > 0")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Andrey Ignatov <rdna@fb.com>
----
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 381d3d6f24bc..b991fb0a5da4 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12004,6 +12004,10 @@ static int convert_ctx_accesses(struct bpf_verifie=
-r_env *env)
- 		if (is_narrower_load && size < target_size) {
- 			u8 shift =3D bpf_ctx_narrow_access_offset(
- 				off, size, size_default) * 8;
-+			if (shift && cnt + 1 >=3D ARRAY_SIZE(insn_buf)) {
-+				verbose(env, "bpf verifier narrow ctx load misconfigured\n");
-+				return -EINVAL;
-+			}
- 			if (ctx_field_size <=3D 4) {
- 				if (shift)
- 					insn_buf[cnt++] =3D BPF_ALU32_IMM(BPF_RSH,
---=20
-2.30.2
-
+Rest lgtm, thanks!
