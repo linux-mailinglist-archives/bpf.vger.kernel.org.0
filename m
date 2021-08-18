@@ -2,149 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6296F3F00A9
-	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 11:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162EA3F00E6
+	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 11:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbhHRJh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Aug 2021 05:37:58 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8038 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234949AbhHRJg5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:36:57 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GqN733dvCzYnLv;
-        Wed, 18 Aug 2021 17:35:43 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 18 Aug 2021 17:36:07 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 18 Aug
- 2021 17:36:06 +0800
-Subject: Re: [PATCH RFC 0/7] add socket to netdev page frag recycling support
-To:     Eric Dumazet <edumazet@google.com>
-CC:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        "Tang, Feng" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        <mcroce@microsoft.com>, Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        <kpsingh@kernel.org>, "Andrii Nakryiko" <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        <chenhao288@hisilicon.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, <memxor@gmail.com>,
-        <linux@rempel-privat.de>, Antoine Tenart <atenart@kernel.org>,
-        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        <aahringo@redhat.com>, <ceggers@arri.de>, <yangbo.lu@nxp.com>,
-        "Florian Westphal" <fw@strlen.de>, <xiangxia.m.yue@gmail.com>,
-        linmiaohe <linmiaohe@huawei.com>, <hch@lst.de>
-References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
- <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com>
-Date:   Wed, 18 Aug 2021 17:36:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S232627AbhHRJuG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Aug 2021 05:50:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27566 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231218AbhHRJuF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Aug 2021 05:50:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629280171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HvcSEnORdg0rggRp6WxuZOJU65VaYwpcnMsvEkyDCJQ=;
+        b=BDLW0Zy35+gIVndksOSDct/KtI7MQYeMYc89qSqHxb58vWejHciB5HTkOWoE0AeGYAQ+F7
+        4Ljtt4oX9huk6WV9MDBZ3jdgdYaD2lR/ldBa/6B+9+xvhF6Kfg/980LenBW+SlwDw7ru/D
+        EOWLdRsDhMe6gb69NsjeR477lI92Nkk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-E86VsbWHOzS08ih-glxFng-1; Wed, 18 Aug 2021 05:49:29 -0400
+X-MC-Unique: E86VsbWHOzS08ih-glxFng-1
+Received: by mail-wm1-f69.google.com with SMTP id b196-20020a1c80cd0000b02902e677003785so2039236wmd.7
+        for <bpf@vger.kernel.org>; Wed, 18 Aug 2021 02:49:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HvcSEnORdg0rggRp6WxuZOJU65VaYwpcnMsvEkyDCJQ=;
+        b=gmIzsoT32R2T3yHJKf4ycBi+KDb/FJmdF44fjPQN44CnMyIaR1s20ew+uHcraxUWE6
+         iCXXD7NzTE31OViRvRLWcd4EikqjSRI1kE7CTIEuXRoq+xa4SMnkRAYrGKpqwFY0OAyN
+         t8Dn5I7Upf3BKkXYsWSfdyI3EAZeEc+8mFlmXReQTErTKwEYFR87hu++aw2r2GXZ1Ov0
+         DBfM8DHCl9NH7p7OK59P6FmNKRTlEtENSnceuwiHkOko4YRcQBW8gwIiYUaMIS9/1Zby
+         0d6WlbYcct75T4rpsLMUYTmavdBuJW6uyM10jyPD9d64eTZUYR+0ZKmm0ct3OyG6atfm
+         BpVQ==
+X-Gm-Message-State: AOAM531yo+kGZsnKlYskbTwKpwPfK5Zz9mY65NORqT+1OE1l2vpPghEp
+        HFKZkgUSgHVzqDyvTX89M++U9HmUD/hk4BlUYBMenbKFhWRVwLcC9VXmr751mKW5U9dZR9ieDeX
+        10/kMV2XAKR2D
+X-Received: by 2002:a7b:cb02:: with SMTP id u2mr7496207wmj.103.1629280168601;
+        Wed, 18 Aug 2021 02:49:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyofXpRJKhkep0m9OkVH9UnpUv5Dqh6G0c+2TULLuqBeGVu3+SnILWTvBPsQllJ3RbZHSfpkQ==
+X-Received: by 2002:a7b:cb02:: with SMTP id u2mr7496180wmj.103.1629280168354;
+        Wed, 18 Aug 2021 02:49:28 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id d8sm5373020wrx.12.2021.08.18.02.49.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 02:49:27 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com
+Subject: Re: [RFC bpf-next 2/5] libbpf: SO_TXTIME support in AF_XDP
+To:     Kishen Maloor <kishen.maloor@intel.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, hawk@kernel.org, magnus.karlsson@intel.com,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jithu Joseph <jithu.joseph@intel.com>
+References: <20210803171006.13915-1-kishen.maloor@intel.com>
+ <20210803171006.13915-3-kishen.maloor@intel.com>
+Message-ID: <31fb6a84-562e-a41d-0614-061e1f475db3@redhat.com>
+Date:   Wed, 18 Aug 2021 11:49:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210803171006.13915-3-kishen.maloor@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/8/18 16:57, Eric Dumazet wrote:
-> On Wed, Aug 18, 2021 at 5:33 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> This patchset adds the socket to netdev page frag recycling
->> support based on the busy polling and page pool infrastructure.
-> 
-> I really do not see how this can scale to thousands of sockets.
-> 
-> tcp_mem[] defaults to ~ 9 % of physical memory.
-> 
-> If you now run tests with thousands of sockets, their skbs will
-> consume Gigabytes
-> of memory on typical servers, now backed by order-0 pages (instead of
-> current order-3 pages)
-> So IOMMU costs will actually be much bigger.
 
-As the page allocator support bulk allocating now, see:
-https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L252
 
-if the DMA also support batch mapping/unmapping, maybe having a
-small-sized page pool for thousands of sockets may not be a problem?
-Christoph Hellwig mentioned the batch DMA operation support in below
-thread:
-https://www.spinics.net/lists/netdev/msg666715.html
+On 03/08/2021 19.10, Kishen Maloor wrote:
+> This change adds userspace support for SO_TXTIME in AF_XDP
+> to include a specific TXTIME (aka "Launch Time")
+> with XDP frames issued from userspace XDP applications.
+> 
+> The userspace API has been expanded with two helper functons:
+> 
+> - int xsk_socket__enable_so_txtime(struct xsk_socket *xsk, bool enable)
+>     Sets the SO_TXTIME option on the AF_XDP socket (using setsockopt()).
+> 
+> - void xsk_umem__set_md_txtime(void *umem_area, __u64 chunkAddr,
+>                                 __s64 txtime)
+>     Packages the application supplied TXTIME into struct xdp_user_tx_metadata:
+>     struct xdp_user_tx_metadata {
 
-if the batched DMA operation is supported, maybe having the
-page pool is mainly benefit the case of small number of socket?
+Struct name is important and becomes UAPI. I'm not 100% convinced this 
+is a good name.
 
-> 
-> Are we planning to use Gigabyte sized page pools for NIC ?
-> 
-> Have you tried instead to make TCP frags twice bigger ?
+For BPF programs libbpf can at load-time lookup the 'btf_id' via:
 
-Not yet.
+   btf_id = bpf_core_type_id_kernel(struct xdp_user_tx_metadata);
 
-> This would require less IOMMU mappings.
-> (Note: This could require some mm help, since PAGE_ALLOC_COSTLY_ORDER
-> is currently 3, not 4)
+Example see[1]
+  [1] https://github.com/xdp-project/bpf-examples/commit/2390b4b11079
 
-I am not familiar with mm yet, but I will take a look about that:)
+I know this is AF_XDP userspace, but I hope Andrii can help guide us 
+howto expose the bpf_core_type_id_kernel() API via libbpf, to be used by 
+the AF_XDP userspace program.
 
+
+>          __u64 timestamp;
+>          __u32 md_valid;
+>          __u32 btf_id;
+>     };
+
+I assume this struct is intended to be BTF "described".
+
+Struct member *names* are very important for BTF. (E.g. see how 
+'spinlock' have special meaning and is matched internally by kernel).
+
+The member name 'timestamp' seems too generic.  This is a very specific 
+'LaunchTime' feature, which could be reflected in the name.
+
+Later it looks like you are encoding the "type" in md_valid, which I 
+guess it is needed as timestamps can have different "types".
+E.g. some of the clockid_t types from clock_gettime(2):
+  CLOCK_REALTIME
+  CLOCK_TAI
+  CLOCK_MONOTONIC
+  CLOCK_BOOTTIME
+
+Which of these timestamp does XDP_METADATA_USER_TX_TIMESTAMP represent?
+Or what timestamp type is the expected one?
+
+In principle we could name the member 'Launch_Time_CLOCK_TAI' to encoded 
+the clockid_t type in the name, but I think that would be too much (and 
+require too advanced BTF helpers to extract type, having a clock_type 
+member is easier to understand/consume from C).
+
+
+>     and stores it in the XDP metadata area, which precedes the XDP frame.
 > 
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index a3eea6e0b30a7d43793f567ffa526092c03e3546..6b66b51b61be9f198f6f1c4a3d81b57fa327986a
-> 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -2560,7 +2560,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
->         }
->  }
+> Signed-off-by: Kishen Maloor <kishen.maloor@intel.com>
+> ---
+>   tools/include/uapi/linux/if_xdp.h     |  2 ++
+>   tools/include/uapi/linux/xdp_md_std.h | 14 ++++++++++++++
+>   tools/lib/bpf/xsk.h                   | 27 ++++++++++++++++++++++++++-
+>   3 files changed, 42 insertions(+), 1 deletion(-)
+>   create mode 100644 tools/include/uapi/linux/xdp_md_std.h
 > 
-> -#define SKB_FRAG_PAGE_ORDER    get_order(32768)
-> +#define SKB_FRAG_PAGE_ORDER    get_order(65536)
->  DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
+> diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/linux/if_xdp.h
+> index a78a8096f4ce..31f81f82ed86 100644
+> --- a/tools/include/uapi/linux/if_xdp.h
+> +++ b/tools/include/uapi/linux/if_xdp.h
+> @@ -106,6 +106,8 @@ struct xdp_desc {
+>   	__u32 options;
+>   };
+>   
+> +#define XDP_DESC_OPTION_METADATA (1 << 0)
+> +
+>   /* UMEM descriptor is __u64 */
+>   
+>   #endif /* _LINUX_IF_XDP_H */
+> diff --git a/tools/include/uapi/linux/xdp_md_std.h b/tools/include/uapi/linux/xdp_md_std.h
+> new file mode 100644
+> index 000000000000..f00996a61639
+> --- /dev/null
+> +++ b/tools/include/uapi/linux/xdp_md_std.h
+> @@ -0,0 +1,14 @@
+> +#ifndef _UAPI_LINUX_XDP_MD_STD_H
+> +#define _UAPI_LINUX_XDP_MD_STD_H
+> +
+> +#include <linux/types.h>
+> +
+> +#define XDP_METADATA_USER_TX_TIMESTAMP 0x1
+> +
+> +struct xdp_user_tx_metadata {
+> +	__u64 timestamp;
+> +	__u32 md_valid;
+> +	__u32 btf_id;
+> +};
+> +
+> +#endif /* _UAPI_LINUX_XDP_MD_STD_H */
+> diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
+> index 01c12dca9c10..1b52ffe1c9a3 100644
+> --- a/tools/lib/bpf/xsk.h
+> +++ b/tools/lib/bpf/xsk.h
+> @@ -16,7 +16,8 @@
+>   #include <stdint.h>
+>   #include <stdbool.h>
+>   #include <linux/if_xdp.h>
+> -
+> +#include <linux/xdp_md_std.h>
+> +#include <errno.h>
+>   #include "libbpf.h"
+>   
+>   #ifdef __cplusplus
+> @@ -248,6 +249,30 @@ static inline __u64 xsk_umem__add_offset_to_addr(__u64 addr)
+>   LIBBPF_API int xsk_umem__fd(const struct xsk_umem *umem);
+>   LIBBPF_API int xsk_socket__fd(const struct xsk_socket *xsk);
+>   
+> +/* Helpers for SO_TXTIME */
+> +
+> +static inline void xsk_umem__set_md_txtime(void *umem_area, __u64 addr, __s64 txtime)
+> +{
+> +	struct xdp_user_tx_metadata *md;
+> +
+> +	md = (struct xdp_user_tx_metadata *)&((char *)umem_area)[addr];
+> +
+> +	md->timestamp = txtime;
+> +	md->md_valid |= XDP_METADATA_USER_TX_TIMESTAMP;
+
+Is this encoding the "type" of the timestamp?
+
+I don't see the btf_id being updated.  Does that happen in another patch?
+
+As I note above we are current;y lacking an libbpf equivalent 
+bpf_core_type_id_kernel() lookup function in userspace.
+
+> +}
+> +
+> +static inline int xsk_socket__enable_so_txtime(struct xsk_socket *xsk, bool enable)
+> +{
+> +	unsigned int val = (enable) ? 1 : 0;
+> +	int err;
+> +
+> +	err = setsockopt(xsk_socket__fd(xsk), SOL_XDP, SO_TXTIME, &val, sizeof(val));
+> +
+> +	if (err)
+> +		return -errno;
+> +	return 0;
+> +}
+> +
+>   #define XSK_RING_CONS__DEFAULT_NUM_DESCS      2048
+>   #define XSK_RING_PROD__DEFAULT_NUM_DESCS      2048
+>   #define XSK_UMEM__DEFAULT_FRAME_SHIFT    12 /* 4096 bytes */
 > 
->  /**
-> 
-> 
-> 
->>
+
