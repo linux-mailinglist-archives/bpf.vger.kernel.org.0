@@ -2,253 +2,557 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67963EF5CE
-	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 00:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517A33EF789
+	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 03:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234958AbhHQWnJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Aug 2021 18:43:09 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45936 "EHLO
+        id S235186AbhHRBaj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Aug 2021 21:30:39 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:56434 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229466AbhHQWnF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 17 Aug 2021 18:43:05 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17HMZoql004081
-        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 15:42:32 -0700
+        by vger.kernel.org with ESMTP id S233027AbhHRBai (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 17 Aug 2021 21:30:38 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17I1F9Ln013263
+        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 18:30:05 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=EswJnNKSHfzdl7fnTO/iiwnjawHESMRvhJtbYN/aEgM=;
- b=RVmusWLrEUGu1QUDHzmOiDxpegsAJULWdq0rpdUKJfLviLUkNArLGXfS5SduE9Tw+UTM
- LV+/K+1cHIE3YKVarceB5chcAfkNNx9iGDuLCURCqo8yeJumRWICfZX5Vf3EGXTsgp/G
- FLqjA4lxSa9WBYqJJHK9nkSF5l9Km12v8Fw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3agnh1080t-2
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=TnVQkMH4mAe8fhubdqSGXRk+f71lWpczr+zPvZIv9lA=;
+ b=nq5nwyhAo4/O9SF78nk6i8s6wUZoACKUk8bwevDkHf6UNZxPL8CCFDgr0XztsawD1jMx
+ BYdzb7nOl8MO598QFS9sJ1f/sr7xof94Iu0VICVGQimGhiRJ7PW/KcXaow9Gqt/kNH+g
+ YVUqD971WpoXCiVJd7RcFJFCDqCuO55pY/c= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3afqeybxxm-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 15:42:31 -0700
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 17 Aug 2021 18:30:04 -0700
+Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 17 Aug 2021 15:42:30 -0700
-Received: by devbig577.ftw3.facebook.com (Postfix, from userid 201728)
-        id 248EC6E8CF1A; Tue, 17 Aug 2021 15:42:24 -0700 (PDT)
-From:   Prankur gupta <prankgup@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
-        <daniel@iogearbox.net>
-CC:     <kernel-team@fb.com>, <prankur.07@gmail.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test for {set|get} socket option from setsockopt BPF program
-Date:   Tue, 17 Aug 2021 15:42:21 -0700
-Message-ID: <20210817224221.3257826-3-prankgup@fb.com>
+ 15.1.2176.2; Tue, 17 Aug 2021 18:30:03 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 5C194D053991; Tue, 17 Aug 2021 18:30:01 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Subject: [RFC] bpf: lbr: enable reading LBR from tracing bpf programs
+Date:   Tue, 17 Aug 2021 18:29:37 -0700
+Message-ID: <20210818012937.2522409-1-songliubraving@fb.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210817224221.3257826-1-prankgup@fb.com>
-References: <20210817224221.3257826-1-prankgup@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: W1UQ2JGIL6Ibnoj-aQMooxGMfgVjTqP4
-X-Proofpoint-ORIG-GUID: W1UQ2JGIL6Ibnoj-aQMooxGMfgVjTqP4
+X-Proofpoint-ORIG-GUID: NNOkHqGxXNpPDnqduchT7737YcI491tU
+X-Proofpoint-GUID: NNOkHqGxXNpPDnqduchT7737YcI491tU
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-17_08:2021-08-17,2021-08-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
- bulkscore=0 malwarescore=0 adultscore=0 spamscore=0 impostorscore=0
- priorityscore=1501 mlxlogscore=999 clxscore=1015 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108170142
+ definitions=2021-08-17_09:2021-08-17,2021-08-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 lowpriorityscore=0
+ mlxscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
+ clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108180007
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding selftests for new added functionality to call bpf_setsockopt and
-bpf_getsockopt from setsockopt BPF programs
+The typical way to access LBR is via hardware perf_event. For CPUs with
+FREEZE_LBRS_ON_PMI support, PMI could capture reliable LBR. On the other
+hand, LBR could also be useful in non-PMI scenario. For example, in
+kretprobe or bpf fexit program, LBR could provide a lot of information
+on what happened with the function.
 
-Test Details:
-1. BPF Program
-   Checks for changes in IPV6_TCLASS(SOL_IPV6) via setsockopt
-   If the cca for the socket is not cubic do nothing
-   If the newly set value for IPV6_TCLASS is 45 (0x2d) (as per our usecas=
-e)
-   then change the cc from cubic to reno
+In this RFC, we try to enable LBR for BPF program. This works like:
+  1. Create a hardware perf_event with PERF_SAMPLE_BRANCH_* on each CPU;
+  2. Call a new bpf helper (bpf_get_branch_trace) from the BPF program;
+  3. Before calling this bpf program, the kernel stops LBR on local CPU,
+     make a copy of LBR, and resumes LBR;
+  4. In the bpf program, the helper access the copy from #3.
 
-2. User Space Program
-   Creates an AF_INET6 socket and set the cca for that to be "cubic"
-   Attach the program and set the IPV6_TCLASS to 0x2d using setsockopt
-   Verify the cca for the socket changed to reno
+Please see tools/testing/selftests/bpf/[progs|prog_tests]/get_call_trace.=
+c
+for a detailed example. Not that, this process is far from ideal, but it
+allows quick prototype of this feature.
 
-Signed-off-by: Prankur gupta <prankgup@fb.com>
+AFAICT, the biggest challenge here is that we are now sharing LBR in PMI
+and out of PMI, which could trigger some interesting race conditions.
+However, if we allow some level of missed/corrupted samples, this should
+still be very useful.
+
+Please share your thoughts and comments on this. Thanks in advance!
+
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Like Xu <like.xu@linux.intel.com>
+Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- tools/testing/selftests/bpf/bpf_tcp_helpers.h | 18 +++++
- .../bpf/prog_tests/sockopt_qos_to_cc.c        | 70 +++++++++++++++++++
- .../selftests/bpf/progs/sockopt_qos_to_cc.c   | 39 +++++++++++
- 3 files changed, 127 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sockopt_qos_to=
-_cc.c
- create mode 100644 tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c
+ arch/x86/events/intel/lbr.c                   | 16 ++++
+ include/linux/filter.h                        |  3 +-
+ include/linux/perf_event.h                    |  2 +
+ include/uapi/linux/bpf.h                      |  8 ++
+ kernel/bpf/trampoline.c                       |  3 +
+ kernel/bpf/verifier.c                         |  7 ++
+ kernel/events/core.c                          |  5 ++
+ kernel/trace/bpf_trace.c                      | 27 ++++++
+ net/bpf/test_run.c                            | 15 +++-
+ tools/include/uapi/linux/bpf.h                |  8 ++
+ .../bpf/prog_tests/get_branch_trace.c         | 82 +++++++++++++++++++
+ .../selftests/bpf/progs/get_branch_trace.c    | 36 ++++++++
+ tools/testing/selftests/bpf/trace_helpers.c   | 30 +++++++
+ tools/testing/selftests/bpf/trace_helpers.h   |  5 ++
+ 14 files changed, 245 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_tra=
+ce.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_branch_trace.c
 
-diff --git a/tools/testing/selftests/bpf/bpf_tcp_helpers.h b/tools/testin=
-g/selftests/bpf/bpf_tcp_helpers.h
-index 029589c008c9..c9f9bdad60c7 100644
---- a/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-+++ b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-@@ -12,6 +12,10 @@
- SEC("struct_ops/"#name) \
- BPF_PROG(name, args)
+diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
+index 9e6d6eaeb4cb6..e4e863f6fb93d 100644
+--- a/arch/x86/events/intel/lbr.c
++++ b/arch/x86/events/intel/lbr.c
+@@ -1862,3 +1862,19 @@ EXPORT_SYMBOL_GPL(x86_perf_get_lbr);
+ struct event_constraint vlbr_constraint =3D
+ 	__EVENT_CONSTRAINT(INTEL_FIXED_VLBR_EVENT, (1ULL << INTEL_PMC_IDX_FIXED=
+_VLBR),
+ 			  FIXED_EVENT_FLAGS, 1, 0, PERF_X86_EVENT_LBR_SELECT);
++
++DEFINE_PER_CPU(struct perf_branch_entry, bpf_lbr_entries[MAX_LBR_ENTRIES=
+]);
++DEFINE_PER_CPU(int, bpf_lbr_cnt);
++
++int bpf_branch_record_read(void)
++{
++	struct cpu_hw_events *cpuc =3D this_cpu_ptr(&cpu_hw_events);
++
++	intel_pmu_lbr_disable_all();
++	intel_pmu_lbr_read();
++	memcpy(this_cpu_ptr(&bpf_lbr_entries), cpuc->lbr_entries,
++	       sizeof(struct perf_branch_entry) * x86_pmu.lbr_nr);
++	*this_cpu_ptr(&bpf_lbr_cnt) =3D x86_pmu.lbr_nr;
++	intel_pmu_lbr_enable_all(false);
++	return 0;
++}
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 7d248941ecea3..8c30712f56ab2 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -575,7 +575,8 @@ struct bpf_prog {
+ 				has_callchain_buf:1, /* callchain buffer allocated? */
+ 				enforce_expected_attach_type:1, /* Enforce expected_attach_type chec=
+king at attach time */
+ 				call_get_stack:1, /* Do we call bpf_get_stack() or bpf_get_stackid()=
+ */
+-				call_get_func_ip:1; /* Do we call get_func_ip() */
++				call_get_func_ip:1, /* Do we call get_func_ip() */
++				call_get_branch:1; /* Do we call get_branch_trace() */
+ 	enum bpf_prog_type	type;		/* Type of BPF program */
+ 	enum bpf_attach_type	expected_attach_type; /* For some prog types */
+ 	u32			len;		/* Number of filter blocks */
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index fe156a8170aa3..cdc36fa5fda91 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -116,6 +116,8 @@ struct perf_branch_stack {
+ 	struct perf_branch_entry	entries[];
+ };
 =20
-+#ifndef SOL_TCP
-+#define SOL_TCP 6
++int bpf_branch_record_read(void);
++
+ struct task_struct;
+=20
+ /*
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index c4f7892edb2b3..442cfef8d6bd5 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -4871,6 +4871,13 @@ union bpf_attr {
+  * 	Return
+  *		Value specified by user at BPF link creation/attachment time
+  *		or 0, if it was not specified.
++ *
++ * long bpf_get_branch_trace(void *entries, u32 size, u64 flags)
++ *	Description
++ *		Get branch strace from hardware engines like Intel LBR.
++ * 	Return
++ *		> 0, # of entries.
++ *		**-EOPNOTSUP**, the hardware/kernel does not support this function
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5048,6 +5055,7 @@ union bpf_attr {
+ 	FN(timer_cancel),		\
+ 	FN(get_func_ip),		\
+ 	FN(get_attach_cookie),		\
++	FN(get_branch_trace),		\
+ 	/* */
+=20
+ /* integer value in 'imm' field of BPF_CALL instruction selects which he=
+lper
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index fe1e857324e66..0526e187f9b21 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -566,6 +566,9 @@ u64 notrace __bpf_prog_enter(struct bpf_prog *prog)
+ {
+ 	rcu_read_lock();
+ 	migrate_disable();
++	if (prog->call_get_branch)
++		bpf_branch_record_read();
++
+ 	if (unlikely(__this_cpu_inc_return(*(prog->active)) !=3D 1)) {
+ 		inc_misses_counter(prog);
+ 		return 0;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index f5a0077c99811..292d2b471892a 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6446,6 +6446,13 @@ static int check_helper_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn
+ 		env->prog->call_get_func_ip =3D true;
+ 	}
+=20
++	if (func_id =3D=3D BPF_FUNC_get_branch_trace) {
++		if (env->prog->aux->sleepable) {
++			verbose(env, "sleepable progs cannot call get_branch_trace\n");
++			return -ENOTSUPP;
++		}
++		env->prog->call_get_branch =3D true;
++	}
+ 	if (changes_data)
+ 		clear_all_pkt_pointers(env);
+ 	return 0;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 2d1e63dd97f23..4808ce268223d 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -13434,3 +13434,8 @@ struct cgroup_subsys perf_event_cgrp_subsys =3D {
+ 	.threaded	=3D true,
+ };
+ #endif /* CONFIG_CGROUP_PERF */
++
++int __weak  bpf_branch_record_read(void)
++{
++	return -EOPNOTSUPP;
++}
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index cbc73c08c4a4e..85683bde1f991 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1002,6 +1002,29 @@ static const struct bpf_func_proto bpf_get_attach_=
+cookie_proto_pe =3D {
+ 	.arg1_type	=3D ARG_PTR_TO_CTX,
+ };
+=20
++#ifndef MAX_LBR_ENTRIES
++#define MAX_LBR_ENTRIES		32
 +#endif
 +
- #define tcp_jiffies32 ((__u32)bpf_jiffies64())
-=20
- struct sock_common {
-@@ -203,6 +207,20 @@ static __always_inline bool tcp_is_cwnd_limited(cons=
-t struct sock *sk)
- 	return !!BPF_CORE_READ_BITFIELD(tp, is_cwnd_limited);
- }
-=20
-+static __always_inline bool tcp_cc_eq(const char *a, const char *b)
++DECLARE_PER_CPU(struct perf_branch_entry, bpf_lbr_entries[MAX_LBR_ENTRIE=
+S]);
++DECLARE_PER_CPU(int, bpf_lbr_cnt);
++BPF_CALL_3(bpf_get_branch_trace, void *, buf, u32, size, u64, flags)
 +{
-+	int i;
-+
-+	for (i =3D 0; i < TCP_CA_NAME_MAX; i++) {
-+		if (a[i] !=3D b[i])
-+			return false;
-+		if (!a[i])
-+			break;
-+	}
-+
-+	return true;
++	memcpy(buf, *this_cpu_ptr(&bpf_lbr_entries),
++	       min_t(u32, size,
++		     sizeof(struct perf_branch_entry) * MAX_LBR_ENTRIES));
++	return *this_cpu_ptr(&bpf_lbr_cnt);
 +}
 +
- extern __u32 tcp_slow_start(struct tcp_sock *tp, __u32 acked) __ksym;
- extern void tcp_cong_avoid_ai(struct tcp_sock *tp, __u32 w, __u32 acked)=
- __ksym;
++static const struct bpf_func_proto bpf_get_branch_trace_proto =3D {
++	.func		=3D bpf_get_branch_trace,
++	.gpl_only	=3D true,
++	.ret_type	=3D RET_INTEGER,
++	.arg1_type	=3D ARG_PTR_TO_UNINIT_MEM,
++	.arg2_type	=3D ARG_CONST_SIZE_OR_ZERO,
++	.arg3_type	=3D ARG_ANYTHING,
++};
++
+ static const struct bpf_func_proto *
+ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *=
+prog)
+ {
+@@ -1115,6 +1138,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, co=
+nst struct bpf_prog *prog)
+ 		return &bpf_snprintf_proto;
+ 	case BPF_FUNC_get_func_ip:
+ 		return &bpf_get_func_ip_proto_tracing;
++	case BPF_FUNC_get_branch_trace:
++		return &bpf_get_branch_trace_proto;
+ 	default:
+ 		return bpf_base_func_proto(func_id);
+ 	}
+@@ -1851,6 +1876,8 @@ void __bpf_trace_run(struct bpf_prog *prog, u64 *ar=
+gs)
+ {
+ 	cant_sleep();
+ 	rcu_read_lock();
++	if (prog->call_get_branch)
++		bpf_branch_record_read();
+ 	(void) bpf_prog_run(prog, args);
+ 	rcu_read_unlock();
+ }
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 2eb0e55ef54d2..60ff066ddab86 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -231,6 +231,18 @@ struct sock * noinline bpf_kfunc_call_test3(struct s=
+ock *sk)
+ 	return sk;
+ }
 =20
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c b=
-/tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c
++int noinline bpf_fexit_loop_test1(int n)
++{
++	int i, sum =3D 0;
++
++	/* the primary goal of this test is to test LBR. Create a lot of
++	 * branches in the function, so we can catch it easily.
++	 */
++	for (i =3D 0; i < n; i++)
++		sum +=3D i;
++	return sum;
++}
++
+ __diag_pop();
+=20
+ ALLOW_ERROR_INJECTION(bpf_modify_return_test, ERRNO);
+@@ -293,7 +305,8 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
+ 		    bpf_fentry_test5(11, (void *)12, 13, 14, 15) !=3D 65 ||
+ 		    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) !=3D 111 =
+||
+ 		    bpf_fentry_test7((struct bpf_fentry_test_t *)0) !=3D 0 ||
+-		    bpf_fentry_test8(&arg) !=3D 0)
++		    bpf_fentry_test8(&arg) !=3D 0 ||
++		    bpf_fexit_loop_test1(101) !=3D 5050)
+ 			goto out;
+ 		break;
+ 	case BPF_MODIFY_RETURN:
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index c4f7892edb2b3..442cfef8d6bd5 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -4871,6 +4871,13 @@ union bpf_attr {
+  * 	Return
+  *		Value specified by user at BPF link creation/attachment time
+  *		or 0, if it was not specified.
++ *
++ * long bpf_get_branch_trace(void *entries, u32 size, u64 flags)
++ *	Description
++ *		Get branch strace from hardware engines like Intel LBR.
++ * 	Return
++ *		> 0, # of entries.
++ *		**-EOPNOTSUP**, the hardware/kernel does not support this function
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5048,6 +5055,7 @@ union bpf_attr {
+ 	FN(timer_cancel),		\
+ 	FN(get_func_ip),		\
+ 	FN(get_attach_cookie),		\
++	FN(get_branch_trace),		\
+ 	/* */
+=20
+ /* integer value in 'imm' field of BPF_CALL instruction selects which he=
+lper
+diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_trace.c b/=
+tools/testing/selftests/bpf/prog_tests/get_branch_trace.c
 new file mode 100644
-index 000000000000..6b53b3cb8dad
+index 0000000000000..509bef6e3edd2
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_qos_to_cc.c
-@@ -0,0 +1,70 @@
++++ b/tools/testing/selftests/bpf/prog_tests/get_branch_trace.c
+@@ -0,0 +1,82 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2021 Facebook */
 +#include <test_progs.h>
-+#include <netinet/tcp.h>
-+#include "sockopt_qos_to_cc.skel.h"
++#include "get_branch_trace.skel.h"
 +
-+static void run_setsockopt_test(int cg_fd, int sock_fd)
++static int pfd_array[128] =3D {-1};  /* TODO remove hardcodded 128 */
++
++static int create_perf_events(void)
 +{
-+	socklen_t optlen;
-+	char cc[16]; /* TCP_CA_NAME_MAX */
-+	int buf;
-+	int err =3D -1;
++	struct perf_event_attr attr =3D {0};
++	int cpu;
 +
-+	buf =3D 0x2D;
-+	err =3D setsockopt(sock_fd, SOL_IPV6, IPV6_TCLASS, &buf, sizeof(buf));
-+	if (!ASSERT_OK(err, "setsockopt(sock_fd, IPV6_TCLASS)"))
-+		return;
-+
-+	/* Verify the setsockopt cc change */
-+	optlen =3D sizeof(cc);
-+	err =3D getsockopt(sock_fd, SOL_TCP, TCP_CONGESTION, cc, &optlen);
-+	if (!ASSERT_OK(err, "getsockopt(sock_fd, TCP_CONGESTION)"))
-+		return;
-+
-+	if (!ASSERT_STREQ(cc, "reno", "getsockopt(sock_fd, TCP_CONGESTION)"))
-+		return;
++	/* create perf event */
++	attr.size =3D sizeof(attr);
++	attr.type =3D PERF_TYPE_HARDWARE;
++	attr.config =3D PERF_COUNT_HW_CPU_CYCLES;
++	attr.freq =3D 1;
++	attr.sample_freq =3D 4000;
++	attr.sample_type =3D PERF_SAMPLE_BRANCH_STACK;
++	attr.branch_sample_type =3D PERF_SAMPLE_BRANCH_KERNEL |
++		PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_ANY;
++	for (cpu =3D 0; cpu < libbpf_num_possible_cpus(); cpu++) {
++		pfd_array[cpu] =3D syscall(__NR_perf_event_open, &attr,
++					 -1, cpu, -1, PERF_FLAG_FD_CLOEXEC);
++		if (pfd_array[cpu] < 0)
++			break;
++	}
++	return cpu =3D=3D 0;
 +}
 +
-+void test_sockopt_qos_to_cc(void)
++static void close_perf_events(void)
 +{
-+	struct sockopt_qos_to_cc *skel;
-+	char cc_cubic[16] =3D "cubic"; /* TCP_CA_NAME_MAX */
-+	int cg_fd =3D -1;
-+	int sock_fd =3D -1;
-+	int err;
++	int cpu =3D 0;
++	int fd;
 +
-+	cg_fd =3D test__join_cgroup("/sockopt_qos_to_cc");
-+	if (!ASSERT_GE(cg_fd, 0, "cg-join(sockopt_qos_to_cc)"))
-+		return;
-+
-+	skel =3D sockopt_qos_to_cc__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel"))
-+		goto done;
-+
-+	sock_fd =3D socket(AF_INET6, SOCK_STREAM, 0);
-+	if (!ASSERT_GE(sock_fd, 0, "v6 socket open"))
-+		goto done;
-+
-+	err =3D setsockopt(sock_fd, SOL_TCP, TCP_CONGESTION, &cc_cubic,
-+			 sizeof(cc_cubic));
-+	if (!ASSERT_OK(err, "setsockopt(sock_fd, TCP_CONGESTION)"))
-+		goto done;
-+
-+	skel->links.sockopt_qos_to_cc =3D
-+		bpf_program__attach_cgroup(skel->progs.sockopt_qos_to_cc,
-+					   cg_fd);
-+	if (!ASSERT_OK_PTR(skel->links.sockopt_qos_to_cc,
-+			   "prog_attach(sockopt_qos_to_cc)"))
-+		goto done;
-+
-+	run_setsockopt_test(cg_fd, sock_fd);
-+
-+done:
-+	if (sock_fd !=3D -1)
-+		close(sock_fd);
-+	if (cg_fd !=3D -1)
-+		close(cg_fd);
-+	/* destroy can take null and error pointer */
-+	sockopt_qos_to_cc__destroy(skel);
++	while (cpu < 128) {
++		fd =3D pfd_array[cpu];
++		if (fd < 0)
++			break;
++		close(fd);
++	}
 +}
-diff --git a/tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c b/tool=
-s/testing/selftests/bpf/progs/sockopt_qos_to_cc.c
++
++void test_get_branch_trace(void)
++{
++	struct get_branch_trace *skel;
++	int err, prog_fd;
++	__u32 retval;
++
++	if (create_perf_events()) {
++		test__skip();  /* system doesn't support LBR */
++		goto cleanup;
++	}
++
++	skel =3D get_branch_trace__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "get_branch_trace__open_and_load"))
++		goto cleanup;
++
++	err =3D kallsyms_find("bpf_fexit_loop_test1", &skel->bss->address_low);
++	if (!ASSERT_OK(err, "kallsyms_find"))
++		goto cleanup;
++
++	err =3D kallsyms_find_next("bpf_fexit_loop_test1", &skel->bss->address_=
+high);
++	if (!ASSERT_OK(err, "kallsyms_find_next"))
++		goto cleanup;
++
++	err =3D get_branch_trace__attach(skel);
++	if (!ASSERT_OK(err, "get_branch_trace__attach"))
++		goto cleanup;
++
++	prog_fd =3D bpf_program__fd(skel->progs.test1);
++	err =3D bpf_prog_test_run(prog_fd, 1, NULL, 0,
++				NULL, 0, &retval, NULL);
++
++	if (!ASSERT_OK(err, "bpf_prog_test_run"))
++		goto cleanup;
++	ASSERT_GT(skel->bss->test1_hits, 5, "find_test1_in_lbr");
++
++cleanup:
++	get_branch_trace__destroy(skel);
++	close_perf_events();
++}
+diff --git a/tools/testing/selftests/bpf/progs/get_branch_trace.c b/tools=
+/testing/selftests/bpf/progs/get_branch_trace.c
 new file mode 100644
-index 000000000000..1bce83b6e3a7
+index 0000000000000..cacfe25fd92e8
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/sockopt_qos_to_cc.c
-@@ -0,0 +1,39 @@
++++ b/tools/testing/selftests/bpf/progs/get_branch_trace.c
+@@ -0,0 +1,36 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2021 Facebook */
-+#include <string.h>
-+#include <linux/tcp.h>
-+#include <netinet/in.h>
-+#include <linux/bpf.h>
++#include "vmlinux.h"
 +#include <bpf/bpf_helpers.h>
-+#include "bpf_tcp_helpers.h"
++#include <bpf/bpf_tracing.h>
 +
 +char _license[] SEC("license") =3D "GPL";
 +
-+SEC("cgroup/setsockopt")
-+int sockopt_qos_to_cc(struct bpf_sockopt *ctx)
++__u64 test1_hits =3D 0;
++__u64 address_low =3D 0;
++__u64 address_high =3D 0;
++
++#define MAX_LBR_ENTRIES 32
++
++struct perf_branch_entry entries[MAX_LBR_ENTRIES] =3D {};
++
++static inline bool in_range(__u64 val)
 +{
-+	void *optval_end =3D ctx->optval_end;
-+	int *optval =3D ctx->optval;
-+	char buf[TCP_CA_NAME_MAX];
-+	char cc_reno[TCP_CA_NAME_MAX] =3D "reno";
-+	char cc_cubic[TCP_CA_NAME_MAX] =3D "cubic";
-+
-+	if (ctx->level !=3D SOL_IPV6 || ctx->optname !=3D IPV6_TCLASS)
-+		return 1;
-+
-+	if (optval + 1 > optval_end)
-+		return 0; /* EPERM, bounds check */
-+
-+	if (bpf_getsockopt(ctx->sk, SOL_TCP, TCP_CONGESTION, &buf, sizeof(buf))=
-)
-+		return 0;
-+
-+	if (!tcp_cc_eq(buf, cc_cubic))
-+		return 0;
-+
-+	if (*optval =3D=3D 0x2d) {
-+		if (bpf_setsockopt(ctx->sk, SOL_TCP, TCP_CONGESTION, &cc_reno,
-+				sizeof(cc_reno)))
-+			return 0;
-+	}
-+	return 1;
++	return (val >=3D address_low) && (val < address_high);
 +}
++
++SEC("fexit/bpf_fexit_loop_test1")
++int BPF_PROG(test1, int n, int ret)
++{
++	long cnt, i;
++
++	cnt =3D bpf_get_branch_trace(entries, sizeof(entries), 0);
++
++	for (i =3D 0; i < MAX_LBR_ENTRIES; i++) {
++		if (i >=3D cnt)
++			break;
++		if (in_range(entries[i].from) && in_range(entries[i].to))
++			test1_hits++;
++	}
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/=
+selftests/bpf/trace_helpers.c
+index e7a19b04d4eaf..2926a3b626821 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -117,6 +117,36 @@ int kallsyms_find(const char *sym, unsigned long lon=
+g *addr)
+ 	return err;
+ }
+=20
++/* find the address of the next symbol, this can be used to determine th=
+e
++ * end of a function
++ */
++int kallsyms_find_next(const char *sym, unsigned long long *addr)
++{
++	char type, name[500];
++	unsigned long long value;
++	bool found =3D false;
++	int err =3D 0;
++	FILE *f;
++
++	f =3D fopen("/proc/kallsyms", "r");
++	if (!f)
++		return -EINVAL;
++
++	while (fscanf(f, "%llx %c %499s%*[^\n]\n", &value, &type, name) > 0) {
++		if (found) {
++			*addr =3D value;
++			goto out;
++		}
++		if (strcmp(name, sym) =3D=3D 0)
++			found =3D true;
++	}
++	err =3D -ENOENT;
++
++out:
++	fclose(f);
++	return err;
++}
++
+ void read_trace_pipe(void)
+ {
+ 	int trace_fd;
+diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/=
+selftests/bpf/trace_helpers.h
+index d907b445524d5..bc8ed86105d94 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.h
++++ b/tools/testing/selftests/bpf/trace_helpers.h
+@@ -16,6 +16,11 @@ long ksym_get_addr(const char *name);
+ /* open kallsyms and find addresses on the fly, faster than load + searc=
+h. */
+ int kallsyms_find(const char *sym, unsigned long long *addr);
+=20
++/* find the address of the next symbol, this can be used to determine th=
+e
++ * end of a function
++ */
++int kallsyms_find_next(const char *sym, unsigned long long *addr);
++
+ void read_trace_pipe(void);
+=20
+ ssize_t get_uprobe_offset(const void *addr, ssize_t base);
 --=20
 2.30.2
 
