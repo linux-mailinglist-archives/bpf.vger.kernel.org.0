@@ -2,77 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F2F3F0E49
-	for <lists+bpf@lfdr.de>; Thu, 19 Aug 2021 00:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7FF3F0E5B
+	for <lists+bpf@lfdr.de>; Thu, 19 Aug 2021 00:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234246AbhHRWkl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Aug 2021 18:40:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232456AbhHRWkl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:40:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 33D0A6108B;
-        Wed, 18 Aug 2021 22:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629326406;
-        bh=rpH07toMkyUa4SU29qgQ5rbYk0DjTSEbT1X0U1mDRts=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=OHGUzGE+sxlmXXSLaAXwOxb2wkIbkJQ2z/+CaZIEsIlTQdy+UJzWM57jutW8qml76
-         aHmHJVnelqICzA3oNQhTRzC88YDd5IdQLhcC8xC1csQdquKKvSnyUu+BY8w0T7jLGf
-         ZYULqcvzwcQI2wqXllEvoaszLgas8TckLsXqgZZ2V2nvv17/WPei2Guv5nwgd4Uj4X
-         zxZs/jPTGm5hPMSrNWAPdMeY81IrguyKs0kMd1dP+7r12u7igISFwdAzb2+x6e7Zsw
-         93usWvfFnsxhXQHIfMw8tmINLEUszmlGTCr6RF+VKcxagD+Uhk20VWbkoO+WcwjxOO
-         LH8TZZSs/dMmA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 26E6060A2E;
-        Wed, 18 Aug 2021 22:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234110AbhHRWsr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Aug 2021 18:48:47 -0400
+Received: from www62.your-server.de ([213.133.104.62]:60700 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232456AbhHRWsq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:48:46 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mGULx-0007mj-MQ; Thu, 19 Aug 2021 00:48:09 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mGULx-000MBg-Gf; Thu, 19 Aug 2021 00:48:09 +0200
+Subject: Re: [PATCH bpf] bpf: Fix possible out of bound write in narrow load
+ handling
+To:     Andrey Ignatov <rdna@fb.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, andriin@fb.com, dan.carpenter@oracle.com,
+        kernel-team@fb.com
+References: <20210818221143.1004463-1-rdna@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4589201d-48ea-d3ef-d0cf-7dc8cc23d108@iogearbox.net>
+Date:   Thu, 19 Aug 2021 00:48:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/2] bpf: Allow bpf_get_netns_cookie in
- BPF_PROG_TYPE_SOCK_OPS
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162932640615.7744.7394691791287169298.git-patchwork-notify@kernel.org>
-Date:   Wed, 18 Aug 2021 22:40:06 +0000
-References: <20210818105820.91894-1-liuxu623@gmail.com>
-In-Reply-To: <20210818105820.91894-1-liuxu623@gmail.com>
-To:     Xu Liu <liuxu623@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <20210818221143.1004463-1-rdna@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26267/Wed Aug 18 10:21:27 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Wed, 18 Aug 2021 18:58:18 +0800 you wrote:
-> v2: Added selftests
+On 8/19/21 12:11 AM, Andrey Ignatov wrote:
+> Fix a verifier bug found by smatch static checker in [0].
 > 
-> Xu Liu (2):
->   bpf: Allow bpf_get_netns_cookie in BPF_PROG_TYPE_SOCK_OPS
->   selftests/bpf: Test for get_netns_cookie
+> When narrow load is handled, one or two new instructions are added to
+> insn_buf array, but before it was only checked that
 > 
->  net/core/filter.c                             | 14 +++++
->  .../selftests/bpf/prog_tests/netns_cookie.c   | 61 +++++++++++++++++++
->  .../selftests/bpf/progs/netns_cookie_prog.c   | 39 ++++++++++++
->  3 files changed, 114 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/netns_cookie.c
->  create mode 100644 tools/testing/selftests/bpf/progs/netns_cookie_prog.c
+> 	cnt >= ARRAY_SIZE(insn_buf)
+> 
+> And it's safe to add a new instruction to insn_buf[cnt++] only once. The
+> second try will lead to out of bound write. And this is what can happen
+> if `shift` is set.
 
-Here is the summary with links:
-  - [bpf-next,v2,1/2] bpf: Allow bpf_get_netns_cookie in BPF_PROG_TYPE_SOCK_OPS
-    https://git.kernel.org/bpf/bpf-next/c/6cf1770d63dd
-  - [bpf-next,v2,2/2] selftests/bpf: Test for get_netns_cookie
-    https://git.kernel.org/bpf/bpf-next/c/374e74de9631
+Afaik, the insn_buf[] should always be large enough, could you add something to
+the commit message of this fix whether this created an actual issue in practice
+where we do oob overrun insn_buf[] (or whether it's 'only' the static checker
+report ... from above paragraph I read you saw the former in practice)?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Daniel
