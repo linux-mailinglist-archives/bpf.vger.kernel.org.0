@@ -2,192 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AD13F021C
-	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 12:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218763F030F
+	for <lists+bpf@lfdr.de>; Wed, 18 Aug 2021 13:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235239AbhHRK7U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Aug 2021 06:59:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235126AbhHRK7L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:59:11 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DADEC0613D9;
-        Wed, 18 Aug 2021 03:58:37 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id m26so1734130pff.3;
-        Wed, 18 Aug 2021 03:58:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5ARDh7zwSb2X5RObytIAU8QGeSNvl46IYM6BIWZuQHU=;
-        b=kgz0j3/ZG5layIgNAKSLvmcq9bWDXQP5wO8sD43K3y9/ZGRmQQAERtK2A9qODJ1jI7
-         PFjFK0c5msANswvgIHnLeZV39qsLJWn32SOLkpFgeq9IcOGGxP1I7cPTaegGXeQjL8YN
-         ChdGueOimURrUxVDboS+9KgDIeInZ18njgbeyJvoTmIx3STEn7viX79Pf5AgqobNLlqD
-         g+kC4H5RiRTCxB2aZcyfr6Me0rRVmbdOuYSqI65F1fBk33ICF2wdof57wZ+B8VcTSPpO
-         S0AWzBgyMyPOC4Qj2uFmGTp+tnrfgVa8cYU+3oJpBel2e8eCuBL6skVwUkKZ16jlLuR7
-         sueg==
+        id S233192AbhHRLzT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Aug 2021 07:55:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56271 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232191AbhHRLzT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Aug 2021 07:55:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629287683;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aF2YAaaZplhykzZP8JKiNx+F3piFPmPM20xDcdTGrrE=;
+        b=by7pROyW0/XViGX57IDlbE+OSCvHqT+r8v6Aqa7hCtEygh9buRkfGOTVYrGY9ryK/eUcqD
+        sxMyHKTA6PUph9Ju2Jxz8I/KUXt7xa+c/4kxjOxJSC3WwMJ50B1iHFNFye4WerfSnpn9pD
+        zsI877ni2GS1wAB4bB2cnHbFCvCs5gE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-421-AoPnzxooMl-nXB7oIebAPQ-1; Wed, 18 Aug 2021 07:54:42 -0400
+X-MC-Unique: AoPnzxooMl-nXB7oIebAPQ-1
+Received: by mail-wm1-f70.google.com with SMTP id b3-20020a1c80030000b02902e6a7296cb3so565053wmd.5
+        for <bpf@vger.kernel.org>; Wed, 18 Aug 2021 04:54:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5ARDh7zwSb2X5RObytIAU8QGeSNvl46IYM6BIWZuQHU=;
-        b=nAVPqsxSdieOPhPaB+jNSuE87QEvY7Bf3h0IhbtEMuaPUZasFHvCmCvAZWJcw01HKd
-         FpOB9MOgly6Rm/0PxfK6AbFWrV0aFAXxf3LJPgFinq8t+D3CGMBDxLYQxNVjS5RB7IYQ
-         U7Bwpr7YTj0jtPg+YIy5VQIh1rSNNWnolxLI9KAzjyxfk663YCRsvxoJPzCaYH4fYXxG
-         6b7bxwycSy6z/TYfIceYVEl6kHRcuDg475i5hHbhr7ynpspJtuZEdAsNCB/3EoHCHqzE
-         QffcRZAVgx75/j1ZeJU5Q4zRYZ0nw2cfGnpPiZ4SkKJY7kQusgfiyKotKyBobIgS7Pfe
-         ARGQ==
-X-Gm-Message-State: AOAM531Ruc9J1NeAS3kPvThduEGG7B2OGcLugAPTTc03V0JchXSLdWbf
-        BLjfH+RZhdqaOrIXb0MDK1M=
-X-Google-Smtp-Source: ABdhPJw9BpE+Hvns4NnirXV/b/Mn11VgwyMngLva03K9N8cnsYeEB/iBdB4SI3dih+eaj48zaStnYg==
-X-Received: by 2002:a63:1a65:: with SMTP id a37mr8432809pgm.338.1629284316963;
-        Wed, 18 Aug 2021 03:58:36 -0700 (PDT)
-Received: from IRVINGLIU-MB0.tencent.com ([203.205.141.117])
-        by smtp.gmail.com with ESMTPSA id b190sm7099440pgc.91.2021.08.18.03.58.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 18 Aug 2021 03:58:36 -0700 (PDT)
-From:   Xu Liu <liuxu623@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xu Liu <liuxu623@gmail.com>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Test for get_netns_cookie
-Date:   Wed, 18 Aug 2021 18:58:20 +0800
-Message-Id: <20210818105820.91894-3-liuxu623@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210818105820.91894-1-liuxu623@gmail.com>
-References: <20210818105820.91894-1-liuxu623@gmail.com>
+        h=x-gm-message-state:from:cc:to:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=aF2YAaaZplhykzZP8JKiNx+F3piFPmPM20xDcdTGrrE=;
+        b=L6aDSsiVTMg2kLGqbEjQ8zCj/+dOe28wjDnL22mZN1OA71Z8f0QzTHUf5fcTvV+vu1
+         T/E0xOGTJz7VtU8HGLwQ0JcA65HzqsFL70/v49xFJggj/T/ECAsDM4EmNR37+SuVLzMI
+         NgZn84wWB4OYVbJJrIPk7LcFjrh4QdrqCHnf1ArECfQhJhAz2MjrmBII5HNVMxIiN0if
+         VhMH6vPY/uRHi6QAvy7lB6Z7hQmozMMpnI+PuMzCM3PyrOSvCtUg6GXUERU+KqQH7x1k
+         eEDdrg4wVVcAYevHvZQG6xrQAKnPUeZk5l0Ig8w4kgFQASySg4r4SKJKL5wIwqTpolYF
+         KIVg==
+X-Gm-Message-State: AOAM533NonhZaMfuDkhPj71BigsRprLsptEI83jN/lkl1wt/qIHMurgk
+        gNTXPe0/vXyVA/8kpjaHiyclK4ZQ28Mn1jB49d5dd4WMnz3QXRAOEr8ahBYb9kfbI7hUpRpDYqW
+        UqIaOi1mzsxaA
+X-Received: by 2002:adf:d227:: with SMTP id k7mr10062271wrh.285.1629287681693;
+        Wed, 18 Aug 2021 04:54:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz4Cihy/hZE7IlAomO9N7U5eaYxYs2uFifO8eMnZkuiaHLF8ULquzCUmRu2+HmnlR24dHbuXg==
+X-Received: by 2002:adf:d227:: with SMTP id k7mr10062256wrh.285.1629287681579;
+        Wed, 18 Aug 2021 04:54:41 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id o8sm2794321wmq.21.2021.08.18.04.54.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 04:54:41 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com,
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+        bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>
+To:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Kishen Maloor <kishen.maloor@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        Alexander Lobakin <alobakin@pm.me>
+Subject: AF_XDP finding descriptor room for XDP-hints metadata size
+Message-ID: <811eb35f-5c8b-1591-1e68-8856420b4578@redhat.com>
+Date:   Wed, 18 Aug 2021 13:54:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test to use get_netns_cookie() from BPF_PROG_TYPE_SOCK_OPS.
 
-Signed-off-by: Xu Liu <liuxu623@gmail.com>
----
- .../selftests/bpf/prog_tests/netns_cookie.c   | 61 +++++++++++++++++++
- .../selftests/bpf/progs/netns_cookie_prog.c   | 39 ++++++++++++
- 2 files changed, 100 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/netns_cookie.c
- create mode 100644 tools/testing/selftests/bpf/progs/netns_cookie_prog.c
+In previous discussions with AF_XDP maintainers (Magnus+Bjørn), I 
+understood we have two challenges with metadata and BTF id.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/netns_cookie.c b/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
-new file mode 100644
-index 000000000000..6f3cd472fb65
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/netns_cookie.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "netns_cookie_prog.skel.h"
-+#include "network_helpers.h"
-+
-+#ifndef SO_NETNS_COOKIE
-+#define SO_NETNS_COOKIE 71
-+#endif
-+
-+static int duration;
-+
-+void test_netns_cookie(void)
-+{
-+	int server_fd = 0, client_fd = 0, cgroup_fd = 0, err = 0, val = 0;
-+	struct netns_cookie_prog *skel;
-+	uint64_t cookie_expected_value;
-+	socklen_t vallen = sizeof(cookie_expected_value);
-+
-+	skel = netns_cookie_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	cgroup_fd = test__join_cgroup("/netns_cookie");
-+	if (CHECK(cgroup_fd < 0, "join_cgroup", "cgroup creation failed\n"))
-+		goto out;
-+
-+	skel->links.get_netns_cookie_sockops = bpf_program__attach_cgroup(
-+		skel->progs.get_netns_cookie_sockops, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links.get_netns_cookie_sockops, "prog_attach"))
-+		goto close_cgroup_fd;
-+
-+	server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
-+	if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
-+		goto close_cgroup_fd;
-+
-+	client_fd = connect_to_fd(server_fd, 0);
-+	if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
-+		goto close_server_fd;
-+
-+	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.netns_cookies),
-+				&client_fd, &val);
-+	if (!ASSERT_OK(err, "map_lookup(socket_cookies)"))
-+		goto close_client_fd;
-+
-+	err = getsockopt(client_fd, SOL_SOCKET, SO_NETNS_COOKIE,
-+				&cookie_expected_value, &vallen);
-+	if (!ASSERT_OK(err, "getsockopt)"))
-+		goto close_client_fd;
-+
-+	ASSERT_EQ(val, cookie_expected_value, "cookie_value");
-+
-+close_client_fd:
-+	close(client_fd);
-+close_server_fd:
-+	close(server_fd);
-+close_cgroup_fd:
-+	close(cgroup_fd);
-+out:
-+	netns_cookie_prog__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/netns_cookie_prog.c b/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
-new file mode 100644
-index 000000000000..4ed8d75aa299
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/netns_cookie_prog.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+
-+#include <bpf/bpf_helpers.h>
-+
-+#define AF_INET6 10
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, int);
-+} netns_cookies SEC(".maps");
-+
-+SEC("sockops")
-+int get_netns_cookie_sockops(struct bpf_sock_ops *ctx)
-+{
-+	struct bpf_sock *sk = ctx->sk;
-+	int *cookie;
-+
-+	if (ctx->family != AF_INET6)
-+		return 1;
-+
-+	if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
-+		return 1;
-+
-+	if (!sk)
-+		return 1;
-+
-+	cookie = bpf_sk_storage_get(&netns_cookies, sk, 0,
-+				BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!cookie)
-+		return 1;
-+
-+	*cookie = bpf_get_netns_cookie(ctx);
-+
-+	return 1;
-+}
--- 
-2.28.0
+  (1) AF_XDP doesn't know size of metadata area.
+  (2) No room in xdp_desc to store the BTF-id.
+
+Below I propose new idea to solve (1) metadata size.
+
+To follow the discussion this is struct xdp_desc:
+
+  /* Rx/Tx descriptor */
+  struct xdp_desc {
+	__u64 addr;
+	__u32 len;
+	__u32 options;
+  };
+
+One option (that was rejected) was to store the BTF-id in 'options' and
+deduct the metadata size from BTF-id, but it was rejected as it blocks
+future usages of 'options'.
+
+The proposal by Magnus was to use a single bit in 'options' to say this
+descriptor contains metadata described via BTF info. And Bjørn proposed
+to store the BTF-id as the last member in metadata, as it would be
+accessible via minus-4 byte offset from packet start 'addr'. And again
+via BTF-id code can know the size of metadata area.
+
+My idea is that we could store the metadata size in top-bits of 'len'
+member when we have set the 'options' bit for BTF-metadata.
+
+-Jesper
 
