@@ -2,121 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F563F1676
-	for <lists+bpf@lfdr.de>; Thu, 19 Aug 2021 11:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3BD3F16BB
+	for <lists+bpf@lfdr.de>; Thu, 19 Aug 2021 11:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhHSJot (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Aug 2021 05:44:49 -0400
-Received: from mga18.intel.com ([134.134.136.126]:30218 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237757AbhHSJo1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:44:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="203668373"
-X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
-   d="scan'208";a="203668373"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 02:43:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
-   d="scan'208";a="679255110"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga006.fm.intel.com with ESMTP; 19 Aug 2021 02:43:49 -0700
-Date:   Thu, 19 Aug 2021 11:28:49 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, ciara.loftus@intel.com,
-        bpf@vger.kernel.org, yhs@fb.com, andrii@kernel.org
-Subject: Re: [PATCH bpf-next v2 12/16] selftests: xsk: remove cleanup at end
- of program
-Message-ID: <20210819092849.GB32204@ranger.igk.intel.com>
-References: <20210817092729.433-1-magnus.karlsson@gmail.com>
- <20210817092729.433-13-magnus.karlsson@gmail.com>
+        id S237712AbhHSJxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Aug 2021 05:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237543AbhHSJxH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:53:07 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61E5C061575;
+        Thu, 19 Aug 2021 02:52:31 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id c17so3621929plz.2;
+        Thu, 19 Aug 2021 02:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MtX3zfkwXjgZQmvG0rh2e9cIM28vvI+IW/MYmEHnn/g=;
+        b=LYVd7+spnMM/0LWG4s85cvDd2nW2HgTfSitRafnJg9uow2ho3eqiGjfbUz9hC84fyx
+         28bOtfIIw/UXBZJnBmVnIAe95XnqpbBSlmMS6D02rRidiCs3xdFbSsR7MGblu8FO+IfG
+         3pDxnrlyfLntKd6WEhHbOLpTdJT72BPTSwcs5XwvDbPzV8MJhmJCCToGzyts7bqwA4HK
+         2rPg7pCeklMWcYZamB6LAr/GA8iTIfnpoyFpOigilDHZgseKgS8xlEwqA+1TQtvg7miX
+         KLflhCPlgvZjarkIsVc8T60r6mtXJB9wkw40F0ryzXIBlFxLYNLjUXx9B+BUMlh4UIRj
+         MtUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MtX3zfkwXjgZQmvG0rh2e9cIM28vvI+IW/MYmEHnn/g=;
+        b=RgaGrxsE5gLVj+XeexA5I3KLpxBHkiv1Vbtg4pLvkARGTAj/1oltnX8Erg1CMnrAIP
+         N+v3iAu951iGVLBVJieCiSSz2mpC8HksEnECiuS3ZwPXza4sQXroLpCKKmr94QbT+wZP
+         q0Yj23yXHEMdX0TNqZgZ5TyPdJ+gbDpgNhEOdz5/QBTN97oV2VWVQyWPpHNHKZmftlpR
+         1bhq5hW3ovMFHO2SB2uu5SkdSCeDadysp1z5GPvVQLDGnZiCisbNhMfGoxH93CRHWPPJ
+         XbJ2qAn8NYPwtqMWfVJQl0GahsCGQilJeWEqoDZmnNSGGvjf5hG0WW+LTTXa2UBHWCgN
+         zCfQ==
+X-Gm-Message-State: AOAM532tWTrycUWDP1fCc2VpFl51RvIx/blbFghHYFB/+xUPTDOWatxa
+        9IsDMfckhlNXKLbap6D+c0VPOziaT8pzcA1WpkA=
+X-Google-Smtp-Source: ABdhPJxmBy4Cguct7mmL7MQTi9YV9a75Akl7f3g5y4ppTVad0Fp31wEzXxx0NFgYP6DGiP0FMnlprTTnDwyGfZ26pd4=
+X-Received: by 2002:a17:90b:18f:: with SMTP id t15mr13935469pjs.168.1629366751349;
+ Thu, 19 Aug 2021 02:52:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817092729.433-13-magnus.karlsson@gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20210817092729.433-1-magnus.karlsson@gmail.com>
+ <20210817092729.433-11-magnus.karlsson@gmail.com> <20210819092634.GA32204@ranger.igk.intel.com>
+In-Reply-To: <20210819092634.GA32204@ranger.igk.intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 19 Aug 2021 11:52:20 +0200
+Message-ID: <CAJ8uoz2aUnsnN5TQ5JstfbzByq80yX9utzbt3THwMKFHpYs4zA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 10/16] selftests: xsk: validate tx stats on tx thread
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Ciara Loftus <ciara.loftus@intel.com>,
+        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 11:27:25AM +0200, Magnus Karlsson wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
-> 
-> Remove the cleanup right before the program/process exits as this will
-> trigger the cleanup without us having to write or maintain any
-> code. The application is not a library, so let us benefit from that.
+On Thu, Aug 19, 2021 at 11:41 AM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> On Tue, Aug 17, 2021 at 11:27:23AM +0200, Magnus Karlsson wrote:
+> > From: Magnus Karlsson <magnus.karlsson@intel.com>
+> >
+> > Validate the tx stats on the Tx thread instead of the Rx
+> > tread. Depending on your settings, you might not be allowed to query
+> > the statistics of a socket you do not own, so better to do this on the
+> > correct thread to start with.
+> >
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > ---
+> >  tools/testing/selftests/bpf/xdpxceiver.c | 55 ++++++++++++++++++------
+> >  1 file changed, 41 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
+> > index fe3d281a0575..8ff24472ef1e 100644
+> > --- a/tools/testing/selftests/bpf/xdpxceiver.c
+> > +++ b/tools/testing/selftests/bpf/xdpxceiver.c
+> > @@ -642,23 +642,22 @@ static void tx_only_all(struct ifobject *ifobject)
+> >       complete_tx_only_all(ifobject);
+> >  }
+> >
+> > -static void stats_validate(struct ifobject *ifobject)
+> > +static bool rx_stats_are_valid(struct ifobject *ifobject)
+> >  {
+> > +     u32 xsk_stat = 0, expected_stat = opt_pkt_count;
+> > +     struct xsk_socket *xsk = ifobject->xsk->xsk;
+> > +     int fd = xsk_socket__fd(xsk);
+> >       struct xdp_statistics stats;
+> >       socklen_t optlen;
+> >       int err;
+> > -     struct xsk_socket *xsk = stat_test_type == STAT_TEST_TX_INVALID ?
+> > -                                                     ifdict[!ifobject->ifdict_index]->xsk->xsk :
+> > -                                                     ifobject->xsk->xsk;
+> > -     int fd = xsk_socket__fd(xsk);
+> > -     unsigned long xsk_stat = 0, expected_stat = opt_pkt_count;
+> > -
+> > -     sigvar = 0;
+> >
+> >       optlen = sizeof(stats);
+> >       err = getsockopt(fd, SOL_XDP, XDP_STATISTICS, &stats, &optlen);
+> > -     if (err)
+> > -             return;
+> > +     if (err) {
+> > +             ksft_test_result_fail("ERROR: [%s] getsockopt(XDP_STATISTICS) error %u %s\n",
+> > +                                   __func__, -err, strerror(-err));
+> > +             return true;
+>
+> Can we invert the logic or change the name of the func?
+> Returning 'true' for error case is a bit confusing given the name of func
+> is blah_are_valid, no? If there was an error then I'd return false.
+>
+> OTOH we're testing faulty socket situations in here, but error from
+> getsockopt does not mean that stats were valid.
 
-Not a fan of that, I'd rather keep things tidy, but you're right that
-dropping this logic won't hurt us.
+Yes, this is not that clear. We want the loop on the higher level to
+quit, therefore we return true when there is an error. A problem with
+the stats tests is that they do not terminate when the stats are
+wrong, only when they pass. Once I get the second patch set accepted
+(in some form), we should rewrite these stats tests in that new
+framework so that they will terminate even when the stats are wrong.
+This whole problem will likely disappear at that point. But I will
+scratch my head and try to make it better in this patch.
 
-> 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->  tools/testing/selftests/bpf/xdpxceiver.c | 29 +++++-------------------
->  1 file changed, 6 insertions(+), 23 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-> index 8ff24472ef1e..c1bb03e0ca07 100644
-> --- a/tools/testing/selftests/bpf/xdpxceiver.c
-> +++ b/tools/testing/selftests/bpf/xdpxceiver.c
-> @@ -1041,28 +1041,24 @@ static void run_pkt_test(int mode, int type)
->  int main(int argc, char **argv)
->  {
->  	struct rlimit _rlim = { RLIM_INFINITY, RLIM_INFINITY };
-> -	bool failure = false;
->  	int i, j;
->  
->  	if (setrlimit(RLIMIT_MEMLOCK, &_rlim))
->  		exit_with_error(errno);
->  
-> -	for (int i = 0; i < MAX_INTERFACES; i++) {
-> +	for (i = 0; i < MAX_INTERFACES; i++) {
->  		ifdict[i] = malloc(sizeof(struct ifobject));
->  		if (!ifdict[i])
->  			exit_with_error(errno);
->  
->  		ifdict[i]->ifdict_index = i;
->  		ifdict[i]->xsk_arr = calloc(2, sizeof(struct xsk_socket_info *));
-> -		if (!ifdict[i]->xsk_arr) {
-> -			failure = true;
-> -			goto cleanup;
-> -		}
-> +		if (!ifdict[i]->xsk_arr)
-> +			exit_with_error(errno);
-> +
->  		ifdict[i]->umem_arr = calloc(2, sizeof(struct xsk_umem_info *));
-> -		if (!ifdict[i]->umem_arr) {
-> -			failure = true;
-> -			goto cleanup;
-> -		}
-> +		if (!ifdict[i]->umem_arr)
-> +			exit_with_error(errno);
->  	}
->  
->  	setlocale(LC_ALL, "");
-> @@ -1081,19 +1077,6 @@ int main(int argc, char **argv)
->  		}
->  	}
->  
-> -cleanup:
-> -	for (int i = 0; i < MAX_INTERFACES; i++) {
-> -		if (ifdict[i]->ns_fd != -1)
-> -			close(ifdict[i]->ns_fd);
-> -		free(ifdict[i]->xsk_arr);
-> -		free(ifdict[i]->umem_arr);
-> -		free(ifdict[i]);
-> -	}
-> -
-> -	if (failure)
-> -		exit_with_error(errno);
-> -
->  	ksft_exit_pass();
-> -
->  	return 0;
->  }
-> -- 
-> 2.29.0
-> 
+> > +     }
+> >
+> >       if (optlen == sizeof(struct xdp_statistics)) {
+> >               switch (stat_test_type) {
+> > @@ -666,8 +665,7 @@ static void stats_validate(struct ifobject *ifobject)
+> >                       xsk_stat = stats.rx_dropped;
+> >                       break;
+> >               case STAT_TEST_TX_INVALID:
+> > -                     xsk_stat = stats.tx_invalid_descs;
+> > -                     break;
+> > +                     return true;
+> >               case STAT_TEST_RX_FULL:
+> >                       xsk_stat = stats.rx_ring_full;
+> >                       expected_stat -= RX_FULL_RXQSIZE;
+> > @@ -680,8 +678,33 @@ static void stats_validate(struct ifobject *ifobject)
+> >               }
+> >
+> >               if (xsk_stat == expected_stat)
+> > -                     sigvar = 1;
+> > +                     return true;
+> > +     }
+> > +
+> > +     return false;
+> > +}
+> > +
+> > +static void tx_stats_validate(struct ifobject *ifobject)
+> > +{
+> > +     struct xsk_socket *xsk = ifobject->xsk->xsk;
+> > +     int fd = xsk_socket__fd(xsk);
+> > +     struct xdp_statistics stats;
+> > +     socklen_t optlen;
+> > +     int err;
+> > +
+> > +     optlen = sizeof(stats);
+> > +     err = getsockopt(fd, SOL_XDP, XDP_STATISTICS, &stats, &optlen);
+> > +     if (err) {
+> > +             ksft_test_result_fail("ERROR: [%s] getsockopt(XDP_STATISTICS) error %u %s\n",
+> > +                                   __func__, -err, strerror(-err));
+> > +             return;
+> >       }
+> > +
+> > +     if (stats.tx_invalid_descs == opt_pkt_count)
+> > +             return;
+> > +
+> > +     ksft_test_result_fail("ERROR: [%s] tx_invalid_descs incorrect. Got [%u] expected [%u]\n",
+> > +                           __func__, stats.tx_invalid_descs, opt_pkt_count);
+> >  }
+> >
+> >  static void thread_common_ops(struct ifobject *ifobject, void *bufs)
+> > @@ -767,6 +790,9 @@ static void *worker_testapp_validate_tx(void *arg)
+> >       print_verbose("Sending %d packets on interface %s\n", opt_pkt_count, ifobject->ifname);
+> >       tx_only_all(ifobject);
+> >
+> > +     if (stat_test_type == STAT_TEST_TX_INVALID)
+> > +             tx_stats_validate(ifobject);
+> > +
+> >       testapp_cleanup_xsk_res(ifobject);
+> >       pthread_exit(NULL);
+> >  }
+> > @@ -792,7 +818,8 @@ static void *worker_testapp_validate_rx(void *arg)
+> >               if (test_type != TEST_TYPE_STATS) {
+> >                       rx_pkt(ifobject->xsk, fds);
+> >               } else {
+> > -                     stats_validate(ifobject);
+> > +                     if (rx_stats_are_valid(ifobject))
+> > +                             break;
+> >               }
+> >               if (sigvar)
+> >                       break;
+> > --
+> > 2.29.0
+> >
