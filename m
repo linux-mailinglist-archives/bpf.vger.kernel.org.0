@@ -2,123 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A139D3F18A8
-	for <lists+bpf@lfdr.de>; Thu, 19 Aug 2021 13:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410DF3F18E5
+	for <lists+bpf@lfdr.de>; Thu, 19 Aug 2021 14:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238849AbhHSL7V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Aug 2021 07:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238105AbhHSL7V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Aug 2021 07:59:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE752C061575;
-        Thu, 19 Aug 2021 04:58:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pRsyB7CLFbiWCWtNNYvYvOJlpHqB369aROjMV8RfXbw=; b=l1jlu5EZgp4GKpzmGDKmEB0EtK
-        MwnbW+CyIasQrjBGnjBcznPAJxhjt/pXw12scouBOjLv1yoEasR1e1RiPa2iMASkwtlXtPbOMzlCl
-        LcGDSvsFwITjpTG+4Xqb8ITrucsbriI5YVokZRbQ3V55H9je1X8QKriJXSdLaVuuNL8fTmxhEtZSL
-        LUyJvzPJWlFsAbINmlNwQRHQZKhd4mHOVVUj6E3ocPPYQFHSBa0LSWBLoNLtTG3wzmPwL5zyrJQ8X
-        ggnBGqDdNDEAdJivkqlAD/6HnygHMXbCKvr6Cr6NsbNTSxNRtipAWP5YMEntJArpo9/jm0z6AIjN7
-        zrAaq6dA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGgfo-0052Yn-C2; Thu, 19 Aug 2021 11:57:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EDAB830009A;
-        Thu, 19 Aug 2021 13:57:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D22C1200B42A0; Thu, 19 Aug 2021 13:57:26 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 13:57:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [RFC] bpf: lbr: enable reading LBR from tracing bpf programs
-Message-ID: <YR5HJkPyaM3TWkkl@hirez.programming.kicks-ass.net>
-References: <20210818012937.2522409-1-songliubraving@fb.com>
- <YRzPwClswwxHXVHe@hirez.programming.kicks-ass.net>
- <962EDD5A-1B35-4C7F-A0A1-3EBC32EE63AB@fb.com>
+        id S238105AbhHSMPu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Aug 2021 08:15:50 -0400
+Received: from mga06.intel.com ([134.134.136.31]:50600 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233610AbhHSMPu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Aug 2021 08:15:50 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="277560935"
+X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
+   d="scan'208";a="277560935"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 05:15:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
+   d="scan'208";a="532195059"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Aug 2021 05:15:10 -0700
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        anthony.l.nguyen@intel.com, kuba@kernel.org, bjorn@kernel.org,
+        magnus.karlsson@intel.com, jesse.brandeburg@intel.com,
+        alexandr.lobakin@intel.com, joamaki@gmail.com, toke@redhat.com,
+        brett.creeley@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH v7 intel-next 0/9] XDP_TX improvements for ice
+Date:   Thu, 19 Aug 2021 13:59:55 +0200
+Message-Id: <20210819120004.34392-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <962EDD5A-1B35-4C7F-A0A1-3EBC32EE63AB@fb.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 04:46:32PM +0000, Song Liu wrote:
+I didn't realize that on v6 I didn't have CONFIG_NET_SWITCHDEV option
+set in the kernel config. I removed ice_eswitch_remap_ring but didn't
+adjust the q_vector's ring pointer to the new Rx/Tx union.
 
-> > Urgghhh.. I so really hate BPF specials like this.
-> 
-> I don't really like this design either. But it does show that LBR can be
-> very useful in non-PMI scenario. 
-> 
-> > Also, the PMI race
-> > you describe is because you're doing abysmal layer violations. If you'd
-> > have used perf_pmu_disable() that wouldn't have been a problem.
-> 
-> Do you mean instead of disable/enable lbr, we disable/enable the whole 
-> pmu? 
+Hope that it's the last time of embarrassment :)
 
-Yep, that way you're serialized against PMIs. It's what all of the perf
-core does.
+v6->v7:
+* fix compilation issues when CONFIG_NET_SWITCHDEV=y
 
-> > I'd much rather see a generic 'fake/inject' PMI facility, something that
-> > works across the board and isn't tied to x86/intel.
-> 
-> How would that work? Do we have a function to trigger PMI from software, 
-> and then gather the LBR data after the PMI? This does sound like a much
-> cleaner solution. Where can I find code examples that fake/inject PMI?
+v5->v6:
+* rebase set on Tony's dev-queue
+* adjust switchdev code to ring split
+* compile with W=1 C=2 and fix outstanding kdoc issues
 
-We don't yet have anything like it; but it would look a little like:
+v4->v5:
+* fix issues pointed by lkp; variables used for updating ring stats
+  could be un-inited
+* s/ice_ring/ice_rx_ring; it looks now symmetric given that we have
+  ice_tx_ring struct dedicated for Tx ring
+* go through the code and use ice_for_each_* macros; it was spotted by
+  Brett that there was a place around that code that this set is
+  touching that was not using the ice_for_each_txq. Turned out that there
+  were more such places
+* take care of coalesce related code; carry the info about type of ring
+  container in ice_ring_container
+* pull out getting rid of @ring_active onto separate patch, as suggested
+  by Brett
 
-void perf_inject_event(struct perf_event *event, struct pt_regs *regs)
-{
-	struct perf_sample_data data;
-	struct pmu *pmu = event->pmu;
-	unsigned long flags;
+v3->v4:
+* fix lkp issues;
 
-	local_irq_save(flags);
-	perf_pmu_disable(pmu);
+v2->v3:
+* improve XDP_TX in a proper way
+* split ice_ring
+* propagate XDP ring pointer to Rx ring
 
-	perf_sample_data_init(&data, 0, 0);
-	/*
-	 * XXX or a variant with more _ that starts at the overflow
-	 * handler...
-	 */
-	__perf_event_overflow(event, 0, &data, regs);
+v1->v2:
+* try to improve XDP_TX processing
 
-	perf_pmu_enable(pmu);
-	local_irq_restore(flags);
-}
+v6 : https://lore.kernel.org/bpf/20210818135916.25007-1-maciej.fijalkowski@intel.com/
+v5 : https://lore.kernel.org/bpf/20210818075256.GA16780@ranger.igk.intel.com/
+v4 : https://lore.kernel.org/bpf/20210806095539.34423-1-maciej.fijalkowski@intel.com/
+v3 : https://lore.kernel.org/bpf/20210805230046.28715-1-maciej.fijalkowski@intel.com/
+v2 : https://lore.kernel.org/bpf/20210705164338.58313-1-maciej.fijalkowski@intel.com/
+v1 : https://lore.kernel.org/bpf/20210601113236.42651-1-maciej.fijalkowski@intel.com/
 
-But please consider carefully, I haven't...
+Thanks!
+Maciej
 
-> There is another limitation right now: we need to enable LBR with a 
-> hardware perf event (cycles, etc.). However, unless we use the event for 
-> something else, it wastes a hardware counter. So I was thinking to allow
-> software event, i.e. dummy event, to enable LBR. Does this idea sound 
-> sane to you?
+Maciej Fijalkowski (9):
+  ice: remove ring_active from ice_ring
+  ice: move ice_container_type onto ice_ring_container
+  ice: split ice_ring onto Tx/Rx separate structs
+  ice: unify xdp_rings accesses
+  ice: do not create xdp_frame on XDP_TX
+  ice: propagate xdp_ring onto rx_ring
+  ice: optimize XDP_TX workloads
+  ice: introduce XDP_TX fallback path
+  ice: make use of ice_for_each_* macros
 
-We have a VLBR dummy event, but I'm not sure it does exactly as you
-want. However, we should also consider Power, which also has the branch
-stack feature.
+ drivers/net/ethernet/intel/ice/ice.h          |  41 +++-
+ drivers/net/ethernet/intel/ice/ice_arfs.c     |   2 +-
+ drivers/net/ethernet/intel/ice/ice_base.c     |  59 +++---
+ drivers/net/ethernet/intel/ice/ice_base.h     |   8 +-
+ drivers/net/ethernet/intel/ice/ice_dcb_lib.c  |   9 +-
+ drivers/net/ethernet/intel/ice/ice_dcb_lib.h  |  10 +-
+ drivers/net/ethernet/intel/ice/ice_eswitch.c  |  35 ++--
+ drivers/net/ethernet/intel/ice/ice_eswitch.h  |   4 +-
+ drivers/net/ethernet/intel/ice/ice_ethtool.c  |  95 +++++----
+ drivers/net/ethernet/intel/ice/ice_lib.c      |  92 +++++----
+ drivers/net/ethernet/intel/ice/ice_lib.h      |   6 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     | 145 +++++++++-----
+ drivers/net/ethernet/intel/ice/ice_ptp.c      |   2 +-
+ drivers/net/ethernet/intel/ice/ice_ptp.h      |   4 +-
+ drivers/net/ethernet/intel/ice/ice_trace.h    |  28 +--
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 183 +++++++++++-------
+ drivers/net/ethernet/intel/ice/ice_txrx.h     | 126 +++++++-----
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  98 ++++++++--
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  14 +-
+ .../net/ethernet/intel/ice/ice_virtchnl_pf.c  |   2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |  70 ++++---
+ drivers/net/ethernet/intel/ice/ice_xsk.h      |  20 +-
+ 22 files changed, 629 insertions(+), 424 deletions(-)
 
-You can't really make a software event with LBR on, because then it
-wouldn't be a software event anymore. You'll need some hybrid like
-thing, which will be yuck and I suspect it needs arch support one way or
-the other :/
+-- 
+2.20.1
+
