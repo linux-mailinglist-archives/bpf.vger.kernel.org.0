@@ -2,118 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC383F22E0
-	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 00:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C26B3F2317
+	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 00:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235676AbhHSWR2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Aug 2021 18:17:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48540 "EHLO mail.kernel.org"
+        id S233507AbhHSW22 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Aug 2021 18:28:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235852AbhHSWR1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:17:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDED4608FE;
-        Thu, 19 Aug 2021 22:16:50 +0000 (UTC)
+        id S229532AbhHSW22 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Aug 2021 18:28:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB40E6109E
+        for <bpf@vger.kernel.org>; Thu, 19 Aug 2021 22:27:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629411410;
-        bh=Jch+3Ax87+1/iAOT5wwQKdSvOesvPFQpbYLw/CCHsy4=;
+        s=k20201202; t=1629412071;
+        bh=OzBCSSWJ97ptHE9a21JwPYypwnMEhpfPwBNttiOYvGs=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nfEhouSa0f1oZt3fUFd6CoNcNWblbFQZJuVIgrhiOwvluHbc+w5VmqCtEQCtLcjpg
-         AqJgH16xVZsLzgzq2StGFhx+22pdRClHRuoR7t/vhIiKLIkZFlzqErIKdM/rAskBR9
-         ccnmrSLV7rN43GekaO+WuyLS6Xwrlat8B5gVWp+p+HRUhO45fenfibSbX3JZbc3lg5
-         hTxrB3Yzp1HB9uFz42bqLCmzwoLAqesixAeGNITD8an/100eXGn6hVsrFy6VGGWygO
-         adh5fGE+j/tun0Zk1ZRQhxbW6DjwZPOqDQA7iQhc+b4UckgyOGEbYLYw0x1oUdH7Tc
-         L2Wox1/JUCQIw==
-Received: by mail-lf1-f45.google.com with SMTP id w20so16071284lfu.7;
-        Thu, 19 Aug 2021 15:16:50 -0700 (PDT)
-X-Gm-Message-State: AOAM532cSTiBLLWbBrXHomSntvLcPrHYYtUDhLL6vg+R8atn9O6doPYu
-        NuEFfkhpbkrhAGZRAiIiFNAH/i/UOBcmIdWZJ3A=
-X-Google-Smtp-Source: ABdhPJxo1NIsebdSOYgFeXIpqE8FX/yKBJ4O71p1uiBZoohYPx/cT9sIJJhaTXvOVLcWbgcIhnHDWoMbs1wwKUHk5bQ=
-X-Received: by 2002:a05:6512:169d:: with SMTP id bu29mr12221745lfb.160.1629411409125;
- Thu, 19 Aug 2021 15:16:49 -0700 (PDT)
+        b=tDcF6R1Yckso3iuIGY9SHeuLOoew6vC89Kx8Qe41+iZoAygNeaPnLyRqxApgoCsBL
+         WRdEA8QD6S7e7SRueS2N/RzMBPaAg7Zdt14TrfLWGD0XuVSf8qUWQu6k4mXLVYcf0v
+         o6QYEiZEcvOkKo3f4kKJYmZ4zMUKP6+goGxb+BwAsnbqDXtPplvTtQN3QX/Il8UX5u
+         q//gypZIZmKxvyA91ColNLx/jCd05D90aGsYMuz1pazYMg5Kw8HE9dJxzMHDkMczgM
+         IhzW5ob2coymM1nx7rzJbo+0eVxVz2y9pfaKd+ee1tX12lMlLQo1FVRE1re2LA+/jJ
+         eJk52NmVBlgKg==
+Received: by mail-lj1-f176.google.com with SMTP id d16so13995942ljq.4
+        for <bpf@vger.kernel.org>; Thu, 19 Aug 2021 15:27:51 -0700 (PDT)
+X-Gm-Message-State: AOAM530YjOUl/kW806DrguoFXviYT6cx8xeEI9IF7rMfG8D15oyocV/Z
+        6ZDW6KFMRE27mc6XJ15LApjieKVAVq8vYM2VDQ8=
+X-Google-Smtp-Source: ABdhPJy2DuncuSzwCZVSAIicWTM0wAOME6fYIl8Fo9nOlILJHB06hAFP8o04Hrcg+nDGCt6x9oT0BSYcCbs9vR95mas=
+X-Received: by 2002:a2e:a713:: with SMTP id s19mr3919090lje.177.1629412070171;
+ Thu, 19 Aug 2021 15:27:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210819072431.21966-1-lizhijian@cn.fujitsu.com> <20210819072431.21966-3-lizhijian@cn.fujitsu.com>
-In-Reply-To: <20210819072431.21966-3-lizhijian@cn.fujitsu.com>
+References: <20210817224221.3257826-1-prankgup@fb.com> <20210817224221.3257826-3-prankgup@fb.com>
+In-Reply-To: <20210817224221.3257826-3-prankgup@fb.com>
 From:   Song Liu <song@kernel.org>
-Date:   Thu, 19 Aug 2021 15:16:38 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5J2dg+aiwbQC28YZkEYEstcCQKP7fY9e4i=OPuMMsSTQ@mail.gmail.com>
-Message-ID: <CAPhsuW5J2dg+aiwbQC28YZkEYEstcCQKP7fY9e4i=OPuMMsSTQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] selftests/bpf: add missing files required by
- test_bpftool.sh for installing
-To:     Li Zhijian <lizhijian@cn.fujitsu.com>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Thu, 19 Aug 2021 15:27:39 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7FvKx0X-ap+4eOwanBtOg81qnsOtW+9_O5kDO_piX9nQ@mail.gmail.com>
+Message-ID: <CAPhsuW7FvKx0X-ap+4eOwanBtOg81qnsOtW+9_O5kDO_piX9nQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add test for {set|get} socket
+ option from setsockopt BPF program
+To:     Prankur gupta <prankgup@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, philip.li@intel.com,
-        yifeix.zhu@intel.com
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, prankur.07@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 12:28 AM Li Zhijian <lizhijian@cn.fujitsu.com> wrote:
+On Tue, Aug 17, 2021 at 3:43 PM Prankur gupta <prankgup@fb.com> wrote:
 >
-> - 'make install' will install bpftool to INSTALL_PATH/bpf/bpftool
-> - add INSTALL_PATH/bpf to PATH
+> Adding selftests for new added functionality to call bpf_setsockopt and
+> bpf_getsockopt from setsockopt BPF programs
 >
-> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> Test Details:
+> 1. BPF Program
+>    Checks for changes in IPV6_TCLASS(SOL_IPV6) via setsockopt
+>    If the cca for the socket is not cubic do nothing
+>    If the newly set value for IPV6_TCLASS is 45 (0x2d) (as per our usecase)
+>    then change the cc from cubic to reno
+>
+> 2. User Space Program
+>    Creates an AF_INET6 socket and set the cca for that to be "cubic"
+>    Attach the program and set the IPV6_TCLASS to 0x2d using setsockopt
+>    Verify the cca for the socket changed to reno
+>
+> Signed-off-by: Prankur gupta <prankgup@fb.com>
 
 Acked-by: Song Liu <songliubraving@fb.com>
-
-With one nit below:
-
-> ---
->  tools/testing/selftests/bpf/Makefile        | 4 +++-
->  tools/testing/selftests/bpf/test_bpftool.sh | 3 ++-
->  2 files changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index f405b20c1e6c..c6ca1b8e33d5 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -85,7 +85,7 @@ TEST_PROGS_EXTENDED := with_addr.sh \
->  TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
->         flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
->         test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
-> -       xdpxceiver xdp_redirect_multi
-> +       xdpxceiver xdp_redirect_multi test_bpftool.py
->
->  TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read
->
-> @@ -187,6 +187,8 @@ $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL)
->                     BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR) &&      \
->                     cp $(SCRATCH_DIR)/runqslower $@
->
-> +TEST_GEN_PROGS_EXTENDED += $(DEFAULT_BPFTOOL)
-> +
->  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BPFOBJ)
->
->  $(OUTPUT)/test_dev_cgroup: cgroup_helpers.c
-> diff --git a/tools/testing/selftests/bpf/test_bpftool.sh b/tools/testing/selftests/bpf/test_bpftool.sh
-> index 6b7ba19be1d0..50cf9d3645d2 100755
-> --- a/tools/testing/selftests/bpf/test_bpftool.sh
-> +++ b/tools/testing/selftests/bpf/test_bpftool.sh
-> @@ -2,9 +2,10 @@
->  # SPDX-License-Identifier: GPL-2.0
->  # Copyright (c) 2020 SUSE LLC.
->
-> +# 'make -C tools/testing/selftests/bpf install' will install to SCRIPT_PATH
-
-nit: Should be SCRIPT_DIR.              ^^^^^
-
->  SCRIPT_DIR=$(dirname $(realpath $0))
->
->  # 'make -C tools/testing/selftests/bpf' will install to BPFTOOL_INSTALL_PATH
->  BPFTOOL_INSTALL_PATH="$SCRIPT_DIR"/tools/sbin
-> -export PATH=$BPFTOOL_INSTALL_PATH:$PATH
-> +export PATH=$SCRIPT_DIR:$BPFTOOL_INSTALL_PATH:$PATH
->  python3 -m unittest -v test_bpftool.TestBpftool
-> --
-> 2.32.0
->
->
->
