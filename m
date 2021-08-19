@@ -2,78 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846E63F1FE0
-	for <lists+bpf@lfdr.de>; Thu, 19 Aug 2021 20:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77303F2016
+	for <lists+bpf@lfdr.de>; Thu, 19 Aug 2021 20:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbhHSS2G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Aug 2021 14:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
+        id S229465AbhHSSpi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Aug 2021 14:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233971AbhHSS2E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Aug 2021 14:28:04 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7A2C061575;
-        Thu, 19 Aug 2021 11:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+bTbGbKR1TC3lLaeYOl/sYgM2QGbnXnwBH0Mh0F17/8=; b=dwnz0X/tx54x1HktT+4On+TT9z
-        latNRYxu0+rNhJfDYrdmGkBAEoK1AnNpwjGsZ1DeRptGGLHrrpEcyaS1ktmEWDQcmX/L2leHgCqX4
-        bbH9hgbcBUt25KNkD3idyXf5xo4ZECBZRG5jhA++GLITSSgR9K18BwvyVDRiY+vQ77Ygv+7UKPiJW
-        s/1Yljo76fi0RXFMl1mw8ImBKRQrMqcgzFIaUQGChBdO7Qlwj3WMC52bnbVLzgmDMW16pXXH2PKqS
-        b5jUIyHThWO14FWV3SUQcjYmwYF/DgAcjb02UeZQyeWJZPSc1KbWur0bvdiP6vyr6/Pc5+wJF9BPb
-        R7wd1eHA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGml6-00BAqC-1B; Thu, 19 Aug 2021 18:27:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 675863012AD;
-        Thu, 19 Aug 2021 20:27:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4D012202317D2; Thu, 19 Aug 2021 20:27:19 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 20:27:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: Re: [RFC] bpf: lbr: enable reading LBR from tracing bpf programs
-Message-ID: <YR6ih+pKSm5TVVBc@hirez.programming.kicks-ass.net>
-References: <20210818012937.2522409-1-songliubraving@fb.com>
- <YRzPwClswwxHXVHe@hirez.programming.kicks-ass.net>
- <962EDD5A-1B35-4C7F-A0A1-3EBC32EE63AB@fb.com>
- <YR5HJkPyaM3TWkkl@hirez.programming.kicks-ass.net>
- <AB509D87-67C6-4B7F-AEFB-2324845C310C@fb.com>
- <YR6dreGQSe4oQFBr@hirez.programming.kicks-ass.net>
- <A5F7CF90-27F9-476C-B87C-CAD2A6BE5DA4@fb.com>
+        with ESMTP id S232117AbhHSSph (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Aug 2021 14:45:37 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16409C061756
+        for <bpf@vger.kernel.org>; Thu, 19 Aug 2021 11:45:01 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id l144so14027352ybl.12
+        for <bpf@vger.kernel.org>; Thu, 19 Aug 2021 11:45:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OBEwDOBwwxynaaFh4NJ9Bk0iSClWw6W0bHKETXr1p7w=;
+        b=dnSDt1qsQ/hDrNxeqFJdhoOQnHS1/7MJsHzcwjLhGlEMA5x54/6mVtmzHxSObf1VQc
+         nGmSSSh2GllrGsZ+WfP+nfYpLEVDssxd2l8xvUtLcyqopqh9LeVu4zF8CPeF/PBz8KrN
+         rLE3Bq4mCGmr7ijO6jLYYml4WcWvIYqcDMThJ5KM6so5NZ00WkprKNxXapIHkJfpKCYG
+         ukcfHwCW5JodATASwekm72yfD7e5lbkRzi8TULRloRRJfwIoUBZLriFj82x56pUHKfaa
+         eHs4JRJF6Q4j+DbI6vCdrE/KWWRJljWMrr9RFTFyNoP7BXVFNhFEc/ucryOBzRqkTXLh
+         bKgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OBEwDOBwwxynaaFh4NJ9Bk0iSClWw6W0bHKETXr1p7w=;
+        b=Oh3QnOsgN6PUQzsXIeXPqBBH8RoDqPgGE9KBlZVjpuvORc0rteNpAfcjG5wXlD/P7w
+         cTXQu/DQLonHCp5JRDzQP34HalOlYfklFDrv3Ag4RbCxVvWHZik4W5KUXHrFzi73nDhP
+         ATPxmO6gmFSqwQAbOH9D9tFEfiT37QoRPvilK/8h/t0PUzDlrLQbOFJWdASXckvdLxbo
+         2SOM2PHDh2P7MBySvfoG2wPDMSitF69mbO5GN8C5N0SAFB1tDMV+JoHlXLLVxqMLfP7l
+         Ay/cPZEVNCq9j684ycV7JbETwWur3FHbU/KZhmbXGvhZPonGnn0J4WFmPxoOpVs0fUh1
+         9O9g==
+X-Gm-Message-State: AOAM532D+e0oRtYNaXqd3aIQkkcmbuAgTbrMeHDU/NtOBKxdIndYuPTk
+        VLLbpN5l0pzUK2+I4rZiYY2ZXDdQcp6x40W214M=
+X-Google-Smtp-Source: ABdhPJwariHExY40B2GS7kms72hpVi/KFJpc9iuLE0pq1ikSBE93vfqKoEnNer+Wg0WAZv/5JlvkW/0xUoI1tt3JMMg=
+X-Received: by 2002:a25:d691:: with SMTP id n139mr21076390ybg.27.1629398700296;
+ Thu, 19 Aug 2021 11:45:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A5F7CF90-27F9-476C-B87C-CAD2A6BE5DA4@fb.com>
+References: <20210819163609.2583758-1-fallentree@fb.com>
+In-Reply-To: <20210819163609.2583758-1-fallentree@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 19 Aug 2021 11:44:48 -0700
+Message-ID: <CAEf4BzZyiZ3Q4Q=VSRZD0_8Wf-2-T8Ti_NyghC4eAoRGoH-F4g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: adding delay in socketmap_listen
+ to reduce flakyness
+To:     Yucong Sun <fallentree@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, sunyucong@gmail.com,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 06:22:07PM +0000, Song Liu wrote:
+On Thu, Aug 19, 2021 at 9:36 AM Yucong Sun <fallentree@fb.com> wrote:
+>
+> This patch adds a 1ms delay to reduce flakyness of the test.
+>
+> Signed-off-by: Yucong Sun <fallentree@fb.com>
+> ---
 
-> > And if we're going to be adding new pmu::methods then I figure one that
-> > does the whole sample state might be more useful.
-> 
-> What do you mean by "whole sample state"? To integrate with exiting
-> perf_sample_data, like perf_output_sample()?
+Any reasons to not implement exponential back-off, like we did for test_maps?
 
-Yeah, the PMI can/does set more than data->br_stack, but I'm now
-thinking that without an actual PMI, much of that will not be possible.
-br_stack is special here.
-
-Oh well, carry on I suppose.
+>  .../selftests/bpf/prog_tests/sockmap_listen.c        | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+> index afa14fb66f08..6a5df28f9a3d 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+> @@ -1603,8 +1603,10 @@ static void unix_redir_to_connected(int sotype, int sock_mapfd,
+>  again:
+>         n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
+>         if (n < 0) {
+> -               if (errno == EAGAIN && retries--)
+> +               if (errno == EAGAIN && retries--) {
+> +                       usleep(1000);
+>                         goto again;
+> +               }
+>                 FAIL_ERRNO("%s: read", log_prefix);
+>         }
+>         if (n == 0)
+> @@ -1776,8 +1778,10 @@ static void udp_redir_to_connected(int family, int sock_mapfd, int verd_mapfd,
+>  again:
+>         n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
+>         if (n < 0) {
+> -               if (errno == EAGAIN && retries--)
+> +               if (errno == EAGAIN && retries--) {
+> +                       usleep(1000);
+>                         goto again;
+> +               }
+>                 FAIL_ERRNO("%s: read", log_prefix);
+>         }
+>         if (n == 0)
+> @@ -1869,8 +1873,10 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
+>  again:
+>         n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
+>         if (n < 0) {
+> -               if (errno == EAGAIN && retries--)
+> +               if (errno == EAGAIN && retries--) {
+> +                       usleep(1000);
+>                         goto again;
+> +               }
+>                 FAIL_ERRNO("%s: read", log_prefix);
+>         }
+>         if (n == 0)
+> --
+> 2.30.2
+>
