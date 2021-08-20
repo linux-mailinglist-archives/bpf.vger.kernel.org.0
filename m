@@ -2,166 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACE13F2FE1
-	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 17:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39603F31A4
+	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 18:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241059AbhHTPof (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Aug 2021 11:44:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241250AbhHTPo2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:44:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCDC6610FF;
-        Fri, 20 Aug 2021 15:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629474230;
-        bh=sb2BeUs+EdYXtkzmBkfivuB9XqFS6eMIn4b9huUVAyg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=syVoTvIbWNx2iptpfdCxcg4TBmXATzR+C9hFbCCUW/apNBfVEJjrxeusqpe3XV9eD
-         6EIQewMRlpq1cPagdP1FLCEH+zUIucNH1Tkadg3kA6KUGmVgKCf6wF46d+SbtLKqEH
-         QUyXY3+uCQ3BhPY4afv4WidAPcbH/YUwqmrA/6LapeNyKQ/dfb2awa0vtWj91ImZOl
-         5yQKvMR6D8Wj3Y2bXxBWlMsBwvfqgWl74CrLm84eVFmQftNkDzE8EEJ5a/XD3It51+
-         daHNdfLNLFYqUej0LqVk+h5uv8Ck1yU/J8kM154rSb+m53XN3SzFh26ntwLRjh6r3J
-         VDdzF1ii+8PWA==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
-        echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: [PATCH v12 bpf-next 18/18] bpf: add bpf_xdp_adjust_data selftest
-Date:   Fri, 20 Aug 2021 17:40:31 +0200
-Message-Id: <9515bcaa081a6626f6fbc9b16c4cd75bbdb1eda7.1629473234.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1629473233.git.lorenzo@kernel.org>
-References: <cover.1629473233.git.lorenzo@kernel.org>
+        id S230295AbhHTQkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Aug 2021 12:40:37 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:65254 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230078AbhHTQkh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 20 Aug 2021 12:40:37 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17KGXn6F005306
+        for <bpf@vger.kernel.org>; Fri, 20 Aug 2021 09:39:59 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=CxCKuH0kyJR+WYs4tSStv3Od2wuTPrYAmVKI4q+t0ts=;
+ b=DhKXhore4tVDS+ZsJ9+6bd06sIp0w3r976IbQ75RXjgFcLXiLWqaA2WXz7eK98v0Qndq
+ g0lBVDYJPVD6jQvPcOiV8eqXL9hdxR2yjBFz4gWtnvT2saoyN/1Wjwphl6MdBlA8Jf15
+ XJSCa6T0++cUk8zxgzlFa/UT9J6lgtPNO2M= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3ahxasx3sp-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 20 Aug 2021 09:39:59 -0700
+Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 20 Aug 2021 09:39:56 -0700
+Received: by devbig139.ftw2.facebook.com (Postfix, from userid 572249)
+        id 6259116868AE; Fri, 20 Aug 2021 09:39:52 -0700 (PDT)
+From:   Andrey Ignatov <rdna@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>,
+        <dan.carpenter@oracle.com>, <kernel-team@fb.com>
+Subject: [PATCH bpf v2] bpf: Fix possible out of bound write in narrow load handling
+Date:   Fri, 20 Aug 2021 09:39:35 -0700
+Message-ID: <20210820163935.1902398-1-rdna@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: 9obDDWsUQGkr35q3sfF0cmhZENTR14LD
+X-Proofpoint-ORIG-GUID: 9obDDWsUQGkr35q3sfF0cmhZENTR14LD
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-20_06:2021-08-20,2021-08-20 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ suspectscore=0 mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 impostorscore=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2107140000 definitions=main-2108200094
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce kernel selftest for new bpf_xdp_adjust_data helper.
+Fix a verifier bug found by smatch static checker in [0].
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+This problem has never been seen in prod to my best knowledge. Fixing it
+still seems to be a good idea since it's hard to say for sure whether
+it's possible or not to have a scenario where a combination of
+convert_ctx_access() and a narrow load would lead to an out of bound
+write.
+
+When narrow load is handled, one or two new instructions are added to
+insn_buf array, but before it was only checked that
+
+	cnt >=3D ARRAY_SIZE(insn_buf)
+
+And it's safe to add a new instruction to insn_buf[cnt++] only once. The
+second try will lead to out of bound write. And this is what can happen
+if `shift` is set.
+
+Fix it by making sure that if the BPF_RSH instruction has to be added in
+addition to BPF_AND then there is enough space for two more instructions
+in insn_buf.
+
+The full report [0] is below:
+
+kernel/bpf/verifier.c:12304 convert_ctx_accesses() warn: offset 'cnt' incre=
+mented past end of array
+kernel/bpf/verifier.c:12311 convert_ctx_accesses() warn: offset 'cnt' incre=
+mented past end of array
+
+kernel/bpf/verifier.c
+    12282
+    12283 			insn->off =3D off & ~(size_default - 1);
+    12284 			insn->code =3D BPF_LDX | BPF_MEM | size_code;
+    12285 		}
+    12286
+    12287 		target_size =3D 0;
+    12288 		cnt =3D convert_ctx_access(type, insn, insn_buf, env->prog,
+    12289 					 &target_size);
+    12290 		if (cnt =3D=3D 0 || cnt >=3D ARRAY_SIZE(insn_buf) ||
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Bounds check.
+
+    12291 		    (ctx_field_size && !target_size)) {
+    12292 			verbose(env, "bpf verifier is misconfigured\n");
+    12293 			return -EINVAL;
+    12294 		}
+    12295
+    12296 		if (is_narrower_load && size < target_size) {
+    12297 			u8 shift =3D bpf_ctx_narrow_access_offset(
+    12298 				off, size, size_default) * 8;
+    12299 			if (ctx_field_size <=3D 4) {
+    12300 				if (shift)
+    12301 					insn_buf[cnt++] =3D BPF_ALU32_IMM(BPF_RSH,
+                                                         ^^^^^
+increment beyond end of array
+
+    12302 									insn->dst_reg,
+    12303 									shift);
+--> 12304 				insn_buf[cnt++] =3D BPF_ALU32_IMM(BPF_AND, insn->dst_reg,
+                                                 ^^^^^
+out of bounds write
+
+    12305 								(1 << size * 8) - 1);
+    12306 			} else {
+    12307 				if (shift)
+    12308 					insn_buf[cnt++] =3D BPF_ALU64_IMM(BPF_RSH,
+    12309 									insn->dst_reg,
+    12310 									shift);
+    12311 				insn_buf[cnt++] =3D BPF_ALU64_IMM(BPF_AND, insn->dst_reg,
+                                        ^^^^^^^^^^^^^^^
+Same.
+
+    12312 								(1ULL << size * 8) - 1);
+    12313 			}
+    12314 		}
+    12315
+    12316 		new_prog =3D bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+    12317 		if (!new_prog)
+    12318 			return -ENOMEM;
+    12319
+    12320 		delta +=3D cnt - 1;
+    12321
+    12322 		/* keep walking new program and skip insns we just inserted */
+    12323 		env->prog =3D new_prog;
+    12324 		insn      =3D new_prog->insnsi + i + delta;
+    12325 	}
+    12326
+    12327 	return 0;
+    12328 }
+
+[0] https://lore.kernel.org/bpf/20210817050843.GA21456@kili/
+
+v1->v2:
+- clarify that problem was only seen by static checker but not in prod;
+
+Fixes: 46f53a65d2de ("bpf: Allow narrow loads with offset > 0")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
 ---
- .../bpf/prog_tests/xdp_adjust_data.c          | 55 +++++++++++++++++++
- .../bpf/progs/test_xdp_update_frags.c         | 41 ++++++++++++++
- 2 files changed, 96 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_adjust_data.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_data.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_data.c
-new file mode 100644
-index 000000000000..a3e098b72fc9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_data.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+
-+void test_xdp_update_frag(void)
-+{
-+	const char *file = "./test_xdp_update_frags.o";
-+	__u32 duration, retval, size;
-+	struct bpf_object *obj;
-+	int err, prog_fd;
-+	__u8 *buf;
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-+	if (CHECK_FAIL(err))
-+		return;
-+
-+	buf = malloc(128);
-+	if (CHECK(!buf, "malloc()", "error:%s\n", strerror(errno)))
-+		return;
-+
-+	memset(buf, 0, 128);
-+
-+	err = bpf_prog_test_run(prog_fd, 1, buf, 128,
-+				buf, &size, &retval, &duration);
-+	free(buf);
-+
-+	CHECK(err || retval != XDP_DROP,
-+	      "128b", "err %d errno %d retval %d size %d\n",
-+	      err, errno, retval, size);
-+
-+	buf = malloc(9000);
-+	if (CHECK(!buf, "malloc()", "error:%s\n", strerror(errno)))
-+		return;
-+
-+	memset(buf, 0, 9000);
-+	buf[5000] = 0xaa; /* marker at offset 5000 (frag0) */
-+
-+	err = bpf_prog_test_run(prog_fd, 1, buf, 9000,
-+				buf, &size, &retval, &duration);
-+
-+	/* test_xdp_update_frags: buf[5000]: 0xaa -> 0xbb */
-+	CHECK(err || retval != XDP_PASS || buf[5000] != 0xbb,
-+	      "9000b", "err %d errno %d retval %d size %d\n",
-+	      err, errno, retval, size);
-+
-+	free(buf);
-+
-+	bpf_object__close(obj);
-+}
-+
-+void test_xdp_adjust_data(void)
-+{
-+	if (test__start_subtest("xdp_adjust_data"))
-+		test_xdp_update_frag();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c b/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
-new file mode 100644
-index 000000000000..c2d5772007f3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ */
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int _version SEC("version") = 1;
-+
-+SEC("xdp_adjust_frags")
-+int _xdp_adjust_frags(struct xdp_md *xdp)
-+{
-+	__u8 *data_end = (void *)(long)xdp->data_end;
-+	__u8 *data = (void *)(long)xdp->data;
-+	__u32 offset = 5000; /* marker offset */
-+	int base_offset, ret = XDP_DROP;
-+
-+	base_offset = bpf_xdp_adjust_data(xdp, offset);
-+	if (base_offset < 0 || base_offset > offset)
-+		return XDP_DROP;
-+
-+	data_end = (void *)(long)xdp->data_end;
-+	data = (void *)(long)xdp->data;
-+
-+	if (data + 1 > data_end)
-+		goto out;
-+
-+	if (*data != 0xaa) /* marker */
-+		goto out;
-+
-+	*data = 0xbb; /* update the marker */
-+	ret = XDP_PASS;
-+out:
-+	bpf_xdp_adjust_data(xdp, 0);
-+	return ret;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.31.1
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 381d3d6f24bc..b991fb0a5da4 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12004,6 +12004,10 @@ static int convert_ctx_accesses(struct bpf_verifie=
+r_env *env)
+ 		if (is_narrower_load && size < target_size) {
+ 			u8 shift =3D bpf_ctx_narrow_access_offset(
+ 				off, size, size_default) * 8;
++			if (shift && cnt + 1 >=3D ARRAY_SIZE(insn_buf)) {
++				verbose(env, "bpf verifier narrow ctx load misconfigured\n");
++				return -EINVAL;
++			}
+ 			if (ctx_field_size <=3D 4) {
+ 				if (shift)
+ 					insn_buf[cnt++] =3D BPF_ALU32_IMM(BPF_RSH,
+--=20
+2.30.2
 
