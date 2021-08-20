@@ -2,69 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996463F31E9
-	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 19:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D913F32C7
+	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 20:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbhHTRCg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Aug 2021 13:02:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232906AbhHTRCb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:02:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 906B0610CC;
-        Fri, 20 Aug 2021 17:01:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629478913;
-        bh=xTkMIkuRn3ljkfmNjAERQ5Fr9C6u5cx0vFhpd6KNW+w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JRdx79AsJcT6Zc5Uyn3gZruJaO9Ff23MDu6d+m+7oqP29/sX9gQVEwXJ2AeQAvYc0
-         Gbj4drL6XtAfuPnBOpHkGOmJyLNU4axMlP6hU2K8yQWsZtoR/0udqGOoyr+e0SyeUL
-         h/zn0BeNrl5W1t/Rrzagp6aUcwFJ+sqt32KbWJMX0tMG95IPUZTAEy7D94QBIgjyG4
-         AWNc+N7kUZWfDUL2cpSqufQsJMDPeaOCmnNMrrLR5VXHkfbEL5KgGvvEUbS7XC130Y
-         pm71LqlZNBlv+F4oft0cZObRc89TZJ3pVd7rdL2OURCZ5lz4rRIBFIUnlAJ+gdXObM
-         KH2HThdFFtQHA==
-Date:   Fri, 20 Aug 2021 10:01:51 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Kees Cook <keescook@chromium.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     netdev@vger.kernel.org,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S229560AbhHTSIx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Aug 2021 14:08:53 -0400
+Received: from smtprelay0094.hostedemail.com ([216.40.44.94]:44300 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229512AbhHTSIw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 20 Aug 2021 14:08:52 -0400
+X-Greylist: delayed 577 seconds by postgrey-1.27 at vger.kernel.org; Fri, 20 Aug 2021 14:08:52 EDT
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id ACDED1802BDE4
+        for <bpf@vger.kernel.org>; Fri, 20 Aug 2021 17:58:37 +0000 (UTC)
+Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 8C4981804EE3A;
+        Fri, 20 Aug 2021 17:58:36 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id A29152EBFA4;
+        Fri, 20 Aug 2021 17:58:35 +0000 (UTC)
+Message-ID: <51685e024c86a691aaf7c94ad74f04971e736d3e.camel@perches.com>
+Subject: BPF MAINTAINERS entry "K: bpf" casts too wide a net
+From:   Joe Perches <joe@perches.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/3] net: Cleanups for FORTIFY_SOURCE
-Message-ID: <20210820100151.25f7ccd4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210819202825.3545692-1-keescook@chromium.org>
-References: <20210819202825.3545692-1-keescook@chromium.org>
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Fri, 20 Aug 2021 10:58:34 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: A29152EBFA4
+X-Stat-Signature: 3cimuwdoh68ae1q3gbc1ibx5uxjzssud
+X-Spam-Status: No, score=0.10
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/l2u7Um2HH+RyIjt7rz8+orLZYkJvFF/A=
+X-HE-Tag: 1629482315-825942
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 19 Aug 2021 13:28:22 -0700 Kees Cook wrote:
-> Hi,
-> 
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy(), memmove(), and memset(), avoid
-> intentionally writing across neighboring fields.
-> 
-> These three changes have been living in my memcpy() series[1], but have
-> no external dependencies. It's probably better to have these go via
-> netdev.
+The MAINTAINERS entry for BPF (Safe dynamic programs and tools)
+includes K: bpf
 
-Thanks.
+This entry seems to match far too many files in the kernel sources.
 
-Kalle, Saeed - would you like to take the relevant changes? Presumably
-they would get into net-next anyway by the time the merge window opens.
+$ git grep --name-only 'bpf' | wc -l
+1398
+
+Likely this entry should be removed or improved to ignore unnecessary
+matches within files like scripts/checkpatch.pl
+
+Perhaps instead this could be something like:
+
+K:	\bbpf_|_bpf\b
+
+
+
+
