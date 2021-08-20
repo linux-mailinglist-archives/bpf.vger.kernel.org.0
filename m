@@ -2,101 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88C53F32BC
-	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 20:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA3B3F33E5
+	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 20:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhHTSG4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Aug 2021 14:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
+        id S235229AbhHTSfv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Aug 2021 14:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhHTSG4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Aug 2021 14:06:56 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA438C061575
-        for <bpf@vger.kernel.org>; Fri, 20 Aug 2021 11:06:17 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id k5so22285294lfu.4
-        for <bpf@vger.kernel.org>; Fri, 20 Aug 2021 11:06:17 -0700 (PDT)
+        with ESMTP id S229512AbhHTSfv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Aug 2021 14:35:51 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D77C06175F
+        for <bpf@vger.kernel.org>; Fri, 20 Aug 2021 11:35:12 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id 22so11830984qkg.2
+        for <bpf@vger.kernel.org>; Fri, 20 Aug 2021 11:35:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kpdK3tQnsd5kU/S6cdE5TTNsWchQfKmPnLEhEuoCOSw=;
-        b=bFdIYjl85UxRyepXF+qWt5RpSgjuLshaALianuSS1+dNYiRsSCpeN9ncBk7nOAnPqM
-         bMZ+RJGsTz3VI+uitqqY8sspqhku9zFS3rvC8C0HEQ94s3Rm2ivOnnWGPKHt9qcW0Nte
-         MlwQeacxXGMFYnYfINZdZu8dYeYIGXMcHFwZA=
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:from:to:cc:subject;
+        bh=20/a0sZ2dzFKeddKBSkNEVtv2AMo9NoJrHJmvABR31k=;
+        b=iraa4Yg2ZIyDuLWjWxoz7XhaITVgAYkL2+UmLSFrqzMB3Uvs29V23Zg5ZWoo3nSrSZ
+         b0dXIrjTqoCGqlt1bugRacT5AbM7T5760fHd5UgMw48rJMdz4pQCKgkQqu+1q6icd7Lh
+         tR4z5xVyYZXDdAyNdKWuDuKWkAVefKGJAU+UbRIwopG6QmTsWlPBx9e+xAAOzGooNbGA
+         /5NPhzg0yAMk99xz4CasbFUmtvV3ciy4mALUH8pW1BZ0fEBCJlOUuEc8VXFVTaPaSSfd
+         lX0gEIIFctA+XwIkf/dWjE4RhQP77SJUbdLGVanMyBnf0sf3Vbd62+dQ9ux2O4jgxyRK
+         V1Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kpdK3tQnsd5kU/S6cdE5TTNsWchQfKmPnLEhEuoCOSw=;
-        b=sTo0fC8qUJrFZUj8lu9Nsbf4K/r0BeUsIyA6RyssoqQhGKw3CyhVvBNqFPD2J7EWwu
-         iP2Twxmpo3szFwJpj6v/uqJs1oWaWKxMVYRwkv0eusZnKpw62SvEPOHQZNyvNE2z7jjE
-         HRzUdndjEY/HX+vqZt8kTk0AhMkPQPcygfOuaOelVBSnfRDjV4Wp8rg3DuXKnBMcBo/D
-         LysQTNoW2jlvvoQYlKfo6xL8/Un151LCqC6ZpM6No+Zf8Z3NqfeB2tLkY1pqi044eGIX
-         lxHiN6fQHEKl1xsC6RI1tNhk8ssIp5DkXIgaQINQumyzzKBVyrckjWWCgbAnD4xmhjlq
-         YkGg==
-X-Gm-Message-State: AOAM530jIEZxB6dlvQbArT325fqH0oH1R/3V08RIB6416iYViuav+p7A
-        QvygKs8FZqiyRd/5Qln1/mZG5LRtw/H09lxHn+SXsQ==
-X-Google-Smtp-Source: ABdhPJyDvw/lD+z2kmSTqPAlkIyBYwbU08Q/RU9cGlUTWre3D154WzXg2hJq2G29Cv1+Z20vZK1V7PTOSjALTtZizxk=
-X-Received: by 2002:ac2:5a0b:: with SMTP id q11mr15164118lfn.578.1629482775755;
- Fri, 20 Aug 2021 11:06:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210820165511.72890-1-mauricio@kinvolk.io>
-In-Reply-To: <20210820165511.72890-1-mauricio@kinvolk.io>
-From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
-Date:   Fri, 20 Aug 2021 13:06:04 -0500
-Message-ID: <CAHap4zvz5JW2paVnkYERq=L98pDBBk2mfkJrQ=pHAU3cfqMkAg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: remove unused variable
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauriciov@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:message-id:date:from:to:cc:subject;
+        bh=20/a0sZ2dzFKeddKBSkNEVtv2AMo9NoJrHJmvABR31k=;
+        b=d5+52nxmSjFC/7ICHsAFF5sLhydqfGyLv5TAIFcNPa+G8JpvwM6i4RKgiq+lfMlwnP
+         rdsLANItZAGsDrRWS01z4N7RmrE7sIrqFfFTLXhRSAVAAexBHJwj5YEWuTYc6jOrU+/Q
+         dNp5b+XtFDHNzO2vGwbomS5OkUDt5P1N30UY5SOFEOPjDyVm1IENv56Pjo7Fj2bn1xmI
+         57yJQB7IOzXbfyeyffDNTpiaKaor+LYqT9yGHj+S3mqTparA/4GZIoGlGisCSFNdaBWN
+         ikN+Sjkme+oJNwI6AN/glZ3iE80lZN3+dgoXf1kemHjhGC5bTLJZt4JoKXdRvjAzpXP9
+         W4uA==
+X-Gm-Message-State: AOAM5308xAk5vbdvzIw27/CEUXYW47In91nQ1LEnjC2DzETbBwmhTIJY
+        j0oeJs7hKbufEpTFhcuBkiw3S1QruH6IgQ==
+X-Google-Smtp-Source: ABdhPJyu6VME/MSR6isTYWyYplihN92JlMd+BYrZuko4mFZdVnneppsOXB+uYbKpE5mJc8NKjPKd6A==
+X-Received: by 2002:a37:9481:: with SMTP id w123mr10382554qkd.75.1629484511800;
+        Fri, 20 Aug 2021 11:35:11 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id p187sm3584045qkd.101.2021.08.20.11.35.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 11:35:11 -0700 (PDT)
+Message-ID: <611ff5df.1c69fb81.43234.a478@mx.google.com>
+Date:   Fri, 20 Aug 2021 14:35:09 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     lsf-pc@lists.linuxfoundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [REMINDER] LSF/MM/BPF: 2021: Cancellation announcement
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 11:55 AM Mauricio V=C3=A1squez <mauricio@kinvolk.io=
-> wrote:
->
-> From: Mauricio V=C3=A1squez <mauriciov@microsoft.com>
->
-> Fixes: ddc7c3042614 ("libbpf: implement BPF CO-RE offset relocation algor=
-ithm")
->
-> Signed-off-by: Mauricio V=C3=A1squez <mauriciov@microsoft.com>
-> ---
->  tools/lib/bpf/relo_core.c | 7 -------
->  1 file changed, 7 deletions(-)
->
-> diff --git tools/lib/bpf/relo_core.c tools/lib/bpf/relo_core.c
-> index 4016ed492d0c..52d8125b7cbe 100644
-> --- tools/lib/bpf/relo_core.c
-> +++ tools/lib/bpf/relo_core.c
-> @@ -417,13 +417,6 @@ static int bpf_core_match_member(const struct btf *l=
-ocal_btf,
->                                 return found;
->                 } else if (strcmp(local_name, targ_name) =3D=3D 0) {
->                         /* matching named field */
-> -                       struct bpf_core_accessor *targ_acc;
-> -
-> -                       targ_acc =3D &spec->spec[spec->len++];
-> -                       targ_acc->type_id =3D targ_id;
-> -                       targ_acc->idx =3D i;
-> -                       targ_acc->name =3D targ_name;
-> -
->                         *next_targ_id =3D m->type;
->                         found =3D bpf_core_fields_are_compat(local_btf,
->                                                            local_member->=
-type,
-> --
-> 2.25.1
->
+Due to the continal assessments and growing concerns around the spiking COVID-19
+infections worldwide we have made the decision to cancel the Linux Storage,
+Filesystem, Memory Management, and BPF summit this year.
 
-Forget that, it's used indeed. Sorry for the noise.
+We are investigating dates for 2022 with the hopes that we can finally hold a
+safe and productive conference.  When we have finalized those plans and are
+ready to begin planning again we will send out a new call for participation.
+The current board will stay in place until we can successfully host the next
+conference.
+
+We thank you for your patience and understanding while we continue to work
+through this very unpredictable situation.
+
+The linux plumbers conference is being held virtually, and there are several
+micro conferences that cover the various topics that we cover at LSF.  If you
+have the desire to still talk with your fellow colleagues I encourage you to
+look into participating in linux plumbers and possibly submitting talks for the
+appropriate micro conference.
+
+Thank you again for your support.  Our sincere sympathies are with all those
+who continue to be affected by this pandemic and wish for good health and safety
+for all.
+
+Thank you on behalf of the program committe:
+
+        Josef Bacik (Filesystems)
+        Amir Goldstein (Filesystems)
+        Martin K. Petersen (Storage)
+        Omar Sandoval (Storage)
+        Michal Hocko (MM)
+        Dan Williams (MM)
+        Alexei Starovoitov (BPF)
+        Daniel Borkmann (BPF)
