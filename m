@@ -2,70 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C26B3F2317
-	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 00:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8153F2479
+	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 03:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233507AbhHSW22 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Aug 2021 18:28:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229532AbhHSW22 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:28:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB40E6109E
-        for <bpf@vger.kernel.org>; Thu, 19 Aug 2021 22:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629412071;
-        bh=OzBCSSWJ97ptHE9a21JwPYypwnMEhpfPwBNttiOYvGs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tDcF6R1Yckso3iuIGY9SHeuLOoew6vC89Kx8Qe41+iZoAygNeaPnLyRqxApgoCsBL
-         WRdEA8QD6S7e7SRueS2N/RzMBPaAg7Zdt14TrfLWGD0XuVSf8qUWQu6k4mXLVYcf0v
-         o6QYEiZEcvOkKo3f4kKJYmZ4zMUKP6+goGxb+BwAsnbqDXtPplvTtQN3QX/Il8UX5u
-         q//gypZIZmKxvyA91ColNLx/jCd05D90aGsYMuz1pazYMg5Kw8HE9dJxzMHDkMczgM
-         IhzW5ob2coymM1nx7rzJbo+0eVxVz2y9pfaKd+ee1tX12lMlLQo1FVRE1re2LA+/jJ
-         eJk52NmVBlgKg==
-Received: by mail-lj1-f176.google.com with SMTP id d16so13995942ljq.4
-        for <bpf@vger.kernel.org>; Thu, 19 Aug 2021 15:27:51 -0700 (PDT)
-X-Gm-Message-State: AOAM530YjOUl/kW806DrguoFXviYT6cx8xeEI9IF7rMfG8D15oyocV/Z
-        6ZDW6KFMRE27mc6XJ15LApjieKVAVq8vYM2VDQ8=
-X-Google-Smtp-Source: ABdhPJy2DuncuSzwCZVSAIicWTM0wAOME6fYIl8Fo9nOlILJHB06hAFP8o04Hrcg+nDGCt6x9oT0BSYcCbs9vR95mas=
-X-Received: by 2002:a2e:a713:: with SMTP id s19mr3919090lje.177.1629412070171;
- Thu, 19 Aug 2021 15:27:50 -0700 (PDT)
+        id S235004AbhHTB7P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Aug 2021 21:59:15 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:41738 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234428AbhHTB7P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Aug 2021 21:59:15 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Akw+xbamDvtd26P+Sn+GA+fpoPEPpDfIQ3DAb?=
+ =?us-ascii?q?v31ZSRFFG/Fw9vre+MjzsCWYtN9/Yh8dcK+7UpVoLUm8yXcX2/h1AV7BZniEhI?=
+ =?us-ascii?q?LAFugLgrcKqAeQeREWmNQ86Y5QN4B6CPDVSWNxlNvG5mCDeOoI8Z2q97+JiI7l?=
+ =?us-ascii?q?o0tQcQ=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,336,1620662400"; 
+   d="scan'208";a="113155626"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 20 Aug 2021 09:58:35 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id B5CF14D0D4BE;
+        Fri, 20 Aug 2021 09:58:31 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 20 Aug 2021 09:58:32 +0800
+Received: from FNSTPC.g08.fujitsu.local (10.167.226.45) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 20 Aug 2021 09:58:10 +0800
+From:   Li Zhijian <lizhijian@cn.fujitsu.com>
+To:     <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <philip.li@intel.com>, <yifeix.zhu@intel.com>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>
+Subject: [PATCH v2 0/5] selftests/bpf: minor fixups
+Date:   Fri, 20 Aug 2021 09:55:52 +0800
+Message-ID: <20210820015556.23276-1-lizhijian@cn.fujitsu.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210817224221.3257826-1-prankgup@fb.com> <20210817224221.3257826-3-prankgup@fb.com>
-In-Reply-To: <20210817224221.3257826-3-prankgup@fb.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 19 Aug 2021 15:27:39 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7FvKx0X-ap+4eOwanBtOg81qnsOtW+9_O5kDO_piX9nQ@mail.gmail.com>
-Message-ID: <CAPhsuW7FvKx0X-ap+4eOwanBtOg81qnsOtW+9_O5kDO_piX9nQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add test for {set|get} socket
- option from setsockopt BPF program
-To:     Prankur gupta <prankgup@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, prankur.07@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: B5CF14D0D4BE.A1391
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 3:43 PM Prankur gupta <prankgup@fb.com> wrote:
->
-> Adding selftests for new added functionality to call bpf_setsockopt and
-> bpf_getsockopt from setsockopt BPF programs
->
-> Test Details:
-> 1. BPF Program
->    Checks for changes in IPV6_TCLASS(SOL_IPV6) via setsockopt
->    If the cca for the socket is not cubic do nothing
->    If the newly set value for IPV6_TCLASS is 45 (0x2d) (as per our usecase)
->    then change the cc from cubic to reno
->
-> 2. User Space Program
->    Creates an AF_INET6 socket and set the cca for that to be "cubic"
->    Attach the program and set the IPV6_TCLASS to 0x2d using setsockopt
->    Verify the cca for the socket changed to reno
->
-> Signed-off-by: Prankur gupta <prankgup@fb.com>
+Fix a few issues reported by 0Day/LKP during runing selftests/bpf.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Changelog:
+V2:
+- folded previous similar standalone patch to [1/5], and add acked tag
+  from Song Liu
+- add acked tag to [2/5], [3/5] from Song Liu
+- [4/5]: move test_bpftool.py to TEST_PROGS_EXTENDED, files in TEST_GEN_PROGS_EXTENDED
+are generated by make. Otherwise, it will break out-of-tree install:
+'make O=/kselftest-build SKIP_TARGETS= V=1 -C tools/testing/selftests install INSTALL_PATH=/kselftest-install'
+- [5/5]: new patch
+
+
+Li Zhijian (5):
+  selftests/bpf: enlarge select() timeout for test_maps
+  selftests/bpf: make test_doc_build.sh work from script directory
+  selftests/bpf: add default bpftool built by selftests to PATH
+  selftests/bpf: add missing files required by test_bpftool.sh for
+    installing
+  selftests/bpf: exit with KSFT_SKIP if no Makefile found
+
+ tools/testing/selftests/bpf/Makefile              |  4 +++-
+ tools/testing/selftests/bpf/test_bpftool.sh       |  6 ++++++
+ tools/testing/selftests/bpf/test_bpftool_build.sh |  2 +-
+ tools/testing/selftests/bpf/test_doc_build.sh     | 10 ++++++++--
+ tools/testing/selftests/bpf/test_maps.c           |  2 +-
+ 5 files changed, 19 insertions(+), 5 deletions(-)
+
+-- 
+2.32.0
+
+
+
