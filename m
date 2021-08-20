@@ -2,120 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 644693F250C
-	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 04:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECD33F2559
+	for <lists+bpf@lfdr.de>; Fri, 20 Aug 2021 05:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237618AbhHTC7I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Aug 2021 22:59:08 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:41931 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234797AbhHTC7I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Aug 2021 22:59:08 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AykiYbqPLLL4ekMBcTiWjsMiBIKoaSvp037Eq?=
- =?us-ascii?q?v3oedfUzSL3/qynOpoVj6faaslYssR0b9exofZPwJE80lqQFhrX5X43SPzUO0V?=
- =?us-ascii?q?HAROoJgLcKgQeQfxEWndQ96U4PScdD4aXLfDpHZNjBkXSFOudl0N+a67qpmOub?=
- =?us-ascii?q?639sSDthY6Zm4xwRMHfhLmRGABlBGYEiFIeRou5Opz+bc3wRacihQlYfWeyrna?=
- =?us-ascii?q?ywqLvWJQ4BGwU86BSDyReh6LvBGRCe2RsEFxNjqI1SiVT4rw=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,336,1620662400"; 
-   d="scan'208";a="113158693"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 20 Aug 2021 10:58:28 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 11F084D0D9BA;
-        Fri, 20 Aug 2021 10:58:23 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Fri, 20 Aug 2021 10:58:17 +0800
-Received: from FNSTPC.g08.fujitsu.local (10.167.226.45) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Fri, 20 Aug 2021 10:58:17 +0800
-From:   Li Zhijian <lizhijian@cn.fujitsu.com>
-To:     <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <philip.li@intel.com>, <yifeix.zhu@intel.com>,
-        Li Zhijian <lizhijian@cn.fujitsu.com>
-Subject: [PATCH v2 5/5] selftests/bpf: exit with KSFT_SKIP if no Makefile found
-Date:   Fri, 20 Aug 2021 10:55:49 +0800
-Message-ID: <20210820025549.28325-1-lizhijian@cn.fujitsu.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210820015556.23276-1-lizhijian@cn.fujitsu.com>
-References: <20210820015556.23276-1-lizhijian@cn.fujitsu.com>
+        id S238105AbhHTDbw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Aug 2021 23:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237933AbhHTDbv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Aug 2021 23:31:51 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994A2C061575;
+        Thu, 19 Aug 2021 20:31:14 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id t66so9624497qkb.0;
+        Thu, 19 Aug 2021 20:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o71P6Ra+Zi7C6O03ccvneZzNal5clWO5NdzPrype27A=;
+        b=p0xG8PkSTCBoEQMuhsRmO+NkOvz21M9ONlm+0sP4280qmyXFg8uESSQ1cqmyaIdikY
+         OyldHtq6mileVjvMeuRJUtrHhEZyedWkPmc80S4U4U28WP06OAmK2ll2ffTkh3Xed261
+         mDoD3Ubfy3T7tnREsmaEBeoRHvziD/TjDw8Exp+LKLMwe2OpTefyXRG59gJV8EGUemwn
+         TK5m45hgnXO4srgJuQgsNF8jTRrIVuugFUFWqoHI9KtNiCWrbEwlswqlVjlqCTUFX6tF
+         CBZkoAad+x4kVMmQyt/I3mHKVYMgL0AYxt9VXRpepppJf1l1W6GuFoHMHPzSL18zCQFA
+         XeQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o71P6Ra+Zi7C6O03ccvneZzNal5clWO5NdzPrype27A=;
+        b=C+OPzX5r2wgvCNx6GY4IVyYDLE+jfKP6P64XqFl+GeM2E1NMck8NwAx9YCRl8sWFNq
+         ZYIFtmF21WjXmTkC/Hz4l4jWnlRjM8gRq5jUaExVB0Lee6ZU570TN1p59wm8lg321KJI
+         BQMTLV/tyEL9i/OREXlvMQr5ndQhLnDUb1t/cdweLc6dksTMX2Y+4G0v6Z3ui/hoMkn4
+         X91AZz+N5R9CFd+Q1aoluf621Wydlb/g8IImUW4kdVsqH3rH1Hwp6CeH1bGeosI0Eg17
+         ixLofFdD5dwcMFl4st8LiIftYzwwF/sfWDUfP8y57Np4J+T0VfTSLXPxACfBkq1AMjP1
+         e+4Q==
+X-Gm-Message-State: AOAM531rWsPac/ySFSBg80V0dXzV8wwM9Y7NIhmwFrOX23iFWHyYtequ
+        HNxM/3tMD39ituOviC1uTzg=
+X-Google-Smtp-Source: ABdhPJzE4RKGFzyux0S+iKMw4H1k9x+N/4CRw7n8C5pMAXXQrT4/RjeUmvcJwL81kcuONsHkZ0de7w==
+X-Received: by 2002:a05:620a:1671:: with SMTP id d17mr6880822qko.191.1629430273893;
+        Thu, 19 Aug 2021 20:31:13 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id p188sm2628878qka.114.2021.08.19.20.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 20:31:13 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Andrei Matei <andreimatei1@gmail.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] tools: fix warning comparing pointer to 0
+Date:   Thu, 19 Aug 2021 20:30:57 -0700
+Message-Id: <20210820033057.13063-1-jing.yangyang@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 11F084D0D9BA.AFE72
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This would happend when we run the tests after install kselftests
- root@lkp-skl-d01 ~# /kselftests/run_kselftest.sh -t bpf:test_doc_build.sh
- TAP version 13
- 1..1
- # selftests: bpf: test_doc_build.sh
- perl: warning: Setting locale failed.
- perl: warning: Please check that your locale settings:
-         LANGUAGE = (unset),
-         LC_ALL = (unset),
-         LC_ADDRESS = "en_US.UTF-8",
-         LC_NAME = "en_US.UTF-8",
-         LC_MONETARY = "en_US.UTF-8",
-         LC_PAPER = "en_US.UTF-8",
-         LC_IDENTIFICATION = "en_US.UTF-8",
-         LC_TELEPHONE = "en_US.UTF-8",
-         LC_MEASUREMENT = "en_US.UTF-8",
-         LC_TIME = "en_US.UTF-8",
-         LC_NUMERIC = "en_US.UTF-8",
-         LANG = "en_US.UTF-8"
-     are supported and installed on your system.
- perl: warning: Falling back to the standard locale ("C").
- # skip:    bpftool files not found!
- #
- ok 1 selftests: bpf: test_doc_build.sh # SKIP
+From: jing yangyang <jing.yangyang@zte.com.cn>
 
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+Fix the following coccicheck warning:
+./tools/testing/selftests/bpf/progs/profiler.inc.h:364:18-22:WARNING
+comparing pointer to 0
+./tools/testing/selftests/bpf/progs/profiler.inc.h:537:23-27:WARNING
+comparing pointer to 0
+./tools/testing/selftests/bpf/progs/profiler.inc.h:544:21-25:WARNING
+comparing pointer to 0
+./tools/testing/selftests/bpf/progs/profiler.inc.h:770:13-17:WARNING
+comparing pointer to 0
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
 ---
- tools/testing/selftests/bpf/test_bpftool_build.sh | 2 +-
- tools/testing/selftests/bpf/test_doc_build.sh     | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/progs/profiler.inc.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_bpftool_build.sh b/tools/testing/selftests/bpf/test_bpftool_build.sh
-index ac349a5cea7e..b03a87571592 100755
---- a/tools/testing/selftests/bpf/test_bpftool_build.sh
-+++ b/tools/testing/selftests/bpf/test_bpftool_build.sh
-@@ -22,7 +22,7 @@ KDIR_ROOT_DIR=$(realpath $PWD/$SCRIPT_REL_DIR/../../../../)
- cd $KDIR_ROOT_DIR
- if [ ! -e tools/bpf/bpftool/Makefile ]; then
- 	echo -e "skip:    bpftool files not found!\n"
--	exit 0
-+	exit 4 # KSFT_SKIP=4
- fi
+diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
+index 4896fdf..5c0bdab 100644
+--- a/tools/testing/selftests/bpf/progs/profiler.inc.h
++++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
+@@ -361,7 +361,7 @@ static INLINE void* populate_var_metadata(struct var_metadata_t* metadata,
+ 	int zero = 0;
+ 	struct var_kill_data_t* kill_data = bpf_map_lookup_elem(&data_heap, &zero);
  
- ERROR=0
-diff --git a/tools/testing/selftests/bpf/test_doc_build.sh b/tools/testing/selftests/bpf/test_doc_build.sh
-index d67ced95a6cf..679cf968c7d1 100755
---- a/tools/testing/selftests/bpf/test_doc_build.sh
-+++ b/tools/testing/selftests/bpf/test_doc_build.sh
-@@ -10,6 +10,11 @@ KDIR_ROOT_DIR=$(realpath $SCRIPT_REL_DIR/../../../../)
- SCRIPT_REL_DIR=$(dirname $(realpath --relative-to=$KDIR_ROOT_DIR $SCRIPT_REL_PATH))
- cd $KDIR_ROOT_DIR
+-	if (kill_data == NULL)
++	if (!kill_dat)
+ 		return NULL;
+ 	struct task_struct* task = (struct task_struct*)bpf_get_current_task();
  
-+if [ ! -e $PWD/$SCRIPT_REL_DIR/Makefile ]; then
-+	echo -e "skip:    bpftool files not found!\n"
-+	exit 4 # KSFT_SKIP=4
-+fi
-+
- for tgt in docs docs-clean; do
- 	make -s -C $PWD/$SCRIPT_REL_DIR $tgt;
- done
+@@ -534,14 +534,14 @@ static INLINE bool is_dentry_allowed_for_filemod(struct dentry* file_dentry,
+ 	*device_id = dev_id;
+ 	bool* allowed_device = bpf_map_lookup_elem(&allowed_devices, &dev_id);
+ 
+-	if (allowed_device == NULL)
++	if (!allowed_device)
+ 		return false;
+ 
+ 	u64 ino = BPF_CORE_READ(file_dentry, d_inode, i_ino);
+ 	*file_ino = ino;
+ 	bool* allowed_file = bpf_map_lookup_elem(&allowed_file_inodes, &ino);
+ 
+-	if (allowed_file == NULL)
++	if (!allowed_fil)
+ 		if (!is_ancestor_in_allowed_inodes(BPF_CORE_READ(file_dentry, d_parent)))
+ 			return false;
+ 	return true;
+@@ -689,7 +689,7 @@ int raw_tracepoint__sched_process_exec(struct bpf_raw_tracepoint_args* ctx)
+ 	u64 inode = BPF_CORE_READ(bprm, file, f_inode, i_ino);
+ 
+ 	bool* should_filter_binprm = bpf_map_lookup_elem(&disallowed_exec_inodes, &inode);
+-	if (should_filter_binprm != NULL)
++	if (should_filter_binprm)
+ 		goto out;
+ 
+ 	int zero = 0;
 -- 
-2.32.0
-
+1.8.3.1
 
 
