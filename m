@@ -2,150 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14D73F38CF
-	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 07:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD313F3A1F
+	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 12:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhHUFU5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Aug 2021 01:20:57 -0400
-Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:46156 "EHLO
-        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhHUFU4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Aug 2021 01:20:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1629523218; x=1661059218;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=hRjIA2N7XqbYT9/bYzG7LF9KmVpB8TKkOtmPXU0WOg8=;
-  b=p7hKn6+vME6R58Vpi6gvRJdFXt88a0GhmCTZ/aLKoaa5vqgIbUq2nOy2
-   h8xvb7aHqNxzUTKKFboVGADZJYz1kCMB8/INiAQk+NzIa+3rUmt4AMzxu
-   n6cd3H6wnFLQSeYiyJXd/mCKdo4TkWi/nb5VA0t4nahpspP81hd/WrDRj
-   g=;
-X-IronPort-AV: E=Sophos;i="5.84,338,1620691200"; 
-   d="scan'208";a="20872219"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1d-25e59222.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 21 Aug 2021 05:20:16 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-25e59222.us-east-1.amazon.com (Postfix) with ESMTPS id 20D13A2437;
-        Sat, 21 Aug 2021 05:20:11 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Sat, 21 Aug 2021 05:20:11 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.161.229) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Sat, 21 Aug 2021 05:20:06 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <jiang.wang@bytedance.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <chaiwen.cc@bytedance.com>,
-        <christian.brauner@ubuntu.com>, <cong.wang@bytedance.com>,
-        <davem@davemloft.net>, <digetx@gmail.com>,
-        <duanxiongchun@bytedance.com>, <kuba@kernel.org>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <rao.shoaib@oracle.com>,
-        <viro@zeniv.linux.org.uk>, <xieyongji@bytedance.com>,
-        <bpf@vger.kernel.org>
-Subject: [PATCH v1] af_unix: fix NULL pointer bug in unix_shutdown
-Date:   Sat, 21 Aug 2021 14:20:02 +0900
-Message-ID: <20210821052002.37230-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210821035045.373991-1-jiang.wang@bytedance.com>
-References: <20210821035045.373991-1-jiang.wang@bytedance.com>
+        id S234179AbhHUKMi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Aug 2021 06:12:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:55947 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233789AbhHUKMh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 Aug 2021 06:12:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629540718; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=DtreSWuXzdy5PnILjEf5ZoEUDjROdOZk8ywtPP/mAQM=; b=BGKHDXFByW2hMcLSq++I6DS50yBrAqTneLPn3BMP9zwaBX/DfDOG81vAv5aOeX97bqZe9hkz
+ l8I/fx0jllOAvVYZs9kIxUQB7E1Svvii/jPkpi9hMLSefItuXH0AME0TwO791mp534CDS/5f
+ KUqveGmQ5GG8rvyvzayjXo7+tR8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyJkMjBlNSIsICJicGZAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6120d16aa2d1fbf62b011a64 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Aug 2021 10:11:54
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9DAB4C4360C; Sat, 21 Aug 2021 10:11:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8F2BAC4338F;
+        Sat, 21 Aug 2021 10:11:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 8F2BAC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 0/3] net: Cleanups for FORTIFY_SOURCE
+References: <20210819202825.3545692-1-keescook@chromium.org>
+        <20210820100151.25f7ccd4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Date:   Sat, 21 Aug 2021 13:11:46 +0300
+In-Reply-To: <20210820100151.25f7ccd4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        (Jakub Kicinski's message of "Fri, 20 Aug 2021 10:01:51 -0700")
+Message-ID: <87tujjt8d9.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.43.161.229]
-X-ClientProxiedBy: EX13D29UWA004.ant.amazon.com (10.43.160.33) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Jiang Wang <jiang.wang@bytedance.com>
-Date:   Sat, 21 Aug 2021 03:50:44 +0000
-> Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap") 
-> introduced a bug for af_unix SEQPACKET type. In unix_shutdown, the 
-> unhash function will call prot->unhash(), which is NULL for SEQPACKET. 
-> And kernel will panic. On ARM32, it will show following messages: (it 
-> likely affects x86 too).
-> 
-> Fix the bug by checking the sk->type first.
-> 
-> Kernel log:
-> <--- cut here ---
->  Unable to handle kernel NULL pointer dereference at virtual address
-> 00000000
->  pgd = 2fba1ffb
->  *pgd=00000000
->  Internal error: Oops: 80000005 [#1] PREEMPT SMP THUMB2
->  Modules linked in:
->  CPU: 1 PID: 1999 Comm: falkon Tainted: G        W
-> 5.14.0-rc5-01175-g94531cfcbe79-dirty #9240
->  Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
->  PC is at 0x0
->  LR is at unix_shutdown+0x81/0x1a8
->  pc : [<00000000>]    lr : [<c08f3311>]    psr: 600f0013
->  sp : e45aff70  ip : e463a3c0  fp : beb54f04
->  r10: 00000125  r9 : e45ae000  r8 : c4a56664
->  r7 : 00000001  r6 : c4a56464  r5 : 00000001  r4 : c4a56400
->  r3 : 00000000  r2 : c5a6b180  r1 : 00000000  r0 : c4a56400
->  Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
->  Control: 50c5387d  Table: 05aa804a  DAC: 00000051
->  Register r0 information: slab PING start c4a56400 pointer offset 0
->  Register r1 information: NULL pointer
->  Register r2 information: slab task_struct start c5a6b180 pointer offset 0
->  Register r3 information: NULL pointer
->  Register r4 information: slab PING start c4a56400 pointer offset 0
->  Register r5 information: non-paged memory
->  Register r6 information: slab PING start c4a56400 pointer offset 100
->  Register r7 information: non-paged memory
->  Register r8 information: slab PING start c4a56400 pointer offset 612
->  Register r9 information: non-slab/vmalloc memory
->  Register r10 information: non-paged memory
->  Register r11 information: non-paged memory
->  Register r12 information: slab filp start e463a3c0 pointer offset 0
->  Process falkon (pid: 1999, stack limit = 0x9ec48895)
->  Stack: (0xe45aff70 to 0xe45b0000)
->  ff60:                                     e45ae000 c5f26a00 00000000 00000125
->  ff80: c0100264 c07f7fa3 beb54f04 fffffff7 00000001 e6f3fc0e b5e5e9ec beb54ec4
->  ffa0: b5da0ccc c010024b b5e5e9ec beb54ec4 0000000f 00000000 00000000 beb54ebc
->  ffc0: b5e5e9ec beb54ec4 b5da0ccc 00000125 beb54f58 00785238 beb5529c beb54f04
->  ffe0: b5da1e24 beb54eac b301385c b62b6ee8 600f0030 0000000f 00000000 00000000
->  [<c08f3311>] (unix_shutdown) from [<c07f7fa3>] (__sys_shutdown+0x2f/0x50)
->  [<c07f7fa3>] (__sys_shutdown) from [<c010024b>]
-> (__sys_trace_return+0x1/0x16)
->  Exception stack(0xe45affa8 to 0xe45afff0)
-> 
-> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-> Reported-by: Dmitry Osipenko <digetx@gmail.com>
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Jakub Kicinski <kuba@kernel.org> writes:
 
-Fixes: 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
+> On Thu, 19 Aug 2021 13:28:22 -0700 Kees Cook wrote:
+>> Hi,
+>> 
+>> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+>> field bounds checking for memcpy(), memmove(), and memset(), avoid
+>> intentionally writing across neighboring fields.
+>> 
+>> These three changes have been living in my memcpy() series[1], but have
+>> no external dependencies. It's probably better to have these go via
+>> netdev.
+>
+> Thanks.
+>
+> Kalle, Saeed - would you like to take the relevant changes? Presumably
+> they would get into net-next anyway by the time the merge window opens.
 
-And the commit is not in net-next yet, so is this patch for bpf-next?
+Ok, I'll take patch 1 to wireless-drivers-next.
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> ---
->  net/unix/af_unix.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> index 443c49081636..6965bc578a80 100644
-> --- a/net/unix/af_unix.c
-> +++ b/net/unix/af_unix.c
-> @@ -2847,7 +2847,8 @@ static int unix_shutdown(struct socket *sock, int mode)
->  		int peer_mode = 0;
->  		const struct proto *prot = READ_ONCE(other->sk_prot);
->  
-> -		prot->unhash(other);
-> +		if (sk->sk_type == SOCK_STREAM)
-
-		if (prot->unhash)
-is more straight?
-
-
-> +			prot->unhash(other);
->  		if (mode&RCV_SHUTDOWN)
->  			peer_mode |= SEND_SHUTDOWN;
->  		if (mode&SEND_SHUTDOWN)
-> -- 
-> 2.20.1
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
