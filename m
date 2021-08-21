@@ -2,129 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20343F3B9E
-	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 19:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D413F3BF6
+	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 20:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhHURQt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Aug 2021 13:16:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:62992 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230309AbhHURQs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Aug 2021 13:16:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629566169; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=MLXw2kAV40fUYj05/3m6TBzD/fnzpbaaqB86lj9wxNQ=;
- b=YvaqIFhphguctGSq56BKs4BmSIy/xNl4MbUloieGT9XE2aefVeVVpm/cULdo6m1+TB8TvUQC
- ZhRjmmW1j87ubspSAoId7Gjwb39JO0XautDjbZB/k80Fv072f1gxaVcx2jpuM/Ul64v21xYT
- zfGRy8pnKLYz0P5/siO2+tCxOYU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyJkMjBlNSIsICJicGZAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 612134cb89fbdf3ffe782829 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Aug 2021 17:15:55
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 398BEC43619; Sat, 21 Aug 2021 17:15:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AEA07C4360C;
-        Sat, 21 Aug 2021 17:15:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org AEA07C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 1/3] ipw2x00: Avoid field-overflowing memcpy()
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210819202825.3545692-2-keescook@chromium.org>
-References: <20210819202825.3545692-2-keescook@chromium.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     netdev@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        id S230486AbhHUSId (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Aug 2021 14:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230419AbhHUSId (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 Aug 2021 14:08:33 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCFCC061757
+        for <bpf@vger.kernel.org>; Sat, 21 Aug 2021 11:07:53 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id j187so11564507pfg.4
+        for <bpf@vger.kernel.org>; Sat, 21 Aug 2021 11:07:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8GJsXQuTpKR2wbHDfP7I1D/01uKb8jZNCY+DWhBzgmo=;
+        b=TIB+RBAgH2h2zSki63S+WYlw3AyD3MPcXf0osPvAucaDGEClyzYSEiH2OLT6cAE7+U
+         O4ekTzJhQ2rj6aA6mdvWqF9pKqq9sLBxz5BNDn04HlXBcZ2oOt/khfZyJF5b29c/e2he
+         hd5PsYah1pEx9nGWZDNfz+IMmUckPALs1wq2tI+oNDWTbQaRH5V9wL2+wdfGrULX8P9c
+         pOnxnJzMfq32VcsDmelDCfyG9Gymgd6XD2yoVWBgDY47nR16YUQkE8yaMmWER80D0Bh7
+         fkB3G271uCIe6KZIvl1BMvaUxaiKuN/hIi8DGQ2Gk5I7s7W0DMNdAlJR4UsoRE9Ktt/S
+         K/ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8GJsXQuTpKR2wbHDfP7I1D/01uKb8jZNCY+DWhBzgmo=;
+        b=j4VMEXzOAeM/dito46m54aDJ5dtfEe0YCToHBRnTSJSo2++deLV+AhlKGUUi3a3CiN
+         E10w4NIOM8plrYbu2TtlneZJkUwiiyfjA5a9KlfASknKg47eMsCT83H11ef1fWqwmUwV
+         GSrdcYIhLIu0teURw4lVv2/JkG1TdjcSMLVWZZQxJj3EovU0Xs7kJ7AOys3SsNrOX0SQ
+         GtN807f7bGU0/h9HF2mx+lDhgpUdoWOh6F2gT80JGcgYcn0Q08Xl1vTyoPm3xpnlvPXB
+         cbwfuK7xVm7MQZnQSJYBPCMdVayNyKnRPebNNPdar/tzYz/MlxipFlJzUUSsZrTtKcT9
+         lXig==
+X-Gm-Message-State: AOAM5325DQiH3IULd+iF61xqw+V8MqZn8qGLMQjS1LZJdc1ugoUi+35r
+        ylOhOsPneqsQaqiidFAaqJBgY5K2eG0+4Q==
+X-Google-Smtp-Source: ABdhPJwWegNY4tNj3aN8baq189DLQrBmrG3fbjMv6aFrT3BR5GjwReseEtyfLb0IyUEWHMuurCs3dA==
+X-Received: by 2002:aa7:8d0c:0:b029:3e0:2e32:3148 with SMTP id j12-20020aa78d0c0000b02903e02e323148mr25776486pfe.23.1629569272676;
+        Sat, 21 Aug 2021 11:07:52 -0700 (PDT)
+Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
+        by smtp.gmail.com with ESMTPSA id n32sm11944585pgl.69.2021.08.21.11.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Aug 2021 11:07:52 -0700 (PDT)
+From:   Jiang Wang <jiang.wang@bytedance.com>
+To:     bpf@vger.kernel.org
+Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
+        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        kuniyu@amazon.co.jp, Dmitry Osipenko <digetx@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210821171554.398BEC43619@smtp.codeaurora.org>
-Date:   Sat, 21 Aug 2021 17:15:54 +0000 (UTC)
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Rao Shoaib <rao.shoaib@oracle.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2] af_unix: fix NULL pointer bug in unix_shutdown
+Date:   Sat, 21 Aug 2021 18:07:36 +0000
+Message-Id: <20210821180738.1151155-1-jiang.wang@bytedance.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> wrote:
+Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap") 
+introduced a bug for af_unix SEQPACKET type. In unix_shutdown, the
+unhash function will call prot->unhash(), which is NULL for SEQPACKET.
+And kernel will panic. On ARM32, it will show following messages: (it 
+likely affects x86 too).
 
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy(), memmove(), and memset(), avoid
-> intentionally writing across neighboring fields.
-> 
-> libipw_read_qos_param_element() copies a struct libipw_info_element
-> into a struct libipw_qos_information_element, but is actually wanting to
-> copy into the larger struct libipw_qos_parameter_info (the contents of
-> ac_params_record[] is later examined). Refactor the routine to perform
-> centralized checks, and copy the entire contents directly (since the id
-> and len members match the elementID and length members):
-> 
-> struct libipw_info_element {
->         u8 id;
->         u8 len;
->         u8 data[];
-> } __packed;
-> 
-> struct libipw_qos_information_element {
->         u8 elementID;
->         u8 length;
->         u8 qui[QOS_OUI_LEN];
->         u8 qui_type;
->         u8 qui_subtype;
->         u8 version;
->         u8 ac_info;
-> } __packed;
-> 
-> struct libipw_qos_parameter_info {
->         struct libipw_qos_information_element info_element;
->         u8 reserved;
->         struct libipw_qos_ac_parameter ac_params_record[QOS_QUEUE_NUM];
-> } __packed;
-> 
-> Cc: Stanislav Yakovlev <stas.yakovlev@gmail.com>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Fix the bug by checking the prot->unhash is NULL or not first.
 
-2 patches applied to wireless-drivers-next.git, thanks.
+Kernel log:
+<--- cut here ---
+ Unable to handle kernel NULL pointer dereference at virtual address
+00000000
+ pgd = 2fba1ffb
+ *pgd=00000000
+ Internal error: Oops: 80000005 [#1] PREEMPT SMP THUMB2
+ Modules linked in:
+ CPU: 1 PID: 1999 Comm: falkon Tainted: G        W
+5.14.0-rc5-01175-g94531cfcbe79-dirty #9240
+ Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+ PC is at 0x0
+ LR is at unix_shutdown+0x81/0x1a8
+ pc : [<00000000>]    lr : [<c08f3311>]    psr: 600f0013
+ sp : e45aff70  ip : e463a3c0  fp : beb54f04
+ r10: 00000125  r9 : e45ae000  r8 : c4a56664
+ r7 : 00000001  r6 : c4a56464  r5 : 00000001  r4 : c4a56400
+ r3 : 00000000  r2 : c5a6b180  r1 : 00000000  r0 : c4a56400
+ Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+ Control: 50c5387d  Table: 05aa804a  DAC: 00000051
+ Register r0 information: slab PING start c4a56400 pointer offset 0
+ Register r1 information: NULL pointer
+ Register r2 information: slab task_struct start c5a6b180 pointer offset 0
+ Register r3 information: NULL pointer
+ Register r4 information: slab PING start c4a56400 pointer offset 0
+ Register r5 information: non-paged memory
+ Register r6 information: slab PING start c4a56400 pointer offset 100
+ Register r7 information: non-paged memory
+ Register r8 information: slab PING start c4a56400 pointer offset 612
+ Register r9 information: non-slab/vmalloc memory
+ Register r10 information: non-paged memory
+ Register r11 information: non-paged memory
+ Register r12 information: slab filp start e463a3c0 pointer offset 0
+ Process falkon (pid: 1999, stack limit = 0x9ec48895)
+ Stack: (0xe45aff70 to 0xe45b0000)
+ ff60:                                     e45ae000 c5f26a00 00000000 00000125
+ ff80: c0100264 c07f7fa3 beb54f04 fffffff7 00000001 e6f3fc0e b5e5e9ec beb54ec4
+ ffa0: b5da0ccc c010024b b5e5e9ec beb54ec4 0000000f 00000000 00000000 beb54ebc
+ ffc0: b5e5e9ec beb54ec4 b5da0ccc 00000125 beb54f58 00785238 beb5529c beb54f04
+ ffe0: b5da1e24 beb54eac b301385c b62b6ee8 600f0030 0000000f 00000000 00000000
+ [<c08f3311>] (unix_shutdown) from [<c07f7fa3>] (__sys_shutdown+0x2f/0x50)
+ [<c07f7fa3>] (__sys_shutdown) from [<c010024b>]
+(__sys_trace_return+0x1/0x16)
+ Exception stack(0xe45affa8 to 0xe45afff0)
 
-d6b6d1bb80be ipw2x00: Avoid field-overflowing memcpy()
-92276c592a6b ray_cs: Split memcpy() to avoid bounds check warning
+Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+Reported-by: Dmitry Osipenko <digetx@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+---
+v1 -> v2: check prot->unhash directly.
 
+ net/unix/af_unix.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index 443c49081636..15c1e4e4012d 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -2847,7 +2847,8 @@ static int unix_shutdown(struct socket *sock, int mode)
+ 		int peer_mode = 0;
+ 		const struct proto *prot = READ_ONCE(other->sk_prot);
+ 
+-		prot->unhash(other);
++		if (prot->unhash)
++			prot->unhash(other);
+ 		if (mode&RCV_SHUTDOWN)
+ 			peer_mode |= SEND_SHUTDOWN;
+ 		if (mode&SEND_SHUTDOWN)
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210819202825.3545692-2-keescook@chromium.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.20.1
 
