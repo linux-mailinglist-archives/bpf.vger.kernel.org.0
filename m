@@ -2,151 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6D53F3B24
-	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 17:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20343F3B9E
+	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 19:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231736AbhHUPT6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Aug 2021 11:19:58 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:44872 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhHUPT6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Aug 2021 11:19:58 -0400
-Received: by mail-io1-f69.google.com with SMTP id d15-20020a0566022befb02905b2e9040807so7226400ioy.11
-        for <bpf@vger.kernel.org>; Sat, 21 Aug 2021 08:19:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=MWvlGvJX3+lC+CEYrV+NJHyCqoKq7RyLbTXAsQO2CkQ=;
-        b=IBUINmbJ8fHvT3eyUMvAolEQ+93gOVpQO5KziY41TuwrJjyXAlmq/NsWv/8m8BKE4l
-         ragvLyKf9ROTgKi+CHFenNiPjHDcnwOATXSwwnMPfTTRer3yfOP2AK3f9WBQv8bm4sF0
-         DLQkq7DS7t95rtajCNaqhecqTZqxo1l7MSwoiLskKzo1Bt2G1xzmTFjfhVZLl2t7kwms
-         WLT8bO237UxU5BdoQyaka6OjVZRJk3ZGQ6NI+xivifLxD8P4WeyJjUWhVYnMYim3Bqh1
-         Sru4c/EokZpBjDOgegzVBSgjF9OUm0491CJ0+09kHutcCfCA0EydfqD2HBi+60O8sthz
-         Wf+A==
-X-Gm-Message-State: AOAM533ttMTTPIDGm0ZZgRglO/0017JRcSwKXfNn5KqYz/IYR23eyAfz
-        ljgkJVXRXP/B0ThH45OcKkEOkFmDNU0l7GdQnCgED/MJDDjT
-X-Google-Smtp-Source: ABdhPJwtfhWP2cfkdff8Z/zHnkfT0tZgwaUP5HKN+ka3i6qEb3FVDC/Z62GKMqghqbhutTFdaMU02QNNxsK63f/Qp3KIufdL9hPq
+        id S231395AbhHURQt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Aug 2021 13:16:49 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:62992 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230309AbhHURQs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 Aug 2021 13:16:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629566169; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=MLXw2kAV40fUYj05/3m6TBzD/fnzpbaaqB86lj9wxNQ=;
+ b=YvaqIFhphguctGSq56BKs4BmSIy/xNl4MbUloieGT9XE2aefVeVVpm/cULdo6m1+TB8TvUQC
+ ZhRjmmW1j87ubspSAoId7Gjwb39JO0XautDjbZB/k80Fv072f1gxaVcx2jpuM/Ul64v21xYT
+ zfGRy8pnKLYz0P5/siO2+tCxOYU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyJkMjBlNSIsICJicGZAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 612134cb89fbdf3ffe782829 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Aug 2021 17:15:55
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 398BEC43619; Sat, 21 Aug 2021 17:15:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AEA07C4360C;
+        Sat, 21 Aug 2021 17:15:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org AEA07C4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-Received: by 2002:a92:6711:: with SMTP id b17mr17814117ilc.122.1629559158845;
- Sat, 21 Aug 2021 08:19:18 -0700 (PDT)
-Date:   Sat, 21 Aug 2021 08:19:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cdb89d05ca134e47@google.com>
-Subject: [syzbot] BUG: unable to handle kernel NULL pointer dereference in unix_shutdown
-From:   syzbot <syzbot+cd7ceee0d3b5892f07af@syzkaller.appspotmail.com>
-To:     Rao.Shoaib@oracle.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, cong.wang@bytedance.com, daniel@iogearbox.net,
-        davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 1/3] ipw2x00: Avoid field-overflowing memcpy()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210819202825.3545692-2-keescook@chromium.org>
+References: <20210819202825.3545692-2-keescook@chromium.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     netdev@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210821171554.398BEC43619@smtp.codeaurora.org>
+Date:   Sat, 21 Aug 2021 17:15:54 +0000 (UTC)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Kees Cook <keescook@chromium.org> wrote:
 
-syzbot found the following issue on:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy(), memmove(), and memset(), avoid
+> intentionally writing across neighboring fields.
+> 
+> libipw_read_qos_param_element() copies a struct libipw_info_element
+> into a struct libipw_qos_information_element, but is actually wanting to
+> copy into the larger struct libipw_qos_parameter_info (the contents of
+> ac_params_record[] is later examined). Refactor the routine to perform
+> centralized checks, and copy the entire contents directly (since the id
+> and len members match the elementID and length members):
+> 
+> struct libipw_info_element {
+>         u8 id;
+>         u8 len;
+>         u8 data[];
+> } __packed;
+> 
+> struct libipw_qos_information_element {
+>         u8 elementID;
+>         u8 length;
+>         u8 qui[QOS_OUI_LEN];
+>         u8 qui_type;
+>         u8 qui_subtype;
+>         u8 version;
+>         u8 ac_info;
+> } __packed;
+> 
+> struct libipw_qos_parameter_info {
+>         struct libipw_qos_information_element info_element;
+>         u8 reserved;
+>         struct libipw_qos_ac_parameter ac_params_record[QOS_QUEUE_NUM];
+> } __packed;
+> 
+> Cc: Stanislav Yakovlev <stas.yakovlev@gmail.com>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-HEAD commit:    9803fb968c8c Add linux-next specific files for 20210817
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1727c65e300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=681282daead30d81
-dashboard link: https://syzkaller.appspot.com/bug?extid=cd7ceee0d3b5892f07af
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13fb6ff9300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15272861300000
+2 patches applied to wireless-drivers-next.git, thanks.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cd7ceee0d3b5892f07af@syzkaller.appspotmail.com
+d6b6d1bb80be ipw2x00: Avoid field-overflowing memcpy()
+92276c592a6b ray_cs: Split memcpy() to avoid bounds check warning
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 6f812067 P4D 6f812067 PUD 6fe2f067 PMD 0 
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6569 Comm: syz-executor133 Not tainted 5.14.0-rc6-next-20210817-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc90002dcfe38 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffffff8d27cfa0 RCX: 0000000000000000
-RDX: 1ffffffff1a4fa0a RSI: ffffffff87d03085 RDI: ffff888077074d80
-RBP: ffff888077074d80 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff87d03004 R11: 0000000000000001 R12: 0000000000000001
-R13: ffff888077075398 R14: ffff888077075b58 R15: ffff888077074e00
-FS:  0000000001747300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 000000006f93f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- unix_shutdown+0x28a/0x5b0 net/unix/af_unix.c:2857
- __sys_shutdown_sock net/socket.c:2242 [inline]
- __sys_shutdown_sock net/socket.c:2236 [inline]
- __sys_shutdown+0xf1/0x1b0 net/socket.c:2254
- __do_sys_shutdown net/socket.c:2262 [inline]
- __se_sys_shutdown net/socket.c:2260 [inline]
- __x64_sys_shutdown+0x50/0x70 net/socket.c:2260
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ee29
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdc0b3c908 EFLAGS: 00000246 ORIG_RAX: 0000000000000030
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee29
-RDX: 00000000004ac018 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000402e10 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402ea0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-Modules linked in:
-CR2: 0000000000000000
----[ end trace f541a02ac6ed69b5 ]---
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc90002dcfe38 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffffff8d27cfa0 RCX: 0000000000000000
-RDX: 1ffffffff1a4fa0a RSI: ffffffff87d03085 RDI: ffff888077074d80
-RBP: ffff888077074d80 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff87d03004 R11: 0000000000000001 R12: 0000000000000001
-R13: ffff888077075398 R14: ffff888077075b58 R15: ffff888077074e00
-FS:  0000000001747300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 000000006f93f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	28 c3                	sub    %al,%bl
-   2:	e8 2a 14 00 00       	callq  0x1431
-   7:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
-   e:	00 00 00 
-  11:	48 89 f8             	mov    %rdi,%rax
-  14:	48 89 f7             	mov    %rsi,%rdi
-  17:	48 89 d6             	mov    %rdx,%rsi
-  1a:	48 89 ca             	mov    %rcx,%rdx
-  1d:	4d 89 c2             	mov    %r8,%r10
-  20:	4d 89 c8             	mov    %r9,%r8
-  23:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
-  28:	0f 05                	syscall 
-  2a:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax <-- trapping instruction
-  30:	73 01                	jae    0x33
-  32:	c3                   	retq   
-  33:	48 c7 c1 c0 ff ff ff 	mov    $0xffffffffffffffc0,%rcx
-  3a:	f7 d8                	neg    %eax
-  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
-  3f:	48                   	rex.W
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210819202825.3545692-2-keescook@chromium.org/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
