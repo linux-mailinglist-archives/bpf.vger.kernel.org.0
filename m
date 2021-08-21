@@ -2,155 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D413F3BF6
-	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 20:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B066E3F3C26
+	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 20:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhHUSId (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Aug 2021 14:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
+        id S230364AbhHUStI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Aug 2021 14:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbhHUSId (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Aug 2021 14:08:33 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCFCC061757
-        for <bpf@vger.kernel.org>; Sat, 21 Aug 2021 11:07:53 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id j187so11564507pfg.4
-        for <bpf@vger.kernel.org>; Sat, 21 Aug 2021 11:07:53 -0700 (PDT)
+        with ESMTP id S230207AbhHUStI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 Aug 2021 14:49:08 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DAEC061575;
+        Sat, 21 Aug 2021 11:48:28 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id j2so3397395pll.1;
+        Sat, 21 Aug 2021 11:48:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=8GJsXQuTpKR2wbHDfP7I1D/01uKb8jZNCY+DWhBzgmo=;
-        b=TIB+RBAgH2h2zSki63S+WYlw3AyD3MPcXf0osPvAucaDGEClyzYSEiH2OLT6cAE7+U
-         O4ekTzJhQ2rj6aA6mdvWqF9pKqq9sLBxz5BNDn04HlXBcZ2oOt/khfZyJF5b29c/e2he
-         hd5PsYah1pEx9nGWZDNfz+IMmUckPALs1wq2tI+oNDWTbQaRH5V9wL2+wdfGrULX8P9c
-         pOnxnJzMfq32VcsDmelDCfyG9Gymgd6XD2yoVWBgDY47nR16YUQkE8yaMmWER80D0Bh7
-         fkB3G271uCIe6KZIvl1BMvaUxaiKuN/hIi8DGQ2Gk5I7s7W0DMNdAlJR4UsoRE9Ktt/S
-         K/ng==
+        bh=YFp91sLeLK3hJtIZ3y93Vq2ajpewNkRNEYqAKJVS7oQ=;
+        b=V3b4h+F/GH+PDcCFEl6TIXQHzyvepsirZBoz1Zop5YykyUf8NS8hlQfNZeLBFPCJFd
+         Pi19PXLfGfEvuRZemH75561ed9swAYx/dgkXqhBnUmzvFyUtN8gcpK3BH2G8yTL4eWNN
+         ssGAecmrqk9gvQROGW/V3lvWkzBc18FWIaCgZI2K1UFjIE2ESnpJONQwne5kX2TaUitq
+         D5GHMH/kXIjZLwCARtDRzxt3rRW9qE5qtAXA5LOZzUW6Pu2Qt6vlFkcIl9RpOvae6vfA
+         jr8JSOXMahCfhNmyi3qgnAgRDsIu3SvcSFDVP+5TdCXFlGnp3nKsNarnxl4+YyLRMYLT
+         TkbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=8GJsXQuTpKR2wbHDfP7I1D/01uKb8jZNCY+DWhBzgmo=;
-        b=j4VMEXzOAeM/dito46m54aDJ5dtfEe0YCToHBRnTSJSo2++deLV+AhlKGUUi3a3CiN
-         E10w4NIOM8plrYbu2TtlneZJkUwiiyfjA5a9KlfASknKg47eMsCT83H11ef1fWqwmUwV
-         GSrdcYIhLIu0teURw4lVv2/JkG1TdjcSMLVWZZQxJj3EovU0Xs7kJ7AOys3SsNrOX0SQ
-         GtN807f7bGU0/h9HF2mx+lDhgpUdoWOh6F2gT80JGcgYcn0Q08Xl1vTyoPm3xpnlvPXB
-         cbwfuK7xVm7MQZnQSJYBPCMdVayNyKnRPebNNPdar/tzYz/MlxipFlJzUUSsZrTtKcT9
-         lXig==
-X-Gm-Message-State: AOAM5325DQiH3IULd+iF61xqw+V8MqZn8qGLMQjS1LZJdc1ugoUi+35r
-        ylOhOsPneqsQaqiidFAaqJBgY5K2eG0+4Q==
-X-Google-Smtp-Source: ABdhPJwWegNY4tNj3aN8baq189DLQrBmrG3fbjMv6aFrT3BR5GjwReseEtyfLb0IyUEWHMuurCs3dA==
-X-Received: by 2002:aa7:8d0c:0:b029:3e0:2e32:3148 with SMTP id j12-20020aa78d0c0000b02903e02e323148mr25776486pfe.23.1629569272676;
-        Sat, 21 Aug 2021 11:07:52 -0700 (PDT)
-Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id n32sm11944585pgl.69.2021.08.21.11.07.51
+        bh=YFp91sLeLK3hJtIZ3y93Vq2ajpewNkRNEYqAKJVS7oQ=;
+        b=ewnbbtjhhIXuemXNTeJaNPi+wIaeKQcEnvlGpwSx9B9+JbvWr3LB0BaQN6pFVl4nMN
+         rF0H5+WIFaVHqewPpyy5MTkBSaSV4c/IE1Y0qRryJhWNaPDL/XBLW2bOwiRu6/p1gaA3
+         EkmdnjrxfJIp9jtoaq/I9yCNvpp/QQRMq5AiZaYVCYY8L3k3fNTwcNfOdQ0vXy8U2ml8
+         8iZJ3UcWrYiel1DcCXp1WvWR0S3dUg8D9b7AFtVJNn8JcDc1pyBBGmTJVBgTQhfLBk35
+         DLyNAD7zsuPXlOwemWsrUdOEK0lKTGtJSC8TQyOHjTg7bAIt+GaYJWbnuz9zFR7Ub+Hy
+         5PlQ==
+X-Gm-Message-State: AOAM5317CjCX4FZjenuCgkOAYwfTc0c6gqpz9vdREx/k7cdHN92DcLLn
+        48GA6R1wqlmlp3694GPPPPp/EzBNRM8=
+X-Google-Smtp-Source: ABdhPJygG/cOO1Hn8RXsr41zJ6C/F3NKCUGYXAJFAvkQhfYMzuL/yOuLfwx/vBjldZBzVQtVUvDpcg==
+X-Received: by 2002:a17:90a:cb93:: with SMTP id a19mr11262395pju.215.1629571707894;
+        Sat, 21 Aug 2021 11:48:27 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d820:9cc6:d37f:c2fd:dc6])
+        by smtp.gmail.com with ESMTPSA id e3sm11186808pfi.189.2021.08.21.11.48.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 11:07:52 -0700 (PDT)
-From:   Jiang Wang <jiang.wang@bytedance.com>
+        Sat, 21 Aug 2021 11:48:27 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
-Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        kuniyu@amazon.co.jp, Dmitry Osipenko <digetx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Rao Shoaib <rao.shoaib@oracle.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2] af_unix: fix NULL pointer bug in unix_shutdown
-Date:   Sat, 21 Aug 2021 18:07:36 +0000
-Message-Id: <20210821180738.1151155-1-jiang.wang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
+        Spencer Baugh <sbaugh@catern.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Alexander Mihalicyn <alexander@mihalicyn.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH bpf-next RFC v1 0/5] Implement file local storage
+Date:   Sun, 22 Aug 2021 00:18:19 +0530
+Message-Id: <20210821184824.2052643-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap") 
-introduced a bug for af_unix SEQPACKET type. In unix_shutdown, the
-unhash function will call prot->unhash(), which is NULL for SEQPACKET.
-And kernel will panic. On ARM32, it will show following messages: (it 
-likely affects x86 too).
+This series implements a file local storage map for eBPF LSM programs. This
+allows to tie lifetime of data in the map to an open file description (in POSIX
+parlance). Like other local storage map types, lifetime of data is tied to the
+struct file instance.
 
-Fix the bug by checking the prot->unhash is NULL or not first.
+The main purpose is a general purpose map keyed by fd where the open file
+underlying the fd (struct file *) serves as the key into the map. It is possible
+to use struct file * from kernelspace, but sharing update access with userspace
+means userspace has no way except kcmp-aring with another known fd with a key.
+This is pretty wasteful.
 
-Kernel log:
-<--- cut here ---
- Unable to handle kernel NULL pointer dereference at virtual address
-00000000
- pgd = 2fba1ffb
- *pgd=00000000
- Internal error: Oops: 80000005 [#1] PREEMPT SMP THUMB2
- Modules linked in:
- CPU: 1 PID: 1999 Comm: falkon Tainted: G        W
-5.14.0-rc5-01175-g94531cfcbe79-dirty #9240
- Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
- PC is at 0x0
- LR is at unix_shutdown+0x81/0x1a8
- pc : [<00000000>]    lr : [<c08f3311>]    psr: 600f0013
- sp : e45aff70  ip : e463a3c0  fp : beb54f04
- r10: 00000125  r9 : e45ae000  r8 : c4a56664
- r7 : 00000001  r6 : c4a56464  r5 : 00000001  r4 : c4a56400
- r3 : 00000000  r2 : c5a6b180  r1 : 00000000  r0 : c4a56400
- Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
- Control: 50c5387d  Table: 05aa804a  DAC: 00000051
- Register r0 information: slab PING start c4a56400 pointer offset 0
- Register r1 information: NULL pointer
- Register r2 information: slab task_struct start c5a6b180 pointer offset 0
- Register r3 information: NULL pointer
- Register r4 information: slab PING start c4a56400 pointer offset 0
- Register r5 information: non-paged memory
- Register r6 information: slab PING start c4a56400 pointer offset 100
- Register r7 information: non-paged memory
- Register r8 information: slab PING start c4a56400 pointer offset 612
- Register r9 information: non-slab/vmalloc memory
- Register r10 information: non-paged memory
- Register r11 information: non-paged memory
- Register r12 information: slab filp start e463a3c0 pointer offset 0
- Process falkon (pid: 1999, stack limit = 0x9ec48895)
- Stack: (0xe45aff70 to 0xe45b0000)
- ff60:                                     e45ae000 c5f26a00 00000000 00000125
- ff80: c0100264 c07f7fa3 beb54f04 fffffff7 00000001 e6f3fc0e b5e5e9ec beb54ec4
- ffa0: b5da0ccc c010024b b5e5e9ec beb54ec4 0000000f 00000000 00000000 beb54ebc
- ffc0: b5e5e9ec beb54ec4 b5da0ccc 00000125 beb54f58 00785238 beb5529c beb54f04
- ffe0: b5da1e24 beb54eac b301385c b62b6ee8 600f0030 0000000f 00000000 00000000
- [<c08f3311>] (unix_shutdown) from [<c07f7fa3>] (__sys_shutdown+0x2f/0x50)
- [<c07f7fa3>] (__sys_shutdown) from [<c010024b>]
-(__sys_trace_return+0x1/0x16)
- Exception stack(0xe45affa8 to 0xe45afff0)
+It can also be used to treat the map as a set of files that have been added to
+it, such that multiples sets can be looked up for matching purposes in O(1)
+instead of O(n) using kcmp(2) from userspace (for same struct file *).
 
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-Reported-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
----
-v1 -> v2: check prot->unhash directly.
+There are multiple other usecases served by this map. One of the motivating ones
+is the ability to now implement a Capsicum [0] style capability based sandbox
+using eBPF LSM, but the actual mechanism is much more generic and allows
+applications to enforce rights of their own per open file that they delegate to
+other users by conventional fd-passing on UNIX (dup/fork/SCM_RIGHTS).
 
- net/unix/af_unix.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+The implementation is exactly the same as bpf_inode_storage, except some
+modifications to use struct file * as the key instead of struct inode *.
 
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 443c49081636..15c1e4e4012d 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -2847,7 +2847,8 @@ static int unix_shutdown(struct socket *sock, int mode)
- 		int peer_mode = 0;
- 		const struct proto *prot = READ_ONCE(other->sk_prot);
- 
--		prot->unhash(other);
-+		if (prot->unhash)
-+			prot->unhash(other);
- 		if (mode&RCV_SHUTDOWN)
- 			peer_mode |= SEND_SHUTDOWN;
- 		if (mode&SEND_SHUTDOWN)
+[0]: https://www.usenix.org/legacy/event/sec10/tech/full_papers/Watson.pdf
+
+Kumar Kartikeya Dwivedi (5):
+  bpf: Implement file local storage
+  tools: sync bpf.h header
+  libbpf: Add bpf_probe_map_type support for file local storage
+  tools: bpf: update bpftool for file_storage map
+  tools: testing: Add selftest for file local storage map
+
+ include/linux/bpf_lsm.h                       |  21 ++
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |  39 +++
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bpf_file_storage.c                 | 244 ++++++++++++++++++
+ kernel/bpf/bpf_lsm.c                          |   4 +
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  10 +
+ security/bpf/hooks.c                          |   2 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   2 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   3 +-
+ tools/bpf/bpftool/map.c                       |   3 +-
+ tools/include/uapi/linux/bpf.h                |  39 +++
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ .../bpf/prog_tests/test_local_storage.c       |  51 ++++
+ .../selftests/bpf/progs/local_storage.c       |  23 ++
+ 16 files changed, 443 insertions(+), 5 deletions(-)
+ create mode 100644 kernel/bpf/bpf_file_storage.c
+
 -- 
-2.20.1
+2.33.0
 
