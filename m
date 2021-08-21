@@ -2,104 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E972B3F3A24
-	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 12:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71B33F3A8B
+	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 14:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233989AbhHUKOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Aug 2021 06:14:55 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:44448 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233654AbhHUKOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Aug 2021 06:14:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629540855; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=Ny6XszXW7Z2ZbJ4W8vGu4YWMEB4nBB7dDkoYqIpT+uE=; b=aEr3Eux6qlgZLDBCwXjo177GrMmrHXpgJ1lHP4FDPAcd3pZ0ZYdSLs4uHeoHXKi5LTDR79Xo
- C2KLHD1ubgj9nzANHaU8iGMnn4+pemKIR9kGYtjkwdFw6GTOFfUSPxk2NZY9gQmgAbSEzG2V
- Avde6y+x1t+A7I7pOJ/DPP4ASYc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyJkMjBlNSIsICJicGZAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 6120d1dd89fbdf3ffece3fa6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Aug 2021 10:13:49
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6D092C4361B; Sat, 21 Aug 2021 10:13:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 82EA8C4338F;
-        Sat, 21 Aug 2021 10:13:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 82EA8C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S233530AbhHUMOy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Aug 2021 08:14:54 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:53002 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234466AbhHUMOx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 Aug 2021 08:14:53 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx30EH7iBhLFozAA--.19387S2;
+        Sat, 21 Aug 2021 20:14:00 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/3] net: Cleanups for FORTIFY_SOURCE
-References: <20210819202825.3545692-1-keescook@chromium.org>
-        <20210820100151.25f7ccd4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87tujjt8d9.fsf@codeaurora.org>
-Date:   Sat, 21 Aug 2021 13:13:37 +0300
-In-Reply-To: <87tujjt8d9.fsf@codeaurora.org> (Kalle Valo's message of "Sat, 21
-        Aug 2021 13:11:46 +0300")
-Message-ID: <87eean9kby.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: test_bpf: Print total time of test in the summary
+Date:   Sat, 21 Aug 2021 20:13:59 +0800
+Message-Id: <1629548039-3747-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx30EH7iBhLFozAA--.19387S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar17Ary3ur1UtrWxtw1UKFg_yoW8Kw45pF
+        WYg3s2gw45ta1fuFyxJFWUtF4fKFW0k3yfCryxG34Yyan3Kw1jqF48tryFvrySy3yFqr4a
+        y3W0yrW5CF1fKaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kI
+        c2xKxwCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07jcPE-UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kalle Valo <kvalo@codeaurora.org> writes:
+The total time of test is useful to compare the performance
+when bpf_jit_enable is 0 or 1, so print it in the summary.
 
-> Jakub Kicinski <kuba@kernel.org> writes:
->
->> On Thu, 19 Aug 2021 13:28:22 -0700 Kees Cook wrote:
->>> Hi,
->>> 
->>> In preparation for FORTIFY_SOURCE performing compile-time and run-time
->>> field bounds checking for memcpy(), memmove(), and memset(), avoid
->>> intentionally writing across neighboring fields.
->>> 
->>> These three changes have been living in my memcpy() series[1], but have
->>> no external dependencies. It's probably better to have these go via
->>> netdev.
->>
->> Thanks.
->>
->> Kalle, Saeed - would you like to take the relevant changes? Presumably
->> they would get into net-next anyway by the time the merge window opens.
->
-> Ok, I'll take patch 1 to wireless-drivers-next.
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ lib/test_bpf.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
 
-Correction: I'll take patches 1 and 3 to wireless-drivers-next.
-
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index 830a18e..b1b17ba 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -8920,6 +8920,9 @@ static __init int test_skb_segment_single(const struct skb_segment_test *test)
+ static __init int test_skb_segment(void)
+ {
+ 	int i, err_cnt = 0, pass_cnt = 0;
++	u64 start, finish;
++
++	start = ktime_get_ns();
+ 
+ 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
+ 		const struct skb_segment_test *test = &skb_segment_tests[i];
+@@ -8935,8 +8938,10 @@ static __init int test_skb_segment(void)
+ 		}
+ 	}
+ 
+-	pr_info("%s: Summary: %d PASSED, %d FAILED\n", __func__,
+-		pass_cnt, err_cnt);
++	finish = ktime_get_ns();
++
++	pr_info("%s: Summary: %d PASSED, %d FAILED in %llu nsec\n",
++		__func__, pass_cnt, err_cnt, finish - start);
+ 	return err_cnt ? -EINVAL : 0;
+ }
+ 
+@@ -8944,6 +8949,9 @@ static __init int test_bpf(void)
+ {
+ 	int i, err_cnt = 0, pass_cnt = 0;
+ 	int jit_cnt = 0, run_cnt = 0;
++	u64 start, finish;
++
++	start = ktime_get_ns();
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+ 		struct bpf_prog *fp;
+@@ -8983,8 +8991,10 @@ static __init int test_bpf(void)
+ 		}
+ 	}
+ 
+-	pr_info("Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed]\n",
+-		pass_cnt, err_cnt, jit_cnt, run_cnt);
++	finish = ktime_get_ns();
++
++	pr_info("Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed] in %llu nsec\n",
++		pass_cnt, err_cnt, jit_cnt, run_cnt, finish - start);
+ 
+ 	return err_cnt ? -EINVAL : 0;
+ }
+@@ -9192,6 +9202,9 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ {
+ 	int i, err_cnt = 0, pass_cnt = 0;
+ 	int jit_cnt = 0, run_cnt = 0;
++	u64 start, finish;
++
++	start = ktime_get_ns();
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
+ 		struct tail_call_test *test = &tail_call_tests[i];
+@@ -9222,8 +9235,10 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ 		}
+ 	}
+ 
+-	pr_info("%s: Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed]\n",
+-		__func__, pass_cnt, err_cnt, jit_cnt, run_cnt);
++	finish = ktime_get_ns();
++
++	pr_info("%s: Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed] in %llu nsec\n",
++		__func__, pass_cnt, err_cnt, jit_cnt, run_cnt, finish - start);
+ 
+ 	return err_cnt ? -EINVAL : 0;
+ }
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.1.0
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
