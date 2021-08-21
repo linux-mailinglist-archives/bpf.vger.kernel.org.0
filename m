@@ -2,217 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB103F3832
-	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 04:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14D73F38CF
+	for <lists+bpf@lfdr.de>; Sat, 21 Aug 2021 07:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240974AbhHUDAC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Aug 2021 23:00:02 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:6482 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240917AbhHUDAC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 20 Aug 2021 23:00:02 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17L2ns2q025227
-        for <bpf@vger.kernel.org>; Fri, 20 Aug 2021 19:59:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=x5MH0LICWFGXZzJKV/mKS2xu1y75l/9W0mB962bIBEM=;
- b=ceSYUczT0w2mdn3HZXyt998+Bz/FHls5ymLYEJ1swMyl8BParCUlrB2p838iVPuwVqHF
- nVERAqpeMdLmWJwJMZvD2jBXUT3PSZ6tg7dhzo8DO2hwyD30qO9FRaDQbuY8hbLRkFM7
- kucWQl0WeNByDKVQ0mDwBZrf0SXClhS1w3A= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aj09u07wr-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 20 Aug 2021 19:59:23 -0700
-Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 20 Aug 2021 19:59:19 -0700
-Received: by devbig030.frc3.facebook.com (Postfix, from userid 158236)
-        id 4D7C457300BA; Fri, 20 Aug 2021 19:59:14 -0700 (PDT)
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Florent Revest <revest@chromium.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf-next 5/5] selftests/bpf: add trace_vprintk test prog
-Date:   Fri, 20 Aug 2021 19:58:37 -0700
-Message-ID: <20210821025837.1614098-6-davemarchevsky@fb.com>
+        id S229975AbhHUFU5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Aug 2021 01:20:57 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:46156 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229616AbhHUFU4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 Aug 2021 01:20:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1629523218; x=1661059218;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hRjIA2N7XqbYT9/bYzG7LF9KmVpB8TKkOtmPXU0WOg8=;
+  b=p7hKn6+vME6R58Vpi6gvRJdFXt88a0GhmCTZ/aLKoaa5vqgIbUq2nOy2
+   h8xvb7aHqNxzUTKKFboVGADZJYz1kCMB8/INiAQk+NzIa+3rUmt4AMzxu
+   n6cd3H6wnFLQSeYiyJXd/mCKdo4TkWi/nb5VA0t4nahpspP81hd/WrDRj
+   g=;
+X-IronPort-AV: E=Sophos;i="5.84,338,1620691200"; 
+   d="scan'208";a="20872219"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1d-25e59222.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 21 Aug 2021 05:20:16 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-25e59222.us-east-1.amazon.com (Postfix) with ESMTPS id 20D13A2437;
+        Sat, 21 Aug 2021 05:20:11 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Sat, 21 Aug 2021 05:20:11 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.161.229) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Sat, 21 Aug 2021 05:20:06 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <jiang.wang@bytedance.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <chaiwen.cc@bytedance.com>,
+        <christian.brauner@ubuntu.com>, <cong.wang@bytedance.com>,
+        <davem@davemloft.net>, <digetx@gmail.com>,
+        <duanxiongchun@bytedance.com>, <kuba@kernel.org>,
+        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <rao.shoaib@oracle.com>,
+        <viro@zeniv.linux.org.uk>, <xieyongji@bytedance.com>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH v1] af_unix: fix NULL pointer bug in unix_shutdown
+Date:   Sat, 21 Aug 2021 14:20:02 +0900
+Message-ID: <20210821052002.37230-1-kuniyu@amazon.co.jp>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210821025837.1614098-1-davemarchevsky@fb.com>
-References: <20210821025837.1614098-1-davemarchevsky@fb.com>
+In-Reply-To: <20210821035045.373991-1-jiang.wang@bytedance.com>
+References: <20210821035045.373991-1-jiang.wang@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: Bct1DeBE052npPDHsadf6fTy2DvAK0MN
-X-Proofpoint-GUID: Bct1DeBE052npPDHsadf6fTy2DvAK0MN
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-20_11:2021-08-20,2021-08-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 bulkscore=0
- impostorscore=0 malwarescore=0 adultscore=0 priorityscore=1501
- clxscore=1015 lowpriorityscore=0 suspectscore=0 mlxlogscore=999
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108210016
-X-FB-Internal: deliver
+X-Originating-IP: [10.43.161.229]
+X-ClientProxiedBy: EX13D29UWA004.ant.amazon.com (10.43.160.33) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit adds a test prog for vprintk which confirms that:
-  * bpf_trace_vprintk is writing to dmesg
-  * bpf_vprintk convenience macro works as expected
-  * >3 args are printed
+From:   Jiang Wang <jiang.wang@bytedance.com>
+Date:   Sat, 21 Aug 2021 03:50:44 +0000
+> Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap") 
+> introduced a bug for af_unix SEQPACKET type. In unix_shutdown, the 
+> unhash function will call prot->unhash(), which is NULL for SEQPACKET. 
+> And kernel will panic. On ARM32, it will show following messages: (it 
+> likely affects x86 too).
+> 
+> Fix the bug by checking the sk->type first.
+> 
+> Kernel log:
+> <--- cut here ---
+>  Unable to handle kernel NULL pointer dereference at virtual address
+> 00000000
+>  pgd = 2fba1ffb
+>  *pgd=00000000
+>  Internal error: Oops: 80000005 [#1] PREEMPT SMP THUMB2
+>  Modules linked in:
+>  CPU: 1 PID: 1999 Comm: falkon Tainted: G        W
+> 5.14.0-rc5-01175-g94531cfcbe79-dirty #9240
+>  Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+>  PC is at 0x0
+>  LR is at unix_shutdown+0x81/0x1a8
+>  pc : [<00000000>]    lr : [<c08f3311>]    psr: 600f0013
+>  sp : e45aff70  ip : e463a3c0  fp : beb54f04
+>  r10: 00000125  r9 : e45ae000  r8 : c4a56664
+>  r7 : 00000001  r6 : c4a56464  r5 : 00000001  r4 : c4a56400
+>  r3 : 00000000  r2 : c5a6b180  r1 : 00000000  r0 : c4a56400
+>  Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+>  Control: 50c5387d  Table: 05aa804a  DAC: 00000051
+>  Register r0 information: slab PING start c4a56400 pointer offset 0
+>  Register r1 information: NULL pointer
+>  Register r2 information: slab task_struct start c5a6b180 pointer offset 0
+>  Register r3 information: NULL pointer
+>  Register r4 information: slab PING start c4a56400 pointer offset 0
+>  Register r5 information: non-paged memory
+>  Register r6 information: slab PING start c4a56400 pointer offset 100
+>  Register r7 information: non-paged memory
+>  Register r8 information: slab PING start c4a56400 pointer offset 612
+>  Register r9 information: non-slab/vmalloc memory
+>  Register r10 information: non-paged memory
+>  Register r11 information: non-paged memory
+>  Register r12 information: slab filp start e463a3c0 pointer offset 0
+>  Process falkon (pid: 1999, stack limit = 0x9ec48895)
+>  Stack: (0xe45aff70 to 0xe45b0000)
+>  ff60:                                     e45ae000 c5f26a00 00000000 00000125
+>  ff80: c0100264 c07f7fa3 beb54f04 fffffff7 00000001 e6f3fc0e b5e5e9ec beb54ec4
+>  ffa0: b5da0ccc c010024b b5e5e9ec beb54ec4 0000000f 00000000 00000000 beb54ebc
+>  ffc0: b5e5e9ec beb54ec4 b5da0ccc 00000125 beb54f58 00785238 beb5529c beb54f04
+>  ffe0: b5da1e24 beb54eac b301385c b62b6ee8 600f0030 0000000f 00000000 00000000
+>  [<c08f3311>] (unix_shutdown) from [<c07f7fa3>] (__sys_shutdown+0x2f/0x50)
+>  [<c07f7fa3>] (__sys_shutdown) from [<c010024b>]
+> (__sys_trace_return+0x1/0x16)
+>  Exception stack(0xe45affa8 to 0xe45afff0)
+> 
+> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+> Reported-by: Dmitry Osipenko <digetx@gmail.com>
+> Tested-by: Dmitry Osipenko <digetx@gmail.com>
 
-Approach and code are borrowed from trace_printk test.
+Fixes: 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
 
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
- tools/testing/selftests/bpf/Makefile          |  3 +-
- .../selftests/bpf/prog_tests/trace_vprintk.c  | 75 +++++++++++++++++++
- .../selftests/bpf/progs/trace_vprintk.c       | 25 +++++++
- 3 files changed, 102 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_vprintk.=
-c
- create mode 100644 tools/testing/selftests/bpf/progs/trace_vprintk.c
+And the commit is not in net-next yet, so is this patch for bpf-next?
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-index 2a58b7b5aea4..af5e7a1e9a7c 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -313,7 +313,8 @@ LINKED_SKELS :=3D test_static_linked.skel.h linked_fu=
-ncs.skel.h		\
- 		linked_vars.skel.h linked_maps.skel.h
-=20
- LSKELS :=3D kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
--	test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c
-+	test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c \
-+	trace_vprintk.c
- SKEL_BLACKLIST +=3D $$(LSKELS)
-=20
- test_static_linked.skel.h-deps :=3D test_static_linked1.o test_static_li=
-nked2.o
-diff --git a/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c b/too=
-ls/testing/selftests/bpf/prog_tests/trace_vprintk.c
-new file mode 100644
-index 000000000000..fd70427d2918
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <test_progs.h>
-+
-+#include "trace_vprintk.lskel.h"
-+
-+#define TRACEBUF	"/sys/kernel/debug/tracing/trace_pipe"
-+#define SEARCHMSG	"1,2,3,4,5,6,7,8,9,10"
-+
-+void test_trace_vprintk(void)
-+{
-+	int err, iter =3D 0, duration =3D 0, found =3D 0;
-+	struct trace_vprintk__bss *bss;
-+	struct trace_vprintk *skel;
-+	char *buf =3D NULL;
-+	FILE *fp =3D NULL;
-+	size_t buflen;
-+
-+	skel =3D trace_vprintk__open();
-+	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-+		return;
-+
-+	err =3D trace_vprintk__load(skel);
-+	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-+		goto cleanup;
-+
-+	bss =3D skel->bss;
-+
-+	err =3D trace_vprintk__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	fp =3D fopen(TRACEBUF, "r");
-+	if (CHECK(fp =3D=3D NULL, "could not open trace buffer",
-+		  "error %d opening %s", errno, TRACEBUF))
-+		goto cleanup;
-+
-+	/* We do not want to wait forever if this test fails... */
-+	fcntl(fileno(fp), F_SETFL, O_NONBLOCK);
-+
-+	/* wait for tracepoint to trigger */
-+	usleep(1);
-+	trace_vprintk__detach(skel);
-+
-+	if (CHECK(bss->trace_vprintk_ran =3D=3D 0,
-+		  "bpf_trace_vprintk never ran",
-+		  "ran =3D=3D %d", bss->trace_vprintk_ran))
-+		goto cleanup;
-+
-+	if (CHECK(bss->trace_vprintk_ret <=3D 0,
-+		  "bpf_trace_vprintk returned <=3D 0 value",
-+		  "got %d", bss->trace_vprintk_ret))
-+		goto cleanup;
-+
-+	/* verify our search string is in the trace buffer */
-+	while (getline(&buf, &buflen, fp) >=3D 0 || errno =3D=3D EAGAIN) {
-+		if (strstr(buf, SEARCHMSG) !=3D NULL)
-+			found++;
-+		if (found =3D=3D bss->trace_vprintk_ran)
-+			break;
-+		if (++iter > 1000)
-+			break;
-+	}
-+
-+	if (CHECK(!found, "message from bpf_trace_vprintk not found",
-+		  "no instance of %s in %s", SEARCHMSG, TRACEBUF))
-+		goto cleanup;
-+
-+cleanup:
-+	trace_vprintk__destroy(skel);
-+	free(buf);
-+	if (fp)
-+		fclose(fp);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/trace_vprintk.c b/tools/te=
-sting/selftests/bpf/progs/trace_vprintk.c
-new file mode 100644
-index 000000000000..993439a19e1e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/trace_vprintk.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+int trace_vprintk_ret =3D 0;
-+int trace_vprintk_ran =3D 0;
-+
-+SEC("fentry/__x64_sys_nanosleep")
-+int sys_enter(void *ctx)
-+{
-+	static const char one[] =3D "1";
-+	static const char three[] =3D "3";
-+	static const char five[] =3D "5";
-+	static const char seven[] =3D "7";
-+	static const char nine[] =3D "9";
-+
-+	trace_vprintk_ret =3D bpf_vprintk("%s,%d,%s,%d,%s,%d,%s,%d,%s,%d %d\n",
-+		one, 2, three, 4, five, 6, seven, 8, nine, 10, ++trace_vprintk_ran);
-+	return 0;
-+}
---=20
-2.30.2
 
+> ---
+>  net/unix/af_unix.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> index 443c49081636..6965bc578a80 100644
+> --- a/net/unix/af_unix.c
+> +++ b/net/unix/af_unix.c
+> @@ -2847,7 +2847,8 @@ static int unix_shutdown(struct socket *sock, int mode)
+>  		int peer_mode = 0;
+>  		const struct proto *prot = READ_ONCE(other->sk_prot);
+>  
+> -		prot->unhash(other);
+> +		if (sk->sk_type == SOCK_STREAM)
+
+		if (prot->unhash)
+is more straight?
+
+
+> +			prot->unhash(other);
+>  		if (mode&RCV_SHUTDOWN)
+>  			peer_mode |= SEND_SHUTDOWN;
+>  		if (mode&SEND_SHUTDOWN)
+> -- 
+> 2.20.1
