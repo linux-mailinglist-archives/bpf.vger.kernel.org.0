@@ -2,75 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F923F4B41
-	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 15:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C278A3F4D05
+	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 17:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237158AbhHWNAv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Aug 2021 09:00:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235731AbhHWNAv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:00:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EDFD9613C8;
-        Mon, 23 Aug 2021 13:00:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629723609;
-        bh=jlMYI2wq3qAtpmX7x3t1yFUv2yIsZ5oqvaHDi9/CJKo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=e+ef2JFZq0Y2gXjiTbqvKLuUhRa1Bmz2T/R6lInYTK6tmWniMIeWt3CU+YK59NLO3
-         VwoRrY2NtdWlyq+hKq91+bRpV5anBGXcyJ/Ur/OuqW46Yqz+QtTvZe946GWKeSnzE+
-         jq1Sh0gPzn5NR+sjzVzHZI/lB8ktAK+lduzoZiWB7GOlY5qgjQI580SHhSaQahKuYf
-         xN7uLDLWr3k3D6QZjR3Rg4w4vPeECh2iEkC+hhtgur6z7v8jIJ70GGJpX78dv4CgoZ
-         ZnF3BLwkp/vn03NyOQ4F2zVAiifL875ZXSPQCl+6vpayTWQT6py37sr56GAfkvenI1
-         avgC7YkWcE7bg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DF6616098C;
-        Mon, 23 Aug 2021 13:00:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230420AbhHWPFM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Aug 2021 11:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231174AbhHWPFM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Aug 2021 11:05:12 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1815DC061757
+        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 08:04:29 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id n126so21393057ybf.6
+        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 08:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=brllRPBO8PdBfH3Jzs8CaAHdDlba7cjyGUD8zEZHXyY=;
+        b=Vc94pMZYpc3ZyvKJNLJR7EvkvNVw9GhNOAOpAliq6KWt3zPz4+eWlN7s8oacbHvPfG
+         T1ZWXFUTqWUQtDMntCHNe0df98oepr+UqMcrx2l794bCcdeL/YKATj+g0ZWPKkKXiR8l
+         LlZJD4r4V7HVVKltZj68itYQapxgFlrJZnFruvhzqzbhkJu8+kn8Guu/TfuVUOv5Ama5
+         xrVG+YDIkOLNVTDTNWfu6bvxYhRpKndPVxk3EYlxYDq5r4VCQ1rpU8gBNoeTdimT40wO
+         El539AasUnjmndFEkMIO2V90KHJBrz7CizfpLVCNaZfqxfSWbyZ2zA8ziexXSACy7EVZ
+         cvUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=brllRPBO8PdBfH3Jzs8CaAHdDlba7cjyGUD8zEZHXyY=;
+        b=jEO3tbgaUO6p660S6vgmJ8+A7qnIeMg51Zc/V39YAumaIN5z4VakPjIXYKN1T323pB
+         Mo4VpX/4mWwJwSnPr+ba6u8mLZrGwtoWU5BJ8oLlY12is6GNa4N3lSE8U7qJeZam9jTx
+         1TpAHOsEY9Y/h1+EE44wZu9N63f2J/Eab0cSNRp2GmcCV4WVs+IOLqRR69hRB6nX2Qkt
+         SnBaDP9X08/uQUDwrkz0SEnyI7/QGq6I1UOhNvOq00BidTantD44WDagJuE4JUyzItE3
+         hvxDor5P1AB1k7+iuCAB1V8Lq8qEQeJeikoT+FkkBAZxoAr+nkKuGglNpzbno7RqGKav
+         eM7Q==
+X-Gm-Message-State: AOAM532FGzvSVb0lNnOOCI5MxWk8F5/RkfNUCxUY5raeus0ZfkkXIKce
+        f3NY8YLqPk2x2aOIilp2x+JPMURB2bl+xQ4yS5RNLA==
+X-Google-Smtp-Source: ABdhPJzACN5iW03c/RkSTXbYC3XXHzI70EbUZdt3h+laFXezA37uunrWvdyn9XuQcY7UyBk5h7i/rsROdE5kjXMoX3o=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr42895820ybj.504.1629731067656;
+ Mon, 23 Aug 2021 08:04:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] af_unix: fix NULL pointer bug in unix_shutdown
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162972360690.29348.8530821383166301782.git-patchwork-notify@kernel.org>
-Date:   Mon, 23 Aug 2021 13:00:06 +0000
-References: <20210821180738.1151155-1-jiang.wang@bytedance.com>
-In-Reply-To: <20210821180738.1151155-1-jiang.wang@bytedance.com>
-To:     Jiang Wang <jiang.wang@bytedance.com>
-Cc:     bpf@vger.kernel.org, cong.wang@bytedance.com,
-        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
-        chaiwen.cc@bytedance.com, kuniyu@amazon.co.jp, digetx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, viro@zeniv.linux.org.uk,
-        christian.brauner@ubuntu.com, rao.shoaib@oracle.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
+ <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
+ <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com> <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
+In-Reply-To: <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 23 Aug 2021 08:04:16 -0700
+Message-ID: <CANn89iK0nMG3qq226aL-urrtPF5jBN6UQCV=ckTmAFqWgy5kiA@mail.gmail.com>
+Subject: Re: [Linuxarm] Re: [PATCH RFC 0/7] add socket to netdev page frag
+ recycling support
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        "Tang, Feng" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        mcroce@microsoft.com, Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        chenhao288@hisilicon.com,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, memxor@gmail.com,
+        linux@rempel-privat.de, Antoine Tenart <atenart@kernel.org>,
+        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        aahringo@redhat.com, ceggers@arri.de, yangbo.lu@nxp.com,
+        Florian Westphal <fw@strlen.de>, xiangxia.m.yue@gmail.com,
+        linmiaohe <linmiaohe@huawei.com>, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, Aug 23, 2021 at 2:25 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2021/8/18 17:36, Yunsheng Lin wrote:
+> > On 2021/8/18 16:57, Eric Dumazet wrote:
+> >> On Wed, Aug 18, 2021 at 5:33 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >>>
+> >>> This patchset adds the socket to netdev page frag recycling
+> >>> support based on the busy polling and page pool infrastructure.
+> >>
+> >> I really do not see how this can scale to thousands of sockets.
+> >>
+> >> tcp_mem[] defaults to ~ 9 % of physical memory.
+> >>
+> >> If you now run tests with thousands of sockets, their skbs will
+> >> consume Gigabytes
+> >> of memory on typical servers, now backed by order-0 pages (instead of
+> >> current order-3 pages)
+> >> So IOMMU costs will actually be much bigger.
+> >
+> > As the page allocator support bulk allocating now, see:
+> > https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L252
+> >
+> > if the DMA also support batch mapping/unmapping, maybe having a
+> > small-sized page pool for thousands of sockets may not be a problem?
+> > Christoph Hellwig mentioned the batch DMA operation support in below
+> > thread:
+> > https://www.spinics.net/lists/netdev/msg666715.html
+> >
+> > if the batched DMA operation is supported, maybe having the
+> > page pool is mainly benefit the case of small number of socket?
+> >
+> >>
+> >> Are we planning to use Gigabyte sized page pools for NIC ?
+> >>
+> >> Have you tried instead to make TCP frags twice bigger ?
+> >
+> > Not yet.
+> >
+> >> This would require less IOMMU mappings.
+> >> (Note: This could require some mm help, since PAGE_ALLOC_COSTLY_ORDER
+> >> is currently 3, not 4)
+> >
+> > I am not familiar with mm yet, but I will take a look about that:)
+>
+>
+> It seems PAGE_ALLOC_COSTLY_ORDER is mostly related to pcp page, OOM, memory
+> compact and memory isolation, as the test system has a lot of memory installed
+> (about 500G, only 3-4G is used), so I used the below patch to test the max
+> possible performance improvement when making TCP frags twice bigger, and
+> the performance improvement went from about 30Gbit to 32Gbit for one thread
+> iperf tcp flow in IOMMU strict mode,
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+This is encouraging, and means we can do much better.
 
-On Sat, 21 Aug 2021 18:07:36 +0000 you wrote:
-> Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
-> introduced a bug for af_unix SEQPACKET type. In unix_shutdown, the
-> unhash function will call prot->unhash(), which is NULL for SEQPACKET.
-> And kernel will panic. On ARM32, it will show following messages: (it
-> likely affects x86 too).
-> 
-> Fix the bug by checking the prot->unhash is NULL or not first.
-> 
-> [...]
+Even with SKB_FRAG_PAGE_ORDER  set to 4, typical skbs will need 3 mappings
 
-Here is the summary with links:
-  - [bpf-next,v2] af_unix: fix NULL pointer bug in unix_shutdown
-    https://git.kernel.org/bpf/bpf-next/c/d359902d5c35
+1) One for the headers (in skb->head)
+2) Two page frags, because one TSO packet payload is not a nice power-of-two.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+The first issue can be addressed using a piece of coherent memory (128
+or 256 bytes per entry in TX ring).
+Copying the headers can avoid one IOMMU mapping, and improve IOTLB
+hits, because all
+slots of the TX ring buffer will use one single IOTLB slot.
+
+The second issue can be solved by tweaking a bit
+skb_page_frag_refill() to accept an additional parameter
+so that the whole skb payload fits in a single order-4 page.
 
 
+ and using the pfrag pool, the improvement
+> went from about 30Gbit to 40Gbit for the same testing configuation:
+
+Yes, but you have not provided performance number when 200 (or 1000+)
+concurrent flows are running.
+
+Optimizing singe flow TCP performance while killing performance for
+the more common case is not an option.
+
+
+>
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index fcb5355..dda20f9 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -37,7 +37,7 @@
+>   * coalesce naturally under reasonable reclaim pressure and those which
+>   * will not.
+>   */
+> -#define PAGE_ALLOC_COSTLY_ORDER 3
+> +#define PAGE_ALLOC_COSTLY_ORDER 4
+>
+>  enum migratetype {
+>         MIGRATE_UNMOVABLE,
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 870a3b7..b1e0dfc 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -2580,7 +2580,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
+>         }
+>  }
+>
+> -#define SKB_FRAG_PAGE_ORDER    get_order(32768)
+> +#define SKB_FRAG_PAGE_ORDER    get_order(65536)
+>  DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
+>
+>  /**
+>
+> >
+> >>
+> >> diff --git a/net/core/sock.c b/net/core/sock.c
+> >> index a3eea6e0b30a7d43793f567ffa526092c03e3546..6b66b51b61be9f198f6f1c4a3d81b57fa327986a
+> >> 100644
+> >> --- a/net/core/sock.c
+> >> +++ b/net/core/sock.c
+> >> @@ -2560,7 +2560,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
+> >>         }
+> >>  }
+> >>
+> >> -#define SKB_FRAG_PAGE_ORDER    get_order(32768)
+> >> +#define SKB_FRAG_PAGE_ORDER    get_order(65536)
+> >>  DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
+> >>
+> >>  /**
+> >>
+> >>
+> >>
+> >>>
+> > _______________________________________________
+> > Linuxarm mailing list -- linuxarm@openeuler.org
+> > To unsubscribe send an email to linuxarm-leave@openeuler.org
+> >
