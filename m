@@ -2,97 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FEB43F4DC3
-	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 17:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB74C3F4DC7
+	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 17:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhHWPwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Aug 2021 11:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhHWPwf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:52:35 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E0CC061575
-        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 08:51:52 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id oa17so12270213pjb.1
-        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 08:51:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eQACu/hwwHjdKf3BvfBNntckyXeGPydw0NB/8Jhtwik=;
-        b=T69l+Al2dQuLamsFncrBh9qk/usPIFQz1+BBd35sB96Y0EcPXZRC45usfa/m1pW5Ux
-         D+v+hiCqjCaV/cEFjGhfHy4/C+OzAzF7Yf7XAptFRV2mZZqBRegqQATxp9FYrb0YpsUn
-         lqTPOJ4eMRUTuMCn8cSc3ldNg/ZVm4vRuxBNGnYyO2whC+W1Y/yitECbLTbjN5KoMosP
-         0zCouSSQUJxbsvllzyq2mNfaX8QWFWHfcWsIhEjYku6xDYju/5ur6AbKF38iNa9905Gp
-         77h5x3yAGjtpD8O9ZT9KOaVh0ZmT3cmgsgdsi/exCJSZcQLGNzmDJ2lt5VsJ8UV4Bo6I
-         tyAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eQACu/hwwHjdKf3BvfBNntckyXeGPydw0NB/8Jhtwik=;
-        b=VQvB29LRXeK1eOD/sW2QIf1+tfvNZdBKkqhIdbWN1WtjsRYk34YOA3Sph/I6+17AfJ
-         kYolmWY8QF+vuhHCyUH7AVXPy57Mfhi+zkFzmxMDxFyWV7rLYX5EMhCfOTNdxoSI4vb/
-         CkH/yOgUPPMxYR9pLZBVIZ4zXwt3K4Ry5FAizxHR01PmkDfKsTjA2qxcjWTvH0PeYd72
-         +AYofSwTFg6NOniX6fA6OpV45Kr22+TcuXFWkzUktWBuvrBXb4YKR55o/W8f/NtU/dDf
-         B+F1WvIughm45hdhnKCcNafQgDZrdRftUcXSbAMuwoHR9Fo7fV/hnUG5NacRKxqCn8Wk
-         sPlg==
-X-Gm-Message-State: AOAM530j8nKqPSKXxQ4Bq4Zwv39j9pcrvKAYnWXngkLza670A7rmjTbg
-        0My81L5Sr78n6djwU6pZ0fk=
-X-Google-Smtp-Source: ABdhPJybzoUroa6XjAeH5Zt2ntikVuvkJQjKPL32cOaIlQj2fFFLJx27JeYgAdIw0qkV+awN+knGXA==
-X-Received: by 2002:a17:90b:4c8e:: with SMTP id my14mr20843705pjb.234.1629733912140;
-        Mon, 23 Aug 2021 08:51:52 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d820:9cc6:d37f:c2fd:dc6])
-        by smtp.gmail.com with ESMTPSA id x69sm16716317pfc.59.2021.08.23.08.51.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 08:51:51 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 21:21:49 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Yaniv Agman <yanivagman@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Subject: Re: libbpf: Kernel error message: Exclusivity flag on, cannot modify
-Message-ID: <20210823155149.3jg7nizcxgxf4tfv@apollo.localdomain>
-References: <CAMy7=ZXTiaX9xzNi5aOavwsf+mziJ=w-EcHH2f=cJmCGr3EPQA@mail.gmail.com>
+        id S231214AbhHWPzG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Aug 2021 11:55:06 -0400
+Received: from www62.your-server.de ([213.133.104.62]:35630 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230314AbhHWPzG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Aug 2021 11:55:06 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mICH7-0007Np-Gb; Mon, 23 Aug 2021 17:54:13 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mICH6-000KwX-Tj; Mon, 23 Aug 2021 17:54:13 +0200
+Subject: Re: [PATCH linux-next] tools: fix warning comparing pointer to 0
+To:     CGEL <cgel.zte@gmail.com>, Shuah Khan <shuah@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Andrei Matei <andreimatei1@gmail.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20210820033057.13063-1-jing.yangyang@zte.com.cn>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <491f06b5-3680-012a-f1d0-9831aa18e56a@iogearbox.net>
+Date:   Mon, 23 Aug 2021 17:54:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMy7=ZXTiaX9xzNi5aOavwsf+mziJ=w-EcHH2f=cJmCGr3EPQA@mail.gmail.com>
+In-Reply-To: <20210820033057.13063-1-jing.yangyang@zte.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26272/Mon Aug 23 10:21:13 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 04:35:51PM IST, Yaniv Agman wrote:
-> Using the recently added libbpf tc API worked fine for us in v0.4.0.
-> After updating libbpf and syncing with master branch, we get the
-> following error:
->
-> libbpf: Kernel error message: Exclusivity flag on, cannot modify
->
+On 8/20/21 5:30 AM, CGEL wrote:
+> From: jing yangyang <jing.yangyang@zte.com.cn>
+> 
+> Fix the following coccicheck warning:
+> ./tools/testing/selftests/bpf/progs/profiler.inc.h:364:18-22:WARNING
+> comparing pointer to 0
+> ./tools/testing/selftests/bpf/progs/profiler.inc.h:537:23-27:WARNING
+> comparing pointer to 0
+> ./tools/testing/selftests/bpf/progs/profiler.inc.h:544:21-25:WARNING
+> comparing pointer to 0
+> ./tools/testing/selftests/bpf/progs/profiler.inc.h:770:13-17:WARNING
+> comparing pointer to 0
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
 
-This message is harmless. The commit that adds NLM_F_EXCL is a bug fix. Without
-it, the kernel returns 0 when it should return -EEXIST. It's just that the
-kernel complains loudly for the latter case through extack.
+Please properly explain in the commit message what this 'fixes' exactly and
+why it is needed.
 
-User needs EEXIST to detect whether it installed the qdisc or not. To see how
-this affects the system, run ./test_progs -t tc_bpf after installing clsact
-using:
-	tc qdisc add dev lo clsact
+> ---
+>   tools/testing/selftests/bpf/progs/profiler.inc.h | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
+> index 4896fdf..5c0bdab 100644
+> --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
+> +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
+> @@ -361,7 +361,7 @@ static INLINE void* populate_var_metadata(struct var_metadata_t* metadata,
+>   	int zero = 0;
+>   	struct var_kill_data_t* kill_data = bpf_map_lookup_elem(&data_heap, &zero);
+>   
+> -	if (kill_data == NULL)
+> +	if (!kill_dat)
 
-Before this fix is added, it will remove the system qdisc as bpf_tc_hook_create
-returns 0, after the fix it detects the presence of the existing qdisc using
--EEXIST and disables the bpf_tc_hook_destroy call before exit.
+And please don't send broken stuff like this.
 
-I would suggest handling the error explicitly, and using libbpf_set_print to
-filter it out. See the example in tools/testing/selftests/bpf/test_progs.c.
+>   		return NULL;
+>   	struct task_struct* task = (struct task_struct*)bpf_get_current_task();
+>   
+> @@ -534,14 +534,14 @@ static INLINE bool is_dentry_allowed_for_filemod(struct dentry* file_dentry,
+>   	*device_id = dev_id;
+>   	bool* allowed_device = bpf_map_lookup_elem(&allowed_devices, &dev_id);
+>   
+> -	if (allowed_device == NULL)
+> +	if (!allowed_device)
+>   		return false;
+>   
+>   	u64 ino = BPF_CORE_READ(file_dentry, d_inode, i_ino);
+>   	*file_ino = ino;
+>   	bool* allowed_file = bpf_map_lookup_elem(&allowed_file_inodes, &ino);
+>   
+> -	if (allowed_file == NULL)
+> +	if (!allowed_fil)
 
-> I found that commit a1bd8104a9f1c1a5b9cd0f698c886296749a0ce9 is
+... same. You did not bother to compile test even.
 
-You probably meant bbf29d3a2e49e482d5267311798aec42f00e88f3? I cannot find this
-commit.
+>   		if (!is_ancestor_in_allowed_inodes(BPF_CORE_READ(file_dentry, d_parent)))
+>   			return false;
+>   	return true;
+> @@ -689,7 +689,7 @@ int raw_tracepoint__sched_process_exec(struct bpf_raw_tracepoint_args* ctx)
+>   	u64 inode = BPF_CORE_READ(bprm, file, f_inode, i_ino);
+>   
+>   	bool* should_filter_binprm = bpf_map_lookup_elem(&disallowed_exec_inodes, &inode);
+> -	if (should_filter_binprm != NULL)
+> +	if (should_filter_binprm)
+>   		goto out;
+>   
+>   	int zero = 0;
+> 
 
-> causing this problem, and removing the NLM_F_EXCL resolves the issue.
-> Is this the expected behavior and I'm doing something wrong?
-
---
-Kartikeya
