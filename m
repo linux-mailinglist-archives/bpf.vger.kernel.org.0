@@ -2,107 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B703F52E7
-	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 23:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5AC13F530B
+	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 23:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhHWVhX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Aug 2021 17:37:23 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:55850 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232503AbhHWVhR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Aug 2021 17:37:17 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 17NLQTso019717
-        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 14:36:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=XevacFUrBf4Xpy1G3C5BzqeUVQOKsIjOkqc5PhzDFEc=;
- b=H2v7r/WqXNGu07vnSAR3yB7nWnqbAgVoxkFMISOPMsa+4pYekt1i8l7nEcczso99Qfbi
- RKs8HRJ5dxaxfLMzokT9MRhOHtbaoQV43COFemHtSavDSIId7qoK5CIEVn8PKdzQ4hvw
- KIg7D2yRIb3yrK0hFRQAmvGlHwueerl9VVQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3amdru2jk1-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 14:36:33 -0700
-Received: from intmgw003.48.prn1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 23 Aug 2021 14:36:32 -0700
-Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id CF2E528CD0EB; Mon, 23 Aug 2021 14:36:29 -0700 (PDT)
-From:   Yucong Sun <fallentree@fb.com>
-To:     <andrii@kernel.org>
-CC:     <sunyucong@gmail.com>, <bpf@vger.kernel.org>,
-        Yucong Sun <fallentree@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: reduce flakyness in timer_mim
-Date:   Mon, 23 Aug 2021 14:36:29 -0700
-Message-ID: <20210823213629.3519641-1-fallentree@fb.com>
+        id S232930AbhHWVxu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Aug 2021 17:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232808AbhHWVxt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Aug 2021 17:53:49 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA59AC061575;
+        Mon, 23 Aug 2021 14:53:06 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id u21so12166367qtw.8;
+        Mon, 23 Aug 2021 14:53:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:reply-to:mime-version
+         :content-transfer-encoding;
+        bh=sLxjM71SuGe9hGuMszxC2z30QFVA4P0rmUHgi02d4SY=;
+        b=e+ErOFc33bysvfbMCOJrjf9S+MokkR7iuUlFWgn7SSJHZebdotXndGH18psCqdnoPd
+         5BH+Cb9t2DFWlsxB+zDaEeV2XpDH+qUm9D6COz39Kiq3KoqCdfTLZ0je+tbb9FBdFSR7
+         mLLfHIkBOixaZy3D/ryxZ+zRIHs+0WyCxj8g6qWIVEOlybpMS4d1TN6Bho+n8No6r8NG
+         tMDOlG+FwsxF5aDnyUWXd7dmLL7HfGGN8Q16qffK/KAUrgXbEqOE8xKOnVtsvFF5cEcd
+         RpT+pVB4XUKgWfGqPaRhmrbpyMRr2vH89SNJhKHghkyDE+WhJI03xzsJ5dPsQl6JEqcx
+         YQOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :mime-version:content-transfer-encoding;
+        bh=sLxjM71SuGe9hGuMszxC2z30QFVA4P0rmUHgi02d4SY=;
+        b=SKA+NNM5lTQwV7Y2RjXWVuxjDyp53YFeDgmzOUb8ZizIiW3hPAs1JCiN/pITiemhG0
+         bMvoMN9kn3GxcN5wPBJiEdDZjbjvt3uLXdaMjOtgDmUL+r1Pe237Gq4la2KXoDmYOB54
+         dy8i9NhRY3ucGcM3jO2ub5WDwXMI9AApUgfrtGG3vqi4bM5k4dFo0pTF7fI5g1Oj4A90
+         o84H5u+BYn+3Ahi/RGsdpj5Gx1WR7FBGXtNYd/6bB7k3VjdFYO2x+eXls63JzY2K0G+G
+         Czx/8IAks2HB69cIkVMuI6WAnO5qbYKT8unpypQOJ8Jdp2nzBM/YOJwxR/h9LftX2mgU
+         XTcg==
+X-Gm-Message-State: AOAM530DFrtYC3HFKQNxzMxEk3j/axfnmrQkYuN4JoTS5KwznIL/wK7B
+        MauTxzTx6Gsz0xo69jV6YrW99v/etaiaErc/
+X-Google-Smtp-Source: ABdhPJytSrRjL9t0kkC3gX1sulAHct2Oo68Y4XoCZ/EfbjBb3Wj3PDOuHvC2g6wLJpn8HM1y8VQXeg==
+X-Received: by 2002:ac8:6bcc:: with SMTP id b12mr8033154qtt.243.1629755585877;
+        Mon, 23 Aug 2021 14:53:05 -0700 (PDT)
+Received: from localhost.localdomain (cpe-74-65-249-7.nyc.res.rr.com. [74.65.249.7])
+        by smtp.gmail.com with ESMTPSA id 18sm7004261qtx.76.2021.08.23.14.53.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 14:53:05 -0700 (PDT)
+From:   Hans Montero <hansmontero99@gmail.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     hjm2133@columbia.edu, sdf@google.com, ppenkov@google.com
+Subject: [RFC PATCH bpf-next 0/2] bpf: Implement shared persistent fast(er) sk_storoage mode
+Date:   Mon, 23 Aug 2021 17:52:50 -0400
+Message-Id: <20210823215252.15936-1-hansmontero99@gmail.com>
 X-Mailer: git-send-email 2.30.2
+Reply-To: hjm2133@columbia.edu
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: Ky9tqlLuHBgfN6DNGMnaJBx-qBub4C-3
-X-Proofpoint-ORIG-GUID: Ky9tqlLuHBgfN6DNGMnaJBx-qBub4C-3
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-23_04:2021-08-23,2021-08-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- mlxlogscore=748 bulkscore=0 spamscore=0 lowpriorityscore=0 mlxscore=0
- suspectscore=0 priorityscore=1501 impostorscore=0 clxscore=1015
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108230146
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch extends wait time in timer_mim. As observed in slow CI environ=
-ment,
-it is possible to have interrupt/preemption long enough to cause the test=
- to
-fail, almost 1 failure in 5 runs.
+From: Hans Montero <hjm2133@columbia.edu>
 
-Signed-off-by: Yucong Sun <fallentree@fb.com>
----
- .../testing/selftests/bpf/prog_tests/timer_mim.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+This patch set adds a BPF local storage optimization. The first patch adds the
+feature, and the second patch extends the bpf selftests so that the feature is
+tested.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer_mim.c b/tools/t=
-esting/selftests/bpf/prog_tests/timer_mim.c
-index f5acbcbe33a4..ced8f6cf347c 100644
---- a/tools/testing/selftests/bpf/prog_tests/timer_mim.c
-+++ b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
-@@ -23,8 +23,12 @@ static int timer_mim(struct timer_mim *timer_skel)
-=20
- 	/* check that timer_cb[12] are incrementing 'cnt' */
- 	cnt1 =3D READ_ONCE(timer_skel->bss->cnt);
--	usleep(200); /* 100 times more than interval */
--	cnt2 =3D READ_ONCE(timer_skel->bss->cnt);
-+	for (int i =3D 0; i < 100; i++) {
-+		cnt2 =3D READ_ONCE(timer_skel->bss->cnt);
-+		if (cnt2 !=3D cnt1)
-+			break;
-+		usleep(200); /* 100 times more than interval */
-+	}
- 	ASSERT_GT(cnt2, cnt1, "cnt");
-=20
- 	ASSERT_EQ(timer_skel->bss->err, 0, "err");
-@@ -37,8 +41,12 @@ static int timer_mim(struct timer_mim *timer_skel)
-=20
- 	/* check that timer_cb[12] are no longer running */
- 	cnt1 =3D READ_ONCE(timer_skel->bss->cnt);
--	usleep(200);
--	cnt2 =3D READ_ONCE(timer_skel->bss->cnt);
-+	for (int i =3D 0; i < 100; i++) {
-+		usleep(200); /* 100 times more than interval */
-+		cnt2 =3D READ_ONCE(timer_skel->bss->cnt);
-+		if (cnt2 =3D=3D cnt1)
-+			break;
-+	}
- 	ASSERT_EQ(cnt2, cnt1, "cnt");
-=20
- 	return 0;
---=20
+We are running BPF programs for each egress packet and noticed that
+bpf_sk_storage_get incurs a significant amount of cpu time. By inlining the
+storage into struct sock and accessing that instead of performing a map lookup,
+we expect to reduce overhead for our specific use-case. This also has a
+side-effect of persisting the socket storage, which can be beneficial.
+
+This optimization is disabled by default and can be enabled by setting
+CONFIG_BPF_SHARED_LOCAL_STORAGE_SIZE, the byte length of the inline buffer, to
+a non-zero number.
+
+Hans Montero (2):
+  bpf: Implement shared sk_storage optimization
+  selftests/bpf: Extend tests for shared sk_storage
+
+ include/net/sock.h                            |  3 ++
+ include/uapi/linux/bpf.h                      |  6 +++
+ kernel/bpf/Kconfig                            | 11 +++++
+ kernel/bpf/bpf_local_storage.c                |  3 +-
+ net/core/bpf_sk_storage.c                     | 47 ++++++++++++++++++-
+ tools/testing/selftests/bpf/config            |  1 +
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 31 +++++++++++-
+ .../bpf/prog_tests/test_local_storage.c       |  3 ++
+ .../progs/bpf_iter_bpf_sk_storage_helpers.c   | 27 ++++++++++-
+ .../selftests/bpf/progs/local_storage.c       | 30 ++++++++++++
+ 10 files changed, 156 insertions(+), 6 deletions(-)
+
+-- 
 2.30.2
 
