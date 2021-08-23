@@ -2,171 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EED93F43C4
-	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 05:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C4F3F43F4
+	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 05:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234891AbhHWDN3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 Aug 2021 23:13:29 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:48192
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233843AbhHWDLj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 22 Aug 2021 23:11:39 -0400
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5443C40316
-        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 03:02:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629687744;
-        bh=mu4K9UEbVVgKl8wqKqQriHgKtmS1iIjJ4mnsH+d8LhI=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=uhITjlCfwpl74B8LkNa3N7830qMD2izkZn7lBBUakdL7+cY83m8JT1MUoKiAK1l02
-         EAAtV2HMhN5E+GfrMgjXj/WdwiUQjss5LCpUvSFbJcUelDTtI9i3AvnXsM5bdgtUXQ
-         iIbKFMs7qvjXqB0q5y1LGJ+gbiZfMZE3jS1/jcasgAYsntnTjYGcgvPnx2FpBfhpFP
-         iPMi78BqFS5Vz+kCRX58qYxIeNBlE8ZJJQGrimPsGA6qH6XNmL2Hm9nVtDnZPOPwT6
-         9sUChxZdKIQ78P75zFK8gnOiW48X6XPQqK1pbijpsACw7xVbZdyLOQi5zZIz2KrypW
-         5fR6cxHwj0BTA==
-Received: by mail-pl1-f198.google.com with SMTP id f17-20020a170902ab91b029012c3bac8d81so3680887plr.23
-        for <bpf@vger.kernel.org>; Sun, 22 Aug 2021 20:02:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mu4K9UEbVVgKl8wqKqQriHgKtmS1iIjJ4mnsH+d8LhI=;
-        b=M6DrSzKivAbhkjxHhjZToE4wX16C8CrfVcX/Za87KinzZnuXhFmqB1gWSZ+X8v9Ae3
-         c7PcIcBlmvYdmZdBfTFs8bJrtr+QBJmbUL+lpSX6J+pAJQXQbVxd4NoqJoO3KjklkYwc
-         lJy1Ff9/3NphAnCscr27SUGoFHQtSSR8xKXm38xr6k30Ykw4uyHrLa0NesehLTsYGwWE
-         ByGOeEltfwJG3H3WcbD+2hGLuaDc7WfXQP5VVJVgivrDPLVAdkKnLEYXpu/lyTHvL6Eb
-         A3AD0CbS7v8Ltpwb2AzKYe21gq3LQ+hML+Vag2MhUsmprA/+4MWHv2Zix0Sd7omTLo7/
-         uRYw==
-X-Gm-Message-State: AOAM531vYQg3Q6oKk+C4PewY/R827y7THfVrRRjW0yCHVFS6HFkIFM+k
-        Auu17U+CJMR8S6Eg55JiWQYyLAlCJGWQsnSbaCnhvUftrYM4yaLE/4ign8YpByEOjyBx2cbHP/C
-        iZ3ffQ8gm/TAQdMhlB5xt7cR+aTFB
-X-Received: by 2002:a62:5304:0:b029:3c7:9dce:8a4c with SMTP id h4-20020a6253040000b02903c79dce8a4cmr31320752pfb.37.1629687742871;
-        Sun, 22 Aug 2021 20:02:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+vzGPc4KrjtFTFTzCJYdN8VamfWYiJRRG4JYPzYCNxJQfvTUy+Dzq+sDO9ovEM8y9xdHDjw==
-X-Received: by 2002:a62:5304:0:b029:3c7:9dce:8a4c with SMTP id h4-20020a6253040000b02903c79dce8a4cmr31320728pfb.37.1629687742612;
-        Sun, 22 Aug 2021 20:02:22 -0700 (PDT)
-Received: from localhost.localdomain (223-137-217-38.emome-ip.hinet.net. [223.137.217.38])
-        by smtp.gmail.com with ESMTPSA id y7sm12655675pfi.204.2021.08.22.20.02.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 20:02:21 -0700 (PDT)
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     po-hsu.lin@canonical.com, hawk@kernel.org, kuba@kernel.org,
-        davem@davemloft.net, kpsingh@kernel.org, john.fastabend@gmail.com,
-        yhs@fb.com, songliubraving@fb.com, kafai@fb.com, andrii@kernel.org,
-        daniel@iogearbox.net, ast@kernel.org, skhan@linuxfoundation.org
-Subject: [PATCH] selftests/bpf: Use kselftest skip code for skipped tests
-Date:   Mon, 23 Aug 2021 11:01:43 +0800
-Message-Id: <20210823030143.29937-1-po-hsu.lin@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S231996AbhHWDcs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Aug 2021 23:32:48 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8919 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231565AbhHWDcs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Aug 2021 23:32:48 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GtHkN4QSQz8tFT;
+        Mon, 23 Aug 2021 11:27:56 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 23 Aug 2021 11:32:03 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 23 Aug
+ 2021 11:32:02 +0800
+Subject: Re: [PATCH RFC 0/7] add socket to netdev page frag recycling support
+To:     David Ahern <dsahern@gmail.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
+        <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
+        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
+        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
+        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <chenhao288@hisilicon.com>, <edumazet@google.com>,
+        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>,
+        <memxor@gmail.com>, <linux@rempel-privat.de>, <atenart@kernel.org>,
+        <weiwan@google.com>, <ap420073@gmail.com>, <arnd@arndb.de>,
+        <mathew.j.martineau@linux.intel.com>, <aahringo@redhat.com>,
+        <ceggers@arri.de>, <yangbo.lu@nxp.com>, <fw@strlen.de>,
+        <xiangxia.m.yue@gmail.com>, <linmiaohe@huawei.com>
+References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
+ <83b8bae8-d524-36a1-302e-59198410d9a9@gmail.com>
+ <f0d935b9-45fe-4c51-46f0-1f526167877f@huawei.com>
+ <619b5ca5-a48b-49e9-2fef-a849811d62bb@gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <744e88b6-7cb4-ea99-0523-4bfa5a23e15c@huawei.com>
+Date:   Mon, 23 Aug 2021 11:32:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <619b5ca5-a48b-49e9-2fef-a849811d62bb@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There are several test cases in the bpf directory are still using
-exit 0 when they need to be skipped. Use kselftest framework skip
-code instead so it can help us to distinguish the return status.
+On 2021/8/20 22:35, David Ahern wrote:
+> On 8/19/21 2:18 AM, Yunsheng Lin wrote:
+>> On 2021/8/19 6:05, David Ahern wrote:
+>>> On 8/17/21 9:32 PM, Yunsheng Lin wrote:
+>>>> This patchset adds the socket to netdev page frag recycling
+>>>> support based on the busy polling and page pool infrastructure.
+>>>>
+>>>> The profermance improve from 30Gbit to 41Gbit for one thread iperf
+>>>> tcp flow, and the CPU usages decreases about 20% for four threads
+>>>> iperf flow with 100Gb line speed in IOMMU strict mode.
+>>>>
+>>>> The profermance improve about 2.5% for one thread iperf tcp flow
+>>>> in IOMMU passthrough mode.
+>>>>
+>>>
+>>> Details about the test setup? cpu model, mtu, any other relevant changes
+>>> / settings.
+>>
+>> CPU is arm64 Kunpeng 920, see:
+>> https://www.hisilicon.com/en/products/Kunpeng/Huawei-Kunpeng-920
+>>
+>> mtu is 1500, the relevant changes/settings I can think of the iperf
+>> client runs on the same numa as the nic hw exists(which has one 100Gbit
+>> port), and the driver has the XPS enabled too.
+>>
+>>>
+>>> How does that performance improvement compare with using the Tx ZC API?
+>>> At 1500 MTU I see a CPU drop on the Tx side from 80% to 20% with the ZC
+>>> API and ~10% increase in throughput. Bumping the MTU to 3300 and
+>>> performance with the ZC API is 2x the current model with 1/2 the cpu.
+>>
+>> I added a sysctl node to decide whether pfrag pool is used:
+>> net.ipv4.tcp_use_pfrag_pool
+>>
 
-Criterion to filter out what should be fixed in bpf directory:
-  grep -r "exit 0" -B1 | grep -i skip
+[..]
 
-This change might cause some false-positives if people are running
-these test scripts directly and only checking their return codes,
-which will change from 0 to 4. However I think the impact should be
-small as most of our scripts here are already using this skip code.
-And there will be no such issue if running them with the kselftest
-framework.
+>>
+>>
+>>>
+>>> Epyc 7502, ConnectX-6, IOMMU off.
+>>>
+>>> In short, it seems like improving the Tx ZC API is the better path
+>>> forward than per-socket page pools.
+>>
+>> The main goal is to optimize the SMMU mapping/unmaping, if the cost of memcpy
+>> it higher than the SMMU mapping/unmaping + page pinning, then Tx ZC may be a
+>> better path, at leas it is not sure for small packet?
+>>
+> 
+> It's a CPU bound problem - either Rx or Tx is cpu bound depending on the
+> test configuration. In my tests 3.3 to 3.5M pps is the limit (not using
+> LRO in the NIC - that's a different solution with its own problems).
 
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- tools/testing/selftests/bpf/test_bpftool_build.sh | 5 ++++-
- tools/testing/selftests/bpf/test_xdp_meta.sh      | 5 ++++-
- tools/testing/selftests/bpf/test_xdp_vlan.sh      | 7 +++++--
- 3 files changed, 13 insertions(+), 4 deletions(-)
+I assumed the "either Rx or Tx is cpu bound" meant either Rx or Tx is the
+bottleneck?
 
-diff --git a/tools/testing/selftests/bpf/test_bpftool_build.sh b/tools/testing/selftests/bpf/test_bpftool_build.sh
-index ac349a5..b6fab1e 100755
---- a/tools/testing/selftests/bpf/test_bpftool_build.sh
-+++ b/tools/testing/selftests/bpf/test_bpftool_build.sh
-@@ -1,6 +1,9 @@
- #!/bin/bash
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- 
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+
- case $1 in
- 	-h|--help)
- 		echo -e "$0 [-j <n>]"
-@@ -22,7 +25,7 @@ KDIR_ROOT_DIR=$(realpath $PWD/$SCRIPT_REL_DIR/../../../../)
- cd $KDIR_ROOT_DIR
- if [ ! -e tools/bpf/bpftool/Makefile ]; then
- 	echo -e "skip:    bpftool files not found!\n"
--	exit 0
-+	exit $ksft_skip
- fi
- 
- ERROR=0
-diff --git a/tools/testing/selftests/bpf/test_xdp_meta.sh b/tools/testing/selftests/bpf/test_xdp_meta.sh
-index 637fcf4..fd3f218 100755
---- a/tools/testing/selftests/bpf/test_xdp_meta.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_meta.sh
-@@ -1,5 +1,8 @@
- #!/bin/sh
- 
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+
- cleanup()
- {
- 	if [ "$?" = "0" ]; then
-@@ -17,7 +20,7 @@ cleanup()
- ip link set dev lo xdp off 2>/dev/null > /dev/null
- if [ $? -ne 0 ];then
- 	echo "selftests: [SKIP] Could not run test without the ip xdp support"
--	exit 0
-+	exit $ksft_skip
- fi
- set -e
- 
-diff --git a/tools/testing/selftests/bpf/test_xdp_vlan.sh b/tools/testing/selftests/bpf/test_xdp_vlan.sh
-index bb8b0da..1aa7404 100755
---- a/tools/testing/selftests/bpf/test_xdp_vlan.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_vlan.sh
-@@ -2,6 +2,9 @@
- # SPDX-License-Identifier: GPL-2.0
- # Author: Jesper Dangaard Brouer <hawk@kernel.org>
- 
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+
- # Allow wrapper scripts to name test
- if [ -z "$TESTNAME" ]; then
-     TESTNAME=xdp_vlan
-@@ -94,7 +97,7 @@ while true; do
- 	    -h | --help )
- 		usage;
- 		echo "selftests: $TESTNAME [SKIP] usage help info requested"
--		exit 0
-+		exit $ksft_skip
- 		;;
- 	    * )
- 		shift
-@@ -117,7 +120,7 @@ fi
- ip link set dev lo xdpgeneric off 2>/dev/null > /dev/null
- if [ $? -ne 0 ]; then
- 	echo "selftests: $TESTNAME [SKIP] need ip xdp support"
--	exit 0
-+	exit $ksft_skip
- fi
- 
- # Interactive mode likely require us to cleanup netns
--- 
-2.7.4
+It seems iperf3 support the Tx ZC, I retested using the iperf3, Rx settings
+is not changed when testing, MTU is 1500:
 
+IOMMU in strict mode:
+1. Tx ZC case:
+   22Gbit with Tx being bottleneck(cpu bound)
+2. Tx non-ZC case with pfrag pool enabled:
+   40Git with Rx being bottleneck(cpu bound)
+3. Tx non-ZC case with pfrag pool disabled:
+   30Git, the bottleneck seems not to be cpu bound, as the Rx and Tx does
+   not have a single CPU reaching about 100% usage.
+
+> 
+> At 1500 MTU lowering CPU usage on the Tx side does not accomplish much
+> on throughput since the Rx is 100% cpu.
+
+As above performance data, enabling ZC does not seems to help when IOMMU
+is involved, which has about 30% performance degrade when pfrag pool is
+disabled and 50% performance degrade when pfrag pool is enabled.
+
+> 
+> At 3300 MTU you have ~47% the pps for the same throughput. Lower pps
+> reduces Rx processing and lower CPU to process the incoming stream. Then
+> using the Tx ZC API you lower the Tx overehad allowing a single stream
+> to faster - sending more data which in the end results in much higher
+> pps and throughput. At the limit you are CPU bound (both ends in my
+> testing as Rx side approaches the max pps, and Tx side as it continually
+> tries to send data).
+> 
+> Lowering CPU usage on Tx the side is a win regardless of whether there
+> is a big increase on the throughput at 1500 MTU since that configuration
+> is an Rx CPU bound problem. Hence, my point that we have a good start
+> point for lowering CPU usage on the Tx side; we should improve it rather
+> than add per-socket page pools.
+
+Acctually it is not a per-socket page pools, the page pool is still per
+NAPI, this patchset adds multi allocation context to the page pool, so that
+the tx can reuse the same page pool with rx, which is quite usefully if the
+ARFS is enabled.
+
+> 
+> You can stress the Tx side and emphasize its overhead by modifying the
+> receiver to drop the data on Rx rather than copy to userspace which is a
+> huge bottleneck (e.g., MSG_TRUNC on recv). This allows the single flow
+
+As the frag page is supported in page pool for Rx, the Rx probably is not
+a bottleneck any more, at least not for IOMMU in strict mode.
+
+It seems iperf3 does not support MSG_TRUNC yet, any testing tool supporting
+MSG_TRUNC? Or do I have to hack the kernel or iperf3 tool to do that?
+
+> stream to go faster and emphasize Tx bottlenecks as the pps at 3300
+> approaches the top pps at 1500. e.g., doing this with iperf3 shows the
+> spinlock overhead with tcp_sendmsg, overhead related to 'select' and
+> then gup_pgd_range.
+
+When IOMMU is in strict mode, the overhead with IOMMU seems to be much
+bigger than spinlock(23% to 10%).
+
+Anyway, I still think ZC mostly benefit to packet which is bigger than a
+specific size and IOMMU disabling case.
+
+
+> .
+> 
