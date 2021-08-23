@@ -2,336 +2,260 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CF33F530E
-	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 23:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB1F3F5317
+	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 23:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhHWVyJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Aug 2021 17:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233029AbhHWVyJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Aug 2021 17:54:09 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46383C061575;
-        Mon, 23 Aug 2021 14:53:26 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id jz1so10585045qvb.13;
-        Mon, 23 Aug 2021 14:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references:reply-to
-         :mime-version:content-transfer-encoding;
-        bh=rREGuTwP1+4wHWH12BihyPoN4oNvTOi9vc36dumglaA=;
-        b=KnOj592NG8kxPiKFyAauX9fW0ixlq6hDevUHSfdIHfisAt5oQwG+lpSsCGv/cwUfR/
-         zW9wWNq+ee1CkHSlw34kEt4jGuN+3iykI4o7X3ERCg3mDHcc3+IycxmLcUQQGyLhu6FD
-         BCoM8eGK+I+Obs95RI8lb3LIRvhRkKiuMVYCXG7KMM5vdWUFTfPnoRIbkPjOZYAzpf9n
-         cmTitojjfhXhx/1w21B2CU9g25WavcffDG+lT86ecD6KqnlGlWJsIvDnsvYTsXsEdNmb
-         xF8sMzcL8d4gZhcO6SlO7eFtV8mVczGBgmOXc1ho5DOY5EhKSTgdZHVMge1Ae4iRkvBL
-         gFaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:reply-to:mime-version:content-transfer-encoding;
-        bh=rREGuTwP1+4wHWH12BihyPoN4oNvTOi9vc36dumglaA=;
-        b=dV0WVXPiFoAGJGCmhFp7JmOQqo0LJI6JnPKZ5nBmHpXnDmz0OyuXx05kT8P/c2Y3vK
-         mchV2QIM5E7mmlvDMT4BvnhlYCHt1Bw60U33G7qkvlX/uz72X8w4DBQOSfmpNZtXJ7zd
-         LOeP25lrM5TyNmruRtPmhILky5uYF/TSvBQCLZanZXkfaOzXsUccnzBOtEtqUdUroDw8
-         ySQihJxqS024NMgfRBGYZuTI1CU7k8mQ5z3TnQX2OuALsPl0wsJ2XHuYd5reZnkhMhSS
-         s4nXRhJIngiYCthFOWX5OrkfSmT4RoG0mlri8Ktby/ZsLhg6J7Hwa/mc0IIuyHXIN62K
-         nunQ==
-X-Gm-Message-State: AOAM533YaWUMG4dZi0EMzaouMD8JKgRRrYK/ND3xSGF62VWmGAZl5KSE
-        iMcz4iU4AaxO+V2aFuPDjLwUz2SfDOvrlPka
-X-Google-Smtp-Source: ABdhPJxIeDU7xKYoM2EBiIlmFqQ7QSdktNRL1/+1b5JkzlJ4M11FFCdE77916H4NreYoNX1fnMF0eA==
-X-Received: by 2002:a0c:a702:: with SMTP id u2mr34178648qva.62.1629755605251;
-        Mon, 23 Aug 2021 14:53:25 -0700 (PDT)
-Received: from localhost.localdomain (cpe-74-65-249-7.nyc.res.rr.com. [74.65.249.7])
-        by smtp.gmail.com with ESMTPSA id 18sm7004261qtx.76.2021.08.23.14.53.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 14:53:24 -0700 (PDT)
-From:   Hans Montero <hansmontero99@gmail.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     hjm2133@columbia.edu, sdf@google.com, ppenkov@google.com
-Subject: [RFC PATCH bpf-next 2/2] selftests/bpf: Extend tests for shared sk_storage
-Date:   Mon, 23 Aug 2021 17:52:52 -0400
-Message-Id: <20210823215252.15936-3-hansmontero99@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210823215252.15936-1-hansmontero99@gmail.com>
-References: <20210823215252.15936-1-hansmontero99@gmail.com>
-Reply-To: hjm2133@columbia.edu
+        id S232949AbhHWV4l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Aug 2021 17:56:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232898AbhHWV4j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Aug 2021 17:56:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21BF96024A;
+        Mon, 23 Aug 2021 21:55:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629755756;
+        bh=sc/4ja9GPvzLDmr9k7MMLYkVDPUVCcXAFpEGW6GsVtQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DiUy1zod8TqcbVrdWr+jTsM2/VqgPHG0+2fST+VPPvnNpiXxVA0JPZRh1xLZ/nHq/
+         JASjGnz17gx37R0TeFGQzcDRMVTEs4OKsSoKxlUOeV1EKy/HmNhlTbe8mHpzEV2gR6
+         ZZfqLGE/YJpJ4gkzWbKHC04AEjNp0NFPZqLiVnWtSMGyG5i2a2QtcuwEcGPpdlp/Pd
+         9IvN44jbWDVVq7JxVLEvt19cIYypDifYCzmQw56v9hPpHkU7z30AqxWfUcm5qaHy3j
+         LZfrNhkgAgKVYkDTgcWZcoEscOzGWLZ4AVXf0oZ5JYaaRLDnVermcpeHNFqmX9HXzA
+         puIj7J6YTWUhQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E68D14007E; Mon, 23 Aug 2021 18:55:52 -0300 (-03)
+Date:   Mon, 23 Aug 2021 18:55:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     dwarves@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Mark Wieelard <mjw@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Deepak Kumar Mishra <deepakkumar.mishra@arm.com>,
+        Luca Boccassi <bluca@debian.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sevan Janiyan <venture37@geeklan.co.uk>,
+        Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Subject: Re: ANNOUNCE: pahole v1.22 (Multithreaded DWARF Loading, detached
+ BTF encoding)
+Message-ID: <YSQZaPtcEwBKvUSL@kernel.org>
+References: <YSQSZQnnlIWAQ06v@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSQSZQnnlIWAQ06v@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hans Montero <hjm2133@columbia.edu>
+Em Mon, Aug 23, 2021 at 06:25:57PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Hi,
+>  
+> 	The v1.22 release of pahole and its friends is out, this time
+> the main new features are the ability to encode BTF to a
+> separate file and Multithreaded DWARF loading.
+> 
+> 	Lots of cleanups and improvements resulted from preparing for
+> multithreading. Please see the changes-1.22 file in the source tree and
+> at the end of this message for a detailed list of improvements.
+> 
+> 	Next step is to multithread BTF encoding, but even without that
+> the time taken tp encode the kernel BTF information now is slashed by
+> over 50%. The before/after 'perf stat' output for each of the improvements
+> can be found in the project git commit log messages. 
+> 
+> 	The non-cross build set of containers used to test build the
+> Linux perf tools is now being used to make sure pahole doesn't build
+> regresses.
+> 
+> 	Thanks as well to Andrii for putting in place a CI job for pahole
+> at https://github.com/libbpf/libbpf/actions/workflows/pahole.yml.
+> 
+> Main git repo:
+> 
+>    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+> 
+> Mirror git repo:
+> 
+>    https://github.com/acmel/dwarves.git
+> 
+> tarball + gpg signature:
+> 
+>    https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.xz
+>    https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.bz2
+>    https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.sign
 
-Suggested-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Hans Montero <hjm2133@columbia.edu>
----
- tools/testing/selftests/bpf/config            |  1 +
- .../selftests/bpf/prog_tests/bpf_iter.c       | 31 +++++++++++++++++--
- .../bpf/prog_tests/test_local_storage.c       |  3 ++
- .../progs/bpf_iter_bpf_sk_storage_helpers.c   | 27 ++++++++++++++--
- .../selftests/bpf/progs/local_storage.c       | 30 ++++++++++++++++++
- 5 files changed, 88 insertions(+), 4 deletions(-)
+Oh well, really at:
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 5192305159ec..f2d614ab744c 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -1,5 +1,6 @@
- CONFIG_BPF=y
- CONFIG_BPF_SYSCALL=y
-+CONFIG_BPF_SHARED_LOCAL_STORAGE_SIZE=8
- CONFIG_NET_CLS_BPF=m
- CONFIG_BPF_EVENTS=y
- CONFIG_TEST_BPF=m
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-index 77ac24b191d4..c768cf6c399a 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -943,7 +943,7 @@ static void test_bpf_sk_storage_delete(void)
- 	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
- 	struct bpf_iter_bpf_sk_storage_helpers *skel;
- 	union bpf_iter_link_info linfo;
--	int err, len, map_fd, iter_fd;
-+	int err, len, map_fd, dummy_map_fd, iter_fd;
- 	struct bpf_link *link;
- 	int sock_fd = -1;
- 	__u32 val = 42;
-@@ -955,6 +955,7 @@ static void test_bpf_sk_storage_delete(void)
- 		return;
- 
- 	map_fd = bpf_map__fd(skel->maps.sk_stg_map);
-+	dummy_map_fd = bpf_map__fd(skel->maps.dummy_sk_stg_map);
- 
- 	sock_fd = socket(AF_INET6, SOCK_STREAM, 0);
- 	if (CHECK(sock_fd < 0, "socket", "errno: %d\n", errno))
-@@ -962,6 +963,10 @@ static void test_bpf_sk_storage_delete(void)
- 	err = bpf_map_update_elem(map_fd, &sock_fd, &val, BPF_NOEXIST);
- 	if (CHECK(err, "map_update", "map_update failed\n"))
- 		goto out;
-+	err = bpf_map_update_elem(dummy_map_fd, &sock_fd, &val, BPF_NOEXIST);
-+	if (CHECK(err, "(shared local storage) map_update",
-+		  "map_update failed\n"))
-+		goto out;
- 
- 	memset(&linfo, 0, sizeof(linfo));
- 	linfo.map.map_fd = map_fd;
-@@ -987,6 +992,12 @@ static void test_bpf_sk_storage_delete(void)
- 	if (CHECK(!err || errno != ENOENT, "bpf_map_lookup_elem",
- 		  "map value wasn't deleted (err=%d, errno=%d)\n", err, errno))
- 		goto close_iter;
-+	err = bpf_map_lookup_elem(dummy_map_fd, &sock_fd, &val);
-+	if (CHECK(
-+	    err || val != 0, "(shared local storage) bpf_map_lookup_elem",
-+	    "map value wasn't deleted (expected val=0, got val=%d, err=%d)\n",
-+	    val, err))
-+		goto close_iter;
- 
- close_iter:
- 	close(iter_fd);
-@@ -1007,7 +1018,7 @@ static void test_bpf_sk_storage_delete(void)
- static void test_bpf_sk_storage_get(void)
- {
- 	struct bpf_iter_bpf_sk_storage_helpers *skel;
--	int err, map_fd, val = -1;
-+	int err, map_fd, dummy_map_fd, val = -1;
- 	int sock_fd = -1;
- 
- 	skel = bpf_iter_bpf_sk_storage_helpers__open_and_load();
-@@ -1024,10 +1035,15 @@ static void test_bpf_sk_storage_get(void)
- 		goto close_socket;
- 
- 	map_fd = bpf_map__fd(skel->maps.sk_stg_map);
-+	dummy_map_fd = bpf_map__fd(skel->maps.dummy_sk_stg_map);
- 
- 	err = bpf_map_update_elem(map_fd, &sock_fd, &val, BPF_NOEXIST);
- 	if (CHECK(err, "bpf_map_update_elem", "map_update_failed\n"))
- 		goto close_socket;
-+	err = bpf_map_update_elem(dummy_map_fd, &sock_fd, &val, BPF_NOEXIST);
-+	if (CHECK(err, "(shared socket storage) bpf_map_update_elem",
-+		  "map_update_failed\n"))
-+		goto close_socket;
- 
- 	do_dummy_read(skel->progs.fill_socket_owner);
- 
-@@ -1036,6 +1052,12 @@ static void test_bpf_sk_storage_get(void)
- 	    "map value wasn't set correctly (expected %d, got %d, err=%d)\n",
- 	    getpid(), val, err))
- 		goto close_socket;
-+	err = bpf_map_lookup_elem(dummy_map_fd, &sock_fd, &val);
-+	if (CHECK(err || val != getpid(),
-+	    "(shared local storage) bpf_map_lookup_elem",
-+	    "map value wasn't set correctly (expected %d, got %d, err=%d)\n",
-+	    getpid(), val, err))
-+		goto close_socket;
- 
- 	do_dummy_read(skel->progs.negate_socket_local_storage);
- 
-@@ -1043,6 +1065,11 @@ static void test_bpf_sk_storage_get(void)
- 	CHECK(err || val != -getpid(), "bpf_map_lookup_elem",
- 	      "map value wasn't set correctly (expected %d, got %d, err=%d)\n",
- 	      -getpid(), val, err);
-+	err = bpf_map_lookup_elem(dummy_map_fd, &sock_fd, &val);
-+	CHECK(err || val != -getpid(),
-+	      "(shared local storage) bpf_map_lookup_elem",
-+	      "map value wasn't set correctly (expected %d, got %d, err=%d)\n",
-+	      -getpid(), val, err);
- 
- close_socket:
- 	close(sock_fd);
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-index d2c16eaae367..2cb24b38447b 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-@@ -189,6 +189,9 @@ void test_test_local_storage(void)
- 				      serv_sk))
- 		goto close_prog_rmdir;
- 
-+	CHECK(skel->data->fast_sk_storage_result != 0, "fast_sk_storage_result",
-+	      "fast_sk_local_storage not set\n");
-+
- close_prog_rmdir:
- 	snprintf(cmd, sizeof(cmd), "rm -rf %s", tmp_dir_path);
- 	system(cmd);
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
-index 6cecab2b32ba..f124dc22a7cc 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
-@@ -13,11 +13,22 @@ struct {
- 	__type(value, int);
- } sk_stg_map SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_SHARED_LOCAL_STORAGE);
-+	__type(key, int);
-+	__type(value, int);
-+} dummy_sk_stg_map SEC(".maps");
-+
- SEC("iter/bpf_sk_storage_map")
- int delete_bpf_sk_storage_map(struct bpf_iter__bpf_sk_storage_map *ctx)
- {
--	if (ctx->sk)
--		bpf_sk_storage_delete(&sk_stg_map, ctx->sk);
-+	struct sock *sk = ctx->sk;
-+
-+	if (sk) {
-+		bpf_sk_storage_delete(&sk_stg_map, sk);
-+		bpf_sk_storage_delete(&dummy_sk_stg_map, sk);
-+	}
- 
- 	return 0;
- }
-@@ -43,6 +54,12 @@ int fill_socket_owner(struct bpf_iter__task_file *ctx)
- 
- 	*sock_tgid = task->tgid;
- 
-+	sock_tgid = bpf_sk_storage_get(&dummy_sk_stg_map, sock->sk, 0, 0);
-+	if (!sock_tgid)
-+		return 0;
-+
-+	*sock_tgid = task->tgid;
-+
- 	return 0;
- }
- 
-@@ -61,5 +78,11 @@ int negate_socket_local_storage(struct bpf_iter__tcp *ctx)
- 
- 	*sock_tgid = -*sock_tgid;
- 
-+	sock_tgid = bpf_sk_storage_get(&dummy_sk_stg_map, sk_common, 0, 0);
-+	if (!sock_tgid)
-+		return 0;
-+
-+	*sock_tgid = -*sock_tgid;
-+
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
-index 95868bc7ada9..502a118f57ed 100644
---- a/tools/testing/selftests/bpf/progs/local_storage.c
-+++ b/tools/testing/selftests/bpf/progs/local_storage.c
-@@ -16,6 +16,7 @@ char _license[] SEC("license") = "GPL";
- int monitored_pid = 0;
- int inode_storage_result = -1;
- int sk_storage_result = -1;
-+int fast_sk_storage_result = -1;
- 
- struct local_storage {
- 	struct inode *exec_inode;
-@@ -23,6 +24,10 @@ struct local_storage {
- 	struct bpf_spin_lock lock;
- };
- 
-+struct fast_storage {
-+	__u32 value;
-+};
-+
- struct {
- 	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
- 	__uint(map_flags, BPF_F_NO_PREALLOC);
-@@ -37,6 +42,14 @@ struct {
- 	__type(value, struct local_storage);
- } sk_storage_map SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE |
-+			  BPF_F_SHARED_LOCAL_STORAGE);
-+	__type(key, int);
-+	__type(value, struct fast_storage);
-+} dummy_sk_storage_map SEC(".maps");
-+
- struct {
- 	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
- 	__uint(map_flags, BPF_F_NO_PREALLOC);
-@@ -107,6 +120,7 @@ int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
- {
- 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
- 	struct local_storage *storage;
-+	struct fast_storage *fast_storage;
- 	int err;
- 
- 	if (pid != monitored_pid)
-@@ -126,6 +140,14 @@ int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
- 	if (!err)
- 		sk_storage_result = err;
- 
-+	fast_storage =
-+		bpf_sk_storage_get(&dummy_sk_storage_map, sock->sk, 0, 0);
-+	if (!fast_storage)
-+		return 0;
-+
-+	fast_sk_storage_result =
-+		fast_storage->value == DUMMY_STORAGE_VALUE ? 0 : -1;
-+
- 	return 0;
- }
- 
-@@ -135,6 +157,7 @@ int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
- {
- 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
- 	struct local_storage *storage;
-+	struct fast_storage *fast_storage;
- 
- 	if (pid != monitored_pid)
- 		return 0;
-@@ -148,6 +171,13 @@ int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
- 	storage->value = DUMMY_STORAGE_VALUE;
- 	bpf_spin_unlock(&storage->lock);
- 
-+	fast_storage =
-+		bpf_sk_storage_get(&dummy_sk_storage_map, sock->sk, 0, 0);
-+	if (!fast_storage || fast_storage != sock->sk->bpf_shared_local_storage)
-+		return 0;
-+
-+	fast_storage->value = DUMMY_STORAGE_VALUE;
-+
- 	return 0;
- }
- 
+    https://fedorapeople.org/~acme/dwarves/dwarves-1.22.tar.xz
+    https://fedorapeople.org/~acme/dwarves/dwarves-1.22.tar.bz2
+    https://fedorapeople.org/~acme/dwarves/dwarves-1.22.tar.sign
+
+:-)
+
+> 	Thanks a lot to all the contributors and distro packagers, you're on the
+> CC list, I appreciate a lot the work you put into these tools,
+> 
+> Best Regards,
+> 
+> - Arnaldo
+> 
+> pahole:
+> 
+> - Allow encoding BTF to a separate BTF file (detached) instead of to a new
+>   ".BTF" ELF section in the file being encoded (vmlinux usually).
+> 
+> - Introduce -j/--jobs option to specify the number of threads to use. Without
+>   arguments means one thread per CPU. So far used for the DWARF loader, will
+>   be used as well for the BTF encoder.
+> 
+> - Show all different types with the same name, not just the first one found.
+> 
+> - Introduce sorted type output (--sort), needed with multithreaded DWARF loading,
+>   to use with things like 'btfdiff' that expects the output from DWARF and BTF
+>   types to be comparable using 'diff'.
+> 
+> - Stop assuming that reading from stdin means pretty printing as this broke
+>   pre-existing scripts, introduce a explicit --prettify command line option.
+> 
+> - Improve type resolution for the --header command line option.
+> 
+> - Disable incomplete CTF encoder, this needs to be done using the external
+>   libctf library.
+> 
+> - Do not consider the ftrace filter when encoding BTF for kernel functions.
+> 
+> - Add --kabi_prefix to avoid deduplication woes when using _RH_KABI_REPLACE(),
+> 
+> - Add --with_flexible_array to show just types with flexible arrays.
+> 
+> DWARF Loader:
+> 
+> - Multithreaded loading, requires elfutils >= 0.178.
+> 
+> - Lock calls to non-thread safe elfutils' libdw functions (dwarf_decl_file()
+>   and dwarf_decl_line())
+> 
+> - Change hash table size to one that performs better with current typical
+>   vmlinux files.
+> 
+> - Allow tweaking the hash table size from the command line.
+> 
+> - Stop allocating memory for strings obtained from libdw, just defer freeing
+>   the Dwfl handler so that references to its strings can be safely kept.
+> 
+> - Use a frontend cache for the latest lookup result.
+> 
+> - Allow ignoring some DWARF tags when loading for encoding BTF, as BTF doesn't
+>   have equivalents for things like DW_TAG_inline_expansion and DW_TAG_label.
+> 
+> - Allow ignoring some DWARF tag attributes, such as DW_AT_alignment, not used
+>   when encoding BTF.
+> 
+> - Do not query for non-C attributes when loading a C language CU (compilation unit).
+> 
+> BTF encoder:
+> 
+> - Preparatory work for multithreaded encoding, the focus for 1.23.
+> 
+> btfdiff:
+> 
+> - Support diffing against a detached BTF file, e.g.: 'btfdiff vmlinux vmlinux.btf'
+> 
+> - Support multithreaded DWARF loading, using the new pahole --sort option to have
+>   the output from both BTF and DWARF sorted and thus comparable via 'diff'.
+> 
+> Build:
+> 
+> - Support building with libc libraries lacking either obstacks or argp, such
+>   as Alpine Linux's musl libc.
+> 
+> - Support systems without getconf() to obtain the data cacheline size, such
+>   as musl libc.
+> 
+> - Add a buildcmd.sh for test builds, tested using the same set of containers
+>   used for testing the Linux kernel perf tools.
+> 
+> - Enable selecting building with a shared libdwarves library or statically.
+> 
+> - Allow to use the libbpf package found in distributions instead of with the
+>   accompanying libbpf git submodule.
+> 
+> Cleanups:
+> 
+> - Address lots of compiler warnings accumulated by not using -Wextra, it'll
+>   be added in the next release after allowing not to use it to build libbpf.
+> 
+> - Address covscan report issues.
+> 
+> Documentation:
+> 
+> - Improve the --nr_methods/-m pahole man page entry.
+> 
+> - Clarify that currently --nr_methods doesn't work together witn -C.
+> 
+> Tests:
+> 
+>   $ export BUILD_TARBALL=http://192.168.100.2/pahole/dwarves-1.22.tar.xz
+>   $ export BUILD_CMD=buildcmd.sh
+>   $ time dm -X
+>      1	3.78 almalinux:8                   : Ok   gcc (GCC) 8.4.1 20200928 (Red Hat 8.4.1-1) , clang version 11.0.0 (Red Hat 11.0.0-1.module_el8.4.0+2107+39fed697)
+>      2	5.07 alpine:3.12                   : Ok   gcc (Alpine 9.3.0) 9.3.0 , Alpine clang version 10.0.0 (https://gitlab.alpinelinux.org/alpine/aports.git 7445adce501f8473efdb93b17b5eaf2f1445ed4c)
+>      3	5.48 alpine:3.13                   : Ok   gcc (Alpine 10.2.1_pre1) 10.2.1 20201203 , Alpine clang version 10.0.1 
+>      4	5.68 alpine:3.14                   : Ok   gcc (Alpine 10.3.1_git20210424) 10.3.1 20210424 , Alpine clang version 11.1.0
+>      5	5.99 alpine:edge                   : Ok   gcc (Alpine 10.3.1_git20210625) 10.3.1 20210625 , Alpine clang version 11.1.0
+>      6	4.27 alt:p8                        : Ok   x86_64-alt-linux-gcc (GCC) 5.3.1 20151207 (ALT p8 5.3.1-alt3.M80P.1) , clang version 3.8.0 (tags/RELEASE_380/final)
+>      7	4.27 alt:p9                        : Ok   x86_64-alt-linux-gcc (GCC) 8.4.1 20200305 (ALT p9 8.4.1-alt0.p9.1) , clang version 10.0.0 
+>      8	5.07 alt:sisyphus                  : Ok   x86_64-alt-linux-gcc (GCC) 10.2.1 20210313 (ALT Sisyphus 10.2.1-alt3) , clang version 10.0.1 
+>      9	4.67 amazonlinux:1                 : Ok   gcc (GCC) 7.2.1 20170915 (Red Hat 7.2.1-2) , clang version 3.6.2 (tags/RELEASE_362/final)
+>     10	4.27 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-13) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2)
+>     11	4.48 centos:8                      : Ok   gcc (GCC) 8.4.1 20200928 (Red Hat 8.4.1-1) , clang version 11.0.0 (Red Hat 11.0.0-1.module_el8.4.0+587+5187cac0)
+>     12	4.48 centos:stream                 : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-3) , clang version 12.0.0 (Red Hat 12.0.0-1.module_el8.5.0+840+21214faf)
+>     13	4.18 clearlinux:latest             : Ok   gcc (Clear Linux OS for Intel Architecture) 11.2.1 20210816 releases/gcc-11.2.0-71-g4a414ac2a5 , clang version 11.1.0
+>     14	4.88 debian:9                      : Ok   gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516 , clang version 3.8.1-24 (tags/RELEASE_381/final)
+>     15	4.79 debian:10                     : Ok   gcc (Debian 8.3.0-6) 8.3.0 , clang version 7.0.1-8+deb10u2 (tags/RELEASE_701/final)
+>     16	4.18 debian:11                     : Ok   gcc (Debian 10.2.1-6) 10.2.1 20210110 , Debian clang version 11.0.1-2
+>     17	4.27 debian:experimental           : Ok   gcc (Debian 10.2.1-6) 10.2.1 20210110 , Debian clang version 11.0.1-2
+>     18	3.77 fedora:22                     : Ok   gcc (GCC) 5.3.1 20160406 (Red Hat 5.3.1-6) , clang version 3.5.0 (tags/RELEASE_350/final)
+>     19	3.97 fedora:23                     : Ok   gcc (GCC) 5.3.1 20160406 (Red Hat 5.3.1-6) , clang version 3.7.0 (tags/RELEASE_370/final)
+>     20	4.17 fedora:24                     : Ok   gcc (GCC) 6.3.1 20161221 (Red Hat 6.3.1-1) , clang version 3.8.1 (tags/RELEASE_381/final)
+>     21	4.37 fedora:25                     : Ok   gcc (GCC) 6.4.1 20170727 (Red Hat 6.4.1-1) , clang version 3.9.1 (tags/RELEASE_391/final)
+>     22	4.48 fedora:26                     : Ok   gcc (GCC) 7.3.1 20180130 (Red Hat 7.3.1-2) , clang version 4.0.1 (tags/RELEASE_401/final)
+>     23	4.28 fedora:27                     : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-6) , clang version 5.0.2 (tags/RELEASE_502/final)
+>     24	4.47 fedora:28                     : Ok   gcc (GCC) 8.3.1 20190223 (Red Hat 8.3.1-2) , clang version 6.0.1 (tags/RELEASE_601/final)
+>     25	4.37 fedora:29                     : Ok   gcc (GCC) 8.3.1 20190223 (Red Hat 8.3.1-2) , clang version 7.0.1 (Fedora 7.0.1-6.fc29)
+>     26	4.28 fedora:30                     : Ok   gcc (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2) , clang version 8.0.0 (Fedora 8.0.0-3.fc30)
+>     27	4.07 fedora:31                     : Ok   gcc (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2) , clang version 9.0.1 (Fedora 9.0.1-4.fc31)
+>     28	4.27 fedora:32                     : Ok   gcc (GCC) 10.3.1 20210422 (Red Hat 10.3.1-1) , clang version 10.0.1 (Fedora 10.0.1-3.fc32)
+>     29	4.38 fedora:33                     : Ok   gcc (GCC) 10.3.1 20210422 (Red Hat 10.3.1-1) , clang version 11.0.0 (Fedora 11.0.0-3.fc33)
+>     30	4.47 fedora:34                     : Ok   gcc (GCC) 11.2.1 20210728 (Red Hat 11.2.1-1) , clang version 12.0.1 (Fedora 12.0.1-1.fc34)
+>     31	4.37 fedora:35                     : Ok   gcc (GCC) 11.2.1 20210728 (Red Hat 11.2.1-1) , clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
+>     32	4.37 fedora:rawhide                : Ok   gcc (GCC) 11.2.1 20210728 (Red Hat 11.2.1-1) , clang version 12.0.1 (Fedora 12.0.1-2.fc35)
+>     33	4.08 gentoo-stage3:latest          : Ok   gcc (Gentoo 10.3.0 p1) 10.3.0 
+>     34	4.07 mageia:6                      : Ok   gcc (Mageia 5.5.0-1.mga6) 5.5.0 , clang version 3.9.1 (tags/RELEASE_391/final)
+>     35	4.78 mageia:7                      : Ok   gcc (Mageia 8.4.0-1.mga7) 8.4.0 , clang version 8.0.0 (Mageia 8.0.0-1.mga7)
+>     36	6.48 openmandriva:cooker           : Ok   gcc (GCC) 11.2.0 20210728 (OpenMandriva) , OpenMandriva 12.0.1-1 clang version 12.0.1 (/builddir/build/BUILD/llvm-project-12.0.1.src/clang 0a7362bac93d0a3bf152ead1b6b3f98c9a9695d5)
+>     37	4.48 opensuse:15.0                 : Ok   gcc (SUSE Linux) 7.4.1 20190905 [gcc-7-branch revision 275407] , clang version 5.0.1 (tags/RELEASE_501/final 312548)
+>     38	4.08 opensuse:15.1                 : Ok   gcc (SUSE Linux) 7.5.0 , clang version 7.0.1 (tags/RELEASE_701/final 349238)
+>     39	3.87 opensuse:15.2                 : Ok   gcc (SUSE Linux) 7.5.0 , clang version 9.0.1 
+>     40	3.78 opensuse:15.3                 : Ok   gcc (SUSE Linux) 7.5.0 , clang version 11.0.1
+>     41	4.38 opensuse:tumbleweed           : Ok   gcc (SUSE Linux) 11.1.1 20210721 [revision 076930b9690ac3564638636f6b13bbb6bc608aea] , clang version 12.0.1
+>     42	3.87 oraclelinux:8                 : Ok   gcc (GCC) 8.4.1 20200928 (Red Hat 8.4.1-1.0.1) , clang version 11.0.0 (Red Hat 11.0.0-1.0.1.module+el8.4.0+20046+39fed697)
+>     43	3.87 rockylinux:8                  : Ok   gcc (GCC) 8.4.1 20200928 (Red Hat 8.4.1-1) , clang version 11.0.0 (Red Hat 11.0.0-1.module+el8.4.0+412+05cf643f)
+>     44	3.97 ubuntu:16.04                  : Ok   gcc (Ubuntu 5.4.0-6ubuntu1~16.04.12) 5.4.0 20160609 , clang version 3.8.0-2ubuntu4 (tags/RELEASE_380/final)
+>     45	4.37 ubuntu:18.04                  : Ok   gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0 , clang version 6.0.0-1ubuntu2 (tags/RELEASE_600/final)
+>     46	4.87 ubuntu:20.04                  : Ok   gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0 , clang version 10.0.0-4ubuntu1 
+>     47	4.47 ubuntu:20.10                  : Ok   gcc (Ubuntu 10.3.0-1ubuntu1~20.10) 10.3.0 , Ubuntu clang version 11.0.0-2
+>     48	4.27 ubuntu:21.04                  : Ok   gcc (Ubuntu 10.3.0-1ubuntu1) 10.3.0 , Ubuntu clang version 12.0.0-3ubuntu1~21.04.1
+>     49  4.37 ubuntu:21.10                  : Ok   gcc (Ubuntu 11.2.0-1ubuntu2) 11.2.0 , Ubuntu clang version 12.0.1-1
+> 
+>   $
+
 -- 
-2.30.2
 
+- Arnaldo
