@@ -2,123 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF7A3F5079
-	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 20:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493513F50FF
+	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 21:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhHWSjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Aug 2021 14:39:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25573 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230149AbhHWSjA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Aug 2021 14:39:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629743897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aGeRK61kiXK1K05tade+IDVRPgDSs9Mu5QBfh6lgm+Q=;
-        b=djNEjY4Fguk8kZOlSfsvJ+wW7HO//F2kxNF6l9ZIb6m2rvsSPVfT83NaKHheUfjNcX6F++
-        MezfFSYPryBSo0h06eJmOx1fUKfpjQBHeNyFjcqIFO0oM+bB9uSvGanlsnSmmubUt9YQLk
-        eBhVraaDeDp6bui2cMqSlsCceMF9Ua4=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-QkOGdbLsO6ektg9UBV_VXQ-1; Mon, 23 Aug 2021 14:38:15 -0400
-X-MC-Unique: QkOGdbLsO6ektg9UBV_VXQ-1
-Received: by mail-wm1-f71.google.com with SMTP id v2-20020a7bcb420000b02902e6b108fcf1so40463wmj.8
-        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 11:38:15 -0700 (PDT)
+        id S230326AbhHWTF5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Aug 2021 15:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230192AbhHWTF4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Aug 2021 15:05:56 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943ABC061575
+        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 12:05:13 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id u3so39161299ejz.1
+        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 12:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4pNZik/7MZ1gd1JMjWsqS/rZ8ho6j9+j+/Hbspf35bA=;
+        b=iHx8CD8Wye8bC/pV3KnOX8WsN1O0/ZsD9s5qkVlx4CXLFFFB0DjSNrxQJHeaHF9SWX
+         uHZ8DKyB9CK15kwdt1S4L6rlFNJGCV1qnQd4R6NluUWG9yil9cJ/T4xSX9r/CJEQiCpe
+         94uUwp2QLjkeDY98+iZWSEid+VBxVfGr+5T+klB1/2lSGljACj4gVr2o9UqDLfea7/n4
+         BPxAwRXwYnJYSVYjxK3px8/7SIpzpwWVVDZbpV4kSbjgZlb2yeqMn0wLpxD0jp/sUYzX
+         Luf1yj61YBzI4niQ8V/4vesGAmnR2VIOOKG0p3ZT5NAIUhVas/O2kba8NxK6VHFGcg1e
+         +COA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aGeRK61kiXK1K05tade+IDVRPgDSs9Mu5QBfh6lgm+Q=;
-        b=ceeAQ5+Fx+d+Mwq5T70e7PvJX1A3+MYmKFUfZL9mJ2NF07U53nRVMcNJ1rR895Lr3Z
-         QRueLO7dtTdkzAwzXKSE+y/VfXMhMf0u1tC8HF7ow9SNoMSNoDqowoRJwnof0awkW5gw
-         0Q+8+/dFIB5HD6CfEkC+JWjvna3nr9/RIAYBF93ncLaGFPQAJW0ok6FClb6xjj+HQACT
-         P9UWl08Dz3YMW63AYJju+u688492o61uCxcAMK0djInpNlNssE1oCtteOvEQ91YFbktL
-         0J/sKuopdKO3kS0veu5R4uP78Vx0w++AqGkKBVCyaZRIP3HAagc2rm13P4fPpdHTPB1/
-         nTpA==
-X-Gm-Message-State: AOAM531G8xiZavQ49iWtmB9oQ5x4v1s9pO1hH6dfhhtyPrlob9VtD0GG
-        +vUmCGeJSiyqn8hAVwROXT3Uaqw89d13UvPPIXIasFheIL4koSRmOhMCG36eC9oVQNjh5QhDoMA
-        W5mNeaqaAVJcG
-X-Received: by 2002:a05:600c:4656:: with SMTP id n22mr13403720wmo.74.1629743894355;
-        Mon, 23 Aug 2021 11:38:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx30LR2fj61cxgWt2sNK/230aqlYfdRAsV6ILtvVucKEAcOOWdUh1RddfLWL/j+m/rLgt1jrQ==
-X-Received: by 2002:a05:600c:4656:: with SMTP id n22mr13403712wmo.74.1629743894249;
-        Mon, 23 Aug 2021 11:38:14 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id l2sm13936162wme.28.2021.08.23.11.38.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 11:38:13 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com
-Subject: Re: [PATCH net-next] netdevice: move xdp_rxq within netdev_rx_queue
-To:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
-References: <20210823180135.1153608-1-kuba@kernel.org>
-Message-ID: <b2cd6882-4e31-18f6-315b-7b0937b8942c@redhat.com>
-Date:   Mon, 23 Aug 2021 20:38:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4pNZik/7MZ1gd1JMjWsqS/rZ8ho6j9+j+/Hbspf35bA=;
+        b=FyjIKSH2iuHWyfi85b0UwUhyqTBM4Ruk4XFLihCwnG5PonVTTQ4iZy5m0Jc20UMx1r
+         u53ePo36yrFFFnG55I04bDjhlfFGQ8KW54tQRHxhGDnAN9hEDE/rMf4kUFEP+gqYjeBK
+         pWm+tHK1lN587u09CrVl2atkRGDo8zGoI4EiuMwiYm03exhVqKkmCZ4FEsZFiPQfpwDb
+         ockOLDJ4kgX8nK4H4BTa5L0/EM4WctERsyu6rhxx6k+ltXzaCOWQqpcIT7m+KmVvPqv4
+         nbmf1Jk0bqwu6yBXFbTSD+xvfhFlJX9QP0hFUa7dna01MhHZAT7tmLlutjQ7TauUI9MF
+         0xfw==
+X-Gm-Message-State: AOAM531JwwEG1Jpue3jiscDAu8mR4DAuivKJ7HCcd0lAe2hhwVHNwC9w
+        ObJvYKKRpGS91f/5HKut7XwZFI+5Yl3Qh6P6nuc=
+X-Google-Smtp-Source: ABdhPJzEOoaklJodoN4hPwGj7k/Kxa2x1pIF4tvv/kL9eeENc5bQndIlRdOVL86MN3pQNDgWMkUcjhrwwGxPLHAUiyk=
+X-Received: by 2002:a17:906:ca1:: with SMTP id k1mr7268477ejh.369.1629745511080;
+ Mon, 23 Aug 2021 12:05:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210823180135.1153608-1-kuba@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAMy7=ZXTiaX9xzNi5aOavwsf+mziJ=w-EcHH2f=cJmCGr3EPQA@mail.gmail.com>
+ <20210823155149.3jg7nizcxgxf4tfv@apollo.localdomain>
+In-Reply-To: <20210823155149.3jg7nizcxgxf4tfv@apollo.localdomain>
+From:   Yaniv Agman <yanivagman@gmail.com>
+Date:   Mon, 23 Aug 2021 22:06:03 +0300
+Message-ID: <CAMy7=ZWQCO0rkW979v6cF56x06G_kmA_qTDm9_yumJyjrcg47Q@mail.gmail.com>
+Subject: Re: libbpf: Kernel error message: Exclusivity flag on, cannot modify
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=91=D7=
+=B3, 23 =D7=91=D7=90=D7=95=D7=92=D7=B3 2021 =D7=91-18:51 =D7=9E=D7=90=D7=AA=
+ =E2=80=AAKumar Kartikeya Dwivedi=E2=80=AC=E2=80=8F
+<=E2=80=AAmemxor@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+>
+> On Mon, Aug 23, 2021 at 04:35:51PM IST, Yaniv Agman wrote:
+> > Using the recently added libbpf tc API worked fine for us in v0.4.0.
+> > After updating libbpf and syncing with master branch, we get the
+> > following error:
+> >
+> > libbpf: Kernel error message: Exclusivity flag on, cannot modify
+> >
+>
+> This message is harmless. The commit that adds NLM_F_EXCL is a bug fix. W=
+ithout
+> it, the kernel returns 0 when it should return -EEXIST. It's just that th=
+e
+> kernel complains loudly for the latter case through extack.
+>
+> User needs EEXIST to detect whether it installed the qdisc or not. To see=
+ how
+> this affects the system, run ./test_progs -t tc_bpf after installing clsa=
+ct
+> using:
+>         tc qdisc add dev lo clsact
+>
+> Before this fix is added, it will remove the system qdisc as bpf_tc_hook_=
+create
+> returns 0, after the fix it detects the presence of the existing qdisc us=
+ing
+> -EEXIST and disables the bpf_tc_hook_destroy call before exit.
+>
 
+Got it, thanks!
 
-On 23/08/2021 20.01, Jakub Kicinski wrote:
-> Both struct netdev_rx_queue and struct xdp_rxq_info are cacheline
-> aligned. This causes extra padding before and after the xdp_rxq
-> member. Move the member upfront, so that it's naturally aligned.
-> 
-> Before:
-> 	/* size: 256, cachelines: 4, members: 6 */
-> 	/* sum members: 160, holes: 1, sum holes: 40 */
-> 	/* padding: 56 */
-> 	/* paddings: 1, sum paddings: 36 */
-> 	/* forced alignments: 1, forced holes: 1, sum forced holes: 40 */
-> 
-> After:
-> 	/* size: 192, cachelines: 3, members: 6 */
-> 	/* padding: 32 */
-> 	/* paddings: 1, sum paddings: 36 */
-> 	/* forced alignments: 1 */
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
->   include/linux/netdevice.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> I would suggest handling the error explicitly, and using libbpf_set_print=
+ to
+> filter it out. See the example in tools/testing/selftests/bpf/test_progs.=
+c.
+>
 
+Explicitly handling EEXIST solved the problem, however,
+libbpf_set_print in my setup is already set to ignore any message that
+is not LIBBPF_WARN.
+so I'm not sure how to specifically filter this error out...
 
-LGTM
+> > I found that commit a1bd8104a9f1c1a5b9cd0f698c886296749a0ce9 is
+>
+> You probably meant bbf29d3a2e49e482d5267311798aec42f00e88f3? I cannot fin=
+d this
+> commit.
+>
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Sorry, I should have mentioned that the commit ID is of the libbpf
+mirror: https://github.com/libbpf/libbpf/commit/a1bd8104a9f1c1a5b9cd0f698c8=
+86296749a0ce9
 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 9579942ac2fd..514ec3a0507c 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -722,13 +722,13 @@ bool rps_may_expire_flow(struct net_device *dev, u16 rxq_index, u32 flow_id,
->   
->   /* This structure contains an instance of an RX queue. */
->   struct netdev_rx_queue {
-> +	struct xdp_rxq_info		xdp_rxq;
->   #ifdef CONFIG_RPS
->   	struct rps_map __rcu		*rps_map;
->   	struct rps_dev_flow_table __rcu	*rps_flow_table;
->   #endif
->   	struct kobject			kobj;
->   	struct net_device		*dev;
-> -	struct xdp_rxq_info		xdp_rxq;
->   #ifdef CONFIG_XDP_SOCKETS
->   	struct xsk_buff_pool            *pool;
->   #endif
-> 
-
+> > causing this problem, and removing the NLM_F_EXCL resolves the issue.
+> > Is this the expected behavior and I'm doing something wrong?
+>
+> --
+> Kartikeya
