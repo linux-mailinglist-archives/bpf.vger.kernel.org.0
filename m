@@ -2,90 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF653F4DB4
-	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 17:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEB43F4DC3
+	for <lists+bpf@lfdr.de>; Mon, 23 Aug 2021 17:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbhHWPsz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Aug 2021 11:48:55 -0400
-Received: from www62.your-server.de ([213.133.104.62]:34654 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhHWPsz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:48:55 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mICBA-0006tY-Ed; Mon, 23 Aug 2021 17:48:04 +0200
-Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mICB9-000Jg5-UB; Mon, 23 Aug 2021 17:48:04 +0200
-Subject: Re: [PATCH bpf-next] bpf: test_bpf: Print total time of test in the
- summary
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1629548039-3747-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4226eb32-7755-5a32-5c58-7e64c129727c@iogearbox.net>
-Date:   Mon, 23 Aug 2021 17:48:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S231224AbhHWPwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Aug 2021 11:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230314AbhHWPwf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Aug 2021 11:52:35 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E0CC061575
+        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 08:51:52 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id oa17so12270213pjb.1
+        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 08:51:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eQACu/hwwHjdKf3BvfBNntckyXeGPydw0NB/8Jhtwik=;
+        b=T69l+Al2dQuLamsFncrBh9qk/usPIFQz1+BBd35sB96Y0EcPXZRC45usfa/m1pW5Ux
+         D+v+hiCqjCaV/cEFjGhfHy4/C+OzAzF7Yf7XAptFRV2mZZqBRegqQATxp9FYrb0YpsUn
+         lqTPOJ4eMRUTuMCn8cSc3ldNg/ZVm4vRuxBNGnYyO2whC+W1Y/yitECbLTbjN5KoMosP
+         0zCouSSQUJxbsvllzyq2mNfaX8QWFWHfcWsIhEjYku6xDYju/5ur6AbKF38iNa9905Gp
+         77h5x3yAGjtpD8O9ZT9KOaVh0ZmT3cmgsgdsi/exCJSZcQLGNzmDJ2lt5VsJ8UV4Bo6I
+         tyAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eQACu/hwwHjdKf3BvfBNntckyXeGPydw0NB/8Jhtwik=;
+        b=VQvB29LRXeK1eOD/sW2QIf1+tfvNZdBKkqhIdbWN1WtjsRYk34YOA3Sph/I6+17AfJ
+         kYolmWY8QF+vuhHCyUH7AVXPy57Mfhi+zkFzmxMDxFyWV7rLYX5EMhCfOTNdxoSI4vb/
+         CkH/yOgUPPMxYR9pLZBVIZ4zXwt3K4Ry5FAizxHR01PmkDfKsTjA2qxcjWTvH0PeYd72
+         +AYofSwTFg6NOniX6fA6OpV45Kr22+TcuXFWkzUktWBuvrBXb4YKR55o/W8f/NtU/dDf
+         B+F1WvIughm45hdhnKCcNafQgDZrdRftUcXSbAMuwoHR9Fo7fV/hnUG5NacRKxqCn8Wk
+         sPlg==
+X-Gm-Message-State: AOAM530j8nKqPSKXxQ4Bq4Zwv39j9pcrvKAYnWXngkLza670A7rmjTbg
+        0My81L5Sr78n6djwU6pZ0fk=
+X-Google-Smtp-Source: ABdhPJybzoUroa6XjAeH5Zt2ntikVuvkJQjKPL32cOaIlQj2fFFLJx27JeYgAdIw0qkV+awN+knGXA==
+X-Received: by 2002:a17:90b:4c8e:: with SMTP id my14mr20843705pjb.234.1629733912140;
+        Mon, 23 Aug 2021 08:51:52 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d820:9cc6:d37f:c2fd:dc6])
+        by smtp.gmail.com with ESMTPSA id x69sm16716317pfc.59.2021.08.23.08.51.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 08:51:51 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 21:21:49 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Subject: Re: libbpf: Kernel error message: Exclusivity flag on, cannot modify
+Message-ID: <20210823155149.3jg7nizcxgxf4tfv@apollo.localdomain>
+References: <CAMy7=ZXTiaX9xzNi5aOavwsf+mziJ=w-EcHH2f=cJmCGr3EPQA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1629548039-3747-1-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26272/Mon Aug 23 10:21:13 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMy7=ZXTiaX9xzNi5aOavwsf+mziJ=w-EcHH2f=cJmCGr3EPQA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/21/21 2:13 PM, Tiezhu Yang wrote:
-> The total time of test is useful to compare the performance
-> when bpf_jit_enable is 0 or 1, so print it in the summary.
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->   lib/test_bpf.c | 27 +++++++++++++++++++++------
->   1 file changed, 21 insertions(+), 6 deletions(-)
-> 
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index 830a18e..b1b17ba 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -8920,6 +8920,9 @@ static __init int test_skb_segment_single(const struct skb_segment_test *test)
->   static __init int test_skb_segment(void)
->   {
->   	int i, err_cnt = 0, pass_cnt = 0;
-> +	u64 start, finish;
-> +
-> +	start = ktime_get_ns();
->   
->   	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
->   		const struct skb_segment_test *test = &skb_segment_tests[i];
-> @@ -8935,8 +8938,10 @@ static __init int test_skb_segment(void)
->   		}
->   	}
->   
-> -	pr_info("%s: Summary: %d PASSED, %d FAILED\n", __func__,
-> -		pass_cnt, err_cnt);
-> +	finish = ktime_get_ns();
-> +
-> +	pr_info("%s: Summary: %d PASSED, %d FAILED in %llu nsec\n",
-> +		__func__, pass_cnt, err_cnt, finish - start);
->   	return err_cnt ? -EINVAL : 0;
->   }
+On Mon, Aug 23, 2021 at 04:35:51PM IST, Yaniv Agman wrote:
+> Using the recently added libbpf tc API worked fine for us in v0.4.0.
+> After updating libbpf and syncing with master branch, we get the
+> following error:
+>
+> libbpf: Kernel error message: Exclusivity flag on, cannot modify
+>
 
-I don't think this gives you any accurate results (e.g. what if this gets migrated
-or preempted?); maybe rather use the duration from __run_one() ..
+This message is harmless. The commit that adds NLM_F_EXCL is a bug fix. Without
+it, the kernel returns 0 when it should return -EEXIST. It's just that the
+kernel complains loudly for the latter case through extack.
 
-Thanks,
-Daniel
+User needs EEXIST to detect whether it installed the qdisc or not. To see how
+this affects the system, run ./test_progs -t tc_bpf after installing clsact
+using:
+	tc qdisc add dev lo clsact
+
+Before this fix is added, it will remove the system qdisc as bpf_tc_hook_create
+returns 0, after the fix it detects the presence of the existing qdisc using
+-EEXIST and disables the bpf_tc_hook_destroy call before exit.
+
+I would suggest handling the error explicitly, and using libbpf_set_print to
+filter it out. See the example in tools/testing/selftests/bpf/test_progs.c.
+
+> I found that commit a1bd8104a9f1c1a5b9cd0f698c886296749a0ce9 is
+
+You probably meant bbf29d3a2e49e482d5267311798aec42f00e88f3? I cannot find this
+commit.
+
+> causing this problem, and removing the NLM_F_EXCL resolves the issue.
+> Is this the expected behavior and I'm doing something wrong?
+
+--
+Kartikeya
