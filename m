@@ -2,44 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9413F55E3
-	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 04:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37543F55E6
+	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 04:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhHXCow (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Aug 2021 22:44:52 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:51025 "EHLO
+        id S233895AbhHXCo5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Aug 2021 22:44:57 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:40503 "EHLO
         out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233664AbhHXCow (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Aug 2021 22:44:52 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5056B5C00DD;
-        Mon, 23 Aug 2021 22:44:08 -0400 (EDT)
+        by vger.kernel.org with ESMTP id S233759AbhHXCox (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 23 Aug 2021 22:44:53 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 49A965C00D0;
+        Mon, 23 Aug 2021 22:44:09 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 23 Aug 2021 22:44:08 -0400
+  by compute4.internal (MEProxy); Mon, 23 Aug 2021 22:44:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=F3W3koZQ8zrs6
-        P9f79PHZ3xp/CAOoMzvM88wFU8RhHU=; b=iDfeXmKHlCzXqSd/+QbkJla/vbBQE
-        CrP4PkDP24vMb/MqhqTAzz0JqUG89JGFgKQgUtujF+S/ijox+Y7kxZUqpTv0I1++
-        o2Q/DPmybtXL4xaDyNq/jzQ7Mz1e5fVwNvXKlQvprBbnyeaW/jvoJIakbZ1b60up
-        qOviOFjnRevvC5HAkjBQ7JUelnufqg/9X+Oi6qu2BLznpGZQO+qYDEJz+MQ6wqPE
-        wl0klFDjZscMLKXMKy/EDEm0UzMfRjABD14EsoWZsCcKIBCQ9QgnMa8OUJ+g3ffr
-        IlRcyLHchMd+DgJWWdOQjY1aCR+zGG516wI9ARcEhq1qWuT1BaCQofr3w==
+        :mime-version:content-transfer-encoding; s=fm1; bh=Q6Mw3g/mXE1iS
+        KUihMUa0TtUGExnnjhHmxPLwftdxpQ=; b=fgezGcFpvvuUL3NA2w6UPYRVg3htO
+        jo/bwmUNSmFqYxEkdxdGqBvYaAU/USoN5LwuPSpsiy36gnIFm1fsxzkH7t04kAW5
+        exnzZVD1mnVrOVp5W/A2PSyjmHOKHoyQM43UqBbFsRg08rI5igKkpdtVKW3NMF0L
+        0eowqLdFMPaCawmy+rCE6CNaHl0DAlOx6YRZRzN7kIwMoF1iAvqhDAMAEcZr5cwb
+        5KgVgm4GWoqA+bqDMa+NlIitWCIbOA0Nz2v0pclBklUNFzIfvAYSPDeN2aTnSYvo
+        D2WYRuUJXPlmPZbCYb6QRNjaAkGnvPZFyUAMEsfDUBKli7eRVpc0FgRNQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=F3W3koZQ8zrs6P9f79PHZ3xp/CAOoMzvM88wFU8RhHU=; b=vrzEphWg
-        Rz1YD0GXk2udqrrq3H0nwQqmh/Fu+Rgx3+LdgRTwBeTlgQTM+de8zne3ToMuKWPr
-        pBalIAaOpim2GFMT+VvaNsZpJ1sIIiYyyJ7BC7GwQ6nxLFIa/p2WEoTQVksrT33T
-        a2a3wwb7TaDeWFD+KyJ3GmcuYnIZZ+v2HNMOYZlPnQ5labQuz/eGUEq2CkmNFebu
-        e4g7j+pX8RtWnEHpO1+bee64bAUw/ayuR+ANBpQRY8ldCueExijUCnqaeifyHKUb
-        w6uy6eS5AdqbStJUenM5o0KLxrl8pEEwnfb4q68Eecg8QJoNLDoceJqboRbFQ443
-        pTmS3DdhvSxjrA==
-X-ME-Sender: <xms:91wkYYdV_j9_yee6zeF3uATYIJZUADkK0Hoz5y6eeKpBa3wRzvdq6w>
-    <xme:91wkYaPQi_LuO-DfzA2YbI1GmfA-ivzzH5xadbaC1cO57S21RXHqQRhrHWn-CFn1T
-    2G4Rf7hRKTC3LJP0A>
-X-ME-Received: <xmr:91wkYZifnoovHDZTrWN6JPHc3HOvnFsK4AgRd2GlfOTWv4-f-4Gw6KaR-2I7hLqfPHNMptg5TN_SBMqkiyIkVLKtPL4hIVAAUi-3__4DqTlNDA>
+        fm3; bh=Q6Mw3g/mXE1iSKUihMUa0TtUGExnnjhHmxPLwftdxpQ=; b=OMTHJPQS
+        m1UAkaBe8mCIA6YETcaYsjMDfkkYoTyRo1CFWdL1qaYT33WIzyz68by33qwzygiP
+        eyJaI22QvXwscl7mq9hcZGq/9t1tv4qmB4IqIKb1xVyGGDAlCYjwl6sDEiwFnxTi
+        KypSXYun9/t4DRdEF6PHup08cgamkLRgcfFt/sSSSw3mOEalXdcbxzQAKGwPKO/o
+        HPJ86zFG9maYGvPX/hNl1uQiXfZ9ZNi1QmS8mbLDoXPcHA4utciX4kQo64Z9rMq1
+        1pnbvxJNnaDvXIwmXD6mMa9bYpbgNz9x8TgV1QY9dIgaUPVSF78rwwu6HzKIsGrb
+        4nmyxgPQiTuMvQ==
+X-ME-Sender: <xms:-VwkYar-E1CdEVbD-CWb98mT4UliZv92SxQfL5rAV1eJS22rYA-KZQ>
+    <xme:-VwkYYpG_ofoKhPbMJg0Dmro7r8NE8rYqg2C5TyfN2zguPTG84GaRzoBPJ1xl5B9_
+    OkqcMhuJ4c0UFzisg>
+X-ME-Received: <xmr:-VwkYfNcPAXlAKLoLPFwABcPUMy_OQmNEy9ejqnjfNDQU58hO8GH3zIXpOdMRUK3uP2pj-DC7-LyYJlbM_gK1nepYZNSSWCPUcGHqDUKdXrIpQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddtiedgieduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
@@ -47,19 +47,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddtiedgieduucetufdoteggod
     gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgkeduleekhfetvefhge
     fgvdegfeejfefguedvuddthffggffhhedtueeuteefieenucevlhhushhtvghrufhiiigv
     pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:91wkYd_v773tcw4xzv-IleZgARYT6XENtH_1AodNqsSAaf3RE2qkQA>
-    <xmx:91wkYUtAgzC05zBBT8qibCja415Rk2TsZj3fwB3tmrLPILXt0o66QA>
-    <xmx:91wkYUFesGPyfFYe4aIAQTuFz6o9lgRpFYWi1HmuwOwoaGWI6pNwEQ>
-    <xmx:-FwkYWJ7Sms9do_R5h-7sTfpA6uIdEPfFiiMJqo5y5vjM0U98UjLmw>
+X-ME-Proxy: <xmx:-VwkYZ5RHSU4hOPq-FxiAp-JalrrjfgRhAAcN7dKwzEuj7pNkS6g7A>
+    <xmx:-VwkYZ54u6LvEyuySMx4nJ2PNfRcOTvZUYiL3_X3Z-oKwOyOyE30Cw>
+    <xmx:-VwkYZjrvm6SGiAa3cLYaIEpoP1KNlwV0gFJ4wwIJIb4cwxnhjsVIQ>
+    <xmx:-VwkYc2pPWEEeseTxAjV1Ngi-vs7zgVAH6n308wwgx5jWgZWzXk_Aw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 23 Aug 2021 22:44:07 -0400 (EDT)
+ 23 Aug 2021 22:44:08 -0400 (EDT)
 From:   Daniel Xu <dxu@dxuuu.xyz>
 To:     bpf@vger.kernel.org, yhs@fb.com, andriin@fb.com
 Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/5] bpf: Consolidate task_struct BTF_ID declarations
-Date:   Mon, 23 Aug 2021 19:43:47 -0700
-Message-Id: <6dcefa5bed26fe1226f26683f36819bb53ec19a2.1629772842.git.dxu@dxuuu.xyz>
+Subject: [PATCH bpf-next v2 3/5] bpf: Extend bpf_base_func_proto helpers with bpf_get_current_task_btf()
+Date:   Mon, 23 Aug 2021 19:43:48 -0700
+Message-Id: <f99870ed5f834c9803d73b3476f8272b1bb987c0.1629772842.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <cover.1629772842.git.dxu@dxuuu.xyz>
 References: <cover.1629772842.git.dxu@dxuuu.xyz>
@@ -69,133 +69,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-No need to have it defined 5 times. Once is enough.
+bpf_get_current_task() is already supported so it's natural to also
+include the _btf() variant for btf-powered helpers.
+
+This is required for non-tracing progs to use bpf_task_pt_regs() in the
+next commit.
 
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- include/linux/btf_ids.h       |  2 ++
- kernel/bpf/bpf_task_storage.c |  6 ++----
- kernel/bpf/stackmap.c         |  4 +---
- kernel/bpf/task_iter.c        | 11 +++++------
- kernel/trace/bpf_trace.c      |  4 ++--
- 5 files changed, 12 insertions(+), 15 deletions(-)
+ kernel/bpf/helpers.c     | 3 +++
+ kernel/trace/bpf_trace.c | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-index 6d1395030616..93d881ab0d48 100644
---- a/include/linux/btf_ids.h
-+++ b/include/linux/btf_ids.h
-@@ -188,4 +188,6 @@ MAX_BTF_SOCK_TYPE,
- extern u32 btf_sock_ids[];
- #endif
- 
-+extern u32 btf_task_struct_ids[];
-+
- #endif
-diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
-index 3ce75758d394..ebfa8bc90892 100644
---- a/kernel/bpf/bpf_task_storage.c
-+++ b/kernel/bpf/bpf_task_storage.c
-@@ -317,15 +317,13 @@ const struct bpf_map_ops task_storage_map_ops = {
- 	.map_owner_storage_ptr = task_storage_ptr,
- };
- 
--BTF_ID_LIST_SINGLE(bpf_task_storage_btf_ids, struct, task_struct)
--
- const struct bpf_func_proto bpf_task_storage_get_proto = {
- 	.func = bpf_task_storage_get,
- 	.gpl_only = false,
- 	.ret_type = RET_PTR_TO_MAP_VALUE_OR_NULL,
- 	.arg1_type = ARG_CONST_MAP_PTR,
- 	.arg2_type = ARG_PTR_TO_BTF_ID,
--	.arg2_btf_id = &bpf_task_storage_btf_ids[0],
-+	.arg2_btf_id = &btf_task_struct_ids[0],
- 	.arg3_type = ARG_PTR_TO_MAP_VALUE_OR_NULL,
- 	.arg4_type = ARG_ANYTHING,
- };
-@@ -336,5 +334,5 @@ const struct bpf_func_proto bpf_task_storage_delete_proto = {
- 	.ret_type = RET_INTEGER,
- 	.arg1_type = ARG_CONST_MAP_PTR,
- 	.arg2_type = ARG_PTR_TO_BTF_ID,
--	.arg2_btf_id = &bpf_task_storage_btf_ids[0],
-+	.arg2_btf_id = &btf_task_struct_ids[0],
- };
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 6fbc2abe9c91..e8eefdf8cf3e 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -530,14 +530,12 @@ BPF_CALL_4(bpf_get_task_stack, struct task_struct *, task, void *, buf,
- 	return res;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 4e8540716187..609674f409ed 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1322,6 +1322,7 @@ void bpf_timer_cancel_and_free(void *val)
  }
  
--BTF_ID_LIST_SINGLE(bpf_get_task_stack_btf_ids, struct, task_struct)
--
- const struct bpf_func_proto bpf_get_task_stack_proto = {
- 	.func		= bpf_get_task_stack,
- 	.gpl_only	= false,
- 	.ret_type	= RET_INTEGER,
- 	.arg1_type	= ARG_PTR_TO_BTF_ID,
--	.arg1_btf_id	= &bpf_get_task_stack_btf_ids[0],
-+	.arg1_btf_id	= &btf_task_struct_ids[0],
- 	.arg2_type	= ARG_PTR_TO_UNINIT_MEM,
- 	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
- 	.arg4_type	= ARG_ANYTHING,
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index b68cb5d6d6eb..b48750bfba5a 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -525,7 +525,6 @@ static const struct seq_operations task_vma_seq_ops = {
- };
- 
- BTF_ID_LIST(btf_task_file_ids)
--BTF_ID(struct, task_struct)
- BTF_ID(struct, file)
- BTF_ID(struct, vm_area_struct)
- 
-@@ -591,19 +590,19 @@ static int __init task_iter_init(void)
- {
- 	int ret;
- 
--	task_reg_info.ctx_arg_info[0].btf_id = btf_task_file_ids[0];
-+	task_reg_info.ctx_arg_info[0].btf_id = btf_task_struct_ids[0];
- 	ret = bpf_iter_reg_target(&task_reg_info);
- 	if (ret)
- 		return ret;
- 
--	task_file_reg_info.ctx_arg_info[0].btf_id = btf_task_file_ids[0];
--	task_file_reg_info.ctx_arg_info[1].btf_id = btf_task_file_ids[1];
-+	task_file_reg_info.ctx_arg_info[0].btf_id = btf_task_struct_ids[0];
-+	task_file_reg_info.ctx_arg_info[1].btf_id = btf_task_file_ids[0];
- 	ret =  bpf_iter_reg_target(&task_file_reg_info);
- 	if (ret)
- 		return ret;
- 
--	task_vma_reg_info.ctx_arg_info[0].btf_id = btf_task_file_ids[0];
--	task_vma_reg_info.ctx_arg_info[1].btf_id = btf_task_file_ids[2];
-+	task_vma_reg_info.ctx_arg_info[0].btf_id = btf_task_struct_ids[0];
-+	task_vma_reg_info.ctx_arg_info[1].btf_id = btf_task_file_ids[1];
- 	return bpf_iter_reg_target(&task_vma_reg_info);
- }
- late_initcall(task_iter_init);
+ const struct bpf_func_proto bpf_get_current_task_proto __weak;
++const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_kernel_proto __weak;
+@@ -1407,6 +1408,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+ 		return bpf_get_trace_printk_proto();
+ 	case BPF_FUNC_get_current_task:
+ 		return &bpf_get_current_task_proto;
++	case BPF_FUNC_get_current_task_btf:
++		return &bpf_get_current_task_btf_proto;
+ 	case BPF_FUNC_probe_read_user:
+ 		return &bpf_probe_read_user_proto;
+ 	case BPF_FUNC_probe_read_kernel:
 diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index cbc73c08c4a4..50d055fc2327 100644
+index 50d055fc2327..4e54f3dc209f 100644
 --- a/kernel/trace/bpf_trace.c
 +++ b/kernel/trace/bpf_trace.c
-@@ -714,13 +714,13 @@ BPF_CALL_0(bpf_get_current_task_btf)
- 	return (unsigned long) current;
- }
+@@ -716,7 +716,7 @@ BPF_CALL_0(bpf_get_current_task_btf)
  
--BTF_ID_LIST_SINGLE(bpf_get_current_btf_ids, struct, task_struct)
-+BTF_ID_LIST_GLOBAL_SINGLE(btf_task_struct_ids, struct, task_struct)
+ BTF_ID_LIST_GLOBAL_SINGLE(btf_task_struct_ids, struct, task_struct)
  
- static const struct bpf_func_proto bpf_get_current_task_btf_proto = {
+-static const struct bpf_func_proto bpf_get_current_task_btf_proto = {
++const struct bpf_func_proto bpf_get_current_task_btf_proto = {
  	.func		= bpf_get_current_task_btf,
  	.gpl_only	= true,
  	.ret_type	= RET_PTR_TO_BTF_ID,
--	.ret_btf_id	= &bpf_get_current_btf_ids[0],
-+	.ret_btf_id	= &btf_task_struct_ids[0],
- };
- 
- BPF_CALL_2(bpf_current_task_under_cgroup, struct bpf_map *, map, u32, idx)
 -- 
 2.33.0
 
