@@ -2,86 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9968F3F5422
-	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 02:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476CD3F553F
+	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 03:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233396AbhHXAje (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Aug 2021 20:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233330AbhHXAje (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Aug 2021 20:39:34 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446B4C061575;
-        Mon, 23 Aug 2021 17:38:51 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id n12so11219490plf.4;
-        Mon, 23 Aug 2021 17:38:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nvQfn4Lm9XjuSF4MMKdAhjaGiegbxL+5ChcYOK7EBiw=;
-        b=OWcIEcteyARKSz0sUqBbk65Bg+LfmCFkPd4H0EiJp728ZxaZG966RS5Z3zagvbvaRy
-         2JuS5Fe7od33AZgnpKFogWny/Br5SA+AaQ+mLwTdKAktgJG2xlXqLp+jBF9aNl0g5rVb
-         HATjheG/TBF7iWETbynkYAbUVv8ofhrCi+3iiAUaskS4lzF5bb0D2n/DPCrGGy4xJCEa
-         RNTZnzYKi+X5VfZqAgO8oWyyMssN5IYx2+SFUMcz5SVyCDiBD/Vs+oG6tO+6xv+rdgO9
-         HvtT4UsCHJGrjk31u4XcDJLeaQgLIAnrqWIFrSQeWi39iLBp1PY6/iuLBO6vhgq1YNOm
-         aoag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nvQfn4Lm9XjuSF4MMKdAhjaGiegbxL+5ChcYOK7EBiw=;
-        b=m5tkyZppVbKvZeUBGGkjX6CKw81AH8Kzrw9Wec81wwVYSYE2b4xF/AN5HvhURTt/w8
-         okuU7W+iEqHqaGkXbSMKDwQ0NeDHSpDgynwPxh2as8430f/JEUbecTisgu2iIZWtpuh8
-         /I2oKkswU8lM7EsiIOsVdckHwwdJNYu291IHaOYu+UaWAf/3MGNBD/TL1rSAOOM7bim6
-         +GZ3ynFV6OhjblqYj91mFY23iX0K5LdnhdB8ykemd3xUC0LFAfIn1VWlkuI3lAwbWIB+
-         XM5sQ/7EF/ByBe02J0CGJvnp6xQkvsJd7ieGgHlHtO3+/UNvTgDhB5O21AuliXxgNX8q
-         ZYCA==
-X-Gm-Message-State: AOAM5315hgbwW+b/aM/tMdByKfJdMsse8kr/cEZIkrDt5SXYdazhUP3J
-        tYRUv2C+d4MBgmcmIC6hb1Q=
-X-Google-Smtp-Source: ABdhPJy1jT3/yYhojNwqJn/bvwsNLf7FlclkjZFE0lQ2Mc5EWXQjCXDSmGJSn4ljnX3OUGPNcO6J/w==
-X-Received: by 2002:a17:902:b102:b0:134:a329:c2f8 with SMTP id q2-20020a170902b10200b00134a329c2f8mr6164883plr.71.1629765530595;
-        Mon, 23 Aug 2021 17:38:50 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:9af7])
-        by smtp.gmail.com with ESMTPSA id g26sm20035390pgb.45.2021.08.23.17.38.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 17:38:50 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 17:38:47 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     hjm2133@columbia.edu
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, sdf@google.com,
-        ppenkov@google.com
-Subject: Re: [RFC PATCH bpf-next 0/2] bpf: Implement shared persistent
- fast(er) sk_storoage mode
-Message-ID: <20210824003847.4jlkv2hpx7milwfr@ast-mbp.dhcp.thefacebook.com>
-References: <20210823215252.15936-1-hansmontero99@gmail.com>
+        id S234742AbhHXBCm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Aug 2021 21:02:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234205AbhHXBAs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Aug 2021 21:00:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9E65B61360;
+        Tue, 24 Aug 2021 01:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629766805;
+        bh=C4C9EC93l2NXJl2GeHU5g8pzFErFS251vY0sAquMUPU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=EqdU3TM+GEiKCU1OdFUshE9+iCSL6kQ/mp83hR9rCTQTN6dI0Z2eR0k6+ikF/6B0b
+         c29/ccAiTwvI579NDmqBHu8wkmuBx6pSeG/Uz/MHLpO4muc7BOsz3Qvrsc41Bjtr+t
+         O6/4xgrBPmRPe0TGb7I2FjFtkSr924H6jXrHE56mDwL0REtNRrPX50CwXWi9Vxl4OS
+         b5DtgloMD9lpY8n9SB0fyDfTnwKYyb2cNGsCRKOoeZ7RopNmWE1T2RWb8iqx1EMfSs
+         lYHYAojIrDWVxF4F2YVqI/kwscJa6Lyry7CENt9Ry93izVX9318FMZDTbhqE9Cj3Dx
+         zwauLB7LSpkEg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 90E376098C;
+        Tue, 24 Aug 2021 01:00:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823215252.15936-1-hansmontero99@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/1] Refactor cgroup_bpf internals to use more
+ specific attach_type
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162976680558.16394.17738506707111563389.git-patchwork-notify@kernel.org>
+Date:   Tue, 24 Aug 2021 01:00:05 +0000
+References: <20210819092420.1984861-1-davemarchevsky@fb.com>
+In-Reply-To: <20210819092420.1984861-1-davemarchevsky@fb.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 05:52:50PM -0400, Hans Montero wrote:
-> From: Hans Montero <hjm2133@columbia.edu>
+Hello:
+
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Thu, 19 Aug 2021 02:24:19 -0700 you wrote:
+> The cgroup_bpf struct has a few arrays (effective, progs, and flags) of
+> size MAX_BPF_ATTACH_TYPE. These are meant to separate progs by their
+> attach type, currently represented by the bpf_attach_type enum.
 > 
-> This patch set adds a BPF local storage optimization. The first patch adds the
-> feature, and the second patch extends the bpf selftests so that the feature is
-> tested.
+> There are some bpf_attach_type values which are not valid attach types
+> for cgroup bpf programs. Programs with these attach types will never be
+> handled by cgroup_bpf_{attach,detach} and thus will never be held in
+> cgroup_bpf structs. Even if such programs did make it into their
+> reserved slot in those arrays, they would never be executed.
 > 
-> We are running BPF programs for each egress packet and noticed that
-> bpf_sk_storage_get incurs a significant amount of cpu time. By inlining the
-> storage into struct sock and accessing that instead of performing a map lookup,
-> we expect to reduce overhead for our specific use-case. 
+> [...]
 
-Looks like a hack to me. Please share the perf numbers and setup details.
-I think there should be a different way to address performance concerns
-without going into such hacks.
+Here is the summary with links:
+  - [bpf-next,v2,1/1] bpf: migrate cgroup_bpf to internal cgroup_bpf_attach_type enum
+    https://git.kernel.org/bpf/bpf-next/c/4ed589a27893
 
-> This also has a
-> side-effect of persisting the socket storage, which can be beneficial.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Without explicit opt-in such sharing will cause multiple bpf progs to corrupt
-each other data.
+
