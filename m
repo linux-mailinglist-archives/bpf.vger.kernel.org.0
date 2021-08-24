@@ -2,184 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7557D3F59F3
-	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 10:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E964A3F5B1F
+	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 11:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235323AbhHXImW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Aug 2021 04:42:22 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:14316 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbhHXImV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:42:21 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Gv2dY3H2rz7w4V;
-        Tue, 24 Aug 2021 16:41:21 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 24 Aug 2021 16:41:35 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 24 Aug
- 2021 16:41:34 +0800
-Subject: Re: [PATCH RFC 0/7] add socket to netdev page frag recycling support
-To:     David Ahern <dsahern@gmail.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
-        <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <chenhao288@hisilicon.com>, <edumazet@google.com>,
-        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>,
-        <memxor@gmail.com>, <linux@rempel-privat.de>, <atenart@kernel.org>,
-        <weiwan@google.com>, <ap420073@gmail.com>, <arnd@arndb.de>,
-        <mathew.j.martineau@linux.intel.com>, <aahringo@redhat.com>,
-        <ceggers@arri.de>, <yangbo.lu@nxp.com>, <fw@strlen.de>,
-        <xiangxia.m.yue@gmail.com>, <linmiaohe@huawei.com>
-References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
- <83b8bae8-d524-36a1-302e-59198410d9a9@gmail.com>
- <f0d935b9-45fe-4c51-46f0-1f526167877f@huawei.com>
- <619b5ca5-a48b-49e9-2fef-a849811d62bb@gmail.com>
- <744e88b6-7cb4-ea99-0523-4bfa5a23e15c@huawei.com>
- <80701f7a-e7c6-eb86-4018-67033f0823bf@gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <71ee12f2-8b71-923d-f993-ad4a43b9802d@huawei.com>
-Date:   Tue, 24 Aug 2021 16:41:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S235573AbhHXJcM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Aug 2021 05:32:12 -0400
+Received: from condef-10.nifty.com ([202.248.20.75]:53812 "EHLO
+        condef-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235566AbhHXJcL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Aug 2021 05:32:11 -0400
+Received: from conssluserg-05.nifty.com ([10.126.8.84])by condef-10.nifty.com with ESMTP id 17O9S3IG009642;
+        Tue, 24 Aug 2021 18:28:03 +0900
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 17O9ReOO014183;
+        Tue, 24 Aug 2021 18:27:40 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 17O9ReOO014183
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1629797261;
+        bh=U+ETojJLC46giLV0nmFB3HMfhm00P2uQEj6O7D2QdBQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LX8dlc4V1V68ls3dBTGJ4wO/Sez/ReNhciPSQ4lZWQ8oxxcNUpDLIo7s37Kj5WMdn
+         jO3+uhXo0lc1d2rlSKkLZlB1gUyXAqHBpzxAaOv43LvIz4E8nBVQ2WkTIe0CKByeO9
+         scrXPIGG9zTWXTwSVdBUNt0qcoR4hgfgicIwSiEpprcLEAJSv7HJO+Hvxb+Wko1M91
+         gQPADHucP6kGL+lvTrR+oYFGoNLyQQy1HVM1FaEc81EzliCanhrrrohj4W7OwOveEh
+         NlPKcIeMcHX/vTsxwGZUpyvBove6xmssFJCroHkQjWjF1Qdrb9Hp1hcV5msK2RMAgw
+         dwvm1fPJaLYTQ==
+X-Nifty-SrcIP: [209.85.215.181]
+Received: by mail-pg1-f181.google.com with SMTP id r2so19209514pgl.10;
+        Tue, 24 Aug 2021 02:27:40 -0700 (PDT)
+X-Gm-Message-State: AOAM530uU8avtLPCqgC3QE/VgV+LDqLcgKCaVi/so8K+ph/lxn01qQJQ
+        X132Acb6LJeSsbWZmk+CxjvsLFvtZN4YzEeEULY=
+X-Google-Smtp-Source: ABdhPJxfShD1P0kCObeK6dJf5CZ3KcyG1O2nFtAivI0lNRJ/uey7BF+d+YEH+hMIPYM+yGSuVGc/qhLx0NySiCPwzSs=
+X-Received: by 2002:aa7:94ac:0:b0:3e0:f21a:e6ff with SMTP id
+ a12-20020aa794ac000000b003e0f21ae6ffmr37132148pfl.76.1629797260039; Tue, 24
+ Aug 2021 02:27:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <80701f7a-e7c6-eb86-4018-67033f0823bf@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210528180140.176257-1-masahiroy@kernel.org> <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
+In-Reply-To: <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 24 Aug 2021 18:27:03 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR3NR=u7D0qPVeLUSEiStDvbVUdj4VnFBJ_wHo1UMmcOg@mail.gmail.com>
+Message-ID: <CAK7LNAR3NR=u7D0qPVeLUSEiStDvbVUdj4VnFBJ_wHo1UMmcOg@mail.gmail.com>
+Subject: Re: [PATCH] security: remove unneeded subdir-$(CONFIG_...)
+To:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/8/24 11:34, David Ahern wrote:
-> On 8/22/21 9:32 PM, Yunsheng Lin wrote:
->>
->> I assumed the "either Rx or Tx is cpu bound" meant either Rx or Tx is the
->> bottleneck?
-> 
-> yes.
-> 
->>
->> It seems iperf3 support the Tx ZC, I retested using the iperf3, Rx settings
->> is not changed when testing, MTU is 1500:
-> 
-> -Z == sendfile API. That works fine to a point and that point is well
-> below 100G.
-> 
-> I mean TCP with MSG_ZEROCOPY and SO_ZEROCOPY.
-> 
->>
->> IOMMU in strict mode:
->> 1. Tx ZC case:
->>    22Gbit with Tx being bottleneck(cpu bound)
->> 2. Tx non-ZC case with pfrag pool enabled:
->>    40Git with Rx being bottleneck(cpu bound)
->> 3. Tx non-ZC case with pfrag pool disabled:
->>    30Git, the bottleneck seems not to be cpu bound, as the Rx and Tx does
->>    not have a single CPU reaching about 100% usage.
->>
->>>
->>> At 1500 MTU lowering CPU usage on the Tx side does not accomplish much
->>> on throughput since the Rx is 100% cpu.
->>
->> As above performance data, enabling ZC does not seems to help when IOMMU
->> is involved, which has about 30% performance degrade when pfrag pool is
->> disabled and 50% performance degrade when pfrag pool is enabled.
-> 
-> In a past response you should numbers for Tx ZC API with a custom
-> program. That program showed the dramatic reduction in CPU cycles for Tx
-> with the ZC API.
+On Sat, Jul 31, 2021 at 3:02 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Sat, May 29, 2021 at 3:02 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > All of these are unneeded. The directories to descend are specified
+> > by obj-$(CONFIG_...).
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+>
+> Ping?
+>
 
-As I deduced the cpu usage from the cycles in "perf stat -e cycles XX", which
-does not seem to include the cycles for NAPI polling, which does the tx clean
-(including dma unmapping) and does not run in the same cpu as msg_zerocopy runs.
 
-I retested it using msg_zerocopy:
-       msg_zerocopy cpu usage      NAPI polling cpu usage
-ZC:        23%                               70%
-non-ZC     50%                               40%
 
-So it seems to match now, sorry for the confusion.
+Applied to linux-kbuild.
 
-> 
->>
->>>
->>> At 3300 MTU you have ~47% the pps for the same throughput. Lower pps
->>> reduces Rx processing and lower CPU to process the incoming stream. Then
->>> using the Tx ZC API you lower the Tx overehad allowing a single stream
->>> to faster - sending more data which in the end results in much higher
->>> pps and throughput. At the limit you are CPU bound (both ends in my
->>> testing as Rx side approaches the max pps, and Tx side as it continually
->>> tries to send data).
->>>
->>> Lowering CPU usage on Tx the side is a win regardless of whether there
->>> is a big increase on the throughput at 1500 MTU since that configuration
->>> is an Rx CPU bound problem. Hence, my point that we have a good start
->>> point for lowering CPU usage on the Tx side; we should improve it rather
->>> than add per-socket page pools.
->>
->> Acctually it is not a per-socket page pools, the page pool is still per
->> NAPI, this patchset adds multi allocation context to the page pool, so that
->> the tx can reuse the same page pool with rx, which is quite usefully if the
->> ARFS is enabled.
->>
->>>
->>> You can stress the Tx side and emphasize its overhead by modifying the
->>> receiver to drop the data on Rx rather than copy to userspace which is a
->>> huge bottleneck (e.g., MSG_TRUNC on recv). This allows the single flow
->>
->> As the frag page is supported in page pool for Rx, the Rx probably is not
->> a bottleneck any more, at least not for IOMMU in strict mode.
->>
->> It seems iperf3 does not support MSG_TRUNC yet, any testing tool supporting
->> MSG_TRUNC? Or do I have to hack the kernel or iperf3 tool to do that?
-> 
-> https://github.com/dsahern/iperf, mods branch
-> 
-> --zc_api is the Tx ZC API; --rx_drop adds MSG_TRUNC to recv.
 
-Thanks for sharing the tool.
-I retested using above iperf, and result is similar to previous result
-too.
 
-> 
-> 
->>
->>> stream to go faster and emphasize Tx bottlenecks as the pps at 3300
->>> approaches the top pps at 1500. e.g., doing this with iperf3 shows the
->>> spinlock overhead with tcp_sendmsg, overhead related to 'select' and
->>> then gup_pgd_range.
->>
->> When IOMMU is in strict mode, the overhead with IOMMU seems to be much
->> bigger than spinlock(23% to 10%).
->>
->> Anyway, I still think ZC mostly benefit to packet which is bigger than a
->> specific size and IOMMU disabling case.
->>
->>
->>> .
->>>
-> 
-> .
-> 
+
+>
+>
+> > ---
+> >
+> >  security/Makefile | 11 -----------
+> >  1 file changed, 11 deletions(-)
+> >
+> > diff --git a/security/Makefile b/security/Makefile
+> > index 47e432900e24..18121f8f85cd 100644
+> > --- a/security/Makefile
+> > +++ b/security/Makefile
+> > @@ -4,16 +4,6 @@
+> >  #
+> >
+> >  obj-$(CONFIG_KEYS)                     += keys/
+> > -subdir-$(CONFIG_SECURITY_SELINUX)      += selinux
+> > -subdir-$(CONFIG_SECURITY_SMACK)                += smack
+> > -subdir-$(CONFIG_SECURITY_TOMOYO)        += tomoyo
+> > -subdir-$(CONFIG_SECURITY_APPARMOR)     += apparmor
+> > -subdir-$(CONFIG_SECURITY_YAMA)         += yama
+> > -subdir-$(CONFIG_SECURITY_LOADPIN)      += loadpin
+> > -subdir-$(CONFIG_SECURITY_SAFESETID)    += safesetid
+> > -subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM) += lockdown
+> > -subdir-$(CONFIG_BPF_LSM)               += bpf
+> > -subdir-$(CONFIG_SECURITY_LANDLOCK)     += landlock
+> >
+> >  # always enable default capabilities
+> >  obj-y                                  += commoncap.o
+> > @@ -36,5 +26,4 @@ obj-$(CONFIG_BPF_LSM)                 += bpf/
+> >  obj-$(CONFIG_SECURITY_LANDLOCK)                += landlock/
+> >
+> >  # Object integrity file lists
+> > -subdir-$(CONFIG_INTEGRITY)             += integrity
+> >  obj-$(CONFIG_INTEGRITY)                        += integrity/
+> > --
+> > 2.27.0
+> >
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
