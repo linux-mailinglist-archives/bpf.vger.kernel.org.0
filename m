@@ -2,74 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3E83F6B4B
-	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 23:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BC23F6B9E
+	for <lists+bpf@lfdr.de>; Wed, 25 Aug 2021 00:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235477AbhHXVlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Aug 2021 17:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36508 "EHLO
+        id S234872AbhHXWQK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Aug 2021 18:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235505AbhHXVlE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Aug 2021 17:41:04 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA091C061764
-        for <bpf@vger.kernel.org>; Tue, 24 Aug 2021 14:40:19 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id j2so8653072pll.1
-        for <bpf@vger.kernel.org>; Tue, 24 Aug 2021 14:40:19 -0700 (PDT)
+        with ESMTP id S230177AbhHXWQK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Aug 2021 18:16:10 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABADC061757;
+        Tue, 24 Aug 2021 15:15:25 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id m4so2081186pll.0;
+        Tue, 24 Aug 2021 15:15:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8bdo96wNlDp0nsP8N49Gq9gKciXsugdqeS68XJJ7bCc=;
-        b=Qyzz22rpgJ2QQB+0rEBPv5KEu8iGhlK/4HpB80dMEDKJcBZy3xomtOUe0JrHXYQ6Ke
-         q7Ii6p4iWtVOTpc7opqMBYAEwM6VVQt8LtltJWKf8DJE8I7wPHl1X+4g23aNTcUbkxt1
-         SjBB8aaBovJ/V0nCPiX2qvymux4SSXb3p0F8gpL4KGRvdaTg9r9N97hSTVyCui/eJoQE
-         EPzKQn8a79ujPASdPg/mpo6ZIksuNveRRVnFESZO3DW88L7i9zdMJArk+M6bU/MuAapu
-         JwffNNOO6L0YjBFs9dWDckrV+vEbflITGtfeUWmyMuszK3NpA6CFFJjJ82sN22cNCK1D
-         9tBA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Dxd11OUrvB9RJEaZboe/M/emqrU0iALdwV2Fo+CWDbA=;
+        b=llO0hESPXEUWWbhqYNKsh8j7d4KqbafG2I0nGffiAkD7wSf6k4DFXiiDk5Q/GzalS+
+         sYZzue2qiXOLeZCHX27kL8JfdZAjUt6Si2IlSQsFE+vxEzuyVTl+YQxFIB60f1AXM3pA
+         wPMtZglRINiR2TZlvnlj5q67jD9y8YPqfFOz8waUL+snvukVzrKkQBxSTITgo0V4/Pho
+         mF4mhnc/5ek3DGNxImumte9a9BR9UDg74ZBjw7YUFhXjfkgH/S4yS/LcbWpC+iADAzK8
+         TDKaeGknKligzssLm/XeL3gvcZeE5ALFcuj2oOF0HjbmovuyQS2EArbx7+iS5fROwNVw
+         op6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8bdo96wNlDp0nsP8N49Gq9gKciXsugdqeS68XJJ7bCc=;
-        b=hs7V8a3FJMrr1Bsz0GY1YPnjwTjo8wHUU4GmQYr3TbMLL3cBfoTZWESF5AXdi7SiOE
-         TPHCLbrLZ/qWFHhYWMhK91Aqqy5FoN9Ae811cafM2S11ngFZdR68zgFPBH/UXkNcrKiK
-         PJvVKz9hH3PZgi3mE9fr94TeXQ+XRAXRb5s6fOFu8FTVKf72tgUq06iyIxQFjNm3Q3CO
-         EIrwHJ6mpgJqICbWCNvLpY1PA8NIXOjMFBk5eOBxYl0i8i6IkS8i5MpDBdpaRwN/huy0
-         Bs5H2s79JLr6fTrLFpmziRMd/2kBvOsBtUjdRSKHrsy/Xx02mkwHX24h1yT+fcbKDEwk
-         St6g==
-X-Gm-Message-State: AOAM532isjw818C89YFv0HlbsvabPJf5hmUaB3W6LV4TdC9aco3cFhnM
-        EvY6DWg/y7mnMdna6/93cieiXmmRVN3DYsJaW4s=
-X-Google-Smtp-Source: ABdhPJxhjunnxmdOTuZjdi7H3X+TBYE2zZtVb4toqoxW+WYtCOR2lcnKsI8XuFqImGyvamB8pG/vHDCuq9ll1AR9RfA=
-X-Received: by 2002:a17:902:82c6:b0:136:59b0:ed17 with SMTP id
- u6-20020a17090282c600b0013659b0ed17mr4468006plz.61.1629841219212; Tue, 24 Aug
- 2021 14:40:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210820163935.1902398-1-rdna@fb.com>
-In-Reply-To: <20210820163935.1902398-1-rdna@fb.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dxd11OUrvB9RJEaZboe/M/emqrU0iALdwV2Fo+CWDbA=;
+        b=dynJPLEAIMOROqDrbza7tbsp3BqJvUsTcWlDnJqAKuHE4LPESKAYbf4NDwvz2AR/UB
+         gmA4XL9xJix/W9KcM2Nf3/WDQc/4iDAXICgKE+bJzpd1W3p0QsTECZDGzljAGxNJhCqq
+         57cxvT2pTEOy/8MCzy7KvFYXJNbVD51OBQIdrP4LbIRyuN7BwHZNBFP2Xbr3B8RTMFnh
+         9xnkrt/LJ3HECSihlgkDh79YndbDIL3K6R4Ind5u8YwI2uCQv9poL26QA8YjD8VL1M1/
+         rzjyTHFmVI7oR39cONnWeVs5xLmqYGYk2gTaQ8rTeliLJbdgn0rqMbfnF2pavHX89uES
+         sW5w==
+X-Gm-Message-State: AOAM5303XhMKaFqqmRRywulJ6X3459l3faqOFrdVCUdkyFQ7erxSjcXU
+        6BWpiwGwae+CPpGfmBZ5wGg=
+X-Google-Smtp-Source: ABdhPJzp4glQnPn/CBKVieurs7ALor3fKFLUsN5YcHWLhtoitrMttuCwr7r8zQm7fK2MccpygXRF9g==
+X-Received: by 2002:a17:90a:28a6:: with SMTP id f35mr7036524pjd.68.1629843324783;
+        Tue, 24 Aug 2021 15:15:24 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::6:5aca])
+        by smtp.gmail.com with ESMTPSA id h8sm3404851pjs.8.2021.08.24.15.15.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 15:15:24 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 15:15:22 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 24 Aug 2021 14:40:08 -0700
-Message-ID: <CAADnVQKemaH_0sw-v04b7Rnvmn98XSigseGtz5K14Zoophbbhw@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] bpf: Fix possible out of bound write in narrow
- load handling
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     sdf@google.com
+Cc:     hjm2133@columbia.edu, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        ppenkov@google.com
+Subject: Re: [RFC PATCH bpf-next 0/2] bpf: Implement shared persistent
+ fast(er) sk_storoage mode
+Message-ID: <20210824221522.5kokuv3eekalo2ha@ast-mbp.dhcp.thefacebook.com>
+References: <20210823215252.15936-1-hansmontero99@gmail.com>
+ <20210824003847.4jlkv2hpx7milwfr@ast-mbp.dhcp.thefacebook.com>
+ <YSUYSIYyXmBgKRwr@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSUYSIYyXmBgKRwr@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 9:39 AM Andrey Ignatov <rdna@fb.com> wrote:
->
-> Fix a verifier bug found by smatch static checker in [0].
->
-> [0] https://lore.kernel.org/bpf/20210817050843.GA21456@kili/
->
-> v1->v2:
-> - clarify that problem was only seen by static checker but not in prod;
+On Tue, Aug 24, 2021 at 09:03:20AM -0700, sdf@google.com wrote:
+> On 08/23, Alexei Starovoitov wrote:
+> > On Mon, Aug 23, 2021 at 05:52:50PM -0400, Hans Montero wrote:
+> > > From: Hans Montero <hjm2133@columbia.edu>
+> > >
+> > > This patch set adds a BPF local storage optimization. The first patch
+> > adds the
+> > > feature, and the second patch extends the bpf selftests so that the
+> > feature is
+> > > tested.
+> > >
+> > > We are running BPF programs for each egress packet and noticed that
+> > > bpf_sk_storage_get incurs a significant amount of cpu time. By
+> > inlining the
+> > > storage into struct sock and accessing that instead of performing a
+> > map lookup,
+> > > we expect to reduce overhead for our specific use-case.
+> 
+> > Looks like a hack to me. Please share the perf numbers and setup details.
+> > I think there should be a different way to address performance concerns
+> > without going into such hacks.
+> 
+> What kind of perf numbers would you like to see? What we see here is
+> that bpf_sk_storage_get() cycles are somewhere on par with hashtable
+> lookups (we've moved off of 5-tuple ht lookup to sk_storage). Looking
+> at the code, it seems it's mostly coming from the following:
+> 
+>   sk_storage = rcu_dereference(sk->sk_bpf_storage);
+>   sdata = rcu_dereference(local_storage->cache[smap->cache_idx]);
+>   return sdata->data
+> 
+> We do 3 cold-cache references :-( 
 
-Since it's a theoretical bug applied to bpf-next.
+Only if the prog doesn't read anything at all through 'sk' pointer,
+but sounds like the bpf logic is accessing it, so for a system with millions
+of sockets the first access to 'sk' will pay that penalty.
+I suspect if you rearrange bpf prog to do sk->foo first the cache
+miss will move and bpf_sk_storage_get() won't be hot anymore.
+That's why optimizing loads like this without considering the full
+picture might not achieve the desired result at the end.
+
+> This is where the idea of inlining
+> something in the socket itself came from. The RFC is just to present
+> the case and discuss. I was thinking about doing some kind of
+> inlining at runtime (and fallback to non-inlined case) but wanted
+> to start with discussing this compile-time option first.
+> 
+> We can also try to save sdata somewhere in the socket to avoid two
+> lookups for the cached case, this can potentially save us two
+> rcu_dereference's.
+> Is that something that looks acceptable? 
+
+Not until there is clear 'perf report' where issue is obvious.
+
+> I was wondering whether you've
+> considered any socket storage optimizations on your side?
+
+Quite the opposite. We've refactored several bpf progs to use
+local storage instead of hash maps and achieved nice perf wins.
+
+> I can try to set up some office hours to discuss in person if that's
+> preferred.
+
+Indeed, it's probably the best do discuss it on a call.
