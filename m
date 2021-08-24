@@ -2,138 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DBF3F5F31
-	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 15:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18623F6186
+	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 17:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237289AbhHXNdc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Aug 2021 09:33:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47062 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236661AbhHXNdb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 24 Aug 2021 09:33:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629811967;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QeV74JQJHRoEmeq7H6kmk/7VDFwFpt82W+iJfSrcr/0=;
-        b=dI2EdCmDUHfLegT7gE2mirTT4JS1N/wZjyfD3GVXwNAN9eaFKMwqMcj1hmV/50knpBiZ2g
-        /ESdT/mNx2+hRPhGcaMFG1p7BMqNSgmHDxf2srr5YX0az+RRIoYMd01f5xdzczzNMI72Sy
-        5hA39ROmWZE2QQPeHc2POvCHYHgS4ew=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-415-4j8msKO8MT2-H6oO1ME6cA-1; Tue, 24 Aug 2021 09:32:43 -0400
-X-MC-Unique: 4j8msKO8MT2-H6oO1ME6cA-1
-Received: by mail-wr1-f72.google.com with SMTP id m2-20020a0560000082b0290154f6e2e51fso5732989wrx.12
-        for <bpf@vger.kernel.org>; Tue, 24 Aug 2021 06:32:43 -0700 (PDT)
+        id S238291AbhHXPYw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Aug 2021 11:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238305AbhHXPYu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Aug 2021 11:24:50 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE51C0613C1;
+        Tue, 24 Aug 2021 08:24:06 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso41971327otp.1;
+        Tue, 24 Aug 2021 08:24:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oeGV5t/oJZwqNMB4jX1FuHm+Z0cA2twU4gN/nkkX+8A=;
+        b=SFUT5QMnrpG848wlRzo/0AfLJVjur8Qo1T9Lz0HM4GJS+LOQcQzqpAD9b6x3yll444
+         S473LxVNAIJyWwFOVIqr/HUgDkX+T0qgceS8A9m+NRiQ7gmDeIBaK+y1TQ3YtHVcMOQi
+         mYAn1SmcAq20Nw74K6bPs+eWszTRocP5WfVWvmnl/VZNtSVA2ZOpYuaL//ZfRFihjjxU
+         sbSX/QRZZWz0IaA3UY4SBPsOxKxhk3lgCiXSOn4e8wVz1NcqqSy0Z8OaU4/blrQ55iqe
+         3BdBHw3Nyb4kDl5yLxPU+KmoNGeaHEY+29K3stzCDjOe7j3Gf/3IyKFCkSBpSf/p99Do
+         9U1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QeV74JQJHRoEmeq7H6kmk/7VDFwFpt82W+iJfSrcr/0=;
-        b=Bb6ahZucb6zyNamn8/3UQvzzL6YBIAHBvyjljAOa+DO0Vr6/JNCEFV7UBoBrppxPbc
-         DwC9acd0mgKu8VvBg19+FVvDf6btq/jx1+aREFtIeC1tSVkTDFADCxg/IMvvtj+uAf/j
-         dBIdB006asMYL4EqRGSncDXtDSeqPYZ/y8IBW+/n7OnRj1XABfEkb3vo8kHSCDgEUtop
-         wpIpVgWhkARBwzuYjxywk4Tm6QZUbuAUodJBXxmNYbO+xIjoSohzGSB9TXkcmhLvtQDa
-         IV+4Ep4x9Fv/xqmlLiA0KPifyqe0CqZfrqo3eV8ws2IG6Po1UKExLVlSfD4Koqje67in
-         ea/g==
-X-Gm-Message-State: AOAM533vzqIBrn8YruYkPzvRup2pvsPLu4804ttstnNM8T9JDjzhZ4bS
-        6qj4jiUbqzdTRca6A7A8bKKsq8GduW+MNTgCp8mXzHE1ZhSkW5o+cFREkcr1L2Mq5ZDR8dwRn5L
-        MGH4rLeqk7DEE
-X-Received: by 2002:a1c:9acc:: with SMTP id c195mr4245376wme.69.1629811962584;
-        Tue, 24 Aug 2021 06:32:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxJOUQhZGHcg+h797DWQJpPSgDrZrkLJZOaYSjluUYhh54hujkxG8C8Pjz+eoTss4z6d9NpTg==
-X-Received: by 2002:a1c:9acc:: with SMTP id c195mr4245358wme.69.1629811962408;
-        Tue, 24 Aug 2021 06:32:42 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id z7sm2316517wmi.4.2021.08.24.06.32.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 06:32:42 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>,
-        =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oeGV5t/oJZwqNMB4jX1FuHm+Z0cA2twU4gN/nkkX+8A=;
+        b=eJ4cAznxudB6zsbO6pLS6jHlnRdP+for13cw0g95GwsCo2wITBRlTYt0xowKxo/Tnr
+         cufZGhfs8o9F30whUReGbtuUIlwUvxcwN/YHOwI3DosTY141L6lBZOdQuBHCkKI9qpNy
+         3kTRo6k1B2/5gBnG/7+TzKYXYiKQK0Plc1RJYBYDTk9kFo0X5eOuboc8vcYALWZS8sBP
+         g/pd1+gBSdzAeyiVqdIR02fqUcR2lzYE0zJYvMPowD9BYWXt+eDheXdZC8YCywsoXDS8
+         rQeEozvvR2nuGGdVGHcAX0N37DtTAbXmYo5rNwLsdr/PwBZhtOz1dJvMqcNjXeRY7uJu
+         xpSQ==
+X-Gm-Message-State: AOAM53013GAaUFKNi+nLc+qYg9/iLDHnikMfZ2Eh/xuQRm/5Our5Wayd
+        5mEbQBNvmokkdGW6VBQALFTJqaQ5tnFliFSJ+eA=
+X-Google-Smtp-Source: ABdhPJxJq0hfArntSLZ0Abf4D5GQ30roxEYoGaXVebZpbQrC3CJzfxuKFpUFpNA7eAbrlywZMiuj9ilh9kov66IugqA=
+X-Received: by 2002:a05:6808:208b:: with SMTP id s11mr3145964oiw.95.1629818645584;
+ Tue, 24 Aug 2021 08:24:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210824104918.7930-1-kerneljasonxing@gmail.com> <59dff551-2d52-5ecc-14ac-4a6ada5b1275@redhat.com>
+In-Reply-To: <59dff551-2d52-5ecc-14ac-4a6ada5b1275@redhat.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Tue, 24 Aug 2021 23:23:29 +0800
+Message-ID: <CAL+tcoDERDZqtjK1BCc0vYYwYtvgRtb8H6z2FTVbGqr+N7bVmA@mail.gmail.com>
 Subject: Re: [PATCH] ixgbe: let the xdpdrv work with more than 64 cpus
-To:     kerneljasonxing@gmail.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
         ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
         john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org
-References: <20210824104918.7930-1-kerneljasonxing@gmail.com>
-Message-ID: <59dff551-2d52-5ecc-14ac-4a6ada5b1275@redhat.com>
-Date:   Tue, 24 Aug 2021 15:32:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210824104918.7930-1-kerneljasonxing@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        brouer@redhat.com, intel-wired-lan@lists.osuosl.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>,
+        =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Aug 24, 2021 at 9:32 PM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
+>
+>
+>
+> On 24/08/2021 12.49, kerneljasonxing@gmail.com wrote:
+> > From: Jason Xing <xingwanli@kuaishou.com>
+> >
+> > Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
+> > server is equipped with more than 64 cpus online. So it turns out that
+> > the loading of xdpdrv causes the "NOMEM" failure.
+> >
+> > Actually, we can adjust the algorithm and then make it work, which has
+> > no harm at all, only if we set the maxmium number of xdp queues.
+>
+> This is not true, it can cause harm, because XDP transmission queues are
+> used without locking. See drivers ndo_xdp_xmit function ixgbe_xdp_xmit().
+> As driver assumption is that each CPU have its own XDP TX-queue.
+>
 
+Point taken. I indeed miss that part which would cause bad behavior if it
+happens.
 
-On 24/08/2021 12.49, kerneljasonxing@gmail.com wrote:
-> From: Jason Xing <xingwanli@kuaishou.com>
-> 
-> Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
-> server is equipped with more than 64 cpus online. So it turns out that
-> the loading of xdpdrv causes the "NOMEM" failure.
-> 
-> Actually, we can adjust the algorithm and then make it work, which has
-> no harm at all, only if we set the maxmium number of xdp queues.
+At this point, I think I should find all the allocation and use of XDP
+related, say,
+queues and rings, then adjust them all?
 
-This is not true, it can cause harm, because XDP transmission queues are 
-used without locking. See drivers ndo_xdp_xmit function ixgbe_xdp_xmit().
-As driver assumption is that each CPU have its own XDP TX-queue.
+Let's say if the server is shipped with 128 cpus, we could map 128 cpus to 64
+rings in the function ixgbe_xdp_xmit(). However, it sounds a little bit odd.
 
-This patch is not a proper fix.
+Do you think that it makes any sense?
 
-I do think we need a proper fix for this issue on ixgbe.
+Thanks,
+Jason
 
-
-> Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
-> Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-> ---
->   drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 2 +-
->   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 ---
->   2 files changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> index 0218f6c..5953996 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> @@ -299,7 +299,7 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
->   
->   static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
->   {
-> -	return adapter->xdp_prog ? nr_cpu_ids : 0;
-> +	return adapter->xdp_prog ? min_t(int, MAX_XDP_QUEUES, nr_cpu_ids) : 0;
->   }
->   
->   #define IXGBE_RSS_64Q_MASK	0x3F
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> index 14aea40..b36d16b 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> @@ -10130,9 +10130,6 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
->   			return -EINVAL;
->   	}
->   
-> -	if (nr_cpu_ids > MAX_XDP_QUEUES)
-> -		return -ENOMEM;
-> -
->   	old_prog = xchg(&adapter->xdp_prog, prog);
->   	need_reset = (!!prog != !!old_prog);
->   
-> 
-
+> This patch is not a proper fix.
+>
+> I do think we need a proper fix for this issue on ixgbe.
+>
+>
+> > Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
+> > Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+> > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+> > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> > ---
+> >   drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 2 +-
+> >   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 ---
+> >   2 files changed, 1 insertion(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+> > index 0218f6c..5953996 100644
+> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+> > @@ -299,7 +299,7 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
+> >
+> >   static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
+> >   {
+> > -     return adapter->xdp_prog ? nr_cpu_ids : 0;
+> > +     return adapter->xdp_prog ? min_t(int, MAX_XDP_QUEUES, nr_cpu_ids) : 0;
+> >   }
+> >
+> >   #define IXGBE_RSS_64Q_MASK  0x3F
+> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> > index 14aea40..b36d16b 100644
+> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> > @@ -10130,9 +10130,6 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+> >                       return -EINVAL;
+> >       }
+> >
+> > -     if (nr_cpu_ids > MAX_XDP_QUEUES)
+> > -             return -ENOMEM;
+> > -
+> >       old_prog = xchg(&adapter->xdp_prog, prog);
+> >       need_reset = (!!prog != !!old_prog);
+> >
+> >
+>
