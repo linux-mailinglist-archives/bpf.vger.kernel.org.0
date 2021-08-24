@@ -2,138 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239DB3F61F9
-	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 17:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41E53F6236
+	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 18:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238385AbhHXPs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Aug 2021 11:48:58 -0400
-Received: from mga12.intel.com ([192.55.52.136]:27746 "EHLO mga12.intel.com"
+        id S232085AbhHXQHR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Aug 2021 12:07:17 -0400
+Received: from mga07.intel.com ([134.134.136.100]:13426 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238287AbhHXPs6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:48:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="196914374"
+        id S232037AbhHXQHQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:07:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="281059309"
 X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="196914374"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 08:48:14 -0700
+   d="scan'208";a="281059309"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 09:03:14 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="455619246"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga007.fm.intel.com with ESMTP; 24 Aug 2021 08:48:06 -0700
-Date:   Tue, 24 Aug 2021 17:32:25 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Jason Xing <kerneljasonxing@gmail.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        brouer@redhat.com, intel-wired-lan@lists.osuosl.org,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>,
-        =?iso-8859-1?B?zfFpZ28=?= Huguet <ihuguet@redhat.com>
-Subject: Re: [PATCH] ixgbe: let the xdpdrv work with more than 64 cpus
-Message-ID: <20210824153225.GA16546@ranger.igk.intel.com>
-References: <20210824104918.7930-1-kerneljasonxing@gmail.com>
- <59dff551-2d52-5ecc-14ac-4a6ada5b1275@redhat.com>
- <CAL+tcoDERDZqtjK1BCc0vYYwYtvgRtb8H6z2FTVbGqr+N7bVmA@mail.gmail.com>
+   d="scan'208";a="493592392"
+Received: from siang-ilbpg0.png.intel.com ([10.88.227.28])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Aug 2021 09:03:06 -0700
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH net 1/1] net: stmmac: fix kernel panic due to NULL pointer dereference of xsk_pool
+Date:   Tue, 24 Aug 2021 23:56:12 +0800
+Message-Id: <20210824155612.978529-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL+tcoDERDZqtjK1BCc0vYYwYtvgRtb8H6z2FTVbGqr+N7bVmA@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:23:29PM +0800, Jason Xing wrote:
-> On Tue, Aug 24, 2021 at 9:32 PM Jesper Dangaard Brouer
-> <jbrouer@redhat.com> wrote:
-> >
-> >
-> >
-> > On 24/08/2021 12.49, kerneljasonxing@gmail.com wrote:
-> > > From: Jason Xing <xingwanli@kuaishou.com>
-> > >
-> > > Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
-> > > server is equipped with more than 64 cpus online. So it turns out that
-> > > the loading of xdpdrv causes the "NOMEM" failure.
-> > >
-> > > Actually, we can adjust the algorithm and then make it work, which has
-> > > no harm at all, only if we set the maxmium number of xdp queues.
-> >
-> > This is not true, it can cause harm, because XDP transmission queues are
-> > used without locking. See drivers ndo_xdp_xmit function ixgbe_xdp_xmit().
-> > As driver assumption is that each CPU have its own XDP TX-queue.
+After free xsk_pool, there is possibility that napi polling is still
+running in the middle, thus causes a kernel crash due to kernel NULL
+pointer dereference of rx_q->xsk_pool and tx_q->xsk_pool.
 
-Thanks Jesper for chiming in.
+Fix this by changing the XDP pool setup sequence to:
+ 1. disable napi before free xsk_pool
+ 2. enable napi after init xsk_pool
 
-> >
-> 
-> Point taken. I indeed miss that part which would cause bad behavior if it
-> happens.
-> 
-> At this point, I think I should find all the allocation and use of XDP
-> related, say,
-> queues and rings, then adjust them all?
-> 
-> Let's say if the server is shipped with 128 cpus, we could map 128 cpus to 64
-> rings in the function ixgbe_xdp_xmit(). However, it sounds a little bit odd.
-> 
-> Do you think that it makes any sense?
+The following kernel panic is observed without this patch:
 
-We need a fallback path for ixgbe. I did the following for ice:
-https://x-lore.kernel.org/bpf/20210819120004.34392-9-maciej.fijalkowski@intel.com/T/#u
+RIP: 0010:xsk_uses_need_wakeup+0x5/0x10
+Call Trace:
+stmmac_napi_poll_rxtx+0x3a9/0xae0 [stmmac]
+__napi_poll+0x27/0x130
+net_rx_action+0x233/0x280
+__do_softirq+0xe2/0x2b6
+run_ksoftirqd+0x1a/0x20
+smpboot_thread_fn+0xac/0x140
+? sort_range+0x20/0x20
+kthread+0x124/0x150
+? set_kthread_struct+0x40/0x40
+ret_from_fork+0x1f/0x30
+---[ end trace a77c8956b79ac107 ]---
 
-> 
-> Thanks,
-> Jason
-> 
-> > This patch is not a proper fix.
-> >
-> > I do think we need a proper fix for this issue on ixgbe.
-> >
-> >
-> > > Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
-> > > Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-> > > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-> > > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-> > > ---
-> > >   drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 2 +-
-> > >   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 ---
-> > >   2 files changed, 1 insertion(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> > > index 0218f6c..5953996 100644
-> > > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> > > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> > > @@ -299,7 +299,7 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
-> > >
-> > >   static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
-> > >   {
-> > > -     return adapter->xdp_prog ? nr_cpu_ids : 0;
-> > > +     return adapter->xdp_prog ? min_t(int, MAX_XDP_QUEUES, nr_cpu_ids) : 0;
-> > >   }
-> > >
-> > >   #define IXGBE_RSS_64Q_MASK  0x3F
-> > > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > > index 14aea40..b36d16b 100644
-> > > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > > @@ -10130,9 +10130,6 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
-> > >                       return -EINVAL;
-> > >       }
-> > >
-> > > -     if (nr_cpu_ids > MAX_XDP_QUEUES)
-> > > -             return -ENOMEM;
-> > > -
-> > >       old_prog = xchg(&adapter->xdp_prog, prog);
-> > >       need_reset = (!!prog != !!old_prog);
-> > >
-> > >
-> >
+Fixes: bba2556efad6 ("net: stmmac: Enable RX via AF_XDP zero-copy")
+Cc: <stable@vger.kernel.org> # 5.13.x
+Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
+index 105821b53020..2a616c6f7cd0 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
+@@ -34,18 +34,18 @@ static int stmmac_xdp_enable_pool(struct stmmac_priv *priv,
+ 	need_update = netif_running(priv->dev) && stmmac_xdp_is_enabled(priv);
+ 
+ 	if (need_update) {
+-		stmmac_disable_rx_queue(priv, queue);
+-		stmmac_disable_tx_queue(priv, queue);
+ 		napi_disable(&ch->rx_napi);
+ 		napi_disable(&ch->tx_napi);
++		stmmac_disable_rx_queue(priv, queue);
++		stmmac_disable_tx_queue(priv, queue);
+ 	}
+ 
+ 	set_bit(queue, priv->af_xdp_zc_qps);
+ 
+ 	if (need_update) {
+-		napi_enable(&ch->rxtx_napi);
+ 		stmmac_enable_rx_queue(priv, queue);
+ 		stmmac_enable_tx_queue(priv, queue);
++		napi_enable(&ch->rxtx_napi);
+ 
+ 		err = stmmac_xsk_wakeup(priv->dev, queue, XDP_WAKEUP_RX);
+ 		if (err)
+@@ -72,10 +72,10 @@ static int stmmac_xdp_disable_pool(struct stmmac_priv *priv, u16 queue)
+ 	need_update = netif_running(priv->dev) && stmmac_xdp_is_enabled(priv);
+ 
+ 	if (need_update) {
++		napi_disable(&ch->rxtx_napi);
+ 		stmmac_disable_rx_queue(priv, queue);
+ 		stmmac_disable_tx_queue(priv, queue);
+ 		synchronize_rcu();
+-		napi_disable(&ch->rxtx_napi);
+ 	}
+ 
+ 	xsk_pool_dma_unmap(pool, STMMAC_RX_DMA_ATTR);
+@@ -83,10 +83,10 @@ static int stmmac_xdp_disable_pool(struct stmmac_priv *priv, u16 queue)
+ 	clear_bit(queue, priv->af_xdp_zc_qps);
+ 
+ 	if (need_update) {
+-		napi_enable(&ch->rx_napi);
+-		napi_enable(&ch->tx_napi);
+ 		stmmac_enable_rx_queue(priv, queue);
+ 		stmmac_enable_tx_queue(priv, queue);
++		napi_enable(&ch->rx_napi);
++		napi_enable(&ch->tx_napi);
+ 	}
+ 
+ 	return 0;
+-- 
+2.25.1
+
