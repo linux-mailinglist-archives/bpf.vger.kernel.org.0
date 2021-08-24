@@ -2,79 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F663F53F5
-	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 02:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAA83F53FE
+	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 02:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233321AbhHXACY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Aug 2021 20:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
+        id S233413AbhHXALA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Aug 2021 20:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233260AbhHXACW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Aug 2021 20:02:22 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004E8C061575
-        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 17:01:32 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id h1so7204317pjs.2
-        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 17:01:32 -0700 (PDT)
+        with ESMTP id S233371AbhHXAK7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Aug 2021 20:10:59 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3ACC061575
+        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 17:10:16 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id e15so11165214plh.8
+        for <bpf@vger.kernel.org>; Mon, 23 Aug 2021 17:10:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=674RpNdxWoSkoPrbwPjoUiyxumKG2tsmoQ70QT49ot4=;
-        b=ddXGQ4bQxfNVZT7TFeXvZ7VI6HF+tIMysLfw0JC4ygyMy+r4CkNmNCWCvjUZqL5dM9
-         KgD64tRKvK2yzCjG4MVev/rPur17KnEF8jG1yTXf4z1G7H0YTsxTrduWrv75syI+U2k5
-         0BkGMpQH+3QAKVEf2PloOzInvcSz/BdJ7+wsOQp93zjs04SgN4ypTZLaw6bPvNOCNEvr
-         3qsM7KFQtbV6T5RFQcTXlJNpLM95xjGaruVKRqYswwgLbPkchwnre67Sg8HTspgd8AVj
-         ZQWCC1leFGWp189l9S7Yva3/e66veSkgMqVr5mk3t+XbiiL8+xCP4Kt2RAr4v/MBQpFx
-         SBYg==
+        bh=mLQNCLLEO0dr2EkMHlEOJRcHbmjnxgdHtyZ8leefxqI=;
+        b=oYFK/Dcyz8fBho8eUcpt03KhMOr7vsxWibmccwyOlKHf1AQ3B8e08q2UkcUJzXzQqX
+         FOB+PV9OnYWRrNluPxPQt7v9IJ21RioHq4JINI6j07xA4MygzFHxDEkdaPCuh1sQr0lZ
+         /e1buErBRUNqmIzZSgou8cnJTb+/lYoDmmhUo1+GLwmI/Ub1sfVgYeGfZPgJSCfpquP4
+         xcXSpOCMHQyEXBStRC74THFn1bVT2FCq/SOZ2XkTKLaaVKSC3oCenecCMhtuUPIA/z7T
+         fLybvy5AhGBBbEAwnJDwzctd2ytXcju7RjEpS7TCOPAMpMaF+6uLdB/Gz0oTwsSLVegN
+         Iytw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=674RpNdxWoSkoPrbwPjoUiyxumKG2tsmoQ70QT49ot4=;
-        b=n4zMdiqt/8pfYDUMNEn6H84jVYhf8Zj/5kPN4R1/If/LfsmxZyS1spI67wv4W542tc
-         WPyskDzU3dwIv+HPEtVn1yvlWgTsfZDXNy7AYIxkEVr2kENIHYbZIbH1pmriUmERFA42
-         b8WsOKD8cAGCrV1GtQrxsOKBi5lDE79kp7yYlkPe14xIqHTk8VcPfzwiVZSoPqQho5Q6
-         RTOrcJoZKvvEIwtsjs3syFwGnuN7f738hp6NrdOf7CRxSBM0UXqYeDxro5haq29FznTF
-         NfnLKZz9VO5LNKRUZYYEUowwGrU+9BhfbqyV5uiwHY2zBYQwF7mVrUYqcnidbEWCdARt
-         0XCQ==
-X-Gm-Message-State: AOAM531k7V8Znj41ZtHlxMb5fDePuG3TdcyaTFdIKNGfWzH70IYXdlt1
-        pH0r2uFfy9Yh4nSHN0aN4cN8KiwZgv8=
-X-Google-Smtp-Source: ABdhPJxxS0cmruXlLfhe2B/PijNsJLV3JVlELsH0YyJWLrTEJ5rF40Iy7p0bg07H9PuoVYRlNn2Awg==
-X-Received: by 2002:a17:90b:370d:: with SMTP id mg13mr1162110pjb.117.1629763292392;
-        Mon, 23 Aug 2021 17:01:32 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d820:9cc6:d37f:c2fd:dc6])
-        by smtp.gmail.com with ESMTPSA id c16sm17322784pfb.196.2021.08.23.17.01.31
+        bh=mLQNCLLEO0dr2EkMHlEOJRcHbmjnxgdHtyZ8leefxqI=;
+        b=J7yPOLFYr2YFlalaD2M0+0pukPLWXhS99UuwoH4FjtotiGsS7WJHr40JNRtcD7kLtb
+         AZC/1ZRh1yB43VUMyBoHtR3a0dHQVtRVGt4ExNCV+vfQvhuQpkzeVnGKmgCejB1biwfw
+         3oRSTlaBuaqXON1EkqtgRigl9NxYdOj3mn7gs0/lAx8XE+jCaZGP+VP+qiELxKfN974w
+         CLDH8dW4S7/EjVbbF/dtarGcWOvQT8PoeXJRwCUcMq0mp48NmT0zT7+G5wRFpQkUgtf/
+         BIPZnt9Enn1igrDuLYPsIc2pNtMHKEeF19LoB8+p9Rzg2nw41x66j3iYnNQ1XPSfBcGl
+         PFdA==
+X-Gm-Message-State: AOAM533SlJ2p4jjaLRWSVGnKnsFEFqzgRrdeiMnee3TN6oKX9wvhmCsa
+        8jY9WeKrfSg+A+NcfSmiJyg=
+X-Google-Smtp-Source: ABdhPJy0sq1MRUQxCI8zLHS99ejxg5OTviAq+0m+eJSiEd4bFQzUeuaQtlqA1NDgKCqwjYUGo8houQ==
+X-Received: by 2002:a17:90a:7384:: with SMTP id j4mr1234557pjg.138.1629763816185;
+        Mon, 23 Aug 2021 17:10:16 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:9af7])
+        by smtp.gmail.com with ESMTPSA id z3sm328986pjn.43.2021.08.23.17.10.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 17:01:32 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 05:31:29 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Yaniv Agman <yanivagman@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Subject: Re: libbpf: Kernel error message: Exclusivity flag on, cannot modify
-Message-ID: <20210824000129.aybya44ymxssc3so@apollo.localdomain>
-References: <CAMy7=ZXTiaX9xzNi5aOavwsf+mziJ=w-EcHH2f=cJmCGr3EPQA@mail.gmail.com>
- <20210823155149.3jg7nizcxgxf4tfv@apollo.localdomain>
- <CAMy7=ZWQCO0rkW979v6cF56x06G_kmA_qTDm9_yumJyjrcg47Q@mail.gmail.com>
+        Mon, 23 Aug 2021 17:10:15 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 17:10:13 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Lorenzo Fontana <fontanalorenz@gmail.com>
+Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next] bpf: add helpers documentation about GPL
+ compatibility
+Message-ID: <20210824001013.mktbw4p6mn6desdv@ast-mbp.dhcp.thefacebook.com>
+References: <20210822115900.26815-1-fontanalorenz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMy7=ZWQCO0rkW979v6cF56x06G_kmA_qTDm9_yumJyjrcg47Q@mail.gmail.com>
+In-Reply-To: <20210822115900.26815-1-fontanalorenz@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:36:03AM IST, Yaniv Agman wrote:
-> [...]
->
-> Explicitly handling EEXIST solved the problem, however,
-> libbpf_set_print in my setup is already set to ignore any message that
-> is not LIBBPF_WARN.
+On Sun, Aug 22, 2021 at 01:59:00PM +0200, Lorenzo Fontana wrote:
+> When writing BPF programs one might refer to the man page
+> to lookup helpers. When you do so, however you don't have
+> a way to immediately know if you can use the helper
+> based on your program licensing requirements.
+> 
+> This patch adds a specific line in the man bpf-helpers
+> to show that information straight away.
+> 
+> Signed-off-by: Lorenzo Fontana <fontanalorenz@gmail.com>
+...
+>   * long bpf_trace_printk(const char *fmt, u32 fmt_size, ...)
+>   * 	Description
+> @@ -1613,6 +1621,8 @@ union bpf_attr {
+>   * 	Return
+>   * 		The number of bytes written to the buffer, or a negative error
+>   * 		in case of failure.
+> + * 	GPL Compatibility
+> + * 		Required
 
-You need to filter on LIBBPF_WARN for this one, the log level in
-libbpf_nla_dump_errormsg is pr_warn.
-
-> [...]
-
---
-Kartikeya
+I think manually annotating the docs is too easy to get wrong.
+I think scripts/bpf_doc.py should be able to pick it up from the code somehow?
+or rely on dynamic discovery by bpftool?
