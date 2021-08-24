@@ -2,131 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E964A3F5B1F
-	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 11:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF9D3F5C6D
+	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 12:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235573AbhHXJcM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Aug 2021 05:32:12 -0400
-Received: from condef-10.nifty.com ([202.248.20.75]:53812 "EHLO
-        condef-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235566AbhHXJcL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:32:11 -0400
-Received: from conssluserg-05.nifty.com ([10.126.8.84])by condef-10.nifty.com with ESMTP id 17O9S3IG009642;
-        Tue, 24 Aug 2021 18:28:03 +0900
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 17O9ReOO014183;
-        Tue, 24 Aug 2021 18:27:40 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 17O9ReOO014183
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629797261;
-        bh=U+ETojJLC46giLV0nmFB3HMfhm00P2uQEj6O7D2QdBQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LX8dlc4V1V68ls3dBTGJ4wO/Sez/ReNhciPSQ4lZWQ8oxxcNUpDLIo7s37Kj5WMdn
-         jO3+uhXo0lc1d2rlSKkLZlB1gUyXAqHBpzxAaOv43LvIz4E8nBVQ2WkTIe0CKByeO9
-         scrXPIGG9zTWXTwSVdBUNt0qcoR4hgfgicIwSiEpprcLEAJSv7HJO+Hvxb+Wko1M91
-         gQPADHucP6kGL+lvTrR+oYFGoNLyQQy1HVM1FaEc81EzliCanhrrrohj4W7OwOveEh
-         NlPKcIeMcHX/vTsxwGZUpyvBove6xmssFJCroHkQjWjF1Qdrb9Hp1hcV5msK2RMAgw
-         dwvm1fPJaLYTQ==
-X-Nifty-SrcIP: [209.85.215.181]
-Received: by mail-pg1-f181.google.com with SMTP id r2so19209514pgl.10;
-        Tue, 24 Aug 2021 02:27:40 -0700 (PDT)
-X-Gm-Message-State: AOAM530uU8avtLPCqgC3QE/VgV+LDqLcgKCaVi/so8K+ph/lxn01qQJQ
-        X132Acb6LJeSsbWZmk+CxjvsLFvtZN4YzEeEULY=
-X-Google-Smtp-Source: ABdhPJxfShD1P0kCObeK6dJf5CZ3KcyG1O2nFtAivI0lNRJ/uey7BF+d+YEH+hMIPYM+yGSuVGc/qhLx0NySiCPwzSs=
-X-Received: by 2002:aa7:94ac:0:b0:3e0:f21a:e6ff with SMTP id
- a12-20020aa794ac000000b003e0f21ae6ffmr37132148pfl.76.1629797260039; Tue, 24
- Aug 2021 02:27:40 -0700 (PDT)
+        id S236374AbhHXKxq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Aug 2021 06:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236150AbhHXKxp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Aug 2021 06:53:45 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3FCC061757;
+        Tue, 24 Aug 2021 03:53:01 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id c17so19395718pgc.0;
+        Tue, 24 Aug 2021 03:53:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LNPUq/my7v0mlOT+sydB1v9A4usTz8ZuFnFZblPYipE=;
+        b=ac6NqL2kYMbSjIW7lO8U2EAfeZ8ZSvdYpRAN5FtVqf26LMPDTR/PlH9M2ZVJqumiQW
+         RJDD+CSR17WXxqAkHvZ0bDjZ08DUhoo9s+30kz8LmAM0Q5g52gTe1ZAN3aG+YV5Wls8z
+         ehmq4UcLfCOGpaui3XKMdm9knQgZO0LvG6jZkyqUnadxQQVmu0vU9X3iDAFyJhQhptTt
+         LMzauYG6fQWOJbmpUlMzdAWEGD9PZD5pCdGe/baFjq5R5Gw9fo8Yk6bqQ6pXfPeri4Mv
+         BIcAnN0KkSLu472Ek1yiBAUbpXNK/vaY9z6jz4/hhrwlCM5R2hD2ugLKZh2+1u8HWvRw
+         zYpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LNPUq/my7v0mlOT+sydB1v9A4usTz8ZuFnFZblPYipE=;
+        b=og7vJphA2O2qLFFTXPOXq+DK/AMHthuHJX72vVrHcGeP15yQAhCqNlXDXLnLNzEC5u
+         O5Qi7BfFsgY2tWOTtU1NfORmiE6hGvg/XFP6mhDZMng/39WEO8nlF7gcaJ1C9kYvhKYv
+         jonBpNTnIoXBzgcxRQF7C8k49XCQbxYreb4VvNCFYPoSk8GR/qaUOVtGjsO86iwBdJng
+         ILG2+IaoBYVj4Y0Q7lIbDmYRxqbLLrZEsDOREqLEs0GOYVirkfyMcF/mIjjJ7YxUgbxO
+         HAN4DBRKtL9BmSAVPi6uOeREljmjFXYIYK/tl8AUVy7x3sG1t3/pJKf7GQDFeDibvtWO
+         AhXQ==
+X-Gm-Message-State: AOAM530WLEIJfkweq0bVm1KjNVezXljArMNqexhnjaI45D/4IuEK32UY
+        isOJ1wqakVMhDk5un5vYA24=
+X-Google-Smtp-Source: ABdhPJyDnSmefDKPzZ1Z0XNecxC4jE/Ejbls2ucBKiWsPZI9M7jABvsh6Bf8IyUVEzp6yyrPXBJaLw==
+X-Received: by 2002:a63:170d:: with SMTP id x13mr35222225pgl.216.1629802380966;
+        Tue, 24 Aug 2021 03:53:00 -0700 (PDT)
+Received: from localhost.localdomain ([162.219.34.246])
+        by smtp.gmail.com with ESMTPSA id q12sm2085126pfj.153.2021.08.24.03.52.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 24 Aug 2021 03:53:00 -0700 (PDT)
+From:   kerneljasonxing@gmail.com
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kerneljasonxing@gmail.com, Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Subject: [PATCH] ixgbe: let the xdpdrv work with more than 64 cpus
+Date:   Tue, 24 Aug 2021 18:49:18 +0800
+Message-Id: <20210824104918.7930-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-References: <20210528180140.176257-1-masahiroy@kernel.org> <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
-In-Reply-To: <CAK7LNAQ5x55oCYRQbbC6fCE6qP5cp1Jdw+9SH-BNFuN=bqntFw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 24 Aug 2021 18:27:03 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR3NR=u7D0qPVeLUSEiStDvbVUdj4VnFBJ_wHo1UMmcOg@mail.gmail.com>
-Message-ID: <CAK7LNAR3NR=u7D0qPVeLUSEiStDvbVUdj4VnFBJ_wHo1UMmcOg@mail.gmail.com>
-Subject: Re: [PATCH] security: remove unneeded subdir-$(CONFIG_...)
-To:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 3:02 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Sat, May 29, 2021 at 3:02 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > All of these are unneeded. The directories to descend are specified
-> > by obj-$(CONFIG_...).
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
->
-> Ping?
->
+From: Jason Xing <xingwanli@kuaishou.com>
 
+Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
+server is equipped with more than 64 cpus online. So it turns out that
+the loading of xdpdrv causes the "NOMEM" failure.
 
+Actually, we can adjust the algorithm and then make it work, which has
+no harm at all, only if we set the maxmium number of xdp queues.
 
-Applied to linux-kbuild.
+Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
+Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 ---
+ 2 files changed, 1 insertion(+), 4 deletions(-)
 
-
-
-
->
->
-> > ---
-> >
-> >  security/Makefile | 11 -----------
-> >  1 file changed, 11 deletions(-)
-> >
-> > diff --git a/security/Makefile b/security/Makefile
-> > index 47e432900e24..18121f8f85cd 100644
-> > --- a/security/Makefile
-> > +++ b/security/Makefile
-> > @@ -4,16 +4,6 @@
-> >  #
-> >
-> >  obj-$(CONFIG_KEYS)                     += keys/
-> > -subdir-$(CONFIG_SECURITY_SELINUX)      += selinux
-> > -subdir-$(CONFIG_SECURITY_SMACK)                += smack
-> > -subdir-$(CONFIG_SECURITY_TOMOYO)        += tomoyo
-> > -subdir-$(CONFIG_SECURITY_APPARMOR)     += apparmor
-> > -subdir-$(CONFIG_SECURITY_YAMA)         += yama
-> > -subdir-$(CONFIG_SECURITY_LOADPIN)      += loadpin
-> > -subdir-$(CONFIG_SECURITY_SAFESETID)    += safesetid
-> > -subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM) += lockdown
-> > -subdir-$(CONFIG_BPF_LSM)               += bpf
-> > -subdir-$(CONFIG_SECURITY_LANDLOCK)     += landlock
-> >
-> >  # always enable default capabilities
-> >  obj-y                                  += commoncap.o
-> > @@ -36,5 +26,4 @@ obj-$(CONFIG_BPF_LSM)                 += bpf/
-> >  obj-$(CONFIG_SECURITY_LANDLOCK)                += landlock/
-> >
-> >  # Object integrity file lists
-> > -subdir-$(CONFIG_INTEGRITY)             += integrity
-> >  obj-$(CONFIG_INTEGRITY)                        += integrity/
-> > --
-> > 2.27.0
-> >
->
->
-> --
-> Best Regards
-> Masahiro Yamada
-
-
-
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+index 0218f6c..5953996 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+@@ -299,7 +299,7 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
+ 
+ static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
+ {
+-	return adapter->xdp_prog ? nr_cpu_ids : 0;
++	return adapter->xdp_prog ? min_t(int, MAX_XDP_QUEUES, nr_cpu_ids) : 0;
+ }
+ 
+ #define IXGBE_RSS_64Q_MASK	0x3F
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 14aea40..b36d16b 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -10130,9 +10130,6 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+ 			return -EINVAL;
+ 	}
+ 
+-	if (nr_cpu_ids > MAX_XDP_QUEUES)
+-		return -ENOMEM;
+-
+ 	old_prog = xchg(&adapter->xdp_prog, prog);
+ 	need_reset = (!!prog != !!old_prog);
+ 
 -- 
-Best Regards
-Masahiro Yamada
+1.8.3.1
+
