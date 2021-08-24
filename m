@@ -2,145 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E13F3F5773
-	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 06:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCEE3F5784
+	for <lists+bpf@lfdr.de>; Tue, 24 Aug 2021 07:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhHXFAF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Aug 2021 01:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
+        id S229666AbhHXFNC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Aug 2021 01:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhHXFAE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Aug 2021 01:00:04 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD96C061575;
-        Mon, 23 Aug 2021 21:59:20 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id f15so10229865ybg.3;
-        Mon, 23 Aug 2021 21:59:20 -0700 (PDT)
+        with ESMTP id S229646AbhHXFNB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Aug 2021 01:13:01 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE96EC061575;
+        Mon, 23 Aug 2021 22:12:17 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id k65so38517124yba.13;
+        Mon, 23 Aug 2021 22:12:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=17KYTMCnTi2z2l5ALdgtQNaS1BaS2qFMHtmvlTtkPYg=;
-        b=TBa6yO1R49zx2vQEc8KiF/cj1vR7hwwx+hhVwgiXJeDvsIYAQtPgszQmtZURB9Md5u
-         7KUrBxWdru4+C29RIIYlYLQ9T5aQhC70TYAYxEczXHFtodm99iuncS3ID5g7zKY8rOOG
-         sLXbAjttxH0X/1Tv1jsH/u5JaZbxjg4vkxCG89erpvPQ4/g91QXnB/izrfkBh2bL94Rr
-         kB8wM2Ui70iunTI0kC38+IfiTOdzD70qSrd6H6EEK+1G55whLs0h9xVqXUXCOqqyJVOr
-         RZMMaqo2fXQHHV1oyeNwMQM64wtLcciNJKTYlyNkksE4IenblxXmKaGXfuEN4nAishlF
-         VMBg==
+        bh=FrYRhpX8V2RxHliFgyoGiQz1nrfS1cZ96W8NbTEFTXA=;
+        b=O3Hy0rGn0D/+9OlMmdod9ck0A1fu6zAHqpaf2Nq4mpXt5TvHelm3OyKSrv989Z4bnq
+         42MuPy7uN8aC1+Hvl/WFPT/MQvGusaeD12r1dDCFhhwzzBaOEQAmCF43lviPDBxNKbKf
+         c18komufG6iRNJrHxv90dhY88N8lxAuvPLac5745qw0GNFOTAQ6T0Wq0McL0zmySg1fD
+         A93O3b28P+eeycy7SsaBHu+LdtmJmib8geFUXxDceXv/dmNvohsR8In/F7jRE+Djov4p
+         xqTzLCzVYGqKgt4MU/ISJyzjETCCOWQwE4jMLVzoLcFvH3CkOd8ABVJTUOjqHMie1Gvq
+         oetQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=17KYTMCnTi2z2l5ALdgtQNaS1BaS2qFMHtmvlTtkPYg=;
-        b=O5CAUomsAY/hCGNmqANZOukn9ulkWwHWcDhv+oDZO06dKth02YK+dsxF6XSPYvcez2
-         AK87wwbgcAc2knsLVrxfVPmLB6lPqN1fAyuhdNzFvmsaXsaNjssDSLmTjpvH389UpHTz
-         d3x8NgGEVSbnugSBsWHkCVidhQWj3VKdj1bvFosBylVZrYJggc8bMIado4MMaRkCHOez
-         jDt6+KiLfDV6BXoHOPeOajIJC7NZH/THgxdzrJ7wnfIvUOxOWQ/bL4UQEFElZUhQGUaz
-         7avWe20hdn61mRsuz/R83EBu3rj85CTHAU9vWlt77yGrgiQzQOtcpzx1swK1HYvd/8QT
-         8sVg==
-X-Gm-Message-State: AOAM5323QP7GSrb8+vx38qWZfGqgQKumhXkmfMv2/YMg0wLt9MFD/nhn
-        6mC+B0+GnkwRxugN8TtXqBj9SNX8983Wm3t3oOQ=
-X-Google-Smtp-Source: ABdhPJzdcHojAcoPBe4rwfc1cc2oB0rZzhFw00nrhVl5HjKyYUyMIB6dj1/hrRuGrZItzhj6ojojSHuvvNYTGNoh38A=
-X-Received: by 2002:a25:fc10:: with SMTP id v16mr28237345ybd.510.1629781160100;
- Mon, 23 Aug 2021 21:59:20 -0700 (PDT)
+        bh=FrYRhpX8V2RxHliFgyoGiQz1nrfS1cZ96W8NbTEFTXA=;
+        b=iQgtfv/VVMhu/bTdPeg6EWoWNyVyhVgTi9RCOG0v5FFT7cdl7u7BU/iT4+CE0rmTi9
+         7bBUHznnn93czKxyIFOXsajsxZjd5xYKEJBAWkWAOP2FWuTNZWm9c3/0LeCI2PFcX9+z
+         ywQhnZInnqegD0dfFFWq4Hp+XoMgzhH+I9vKn87oqo1IcaJE+BCgy/6KXtY1EnhBvRKY
+         fqKjmwVRtKBeciSaA866WGxmrykV9QhEiPbOlchHRlfsPllkVsCFc012EG54U0LOlr+6
+         ZBcRpmWIP/tSw+5pek6zH/zQ3T7nUASCIG+orZjdHydVeQJKfmIJbeXWIDK53rKMB8sS
+         ZAkw==
+X-Gm-Message-State: AOAM532jTNwpyrZhdr4bkDj9XWh1xPCHIvRpoYrhf7r4ApamqnKDi68U
+        Q8sxXJOoXQoEfYxhZon9UbXIqysAiEop09pYoJE=
+X-Google-Smtp-Source: ABdhPJy0Wx5/xOSiDxelaPuOpL34/4i2trBSGWHIlo/Heur7Lhrot/4g6kCCOg/uyGjN/ZNFBC433k5lcnHBXBE0A+s=
+X-Received: by 2002:a25:bb13:: with SMTP id z19mr50337899ybg.347.1629781937178;
+ Mon, 23 Aug 2021 22:12:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210821025837.1614098-1-davemarchevsky@fb.com> <20210821025837.1614098-6-davemarchevsky@fb.com>
-In-Reply-To: <20210821025837.1614098-6-davemarchevsky@fb.com>
+References: <162756755600.301564.4957591913842010341.stgit@devnote2> <20210730083549.4e36df1cba88e408dc60b031@kernel.org>
+In-Reply-To: <20210730083549.4e36df1cba88e408dc60b031@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 Aug 2021 21:59:09 -0700
-Message-ID: <CAEf4BzYeRNKWfSaqyzhNbm7qdLoWGzFLp9A05pVmQKU_f0zY5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add trace_vprintk test prog
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Florent Revest <revest@chromium.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+Date:   Mon, 23 Aug 2021 22:12:06 -0700
+Message-ID: <CAEf4Bzb2i4Z9kUWU+L-HF3k+XQ0V3hLH1Er7U2_oCdv1BTvaBw@mail.gmail.com>
+Subject: Re: [PATCH -tip v10 00/16] kprobes: Fix stacktrace with kretprobes on x86
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 7:59 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+On Thu, Jul 29, 2021 at 4:35 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 >
-> This commit adds a test prog for vprintk which confirms that:
->   * bpf_trace_vprintk is writing to dmesg
->   * bpf_vprintk convenience macro works as expected
->   * >3 args are printed
+> On Thu, 29 Jul 2021 23:05:56 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
 >
-> Approach and code are borrowed from trace_printk test.
+> > Hello,
+> >
+> > This is the 10th version of the series to fix the stacktrace with kretprobe on x86.
+> >
+> > The previous version is here;
+> >
+> >  https://lore.kernel.org/bpf/162601048053.1318837.1550594515476777588.stgit@devnote2/
+> >
+> > This version is rebased on top of new kprobes cleanup series(*1) and merging
+> > Josh's objtool update series (*2)(*3) as [6/16] and [7/16].
+> >
+> > (*1) https://lore.kernel.org/bpf/162748615977.59465.13262421617578791515.stgit@devnote2/
+> > (*2) https://lore.kernel.org/bpf/20210710192433.x5cgjsq2ksvaqnss@treble/
+> > (*3) https://lore.kernel.org/bpf/20210710192514.ghvksi3ozhez4lvb@treble/
+> >
+> > Changes from v9:
+> >  - Add Josh's objtool update patches with a build error fix as [6/16] and [7/16].
+> >  - Add a API document for kretprobe_find_ret_addr() and check cur != NULL in [5/16].
+> >
+> > With this series, unwinder can unwind stack correctly from ftrace as below;
+> >
+> >   # cd /sys/kernel/debug/tracing
+> >   # echo > trace
+> >   # echo 1 > options/sym-offset
+> >   # echo r vfs_read >> kprobe_events
+> >   # echo r full_proxy_read >> kprobe_events
+> >   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+> >   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+> >   # echo 1 > events/kprobes/enable
+> >   # cat /sys/kernel/debug/kprobes/list
+> > ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+> > ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+> >   # echo 0 > events/kprobes/enable
+> >   # cat trace
+> > # tracer: nop
+> > #
+> > # entries-in-buffer/entries-written: 3/3   #P:8
+> > #
+> > #                                _-----=> irqs-off
+> > #                               / _----=> need-resched
+> > #                              | / _---=> hardirq/softirq
+> > #                              || / _--=> preempt-depth
+> > #                              ||| /     delay
+> > #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> > #              | |         |   ||||      |         |
+> >            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
+> >            <...>-134     [007] ...1    16.185901: <stack trace>
+> >  => kretprobe_trace_func+0x209/0x300
+> >  => kretprobe_dispatcher+0x4a/0x70
+> >  => __kretprobe_trampoline_handler+0xd4/0x170
+> >  => trampoline_handler+0x43/0x60
+> >  => kretprobe_trampoline+0x2a/0x50
+> >  => vfs_read+0x98/0x180
+> >  => ksys_read+0x5f/0xe0
+> >  => do_syscall_64+0x37/0x90
+> >  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
+> >
+> > This shows the double return probes (vfs_read() and full_proxy_read()) on the stack
+> > correctly unwinded. (vfs_read() returns to 'ksys_read+0x5f' and full_proxy_read()
+> > returns to 'vfs_read+0x98')
+> >
+> > This also changes the kretprobe behavisor a bit, now the instraction pointer in
+> > the 'pt_regs' passed to kretprobe user handler is correctly set the real return
+> > address. So user handlers can get it via instruction_pointer() API, and can use
+> > stack_trace_save_regs().
+> >
+> > You can also get this series from
+> >  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v9
 >
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->  tools/testing/selftests/bpf/Makefile          |  3 +-
->  .../selftests/bpf/prog_tests/trace_vprintk.c  | 75 +++++++++++++++++++
->  .../selftests/bpf/progs/trace_vprintk.c       | 25 +++++++
->  3 files changed, 102 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_vprintk.c
->  create mode 100644 tools/testing/selftests/bpf/progs/trace_vprintk.c
+> Oops, this is of course 'kprobes/kretprobe-stackfix-v10'. And this branch includes above (*1) series.
+
+Hi Masami,
+
+Was this ever merged/applied? This is a very important functionality
+for BPF kretprobes, so I hope this won't slip through the cracks.
+Thanks!
+
 >
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 2a58b7b5aea4..af5e7a1e9a7c 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -313,7 +313,8 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h               \
->                 linked_vars.skel.h linked_maps.skel.h
+> Thank you,
 >
->  LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
-> -       test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c
-> +       test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c \
-> +       trace_vprintk.c
->  SKEL_BLACKLIST += $$(LSKELS)
->
->  test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
-> diff --git a/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c b/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c
-> new file mode 100644
-> index 000000000000..fd70427d2918
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Facebook */
-> +
-> +#include <test_progs.h>
-> +
-> +#include "trace_vprintk.lskel.h"
-> +
-> +#define TRACEBUF       "/sys/kernel/debug/tracing/trace_pipe"
-> +#define SEARCHMSG      "1,2,3,4,5,6,7,8,9,10"
-> +
-> +void test_trace_vprintk(void)
-> +{
-> +       int err, iter = 0, duration = 0, found = 0;
-> +       struct trace_vprintk__bss *bss;
-> +       struct trace_vprintk *skel;
-> +       char *buf = NULL;
-> +       FILE *fp = NULL;
-> +       size_t buflen;
-> +
-> +       skel = trace_vprintk__open();
-> +       if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-> +               return;
-
-Let's use ASSERT_xxx() in new tests, no new CHECK() uses.
-
-
-> +
-> +       err = trace_vprintk__load(skel);
-> +       if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-
-you should be able to combine open and load into trace_vprintk__open_and_load()
-
-> +               goto cleanup;
-> +
-> +       bss = skel->bss;
-> +
-> +       err = trace_vprintk__attach(skel);
-> +       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-> +               goto cleanup;
-> +
-
-[...]
+> --
+> Masami Hiramatsu <mhiramat@kernel.org>
