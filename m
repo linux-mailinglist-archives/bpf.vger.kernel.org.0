@@ -2,130 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0CB3F7C6B
-	for <lists+bpf@lfdr.de>; Wed, 25 Aug 2021 20:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD42B3F7CC5
+	for <lists+bpf@lfdr.de>; Wed, 25 Aug 2021 21:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240689AbhHYSsv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Aug 2021 14:48:51 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44126 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240322AbhHYSsu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 25 Aug 2021 14:48:50 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17PIhPbF018479
-        for <bpf@vger.kernel.org>; Wed, 25 Aug 2021 11:48:04 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=BljyG5RYg2rqg821rjy3xBXWmHYNrHQfXLuS6Xolp2o=;
- b=NuybvQ1XrbQHR4ftCP2VpCUs4EBbvQqvJzMoQewsVBOQ1yvIqtotRT8zIgi1B/+ZvSDy
- 9dbwL0GQF1mLr7nIxi5Zew5YT3WR5KJPlPPdCylsU1RrfS5ZcGbkvUlw4dnn8pkFcuST
- dbXv8ehehZJYUgO1FbrWnfpo6eaGSc6dwsg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3an6hd7m7k-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 25 Aug 2021 11:48:04 -0700
-Received: from intmgw001.05.prn6.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 25 Aug 2021 11:48:02 -0700
-Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id BCD6F2A16F12; Wed, 25 Aug 2021 11:47:54 -0700 (PDT)
-From:   Yucong Sun <fallentree@fb.com>
-To:     <andrii@kernel.org>
-CC:     <sunyucong@gmail.com>, <bpf@vger.kernel.org>,
-        Yucong Sun <fallentree@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: reduce more flakyness in sockmap_listen
-Date:   Wed, 25 Aug 2021 11:47:45 -0700
-Message-ID: <20210825184745.2680830-1-fallentree@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S233208AbhHYTda (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Aug 2021 15:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231445AbhHYTda (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Aug 2021 15:33:30 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829F7C061757;
+        Wed, 25 Aug 2021 12:32:44 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so579801pjt.0;
+        Wed, 25 Aug 2021 12:32:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q9woyFvZscziXAkEJcOlKEFMpONuxgV7zFshtJwHQb0=;
+        b=UIAciSu6TlZobeFzDa0D8Bitf2GOv5lOAtDKOzLIvSnnAUcFMZVkPeVruL3ZRPNUcl
+         eJlBpcRpiFDxHUskHAj38qdJj1UvXSbvjXaASb7hthCSGtP8Jb0mPzx3xdACaghKZGyz
+         xxQInYY70nGNfWfP9ROLwDrc3oVOU60V9AEM65uMZWN1eipl+LXab8amQZdMCO+sVR+N
+         SFEj+/WghWlduAzjFLdzCzrHhAT3q+KhTYlZzuiKQSxf09QO9klVQVmS4zM3zo0S4ONz
+         qgeETe7E1oqt17weppFrzK1JWM5NFovymB7/yOHhfCPAkzW/9xhW8X1q3iHm6Nb3cBvB
+         NESA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q9woyFvZscziXAkEJcOlKEFMpONuxgV7zFshtJwHQb0=;
+        b=mPHXOGNH0FWYx923maqOQuINtZ9oWOq1ok2D4qJ+1s26bqIWw4Y7WDF/1/cppoWZ0x
+         P09EScndEiwvA3CDYr7IFeg50U49eHNfEKQwDO4t5gqIvsvyoQlOV+PlKENNOABaktT0
+         bTXC6rvtGIKPHYOvIEa5qA6mdJ3vjz/0Leu1SjwBR3Oc45OX4V4KdQL04pEx621G3VZO
+         bWzvYYowADGFxSGQPeh5KIGtmxi61GTsJP22MAwPbtY4A5WptleMgPlh/9M/PErTSE/v
+         4JDOXPA0eVYP9M7HEg1GnGPGa7cML/Fk4XWYYjTdPlnbXltX5ew0Vz/GaexyqIKpeTrk
+         xoFg==
+X-Gm-Message-State: AOAM530OWSzOJiLzaUks3tfyTrwrEL1zDXKg9brKlubkDAhfO/5skE1D
+        uiFJU1WGznMPI/gvfHx0CKIEnEqhPU0lKSH+IlI=
+X-Google-Smtp-Source: ABdhPJxjp/j1nFXX+libRk/30fJtdvDJaKPtZSbwldDH1FLk3WLy43zDTFJUjubwi7cXJZ3L74xbKarGGzJoKJXvlcs=
+X-Received: by 2002:a17:90a:6009:: with SMTP id y9mr12179405pji.93.1629919964009;
+ Wed, 25 Aug 2021 12:32:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: jypCTktTZpjDBxvVdVESXJ8ae0txsA-Y
-X-Proofpoint-ORIG-GUID: jypCTktTZpjDBxvVdVESXJ8ae0txsA-Y
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-25_07:2021-08-25,2021-08-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=0 priorityscore=1501 adultscore=0 clxscore=1015
- impostorscore=0 mlxscore=0 phishscore=0 spamscore=0 mlxlogscore=945
- bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108250110
-X-FB-Internal: deliver
+References: <20210825093722.10219-1-magnus.karlsson@gmail.com> <20210825182656.GA26792@ranger.igk.intel.com>
+In-Reply-To: <20210825182656.GA26792@ranger.igk.intel.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 25 Aug 2021 12:32:33 -0700
+Message-ID: <CAADnVQJHOmpRgzs0xXbm334XP_cTmGfrMfn=NoQw+eCw3WqBfA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 00/16] selftests: xsk: various simplifications
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Ciara Loftus <ciara.loftus@intel.com>,
+        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds similar retry logic to more places where read() is used, =
-to
-reduce flakyness in slow CI environment.
+On Wed, Aug 25, 2021 at 11:42 AM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> On Wed, Aug 25, 2021 at 11:37:06AM +0200, Magnus Karlsson wrote:
+> > This patch set mainly contains various simplifications to the xsk
+> > selftests. The only exception is the introduction of packet streams
+> > that describes what the Tx process should send and what the Rx process
+> > should receive. If it receives anything else, the test fails. This
+> > mechanism can be used to produce tests were all packets are not
+> > received by the Rx thread or modified in some way. An example of this
+> > is if an XDP program does XDP_PASS on some of the packets.
+> >
+> > This patch set will be followed by another patch set that implements a
+> > new structure that will facilitate adding new tests. A couple of new
+> > tests will also be included in that patch set.
+>
+> I went through the series and besides the typo found by Alexei I have no
+> objections.
+>
+> Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-Signed-off-by: Yucong Sun <fallentree@fb.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/to=
-ols/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 6a5df28f9a3d..5c5979046523 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -949,6 +949,7 @@ static void redir_to_connected(int family, int sotype=
-, int sock_mapfd,
- 	int err, n;
- 	u32 key;
- 	char b;
-+	int retries =3D 100;
-=20
- 	zero_verdict_count(verd_mapfd);
-=20
-@@ -1001,10 +1002,15 @@ static void redir_to_connected(int family, int so=
-type, int sock_mapfd,
- 		goto close_peer1;
- 	if (pass !=3D 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
--
-+again:
- 	n =3D read(c0, &b, 1);
--	if (n < 0)
-+	if (n < 0) {
-+		if (errno =3D=3D EAGAIN && retries--) {
-+			usleep(1000);
-+			goto again;
-+		}
- 		FAIL_ERRNO("%s: read", log_prefix);
-+	}
- 	if (n =3D=3D 0)
- 		FAIL("%s: incomplete read", log_prefix);
-=20
-@@ -1926,6 +1932,7 @@ static void unix_inet_redir_to_connected(int family=
-, int type, int sock_mapfd,
- 	int sfd[2];
- 	u32 key;
- 	char b;
-+	int retries =3D 100;
-=20
- 	zero_verdict_count(verd_mapfd);
-=20
-@@ -1956,9 +1963,15 @@ static void unix_inet_redir_to_connected(int famil=
-y, int type, int sock_mapfd,
- 	if (pass !=3D 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
-=20
-+again:
- 	n =3D read(mode =3D=3D REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0)
-+	if (n < 0) {
-+		if (errno =3D=3D EAGAIN && retries--) {
-+			usleep(1000);
-+			goto again;
-+		}
- 		FAIL_ERRNO("%s: read", log_prefix);
-+	}
- 	if (n =3D=3D 0)
- 		FAIL("%s: incomplete read", log_prefix);
-=20
---=20
-2.30.2
-
+Great. Applied. Thanks everyone.
