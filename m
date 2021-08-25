@@ -2,84 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8B83F7B98
-	for <lists+bpf@lfdr.de>; Wed, 25 Aug 2021 19:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBBF3F7C5D
+	for <lists+bpf@lfdr.de>; Wed, 25 Aug 2021 20:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233677AbhHYRe0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Aug 2021 13:34:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242333AbhHYReO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Aug 2021 13:34:14 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0776C061757;
-        Wed, 25 Aug 2021 10:33:28 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id 18so322737pfh.9;
-        Wed, 25 Aug 2021 10:33:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jDz0GO/sDA4MC0xQVYz8V4Wd0OWf5ozUiNTHo51XtSs=;
-        b=Rfpf4AZD9CQsx9V4G9z75RNxi9To35GAmKJTUxA0uYW20GceH+jJoRzgiEOBk2hKlT
-         07TV98mS4mdfD/e8tdoLfvJML0/quFxoF4z8SztRFOQmcERHT6BLUhpgz6Qmep9JUT/X
-         im5+lDYTNWUKH0+3QIH0a/gn0p//XP0rvAMlup4LinNImuKZhcgT0Gn8xAnaXkx/+ofr
-         4iDH3LfgtMDnQCo0dxafinxt4pop7Num7AB9kKnKtA8SW7v930K1VbkiXIvcAErgprKG
-         3jd64+xF4oJgl6GHRm0F04wI7qFQ3UN8fYVkqSVJYOm/CIGty+8PYo/jeiRMeNXUaemt
-         5FMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jDz0GO/sDA4MC0xQVYz8V4Wd0OWf5ozUiNTHo51XtSs=;
-        b=J9zBh9KX+l8E4l0tc8jU5yM66X+tWS/hXXwPWnv/DAEtX/Xy53TJnAQtZ9xKcUrnsj
-         jMLag/sD7bPY3KiRML8oayHJcnfOePy3ImkavOxfKezLmxteaaTgO3E0TTRPIqLT4Pqg
-         Pf+CveoSI8oDDsjHEMOD1igZWqxrg2iwan6J7vCE2zdNlv9XJVFU4PE0naNWuFd6wB/S
-         eGg1XMkaPlgSw3ZrbxnpJ9XDEwuLRX8hSYHsjkA3olmTlJr0iMSw7w6gr5EgukZ7eIAK
-         UUq8WRJ8RjI5EqVEHix9z67F2qGvt2tBIFospj3n1Xu/5q8mtBALaUAkcgd9m3380flw
-         +dcw==
-X-Gm-Message-State: AOAM533LcnZ4eG/+EEHNyIGryueoJG3hQm7OqbEkZV/dTiNnuHGDLC5g
-        0wQVz+s16aFp/62htSVVqWk=
-X-Google-Smtp-Source: ABdhPJynccttmGOmsCaSHsk2vdJjnmjdrZp0KzQ/E1gz+gJqBCn8i6sB4oF17R0e2l5oKRZZOnvHWg==
-X-Received: by 2002:a62:f90d:0:b0:3e3:5739:d075 with SMTP id o13-20020a62f90d000000b003e35739d075mr31574656pfh.19.1629912808042;
-        Wed, 25 Aug 2021 10:33:28 -0700 (PDT)
-Received: from ast-mbp.lan ([2607:fb90:b2da:ad8d:883:bb6d:9e85:dd2d])
-        by smtp.gmail.com with ESMTPSA id g26sm616834pgb.45.2021.08.25.10.33.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 10:33:27 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 10:33:14 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        id S237527AbhHYSnj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Aug 2021 14:43:39 -0400
+Received: from mga14.intel.com ([192.55.52.115]:29739 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241704AbhHYSnh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Aug 2021 14:43:37 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="217309983"
+X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
+   d="scan'208";a="217309983"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 11:42:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,351,1620716400"; 
+   d="scan'208";a="684612821"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga006.fm.intel.com with ESMTP; 25 Aug 2021 11:42:46 -0700
+Date:   Wed, 25 Aug 2021 20:26:56 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To:     Magnus Karlsson <magnus.karlsson@gmail.com>
 Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
         daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-        ciara.loftus@intel.com, bpf@vger.kernel.org, yhs@fb.com,
-        andrii@kernel.org
-Subject: Re: [PATCH bpf-next v3 10/16] selftests: xsk: validate tx stats on
- tx thread
-Message-ID: <20210825173314.dbkzinas3afz2lxk@ast-mbp.lan>
+        jonathan.lemon@gmail.com, ciara.loftus@intel.com,
+        bpf@vger.kernel.org, yhs@fb.com, andrii@kernel.org
+Subject: Re: [PATCH bpf-next v3 00/16] selftests: xsk: various simplifications
+Message-ID: <20210825182656.GA26792@ranger.igk.intel.com>
 References: <20210825093722.10219-1-magnus.karlsson@gmail.com>
- <20210825093722.10219-11-magnus.karlsson@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210825093722.10219-11-magnus.karlsson@gmail.com>
+In-Reply-To: <20210825093722.10219-1-magnus.karlsson@gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 11:37:16AM +0200, Magnus Karlsson wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Wed, Aug 25, 2021 at 11:37:06AM +0200, Magnus Karlsson wrote:
+> This patch set mainly contains various simplifications to the xsk
+> selftests. The only exception is the introduction of packet streams
+> that describes what the Tx process should send and what the Rx process
+> should receive. If it receives anything else, the test fails. This
+> mechanism can be used to produce tests were all packets are not
+> received by the Rx thread or modified in some way. An example of this
+> is if an XDP program does XDP_PASS on some of the packets.
 > 
-> Validate the tx stats on the Tx thread instead of the Rx
-> tread. Depending on your settings, you might not be allowed to query
+> This patch set will be followed by another patch set that implements a
+> new structure that will facilitate adding new tests. A couple of new
+> tests will also be included in that patch set.
 
-thread.
+I went through the series and besides the typo found by Alexei I have no
+objections.
 
-> the statistics of a socket you do not own, so better to do this on the
-> correct thread to start with.
+Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+
+Looking forward to next set that you mention above :)
+
 > 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-
-Overall the set looks good to me.
-I'd like to see an Ack from Maciej, since he reviewed v2.
+> v2 -> v3:
+> 
+> * Reworked patch 12 so that it now has functions for creating and
+>   destroying ifobjects. Simplifies the code. [Maciej]
+> * The packet stream now allocates the supplied buffer array length,
+>   instead of the default one. [Maciej]
+> * pkt_stream_get_pkt() now returns NULL when indexing a non-existing
+>   packet. [Maciej]
+> * pkt_validate() is now is_pkt_valid(). [Maciej]
+> * Slowed down packet sending speed even more in patch 11 so that slow
+>   systems do not silenty drop packets in skb mode.
+> 
+> v1 -> v2:
+> 
+> * Dropped the patch with per process limit changes as it is not needed
+>   [Yonghong]
+> * Improved the commit message of patch 1 [Yonghong]
+> * Fixed a spelling error in patch 9
+> 
+> Thanks: Magnus
+> 
+> Magnus Karlsson (16):
+>   selftests: xsk: remove color mode
+>   selftests: xsk: remove the num_tx_packets option
+>   selftests: xsk: remove unused variables
+>   selftests: xsk: return correct error codes
+>   selftests: xsk: simplify the retry code
+>   selftests: xsk: remove end-of-test packet
+>   selftests: xsk: disassociate umem size with packets sent
+>   selftests: xsk: rename worker_* functions that are not thread entry
+>     points
+>   selftests: xsk: simplify packet validation in xsk tests
+>   selftests: xsk: validate tx stats on tx thread
+>   selftests: xsk: decrease sending speed
+>   selftests: xsk: simplify cleanup of ifobjects
+>   selftests: xsk: generate packet directly in umem
+>   selftests: xsk: generate packets from specification
+>   selftests: xsk: make enums lower case
+>   selftests: xsk: preface options with opt
+> 
+>  tools/testing/selftests/bpf/test_xsk.sh    |  10 +-
+>  tools/testing/selftests/bpf/xdpxceiver.c   | 681 ++++++++++-----------
+>  tools/testing/selftests/bpf/xdpxceiver.h   |  63 +-
+>  tools/testing/selftests/bpf/xsk_prereqs.sh |  30 +-
+>  4 files changed, 356 insertions(+), 428 deletions(-)
+> 
+> 
+> base-commit: 3bbc8ee7c363a83aa192d796ad37b6bf462a2947
+> --
+> 2.29.0
