@@ -2,57 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB633F7A83
-	for <lists+bpf@lfdr.de>; Wed, 25 Aug 2021 18:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 429E43F7AA2
+	for <lists+bpf@lfdr.de>; Wed, 25 Aug 2021 18:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239054AbhHYQaA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Aug 2021 12:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
+        id S242020AbhHYQdr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Aug 2021 12:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239665AbhHYQ37 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Aug 2021 12:29:59 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9DFC0613CF;
-        Wed, 25 Aug 2021 09:29:12 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id c17so302907pgc.0;
-        Wed, 25 Aug 2021 09:29:12 -0700 (PDT)
+        with ESMTP id S241900AbhHYQdj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Aug 2021 12:33:39 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37F3C0613D9
+        for <bpf@vger.kernel.org>; Wed, 25 Aug 2021 09:32:53 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id r4so101260ybp.4
+        for <bpf@vger.kernel.org>; Wed, 25 Aug 2021 09:32:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sqeNXGhA3cye1rsmvOQ8m1ijfc+DLpUpqgAU3WM7aN4=;
-        b=OrbxUpYEIiu7NIfew3ajuAEX9jeRcQHAr8imiwkrrbpLS2G/1fk8hZ6sBYyJuQRTid
-         h/06Awkk2XomH/y33/Ohuvr0tBJ7wR+So1xBFDCsCjUIn8rJrsE4Mp0YPuBzqWN2A1Mr
-         XN1QnZNArYu+ptSfUEcxQc1DJLBBENz2VNVUB92jV8IkRnpWYxDKnMbXknwkmbZzyo6+
-         xKS5hyPUKGMAEIAwYTgv8PHWx5zy9m618JBlJ9ofKy4MxxKYORtbbL/Xd4+zUBn4Cey/
-         KYtI6w+Rgoxpx1xujAEfGRMYiBczvdY8zuKpr6ZnejX5FLaOrFYtFMjVNTNvPcXQYt1z
-         /D7g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L2AFAbGFTPnA/RAdM2ZFaFkRP5a2X/wBdXmNjJ5mbxQ=;
+        b=EFyH5gQ1TyJQ0E/ipGx4TjWbQoJdvjNdek6wygsodqgXmWXthWUMYK9134wQX76vjd
+         pjZyjX4x6YcGYOgnKumYuYYtVgnqbYaVCtAXBfYjPAh//H8JEXyKRCsVnaXdDAasu9/O
+         zPhwt8cHWwLvKcKavTKt7NJ6x2JpU1DM3B8BRVw6TFys4+mM+pxgy3Y0M8xp2ddwyUlW
+         eXO0m9iYrH/mcG71cp9eDjDeOU3pjHqlzJBpIJWz66SM+2FKzsAYULoFZLc5rT9dpmiE
+         RgDFxCUdcZzYcQbR9eYrYDgiVhhaYI9Ra0hngSaLblFJSYXuEC9MGDdvXfT2d0cYL3QB
+         TVbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sqeNXGhA3cye1rsmvOQ8m1ijfc+DLpUpqgAU3WM7aN4=;
-        b=jJFsnwACOr36Vx8TJPA3avqf8T0rTXadFwHEYifjNJBSeiy4O5o4sR0yHiwkpC8o15
-         DQb0s1Tw+POJh6WGycMQSVDZVwb/DiPOsH5Qq3AgNAN14d/dQDq3zogJxGA3BiXKiqG9
-         a2gFv6mLm6pP7MP0RiOG43ETtaBbk8/wuNkoB0UsjCx78dN5Wnah+jMmsTR9a8jXGdBU
-         RknjbAsUHf1ejEgnE0FhNld2vhfCBbVKiIRh5ALaYAMC5RGy3/s6kqqqd8ANkl4At6P1
-         sCFIp4VwGz3nTw7620eIrnCps2naKBWZ8x9LJ6YbjO8dx7HTEv44jWIzx65qjgVujXZd
-         39pw==
-X-Gm-Message-State: AOAM531xSmSRDPUVWbOrABVPpZwzu0N7dcqo8s2Ds+f/zJas0Qe8vK9y
-        +/hxvF8tI2YXPCKr8+giqOo=
-X-Google-Smtp-Source: ABdhPJyp1GSn7DJWZmmufrA+tyes3YmkjmDkWuHBiZ49/Hmzz5Ryn3lrUoGHZxePMk67afl6OS6sQA==
-X-Received: by 2002:aa7:8d11:0:b0:3ef:9c79:405d with SMTP id j17-20020aa78d11000000b003ef9c79405dmr3832497pfe.72.1629908952097;
-        Wed, 25 Aug 2021 09:29:12 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.45.42.119])
-        by smtp.googlemail.com with ESMTPSA id a66sm300826pfa.59.2021.08.25.09.29.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 09:29:11 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L2AFAbGFTPnA/RAdM2ZFaFkRP5a2X/wBdXmNjJ5mbxQ=;
+        b=cHr4B7GIcqLRyHsRqhgYPWvD8IqJG2NeFj+kFxqifBa0o0Bvd8FqGtcSeEOHcc+9pD
+         VXg7KPe2wwCs0kNKY/VuCYvt8wXI7G5IXu2Gp8fETzNKrRbZjO9bnInUBwGjgCrCSug8
+         10vTF3/2PaOpimCvp0QtAJ50Z3aiivRlkWG4vPg+bcgVbACwk8BkGf8f/eChd0VbD6x+
+         X51Q+cJiBypnRJeu+B5jcXkJl1b/W5u9ijHbfztT0+BPwEWLeqyp9s+dd5MNlUpMTQlM
+         Tap+UFWITdZHW+H7ejRqfo09oa47iSeT6ICs79d5sagjnarIgaDAAaTZq0oixlZtGhCG
+         FtbA==
+X-Gm-Message-State: AOAM531U5hYKbDY9yMnQe8Oc0K5/a3a04NfNjwTbT/H5KqvTbDn9adVY
+        vnrBg9k4T/wAwrLU0a7iqhKVLMjxOqD23vDGP/tM8w==
+X-Google-Smtp-Source: ABdhPJyjMEw3MAy8Rswny0jBRnbt29d64qJjNPqBZ4cVCxfjKryRONVrGN9Sy8zNpFb12YVfZl773NDJUeXFJ54fBTo=
+X-Received: by 2002:a25:d6d8:: with SMTP id n207mr20857216ybg.518.1629909172492;
+ Wed, 25 Aug 2021 09:32:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
+ <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
+ <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com> <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
+ <CANn89iK0nMG3qq226aL-urrtPF5jBN6UQCV=ckTmAFqWgy5kiA@mail.gmail.com> <5fdc5223-7d67-fed7-f691-185dcb2e3d80@gmail.com>
+In-Reply-To: <5fdc5223-7d67-fed7-f691-185dcb2e3d80@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 25 Aug 2021 09:32:41 -0700
+Message-ID: <CANn89iKqijGU_0dQMeyMJ2h2MJE3=fLm8qb456G3ZD_7TrLt_A@mail.gmail.com>
 Subject: Re: [Linuxarm] Re: [PATCH RFC 0/7] add socket to netdev page frag
  recycling support
-To:     Eric Dumazet <edumazet@google.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexander Duyck <alexander.duyck@gmail.com>,
         Russell King <linux@armlinux.org.uk>,
@@ -96,54 +100,79 @@ Cc:     David Miller <davem@davemloft.net>,
         aahringo@redhat.com, ceggers@arri.de, yangbo.lu@nxp.com,
         Florian Westphal <fw@strlen.de>, xiangxia.m.yue@gmail.com,
         linmiaohe <linmiaohe@huawei.com>, Christoph Hellwig <hch@lst.de>
-References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
- <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
- <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com>
- <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
- <CANn89iK0nMG3qq226aL-urrtPF5jBN6UQCV=ckTmAFqWgy5kiA@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <5fdc5223-7d67-fed7-f691-185dcb2e3d80@gmail.com>
-Date:   Wed, 25 Aug 2021 09:29:06 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CANn89iK0nMG3qq226aL-urrtPF5jBN6UQCV=ckTmAFqWgy5kiA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/23/21 8:04 AM, Eric Dumazet wrote:
->>
->>
->> It seems PAGE_ALLOC_COSTLY_ORDER is mostly related to pcp page, OOM, memory
->> compact and memory isolation, as the test system has a lot of memory installed
->> (about 500G, only 3-4G is used), so I used the below patch to test the max
->> possible performance improvement when making TCP frags twice bigger, and
->> the performance improvement went from about 30Gbit to 32Gbit for one thread
->> iperf tcp flow in IOMMU strict mode,
-> 
-> This is encouraging, and means we can do much better.
-> 
-> Even with SKB_FRAG_PAGE_ORDER  set to 4, typical skbs will need 3 mappings
-> 
-> 1) One for the headers (in skb->head)
-> 2) Two page frags, because one TSO packet payload is not a nice power-of-two.
+On Wed, Aug 25, 2021 at 9:29 AM David Ahern <dsahern@gmail.com> wrote:
+>
+> On 8/23/21 8:04 AM, Eric Dumazet wrote:
+> >>
+> >>
+> >> It seems PAGE_ALLOC_COSTLY_ORDER is mostly related to pcp page, OOM, memory
+> >> compact and memory isolation, as the test system has a lot of memory installed
+> >> (about 500G, only 3-4G is used), so I used the below patch to test the max
+> >> possible performance improvement when making TCP frags twice bigger, and
+> >> the performance improvement went from about 30Gbit to 32Gbit for one thread
+> >> iperf tcp flow in IOMMU strict mode,
+> >
+> > This is encouraging, and means we can do much better.
+> >
+> > Even with SKB_FRAG_PAGE_ORDER  set to 4, typical skbs will need 3 mappings
+> >
+> > 1) One for the headers (in skb->head)
+> > 2) Two page frags, because one TSO packet payload is not a nice power-of-two.
+>
+> interesting observation. I have noticed 17 with the ZC API. That might
+> explain the less than expected performance bump with iommu strict mode.
 
-interesting observation. I have noticed 17 with the ZC API. That might
-explain the less than expected performance bump with iommu strict mode.
+Note that if application is using huge pages, things get better after
 
-> 
-> The first issue can be addressed using a piece of coherent memory (128
-> or 256 bytes per entry in TX ring).
-> Copying the headers can avoid one IOMMU mapping, and improve IOTLB
-> hits, because all
-> slots of the TX ring buffer will use one single IOTLB slot.
-> 
-> The second issue can be solved by tweaking a bit
-> skb_page_frag_refill() to accept an additional parameter
-> so that the whole skb payload fits in a single order-4 page.
-> 
-> 
+commit 394fcd8a813456b3306c423ec4227ed874dfc08b
+Author: Eric Dumazet <edumazet@google.com>
+Date:   Thu Aug 20 08:43:59 2020 -0700
+
+    net: zerocopy: combine pages in zerocopy_sg_from_iter()
+
+    Currently, tcp sendmsg(MSG_ZEROCOPY) is building skbs with order-0
+fragments.
+    Compared to standard sendmsg(), these skbs usually contain up to
+16 fragments
+    on arches with 4KB page sizes, instead of two.
+
+    This adds considerable costs on various ndo_start_xmit() handlers,
+    especially when IOMMU is in the picture.
+
+    As high performance applications are often using huge pages,
+    we can try to combine adjacent pages belonging to same
+    compound page.
+
+    Tested on AMD Rome platform, with IOMMU, nominal single TCP flow speed
+    is roughly doubled (~55Gbit -> ~100Gbit), when user application
+    is using hugepages.
+
+    For reference, nominal single TCP flow speed on this platform
+    without MSG_ZEROCOPY is ~65Gbit.
+
+    Signed-off-by: Eric Dumazet <edumazet@google.com>
+    Cc: Willem de Bruijn <willemb@google.com>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+
+Ideally the gup stuff should really directly deal with hugepages, so
+that we avoid
+all these crazy refcounting games on the per-huge-page central refcount.
+
+>
+> >
+> > The first issue can be addressed using a piece of coherent memory (128
+> > or 256 bytes per entry in TX ring).
+> > Copying the headers can avoid one IOMMU mapping, and improve IOTLB
+> > hits, because all
+> > slots of the TX ring buffer will use one single IOTLB slot.
+> >
+> > The second issue can be solved by tweaking a bit
+> > skb_page_frag_refill() to accept an additional parameter
+> > so that the whole skb payload fits in a single order-4 page.
+> >
+> >
