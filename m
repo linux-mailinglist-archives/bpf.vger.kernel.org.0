@@ -2,334 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF743F74BF
-	for <lists+bpf@lfdr.de>; Wed, 25 Aug 2021 14:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406763F74D2
+	for <lists+bpf@lfdr.de>; Wed, 25 Aug 2021 14:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240348AbhHYMFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Aug 2021 08:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35602 "EHLO
+        id S240501AbhHYMLO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Aug 2021 08:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232681AbhHYMFr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Aug 2021 08:05:47 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9BCC061757;
-        Wed, 25 Aug 2021 05:05:01 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id y23so22845400pgi.7;
-        Wed, 25 Aug 2021 05:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5QSiBXeq3/LnPdKRh6dpjgFPvUTy6ZP5LQTegDoZrYI=;
-        b=p6f55rdw/Sra6W2SJ3m//Tlt8dyIpKuz/alKYmQdJvG80/0EkuuilCD57wrXV1JtJq
-         bhucdLhDzrJuO2lIOH32K024VjjnXP04O3/wUzjdUBCfwN57isPWPuFmE9XyEBEAHS5F
-         nzW0tTEoFne2w740PgQW8vZuSVxe3VZJn+OnyNyJD8iSmtDAxfbJFGXthVAxugUBjVuu
-         SyszLSLh28tPVoAkNLtaSET+mgEMnMTmlT6DgbnaDmKDCWcofLmdscjD+mtELbP5q9Au
-         SFMjMbaI3iUaMbb/6j91QcQYkhsEbWhjGjPjVu9m3Awh+fdcJtTnX+y6PVUJxKIe/5vE
-         lU1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5QSiBXeq3/LnPdKRh6dpjgFPvUTy6ZP5LQTegDoZrYI=;
-        b=uUzC6UTtqjofUHIYqPRErj2tTuyRxVvypObhY5dz5EA+kJcQSVBusVo0JlYdweE6W9
-         OY62OSt7iENiopmFc3VonBmjEy9tdnFv0FO1O6eIDrv6cVOeD4ulkAXvIaemFSkZjHFn
-         WmqBJkH1Et4hor0EMhUFnpqWkNvf+oJSkkopdGZ0nYNhPgE/S0QYLqqypfwr7Yiz6Ezz
-         WxTZ+u2oYhgLp2G1fdcczbHREHCwkPrXl3jTTSlPVEibTKBp/6qGVw6ZVnX18LQ6F2ud
-         7yS2SnK0KL02QxnqkImbTdjTztnpNxUyHepW3PvSppzTQsrvEx7tvlGdwDz9kBqrhTRt
-         s9Cg==
-X-Gm-Message-State: AOAM531olgoKcYGyQBQO4vvr5aUaQYru1rNK5I09hLiTNGDE9DtjvKXY
-        TC+26hADbt7qbwSgJaWWw+c=
-X-Google-Smtp-Source: ABdhPJzmb8LykImBmLRhUPGhHuRWPVZG7iudemCexh5Jpdou7SC8UGrZ/X6xuRz1G4TQtzJFW0n7uQ==
-X-Received: by 2002:aa7:83d8:0:b0:3ef:990f:5525 with SMTP id j24-20020aa783d8000000b003ef990f5525mr2795407pfn.29.1629893101478;
-        Wed, 25 Aug 2021 05:05:01 -0700 (PDT)
-Received: from localhost.localdomain ([154.86.159.245])
-        by smtp.gmail.com with ESMTPSA id x19sm22202342pfa.104.2021.08.25.05.04.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 25 Aug 2021 05:05:01 -0700 (PDT)
-From:   kerneljasonxing@gmail.com
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kerneljasonxing@gmail.com, Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Subject: [PATCH v2] ixgbe: let the xdpdrv work with more than 64 cpus
-Date:   Wed, 25 Aug 2021 20:02:41 +0800
-Message-Id: <20210825120241.7389-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <CAL+tcoDUhZfy3NTx4TOv3wa1f8SMkNhzNpVS5qyySaVOm6L-qQ@mail.gmail.com>
-References: <CAL+tcoDUhZfy3NTx4TOv3wa1f8SMkNhzNpVS5qyySaVOm6L-qQ@mail.gmail.com>
+        with ESMTP id S232681AbhHYMLO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Aug 2021 08:11:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75392C061757;
+        Wed, 25 Aug 2021 05:10:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8QAd+m0xXfOgmAHHNjQ6ok1qU8bS1qOWA/P3vU/O1ws=; b=VzWYxZTzWbuE97q7cLTQ5kB/Ox
+        HI8EbLyKbcWCpaEZUbwrZ/Ukr+X9SFI5XsMeCfGe3ZTupkvXKa8c/Ig1k0FUpPWRMmdq+IOmP6Um5
+        wlabmLfmjpCJ6PYPexvn+abWnq3U+kt5OZ/HxqGKJi8JN3YWMwHpl0/HxUZjDtGAQOlh+vtBkg2ho
+        eZOh00zFu6FTeeQ0wYLZ87xKlhEYmmp/g7YHf2LiWodg4fwjsez0rLHgrGsbQ7CSonG/1S2afrJj+
+        H8qVzUNgNAUZHhgnhgjWZUhidrjabbr8AHH0jTfhZ25SyGDGwvvsKIdzWfVarkrrk7xB8te3K2PPy
+        J2tgIAxw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIrid-00CH69-WD; Wed, 25 Aug 2021 12:09:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 832E4300252;
+        Wed, 25 Aug 2021 14:09:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 61004200E4A29; Wed, 25 Aug 2021 14:09:23 +0200 (CEST)
+Date:   Wed, 25 Aug 2021 14:09:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mingo@redhat.com, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <YSYy87ta1GpXCCzk@hirez.programming.kicks-ass.net>
+References: <20210824060157.3889139-1-songliubraving@fb.com>
+ <20210824060157.3889139-2-songliubraving@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824060157.3889139-2-songliubraving@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jason Xing <xingwanli@kuaishou.com>
+On Mon, Aug 23, 2021 at 11:01:55PM -0700, Song Liu wrote:
 
-Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
-server is equipped with more than 64 cpus online. So it turns out that
-the loading of xdpdrv causes the "NOMEM" failure.
+>  arch/x86/events/intel/core.c |  5 ++++-
+>  arch/x86/events/intel/lbr.c  | 12 ++++++++++++
+>  arch/x86/events/perf_event.h |  2 ++
+>  include/linux/perf_event.h   | 33 +++++++++++++++++++++++++++++++++
+>  kernel/events/core.c         | 28 ++++++++++++++++++++++++++++
+>  5 files changed, 79 insertions(+), 1 deletion(-)
 
-Actually, we can adjust the algorithm and then make it work through
-mapping the current cpu to some xdp ring with the protect of @tx_lock.
+No PowerPC support :/
 
-Considering the performance of xdpdrv mode, I add another limit like ice
-driver where the number of cpus should be within the twice of
-MAX_XDP_QUEUES.
+> +void intel_pmu_snapshot_branch_stack(void)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +
+> +	intel_pmu_lbr_disable_all();
+> +	intel_pmu_lbr_read();
+> +	memcpy(this_cpu_ptr(&perf_branch_snapshot_entries), cpuc->lbr_entries,
+> +	       sizeof(struct perf_branch_entry) * x86_pmu.lbr_nr);
+> +	*this_cpu_ptr(&perf_branch_snapshot_size) = x86_pmu.lbr_nr;
+> +	intel_pmu_lbr_enable_all(false);
+> +}
 
-v2:
-- Adjust cpu id in ixgbe_xdp_xmit(). (Jesper)
-- Add a fallback path. (Maciej)
-- Adjust other parts related to xdp ring.
+Still has the layering violation and issues vs PMI.
 
-Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
-Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
----
- drivers/net/ethernet/intel/ixgbe/ixgbe.h      | 11 +++++
- drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  |  6 ++-
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 63 ++++++++++++++++++++-------
- drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 15 ++++---
- 4 files changed, 72 insertions(+), 23 deletions(-)
+> +#ifdef CONFIG_HAVE_STATIC_CALL
+> +DECLARE_STATIC_CALL(perf_snapshot_branch_stack,
+> +		    perf_default_snapshot_branch_stack);
+> +#else
+> +extern void (*perf_snapshot_branch_stack)(void);
+> +#endif
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-index a604552..466b2b0 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-@@ -82,6 +82,8 @@
- #define IXGBE_2K_TOO_SMALL_WITH_PADDING \
- ((NET_SKB_PAD + IXGBE_RXBUFFER_1536) > SKB_WITH_OVERHEAD(IXGBE_RXBUFFER_2K))
- 
-+DECLARE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
-+
- static inline int ixgbe_compute_pad(int rx_buf_len)
- {
- 	int page_size, pad_size;
-@@ -351,6 +353,7 @@ struct ixgbe_ring {
- 	};
- 	u16 rx_offset;
- 	struct xdp_rxq_info xdp_rxq;
-+	spinlock_t tx_lock;	/* used in XDP mode */
- 	struct xsk_buff_pool *xsk_pool;
- 	u16 ring_idx;		/* {rx,tx,xdp}_ring back reference idx */
- 	u16 rx_buf_len;
-@@ -772,6 +775,14 @@ struct ixgbe_adapter {
- #endif /* CONFIG_IXGBE_IPSEC */
- };
- 
-+static inline int ixgbe_determine_xdp_cpu(int cpu)
-+{
-+	if (static_key_enabled(&ixgbe_xdp_locking_key))
-+		return cpu % MAX_XDP_QUEUES;
-+	else
-+		return cpu;
-+}
-+
- static inline u8 ixgbe_max_rss_indices(struct ixgbe_adapter *adapter)
- {
- 	switch (adapter->hw.mac.type) {
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-index 0218f6c..d6b58e1 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-@@ -299,7 +299,7 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
- 
- static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
- {
--	return adapter->xdp_prog ? nr_cpu_ids : 0;
-+	return adapter->xdp_prog ? min_t(int, MAX_XDP_QUEUES, nr_cpu_ids) : 0;
- }
- 
- #define IXGBE_RSS_64Q_MASK	0x3F
-@@ -947,6 +947,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
- 		ring->count = adapter->tx_ring_count;
- 		ring->queue_index = xdp_idx;
- 		set_ring_xdp(ring);
-+		spin_lock_init(&ring->tx_lock);
- 
- 		/* assign ring to adapter */
- 		WRITE_ONCE(adapter->xdp_ring[xdp_idx], ring);
-@@ -1032,6 +1033,9 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
- 	adapter->q_vector[v_idx] = NULL;
- 	__netif_napi_del(&q_vector->napi);
- 
-+	if (static_key_enabled(&ixgbe_xdp_locking_key))
-+		static_branch_dec(&ixgbe_xdp_locking_key);
-+
- 	/*
- 	 * after a call to __netif_napi_del() napi may still be used and
- 	 * ixgbe_get_stats64() might access the rings on this vector,
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 14aea40..4c94577 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -165,6 +165,9 @@ static int ixgbe_notify_dca(struct notifier_block *, unsigned long event,
- MODULE_DESCRIPTION("Intel(R) 10 Gigabit PCI Express Network Driver");
- MODULE_LICENSE("GPL v2");
- 
-+DEFINE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
-+EXPORT_SYMBOL(ixgbe_xdp_locking_key);
-+
- static struct workqueue_struct *ixgbe_wq;
- 
- static bool ixgbe_check_cfg_remove(struct ixgbe_hw *hw, struct pci_dev *pdev);
-@@ -2422,13 +2425,14 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
- 		xdp_do_flush_map();
- 
- 	if (xdp_xmit & IXGBE_XDP_TX) {
--		struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
-+		int cpu = ixgbe_determine_xdp_cpu(smp_processor_id());
-+		struct ixgbe_ring *ring = adapter->xdp_ring[cpu];
- 
--		/* Force memory writes to complete before letting h/w
--		 * know there are new descriptors to fetch.
--		 */
--		wmb();
--		writel(ring->next_to_use, ring->tail);
-+		if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+			spin_lock(&ring->tx_lock);
-+		ixgbe_xdp_ring_update_tail(ring);
-+		if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+			spin_unlock(&ring->tx_lock);
- 	}
- 
- 	u64_stats_update_begin(&rx_ring->syncp);
-@@ -8539,21 +8543,33 @@ static u16 ixgbe_select_queue(struct net_device *dev, struct sk_buff *skb,
- int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
- 			struct xdp_frame *xdpf)
- {
--	struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
-+	struct ixgbe_ring *ring;
- 	struct ixgbe_tx_buffer *tx_buffer;
- 	union ixgbe_adv_tx_desc *tx_desc;
- 	u32 len, cmd_type;
- 	dma_addr_t dma;
- 	u16 i;
-+	int cpu;
-+	int ret;
- 
- 	len = xdpf->len;
- 
--	if (unlikely(!ixgbe_desc_unused(ring)))
--		return IXGBE_XDP_CONSUMED;
-+	cpu = ixgbe_determine_xdp_cpu(smp_processor_id());
-+	ring = adapter->xdp_ring[cpu];
-+
-+	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+		spin_lock(&ring->tx_lock);
-+
-+	if (unlikely(!ixgbe_desc_unused(ring))) {
-+		ret = IXGBE_XDP_CONSUMED;
-+		goto out;
-+	}
- 
- 	dma = dma_map_single(ring->dev, xdpf->data, len, DMA_TO_DEVICE);
--	if (dma_mapping_error(ring->dev, dma))
--		return IXGBE_XDP_CONSUMED;
-+	if (dma_mapping_error(ring->dev, dma)) {
-+		ret = IXGBE_XDP_CONSUMED;
-+		goto out;
-+	}
- 
- 	/* record the location of the first descriptor for this packet */
- 	tx_buffer = &ring->tx_buffer_info[ring->next_to_use];
-@@ -8590,7 +8606,11 @@ int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
- 	tx_buffer->next_to_watch = tx_desc;
- 	ring->next_to_use = i;
- 
--	return IXGBE_XDP_TX;
-+	ret = IXGBE_XDP_TX;
-+out:
-+	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+		spin_unlock(&ring->tx_lock);
-+	return ret;
- }
- 
- netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
-@@ -10130,8 +10150,13 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
- 			return -EINVAL;
- 	}
- 
--	if (nr_cpu_ids > MAX_XDP_QUEUES)
-+	/* if the number of cpus is much larger than the maximum of queues,
-+	 * we should stop it and then return with NOMEM like before!
-+	 */
-+	if (nr_cpu_ids > MAX_XDP_QUEUES * 2)
- 		return -ENOMEM;
-+	else if (nr_cpu_ids > MAX_XDP_QUEUES)
-+		static_branch_inc(&ixgbe_xdp_locking_key);
- 
- 	old_prog = xchg(&adapter->xdp_prog, prog);
- 	need_reset = (!!prog != !!old_prog);
-@@ -10201,6 +10226,7 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
- 	struct ixgbe_adapter *adapter = netdev_priv(dev);
- 	struct ixgbe_ring *ring;
- 	int nxmit = 0;
-+	int cpu;
- 	int i;
- 
- 	if (unlikely(test_bit(__IXGBE_DOWN, &adapter->state)))
-@@ -10209,10 +10235,12 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
- 
-+	cpu = ixgbe_determine_xdp_cpu(smp_processor_id());
-+
- 	/* During program transitions its possible adapter->xdp_prog is assigned
- 	 * but ring has not been configured yet. In this case simply abort xmit.
- 	 */
--	ring = adapter->xdp_prog ? adapter->xdp_ring[smp_processor_id()] : NULL;
-+	ring = adapter->xdp_prog ? adapter->xdp_ring[cpu] : NULL;
- 	if (unlikely(!ring))
- 		return -ENXIO;
- 
-@@ -10229,8 +10257,13 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
- 		nxmit++;
- 	}
- 
--	if (unlikely(flags & XDP_XMIT_FLUSH))
-+	if (unlikely(flags & XDP_XMIT_FLUSH)) {
-+		if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+			spin_lock(&ring->tx_lock);
- 		ixgbe_xdp_ring_update_tail(ring);
-+		if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+			spin_unlock(&ring->tx_lock);
-+	}
- 
- 	return nxmit;
- }
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-index b1d22e4..e9ce6c1 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-@@ -334,13 +334,14 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
- 		xdp_do_flush_map();
- 
- 	if (xdp_xmit & IXGBE_XDP_TX) {
--		struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
--
--		/* Force memory writes to complete before letting h/w
--		 * know there are new descriptors to fetch.
--		 */
--		wmb();
--		writel(ring->next_to_use, ring->tail);
-+		int cpu = ixgbe_determine_xdp_cpu(smp_processor_id());
-+		struct ixgbe_ring *ring = adapter->xdp_ring[cpu];
-+
-+		if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+			spin_lock(&ring->tx_lock);
-+		ixgbe_xdp_ring_update_tail(ring);
-+		if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+			spin_unlock(&ring->tx_lock);
- 	}
- 
- 	u64_stats_update_begin(&rx_ring->syncp);
--- 
-1.8.3.1
+That's weird, static call should work unconditionally, and fall back to
+a regular function pointer exactly like you do here. Search for:
+"Generic Implementation" in include/linux/static_call.h
+
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 011cc5069b7ba..b42cc20451709 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+
+> +#ifdef CONFIG_HAVE_STATIC_CALL
+> +DEFINE_STATIC_CALL(perf_snapshot_branch_stack,
+> +		   perf_default_snapshot_branch_stack);
+> +#else
+> +void (*perf_snapshot_branch_stack)(void) = perf_default_snapshot_branch_stack;
+> +#endif
+
+Idem.
+
+Something like:
+
+DEFINE_STATIC_CALL_NULL(perf_snapshot_branch_stack, void (*)(void));
+
+with usage like: static_call_cond(perf_snapshot_branch_stack)();
+
+Should unconditionally work.
+
+> +int perf_read_branch_snapshot(void *buf, size_t len)
+> +{
+> +	int cnt;
+> +
+> +	memcpy(buf, *this_cpu_ptr(&perf_branch_snapshot_entries),
+> +	       min_t(u32, (u32)len,
+> +		     sizeof(struct perf_branch_entry) * MAX_BRANCH_SNAPSHOT));
+> +	cnt =  *this_cpu_ptr(&perf_branch_snapshot_size);
+> +
+> +	return (cnt > 0) ? cnt : -EOPNOTSUPP;
+> +}
+
+Doesn't seem used at all..
 
