@@ -2,379 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E451E3F89F0
-	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 16:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0DD3F8AF1
+	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 17:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242850AbhHZORX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Aug 2021 10:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242831AbhHZORW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Aug 2021 10:17:22 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A8DC061757;
-        Thu, 26 Aug 2021 07:16:35 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id e16so2457579pfc.6;
-        Thu, 26 Aug 2021 07:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gIXILh4u2/FJCokufiuXl0tfuBYGsQ0FmXdZ0Qs3mto=;
-        b=hkvrV6YarL0j8r1toU/qzUgaUsgXuLlykVRiYhQQdhZ8FjSbGep0du+7aG/hfmUG4f
-         yr7SyQvM3QAhm7wFaMeZekS3yZDAxHeaeMtZMJUZ4vQI1buGSRLoXoIBt3C9pRRNeNkw
-         atW6qe5jhJ0490LYsPi524E+h2rXNI1lTcBXzqVMcPL4qCEi5wo6B4cewx1Kh9qLq+el
-         yBxLnD6kWPwnKAo+SvvilPBADdVZH0A6mj4oonYkHsRPUgHz58OXIWdmT3ls7IchGCEH
-         +TbYzJVv1H0ggCZYfw7DAuzGqeEWejF4JeEK024sO1QcnwWLznm2Dos5QOwufB4HTXIt
-         +tuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gIXILh4u2/FJCokufiuXl0tfuBYGsQ0FmXdZ0Qs3mto=;
-        b=Ckoj/zJo7P0PRONrdtzXdFZ3oaQILRS2KxcHuIkh7Kyrvio1lunoYVf/Y9uVAiWtRd
-         89ca3+u6VfR6CkFskJo7yAdueu6SVCjhtz1r5+XMByj3WF0GKeMIdYhYXd2014C6LN5u
-         v2+kIov7c/QB+BbFtOGOGfLKAoTutBRL/CYvwUs9gYDgFZ+XdaQNMo6kDKQ0fVfhmSCD
-         o5yhBGFAE6ECRPEOW2+xEnpxsxL5dSaIYGCEpeRqSO25nML1KQffnWDiiz0EdPwATdPp
-         23WjPZdLK9Ggw6LcrJVsguwqpNBPTG0nfsn0JzCcM5jwKHULb5oHRu0MbjkHP6dI2JdC
-         Hc7g==
-X-Gm-Message-State: AOAM533szS8CiZ8re38J6Xh4bmwj5IzNCuFVn0tRIRhfTh5eSpWaCD0v
-        II1aUxgSeuIDFOB6G309eXk=
-X-Google-Smtp-Source: ABdhPJxP2q9DCPvlhXW+JY46EkjK7LYWgh6k9dQPSm+UnXsSfEw2c9QhIP0879zZOQ06taDDU7MPKg==
-X-Received: by 2002:aa7:8e56:0:b029:3cd:c2ec:6c1c with SMTP id d22-20020aa78e560000b02903cdc2ec6c1cmr3841529pfr.80.1629987394953;
-        Thu, 26 Aug 2021 07:16:34 -0700 (PDT)
-Received: from localhost.localdomain ([162.219.34.246])
-        by smtp.gmail.com with ESMTPSA id 64sm3255782pfy.114.2021.08.26.07.16.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 26 Aug 2021 07:16:34 -0700 (PDT)
-From:   kerneljasonxing@gmail.com
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kerneljasonxing@gmail.com, Jason Xing <xingwanli@kuaishou.com>,
+        id S242911AbhHZPYk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Aug 2021 11:24:40 -0400
+Received: from mga11.intel.com ([192.55.52.93]:5278 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230203AbhHZPYk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Aug 2021 11:24:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="214638360"
+X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
+   d="scan'208";a="214638360"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 08:23:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,353,1620716400"; 
+   d="scan'208";a="643895714"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga005.jf.intel.com with ESMTP; 26 Aug 2021 08:23:51 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Thu, 26 Aug 2021 08:23:51 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Thu, 26 Aug 2021 08:23:51 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Thu, 26 Aug 2021 08:23:51 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Thu, 26 Aug 2021 08:23:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MX0Gs5Qm2dPAy/8qAgjmmuanMXr9Hs5rccXts85uaT5UImdVp5H8iTu2oBTk+4xuu3vhi/oMkZja07hILBNU7xNpT8E0Fhc6HCqReAzUF522JHukoQpDWHipNPxnbSsV5ap5UQ5PHE67qlaoKo4MDX0Fol/9Q82Raizd6o0PhCYt+g1Fwi69XvF/qGYz45flkBA/yCcVPbIkBSXcirsY57JkVdfMnVxqGp0HUXuD6Bddv8UkQqBZaKy14bBX1zCdNpTtPpD9qo2uWZdf27GmY0Q/VjXN+irUft9f+uAKJyG/HAM3eWo5ACJkhzbpC5t10o4clJ7e0oyxaVPwZQa8cA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n5D6t6s3ISKzZ9mpgjS1BVGqQyfQUijb6dhAQYtluJE=;
+ b=KmqSnWZTpCYfgMCfJcmlWQ3JNEue02oJvfkmSTslwTFFyEyEmAFu+/1MpN4t0Geh71aIk+sW22c5JUA63d7NjcfP7ly0sobY20plyIAv2E2gc52DClFNf+4ZVYDJUz1mWT4UeHDA5b6sE6EOtujGXnPUgiah05jMJ13kQgChi7/CQ4oMaYVtdCLXCVNRSGZKkFe0FHOB4bAkSZVBdTYZDScPqNHnT972r0aoqG59XX+fv6EHQweHB2YISFCcixovxWuzMd2aaULu2EuaQh/RgcKmPhXUxyaRdQyohB/vci4F3+Yro/N6v/LC2Ky6LAmjbvlO8cWu/iCS+EGlC4pnYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n5D6t6s3ISKzZ9mpgjS1BVGqQyfQUijb6dhAQYtluJE=;
+ b=lF+4eUw34zLVPmq/RvxcXPiARu6jnhtFg40BCFu/tiVdx3zCZpWuSbdgAZ7tDRC56MJsy57PLw3hkK3h9LoZ6Kyce0SFR+PE2KmC7jI2bsTRm1zjjDLe9H8G/+LBFcRSkRqokNy6c49Bcb/SdxgebUELVFU8+w/yYymaLH4IVds=
+Authentication-Results: kuaishou.com; dkim=none (message not signed)
+ header.d=none;kuaishou.com; dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB4914.namprd11.prod.outlook.com (2603:10b6:303:90::24)
+ by MWHPR11MB1437.namprd11.prod.outlook.com (2603:10b6:301:a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18; Thu, 26 Aug
+ 2021 15:23:49 +0000
+Received: from CO1PR11MB4914.namprd11.prod.outlook.com
+ ([fe80::45e:286f:64a1:1710]) by CO1PR11MB4914.namprd11.prod.outlook.com
+ ([fe80::45e:286f:64a1:1710%9]) with mapi id 15.20.4415.027; Thu, 26 Aug 2021
+ 15:23:49 +0000
+To:     <kerneljasonxing@gmail.com>, <anthony.l.nguyen@intel.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <andrii@kernel.org>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <kpsingh@kernel.org>
+CC:     <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Jason Xing <xingwanli@kuaishou.com>,
         Shujin Li <lishujin@kuaishou.com>
-Subject: [PATCH v4] ixgbe: let the xdpdrv work with more than 64 cpus
-Date:   Thu, 26 Aug 2021 22:16:23 +0800
-Message-Id: <20210826141623.8151-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-MIME-Version: 1.0
+References: <20210826141623.8151-1-kerneljasonxing@gmail.com>
+From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
+Subject: Re: [PATCH v4] ixgbe: let the xdpdrv work with more than 64 cpus
+Message-ID: <d15a1f43-3fea-b798-7848-61faf3ca1e8c@intel.com>
+Date:   Thu, 26 Aug 2021 08:23:46 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20210826141623.8151-1-kerneljasonxing@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MWHPR2201CA0043.namprd22.prod.outlook.com
+ (2603:10b6:301:16::17) To CO1PR11MB4914.namprd11.prod.outlook.com
+ (2603:10b6:303:90::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.214] (50.39.107.76) by MWHPR2201CA0043.namprd22.prod.outlook.com (2603:10b6:301:16::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Thu, 26 Aug 2021 15:23:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e2a444cc-37f4-465c-fcaf-08d968a58105
+X-MS-TrafficTypeDiagnostic: MWHPR11MB1437:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR11MB14377C7B1518784BC63921C997C79@MWHPR11MB1437.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LPMuh/zaMxMQtkb8Oodv6BbaM3bwZD9b1fk2WCJzQQlv8k4yRojVRfx5MyTBd35U3RhEN6tceGkKKUlE8w5jrgeckpkoTx4Wx++3Lc02B7ItsNuOiRNcNiHGpQ0q1aJZyfry7dq9XQ5Nug3NGb/+z38c7rMHOOFCKw8gjA7S+zibs3Q7Ys6K8zwGnIvbsaJuJ0pkJ2pB5xisWjQk47LfMjw/jlt8eBhbBWYjA1/YSz6JjyZbOK2uQjDMC43NrEUgfcU6tUS2JgK7W38YzgstwC1foy6fa+tzv9SI1NSBKqtgq1IzhnyQWJO/qjYEe3EgMVgh3h9tTu4RPsjSbq9m22lg6qx/ueFetxDw46Yn0+XyjMolAk9lmlij0tlowOfZ8t3oNDAMwnJMRFf2BErdecbL1opv3qFCqUdbsKx/JGoh+wvDX8HRhbyV1VA6MlEjQkF2J+N5tHflKRy/B5Gb+hy+1EsUnpNbSShQRBX2yP02Wmy7o5B95jspVNjd/gmgHNpPwrLFcUABqE659HZqhY5mFAm8VJrRHsCkEGHc+sTWmBk4mAwkXifvbqeDq485wGByilUdWqGHpiOyQJKWtF2tAXuJaOHDMFEug9sIbgwVH6Iyfrhr0sjvokEedhc+hUEyuMEyUEfJDXbAcs2eYKz8X2lsvgW87vGuWuegwJgis/XG9lD097XUvB6sZIz+40odwFxVbdzSOQCJGRhIkb//4Xdc7hGMLprU7MmuYT6vDbecZrgJkOE/oV/YINQOM024FA4L+om5jXICXsWHhA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(921005)(53546011)(7416002)(38100700002)(186003)(31686004)(36756003)(508600001)(26005)(956004)(83380400001)(6486002)(2616005)(316002)(66476007)(4326008)(2906002)(54906003)(31696002)(8676002)(5660300002)(66946007)(66556008)(6666004)(16576012)(44832011)(8936002)(40753002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WmJidlJDNkRDdHJPam1vUi9RcjB0ZnNtOHNuZmFHNWhTTFMweS90Nk1MKzl4?=
+ =?utf-8?B?dkYzeDhKVXZLY1cwdFNxRFUxTlZheUtPdHdRNnBPTVg5TkQ3alBtVHpZKzlv?=
+ =?utf-8?B?Ynp0TWdNTjNBcmd6cVR3NjB1WUc4dUxXR2JLSjVhK3RxTGhhQ2ExV2lKSDlF?=
+ =?utf-8?B?VXpaYmNZQ0JXbkQ0KzNqLzg5a2xJbVV5eUE3N1NuYStGeHNYNzM2d0g1Sjhs?=
+ =?utf-8?B?S3ltOUEwQVgrblU0U3V3MTlydWEvU09kd3ZPOU13L2NuRWJOcHhPUHdubGIx?=
+ =?utf-8?B?eDh5QXBQaisxK054aXFmZjFWcTM2RnZFdisrSEtKMmx2RkFYYnVZdzNBRUsw?=
+ =?utf-8?B?enViZmUvN0Z5QlYybFlqVTB5WHpFemRSRndFL21WK2RxQWVkdjBwa05FRUVJ?=
+ =?utf-8?B?MFVUQ1NHS28wMUpJWjZzKzdYOVZtVWNLYUVEM1p3ZEI2cWNKVlVOdzE5MjBn?=
+ =?utf-8?B?QWR5WTBLZGdoUnYrOVpZajJoa1RQcTJWcFV6ZUd6QzM3RUY3UmIxcDVnbHdt?=
+ =?utf-8?B?QWlxSmtHV0FERll0NW12SDhaTVlLMk0rKzk4eTlJT3BoZXpzTnVmcmx4RTJH?=
+ =?utf-8?B?L1lJek1YS0lmdUlBWldKaTlBNis4QXJoY3FTVXZ1Z2creHY3ODBxSDFtZ21t?=
+ =?utf-8?B?ZjRDaXRTMHdib2puVHNzbitYTW4yQWJ4YlB6eUtUMFhjN0Evek8vSUNPekJl?=
+ =?utf-8?B?aVVrYkk5SG9kZ1JlTjJLVWtFYjJ3SVlBYmN2c29udGJUNkpVaDBrRmVKbnJl?=
+ =?utf-8?B?aWJMVjRJU2tOeUlzLzhFYUtOSkRqbVVid0pUNFpSdnorSWRzaEtwTDk1ZnJs?=
+ =?utf-8?B?bmtuTitEZHdQemRXQUc0UW5sVUVHeWNjVEdFTER1cmRyYkZ6SVB5L0VHQVVx?=
+ =?utf-8?B?UDRmTGVuWTFYNTZMbkdMZjlxK3Z5OUROd3REcUo2MithZ3R6a2ViSHBiTUQ1?=
+ =?utf-8?B?NDhZQ2FYNWxRazA3WmpoUmF5Z01PSkVodzVUYVNwRm91cjVlOGNHL1lUc3J1?=
+ =?utf-8?B?dEh3aUNYN3lkOC9nM1hpa2JSK2g2UHovL3pHNXBLeHhjRXB0UExQc1hTQ2JE?=
+ =?utf-8?B?S09TYkVOR3BybVRSOFd0OGZCd0RoV3E4WWlLYnA3VjNUNWVQS213UXVYWGRi?=
+ =?utf-8?B?NE9jcDFWNEEwSGUrdnNOeTlmUUNCaDFsbmZRMG5WZml5NnJhUnhXN2FxZFdF?=
+ =?utf-8?B?RVJrOHArc0RaODJCZGxDRjJoR2xTRUIzNzNoaDZvdm1zRkRrak9XdlR4TkhT?=
+ =?utf-8?B?dE1BOUhMQjEvWnp4VFZyYkIxeUZ2cStrYXk1WTArU2d1MXY3dmIybU9xcnpJ?=
+ =?utf-8?B?ZmdwcVhJMXExNCtYQzhjUUZmNGJMZkpDYkRBMXlvR3lDeTZTWjZ3ZlAxTGd0?=
+ =?utf-8?B?UG9saTFaMkhvaHF6WUJXL2JMVk5EZmRwV2tMUDJ0YXg2dkZsczZYVUtHbnpU?=
+ =?utf-8?B?ZG11TTR5aDlnWmx3Rmx1VitHd1c0YTJIWk9wemQ1OTVwOWc0QVpMMytERlZv?=
+ =?utf-8?B?VkdMd3BLTUFhWE03T0NuTngxZXJTb3cyODV6Ulh6NzJzUVUwdzRLYTl6QTM5?=
+ =?utf-8?B?NGNEYUF3R2ZqL1F3SHRZeXJVbDJyd2krTFdlVHhUWkJ6bmRrTXhYOWR6ckQ0?=
+ =?utf-8?B?Y0JQc25FeGUxb1B1MDFpVzU5KzR4bXdORmhhalV5V3I3bmdGTU9FeVhNcUI1?=
+ =?utf-8?B?ZXVyN1Rxb242VGVSUTc1QWpSbnhEd0xmTzd1ZkxscHU4dW95VjlOd2VyUkpD?=
+ =?utf-8?Q?g55ppxtNUmJQ3+2xmTwld9/IRdOR1vSWWdHSl3n?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2a444cc-37f4-465c-fcaf-08d968a58105
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4914.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2021 15:23:49.4326
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /fgj0ZtCzaYqNoeXn2Q2Bmo+8Otab7kj+hfPQNTWMpdf2DT2FE5NHNmB5HvqyGBCsrN8v0EwesYz33BoDQLqUaOrBQc2Ig+WOPXqNnXGtqA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1437
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jason Xing <xingwanli@kuaishou.com>
+On 8/26/2021 7:16 AM, kerneljasonxing@gmail.com wrote:
+> From: Jason Xing <xingwanli@kuaishou.com>
+> 
+> Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
+> server is equipped with more than 64 cpus online. So it turns out that
+> the loading of xdpdrv causes the "NOMEM" failure.
+> 
+> Actually, we can adjust the algorithm and then make it work through
+> mapping the current cpu to some xdp ring with the protect of @tx_lock.
 
-Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
-server is equipped with more than 64 cpus online. So it turns out that
-the loading of xdpdrv causes the "NOMEM" failure.
+Thank you very much for working on this!
 
-Actually, we can adjust the algorithm and then make it work through
-mapping the current cpu to some xdp ring with the protect of @tx_lock.
+you should put your sign off block here, and then end with a triple-dash
+"---"
 
-v4:
-- Update the wrong commit messages. (Jason)
+then have your vN: updates below that, so they will be dropped from
+final git apply. It's ok to have more than one triple-dash.
 
-v3:
-- Change nr_cpu_ids to num_online_cpus() (Maciej)
-- Rename MAX_XDP_QUEUES to IXGBE_MAX_XDP_QS (Maciej)
-- Rename ixgbe_determine_xdp_cpu() to ixgbe_determine_xdp_q_idx() (Maciej)
-- Wrap ixgbe_xdp_ring_update_tail() with lock into one function (Maciej)
+> 
+> v4:
+> - Update the wrong commit messages. (Jason)
+> 
+> v3:
+> - Change nr_cpu_ids to num_online_cpus() (Maciej)
+> - Rename MAX_XDP_QUEUES to IXGBE_MAX_XDP_QS (Maciej)
+> - Rename ixgbe_determine_xdp_cpu() to ixgbe_determine_xdp_q_idx() (Maciej)
+> - Wrap ixgbe_xdp_ring_update_tail() with lock into one function (Maciej)
+> 
+> v2:
+> - Adjust cpu id in ixgbe_xdp_xmit(). (Jesper)
+> - Add a fallback path. (Maciej)
+> - Adjust other parts related to xdp ring.
+> 
+> Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
+> Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> ---
+>  drivers/net/ethernet/intel/ixgbe/ixgbe.h           | 15 ++++-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c       |  9 ++-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      | 64 ++++++++++++++++------
+>  .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |  1 +
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  9 +--
+>  5 files changed, 73 insertions(+), 25 deletions(-)
 
-v2:
-- Adjust cpu id in ixgbe_xdp_xmit(). (Jesper)
-- Add a fallback path. (Maciej)
-- Adjust other parts related to xdp ring.
+...
 
-Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
-Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
----
- drivers/net/ethernet/intel/ixgbe/ixgbe.h           | 15 ++++-
- drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c       |  9 ++-
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      | 64 ++++++++++++++++------
- .../net/ethernet/intel/ixgbe/ixgbe_txrx_common.h   |  1 +
- drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |  9 +--
- 5 files changed, 73 insertions(+), 25 deletions(-)
+> @@ -8539,21 +8539,32 @@ static u16 ixgbe_select_queue(struct net_device *dev, struct sk_buff *skb,
+>  int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
+>  			struct xdp_frame *xdpf)
+>  {
+> -	struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
+>  	struct ixgbe_tx_buffer *tx_buffer;
+>  	union ixgbe_adv_tx_desc *tx_desc;
+> +	struct ixgbe_ring *ring;
+>  	u32 len, cmd_type;
+>  	dma_addr_t dma;
+> +	int index, ret;
+>  	u16 i;
+>  
+>  	len = xdpf->len;
+>  
+> -	if (unlikely(!ixgbe_desc_unused(ring)))
+> -		return IXGBE_XDP_CONSUMED;
+> +	index = ixgbe_determine_xdp_q_idx(smp_processor_id());
+> +	ring = adapter->xdp_ring[index];
+> +
+> +	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
+> +		spin_lock(&ring->tx_lock);
+> +
+> +	if (unlikely(!ixgbe_desc_unused(ring))) {
+> +		ret = IXGBE_XDP_CONSUMED;
+> +		goto out;
+> +	}
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-index a604552..5f7f181 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-@@ -82,6 +82,8 @@
- #define IXGBE_2K_TOO_SMALL_WITH_PADDING \
- ((NET_SKB_PAD + IXGBE_RXBUFFER_1536) > SKB_WITH_OVERHEAD(IXGBE_RXBUFFER_2K))
- 
-+DECLARE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
-+
- static inline int ixgbe_compute_pad(int rx_buf_len)
- {
- 	int page_size, pad_size;
-@@ -351,6 +353,7 @@ struct ixgbe_ring {
- 	};
- 	u16 rx_offset;
- 	struct xdp_rxq_info xdp_rxq;
-+	spinlock_t tx_lock;	/* used in XDP mode */
- 	struct xsk_buff_pool *xsk_pool;
- 	u16 ring_idx;		/* {rx,tx,xdp}_ring back reference idx */
- 	u16 rx_buf_len;
-@@ -375,7 +378,7 @@ enum ixgbe_ring_f_enum {
- #define IXGBE_MAX_FCOE_INDICES		8
- #define MAX_RX_QUEUES			(IXGBE_MAX_FDIR_INDICES + 1)
- #define MAX_TX_QUEUES			(IXGBE_MAX_FDIR_INDICES + 1)
--#define MAX_XDP_QUEUES			(IXGBE_MAX_FDIR_INDICES + 1)
-+#define IXGBE_MAX_XDP_QS		(IXGBE_MAX_FDIR_INDICES + 1)
- #define IXGBE_MAX_L2A_QUEUES		4
- #define IXGBE_BAD_L2A_QUEUE		3
- #define IXGBE_MAX_MACVLANS		63
-@@ -629,7 +632,7 @@ struct ixgbe_adapter {
- 
- 	/* XDP */
- 	int num_xdp_queues;
--	struct ixgbe_ring *xdp_ring[MAX_XDP_QUEUES];
-+	struct ixgbe_ring *xdp_ring[IXGBE_MAX_XDP_QS];
- 	unsigned long *af_xdp_zc_qps; /* tracks AF_XDP ZC enabled rings */
- 
- 	/* TX */
-@@ -772,6 +775,14 @@ struct ixgbe_adapter {
- #endif /* CONFIG_IXGBE_IPSEC */
- };
- 
-+static inline int ixgbe_determine_xdp_q_idx(int cpu)
-+{
-+	if (static_key_enabled(&ixgbe_xdp_locking_key))
-+		return cpu % IXGBE_MAX_XDP_QS;
-+	else
-+		return cpu;
-+}
-+
- static inline u8 ixgbe_max_rss_indices(struct ixgbe_adapter *adapter)
- {
- 	switch (adapter->hw.mac.type) {
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-index 0218f6c..884bf99 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-@@ -299,7 +299,10 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
- 
- static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
- {
--	return adapter->xdp_prog ? nr_cpu_ids : 0;
-+	int queues;
-+
-+	queues = min_t(int, IXGBE_MAX_XDP_QS, num_online_cpus());
-+	return adapter->xdp_prog ? queues : 0;
- }
- 
- #define IXGBE_RSS_64Q_MASK	0x3F
-@@ -947,6 +950,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
- 		ring->count = adapter->tx_ring_count;
- 		ring->queue_index = xdp_idx;
- 		set_ring_xdp(ring);
-+		spin_lock_init(&ring->tx_lock);
- 
- 		/* assign ring to adapter */
- 		WRITE_ONCE(adapter->xdp_ring[xdp_idx], ring);
-@@ -1032,6 +1036,9 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
- 	adapter->q_vector[v_idx] = NULL;
- 	__netif_napi_del(&q_vector->napi);
- 
-+	if (static_key_enabled(&ixgbe_xdp_locking_key))
-+		static_branch_dec(&ixgbe_xdp_locking_key);
-+
- 	/*
- 	 * after a call to __netif_napi_del() napi may still be used and
- 	 * ixgbe_get_stats64() might access the rings on this vector,
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 14aea40..a878f40 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -165,6 +165,9 @@ static int ixgbe_notify_dca(struct notifier_block *, unsigned long event,
- MODULE_DESCRIPTION("Intel(R) 10 Gigabit PCI Express Network Driver");
- MODULE_LICENSE("GPL v2");
- 
-+DEFINE_STATIC_KEY_FALSE(ixgbe_xdp_locking_key);
-+EXPORT_SYMBOL(ixgbe_xdp_locking_key);
-+
- static struct workqueue_struct *ixgbe_wq;
- 
- static bool ixgbe_check_cfg_remove(struct ixgbe_hw *hw, struct pci_dev *pdev);
-@@ -2422,13 +2425,10 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
- 		xdp_do_flush_map();
- 
- 	if (xdp_xmit & IXGBE_XDP_TX) {
--		struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
-+		int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-+		struct ixgbe_ring *ring = adapter->xdp_ring[index];
- 
--		/* Force memory writes to complete before letting h/w
--		 * know there are new descriptors to fetch.
--		 */
--		wmb();
--		writel(ring->next_to_use, ring->tail);
-+		ixgbe_xdp_ring_update_tail_locked(ring);
- 	}
- 
- 	u64_stats_update_begin(&rx_ring->syncp);
-@@ -6320,7 +6320,7 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
- 	if (ixgbe_init_rss_key(adapter))
- 		return -ENOMEM;
- 
--	adapter->af_xdp_zc_qps = bitmap_zalloc(MAX_XDP_QUEUES, GFP_KERNEL);
-+	adapter->af_xdp_zc_qps = bitmap_zalloc(IXGBE_MAX_XDP_QS, GFP_KERNEL);
- 	if (!adapter->af_xdp_zc_qps)
- 		return -ENOMEM;
- 
-@@ -8539,21 +8539,32 @@ static u16 ixgbe_select_queue(struct net_device *dev, struct sk_buff *skb,
- int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
- 			struct xdp_frame *xdpf)
- {
--	struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
- 	struct ixgbe_tx_buffer *tx_buffer;
- 	union ixgbe_adv_tx_desc *tx_desc;
-+	struct ixgbe_ring *ring;
- 	u32 len, cmd_type;
- 	dma_addr_t dma;
-+	int index, ret;
- 	u16 i;
- 
- 	len = xdpf->len;
- 
--	if (unlikely(!ixgbe_desc_unused(ring)))
--		return IXGBE_XDP_CONSUMED;
-+	index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-+	ring = adapter->xdp_ring[index];
-+
-+	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+		spin_lock(&ring->tx_lock);
-+
-+	if (unlikely(!ixgbe_desc_unused(ring))) {
-+		ret = IXGBE_XDP_CONSUMED;
-+		goto out;
-+	}
- 
- 	dma = dma_map_single(ring->dev, xdpf->data, len, DMA_TO_DEVICE);
--	if (dma_mapping_error(ring->dev, dma))
--		return IXGBE_XDP_CONSUMED;
-+	if (dma_mapping_error(ring->dev, dma)) {
-+		ret = IXGBE_XDP_CONSUMED;
-+		goto out;
-+	}
- 
- 	/* record the location of the first descriptor for this packet */
- 	tx_buffer = &ring->tx_buffer_info[ring->next_to_use];
-@@ -8590,7 +8601,11 @@ int ixgbe_xmit_xdp_ring(struct ixgbe_adapter *adapter,
- 	tx_buffer->next_to_watch = tx_desc;
- 	ring->next_to_use = i;
- 
--	return IXGBE_XDP_TX;
-+	ret = IXGBE_XDP_TX;
-+out:
-+	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+		spin_unlock(&ring->tx_lock);
-+	return ret;
- }
- 
- netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
-@@ -10130,8 +10145,13 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
- 			return -EINVAL;
- 	}
- 
--	if (nr_cpu_ids > MAX_XDP_QUEUES)
-+	/* if the number of cpus is much larger than the maximum of queues,
-+	 * we should stop it and then return with NOMEM like before.
-+	 */
-+	if (num_online_cpus() > IXGBE_MAX_XDP_QS * 2)
- 		return -ENOMEM;
-+	else if (num_online_cpus() > IXGBE_MAX_XDP_QS)
-+		static_branch_inc(&ixgbe_xdp_locking_key);
- 
- 	old_prog = xchg(&adapter->xdp_prog, prog);
- 	need_reset = (!!prog != !!old_prog);
-@@ -10195,12 +10215,22 @@ void ixgbe_xdp_ring_update_tail(struct ixgbe_ring *ring)
- 	writel(ring->next_to_use, ring->tail);
- }
- 
-+void ixgbe_xdp_ring_update_tail_locked(struct ixgbe_ring *ring)
-+{
-+	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+		spin_lock(&ring->tx_lock);
-+	ixgbe_xdp_ring_update_tail(ring);
-+	if (static_branch_unlikely(&ixgbe_xdp_locking_key))
-+		spin_unlock(&ring->tx_lock);
-+}
-+
- static int ixgbe_xdp_xmit(struct net_device *dev, int n,
- 			  struct xdp_frame **frames, u32 flags)
- {
- 	struct ixgbe_adapter *adapter = netdev_priv(dev);
- 	struct ixgbe_ring *ring;
- 	int nxmit = 0;
-+	int index;
- 	int i;
- 
- 	if (unlikely(test_bit(__IXGBE_DOWN, &adapter->state)))
-@@ -10209,10 +10239,12 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
- 
-+	index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-+
- 	/* During program transitions its possible adapter->xdp_prog is assigned
- 	 * but ring has not been configured yet. In this case simply abort xmit.
- 	 */
--	ring = adapter->xdp_prog ? adapter->xdp_ring[smp_processor_id()] : NULL;
-+	ring = adapter->xdp_prog ? adapter->xdp_ring[index] : NULL;
- 	if (unlikely(!ring))
- 		return -ENXIO;
- 
-@@ -10230,7 +10262,7 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
- 	}
- 
- 	if (unlikely(flags & XDP_XMIT_FLUSH))
--		ixgbe_xdp_ring_update_tail(ring);
-+		ixgbe_xdp_ring_update_tail_locked(ring);
- 
- 	return nxmit;
- }
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-index 2aeec78..f6426d9 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-@@ -23,6 +23,7 @@ void ixgbe_process_skb_fields(struct ixgbe_ring *rx_ring,
- void ixgbe_rx_skb(struct ixgbe_q_vector *q_vector,
- 		  struct sk_buff *skb);
- void ixgbe_xdp_ring_update_tail(struct ixgbe_ring *ring);
-+void ixgbe_xdp_ring_update_tail_locked(struct ixgbe_ring *ring);
- void ixgbe_irq_rearm_queues(struct ixgbe_adapter *adapter, u64 qmask);
- 
- void ixgbe_txrx_ring_disable(struct ixgbe_adapter *adapter, int ring);
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-index b1d22e4..82d00e4 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-@@ -334,13 +334,10 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
- 		xdp_do_flush_map();
- 
- 	if (xdp_xmit & IXGBE_XDP_TX) {
--		struct ixgbe_ring *ring = adapter->xdp_ring[smp_processor_id()];
-+		int index = ixgbe_determine_xdp_q_idx(smp_processor_id());
-+		struct ixgbe_ring *ring = adapter->xdp_ring[index];
- 
--		/* Force memory writes to complete before letting h/w
--		 * know there are new descriptors to fetch.
--		 */
--		wmb();
--		writel(ring->next_to_use, ring->tail);
-+		ixgbe_xdp_ring_update_tail_locked(ring);
- 	}
- 
- 	u64_stats_update_begin(&rx_ring->syncp);
--- 
-1.8.3.1
+This static key stuff is tricky code, but I guess if it works, then it's
+better than nothing.
+
+As Maciej also commented, I'd like to see some before/after numbers for
+some of the xdp sample programs to make sure this doesn't cause a huge
+regression on the xdp transmit path. A small regression would be ok,
+since this *is* adding overhead.
+
+Jesse
 
