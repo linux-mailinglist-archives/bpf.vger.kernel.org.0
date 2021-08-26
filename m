@@ -2,85 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B043F8FFE
-	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 23:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCE93F9096
+	for <lists+bpf@lfdr.de>; Fri, 27 Aug 2021 01:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243578AbhHZVI7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Aug 2021 17:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243577AbhHZVI7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Aug 2021 17:08:59 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E116C061757
-        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 14:08:11 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id f2so7612629ljn.1
-        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 14:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I6GByZspfCdWJ6Gwzmp4v+h7d0GeJ9lZJ16I1L6Q0mY=;
-        b=Fp7fEksRW3evqkLGzRDwBH5eReGxbFv2Au2FTr81TA5HU5WPJLZkcI1FKIis12vsPI
-         Ha97Chd5urSJ85Bq0yRAbMhRl4bEQ5wey9Po+a8PwFrylTL3YW4Or5owZSHadtK9tmJA
-         uZvhgxNPEdB6qDHbG9u795yDlbDKuCrfz/oVyOLFsl9N2bRVnjD2tY99ueGIfm/rNv+f
-         79AzRlSJAFtchSlCCv8ApEC1Byf4DdqZ32qS+WGft8eKxA20F03HbgqertQ127CXOA01
-         qJYtWvrae52bvdDxMtxGl7zSmnvRo4ahaOecEo70Rlb56E7Z9opEDHqGLWoDJipe9PV6
-         Bmig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I6GByZspfCdWJ6Gwzmp4v+h7d0GeJ9lZJ16I1L6Q0mY=;
-        b=BIHdvLf9SDukfhhEimB5Whe1Z+FJHtn1WW13ssZ/hT4zHFnA0sfIsPddfc8b2WNrOu
-         1jop2r+wnUlfJj9Q7NBbXGw2t+PQPVqkqxXoTQ2+I+PLACaWEp5SAZxXg9PlH232neYi
-         e4hI6nqc64E2HF/bIVHHs3Rg62Osszf4kBTLDMC/xdLl0s4a1KBU/hGuQD2fHbmK4CR9
-         bSDrAhLsh5YWwKAf7XML7oY7HF8Umu/nRGCmI4an99zTml0701w+4iRyfo2O+wNDfSK/
-         jCpfgf0OKPv+4BiFKrFlc/ozVti+xG873vE5HiB0TWVDlg7p6mYvzsDiv2i18erhGDkk
-         Q5CQ==
-X-Gm-Message-State: AOAM532zg0/1o3tOWY03p+rOZEXlouwqL8Lbvw6CMc1uPvoKHKW5/tut
-        WqPt4A8UIW7+t0+zVaAPEqkRl0E1Xjn7z4I6lEo=
-X-Google-Smtp-Source: ABdhPJzWi1KyCWnqVLoiXE28uQ9siGN5LrGwln72SmsFhTGs8zdULHf6g9zSkQ2sQl7V/IDThU1vxGDqbhGfLhPYzUc=
-X-Received: by 2002:a2e:a4d1:: with SMTP id p17mr4798315ljm.82.1630012089465;
- Thu, 26 Aug 2021 14:08:09 -0700 (PDT)
+        id S243665AbhHZWSZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Aug 2021 18:18:25 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42320 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230397AbhHZWSZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 26 Aug 2021 18:18:25 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 17QMDMx4001776
+        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 15:17:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=SNlvjBOoMc2diRh3mh3qe/DjYVpAezw4uV4LpUmVRRc=;
+ b=gf0iGrZq0VKc9m3tQF01o8GKUpardlVEtbyIgFk/wzoPgBIQXU56P0nlcVFyusbbT85b
+ DRC/220w3UeJ2VeAl9SGe3JhVwMZx9QxDX5TzJ+5SHFF93YNMofnFlfCjxMclJq8vPaZ
+ MX+LFBrC9FUFy0HCJrNDBWJkN7JQpYVKhlE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 3angchnhvb-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 15:17:37 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 26 Aug 2021 15:15:47 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 96B51E2EC432; Thu, 26 Aug 2021 15:13:11 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <kjain@linux.ibm.com>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v2 bpf-next 0/3] bpf: introduce bpf_get_branch_snapshot
+Date:   Thu, 26 Aug 2021 15:13:03 -0700
+Message-ID: <20210826221306.2280066-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: 20cYZVCD9EASkaXpOai1Vjp-OsQTN24z
+X-Proofpoint-ORIG-GUID: 20cYZVCD9EASkaXpOai1Vjp-OsQTN24z
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210825184745.2680830-1-fallentree@fb.com> <CAADnVQJz8LUTsm_azd4JE0n5Q4Me0Lze6hmsqNYfAKMeA44_fQ@mail.gmail.com>
- <CAJygYd24KySBLCL2rRofGqdPkQzonxBfihRxLQ=O8Xg=AWAowA@mail.gmail.com>
- <CAJygYd3M1E3N9C02WCmPD6_i9miXaCe=OP-M32QTnOXOajBPZA@mail.gmail.com>
- <CAADnVQJB3GKKr1hMWHNKYhoo8CzrDQ83LEnO8c+ntOBtEkjApA@mail.gmail.com>
- <CAJygYd2aK_s6x4KO71G0KQLdMr5z07hAPqu5fsj+cQpxUw+7tw@mail.gmail.com> <CAADnVQ+u_vzMmftV4YoTs42HSia4L6DjDc++wP9Bd03n8PVtKw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+u_vzMmftV4YoTs42HSia4L6DjDc++wP9Bd03n8PVtKw@mail.gmail.com>
-From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
-Date:   Thu, 26 Aug 2021 14:07:43 -0700
-Message-ID: <CAJygYd3VEiYsju92FMoqA=kY6tVtN=TDRzws4Te4w=A1ELpkUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: reduce more flakyness in sockmap_listen
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Yucong Sun <fallentree@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-26_05:2021-08-26,2021-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 bulkscore=0 adultscore=0
+ malwarescore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=999 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2107140000 definitions=main-2108260124
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 2:05 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Aug 26, 2021 at 12:24 PM sunyucong@gmail.com
-> <sunyucong@gmail.com> wrote:
-> >
-> > I don't think it's AF_UNIX alone, I'm getting select() timeout for all family:
-> >
-> > ./test_progs:udp_redir_to_connected:1775: ingress: read: Timer expired
-> > udp_redir_to_connected:FAIL:1775
-> > #120/36 sockmap_listen/sockmap IPv4 test_udp_redir:FAIL
-> > ./test_progs:inet_unix_redir_to_connected:1865: ingress: read: Timer expired
-> > inet_unix_redir_to_connected:FAIL:1865
->
-> That's something different. It's ETIME and not EAGAIN.
-> Do you see IO_TIMEOUT_SEC==30 seconds elapsed between these lines?
-> No matter how slow the qemu setup is, the test shouldn't wait that long.
+Changes v1 =3D> v2:
+1. Rename the helper as bpf_get_branch_snapshot;
+2. Fix/simplify the use of stack_call;
+3. Instead of percpu variables, let intel_pmu_snapshot_branch_stack output
+   branch records to an output argument of type perf_branch_snapshot.
 
-Yes, I do see 30s passes before failure, failure code is ETIME because
- it was set in poll_read() function.
+Branch stack can be very useful in understanding software events. For
+example, when a long function, e.g. sys_perf_event_open, returns an errno,
+it is not obvious why the function failed. Branch stack could provide very
+helpful information in this type of scenarios.
+
+This set adds support to read branch stack with a new BPF helper
+bpf_get_branch_trace(). Currently, this is only supported in Intel systems.
+It is also possible to support the same feaure for PowerPC.
+
+The hardware that records the branch stace is not stopped automatically on
+software events. Therefore, it is necessary to stop it in software soon.
+Otherwise, the hardware buffers/registers will be flushed. One of the key
+design consideration in this set is to minimize the number of branch record
+entries between the event triggers and the hardware recorder is stopped.
+Based on this goal, current design is different from the discussions in
+original RFC [1]:
+ 1) Static call is used when supported, to save function pointer
+    dereference;
+ 2) intel_pmu_lbr_disable_all is used instead of perf_pmu_disable(),
+    because the latter uses about 10 entries before stopping LBR.
+
+With current code, on Intel CPU, LBR is stopped after 6 branch entries
+after fexit triggers:
+
+ID: 0 from intel_pmu_lbr_disable_all.part.10+37 to intel_pmu_lbr_disable_al=
+l.part.10+72
+ID: 1 from intel_pmu_lbr_disable_all.part.10+33 to intel_pmu_lbr_disable_al=
+l.part.10+37
+ID: 2 from intel_pmu_snapshot_branch_stack+46 to intel_pmu_lbr_disable_all.=
+part.10+0
+ID: 3 from __bpf_prog_enter+38 to intel_pmu_snapshot_branch_stack+0
+ID: 4 from __bpf_prog_enter+8 to __bpf_prog_enter+38
+ID: 5 from __brk_limit+477020214 to __bpf_prog_enter+0
+ID: 6 from bpf_fexit_loop_test1+22 to __brk_limit+477020195
+ID: 7 from bpf_fexit_loop_test1+20 to bpf_fexit_loop_test1+13
+ID: 8 from bpf_fexit_loop_test1+20 to bpf_fexit_loop_test1+13
+...
+
+[1] https://lore.kernel.org/bpf/20210818012937.2522409-1-songliubraving@fb.=
+com/
+
+Song Liu (3):
+  perf: enable branch record for software events
+  bpf: introduce helper bpf_get_branch_snapshot
+  selftests/bpf: add test for bpf_get_branch_snapshot
+
+ arch/x86/events/intel/core.c                  |   5 +-
+ arch/x86/events/intel/lbr.c                   |  13 +++
+ arch/x86/events/perf_event.h                  |   2 +
+ include/linux/bpf.h                           |   2 +
+ include/linux/filter.h                        |   3 +-
+ include/linux/perf_event.h                    |  29 +++++
+ include/uapi/linux/bpf.h                      |  16 +++
+ kernel/bpf/trampoline.c                       |  11 ++
+ kernel/bpf/verifier.c                         |   7 ++
+ kernel/events/core.c                          |   3 +
+ kernel/trace/bpf_trace.c                      |  38 +++++++
+ net/bpf/test_run.c                            |  15 ++-
+ tools/include/uapi/linux/bpf.h                |  16 +++
+ .../bpf/prog_tests/get_branch_snapshot.c      | 106 ++++++++++++++++++
+ .../selftests/bpf/progs/get_branch_snapshot.c |  41 +++++++
+ tools/testing/selftests/bpf/trace_helpers.c   |  30 +++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   5 +
+ 17 files changed, 339 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_snaps=
+hot.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot.c
+
+--
+2.30.2
