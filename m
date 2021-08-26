@@ -2,74 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2373F809E
-	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 04:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18983F8178
+	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 06:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237532AbhHZCqn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Aug 2021 22:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40236 "EHLO
+        id S229662AbhHZEGw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Aug 2021 00:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232441AbhHZCqn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Aug 2021 22:46:43 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B648AC061757;
-        Wed, 25 Aug 2021 19:45:56 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id b9so872107plx.2;
-        Wed, 25 Aug 2021 19:45:56 -0700 (PDT)
+        with ESMTP id S229608AbhHZEGw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Aug 2021 00:06:52 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7D3C061757;
+        Wed, 25 Aug 2021 21:06:05 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id oc2-20020a17090b1c0200b00179e56772d6so5652236pjb.4;
+        Wed, 25 Aug 2021 21:06:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CfZY7/KYBdyUngWYbBs3KCgnIznYeyHefpYrVfk/TDE=;
-        b=gjssXE1+8lDOFt3vv+5VwxmFOkrc7NVGyJeoZF/EVdYnqvrOS3rLiX1PQb8QybFRM+
-         TB19xuMiZ9YezBwt2jdbTLtmwisamUXnAFLmXVeti3DiKnzuxPVSwt0sa/f00vIrjxMQ
-         HHwPrvXWIe3mwJuFe1DETLKgpopfUehYZhiXxndpgcwyV4v3RUQ+rGD7V9n52o+P+mkn
-         sm5SM3V4wXDeD1Qbiig+5JNc89PCAmGoPixyVjRwbHUMAp1ziyP8VXm1phk8NbLpOH9O
-         PwvTKr1Ykz2y/dM2wnjK+WzU/+E117AFDjWihfrPKNJ7VSzdQI4wqZ7Uga+Pd+ZPt7J5
-         MJJw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N16RKnUBx3phhWrpfZGU8bqm0CgY23oxoM9EgaIfVmw=;
+        b=inJL4C+amEqXewa2Rc0U4g2vrwjLtbaLLFQ1N/KY7NtVNXbaomLm05qmUrWnRYfbAu
+         QiqnY7O5AgRDCUFmxb8+P25rW/BXymUNTQVvEh0GALLT25We/ajMcPwbigRvFKZAfUqm
+         QrvBd+0SWL+uw2uPaTaS1QE+wlwvsR/3QlzFkn6/5HHo5z48LiLJX3q4p6gP7Wf0Bkmk
+         iwthRKXapDwz3pt1mPyx4hXf4aRB1WGpRic3oNuQojkS1E2I3Dl8Ccfc0XcBrGXsyBoj
+         5P9O9BCJXwwfS5ShBqgjWQaIZ91sOtG97WughmTirOYSmNwPrlEsL2KFm3k6Z9JrGyVr
+         9vXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CfZY7/KYBdyUngWYbBs3KCgnIznYeyHefpYrVfk/TDE=;
-        b=j9m4KOumW47SQ7+t2oSzzmJyqFaRLJ1CeMh85FfdrRcQWnZay4+8Hyfic7cxveEFM4
-         j4TOgmGa9SaL3qL3gzuWoJzwhPjQEryrrQQRiAxJYVRzoXwxfEWMLjMQmuZwPMs492Mk
-         H++tV/KBGZd3QL7k4lzK4OfSE96azvhyvobfDoXNZozrytUfmVUp+scjILsw35iuYsyZ
-         p7UlXmfsZoiZ4TkP8tyRZsdiDDRbStA8iT4b7nQ2izVKi6Ch4mBYjp1WmSGjnfd56OTD
-         EvrM4cktV0fxI8txv1AloFtoigftB7eb68Ond7lKVgYXcDNepttOt+z1jrBKDwXTOP14
-         3vlA==
-X-Gm-Message-State: AOAM531UA/JxbvewfJkWdCL3+mcEd1RIQf4dRWTPH12PUyLYYuAQK8X1
-        CSfTOD1d9SgrJtsKvflWjzabWq7EGQxboVJe138H9dhp
-X-Google-Smtp-Source: ABdhPJx78rLDjpRvAWeopEHOevAHoPZnk8R5tfQrrO/ODssqY+r4N4oxuIbwUq7TS+3MO1bUUzwIZIoJNPwAQCwLT44=
-X-Received: by 2002:a17:90a:6ac2:: with SMTP id b2mr1644032pjm.36.1629945956222;
- Wed, 25 Aug 2021 19:45:56 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N16RKnUBx3phhWrpfZGU8bqm0CgY23oxoM9EgaIfVmw=;
+        b=BrK65VtZQwUDgZ/iO+Fx7Zrx5Pp1tB9vU5dsIQBheV4f3qu6/dh0H02qIxFeeQNAQY
+         qRG/KTDW12hlQyvDFja+WxXRYflXkSh3QV7OrYPZuKpkB3DaTN3b5mZAiQbJy6VsGZUJ
+         4eH2JaaEyn5OVQ0+d6VwP/8OG+gnCBeOJjc/L8pnzYgd3tTLg4Nfbfvhfin9516PYcEM
+         4LGAPzrytHdnEYf3ek67SGGjqbvhxZHuWtX2arkT7xTNcLEluKK1ywwKLj/StEMbAQOl
+         MbB5SS2qfacgOFI2mEQts4+l/g5M0VBIgRentoelPJ5+m2KE61x6kJbKtFLEDI8leN7N
+         /8Fg==
+X-Gm-Message-State: AOAM532EgjuZdj9I82cCAhD+ZOFRPTjOrtXiBD6eJvy1lSBSAIGpAnNe
+        fy84owI6JLg8inC37m2YGdw=
+X-Google-Smtp-Source: ABdhPJwvOq8Z9Vd5RrqOn/Y6ERgkcHEfA1yPjfNi4dpchaixmO68J2qRQh2aEksvfAxABwAm0dgsUg==
+X-Received: by 2002:a17:90a:404a:: with SMTP id k10mr1904704pjg.145.1629950765370;
+        Wed, 25 Aug 2021 21:06:05 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:647:5e00:7920:50c4:c83a:d55e:e023])
+        by smtp.googlemail.com with ESMTPSA id f5sm7541989pjw.20.2021.08.25.21.06.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Aug 2021 21:06:04 -0700 (PDT)
+Subject: Re: [Linuxarm] Re: [PATCH RFC 0/7] add socket to netdev page frag
+ recycling support
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        "Tang, Feng" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        mcroce@microsoft.com, Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        chenhao288@hisilicon.com,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, memxor@gmail.com,
+        linux@rempel-privat.de, Antoine Tenart <atenart@kernel.org>,
+        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        aahringo@redhat.com, ceggers@arri.de, yangbo.lu@nxp.com,
+        Florian Westphal <fw@strlen.de>, xiangxia.m.yue@gmail.com,
+        linmiaohe <linmiaohe@huawei.com>, Christoph Hellwig <hch@lst.de>
+References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
+ <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
+ <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com>
+ <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
+ <CANn89iK0nMG3qq226aL-urrtPF5jBN6UQCV=ckTmAFqWgy5kiA@mail.gmail.com>
+ <5fdc5223-7d67-fed7-f691-185dcb2e3d80@gmail.com>
+ <CANn89iKqijGU_0dQMeyMJ2h2MJE3=fLm8qb456G3ZD_7TrLt_A@mail.gmail.com>
+ <2d2154f4-c735-a9b3-7940-f8830fee6229@gmail.com>
+ <CANn89iLa4QnA-hOJVVrAZLZs-pLr66-K+fRjB9vTjqgz_aAmnA@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <dd74d689-ebc8-3356-4a4f-d423a6aee4a6@gmail.com>
+Date:   Wed, 25 Aug 2021 21:05:58 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <05d94748d9f4b3eecedc4fddd6875418a396e23c.1629942444.git.dxu@dxuuu.xyz>
-In-Reply-To: <05d94748d9f4b3eecedc4fddd6875418a396e23c.1629942444.git.dxu@dxuuu.xyz>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 25 Aug 2021 19:45:45 -0700
-Message-ID: <CAADnVQJFk5mgy1oFmz=6hBZHxjPvmQp81rWU_gY5MYi0tZoipg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix bpf-next builds without CONFIG_BPF_EVENTS
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANn89iLa4QnA-hOJVVrAZLZs-pLr66-K+fRjB9vTjqgz_aAmnA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 6:48 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> This commit fixes linker errors along the lines of:
->
->     s390-linux-ld: task_iter.c:(.init.text+0xa4): undefined reference to `btf_task_struct_ids'`
->
-> Fix by defining btf_task_struct_ids unconditionally in kernel/bpf/btf.c
-> since there exists code that unconditionally uses btf_task_struct_ids.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+On 8/25/21 10:24 AM, Eric Dumazet wrote:
+> On Wed, Aug 25, 2021 at 9:39 AM David Ahern <dsahern@gmail.com> wrote:
+>>
+>> On 8/25/21 9:32 AM, Eric Dumazet wrote:
+> 
+>>>
+>>
+>> thanks for the pointer. I need to revisit my past attempt to get iperf3
+>> working with hugepages.
+> 
+> ANother pointer, just in case this helps.
+> 
+> commit 72653ae5303c626ca29fcbcbb8165a894a104adf
+> Author: Eric Dumazet <edumazet@google.com>
+> Date:   Thu Aug 20 10:11:17 2020 -0700
+> 
+>     selftests: net: tcp_mmap: Use huge pages in send path
+> 
 
-Applied. Thanks
+very helpful. Thanks. Added support to iperf3, and it does show a big
+drop in cpu utilization.
