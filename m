@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7C83F8EF4
-	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 21:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD4B3F8EF6
+	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 21:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243554AbhHZTlz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Aug 2021 15:41:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43968 "EHLO
+        id S243594AbhHZTl6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Aug 2021 15:41:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51846 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243589AbhHZTlr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 26 Aug 2021 15:41:47 -0400
+        by vger.kernel.org with ESMTP id S243360AbhHZTlx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 26 Aug 2021 15:41:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630006859;
+        s=mimecast20190719; t=1630006865;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aB69aifL1zI8vrW5XNajMWuHmZ5MVDONIdA/rCm6EsU=;
-        b=MM/yGe4J5Qw3TSVXWp93tQ5cWeXzJHyP3qr1xIjQim0RI3pSPUYJVIAXiP5+ACQiGfhoe9
-        KMTpMLdmbA31xVxnxtBs45KOBXu5+cgQOwaGPcK2KbLK8ojABH4MAcShBkBEJhlZMEXkiE
-        DGH/OKcETCLoHJrHAUKavN5v+Alwgp8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-QyQ-obSbOp6nhS7EXNwf5Q-1; Thu, 26 Aug 2021 15:40:58 -0400
-X-MC-Unique: QyQ-obSbOp6nhS7EXNwf5Q-1
-Received: by mail-wr1-f72.google.com with SMTP id h15-20020adff18f000000b001574654fbc2so1202058wro.10
-        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 12:40:57 -0700 (PDT)
+        bh=ISOz03pxm8/IDfssr2+wjRRzJVFbEDf7IJBjDKpD7YI=;
+        b=DgLxdtcmc0UlerEG9mYQdlZSpFi+ppY1cJgl9IOxW3PfPwTywA8CACodrCMn2UnG3LEHIa
+        B+stxRGQyEe+oMnJ0bMupdV83oQNfXnKIcmueuqSgK7dAF2SIsN4yfVUqgf5oOKVLwCZiU
+        ErSx+WAswdemEJ3FvVh+k/RsUmWbaRc=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-iT5-9Mo7NqqP3ROjAUoILQ-1; Thu, 26 Aug 2021 15:41:04 -0400
+X-MC-Unique: iT5-9Mo7NqqP3ROjAUoILQ-1
+Received: by mail-wm1-f72.google.com with SMTP id n16-20020a1c7210000000b002ea2ed60dc6so240247wmc.0
+        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 12:41:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aB69aifL1zI8vrW5XNajMWuHmZ5MVDONIdA/rCm6EsU=;
-        b=H0mudDtb1QgcJ9i5Awfq49nZE1lE77G+ogDcRCLEWBJiW7xkvVu7io57VczK0WXa3W
-         soETps0m9LzC+pQHrBU6kzeds2FXzbNxupTKO315sVLOo/g1qL4w+aCnaUTW+821cWYl
-         m6Tn/s1kG7hxAnyBemGZJKxI970lrg2+KEGmImZFC/9TrRkcsnSXNTi+bjWtUw+XT1vi
-         x13MAhlzwR4vTOXCbEHldmjj7Fo0eKBeioM9HODyL2hh7W7m0EJ2goee8wN1TF/Q3wBe
-         K9yNLkEe3DWIxwioQgGmHgdzVeG5gIbU4bESvNTSgH+xyIAFbKhUXfl8T8vDHSqMvAbL
-         tFeA==
-X-Gm-Message-State: AOAM533bW122qm4LF+fzLW90fy4ZPIw2QvFLUIPfG2bnEyS1DB7x/J4q
-        MbG1G1eov09aTOrJhacpaXjgzTQkXCSSvN7kIyqEbup7PUtvejY2cZBoHudnupMh7deKTfSVKKM
-        IJnXnOes1Ex5I
-X-Received: by 2002:a1c:27c2:: with SMTP id n185mr5120207wmn.20.1630006856789;
-        Thu, 26 Aug 2021 12:40:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJximqozMr0/Jm9W8qaJJ+TOp3iu2uH+xdipTy7sLT+cli5O3p4fnfXEZvgGgFYa01EeiwtxAQ==
-X-Received: by 2002:a1c:27c2:: with SMTP id n185mr5120188wmn.20.1630006856586;
-        Thu, 26 Aug 2021 12:40:56 -0700 (PDT)
+        bh=ISOz03pxm8/IDfssr2+wjRRzJVFbEDf7IJBjDKpD7YI=;
+        b=IYzASB+yXll/YU/VOIvWkgI66kSdaCldHbvZkBqTeJIJOLXVhKQRHRrTs1NjyvPDdF
+         mx77ZkIO2Dk6YNrIUfrpAhwwbZm7Qydg7wKC12N7QFr/i3z+QuURf5TQ2jF1NZDib6S1
+         HSPkraJVEe4siWP0zq6XLioTMRPbKdP/uaMpMc086ddJqQ/ZrxWb/P19hjmahPhFzifw
+         RXBC/pfHpAb/W5dLNvBaHxQQa0FvUaCN+TAo+XFl8j7tp8qRovY0CH5Qnxnmoxjdv0Iu
+         0a2znh948CcLR6Xe2Wz/NNMkYpZtWhgtHE3D08DGfiEMxBHcp+e7Kcw+BjvPDjM1yZGv
+         VQHw==
+X-Gm-Message-State: AOAM533hGAgl/2rWeSBBFqA97or1u8mXFANY71OJooh9lixMBkBfmHOx
+        nz/GamLryuUJ6ygyDpQHC8iUx15ad5/ah8g9t3TAjlVvJSl/T9HlwICG6OW0+QKTEsACMePwivb
+        Cw0s6/sgNsg4Y
+X-Received: by 2002:a5d:6707:: with SMTP id o7mr6103977wru.307.1630006863210;
+        Thu, 26 Aug 2021 12:41:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxuAcnoH9r3dNMdYGKPXN+YTRJdweWec0LDdFWr33uFOwzn9/YBcxwHxSUU5VsuJnmi3PlETA==
+X-Received: by 2002:a5d:6707:: with SMTP id o7mr6103956wru.307.1630006862972;
+        Thu, 26 Aug 2021 12:41:02 -0700 (PDT)
 Received: from krava.redhat.com ([83.240.63.86])
-        by smtp.gmail.com with ESMTPSA id x21sm2507342wmi.15.2021.08.26.12.40.55
+        by smtp.gmail.com with ESMTPSA id j7sm9112722wmi.37.2021.08.26.12.41.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 12:40:56 -0700 (PDT)
+        Thu, 26 Aug 2021 12:41:02 -0700 (PDT)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -62,9 +62,9 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
         Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next v4 15/27] bpf, x64: Allow to use caller address from stack
-Date:   Thu, 26 Aug 2021 21:39:10 +0200
-Message-Id: <20210826193922.66204-16-jolsa@kernel.org>
+Subject: [PATCH bpf-next v4 16/27] bpf: Add bpf_trampoline_multi_get/put functions
+Date:   Thu, 26 Aug 2021 21:39:11 +0200
+Message-Id: <20210826193922.66204-17-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210826193922.66204-1-jolsa@kernel.org>
 References: <20210826193922.66204-1-jolsa@kernel.org>
@@ -74,69 +74,281 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently we call the original function by using the absolute address
-given at the JIT generation. That's not usable when having trampoline
-attached to multiple functions. In this case we need to take the
-return address from the stack.
+Adding struct bpf_trampoline_multi object and API to allocate
+and free it.
 
-Adding support to retrieve the original function address from the stack
-by adding new BPF_TRAMP_F_ORIG_STACK flag for arch_prepare_bpf_trampoline
-function.
+The multi bpf trampoline is defined by BTF ids that represents
+functions that the trampoline will be attached to.
 
-Basically we take the return address of the 'fentry' call:
+By calling bpf_trampoline_multi_get you'll allocate new or get
+existing bpf_trampoline_multi object with following rules:
 
-   function + 0: call fentry    # stores 'function + 5' address on stack
-   function + 5: ...
+  - multi trampolines BTF ids can't intersect
+  - multi trampoline can attach to functions that have standard
+    program attached
+  - standard programs can't attach to functions that have multi
+    trampoline attached
 
-The 'function + 5' address will be used as the address for the
-original function to call.
+The multi trampoline contains pointers to all 'nested' standard
+trampolines and 'main' standard trampoline object (with key == 0)
+that represents the rest of the functions.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/net/bpf_jit_comp.c | 13 +++++++++----
- include/linux/bpf.h         |  5 +++++
- 2 files changed, 14 insertions(+), 4 deletions(-)
+ include/linux/bpf.h     |  15 ++++
+ kernel/bpf/trampoline.c | 179 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 194 insertions(+)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 0fe6aacef3db..9f31197780ae 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2024,10 +2024,15 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
- 		restore_regs(m, &prog, nr_args, stack_size);
- 
--		/* call original function */
--		if (emit_call(&prog, orig_call, prog)) {
--			ret = -EINVAL;
--			goto cleanup;
-+		if (flags & BPF_TRAMP_F_ORIG_STACK) {
-+			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
-+			EMIT2(0xff, 0xd0); /* call *rax */
-+		} else {
-+			/* call original function */
-+			if (emit_call(&prog, orig_call, prog)) {
-+				ret = -EINVAL;
-+				goto cleanup;
-+			}
- 		}
- 		/* remember return value in a stack for bpf prog to access */
- 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f0f548f8f391..a5c3307d49c6 100644
+index a5c3307d49c6..678b9cd2fa21 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -584,6 +584,11 @@ struct btf_func_model {
-  */
- #define BPF_TRAMP_F_IP_ARG		BIT(3)
- 
-+/* Get original function from stack instead of from provided direct address.
-+ * Makes sense for fexit programs only.
-+ */
-+#define BPF_TRAMP_F_ORIG_STACK		BIT(4)
+@@ -691,6 +691,18 @@ struct bpf_trampoline {
+ 	struct bpf_tramp_image *cur_image;
+ 	u64 selector;
+ 	struct module *mod;
++	struct {
++		struct bpf_trampoline *tr;
++	} multi;
++};
 +
- /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
-  * bytes on x86.  Pick a number to fit into BPF_IMAGE_SIZE / 2
-  */
++struct bpf_trampoline_multi {
++	struct bpf_trampoline main;
++	struct list_head list;
++	u32 *ids;
++	u32 ids_cnt;
++	int tr_cnt;
++	struct bpf_trampoline *tr[];
+ };
+ 
+ struct bpf_attach_target_info {
+@@ -732,6 +744,9 @@ int bpf_trampoline_unlink_prog(struct bpf_tramp_node *node, struct bpf_trampolin
+ struct bpf_trampoline *bpf_trampoline_get(u64 key,
+ 					  struct bpf_attach_target_info *tgt_info);
+ void bpf_trampoline_put(struct bpf_trampoline *tr);
++struct bpf_trampoline_multi *bpf_trampoline_multi_get(struct bpf_prog *prog, u32 *ids,
++						      u32 ids_cnt);
++void bpf_trampoline_multi_put(struct bpf_trampoline_multi *multi);
+ #define BPF_DISPATCHER_INIT(_name) {				\
+ 	.mutex = __MUTEX_INITIALIZER(_name.mutex),		\
+ 	.func = &_name##_func,					\
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index c9794e9f24ee..d66b76c23d74 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -10,6 +10,9 @@
+ #include <linux/rcupdate_trace.h>
+ #include <linux/rcupdate_wait.h>
+ #include <linux/module.h>
++#include <linux/bsearch.h>
++#include <linux/bpf_verifier.h>
++#include <linux/sort.h>
+ 
+ /* dummy _ops. The verifier will operate on target program's ops. */
+ const struct bpf_verifier_ops bpf_extension_verifier_ops = {
+@@ -22,6 +25,7 @@ const struct bpf_prog_ops bpf_extension_prog_ops = {
+ #define TRAMPOLINE_TABLE_SIZE (1 << TRAMPOLINE_HASH_BITS)
+ 
+ static struct hlist_head trampoline_table[TRAMPOLINE_TABLE_SIZE];
++static LIST_HEAD(trampoline_multi);
+ 
+ /* serializes access to trampoline_table */
+ static DEFINE_MUTEX(trampoline_mutex);
+@@ -85,12 +89,41 @@ static struct bpf_trampoline *__bpf_trampoline_lookup(u64 key)
+ 	return NULL;
+ }
+ 
++static int btf_ids_cmp(const void *a, const void *b)
++{
++	const u32 *x = a;
++	const u32 *y = b;
++
++	if (*x == *y)
++		return 0;
++	return *x < *y ? -1 : 1;
++}
++
++static bool is_in_multi(u64 key)
++{
++	struct bpf_trampoline_multi *multi;
++	u32 id;
++
++	bpf_trampoline_unpack_key(key, NULL, &id);
++
++	list_for_each_entry(multi, &trampoline_multi, list) {
++		if (bsearch(&id, multi->ids, multi->ids_cnt,
++			    sizeof(u32), btf_ids_cmp))
++			return true;
++	}
++	return false;
++}
++
+ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+ {
+ 	struct bpf_trampoline *tr;
+ 	struct hlist_head *head;
+ 
+ 	mutex_lock(&trampoline_mutex);
++	if (is_in_multi(key)) {
++		tr = ERR_PTR(-EBUSY);
++		goto out;
++	}
+ 	tr = __bpf_trampoline_lookup(key);
+ 	if (tr) {
+ 		refcount_inc(&tr->refcnt);
+@@ -553,6 +586,152 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+ 	mutex_unlock(&trampoline_mutex);
+ }
+ 
++static void bpf_func_model_nargs(struct btf_func_model *m, int nr_args)
++{
++	int i;
++
++	for (i = 0; i < nr_args; i++)
++		m->arg_size[i] = 8;
++	m->ret_size = 8;
++	m->nr_args = nr_args;
++}
++
++static struct bpf_trampoline *lookup_trampoline(struct bpf_prog *prog, u32 id)
++{
++	u64 key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf, id);
++
++	return __bpf_trampoline_lookup(key);
++}
++
++struct bpf_trampoline_multi *bpf_trampoline_multi_get(struct bpf_prog *prog,
++						      u32 *ids, u32 ids_cnt)
++{
++	int i, j, tr_cnt = 0, err = 0;
++	struct bpf_trampoline_multi *multi;
++	struct bpf_trampoline *tr;
++	u8 nr_args = 0;
++	size_t size;
++
++	/* Sort user provided BTF ids, so we can use memcpy
++	 * and bsearch below.
++	 */
++	sort(ids, ids_cnt, sizeof(u32), btf_ids_cmp, NULL);
++
++	mutex_lock(&trampoline_mutex);
++	/* Check if the requested multi trampoline already exists. */
++	list_for_each_entry(multi, &trampoline_multi, list) {
++		if (ids_cnt == multi->ids_cnt && !memcmp(ids, multi->ids, ids_cnt)) {
++			refcount_inc(&multi->main.refcnt);
++			kfree(ids);
++			goto out;
++		}
++		for (i = 0; i < ids_cnt; i++) {
++			if (bsearch(&ids[i], multi->ids, multi->ids_cnt,
++				    sizeof(u32), btf_ids_cmp)) {
++				multi = ERR_PTR(-EINVAL);
++				goto out;
++			}
++		}
++	}
++
++	/* Check if any of the requested functions have already standard
++	 * trampoline attached.
++	 */
++	for (i = 0; i < ids_cnt; i++) {
++		tr = lookup_trampoline(prog, ids[i]);
++		if (!tr)
++			continue;
++		if (tr->multi.tr) {
++			multi = ERR_PTR(-EBUSY);
++			goto out;
++		}
++		tr_cnt++;
++	}
++
++	/* Create new multi trampoline ... */
++	size = sizeof(*multi) + tr_cnt * sizeof(multi->tr[0]);
++	multi = kzalloc(size, GFP_KERNEL);
++	if (!multi) {
++		multi = ERR_PTR(-ENOMEM);
++		goto out;
++	}
++
++	bpf_trampoline_init(&multi->main, 0);
++	multi->tr_cnt = tr_cnt;
++	multi->ids = ids;
++	multi->ids_cnt = ids_cnt;
++	list_add_tail(&multi->list, &trampoline_multi);
++
++	for (i = 0; i < ids_cnt; i++) {
++		struct bpf_attach_target_info tgt_info = {};
++
++		tr = lookup_trampoline(prog, ids[i]);
++		if (tr)
++			continue;
++
++		err = bpf_check_attach_target(NULL, prog, NULL, ids[i], &tgt_info);
++		if (err)
++			goto out_free;
++
++		err = -EINVAL;
++		if (!is_ftrace_location((void *) tgt_info.tgt_addr))
++			goto out_free;
++
++		if (nr_args < tgt_info.fmodel.nr_args)
++			nr_args = tgt_info.fmodel.nr_args;
++	}
++
++	bpf_func_model_nargs(&multi->main.func.model, nr_args);
++
++	/* ... and attach already existing standard trampolines. */
++	for (i = 0, j = 0; i < ids_cnt && j < tr_cnt; i++) {
++		tr = lookup_trampoline(prog, ids[i]);
++		if (tr) {
++			refcount_inc(&tr->refcnt);
++			tr->multi.tr = &multi->main;
++			multi->tr[j++] = tr;
++		}
++	}
++
++out_free:
++	if (err) {
++		list_del(&multi->list);
++		kfree(multi);
++		multi = ERR_PTR(err);
++	}
++out:
++	mutex_unlock(&trampoline_mutex);
++	return multi;
++}
++
++void bpf_trampoline_multi_put(struct bpf_trampoline_multi *multi)
++{
++	int i;
++
++	if (!multi)
++		return;
++
++	mutex_lock(&trampoline_mutex);
++	if (!refcount_dec_and_test(&multi->main.refcnt))
++		goto out;
++
++	if (WARN_ON_ONCE(!hlist_empty(&multi->main.progs_hlist[BPF_TRAMP_FENTRY])))
++		goto out;
++	if (WARN_ON_ONCE(!hlist_empty(&multi->main.progs_hlist[BPF_TRAMP_FEXIT])))
++		goto out;
++
++	list_del(&multi->list);
++
++	for (i = 0; i < multi->tr_cnt; i++) {
++		multi->tr[i]->multi.tr = NULL;
++		__bpf_trampoline_put(multi->tr[i]);
++	}
++	kfree(multi->ids);
++	kfree(multi);
++out:
++	mutex_unlock(&trampoline_mutex);
++}
++
+ #define NO_START_TIME 1
+ static u64 notrace bpf_prog_start_time(void)
+ {
 -- 
 2.31.1
 
