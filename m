@@ -2,102 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70343F8DBE
-	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 20:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F2A3F8E73
+	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 21:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234488AbhHZSU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Aug 2021 14:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
+        id S243241AbhHZTIq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Aug 2021 15:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbhHZSU0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:20:26 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA526C061757;
-        Thu, 26 Aug 2021 11:19:38 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id x16so668207pll.2;
-        Thu, 26 Aug 2021 11:19:38 -0700 (PDT)
+        with ESMTP id S230442AbhHZTIp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Aug 2021 15:08:45 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43862C061757
+        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 12:07:58 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id x16so3593483pfh.2
+        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 12:07:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I292LG7vgq4KTBMOuKIuywhwI+2Z6jzDy4c1Rs1ZsBs=;
-        b=qyea7EjeRrSDeFXhvwdwxYyD/cUxfn1B6lygpMv/gXzWpbGsTcAqk7HzMg6wXqYcwQ
-         5bR5a3Pz11vSPm7t6lf1TmMYWr5TIeb7mUOw+iboqosrFSDjxGar5DcXrw6Mqr3w8z0W
-         tIeAFju4JmZkddCN1KPygTJy1R0eaidvWCDBDw6tHtLmv6wC0T0FwKLvXr53+EsElStx
-         4WhhHqHDCWUsUw3f8jrY6U9YwjzEUYcwVuHlpVO11WYdudNqyF0GGgcTf/RUHPAHJznj
-         Q5XCjyHLv0xpP4ZcsopcWUPHly6q4qeWw61NxwSRlPR8u7fpw+L1THZV48e5iI9DlYF7
-         fMDg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mf4UmSK3/FFWe3dVJs4Xhc3jgFCYAcPdFUpEVjrjWds=;
+        b=j4/I9HrhAiOCELN1r18SrGwIFT5fNg7ebePUX1qz5BaWPmZd5qR0nntz1OtG/mbWir
+         XAzJ4m1hDE/pPFvV9+rFbDUomt/Ba1M28377Av74qmSmw9Asg54VaO2ZZr0vdyi6Lk+9
+         BE9OAxw6dd3qtcTejAzDX50gtYtmnJZdqMQFQ0LX7HpiJFUlkX0UY+Sxn4qopKFuZEP0
+         IxoqDdoa5Ea81DqgpoQOFRWOEk2bhbZnBGkF1VbGp9mx3u840fBqd72u7Y2jCemeAruK
+         KfVyh9Lhszacu2hKwlj65G/N8n71pzpDyjIeSSKeGnKhhAdI3vKyuIJwCL8LO5jG6A6t
+         QJAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I292LG7vgq4KTBMOuKIuywhwI+2Z6jzDy4c1Rs1ZsBs=;
-        b=SqTMDYanCBoxPuIrUW6cLbM1zDZu/bcQ3qDJDjHCd0vsWFjjZnnCdcemBHxuzIYB78
-         gadLUioicWHsQ1cLWqGaAdEKFx14ZhWgGNxIzAAfcoGSuJtz9bsww4HYNhG+I7lu/SBL
-         L31epJsSH0fV9Ds5RitjXnl8wKaxjFReZHW8dEDPZTrcLer08mv6/1yH8QUb0sSwueea
-         nCIyhFYopMGv0XNoRvd6NfihKBe27UvwgRguvJAMFmUAnnsV7k3hsKnRqnHNZNtgOXCH
-         6njQqaZtG1uf6RFNSDrUwUP89IHSsYM16lQhM2+RNsoEDdTe8TuknsH7iVBmofDMycvJ
-         zH8Q==
-X-Gm-Message-State: AOAM5323OHWuILaxnAAXJJPmwkPwjVmAcYWVpMxyxsBR+fVFmCQ26dtL
-        5aS8s5zJCm7Z81Th60d4QTk=
-X-Google-Smtp-Source: ABdhPJwFev7mmxVJjjbNg7QurgKuXmBlTrzeC1J5XHsCkxZhqkXm1xBULzhHSJ7NG7icBkuFOUFitQ==
-X-Received: by 2002:a17:902:e744:b029:12d:6479:83a3 with SMTP id p4-20020a170902e744b029012d647983a3mr4868681plf.30.1630001978448;
-        Thu, 26 Aug 2021 11:19:38 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id s15sm6758253pjk.21.2021.08.26.11.19.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 11:19:38 -0700 (PDT)
-Subject: Re: [PATCH v4] ixgbe: let the xdpdrv work with more than 64 cpus
-To:     Jason Xing <kerneljasonxing@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-References: <20210826141623.8151-1-kerneljasonxing@gmail.com>
- <00890ff4-3264-337a-19cc-521a6434d1d0@gmail.com>
- <860ead37-87f4-22fa-e4f3-5cadd0f2c85c@intel.com>
- <CAL+tcoCovfAQmN_c43ScmjpO9D54CKP5XFTpx6VQpwJVxZhAdg@mail.gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <da5da485-9dc7-e731-a8d9-f5ad7c7dffde@gmail.com>
-Date:   Thu, 26 Aug 2021 11:19:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mf4UmSK3/FFWe3dVJs4Xhc3jgFCYAcPdFUpEVjrjWds=;
+        b=qTQbTzbpwj7UvhLglAaZRnPLxU/1ZFTcYe3rGs97GI3VzLN+5wrMYYAo7pRsPuwVUz
+         9zebOH+NfVlf1k1wuhYT4KR+5Ef0nEJjhB8gx8SEEKEy3P14eYXhM/YJwMEHnKUxbw0W
+         IUwCL70QuTbNGaoukUkB/Aal7yk3TITyEVVNjV7/eH7Acf2YKF/0ofDs1rhfHPWJBBNd
+         Mwovv9oH4RY7FrEx6IJkJ56aeN6PVUwK4gmqNG9Nv1a2cp02davWeQr81BDQRkmzcMSG
+         C4MSY4S+SYepwRdde/bUdoz3NMo/gr/0Co8GEVMiYk55aUeb7BRpInMkAGvtsLZspRzT
+         4WoQ==
+X-Gm-Message-State: AOAM5322Jv8I5nmfJOVC8g97nSjsJZDsv7oQLwK8d0joda25b+ca6RLy
+        lm3AefWijpMwJdIZdCD/3tulBjY2TmEHXp0CcSY=
+X-Google-Smtp-Source: ABdhPJyl41GM1cypJGTq3W0nfyXzEU+kAXWSbjdWTGOFlyrsoq8RfMJtWOX1ce5DNrBha8yL1V5Wzp2wqs8o2/s7hlA=
+X-Received: by 2002:a62:8407:0:b029:39a:59dc:a237 with SMTP id
+ k7-20020a6284070000b029039a59dca237mr5315350pfd.30.1630004877650; Thu, 26 Aug
+ 2021 12:07:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAL+tcoCovfAQmN_c43ScmjpO9D54CKP5XFTpx6VQpwJVxZhAdg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210825184745.2680830-1-fallentree@fb.com> <CAADnVQJz8LUTsm_azd4JE0n5Q4Me0Lze6hmsqNYfAKMeA44_fQ@mail.gmail.com>
+ <CAJygYd24KySBLCL2rRofGqdPkQzonxBfihRxLQ=O8Xg=AWAowA@mail.gmail.com> <CAJygYd3M1E3N9C02WCmPD6_i9miXaCe=OP-M32QTnOXOajBPZA@mail.gmail.com>
+In-Reply-To: <CAJygYd3M1E3N9C02WCmPD6_i9miXaCe=OP-M32QTnOXOajBPZA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 26 Aug 2021 12:07:46 -0700
+Message-ID: <CAADnVQJB3GKKr1hMWHNKYhoo8CzrDQ83LEnO8c+ntOBtEkjApA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: reduce more flakyness in sockmap_listen
+To:     "sunyucong@gmail.com" <sunyucong@gmail.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>
+Cc:     Yucong Sun <fallentree@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Aug 26, 2021 at 11:18 AM sunyucong@gmail.com
+<sunyucong@gmail.com> wrote:
+>
+> Reporting back: I tried a select() based approach, (as attached below)
+>  but unfortunately it doesn't seem to work. During testing,  I am
+> always getting full timeout errors as the socket never seems to become
+> ready to read(). My guess is that this has something to do with the
+> sockets being created through sockpair() , but I am unable to confirm.
+>
+> On the other hand, the previous patch approach works perfectly fine, I
+> would still like to request to apply that instead.
 
+Ok. Applied your earlier patch, but it's a short term workaround.
+select() should work for af_unix.
+I suspect something got broken with the redirect.
+Cong, Jiang,
+could you please take a look ?
 
-On 8/26/21 10:03 AM, Jason Xing wrote:
-
-> 
-> Honestly, I'm a little confused right now. @nr_cpu_ids is the fixed
-> number which means the total number of cpus the machine has.
-> I think, using @nr_cpu_ids is safe one way or the other regardless of
-> whether the cpu goes offline or not. What do you think?
-> 
-
-More exactly, nr_cpu_ids is the max number cpu id can reach,
-even in presence of holes.
-
-I think that most/many num_online_cpus() in drivers/net are simply broken
-and should be replaced by nr_cpu_ids.
-
-The assumptions of cpus being nicely numbered from [0 to X-1],
-with X==num_online_cpus() is wrong.
-
-Same remark for num_possible_cpus(), see commit
-88d4f0db7fa8 ("perf: Fix alloc_callchain_buffers()") for reference.
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+> b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+> index 5c5979046523..247e8b7a6911 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+> @@ -949,7 +949,6 @@ static void redir_to_connected(int family, int
+> sotype, int sock_mapfd,
+>         int err, n;
+>         u32 key;
+>         char b;
+> -       int retries = 100;
+>
+>         zero_verdict_count(verd_mapfd);
+>
+> @@ -1002,15 +1001,12 @@ static void redir_to_connected(int family, int
+> sotype, int sock_mapfd,
+>                 goto close_peer1;
+>         if (pass != 1)
+>                 FAIL("%s: want pass count 1, have %d", log_prefix, pass);
+> -again:
+> +
+> +       if (poll_read(c0, IO_TIMEOUT_SEC))
+> +             FAIL_ERRNO("%s: read", log_prefix);
+>         n = read(c0, &b, 1);
+> -       if (n < 0) {
+> -               if (errno == EAGAIN && retries--) {
+> -                       usleep(1000);
+> -                       goto again;
+> -               }
+> +       if (n < 0)
+>                 FAIL_ERRNO("%s: read", log_prefix);
+> -       }
+>         if (n == 0)
+>                 FAIL("%s: incomplete read", log_prefix);
+>
+> @@ -1571,7 +1567,6 @@ static void unix_redir_to_connected(int sotype,
+> int sock_mapfd,
+>         const char *log_prefix = redir_mode_str(mode);
+>         int c0, c1, p0, p1;
+>         unsigned int pass;
+> -       int retries = 100;
+>         int err, n;
+>         int sfd[2];
+>         u32 key;
+> @@ -1606,15 +1601,11 @@ static void unix_redir_to_connected(int
+> sotype, int sock_mapfd,
+>         if (pass != 1)
+>                 FAIL("%s: want pass count 1, have %d", log_prefix, pass);
+>
+> -again:
+> +       if (poll_read(mode == REDIR_INGRESS ? p0 : c0, IO_TIMEOUT_SEC))
+> +             FAIL_ERRNO("%s: read", log_prefix);
+>         n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
+> -       if (n < 0) {
+> -               if (errno == EAGAIN && retries--) {
+> -                       usleep(1000);
+> -                       goto again;
+> -               }
+> +       if (n < 0)
+>                 FAIL_ERRNO("%s: read", log_prefix);
+> -       }
+>         if (n == 0)
+>                 FAIL("%s: incomplete read", log_prefix);
+>
+> @@ -1748,7 +1739,6 @@ static void udp_redir_to_connected(int family,
+> int sock_mapfd, int verd_mapfd,
+>         const char *log_prefix = redir_mode_str(mode);
+>         int c0, c1, p0, p1;
+>         unsigned int pass;
+> -       int retries = 100;
+>         int err, n;
+>         u32 key;
+>         char b;
+> @@ -1781,15 +1771,11 @@ static void udp_redir_to_connected(int family,
+> int sock_mapfd, int verd_mapfd,
+>         if (pass != 1)
+>                 FAIL("%s: want pass count 1, have %d", log_prefix, pass);
+>
+> -again:
+> +       if (poll_read(mode == REDIR_INGRESS ? p0 : c0, IO_TIMEOUT_SEC * 10))
+> +               FAIL_ERRNO("%s: read", log_prefix);
+>         n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
+> -       if (n < 0) {
+> -               if (errno == EAGAIN && retries--) {
+> -                       usleep(1000);
+> -                       goto again;
+> -               }
+> +       if (n < 0)
+>                 FAIL_ERRNO("%s: read", log_prefix);
+> -       }
+>         if (n == 0)
+>                 FAIL("%s: incomplete read", log_prefix);
+>
+> @@ -1841,7 +1827,6 @@ static void inet_unix_redir_to_connected(int
+> family, int type, int sock_mapfd,
+>         const char *log_prefix = redir_mode_str(mode);
+>         int c0, c1, p0, p1;
+>         unsigned int pass;
+> -       int retries = 100;
+>         int err, n;
+>         int sfd[2];
+>         u32 key;
+> @@ -1876,15 +1861,11 @@ static void inet_unix_redir_to_connected(int
+> family, int type, int sock_mapfd,
+>         if (pass != 1)
+>                 FAIL("%s: want pass count 1, have %d", log_prefix, pass);
+>
+> -again:
+> +       if (poll_read(mode == REDIR_INGRESS ? p0 : c0, IO_TIMEOUT_SEC))
+> +             FAIL_ERRNO("%s: read", log_prefix);
+>         n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
+> -       if (n < 0) {
+> -               if (errno == EAGAIN && retries--) {
+> -                       usleep(1000);
+> -                       goto again;
+> -               }
+> +       if (n < 0)
+>                 FAIL_ERRNO("%s: read", log_prefix);
+> -       }
+>         if (n == 0)
+>                 FAIL("%s: incomplete read", log_prefix);
+>
+> @@ -1932,7 +1913,6 @@ static void unix_inet_redir_to_connected(int
+> family, int type, int sock_mapfd,
+>         int sfd[2];
+>         u32 key;
+>         char b;
+> -       int retries = 100;
+>
+>         zero_verdict_count(verd_mapfd);
+>
+> @@ -1963,15 +1943,11 @@ static void unix_inet_redir_to_connected(int
+> family, int type, int sock_mapfd,
+>         if (pass != 1)
+>                 FAIL("%s: want pass count 1, have %d", log_prefix, pass);
+>
+> -again:
+> +       if (poll_read(mode == REDIR_INGRESS ? p0 : c0, IO_TIMEOUT_SEC))
+> +             FAIL_ERRNO("%s: read", log_prefix);
+>         n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
+> -       if (n < 0) {
+> -               if (errno == EAGAIN && retries--) {
+> -                       usleep(1000);
+> -                       goto again;
+> -               }
+> +       if (n < 0)
+>                 FAIL_ERRNO("%s: read", log_prefix);
+> -       }
+>         if (n == 0)
+>                 FAIL("%s: incomplete read", log_prefix);
