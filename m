@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EC53F8EFB
-	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 21:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBCE3F8EFF
+	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 21:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243356AbhHZTmH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Aug 2021 15:42:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22335 "EHLO
+        id S243607AbhHZTmO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Aug 2021 15:42:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50126 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243485AbhHZTmG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 26 Aug 2021 15:42:06 -0400
+        by vger.kernel.org with ESMTP id S243611AbhHZTmN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 26 Aug 2021 15:42:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630006878;
+        s=mimecast20190719; t=1630006885;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IZxI6wOoaWT81ALa8QkvdxqAQKY5lKnGUs6cJrU25Fs=;
-        b=RRgn1bKlERf8XUV/0EPJaSSTK9ZiwOWppz0HKpv5Vg6SEw4hd7aEJM3kA5B661quNMCPiW
-        jPV/4wJg6bMs08qknVPmPQ4/9erUF75egxAJA3/6nv1J8XnlWoJX3sdXZ88aWmmGSuCDPb
-        StP2/y95AhwQmdoqwLdLh4r9Kweaucw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-ZTiVIGMuNnOq-jEMHPesCg-1; Thu, 26 Aug 2021 15:41:17 -0400
-X-MC-Unique: ZTiVIGMuNnOq-jEMHPesCg-1
-Received: by mail-wr1-f72.google.com with SMTP id b7-20020a5d4d87000000b001575d1053d2so1180704wru.23
-        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 12:41:17 -0700 (PDT)
+        bh=/wdRRB3BbU0zTebKEzNMBHGnZzjSnqwp9yN08+1iPjU=;
+        b=XTCAJin1neNHFLzJvlySZ/iYT40ae8hFSZJkZURFEHf6vx9IVA08Yk6gXyNzsdp/hXFjPf
+        HS8+ckPLzzqvCR7Tsjsm/usVX0QU5nEvkHHHvsslnZnLPq3jFoqeV1zaxmONl5KIn25uRj
+        W8StGtpN6vLep/qQ8VemdSyCFsAKgFU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-496-2Jc8iAuTONSSkLalopdd8g-1; Thu, 26 Aug 2021 15:41:24 -0400
+X-MC-Unique: 2Jc8iAuTONSSkLalopdd8g-1
+Received: by mail-wm1-f72.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso4752910wma.9
+        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 12:41:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IZxI6wOoaWT81ALa8QkvdxqAQKY5lKnGUs6cJrU25Fs=;
-        b=FlOEonjOs+3ProEJJXJanv9DRajuCoJgmi+4G1l3phr1A1GaByjvOt+1vEnaFxHrgV
-         eGs8sXPilMCLKX26gRwSxzLCFwzcOw2jtrR1Ob0MLZHlUjvrd927NpVVAZEdR9kufgKM
-         Li3U+8E5q3qEymIokZ5rjMDxeTDfHnHetiVHtpN2eXos6h2/hGFoIlXcmEQhDIOQ3Yve
-         gVme53EXPqSSiE4/SwvVdWFm3LRcVTYT9CYcxR8o8ryIa6OGWjWq/qheaQcr072yy2vx
-         eL8QcvXzSGdldq64RX4+s69BNmZydaB+zqfyKEJ8vW3uoHQEDGL7t8ymkt+HpqyuewbC
-         C4KQ==
-X-Gm-Message-State: AOAM53387xncoqCgjYd+Y4G/ge97pGR9sL1dgE9EARWbCbEv9VYak2Dg
-        F6D2fdC6AKnnkP4Ed/U4B3pn9tbK+c519tQBXbeeKRao13vO9l+uxxjlWjXssUMQ4mg6AjoJeur
-        UWbtkLiaeDIMk
-X-Received: by 2002:adf:9f0d:: with SMTP id l13mr848694wrf.328.1630006875831;
-        Thu, 26 Aug 2021 12:41:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwo67KkXMdAPOOGMrz24uHf7y9/tWyscdaPfYgn96pwyBfYz/iJlHc46O9G4R2MLdO7VZ/buQ==
-X-Received: by 2002:adf:9f0d:: with SMTP id l13mr848672wrf.328.1630006875603;
-        Thu, 26 Aug 2021 12:41:15 -0700 (PDT)
+        bh=/wdRRB3BbU0zTebKEzNMBHGnZzjSnqwp9yN08+1iPjU=;
+        b=L8xPM99zVBcZFs9cp0z1ozuMhcENb0in52LAULTcK9CFB/toSev+8MaLLLQ/VX6ErL
+         Dr7GqKNeXE93NvPYdiWsrU0sc501GjYorxUBVcVYPEFnqS6uDiG+fVNpoyHhSzWciERs
+         Xsneuo97G04WY6wfKFedGfPGJfrQgxoNp7tmhds7dXLhHHupsKpNo0K7GobMQFapdMQ7
+         lZbdC9RMjddbM9EG97UzsS5QzbA76l2x6e/bk2CyjB4hdTjdrrBiyHRZtYljNcaAonkQ
+         WsEyhqBnmuadmARD9yZRqCscrwUnX2muD376grrmmCswASQe8+X05KXdCLaFkiFNJnF+
+         DmdA==
+X-Gm-Message-State: AOAM5309cc4Vb0JKfR3lcFOwOYnEK9N1pkAqSbGTkjMNqqe82ncmwbSW
+        4BfRv33IrC+bl4yiVRTteR1TZay/rLTjqwmuCpMvX3dCk9RcLmjPv6ELVSOlQobETUaorYEUkco
+        iWZt9j3lfK1x1
+X-Received: by 2002:a05:6000:1808:: with SMTP id m8mr5842525wrh.272.1630006882351;
+        Thu, 26 Aug 2021 12:41:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzhi28xOo8akRuWYI1q+XExG6E1iNF4UXfPNErBo+zAHkd2rbEd372edPEF5IYB7n7bBmLlLA==
+X-Received: by 2002:a05:6000:1808:: with SMTP id m8mr5842503wrh.272.1630006882147;
+        Thu, 26 Aug 2021 12:41:22 -0700 (PDT)
 Received: from krava.redhat.com ([83.240.63.86])
-        by smtp.gmail.com with ESMTPSA id n14sm4018343wrx.10.2021.08.26.12.41.14
+        by smtp.gmail.com with ESMTPSA id l21sm3356742wmh.31.2021.08.26.12.41.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 12:41:15 -0700 (PDT)
+        Thu, 26 Aug 2021 12:41:21 -0700 (PDT)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -62,9 +62,9 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
         Viktor Malik <vmalik@redhat.com>
-Subject: [PATCH bpf-next v4 18/27] bpf, x64: Store properly return value for trampoline with multi func programs
-Date:   Thu, 26 Aug 2021 21:39:13 +0200
-Message-Id: <20210826193922.66204-19-jolsa@kernel.org>
+Subject: [PATCH bpf-next v4 19/27] bpf: Attach multi trampoline with ftrace_ops
+Date:   Thu, 26 Aug 2021 21:39:14 +0200
+Message-Id: <20210826193922.66204-20-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210826193922.66204-1-jolsa@kernel.org>
 References: <20210826193922.66204-1-jolsa@kernel.org>
@@ -74,181 +74,174 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When we have multi func program attached, the trampoline
-switched to the function model of the multi func program.
+Adding struct ftrace_ops object to bpf_trampoline_multi
+struct and setting it up with all the requested function
+addresses.
 
-This breaks already attached standard programs, for example
-when we attach following program:
+Adding is_multi_trampoline(tr) hooks to installing functions
+to actually install multiple bpf trampoline via ftrace_ops.
 
-  SEC("fexit/bpf_fentry_test2")
-  int BPF_PROG(test1, int a, __u64 b, int ret)
-
-the trampoline pushes on stack args 'a' and 'b' and return
-value 'ret'.
-
-When following multi func program is attached to bpf_fentry_test2:
-
-  SEC("fexit.multi/bpf_fentry_test*")
-  int BPF_PROG(test2, __u64 a, __u64 b, __u64 c, __u64 d,
-                       __u64 e, __u64 f, int ret)
-
-the trampoline takes this program model and pushes all 6 args
-and return value on stack.
-
-But we still have the original 'test1' program attached, that
-expects 'ret' value where there's 'c' argument now:
-
-  test1(a, b, c)
-
-To fix that we simply overwrite 'c' argument with 'ret' value,
-so test1 is called as expected and test2 gets called as:
-
-  test2(a, b, ret, d, e, f, ret)
-
-which is ok, because 'c' is not defined for bpf_fentry_test2
-anyway.
+I had to add -DCC_USING_FENTRY to several places because
+arch/x86/include/asm/ftrace.h would fail the compilation
+if it's not defined. Perhaps there's a better way.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/net/bpf_jit_comp.c | 40 ++++++++++++++++++++++++++++++-------
- include/linux/bpf.h         |  1 +
- kernel/bpf/trampoline.c     |  1 +
- 3 files changed, 35 insertions(+), 7 deletions(-)
+ arch/x86/Makefile                     |  7 +++++
+ arch/x86/boot/compressed/Makefile     |  4 +++
+ drivers/firmware/efi/libstub/Makefile |  3 +++
+ include/linux/bpf.h                   |  2 ++
+ kernel/bpf/trampoline.c               | 37 +++++++++++++++++++++++++++
+ 5 files changed, 53 insertions(+)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 9f31197780ae..3f7911a92d62 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1744,7 +1744,7 @@ static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
- }
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 307fd0000a83..72986eb38d0b 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -34,6 +34,9 @@ REALMODE_CFLAGS += -fno-stack-protector
+ REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
+ REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
+ REALMODE_CFLAGS += $(CLANG_FLAGS)
++ifdef CONFIG_DYNAMIC_FTRACE
++     REALMODE_CFLAGS += -DCC_USING_FENTRY
++endif
+ export REALMODE_CFLAGS
  
- static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
--			   struct bpf_prog *p, int stack_size, bool mod_ret)
-+			   struct bpf_prog *p, int stack_size, bool mod_ret, int args_off)
- {
- 	u8 *prog = *pprog;
- 	u8 *jmp_insn;
-@@ -1780,9 +1780,14 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
- 	/* BPF_TRAMP_MODIFY_RETURN trampolines can modify the return
- 	 * of the previous call which is then passed on the stack to
- 	 * the next BPF program.
-+	 * Store the return value also to original args' end in case
-+	 * we have multi func programs in trampoline.
- 	 */
--	if (mod_ret)
-+	if (mod_ret) {
- 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
-+		if (args_off)
-+			emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -args_off);
-+	}
+ # BITS is used as extension for files which are available in a 32 bit
+@@ -54,6 +57,10 @@ KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
+ # Intel CET isn't enabled in the kernel
+ KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
  
- 	/* replace 2 nops with JE insn, since jmp target is known */
- 	jmp_insn[0] = X86_JE;
-@@ -1834,7 +1839,7 @@ static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
- 	u8 *prog = *pprog;
- 
- 	for (i = 0; i < tp->nr_progs; i++) {
--		if (invoke_bpf_prog(m, &prog, tp->progs[i], stack_size, false))
-+		if (invoke_bpf_prog(m, &prog, tp->progs[i], stack_size, false, 0))
- 			return -EINVAL;
- 	}
- 	*pprog = prog;
-@@ -1843,7 +1848,7 @@ static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
- 
- static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
- 			      struct bpf_tramp_progs *tp, int stack_size,
--			      u8 **branches)
-+			      u8 **branches, int args_off)
- {
- 	u8 *prog = *pprog;
- 	int i;
-@@ -1853,8 +1858,15 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
- 	 */
- 	emit_mov_imm32(&prog, false, BPF_REG_0, 0);
- 	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
++ifdef CONFIG_DYNAMIC_FTRACE
++     KBUILD_CFLAGS += -DCC_USING_FENTRY
++endif
 +
-+	/* Store the return value also to original args' end in case
-+	 * we have multi func programs in trampoline.
-+	 */
-+	if (args_off)
-+		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -args_off);
-+
- 	for (i = 0; i < tp->nr_progs; i++) {
--		if (invoke_bpf_prog(m, &prog, tp->progs[i], stack_size, true))
-+		if (invoke_bpf_prog(m, &prog, tp->progs[i], stack_size, true, args_off))
- 			return -EINVAL;
+ ifeq ($(CONFIG_X86_32),y)
+         BITS := 32
+         UTS_MACHINE := i386
+diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+index 431bf7f846c3..a93dcbda4de2 100644
+--- a/arch/x86/boot/compressed/Makefile
++++ b/arch/x86/boot/compressed/Makefile
+@@ -49,6 +49,10 @@ KBUILD_CFLAGS += $(call as-option,-Wa$(comma)-mrelax-relocations=no)
+ KBUILD_CFLAGS += -include $(srctree)/include/linux/hidden.h
+ KBUILD_CFLAGS += $(CLANG_FLAGS)
  
- 		/* mod_ret prog stored return value into [rbp - 8]. Emit:
-@@ -1942,7 +1954,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 				struct bpf_tramp_progs *tprogs,
- 				void *orig_call)
- {
--	int ret, i, nr_args = m->nr_args;
-+	int ret, i, args_off = 0, nr_args = m->nr_args;
- 	int stack_size = nr_args * 8;
- 	struct bpf_tramp_progs *fentry = &tprogs[BPF_TRAMP_FENTRY];
- 	struct bpf_tramp_progs *fexit = &tprogs[BPF_TRAMP_FEXIT];
-@@ -1958,6 +1970,13 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 	    (flags & BPF_TRAMP_F_SKIP_FRAME))
- 		return -EINVAL;
- 
-+	/* if m->nr_args_orig != 0, then we have multi prog model and
-+	 * we need to also store return value at the end of standard
-+	 * trampoline's arguments
-+	 */
-+	if (m->nr_args_orig && m->nr_args > m->nr_args_orig)
-+		args_off = (m->nr_args - m->nr_args_orig) * 8 + 8;
++ifdef CONFIG_DYNAMIC_FTRACE
++     KBUILD_CFLAGS += -DCC_USING_FENTRY
++endif
 +
- 	if (flags & BPF_TRAMP_F_CALL_ORIG)
- 		stack_size += 8; /* room for return value of orig_call */
+ # sev.c indirectly inludes inat-table.h which is generated during
+ # compilation and stored in $(objtree). Add the directory to the includes so
+ # that the compiler finds it even with out-of-tree builds (make O=/some/path).
+diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+index d0537573501e..2fd5d6f55e24 100644
+--- a/drivers/firmware/efi/libstub/Makefile
++++ b/drivers/firmware/efi/libstub/Makefile
+@@ -15,6 +15,9 @@ cflags-$(CONFIG_X86)		+= -m$(BITS) -D__KERNEL__ \
+ 				   $(call cc-disable-warning, gnu) \
+ 				   -fno-asynchronous-unwind-tables \
+ 				   $(CLANG_FLAGS)
++ifdef CONFIG_DYNAMIC_FTRACE
++     cflags-$(CONFIG_X86)	+= -DCC_USING_FENTRY
++endif
  
-@@ -2015,7 +2034,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 			return -ENOMEM;
- 
- 		if (invoke_bpf_mod_ret(m, &prog, fmod_ret, stack_size,
--				       branches)) {
-+				       branches, args_off)) {
- 			ret = -EINVAL;
- 			goto cleanup;
- 		}
-@@ -2036,6 +2055,13 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 		}
- 		/* remember return value in a stack for bpf prog to access */
- 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
-+
-+		/* store return value also to original args' end in case we have
-+		 * multi func programs in trampoline
-+		 */
-+		if (args_off)
-+			emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -args_off);
-+
- 		im->ip_after_call = prog;
- 		memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
- 		prog += X86_PATCH_SIZE;
+ # arm64 uses the full KBUILD_CFLAGS so it's necessary to explicitly
+ # disable the stackleak plugin
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3ce4656e2057..373f45ae7dce 100644
+index 373f45ae7dce..52cbec23665c 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -563,6 +563,7 @@ struct btf_func_model {
- 	u8 ret_size;
- 	u8 nr_args;
- 	u8 arg_size[MAX_BPF_FUNC_ARGS];
-+	u8 nr_args_orig;
- };
+@@ -23,6 +23,7 @@
+ #include <linux/slab.h>
+ #include <linux/percpu-refcount.h>
+ #include <linux/bpfptr.h>
++#include <linux/ftrace.h>
  
- /* Restore arguments before returning from trampoline to let original function
+ struct bpf_verifier_env;
+ struct bpf_verifier_log;
+@@ -703,6 +704,7 @@ struct bpf_trampoline_multi {
+ 	struct list_head list;
+ 	u32 *ids;
+ 	u32 ids_cnt;
++	struct ftrace_ops ops;
+ 	int tr_cnt;
+ 	struct bpf_trampoline *tr[];
+ };
 diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 6ff5c2512f91..308d58e698be 100644
+index 308d58e698be..82e7545a7426 100644
 --- a/kernel/bpf/trampoline.c
 +++ b/kernel/bpf/trampoline.c
-@@ -398,6 +398,7 @@ static bool needs_multi_model(struct bpf_trampoline *tr, struct btf_func_model *
- 	if (tr->func.model.nr_args >= multi->func.model.nr_args)
- 		return false;
- 	memcpy(new, &multi->func.model, sizeof(*new));
-+	new->nr_args_orig = tr->func.model.nr_args;
- 	return true;
+@@ -179,11 +179,38 @@ static int is_ftrace_location(void *ip)
+ 	return 1;
  }
  
++static int register_ftrace_multi(struct bpf_trampoline *tr, void *new_addr)
++{
++	struct bpf_trampoline_multi *multi;
++
++	multi = container_of(tr, struct bpf_trampoline_multi, main);
++	return register_ftrace_direct_multi(&multi->ops, (long)new_addr);
++}
++
++static int unregister_ftrace_multi(struct bpf_trampoline *tr, void *old_addr)
++{
++	struct bpf_trampoline_multi *multi;
++
++	multi = container_of(tr, struct bpf_trampoline_multi, main);
++	return unregister_ftrace_direct_multi(&multi->ops);
++}
++
++static int modify_ftrace_multi(struct bpf_trampoline *tr, void *new_addr)
++{
++	struct bpf_trampoline_multi *multi;
++
++	multi = container_of(tr, struct bpf_trampoline_multi, main);
++	return modify_ftrace_direct_multi(&multi->ops, (long)new_addr);
++}
++
+ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
+ {
+ 	void *ip = tr->func.addr;
+ 	int ret;
+ 
++	if (is_multi_trampoline(tr))
++		return unregister_ftrace_multi(tr, old_addr);
++
+ 	if (tr->func.ftrace_managed)
+ 		ret = unregister_ftrace_direct((long)ip, (long)old_addr);
+ 	else
+@@ -199,6 +226,9 @@ static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_ad
+ 	void *ip = tr->func.addr;
+ 	int ret;
+ 
++	if (is_multi_trampoline(tr))
++		return modify_ftrace_multi(tr, new_addr);
++
+ 	if (tr->func.ftrace_managed)
+ 		ret = modify_ftrace_direct((long)ip, (long)old_addr, (long)new_addr);
+ 	else
+@@ -212,6 +242,9 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+ 	void *ip = tr->func.addr;
+ 	int ret;
+ 
++	if (is_multi_trampoline(tr))
++		return register_ftrace_multi(tr, new_addr);
++
+ 	ret = is_ftrace_location(ip);
+ 	if (ret < 0)
+ 		return ret;
+@@ -703,6 +736,10 @@ struct bpf_trampoline_multi *bpf_trampoline_multi_get(struct bpf_prog *prog,
+ 		if (!is_ftrace_location((void *) tgt_info.tgt_addr))
+ 			goto out_free;
+ 
++		err = ftrace_set_filter_ip(&multi->ops, tgt_info.tgt_addr, 0, 0);
++		if (err)
++			goto out_free;
++
+ 		if (nr_args < tgt_info.fmodel.nr_args)
+ 			nr_args = tgt_info.fmodel.nr_args;
+ 	}
 -- 
 2.31.1
 
