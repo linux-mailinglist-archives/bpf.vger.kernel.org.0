@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212783F8927
-	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 15:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDA43F8929
+	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 15:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242652AbhHZNkQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Aug 2021 09:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S242629AbhHZNkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Aug 2021 09:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242601AbhHZNkP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Aug 2021 09:40:15 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021C1C061757;
-        Thu, 26 Aug 2021 06:39:28 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id j1so2226634pjv.3;
-        Thu, 26 Aug 2021 06:39:27 -0700 (PDT)
+        with ESMTP id S242601AbhHZNkS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Aug 2021 09:40:18 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF74AC061757;
+        Thu, 26 Aug 2021 06:39:30 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u6so2168008pfi.0;
+        Thu, 26 Aug 2021 06:39:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SQ8X68+agmo/9YIuGhT9zb0QxYHN2zLKWc/jICvz7q0=;
-        b=Po1YYxpEyLyYWZqDoAMVn9GmaKXBB1P5i7AjLj1ItDim/6/5LFpK0+7XbxUdGYXw8W
-         0vfFS7rK9drXrWoT5PWbFYFGa+McstOePM02mbyw9VWAwy9SF7hKIt4JKwpl+yvt7FbO
-         e8kJ3eg0FR8RGb/kjrazXg1ZAcTNfmwuYgnHC2U72bciP+vjlrzPS8SsaWD4P2MFjmHF
-         2mDstd1in0jmSqohPZ2E8AqEGUgbUvetW9ZUxVmlc/p9M5Oms5EFw+EnqTSLsOCgic33
-         za/A7Ism3ZiNUmR+TEgg9l25trE6LeRFn3Zd7xb5O5W6GRnv1GQAMcxyh3Ol5CG7oL/4
-         Huiw==
+        bh=VZddMfhMy2qsp873EeyfgTUq4LH9HW+30X5gjNhM9wo=;
+        b=YFkhE8dlbtgirv8svxYN51iSJOIAyJK7rAxHygkFAxmY+ttyvToWJm701kt+vnEnR0
+         eC7B63GPKhGn5BaFunHx/rGVU7D5yBMQJsZMPKU3BwScp3GvBhwRPJQcaI0HMWxc6XB3
+         vmz3v2zZiYY4GvuhMuRfu3LpUIPQtBODc+247g/w5bB2nlDIAHKdNjzHDGVrtsop3HDb
+         dVNJjiFl1Y02tqyrR19hzHT65Chssm576RF/c06401qnoYFoLLGy07xaZCupmTNORKzs
+         jQnP/5Nvb0//xTBnswj3KncsgDrKtmt6LT/AEpRNLBXTO2F1l23ASL9ZbSTXCGzau9sk
+         En6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SQ8X68+agmo/9YIuGhT9zb0QxYHN2zLKWc/jICvz7q0=;
-        b=K99e8KtTigTLVBMrl13zFis4d9K712hkCZF8zUM+52+cuL4qZgmRpK6LLTvwUdSKxo
-         GCDg9OEqCRCW12Y5mJgjik/+vs9WaWFe1Zd5t2R9F9R+6g9wo/gFYZUfmxm+mnYvptJu
-         KIpmXa3UeAM5eGBVr/nRbPaY+pIXs2CpWJswm/42uejJQecAEKUI1G5M6+CCc6xwNKM7
-         ASLwzpkhkzhJPiVH28LZzfCQuqdO148DwMLFMNwRq/2pOVMFPWDkz4jZFnLr3Y2TS7l0
-         4DC9b0JlwTBztjTrHSpI/4QABSofeDztb1B3z1r2TT4denxZIyNd+l1y6aZa7csXLSmZ
-         iC+w==
-X-Gm-Message-State: AOAM531BgNmGvy8IHK0cYKK9zh0iWl4EhruYZc5ZvycR/flXPzeJvszA
-        vypqPlEJqLU0lfTMv57QyQJmbvKH3V4=
-X-Google-Smtp-Source: ABdhPJzVj8Twv4CwSQJuK1Jpsdk7ku+SLYJQ82nGUUQxzISLjtsVZ8/zKK0LQ4VN+XrtZx074JUbng==
-X-Received: by 2002:a17:902:b102:b0:134:a329:c2f8 with SMTP id q2-20020a170902b10200b00134a329c2f8mr3714167plr.71.1629985167354;
-        Thu, 26 Aug 2021 06:39:27 -0700 (PDT)
+        bh=VZddMfhMy2qsp873EeyfgTUq4LH9HW+30X5gjNhM9wo=;
+        b=fEvHz2Ma7597x5eXeY/xzzdP4dtMt0bihRhfwI1T6Q7rO0RO7yK3n5M7AYq++ktbBf
+         PBtLy7Z5G/ROs1CUWsNQaMrSCvUamm6Bj5F+m4EP1gQe8MO9KDEP/6vkEVnEJNA2ERrY
+         sd4UVavrhOhyo9ECXVHHT3hWtQ+HVYonfNLYPlKZVTwG/K0775U/glM8G5DY6pOUPBDy
+         rAUvYClnaA13fL6gCXRD8A6UqG5FTk43CvDjKTcEJGygIVE8OcFr60KuQveaclcVhCN+
+         nW6JK45bTlqU2hRi5kk0PnzvcLl97oK2fXVuCQXbi5BrcRQgby2JDNfrRECWkViwoP9G
+         PDXw==
+X-Gm-Message-State: AOAM5329UeB8rfibgMjh2LzedhJpTVJ95tMwH6jypMBk+/fno7i1GTNl
+        pEWFcILUgYqKza6bNkzxA68W5Tf+fQ4=
+X-Google-Smtp-Source: ABdhPJw82MPp+FiMSCOUVR3v1ciRHgmaCI2IZaloa3O0ujKJKvBQm9DJbaU0td0MnucWaS5LhQ+nHg==
+X-Received: by 2002:a62:80d2:0:b0:3f1:e19c:a23 with SMTP id j201-20020a6280d2000000b003f1e19c0a23mr3789918pfd.43.1629985170279;
+        Thu, 26 Aug 2021 06:39:30 -0700 (PDT)
 Received: from localhost ([2405:201:6014:d820:9cc6:d37f:c2fd:dc6])
-        by smtp.gmail.com with ESMTPSA id 11sm3052712pfl.41.2021.08.26.06.39.26
+        by smtp.gmail.com with ESMTPSA id k20sm3506830pfu.133.2021.08.26.06.39.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 06:39:27 -0700 (PDT)
+        Thu, 26 Aug 2021 06:39:30 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
@@ -60,9 +60,9 @@ Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Alexander Mihalicyn <alexander@mihalicyn.com>,
         Andrei Vagin <avagin@gmail.com>,
         linux-security-module@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/5] libbpf: Add bpf_probe_map_type support for file local storage
-Date:   Thu, 26 Aug 2021 19:09:11 +0530
-Message-Id: <20210826133913.627361-4-memxor@gmail.com>
+Subject: [PATCH bpf-next v2 4/5] tools: bpf: update bpftool for file_storage map
+Date:   Thu, 26 Aug 2021 19:09:12 +0530
+Message-Id: <20210826133913.627361-5-memxor@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210826133913.627361-1-memxor@gmail.com>
 References: <20210826133913.627361-1-memxor@gmail.com>
@@ -72,23 +72,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This updates bpftool to recognise the new file local storage map type.
+
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- tools/lib/bpf/libbpf_probes.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/bpf/bpftool/Documentation/bpftool-map.rst | 2 +-
+ tools/bpf/bpftool/bash-completion/bpftool       | 3 ++-
+ tools/bpf/bpftool/map.c                         | 3 ++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-index cd8c703dde71..a97f2088c53a 100644
---- a/tools/lib/bpf/libbpf_probes.c
-+++ b/tools/lib/bpf/libbpf_probes.c
-@@ -233,6 +233,7 @@ bool bpf_probe_map_type(enum bpf_map_type map_type, __u32 ifindex)
- 	case BPF_MAP_TYPE_SK_STORAGE:
- 	case BPF_MAP_TYPE_INODE_STORAGE:
- 	case BPF_MAP_TYPE_TASK_STORAGE:
-+	case BPF_MAP_TYPE_FILE_STORAGE:
- 		btf_key_type_id = 1;
- 		btf_value_type_id = 3;
- 		value_size = 8;
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+index d0c4abe08aba..aff192eb6e37 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+@@ -52,7 +52,7 @@ MAP COMMANDS
+ |		| **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
+ |		| **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
+ |		| **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage**
+-		| **task_storage** }
++		| **task_storage** | **file_storage** }
+ 
+ DESCRIPTION
+ ===========
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 88e2bcf16cca..e7939e82bda4 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -710,7 +710,8 @@ _bpftool()
+                                 hash_of_maps devmap devmap_hash sockmap cpumap \
+                                 xskmap sockhash cgroup_storage reuseport_sockarray \
+                                 percpu_cgroup_storage queue stack sk_storage \
+-                                struct_ops inode_storage task_storage ringbuf'
++                                struct_ops inode_storage task_storage ringbuf \
++                                file_storage'
+                             COMPREPLY=( $( compgen -W "$BPFTOOL_MAP_CREATE_TYPES" -- "$cur" ) )
+                             return 0
+                             ;;
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index 407071d54ab1..f3c6ea47f846 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -52,6 +52,7 @@ const char * const map_type_name[] = {
+ 	[BPF_MAP_TYPE_RINGBUF]			= "ringbuf",
+ 	[BPF_MAP_TYPE_INODE_STORAGE]		= "inode_storage",
+ 	[BPF_MAP_TYPE_TASK_STORAGE]		= "task_storage",
++	[BPF_MAP_TYPE_FILE_STORAGE]		= "file_storage",
+ };
+ 
+ const size_t map_type_name_size = ARRAY_SIZE(map_type_name);
+@@ -1466,7 +1467,7 @@ static int do_help(int argc, char **argv)
+ 		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
+ 		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
+ 		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage |\n"
+-		"                 task_storage }\n"
++		"		  task_storage | file_storage }\n"
+ 		"       " HELP_SPEC_OPTIONS " |\n"
+ 		"                    {-f|--bpffs} | {-n|--nomount} }\n"
+ 		"",
 -- 
 2.33.0
 
