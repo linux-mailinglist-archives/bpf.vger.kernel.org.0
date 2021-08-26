@@ -2,114 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E669D3F86FC
-	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 14:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9073F8921
+	for <lists+bpf@lfdr.de>; Thu, 26 Aug 2021 15:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbhHZMKr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Aug 2021 08:10:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44909 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234332AbhHZMKr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 26 Aug 2021 08:10:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629979799;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=nWrE2HDlrjtGecuiHb39mNXd8P/fR0BmAr5iq/4KUOo=;
-        b=d++5g4Wz4ySkn0nuSfmo8fsAOYICvJ0YKWZWxVwyTxrmwKs7H3mFqWK74+3Wst4MZjey+M
-        W4+KN2fUzSwYkpjpamJuLsJXpynUTtGEPHjfu1UgB4dPsB4P66OAQs7DoErVW85dbNYhF1
-        q/lGBq+1LpaQyWzJcKA2bpJGEoiFBM0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-gQxxC8iNNVuAZl9JRY65BA-1; Thu, 26 Aug 2021 08:09:58 -0400
-X-MC-Unique: gQxxC8iNNVuAZl9JRY65BA-1
-Received: by mail-ed1-f70.google.com with SMTP id g4-20020a056402180400b003c2e8da869bso1400449edy.13
-        for <bpf@vger.kernel.org>; Thu, 26 Aug 2021 05:09:58 -0700 (PDT)
+        id S242503AbhHZNkG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Aug 2021 09:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231371AbhHZNkG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Aug 2021 09:40:06 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED38EC061757;
+        Thu, 26 Aug 2021 06:39:18 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id m26so2816166pff.3;
+        Thu, 26 Aug 2021 06:39:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g8BGx0Ba10IsHwKsa7FzG5NnzcV5Ex49w3yDNQPok2U=;
+        b=pJkEISWL/bU9vH8h9V8nsTX97MRUPQiNyJFoPS3si5V2B7zsTfbUadc6l8BWy0zptd
+         uf2Yead7L5K/rFeT8oB+tYaAJYvLUXvJX5zR7uhw54bHmXLrI6M92iRoFfl2jBx/6vvN
+         Y2t8cgO2xXiFaG0lF/BQa6XwJJM3HRei5bZ5lB9UeUFOSl9HggoeQQGo50YeDCfmvVy+
+         QoEH/+PtMf/7ytO7FzRJli+edZWjLoRqMEMfpmuIwCzVX3XfS8dCUF5pDs+3Y4EOaWTd
+         uGceqCjCMhD1nCUt8QgnXOXAcoDhZTJxImWnqM3Ioy6/QkA12+j8oubW77BXYJPxmeO5
+         JKfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=nWrE2HDlrjtGecuiHb39mNXd8P/fR0BmAr5iq/4KUOo=;
-        b=NyawQ29TEPPbZ3kkxPfCfoEOi9QJUHuxOxHh4SqFZEipmJnxmshc1bK+mylwc02t+f
-         +wOBtQuCNAynyeTTdVbOlBw2aS2By03irHE4HWsfykW4hkiPudx/GQwhMQcr9u5IWtvv
-         vgT+q7DCysM9vYa9KXFh0AvH9MBtiEVZKjOVdI+259ExmYn106BcVOESxCKGdfcBKuV5
-         Jd0qCPPXWcjSdHQQz9ZnBdCkRu3CbOTjT+ujtWiTjOSF5CiTOgaN0wG7zgqZmSPj8BNK
-         vpnohfK6/Uagut4V/908domv4afiNm1WCMeppqM4VlywHHFjgB0N9ciZMCtS2tFk8VVK
-         zjYg==
-X-Gm-Message-State: AOAM532zOwIy1z5C/pael6YNo5CbVYydHLDkSTgp+BRkrA2qKdetyzV0
-        4I/MbLql381t4n/mNih5Js85T0qhM2Vhm5Y08LFHoX2uV+2cCyZ0/QCounWV2sEE1rfUk+4AVSk
-        xZaMG4d+SZ0Zr
-X-Received: by 2002:a17:906:919:: with SMTP id i25mr3825645ejd.171.1629979797253;
-        Thu, 26 Aug 2021 05:09:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDTy7MYeSlLofghaX7Wawjfw7wPqvh8RZCCqlh2GHsJC031WE+0KbJ0nbNLJyQJOtIjogVMA==
-X-Received: by 2002:a17:906:919:: with SMTP id i25mr3825621ejd.171.1629979797009;
-        Thu, 26 Aug 2021 05:09:57 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id mf2sm1292612ejb.76.2021.08.26.05.09.56
+        bh=g8BGx0Ba10IsHwKsa7FzG5NnzcV5Ex49w3yDNQPok2U=;
+        b=fFapy+sZLZFTRNECZjKNZ8mzbPT4IUSn8dZBmk91R7Iu18aaRZIzJea5niMbLy0rkE
+         i4ACK0iAIBQDNGhYWkzQ5LSTfS/xHeMZQQ7qUlM0aMvv/r7dNEBK0o4hB7zLpW97sbIw
+         2t2XU+WW9fxHvjvyrGDEEEqIuOJq328kg0K+jYUIy2bb3o5bvkMT4iRSTWFgtpdUiWmn
+         zT0DLdxtXJe1vhGbCpKDw3Jx5FcJaRbu7DKfCS4n/pTGGA1wGpnnVwWk0P+4gwfZmdPV
+         svNcqa8zWj7uCDV93WJ4+bEy74h2JAcH8Q2Y+ByK73IMUQJtYNuS3QynFhrEz5WpzywL
+         LkUQ==
+X-Gm-Message-State: AOAM532zTob9phDNtlCRb3E4xlKuDDA9lo3hxNnGwb52IDgUJXSFR/8O
+        o+fmeDafjmM+13znWciJm87nXBxDg6I=
+X-Google-Smtp-Source: ABdhPJzASv/6AbUjEuve2eNqS8IeJFLvptgHhP9dy7GfgqRVXgVnGPInwLnvmte2fBW23aJc9czNJg==
+X-Received: by 2002:a63:eb41:: with SMTP id b1mr3494470pgk.236.1629985158140;
+        Thu, 26 Aug 2021 06:39:18 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d820:9cc6:d37f:c2fd:dc6])
+        by smtp.gmail.com with ESMTPSA id b7sm1181677pgs.64.2021.08.26.06.39.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 05:09:56 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 01CC8180082; Thu, 26 Aug 2021 14:09:54 +0200 (CEST)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Thu, 26 Aug 2021 06:39:17 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
-Subject: [PATCH bpf-next v2] libbpf: ignore .eh_frame sections when parsing elf files
-Date:   Thu, 26 Aug 2021 14:09:53 +0200
-Message-Id: <20210826120953.11041-1-toke@redhat.com>
+        Spencer Baugh <sbaugh@catern.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Alexander Mihalicyn <alexander@mihalicyn.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/5] Implement file local storage
+Date:   Thu, 26 Aug 2021 19:09:08 +0530
+Message-Id: <20210826133913.627361-1-memxor@gmail.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When .eh_frame and .rel.eh_frame sections are present in BPF object files,
-libbpf produces errors like this when loading the file:
+This series implements a file local storage map for eBPF LSM programs. This
+allows to tie lifetime of data in the map to an open file description (in POSIX
+parlance). Like other local storage map types, lifetime of data is tied to the
+struct file instance.
 
-libbpf: elf: skipping unrecognized data section(32) .eh_frame
-libbpf: elf: skipping relo section(33) .rel.eh_frame for section(32) .eh_frame
+The main purpose is a general purpose map keyed by fd where the open file
+underlying the fd (struct file *) serves as the key into the map. It is possible
+to use struct file * from kernelspace, but sharing update access with userspace
+means userspace has no way except kcmp-aring with another known fd with a key.
+This is pretty wasteful.
 
-It is possible to get rid of the .eh_frame section by adding
--fno-asynchronous-unwind-tables to the compilation, but we have seen
-multiple examples of these sections appearing in BPF files in the wild,
-most recently in samples/bpf, fixed by:
-5a0ae9872d5c ("bpf, samples: Add -fno-asynchronous-unwind-tables to BPF Clang invocation")
+It can also be used to treat the map as a set of files that have been added to
+it, such that multiples sets can be looked up for matching purposes in O(1)
+instead of O(n) using kcmp(2) from userspace (for same struct file *).
 
-While the errors are technically harmless, they look odd and confuse users.
-So let's make libbpf filter out those sections, by adding .eh_frame to the
-filter check in is_sec_name_dwarf().
+There are multiple other usecases served by this map. One of the motivating ones
+is the ability to now implement a Capsicum [0] style capability based sandbox
+using eBPF LSM, but the actual mechanism is much more generic and allows
+applications to enforce rights of their own per open file that they delegate to
+other users by conventional fd-passing on UNIX (dup/fork/SCM_RIGHTS).
 
-v2:
-- Expand explanation in the commit message
+Implementation is similar to that of bpf_inode_storage, with some modifications
+to use struct file * as map key.
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/lib/bpf/libbpf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+[0]: https://www.usenix.org/legacy/event/sec10/tech/full_papers/Watson.pdf
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 88d8825fc6f6..b1dc97b95965 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2909,7 +2909,8 @@ static Elf_Data *elf_sec_data(const struct bpf_object *obj, Elf_Scn *scn)
- static bool is_sec_name_dwarf(const char *name)
- {
- 	/* approximation, but the actual list is too long */
--	return strncmp(name, ".debug_", sizeof(".debug_") - 1) == 0;
-+	return (strncmp(name, ".debug_", sizeof(".debug_") - 1) == 0 ||
-+		strncmp(name, ".eh_frame", sizeof(".eh_frame") - 1) == 0);
- }
- 
- static bool ignore_elf_section(GElf_Shdr *hdr, const char *name)
+Changelog:
+----------
+RFC v1 -> v2
+v1: https://lore.kernel.org/bpf/20210821184824.2052643-1-memxor@gmail.com
+
+ * Expand selftest to demonstrate sample use, and add spin lock in test
+
+Kumar Kartikeya Dwivedi (5):
+  bpf: Implement file local storage
+  tools: sync bpf.h header
+  libbpf: Add bpf_probe_map_type support for file local storage
+  tools: bpf: update bpftool for file_storage map
+  tools: testing: Add selftest for file local storage map
+
+ include/linux/bpf_lsm.h                       |  21 ++
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |  39 +++
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bpf_file_storage.c                 | 244 ++++++++++++++++++
+ kernel/bpf/bpf_lsm.c                          |   4 +
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  10 +
+ security/bpf/hooks.c                          |   2 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   2 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   3 +-
+ tools/bpf/bpftool/map.c                       |   3 +-
+ tools/include/uapi/linux/bpf.h                |  39 +++
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ .../bpf/prog_tests/test_local_storage.c       |  55 ++++
+ .../selftests/bpf/progs/local_storage.c       |  43 +++
+ 16 files changed, 467 insertions(+), 5 deletions(-)
+ create mode 100644 kernel/bpf/bpf_file_storage.c
+
 -- 
 2.33.0
 
