@@ -2,96 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77033F914D
-	for <lists+bpf@lfdr.de>; Fri, 27 Aug 2021 02:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB39D3F91D5
+	for <lists+bpf@lfdr.de>; Fri, 27 Aug 2021 03:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhH0A1Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Aug 2021 20:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
+        id S243916AbhH0BGS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Aug 2021 21:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhH0A1W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Aug 2021 20:27:22 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844A8C061757;
-        Thu, 26 Aug 2021 17:26:34 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id s21-20020a4ae495000000b0028e499b5921so1496527oov.12;
-        Thu, 26 Aug 2021 17:26:34 -0700 (PDT)
+        with ESMTP id S243853AbhH0BGS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Aug 2021 21:06:18 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2827C061757;
+        Thu, 26 Aug 2021 18:05:26 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id m4so2910412pll.0;
+        Thu, 26 Aug 2021 18:05:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pnwBhL+bIRZ+1AujOyithEsycI0iSDtmHs6X+/x+Fhc=;
-        b=sBP1y9OgvieB5CccQH32mPE+X+ashq9FrlnUIlsj20FzDRksOusy3AEq18QQTjGlTN
-         j7HCMqzoDTKGUfxl+NjSTSPWAUvFySjZO2ED4rFuZfmfE1hI6G1UxrJ+xMKI6/Q8ot8S
-         Sm1unDbFtNAXi53kHjGwYPwHpcpv93aMMdzCexVagDs0dEy6PmXV9BWlHWVWJrBKn2Jn
-         EnWBCmWzEhsA6E9EqeyVzjiW0afuEbMkhoV+ivtaNJW8PaDxbtZr/xwdBRfdeY0D/S86
-         HUhj6QWPmCd3lNBSskZ67qX+MG9QVqCHfVaCI+HGe84L3JR3YSDQtuQ4mlLI5azhbI50
-         YxGw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CJoF4Bgpjmz+E7bVdWY2k+bvCattJTFOGcI1X+RlV2A=;
+        b=Xw8hi+ZNH78UlcZDWdCmX6NKyyAA3smvcVS5KjVJWrErrTcr2LmjJL6ARgqTOrR15v
+         xLy0egSMc7lZTlT1MQQcSlhOwRjK8gjy3Wttkew03DA4S6VY7ytzQD+R1mAOBTMJT4j9
+         Ev1bjV8bwfvL4zmjLxRvRBef42hH6yB0Zlp5q6sd+P8mFlKpMtJfg7KsamNxPeEi6zkO
+         4oGveSMKQI5drBkNvkLTgifODCE3tNJhbQtsdkxMq67l6/xznsY8tvS2Hi6iSFW+hlbT
+         9eu/ZPcIzTLPZe9QRNFWxOXwB5DDDYFVZquqRhz2CjFrumFhGlZctUuf43irUiHYr+66
+         1Zcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pnwBhL+bIRZ+1AujOyithEsycI0iSDtmHs6X+/x+Fhc=;
-        b=anoBQSwBHflfgaX5kbSsRaRh8R8BeVqXiXb4x4iYuc8xYtG0L8w1oCTv1xHGxmu3Qt
-         kQe9pRDk3DaGpmqTW4m2nlxtM1REdN8u7tYRtiyFSglIzZ1jkb3zsAPESIsq7FqJIWx6
-         tL+/R06izYrKoBxVnSTW/cAj2U+3g4G19AhWuT6fcbR+OPQsvMTlt7T6M3RjyZIkhWb7
-         okPVqdYpMJXh1C92KUVBsiAcMwBANHq73LdIgQvrRNdoaawUy0+7jXMZGFdOmi/JLxuf
-         WRbV5jKLFU80G8hVjJFQVhYTaa5WHMV4AbSxDBfJMlKTD4CdkE68oXC70KT8OZpSpAEm
-         8afw==
-X-Gm-Message-State: AOAM533nl1W1cUWdj+RqXLYZj5iNBot4iYN9x9WhxA9lbDFE18rxiT+P
-        pinFXA/jQdyhDLRiGEcynbqS1syPYEekixKuhU+KVyT+sY1eNsQH
-X-Google-Smtp-Source: ABdhPJzaoHbOjah8e/X215Kp/Z3xDTS2cp8NQupcSAzhDxBFPFu/G55Fo9UBoorbueobdipf4Ayxle3exSXBftAU5DA=
-X-Received: by 2002:a4a:5742:: with SMTP id u63mr5507687ooa.87.1630023993563;
- Thu, 26 Aug 2021 17:26:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CJoF4Bgpjmz+E7bVdWY2k+bvCattJTFOGcI1X+RlV2A=;
+        b=UQAC7w9tf534eDFcXrK56sH9avGIp8MhSk4mWmghio8vYft7rUlVKaERIEB9N7OIIv
+         GF+rkc+MyjDujaIj6o5gwUrfY6iUSZFrJKmAsGpp1b6KXV23IIWZGJpynP7V64/UAnRw
+         +ya00KF0uA6B4fCrA6jk1lmW4yjB8R/qYag4oSYpMoDC7eDwLqtqJGWk2O9EuE4Rw8+/
+         9M+nrUI6u4wxaWppac0TNLWZ1jzK/rhKUPQ31Os/KvZyqIQiBVK164sLA15e9VHNF5No
+         F4C1dWvomKOAEwurX6ZMTmIckYzFRSDClToeJTaTqad3J8KzFtzZ+289NQ8hRW9b6Oa/
+         iuKg==
+X-Gm-Message-State: AOAM5309E2P6veNUJDAfbbaySWom8oSSCPb6KYKaiNWXLkZ9UqQanH7Z
+        Ye/x9ukfCJyfYBcuYmTegVM=
+X-Google-Smtp-Source: ABdhPJxOah0eBvELAOjhdzUXVYmB2Z/tYt7nhdTqVkdviWdPsuvJZFJ1Ehtt6xtuHJlfJ23Nay0SJA==
+X-Received: by 2002:a17:90a:b785:: with SMTP id m5mr20286683pjr.213.1630026326070;
+        Thu, 26 Aug 2021 18:05:26 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d820:9cc6:d37f:c2fd:dc6])
+        by smtp.gmail.com with ESMTPSA id c15sm3975021pjr.22.2021.08.26.18.05.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 18:05:25 -0700 (PDT)
+Date:   Fri, 27 Aug 2021 06:35:23 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Spencer Baugh <sbaugh@catern.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Alexander Mihalicyn <alexander@mihalicyn.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v2 1/5] bpf: Implement file local storage
+Message-ID: <20210827010523.4mty6oqzeuvadaml@apollo.localdomain>
+References: <20210826133913.627361-1-memxor@gmail.com>
+ <20210826133913.627361-2-memxor@gmail.com>
+ <20210826222347.3bf5q5ehdfnrblir@ast-mbp.dhcp.thefacebook.com>
+ <CACYkzJ6G-E6X2hxwQfwqJ6Hgm-CbiNnY6h+xZRhO1AuOUu0NJA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210826141623.8151-1-kerneljasonxing@gmail.com>
- <00890ff4-3264-337a-19cc-521a6434d1d0@gmail.com> <860ead37-87f4-22fa-e4f3-5cadd0f2c85c@intel.com>
- <CAL+tcoCovfAQmN_c43ScmjpO9D54CKP5XFTpx6VQpwJVxZhAdg@mail.gmail.com> <da5da485-9dc7-e731-a8d9-f5ad7c7dffde@gmail.com>
-In-Reply-To: <da5da485-9dc7-e731-a8d9-f5ad7c7dffde@gmail.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Fri, 27 Aug 2021 08:25:57 +0800
-Message-ID: <CAL+tcoCyYeb+ppM4gBU3MZWKcm4513J49QNu2yLjY2O8-KaRog@mail.gmail.com>
-Subject: Re: [PATCH v4] ixgbe: let the xdpdrv work with more than 64 cpus
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACYkzJ6G-E6X2hxwQfwqJ6Hgm-CbiNnY6h+xZRhO1AuOUu0NJA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 2:19 AM Eric Dumazet <eric.dumazet@gmail.com> wrote:
->
->
->
-> On 8/26/21 10:03 AM, Jason Xing wrote:
->
+On Fri, Aug 27, 2021 at 05:43:41AM IST, KP Singh wrote:
+> On Fri, Aug 27, 2021 at 12:23 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > Honestly, I'm a little confused right now. @nr_cpu_ids is the fixed
-> > number which means the total number of cpus the machine has.
-> > I think, using @nr_cpu_ids is safe one way or the other regardless of
-> > whether the cpu goes offline or not. What do you think?
+> > On Thu, Aug 26, 2021 at 07:09:09PM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > +BPF_CALL_2(bpf_file_storage_delete, struct bpf_map *, map, struct file *, file)
+> > > +{
+> > > +     if (!file)
+> > > +             return -EINVAL;
+> > > +
+> > > +     return file_storage_delete(file, map);
+> > > +}
+> >
+> > It's exciting to see that file local storage is coming to life.
 > >
 >
-> More exactly, nr_cpu_ids is the max number cpu id can reach,
-> even in presence of holes.
+> +1 Thanks for your work!
 >
-> I think that most/many num_online_cpus() in drivers/net are simply broken
-> and should be replaced by nr_cpu_ids.
+> > What is the reason you've copy pasted inode_local_storage implementation,
+> > but didn't copy any comments?
+> > They were relevant there and just as relevant here.
+> > For example in the above *_storage_delete, the inode version would say:
+> >
+> > /* This helper must only called from where the inode is guaranteed
+> >  * to have a refcount and cannot be freed.
+> >  */
+> >
+> > That comment highlights the important restriction.
+> > The 'file' pointer should have similar restriction, right?
+> > But files are trickier than inodes in terms of refcnt.
+> > They are more similar to sockets,
+> > the socket_local_storage is doing refcount_inc_not_zero() in similar
+>
+> Even the task_local_storage checks if the task is refcounted and going to
+> be around while we do a get / delete.
+>
+> > case to make sure socket doesn't disappear.
+> >
+>
+> Agreed, I would prefer if we also revisit inode_local_storage
+> in this respect pretty much because of what Alexei said.
+> One could end up with an inode (e.g. by walking pointers) in an LSM hook
+> whose life-cycle is not guaranteed in the current context.
+>
+> This is generally not that big a deal with inodes because they are
+> not as ephemeral as tasks, sockets and files.
+>
+> e.g. your userspace "_fd_" version of the helper does the right thing
+> by grabbing a
+> reference to the file and then dropping it once the storage is updated.
 >
 
-Thank you, Eric, really. I nearly made a terrible mistake.
+Thank you both of you for the comments. I will revisit this and inode_storage
+and get back to you, soon.
 
-> The assumptions of cpus being nicely numbered from [0 to X-1],
-> with X==num_online_cpus() is wrong.
->
-> Same remark for num_possible_cpus(), see commit
-> 88d4f0db7fa8 ("perf: Fix alloc_callchain_buffers()") for reference.
+--
+Kartikeya
