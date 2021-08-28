@@ -2,206 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1253FA3D8
-	for <lists+bpf@lfdr.de>; Sat, 28 Aug 2021 07:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3957E3FA44D
+	for <lists+bpf@lfdr.de>; Sat, 28 Aug 2021 09:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbhH1FVa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Aug 2021 01:21:30 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35308 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232389AbhH1FV0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 28 Aug 2021 01:21:26 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17S5Agwi014354
-        for <bpf@vger.kernel.org>; Fri, 27 Aug 2021 22:20:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=8S9gZBnDcBQ1pCquTXlS/il6zMXDUMExSTT3aibAoII=;
- b=WSGHT8R5ImwkXGGjF7ksXkP897dzuVmk8+jhuZ5jgWF9VkAKiKA9Lm9+n94cYs5Ru6UX
- uP93PVEFeXS5uVqfc0Gt0ZNOy8c+7MKvTR5HcMAqY3/v4BlPmDHIrMWkl+s8Y1C133wG
- LwT/fLyH1iW3x2mgiEUI5+HjpmtVetPWKSg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aqbqxrnv7-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 27 Aug 2021 22:20:36 -0700
-Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 27 Aug 2021 22:20:34 -0700
-Received: by devbig030.frc3.facebook.com (Postfix, from userid 158236)
-        id 288235BF0E50; Fri, 27 Aug 2021 22:20:28 -0700 (PDT)
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        id S233452AbhH1HcR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 28 Aug 2021 03:32:17 -0400
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:37642 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233348AbhH1HcQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Aug 2021 03:32:16 -0400
+Received: by mail-pj1-f50.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so10504166pjw.2;
+        Sat, 28 Aug 2021 00:31:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=72FGwkr2cgYiG2mCqnRFPrgyEIFWlTQT13Q2rpcWR6c=;
+        b=L+vVgObJEkYk7Kj9HifFAAdZZz9aNXuZhrDFsHtkhV/VNZ9897PRKglf16uBw9UTmi
+         9cddLe4hmacg1zuTx0Re7pbPE0Mu2682dNgSCqsErobItEHcivwT4vp0DIXGbjgUNEMj
+         2rNX76AW5H0hrl6T6OAuJSsZgYY6aqgBfjAIYp0eQCb0lOsI1miW8y6tD+fBfmbGH5Ga
+         hrwwnW2IxSwKUGz2+WagX5HEe7uKuGUCf7NdHgX2EfrSVPgXUU4QsDrlFGsE7cXEIpds
+         hSdsKTY1p6UZEaEMMAy25+O4GC4/8THYW7nXYvxNsptsURic/iQqiZiRFCP6azgQDCae
+         3Emw==
+X-Gm-Message-State: AOAM532ki5yPgAYmkfZytjljhxN8sJ4nQPsm0mxEFyhA1t4fcpcHX1ON
+        VbT0VlKLLafWNf5/vTAAermSbuEibtBEYOKX4zU=
+X-Google-Smtp-Source: ABdhPJzVwiRr/iufrwRsD3iA1dLD0/75TS+nkg+Sq3eKriL7lOlxSYaVCBACpKhZsKqGUkHhvzxRECVhEBWX+9qFs7M=
+X-Received: by 2002:a17:902:9b89:b0:12d:7f02:f6a5 with SMTP id
+ y9-20020a1709029b8900b0012d7f02f6a5mr12373883plp.39.1630135885761; Sat, 28
+ Aug 2021 00:31:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210826050458.1540622-1-keescook@chromium.org>
+ <20210826050458.1540622-3-keescook@chromium.org> <20210826062452.jekmoo43f4xu5jxk@pengutronix.de>
+ <202108270915.B4DD070AF@keescook>
+In-Reply-To: <202108270915.B4DD070AF@keescook>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Sat, 28 Aug 2021 16:31:14 +0900
+Message-ID: <CAMZ6Rq+b1wy3miNvXyeM5Cbp16CH78RKRf2WxUSL4s4w5=+aYg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] treewide: Replace open-coded flex arrays in unions
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, <netdev@vger.kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v3 bpf-next 7/7] selftests/bpf: add trace_vprintk test prog
-Date:   Fri, 27 Aug 2021 22:20:06 -0700
-Message-ID: <20210828052006.1313788-8-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210828052006.1313788-1-davemarchevsky@fb.com>
-References: <20210828052006.1313788-1-davemarchevsky@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: eMsfV1bPWgxdynlIXeouu5G5yUe2wABB
-X-Proofpoint-ORIG-GUID: eMsfV1bPWgxdynlIXeouu5G5yUe2wABB
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-28_01:2021-08-27,2021-08-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- clxscore=1015 impostorscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108280031
-X-FB-Internal: deliver
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        linux-crypto@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        linux-scsi@vger.kernel.org, linux-can <linux-can@vger.kernel.org>,
+        bpf@vger.kernel.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Keith Packard <keithp@keithp.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit adds a test prog for vprintk which confirms that:
-  * bpf_trace_vprintk is writing to dmesg
-  * __bpf_vprintk macro works as expected
-  * >3 args are printed
+Le sam. 28 août 2021 à 01:17, Kees Cook <keescook@chromium.org> a écrit :
+>
+> On Thu, Aug 26, 2021 at 08:24:52AM +0200, Marc Kleine-Budde wrote:
+> > [...]
+> > BTW: Is there opportunity for conversion, too?
+> >
+> > | drivers/net/can/peak_canfd/peak_pciefd_main.c:146:32: warning: array of flexible structures
+>
+> Untested potential solution:
+>
+> diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+> index 1df3c4b54f03..efa2b5a52bd7 100644
+> --- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
+> +++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+> @@ -143,7 +143,11 @@ struct pciefd_rx_dma {
+>         __le32 irq_status;
+>         __le32 sys_time_low;
+>         __le32 sys_time_high;
+> -       struct pucan_rx_msg msg[];
+> +       /*
+> +        * with "msg" being pciefd_irq_rx_cnt(priv->irq_status)-many
+> +        * variable-sized struct pucan_rx_msg following.
+> +        */
+> +       __le32 msg[];
 
-Approach and code are borrowed from trace_printk test.
+Isn't u8 msg[] preferable here?
 
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
- tools/testing/selftests/bpf/Makefile          |  3 +-
- .../selftests/bpf/prog_tests/trace_vprintk.c  | 65 +++++++++++++++++++
- .../selftests/bpf/progs/trace_vprintk.c       | 25 +++++++
- 3 files changed, 92 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_vprintk.=
-c
- create mode 100644 tools/testing/selftests/bpf/progs/trace_vprintk.c
+>  } __packed __aligned(4);
+>
+>  /* Tx Link record */
+> @@ -327,7 +331,7 @@ static irqreturn_t pciefd_irq_handler(int irq, void *arg)
+>
+>         /* handle rx messages (if any) */
+>         peak_canfd_handle_msgs_list(&priv->ucan,
+> -                                   rx_dma->msg,
+> +                                   (struct pucan_rx_msg *)rx_dma->msg,
+>                                     pciefd_irq_rx_cnt(priv->irq_status));
+>
+>         /* handle tx link interrupt (if any) */
+>
+>
+> It's not great, but it's also not strictly a flex array, in the sense
+> that since struct pucan_rx_msg is a variable size, the compiler cannot
+> reason about the size of struct pciefd_rx_dma based only on the
+> irq_status encoding...
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-index 866531c08e4f..0a4cdac7ea02 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -315,7 +315,8 @@ LINKED_SKELS :=3D test_static_linked.skel.h linked_fu=
-ncs.skel.h		\
- 		linked_vars.skel.h linked_maps.skel.h
-=20
- LSKELS :=3D kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
--	test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c
-+	test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c \
-+	trace_vprintk.c
- SKEL_BLACKLIST +=3D $$(LSKELS)
-=20
- test_static_linked.skel.h-deps :=3D test_static_linked1.o test_static_li=
-nked2.o
-diff --git a/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c b/too=
-ls/testing/selftests/bpf/prog_tests/trace_vprintk.c
-new file mode 100644
-index 000000000000..9fc1d279b673
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/trace_vprintk.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <test_progs.h>
-+
-+#include "trace_vprintk.lskel.h"
-+
-+#define TRACEBUF	"/sys/kernel/debug/tracing/trace_pipe"
-+#define SEARCHMSG	"1,2,3,4,5,6,7,8,9,10"
-+
-+void test_trace_vprintk(void)
-+{
-+	int err =3D 0, iter =3D 0, found =3D 0;
-+	struct trace_vprintk__bss *bss;
-+	struct trace_vprintk *skel;
-+	char *buf =3D NULL;
-+	FILE *fp =3D NULL;
-+	size_t buflen;
-+
-+	skel =3D trace_vprintk__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "trace_vprintk__open_and_load"))
-+		goto cleanup;
-+
-+	bss =3D skel->bss;
-+
-+	err =3D trace_vprintk__attach(skel);
-+	if (!ASSERT_OK(err, "trace_vprintk__attach"))
-+		goto cleanup;
-+
-+	fp =3D fopen(TRACEBUF, "r");
-+	if (!ASSERT_OK_PTR(fp, "fopen(TRACEBUF)"))
-+		goto cleanup;
-+
-+	/* We do not want to wait forever if this test fails... */
-+	fcntl(fileno(fp), F_SETFL, O_NONBLOCK);
-+
-+	/* wait for tracepoint to trigger */
-+	usleep(1);
-+	trace_vprintk__detach(skel);
-+
-+	if (!ASSERT_GT(bss->trace_vprintk_ran, 0, "bss->trace_vprintk_ran"))
-+		goto cleanup;
-+
-+	if (!ASSERT_GT(bss->trace_vprintk_ret, 0, "bss->trace_vprintk_ret"))
-+		goto cleanup;
-+
-+	/* verify our search string is in the trace buffer */
-+	while (getline(&buf, &buflen, fp) >=3D 0 || errno =3D=3D EAGAIN) {
-+		if (strstr(buf, SEARCHMSG) !=3D NULL)
-+			found++;
-+		if (found =3D=3D bss->trace_vprintk_ran)
-+			break;
-+		if (++iter > 1000)
-+			break;
-+	}
-+
-+	if (!ASSERT_EQ(found, bss->trace_vprintk_ran, "found"))
-+		goto cleanup;
-+
-+cleanup:
-+	trace_vprintk__destroy(skel);
-+	free(buf);
-+	if (fp)
-+		fclose(fp);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/trace_vprintk.c b/tools/te=
-sting/selftests/bpf/progs/trace_vprintk.c
-new file mode 100644
-index 000000000000..255e2f018efe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/trace_vprintk.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+int trace_vprintk_ret =3D 0;
-+int trace_vprintk_ran =3D 0;
-+
-+SEC("fentry/__x64_sys_nanosleep")
-+int sys_enter(void *ctx)
-+{
-+	static const char one[] =3D "1";
-+	static const char three[] =3D "3";
-+	static const char five[] =3D "5";
-+	static const char seven[] =3D "7";
-+	static const char nine[] =3D "9";
-+
-+	trace_vprintk_ret =3D __bpf_vprintk("%s,%d,%s,%d,%s,%d,%s,%d,%s,%d %d\n=
-",
-+		one, 2, three, 4, five, 6, seven, 8, nine, 10, ++trace_vprintk_ran);
-+	return 0;
-+}
---=20
-2.30.2
+In the same spirit, it is a bit cleaner to change the prototype of
+handle_msgs_list().
 
+Like that:
+
+
+diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canf
+d/peak_canfd.c
+index d08718e98e11..81a9faa6193f 100644
+--- a/drivers/net/can/peak_canfd/peak_canfd.c
++++ b/drivers/net/can/peak_canfd/peak_canfd.c
+@@ -484,9 +484,8 @@ int peak_canfd_handle_msg(struct peak_canfd_priv *priv,
+
+ /* handle a list of rx_count messages from rx_msg memory address */
+ int peak_canfd_handle_msgs_list(struct peak_canfd_priv *priv,
+-                               struct pucan_rx_msg *msg_list, int msg_count)
++                               void *msg_ptr, int msg_count)
+ {
+-       void *msg_ptr = msg_list;
+        int i, msg_size = 0;
+
+        for (i = 0; i < msg_count; i++) {
+diff --git a/drivers/net/can/peak_canfd/peak_canfd_user.h b/drivers/net/can/peak
+_canfd/peak_canfd_user.h
+index a72719dc3b74..ef91f92e70c3 100644
+--- a/drivers/net/can/peak_canfd/peak_canfd_user.h
++++ b/drivers/net/can/peak_canfd/peak_canfd_user.h
+@@ -42,5 +42,5 @@ struct net_device *alloc_peak_canfd_dev(int
+sizeof_priv, int index,
+ int peak_canfd_handle_msg(struct peak_canfd_priv *priv,
+                          struct pucan_rx_msg *msg);
+ int peak_canfd_handle_msgs_list(struct peak_canfd_priv *priv,
+-                               struct pucan_rx_msg *rx_msg, int rx_count);
++                               void *msg_ptr, int rx_count);
+ #endif
+diff --git a/drivers/net/can/peak_canfd/peak_pciefd_main.c
+b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+index 1df3c4b54f03..c1de1e3dc4bc 100644
+--- a/drivers/net/can/peak_canfd/peak_pciefd_main.c
++++ b/drivers/net/can/peak_canfd/peak_pciefd_main.c
+@@ -143,7 +143,11 @@ struct pciefd_rx_dma {
+        __le32 irq_status;
+        __le32 sys_time_low;
+        __le32 sys_time_high;
+-       struct pucan_rx_msg msg[];
++       /*
++        * with "msg" being pciefd_irq_rx_cnt(priv->irq_status)-many
++        * variable-sized struct pucan_rx_msg following.
++        */
++       u8 msg[];
+ } __packed __aligned(4);
+
+ /* Tx Link record */
+
+
+Another solution would be to declare a maximum length for struct
+pucan_rx_msg::d. Because these are CAN FD messages, I suppose
+that maximum length would be CANFD_MAX_DLEN. struct canfd_frame
+from the UAPI uses the same pattern.
+
+N.B. This solution is not exclusive from the above one (actually,
+I think that using both would be the best solution).
+
+diff --git a/include/linux/can/dev/peak_canfd.h
+b/include/linux/can/dev/peak_canfd.h
+index f38772fd0c07..a048359db430 100644
+--- a/include/linux/can/dev/peak_canfd.h
++++ b/include/linux/can/dev/peak_canfd.h
+@@ -189,7 +189,7 @@ struct __packed pucan_rx_msg {
+        u8      client;
+        __le16  flags;
+        __le32  can_id;
+-       u8      d[];
++       u8      d[CANFD_MAX_DLEN];
+ };
+
+ /* uCAN error types */
+
+
+
+I only tested for compilation.
+
+Yours sincerely,
+Vincent
