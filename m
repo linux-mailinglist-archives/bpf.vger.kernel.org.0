@@ -2,171 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1140A3FA852
-	for <lists+bpf@lfdr.de>; Sun, 29 Aug 2021 05:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD963FA97D
+	for <lists+bpf@lfdr.de>; Sun, 29 Aug 2021 08:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhH2Dpf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Aug 2021 23:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233468AbhH2Dpe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Aug 2021 23:45:34 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC05C061796
-        for <bpf@vger.kernel.org>; Sat, 28 Aug 2021 20:44:43 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id s29so4513556pfw.5
-        for <bpf@vger.kernel.org>; Sat, 28 Aug 2021 20:44:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to;
-        bh=/bRpxTuoCDHThcBlktEP86KyBftlaEiT8Uv7OKWtgJE=;
-        b=hFNLOtBLX+Lk+beWCEFICuA6yckBzgsRBzXV9Hc7Vx9wB1YHwWlJNUXXHt9NI0JB1A
-         1kn11ao4/cjhZTPA0pzt9XqiuwVxrpxAp+Lo62GJTe1ZRGl3OdaDcUKEvbCPhb9rNvDG
-         Nt5EfMNvHXk+qIBRinq9yDhL3nV157zz65j49U56Gz5J2AM2RJmOfYOEfrg+OX9ha4WD
-         xj5N1Q/HU087zeUbVHEM6WeORen19IVqs+UkBXOXkj+6awFxd8eXGE+TUY7g09RLVCcW
-         kaphOhve3LPWIJBgvG2MDqB1ZtG6p6N38CnuOuPoC38WYuwacYUTvwUs/NG09teLemy5
-         P9gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to;
-        bh=/bRpxTuoCDHThcBlktEP86KyBftlaEiT8Uv7OKWtgJE=;
-        b=pBgmB3RLbnBEPJ0HytapwxwRtMYbPTY3Rrc6dFCUF/w/U+3DWw+kLC2tlWx0HkZ4KA
-         BUfj+JkeHgK89/OlsHmWjXR6GjcJh9O718NYyNC9q0GAf7BIV0BN1mXwFWEvAcJAbo2y
-         tpiVVyTzbcFDf5Pq9ZKZsE02EH9p6XOiD1Vt6328vBiPViTJGfYcgktklXvsjQjDkFaV
-         bSEvNX0W1qtOr17Fu1fbymMFeAQvQnQY5I/ngXjc1zHkp8CP8IeuNF52JiqjIiErsE50
-         NUAIlQd4ORwe+TxzvMVAqY5uFyAflig7bGkPkZjlROGHRw1ypK6yR8c40DEszehHpY2h
-         i0LQ==
-X-Gm-Message-State: AOAM5311Q+XN9pMXcllsMvWOuyBTVQyeyI23MdM3LSJM6286bkb8Mh3H
-        VVS9Fn28Y5K37bSLHCLWS9AF9IebU7JVgzEZE28=
-X-Google-Smtp-Source: ABdhPJz5uz4GLRz2qq7We0+SFLqHWl3HWf19mZ5oZc5xqIni2Kt+EyUlBeUEqWYVMEXycIsnXAPGj3lqOBY2gK4McQU=
-X-Received: by 2002:a63:705:: with SMTP id 5mr14984605pgh.265.1630208682579;
- Sat, 28 Aug 2021 20:44:42 -0700 (PDT)
+        id S232218AbhH2GcE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 29 Aug 2021 02:32:04 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55586 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229889AbhH2GcD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 29 Aug 2021 02:32:03 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17T6FTJV009542;
+        Sat, 28 Aug 2021 23:31:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : references
+ : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=GraXoGylh3OFYedaJ/7m4RI34kzxEkCoulU/0DTKIEI=;
+ b=J7u3X0Mbtap/PNs+EBWoddvchRvf48wqAsaCY2TszQ3IZJWP63m3QACn/0K3emk0RiIW
+ //1kZ+GZuB3CS5Lxvw38yxNJ9WuRM9gmhSJiITwhF7emXoiLvg+lXtCMC588ZlpwYmH/
+ ppCKkoDizOfXr/dHRWdtLaKYQa4PgcZoj4w= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3aqj8ykuew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 28 Aug 2021 23:31:09 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Sat, 28 Aug 2021 23:31:08 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eJL2SK0p0O7aUFcjb8lPLiJJe10ssObgyqSylPm8k8x4CcspO107m+c4BVpqB81egHt8M9lJIqlKW4Cs7bfhWn2PBlQ2MZdfp22X2J4uGr/vT5jcLY6YpL3ageSd4E6m4K4o9AIsprlwwWdo/0S6q5xXfChuVLYQuJI0Oc3nQSgnZhe/OEsPxbNh9lDRI1mmpiZR0lDWZdfKGj9BLtXbOW7fD1e2xD+cao/KKWGnKzl/mf/p9hx9+t8WalWPfbN2OLjqrdPH+v5x+QbFKM0eH4/TN+MXRpb/Z1esEW5KUD/AdplHxYS7/N/Cj05ooncakDzkFLYXIuz7tHcdgNoGMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GraXoGylh3OFYedaJ/7m4RI34kzxEkCoulU/0DTKIEI=;
+ b=Gx1J5Pzkl+WocPAB4N65ax0SwwuSNVk4259DHi8wlHJx0O261u5N2GN+kHyZuStkz2PjGwBvGcA7oCq7X6w94jkPrK9KxblDoXpzpPSShsxBKQOBFMwWWQzb50c+VWeUhfGxbxxLjHU9YsenufbfgNEsbJ04+60dZUbKCQA3uHGGSNB92zRIhUDg83elx7kw4hC9/L0OiEqksHrnTzdTcv7nX+ug+EmEVMzyZbkD0oq+X/aIFs3mL6je1Z8/osVodBIaXJb3fNSvVIgFcFU2QnYOCB4uxyY+A2HqzDKKvpdIeEMKoakpn4xzALFO08u1BqapOnw7SCT8+OhPeDsZCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4339.namprd15.prod.outlook.com (2603:10b6:806:1ae::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Sun, 29 Aug
+ 2021 06:31:06 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4457.024; Sun, 29 Aug 2021
+ 06:31:06 +0000
+Subject: Re: cannot pass ebpf verify bound check due to compiler optimization
+To:     rainkin <rainkin1993@gmail.com>, bpf <bpf@vger.kernel.org>
+References: <CAHb-xaufru2zfr0hzOe-dkXDNhZXb1hpNkWK5z3uu5jYQuNeKA@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <71f62863-6931-e395-c197-679ef2af0e7c@fb.com>
+Date:   Sat, 28 Aug 2021 23:31:03 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
+In-Reply-To: <CAHb-xaufru2zfr0hzOe-dkXDNhZXb1hpNkWK5z3uu5jYQuNeKA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR1701CA0007.namprd17.prod.outlook.com
+ (2603:10b6:301:14::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:6c05:0:0:0:0 with HTTP; Sat, 28 Aug 2021 20:44:41
- -0700 (PDT)
-Reply-To: sararrobrt@gmail.com
-In-Reply-To: <CAHiqPVcjWLNOr0C=n4WN14sPVGhB7QFNt9RNgumzR_Abdtipqg@mail.gmail.com>
-References: <CAHiqPVcqgvcC+2o+BY8ChZmh6e7jDdHGE3tz_d2hqhFTO1y5Xg@mail.gmail.com>
- <CAHiqPVeL6TLjCDiOC4rovz1AVOvdJAn7j_B_a-RbBZpgiKrdsw@mail.gmail.com>
- <CAHiqPVem-8KZoQy_=88ia251AexAgb1MZgiN0mM3rSTM=F2QGA@mail.gmail.com>
- <CAHiqPVciEMHdof6B4sos5Yx3uoZ73R_zQFt2fE4ZH10FrjnxdA@mail.gmail.com>
- <CAHiqPVexeJrW65oi_0V_ZnZr5Mfa3rqwhvn9Ab4gjhdVhffopA@mail.gmail.com>
- <CAHiqPVdAHLBruUE6qeMNHTpxcLBO0qe9GRsdFVtLpd+m0edRpw@mail.gmail.com>
- <CAHiqPVfKaEcMdB6njt0VmygLjbjNp2vobF=WgyZhXv4RS8ZOtA@mail.gmail.com>
- <CAHiqPVfuuyycmLG8zK2bMS8a0y0VO18Y_0k1HkD0wi8en15Gdw@mail.gmail.com>
- <CAHiqPVfVsQawzzr96PixRkH24f1CpPsg3jcv9O+d3TB5v3jxFA@mail.gmail.com>
- <CAHiqPVcJ4JN+aZGZy6uwn92pUggRjvGs=KJjSLTfR1N0+fuHVA@mail.gmail.com>
- <CAHiqPVdPajC=hxHWR5X2_uvWkiubZKye0Z0xtwaHR2drp9QVEQ@mail.gmail.com>
- <CAHiqPVcfARmYujFVdpt_P-i8dE2+P2ncqY5rWVKmFrQkJenwtA@mail.gmail.com>
- <CAHiqPVcULyR=DQN0moAbWcat7KDXNyetwEt+V+=W-d5bVnGfKQ@mail.gmail.com>
- <CAHiqPVe1DXM=CNXn=k93Mk68Rkz381CC_aPRXhUdP8C-arnYpA@mail.gmail.com>
- <CAHiqPVdZbKEDX4dN719tiBw1EHx7SUBAHAFQW70+3VpCUbFKew@mail.gmail.com>
- <CAHiqPVdudjHKET-C34GJWx4UjaTbfq9CPosuonjhV0T7rMbJNA@mail.gmail.com>
- <CAHiqPVfffCpmozVTHCM_Q+khT_aMo7E7sX5ogn6q5_-NQZaEkQ@mail.gmail.com>
- <CAHiqPVcft5QBtN_Dfzh+yaFCz+RdHO9A_iesheqm=RYkeDXHrg@mail.gmail.com>
- <CAHiqPVffSmK1w4OPe0-aSeuYmMQFfTnSQjmsB5sweTjbk8sCNw@mail.gmail.com>
- <CAHiqPVfA13=ZqVxoPvQDJd_3mz0Ca9XoJFoB-DVd2Lj=cAeWXQ@mail.gmail.com>
- <CAHiqPVdwHr86DjVjLzGQu9N+iqC7XoLuFBG3YisYpKeP--Jp-Q@mail.gmail.com>
- <CAHiqPVfpcS7RUQZtf85d0RmWeW3Hr1Q_DpthL7TLzhKOt4zu3Q@mail.gmail.com>
- <CAHiqPVdRgdu-0icbtnyB_L55e+HQ0DX2i7ihp7H4QEDNA5YAsQ@mail.gmail.com>
- <CAHiqPVfdb2y5dh7BQFq+vTG8dzWwBMbjE0bzDAgj9xiJmhfHpg@mail.gmail.com>
- <CAHiqPVdwqZmuZV7sjFJbd-BtOW7YNDJ5TF5P-LYYaKVoBHNHmg@mail.gmail.com>
- <CAHiqPVcWxXPT-J0TmWjQGHGXmUNccri_ED0s1ka6kF0ZBd+6=A@mail.gmail.com>
- <CAHiqPVcA3fCJQT694+7C0KKGkFTmrGrb07CHGPHGoNRHNuXFLA@mail.gmail.com>
- <CAHiqPVcZkHhmtHNXTzzm78wOeOOuFkSYOjtCf3HU2d5HfvVvpQ@mail.gmail.com>
- <CAHiqPVeYQUPvdwzRyVJ0LuRo-WU6=tAunD+1bv83rrpKCE55Gw@mail.gmail.com>
- <CAHiqPVeFYAz+1pDfS1W1pz-8JTMRY+yM4BpB1fTFyQqSXCW7wg@mail.gmail.com>
- <CAHiqPVennSErNWbnGZBL72TnAcn=a-HG4d8gNkXditWD8zXtvQ@mail.gmail.com>
- <CAHiqPVetpHpCyfPSnZMqmZkqspviwjjB6X1XhD8r_papHh+eSA@mail.gmail.com>
- <CAHiqPVdi1ABJ7cNQTHwCzBN9FtCTdo7U+zABsUWESp3zgAkmDA@mail.gmail.com>
- <CAHiqPVcYJE9WWtO2H4=UydSNKa+J8m8RCmVSQF2S+nMu=z97FQ@mail.gmail.com>
- <CAHiqPVfsSnUDTGVU4L-QT9bxDfXDM5FkQNG=kTszV=8Skw_jag@mail.gmail.com>
- <CAHiqPVex0_3b9EJ7b08=nwOX2hAyuvrgudPSXOrAFUGBqijcdQ@mail.gmail.com>
- <CAHiqPVdY3R7tbc1XO2KQ4zPvy3Q2kAs+gUA_TCJRv1ckx44=eQ@mail.gmail.com>
- <CAHiqPVch8sXuxXbJOjiFn9LG1fBUbVxY1fsx5aUifrb-GO5NhA@mail.gmail.com>
- <CAHiqPVeOfGY9VZdofq0uWF3=Oor1ky=b6s5W+RuYw4ESk6-Y6g@mail.gmail.com>
- <CAHiqPVd0=TZDHSya_C-Z9FVPgMWng9qvWxLyL6SZwY8PGPHaGQ@mail.gmail.com>
- <CAHiqPVceVLLDUiy8s_vURy-h6_zquya7Z08_a86QUtXyHVVbHQ@mail.gmail.com>
- <CAHiqPVcuHuu8TqQC3u-jUE8X5kv9DceS4AOVaX4xOL2DrSo4kA@mail.gmail.com>
- <CAHiqPVfKsUdYUg0a2rRbXZejXxvWXCfxCYojxq7qZAVoXnWn1Q@mail.gmail.com>
- <CAHiqPVeCFuArs-t7Xk3qYcT=rM=z7CV5BtGCwavwgPpsdt1UyA@mail.gmail.com>
- <CAHiqPVc9mRjo0cpu3LNuJCiQPuTEeiu+N+EFh_rCPkZ4jwFYtQ@mail.gmail.com>
- <CAHiqPVdn7tY8eCxS-CRcA4Cuy3P9+OmQJV+Sq6gE=HFBEvgE7w@mail.gmail.com>
- <CAHiqPVePLc3Ce-zfKO+rTepquitVmsn=+Hsvt7io5VW8gig2GA@mail.gmail.com>
- <CAHiqPVcTqxSSTgo3O7re+N4-9aPFeqwFAyrGiAyibgTq6puuEA@mail.gmail.com>
- <CAHiqPVfKhozPyj1ppxm2+Y04U4k9vg8s9HQ=oO=gQdeAxSw9KA@mail.gmail.com>
- <CAHiqPVfj6NL=E-n3jn2DYm+16rkbLrUt4TT2sdwXuOTaEjpmBA@mail.gmail.com>
- <CAHiqPVdJRi4HbjGj8c1Q5RaA9YGzRqyOzcQ9uJsDGYZ7M5aX-g@mail.gmail.com>
- <CAHiqPVfqkHD0tSC6ggtkGtYn_xGM6S4i5Os=SkYWOEykX5b7xA@mail.gmail.com>
- <CAHiqPVcLCd0ten6kG01w29o8JGPSSqdgOT9HED=eo=dL3Vn=VQ@mail.gmail.com>
- <CAHiqPVepiUkz1u2WObe8Kco__eLbWWx-EOYjvXrof-7ALa4XXQ@mail.gmail.com>
- <CAHiqPVfHDTn8JZ5hUYm7+dMGim2+x+ODWKdVPja+ZwUcqzvNDQ@mail.gmail.com>
- <CAHiqPVfBbTZBqQGC5HnLeUw2qAqyAwAs6uRNxwmAqTRZfp=eTw@mail.gmail.com>
- <CAHiqPVcXnY=Vki9=HFh5VDM3wh1pe44tVbbshyP2604b2v_5wg@mail.gmail.com>
- <CAHiqPVfZcz27_19-5wQ8rgnX9yMTdpjsQUM66M+3GKNUAsNP8A@mail.gmail.com>
- <CAHiqPVcrctHNsiDK3bWQKDWvx0-71pqVNmw5r-_tZhYhRLD-Tg@mail.gmail.com>
- <CAHiqPVcnxCkPsWAmsEkrAfZ=sRx53vhHbhEyf9uLFpr2VgrRrw@mail.gmail.com>
- <CAHiqPVdZdnu3QKBeL8xjyCFDHSP8vKuCXjoPFQt+kRSOR28v5A@mail.gmail.com>
- <CAHiqPVdxWE4zUQ7G+FOw410pvNbDaHOs0SsiF_2_Xn+SBLOnZA@mail.gmail.com>
- <CAHiqPVcde3+M=tQQQ7F40o5_zQc1tmDEt9wJSBMYOR+xx82ynQ@mail.gmail.com>
- <CAHiqPVc0dt2uRErMBYWkNMHW6+abfBaxAmdSsoS+koMWB2DBRw@mail.gmail.com>
- <CAHiqPVfcxoCc-_JZH0mJhzHEOOxymy3teD_20T6dKm=1P_qkkw@mail.gmail.com>
- <CAHiqPVf+T-__ir6Kfr7V3DhbzpnKNxYej01H1qd_kBuJVjWT0w@mail.gmail.com>
- <CAHiqPVe6T-ro3yci2GX6v6mVV0LT6Ags-M84EvjErGN91-HKdw@mail.gmail.com>
- <CAHiqPVeVzowL_q=r1ORGKzfLAR4wO-55LgZud1RhkEK2cQsemA@mail.gmail.com>
- <CAHiqPVczeXej2w=zFN6WVynosxcJG6X8XqgzyUkS0ZQGF5j5Vw@mail.gmail.com>
- <CAHiqPVcWBeUrWcA+rBOojoz6B_mYOJ=bb9w1aK8x760GuZiBdA@mail.gmail.com>
- <CAHiqPVeBaF6QxJsZWt5+8Y2p337zdesdCVa_g+6u5ToF+27QwQ@mail.gmail.com>
- <CAHiqPVcrOEUkVso606iFjJY2FOZTxaUMnXC6uT98Jet5gxiVDw@mail.gmail.com>
- <CAHiqPVc4UeiQPr7SoCtVCCrs+z=r3DS8m+JykpaiYrHaZ5=7Tg@mail.gmail.com>
- <CAHiqPVfrWeP3nQrMA16Dvq-DoHLjKDSCE1qUrbpsM8mLzEFHXw@mail.gmail.com>
- <CAHiqPVd2ZYWs4iCMrpDoAGaC+MFQ799Y4XjeZ0SQkNtGu-mR9w@mail.gmail.com>
- <CAHiqPVdacYVUegUY014DxBoO9WVp4rcB0nWTxTpKiqU4FxaGPw@mail.gmail.com>
- <CAHiqPVcyw824RZO7B67nBPvPdnouxg70FUCiWZbFy1t2-Bqv1w@mail.gmail.com>
- <CAHiqPVfKH_H_5WEB43CegyikRMN95ODLMK_8uofxxEo0Vgt2rQ@mail.gmail.com>
- <CAHiqPVfNfhB+a3ft+6Cw-3eqx9MmvXJM-MGXMQVNV=AwGL9Y5w@mail.gmail.com>
- <CAHiqPVe0gs1HwZ1n025U5Mg7hMBPfW8e=u0jOMNv50H0UL_uNg@mail.gmail.com>
- <CAHiqPVfoTRobuhK1sAPUje3UQDGAnD_=CFB-=2EO7rW1imL+_w@mail.gmail.com>
- <CAHiqPVf5aqZtGi=9hCv1=AmfMO_c6Mfy5kANfHzq9U2fh4gpUA@mail.gmail.com>
- <CAHiqPVdvdVbVW88ScyCWFKq6DJTGaNYOPvnCTM_yJU2pt4wHKg@mail.gmail.com>
- <CAHiqPVf2sU1Aouubq+rGobkrbJW49UXoE==VvNfdKNRJTLuBNg@mail.gmail.com>
- <CAHiqPVc1A8VjQ_gHrQc+HZcgPNinQcicsC5Ew5asUCOF2CtC5g@mail.gmail.com>
- <CAHiqPVeo6Zua22Vew75asbS8xv=_4enDDX4hr6V8Wp80rm8gjg@mail.gmail.com>
- <CAHiqPVc74Yk0xYef+WaSzELpphrJgEzQRwd8cFLLLB5fOWAtkQ@mail.gmail.com>
- <CAHiqPVdQ6862szC8yU6bte8zs29hjgMSwDdVMT_sPJoOMLXyeQ@mail.gmail.com>
- <CAHiqPVepMrsV4J0NWxK4eHBUdSFjm_c5sfFz2J6zW3H+Or2Oyg@mail.gmail.com>
- <CAHiqPVf7iTMMnHe=jo0yvszStDX0mdek-COjtcqYtKvjyLT4+A@mail.gmail.com>
- <CAHiqPVdyRSj1fus-0Cm299-frppuBj6TFYw9Ypbz+BuerQaLTQ@mail.gmail.com>
- <CAHiqPVcFdYXshya2iOE-XzM8BHtVz8i6+AnRmsM9JQCNrt66_Q@mail.gmail.com>
- <CAHiqPVeBUKHni-5RRwKV19opDFuTya1gcQ5Df6w-yvY2iV2wew@mail.gmail.com>
- <CAHiqPVcfzcY0d9cxK66WD9S7x=sX4chnLmbtxELUW-ghsiiSrA@mail.gmail.com>
- <CAHiqPVec4ECrGwxK22NQmAQGTqojiePEiH20L5dra2LDSajYWw@mail.gmail.com>
- <CAHiqPVf1gMi4enA06gY4TRWnn8FcLPgKUzSRFuotuzJu9UYrwA@mail.gmail.com>
- <CAHiqPVfz3h_qXVmitKXsO+JxGDHWJKwA8Zm9XeFmai_-LO9PMA@mail.gmail.com>
- <CAHiqPVe9H7C28=OG91wxFjtPEFLyDAmHmVs7iG9iZ=Vnd0T6YA@mail.gmail.com>
- <CAHiqPVe6V8GZiFnePXZ+vH+MtQAZ79fLMFFGa2tejB6Ssnfvrw@mail.gmail.com> <CAHiqPVcjWLNOr0C=n4WN14sPVGhB7QFNt9RNgumzR_Abdtipqg@mail.gmail.com>
-From:   "Mrs. Sarah Robert" <goodwllalex@gmail.com>
-Date:   Sun, 29 Aug 2021 04:44:41 +0100
-Message-ID: <CAHiqPVc2AnsP+b6GpUzZnNgvjAn2zjtL2xWZqwDF0sptUiCfRA@mail.gmail.com>
-Subject: Greetings?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c1::11ab] (2620:10d:c090:400::5:3718) by MWHPR1701CA0007.namprd17.prod.outlook.com (2603:10b6:301:14::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20 via Frontend Transport; Sun, 29 Aug 2021 06:31:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c1b9d157-92d6-463b-53d0-08d96ab69482
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4339:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB43394406A264B532FC2F6BB3D3CA9@SA1PR15MB4339.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hfcI7G+OUy8/AR8AhaAK+x9wEiBvve583VN+6I0bKHwT03obDmMzV2ojOuMaSmVKPsNw5fS3qqs3eCNP2yJfU4kfXy0XzeCruiXQT0/QCUN6S+LffZoDAH4TFZT9AY9B9HY9jiN9sEFmO2Fi83bA74aA2GchcrUxa9Yxc2Unkf6LC4uSJ/vk1ebj2EonVx+ZWorymUnACsuX8MiHPoOuzjk38UKqKymt+h3g+BP8Un87/NHUdFyYURyL+LKOFWhg05rCMTDY525lVnua/XwjwWEzbV1FewsulSy2DDjzMu/n35yukwVKkznnMbINEDCmhuGYhMskdQW2nyzW7yPZ+MBdhz4M1j6xinArRnSfI5n4uIqa4Nyhu859l9v+uBfYI2ki6bh6ACNbJhWB6Ty6ordECdt611cG/+ere7SCtTNdWe+hlDzxQH1m0J7GS+l3ZOECC8/yh+h2uQfusviT5RXZP0FG5kRfFlkvOUpt9LTqocfk6khp+zWSAAhTLM69eIWikf9zfsXSyFcIpaTD574H14PHm5eMYdSFHPchHuTL9qoJCxfqo4V0yPBM6RI187E14D4pbyZrEKdPSbQw32quIw7BXAqncRrihlbX5C82HN1qImmM3X9n8R1jDppyF/V7PSFnMSoJA19+P/q4/9aQI2lGUYA9gaH6V3j8IO+rt/MW2jZB4jLj8RRBpLxe7n0dZNuRXrJmG4hYPnTGiFk8cCpOhqjYiuivuhrbJMQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(366004)(346002)(396003)(2906002)(316002)(31686004)(36756003)(5660300002)(66556008)(2616005)(66946007)(86362001)(15650500001)(83380400001)(66476007)(8936002)(53546011)(38100700002)(52116002)(478600001)(8676002)(31696002)(110136005)(186003)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZkdKUlN2YVJvc0ZGSitybE92ZGpuM1g5d0pnRkdpbVNHRDVSSXllR3R5dnlq?=
+ =?utf-8?B?c1lzYWZRb2xMU1hQKzVxN3VtR3pTdFNpSmFBTmErSHAzUCsySmJ5QVNxU3gr?=
+ =?utf-8?B?QkR5QjYrNmJuK2pvenlxTUZQQTZGdmg2S3NpRVRGNDgxK2JrekYwMnY2SmJV?=
+ =?utf-8?B?SlBsa0hIOHEvQXR0WnNqcjhVazNvMGN1eFN5RmpyMytHNWJYdzBIY0xMWk9S?=
+ =?utf-8?B?aGhVY3ljQjZCNmhjek5qSFJxNktzQ1I1aHo0L3RJMHdrSWF6RHdWdnRqSS81?=
+ =?utf-8?B?ZWl4all0UE1XNDdkREVSaHdyRkdZUVlseXFVU1Y2RFozRHlGUzhBM0IwSW1U?=
+ =?utf-8?B?TGdWMlRyTGlWV1NZNS9iWllyWm1jeXA5cFJOajUyV2dkK2ljMThYZWxicnha?=
+ =?utf-8?B?QW41a3BudEdKU0lJR2MvbzRwYVNUc3o1aUZDamxWYkhJenNMR1J5KzdQUUYw?=
+ =?utf-8?B?YjdCNU1PN2VoMER4NzF6UWdLeEdaTjhnblZ3Z1ovWVU2ejZiRHNKR1d5Nksy?=
+ =?utf-8?B?bE83Zm5rdUVtN250SXNKL1VneHNtMTZPOWdYd3Z2RjJlanc3L3pub0VRVzg2?=
+ =?utf-8?B?RHBBNEFMN20yWHQrSTdTMjlweDk5VjFORzIrd2YydVpoTzZuUnZUR1VTWTZq?=
+ =?utf-8?B?OG5rcjJKUmovSWN6OHRZeWs2Q3ZDS216UlMxL1ZNSnFvSzNveWdPK0gxeHA3?=
+ =?utf-8?B?QXdGcUMvNEhtcS9NSmREZWpOWVRLVU9mRGlGM2NwVzN4MzNwNGJNQ281NU1j?=
+ =?utf-8?B?OXVoczVOYXRZeXBvSGh1WGN0STVhWDAvSWlqTEg4aTFWV29MUVpsSHhqS1hj?=
+ =?utf-8?B?LzZ6VndkVml4VkVRU2o4U2xqbGRsek1lV3NCZWJ3dWFqRTAxZUdqQkcveWJj?=
+ =?utf-8?B?dUVENUFDdmFsak9XYkovbjFNVTYySnBmZ3RLYTFUcFlWMUEyNHpsWTR3VUlt?=
+ =?utf-8?B?WGpJZzJjeGhYWmJjdHpJdVZZU1AyVzUzcjY5czFHdHBibldiSkRGdWZ2L1U3?=
+ =?utf-8?B?dSsxMmYrLzNFM0xtdks3c1ZkbGRadEtpMm5nOTJmSnBtR2xWZ1YvZnROL0dh?=
+ =?utf-8?B?RldKQ0M2a2FCTTBub0JmSFdoWjZCUHlZQVpCZ3NMamJnaTJSSlZpbm4zVVl5?=
+ =?utf-8?B?YUFnVlFnZU1QTlYyUzJZUlZ5NFF2MktQN3JpMU83dnkwZ09lQ1VVQlh2VmQ0?=
+ =?utf-8?B?VWJrM08wUFdERkRsaTFnNWQyL0xHK3I2Z2NNbWRuQlAveG56RmEvbE1TeEs1?=
+ =?utf-8?B?OWJoLzlJOCtadVU4bWVLbTJnSzI2T0luUmlhbGo1WW1mVU9lMllTWk5GODRT?=
+ =?utf-8?B?bVJlTG9HMnRUZTdxVzBUTHV1TlpSZnBnckgrY0ZUSEhHYlZXckZJSFdZcHdm?=
+ =?utf-8?B?aEFxalF4Ym1RY0dudGgvMHkxSTlTSGxMYmZyZ0JURXBLL0ZCblZxdGFIN2Nt?=
+ =?utf-8?B?VzhnbjFvb0JUNGJYWjE2UTF0bHROSTR4STlhTE14NXlzNS9XQkVUcEpoUUMr?=
+ =?utf-8?B?dFIvQ0dKYnowQlhkdzNBZkZjeFJ2QjhhWFoxYTZPYktnNjVpMUdOWU83M0x5?=
+ =?utf-8?B?R3c3cDQ2UXBlaEw4ekc5clNZTjBUNjNnenI5VUF1MUVRdHlZL0wrc1lOcjZU?=
+ =?utf-8?B?VHlIa0NMQ1d3NkNqbzIyNGs2QTFlcUsxT2NIdWx2NjRxREFvU2c1UWFVNnY4?=
+ =?utf-8?B?bzhKZThGc3htTXgxTmNLcVE1a0J5ZVdYSUt4QnhMdHhQamdwd2cvc2hsWEx1?=
+ =?utf-8?B?UE84dUZQbTRKWWJNdWtSdTkvWEVWb0FlMjhDd2YrNE0zN0hYdUF1UVdiQkFQ?=
+ =?utf-8?B?LytFS3IrcndybDNXT1QwZz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1b9d157-92d6-463b-53d0-08d96ab69482
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2021 06:31:05.9965
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FnT8RlZS3hCIexDfScWcTL52N417bsOvWeH/TCirBxoAjsZzGM9D2FV2SColtf3j
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4339
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: Zb4y1Z9MJxxg2UMt_AxBriTEeTvntql2
+X-Proofpoint-GUID: Zb4y1Z9MJxxg2UMt_AxBriTEeTvntql2
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-29_02:2021-08-27,2021-08-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ mlxscore=0 mlxlogscore=999 impostorscore=0 lowpriorityscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108290037
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-My Dear,
-I'm Mrs. Sarah H. Robert, 77 years old dying widow from Australia;
-that was diagnosed of cancer about 4 years ago. I got your details
-after an extensive online search Via (Network Power Charitable Trust)
-for a reliable person,  I have decided to donate my late husband WILL
-valued of ($5,500,000.00) (Five Million Five Hundred Thousand United
-States Dollars) to you for charitable goals. Get back to me if you
-will be interesting in carrying out this humanitarian project, so that
-i can arrange for the release of the funds to you for the work of
-charity before entering the surgery theater. Contact me via
-E-mail at :  sararrobrt@gmail.com
-Sincerely,
-Mrs. Sarah H. Robert.
+
+
+On 8/28/21 8:25 PM, rainkin wrote:
+> Hi,
+> 
+> My kernel version is 4.19.
+> 
+> I have an eBPFprogram that accesses Map memory, and I check the bound
+> of the Map value pointer offset when I use offset to access the Map.
+> 
+> However, I find a very strange situation: Although I have checked the
+> bound in the source code, eBPF verify still reports an error saying
+> that the bound is not checked and cannot pass the verification. But
+> when I just a bpf_printk into the program, the program works well and
+> passes the verification...
+> 
+> After investigating the disassembly code for several days, I finally
+> figure out the root cause: eBPF verify logic is not compatible with
+> LLVM compiler optimization.
+> Specifically, there are two cases:
+> 1. registers reloaded from the stack lose the state.
+> The Map value pointer offset stored in a register is checked and eBPF
+> verify successfully updates the bound state of the register. When
+> registers are not enough, LLVM stores the register value in the stack
+> and uses the register to perform other tasks. When the MAP needed to
+> be accessed, the offset value is reloaded from the stack. However, the
+> bound state of the offset is lost, which causing the verify error.
+> 
+> Intuitive solution: track the state of the stack value. In my
+> understanding, the stack size is limited (512 bytes), it should be
+> fine to track the whole stack and do not cause performance issues?
+> 
+> 2.  LLVM uses two registers to represent the same MAP pointer offset.
+> When performing bound checking, register R1 is used and the bound
+> check state is saved in R1.
+> However, when accessing the MAP, register R2 is used which does not
+> have bound checks, which causing the verify error...
+> 
+> Solution: It seems this issue cannot be solved easily by eBPF verify
+> because the relationship between R1 and R2 is lost during LLVM
+> compiler optimization.
+> 
+> These issues make me crazy... Do you guys have any workarounds to
+> solve the above two issues before eBPF/LLVM is patched?
+
+The above two issues are all due to register pressure in llvm 
+optimization. Since there are not enough register, so spilling
+happens for (1) above, and register allocator utilizes (2) above
+to reduce spilling.
+
+Recent kernel should have fix for both above cases.
+
+In your case, adding a bpf_printk() and everything works fine.
+llvm register allocator has its own heuristic. It is totally
+possible that some code change might impact register allocation
+quite dramatically w.r.t. kernel verification. It is hard to
+give a good advice how to change your source code to have less
+spills. But since you are using a old kernel, 4.19 should have
+tail call support, maybe you want to break one program into
+two to reduce potential register spills hence generate verifier
+friendly code?
+
+> 
+> Thanks,
+> rainkin
+> 
