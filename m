@@ -2,117 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691693FAD4A
-	for <lists+bpf@lfdr.de>; Sun, 29 Aug 2021 18:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A317A3FAD5F
+	for <lists+bpf@lfdr.de>; Sun, 29 Aug 2021 19:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235774AbhH2Q6J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 Aug 2021 12:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40304 "EHLO
+        id S229937AbhH2RFV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 29 Aug 2021 13:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235720AbhH2Q6J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 29 Aug 2021 12:58:09 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0293BC061575;
-        Sun, 29 Aug 2021 09:57:17 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so12248806pjb.0;
-        Sun, 29 Aug 2021 09:57:16 -0700 (PDT)
+        with ESMTP id S229467AbhH2RFU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 29 Aug 2021 13:05:20 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5248CC061575;
+        Sun, 29 Aug 2021 10:04:28 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id fz10so7936771pjb.0;
+        Sun, 29 Aug 2021 10:04:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=TrOT5kAqHDzxKVhcRxNJfE7NH12WV49NMN9SrzZvomw=;
-        b=al7xRziDp6wtdsrL2oW9opcStrIQPpqkzTsE8/QRLPzVxhhzL2nd4i06EUzK7Pf/X2
-         KLt7CVEpQBR0+Q39nLwO5WTYvb7CAIcPPFGuj9tDyuev2FeYDSjYyItH+R7HDfkxO0za
-         Bu6G+jyeuNKbzmv6muHud4UqqZzfDEUtYZ0Y0kyDJwc3m4taOWdA+t70kzpK9d6fIjJJ
-         rQfVsEGS1LcFTYqsSD7xARuE6R3oLpe8z2t0/O7o8QEFD86iDaY90By86K0OYs1CsThn
-         jxxz6dKQ2KAKwFyZ0ZE7T87NVtd7ZjeoKEV60Vllmnl+8XL77qPCnHm7CIphZDUdyN91
-         6XLQ==
+        bh=55IMWtSa+Z7mHHOE+8rmvrIaongEWfOtNnZCXik1094=;
+        b=EqflWSXhbLRRTMqRIOAiV+S8S4KqVjIG7czsYoQttB7CTiV2SAEObKXY7L7gem/4AT
+         6I2oFh1lKven7gR/mLmI6N0dWkpOjFDrqiH77KYnhIOvbDSein+G8SVOd9oBikZeubmC
+         F3Z8+Kk5rFsAIv6UKyN1gnKtzGx+BPXGCkVHXWsdsn/Tju1a3+UoUrhIbm6i7c9szzJt
+         gKAVx1ow6Rq0txZ0o1/hV3VyMTLbcCT3pod8PfyeZN51yYZ/XdDvKBg1/SAIBQ5FT1yW
+         3jQ/N4mOlmPJxGDVFrY62VrDjpfWZ0ye9XxINYMmnjoRZ2E4EvgZsRvaJh1M7Sdblu6d
+         +TaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=TrOT5kAqHDzxKVhcRxNJfE7NH12WV49NMN9SrzZvomw=;
-        b=k65VsBvfsq3l0ZzlqXgWJRtgEE+H4nYLQQTAlmlrCt0J9Oa79ROn5G3ChUZPauqxol
-         SwV+EtM8uQE6YAbzYOPzn/On3C81yKm7rKT4JpNvfpDkDn2WBGmotaCCk+JQPOszzr8S
-         z8e4a3GaZzqWGcfgCbSRTUEqyCjnSqT/iqI5/xOYuPdw72caXWq5reaKnXD49bRpAGe0
-         kEUhh/0U3K6B4CtWP3D3PrEkGL9LoPJXpHMRyVavDhSoTyfWjzlFRCBaVqF2KQLevIPy
-         4jRN00C+vutZCmN+GodznVpcpfRJbTeGyxmMIPBufOV2ans6UVfuwHpby/tNC5zWBEs3
-         t0Ow==
-X-Gm-Message-State: AOAM531zDWduIbXJuhBx5axAYfKlPQ7GsZX9OVE9rDi/brvjIX09PCnZ
-        P+OFsUcJsxPtKnuu8ByO2q104cjkVvU=
-X-Google-Smtp-Source: ABdhPJyfMPVmUfOc95p+TAwGz7Pk3tDjBfSYFA8uaC6OQw8YfqWkfZpmqWQtgPNczzZCmkpGZCeSWA==
-X-Received: by 2002:a17:90a:64c1:: with SMTP id i1mr34245322pjm.111.1630256236473;
-        Sun, 29 Aug 2021 09:57:16 -0700 (PDT)
+        bh=55IMWtSa+Z7mHHOE+8rmvrIaongEWfOtNnZCXik1094=;
+        b=eAAD5nBw7F1MZ6APp5kVMG/5+7tGhd2QGZTOxUaWnh65fEzQt0ILOvCefIpw6IjCLX
+         ZabrO9IKJeALWzrrcm0EuHQgJhivWMHRAqiDolG5m1pNB3Y6koqUgr3+M4BIqb/e3tXx
+         qx76BpP2kUPMvLuwnB9EhEWzIFjG/mKDOEQEP+sTOIOgfRy0ftlEYK0vn6QYRgJdWbSy
+         7hvSysFEPN9n89DcCxFcpKyGt+PQv+czO+euk1qMYWk4gHAP9sm6S/JCbzdhQvNAYhfz
+         C3erH8uMnWLgemmfgWbHqVrHuymcgZp39Cv3GZSbZZOA4qlQ8mbvAQ1n5M3pau/5Xaab
+         E7Ig==
+X-Gm-Message-State: AOAM531flG2NEs6Dc4/LNZ+9vaPz4w+J8dTeE9XW5/k6cU+gOUsf75oz
+        /tdFQSD2tERcpN8/izTMuPQ=
+X-Google-Smtp-Source: ABdhPJypV76d1nREWPuGhIZMLnXklYpK4H7JAJDvvSIDdfh6+56Q+20mSoFR7zA2W3jHjxaRWKVUyA==
+X-Received: by 2002:a17:902:a40c:b029:12c:17cf:ab6f with SMTP id p12-20020a170902a40cb029012c17cfab6fmr18274359plq.71.1630256667705;
+        Sun, 29 Aug 2021 10:04:27 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:d606])
-        by smtp.gmail.com with ESMTPSA id h4sm4902291pjc.28.2021.08.29.09.57.15
+        by smtp.gmail.com with ESMTPSA id k4sm12109108pff.12.2021.08.29.10.04.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 29 Aug 2021 09:57:16 -0700 (PDT)
-Date:   Sun, 29 Aug 2021 09:57:14 -0700
+        Sun, 29 Aug 2021 10:04:27 -0700 (PDT)
+Date:   Sun, 29 Aug 2021 10:04:25 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 bpf-next 4/7] libbpf: use static const fmt string in
- __bpf_printk
-Message-ID: <20210829165714.wghn236g2ka7lgna@ast-mbp.dhcp.thefacebook.com>
-References: <20210828052006.1313788-1-davemarchevsky@fb.com>
- <20210828052006.1313788-5-davemarchevsky@fb.com>
- <3da3377c-7f79-9e07-7deb-4fca6abae8fd@fb.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCH bpf-next v4 00/27] x86/ftrace/bpf: Add batch support for
+ direct/tracing attach
+Message-ID: <20210829170425.hd7zx2y774ykaedt@ast-mbp.dhcp.thefacebook.com>
+References: <20210826193922.66204-1-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3da3377c-7f79-9e07-7deb-4fca6abae8fd@fb.com>
+In-Reply-To: <20210826193922.66204-1-jolsa@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 12:40:17PM -0400, Dave Marchevsky wrote:
-> On 8/28/21 1:20 AM, Dave Marchevsky wrote:   
-> > The __bpf_printk convenience macro was using a 'char' fmt string holder
-> > as it predates support for globals in libbpf. Move to more efficient
-> > 'static const char', but provide a fallback to the old way via
-> > BPF_NO_GLOBAL_DATA so users on old kernels can still use the macro.
-> > 
-> > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> > ---
-> >  tools/lib/bpf/bpf_helpers.h | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> > index 5f087306cdfe..a1d5ec6f285c 100644
-> > --- a/tools/lib/bpf/bpf_helpers.h
-> > +++ b/tools/lib/bpf/bpf_helpers.h
-> > @@ -216,10 +216,16 @@ enum libbpf_tristate {
-> >  		     ___param, sizeof(___param));		\
-> >  })
-> >  
-> > +#ifdef BPF_NO_GLOBAL_DATA
-> > +#define BPF_PRINTK_FMT_TYPE char
-> > +#else
-> > +#define BPF_PRINTK_FMT_TYPE static const char
+On Thu, Aug 26, 2021 at 09:38:55PM +0200, Jiri Olsa wrote:
+> hi,
+> sending new version of batch attach support, previous post
+> is in here [1].
 > 
-> The reference_tracking prog test is failing as a result of this.
-> Specifically, it fails to load bpf_sk_lookup_test0 prog, which 
-> has a bpf_printk:
+> The previous post could not assign multi trampoline on top
+> of regular trampolines. This patchset is trying to address
+> that, plus it has other fixes from last post.
 > 
->   47: (b4) w3 = 0
->   48: (18) r1 = 0x0
->   50: (b4) w2 = 7
->   51: (85) call bpf_trace_printk#6
->   R1 type=inv expected=fp, pkt, pkt_meta, map_key, map_value, mem, rdonly_buf, rdwr_buf
-> 
-> Setting BPF_NO_GLOBAL_DATA in the test results in a pass
+> This patchset contains:
+>   1) patches (1-4) that fix the ftrace graph tracing over the function
+>      with direct trampolines attached
+>   2) patches (5-8) that add batch interface for ftrace direct function
+>      register/unregister/modify
+>   3) patches (9-27) that add support to attach BPF program to multiple
+>      functions
 
-hmm. that's odd. pls investigate.
-Worst case we can just drop this patch for now.
-The failing printk is this one, right?
-bpf_printk("sk=%d\n", sk ? 1 : 0);
-iirc we had an issue related to ?: operand being used as an argument
-and llvm generating interesting code path with 'sk' and the later
-if (sk) bpf_sk_release(sk);
-would not be properly recognized by the verifier leading it to
-believe that sk may not be released in some cases.
-That printk was triggering such interesting llvm codegen.
-See commit d844a71bff0f ("bpf: Selftests, add printk to test_sk_lookup_kern to encode null ptr check")
+I did a quick look and it looks ok, but probably will require another respin.
+In the mean would be great to land the first 8 patches for the upcoming merge
+window.
+Jiri,
+can you respin them quickly addressing build bot issues and maybe
+Steven can apply them into his tracing tree for the merge window?
+Then during the next release cycle we will only iterate on bpf bits in the
+later patches.
+Thoughts?
