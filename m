@@ -2,186 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8266B3FB835
-	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 16:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4B93FB8F3
+	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 17:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237413AbhH3O0R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Aug 2021 10:26:17 -0400
-Received: from sonic308-14.consmr.mail.ne1.yahoo.com ([66.163.187.37]:34932
-        "EHLO sonic308-14.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237355AbhH3O0P (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Aug 2021 10:26:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1630333521; bh=0pxK8TOsLSSsgIq4Lo5ECQG0ClbIJTlF/6mdGZc7k/c=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=WusjcrWm3DkvbDeQIkHFqVseRlbmYkKVMlo+OWoYomxGv+BlXwWYZw5XNtG6tl0ReLLodPUx/QVujP3hH5trBAAVWAFl98pbgm36P3kkpgCfXtvDR7J4/kdbfjO/fz3eXY/HQpi4/niK/u60V/hiexvxrZkerQNAdHWRMt2e5fx9B5EIqEZLa6LXBG967DsBl08HtEjDYEBz9lm0oCIvW1nAz/TIUqB2wJMBkygWs8lVUZKYDeRmTwX9xZL0jSI7ewulWsG5FO6OMfd5pshhINr7dNqEs/aaGJSPgGHPfz4j8j3unVk0YX2BmWN1ZMeJJ32k//o3PKD7QxQt7PKLKg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1630333521; bh=g8c29hjVoX7EBTcnwTq6gowo7IaOPvAHTDt7LNSkT09=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=uhYgdD+p1K4+3QkYN2gUE/0nfKVS0BNlHn0Xq1awNiWXwaGQsSJHdJEEmJ9Y/E1sr2N2tIUi9LGeNkdoysl3UHbKANKFlKEpGG/zYqtdHZ/6/g4O5gpVnwtqDgRIGmdLNiC0huiz3qsZl9LuL+Xk7lbFTJ0v7hqy9dageVPePx5O/rMAwKglt8yj1PR2//F0DbqY7nU2VpLWhH29QakV6rz8e9FuOJ2h/BVifS3ltawlHyGyDMzkQZVniL7s5Hu18Zz8mAxie2Mh9ACOunUV81KGxa53lXdu71L0lKC3dBeto8gsR4Ryhw9po1gJO8pI0ytvTrr+QjR5fl09dy7Gow==
-X-YMail-OSG: elb0DNYVM1k.p6ZKpjRZ8vfyWh9mK.roguxlODXE6GvCbs6ZOomvUmbMvt5Ik55
- ISxK6ohrhSgv1qc_x0LyfnTXqoztF8AbZW9X9nSRHsajaYSX9FqTAvq04etlmpEW1UEBrrC8tZeR
- Ljbz7.TU0INvvGOYnMsrfqgKpX.lhjbPgIQEwQnPQUyPgZEZKE.xNE2NL0jnW_R6AUfdTanLg06P
- jItq1xVR.g3x8C57_qyShWY0Hnzk3VrzqCzfGMiizgJLv.YA.ySm1fcgdLTbqkX6S3wgr5fbDnFo
- ryecO7CZ9g59YiiUXhqt05RvtVnOR9Jrtmd1s.pgn73Sri5FShgBz9fRrXH5RWlyNpm6aVjR4tG4
- h8TkaP99T9CeTOl7bkNxa7C.FTxPMWB0VZW0KPCOQ0_TscagwmmPqrZQ.0BiYVKgjbHFHmJ.lWH0
- .HRuBpa.wm8lH7Mww4UI30ZhxGEYVax1L0CsIwNyoCpUC2Xay3EUaYAywo9sLr8NDkR7fhpbiyZX
- iyo7ieSIBbp_UJypYX77jXq5fbISTaeDEVCdqQpynkECVt4NefLHBVUbo4_DJDlqtUKcQkFmSzoB
- RI5h2MHHCHDDkVYx_fvQWjN9k8rMSOzpO9x5wjcbK9uUY83q1X_2o1NJhBCYqGtIl6Dq2IPbOTBL
- 2c.JAnEcJh4bSdf2DzFtbUoe5h2MQ.dB1vs1ciq_hY7GWYnB5wlJ4ypFIXxRYWxLO0ZW.A1K2pEe
- dBVcepymhGJaNyTYWXhYLVT0v0apVCyOhcnQsvCvZb76Gxjz5_MBtMVByRVpNA6KMBLwi5adSgdA
- FHhPqCJWktkxg58TOSAERhXdaEmAH9YWD8L8jqu36q4UwxE2x2c8juKu8xs5wOo8Q.s_gDoxhRXf
- SJliMRCBJyrcM_2Yl3jgXbYbKlM_grXtresNdFsDQVaEbnyYH7prLce7Bo2RZx1biO_pf5QSTE_B
- FzF.RIgjKZNmLuXOvBTN94XhwdEG3_2LV5PcAJ5HSSjRcHSzauFwdk0F7A2_1nAiFvvMgBedFQWX
- vKbsX4VRWUAIN1OXmjxskOhnHo82461I3OTqd59XUfC1oYCRKRFOqHPT079gWUsNeVRKXhtrbDZq
- ZUQCs4hTe0tOCreeLry9xHafenMi8559v3Nt6Hirt.xQM.OBhSB_wGEoCrAdjYNxR7YAYNWVsXeG
- ad03wQioN_NYP6suVE2okFwQqEWVO5eHpWeylrEsnWCigxtfZtggFqHOdQJwPYp8H3xK1PsFgyDM
- 8vcfnmuY4FuNw5DHT0hB57b4nEsyiBi6Sco2w2lHMt8lupfthvXAT_lbNXhv49ejj78UFnJYift3
- fTdMksZWnC_pU6faKHyk2K73Fh9NBDXXN8j7ZUIYZUuRKp367Nbm4LjuKX3KRpCl.6N6a9VNy3qG
- XOLfTt.56sOzZSDIbbdzLw3od.bPjaz8AseUn68AtqaYoh_S.Znx1bzbAgMKTWkjj3iApcU8R4qQ
- 3IE5jY2jFTGFhREeKssCNVcx8N_SeSAq3MNlGdtR1Sxra1wmmbPtjH5yR1C9YmJeFjtAoWg7W9Bb
- S87jo6HIVs_ixOok_6hr3lIib5qkyMsIXKp2Go_JU4fUnsY1e7yH6SUt_pt3174acZY5lwG0rpig
- tJzL9M69L5Y8Tel_U9entVUTDruHEXOsAE5iH29p3UUp368nCbEizyQnocE.yo2Ejq6LRlKHEe9U
- Xq3FyJlvlaBsZVSO2gB657g8s8MLKxdjSuZCKZMVEAWzXwctPhmh2RPzBWccZ1X9NnUd3ZC8n3.M
- bOf_KR65BdDrrK6cjekW7BKw55.6BS_uwFwKT0nIE4EMEQxSFXTnrVupFN2UpijP3l6Y9o5PDfci
- FxN50hXS8Dh8u4GJ0ARBDKQT3yK6h9m5t71ANSPXodeKhfGCLppNqwHvFsWM_d3ExReZJIrd68MA
- z71v_BPUimf.xHvOk1wu.dLwAkCGpktboWCCatl5tfjenL9CL0Cv3GS4Rb1n_yp1jEewunj0cFwR
- VFccC_gUShEjGrs0NjNCnYQT3n4MrI9ivLr.Uj.fqdFSJz1dOHVLP7At0zI1u9_IArhPgDOiZCck
- nF8bVSrGrLHuYh69EPUaQwtF9Qw4TxG9u2xg9GX7nq15TZKAhplE6p.rVM7GBAdiSqXUHWKz4ERE
- sL2Xi0_Dc.tGRElkf2FA.Ye4VF7rqujWk5VqgZrVLOPFpo23P2Pyi9ejhJ0x.ausc85aAF0TkSs3
- Vsfp_MG8bbMqSh8A5uwDpYWs_GhmEuxILnItrqPSzOiUGJ.0bPVwovbJ.f9vocTBoCErYnohT6Wo
- HzR4S
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Mon, 30 Aug 2021 14:25:21 +0000
-Received: by kubenode558.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID feaa928858b93704f05540583ecfdccd;
-          Mon, 30 Aug 2021 14:25:18 +0000 (UTC)
-Subject: Re: [syzbot] general protection fault in legacy_parse_param
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>
-Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, dhowells@redhat.com, dvyukov@google.com,
-        jmorris@namei.org, kafai@fb.com, kpsingh@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        paul@paul-moore.com, selinux@vger.kernel.org,
-        songliubraving@fb.com, stephen.smalley.work@gmail.com,
-        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
-        viro@zeniv.linux.org.uk, yhs@fb.com,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <0000000000004e5ec705c6318557@google.com>
- <0000000000008d2a0005ca951d94@google.com>
- <20210830122348.jffs5dmq6z25qzw5@wittgenstein>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <61bf6b11-80f8-839e-4ae7-54c2c6021ed5@schaufler-ca.com>
-Date:   Mon, 30 Aug 2021 07:25:15 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210830122348.jffs5dmq6z25qzw5@wittgenstein>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S232946AbhH3P0n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 11:26:43 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:65350 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232682AbhH3P0m (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Aug 2021 11:26:42 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17UFFw6s003975;
+        Mon, 30 Aug 2021 08:25:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=nFYlBPY6yaYwyLPt+OcA6GpAXX8Y4UzNQjWG5LIRCKo=;
+ b=jQR3zYSX06pdPuCa05YVGZGCOEvTqbyTGC8Wk7/VvY0ISPTXZgpl67D+4KvnJCc+UiMY
+ aS2RbfDr1tZI3QKEnXAbY7KIVYjekroD205sS4qrxvQ0/S9jCZBgO10lTu1BRWCVTpNW
+ qjZtEQiozJG8hy5nJHd6FfZ7rvygmfmRjE0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3aryp90wjk-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 30 Aug 2021 08:25:48 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 30 Aug 2021 08:25:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LxmXSjdHb81fJIa0vSjEjrIlcA9BUQORFNdULj1jIMtepzV5cm+vnwgYbENQ6vDS/cIyqG6v+ik6t3b8vEIe9B7OnbCoRhjIYTjvfWtuQ64JvSkou4eRIX8CwTDowAqeYOt9y9QOXg/rPNpbUPC39zbpb3YI4LOKePrfnFfR0ANW/Q/VURlh49MKBPP/WdaGHUA+HP4a3QgopzUQv2vgkW9fSEy9r9whQ+/HR8PlBouw7ddsabroeBJqffuq9UYmoVbDm14FlWMKxFBuSLvukG6H2kuUDbtAYZR88/SHo4BxRz+AJ9qfzw4CWRc2Hj5+bazNqODcLcRT0o09pW4fRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nFYlBPY6yaYwyLPt+OcA6GpAXX8Y4UzNQjWG5LIRCKo=;
+ b=nv02EOk6TfLQxPAJr+6zaOIEGmdZtgpitPePSWE4YTi6EM7c8ePfd1p+RtlQyBWJJ5ejOhnotw5RCZ1gmG9glk4jZ3u/dJJu5dOXOJ15m31kcGUdUH08Z+4AEceQ6IEoIxPDhDTG+tIatLLrsPGlmJShMH/WDUSz6Y8WG3mOTNr/XCWJMoj3bL6EiR3hGqL2gZiXmMfWSZQbSnkLXBuyByuK+b9z7ubxEhKh0pGqUzNppvmpGo1lerYT0oYIECzkY0WRhYvriINRO4GTXhufeh7a2xVPYBVYMCPbOO578WvWip0TqcWndYlu0BKpFfAwTt8y7MPaldmx+EDb2+VeHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SA1PR15MB5062.namprd15.prod.outlook.com (2603:10b6:806:1dd::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.24; Mon, 30 Aug
+ 2021 15:25:44 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::7d66:9b36:b482:af0f]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::7d66:9b36:b482:af0f%6]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
+ 15:25:44 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        kajoljain <kjain@linux.ibm.com>, Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] perf: enable branch record for software
+ events
+Thread-Topic: [PATCH v2 bpf-next 1/3] perf: enable branch record for software
+ events
+Thread-Index: AQHXmsebo1O8tvcQbk6YyjOXJsK0SquL3HIAgABUloA=
+Date:   Mon, 30 Aug 2021 15:25:44 +0000
+Message-ID: <F70BD5BE-C698-4C53-9ECD-A4805CB2D659@fb.com>
+References: <20210826221306.2280066-1-songliubraving@fb.com>
+ <20210826221306.2280066-2-songliubraving@fb.com>
+ <20210830102258.GI4353@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210830102258.GI4353@worktop.programming.kicks-ass.net>
+Accept-Language: en-US
 Content-Language: en-US
-X-Mailer: WebService/1.1.18924 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.120.0.1.13)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 749961a7-c752-4409-f2b9-08d96bca6f3c
+x-ms-traffictypediagnostic: SA1PR15MB5062:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA1PR15MB5062B68D888960320FBF46F9B3CB9@SA1PR15MB5062.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:901;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dYJovJhInzAOAekiulJDQQLwa0Fvk2Y1rSYLPyFUNhnrzqQASDhPbFnBfu0+O1KEpRHDcpLVUDRgrDPUmAmhszKgJl9m6IynYMK1lUyfOPkPAuOVK0k0iIexPl5/dHxB3CUYDQO/5mafVzktVLbPoqtVE63AtuE/8h+ueeOqwYcQQQk7VLiV0Zr1rcV/beDSI26f3fKMXxuVGAG3bAAPS4wIHOwk9Q7LfvEAw5TtN9Tk5bzBsqgPhH/b6R+tufvBwLktJNatfaFoqas0sSitdp+PD9qzyil3jhG9tVs9g06vVObqb9vEXkmy1v5GD8gSRf7i+mzDG/AcsNnRaYwxaLfRpmIBHA76+FtVO3VqR2ZpySI46ruweMeyUap/qVYpcmbfIsqDwP6RlOt5YDCFed+1lR7qtTj2OJElVknSpFe+QC92TnycJ/3RtU7+JQ9aUr0sx/TJ2OAI6nKIPMziTKCxWxXBo2CGbu6g6KJvSxmiccAw6Z/vAhpo2NJ8BF204N8jijjS0e6+1jhLhFvnTSp4JzoGzTwu7WVvHFrAf1+nePqq0KlDXGXZ/H+1XcZoULaOgHioBZXxk6k3JWqGs2S/nZWcS+SY+Pwmv3d8g/IsGlPyODXmlBPxqFrkPCRNlaZVRnrrJeyoOBuvngDi5Q/xAZPv35qYVV6dYsFuYqJ7J64/7p5oqGi7OErMNXBQ4pobjyFdOFY1q4wOGj4jMxup9V4+7FYnqk8qdO7hDxM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(376002)(136003)(396003)(2616005)(6506007)(122000001)(53546011)(478600001)(38100700002)(316002)(186003)(8936002)(8676002)(38070700005)(4326008)(6512007)(71200400001)(66476007)(5660300002)(66946007)(66446008)(66556008)(64756008)(54906003)(6916009)(86362001)(33656002)(91956017)(76116006)(6486002)(36756003)(2906002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bOpb+bja6u7VW+5DL2rJja4X8FYpyW0OA1gTCMdlCDosiC/xlIt1jjZZ3hLu?=
+ =?us-ascii?Q?tFDVDFYhkJ8nRMZ8Uy7++dkAeZBGlt7R2v7oTXv2Y6WiWs3IGfrsYvDSbvqp?=
+ =?us-ascii?Q?3GBSh3RVv9vzGGSIAy8lCDHFc3qhh3q/caeATOo4dd4EQYq0NnAJATNLv8J+?=
+ =?us-ascii?Q?LhBgmzRcTQNVtBEbYjF1CYNVSMIQXSN3ho1YspWqcyQ8+FoKqDPYHDp3wZjj?=
+ =?us-ascii?Q?OgCGiF0MI6mPKA4aMOooRMtoo/g2FR9s9raLXR+wlq+wLnJfqD/snAxI4q8f?=
+ =?us-ascii?Q?mNOr5rZRQWO6fdDayjEZXkPmSShn6rCnG0/XhjYHM9PXlt24qm5dXICjkMeJ?=
+ =?us-ascii?Q?wP8br+f+I0yivbdNG1n/wikQa0O3RMTT4SkxZqFO5qAxNF1VepzJITB+7G5g?=
+ =?us-ascii?Q?q+fP8QU/36ZHZocYaYD93eBc7IrVXZb9DwETD0GsqrZle3LdXohsoHcJSGID?=
+ =?us-ascii?Q?x2wPUF7YXVXVzpi3SCp4mHYl3RZHC8RS6pN5vgnjWlxyHTCr91DljRNVkZuC?=
+ =?us-ascii?Q?VRQX77ZtAhwTiTcK62r+XeeNBIAIPLxS1EXNWvTgvdYt0Plh/IdLwna+d2fH?=
+ =?us-ascii?Q?CSnKEpLBsZzvQzjVvvBxuhAtlbEVLd6bL5Mq7rvQTbqvI7FahpexSFTd8FlP?=
+ =?us-ascii?Q?RsjeZXIUURjgnZ6G/idKwJbGEvpAVWN91+Ip94C//QEM19lYseNFt/sfhUSD?=
+ =?us-ascii?Q?rVwiKAhJ3JNjHbaJZdZG3U2W834GGidzw+US7UBWVfAC7Sozvwq//EvbBCSA?=
+ =?us-ascii?Q?58X/Rf97BQRGiGKGeGLiovxbsWagTTj38iboITSU1CPXOM1MOhLTMRZs6EC2?=
+ =?us-ascii?Q?hQQUSjHIkg74yp0J1oxlBc2ECSZA5mA/ZFb20wAgJRNvJo/ernrSukRAbL+j?=
+ =?us-ascii?Q?try/aEuNipOVQRgqnoObzOAKnmvbkiT/HmbHdZ4oyyl8FMsp8AR342QZkCIX?=
+ =?us-ascii?Q?y70SbLk+sd2RhokrVx1+4gcY36C834y/9gmXCCz3dmWh253HHqrUUPbh/fTH?=
+ =?us-ascii?Q?EgufjHKMjPlNK/UcI4yQvajtNvutZxU9S9icbILVOrwFtXFCWPZ0L98f0vvA?=
+ =?us-ascii?Q?ldUVBQWdCDnn3ywe/7hPVNmYQGhWLG5pAIqLva5MhU1aTS0t3phIp/7nzrrf?=
+ =?us-ascii?Q?D+LX3afqr6ABqZAEETHUayN8oGUbPdrhxcQURH1kzE/UQoIcIfztDlukUBPA?=
+ =?us-ascii?Q?Z7Qx880mwR3SrO4reQ8KjvkCyv8yKh84LHVAY0N5iA+r1yeFlD+/j/+dplsQ?=
+ =?us-ascii?Q?WfdR1yLGc9VrllGuSJjkmmhQ9lnkXiKpxkdVb1EzIr7qa43disStHiN3Fedi?=
+ =?us-ascii?Q?IzEgBiD8RPrQ/xnHZwtshhmI4e+zrWMG9c2m22DGFi2fxoh75+qDMDl8qOuT?=
+ =?us-ascii?Q?Lt5CACU=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C2BE6915B162B84C94CDC6CCEF0C1886@namprd15.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 749961a7-c752-4409-f2b9-08d96bca6f3c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2021 15:25:44.2690
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1wLPNLKsMwN7bnjwNDPIzm20AY40yOSgIWfl+0gjE1DQ71eBGmoIak97Pfc4bOWt82aFpqFmBLwE2cOgBSloSQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5062
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: Uq6DwOJsRk_Z5f9NVY8kGldbksHOVI3g
+X-Proofpoint-ORIG-GUID: Uq6DwOJsRk_Z5f9NVY8kGldbksHOVI3g
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-30_05:2021-08-30,2021-08-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 spamscore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 adultscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108300108
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/30/2021 5:23 AM, Christian Brauner wrote:
-> On Fri, Aug 27, 2021 at 07:11:18PM -0700, syzbot wrote:
->> syzbot has bisected this issue to:
->>
->> commit 54261af473be4c5481f6196064445d2945f2bdab
->> Author: KP Singh <kpsingh@google.com>
->> Date:   Thu Apr 30 15:52:40 2020 +0000
->>
->>     security: Fix the default value of fs_context_parse_param hook
->>
->> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D160c5d7=
-5300000
->> start commit:   77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git:/=
-/ano..
->> git tree:       upstream
->> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D150c5d7=
-5300000
->> console output: https://syzkaller.appspot.com/x/log.txt?x=3D110c5d7530=
-0000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D2fd902af77=
-ff1e56
->> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd1e3b1d92d25=
-abf97943
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D126d084d=
-300000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D16216eb130=
-0000
->>
->> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
->> Fixes: 54261af473be ("security: Fix the default value of fs_context_pa=
-rse_param hook")
->>
->> For information about bisection process see: https://goo.gl/tpsmEJ#bis=
-ection
-> So ok, this seems somewhat clear now. When smack and=20
-> CONFIG_BPF_LSM=3Dy
-> is selected the bpf LSM will register NOP handlers including
->
-> bpf_lsm_fs_context_fs_param()
->
-> for the
->
-> fs_context_fs_param
->
-> LSM hook. The bpf LSM runs last, i.e. after smack according to:
->
-> CONFIG_LSM=3D"landlock,lockdown,yama,safesetid,integrity,tomoyo,smack,b=
-pf"
->
-> in the appended config. The smack hook runs and sets
->
-> param->string =3D NULL
->
-> then the bpf NOP handler runs returning -ENOPARM indicating to the vfs
-> parameter parser that this is not a security module option so it should=
 
-> proceed processing the parameter subsequently causing the crash because=
 
-> param->string is not allowed to be NULL (Which the vfs parameter parser=
+> On Aug 30, 2021, at 3:22 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> On Thu, Aug 26, 2021 at 03:13:04PM -0700, Song Liu wrote:
+>> +int dummy_perf_snapshot_branch_stack(struct perf_branch_snapshot *br_snapshot);
+>> +
+>> +DECLARE_STATIC_CALL(perf_snapshot_branch_stack, dummy_perf_snapshot_branch_stack);
+>> +
+>> #endif /* _LINUX_PERF_EVENT_H */
+>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>> index 011cc5069b7ba..c53fe90e630ac 100644
+>> --- a/kernel/events/core.c
+>> +++ b/kernel/events/core.c
+>> @@ -13437,3 +13437,6 @@ struct cgroup_subsys perf_event_cgrp_subsys = {
+>> 	.threaded	= true,
+>> };
+>> #endif /* CONFIG_CGROUP_PERF */
+>> +
+>> +DEFINE_STATIC_CALL_NULL(perf_snapshot_branch_stack,
+>> +			dummy_perf_snapshot_branch_stack);
+> 
+> This isn't right...
+> 
+> The whole dummy_perf_snapshot_branch_stack() thing is a declaration only
+> and used as a typedef. Also, DEFINE_STATIC_CALL_NULL() and
+> static_call_cond() rely on a void return value, which it doesn't have.
+> 
+> Did you want:
+> 
+>  DECLARE_STATIC_CALL(perf_snapshot_branch_stack, void (*)(struct perf_branch_snapshot *));
+> 
+>  DEFINE_STATIC_CALL_NULL(perf_snapshot_branch_stack, void (*)(struct perf_branch_snapshot *));
+> 
+>  static_call_cond(perf_snapshot_branch_stack)(...);
+> 
+> *OR*, do you actually need that return value, in which case you're
+> probably looking for:
+> 
+>  DECLARE_STATIC_CALL(perf_snapshot_branch_stack, int (*)(struct perf_branch_snapshot *));
+> 
+>  DEFINE_STATIC_CALL_RET0(perf_snapshot_branch_stack, int (*)(struct perf_branch_snapshot *));
+> 
+>  ret = static_call(perf_snapshot_branch_stack)(...);
+> 
+> ?
 
-> verifies early in fsconfig().).
+Thanks for these information! I did get confused these macros for quite a 
+while. Let me try with the _RET0 version.
 
-The security_fs_context_parse_param() function is incorrectly
-implemented using the call_int_hook() macro. It should return
-zero if any of the modules return zero. It does not follow the
-usual failure model of LSM hooks. It could be argued that the
-code was fine before the addition of the BPF hook, but it was
-going to fail as soon as any two security modules provided
-mount options.
-
-Regardless, I will have a patch later today. Thank you for
-tracking this down.
-
->
-> If you take the appended syzkaller config and additionally select
-> kprobes you can observe this by registering bpf kretprobes for:
-> security_fs_context_parse_param()
-> smack_fs_context_parse_param()
-> bpf_lsm_fs_context_parse_param()
-> in different terminal windows and then running the syzkaller provided
-> reproducer:
->
-> root@f2-vm:~# bpftrace -e 'kretprobe:smack_fs_context_parse_param { pri=
-ntf("returned: %d\n", retval); }'
-> Attaching 1 probe...
-> returned: 0
->
-> root@f2-vm:~# bpftrace -e 'kretprobe:bpf_lsm_fs_context_parse_param { p=
-rintf("returned: %d\n", retval); }'
-> Attaching 1 probe...
-> returned: -519
->
-> root@f2-vm:~# bpftrace -e 'kretprobe:security_fs_context_parse_param { =
-printf("returned: %d\n", retval); }'
-> Attaching 1 probe...
-> returned: -519
->
-> ^^^^^
-> This will ultimately tell the vfs to move on causing the crash because
-> param->string is null at that point.
->
-> Unless I missed something why that can't happen.
->
-> Christian
+Song  
 
