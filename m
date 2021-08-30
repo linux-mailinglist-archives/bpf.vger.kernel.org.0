@@ -2,62 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099553FB418
-	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 12:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA85D3FB5F6
+	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 14:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236460AbhH3Kto (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Aug 2021 06:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236415AbhH3Ktn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Aug 2021 06:49:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6611AC061575;
-        Mon, 30 Aug 2021 03:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dKqKLIxUsagVJumO62jXGIe/loCKVk6eG2zNzXoCLu0=; b=DC1+bjb6VW4EnFq6o2tl/PH/Oy
-        fF+RTWPCypJoRXwG2Ig8NW8E59NULCElV9jlXYE7WnGrgdE8TVIcu+YNjTBkivSpXJnDG7WzFA9gW
-        V3NDQ7h+ZPbZhp13UNT6Qyrhzzm7QwfkMdqwQ4pAZogK+P8SXl6daRmA36sjueqjiYp3osCoD5WfK
-        fMI/k2HCyuXVDY+NuFQ5E3Im9kW9aVGsIxWY7tTydUW3s4xFYE8+VLLTETw+tNm1LDFTLQdV4u3OV
-        tYg6nPFjsAzhyH0FLxJv/+z4ol/Ty4zKdUreqqVL8VcEZ1AsC6k9pBvWZMZ9rObSewbAFHXqyxLv4
-        E/wQc1ug==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mKepJ-00021g-Cf; Mon, 30 Aug 2021 10:47:47 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EFAD498186D; Mon, 30 Aug 2021 12:47:40 +0200 (CEST)
-Date:   Mon, 30 Aug 2021 12:47:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        acme@kernel.org, mingo@redhat.com, kjain@linux.ibm.com,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 2/3] bpf: introduce helper
- bpf_get_branch_snapshot
-Message-ID: <20210830104740.GK4353@worktop.programming.kicks-ass.net>
-References: <20210826221306.2280066-3-songliubraving@fb.com>
- <202108272326.sMsn5b1g-lkp@intel.com>
+        id S232442AbhH3MYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 08:24:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231165AbhH3MYu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Aug 2021 08:24:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B1B5610E6;
+        Mon, 30 Aug 2021 12:23:51 +0000 (UTC)
+Date:   Mon, 30 Aug 2021 14:23:48 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>
+Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        casey@schaufler-ca.com, daniel@iogearbox.net, dhowells@redhat.com,
+        dvyukov@google.com, jmorris@namei.org, kafai@fb.com,
+        kpsingh@google.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        paul@paul-moore.com, selinux@vger.kernel.org,
+        songliubraving@fb.com, stephen.smalley.work@gmail.com,
+        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
+        viro@zeniv.linux.org.uk, yhs@fb.com
+Subject: Re: [syzbot] general protection fault in legacy_parse_param
+Message-ID: <20210830122348.jffs5dmq6z25qzw5@wittgenstein>
+References: <0000000000004e5ec705c6318557@google.com>
+ <0000000000008d2a0005ca951d94@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202108272326.sMsn5b1g-lkp@intel.com>
+In-Reply-To: <0000000000008d2a0005ca951d94@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 11:10:39PM +0800, kernel test robot wrote:
-
-> All errors (new ones prefixed by >>):
+On Fri, Aug 27, 2021 at 07:11:18PM -0700, syzbot wrote:
+> syzbot has bisected this issue to:
 > 
->    riscv32-linux-ld: kernel/bpf/trampoline.o: in function `.L57':
-> >> trampoline.c:(.text+0x34c): undefined reference to `__SCK__perf_snapshot_branch_stack'
->    riscv32-linux-ld: kernel/bpf/trampoline.o: in function `.L61':
->    trampoline.c:(.text+0x360): undefined reference to `bpf_perf_branch_snapshot'
+> commit 54261af473be4c5481f6196064445d2945f2bdab
+> Author: KP Singh <kpsingh@google.com>
+> Date:   Thu Apr 30 15:52:40 2020 +0000
 > 
+>     security: Fix the default value of fs_context_parse_param hook
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=160c5d75300000
+> start commit:   77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git://ano..
+> git tree:       upstream
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=150c5d75300000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=110c5d75300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126d084d300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16216eb1300000
+> 
+> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
+> Fixes: 54261af473be ("security: Fix the default value of fs_context_parse_param hook")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-This a build with PERF_EVENTS=n, I suppose you'd better make calling
-perf_snapshot_branch_stack() dependent on having that :-)
+So ok, this seems somewhat clear now. When smack and 
+CONFIG_BPF_LSM=y
+is selected the bpf LSM will register NOP handlers including
+
+bpf_lsm_fs_context_fs_param()
+
+for the
+
+fs_context_fs_param
+
+LSM hook. The bpf LSM runs last, i.e. after smack according to:
+
+CONFIG_LSM="landlock,lockdown,yama,safesetid,integrity,tomoyo,smack,bpf"
+
+in the appended config. The smack hook runs and sets
+
+param->string = NULL
+
+then the bpf NOP handler runs returning -ENOPARM indicating to the vfs
+parameter parser that this is not a security module option so it should
+proceed processing the parameter subsequently causing the crash because
+param->string is not allowed to be NULL (Which the vfs parameter parser
+verifies early in fsconfig().).
+
+If you take the appended syzkaller config and additionally select
+kprobes you can observe this by registering bpf kretprobes for:
+security_fs_context_parse_param()
+smack_fs_context_parse_param()
+bpf_lsm_fs_context_parse_param()
+in different terminal windows and then running the syzkaller provided
+reproducer:
+
+root@f2-vm:~# bpftrace -e 'kretprobe:smack_fs_context_parse_param { printf("returned: %d\n", retval); }'
+Attaching 1 probe...
+returned: 0
+
+root@f2-vm:~# bpftrace -e 'kretprobe:bpf_lsm_fs_context_parse_param { printf("returned: %d\n", retval); }'
+Attaching 1 probe...
+returned: -519
+
+root@f2-vm:~# bpftrace -e 'kretprobe:security_fs_context_parse_param { printf("returned: %d\n", retval); }'
+Attaching 1 probe...
+returned: -519
+
+^^^^^
+This will ultimately tell the vfs to move on causing the crash because
+param->string is null at that point.
+
+Unless I missed something why that can't happen.
+
+Christian
