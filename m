@@ -2,149 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368C63FBA7A
-	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 18:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403103FBB03
+	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 19:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237921AbhH3Q6e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Aug 2021 12:58:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231234AbhH3Q6e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Aug 2021 12:58:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C7BC60E90;
-        Mon, 30 Aug 2021 16:57:36 +0000 (UTC)
-Date:   Mon, 30 Aug 2021 18:57:33 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>,
-        andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, dhowells@redhat.com, dvyukov@google.com,
-        jmorris@namei.org, kafai@fb.com, kpsingh@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        paul@paul-moore.com, selinux@vger.kernel.org,
-        songliubraving@fb.com, stephen.smalley.work@gmail.com,
-        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
-        viro@zeniv.linux.org.uk, yhs@fb.com
-Subject: Re: [syzbot] general protection fault in legacy_parse_param
-Message-ID: <20210830165733.emqlg3orflaqqfio@wittgenstein>
-References: <0000000000004e5ec705c6318557@google.com>
- <0000000000008d2a0005ca951d94@google.com>
- <20210830122348.jffs5dmq6z25qzw5@wittgenstein>
- <61bf6b11-80f8-839e-4ae7-54c2c6021ed5@schaufler-ca.com>
- <89d0e012-4caf-4cda-3c4e-803a2c6ebc2b@schaufler-ca.com>
+        id S238000AbhH3Rf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 13:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234054AbhH3RfZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Aug 2021 13:35:25 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994DFC061575;
+        Mon, 30 Aug 2021 10:34:31 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so14385231pjr.1;
+        Mon, 30 Aug 2021 10:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CyOQ7v1k83UeAxnfGLUghIwT0Z2JNPMZHajFoOQYtNM=;
+        b=qpCwUREaztkvtdgpaq1mKQUA7UxXoulIk2SJJFD4IacPINKBjIonkNTXbpWGQaQ17a
+         1msbOlzbHv1ItJlnSkywA/fY5KPqCgio00F2WJNNk9OlqVXj8YX+7SkVp4nv2UNL/MXq
+         j7+dN5nIjdSGfxDvVlyQgbytwfBXZedN27FzLEUAanNDdqKbLpq0biuAg6n8z+HrVBbh
+         u0/EuWEP/jUzhsmW/ZNAQNydU3AURZa8wcsGPvg4Cb41PKavkJhz23L6sryYFYAe8tqz
+         9DeRlPkk0Ojb3QS+4NggTUrOZyo+dMnj/9AFNMWxhg0jD2l5MVHkZfUqsGXMgTSr6mZU
+         /Dug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CyOQ7v1k83UeAxnfGLUghIwT0Z2JNPMZHajFoOQYtNM=;
+        b=VKEliovq7kSs0Q0ZeabkY0mdCsDC+l6Q5xA93C/hmRWAYySuBNOYXqrTHzZIbzdK0q
+         WzEBSBQeDXHn1r6qAhk1VRDipOwc1Mt2v19eAuJLgGhGWv84YJExjGC+6EKPShcc/6m2
+         uaQ+FNkagjiz1nwuNoDpvg9dY4anjnlnAmcvZs8fYU9nj+tc7AwbjE/S6UZn/UrW1EnI
+         YoPtkFeaAOOfAbMXrnXYPFGkTO+5jzu4fo4h26ImlB4B0YEImRb7t70bfe86xPU1ykWN
+         Fd83xy3uChW0IURtUxZiw7Hix9WGyo6tGDUqx3AkOQz/IrWhx9tQJLEYtWqbObItK6Vf
+         7YQw==
+X-Gm-Message-State: AOAM530EpAIdYXJkhjXMdGbqj/n+/KWTfbLRoHl6Y4XViKuQ5sIkwa3N
+        F69baj9cH32ShqQb1p8XCZRuIid8z43Eow==
+X-Google-Smtp-Source: ABdhPJwPxvpTguE8UV0MKzvoa9xJqTJZmKnY8bfmtNFdnCmzD1+XjanYmpPKZohwDu5RzMWg7Qpkkw==
+X-Received: by 2002:a17:90a:f285:: with SMTP id fs5mr211109pjb.148.1630344870881;
+        Mon, 30 Aug 2021 10:34:30 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d820:9cc6:d37f:c2fd:dc6])
+        by smtp.gmail.com with ESMTPSA id d20sm14776076pfu.36.2021.08.30.10.34.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 10:34:30 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org
+Subject: [PATCH bpf-next RFC v1 0/8] Support kernel module function calls from eBPF
+Date:   Mon, 30 Aug 2021 23:04:16 +0530
+Message-Id: <20210830173424.1385796-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <89d0e012-4caf-4cda-3c4e-803a2c6ebc2b@schaufler-ca.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2603; h=from:subject; bh=c2kGo/sigrmHyjOR/An+f/GPRWdYGrv14zTON1Yr4pE=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhLRX8wbdN7XRR71nQ6cXdP7rSs2SdbTSRYlDPLgtf KTn27gOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYS0V/AAKCRBM4MiGSL8RyuqcEA CPdzyqUsDI0TouE2k0m1f5BptZ++2iFDADY61yXRJk7jmpSRHcZXHn5PoU1Xgl88oldSXHRfEDh65c qSi0qa5l+rqOGD+rXQKfx++FQrUZSPaBMY4qEgxHPgVPty4JxpgVR3+ZKqzuxssPbltmjqIef15KLH 2Z10i9RSPh0OdEtTwpYf5qy+BGG5No2v4R3azphNsxR2TTr751L3NxOaAK7C8eD7nRe5hhJrIPfcX6 fhujrFhtuiHs12EV7B2g8GTRTrDGU15e2tDEN/ZZabKW6bHmFRsQyTTdMFiZmGdjuY3dPZJOrdZaeD UMBd2gbwyRF1TfrPK7Qc5lE06deLsfHh5/Y+zSRJc9s7jJQHnLoI+/Lou+BBss+qIMNc8XGDFySkMY CVgm7xhLV5Ac1fTMxiI2G+5hunQPO+O8nSENcig+Rr6I3eie7C4rn5zqQup+yXagN+avYcfJZhbTF0 tQIYV585QVuhNhHt92Jja/a61sYqHvlWLyDNdoljlaISlVT7qAITWl0aPnfq/yLsdrakNDUdlHelyX ZKYifIyrJ455J0ewgQo7AzwcTLFPlItM3w5W6tdcxPmprCD9atG+I0Mgrl3s3HH20cgU8qvFD/1iAs 1fbUfh03t8S9DZeO/5HvBMtfCeN8njNTKr+DGp8cUOjT2hrDjFcUBWw6cTAA==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 09:40:57AM -0700, Casey Schaufler wrote:
-> On 8/30/2021 7:25 AM, Casey Schaufler wrote:
-> > On 8/30/2021 5:23 AM, Christian Brauner wrote:
-> >> On Fri, Aug 27, 2021 at 07:11:18PM -0700, syzbot wrote:
-> >>> syzbot has bisected this issue to:
-> >>>
-> >>> commit 54261af473be4c5481f6196064445d2945f2bdab
-> >>> Author: KP Singh <kpsingh@google.com>
-> >>> Date:   Thu Apr 30 15:52:40 2020 +0000
-> >>>
-> >>>     security: Fix the default value of fs_context_parse_param hook
-> >>>
-> >>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=160c5d75300000
-> >>> start commit:   77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git://ano..
-> >>> git tree:       upstream
-> >>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=150c5d75300000
-> >>> console output: https://syzkaller.appspot.com/x/log.txt?x=110c5d75300000
-> >>> kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
-> >>> dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
-> >>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126d084d300000
-> >>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16216eb1300000
-> >>>
-> >>> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
-> >>> Fixes: 54261af473be ("security: Fix the default value of fs_context_parse_param hook")
-> >>>
-> >>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> >> So ok, this seems somewhat clear now. When smack and 
-> >> CONFIG_BPF_LSM=y
-> >> is selected the bpf LSM will register NOP handlers including
-> >>
-> >> bpf_lsm_fs_context_fs_param()
-> >>
-> >> for the
-> >>
-> >> fs_context_fs_param
-> >>
-> >> LSM hook. The bpf LSM runs last, i.e. after smack according to:
-> >>
-> >> CONFIG_LSM="landlock,lockdown,yama,safesetid,integrity,tomoyo,smack,bpf"
-> >>
-> >> in the appended config. The smack hook runs and sets
-> >>
-> >> param->string = NULL
-> >>
-> >> then the bpf NOP handler runs returning -ENOPARM indicating to the vfs
-> >> parameter parser that this is not a security module option so it should
-> >> proceed processing the parameter subsequently causing the crash because
-> >> param->string is not allowed to be NULL (Which the vfs parameter parser
-> >> verifies early in fsconfig().).
-> > The security_fs_context_parse_param() function is incorrectly
-> > implemented using the call_int_hook() macro. It should return
-> > zero if any of the modules return zero. It does not follow the
-> > usual failure model of LSM hooks. It could be argued that the
-> > code was fine before the addition of the BPF hook, but it was
-> > going to fail as soon as any two security modules provided
-> > mount options.
-> >
-> > Regardless, I will have a patch later today. Thank you for
-> > tracking this down.
-> 
-> Here's my proposed patch. I'll tidy it up with a proper
-> commit message if it looks alright to y'all. I've tested
-> with Smack and with and without BPF.
+This set enables kernel module function calls, and also modifies verifier logic
+to permit invalid kernel function calls as long as they are pruned as part of
+dead code elimination. This is done to provide better runtime portability for
+BPF objects, which can conditionally disable parts of code that are pruned later
+by the verifier (e.g. const volatile vars, kconfig options). libbpf
+modifications are made along with kernel changes to support module function
+calls.
 
-Looks good to me.
-On question, in contrast to smack, selinux returns 1 instead of 0 on
-success. So selinux would cause an early return preventing other hooks
-from running. Just making sure that this is intentional.
+It also converts TCP congestion control objects to use the module kfunc support
+instead of relying on IS_BUILTIN ifdef.
 
-Iirc, this would mean that selinux causes fsconfig() to return a
-positive value to userspace which I think is a bug; likely in selinux.
-So I think selinux should either return 0 or the security hook itself
-needs to overwrite a positive value with a sensible errno that can be
-seen by userspace.
+Kumar Kartikeya Dwivedi (8):
+  bpf: Introduce BPF support for kernel module function calls
+  bpf: Be conservative during verification for invalid kfunc calls
+  libbpf: Support kernel module function calls
+  libbpf: Resolve invalid kfunc calls with imm = 0, off = 0
+  tools: Allow specifying base BTF file in resolve_btfids
+  bpf: btf: Introduce helpers for dynamic BTF set registration
+  bpf: enable TCP congestion control kfunc from modules
+  bpf, selftests: Add basic test for module kfunc call
 
-> 
-> 
->  security/security.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/security/security.c b/security/security.c
-> index 09533cbb7221..3cf0faaf1c5b 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -885,7 +885,19 @@ int security_fs_context_dup(struct fs_context *fc, struct fs_context *src_fc)
->  
->  int security_fs_context_parse_param(struct fs_context *fc, struct fs_parameter *param)
->  {
-> -	return call_int_hook(fs_context_parse_param, -ENOPARAM, fc, param);
-> +	struct security_hook_list *hp;
-> +	int trc;
-> +	int rc = -ENOPARAM;
-> +
-> +	hlist_for_each_entry(hp, &security_hook_heads.fs_context_parse_param,
-> +			     list) {
-> +		trc = hp->hook.fs_context_parse_param(fc, param);
-> +		if (trc == 0)
-> +			rc = 0;
-> +		else if (trc != -ENOPARAM)
-> +			return trc;
-> +	}
-> +	return rc;
->  }
->  
->  int security_sb_alloc(struct super_block *sb)
+ include/linux/bpf.h                           |   1 +
+ include/linux/bpfptr.h                        |   1 +
+ include/linux/btf.h                           |  18 +++
+ include/linux/filter.h                        |   9 ++
+ include/uapi/linux/bpf.h                      |   3 +-
+ kernel/bpf/btf.c                              |  37 +++++++
+ kernel/bpf/core.c                             |  14 +++
+ kernel/bpf/syscall.c                          |  55 +++++++++-
+ kernel/bpf/verifier.c                         | 103 ++++++++++++++----
+ kernel/trace/bpf_trace.c                      |   1 +
+ net/ipv4/bpf_tcp_ca.c                         |  34 +-----
+ net/ipv4/tcp_bbr.c                            |  28 ++++-
+ net/ipv4/tcp_cubic.c                          |  26 ++++-
+ net/ipv4/tcp_dctcp.c                          |  26 ++++-
+ scripts/Makefile.modfinal                     |   1 +
+ tools/bpf/resolve_btfids/main.c               |  19 +++-
+ tools/include/uapi/linux/bpf.h                |   3 +-
+ tools/lib/bpf/bpf.c                           |   3 +
+ tools/lib/bpf/libbpf.c                        |  91 ++++++++++++++--
+ tools/lib/bpf/libbpf_internal.h               |   2 +
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  23 +++-
+ .../selftests/bpf/prog_tests/ksyms_module.c   |  10 +-
+ .../selftests/bpf/progs/test_ksyms_module.c   |   9 ++
+ 24 files changed, 446 insertions(+), 74 deletions(-)
 
-<snip>
+-- 
+2.33.0
+
