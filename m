@@ -2,174 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9208A3FBC7C
-	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 20:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD7C3FBCC1
+	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 21:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238838AbhH3Sdm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Aug 2021 14:33:42 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:35942
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238837AbhH3Sdm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Aug 2021 14:33:42 -0400
-Received: from mussarela.. (201-69-234-220.dial-up.telesp.net.br [201.69.234.220])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 5D1013F109;
-        Mon, 30 Aug 2021 18:32:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630348367;
-        bh=WoV8Gp2FCGI3RaWTuFmI/xHF+q8iCkzmY90VFsZdqMA=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=Dr76ubMIOBPb8uUIr3/ZrElUTKbNHJoW3jXzti62bdmE47MnFCWv1ErQgdnpjrTEK
-         rnvwUceFS08tfYqDKpFaDdQxejK9GYfHM4qmpzlSNQ5YLbnhfWGMlEl1EbYHuZ/vBq
-         IcYlfAF32g2Rlc+Qi4gFCDz5BnXu2LCTgybhECLInXH+knzKdLEZbkD/oOow0VsSDn
-         8AzDnFXbwLPhxg1x3GmUEi1uvLR+veGx9Q1bznaoxFqZTnov2ZK33QnP4n1d/B7SGt
-         ffPSSOnklASz7yyTWYZ5PGbFCqG9tBo8nEgD6UX95RBANF0SL28WEoQtDtLiIU4Gvx
-         KDFuJ4fRqp6eQ==
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     stable@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Pavel Machek <pavel@denx.de>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Subject: [PATCH 4.14 4/4] bpf: Fix truncation handling for mod32 dst reg wrt zero
-Date:   Mon, 30 Aug 2021 15:32:11 -0300
-Message-Id: <20210830183211.339054-5-cascardo@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210830183211.339054-1-cascardo@canonical.com>
-References: <20210830183211.339054-1-cascardo@canonical.com>
+        id S232750AbhH3TGD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 15:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230471AbhH3TGC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Aug 2021 15:06:02 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31102C061575;
+        Mon, 30 Aug 2021 12:05:08 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id v19so16617615ybv.9;
+        Mon, 30 Aug 2021 12:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iq88rt+bkBOjHt9lnMugBUtWcA1Pi2Qr+AfgrTf4Tro=;
+        b=mI7Z+EkcDZxptsnn+NdYNNruhnmO+15i71gU88do/cMT9RCxgouuSAxfaXpiwX+Iv7
+         foEkwBDwm4Uu3hdUjSPpSd7aTenZoR7ZtF9eng9ayWEpOmctFWgDWNZPKLMtfZMyZSpD
+         TkbDLgAb8SzdLIBTov7wAmwkYM5TlDr1lubOj1Q6uZ1D6l35ES/jJIY92QjyKTJ5vofT
+         A62k8sMexGEvC9CGq4njL7i1zcl4xzdmo+9uP6q45idVtrxnmA+Kl+xymML2Dmhqm3RV
+         zKmZXNZSkXogQzZnFMIbASzXh47dt7BrM+gqnOW1vZlm+va9IhY/qumhiDL+TKlLcEUJ
+         36Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iq88rt+bkBOjHt9lnMugBUtWcA1Pi2Qr+AfgrTf4Tro=;
+        b=gACMPsKtF4Sirvugc+IPuA4rAc8+2ePOYVW5eOukJ/Q2x6xK9R6AfVfZ4xsecMTxIX
+         r5iYs6lEuMtD1YvHzakdB5fdULRxt5Zlt2RVsetiCvWGp+TPaigdyShKFZ6s6aaJHnaz
+         m2vXtWdc9lBFqptDeaXzRSOARWS18dFM+uyWjLvaxYf60h4Jv6zHq3zvid06pMG510vz
+         f1tRhGmYjFoaDcPUfa4Qj5yoyvZSJFyItleSq/uafH+hBSPWSdW8WgUqQ9x+rTIcPXja
+         YWW8iahhj2xTgvm4SEkUegoSk3ZJhVRG3t/xvfPZ9Gbccuov6l8p6LXrUfg2VcxtXSdx
+         qfXw==
+X-Gm-Message-State: AOAM530nHOEsWN/WYhPT+JO+EJ1IPhyOeIcSKTo1QD78p7WMnaexWA6c
+        UAwO9Yuob5DV0EiZpR9Wlo7ISM4K5HyVV5DyuKIfDCh/f4M=
+X-Google-Smtp-Source: ABdhPJxMZEuIbVQ7KIIzLj0InJxIVVLpvXZyMG41cAigOqrmaFBgqH5biJ/zyZIOrh+xdguT51vlqy/bi6YqU3foX7Y=
+X-Received: by 2002:a25:5e8a:: with SMTP id s132mr25477533ybb.510.1630350307295;
+ Mon, 30 Aug 2021 12:05:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <162756755600.301564.4957591913842010341.stgit@devnote2> <163024693462.457128.1437820221831758047.stgit@devnote2>
+In-Reply-To: <163024693462.457128.1437820221831758047.stgit@devnote2>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 30 Aug 2021 12:04:56 -0700
+Message-ID: <CAEf4BzbQZqtHAt5XMVxpeH2AmfaWmrqesB5fZavcwESudymR+g@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/1] Non stack-intrusive return probe event
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+On Sun, Aug 29, 2021 at 7:22 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Hello,
+>
+> For a long time, we tackled to fix some issues around kretprobe.
+> One of the latest action was the stacktrace fix on x86 in this
+> thread.
+>
+> https://lore.kernel.org/bpf/162756755600.301564.4957591913842010341.stgit@devnote2/
+>
+> However, there seems no progress/further discussion. So I would
+> like to make another approach for this (and the other issues.)
 
-Commit 9b00f1b78809309163dda2d044d9e94a3c0248a3 upstream.
+v10 of kretprobe+stacktrace fixes ([0]) from Masami has received no
+comment or objections in the last month, since it was posted. It fixes
+the very real and very limiting problem of not being able to capture a
+stack trace from BPF kretprobe programs. Masami, while I don't mind
+your new approach, I think we shouldn't consider them as "either/or"
+solutions. We have a fix that works for existing implementations, can
+we please land it, and then work on further improvements
+independently?
 
-Recently noticed that when mod32 with a known src reg of 0 is performed,
-then the dst register is 32-bit truncated in verifier:
+Ingo, Peter, Steven,
 
-  0: R1=ctx(id=0,off=0,imm=0) R10=fp0
-  0: (b7) r0 = 0
-  1: R0_w=inv0 R1=ctx(id=0,off=0,imm=0) R10=fp0
-  1: (b7) r1 = -1
-  2: R0_w=inv0 R1_w=inv-1 R10=fp0
-  2: (b4) w2 = -1
-  3: R0_w=inv0 R1_w=inv-1 R2_w=inv4294967295 R10=fp0
-  3: (9c) w1 %= w0
-  4: R0_w=inv0 R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4294967295 R10=fp0
-  4: (b7) r0 = 1
-  5: R0_w=inv1 R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4294967295 R10=fp0
-  5: (1d) if r1 == r2 goto pc+1
-   R0_w=inv1 R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4294967295 R10=fp0
-  6: R0_w=inv1 R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4294967295 R10=fp0
-  6: (b7) r0 = 2
-  7: R0_w=inv2 R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2_w=inv4294967295 R10=fp0
-  7: (95) exit
-  7: R0=inv1 R1=inv(id=0,umin_value=4294967295,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R2=inv4294967295 R10=fp0
-  7: (95) exit
+I'm not sure who and which kernel tree this has to go through, but
+assuming it's one of you/yours, can you please take a look at [0] and
+apply it where appropriate? The work has been going on since March and
+it blocks development of some extremely useful tooling (retsnoop [1]
+being one of them). There were also bpftrace users that were
+completely surprised about the inability to use stack trace capturing
+from kretprobe handlers, so it's not just me. I (and a bunch of other
+BPF users) would greatly appreciate help with getting this problem
+fixed. Thank you!
 
-However, as a runtime result, we get 2 instead of 1, meaning the dst
-register does not contain (u32)-1 in this case. The reason is fairly
-straight forward given the 0 test leaves the dst register as-is:
+  [0] https://lore.kernel.org/bpf/162756755600.301564.4957591913842010341.stgit@devnote2/
+  [1] https://github.com/anakryiko/retsnoop
 
-  # ./bpftool p d x i 23
-   0: (b7) r0 = 0
-   1: (b7) r1 = -1
-   2: (b4) w2 = -1
-   3: (16) if w0 == 0x0 goto pc+1
-   4: (9c) w1 %= w0
-   5: (b7) r0 = 1
-   6: (1d) if r1 == r2 goto pc+1
-   7: (b7) r0 = 2
-   8: (95) exit
-
-This was originally not an issue given the dst register was marked as
-completely unknown (aka 64 bit unknown). However, after 468f6eafa6c4
-("bpf: fix 32-bit ALU op verification") the verifier casts the register
-output to 32 bit, and hence it becomes 32 bit unknown. Note that for
-the case where the src register is unknown, the dst register is marked
-64 bit unknown. After the fix, the register is truncated by the runtime
-and the test passes:
-
-  # ./bpftool p d x i 23
-   0: (b7) r0 = 0
-   1: (b7) r1 = -1
-   2: (b4) w2 = -1
-   3: (16) if w0 == 0x0 goto pc+2
-   4: (9c) w1 %= w0
-   5: (05) goto pc+1
-   6: (bc) w1 = w1
-   7: (b7) r0 = 1
-   8: (1d) if r1 == r2 goto pc+1
-   9: (b7) r0 = 2
-  10: (95) exit
-
-Semantics also match with {R,W}x mod{64,32} 0 -> {R,W}x. Invalid div
-has always been {R,W}x div{64,32} 0 -> 0. Rewrites are as follows:
-
-  mod32:                            mod64:
-
-  (16) if w0 == 0x0 goto pc+2       (15) if r0 == 0x0 goto pc+1
-  (9c) w1 %= w0                     (9f) r1 %= r0
-  (05) goto pc+1
-  (bc) w1 = w1
-
-Fixes: 468f6eafa6c4 ("bpf: fix 32-bit ALU op verification")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-[Salvatore Bonaccorso: This is an earlier version based on work by
-Daniel and John which does not rely on availability of the BPF_JMP32
-instruction class. This means it is not even strictly a backport of the
-upstream commit mentioned but based on Daniel's and John's work to
-address the issue and was finalized by Thadeu Lima de Souza Cascardo.]
-Tested-by: Salvatore Bonaccorso <carnil@debian.org>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
----
- kernel/bpf/verifier.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e7d92a03f8ac..9dccbffde04f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4845,7 +4845,7 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
- 			bool is64 = BPF_CLASS(insn->code) == BPF_ALU64;
- 			struct bpf_insn mask_and_div[] = {
- 				BPF_MOV_REG(BPF_CLASS(insn->code), BPF_REG_AX, insn->src_reg),
--				/* Rx div 0 -> 0 */
-+				/* [R,W]x div 0 -> 0 */
- 				BPF_JMP_IMM(BPF_JEQ, BPF_REG_AX, 0, 2),
- 				BPF_RAW_REG(*insn, insn->dst_reg, BPF_REG_AX),
- 				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
-@@ -4853,9 +4853,10 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
- 			};
- 			struct bpf_insn mask_and_mod[] = {
- 				BPF_MOV_REG(BPF_CLASS(insn->code), BPF_REG_AX, insn->src_reg),
--				/* Rx mod 0 -> Rx */
--				BPF_JMP_IMM(BPF_JEQ, BPF_REG_AX, 0, 1),
-+				BPF_JMP_IMM(BPF_JEQ, BPF_REG_AX, 0, 1 + (is64 ? 0 : 1)),
- 				BPF_RAW_REG(*insn, insn->dst_reg, BPF_REG_AX),
-+				BPF_JMP_IMM(BPF_JA, 0, 0, 1),
-+				BPF_MOV32_REG(insn->dst_reg, insn->dst_reg),
- 			};
- 			struct bpf_insn *patchlet;
- 
-@@ -4865,7 +4866,7 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
- 				cnt = ARRAY_SIZE(mask_and_div);
- 			} else {
- 				patchlet = mask_and_mod;
--				cnt = ARRAY_SIZE(mask_and_mod);
-+				cnt = ARRAY_SIZE(mask_and_mod) - (is64 ? 2 : 0);
- 			}
- 
- 			new_prog = bpf_patch_insn_data(env, i + delta, patchlet, cnt);
--- 
-2.30.2
-
+>
+> Here is my idea -- replace kretprobe with kprobe.
+> In other words, put a kprobe on the "return instruction" directly
+> instead of modifying the kernel stack. This can solve most
+> of the kretprobe disadvantges. E.g.
+>
+> - Since it doesn't change the kernel stack, any special stack
+>   unwinder fixup is not needed anymore.
+> - No "max-instance" limitations anymore, because it will use
+>   kprobes directly.
+> - Scalability performance will be improved as same as kprobes.
+>   No list-operation in probe-runtime.
+>
+> Here is a PoC code which introduces "retinsn_probe" event as a part
+> of ftrace kprobe event. I don't think we need to replace the
+> kretprobe. This should be a higher layer feature, because some
+> kernel functions can have multiple "return instructions". Thus,
+> the "retinsn_probe" must manage multiple kprobes. That means the
+> "retinsn_probe" will be a user of kprobes. I decided to make it
+> inside the ftrace "kprobe-event". This gives us another advantage
+> for eBPF support. Because eBPF uses "kprobe-event" instead of
+> "kprobe" directly, if the "retinsn_probe" is implemented in the
+> "kprobe-event", eBPF can use it without any change.
+> Anyway, this can be co-exist with kretprobe. So as far as any
+> user uses kretprobe, we can keep it.
+>
+>
+> Example
+> =======
+> For example, I ran a shell script, which was used in the
+> stacktrace fix series.
+>
+> ----
+> mount -t debugfs debugfs /sys/kernel/debug/
+> cd /sys/kernel/debug/tracing
+> echo > trace
+> echo 1 > options/sym-offset
+> echo r vfs_read >> kprobe_events
+> echo r full_proxy_read >> kprobe_events
+> echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+> echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+> echo 1 > events/kprobes/enable
+> cat /sys/kernel/debug/kprobes/list
+> echo 0 > events/kprobes/enable
+> cat trace
+> ----
+>
+> This is the result.
+> ----
+> ffffffff813b420e  k  full_proxy_read+0x6e
+> ffffffff812b7c0a  k  vfs_read+0xda
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 3/3   #P:8
+> #
+> #                                _-----=> irqs-off
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| /     delay
+> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> #              | |         |   ||||      |         |
+>              cat-136     [007] d.Z.     8.038381: r_full_proxy_read_0: (vfs_read+0x9b/0x180 <- full_proxy_read)
+>              cat-136     [007] d.Z.     8.038386: <stack trace>
+>  => kretprobe_trace_func+0x209/0x300
+>  => retinsn_dispatcher+0x7a/0xa0
+>  => kprobe_post_process+0x28/0x80
+>  => kprobe_int3_handler+0x166/0x1a0
+>  => exc_int3+0x47/0x140
+>  => asm_exc_int3+0x31/0x40
+>  => vfs_read+0x9b/0x180
+>  => ksys_read+0x68/0xe0
+>  => do_syscall_64+0x3b/0x90
+>  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+>              cat-136     [007] d.Z.     8.038387: r_vfs_read_0: (ksys_read+0x68/0xe0 <- vfs_read)
+> ----
+>
+> You can see the return probe events are translated to kprobes
+> instead of kretprobes. And also, on the stacktrace, we can see
+> an int3 calls the kprobe and decode stacktrace correctly.
+>
+>
+> TODO
+> ====
+> Of course, this is just an PoC code, there are many TODOs.
+>
+> - This PoC code only supports x86 at this moment. But I think this
+>   can be done on the other architectures. What it needs is
+>   to implement "find_return_instructions()".
+> - Code cleanup is not enough. I have to remove "kretprobe" from
+>  "trace_kprobe" data structure, rewrite related functions etc.
+> - It has to handle "tail-call" optimized code, which replaces
+>   a "call + return" into "jump". find_return_instruction() should
+>   detect it and decode the jump destination too.
+>
+>
+> Thank you,
+>
+>
+> ---
+>
+> Masami Hiramatsu (1):
+>       [PoC] tracing: kprobe: Add non-stack intrusion return probe event
+>
+>
+>  arch/x86/kernel/kprobes/core.c |   59 +++++++++++++++++++++
+>  kernel/trace/trace_kprobe.c    |  110 ++++++++++++++++++++++++++++++++++++++--
+>  2 files changed, 164 insertions(+), 5 deletions(-)
+>
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
