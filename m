@@ -2,195 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A34D3FBB2B
-	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 19:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE023FBB30
+	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 19:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238278AbhH3Rma (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Aug 2021 13:42:30 -0400
-Received: from sonic317-38.consmr.mail.ne1.yahoo.com ([66.163.184.49]:34769
-        "EHLO sonic317-38.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238286AbhH3Rm3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Aug 2021 13:42:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1630345295; bh=63tGWgI+91kZFLvxtV3AtuV+jYHX6c73k4KyOfXCONw=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=m48tD3xXUrfjx7+r1ALnguHUfE08MvFNc+crw47IKk1FPbyF1Dh2s4ZwjM9x3owroSJt0yStxemWNoVa4K/5/nFMBnDLvdaxsiiF1y7Bfxvrrz/FmZKaC6VuH603xoBaO6MabHZNPL9gPK1RlW5Mf3/7qd5/IgpC0tMf41yNFuiaV5j5JvV9WuFMYUbbwXGO5+YWT+aXkLJX8smSUn4WOqixGOU8fLWlFgtcy3Udbe68wPU/YmQoOq8oywLY8hJ9HuoWL8zwt32kU8DvGY8TBcwdUr7bsLRLtLbbtPIx4Ug93v3O5griDBcJN3GW5x0jEX1YspEuvJkN8hqxabKugA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1630345295; bh=TZQ50t//E90y1A1wAgklpP7i5tmD2Nnaxlb1IL7FWoN=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=DPcwZ7LEbKsUlOTC4zZlbkTiumeWiREeakRKa0HokC5Hs3YfXLJkBCsnsIDP52T6E1wOs0Y3/G0Fwc3beuIwBHdjG3ZCCVS/QvJkz+cYAc15L+2U9gCiUq0XH8uRxpYoI4vSy7OPLxrUJmgWal8LE0c7+j7kyqpI7+MHdU0l/U6GOdPzKfUaas67IAAZzrRFI6hi/SSPiicwgOC+yskvEi/QhqLLxIV6k8FOiBoJIl3vueWAxHB5iCOrR18aHPRPjmCwWNGzXG2Eklf8X9rF95qXESjMmFGBXsgq/i6LYhSdZIHzyL+PFbScLPnh7RfrK537yr1b5J4Cb3w5e5XLxw==
-X-YMail-OSG: rpdanEUVM1kM9AmM5ooEUWSLyY3bQWRdUHvdUp4TdcvE10AxpMkqU40Zcbq.HFs
- 1vkhSCukI0I_H0PggDeo_HfIHtldDIuf58y.j9l3Wv2um1j7XrdwHcZagw.l0ngYp8FFzfRHx1kk
- TJ_w44hhwl.fQoKXIg6GplwIQR2Jf1nQ0.TC4Ro4PhvOqWe6a4ynpZQxCDXLIS52HYYYButyB_xm
- 1M.L3ytwCUtofWLm.B5iWgtpafHkVQeUaJ2LyWM5b8rc4DmJ4nRU92XmYPN45674Vnfmn33qcB8X
- jqc6H9zNUR6W0nkN_R0eXjFfsle4dTjKEJPcebzaKECTbdAN35VGBbvKzSVH_AY0b3bnN4ZMMQG0
- dGWDR0G3qA8WmViwKU7vWTHhxhLyDJAtLSTm3qbM1Oe0GkUvTGvZWB_uJMl8.7NIz9R6A_LqvhZ.
- 16SDVSErmGIsQtNS4mxu0d7Gpc5wn1mKV0WMmRFWy6zqAsaqb2iXRonypuP6VJCLsZhktRyl_1vt
- .l4.0qGxGlNiQY94koPBdVqwVyvsMpntCYTxusoeht_Umy4lh0s9LTZ_dkZk0j4hfNGv0DmnC.0j
- EbRzXc00GnWYFkHYx_Ifz99_CFmTsBmMeS3kuLDKPNYYR6XVVTKatS8gTq6j3vCN7ki0nuNNT0Bu
- dCn77nT5pEys09IgnvcQqB5BJHstmF_FpxUXxAx4dxvaENLDqCmdHa6SZzlleQTJn.Rf7j6XZ5ic
- Y45ziRKML1j1nVsbgt25LFNuYVpVwusGwV4cZgASuAa1wj7H87gwBIcziI_pvBZceo7PWS0wRY4W
- PfPiRlIGJZ7wFFgWwhSulo_uleF.52uF0lEZaOmADGNHddXmdFwDtQHRCSfxXmZk7qHyC4sK7Y7c
- obnH74SPfUY8OYcjNvNmfpwUkl1KMiRC1idnTvEk6pMc7PyLpD0XSklkBCFiVV2wcULKbvJfjE81
- phYRkugSR7D406Gd5fGb7dWE0OwKcseXhRD6MY1jTYZMjsQ0rgiKobHVvCEfKI68Z9xrm8YGCCmP
- aNbZDoH9u4HFSFl8nm1T0yIvk1DEeeuesK5ISp1.rnto3TT3hIkmqEcvUpJyJO.5c7_JpiHUTHVB
- FHTIAnLcgJEb8JMWp841DNFuGmn7h_ZkpMEfjyBAxswFmqhUA2S_Q4XfxJuPjFaa6TMBHjibqDM2
- fWPO95B6aZHpHz_13I30yHiJo4bN12Ks_y01bHqg_T0zwzDff5B73gAg0e_fVi4Ai8AxjO34mL9R
- KnTCEaJo2W2IviZq_mLVdifQuuJGJt82LitF4tqPGll9ggKjuRsMLmzE.inwmj7LIzPBJOmut4ts
- Ipl6z5jPu4tlR3DEg7gptm38XeS3cZVfa1pzaXsU6poUiUNcZzIpvvZymH4EHdXNSxmp_p5Z24tN
- 0.Kskn3Zc2CJTsdTYoBKyQRrMH9rfNv_9IUgn7mBHGnP3KK8HMNlaOdQKkRxXwyFde2yJckNFOSS
- 9gIjih.OlN0rUe.r840.I8Yc2lJxDWX5RYK31axOhtxFghIxXupHkp9b91rFK47tDxxEkvKET1lu
- c1zmdxD4pE35ivA1fMPWOvpuwJEFmA6W5bwVjDmAGsano0LSLoxyBapksKArTpkHGg8eAzTjn5rF
- Evq6e7Tl.XQzv4p0po6EMvhHYng5TcgkRaxhid5WeJF6VhUifKSn3xX8vDIcCVRzfjVI1oNo5Juf
- L3NoiOrFJZWQRudg1tizyzoHpeafCPfZsVj.jTzTAICoAnUri.rkpVaR7fJFMT0.pyuCLMXEvnZY
- fygvySH9pjW2Kto7jK34R90730V9.GZLeLNKClbgIKpD0F8JuWgCD4vcwODqCeHumsWMF6MfU8mX
- VMSdeZ3oHxP5.YI5WqMZyjJbwAHvBa.edWJKU9YUbgPf7uvYfF08YW4XdBVKw2jlDpytJP9fa70E
- 8CHugm0PaJT9llehDD1sndAsipxxS9X2TPxDHC61k_xy89tWrxoA0NEyREsmKs_BAySZANFI5het
- 6skiXeOK71LiW..6jAiMBRSRBsI8r5ezFlGEcmQ7TsNG9jpjEo8AW9DDlIAcBP_sgOqFKNxwksMc
- 667zkwbicXc062M7AkSzoKGn7gEMd9I7WIcVW1DWA9KVLXJiyh9NmINf_jfu5EyYCP9AQYYU8uxR
- tZPwOB3PGnxbQY7huybRXKUAbGJxU7RYYUG_0iVUOPwRZMpHBRBVkJBs.5Hlp2lcaJ5aeGB0MovG
- UHjsUIMGUr6p2fBaR5VUmFC_23mGu_r8IVAwMKMcxxHbUqANkuH3oROWZ_0rN7NJWVlATTNlwOe9
- tXUD9luptuBP8
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Mon, 30 Aug 2021 17:41:35 +0000
-Received: by kubenode521.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID a3d7a860b9579fd1561d3f4cd5329979;
-          Mon, 30 Aug 2021 17:41:31 +0000 (UTC)
-Subject: Re: [syzbot] general protection fault in legacy_parse_param
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>,
-        andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, dvyukov@google.com, jmorris@namei.org,
-        kafai@fb.com, kpsingh@google.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        paul@paul-moore.com, selinux@vger.kernel.org,
-        songliubraving@fb.com, stephen.smalley.work@gmail.com,
-        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
-        viro@zeniv.linux.org.uk, yhs@fb.com
-References: <0000000000004e5ec705c6318557@google.com>
- <0000000000008d2a0005ca951d94@google.com>
- <20210830122348.jffs5dmq6z25qzw5@wittgenstein>
- <61bf6b11-80f8-839e-4ae7-54c2c6021ed5@schaufler-ca.com>
- <89d0e012-4caf-4cda-3c4e-803a2c6ebc2b@schaufler-ca.com>
- <20210830165733.emqlg3orflaqqfio@wittgenstein>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <3354839e-5e7a-08c7-277a-9bbebfbfc0bc@schaufler-ca.com>
-Date:   Mon, 30 Aug 2021 10:41:29 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210830165733.emqlg3orflaqqfio@wittgenstein>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S238243AbhH3Rmt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 13:42:49 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15536 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238294AbhH3Rmo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Aug 2021 13:42:44 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 17UHR60P027892;
+        Mon, 30 Aug 2021 10:41:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=q4Qr7iQ7mzgMRgRdH3G/OZqQ9+PHMngQYTdcM9njpDY=;
+ b=m+ukZ3jfVvRKb6IMY/acmrGSLF58wX4QObm5CihHA4qKmQFvR8NGkbiS9K2Ue+nHvPEI
+ Y0N00sWm7L8D2+UDwwLokkxnq2zcKJOkYuqHu56o3wruhKyC/owwG5TDZQYJXql9OGP0
+ jdAqcCyGcYu14py3T1u5BhrMl3nzhtOneOk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 3aru4xbb76-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 30 Aug 2021 10:41:49 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 30 Aug 2021 10:41:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JiibuhVBxSG8ogaITTAr0EgWv0Milqkp/q3GCMCfvbUwcXHI68g6/ZFEjVGXC495A1ua/IXW7pahBHW8x0+DO5IwtFuKeFZWj9me65lpdDRXXZ1cXHsqjbOz1uCJ5AvaeyuoEU2O2zSnKR8QcvDZhgJFGGK1FTILkrJ+HB+Sd0+9T1QE+WX2aLkgWZsItrhjWB1MEhxHv+eUS9CuTKqKgEESbvVJRr9bC0D6nTb+OggsmpyvRKv/0acO5iRpLRML+zUuIP5CowB4rbAX4qoHs+/JOXSpWCMuCrArKtBUofEgR8/sGcnj0WAMkam598sAhvrr/hup5U5kI2D3Zi4ZjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q4Qr7iQ7mzgMRgRdH3G/OZqQ9+PHMngQYTdcM9njpDY=;
+ b=Q2vHPcEo18AIZdKxUI0jP+qeSlKfq6hgtylssQVnytkCPyqxeVfKEXYmBanGzadX0b2kg38YyO8emL67L802uRIRg6LOYhZhJjcBNgrmH9cGgbvcenaua8pVxg0qyM4AwzZWDejhdho24pwV0a/Zz5F206KWjCiboWlRf7AmFsCkVuBCdTbvPJccmZvdl/YuUEI1nY34XeDyDSLjN06/rOgd4ebu0w2lopI7IwbsRyoEUcnBvQP5iCpbccsP/gGQBs73ily4riy0/a9rx7LWa+G5OZ5e0DDke3O5Ua4BJiYR1scdC7SBwykYz86n8JxFjUng6ROy0rDZrrcvfoW41A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SA1PR15MB5112.namprd15.prod.outlook.com (2603:10b6:806:1df::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Mon, 30 Aug
+ 2021 17:41:46 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::7d66:9b36:b482:af0f]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::7d66:9b36:b482:af0f%6]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
+ 17:41:46 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 1/3] perf: enable branch record for software
+ events
+Thread-Topic: [PATCH v2 bpf-next 1/3] perf: enable branch record for software
+ events
+Thread-Index: AQHXmsebo1O8tvcQbk6YyjOXJsK0SquL3HIAgAB6mIA=
+Date:   Mon, 30 Aug 2021 17:41:46 +0000
+Message-ID: <719D2DC2-CC5D-4C6A-94F4-DBCADDA291CC@fb.com>
+References: <20210826221306.2280066-1-songliubraving@fb.com>
+ <20210826221306.2280066-2-songliubraving@fb.com>
+ <20210830102258.GI4353@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210830102258.GI4353@worktop.programming.kicks-ass.net>
+Accept-Language: en-US
 Content-Language: en-US
-X-Mailer: WebService/1.1.18924 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.120.0.1.13)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 78d26818-4bdb-4174-286b-08d96bdd7066
+x-ms-traffictypediagnostic: SA1PR15MB5112:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA1PR15MB51126342E4046C4433837FFEB3CB9@SA1PR15MB5112.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1P941pabKd57yqKn+efkWDKe8QwNennc/SiE4CK5AXzf95X8D57T2f0+XHhTHVDs5RGZhbX67JvxzVWsxtk+xfOroxR6aVCBthskbllHczEdNWbQSbB0wPeUW5brQvjR4lLWzFj4EMuEWxs5SWQZsafrY52U+1iehWpRaS99MjUY+cf8TxkYvW5Qy24n4c3wbUZ0LCzn9rauCu8Vb7bRfi7dQoOjfIHIKOyCU6sJM+BikYuj4d10Rt1YhXjTnbCuVcst1FiZKiqh6XjWAG/MH4GFz23I4N5IYJ5SQBaLmdwhp2suMt8dsNikDlYv6RJi6mRsC08jUAFMqjvsX3GUTytpFmKmQ3C/cjosrHu0I4Gcr1tXR8DxZuvvuxEOMrWuEyJGdvV2fTvTl6mPwN9OeH6s6aQj8HepJ5NNdzBZl4aMrXGCepQPqCm+tzc+M/CxCaS/TvqTDzCrKl4fl1HqRtfyth5Cz2/GYi3+ydxFlY0vhIBu61pM8NqWjmmN15BS7E1HWKSR0U4fdVhvoi4DY/fJAaW3vDGqArsZh/1I6xxLx4rS3Cscczf/vedINQeiGSf7T4CM19zyh1/i8o4vNftGXm7s5lmHls2IfFTyVCQASodVXeKsGaH9iIQsJOJqgUa37BKreeG4JI3C2M/o4Fn97ILJCJ72SEOf8fN/wkoXvXC40/bqGPm+Y3FZx9hf8jlWsx0xz8eul4xt6Jdhabp2eKeBKoXnU3wqGZqZ122pX5LS6zqoWW6ed2e9g+Ri
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(6506007)(186003)(53546011)(8936002)(4326008)(2616005)(86362001)(66476007)(36756003)(71200400001)(91956017)(122000001)(83380400001)(66556008)(33656002)(5660300002)(66446008)(64756008)(76116006)(6486002)(38100700002)(8676002)(6916009)(66946007)(6512007)(54906003)(38070700005)(316002)(2906002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Nm5FTE4rNEpTckJNb3FsWllPMzlhS0xBMWJhSDlUR3pVckFlaElSU0FsTmV6?=
+ =?utf-8?B?SG5Yb0Y0SHZQNFdGdnpoemxYKzU1OEJJMzRkQlo5dS9CSTFpZENSMDV4b09E?=
+ =?utf-8?B?OGdxQkQ1TE9hb1VJSFU5WUtxdVQvQlpyQm5JWVZVRkxSV05yRy9BKzd1MFk4?=
+ =?utf-8?B?QTdNWDNEaDlKTDhzdGdtNFBJVDVZNWVnQSsyRDA2VzVOVlAyVW4yckVJcUJF?=
+ =?utf-8?B?c1ZpZm1DTEM0V0MvWDlvWUhjbjA1aTVyc0QwVUZ4ZjBIb1grK1l0OVF6eUM3?=
+ =?utf-8?B?b2RlMWR4WGlaaXFnMTB3ZmQyVkdTR0tuR3hYMzU2a1VzUWp1M2Q3djlCU1My?=
+ =?utf-8?B?WGhpamlwUThPdU9MSDlyU205czlnVUFnc3ZjU0NBMzZjUjQxQkdTdHVTTzdI?=
+ =?utf-8?B?MVBxMkk2M2xJUW8ydnNiRE1tVTIzWGNlVXZLTDJMOU9HWEswNzlmWnhDa2RC?=
+ =?utf-8?B?NXBBRnJ6ZGk0QW5ONTZaTW80T243THhubVBPaWg4Wnp2WDZ6TktkT1pJbnBo?=
+ =?utf-8?B?bzhTOHA4WGt3K0dmTXdDZUJvMVNXUU9qdEJGcUFxcGFTZ1F2b1BnMTFuMUpi?=
+ =?utf-8?B?MWR6SjQ1L09FcTh2aVU4NnpnNk0rRVA2Y05KamdERU1uc2dHVURsZjN2N2Vj?=
+ =?utf-8?B?cHVYRTQwcEtuRlJhalk5MnpTL3d0T3FQVVFRd1VIZ0VEdGltRTdINGtlS1hr?=
+ =?utf-8?B?TWw1WVBHMHNrWkRYcDZteGdsUndoUVdTaFVPbVFXZzBrbWRVcTRYQ1NtSzFW?=
+ =?utf-8?B?TmdCOU1PSU5uNGx6NjFWaU9yZ3ZoZGlQNnFseHNtREFzQmIyR05aQ1IzVm1K?=
+ =?utf-8?B?UDNoK045SEhUREJzRmlwb3dNZ2FpNndQZCtCbDJGaG5saDZ6UllSclN0dzRv?=
+ =?utf-8?B?SldvcGVGcTFpZitiWjY4TVJsckdxdVJEbGtSOGdLTXlaZDdUTU04VDFmRW1x?=
+ =?utf-8?B?T0s5SlNNeVRuVHZnRnpNWmRCRFdnT0VGZUY5M0l3OG9GN09sRWFXZHE1Q3hT?=
+ =?utf-8?B?RXlVV2JjWHNkMkdRczdtVjBsbTdkOUFTZUZUOFF0QXd2OHZwNHBJeEF5UGlp?=
+ =?utf-8?B?cEFLSFZSVHhFbUZ5bmRkdGl6REd1dGRlZlIyL0lQUkExa214SmpLU2V2T044?=
+ =?utf-8?B?VFNvVGVoaFpLcU1TUmNzY1FQQ2ZoaklWVEJhSFYvb1MwM3ZJVis1bDdvUEs2?=
+ =?utf-8?B?aFE4K0lrZElTUm1FTDRuVnRNcHVLMC9OaDFWdHJvWFNFU0NtYlorSWxKakQ2?=
+ =?utf-8?B?RzcrNk5TZEZ3MlQyL1hOSVNIZWpDSW9BMEp5S0J3aDFDVXF1MWo4cUQ1emRk?=
+ =?utf-8?B?Y2c0QnNwYWR6Q1V3N0Y1SXV6YTk4dm9HTnRqK1pOTWQvenpMSG82SXRaeFBR?=
+ =?utf-8?B?dVFBbkloVklpcC9yRVZTK29NemdEVGtTeVpLTDZIVHo2c2VKdENKMkppQ3Jz?=
+ =?utf-8?B?U3VHSlRjNkZBRmdJTkwwREpWVmxCT0o0RW9FRDRrRGdKSWg5R0J0MWxMdUd1?=
+ =?utf-8?B?UFBYNjczeFIvRzVXZVB4Z2E2RmEyTXFoMENpQ3FMUnMwdFJOaSt3VEtVWkV1?=
+ =?utf-8?B?VzRnODFma2puTTJoODdRbG00Wlo4cllERWlHRVk0RFl3NXN1bVNZbXkxMUJD?=
+ =?utf-8?B?UWV5OVJyOGhwQ0F0S0hnZUlMQi9TRTNvc2lkWEx2aXlGT2lBdVEwQjhFYzdx?=
+ =?utf-8?B?b0NsV2RqNGsrZVVrRDQ1MTA1K0tmV2N1bGs4UlRSSm5ja3pKazg4d2JZYVNF?=
+ =?utf-8?B?SEhoakEwUkNsKzB6R2dhOG0xTUVpNlM1c1RwazAraHlwMmtlU0o5S2tkNjBq?=
+ =?utf-8?Q?tZtjNAZnOwZAR/iYjGKLYHQYfb8JEUcDZJvTw=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <485C951FA1F61640A5ECFA0A6BC8D4E3@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78d26818-4bdb-4174-286b-08d96bdd7066
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2021 17:41:46.6984
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VPKGj9JBdMkQb+CEQTR9T/I0/Rju6vKBAQ0nV6QPWt7lNdTicmxXjjWWezXnfe+gTlw/ZgLxxhFVHQxzoTAVww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5112
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: 6NbMQUf5Xw_UgGk7MNx22pMJHmNPLaxL
+X-Proofpoint-GUID: 6NbMQUf5Xw_UgGk7MNx22pMJHmNPLaxL
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-30_06:2021-08-30,2021-08-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ clxscore=1015 spamscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ mlxscore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108300118
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/30/2021 9:57 AM, Christian Brauner wrote:
-> On Mon, Aug 30, 2021 at 09:40:57AM -0700, Casey Schaufler wrote:
->> On 8/30/2021 7:25 AM, Casey Schaufler wrote:
->>> On 8/30/2021 5:23 AM, Christian Brauner wrote:
->>>> On Fri, Aug 27, 2021 at 07:11:18PM -0700, syzbot wrote:
->>>>> syzbot has bisected this issue to:
->>>>>
->>>>> commit 54261af473be4c5481f6196064445d2945f2bdab
->>>>> Author: KP Singh <kpsingh@google.com>
->>>>> Date:   Thu Apr 30 15:52:40 2020 +0000
->>>>>
->>>>>     security: Fix the default value of fs_context_parse_param hook
->>>>>
->>>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=160c5d75300000
->>>>> start commit:   77dd11439b86 Merge tag 'drm-fixes-2021-08-27' of git://ano..
->>>>> git tree:       upstream
->>>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=150c5d75300000
->>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=110c5d75300000
->>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=2fd902af77ff1e56
->>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=d1e3b1d92d25abf97943
->>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126d084d300000
->>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16216eb1300000
->>>>>
->>>>> Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
->>>>> Fixes: 54261af473be ("security: Fix the default value of fs_context_parse_param hook")
->>>>>
->>>>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
->>>> So ok, this seems somewhat clear now. When smack and 
->>>> CONFIG_BPF_LSM=y
->>>> is selected the bpf LSM will register NOP handlers including
->>>>
->>>> bpf_lsm_fs_context_fs_param()
->>>>
->>>> for the
->>>>
->>>> fs_context_fs_param
->>>>
->>>> LSM hook. The bpf LSM runs last, i.e. after smack according to:
->>>>
->>>> CONFIG_LSM="landlock,lockdown,yama,safesetid,integrity,tomoyo,smack,bpf"
->>>>
->>>> in the appended config. The smack hook runs and sets
->>>>
->>>> param->string = NULL
->>>>
->>>> then the bpf NOP handler runs returning -ENOPARM indicating to the vfs
->>>> parameter parser that this is not a security module option so it should
->>>> proceed processing the parameter subsequently causing the crash because
->>>> param->string is not allowed to be NULL (Which the vfs parameter parser
->>>> verifies early in fsconfig().).
->>> The security_fs_context_parse_param() function is incorrectly
->>> implemented using the call_int_hook() macro. It should return
->>> zero if any of the modules return zero. It does not follow the
->>> usual failure model of LSM hooks. It could be argued that the
->>> code was fine before the addition of the BPF hook, but it was
->>> going to fail as soon as any two security modules provided
->>> mount options.
->>>
->>> Regardless, I will have a patch later today. Thank you for
->>> tracking this down.
->> Here's my proposed patch. I'll tidy it up with a proper
->> commit message if it looks alright to y'all. I've tested
->> with Smack and with and without BPF.
-> Looks good to me.
-> On question, in contrast to smack, selinux returns 1 instead of 0 on
-> success. So selinux would cause an early return preventing other hooks
-> from running. Just making sure that this is intentional.
->
-> Iirc, this would mean that selinux causes fsconfig() to return a
-> positive value to userspace which I think is a bug; likely in selinux.
-> So I think selinux should either return 0 or the security hook itself
-> needs to overwrite a positive value with a sensible errno that can be
-> seen by userspace.
-
-I think that I agree. The SELinux and Smack versions of the
-hook are almost identical except for setting rc to 1 in the
-SELinux case. And returning 1 makes no sense if you follow
-the callers back. David Howells wrote both the SELinux and
-Smack versions. David - why are they different? which is correct?
-
->
->>
->>  security/security.c | 14 +++++++++++++-
->>  1 file changed, 13 insertions(+), 1 deletion(-)
->>
->> diff --git a/security/security.c b/security/security.c
->> index 09533cbb7221..3cf0faaf1c5b 100644
->> --- a/security/security.c
->> +++ b/security/security.c
->> @@ -885,7 +885,19 @@ int security_fs_context_dup(struct fs_context *fc, struct fs_context *src_fc)
->>  
->>  int security_fs_context_parse_param(struct fs_context *fc, struct fs_parameter *param)
->>  {
->> -	return call_int_hook(fs_context_parse_param, -ENOPARAM, fc, param);
->> +	struct security_hook_list *hp;
->> +	int trc;
->> +	int rc = -ENOPARAM;
->> +
->> +	hlist_for_each_entry(hp, &security_hook_heads.fs_context_parse_param,
->> +			     list) {
->> +		trc = hp->hook.fs_context_parse_param(fc, param);
->> +		if (trc == 0)
->> +			rc = 0;
->> +		else if (trc != -ENOPARAM)
->> +			return trc;
->> +	}
->> +	return rc;
->>  }
->>  
->>  int security_sb_alloc(struct super_block *sb)
-> <snip>
+DQoNCj4gT24gQXVnIDMwLCAyMDIxLCBhdCAzOjIyIEFNLCBQZXRlciBaaWpsc3RyYSA8cGV0ZXJ6
+QGluZnJhZGVhZC5vcmc+IHdyb3RlOg0KPiANCj4gT24gVGh1LCBBdWcgMjYsIDIwMjEgYXQgMDM6
+MTM6MDRQTSAtMDcwMCwgU29uZyBMaXUgd3JvdGU6DQo+PiAraW50IGR1bW15X3BlcmZfc25hcHNo
+b3RfYnJhbmNoX3N0YWNrKHN0cnVjdCBwZXJmX2JyYW5jaF9zbmFwc2hvdCAqYnJfc25hcHNob3Qp
+Ow0KPj4gKw0KPj4gK0RFQ0xBUkVfU1RBVElDX0NBTEwocGVyZl9zbmFwc2hvdF9icmFuY2hfc3Rh
+Y2ssIGR1bW15X3BlcmZfc25hcHNob3RfYnJhbmNoX3N0YWNrKTsNCj4+ICsNCj4+ICNlbmRpZiAv
+KiBfTElOVVhfUEVSRl9FVkVOVF9IICovDQo+PiBkaWZmIC0tZ2l0IGEva2VybmVsL2V2ZW50cy9j
+b3JlLmMgYi9rZXJuZWwvZXZlbnRzL2NvcmUuYw0KPj4gaW5kZXggMDExY2M1MDY5YjdiYS4uYzUz
+ZmU5MGU2MzBhYyAxMDA2NDQNCj4+IC0tLSBhL2tlcm5lbC9ldmVudHMvY29yZS5jDQo+PiArKysg
+Yi9rZXJuZWwvZXZlbnRzL2NvcmUuYw0KPj4gQEAgLTEzNDM3LDMgKzEzNDM3LDYgQEAgc3RydWN0
+IGNncm91cF9zdWJzeXMgcGVyZl9ldmVudF9jZ3JwX3N1YnN5cyA9IHsNCj4+IAkudGhyZWFkZWQJ
+PSB0cnVlLA0KPj4gfTsNCj4+ICNlbmRpZiAvKiBDT05GSUdfQ0dST1VQX1BFUkYgKi8NCj4+ICsN
+Cj4+ICtERUZJTkVfU1RBVElDX0NBTExfTlVMTChwZXJmX3NuYXBzaG90X2JyYW5jaF9zdGFjaywN
+Cj4+ICsJCQlkdW1teV9wZXJmX3NuYXBzaG90X2JyYW5jaF9zdGFjayk7DQo+IA0KPiBUaGlzIGlz
+bid0IHJpZ2h0Li4uDQo+IA0KPiBUaGUgd2hvbGUgZHVtbXlfcGVyZl9zbmFwc2hvdF9icmFuY2hf
+c3RhY2soKSB0aGluZyBpcyBhIGRlY2xhcmF0aW9uIG9ubHkNCj4gYW5kIHVzZWQgYXMgYSB0eXBl
+ZGVmLiBBbHNvLCBERUZJTkVfU1RBVElDX0NBTExfTlVMTCgpIGFuZA0KPiBzdGF0aWNfY2FsbF9j
+b25kKCkgcmVseSBvbiBhIHZvaWQgcmV0dXJuIHZhbHVlLCB3aGljaCBpdCBkb2Vzbid0IGhhdmUu
+DQo+IA0KPiBEaWQgeW91IHdhbnQ6DQo+IA0KPiAgREVDTEFSRV9TVEFUSUNfQ0FMTChwZXJmX3Nu
+YXBzaG90X2JyYW5jaF9zdGFjaywgdm9pZCAoKikoc3RydWN0IHBlcmZfYnJhbmNoX3NuYXBzaG90
+ICopKTsNCj4gDQo+ICBERUZJTkVfU1RBVElDX0NBTExfTlVMTChwZXJmX3NuYXBzaG90X2JyYW5j
+aF9zdGFjaywgdm9pZCAoKikoc3RydWN0IHBlcmZfYnJhbmNoX3NuYXBzaG90ICopKTsNCj4gDQo+
+ICBzdGF0aWNfY2FsbF9jb25kKHBlcmZfc25hcHNob3RfYnJhbmNoX3N0YWNrKSguLi4pOw0KPiAN
+Cj4gKk9SKiwgZG8geW91IGFjdHVhbGx5IG5lZWQgdGhhdCByZXR1cm4gdmFsdWUsIGluIHdoaWNo
+IGNhc2UgeW91J3JlDQo+IHByb2JhYmx5IGxvb2tpbmcgZm9yOg0KPiANCj4gIERFQ0xBUkVfU1RB
+VElDX0NBTEwocGVyZl9zbmFwc2hvdF9icmFuY2hfc3RhY2ssIGludCAoKikoc3RydWN0IHBlcmZf
+YnJhbmNoX3NuYXBzaG90ICopKTsNCj4gDQo+ICBERUZJTkVfU1RBVElDX0NBTExfUkVUMChwZXJm
+X3NuYXBzaG90X2JyYW5jaF9zdGFjaywgaW50ICgqKShzdHJ1Y3QgcGVyZl9icmFuY2hfc25hcHNo
+b3QgKikpOw0KPiANCj4gIHJldCA9IHN0YXRpY19jYWxsKHBlcmZfc25hcHNob3RfYnJhbmNoX3N0
+YWNrKSguLi4pOw0KPiANCj4gPw0KDQpIbW1tLi4uIHNvbWV0aGluZyBkb2Vzbid0IHdvcmsgaGVy
+ZS4gSSBoYXZlOg0KDQovKiBpbmNsdWRlL2xpbnV4L3BlcmZfZXZlbnQuaCAqLw0KREVDTEFSRV9T
+VEFUSUNfQ0FMTChwZXJmX3NuYXBzaG90X2JyYW5jaF9zdGFjaywNCiAgICAgICAgICAgICAgICAg
+ICBpbnQgKCopKHN0cnVjdCBwZXJmX2JyYW5jaF9zbmFwc2hvdCAqKSk7DQoNCg0KLyoga2VybmVs
+L2V2ZW50cy9jb3JlLmMgKi8NCkRFRklORV9TVEFUSUNfQ0FMTF9SRVQwKHBlcmZfc25hcHNob3Rf
+YnJhbmNoX3N0YWNrLA0KICAgICAgICAgICAgICAgICAgICAgICBpbnQgKCopKHN0cnVjdCBwZXJm
+X2JyYW5jaF9zbmFwc2hvdCAqKSk7DQoNCi8qIGtlcm5lbC9icGYvdHJhbXBvbGluZS5jICovDQog
+ICAgICAgaWYgKHByb2ctPmNhbGxfZ2V0X2JyYW5jaCkNCiAgICAgICAgICAgICAgIHN0YXRpY19j
+YWxsKHBlcmZfc25hcHNob3RfYnJhbmNoX3N0YWNrKSgNCiAgICAgICAgICAgICAgICAgICAgICAg
+dGhpc19jcHVfcHRyKCZicGZfcGVyZl9icmFuY2hfc25hcHNob3QpKTsNCg0KLyogYXJjaC94ODYv
+ZXZlbnRzL2ludGVsL2NvcmUuYyAqLw0KICAgICAgIGlmICh4ODZfcG11LmRpc2FibGVfYWxsID09
+IGludGVsX3BtdV9kaXNhYmxlX2FsbCkNCiAgICAgICAgICAgICAgIHN0YXRpY19jYWxsX3VwZGF0
+ZShwZXJmX3NuYXBzaG90X2JyYW5jaF9zdGFjaywNCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBpbnRlbF9wbXVfc25hcHNob3RfYnJhbmNoX3N0YWNrKTsNCg0KQW5kIHRoZSBjb21w
+aWxlciBrZWVwcyBjb21wbGFpbiB3aXRoOg0KDQphcmNoL3g4Ni9ldmVudHMvaW50ZWwvY29yZS5j
+OiBJbiBmdW5jdGlvbiDigJhpbnRlbF9wbXVfaW5pdOKAmToNCi4vaW5jbHVkZS9saW51eC9zdGF0
+aWNfY2FsbC5oOjEyMTo0MTogZXJyb3I6IGluaXRpYWxpemF0aW9uIG9mIOKAmGludCAoKiopKHN0
+cnVjdCBwZXJmX2JyYW5jaF9zbmFwc2hvdCAqKeKAmSBmcm9tIGluY29tcGF0aWJsZSBwb2ludGVy
+IHR5cGUg4oCYaW50ICgqKShzdHJ1Y3QgcGVyZl9icmFuY2hfc25hcHNob3QgKinigJkgWy1XZXJy
+b3I9aW5jb21wYXRpYmxlLXBvaW50ZXItdHlwZSBdDQogIHR5cGVvZigmU1RBVElDX0NBTExfVFJB
+TVAobmFtZSkpIF9fRiA9IChmdW5jKTsgICBcDQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIF4NCmFyY2gveDg2L2V2ZW50cy9pbnRlbC9jb3JlLmM6NjMwNTo0OiBub3Rl
+OiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYc3RhdGljX2NhbGxfdXBkYXRl4oCZDQogICAgc3Rh
+dGljX2NhbGxfdXBkYXRlKHBlcmZfc25hcHNob3RfYnJhbmNoX3N0YWNrLA0KICAgIF5+fn5+fn5+
+fn5+fn5+fn5+fg0KDQoNClNvbWV0aGluZyBsaWtlIA0KDQp0eXBlZGVmIGludCAocGVyZl9zbmFw
+c2hvdF9icmFuY2hfc3RhY2tfdCkoc3RydWN0IHBlcmZfYnJhbmNoX3NuYXBzaG90ICopOw0KREVD
+TEFSRV9TVEFUSUNfQ0FMTChwZXJmX3NuYXBzaG90X2JyYW5jaF9zdGFjaywgcGVyZl9zbmFwc2hv
+dF9icmFuY2hfc3RhY2tfdCk7DQoNCnNlZW1zIHRvIHdvcmsgZmluZS4gDQoNClRoYW5rcywNClNv
+bmcNCg0K
