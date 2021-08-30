@@ -2,197 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DE83FBE5D
-	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 23:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692B33FBE6D
+	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 23:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237867AbhH3Vge (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Aug 2021 17:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237612AbhH3Vgd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Aug 2021 17:36:33 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6730C061575;
-        Mon, 30 Aug 2021 14:35:39 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id z5so30997569ybj.2;
-        Mon, 30 Aug 2021 14:35:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gf34JnV1lSM1Cbi+GL89F2UQCzx/0cv4oSjkGUIGpRE=;
-        b=rIfwrzYvLmYLOQXE7nQ7h33IQEgQKgY+u1I6bSTi2vnfz/NzZSF82oh0NRpncwjBmd
-         BIOXs8UhtPJNMz/ygXJf+GvS3hH1Zig2IIo+qVjBBYHWggMw7mEPQqOYeehFP/vR0tLr
-         FYD+N0Yrn4WSlvgB6Qu63t2BnWRzt++VW/+c+1GUxajZgfn8KVA2MJb5pDIZDOSVc3wF
-         3GwtY2rEhRLzYo+PQxJTRvt1TjJ7eCz8QXArqHMKN3RWlR9qvh3bSF63g/gw2lmXaWsX
-         sDZQc9dHbjBgQEpr3p4EhmCQxAbej4d4HNXTDgypXFmJIvea1uxsvB4Bnhbf9Erwq1d7
-         mHQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gf34JnV1lSM1Cbi+GL89F2UQCzx/0cv4oSjkGUIGpRE=;
-        b=Onu05vF0DS4HxQ3jnv7OPohBQkSkXrTEnG9Q1uKzeKICbZvhztjOnmBMyhzuHw6HIg
-         BPYNNjKOSV045C6sLNXd5id8ZxlSWeJODhRdU2DX8oJvjoDgQcjUT7ZRIS30eTvD/pya
-         O3a5vUdmymJ4IUtfnmZ4w0qjpxX4sJi+mgtlmcVZJWg1X6WUZ7RhKoZ/Z7MqlFjIiVaw
-         Abd8eQEM6fA/X3dB0gs4mkesP5BwEBybUf870eHNdYVjtxJxAeiZ4AMGFipW3ctQhZMz
-         aGjVjH6I0+TOXxxv+tERixOXblqL9hEYxjzhwzSXTg0cYB6WrPHvA345bNoXjotLIxmp
-         V4Pw==
-X-Gm-Message-State: AOAM533ET3j1qKemykxTsGimm8N1rcz2Gm7DLtNvuzhYQc0XWt3ukY9V
-        d9m0OHUIxOMeTazgP5oCL6VsYRweh2WzFZecvC0=
-X-Google-Smtp-Source: ABdhPJw3up6v1OrLUwUjBJPy5FhqtSclWkUuy0H89JieOlpg+lHkihbS7AN112XNlWcEjmrB7nh0Ms8bUCSeOBOON0I=
-X-Received: by 2002:a25:4941:: with SMTP id w62mr26204913yba.230.1630359338981;
- Mon, 30 Aug 2021 14:35:38 -0700 (PDT)
+        id S238566AbhH3VmJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 17:42:09 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57584 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237296AbhH3VmI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Aug 2021 17:42:08 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17ULe8qQ006964
+        for <bpf@vger.kernel.org>; Mon, 30 Aug 2021 14:41:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=GQkjT68Y1G0cFcBBOBufW5uO3v6jWnEaZhZVXddLF0Q=;
+ b=PGj5ps+zKOHRiEsgkrVfJEZF6xWFWfPDBUyFn+sneBwVyzfR7O80uvkq4deTlv1vvsmg
+ XEi8MlakBXr+byFwHt5O7bvky4VhBVzzisggJd6Xop31isMxFt26EaUYAQsLV249a4Si
+ vMU6fWeUncu5bQZOhK3VDV5L3e1U+iToU2U= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3arnw15yw8-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 30 Aug 2021 14:41:14 -0700
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 30 Aug 2021 14:41:11 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id DD81FF146804; Mon, 30 Aug 2021 14:41:09 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <kjain@linux.ibm.com>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v3 bpf-next 0/3] bpf: introduce bpf_get_branch_snapshot
+Date:   Mon, 30 Aug 2021 14:41:03 -0700
+Message-ID: <20210830214106.4142056-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: 4WWCllbV5xHC1iGnQWJBpgBMsNpbwArq
+X-Proofpoint-GUID: 4WWCllbV5xHC1iGnQWJBpgBMsNpbwArq
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210827072539.3399-1-msuchanek@suse.de>
-In-Reply-To: <20210827072539.3399-1-msuchanek@suse.de>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 30 Aug 2021 14:35:28 -0700
-Message-ID: <CAEf4BzbwX792higEDr_O+mqdqkZDoD67GuGvE7gEr1tO=U46Og@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Fix build with latest gcc/binutils with LTO
-To:     Michal Suchanek <msuchanek@suse.de>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Patrick McCarty <patrick.mccarty@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-30_06:2021-08-30,2021-08-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ malwarescore=0 adultscore=0 spamscore=0 priorityscore=1501 impostorscore=0
+ phishscore=0 suspectscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108300136
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 12:25 AM Michal Suchanek <msuchanek@suse.de> wrote:
->
-> From: Patrick McCarty <patrick.mccarty@intel.com>
->
-> After updating to binutils 2.35, the build began to fail with an
-> assembler error. A bug was opened on the Red Hat Bugzilla a few days
-> later for the same issue.
->
-> Work around the problem by using the new `symver` attribute (introduced
-> in GCC 10) as needed, instead of the `COMPAT_VERSION` and
-> `DEFAULT_VERSION` macros, which expand to assembler directives.
->
-> Fixes: https://github.com/libbpf/libbpf/issues/338
+Changes v2 =3D> v3:
+1. Fix the use of static_call. (Peter)
+2. Limit the use to perfmon version >=3D 2. (Peter)
+3. Modify intel_pmu_snapshot_branch_stack() to use intel_pmu_disable_all
+   and intel_pmu_enable_all().
 
-This is not a proper tag. We used the following form before:
+Changes v1 =3D> v2:
+1. Rename the helper as bpf_get_branch_snapshot;
+2. Fix/simplify the use of static_call;
+3. Instead of percpu variables, let intel_pmu_snapshot_branch_stack output
+   branch records to an output argument of type perf_branch_snapshot.
 
-  [0] Closes: https://github.com/libbpf/libbpf/issues/280
+Branch stack can be very useful in understanding software events. For
+example, when a long function, e.g. sys_perf_event_open, returns an errno,
+it is not obvious why the function failed. Branch stack could provide very
+helpful information in this type of scenarios.
 
-So it's a reference. And then mention in commit message that this was
-initiated by the issue on Github ([0]), or something along those
-lines.
+This set adds support to read branch stack with a new BPF helper
+bpf_get_branch_trace(). Currently, this is only supported in Intel systems.
+It is also possible to support the same feaure for PowerPC.
 
+The hardware that records the branch stace is not stopped automatically on
+software events. Therefore, it is necessary to stop it in software soon.
+Otherwise, the hardware buffers/registers will be flushed. One of the key
+design consideration in this set is to minimize the number of branch record
+entries between the event triggers and the hardware recorder is stopped.
+Based on this goal, current design is different from the discussions in
+original RFC [1]:
+ 1) Static call is used when supported, to save function pointer
+    dereference;
+ 2) intel_pmu_lbr_disable_all is used instead of perf_pmu_disable(),
+    because the latter uses about 10 entries before stopping LBR.
 
-> Fixes: https://bugzilla.redhat.com/show_bug.cgi?id=1863059
-> Fixes: https://bugzilla.opensuse.org/show_bug.cgi?id=1188749
+With current code, on Intel CPU, LBR is stopped after 6 branch entries
+after fexit triggers:
 
-These are also not proper Fixes: tags for kernel. It's fine if you
-mention that this change fixes those bugs, but maybe use the reference
-([1], [2]) style for that?
+ID: 0 from intel_pmu_lbr_disable_all.part.10+37 to intel_pmu_lbr_disable_al=
+l.part.10+72
+ID: 1 from intel_pmu_lbr_disable_all.part.10+33 to intel_pmu_lbr_disable_al=
+l.part.10+37
+ID: 2 from intel_pmu_snapshot_branch_stack+46 to intel_pmu_lbr_disable_all.=
+part.10+0
+ID: 3 from __bpf_prog_enter+38 to intel_pmu_snapshot_branch_stack+0
+ID: 4 from __bpf_prog_enter+8 to __bpf_prog_enter+38
+ID: 5 from __brk_limit+477020214 to __bpf_prog_enter+0
+ID: 6 from bpf_fexit_loop_test1+22 to __brk_limit+477020195
+ID: 7 from bpf_fexit_loop_test1+20 to bpf_fexit_loop_test1+13
+ID: 8 from bpf_fexit_loop_test1+20 to bpf_fexit_loop_test1+13
+...
 
-> Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
-> Make the change conditional on GCC version
+[1] https://lore.kernel.org/bpf/20210818012937.2522409-1-songliubraving@fb.=
+com/
 
-This is not a tag, maybe remove this or make it part of the commit
-message properly?
+Song Liu (3):
+  perf: enable branch record for software events
+  bpf: introduce helper bpf_get_branch_snapshot
+  selftests/bpf: add test for bpf_get_branch_snapshot
 
-> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> ---
->  tools/lib/bpf/libbpf_internal.h | 23 +++++++++++++++++------
->  tools/lib/bpf/xsk.c             |  4 ++--
->  2 files changed, 19 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> index 016ca7cb4f8a..af0f3fb102c0 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -86,20 +86,31 @@
->         (offsetof(TYPE, FIELD) + sizeof(((TYPE *)0)->FIELD))
->  #endif
->
-> +#ifdef __GNUC__
-> +# if __GNUC__ >= 10
-> +#  define DEFAULT_VERSION(internal_name, api_name, version) \
-> +__attribute__((__symver__(#api_name "@@" #version)))
-> +#  define COMPAT_VERSION(internal_name, api_name, version) \
-> +__attribute__((__symver__(#api_name "@" #version)))
-> +# endif
-> +#endif
-> +
-> +#if !defined(COMPAT_VERSION) || !defined(DEFAULT_VERSION)
+ arch/x86/events/intel/core.c                  |  24 +++-
+ include/linux/bpf.h                           |   2 +
+ include/linux/filter.h                        |   3 +-
+ include/linux/perf_event.h                    |  24 ++++
+ include/uapi/linux/bpf.h                      |  16 +++
+ kernel/bpf/trampoline.c                       |  13 +++
+ kernel/bpf/verifier.c                         |  12 ++
+ kernel/events/core.c                          |   3 +
+ kernel/trace/bpf_trace.c                      |  43 +++++++
+ net/bpf/test_run.c                            |  15 ++-
+ tools/include/uapi/linux/bpf.h                |  16 +++
+ .../bpf/prog_tests/get_branch_snapshot.c      | 106 ++++++++++++++++++
+ .../selftests/bpf/progs/get_branch_snapshot.c |  41 +++++++
+ tools/testing/selftests/bpf/trace_helpers.c   |  30 +++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   5 +
+ 15 files changed, 349 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_snaps=
+hot.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot.c
 
-This seems wrong. If __GNUC__ && __GNUC__ >= 10 we'll define
-DEFAULT_VERSION and COMPAT_VERSION as if we are linking in shared
-library mode. This will be wrong on new GCC *and* static linking mode.
-I think the above declarations should be inside #ifdef SHARED section.
-
-Also, can you please write it out as #if defined(__GNUC__) && __GNUC__
->= 10, instead of doubly nested #if/#ifdef condition?
-
-
->  /* Symbol versioning is different between static and shared library.
->   * Properly versioned symbols are needed for shared library, but
->   * only the symbol of the new version is needed for static library.
->   */
-> -#ifdef SHARED
-> -# define COMPAT_VERSION(internal_name, api_name, version) \
-> +# ifdef SHARED
-> +#  define COMPAT_VERSION(internal_name, api_name, version) \
->         asm(".symver " #internal_name "," #api_name "@" #version);
-> -# define DEFAULT_VERSION(internal_name, api_name, version) \
-> +#  define DEFAULT_VERSION(internal_name, api_name, version) \
->         asm(".symver " #internal_name "," #api_name "@@" #version);
-> -#else
-> -# define COMPAT_VERSION(internal_name, api_name, version)
-> -# define DEFAULT_VERSION(internal_name, api_name, version) \
-> +# else
-> +#  define COMPAT_VERSION(internal_name, api_name, version)
-> +#  define DEFAULT_VERSION(internal_name, api_name, version) \
->         extern typeof(internal_name) api_name \
->         __attribute__((alias(#internal_name)));
-> +# endif
->  #endif
->
->  extern void libbpf_print(enum libbpf_print_level level,
-> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index e9b619aa0cdf..a2111696ba91 100644
-> --- a/tools/lib/bpf/xsk.c
-> +++ b/tools/lib/bpf/xsk.c
-> @@ -281,6 +281,7 @@ static int xsk_create_umem_rings(struct xsk_umem *umem, int fd,
->         return err;
->  }
->
-> +DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
->  int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
->                             __u64 size, struct xsk_ring_prod *fill,
->                             struct xsk_ring_cons *comp,
-> @@ -345,6 +346,7 @@ struct xsk_umem_config_v1 {
->         __u32 frame_headroom;
->  };
->
-> +COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
->  int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
->                             __u64 size, struct xsk_ring_prod *fill,
->                             struct xsk_ring_cons *comp,
-> @@ -358,8 +360,6 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
->         return xsk_umem__create_v0_0_4(umem_ptr, umem_area, size, fill, comp,
->                                         &config);
->  }
-> -COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
-> -DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
->
->  static enum xsk_prog get_xsk_prog(void)
->  {
-> --
-> 2.31.1
->
+--
+2.30.2
