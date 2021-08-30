@@ -2,142 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11ACE3FBD91
-	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 22:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D36F3FBDA6
+	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 22:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235790AbhH3UqP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Aug 2021 16:46:15 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:53827 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235482AbhH3UqO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:46:14 -0400
-Received: by mail-il1-f197.google.com with SMTP id c4-20020a056e020cc4b02902242bd90889so9858145ilj.20
-        for <bpf@vger.kernel.org>; Mon, 30 Aug 2021 13:45:20 -0700 (PDT)
+        id S234904AbhH3Uzm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 16:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234509AbhH3Uzm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Aug 2021 16:55:42 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0741AC061575
+        for <bpf@vger.kernel.org>; Mon, 30 Aug 2021 13:54:47 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id y6so28181637lje.2
+        for <bpf@vger.kernel.org>; Mon, 30 Aug 2021 13:54:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=FiAgtnoVZFVs9eMFVkpCY9ZoVzAD5IMfBshsg/59NmY=;
+        b=daEluc4Zxdi1PDEvOhU47J9P/lRYqX97S60ubZ446kLOUxa29p4wqVCx2K3ZHaINut
+         GL/X0tVGtyw9O0MgBck84vFLMrF3AQRcTSoV03YBC/phABAcjF+mAW7Sxl9ZuPT+3EXC
+         k8Sz9eDLgC6m4uPWlRTfOKRCTdEkzCfs7ne1mlE/u/KIL8Qo3oHbbNhX1js5EkfFZ9Am
+         RqsYLnWIiJisQmkJZnZ1bpm3x452A79kLA5cbFWBhucIdcHa900CRYei3KGPTFGoEsXe
+         Yl8hIR1mAPez6Idn5cUippiWE4FZTqHbPoGFqTCHVjK+dyEycbzjhe99uobAGwi5JO78
+         3UzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=TUim2GYBMpqIAzadnnQg2XP/DUNHWp/cxvGn11BKvOI=;
-        b=pgMmUQlJKKkTmF5HqCx0Yk5dXIkR9m/JaKV45mWn0iJQGKFeM2bSsV2Gv0aYKkcJa8
-         1S7Hw82LZyzUhFb4nvUWidT8JyAYwWpTwsUuyLCz4k7Lt19kZH2JzmuKmkiKZrK9GaXm
-         CWJcFF8WHCeQAZb/KyB5LAF9sVJfWZCGgABXJXvM4LNOS+j9gPFyLcP9s72OBSPeT7zx
-         kbdHO4mq1fEen4Lt8js/ZpI0K/bB1C4uHlorU3xc6oF5Z9mdmjTYMl2riGYLiywxVyeW
-         /t/yVu09qMt3Bw5369uLZBhDzJGX8wZiguMev+aSgPH14hHifm1P9UyeirqzuZmclhyP
-         G9jQ==
-X-Gm-Message-State: AOAM530fGDgi5D+ruI8ScMOp0Ag6/XqHp2pL0W6kTIxweSHy0tbawJ9T
-        bQFfNT8RY31mWzsYANaBbd2b44rlIGCk1XXp31v2W+utIzVY
-X-Google-Smtp-Source: ABdhPJzSGbUEzTyjHN5+24eSmWsDmN7IKM/+iirNVhvuKKfmTSSnB2perh5Ub1G9oppAErlA87kiVAj+QMTG9ZEjOkmBVTWoIp86
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FiAgtnoVZFVs9eMFVkpCY9ZoVzAD5IMfBshsg/59NmY=;
+        b=TjQQtqiG6PWIy9oKZ9QHEeiq+up6lsuTDCZ6nFGBNGNjPwEn9bQv/45sML6W2VhM3K
+         Z9uD+a4pMXV1VfCYPiXTgRpikm6hUdZ+tXUfKtPEMFMHSCE/h0Qo71ZvladCkwnGiQo0
+         lFUKkVQF2c75Kj1N2dnhzCBkc++pyPgENzncOIdQkeITGT9alujQNzRVtesmPqUBa/+b
+         vH9pPT9AiYLMGfkeRmoWkvGHz51TcNLgcqDRWz/u/rBzam4xrm0bzt09bb1ScyNNJlhn
+         nFzpbTF2uaABuwsv8rrF1R15YwSMiGmzkRqI2ycM1FL5k6itE787gdWcFj0XSdhVxG+f
+         pmiA==
+X-Gm-Message-State: AOAM532JM692A4NCq3aFn8zWEfDX3FK+rNtNYKTEcycdY5ncvH+VWVgC
+        TRXMCwht/7e52xT22dSZvuDZ3g==
+X-Google-Smtp-Source: ABdhPJwZkyqI0FXZeSDpL1cTq1feSl1H+2uDcaH7l45R/AXUZTFFu+LqYKesUJjaPnaDnnWUseZpBA==
+X-Received: by 2002:a2e:bc1d:: with SMTP id b29mr23222717ljf.2.1630356885361;
+        Mon, 30 Aug 2021 13:54:45 -0700 (PDT)
+Received: from localhost ([5.18.150.171])
+        by smtp.gmail.com with ESMTPSA id c10sm1496527lfv.246.2021.08.30.13.54.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 13:54:44 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 00:54:43 +0400
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, davem@davemloft.net,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, rdna@fb.com
+Subject: Re: [PATCH bpf-next v2 12/13] bpfilter: Add filter table
+Message-ID: <20210830205443.wx3n2bhw44pji2hn@amnesia>
+References: <20210829183608.2297877-1-me@ubique.spb.ru>
+ <20210829183608.2297877-13-me@ubique.spb.ru>
+ <20210830194545.rgwg3ks3alikeyzx@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:dc02:: with SMTP id b2mr19708795iok.197.1630356320619;
- Mon, 30 Aug 2021 13:45:20 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 13:45:20 -0700
-In-Reply-To: <00000000000011360d05cacbb622@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000059117905cacce99e@google.com>
-Subject: Re: [syzbot] general protection fault in sock_from_file
-From:   syzbot <syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, asml.silence@gmail.com, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, dvyukov@google.com, io-uring@vger.kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210830194545.rgwg3ks3alikeyzx@ast-mbp.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Mon, Aug 30, 2021 at 12:45:45PM -0700, Alexei Starovoitov wrote:
+> On Sun, Aug 29, 2021 at 10:36:07PM +0400, Dmitrii Banshchikov wrote:
+> >  /*
+> > - * # Generated by iptables-save v1.8.2 on Sat May  8 05:22:41 2021
+> > + *  Generated by iptables-save v1.8.2 on Sat May  8 05:22:41 2021
+> >   * *filter
+> ...
+> > - * -A LOCAL -s 10.32.0.0/11 -j FROMDC
+> > - * -A LOCAL -s 10.144.0.0/12 -j FROMDC
+> > - * -A LOCAL -s 10.160.0.0/12 -j FROMDC
+> > - * -A LOCAL -s 10.0.0.0/12 -j FROMDC
+> > - * -A LOCAL -s 10.248.0.0/24 -j FROMDC
+> > - * -A LOCAL -s 10.232.0.0/16 -j FROMDC
+> > - * -A LOCAL -s 10.1.146.131/32 -p udp -m udp --dport 161 -j ACCEPT
+> > - * -A LOCAL -s 10.149.118.14/32 -p udp -m udp --dport 161 -j ACCEPT
+> > - * -A LOCAL -p icmp -j ACCEPT
+> > + * :INPUT ACCEPT [0:0]
+> > + * :FORWARD ACCEPT [0:0]
+> > + * :OUTPUT ACCEPT [0:0]
+> > + * -A INPUT -s 1.1.1.1/32 -d 2.2.2.2/32 -j DROP
+> > + * -A INPUT -s 2.2.0.0/16 -d 3.0.0.0/8 -j DROP
+> > + * -A INPUT -p udp -m udp --sport 100 --dport 500 -j DROP
+> >   * COMMIT
+> >   */
+> 
+> Patch 10 adds this test, but then patch 12 removes most of it?
+> Keep both?
 
-HEAD commit:    93717cde744f Add linux-next specific files for 20210830
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15200fad300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
-dashboard link: https://syzkaller.appspot.com/bug?extid=f9704d1878e290eddf73
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111f5f9d300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1651a415300000
+Sorry, I missed it.
+I decided that the large blob looks really ugly and switched to
+the smaller one and forgot to cleanup the patchset.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com
+> 
+> Also hit this on my system with older glibc:
+> 
+> ../net/bpfilter/codegen.c: In function ‘codegen_push_subprog’:
+> ../net/bpfilter/codegen.c:67:4: warning: implicit declaration of function ‘reallocarray’ [-Wimplicit-function-declaration]
+>    67 |    reallocarray(codegen->subprogs, subprogs_max, sizeof(codegen->subprogs[0]));
+>       |    ^~~~~~~~~~~~
+> ../net/bpfilter/codegen.c:66:12: warning: assignment to ‘struct codegen_subprog_desc **’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+>    66 |   subprogs =
+>       |            ^
+> 
+> In libbpf we have libbpf_reallocarray() for this reason.
+> 
+> Could you provide an example of generated bpf program?
+> And maybe add Documentation/bpf/bpfilter_design.rst ?
 
-general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
-CPU: 0 PID: 6548 Comm: syz-executor433 Not tainted 5.14.0-next-20210830-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
-Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
-RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
-RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
-R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
-R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
-FS:  00000000013b5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004ae0f0 CR3: 000000001d355000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_sendmsg+0x98/0x640 fs/io_uring.c:4681
- io_issue_sqe+0x14de/0x6ba0 fs/io_uring.c:6578
- __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
- io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
- tctx_task_work+0x166/0x610 fs/io_uring.c:2143
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_signal include/linux/tracehook.h:212 [inline]
- handle_signal_work kernel/entry/common.c:146 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43fd49
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd6347b9d8 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
-RAX: 0000000000001000 RBX: 0000000000000003 RCX: 000000000043fd49
-RDX: 0000000000000000 RSI: 000000000000688c RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004035d0
-R13: 431bde82d7b634db R14: 00000000004ae018 R15: 0000000000400488
-Modules linked in:
----[ end trace aa9bf60339277d03 ]---
-RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
-Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
-RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
-RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
-R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
-R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
-FS:  00000000013b5300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2cc6f84000 CR3: 000000001d355000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 3 bytes skipped:
-   0:	ff c3                	inc    %ebx
-   2:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
-   7:	41 54                	push   %r12
-   9:	53                   	push   %rbx
-   a:	48 89 fb             	mov    %rdi,%rbx
-   d:	e8 85 e9 62 fa       	callq  0xfa62e997
-  12:	48 8d 7b 28          	lea    0x28(%rbx),%rdi
-  16:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  1d:	fc ff df
-  20:	48 89 fa             	mov    %rdi,%rdx
-  23:	48 c1 ea 03          	shr    $0x3,%rdx
-* 27:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2b:	75 4f                	jne    0x7c
-  2d:	45 31 e4             	xor    %r12d,%r12d
-  30:	48 81 7b 28 80 f1 8a 	cmpq   $0xffffffff8a8af180,0x28(%rbx)
-  37:	8a
-  38:	74 0c                	je     0x46
-  3a:	e8                   	.byte 0xe8
-  3b:	58                   	pop    %rax
-  3c:	e9                   	.byte 0xe9
+I will add documentation in the next iteration when
+bpf_map_for_each() subprog will be introduced.
 
+> 
+> The tests don't build for me:
+> $ cd selftests/bpf/bpfilter; make
+> make: *** No rule to make target '-lelf', needed by '.../selftests/bpf/bpfilter/test_match'.  Stop.
+
+libelf was added because libbpf depends on it.
+Are you able to build libbpf?
+
+> 
+> The unit tests are great, btw. test_codegen is not end-to-end, right?
+> Could you add a full test with iptable command line?
+> or netns support is a prerequisite for it?
+
+Yeah, as net namespaces aren't supported using iptables binary
+will modify the root namespace. That is the reason why codegen
+tests aren't implemented in the end-to-end fashion and rules are
+represented by blobs.
+
+
+-- 
+
+Dmitrii Banshchikov
