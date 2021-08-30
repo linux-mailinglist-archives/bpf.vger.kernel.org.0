@@ -2,108 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161FB3FB237
-	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 10:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885903FB3CF
+	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 12:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhH3IDq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Aug 2021 04:03:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47270 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234059AbhH3IDp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Aug 2021 04:03:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630310572;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rXrubIEC2DMSUpM/+V8SVHvpGY5IIt96CE00R1zKyYM=;
-        b=U2gTqR0dHaS0kupjRZAICwc0KerwjRAnimtkWoCAANRBpsH6N3MhGChnC6lt5CeqMl4n5Y
-        4Kqi3oRBnlBkDxHKohN45p/rskAV8rzDx6js344pmgSdjC5UlYHTEuWKKMMr+Z2xavYOug
-        BsZf6qyNbiql4O/kwjByOcR6up7rNyY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-49-07vFYQNvMTqOeLLYcfpadg-1; Mon, 30 Aug 2021 04:02:49 -0400
-X-MC-Unique: 07vFYQNvMTqOeLLYcfpadg-1
-Received: by mail-ed1-f69.google.com with SMTP id o11-20020a056402038b00b003c9e6fd522bso2487614edv.19
-        for <bpf@vger.kernel.org>; Mon, 30 Aug 2021 01:02:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rXrubIEC2DMSUpM/+V8SVHvpGY5IIt96CE00R1zKyYM=;
-        b=hlBskPxHmognSmQdO3CmAmLgu42ctiqyDkqxQ0zF6ipQetJUsa+/JrafY7e+VcWa2O
-         Qufr88abN1rAaEetyTEGFQMtuI605AfRPP09QcfZr8S3Z1pGKeJRvO3JL+M1uEpyNcz0
-         XksDK7AKtUBGA7TB+79Tm+hX0/AsnBytvGWON5caQtGnrG2AxuxASQihDyonXjK8jLrl
-         WINqIPZVpUoHHXndtou/+xgzA+xdAU3bhYSRQwYTUpF7MGZb4BcHvpMSsyieW+igcft/
-         0TOTC6qACUyO3Y+0rnv2cGByybo6AtEgx15mfmQF1XzV2AP1ielvrlXwKncnM7qNq6K1
-         oY+w==
-X-Gm-Message-State: AOAM530amKebPlQEi13sNRdTtBvHCAD3b0mNt34k3qjQSWVxGL1gB30+
-        EBi7Rjq6vJTp4fjvU4R5cOZbznR0TgJyAAwtrLHyLN7Z3P1jODosmQpXY2te7UmzgKaaxxNxbUM
-        SM8wmmH5JXkCP
-X-Received: by 2002:aa7:d601:: with SMTP id c1mr16316428edr.143.1630310568104;
-        Mon, 30 Aug 2021 01:02:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzXcJW8oDEN0ZkObgpaUFwYy7NjLN/KkIEO0WkUwvPs1b+YMrZrZnVlhkNQV+KbC4oB0CA4+g==
-X-Received: by 2002:aa7:d601:: with SMTP id c1mr16316412edr.143.1630310567996;
-        Mon, 30 Aug 2021 01:02:47 -0700 (PDT)
-Received: from krava ([83.240.63.86])
-        by smtp.gmail.com with ESMTPSA id r28sm7351905eda.84.2021.08.30.01.02.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Aug 2021 01:02:47 -0700 (PDT)
-Date:   Mon, 30 Aug 2021 10:02:45 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>
-Subject: Re: [PATCH bpf-next v4 00/27] x86/ftrace/bpf: Add batch support for
- direct/tracing attach
-Message-ID: <YSyQpYCsrV3lm8/6@krava>
-References: <20210826193922.66204-1-jolsa@kernel.org>
- <20210829170425.hd7zx2y774ykaedt@ast-mbp.dhcp.thefacebook.com>
+        id S236104AbhH3K0m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 06:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233248AbhH3K0m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Aug 2021 06:26:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55D5C061575;
+        Mon, 30 Aug 2021 03:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zz+aqp/XGpyd1iC8O795/y6Kat+qjTYy7lakfmWUgDQ=; b=AqoqXvyigMzdVGJdyx45l9Ng5s
+        wGnZ3ftBYoxY5tOx/XRIKWlise1TkjDTRw1hLkf9GTI4HhfcFJJm1I4yLEFUsSoJQKOaq0YUsN7XZ
+        XNUJyKicmvWfD8ccUOgdOdLS7ETXB0vlYRONHdPtyKgzinQopSYWte4HVlQKOC1HVHZoJraz2SMQy
+        LTXOci1EwWtUnnk6A+2gyhJNnrB8WZn3rdE0V6E67wF38kF2S+bOoYAPytepp6J4C2zH8FdSxIL3W
+        wUr4j5uLbY274DGIqXx8MofhZrVxBrfJ+mgz37IEhaMuBI6J4mYxP087P76HlNgp6M7SBmv0CCOJx
+        d5E/eLGA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mKeRQ-0000wj-69; Mon, 30 Aug 2021 10:23:19 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7AC25981BFF; Mon, 30 Aug 2021 12:22:58 +0200 (CEST)
+Date:   Mon, 30 Aug 2021 12:22:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <20210830102258.GI4353@worktop.programming.kicks-ass.net>
+References: <20210826221306.2280066-1-songliubraving@fb.com>
+ <20210826221306.2280066-2-songliubraving@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210829170425.hd7zx2y774ykaedt@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210826221306.2280066-2-songliubraving@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 10:04:25AM -0700, Alexei Starovoitov wrote:
-> On Thu, Aug 26, 2021 at 09:38:55PM +0200, Jiri Olsa wrote:
-> > hi,
-> > sending new version of batch attach support, previous post
-> > is in here [1].
-> > 
-> > The previous post could not assign multi trampoline on top
-> > of regular trampolines. This patchset is trying to address
-> > that, plus it has other fixes from last post.
-> > 
-> > This patchset contains:
-> >   1) patches (1-4) that fix the ftrace graph tracing over the function
-> >      with direct trampolines attached
-> >   2) patches (5-8) that add batch interface for ftrace direct function
-> >      register/unregister/modify
-> >   3) patches (9-27) that add support to attach BPF program to multiple
-> >      functions
-> 
-> I did a quick look and it looks ok, but probably will require another respin.
-> In the mean would be great to land the first 8 patches for the upcoming merge
-> window.
-> Jiri,
-> can you respin them quickly addressing build bot issues and maybe
-> Steven can apply them into his tracing tree for the merge window?
-> Then during the next release cycle we will only iterate on bpf bits in the
-> later patches.
-> Thoughts?
+On Thu, Aug 26, 2021 at 03:13:04PM -0700, Song Liu wrote:
+> +int dummy_perf_snapshot_branch_stack(struct perf_branch_snapshot *br_snapshot);
+> +
+> +DECLARE_STATIC_CALL(perf_snapshot_branch_stack, dummy_perf_snapshot_branch_stack);
+> +
+>  #endif /* _LINUX_PERF_EVENT_H */
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 011cc5069b7ba..c53fe90e630ac 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -13437,3 +13437,6 @@ struct cgroup_subsys perf_event_cgrp_subsys = {
+>  	.threaded	= true,
+>  };
+>  #endif /* CONFIG_CGROUP_PERF */
+> +
+> +DEFINE_STATIC_CALL_NULL(perf_snapshot_branch_stack,
+> +			dummy_perf_snapshot_branch_stack);
 
-sounds good, will do
+This isn't right...
 
-jirka
+The whole dummy_perf_snapshot_branch_stack() thing is a declaration only
+and used as a typedef. Also, DEFINE_STATIC_CALL_NULL() and
+static_call_cond() rely on a void return value, which it doesn't have.
 
+Did you want:
+
+  DECLARE_STATIC_CALL(perf_snapshot_branch_stack, void (*)(struct perf_branch_snapshot *));
+
+  DEFINE_STATIC_CALL_NULL(perf_snapshot_branch_stack, void (*)(struct perf_branch_snapshot *));
+
+  static_call_cond(perf_snapshot_branch_stack)(...);
+
+*OR*, do you actually need that return value, in which case you're
+probably looking for:
+
+  DECLARE_STATIC_CALL(perf_snapshot_branch_stack, int (*)(struct perf_branch_snapshot *));
+
+  DEFINE_STATIC_CALL_RET0(perf_snapshot_branch_stack, int (*)(struct perf_branch_snapshot *));
+
+  ret = static_call(perf_snapshot_branch_stack)(...);
+
+?
