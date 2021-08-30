@@ -2,255 +2,536 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE1F3FAEC8
-	for <lists+bpf@lfdr.de>; Sun, 29 Aug 2021 23:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918903FB073
+	for <lists+bpf@lfdr.de>; Mon, 30 Aug 2021 06:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235920AbhH2VxI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 Aug 2021 17:53:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54894 "EHLO mail.kernel.org"
+        id S229495AbhH3EdY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 00:33:24 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:39672 "EHLO mail.hallyn.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231800AbhH2VxH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 29 Aug 2021 17:53:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E86160F5B
-        for <bpf@vger.kernel.org>; Sun, 29 Aug 2021 21:52:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630273935;
-        bh=hciiu3pjpl8VMZuMEriH/9TR4QRqn7/lJuAZjfhKxlg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dFNTdPJBmicbcs/W4YC0w8ms9n3IK3wJA2qR4DTQlvGmmpu4R3oLb1DonUhlw6irl
-         dWWD2PvYG7Ioj9VylX6WsDSjzBb/gQMWyhnAhHZ3p+Qjxwn69xoNApr7fNp8YVCWUE
-         1njcwYwygGQ9S1aOxh+kjDkL0wn9flOsi4sybs2JX4IDCH/2boWZjSRJAjhOyTJYRI
-         xcr+USK6z1aJ3If2BUO804ZEUD4mSQhoJMEd0uWQV+Pf0ebQLhdX9+3dT/zrtZpgYi
-         lFwE+bxRpbZOcw9MpewDYUVnRRslaAcXtAD2v/d8XrWSCPXvd/iGFeyd6k6wYYVHZ2
-         V7mdD4oB7MURA==
-Received: by mail-ed1-f46.google.com with SMTP id s25so18796534edw.0
-        for <bpf@vger.kernel.org>; Sun, 29 Aug 2021 14:52:15 -0700 (PDT)
-X-Gm-Message-State: AOAM533nGV8X6MnszKKcbeL03DvXDP8jcGRmHpDjPrAJSneBUjGL5owr
-        9dBs5Uw5oPY3xadXgjFfZsAHdy0zFbsX9VxF5oUnzg==
-X-Google-Smtp-Source: ABdhPJzvNg8GlwuWRIXDA1U+BfO9LFgCYLuzwWvWQJneYZpO4FzWq+Q9lPDa7wpyPlPojubBrrBgx0MTpYLFSNXtY+s=
-X-Received: by 2002:a05:6402:714:: with SMTP id w20mr17025331edx.62.1630273933891;
- Sun, 29 Aug 2021 14:52:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210826235127.303505-1-kpsingh@kernel.org> <20210826235127.303505-2-kpsingh@kernel.org>
- <20210827205530.zzqawd6wz52n65qh@kafai-mbp>
-In-Reply-To: <20210827205530.zzqawd6wz52n65qh@kafai-mbp>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Sun, 29 Aug 2021 23:52:03 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ6sgJ+PV3SUMtsg=8Xuun2hfYHn8szQ6Rdps7rpWmPP_g@mail.gmail.com>
-Message-ID: <CACYkzJ6sgJ+PV3SUMtsg=8Xuun2hfYHn8szQ6Rdps7rpWmPP_g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
- sleepable programs
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S229379AbhH3EdY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Aug 2021 00:33:24 -0400
+X-Greylist: delayed 523 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Aug 2021 00:33:23 EDT
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 6D8F8F5F; Sun, 29 Aug 2021 23:23:46 -0500 (CDT)
+Date:   Sun, 29 Aug 2021 23:23:46 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Spencer Baugh <sbaugh@catern.com>,
+        Pavel Emelyanov <ovzxemul@gmail.com>,
+        Alexander Mihalicyn <alexander@mihalicyn.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/5] bpf: Implement file local storage
+Message-ID: <20210830042346.GA26321@mail.hallyn.com>
+References: <20210826133913.627361-1-memxor@gmail.com>
+ <20210826133913.627361-2-memxor@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210826133913.627361-2-memxor@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 10:55 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Thu, Aug 26, 2021 at 11:51:26PM +0000, KP Singh wrote:
-> > Other maps like hashmaps are already available to sleepable programs.
-> > Sleepable BPF programs run under trace RCU. Allow task, local and inode
-> > storage to be used from sleepable programs.
-> >
-> > The local storage code mostly runs under the programs RCU read section
-> > (in __bpf_prog_enter{_sleepable} and __bpf_prog_exit{_sleepable})
-> > (rcu_read_lock or rcu_read_lock_trace) with the exception the logic
-> > where the map is freed.
-> >
-> > After some discussions and help from Jann Horn, the following changes
-> > were made:
-> >
-> > bpf_local_storage{_elem} are freed with a kfree_rcu
-> > wrapped with a call_rcu_tasks_trace callback instead of a direct
-> > kfree_rcu which does not respect the trace RCU grace periods. The
-> > callback frees the storage/selem with kfree_rcu which handles the normal
-> > RCU grace period similar to BPF trampolines.
-> >
-> > Update the synchronise_rcu to synchronize_rcu_mult in the map freeing
-> > code to wait for trace RCU and normal RCU grace periods.
-> > While this is an expensive operation, bpf_local_storage_map_free
-> > is not called from within a BPF program, rather only called when the
-> > owning object is being freed.
-> >
-> > Update the dereferencing of the pointers to use rcu_derference_protected
-> > (with either the trace or normal RCU locks held) and add warnings in the
-> > beginning of the get and delete helpers.
-> >
-> > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > ---
+On Thu, Aug 26, 2021 at 07:09:09PM +0530, Kumar Kartikeya Dwivedi wrote:
+> This map is useful in general to tie data associated with a open file
+> (not fd) from eBPF programs, such that data is released when the file
+> goes away (e.g. checkpoint/restore usecase).
+> 
+> Another usecase is implementing Capsicum [0] style capability sandbox in
+> userspace using eBPF LSM, enforcing rights at the file level using this
+> mechanism.
+> 
+> [0]: https://www.usenix.org/legacy/event/sec10/tech/full_papers/Watson.pdf
+> 
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf_lsm.h       |  21 +++
+>  include/linux/bpf_types.h     |   1 +
+>  include/uapi/linux/bpf.h      |  39 ++++++
+>  kernel/bpf/Makefile           |   2 +-
+>  kernel/bpf/bpf_file_storage.c | 244 ++++++++++++++++++++++++++++++++++
+>  kernel/bpf/bpf_lsm.c          |   4 +
+>  kernel/bpf/syscall.c          |   3 +-
+>  kernel/bpf/verifier.c         |  10 ++
+>  security/bpf/hooks.c          |   2 +
+>  9 files changed, 324 insertions(+), 2 deletions(-)
+>  create mode 100644 kernel/bpf/bpf_file_storage.c
+> 
+> diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> index 479c101546ad..5901a39cd5ac 100644
+> --- a/include/linux/bpf_lsm.h
+> +++ b/include/linux/bpf_lsm.h
+> @@ -42,6 +42,18 @@ extern const struct bpf_func_proto bpf_inode_storage_get_proto;
+>  extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
+>  void bpf_inode_storage_free(struct inode *inode);
+>  
+> +static inline struct bpf_storage_blob *bpf_file(const struct file *file)
+> +{
+> +	if (unlikely(!file->f_security))
+> +		return NULL;
+> +
+> +	return file->f_security + bpf_lsm_blob_sizes.lbs_file;
+> +}
+> +
+> +extern const struct bpf_func_proto bpf_file_storage_get_proto;
+> +extern const struct bpf_func_proto bpf_file_storage_delete_proto;
+> +void bpf_file_storage_free(struct file *file);
+> +
+>  #else /* !CONFIG_BPF_LSM */
+>  
+>  static inline bool bpf_lsm_is_sleepable_hook(u32 btf_id)
+> @@ -65,6 +77,15 @@ static inline void bpf_inode_storage_free(struct inode *inode)
+>  {
+>  }
+>  
+> +static inline struct bpf_storage_blob *bpf_file(const struct file *file)
+> +{
+> +	return NULL;
+> +}
+> +
+> +static inline void bpf_file_storage_free(struct file *file)
+> +{
+> +}
+> +
+>  #endif /* CONFIG_BPF_LSM */
+>  
+>  #endif /* _LINUX_BPF_LSM_H */
+> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> index 9c81724e4b98..c68cc6d9e7da 100644
+> --- a/include/linux/bpf_types.h
+> +++ b/include/linux/bpf_types.h
+> @@ -107,6 +107,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_DEVMAP_HASH, dev_map_hash_ops)
+>  BPF_MAP_TYPE(BPF_MAP_TYPE_SK_STORAGE, sk_storage_map_ops)
+>  #ifdef CONFIG_BPF_LSM
+>  BPF_MAP_TYPE(BPF_MAP_TYPE_INODE_STORAGE, inode_storage_map_ops)
+> +BPF_MAP_TYPE(BPF_MAP_TYPE_FILE_STORAGE, file_storage_map_ops)
+>  #endif
+>  BPF_MAP_TYPE(BPF_MAP_TYPE_TASK_STORAGE, task_storage_map_ops)
+>  BPF_MAP_TYPE(BPF_MAP_TYPE_CPUMAP, cpu_map_ops)
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 791f31dd0abe..62aa1ff2dcfb 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -906,6 +906,7 @@ enum bpf_map_type {
+>  	BPF_MAP_TYPE_RINGBUF,
+>  	BPF_MAP_TYPE_INODE_STORAGE,
+>  	BPF_MAP_TYPE_TASK_STORAGE,
+> +	BPF_MAP_TYPE_FILE_STORAGE,
+>  };
+>  
+>  /* Note that tracing related programs such as
+> @@ -4877,6 +4878,42 @@ union bpf_attr {
+>   *		Get the struct pt_regs associated with **task**.
+>   *	Return
+>   *		A pointer to struct pt_regs.
+> + *
+> + * void *bpf_file_storage_get(struct bpf_map *map, void *file, void *value, u64 flags)
+> + *	Description
+> + *		Get a bpf_local_storage from a *file*.
+> + *
+> + *		Logically, it could be thought of as getting the value from
+> + *		a *map* with *file* as the **key**.  From this
+> + *		perspective,  the usage is not much different from
+> + *		**bpf_map_lookup_elem**\ (*map*, **&**\ *file*) except this
+> + *		helper enforces the key must be an file and the map must also
+> + *		be a **BPF_MAP_TYPE_FILE_STORAGE**.
+> + *
+> + *		Underneath, the value is stored locally at *file* instead of
+> + *		the *map*.  The *map* is used as the bpf-local-storage
+> + *		"type". The bpf-local-storage "type" (i.e. the *map*) is
+> + *		searched against all bpf_local_storage residing at *file*.
+> + *
+> + *		An optional *flags* (**BPF_LOCAL_STORAGE_GET_F_CREATE**) can be
+> + *		used such that a new bpf_local_storage will be
+> + *		created if one does not exist.  *value* can be used
+> + *		together with **BPF_LOCAL_STORAGE_GET_F_CREATE** to specify
+> + *		the initial value of a bpf_local_storage.  If *value* is
+> + *		**NULL**, the new bpf_local_storage will be zero initialized.
+> + *	Return
+> + *		A bpf_local_storage pointer is returned on success.
+> + *
+> + *		**NULL** if not found or there was an error in adding
+> + *		a new bpf_local_storage.
+> + *
+> + * int bpf_file_storage_delete(struct bpf_map *map, void *file)
+> + *	Description
+> + *		Delete a bpf_local_storage from a *file*.
+> + *	Return
+> + *		0 on success.
+> + *
+> + *		**-ENOENT** if the bpf_local_storage cannot be found.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -5055,6 +5092,8 @@ union bpf_attr {
+>  	FN(get_func_ip),		\
+>  	FN(get_attach_cookie),		\
+>  	FN(task_pt_regs),		\
+> +	FN(file_storage_get),		\
+> +	FN(file_storage_delete),	\
+>  	/* */
+>  
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index 7f33098ca63f..98a18e402a0a 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -10,7 +10,7 @@ obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_i
+>  obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
+>  obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
+>  obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
+> -obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o
+> +obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o bpf_file_storage.o
+>  obj-$(CONFIG_BPF_SYSCALL) += disasm.o
+>  obj-$(CONFIG_BPF_JIT) += trampoline.o
+>  obj-$(CONFIG_BPF_SYSCALL) += btf.o
+> diff --git a/kernel/bpf/bpf_file_storage.c b/kernel/bpf/bpf_file_storage.c
+> new file mode 100644
+> index 000000000000..c826bc0405c4
+> --- /dev/null
+> +++ b/kernel/bpf/bpf_file_storage.c
+> @@ -0,0 +1,244 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/rculist.h>
+> +#include <linux/list.h>
+> +#include <linux/hash.h>
+> +#include <linux/types.h>
+> +#include <linux/filter.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/bpf.h>
+> +#include <linux/bpf_local_storage.h>
+> +#include <uapi/linux/btf.h>
+> +#include <linux/bpf_lsm.h>
+> +#include <linux/btf_ids.h>
+> +
+> +DEFINE_BPF_STORAGE_CACHE(file_cache);
+> +
+> +static struct bpf_local_storage __rcu **file_storage_ptr(void *owner)
+> +{
+> +	struct bpf_storage_blob *bsb;
+> +	struct file *file = owner;
+> +
+> +	bsb = bpf_file(file);
+> +	if (!bsb)
+> +		return NULL;
+> +	return &bsb->storage;
+> +}
+> +
+> +static struct bpf_local_storage_data *
+> +file_storage_lookup(struct file *file, struct bpf_map *map, bool cacheit_lockit)
+> +{
+> +	struct bpf_local_storage *file_storage;
+> +	struct bpf_local_storage_map *smap;
+> +	struct bpf_storage_blob *bsb;
+> +
+> +	bsb = bpf_file(file);
+> +	if (!bsb)
+> +		return NULL;
+> +
+> +	file_storage = rcu_dereference(bsb->storage);
 
-[...]
+It's possible that I am (and the docs are) behind the times, or (very likely)
+I'm missing something else, but Documentation/RCU/whatisRCU.rst says that
+rcu_dereference result is only valid within a rcu read-side critical section.
 
-> > @@ -16,6 +16,9 @@
-> >
-> >  #define BPF_LOCAL_STORAGE_CACHE_SIZE 16
-> >
-> > +#define bpf_local_storage_rcu_lock_held()                    \
-> > +     (rcu_read_lock_held() || rcu_read_lock_trace_held() ||  \
-> > +             rcu_read_lock_bh_held())
-> There is a similar test in hashtab.  May be renaming it to a more
-> generic name such that it can be reused there?
+Here it doesn't seem like you're in a rcu_read_unlock at all.  Will the
+callers (bpf_map_ops->map_lookup_elem) be called that way?
 
-Sure.
+> +	if (!file_storage)
+> +		return NULL;
+> +
+> +	smap = (struct bpf_local_storage_map *)map;
+> +	return bpf_local_storage_lookup(file_storage, smap, cacheit_lockit);
+> +}
+> +
+> +void bpf_file_storage_free(struct file *file)
+> +{
+> +	struct bpf_local_storage *local_storage;
+> +	struct bpf_local_storage_elem *selem;
+> +	bool free_file_storage = false;
+> +	struct bpf_storage_blob *bsb;
+> +	struct hlist_node *n;
+> +
+> +	bsb = bpf_file(file);
+> +	if (!bsb)
+> +		return;
+> +
+> +	rcu_read_lock();
+> +
+> +	local_storage = rcu_dereference(bsb->storage);
 
->
-> [ ... ]
->
-> > diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> > index b305270b7a4b..7760bc4e9565 100644
-> > --- a/kernel/bpf/bpf_local_storage.c
-> > +++ b/kernel/bpf/bpf_local_storage.c
-> > @@ -11,6 +11,8 @@
-> >  #include <net/sock.h>
-> >  #include <uapi/linux/sock_diag.h>
-> >  #include <uapi/linux/btf.h>
-> > +#include <linux/rcupdate_trace.h>
-> > +#include <linux/rcupdate_wait.h>
-> >
-> >  #define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK (BPF_F_NO_PREALLOC | BPF_F_CLONE)
-> >
-> > @@ -81,6 +83,22 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
-> >       return NULL;
-> >  }
-> >
-> > +void bpf_local_storage_free_rcu(struct rcu_head *rcu)
-> > +{
-> > +     struct bpf_local_storage *local_storage;
-> > +
-> > +     local_storage = container_of(rcu, struct bpf_local_storage, rcu);
-> > +     kfree_rcu(local_storage, rcu);
-> > +}
-> > +
-> > +static void bpf_selem_free_rcu(struct rcu_head *rcu)
-> > +{
-> > +     struct bpf_local_storage_elem *selem;
-> > +
-> > +     selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
-> > +     kfree_rcu(selem, rcu);
-> > +}
-> > +
-> >  /* local_storage->lock must be held and selem->local_storage == local_storage.
-> >   * The caller must ensure selem->smap is still valid to be
-> >   * dereferenced for its smap->elem_size and smap->cache_idx.
-> > @@ -118,12 +136,12 @@ bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_storage,
-> >                *
-> >                * Although the unlock will be done under
-> >                * rcu_read_lock(),  it is more intutivie to
-> > -              * read if kfree_rcu(local_storage, rcu) is done
-> > +              * read if the freeing of the storage is done
-> >                * after the raw_spin_unlock_bh(&local_storage->lock).
-> >                *
-> >                * Hence, a "bool free_local_storage" is returned
-> > -              * to the caller which then calls the kfree_rcu()
-> > -              * after unlock.
-> > +              * to the caller which then calls then frees the storage after
-> > +              * all the RCU grace periods have expired.
-> >                */
-> >       }
-> >       hlist_del_init_rcu(&selem->snode);
-> > @@ -131,7 +149,7 @@ bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_storage,
-> >           SDATA(selem))
-> >               RCU_INIT_POINTER(local_storage->cache[smap->cache_idx], NULL);
-> >
-> > -     kfree_rcu(selem, rcu);
-> > +     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-> Although the common use case is usually storage_get() much more often
-> than storage_delete(), do you aware any performance impact for
-> the bpf prog that does a lot of storage_delete()?
+Here you've called rcu_read_lock, but you use the result of it,
+'local_storage', after dropping the rcu_read_unlock, which whatisRCU.rst
+explicitly calls out as a bug.
 
-I have not really measured the impact on deletes, My understanding is
-that it should
-not impact the BPF program, but yes, if there are some critical
-sections that are prolonged
-due to a sleepable program "sleeping" too long, then it would pile up
-the callbacks.
-
-But this is not something new, as we have a similar thing in BPF
-trampolines. If this really
-becomes an issue, we could add a flag BPF_F_SLEEPABLE_STORAGE and only maps
-with this flag would be allowed in sleepable progs.
-
-We could then wait for both critical sections only when this flag is
-set on the map.
-
->
-> >
-> >       return free_local_storage;
-> >  }
-> > @@ -154,7 +172,8 @@ static void __bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem)
-> >       raw_spin_unlock_irqrestore(&local_storage->lock, flags);
-> >
-> >       if (free_local_storage)
-> > -             kfree_rcu(local_storage, rcu);
-> > +             call_rcu_tasks_trace(&local_storage->rcu,
-> > +                                  bpf_local_storage_free_rcu);
-> >  }
-> >
-> >  void bpf_selem_link_storage_nolock(struct bpf_local_storage *local_storage,
-> > @@ -213,7 +232,8 @@ bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
-> >       struct bpf_local_storage_elem *selem;
-> >
-> >       /* Fast path (cache hit) */
-> > -     sdata = rcu_dereference(local_storage->cache[smap->cache_idx]);
-> > +     sdata = rcu_dereference_protected(local_storage->cache[smap->cache_idx],
-> > +                                       bpf_local_storage_rcu_lock_held());
-> There are other places using rcu_dereference() also.
-> e.g. in bpf_local_storage_update().
-> Should they be changed also?
-
-From what I saw, the other usage of rcu_derference is in a nested
-(w.r.t to the RCU section that in bpf_prog_enter/exit) RCU
-read side critical section/rcu_read_{lock, unlock} so it should not be required.
-
-If there are some that are not, then they need to be updated. Did I miss any?
-
->
-> [ ... ]
->
-> > --- a/net/core/bpf_sk_storage.c
-> > +++ b/net/core/bpf_sk_storage.c
-> > @@ -13,6 +13,7 @@
-> >  #include <net/sock.h>
-> >  #include <uapi/linux/sock_diag.h>
-> >  #include <uapi/linux/btf.h>
-> > +#include <linux/rcupdate_trace.h>
-> >
-> >  DEFINE_BPF_STORAGE_CACHE(sk_cache);
-> >
-> > @@ -22,7 +23,8 @@ bpf_sk_storage_lookup(struct sock *sk, struct bpf_map *map, bool cacheit_lockit)
-> >       struct bpf_local_storage *sk_storage;
-> >       struct bpf_local_storage_map *smap;
-> >
-> > -     sk_storage = rcu_dereference(sk->sk_bpf_storage);
-> > +     sk_storage = rcu_dereference_protected(sk->sk_bpf_storage,
-> > +                                            bpf_local_storage_rcu_lock_held());
-> >       if (!sk_storage)
-> >               return NULL;
-> >
-> > @@ -258,6 +260,7 @@ BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
-> >  {
-> >       struct bpf_local_storage_data *sdata;
-> >
-> > +     WARN_ON_ONCE(!bpf_local_storage_rcu_lock_held());
-> >       if (!sk || !sk_fullsock(sk) || flags > BPF_SK_STORAGE_GET_F_CREATE)
-> sk is protected by rcu_read_lock here.
-> Is it always safe to access it with the rcu_read_lock_trace alone ?
-
-We don't dereference sk with an rcu_dereference though, is it still the case for
-tracing and LSM programs? Or is it somehow implicity protected even
-though we don't
-use rcu_dereference since that's just a READ_ONCE + some checks?
-
-Would grabbing a refcount earlier in the code be helpful?
-
->
-> >               return (unsigned long)NULL;
-> >
+> +	if (!local_storage) {
+> +		rcu_read_unlock();
+> +		return;
+> +	}
+> +
+> +	raw_spin_lock_bh(&local_storage->lock);
+> +	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+> +		bpf_selem_unlink_map(selem);
+> +		free_file_storage = bpf_selem_unlink_storage_nolock(local_storage,
+> +								    selem, false);
+> +	}
+> +	raw_spin_unlock_bh(&local_storage->lock);
+> +	rcu_read_unlock();
+> +
+> +	if (free_file_storage)
+> +		kfree_rcu(local_storage, rcu);
+> +}
+> +
+> +static void *bpf_fd_file_storage_lookup_elem(struct bpf_map *map, void *key)
+> +{
+> +	struct bpf_local_storage_data *sdata;
+> +	struct file *file;
+> +	int fd;
+> +
+> +	fd = *(int *)key;
+> +	file = fget_raw(fd);
+> +	if (!file)
+> +		return ERR_PTR(-EBADF);
+> +
+> +	sdata = file_storage_lookup(file, map, true);
+> +	fput(file);
+> +	return sdata ? sdata->data : NULL;
+> +}
+> +
+> +static int bpf_fd_file_storage_update_elem(struct bpf_map *map, void *key,
+> +					   void *value, u64 map_flags)
+> +{
+> +	struct bpf_local_storage_data *sdata;
+> +	struct file *file;
+> +	int fd;
+> +
+> +	fd = *(int *)key;
+> +	file = fget_raw(fd);
+> +	if (!file)
+> +		return -EBADF;
+> +	if (!file_storage_ptr(file)) {
+> +		fput(file);
+> +		return -EBADF;
+> +	}
+> +
+> +	sdata = bpf_local_storage_update(file,
+> +					 (struct bpf_local_storage_map *)map,
+> +					 value, map_flags);
+> +	fput(file);
+> +	return PTR_ERR_OR_ZERO(sdata);
+> +}
+> +
+> +static int file_storage_delete(struct file *file, struct bpf_map *map)
+> +{
+> +	struct bpf_local_storage_data *sdata;
+> +
+> +	sdata = file_storage_lookup(file, map, false);
+> +	if (!sdata)
+> +		return -ENOENT;
+> +
+> +	bpf_selem_unlink(SELEM(sdata));
+> +
+> +	return 0;
+> +}
+> +
+> +static int bpf_fd_file_storage_delete_elem(struct bpf_map *map, void *key)
+> +{
+> +	struct file *file;
+> +	int fd, err;
+> +
+> +	fd = *(int *)key;
+> +	file = fget_raw(fd);
+> +	if (!file)
+> +		return -EBADF;
+> +
+> +	err = file_storage_delete(file, map);
+> +	fput(file);
+> +	return err;
+> +}
+> +
+> +BPF_CALL_4(bpf_file_storage_get, struct bpf_map *, map, struct file *, file,
+> +	   void *, value, u64, flags)
+> +{
+> +	struct bpf_local_storage_data *sdata;
+> +
+> +	if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
+> +		return (unsigned long)NULL;
+> +
+> +	if (!file || !file_storage_ptr(file))
+> +		return (unsigned long)NULL;
+> +
+> +	sdata = file_storage_lookup(file, map, true);
+> +	if (sdata)
+> +		return (unsigned long)sdata->data;
+> +
+> +	if (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
+> +		sdata = bpf_local_storage_update(
+> +			file, (struct bpf_local_storage_map *)map, value,
+> +			BPF_NOEXIST);
+> +		return IS_ERR(sdata) ? (unsigned long)NULL :
+> +					     (unsigned long)sdata->data;
+> +	}
+> +
+> +	return (unsigned long)NULL;
+> +}
+> +
+> +BPF_CALL_2(bpf_file_storage_delete, struct bpf_map *, map, struct file *, file)
+> +{
+> +	if (!file)
+> +		return -EINVAL;
+> +
+> +	return file_storage_delete(file, map);
+> +}
+> +
+> +static int notsupp_get_next_key(struct bpf_map *map, void *key, void *next_key)
+> +{
+> +	return -ENOTSUPP;
+> +}
+> +
+> +static struct bpf_map *file_storage_map_alloc(union bpf_attr *attr)
+> +{
+> +	struct bpf_local_storage_map *smap;
+> +
+> +	smap = bpf_local_storage_map_alloc(attr);
+> +	if (IS_ERR(smap))
+> +		return ERR_CAST(smap);
+> +
+> +	smap->cache_idx = bpf_local_storage_cache_idx_get(&file_cache);
+> +	return &smap->map;
+> +}
+> +
+> +static void file_storage_map_free(struct bpf_map *map)
+> +{
+> +	struct bpf_local_storage_map *smap;
+> +
+> +	smap = (struct bpf_local_storage_map *)map;
+> +	bpf_local_storage_cache_idx_free(&file_cache, smap->cache_idx);
+> +	bpf_local_storage_map_free(smap, NULL);
+> +}
+> +
+> +static int file_storage_map_btf_id;
+> +
+> +const struct bpf_map_ops file_storage_map_ops = {
+> +	.map_meta_equal        = bpf_map_meta_equal,
+> +	.map_alloc_check       = bpf_local_storage_map_alloc_check,
+> +	.map_alloc             = file_storage_map_alloc,
+> +	.map_free              = file_storage_map_free,
+> +	.map_get_next_key      = notsupp_get_next_key,
+> +	.map_lookup_elem       = bpf_fd_file_storage_lookup_elem,
+> +	.map_update_elem       = bpf_fd_file_storage_update_elem,
+> +	.map_delete_elem       = bpf_fd_file_storage_delete_elem,
+> +	.map_check_btf         = bpf_local_storage_map_check_btf,
+> +	.map_btf_name          = "bpf_local_storage_map",
+> +	.map_btf_id            = &file_storage_map_btf_id,
+> +	.map_owner_storage_ptr = file_storage_ptr,
+> +};
+> +
+> +BTF_ID_LIST_SINGLE(bpf_file_storage_btf_ids, struct, file)
+> +
+> +const struct bpf_func_proto bpf_file_storage_get_proto = {
+> +	.func        = bpf_file_storage_get,
+> +	.gpl_only    = false,
+> +	.ret_type    = RET_PTR_TO_MAP_VALUE_OR_NULL,
+> +	.arg1_type   = ARG_CONST_MAP_PTR,
+> +	.arg2_type   = ARG_PTR_TO_BTF_ID,
+> +	.arg2_btf_id = &bpf_file_storage_btf_ids[0],
+> +	.arg3_type   = ARG_PTR_TO_MAP_VALUE_OR_NULL,
+> +	.arg4_type   = ARG_ANYTHING,
+> +};
+> +
+> +const struct bpf_func_proto bpf_file_storage_delete_proto = {
+> +	.func        = bpf_file_storage_delete,
+> +	.gpl_only    = false,
+> +	.ret_type    = RET_INTEGER,
+> +	.arg1_type   = ARG_CONST_MAP_PTR,
+> +	.arg2_type   = ARG_PTR_TO_BTF_ID,
+> +	.arg2_btf_id = &bpf_file_storage_btf_ids[0],
+> +};
+> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> index 06062370c3b8..48c2022fd958 100644
+> --- a/kernel/bpf/bpf_lsm.c
+> +++ b/kernel/bpf/bpf_lsm.c
+> @@ -121,6 +121,10 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  		return &bpf_bprm_opts_set_proto;
+>  	case BPF_FUNC_ima_inode_hash:
+>  		return prog->aux->sleepable ? &bpf_ima_inode_hash_proto : NULL;
+> +	case BPF_FUNC_file_storage_get:
+> +		return &bpf_file_storage_get_proto;
+> +	case BPF_FUNC_file_storage_delete:
+> +		return &bpf_file_storage_delete_proto;
+>  	default:
+>  		return tracing_prog_func_proto(func_id, prog);
+>  	}
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 4e50c0bfdb7d..946a85945776 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -783,7 +783,8 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+>  		    map->map_type != BPF_MAP_TYPE_CGROUP_STORAGE &&
+>  		    map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
+>  		    map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
+> -		    map->map_type != BPF_MAP_TYPE_TASK_STORAGE)
+> +		    map->map_type != BPF_MAP_TYPE_TASK_STORAGE &&
+> +		    map->map_type != BPF_MAP_TYPE_FILE_STORAGE)
+>  			return -ENOTSUPP;
+>  		if (map->spin_lock_off + sizeof(struct bpf_spin_lock) >
+>  		    map->value_size) {
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 206c221453cf..c703d58681a8 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5390,6 +5390,11 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+>  		    func_id != BPF_FUNC_task_storage_delete)
+>  			goto error;
+>  		break;
+> +	case BPF_MAP_TYPE_FILE_STORAGE:
+> +		if (func_id != BPF_FUNC_file_storage_get &&
+> +		    func_id != BPF_FUNC_file_storage_delete)
+> +			goto error;
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> @@ -5473,6 +5478,11 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+>  		if (map->map_type != BPF_MAP_TYPE_TASK_STORAGE)
+>  			goto error;
+>  		break;
+> +	case BPF_FUNC_file_storage_get:
+> +	case BPF_FUNC_file_storage_delete:
+> +		if (map->map_type != BPF_MAP_TYPE_FILE_STORAGE)
+> +			goto error;
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+> index e5971fa74fd7..faa70467db4d 100644
+> --- a/security/bpf/hooks.c
+> +++ b/security/bpf/hooks.c
+> @@ -13,6 +13,7 @@ static struct security_hook_list bpf_lsm_hooks[] __lsm_ro_after_init = {
+>  	#undef LSM_HOOK
+>  	LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
+>  	LSM_HOOK_INIT(task_free, bpf_task_storage_free),
+> +	LSM_HOOK_INIT(file_free_security, bpf_file_storage_free),
+>  };
+>  
+>  static int __init bpf_lsm_init(void)
+> @@ -25,6 +26,7 @@ static int __init bpf_lsm_init(void)
+>  struct lsm_blob_sizes bpf_lsm_blob_sizes __lsm_ro_after_init = {
+>  	.lbs_inode = sizeof(struct bpf_storage_blob),
+>  	.lbs_task = sizeof(struct bpf_storage_blob),
+> +	.lbs_file = sizeof(struct bpf_storage_blob),
+>  };
+>  
+>  DEFINE_LSM(bpf) = {
+> -- 
+> 2.33.0
