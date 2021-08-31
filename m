@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D92A3FBFA0
-	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 01:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1982A3FBFD6
+	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 02:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239105AbhH3X4Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Aug 2021 19:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
+        id S239184AbhHaAEX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 20:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233668AbhH3X4P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Aug 2021 19:56:15 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04768C061575;
-        Mon, 30 Aug 2021 16:55:21 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id z18so31489176ybg.8;
-        Mon, 30 Aug 2021 16:55:20 -0700 (PDT)
+        with ESMTP id S233270AbhHaAEO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Aug 2021 20:04:14 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CE4C061575;
+        Mon, 30 Aug 2021 17:03:19 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id k78so28323188ybf.10;
+        Mon, 30 Aug 2021 17:03:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=osaHZsvC6GXD6W3Yy9wZgX7DMF08yB4vlQ7sjrfCqUk=;
-        b=naQViWRWvuh/C+pCLh3fUahwLOVxtJ1O3NePHN0ih0WhxOiKetMUXEguFhh3SUMEGY
-         pNVqIXEdKwfoaK+vL30Z1n+8i0wNamVpjJ1B6XgSc4V0Rhoxldm10/uTctrkzidQUFqo
-         wDTX7lgRd3n63H4YxlNNOcIWR4wpQImsgok5FyjBYTvf5U2+DKMsGaY08dyGOJ/1jWoC
-         E5rrIIV4oMd0CCfZc0q3xHwYjVX7pqZ1gF9/mbdwP4lLPhBYGmip27cjCYj61Zqm9fJC
-         KHDAERCDFthNFSmqXvGsZsfWjUAY4Z5bprpRrGbktrnydpYDsCYYfqo5COCmYRhU9CD3
-         zPFA==
+        bh=lglQ3JxOUp4IZye4xSji78qLqmdUdPj3wxm8G2VOvkE=;
+        b=UiqKSheXumgrI5tnQNS+k+ty5ojnYBNKjOYwOsOf7ND4TQwx4l/JKiafYvKIp4/0iw
+         tRt8AC1de7wX+oRi5feG2cXXnCKl92tWRUYdHiEMIdvCIGsm2E/DdXNNAEl8RIzAuPN+
+         eLtuGOxsJHA4UOi3OH4+Fggxeb6AXQYU9Z4KnIvXInqOQiOnraBu6zGQx1rHUsEkB0ph
+         8DFT4SMC4J4N/bWVCGLpWdYJcfbqyZBiDnj9q7ZHCUWRbLHecXJeb9096ZeaL4aJp2jo
+         5he+x7k0XqWMfZi8MQWx94zxcrarci+MtbhBgaIboT5a7ecIG4YAvcNCdAFox/7t1Sp2
+         Rb/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=osaHZsvC6GXD6W3Yy9wZgX7DMF08yB4vlQ7sjrfCqUk=;
-        b=A+5NFyoxRMrk6GfURXdmbwYJl0Lssuv8VENQuuuiYpbPhK7FgR4m8Z0BBhvHDVe2Ns
-         6FbO7y0O2QEULf9+U5O3UXB2f1si/UK199iq8HCmVNWK1FHEqbUVGNlF0aU4AtdY386x
-         Fh4hjFTdnP/UEakNO5cuFgiyfLRPOtucQ1t0s7tQZGvAFAi95Y31j5zqbSRhcXnKVWc+
-         1s6SjlOkTIuW0RNYwiLkEzk0sPuKST2HI8kQoqNgkRot9Tx0ejj7c9l7p9Gf2tf/uvOm
-         8jvkDqhcKDZ/XdAOBJuAWzimIklwC4LJq38CyBq+xtPkVF6i64XtK0KOgPGa9sihk+nl
-         VtOw==
-X-Gm-Message-State: AOAM531D3/wfWKAqBcwvHo9olipff+tYoaZrGP3uPZs8TTz0mTAI/0Pc
-        z4pSiRYeI8KPpijT4TourLAi5ShX5emUHudOzdI=
-X-Google-Smtp-Source: ABdhPJyzq2UjMhGJJUlz4e9HhnH0du8C8/unmhgvND6mtwtk64xDXG8ep8cy9SlIlluC6H3m2C/HPn8iTA9lYSB3v1I=
-X-Received: by 2002:a25:16c6:: with SMTP id 189mr26785803ybw.27.1630367720120;
- Mon, 30 Aug 2021 16:55:20 -0700 (PDT)
+        bh=lglQ3JxOUp4IZye4xSji78qLqmdUdPj3wxm8G2VOvkE=;
+        b=nxX5As65UezaI95sMAhpPszS33bwcVuCesce08DAXdU4RtbzNRVwi3EgHsdhyZpnTZ
+         A6qXq7nFVkxx5uMYsbV2vHgD5lXRXYi5Ht7QRLaxO27yih/XKugy5yVd1N8Iuwnoa20w
+         4QxaxPI59Srs9vQwFlxe27HyQgYxJRgCY8vXcnk7qQW2Upssrmk5j77AW7uH243na6sp
+         PlP8maQVg+BlsW+a0wMnaQONz7shwUaqbt/Y4NVYSbWIgkxzAElIwjq7OSREmnJAkotH
+         WqtohdfSIQtgVVixxjBEdLqxgqYTFd2kh2EIdsvfTBirwwRrgI70kRV+AqlzJuSu6S5V
+         vRBw==
+X-Gm-Message-State: AOAM530IcvPC1vW05UouapsALN2wGu/WK1D+9F1Ui102p/0e+FdkL4Tx
+        GYq07v4wkdIEK2Fys/kI4OZs2HVKT9YcGVtSbLMXjmG48AQ=
+X-Google-Smtp-Source: ABdhPJznp92dCOB3vB2YFaUTt0/v/C6oe41rbnqR1SwbcKI3n4IfOnGeaFH6wmd674khXQPd4iw7F8oT3i9W1CSYtmA=
+X-Received: by 2002:a25:bb13:: with SMTP id z19mr28067365ybg.347.1630368199063;
+ Mon, 30 Aug 2021 17:03:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210825195823.381016-1-davemarchevsky@fb.com> <20210825195823.381016-4-davemarchevsky@fb.com>
-In-Reply-To: <20210825195823.381016-4-davemarchevsky@fb.com>
+References: <20210828052006.1313788-1-davemarchevsky@fb.com> <20210828052006.1313788-7-davemarchevsky@fb.com>
+In-Reply-To: <20210828052006.1313788-7-davemarchevsky@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 30 Aug 2021 16:55:09 -0700
-Message-ID: <CAEf4BzaNH1vRQr5jZO_m3haUaV5rXKiH5AJLFrM5iwbkEja=VQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/6] libbpf: Modify bpf_printk to choose
- helper based on arg count
+Date:   Mon, 30 Aug 2021 17:03:08 -0700
+Message-ID: <CAEf4BzbNh-dXYjkxKPq576w3YeqpKfufWToPAR_bq8+hnbzOzA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 6/7] selftests/bpf: Migrate
+ prog_tests/trace_printk CHECKs to ASSERTs
 To:     Dave Marchevsky <davemarchevsky@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -61,140 +61,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 12:58 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+On Fri, Aug 27, 2021 at 10:20 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
 >
-> Instead of being a thin wrapper which calls into bpf_trace_printk,
-> libbpf's bpf_printk convenience macro now chooses between
-> bpf_trace_printk and bpf_trace_vprintk. If the arg count (excluding
-> format string) is >3, use bpf_trace_vprintk, otherwise use the older
-> helper.
->
-> The motivation behind this added complexity - instead of migrating
-> entirely to bpf_trace_vprintk - is to maintain good developer experience
-> for users compiling against new libbpf but running on older kernels.
-> Users who are passing <=3 args to bpf_printk will see no change in their
-> bytecode.
->
-> __bpf_vprintk functions similarly to BPF_SEQ_PRINTF and BPF_SNPRINTF
-> macros elsewhere in the file - it allows use of bpf_trace_vprintk
-> without manual conversion of varargs to u64 array. Previous
-> implementation of bpf_printk macro is moved to __bpf_printk for use by
-> the new implementation.
->
-> This does change behavior of bpf_printk calls with >3 args in the "new
-> libbpf, old kernels" scenario. On my system, using a clang built from
-> recent upstream sources (14.0.0 https://github.com/llvm/llvm-project.git
-> 50b62731452cb83979bbf3c06e828d26a4698dca), attempting to use 4 args to
-> __bpf_printk (old impl) results in a compile-time error:
->
->   progs/trace_printk.c:21:21: error: too many args to 0x6cdf4b8: i64 = Constant<6>
->         trace_printk_ret = __bpf_printk("testing,testing %d %d %d %d\n",
->
-> I was able to replicate this behavior with an older clang as well. When
-> the format string has >3 format specifiers, there is no output to the
-> trace_pipe in either case.
->
-> After this patch, using bpf_printk with 4 args would result in a
-> trace_vprintk helper call being emitted and a load-time failure on older
-> kernels.
+> Guidance for new tests is to use ASSERT macros instead of CHECK. Since
+> trace_vprintk test will borrow heavily from trace_printk's, migrate its
+> CHECKs so it remains obvious that the two are closely related.
 >
 > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 > ---
->  tools/lib/bpf/bpf_helpers.h | 45 ++++++++++++++++++++++++++++++-------
->  1 file changed, 37 insertions(+), 8 deletions(-)
+
+Great, thanks!
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  .../selftests/bpf/prog_tests/trace_printk.c   | 24 +++++++------------
+>  1 file changed, 9 insertions(+), 15 deletions(-)
 >
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index b9987c3efa3c..5f087306cdfe 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -14,14 +14,6 @@
->  #define __type(name, val) typeof(val) *name
->  #define __array(name, val) typeof(val) *name[]
+> diff --git a/tools/testing/selftests/bpf/prog_tests/trace_printk.c b/tools/testing/selftests/bpf/prog_tests/trace_printk.c
+> index d39bc00feb45..e47835f0a674 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/trace_printk.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/trace_printk.c
+> @@ -10,7 +10,7 @@
 >
-> -/* Helper macro to print out debug messages */
-> -#define bpf_printk(fmt, ...)                           \
-> -({                                                     \
-> -       char ____fmt[] = fmt;                           \
-> -       bpf_trace_printk(____fmt, sizeof(____fmt),      \
-> -                        ##__VA_ARGS__);                \
-> -})
-> -
->  /*
->   * Helper macro to place programs, maps, license in
->   * different sections in elf_bpf file. Section names
-> @@ -224,4 +216,41 @@ enum libbpf_tristate {
->                      ___param, sizeof(___param));               \
->  })
+>  void test_trace_printk(void)
+>  {
+> -       int err, iter = 0, duration = 0, found = 0;
+> +       int err = 0, iter = 0, found = 0;
+>         struct trace_printk__bss *bss;
+>         struct trace_printk *skel;
+>         char *buf = NULL;
+> @@ -18,25 +18,24 @@ void test_trace_printk(void)
+>         size_t buflen;
 >
-> +/* Helper macro to print out debug messages */
-> +#define __bpf_printk(fmt, ...)                         \
-> +({                                                     \
-> +       char ____fmt[] = fmt;                           \
-> +       bpf_trace_printk(____fmt, sizeof(____fmt),      \
-> +                        ##__VA_ARGS__);                \
-> +})
-> +
-> +/*
-> + * __bpf_vprintk wraps the bpf_trace_vprintk helper with variadic arguments
-> + * instead of an array of u64.
-> + */
-> +#define __bpf_vprintk(fmt, args...)                            \
-> +({                                                             \
-> +       static const char ___fmt[] = fmt;                       \
-> +       unsigned long long ___param[___bpf_narg(args)];         \
-> +                                                               \
-> +       _Pragma("GCC diagnostic push")                          \
-> +       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> +       ___bpf_fill(___param, args);                            \
-> +       _Pragma("GCC diagnostic pop")                           \
-> +                                                               \
-> +       bpf_trace_vprintk(___fmt, sizeof(___fmt),               \
-> +                    ___param, sizeof(___param));               \
-
-nit: is this really misaligned or it's just Gmail's rendering?
-
-> +})
-> +
-> +#define ___bpf_pick_printk(...) \
-> +       ___bpf_nth(_, ##__VA_ARGS__, __bpf_vprintk, __bpf_vprintk, __bpf_vprintk,       \
-> +               __bpf_vprintk, __bpf_vprintk, __bpf_vprintk, __bpf_vprintk,             \
-> +               __bpf_vprintk, __bpf_vprintk, __bpf_printk, __bpf_printk,               \
-> +               __bpf_printk, __bpf_printk)
-
-There is no best solution with macros, but I think this one is
-extremely error prone because __bpf_nth invocation is very long and
-it's hard to even see where printk turns into vprintk.
-
-How about doing it similarly to ___empty in bpf_core_read.h? It will
-be something like this (untested and not even compiled, just a demo)
-
-#define __bpf_printk_kind(...) ___bpf_nth(_, ##__VA_ARGS__, new, new,
-new, new, new, <however many>, new, old /*3*/, old /*2*/, old /*1*/,
-old /*0*/)
-
-#define bpf_printk(fmt, args...) ___bpf_apply(___bpf_printk_,
-___bpf_narg(args))(fmt, args)
-
-
-And you'll have s/__bpf_printk/__bpf_printk_old/ (using
-bpf_trace_printk) and s/__bpf_printk_new/__bpf_vprintk/ (using
-bpf_trace_vprintk).
-
-This new/old distinction makes it a bit clearer to me. I find
-__bpf_nth so counterintuitive that I try not to use it directly
-anywhere at all.
-
-
-> +
-> +#define bpf_printk(fmt, args...)               \
-> +({                                             \
-> +       ___bpf_pick_printk(args)(fmt, args);    \
-> +})
-
-not sure ({ }) buys you anything?...
-
-> +
->  #endif
+>         skel = trace_printk__open();
+> -       if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+> +       if (!ASSERT_OK_PTR(skel, "trace_printk__open"))
+>                 return;
+>
+> -       ASSERT_EQ(skel->rodata->fmt[0], 'T', "invalid printk fmt string");
+> +       ASSERT_EQ(skel->rodata->fmt[0], 'T', "skel->rodata->fmt[0]");
+>         skel->rodata->fmt[0] = 't';
+>
+>         err = trace_printk__load(skel);
+> -       if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
+> +       if (!ASSERT_OK(err, "trace_printk__load"))
+>                 goto cleanup;
+>
+>         bss = skel->bss;
+>
+>         err = trace_printk__attach(skel);
+> -       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+> +       if (!ASSERT_OK(err, "trace_printk__attach"))
+>                 goto cleanup;
+>
+>         fp = fopen(TRACEBUF, "r");
+> -       if (CHECK(fp == NULL, "could not open trace buffer",
+> -                 "error %d opening %s", errno, TRACEBUF))
+> +       if (!ASSERT_OK_PTR(fp, "fopen(TRACEBUF)"))
+>                 goto cleanup;
+>
+>         /* We do not want to wait forever if this test fails... */
+> @@ -46,14 +45,10 @@ void test_trace_printk(void)
+>         usleep(1);
+>         trace_printk__detach(skel);
+>
+> -       if (CHECK(bss->trace_printk_ran == 0,
+> -                 "bpf_trace_printk never ran",
+> -                 "ran == %d", bss->trace_printk_ran))
+> +       if (!ASSERT_GT(bss->trace_printk_ran, 0, "bss->trace_printk_ran"))
+>                 goto cleanup;
+>
+> -       if (CHECK(bss->trace_printk_ret <= 0,
+> -                 "bpf_trace_printk returned <= 0 value",
+> -                 "got %d", bss->trace_printk_ret))
+> +       if (!ASSERT_GT(bss->trace_printk_ret, 0, "bss->trace_printk_ret"))
+>                 goto cleanup;
+>
+>         /* verify our search string is in the trace buffer */
+> @@ -66,8 +61,7 @@ void test_trace_printk(void)
+>                         break;
+>         }
+>
+> -       if (CHECK(!found, "message from bpf_trace_printk not found",
+> -                 "no instance of %s in %s", SEARCHMSG, TRACEBUF))
+> +       if (!ASSERT_EQ(found, bss->trace_printk_ran, "found"))
+>                 goto cleanup;
+>
+>  cleanup:
 > --
 > 2.30.2
 >
