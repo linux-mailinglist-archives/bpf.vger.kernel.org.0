@@ -2,155 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857A33FCFCF
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 01:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B91C3FCFD2
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 01:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhHaXM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 19:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44976 "EHLO
+        id S230222AbhHaXO2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 19:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhHaXM1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Aug 2021 19:12:27 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3A1C061575
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 16:11:31 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id z5so1599857ybj.2
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 16:11:31 -0700 (PDT)
+        with ESMTP id S240043AbhHaXO1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Aug 2021 19:14:27 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02FDC061575;
+        Tue, 31 Aug 2021 16:13:31 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id a13so1542601iol.5;
+        Tue, 31 Aug 2021 16:13:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=w7EJ5rjRWO4ALKigy5lPIOz8Ix5Cpu3v0W2cO3eEUSI=;
-        b=dQO466/msDMp8HNUeg7XjsOZzcOveaFKlFfiv5Sp5KNd4mkxeoJSg8mms4iAyN44RG
-         rY0mrdFweuuUWcOlZei4rFgRwVyUb1kxhj+HeMqWQ/SafQeFUHuERpJn9hMCrfXJL5Vu
-         tXEPVTx6ErFUur75vXewXsIelCZSpxWe/tj1HrarKRNMgI93YpkuzsN1F1cdbEndSTKT
-         euzQs6TFaNRlLbVLaVyScwbPsens5lE/nqToxR2sv2iivRJ3hY7rW/yXnW/ozvMOPoT6
-         pZLgCr/L9KC6FcUixOcgp0IJrW/4xH1XnWtGDnbZxtD3rXlkbC0JWcQ3pQW8d2arOkZz
-         DqXA==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=3B4L8yeK1tSAPJP2FCIzPA6vRdgudqf09e09EGD5q1g=;
+        b=tKcF5Yzf1JKmtN+ccr1+tQjzkqXXN7Nr0h9rk5KKNOPbX11ou4TF9mPSQKsHr0fG//
+         kotUhxlJyjo6XSbuZPIY5BjuDUH21LOVVy8V6D85Vmd9JmQSGiDAmkPtH0k3JzAuVnJT
+         DcwAZ84F5jWtfkYdqmOQAKs9IFkZsVW9GTeak7BJFvHXn32W9A46JFVAmBnqMcN9sHNv
+         lXlOm1VVfYDyp1PZWRcMoCiOPIqfj+X7+R3Hq8WeRqIuOmRlt+cF80gKYPepIRAl2EpB
+         9ddbzuLs6Ry9lKxsBs6+KaTs6REa7/7e0NKwbC4VYSQieDBSJVpaOn1ASbxb2rY814mr
+         PCfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=w7EJ5rjRWO4ALKigy5lPIOz8Ix5Cpu3v0W2cO3eEUSI=;
-        b=I68r220aOrfcKjuzxDDo/wGkc4mYoqiJViR2DrRbTurSDpNxqEWPUGfy1TxGMXRjC8
-         /+RKPpisUtLazioAHPLeaFjJ7B1NZMm+I+FDwduzwujb3paCdfCGuUS6TdE5i10x56OT
-         5bPx4NJdTqsR2aLjpnupgOYE9JWbN8IbKnO+mQzTRZDh6Ojrm3ial9iuSKJHCl2WTL/X
-         yqWMilUzF7AMsp6Y4I1TYCP3GBRCieu4+eAHZFVw8iVH9pvvA0G1p2CxreHujOj97eAH
-         cD7ZFMkxwoKriWXppM0J1lJnNSxdm7js/b5qp6qWc3I1f7BX5b9VZl+arVEvvkj8YBBt
-         VMeA==
-X-Gm-Message-State: AOAM530LnEL7gfdRuCqQtu/82BnRkoUNKuuPL1/rzY7Gpv7OmRiS0n0O
-        C+MP9MED2vK834oh7vUWZAcGkIFVe4WWFSGUjqWXZclDAWw=
-X-Google-Smtp-Source: ABdhPJyb9oJM0rHpRHbQBpz4DjtSyKG/AcVTMSzFcQtl+CVFyclfU1ognpdA9zkOmPXIbDOdsW6mKHiEgzumzEAD3LY=
-X-Received: by 2002:a25:16c6:: with SMTP id 189mr33713119ybw.27.1630451490122;
- Tue, 31 Aug 2021 16:11:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210826120953.11041-1-toke@redhat.com> <CAEf4BzZ7dcYrGRgOczk-mLC_VcRW3rucj3TRgkRqLgKXFHgtog@mail.gmail.com>
- <87lf4hvrgc.fsf@toke.dk>
-In-Reply-To: <87lf4hvrgc.fsf@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 Aug 2021 16:11:19 -0700
-Message-ID: <CAEf4BzZxar7oEiXUTSxV_H1GbuJMN6gxGVC9xMFX6PdKzK49+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] libbpf: ignore .eh_frame sections when
- parsing elf files
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=3B4L8yeK1tSAPJP2FCIzPA6vRdgudqf09e09EGD5q1g=;
+        b=gMib4m0yvQwTApB1AagrCA/0hb2SSYmLlTHECXiOTdbp7svMD/1JZm1drqztqIxDMi
+         skzfpVfGb52nFHD3QUcZwzmHJ0/MFw0ydLUjYzpwiQtuSgqnTxw1CoiI3B5/Q/7TLUiu
+         40biBOrNSH8o8hflhlA1u/kNP33xbtqOywurvHERlkIW2VwIKy7KcmcJf7/RSWJqqaJ9
+         gZAnMtvqttRIT9fIjapJtpiwFcdm+j6MxwJ5B5eRmSxnF7XjrBQQ22YRoth9ZlGvkXxr
+         PRG2DJVjvwVyRV2Wg0e995EdYk0LNWimgKznZmzYckZ89tbBQwVAULoGddVm58MUrK6/
+         f31w==
+X-Gm-Message-State: AOAM532We0OALhVq7laNrAovAPYuPFraKS8I0FOis5tlC491BLSvfSe3
+        bPtMlcSlWvdrfOoBVeHGITw=
+X-Google-Smtp-Source: ABdhPJzrv+tsecmvdUAL/8Xby9Rm62GQ1zqDa/yP+N90Pu+c8on3AHEAnFio1RUdeS2Nrx8nquy1jw==
+X-Received: by 2002:a02:ba1a:: with SMTP id z26mr4998897jan.98.1630451611063;
+        Tue, 31 Aug 2021 16:13:31 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id s9sm10186603iob.10.2021.08.31.16.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 16:13:30 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 16:13:23 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
+        echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Message-ID: <612eb79343225_6b872087a@john-XPS-13-9370.notmuch>
+In-Reply-To: <ab0c64f1543239256ef63ec9b40f35a7491812c6.1629473233.git.lorenzo@kernel.org>
+References: <cover.1629473233.git.lorenzo@kernel.org>
+ <ab0c64f1543239256ef63ec9b40f35a7491812c6.1629473233.git.lorenzo@kernel.org>
+Subject: RE: [PATCH v12 bpf-next 01/18] net: skbuff: add size metadata to
+ skb_shared_info for xdp
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 3:28 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Thu, Aug 26, 2021 at 5:10 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
-> >>
-> >> When .eh_frame and .rel.eh_frame sections are present in BPF object fi=
-les,
-> >> libbpf produces errors like this when loading the file:
-> >>
-> >> libbpf: elf: skipping unrecognized data section(32) .eh_frame
-> >> libbpf: elf: skipping relo section(33) .rel.eh_frame for section(32) .=
-eh_frame
-> >>
-> >> It is possible to get rid of the .eh_frame section by adding
-> >> -fno-asynchronous-unwind-tables to the compilation, but we have seen
-> >> multiple examples of these sections appearing in BPF files in the wild=
-,
-> >> most recently in samples/bpf, fixed by:
-> >> 5a0ae9872d5c ("bpf, samples: Add -fno-asynchronous-unwind-tables to BP=
-F Clang invocation")
-> >>
-> >> While the errors are technically harmless, they look odd and confuse u=
-sers.
-> >
-> > These warnings point out invalid set of compiler flags used for
-> > compiling BPF object files, though. Which is a good thing and should
-> > incentivize anyone getting those warnings to check and fix how they do
-> > BPF compilation. Those .eh_frame sections shouldn't be present in BPF
-> > object files at all, and that's what libbpf is trying to say.
->
-> Apart from triggering that warning, what effect does this have, though?
-> The programs seem to work just fine (as evidenced by the fact that
-> samples/bpf has been built this way for years, for instance)...
->
-> Also, how is a user supposed to go from that cryptic error message to
-> figuring out that it has something to do with compiler flags?
+Lorenzo Bianconi wrote:
+> Introduce xdp_frags_tsize field in skb_shared_info data structure
+> to store xdp_buff/xdp_frame truesize (xdp_frags_tsize will be used
+> in xdp multi-buff support). In order to not increase skb_shared_info
+> size we will use a hole due to skb_shared_info alignment.
+> Introduce xdp_frags_size field in skb_shared_info data structure
+> reusing gso_type field in order to store xdp_buff/xdp_frame paged size.
+> xdp_frags_size will be used in xdp multi-buff support.
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Google and find discussions like these?.. I don't think libbpf error
-messages have to include intro into DWARF and .eh_frame.
+I assume we can use xdp_frags_tsize for anything else above XDP later?
+Other than simple question looks OK to me.
 
-Just googling ".eh_frame" gives me [0] as a first link, which seems to
-describe what it is and how to get rid of it.
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
-  [0] https://stackoverflow.com/questions/26300819/why-gcc-compiled-c-progr=
-am-needs-eh-frame-section
+> ---
+>  include/linux/skbuff.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 6bdb0db3e825..1abeba7ef82e 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -522,13 +522,17 @@ struct skb_shared_info {
+>  	unsigned short	gso_segs;
+>  	struct sk_buff	*frag_list;
+>  	struct skb_shared_hwtstamps hwtstamps;
+> -	unsigned int	gso_type;
+> +	union {
+> +		unsigned int	gso_type;
+> +		unsigned int	xdp_frags_size;
+> +	};
+>  	u32		tskey;
+>  
+>  	/*
+>  	 * Warning : all fields before dataref are cleared in __alloc_skb()
+>  	 */
+>  	atomic_t	dataref;
+> +	unsigned int	xdp_frags_tsize;
+>  
+>  	/* Intermediate layers must ensure that destructor_arg
+>  	 * remains valid until skb destructor */
+> -- 
+> 2.31.1
+> 
 
->
-> > I don't know exactly in which situations that .eh_frame section is
-> > added, but looking at our selftests (and now samples/bpf as well),
-> > where we use -target bpf, we don't need
-> > -fno-asynchronous-unwind-tables at all.
->
-> This seems to at least be compiler-dependent. We ran into this with
-> bpftool as well (for the internal BPF programs it loads whenever it
-> runs), which already had '-target bpf' in the Makefile. We're carrying
-> an internal RHEL patch adding -fno-asynchronous-unwind-tables to the
-> bpftool build to fix this...
 
-So instead of figuring out why your compilers cause .eh_frame
-generation (while they shouldn't), you are trying to hide the warning
-in libbpf? This hasn't been the problem in production apps at
-Facebook, nor with libbpf-tools or libbpf-bootstrap apps. Which just
-makes me keep this warning more. Once we support multiple
-.rodata/.data/.bss sections for libbpf, I think I'll turn all those
-unrecognized sections into actual errors. I'd rather not have unknown
-sections being just ignored by libbpf. Someday we might actually use
-.eh_frame with BPF objects, that's when this will become not an error
-or warning.
-
->
-> > So instead of hiding the problem, let's use this as an opportunity to
-> > fix those user's compilation flags instead.
->
-> This really doesn't seem like something that's helping anyone, it's just
-> annoying and confusing users...
-
-Warnings like "libbpf: elf: skipping unrecognized data section(4)
-.rodata.str1.1" annoy me as well, and that's one of the reasons I'll
-add support for multiple .rodata sections. So annoying is fine, it
-raises awareness and incentivizes fixing the problem.
-
->
-> -Toke
->
