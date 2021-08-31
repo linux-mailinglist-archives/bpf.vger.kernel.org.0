@@ -2,123 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD22C3FC8D7
-	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 15:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5943FC9DA
+	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 16:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239497AbhHaNyi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 09:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhHaNyh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:54:37 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D35C061575
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 06:53:42 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id dm15so26930195edb.10
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 06:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0KsdRco5g3Rxsur7HnzmWia1aqV1LswyiZ+q0x+vuSY=;
-        b=HQ7YjqNn+GvyrMyaEw4Ts6k7wU5aPcFPAWZ/MvIgnb/b3nJTG/bZDiK6JU5Urc0OGw
-         eYdX1ndiXPm2WmlL+IK4/u/BaFz6AbYdNIgxPmK/jtKVgAB4AXg1YnEwThk50eDSwxKa
-         5zamzfT+Mw9ZsLCNbbSg/KnigE4n5pxUzOD+A/0pPF9mh4JO0EwgAg6tp4mjPp+2ybhC
-         LKwkjJVc1hih9nB2NRvpLDKH15CvIzCDRkybcb8PHSW6J2tGC65jUPq2wh7pHwEv7mh1
-         GGntJW/v2BIHeuezNaO8q8z3cKspObfYA7MpK111176yeraZmzPIIb/SJwoe9ailV5zQ
-         GIEQ==
+        id S238321AbhHaOfG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 10:35:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49496 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238327AbhHaOfA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 31 Aug 2021 10:35:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630420444;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6PmT5XJD+8h8skjkZI3qWWXkCH+r4hgnl/yZSPi7Y2o=;
+        b=HpoMIqo0uErqUStH7ZrQMh8ijkNteEHgPls0mF1qNNT76WtY7QKUyAL1IzwunFMh1849Pn
+        orwO+VRwH/1mwfZGObM7c17c2Dvs5q9+MCmJyqultga0pQG8IqgBARUIf+bkUOif6+lYTD
+        hjf0B8at2+eONV46G2OGDHppR5YB5H8=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-o979AFxMNxKyH9cMUPSOLw-1; Tue, 31 Aug 2021 10:34:02 -0400
+X-MC-Unique: o979AFxMNxKyH9cMUPSOLw-1
+Received: by mail-ed1-f72.google.com with SMTP id z17-20020a05640240d100b003cac681f4f4so3895405edb.21
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 07:34:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0KsdRco5g3Rxsur7HnzmWia1aqV1LswyiZ+q0x+vuSY=;
-        b=Mm9qO0VuQADMiKfuZUEBOD1R8CmpFM+UaCJGrxt2bewBmALFcf3/XkuXP1BHkeomtu
-         O6uaEyHwTPKproo0HHUcfffXQkWALOYuOK+A/CJzc1oarGQ08Whij06SAvurdFYVeh7P
-         IZC+hYyklKEypRJ2geYI/XJKhESKz/YOQFot7Fj9/nD6lJYX/O2O5IDwoKUMGjY6NCtH
-         v4c1AxWc/1/myuEWOBPSkX/b51K/p6qrx2jQkH4A6xkKwCCZkqJxtaSnq6CWBCVyXWBW
-         321wsQmDWSLCf96fVgAzMD2wRzFKFCiXKzd1dbTix5bw6KfwD4exHPfAlUaGLbsxlQKt
-         4GHg==
-X-Gm-Message-State: AOAM5316gSmzlSWQtLHapR+8Vhg3zsK57cwUzOEpqLwSVFrBgT47uONJ
-        VE+JYKWpviJ+6pTNNTXXtQcIABbU64KuCSWFl8X7
-X-Google-Smtp-Source: ABdhPJws3lszVbtjZiLZOptaWsbrL101boZlKAvA+uSpyGqWqgyhydVacfD22Otuw8Ioe1qUU+ZoAgTEh8gbHZtS+70=
-X-Received: by 2002:a05:6402:4cf:: with SMTP id n15mr30419950edw.269.1630418020725;
- Tue, 31 Aug 2021 06:53:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6PmT5XJD+8h8skjkZI3qWWXkCH+r4hgnl/yZSPi7Y2o=;
+        b=jzAKO6KDWqIfrkSoFCzEbjLSe884RF56xOu+kBvuRRWo+KmHpK9SjKZkXRtLdtVDVA
+         XYqXtZ28FhfT7cPeBr663cyj+HFpDUA0OI+AZznwvgVNdQsFS1Wf22h89owQM6Hmw7Ip
+         lj94+GoCJ8+FoslXSyOsnFVMBbFPtvmjpoaol1nJk7oZKz6qjbOleRbJ2kTf+z5snGBJ
+         a8Hz9IxV3vV94A9X33lbcCWu47TUz94faAVkwcGQv+CRfqmdJ+BlwI0WAzsshaK4SKOD
+         t8ZJLhp/I4j6w10KouVIU5MKRVfkXSHzQa87/FWjzCRtCJbY3yqMLl8nMa2egc6un9GP
+         Cy9A==
+X-Gm-Message-State: AOAM531v0KdDoJEwdamRjkugR7+4fzaZkmkteLyagNPo4rlkwHIH1wtb
+        /n08p2MnjspFhis7dy1/AgvHebo+jWq0Xvh57x0k+6myujQzj8w1I2SBcjcGBHuvwWPwjbGe48p
+        jUkXkMbZh8qpg
+X-Received: by 2002:a17:906:1913:: with SMTP id a19mr31557125eje.390.1630420441148;
+        Tue, 31 Aug 2021 07:34:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzzjjdwiOd8AeTnBC2TXxLH1EhvIr4UtSGSCDv5ZFm6H4uv3KIhAXZlHdfrPICpWzNoiNhPsw==
+X-Received: by 2002:a17:906:1913:: with SMTP id a19mr31557113eje.390.1630420440965;
+        Tue, 31 Aug 2021 07:34:00 -0700 (PDT)
+Received: from redhat.com ([2.55.138.60])
+        by smtp.gmail.com with ESMTPSA id q9sm8369501ejf.70.2021.08.31.07.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 07:34:00 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 10:33:56 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     "Li,Rongqing" <lirongqing@baidu.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHZpcnRp?= =?utf-8?Q?o=5Fnet?=
+ =?utf-8?Q?=3A?= reduce raw_smp_processor_id() calling in virtnet_xdp_get_sq
+Message-ID: <20210831103024-mutt-send-email-mst@kernel.org>
+References: <1629966095-16341-1-git-send-email-lirongqing@baidu.com>
+ <20210830170837-mutt-send-email-mst@kernel.org>
+ <bbf978c3252b4f2ea13ab7ca07d53034@baidu.com>
 MIME-Version: 1.0
-References: <20210616085118.1141101-1-omosnace@redhat.com> <CAPcyv4jvR8CT4rYODR5KUHNdiqMwQSwJZ+OkVf61kLT3JfjC_Q@mail.gmail.com>
- <CAFqZXNtuH0329Xvcb415Kar-=o6wwrkFuiP8BZ_2OQhHLqkkAg@mail.gmail.com>
-In-Reply-To: <CAFqZXNtuH0329Xvcb415Kar-=o6wwrkFuiP8BZ_2OQhHLqkkAg@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 31 Aug 2021 09:53:29 -0400
-Message-ID: <CAHC9VhTGECM2p+Q8n48aSdfJzY6XrpXQ5tcFurjWc4A3n8Qxjg@mail.gmail.com>
-Subject: Re: [PATCH v3] lockdown,selinux: fix wrong subject in some SELinux
- lockdown checks
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        X86 ML <x86@kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-cxl@vger.kernel.org, linux-efi <linux-efi@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux-pm mailing list <linux-pm@vger.kernel.org>,
-        linux-serial@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Kexec Mailing List <kexec@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bbf978c3252b4f2ea13ab7ca07d53034@baidu.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 5:09 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> On Sat, Jun 19, 2021 at 12:18 AM Dan Williams <dan.j.williams@intel.com> wrote:
-> > On Wed, Jun 16, 2021 at 1:51 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-
-...
-
-> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > index 2acc6173da36..c1747b6555c7 100644
-> > > --- a/drivers/cxl/mem.c
-> > > +++ b/drivers/cxl/mem.c
-> > > @@ -568,7 +568,7 @@ static bool cxl_mem_raw_command_allowed(u16 opcode)
-> > >         if (!IS_ENABLED(CONFIG_CXL_MEM_RAW_COMMANDS))
-> > >                 return false;
+On Tue, Aug 31, 2021 at 02:09:36AM +0000, Li,Rongqing wrote:
+> > -----邮件原件-----
+> > 发件人: Michael S. Tsirkin <mst@redhat.com>
+> > 发送时间: 2021年8月31日 5:10
+> > 收件人: Li,Rongqing <lirongqing@baidu.com>
+> > 抄送: netdev@vger.kernel.org; bpf@vger.kernel.org;
+> > virtualization@lists.linux-foundation.org
+> > 主题: Re: [PATCH] virtio_net: reduce raw_smp_processor_id() calling in
+> > virtnet_xdp_get_sq
+> > 
+> > On Thu, Aug 26, 2021 at 04:21:35PM +0800, Li RongQing wrote:
+> > > smp_processor_id()/raw* will be called once each when not more queues
+> > > in virtnet_xdp_get_sq() which is called in non-preemptible context, so
+> > > it's safe to call the function
+> > > smp_processor_id() once.
 > > >
-> > > -       if (security_locked_down(LOCKDOWN_NONE))
-> > > +       if (security_locked_down(current_cred(), LOCKDOWN_NONE))
-> >
-> > Acked-by: Dan Williams <dan.j.williams@intel.com>
-> >
-> > ...however that usage looks wrong. The expectation is that if kernel
-> > integrity protections are enabled then raw command access should be
-> > disabled. So I think that should be equivalent to LOCKDOWN_PCI_ACCESS
-> > in terms of the command capabilities to filter.
->
-> Yes, the LOCKDOWN_NONE seems wrong here... but it's a pre-existing bug
-> and I didn't want to go down yet another rabbit hole trying to fix it.
-> I'll look at this again once this patch is settled - it may indeed be
-> as simple as replacing LOCKDOWN_NONE with LOCKDOWN_PCI_ACCESS.
+> > > Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> > 
+> > commit log should probably explain why it's a good idea to replace
+> > raw_smp_processor_id with smp_processor_id in the case of curr_queue_pairs
+> > <= nr_cpu_ids.
+> > 
+> 
+> 
+> I change it as below, is it ok?
+> 
+>     virtio_net: reduce raw_smp_processor_id() calling in virtnet_xdp_get_sq
 
-At this point you should be well aware of my distaste for merging
-patches that have known bugs in them.  Yes, this is a pre-existing
-condition, but it seems well within the scope of this work to address
-it as well.
+shorter:
 
-This isn't something that is going to get merged while the merge
-window is open, so at the very least you've got almost two weeks to
-sort this out - please do that.
+virtio_net: s/raw_smp_processor_id/smp_processor_id/ in virtnet_xdp_get_sq
 
--- 
-paul moore
-www.paul-moore.com
+
+> 
+>     smp_processor_id() and raw_smp_processor_id() are called once
+>     each in virtnet_xdp_get_sq(), when curr_queue_pairs <= nr_cpu_ids,
+>     should be merged
+
+I'd just drop this part.
+
+> 
+>     virtnet_xdp_get_sq() is called in non-preemptible context, so
+>     it's safe to call the function smp_processor_id(), and keep
+>     smp_processor_id(), and remove the calling of raw_smp_processor_id(),
+>     avoid the wrong use virtnet_xdp_get_sq to preemptible context
+>     in the future
+
+s/avoid.*/this way we'll get a warning if this is ever called in a preemptible context/
+
+
+> 
+> -Li
+
