@@ -2,133 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927853FC5A3
-	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 12:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DEF73FC65B
+	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 13:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240995AbhHaK3W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 06:29:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52384 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240985AbhHaK3V (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 31 Aug 2021 06:29:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630405705;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zNImg2MTtOIvPkfoEZBKYQflvCbrhkcRvwv6Z7KRDQY=;
-        b=GiBOGi9NuvUS1vTmTdKvVeP9ypaSFBYQp43IOzRZiSjeq1LbhDWtyjx77DGDiZ5KUSdfLw
-        TvTwkcljzo02IH9PaE++rk7i9QRzYe0RbrWhAnb4/S3qmJMFNRA6rwAGWnSG9O4EIJYmb0
-        iUU2nxIKEDsXzC/Tdvb/hpWxg8dbyys=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-227-LeVZKSoPPo-txZCmF2V-0w-1; Tue, 31 Aug 2021 06:28:24 -0400
-X-MC-Unique: LeVZKSoPPo-txZCmF2V-0w-1
-Received: by mail-ed1-f69.google.com with SMTP id s25-20020a50d499000000b003c1a8573042so8048305edi.11
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 03:28:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=zNImg2MTtOIvPkfoEZBKYQflvCbrhkcRvwv6Z7KRDQY=;
-        b=bbgc/T3StsLtC1KG2Dmxb2kr6ieouu1HVaPIQomZ2IpCmelBGWfKuBrOKAhDxfBQgd
-         cKb+u0OuqXafyk1poaKolRb8drpFj9LSEJjuLMfLZdy6QI1DjLwHB20u8iWy+GJuDovt
-         +jspjODAOGMnVJgznZ4fpjF6nwC3jS0lMmnV1oLt4VsHJmON3t5+LjwaTEobNcaXB35c
-         15dGYBN5A3oaWRSVxum3Ows5L5k5cQpTfjZE1p8wujY0jql2YdjVY03DXdGpb0941GQ0
-         RwyQT60DFuGczvR0wwP6oN4GTZ2qejwmkxpVKeAtvmnAwJu/kZPo8fQv4M8d6gOoHCva
-         vTrA==
-X-Gm-Message-State: AOAM5335oNakyBL2y+4UTwfFWxbENdt4a/yMG3APhowYacxLPKSU4tFQ
-        SIkaySh6EB/P31leNOT6UtvItC2+1qwnX/R6ka7yLaI57yGZc1gOj8INYtPnvgHN0yUoS6DxItM
-        l9B+q9bcktVz9
-X-Received: by 2002:a17:906:c317:: with SMTP id s23mr30252142ejz.83.1630405702868;
-        Tue, 31 Aug 2021 03:28:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0hrku4cvtZGOf/X7jxMbvDMh074FBCX+3GJYq344hZGWcHGyPdG1OQoFZ0ccreJhYsKHWww==
-X-Received: by 2002:a17:906:c317:: with SMTP id s23mr30252126ejz.83.1630405702670;
-        Tue, 31 Aug 2021 03:28:22 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id l23sm9221717eds.29.2021.08.31.03.28.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 03:28:22 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D27CF1800EB; Tue, 31 Aug 2021 12:28:19 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2] libbpf: ignore .eh_frame sections when
- parsing elf files
-In-Reply-To: <CAEf4BzZ7dcYrGRgOczk-mLC_VcRW3rucj3TRgkRqLgKXFHgtog@mail.gmail.com>
-References: <20210826120953.11041-1-toke@redhat.com>
- <CAEf4BzZ7dcYrGRgOczk-mLC_VcRW3rucj3TRgkRqLgKXFHgtog@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 31 Aug 2021 12:28:19 +0200
-Message-ID: <87lf4hvrgc.fsf@toke.dk>
+        id S241314AbhHaLGN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 07:06:13 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:52767 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241296AbhHaLGM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 31 Aug 2021 07:06:12 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=haoxu@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0Uml4q6e_1630407913;
+Received: from B-25KNML85-0107.local(mailfrom:haoxu@linux.alibaba.com fp:SMTPD_---0Uml4q6e_1630407913)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 31 Aug 2021 19:05:13 +0800
+Subject: Re: [syzbot] general protection fault in sock_from_file
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        syzbot <syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dvyukov@google.com,
+        io-uring@vger.kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <00000000000059117905cacce99e@google.com>
+ <7949b7a0-fec1-34a7-aaf5-cbe07c6127ed@kernel.dk>
+ <d881d3fa-4df5-1862-bc2b-9420649ba3c8@linux.alibaba.com>
+ <407ce02f-7a0a-4eb2-b242-188fc605012c@gmail.com>
+From:   Hao Xu <haoxu@linux.alibaba.com>
+Message-ID: <6df81737-38d8-4c91-358a-79bc5d5f9074@linux.alibaba.com>
+Date:   Tue, 31 Aug 2021 19:05:12 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <407ce02f-7a0a-4eb2-b242-188fc605012c@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+在 2021/8/31 下午5:42, Pavel Begunkov 写道:
+> On 8/31/21 10:19 AM, Hao Xu wrote:
+>> 在 2021/8/31 上午10:14, Jens Axboe 写道:
+>>> On 8/30/21 2:45 PM, syzbot wrote:
+>>>> syzbot has found a reproducer for the following issue on:
+>>>>
+>>>> HEAD commit:    93717cde744f Add linux-next specific files for 20210830
+>>>> git tree:       linux-next
+>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15200fad300000
+>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
+>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=f9704d1878e290eddf73
+>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111f5f9d300000
+>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1651a415300000
+>>>>
+>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>> Reported-by: syzbot+f9704d1878e290eddf73@syzkaller.appspotmail.com
+>>>>
+>>>> general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
+>>>> KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
+>>>> CPU: 0 PID: 6548 Comm: syz-executor433 Not tainted 5.14.0-next-20210830-syzkaller #0
+>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>>>> RIP: 0010:sock_from_file+0x20/0x90 net/socket.c:505
+>>>> Code: f5 ff ff ff c3 0f 1f 44 00 00 41 54 53 48 89 fb e8 85 e9 62 fa 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 4f 45 31 e4 48 81 7b 28 80 f1 8a 8a 74 0c e8 58 e9
+>>>> RSP: 0018:ffffc90002caf8e8 EFLAGS: 00010206
+>>>> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+>>>> RDX: 0000000000000005 RSI: ffffffff8713203b RDI: 0000000000000028
+>>>> RBP: ffff888019fc0780 R08: ffffffff899aee40 R09: ffffffff81e21978
+>>>> R10: 0000000000000027 R11: 0000000000000009 R12: dffffc0000000000
+>>>> R13: 1ffff110033f80f9 R14: 0000000000000003 R15: ffff888019fc0780
+>>>> FS:  00000000013b5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>> CR2: 00000000004ae0f0 CR3: 000000001d355000 CR4: 00000000001506f0
+>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>>> Call Trace:
+>>>>    io_sendmsg+0x98/0x640 fs/io_uring.c:4681
+>>>>    io_issue_sqe+0x14de/0x6ba0 fs/io_uring.c:6578
+>>>>    __io_queue_sqe+0x90/0xb50 fs/io_uring.c:6864
+>>>>    io_req_task_submit+0xbf/0x1b0 fs/io_uring.c:2218
+>>>>    tctx_task_work+0x166/0x610 fs/io_uring.c:2143
+>>>>    task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+>>>>    tracehook_notify_signal include/linux/tracehook.h:212 [inline]
+>>>>    handle_signal_work kernel/entry/common.c:146 [inline]
+>>>>    exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>>>>    exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:209
+>>>>    __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>>>>    syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>>>>    do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>>>>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>>> RIP: 0033:0x43fd49
+>>>
+>>> Hao, this is due to:
+>>>
+>>> commit a8295b982c46d4a7c259a4cdd58a2681929068a9
+>>> Author: Hao Xu <haoxu@linux.alibaba.com>
+>>> Date:   Fri Aug 27 17:46:09 2021 +0800
+>>>
+>>>       io_uring: fix failed linkchain code logic
+>>>
+>>> which causes some weirdly super long chains from that single sqe.
+>>> Can you take a look, please?
+>> Sure, I'm working on this.
+> 
+> Ah, saw it after sending a patch. It's nothing too curious, just
+> a small error in logic. More interesting that we don't have a
+> test case covering it, we should definitely add something.
+> 
+Saw your patch after coding my fix..😂
+Since my email client doesn't receive your patch(only saw it in
+webpage https://lore.kernel.org/), I put my comment here:
+>  fs/io_uring.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 473a977c7979..a531c7324ea8 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -6717,6 +6717,8 @@ static inline void io_queue_sqe(struct io_kiocb *req)
+>  	if (likely(!(req->flags & (REQ_F_FORCE_ASYNC | REQ_F_FAIL)))) {
+>  		__io_queue_sqe(req);
+>  	} else if (req->flags & REQ_F_FAIL) {
+> +		/* fail all, we don't submit */
+> +		req->flags &= ~REQ_F_HARDLINK;
+maybe set REQ_F_LINK here?
+>  		io_req_complete_failed(req, req->result);
+>  	} else {
+>  		int ret = io_req_prep_async(req);
+> -- 
 
-> On Thu, Aug 26, 2021 at 5:10 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> When .eh_frame and .rel.eh_frame sections are present in BPF object file=
-s,
->> libbpf produces errors like this when loading the file:
->>
->> libbpf: elf: skipping unrecognized data section(32) .eh_frame
->> libbpf: elf: skipping relo section(33) .rel.eh_frame for section(32) .eh=
-_frame
->>
->> It is possible to get rid of the .eh_frame section by adding
->> -fno-asynchronous-unwind-tables to the compilation, but we have seen
->> multiple examples of these sections appearing in BPF files in the wild,
->> most recently in samples/bpf, fixed by:
->> 5a0ae9872d5c ("bpf, samples: Add -fno-asynchronous-unwind-tables to BPF =
-Clang invocation")
->>
->> While the errors are technically harmless, they look odd and confuse use=
-rs.
->
-> These warnings point out invalid set of compiler flags used for
-> compiling BPF object files, though. Which is a good thing and should
-> incentivize anyone getting those warnings to check and fix how they do
-> BPF compilation. Those .eh_frame sections shouldn't be present in BPF
-> object files at all, and that's what libbpf is trying to say.
 
-Apart from triggering that warning, what effect does this have, though?
-The programs seem to work just fine (as evidenced by the fact that
-samples/bpf has been built this way for years, for instance)...
-
-Also, how is a user supposed to go from that cryptic error message to
-figuring out that it has something to do with compiler flags?
-
-> I don't know exactly in which situations that .eh_frame section is
-> added, but looking at our selftests (and now samples/bpf as well),
-> where we use -target bpf, we don't need
-> -fno-asynchronous-unwind-tables at all.
-
-This seems to at least be compiler-dependent. We ran into this with
-bpftool as well (for the internal BPF programs it loads whenever it
-runs), which already had '-target bpf' in the Makefile. We're carrying
-an internal RHEL patch adding -fno-asynchronous-unwind-tables to the
-bpftool build to fix this...
-
-> So instead of hiding the problem, let's use this as an opportunity to
-> fix those user's compilation flags instead.
-
-This really doesn't seem like something that's helping anyone, it's just
-annoying and confusing users...
-
--Toke
 
