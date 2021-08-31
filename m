@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2713FC528
-	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 11:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1923FC536
+	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 11:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240744AbhHaJvu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 05:51:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53941 "EHLO
+        id S240807AbhHaJxE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 05:53:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51258 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240742AbhHaJvs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 31 Aug 2021 05:51:48 -0400
+        by vger.kernel.org with ESMTP id S240785AbhHaJxC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 31 Aug 2021 05:53:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630403453;
+        s=mimecast20190719; t=1630403527;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uK5Gw3luJndbFn1Fa9N5OtQXbRTUWbF3Z2jHUj38PoM=;
-        b=VE1DY2MdZC/XqfJz22z24l4aEfoqSfXeX5ZeRkClDhJqiCUM/JR+wQ11X30aH9uAil65X1
-        7X7Gu2+GEhAV2VO00MtDqBr2QGes9bSdSHrsCL9/9N3P1IJzjZEnW9aAuLkFS8ipRC+HpY
-        y/udP9Bm/LBEQ8IpFopKNSdU3JVhg9Y=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-sgDiljMlMFS2PhB1ZFzAuA-1; Tue, 31 Aug 2021 05:50:51 -0400
-X-MC-Unique: sgDiljMlMFS2PhB1ZFzAuA-1
-Received: by mail-wm1-f72.google.com with SMTP id a201-20020a1c7fd2000000b002e748bf0544so1034709wmd.2
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 02:50:51 -0700 (PDT)
+        bh=LSGXz5zVkm4f250jTbRF6daIOdS+MoPdJeoX8bvDLJI=;
+        b=FLwOo/Q4AVUic2DBmZ3oTuyYEvB7DjhB4GLSDjGc6J/ah1KWxB8Y1LGFxjHbRuoeOhxeRc
+        55VUzOlanDtzoHHUv2g5VnA1h/HbV4tXgj3nn/mi4E0tytSC+YeNldRARPjRQ7b6F6LAQJ
+        Sp84bdVdEGo2BylGOooVcjR9/kVJwfk=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-QDvS53KOM-G1HGvxYRZbaQ-1; Tue, 31 Aug 2021 05:50:58 -0400
+X-MC-Unique: QDvS53KOM-G1HGvxYRZbaQ-1
+Received: by mail-wr1-f71.google.com with SMTP id v18-20020adfe2920000b029013bbfb19640so3855763wri.17
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 02:50:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uK5Gw3luJndbFn1Fa9N5OtQXbRTUWbF3Z2jHUj38PoM=;
-        b=WZeH+KyWZx3JmGWgwSSp+exeSLg9wPctYNl/rKuK6Lu24QDJ6C6W0Avb0Eh7Nyx9i0
-         TtG4UEVbMPvk95RwGgqkIFPvC+ODTp/7YtDjAvcmWesunqe4btQ7S47DYlpWzEbUJTWH
-         tMdMr4y3y94a1P/2vWvNDO36TMkuEJkQNZwUuYyh5wX2GqFpJWwmiYSMrPDRY0e1L5m6
-         JNpLe9LhsNNzszUIQ0BGpCmOAH9eAFHY5OjNlANi91PdQPpECn7u5BGRoVVbbFf4PCiF
-         YG1FJ3UEXo/2WWlILpDRNg5yumqpraBEKnug85Rr/Du75t/yjzCYHwNhqRYv/yk12Flg
-         GvfQ==
-X-Gm-Message-State: AOAM533+MNbYyCSIQ5kWHLrsIi2LmIvsatI+iUy6sWmnNZQQVj+3j4wD
-        8jVy+KKJMRb59Lq+JPeojcONqoM/dPsKvE4yizNlGOXhxYZSnO38vyK+ehspyPSLYInrpYilqSZ
-        X4/+4LUPsvGHh
-X-Received: by 2002:a7b:c316:: with SMTP id k22mr3235167wmj.56.1630403450390;
-        Tue, 31 Aug 2021 02:50:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzQDlQOr4yHaAI0wp/1WVyoRB28jMuZLOwEex+kYyerzAXTeemfWIxW7uAJAQsdfdrnE4qMgg==
-X-Received: by 2002:a7b:c316:: with SMTP id k22mr3235150wmj.56.1630403450186;
-        Tue, 31 Aug 2021 02:50:50 -0700 (PDT)
+        bh=LSGXz5zVkm4f250jTbRF6daIOdS+MoPdJeoX8bvDLJI=;
+        b=V/lhUiBwRjKiY/DiOj8B/EzdehzYJXMKlMJhxMt1unKGYwNJpb62rS2eYtG1X4wEYl
+         v+5U5jq6vTdmQgmL7wQOPuF+6W7qK/aKSGkh8/suyNJE3e9zyz8EtP0mgE6GeaPvzRvH
+         mSTauf0vhCW3CEP6AcYJcgtK3yPB0ePsfsFFmmMsPgu5rynO/7IuYdXlWYUv+dHQYKj9
+         Sj7+2m/qRAq1qo/CAh+BbaHzqw2RgiieA0GpAvEEa5ymUNfpKU9i18BIBpkR0ZgGMo6S
+         YthXpLvYFcRNunkPqgUR9/hrw+/DVjoUFceLcFXAAbEd+2aullqGBZDTK2m0g0iF8369
+         67qA==
+X-Gm-Message-State: AOAM533Dlj7dv8i8sVnmnkZRf6I/35YtK5lP6fWt/7K3c+Zy6jXrrVJK
+        iouU8ABQftgIKrMYp/F4odnRjwr1VLh77swjATq4RZN5+vm8er4iqbIECdSUiZaSotcT0kaKW3+
+        C6hSxR+mdqSN0
+X-Received: by 2002:a7b:cd88:: with SMTP id y8mr3366206wmj.24.1630403456620;
+        Tue, 31 Aug 2021 02:50:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxxlq+Ojis0honlAiaLLzNSjgQeVRglyDlMRqLeiDYCnLJvpLvP0AheHktCif43/fBYU6dnmw==
+X-Received: by 2002:a7b:cd88:: with SMTP id y8mr3366193wmj.24.1630403456462;
+        Tue, 31 Aug 2021 02:50:56 -0700 (PDT)
 Received: from krava.redhat.com ([94.113.247.3])
-        by smtp.gmail.com with ESMTPSA id b18sm17953773wrr.89.2021.08.31.02.50.49
+        by smtp.gmail.com with ESMTPSA id q14sm11278818wrc.31.2021.08.31.02.50.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 02:50:49 -0700 (PDT)
+        Tue, 31 Aug 2021 02:50:56 -0700 (PDT)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>
@@ -57,9 +57,9 @@ Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH 5/8] ftrace: Add ftrace_add_rec_direct function
-Date:   Tue, 31 Aug 2021 11:50:14 +0200
-Message-Id: <20210831095017.412311-6-jolsa@kernel.org>
+Subject: [PATCH 6/8] ftrace: Add multi direct register/unregister interface
+Date:   Tue, 31 Aug 2021 11:50:15 +0200
+Message-Id: <20210831095017.412311-7-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210831095017.412311-1-jolsa@kernel.org>
 References: <20210831095017.412311-1-jolsa@kernel.org>
@@ -69,100 +69,180 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Factor out the code that adds (ip, addr) tuple to direct_functions
-hash in new ftrace_add_rec_direct function. It will be used in
-following patches.
+Adding interface to register multiple direct functions
+within single call. Adding following functions:
+
+  register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+  unregister_ftrace_direct_multi(struct ftrace_ops *ops)
+
+The register_ftrace_direct_multi registers direct function (addr)
+with all functions in ops filter. The ops filter can be updated
+before with ftrace_set_filter_ip calls.
+
+All requested functions must not have direct function currently
+registered, otherwise register_ftrace_direct_multi will fail.
+
+The unregister_ftrace_direct_multi unregisters ops related direct
+functions.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/trace/ftrace.c | 60 ++++++++++++++++++++++++++-----------------
- 1 file changed, 36 insertions(+), 24 deletions(-)
+ include/linux/ftrace.h |  11 ++++
+ kernel/trace/ftrace.c  | 111 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 122 insertions(+)
 
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index d399621a67ee..e40b5201c16e 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -316,7 +316,10 @@ int ftrace_modify_direct_caller(struct ftrace_func_entry *entry,
+ 				unsigned long old_addr,
+ 				unsigned long new_addr);
+ unsigned long ftrace_find_rec_direct(unsigned long ip);
++int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr);
++int unregister_ftrace_direct_multi(struct ftrace_ops *ops);
+ #else
++struct ftrace_ops;
+ # define ftrace_direct_func_count 0
+ static inline int register_ftrace_direct(unsigned long ip, unsigned long addr)
+ {
+@@ -346,6 +349,14 @@ static inline unsigned long ftrace_find_rec_direct(unsigned long ip)
+ {
+ 	return 0;
+ }
++static inline int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
++{
++	return -ENODEV;
++}
++static inline int unregister_ftrace_direct_multi(struct ftrace_ops *ops)
++{
++	return -ENODEV;
++}
+ #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
+ 
+ #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
 diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 7b180f61e6d3..c60217d81040 100644
+index c60217d81040..7243769493c9 100644
 --- a/kernel/trace/ftrace.c
 +++ b/kernel/trace/ftrace.c
-@@ -2394,6 +2394,39 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
- 	return entry->direct;
+@@ -5407,6 +5407,117 @@ int modify_ftrace_direct(unsigned long ip,
+ 	return ret;
  }
- 
-+static struct ftrace_func_entry*
-+ftrace_add_rec_direct(unsigned long ip, unsigned long addr,
-+		      struct ftrace_hash **free_hash)
+ EXPORT_SYMBOL_GPL(modify_ftrace_direct);
++
++#define MULTI_FLAGS (FTRACE_OPS_FL_IPMODIFY | FTRACE_OPS_FL_DIRECT | \
++		     FTRACE_OPS_FL_SAVE_REGS)
++
++static int check_direct_multi(struct ftrace_ops *ops)
 +{
-+	struct ftrace_func_entry *entry;
-+
-+	if (ftrace_hash_empty(direct_functions) ||
-+	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
-+		struct ftrace_hash *new_hash;
-+		int size = ftrace_hash_empty(direct_functions) ? 0 :
-+			direct_functions->count + 1;
-+
-+		if (size < 32)
-+			size = 32;
-+
-+		new_hash = dup_hash(direct_functions, size);
-+		if (!new_hash)
-+			return NULL;
-+
-+		*free_hash = direct_functions;
-+		direct_functions = new_hash;
-+	}
-+
-+	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-+	if (!entry)
-+		return NULL;
-+
-+	entry->ip = ip;
-+	entry->direct = addr;
-+	__add_hash_entry(direct_functions, entry);
-+	return entry;
++	if (!(ops->flags & FTRACE_OPS_FL_INITIALIZED))
++		return -EINVAL;
++	if ((ops->flags & MULTI_FLAGS) != MULTI_FLAGS)
++		return -EINVAL;
++	return 0;
 +}
 +
- static void call_direct_funcs(unsigned long ip, unsigned long pip,
- 			      struct ftrace_ops *ops, struct ftrace_regs *fregs)
- {
-@@ -5110,27 +5143,6 @@ int register_ftrace_direct(unsigned long ip, unsigned long addr)
- 	}
++int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
++{
++	struct ftrace_hash *hash, *free_hash = NULL;
++	struct ftrace_func_entry *entry, *new;
++	int err = -EBUSY, size, i;
++
++	if (ops->func || ops->trampoline)
++		return -EINVAL;
++	if (!(ops->flags & FTRACE_OPS_FL_INITIALIZED))
++		return -EINVAL;
++	if (ops->flags & FTRACE_OPS_FL_ENABLED)
++		return -EINVAL;
++
++	hash = ops->func_hash->filter_hash;
++	if (ftrace_hash_empty(hash))
++		return -EINVAL;
++
++	mutex_lock(&direct_mutex);
++
++	/* Make sure requested entries are not already registered.. */
++	size = 1 << hash->size_bits;
++	for (i = 0; i < size; i++) {
++		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
++			if (ftrace_find_rec_direct(entry->ip))
++				goto out_unlock;
++		}
++	}
++
++	/* ... and insert them to direct_functions hash. */
++	err = -ENOMEM;
++	for (i = 0; i < size; i++) {
++		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
++			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
++			if (!new)
++				goto out_remove;
++			entry->direct = addr;
++		}
++	}
++
++	ops->func = call_direct_funcs;
++	ops->flags = MULTI_FLAGS;
++	ops->trampoline = FTRACE_REGS_ADDR;
++
++	err = register_ftrace_function(ops);
++
++ out_remove:
++	if (err) {
++		for (i = 0; i < size; i++) {
++			hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
++				new = __ftrace_lookup_ip(direct_functions, entry->ip);
++				if (new) {
++					remove_hash_entry(direct_functions, new);
++					kfree(new);
++				}
++			}
++		}
++	}
++
++ out_unlock:
++	mutex_unlock(&direct_mutex);
++
++	if (free_hash) {
++		synchronize_rcu_tasks();
++		free_ftrace_hash(free_hash);
++	}
++	return err;
++}
++EXPORT_SYMBOL_GPL(register_ftrace_direct_multi);
++
++int unregister_ftrace_direct_multi(struct ftrace_ops *ops)
++{
++	struct ftrace_hash *hash = ops->func_hash->filter_hash;
++	struct ftrace_func_entry *entry, *new;
++	int err, size, i;
++
++	if (check_direct_multi(ops))
++		return -EINVAL;
++	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
++		return -EINVAL;
++
++	mutex_lock(&direct_mutex);
++	err = unregister_ftrace_function(ops);
++
++	size = 1 << hash->size_bits;
++	for (i = 0; i < size; i++) {
++		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
++			new = __ftrace_lookup_ip(direct_functions, entry->ip);
++			if (new) {
++				remove_hash_entry(direct_functions, new);
++				kfree(new);
++			}
++		}
++	}
++
++	mutex_unlock(&direct_mutex);
++	return err;
++}
++EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
+ #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
  
- 	ret = -ENOMEM;
--	if (ftrace_hash_empty(direct_functions) ||
--	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
--		struct ftrace_hash *new_hash;
--		int size = ftrace_hash_empty(direct_functions) ? 0 :
--			direct_functions->count + 1;
--
--		if (size < 32)
--			size = 32;
--
--		new_hash = dup_hash(direct_functions, size);
--		if (!new_hash)
--			goto out_unlock;
--
--		free_hash = direct_functions;
--		direct_functions = new_hash;
--	}
--
--	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
--	if (!entry)
--		goto out_unlock;
--
- 	direct = ftrace_find_direct_func(addr);
- 	if (!direct) {
- 		direct = ftrace_alloc_direct_func(addr);
-@@ -5140,9 +5152,9 @@ int register_ftrace_direct(unsigned long ip, unsigned long addr)
- 		}
- 	}
- 
--	entry->ip = ip;
--	entry->direct = addr;
--	__add_hash_entry(direct_functions, entry);
-+	entry = ftrace_add_rec_direct(ip, addr, &free_hash);
-+	if (!entry)
-+		goto out_unlock;
- 
- 	ret = ftrace_set_filter_ip(&direct_ops, ip, 0, 0);
- 	if (ret)
+ /**
 -- 
 2.31.1
 
