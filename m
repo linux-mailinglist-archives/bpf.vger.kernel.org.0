@@ -2,102 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3658B3FC748
-	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 14:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220853FC791
+	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 14:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhHaMbI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 08:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
+        id S229762AbhHaMuG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 08:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhHaMbH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Aug 2021 08:31:07 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87429C06175F
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 05:30:12 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id l18so31385007lji.12
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 05:30:12 -0700 (PDT)
+        with ESMTP id S233126AbhHaMuA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Aug 2021 08:50:00 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6454EC061575
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 05:49:04 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id j13so21274680edv.13
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 05:49:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c3P6y71J+N/+Nmo4dV8xQ6c1hdhqJwtQ6PsRB5PSlU0=;
-        b=Z96RwoJqmJtzEE8VDumdL5JDhfIpRHINK+Yw3/3XSsCf7jDXeDC8UhuHKHEFVHMjYx
-         7xwlQg0+gPyz1lvp5fLIUVm0fPM1C8xpV9DkXxOy0Hy3PfmZtG5abRoFLqDYTNNVb1l2
-         /+BK71gwBQeTd+rOgRj4rnvE78i3DgvqzE5NpXDZwqws/LyiLAqZ6aFuEK6aWVCAQdPE
-         jEJS4k/omCOXdd4ijHH/qrXQM8VEfiaIO78C6slD2Xzg166AW/zJMmezIF90XYnSfqZd
-         DzaXV9AEuf9op0H7aEKZiwhOP89LsP6h6mkHm4tw9px8h9uSQkL73yjYxtCeU2fvhNrG
-         1myQ==
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1cbiRqCKbbnjFPMuqxU9pzl3is1JghiOlnA5OtFXB2U=;
+        b=G5/uLfdB5e/PNccmx/EDnnInPUdnlVRsoxsU5g9EoDxhwzm/cNTEX0vNDcDlmqjou7
+         vDCKgSikjbUwjRJfoFu+EQ5L+NdlmpanOYqUD04T3UtFZC9HkRJZ9y5L+sdXgdvm67fC
+         gUQP0VtmHkTZ1I6170BMo+5N0XuM0ZBePGuvB6h7nUKOB6rCkyPjXJr+MpRh9vis3GEV
+         5FOafRyYQXazX26tsfp7u8mJWs+teJq+NwGisMf5509t0YGubbXn2ydZf+c3q5l0roXT
+         scNYJMgFkEEfetsNIsEHKZCebviA5ofNmjbd/PZNHWzLnKPnDgLoTkZxFLgWUPcrH3n+
+         KQtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c3P6y71J+N/+Nmo4dV8xQ6c1hdhqJwtQ6PsRB5PSlU0=;
-        b=c3JPVKk9o++oWcSsTsR4scHqbHtbAhrz088sLOd39qWgaHehDQO7qOBgO5Oge4T25z
-         eDpyp6RB/pU96zGyNe8Wi1pwKYyZnqe/wWKQo36tVvQIGnX0LuEgShIjvpk4G87ZXAcx
-         hW2kNJ7RDgAhdi/wYlj8P7b2qQNCgnArO71X/6UFbpx6jUaI8M2ps9NPivNelN42wx2c
-         by7JDQbFNatKIUXrEJeXjdHBrtiyFd1dRqI2Pzk0gTjCaX1feJu2IIgpsEwXOoLe06gI
-         aq1w5865FPAjrCS1uQBbW4mnfBXWhnGGkcHZmgX0ikUxiEYdC+4ljXJ6a2zbTd+zQJ0+
-         8Bdw==
-X-Gm-Message-State: AOAM531KpFB+1m/fo+Rt+LkV38qYBdG4hWoMu+cBZ24FnLl/hlMu5T9E
-        qpHNNC/4+378K3Dn86BxDPpxLfuisNO7t4atnK0nBbi5EFUBuQ==
-X-Google-Smtp-Source: ABdhPJy+5GViwnWqNhudfTv9dTHacF8ugEM1mQP8FE6cO4zAMXjKyzqPiouoR/MVUKoyzaRz2Cdv2IukCPJajzybze4=
-X-Received: by 2002:a2e:bf0d:: with SMTP id c13mr2911326ljr.101.1630413010725;
- Tue, 31 Aug 2021 05:30:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1cbiRqCKbbnjFPMuqxU9pzl3is1JghiOlnA5OtFXB2U=;
+        b=BpRkFNg0IOkj/uWcpwRpe43VFFocH+Yewt8s30Vn3qxpGGvlfOjJYX5LBEOF2wyrza
+         cExgkrfMUrBZ8f5pXDVBB8SsZTs4RFQtR82wWZbjcOp6ohv7O50lV/Qqr/TghK60e5Zi
+         f+xkax0UurWhrpW9R4reBTdxjlHUCqiGHq4jAdzUTdFnMAxvaGT5kiMLyVZfUqW7qfy3
+         Ou7gVO3ZmPp/vD5I8r1ki0kv1kSowMrC/MKaEIux2Pd9TGnUteQU0CPpWxBMZwSyPCOg
+         S82ZE8u5zuSQR5nTN660uFwSNQwqpV2bIShJ9NyecFJgG2xYefo42uI5zvpda+wom3Ss
+         GcmQ==
+X-Gm-Message-State: AOAM532lFRkbyGj0lLKhw19WXR3M/kkewmz+mLfFdCIJKfV3Rmu/xat/
+        h5+Yh31tzJFDsQOGwsKhwmI+yA==
+X-Google-Smtp-Source: ABdhPJw4Dfa1IhTO5pkue+ot8FcJfqr3PwHLb/S74lA41FgwgBoM0F5FJRVS/FeI/mD4rz24TnURJQ==
+X-Received: by 2002:a05:6402:2691:: with SMTP id w17mr18584907edd.339.1630414142902;
+        Tue, 31 Aug 2021 05:49:02 -0700 (PDT)
+Received: from localhost ([154.21.15.43])
+        by smtp.gmail.com with ESMTPSA id d16sm9358989edu.8.2021.08.31.05.49.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 05:49:02 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 16:48:56 +0400
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, davem@davemloft.net,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, rdna@fb.com
+Subject: Re: [PATCH bpf-next v2 00/13] bpfilter
+Message-ID: <20210831124856.fucr676zd365va7c@amnesia>
+References: <20210829183608.2297877-1-me@ubique.spb.ru>
+ <a4039e82-9184-45bf-6aee-e663766d655a@mojatatu.com>
 MIME-Version: 1.0
-References: <20210827231307.3787723-1-fallentree@fb.com> <20210827231307.3787723-2-fallentree@fb.com>
- <CAEf4BzaSO3jfomcwTwtGJpTj730RdVuO714=tXA6pxNRzGKESQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzaSO3jfomcwTwtGJpTj730RdVuO714=tXA6pxNRzGKESQ@mail.gmail.com>
-From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
-Date:   Tue, 31 Aug 2021 08:29:44 -0400
-Message-ID: <CAJygYd0G1axj_z+_n+13goRYMsW1P4PZKv2eFttDc0Z9T+2jQg@mail.gmail.com>
-Subject: Re: [RFC 1/1] selftests/bpf: Add parallelism to test_progs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yucong Sun <fallentree@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a4039e82-9184-45bf-6aee-e663766d655a@mojatatu.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 11:37 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Aug 27, 2021 at 4:13 PM Yucong Sun <fallentree@fb.com> wrote:
-> >
-> > From: Yucong Sun <sunyucong@gmail.com>
-> >
-> > This patch adds "-p" parameter to test_progs, which will spawn workers and
-> > distribute tests evenly among all workers, speeding up execution.
->
-> make and pahole use -j for parallelism, let's use the same for
-> familiarity? pahole (make gives a bad example in this regard) is using
-> a good convention that if no number of workers is provided with -j, it
-> assumes number of CPUs. I think that's a good default, let's do that
-> as well.
+On Mon, Aug 30, 2021 at 09:56:18PM -0400, Jamal Hadi Salim wrote:
+> On 2021-08-29 2:35 p.m., Dmitrii Banshchikov wrote:
+> 
+> [..]
+> 
+> > And here are some performance tests.
+> > 
+> > The environment consists of two machines(sender and receiver)
+> > connected with 10Gbps link via switch.  The sender uses DPDK to
+> > simulate QUIC packets(89 bytes long) from random IP. The switch
+> > measures the generated traffic to be about 7066377568 bits/sec,
+> > 9706553 packets/sec.
+> > 
+> > The receiver is a 2 socket 2680v3 + HT and uses either iptables,
+> > nft or bpfilter to filter out UDP traffic.
+> > 
+> > Two tests were made. Two rulesets(default policy was to ACCEPT)
+> > were used in each test:
+> > 
+> > ```
+> > iptables -A INPUT -p udp -m udp --dport 1500 -j DROP
+> > ```
+> > and
+> > ```
+> > iptables -A INPUT -s 1.1.1.1/32 -p udp -m udp --dport 1000 -j DROP
+> > iptables -A INPUT -s 2.2.2.2/32 -p udp -m udp --dport 2000 -j DROP
+> > ...
+> > iptables -A INPUT -s 31.31.31.31/32 -p udp -m udp --dport 31000 -j DROP
+> > iptables -A INPUT -p udp -m udp --dport 1500 -j DROP
+> > ```
+> > 
+> > The first test measures performance of the receiver via stress-ng
+> > [3] in bogo-ops. The upper-bound(there are no firewall and no
+> > traffic) value for bogo-ops is 8148-8210. The lower bound value
+> > (there is traffic but no firewall) is 6567-6643.
+> > The stress-ng command used: stress-ng -t60 -c48 --metrics-brief.
+> > 
+> > The second test measures the number the of dropped packets. The
+> > receiver keeps only 1 CPU online and disables all
+> > others(maxcpus=1 and set number of cores per socket to 1 in
+> > BIOS). The number of the dropped packets is collected via
+> > iptables-legacy -nvL, iptables -nvL and bpftool map dump id.
+> > 
+> > Test 1: bogo-ops(the more the better)
+> >              iptables            nft        bpfilter
+> >    1 rule:  6474-6554      6483-6515       7996-8008
+> > 32 rules:  6374-6433      5761-5804       7997-8042
+> > 
+> > 
+> > Test 2: number of dropped packets(the more the better)
+> >              iptables            nft         bpfilter
+> >    1 rule:  234M-241M           220M            900M+
+> > 32 rules:  186M-196M        97M-98M            900M+
+> > 
+> > 
+> > Please let me know if you see a gap in the testing environment.
+> 
+> General perf testing will depend on the nature of the use case
+> you are trying to target.
+> What is the nature of the app? Is it just receiving packets and
+> counting? Does it exemplify something something real in your
+> network or is just purely benchmarking? Both are valid.
+> What else can it do (eg are you interested in latency accounting etc)?
+> What i have seen in practise for iptables deployments is a default
+> drop and in general an accept list. Per ruleset IP address aggregation
+> is typically achieved via ipset. So your mileage may vary...
 
-Ack, with the new server/worker model it would definitely make sense.
+This was a pure benchmarking with the single goal - show that
+there might exist scenarios when using bpfilter may provide some
+performance benefits.
 
->
-> >
-> > "-p" mode is optional, and works with all existing test selection mechanism,
-> > including "-l".
-> >
-> > Each worker print its own summary and exit with its own status, the main
-> > process will collect all status together and exit with a overall status.
->
-> Signed-off-by: is missing, don't forget about it.
+> 
+> Having said that:
+> Our testing[1] approach is typically for a worst case scenario.
+> i.e we make sure you structure the rulesets such that all of the
+> linear rulesets will be iterated and we eventually hit the default
+> ruleset.
+> We also try to reduce variability in the results. A lot of small
+> things could affect your reproducibility, so we try to avoid them.
+> For example, from what you described:
+> You are sending from a random IP - that means each packet will hit
+> a random ruleset (for the case of 32 rulesets). And some rules will
+> likely be hit more often than others. The likelihood of reproducing the
+> same results for multiple runs gets lower as you increase the number
+> of rulesets.
+> From a collection perspective:
+> Looking at the nature of the CPU utilization is important
+> Softirq vs system calls vs user app.
+> Your test workload seems to be very specific to ingress host.
+> So in reality you are more constrained by kernel->user syscalls
+> (which will be hidden if you are mostly dropping in the kernel
+> as opposed to letting packets go to user space).
 
-Ack!
 
->
-> > ---
-> >  tools/testing/selftests/bpf/test_progs.c | 94 ++++++++++++++++++++++--
-> >  tools/testing/selftests/bpf/test_progs.h |  3 +
-> >  2 files changed, 91 insertions(+), 6 deletions(-)
-> >
->
-> I'll add high-level comments on the cover letter (which single patch
-> submissions don't really need, cover letter is required only for patch
-> sets with more than one patch; no big deal, but keep this in mind).
+> 
+> Something is not clear from your email:
+> You seem to indicate that no traffic was running in test 1.
+> If so, why would 32 rulesets give different results than 1?
 
-Got it!
+I mentioned the lower and upper bound values for bogo-ops on the
+machine. The lower bound is when there is traffic and no firewall
+at all. The upper bound is when there is no firewall and no
+traffic. Then the first test measures bogo-ops for two rule sets
+when there is traffic for either iptables, nft or bpfilter.
+
+> 
+> cheers,
+> jamal
+> 
+> [1] https://netdevconf.info/0x15/session.html?Linux-ACL-Performance-Analysis
+
+-- 
+
+Dmitrii Banshchikov
