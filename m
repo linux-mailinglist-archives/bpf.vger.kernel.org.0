@@ -2,104 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF593FC00F
-	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 02:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB613FC07B
+	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 03:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239131AbhHaAjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Aug 2021 20:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48412 "EHLO
+        id S233055AbhHaB3O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Aug 2021 21:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231989AbhHaAjC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Aug 2021 20:39:02 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B553AC061575;
-        Mon, 30 Aug 2021 17:38:07 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id e129so31633678yba.5;
-        Mon, 30 Aug 2021 17:38:07 -0700 (PDT)
+        with ESMTP id S231297AbhHaB3O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Aug 2021 21:29:14 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED798C061575
+        for <bpf@vger.kernel.org>; Mon, 30 Aug 2021 18:28:19 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id q68so15156035pga.9
+        for <bpf@vger.kernel.org>; Mon, 30 Aug 2021 18:28:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dIoCwE46sRweXCxYQ2GXPb1y5Z88T5kmd3WMggOIQlM=;
-        b=C6WzzhEIa5tkiDWnP3ym+GCLUImj02sSwGurz0W6JfMrbtFPZjckdOW9JbSeAzdaAV
-         AtPwUXpxVShsYGTxB9UhtWr4Zo4iC/r6JQclZInmZOzxWasR5AIjU/XTJdJrs90McPzf
-         x+9AMAqZwJZcCQbEWXKMRq2K9VknG3kaOmIW0WbGC/Xw6WpK/44PuCR/Lk/+I0vooMAF
-         x5xVJur/sFD263w1kQ4uWX8MD5lFptG5mPh/5dDIRAaeJqD2blUDXXOuL9dqiRT8S/JH
-         h81OuB0R8f6GvLqu+imHUFaBNHZoFM5AxHo6IXJhUzkKiYV13YseDoZCy/SyD/ZJWh/u
-         AXgA==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=UWVukDYpnouo2TmAsoiK3YFI/UCntBVDF8OdhEqH+sQ=;
+        b=rD0Toelc/OjmqsZafJnHbNjVMAHudCPce3gu9fS0GhQGzH5cD3va+OKExL/i9y3b9L
+         60+AS9wo6WSFqMALmNfc74qZb6t/TZmieGujk6WEIDddo+dRZOnEjkvD4px9cAiz8r1u
+         PPFOjfwjXRNunj3LYmg9eapGHiVIUzOWoMrSs8Q7G1Lf2u134sTX7Kgo+J8xhmu4fJvn
+         i3x96BzOMxgVTGkTsmh+pU75wlkSur2+5zktnA2i6zpQHbex9xhcLC2533yPK8+QNYpr
+         aVEGCjuI0YkSqXLidco8r+PKSwJIVpEk+5GL2bk4mbRzvYvQfKjD48MgnQzvCCf8CDvn
+         KPtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dIoCwE46sRweXCxYQ2GXPb1y5Z88T5kmd3WMggOIQlM=;
-        b=im2nGHqe3Wxb6BK1wTWSROYfYJ720G1zhyDF1un7Lg7Sco/vgWGm2w0ORXZSYBAGaI
-         OxcLg3ihOAI4olROppr/nDyyYORu/QS5jDnc8VhAWbAhWUWLwtFnXf1CZwawCKqc8BVW
-         kCwc69l+uWB20GaGs7ZyU8MTkDhzehe6pbRERFLXgtlh+/ZVWTk+hquYgYUM/LxyaKBY
-         MCrAfUOHW7IuAZMTM1ju8++N7FLKFubh5IJhlO/EHFPMvzKDSO71DZMtpqfamB20lcdf
-         GmfzymuDVP5dUG9JoFuUVpO50Hf4fqzylp8jrI3AHdyOmjsj0Lpijg07Xc8Ekb3W6cK7
-         ew+A==
-X-Gm-Message-State: AOAM533ZTJZmC5EiIa2fxkzwHbbBBx2EOa8AHGdbcEwQBXjE1aMnyEQi
-        DfA3xYcOlpRvbQjYpxtQpAY4XJyMy0Odv7pYKOEW2FuQ
-X-Google-Smtp-Source: ABdhPJxeMygX7oYWfVfD8GI1jlPX2zWgC/Q1jXddRHXB0y2VFfDm3QhGq4IOGRbcJ56FB2pcnlXuK2JkA+pjetlFZKA=
-X-Received: by 2002:a25:4941:: with SMTP id w62mr26991045yba.230.1630370286948;
- Mon, 30 Aug 2021 17:38:06 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=UWVukDYpnouo2TmAsoiK3YFI/UCntBVDF8OdhEqH+sQ=;
+        b=fMGujTYCUA+ZuJU5Arw4E09XuxkPoQ9k0a4Q0mU9T0kihzjpfqKaX2QIT5uzyNtYru
+         kX75R750LNEjN6VxuQpsdVMH0GcYVgfLqwxfOI+hBIPCFBTaSiOpEdjmgMJiMykoNpJD
+         NPJNZIymhjugU4xpYzqEuZ0ghvqlE2fQ0dBcecAsiIV2IlaPZ4DZP6bIPlDqSeAe0n+Z
+         fMlTo09mX/gaC1V2Va/h/adU+h3S2KK+/Ck7fjo+2drkBsoru/dFPf+BfoOKuUScdCvs
+         GE0Py/yOXF+mn7BuLDGBycDZxMHQ+CY+uVnXJB600uKLxlhIAWZDrKMHuwua9FJIOIgQ
+         5zVQ==
+X-Gm-Message-State: AOAM531Whn7/voZBgcb7y4Kg111EmTBewwG5TTdPlsVVWGobGBbJNO7F
+        vy2V3pqQP9ikH9x5UHY6vRahgxQ5zKh8XP1eRvk=
+X-Google-Smtp-Source: ABdhPJwq679iaJ6TfUBoNbfDPixhu6IcdY7EyP9z71lB8fERRgiMXCszkdLOZXIg7PsaV0xS7ieLGW+pLBnRvBGFSGA=
+X-Received: by 2002:a65:52cd:: with SMTP id z13mr24069283pgp.405.1630373299335;
+ Mon, 30 Aug 2021 18:28:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210828052006.1313788-1-davemarchevsky@fb.com> <20210828052006.1313788-5-davemarchevsky@fb.com>
-In-Reply-To: <20210828052006.1313788-5-davemarchevsky@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 30 Aug 2021 17:37:56 -0700
-Message-ID: <CAEf4BzZMaWFWqmucCczJ8DtHjY6zsWizr7G7_O9Lc-uV_1yEKQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 4/7] libbpf: use static const fmt string in __bpf_printk
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Networking <netdev@vger.kernel.org>
+Reply-To: aliuhuadams@gmail.com
+Sender: cpt.jeffwilson@gmail.com
+Received: by 2002:a17:90b:3b83:0:0:0:0 with HTTP; Mon, 30 Aug 2021 18:28:18
+ -0700 (PDT)
+From:   Aliuhu Adams <aliuhuadamss@gmail.com>
+Date:   Tue, 31 Aug 2021 01:28:18 +0000
+X-Google-Sender-Auth: frY0274dKikh3UcG4reiRO7i6bg
+Message-ID: <CAD1CVt7Pb2jQpo1OkdvJwoREij_vWUi3Myk4mzQAnRRWbeAdBg@mail.gmail.com>
+Subject: From Aliuhu Adams
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 10:20 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->
-> The __bpf_printk convenience macro was using a 'char' fmt string holder
-> as it predates support for globals in libbpf. Move to more efficient
-> 'static const char', but provide a fallback to the old way via
-> BPF_NO_GLOBAL_DATA so users on old kernels can still use the macro.
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->  tools/lib/bpf/bpf_helpers.h | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index 5f087306cdfe..a1d5ec6f285c 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -216,10 +216,16 @@ enum libbpf_tristate {
->                      ___param, sizeof(___param));               \
->  })
->
-> +#ifdef BPF_NO_GLOBAL_DATA
-> +#define BPF_PRINTK_FMT_TYPE char
-> +#else
-> +#define BPF_PRINTK_FMT_TYPE static const char
-> +#endif
-> +
->  /* Helper macro to print out debug messages */
->  #define __bpf_printk(fmt, ...)                         \
->  ({                                                     \
-> -       char ____fmt[] = fmt;                           \
-> +       BPF_PRINTK_FMT_TYPE ____fmt[] = fmt;            \
+-- 
+From Aliuhu Adams,
 
-personal preferences, of course, but I'd leave char right there (I
-think it makes it a bit more obvious what's going on right there), and
-s/BPF_PRINTK_FMT_TYPE/BPF_PRINTK_FMT_MOD/ and have it as either "" or
-"static const".
+My name is Aliuhu Adams, from Burkina Faso
 
->         bpf_trace_printk(____fmt, sizeof(____fmt),      \
->                          ##__VA_ARGS__);                \
->  })
-> --
-> 2.30.2
->
+Please, I am contacting you for urgent assistance to help me move my
+inheritance to your country and help me to invest in your country.
+
+The amount is 14 million dollars and I want this money to be moved to your
+country urgently with me because of the fear of the killer of my parents.
+
+I shall give you more details when I hear from you.
+
+Thank you,
+
+Aliuhu Adams
