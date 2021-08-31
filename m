@@ -2,132 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56593FCD5B
-	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 21:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8207E3FCDE0
+	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 22:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239707AbhHaTAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 15:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43958 "EHLO
+        id S234139AbhHaTeW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 15:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239537AbhHaTAk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Aug 2021 15:00:40 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21186C0617AE
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 11:59:44 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id me10so914785ejb.11
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 11:59:43 -0700 (PDT)
+        with ESMTP id S240873AbhHaTeU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Aug 2021 15:34:20 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1185EC061575
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 12:33:25 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so280745pjx.5
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 12:33:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K4O58ZgiMsf0cCMtsvw/t7AJFM1T3tlDvm3uUGsU/to=;
-        b=m/p6PQxMro/Ee7fR7WvozEwx71BnscpCpL2xs1XR6unVL7bfCWki5mm/DL8tzkxtlv
-         IgmDAUJlZv7+KUUNuYAb3NRkVROzdUIxdGRwwrqEOUO0vD6Cu/HZq+bSFieTd9983AeD
-         YktyhmMz20Tq1h8uROtJTQQFwlHuUy+Bds8+ZIoQqHDYDTRBZ7xIrXRop6SBBaMcqz3D
-         KSsC4i4L46l25F26x2rXCk4fmowpOEt5kNPUpUjO3ZN5jtoqzJulRjdNVM64Yw8ZBWOt
-         rXYGE77kjE3hfKV3j/NE4j8c0xfhsFszf/XJGAR6u3atTQlztdBXyq7sYYSIi6VfUO2y
-         mhuw==
+        bh=PeZDQrDqcQAGLQrz/I7TpVM8SJTv7M0K+gxKgXhgs68=;
+        b=sihN7oBbJ5I86jLv3PK9u4Byc4gBeGvz8Ye0A6na+tMx6ajWusgiLhlbPCBC33ST84
+         OVb95mkFiuQJaB3sPO0WgKOT1n8azLxkx7WiOUAao7p4XE88p1K7e23eHtbn/HMO0y7D
+         1xJj89LKE+NvPnPr/4gQKEVWuQlOPbmAVvfE2dP71dh+UpnsLa2TW0Eqpq92cvCv2tEK
+         HrtjDGGV5IKRxxmKu7EiHYls0suFwx3IU0o+HqpUFqIwPxNmGqyGqaNOq4qGkFj+cs79
+         tHzBNvlYCUqeFQAz1XFdRVIq9TnLOD0UTwn/Viqw4G0WwC8nTyCMZz+kRIjbleGxQKz8
+         cabw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K4O58ZgiMsf0cCMtsvw/t7AJFM1T3tlDvm3uUGsU/to=;
-        b=gbjqLjPWns5ZKHeGJOsoX7p1QHQtIJwILI1SJ3rZm++KiHFku3HjoDvXuKhejkRNbF
-         XShdy0ZmdwcXkntSkv07mar+zIAL6htHTtDvUK3nQXEbgWUIpYb0cCK2YxKccPziB6Wp
-         ZD5eBZf3kLv6h1t1lec9HyOH6P0VhkHc9r1EYChERkXd7T15so9znj5eytIv72JoDO9y
-         l7+gV9OhYNNZj5pStto9wfSM3Zub8BOAMDoQRgcpt3sVzaOcCjXDJd+Ke/IY6dZ0sBsU
-         SlBcdlE1WGYc74NAMp+B3yOE9ZBc2gpoxAy4zTv1E5pk8Bm43RJuFzol8tZ/t8YdkNUu
-         4vyA==
-X-Gm-Message-State: AOAM532PDb/zZ5Z+5TVOevMLTFN0IoY/DVz6dOcI93Fsuh6rBPvT5mPG
-        sVbQwe+iUHpNiD5R8cVqmwvpooJAxffHJdfAR6iX
-X-Google-Smtp-Source: ABdhPJynhzjWiT5WygcinC1v/vpSrVXtKhAajoj91Y8oOaAf641QOi9pajzp20JXEjTMXZ2nBzK8acBfiZKG6sYGsHg=
-X-Received: by 2002:a17:906:2cd6:: with SMTP id r22mr31706715ejr.398.1630436382385;
- Tue, 31 Aug 2021 11:59:42 -0700 (PDT)
+        bh=PeZDQrDqcQAGLQrz/I7TpVM8SJTv7M0K+gxKgXhgs68=;
+        b=Gm9G4FA7d0aVjUEP45UTg+NlXXhdTE0HPmEztw7ubvMFUf57fTKTU7og01hs04al5o
+         t6pHawKJHQ8XBiPodLPLINsleGA6inOBUKSWd7Dw7sMY9ZHoEMq/GBvgLpwi+VwjjTfj
+         ZD9fwgl8JcUDozeS3DlhrehKLkxraen31BO35PMLyma1Kx70dfbh1mXet99J3eA8mXo3
+         L9Bf/yeLFt+Rp2FWtJkA4i9eloI/lwlk1hs3cTnf7JYxP5GCILkdWlkgV5YbbH1DY5vA
+         CI9dEyCMwqGm67ietznWB04j6P0VGF5mpRk1btUNN12bhNxVs3g5oLqYzI7fUBh/Xj7x
+         bR9A==
+X-Gm-Message-State: AOAM530W4UMpcMgAS45sTBXY+J5edzv+mG1Lll7LwiEFZGO6B0Nh2Bpy
+        R3o53f3CFrWL9g4h1WNhNxq5rM4jIKXeY7nRfeM=
+X-Google-Smtp-Source: ABdhPJytBhVukO2jdqYC6k6SfCzt4JsmdxqHHkEEWxRwvqIsxz7eLQH16MWYU6EaEI4ygIG46RGrmte4IOlnGrkI+HU=
+X-Received: by 2002:a17:90a:a0a:: with SMTP id o10mr7301603pjo.231.1630438404514;
+ Tue, 31 Aug 2021 12:33:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210616085118.1141101-1-omosnace@redhat.com> <CAPcyv4jvR8CT4rYODR5KUHNdiqMwQSwJZ+OkVf61kLT3JfjC_Q@mail.gmail.com>
- <CAFqZXNtuH0329Xvcb415Kar-=o6wwrkFuiP8BZ_2OQhHLqkkAg@mail.gmail.com>
- <CAHC9VhTGECM2p+Q8n48aSdfJzY6XrpXQ5tcFurjWc4A3n8Qxjg@mail.gmail.com> <CAPcyv4i8YXo=xOL2vO67KLABQRDNAxzrzT=a1xtwtrts5pVPKw@mail.gmail.com>
-In-Reply-To: <CAPcyv4i8YXo=xOL2vO67KLABQRDNAxzrzT=a1xtwtrts5pVPKw@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 31 Aug 2021 14:59:31 -0400
-Message-ID: <CAHC9VhReGcV=cngDMmAcEiS2NpkXZQ6b09go9m0omzxLdrUQXg@mail.gmail.com>
-Subject: Re: [PATCH v3] lockdown,selinux: fix wrong subject in some SELinux
- lockdown checks
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        X86 ML <x86@kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-cxl@vger.kernel.org, linux-efi <linux-efi@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux-pm mailing list <linux-pm@vger.kernel.org>,
-        linux-serial@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Kexec Mailing List <kexec@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
+References: <20210825184745.2680830-1-fallentree@fb.com> <CAADnVQJz8LUTsm_azd4JE0n5Q4Me0Lze6hmsqNYfAKMeA44_fQ@mail.gmail.com>
+ <CAJygYd24KySBLCL2rRofGqdPkQzonxBfihRxLQ=O8Xg=AWAowA@mail.gmail.com>
+ <CAJygYd3M1E3N9C02WCmPD6_i9miXaCe=OP-M32QTnOXOajBPZA@mail.gmail.com> <CAADnVQJB3GKKr1hMWHNKYhoo8CzrDQ83LEnO8c+ntOBtEkjApA@mail.gmail.com>
+In-Reply-To: <CAADnVQJB3GKKr1hMWHNKYhoo8CzrDQ83LEnO8c+ntOBtEkjApA@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Tue, 31 Aug 2021 12:33:13 -0700
+Message-ID: <CAM_iQpVw-5dG8Na9e851bQy2_BcpZQ5QK+r554NZsP0_dbzwNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: reduce more flakyness in sockmap_listen
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "sunyucong@gmail.com" <sunyucong@gmail.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Yucong Sun <fallentree@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 2:58 PM Dan Williams <dan.j.williams@intel.com> wrote:
-> On Tue, Aug 31, 2021 at 6:53 AM Paul Moore <paul@paul-moore.com> wrote:
-> > On Tue, Aug 31, 2021 at 5:09 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> > > On Sat, Jun 19, 2021 at 12:18 AM Dan Williams <dan.j.williams@intel.com> wrote:
-> > > > On Wed, Jun 16, 2021 at 1:51 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> >
-> > ...
-> >
-> > > > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > > > index 2acc6173da36..c1747b6555c7 100644
-> > > > > --- a/drivers/cxl/mem.c
-> > > > > +++ b/drivers/cxl/mem.c
-> > > > > @@ -568,7 +568,7 @@ static bool cxl_mem_raw_command_allowed(u16 opcode)
-> > > > >         if (!IS_ENABLED(CONFIG_CXL_MEM_RAW_COMMANDS))
-> > > > >                 return false;
-> > > > >
-> > > > > -       if (security_locked_down(LOCKDOWN_NONE))
-> > > > > +       if (security_locked_down(current_cred(), LOCKDOWN_NONE))
-> > > >
-> > > > Acked-by: Dan Williams <dan.j.williams@intel.com>
-> > > >
-> > > > ...however that usage looks wrong. The expectation is that if kernel
-> > > > integrity protections are enabled then raw command access should be
-> > > > disabled. So I think that should be equivalent to LOCKDOWN_PCI_ACCESS
-> > > > in terms of the command capabilities to filter.
-> > >
-> > > Yes, the LOCKDOWN_NONE seems wrong here... but it's a pre-existing bug
-> > > and I didn't want to go down yet another rabbit hole trying to fix it.
-> > > I'll look at this again once this patch is settled - it may indeed be
-> > > as simple as replacing LOCKDOWN_NONE with LOCKDOWN_PCI_ACCESS.
-> >
-> > At this point you should be well aware of my distaste for merging
-> > patches that have known bugs in them.  Yes, this is a pre-existing
-> > condition, but it seems well within the scope of this work to address
-> > it as well.
-> >
-> > This isn't something that is going to get merged while the merge
-> > window is open, so at the very least you've got almost two weeks to
-> > sort this out - please do that.
+On Thu, Aug 26, 2021 at 12:08 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Yes, apologies, I should have sent the fix shortly after noticing the
-> problem. I'll get the CXL bug fix out of the way so Ondrej can move
-> this along.
+> On Thu, Aug 26, 2021 at 11:18 AM sunyucong@gmail.com
+> <sunyucong@gmail.com> wrote:
+> >
+> > Reporting back: I tried a select() based approach, (as attached below)
+> >  but unfortunately it doesn't seem to work. During testing,  I am
+> > always getting full timeout errors as the socket never seems to become
+> > ready to read(). My guess is that this has something to do with the
+> > sockets being created through sockpair() , but I am unable to confirm.
+> >
+> > On the other hand, the previous patch approach works perfectly fine, I
+> > would still like to request to apply that instead.
+>
+> Ok. Applied your earlier patch, but it's a short term workaround.
+> select() should work for af_unix.
+> I suspect something got broken with the redirect.
+> Cong, Jiang,
+> could you please take a look ?
 
-Thanks Dan.
+Like I mentioned before, I suspect there is some delay in one of
+the queues on the way or there is a worker wakeup latency.
+I will try adding some tracepoints to see if I can capture it.
 
--- 
-paul moore
-www.paul-moore.com
+Thanks.
