@@ -2,127 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5943FC9DA
-	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 16:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDC23FCAC0
+	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 17:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238321AbhHaOfG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 10:35:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49496 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238327AbhHaOfA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 31 Aug 2021 10:35:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630420444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6PmT5XJD+8h8skjkZI3qWWXkCH+r4hgnl/yZSPi7Y2o=;
-        b=HpoMIqo0uErqUStH7ZrQMh8ijkNteEHgPls0mF1qNNT76WtY7QKUyAL1IzwunFMh1849Pn
-        orwO+VRwH/1mwfZGObM7c17c2Dvs5q9+MCmJyqultga0pQG8IqgBARUIf+bkUOif6+lYTD
-        hjf0B8at2+eONV46G2OGDHppR5YB5H8=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-o979AFxMNxKyH9cMUPSOLw-1; Tue, 31 Aug 2021 10:34:02 -0400
-X-MC-Unique: o979AFxMNxKyH9cMUPSOLw-1
-Received: by mail-ed1-f72.google.com with SMTP id z17-20020a05640240d100b003cac681f4f4so3895405edb.21
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 07:34:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6PmT5XJD+8h8skjkZI3qWWXkCH+r4hgnl/yZSPi7Y2o=;
-        b=jzAKO6KDWqIfrkSoFCzEbjLSe884RF56xOu+kBvuRRWo+KmHpK9SjKZkXRtLdtVDVA
-         XYqXtZ28FhfT7cPeBr663cyj+HFpDUA0OI+AZznwvgVNdQsFS1Wf22h89owQM6Hmw7Ip
-         lj94+GoCJ8+FoslXSyOsnFVMBbFPtvmjpoaol1nJk7oZKz6qjbOleRbJ2kTf+z5snGBJ
-         a8Hz9IxV3vV94A9X33lbcCWu47TUz94faAVkwcGQv+CRfqmdJ+BlwI0WAzsshaK4SKOD
-         t8ZJLhp/I4j6w10KouVIU5MKRVfkXSHzQa87/FWjzCRtCJbY3yqMLl8nMa2egc6un9GP
-         Cy9A==
-X-Gm-Message-State: AOAM531v0KdDoJEwdamRjkugR7+4fzaZkmkteLyagNPo4rlkwHIH1wtb
-        /n08p2MnjspFhis7dy1/AgvHebo+jWq0Xvh57x0k+6myujQzj8w1I2SBcjcGBHuvwWPwjbGe48p
-        jUkXkMbZh8qpg
-X-Received: by 2002:a17:906:1913:: with SMTP id a19mr31557125eje.390.1630420441148;
-        Tue, 31 Aug 2021 07:34:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzzjjdwiOd8AeTnBC2TXxLH1EhvIr4UtSGSCDv5ZFm6H4uv3KIhAXZlHdfrPICpWzNoiNhPsw==
-X-Received: by 2002:a17:906:1913:: with SMTP id a19mr31557113eje.390.1630420440965;
-        Tue, 31 Aug 2021 07:34:00 -0700 (PDT)
-Received: from redhat.com ([2.55.138.60])
-        by smtp.gmail.com with ESMTPSA id q9sm8369501ejf.70.2021.08.31.07.33.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 07:34:00 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 10:33:56 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     "Li,Rongqing" <lirongqing@baidu.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHZpcnRp?= =?utf-8?Q?o=5Fnet?=
- =?utf-8?Q?=3A?= reduce raw_smp_processor_id() calling in virtnet_xdp_get_sq
-Message-ID: <20210831103024-mutt-send-email-mst@kernel.org>
-References: <1629966095-16341-1-git-send-email-lirongqing@baidu.com>
- <20210830170837-mutt-send-email-mst@kernel.org>
- <bbf978c3252b4f2ea13ab7ca07d53034@baidu.com>
+        id S238931AbhHaP0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 11:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234356AbhHaP0O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Aug 2021 11:26:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFA0C061575;
+        Tue, 31 Aug 2021 08:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uwTrTbDOHkMVsLsXLuJcKBuRojYiovx3RxkvNr4JkMg=; b=kjxY+506AsKcbc56c4Db88UNyP
+        mAffMHWYJi+LpHja+OyORAKzOUK8ha4Ey/H1HwPXBL8ggcP/zW7hPehvqLPWBbe4JEThAkkD3k5pP
+        WF03Z3VvU9ldXavXGUkqVVoejtZ4dlvP0jhhm7oyRhZ7y9lU3M660mGs2tZXRA5f/5mrlKjdmBdB4
+        bCPpZMbFYQqrCdoB3EdZ5ba1O1ZU9NOvazzaQQ/tdEKjoCukrYzzoKQDMMfge8hOweqYuGbqWwx3U
+        lwQXQlnEHDaXqxUUj/MVblTNbkyFXn97hnhMtwWdHDGNQAnet4r4ydnCEQdGEd52Tj9Tr9RoZYXgA
+        mwSHerJA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mL5cm-001KP4-UO; Tue, 31 Aug 2021 15:24:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AFB1E300109;
+        Tue, 31 Aug 2021 17:24:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5FE1820AEBF37; Tue, 31 Aug 2021 17:24:26 +0200 (CEST)
+Date:   Tue, 31 Aug 2021 17:24:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com
+Subject: Re: [PATCH v3 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <YS5Jqr60qHZ14+2g@hirez.programming.kicks-ass.net>
+References: <20210830214106.4142056-1-songliubraving@fb.com>
+ <20210830214106.4142056-2-songliubraving@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bbf978c3252b4f2ea13ab7ca07d53034@baidu.com>
+In-Reply-To: <20210830214106.4142056-2-songliubraving@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 02:09:36AM +0000, Li,Rongqing wrote:
-> > -----邮件原件-----
-> > 发件人: Michael S. Tsirkin <mst@redhat.com>
-> > 发送时间: 2021年8月31日 5:10
-> > 收件人: Li,Rongqing <lirongqing@baidu.com>
-> > 抄送: netdev@vger.kernel.org; bpf@vger.kernel.org;
-> > virtualization@lists.linux-foundation.org
-> > 主题: Re: [PATCH] virtio_net: reduce raw_smp_processor_id() calling in
-> > virtnet_xdp_get_sq
-> > 
-> > On Thu, Aug 26, 2021 at 04:21:35PM +0800, Li RongQing wrote:
-> > > smp_processor_id()/raw* will be called once each when not more queues
-> > > in virtnet_xdp_get_sq() which is called in non-preemptible context, so
-> > > it's safe to call the function
-> > > smp_processor_id() once.
-> > >
-> > > Signed-off-by: Li RongQing <lirongqing@baidu.com>
-> > 
-> > commit log should probably explain why it's a good idea to replace
-> > raw_smp_processor_id with smp_processor_id in the case of curr_queue_pairs
-> > <= nr_cpu_ids.
-> > 
-> 
-> 
-> I change it as below, is it ok?
-> 
->     virtio_net: reduce raw_smp_processor_id() calling in virtnet_xdp_get_sq
+On Mon, Aug 30, 2021 at 02:41:04PM -0700, Song Liu wrote:
 
-shorter:
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index ac6fd2dabf6a2..d28d0e12c112c 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -2155,9 +2155,9 @@ static void __intel_pmu_disable_all(void)
+>  
+>  static void intel_pmu_disable_all(void)
+>  {
+> +	intel_pmu_lbr_disable_all();
+>  	__intel_pmu_disable_all();
+>  	intel_pmu_pebs_disable_all();
+> -	intel_pmu_lbr_disable_all();
+>  }
 
-virtio_net: s/raw_smp_processor_id/smp_processor_id/ in virtnet_xdp_get_sq
+Hurmph... I'm not sure about that, I'd rather you sprinkle a few
+__always_inline to ensure no actual function is called while you disable
+things in the correct order.
 
+You now still have a hole vs PMI.
 
-> 
->     smp_processor_id() and raw_smp_processor_id() are called once
->     each in virtnet_xdp_get_sq(), when curr_queue_pairs <= nr_cpu_ids,
->     should be merged
+> +static int
+> +intel_pmu_snapshot_branch_stack(struct perf_branch_snapshot *br_snapshot)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
 
-I'd just drop this part.
+Note that this requires preemption is disabled, then look at the
+call-sites in your next patch and spot the problem...
 
-> 
->     virtnet_xdp_get_sq() is called in non-preemptible context, so
->     it's safe to call the function smp_processor_id(), and keep
->     smp_processor_id(), and remove the calling of raw_smp_processor_id(),
->     avoid the wrong use virtnet_xdp_get_sq to preemptible context
->     in the future
+> +
+> +	intel_pmu_disable_all();
+> +	intel_pmu_lbr_read();
+> +	memcpy(br_snapshot->entries, cpuc->lbr_entries,
+> +	       sizeof(struct perf_branch_entry) * x86_pmu.lbr_nr);
+> +	br_snapshot->nr = x86_pmu.lbr_nr;
+> +	intel_pmu_enable_all(0);
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Workaround for:
+>   *   Intel Errata AAK100 (model 26)
+> @@ -6283,9 +6297,15 @@ __init int intel_pmu_init(void)
+>  			x86_pmu.lbr_nr = 0;
+>  	}
+>  
+> -	if (x86_pmu.lbr_nr)
+> +	if (x86_pmu.lbr_nr) {
+>  		pr_cont("%d-deep LBR, ", x86_pmu.lbr_nr);
+>  
+> +		/* only support branch_stack snapshot for perfmon >= v2 */
+> +		if (x86_pmu.disable_all == intel_pmu_disable_all)
+								  {
+> +			static_call_update(perf_snapshot_branch_stack,
+> +					   intel_pmu_snapshot_branch_stack);
 
-s/avoid.*/this way we'll get a warning if this is ever called in a preemptible context/
+		}
 
+> +	}
+> +
+>  	intel_pmu_check_extra_regs(x86_pmu.extra_regs);
+>  
+>  	/* Support full width counters using alternative MSR range */
 
-> 
-> -Li
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 011cc5069b7ba..22807864e913b 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -13437,3 +13437,6 @@ struct cgroup_subsys perf_event_cgrp_subsys = {
+>  	.threaded	= true,
+>  };
+>  #endif /* CONFIG_CGROUP_PERF */
+> +
+> +DEFINE_STATIC_CALL_RET0(perf_snapshot_branch_stack,
+> +			perf_snapshot_branch_stack_t);
 
+I'll squint and accept 82 characters :-)
