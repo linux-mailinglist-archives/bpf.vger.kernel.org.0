@@ -2,166 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25083FC79C
-	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 14:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD59F3FC866
+	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 15:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbhHaMxj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 08:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42612 "EHLO
+        id S238105AbhHaNjq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 09:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhHaMxj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Aug 2021 08:53:39 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CCDC061575
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 05:52:43 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id u14so38317092ejf.13
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 05:52:43 -0700 (PDT)
+        with ESMTP id S237552AbhHaNjq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Aug 2021 09:39:46 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45145C061760
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 06:38:51 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id z2so10301324qvl.10
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 06:38:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zNiC6TUjESHnzWkXmeRHVbBslUBHXHDX5iAWQhEE+RA=;
-        b=MVLBgY2hFR0wS3O06Z58t48AcJjFUDQ37nKvhjeUf0NaH9btWiNoDue9QLGA45evQO
-         Y+P1M2XPTttFBfu91KO4lF8fN+oDUay3NceRXf0dpGHn88wda65qZLBm/m/oNMu1Z0dt
-         I4jmfc+bNMjE3mO21StR09L7cuoGxHzYhzWuD3Nr88G9i6Hc9TiAOTW5vccV6ycGd5ji
-         QfFiU1DJlLnmsugSVOiddld3jv9BxU1vMsDMeQekdpCN70eOENwh3odkgTw6gVshal4m
-         BOUVO8At/FDqLBub/vIHpKQ34+AVuHjMQQWkiGCHF1r+dYtWZJmMQtZer04GFw1RSLQf
-         goKA==
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4cVWPMLdDwe2dW8rgQ4O5ZdeEA9NF5jDi3TG/HjqIHs=;
+        b=cbXk1iCt+OXs5GDhDkA23MEwInwGCBR9cNS96bqLK03L+Po0HLdBG1DUreWEh7GxFg
+         EBvcXQvzgnSPD9hEUBJx2x/A4XrAAv8dIH7rxISBxUSHCbqJcBe9KTHURb2wNNIGkgvO
+         kdcOmbarUx95IwcaHf2flxxK7gojU7+tuoAClZF5Sq0wlCZQi7mJqIKr2X1h/82q7A5A
+         u7oCQPyff1dYPnyjb/H0/PBseZPjxh3Xi+EBwdygP86NymVgeF7HJOS5XtDW4W/0QDd/
+         OURqKfoHKJ4SicHl36z6FkoArJmtdJ1CXgae9Ba9Ktr/uoBgC6ZBjNk/fop7NjqDZgs8
+         nPDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zNiC6TUjESHnzWkXmeRHVbBslUBHXHDX5iAWQhEE+RA=;
-        b=rQqsU/bWRCHf3fARsnbbdQPmE1Wp5Ry1Z+PdOJDlAxtQbmmBc388Nv1ykZY+BdWKS+
-         YbPaWsH+FVdamztR0Ct/xHYKVvAfvzsj0jPqpH/1lfBbz1cfpOZldTqcIKrULKz0VwHr
-         DjKb767AtKnZkkhvhKifAeHVy2BR4N/gPhQ7nFSJt6NDHznovxvZpV9IR9tjAZzFUTah
-         PX2FFEnhQSafaNZYf2lXM8ocS+Fp5X1cfj5DErQ0mWPSElHylKz121lv1leUX2JXhWT5
-         RtLARk8KUEUiKVA/GYK/EShQJsSbKRcnUL21uy0OcLVAFVOf9TCSjEnvn62HeXJliboE
-         DTwQ==
-X-Gm-Message-State: AOAM532GC5FBHC7JxWs6dXS66YmymB16hZGVI3nxrzwbg1CTkn4JZ40N
-        hvmpZ/x71dkRvShRXrWkXenOEA==
-X-Google-Smtp-Source: ABdhPJyZWGtVv8jKLifUVMy+cAFbd23QtYctx/VwFVYgZt8iHjVuD9qxVe9l0NRp7cKJqvIPAXWZ4g==
-X-Received: by 2002:a17:906:8258:: with SMTP id f24mr30763776ejx.375.1630414362090;
-        Tue, 31 Aug 2021 05:52:42 -0700 (PDT)
-Received: from localhost ([154.21.15.43])
-        by smtp.gmail.com with ESMTPSA id q18sm8249671ejc.84.2021.08.31.05.52.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Aug 2021 05:52:41 -0700 (PDT)
-Date:   Tue, 31 Aug 2021 16:52:40 +0400
-From:   Dmitrii Banshchikov <me@ubique.spb.ru>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4cVWPMLdDwe2dW8rgQ4O5ZdeEA9NF5jDi3TG/HjqIHs=;
+        b=JYIOq7RxIQuCl94fovLcFjBsuJsJ+uqGIZ/y4x4Nrieia2nyce3Ek/E/Yx2Rga1qNe
+         T3qm8Af1q4n3TZlUxmpTU+sSYw6X+Uf0aRJWtfzV+M+jwMzlyIiQj5FJtMtFOj7niIqX
+         ORyYNGdh5V9m3xIA5p5b59OLuFLryUG/hpMb5y1dtrUhL6TWZcadavEkp+Z/tRyEzFQr
+         pdTAOopiFuBhFIIHQWBEEQY4jR/grMKCD8hHbWU1T+YQOhfv0aJMBerRKh2L66yoDZuf
+         vb3kPmLnawpMfq3EEiFArlwlKIXyWyTAKFnHR3Wmgl26tfXUgqql1dOt4/1ni724aOEC
+         UuXQ==
+X-Gm-Message-State: AOAM532ObFeNyjv+sVHTjePPBZHkKHh9fU4Jec8hCToNqxeGx9cCm8j6
+        J55yGcwKLj9IbcGUaYVTmddzDw==
+X-Google-Smtp-Source: ABdhPJzW8Kv2XuLtrO1TP3JccBuX8ufuM05Cdx1pHoNxDG7KA6am7XjWWxGWv/IHTPiHCJjJ9yGviA==
+X-Received: by 2002:ad4:5651:: with SMTP id bl17mr21719930qvb.49.1630417130490;
+        Tue, 31 Aug 2021 06:38:50 -0700 (PDT)
+Received: from [192.168.1.79] (bras-base-kntaon1617w-grc-28-184-148-47-47.dsl.bell.ca. [184.148.47.47])
+        by smtp.googlemail.com with ESMTPSA id v3sm14063899qkd.20.2021.08.31.06.38.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 06:38:50 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v2 00/13] bpfilter
+To:     Dmitrii Banshchikov <me@ubique.spb.ru>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, davem@davemloft.net,
         daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
         songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
         kpsingh@kernel.org, netdev@vger.kernel.org, rdna@fb.com
-Subject: Re: [PATCH bpf-next v2 12/13] bpfilter: Add filter table
-Message-ID: <20210831125240.sm3ouie6hxur5cyb@amnesia>
 References: <20210829183608.2297877-1-me@ubique.spb.ru>
- <20210829183608.2297877-13-me@ubique.spb.ru>
- <20210830194545.rgwg3ks3alikeyzx@ast-mbp.dhcp.thefacebook.com>
- <20210830205443.wx3n2bhw44pji2hn@amnesia>
- <20210830234515.ncvsdswj4lalgpo3@ast-mbp.dhcp.thefacebook.com>
+ <a4039e82-9184-45bf-6aee-e663766d655a@mojatatu.com>
+ <20210831124856.fucr676zd365va7c@amnesia>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <ae2b3a81-acc2-39d1-2a89-ffea169e8230@mojatatu.com>
+Date:   Tue, 31 Aug 2021 09:38:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210830234515.ncvsdswj4lalgpo3@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210831124856.fucr676zd365va7c@amnesia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 04:45:15PM -0700, Alexei Starovoitov wrote:
-> On Tue, Aug 31, 2021 at 12:54:43AM +0400, Dmitrii Banshchikov wrote:
-> > On Mon, Aug 30, 2021 at 12:45:45PM -0700, Alexei Starovoitov wrote:
-> > > On Sun, Aug 29, 2021 at 10:36:07PM +0400, Dmitrii Banshchikov wrote:
-> > > >  /*
-> > > > - * # Generated by iptables-save v1.8.2 on Sat May  8 05:22:41 2021
-> > > > + *  Generated by iptables-save v1.8.2 on Sat May  8 05:22:41 2021
-> > > >   * *filter
-> > > ...
-> > > > - * -A LOCAL -s 10.32.0.0/11 -j FROMDC
-> > > > - * -A LOCAL -s 10.144.0.0/12 -j FROMDC
-> > > > - * -A LOCAL -s 10.160.0.0/12 -j FROMDC
-> > > > - * -A LOCAL -s 10.0.0.0/12 -j FROMDC
-> > > > - * -A LOCAL -s 10.248.0.0/24 -j FROMDC
-> > > > - * -A LOCAL -s 10.232.0.0/16 -j FROMDC
-> > > > - * -A LOCAL -s 10.1.146.131/32 -p udp -m udp --dport 161 -j ACCEPT
-> > > > - * -A LOCAL -s 10.149.118.14/32 -p udp -m udp --dport 161 -j ACCEPT
-> > > > - * -A LOCAL -p icmp -j ACCEPT
-> > > > + * :INPUT ACCEPT [0:0]
-> > > > + * :FORWARD ACCEPT [0:0]
-> > > > + * :OUTPUT ACCEPT [0:0]
-> > > > + * -A INPUT -s 1.1.1.1/32 -d 2.2.2.2/32 -j DROP
-> > > > + * -A INPUT -s 2.2.0.0/16 -d 3.0.0.0/8 -j DROP
-> > > > + * -A INPUT -p udp -m udp --sport 100 --dport 500 -j DROP
-> > > >   * COMMIT
-> > > >   */
-> > > 
-> > > Patch 10 adds this test, but then patch 12 removes most of it?
-> > > Keep both?
-> > 
-> > Sorry, I missed it.
-> > I decided that the large blob looks really ugly and switched to
-> > the smaller one and forgot to cleanup the patchset.
-> > 
-> > > 
-> > > Also hit this on my system with older glibc:
-> > > 
-> > > ../net/bpfilter/codegen.c: In function ‘codegen_push_subprog’:
-> > > ../net/bpfilter/codegen.c:67:4: warning: implicit declaration of function ‘reallocarray’ [-Wimplicit-function-declaration]
-> > >    67 |    reallocarray(codegen->subprogs, subprogs_max, sizeof(codegen->subprogs[0]));
-> > >       |    ^~~~~~~~~~~~
-> > > ../net/bpfilter/codegen.c:66:12: warning: assignment to ‘struct codegen_subprog_desc **’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
-> > >    66 |   subprogs =
-> > >       |            ^
-> > > 
-> > > In libbpf we have libbpf_reallocarray() for this reason.
-> > > 
-> > > Could you provide an example of generated bpf program?
-> > > And maybe add Documentation/bpf/bpfilter_design.rst ?
-> > 
-> > I will add documentation in the next iteration when
-> > bpf_map_for_each() subprog will be introduced.
-> > 
-> > > 
-> > > The tests don't build for me:
-> > > $ cd selftests/bpf/bpfilter; make
-> > > make: *** No rule to make target '-lelf', needed by '.../selftests/bpf/bpfilter/test_match'.  Stop.
-> > 
-> > libelf was added because libbpf depends on it.
-> > Are you able to build libbpf?
+On 2021-08-31 8:48 a.m., Dmitrii Banshchikov wrote:
+> On Mon, Aug 30, 2021 at 09:56:18PM -0400, Jamal Hadi Salim wrote:
+>> On 2021-08-29 2:35 p.m., Dmitrii Banshchikov wrote:
+
+
+>>
+>> Something is not clear from your email:
+>> You seem to indicate that no traffic was running in test 1.
+>> If so, why would 32 rulesets give different results than 1?
 > 
-> make proceeds to build libbpf just fine, but then it stops with above message.
-> I manually removed -lelf from Makefile. Then run make to see it fail linking
-> and then manually copy pasted gcc command to build it with additional -lelf
-> command line.
-> fwiw make -v
-> GNU Make 4.2.1
-
-Will take a look on it. Thanks.
-
+> I mentioned the lower and upper bound values for bogo-ops on the
+> machine. The lower bound is when there is traffic and no firewall
+> at all. The upper bound is when there is no firewall and no
+> traffic. Then the first test measures bogo-ops for two rule sets
+> when there is traffic for either iptables, nft or bpfilter.
 > 
-> > > 
-> > > The unit tests are great, btw. test_codegen is not end-to-end, right?
-> > > Could you add a full test with iptable command line?
-> > > or netns support is a prerequisite for it?
-> > 
-> > Yeah, as net namespaces aren't supported using iptables binary
-> > will modify the root namespace. That is the reason why codegen
-> > tests aren't implemented in the end-to-end fashion and rules are
-> > represented by blobs.
-> 
-> I think when ifindex is no longer hardcoded the netns support
-> doesn't have to be gating. The generic xdp attached to veth in netns
-> should work to do end-to-end test. bpftiler would need to do a bit of magic
-> to figure out the right ifindex. Or we can extend kernel with ifindex-less
-> generic XDP.
 
-Is it ok to add an external dependency to tests? The unit test
-will need to execute iptables binary.
+Thanks, I totally misread that. I did look at stress-ng initially
+to use it to stress the system and emulate some real world
+setup (polluting cache etc) while testing but the variability of
+the results was bad - so dropped it earlier. Maybe we should look
+at it again.
 
-
--- 
-
-Dmitrii Banshchikov
+cheers,
+jamal
