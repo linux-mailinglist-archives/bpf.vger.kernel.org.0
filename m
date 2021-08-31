@@ -2,97 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD59F3FC866
-	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 15:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC603FC8B9
+	for <lists+bpf@lfdr.de>; Tue, 31 Aug 2021 15:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238105AbhHaNjq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 09:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
+        id S239526AbhHaNvD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 09:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237552AbhHaNjq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Aug 2021 09:39:46 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45145C061760
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 06:38:51 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id z2so10301324qvl.10
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 06:38:51 -0700 (PDT)
+        with ESMTP id S237025AbhHaNvA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Aug 2021 09:51:00 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CECC061760
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 06:50:03 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id dm15so26911217edb.10
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 06:50:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4cVWPMLdDwe2dW8rgQ4O5ZdeEA9NF5jDi3TG/HjqIHs=;
-        b=cbXk1iCt+OXs5GDhDkA23MEwInwGCBR9cNS96bqLK03L+Po0HLdBG1DUreWEh7GxFg
-         EBvcXQvzgnSPD9hEUBJx2x/A4XrAAv8dIH7rxISBxUSHCbqJcBe9KTHURb2wNNIGkgvO
-         kdcOmbarUx95IwcaHf2flxxK7gojU7+tuoAClZF5Sq0wlCZQi7mJqIKr2X1h/82q7A5A
-         u7oCQPyff1dYPnyjb/H0/PBseZPjxh3Xi+EBwdygP86NymVgeF7HJOS5XtDW4W/0QDd/
-         OURqKfoHKJ4SicHl36z6FkoArJmtdJ1CXgae9Ba9Ktr/uoBgC6ZBjNk/fop7NjqDZgs8
-         nPDA==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zPX1Cx6i1wGAaNv/FyWRibhoHk490fta5weo1iPmB0Q=;
+        b=1dVdeB6E9D4+m134wRVReiHxIto9X5gCIKMBqQuRf87ES60DlT5paBnu3uA0Wer4x2
+         ny9wiMkfWtxR/Jww/CTgv66he1SAsLUUk4ZAaPnUDD7UQXXtjtzbdc+HxNbFcOEoioPZ
+         sWNnXfuuI79IjoTQAcbKSmuJHP3Pa07T+UStcaM7PpYUDsRZ3uWHw5aadzlmR7mU2GZH
+         bnWGy6bUdTewhMMNj8Hj6SXb1IQeqDl6BCCCD4dcaRuCou3iF3gxiKz6qIn1+GeXI9aR
+         espETnz/DEToQCnl5tcSCsCNxkJSLAEYfd4DKxlRK25cwk2hHeKRLRS2xX8IbcrVxPCv
+         7M6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4cVWPMLdDwe2dW8rgQ4O5ZdeEA9NF5jDi3TG/HjqIHs=;
-        b=JYIOq7RxIQuCl94fovLcFjBsuJsJ+uqGIZ/y4x4Nrieia2nyce3Ek/E/Yx2Rga1qNe
-         T3qm8Af1q4n3TZlUxmpTU+sSYw6X+Uf0aRJWtfzV+M+jwMzlyIiQj5FJtMtFOj7niIqX
-         ORyYNGdh5V9m3xIA5p5b59OLuFLryUG/hpMb5y1dtrUhL6TWZcadavEkp+Z/tRyEzFQr
-         pdTAOopiFuBhFIIHQWBEEQY4jR/grMKCD8hHbWU1T+YQOhfv0aJMBerRKh2L66yoDZuf
-         vb3kPmLnawpMfq3EEiFArlwlKIXyWyTAKFnHR3Wmgl26tfXUgqql1dOt4/1ni724aOEC
-         UuXQ==
-X-Gm-Message-State: AOAM532ObFeNyjv+sVHTjePPBZHkKHh9fU4Jec8hCToNqxeGx9cCm8j6
-        J55yGcwKLj9IbcGUaYVTmddzDw==
-X-Google-Smtp-Source: ABdhPJzW8Kv2XuLtrO1TP3JccBuX8ufuM05Cdx1pHoNxDG7KA6am7XjWWxGWv/IHTPiHCJjJ9yGviA==
-X-Received: by 2002:ad4:5651:: with SMTP id bl17mr21719930qvb.49.1630417130490;
-        Tue, 31 Aug 2021 06:38:50 -0700 (PDT)
-Received: from [192.168.1.79] (bras-base-kntaon1617w-grc-28-184-148-47-47.dsl.bell.ca. [184.148.47.47])
-        by smtp.googlemail.com with ESMTPSA id v3sm14063899qkd.20.2021.08.31.06.38.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Aug 2021 06:38:50 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v2 00/13] bpfilter
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, davem@davemloft.net,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, rdna@fb.com
-References: <20210829183608.2297877-1-me@ubique.spb.ru>
- <a4039e82-9184-45bf-6aee-e663766d655a@mojatatu.com>
- <20210831124856.fucr676zd365va7c@amnesia>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Message-ID: <ae2b3a81-acc2-39d1-2a89-ffea169e8230@mojatatu.com>
-Date:   Tue, 31 Aug 2021 09:38:48 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zPX1Cx6i1wGAaNv/FyWRibhoHk490fta5weo1iPmB0Q=;
+        b=Ro7veWFl8rUa6Yd2Ih4UsP/AVua/CPseIiqWL2cXtjQ3576oLyS5BtkqrLnIisfzmO
+         pkMjuaV6L35In6NSqLMaPsdWmY++uZjW+LZqeeJMlbEtVgvynTwg4QxXbKTIp5trdeHe
+         ZemvmE7e6IoqERN+xsNqnltNMdP/ICQvRueb3HaIrDway01HUdTEXavwytyssECLi+jQ
+         1Q2Y4TLHBnum4gHZyHmHlniLBZWOUoIfaq3i780F3bdAIawQgNufwjbTfF6O9LJEw1WC
+         vfjsfTeVYyblruCTt4fVvDFWTTWaf7ENEu3oYvlnhAaovXB7LJbcVEr4maBaqX0XAipm
+         09bw==
+X-Gm-Message-State: AOAM533sL9tUlh4M9QXo3ZY3f8wKZfEze6hAa+eS5ppzspXlwtLJanCg
+        Z5EpMi5LCICm3kM30KVMzPJZ0ICr2YmUIUiZj+jL
+X-Google-Smtp-Source: ABdhPJyGDT7sjKnvAaslCh6VU3oeZudwS5qG9rubETPaZxPkqNoONMqbRw1AEONbP0PiecvVT5WPlpdCnWvYhqaPj8Q=
+X-Received: by 2002:a05:6402:4cf:: with SMTP id n15mr30404106edw.269.1630417801745;
+ Tue, 31 Aug 2021 06:50:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210831124856.fucr676zd365va7c@amnesia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210616085118.1141101-1-omosnace@redhat.com> <CAHC9VhSr2KpeBXuyoHR3_hs+qczFUaBx0oCSMfBBA5UNYU+0KA@mail.gmail.com>
+ <CAFqZXNvJtMOfLk-SLt2S2qt=+-x8fm9jS3NKxFoT0_5d2=8Ckg@mail.gmail.com>
+In-Reply-To: <CAFqZXNvJtMOfLk-SLt2S2qt=+-x8fm9jS3NKxFoT0_5d2=8Ckg@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 31 Aug 2021 09:49:50 -0400
+Message-ID: <CAHC9VhRdh0uTBur8PHOR4bL38rQozatO7J2fwEzZiLwRXLL7fg@mail.gmail.com>
+Subject: Re: [PATCH v3] lockdown,selinux: fix wrong subject in some SELinux
+ lockdown checks
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        linux-acpi@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-efi@vger.kernel.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-serial@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        kexec@lists.infradead.org,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-08-31 8:48 a.m., Dmitrii Banshchikov wrote:
-> On Mon, Aug 30, 2021 at 09:56:18PM -0400, Jamal Hadi Salim wrote:
->> On 2021-08-29 2:35 p.m., Dmitrii Banshchikov wrote:
+On Tue, Aug 31, 2021 at 5:08 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> Can we move this forward somehow, please?
 
+As mentioned previously, I can merge this via the SELinux tree but I
+need to see some ACKs from the other subsystems first, not to mention
+some resolution to the outstanding questions.
 
->>
->> Something is not clear from your email:
->> You seem to indicate that no traffic was running in test 1.
->> If so, why would 32 rulesets give different results than 1?
-> 
-> I mentioned the lower and upper bound values for bogo-ops on the
-> machine. The lower bound is when there is traffic and no firewall
-> at all. The upper bound is when there is no firewall and no
-> traffic. Then the first test measures bogo-ops for two rule sets
-> when there is traffic for either iptables, nft or bpfilter.
-> 
-
-Thanks, I totally misread that. I did look at stress-ng initially
-to use it to stress the system and emulate some real world
-setup (polluting cache etc) while testing but the variability of
-the results was bad - so dropped it earlier. Maybe we should look
-at it again.
-
-cheers,
-jamal
+-- 
+paul moore
+www.paul-moore.com
