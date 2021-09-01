@@ -2,97 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515253FD1DC
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 05:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5FB3FD206
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 06:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241812AbhIADjI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 23:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47872 "EHLO
+        id S229487AbhIAEDs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Sep 2021 00:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241811AbhIADjH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Aug 2021 23:39:07 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C55C061575;
-        Tue, 31 Aug 2021 20:38:11 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id f15so2512840ybg.3;
-        Tue, 31 Aug 2021 20:38:11 -0700 (PDT)
+        with ESMTP id S229441AbhIAEDr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Sep 2021 00:03:47 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859EDC061575;
+        Tue, 31 Aug 2021 21:02:51 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id v26so417438ybd.9;
+        Tue, 31 Aug 2021 21:02:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nvD84ugqQhro2PABRBkxd/oqt9jOPsun4IafVjYuMAo=;
-        b=o6ijO5e6ux1f1tC8Z5VjaI/1QJ9tDBeUvEY8lPIWKyzZx+xNlRTZ7DgxhIkWHbZUEP
-         erUKuC4Kvm/f0eAWFzB8FqJLPZj2rstzf1Nlf7WrI7ao74JIXrY+kqnquZs0kqQ+fON2
-         MtQpZgcFyoSoy2CwA9n0cKwnXXzh0mfj8ojgUBTSTxxHF+5lEva2u5mEZzfLcszFAlg0
-         RxMTjXaTHRHcGM+L0+CEcp/tTR6oJqgTPCZwqIwKT5YmtSMXcvtIQbrJwgEYvUsNh3HU
-         0I2Cucb0wp2E92PyQvIuc/z+6fKSOxwmDmq053csePt2KGqY1uJrltRNEyTeOs3vN4yW
-         48kg==
+        bh=3jvvFuay3kvFuziBi2+wIgp51YYcFQaw4C+vPV7RxBY=;
+        b=jCB7H0vbJHZXWbx/rKoyVmPSlZnv1sBq8vdikvihB+5ts0bB3NMBxl5+lihGK9CWUY
+         5m4lq3wv0UFHnMKkNBE5ZA6GvnveWS/MUHX5R4gwBENxsxnwDMlVC0ge5lV6g8v+0+8d
+         uCkkfKPPlJCsV8Y6R9sg2usmFwn+FcI/pmMcbrj/D71ok1jOSoNwNXpSJLKTcXoevmag
+         6oB8+8HLOODAMGk2SkfQUKBSQv7tvJtBzpfj7tCRYtd9oqOlwZPgIBtKtSWAbe8cdbZY
+         HBGlGPl2z27MxRQF1cljdwDtC2J2kr8owHWhRpqAwsxX+Rfc3MrhDAx7qveaTSRTeFt0
+         nZCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nvD84ugqQhro2PABRBkxd/oqt9jOPsun4IafVjYuMAo=;
-        b=N5BWzzCgK9jdKk1f5awCPQ+8O2K6jvD8vpkZCB/lx6sVx34oFltA+g6uoZ5m9jqIaw
-         TaETE9ay5GPDUNZFZ+g5St3f4bY5wBQsIlfHSDUWGOnfK2hfPnHNhRdxCImuQkAPe1cm
-         ganASYyLG+G2HG0qCy2g7DxzrGaF4NSbBFwCT4tVCjokGHUTm7oMc9MH+M5T8tEZbqae
-         2kzpbBtVyxamudcZKTeyyBpEnWQ/dEDBKfis2l9NLHcqos2V2iPXtm4QLgnihWcxoq3Y
-         lfriISEAoO4KCBBLgctv/iZP25Vvt6omDVmRp6ARn/5z1lqUTLKC9+gss5aT7/vcgrou
-         JILQ==
-X-Gm-Message-State: AOAM530Rb9DajuXExpG01Q7vJa5unmsZNMTPqJNT2ITeT9JqtDxmdhVf
-        vbf8z+liBBq74fZoejHWxRIK6d4QHMD9VBKFi6E=
-X-Google-Smtp-Source: ABdhPJxvjgan2QF6MzekFlP5IW4JeqbpUT1xrImBZG2OUF19EfUCuOtl3tThOt005xgprmBtIhKzAZ8AcquBeQooR8o=
-X-Received: by 2002:a25:16c6:: with SMTP id 189mr34949672ybw.27.1630467490997;
- Tue, 31 Aug 2021 20:38:10 -0700 (PDT)
+        bh=3jvvFuay3kvFuziBi2+wIgp51YYcFQaw4C+vPV7RxBY=;
+        b=A3pIr68iVpALodO9G1Qs1ZNKE4+Zpm3ESxtyKj0txQZLZfefiN6ZllLQsa2WVeeu8f
+         Qzn+DfB45rcWqCjG+LwwY3+FS3rUW6yO3ohVrv+VEXyWlOVurV0jJNDHsb4ollkuqN5L
+         zj4MyzmWcPt7fktdnLpJb6HdzGax9tKPBuE5jyynh44IPvdBSxs4B+4bZ321ULjmz6mu
+         24SbDaPo/v6I66U6zTX6qoakJdc75u9gBMbKI5gDKqbkDGQsUTpsG+vgnAZK8OXBCIJa
+         FWIbzPX+80tkYIPJNtMeKwHLmLPPo5eJVHLSZwJ4AX+F+zrcpQfd4o9BvW2IQhAdtFrF
+         TKDw==
+X-Gm-Message-State: AOAM531TnsdZCSOoc5QDc/61iSaHXVdKwAujoTP9Yafkq2dMm/YXzii1
+        7Xb9Moxt84DFqcp5lgEh0RLf4xFU5DUFzX/EDl4=
+X-Google-Smtp-Source: ABdhPJzir6T0JZ97Rw2E61zEdODF/tNWIuSgxr2AIWkP5w+rekEmH48hqvYBMSKTzAgqt6eQSyH85WPPVn7SguelBmw=
+X-Received: by 2002:a25:bdc5:: with SMTP id g5mr34790828ybk.403.1630468970557;
+ Tue, 31 Aug 2021 21:02:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830173424.1385796-1-memxor@gmail.com> <20210830173424.1385796-4-memxor@gmail.com>
- <CAEf4Bza11W+NPt1guXj87fy_xcsWLHeFLNK0OkzL9A+TfcYhog@mail.gmail.com>
- <20210901022701.g7nzkmm6lo7jf3wd@apollo.localdomain> <CAADnVQ+yCv14f6=yCgqZJJxqjC+J18ex32j03q6N_JL_ohovzA@mail.gmail.com>
-In-Reply-To: <CAADnVQ+yCv14f6=yCgqZJJxqjC+J18ex32j03q6N_JL_ohovzA@mail.gmail.com>
+References: <20210901003517.3953145-1-songliubraving@fb.com> <20210901003517.3953145-3-songliubraving@fb.com>
+In-Reply-To: <20210901003517.3953145-3-songliubraving@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 Aug 2021 20:38:00 -0700
-Message-ID: <CAEf4Bza_drPotcErp6=zpZ705BbJ4QFf2bYYpcX5UuF_+7b3Eg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next RFC v1 3/8] libbpf: Support kernel module
- function calls
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
+Date:   Tue, 31 Aug 2021 21:02:39 -0700
+Message-ID: <CAEf4BzaPuPJKnVJ+Bi4aNs57A2x0jRnM3V-ud37U6V=wThHAYQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 7:59 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Aug 31, 2021 at 7:01 PM Song Liu <songliubraving@fb.com> wrote:
 >
-> On Tue, Aug 31, 2021 at 7:27 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> > > > @@ -5327,6 +5340,7 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
-> > > >                         ext = &obj->externs[relo->sym_off];
-> > > >                         insn[0].src_reg = BPF_PSEUDO_KFUNC_CALL;
-> > > >                         insn[0].imm = ext->ksym.kernel_btf_id;
-> > > > +                       insn[0].off = ext->ksym.offset;
-> > >
-> > > Just a few lines above we use insn[1].imm =
-> > > ext->ksym.kernel_btf_obj_fd; for EXT_KSYM (for variables). Why are you
-> > > inventing a new form if we already have a pretty consistent pattern?
-> > >
-> >
-> > That makes sense. This is all new to me, so I went with what was described in
-> > e6ac2450d6de (bpf: Support bpf program calling kernel function), but I'll rework
-> > it to encode the btf fd like that in the next spin. It also makes the everything
-> > far simpler.
+> Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
+> branch trace from hardware (e.g. Intel LBR). To use the feature, the
+> user need to create perf_event with proper branch_record filtering
+> on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
+> On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
 >
-> Hmm. kfunc call is a call insn. There is no imm[1].
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  include/uapi/linux/bpf.h       | 22 +++++++++++++++++++
+>  kernel/bpf/trampoline.c        |  3 ++-
+>  kernel/trace/bpf_trace.c       | 40 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 22 +++++++++++++++++++
+>  4 files changed, 86 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 791f31dd0abee..c986e6fad5bc0 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4877,6 +4877,27 @@ union bpf_attr {
+>   *             Get the struct pt_regs associated with **task**.
+>   *     Return
+>   *             A pointer to struct pt_regs.
+> + *
+> + * long bpf_get_branch_snapshot(void *entries, u32 size, u64 flags)
+> + *     Description
+> + *             Get branch trace from hardware engines like Intel LBR. The
+> + *             branch trace is taken soon after the trigger point of the
+> + *             BPF program, so it may contain some entries after the
+> + *             trigger point. The user need to filter these entries
+> + *             accordingly.
+> + *
+> + *             The data is stored as struct perf_branch_entry into output
+> + *             buffer *entries*. *size* is the size of *entries* in bytes.
+> + *             *flags* is reserved for now and must be zero.
+> + *
+> + *     Return
+> + *             On success, number of bytes written to *buf*. On error, a
+> + *             negative value.
+> + *
+> + *             **-EINVAL** if arguments invalid or **size** not a multiple
+> + *             of **sizeof**\ (**struct perf_branch_entry**\ ).
+> + *
+> + *             **-ENOENT** if architecture does not support branch records.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -5055,6 +5076,7 @@ union bpf_attr {
+>         FN(get_func_ip),                \
+>         FN(get_attach_cookie),          \
+>         FN(task_pt_regs),               \
+> +       FN(get_branch_snapshot),        \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index fe1e857324e66..39eaaff81953d 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/rcupdate_trace.h>
+>  #include <linux/rcupdate_wait.h>
+>  #include <linux/module.h>
+> +#include <linux/static_call.h>
+>
+>  /* dummy _ops. The verifier will operate on target program's ops. */
+>  const struct bpf_verifier_ops bpf_extension_verifier_ops = {
+> @@ -526,7 +527,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+>  }
+>
+>  #define NO_START_TIME 1
+> -static u64 notrace bpf_prog_start_time(void)
+> +static __always_inline u64 notrace bpf_prog_start_time(void)
+>  {
+>         u64 start = NO_START_TIME;
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 8e2eb950aa829..a8ec3634a3329 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1017,6 +1017,44 @@ static const struct bpf_func_proto bpf_get_attach_cookie_proto_pe = {
+>         .arg1_type      = ARG_PTR_TO_CTX,
+>  };
+>
+> +static DEFINE_PER_CPU(struct perf_branch_snapshot, bpf_perf_branch_snapshot);
+> +
+> +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
+> +{
+> +#ifndef CONFIG_X86
+> +       return -ENOENT;
 
-Doh, right :( Never mind, we'll need to use fd_array for this.
+nit: -EOPNOTSUPP probably makes more sense for this?
 
-Either way, I don't think hashmap use is warranted here to find a BTF
-slot. Let's just do linear search, it's not like we are going to have
-thousands of module BTFs used by any single BPF program, right?
+> +#else
+> +       static const u32 br_entry_size = sizeof(struct perf_branch_entry);
+> +       u32 to_copy;
+> +
+> +       if (unlikely(flags))
+> +               return -EINVAL;
+> +
+> +       if (!buf || (size % br_entry_size != 0))
+> +               return -EINVAL;
+> +
+> +       static_call(perf_snapshot_branch_stack)(this_cpu_ptr(&bpf_perf_branch_snapshot));
+
+First, you have four this_cpu_ptr(&bpf_perf_branch_snapshot)
+invocations in this function, probably cleaner to store the pointer in
+local variable?
+
+But second, this still has the reentrancy problem, right? And further,
+we copy the same LBR data twice (to per-cpu buffer and into
+user-provided destination).
+
+What if we change perf_snapshot_branch_stack signature to this:
+
+int perf_snapshot_branch_stack(struct perf_branch_entry *entries, int
+max_nr_entries);
+
+with the semantics that it will copy only min(max_nr_entreis,
+PERF_MAX_BRANCH_RECORDS) * sizeof(struct perf_branch_entry) bytes.
+That way we can copy directly into a user-provided buffer with no
+per-cpu storage. Of course, perf_snapshot_branch_stack will return
+number of entries copied, either as return result, or if static calls
+don't support that, as another int *nr_entries output argument.
+
+
+> +
+> +       if (this_cpu_ptr(&bpf_perf_branch_snapshot)->nr == 0)
+> +               return -ENOENT;
+> +
+> +       to_copy = this_cpu_ptr(&bpf_perf_branch_snapshot)->nr *
+> +               sizeof(struct perf_branch_entry);
+> +       to_copy = min_t(u32, size, to_copy);
+> +       memcpy(buf, this_cpu_ptr(&bpf_perf_branch_snapshot)->entries, to_copy);
+> +
+> +       return to_copy;
+> +#endif
+> +}
+> +
+
+[...]
