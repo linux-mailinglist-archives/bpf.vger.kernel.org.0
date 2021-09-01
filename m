@@ -2,158 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0A13FD819
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 12:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8FE3FD8C5
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 13:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239957AbhIAKta (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Sep 2021 06:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238584AbhIAKt0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Sep 2021 06:49:26 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A419AC061760;
-        Wed,  1 Sep 2021 03:48:29 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id i3so1526611wmq.3;
-        Wed, 01 Sep 2021 03:48:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=w/EUsXdij3lSByOwN7tFJbAP26Euxi8J8qCeyd1PWMU=;
-        b=qlb0H+nTRnwBTgGZDO4SUQ59o1cPMiA25U3w2BRdVFQdNw62AB1Rrbn/N1o9B0v5T6
-         /VfkV89FeqEwmJDI1WEhHL1CCUll+SKQK+9xnSVWPFFCbOEo0twTk3/vBtauQoYWx3H8
-         TpjrT30m9+L1QWCzBoTCt+ZOB3dSzbQ7A2cAv3DrzjSFTcerSVxetbhORcalXd4GCQ7D
-         Uv2RfgHNsY5lYo9gP4oRtgXhUKXMhWnWXy/SuDTrYbRCDMQTy/SzEF6Y69s94vtaKqjC
-         3hD19uC18nTSKw3o8ZgzObPx1NatPlHAfWMus/jwJgA75dBbpzTHJviP4n3mQaN4Zvng
-         zexg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=w/EUsXdij3lSByOwN7tFJbAP26Euxi8J8qCeyd1PWMU=;
-        b=bwhxzrHEwrdMZEE71fckzpj61NePV5O/NPoZjALR+obIIbPDBE/21U+mGfAbPYH8br
-         v1JgDf0RvPvP4m8JWADM/QkgY1oXVSbBDVnPC86y17/odeX3UqUozaoJFZ6s/0KNQc3J
-         Sc562fN6qEf3y+EEH3nF7IND0tOH5rt5Kw1gaOTQUom6w63B5P85eeWmc2CMmYElZ4BD
-         PnUU7+5+kkc/QGiFkSwL/qjHmVrMtxydoahG6ZCHjd1RO7yshfE7LT5KoZidllCGs5CW
-         kaFBxtJ8YJSsc/HiWuCCS8OJQ3xm9bkomVg0huXIciAV2ni3yrNlq0J5Xhh4dtNDVwn5
-         GjBw==
-X-Gm-Message-State: AOAM530CJEJDX9kvK5gEDUCYQh7M2c28sf8Y9cdtNRTxFY3T7gezUzqG
-        svLHP0fTRvkl13FX78I/m20pRXT4U0dCy+gu
-X-Google-Smtp-Source: ABdhPJwi7+GmyjMmJkxgvGpjXP/yyjCa74pcsuZA//4/w0AjBXvrnrnIlx8PXa/S8s6VIczmSqaGwA==
-X-Received: by 2002:a05:600c:350d:: with SMTP id h13mr8776634wmq.38.1630493308309;
-        Wed, 01 Sep 2021 03:48:28 -0700 (PDT)
-Received: from localhost.localdomain (h-46-59-47-246.A165.priv.bahnhof.se. [46.59.47.246])
-        by smtp.gmail.com with ESMTPSA id r12sm21530843wrv.96.2021.09.01.03.48.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 01 Sep 2021 03:48:27 -0700 (PDT)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com
-Cc:     jonathan.lemon@gmail.com, ciara.loftus@intel.com,
-        bpf@vger.kernel.org, yhs@fb.com, andrii@kernel.org
-Subject: [PATCH bpf-next 20/20] selftests: xsk: add tests for 2K frame size
-Date:   Wed,  1 Sep 2021 12:47:32 +0200
-Message-Id: <20210901104732.10956-21-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210901104732.10956-1-magnus.karlsson@gmail.com>
-References: <20210901104732.10956-1-magnus.karlsson@gmail.com>
+        id S242850AbhIALbj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Sep 2021 07:31:39 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:33867 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238369AbhIALbj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Sep 2021 07:31:39 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5D804580BFF;
+        Wed,  1 Sep 2021 07:30:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 01 Sep 2021 07:30:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=G
+        PssD/uNZz84wcIk7cs83jegUsWzfmRSjClnkDPIgT4=; b=rhLMtQtIuPNPno+aR
+        q8BW/JT4rJxJ4DpiYa/9bgd+ku1hdTL3Ipup847P5J6zOBgsXwjXqTO8YpPVOuov
+        6/UirwgYJ9LLE30QPYrOtQpSTjyVYO2r0OqdCQ6R6pSZBZ7AiGuKrd2NTMSi3E0g
+        nhxSpZc/ZDgGa0QhjDcutq4w26DWWaGZelibSvuoSGMPUVM7KwF0pYfPisIG+sMR
+        S5j0WwYibX/dKohT7axK6FmpuJY+PWOECq5lU2UYro5iynVn3YPGXUjzN8Pvg5uW
+        rbqBMdMcMXKQ8kNv6pMnQyWqMo8K5xX/f6zQ8yE2U5ccUEtGYN162H/pFsVyY+EA
+        5P6HA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=GPssD/uNZz84wcIk7cs83jegUsWzfmRSjClnkDPIg
+        T4=; b=Yp0slgk16ydWOUxchwYVNjj8806MGQkrBo1mgpSgSw9YjZ27tQMVN9jcV
+        ndc+jGsERnLBJnWLQfAA/DDN4TSzVvrR1aEtH+BVVetMZT9BVgaEviPmnDD7kT5H
+        REHmMRT9MSLOiwt+MmZl9c26ez7Qg2lEZit1FaNWGYjTQfphjqFzWLB+Pn32vCgg
+        BqUT4ZPGtjuFpvL5WuGuOTBA/8c0DL99t57ohE1i3imy7dQg5aFvRzm4qFqfzSEq
+        vUI0KsnVPuJwOwoukk3+NfRkey16WLMedd50J+Lm4zg2xM09vdtRQ3w/v0jeNoEQ
+        /1rE305G7v4vsLbtsfQxUUHU29Dtw==
+X-ME-Sender: <xms:YGQvYYIWkXLk4QaLJQVr5sKMq5HTwZBNthN2nY3dPuX9QjB4guxZUQ>
+    <xme:YGQvYYJ9zeWCnUqo-4rIsvLEXPEVG-0i289zieQKUR1cYHNpoliUPnFZfV1KFzfpP
+    FS3nHyQmQ5zCQ>
+X-ME-Received: <xmr:YGQvYYuUed4mfpFgm0msiUbbqjjgEQeSpRSyk2m4O8h_zsrseHdcljRpfgt6A_yi0aB7uKN-O5D_vgL2WvhOXypue-p4i1Eu>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvfedggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueehke
+    ehlefffeeiudetfeekjeffvdeuheejjeffheeludfgteekvdelkeduuddvnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:YGQvYVaNQLQte4Uzg5HypTNd6SatHM5GibQixsJZMhpsJ1GQ76ZQ7w>
+    <xmx:YGQvYfY1A9pBoyy1qE3Y7gOTQrbpgENtqwOI6Q1v2SMJpswztecMrA>
+    <xmx:YGQvYRCah0mdyDcEFR5L8BrmkppTqUeT2O9rW3W_A7ufOdEliNuGVQ>
+    <xmx:YmQvYTTMXzy1QJ23DGh_7wNNzfPrYWDuFPPrbKnX3T55WZXNE4rWdg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 1 Sep 2021 07:30:40 -0400 (EDT)
+Date:   Wed, 1 Sep 2021 13:30:37 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Cc:     stable@vger.kernel.org, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Pavel Machek <pavel@denx.de>
+Subject: Re: [PATCH 4.14 1/4] bpf: Do not use ax register in interpreter on
+ div/mod
+Message-ID: <YS9kXabJPWScxiHi@kroah.com>
+References: <20210830183211.339054-1-cascardo@canonical.com>
+ <20210830183211.339054-2-cascardo@canonical.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210830183211.339054-2-cascardo@canonical.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Mon, Aug 30, 2021 at 03:32:08PM -0300, Thadeu Lima de Souza Cascardo wrote:
+> From: Daniel Borkmann <daniel@iogearbox.net>
+> 
+> Partially undo old commit 144cd91c4c2b ("bpf: move tmp variable into ax
+> register in interpreter"). The reason we need this here is because ax
+> register will be used for holding temporary state for div/mod instruction
+> which otherwise interpreter would corrupt. This will cause a small +8 byte
+> stack increase for interpreter, but with the gain that we can use it from
+> verifier rewrites as scratch register.
+> 
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+> [cascardo: This partial revert is needed in order to support using AX for
+> the following two commits, as there is no JMP32 on 4.19.y]
+> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> ---
+>  kernel/bpf/core.c | 32 +++++++++++++++-----------------
+>  1 file changed, 15 insertions(+), 17 deletions(-)
+> 
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index e7211b0fa27c..30d871be9974 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -616,9 +616,6 @@ static int bpf_jit_blind_insn(const struct bpf_insn *from,
+>  	 * below.
+>  	 *
+>  	 * Constant blinding is only used by JITs, not in the interpreter.
+> -	 * The interpreter uses AX in some occasions as a local temporary
+> -	 * register e.g. in DIV or MOD instructions.
+> -	 *
+>  	 * In restricted circumstances, the verifier can also use the AX
+>  	 * register for rewrites as long as they do not interfere with
+>  	 * the above cases!
+> @@ -951,6 +948,7 @@ static unsigned int ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn,
+>  	u32 tail_call_cnt = 0;
+>  	void *ptr;
+>  	int off;
+> +	u64 tmp;
+>  
+>  #define CONT	 ({ insn++; goto select_insn; })
+>  #define CONT_JMP ({ insn++; goto select_insn; })
+> @@ -1013,22 +1011,22 @@ static unsigned int ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn,
+>  	ALU64_MOD_X:
+>  		if (unlikely(SRC == 0))
+>  			return 0;
+> -		div64_u64_rem(DST, SRC, &AX);
+> -		DST = AX;
+> +		div64_u64_rem(DST, SRC, &tmp);
+> +		DST = tmp;
+>  		CONT;
+>  	ALU_MOD_X:
+>  		if (unlikely((u32)SRC == 0))
+>  			return 0;
+> -		AX = (u32) DST;
+> -		DST = do_div(AX, (u32) SRC);
+> +		tmp = (u32) DST;
+> +		DST = do_div(tmp, (u32) SRC);
+>  		CONT;
+>  	ALU64_MOD_K:
+> -		div64_u64_rem(DST, IMM, &AX);
+> -		DST = AX;
+> +		div64_u64_rem(DST, IMM, &tmp);
+> +		DST = tmp;
+>  		CONT;
+>  	ALU_MOD_K:
+> -		AX = (u32) DST;
+> -		DST = do_div(AX, (u32) IMM);
+> +		tmp = (u32) DST;
+> +		DST = do_div(tmp, (u32) IMM);
+>  		CONT;
+>  	ALU64_DIV_X:
+>  		if (unlikely(SRC == 0))
+> @@ -1038,17 +1036,17 @@ static unsigned int ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn,
+>  	ALU_DIV_X:
+>  		if (unlikely((u32)SRC == 0))
+>  			return 0;
+> -		AX = (u32) DST;
+> -		do_div(AX, (u32) SRC);
+> -		DST = (u32) AX;
+> +		tmp = (u32) DST;
+> +		do_div(tmp, (u32) SRC);
+> +		DST = (u32) tmp;
+>  		CONT;
+>  	ALU64_DIV_K:
+>  		DST = div64_u64(DST, IMM);
+>  		CONT;
+>  	ALU_DIV_K:
+> -		AX = (u32) DST;
+> -		do_div(AX, (u32) IMM);
+> -		DST = (u32) AX;
+> +		tmp = (u32) DST;
+> +		do_div(tmp, (u32) IMM);
+> +		DST = (u32) tmp;
+>  		CONT;
+>  	ALU_END_TO_BE:
+>  		switch (IMM) {
+> -- 
+> 2.30.2
+> 
 
-Add tests for 2K frame size. Both a standard send and receive test and
-one testing for invalid descriptors when the frame size is 2K.
+Oops, no, this patch causes build errors:
 
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- tools/testing/selftests/bpf/xdpxceiver.c | 23 +++++++++++++++++++++++
- tools/testing/selftests/bpf/xdpxceiver.h |  2 ++
- 2 files changed, 25 insertions(+)
+kernel/bpf/core.c: In function ‘___bpf_prog_run’:
+kernel/bpf/core.c:951:13: error: redeclaration of ‘tmp’ with no linkage
+  951 |         u64 tmp;
+      |             ^~~
+kernel/bpf/core.c:839:13: note: previous declaration of ‘tmp’ with type ‘u64’ {aka ‘long long unsigned int’}
+  839 |         u64 tmp;
+      |             ^~~
+make[2]: *** [scripts/Makefile.build:329: kernel/bpf/core.o] Error 1
 
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index a4f6ce3a6b14..8e4cb781a3e3 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -48,6 +48,7 @@
-  *    g. unaligned mode
-  *    h. tests for invalid and corner case Tx descriptors so that the correct ones
-  *       are discarded and let through, respectively.
-+ *    i. 2K frame size tests
-  *
-  * Total tests: 12
-  *
-@@ -1203,6 +1204,8 @@ static void testapp_inv_desc(struct test_spec *test)
- 			     {UMEM_SIZE - PKT_SIZE / 2, PKT_SIZE, 0, false},
- 		/* Straddle a page boundrary */
- 			     {0x3000 - PKT_SIZE / 2, PKT_SIZE, 0, false},
-+		/* Straddle a 2K boundrary */
-+			     {0x3800 - PKT_SIZE / 2, PKT_SIZE, 0, true},
- 		/* Valid packet for synch so that something is received */
- 			     {0x4000, PKT_SIZE, 0, true}};
- 
-@@ -1210,6 +1213,11 @@ static void testapp_inv_desc(struct test_spec *test)
- 		/* Crossing a page boundrary allowed */
- 		pkts[6].valid = true;
- 	}
-+	if (test->ifobj_tx->umem->frame_size == XSK_UMEM__DEFAULT_FRAME_SIZE / 2) {
-+		/* Crossing a 2K frame size boundrary not allowed */
-+		pkts[7].valid = false;
-+	}
-+
- 	pkt_stream_set(test, pkts, ARRAY_SIZE(pkts));
- 	testapp_validate_traffic(test);
- 	pkt_stream_restore_default(test);
-@@ -1260,6 +1268,15 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- 		test_spec_set_name(test, "RUN_TO_COMPLETION");
- 		testapp_validate_traffic(test);
- 		break;
-+	case TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME:
-+		test_spec_set_name(test, "RUN_TO_COMPLETION_2K_FRAME_SIZE");
-+		test->ifobj_tx->umem->frame_size = 2048;
-+		test->ifobj_rx->umem->frame_size = 2048;
-+		pkt_stream_replace(test, DEFAULT_PKT_CNT, MIN_PKT_SIZE);
-+		testapp_validate_traffic(test);
-+
-+		pkt_stream_restore_default(test);
-+		break;
- 	case TEST_TYPE_POLL:
- 		test->ifobj_tx->use_poll = true;
- 		test->ifobj_rx->use_poll = true;
-@@ -1270,6 +1287,12 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- 		test_spec_set_name(test, "ALIGNED_INV_DESC");
- 		testapp_inv_desc(test);
- 		break;
-+	case TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME:
-+		test_spec_set_name(test, "ALIGNED_INV_DESC_2K_FRAME_SIZE");
-+		test->ifobj_tx->umem->frame_size = 2048;
-+		test->ifobj_rx->umem->frame_size = 2048;
-+		testapp_inv_desc(test);
-+		break;
- 	case TEST_TYPE_UNALIGNED_INV_DESC:
- 		test_spec_set_name(test, "UNALIGNED_INV_DESC");
- 		test->ifobj_tx->umem->unaligned_mode = true;
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
-index 2d9efb89ea28..5ac4a5e64744 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.h
-+++ b/tools/testing/selftests/bpf/xdpxceiver.h
-@@ -54,9 +54,11 @@ enum test_mode {
- 
- enum test_type {
- 	TEST_TYPE_RUN_TO_COMPLETION,
-+	TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME,
- 	TEST_TYPE_POLL,
- 	TEST_TYPE_UNALIGNED,
- 	TEST_TYPE_ALIGNED_INV_DESC,
-+	TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME,
- 	TEST_TYPE_UNALIGNED_INV_DESC,
- 	TEST_TYPE_TEARDOWN,
- 	TEST_TYPE_BIDI,
--- 
-2.29.0
 
+Please fix up and resend the whole series, as I will go drop these 3
+patches from the 4.14.y queue now.
+
+greg k-h
