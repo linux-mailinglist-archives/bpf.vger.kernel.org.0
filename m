@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C243FD00B
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 01:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C30F3FD016
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 02:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235942AbhHaXw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 19:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
+        id S242514AbhIAADI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 20:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234343AbhHaXw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Aug 2021 19:52:26 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443DAC061575;
-        Tue, 31 Aug 2021 16:51:30 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id k65so1623210yba.13;
-        Tue, 31 Aug 2021 16:51:30 -0700 (PDT)
+        with ESMTP id S241638AbhIAADH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Aug 2021 20:03:07 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3858C061575;
+        Tue, 31 Aug 2021 17:02:11 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id e133so1881102ybh.0;
+        Tue, 31 Aug 2021 17:02:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gy3c/vPptdzHw6rjCL9JqoDyC+QFaVvuVXif+55WqAQ=;
-        b=QzfIn47lfDFhCiveh1QvniOmDQpha/mSEuJpkIyg2CXu+02Zs0B5sFdNjnuRdCl2kb
-         Pa52CNfqTytmHdrHMCLblmjwrFv+ILelrfKe5yJRii5jUc9z1ea7wvBCE5JkDQvCBr0A
-         YtBUcaLpodPtUtHE/Mm2730370YB6LX2EpTDVpxlmxBpX5k/5AvpTEleIS//Qh2n7MMF
-         mpl7JEyjXkoGKqS2dEtxwA4njMAey2745urD83gtRDULeqk2/p07/qlFQc0JIbyYaePf
-         A+KTTwvtLoVpNHY7qTQ+25wz7O6JLsPnWONj0z1lW6JVPpbUO7Yw8QG++W28kdyCM2Gq
-         +v+A==
+        bh=rJROg9nKYeDHsPA+zUJoTFsTIZiswC6JkF6rV7YqPh4=;
+        b=TmbhOH6QnaYA8KwUtrcoqZwnHztDiSm3QboMYBB7XlBGLmjiJV+REGCTrIVLkkZPm/
+         DNh43A8ZKhWyRrtQ7/Lzd4s9/L24ha+9FyoCpaENiLsrxBRFbaTSZqv5I9pIDDMnt8af
+         eVBvlFuUhFgKw9budzyVoLjcZVHrVNIJ9mWBEu54KkbM5QefQGd+6wuhDuoP5Truob6K
+         64BFx1d2GWLkIV/+IDYXXqzRkowcB/ZLKlKgStZcnoxgfD76adv1SraAJmQ6LiwblB/5
+         EJrZfU5fUJ2tmDs+huuKkJQLdrbWDMFkEds1WmJer4BWpxSah0OFr5/TeIcOIEQ+w7RD
+         60Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gy3c/vPptdzHw6rjCL9JqoDyC+QFaVvuVXif+55WqAQ=;
-        b=nWRXC9XMi9KTYPxvg83lDKqPx9H6Si57uFjyHxlOHf5kUz87YPE9uVTAIcAeyteeUq
-         rCFmyVDHmbc7jYHbmmPzAgzgdC2j4NYfWAw35NGurJOJayEJDe3j3muDnrIisrkF3yP9
-         U/7/uiJT6NLVjIYSKUj3GMADqiLztu8Dve4VIVpTQTMx6mKCtKP7Npcinkbyrx9UTzB3
-         66ZIgtf1ulKx5Ji71tmPo/gDiGXoylnQP9mhIRTTIVXDV7gWZKMfdyDJ5SvLiA+ITQeh
-         Dq5+MCQZlFh5E8OCtVmsxddY2nfgnhRF0Ud+G972+cHhZxPq7Du6gxJIeFTHrdptWUJI
-         15bQ==
-X-Gm-Message-State: AOAM532Wp5NUiwf5CFgsRcjy0vZVfO0ld1VwtrFxNe24nw5WxfN2MMoK
-        fhhslljazRWgxrpmvgizSel/51vpVU+JcJWZdBQ=
-X-Google-Smtp-Source: ABdhPJymUSjri2fcF2g6+pTS44mOzkMl78Ft77ILNASBhXd4qJPnwcQx+V9y3HSzRuJfP5FUUX/MR+n0yi2RqEQPFNI=
-X-Received: by 2002:a25:1e03:: with SMTP id e3mr32354638ybe.459.1630453889430;
- Tue, 31 Aug 2021 16:51:29 -0700 (PDT)
+        bh=rJROg9nKYeDHsPA+zUJoTFsTIZiswC6JkF6rV7YqPh4=;
+        b=nDDEtZSljW/9FLL3Kh+3lJL19AQQt1t8mi3caZ0DztDVTB3TNJnJgnFWsNK5GQwnTu
+         hfszdr2jhg8q6TpCA9KHaXnHtXNFaVrjmHk11neDq23P5QkPgmZO6mPXwJmcQ/LQsHTv
+         pLDs4vPYz+swLhrrO0EcvbSX8RdT7b2SdPsfV9QZxq8XVCnmhtNUAzmI88ZjDcx6ehHp
+         AjdxyHrsi5T3oexkvneOgvL3bIgkAgQKlAc8cROlQaM92UUmufeXBeHJ6cpcyfq39hRk
+         x0loOLNAnHeI1TcJwtk6ZBmP4iytxG1dfiY6hTUFqVjKAUUFy4ojW4g+Visl7a7Z+xp8
+         SqMA==
+X-Gm-Message-State: AOAM531P7aFlrC78Ilxguhp8csR7K84XBhwJoOBPBMk/8LbnIp5Be85F
+        0XnCbZss0Cg3kl8n4OzMx1ayshfQD61prSE+Xn8FlFxR
+X-Google-Smtp-Source: ABdhPJxVp5giCBTW8ND2KTzbfXQ1BtZI8EgREuyQunWcRnzXUngma0wLPfhQCK108Vh4FWwOivPl5ZRKB6rB9Ti1EaE=
+X-Received: by 2002:a25:bb13:: with SMTP id z19mr35589933ybg.347.1630454531213;
+ Tue, 31 Aug 2021 17:02:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210826193922.66204-1-jolsa@kernel.org> <20210826193922.66204-19-jolsa@kernel.org>
-In-Reply-To: <20210826193922.66204-19-jolsa@kernel.org>
+References: <20210826193922.66204-1-jolsa@kernel.org> <20210826193922.66204-18-jolsa@kernel.org>
+ <CAEf4BzbvhgG8uLtkWHYmTBzKnPSJOLAmqDum0tZn1LNVi-8-nw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbvhgG8uLtkWHYmTBzKnPSJOLAmqDum0tZn1LNVi-8-nw@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 Aug 2021 16:51:18 -0700
-Message-ID: <CAEf4BzbFxSVzu1xrUyzrgn1jKyR40RJ3UEEsUCkii3u5nN_8wg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 18/27] bpf, x64: Store properly return value
- for trampoline with multi func programs
+Date:   Tue, 31 Aug 2021 17:02:00 -0700
+Message-ID: <CAEf4Bza5wz49r0QfuJ8d_3bxw9Cy3D_vGtFPkQ1OUJDQn6XKbQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 17/27] bpf: Add multi trampoline attach support
 To:     Jiri Olsa <jolsa@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -67,85 +67,113 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 12:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Tue, Aug 31, 2021 at 4:36 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> When we have multi func program attached, the trampoline
-> switched to the function model of the multi func program.
->
-> This breaks already attached standard programs, for example
-> when we attach following program:
->
->   SEC("fexit/bpf_fentry_test2")
->   int BPF_PROG(test1, int a, __u64 b, int ret)
->
-> the trampoline pushes on stack args 'a' and 'b' and return
-> value 'ret'.
->
-> When following multi func program is attached to bpf_fentry_test2:
->
->   SEC("fexit.multi/bpf_fentry_test*")
->   int BPF_PROG(test2, __u64 a, __u64 b, __u64 c, __u64 d,
->                        __u64 e, __u64 f, int ret)
->
-> the trampoline takes this program model and pushes all 6 args
-> and return value on stack.
->
-> But we still have the original 'test1' program attached, that
-> expects 'ret' value where there's 'c' argument now:
->
->   test1(a, b, c)
->
-> To fix that we simply overwrite 'c' argument with 'ret' value,
-> so test1 is called as expected and test2 gets called as:
->
->   test2(a, b, ret, d, e, f, ret)
->
-> which is ok, because 'c' is not defined for bpf_fentry_test2
-> anyway.
->
+> On Thu, Aug 26, 2021 at 12:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > Adding new multi trampoline link (BPF_LINK_TYPE_TRACING_MULTI)
+> > as an interface to attach program to multiple functions.
+> >
+> > The link_create bpf_attr interface already has 'bpf_prog' file
+> > descriptor, that defines the program to be attached. It must be
+> > loaded with BPF_F_MULTI_FUNC flag.
+> >
+> > Adding new multi_btf_ids/multi_btf_ids_cnt link_create bpf_attr
+> > fields that provides BTF ids.
+> >
+> > The new link gets multi trampoline (via bpf_trampoline_multi_get)
+> > and links the provided program with embedded trampolines and the
+> > 'main' trampoline with new multi link/unlink functions:
+> >
+> >   int bpf_trampoline_multi_link_prog(struct bpf_prog *prog,
+> >                                      struct bpf_trampoline_multi *tr);
+> >   int bpf_trampoline_multi_unlink_prog(struct bpf_prog *prog,
+> >                                        struct bpf_trampoline_multi *tr);
+> >
+> > If embedded trampoline contains fexit programs, we need to switch
+> > its model to the multi trampoline model (because of the final 'ret'
+> > argument). We keep the count of attached multi func programs for each
+> > trampoline, so we can tell when to switch the model.
 
-What if we change the order on the stack to be the return value first,
-followed by input arguments. That would get us a bit closer to
-unifying multi-trampoline and the normal one, right? BPF verifier
-should be able to rewrite access to the last argument (i.e., return
-value) for fexit programs to actually be at offset 0, and shift all
-other arguments by 8 bytes. For fentry, if that helps to keep things
-more aligned, we'd just skip the first 8 bytes on the stack and store
-all the input arguments in the same offsets. So BPF verifier rewriting
-logic stays consistent (except offset 0 will be disallowed).
+Related to my comments on the next patch, if we switch the order of
+return value and always reserve 6 slots for input args, regardless of
+the actual number of function input args, that should make this
+upgrade logic unnecessary, right?
 
-Basically, I'm thinking how we can make normal and multi trampolines
-more interoperable to remove those limitations that two
-multi-trampolines can't be attached to the same function, which seems
-like a pretty annoying limitation which will be easy to hit in
-practice. Alexei previously proposed (as an optimization) to group all
-to-be-attached functions into groups by number of arguments, so that
-we can have up to 6 different trampolines tailored to actual functions
-being attached. So that we don't save unnecessary extra input
-arguments saving, which will be even more important once we allow more
-than 6 arguments in the future.
-
-With such logic, we should be able to split all the functions into
-multiple underlying trampolines, so it seems like it should be
-possible to also allow multiple multi-fentry programs to be attached
-to the same function by having a separate bpf_trampoline just for
-those functions. It will be just an extension of the above "just 6
-trampolines" strategy to "as much as we need trampolines".
-
-It's just a vague idea, sorry, I don't understand all the code yet.
-But the limitation outlined in one of the previous patches seems very
-limiting and unpleasant. I can totally see that some 24/7 running BPF
-tracing app uses multi-fentry for tracing a small subset of kernel
-functions non-stop, and then someone is trying to use bpftrace or
-retsnoop to trace overlapping set of functions. And it immediately
-fails. Very frustrating.
-
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  arch/x86/net/bpf_jit_comp.c | 40 ++++++++++++++++++++++++++++++-------
->  include/linux/bpf.h         |  1 +
->  kernel/bpf/trampoline.c     |  1 +
->  3 files changed, 35 insertions(+), 7 deletions(-)
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/linux/bpf.h            |   5 ++
+> >  include/uapi/linux/bpf.h       |   5 ++
+> >  kernel/bpf/core.c              |   1 +
+> >  kernel/bpf/syscall.c           | 120 +++++++++++++++++++++++++++++++++
+> >  kernel/bpf/trampoline.c        |  87 ++++++++++++++++++++++--
+> >  tools/include/uapi/linux/bpf.h |   5 ++
+> >  6 files changed, 219 insertions(+), 4 deletions(-)
+> >
 >
-
-[...]
+> [...]
+>
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 1f9d336861f0..9533200ffadf 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1008,6 +1008,7 @@ enum bpf_link_type {
+> >         BPF_LINK_TYPE_NETNS = 5,
+> >         BPF_LINK_TYPE_XDP = 6,
+> >         BPF_LINK_TYPE_PERF_EVENT = 7,
+> > +       BPF_LINK_TYPE_TRACING_MULTI = 8,
+> >
+> >         MAX_BPF_LINK_TYPE,
+> >  };
+> > @@ -1462,6 +1463,10 @@ union bpf_attr {
+> >                                  */
+> >                                 __u64           bpf_cookie;
+> >                         } perf_event;
+> > +                       struct {
+> > +                               __aligned_u64   multi_btf_ids;          /* addresses to attach */
+> > +                               __u32           multi_btf_ids_cnt;      /* addresses count */
+> > +                       };
+>
+> Please follow the pattern of perf_event, name this struct "multi".
+>
+> >                 };
+> >         } link_create;
+> >
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index bad03dde97a2..6c16ac43dd91 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+>
+> [...]
+>
+> > +
+> > +       bpf_link_init(&link->link, BPF_LINK_TYPE_TRACING_MULTI,
+> > +                     &bpf_tracing_multi_link_lops, prog);
+> > +       link->attach_type = prog->expected_attach_type;
+> > +       link->multi = multi;
+> > +
+> > +       err = bpf_link_prime(&link->link, &link_primer);
+> > +       if (err)
+> > +               goto out_free;
+> > +       err = bpf_trampoline_multi_link_prog(prog, multi);
+> > +       if (err)
+> > +               goto out_free;
+>
+> bpf_link_cleanup(), can't free link after priming. Look at other
+> places using bpf_link.
+>
+>
+> > +       return bpf_link_settle(&link_primer);
+> > +
+> > +out_free:
+> > +       bpf_trampoline_multi_put(multi);
+> > +       kfree(link);
+> > +out_free_ids:
+> > +       kfree(btf_ids);
+> > +       return err;
+> > +}
+> > +
+>
+> [...]
