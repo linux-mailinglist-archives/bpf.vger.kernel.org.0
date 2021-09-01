@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863523FD8D1
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 13:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADF33FD8E2
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 13:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243815AbhIALei (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Sep 2021 07:34:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33265 "EHLO
+        id S243835AbhIALkn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Sep 2021 07:40:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30698 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243793AbhIALeh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 1 Sep 2021 07:34:37 -0400
+        by vger.kernel.org with ESMTP id S243753AbhIALkn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Sep 2021 07:40:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630496020;
+        s=mimecast20190719; t=1630496385;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qfiHKoT5MN3E0ZiaC3Ojbhr2s8ndIKXzF4a+608y18Y=;
-        b=WhOFPoeelhPfEhfq1tDGjC+IkRAw/FJLiBET/e5QYrbTgE6beaGU6rVxrBFaxg+6PfKY46
-        mCA1ANaOHPjAW+qUerqrFE75L5FsSaCf54tSqtyBVWXEzDJ5v9RI086S9WyL8C+Jrrh0y0
-        wtEptMLz13/qwzsjsDgycuLmMkF5beE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-q0h9q0wfOwmDfrdt7OrlIQ-1; Wed, 01 Sep 2021 07:33:39 -0400
-X-MC-Unique: q0h9q0wfOwmDfrdt7OrlIQ-1
-Received: by mail-wm1-f69.google.com with SMTP id r125-20020a1c2b830000b0290197a4be97b7so897231wmr.9
-        for <bpf@vger.kernel.org>; Wed, 01 Sep 2021 04:33:39 -0700 (PDT)
+        bh=Om5B2W3t+fW0DWLUQjN1Z9adUS3zdf+8SczsT0i6Ja0=;
+        b=G17fya9LW9udsS31n1FF5aHMfubEzf9iwSXgLK5ZGYSZ73A3L2yo1Aua7obGXcIG60XRzd
+        O1T/FMTvHCchRKhbgGNAxTDFjRZMrp3oqq6tm07t6IbkkwsTMjhaWf2EFJYKbJM20jZmDD
+        g7qXIlH0Rk9z6ZM9C2uz/PA7EH9caUo=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-I9urq2FGM-isYT9CKXs18g-1; Wed, 01 Sep 2021 07:39:44 -0400
+X-MC-Unique: I9urq2FGM-isYT9CKXs18g-1
+Received: by mail-wm1-f71.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so878586wmj.8
+        for <bpf@vger.kernel.org>; Wed, 01 Sep 2021 04:39:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=qfiHKoT5MN3E0ZiaC3Ojbhr2s8ndIKXzF4a+608y18Y=;
-        b=FUg+os0yXdpK7clH2i7jSqdxIoC/rCwdpFaTgD0AXhPka70TgMeXZdW8lnnpX6dl5+
-         9DKy59o0O3mN8Bk0WKzppACwLDHMUFnIv/7dyb8MITGcQxGvIQyHNx68sTG/vceExhFR
-         QcRjYbtOkD56PiQLE5Zvt17e/s8NKvzl4yP9kSlpNRx0haYUEnL0nSMgevI/pBwG8Nq0
-         43gNkI7W70wu/7h/bvCD/eBzzNOyXseZqgeW96wEG9Wp2uXWX5ycwgkiN3CPckhBvBfG
-         Fek0aWs2Gq/jkE1/3/QaDR/HHSOgYECyi/YDkx47W4+9pyhbGdUxr5978dMLcwkDJsTn
-         9/Sg==
-X-Gm-Message-State: AOAM532fwz83c3od1uY2E+DSOLmsLJWxktV4goo9NTj1he7swZN6TuIT
-        iZ2G1qZS8kOXct/UnusRvgQ+JpvGbgb6O+2QGAcCyFUz3XqOeIc6b1rkgrKm3rQMKsPG+P93C8v
-        U9014YOpc0g/e
-X-Received: by 2002:a1c:a793:: with SMTP id q141mr9140703wme.157.1630496018354;
-        Wed, 01 Sep 2021 04:33:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzllkDttpmad/9xB6vvxRknNjVlOeQdBWPPTb+XT8cgjYVQinKRakHvxZHkpXDGSFNm9zwh6Q==
-X-Received: by 2002:a1c:a793:: with SMTP id q141mr9140689wme.157.1630496018186;
-        Wed, 01 Sep 2021 04:33:38 -0700 (PDT)
+        bh=Om5B2W3t+fW0DWLUQjN1Z9adUS3zdf+8SczsT0i6Ja0=;
+        b=B+HsLkLLJtBFDcvkmzd96NDRf+qJoqSkRrBE383LK1qpU0vkKPmSYMzSVG9CRvNkRs
+         Iwp1sMHYR5vKlOmuKKNNyNgwbDTWnORvxx8Vhf3n9o12rSIEzNUSLsZGQ7DNDuTZBnY1
+         b8CYt14J67Db8JBFKwe8r1rzBrQq6w6PaOpavwhppHvm/lh62FxG/WhY9tzc30YYusnz
+         jK7vMajDXSH7vtCc+xAFxrW6tIBNElfI/WwsWOzIPNjmCCumLCZ/K1+ngFMErdi6rnUp
+         N3r3PWPiNdZ3aMJAlvrs17g5F4abZeUD9GbgrTjZjkBtIPxPLr93X4pO9YUtCwvqSkkn
+         Zdaw==
+X-Gm-Message-State: AOAM532l7kp8koLTjnGQ87dEx1eKBjAbW8/z4hCEWJT1DaZ/kANTEAib
+        ERyFhA5FZwVb2WTBE2g9n2lQd3+N63jXdfY6cN61VpxiLskY1QV0oGweZRsSu/mB1bJyQSO902k
+        RI8X0a7Gg0seG
+X-Received: by 2002:a1c:28b:: with SMTP id 133mr9197252wmc.138.1630496382812;
+        Wed, 01 Sep 2021 04:39:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyek3btq8+RBNHOROVj7AlMC7xgwsgjELvU6aWn2rDcQOd3TynoRbpbujxe5RvZG89nQ+1iFQ==
+X-Received: by 2002:a1c:28b:: with SMTP id 133mr9197238wmc.138.1630496382592;
+        Wed, 01 Sep 2021 04:39:42 -0700 (PDT)
 Received: from krava ([94.113.247.3])
-        by smtp.gmail.com with ESMTPSA id c1sm4990023wml.33.2021.09.01.04.33.37
+        by smtp.gmail.com with ESMTPSA id x18sm5704975wmj.36.2021.09.01.04.39.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 04:33:37 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 13:33:35 +0200
+        Wed, 01 Sep 2021 04:39:42 -0700 (PDT)
+Date:   Wed, 1 Sep 2021 13:39:40 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -62,158 +62,130 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
         Viktor Malik <vmalik@redhat.com>
-Subject: Re: [PATCH bpf-next v4 20/27] libbpf: Add btf__find_by_glob_kind
- function
-Message-ID: <YS9lD5r7HSAuh+MR@krava>
+Subject: Re: [PATCH bpf-next v4 17/27] bpf: Add multi trampoline attach
+ support
+Message-ID: <YS9mfFhMyT8vaYF/@krava>
 References: <20210826193922.66204-1-jolsa@kernel.org>
- <20210826193922.66204-21-jolsa@kernel.org>
- <CAEf4BzaxuWMDW5shE_LuAkHfy0rkbdd05t9QAtL4j9XPZ1_rYQ@mail.gmail.com>
+ <20210826193922.66204-18-jolsa@kernel.org>
+ <CAEf4BzbvhgG8uLtkWHYmTBzKnPSJOLAmqDum0tZn1LNVi-8-nw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzaxuWMDW5shE_LuAkHfy0rkbdd05t9QAtL4j9XPZ1_rYQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbvhgG8uLtkWHYmTBzKnPSJOLAmqDum0tZn1LNVi-8-nw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 05:10:52PM -0700, Andrii Nakryiko wrote:
+On Tue, Aug 31, 2021 at 04:36:22PM -0700, Andrii Nakryiko wrote:
 > On Thu, Aug 26, 2021 at 12:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
 > >
-> > Adding btf__find_by_glob_kind function that returns array of
-> > BTF ids that match given kind and allow/deny patterns.
+> > Adding new multi trampoline link (BPF_LINK_TYPE_TRACING_MULTI)
+> > as an interface to attach program to multiple functions.
 > >
-> > int btf__find_by_glob_kind(const struct btf *btf, __u32 kind,
-> >                            const char *allow_pattern,
-> >                            const char *deny_pattern,
-> >                            __u32 **__ids);
+> > The link_create bpf_attr interface already has 'bpf_prog' file
+> > descriptor, that defines the program to be attached. It must be
+> > loaded with BPF_F_MULTI_FUNC flag.
 > >
-> > The __ids array is allocated and needs to be manually freed.
+> > Adding new multi_btf_ids/multi_btf_ids_cnt link_create bpf_attr
+> > fields that provides BTF ids.
 > >
-> > At the moment the supported pattern is '*' at the beginning or
-> > the end of the pattern.
+> > The new link gets multi trampoline (via bpf_trampoline_multi_get)
+> > and links the provided program with embedded trampolines and the
+> > 'main' trampoline with new multi link/unlink functions:
 > >
-> > Kindly borrowed from retsnoop.
+> >   int bpf_trampoline_multi_link_prog(struct bpf_prog *prog,
+> >                                      struct bpf_trampoline_multi *tr);
+> >   int bpf_trampoline_multi_unlink_prog(struct bpf_prog *prog,
+> >                                        struct bpf_trampoline_multi *tr);
 > >
-> > Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > If embedded trampoline contains fexit programs, we need to switch
+> > its model to the multi trampoline model (because of the final 'ret'
+> > argument). We keep the count of attached multi func programs for each
+> > trampoline, so we can tell when to switch the model.
+> >
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  tools/lib/bpf/btf.c | 80 +++++++++++++++++++++++++++++++++++++++++++++
-> >  tools/lib/bpf/btf.h |  3 ++
-> >  2 files changed, 83 insertions(+)
+> >  include/linux/bpf.h            |   5 ++
+> >  include/uapi/linux/bpf.h       |   5 ++
+> >  kernel/bpf/core.c              |   1 +
+> >  kernel/bpf/syscall.c           | 120 +++++++++++++++++++++++++++++++++
+> >  kernel/bpf/trampoline.c        |  87 ++++++++++++++++++++++--
+> >  tools/include/uapi/linux/bpf.h |   5 ++
+> >  6 files changed, 219 insertions(+), 4 deletions(-)
 > >
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index 77dc24d58302..5baaca6c3134 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -711,6 +711,86 @@ __s32 btf__find_by_name_kind(const struct btf *btf, const char *type_name,
-> >         return libbpf_err(-ENOENT);
-> >  }
+> 
+> [...]
+> 
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 1f9d336861f0..9533200ffadf 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1008,6 +1008,7 @@ enum bpf_link_type {
+> >         BPF_LINK_TYPE_NETNS = 5,
+> >         BPF_LINK_TYPE_XDP = 6,
+> >         BPF_LINK_TYPE_PERF_EVENT = 7,
+> > +       BPF_LINK_TYPE_TRACING_MULTI = 8,
 > >
-> > +/* 'borrowed' from retsnoop */
-> > +static bool glob_matches(const char *glob, const char *s)
-> > +{
-> > +       int n = strlen(glob);
+> >         MAX_BPF_LINK_TYPE,
+> >  };
+> > @@ -1462,6 +1463,10 @@ union bpf_attr {
+> >                                  */
+> >                                 __u64           bpf_cookie;
+> >                         } perf_event;
+> > +                       struct {
+> > +                               __aligned_u64   multi_btf_ids;          /* addresses to attach */
+> > +                               __u32           multi_btf_ids_cnt;      /* addresses count */
+> > +                       };
+> 
+> Please follow the pattern of perf_event, name this struct "multi".
+
+I did that in struct bpf_link_create_opts and forgot this place,
+will change
+
+> 
+> >                 };
+> >         } link_create;
+> >
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index bad03dde97a2..6c16ac43dd91 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> 
+> [...]
+> 
 > > +
-> > +       if (n == 1 && glob[0] == '*')
-> > +               return true;
+> > +       bpf_link_init(&link->link, BPF_LINK_TYPE_TRACING_MULTI,
+> > +                     &bpf_tracing_multi_link_lops, prog);
+> > +       link->attach_type = prog->expected_attach_type;
+> > +       link->multi = multi;
 > > +
-> > +       if (glob[0] == '*' && glob[n - 1] == '*') {
-> > +               const char *subs;
-> > +               /* substring match */
+> > +       err = bpf_link_prime(&link->link, &link_primer);
+> > +       if (err)
+> > +               goto out_free;
+> > +       err = bpf_trampoline_multi_link_prog(prog, multi);
+> > +       if (err)
+> > +               goto out_free;
+> 
+> bpf_link_cleanup(), can't free link after priming. Look at other
+> places using bpf_link.
+
+will check, thanks
+
+jirka
+
+> 
+> 
+> > +       return bpf_link_settle(&link_primer);
 > > +
-> > +               /* this is hacky, but we don't want to allocate for no good reason */
-> > +               ((char *)glob)[n - 1] = '\0';
-> > +               subs = strstr(s, glob + 1);
-> > +               ((char *)glob)[n - 1] = '*';
-> > +
-> > +               return subs != NULL;
-> > +       } else if (glob[0] == '*') {
-> > +               size_t nn = strlen(s);
-> > +               /* suffix match */
-> > +
-> > +               /* too short for a given suffix */
-> > +               if (nn < n - 1)
-> > +                       return false;
-> > +
-> > +               return strcmp(s + nn - (n - 1), glob + 1) == 0;
-> > +       } else if (glob[n - 1] == '*') {
-> > +               /* prefix match */
-> > +               return strncmp(s, glob, n - 1) == 0;
-> > +       } else {
-> > +               /* exact match */
-> > +               return strcmp(glob, s) == 0;
-> > +       }
+> > +out_free:
+> > +       bpf_trampoline_multi_put(multi);
+> > +       kfree(link);
+> > +out_free_ids:
+> > +       kfree(btf_ids);
+> > +       return err;
 > > +}
 > > +
-> > +int btf__find_by_glob_kind(const struct btf *btf, __u32 kind,
-> > +                          const char *allow_pattern, const char *deny_pattern,
-> > +                          __u32 **__ids)
-> > +{
-> > +       __u32 i, nr_types = btf__get_nr_types(btf);
-> > +       int cnt = 0, alloc = 0;
-> > +       __u32 *ids = NULL;
-> > +
-> > +       for (i = 1; i <= nr_types; i++) {
-> > +               const struct btf_type *t = btf__type_by_id(btf, i);
-> > +               bool match = false;
-> > +               const char *name;
-> > +               __u32 *p;
-> > +
-> > +               if (btf_kind(t) != kind)
-> > +                       continue;
-> > +               name = btf__name_by_offset(btf, t->name_off);
-> > +               if (!name)
-> > +                       continue;
-> > +
-> > +               if (allow_pattern && glob_matches(allow_pattern, name))
-> > +                       match = true;
-> > +               if (deny_pattern && !glob_matches(deny_pattern, name))
-> > +                       match = true;
 > 
-> this is wrong, if it matches both deny and allow patterns, you'll
-> still pass it through. Drop the match flag, just check deny first and
-> `continue` if matches.
-
-true, ok
-
+> [...]
 > 
-> > +               if (!match)
-> > +                       continue;
-> > +
-> > +               if (cnt == alloc) {
-> > +                       alloc = max(100, alloc * 3 / 2);
-> 
-> nit: maybe start with something like 16?
-
-ok
-
-> 
-> > +                       p = realloc(ids, alloc * sizeof(__u32));
-> 
-> we have libbpf_reallocarray, please use it
-
-ok
-
-> 
-> > +                       if (!p) {
-> > +                               free(ids);
-> > +                               return -ENOMEM;
-> > +                       }
-> > +                       ids = p;
-> > +               }
-> > +               ids[cnt] = i;
-> > +               cnt++;
-> > +       }
-> > +
-> > +       *__ids = ids;
-> > +       return cnt ?: -ENOENT;
-> 
-> cnt == 0 means -ENOENT, basically, no? It's up to the application to
-> decide if that's an error, let's just return the number of matches,
-> i.e., zero.
-
-ok
-
-thanks,
-jirka
 
