@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7C23FDEE0
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 17:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB133FDEE9
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 17:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244612AbhIAPmu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Sep 2021 11:42:50 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62614 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S244935AbhIAPmu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 1 Sep 2021 11:42:50 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 181FXVJN001263;
-        Wed, 1 Sep 2021 08:41:52 -0700
+        id S244562AbhIAPo7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Sep 2021 11:44:59 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31864 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244434AbhIAPo6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Sep 2021 11:44:58 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181Fek9j020519;
+        Wed, 1 Sep 2021 08:44:01 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : mime-version; s=facebook;
- bh=MWHdAMf8ohFBxrc1s26Lqb37DR3Z3gNXqRyJ9Vjs/7s=;
- b=mWwiFc5eWxCbPMLrdssMuJ5SfSx/fI1IiOSmz/JVZ4IQJVCRYgvc8dX0JZ0HlUPS32Fl
- wUMndcIuimZivAOPI5AKKl8GHDSVjT47jSsYP21cVPK3J124d3N8ALSXDrx0ccJDtKKv
- 1aMjqkILw19KTjCU16OVQcKl6ZEBF4i+zqo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3assekae8b-7
+ bh=VoYz3Oy0nvjxL24Xka9WQ8ch1TspLHWJikmdyB1Z3hM=;
+ b=VPJiLvtdxGmhwl6WRCDlVwOvqx8Bl0Euyq5UJlGXkgNlNQSM4YZoI3xxGnX+IaEpcp+R
+ p4LqLJQTZUsz5N3rSfR3SGXKr6Ovf65zaBxHcjpj5MTLznC3iE962tpbOmeqBSfU+oPp
+ MlpRzDSE09sf7wAzsuvTJZEQPzaPorTQjh4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3asuxupr1v-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 01 Sep 2021 08:41:52 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+        Wed, 01 Sep 2021 08:44:01 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 1 Sep 2021 08:41:50 -0700
+ 15.1.2308.14; Wed, 1 Sep 2021 08:44:00 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jGjY8fyCParjKH+ImkGtpZrGGqZI3k7IJ/39DXtE8b8I91loCUXM39yJFVnK4zfamJaUi72v3l+Ewv5qphaxoFCD8N+h0PET4Zqi+b47AVNl8ccFrCpGoP3xhmkzW/+qah3H0izw0RtHvgD6eGeRNAHxYat/PQ7UTxtCEY6b9zpEsuf31pjNeGPZbZ8VObEFZjq0ZXgFM/zY8iu1AyOfwvBxQ5ABQ+6v94hsIhm24x55tblf1jXKsYuUsfe6ZGwgQGgjWoMdC6zW4iAQ5EgxFYje8CSZYm6u2jX9uRWqoQj/WPssxlBYJV2yVGcnCqsX56XtUFkdilUaN9ubOfMb/A==
+ b=f/xMEH1n6by+9EMqP9U8nxoaYBhZagvujY8BRIAXzU5dUAXAH/S0pESq5gYiTdbxWHzh37mpm/Ix1zKUSaQsVtL07Bp8LY/hIpVVE4t98xzWswE2o8LFygG9A6YaStBJgd14scrujOwdT8vMHIY0whAXfWiHfuWFB61+FIvPWntFu1INPHavFaWwF8Nd+ESlei+wwktFVXS65vT5rqjjQbB5ojFH3Axp+qUpN25vUihYmo8jSujE5Q1XObQl/MydKLVOLtW9gnlgJ4BKeacewpRq2wCp+FdBzMZfrvV6jAcG9DS97s4CfB6XdPUapsMrKqFmT4bqnEK+IqPtbQ72Sw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=MWHdAMf8ohFBxrc1s26Lqb37DR3Z3gNXqRyJ9Vjs/7s=;
- b=ISIy+PzFC+ZEKRhV4vnZDPUtfUZfFQV9ir3fpEHwMM6E2GYsyCCnwmPd2Roi5K+uuB/gwExnvk3QRHXn7X+jYlMvhDxaC0SOtSXOhYLSIOORBTb/aKHE4LtaRrMoVxZdqw7PyIegImWMc64vs/8dQtfbq91mpEioQ5nkmRP8sJqNulls6ctUrkBIOz+h8x3GwLHIPZUuo/8d1ncoDczsbfM1NhUQuqYoGkG06qZB7bFTbclDViGSyd57k8ijp4YL/Am7hFZ/2gWD/q3eWOLmsu0XRzkKx8Qvx70ACNt800tKAQ2pHkEByEnspZUBzPxNhTGhAaRBckwVuibct5Wwug==
+ bh=VoYz3Oy0nvjxL24Xka9WQ8ch1TspLHWJikmdyB1Z3hM=;
+ b=cxtWIvhem6X+BUcyLB4ElycfhrDYaAzZWum6HlgustoIgELqz5RvLLY8Sy75Eb869Aw/4lyepgopD/8DpjKsAKz3asVdvzY7h4XPskVCXjwhAVoyrSwqy1ZtBiFnkOV8EYfdhkORCyuJtUQek+iezEqPZletg9LEkYRTGJFINVQsGRn8AtIX2SOqw4voNW+FsV9EW3+pOl8RYjOWH0KTgjBRSAQocdRhYWv3fZxfCV6eK3WKsXi1+yDIIq0h6VPGUu0sNpIokrOwSd55DuU1xDy6W3w/IHC9bZdDb7boU2+V1DYIPs5KQDc4pbogonozFBljMRHL213nNw/spnNoAA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA1PR15MB5111.namprd15.prod.outlook.com (2603:10b6:806:1de::16) with
+ by SA1PR15MB5096.namprd15.prod.outlook.com (2603:10b6:806:1df::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17; Wed, 1 Sep
- 2021 15:41:48 +0000
+ 2021 15:43:59 +0000
 Received: from SA1PR15MB5109.namprd15.prod.outlook.com
  ([fe80::7d66:9b36:b482:af0f]) by SA1PR15MB5109.namprd15.prod.outlook.com
  ([fe80::7d66:9b36:b482:af0f%7]) with mapi id 15.20.4478.017; Wed, 1 Sep 2021
- 15:41:48 +0000
+ 15:43:59 +0000
 From:   Song Liu <songliubraving@fb.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 CC:     bpf <bpf@vger.kernel.org>,
@@ -56,17 +56,17 @@ CC:     bpf <bpf@vger.kernel.org>,
         Ingo Molnar <mingo@redhat.com>,
         Kajol Jain <kjain@linux.ibm.com>,
         Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v4 bpf-next 2/3] bpf: introduce helper
+Subject: Re: [PATCH v4 bpf-next 3/3] selftests/bpf: add test for
  bpf_get_branch_snapshot
-Thread-Topic: [PATCH v4 bpf-next 2/3] bpf: introduce helper
+Thread-Topic: [PATCH v4 bpf-next 3/3] selftests/bpf: add test for
  bpf_get_branch_snapshot
-Thread-Index: AQHXnslLqg0okkw0sUSYXhRhs4rqnKuOjtaAgADDVoA=
-Date:   Wed, 1 Sep 2021 15:41:48 +0000
-Message-ID: <0B76C4B1-F113-41F4-A141-163A2A71F4B8@fb.com>
+Thread-Index: AQHXnslOGJvfh6WSokmD54fWNMz0G6uOkIyAgADCPYA=
+Date:   Wed, 1 Sep 2021 15:43:59 +0000
+Message-ID: <44C43497-13EC-4F05-B15B-40531D5C3852@fb.com>
 References: <20210901003517.3953145-1-songliubraving@fb.com>
- <20210901003517.3953145-3-songliubraving@fb.com>
- <CAEf4BzaPuPJKnVJ+Bi4aNs57A2x0jRnM3V-ud37U6V=wThHAYQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzaPuPJKnVJ+Bi4aNs57A2x0jRnM3V-ud37U6V=wThHAYQ@mail.gmail.com>
+ <20210901003517.3953145-4-songliubraving@fb.com>
+ <CAEf4BzZrEcZFNSH=YDi_NmT2oqaOhmgQvPv0THXKy4haEzBFvQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZrEcZFNSH=YDi_NmT2oqaOhmgQvPv0THXKy4haEzBFvQ@mail.gmail.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -75,65 +75,65 @@ x-mailer: Apple Mail (2.3654.120.0.1.13)
 authentication-results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 01f867bb-577f-4c6f-0cf3-08d96d5f02da
-x-ms-traffictypediagnostic: SA1PR15MB5111:
+x-ms-office365-filtering-correlation-id: ef6fe033-1c2e-4271-0027-08d96d5f50e5
+x-ms-traffictypediagnostic: SA1PR15MB5096:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA1PR15MB511160884D0CFD6D83D71842B3CD9@SA1PR15MB5111.namprd15.prod.outlook.com>
+x-microsoft-antispam-prvs: <SA1PR15MB509648863CFADC89F8635F16B3CD9@SA1PR15MB5096.namprd15.prod.outlook.com>
 x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: F8Duhjdy5+aNU9e4i8nE1j4CgPxyR57aonTelbsn+cvU+H7CahCbVrvD57Nnhxhs+fRaA+6pO5u/LuDGduGhUkwL6MYAFvEMl7+ZMkDPR8qs23l+CVTEQEWP/OkvFeJ6db5YrM7YglCrtzWIS/ME8nGAmrDuqalfmq1m8+dhnXqv/4Ebs6URDLont5053Kr5ZBoQYGDt6V3lbFHk9xm/JKfXH4ktGVceWNgLPU61bmcK31GXlrn9d7z3t8xIfm/4ONOW3gWfOv31So1ZiCpB2EuBpiUJa7vCDq2QGfKhlni2+IL2YHFa0/vGOf8gWZXxifXyyL63kjcgUwWh03/LlBDpzByDHHq+wbf9is0IhG3E8+DovHKlK/Y3Rc1Oft7hemiujiD/D+6+4pQoMs6l9zMdunElXOMFqeHf2lzIo8L+wpwzAq+tEOYGzRwB2LMkQB0vgvSmi/J+FAN6l826DOqigIXnGuRpE9AVIx5zQQSvo2mhUcnogPAGoiRgTcgX3bdQkEg/9TO3mgEjtM5Mg9bDtjGho6PTxvJWMjSEhFSNQf3V1+/w4JlP9guGZVVVnpTGsBLStqEAus7W84zWJyheFYosYxuonFDXphw58ZQlpv9kQZ/VT5Y7JjJAYtPiUuUTljrshzkoBvnrHq8vkP+f1r0SusYITPYvjq4+3tF9EfFoCFQIszc33BAhBGobQVJUhxe6S9KBo6FNUl3H4PM/t+rZBbSw3hX8U5Aq0HpZdmEE6pEkrfO6UssbMHCt
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(39860400002)(136003)(366004)(64756008)(66556008)(66946007)(4326008)(66476007)(71200400001)(6506007)(6916009)(91956017)(478600001)(66446008)(76116006)(53546011)(33656002)(2616005)(6512007)(186003)(83380400001)(5660300002)(86362001)(54906003)(8936002)(36756003)(2906002)(8676002)(122000001)(38100700002)(6486002)(316002)(38070700005)(45980500001);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: lZ73f7c/HWJiw6YFCUZF9yuicMdtgc/rXGXzP230r4QN4hUAYuTxE3TA+N2qeLvjAeh1dA6Y1Habvqspv5suioXuQVVukNNcha+mDMdbhOcv/K6r4OEUsVxxQysZcH8ghvDatsSD7zyMoi7dtp+qGoD1TqS5zX8L4p2U6qH+oGU2XbtTE4QeZNiypR54wkmmUHLESkbJS7VQxh862X074au1Kyk/uwH6haYEua3HJma8/emoCnLGDCt31ibt7szq1nce2NYX5dEvavyQaWAGhp69r1xZEIp7Xs2YlnFyAcddwVVf1Zq8fsJOn1XseaO8AH5aZV0yIV+FDfcwuA1ge0nSV5udko/s5VGprTd+a0y5rewFXS/uiThfFdXaOPWk/YfSySoFQm3Wi3OBUp/e6OWGDzeLIskV/I/i3TnoOf5fVoEvgGlBSN8+M5WD4pMkQ64CdPr4gDUPhNW9jameJGyzZBae8Vkwdq3q+qK0ytUNBHPn+d1G1zBq7Rl1z2uWzTQeNpR4ycD8s8za64vsoEFdU5kNxq96oIJPnx+FaT3roNo7fp7/d1greFRjrX4XvgF6O/lP101Fe/tmy6GYQcz5PQkvHwRZRXTEkl9vYL3UzEvedPO9Xvw5D9VApshBSAZRDc8JMX3NLNLYU1vIK41PxIkcOgEhwJwD8gOu3mwy+Fak6b6DbABIGhbfRPH8mHjek4/05AdQnYoDRb5Mp/X+2hDeYFh65FJtNcBS4ehY8d8PrNce0l8M9xP/pHXx
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(366004)(136003)(66446008)(66556008)(6506007)(186003)(64756008)(66476007)(91956017)(66946007)(83380400001)(122000001)(76116006)(53546011)(8936002)(6916009)(2616005)(8676002)(36756003)(2906002)(38100700002)(6512007)(33656002)(316002)(71200400001)(54906003)(478600001)(5660300002)(4326008)(38070700005)(86362001)(6486002)(45980500001);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?nUEfZF8HNpGmGiLW2HXmL+IpsC95PZ594bmKjxJKLe+BmM5sWjTJqbCPWgDt?=
- =?us-ascii?Q?8XzYtPzqHw7c0jLih8ad+8ixUI7ZYU3aE2T0qEEEncrVZHWRJoE+Qkr3eExd?=
- =?us-ascii?Q?uaGGHR4byfqLh4043mv678UXM3+QdeyUsGjNPKrrjJpVdgBF6dcxUckLq6r4?=
- =?us-ascii?Q?pvox4RY3gmqaJ+ctHF6oz0qdLfIpzN+lhsZ33IQVlOYiT4rIblqzoRBMQGgC?=
- =?us-ascii?Q?u14Ph9/vgfwsA/DwaacJSzzSP3FE75paKmP2XNyQp6CasZtKB0Y6CZbqkzmE?=
- =?us-ascii?Q?OUauOzXpAGjZGcrPjd0JkZOHR9gmON76deIWGBqJAP/NyaLexzImVQlkYyok?=
- =?us-ascii?Q?NJB86bwKW19UXxltRVmJMzAcVRGZTNqinRnizEVvocsR2d/A15lbsKPTGv6q?=
- =?us-ascii?Q?uYO9NhMm7MlhHtpVN0ns1kQ2iT3wSt7gyy/bMsbMQ4zB+r4roiehJ5Pj/LrC?=
- =?us-ascii?Q?SGsCv6BiZ4cWHhsKuouPA8f2qSBFFnofVagYjbkWZvfC+/fnmmB931OOCa8+?=
- =?us-ascii?Q?YdkcYGkL3sP1zpgY8+iSH0J8yuCHlib2KE9ztwvSx5Z8+3nOEAvxiueVYRaS?=
- =?us-ascii?Q?gZvtgWk4ZhPsk28YLJJmbkBe4/O0hDsJ0qPkKvurfW+C1ZZS3EzWO9V4ArdF?=
- =?us-ascii?Q?n6obOXnmgzrQUTrzBLtWU+VVpRf4ne64egYYekTili00w4OFmqiCTZPCIfTk?=
- =?us-ascii?Q?g5Z+QYJme+fH4TuRI1r9k5GlYpS3vEb5p7aiDTwRyYQUhZ1+H1QvdXvfjStA?=
- =?us-ascii?Q?161Vk9cUGQq8oXvbIiQ3iiT4XlteqjnFp1DYzPgem+aVM+LuCKXgPqK4+xGj?=
- =?us-ascii?Q?Be6e6UQb5bnvaRobEJumoRcNHMxWQhLoyot/j8fLSxfUSv9wlx+EA+9pWO5h?=
- =?us-ascii?Q?zsreiuRo7qftj78sIJRLSg7j14dyk+vNTItbcP3OlGnwWwIm2yqpiJbhoZgN?=
- =?us-ascii?Q?SGwHnbA2+zPYeMwd0jQ2oZcifyCZbWJQ11bfAW7TySt2tsxyrmQc17CRVlXj?=
- =?us-ascii?Q?6uHW8EwL3cZDS1lj1f8zjiysH3CV4b2KGuUH1O6XHYGbVWSOezvjj3QfAR/q?=
- =?us-ascii?Q?tcOlyJ6LEHGKBFosEyEXIIAH1Dj2um2h62XW3ZdTdBTuUfb+B+OPKOpcktGs?=
- =?us-ascii?Q?eL/Yny4JYJDXB9pogofxmpwrfSzgaqy8LC6PtsW/5IYsw1kZ7h5OCUhpikhl?=
- =?us-ascii?Q?LTWrLCSxdPyq1/21GForghs/HY3xuiX1froeaCVou8yf7XlKlOQMTz1HS5uM?=
- =?us-ascii?Q?tqGdI8ttfBKDotWTp9m7UFarSHETjLSZ5TJK16bXEH10/ucOGemW+Xit7bR0?=
- =?us-ascii?Q?fGC0fF9EfCIaY+74wrLQ1gC3Bog9ul3DylxdCx6jeXgt7CzlTyuilULfNrtU?=
- =?us-ascii?Q?9usPd7s=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0njHRCyVZUFYz9WW4bUXfgnHcB/ANcejYAj0Wa0Fe5zotMGQglz9WdRalPSt?=
+ =?us-ascii?Q?cMRUrfGZVmpCIk1ZYiXlWCZItF+yrXwm6ZIA0hxtyIIiYDX+MOjtGdfiWSmz?=
+ =?us-ascii?Q?EyySrRX9JFqtpTxHtEMzzR/26eYZXlyuOXVPWipOEYDNpk60vydxPxRq7Zqr?=
+ =?us-ascii?Q?j6mMBF7g6k3CRez0XaqUrGTQO3Mu6/ZvRS/Ikphk+i3s/7+Eawhl1ih3hSCX?=
+ =?us-ascii?Q?ODkTn1EJYepp6Y/qrgIVQAaWi0jPNZ11jrj4QpKdKXBIFl7b38LUv10zBir4?=
+ =?us-ascii?Q?55pPNFRrZKiu0aPSV7ZpGFngm3pqfT9pbKxXu2SahNOIYWVNypM01kffK17q?=
+ =?us-ascii?Q?dlPF0H2cNqMpjTSd24tOtkfxQHYr1KZKpfsbK8wNWAeZ50EPsg+RWsWvriJU?=
+ =?us-ascii?Q?aOmC13O6Ie3xArVQkIxTrJIh6++RgmreykYUksVV/9gRhkMeJZVSN5KS4cMJ?=
+ =?us-ascii?Q?YCvtMAbylfHl9qa8Dt0uxG78vnzuCQVbnqytfoa0nMF8uxusVflBx18rCDzq?=
+ =?us-ascii?Q?PHqac1JdDLrFEaiQRxB7nKxwnAprWsLYYLLqvBI0xrWFmV7/dUSnTsr5kkrV?=
+ =?us-ascii?Q?5Qw/UZTh76CWs+Wyb1tRa0kMiHO5OjYWVwKWqsanx7fLjNYUbcq+qaWjXXbq?=
+ =?us-ascii?Q?1mbzJWu3xGMCCeuVFPmTFpwkvNNa25Mn4wBeuJy+sBHIPzyyU71kO2HmPg5T?=
+ =?us-ascii?Q?F2rxZs4BIVgU8sQE1FGvxUkSIOM2+J651g36BQgdEuZED+SKsPR1pK99VbRn?=
+ =?us-ascii?Q?xFGd3xDLLCW05f1cUeD7HiwKD9mgrl2BGkhPqrMtiZeBFNyA3eR3S7RNX9uT?=
+ =?us-ascii?Q?znBtetjxRIgHrbE1Wz8MwM5opFja36CVZiVfm3VK7XGVMHp8OT0rdWV5Ab+A?=
+ =?us-ascii?Q?3GfcsRldrPzfNOTYB7J0Tb82eXdO7dsB9zzuP7n/c8oJzd+tbbikW5ux6Avv?=
+ =?us-ascii?Q?9Og+2VwalhdtFAQl6i1qpbKbKmUI0ucfbtfa1odcawpLHhfGX9J3cuO9c4Xz?=
+ =?us-ascii?Q?AMkfEN3JEvNhibyFVTK12Vpwq/e5jvzFjJhuXkzgyQvK1znz+9vgh6p8Hs04?=
+ =?us-ascii?Q?1d0CprZgsT6OtyRn9nws0IXA6hwktvKfOwdGOWunLdqzY76WEheAVqp8Xsdq?=
+ =?us-ascii?Q?QJ4ZU3Ujl3R2Lf/RvEcXoZXkgBAWfARNcWXLg6judPAl5SA42jbH7u1Q3D9s?=
+ =?us-ascii?Q?h8XG/bPBenDqRyXUoLlAvSd9NfEBzPeUS0AMAX1N3ytMkmDeQQUTSjJxBUxt?=
+ =?us-ascii?Q?+98O4eEU2oyfn4Six+qSrLmgVydQUpLcqzwajyElC7wjlJQXZQ4SEyc3UVUr?=
+ =?us-ascii?Q?Ic0yDRZjpLm1ej2SJ6fzAHGZ0jzDeJyNRu++VYqzhn2S+EgXqNXcHIheTdw0?=
+ =?us-ascii?Q?yF6wyv4=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B358B7C882A62D4A87B0E5122EEAD176@namprd15.prod.outlook.com>
+Content-ID: <1874CC15773AED48B866AF32E20050B2@namprd15.prod.outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01f867bb-577f-4c6f-0cf3-08d96d5f02da
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2021 15:41:48.6422
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef6fe033-1c2e-4271-0027-08d96d5f50e5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2021 15:43:59.5793
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8SmiyMdTNyLIfz5yL7/zlsRYLGXElqleX7Y1C/K8VqUh8d48568RNcw1rP5XNqmTNjKfW/QABygIirQzXdZfPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5111
+X-MS-Exchange-CrossTenant-userprincipalname: fSAC9o1dUSnGXrm5xIZx1QPKOPjqa8GlNd8ij4QyWHpR4ymEaBQXfG3zHi5fkNYlvxWjzOv15rpTkoYQDgzKag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5096
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: gNNGnY2VL7i1nJV53iVrTwYWGX6T02sZ
-X-Proofpoint-GUID: gNNGnY2VL7i1nJV53iVrTwYWGX6T02sZ
+X-Proofpoint-GUID: CYBYAiuQDncSEjPR9cr4o8krO_qQOV-5
+X-Proofpoint-ORIG-GUID: CYBYAiuQDncSEjPR9cr4o8krO_qQOV-5
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- suspectscore=0 impostorscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 phishscore=0 malwarescore=0
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2109010090
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ mlxlogscore=999 clxscore=1015 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 spamscore=0 mlxscore=0 phishscore=0
+ priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2107140000 definitions=main-2109010091
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -141,140 +141,102 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-> On Aug 31, 2021, at 9:02 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> On Aug 31, 2021, at 9:08 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 > 
 > On Tue, Aug 31, 2021 at 7:01 PM Song Liu <songliubraving@fb.com> wrote:
 >> 
->> Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
->> branch trace from hardware (e.g. Intel LBR). To use the feature, the
->> user need to create perf_event with proper branch_record filtering
->> on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
->> On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
+>> This test uses bpf_get_branch_snapshot from a fexit program. The test uses
+>> a target function (bpf_testmod_loop_test) and compares the record against
+>> kallsyms. If there isn't enough record matching kallsyms, the test fails.
 >> 
 >> Signed-off-by: Song Liu <songliubraving@fb.com>
 >> ---
->> include/uapi/linux/bpf.h       | 22 +++++++++++++++++++
->> kernel/bpf/trampoline.c        |  3 ++-
->> kernel/trace/bpf_trace.c       | 40 ++++++++++++++++++++++++++++++++++
->> tools/include/uapi/linux/bpf.h | 22 +++++++++++++++++++
->> 4 files changed, 86 insertions(+), 1 deletion(-)
+> 
+> LGTM, few minor nits below
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+>> .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  14 ++-
+>> .../bpf/prog_tests/get_branch_snapshot.c      | 101 ++++++++++++++++++
+>> .../selftests/bpf/progs/get_branch_snapshot.c |  44 ++++++++
+>> tools/testing/selftests/bpf/trace_helpers.c   |  37 +++++++
+>> tools/testing/selftests/bpf/trace_helpers.h   |   5 +
+>> 5 files changed, 200 insertions(+), 1 deletion(-)
+>> create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+>> create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot.c
 >> 
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 791f31dd0abee..c986e6fad5bc0 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -4877,6 +4877,27 @@ union bpf_attr {
->>  *             Get the struct pt_regs associated with **task**.
->>  *     Return
->>  *             A pointer to struct pt_regs.
->> + *
->> + * long bpf_get_branch_snapshot(void *entries, u32 size, u64 flags)
->> + *     Description
->> + *             Get branch trace from hardware engines like Intel LBR. The
->> + *             branch trace is taken soon after the trigger point of the
->> + *             BPF program, so it may contain some entries after the
->> + *             trigger point. The user need to filter these entries
->> + *             accordingly.
->> + *
->> + *             The data is stored as struct perf_branch_entry into output
->> + *             buffer *entries*. *size* is the size of *entries* in bytes.
->> + *             *flags* is reserved for now and must be zero.
->> + *
->> + *     Return
->> + *             On success, number of bytes written to *buf*. On error, a
->> + *             negative value.
->> + *
->> + *             **-EINVAL** if arguments invalid or **size** not a multiple
->> + *             of **sizeof**\ (**struct perf_branch_entry**\ ).
->> + *
->> + *             **-ENOENT** if architecture does not support branch records.
->>  */
->> #define __BPF_FUNC_MAPPER(FN)          \
->>        FN(unspec),                     \
->> @@ -5055,6 +5076,7 @@ union bpf_attr {
->>        FN(get_func_ip),                \
->>        FN(get_attach_cookie),          \
->>        FN(task_pt_regs),               \
->> +       FN(get_branch_snapshot),        \
->>        /* */
->> 
->> /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
->> index fe1e857324e66..39eaaff81953d 100644
->> --- a/kernel/bpf/trampoline.c
->> +++ b/kernel/bpf/trampoline.c
->> @@ -10,6 +10,7 @@
->> #include <linux/rcupdate_trace.h>
->> #include <linux/rcupdate_wait.h>
->> #include <linux/module.h>
->> +#include <linux/static_call.h>
->> 
->> /* dummy _ops. The verifier will operate on target program's ops. */
->> const struct bpf_verifier_ops bpf_extension_verifier_ops = {
->> @@ -526,7 +527,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
->> }
->> 
->> #define NO_START_TIME 1
->> -static u64 notrace bpf_prog_start_time(void)
->> +static __always_inline u64 notrace bpf_prog_start_time(void)
->> {
->>        u64 start = NO_START_TIME;
->> 
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index 8e2eb950aa829..a8ec3634a3329 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -1017,6 +1017,44 @@ static const struct bpf_func_proto bpf_get_attach_cookie_proto_pe = {
->>        .arg1_type      = ARG_PTR_TO_CTX,
->> };
->> 
->> +static DEFINE_PER_CPU(struct perf_branch_snapshot, bpf_perf_branch_snapshot);
+> 
+> [...]
+> 
 >> +
->> +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
+>> +void test_get_branch_snapshot(void)
 >> +{
->> +#ifndef CONFIG_X86
->> +       return -ENOENT;
-> 
-> nit: -EOPNOTSUPP probably makes more sense for this?
-
-I had -EOPNOTSUPP in earlier version. But bpf_read_branch_records uses
--ENOENT, so I updated here in v4. I guess -ENOENT also makes sense? I 
-won't insist if you think -EOPNOTSUPP is better.  
-
-> 
->> +#else
->> +       static const u32 br_entry_size = sizeof(struct perf_branch_entry);
->> +       u32 to_copy;
+>> +       struct get_branch_snapshot *skel = NULL;
+>> +       int err;
 >> +
->> +       if (unlikely(flags))
->> +               return -EINVAL;
+>> +       if (create_perf_events()) {
+>> +               test__skip();  /* system doesn't support LBR */
+>> +               goto cleanup;
+>> +       }
 >> +
->> +       if (!buf || (size % br_entry_size != 0))
->> +               return -EINVAL;
+>> +       skel = get_branch_snapshot__open_and_load();
+>> +       if (!ASSERT_OK_PTR(skel, "get_branch_snapshot__open_and_load"))
+>> +               goto cleanup;
 >> +
->> +       static_call(perf_snapshot_branch_stack)(this_cpu_ptr(&bpf_perf_branch_snapshot));
+>> +       err = kallsyms_find("bpf_testmod_loop_test", &skel->bss->address_low);
+>> +       if (!ASSERT_OK(err, "kallsyms_find"))
+>> +               goto cleanup;
+>> +
+>> +       err = kallsyms_find_next("bpf_testmod_loop_test", &skel->bss->address_high);
+>> +       if (!ASSERT_OK(err, "kallsyms_find_next"))
+>> +               goto cleanup;
+>> +
+>> +       err = get_branch_snapshot__attach(skel);
+>> +       if (!ASSERT_OK(err, "get_branch_snapshot__attach"))
+>> +               goto cleanup;
+>> +
+>> +       /* trigger the program */
+>> +       system("cat /sys/kernel/bpf_testmod > /dev/null 2>& 1");
 > 
-> First, you have four this_cpu_ptr(&bpf_perf_branch_snapshot)
-> invocations in this function, probably cleaner to store the pointer in
-> local variable?
-> 
-> But second, this still has the reentrancy problem, right? And further,
-> we copy the same LBR data twice (to per-cpu buffer and into
-> user-provided destination).
-> 
-> What if we change perf_snapshot_branch_stack signature to this:
-> 
-> int perf_snapshot_branch_stack(struct perf_branch_entry *entries, int
-> max_nr_entries);
-> 
-> with the semantics that it will copy only min(max_nr_entreis,
-> PERF_MAX_BRANCH_RECORDS) * sizeof(struct perf_branch_entry) bytes.
-> That way we can copy directly into a user-provided buffer with no
-> per-cpu storage. Of course, perf_snapshot_branch_stack will return
-> number of entries copied, either as return result, or if static calls
-> don't support that, as another int *nr_entries output argument.
+> ugh :( see prog_tests/module_attach.c, we can extract and reuse
+> trigger_module_test_read() and trigger_module_test_write()
 
-I like this idea. Once we get feedback from Peter, I will change this 
+Will fix. 
+> 
+>> +
+>> +       if (skel->bss->total_entries < 16) {
+>> +               /* too few entries for the hit/waste test */
+>> +               test__skip();
+>> +               goto cleanup;
+>> +       }
+>> +
+> 
+> [...]
+> 
+>> +SEC("fexit/bpf_testmod_loop_test")
+>> +int BPF_PROG(test1, int n, int ret)
+>> +{
+>> +       long i;
+>> +
+>> +       total_entries = bpf_get_branch_snapshot(entries, sizeof(entries), 0);
+>> +       total_entries /= sizeof(struct perf_branch_entry);
+>> +
+>> +       bpf_printk("total_entries %lu\n", total_entries);
+>> +
+>> +       for (i = 0; i < PERF_MAX_BRANCH_SNAPSHOT; i++) {
+>> +               if (i >= total_entries)
+>> +                       break;
+>> +               if (in_range(entries[i].from) && in_range(entries[i].to))
+>> +                       test1_hits++;
+>> +               else if (!test1_hits)
+>> +                       wasted_entries++;
+>> +               bpf_printk("i %d from %llx to %llx", i, entries[i].from,
+>> +                          entries[i].to);
+> 
+> debug leftovers? this will be polluting trace_pipe unnecessarily; same
+> for above total_entries bpf_printk()
+
+Oops.. I added/removed it for every version, but forgot this time. Will fix 
 in v5. 
 
 Thanks,
