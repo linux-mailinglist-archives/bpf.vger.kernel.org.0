@@ -2,357 +2,310 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B506D3FD057
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 02:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AAA3FD05C
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 02:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241453AbhIAAga (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 20:36:30 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:61680 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230062AbhIAAg3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 31 Aug 2021 20:36:29 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1810S4t7028187
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 17:35:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=ji+vwwd4eLTbcJw2c2j868X0v2GjIrzS21oBKXZzeeQ=;
- b=bb85rmRpAeoxyE3Rdeywwz4bzb8c/1q2U5gZYMLxTx8U4t50tdIOCAjhTbYXtpRhcRds
- wJA8GRdMHBHe+lpID6Ez+pFp5vl4403jrC+IofdJ8yN4frlJ1M7oab/Tk/FZ7U4CmdyP
- zztfcUNXYmi96fIGB2ZLs4Hhi1Ik5G1X/nA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aryqsbt2s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 17:35:33 -0700
-Received: from intmgw001.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 31 Aug 2021 17:35:32 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 305F2F58692A; Tue, 31 Aug 2021 17:35:29 -0700 (PDT)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <kjain@linux.ibm.com>, <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v4 bpf-next 3/3] selftests/bpf: add test for bpf_get_branch_snapshot
-Date:   Tue, 31 Aug 2021 17:35:17 -0700
-Message-ID: <20210901003517.3953145-4-songliubraving@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210901003517.3953145-1-songliubraving@fb.com>
-References: <20210901003517.3953145-1-songliubraving@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: 7w6s5v2cUE08krQbUIqKPD2aGshahgud
-X-Proofpoint-ORIG-GUID: 7w6s5v2cUE08krQbUIqKPD2aGshahgud
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-31_10:2021-08-31,2021-08-31 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- lowpriorityscore=0 suspectscore=0 impostorscore=0 priorityscore=1501
- adultscore=0 phishscore=0 spamscore=0 mlxscore=0 bulkscore=0 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2109010001
-X-FB-Internal: deliver
+        id S241414AbhIAAh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 20:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241413AbhIAAh6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 Aug 2021 20:37:58 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD934C061575;
+        Tue, 31 Aug 2021 17:37:02 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id z2so1724513iln.0;
+        Tue, 31 Aug 2021 17:37:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=uJK4ZZSDEP4YjA8edgfZhxskYILZT/03UHWDnmiGok8=;
+        b=qgZ1YUREXxwMIug9mNQekf+6j3/t58KDMBsc0aU36bZ6wjsAARbIiQEnQOtf9Ovb+q
+         7OTo2aE0v5ob+lUPjUtmlix6Ujdnsr7bPgoqjBsuBrQg0jupiwHLrphsqo/2lbWrHX4X
+         QAFixdaeCpASgxzVhLsNmYCEaAqkLvURjUBwRNm8NpgGzCs5dLIxBKsckYVrAIMWoJ7l
+         aX7A845VzJLFGob96TIraaSPS2/vUjJpeEvYZtvlWW+cMGekwTZ9+nTdglTjqoIJ9MXb
+         koJcTkm/Fkb/EJ1ZsxnSUV5kv+FWHkQM5wCyBwi2rcJ9xjdobxy5tgGUrtksBc9aJ0+D
+         KnKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=uJK4ZZSDEP4YjA8edgfZhxskYILZT/03UHWDnmiGok8=;
+        b=f2AIjfzFPGgb/nBlLOdlnda11+NpQ5jvo+PeAHDSRYGJjQw7DFs80C9Y2Qh9Z2uMf9
+         B6bdM+o8ouuwIsxqWDN5uhX5XXtlCWGW0VOVZyohM06EJICEhOGOnm+e57vsc3lwpaZq
+         yXH84LlDyXFaJMW1MZgDpM7npPEtaEW3UiqPewDRF4utkZ4b28fVPzFQDNrQMyG+c9wk
+         BTgfs0rQnCxT/5WfhQzyTCVmG0cuDoobWK6zm3qnQOZJUqAyFEx6jh7VxeRhD8aNlul6
+         Lq7YOctKCWJoOoAK0dInZGwqfqKTo0mM6jeF8eokj/HciXYtxU2VAmLcBi+e8Y5zjnK8
+         A6MQ==
+X-Gm-Message-State: AOAM533IIyblU+cr+Kbz2AbGMu+02U0+kzFsLvGm8qALeveO26n9sPAp
+        Phna/dC4ouew2AZxtRISobw=
+X-Google-Smtp-Source: ABdhPJxamCjTQZGe34ONPx0Ww+2T1IzT2rGI5cZW8cn2B2kJjzs/VZWfem94zF3x+ykld62tLESNMQ==
+X-Received: by 2002:a92:280d:: with SMTP id l13mr22483031ilf.99.1630456622094;
+        Tue, 31 Aug 2021 17:37:02 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id n11sm10879364ilq.21.2021.08.31.17.36.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Aug 2021 17:37:01 -0700 (PDT)
+Date:   Tue, 31 Aug 2021 17:36:54 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
+        echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Message-ID: <612ecb262b05_6b87208c0@john-XPS-13-9370.notmuch>
+In-Reply-To: <14b99bc75ce0f8d4968208fb0b420a054e45433e.1629473234.git.lorenzo@kernel.org>
+References: <cover.1629473233.git.lorenzo@kernel.org>
+ <14b99bc75ce0f8d4968208fb0b420a054e45433e.1629473234.git.lorenzo@kernel.org>
+Subject: RE: [PATCH v12 bpf-next 17/18] net: xdp: introduce
+ bpf_xdp_adjust_data helper
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test uses bpf_get_branch_snapshot from a fexit program. The test use=
-s
-a target function (bpf_testmod_loop_test) and compares the record against
-kallsyms. If there isn't enough record matching kallsyms, the test fails.
+Lorenzo Bianconi wrote:
+> For XDP frames split over multiple buffers, the xdp_md->data and
+> xdp_md->data_end pointers will point to the start and end of the first
+> fragment only. bpf_xdp_adjust_data can be used to access subsequent
+> fragments by moving the data pointers. To use, an XDP program can call
+> this helper with the byte offset of the packet payload that
+> it wants to access; the helper will move xdp_md->data and xdp_md ->data_end
+> so they point to the requested payload offset and to the end of the
+> fragment containing this byte offset, and return the byte offset of the
+> start of the fragment.
+> To move back to the beginning of the packet, simply call the
+> helper with an offset of '0'.
+> Note also that the helpers that modify the packet boundaries
+> (bpf_xdp_adjust_head(), bpf_xdp_adjust_tail() and
+> bpf_xdp_adjust_meta()) will fail if the pointers have been
+> moved; it is the responsibility of the BPF program to move them
+> back before using these helpers.
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  14 ++-
- .../bpf/prog_tests/get_branch_snapshot.c      | 101 ++++++++++++++++++
- .../selftests/bpf/progs/get_branch_snapshot.c |  44 ++++++++
- tools/testing/selftests/bpf/trace_helpers.c   |  37 +++++++
- tools/testing/selftests/bpf/trace_helpers.h   |   5 +
- 5 files changed, 200 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_sna=
-pshot.c
- create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot=
-.c
+I'm ok with this for a first iteration I guess with more work we
+can make the helpers use the updated pointers though.
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
-s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 141d8da687d21..19635e57ff21a 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -13,6 +13,18 @@
-=20
- DEFINE_PER_CPU(int, bpf_testmod_ksym_percpu) =3D 123;
-=20
-+noinline int bpf_testmod_loop_test(int n)
-+{
-+	int i, sum =3D 0;
-+
-+	/* the primary goal of this test is to test LBR. Create a lot of
-+	 * branches in the function, so we can catch it easily.
-+	 */
-+	for (i =3D 0; i < n; i++)
-+		sum +=3D i;
-+	return sum;
-+}
-+
- noinline ssize_t
- bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- 		      struct bin_attribute *bin_attr,
-@@ -24,6 +36,7 @@ bpf_testmod_test_read(struct file *file, struct kobject=
- *kobj,
- 		.len =3D len,
- 	};
-=20
-+	bpf_testmod_loop_test(101);
- 	trace_bpf_testmod_test_read(current, &ctx);
-=20
- 	return -EIO; /* always fail */
-@@ -71,4 +84,3 @@ module_exit(bpf_testmod_exit);
- MODULE_AUTHOR("Andrii Nakryiko");
- MODULE_DESCRIPTION("BPF selftests module");
- MODULE_LICENSE("Dual BSD/GPL");
--
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c=
- b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-new file mode 100644
-index 0000000000000..03ffa5cdf9b09
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include <test_progs.h>
-+#include "get_branch_snapshot.skel.h"
-+
-+static int *pfd_array;
-+static int cpu_cnt;
-+
-+static int create_perf_events(void)
-+{
-+	struct perf_event_attr attr =3D {0};
-+	int cpu;
-+
-+	/* create perf event */
-+	attr.size =3D sizeof(attr);
-+	attr.type =3D PERF_TYPE_RAW;
-+	attr.config =3D 0x1b00;
-+	attr.sample_type =3D PERF_SAMPLE_BRANCH_STACK;
-+	attr.branch_sample_type =3D PERF_SAMPLE_BRANCH_KERNEL |
-+		PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_ANY;
-+
-+	cpu_cnt =3D libbpf_num_possible_cpus();
-+	pfd_array =3D malloc(sizeof(int) * cpu_cnt);
-+	if (!pfd_array) {
-+		cpu_cnt =3D 0;
-+		return 1;
-+	}
-+
-+	for (cpu =3D 0; cpu < cpu_cnt; cpu++) {
-+		pfd_array[cpu] =3D syscall(__NR_perf_event_open, &attr,
-+					 -1, cpu, -1, PERF_FLAG_FD_CLOEXEC);
-+		if (pfd_array[cpu] < 0)
-+			break;
-+	}
-+
-+	return cpu =3D=3D 0;
-+}
-+
-+static void close_perf_events(void)
-+{
-+	int cpu =3D 0;
-+	int fd;
-+
-+	while (cpu++ < cpu_cnt) {
-+		fd =3D pfd_array[cpu];
-+		if (fd < 0)
-+			break;
-+		close(fd);
-+	}
-+	free(pfd_array);
-+}
-+
-+void test_get_branch_snapshot(void)
-+{
-+	struct get_branch_snapshot *skel =3D NULL;
-+	int err;
-+
-+	if (create_perf_events()) {
-+		test__skip();  /* system doesn't support LBR */
-+		goto cleanup;
-+	}
-+
-+	skel =3D get_branch_snapshot__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "get_branch_snapshot__open_and_load"))
-+		goto cleanup;
-+
-+	err =3D kallsyms_find("bpf_testmod_loop_test", &skel->bss->address_low)=
-;
-+	if (!ASSERT_OK(err, "kallsyms_find"))
-+		goto cleanup;
-+
-+	err =3D kallsyms_find_next("bpf_testmod_loop_test", &skel->bss->address=
-_high);
-+	if (!ASSERT_OK(err, "kallsyms_find_next"))
-+		goto cleanup;
-+
-+	err =3D get_branch_snapshot__attach(skel);
-+	if (!ASSERT_OK(err, "get_branch_snapshot__attach"))
-+		goto cleanup;
-+
-+	/* trigger the program */
-+	system("cat /sys/kernel/bpf_testmod > /dev/null 2>& 1");
-+
-+	if (skel->bss->total_entries < 16) {
-+		/* too few entries for the hit/waste test */
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	ASSERT_GT(skel->bss->test1_hits, 1, "find_looptest_in_lbr");
-+
-+	/* Given we stop LBR in software, we will waste a few entries.
-+	 * But we should try to waste as few as possible entries. We are at
-+	 * about 11 on x86_64 systems.
-+	 * Add a check for < 15 so that we get heads-up when something
-+	 * changes and wastes too many entries.
-+	 */
-+	ASSERT_LT(skel->bss->wasted_entries, 15, "check_wasted_entries");
-+
-+cleanup:
-+	get_branch_snapshot__destroy(skel);
-+	close_perf_events();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/get_branch_snapshot.c b/to=
-ols/testing/selftests/bpf/progs/get_branch_snapshot.c
-new file mode 100644
-index 0000000000000..24a6e7a9c08ac
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/get_branch_snapshot.c
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+__u64 test1_hits =3D 0;
-+__u64 address_low =3D 0;
-+__u64 address_high =3D 0;
-+int wasted_entries =3D 0;
-+long total_entries =3D 0;
-+
-+struct perf_branch_entry entries[PERF_MAX_BRANCH_SNAPSHOT] =3D {};
-+
-+
-+static inline bool in_range(__u64 val)
-+{
-+	return (val >=3D address_low) && (val < address_high);
-+}
-+
-+SEC("fexit/bpf_testmod_loop_test")
-+int BPF_PROG(test1, int n, int ret)
-+{
-+	long i;
-+
-+	total_entries =3D bpf_get_branch_snapshot(entries, sizeof(entries), 0);
-+	total_entries /=3D sizeof(struct perf_branch_entry);
-+
-+	bpf_printk("total_entries %lu\n", total_entries);
-+
-+	for (i =3D 0; i < PERF_MAX_BRANCH_SNAPSHOT; i++) {
-+		if (i >=3D total_entries)
-+			break;
-+		if (in_range(entries[i].from) && in_range(entries[i].to))
-+			test1_hits++;
-+		else if (!test1_hits)
-+			wasted_entries++;
-+		bpf_printk("i %d from %llx to %llx", i, entries[i].from,
-+			   entries[i].to);
-+	}
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/=
-selftests/bpf/trace_helpers.c
-index e7a19b04d4eaf..5100a169b72b1 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -1,4 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <ctype.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-@@ -117,6 +118,42 @@ int kallsyms_find(const char *sym, unsigned long lon=
-g *addr)
- 	return err;
- }
-=20
-+/* find the address of the next symbol of the same type, this can be use=
-d
-+ * to determine the end of a function.
-+ */
-+int kallsyms_find_next(const char *sym, unsigned long long *addr)
-+{
-+	char type, found_type, name[500];
-+	unsigned long long value;
-+	bool found =3D false;
-+	int err =3D 0;
-+	FILE *f;
-+
-+	f =3D fopen("/proc/kallsyms", "r");
-+	if (!f)
-+		return -EINVAL;
-+
-+	while (fscanf(f, "%llx %c %499s%*[^\n]\n", &value, &type, name) > 0) {
-+		/* Different types of symbols in kernel modules are mixed
-+		 * in /proc/kallsyms. Only return the next matching type.
-+		 * Use tolower() for type so that 'T' matches 't'.
-+		 */
-+		if (found && found_type =3D=3D tolower(type)) {
-+			*addr =3D value;
-+			goto out;
-+		}
-+		if (strcmp(name, sym) =3D=3D 0) {
-+			found =3D true;
-+			found_type =3D tolower(type);
-+		}
-+	}
-+	err =3D -ENOENT;
-+
-+out:
-+	fclose(f);
-+	return err;
-+}
-+
- void read_trace_pipe(void)
- {
- 	int trace_fd;
-diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/=
-selftests/bpf/trace_helpers.h
-index d907b445524d5..bc8ed86105d94 100644
---- a/tools/testing/selftests/bpf/trace_helpers.h
-+++ b/tools/testing/selftests/bpf/trace_helpers.h
-@@ -16,6 +16,11 @@ long ksym_get_addr(const char *name);
- /* open kallsyms and find addresses on the fly, faster than load + searc=
-h. */
- int kallsyms_find(const char *sym, unsigned long long *addr);
-=20
-+/* find the address of the next symbol, this can be used to determine th=
-e
-+ * end of a function
-+ */
-+int kallsyms_find_next(const char *sym, unsigned long long *addr);
-+
- void read_trace_pipe(void);
-=20
- ssize_t get_uprobe_offset(const void *addr, ssize_t base);
---=20
-2.30.2
+> 
+> Suggested-by: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
+Overall looks good couple small nits/questions below. Thanks!
+
+> ---
+>  include/net/xdp.h              |  8 +++++
+>  include/uapi/linux/bpf.h       | 32 ++++++++++++++++++
+>  net/bpf/test_run.c             |  8 +++++
+>  net/core/filter.c              | 62 +++++++++++++++++++++++++++++++++-
+>  tools/include/uapi/linux/bpf.h | 32 ++++++++++++++++++
+>  5 files changed, 141 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index cdaecf8d4d61..ce4764c7cd40 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -82,6 +82,11 @@ struct xdp_buff {
+>  	struct xdp_txq_info *txq;
+>  	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
+>  	u16 flags; /* supported values defined in xdp_flags */
+> +	/* xdp multi-buff metadata used for frags iteration */
+> +	struct {
+> +		u16 headroom;	/* frame headroom: data - data_hard_start */
+> +		u16 headlen;	/* first buffer length: data_end - data */
+> +	} mb;
+>  };
+>  
+>  static __always_inline bool xdp_buff_is_mb(struct xdp_buff *xdp)
+> @@ -127,6 +132,9 @@ xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
+>  	xdp->data = data;
+>  	xdp->data_end = data + data_len;
+>  	xdp->data_meta = meta_valid ? data : data + 1;
+> +	/* mb metadata for frags iteration */
+> +	xdp->mb.headroom = headroom;
+> +	xdp->mb.headlen = data_len;
+>  }
+>  
+>  /* Reserve memory area at end-of data area.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 9e2c3b12ea49..a7b5185a718a 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4877,6 +4877,37 @@ union bpf_attr {
+>   *		Get the total size of a given xdp buff (linear and paged area)
+>   *	Return
+>   *		The total size of a given xdp buffer.
+> + *
+> + * long bpf_xdp_adjust_data(struct xdp_buff *xdp_md, u32 offset)
+> + *	Description
+> + *		For XDP frames split over multiple buffers, the
+> + *		*xdp_md*\ **->data** and*xdp_md *\ **->data_end** pointers
+                                       ^^^^
+missing space?
+
+> + *		will point to the start and end of the first fragment only.
+> + *		This helper can be used to access subsequent fragments by
+> + *		moving the data pointers. To use, an XDP program can call
+> + *		this helper with the byte offset of the packet payload that
+> + *		it wants to access; the helper will move *xdp_md*\ **->data**
+> + *		and *xdp_md *\ **->data_end** so they point to the requested
+> + *		payload offset and to the end of the fragment containing this
+> + *		byte offset, and return the byte offset of the start of the
+> + *		fragment.
+> + *		To move back to the beginning of the packet, simply call the
+> + *		helper with an offset of '0'.
+> + *		Note also that the helpers that modify the packet boundaries
+> + *		(*bpf_xdp_adjust_head()*, *bpf_xdp_adjust_tail()* and
+> + *		*bpf_xdp_adjust_meta()*) will fail if the pointers have been
+> + *		moved; it is the responsibility of the BPF program to move them
+> + *		back before using these helpers.
+> + *
+> + *		A call to this helper is susceptible to change the underlying
+> + *		packet buffer. Therefore, at load time, all checks on pointers
+> + *		previously done by the verifier are invalidated and must be
+> + *		performed again, if the helper is used in combination with
+> + *		direct packet access.
+> + *	Return
+> + *		offset between the beginning of the current fragment and
+> + *		original *xdp_md*\ **->data** on success, or a negative error
+> + *		in case of failure.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -5055,6 +5086,7 @@ union bpf_attr {
+>  	FN(get_func_ip),		\
+>  	FN(get_attach_cookie),		\
+>  	FN(xdp_get_buff_len),		\
+> +	FN(xdp_adjust_data),		\
+>  	/* */
+>  
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index 869dcf23a1ca..f09c2c8c0d6c 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -757,6 +757,8 @@ static int xdp_convert_md_to_buff(struct xdp_md *xdp_md, struct xdp_buff *xdp)
+>  	}
+>  
+>  	xdp->data = xdp->data_meta + xdp_md->data;
+> +	xdp->mb.headroom = xdp->data - xdp->data_hard_start;
+> +	xdp->mb.headlen = xdp->data_end - xdp->data;
+>  	return 0;
+>  
+>  free_dev:
+> @@ -871,6 +873,12 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+>  	if (ret)
+>  		goto out;
+>  
+> +	/* data pointers need to be reset after frag iteration */
+> +	if (unlikely(xdp.data_hard_start + xdp.mb.headroom != xdp.data)) {
+> +		ret = -EFAULT;
+> +		goto out;
+> +	}
+> +
+>  	size = xdp.data_end - xdp.data_meta + sinfo->xdp_frags_size;
+>  	ret = bpf_test_finish(kattr, uattr, xdp.data_meta, sinfo, size,
+>  			      retval, duration);
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 2122c00c680f..ed2a6632adce 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3827,6 +3827,10 @@ BPF_CALL_2(bpf_xdp_adjust_head, struct xdp_buff *, xdp, int, offset)
+>  	void *data_start = xdp_frame_end + metalen;
+>  	void *data = xdp->data + offset;
+>  
+> +	/* data pointers need to be reset after frag iteration */
+> +	if (unlikely(xdp->data_hard_start + xdp->mb.headroom != xdp->data))
+> +		return -EINVAL;
+
+-EFAULT? It might be nice if error code is different from below
+for debugging?
+
+> +
+>  	if (unlikely(data < data_start ||
+>  		     data > xdp->data_end - ETH_HLEN))
+>  		return -EINVAL;
+> @@ -3836,6 +3840,9 @@ BPF_CALL_2(bpf_xdp_adjust_head, struct xdp_buff *, xdp, int, offset)
+>  			xdp->data_meta, metalen);
+>  	xdp->data_meta += offset;
+>  	xdp->data = data;
+> +	/* update metada for multi-buff frag iteration */
+> +	xdp->mb.headroom = xdp->data - xdp->data_hard_start;
+> +	xdp->mb.headlen = xdp->data_end - xdp->data;
+>  
+>  	return 0;
+>  }
+> @@ -3910,6 +3917,10 @@ BPF_CALL_2(bpf_xdp_adjust_tail, struct xdp_buff *, xdp, int, offset)
+>  	void *data_hard_end = xdp_data_hard_end(xdp); /* use xdp->frame_sz */
+>  	void *data_end = xdp->data_end + offset;
+>  
+> +	/* data pointer needs to be reset after frag iteration */
+> +	if (unlikely(xdp->data + xdp->mb.headlen != xdp->data_end))
+> +		return -EINVAL;
+
+EFAULT?
+
+> +
+>  	if (unlikely(xdp_buff_is_mb(xdp)))
+>  		return bpf_xdp_mb_adjust_tail(xdp, offset);
+>  
+> @@ -3949,6 +3960,10 @@ BPF_CALL_2(bpf_xdp_adjust_meta, struct xdp_buff *, xdp, int, offset)
+>  	void *meta = xdp->data_meta + offset;
+>  	unsigned long metalen = xdp->data - meta;
+>  
+> +	/* data pointer needs to be reset after frag iteration */
+> +	if (unlikely(xdp->data_hard_start + xdp->mb.headroom != xdp->data))
+> +		return -EINVAL;
+
+same comment.
+
+>  	if (xdp_data_meta_unsupported(xdp))
+>  		return -ENOTSUPP;
+>  	if (unlikely(meta < xdp_frame_end ||
+> @@ -3970,6 +3985,48 @@ static const struct bpf_func_proto bpf_xdp_adjust_meta_proto = {
+>  	.arg2_type	= ARG_ANYTHING,
+>  };
+>  
+> +BPF_CALL_2(bpf_xdp_adjust_data, struct xdp_buff *, xdp, u32, offset)
+> +{
+> +	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+> +	u32 base_offset = xdp->mb.headlen;
+> +	int i;
+> +
+> +	if (!xdp_buff_is_mb(xdp) || offset > sinfo->xdp_frags_size)
+> +		return -EINVAL;
+
+Do we need to error this? If its not mb we can just return the same
+as offset==0?
+
+> +
+> +	if (offset < xdp->mb.headlen) {
+> +		/* linear area */
+> +		xdp->data = xdp->data_hard_start + xdp->mb.headroom + offset;
+> +		xdp->data_end = xdp->data_hard_start + xdp->mb.headroom +
+> +				xdp->mb.headlen;
+> +		return 0;
+> +	}
+> +
+> +	for (i = 0; i < sinfo->nr_frags; i++) {
+> +		/* paged area */
+> +		skb_frag_t *frag = &sinfo->frags[i];
+> +		unsigned int size = skb_frag_size(frag);
+> +
+> +		if (offset < base_offset + size) {
+> +			u8 *addr = skb_frag_address(frag);
+> +
+> +			xdp->data = addr + offset - base_offset;
+> +			xdp->data_end = addr + size;
+> +			break;
+> +		}
+> +		base_offset += size;
+> +	}
+> +	return base_offset;
+> +}
