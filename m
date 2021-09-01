@@ -2,43 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524413FD059
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 02:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B506D3FD057
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 02:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbhIAAgd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 20:36:33 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:12048 "EHLO
+        id S241453AbhIAAga (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 20:36:30 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:61680 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241458AbhIAAgb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 31 Aug 2021 20:36:31 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1810ShFG011771
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 17:35:36 -0700
+        by vger.kernel.org with ESMTP id S230062AbhIAAg3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 31 Aug 2021 20:36:29 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1810S4t7028187
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 17:35:33 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=wAnRhnQHsBGWS30dkE41tRfVrCpRIrwrA3URonrxIPY=;
- b=eDls+kmj5k/ZqNbOzphaDriia8Rg2WcjO5ly7vXvxvJE2fHf/yOdlBQxbvqiURnZwYAG
- /Dyr2trV3/1QpfNNZSHawgui/FWBtXSj9Qbuubneh5Ajb49uXVOTMbcd1aQa/tuD9mRN
- pZkd441w5n+CG5i0zd7M3yFCeue5aeq8QK4= 
+ bh=ji+vwwd4eLTbcJw2c2j868X0v2GjIrzS21oBKXZzeeQ=;
+ b=bb85rmRpAeoxyE3Rdeywwz4bzb8c/1q2U5gZYMLxTx8U4t50tdIOCAjhTbYXtpRhcRds
+ wJA8GRdMHBHe+lpID6Ez+pFp5vl4403jrC+IofdJ8yN4frlJ1M7oab/Tk/FZ7U4CmdyP
+ zztfcUNXYmi96fIGB2ZLs4Hhi1Ik5G1X/nA= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3arykq3tjr-2
+        by mx0a-00082601.pphosted.com with ESMTP id 3aryqsbt2s-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 17:35:35 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 17:35:33 -0700
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 31 Aug 2021 17:35:33 -0700
+ 15.1.2308.14; Tue, 31 Aug 2021 17:35:32 -0700
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 7041FF586921; Tue, 31 Aug 2021 17:35:26 -0700 (PDT)
+        id 305F2F58692A; Tue, 31 Aug 2021 17:35:29 -0700 (PDT)
 From:   Song Liu <songliubraving@fb.com>
 To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
         <kjain@linux.ibm.com>, <kernel-team@fb.com>,
         Song Liu <songliubraving@fb.com>
-Subject: [PATCH v4 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
-Date:   Tue, 31 Aug 2021 17:35:16 -0700
-Message-ID: <20210901003517.3953145-3-songliubraving@fb.com>
+Subject: [PATCH v4 bpf-next 3/3] selftests/bpf: add test for bpf_get_branch_snapshot
+Date:   Tue, 31 Aug 2021 17:35:17 -0700
+Message-ID: <20210901003517.3953145-4-songliubraving@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210901003517.3953145-1-songliubraving@fb.com>
 References: <20210901003517.3953145-1-songliubraving@fb.com>
@@ -47,201 +47,312 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: ZwJdycc0MsNgz679farVLcuAGaI2tTSn
-X-Proofpoint-ORIG-GUID: ZwJdycc0MsNgz679farVLcuAGaI2tTSn
+X-Proofpoint-GUID: 7w6s5v2cUE08krQbUIqKPD2aGshahgud
+X-Proofpoint-ORIG-GUID: 7w6s5v2cUE08krQbUIqKPD2aGshahgud
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-08-31_10:2021-08-31,2021-08-31 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- lowpriorityscore=0 adultscore=0 malwarescore=0 priorityscore=1501
- mlxscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 spamscore=0
- clxscore=1015 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2109010001
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 impostorscore=0 priorityscore=1501
+ adultscore=0 phishscore=0 spamscore=0 mlxscore=0 bulkscore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2109010001
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
-branch trace from hardware (e.g. Intel LBR). To use the feature, the
-user need to create perf_event with proper branch_record filtering
-on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
-On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
+This test uses bpf_get_branch_snapshot from a fexit program. The test use=
+s
+a target function (bpf_testmod_loop_test) and compares the record against
+kallsyms. If there isn't enough record matching kallsyms, the test fails.
 
 Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- include/uapi/linux/bpf.h       | 22 +++++++++++++++++++
- kernel/bpf/trampoline.c        |  3 ++-
- kernel/trace/bpf_trace.c       | 40 ++++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h | 22 +++++++++++++++++++
- 4 files changed, 86 insertions(+), 1 deletion(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  14 ++-
+ .../bpf/prog_tests/get_branch_snapshot.c      | 101 ++++++++++++++++++
+ .../selftests/bpf/progs/get_branch_snapshot.c |  44 ++++++++
+ tools/testing/selftests/bpf/trace_helpers.c   |  37 +++++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   5 +
+ 5 files changed, 200 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_sna=
+pshot.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot=
+.c
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 791f31dd0abee..c986e6fad5bc0 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -4877,6 +4877,27 @@ union bpf_attr {
-  *		Get the struct pt_regs associated with **task**.
-  *	Return
-  *		A pointer to struct pt_regs.
-+ *
-+ * long bpf_get_branch_snapshot(void *entries, u32 size, u64 flags)
-+ *	Description
-+ *		Get branch trace from hardware engines like Intel LBR. The
-+ *		branch trace is taken soon after the trigger point of the
-+ *		BPF program, so it may contain some entries after the
-+ *		trigger point. The user need to filter these entries
-+ *		accordingly.
-+ *
-+ *		The data is stored as struct perf_branch_entry into output
-+ *		buffer *entries*. *size* is the size of *entries* in bytes.
-+ *		*flags* is reserved for now and must be zero.
-+ *
-+ *	Return
-+ *		On success, number of bytes written to *buf*. On error, a
-+ *		negative value.
-+ *
-+ *		**-EINVAL** if arguments invalid or **size** not a multiple
-+ *		of **sizeof**\ (**struct perf_branch_entry**\ ).
-+ *
-+ *		**-ENOENT** if architecture does not support branch records.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -5055,6 +5076,7 @@ union bpf_attr {
- 	FN(get_func_ip),		\
- 	FN(get_attach_cookie),		\
- 	FN(task_pt_regs),		\
-+	FN(get_branch_snapshot),	\
- 	/* */
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
+s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 141d8da687d21..19635e57ff21a 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -13,6 +13,18 @@
 =20
- /* integer value in 'imm' field of BPF_CALL instruction selects which he=
-lper
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index fe1e857324e66..39eaaff81953d 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -10,6 +10,7 @@
- #include <linux/rcupdate_trace.h>
- #include <linux/rcupdate_wait.h>
- #include <linux/module.h>
-+#include <linux/static_call.h>
+ DEFINE_PER_CPU(int, bpf_testmod_ksym_percpu) =3D 123;
 =20
- /* dummy _ops. The verifier will operate on target program's ops. */
- const struct bpf_verifier_ops bpf_extension_verifier_ops =3D {
-@@ -526,7 +527,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
- }
-=20
- #define NO_START_TIME 1
--static u64 notrace bpf_prog_start_time(void)
-+static __always_inline u64 notrace bpf_prog_start_time(void)
- {
- 	u64 start =3D NO_START_TIME;
-=20
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 8e2eb950aa829..a8ec3634a3329 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1017,6 +1017,44 @@ static const struct bpf_func_proto bpf_get_attach_=
-cookie_proto_pe =3D {
- 	.arg1_type	=3D ARG_PTR_TO_CTX,
- };
-=20
-+static DEFINE_PER_CPU(struct perf_branch_snapshot, bpf_perf_branch_snaps=
-hot);
-+
-+BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
++noinline int bpf_testmod_loop_test(int n)
 +{
-+#ifndef CONFIG_X86
-+	return -ENOENT;
-+#else
-+	static const u32 br_entry_size =3D sizeof(struct perf_branch_entry);
-+	u32 to_copy;
++	int i, sum =3D 0;
 +
-+	if (unlikely(flags))
-+		return -EINVAL;
-+
-+	if (!buf || (size % br_entry_size !=3D 0))
-+		return -EINVAL;
-+
-+	static_call(perf_snapshot_branch_stack)(this_cpu_ptr(&bpf_perf_branch_s=
-napshot));
-+
-+	if (this_cpu_ptr(&bpf_perf_branch_snapshot)->nr =3D=3D 0)
-+		return -ENOENT;
-+
-+	to_copy =3D this_cpu_ptr(&bpf_perf_branch_snapshot)->nr *
-+		sizeof(struct perf_branch_entry);
-+	to_copy =3D min_t(u32, size, to_copy);
-+	memcpy(buf, this_cpu_ptr(&bpf_perf_branch_snapshot)->entries, to_copy);
-+
-+	return to_copy;
-+#endif
++	/* the primary goal of this test is to test LBR. Create a lot of
++	 * branches in the function, so we can catch it easily.
++	 */
++	for (i =3D 0; i < n; i++)
++		sum +=3D i;
++	return sum;
 +}
 +
-+static const struct bpf_func_proto bpf_get_branch_snapshot_proto =3D {
-+	.func		=3D bpf_get_branch_snapshot,
-+	.gpl_only	=3D true,
-+	.ret_type	=3D RET_INTEGER,
-+	.arg1_type	=3D ARG_PTR_TO_UNINIT_MEM,
-+	.arg2_type	=3D ARG_CONST_SIZE_OR_ZERO,
-+};
-+
- static const struct bpf_func_proto *
- bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *=
-prog)
- {
-@@ -1132,6 +1170,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, co=
-nst struct bpf_prog *prog)
- 		return &bpf_snprintf_proto;
- 	case BPF_FUNC_get_func_ip:
- 		return &bpf_get_func_ip_proto_tracing;
-+	case BPF_FUNC_get_branch_snapshot:
-+		return &bpf_get_branch_snapshot_proto;
- 	default:
- 		return bpf_base_func_proto(func_id);
- 	}
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-index 791f31dd0abee..c986e6fad5bc0 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -4877,6 +4877,27 @@ union bpf_attr {
-  *		Get the struct pt_regs associated with **task**.
-  *	Return
-  *		A pointer to struct pt_regs.
-+ *
-+ * long bpf_get_branch_snapshot(void *entries, u32 size, u64 flags)
-+ *	Description
-+ *		Get branch trace from hardware engines like Intel LBR. The
-+ *		branch trace is taken soon after the trigger point of the
-+ *		BPF program, so it may contain some entries after the
-+ *		trigger point. The user need to filter these entries
-+ *		accordingly.
-+ *
-+ *		The data is stored as struct perf_branch_entry into output
-+ *		buffer *entries*. *size* is the size of *entries* in bytes.
-+ *		*flags* is reserved for now and must be zero.
-+ *
-+ *	Return
-+ *		On success, number of bytes written to *buf*. On error, a
-+ *		negative value.
-+ *
-+ *		**-EINVAL** if arguments invalid or **size** not a multiple
-+ *		of **sizeof**\ (**struct perf_branch_entry**\ ).
-+ *
-+ *		**-ENOENT** if architecture does not support branch records.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -5055,6 +5076,7 @@ union bpf_attr {
- 	FN(get_func_ip),		\
- 	FN(get_attach_cookie),		\
- 	FN(task_pt_regs),		\
-+	FN(get_branch_snapshot),	\
- 	/* */
+ noinline ssize_t
+ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+ 		      struct bin_attribute *bin_attr,
+@@ -24,6 +36,7 @@ bpf_testmod_test_read(struct file *file, struct kobject=
+ *kobj,
+ 		.len =3D len,
+ 	};
 =20
- /* integer value in 'imm' field of BPF_CALL instruction selects which he=
-lper
++	bpf_testmod_loop_test(101);
+ 	trace_bpf_testmod_test_read(current, &ctx);
+=20
+ 	return -EIO; /* always fail */
+@@ -71,4 +84,3 @@ module_exit(bpf_testmod_exit);
+ MODULE_AUTHOR("Andrii Nakryiko");
+ MODULE_DESCRIPTION("BPF selftests module");
+ MODULE_LICENSE("Dual BSD/GPL");
+-
+diff --git a/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c=
+ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+new file mode 100644
+index 0000000000000..03ffa5cdf9b09
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
+@@ -0,0 +1,101 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2021 Facebook */
++#include <test_progs.h>
++#include "get_branch_snapshot.skel.h"
++
++static int *pfd_array;
++static int cpu_cnt;
++
++static int create_perf_events(void)
++{
++	struct perf_event_attr attr =3D {0};
++	int cpu;
++
++	/* create perf event */
++	attr.size =3D sizeof(attr);
++	attr.type =3D PERF_TYPE_RAW;
++	attr.config =3D 0x1b00;
++	attr.sample_type =3D PERF_SAMPLE_BRANCH_STACK;
++	attr.branch_sample_type =3D PERF_SAMPLE_BRANCH_KERNEL |
++		PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_ANY;
++
++	cpu_cnt =3D libbpf_num_possible_cpus();
++	pfd_array =3D malloc(sizeof(int) * cpu_cnt);
++	if (!pfd_array) {
++		cpu_cnt =3D 0;
++		return 1;
++	}
++
++	for (cpu =3D 0; cpu < cpu_cnt; cpu++) {
++		pfd_array[cpu] =3D syscall(__NR_perf_event_open, &attr,
++					 -1, cpu, -1, PERF_FLAG_FD_CLOEXEC);
++		if (pfd_array[cpu] < 0)
++			break;
++	}
++
++	return cpu =3D=3D 0;
++}
++
++static void close_perf_events(void)
++{
++	int cpu =3D 0;
++	int fd;
++
++	while (cpu++ < cpu_cnt) {
++		fd =3D pfd_array[cpu];
++		if (fd < 0)
++			break;
++		close(fd);
++	}
++	free(pfd_array);
++}
++
++void test_get_branch_snapshot(void)
++{
++	struct get_branch_snapshot *skel =3D NULL;
++	int err;
++
++	if (create_perf_events()) {
++		test__skip();  /* system doesn't support LBR */
++		goto cleanup;
++	}
++
++	skel =3D get_branch_snapshot__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "get_branch_snapshot__open_and_load"))
++		goto cleanup;
++
++	err =3D kallsyms_find("bpf_testmod_loop_test", &skel->bss->address_low)=
+;
++	if (!ASSERT_OK(err, "kallsyms_find"))
++		goto cleanup;
++
++	err =3D kallsyms_find_next("bpf_testmod_loop_test", &skel->bss->address=
+_high);
++	if (!ASSERT_OK(err, "kallsyms_find_next"))
++		goto cleanup;
++
++	err =3D get_branch_snapshot__attach(skel);
++	if (!ASSERT_OK(err, "get_branch_snapshot__attach"))
++		goto cleanup;
++
++	/* trigger the program */
++	system("cat /sys/kernel/bpf_testmod > /dev/null 2>& 1");
++
++	if (skel->bss->total_entries < 16) {
++		/* too few entries for the hit/waste test */
++		test__skip();
++		goto cleanup;
++	}
++
++	ASSERT_GT(skel->bss->test1_hits, 1, "find_looptest_in_lbr");
++
++	/* Given we stop LBR in software, we will waste a few entries.
++	 * But we should try to waste as few as possible entries. We are at
++	 * about 11 on x86_64 systems.
++	 * Add a check for < 15 so that we get heads-up when something
++	 * changes and wastes too many entries.
++	 */
++	ASSERT_LT(skel->bss->wasted_entries, 15, "check_wasted_entries");
++
++cleanup:
++	get_branch_snapshot__destroy(skel);
++	close_perf_events();
++}
+diff --git a/tools/testing/selftests/bpf/progs/get_branch_snapshot.c b/to=
+ols/testing/selftests/bpf/progs/get_branch_snapshot.c
+new file mode 100644
+index 0000000000000..24a6e7a9c08ac
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/get_branch_snapshot.c
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2021 Facebook */
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") =3D "GPL";
++
++__u64 test1_hits =3D 0;
++__u64 address_low =3D 0;
++__u64 address_high =3D 0;
++int wasted_entries =3D 0;
++long total_entries =3D 0;
++
++struct perf_branch_entry entries[PERF_MAX_BRANCH_SNAPSHOT] =3D {};
++
++
++static inline bool in_range(__u64 val)
++{
++	return (val >=3D address_low) && (val < address_high);
++}
++
++SEC("fexit/bpf_testmod_loop_test")
++int BPF_PROG(test1, int n, int ret)
++{
++	long i;
++
++	total_entries =3D bpf_get_branch_snapshot(entries, sizeof(entries), 0);
++	total_entries /=3D sizeof(struct perf_branch_entry);
++
++	bpf_printk("total_entries %lu\n", total_entries);
++
++	for (i =3D 0; i < PERF_MAX_BRANCH_SNAPSHOT; i++) {
++		if (i >=3D total_entries)
++			break;
++		if (in_range(entries[i].from) && in_range(entries[i].to))
++			test1_hits++;
++		else if (!test1_hits)
++			wasted_entries++;
++		bpf_printk("i %d from %llx to %llx", i, entries[i].from,
++			   entries[i].to);
++	}
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/=
+selftests/bpf/trace_helpers.c
+index e7a19b04d4eaf..5100a169b72b1 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <ctype.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -117,6 +118,42 @@ int kallsyms_find(const char *sym, unsigned long lon=
+g *addr)
+ 	return err;
+ }
+=20
++/* find the address of the next symbol of the same type, this can be use=
+d
++ * to determine the end of a function.
++ */
++int kallsyms_find_next(const char *sym, unsigned long long *addr)
++{
++	char type, found_type, name[500];
++	unsigned long long value;
++	bool found =3D false;
++	int err =3D 0;
++	FILE *f;
++
++	f =3D fopen("/proc/kallsyms", "r");
++	if (!f)
++		return -EINVAL;
++
++	while (fscanf(f, "%llx %c %499s%*[^\n]\n", &value, &type, name) > 0) {
++		/* Different types of symbols in kernel modules are mixed
++		 * in /proc/kallsyms. Only return the next matching type.
++		 * Use tolower() for type so that 'T' matches 't'.
++		 */
++		if (found && found_type =3D=3D tolower(type)) {
++			*addr =3D value;
++			goto out;
++		}
++		if (strcmp(name, sym) =3D=3D 0) {
++			found =3D true;
++			found_type =3D tolower(type);
++		}
++	}
++	err =3D -ENOENT;
++
++out:
++	fclose(f);
++	return err;
++}
++
+ void read_trace_pipe(void)
+ {
+ 	int trace_fd;
+diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/=
+selftests/bpf/trace_helpers.h
+index d907b445524d5..bc8ed86105d94 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.h
++++ b/tools/testing/selftests/bpf/trace_helpers.h
+@@ -16,6 +16,11 @@ long ksym_get_addr(const char *name);
+ /* open kallsyms and find addresses on the fly, faster than load + searc=
+h. */
+ int kallsyms_find(const char *sym, unsigned long long *addr);
+=20
++/* find the address of the next symbol, this can be used to determine th=
+e
++ * end of a function
++ */
++int kallsyms_find_next(const char *sym, unsigned long long *addr);
++
+ void read_trace_pipe(void);
+=20
+ ssize_t get_uprobe_offset(const void *addr, ssize_t base);
 --=20
 2.30.2
 
