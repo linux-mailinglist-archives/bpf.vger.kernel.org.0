@@ -2,145 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2393FD7E1
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 12:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279B63FD7F8
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 12:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236926AbhIAKnG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Sep 2021 06:43:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39659 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236914AbhIAKnG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 1 Sep 2021 06:43:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630492929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ylLWjea9xm9l8vXltLGPLEQyUT5/ObE17rwxNz68/Lo=;
-        b=EU2v7ckVO4lApfAluOQqthfVaMehHPnKrW0ZGDvOsoc34+CHWAZZuVWUdBNmI9GTtaCuUF
-        Ip3CPBJZrG9fqT6pYIvrpvnlDEmOwbr9DLM6bnqXpeGLbczVU2EVnJjLxmLI9vh0XNqEwz
-        HzeR4QAwEjHe9t+n6EenCeIWRO0tweU=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-37-OVsRTy5OO_KOQF-Mo7rVeQ-1; Wed, 01 Sep 2021 06:42:08 -0400
-X-MC-Unique: OVsRTy5OO_KOQF-Mo7rVeQ-1
-Received: by mail-ej1-f70.google.com with SMTP id m18-20020a170906849200b005c701c9b87cso1217128ejx.8
-        for <bpf@vger.kernel.org>; Wed, 01 Sep 2021 03:42:08 -0700 (PDT)
+        id S234967AbhIAKs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Sep 2021 06:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231903AbhIAKs5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Sep 2021 06:48:57 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F33DC061575;
+        Wed,  1 Sep 2021 03:48:00 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id z4so3786084wrr.6;
+        Wed, 01 Sep 2021 03:48:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8ZVMMm/7VePbBno+rUu3lisTUfXZQKB7offQjykcbVw=;
+        b=Q10+tV9VtWrF5qDcZ0QrAtn3VL6ZaqjFS48EO6ppUs1CuMr1++kWs2W+FyvEjG1f4N
+         lKjmvYkFA3Wp4cDYKrlbQgEIWloLiNgKVwAq82uLsV2Z9bzgbTgZj0Is8nOb3VFQAXgx
+         44a0Fs6PilSrQ8Kq1AM0rOToqZLEPbexCtEoqIAXy7NUAMIKwSSU1yWoc/XB8IKrZxPk
+         ZRY693QpM8dCLkQ5cezG2V3g6mwuvDvskgI5ELiAYIa7ug2vBfyzfpdLv2cySLgrZanO
+         gqOXeVht/F9p16MJcBn3KgDu45OCWIeix7yjiEDQZ0AR3f/TGxAwRtjF87a14m0czOpS
+         7g0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=ylLWjea9xm9l8vXltLGPLEQyUT5/ObE17rwxNz68/Lo=;
-        b=BUB46cgI+sg9aDcTC1RGIMHSUST2i6aHdwwCLb15Q28ad99UlDP5mZ77Qxf4T+y/Zu
-         haj7Eor76w62D1GdVZqO3SobbOp5sLwVSrCyOgt2tY/NJPwR62P/GGGeL7qbOTpzHOrT
-         aJsIUwk9ipscnBm35cnAKPAPqruVJKzgY7GB3Ek6yXLutuWWnQT+l6rqepkN/rt5iNv+
-         tF1WYxCgoirJEKdIcCDo6rCvkXMGWMMg7XVl3TipGvC5QdlU0kQU9mC7rFdjoAKXEmiW
-         gY/15FnBeEVNqZISkLeYlaWywlA8/KA86rTUenpfOMH1ExjyySpTi/QmCoiMm2Y+oKqN
-         NL/g==
-X-Gm-Message-State: AOAM5338QiHiSLtUfyRTi5Nv0gnQZLnHQTFUKLEQCFCWbzs537YTn6Bt
-        DtzMjXpxLmDiagJs4ybURH3ANplp067H/QbCf9goy3UpSqiOKSeCmAM1uResVbIowYwFkm3KvGa
-        1mK+2zBAPo8uX
-X-Received: by 2002:aa7:d303:: with SMTP id p3mr35205730edq.184.1630492926496;
-        Wed, 01 Sep 2021 03:42:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzENHpT4hHuD6yibw7Jn0uczYDS8QbdS0pQ+oiQpD3G9ztZ+PedZLvTfOMVUd9pL4yx5Ce0xg==
-X-Received: by 2002:aa7:d303:: with SMTP id p3mr35205666edq.184.1630492925442;
-        Wed, 01 Sep 2021 03:42:05 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id v13sm7036633ejx.72.2021.09.01.03.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 03:42:04 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C3EF01800EB; Wed,  1 Sep 2021 12:42:03 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Subject: Re: [RFC Patch net-next] net_sched: introduce eBPF based Qdisc
-In-Reply-To: <612f137f4dc5c_152fe20891@john-XPS-13-9370.notmuch>
-References: <20210821010240.10373-1-xiyou.wangcong@gmail.com>
- <20210824234700.qlteie6al3cldcu5@kafai-mbp>
- <CAM_iQpWP_kvE58Z+363n+miTQYPYLn6U4sxMKVaDvuRvjJo_Tg@mail.gmail.com>
- <612f137f4dc5c_152fe20891@john-XPS-13-9370.notmuch>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 01 Sep 2021 12:42:03 +0200
-Message-ID: <871r68vapw.fsf@toke.dk>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8ZVMMm/7VePbBno+rUu3lisTUfXZQKB7offQjykcbVw=;
+        b=klgUtGDOPlCPMtL1kyL8uvI3HIrbVckBEUpRa+1u3GZH+K3Qery9W9/3/pmlmVwQqc
+         acagjzsZYnBKwAumkPCfJaVk84D9kotZ9NAB3JOxONt48rW1Kf6ghSt/NyuFhlk5aNL+
+         P7zV5d0XRL4bV3L4aEydpDWWx2NLWGIxg42a+xqBom34/y8ZaezAkIPP3LA8wZQNozKn
+         rfHRriUa5PIInMc5fzoTNiGK+FYYMVwRDww977JjojR5qugFUGx7hdGPLXRaNvicnyJh
+         bibBRNDWytxpotK+JbPSBYmPbRT8be+vAhFIyusP/awi8p/PXyEL8wLvWtsILmEIUy6F
+         LsFw==
+X-Gm-Message-State: AOAM533nPEhfnCtBomFktQOhZalfk+XaT5RNT7GdttJeVZWqNstkuu08
+        X2ECHHa/kY99TZE0/MpFYz1Us5uQ7bHnvMZZ
+X-Google-Smtp-Source: ABdhPJxaXNoPTEFJluW4XJr9g2RYRAYIb9ufYvtEOVmFWK35OJqXQEYJhcvK58GISC9LvJnreLJ8bQ==
+X-Received: by 2002:adf:9084:: with SMTP id i4mr37328158wri.23.1630493278690;
+        Wed, 01 Sep 2021 03:47:58 -0700 (PDT)
+Received: from localhost.localdomain (h-46-59-47-246.A165.priv.bahnhof.se. [46.59.47.246])
+        by smtp.gmail.com with ESMTPSA id r12sm21530843wrv.96.2021.09.01.03.47.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 01 Sep 2021 03:47:58 -0700 (PDT)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        jonathan.lemon@gmail.com, ciara.loftus@intel.com,
+        bpf@vger.kernel.org, yhs@fb.com, andrii@kernel.org
+Subject: [PATCH bpf-next 00/20] selftests: xsk: facilitate adding tests
+Date:   Wed,  1 Sep 2021 12:47:12 +0200
+Message-Id: <20210901104732.10956-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
+This patch set facilitates adding new tests as well as describing
+existing ones in the xsk selftests suite and adds 3 new test suites at
+the end. The idea is to isolate the run-time that executes the test
+from the actual implementation of the test. Today, implementing a test
+amounts to adding test specific if-statements all around the run-time,
+which is not scalable or amenable for reuse. This patch set instead
+introduces a test specification that is the only thing that a test
+fills in. The run-time then gets this specification and acts upon it
+completely unaware of what test it is executing. This way, we can get
+rid of all test specific if-statements from the run-time and the
+implementation of the test can be contained in a single function. This
+hopefully makes it easier to add tests and for users to understand
+what the test accomplishes.
 
-> Cong Wang wrote:
->> On Tue, Aug 24, 2021 at 4:47 PM Martin KaFai Lau <kafai@fb.com> wrote:
->> > Please explain more on this.  What is currently missing
->> > to make qdisc in struct_ops possible?
->> 
->> I think you misunderstand this point. The reason why I avoid it is
->> _not_ anything is missing, quite oppositely, it is because it requires
->> a lot of work to implement a Qdisc with struct_ops approach, literally
->> all those struct Qdisc_ops (not to mention struct Qdisc_class_ops).
->> WIth current approach, programmers only need to implement two
->> eBPF programs (enqueue and dequeue).
->> 
->> Thanks.
->
-> Another idea. Rather than work with qdisc objects which creates all
-> these issues with how to work with existing interfaces, filters, etc.
-> Why not create an sk_buff map? Then this can be used from the existing
-> egress/ingress hooks independent of the actual qdisc being used.
+As a recap of what the run-time does: each test is based on the
+run-time launching two threads and connecting a veth link between the
+two threads. Each thread opens an AF_XDP socket on that veth interface
+and one of them sends traffic that the other one receives and
+validates. Each thread has its own umem. Note that this behavior is
+not changed by this patch set.
 
-I agree. In fact, I'm working on doing just this for XDP, and I see no
-reason why the map type couldn't be reused for skbs as well. Doing it
-this way has a couple of benefits:
+A test specification consists of several items. Most importantly:
 
-- It leaves more flexibility to BPF: want a simple FIFO queue? just
-  implement that with a single queue map. Or do you want to build a full
-  hierarchical queueing structure? Just instantiate as many queue maps
-  as you need to achieve this. Etc.
+* Two packet streams. One for Tx thread that specifies what traffic to
+  send and one for the Rx thread that specifies what that thread
+  should receive. If it receives exactly what is specified, the test
+  passes, otherwise it fails. A packet stream can also specify what
+  buffers in the umem that should be used by the Rx and Tx threads.
 
-- The behaviour is defined entirely by BPF program behaviour, and does
-  not require setting up a qdisc hierarchy in addition to writing BPF
-  code.
+* What kind of AF_XDP sockets it should create and bind to what
+  interfaces
 
-- It should be possible to structure the hooks in a way that allows
-  reusing queueing algorithm implementations between the qdisc and XDP
-  layers.
+* How many times it should repeat the socket creation and destruction
 
-> You mention skb should not be exposed to userspace? Why? Whats the
-> reason for this? Anyways we can make kernel only maps if we want or
-> scrub the data before passing it to userspace. We do this already in
-> some cases.
+* The name of the test
 
-Yup, that's my approach as well.
+The interface for the test spec is the following:
 
-> IMO it seems cleaner and more general to allow sk_buffs
-> to be stored in maps and pulled back out later for enqueue/dequeue.
+void test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
+                    struct ifobject *ifobj_rx, enum test_mode mode);
 
-FWIW there's some gnarly details here (for instance, we need to make
-sure the BPF program doesn't leak packet references after they are
-dequeued from the map). My idea is to use a scheme similar to what we do
-for XDP_REDIRECT, where a helper sets some hidden variables and doesn't
-actually remove the packet from the queue until the BPF program exits
-(so the kernel can make sure things are accounted correctly).
+/* Reset everything but the interface specifications and the mode */
+void test_spec_reset(struct test_spec *test);
 
-> I think one trick might be how to trigger the dequeue event on
-> transition from stopped to running net_device or other events like
-> this, but that could be solved with another program attached to
-> those events to kick the dequeue logic.
+void test_spec_set_name(struct test_spec *test, const char *name);
 
-This is actually easy in the qdisc case, I think: there's already a
-qdisc_dequeue() operation, which just needs to execute a BPF program
-that picks which packet to dequeue (by pulling it off a queue map). For
-XDP we do need a new hook, on driver TX completion or something like
-that. Details TBD. Also, we need a way to BPF to kick an idle interface
-and make it start transmitting; that way we can implement a traffic
-shaper (that delays packets) by using BPF timers :)
 
--Toke
+Packet streams have the following interfaces:
 
+struct pkt *pkt_stream_get_pkt(struct pkt_stream *pkt_stream, u32 pkt_nb)
+
+struct pkt *pkt_stream_get_next_rx_pkt(struct pkt_stream *pkt_stream)
+
+struct pkt_stream *pkt_stream_generate(struct xsk_umem_info *umem,
+                                       u32 nb_pkts, u32 pkt_len);
+
+void pkt_stream_delete(struct pkt_stream *pkt_stream);
+
+struct pkt_stream *pkt_stream_clone(struct xsk_umem_info *umem,
+                                    struct pkt_stream *pkt_stream);
+
+/* Replaces all packets in the stream*/
+void pkt_stream_replace(struct test_spec *test, u32 nb_pkts, u32 pkt_len);
+
+/* Replaces every other packet in the stream */
+void pkt_stream_replace_half(struct test_spec *test, u32 pkt_len, u32 offset);
+
+/* For creating custom made packet streams */
+void pkt_stream_set(struct test_spec *test, struct pkt *pkts, u32 nb_pkts);
+
+/* Restores the default packet stream */
+void pkt_stream_restore_default(struct test_spec *test);
+
+
+A test can then then in the most basic case described like this
+(provided the test specification has been created before calling the
+function):
+
+static bool testapp_aligned(struct test_spec *test)
+{
+        test_spec_set_name(test, "RUN_TO_COMPLETION");
+        testapp_validate_traffic(test);
+}
+
+Running the same test in unaligned mode would then look like this:
+
+static bool testapp_unaligned(struct test_spec *test)
+{
+        if (!hugepages_present(test->ifobj_tx)) {
+                ksft_test_result_skip("No 2M huge pages present.\n");
+                return false;
+        }
+
+        test_spec_set_name(test, "UNALIGNED_MODE");
+        test->ifobj_tx->umem->unaligned_mode = true;
+        test->ifobj_rx->umem->unaligned_mode = true;
+        /* Let half of the packets straddle a buffer boundrary */
+        pkt_stream_replace_half(test, PKT_SIZE,
+                                XSK_UMEM__DEFAULT_FRAME_SIZE - 32);
+	/* Populate fill ring with addresses in the packet stream */
+        test->ifobj_rx->pkt_stream->use_addr_for_fill = true;
+        testapp_validate_traffic(test);
+
+        pkt_stream_restore_default(test);
+	return true;
+}
+
+3 of the last 4 patches in the set add 3 new test suites, one for
+unaligned mode, one for testing the rejection of tricky invalid
+descriptors plus the acceptance of some valid ones in the Tx ring, and
+one for testing 2K frame sizes (the default is 4K).
+
+What is left to do for follow-up patches:
+
+* Convert the statistics tests to the new framework.
+
+* Implement a way of registering new tests without having the enum
+  test_type. Once this has been done (together with the previous
+  bullet), all the test types can be dropped from the header
+  file. This means that we should be able to add tests by just writing
+  a single function with a new test specification, which is one of the
+  goals.
+
+* Introduce functions for manipulating parts of the test or interface
+  spec instead of direct manipulations such as
+  test->ifobj_rx->pkt_stream->use_addr_for_fill = true; which is kind
+  of awkward.
+
+* Move the run-time and its interface to its own .c and .h files. Then
+  we can have all the tests in a separate file.
+
+* Better error reporting if a test fails. Today it does not state what
+  test fails and might not continue execute the rest of the tests due
+  to this failure. Failures are not propagated upwards through the
+  functions so a failed test will also be a passed test, which messes
+  up the stats counting. This needs to be changed.
+
+* Add option to run specific test instead of all of them
+
+* Introduce pacing of sent packets so that they are never dropped by
+  the receiver even if it is stalled for some reason. If you run the
+  current tests on a heavily loaded system, they might fail in SKB
+  mode due to packets being dropped by the driver on Tx. Though I have
+  never seen it, it might happen.
+
+Thanks: Magnus
+
+Magnus Karlsson (20):
+  selftests: xsk: simplify xsk and umem arrays
+  selftests: xsk: introduce type for thread function
+  selftests: xsk: introduce test specifications
+  selftests: xsk: move num_frames and frame_headroom to xsk_umem_info
+  selftests: xsk: move rxqsize into xsk_socket_info
+  selftests: xsk: make frame_size configurable
+  selftests: xsx: introduce test name in test spec
+  selftests: xsk: add use_poll to ifobject
+  selftests: xsk: introduce rx_on and tx_on in ifobject
+  selftests: xsk: replace second_step global variable
+  selftests: xsk: specify number of sockets to create
+  selftests: xsk: make xdp_flags and bind_flags local
+  selftests: xsx: make pthreads local scope
+  selftests: xsk: eliminate MAX_SOCKS define
+  selftests: xsk: allow for invalid packets
+  selftests: xsk: introduce replacing the default packet stream
+  selftests: xsk: add test for unaligned mode
+  selftests: xsk: eliminate test specific if-statement in test runner
+  selftests: xsk: add tests for invalid xsk descriptors
+  selftests: xsk: add tests for 2K frame size
+
+ tools/testing/selftests/bpf/xdpxceiver.c | 870 +++++++++++++++--------
+ tools/testing/selftests/bpf/xdpxceiver.h |  66 +-
+ 2 files changed, 606 insertions(+), 330 deletions(-)
+
+
+base-commit: 9e9fb7655ed585da8f468e29221f0ba194a5f613
+--
+2.29.0
