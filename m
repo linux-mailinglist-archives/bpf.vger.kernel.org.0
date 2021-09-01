@@ -2,103 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEDF3FD8FA
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 13:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D243FD940
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 14:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243840AbhIALt0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Sep 2021 07:49:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25591 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243904AbhIALtS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 1 Sep 2021 07:49:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630496901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TpKhRaDL5uh9kwtULNfhD5GpIDEUbSUYlpxLcPeJ2GI=;
-        b=X+GvF30IkZkBuKOlOH5SUOla4cTj63DdzkyQeVBq7XyNLdT0h9Kmx1hoqMXg/hTDljSZkL
-        KVHY7BBNe8PFwewO6QW0Ra3GCqBmS9TXv+sVHAuV38oUFqw2I5KK5LwSwaOueOiCE9GOlq
-        s9RfeRVwBicTvxXT8SgX7vR1nc26Hg4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-121-G6WwzfVWP2WEr0TMb0FrBQ-1; Wed, 01 Sep 2021 07:48:20 -0400
-X-MC-Unique: G6WwzfVWP2WEr0TMb0FrBQ-1
-Received: by mail-ed1-f72.google.com with SMTP id y21-20020a056402359500b003cd0257fc7fso1158146edc.10
-        for <bpf@vger.kernel.org>; Wed, 01 Sep 2021 04:48:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TpKhRaDL5uh9kwtULNfhD5GpIDEUbSUYlpxLcPeJ2GI=;
-        b=cKo67sg4B6QK9me+0anGsm9mYu0wAclqWffDf/CuiSKB8WtiAjrD7JhR1q3YBOuY4u
-         Lq5MLDkAOR21ztZCW0nRhpFl2oIRsK172ttqp6iqTMbw9AAE4LtEUrbsa1jQuIc2BJKV
-         1wYEZnM4RbzHcSM1OGEiQ7IqW1HE9VRVgRjhXmyGXBbREqkTSB3pyIPwrmQv8nt9y6uu
-         8glsZDSt9bshwOHKdjxsFmFoxCYmPv7nsLI3Mu1ZoLlamUM2dQtwXeo1J+Y3XmnZXFgP
-         e83WvzcV1jPObAKGMOvQGmNGe8510Rwf+VwaxjuhMcWhF6qwHfN9dKeU51zNljteQsMa
-         cq7g==
-X-Gm-Message-State: AOAM533dgJPePwB2lh9v/Zzb1+RCiq/qOLZSjgXnnQcsjIfV3CweF3pp
-        gAVpEaRt7TLBHIKJCEzisIVcrOnmsclFGic0rESkZWdSQhiVFcG0Gce0NGDIxUWSiYi+U45427k
-        V002phkqwUbc8
-X-Received: by 2002:a17:906:e82:: with SMTP id p2mr36393367ejf.50.1630496899666;
-        Wed, 01 Sep 2021 04:48:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz0cnkbRVkbiVq+hTOc9zTMTCSJABSikudZcY4vayfYyx6/T8yZ+cgbzsYY0TjPgbJzplvpbA==
-X-Received: by 2002:a17:906:e82:: with SMTP id p2mr36393343ejf.50.1630496899383;
-        Wed, 01 Sep 2021 04:48:19 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id d22sm10009367ejj.47.2021.09.01.04.48.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 04:48:18 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3A8031800EB; Wed,  1 Sep 2021 13:48:16 +0200 (CEST)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH bpf v2] libbpf: don't crash on object files with no symbol tables
-Date:   Wed,  1 Sep 2021 13:48:12 +0200
-Message-Id: <20210901114812.204720-1-toke@redhat.com>
-X-Mailer: git-send-email 2.33.0
+        id S243910AbhIAMKK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Sep 2021 08:10:10 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:43714
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243873AbhIAMKJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Sep 2021 08:10:09 -0400
+Received: from mussarela (201-69-234-220.dial-up.telesp.net.br [201.69.234.220])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id EBA3F3F049;
+        Wed,  1 Sep 2021 12:09:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630498151;
+        bh=592zJBHPQ18BCV/B2vMAyBLKmPv4PHYtdUunpe+UzF8=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=BtRw0RX/bjpBRKQunQh9UHJ1CCSui+ZRuh7qeSWmyfJc7mt8sx+DxiNjXNaNblT00
+         l96i8csW7GJyjhqIyuRRXdxrOcVdFYn8I970v9Gzpvc5eeXpuK84Fq63p8UOy96g9+
+         DKb/W/CTtQ7cOSJBoewhdRLFPsZhmj8UW97E+QWZAyZkau7Jw1IVfEjpMjIgXQUESa
+         kPrlwvaSsxm2XFvvWH9lGW7+nWwi+x6vEKnFNqecca5Hl85THYynlboFh+DbeAPrfJ
+         CAmmUUj+wRQ/MAy613AGZ3A/C/ehuyXJK1DBdTjrKfYLTVmjxeFjjDceHXSmNs0j+J
+         lWnnipKvKEGpA==
+Date:   Wed, 1 Sep 2021 09:09:05 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Greg KH <greg@kroah.com>
+Cc:     stable@vger.kernel.org, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Pavel Machek <pavel@denx.de>
+Subject: Re: [PATCH 4.14 1/4] bpf: Do not use ax register in interpreter on
+ div/mod
+Message-ID: <YS9tYezeg8EH6nk2@mussarela>
+References: <20210830183211.339054-1-cascardo@canonical.com>
+ <20210830183211.339054-2-cascardo@canonical.com>
+ <YS9kXabJPWScxiHi@kroah.com>
+ <YS9khsCFrPQ4PZDm@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YS9khsCFrPQ4PZDm@kroah.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If libbpf encounters an ELF file that has been stripped of its symbol
-table, it will crash in bpf_object__add_programs() when trying to
-dereference the obj->efile.symbols pointer.
+On Wed, Sep 01, 2021 at 01:31:18PM +0200, Greg KH wrote:
+> On Wed, Sep 01, 2021 at 01:30:37PM +0200, Greg KH wrote:
+> > On Mon, Aug 30, 2021 at 03:32:08PM -0300, Thadeu Lima de Souza Cascardo wrote:
+> > > From: Daniel Borkmann <daniel@iogearbox.net>
+> > > 
+> > > Partially undo old commit 144cd91c4c2b ("bpf: move tmp variable into ax
+> > > register in interpreter"). The reason we need this here is because ax
+> > > register will be used for holding temporary state for div/mod instruction
+> > > which otherwise interpreter would corrupt. This will cause a small +8 byte
+> > > stack increase for interpreter, but with the gain that we can use it from
+> > > verifier rewrites as scratch register.
+> > > 
+> > > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> > > Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+> > > [cascardo: This partial revert is needed in order to support using AX for
+> > > the following two commits, as there is no JMP32 on 4.19.y]
+> > > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> > > ---
+> > >  kernel/bpf/core.c | 32 +++++++++++++++-----------------
+> > >  1 file changed, 15 insertions(+), 17 deletions(-)
+> > > 
+> > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > > index e7211b0fa27c..30d871be9974 100644
+> > > --- a/kernel/bpf/core.c
+> > > +++ b/kernel/bpf/core.c
+> > > @@ -616,9 +616,6 @@ static int bpf_jit_blind_insn(const struct bpf_insn *from,
+> > >  	 * below.
+> > >  	 *
+> > >  	 * Constant blinding is only used by JITs, not in the interpreter.
+> > > -	 * The interpreter uses AX in some occasions as a local temporary
+> > > -	 * register e.g. in DIV or MOD instructions.
+> > > -	 *
+> > >  	 * In restricted circumstances, the verifier can also use the AX
+> > >  	 * register for rewrites as long as they do not interfere with
+> > >  	 * the above cases!
+> > > @@ -951,6 +948,7 @@ static unsigned int ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn,
+> > >  	u32 tail_call_cnt = 0;
+> > >  	void *ptr;
+> > >  	int off;
+> > > +	u64 tmp;
+> > >  
+> > >  #define CONT	 ({ insn++; goto select_insn; })
+> > >  #define CONT_JMP ({ insn++; goto select_insn; })
+> > > @@ -1013,22 +1011,22 @@ static unsigned int ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn,
+> > >  	ALU64_MOD_X:
+> > >  		if (unlikely(SRC == 0))
+> > >  			return 0;
+> > > -		div64_u64_rem(DST, SRC, &AX);
+> > > -		DST = AX;
+> > > +		div64_u64_rem(DST, SRC, &tmp);
+> > > +		DST = tmp;
+> > >  		CONT;
+> > >  	ALU_MOD_X:
+> > >  		if (unlikely((u32)SRC == 0))
+> > >  			return 0;
+> > > -		AX = (u32) DST;
+> > > -		DST = do_div(AX, (u32) SRC);
+> > > +		tmp = (u32) DST;
+> > > +		DST = do_div(tmp, (u32) SRC);
+> > >  		CONT;
+> > >  	ALU64_MOD_K:
+> > > -		div64_u64_rem(DST, IMM, &AX);
+> > > -		DST = AX;
+> > > +		div64_u64_rem(DST, IMM, &tmp);
+> > > +		DST = tmp;
+> > >  		CONT;
+> > >  	ALU_MOD_K:
+> > > -		AX = (u32) DST;
+> > > -		DST = do_div(AX, (u32) IMM);
+> > > +		tmp = (u32) DST;
+> > > +		DST = do_div(tmp, (u32) IMM);
+> > >  		CONT;
+> > >  	ALU64_DIV_X:
+> > >  		if (unlikely(SRC == 0))
+> > > @@ -1038,17 +1036,17 @@ static unsigned int ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn,
+> > >  	ALU_DIV_X:
+> > >  		if (unlikely((u32)SRC == 0))
+> > >  			return 0;
+> > > -		AX = (u32) DST;
+> > > -		do_div(AX, (u32) SRC);
+> > > -		DST = (u32) AX;
+> > > +		tmp = (u32) DST;
+> > > +		do_div(tmp, (u32) SRC);
+> > > +		DST = (u32) tmp;
+> > >  		CONT;
+> > >  	ALU64_DIV_K:
+> > >  		DST = div64_u64(DST, IMM);
+> > >  		CONT;
+> > >  	ALU_DIV_K:
+> > > -		AX = (u32) DST;
+> > > -		do_div(AX, (u32) IMM);
+> > > -		DST = (u32) AX;
+> > > +		tmp = (u32) DST;
+> > > +		do_div(tmp, (u32) IMM);
+> > > +		DST = (u32) tmp;
+> > >  		CONT;
+> > >  	ALU_END_TO_BE:
+> > >  		switch (IMM) {
+> > > -- 
+> > > 2.30.2
+> > > 
+> > 
+> > Oops, no, this patch causes build errors:
+> > 
+> > kernel/bpf/core.c: In function ‘___bpf_prog_run’:
+> > kernel/bpf/core.c:951:13: error: redeclaration of ‘tmp’ with no linkage
+> >   951 |         u64 tmp;
+> >       |             ^~~
+> > kernel/bpf/core.c:839:13: note: previous declaration of ‘tmp’ with type ‘u64’ {aka ‘long long unsigned int’}
+> >   839 |         u64 tmp;
+> >       |             ^~~
+> > make[2]: *** [scripts/Makefile.build:329: kernel/bpf/core.o] Error 1
+> > 
+> > 
+> > Please fix up and resend the whole series, as I will go drop these 3
+> > patches from the 4.14.y queue now.
+> 
+> All _4_ patches I mean.  now dropped...
 
-Fix this by erroring out of bpf_object__elf_collect() if it is not able
-able to find the symbol table.
+Ah... it seems I only built it with CONFIG_BPF_JIT_ALWAYS_ON. I will build with
+both that option on and off and check the results.
 
-v2:
-  - Move check into bpf_object__elf_collect() and add nice error message
+Thanks for catching this.
 
-Fixes: 6245947c1b3c ("libbpf: Allow gaps in BPF program sections to support overriden weak functions")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/lib/bpf/libbpf.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6f5e2757bb3c..997060182cef 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2990,6 +2990,12 @@ static int bpf_object__elf_collect(struct bpf_object *obj)
- 		}
- 	}
- 
-+	if (!obj->efile.symbols) {
-+		pr_warn("elf: couldn't find symbol table in %s - stripped object file?\n",
-+			obj->path);
-+		return -ENOENT;
-+	}
-+
- 	scn = NULL;
- 	while ((scn = elf_nextscn(elf, scn)) != NULL) {
- 		idx++;
--- 
-2.33.0
-
+Cascardo.
