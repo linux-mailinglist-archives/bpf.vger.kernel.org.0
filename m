@@ -2,305 +2,319 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE253FE3F6
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 22:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D46D3FE618
+	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 02:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhIAU1D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Sep 2021 16:27:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231196AbhIAU1D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Sep 2021 16:27:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 372E560FDC;
-        Wed,  1 Sep 2021 20:26:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630527966;
-        bh=h/pTKdipLoGqkHogLtH2CPsnKI+TKRD795FcQjQYa0E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=aunVUXLNnmjt5t7VN44umS9n32TAWorvljtv8XVQdJzd922dAoH6Ns9ywlCcTkXan
-         wrIhSo6oswkR5kbXmzOP/xEkwM0OS2UAghlOomB333fBC3lH2yxhl899YFwMDR7F8+
-         SsjefaH26avmBAnI9S2t4rs2KU0EZasxVph+RZGXBUIqzeYGAgLqZFsflDed+ooKTo
-         sd2FFgyWFCEviZnm6w+JLDAQYMPUHtwA48/3wVgG1lJb5LwG8c4cfSss8N5uQTE2GM
-         Ji9d5ke0pVok9j3GqYigvV2jeVoZ7wddyYhACQ+K2xxZN6WoBABAOTfl3gtRcottB6
-         JqLm3XrnUrlIw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EF3A25C0DDE; Wed,  1 Sep 2021 13:26:05 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 13:26:05 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S239618AbhIAXau (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Sep 2021 19:30:50 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:3642 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240891AbhIAXat (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Sep 2021 19:30:49 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 181NTUWA031642;
+        Wed, 1 Sep 2021 16:29:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=daPS3UIkttTn9m9mxiteAZoO8zktodQmaKexnte7qPA=;
+ b=LDXxVb0QCzkL4anzTAm/fd0YI6g9kjb0yDswri2K/Aqx2Yyuz7nTj48VWHoYXrp89Cd/
+ GPUxhsakMvTOE8KEMAFiC1/muTOkWNcet7M7rdeTWNLQJ8hskrd23Yovv0L/uLVSQ61s
+ YJ5aiASinCQglzy1nAEnlWmOVeggmAbQamY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3ate08vvmm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 01 Sep 2021 16:29:38 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 1 Sep 2021 16:29:37 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cejqx09jjfmzLUXh7CV0wRYe9EQ7A1aOdsq+QeZlbmSFss4tXLW08zL3mgu7OWcBZ3BsSCaItdAK9ge9E4APAlp3ieoqXIgppY7Gj9tvWvJyTXdLow5y6cJ98LJtqj1VZrcc4YHuqDw/pUJXv5nTx8bH8aoiSULDWJtN1NY4d+GlzJk5cDXFnOhBZpR5vyIaYcveWYRHpsY0YaiQqz9oKL+nan5Au+/CoPRVisqya+9UBNFHInt5LNmln+HpQMDSsiizys3Ft16ciqNRdoiGq26oKEkUeYXnYu9Q+RmKw5gvx68vFRTsSfPO5eKRVxqNxO3wIo+TBW9zfK6wIVuPGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=daPS3UIkttTn9m9mxiteAZoO8zktodQmaKexnte7qPA=;
+ b=UZIndDSvA9vjwEzNeg4B7dHJT2KuWJ6d6qvl5BUZ1XLwOXpFvOn6uxnwFKBUw8QjmjQI0W4NM8w3i+qSU0k5DWoRssEhg8kGRYSqiYzhhH2NECq67p/3IXqiC5VS1q4rfQPpMr80EWf5cVeKT6jjZbONA+hLIFL4zPJMceXh+0mlw44LeOCcZd1f+mC47W3ZIPhQiJmv5LHFHi7wwY/0vqTn1qT90bBZEohiQlpeFaF/8wwt2Ec0lXxD8FhexOBJc5Rk2pQ6RDZU+Y+WZquORAa6jn3ISqyXi1VApdloee/AOxZGjhiK0VcC9pkd3dHugbpxQaQjW2n9Us94jMgm2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
+ by DM5PR15MB1259.namprd15.prod.outlook.com (2603:10b6:3:b3::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.24; Wed, 1 Sep
+ 2021 23:29:31 +0000
+Received: from DM6PR15MB4039.namprd15.prod.outlook.com
+ ([fe80::94f2:70b2:4b15:cbd6]) by DM6PR15MB4039.namprd15.prod.outlook.com
+ ([fe80::94f2:70b2:4b15:cbd6%7]) with mapi id 15.20.4457.024; Wed, 1 Sep 2021
+ 23:29:31 +0000
+Message-ID: <f4bd93de-14e1-855d-eb31-1de4697ce7d7@fb.com>
+Date:   Wed, 1 Sep 2021 19:29:28 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.0.3
+Subject: Re: [PATCH v2 bpf-next 3/6] libbpf: Modify bpf_printk to choose
+ helper based on arg count
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_local_storage to be used by
- sleepable programs
-Message-ID: <20210901202605.GK4156@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210826235127.303505-1-kpsingh@kernel.org>
- <20210826235127.303505-2-kpsingh@kernel.org>
- <20210827205530.zzqawd6wz52n65qh@kafai-mbp>
- <CACYkzJ6sgJ+PV3SUMtsg=8Xuun2hfYHn8szQ6Rdps7rpWmPP_g@mail.gmail.com>
- <20210831021132.sehzvrudvcjbzmwt@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ5nQ4O-XqX0VHCPs77hDcyjtbk2c9DjXLdZLJ-7sO6DgQ@mail.gmail.com>
- <20210831182207.2roi4hzhmmouuwin@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ58Yp_YQBGMFCL_5UhjK3pHC5n-dcqpR-HEDz+Y-yasfw@mail.gmail.com>
- <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com>
+        Yonghong Song <yhs@fb.com>, Networking <netdev@vger.kernel.org>
+References: <20210825195823.381016-1-davemarchevsky@fb.com>
+ <20210825195823.381016-4-davemarchevsky@fb.com>
+ <CAEf4BzaNH1vRQr5jZO_m3haUaV5rXKiH5AJLFrM5iwbkEja=VQ@mail.gmail.com>
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+In-Reply-To: <CAEf4BzaNH1vRQr5jZO_m3haUaV5rXKiH5AJLFrM5iwbkEja=VQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-ClientProxiedBy: BL1PR13CA0432.namprd13.prod.outlook.com
+ (2603:10b6:208:2c3::17) To DM6PR15MB4039.namprd15.prod.outlook.com
+ (2603:10b6:5:2b2::20)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPV6:2620:10d:c0a8:11d1::130a] (2620:10d:c091:480::1:1928) by BL1PR13CA0432.namprd13.prod.outlook.com (2603:10b6:208:2c3::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.11 via Frontend Transport; Wed, 1 Sep 2021 23:29:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 29227a7a-7007-42c7-c007-08d96da059b4
+X-MS-TrafficTypeDiagnostic: DM5PR15MB1259:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR15MB1259D9F2E2ADD271EF545A6FA0CD9@DM5PR15MB1259.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EqoV5pWDyRj2QL3PhBrZcWGxvu/5j/8g2wouex/u460ieNC9w6BH78GWwzfO6sQpv+8LDt2mOtzMR+Jl+AcVhODm8LnMuzdjoz+76ZxytUxQGDs0gIQeOQ843ZT99ySVa56oIbNW7FuZBeX4c31nddXESwksMQxc8tw7B4ZbaJLw8IxUiTbPqUd5Kbls7uFY6ctI7ZC7m0VwYhw0KbvPo0DZx6W6VZo4ws8K1ZWRfsWdFXOa7wG7vZFQVz2U6iTqWZstSZLSdMIdtbggEULZMo44zaRnmzu1KHeGyCQio9MZR8IrNwPFSwKvkJJO1EPGZ+D7SUScr4AYotbD4qLOvT65u8D1ldvFwDH6r5P8Zc+KPlz187FRjo/SVV5bu2Lpot+3g/H7hZzLZ3WAEKmg9TaMcFbYmmEGNHKqAd4wruRVbD+QNW0l3VTnX563rgBmtJX7Gjvhz5nslkbBJFHILz09bwkR7xbsVmKONoXc+ePY7qYOm482AuwhruV756GDEBMBl2xvUm14PraPcO4PU5rhtNGXb3L3f2Jn/bVTChk46bpjb6RZW7H8tWOO0G1PPTPK9N6TJcYaUbImRmUIcG6w3wOp9rIAoJBoGgCsZds/hGX+Mw6j4lqw10608p8JRqhbYilGCjGNDfEVF3MGhGOpCD7yqNuLaCQgohrU4bwXL1vslrtQ4ErEQdKi2efzVsZvH9YgigqD2So+htSqN2EUvXCcVCm1IDf1AoIXUm68njF0bY5HJ2EXf94jvEWryz9f3mPsDsw41p9nn+zIj5IAtaeaJwiLzQVrgiv5Od78qCxl8e09JCUtaCu6miUB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(376002)(396003)(346002)(2616005)(54906003)(478600001)(2906002)(53546011)(8676002)(83380400001)(36756003)(316002)(8936002)(52116002)(4326008)(6666004)(186003)(66946007)(6486002)(5660300002)(66556008)(66476007)(966005)(38100700002)(6916009)(31696002)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QWRaRjZ4TVorV2VFRGlIRWJ1em1TK2Z0cXQrN1RpUlB6bHIzTG14NDdoZ2Zo?=
+ =?utf-8?B?Z0lrOUhJKytqM2NpL21PdkVZQk0xb3d6dHVnaFV6OVRHaDhQWThWbHJYZDFU?=
+ =?utf-8?B?cGtyRWxhUUp3V1BtakRnWndPblh4MnJ3eFN4ME5hQkJ3MDMrUGZ2b1FtWWx1?=
+ =?utf-8?B?WDJqRVJ1YjNOY2RkYUNHNVhrNmR6Qm5nVktRWUpoQTNPamJvMldIb0dIS3h3?=
+ =?utf-8?B?N3lQQndHdXlqNW05R0dRRnJyM0hoQi9Db2RaVDh4d1k4Zk5pU1BrM2loeWVG?=
+ =?utf-8?B?OU5idEtURGdJUG5Vam14a0hTeVhaMGRnSjRIaDZaVlJpUEVob3krUzU0ankr?=
+ =?utf-8?B?YjNiejZxSEpTSWp6eDlxUEhIbUdJclVqSUlFY0FrWG0ybFZVMVhwcitud25K?=
+ =?utf-8?B?a09RT3VqcDZXQUYxOW1Cd0Y1cS9zSmpzVFQvUGplTGh4bC9IUE5DeE9zUHFh?=
+ =?utf-8?B?cUNkN1JGdCtxOFUxejZEQ1M4Nnc2dXllam5LMnpXdC9Ea3N5Z1F6c3ZPRDM1?=
+ =?utf-8?B?VHQzQVJJU1BTNmlERnBCZEIxNVd6VkwrZnBvQkZZRGxlRi9yaGdvZTlTTWRk?=
+ =?utf-8?B?SWEwbU4rcWpBNm5pUkdVWitkZDd6OG91T1huYTg4SlRGNUkrenZUUjlGYnlF?=
+ =?utf-8?B?a3Znd1h3K1VudEVVV20rUEFIc2lnT25YY2phVVVqUS8xYzJ0alN2MTgyaStu?=
+ =?utf-8?B?VUxzTmxUYXByYTdWN2tJL01Yd1Q1ODZXc0xMUDVRUG9PQ2VzVWxBeWMvbUMy?=
+ =?utf-8?B?WVBnYXRweDBIeXBlcmtTYUE4LzhkVkhicGpjb0ZMbjNxNHpkbTd4ZG43WEZG?=
+ =?utf-8?B?a0lzS3g0ZmQxTGNoR3FUYWc4UmoyRk5BeXl0VVZCVHFqMk1XQVdGemEyM0oz?=
+ =?utf-8?B?RzNMS09icmVkYVNiQ3krdmFQb3puVDU4cThCZHNWVU1kSHVHQWU5bmRPWWtQ?=
+ =?utf-8?B?N2J6T0tKUjFuTStjS2VXTVhxblNjeGlCTWNUSXkxR3hVeWJTU2Y4ZlhyWHVV?=
+ =?utf-8?B?SWpRQm53d016b0J3UlFvelg0NTJOZXFLZlBlTEEwQWxHclZCYWtBemwyalNE?=
+ =?utf-8?B?VjJaNjhuWXJ1MGxYY1U3L0RHWTlFbndESTZtTGExZS9mZFZ5UVBaaGYwV0l4?=
+ =?utf-8?B?VEt4RnN5Mlg0M0lNTk1MSDI5SlNVcFNGT2E4cjZteEZDeE8yaXp3VUFWQWdS?=
+ =?utf-8?B?b3B3MFc2RTgxRjhuZFNPMGtTKzMxSmJjOGw4Smx2M0hoVi9Mc0lra1NiTnpB?=
+ =?utf-8?B?M2RUWWxQOXU1ODFSalJYa1Z2aFVCWGwrMnFDUkFLR2dqeVQ5YXVlSFRjMENF?=
+ =?utf-8?B?UC9JeGp6S3d0elBEbEZnZ2FyVGc3UzZVUlBQUmVORzdQdFQzdjZma3ZUT2FX?=
+ =?utf-8?B?c1VEZGFCN1NDY01xaDN0SXl3MzZxZnJYZGpmTTNBdmdubUw2bURIL0Q3R2Fk?=
+ =?utf-8?B?Wm80UXJRQTFxYkltRGROUkpVcVlhQWpFZ0c5ZHhIcTVUeEIycE02emp3dEhn?=
+ =?utf-8?B?Y1hoV21STEs0YU5MdlhJODRPSnI2Um8rdzMzaDVRUEk1UjVzdjRNUlJYNFVN?=
+ =?utf-8?B?Mlk3QTN1R0NISVdJbFhHclJheDJ1OVdYSFhOekFKV25DQ1NLeWpBdEF5M2VC?=
+ =?utf-8?B?ZlJKMy96MjNoZld3NFo0TnYyOGdEZm80THNhOWFQa09VU2NZVllOdENLbXVT?=
+ =?utf-8?B?ZnNERXZBR1VNSzJDZFRhUXc1U1JjcXNKY2dMWmFrTlRNeU94cUdEa0l1MExY?=
+ =?utf-8?B?ay92bXlrVzBUV1psWFBWdDlzRnRJMG5GcWJvR1RYZkVORU1aalJ1dDYyY0FW?=
+ =?utf-8?B?a0xVNkRtTnVaZjNreUV3UT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29227a7a-7007-42c7-c007-08d96da059b4
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 23:29:31.7754
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TSmx/bmp5rICU1MSGH0k/z+jXca2jFC6GvKFFqjLsOXW9npj8lH7u7bg/ByvNcldbWSqaqJCPu5FP1unkFP+4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1259
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: BIzAePN1DlGcPgbTktNu-Ogq_gbqpgyx
+X-Proofpoint-ORIG-GUID: BIzAePN1DlGcPgbTktNu-Ogq_gbqpgyx
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ priorityscore=1501 phishscore=0 clxscore=1011 impostorscore=0 adultscore=0
+ malwarescore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2108310000 definitions=main-2109010138
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 11:32:17PM -0700, Martin KaFai Lau wrote:
-> On Tue, Aug 31, 2021 at 09:38:01PM +0200, KP Singh wrote:
-> [ ... ]
+On 8/30/21 7:55 PM, Andrii Nakryiko wrote:   
+> On Wed, Aug 25, 2021 at 12:58 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+>>
+>> Instead of being a thin wrapper which calls into bpf_trace_printk,
+>> libbpf's bpf_printk convenience macro now chooses between
+>> bpf_trace_printk and bpf_trace_vprintk. If the arg count (excluding
+>> format string) is >3, use bpf_trace_vprintk, otherwise use the older
+>> helper.
+>>
+>> The motivation behind this added complexity - instead of migrating
+>> entirely to bpf_trace_vprintk - is to maintain good developer experience
+>> for users compiling against new libbpf but running on older kernels.
+>> Users who are passing <=3 args to bpf_printk will see no change in their
+>> bytecode.
+>>
+>> __bpf_vprintk functions similarly to BPF_SEQ_PRINTF and BPF_SNPRINTF
+>> macros elsewhere in the file - it allows use of bpf_trace_vprintk
+>> without manual conversion of varargs to u64 array. Previous
+>> implementation of bpf_printk macro is moved to __bpf_printk for use by
+>> the new implementation.
+>>
+>> This does change behavior of bpf_printk calls with >3 args in the "new
+>> libbpf, old kernels" scenario. On my system, using a clang built from
+>> recent upstream sources (14.0.0 https://github.com/llvm/llvm-project.git
+>> 50b62731452cb83979bbf3c06e828d26a4698dca), attempting to use 4 args to
+>> __bpf_printk (old impl) results in a compile-time error:
+>>
+>>   progs/trace_printk.c:21:21: error: too many args to 0x6cdf4b8: i64 = Constant<6>
+>>         trace_printk_ret = __bpf_printk("testing,testing %d %d %d %d\n",
+>>
+>> I was able to replicate this behavior with an older clang as well. When
+>> the format string has >3 format specifiers, there is no output to the
+>> trace_pipe in either case.
+>>
+>> After this patch, using bpf_printk with 4 args would result in a
+>> trace_vprintk helper call being emitted and a load-time failure on older
+>> kernels.
+>>
+>> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+>> ---
+>>  tools/lib/bpf/bpf_helpers.h | 45 ++++++++++++++++++++++++++++++-------
+>>  1 file changed, 37 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+>> index b9987c3efa3c..5f087306cdfe 100644
+>> --- a/tools/lib/bpf/bpf_helpers.h
+>> +++ b/tools/lib/bpf/bpf_helpers.h
+>> @@ -14,14 +14,6 @@
+>>  #define __type(name, val) typeof(val) *name
+>>  #define __array(name, val) typeof(val) *name[]
+>>
+>> -/* Helper macro to print out debug messages */
+>> -#define bpf_printk(fmt, ...)                           \
+>> -({                                                     \
+>> -       char ____fmt[] = fmt;                           \
+>> -       bpf_trace_printk(____fmt, sizeof(____fmt),      \
+>> -                        ##__VA_ARGS__);                \
+>> -})
+>> -
+>>  /*
+>>   * Helper macro to place programs, maps, license in
+>>   * different sections in elf_bpf file. Section names
+>> @@ -224,4 +216,41 @@ enum libbpf_tristate {
+>>                      ___param, sizeof(___param));               \
+>>  })
+>>
+>> +/* Helper macro to print out debug messages */
+>> +#define __bpf_printk(fmt, ...)                         \
+>> +({                                                     \
+>> +       char ____fmt[] = fmt;                           \
+>> +       bpf_trace_printk(____fmt, sizeof(____fmt),      \
+>> +                        ##__VA_ARGS__);                \
+>> +})
+>> +
+>> +/*
+>> + * __bpf_vprintk wraps the bpf_trace_vprintk helper with variadic arguments
+>> + * instead of an array of u64.
+>> + */
+>> +#define __bpf_vprintk(fmt, args...)                            \
+>> +({                                                             \
+>> +       static const char ___fmt[] = fmt;                       \
+>> +       unsigned long long ___param[___bpf_narg(args)];         \
+>> +                                                               \
+>> +       _Pragma("GCC diagnostic push")                          \
+>> +       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
+>> +       ___bpf_fill(___param, args);                            \
+>> +       _Pragma("GCC diagnostic pop")                           \
+>> +                                                               \
+>> +       bpf_trace_vprintk(___fmt, sizeof(___fmt),               \
+>> +                    ___param, sizeof(___param));               \
 > 
-> > > > > > > > @@ -131,7 +149,7 @@ bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_storage,
-> > > > > > > >           SDATA(selem))
-> > > > > > > >               RCU_INIT_POINTER(local_storage->cache[smap->cache_idx], NULL);
-> > > > > > > >
-> > > > > > > > -     kfree_rcu(selem, rcu);
-> > > > > > > > +     call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-> > > > > > > Although the common use case is usually storage_get() much more often
-> > > > > > > than storage_delete(), do you aware any performance impact for
-> > > > > > > the bpf prog that does a lot of storage_delete()?
-> > > > > >
-> > > > > > I have not really measured the impact on deletes, My understanding is
-> > > > > > that it should
-> > > > > > not impact the BPF program, but yes, if there are some critical
-> > > > > > sections that are prolonged
-> > > > > > due to a sleepable program "sleeping" too long, then it would pile up
-> > > > > > the callbacks.
-> > > > > >
-> > > > > > But this is not something new, as we have a similar thing in BPF
-> > > > > > trampolines. If this really
-> > > > > > becomes an issue, we could add a flag BPF_F_SLEEPABLE_STORAGE and only maps
-> > > > > > with this flag would be allowed in sleepable progs.
-> > > > > Agree that is similar to trampoline updates but not sure it is comparable
-> > > > > in terms of the frequency of elems being deleted here.  e.g. many
-> > > > > short lived tcp connections created by external traffic.
-> > > > >
-> > > > > Adding a BPF_F_SLEEPABLE_STORAGE later won't work.  It will break
-> > > > > existing sleepable bpf prog.
-> > > > >
-> > > > > I don't know enough on call_rcu_tasks_trace() here, so the
-> > > > > earlier question on perf/callback-pile-up implications in order to
-> > > > > decide if extra logic or knob is needed here or not.
-> > > >
-> > > > I will defer to the others, maybe Alexei and Paul,
-> > >
-> > > > we could also just
-> > > > add the flag to not affect existing performance characteristics?
-> > > I would see if it is really necessary first.  Other sleepable
-> > > supported maps do not need a flag.  Adding one here for local
-> > > storage will be confusing especially if it turns out to be
-> > > unnecessary.
-> > >
-> > > Could you run some tests first which can guide the decision?
-> > 
-> > I think the performance impact would happen only in the worst case which
-> > needs some work to simulate. What do you think about:
-> > 
-> > A bprm_committed_creds program that processes a large argv
-> > and also gets a storage on the inode.
-> > 
-> > A file_open program that tries to delete the local storage on the inode.
-> > 
-> > Trigger this code in parallel. i.e. lots of programs that execute with a very
-> > large argv and then in parallel the executable being opened to trigger the
-> > delete.
-> > 
-> > Do you have any other ideas? Is there something we could re-use from
-> > the selftests?
+> nit: is this really misaligned or it's just Gmail's rendering?
+
+It's misaligned, will fix. As is __bpf_pick_printk below.
+
+>> +})
+>> +
+>> +#define ___bpf_pick_printk(...) \
+>> +       ___bpf_nth(_, ##__VA_ARGS__, __bpf_vprintk, __bpf_vprintk, __bpf_vprintk,       \
+>> +               __bpf_vprintk, __bpf_vprintk, __bpf_vprintk, __bpf_vprintk,             \
+>> +               __bpf_vprintk, __bpf_vprintk, __bpf_printk, __bpf_printk,               \
+>> +               __bpf_printk, __bpf_printk)
 > 
-> There is a bench framework in tools/testing/selftests/bpf/benchs/
-> that has a parallel thread setup which could be useful.
+> There is no best solution with macros, but I think this one is
+> extremely error prone because __bpf_nth invocation is very long and
+> it's hard to even see where printk turns into vprintk.
 > 
-> Don't know how to simulate the "sleeping" too long which
-> then pile-up callbacks.  This is not bpf specific.
-> Paul, I wonder if you have similar test to trigger this to
-> compare between call_rcu_tasks_trace() and call_rcu()?
-
-It is definitely the case that call_rcu() is way more scalable than
-is call_rcu_tasks_trace().  Something about call_rcu_tasks_trace()
-acquiring a global lock. ;-)
-
-So actually testing it makes a lot of sense.
-
-I do have an rcuscale module, but it is set up more for synchronous grace
-periods such as synchronize_rcu() and synchronize_rcu_tasks_trace().  It
-has the beginnings of support for call_rcu() and call_rcu_tasks_trace(),
-but I would not yet trust them.
-
-But I also have a test for global locking:
-
-$ tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs "NOPREEMPT" --kconfig "CONFIG_NR_CPUS=16" --bootargs "refscale.scale_type=lock refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot" --trust-make
-
-This gives a median lock overhead of 960ns.  Running a single CPU rather
-than 16 of them:
-
-$ tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --configs "NOPREEMPT" --kconfig "CONFIG_NR_CPUS=16" --bootargs "refscale.scale_type=lock refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot" --trust-make
-
-This gives a median lock overhead of 4.1ns, which is way faster.
-And the greater the number of CPUs, the greater the lock overhead.
-
-On the other hand, if each call to call_rcu_tasks_trace() involves a
-fork()/exec() pair, I would be rather surprised if that global lock was
-your bottleneck.
-
-Of course, if call_rcu_tasks_trace() does prove to be a bottleneck,
-there are of course things that can be done.
-
-> [ ... ]
+> How about doing it similarly to ___empty in bpf_core_read.h? It will
+> be something like this (untested and not even compiled, just a demo)
 > 
-> > > > > > > > @@ -213,7 +232,8 @@ bpf_local_storage_lookup(struct bpf_local_storage *local_storage,
-> > > > > > > >       struct bpf_local_storage_elem *selem;
-> > > > > > > >
-> > > > > > > >       /* Fast path (cache hit) */
-> > > > > > > > -     sdata = rcu_dereference(local_storage->cache[smap->cache_idx]);
-> > > > > > > > +     sdata = rcu_dereference_protected(local_storage->cache[smap->cache_idx],
-> > > > > > > > +                                       bpf_local_storage_rcu_lock_held());
-> > > > > > > There are other places using rcu_dereference() also.
-> > > > > > > e.g. in bpf_local_storage_update().
-> > > > > > > Should they be changed also?
-> > > > > >
-> > > > > > From what I saw, the other usage of rcu_derference is in a nested
-> > > > > > (w.r.t to the RCU section that in bpf_prog_enter/exit) RCU
-> > > > > > read side critical section/rcu_read_{lock, unlock} so it should not be required.
-> > > > > hmm... not sure what nested or not has to do here.
-> > > > > It is likely we are talking different things.
-> > > > >
-> > > > Yeah, we were looking at different things.
-> > > >
-> > > > e.g. bpf_selem_unlink does not need to be changed as it is in
-> > > > a rcu_read_lock.
-> > > No.  It is not always under rcu_read_lock().  From the patch 2 test,
-> > > it should have a splat either from bpf_inode_storage_delete()
-> > > or bpf_sk_storage_delete(), depending on which one runs first.
-> > 
-> > I missed this one, but I wonder why it did not trigger a warning. The test does
-> > exercise the delete and rcu_dereference should have warned me that I am not
-> > holding an rcu_read_lock();
-> hmm... not sure either.  may be some kconfigs that disabled rcu_read_lock_held()?
-> I would also take a look at RCU_LOCKDEP_WARN().
+> #define __bpf_printk_kind(...) ___bpf_nth(_, ##__VA_ARGS__, new, new,
+> new, new, new, <however many>, new, old /*3*/, old /*2*/, old /*1*/,
+> old /*0*/)
 > 
-> I just quickly tried the patches to check:
+> #define bpf_printk(fmt, args...) ___bpf_apply(___bpf_printk_,
+> ___bpf_narg(args))(fmt, args)
 > 
-> [  143.376587] =============================
-> [  143.377068] WARNING: suspicious RCU usage
-> [  143.377541] 5.14.0-rc5-01271-g68e5bda2b18e #4966 Tainted: G           O
-> [  143.378378] -----------------------------
-> [  143.378857] kernel/bpf/bpf_local_storage.c:114 suspicious rcu_dereference_check() usage!
-> [  143.379914]
-> [  143.379914] other info that might help us debug this:
-> [  143.379914]
-> [  143.380838]
-> [  143.380838] rcu_scheduler_active = 2, debug_locks = 1
-> [  143.381602] 4 locks held by mv/1781:
-> [  143.382025]  #0: ffff888121e7c438 (sb_writers#6){.+.+}-{0:0}, at: do_renameat2+0x2f5/0xa80
-> [  143.383009]  #1: ffff88812ce68760 (&type->i_mutex_dir_key#5/1){+.+.}-{3:3}, at: lock_rename+0x1f4/0x250
-> [  143.384144]  #2: ffffffff843fbc60 (rcu_read_lock_trace){....}-{0:0}, at: __bpf_prog_enter_sleepable+0x45/0x160
-> [  143.385326]  #3: ffff88811d8348b8 (&storage->lock){..-.}-{2:2}, at: __bpf_selem_unlink_storage+0x7d/0x170
-> [  143.386459]
-> [  143.386459] stack backtrace:
-> [  143.386983] CPU: 2 PID: 1781 Comm: mv Tainted: G           O      5.14.0-rc5-01271-g68e5bda2b18e #4966
-> [  143.388071] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.9.3-1.el7.centos 04/01/2014
-> [  143.389146] Call Trace:
-> [  143.389446]  dump_stack_lvl+0x5b/0x82
-> [  143.389901]  dump_stack+0x10/0x12
-> [  143.390302]  lockdep_rcu_suspicious+0x15c/0x167
-> [  143.390854]  bpf_selem_unlink_storage_nolock+0x2e1/0x6d0
-> [  143.391501]  __bpf_selem_unlink_storage+0xb7/0x170
-> [  143.392085]  bpf_selem_unlink+0x1b/0x30
-> [  143.392554]  bpf_inode_storage_delete+0x57/0xa0
-> [  143.393112]  bpf_prog_31e277fe2c132665_inode_rename+0x9c/0x268
-> [  143.393814]  bpf_trampoline_6442476301_0+0x4e/0x1000
-> [  143.394413]  bpf_lsm_inode_rename+0x5/0x10
+> 
+> And you'll have s/__bpf_printk/__bpf_printk_old/ (using
+> bpf_trace_printk) and s/__bpf_printk_new/__bpf_vprintk/ (using
+> bpf_trace_vprintk).
+> 
+> This new/old distinction makes it a bit clearer to me. I find
+> __bpf_nth so counterintuitive that I try not to use it directly
+> anywhere at all.
 
-I am not sure what line 114 is (it is a blank line in bpf-next), but
-you might be missing a rcu_read_lock_trace_held() in the second argument
-of rcu_dereference_check().
+When you're saying 'error prone' here, do you mean something like 
+'hard to understand and modify'? Asking because IMO adding 
+___bpf_apply here makes it harder to understand. Having the full
+helper macros in ___bpf_nth makes it obvious that they're being used
+somehow.
 
-							Thanx, Paul
+But I feel more strongly that these should not be renamed to __bpf_printk_{old,new}.
+Although this is admittedly an edge case, I'd like to leave an 'escape
+hatch' for power users who might not want bpf_printk to change the 
+helper call underneath them - they could use the __bpf_{v}printk
+macros directly. Of course they could do the same with _{old,new},
+but the rename obscures the name of the underlying helper called,
+which is the very thing the hypothetical power user cares about in 
+this scenario.
 
-> > > > > > > > --- a/net/core/bpf_sk_storage.c
-> > > > > > > > +++ b/net/core/bpf_sk_storage.c
-> > > > > > > > @@ -13,6 +13,7 @@
-> > > > > > > >  #include <net/sock.h>
-> > > > > > > >  #include <uapi/linux/sock_diag.h>
-> > > > > > > >  #include <uapi/linux/btf.h>
-> > > > > > > > +#include <linux/rcupdate_trace.h>
-> > > > > > > >
-> > > > > > > >  DEFINE_BPF_STORAGE_CACHE(sk_cache);
-> > > > > > > >
-> > > > > > > > @@ -22,7 +23,8 @@ bpf_sk_storage_lookup(struct sock *sk, struct bpf_map *map, bool cacheit_lockit)
-> > > > > > > >       struct bpf_local_storage *sk_storage;
-> > > > > > > >       struct bpf_local_storage_map *smap;
-> > > > > > > >
-> > > > > > > > -     sk_storage = rcu_dereference(sk->sk_bpf_storage);
-> > > > > > > > +     sk_storage = rcu_dereference_protected(sk->sk_bpf_storage,
-> > > > > > > > +                                            bpf_local_storage_rcu_lock_held());
-> > > > > > > >       if (!sk_storage)
-> > > > > > > >               return NULL;
-> > > > > > > >
-> > > > > > > > @@ -258,6 +260,7 @@ BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
-> > > > > > > >  {
-> > > > > > > >       struct bpf_local_storage_data *sdata;
-> > > > > > > >
-> > > > > > > > +     WARN_ON_ONCE(!bpf_local_storage_rcu_lock_held());
-> > > > > > > >       if (!sk || !sk_fullsock(sk) || flags > BPF_SK_STORAGE_GET_F_CREATE)
-> > > > > > > sk is protected by rcu_read_lock here.
-> > > > > > > Is it always safe to access it with the rcu_read_lock_trace alone ?
-> > > > > >
-> > > > > > We don't dereference sk with an rcu_dereference though, is it still the case for
-> > > > > > tracing and LSM programs? Or is it somehow implicity protected even
-> > > > > > though we don't use rcu_dereference since that's just a READ_ONCE + some checks?
-> > > > > e.g. the bpf_prog (currently run under rcu_read_lock()) may read the sk from
-> > > > > req_sk->sk which I don't think the verifier will optimize it out, so as good
-> > > > > as READ_ONCE(), iiuc.
-> > > > >
-> > > > > The sk here is obtained from the bpf_lsm_socket_* hooks?  Those sk should have
-> > > > > a refcnt, right?  If that is the case, it should be good enough for now.
-> > > >
-> > > > The one passed in the arguments yes, but if you notice the discussion in
-> > > >
-> > > > https://lore.kernel.org/bpf/20210826133913.627361-1-memxor@gmail.com/T/#me254212a125516a6c5d2fbf349b97c199e66dce0
-> > > >
-> > > > one may also get an sk in LSM and tracing progs by pointer walking.
-> > > Right.  There is pointer walking case.
-> > > e.g. "struct request_sock __rcu *fastopen_rsk" in tcp_sock.
-> > > I don't think it is possible for lsm to get a hold on tcp_sock
-> > > but agree that other similar cases could happen.
-> > >
-> > > May be for now, in sleepable program, only allow safe sk ptr
-> > > to be used in helpers that take sk PTR_TO_BTF_ID argument.
-> > > e.g. sock->sk is safe in the test in patch 2.  The same should go for other
-> > > storages like inode.  This needs verifier change.
-> > >
-> > 
-> > Sorry, I may be missing some context. Do you mean wait for Yonghong's work?
-> I don't think we have to wait.  Just saying Yonghong's work could fit
-> well in this use case in the future.
+One concrete example of such a user: someone who keeps up with
+latest bpf developments but needs to run their programs on a fleet
+which has some % of older kernels. Using __bpf_printk directly to 
+force a compile error for >3 fmt args instead of being bitten at
+load time would be desireable.
+
+Also, 'new' name leaves open possibility that something newer comes
+along in the future and turns 'new' into 'old', which feels churny. 
+Although if these are never used directly it doesn't matter.
+
+I agree with 'it's hard to even see where printk turns into vprintk'
+and like your comment idea. If you're fine with keeping names as-is,
+will still add /*3*/ /*2*/... and perhaps a /*BOUNDARY*/ marking the
+switch from vprintk to printk.
+
 > 
-> > Or is there another way to update the verifier to recognize safe sk and inode
-> > pointers?
-> I was thinking specifically for this pointer walking case.
-> Take a look at btf_struct_access().  It walks the struct
-> in the verifier and figures out reading sock->sk will get
-> a "struct sock *".  It marks the reg to PTR_TO_BTF_ID.
-> This will allow the bpf prog to directly read from sk (e.g. sk->sk_num)
-> or pass the sk to helper that takes a "struct sock *" pointer.
-> Reading from any sk pointer is fine since it is protected by BPF_PROBE_MEM
-> read.  However, we only allow the sk from sock->sk to be passed to the
-> helper here because we only know this one is refcnt-ed.
+>> +
+>> +#define bpf_printk(fmt, args...)               \
+>> +({                                             \
+>> +       ___bpf_pick_printk(args)(fmt, args);    \
+>> +})
 > 
-> Take a look at check_ptr_to_btf_access().  An individual verifier_ops 
-> can also have its own btf_struct_access.  One possibility is
-> to introduce a (new) PTR_TO_RDONLY_BTF_ID to mean it can only
-> do BPR_PROBE_MEM read but cannot be used in helper.
+> not sure ({ }) buys you anything?...
+
+Agreed, will fix.
+
+>> +
+>>  #endif
+>> --
+>> 2.30.2
+>>
+
