@@ -2,129 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54EA3FD051
-	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 02:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590EA3FD053
+	for <lists+bpf@lfdr.de>; Wed,  1 Sep 2021 02:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhIAAgO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 Aug 2021 20:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbhIAAgO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 Aug 2021 20:36:14 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D3CC061575;
-        Tue, 31 Aug 2021 17:35:18 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id c206so1794987ybb.12;
-        Tue, 31 Aug 2021 17:35:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7ySCqoRoWaqHTFuRNuFn2ouo7KNCaKC1FBNl++vWTZ8=;
-        b=ABlx7KNBjeho6Uo90FQMTrTOy74sl7EifFBx72z/cpDpWOFtfwpEkkWP5dQU/9+JwL
-         sw8dSXMpwiavgrNeEsgrSW5GzwF+t87DNiCIl4gltygxiLolWXd64kskHtgnYQOdmezI
-         Ke4J6FRh6KSD6d2DQspmqvVTCnLDS8qfc9yViY3rWBRHGJCq71QdgRXPIPn14Utn5yu/
-         tEJ8LerQgZMz+Y3uGMSFg+mxbvm28zmT4Y+j9Yeg3e7EVWmsumzpyM7LSsJ/LK0E5hof
-         mUAXg4/kkMfj3VMRqf1NSw7H+X1dHrLnRVk17zNlm6thEc5nRs6AC4dNQo1cCO2+h394
-         HoQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7ySCqoRoWaqHTFuRNuFn2ouo7KNCaKC1FBNl++vWTZ8=;
-        b=mjAXl0QXJ9fTxPaGvOXZzgXh3CdsJE5GTU4W6oUypKR6I4TbOujNkkpJj2pENfP8Kv
-         xCj3zTPkX5nCYWRrbo5eU1NHvXa+94gA96HFI/CGVii4s5OLNgWurhcR1Ki/V0R+eX6s
-         xU4sYw0tSnArJowxBvmEF9/W8PkcwQyO3TFxA+wvfhrN9HTqAM1zViOFUTe5VZXSbVe3
-         Cfg1SGF5V2EG4q22sKMnVv/QzVEI+aLQcZGMhfsgr1q3mCgE0C/5aYquqc0ZQ9nKRvyn
-         7LIubO1j8Fe7xNl+HkkbNJGc7qxVMNS8jFrZeYZeEjFLPkCb3OW+m/6Ds/9TyRSX5agI
-         CrTQ==
-X-Gm-Message-State: AOAM531c7HQUaXbrEBX8Qy9EQvVJA5KYQIjhrX7MghNow+7D/5z6e5q+
-        TA1x5rngObdMtop2FPO7TTu2bYkkknYwnRkwH08=
-X-Google-Smtp-Source: ABdhPJzIBq7k9UykvHaZJme8ruS3ldO7UCH976dlKDRzs6riSQfZTAR7N3smMqu3wVXEY6D3AVkprwgp0SzVna7cn/A=
-X-Received: by 2002:a25:1e03:: with SMTP id e3mr32556584ybe.459.1630456516365;
- Tue, 31 Aug 2021 17:35:16 -0700 (PDT)
+        id S240914AbhIAAgY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 Aug 2021 20:36:24 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:52266 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240844AbhIAAgX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 31 Aug 2021 20:36:23 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1810Ufev025279
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 17:35:27 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=xfJaQgEFutNFXHwxqE5t89p1I7MO4YmmYJYKZbVwTU4=;
+ b=RoxxkhAlCK6II/ZzjpnpNSUOByRltX/hfQCzmnISFlMiYpzjU6gL4bKY7/ikRxeyAbAt
+ Q7T0SN4OurkWX7GjjLsiVV6hwhPbXXz4iqXO/0zstpYZrCHFf8nYTKIsXIKzjy+o5sdC
+ f2qvyPHkIWgPTMB4p0V47Yf+jh7LEAsBhh4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3asmx9dfe1-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 31 Aug 2021 17:35:27 -0700
+Received: from intmgw001.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 31 Aug 2021 17:35:26 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 92286F58687E; Tue, 31 Aug 2021 17:35:20 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <kjain@linux.ibm.com>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v4 bpf-next 0/3] bpf: introduce bpf_get_branch_snapshot
+Date:   Tue, 31 Aug 2021 17:35:14 -0700
+Message-ID: <20210901003517.3953145-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: 6dVRIz7hVR8S6nJZnd9vro5aCaFM7D13
+X-Proofpoint-GUID: 6dVRIz7hVR8S6nJZnd9vro5aCaFM7D13
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210830173424.1385796-1-memxor@gmail.com> <20210830173424.1385796-5-memxor@gmail.com>
-In-Reply-To: <20210830173424.1385796-5-memxor@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 Aug 2021 17:35:05 -0700
-Message-ID: <CAEf4BzYuXnVZMH3roZw68yMeUC4eapybXKdZ0Cvrw4+d+sZ5vQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next RFC v1 4/8] libbpf: Resolve invalid kfunc calls
- with imm = 0, off = 0
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-31_10:2021-08-31,2021-08-31 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ mlxlogscore=938 mlxscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
+ bulkscore=0 priorityscore=1501 phishscore=0 suspectscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2109010001
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 10:34 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> Preserve these calls as it allows verifier to succeed in loading the
-> program if they are determined to be unreachable after dead code
-> elimination during program load. If not, the verifier will fail at
-> runtime.
->
+changes v3 =3D> v4:
+1. Do not reshuffle intel_pmu_disable_all(). Use some inline to save LBR
+   entries. (Peter)
+2. Move static_call(perf_snapshot_branch_stack) to the helper. (Alexei)
+3. Add argument flags to bpf_get_branch_snapshot. (Andrii)
+4. Make MAX_BRANCH_SNAPSHOT an enum (Andrii). And rename it as
+   PERF_MAX_BRANCH_SNAPSHOT
+5. Make bpf_get_branch_snapshot similar to bpf_read_branch_records.
+   (Andrii)
+6. Move the test target function to bpf_testmod. Updated kallsyms_find_next
+   to work properly with modules. (Andrii)
 
-This should be controlled by whether extern for func is weak or not,
-just like we do for variables (see
-bpf_object__resolve_ksym_var_btf_id()).
+Changes v2 =3D> v3:
+1. Fix the use of static_call. (Peter)
+2. Limit the use to perfmon version >=3D 2. (Peter)
+3. Modify intel_pmu_snapshot_branch_stack() to use intel_pmu_disable_all
+   and intel_pmu_enable_all().
 
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index c4677ef97caa..9df90098f111 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -6736,9 +6736,14 @@ static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
->         kfunc_id = find_ksym_btf_id(obj, ext->name, BTF_KIND_FUNC,
->                                     &kern_btf, &kern_btf_fd);
->         if (kfunc_id < 0) {
-> -               pr_warn("extern (func ksym) '%s': not found in kernel BTF\n",
-> +               pr_warn("extern (func ksym) '%s': not found in kernel BTF, encoding btf_id as 0\n",
->                         ext->name);
-> -               return kfunc_id;
-> +               /* keep invalid kfuncs, so that verifier can load the program if
-> +                * they get removed during DCE pass in the verifier.
-> +                * The encoding must be insn->imm = 0, insn->off = 0.
-> +                */
-> +               kfunc_id = kern_btf_fd = 0;
-> +               goto resolve;
->         }
->
->         if (kern_btf != obj->btf_vmlinux) {
-> @@ -6798,11 +6803,18 @@ static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
->                 return -EINVAL;
->         }
->
-> +resolve:
->         ext->is_set = true;
->         ext->ksym.kernel_btf_obj_fd = kern_btf_fd;
->         ext->ksym.kernel_btf_id = kfunc_id;
-> -       pr_debug("extern (func ksym) '%s': resolved to kernel [%d]\n",
-> -                ext->name, kfunc_id);
-> +       if (kfunc_id) {
-> +               pr_debug("extern (func ksym) '%s': resolved to kernel [%d]\n",
-> +                        ext->name, kfunc_id);
-> +       } else {
-> +               ext->ksym.offset = 0;
-> +               pr_debug("extern (func ksym) '%s': added special invalid kfunc with imm = 0\n",
-> +                        ext->name);
-> +       }
->
->         return 0;
->  }
-> --
-> 2.33.0
->
+Changes v1 =3D> v2:
+1. Rename the helper as bpf_get_branch_snapshot;
+2. Fix/simplify the use of static_call;
+3. Instead of percpu variables, let intel_pmu_snapshot_branch_stack output
+   branch records to an output argument of type perf_branch_snapshot.
+
+Branch stack can be very useful in understanding software events. For
+example, when a long function, e.g. sys_perf_event_open, returns an errno,
+it is not obvious why the function failed. Branch stack could provide very
+helpful information in this type of scenarios.
+
+This set adds support to read branch stack with a new BPF helper
+bpf_get_branch_trace(). Currently, this is only supported in Intel systems.
+It is also possible to support the same feaure for PowerPC.
+
+The hardware that records the branch stace is not stopped automatically on
+software events. Therefore, it is necessary to stop it in software soon.
+Otherwise, the hardware buffers/registers will be flushed. One of the key
+design consideration in this set is to minimize the number of branch record
+entries between the event triggers and the hardware recorder is stopped.
+Based on this goal, current design is different from the discussions in
+original RFC [1]:
+ 1) Static call is used when supported, to save function pointer
+    dereference;
+ 2) intel_pmu_lbr_disable_all is used instead of perf_pmu_disable(),
+    because the latter uses about 10 entries before stopping LBR.
+
+With current code, on Intel CPU, LBR is stopped after 10 branch entries
+after fexit triggers:
+
+ID: 0 from intel_pmu_lbr_disable_all+58 to intel_pmu_lbr_disable_all+93
+ID: 1 from intel_pmu_lbr_disable_all+54 to intel_pmu_lbr_disable_all+58
+ID: 2 from intel_pmu_snapshot_branch_stack+88 to intel_pmu_lbr_disable_all+0
+ID: 3 from bpf_get_branch_snapshot+77 to intel_pmu_snapshot_branch_stack+0
+ID: 4 from __brk_limit+478052814 to bpf_get_branch_snapshot+0
+ID: 5 from __brk_limit+478036039 to __brk_limit+478052760
+ID: 6 from __bpf_prog_enter+34 to __brk_limit+478036027
+ID: 7 from migrate_disable+60 to __bpf_prog_enter+9
+ID: 8 from __bpf_prog_enter+4 to migrate_disable+0
+ID: 9 from __brk_limit+478036022 to __bpf_prog_enter+0
+ID: 10 from bpf_testmod_loop_test+22 to __brk_limit+478036003
+ID: 11 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+ID: 12 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+ID: 13 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+...
+
+[1] https://lore.kernel.org/bpf/20210818012937.2522409-1-songliubraving@fb.=
+com/
+
+Song Liu (3):
+  perf: enable branch record for software events
+  bpf: introduce helper bpf_get_branch_snapshot
+  selftests/bpf: add test for bpf_get_branch_snapshot
+
+ arch/x86/events/intel/core.c                  |  26 ++++-
+ arch/x86/events/intel/ds.c                    |   8 --
+ arch/x86/events/perf_event.h                  |  10 +-
+ include/linux/perf_event.h                    |  26 +++++
+ include/uapi/linux/bpf.h                      |  22 ++++
+ kernel/bpf/trampoline.c                       |   3 +-
+ kernel/events/core.c                          |   2 +
+ kernel/trace/bpf_trace.c                      |  40 +++++++
+ tools/include/uapi/linux/bpf.h                |  22 ++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  14 ++-
+ .../bpf/prog_tests/get_branch_snapshot.c      | 101 ++++++++++++++++++
+ .../selftests/bpf/progs/get_branch_snapshot.c |  44 ++++++++
+ tools/testing/selftests/bpf/trace_helpers.c   |  37 +++++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   5 +
+ 14 files changed, 345 insertions(+), 15 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_snaps=
+hot.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot.c
+
+--
+2.30.2
