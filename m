@@ -2,268 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455533FE6C1
-	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 02:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D513FE72E
+	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 03:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhIBAyE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Sep 2021 20:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        id S233193AbhIBBeR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Sep 2021 21:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbhIBAyD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Sep 2021 20:54:03 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE64C061575;
-        Wed,  1 Sep 2021 17:53:05 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id e133so575145ybh.0;
-        Wed, 01 Sep 2021 17:53:05 -0700 (PDT)
+        with ESMTP id S233192AbhIBBeQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Sep 2021 21:34:16 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4258DC061760
+        for <bpf@vger.kernel.org>; Wed,  1 Sep 2021 18:33:18 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso324700pjq.4
+        for <bpf@vger.kernel.org>; Wed, 01 Sep 2021 18:33:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ayvaPcH4PeKRgsTyQAb7B44ose8e+hCAQVDtMMshj1c=;
-        b=aKp0EVSD/3Wtm5nG6cJmiWxRrTAH1ZjeGxTJCfi/kfCyNiMzIhfcMvN/SeR6kC4XZl
-         34V/OvEFtwo9aJv6ArOIB3oz/2hYmAzxHWrCrJYXGRdE8N8s4QFJqCWcoE4JU3f21cOF
-         ACNJAxIyT5Tz9CInE1WcX4ovVacfVZtieshiBL+zcKyxMXc1PuGVC6TDDJRLO7rJwxZH
-         2hukrbKsZNyNRdFKPIJsGeazdxOa88NzHHkiE5axgecCDHZY6E5w7/n8yxwAKlqoeA7x
-         QGyAu1SmOBJT/3eRw65RMaF6gigkFnickeMxetASQ2SiDOovKaoBo/Cm33rDN1Qpfd64
-         NLGQ==
+        bh=nWX/ioTNQ2QOF0ESBfXzZRM4T2D3d+eIYmLvmVwtWK8=;
+        b=oSpyGu8SiNFqAVoJV1eyNCxhwIJ0NqBJo8CCA+bV0iWITQYrB3j23R/kAggyfAm714
+         Wv2/YRCurzOIpSVfWhNOvXnibN1iJRkk04KViGL2XpUnyYvrxaBidRE55suW3sIvk+Rq
+         ZRP19dYG8B91jarWQ2bsGz65T5nP4s3MhZAoNaXPrqJ20YoyfRsCDXJHYO77vnTRF4fW
+         vuLnEd67Z/P16FOVCmb8mQQcvXU+fC5CwPGLnD4boXBRSWg8JkLx4PYdw6j2Qw7Yp2RI
+         8LguivzXnJTKeMYoOjvW8qw/aHvOFCID9eDuY2KRnyu9zRwjbcULtAm6abkZZ7tMgLo0
+         6YWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ayvaPcH4PeKRgsTyQAb7B44ose8e+hCAQVDtMMshj1c=;
-        b=kvF4K1XnTScsXCnHTde4bB+e1raeP7TM1wc+d87xZL6vnxZfhZ/bndGNxBGIsP16ET
-         Twe+szuVAfkU0W7lllcTcKWimm0R5QRnTwurJzM1SciF2c8dMi66ttzif+nhf3vgm4g5
-         0m+iSj8jGD3AXo3/1ty74W9R25tukIYAdNCW5nfxde/9OF9AxeSABk0eKtpAyRViwMKC
-         /sCFdNn4uaHDq/34JKR4mTdgSXS1rvNw47CjHSs1zyZBy91uQE8OF4Gf9BhMWDHQNaCX
-         3PqRqrD24DtRjObWEKz9pQxAhiNQt/AxxzaFbEbrJ8J9qogYp8Lh5NQ0/3gU84lMaigB
-         FbiA==
-X-Gm-Message-State: AOAM530rySfeD4n22bK+RYj09fJkEFy4kJrqPvRrIccNKAcrmGybA6Tt
-        GADV5VnkpYbOh3jOeYmenRT4Ut8FGUwKKrZy/tE=
-X-Google-Smtp-Source: ABdhPJztdGAJRd4iX0setcCzorAm22re+j5ywoKLRLbkMzeJPvS4C2lR17Uyyr85G4WXYZqlWTSKfxRDQS92JmsntGM=
-X-Received: by 2002:a25:bdc5:: with SMTP id g5mr861952ybk.403.1630543985128;
- Wed, 01 Sep 2021 17:53:05 -0700 (PDT)
+        bh=nWX/ioTNQ2QOF0ESBfXzZRM4T2D3d+eIYmLvmVwtWK8=;
+        b=VRSNqOxl9wI4RVjsEMGmgePUV5rzGee4QdcEZo1LUMX1vlEdSIUy0k/w5x0MNQE9OX
+         RHJ8xR57vzNK7BKe6NQp78fa4iyrEM2MPvSME74g4qS6sNe9EDcYLT/kUITbonjyL086
+         CN4RjIx5AragYtXAMdbwpRm4wzh5noyG0tnDP25c5sGDaiYmneVDVv0VL3vSNltZDT5u
+         7kfdJK7nOhAI+IHd9fJ31BZ08d5BvVe3GunQsbUCa8IGslbGnTFGZHygDDKzLSe4RjbV
+         dV3C2tHnY0MxGdnwxavf1q3LJw7yuEl78wgj/xjMnLP1i9vBWm3ZK6p3UMN9wCynTcK0
+         0mqg==
+X-Gm-Message-State: AOAM532Tr1Jn3uZz0v6fRqktJjxsBJEW4/G5Pq0GHGdjjWHC4KDE+AL7
+        jhpwhdEtonp3M2RipXkZ1FIAfqJ1VXZaC1FcTwc=
+X-Google-Smtp-Source: ABdhPJwpnJ6HQ5CCoSUrR5X/BZh9+15CfAKynQAeA0/4dbaaiPOwdTQc/u+1yeZjD49Y+83HMjAHdga0aYiBl0DNp6s=
+X-Received: by 2002:a17:902:e790:b0:12c:c0f3:605c with SMTP id
+ cp16-20020a170902e79000b0012cc0f3605cmr640299plb.70.1630546397821; Wed, 01
+ Sep 2021 18:33:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210825195823.381016-1-davemarchevsky@fb.com>
- <20210825195823.381016-4-davemarchevsky@fb.com> <CAEf4BzaNH1vRQr5jZO_m3haUaV5rXKiH5AJLFrM5iwbkEja=VQ@mail.gmail.com>
- <f4bd93de-14e1-855d-eb31-1de4697ce7d7@fb.com>
-In-Reply-To: <f4bd93de-14e1-855d-eb31-1de4697ce7d7@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 1 Sep 2021 17:52:53 -0700
-Message-ID: <CAEf4BzbVuHzZGQLO9F7jYj1ewdjixiza=CWnthPL9MQzAHByeA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/6] libbpf: Modify bpf_printk to choose
- helper based on arg count
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Networking <netdev@vger.kernel.org>
+References: <20210825184745.2680830-1-fallentree@fb.com> <CAADnVQJz8LUTsm_azd4JE0n5Q4Me0Lze6hmsqNYfAKMeA44_fQ@mail.gmail.com>
+ <CAJygYd24KySBLCL2rRofGqdPkQzonxBfihRxLQ=O8Xg=AWAowA@mail.gmail.com>
+ <CAJygYd3M1E3N9C02WCmPD6_i9miXaCe=OP-M32QTnOXOajBPZA@mail.gmail.com>
+ <CAADnVQJB3GKKr1hMWHNKYhoo8CzrDQ83LEnO8c+ntOBtEkjApA@mail.gmail.com> <CAM_iQpVw-5dG8Na9e851bQy2_BcpZQ5QK+r554NZsP0_dbzwNw@mail.gmail.com>
+In-Reply-To: <CAM_iQpVw-5dG8Na9e851bQy2_BcpZQ5QK+r554NZsP0_dbzwNw@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 1 Sep 2021 18:33:07 -0700
+Message-ID: <CAM_iQpUG30QL03Uh9D_ACy_29TLWG+YfDO9_GvcqzW2f0TbpYw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: reduce more flakyness in sockmap_listen
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "sunyucong@gmail.com" <sunyucong@gmail.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Yucong Sun <fallentree@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 4:29 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+On Tue, Aug 31, 2021 at 12:33 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> Like I mentioned before, I suspect there is some delay in one of
+> the queues on the way or there is a worker wakeup latency.
+> I will try adding some tracepoints to see if I can capture it.
 >
-> On 8/30/21 7:55 PM, Andrii Nakryiko wrote:
-> > On Wed, Aug 25, 2021 at 12:58 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
-> >>
-> >> Instead of being a thin wrapper which calls into bpf_trace_printk,
-> >> libbpf's bpf_printk convenience macro now chooses between
-> >> bpf_trace_printk and bpf_trace_vprintk. If the arg count (excluding
-> >> format string) is >3, use bpf_trace_vprintk, otherwise use the older
-> >> helper.
-> >>
-> >> The motivation behind this added complexity - instead of migrating
-> >> entirely to bpf_trace_vprintk - is to maintain good developer experience
-> >> for users compiling against new libbpf but running on older kernels.
-> >> Users who are passing <=3 args to bpf_printk will see no change in their
-> >> bytecode.
-> >>
-> >> __bpf_vprintk functions similarly to BPF_SEQ_PRINTF and BPF_SNPRINTF
-> >> macros elsewhere in the file - it allows use of bpf_trace_vprintk
-> >> without manual conversion of varargs to u64 array. Previous
-> >> implementation of bpf_printk macro is moved to __bpf_printk for use by
-> >> the new implementation.
-> >>
-> >> This does change behavior of bpf_printk calls with >3 args in the "new
-> >> libbpf, old kernels" scenario. On my system, using a clang built from
-> >> recent upstream sources (14.0.0 https://github.com/llvm/llvm-project.git
-> >> 50b62731452cb83979bbf3c06e828d26a4698dca), attempting to use 4 args to
-> >> __bpf_printk (old impl) results in a compile-time error:
-> >>
-> >>   progs/trace_printk.c:21:21: error: too many args to 0x6cdf4b8: i64 = Constant<6>
-> >>         trace_printk_ret = __bpf_printk("testing,testing %d %d %d %d\n",
-> >>
-> >> I was able to replicate this behavior with an older clang as well. When
-> >> the format string has >3 format specifiers, there is no output to the
-> >> trace_pipe in either case.
-> >>
-> >> After this patch, using bpf_printk with 4 args would result in a
-> >> trace_vprintk helper call being emitted and a load-time failure on older
-> >> kernels.
-> >>
-> >> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> >> ---
-> >>  tools/lib/bpf/bpf_helpers.h | 45 ++++++++++++++++++++++++++++++-------
-> >>  1 file changed, 37 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> >> index b9987c3efa3c..5f087306cdfe 100644
-> >> --- a/tools/lib/bpf/bpf_helpers.h
-> >> +++ b/tools/lib/bpf/bpf_helpers.h
-> >> @@ -14,14 +14,6 @@
-> >>  #define __type(name, val) typeof(val) *name
-> >>  #define __array(name, val) typeof(val) *name[]
-> >>
-> >> -/* Helper macro to print out debug messages */
-> >> -#define bpf_printk(fmt, ...)                           \
-> >> -({                                                     \
-> >> -       char ____fmt[] = fmt;                           \
-> >> -       bpf_trace_printk(____fmt, sizeof(____fmt),      \
-> >> -                        ##__VA_ARGS__);                \
-> >> -})
-> >> -
-> >>  /*
-> >>   * Helper macro to place programs, maps, license in
-> >>   * different sections in elf_bpf file. Section names
-> >> @@ -224,4 +216,41 @@ enum libbpf_tristate {
-> >>                      ___param, sizeof(___param));               \
-> >>  })
-> >>
-> >> +/* Helper macro to print out debug messages */
-> >> +#define __bpf_printk(fmt, ...)                         \
-> >> +({                                                     \
-> >> +       char ____fmt[] = fmt;                           \
-> >> +       bpf_trace_printk(____fmt, sizeof(____fmt),      \
-> >> +                        ##__VA_ARGS__);                \
-> >> +})
-> >> +
-> >> +/*
-> >> + * __bpf_vprintk wraps the bpf_trace_vprintk helper with variadic arguments
-> >> + * instead of an array of u64.
-> >> + */
-> >> +#define __bpf_vprintk(fmt, args...)                            \
-> >> +({                                                             \
-> >> +       static const char ___fmt[] = fmt;                       \
-> >> +       unsigned long long ___param[___bpf_narg(args)];         \
-> >> +                                                               \
-> >> +       _Pragma("GCC diagnostic push")                          \
-> >> +       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> >> +       ___bpf_fill(___param, args);                            \
-> >> +       _Pragma("GCC diagnostic pop")                           \
-> >> +                                                               \
-> >> +       bpf_trace_vprintk(___fmt, sizeof(___fmt),               \
-> >> +                    ___param, sizeof(___param));               \
-> >
-> > nit: is this really misaligned or it's just Gmail's rendering?
->
-> It's misaligned, will fix. As is __bpf_pick_printk below.
->
-> >> +})
-> >> +
-> >> +#define ___bpf_pick_printk(...) \
-> >> +       ___bpf_nth(_, ##__VA_ARGS__, __bpf_vprintk, __bpf_vprintk, __bpf_vprintk,       \
-> >> +               __bpf_vprintk, __bpf_vprintk, __bpf_vprintk, __bpf_vprintk,             \
-> >> +               __bpf_vprintk, __bpf_vprintk, __bpf_printk, __bpf_printk,               \
-> >> +               __bpf_printk, __bpf_printk)
-> >
-> > There is no best solution with macros, but I think this one is
-> > extremely error prone because __bpf_nth invocation is very long and
-> > it's hard to even see where printk turns into vprintk.
-> >
-> > How about doing it similarly to ___empty in bpf_core_read.h? It will
-> > be something like this (untested and not even compiled, just a demo)
-> >
-> > #define __bpf_printk_kind(...) ___bpf_nth(_, ##__VA_ARGS__, new, new,
-> > new, new, new, <however many>, new, old /*3*/, old /*2*/, old /*1*/,
-> > old /*0*/)
-> >
-> > #define bpf_printk(fmt, args...) ___bpf_apply(___bpf_printk_,
-> > ___bpf_narg(args))(fmt, args)
-> >
-> >
-> > And you'll have s/__bpf_printk/__bpf_printk_old/ (using
-> > bpf_trace_printk) and s/__bpf_printk_new/__bpf_vprintk/ (using
-> > bpf_trace_vprintk).
-> >
-> > This new/old distinction makes it a bit clearer to me. I find
-> > __bpf_nth so counterintuitive that I try not to use it directly
-> > anywhere at all.
->
-> When you're saying 'error prone' here, do you mean something like
-> 'hard to understand and modify'? Asking because IMO adding
-> ___bpf_apply here makes it harder to understand. Having the full
-> helper macros in ___bpf_nth makes it obvious that they're being used
-> somehow.
 
-Hm... I disagree on ___bpf_nth being easier, because of both *reverse*
-and *positional* notation. But whichever you prefer, not a big deal.
-In this particular case it takes lots of attention to even see at
-which position __bpf_vprintk switches to __bpf_printk. They are too
-similar and not both verbose and not distinctive enough, IMO.
+I tried to revert this patch locally to reproduce the EAGAIN
+failure, but even after repeating the sockmap_listen test hundreds
+of times, I didn't see any failure here.
 
-bpf_apply feels more natural, but I'm the one who wrote a bunch of
-bpf_core_read.h macro using that approach, so I'm totally biased.
-(Though I wrote and used bpf__nth as well, yet I still hate it, but
-it's just a necessary evil).
+If you are still interested in this issue, I'd suggest you adding some
+tracepoints to see what happens to kworker or the packet queues.
 
->
-> But I feel more strongly that these should not be renamed to __bpf_printk_{old,new}.
-> Although this is admittedly an edge case, I'd like to leave an 'escape
-> hatch' for power users who might not want bpf_printk to change the
-> helper call underneath them - they could use the __bpf_{v}printk
-> macros directly. Of course they could do the same with _{old,new},
-> but the rename obscures the name of the underlying helper called,
-> which is the very thing the hypothetical power user cares about in
-> this scenario.
+It does not look like a sockmap bug, otherwise I would be able to
+reproduce it here.
 
-Any of the __ prefixed macro should not be used by anyone and are not
-considered part of the API. We can rename, remove, break them at any
-time. So regardless of the above, one should not use __bpf_vprintk or
-__bpf_vprintk directly in their BPF apps.
-
->
-> One concrete example of such a user: someone who keeps up with
-> latest bpf developments but needs to run their programs on a fleet
-> which has some % of older kernels. Using __bpf_printk directly to
-> force a compile error for >3 fmt args instead of being bitten at
-> load time would be desireable.
-
-it's not hard for such users to just copy/paste (and actually have
-cleaner name). __bpf_printk() is not a hard macro that needs to be
-reused by end users.
-
->
-> Also, 'new' name leaves open possibility that something newer comes
-> along in the future and turns 'new' into 'old', which feels churny.
-> Although if these are never used directly it doesn't matter.
-
-Right, internal implementation details, as far as end users are concerned.
-
->
-> I agree with 'it's hard to even see where printk turns into vprintk'
-> and like your comment idea. If you're fine with keeping names as-is,
-> will still add /*3*/ /*2*/... and perhaps a /*BOUNDARY*/ marking the
-> switch from vprintk to printk.
-
-BOUNDARY is probably an overkill. Positional comments might be nice, try it.
-
->
-> >
-> >> +
-> >> +#define bpf_printk(fmt, args...)               \
-> >> +({                                             \
-> >> +       ___bpf_pick_printk(args)(fmt, args);    \
-> >> +})
-> >
-> > not sure ({ }) buys you anything?...
->
-> Agreed, will fix.
->
-> >> +
-> >>  #endif
-> >> --
-> >> 2.30.2
-> >>
->
+Thanks.
