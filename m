@@ -2,75 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C5A3FF1EC
-	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 18:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEC73FF215
+	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 19:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346534AbhIBQ6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Sep 2021 12:58:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29160 "EHLO
+        id S1346533AbhIBRJH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Sep 2021 13:09:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50311 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346521AbhIBQ60 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 2 Sep 2021 12:58:26 -0400
+        by vger.kernel.org with ESMTP id S1346538AbhIBRJG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 2 Sep 2021 13:09:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630601844;
+        s=mimecast20190719; t=1630602487;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y8Q1kK8grLBRDrHjzp9sq1sAAV8774+oYHuiomT7vc8=;
-        b=fiUSZlf4l+bIpvTI9QLdOPrk5fvYOaffJ2+umQaNwZ0GP7/vXYLcWp7yDeV75kVfQJ5kSw
-        CySd9syAgx65IBWBDedSkO86+GLpdj+o7mPqv3D/84SHEYjf7I1ceP+f2zD4O0s91J6u5u
-        yLzVB9E49X4zAOk6qi/ON9WG9sTGP9k=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-MvrILhprOfqp9Lr3R8-hQA-1; Thu, 02 Sep 2021 12:57:23 -0400
-X-MC-Unique: MvrILhprOfqp9Lr3R8-hQA-1
-Received: by mail-ej1-f70.google.com with SMTP id x21-20020a170906135500b005d8d4900c5eso1244656ejb.4
-        for <bpf@vger.kernel.org>; Thu, 02 Sep 2021 09:57:23 -0700 (PDT)
+        bh=k+uDesInFuRexRO1lWLZaUErkyo/kRjkjvT+Y1LURy4=;
+        b=datXzIMANl2ChlfZqB7DpEUufuBP0s0RZMQ9XOi4U1j3Sq9lPVIzBKwr7mPU+Ivhkm8Ull
+        6LJYCsD5UOw81LeZBNari/m30ES9UJ6eWadRo9vyHFYcYuxnRP2Dj6T+qKKpxkN0KYAnXu
+        tXI9NxlXh250yTppr2V1mkE1+jkFdKo=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498-MJGYJmFHOfOfmkayRM7kEQ-1; Thu, 02 Sep 2021 13:08:06 -0400
+X-MC-Unique: MJGYJmFHOfOfmkayRM7kEQ-1
+Received: by mail-ed1-f70.google.com with SMTP id ch11-20020a0564021bcb00b003c8021b61c4so1282645edb.23
+        for <bpf@vger.kernel.org>; Thu, 02 Sep 2021 10:08:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=Y8Q1kK8grLBRDrHjzp9sq1sAAV8774+oYHuiomT7vc8=;
-        b=dTU0Y9o91L+n5g7qcGKvai9bdL1k82IMnGE/ptFvfRA6nV/zLtp+GSxL3SiEfwxQnJ
-         4XqiLDd/mPsi7g6pmtAIHRzASTSWgoqn7z2R34E+UUa+7vY1cNg8MrhSBHVC6Iu2IYre
-         2ZVhKBHMIHOKURqJvfIJ1bGPnI3IXlHkJI+GsZ5TwAI9bD4363ZDOs5nN7vTE8s9Sde2
-         Cx5kyy5OBjr3PeEixEIBUtDKzDO4ym0qpETGb9KhLJmVvYFzyNYb0sGfD5EyHueEkxWj
-         MP/1EXtS8NAL2NafFSfr6TajJzzW2Ma+NvOQkfTXjh1uWI3ciKwx5kz8AZnOscCNTHgx
-         dOLg==
-X-Gm-Message-State: AOAM532gu7bfiNLHnOMyvwAVEEvBo7aSS7FLpkCqx1zGqUInMWStVJ3X
-        XI+yWZ1QIViVrFUZvYj/Kw99jiGKOVKXSlZ4fuaOvMHxB7E8c5hqBkEPrkNiItC3ito6k4n7nCs
-        h+u76QRVqCG9C
-X-Received: by 2002:a17:906:3146:: with SMTP id e6mr4787466eje.296.1630601841271;
-        Thu, 02 Sep 2021 09:57:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwA7t1ufeC8Jy4UEBuz0UedPDZt+yymBf/BVOrjcuL/zq8TriQxH/MNambvq/MaIXWjPSEoGQ==
-X-Received: by 2002:a17:906:3146:: with SMTP id e6mr4787374eje.296.1630601839982;
-        Thu, 02 Sep 2021 09:57:19 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id bm1sm1494793ejb.38.2021.09.02.09.57.18
+        bh=k+uDesInFuRexRO1lWLZaUErkyo/kRjkjvT+Y1LURy4=;
+        b=FeSeHUw+Y7DCf94Qi0pwCg5VWZaTV98sEED0q6ZQhjHQWAcLlA62+FtrmQC+68zQyV
+         T2fipUNbzZ0ju9dsYXGItG9MroJFSXIrU0rzRVpfrvkApMDX8LolY4h8hddNRTRYRn4N
+         0hBMpMzHOuQmLHW5VsnWlN1o5l0i5IWUDGc8MV7aN9ZSgKE+H0dPqsLURmj2kuzkLxJS
+         q37ZkMxWWVVjYg7N+CAqfpvrIHNG57gbRpPG2TBL0KF6Ok+YqvEAobB2QxoraCjp/SIn
+         3KCbs86kQ5TcXsVGtpFe5SD8IpzMZwrPJI+o8D4C1WLUFcqUUzyNfQqfUHu0HVKKm4bJ
+         //Ng==
+X-Gm-Message-State: AOAM533+gwQz3S0rWout1pxwSUtvLEvmUuekroOEXB/1tx63Rnrmdiv/
+        E5B2GEmGxFg4jiUNcckd+acGU2n610QF3KzMN1CjNqS4eHBUEhQ5216O/H84R7Hh9X7b87I6HLB
+        A2/u5fxWTrCkn
+X-Received: by 2002:a05:6402:5c9:: with SMTP id n9mr4578890edx.336.1630602485539;
+        Thu, 02 Sep 2021 10:08:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyOoPh8tnGcT2vsuQ7eJoSy2dO8ioPhaKct5AHAGarbvs8SmNA5RgTEUllYMHRJj2aNiJ7aHA==
+X-Received: by 2002:a05:6402:5c9:: with SMTP id n9mr4578865edx.336.1630602485273;
+        Thu, 02 Sep 2021 10:08:05 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id jz16sm1399675ejc.34.2021.09.02.10.08.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 09:57:18 -0700 (PDT)
+        Thu, 02 Sep 2021 10:08:04 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id DC0211800EB; Thu,  2 Sep 2021 18:57:17 +0200 (CEST)
+        id 84BA61800EB; Thu,  2 Sep 2021 19:08:03 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Martin KaFai Lau <kafai@fb.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Subject: Re: [RFC Patch net-next] net_sched: introduce eBPF based Qdisc
-In-Reply-To: <20210901174543.xukawl7ylkqzbuax@kafai-mbp.dhcp.thefacebook.com>
-References: <20210821010240.10373-1-xiyou.wangcong@gmail.com>
- <20210824234700.qlteie6al3cldcu5@kafai-mbp>
- <CAM_iQpWP_kvE58Z+363n+miTQYPYLn6U4sxMKVaDvuRvjJo_Tg@mail.gmail.com>
- <612f137f4dc5c_152fe20891@john-XPS-13-9370.notmuch>
- <871r68vapw.fsf@toke.dk>
- <20210901174543.xukawl7ylkqzbuax@kafai-mbp.dhcp.thefacebook.com>
+To:     Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v2] libbpf: ignore .eh_frame sections when
+ parsing elf files
+In-Reply-To: <a65e20f9-d554-761e-9a9e-8a9dfcf13919@fb.com>
+References: <20210826120953.11041-1-toke@redhat.com>
+ <CAEf4BzZ7dcYrGRgOczk-mLC_VcRW3rucj3TRgkRqLgKXFHgtog@mail.gmail.com>
+ <87lf4hvrgc.fsf@toke.dk> <a65e20f9-d554-761e-9a9e-8a9dfcf13919@fb.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 02 Sep 2021 18:57:17 +0200
-Message-ID: <871r66ud8y.fsf@toke.dk>
+Date:   Thu, 02 Sep 2021 19:08:03 +0200
+Message-ID: <87wnnysy6k.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -78,98 +79,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin KaFai Lau <kafai@fb.com> writes:
+Yonghong Song <yhs@fb.com> writes:
 
-> On Wed, Sep 01, 2021 at 12:42:03PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> John Fastabend <john.fastabend@gmail.com> writes:
+> On 8/31/21 3:28 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 >>=20
->> > Cong Wang wrote:
->> >> On Tue, Aug 24, 2021 at 4:47 PM Martin KaFai Lau <kafai@fb.com> wrote:
->> >> > Please explain more on this.  What is currently missing
->> >> > to make qdisc in struct_ops possible?
->> >>=20
->> >> I think you misunderstand this point. The reason why I avoid it is
->> >> _not_ anything is missing, quite oppositely, it is because it requires
->> >> a lot of work to implement a Qdisc with struct_ops approach, literally
->> >> all those struct Qdisc_ops (not to mention struct Qdisc_class_ops).
->> >> WIth current approach, programmers only need to implement two
->> >> eBPF programs (enqueue and dequeue).
-> _if_ it is using as a qdisc object/interface,
-> the patch "looks" easier because it obscures some of the ops/interface
-> from the bpf user.  The user will eventually ask for more flexibility
-> and then an on-par interface as the kernel's qdisc.  If there are some
-> common 'ops', the common bpf code can be shared as a library in userspace
-> or there is also kfunc call to call into the kernel implementation.
-> For existing kernel qdisc author,  it will be easier to use the same
-> interface also.
-
-The question is if it's useful to provide the full struct_ops for
-qdiscs? Having it would allow a BPF program to implement that interface
-towards userspace (things like statistics, classes etc), but the
-question is if anyone is going to bother with that given the wealth of
-BPF-specific introspection tools already available?
-
-My hope is that we can (longer term) develop some higher-level tools to
-express queueing policies that can then generate the BPF code needed to
-implement them. Or as a start just some libraries to make this easier,
-which I think is also what you're hinting at here? :)
-
->> > Another idea. Rather than work with qdisc objects which creates all
->> > these issues with how to work with existing interfaces, filters, etc.
->> > Why not create an sk_buff map? Then this can be used from the existing
->> > egress/ingress hooks independent of the actual qdisc being used.
+>>> On Thu, Aug 26, 2021 at 5:10 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+>>>>
+>>>> When .eh_frame and .rel.eh_frame sections are present in BPF object fi=
+les,
+>>>> libbpf produces errors like this when loading the file:
+>>>>
+>>>> libbpf: elf: skipping unrecognized data section(32) .eh_frame
+>>>> libbpf: elf: skipping relo section(33) .rel.eh_frame for section(32) .=
+eh_frame
+>>>>
+>>>> It is possible to get rid of the .eh_frame section by adding
+>>>> -fno-asynchronous-unwind-tables to the compilation, but we have seen
+>>>> multiple examples of these sections appearing in BPF files in the wild,
+>>>> most recently in samples/bpf, fixed by:
+>>>> 5a0ae9872d5c ("bpf, samples: Add -fno-asynchronous-unwind-tables to BP=
+F Clang invocation")
+>>>>
+>>>> While the errors are technically harmless, they look odd and confuse u=
+sers.
+>>>
+>>> These warnings point out invalid set of compiler flags used for
+>>> compiling BPF object files, though. Which is a good thing and should
+>>> incentivize anyone getting those warnings to check and fix how they do
+>>> BPF compilation. Those .eh_frame sections shouldn't be present in BPF
+>>> object files at all, and that's what libbpf is trying to say.
 >>=20
->> I agree. In fact, I'm working on doing just this for XDP, and I see no
->> reason why the map type couldn't be reused for skbs as well. Doing it
->> this way has a couple of benefits:
+>> Apart from triggering that warning, what effect does this have, though?
+>> The programs seem to work just fine (as evidenced by the fact that
+>> samples/bpf has been built this way for years, for instance)...
 >>=20
->> - It leaves more flexibility to BPF: want a simple FIFO queue? just
->>   implement that with a single queue map. Or do you want to build a full
->>   hierarchical queueing structure? Just instantiate as many queue maps
->>   as you need to achieve this. Etc.
-> Agree.  Regardless how the interface may look like,
-> I even think being able to queue/dequeue an skb into different bpf maps
-> should be the first thing to do here.  Looking forward to your patches.
-
-Thanks! Guess I should go work on them, then :D
-
->> - The behaviour is defined entirely by BPF program behaviour, and does
->>   not require setting up a qdisc hierarchy in addition to writing BPF
->>   code.
-> Interesting idea.  If it does not need to use the qdisc object/interface
-> and be able to do the qdisc hierarchy setup in a programmable way, it may
-> be nice.  It will be useful for the future patches to come with some
-> bpf prog examples to do that.
-
-Absolutely; we plan to include example algorithm implementations as well!
-
->> - It should be possible to structure the hooks in a way that allows
->>   reusing queueing algorithm implementations between the qdisc and XDP
->>   layers.
+>> Also, how is a user supposed to go from that cryptic error message to
+>> figuring out that it has something to do with compiler flags?
 >>=20
->> > You mention skb should not be exposed to userspace? Why? Whats the
->> > reason for this? Anyways we can make kernel only maps if we want or
->> > scrub the data before passing it to userspace. We do this already in
->> > some cases.
+>>> I don't know exactly in which situations that .eh_frame section is
+>>> added, but looking at our selftests (and now samples/bpf as well),
+>>> where we use -target bpf, we don't need
+>>> -fno-asynchronous-unwind-tables at all.
 >>=20
->> Yup, that's my approach as well.
->>=20
->> > IMO it seems cleaner and more general to allow sk_buffs
->> > to be stored in maps and pulled back out later for enqueue/dequeue.
->>=20
->> FWIW there's some gnarly details here (for instance, we need to make
->> sure the BPF program doesn't leak packet references after they are
->> dequeued from the map). My idea is to use a scheme similar to what we do
->> for XDP_REDIRECT, where a helper sets some hidden variables and doesn't
->> actually remove the packet from the queue until the BPF program exits
->> (so the kernel can make sure things are accounted correctly).
-> The verifier is tracking the sk's references.  Can it be reused to
-> track the skb's reference?
+>> This seems to at least be compiler-dependent. We ran into this with
+>> bpftool as well (for the internal BPF programs it loads whenever it
+>> runs), which already had '-target bpf' in the Makefile. We're carrying
+>> an internal RHEL patch adding -fno-asynchronous-unwind-tables to the
+>> bpftool build to fix this...
+>
+> I haven't seen an instance of .eh_frame as well with -target bpf.
+> Do you have a reproducible test case? I would like to investigate
+> what is the possible cause and whether we could do something in llvm
+> to prevent its generatin. Thanks!
 
-I was vaguely aware that it does this, but have not looked at the
-details. Would be great if this was possible; will see how far I get
-with it, and iterate from there (with your help, hopefully :))
+We found this in the RHEL builds of bpftool. I don't think we're doing
+anything special, other than maybe building with a clang version that's
+a few versions behind:
+
+# clang --version
+clang version 11.0.0 (Red Hat 11.0.0-1.module+el8.4.0+8598+a071fcd5)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+
+So I suppose it may resolve itself once we upgrade LLVM?
 
 -Toke
 
