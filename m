@@ -2,297 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1D63FF1D9
-	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 18:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67133FF1E9
+	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 18:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhIBQz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Sep 2021 12:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242304AbhIBQz1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:55:27 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7CFC061575;
-        Thu,  2 Sep 2021 09:54:28 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id k65so5071676yba.13;
-        Thu, 02 Sep 2021 09:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PJebsVBcJ8prC+iuDRlxEfU/bRxgS7Q0ZEizqjZ7FC0=;
-        b=oSicBmCPXidC0GtGRUJcclOD2522md4seZRqlg1J+T3Q2cNyvDD2mdBQXJIOLA9Tri
-         3AAVgAy+J+rUIciIprOpMPbxT5DrZ1LD8t5GWUgn/qSAkn4PIMNKRuAQj0X7+IM62Ky5
-         tLiSCN9SJqpjOnH/ATuVBMEgbeL3y/1Do3X0BksviX2vsxDwwjKmgjSaFd/wxvLiDmpi
-         xT6kcacWb+OcTtInfV0dLt2W2R+ARlxfravUNNtDvrG2CqlXdGXX5RT5jNw+VXLqIxDG
-         keYQAkoERO6rBQm+LJOeGbaOvPBv1sEIMaV3TRiheX/AMG2AbNK9YoksCjLRikM9Aj1x
-         rKUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PJebsVBcJ8prC+iuDRlxEfU/bRxgS7Q0ZEizqjZ7FC0=;
-        b=tIlex3rVGSpHPoiLH0DHxgzM/wTF+cfu8G3FzrEP42HL9a5uxPa42FNBcC93MEi+yl
-         kCI0XE3+uYPqpqoVmyBqc2n+MSUcKn+6GSBJG/jQb0btOnVSz2mOnvZZRiNvuxmb3R6p
-         P9H3RdrNLHu4nIWRRGob7IUITON8JP3IUu7JwoiHsVIgDuV6MezIIOBArz15e7UNqLBX
-         hT7bQTxZDogoTCvzOjImMk0Ojs1O+JA97XngGn0E/1ehtTf92AcdYsC7PiRN/CX46IUx
-         E6L3dy5vimPAnlR8G7T6FYiZE4q4BuKtT2zfNrTS+/mJtLdz4YtUguvwaPSzLzWIqdqC
-         uhJw==
-X-Gm-Message-State: AOAM530yWIBzQssdZmwAya9lkOWNr0yUx5xVohuS9FmH+j9pPONXhPgG
-        M/YL9XMxYLamGlynOfZLTrLblKJgaPXLSZbbAr0=
-X-Google-Smtp-Source: ABdhPJzioYR862CbHmI8K9hNN/Nu+zjclwMuM74dXFQkSTtCLtUUA2YuXY44N8ySCp82o+Ub5IBga2lVmbc3PZq9ON8=
-X-Received: by 2002:a05:6902:70b:: with SMTP id k11mr5774564ybt.510.1630601667555;
- Thu, 02 Sep 2021 09:54:27 -0700 (PDT)
+        id S1346039AbhIBQ6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Sep 2021 12:58:15 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56230 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232259AbhIBQ6P (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 2 Sep 2021 12:58:15 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 182GqT9B003533
+        for <bpf@vger.kernel.org>; Thu, 2 Sep 2021 09:57:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=JfH3F4h9yjuZY4fXc+F2YZI5k+kzGOzFulOPWefUzpQ=;
+ b=lJR7iNr164NtSL64JXfx7hULj5q17cWWnbfMC4p4OQvhPiVTgfO5ZDgfJkenAED3BG47
+ Y4SHympPrM8HCGmzfZzbQ765YYu+1qL+olUZUrMkwcHw7v4t+cFgHhxeq/+PPpSInO62
+ Hq7iUYOgYjr64x+QSG3XGvzrMNOUHl0Wtmg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3atdyhdc5b-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 02 Sep 2021 09:57:15 -0700
+Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 2 Sep 2021 09:57:14 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id B912CFBB7C45; Thu,  2 Sep 2021 09:57:11 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <kjain@linux.ibm.com>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v5 bpf-next 0/3] bpf: introduce bpf_get_branch_snapshot
+Date:   Thu, 2 Sep 2021 09:57:03 -0700
+Message-ID: <20210902165706.2812867-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: SmjsLUypbK7SBNra7Mx0BkR9KyDFHkOz
+X-Proofpoint-ORIG-GUID: SmjsLUypbK7SBNra7Mx0BkR9KyDFHkOz
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210826193922.66204-1-jolsa@kernel.org> <20210826193922.66204-19-jolsa@kernel.org>
- <CAEf4BzbFxSVzu1xrUyzrgn1jKyR40RJ3UEEsUCkii3u5nN_8wg@mail.gmail.com>
- <YS+ZAbb+h9uAX6EP@krava> <CAEf4BzY1XhuZ5huinfTmUZGhrT=wgACOgKbbdEPmnek=nN6YgA@mail.gmail.com>
- <YTDKJ2E1fN0hPDZj@krava>
-In-Reply-To: <YTDKJ2E1fN0hPDZj@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 2 Sep 2021 09:54:16 -0700
-Message-ID: <CAEf4BzZeMh8MAZiR-wAjKJWrR=h1FnYg_eevWg+Rg78U1xEp1Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 18/27] bpf, x64: Store properly return value
- for trampoline with multi func programs
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Viktor Malik <vmalik@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-02_04:2021-09-02,2021-09-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=955 clxscore=1015 suspectscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109020098
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 5:57 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Sep 01, 2021 at 08:56:19PM -0700, Andrii Nakryiko wrote:
-> > On Wed, Sep 1, 2021 at 8:15 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Tue, Aug 31, 2021 at 04:51:18PM -0700, Andrii Nakryiko wrote:
-> > > > On Thu, Aug 26, 2021 at 12:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > >
-> > > > > When we have multi func program attached, the trampoline
-> > > > > switched to the function model of the multi func program.
-> > > > >
-> > > > > This breaks already attached standard programs, for example
-> > > > > when we attach following program:
-> > > > >
-> > > > >   SEC("fexit/bpf_fentry_test2")
-> > > > >   int BPF_PROG(test1, int a, __u64 b, int ret)
-> > > > >
-> > > > > the trampoline pushes on stack args 'a' and 'b' and return
-> > > > > value 'ret'.
-> > > > >
-> > > > > When following multi func program is attached to bpf_fentry_test2:
-> > > > >
-> > > > >   SEC("fexit.multi/bpf_fentry_test*")
-> > > > >   int BPF_PROG(test2, __u64 a, __u64 b, __u64 c, __u64 d,
-> > > > >                        __u64 e, __u64 f, int ret)
-> > > > >
-> > > > > the trampoline takes this program model and pushes all 6 args
-> > > > > and return value on stack.
-> > > > >
-> > > > > But we still have the original 'test1' program attached, that
-> > > > > expects 'ret' value where there's 'c' argument now:
-> > > > >
-> > > > >   test1(a, b, c)
-> > > > >
-> > > > > To fix that we simply overwrite 'c' argument with 'ret' value,
-> > > > > so test1 is called as expected and test2 gets called as:
-> > > > >
-> > > > >   test2(a, b, ret, d, e, f, ret)
-> > > > >
-> > > > > which is ok, because 'c' is not defined for bpf_fentry_test2
-> > > > > anyway.
-> > > > >
-> > > >
-> > > > What if we change the order on the stack to be the return value first,
-> > > > followed by input arguments. That would get us a bit closer to
-> > > > unifying multi-trampoline and the normal one, right? BPF verifier
-> > > > should be able to rewrite access to the last argument (i.e., return
-> > > > value) for fexit programs to actually be at offset 0, and shift all
-> > > > other arguments by 8 bytes. For fentry, if that helps to keep things
-> > > > more aligned, we'd just skip the first 8 bytes on the stack and store
-> > > > all the input arguments in the same offsets. So BPF verifier rewriting
-> > > > logic stays consistent (except offset 0 will be disallowed).
-> > >
-> > > nice idea, with this in place we could cut that args re-arranging code
-> > >
-> > > >
-> > > > Basically, I'm thinking how we can make normal and multi trampolines
-> > > > more interoperable to remove those limitations that two
-> > > > multi-trampolines can't be attached to the same function, which seems
-> > > > like a pretty annoying limitation which will be easy to hit in
-> > > > practice. Alexei previously proposed (as an optimization) to group all
-> > > > to-be-attached functions into groups by number of arguments, so that
-> > > > we can have up to 6 different trampolines tailored to actual functions
-> > > > being attached. So that we don't save unnecessary extra input
-> > > > arguments saving, which will be even more important once we allow more
-> > > > than 6 arguments in the future.
-> > > >
-> > > > With such logic, we should be able to split all the functions into
-> > > > multiple underlying trampolines, so it seems like it should be
-> > > > possible to also allow multiple multi-fentry programs to be attached
-> > > > to the same function by having a separate bpf_trampoline just for
-> > > > those functions. It will be just an extension of the above "just 6
-> > > > trampolines" strategy to "as much as we need trampolines".
-> > >
-> > > I'm probably missing something here.. say we have 2 functions with single
-> > > argument:
-> > >
-> > >   foo1(int a)
-> > >   foo2(int b)
-> > >
-> > > then having 2 programs:
-> > >
-> > >   A - attaching to foo1
-> > >   B - attaching to foo2
-> > >
-> > > then you need to have 2 different trampolines instead of single 'generic-1-argument-trampoline'
-> >
-> > right, you have two different BPF progs attached to two different
-> > functions. You have to have 2 trampolines, not sure what's
-> > confusing?..
->
-> I misunderstood the statement above:
->
-> > > > practice. Alexei previously proposed (as an optimization) to group all
-> > > > to-be-attached functions into groups by number of arguments, so that
-> > > > we can have up to 6 different trampolines tailored to actual functions
-> > > > being attached. So that we don't save unnecessary extra input
->
-> you meant just functions to be attached at that moment, not all, ok
->
-> >
-> > >
-> > > >
-> > > > It's just a vague idea, sorry, I don't understand all the code yet.
-> > > > But the limitation outlined in one of the previous patches seems very
-> > > > limiting and unpleasant. I can totally see that some 24/7 running BPF
-> > > > tracing app uses multi-fentry for tracing a small subset of kernel
-> > > > functions non-stop, and then someone is trying to use bpftrace or
-> > > > retsnoop to trace overlapping set of functions. And it immediately
-> > > > fails. Very frustrating.
-> > >
-> > > so the current approach is to some extent driven by the direct ftrace
-> > > batch API:
-> > >
-> > >   you have ftrace_ops object and set it up with functions you want
-> > >   to change with calling:
-> > >
-> > >   ftrace_set_filter_ip(ops, ip1);
-> > >   ftrace_set_filter_ip(ops, ip2);
-> > >   ...
-> > >
-> > > and then register trampoline with those functions:
-> > >
-> > >   register_ftrace_direct_multi(ops, tramp_addr);
-> > >
-> > > and with this call being the expensive one (it does the actual work
-> > > and sync waiting), my objective was to call it just once for update
-> > >
-> > > now with 2 intersecting multi trampolines we end up with 3 functions
-> > > sets:
-> > >
-> > >   A - functions for first multi trampoline
-> > >   B - functions for second multi trampoline
-> > >   C - intersection of them
-> > >
-> > > each set needs different trampoline:
-> > >
-> > >   tramp A - calls program for first multi trampoline
-> > >   tramp B - calls program for second multi trampoline
-> > >   tramp C - calls both programs
-> > >
-> > > so we need to call register_ftrace_direct_multi 3 times
-> >
-> > Yes, that's the minimal amount of trampolines you need. Calling
-> > register_ftrace_direct_multi() three times is not that bad at all,
-> > compared to calling it 1000s of times. If you are worried about 1 vs 3
-> > calls, I think you are over-optimizing here. I'd rather take no
-> > restrictions on what can be attached to what and in which sequences
-> > but taking 3ms vs having obscure (for uninitiated users) restrictions,
-> > but in some cases allowing attachment to happen in 1ms.
-> >
-> > The goal with multi-attach is to make it decently fast when attaching
-> > to a lot functions, but if attachment speed is fast enough, then such
-> > small performance differences don't matter anymore.
->
-> true, I might have been focused on the worst possible case here ;-)
->
-> >
-> > >
-> > > if we allow also standard trampolines being attached, it makes
-> > > it even more complicated and ultimatelly gets broken to
-> > > 1-function/1-trampoline pairs, ending up with attach speed
-> > > that we have now
-> > >
-> >
-> > So let's make sure that we are on the same page. Let me write out an example.
-> >
-> > Let's say we have 5 kernel functions: a, b, c, d, e. Say a, b, c all
-> > have 1 input args, and d and e have 2.
-> >
-> > Now let's say we attach just normal fentry program A to function a.
-> > Also we attach normal fexit program E to func e.
-> >
-> > We'll have A  attached to a with trampoline T1. We'll also have E
-> > attached to e with trampoline T2. Right?
-> >
-> > And now we try to attach generic fentry (fentry.multi in your
-> > terminology) prog X to all 5 of them. If A and E weren't attached,
-> > we'd need two generic trampolines, one for a, b, c (because 1 input
-> > argument) and another for d,e (because 2 input arguments). But because
-> > we already have A and B attached, we'll end up needing 4:
-> >
-> > T1 (1 arg)  for func a calling progs A and X
-> > T2 (2 args) for func e calling progs E and X
-> > T3 (1 arg)  for func b and c calling X
-> > T4 (2 args) for func d calling X
->
-> so current code would group T3/T4 together, but if we keep
-> them separated, then we won't need to use new model and
-> cut off some of the code, ok
->
-> together with that args shifting we could endup with almost
-> untouched trampoline generation code ;-)
+Changes v4 =3D> v5
+1. Modify perf_snapshot_branch_stack_t to save some memcpy. (Andrii)
+2. Minor fixes in selftests. (Andrii)
 
-exactly, and thus remove those limitations you've described
+Changes v3 =3D> v4:
+1. Do not reshuffle intel_pmu_disable_all(). Use some inline to save LBR
+   entries. (Peter)
+2. Move static_call(perf_snapshot_branch_stack) to the helper. (Alexei)
+3. Add argument flags to bpf_get_branch_snapshot. (Andrii)
+4. Make MAX_BRANCH_SNAPSHOT an enum (Andrii). And rename it as
+   PERF_MAX_BRANCH_SNAPSHOT
+5. Make bpf_get_branch_snapshot similar to bpf_read_branch_records.
+   (Andrii)
+6. Move the test target function to bpf_testmod. Updated kallsyms_find_next
+   to work properly with modules. (Andrii)
 
->
-> >
-> > We can't have less than that and satisfy all the constraints. But 4 is
-> > not that bad. If the example has 1000s of functions, you'd still need
-> > between 4 and 8 trampolines (if we had 3, 4, 5, and 6 input args for
-> > kernel functions). That's way less than 1000s of trampolines needed
-> > today. And it's still fast enough on the attachment.
-> >
-> > The good thing with what we discussed with making current trampoline
-> > co-exist with generic (multi) fentry/fexit, is that we'll still have
-> > just one trampoline, saving exactly as many input arguments as
-> > attached function(s) have. So at least we don't have to maintain two
-> > separate pieces of logic for that. Then the only added complexity
-> > would be breaking up all to-be-attached kernel functions into groups,
-> > as described in the example.
-> >
-> > It sounds a bit more complicated in writing than it will be in
-> > practice, probably. I think the critical part is unification of
-> > trampoline to work with fentry/fexit and fentry.multi/fexit.multi
-> > simultaneously, which seems like you agreed above is achievable.
->
-> ok, I haven't considered this way, but I think it's doable
->
+Changes v2 =3D> v3:
+1. Fix the use of static_call. (Peter)
+2. Limit the use to perfmon version >=3D 2. (Peter)
+3. Modify intel_pmu_snapshot_branch_stack() to use intel_pmu_disable_all
+   and intel_pmu_enable_all().
 
-awesome, give it a try!
+Changes v1 =3D> v2:
+1. Rename the helper as bpf_get_branch_snapshot;
+2. Fix/simplify the use of static_call;
+3. Instead of percpu variables, let intel_pmu_snapshot_branch_stack output
+   branch records to an output argument of type perf_branch_snapshot.
 
+Branch stack can be very useful in understanding software events. For
+example, when a long function, e.g. sys_perf_event_open, returns an errno,
+it is not obvious why the function failed. Branch stack could provide very
+helpful information in this type of scenarios.
 
-> thanks,
-> jirka
->
+This set adds support to read branch stack with a new BPF helper
+bpf_get_branch_trace(). Currently, this is only supported in Intel systems.
+It is also possible to support the same feaure for PowerPC.
+
+The hardware that records the branch stace is not stopped automatically on
+software events. Therefore, it is necessary to stop it in software soon.
+Otherwise, the hardware buffers/registers will be flushed. One of the key
+design consideration in this set is to minimize the number of branch record
+entries between the event triggers and the hardware recorder is stopped.
+Based on this goal, current design is different from the discussions in
+original RFC [1]:
+ 1) Static call is used when supported, to save function pointer
+    dereference;
+ 2) intel_pmu_lbr_disable_all is used instead of perf_pmu_disable(),
+    because the latter uses about 10 entries before stopping LBR.
+
+With current code, on Intel CPU, LBR is stopped after 10 branch entries
+after fexit triggers:
+
+ID: 0 from intel_pmu_lbr_disable_all+58 to intel_pmu_lbr_disable_all+93
+ID: 1 from intel_pmu_lbr_disable_all+54 to intel_pmu_lbr_disable_all+58
+ID: 2 from intel_pmu_snapshot_branch_stack+88 to intel_pmu_lbr_disable_all+0
+ID: 3 from bpf_get_branch_snapshot+77 to intel_pmu_snapshot_branch_stack+0
+ID: 4 from __brk_limit+478052814 to bpf_get_branch_snapshot+0
+ID: 5 from __brk_limit+478036039 to __brk_limit+478052760
+ID: 6 from __bpf_prog_enter+34 to __brk_limit+478036027
+ID: 7 from migrate_disable+60 to __bpf_prog_enter+9
+ID: 8 from __bpf_prog_enter+4 to migrate_disable+0
+ID: 9 from __brk_limit+478036022 to __bpf_prog_enter+0
+ID: 10 from bpf_testmod_loop_test+22 to __brk_limit+478036003
+ID: 11 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+ID: 12 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+ID: 13 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
+...
+
+[1] https://lore.kernel.org/bpf/20210818012937.2522409-1-songliubraving@fb.=
+com/
+
+Song Liu (3):
+  perf: enable branch record for software events
+  bpf: introduce helper bpf_get_branch_snapshot
+  selftests/bpf: add test for bpf_get_branch_snapshot
+
+ arch/x86/events/intel/core.c                  |  26 ++++-
+ arch/x86/events/intel/ds.c                    |   8 --
+ arch/x86/events/perf_event.h                  |  10 +-
+ include/linux/perf_event.h                    |  23 ++++
+ include/uapi/linux/bpf.h                      |  22 ++++
+ kernel/bpf/trampoline.c                       |   3 +-
+ kernel/events/core.c                          |   2 +
+ kernel/trace/bpf_trace.c                      |  33 ++++++
+ tools/include/uapi/linux/bpf.h                |  22 ++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  19 +++-
+ .../selftests/bpf/prog_tests/core_reloc.c     |  14 +--
+ .../bpf/prog_tests/get_branch_snapshot.c      | 100 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/module_attach.c  |  39 -------
+ .../selftests/bpf/progs/get_branch_snapshot.c |  40 +++++++
+ tools/testing/selftests/bpf/test_progs.c      |  39 +++++++
+ tools/testing/selftests/bpf/test_progs.h      |   2 +
+ tools/testing/selftests/bpf/trace_helpers.c   |  37 +++++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   5 +
+ 18 files changed, 378 insertions(+), 66 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_snaps=
+hot.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot.c
+
+--
+2.30.2
