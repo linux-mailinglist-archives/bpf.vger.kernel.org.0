@@ -2,28 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE693FF712
+	by mail.lfdr.de (Postfix) with ESMTP id 894C13FF714
 	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 00:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbhIBWZl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Sep 2021 18:25:41 -0400
-Received: from novek.ru ([213.148.174.62]:60530 "EHLO novek.ru"
+        id S230286AbhIBWZm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Sep 2021 18:25:42 -0400
+Received: from novek.ru ([213.148.174.62]:60528 "EHLO novek.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhIBWZl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S231642AbhIBWZl (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 2 Sep 2021 18:25:41 -0400
-X-Greylist: delayed 511 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Sep 2021 18:25:41 EDT
 Received: from nat1.ooonet.ru (gw.zelenaya.net [91.207.137.40])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by novek.ru (Postfix) with ESMTPSA id D1F19500549;
-        Fri,  3 Sep 2021 01:12:56 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 novek.ru D1F19500549
+        by novek.ru (Postfix) with ESMTPSA id DDE09504080;
+        Fri,  3 Sep 2021 01:13:02 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 novek.ru DDE09504080
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=novek.ru; s=mail;
-        t=1630620782; bh=KNQjZbtXquHQ4V93076S6OZRbMnpHc7vfvGqQCcVcNg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eM0vVXtMv/i1VIr7+rudyMWB7WkGuMNA/6KNI32Xadb0c3fQ3KoU7XGpU/rlKzNWL
-         r0X3OaRFAEkVnIUQWQ5SaEaGJoJCbQhCTZVNvXhFvPPlOC1Oc4p+EgWv22QATODSQT
-         mdMYPqU3wQZYQ0h2c28S/8ceQgObyVSIB5xrbczA=
+        t=1630620787; bh=htM0bYVvpwMhmEKqwtiX3u6zhNVDYeI3Ra0nrYVVTdw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jDxTmyBK8yvpX9BlsHpUSFzOKczFvySlS9592lCToBOI3YUGVRlvPraNlTEY6ne3t
+         wR4kJr8NpJlsnxTOc/2r4PNutToIj/8Bj1zPMa12YM69HGIOBo8kWb76m1LQ7pjJNR
+         tXIFQ8J3ccUoTPDSSmkYx53ZoHK2g9MJpdO5h1jw=
 From:   Vadim Fedorenko <vfedorenko@novek.ru>
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     Vadim Fedorenko <vfedorenko@novek.ru>,
@@ -32,10 +31,12 @@ Cc:     Vadim Fedorenko <vfedorenko@novek.ru>,
         John Fastabend <john.fastabend@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH bpf-next 0/2] add hwtstamp to __sk_buff
-Date:   Fri,  3 Sep 2021 01:15:49 +0300
-Message-Id: <20210902221551.15566-1-vfedorenko@novek.ru>
+Subject: [PATCH bpf-next 1/2] bpf: add hardware timestamp field to __sk_buff
+Date:   Fri,  3 Sep 2021 01:15:50 +0300
+Message-Id: <20210902221551.15566-2-vfedorenko@novek.ru>
 X-Mailer: git-send-email 2.18.4
+In-Reply-To: <20210902221551.15566-1-vfedorenko@novek.ru>
+References: <20210902221551.15566-1-vfedorenko@novek.ru>
 X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.1
 X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on gate.novek.ru
@@ -43,23 +44,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set adds hardware timestamps to __sk_buff. The first patch
-implements feature, the second one adds a selftest.
+BPF programs may want to know hardware timestamps if NIC supports
+such timestamping.
 
-Vadim Fedorenko (2):
-  bpf: add hardware timestamp field to __sk_buff
-  selftests/bpf: test new __sk_buff field hwtstamp
+Expose this data as hwtstamp field of __sk_buff the same way as
+gso_segs/gso_size.
 
- include/uapi/linux/bpf.h                      |  2 +
- lib/test_bpf.c                                |  1 +
- net/bpf/test_run.c                            |  8 ++++
- net/core/filter.c                             | 11 +++++
- tools/include/uapi/linux/bpf.h                |  2 +
- .../selftests/bpf/prog_tests/skb_ctx.c        |  1 +
- .../selftests/bpf/progs/test_skb_ctx.c        |  2 +
- .../testing/selftests/bpf/verifier/ctx_skb.c  | 47 +++++++++++++++++++
- 8 files changed, 74 insertions(+)
+Also update BPF_PROG_TEST_RUN tests of the feature.
 
+Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
+---
+ include/uapi/linux/bpf.h       |  2 ++
+ net/core/filter.c              | 11 +++++++++++
+ tools/include/uapi/linux/bpf.h |  2 ++
+ 3 files changed, 15 insertions(+)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 791f31dd0abe..c7d05b49f557 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5284,6 +5284,8 @@ struct __sk_buff {
+ 	__u32 gso_segs;
+ 	__bpf_md_ptr(struct bpf_sock *, sk);
+ 	__u32 gso_size;
++	__u32 padding;		/* Padding, future use. */
++	__u64 hwtstamp;
+ };
+ 
+ struct bpf_tunnel_key {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2e32cee2c469..1d8f8494d325 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -8884,6 +8884,17 @@ static u32 bpf_convert_ctx_access(enum bpf_access_type type,
+ 				      si->dst_reg, si->src_reg,
+ 				      offsetof(struct sk_buff, sk));
+ 		break;
++	case offsetof(struct __sk_buff, hwtstamp):
++		BUILD_BUG_ON(sizeof_field(struct skb_shared_hwtstamps, hwtstamp) != 8);
++		BUILD_BUG_ON(offsetof(struct skb_shared_hwtstamps, hwtstamp) != 0);
++
++		insn = bpf_convert_shinfo_access(si, insn);
++		*insn++ = BPF_LDX_MEM(BPF_DW,
++				      si->dst_reg, si->dst_reg,
++				      bpf_target_off(struct skb_shared_info,
++						     hwtstamps, 8,
++						     target_size));
++		break;
+ 	}
+ 
+ 	return insn - insn_buf;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 791f31dd0abe..c7d05b49f557 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5284,6 +5284,8 @@ struct __sk_buff {
+ 	__u32 gso_segs;
+ 	__bpf_md_ptr(struct bpf_sock *, sk);
+ 	__u32 gso_size;
++	__u32 padding;		/* Padding, future use. */
++	__u64 hwtstamp;
+ };
+ 
+ struct bpf_tunnel_key {
 -- 
 2.18.4
 
