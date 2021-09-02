@@ -2,181 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEF53FF3EF
-	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 21:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D98A3FF43A
+	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 21:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347185AbhIBTOv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Sep 2021 15:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
+        id S1347390AbhIBTeH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Sep 2021 15:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243525AbhIBTOu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:14:50 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B80BC061575;
-        Thu,  2 Sep 2021 12:13:52 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id w8so3019301pgf.5;
-        Thu, 02 Sep 2021 12:13:52 -0700 (PDT)
+        with ESMTP id S1347257AbhIBTeC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Sep 2021 15:34:02 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBEEC061575
+        for <bpf@vger.kernel.org>; Thu,  2 Sep 2021 12:33:04 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id mj9-20020a17090b368900b001965618d019so2218392pjb.4
+        for <bpf@vger.kernel.org>; Thu, 02 Sep 2021 12:33:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HuFL9SrWt8TgOKWuzSN3+Eda4flwK1j2j+5Ge7i3JLw=;
-        b=qO4BYhxpyh0i1oqhV7G9YySQQKZfdNcqJFO+wfkHzzUV2Ba9TYRU+xDxenUwUK+C+k
-         fG7cfjiP0/pexV1JeaJjdgbuA3SKxpfz48MDa171THkUnn6ghNaaiLMRccIBxkWlHPvC
-         VkeLlvGNCigis/CWSV5Qyq2LrPXYkXcVwgoak4YHDhycaGRvIzWDobeIoHSrSSh6KVtM
-         oY30jCFL8lQUjBKF/iUW9c15iBUht6Vuw1zf5PBJWF1BcLnxqhCCyCGUmJGKvGXHoR+F
-         B6Zip9qDznFBObOBbB0C6OSwpFSeRTO5x8TrblFUumbyWcO1kv1FzwIyDGaOsfBQeJOT
-         x64w==
+         :cc:content-transfer-encoding;
+        bh=D6dXM1zqlE0MENMsvVQ3PcT3IxW10/PVhM7LHbjLuGU=;
+        b=Fu7c7jNxBB7EJL4NNBvLLmwivdZkkfAhGl+FYzsr9M/hjnHLdgTpri3+r+KFxNBqqd
+         AAmk9Llwh0z+gt+Cd0bBg7upfhmYL5q5qcAVGInNKBWsmzj5XC6RSd9ad4NmHOeLoBLN
+         Y6BIPJgwMHXmgugL22pJ8I5kVs36MchRbNHviwmwRxdOtfT7UiLo+GcetW3lM+KloSkO
+         xFYN8YKTjj++qzY31NkEqRzS5MKMru0gPA/ZMx6iVJ9CbZKl9t+Ax/XVBCYZxZ6neBX2
+         aYhgF4YlsHV1n5+zvq3Yr6gX6+TxngnRrueEL9+yWLM5qWZW/ZTN9WcMxvrUIbrdOeKW
+         zm2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HuFL9SrWt8TgOKWuzSN3+Eda4flwK1j2j+5Ge7i3JLw=;
-        b=ktxwIc8YGOKdXV3ysboKBdWtMdcnWbv+dOD7p6lCxDiVHVekoqqn42xNeoav0AIx60
-         EAoI0Gt5/fg+OoY5+ED4CYV1W/uTGbuuoVcJEYC13xavzF1kwW7EgQllsbmbYMoZP7NX
-         NPJSpeeWILh136fy4aIYFKIc8UEHAw4UWuv6GmWz/Lz7Qur4filWLy6IdcWC+udFWlgo
-         IpzN9GWJCCc81qIY+TJNneFBCFunQ0QKbPhrW8SRXrRaShlXNgFe1203W3BiYPo1vZzG
-         C01LJCGYfw8dUR05eNwNoFoYlzlqEem4RRAqaMvRmcmYlwIqsWC0iM3qC13wjmmJSVDi
-         Rfkw==
-X-Gm-Message-State: AOAM531PM25tLQhEZsNgPtvecj95OiU40/Ua16C/h8aI5T3ft9Q3JiUL
-        b0zKi1cYb5z8OI/AgRntY0QMmC5UMVYcWWKE6Ro=
-X-Google-Smtp-Source: ABdhPJxT7MoadrwNOWcLYHeTO19S+s7QOce9Sz9PQyW8nGHNAx9SkLSkk5zoYx4dVWPuYKhYm38T78u2i7m0XhRgVTo=
-X-Received: by 2002:a63:ec45:: with SMTP id r5mr4690840pgj.440.1630610031377;
- Thu, 02 Sep 2021 12:13:51 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=D6dXM1zqlE0MENMsvVQ3PcT3IxW10/PVhM7LHbjLuGU=;
+        b=Pbh6JLHqMb/R+pfXbWMp/z7nefBwAeRL8ZmHy387NOc+QgDcjJE+L4XzfiAC0VeSkh
+         Pq7yBb/39PrRXP/GID/98SlD8qmJdZFEIjS3ig0Gv8KyYzNzOZT1zuovn1IVgPPLpTHQ
+         ylTB92VS4I3vM1XVDbMF7Ypv/UEQHcEL0Nut8YhP6HQaadabn74IbtFEbSjfAc88mm6K
+         YhWakgMyFlls/e0n5W5eldXx0Q/uXhhqZ3BqYWpArn/w4iwVRrb9cVHLjV02VPN7uktm
+         xEs/0CMxasdEg9V0i/rE5QcF3qDx7+S1lhlP5Lj/IaUSS6sKDpYdkraV26szs/zOLD6z
+         nepw==
+X-Gm-Message-State: AOAM532wF4LdJhbBYu/rYtdUGe6y7tt3NFiL0X97gIEPMC6WpZE7YkAW
+        zmSWB7u8n9fSEotgdBVLGS2JehPM7l9QLkJXWwk=
+X-Google-Smtp-Source: ABdhPJwTRSaF6mGeZwmeUAqtyg4phufyLCDYO69JFFYOvBcNuBHoesVQIwyVGIPnyKFx8vdb+jA/O+MNsvFCHX1mmmA=
+X-Received: by 2002:a17:902:82c6:b0:136:59b0:ed17 with SMTP id
+ u6-20020a17090282c600b0013659b0ed17mr4340258plz.61.1630611183389; Thu, 02 Sep
+ 2021 12:33:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902090925.2010528-1-jean-philippe@linaro.org>
-In-Reply-To: <20210902090925.2010528-1-jean-philippe@linaro.org>
+References: <20210826120953.11041-1-toke@redhat.com> <CAEf4BzZ7dcYrGRgOczk-mLC_VcRW3rucj3TRgkRqLgKXFHgtog@mail.gmail.com>
+ <87lf4hvrgc.fsf@toke.dk> <a65e20f9-d554-761e-9a9e-8a9dfcf13919@fb.com> <87wnnysy6k.fsf@toke.dk>
+In-Reply-To: <87wnnysy6k.fsf@toke.dk>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 2 Sep 2021 12:13:40 -0700
-Message-ID: <CAADnVQKwHXw7fLGpJBJBb_MW+d1Gzexo2wk9QwE2v3fy=kHDRA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix build of task_pt_regs tests
- for arm64
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 2 Sep 2021 12:32:52 -0700
+Message-ID: <CAADnVQKYdjFR+LvnQFdKF=TJ2fSRdG7B0L+Au9KchBsV+dCr5w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: ignore .eh_frame sections when
+ parsing elf files
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 2:08 AM Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
+On Thu, Sep 2, 2021 at 10:08 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> struct pt_regs is not exported to userspace on all archs. arm64 and s390
-> export "user_pt_regs" instead, which causes build failure at the moment:
+> Yonghong Song <yhs@fb.com> writes:
 >
->   progs/test_task_pt_regs.c:8:16: error: variable has incomplete type 'struct pt_regs'
->   struct pt_regs current_regs = {};
+> > On 8/31/21 3:28 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> >>
+> >>> On Thu, Aug 26, 2021 at 5:10 AM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
+e@redhat.com> wrote:
+> >>>>
+> >>>> When .eh_frame and .rel.eh_frame sections are present in BPF object =
+files,
+> >>>> libbpf produces errors like this when loading the file:
+> >>>>
+> >>>> libbpf: elf: skipping unrecognized data section(32) .eh_frame
+> >>>> libbpf: elf: skipping relo section(33) .rel.eh_frame for section(32)=
+ .eh_frame
+> >>>>
+> >>>> It is possible to get rid of the .eh_frame section by adding
+> >>>> -fno-asynchronous-unwind-tables to the compilation, but we have seen
+> >>>> multiple examples of these sections appearing in BPF files in the wi=
+ld,
+> >>>> most recently in samples/bpf, fixed by:
+> >>>> 5a0ae9872d5c ("bpf, samples: Add -fno-
+/to BPF Clang invocation")
+> >>>>
+> >>>> While the errors are technically harmless, they look odd and confuse=
+ users.
+> >>>
+> >>> These warnings point out invalid set of compiler flags used for
+> >>> compiling BPF object files, though. Which is a good thing and should
+> >>> incentivize anyone getting those warnings to check and fix how they d=
+o
+> >>> BPF compilation. Those .eh_frame sections shouldn't be present in BPF
+> >>> object files at all, and that's what libbpf is trying to say.
+> >>
+> >> Apart from triggering that warning, what effect does this have, though=
+?
+> >> The programs seem to work just fine (as evidenced by the fact that
+> >> samples/bpf has been built this way for years, for instance)...
+> >>
+> >> Also, how is a user supposed to go from that cryptic error message to
+> >> figuring out that it has something to do with compiler flags?
+> >>
+> >>> I don't know exactly in which situations that .eh_frame section is
+> >>> added, but looking at our selftests (and now samples/bpf as well),
+> >>> where we use -target bpf, we don't need
+> >>> -fno-asynchronous-unwind-tables at all.
+> >>
+> >> This seems to at least be compiler-dependent. We ran into this with
+> >> bpftool as well (for the internal BPF programs it loads whenever it
+> >> runs), which already had '-target bpf' in the Makefile. We're carrying
+> >> an internal RHEL patch adding -fno-asynchronous-unwind-tables to the
+> >> bpftool build to fix this...
+> >
+> > I haven't seen an instance of .eh_frame as well with -target bpf.
+> > Do you have a reproducible test case? I would like to investigate
+> > what is the possible cause and whether we could do something in llvm
+> > to prevent its generatin. Thanks!
+>
+> We found this in the RHEL builds of bpftool. I don't think we're doing
+> anything special, other than maybe building with a clang version that's
+> a few versions behind:
+>
+> # clang --version
+> clang version 11.0.0 (Red Hat 11.0.0-1.module+el8.4.0+8598+a071fcd5)
+> Target: x86_64-unknown-linux-gnu
+> Thread model: posix
+> InstalledDir: /usr/bin
+>
+> So I suppose it may resolve itself once we upgrade LLVM?
 
-Right, which is 'bpf_user_pt_regs_t'.
-It's defined for all archs and arm64/s390/ppc/risv define it
-differently from pt_regs.
+That's odd. I don't think I've seen this issue even with clang 11
+(but I built it myself).
+If there is a fix indeed let's backport it to llvm 11. The user
+experience matters.
+It could be llvm configuration too.
+I'm guessing some build flags might influence default settings
+for unwind tables.
 
->
-> Use the multi-arch macros defined by tools/lib/bpf/bpf_tracing.h to copy
-> the pt_regs into a locally-defined struct.
->
-> Copying the user_pt_regs struct on arm64 wouldn't work because the
-> struct is too large and the compiler complains about using too much
-> stack.
-
-That's a different issue.
-I think the cleaner fix would be to make the test use
-bpf_user_pt_regs_t instead.
-
-> Fixes: 576d47bb1a92 ("bpf: selftests: Add bpf_task_pt_regs() selftest")
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> ---
->  .../selftests/bpf/bpf_pt_regs_helpers.h       | 30 +++++++++++++++++++
->  .../selftests/bpf/prog_tests/task_pt_regs.c   |  1 +
->  .../selftests/bpf/progs/test_task_pt_regs.c   | 10 ++++---
->  3 files changed, 37 insertions(+), 4 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/bpf_pt_regs_helpers.h
->
-> diff --git a/tools/testing/selftests/bpf/bpf_pt_regs_helpers.h b/tools/testing/selftests/bpf/bpf_pt_regs_helpers.h
-> new file mode 100644
-> index 000000000000..7531f4824ead
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/bpf_pt_regs_helpers.h
-> @@ -0,0 +1,30 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __BPF_PT_REGS_HELPERS
-> +#define __BPF_PT_REGS_HELPERS
-> +
-> +#include <bpf/bpf_tracing.h>
-> +
-> +struct bpf_pt_regs {
-> +       unsigned long long parm[5];
-> +       unsigned long long ret;
-> +       unsigned long long fp;
-> +       unsigned long long rc;
-> +       unsigned long long sp;
-> +       unsigned long long ip;
-> +};
-> +
-> +static inline void bpf_copy_pt_regs(struct bpf_pt_regs *dest, struct pt_regs *src)
-> +{
-> +       dest->parm[0]   = PT_REGS_PARM1(src);
-> +       dest->parm[1]   = PT_REGS_PARM2(src);
-> +       dest->parm[2]   = PT_REGS_PARM3(src);
-> +       dest->parm[3]   = PT_REGS_PARM4(src);
-> +       dest->parm[4]   = PT_REGS_PARM5(src);
-> +       dest->ret       = PT_REGS_RET(src);
-> +       dest->fp        = PT_REGS_FP(src);
-> +       dest->rc        = PT_REGS_RC(src);
-> +       dest->sp        = PT_REGS_SP(src);
-> +       dest->ip        = PT_REGS_IP(src);
-> +}
-> +
-> +#endif /* __BPF_PT_REGS_HELPERS */
-> diff --git a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-> index 53f0e0fa1a53..196453b75937 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-> @@ -2,6 +2,7 @@
->  #define _GNU_SOURCE
->  #include <test_progs.h>
->  #include <linux/ptrace.h>
-> +#include "bpf_pt_regs_helpers.h"
->  #include "test_task_pt_regs.skel.h"
->
->  void test_task_pt_regs(void)
-> diff --git a/tools/testing/selftests/bpf/progs/test_task_pt_regs.c b/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
-> index 6c059f1cfa1b..348da3509093 100644
-> --- a/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
-> +++ b/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
-> @@ -5,8 +5,10 @@
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
->
-> -struct pt_regs current_regs = {};
-> -struct pt_regs ctx_regs = {};
-> +#include "bpf_pt_regs_helpers.h"
-> +
-> +struct bpf_pt_regs current_regs = {};
-> +struct bpf_pt_regs ctx_regs = {};
->  int uprobe_res = 0;
->
->  SEC("uprobe/trigger_func")
-> @@ -17,8 +19,8 @@ int handle_uprobe(struct pt_regs *ctx)
->
->         current = bpf_get_current_task_btf();
->         regs = (struct pt_regs *) bpf_task_pt_regs(current);
-> -       __builtin_memcpy(&current_regs, regs, sizeof(*regs));
-> -       __builtin_memcpy(&ctx_regs, ctx, sizeof(*ctx));
-> +       bpf_copy_pt_regs(&current_regs, regs);
-> +       bpf_copy_pt_regs(&ctx_regs, ctx);
->
->         /* Prove that uprobe was run */
->         uprobe_res = 1;
-> --
-> 2.33.0
->
+Yonghong, can we make bpf backend to ignore needsUnwindTableEntry ?
