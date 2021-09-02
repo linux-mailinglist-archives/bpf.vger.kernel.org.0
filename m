@@ -2,389 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7943FE743
-	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 03:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114953FE7CE
+	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 04:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhIBBpm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Sep 2021 21:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhIBBpl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Sep 2021 21:45:41 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2708DC061575
-        for <bpf@vger.kernel.org>; Wed,  1 Sep 2021 18:44:44 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id c206so647152ybb.12
-        for <bpf@vger.kernel.org>; Wed, 01 Sep 2021 18:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2TkMOolg8sDF0SJfDSKHRg6zH3jE8ebOqzK50ndrlr8=;
-        b=VOZWioi5bEOzWdOBL5HfIoKX2ShXx/PuMNL14uSgt01PtFM3VfAl6H501qSKOIeZ8H
-         odT7766wM7aZitcTJ3jYA3YAg7OxV4dSY5DTwjnvjfoDreToTHQXC+4XEWdjU1cXA4eo
-         7QxZsjJDdpIVoaiz/uKCl/H1NGxITcchm4sxMhmn0p0TZZ79JFqpEKki16+NsQ6cHxX+
-         UlDVrSC5HVNmKF/NbTA/L/w9wDpisBPPbUjbMWn3d7lMK82BjyxQ4TfdQhYGdJo9T7Lg
-         hn065psLwFQvPLzAubTAzbo1gWzbcjjieHhrLUZ5JDLtkIYqipnPf0yvs9+E6v72XMux
-         N/aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2TkMOolg8sDF0SJfDSKHRg6zH3jE8ebOqzK50ndrlr8=;
-        b=AVBdhcZ4hmHJSgKwnz6iC5k+xcdEwHIC0nwwc3ANNSoW+FbhOiSYcVF7Cp1/CftoDU
-         xIbUkRVhJcZTFYXez5TNqNu7iao0KMFq592cuxkA6C/OX5tXdBxnt+Gk5dr2iDI6srD5
-         D9L1h1/+ICadoKrkXpiwjfnzOoyk7Le5ag5Qne+OCJPZJ/Npgeyqhqw6Id4fF7yt1jbz
-         aTWmm4v1e+N6eCsFN77a5Epgg3GWf9dOXl2e1pElOcjF6Lix8zmnj8ygbNuT7cI4okFh
-         HKArA2aevyW8ILLQDtlLSpp+TwZDlBUkEfP+2sTFiOhOpAJj8ktZwBnxermaI4INM6jq
-         MLgw==
-X-Gm-Message-State: AOAM533F1G778wFsEjod5kX7RdUSA9mV/Wyg0mofABBoIR/e94p+bPvk
-        h4xtJun4udxIiwa+/fzk9thXPB5km54DuI95I99Ofmjk
-X-Google-Smtp-Source: ABdhPJwrh85LxZ8JvBJg/ERXAM/xKUEmeKT2lgZ+v2XgF08aCIA8PF+bwXhFNsG9cQNZqJkim+h1ZYkec9m5EMQ8tfk=
-X-Received: by 2002:a05:6902:70b:: with SMTP id k11mr1178693ybt.510.1630547083039;
- Wed, 01 Sep 2021 18:44:43 -0700 (PDT)
+        id S243064AbhIBCt2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Sep 2021 22:49:28 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20238 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233142AbhIBCt2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 1 Sep 2021 22:49:28 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1822iXQ8002654;
+        Wed, 1 Sep 2021 19:48:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=mcuK5NtoAFFkEYBCRqf0cgazdpJLVwkuj7YpR0CZYtM=;
+ b=J1cIui9mgQIQ5wVkglDhIC2FmUsDprK1ncsJ2y4bPkgYuIoHR4mfGMvPfPsPygUicvLr
+ kLJGmaLvQUpPEthnesqsLgd/QOb51yZdlL6+PK5HhpB9dFcxvxKnU7CG/9BDnzDjmAiJ
+ J/0UKAw+UpA/5xOXWSneQVV7m7lChGSI+Iw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3atdwtxh71-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 01 Sep 2021 19:48:15 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 1 Sep 2021 19:48:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MEr8E6qZOSIAGpWXoDQ0v5BXyhUCA9NliGBPQJBKRFv0Sa40oevuyRvuComTOXzp01pnDS/WD8ZMV4KNJ111FlsoE7adzGzDCZHtntIz0i7xCCQOUpqWj+NyEskxaJXpNgHG3k6kZiXr9Wgjxq16SOqbcuV426xB/6CBUZhGFmvqmKGthDUDVPeEEu0e0RFgUEJEJqOT7LYsQ1xVumSGQiFBiMs9XUh3AmHV2iESKx8rGwOHus0HecUpTvov/u/YsSJ/pSMCGj6w+9piHRiC91ueloW13JD1MoKZl+812LYIlmEeM4C6Fb+lnXQN+/EsK+fYZNOhaUHozco+eArDTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=mcuK5NtoAFFkEYBCRqf0cgazdpJLVwkuj7YpR0CZYtM=;
+ b=kyDnp2GEEHt0pSqkn0dgsVV81D5WkKN8EdRkwvNUObm3S3sw7cpLMRiU9KDrS4E9lZ5EFo8nFe/kXJCH35uTR68x8TqwYCMJxx0bnZqr1y8vaEmPi2wUxfvzNMEZrhaAAi/vgRRqj3T9Vp3d8ntJWKnlbeiXdSEVeIw0baU0VbUlCQQKUYbnfFvbn2y+W5xDTeuxy0hPERDU3T/TUjJ9S43dADKOZBLLrtIM5KtUfYNaFhHOEc4K2uRxfL5tmpuSPaznCFfO+d/L0mlrTJZ50hfrJc8lzaD1EV56cXeIGtWwrcBEMc/z2K22cyScGmjQDslhYpmB2IMVNsNi7YoNvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB3760.namprd15.prod.outlook.com (2603:10b6:806:84::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Thu, 2 Sep
+ 2021 02:48:08 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::c143:fac2:85b4:14cb%7]) with mapi id 15.20.4478.020; Thu, 2 Sep 2021
+ 02:48:08 +0000
+Subject: Re: [PATCH bpf-next v2] libbpf: ignore .eh_frame sections when
+ parsing elf files
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
+References: <20210826120953.11041-1-toke@redhat.com>
+ <CAEf4BzZ7dcYrGRgOczk-mLC_VcRW3rucj3TRgkRqLgKXFHgtog@mail.gmail.com>
+ <87lf4hvrgc.fsf@toke.dk>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <a65e20f9-d554-761e-9a9e-8a9dfcf13919@fb.com>
+Date:   Wed, 1 Sep 2021 19:48:03 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
+In-Reply-To: <87lf4hvrgc.fsf@toke.dk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR03CA0328.namprd03.prod.outlook.com
+ (2603:10b6:303:dd::33) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-References: <20210831225005.2762202-1-joannekoong@fb.com> <20210831225005.2762202-2-joannekoong@fb.com>
-In-Reply-To: <20210831225005.2762202-2-joannekoong@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 1 Sep 2021 18:44:32 -0700
-Message-ID: <CAEf4Bza_y6497cWE5H04gDg__RkoMovkFYSqXjo-yFG7XH11ug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: Add bloom filter map implementation
-To:     Joanne Koong <joannekoong@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from [IPv6:2620:10d:c085:21e1::1642] (2620:10d:c090:400::5:4f44) by MW4PR03CA0328.namprd03.prod.outlook.com (2603:10b6:303:dd::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.20 via Frontend Transport; Thu, 2 Sep 2021 02:48:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 60930b58-a512-4116-0b47-08d96dbc1897
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3760:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR15MB3760AB20345366B5D1EDF925D3CE9@SA0PR15MB3760.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HrsFZf4/WBmVCQuZSwPVGa/FFmsFksFjjGIen+ZBfnwEGJSqrUcqhE5Y0VSb8freumEPEtI6wxA73WnJdq3DSzNP1kkt589qiksytcR/fYPfle4Y0JyPHfEq3oy8tySciftIevQtYTb9H9bB97qZvVPbOlEpFrucwIy1c5w9nL+rZBxjvkoExcsQJI08xHFMKvKMB5YmRnvfVlVtW4MND2WAmiMEEvGCG1mnd6MSiIMDZ86D/B1jS3D2wEgiYjO5kXINtr0pmS/OpPwIvf2HNPz8ljGQjZXsSI7MaRC9zRAPc00VPOVbMKcrZHivBGWiylxbSPPsgFW+6xjhYZN21YlSWskEHql3M5ce6GjKzNDKJpVT63eYphvO3TJfnEvKD1wDE7FX52y7nSAlch6OiaEHMFPCYSU7uEXqCN5Z3Y2x4EifrPhg50cZdiWbKCbo18AIhfQvKaFN9Iy3fZs/Rtx4LWhv+ZVLbQrUXmPv1z1H42nIdQik/WOEy1ecyZWJUC9oOTXB9xSfddVvl8vzEil8n+gGRbAgaxwQkguk3LebRY16UU7MsFBXCsMh903UcoaTQ1j9t1ViOn5Xr9Y7iWqTooCfayJKgHe0rLKh05C5Ebc4ydHq9eEIZywWdNnCow171f9hjYJXfzl51lh6fBMTDpGoH26z/99HXuEzWITyGoFXTV5Ju2wQmnxr37fka/kIUyZTRGHNesbqFgmocMS0rv1l+EB8Yc21aPWwSvURMzYgLhJWxj/IewXldsXgge5dhQxu9yT0DhVDKfnePg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(396003)(346002)(39860400002)(38100700002)(2906002)(52116002)(186003)(478600001)(53546011)(83380400001)(66574015)(66946007)(66556008)(66476007)(54906003)(110136005)(4326008)(8936002)(2616005)(6486002)(5660300002)(6666004)(31686004)(86362001)(31696002)(316002)(36756003)(8676002)(142923001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rk9jS3ZkUE05akliMFd2L1gvcmk4SURVZ3VYUnZGTWJVZG1LWXFmY2taeWZh?=
+ =?utf-8?B?eGhYcE5Ddjk5YzNrTzArQ2x2N1kvRlhJYWQvUW1wekdzUEN6SWhXZEMwYkNF?=
+ =?utf-8?B?VXJMZko0WTFiU1FnN1U0TVd5UXRxUFJyWkt4NEFHcDVaOU1yRm1va2QxNEtC?=
+ =?utf-8?B?eTVhYkFwVDM1bHVUaHhRRVpvY0VCcXl0WDJrSDVCUysxN1J2QUlEaVoxZEd3?=
+ =?utf-8?B?bEtycElwa3JSVUZtQ29sUzVLWmhMY0w2ckQvOTdVMTEzcFZEUVlubVFDVmtk?=
+ =?utf-8?B?Q2JWVG5tUFRCTjJkRzFnYlBQb1pUOWFVd2s0SURqOHhtQjdpR25Weno0NFVQ?=
+ =?utf-8?B?R1FMVENrZ01jSUF3Y3Q4Ry9MVTFJT2YwV2ZkaXpXdGY1czlOT2FEMTNnVEkw?=
+ =?utf-8?B?NHgwS0NQRGE3UnlwcHFOVmlXTGlzWlVyaTI4RjRScTNjT3ltcThQbFc4YlBY?=
+ =?utf-8?B?Ym1WQ3ZNZVIxSkRnTlRpaWE3VXRXM1l4Ymt6S1ByNTRRLzQ5WmwzczJJS3BH?=
+ =?utf-8?B?OFlTdDFBanJPbmVEdzkvYnI4NkV2QzNkYk1LbE1LSGFpZEorQ0FEZVpId2V2?=
+ =?utf-8?B?OWhyR1hCZFFhbzRsM2tPZmlsOUlCZENRM25hWUlqUENlT1FrS256YTNLd3hp?=
+ =?utf-8?B?bEhUdVVsVWhVVTkvVFJhMktEa1FoU3JScWV4bGJiNHFoZHBLejZSMFUyV3Qw?=
+ =?utf-8?B?SEtzRFIvU3E4Z1ROU2xnMytadVN5b21mZjh2a1hPRGpwNnNJcFRzdytXbFZH?=
+ =?utf-8?B?VSs2amdwSHk0WXhmUkFpc1ovUEU1S21YaERPbXBaYTZSV21VUk4rVEY2UllB?=
+ =?utf-8?B?ZUZtWHI2NnlEZHFmVGQxUmNZeWRpaXk5K01Ua1Nqa3ZpdklQSVJJZldKdWMr?=
+ =?utf-8?B?bXlXWENwUjg5MnRFcTVYdXN6TEJZZktXQm9kWFREaUFZNkZRaTd2cXVVM216?=
+ =?utf-8?B?TGtJL3JzZ3hsSzR2MFU3UWdLTlduenI5elVrWm9vSjNaekdtd3NYMTl2TVYy?=
+ =?utf-8?B?VFR4TUFQWVN6bTMyTGVPL3V5ZmU4bkxnbC9vb293RmxENnY4VjZTc2tJRUtw?=
+ =?utf-8?B?UWZwRFIwaVNrdXJKd3VINENZa3hsSjFZOFp1Mm04Q0swb29rU2R0NEhMVW9w?=
+ =?utf-8?B?QzI3MVVDR0Jzd3BNd1QrWXh1dFJodzVUdUVIdmJZRDI3QU91c3gzd2FvSDRZ?=
+ =?utf-8?B?cnphOHM3RXM3R0g0V0hDZmgzRzJPZjdBcFNJYWt5eVRsdHpXQUJFZThVbUEy?=
+ =?utf-8?B?MnJCMCtPVlBpTlFGZGN0SWI3Y29maW12anlSNXB6OVJGZDNxaVh3TVplQjkv?=
+ =?utf-8?B?dmY4dmdIZS9yUEhPOXpSY0ZYOGJLQlFwTzROUnFrdTBmb1BVWWxWS0VDUDZB?=
+ =?utf-8?B?c3VUWVVxWmhic3hnaVRuMkRQU2x5ais2L3dZQXlyMjk4TGJMdytpSVMvMjly?=
+ =?utf-8?B?U2tZLy9uazlXOGF4WC9GbTh1M1hTSnM5ZlBBcEFicVRBYWR3OC9rZ3QreVkw?=
+ =?utf-8?B?eUNGdmtQRVhWVVhqWHVQRTFMaGJyNFE1Z0RjclRHYmxaM3czeDk0Sld1Q1dM?=
+ =?utf-8?B?YThkZm1YdnlXMktYMWxRbk16VmJvUVpLV1VkSzFrTXAxY2pQUUxBdE5WcTFS?=
+ =?utf-8?B?OWlpYnJYZkFiTC9Ra0ZBajFodFdvcllUeUYvaTc4ZFcxNlV6c3Mrdis0T0N0?=
+ =?utf-8?B?R1JkMFRXOE0rMnc5UHVoY3l4L3RKd3lWU3hkU1d2SkdrNmdjRmtlT2pzUmJS?=
+ =?utf-8?B?VkYwN3c0S05iMmd4OEltM3pXK0ZyRzVhVTMvQ2hacmJTVTNCMmI1a0daRmpk?=
+ =?utf-8?B?aHVQOEZ5R3pabzZBU3djdz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60930b58-a512-4116-0b47-08d96dbc1897
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 02:48:08.5136
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8ZjBLZ0Jz1HuE1VaqboYf8Max0Fhi9rrktbpsd/b1Sxz3bjjdmn5KYoT3h1WrMpA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3760
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: Mxso3Y94DtxkfFtk3PNVlJ8-IhfXJcqi
+X-Proofpoint-ORIG-GUID: Mxso3Y94DtxkfFtk3PNVlJ8-IhfXJcqi
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-01_05:2021-09-01,2021-09-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ mlxlogscore=999 mlxscore=0 spamscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 suspectscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109020015
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 3:51 PM Joanne Koong <joannekoong@fb.com> wrote:
->
-> Bloom filters are a space-efficient probabilistic data structure
-> used to quickly test whether an element exists in a set.
-> In a bloom filter, false positives are possible whereas false
-> negatives are not.
->
-> This patch adds a bloom filter map for bpf programs.
-> The bloom filter map supports peek (determining whether an element
-> is present in the map) and push (adding an element to the map)
-> operations.These operations are exposed to userspace applications
-> through the already existing syscalls in the following way:
->
-> BPF_MAP_LOOKUP_ELEM -> peek
-> BPF_MAP_UPDATE_ELEM -> push
->
-> The bloom filter map does not have keys, only values. In light of
-> this, the bloom filter map's API matches that of queue stack maps:
-> user applications use BPF_MAP_LOOKUP_ELEM/BPF_MAP_UPDATE_ELEM
-> which correspond internally to bpf_map_peek_elem/bpf_map_push_elem,
-> and bpf programs must use the bpf_map_peek_elem and bpf_map_push_elem
-> APIs to query or add an element to the bloom filter map. When the
-> bloom filter map is created, it must be created with a key_size of 0.
->
-> For updates, the user will pass in the element to add to the map
-> as the value, wih a NULL key. For lookups, the user will pass in the
-> element to query in the map as the value. In the verifier layer, this
-> requires us to modify the argument type of a bloom filter's
-> BPF_FUNC_map_peek_elem call to ARG_PTR_TO_MAP_VALUE; as well, in
-> the syscall layer, we need to copy over the user value so that in
-> bpf_map_peek_elem, we know which specific value to query.
->
-> The maximum number of entries in the bloom filter is not enforced; if
-> the user wishes to insert more entries into the bloom filter than they
-> specified as the max entries size of the bloom filter, that is permitted
-> but the performance of their bloom filter will have a higher false
-> positive rate.
->
-> The number of hashes to use for the bloom filter is configurable from
-> userspace. The benchmarks later in this patchset can help compare the
-> performances of different number of hashes on different entry
-> sizes. In general, using more hashes decreases the speed of a lookup,
-> but increases the false positive rate of an element being detected in the
-> bloom filter.
->
-> Signed-off-by: Joanne Koong <joannekoong@fb.com>
-> ---
 
-This looks nice and simple. I left a few comments below.
 
-But one high-level point I wanted to discuss was that bloom filter
-logic is actually simple enough to be implementable by pure BPF
-program logic. The only problematic part is generic hashing of a piece
-of memory. Regardless of implementing bloom filter as kernel-provided
-BPF map or implementing it with custom BPF program logic, having BPF
-helper for hashing a piece of memory seems extremely useful and very
-generic. I can't recall if we ever discussed adding such helpers, but
-maybe we should?
+On 8/31/21 3:28 AM, Toke Høiland-Jørgensen wrote:
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> 
+>> On Thu, Aug 26, 2021 at 5:10 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>>
+>>> When .eh_frame and .rel.eh_frame sections are present in BPF object files,
+>>> libbpf produces errors like this when loading the file:
+>>>
+>>> libbpf: elf: skipping unrecognized data section(32) .eh_frame
+>>> libbpf: elf: skipping relo section(33) .rel.eh_frame for section(32) .eh_frame
+>>>
+>>> It is possible to get rid of the .eh_frame section by adding
+>>> -fno-asynchronous-unwind-tables to the compilation, but we have seen
+>>> multiple examples of these sections appearing in BPF files in the wild,
+>>> most recently in samples/bpf, fixed by:
+>>> 5a0ae9872d5c ("bpf, samples: Add -fno-asynchronous-unwind-tables to BPF Clang invocation")
+>>>
+>>> While the errors are technically harmless, they look odd and confuse users.
+>>
+>> These warnings point out invalid set of compiler flags used for
+>> compiling BPF object files, though. Which is a good thing and should
+>> incentivize anyone getting those warnings to check and fix how they do
+>> BPF compilation. Those .eh_frame sections shouldn't be present in BPF
+>> object files at all, and that's what libbpf is trying to say.
+> 
+> Apart from triggering that warning, what effect does this have, though?
+> The programs seem to work just fine (as evidenced by the fact that
+> samples/bpf has been built this way for years, for instance)...
+> 
+> Also, how is a user supposed to go from that cryptic error message to
+> figuring out that it has something to do with compiler flags?
+> 
+>> I don't know exactly in which situations that .eh_frame section is
+>> added, but looking at our selftests (and now samples/bpf as well),
+>> where we use -target bpf, we don't need
+>> -fno-asynchronous-unwind-tables at all.
+> 
+> This seems to at least be compiler-dependent. We ran into this with
+> bpftool as well (for the internal BPF programs it loads whenever it
+> runs), which already had '-target bpf' in the Makefile. We're carrying
+> an internal RHEL patch adding -fno-asynchronous-unwind-tables to the
+> bpftool build to fix this...
 
-It would be a really interesting experiment to implement the same
-logic in pure BPF logic and run it as another benchmark, along the
-Bloom filter map. BPF has both spinlock and atomic operation, so we
-can compare and contrast. We only miss hashing BPF helper.
+I haven't seen an instance of .eh_frame as well with -target bpf.
+Do you have a reproducible test case? I would like to investigate
+what is the possible cause and whether we could do something in llvm
+to prevent its generatin. Thanks!
 
-Being able to do this in pure BPF code has a bunch of advantages.
-Depending on specific application, users can decide to:
-  - speed up the operation by ditching spinlock or atomic operation,
-if the logic allows to lose some bit updates;
-  - decide on optimal size, which might not be a power of 2, depending
-on memory vs CPU trade of in any particular case;
-  - it's also possible to implement a more general Counting Bloom
-filter, all without modifying the kernel.
-
-We could go further, and start implementing other simple data
-structures relying on hashing, like HyperLogLog. And all with no
-kernel modifications. Map-in-map is no issue as well, because there is
-a choice of using either fixed global data arrays for maximum
-performance, or using BPF_MAP_TYPE_ARRAY maps that can go inside
-map-in-map.
-
-Basically, regardless of having this map in the kernel or not, let's
-have a "universal" hashing function as a BPF helper as well.
-
-Thoughts?
-
->  include/linux/bpf.h            |   3 +-
->  include/linux/bpf_types.h      |   1 +
->  include/uapi/linux/bpf.h       |   3 +
->  kernel/bpf/Makefile            |   2 +-
->  kernel/bpf/bloom_filter.c      | 171 +++++++++++++++++++++++++++++++++
->  kernel/bpf/syscall.c           |  20 +++-
->  kernel/bpf/verifier.c          |  19 +++-
->  tools/include/uapi/linux/bpf.h |   3 +
->  8 files changed, 214 insertions(+), 8 deletions(-)
->  create mode 100644 kernel/bpf/bloom_filter.c
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f4c16f19f83e..2abaa1052096 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -181,7 +181,8 @@ struct bpf_map {
->         u32 btf_vmlinux_value_type_id;
->         bool bypass_spec_v1;
->         bool frozen; /* write-once; write-protected by freeze_mutex */
-> -       /* 22 bytes hole */
-> +       u32 nr_hashes; /* used for bloom filter maps */
-> +       /* 18 bytes hole */
->
->         /* The 3rd and 4th cacheline with misc members to avoid false sharing
->          * particularly with refcounting.
-> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> index 9c81724e4b98..c4424ac2fa02 100644
-> --- a/include/linux/bpf_types.h
-> +++ b/include/linux/bpf_types.h
-> @@ -125,6 +125,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STACK, stack_map_ops)
->  BPF_MAP_TYPE(BPF_MAP_TYPE_STRUCT_OPS, bpf_struct_ops_map_ops)
->  #endif
->  BPF_MAP_TYPE(BPF_MAP_TYPE_RINGBUF, ringbuf_map_ops)
-> +BPF_MAP_TYPE(BPF_MAP_TYPE_BLOOM_FILTER, bloom_filter_map_ops)
->
->  BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
->  BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 791f31dd0abe..c2acb0a510fe 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -906,6 +906,7 @@ enum bpf_map_type {
->         BPF_MAP_TYPE_RINGBUF,
->         BPF_MAP_TYPE_INODE_STORAGE,
->         BPF_MAP_TYPE_TASK_STORAGE,
-> +       BPF_MAP_TYPE_BLOOM_FILTER,
->  };
->
->  /* Note that tracing related programs such as
-> @@ -1274,6 +1275,7 @@ union bpf_attr {
->                                                    * struct stored as the
->                                                    * map value
->                                                    */
-> +               __u32   nr_hashes;      /* used for configuring bloom filter maps */
-
-This feels like a bit too one-off property that won't be ever reused
-by any other type of map. Also consider that we should probably limit
-nr_hashes to some pretty small sane value (<16? <64?) to prevent easy
-DOS from inside BPF programs (e.g., set nr_hash to 2bln, each
-operation is now extremely slow and CPU intensive). So with that,
-maybe let's provide number of hashes as part of map_flags? And as
-Alexei proposed, zero would mean some recommended value (2 or 3,
-right?). This would also mean that libbpf won't need to know about
-one-off map property in parsing BTF map definitions.
-
->         };
->
->         struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
-> @@ -5594,6 +5596,7 @@ struct bpf_map_info {
->         __u32 btf_id;
->         __u32 btf_key_type_id;
->         __u32 btf_value_type_id;
-> +       __u32 nr_hashes; /* used for bloom filter maps */
->  } __attribute__((aligned(8)));
->
->  struct bpf_btf_info {
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index 7f33098ca63f..cf6ca339f3cd 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -7,7 +7,7 @@ endif
->  CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-nogcse-yy)
->
->  obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
-> -obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
-> +obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
->  obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
->  obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
->  obj-${CONFIG_BPF_LSM}    += bpf_inode_storage.o
-> diff --git a/kernel/bpf/bloom_filter.c b/kernel/bpf/bloom_filter.c
-> new file mode 100644
-> index 000000000000..3ae799ab3747
-> --- /dev/null
-> +++ b/kernel/bpf/bloom_filter.c
-> @@ -0,0 +1,171 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Facebook */
-> +
-> +#include <linux/bitmap.h>
-> +#include <linux/bpf.h>
-> +#include <linux/err.h>
-> +#include <linux/jhash.h>
-> +#include <linux/random.h>
-> +#include <linux/spinlock.h>
-> +
-> +#define BLOOM_FILTER_CREATE_FLAG_MASK \
-> +       (BPF_F_NUMA_NODE | BPF_F_ZERO_SEED | BPF_F_ACCESS_MASK)
-> +
-> +struct bpf_bloom_filter {
-> +       struct bpf_map map;
-> +       u32 bit_array_mask;
-> +       u32 hash_seed;
-> +       /* Used for synchronizing parallel writes to the bit array */
-> +       spinlock_t spinlock;
-> +       unsigned long bit_array[];
-> +};
-> +
-> +static int bloom_filter_map_peek_elem(struct bpf_map *map, void *value)
-> +{
-> +       struct bpf_bloom_filter *bloom_filter =
-> +               container_of(map, struct bpf_bloom_filter, map);
-> +       u32 i, hash;
-> +
-> +       for (i = 0; i < bloom_filter->map.nr_hashes; i++) {
-> +               hash = jhash(value, map->value_size, bloom_filter->hash_seed + i) &
-> +                       bloom_filter->bit_array_mask;
-> +               if (!test_bit(hash, bloom_filter->bit_array))
-> +                       return -ENOENT;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static struct bpf_map *bloom_filter_map_alloc(union bpf_attr *attr)
-> +{
-> +       int numa_node = bpf_map_attr_numa_node(attr);
-> +       u32 nr_bits, bit_array_bytes, bit_array_mask;
-> +       struct bpf_bloom_filter *bloom_filter;
-> +
-> +       if (!bpf_capable())
-> +               return ERR_PTR(-EPERM);
-> +
-> +       if (attr->key_size != 0 || attr->value_size == 0 || attr->max_entries == 0 ||
-> +           attr->nr_hashes == 0 || attr->map_flags & ~BLOOM_FILTER_CREATE_FLAG_MASK ||
-> +           !bpf_map_flags_access_ok(attr->map_flags))
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       /* For the bloom filter, the optimal bit array size that minimizes the
-> +        * false positive probability is n * k / ln(2) where n is the number of
-> +        * expected entries in the bloom filter and k is the number of hash
-> +        * functions. We use 7 / 5 to approximate 1 / ln(2).
-> +        *
-> +        * We round this up to the nearest power of two to enable more efficient
-> +        * hashing using bitmasks. The bitmask will be the bit array size - 1.
-> +        *
-> +        * If this overflows a u32, the bit array size will have 2^32 (4
-> +        * GB) bits.
-> +        */
-> +       if (unlikely(check_mul_overflow(attr->max_entries, attr->nr_hashes, &nr_bits)) ||
-> +           unlikely(check_mul_overflow(nr_bits / 5, (u32)7, &nr_bits)) ||
-> +           unlikely(nr_bits > (1UL << 31))) {
-
-nit: map_alloc is not performance-critical (because it's infrequent),
-so unlikely() are probably unnecessary?
-
-> +               /* The bit array size is 2^32 bits but to avoid overflowing the
-> +                * u32, we use BITS_TO_BYTES(U32_MAX), which will round up to the
-> +                * equivalent number of bytes
-> +                */
-> +               bit_array_bytes = BITS_TO_BYTES(U32_MAX);
-> +               bit_array_mask = U32_MAX;
-> +       } else {
-> +               if (nr_bits <= BITS_PER_LONG)
-> +                       nr_bits = BITS_PER_LONG;
-> +               else
-> +                       nr_bits = roundup_pow_of_two(nr_bits);
-> +               bit_array_bytes = BITS_TO_BYTES(nr_bits);
-> +               bit_array_mask = nr_bits - 1;
-> +       }
-> +
-> +       bit_array_bytes = roundup(bit_array_bytes, sizeof(unsigned long));
-> +       bloom_filter = bpf_map_area_alloc(sizeof(*bloom_filter) + bit_array_bytes,
-> +                                         numa_node);
-> +
-> +       if (!bloom_filter)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       bpf_map_init_from_attr(&bloom_filter->map, attr);
-> +       bloom_filter->map.nr_hashes = attr->nr_hashes;
-> +
-> +       bloom_filter->bit_array_mask = bit_array_mask;
-> +       spin_lock_init(&bloom_filter->spinlock);
-> +
-> +       if (!(attr->map_flags & BPF_F_ZERO_SEED))
-> +               bloom_filter->hash_seed = get_random_int();
-> +
-> +       return &bloom_filter->map;
-> +}
-> +
-> +static void bloom_filter_map_free(struct bpf_map *map)
-> +{
-> +       struct bpf_bloom_filter *bloom_filter =
-> +               container_of(map, struct bpf_bloom_filter, map);
-> +
-> +       bpf_map_area_free(bloom_filter);
-> +}
-> +
-> +static int bloom_filter_map_push_elem(struct bpf_map *map, void *value,
-> +                                     u64 flags)
-> +{
-> +       struct bpf_bloom_filter *bloom_filter =
-> +               container_of(map, struct bpf_bloom_filter, map);
-> +       unsigned long spinlock_flags;
-> +       u32 i, hash;
-> +
-> +       if (flags != BPF_ANY)
-> +               return -EINVAL;
-> +
-> +       spin_lock_irqsave(&bloom_filter->spinlock, spinlock_flags);
-> +
-
-If value_size is pretty big, hashing might take a noticeable amount of
-CPU, during which we'll be keeping spinlock. With what I said above
-about sane number of hashes, if we bound it to small reasonable number
-(e.g., 16), we can have a local 16-element array with hashes
-calculated before we take lock. That way spinlock will be held only
-for few bit flips.
-
-Also, I wonder if ditching spinlock in favor of atomic bit set
-operation would improve performance in typical scenarios. Seems like
-set_bit() is an atomic operation, so it should be easy to test. Do you
-mind running benchmarks with spinlock and with set_bit()?
-
-> +       for (i = 0; i < bloom_filter->map.nr_hashes; i++) {
-> +               hash = jhash(value, map->value_size, bloom_filter->hash_seed + i) &
-> +                       bloom_filter->bit_array_mask;
-> +               bitmap_set(bloom_filter->bit_array, hash, 1);
-> +       }
-> +
-> +       spin_unlock_irqrestore(&bloom_filter->spinlock, spinlock_flags);
-> +
-> +       return 0;
-> +}
-> +
-
-[...]
+> 
+>> So instead of hiding the problem, let's use this as an opportunity to
+>> fix those user's compilation flags instead.
+> 
+> This really doesn't seem like something that's helping anyone, it's just
+> annoying and confusing users...
+> 
+> -Toke
+> 
