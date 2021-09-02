@@ -2,79 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13F53FE969
-	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 08:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B1A3FEAF4
+	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 11:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhIBGpu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Sep 2021 02:45:50 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:41632 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241528AbhIBGpu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Sep 2021 02:45:50 -0400
-X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Sep 2021 02:45:49 EDT
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-03 (Coremail) with SMTP id rQCowABHyo0bcTBhmXLEAA--.41163S2;
-        Thu, 02 Sep 2021 14:37:15 +0800 (CST)
-From:   jiasheng <jiasheng@iscas.ac.cn>
-To:     bpf@vger.kernel.org
-Cc:     jiasheng <jiasheng@iscas.ac.cn>
-Subject: [PATCH] bpf: Add env_type_is_resolved() in front of env_stack_push() in btf_resolve()
-Date:   Thu,  2 Sep 2021 06:37:13 +0000
-Message-Id: <1630564633-552375-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: rQCowABHyo0bcTBhmXLEAA--.41163S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruw4UKr4fArWUKw48uw4fuFg_yoWkArg_K3
-        W8uF1rGwsxKFsaya1jvw4furW2k3yYqFn7Za1aqFs8G3s8WF15Jrn8Xas3JrsrGrWkKrZF
-        vFZ8G3sIgF1avjkaLaAFLSUrUUUUob8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbgkYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2kKe7AKxVWUtVW8ZwAS0I0E0xvYzxvE52x082IY62kv
-        0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z2
-        80aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq
-        67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVW8ZVWrXwCY02Avz4vE14v_GF1l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2Iq
-        xVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r
-        1Y6r17MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY
-        6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67
-        AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuY
-        vj4RC5l1UUUUU
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S244785AbhIBJJw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Sep 2021 05:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244752AbhIBJJv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:09:51 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3568C061757
+        for <bpf@vger.kernel.org>; Thu,  2 Sep 2021 02:08:53 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id t15so1737701wrg.7
+        for <bpf@vger.kernel.org>; Thu, 02 Sep 2021 02:08:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lWTPpneMqSrnaTUXRE0EMYARU3bbZryaUSfXNPXDso0=;
+        b=QSADQ1DM4wvesWoVzLRlasAzQUNPaY0/OW9czId+o7eyf9RN0GONbAMG6MlsN2lOu7
+         4FfINahpo0XvAtOmWgJRhHYPAzjtVKskvcICLGqw1qA4GvBC2XS3rM+1P+ItUGQqOcXf
+         up1lXSO20e8pE9+tcBr97pmWx1dyzjM50j6Wfl9ZuySkkV/VPZkJyTpRXWfchtkmIxmu
+         qr89jRpRrn9UbvzuZJC9hLhPTdAGbBjfQ69GFdz5JC5NdYbt0B43xD0M+U5QqNaORhth
+         WTbnVb6LTc2RnQgRfvbrSrkdWsraAmQkYBL9aV5epu92cV67+cDFBOo8VZkQpEycgMGw
+         zrLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lWTPpneMqSrnaTUXRE0EMYARU3bbZryaUSfXNPXDso0=;
+        b=sAOvi74Womav9SPzaXQ7LIFZsyuc0PlClxV3WSffz7mE0SBucdgHQJF+muHcSXJaIR
+         Q3dDQC5LtD84waLrGqkddIVOi/YfNfOYz6HOIyCHsDEAEoHfbc8sLKTLeNYrw+zEpoFb
+         vjRotaJEu253eLqJ8f2iFisQ4mLj08TJf5lZmZ6+nN3g0Gbd96ljOLdKLVSZYUKchmsu
+         1gHvI4LOsGPPLo/IHaMtJROTNup2K0JcmdNTatLrTD/nD2t4/k4CStgGcAh2BUHw4DX7
+         ihkJHLKk7+u1uaH/UkxFoNI+FFlwWlcuFS8InaaTTHvgOYhb+YzGA0HiHiALBI+aA1+R
+         WriQ==
+X-Gm-Message-State: AOAM532bILpAJDTLfXj3XdeV3ynucfZxIxLGFXxbH1LO6eUo+VgsifhV
+        i85Ls2F0GhaNamb4v1ZPWA0dlw==
+X-Google-Smtp-Source: ABdhPJzS97LWxRcdFC0/4Xbcrwypbqkdsdz1TuXoRfZpJXz6xMazkZ1W8M+c3qLTcqrcp++95ckOrw==
+X-Received: by 2002:a05:6000:1627:: with SMTP id v7mr2481698wrb.54.1630573732230;
+        Thu, 02 Sep 2021 02:08:52 -0700 (PDT)
+Received: from localhost.localdomain (19.11.114.78.rev.sfr.net. [78.114.11.19])
+        by smtp.gmail.com with ESMTPSA id x18sm1279657wmj.36.2021.09.02.02.08.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 02:08:51 -0700 (PDT)
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, dxu@dxuuu.xyz,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH bpf-next] selftests/bpf: Fix build of task_pt_regs tests for arm64
+Date:   Thu,  2 Sep 2021 11:09:26 +0200
+Message-Id: <20210902090925.2010528-1-jean-philippe@linaro.org>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We have found that in the complied files env_stack_push()
-appear more than 10 times, and under at least 90% circumstances
-that env_type_is_resolved() and env_stack_push() appear in pairs.
-For example, they appear together in the btf_modifier_resolve()
-of the file complie from 'kernel/bpf/btf.c'.
-But we have found that in the btf_resolve(), there is only
-env_stack_push() instead of the pair.
-Therefore, we consider that the env_type_is_resolved()
-might be forgotten.
+struct pt_regs is not exported to userspace on all archs. arm64 and s390
+export "user_pt_regs" instead, which causes build failure at the moment:
 
-Signed-off-by: jiasheng <jiasheng@iscas.ac.cn>
+  progs/test_task_pt_regs.c:8:16: error: variable has incomplete type 'struct pt_regs'
+  struct pt_regs current_regs = {};
+
+Use the multi-arch macros defined by tools/lib/bpf/bpf_tracing.h to copy
+the pt_regs into a locally-defined struct.
+
+Copying the user_pt_regs struct on arm64 wouldn't work because the
+struct is too large and the compiler complains about using too much
+stack.
+
+Fixes: 576d47bb1a92 ("bpf: selftests: Add bpf_task_pt_regs() selftest")
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 ---
- kernel/bpf/btf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../selftests/bpf/bpf_pt_regs_helpers.h       | 30 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/task_pt_regs.c   |  1 +
+ .../selftests/bpf/progs/test_task_pt_regs.c   | 10 ++++---
+ 3 files changed, 37 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bpf_pt_regs_helpers.h
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index f982a9f0..454c249 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4002,7 +4002,8 @@ static int btf_resolve(struct btf_verifier_env *env,
- 	int err = 0;
+diff --git a/tools/testing/selftests/bpf/bpf_pt_regs_helpers.h b/tools/testing/selftests/bpf/bpf_pt_regs_helpers.h
+new file mode 100644
+index 000000000000..7531f4824ead
+--- /dev/null
++++ b/tools/testing/selftests/bpf/bpf_pt_regs_helpers.h
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __BPF_PT_REGS_HELPERS
++#define __BPF_PT_REGS_HELPERS
++
++#include <bpf/bpf_tracing.h>
++
++struct bpf_pt_regs {
++	unsigned long long parm[5];
++	unsigned long long ret;
++	unsigned long long fp;
++	unsigned long long rc;
++	unsigned long long sp;
++	unsigned long long ip;
++};
++
++static inline void bpf_copy_pt_regs(struct bpf_pt_regs *dest, struct pt_regs *src)
++{
++	dest->parm[0]	= PT_REGS_PARM1(src);
++	dest->parm[1]	= PT_REGS_PARM2(src);
++	dest->parm[2]	= PT_REGS_PARM3(src);
++	dest->parm[3]	= PT_REGS_PARM4(src);
++	dest->parm[4]	= PT_REGS_PARM5(src);
++	dest->ret	= PT_REGS_RET(src);
++	dest->fp	= PT_REGS_FP(src);
++	dest->rc	= PT_REGS_RC(src);
++	dest->sp	= PT_REGS_SP(src);
++	dest->ip	= PT_REGS_IP(src);
++}
++
++#endif /* __BPF_PT_REGS_HELPERS */
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
+index 53f0e0fa1a53..196453b75937 100644
+--- a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
++++ b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
+@@ -2,6 +2,7 @@
+ #define _GNU_SOURCE
+ #include <test_progs.h>
+ #include <linux/ptrace.h>
++#include "bpf_pt_regs_helpers.h"
+ #include "test_task_pt_regs.skel.h"
  
- 	env->resolve_mode = RESOLVE_TBD;
--	env_stack_push(env, t, type_id);
-+	if (env_type_is_resolved(env, type_id))
-+		env_stack_push(env, t, type_id);
- 	while (!err && (v = env_stack_peak(env))) {
- 		env->log_type_id = v->type_id;
- 		err = btf_type_ops(v->t)->resolve(env, v);
+ void test_task_pt_regs(void)
+diff --git a/tools/testing/selftests/bpf/progs/test_task_pt_regs.c b/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
+index 6c059f1cfa1b..348da3509093 100644
+--- a/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
++++ b/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
+@@ -5,8 +5,10 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
+-struct pt_regs current_regs = {};
+-struct pt_regs ctx_regs = {};
++#include "bpf_pt_regs_helpers.h"
++
++struct bpf_pt_regs current_regs = {};
++struct bpf_pt_regs ctx_regs = {};
+ int uprobe_res = 0;
+ 
+ SEC("uprobe/trigger_func")
+@@ -17,8 +19,8 @@ int handle_uprobe(struct pt_regs *ctx)
+ 
+ 	current = bpf_get_current_task_btf();
+ 	regs = (struct pt_regs *) bpf_task_pt_regs(current);
+-	__builtin_memcpy(&current_regs, regs, sizeof(*regs));
+-	__builtin_memcpy(&ctx_regs, ctx, sizeof(*ctx));
++	bpf_copy_pt_regs(&current_regs, regs);
++	bpf_copy_pt_regs(&ctx_regs, ctx);
+ 
+ 	/* Prove that uprobe was run */
+ 	uprobe_res = 1;
 -- 
-2.7.4
+2.33.0
 
