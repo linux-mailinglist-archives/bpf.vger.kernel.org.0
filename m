@@ -2,259 +2,296 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F693FEB19
-	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 11:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB05D3FEE2A
+	for <lists+bpf@lfdr.de>; Thu,  2 Sep 2021 14:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245025AbhIBJSu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Sep 2021 05:18:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59076 "EHLO
+        id S1344690AbhIBM6Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Sep 2021 08:58:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45045 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233639AbhIBJSt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 2 Sep 2021 05:18:49 -0400
+        by vger.kernel.org with ESMTP id S234290AbhIBM6P (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 2 Sep 2021 08:58:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630574270;
+        s=mimecast20190719; t=1630587436;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UJLAt+CpcJOSUZymcPM/qmFuCf83mxr54RML4d20nn0=;
-        b=CFGgsC4fKdgjjuFzxJ968jMaMU43n8toGkKC8tjzErUCyiutKZ47ofBg5FEI4GfwYE1lzH
-        Van/Wg6hD+1ZVD/5m1CH4MTLkg+w/XWNterHPjLW5pAz6bgtzHVk9upL3KvRttEyQNys4j
-        8X5zFqo9qYlZkE3UKZsspSRX+PYeq6U=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-lT44TEkBMLyGSJzyTk-UIg-1; Thu, 02 Sep 2021 05:17:47 -0400
-X-MC-Unique: lT44TEkBMLyGSJzyTk-UIg-1
-Received: by mail-ej1-f71.google.com with SMTP id q15-20020a17090622cf00b005c42d287e6aso598502eja.18
-        for <bpf@vger.kernel.org>; Thu, 02 Sep 2021 02:17:47 -0700 (PDT)
+        bh=dPOZ8nIkrI7ew/J5rj43oMDhy/dYGh3jKeD7fvlj+ns=;
+        b=LTvrMG1S3TiYYAwiQUG4rxhuqOgp/hs6Rkr+sz0Cf2mO7J9LPribBBlKkL6PKFf4y5nX9Y
+        mTXb0Foqw7Ylqur861iv8kUfEIgjKT4K9lmjByWHT1vGORash7P+XfP9Pb3xSHx8Np9ar+
+        6X/pOBPpjp+vbCRowW9wgxuj6qsI/vg=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-VhphW1jkNymF4ZI5sgaA-A-1; Thu, 02 Sep 2021 08:57:15 -0400
+X-MC-Unique: VhphW1jkNymF4ZI5sgaA-A-1
+Received: by mail-wr1-f71.google.com with SMTP id v6-20020adfe4c6000000b001574f9d8336so500503wrm.15
+        for <bpf@vger.kernel.org>; Thu, 02 Sep 2021 05:57:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UJLAt+CpcJOSUZymcPM/qmFuCf83mxr54RML4d20nn0=;
-        b=JFMrcBnd8Jkk5zUrn3XLZK6F2ZnylqFRDBUPKP2E1/ls/4LWfGyg7hIeA8MjKd6H0S
-         x0dfgtLDAgIZsAS69Erc1eYrmNamoEZkCMySvDUialmNYjf2FtFCvozilPPOLZ0Do1gt
-         WfzpH+48rRpqqTYpIyXfchPKs4q63ipgmUm72g9bfUUVFPTIQ+TBC7c56ZRVlqhqaIVQ
-         AMcqpqrlclXeTrDKB+0Pu7jhZ7q9q0CSXNh6gjxLDP7ZHoTEjfCKmQXtsh7crjIdVuPW
-         Du9oNkQcsXarM1OtTaNh58xeCnU3W9WsvrjVLEqhq62MwB9b5Yudb1hLexYhDzCilX/O
-         LaBg==
-X-Gm-Message-State: AOAM531PT18UyqlKd+siArxel5ikzy0IgThrhnd1ciEqAISl9hquKspO
-        YmOaKqERFO93tIs2QWIiGsAKZHMDf1UVivDkoeiUt9kam0g+1W33IZlejHUFPCuRyRtBTgeWY13
-        uP7GtdoSX+vY5
-X-Received: by 2002:a05:6402:2691:: with SMTP id w17mr2470762edd.339.1630574266479;
-        Thu, 02 Sep 2021 02:17:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxu9C8K9v/c+36bN25VCRjqBQ75YkjnpX6tgYqoJsADQcLF8U97wbjlgPO0XPuSE5xheu3oCw==
-X-Received: by 2002:a05:6402:2691:: with SMTP id w17mr2470739edd.339.1630574266208;
-        Thu, 02 Sep 2021 02:17:46 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id o3sm657991eju.123.2021.09.02.02.17.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 02:17:45 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dPOZ8nIkrI7ew/J5rj43oMDhy/dYGh3jKeD7fvlj+ns=;
+        b=Lb07EhDANjtaehvHsLwC6LpwuhnJKoPdqA5P0v8vUx7ZgHccgnMH+xWZA7O0eprSkI
+         r/as2m16UKRRCAqLW5BoS4X4ywQ1D2ZLAAai9Kxn4Zv9y/3blCbv7ED0GatPq7xtMB1v
+         anfKOzOu1OrAVf7O28Zwi/8Z3Cj8lDzCR2W++boijyA7lUnfhzGXNyWI7zNd0e5if+G/
+         sti80O5vR94nO4/R/2uMGYCOsRmlH3HO3BjfPz+vjZltWCmS1a5ZyOkO1jz52u8ZYURQ
+         vtUkT54k9c2ouk/HSRECV4lX95PlI+ibbXK4DYYi+bRQYHPfwSLJJ/OADIQW2scgOtXB
+         KVrA==
+X-Gm-Message-State: AOAM532hBwlAJt8G9sAfQsrNPK3u6Hh8mEz5R3t/Y5U3Fs3yMX1jzbCL
+        M/ASpDAPJH/KpXHdjLn5crEDbMzUfVmi/mbrZkTwJg4oPEtfvIhuX2vNzaocmUumpl2xtP/Uz1+
+        NXtA3lQULtEDm
+X-Received: by 2002:a5d:5712:: with SMTP id a18mr3458508wrv.367.1630587434370;
+        Thu, 02 Sep 2021 05:57:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzF54+zTnKj97lVrFXjvdcWNp0nyG2WXkiMsyFArySIbH3D4zNlVlDRzNhdSJH8pwe/pTecUQ==
+X-Received: by 2002:a5d:5712:: with SMTP id a18mr3458477wrv.367.1630587434037;
+        Thu, 02 Sep 2021 05:57:14 -0700 (PDT)
+Received: from krava ([94.113.247.3])
+        by smtp.gmail.com with ESMTPSA id k14sm1773069wri.46.2021.09.02.05.57.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 05:57:13 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 14:57:11 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net,
-        Zaremba Larysa <larysa.zaremba@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
-To:     Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-References: <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
- <8735u3dv2l.fsf@toke.dk> <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
- <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <YNGU4GhL8fZ0ErzS@localhost.localdomain> <874kdqqfnm.fsf@toke.dk>
- <YNLxtsasQSv+YR1w@localhost.localdomain> <87mtrfmoyh.fsf@toke.dk>
- <YOa4JVEp20JolOp4@localhost.localdomain> <8735snvjp7.fsf@toke.dk>
- <YTA7x6BIq85UWrYZ@localhost.localdomain>
-Message-ID: <190d8d21-f11d-bb83-58aa-08e86e0006d9@redhat.com>
-Date:   Thu, 2 Sep 2021 11:17:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCH bpf-next v4 18/27] bpf, x64: Store properly return value
+ for trampoline with multi func programs
+Message-ID: <YTDKJ2E1fN0hPDZj@krava>
+References: <20210826193922.66204-1-jolsa@kernel.org>
+ <20210826193922.66204-19-jolsa@kernel.org>
+ <CAEf4BzbFxSVzu1xrUyzrgn1jKyR40RJ3UEEsUCkii3u5nN_8wg@mail.gmail.com>
+ <YS+ZAbb+h9uAX6EP@krava>
+ <CAEf4BzY1XhuZ5huinfTmUZGhrT=wgACOgKbbdEPmnek=nN6YgA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YTA7x6BIq85UWrYZ@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzY1XhuZ5huinfTmUZGhrT=wgACOgKbbdEPmnek=nN6YgA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 02/09/2021 04.49, Michal Swiatkowski wrote:
-> On Fri, Jul 09, 2021 at 12:57:08PM +0200, Toke Høiland-Jørgensen wrote:
->> Michal Swiatkowski <michal.swiatkowski@linux.intel.com> writes:
->>
->>>> I would expect that the program would decide ahead-of-time which BTF IDs
->>>> it supports, by something like including the relevant structs from
->>>> vmlinux.h. And then we need the BTF ID encoded into the packet metadata
->>>> as well, so that it is possible to check at run-time which driver the
->>>> packet came from (since a packet can be redirected, so you may end up
->>>> having to deal with multiple formats in the same XDP program).
->>>>
->>>> Which would allow you to write code like:
->>>>
->>>> if (ctx->has_driver_meta) {
->>>>    /* this should be at a well-known position, like first (or last) in meta area */
->>>>    __u32 *meta_btf_id = ctx->data_meta;
->>>>    
->>>>    if (*meta_btf_id == BTF_ID_MLX5) {
->>>>      struct meta_mlx5 *meta = ctx->data_meta;
->>>>      /* do something with meta */
->>>>    } else if (meta_btf_id == BTF_ID_I40E) {
->>>>      struct meta_i40e *meta = ctx->data_meta;
->>>>      /* do something with meta */
->>>>    } /* etc */
->>>> }
->>>>
->>>> and libbpf could do relocations based on the different meta structs,
->>>> even removing the code for the ones that don't exist on the running
->>>> kernel.
->>>
->>> This looks nice. In this case we need defintions of struct meta_mlx5 and
->>> struct meta_i40e at build time. How are we going to deliver this to bpf
->>> core app? This will be available in /sys/kernel/btf/mlx5 and
->>> /sys/kernel/btf/i40e (if drivers are loaded). Should we dump this to
->>> vmlinux.h? Or a developer of the xdp program should add this definition
->>> to his code?
->>
->> Well, if the driver just defines the struct, the BTF for it will be
->> automatically part of the driver module BTF. BPF program developers
->> would need to include this in their programs somehow (similar to how
->> you'll need to get the type definitions from vmlinux.h today to use
->> CO-RE); how they do this is up to them. Since this is a compile-time
->> thing it will probably depend on the project (for instance, BCC includes
->> a copy of vmlinux.h in their source tree, but you can also just pick out
->> the structs you need).
->>
->>> Maybe create another /sys/kernel/btf/hints with vmlinux and hints from
->>> all drivers which support hints?
->>
->> It may be useful to have a way for the kernel to export all the hints
->> currently loaded, so libbpf can just use that when relocating. The
->> problem of course being that this will only include drivers that are
->> actually loaded, so users need to make sure to load all their network
->> drivers before loading any XDP programs. I think it would be better if
->> the loader could discover all modules *available* on the system, but I'm
->> not sure if there's a good way to do that.
->>
->>> Previously in this thread someone mentioned this ___ use case in libbpf
->>> and proposed creating something like mega xdp hints structure with all
->>> available fields across all drivers. As I understand this could solve
->>> the problem about defining correct structure at build time. But how will
->>> it work when there will be more than one structures with the same name
->>> before ___? I mean:
->>> struct xdp_hints___mega defined only in core app
->>> struct xdp_hints___mlx5 available when mlx5 driver is loaded
->>> struct xdp_hints___i40e available when i40e driver is loaded
->>>
->>> When there will be only one driver loaded should libbpf do correct
->>> reallocation of fields? What will happen when both of the drivers are
->>> loaded?
->>
->> I think we definitely need to make this easy for developers so they
->> don't have to go and manually track down the driver structs and write
->> the disambiguation code etc. I.e., the example code I included above
->> that checks the frame BTF ID and does the loading based on it should be
->> auto-generated. We already have some precedence for auto-generated code
->> in vmlinux.h and the bpftool skeletons. So maybe we could have a command
->> like 'bpftool gen_xdp_meta <fields>' which would go and lookup all the
->> available driver structs and generate a code helper function that will
->> extract the driver structs and generate the loader code? So that if,
->> say, you're interested in rxhash and tstamp you could do:
->>
->> bpftool gen_xdp_meta rxhash tstamp > my_meta.h
->>
->> which would then produce my_meta.h with content like:
->>
->> struct my_meta { /* contains fields specified on the command line */
->>    u32 rxhash;
->>    u32 tstamp;
->> }
->>
->> struct meta_mlx5 {/*generated from kernel BTF */};
->> struct meta_i40e {/*generated from kernel BTF */};
->>
->> static inline int get_xdp_meta(struct xdp_md *ctx, struct my_meta *meta)
->> {
->>   if (ctx->has_driver_meta) {
->>     /* this should be at a well-known position, like first (or last) in meta area */
->>     __u32 *meta_btf_id = ctx->data_meta;
->>     
->>     if (*meta_btf_id == BTF_ID_MLX5) {
->>       struct meta_mlx5 *meta = ctx->data_meta;
->>       my_meta->rxhash = meta->rxhash;
->>       my_meta->tstamp = meta->tstamp;
->>       return 0;
->>     } else if (meta_btf_id == BTF_ID_I40E) {
->>       struct meta_i40e *meta = ctx->data_meta;
->>       my_meta->rxhash = meta->rxhash;
->>       my_meta->tstamp = meta->tstamp;
->>       return 0;
->>     } /* etc */
->>   }
->>   return -ENOENT;
->> }
+On Wed, Sep 01, 2021 at 08:56:19PM -0700, Andrii Nakryiko wrote:
+> On Wed, Sep 1, 2021 at 8:15 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Tue, Aug 31, 2021 at 04:51:18PM -0700, Andrii Nakryiko wrote:
+> > > On Thu, Aug 26, 2021 at 12:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > When we have multi func program attached, the trampoline
+> > > > switched to the function model of the multi func program.
+> > > >
+> > > > This breaks already attached standard programs, for example
+> > > > when we attach following program:
+> > > >
+> > > >   SEC("fexit/bpf_fentry_test2")
+> > > >   int BPF_PROG(test1, int a, __u64 b, int ret)
+> > > >
+> > > > the trampoline pushes on stack args 'a' and 'b' and return
+> > > > value 'ret'.
+> > > >
+> > > > When following multi func program is attached to bpf_fentry_test2:
+> > > >
+> > > >   SEC("fexit.multi/bpf_fentry_test*")
+> > > >   int BPF_PROG(test2, __u64 a, __u64 b, __u64 c, __u64 d,
+> > > >                        __u64 e, __u64 f, int ret)
+> > > >
+> > > > the trampoline takes this program model and pushes all 6 args
+> > > > and return value on stack.
+> > > >
+> > > > But we still have the original 'test1' program attached, that
+> > > > expects 'ret' value where there's 'c' argument now:
+> > > >
+> > > >   test1(a, b, c)
+> > > >
+> > > > To fix that we simply overwrite 'c' argument with 'ret' value,
+> > > > so test1 is called as expected and test2 gets called as:
+> > > >
+> > > >   test2(a, b, ret, d, e, f, ret)
+> > > >
+> > > > which is ok, because 'c' is not defined for bpf_fentry_test2
+> > > > anyway.
+> > > >
+> > >
+> > > What if we change the order on the stack to be the return value first,
+> > > followed by input arguments. That would get us a bit closer to
+> > > unifying multi-trampoline and the normal one, right? BPF verifier
+> > > should be able to rewrite access to the last argument (i.e., return
+> > > value) for fexit programs to actually be at offset 0, and shift all
+> > > other arguments by 8 bytes. For fentry, if that helps to keep things
+> > > more aligned, we'd just skip the first 8 bytes on the stack and store
+> > > all the input arguments in the same offsets. So BPF verifier rewriting
+> > > logic stays consistent (except offset 0 will be disallowed).
+> >
+> > nice idea, with this in place we could cut that args re-arranging code
+> >
+> > >
+> > > Basically, I'm thinking how we can make normal and multi trampolines
+> > > more interoperable to remove those limitations that two
+> > > multi-trampolines can't be attached to the same function, which seems
+> > > like a pretty annoying limitation which will be easy to hit in
+> > > practice. Alexei previously proposed (as an optimization) to group all
+> > > to-be-attached functions into groups by number of arguments, so that
+> > > we can have up to 6 different trampolines tailored to actual functions
+> > > being attached. So that we don't save unnecessary extra input
+> > > arguments saving, which will be even more important once we allow more
+> > > than 6 arguments in the future.
+> > >
+> > > With such logic, we should be able to split all the functions into
+> > > multiple underlying trampolines, so it seems like it should be
+> > > possible to also allow multiple multi-fentry programs to be attached
+> > > to the same function by having a separate bpf_trampoline just for
+> > > those functions. It will be just an extension of the above "just 6
+> > > trampolines" strategy to "as much as we need trampolines".
+> >
+> > I'm probably missing something here.. say we have 2 functions with single
+> > argument:
+> >
+> >   foo1(int a)
+> >   foo2(int b)
+> >
+> > then having 2 programs:
+> >
+> >   A - attaching to foo1
+> >   B - attaching to foo2
+> >
+> > then you need to have 2 different trampolines instead of single 'generic-1-argument-trampoline'
 > 
-> According to meta_btf_id. 
+> right, you have two different BPF progs attached to two different
+> functions. You have to have 2 trampolines, not sure what's
+> confusing?..
 
-In BPF-prog (that gets loaded by libbpf), the BTF_ID_MLX5 and 
-BTF_ID_I40E should be replaced by bpf_core_type_id_kernel() calls.
+I misunderstood the statement above:
 
-I have a code example here[1], where I use the triple-underscore to 
-lookup btf_id = bpf_core_type_id_kernel(struct sk_buff___local).
+> > > practice. Alexei previously proposed (as an optimization) to group all
+> > > to-be-attached functions into groups by number of arguments, so that
+> > > we can have up to 6 different trampolines tailored to actual functions
+> > > being attached. So that we don't save unnecessary extra input
 
-AFAIK (Andrii correctly me if I'm wrong) It is libbpf that does the 
-bpf_id lookup before loading the BPF-prog into the kernel.
+you meant just functions to be attached at that moment, not all, ok
 
-For AF_XDP we need to code our own similar lookup of the btf_id. (In 
-that process I imagine that userspace tools could/would read the BTF 
-member offsets and check it against what they expected).
+> 
+> >
+> > >
+> > > It's just a vague idea, sorry, I don't understand all the code yet.
+> > > But the limitation outlined in one of the previous patches seems very
+> > > limiting and unpleasant. I can totally see that some 24/7 running BPF
+> > > tracing app uses multi-fentry for tracing a small subset of kernel
+> > > functions non-stop, and then someone is trying to use bpftrace or
+> > > retsnoop to trace overlapping set of functions. And it immediately
+> > > fails. Very frustrating.
+> >
+> > so the current approach is to some extent driven by the direct ftrace
+> > batch API:
+> >
+> >   you have ftrace_ops object and set it up with functions you want
+> >   to change with calling:
+> >
+> >   ftrace_set_filter_ip(ops, ip1);
+> >   ftrace_set_filter_ip(ops, ip2);
+> >   ...
+> >
+> > and then register trampoline with those functions:
+> >
+> >   register_ftrace_direct_multi(ops, tramp_addr);
+> >
+> > and with this call being the expensive one (it does the actual work
+> > and sync waiting), my objective was to call it just once for update
+> >
+> > now with 2 intersecting multi trampolines we end up with 3 functions
+> > sets:
+> >
+> >   A - functions for first multi trampoline
+> >   B - functions for second multi trampoline
+> >   C - intersection of them
+> >
+> > each set needs different trampoline:
+> >
+> >   tramp A - calls program for first multi trampoline
+> >   tramp B - calls program for second multi trampoline
+> >   tramp C - calls both programs
+> >
+> > so we need to call register_ftrace_direct_multi 3 times
+> 
+> Yes, that's the minimal amount of trampolines you need. Calling
+> register_ftrace_direct_multi() three times is not that bad at all,
+> compared to calling it 1000s of times. If you are worried about 1 vs 3
+> calls, I think you are over-optimizing here. I'd rather take no
+> restrictions on what can be attached to what and in which sequences
+> but taking 3ms vs having obscure (for uninitiated users) restrictions,
+> but in some cases allowing attachment to happen in 1ms.
+> 
+> The goal with multi-attach is to make it decently fast when attaching
+> to a lot functions, but if attachment speed is fast enough, then such
+> small performance differences don't matter anymore.
 
+true, I might have been focused on the worst possible case here ;-)
 
-  [1] 
-https://github.com/xdp-project/bpf-examples/blob/master/ktrace-CO-RE/ktrace01_kern.c#L34-L57
+> 
+> >
+> > if we allow also standard trampolines being attached, it makes
+> > it even more complicated and ultimatelly gets broken to
+> > 1-function/1-trampoline pairs, ending up with attach speed
+> > that we have now
+> >
+> 
+> So let's make sure that we are on the same page. Let me write out an example.
+> 
+> Let's say we have 5 kernel functions: a, b, c, d, e. Say a, b, c all
+> have 1 input args, and d and e have 2.
+> 
+> Now let's say we attach just normal fentry program A to function a.
+> Also we attach normal fexit program E to func e.
+> 
+> We'll have A  attached to a with trampoline T1. We'll also have E
+> attached to e with trampoline T2. Right?
+> 
+> And now we try to attach generic fentry (fentry.multi in your
+> terminology) prog X to all 5 of them. If A and E weren't attached,
+> we'd need two generic trampolines, one for a, b, c (because 1 input
+> argument) and another for d,e (because 2 input arguments). But because
+> we already have A and B attached, we'll end up needing 4:
+> 
+> T1 (1 arg)  for func a calling progs A and X
+> T2 (2 args) for func e calling progs E and X
+> T3 (1 arg)  for func b and c calling X
+> T4 (2 args) for func d calling X
 
-> Do You have an idea how driver should fill this field?
+so current code would group T3/T4 together, but if we keep
+them separated, then we won't need to use new model and
+cut off some of the code, ok
 
-(Andrii please correctly me as this is likely wrong:)
-I imagine that driver will have a pointer to a 'struct btf' object and 
-the btf_id can be read via btf_obj_id() (that just return btf->id).
-As this also allows driver to take refcnt on the btf-object.
-Much like Ederson did in [2].
+together with that args shifting we could endup with almost
+untouched trampoline generation code ;-)
 
-Maybe I misunderstood the use of the 'struct btf' object ?
+> 
+> We can't have less than that and satisfy all the constraints. But 4 is
+> not that bad. If the example has 1000s of functions, you'd still need
+> between 4 and 8 trampolines (if we had 3, 4, 5, and 6 input args for
+> kernel functions). That's way less than 1000s of trampolines needed
+> today. And it's still fast enough on the attachment.
+> 
+> The good thing with what we discussed with making current trampoline
+> co-exist with generic (multi) fentry/fexit, is that we'll still have
+> just one trampoline, saving exactly as many input arguments as
+> attached function(s) have. So at least we don't have to maintain two
+> separate pieces of logic for that. Then the only added complexity
+> would be breaking up all to-be-attached kernel functions into groups,
+> as described in the example.
+> 
+> It sounds a bit more complicated in writing than it will be in
+> practice, probably. I think the critical part is unification of
+> trampoline to work with fentry/fexit and fentry.multi/fexit.multi
+> simultaneously, which seems like you agreed above is achievable.
 
-Maybe it is the wrong approach? As the patchset[2] exports btf_obj_id() 
-and introduced helper functions that can register/unregister btf 
-objects[3], which I sense might not be needed today, as modules can get 
-their own BTF info automatically today.
-Maybe this (btf->id) is not the ID we are looking for?
+ok, I haven't considered this way, but I think it's doable
 
-[2] 
-https://lore.kernel.org/all/20210803010331.39453-11-ederson.desouza@intel.com/
-[3] 
-https://lore.kernel.org/all/20210803010331.39453-2-ederson.desouza@intel.com/
-
-> hints->btf_id = btf_id_by_name("struct meta_i40e"); /* fill btf id at
-> config time */
-
-Yes, at config time the btf_id can change (and maybe we want to cache 
-the btf_obj_id() lookup to avoid a function call).
-
-> btf_id_by_name will get module btf (or vmlinux btf) and search for
-> correct name for each ids. Does this look correct?
- >
-> Is there any way in kernel to get btf id based on name or we have to
-> write functions for this? I haven't seen code for this case, but maybe I
-> missed it.
-
-There is a function named: btf_find_by_name_kind()
-
---Jesper
+thanks,
+jirka
 
