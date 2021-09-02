@@ -2,232 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327AC3FF727
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 00:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C0F3FF76C
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 00:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240006AbhIBW3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Sep 2021 18:29:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41668 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234660AbhIBW2z (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 2 Sep 2021 18:28:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630621675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dU50Em8L/3rwISxM8UhZTDS5RT6NS6Mf6nQKCXSeZ6U=;
-        b=LjT6e8bqfwl2z8SKzrlYZerlosm+/XnVps9HqBLBuY4HqlzvQNBObRydI92c6vdRvEFb8q
-        8IrJ1gZMpSvtZ/g/J4lSD6OAXdJG5QyVRhptHjAnXHoOL8sgMv4z60FPJh8jn9UNPRfVov
-        O1ajNMoWMnTapbJfWjxIBDp4eOf4XgE=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-Ey4Pk7WmNqOjo9L_ZKFwkg-1; Thu, 02 Sep 2021 18:27:55 -0400
-X-MC-Unique: Ey4Pk7WmNqOjo9L_ZKFwkg-1
-Received: by mail-ej1-f69.google.com with SMTP id 22-20020a170906301600b005ca77a21183so1696444ejz.20
-        for <bpf@vger.kernel.org>; Thu, 02 Sep 2021 15:27:54 -0700 (PDT)
+        id S1348946AbhIBWz2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Sep 2021 18:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348526AbhIBWyb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Sep 2021 18:54:31 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC40BC061575;
+        Thu,  2 Sep 2021 15:53:31 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id a93so6850136ybi.1;
+        Thu, 02 Sep 2021 15:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NkN5TNB/RrUPxS3oGH9hsOFgveMfRt3tup9G6sQBl4A=;
+        b=Fk+6Et1cXuf5QLiY1KbCB35TBJYRkkKpa4ZkIO8ftoR8YyqBQl6X7Zd9LOOT2p+sFm
+         mW6UF7TRboUjxGclc/JzDosCwJDd4Xlm+V6IDqDljBKEX+77V8CjIgCJD0p+chbO1FyQ
+         L95KX5CRjpJDKBjMu9aoIn6191daUsvECPtezqgg1C4EOqSADhpbkqf41SiTbPolICr4
+         7lSlwgi49RwGT+IxRfps3XhsiAcxilkOFr1X/bQl3CyIf7pxW7q8sxU5ptOCNe5RNksQ
+         GIIbO9kZmOQ/r9Uag9BX8i4ec5i6kqJhN2wis7mlQNXLJXjVBXheS3rdQg3wc6W6Ead7
+         P9NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=dU50Em8L/3rwISxM8UhZTDS5RT6NS6Mf6nQKCXSeZ6U=;
-        b=H8aGMl6zrrlWdYNP16aAktOLTLxpgUDmen+S2hvNviIRLuj6mfhrjisQB+5MRvinq6
-         qh5vWH2TLs+uF49uD2sHfnRd0+wwSFY+nrujmb5C/zeMUu8zETX8DwtLodeUmE5FG9sh
-         hieSDsPIagSha1DB1f7CNf2HVcPNj8rbaks+SFyOaVd3a9bh15mQccLOXtmPdfDW1oOt
-         OekF8ZAydcYJcAOfhNqcuV3/8te28JRMkRbr2wZnlVtHZaTif9zIjQDSsPINjcIzIGHR
-         cza7s1FtPeZ9xEZybAq9Ex6cjLXFosZ8t3e7j2pDlsk4F/7JgeiNz8k02Ye/kt5X5+1d
-         Ep1Q==
-X-Gm-Message-State: AOAM5304MgwPWv2Z85WuzP4BptLgCJUevuFd8WtzyAR2++AZN5yK5uJl
-        bhYn0YZoHmJSHat9MrMUs5bWvkAp+XeSfxB0YjVKZ0YaEumRKEUn529oIDgoN0nN+67uu532oeH
-        M7E8Mz8b0Gazj
-X-Received: by 2002:a17:906:26c4:: with SMTP id u4mr437812ejc.511.1630621673810;
-        Thu, 02 Sep 2021 15:27:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVs9SuGz83WFaQ8DLJiU+jUpq6uQD5VWykU7iHyTKNNCmeUToMMOnrorSTWEYLVSmLE0wc5Q==
-X-Received: by 2002:a17:906:26c4:: with SMTP id u4mr437782ejc.511.1630621673478;
-        Thu, 02 Sep 2021 15:27:53 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id o3sm1749091eju.123.2021.09.02.15.27.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 15:27:52 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 283171800EB; Fri,  3 Sep 2021 00:27:52 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Subject: Re: [RFC Patch net-next] net_sched: introduce eBPF based Qdisc
-In-Reply-To: <613136d0cf411_2c56f2086@john-XPS-13-9370.notmuch>
-References: <20210821010240.10373-1-xiyou.wangcong@gmail.com>
- <20210824234700.qlteie6al3cldcu5@kafai-mbp>
- <CAM_iQpWP_kvE58Z+363n+miTQYPYLn6U4sxMKVaDvuRvjJo_Tg@mail.gmail.com>
- <612f137f4dc5c_152fe20891@john-XPS-13-9370.notmuch>
- <871r68vapw.fsf@toke.dk>
- <20210901174543.xukawl7ylkqzbuax@kafai-mbp.dhcp.thefacebook.com>
- <871r66ud8y.fsf@toke.dk>
- <613136d0cf411_2c56f2086@john-XPS-13-9370.notmuch>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 03 Sep 2021 00:27:52 +0200
-Message-ID: <87bl5asjdj.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NkN5TNB/RrUPxS3oGH9hsOFgveMfRt3tup9G6sQBl4A=;
+        b=k3G/OCvEVcefXmooK/X6dVxz927+C1A2w0fIHznAeAc9FrrdjWDWRRy6MEgsvL3Con
+         EwSbbs2T+kG1pofNIgi95iYyVheSLilxg/yB+nQKh5RD4xrvi19qx+U1/bWHVB3E64yX
+         rXYk3lXpXDKW2l4Z+BR4jKMGAAxsXlNf3bcpriPjm5riKdgXjof4cm35IUS+gdzJICoq
+         KQ73RurN31AwmjTIMotXXJS+kW+21uS+L9ruG5tb/5YV4KVHWclmZLwWqY4dsuFQlvJf
+         TpTK5jZf08aw4WGVjeSkD9ADC0TQBAHp/YhcACiG07C3apHMl7XmrDpszZH6wL0jJQIa
+         vCkA==
+X-Gm-Message-State: AOAM531WnNLciuSwPP/aDHixXtklEP8f0svLMa9NcI/GQwO+cOL6TJPz
+        3vCbFWPCN0xiQANEpU03Hz/mXTl2oLDFNrz3hC8=
+X-Google-Smtp-Source: ABdhPJzbkJP3+kY3OlcOu1d13sx/NNf3F4qlhjY7sH5G+nHB6ztvepCnHffpAYOUYrKbvoxrJkGmT1yK+smFeT0o1hE=
+X-Received: by 2002:a25:4941:: with SMTP id w62mr1046684yba.230.1630623211143;
+ Thu, 02 Sep 2021 15:53:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210902165706.2812867-1-songliubraving@fb.com> <20210902165706.2812867-3-songliubraving@fb.com>
+In-Reply-To: <20210902165706.2812867-3-songliubraving@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 2 Sep 2021 15:53:20 -0700
+Message-ID: <CAEf4BzZLSs3ejyVLPMORd_GPCYNE8Jz4M6=4wxzR576Vag-+-A@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
-
-> Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Martin KaFai Lau <kafai@fb.com> writes:
->>=20
->> > On Wed, Sep 01, 2021 at 12:42:03PM +0200, Toke H=C3=B8iland-J=C3=B8rge=
-nsen wrote:
->> >> John Fastabend <john.fastabend@gmail.com> writes:
->> >>=20
->> >> > Cong Wang wrote:
->> >> >> On Tue, Aug 24, 2021 at 4:47 PM Martin KaFai Lau <kafai@fb.com> wr=
-ote:
->> >> >> > Please explain more on this.  What is currently missing
->> >> >> > to make qdisc in struct_ops possible?
->> >> >>=20
->> >> >> I think you misunderstand this point. The reason why I avoid it is
->> >> >> _not_ anything is missing, quite oppositely, it is because it requ=
-ires
->> >> >> a lot of work to implement a Qdisc with struct_ops approach, liter=
-ally
->> >> >> all those struct Qdisc_ops (not to mention struct Qdisc_class_ops).
->> >> >> WIth current approach, programmers only need to implement two
->> >> >> eBPF programs (enqueue and dequeue).
->> > _if_ it is using as a qdisc object/interface,
->> > the patch "looks" easier because it obscures some of the ops/interface
->> > from the bpf user.  The user will eventually ask for more flexibility
->> > and then an on-par interface as the kernel's qdisc.  If there are some
->> > common 'ops', the common bpf code can be shared as a library in usersp=
-ace
->> > or there is also kfunc call to call into the kernel implementation.
->> > For existing kernel qdisc author,  it will be easier to use the same
->> > interface also.
->>=20
->> The question is if it's useful to provide the full struct_ops for
->> qdiscs? Having it would allow a BPF program to implement that interface
->> towards userspace (things like statistics, classes etc), but the
->> question is if anyone is going to bother with that given the wealth of
->> BPF-specific introspection tools already available?
+On Thu, Sep 2, 2021 at 9:58 AM Song Liu <songliubraving@fb.com> wrote:
 >
-> If its a map value then you get all the goodness with normal map
-> inspection.
-
-Yup, exactly, so why bother with struct_ops to implement all the other
-qdisc ops (apart from enqueue/dequeue)?
-
->> My hope is that we can (longer term) develop some higher-level tools to
->> express queueing policies that can then generate the BPF code needed to
->> implement them. Or as a start just some libraries to make this easier,
->> which I think is also what you're hinting at here? :)
+> Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
+> branch trace from hardware (e.g. Intel LBR). To use the feature, the
+> user need to create perf_event with proper branch_record filtering
+> on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
+> On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
 >
-> The P4 working group has thought about QOS and queuing from P4 side if
-> you want to think in terms of a DSL. Might be interesting and have
-> some benefits if you want to drop into hardware offload side. For example
-> compile to XDP for fast CPU architectures, Altera/Xilinx backend for FPGA=
- or
-> switch silicon for others. This was always the dream on my side maybe
-> we've finally got close to actualizing it, 10 years later ;)
-
-Yup, would love to see this! Let's just hope it doesn't take another
-decade ;)
-
->> >> > Another idea. Rather than work with qdisc objects which creates all
->> >> > these issues with how to work with existing interfaces, filters, et=
-c.
->> >> > Why not create an sk_buff map? Then this can be used from the exist=
-ing
->> >> > egress/ingress hooks independent of the actual qdisc being used.
->> >>=20
->> >> I agree. In fact, I'm working on doing just this for XDP, and I see no
->> >> reason why the map type couldn't be reused for skbs as well. Doing it
->> >> this way has a couple of benefits:
->> >>=20
->> >> - It leaves more flexibility to BPF: want a simple FIFO queue? just
->> >>   implement that with a single queue map. Or do you want to build a f=
-ull
->> >>   hierarchical queueing structure? Just instantiate as many queue maps
->> >>   as you need to achieve this. Etc.
->> > Agree.  Regardless how the interface may look like,
->> > I even think being able to queue/dequeue an skb into different bpf maps
->> > should be the first thing to do here.  Looking forward to your patches.
->>=20
->> Thanks! Guess I should go work on them, then :D
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  include/uapi/linux/bpf.h       | 22 ++++++++++++++++++++++
+>  kernel/bpf/trampoline.c        |  3 ++-
+>  kernel/trace/bpf_trace.c       | 33 +++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 22 ++++++++++++++++++++++
+>  4 files changed, 79 insertions(+), 1 deletion(-)
 >
-> Happy to review any RFCs.
->
->>=20
->> >> - The behaviour is defined entirely by BPF program behaviour, and does
->> >>   not require setting up a qdisc hierarchy in addition to writing BPF
->> >>   code.
->> > Interesting idea.  If it does not need to use the qdisc object/interfa=
-ce
->> > and be able to do the qdisc hierarchy setup in a programmable way, it =
-may
->> > be nice.  It will be useful for the future patches to come with some
->> > bpf prog examples to do that.
->>=20
->> Absolutely; we plan to include example algorithm implementations as well!
->
-> A weighted round robin queue setup might be a useful example and easy
-> to implement/understand, but slightly more interesting than a pfifo. Also
-> would force understanding multiple cpus and timer issues.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 791f31dd0abee..c986e6fad5bc0 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4877,6 +4877,27 @@ union bpf_attr {
+>   *             Get the struct pt_regs associated with **task**.
+>   *     Return
+>   *             A pointer to struct pt_regs.
+> + *
+> + * long bpf_get_branch_snapshot(void *entries, u32 size, u64 flags)
+> + *     Description
+> + *             Get branch trace from hardware engines like Intel LBR. The
+> + *             branch trace is taken soon after the trigger point of the
+> + *             BPF program, so it may contain some entries after the
 
-Yup, some sort of RR queueing is definitely on the list!
+This part is a leftover from previous design, so not relevant anymore?
 
->> >> - It should be possible to structure the hooks in a way that allows
->> >>   reusing queueing algorithm implementations between the qdisc and XDP
->> >>   layers.
->> >>=20
->> >> > You mention skb should not be exposed to userspace? Why? Whats the
->> >> > reason for this? Anyways we can make kernel only maps if we want or
->> >> > scrub the data before passing it to userspace. We do this already in
->> >> > some cases.
->> >>=20
->> >> Yup, that's my approach as well.
->
-> Having something reported back to userspace as the value might be helpful
-> for debugging/tracing. Maybe the skb->hash? Then you could set this and
-> then track a skb through the stack even when its in a bpf skb queue.
+> + *             trigger point. The user need to filter these entries
+> + *             accordingly.
+> + *
+> + *             The data is stored as struct perf_branch_entry into output
+> + *             buffer *entries*. *size* is the size of *entries* in bytes.
+> + *             *flags* is reserved for now and must be zero.
+> + *
+> + *     Return
+> + *             On success, number of bytes written to *buf*. On error, a
+> + *             negative value.
+> + *
+> + *             **-EINVAL** if arguments invalid or **size** not a multiple
+> + *             of **sizeof**\ (**struct perf_branch_entry**\ ).
+> + *
+> + *             **-ENOENT** if architecture does not support branch records.
 
-Yeah. I've just been using the pointer value for my initial testing.
-That's not a good solution, of course, but having a visible identifier
-would be neat. skb->hash makes sense for the qdisc layer, but not for
-XDP...
-
->> >>=20
->> >> > IMO it seems cleaner and more general to allow sk_buffs
->> >> > to be stored in maps and pulled back out later for enqueue/dequeue.
->> >>=20
->> >> FWIW there's some gnarly details here (for instance, we need to make
->> >> sure the BPF program doesn't leak packet references after they are
->> >> dequeued from the map). My idea is to use a scheme similar to what we=
- do
->> >> for XDP_REDIRECT, where a helper sets some hidden variables and doesn=
-'t
->> >> actually remove the packet from the queue until the BPF program exits
->> >> (so the kernel can make sure things are accounted correctly).
->> > The verifier is tracking the sk's references.  Can it be reused to
->> > track the skb's reference?
->>=20
->> I was vaguely aware that it does this, but have not looked at the
->> details. Would be great if this was possible; will see how far I get
->> with it, and iterate from there (with your help, hopefully :))
->
-> Also might need to drop any socket references from the networking side
-> so an enqueued sock can't hold a socket open.
-
-Not sure I'm following you here?
-
--Toke
-
+[...]
