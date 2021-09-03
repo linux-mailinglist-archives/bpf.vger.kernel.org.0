@@ -2,202 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0C640040B
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 19:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9890C400410
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 19:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235784AbhICRXt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 13:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbhICRXt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:23:49 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558CDC061575
-        for <bpf@vger.kernel.org>; Fri,  3 Sep 2021 10:22:49 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id m11so7630922ioo.6
-        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 10:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=RwLXQdPhzFXFIucNqjrapY3RzAMIZB9rty7RnzAMXRg=;
-        b=IF4KQq2U5qy2QIhFTZRorUajvKcjlvEn9mAWTCXp9qf2GCgafsBYoH1XC78BQw7wab
-         Nijekp6QAzYSxYCeEydYKCy9RhOmCD22vNSGY7oL1GC2lZZxXb3QYR1VFiq3/A8iyQYb
-         2Uwmnibgw5lkTe0xsDjk3FpUPOWg89OD0/Nu0CcahQE0W/Fq3j/IeDvn9u3obumR7qtq
-         eUNt6EBQRMS3ZZJzq7ShOVETr+JiqV9JJE4W/Q5SIwhC6J8PSFYkGRa4jsg0qleBPBhe
-         c+axQ2pLnfU2GjhHKvW5nFX4sMsRk6zcpReLWQexhlY4hm3XONLkjrQUZHtM5OePij0K
-         X/ew==
+        id S1350154AbhICRYP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 13:24:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51931 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350144AbhICRYP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 3 Sep 2021 13:24:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630689794;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W+TaHnw1m4QF3+gFNvlmfVjI3Eug4gclNUnkDmbww1M=;
+        b=c2EmbHV/kBLZSzBlpZ0bq36BQl5Ih1ZYzUtJ+Vtxwd8vxcas++g/zBJf3HURY4JncCzpCm
+        sNaIny4Wrenw1Vtai2sKAjxL3VjXaF0h0K4SdIvSQ/iUmKG3Kd5i0oLjUy8/7k/LPM1DLK
+        2TVh/3V9silIVSnKC6IldjLA/8lCu+I=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-dvPOfJI6NjCLHfVRU1pZAQ-1; Fri, 03 Sep 2021 13:23:13 -0400
+X-MC-Unique: dvPOfJI6NjCLHfVRU1pZAQ-1
+Received: by mail-yb1-f198.google.com with SMTP id a62-20020a254d410000b0290592f360b0ccso7150091ybb.14
+        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 10:23:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=RwLXQdPhzFXFIucNqjrapY3RzAMIZB9rty7RnzAMXRg=;
-        b=gbjzdy7kF+Y6APqk+g4hm1cdaqbn/Zp5gYRyMV9FWAShqeYBxt1nh191Hg82b5VYXD
-         WxxxD++OIJQ7L0OZjh+AarqvmnRdtYKDMWxjpfuy3rdJJckO4OsKDn3Fp7u7iINzXp/6
-         kGGMxn6lI+gBY3W/7VHCZBAOOiLIafffSkU0bqi/flUFmI0G46cXSBNnbug03Vua9ZJ/
-         zIcoiDIfTZ+hDE9VyHUnQSf3IniP6WhwC4cUKAhXSfM1uu+xgyVSLQ6t81zSqwNrTyPP
-         TWVMVjSCBeN8QRzhzc29LdtOXcNagQAyx16eWmE4cLff0nsV/6p+nRhREvmwfbL6O7Kl
-         IHgg==
-X-Gm-Message-State: AOAM533gnDLjIlkaQ1Z7x0NjPyx86G1RH84ML9LW9k/MvS+w1rYoMLdQ
-        rpRuE0r/xJYHLGVafT0EyHYNiDWio6c=
-X-Google-Smtp-Source: ABdhPJx2MFA58Gf51GnqrsyFtv8fFOB4axGcUFzRWwz6XmfQpbs7OriY/wKTY06z0EQ6wa2ZKf/AxQ==
-X-Received: by 2002:a05:6638:150c:: with SMTP id b12mr117932jat.110.1630689768680;
-        Fri, 03 Sep 2021 10:22:48 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id u15sm32981ilk.53.2021.09.03.10.22.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 10:22:47 -0700 (PDT)
-Date:   Fri, 03 Sep 2021 10:22:39 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Joanne Koong <joannekoong@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Message-ID: <613259dfb6973_1c226208c1@john-XPS-13-9370.notmuch>
-In-Reply-To: <0c1bb5a6-4ef5-77b4-cd10-aea0060d5349@fb.com>
-References: <20210831225005.2762202-1-joannekoong@fb.com>
- <20210831225005.2762202-2-joannekoong@fb.com>
- <CAEf4Bza_y6497cWE5H04gDg__RkoMovkFYSqXjo-yFG7XH11ug@mail.gmail.com>
- <61305cf822fa_439b208a5@john-XPS-13-9370.notmuch>
- <0c1bb5a6-4ef5-77b4-cd10-aea0060d5349@fb.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: Add bloom filter map implementation
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W+TaHnw1m4QF3+gFNvlmfVjI3Eug4gclNUnkDmbww1M=;
+        b=Hf1UtYHVuDTJifjlIKM/bcVF5/a9jM+7qn3qHOB608zLovehMFacCDLUgrvYYne34J
+         aakRptdQ44LWWXhSPQcRjzabSGULB0fZ5rb264TSgRpJacASF46TEr3lbIaNiNMqEXnh
+         xDFR5QKz+V52KaeRhaJfY5V2Lt2dv5ajORubzqMkc9nzsKwczBdJF1EATOyjmumMSvdU
+         kqs0P7C1UkTvfsyZxNe2mq1hK9TaRQDx5DDpfmwS72dOd4/wLUdfRxGTjgu2A+Iz/2jB
+         Rkt2Aqz9yCcaS3Rqk4e8G32pe5a7K3uWeVf2Qd1gfcmaNVmhVqZocGP+kBXSkNW+djtZ
+         lTww==
+X-Gm-Message-State: AOAM530dmDxm/IqdOjjCZNlPONUMBdPGI+pMX/82OkdlhUzLkuvYl8s1
+        OBjsy+u5uMKtAitxxo6SsVWDqXNoDjJOkrgtUu4BaZHfC2x/622n2lgLVM9Idzp3Czq3RgK2vnB
+        5ODt2uINVeosgMhRkvEllNk88tkWt
+X-Received: by 2002:a25:27c1:: with SMTP id n184mr179847ybn.496.1630689792899;
+        Fri, 03 Sep 2021 10:23:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznjCtfZQz2JDWJu9YExK6+0HVbzx0EdaRPmcnXCz9PzzDz4Yb+Lh5OYwO+8PDvyyVgD4ABTsgvFHw+Orr9g9g=
+X-Received: by 2002:a25:27c1:: with SMTP id n184mr179819ybn.496.1630689792637;
+ Fri, 03 Sep 2021 10:23:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1629473233.git.lorenzo@kernel.org> <b1f0cbc19e00e4a4dbb7dd5d82e0c8bad300cffc.1629473233.git.lorenzo@kernel.org>
+ <612eba0cd2678_6b872081d@john-XPS-13-9370.notmuch>
+In-Reply-To: <612eba0cd2678_6b872081d@john-XPS-13-9370.notmuch>
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Date:   Fri, 3 Sep 2021 19:23:01 +0200
+Message-ID: <CAJ0CqmU6cFP3WrvqVqbVKt8R-yrKTKp2ZHm65O-w5fjEJVvemA@mail.gmail.com>
+Subject: Re: [PATCH v12 bpf-next 03/18] net: mvneta: update mb bit before
+ passing the xdp buffer to eBPF layer
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Agroskin, Shay" <shayagr@amazon.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>,
+        Toke Hoiland Jorgensen <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Joanne Koong wrote:
-> On 9/1/21 10:11 PM, John Fastabend wrote:
-> 
-> > Andrii Nakryiko wrote:
-> >> On Tue, Aug 31, 2021 at 3:51 PM Joanne Koong <joannekoong@fb.com> wrote:
-> >>> Bloom filters are a space-efficient probabilistic data structure
-> >>> used to quickly test whether an element exists in a set.
-> >>> In a bloom filter, false positives are possible whereas false
-> >>> negatives are not.
-> >>>
-> >>> This patch adds a bloom filter map for bpf programs.
-> >>> The bloom filter map supports peek (determining whether an element
-> >>> is present in the map) and push (adding an element to the map)
-> >>> operations.These operations are exposed to userspace applications
-> >>> through the already existing syscalls in the following way:
-> >>>
-> >>> BPF_MAP_LOOKUP_ELEM -> peek
-> >>> BPF_MAP_UPDATE_ELEM -> push
-> >>>
-> >>> The bloom filter map does not have keys, only values. In light of
-> >>> this, the bloom filter map's API matches that of queue stack maps:
-> >>> user applications use BPF_MAP_LOOKUP_ELEM/BPF_MAP_UPDATE_ELEM
-> >>> which correspond internally to bpf_map_peek_elem/bpf_map_push_elem,
-> >>> and bpf programs must use the bpf_map_peek_elem and bpf_map_push_elem
-> >>> APIs to query or add an element to the bloom filter map. When the
-> >>> bloom filter map is created, it must be created with a key_size of 0.
-> >>>
-> >>> For updates, the user will pass in the element to add to the map
-> >>> as the value, wih a NULL key. For lookups, the user will pass in the
-> >>> element to query in the map as the value. In the verifier layer, this
-> >>> requires us to modify the argument type of a bloom filter's
-> >>> BPF_FUNC_map_peek_elem call to ARG_PTR_TO_MAP_VALUE; as well, in
-> >>> the syscall layer, we need to copy over the user value so that in
-> >>> bpf_map_peek_elem, we know which specific value to query.
-> >>>
-> >>> The maximum number of entries in the bloom filter is not enforced; if
-> >>> the user wishes to insert more entries into the bloom filter than they
-> >>> specified as the max entries size of the bloom filter, that is permitted
-> >>> but the performance of their bloom filter will have a higher false
-> >>> positive rate.
-> >>>
-> >>> The number of hashes to use for the bloom filter is configurable from
-> >>> userspace. The benchmarks later in this patchset can help compare the
-> >>> performances of different number of hashes on different entry
-> >>> sizes. In general, using more hashes decreases the speed of a lookup,
-> >>> but increases the false positive rate of an element being detected in the
-> >>> bloom filter.
-> >>>
-> >>> Signed-off-by: Joanne Koong <joannekoong@fb.com>
-
-[...]
-
-> >>> +static struct bpf_map *bloom_filter_map_alloc(union bpf_attr *attr)
-> >>> +{
-> >>> +       int numa_node = bpf_map_attr_numa_node(attr);
-> >>> +       u32 nr_bits, bit_array_bytes, bit_array_mask;
-> >>> +       struct bpf_bloom_filter *bloom_filter;
-> >>> +
-> >>> +       if (!bpf_capable())
-> >>> +               return ERR_PTR(-EPERM);
-> >>> +
-> >>> +       if (attr->key_size != 0 || attr->value_size == 0 || attr->max_entries == 0 ||
-> >>> +           attr->nr_hashes == 0 || attr->map_flags & ~BLOOM_FILTER_CREATE_FLAG_MASK ||
-> >>> +           !bpf_map_flags_access_ok(attr->map_flags))
-> >>> +               return ERR_PTR(-EINVAL);
-> >>> +
-> >>> +       /* For the bloom filter, the optimal bit array size that minimizes the
-> >>> +        * false positive probability is n * k / ln(2) where n is the number of
-> >>> +        * expected entries in the bloom filter and k is the number of hash
-> >>> +        * functions. We use 7 / 5 to approximate 1 / ln(2).
-> >>> +        *
-> >>> +        * We round this up to the nearest power of two to enable more efficient
-> >>> +        * hashing using bitmasks. The bitmask will be the bit array size - 1.
-> >>> +        *
-> >>> +        * If this overflows a u32, the bit array size will have 2^32 (4
-> >>> +        * GB) bits.
-> > Would it be better to return E2BIG or EINVAL here? Speculating a bit, but if I was
-> > a user I might want to know that the number of bits I pushed down is not the actual
-> > number?
-> 
-> I think if we return E2BIG or EINVAL here, this will fail to create the 
-> bloom filter map
-> if the max_entries exceeds some limit (~3 billion, according to my math) 
-> whereas
-> automatically setting the bit array size to 2^32 if the max_entries is
-> extraordinarily large will still allow the user to create and use a 
-> bloom filter (albeit
-> one with a higher false positive rate).
-
-It doesn't matter much to me, but I think if a user request 3+billion max entries
-its ok to return E2BIG and then they can use a lower limit and know the
-false positive rate is going to go up. 
-
-> 
-> > Another thought, would it be simpler to let user do this calculation and just let
-> > max_elements be number of bits they want? Then we could have examples with the
-> > above comment. Just a thought...
-> 
-> I like Martin's idea of keeping the max_entries meaning consistent 
-> across all map types.
-> I think that makes the interface clearer for users.
-
-I'm convinced as well, lets keep it consistent. Thanks.
-
-[...]
-
-> >> Also, I wonder if ditching spinlock in favor of atomic bit set
-> >> operation would improve performance in typical scenarios. Seems like
-> >> set_bit() is an atomic operation, so it should be easy to test. Do you
-> >> mind running benchmarks with spinlock and with set_bit()?
-> > With the jhash pulled out of lock, I think it might be noticable. Curious
-> > to see.
-> Awesome, I will test this out and report back!
-
-It looks like the benchmark tests were done with value size of __u64 should
-we do larger entry? I guess (you tell me?) if this is used from XDP for
-DDOS you would use a flow tuple and with IPv6 this could be
-{dstIp, srcIp, sport, dport, proto} with roughly 44B.
-
-> >>> +       for (i = 0; i < bloom_filter->map.nr_hashes; i++) {
-> >>> +               hash = jhash(value, map->value_size, bloom_filter->hash_seed + i) &
-> >>> +                       bloom_filter->bit_array_mask;
-> >>> +               bitmap_set(bloom_filter->bit_array, hash, 1);
-> >>> +       }
-> >>> +
-> >>> +       spin_unlock_irqrestore(&bloom_filter->spinlock, spinlock_flags);
-> >>> +
-> >>> +       return 0;
-> >>> +}
-> >>> +
-> >> [...]
+On Wed, Sep 1, 2021 at 1:24 AM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Lorenzo Bianconi wrote:
+> > Update multi-buffer bit (mb) in xdp_buff to notify XDP/eBPF layer and
+> > XDP remote drivers if this is a "non-linear" XDP buffer. Access
+> > skb_shared_info only if xdp_buff mb is set in order to avoid possible
+> > cache-misses.
 > >
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  drivers/net/ethernet/marvell/mvneta.c | 23 ++++++++++++++++++-----
+> >  1 file changed, 18 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> > index 5d1007e1b5c9..9f4858e35566 100644
+> > --- a/drivers/net/ethernet/marvell/mvneta.c
+> > +++ b/drivers/net/ethernet/marvell/mvneta.c
+> > @@ -2037,9 +2037,14 @@ mvneta_xdp_put_buff(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
+> >  {
+> >       int i;
+> >
+> > +     if (likely(!xdp_buff_is_mb(xdp)))
+> > +             goto out;
+> > +
+>
+> Wouldn't nr_frags = 0 in the !xdp_buff_is_mb case? Is the
+> xdp_buff_is_mb check with goto really required?
+
+if xdp_buff_is_mb is false, nr_frags will not be initialized otherwise
+we will trigger a cache-miss for the single-buffer use case (where
+initializing skb_shared_info is not required).
+
+>
+> >       for (i = 0; i < sinfo->nr_frags; i++)
+> >               page_pool_put_full_page(rxq->page_pool,
+> >                                       skb_frag_page(&sinfo->frags[i]), true);
+> > +
+> > +out:
+> >       page_pool_put_page(rxq->page_pool, virt_to_head_page(xdp->data),
+> >                          sync_len, true);
+> >  }
+> > @@ -2241,7 +2246,6 @@ mvneta_swbm_rx_frame(struct mvneta_port *pp,
+> >       int data_len = -MVNETA_MH_SIZE, len;
+> >       struct net_device *dev = pp->dev;
+> >       enum dma_data_direction dma_dir;
+> > -     struct skb_shared_info *sinfo;
+> >
+> >       if (*size > MVNETA_MAX_RX_BUF_SIZE) {
+> >               len = MVNETA_MAX_RX_BUF_SIZE;
+> > @@ -2261,11 +2265,9 @@ mvneta_swbm_rx_frame(struct mvneta_port *pp,
+> >
+> >       /* Prefetch header */
+> >       prefetch(data);
+> > +     xdp_buff_clear_mb(xdp);
+> >       xdp_prepare_buff(xdp, data, pp->rx_offset_correction + MVNETA_MH_SIZE,
+> >                        data_len, false);
+> > -
+> > -     sinfo = xdp_get_shared_info_from_buff(xdp);
+> > -     sinfo->nr_frags = 0;
+> >  }
+> >
+> >  static void
+> > @@ -2299,6 +2301,9 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
+> >               skb_frag_off_set(frag, pp->rx_offset_correction);
+> >               skb_frag_size_set(frag, data_len);
+> >               __skb_frag_set_page(frag, page);
+> > +
+> > +             if (!xdp_buff_is_mb(xdp))
+> > +                     xdp_buff_set_mb(xdp);
+> >       } else {
+> >               page_pool_put_full_page(rxq->page_pool, page, true);
+> >       }
+> > @@ -2320,8 +2325,12 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+> >                     struct xdp_buff *xdp, u32 desc_status)
+> >  {
+> >       struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+> > -     int i, num_frags = sinfo->nr_frags;
+> >       struct sk_buff *skb;
+> > +     u8 num_frags;
+> > +     int i;
+> > +
+> > +     if (unlikely(xdp_buff_is_mb(xdp)))
+> > +             num_frags = sinfo->nr_frags;
+> >
+> >       skb = build_skb(xdp->data_hard_start, PAGE_SIZE);
+> >       if (!skb)
+> > @@ -2333,6 +2342,9 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+> >       skb_put(skb, xdp->data_end - xdp->data);
+> >       skb->ip_summed = mvneta_rx_csum(pp, desc_status);
+> >
+> > +     if (likely(!xdp_buff_is_mb(xdp)))
+> > +             goto out;
+> > +
+>
+> Not that I care much, but couldn't you just init num_frags = 0 and
+> avoid the goto?
+
+same here.
+
+Regards,
+Lorenzo
+
+>
+> Anyways its not my driver so no need to change it if you like it better
+> the way it is. Mostly just checking my understanding.
+>
+> >       for (i = 0; i < num_frags; i++) {
+> >               skb_frag_t *frag = &sinfo->frags[i];
+> >
+> > @@ -2341,6 +2353,7 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+> >                               skb_frag_size(frag), PAGE_SIZE);
+> >       }
+> >
+> > +out:
+> >       return skb;
+> >  }
+> >
+> > --
+> > 2.31.1
+> >
+>
+>
+
