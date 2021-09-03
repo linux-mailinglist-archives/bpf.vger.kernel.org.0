@@ -2,109 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C49400169
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 16:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A6240025F
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 17:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349442AbhICOpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 10:45:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41769 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240018AbhICOpI (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 3 Sep 2021 10:45:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630680248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tzCAudKDCHUGW3YEsgSMZs1BCDwPAvi4fTUjFk0q5v0=;
-        b=LE+nZ+TUKk7PKXxP2U5oXL2GWqWbxT6b1SSsnyuFziaViI3tfuc7UaqF6ca/NUvwjDvxSr
-        EgJyUb1I7WY7Fb5HfscZ3V1nvKLvicFVtQ5mJlsss66LZi2p+5W14VbjGBc6wNqtKiqZqw
-        pQQUrqgArhzWxCrusNkPU9vENmDoSHc=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-OswiYQQZPbq_h9bg-hAz_w-1; Fri, 03 Sep 2021 10:44:07 -0400
-X-MC-Unique: OswiYQQZPbq_h9bg-hAz_w-1
-Received: by mail-ej1-f71.google.com with SMTP id r21-20020a1709067055b02904be5f536463so2841429ejj.0
-        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 07:44:07 -0700 (PDT)
+        id S235579AbhICPee (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 11:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349956AbhICPe3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Sep 2021 11:34:29 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D0DC061757
+        for <bpf@vger.kernel.org>; Fri,  3 Sep 2021 08:33:28 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id z2so3368026qvl.10
+        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 08:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5LIFlHyVvDkGF8a3JZWS1aY7iXtng1vYiBB9lPA6m9g=;
+        b=tPOkMM9Sih11n6LDTAqxVhivFJ5Lv9zlCYbfZK1dUUAlaq2dGb2NjQS7CxTrxjMuXj
+         eJG7OlsMpakC1gdxmmkHSbXJEHPch/Wy6n9iJerGCChmAwE89oa5aXBaKc95uI8hR8rD
+         hqep19gn6wK32SSWNdVghNMiU8KZcVKYryxo/RxsdnOBZLtHncsZLoGLfuOYiOwog+l3
+         AV73P9wlVbCmdGnJvpFM/VALgl71cshHgII7qR21WWSbkycnIsOOCsJ1mPK8yKRDwvZD
+         KhClacAKV4nJA0p+6M9I0POP1S9sEQs3noz8Lf99aEPcDT121jVKqB5XrvDPMueLTmuy
+         Grag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=tzCAudKDCHUGW3YEsgSMZs1BCDwPAvi4fTUjFk0q5v0=;
-        b=PpZoiLaYeuDfIlExzEYTgBEvkegAFrTnv9t81PO+Mrks+NfrDuu50qjOgoAUE9J5av
-         mHwht01bxHOqfFQCMPX4EYCcWswbW2vXqIya8cORwip9O5aKxdc0RPGUjEF248mLXwAu
-         vQssHNLQ871EjvgTYjzTmki9WitAxR7aqFACAbR9fForh/VH8yOzJ9HUX87B0VqYijux
-         5koiV2L9Juuv/0MrQw/5VScJio/rB5LoU8AlLFpltA02mfvEwwNK31yfiHQ+Gg5+8OSG
-         STFrCunFbJFKqwT+ypHOk8XoFxdwZ7Wd72Z6z6x2oKGzByJ59+QRuYtzSAOm1U45WPd7
-         dzKw==
-X-Gm-Message-State: AOAM532bH7hMmkMydEWbDmPWNRNGWKIRTXn3388yNXwlGpFOujYTV25v
-        gvm80UjGpJ5JEdmBWqamTz96xPINfHtGBCxGkPjlAwOjOaQ88aKtImTqgnTBtq+pfu84rzTZfWf
-        JRiycrbWAN0hr
-X-Received: by 2002:aa7:c1ca:: with SMTP id d10mr4421094edp.294.1630680246329;
-        Fri, 03 Sep 2021 07:44:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJws8r0eF6pqn5eUk3akGSZKVi5DjUKMVWXoQo6QB5DDpIqNVVwGLr0GDn3cD61h/oazHLKidQ==
-X-Received: by 2002:aa7:c1ca:: with SMTP id d10mr4421070edp.294.1630680246078;
-        Fri, 03 Sep 2021 07:44:06 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id jx21sm2809412ejb.41.2021.09.03.07.44.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 07:44:05 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 7002D18016F; Fri,  3 Sep 2021 16:44:04 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Martin KaFai Lau <kafai@fb.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5LIFlHyVvDkGF8a3JZWS1aY7iXtng1vYiBB9lPA6m9g=;
+        b=GGVbt5+Vw2pyFVPGet6uqmpEnluDlQBnN86ZAiKmxEHJdIsKzYUudun3tCfkSdThFz
+         l8UFKrMsTE88kc0fPtJXTKrLSTQ079i5q0Iwe8ULIm5wM/SINF94biokloVKIMyT6avS
+         G8Xo0JILRpXHd1+8HNQpDwMAvf/oDSGYoS9BBFNt+R16FzsuBuywIwlupOTcpesGuskl
+         82w6yiduKRrM0wJdiB+1kCuoODoG3NkDYSFhIgOsBiwEEu1//aiePzNlZuEZyiMETsXW
+         P2btRGL6TSfOsSs7WisTWyKZgVRUr/V2GPMhRooiIvUw+G81G0oxpeBPnAnQ0LA4iLpY
+         JUEA==
+X-Gm-Message-State: AOAM531f7OOhiJF0DM03gHQcdq2y0k0iMmWd29e87kM4idFASlriigIN
+        P2nkrSMX7bciGvMbQU3Hq7MK3A==
+X-Google-Smtp-Source: ABdhPJwrFpeuTZR0dZ65llC0a5kZc0Winn4XlibHIE56DOfJYnAG1NIrAcfshejiQsi0qh1O4SPLeQ==
+X-Received: by 2002:a0c:a995:: with SMTP id a21mr4401372qvb.35.1630683208154;
+        Fri, 03 Sep 2021 08:33:28 -0700 (PDT)
+Received: from [192.168.1.173] (bras-base-kntaon1617w-grc-28-184-148-47-47.dsl.bell.ca. [184.148.47.47])
+        by smtp.googlemail.com with ESMTPSA id k20sm4140441qko.117.2021.09.03.08.33.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 08:33:27 -0700 (PDT)
+Subject: Re: [RFC Patch net-next] net_sched: introduce eBPF based Qdisc
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Martin KaFai Lau <kafai@fb.com>
 Cc:     John Fastabend <john.fastabend@gmail.com>,
         Cong Wang <xiyou.wangcong@gmail.com>,
         Linux Kernel Network Developers <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
         Jiri Pirko <jiri@resnulli.us>
-Subject: Re: [RFC Patch net-next] net_sched: introduce eBPF based Qdisc
-In-Reply-To: <20210902233510.gnimg2krwwkzv4f2@kafai-mbp.dhcp.thefacebook.com>
 References: <20210821010240.10373-1-xiyou.wangcong@gmail.com>
  <20210824234700.qlteie6al3cldcu5@kafai-mbp>
  <CAM_iQpWP_kvE58Z+363n+miTQYPYLn6U4sxMKVaDvuRvjJo_Tg@mail.gmail.com>
- <612f137f4dc5c_152fe20891@john-XPS-13-9370.notmuch>
- <871r68vapw.fsf@toke.dk>
+ <612f137f4dc5c_152fe20891@john-XPS-13-9370.notmuch> <871r68vapw.fsf@toke.dk>
  <20210901174543.xukawl7ylkqzbuax@kafai-mbp.dhcp.thefacebook.com>
- <871r66ud8y.fsf@toke.dk>
- <613136d0cf411_2c56f2086@john-XPS-13-9370.notmuch>
+ <871r66ud8y.fsf@toke.dk> <613136d0cf411_2c56f2086@john-XPS-13-9370.notmuch>
  <87bl5asjdj.fsf@toke.dk>
  <20210902233510.gnimg2krwwkzv4f2@kafai-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 03 Sep 2021 16:44:04 +0200
-Message-ID: <87zgstra6j.fsf@toke.dk>
+ <87zgstra6j.fsf@toke.dk>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <ea37c208-5192-4008-3f92-b12fd8a8ea1a@mojatatu.com>
+Date:   Fri, 3 Sep 2021 11:33:26 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87zgstra6j.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin KaFai Lau <kafai@fb.com> writes:
+On 2021-09-03 10:44 a.m., Toke Høiland-Jørgensen wrote:
+> Martin KaFai Lau <kafai@fb.com> writes:
+> 
+>> On Fri, Sep 03, 2021 at 12:27:52AM +0200, Toke Høiland-Jørgensen wrote:
+>>>>> The question is if it's useful to provide the full struct_ops for
+>>>>> qdiscs? Having it would allow a BPF program to implement that interface
+>>>>> towards userspace (things like statistics, classes etc), but the
+>>>>> question is if anyone is going to bother with that given the wealth of
+>>>>> BPF-specific introspection tools already available?
+>> Instead of bpftool can only introspect bpf qdisc and the existing tc
+>> can only introspect kernel qdisc,  it will be nice to have bpf
+>> qdisc work as other qdisc and showing details together with others
+>> in tc.  e.g. a bpf qdisc export its data/stats with its btf-id
+>> to tc and have tc print it out in a generic way?
+> 
+> I'm not opposed to the idea, certainly. I just wonder if people who go
+> to the trouble of writing a custom qdisc in BPF will feel it's worth it
+> to do the extra work to make this available via a second API. We could
+> certainly encourage it, and some things are easy (drop and pkt counters,
+> etc), but other things (like class stats) will depend on the semantics
+> of the qdisc being implemented, so will require extra work from the BPF
+> qdisc developer...
 
-> On Fri, Sep 03, 2021 at 12:27:52AM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> >> The question is if it's useful to provide the full struct_ops for
->> >> qdiscs? Having it would allow a BPF program to implement that interfa=
-ce
->> >> towards userspace (things like statistics, classes etc), but the
->> >> question is if anyone is going to bother with that given the wealth of
->> >> BPF-specific introspection tools already available?
-> Instead of bpftool can only introspect bpf qdisc and the existing tc
-> can only introspect kernel qdisc,  it will be nice to have bpf
-> qdisc work as other qdisc and showing details together with others
-> in tc.  e.g. a bpf qdisc export its data/stats with its btf-id
-> to tc and have tc print it out in a generic way?
+The idea of using btf to overcome the domain difference is _very_
+appealing but sounds like a lot of work? Havent delved enough
+into btf - but wondering if the same could be stated for filters
+and actions...Note:
+Aside from current existing tooling being well understood,
+challenges  you will be faced with is reinventing all the
+infrastructure that tc qdiscs have taken care of over the years,
+example:
+the proper integrations with softirqs and multiprocessor protections,
+irqs, timers etc which take care of smooth triggering of
+enqueue/dequeue, taking care of defering things when the target
+device/hw is busy, hierarchies, etc, etc;
+not saying it is the most perfect or performant but it is one of
+those 'day 3' deployments i.e a lot of corner cases taken care of.
+I noticed you mentioned some of those things in one of your emails.
+For this reason - Cong's approach looks appealing because it
+reuses said infra. Main thing that needs to have extensibility is
+the de/enqueue ops as ebpf progs. Allowing enq/deq to be ebpf specific
+sounds like will allow one scheme that works for both tc and XDP
+(with enq/deq taking care of the buffer contextual differences).
+I admit XDP is a little harder than plain tc....
 
-I'm not opposed to the idea, certainly. I just wonder if people who go
-to the trouble of writing a custom qdisc in BPF will feel it's worth it
-to do the extra work to make this available via a second API. We could
-certainly encourage it, and some things are easy (drop and pkt counters,
-etc), but other things (like class stats) will depend on the semantics
-of the qdisc being implemented, so will require extra work from the BPF
-qdisc developer...
+cheers,
+jamal
 
--Toke
 
