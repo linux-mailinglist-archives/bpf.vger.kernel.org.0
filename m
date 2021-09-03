@@ -2,180 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDB93FFAB8
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 08:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE7E3FFADE
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 09:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346291AbhICGzz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 02:55:55 -0400
-Received: from mga07.intel.com ([134.134.136.100]:57357 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234729AbhICGzz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Sep 2021 02:55:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="283052686"
-X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
-   d="scan'208";a="283052686"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 23:54:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
-   d="scan'208";a="521571636"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga004.fm.intel.com with ESMTP; 02 Sep 2021 23:54:54 -0700
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+        id S1347518AbhICHOb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 03:14:31 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23386 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234713AbhICHO2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 3 Sep 2021 03:14:28 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18379xD2025556;
+        Fri, 3 Sep 2021 00:13:26 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=+Y1d4X20+HOrvURMe/ruvo6VixOaKJT4Tl7QnUC+qD8=;
+ b=aEOuogbT8JaGwLKkcG6DU4cmAJtlMfxIUmU7v4ttaqYj9Wu0gjD/gXvbm5V0yq60fu5X
+ lsjs1iUFJa6U24WJ6m/AB13a8CdPyF3JUFiLl5T/2nqW2/4RYue1TZZp1W83WZTgFIZ2
+ 34hCWc0/BOEtb28j+W11tXLqiSCjQODd3Ak= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3au5khwfwb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 03 Sep 2021 00:13:25 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Thu, 2 Sep 2021 23:54:54 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Thu, 2 Sep 2021 23:54:54 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Thu, 2 Sep 2021 23:54:54 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.49) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Thu, 2 Sep 2021 23:54:54 -0700
+ 15.1.2308.14; Fri, 3 Sep 2021 00:13:25 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g0frTMOtGjCoH+lwugvg56B5TR2bpBfc3HfrkCMtVy/O2pmZm/NCPngKzrdZmTfFafzOzUpYjTGwDLldZVudC8hMeabBIk5UTPd1PQmJFPHjwohEAIqTCUh1xclAM8hUiKFFnDSYXnUasiD5GzB5kVp+50kpwyCohHwoaN93xyuSqhlPDXnfvjZ/qXPBblnwKtN13Ekd4ej3mb4ifRWeeqJCh8QhztETLt/07uY/izVbE5InvOk/DL7Gdi3T6oVFL/FGdKdHfw0swYwqXCyiFbSZQ8w/7zLJUcfcWexxkF3SpkQ5/ShE9GLiuDjZWz5XNBfn1W8myKIq2zSxv3fcgQ==
+ b=Au39Rsj+AwPAL+SjNEIR+Z5UV44fNxnsNu2i6N2UEFOso4yxH+fMSXAANIx1gPukasIN2CKvIncx969eNeyaeaF29My/0y8BiqHyJ3xwWpNe4WLVY6G4cpjXbBHvczi/BOxAvVI92DLJC8OIPSp11UERNG/CE5M1fSxiX5eyWZ7tfqkV6srcH814AISVc+1gnLFyDyTN74NanYolllMh7GPpTIfx3eoStnI9Xr7JGxiEioOf2zqUHBF3l+NT91dy9QPUkN1qopZQZ6PQhmwiM0ESk+nuurh5htNPS324jh5HClRbowothVleyxN5Rqrbifh0qbg7gCXuiebyzmzx+w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3o/7GK4qnybP/C7+DAp+G3xob3++VtoqaYhLQ05qnqA=;
- b=QEJZ0JfoaU5MpsBtgP5o24ji0xVo6UkuUvsS7qRaWxM+mOEvTtQs/FXD5g1O/pTbj8eqDeuW5X6JFZBLsEduNdeu/J7cGlIlTBzSrApfqacRgromw4NfRV73DZz0kbaJ4pghpiA8+tYA/vmU4wKT1LqjH16VmOjn4n4uWhaH28uF8+GVRqezXq0v9gBNdB8za9nGGatG6Njq5X+2wopjrUiBAocn/AoQ6myAB9rhKSPEMeNnyunBE9iVOFFVbe0ojPvrJJmEOHaS5dtgFNp6uYkwIKGOotF3EwU8/D7oVjHA+caKh//hTRSIvsDdhq8R8d+p+v1ghe9LWOY4G75lRA==
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=+Y1d4X20+HOrvURMe/ruvo6VixOaKJT4Tl7QnUC+qD8=;
+ b=JsUKhX428TkANyHaBfg8joP46LDBW4CXHbDSq7jcZXeGxTTEu1Na2o2TXA1lDy7rJedDid/7jMqAmT0JMOX5QKOaO72Jaeos9+q07seKcfTgJ5ZiQbN5SCA/b0EJMnCTN+JFpLgLw7aKC8VkNBjaC6w9NGQKoP19EhNkfSNG1D2NwkQlAPcR38COkUGW6AqQXn9azrnACnS2YDCpoQZX/XvwK5Bnk4LdG/XRaehhTi5uNi6MkUk5Rp13Qm6fOflwbUkWtihsg4a8iT4Ix/6JKUvyjn5JLpAWC4mXu9R+o6qCjdMfAuGVwn9rIYE4u/cD4CvjXtX2Q94LWdMftIEsvQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3o/7GK4qnybP/C7+DAp+G3xob3++VtoqaYhLQ05qnqA=;
- b=kUkXjS4kRD08QSjDiB/RGvA9vv5cKkNWHshBHpXZWlfGq96m+hYEa//4b5MYqjQslUh3mOwP9hKhucX9LOxPv2auFZpwhDX2UxUrLW/C1ufdNKcrHiquJQd83HBana2VH5pK6YyYTw38Ubd1Y2tJwA1K63Jp5PhSHlzGhBpdUSk=
-Received: from PH0PR11MB5144.namprd11.prod.outlook.com (2603:10b6:510:3e::20)
- by PH0PR11MB4837.namprd11.prod.outlook.com (2603:10b6:510:41::7) with
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB4465.namprd15.prod.outlook.com (2603:10b6:806:194::23)
+ by SN6PR15MB2350.namprd15.prod.outlook.com (2603:10b6:805:23::30) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Fri, 3 Sep
- 2021 06:54:50 +0000
-Received: from PH0PR11MB5144.namprd11.prod.outlook.com
- ([fe80::105f:b75f:c95e:f885]) by PH0PR11MB5144.namprd11.prod.outlook.com
- ([fe80::105f:b75f:c95e:f885%3]) with mapi id 15.20.4478.022; Fri, 3 Sep 2021
- 06:54:50 +0000
-From:   "Kuruvinakunnel, George" <george.kuruvinakunnel@intel.com>
-To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
-CC:     "joamaki@gmail.com" <joamaki@gmail.com>,
-        "Lobakin, Alexandr" <alexandr.lobakin@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "toke@redhat.com" <toke@redhat.com>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: RE: [Intel-wired-lan] [PATCH v6 intel-next 9/9] ice: make use of
- ice_for_each_* macros
-Thread-Topic: [Intel-wired-lan] [PATCH v6 intel-next 9/9] ice: make use of
- ice_for_each_* macros
-Thread-Index: AQHXlDuPuciqmagVJ0uDushRzeP+L6uR+JhQ
-Date:   Fri, 3 Sep 2021 06:54:50 +0000
-Message-ID: <PH0PR11MB51445B9EAB6E3DE927E8FBAEE2CF9@PH0PR11MB5144.namprd11.prod.outlook.com>
-References: <20210818135916.25007-1-maciej.fijalkowski@intel.com>
- <20210818135916.25007-10-maciej.fijalkowski@intel.com>
-In-Reply-To: <20210818135916.25007-10-maciej.fijalkowski@intel.com>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Fri, 3 Sep
+ 2021 07:13:23 +0000
+Received: from SA1PR15MB4465.namprd15.prod.outlook.com
+ ([fe80::6dc9:801e:3ad5:a175]) by SA1PR15MB4465.namprd15.prod.outlook.com
+ ([fe80::6dc9:801e:3ad5:a175%8]) with mapi id 15.20.4478.022; Fri, 3 Sep 2021
+ 07:13:23 +0000
+Message-ID: <0beca6da-7444-fdf3-8dc4-c9126b7779de@fb.com>
+Date:   Fri, 3 Sep 2021 00:13:20 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.0.3
+Subject: Re: [PATCH bpf-next 1/5] bpf: Add bloom filter map implementation
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5d427bc8-ad77-4507-4cca-08d96ea7b9d4
-x-ms-traffictypediagnostic: PH0PR11MB4837:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR11MB4837FEC5BCD8A1D7589FA09BE2CF9@PH0PR11MB4837.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1417;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ljUGXCfyQLkD3oeT+Z+HmqANzMbRatH3pfIXEieYty1egUrvGU+HIXZMqGBALWIYOk2FA6Jjs9AFh4nIdFhlvNq5XLRI3vDXMuRjSIJU/M6Uv2noole6rtGZeIRyQlsPIZHVGOwJlNm/Vvgc+DOL392ye/t75FXjmwVpu/wlGKifLXTQDNNynS0sqK4a/B7lHp8sRipaSlT+djVFUQDqvln/H6BMIf3DYEsy1Tuqh27/YsiqOnCDntNIf7LZzrlgWUwa0mYrc5v60hRdhLkNBUIWZ4nNqx/ei+NFsTwoJbM2AN04V5PywUtGpaubv57nFCWdxTBNBzvWT/bCTnFmnoCGr/7fDROU6NbMVlm6Rbuqn/p6Y3glpG2ve6y57GhTwlViVWbyLNfcYsj6PwKNB0eUui//ZcmT+46Y+dBrC7sJVRX6p+hFtjFU+TLca78TQoWRypRz2H7peLXgq3ISoFVyirJqf3RQ628b19YD+s5E7Zm0kVL2kMZWREPhZDEcgXrrCmU2AP3uIsNV6EViJOZ7UOuBZVP3CDF81h+HXHt2fDJEBQseC5QWup+hKa9Baws57Vk+UCS+Y1NcXnHYSLGEXzuKp8QsciwO1/xT9pTvQbK/AOzAy4pCqQSDlQMSqS61QsqIwJCLkYjJ5rAgI0Mu/isLfDMAtvOQwUg1jYXa8c5UIRIB+fsRTrrHSOcC1hd98QCUb1mc4JoJTlKHkw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5144.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(366004)(346002)(136003)(316002)(83380400001)(4326008)(110136005)(33656002)(7696005)(38070700005)(8676002)(122000001)(6506007)(26005)(76116006)(66946007)(107886003)(55016002)(71200400001)(53546011)(38100700002)(8936002)(52536014)(54906003)(2906002)(64756008)(66476007)(66556008)(86362001)(66446008)(186003)(9686003)(5660300002)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?RF0UFL8dJbzIzSM97n5fqP6kv6yuJrL4JSVjwJoFPDWXPQJHakXXOVwX7/pY?=
- =?us-ascii?Q?8q+nLwjgPe6h5aIyqb3SGI8dSQmfG58iqauapW5bHZeqgf1BtIFwjVhGTjJz?=
- =?us-ascii?Q?hP6IrbUwiHDgqGXADtGZHLtF/1S7Ocnslmu5SX/LDnOifu+GIvhSflYaDXwh?=
- =?us-ascii?Q?XQTW2SHHhUgpVuiJBBxiHGdLkLw5MiQdurvBpG/yo3k6h4S9v92Os3GjsP3i?=
- =?us-ascii?Q?geveQ2chdP/zyBM7Z1NKb2/pKAxNyHWIcNgQuwzwllk3iHRJBrkcyyz/5yXr?=
- =?us-ascii?Q?iwFOkkScLiTnNqsVpKSvyV8+/2BcrVaffDx6kG2ESFQqqf5pZ5D8jGVC5h8p?=
- =?us-ascii?Q?HlqHl8bOyn5eIKHDJSoIS6fkbi6tzUyLS/6fMYx3KK2diW47ojP2yiQh6fKf?=
- =?us-ascii?Q?jYXLCMmtvjbjSCY48o5oDIkbW9KGgPW+clhCI/t7N9mS+sTGs/tzG2CRSkTF?=
- =?us-ascii?Q?DdYFpfmmM9RvUNNkfwR8GKWpPfd9IOTVC1SGF189b0kNq7mORsmQDQ+DbCKR?=
- =?us-ascii?Q?M0rjv561lV/KkN40BpXsbZ4MXEhXn+O/c/MUuwIpfsfezCtb5ablwqoyZUJR?=
- =?us-ascii?Q?CwuaQ41eZZsF3xYJK2hSWXDEDyAZ1QywO1VFkGX4ktpLwFF6xDSqksi+0UZg?=
- =?us-ascii?Q?3HqKF+hs4y7lWT6ChoPMXWlwYqT9mm55ZFbshDIGfoYhK5UhIkUBgWpE/Mv6?=
- =?us-ascii?Q?mqKZpwbAAKR/O3+QPOJHZgFChZ+lTN4oOpJKxjpcJiWa+/sP4D9C3krMzeID?=
- =?us-ascii?Q?o2bFaPJWNh+NCzAWCgwTKDZadU6o39cytiOU3BGq0bK3WfUBRPEdrCa/H6RL?=
- =?us-ascii?Q?GZSgZE5tXSV8Jiz0vO9iuPx9Ewppt1MtLHSXrt/wf2TrgTz0mdZeBwiwdj+L?=
- =?us-ascii?Q?8O0OBC7U61V7c1OHU6uKhmTJaUoOLZhqrgspk3flNQvHYFW61RuMDoPDxHjB?=
- =?us-ascii?Q?VmHL0paQiD82Pudi9yE63KHswk9tQ9qP86a4mq1pw9kvkqIqkp7HaYF1vJki?=
- =?us-ascii?Q?h8bz+i7Hd7kwRSd/zudf4RXwEyABIbbMOaR6E0KPtMiOWdRwjUbjCtnelJMo?=
- =?us-ascii?Q?iX9nzhcFuNMrm65MoTnHieAz1OH45cNT2xUwYBlsZ+Jt4lG+WJcVTv8nWpF3?=
- =?us-ascii?Q?iXSmQkSX8kSnSjuubgdAbPSkKAOmBDLtixvgnpcB3a8rWdXT77rKx6B3b75T?=
- =?us-ascii?Q?nuwVq6omimxj1YwiGqH3FxovpqL1QRZNUailaT6K7oHDyL4XudsoZSLZZmst?=
- =?us-ascii?Q?w9XgYPOaVUp9/mqNX1C4oAk8kuD8N4T4gi6zqpmG2Kp0TUsNba9k32EMl5e3?=
- =?us-ascii?Q?k/umwVWrkVFQ4hbCr0uGq8LF?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To:     Martin KaFai Lau <kafai@fb.com>
+CC:     John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+References: <20210831225005.2762202-1-joannekoong@fb.com>
+ <20210831225005.2762202-2-joannekoong@fb.com>
+ <CAEf4Bza_y6497cWE5H04gDg__RkoMovkFYSqXjo-yFG7XH11ug@mail.gmail.com>
+ <61305cf822fa_439b208a5@john-XPS-13-9370.notmuch>
+ <0c1bb5a6-4ef5-77b4-cd10-aea0060d5349@fb.com>
+ <20210903005611.pnkvybwsc5uxddyx@kafai-mbp.dhcp.thefacebook.com>
+From:   Joanne Koong <joannekoong@fb.com>
+In-Reply-To: <20210903005611.pnkvybwsc5uxddyx@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR05CA0033.namprd05.prod.outlook.com
+ (2603:10b6:a03:33f::8) To SA1PR15MB4465.namprd15.prod.outlook.com
+ (2603:10b6:806:194::23)
 MIME-Version: 1.0
+Received: from [IPV6:2620:10d:c085:21e1::12dc] (2620:10d:c090:400::5:b76f) by SJ0PR05CA0033.namprd05.prod.outlook.com (2603:10b6:a03:33f::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.7 via Frontend Transport; Fri, 3 Sep 2021 07:13:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 574eeaf0-b6b5-4de6-d548-08d96eaa5118
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2350:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR15MB23504FCBE2693D0648AB5A8ED2CF9@SN6PR15MB2350.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xm92pf65dJab4Osa34BaTIgd/t3IRHKUDdXsQrfG3ltjn3IeBMFVcEMhyIHKk+NcE3kagB4l6t4sIbKN002kVPmY/9M06jJgMvc//FEUsq2P72O3MM3RPsBWFNFZKQJA/sHuzQGhWq66tW64KBx0q3FY4MrQyJMBOwXqnzopf0SMv3OKrPwCnRaA0c7cY8PLaW0iN8iY7zL4N/H28/gzSP89WU4g6l7OEHoPUFWLa3VNub7h9SvQ/eb8Yy58TkPtYCQ/JcdV9RSOKx46idjvZnw9G7X42R+k3zf3FGIMUDloLmNOVsZHgiLDaSUpI/9zuzFnRqsLDM1HLwuWpdOl399hyDUzDHvFACYIrcsHns3D2Ay4nkbYbb4DWUw3kWufLhv/72eprzouIpwfu/v2Tt3IfiB7k3WSNQCf4MlbGhs4AZZpJxm87mycMXdB2rLmXhVBlNe8ZiE13nZm4P5a6zfybw4YT8DenB88frJvs15ukjs3LmOLpztkvIY0CIy2rNULQEe35YQp0/2aKl842fH/E6pBNKvp5nLlh3nLvbQ+K4p623jUj+zeLFghgu9dQlwwew/XmlFUr5QVOALDisb52DF8dGsbevuyIPWk0ZNJ5a1dlWvjQaN3QEMhx70vC6Wj1hBjlqruNBdqRYbsmyLemrx18ZMoegAQyIpUT5/nXZQUAsQcLtuxsoxewMBt3jARdLC/9YLKjlx4Lc93e9Cew6qwpoH/J3YdfkoLtSg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB4465.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(53546011)(8676002)(2906002)(316002)(66476007)(66556008)(86362001)(2616005)(66946007)(4326008)(5660300002)(8936002)(6636002)(38100700002)(31686004)(508600001)(6862004)(31696002)(36756003)(54906003)(6486002)(37006003)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OVF3d3VlSTFoL3N3TWtYTU1UU0svUXRjSVJtL2FJbzVDZDk1eW1kMlFrU2xK?=
+ =?utf-8?B?V082alEyZGN2NUtQVUhYVHFYbHZBamlXUTJOQ1VuRW1lZ1hma3ZiREdMank2?=
+ =?utf-8?B?QndUWVlnNVhqdkdNUy9aK0o3R0xNeHc0UXNKNUp6OUcyV0VyTFRuVjJJdUxz?=
+ =?utf-8?B?bHU3Ry92WFZLNUZPUVl5a0ZsdTNJZjdFOVAzbWNpanRVeVkxUFVqNEJwSzdx?=
+ =?utf-8?B?K0s5SEtzVEhFSGNTdDVad0RzazJwQzc2cXFvYm1Ta2VjRGlHUlZKUTM3OXBu?=
+ =?utf-8?B?L1NvOW1nUnBEK3g5cjhjNlJlQ0VabjI2Tkh4enlEOVRBcDNXdnFmRlk3L0R3?=
+ =?utf-8?B?b0lQRFlndEU4TjArV3hYcHUxVExJRUp1a0R6dHVjQUgzVm1NUTlaYkIyczFz?=
+ =?utf-8?B?aGxHZkxyTkFpbGtrdTR6VU43QzhOK2NERnFPQlZ5TWFxY2hGYWpnZDBka2tp?=
+ =?utf-8?B?NlhRTWtKa1dRWUowR3BrcFRGS1VZWEIrWlB0Y0wyNWt1U2lvbXNMNXpmbUhN?=
+ =?utf-8?B?UjY3YnF5USsyR1lLaXExSVlOa24xN0lncTNMUlJhRWNtcGRHV0RTQWEzcWx3?=
+ =?utf-8?B?TnFiNkVQWis0TnliN3NjOE16RHluaXcvd1B2ZllYZ2Y4WDdNTzdUS0tzY2Vh?=
+ =?utf-8?B?eFB4MUp6TDQxbmhXVVRLR2hDY1FOVHNaeWQ2aCttS2J6WHhxUTh6U21PSStF?=
+ =?utf-8?B?bkJvVXI1TkZOTVp4bWd0SmxvdUoxSXRiYlQ4NmVmblZaRFI5dVNVSTA4K3dG?=
+ =?utf-8?B?WlpaR3FKQVNpTUk1OWFvbkNRZmtOZE15TkxzVFVUUG5JcStzRTVGYXBoUFJ1?=
+ =?utf-8?B?SDZqTC9YMzJmd0o3VVY0VWU3OGlodFJROHhwZUtjaUZ6MkpoWi9VQmFDT2dn?=
+ =?utf-8?B?WFdnV1FrSXRZQjJzdHJwNTVCbDJHSkxxUVpXRWtyZDBFQWg3cG5aZFFuOFkx?=
+ =?utf-8?B?OGpxZzVGTEl2cnBJUGlVUzVocnA4azJWSXNKYkV5Qmp0M3NhVzd3eVpBdHZV?=
+ =?utf-8?B?T1J4ZmNlOWhNSVk3NktKOGJycXNPeHhWY253ZmlNdi9iZjIySVMyZkJzVXFZ?=
+ =?utf-8?B?aUFwRFk1QWs4Q0Mwa3haK1QwNDBOZWlLMCs4ckU2akwwVmgwQnRKa1FRM1N5?=
+ =?utf-8?B?NHNEOVFZTXUrUWdDZTFleDgzN2lqMmVPV01OaS9SMDRkaWV4dTNmMEM4YU5z?=
+ =?utf-8?B?VDBEVFpuWEI3czVsN0Q3YUNhaVRWZVNPVmlRV0RocUd3K3VZZmxCN1Z0Vjli?=
+ =?utf-8?B?bFNSRVVJaXQrU3ZYNVlFekY1eGtPU2ZaYUM1dzRHVU1aVW1TM1IyN1RCQzRw?=
+ =?utf-8?B?WVVMamFXTHJka0VLNFpUcTgyWWcweUZLam43eWVkRkJOMWxEMFoxYXpSQ3dV?=
+ =?utf-8?B?Z201S2xZclNwa01tVThFaVFzelREdE5GMlVhZG05UDdyTzlLRk1pUDFJdEYv?=
+ =?utf-8?B?dTJwanlCM0VCUXY3OUUwV00vUkl3cDNSNmNSVk1RRkIrd00xemEvRmtkaUZ5?=
+ =?utf-8?B?eHZwdlFGN0ZiWHRSL2VaUXJ5SVR2eGhWd1VlRzNGT3cvNXUvZFRtblF3eWRv?=
+ =?utf-8?B?OGp1UUx3b05STlR1T28wV2tjUnJJeFU2MDBqUDNKdlRzVld5NUV1TVdxMjU4?=
+ =?utf-8?B?YmxXVW5FUFVTQ25lYzNyeklhLzJKRTR6VkxGMEJ4ckIrSkpZbW9Mb0sremJm?=
+ =?utf-8?B?cTRTSHBiNXJzalY3RnRnc1NEdStkaFJpR1k2LzFDekw4amdOY2tDYVVabW0x?=
+ =?utf-8?B?S1FlVmdKVkVhWStaemNVcWU1K1liZXpqaS95ZEVWRENlK3ErSmgvS24xSVRK?=
+ =?utf-8?B?WDRSY2RoWGFqWTY0R29sdz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 574eeaf0-b6b5-4de6-d548-08d96eaa5118
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB4465.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5144.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d427bc8-ad77-4507-4cca-08d96ea7b9d4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Sep 2021 06:54:50.5151
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2021 07:13:23.5635
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5Ro+EHth5s8MEzXYUqRaT4Cx21iH6BvcOU1DG7KxvZmNwCrYDG2wQYf1C+l7OaDe9HdXJe26MsXbNr62juqodwBK5dwWxWm2US/ZzC/FmO4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4837
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +r7rFlbzIdcMQDv0NpYODmwUV/5yGgA77H6gSEACyJP3VUgojQTJ8vsKf+TLj3gccQhU7EblnRwyAhO9s0vXlg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2350
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: suD1qLwt3t4COl12xmpo_Kw-DWfPDCqt
+X-Proofpoint-ORIG-GUID: suD1qLwt3t4COl12xmpo_Kw-DWfPDCqt
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-03_02:2021-09-03,2021-09-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 phishscore=0 spamscore=0 adultscore=0
+ clxscore=1015 mlxlogscore=999 suspectscore=0 bulkscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109030043
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of M=
-aciej
-> Fijalkowski
-> Sent: Wednesday, August 18, 2021 7:29 PM
-> To: intel-wired-lan@lists.osuosl.org
-> Cc: joamaki@gmail.com; Lobakin, Alexandr <alexandr.lobakin@intel.com>;
-> netdev@vger.kernel.org; toke@redhat.com; bjorn@kernel.org; kuba@kernel.or=
-g;
-> bpf@vger.kernel.org; davem@davemloft.net; Karlsson, Magnus
-> <magnus.karlsson@intel.com>
-> Subject: [Intel-wired-lan] [PATCH v6 intel-next 9/9] ice: make use of ice=
-_for_each_*
-> macros
->=20
-> Go through the code base and use ice_for_each_* macros.  While at it, int=
-roduce
-> ice_for_each_xdp_txq() macro that can be used for looping over xdp_rings =
-array.
->=20
-> Commit is not introducing any new functionality.
->=20
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice.h         |  5 ++++-
->  drivers/net/ethernet/intel/ice/ice_arfs.c    |  2 +-
->  drivers/net/ethernet/intel/ice/ice_dcb_lib.c |  4 ++--
-> drivers/net/ethernet/intel/ice/ice_ethtool.c | 10 ++++-----
->  drivers/net/ethernet/intel/ice/ice_lib.c     | 22 ++++++++++----------
->  drivers/net/ethernet/intel/ice/ice_main.c    | 14 ++++++-------
->  6 files changed, 30 insertions(+), 27 deletions(-)
->=20
+On 9/2/21 5:56 PM, Martin KaFai Lau wrote:
 
-Tested-by: George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
+> On Thu, Sep 02, 2021 at 03:07:56PM -0700, Joanne Koong wrote:
+> [ ... ]
+>>>> But one high-level point I wanted to discuss was that bloom filter
+>>>> logic is actually simple enough to be implementable by pure BPF
+>>>> program logic. The only problematic part is generic hashing of a piece
+>>>> of memory. Regardless of implementing bloom filter as kernel-provided
+>>>> BPF map or implementing it with custom BPF program logic, having BPF
+>>>> helper for hashing a piece of memory seems extremely useful and very
+>>>> generic. I can't recall if we ever discussed adding such helpers, but
+>>>> maybe we should?
+>>> Aha started typing the same thing :)
+>>>
+>>> Adding generic hash helper has been on my todo list and close to the top
+>>> now. The use case is hashing data from skb payloads and such from kprobe
+>>> and sockmap side. I'm happy to work on it as soon as possible if no one
+>>> else picks it up.
+>>>
+After thinking through this some more, I'm curious to hear your thoughts,
+Andrii and John, on how the bitmap would be allocated. From what I
+understand, we do not currently support dynamic memory allocations
+in bpf programs. Assuming the optimal number of bits the user wants
+to use for their bitmap follows something like
+num_entries * num_hash_functions / ln(2), I think the bitmap would
+have to be dynamically allocated in the bpf program since it'd be too
+large to store on the stack, unless there's some other way I'm not seeing?
+>>>> It would be a really interesting experiment to implement the same
+>>>> logic in pure BPF logic and run it as another benchmark, along the
+>>>> Bloom filter map. BPF has both spinlock and atomic operation, so we
+>>>> can compare and contrast. We only miss hashing BPF helper.
+>>> The one issue I've found writing a hash logic is its a bit tricky
+>>> to get the verifier to consume it. Especially when the hash is nested
+>>> inside a for loop and sometimes a couple for loops so you end up with
+>>> things like,
+>>>
+>>>   for (i = 0; i < someTlvs; i++) {
+>>>    for (j = 0; j < someKeys; i++) {
+>>>      ...
+>>>      bpf_hash(someValue)
+>>>      ...
+>>>   }
+>>>
+>>> I've find small seemingly unrelated changes cause the complexity limit
+>>> to explode. Usually we can work around it with code to get pruning
+>>> points and such, but its a bit ugly. Perhaps this means we need
+>>> to dive into details of why the complexity explodes, but I've not
+>>> got to it yet. The todo list is long.
+Out of curiosity, why would this helper have trouble in the verifier?
+ From a quick glance, it seems like the implementation for it would
+be pretty similar to how bpf_get_prandom_u32() is implemented
+(except where the arguments for the hash helper would take in a
+void* data (ARG_PTR_TO_MEM), the size of the data buffer, and
+the seed)? I'm a bit new to bpf, so there's a good chance I might be
+completely overlooking something here :)
+
+>>>> Being able to do this in pure BPF code has a bunch of advantages.
+>>>> Depending on specific application, users can decide to:
+>>>>     - speed up the operation by ditching spinlock or atomic operation,
+>>>> if the logic allows to lose some bit updates;
+>>>>     - decide on optimal size, which might not be a power of 2, depending
+>>>> on memory vs CPU trade of in any particular case;
+>>>>     - it's also possible to implement a more general Counting Bloom
+>>>> filter, all without modifying the kernel.
+>>> Also it means no call and if you build it on top of an array
+>>> map of size 1 its just a load. Could this be a performance win for
+>>> example a Bloom filter in XDP for DDOS? Maybe. Not sure if the program
+>>> would be complex enough a call might be in the noise. I don't know.
+>>>
+>>>> We could go further, and start implementing other simple data
+>>>> structures relying on hashing, like HyperLogLog. And all with no
+>>>> kernel modifications. Map-in-map is no issue as well, because there is
+>>>> a choice of using either fixed global data arrays for maximum
+>>>> performance, or using BPF_MAP_TYPE_ARRAY maps that can go inside
+>>>> map-in-map.
+>>> We've been doing most of our array maps as single entry arrays
+>>> at this point and just calculating offsets directly in BPF. Same
+>>> for some simple hashing algorithms.
+>>>
+>>>> Basically, regardless of having this map in the kernel or not, let's
+>>>> have a "universal" hashing function as a BPF helper as well.
+>>>> Thoughts?
+>>> I like it, but not the bloom filter expert here.
+>> Ooh, I like your idea of comparing the performance of the bloom filter with
+>> a kernel-provided BPF map vs. custom BPF program logic using a
+>> hash helper, especially if a BPF hash helper is something useful that
+>> we want to add to the codebase in and of itself!
+> I think a hash helper will be useful in general but could it be a
+> separate experiment to try using it to implement some bpf maps (probably
+> a mix of an easy one and a little harder one) ?
+
+I agree, I think the hash helper implementation should be its own separate
+patchset orthogonal to this one.
+
