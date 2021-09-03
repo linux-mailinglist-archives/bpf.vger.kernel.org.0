@@ -2,132 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2FC3FF8C8
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 04:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1083FF92F
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 06:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239195AbhICCIX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Sep 2021 22:08:23 -0400
-Received: from mga18.intel.com ([134.134.136.126]:31374 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232931AbhICCIW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Sep 2021 22:08:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="206422289"
-X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
-   d="scan'208";a="206422289"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 19:07:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
-   d="scan'208";a="691781879"
-Received: from siang-ilbpg0.png.intel.com ([10.88.227.28])
-  by fmsmga005.fm.intel.com with ESMTP; 02 Sep 2021 19:07:18 -0700
-From:   Song Yoong Siang <yoong.siang.song@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Song Yoong Siang <yoong.siang.song@intel.com>
-Subject: [PATCH net 1/1] net: stmmac: Fix overall budget calculation for rxtx_napi
-Date:   Fri,  3 Sep 2021 10:00:26 +0800
-Message-Id: <20210903020026.1381962-1-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S229624AbhICEBG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 00:01:06 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:40898 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229481AbhICEBG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Sep 2021 00:01:06 -0400
+Received: from BJHW-Mail-Ex15.internal.baidu.com (unknown [10.127.64.38])
+        by Forcepoint Email with ESMTPS id 16D55AFC0E4098A45303;
+        Fri,  3 Sep 2021 12:00:05 +0800 (CST)
+Received: from BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) by
+ BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Fri, 3 Sep 2021 12:00:04 +0800
+Received: from BJHW-Mail-Ex15.internal.baidu.com ([100.100.100.38]) by
+ BJHW-Mail-Ex15.internal.baidu.com ([100.100.100.38]) with mapi id
+ 15.01.2308.014; Fri, 3 Sep 2021 12:00:04 +0800
+From:   "Li,Rongqing" <lirongqing@baidu.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Subject: =?utf-8?B?562U5aSNOiDnrZTlpI06IFtQQVRDSF0gdmlydGlvX25ldDogcmVkdWNlIHJh?=
+ =?utf-8?B?d19zbXBfcHJvY2Vzc29yX2lkKCkgY2FsbGluZyBpbiB2aXJ0bmV0X3hkcF9n?=
+ =?utf-8?Q?et=5Fsq?=
+Thread-Topic: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHZpcnRpb19uZXQ6IHJlZHVjZSByYXdfc21wX3By?=
+ =?utf-8?B?b2Nlc3Nvcl9pZCgpIGNhbGxpbmcgaW4gdmlydG5ldF94ZHBfZ2V0X3Nx?=
+Thread-Index: AQHXneNzpWGI4yCMH0iM4E17NXpkuauM3hmAgABKeACABIvLUA==
+Date:   Fri, 3 Sep 2021 04:00:04 +0000
+Message-ID: <a8d31e69b6e648adb73c7ca3a61eea3e@baidu.com>
+References: <1629966095-16341-1-git-send-email-lirongqing@baidu.com>
+ <20210830170837-mutt-send-email-mst@kernel.org>
+ <bbf978c3252b4f2ea13ab7ca07d53034@baidu.com>
+ <20210831103024-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210831103024-mutt-send-email-mst@kernel.org>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.194.62]
+x-baidu-bdmsfe-datecheck: 1_BJHW-Mail-Ex15_2021-09-03 12:00:05:006
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tx_done is not used for napi_complete_done(). Thus, NAPI busy polling
-mechanism by gro_flush_timeout and napi_defer_hard_irqs will not able
-be triggered after a packet is transmitted when there is no receive
-packet.
-
-Fix this by taking the maximum value between tx_done and rx_done as
-overall budget completed by the rxtx NAPI poll to ensure XDP Tx ZC
-operation is continuously polling for next Tx frame. This gives
-benefit of lower packet submission processing latency and jitter
-under XDP Tx ZC mode.
-
-Performance of tx-only using xdp-sock on Intel ADL-S platform is
-the same with and without this patch.
-
-root@intel-corei7-64:~# ./xdpsock -i enp0s30f4 -t -z -q 1 -n 10
- sock0@enp0s30f4:1 txonly xdp-drv
-                   pps            pkts           10.00
-rx                 0              0
-tx                 511630         8659520
-
- sock0@enp0s30f4:1 txonly xdp-drv
-                   pps            pkts           10.00
-rx                 0              0
-tx                 511625         13775808
-
- sock0@enp0s30f4:1 txonly xdp-drv
-                   pps            pkts           10.00
-rx                 0              0
-tx                 511619         18892032
-
-Fixes: 132c32ee5bc0 ("net: stmmac: Add TX via XDP zero-copy socket")
-Cc: <stable@vger.kernel.org> # 5.13.x
-Co-developed-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index ed0cd3920171..97238359e101 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5347,7 +5347,7 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
- 	struct stmmac_channel *ch =
- 		container_of(napi, struct stmmac_channel, rxtx_napi);
- 	struct stmmac_priv *priv = ch->priv_data;
--	int rx_done, tx_done;
-+	int rx_done, tx_done, rxtx_done;
- 	u32 chan = ch->index;
- 
- 	priv->xstats.napi_poll++;
-@@ -5357,14 +5357,16 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
- 
- 	rx_done = stmmac_rx_zc(priv, budget, chan);
- 
-+	rxtx_done = max(tx_done, rx_done);
-+
- 	/* If either TX or RX work is not complete, return budget
- 	 * and keep pooling
- 	 */
--	if (tx_done >= budget || rx_done >= budget)
-+	if (rxtx_done >= budget)
- 		return budget;
- 
- 	/* all work done, exit the polling mode */
--	if (napi_complete_done(napi, rx_done)) {
-+	if (napi_complete_done(napi, rxtx_done)) {
- 		unsigned long flags;
- 
- 		spin_lock_irqsave(&ch->lock, flags);
-@@ -5375,7 +5377,7 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
- 		spin_unlock_irqrestore(&ch->lock, flags);
- 	}
- 
--	return min(rx_done, budget - 1);
-+	return min(rxtx_done, budget - 1);
- }
- 
- /**
--- 
-2.25.1
-
+DQoNCj4gLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0KPiDlj5Hku7bkuro6IE1pY2hhZWwgUy4gVHNp
+cmtpbiA8bXN0QHJlZGhhdC5jb20+DQo+IOWPkemAgeaXtumXtDogMjAyMeW5tDjmnIgzMeaXpSAy
+MjozNA0KPiDmlLbku7bkuro6IExpLFJvbmdxaW5nIDxsaXJvbmdxaW5nQGJhaWR1LmNvbT4NCj4g
+5oqE6YCBOiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBicGZAdmdlci5rZXJuZWwub3JnOw0KPiB2
+aXJ0dWFsaXphdGlvbkBsaXN0cy5saW51eC1mb3VuZGF0aW9uLm9yZw0KPiDkuLvpopg6IFJlOiDn
+rZTlpI06IFtQQVRDSF0gdmlydGlvX25ldDogcmVkdWNlIHJhd19zbXBfcHJvY2Vzc29yX2lkKCkg
+Y2FsbGluZyBpbg0KPiB2aXJ0bmV0X3hkcF9nZXRfc3ENCj4gDQo+IE9uIFR1ZSwgQXVnIDMxLCAy
+MDIxIGF0IDAyOjA5OjM2QU0gKzAwMDAsIExpLFJvbmdxaW5nIHdyb3RlOg0KPiA+ID4gLS0tLS3p
+gq7ku7bljp/ku7YtLS0tLQ0KPiA+ID4g5Y+R5Lu25Lq6OiBNaWNoYWVsIFMuIFRzaXJraW4gPG1z
+dEByZWRoYXQuY29tPg0KPiA+ID4g5Y+R6YCB5pe26Ze0OiAyMDIx5bm0OOaciDMx5pelIDU6MTAN
+Cj4gPiA+IOaUtuS7tuS6ujogTGksUm9uZ3FpbmcgPGxpcm9uZ3FpbmdAYmFpZHUuY29tPg0KPiA+
+ID4g5oqE6YCBOiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBicGZAdmdlci5rZXJuZWwub3JnOw0K
+PiA+ID4gdmlydHVhbGl6YXRpb25AbGlzdHMubGludXgtZm91bmRhdGlvbi5vcmcNCj4gPiA+IOS4
+u+mimDogUmU6IFtQQVRDSF0gdmlydGlvX25ldDogcmVkdWNlIHJhd19zbXBfcHJvY2Vzc29yX2lk
+KCkgY2FsbGluZyBpbg0KPiA+ID4gdmlydG5ldF94ZHBfZ2V0X3NxDQo+ID4gPg0KPiA+ID4gT24g
+VGh1LCBBdWcgMjYsIDIwMjEgYXQgMDQ6MjE6MzVQTSArMDgwMCwgTGkgUm9uZ1Fpbmcgd3JvdGU6
+DQo+ID4gPiA+IHNtcF9wcm9jZXNzb3JfaWQoKS9yYXcqIHdpbGwgYmUgY2FsbGVkIG9uY2UgZWFj
+aCB3aGVuIG5vdCBtb3JlDQo+ID4gPiA+IHF1ZXVlcyBpbiB2aXJ0bmV0X3hkcF9nZXRfc3EoKSB3
+aGljaCBpcyBjYWxsZWQgaW4gbm9uLXByZWVtcHRpYmxlDQo+ID4gPiA+IGNvbnRleHQsIHNvIGl0
+J3Mgc2FmZSB0byBjYWxsIHRoZSBmdW5jdGlvbg0KPiA+ID4gPiBzbXBfcHJvY2Vzc29yX2lkKCkg
+b25jZS4NCj4gPiA+ID4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogTGkgUm9uZ1FpbmcgPGxpcm9u
+Z3FpbmdAYmFpZHUuY29tPg0KPiA+ID4NCj4gPiA+IGNvbW1pdCBsb2cgc2hvdWxkIHByb2JhYmx5
+IGV4cGxhaW4gd2h5IGl0J3MgYSBnb29kIGlkZWEgdG8gcmVwbGFjZQ0KPiA+ID4gcmF3X3NtcF9w
+cm9jZXNzb3JfaWQgd2l0aCBzbXBfcHJvY2Vzc29yX2lkIGluIHRoZSBjYXNlIG9mDQo+ID4gPiBj
+dXJyX3F1ZXVlX3BhaXJzIDw9IG5yX2NwdV9pZHMuDQo+ID4gPg0KPiA+DQo+ID4NCj4gPiBJIGNo
+YW5nZSBpdCBhcyBiZWxvdywgaXMgaXQgb2s/DQo+ID4NCj4gPiAgICAgdmlydGlvX25ldDogcmVk
+dWNlIHJhd19zbXBfcHJvY2Vzc29yX2lkKCkgY2FsbGluZyBpbg0KPiA+IHZpcnRuZXRfeGRwX2dl
+dF9zcQ0KPiANCj4gc2hvcnRlcjoNCj4gDQo+IHZpcnRpb19uZXQ6IHMvcmF3X3NtcF9wcm9jZXNz
+b3JfaWQvc21wX3Byb2Nlc3Nvcl9pZC8gaW4gdmlydG5ldF94ZHBfZ2V0X3NxDQo+IA0KPiANCj4g
+Pg0KPiA+ICAgICBzbXBfcHJvY2Vzc29yX2lkKCkgYW5kIHJhd19zbXBfcHJvY2Vzc29yX2lkKCkg
+YXJlIGNhbGxlZCBvbmNlDQo+ID4gICAgIGVhY2ggaW4gdmlydG5ldF94ZHBfZ2V0X3NxKCksIHdo
+ZW4gY3Vycl9xdWV1ZV9wYWlycyA8PSBucl9jcHVfaWRzLA0KPiA+ICAgICBzaG91bGQgYmUgbWVy
+Z2VkDQo+IA0KPiBJJ2QganVzdCBkcm9wIHRoaXMgcGFydC4NCj4gDQo+ID4NCj4gPiAgICAgdmly
+dG5ldF94ZHBfZ2V0X3NxKCkgaXMgY2FsbGVkIGluIG5vbi1wcmVlbXB0aWJsZSBjb250ZXh0LCBz
+bw0KPiA+ICAgICBpdCdzIHNhZmUgdG8gY2FsbCB0aGUgZnVuY3Rpb24gc21wX3Byb2Nlc3Nvcl9p
+ZCgpLCBhbmQga2VlcA0KPiA+ICAgICBzbXBfcHJvY2Vzc29yX2lkKCksIGFuZCByZW1vdmUgdGhl
+IGNhbGxpbmcgb2YgcmF3X3NtcF9wcm9jZXNzb3JfaWQoKSwNCj4gPiAgICAgYXZvaWQgdGhlIHdy
+b25nIHVzZSB2aXJ0bmV0X3hkcF9nZXRfc3EgdG8gcHJlZW1wdGlibGUgY29udGV4dA0KPiA+ICAg
+ICBpbiB0aGUgZnV0dXJlDQo+IA0KPiBzL2F2b2lkLiovdGhpcyB3YXkgd2UnbGwgZ2V0IGEgd2Fy
+bmluZyBpZiB0aGlzIGlzIGV2ZXIgY2FsbGVkIGluIGEgcHJlZW1wdGlibGUNCj4gY29udGV4dC8N
+Cj4gDQoNCg0KVGhhbmtzLCBzaG91bGQgSSByZXNlbmQgaXQNCg0KLUxpDQoNCg0KPiANCj4gPg0K
+PiA+IC1MaQ0KDQo=
