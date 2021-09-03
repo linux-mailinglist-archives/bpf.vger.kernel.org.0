@@ -2,110 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5CE4003EF
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 19:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256F44003F8
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 19:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349616AbhICRL3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 13:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235425AbhICRL2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:11:28 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB06C061575;
-        Fri,  3 Sep 2021 10:10:28 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id j195so3298241ybg.6;
-        Fri, 03 Sep 2021 10:10:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5MjMHuC+roNm7Spa73SgumLohK2Wfsd4VJdqj/W1924=;
-        b=VIZ3CL/+O3UuYMs8eVjmKMQ1O4PiKyZlLSGb+YS/eZDENI7Vh6DXz6ha6ZNMlari+x
-         y/ze7Ji0aApiBcNbJY+FOvDQFRAPGpEA63Q/F73ioEgJHanNl7ZZkUifaQ0x51wGSKNa
-         xR61VTmokLrpYELWjMX9M9rt+AJe7e7r2j9QWsk8YF/vHzb/nCQykFTLkMXoJ5yXvfLj
-         Db6eJKEVUPSVDKyxeiP+78gdEYSl9sVN15q4dyXA6gqwr//3poaJ7rjqYtgMs8f1ZkzV
-         kc8rAD8yj2AM1+lByqHnZQSYMsihCmdBaDIBOo/6V+30udlCZwibcUOj3rQov6DwD8Cx
-         fXxg==
+        id S1350139AbhICROc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 13:14:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53565 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349049AbhICROc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 3 Sep 2021 13:14:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630689211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yHJyQTuhQ2rUo4HEpkrQXS+C/jFPNpqCCL4OYhPvFJs=;
+        b=P+MrMyKce4Q+zsN6ckx3kh8yefQPpAD2LkLgVJd1yMRenRyqwyO8MmNTOc6nlpp4nPikqh
+        JPSDa0XDUhg2FyTkLEh5Lp89n9qX7StvVVwpcxtEJeUp3VLkLfsOEWjCcpW7peEwz/9vpA
+        LJzcvCSc+6g3qJDyH8UcRYgfolNPcJE=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-brwS3-l1M82oja81deqMcA-1; Fri, 03 Sep 2021 13:13:30 -0400
+X-MC-Unique: brwS3-l1M82oja81deqMcA-1
+Received: by mail-yb1-f199.google.com with SMTP id h143-20020a25d095000000b0059c2e43cd3eso7145607ybg.12
+        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 10:13:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5MjMHuC+roNm7Spa73SgumLohK2Wfsd4VJdqj/W1924=;
-        b=oQbDipayy25PijDEONkDHx0tS2wMTgKDUZtzzNFKR3zroh5Apn18tADIYIC1aSAS/l
-         WfgkhFTtSCSxxh6XQKty9+YpN97aO2umIZK49lGxffS6qJYudcll5oLBl9pcRgjmQwVT
-         Jl+FK95m/WFyjy/RZdnn7RG365DvkFa2Y0VO4ReZbESPf9GMCNRWTP6W+r+jz4LELRGl
-         DO00rZDqvaeD85oRoACMdEC4pc62ja0gui7wKXodRXZFSrVHnVAVflLMueHPN11ekM7S
-         XDZF0l0+1/px/Cdw8rtbydjfkFD535blRbhbt8fKlR2+kiFCUfwCD0cvqaVD0gVCrO2D
-         FjRQ==
-X-Gm-Message-State: AOAM531n+HlZxMmrvUqiWpfHYSh+e+9u28smzbVYMifxkwg0rld9p1OO
-        Lpb0hlFdc/Di2h90xV55lZsG5Vz11p8RwNW75Cs=
-X-Google-Smtp-Source: ABdhPJxAwhbn6BupCHaSyKoQeKtU3NA6uno4HUm2g/J3uxG5aJ7h5UIVbOVsRd7X4ri/XV6ah82YYMmWuQOJREMDflo=
-X-Received: by 2002:a25:8c4:: with SMTP id 187mr67041ybi.369.1630689027611;
- Fri, 03 Sep 2021 10:10:27 -0700 (PDT)
+        bh=yHJyQTuhQ2rUo4HEpkrQXS+C/jFPNpqCCL4OYhPvFJs=;
+        b=lbo7DJ1c2rwYixXYzvO3cpqkQvZNTeiDnEKhKbSHoiZbAWz6Mc+Dnad9y5H7rBnkCh
+         4q/ZgbCOpUQ0J5pMVvxJ52O158N3Ji0I6vJEf9LT8QzNbHyXbdSKVepyTZiwDz6/epQ+
+         B3Wo2YmCzCBqA8QcXGKpV3wNTV9OnKYxM3s4TQ9nnv+xRMsW3UuMQCySgn/6lKtiZvJH
+         wNvk3oYXxDley2coaBvNYpSkdSDydwlBPrHxKo4UE8xYxWtmDuGd++cUFqBbAr9eFT8U
+         3U5+gxHYtADfEFgS404pVui6yCFKhGPuHOrgLmuGRCmE9f78qDrL5oQvlycnEMe7jlTi
+         zi1w==
+X-Gm-Message-State: AOAM5327UalpdR+MlJUCpATaC3lHwP/GtG0h7bpD2VaPxNlM3os6Jpck
+        1NHmCZykzoIia7wvZoXL4zrjNCoYuSo29GjqP+2PaahVVjbcAzE54wrRKIscYw+JXB9tUawMrcc
+        22fY/QmjRk8bN1/O26Z0BZtcoXHP4
+X-Received: by 2002:a25:c005:: with SMTP id c5mr158245ybf.168.1630689210020;
+        Fri, 03 Sep 2021 10:13:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzn64tX3wVU8FQE/8IxOa46/3bOs07liCcjapLECaEcqfxtXRfkxmGyJeh0V2xmOGq4e8Mife4ldeUUuZVuHq4=
+X-Received: by 2002:a25:c005:: with SMTP id c5mr158209ybf.168.1630689209747;
+ Fri, 03 Sep 2021 10:13:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902165706.2812867-1-songliubraving@fb.com>
- <20210902165706.2812867-3-songliubraving@fb.com> <YTHhOy1gqr44C1bI@hirez.programming.kicks-ass.net>
-In-Reply-To: <YTHhOy1gqr44C1bI@hirez.programming.kicks-ass.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 3 Sep 2021 10:10:16 -0700
-Message-ID: <CAEf4BzZ0eq1iFh1oVwTZ7+bQkb=pJShgDWzUSAp41sk30iQunQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kernel Team <kernel-team@fb.com>
+References: <cover.1629473233.git.lorenzo@kernel.org> <ab0c64f1543239256ef63ec9b40f35a7491812c6.1629473233.git.lorenzo@kernel.org>
+ <612eb79343225_6b872087a@john-XPS-13-9370.notmuch>
+In-Reply-To: <612eb79343225_6b872087a@john-XPS-13-9370.notmuch>
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Date:   Fri, 3 Sep 2021 19:13:18 +0200
+Message-ID: <CAJ0CqmWGNapcmVae52UJNAg7XKS7f0F2dmQMoO+1sL3zp=oFTw@mail.gmail.com>
+Subject: Re: [PATCH v12 bpf-next 01/18] net: skbuff: add size metadata to
+ skb_shared_info for xdp
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Agroskin, Shay" <shayagr@amazon.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>,
+        Toke Hoiland Jorgensen <toke@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 1:49 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> On Thu, Sep 02, 2021 at 09:57:05AM -0700, Song Liu wrote:
-> > +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
-> > +{
-> > +     static const u32 br_entry_size = sizeof(struct perf_branch_entry);
-> > +     u32 entry_cnt = size / br_entry_size;
-> > +
-> > +     if (unlikely(flags))
-> > +             return -EINVAL;
-> > +
-> > +     if (!buf || (size % br_entry_size != 0))
-
-I think buf can't be NULL, this should be enforced already by verifier
-due to ARG_PTR_TO_UNINIT_MEM, so we can drop that.
-
-> > +             return -EINVAL;
-> > +
-> > +     entry_cnt = static_call(perf_snapshot_branch_stack)(buf, entry_cnt);
+> Lorenzo Bianconi wrote:
+> > Introduce xdp_frags_tsize field in skb_shared_info data structure
+> > to store xdp_buff/xdp_frame truesize (xdp_frags_tsize will be used
+> > in xdp multi-buff support). In order to not increase skb_shared_info
+> > size we will use a hole due to skb_shared_info alignment.
+> > Introduce xdp_frags_size field in skb_shared_info data structure
+> > reusing gso_type field in order to store xdp_buff/xdp_frame paged size.
+> > xdp_frags_size will be used in xdp multi-buff support.
+> >
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 >
-> That's at least 2, possibly 3 branches just from the sanity checks, plus
-> at least one from starting the BPF prog and one from calling this
-> function, gets you at ~5 branch entries gone before you even do the
-> snapshot thing.
+> I assume we can use xdp_frags_tsize for anything else above XDP later?
+> Other than simple question looks OK to me.
+
+yes, right as we did for gso_type/xdp_frags_size.
+
+Regards,
+Lorenzo
+
 >
-> Less if you're in branch-stack mode.
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
 >
-> Can't the validator help with getting rid of the some of that?
+> > ---
+> >  include/linux/skbuff.h | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index 6bdb0db3e825..1abeba7ef82e 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -522,13 +522,17 @@ struct skb_shared_info {
+> >       unsigned short  gso_segs;
+> >       struct sk_buff  *frag_list;
+> >       struct skb_shared_hwtstamps hwtstamps;
+> > -     unsigned int    gso_type;
+> > +     union {
+> > +             unsigned int    gso_type;
+> > +             unsigned int    xdp_frags_size;
+> > +     };
+> >       u32             tskey;
+> >
+> >       /*
+> >        * Warning : all fields before dataref are cleared in __alloc_skb()
+> >        */
+> >       atomic_t        dataref;
+> > +     unsigned int    xdp_frags_tsize;
+> >
+> >       /* Intermediate layers must ensure that destructor_arg
+> >        * remains valid until skb destructor */
+> > --
+> > 2.31.1
+> >
+>
 >
 
-Good points. I think we can drop !buf check completely. The flags and
-size checks can be moved after perf_snapshot_branch_stack call. In
-common cases those checks should always pass, but even if they don't
-we'll just capture the LBR anyways, but will return an error later,
-which seems totally acceptable.
-
-As Alexei mentioned, there is a whole non-inlined migrate_disable()
-call before this, which we should inline as well. It's good for
-performance, not just LBR.
-
-> I suppose you have to have this helper function because the JIT cannot
-> emit static_call()... although in this case one could cheat and simply
-> emit a call to static_call_query() and not bother with dynamic updates
-> (because there aren't any).
-
-If that's safe, let's do it.
