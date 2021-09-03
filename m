@@ -2,112 +2,287 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C303FFFC4
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 14:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A17940001F
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 15:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349357AbhICMct (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 08:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhICMcs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Sep 2021 08:32:48 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FBCC061757
-        for <bpf@vger.kernel.org>; Fri,  3 Sep 2021 05:31:48 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id k20-20020a05600c0b5400b002e87ad6956eso3462108wmr.1
-        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 05:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vTpqNQaM6lWYVJnHl82Fyh/O+33HHqtU4xirnSXQUYs=;
-        b=p4lyLGqiJiypZqMDxYZYmOZ55pKcMEV3cwx3gZUZsyKyAGLkRDW11I9fbVJgXkrt4D
-         eopoaoajV/miiQtWFmeCDwINubRea14TOZ3uIbLpu1NkKnqvoA3Vf2cjD7hUFb18SnaV
-         MZVas75N3s31DFhGRByuswfj4twLv1DgvCyZuyg44q8ZTJK7Ve6ZUyrfwjHfWsW9t5Wv
-         p/YSBu3agQhigfwSoJMZ7kVZZ28jpGmcaduIfi0WHK+QD8kYovKl1t9NxFcgkBgPRdsR
-         ZckUki+LylHVA1TVO/o4LjjdGe2zblirLw2QdqucAzyTIV0gxTAexOdbk8wPZ7SJXoX9
-         bXPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vTpqNQaM6lWYVJnHl82Fyh/O+33HHqtU4xirnSXQUYs=;
-        b=lTjPMe7YFUjRhlvw/xc3GuCiSAlpaNQPKZZnzKrHq0yLGyRMoZ8411Q/BksIigZGJd
-         CKMpp/vs08+5S5bDoAf/Gh8zF+AygXFrOJxI6TOUi35UbV7oZzr5WD7Ehh4xI3+lCXWX
-         N2Q5fp2PmN254M+QrCD5M3Ly09NQA+5QnZaDmKCUPR/yO2jVI/0F7kDpIKKlPLvYBYL8
-         gYG51zHf9W0w6d93bTTbJisxlASC8esvtrvNfjqm8lQIekL3//Jmgm3Fo+0al3ftJPtR
-         2h7ag4YzkjTCIzsM3D8Zn0uwvs9Cdk0p9hb9J4YVLUEHWc0PE9g7Wlhi3lfP/1RvPPZ+
-         rDeA==
-X-Gm-Message-State: AOAM533X70OzHG/ERdZ7lScjUYjruKa8qKZjHmYzrIJXTf1osxtQnqUq
-        Rdr2JfsSrkt0BjogWQDSLIsb+w==
-X-Google-Smtp-Source: ABdhPJwWnw6fJtjHPeIU/KjhjOFglKmSaCXrxfWPWoUO24U0pvjCCpWFz1eU84xUCuAY5YQpA34oAQ==
-X-Received: by 2002:a05:600c:3656:: with SMTP id y22mr7994102wmq.58.1630672307332;
-        Fri, 03 Sep 2021 05:31:47 -0700 (PDT)
-Received: from larix (19.11.114.78.rev.sfr.net. [78.114.11.19])
-        by smtp.gmail.com with ESMTPSA id k1sm4758119wrz.61.2021.09.03.05.31.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 05:31:46 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 14:33:57 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix build of task_pt_regs tests
- for arm64
-Message-ID: <YTIWNRqZ/HmHgcaE@larix>
-References: <20210902090925.2010528-1-jean-philippe@linaro.org>
- <CAADnVQKwHXw7fLGpJBJBb_MW+d1Gzexo2wk9QwE2v3fy=kHDRA@mail.gmail.com>
+        id S235348AbhICNFY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 09:05:24 -0400
+Received: from mga18.intel.com ([134.134.136.126]:43372 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229645AbhICNFX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Sep 2021 09:05:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="206536573"
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="206536573"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 06:04:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="500353441"
+Received: from ipd-test105-dell.igk.intel.com (HELO localhost.localdomain) ([10.102.20.173])
+  by fmsmga008.fm.intel.com with ESMTP; 03 Sep 2021 06:04:19 -0700
+Date:   Fri, 3 Sep 2021 17:04:57 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com, ciara.loftus@intel.com,
+        bpf@vger.kernel.org, yhs@fb.com, andrii@kernel.org
+Subject: Re: [PATCH bpf-next 16/20] selftests: xsk: introduce replacing the
+ default packet stream
+Message-ID: <YTI4Ucn+6/uWLezP@localhost.localdomain>
+References: <20210901104732.10956-1-magnus.karlsson@gmail.com>
+ <20210901104732.10956-17-magnus.karlsson@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQKwHXw7fLGpJBJBb_MW+d1Gzexo2wk9QwE2v3fy=kHDRA@mail.gmail.com>
+In-Reply-To: <20210901104732.10956-17-magnus.karlsson@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 12:13:40PM -0700, Alexei Starovoitov wrote:
-> On Thu, Sep 2, 2021 at 2:08 AM Jean-Philippe Brucker
-> <jean-philippe@linaro.org> wrote:
-> >
-> > struct pt_regs is not exported to userspace on all archs. arm64 and s390
-> > export "user_pt_regs" instead, which causes build failure at the moment:
-> >
-> >   progs/test_task_pt_regs.c:8:16: error: variable has incomplete type 'struct pt_regs'
-> >   struct pt_regs current_regs = {};
+On Wed, Sep 01, 2021 at 12:47:28PM +0200, Magnus Karlsson wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
 > 
-> Right, which is 'bpf_user_pt_regs_t'.
-> It's defined for all archs and arm64/s390/ppc/risv define it
-> differently from pt_regs.
+> Introduce the concept of a default packet stream that is the set of
+> packets sent by most tests. Then add the ability to replace it for a
+> test that would like to send or receive something else through the use
+> of the function pkt_stream_replace() and then restored with
+> pkt_stream_restore_default(). These are then used to convert the
+> STAT_TX_INVALID_TEST to use these new APIs.
+
+s/STAT_TX_INVALID_TEST/STAT_TEST_TX_INVALID
+
 > 
-> >
-> > Use the multi-arch macros defined by tools/lib/bpf/bpf_tracing.h to copy
-> > the pt_regs into a locally-defined struct.
-> >
-> > Copying the user_pt_regs struct on arm64 wouldn't work because the
-> > struct is too large and the compiler complains about using too much
-> > stack.
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
+>  tools/testing/selftests/bpf/xdpxceiver.c | 67 +++++++++++++++++-------
+>  tools/testing/selftests/bpf/xdpxceiver.h |  1 +
+>  2 files changed, 50 insertions(+), 18 deletions(-)
 > 
-> That's a different issue.
+> diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
+> index 09d2854c10e6..d4aad4833754 100644
+> --- a/tools/testing/selftests/bpf/xdpxceiver.c
+> +++ b/tools/testing/selftests/bpf/xdpxceiver.c
+> @@ -390,6 +390,7 @@ static void __test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
+>  		ifobj->umem = &ifobj->umem_arr[0];
+>  		ifobj->xsk = &ifobj->xsk_arr[0];
+>  		ifobj->use_poll = false;
+> +		ifobj->pkt_stream = test->pkt_stream_default;
+>  
+>  		if (i == 0) {
+>  			ifobj->rx_on = false;
+> @@ -418,9 +419,12 @@ static void __test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
+>  static void test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
+>  			   struct ifobject *ifobj_rx, enum test_mode mode)
+>  {
+> +	struct pkt_stream *pkt_stream;
+>  	u32 i;
+>  
+> +	pkt_stream = test->pkt_stream_default;
+>  	memset(test, 0, sizeof(*test));
+> +	test->pkt_stream_default = pkt_stream;
+>  
+>  	for (i = 0; i < MAX_INTERFACES; i++) {
+>  		struct ifobject *ifobj = i ? ifobj_rx : ifobj_tx;
+> @@ -455,6 +459,19 @@ static struct pkt *pkt_stream_get_pkt(struct pkt_stream *pkt_stream, u32 pkt_nb)
+>  	return &pkt_stream->pkts[pkt_nb];
+>  }
+>  
+> +static void pkt_stream_delete(struct pkt_stream *pkt_stream)
+> +{
+> +	free(pkt_stream->pkts);
+> +	free(pkt_stream);
+> +}
+> +
+> +static void pkt_stream_restore_default(struct test_spec *test)
+> +{
+> +	pkt_stream_delete(test->ifobj_tx->pkt_stream);
 
-It does work when doing an implicit copy (current_regs = *regs) rather
-than using __builtin_memcpy(). Don't know why but I'll take it.
+I suppose that streams are the same for both tx and rx ifobjs hence it's
+enough to call the delete op a single time.
 
-> I think the cleaner fix would be to make the test use
-> bpf_user_pt_regs_t instead.
+> +	test->ifobj_tx->pkt_stream = test->pkt_stream_default;
+> +	test->ifobj_rx->pkt_stream = test->pkt_stream_default;
+> +}
+> +
+>  static struct pkt_stream *pkt_stream_generate(struct xsk_umem_info *umem, u32 nb_pkts, u32 pkt_len)
+>  {
+>  	struct pkt_stream *pkt_stream;
+> @@ -483,6 +500,17 @@ static struct pkt_stream *pkt_stream_generate(struct xsk_umem_info *umem, u32 nb
+>  	return pkt_stream;
+>  }
+>  
+> +static void pkt_stream_replace(struct test_spec *test, u32 nb_pkts, u32 pkt_len)
+> +{
+> +	struct pkt_stream *pkt_stream;
+> +
+> +	pkt_stream = pkt_stream_generate(test->ifobj_tx->umem, nb_pkts, pkt_len);
+> +	test->ifobj_tx->pkt_stream = pkt_stream;
+> +	test->ifobj_rx->pkt_stream = pkt_stream;
+> +
+> +	pkt_stream_delete(pkt_stream);
 
-Right, although that comes with another complication. We end up including
-tools/include/uapi/asm/bpf_perf_event.h which requires the compiler
-builtins "__aarch64__", "__s390__", etc. Those are not defined with
-"clang -target bpf" so I have to add them to the command line.
-I'll resend with your suggestion but this patch is simpler.
+Shouldn't this be deleting the stream that got replaced? You're assigning
+pkt_stream to ifobjs and then immediately free it.
 
-Thanks,
-Jean
+I'd say that we should drop this call to pkt_stream_delete() in here
+unless I'm missing something, pkt_stream_restore_default() will free the
+currently assigned pkt stream and bring back the default one to the
+ifobjs.
+
+> +}
+> +
+>  static struct pkt *pkt_generate(struct ifobject *ifobject, u32 pkt_nb)
+>  {
+>  	struct pkt *pkt = pkt_stream_get_pkt(ifobject->pkt_stream, pkt_nb);
+> @@ -557,7 +585,7 @@ static bool is_pkt_valid(struct pkt *pkt, void *buffer, const struct xdp_desc *d
+>  	if (iphdr->version == IP_PKT_VER && iphdr->tos == IP_PKT_TOS) {
+>  		u32 seqnum = ntohl(*((u32 *)(data + PKT_HDR_SIZE)));
+>  
+> -		if (opt_pkt_dump && test_type != TEST_TYPE_STATS)
+> +		if (opt_pkt_dump)
+>  			pkt_dump(data, PKT_SIZE);
+>  
+>  		if (pkt->len != desc->len) {
+> @@ -598,9 +626,6 @@ static void complete_pkts(struct xsk_socket_info *xsk, int batch_size)
+>  	unsigned int rcvd;
+>  	u32 idx;
+>  
+> -	if (!xsk->outstanding_tx)
+> -		return;
+> -
+>  	if (xsk_ring_prod__needs_wakeup(&xsk->tx))
+>  		kick_tx(xsk);
+>  
+> @@ -831,6 +856,7 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
+>  
+>  static void testapp_cleanup_xsk_res(struct ifobject *ifobj)
+>  {
+> +	print_verbose("Destroying socket\n");
+>  	xsk_socket__delete(ifobj->xsk->xsk);
+>  	xsk_umem__delete(ifobj->umem->umem);
+>  }
+> @@ -878,9 +904,6 @@ static void *worker_testapp_validate_rx(void *arg)
+>  	else
+>  		receive_pkts(ifobject->pkt_stream, ifobject->xsk, &fds);
+>  
+> -	if (test_type == TEST_TYPE_TEARDOWN)
+> -		print_verbose("Destroying socket\n");
+> -
+>  	if (test->total_steps == test->current_step)
+>  		testapp_cleanup_xsk_res(ifobject);
+>  	pthread_exit(NULL);
+> @@ -890,19 +913,11 @@ static void testapp_validate_traffic(struct test_spec *test)
+>  {
+>  	struct ifobject *ifobj_tx = test->ifobj_tx;
+>  	struct ifobject *ifobj_rx = test->ifobj_rx;
+> -	struct pkt_stream *pkt_stream;
+>  	pthread_t t0, t1;
+>  
+>  	if (pthread_barrier_init(&barr, NULL, 2))
+>  		exit_with_error(errno);
+>  
+> -	if (stat_test_type == STAT_TEST_TX_INVALID)
+> -		pkt_stream = pkt_stream_generate(test->ifobj_tx->umem, DEFAULT_PKT_CNT,
+> -						 XSK_UMEM__INVALID_FRAME_SIZE);
+> -	else
+> -		pkt_stream = pkt_stream_generate(test->ifobj_tx->umem, DEFAULT_PKT_CNT, PKT_SIZE);
+> -	ifobj_tx->pkt_stream = pkt_stream;
+> -	ifobj_rx->pkt_stream = pkt_stream;
+>  	test->current_step++;
+>  
+>  	/*Spawn RX thread */
+> @@ -982,7 +997,9 @@ static void testapp_bpf_res(struct test_spec *test)
+>  
+>  static void testapp_stats(struct test_spec *test)
+>  {
+> -	for (int i = 0; i < STAT_TEST_TYPE_MAX; i++) {
+> +	int i;
+> +
+> +	for (i = 0; i < STAT_TEST_TYPE_MAX; i++) {
+>  		test_spec_reset(test);
+>  		stat_test_type = i;
+>  
+> @@ -991,21 +1008,27 @@ static void testapp_stats(struct test_spec *test)
+>  			test_spec_set_name(test, "STAT_RX_DROPPED");
+>  			test->ifobj_rx->umem->frame_headroom = test->ifobj_rx->umem->frame_size -
+>  				XDP_PACKET_HEADROOM - 1;
+> +			testapp_validate_traffic(test);
+>  			break;
+>  		case STAT_TEST_RX_FULL:
+>  			test_spec_set_name(test, "STAT_RX_FULL");
+>  			test->ifobj_rx->xsk->rxqsize = RX_FULL_RXQSIZE;
+> +			testapp_validate_traffic(test);
+>  			break;
+>  		case STAT_TEST_TX_INVALID:
+>  			test_spec_set_name(test, "STAT_TX_INVALID");
+> -			continue;
+> +			pkt_stream_replace(test, DEFAULT_PKT_CNT, XSK_UMEM__INVALID_FRAME_SIZE);
+> +			testapp_validate_traffic(test);
+> +
+> +			pkt_stream_restore_default(test);
+> +			break;
+>  		case STAT_TEST_RX_FILL_EMPTY:
+>  			test_spec_set_name(test, "STAT_RX_FILL_EMPTY");
+> +			testapp_validate_traffic(test);
+>  			break;
+>  		default:
+>  			break;
+>  		}
+> -		testapp_validate_traffic(test);
+>  	}
+>  
+>  	/* To only see the whole stat set being completed unless an individual test fails. */
+> @@ -1106,6 +1129,7 @@ int main(int argc, char **argv)
+>  {
+>  	struct rlimit _rlim = { RLIM_INFINITY, RLIM_INFINITY };
+>  	struct ifobject *ifobj_tx, *ifobj_rx;
+> +	struct pkt_stream *pkt_stream_default;
+
+rct broken by a little?
+
+>  	struct test_spec test;
+>  	u32 i, j;
+>  
+> @@ -1133,6 +1157,12 @@ int main(int argc, char **argv)
+>  	init_iface(ifobj_rx, MAC2, MAC1, IP2, IP1, UDP_PORT2, UDP_PORT1,
+>  		   worker_testapp_validate_rx);
+>  
+> +	test_spec_init(&test, ifobj_tx, ifobj_rx, 0);
+> +	pkt_stream_default = pkt_stream_generate(ifobj_tx->umem, DEFAULT_PKT_CNT, PKT_SIZE);
+> +	if (!pkt_stream_default)
+> +		exit_with_error(ENOMEM);
+
+I missed this probably while reviewing previous set, but to be consistent
+with 083be682d976 ("selftests: xsk: Return correct error codes") this
+probably should have -ENOMEM as an arg?
+
+> +	test.pkt_stream_default = pkt_stream_default;
+> +
+>  	ksft_set_plan(TEST_MODE_MAX * TEST_TYPE_MAX);
+>  
+>  	for (i = 0; i < TEST_MODE_MAX; i++)
+> @@ -1142,6 +1172,7 @@ int main(int argc, char **argv)
+>  			usleep(USLEEP_MAX);
+>  		}
+>  
+> +	pkt_stream_delete(pkt_stream_default);
+>  	ifobject_delete(ifobj_tx);
+>  	ifobject_delete(ifobj_rx);
+>  
+> diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
+> index c5baa7c5f560..e27fe348ae50 100644
+> --- a/tools/testing/selftests/bpf/xdpxceiver.h
+> +++ b/tools/testing/selftests/bpf/xdpxceiver.h
+> @@ -132,6 +132,7 @@ struct ifobject {
+>  struct test_spec {
+>  	struct ifobject *ifobj_tx;
+>  	struct ifobject *ifobj_rx;
+> +	struct pkt_stream *pkt_stream_default;
+>  	u16 total_steps;
+>  	u16 current_step;
+>  	u16 nb_sockets;
+> -- 
+> 2.29.0
+> 
