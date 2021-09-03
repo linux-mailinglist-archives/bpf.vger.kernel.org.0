@@ -2,98 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8319B3FF88E
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 03:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2FC3FF8C8
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 04:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346056AbhICBEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Sep 2021 21:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346037AbhICBEv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Sep 2021 21:04:51 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6824C061575;
-        Thu,  2 Sep 2021 18:03:52 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id c5so1395677plz.2;
-        Thu, 02 Sep 2021 18:03:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2DCudZZq4BCGyRqK9T3SXUuab3iD7BkjY5ekmbCqtp8=;
-        b=N/BJJfzm0XA6bDo9jAwneD19vi6/gLhyyTeUOxBPAtjTUp2pYUn/0pZzaurEnMlB58
-         dYPFDPWbPSzD89bdGYcoCYnJbAynPhuoHfAVIQGSOTrk/ahIEXceNmOuFYC49u+2RrLZ
-         +zLhHiZk5qNJ4Pq52SKeUWpKUaqgezTI3yMET3BohvUa7D1+SUN2HxokdDeB1M8PWsek
-         mHOnQsImY/ush+7YyJs7KPVmZttkfq8r4K/slr8IH8WrgA1YhY1pdFL7IdHuxQkgy4GJ
-         NWcwB5uUSnTIKDHH7VKhWxVla+0yM/pTWgKC3XHKff/fd2PeX3OtVpI4hNyUUXfMEDjn
-         FVBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2DCudZZq4BCGyRqK9T3SXUuab3iD7BkjY5ekmbCqtp8=;
-        b=gqe4MRcFvYCMFrtDuUpSwzldP+qFlmJhJ2yBAqOFJNkkgp+jeh9o0qiyjc36Nk4Gy3
-         HftTr9yZkN0rrOznwLLolkVRwu+g4WyPxA5acMkq4Ny56Zw2ooenMmC4e6qUK4qw3vEk
-         g4uoqEbplBRbAyy75qYYlxGgckYeY1jP6z5y3CzIwjv3MmsDfRncAoA2TK8wIOIR0ZSj
-         323/YrFWqP3IHCxxDQ7se6cE3iBb2avXgqi2LwncpvKf8SbFdnZNKUPlxlKUV11ALpPu
-         P9b83No0uHm/gMlOSKTJVYTY/7AfwOZQXYTrPoGVwiXvsSEeWS4zdMIuJovKzWp5HYYA
-         FWdQ==
-X-Gm-Message-State: AOAM533V8JHIzbR3LSQihjZnELiCF6NtG9CX0ucD+G4JlctZB7ApHa5s
-        BaBOG7zZy4RS5aq61ZWR5Nu98edxonBMTWkZf1c=
-X-Google-Smtp-Source: ABdhPJwWS86hdKpJy5bSjHeQ3JB0qgxXYnZTyR3aaMfvNH/4QvwkEV/JL6J3OPEy1dgscMlXgSiMufgqxGO4abDE9Ek=
-X-Received: by 2002:a17:90b:513:: with SMTP id r19mr983426pjz.93.1630631032093;
- Thu, 02 Sep 2021 18:03:52 -0700 (PDT)
+        id S239195AbhICCIX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Sep 2021 22:08:23 -0400
+Received: from mga18.intel.com ([134.134.136.126]:31374 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232931AbhICCIW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Sep 2021 22:08:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="206422289"
+X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
+   d="scan'208";a="206422289"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 19:07:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
+   d="scan'208";a="691781879"
+Received: from siang-ilbpg0.png.intel.com ([10.88.227.28])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Sep 2021 19:07:18 -0700
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH net 1/1] net: stmmac: Fix overall budget calculation for rxtx_napi
+Date:   Fri,  3 Sep 2021 10:00:26 +0800
+Message-Id: <20210903020026.1381962-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210902165706.2812867-1-songliubraving@fb.com> <20210902165706.2812867-3-songliubraving@fb.com>
-In-Reply-To: <20210902165706.2812867-3-songliubraving@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 2 Sep 2021 18:03:41 -0700
-Message-ID: <CAADnVQKxwUtUJTNjwiU-hmtqjpaTZLXoFzKtK7SME=zLuRbdUg@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, kjain@linux.ibm.com,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 9:58 AM Song Liu <songliubraving@fb.com> wrote:
->
-> +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
-> +{
-> +#ifndef CONFIG_X86
-> +       return -ENOENT;
-> +#else
-> +       static const u32 br_entry_size = sizeof(struct perf_branch_entry);
-> +       u32 entry_cnt = size / br_entry_size;
-> +
-> +       if (unlikely(flags))
-> +               return -EINVAL;
-> +
-> +       if (!buf || (size % br_entry_size != 0))
-> +               return -EINVAL;
-> +
-> +       entry_cnt = static_call(perf_snapshot_branch_stack)(buf, entry_cnt);
+tx_done is not used for napi_complete_done(). Thus, NAPI busy polling
+mechanism by gro_flush_timeout and napi_defer_hard_irqs will not able
+be triggered after a packet is transmitted when there is no receive
+packet.
 
-Not taken branches will not be counted even with PERF_SAMPLE_BRANCH_ANY,
-right?
-Probably the first unlikely(flags) will be a fallthrough in asm.
-Maybe worth adding unlikely to 2nd condition as well to make
-sure that the compiler will generate default fallthrough code for it ?
-So both will not appear in lbr entries?
-Or maybe do:
-if (unlikely(!buf))
-   return -EINVAL;
-entry_cnt = static_call
-if (size % br_entry_size)
-   return -EINVAL;
+Fix this by taking the maximum value between tx_done and rx_done as
+overall budget completed by the rxtx NAPI poll to ensure XDP Tx ZC
+operation is continuously polling for next Tx frame. This gives
+benefit of lower packet submission processing latency and jitter
+under XDP Tx ZC mode.
 
-The lbr trace will be collected anyway.
-If there are jmps in lbr due to earlier "if"s we can move them
-after static_call. Like if (unlikely(flags) can be done afterwards too.
+Performance of tx-only using xdp-sock on Intel ADL-S platform is
+the same with and without this patch.
 
-Bigger bang for the buck would be static-inline-ing migrate_disable, though.
+root@intel-corei7-64:~# ./xdpsock -i enp0s30f4 -t -z -q 1 -n 10
+ sock0@enp0s30f4:1 txonly xdp-drv
+                   pps            pkts           10.00
+rx                 0              0
+tx                 511630         8659520
+
+ sock0@enp0s30f4:1 txonly xdp-drv
+                   pps            pkts           10.00
+rx                 0              0
+tx                 511625         13775808
+
+ sock0@enp0s30f4:1 txonly xdp-drv
+                   pps            pkts           10.00
+rx                 0              0
+tx                 511619         18892032
+
+Fixes: 132c32ee5bc0 ("net: stmmac: Add TX via XDP zero-copy socket")
+Cc: <stable@vger.kernel.org> # 5.13.x
+Co-developed-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index ed0cd3920171..97238359e101 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -5347,7 +5347,7 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
+ 	struct stmmac_channel *ch =
+ 		container_of(napi, struct stmmac_channel, rxtx_napi);
+ 	struct stmmac_priv *priv = ch->priv_data;
+-	int rx_done, tx_done;
++	int rx_done, tx_done, rxtx_done;
+ 	u32 chan = ch->index;
+ 
+ 	priv->xstats.napi_poll++;
+@@ -5357,14 +5357,16 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
+ 
+ 	rx_done = stmmac_rx_zc(priv, budget, chan);
+ 
++	rxtx_done = max(tx_done, rx_done);
++
+ 	/* If either TX or RX work is not complete, return budget
+ 	 * and keep pooling
+ 	 */
+-	if (tx_done >= budget || rx_done >= budget)
++	if (rxtx_done >= budget)
+ 		return budget;
+ 
+ 	/* all work done, exit the polling mode */
+-	if (napi_complete_done(napi, rx_done)) {
++	if (napi_complete_done(napi, rxtx_done)) {
+ 		unsigned long flags;
+ 
+ 		spin_lock_irqsave(&ch->lock, flags);
+@@ -5375,7 +5377,7 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
+ 		spin_unlock_irqrestore(&ch->lock, flags);
+ 	}
+ 
+-	return min(rx_done, budget - 1);
++	return min(rxtx_done, budget - 1);
+ }
+ 
+ /**
+-- 
+2.25.1
+
