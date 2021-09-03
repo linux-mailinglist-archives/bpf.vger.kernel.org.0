@@ -2,141 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50E93FFB36
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 09:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089AF3FFB71
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 10:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348055AbhICHmN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 03:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234815AbhICHmM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Sep 2021 03:42:12 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E34CC061575;
-        Fri,  3 Sep 2021 00:41:13 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id u6so3691443pfi.0;
-        Fri, 03 Sep 2021 00:41:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=o5FprG6RzkGJc/C+n+tTnfjcp9TMywhTG5mvqkk94ns=;
-        b=jP0XZ8KN+HJfkZoQ6yd7GQLenMc9wpXpBcFYcTg1At2K1dyijVYNGuaQ+DtMmCZL+6
-         ip6O2Ft1N3fMX2Sr9XDVPQSSzgcAB/5DLIxVZclpDrPjFlYNPbcHlnqceFZhgpN2A30e
-         zPfNbDahv6z+j8Ihn9WdJAzRc0i5mgcU9rsIOkeeXcG0taGQ81ubJHD+uiaJ7CRse7Ww
-         pee9ojl2otlgFfduOx8z4V7ypLGNZlbMUPX2AzX+03YKP8hedQPoDWgDsMAsnFR2KZPD
-         BjFClsZRjkX1Yulmr7Ub2cWA0mWURTEIeiZznDk400hXCedtEzEsqu8yJOIRHksAVVN4
-         xwVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=o5FprG6RzkGJc/C+n+tTnfjcp9TMywhTG5mvqkk94ns=;
-        b=rly82v2NrRomgA7JOTUlCqBGE8yYyy5h3+ZyvKT+WQFFW7NJSZCj7Jc7IF1MNbWK7u
-         WKQ79ApIbDIpjr3mruuiLx8LW/wjmJRNnB75n8W2fn9cWr6eHozmcn8eSLqfN4VU6JN1
-         iiYE7Ske6iyUS3ev0veQDFFCJ6rSN1RmHsRFxk3IJBk7qeohaR/tqNXckV+cm0rCSh4Y
-         ygLtzMezPcvJ9xMMNUQP1OA+r7ZcfjJq+d8Yc11EJuhGoqOkZPHranYKcEPaLENNX8qO
-         JVkAwMKmL/nJ/Z0hu7BUiEeiS1Vl/5AQsq6taP7nu2CInnhLG/54xxFWosJIbCkPtljp
-         DdhQ==
-X-Gm-Message-State: AOAM533B2cI5sfpnTcLGKcFsjDxEGkbrmaTJy0K+D0chRfix06Ur4V3k
-        fkJQDUBNvUVQQbCQfS221W09wmZjwQIhf5AFcg==
-X-Google-Smtp-Source: ABdhPJxcsPdX1DVIdW7/x0qLcobHn8z0XwLxQzPUkFgDsWKAsQQFHfJCfwUEOuHlRhZhLM3yTgc4lXwV0Vj6UHSaTns=
-X-Received: by 2002:a62:7c0d:0:b0:3fe:60d2:bce2 with SMTP id
- x13-20020a627c0d000000b003fe60d2bce2mr2299342pfc.27.1630654872635; Fri, 03
- Sep 2021 00:41:12 -0700 (PDT)
+        id S231332AbhICIBE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 04:01:04 -0400
+Received: from www62.your-server.de ([213.133.104.62]:40308 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347597AbhICIBD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Sep 2021 04:01:03 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mM47F-0002qT-OO; Fri, 03 Sep 2021 10:00:01 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mM47F-000Xgi-GI; Fri, 03 Sep 2021 10:00:01 +0200
+Subject: Re: [PATCH v3 bpf-next 2/7] bpf: add bpf_trace_vprintk helper
+To:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org
+References: <20210828052006.1313788-1-davemarchevsky@fb.com>
+ <20210828052006.1313788-3-davemarchevsky@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1253feeb-9832-1a86-7eb2-5076698c4ca3@iogearbox.net>
+Date:   Fri, 3 Sep 2021 10:00:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Fri, 3 Sep 2021 15:41:01 +0800
-Message-ID: <CACkBjsY9f5=M=8qFwVBWzoJdspenxSxHCL-hdT4YmznAzNUZfw@mail.gmail.com>
-Subject: WARNING in submit_bio_checks
-To:     axboe@kernel.dk, linux-block@vger.kernel.org
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210828052006.1313788-3-davemarchevsky@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26282/Thu Sep  2 10:22:04 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On 8/28/21 7:20 AM, Dave Marchevsky wrote:
+> This helper is meant to be "bpf_trace_printk, but with proper vararg
+> support". Follow bpf_snprintf's example and take a u64 pseudo-vararg
+> array. Write to /sys/kernel/debug/tracing/trace_pipe using the same
+> mechanism as bpf_trace_printk.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+lgtm, minor comments below:
 
-HEAD commit: 7d2a07b76933 Linux 5.14
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1g67CqWvvbFRJyFBoHJk59BMQH3UcvNQx/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1XD9WYDViQLSXN7RGwH8AGGDvP9JvOghx/view?usp=sharing
-C reproducer: https://drive.google.com/file/d/1Mox767TITuZDWxGR8B2RdBH4tAU4bYfq/view?usp=sharing
-Syzlang reproducer:
-https://drive.google.com/file/d/1pzANwS2DrA6owxrHieLNyKWmUgKOtwVl/view?usp=sharing
+> ---
+>   include/linux/bpf.h            |  1 +
+>   include/uapi/linux/bpf.h       |  9 ++++++
+>   kernel/bpf/core.c              |  5 ++++
+>   kernel/bpf/helpers.c           |  2 ++
+>   kernel/trace/bpf_trace.c       | 52 +++++++++++++++++++++++++++++++++-
+>   tools/include/uapi/linux/bpf.h |  9 ++++++
+>   6 files changed, 77 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index be8d57e6e78a..b6c45a6cbbba 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1088,6 +1088,7 @@ bool bpf_prog_array_compatible(struct bpf_array *array, const struct bpf_prog *f
+>   int bpf_prog_calc_tag(struct bpf_prog *fp);
+>   
+>   const struct bpf_func_proto *bpf_get_trace_printk_proto(void);
+> +const struct bpf_func_proto *bpf_get_trace_vprintk_proto(void);
+>   
+>   typedef unsigned long (*bpf_ctx_copy_t)(void *dst, const void *src,
+>   					unsigned long off, unsigned long len);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 791f31dd0abe..f171d4d33136 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4877,6 +4877,14 @@ union bpf_attr {
+>    *		Get the struct pt_regs associated with **task**.
+>    *	Return
+>    *		A pointer to struct pt_regs.
+> + *
+> + * u64 bpf_trace_vprintk(const char *fmt, u32 fmt_size, const void *data, u32 data_len)
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+s/u64/long/
 
-------------[ cut here ]------------
-Trying to write to read-only block-device nullb0 (partno 0)
-WARNING: CPU: 1 PID: 11327 at block/blk-core.c:700 bio_check_ro
-block/blk-core.c:700 [inline]
-WARNING: CPU: 1 PID: 11327 at block/blk-core.c:700
-submit_bio_checks+0x1605/0x1a70 block/blk-core.c:813
-Modules linked in:
-CPU: 1 PID: 11327 Comm: syz-executor Not tainted 5.14.0 #25
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:bio_check_ro block/blk-core.c:700 [inline]
-RIP: 0010:submit_bio_checks+0x1605/0x1a70 block/blk-core.c:813
-Code: 00 00 45 0f b6 a4 24 90 05 00 00 48 8d 74 24 60 48 89 ef e8 8d
-54 fe ff 48 c7 c7 e0 b7 de 89 48 89 c6 44 89 e2 e8 ac 9e 1a 05 <0f> 0b
-e9 91 f3 ff ff e8 8f fc b1 fd e8 9a d5 5b 05 31 ff 89 c3 89
-RSP: 0018:ffffc90004007198 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff888100ec6430 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffff88810338d640 RDI: fffff52000800e25
-RBP: ffff8881140748c0 R08: ffffffff815d0995 R09: 0000000000000000
-R10: 0000000000000005 R11: ffffed10233e3f53 R12: 0000000000000000
-R13: ffff8881140748d0 R14: ffff8881083c21c0 R15: ffff888100ec69a4
-FS:  0000000000000000(0000) GS:ffff888119f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000556c5662e990 CR3: 000000000b68e001 CR4: 0000000000770ee0
-PKRU: 55555554
-Call Trace:
- submit_bio_noacct+0x96/0x1460 block/blk-core.c:1028
- submit_bio+0x10a/0x460 block/blk-core.c:1105
- submit_bh_wbc+0x5eb/0x7f0 fs/buffer.c:3050
- __block_write_full_page+0x853/0x13a0 fs/buffer.c:1805
- block_write_full_page+0x4f3/0x610 fs/buffer.c:2976
- __writepage+0x60/0x180 mm/page-writeback.c:2314
- write_cache_pages+0x78e/0x1280 mm/page-writeback.c:2249
- generic_writepages mm/page-writeback.c:2340 [inline]
- generic_writepages+0xed/0x160 mm/page-writeback.c:2329
- do_writepages+0xfa/0x2a0 mm/page-writeback.c:2355
- __filemap_fdatawrite_range+0x2aa/0x390 mm/filemap.c:413
- filemap_write_and_wait_range mm/filemap.c:686 [inline]
- filemap_write_and_wait_range+0x65/0x100 mm/filemap.c:680
- filemap_write_and_wait include/linux/fs.h:2897 [inline]
- __sync_blockdev+0x84/0xe0 fs/block_dev.c:526
- sync_blockdev fs/block_dev.c:535 [inline]
- blkdev_put+0x53f/0x720 fs/block_dev.c:1532
- blkdev_close+0x8c/0xb0 fs/block_dev.c:1586
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xe0/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbe4/0x2e00 kernel/exit.c:825
- do_group_exit+0x125/0x340 kernel/exit.c:922
- get_signal+0x4d5/0x25a0 kernel/signal.c:2808
- arch_do_signal_or_restart+0x2ed/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x192/0x2a0 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: Unable to access opcode bytes at RIP 0x4739a3.
-RSP: 002b:00007f9d66b2a218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: 0000000000000000 RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000059c0a8
-RBP: 000000000059c0a8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
-R13: 00007ffdcc4a841f R14: 00007ffdcc4a85c0 R15: 00007f9d66b2a300
+> + *	Description
+> + *		Behaves like **bpf_trace_printk**\ () helper, but takes an array of u64
+
+nit: maybe for users it's more clear from description if you instead mention that data_len
+needs to be multiple of 8 bytes? Or somehow mention the relation with data more clearly
+resp. which shortcoming it addresses compared to bpf_trace_printk(), so developers can more
+easily parse it.
+
+> + *		to format. Arguments are to be used as in **bpf_seq_printf**\ () helper.
+> + *	Return
+> + *		The number of bytes written to the buffer, or a negative error
+> + *		in case of failure.
+>    */
+[...]
+>   	default:
+>   		return NULL;
+>   	}
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 10672ebc63b7..ea8358b0c748 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -398,7 +398,7 @@ static const struct bpf_func_proto bpf_trace_printk_proto = {
+>   	.arg2_type	= ARG_CONST_SIZE,
+>   };
+>   
+> -const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
+> +static void __set_printk_clr_event(void)
+>   {
+>   	/*
+>   	 * This program might be calling bpf_trace_printk,
+> @@ -410,10 +410,58 @@ const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
+>   	 */
+>   	if (trace_set_clr_event("bpf_trace", "bpf_trace_printk", 1))
+>   		pr_warn_ratelimited("could not enable bpf_trace_printk events");
+> +}
+>   
+> +const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
+> +{
+> +	__set_printk_clr_event();
+>   	return &bpf_trace_printk_proto;
+>   }
+>   
+> +BPF_CALL_4(bpf_trace_vprintk, char *, fmt, u32, fmt_size, const void *, data,
+> +	   u32, data_len)
+> +{
+> +	static char buf[BPF_TRACE_PRINTK_SIZE];
+> +	unsigned long flags;
+> +	int ret, num_args;
+> +	u32 *bin_args;
+> +
+> +	if (data_len & 7 || data_len > MAX_BPRINTF_VARARGS * 8 ||
+> +	    (data_len && !data))
+> +		return -EINVAL;
+> +	num_args = data_len / 8;
+> +
+> +	ret = bpf_bprintf_prepare(fmt, fmt_size, data, &bin_args, num_args);
+> +	if (ret < 0)
+> +		return ret;
+
+Given you have ARG_PTR_TO_MEM_OR_NULL for data, does this gracefully handle the
+case where you pass in fmt string containing e.g. %ps but data being NULL? From
+reading bpf_bprintf_prepare() looks like it does just fine, but might be nice
+to explicitly add a tiny selftest case for it while you're at it.
+
+> +	raw_spin_lock_irqsave(&trace_printk_lock, flags);
+> +	ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
+> +
+> +	trace_bpf_trace_printk(buf);
+> +	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+> +
+> +	bpf_bprintf_cleanup();
+> +
+> +	return ret;
+> +}
+
+Thanks,
+Daniel
