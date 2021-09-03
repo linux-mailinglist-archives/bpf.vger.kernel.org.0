@@ -2,236 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE7E3FFADE
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 09:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50E93FFB36
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 09:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347518AbhICHOb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 03:14:31 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23386 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234713AbhICHO2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 3 Sep 2021 03:14:28 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18379xD2025556;
-        Fri, 3 Sep 2021 00:13:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=+Y1d4X20+HOrvURMe/ruvo6VixOaKJT4Tl7QnUC+qD8=;
- b=aEOuogbT8JaGwLKkcG6DU4cmAJtlMfxIUmU7v4ttaqYj9Wu0gjD/gXvbm5V0yq60fu5X
- lsjs1iUFJa6U24WJ6m/AB13a8CdPyF3JUFiLl5T/2nqW2/4RYue1TZZp1W83WZTgFIZ2
- 34hCWc0/BOEtb28j+W11tXLqiSCjQODd3Ak= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3au5khwfwb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 03 Sep 2021 00:13:25 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 3 Sep 2021 00:13:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Au39Rsj+AwPAL+SjNEIR+Z5UV44fNxnsNu2i6N2UEFOso4yxH+fMSXAANIx1gPukasIN2CKvIncx969eNeyaeaF29My/0y8BiqHyJ3xwWpNe4WLVY6G4cpjXbBHvczi/BOxAvVI92DLJC8OIPSp11UERNG/CE5M1fSxiX5eyWZ7tfqkV6srcH814AISVc+1gnLFyDyTN74NanYolllMh7GPpTIfx3eoStnI9Xr7JGxiEioOf2zqUHBF3l+NT91dy9QPUkN1qopZQZ6PQhmwiM0ESk+nuurh5htNPS324jh5HClRbowothVleyxN5Rqrbifh0qbg7gCXuiebyzmzx+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=+Y1d4X20+HOrvURMe/ruvo6VixOaKJT4Tl7QnUC+qD8=;
- b=JsUKhX428TkANyHaBfg8joP46LDBW4CXHbDSq7jcZXeGxTTEu1Na2o2TXA1lDy7rJedDid/7jMqAmT0JMOX5QKOaO72Jaeos9+q07seKcfTgJ5ZiQbN5SCA/b0EJMnCTN+JFpLgLw7aKC8VkNBjaC6w9NGQKoP19EhNkfSNG1D2NwkQlAPcR38COkUGW6AqQXn9azrnACnS2YDCpoQZX/XvwK5Bnk4LdG/XRaehhTi5uNi6MkUk5Rp13Qm6fOflwbUkWtihsg4a8iT4Ix/6JKUvyjn5JLpAWC4mXu9R+o6qCjdMfAuGVwn9rIYE4u/cD4CvjXtX2Q94LWdMftIEsvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB4465.namprd15.prod.outlook.com (2603:10b6:806:194::23)
- by SN6PR15MB2350.namprd15.prod.outlook.com (2603:10b6:805:23::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Fri, 3 Sep
- 2021 07:13:23 +0000
-Received: from SA1PR15MB4465.namprd15.prod.outlook.com
- ([fe80::6dc9:801e:3ad5:a175]) by SA1PR15MB4465.namprd15.prod.outlook.com
- ([fe80::6dc9:801e:3ad5:a175%8]) with mapi id 15.20.4478.022; Fri, 3 Sep 2021
- 07:13:23 +0000
-Message-ID: <0beca6da-7444-fdf3-8dc4-c9126b7779de@fb.com>
-Date:   Fri, 3 Sep 2021 00:13:20 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.0.3
-Subject: Re: [PATCH bpf-next 1/5] bpf: Add bloom filter map implementation
-Content-Language: en-US
-To:     Martin KaFai Lau <kafai@fb.com>
-CC:     John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-References: <20210831225005.2762202-1-joannekoong@fb.com>
- <20210831225005.2762202-2-joannekoong@fb.com>
- <CAEf4Bza_y6497cWE5H04gDg__RkoMovkFYSqXjo-yFG7XH11ug@mail.gmail.com>
- <61305cf822fa_439b208a5@john-XPS-13-9370.notmuch>
- <0c1bb5a6-4ef5-77b4-cd10-aea0060d5349@fb.com>
- <20210903005611.pnkvybwsc5uxddyx@kafai-mbp.dhcp.thefacebook.com>
-From:   Joanne Koong <joannekoong@fb.com>
-In-Reply-To: <20210903005611.pnkvybwsc5uxddyx@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0033.namprd05.prod.outlook.com
- (2603:10b6:a03:33f::8) To SA1PR15MB4465.namprd15.prod.outlook.com
- (2603:10b6:806:194::23)
+        id S1348055AbhICHmN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 03:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234815AbhICHmM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Sep 2021 03:42:12 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E34CC061575;
+        Fri,  3 Sep 2021 00:41:13 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id u6so3691443pfi.0;
+        Fri, 03 Sep 2021 00:41:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=o5FprG6RzkGJc/C+n+tTnfjcp9TMywhTG5mvqkk94ns=;
+        b=jP0XZ8KN+HJfkZoQ6yd7GQLenMc9wpXpBcFYcTg1At2K1dyijVYNGuaQ+DtMmCZL+6
+         ip6O2Ft1N3fMX2Sr9XDVPQSSzgcAB/5DLIxVZclpDrPjFlYNPbcHlnqceFZhgpN2A30e
+         zPfNbDahv6z+j8Ihn9WdJAzRc0i5mgcU9rsIOkeeXcG0taGQ81ubJHD+uiaJ7CRse7Ww
+         pee9ojl2otlgFfduOx8z4V7ypLGNZlbMUPX2AzX+03YKP8hedQPoDWgDsMAsnFR2KZPD
+         BjFClsZRjkX1Yulmr7Ub2cWA0mWURTEIeiZznDk400hXCedtEzEsqu8yJOIRHksAVVN4
+         xwVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=o5FprG6RzkGJc/C+n+tTnfjcp9TMywhTG5mvqkk94ns=;
+        b=rly82v2NrRomgA7JOTUlCqBGE8yYyy5h3+ZyvKT+WQFFW7NJSZCj7Jc7IF1MNbWK7u
+         WKQ79ApIbDIpjr3mruuiLx8LW/wjmJRNnB75n8W2fn9cWr6eHozmcn8eSLqfN4VU6JN1
+         iiYE7Ske6iyUS3ev0veQDFFCJ6rSN1RmHsRFxk3IJBk7qeohaR/tqNXckV+cm0rCSh4Y
+         ygLtzMezPcvJ9xMMNUQP1OA+r7ZcfjJq+d8Yc11EJuhGoqOkZPHranYKcEPaLENNX8qO
+         JVkAwMKmL/nJ/Z0hu7BUiEeiS1Vl/5AQsq6taP7nu2CInnhLG/54xxFWosJIbCkPtljp
+         DdhQ==
+X-Gm-Message-State: AOAM533B2cI5sfpnTcLGKcFsjDxEGkbrmaTJy0K+D0chRfix06Ur4V3k
+        fkJQDUBNvUVQQbCQfS221W09wmZjwQIhf5AFcg==
+X-Google-Smtp-Source: ABdhPJxcsPdX1DVIdW7/x0qLcobHn8z0XwLxQzPUkFgDsWKAsQQFHfJCfwUEOuHlRhZhLM3yTgc4lXwV0Vj6UHSaTns=
+X-Received: by 2002:a62:7c0d:0:b0:3fe:60d2:bce2 with SMTP id
+ x13-20020a627c0d000000b003fe60d2bce2mr2299342pfc.27.1630654872635; Fri, 03
+ Sep 2021 00:41:12 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [IPV6:2620:10d:c085:21e1::12dc] (2620:10d:c090:400::5:b76f) by SJ0PR05CA0033.namprd05.prod.outlook.com (2603:10b6:a03:33f::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.7 via Frontend Transport; Fri, 3 Sep 2021 07:13:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 574eeaf0-b6b5-4de6-d548-08d96eaa5118
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2350:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR15MB23504FCBE2693D0648AB5A8ED2CF9@SN6PR15MB2350.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xm92pf65dJab4Osa34BaTIgd/t3IRHKUDdXsQrfG3ltjn3IeBMFVcEMhyIHKk+NcE3kagB4l6t4sIbKN002kVPmY/9M06jJgMvc//FEUsq2P72O3MM3RPsBWFNFZKQJA/sHuzQGhWq66tW64KBx0q3FY4MrQyJMBOwXqnzopf0SMv3OKrPwCnRaA0c7cY8PLaW0iN8iY7zL4N/H28/gzSP89WU4g6l7OEHoPUFWLa3VNub7h9SvQ/eb8Yy58TkPtYCQ/JcdV9RSOKx46idjvZnw9G7X42R+k3zf3FGIMUDloLmNOVsZHgiLDaSUpI/9zuzFnRqsLDM1HLwuWpdOl399hyDUzDHvFACYIrcsHns3D2Ay4nkbYbb4DWUw3kWufLhv/72eprzouIpwfu/v2Tt3IfiB7k3WSNQCf4MlbGhs4AZZpJxm87mycMXdB2rLmXhVBlNe8ZiE13nZm4P5a6zfybw4YT8DenB88frJvs15ukjs3LmOLpztkvIY0CIy2rNULQEe35YQp0/2aKl842fH/E6pBNKvp5nLlh3nLvbQ+K4p623jUj+zeLFghgu9dQlwwew/XmlFUr5QVOALDisb52DF8dGsbevuyIPWk0ZNJ5a1dlWvjQaN3QEMhx70vC6Wj1hBjlqruNBdqRYbsmyLemrx18ZMoegAQyIpUT5/nXZQUAsQcLtuxsoxewMBt3jARdLC/9YLKjlx4Lc93e9Cew6qwpoH/J3YdfkoLtSg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB4465.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(53546011)(8676002)(2906002)(316002)(66476007)(66556008)(86362001)(2616005)(66946007)(4326008)(5660300002)(8936002)(6636002)(38100700002)(31686004)(508600001)(6862004)(31696002)(36756003)(54906003)(6486002)(37006003)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OVF3d3VlSTFoL3N3TWtYTU1UU0svUXRjSVJtL2FJbzVDZDk1eW1kMlFrU2xK?=
- =?utf-8?B?V082alEyZGN2NUtQVUhYVHFYbHZBamlXUTJOQ1VuRW1lZ1hma3ZiREdMank2?=
- =?utf-8?B?QndUWVlnNVhqdkdNUy9aK0o3R0xNeHc0UXNKNUp6OUcyV0VyTFRuVjJJdUxz?=
- =?utf-8?B?bHU3Ry92WFZLNUZPUVl5a0ZsdTNJZjdFOVAzbWNpanRVeVkxUFVqNEJwSzdx?=
- =?utf-8?B?K0s5SEtzVEhFSGNTdDVad0RzazJwQzc2cXFvYm1Ta2VjRGlHUlZKUTM3OXBu?=
- =?utf-8?B?L1NvOW1nUnBEK3g5cjhjNlJlQ0VabjI2Tkh4enlEOVRBcDNXdnFmRlk3L0R3?=
- =?utf-8?B?b0lQRFlndEU4TjArV3hYcHUxVExJRUp1a0R6dHVjQUgzVm1NUTlaYkIyczFz?=
- =?utf-8?B?aGxHZkxyTkFpbGtrdTR6VU43QzhOK2NERnFPQlZ5TWFxY2hGYWpnZDBka2tp?=
- =?utf-8?B?NlhRTWtKa1dRWUowR3BrcFRGS1VZWEIrWlB0Y0wyNWt1U2lvbXNMNXpmbUhN?=
- =?utf-8?B?UjY3YnF5USsyR1lLaXExSVlOa24xN0lncTNMUlJhRWNtcGRHV0RTQWEzcWx3?=
- =?utf-8?B?TnFiNkVQWis0TnliN3NjOE16RHluaXcvd1B2ZllYZ2Y4WDdNTzdUS0tzY2Vh?=
- =?utf-8?B?eFB4MUp6TDQxbmhXVVRLR2hDY1FOVHNaeWQ2aCttS2J6WHhxUTh6U21PSStF?=
- =?utf-8?B?bkJvVXI1TkZOTVp4bWd0SmxvdUoxSXRiYlQ4NmVmblZaRFI5dVNVSTA4K3dG?=
- =?utf-8?B?WlpaR3FKQVNpTUk1OWFvbkNRZmtOZE15TkxzVFVUUG5JcStzRTVGYXBoUFJ1?=
- =?utf-8?B?SDZqTC9YMzJmd0o3VVY0VWU3OGlodFJROHhwZUtjaUZ6MkpoWi9VQmFDT2dn?=
- =?utf-8?B?WFdnV1FrSXRZQjJzdHJwNTVCbDJHSkxxUVpXRWtyZDBFQWg3cG5aZFFuOFkx?=
- =?utf-8?B?OGpxZzVGTEl2cnBJUGlVUzVocnA4azJWSXNKYkV5Qmp0M3NhVzd3eVpBdHZV?=
- =?utf-8?B?T1J4ZmNlOWhNSVk3NktKOGJycXNPeHhWY253ZmlNdi9iZjIySVMyZkJzVXFZ?=
- =?utf-8?B?aUFwRFk1QWs4Q0Mwa3haK1QwNDBOZWlLMCs4ckU2akwwVmgwQnRKa1FRM1N5?=
- =?utf-8?B?NHNEOVFZTXUrUWdDZTFleDgzN2lqMmVPV01OaS9SMDRkaWV4dTNmMEM4YU5z?=
- =?utf-8?B?VDBEVFpuWEI3czVsN0Q3YUNhaVRWZVNPVmlRV0RocUd3K3VZZmxCN1Z0Vjli?=
- =?utf-8?B?bFNSRVVJaXQrU3ZYNVlFekY1eGtPU2ZaYUM1dzRHVU1aVW1TM1IyN1RCQzRw?=
- =?utf-8?B?WVVMamFXTHJka0VLNFpUcTgyWWcweUZLam43eWVkRkJOMWxEMFoxYXpSQ3dV?=
- =?utf-8?B?Z201S2xZclNwa01tVThFaVFzelREdE5GMlVhZG05UDdyTzlLRk1pUDFJdEYv?=
- =?utf-8?B?dTJwanlCM0VCUXY3OUUwV00vUkl3cDNSNmNSVk1RRkIrd00xemEvRmtkaUZ5?=
- =?utf-8?B?eHZwdlFGN0ZiWHRSL2VaUXJ5SVR2eGhWd1VlRzNGT3cvNXUvZFRtblF3eWRv?=
- =?utf-8?B?OGp1UUx3b05STlR1T28wV2tjUnJJeFU2MDBqUDNKdlRzVld5NUV1TVdxMjU4?=
- =?utf-8?B?YmxXVW5FUFVTQ25lYzNyeklhLzJKRTR6VkxGMEJ4ckIrSkpZbW9Mb0sremJm?=
- =?utf-8?B?cTRTSHBiNXJzalY3RnRnc1NEdStkaFJpR1k2LzFDekw4amdOY2tDYVVabW0x?=
- =?utf-8?B?S1FlVmdKVkVhWStaemNVcWU1K1liZXpqaS95ZEVWRENlK3ErSmgvS24xSVRK?=
- =?utf-8?B?WDRSY2RoWGFqWTY0R29sdz09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 574eeaf0-b6b5-4de6-d548-08d96eaa5118
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB4465.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2021 07:13:23.5635
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +r7rFlbzIdcMQDv0NpYODmwUV/5yGgA77H6gSEACyJP3VUgojQTJ8vsKf+TLj3gccQhU7EblnRwyAhO9s0vXlg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2350
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: suD1qLwt3t4COl12xmpo_Kw-DWfPDCqt
-X-Proofpoint-ORIG-GUID: suD1qLwt3t4COl12xmpo_Kw-DWfPDCqt
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-03_02:2021-09-03,2021-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 phishscore=0 spamscore=0 adultscore=0
- clxscore=1015 mlxlogscore=999 suspectscore=0 bulkscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030043
-X-FB-Internal: deliver
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Fri, 3 Sep 2021 15:41:01 +0800
+Message-ID: <CACkBjsY9f5=M=8qFwVBWzoJdspenxSxHCL-hdT4YmznAzNUZfw@mail.gmail.com>
+Subject: WARNING in submit_bio_checks
+To:     axboe@kernel.dk, linux-block@vger.kernel.org
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/2/21 5:56 PM, Martin KaFai Lau wrote:
+Hello,
 
-> On Thu, Sep 02, 2021 at 03:07:56PM -0700, Joanne Koong wrote:
-> [ ... ]
->>>> But one high-level point I wanted to discuss was that bloom filter
->>>> logic is actually simple enough to be implementable by pure BPF
->>>> program logic. The only problematic part is generic hashing of a piece
->>>> of memory. Regardless of implementing bloom filter as kernel-provided
->>>> BPF map or implementing it with custom BPF program logic, having BPF
->>>> helper for hashing a piece of memory seems extremely useful and very
->>>> generic. I can't recall if we ever discussed adding such helpers, but
->>>> maybe we should?
->>> Aha started typing the same thing :)
->>>
->>> Adding generic hash helper has been on my todo list and close to the top
->>> now. The use case is hashing data from skb payloads and such from kprobe
->>> and sockmap side. I'm happy to work on it as soon as possible if no one
->>> else picks it up.
->>>
-After thinking through this some more, I'm curious to hear your thoughts,
-Andrii and John, on how the bitmap would be allocated. From what I
-understand, we do not currently support dynamic memory allocations
-in bpf programs. Assuming the optimal number of bits the user wants
-to use for their bitmap follows something like
-num_entries * num_hash_functions / ln(2), I think the bitmap would
-have to be dynamically allocated in the bpf program since it'd be too
-large to store on the stack, unless there's some other way I'm not seeing?
->>>> It would be a really interesting experiment to implement the same
->>>> logic in pure BPF logic and run it as another benchmark, along the
->>>> Bloom filter map. BPF has both spinlock and atomic operation, so we
->>>> can compare and contrast. We only miss hashing BPF helper.
->>> The one issue I've found writing a hash logic is its a bit tricky
->>> to get the verifier to consume it. Especially when the hash is nested
->>> inside a for loop and sometimes a couple for loops so you end up with
->>> things like,
->>>
->>>   for (i = 0; i < someTlvs; i++) {
->>>    for (j = 0; j < someKeys; i++) {
->>>      ...
->>>      bpf_hash(someValue)
->>>      ...
->>>   }
->>>
->>> I've find small seemingly unrelated changes cause the complexity limit
->>> to explode. Usually we can work around it with code to get pruning
->>> points and such, but its a bit ugly. Perhaps this means we need
->>> to dive into details of why the complexity explodes, but I've not
->>> got to it yet. The todo list is long.
-Out of curiosity, why would this helper have trouble in the verifier?
- From a quick glance, it seems like the implementation for it would
-be pretty similar to how bpf_get_prandom_u32() is implemented
-(except where the arguments for the hash helper would take in a
-void* data (ARG_PTR_TO_MEM), the size of the data buffer, and
-the seed)? I'm a bit new to bpf, so there's a good chance I might be
-completely overlooking something here :)
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
->>>> Being able to do this in pure BPF code has a bunch of advantages.
->>>> Depending on specific application, users can decide to:
->>>>     - speed up the operation by ditching spinlock or atomic operation,
->>>> if the logic allows to lose some bit updates;
->>>>     - decide on optimal size, which might not be a power of 2, depending
->>>> on memory vs CPU trade of in any particular case;
->>>>     - it's also possible to implement a more general Counting Bloom
->>>> filter, all without modifying the kernel.
->>> Also it means no call and if you build it on top of an array
->>> map of size 1 its just a load. Could this be a performance win for
->>> example a Bloom filter in XDP for DDOS? Maybe. Not sure if the program
->>> would be complex enough a call might be in the noise. I don't know.
->>>
->>>> We could go further, and start implementing other simple data
->>>> structures relying on hashing, like HyperLogLog. And all with no
->>>> kernel modifications. Map-in-map is no issue as well, because there is
->>>> a choice of using either fixed global data arrays for maximum
->>>> performance, or using BPF_MAP_TYPE_ARRAY maps that can go inside
->>>> map-in-map.
->>> We've been doing most of our array maps as single entry arrays
->>> at this point and just calculating offsets directly in BPF. Same
->>> for some simple hashing algorithms.
->>>
->>>> Basically, regardless of having this map in the kernel or not, let's
->>>> have a "universal" hashing function as a BPF helper as well.
->>>> Thoughts?
->>> I like it, but not the bloom filter expert here.
->> Ooh, I like your idea of comparing the performance of the bloom filter with
->> a kernel-provided BPF map vs. custom BPF program logic using a
->> hash helper, especially if a BPF hash helper is something useful that
->> we want to add to the codebase in and of itself!
-> I think a hash helper will be useful in general but could it be a
-> separate experiment to try using it to implement some bpf maps (probably
-> a mix of an easy one and a little harder one) ?
+HEAD commit: 7d2a07b76933 Linux 5.14
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1g67CqWvvbFRJyFBoHJk59BMQH3UcvNQx/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1XD9WYDViQLSXN7RGwH8AGGDvP9JvOghx/view?usp=sharing
+C reproducer: https://drive.google.com/file/d/1Mox767TITuZDWxGR8B2RdBH4tAU4bYfq/view?usp=sharing
+Syzlang reproducer:
+https://drive.google.com/file/d/1pzANwS2DrA6owxrHieLNyKWmUgKOtwVl/view?usp=sharing
 
-I agree, I think the hash helper implementation should be its own separate
-patchset orthogonal to this one.
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 
+------------[ cut here ]------------
+Trying to write to read-only block-device nullb0 (partno 0)
+WARNING: CPU: 1 PID: 11327 at block/blk-core.c:700 bio_check_ro
+block/blk-core.c:700 [inline]
+WARNING: CPU: 1 PID: 11327 at block/blk-core.c:700
+submit_bio_checks+0x1605/0x1a70 block/blk-core.c:813
+Modules linked in:
+CPU: 1 PID: 11327 Comm: syz-executor Not tainted 5.14.0 #25
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:bio_check_ro block/blk-core.c:700 [inline]
+RIP: 0010:submit_bio_checks+0x1605/0x1a70 block/blk-core.c:813
+Code: 00 00 45 0f b6 a4 24 90 05 00 00 48 8d 74 24 60 48 89 ef e8 8d
+54 fe ff 48 c7 c7 e0 b7 de 89 48 89 c6 44 89 e2 e8 ac 9e 1a 05 <0f> 0b
+e9 91 f3 ff ff e8 8f fc b1 fd e8 9a d5 5b 05 31 ff 89 c3 89
+RSP: 0018:ffffc90004007198 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffff888100ec6430 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffff88810338d640 RDI: fffff52000800e25
+RBP: ffff8881140748c0 R08: ffffffff815d0995 R09: 0000000000000000
+R10: 0000000000000005 R11: ffffed10233e3f53 R12: 0000000000000000
+R13: ffff8881140748d0 R14: ffff8881083c21c0 R15: ffff888100ec69a4
+FS:  0000000000000000(0000) GS:ffff888119f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000556c5662e990 CR3: 000000000b68e001 CR4: 0000000000770ee0
+PKRU: 55555554
+Call Trace:
+ submit_bio_noacct+0x96/0x1460 block/blk-core.c:1028
+ submit_bio+0x10a/0x460 block/blk-core.c:1105
+ submit_bh_wbc+0x5eb/0x7f0 fs/buffer.c:3050
+ __block_write_full_page+0x853/0x13a0 fs/buffer.c:1805
+ block_write_full_page+0x4f3/0x610 fs/buffer.c:2976
+ __writepage+0x60/0x180 mm/page-writeback.c:2314
+ write_cache_pages+0x78e/0x1280 mm/page-writeback.c:2249
+ generic_writepages mm/page-writeback.c:2340 [inline]
+ generic_writepages+0xed/0x160 mm/page-writeback.c:2329
+ do_writepages+0xfa/0x2a0 mm/page-writeback.c:2355
+ __filemap_fdatawrite_range+0x2aa/0x390 mm/filemap.c:413
+ filemap_write_and_wait_range mm/filemap.c:686 [inline]
+ filemap_write_and_wait_range+0x65/0x100 mm/filemap.c:680
+ filemap_write_and_wait include/linux/fs.h:2897 [inline]
+ __sync_blockdev+0x84/0xe0 fs/block_dev.c:526
+ sync_blockdev fs/block_dev.c:535 [inline]
+ blkdev_put+0x53f/0x720 fs/block_dev.c:1532
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1586
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xe0/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0xbe4/0x2e00 kernel/exit.c:825
+ do_group_exit+0x125/0x340 kernel/exit.c:922
+ get_signal+0x4d5/0x25a0 kernel/signal.c:2808
+ arch_do_signal_or_restart+0x2ed/0x1c40 arch/x86/kernel/signal.c:865
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x192/0x2a0 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4739cd
+Code: Unable to access opcode bytes at RIP 0x4739a3.
+RSP: 002b:00007f9d66b2a218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: 0000000000000000 RBX: 000000000059c0a0 RCX: 00000000004739cd
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000059c0a8
+RBP: 000000000059c0a8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
+R13: 00007ffdcc4a841f R14: 00007ffdcc4a85c0 R15: 00007f9d66b2a300
