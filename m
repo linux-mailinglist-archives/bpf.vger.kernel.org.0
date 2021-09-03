@@ -2,135 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256F44003F8
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 19:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13A3400402
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 19:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350139AbhICROc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 13:14:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53565 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349049AbhICROc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 3 Sep 2021 13:14:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630689211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yHJyQTuhQ2rUo4HEpkrQXS+C/jFPNpqCCL4OYhPvFJs=;
-        b=P+MrMyKce4Q+zsN6ckx3kh8yefQPpAD2LkLgVJd1yMRenRyqwyO8MmNTOc6nlpp4nPikqh
-        JPSDa0XDUhg2FyTkLEh5Lp89n9qX7StvVVwpcxtEJeUp3VLkLfsOEWjCcpW7peEwz/9vpA
-        LJzcvCSc+6g3qJDyH8UcRYgfolNPcJE=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-brwS3-l1M82oja81deqMcA-1; Fri, 03 Sep 2021 13:13:30 -0400
-X-MC-Unique: brwS3-l1M82oja81deqMcA-1
-Received: by mail-yb1-f199.google.com with SMTP id h143-20020a25d095000000b0059c2e43cd3eso7145607ybg.12
-        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 10:13:30 -0700 (PDT)
+        id S231406AbhICRVH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 13:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229687AbhICRVH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Sep 2021 13:21:07 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D0EC061575
+        for <bpf@vger.kernel.org>; Fri,  3 Sep 2021 10:20:07 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id c11so6064490ybn.5
+        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 10:20:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qVaDs7KGxDvkTiaWyI/gWw9XVe/ELV2AX+xyAdkRdxA=;
+        b=ZBRAoy8/WZ2hwmbOgmLhoyMJDfEY2jjF8aE3cQo7jihH4CK+BcxgPXaPmqPedFJJHV
+         LSV0e6xOxQAP3zLQkbBV05XWLG6AsxetlGuwfeVpRZ7BLx0+xz1yrO5bwqKq/MLFq/oT
+         HjQiynQhW6GDewQd2EbR0vtWskPe+sZCJvZPF+2lBKGIh5GPQ8s9kfiesbnwzUPOxQgX
+         u9Nq0HyiRDC7lvFdLohvKOnV73gQV+7zc0zwH+DwJBWtEnu+3n7+Nf04ZIvYY82BBeNB
+         EbY+MXLEO1ncM2gV4zyZP+5p85Pj0ADhUHXUd3ijpeaVza3WnhREIfKeoe8mPER+SiX9
+         TURg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yHJyQTuhQ2rUo4HEpkrQXS+C/jFPNpqCCL4OYhPvFJs=;
-        b=lbo7DJ1c2rwYixXYzvO3cpqkQvZNTeiDnEKhKbSHoiZbAWz6Mc+Dnad9y5H7rBnkCh
-         4q/ZgbCOpUQ0J5pMVvxJ52O158N3Ji0I6vJEf9LT8QzNbHyXbdSKVepyTZiwDz6/epQ+
-         B3Wo2YmCzCBqA8QcXGKpV3wNTV9OnKYxM3s4TQ9nnv+xRMsW3UuMQCySgn/6lKtiZvJH
-         wNvk3oYXxDley2coaBvNYpSkdSDydwlBPrHxKo4UE8xYxWtmDuGd++cUFqBbAr9eFT8U
-         3U5+gxHYtADfEFgS404pVui6yCFKhGPuHOrgLmuGRCmE9f78qDrL5oQvlycnEMe7jlTi
-         zi1w==
-X-Gm-Message-State: AOAM5327UalpdR+MlJUCpATaC3lHwP/GtG0h7bpD2VaPxNlM3os6Jpck
-        1NHmCZykzoIia7wvZoXL4zrjNCoYuSo29GjqP+2PaahVVjbcAzE54wrRKIscYw+JXB9tUawMrcc
-        22fY/QmjRk8bN1/O26Z0BZtcoXHP4
-X-Received: by 2002:a25:c005:: with SMTP id c5mr158245ybf.168.1630689210020;
-        Fri, 03 Sep 2021 10:13:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzn64tX3wVU8FQE/8IxOa46/3bOs07liCcjapLECaEcqfxtXRfkxmGyJeh0V2xmOGq4e8Mife4ldeUUuZVuHq4=
-X-Received: by 2002:a25:c005:: with SMTP id c5mr158209ybf.168.1630689209747;
- Fri, 03 Sep 2021 10:13:29 -0700 (PDT)
+        bh=qVaDs7KGxDvkTiaWyI/gWw9XVe/ELV2AX+xyAdkRdxA=;
+        b=NgTQ1IvJTahR+jpPCTMEET3Zupm1W9MxBWnswP67S5KVeDN6gFkPbh0QycwlEUYVco
+         99RYWW6Jr7jq7/cjOtbX7Oz9+Zq8Xy067bL5bsDitlYFiAmkZ+mx7UnbqMu/oJ21XZSX
+         M+tSC4yAXBW61up4nV/zZ+4hCsixalUr17ovQPo7W87L7jQOorVREiyT3K9+6qdEKViw
+         ShBuKUYPb2wTSsuu2PNyOtr7aFmmEwtxZ0Nlhp1VnLDhZ9smI6hAv5xDEegqz+LpKFm0
+         pHkFRmDcbL3828H4cV0yN+e/U/o+FamBcMJG1JhY+v/++DB70qyXsKH418liDQRFbtn+
+         A9sA==
+X-Gm-Message-State: AOAM531Fkcp3YsjqbavBEAx9NDyK8kVOz1eqrcXkE2D9rGNMakzrek8d
+        t6r6QJaUSPdsDrLsQ3xRln6tx8bIzO8+Gs0wFOA=
+X-Google-Smtp-Source: ABdhPJy9rwse1xXG1y1s2yeRJM7dW6ioYjmlkeKP/el63/VPEW0q+em74USuThucw3uxymh5AskLQK4oFq5vi47MFDw=
+X-Received: by 2002:a25:ef46:: with SMTP id w6mr159290ybm.546.1630689606343;
+ Fri, 03 Sep 2021 10:20:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1629473233.git.lorenzo@kernel.org> <ab0c64f1543239256ef63ec9b40f35a7491812c6.1629473233.git.lorenzo@kernel.org>
- <612eb79343225_6b872087a@john-XPS-13-9370.notmuch>
-In-Reply-To: <612eb79343225_6b872087a@john-XPS-13-9370.notmuch>
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Date:   Fri, 3 Sep 2021 19:13:18 +0200
-Message-ID: <CAJ0CqmWGNapcmVae52UJNAg7XKS7f0F2dmQMoO+1sL3zp=oFTw@mail.gmail.com>
-Subject: Re: [PATCH v12 bpf-next 01/18] net: skbuff: add size metadata to
- skb_shared_info for xdp
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Agroskin, Shay" <shayagr@amazon.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>,
-        Toke Hoiland Jorgensen <toke@redhat.com>
+References: <20210831225005.2762202-1-joannekoong@fb.com> <20210831225005.2762202-2-joannekoong@fb.com>
+ <CAEf4Bza_y6497cWE5H04gDg__RkoMovkFYSqXjo-yFG7XH11ug@mail.gmail.com>
+ <61305cf822fa_439b208a5@john-XPS-13-9370.notmuch> <0c1bb5a6-4ef5-77b4-cd10-aea0060d5349@fb.com>
+ <20210903005611.pnkvybwsc5uxddyx@kafai-mbp.dhcp.thefacebook.com> <0beca6da-7444-fdf3-8dc4-c9126b7779de@fb.com>
+In-Reply-To: <0beca6da-7444-fdf3-8dc4-c9126b7779de@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 3 Sep 2021 10:19:55 -0700
+Message-ID: <CAEf4BzZ1PeuF1Uy2R=c9zmU+Zs=iP8_g5P=xZg+b_5qLbm41iQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] bpf: Add bloom filter map implementation
+To:     Joanne Koong <joannekoong@fb.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Sep 3, 2021 at 12:13 AM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> Lorenzo Bianconi wrote:
-> > Introduce xdp_frags_tsize field in skb_shared_info data structure
-> > to store xdp_buff/xdp_frame truesize (xdp_frags_tsize will be used
-> > in xdp multi-buff support). In order to not increase skb_shared_info
-> > size we will use a hole due to skb_shared_info alignment.
-> > Introduce xdp_frags_size field in skb_shared_info data structure
-> > reusing gso_type field in order to store xdp_buff/xdp_frame paged size.
-> > xdp_frags_size will be used in xdp multi-buff support.
-> >
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> On 9/2/21 5:56 PM, Martin KaFai Lau wrote:
 >
-> I assume we can use xdp_frags_tsize for anything else above XDP later?
-> Other than simple question looks OK to me.
+> > On Thu, Sep 02, 2021 at 03:07:56PM -0700, Joanne Koong wrote:
+> > [ ... ]
+> >>>> But one high-level point I wanted to discuss was that bloom filter
+> >>>> logic is actually simple enough to be implementable by pure BPF
+> >>>> program logic. The only problematic part is generic hashing of a piece
+> >>>> of memory. Regardless of implementing bloom filter as kernel-provided
+> >>>> BPF map or implementing it with custom BPF program logic, having BPF
+> >>>> helper for hashing a piece of memory seems extremely useful and very
+> >>>> generic. I can't recall if we ever discussed adding such helpers, but
+> >>>> maybe we should?
+> >>> Aha started typing the same thing :)
+> >>>
+> >>> Adding generic hash helper has been on my todo list and close to the top
+> >>> now. The use case is hashing data from skb payloads and such from kprobe
+> >>> and sockmap side. I'm happy to work on it as soon as possible if no one
+> >>> else picks it up.
+> >>>
+> After thinking through this some more, I'm curious to hear your thoughts,
+> Andrii and John, on how the bitmap would be allocated. From what I
+> understand, we do not currently support dynamic memory allocations
+> in bpf programs. Assuming the optimal number of bits the user wants
+> to use for their bitmap follows something like
+> num_entries * num_hash_functions / ln(2), I think the bitmap would
+> have to be dynamically allocated in the bpf program since it'd be too
+> large to store on the stack, unless there's some other way I'm not seeing?
 
-yes, right as we did for gso_type/xdp_frags_size.
+You can either use BPF_MAP_TYPE_ARRAY and size it at runtime. Or one
+can use compile-time fixed-sized array in BPF program:
 
-Regards,
-Lorenzo
+
+u64 bits[HOWEVER_MANY_U64S_WE_NEED];
+
+/* then in BPF program itself */
+
+h = hash(...);
+bits[h / 64] |= (1 << (h % 64));
+
+As an example. The latter case avoid map lookups completely, except
+you'd need to prove to the verifier that you are not going out of
+bounds for bits, which is simple to do if HOWEVER_MANY_U64S_WE_NEED is
+power-of-2. Then you can do:
+
+h = hash(...);
+bits[(h / 64) & (HOWEVER_MANY_U64S_WE_NEED - 1)] |= (1 << (h % 64));
+
+> >>>> It would be a really interesting experiment to implement the same
+> >>>> logic in pure BPF logic and run it as another benchmark, along the
+> >>>> Bloom filter map. BPF has both spinlock and atomic operation, so we
+> >>>> can compare and contrast. We only miss hashing BPF helper.
+> >>> The one issue I've found writing a hash logic is its a bit tricky
+> >>> to get the verifier to consume it. Especially when the hash is nested
+> >>> inside a for loop and sometimes a couple for loops so you end up with
+> >>> things like,
+> >>>
+> >>>   for (i = 0; i < someTlvs; i++) {
+> >>>    for (j = 0; j < someKeys; i++) {
+> >>>      ...
+> >>>      bpf_hash(someValue)
+> >>>      ...
+> >>>   }
+> >>>
+> >>> I've find small seemingly unrelated changes cause the complexity limit
+> >>> to explode. Usually we can work around it with code to get pruning
+
+btw, global BPF functions (sub-programs) should limit this complexity
+explosion, even if you implement your own hashing function purely in
+BPF.
+
+> >>> points and such, but its a bit ugly. Perhaps this means we need
+> >>> to dive into details of why the complexity explodes, but I've not
+> >>> got to it yet. The todo list is long.
+> Out of curiosity, why would this helper have trouble in the verifier?
+>  From a quick glance, it seems like the implementation for it would
+> be pretty similar to how bpf_get_prandom_u32() is implemented
+> (except where the arguments for the hash helper would take in a
+> void* data (ARG_PTR_TO_MEM), the size of the data buffer, and
+> the seed)? I'm a bit new to bpf, so there's a good chance I might be
+> completely overlooking something here :)
+
+Curious as well. I imagine we'd define new helper with this signature:
+
+u64 bpf_hash_mem(void *data, u64 sz, enum bpf_hash_func hash_fn, u64 flags);
+
+Where enum bpf_hash_func { JHASH, MURMUR, CRC32, etc }, whatever is
+available in the kernel (or will be added later).
+
+John, would this still cause problems for the verifier?
 
 >
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> >>>> Being able to do this in pure BPF code has a bunch of advantages.
+> >>>> Depending on specific application, users can decide to:
+> >>>>     - speed up the operation by ditching spinlock or atomic operation,
+> >>>> if the logic allows to lose some bit updates;
+> >>>>     - decide on optimal size, which might not be a power of 2, depending
+> >>>> on memory vs CPU trade of in any particular case;
+> >>>>     - it's also possible to implement a more general Counting Bloom
+> >>>> filter, all without modifying the kernel.
+> >>> Also it means no call and if you build it on top of an array
+> >>> map of size 1 its just a load. Could this be a performance win for
+> >>> example a Bloom filter in XDP for DDOS? Maybe. Not sure if the program
+> >>> would be complex enough a call might be in the noise. I don't know.
+> >>>
+> >>>> We could go further, and start implementing other simple data
+> >>>> structures relying on hashing, like HyperLogLog. And all with no
+> >>>> kernel modifications. Map-in-map is no issue as well, because there is
+> >>>> a choice of using either fixed global data arrays for maximum
+> >>>> performance, or using BPF_MAP_TYPE_ARRAY maps that can go inside
+> >>>> map-in-map.
+> >>> We've been doing most of our array maps as single entry arrays
+> >>> at this point and just calculating offsets directly in BPF. Same
+> >>> for some simple hashing algorithms.
+> >>>
+> >>>> Basically, regardless of having this map in the kernel or not, let's
+> >>>> have a "universal" hashing function as a BPF helper as well.
+> >>>> Thoughts?
+> >>> I like it, but not the bloom filter expert here.
+> >> Ooh, I like your idea of comparing the performance of the bloom filter with
+> >> a kernel-provided BPF map vs. custom BPF program logic using a
+> >> hash helper, especially if a BPF hash helper is something useful that
+> >> we want to add to the codebase in and of itself!
+> > I think a hash helper will be useful in general but could it be a
+> > separate experiment to try using it to implement some bpf maps (probably
+> > a mix of an easy one and a little harder one) ?
 >
-> > ---
-> >  include/linux/skbuff.h | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> > index 6bdb0db3e825..1abeba7ef82e 100644
-> > --- a/include/linux/skbuff.h
-> > +++ b/include/linux/skbuff.h
-> > @@ -522,13 +522,17 @@ struct skb_shared_info {
-> >       unsigned short  gso_segs;
-> >       struct sk_buff  *frag_list;
-> >       struct skb_shared_hwtstamps hwtstamps;
-> > -     unsigned int    gso_type;
-> > +     union {
-> > +             unsigned int    gso_type;
-> > +             unsigned int    xdp_frags_size;
-> > +     };
-> >       u32             tskey;
-> >
-> >       /*
-> >        * Warning : all fields before dataref are cleared in __alloc_skb()
-> >        */
-> >       atomic_t        dataref;
-> > +     unsigned int    xdp_frags_tsize;
-> >
-> >       /* Intermediate layers must ensure that destructor_arg
-> >        * remains valid until skb destructor */
-> > --
-> > 2.31.1
-> >
->
+> I agree, I think the hash helper implementation should be its own separate
+> patchset orthogonal to this one.
 >
 
+Sure, I don't feel strongly against having Bloom filter as BPF map.
