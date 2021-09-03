@@ -2,257 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5F740009F
-	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 15:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C49400169
+	for <lists+bpf@lfdr.de>; Fri,  3 Sep 2021 16:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235693AbhICNiz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 09:38:55 -0400
-Received: from mga18.intel.com ([134.134.136.126]:45875 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235169AbhICNiy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Sep 2021 09:38:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="206544189"
-X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
-   d="scan'208";a="206544189"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 06:37:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
-   d="scan'208";a="603066631"
-Received: from ipd-test105-dell.igk.intel.com (HELO localhost.localdomain) ([10.102.20.173])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Sep 2021 06:37:52 -0700
-Date:   Fri, 3 Sep 2021 17:38:30 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, ciara.loftus@intel.com,
-        bpf@vger.kernel.org, yhs@fb.com, andrii@kernel.org
-Subject: Re: [PATCH bpf-next 17/20] selftests: xsk: add test for unaligned
- mode
-Message-ID: <YTJBdg9S1QEvPVZY@localhost.localdomain>
-References: <20210901104732.10956-1-magnus.karlsson@gmail.com>
- <20210901104732.10956-18-magnus.karlsson@gmail.com>
+        id S1349442AbhICOpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 10:45:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41769 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240018AbhICOpI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 3 Sep 2021 10:45:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630680248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tzCAudKDCHUGW3YEsgSMZs1BCDwPAvi4fTUjFk0q5v0=;
+        b=LE+nZ+TUKk7PKXxP2U5oXL2GWqWbxT6b1SSsnyuFziaViI3tfuc7UaqF6ca/NUvwjDvxSr
+        EgJyUb1I7WY7Fb5HfscZ3V1nvKLvicFVtQ5mJlsss66LZi2p+5W14VbjGBc6wNqtKiqZqw
+        pQQUrqgArhzWxCrusNkPU9vENmDoSHc=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-OswiYQQZPbq_h9bg-hAz_w-1; Fri, 03 Sep 2021 10:44:07 -0400
+X-MC-Unique: OswiYQQZPbq_h9bg-hAz_w-1
+Received: by mail-ej1-f71.google.com with SMTP id r21-20020a1709067055b02904be5f536463so2841429ejj.0
+        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 07:44:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=tzCAudKDCHUGW3YEsgSMZs1BCDwPAvi4fTUjFk0q5v0=;
+        b=PpZoiLaYeuDfIlExzEYTgBEvkegAFrTnv9t81PO+Mrks+NfrDuu50qjOgoAUE9J5av
+         mHwht01bxHOqfFQCMPX4EYCcWswbW2vXqIya8cORwip9O5aKxdc0RPGUjEF248mLXwAu
+         vQssHNLQ871EjvgTYjzTmki9WitAxR7aqFACAbR9fForh/VH8yOzJ9HUX87B0VqYijux
+         5koiV2L9Juuv/0MrQw/5VScJio/rB5LoU8AlLFpltA02mfvEwwNK31yfiHQ+Gg5+8OSG
+         STFrCunFbJFKqwT+ypHOk8XoFxdwZ7Wd72Z6z6x2oKGzByJ59+QRuYtzSAOm1U45WPd7
+         dzKw==
+X-Gm-Message-State: AOAM532bH7hMmkMydEWbDmPWNRNGWKIRTXn3388yNXwlGpFOujYTV25v
+        gvm80UjGpJ5JEdmBWqamTz96xPINfHtGBCxGkPjlAwOjOaQ88aKtImTqgnTBtq+pfu84rzTZfWf
+        JRiycrbWAN0hr
+X-Received: by 2002:aa7:c1ca:: with SMTP id d10mr4421094edp.294.1630680246329;
+        Fri, 03 Sep 2021 07:44:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJws8r0eF6pqn5eUk3akGSZKVi5DjUKMVWXoQo6QB5DDpIqNVVwGLr0GDn3cD61h/oazHLKidQ==
+X-Received: by 2002:aa7:c1ca:: with SMTP id d10mr4421070edp.294.1630680246078;
+        Fri, 03 Sep 2021 07:44:06 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id jx21sm2809412ejb.41.2021.09.03.07.44.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 07:44:05 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7002D18016F; Fri,  3 Sep 2021 16:44:04 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>
+Subject: Re: [RFC Patch net-next] net_sched: introduce eBPF based Qdisc
+In-Reply-To: <20210902233510.gnimg2krwwkzv4f2@kafai-mbp.dhcp.thefacebook.com>
+References: <20210821010240.10373-1-xiyou.wangcong@gmail.com>
+ <20210824234700.qlteie6al3cldcu5@kafai-mbp>
+ <CAM_iQpWP_kvE58Z+363n+miTQYPYLn6U4sxMKVaDvuRvjJo_Tg@mail.gmail.com>
+ <612f137f4dc5c_152fe20891@john-XPS-13-9370.notmuch>
+ <871r68vapw.fsf@toke.dk>
+ <20210901174543.xukawl7ylkqzbuax@kafai-mbp.dhcp.thefacebook.com>
+ <871r66ud8y.fsf@toke.dk>
+ <613136d0cf411_2c56f2086@john-XPS-13-9370.notmuch>
+ <87bl5asjdj.fsf@toke.dk>
+ <20210902233510.gnimg2krwwkzv4f2@kafai-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 03 Sep 2021 16:44:04 +0200
+Message-ID: <87zgstra6j.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901104732.10956-18-magnus.karlsson@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 12:47:29PM +0200, Magnus Karlsson wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
-> 
-> Add a test for unaligned mode in which packet buffers can be placed
-> anywhere within the umem. Some packets are made to straddle page
-> boundraries in order to check for correctness. On the Tx side, buffers
+Martin KaFai Lau <kafai@fb.com> writes:
 
-boundaries
+> On Fri, Sep 03, 2021 at 12:27:52AM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> >> The question is if it's useful to provide the full struct_ops for
+>> >> qdiscs? Having it would allow a BPF program to implement that interfa=
+ce
+>> >> towards userspace (things like statistics, classes etc), but the
+>> >> question is if anyone is going to bother with that given the wealth of
+>> >> BPF-specific introspection tools already available?
+> Instead of bpftool can only introspect bpf qdisc and the existing tc
+> can only introspect kernel qdisc,  it will be nice to have bpf
+> qdisc work as other qdisc and showing details together with others
+> in tc.  e.g. a bpf qdisc export its data/stats with its btf-id
+> to tc and have tc print it out in a generic way?
 
-> are now allocated according to the addresses found in the packet
-> stream. Thus, the placement of buffers can be controlled with the
-> boolean use_addr_for_fill in the packet stream.
-> 
-> One new pkt_stream insterface is introduced: pkt_stream_replace_half()
+I'm not opposed to the idea, certainly. I just wonder if people who go
+to the trouble of writing a custom qdisc in BPF will feel it's worth it
+to do the extra work to make this available via a second API. We could
+certainly encourage it, and some things are easy (drop and pkt counters,
+etc), but other things (like class stats) will depend on the semantics
+of the qdisc being implemented, so will require extra work from the BPF
+qdisc developer...
 
-interface
+-Toke
 
-> that replaces every other packet in the default packet stream with the
-> specified new packet.
-
-Can you describe the introduction of DEFAULT_OFFSET ?
-
-> 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->  tools/testing/selftests/bpf/xdpxceiver.c | 125 ++++++++++++++++++-----
->  tools/testing/selftests/bpf/xdpxceiver.h |   4 +
->  2 files changed, 106 insertions(+), 23 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-> index d4aad4833754..a24068993cc3 100644
-> --- a/tools/testing/selftests/bpf/xdpxceiver.c
-> +++ b/tools/testing/selftests/bpf/xdpxceiver.c
-> @@ -19,7 +19,7 @@
->   * Virtual Ethernet interfaces.
->   *
->   * For each mode, the following tests are run:
-> - *    a. nopoll - soft-irq processing
-> + *    a. nopoll - soft-irq processing in run-to-completion mode
->   *    b. poll - using poll() syscall
->   *    c. Socket Teardown
->   *       Create a Tx and a Rx socket, Tx from one socket, Rx on another. Destroy
-> @@ -45,6 +45,7 @@
->   *       Configure sockets at indexes 0 and 1, run a traffic on queue ids 0,
->   *       then remove xsk sockets from queue 0 on both veth interfaces and
->   *       finally run a traffic on queues ids 1
-> + *    g. unaligned mode
->   *
->   * Total tests: 12
->   *
-> @@ -243,6 +244,9 @@ static int xsk_configure_umem(struct xsk_umem_info *umem, void *buffer, u64 size
->  	};
->  	int ret;
->  
-> +	if (umem->unaligned_mode)
-> +		cfg.flags |= XDP_UMEM_UNALIGNED_CHUNK_FLAG;
-> +
->  	ret = xsk_umem__create(&umem->umem, buffer, size,
->  			       &umem->fq, &umem->cq, &cfg);
->  	if (ret)
-> @@ -252,19 +256,6 @@ static int xsk_configure_umem(struct xsk_umem_info *umem, void *buffer, u64 size
->  	return 0;
->  }
->  
-> -static void xsk_populate_fill_ring(struct xsk_umem_info *umem)
-> -{
-> -	int ret, i;
-> -	u32 idx = 0;
-> -
-> -	ret = xsk_ring_prod__reserve(&umem->fq, XSK_RING_PROD__DEFAULT_NUM_DESCS, &idx);
-> -	if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS)
-> -		exit_with_error(-ret);
-> -	for (i = 0; i < XSK_RING_PROD__DEFAULT_NUM_DESCS; i++)
-> -		*xsk_ring_prod__fill_addr(&umem->fq, idx++) = i * umem->frame_size;
-> -	xsk_ring_prod__submit(&umem->fq, XSK_RING_PROD__DEFAULT_NUM_DESCS);
-> -}
-> -
->  static int xsk_configure_socket(struct xsk_socket_info *xsk, struct xsk_umem_info *umem,
->  				struct ifobject *ifobject, u32 qid)
->  {
-> @@ -487,7 +478,8 @@ static struct pkt_stream *pkt_stream_generate(struct xsk_umem_info *umem, u32 nb
->  
->  	pkt_stream->nb_pkts = nb_pkts;
->  	for (i = 0; i < nb_pkts; i++) {
-> -		pkt_stream->pkts[i].addr = (i % umem->num_frames) * umem->frame_size;
-> +		pkt_stream->pkts[i].addr = (i % umem->num_frames) * umem->frame_size +
-> +			DEFAULT_OFFSET;
->  		pkt_stream->pkts[i].len = pkt_len;
->  		pkt_stream->pkts[i].payload = i;
-
-Probably we need to init use_addr_for_fill to false by default in here as
-pkt_stream is malloc'd.
-
->  
-> @@ -500,6 +492,12 @@ static struct pkt_stream *pkt_stream_generate(struct xsk_umem_info *umem, u32 nb
->  	return pkt_stream;
->  }
->  
-> +static struct pkt_stream *pkt_stream_clone(struct xsk_umem_info *umem,
-> +					   struct pkt_stream *pkt_stream)
-> +{
-> +	return pkt_stream_generate(umem, pkt_stream->nb_pkts, pkt_stream->pkts[0].len);
-> +}
-> +
->  static void pkt_stream_replace(struct test_spec *test, u32 nb_pkts, u32 pkt_len)
->  {
->  	struct pkt_stream *pkt_stream;
-> @@ -507,8 +505,22 @@ static void pkt_stream_replace(struct test_spec *test, u32 nb_pkts, u32 pkt_len)
->  	pkt_stream = pkt_stream_generate(test->ifobj_tx->umem, nb_pkts, pkt_len);
->  	test->ifobj_tx->pkt_stream = pkt_stream;
->  	test->ifobj_rx->pkt_stream = pkt_stream;
-> +}
->  
-> -	pkt_stream_delete(pkt_stream);
-> +static void pkt_stream_replace_half(struct test_spec *test, u32 pkt_len, u32 offset)
-> +{
-> +	struct xsk_umem_info *umem = test->ifobj_tx->umem;
-> +	struct pkt_stream *pkt_stream;
-> +	u32 i;
-> +
-> +	pkt_stream = pkt_stream_clone(umem, test->pkt_stream_default);
-> +	for (i = 0; i < test->pkt_stream_default->nb_pkts; i += 2) {
-> +		pkt_stream->pkts[i].addr = (i % umem->num_frames) * umem->frame_size + offset;
-> +		pkt_stream->pkts[i].len = pkt_len;
-> +	}
-> +
-> +	test->ifobj_tx->pkt_stream = pkt_stream;
-> +	test->ifobj_rx->pkt_stream = pkt_stream;
->  }
->  
->  static struct pkt *pkt_generate(struct ifobject *ifobject, u32 pkt_nb)
-> @@ -572,9 +584,9 @@ static void pkt_dump(void *pkt, u32 len)
->  	fprintf(stdout, "---------------------------------------\n");
->  }
->  
-> -static bool is_pkt_valid(struct pkt *pkt, void *buffer, const struct xdp_desc *desc)
-> +static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, u32 len)
->  {
-> -	void *data = xsk_umem__get_data(buffer, desc->addr);
-> +	void *data = xsk_umem__get_data(buffer, addr);
->  	struct iphdr *iphdr = (struct iphdr *)(data + sizeof(struct ethhdr));
->  
->  	if (!pkt) {
-> @@ -588,10 +600,10 @@ static bool is_pkt_valid(struct pkt *pkt, void *buffer, const struct xdp_desc *d
->  		if (opt_pkt_dump)
->  			pkt_dump(data, PKT_SIZE);
->  
-> -		if (pkt->len != desc->len) {
-> +		if (pkt->len != len) {
->  			ksft_test_result_fail
->  				("ERROR: [%s] expected length [%d], got length [%d]\n",
-> -					__func__, pkt->len, desc->len);
-> +					__func__, pkt->len, len);
->  			return false;
->  		}
->  
-> @@ -673,7 +685,7 @@ static void receive_pkts(struct pkt_stream *pkt_stream, struct xsk_socket_info *
->  
->  			orig = xsk_umem__extract_addr(addr);
->  			addr = xsk_umem__add_offset_to_addr(addr);
-> -			if (!is_pkt_valid(pkt, xsk->umem->buffer, desc))
-> +			if (!is_pkt_valid(pkt, xsk->umem->buffer, addr, desc->len))
->  				return;
->  
->  			*xsk_ring_prod__fill_addr(&xsk->umem->fq, idx_fq++) = orig;
-> @@ -817,13 +829,16 @@ static void tx_stats_validate(struct ifobject *ifobject)
->  
->  static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
->  {
-> +	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
->  	u32 i;
->  
->  	ifobject->ns_fd = switch_namespace(ifobject->nsname);
->  
-> +	if (ifobject->umem->unaligned_mode)
-> +		mmap_flags |= MAP_HUGETLB;
-> +
->  	for (i = 0; i < test->nb_sockets; i++) {
->  		u64 umem_sz = ifobject->umem->num_frames * ifobject->umem->frame_size;
-> -		int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
->  		u32 ctr = 0;
->  		void *bufs;
->  
-> @@ -881,6 +896,32 @@ static void *worker_testapp_validate_tx(void *arg)
->  	pthread_exit(NULL);
->  }
->  
-> +static void xsk_populate_fill_ring(struct xsk_umem_info *umem, struct pkt_stream *pkt_stream)
-> +{
-> +	u32 idx = 0, i;
-> +	int ret;
-> +
-> +	ret = xsk_ring_prod__reserve(&umem->fq, XSK_RING_PROD__DEFAULT_NUM_DESCS, &idx);
-> +	if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS)
-> +		exit_with_error(ENOSPC);
-
--ENOSPC?
-
-> +	for (i = 0; i < XSK_RING_PROD__DEFAULT_NUM_DESCS; i++) {
-> +		u64 addr;
-> +
-> +		if (pkt_stream->use_addr_for_fill) {
-> +			struct pkt *pkt = pkt_stream_get_pkt(pkt_stream, i);
-> +
-> +			if (!pkt)
-> +				break;
-> +			addr = pkt->addr;
-> +		} else {
-> +			addr = (i % umem->num_frames) * umem->frame_size + DEFAULT_OFFSET;
-> +		}
-> +
-> +		*xsk_ring_prod__fill_addr(&umem->fq, idx++) = addr;
-> +	}
-> +	xsk_ring_prod__submit(&umem->fq, XSK_RING_PROD__DEFAULT_NUM_DESCS);
-> +}
