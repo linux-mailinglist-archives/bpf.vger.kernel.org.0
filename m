@@ -2,126 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F254008F7
-	for <lists+bpf@lfdr.de>; Sat,  4 Sep 2021 03:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4AA400953
+	for <lists+bpf@lfdr.de>; Sat,  4 Sep 2021 04:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236158AbhIDBb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 21:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
+        id S236244AbhIDC3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Sep 2021 22:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233140AbhIDBb4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Sep 2021 21:31:56 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA647C061575;
-        Fri,  3 Sep 2021 18:30:55 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id j16so851440pfc.2;
-        Fri, 03 Sep 2021 18:30:55 -0700 (PDT)
+        with ESMTP id S236175AbhIDC3n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Sep 2021 22:29:43 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5545CC061575
+        for <bpf@vger.kernel.org>; Fri,  3 Sep 2021 19:28:42 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id h9so1651777ejs.4
+        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 19:28:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=T9nVqnPH4oqlBYTSA1YI/mumrnp4x2ABC9Aj2V1+NSI=;
-        b=Qw54c3OBanCmKxFIqur2nfa8P3UHNoeHXSjsS1nuX4rOTVPFPZfvDrP7fOLKI/at2+
-         F8DAvxRO6ycNmXDyg2TSu/J96yD5sWTRxBSMHmURrEPKXmAeC6/femrKgf2a+SxnnQOm
-         P6NyNXg3Wps86Pf1dzijAfwoaKNQLs5AKBG+MTRiJryS954f8Whc1rz436vM/L3Dfew3
-         0/ztD66CVbvdlpVAwOhK9oVT0/zqDsH8xsOTTH+To0ynNsBTp1RKoFQ9XLl6qdBr4KoQ
-         acEzsurQ86BICM18HJrpu3jeo0x5AhGmctP5hMiFtbFr8gFJbqVdfpWFSaTWwLYH1yna
-         g6rg==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JAWBtM7K7BMtnyPEm20N+4qU/k+yiQgGMrs50rQRJSw=;
+        b=WiQ+iN9M5WdhGlk2j7SJKBPi78UZ52J7lG5sd1KIdu+Cr3m5DP+/jWfp8GjI7JLvcM
+         crfHLPMNOFNtFnIBLG+BcWbTpofFy/JFtxmDo+/kDYSuDLAL2rdejvZg6Yh0F0ibWjdK
+         djKErFB6nRYZtumnO5yAMoeh3ge3E/AYUChknzbihBL00C6PJjyr9joRNKyrQfk29NXy
+         x0yjC+Y6R6SoEJ/t5wbV54whXdOUhS4TGkvGiEr0iqXdGiGDT8X2y6Lz9LnFXd+fs/OX
+         JeXnSRVcGcFy0pzfl+u+1W/ubTQatE+aqpqYS9X66vnoUEt7rlX3hCBVmgSwBqLJm7Y2
+         MU9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=T9nVqnPH4oqlBYTSA1YI/mumrnp4x2ABC9Aj2V1+NSI=;
-        b=taJJccF++AjcE/OGNr6T2hrtmjlpk/jB0jxT35pVw3IWrgmdAVtEIqmtA1yof7tGgg
-         hKP3KPKcrFZdrvCjuAOuRVVld+aEnoWChhr6obf9rQJCP4TybO1NH60dyq/lqeiv7+vU
-         4rBHTPYhCgCXItP4ZV2Q/sB6OecyGSlTekoySWhe/eewYyi1j6lqdVeI9yYLTvKmKgdq
-         B+kRRph+5y4jdGapoitd09zIrR2TxwBgJ9rcRgEGa98x3t6yg1pPTrU1xokvO8F/RM7h
-         EFWKRVVbGEfiwZXs4Ee8PVCOs6tQs3ztIuXOEJHZvol4KJsGW6AKtVG38QVcSz5BIblj
-         5cNg==
-X-Gm-Message-State: AOAM53146XXai6Fx60Nrjwth//OpOKTviI3P5pzC5yElL03JTOumWuSY
-        99+3LRAscSvJcEtq88gVivMNYMKPsSEFBCpWxc4=
-X-Google-Smtp-Source: ABdhPJwaeAyxwm5z6cX7uj8cBeTabx7xO0NGPpZg1xkywQxXAD0Dbfm9A4EPYy4mZ3IeTUEdDxCxCLrM+XpIwLu51d0=
-X-Received: by 2002:a63:4458:: with SMTP id t24mr1572431pgk.218.1630719055338;
- Fri, 03 Sep 2021 18:30:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=JAWBtM7K7BMtnyPEm20N+4qU/k+yiQgGMrs50rQRJSw=;
+        b=jbIOsypsNJ2LnKmt51GYNsRv4lQnatxZ+H7mF2zray7QBZDaO+vqT3NqI0biOW29Bt
+         XItb6neYx8KCnLwPLGtsuRpwjlmghiJjmAK97zQlW5v7x4qDpCMs4Ke5svYtn0epapbS
+         zytQ2UuNWjOaucqOjO8h+DhhJCA7Acf1f9bNq8bWZth7xM9eoMJA4kfRhVmrvGB/FT6y
+         MN3lMAMgKRVWh0Gh2PYt/ftGONP+kfbxaaDYaLVylTeYnJrf8DYoRKnPjwQVa+8ZKO4f
+         3jjkAhOfxpkdpZWMl2XQE5isati9pZ1CdWppd1ZCHZRJA5DcGeR3S56CzL1V+D9uzvlG
+         DxEA==
+X-Gm-Message-State: AOAM533+anWBuQFBpKgNQGD4a23xG+yCw5zkdGCOG7PlIT3Uue+7isHg
+        dQGIg5U5rsi+Wr4ieBSqxSM=
+X-Google-Smtp-Source: ABdhPJxzqLuA0Z26aGHlzlcZHyUQOtpNilKoRp4Shh15UKJ3Qjj9U5U8nbR6YM/epGJWgBcA39Wimg==
+X-Received: by 2002:a17:906:1c41:: with SMTP id l1mr2065122ejg.13.1630722520817;
+        Fri, 03 Sep 2021 19:28:40 -0700 (PDT)
+Received: from localhost (host-79-54-69-56.retail.telecomitalia.it. [79.54.69.56])
+        by smtp.gmail.com with ESMTPSA id x11sm476618edq.58.2021.09.03.19.28.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 19:28:40 -0700 (PDT)
+Date:   Sat, 4 Sep 2021 04:28:37 +0200
+From:   Lorenzo Fontana <fontanalorenz@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next] bpf: add helpers documentation about GPL
+ compatibility
+Message-ID: <YTLZ1dEBdA+5fdat@riversong>
+Mail-Followup-To: Lorenzo Fontana <fontanalorenz@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+References: <20210822115900.26815-1-fontanalorenz@gmail.com>
+ <20210824001013.mktbw4p6mn6desdv@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20210821010240.10373-1-xiyou.wangcong@gmail.com>
- <20210824234700.qlteie6al3cldcu5@kafai-mbp> <CAM_iQpWP_kvE58Z+363n+miTQYPYLn6U4sxMKVaDvuRvjJo_Tg@mail.gmail.com>
- <612f137f4dc5c_152fe20891@john-XPS-13-9370.notmuch> <871r68vapw.fsf@toke.dk>
-In-Reply-To: <871r68vapw.fsf@toke.dk>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Fri, 3 Sep 2021 18:30:44 -0700
-Message-ID: <CAM_iQpUhmYBvu7p_jdiYxxPLqMmo3EFfRPfEsciCypUpM58UnQ@mail.gmail.com>
-Subject: Re: [RFC Patch net-next] net_sched: introduce eBPF based Qdisc
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824001013.mktbw4p6mn6desdv@ast-mbp.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 3:42 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
->
-> John Fastabend <john.fastabend@gmail.com> writes:
->
-> > Cong Wang wrote:
-> >> On Tue, Aug 24, 2021 at 4:47 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >> > Please explain more on this.  What is currently missing
-> >> > to make qdisc in struct_ops possible?
-> >>
-> >> I think you misunderstand this point. The reason why I avoid it is
-> >> _not_ anything is missing, quite oppositely, it is because it requires
-> >> a lot of work to implement a Qdisc with struct_ops approach, literally
-> >> all those struct Qdisc_ops (not to mention struct Qdisc_class_ops).
-> >> WIth current approach, programmers only need to implement two
-> >> eBPF programs (enqueue and dequeue).
-> >>
-> >> Thanks.
-> >
-> > Another idea. Rather than work with qdisc objects which creates all
-> > these issues with how to work with existing interfaces, filters, etc.
-> > Why not create an sk_buff map? Then this can be used from the existing
-> > egress/ingress hooks independent of the actual qdisc being used.
->
-> I agree. In fact, I'm working on doing just this for XDP, and I see no
-> reason why the map type couldn't be reused for skbs as well. Doing it
-> this way has a couple of benefits:
+On Mon, Aug 23, 2021 at 05:10:13PM -0700, Alexei Starovoitov wrote:
+> On Sun, Aug 22, 2021 at 01:59:00PM +0200, Lorenzo Fontana wrote:
+> > When writing BPF programs one might refer to the man page
+> > to lookup helpers. When you do so, however you don't have
+> > a way to immediately know if you can use the helper
+> > based on your program licensing requirements.
+> > 
+> > This patch adds a specific line in the man bpf-helpers
+> > to show that information straight away.
+> > 
+> > Signed-off-by: Lorenzo Fontana <fontanalorenz@gmail.com>
+> ...
+> >   * long bpf_trace_printk(const char *fmt, u32 fmt_size, ...)
+> >   * 	Description
+> > @@ -1613,6 +1621,8 @@ union bpf_attr {
+> >   * 	Return
+> >   * 		The number of bytes written to the buffer, or a negative error
+> >   * 		in case of failure.
+> > + * 	GPL Compatibility
+> > + * 		Required
+> 
+> I think manually annotating the docs is too easy to get wrong.
+> I think scripts/bpf_doc.py should be able to pick it up from the code somehow?
+> or rely on dynamic discovery by bpftool?
 
-I do see a lot of reasons, for starters, struct skb_buff is very different
-from struct xdp_buff, any specialized map can not be reused. I guess you
-are using a generic one, how do you handle the refcnt at least for skb?
+Thanks for the review Alexei. I agree it's not the best but I followed
+the same approach as for the other elements. It might seem that the
+script parses those from code but in reality it just parses them from
+a comment in the helpers file. I tried to accomplish this by looking at
+the various C files containing this information but it would mean
+changing a lot the way the script works. I can still do that but wanted
+to also note that it will be very unlikely that an helper changes
+licensing and since the helper makers will always need to annotate the
+helpers header file with information I thought that adding this
+immediately would've been enough.
 
->
-> - It leaves more flexibility to BPF: want a simple FIFO queue? just
->   implement that with a single queue map. Or do you want to build a full
->   hierarchical queueing structure? Just instantiate as many queue maps
->   as you need to achieve this. Etc.
+I'll explore the possibility of doing this with bpftool instead, that's
+a great suggestion. Thank you!
 
-Please give an example without a queue. ;) Queue is too simple, show us
-something more useful please. How do you plan to re-implement EDT with
-just queues?
 
->
-> - The behaviour is defined entirely by BPF program behaviour, and does
->   not require setting up a qdisc hierarchy in addition to writing BPF
->   code.
-
-I have no idea why you call this a benefit, because my goal is to replace
-Qdisc's, not to replace any other things. You know there are plenty of Qdis=
-c's
-which are not implemented in Linux kernel.
-
->
-> - It should be possible to structure the hooks in a way that allows
->   reusing queueing algorithm implementations between the qdisc and XDP
->   layers.
-
-XDP has no skb but xdp_buff, no? And again, why only queues?
-
-Thanks.
+Lore
