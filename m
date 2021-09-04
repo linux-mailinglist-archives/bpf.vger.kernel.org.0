@@ -2,112 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4AA400953
-	for <lists+bpf@lfdr.de>; Sat,  4 Sep 2021 04:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0AB400ACC
+	for <lists+bpf@lfdr.de>; Sat,  4 Sep 2021 13:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236244AbhIDC3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Sep 2021 22:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        id S235736AbhIDKUG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Sep 2021 06:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236175AbhIDC3n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Sep 2021 22:29:43 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5545CC061575
-        for <bpf@vger.kernel.org>; Fri,  3 Sep 2021 19:28:42 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id h9so1651777ejs.4
-        for <bpf@vger.kernel.org>; Fri, 03 Sep 2021 19:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JAWBtM7K7BMtnyPEm20N+4qU/k+yiQgGMrs50rQRJSw=;
-        b=WiQ+iN9M5WdhGlk2j7SJKBPi78UZ52J7lG5sd1KIdu+Cr3m5DP+/jWfp8GjI7JLvcM
-         crfHLPMNOFNtFnIBLG+BcWbTpofFy/JFtxmDo+/kDYSuDLAL2rdejvZg6Yh0F0ibWjdK
-         djKErFB6nRYZtumnO5yAMoeh3ge3E/AYUChknzbihBL00C6PJjyr9joRNKyrQfk29NXy
-         x0yjC+Y6R6SoEJ/t5wbV54whXdOUhS4TGkvGiEr0iqXdGiGDT8X2y6Lz9LnFXd+fs/OX
-         JeXnSRVcGcFy0pzfl+u+1W/ubTQatE+aqpqYS9X66vnoUEt7rlX3hCBVmgSwBqLJm7Y2
-         MU9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=JAWBtM7K7BMtnyPEm20N+4qU/k+yiQgGMrs50rQRJSw=;
-        b=jbIOsypsNJ2LnKmt51GYNsRv4lQnatxZ+H7mF2zray7QBZDaO+vqT3NqI0biOW29Bt
-         XItb6neYx8KCnLwPLGtsuRpwjlmghiJjmAK97zQlW5v7x4qDpCMs4Ke5svYtn0epapbS
-         zytQ2UuNWjOaucqOjO8h+DhhJCA7Acf1f9bNq8bWZth7xM9eoMJA4kfRhVmrvGB/FT6y
-         MN3lMAMgKRVWh0Gh2PYt/ftGONP+kfbxaaDYaLVylTeYnJrf8DYoRKnPjwQVa+8ZKO4f
-         3jjkAhOfxpkdpZWMl2XQE5isati9pZ1CdWppd1ZCHZRJA5DcGeR3S56CzL1V+D9uzvlG
-         DxEA==
-X-Gm-Message-State: AOAM533+anWBuQFBpKgNQGD4a23xG+yCw5zkdGCOG7PlIT3Uue+7isHg
-        dQGIg5U5rsi+Wr4ieBSqxSM=
-X-Google-Smtp-Source: ABdhPJxzqLuA0Z26aGHlzlcZHyUQOtpNilKoRp4Shh15UKJ3Qjj9U5U8nbR6YM/epGJWgBcA39Wimg==
-X-Received: by 2002:a17:906:1c41:: with SMTP id l1mr2065122ejg.13.1630722520817;
-        Fri, 03 Sep 2021 19:28:40 -0700 (PDT)
-Received: from localhost (host-79-54-69-56.retail.telecomitalia.it. [79.54.69.56])
-        by smtp.gmail.com with ESMTPSA id x11sm476618edq.58.2021.09.03.19.28.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 19:28:40 -0700 (PDT)
-Date:   Sat, 4 Sep 2021 04:28:37 +0200
-From:   Lorenzo Fontana <fontanalorenz@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf-next] bpf: add helpers documentation about GPL
- compatibility
-Message-ID: <YTLZ1dEBdA+5fdat@riversong>
-Mail-Followup-To: Lorenzo Fontana <fontanalorenz@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-References: <20210822115900.26815-1-fontanalorenz@gmail.com>
- <20210824001013.mktbw4p6mn6desdv@ast-mbp.dhcp.thefacebook.com>
+        with ESMTP id S235698AbhIDKUF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Sep 2021 06:20:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332C9C061575;
+        Sat,  4 Sep 2021 03:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=e5R7GYZx+aBiCE582nXkLQEdaHmoBPPfbt7yTR5oZBE=; b=JjKzpp7aDuZbtXkDdUq/VeGCde
+        DsyFTO9TrKCHJ/TchCVMYyQSOc7W6Me2+EOr1yEaWaDtWf8Dm8B2frXhToYjBKhsdDOIP0joSECaG
+        aRz/iSu3Guu+Cy5R/HMHoS2eYFMP05BER5mw2PtaiR/JmgCwkX5EWhoxFdiqH4oezF30okywUmS1k
+        HSDWX3jXJgUPJFzQvNdlqD/R2tHdF/v4VWUb8AgKf3XhELsCnaHctUQV++jxQ6n/KzPvFJLP4pW5l
+        Gjc+SgoKYpy1WOu4MjCQ+hIGH/nsZSlt4rdUFhjw9WJU2NAF4nY4V0VHMr30rMcUzsVBZyFzrBUNj
+        eRc0oPiA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mMSks-005EM9-Hw; Sat, 04 Sep 2021 10:18:40 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2BFE5986283; Sat,  4 Sep 2021 12:18:34 +0200 (CEST)
+Date:   Sat, 4 Sep 2021 12:18:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v5 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <20210904101834.GC4323@worktop.programming.kicks-ass.net>
+References: <20210902165706.2812867-1-songliubraving@fb.com>
+ <20210902165706.2812867-2-songliubraving@fb.com>
+ <YTHcXDhYDFsw9GQX@hirez.programming.kicks-ass.net>
+ <6BA620C1-D311-4992-8119-68A740ABA8BC@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210824001013.mktbw4p6mn6desdv@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <6BA620C1-D311-4992-8119-68A740ABA8BC@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 05:10:13PM -0700, Alexei Starovoitov wrote:
-> On Sun, Aug 22, 2021 at 01:59:00PM +0200, Lorenzo Fontana wrote:
-> > When writing BPF programs one might refer to the man page
-> > to lookup helpers. When you do so, however you don't have
-> > a way to immediately know if you can use the helper
-> > based on your program licensing requirements.
-> > 
-> > This patch adds a specific line in the man bpf-helpers
-> > to show that information straight away.
-> > 
-> > Signed-off-by: Lorenzo Fontana <fontanalorenz@gmail.com>
-> ...
-> >   * long bpf_trace_printk(const char *fmt, u32 fmt_size, ...)
-> >   * 	Description
-> > @@ -1613,6 +1621,8 @@ union bpf_attr {
-> >   * 	Return
-> >   * 		The number of bytes written to the buffer, or a negative error
-> >   * 		in case of failure.
-> > + * 	GPL Compatibility
-> > + * 		Required
+On Fri, Sep 03, 2021 at 04:45:29PM +0000, Song Liu wrote:
+> Hi Peter,
 > 
-> I think manually annotating the docs is too easy to get wrong.
-> I think scripts/bpf_doc.py should be able to pick it up from the code somehow?
-> or rely on dynamic discovery by bpftool?
+> > On Sep 3, 2021, at 1:27 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > On Thu, Sep 02, 2021 at 09:57:04AM -0700, Song Liu wrote:
+> > 
+> >> +static int
+> >> +intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
+> >> +{
+> >> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> >> +
+> >> +	intel_pmu_disable_all();
+> >> +	intel_pmu_lbr_read();
+> >> +	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
+> >> +
+> >> +	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
+> >> +	intel_pmu_enable_all(0);
+> >> +	return cnt;
+> >> +}
+> > 
+> > Given this disables the PMI from 'random' contexts, should we not add
+> > IRQ disabling around this to avoid really bad behaviour?
+> 
+> Do you mean we should add (instead of not add) IRQ disable?
 
-Thanks for the review Alexei. I agree it's not the best but I followed
-the same approach as for the other elements. It might seem that the
-script parses those from code but in reality it just parses them from
-a comment in the helpers file. I tried to accomplish this by looking at
-the various C files containing this information but it would mean
-changing a lot the way the script works. I can still do that but wanted
-to also note that it will be very unlikely that an helper changes
-licensing and since the helper makers will always need to annotate the
-helpers header file with information I thought that adding this
-immediately would've been enough.
-
-I'll explore the possibility of doing this with bpftool instead, that's
-a great suggestion. Thank you!
-
-
-Lore
+Yeah, I tihnk we want local_irq_save()/restore() here.
