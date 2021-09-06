@@ -2,74 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 891E3401172
-	for <lists+bpf@lfdr.de>; Sun,  5 Sep 2021 22:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDE04012BE
+	for <lists+bpf@lfdr.de>; Mon,  6 Sep 2021 03:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbhIEUFK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 5 Sep 2021 16:05:10 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:48672 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbhIEUFK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 5 Sep 2021 16:05:10 -0400
-Received: by mail-io1-f69.google.com with SMTP id z26-20020a05660200da00b005b86e36a1f4so3662564ioe.15
-        for <bpf@vger.kernel.org>; Sun, 05 Sep 2021 13:04:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=u7MTmHe0EZ9aA9LzZAxZXm6GQj3ww9LG3NsEE4FMIzE=;
-        b=XWSwzFqQK//qVCtAsdns+M5cO6PPd+nPS8vaLEDQSog4jWzpZ0NEcpMsmO5A2iNkML
-         uadbmp1laA1pbV1bAp7AJUglIr5xSIUAEr66u4i8zE86QpKL7uR/jQ0x7yk3gTBq7o+o
-         htCSbLLDLor9W1I6sxiljkrDRYtIugyMibkk9ueYs9bPrAO+caFhUxXpWmboT9xb8VPO
-         /9KaQiMChJA88P2dMyLWtIdZidTXthscjzsJVm1yeNhFe44Afr7BnoKjvl5E7O1GXpPn
-         5N7PleojxiaoSJ6Kc2E9ZpQCGFTSuFZMpewrXZP+X5bH0BSdIq1SrGF8KHWHGu5NXgAE
-         10+Q==
-X-Gm-Message-State: AOAM53325ogV5a5XfP+MSkv4LOzlbkISUMtFI64PehUDjqVpkM+3p0/F
-        oPqlx4zy+PoTUVrixwHcf92AIOjEI3VDUD/9C1Il1wlaIco1
-X-Google-Smtp-Source: ABdhPJw8uxsAVTc7y/O2Nho+1GgIvGWLtmslQzKpOBn86Tsfrhp/WIPdMKxCklB4s2cNvBUTeZJMFKunrHzUglETpZQX+qZo7Qz/
+        id S239204AbhIFBWI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 5 Sep 2021 21:22:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238971AbhIFBVq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 5 Sep 2021 21:21:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC33610C8;
+        Mon,  6 Sep 2021 01:20:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630891243;
+        bh=zer8h7C3K3dyF82nvXtNP81OaA4zrCRJbFaH/pOCLEo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rGF5H22WW2sHz6AsQRIixbNK/E2fLaamKsNvx7u34Er0T7arFvSbS3zo76OKuOyiW
+         a1OLNdDGQQB+6DPQ/3R66XM1S6CXFr0bxhpigFyiy5hoCiM0BMsBNs67iVsN+ZTZDT
+         KRg3i5eiMESWCQ0LrX+hijThm5lOFj3NrtLS1vyOZuPW5DCm2RwhKeAaRxMvvQOB2i
+         lPI0TpTfAyVjolCc7CPZCeSSHML3GwWsFwjT6xx3CZkFy1PUzligu7ogsrWstUWGvu
+         Saa8+mwxCGO8Ec0j+eYRZ6JO+6nHuoc7DwvGzgociWYkB8SwzkG535oYIPqhR2CVHy
+         Ss6oGA5L819rQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, Daniel Wagner <dwagner@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 41/47] io-wq: remove GFP_ATOMIC allocation off schedule out path
+Date:   Sun,  5 Sep 2021 21:19:45 -0400
+Message-Id: <20210906011951.928679-41-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210906011951.928679-1-sashal@kernel.org>
+References: <20210906011951.928679-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7b4b:: with SMTP id m11mr7043393iop.165.1630872246693;
- Sun, 05 Sep 2021 13:04:06 -0700 (PDT)
-Date:   Sun, 05 Sep 2021 13:04:06 -0700
-In-Reply-To: <0000000000002c756105cb201ef1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f032a605cb450801@google.com>
-Subject: Re: [syzbot] WARNING: kmalloc bug in bpf_check
-From:   syzbot <syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        daniel@iogearbox.net, davem@davemloft.net, eric.dumazet@gmail.com,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, nathan@kernel.org, ndesaulniers@google.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        w@1wt.eu, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this issue to:
+From: Jens Axboe <axboe@kernel.dk>
 
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 16:45:49 2021 +0000
+[ Upstream commit d3e9f732c415cf22faa33d6f195e291ad82dc92e ]
 
-    mm: don't allow oversized kvmalloc() calls
+Daniel reports that the v5.14-rc4-rt4 kernel throws a BUG when running
+stress-ng:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13136b83300000
-start commit:   a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10936b83300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17136b83300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c84ed2c3f57ace
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3e749d4c662818ae439
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e4cdf5300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ef3b33300000
+| [   90.202543] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+| [   90.202549] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 2047, name: iou-wrk-2041
+| [   90.202555] CPU: 5 PID: 2047 Comm: iou-wrk-2041 Tainted: G        W         5.14.0-rc4-rt4+ #89
+| [   90.202559] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+| [   90.202561] Call Trace:
+| [   90.202577]  dump_stack_lvl+0x34/0x44
+| [   90.202584]  ___might_sleep.cold+0x87/0x94
+| [   90.202588]  rt_spin_lock+0x19/0x70
+| [   90.202593]  ___slab_alloc+0xcb/0x7d0
+| [   90.202598]  ? newidle_balance.constprop.0+0xf5/0x3b0
+| [   90.202603]  ? dequeue_entity+0xc3/0x290
+| [   90.202605]  ? io_wqe_dec_running.isra.0+0x98/0xe0
+| [   90.202610]  ? pick_next_task_fair+0xb9/0x330
+| [   90.202612]  ? __schedule+0x670/0x1410
+| [   90.202615]  ? io_wqe_dec_running.isra.0+0x98/0xe0
+| [   90.202618]  kmem_cache_alloc_trace+0x79/0x1f0
+| [   90.202621]  io_wqe_dec_running.isra.0+0x98/0xe0
+| [   90.202625]  io_wq_worker_sleeping+0x37/0x50
+| [   90.202628]  schedule+0x30/0xd0
+| [   90.202630]  schedule_timeout+0x8f/0x1a0
+| [   90.202634]  ? __bpf_trace_tick_stop+0x10/0x10
+| [   90.202637]  io_wqe_worker+0xfd/0x320
+| [   90.202641]  ? finish_task_switch.isra.0+0xd3/0x290
+| [   90.202644]  ? io_worker_handle_work+0x670/0x670
+| [   90.202646]  ? io_worker_handle_work+0x670/0x670
+| [   90.202649]  ret_from_fork+0x22/0x30
 
-Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
-Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+which is due to the RT kernel not liking a GFP_ATOMIC allocation inside
+a raw spinlock. Besides that not working on RT, doing any kind of
+allocation from inside schedule() is kind of nasty and should be avoided
+if at all possible.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+This particular path happens when an io-wq worker goes to sleep, and we
+need a new worker to handle pending work. We currently allocate a small
+data item to hold the information we need to create a new worker, but we
+can instead include this data in the io_worker struct itself and just
+protect it with a single bit lock. We only really need one per worker
+anyway, as we will have run pending work between to sleep cycles.
+
+https://lore.kernel.org/lkml/20210804082418.fbibprcwtzyt5qax@beryllium.lan/
+Reported-by: Daniel Wagner <dwagner@suse.de>
+Tested-by: Daniel Wagner <dwagner@suse.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/io-wq.c | 72 ++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 40 insertions(+), 32 deletions(-)
+
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 7d2ed8c7dd31..4ce83bb48021 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -51,6 +51,10 @@ struct io_worker {
+ 
+ 	struct completion ref_done;
+ 
++	unsigned long create_state;
++	struct callback_head create_work;
++	int create_index;
++
+ 	struct rcu_head rcu;
+ };
+ 
+@@ -272,24 +276,18 @@ static void io_wqe_inc_running(struct io_worker *worker)
+ 	atomic_inc(&acct->nr_running);
+ }
+ 
+-struct create_worker_data {
+-	struct callback_head work;
+-	struct io_wqe *wqe;
+-	int index;
+-};
+-
+ static void create_worker_cb(struct callback_head *cb)
+ {
+-	struct create_worker_data *cwd;
++	struct io_worker *worker;
+ 	struct io_wq *wq;
+ 	struct io_wqe *wqe;
+ 	struct io_wqe_acct *acct;
+ 	bool do_create = false, first = false;
+ 
+-	cwd = container_of(cb, struct create_worker_data, work);
+-	wqe = cwd->wqe;
++	worker = container_of(cb, struct io_worker, create_work);
++	wqe = worker->wqe;
+ 	wq = wqe->wq;
+-	acct = &wqe->acct[cwd->index];
++	acct = &wqe->acct[worker->create_index];
+ 	raw_spin_lock_irq(&wqe->lock);
+ 	if (acct->nr_workers < acct->max_workers) {
+ 		if (!acct->nr_workers)
+@@ -299,33 +297,42 @@ static void create_worker_cb(struct callback_head *cb)
+ 	}
+ 	raw_spin_unlock_irq(&wqe->lock);
+ 	if (do_create) {
+-		create_io_worker(wq, wqe, cwd->index, first);
++		create_io_worker(wq, wqe, worker->create_index, first);
+ 	} else {
+ 		atomic_dec(&acct->nr_running);
+ 		io_worker_ref_put(wq);
+ 	}
+-	kfree(cwd);
++	clear_bit_unlock(0, &worker->create_state);
++	io_worker_release(worker);
+ }
+ 
+-static void io_queue_worker_create(struct io_wqe *wqe, struct io_wqe_acct *acct)
++static void io_queue_worker_create(struct io_wqe *wqe, struct io_worker *worker,
++				   struct io_wqe_acct *acct)
+ {
+-	struct create_worker_data *cwd;
+ 	struct io_wq *wq = wqe->wq;
+ 
+ 	/* raced with exit, just ignore create call */
+ 	if (test_bit(IO_WQ_BIT_EXIT, &wq->state))
+ 		goto fail;
++	if (!io_worker_get(worker))
++		goto fail;
++	/*
++	 * create_state manages ownership of create_work/index. We should
++	 * only need one entry per worker, as the worker going to sleep
++	 * will trigger the condition, and waking will clear it once it
++	 * runs the task_work.
++	 */
++	if (test_bit(0, &worker->create_state) ||
++	    test_and_set_bit_lock(0, &worker->create_state))
++		goto fail_release;
+ 
+-	cwd = kmalloc(sizeof(*cwd), GFP_ATOMIC);
+-	if (cwd) {
+-		init_task_work(&cwd->work, create_worker_cb);
+-		cwd->wqe = wqe;
+-		cwd->index = acct->index;
+-		if (!task_work_add(wq->task, &cwd->work, TWA_SIGNAL))
+-			return;
+-
+-		kfree(cwd);
+-	}
++	init_task_work(&worker->create_work, create_worker_cb);
++	worker->create_index = acct->index;
++	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
++		return;
++	clear_bit_unlock(0, &worker->create_state);
++fail_release:
++	io_worker_release(worker);
+ fail:
+ 	atomic_dec(&acct->nr_running);
+ 	io_worker_ref_put(wq);
+@@ -343,7 +350,7 @@ static void io_wqe_dec_running(struct io_worker *worker)
+ 	if (atomic_dec_and_test(&acct->nr_running) && io_wqe_run_queue(wqe)) {
+ 		atomic_inc(&acct->nr_running);
+ 		atomic_inc(&wqe->wq->worker_refs);
+-		io_queue_worker_create(wqe, acct);
++		io_queue_worker_create(wqe, worker, acct);
+ 	}
+ }
+ 
+@@ -1004,12 +1011,12 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
+ 
+ static bool io_task_work_match(struct callback_head *cb, void *data)
+ {
+-	struct create_worker_data *cwd;
++	struct io_worker *worker;
+ 
+ 	if (cb->func != create_worker_cb)
+ 		return false;
+-	cwd = container_of(cb, struct create_worker_data, work);
+-	return cwd->wqe->wq == data;
++	worker = container_of(cb, struct io_worker, create_work);
++	return worker->wqe->wq == data;
+ }
+ 
+ void io_wq_exit_start(struct io_wq *wq)
+@@ -1026,12 +1033,13 @@ static void io_wq_exit_workers(struct io_wq *wq)
+ 		return;
+ 
+ 	while ((cb = task_work_cancel_match(wq->task, io_task_work_match, wq)) != NULL) {
+-		struct create_worker_data *cwd;
++		struct io_worker *worker;
+ 
+-		cwd = container_of(cb, struct create_worker_data, work);
+-		atomic_dec(&cwd->wqe->acct[cwd->index].nr_running);
++		worker = container_of(cb, struct io_worker, create_work);
++		atomic_dec(&worker->wqe->acct[worker->create_index].nr_running);
+ 		io_worker_ref_put(wq);
+-		kfree(cwd);
++		clear_bit_unlock(0, &worker->create_state);
++		io_worker_release(worker);
+ 	}
+ 
+ 	rcu_read_lock();
+-- 
+2.30.2
+
