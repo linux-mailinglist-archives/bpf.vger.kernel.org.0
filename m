@@ -2,140 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2991401EA6
-	for <lists+bpf@lfdr.de>; Mon,  6 Sep 2021 18:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D113401EBF
+	for <lists+bpf@lfdr.de>; Mon,  6 Sep 2021 18:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343709AbhIFQrh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Sep 2021 12:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35136 "EHLO
+        id S230491AbhIFQ4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Sep 2021 12:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244385AbhIFQpN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:45:13 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7BEC061575
-        for <bpf@vger.kernel.org>; Mon,  6 Sep 2021 09:44:07 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id q26so9724987wrc.7
-        for <bpf@vger.kernel.org>; Mon, 06 Sep 2021 09:44:07 -0700 (PDT)
+        with ESMTP id S240965AbhIFQ4R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Sep 2021 12:56:17 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02146C0613C1
+        for <bpf@vger.kernel.org>; Mon,  6 Sep 2021 09:55:12 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id x7so5114873pfa.8
+        for <bpf@vger.kernel.org>; Mon, 06 Sep 2021 09:55:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=rIB3XyAtA7T8X8c0T8azumVCg5vSMcsHdXTVtyJWxT8=;
-        b=lQp51m5rWPSBn83DGTZq8v+/+DxQJwpbUe8AFQg99s8K4u51qgkCOWPxfV5V/1dnW+
-         R0MQ/bNjVqk9kCWzIzVivSrKG54BwLVLFsjShL4MwPtXaPZbZXUyrZjurVbXMojPs3MI
-         3JYxg9g2zLcpPph5H4lNYcjE3Lp4niLEAaLmlmMGvSV4RpsI9oALgrGFvkXVX9A85bTw
-         RYd5vftmWScHIjxJkz5dh1fn8om5duKh9fAtNgbuKpwnZYz3IpixjjYrUTEtxfqOAqHR
-         TRSX6OVcJEZ/wwP7luHg9QXQ0awKA3RQG2F3zrIVDSvhfkVEEaIPBASmvp0dYuSlJfrR
-         LtIQ==
+        bh=CJT5PxswcReZ9BJw/EMCO9yiA2qfftOvKk2B3zyNA2o=;
+        b=JUhjk/3cZiRRzvQ0FncujpW8atNuTd8UwdZdBgbGfkt311AC9ROCWHtiPtfrNaq7cM
+         hl5rNz7xw25x5SnWeZZ+DszPgd3f11IyXORLF/7uwyPOHwrfmATKrA/W1S0HWcg1cBMk
+         hDOIHJkqBnPpDFujgN5/tMFXsg4BDrrn9jL4EQieVC9ptb0m9NNf94tn5ubN225aA6/7
+         s1+2eeforwlFo7oN7RUF02IWJzJH0XZ0dR93F1PrIGlwPa6Us6iId9WcU/RS/QNV0Hs4
+         a/6CcB2CwmJ8wDKwVVQ/GSmJNX3x2WmgkUG9buJbcU+Shw4GROXRcLfXadN4gjEk1k7T
+         iMWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=rIB3XyAtA7T8X8c0T8azumVCg5vSMcsHdXTVtyJWxT8=;
-        b=E/e5k3rPjRfQSAbL081pfRmXWA1S+8s+zuNdqyQs9GCtdKce3j55Dk84Sy2uuZmaKv
-         KL3VEtLqBJSB6DLabkc0Yz43Z3tD2wkuGJalRkv3l9eglLi/hjHQeQh8Rc8+LvC45pTJ
-         tzXGrF3JO48BoFD91Pw50/WawQALz74/CgaSQd9RROKrbKU7GE9alV88gbjlL/l7XhJq
-         NQTxkkjXSEsaHdq+Jqf2jPuSqr07bYSP+mTpooLE0JkC+QncQYkF79Re6hHq6zojc1i+
-         o+Z66wgz+qz9JOtBVOfHQW/r0dA/7NbU6OT06a+2WRegqExOP3kWrPUFbGncgQNLaTOQ
-         r/bg==
-X-Gm-Message-State: AOAM533snqdqvAXV6m0V+RzFK++DcYe/ZoOF2pd5Jc/Ctg1AAW4r+oXD
-        dUm97d8DHnjlVGhdCTuRQR5fjg==
-X-Google-Smtp-Source: ABdhPJzPLtOEcLvQYtdvPeOrW+1L7b3taVNWuLYP4bksfvruBczObd3e2lz+VdPzkeEFBJJ/KRnsKw==
-X-Received: by 2002:adf:c402:: with SMTP id v2mr14373341wrf.130.1630946646491;
-        Mon, 06 Sep 2021 09:44:06 -0700 (PDT)
-Received: from localhost.localdomain (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id g3sm7955975wrh.94.2021.09.06.09.44.05
+        bh=CJT5PxswcReZ9BJw/EMCO9yiA2qfftOvKk2B3zyNA2o=;
+        b=hJHEjKkWdYlssaoZecBzERuuxtoKufuVEAkFkzS6xTaOgv56uPnnYc6d4OHA+W4dQH
+         KV0ZcAYAebqI1T9J4k6g+e8s42nu5RkPZf42sVY7Aor2oDrrbXsVhrbfcuM6a2EnvzLx
+         9fcdytrbgze8oOzje7v8kQkVrh5hi0na9k5LPwOz7cGW9BptF2etbgkLGAq/7wCDuhUs
+         WwhdlCKfTnp1gQwh+QlQrSpzXShK9s7i+E/YK5C2Xfg6seZhkCFK8b1mLjE8Vsqk3lnj
+         LlCxm83t8ZsJ2M+LoEzmLZ+C5HLY2rMMO+b4zhiJUYbX5FVGJIdNqcL7Sh8ObbZtBALE
+         iiSA==
+X-Gm-Message-State: AOAM533lggOJGl1HGwmSJzRyE39F62pQUDTaNzLiVoYEezVrJPTRjiJ9
+        y0vIF1Nu83xQ5F/qZkLgx4P9K6suFEBrkQ==
+X-Google-Smtp-Source: ABdhPJyQKGtMzajUkYiT6VakOAXg0o7vRhU5fywf6ad6Y/MRh5LHOea9jJHc6AHKrDHFjNCcaxsyDg==
+X-Received: by 2002:a65:47cd:: with SMTP id f13mr13011490pgs.439.1630947311399;
+        Mon, 06 Sep 2021 09:55:11 -0700 (PDT)
+Received: from localhost.localdomain ([119.28.83.143])
+        by smtp.gmail.com with ESMTPSA id d8sm38189pjr.17.2021.09.06.09.55.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 09:44:06 -0700 (PDT)
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, dxu@dxuuu.xyz,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH bpf-next v2] selftests/bpf: Fix build of task_pt_regs test for arm64
-Date:   Mon,  6 Sep 2021 17:36:38 +0100
-Message-Id: <20210906163635.302307-1-jean-philippe@linaro.org>
-X-Mailer: git-send-email 2.33.0
+        Mon, 06 Sep 2021 09:55:11 -0700 (PDT)
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, hengqi.chen@gmail.com
+Subject: [PATCH bpf-next 1/2] libbpf: Deprecate bpf_{map,program}__{prev,next} APIs
+Date:   Tue,  7 Sep 2021 00:54:55 +0800
+Message-Id: <20210906165456.325999-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-struct pt_regs is not exported to userspace on all archs. arm64 and s390
-export "user_pt_regs" instead, which causes build failure at the moment:
+Deprecate bpf_{map,program}__{prev,next} APIs. Replace them with
+a new set of APIs named bpf_object__{prev,next}_{program,map} which
+follow the libbpf API naming convention. No functionality changes.
 
-  progs/test_task_pt_regs.c:8:16: error: variable has incomplete type 'struct pt_regs'
-  struct pt_regs current_regs = {};
-
-Instead of using pt_regs from ptrace.h, use the larger kernel struct
-from vmlinux.h directly. Since the test runner task_pt_regs.c does not
-have access to the kernel struct definition, copy it into a char array.
-
-Fixes: 576d47bb1a92 ("bpf: selftests: Add bpf_task_pt_regs() selftest")
-Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Closes: https://github.com/libbpf/libbpf/issues/296
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 ---
-v2: Work on struct pt_regs from vmlinux.h
-v1: https://lore.kernel.org/bpf/20210902090925.2010528-1-jean-philippe@linaro.org/
----
- .../selftests/bpf/prog_tests/task_pt_regs.c   |  1 -
- .../selftests/bpf/progs/test_task_pt_regs.c   | 19 +++++++++++++------
- 2 files changed, 13 insertions(+), 7 deletions(-)
+ tools/lib/bpf/libbpf.c   | 24 ++++++++++++++++++------
+ tools/lib/bpf/libbpf.h   | 30 ++++++++++++++++++++----------
+ tools/lib/bpf/libbpf.map |  4 ++++
+ 3 files changed, 42 insertions(+), 16 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-index 53f0e0fa1a53..37c20b5ffa70 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-@@ -1,7 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #define _GNU_SOURCE
- #include <test_progs.h>
--#include <linux/ptrace.h>
- #include "test_task_pt_regs.skel.h"
- 
- void test_task_pt_regs(void)
-diff --git a/tools/testing/selftests/bpf/progs/test_task_pt_regs.c b/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
-index 6c059f1cfa1b..e6cb09259408 100644
---- a/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
-+++ b/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
-@@ -1,12 +1,17 @@
- // SPDX-License-Identifier: GPL-2.0
- 
--#include <linux/ptrace.h>
--#include <linux/bpf.h>
-+#include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- 
--struct pt_regs current_regs = {};
--struct pt_regs ctx_regs = {};
-+#define PT_REGS_SIZE sizeof(struct pt_regs)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 88d8825fc6f6..8d82853fb4a0 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -7347,7 +7347,7 @@ int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
+ 	return 0;
+
+ err_unpin_maps:
+-	while ((map = bpf_map__prev(map, obj))) {
++	while ((map = bpf_object__prev_map(map, obj))) {
+ 		if (!map->pin_path)
+ 			continue;
+
+@@ -7427,7 +7427,7 @@ int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
+ 	return 0;
+
+ err_unpin_programs:
+-	while ((prog = bpf_program__prev(prog, obj))) {
++	while ((prog = bpf_object__prev_program(prog, obj))) {
+ 		char buf[PATH_MAX];
+ 		int len;
+
+@@ -7666,8 +7666,11 @@ __bpf_program__iter(const struct bpf_program *p, const struct bpf_object *obj,
+ 	return &obj->programs[idx];
+ }
+
++__attribute__((alias("bpf_object__next_program")))
++struct bpf_program *bpf_program__next(struct bpf_program *prev, const struct bpf_object *obj);
 +
-+/*
-+ * The kernel struct pt_regs isn't exported in its entirety to userspace.
-+ * Pass it as an array to task_pt_regs.c
-+ */
-+char current_regs[PT_REGS_SIZE] = {};
-+char ctx_regs[PT_REGS_SIZE] = {};
- int uprobe_res = 0;
- 
- SEC("uprobe/trigger_func")
-@@ -17,8 +22,10 @@ int handle_uprobe(struct pt_regs *ctx)
- 
- 	current = bpf_get_current_task_btf();
- 	regs = (struct pt_regs *) bpf_task_pt_regs(current);
--	__builtin_memcpy(&current_regs, regs, sizeof(*regs));
--	__builtin_memcpy(&ctx_regs, ctx, sizeof(*ctx));
-+	if (bpf_probe_read_kernel(current_regs, PT_REGS_SIZE, regs))
-+		return 0;
-+	if (bpf_probe_read_kernel(ctx_regs, PT_REGS_SIZE, ctx))
-+		return 0;
- 
- 	/* Prove that uprobe was run */
- 	uprobe_res = 1;
--- 
-2.33.0
+ struct bpf_program *
+-bpf_program__next(struct bpf_program *prev, const struct bpf_object *obj)
++bpf_object__next_program(struct bpf_program *prev, const struct bpf_object *obj)
+ {
+ 	struct bpf_program *prog = prev;
 
+@@ -7678,8 +7681,11 @@ bpf_program__next(struct bpf_program *prev, const struct bpf_object *obj)
+ 	return prog;
+ }
+
++__attribute__((alias("bpf_object__prev_program")))
++struct bpf_program *bpf_program__prev(struct bpf_program *next, const struct bpf_object *obj);
++
+ struct bpf_program *
+-bpf_program__prev(struct bpf_program *next, const struct bpf_object *obj)
++bpf_object__prev_program(struct bpf_program *next, const struct bpf_object *obj)
+ {
+ 	struct bpf_program *prog = next;
+
+@@ -8698,8 +8704,11 @@ __bpf_map__iter(const struct bpf_map *m, const struct bpf_object *obj, int i)
+ 	return &obj->maps[idx];
+ }
+
++__attribute__((alias("bpf_object__next_map")))
++struct bpf_map *bpf_map__next(const struct bpf_map *prev, const struct bpf_object *obj);
++
+ struct bpf_map *
+-bpf_map__next(const struct bpf_map *prev, const struct bpf_object *obj)
++bpf_object__next_map(const struct bpf_map *prev, const struct bpf_object *obj)
+ {
+ 	if (prev == NULL)
+ 		return obj->maps;
+@@ -8707,8 +8716,11 @@ bpf_map__next(const struct bpf_map *prev, const struct bpf_object *obj)
+ 	return __bpf_map__iter(prev, obj, 1);
+ }
+
++__attribute__((alias("bpf_object__prev_map")))
++struct bpf_map *bpf_map__prev(const struct bpf_map *next, const struct bpf_object *obj);
++
+ struct bpf_map *
+-bpf_map__prev(const struct bpf_map *next, const struct bpf_object *obj)
++bpf_object__prev_map(const struct bpf_map *next, const struct bpf_object *obj)
+ {
+ 	if (next == NULL) {
+ 		if (!obj->nr_maps)
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index f177d897c5f7..e6aab4cd263b 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -186,16 +186,22 @@ LIBBPF_API int libbpf_find_vmlinux_btf_id(const char *name,
+
+ /* Accessors of bpf_program */
+ struct bpf_program;
+-LIBBPF_API struct bpf_program *bpf_program__next(struct bpf_program *prog,
++LIBBPF_API LIBBPF_DEPRECATED("bpf_program__next() is deprecated, use bpf_object__next_program() instead")
++struct bpf_program *bpf_program__next(struct bpf_program *prog,
+ 						 const struct bpf_object *obj);
++LIBBPF_API struct bpf_program *bpf_object__next_program(struct bpf_program *prog,
++							const struct bpf_object *obj);
+
+-#define bpf_object__for_each_program(pos, obj)		\
+-	for ((pos) = bpf_program__next(NULL, (obj));	\
+-	     (pos) != NULL;				\
+-	     (pos) = bpf_program__next((pos), (obj)))
++#define bpf_object__for_each_program(pos, obj)			\
++	for ((pos) = bpf_object__next_program(NULL, (obj));	\
++	     (pos) != NULL;					\
++	     (pos) = bpf_object__next_program((pos), (obj)))
+
+-LIBBPF_API struct bpf_program *bpf_program__prev(struct bpf_program *prog,
++LIBBPF_API LIBBPF_DEPRECATED("bpf_program__prev() is deprecated, use bpf_object__prev_program() instead")
++struct bpf_program *bpf_program__prev(struct bpf_program *prog,
+ 						 const struct bpf_object *obj);
++LIBBPF_API struct bpf_program *bpf_object__prev_program(struct bpf_program *prog,
++							const struct bpf_object *obj);
+
+ typedef void (*bpf_program_clear_priv_t)(struct bpf_program *, void *);
+
+@@ -495,16 +501,20 @@ bpf_object__find_map_fd_by_name(const struct bpf_object *obj, const char *name);
+ LIBBPF_API struct bpf_map *
+ bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset);
+
++LIBBPF_API LIBBPF_DEPRECATED("bpf_map__next() is deprecated, use bpf_object__next_map() instead")
++struct bpf_map *bpf_map__next(const struct bpf_map *map, const struct bpf_object *obj);
+ LIBBPF_API struct bpf_map *
+-bpf_map__next(const struct bpf_map *map, const struct bpf_object *obj);
++bpf_object__next_map(const struct bpf_map *map, const struct bpf_object *obj);
+ #define bpf_object__for_each_map(pos, obj)		\
+-	for ((pos) = bpf_map__next(NULL, (obj));	\
++	for ((pos) = bpf_object__next_map(NULL, (obj));	\
+ 	     (pos) != NULL;				\
+-	     (pos) = bpf_map__next((pos), (obj)))
++	     (pos) = bpf_object__next_map((pos), (obj)))
+ #define bpf_map__for_each bpf_object__for_each_map
+
++LIBBPF_API LIBBPF_DEPRECATED("bpf_map__prev() is deprecated, use bpf_object__prev_map() instead")
++struct bpf_map *bpf_map__prev(const struct bpf_map *map, const struct bpf_object *obj);
+ LIBBPF_API struct bpf_map *
+-bpf_map__prev(const struct bpf_map *map, const struct bpf_object *obj);
++bpf_object__prev_map(const struct bpf_map *map, const struct bpf_object *obj);
+
+ /* get/set map FD */
+ LIBBPF_API int bpf_map__fd(const struct bpf_map *map);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index bbc53bb25f68..0c6d510e7747 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -378,6 +378,10 @@ LIBBPF_0.5.0 {
+ 		bpf_program__attach_tracepoint_opts;
+ 		bpf_program__attach_uprobe_opts;
+ 		bpf_object__gen_loader;
++		bpf_object__next_map;
++		bpf_object__next_program;
++		bpf_object__prev_map;
++		bpf_object__prev_program;
+ 		btf__load_from_kernel_by_id;
+ 		btf__load_from_kernel_by_id_split;
+ 		btf__load_into_kernel;
+--
+2.30.2
