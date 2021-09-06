@@ -2,432 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0163F40178D
-	for <lists+bpf@lfdr.de>; Mon,  6 Sep 2021 10:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A85401A98
+	for <lists+bpf@lfdr.de>; Mon,  6 Sep 2021 13:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240577AbhIFIHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Sep 2021 04:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240455AbhIFIHq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Sep 2021 04:07:46 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E00DC061575;
-        Mon,  6 Sep 2021 01:06:42 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id q21so3459399plq.3;
-        Mon, 06 Sep 2021 01:06:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BdFXfFyLWjIyIzkSHK8qBqpS+9fvlKiDQDpaxfe7/ro=;
-        b=HJZd0aWQt+lTzR03YzR8Dz9fpS+xzXuNRwNlQ6wakQdnLt7C8fFQ9bqhPFTgK7DMIw
-         3UTA4V6Sf365rg6wCwSJp6CRS90RqEZfCbO0UoP40rpJVeb4/AHrp6cBkd/6NFmny08X
-         BKtvUQLyH7auPCZl26FdicFO9vqpD4rRpAD9h4BwWNOeMdLurAoCme5JYK7O+XUzxshP
-         VoyRBLZNIsLzjpYBcZGo8JrH7awRk5ceo8g+ejoLUAZvX01v7mid9dNa7OZ89oLRfX28
-         W5PsKb7vFXtR5+fmoWO6umIRlZ5nJuXI/0uecLe82HeBkNCFD6CpD+GKWepp90NqoBln
-         yg4w==
+        id S240786AbhIFLc2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Sep 2021 07:32:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60031 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238694AbhIFLcY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 6 Sep 2021 07:32:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630927879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ifh2AKn2IYRrBAFZpGRrv4Jn5qIpOvQyMh+sOZEw61k=;
+        b=I0aDSYu6O8oj1Gm3ew8jOBv5gW7vTSPAv7VjdzjnIiheg1G0+WzJjC1C/tI39sRyJgfXCq
+        cyMJXQv01f6bVpofLj+LUD9lP0tqVbZxAqTy9lmJP4ccdIHHXbk2z2DTKTepUMHo2to3aw
+        +7Amyy4G/g+1b5O8WVY9hyWpxDXg/K0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-235-Mv8OV7m-PEis3Eq-VEOGvg-1; Mon, 06 Sep 2021 07:31:18 -0400
+X-MC-Unique: Mv8OV7m-PEis3Eq-VEOGvg-1
+Received: by mail-wr1-f70.google.com with SMTP id t15-20020a5d42cf000000b001565f9c9ee8so1126935wrr.2
+        for <bpf@vger.kernel.org>; Mon, 06 Sep 2021 04:31:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BdFXfFyLWjIyIzkSHK8qBqpS+9fvlKiDQDpaxfe7/ro=;
-        b=EWMyqSF9LNzOSrZtjqxHvvHhZNynyLr5z7Cn49l8jIJFwGweRDz/H7EwafYHUPb1ni
-         GZ7BMByXYeTLnfRlbTFIZ42XVc82NpYHXvdu9sEnFVO1WB2zxC3AmAANvvIoZ86gTzD6
-         vUY3Xt96uVT/JwbVwgyqet3eCBmdtMCLa53SOXTwZbH7WeGtFMc7t+wrQ/zA1azT7tmZ
-         /oBaudd8OIAbC/jAAX+HCbmbCdoAFuY0GCMpabpSzq1OXAmICW1VUiFUaVcsPRiz+Qcc
-         /8iz19tdbG+YPM9eBXY4ouPRWwNxtuUOj/KZCmXGhutemXcC/eFXKgQYQtW5RJPTABZX
-         82HQ==
-X-Gm-Message-State: AOAM531HlJesovU7HEZpwwPvkGXJ/udk/c0dpiAEyTQ2c6G5k9lYb/e8
-        +TUB0PSzmnS8F9UAhGuAVVg9bq7FESTBq/ChICw=
-X-Google-Smtp-Source: ABdhPJyBJApfY9hVKKA2iO07zszSTsIeP8AEUmK+u8ruYbd6csFoOAJwWH06LcDjr3I+HlLcWyikEhXvq3Jwc/gzfDw=
-X-Received: by 2002:a17:902:c643:b0:138:b603:f940 with SMTP id
- s3-20020a170902c64300b00138b603f940mr9833460pls.71.1630915601442; Mon, 06 Sep
- 2021 01:06:41 -0700 (PDT)
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ifh2AKn2IYRrBAFZpGRrv4Jn5qIpOvQyMh+sOZEw61k=;
+        b=IxhtkI1ngcvaoQqUesKdv4Z1tPMIr+nsOZqPWAULbT6sjZpW+VQTaUr9Qs1V6TpLLO
+         tDccIUfpS6NkdHb6A3nq8HpLj2lDgM04TF1AVyAwEL9CYa7RclqZkPvGdRRlnRYmzWzQ
+         QAD5Ki4C0++lMEaq+d1hRNOEAy7wMFgj7SA0XBOO3ICEZ65IOS3Lb9+XhsDNpd6QGvaI
+         p0Nw/69nPjCrYdd3d5+rfgeHz+bt3XEXHRXWvr8MiYFhl8oMAmF+4llEe4n0W1TRjHx6
+         oHlytaS9In5Dz6M3l8hpjm6DuxtnIGQcCdRlsDhhhbIcwEZFd5bjm0X2g5H8r/iyUH+C
+         XOnw==
+X-Gm-Message-State: AOAM532Z5OE5RjKgs91Mszh+L3T2ajjy+zCjJiPCPQFAyyWMaxtgjCD0
+        nlKVk16yy83wDoInht0AbnVhy0Hbhp55sLcBSWcShfsvQNtyrqgwfqfgGxCU5PGXntmdVErWtMe
+        woYbEPq0gtc9d
+X-Received: by 2002:adf:eb4a:: with SMTP id u10mr12773332wrn.11.1630927877220;
+        Mon, 06 Sep 2021 04:31:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRDD+CFWqGasfoJ4bWw1zXPZwgO49ADZdpw61tpeyBjS5qkitLHCkPuytVwq/iV6MGXa+HdQ==
+X-Received: by 2002:adf:eb4a:: with SMTP id u10mr12773300wrn.11.1630927876958;
+        Mon, 06 Sep 2021 04:31:16 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id u26sm7984094wrd.32.2021.09.06.04.31.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 04:31:16 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com, duanxiongchun@bytedance.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhengqi.arch@bytedance.com, chenying.kernel@bytedance.com,
+        intel-wired-lan@lists.osuosl.org, songmuchun@bytedance.com,
+        bpf@vger.kernel.org, wangdongdong.6@bytedance.com,
+        zhouchengming@bytedance.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, jeffrey.t.kirsher@intel.com,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: Re: [External] Re: [Intel-wired-lan] [PATCH v2] ixgbe: Fix NULL
+ pointer dereference in ixgbe_xdp_setup
+To:     Feng Zhou <zhoufeng.zf@bytedance.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Jason Xing <xingwanli@kuaishou.com>
+References: <20210903064013.9842-1-zhoufeng.zf@bytedance.com>
+ <2ee172ab-836c-d464-be59-935030d01f4b@molgen.mpg.de>
+ <8ce8de1c-14bf-20ad-00c0-9e0d8ff34b91@bytedance.com>
+Message-ID: <318e7f75-287e-148a-cdb0-648b7c36e0a9@redhat.com>
+Date:   Mon, 6 Sep 2021 13:31:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210901104732.10956-1-magnus.karlsson@gmail.com>
- <20210901104732.10956-20-magnus.karlsson@gmail.com> <YTJwT8QBAELMO0T1@localhost.localdomain>
-In-Reply-To: <YTJwT8QBAELMO0T1@localhost.localdomain>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 6 Sep 2021 10:06:30 +0200
-Message-ID: <CAJ8uoz2Aoup=Q2oQZBTy-uxZVDSURne0+DZNAvAfNy5mB5GSFw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 19/20] selftests: xsk: add tests for invalid xsk descriptors
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Ciara Loftus <ciara.loftus@intel.com>,
-        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8ce8de1c-14bf-20ad-00c0-9e0d8ff34b91@bytedance.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 6:57 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Wed, Sep 01, 2021 at 12:47:31PM +0200, Magnus Karlsson wrote:
-> > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> >
-> > Add tests for invalid xsk descriptors in the Tx ring. A number of
-> > handcrafted nasty invalid descriptors are created and submitted to the
-> > tx ring to check that they are validated correctly. Corener case valid
->
-> Corner
+Hi Feng and Jason,
 
-Will fix.
+Please notice that you are both developing patches that change the ixgbe 
+driver in related areas.
 
-> > ones are also sent. The tests are run for both aligned and unaligned
-> > mode.
-> >
-> > pkt_stream_set() is introduced to be able to create a hand-crafted
-> > packet stream where every single packet is specified in detail.
-> >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > ---
-> >  tools/testing/selftests/bpf/xdpxceiver.c | 143 ++++++++++++++++++++---
-> >  tools/testing/selftests/bpf/xdpxceiver.h |   7 +-
-> >  2 files changed, 131 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-> > index d085033afd53..a4f6ce3a6b14 100644
-> > --- a/tools/testing/selftests/bpf/xdpxceiver.c
-> > +++ b/tools/testing/selftests/bpf/xdpxceiver.c
-> > @@ -46,6 +46,8 @@
-> >   *       then remove xsk sockets from queue 0 on both veth interfaces and
-> >   *       finally run a traffic on queues ids 1
-> >   *    g. unaligned mode
-> > + *    h. tests for invalid and corner case Tx descriptors so that the correct ones
-> > + *       are discarded and let through, respectively.
-> >   *
-> >   * Total tests: 12
-> >   *
-> > @@ -394,7 +396,7 @@ static void __test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
-> >               for (j = 0; j < MAX_SOCKETS; j++) {
-> >                       memset(&ifobj->umem_arr[j], 0, sizeof(ifobj->umem_arr[j]));
-> >                       memset(&ifobj->xsk_arr[j], 0, sizeof(ifobj->xsk_arr[j]));
-> > -                     ifobj->umem_arr[j].num_frames = DEFAULT_PKT_CNT / 4;
-> > +                     ifobj->umem_arr[j].num_frames = DEFAULT_UMEM_BUFFERS;
-> >                       ifobj->umem_arr[j].frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE;
-> >                       ifobj->xsk_arr[j].rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-> >               }
-> > @@ -450,6 +452,16 @@ static struct pkt *pkt_stream_get_pkt(struct pkt_stream *pkt_stream, u32 pkt_nb)
-> >       return &pkt_stream->pkts[pkt_nb];
-> >  }
-> >
-> > +static struct pkt *pkt_stream_get_next_rx_pkt(struct pkt_stream *pkt_stream)
-> > +{
-> > +     while (pkt_stream->rx_pkt_nb < pkt_stream->nb_pkts) {
-> > +             if (pkt_stream->pkts[pkt_stream->rx_pkt_nb].valid)
-> > +                     return &pkt_stream->pkts[pkt_stream->rx_pkt_nb++];
-> > +             pkt_stream->rx_pkt_nb++;
-> > +     }
-> > +     return NULL;
-> > +}
-> > +
-> >  static void pkt_stream_delete(struct pkt_stream *pkt_stream)
-> >  {
-> >       free(pkt_stream->pkts);
-> > @@ -465,17 +477,31 @@ static void pkt_stream_restore_default(struct test_spec *test)
-> >       test->ifobj_rx->pkt_stream = test->pkt_stream_default;
-> >  }
-> >
-> > -static struct pkt_stream *pkt_stream_generate(struct xsk_umem_info *umem, u32 nb_pkts, u32 pkt_len)
-> > +static struct pkt_stream *__pkt_stream_alloc(u32 nb_pkts)
-> >  {
-> >       struct pkt_stream *pkt_stream;
-> > -     u32 i;
-> >
-> > -     pkt_stream = malloc(sizeof(*pkt_stream));
-> > +     pkt_stream = calloc(1, sizeof(*pkt_stream));
->
-> So with that probably my previous comment about use_addr_for_fill being
-> not set is not relevant.
+Jason's patch:
+  Subject: [PATCH v7] ixgbe: let the xdpdrv work with more than 64 cpus
+ 
+https://lore.kernel.org/all/20210901101206.50274-1-kerneljasonxing@gmail.com/
 
-Will fix this earlier.
+We might need both as this patch looks like a fix to a panic, and 
+Jason's patch allows XDP on ixgbe to work on machines with more than 64 
+CPUs.
 
-> >       if (!pkt_stream)
-> > -             exit_with_error(ENOMEM);
-> > +             return NULL;
-> >
-> >       pkt_stream->pkts = calloc(nb_pkts, sizeof(*pkt_stream->pkts));
-> > -     if (!pkt_stream->pkts)
-> > +     if (!pkt_stream->pkts) {
-> > +             free(pkt_stream);
-> > +             return NULL;
-> > +     }
-> > +
-> > +     pkt_stream->nb_pkts = nb_pkts;
-> > +     return pkt_stream;
-> > +}
-> > +
-> > +static struct pkt_stream *pkt_stream_generate(struct xsk_umem_info *umem, u32 nb_pkts, u32 pkt_len)
-> > +{
-> > +     struct pkt_stream *pkt_stream;
-> > +     u32 i;
-> > +
-> > +     pkt_stream = __pkt_stream_alloc(nb_pkts);
-> > +     if (!pkt_stream)
-> >               exit_with_error(ENOMEM);
-> >
-> >       pkt_stream->nb_pkts = nb_pkts;
-> > @@ -525,6 +551,26 @@ static void pkt_stream_replace_half(struct test_spec *test, u32 pkt_len, u32 off
-> >       test->ifobj_rx->pkt_stream = pkt_stream;
-> >  }
-> >
-> > +static void pkt_stream_set(struct test_spec *test, struct pkt *pkts, u32 nb_pkts)
->
-> This is still a generation of pkt stream, can we name this is as:
-> pkt_stream_generate_custom or is this too long? WDYT?
+-Jesper
 
-Sounds good.
+On 06/09/2021 09.49, Feng Zhou wrote:
+> 
+> 在 2021/9/6 下午2:37, Paul Menzel 写道:
+>> Dear Feng,
+>>
+>>
+>> Am 03.09.21 um 08:40 schrieb Feng zhou:
+>>
+>> (If you care, in your email client, your last name does not start with 
+>> a capital letter.)
+>>
+>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>>
+>>> The ixgbe driver currently generates a NULL pointer dereference with
+>>> some machine (online cpus < 63). This is due to the fact that the
+>>> maximum value of num_xdp_queues is nr_cpu_ids. Code is in
+>>> "ixgbe_set_rss_queues"".
+>>>
+>>> Here's how the problem repeats itself:
+>>> Some machine (online cpus < 63), And user set num_queues to 63 through
+>>> ethtool. Code is in the "ixgbe_set_channels",
+>>> adapter->ring_feature[RING_F_FDIR].limit = count;
+>>
+>> For better legibility, you might want to indent code (blocks) by four 
+>> spaces and add blank lines around it (also below).
+>>
+>>> It becames 63.
+>>
+>> becomes
+>>
+>>> When user use xdp, "ixgbe_set_rss_queues" will set queues num.
+>>> adapter->num_rx_queues = rss_i;
+>>> adapter->num_tx_queues = rss_i;
+>>> adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
+>>> And rss_i's value is from
+>>> f = &adapter->ring_feature[RING_F_FDIR];
+>>> rss_i = f->indices = f->limit;
+>>> So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
+>>> for (i = 0; i < adapter->num_rx_queues; i++)
+>>>     if (adapter->xdp_ring[i]->xsk_umem)
+>>> lead to panic.
+>>
+>> lead*s*?
+>>
+>>> Call trace:
+>>> [exception RIP: ixgbe_xdp+368]
+>>> RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
+>>> RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
+>>> RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
+>>> RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
+>>> R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
+>>> R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
+>>> ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>>>   7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
+>>>   8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
+>>>   9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
+>>> 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
+>>> 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
+>>> 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
+>>> 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
+>>> 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
+>>> 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
+>>> 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
+>>> 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
+>>> 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
+>>> 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
+>>
+>> Please describe the fix in the commit message.
+>>
+>>> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
+>>> AF_XDP")
+>>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>> ---
+>>> Updates since v1:
+>>> - Fix "ixgbe_max_channels" callback so that it will not allow a 
+>>> setting of
+>>> queues to be higher than the num_online_cpus().
+>>> more details can be seen from here:
+>>> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20210817075407.11961-1-zhoufeng.zf@bytedance.com/ 
+>>>
+>>> Thanks to Maciej Fijalkowski for your advice.
+>>>
+>>>   drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 2 +-
+>>>   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c    | 8 ++++++--
+>>>   2 files changed, 7 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c 
+>>> b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+>>> index 4ceaca0f6ce3..21321d164708 100644
+>>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+>>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+>>> @@ -3204,7 +3204,7 @@ static unsigned int ixgbe_max_channels(struct 
+>>> ixgbe_adapter *adapter)
+>>>           max_combined = ixgbe_max_rss_indices(adapter);
+>>>       }
+>>>   -    return max_combined;
+>>> +    return min_t(int, max_combined, num_online_cpus());
+>>>   }
+>>>     static void ixgbe_get_channels(struct net_device *dev,
+>>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c 
+>>> b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+>>> index 14aea40da50f..5db496cc5070 100644
+>>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+>>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+>>> @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device 
+>>> *dev, struct bpf_prog *prog)
+>>>       struct ixgbe_adapter *adapter = netdev_priv(dev);
+>>>       struct bpf_prog *old_prog;
+>>>       bool need_reset;
+>>> +    int num_queues;
+>>>         if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
+>>>           return -EINVAL;
+>>> @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct 
+>>> net_device *dev, struct bpf_prog *prog)
+>>>       /* Kick start the NAPI context if there is an AF_XDP socket open
+>>>        * on that queue id. This so that receiving will start.
+>>>        */
+>>> -    if (need_reset && prog)
+>>> -        for (i = 0; i < adapter->num_rx_queues; i++)
+>>> +    if (need_reset && prog) {
+>>> +        num_queues = min_t(int, adapter->num_rx_queues,
+>>> +            adapter->num_xdp_queues);
+>>> +        for (i = 0; i < num_queues; i++)
+>>>               if (adapter->xdp_ring[i]->xsk_pool)
+>>>                   (void)ixgbe_xsk_wakeup(adapter->netdev, i,
+>>>                                  XDP_WAKEUP_RX);
+>>> +    }
+>>>         return 0;
+>>>   }
+>>>
+> Thanks for your advice. I will modify the commit message in v3
+> 
 
-> > +{
-> > +     struct pkt_stream *pkt_stream;
-> > +     u32 i;
-> > +
-> > +     pkt_stream = __pkt_stream_alloc(nb_pkts);
-> > +     if (!pkt_stream)
-> > +             exit_with_error(ENOMEM);
-> > +
-> > +     test->ifobj_tx->pkt_stream = pkt_stream;
-> > +     test->ifobj_rx->pkt_stream = pkt_stream;
-> > +
-> > +     for (i = 0; i < nb_pkts; i++) {
-> > +             pkt_stream->pkts[i].addr = pkts[i].addr;
-> > +             pkt_stream->pkts[i].len = pkts[i].len;
-> > +             pkt_stream->pkts[i].payload = i;
-> > +             pkt_stream->pkts[i].valid = pkts[i].valid;
-> > +     }
-> > +}
-> > +
-> >  static struct pkt *pkt_generate(struct ifobject *ifobject, u32 pkt_nb)
-> >  {
-> >       struct pkt *pkt = pkt_stream_get_pkt(ifobject->pkt_stream, pkt_nb);
-> > @@ -535,6 +581,8 @@ static struct pkt *pkt_generate(struct ifobject *ifobject, u32 pkt_nb)
-> >
-> >       if (!pkt)
-> >               return NULL;
-> > +     if (!pkt->valid || pkt->len < PKT_SIZE)
-> > +             return pkt;
-> >
-> >       data = xsk_umem__get_data(ifobject->umem->buffer, pkt->addr);
-> >       udp_hdr = (struct udphdr *)(data + sizeof(struct ethhdr) + sizeof(struct iphdr));
-> > @@ -596,19 +644,24 @@ static bool is_pkt_valid(struct pkt *pkt, void *buffer, u64 addr, u32 len)
-> >               return false;
-> >       }
-> >
-> > +     if (len < PKT_SIZE) {
-> > +             /*Do not try to verify packets that are smaller than minimun size. */
->
-> minimum
->
-> > +             return true;
-> > +     }
-> > +
-> > +     if (pkt->len != len) {
-> > +             ksft_test_result_fail
-> > +                     ("ERROR: [%s] expected length [%d], got length [%d]\n",
-> > +                      __func__, pkt->len, len);
-> > +             return false;
-> > +     }
-> > +
-> >       if (iphdr->version == IP_PKT_VER && iphdr->tos == IP_PKT_TOS) {
-> >               u32 seqnum = ntohl(*((u32 *)(data + PKT_HDR_SIZE)));
-> >
-> >               if (opt_pkt_dump)
-> >                       pkt_dump(data, PKT_SIZE);
-> >
-> > -             if (pkt->len != len) {
-> > -                     ksft_test_result_fail
-> > -                             ("ERROR: [%s] expected length [%d], got length [%d]\n",
-> > -                                     __func__, pkt->len, len);
-> > -                     return false;
-> > -             }
-> > -
-> >               if (pkt->payload != seqnum) {
-> >                       ksft_test_result_fail
-> >                               ("ERROR: [%s] expected seqnum [%d], got seqnum [%d]\n",
-> > @@ -645,6 +698,15 @@ static void complete_pkts(struct xsk_socket_info *xsk, int batch_size)
-> >
-> >       rcvd = xsk_ring_cons__peek(&xsk->umem->cq, batch_size, &idx);
-> >       if (rcvd) {
-> > +             if (rcvd > xsk->outstanding_tx) {
-> > +                     u64 addr = *xsk_ring_cons__comp_addr(&xsk->umem->cq, idx + rcvd - 1);
-> > +
-> > +                     ksft_test_result_fail("ERROR: [%s] Too many packets completed\n",
-> > +                                           __func__);
-> > +                     ksft_print_msg("Last completion address: %llx\n", addr);
-> > +                     return;
-> > +             }
-> > +
-> >               xsk_ring_cons__release(&xsk->umem->cq, rcvd);
-> >               xsk->outstanding_tx -= rcvd;
-> >       }
-> > @@ -653,11 +715,10 @@ static void complete_pkts(struct xsk_socket_info *xsk, int batch_size)
-> >  static void receive_pkts(struct pkt_stream *pkt_stream, struct xsk_socket_info *xsk,
-> >                        struct pollfd *fds)
-> >  {
-> > -     u32 idx_rx = 0, idx_fq = 0, rcvd, i, pkt_count = 0;
-> > -     struct pkt *pkt;
-> > +     struct pkt *pkt = pkt_stream_get_next_rx_pkt(pkt_stream);
-> > +     u32 idx_rx = 0, idx_fq = 0, rcvd, i;
-> >       int ret;
-> >
-> > -     pkt = pkt_stream_get_pkt(pkt_stream, pkt_count++);
-> >       while (pkt) {
-> >               rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
-> >               if (!rcvd) {
-> > @@ -685,13 +746,21 @@ static void receive_pkts(struct pkt_stream *pkt_stream, struct xsk_socket_info *
-> >                       const struct xdp_desc *desc = xsk_ring_cons__rx_desc(&xsk->rx, idx_rx++);
-> >                       u64 addr = desc->addr, orig;
-> >
-> > +                     if (!pkt) {
-> > +                             ksft_test_result_fail("ERROR: [%s] Received too many packets.\n",
-> > +                                                   __func__);
-> > +                             ksft_print_msg("Last packet has addr: %llx len: %u\n",
-> > +                                            addr, desc->len);
-> > +                             return;
-> > +                     }
-> > +
-> >                       orig = xsk_umem__extract_addr(addr);
-> >                       addr = xsk_umem__add_offset_to_addr(addr);
-> >                       if (!is_pkt_valid(pkt, xsk->umem->buffer, addr, desc->len))
-> >                               return;
-> >
-> >                       *xsk_ring_prod__fill_addr(&xsk->umem->fq, idx_fq++) = orig;
-> > -                     pkt = pkt_stream_get_pkt(pkt_stream, pkt_count++);
-> > +                     pkt = pkt_stream_get_next_rx_pkt(pkt_stream);
-> >               }
-> >
-> >               xsk_ring_prod__submit(&xsk->umem->fq, rcvd);
-> > @@ -875,6 +944,7 @@ static void testapp_cleanup_xsk_res(struct ifobject *ifobj)
-> >  {
-> >       print_verbose("Destroying socket\n");
-> >       xsk_socket__delete(ifobj->xsk->xsk);
-> > +     munmap(ifobj->umem->buffer, ifobj->umem->num_frames * ifobj->umem->frame_size);
-> >       xsk_umem__delete(ifobj->umem->umem);
-> >  }
-> >
-> > @@ -1118,6 +1188,33 @@ static bool testapp_unaligned(struct test_spec *test)
-> >       return true;
-> >  }
-> >
-> > +static void testapp_inv_desc(struct test_spec *test)
->
-> I'd say that speaking out whole 'invalid' word wouldn't hurt us here.
->
-> > +{
-> > +     struct pkt pkts[] = {{0, 0, 0, true}, /* Zero packet length and zero address allowed */
->
-> Above looks a bit weird, maybe this should be formatted same as the lines
-> below:
->
->         struct pkt pkts[] = {
->                 /* Zero packet length and zero address allowed */
->                              {0, 0, 0, true},
->
-> > +             /* Zero packet length allowed */
-> > +                          {0x1000, 0, 0, true},
-> > +             /* Straddling the start of umem */
-> > +                          {-2, PKT_SIZE, 0, false},
-> > +             /* Packet too large */
-> > +                          {0x2000, XSK_UMEM__INVALID_FRAME_SIZE, 0, false},
-> > +             /* After umem ends */
-> > +                          {UMEM_SIZE, PKT_SIZE, 0, false},
-> > +             /* Straddle the end of umem */
-> > +                          {UMEM_SIZE - PKT_SIZE / 2, PKT_SIZE, 0, false},
-> > +             /* Straddle a page boundrary */
-> > +                          {0x3000 - PKT_SIZE / 2, PKT_SIZE, 0, false},
-> > +             /* Valid packet for synch so that something is received */
-> > +                          {0x4000, PKT_SIZE, 0, true}};
-> > +
-> > +     if (test->ifobj_tx->umem->unaligned_mode) {
-> > +             /* Crossing a page boundrary allowed */
-> > +             pkts[6].valid = true;
-> > +     }
-> > +     pkt_stream_set(test, pkts, ARRAY_SIZE(pkts));
-> > +     testapp_validate_traffic(test);
-> > +     pkt_stream_restore_default(test);
-> > +}
-> > +
-> >  static void init_iface(struct ifobject *ifobj, const char *dst_mac, const char *src_mac,
-> >                      const char *dst_ip, const char *src_ip, const u16 dst_port,
-> >                      const u16 src_port, thread_func_t func_ptr)
-> > @@ -1159,7 +1256,7 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
-> >       case TEST_TYPE_BPF_RES:
-> >               testapp_bpf_res(test);
-> >               break;
-> > -     case TEST_TYPE_NOPOLL:
-> > +     case TEST_TYPE_RUN_TO_COMPLETION:
->
-> I think that you were updating some comment around it on previous patches
-> and it probably belongs to this one.
-
-Will fix plus all the other suggestions above.
-
-Thank you Maciej!
-
-/Magnus
-
-> >               test_spec_set_name(test, "RUN_TO_COMPLETION");
-> >               testapp_validate_traffic(test);
-> >               break;
-> > @@ -1169,6 +1266,16 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
-> >               test_spec_set_name(test, "POLL");
-> >               testapp_validate_traffic(test);
-> >               break;
-> > +     case TEST_TYPE_ALIGNED_INV_DESC:
-> > +             test_spec_set_name(test, "ALIGNED_INV_DESC");
-> > +             testapp_inv_desc(test);
-> > +             break;
-> > +     case TEST_TYPE_UNALIGNED_INV_DESC:
-> > +             test_spec_set_name(test, "UNALIGNED_INV_DESC");
-> > +             test->ifobj_tx->umem->unaligned_mode = true;
-> > +             test->ifobj_rx->umem->unaligned_mode = true;
-> > +             testapp_inv_desc(test);
-> > +             break;
-> >       case TEST_TYPE_UNALIGNED:
-> >               if (!testapp_unaligned(test))
-> >                       return;
-> > diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
-> > index 129801eb013c..2d9efb89ea28 100644
-> > --- a/tools/testing/selftests/bpf/xdpxceiver.h
-> > +++ b/tools/testing/selftests/bpf/xdpxceiver.h
-> > @@ -38,6 +38,8 @@
-> >  #define BATCH_SIZE 8
-> >  #define POLL_TMOUT 1000
-> >  #define DEFAULT_PKT_CNT (4 * 1024)
-> > +#define DEFAULT_UMEM_BUFFERS (DEFAULT_PKT_CNT / 4)
-> > +#define UMEM_SIZE (DEFAULT_UMEM_BUFFERS * XSK_UMEM__DEFAULT_FRAME_SIZE)
-> >  #define RX_FULL_RXQSIZE 32
-> >  #define DEFAULT_OFFSET 256
-> >  #define XSK_UMEM__INVALID_FRAME_SIZE (XSK_UMEM__DEFAULT_FRAME_SIZE + 1)
-> > @@ -51,9 +53,11 @@ enum test_mode {
-> >  };
-> >
-> >  enum test_type {
-> > -     TEST_TYPE_NOPOLL,
-> > +     TEST_TYPE_RUN_TO_COMPLETION,
-> >       TEST_TYPE_POLL,
-> >       TEST_TYPE_UNALIGNED,
-> > +     TEST_TYPE_ALIGNED_INV_DESC,
-> > +     TEST_TYPE_UNALIGNED_INV_DESC,
-> >       TEST_TYPE_TEARDOWN,
-> >       TEST_TYPE_BIDI,
-> >       TEST_TYPE_STATS,
-> > @@ -104,6 +108,7 @@ struct pkt {
-> >
-> >  struct pkt_stream {
-> >       u32 nb_pkts;
-> > +     u32 rx_pkt_nb;
-> >       struct pkt *pkts;
-> >       bool use_addr_for_fill;
-> >  };
-> > --
-> > 2.29.0
-> >
