@@ -2,223 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D113401EBF
-	for <lists+bpf@lfdr.de>; Mon,  6 Sep 2021 18:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F53401EC0
+	for <lists+bpf@lfdr.de>; Mon,  6 Sep 2021 18:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhIFQ4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Sep 2021 12:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
+        id S237374AbhIFQ40 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Sep 2021 12:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240965AbhIFQ4R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:56:17 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02146C0613C1
-        for <bpf@vger.kernel.org>; Mon,  6 Sep 2021 09:55:12 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id x7so5114873pfa.8
-        for <bpf@vger.kernel.org>; Mon, 06 Sep 2021 09:55:11 -0700 (PDT)
+        with ESMTP id S229975AbhIFQ4Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Sep 2021 12:56:25 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3EAC061575
+        for <bpf@vger.kernel.org>; Mon,  6 Sep 2021 09:55:20 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id m26so6032148pff.3
+        for <bpf@vger.kernel.org>; Mon, 06 Sep 2021 09:55:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CJT5PxswcReZ9BJw/EMCO9yiA2qfftOvKk2B3zyNA2o=;
-        b=JUhjk/3cZiRRzvQ0FncujpW8atNuTd8UwdZdBgbGfkt311AC9ROCWHtiPtfrNaq7cM
-         hl5rNz7xw25x5SnWeZZ+DszPgd3f11IyXORLF/7uwyPOHwrfmATKrA/W1S0HWcg1cBMk
-         hDOIHJkqBnPpDFujgN5/tMFXsg4BDrrn9jL4EQieVC9ptb0m9NNf94tn5ubN225aA6/7
-         s1+2eeforwlFo7oN7RUF02IWJzJH0XZ0dR93F1PrIGlwPa6Us6iId9WcU/RS/QNV0Hs4
-         a/6CcB2CwmJ8wDKwVVQ/GSmJNX3x2WmgkUG9buJbcU+Shw4GROXRcLfXadN4gjEk1k7T
-         iMWA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OQtojEzi86PrcQS/2JsvMLjtdNeBqpS7cKAUKFmfV3k=;
+        b=juI4tpgAJdJKgq7MH+VRKO4K4LJ9nmOavJgCqGMBT/Tt0jwEZ4wEhoNfl7g0J/cRfQ
+         VJB2FhOx5VUdzKP9Y1cATJmRcoEZ5QzGJ2RhHvwMAHBLzJ4YZHU+3PAB756nAJTVry6k
+         aaqMggSrcSpferSL0Ns6TP1YiuM8+aiaXGArfE9bhicM4pnz3hzEr+R4L0FnKMhWIe0c
+         6JZr7QbRx09OvCKHANDkkQwbqqyAa5P7NmZguxgi8zIO9CuCcEnrj7yGtFFLhjDTX2Vx
+         Vj4bH/L6dBqHnuGfPJ8D1Ss2dk1twgQJgSxR4Re9VHwtte20gA9u+ucVKmTr8RMp2zhW
+         v9KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CJT5PxswcReZ9BJw/EMCO9yiA2qfftOvKk2B3zyNA2o=;
-        b=hJHEjKkWdYlssaoZecBzERuuxtoKufuVEAkFkzS6xTaOgv56uPnnYc6d4OHA+W4dQH
-         KV0ZcAYAebqI1T9J4k6g+e8s42nu5RkPZf42sVY7Aor2oDrrbXsVhrbfcuM6a2EnvzLx
-         9fcdytrbgze8oOzje7v8kQkVrh5hi0na9k5LPwOz7cGW9BptF2etbgkLGAq/7wCDuhUs
-         WwhdlCKfTnp1gQwh+QlQrSpzXShK9s7i+E/YK5C2Xfg6seZhkCFK8b1mLjE8Vsqk3lnj
-         LlCxm83t8ZsJ2M+LoEzmLZ+C5HLY2rMMO+b4zhiJUYbX5FVGJIdNqcL7Sh8ObbZtBALE
-         iiSA==
-X-Gm-Message-State: AOAM533lggOJGl1HGwmSJzRyE39F62pQUDTaNzLiVoYEezVrJPTRjiJ9
-        y0vIF1Nu83xQ5F/qZkLgx4P9K6suFEBrkQ==
-X-Google-Smtp-Source: ABdhPJyQKGtMzajUkYiT6VakOAXg0o7vRhU5fywf6ad6Y/MRh5LHOea9jJHc6AHKrDHFjNCcaxsyDg==
-X-Received: by 2002:a65:47cd:: with SMTP id f13mr13011490pgs.439.1630947311399;
-        Mon, 06 Sep 2021 09:55:11 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OQtojEzi86PrcQS/2JsvMLjtdNeBqpS7cKAUKFmfV3k=;
+        b=Sr+zuDp7xiQHkls/Xyv0gpapF+ue9K/1NXvUsA7V3yU1gFTEPaJyjopVZwZTFrbFIe
+         5O5ecVyU3aYUHDdfuKms6zKtzbhhGwQwoBBeCm0e7W3JQdYcpG4Jx7abw8QOGCoejiEp
+         r0kxHU6P91roet6KTh+Hito/9mghYu/un0AOB5xt1v83I9PyxBfc88HH8bSq4rYYVaZP
+         lujT9UCvtVRYf0JsyhpM/M2KjDONzfBkHm3Y0jjmsiCB8SHBehevmAyaV2O/Arm2dBGK
+         ueh2HsGFhrhlbShJU/GGZtW8M2kBAEQ+ft/nhIyB49hgq3keghPoVqN9orJdb2Z418/O
+         nV3Q==
+X-Gm-Message-State: AOAM532LrUmPRLgXW81nvuSRUieiO763ZMy7QCJo9SBq6OtcKmIf96C/
+        +8yMV1xLDcWStX+GAWyLOiiV7/e51jiNHA==
+X-Google-Smtp-Source: ABdhPJwImFDjQVEbtrabsXLEqCwa8SzhDyZjfw8+5ZCEsAJ3qAv0pCQy2RIPmH5bZ71YHsCIlSX3Hw==
+X-Received: by 2002:a63:4e65:: with SMTP id o37mr13298874pgl.202.1630947320193;
+        Mon, 06 Sep 2021 09:55:20 -0700 (PDT)
 Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id d8sm38189pjr.17.2021.09.06.09.55.09
+        by smtp.gmail.com with ESMTPSA id d8sm38189pjr.17.2021.09.06.09.55.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 09:55:11 -0700 (PDT)
+        Mon, 06 Sep 2021 09:55:20 -0700 (PDT)
 From:   Hengqi Chen <hengqi.chen@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next 1/2] libbpf: Deprecate bpf_{map,program}__{prev,next} APIs
-Date:   Tue,  7 Sep 2021 00:54:55 +0800
-Message-Id: <20210906165456.325999-1-hengqi.chen@gmail.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Replace bpf_{map,program}__next with bpf_object__next_{map,program}
+Date:   Tue,  7 Sep 2021 00:54:56 +0800
+Message-Id: <20210906165456.325999-2-hengqi.chen@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210906165456.325999-1-hengqi.chen@gmail.com>
+References: <20210906165456.325999-1-hengqi.chen@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Deprecate bpf_{map,program}__{prev,next} APIs. Replace them with
-a new set of APIs named bpf_object__{prev,next}_{program,map} which
-follow the libbpf API naming convention. No functionality changes.
+Replace deprecated bpf_{map,program}__next APIs with newly added
+bpf_object__next_{map,program} APIs, so that no compilation warnings
+emit.
 
-Closes: https://github.com/libbpf/libbpf/issues/296
 Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 ---
- tools/lib/bpf/libbpf.c   | 24 ++++++++++++++++++------
- tools/lib/bpf/libbpf.h   | 30 ++++++++++++++++++++----------
- tools/lib/bpf/libbpf.map |  4 ++++
- 3 files changed, 42 insertions(+), 16 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/btf.c              | 2 +-
+ tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c    | 2 +-
+ tools/testing/selftests/bpf/prog_tests/select_reuseport.c | 2 +-
+ tools/testing/selftests/bpf/prog_tests/tcp_rtt.c          | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 88d8825fc6f6..8d82853fb4a0 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7347,7 +7347,7 @@ int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
- 	return 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
+index 649f87382c8d..77b297f6c003 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+@@ -4268,7 +4268,7 @@ static void do_test_file(unsigned int test_num)
+ 	if (CHECK(err, "obj: %d", err))
+ 		return;
 
- err_unpin_maps:
--	while ((map = bpf_map__prev(map, obj))) {
-+	while ((map = bpf_object__prev_map(map, obj))) {
- 		if (!map->pin_path)
- 			continue;
+-	prog = bpf_program__next(NULL, obj);
++	prog = bpf_object__next_program(NULL, obj);
+ 	if (CHECK(!prog, "Cannot find bpf_prog")) {
+ 		err = -1;
+ 		goto done;
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+index 73b4c76e6b86..68205b172a7d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+@@ -288,7 +288,7 @@ static void test_fmod_ret_freplace(void)
+ 	if (CHECK(err, "freplace_obj_load", "err %d\n", err))
+ 		goto out;
 
-@@ -7427,7 +7427,7 @@ int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
- 	return 0;
+-	prog = bpf_program__next(NULL, freplace_obj);
++	prog = bpf_object__next_program(NULL, freplace_obj);
+ 	freplace_link = bpf_program__attach_trace(prog);
+ 	if (!ASSERT_OK_PTR(freplace_link, "freplace_attach_trace"))
+ 		goto out;
+diff --git a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
+index 4efd337d6a3c..55957b42bc23 100644
+--- a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
++++ b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
+@@ -114,7 +114,7 @@ static int prepare_bpf_obj(void)
+ 	err = bpf_object__load(obj);
+ 	RET_ERR(err, "load bpf_object", "err:%d\n", err);
 
- err_unpin_programs:
--	while ((prog = bpf_program__prev(prog, obj))) {
-+	while ((prog = bpf_object__prev_program(prog, obj))) {
- 		char buf[PATH_MAX];
- 		int len;
+-	prog = bpf_program__next(NULL, obj);
++	prog = bpf_object__next_program(NULL, obj);
+ 	RET_ERR(!prog, "get first bpf_program", "!prog\n");
+ 	select_by_skb_data_prog = bpf_program__fd(prog);
+ 	RET_ERR(select_by_skb_data_prog < 0, "get prog fd",
+diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
+index d207e968e6b1..4957e391e111 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
++++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
+@@ -109,7 +109,7 @@ static int run_test(int cgroup_fd, int server_fd)
+ 		return -1;
+ 	}
 
-@@ -7666,8 +7666,11 @@ __bpf_program__iter(const struct bpf_program *p, const struct bpf_object *obj,
- 	return &obj->programs[idx];
- }
+-	map = bpf_map__next(NULL, obj);
++	map = bpf_object__next_map(NULL, obj);
+ 	map_fd = bpf_map__fd(map);
 
-+__attribute__((alias("bpf_object__next_program")))
-+struct bpf_program *bpf_program__next(struct bpf_program *prev, const struct bpf_object *obj);
-+
- struct bpf_program *
--bpf_program__next(struct bpf_program *prev, const struct bpf_object *obj)
-+bpf_object__next_program(struct bpf_program *prev, const struct bpf_object *obj)
- {
- 	struct bpf_program *prog = prev;
-
-@@ -7678,8 +7681,11 @@ bpf_program__next(struct bpf_program *prev, const struct bpf_object *obj)
- 	return prog;
- }
-
-+__attribute__((alias("bpf_object__prev_program")))
-+struct bpf_program *bpf_program__prev(struct bpf_program *next, const struct bpf_object *obj);
-+
- struct bpf_program *
--bpf_program__prev(struct bpf_program *next, const struct bpf_object *obj)
-+bpf_object__prev_program(struct bpf_program *next, const struct bpf_object *obj)
- {
- 	struct bpf_program *prog = next;
-
-@@ -8698,8 +8704,11 @@ __bpf_map__iter(const struct bpf_map *m, const struct bpf_object *obj, int i)
- 	return &obj->maps[idx];
- }
-
-+__attribute__((alias("bpf_object__next_map")))
-+struct bpf_map *bpf_map__next(const struct bpf_map *prev, const struct bpf_object *obj);
-+
- struct bpf_map *
--bpf_map__next(const struct bpf_map *prev, const struct bpf_object *obj)
-+bpf_object__next_map(const struct bpf_map *prev, const struct bpf_object *obj)
- {
- 	if (prev == NULL)
- 		return obj->maps;
-@@ -8707,8 +8716,11 @@ bpf_map__next(const struct bpf_map *prev, const struct bpf_object *obj)
- 	return __bpf_map__iter(prev, obj, 1);
- }
-
-+__attribute__((alias("bpf_object__prev_map")))
-+struct bpf_map *bpf_map__prev(const struct bpf_map *next, const struct bpf_object *obj);
-+
- struct bpf_map *
--bpf_map__prev(const struct bpf_map *next, const struct bpf_object *obj)
-+bpf_object__prev_map(const struct bpf_map *next, const struct bpf_object *obj)
- {
- 	if (next == NULL) {
- 		if (!obj->nr_maps)
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index f177d897c5f7..e6aab4cd263b 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -186,16 +186,22 @@ LIBBPF_API int libbpf_find_vmlinux_btf_id(const char *name,
-
- /* Accessors of bpf_program */
- struct bpf_program;
--LIBBPF_API struct bpf_program *bpf_program__next(struct bpf_program *prog,
-+LIBBPF_API LIBBPF_DEPRECATED("bpf_program__next() is deprecated, use bpf_object__next_program() instead")
-+struct bpf_program *bpf_program__next(struct bpf_program *prog,
- 						 const struct bpf_object *obj);
-+LIBBPF_API struct bpf_program *bpf_object__next_program(struct bpf_program *prog,
-+							const struct bpf_object *obj);
-
--#define bpf_object__for_each_program(pos, obj)		\
--	for ((pos) = bpf_program__next(NULL, (obj));	\
--	     (pos) != NULL;				\
--	     (pos) = bpf_program__next((pos), (obj)))
-+#define bpf_object__for_each_program(pos, obj)			\
-+	for ((pos) = bpf_object__next_program(NULL, (obj));	\
-+	     (pos) != NULL;					\
-+	     (pos) = bpf_object__next_program((pos), (obj)))
-
--LIBBPF_API struct bpf_program *bpf_program__prev(struct bpf_program *prog,
-+LIBBPF_API LIBBPF_DEPRECATED("bpf_program__prev() is deprecated, use bpf_object__prev_program() instead")
-+struct bpf_program *bpf_program__prev(struct bpf_program *prog,
- 						 const struct bpf_object *obj);
-+LIBBPF_API struct bpf_program *bpf_object__prev_program(struct bpf_program *prog,
-+							const struct bpf_object *obj);
-
- typedef void (*bpf_program_clear_priv_t)(struct bpf_program *, void *);
-
-@@ -495,16 +501,20 @@ bpf_object__find_map_fd_by_name(const struct bpf_object *obj, const char *name);
- LIBBPF_API struct bpf_map *
- bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset);
-
-+LIBBPF_API LIBBPF_DEPRECATED("bpf_map__next() is deprecated, use bpf_object__next_map() instead")
-+struct bpf_map *bpf_map__next(const struct bpf_map *map, const struct bpf_object *obj);
- LIBBPF_API struct bpf_map *
--bpf_map__next(const struct bpf_map *map, const struct bpf_object *obj);
-+bpf_object__next_map(const struct bpf_map *map, const struct bpf_object *obj);
- #define bpf_object__for_each_map(pos, obj)		\
--	for ((pos) = bpf_map__next(NULL, (obj));	\
-+	for ((pos) = bpf_object__next_map(NULL, (obj));	\
- 	     (pos) != NULL;				\
--	     (pos) = bpf_map__next((pos), (obj)))
-+	     (pos) = bpf_object__next_map((pos), (obj)))
- #define bpf_map__for_each bpf_object__for_each_map
-
-+LIBBPF_API LIBBPF_DEPRECATED("bpf_map__prev() is deprecated, use bpf_object__prev_map() instead")
-+struct bpf_map *bpf_map__prev(const struct bpf_map *map, const struct bpf_object *obj);
- LIBBPF_API struct bpf_map *
--bpf_map__prev(const struct bpf_map *map, const struct bpf_object *obj);
-+bpf_object__prev_map(const struct bpf_map *map, const struct bpf_object *obj);
-
- /* get/set map FD */
- LIBBPF_API int bpf_map__fd(const struct bpf_map *map);
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index bbc53bb25f68..0c6d510e7747 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -378,6 +378,10 @@ LIBBPF_0.5.0 {
- 		bpf_program__attach_tracepoint_opts;
- 		bpf_program__attach_uprobe_opts;
- 		bpf_object__gen_loader;
-+		bpf_object__next_map;
-+		bpf_object__next_program;
-+		bpf_object__prev_map;
-+		bpf_object__prev_program;
- 		btf__load_from_kernel_by_id;
- 		btf__load_from_kernel_by_id_split;
- 		btf__load_into_kernel;
+ 	err = bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_SOCK_OPS, 0);
 --
 2.30.2
