@@ -2,320 +2,250 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5201F402535
-	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 10:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF48B40270C
+	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 12:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242624AbhIGIgz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Sep 2021 04:36:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48064 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242844AbhIGIgk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 7 Sep 2021 04:36:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631003734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/1tzDx8U1PWY5C5B/RCN/s1/YDYu2JH+7J0+jVgi6i4=;
-        b=RyoLjwcPmot2FBdeamxlVOl0ex09byx7xfF3M62QNSfhGLI6/WlC1XBl2uljmkZzOp51rJ
-        KvJ+YZW0sIPCItUN6igPh6DcMoa819hzYmsIkNOSOMhp/Nw2jZY+F0hO0ulOR32eXxyGq1
-        08zhCLwDHVJAGELyYHJml/+RqN2lIyk=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-sZeUY-PEM-akXyjRy1d4HA-1; Tue, 07 Sep 2021 04:35:32 -0400
-X-MC-Unique: sZeUY-PEM-akXyjRy1d4HA-1
-Received: by mail-ej1-f69.google.com with SMTP id q19-20020a1709064cd3b02904c5f93c0124so3314337ejt.14
-        for <bpf@vger.kernel.org>; Tue, 07 Sep 2021 01:35:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/1tzDx8U1PWY5C5B/RCN/s1/YDYu2JH+7J0+jVgi6i4=;
-        b=ouAJwy4U2klFDoijjmYWzaHTs/iEXtmu1jqEFwxe4rfQOwtIHjOGoJ0EdTzMRkJ2z4
-         qm9TE+BRGgPe4A5uf+LfaeTmwPzAWUU1jZlumLHIp1Ox8+gwKH8gcpaUGucmaQQuAIdO
-         fEX8uBwv0fP6TSihFz56Bckm+uok8oEBcj+C6RGW1MWhkyGYaaUt6g7M51EyWpBd/WZm
-         rdrA8JOxUgNFoXZrKIqKSlQRxckqmFVHkaWuSUxrRW6QL0h75kwfHEc2bPeeEl5Qx7Lc
-         tzQGwBcitNrihqkgmHzEDCZ8+JCPRtBqku0nFAE2ivlDUEv0IK45Yx68gei5Or71DxD4
-         rSnQ==
-X-Gm-Message-State: AOAM531ASt8KRi++6eeGCK8Mj/QlVZv9LyXKhCtLjeg2dvnSv9Ds4VNH
-        cZzmU7184qCKOSNTfsuTI9sGV6t7O26Mtq//AcIgTjpfkDhmodX26YABtc4uxUuUDG4erDIqhyT
-        Seu5QnnAQPqrt
-X-Received: by 2002:aa7:c9d6:: with SMTP id i22mr17440083edt.307.1631003731626;
-        Tue, 07 Sep 2021 01:35:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxwdVqi2q8sejffcKnVijv+cnK/9z8u4vYOSSDkhuyLXVE3UBsjoKIuv7TuOS3Md5tQH3e3w==
-X-Received: by 2002:aa7:c9d6:: with SMTP id i22mr17440076edt.307.1631003731438;
-        Tue, 07 Sep 2021 01:35:31 -0700 (PDT)
-Received: from localhost (net-37-116-49-210.cust.vodafonedsl.it. [37.116.49.210])
-        by smtp.gmail.com with ESMTPSA id a15sm6408262edr.2.2021.09.07.01.35.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 01:35:30 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 10:35:27 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH v12 bpf-next 00/18] mvneta: introduce XDP multi-buffer
- support
-Message-ID: <YTckT0k3MV8+Pte/@lore-desk>
-References: <cover.1629473233.git.lorenzo@kernel.org>
- <612ecd169d9c7_6b87208d7@john-XPS-13-9370.notmuch>
+        id S233661AbhIGKWl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Sep 2021 06:22:41 -0400
+Received: from mga12.intel.com ([192.55.52.136]:35414 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233477AbhIGKWk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Sep 2021 06:22:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="199688461"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="199688461"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 03:21:34 -0700
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="478621656"
+Received: from unknown (HELO localhost.localdomain) ([10.102.102.63])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 03:21:31 -0700
+Date:   Tue, 7 Sep 2021 02:27:29 -0400
+From:   Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        brouer@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net,
+        Zaremba Larysa <larysa.zaremba@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>
+Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
+Message-ID: <YTcGUbRpvWK+633g@localhost.localdomain>
+References: <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
+ <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <YNGU4GhL8fZ0ErzS@localhost.localdomain>
+ <874kdqqfnm.fsf@toke.dk>
+ <YNLxtsasQSv+YR1w@localhost.localdomain>
+ <87mtrfmoyh.fsf@toke.dk>
+ <YOa4JVEp20JolOp4@localhost.localdomain>
+ <8735snvjp7.fsf@toke.dk>
+ <YTA7x6BIq85UWrYZ@localhost.localdomain>
+ <190d8d21-f11d-bb83-58aa-08e86e0006d9@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2WhikOjJbw4rzvu2"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <612ecd169d9c7_6b87208d7@john-XPS-13-9370.notmuch>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <190d8d21-f11d-bb83-58aa-08e86e0006d9@redhat.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Sep 02, 2021 at 11:17:43AM +0200, Jesper Dangaard Brouer wrote:
+> 
+> 
+> On 02/09/2021 04.49, Michal Swiatkowski wrote:
+> > On Fri, Jul 09, 2021 at 12:57:08PM +0200, Toke Høiland-Jørgensen wrote:
+> > > Michal Swiatkowski <michal.swiatkowski@linux.intel.com> writes:
+> > > 
+> > > > > I would expect that the program would decide ahead-of-time which BTF IDs
+> > > > > it supports, by something like including the relevant structs from
+> > > > > vmlinux.h. And then we need the BTF ID encoded into the packet metadata
+> > > > > as well, so that it is possible to check at run-time which driver the
+> > > > > packet came from (since a packet can be redirected, so you may end up
+> > > > > having to deal with multiple formats in the same XDP program).
+> > > > > 
+> > > > > Which would allow you to write code like:
+> > > > > 
+> > > > > if (ctx->has_driver_meta) {
+> > > > >    /* this should be at a well-known position, like first (or last) in meta area */
+> > > > >    __u32 *meta_btf_id = ctx->data_meta;
+> > > > >    if (*meta_btf_id == BTF_ID_MLX5) {
+> > > > >      struct meta_mlx5 *meta = ctx->data_meta;
+> > > > >      /* do something with meta */
+> > > > >    } else if (meta_btf_id == BTF_ID_I40E) {
+> > > > >      struct meta_i40e *meta = ctx->data_meta;
+> > > > >      /* do something with meta */
+> > > > >    } /* etc */
+> > > > > }
+> > > > > 
+> > > > > and libbpf could do relocations based on the different meta structs,
+> > > > > even removing the code for the ones that don't exist on the running
+> > > > > kernel.
+> > > > 
+> > > > This looks nice. In this case we need defintions of struct meta_mlx5 and
+> > > > struct meta_i40e at build time. How are we going to deliver this to bpf
+> > > > core app? This will be available in /sys/kernel/btf/mlx5 and
+> > > > /sys/kernel/btf/i40e (if drivers are loaded). Should we dump this to
+> > > > vmlinux.h? Or a developer of the xdp program should add this definition
+> > > > to his code?
+> > > 
+> > > Well, if the driver just defines the struct, the BTF for it will be
+> > > automatically part of the driver module BTF. BPF program developers
+> > > would need to include this in their programs somehow (similar to how
+> > > you'll need to get the type definitions from vmlinux.h today to use
+> > > CO-RE); how they do this is up to them. Since this is a compile-time
+> > > thing it will probably depend on the project (for instance, BCC includes
+> > > a copy of vmlinux.h in their source tree, but you can also just pick out
+> > > the structs you need).
+> > > 
+> > > > Maybe create another /sys/kernel/btf/hints with vmlinux and hints from
+> > > > all drivers which support hints?
+> > > 
+> > > It may be useful to have a way for the kernel to export all the hints
+> > > currently loaded, so libbpf can just use that when relocating. The
+> > > problem of course being that this will only include drivers that are
+> > > actually loaded, so users need to make sure to load all their network
+> > > drivers before loading any XDP programs. I think it would be better if
+> > > the loader could discover all modules *available* on the system, but I'm
+> > > not sure if there's a good way to do that.
+> > > 
+> > > > Previously in this thread someone mentioned this ___ use case in libbpf
+> > > > and proposed creating something like mega xdp hints structure with all
+> > > > available fields across all drivers. As I understand this could solve
+> > > > the problem about defining correct structure at build time. But how will
+> > > > it work when there will be more than one structures with the same name
+> > > > before ___? I mean:
+> > > > struct xdp_hints___mega defined only in core app
+> > > > struct xdp_hints___mlx5 available when mlx5 driver is loaded
+> > > > struct xdp_hints___i40e available when i40e driver is loaded
+> > > > 
+> > > > When there will be only one driver loaded should libbpf do correct
+> > > > reallocation of fields? What will happen when both of the drivers are
+> > > > loaded?
+> > > 
+> > > I think we definitely need to make this easy for developers so they
+> > > don't have to go and manually track down the driver structs and write
+> > > the disambiguation code etc. I.e., the example code I included above
+> > > that checks the frame BTF ID and does the loading based on it should be
+> > > auto-generated. We already have some precedence for auto-generated code
+> > > in vmlinux.h and the bpftool skeletons. So maybe we could have a command
+> > > like 'bpftool gen_xdp_meta <fields>' which would go and lookup all the
+> > > available driver structs and generate a code helper function that will
+> > > extract the driver structs and generate the loader code? So that if,
+> > > say, you're interested in rxhash and tstamp you could do:
+> > > 
+> > > bpftool gen_xdp_meta rxhash tstamp > my_meta.h
+> > > 
+> > > which would then produce my_meta.h with content like:
+> > > 
+> > > struct my_meta { /* contains fields specified on the command line */
+> > >    u32 rxhash;
+> > >    u32 tstamp;
+> > > }
+> > > 
+> > > struct meta_mlx5 {/*generated from kernel BTF */};
+> > > struct meta_i40e {/*generated from kernel BTF */};
+> > > 
+> > > static inline int get_xdp_meta(struct xdp_md *ctx, struct my_meta *meta)
+> > > {
+> > >   if (ctx->has_driver_meta) {
+> > >     /* this should be at a well-known position, like first (or last) in meta area */
+> > >     __u32 *meta_btf_id = ctx->data_meta;
+> > >     if (*meta_btf_id == BTF_ID_MLX5) {
+> > >       struct meta_mlx5 *meta = ctx->data_meta;
+> > >       my_meta->rxhash = meta->rxhash;
+> > >       my_meta->tstamp = meta->tstamp;
+> > >       return 0;
+> > >     } else if (meta_btf_id == BTF_ID_I40E) {
+> > >       struct meta_i40e *meta = ctx->data_meta;
+> > >       my_meta->rxhash = meta->rxhash;
+> > >       my_meta->tstamp = meta->tstamp;
+> > >       return 0;
+> > >     } /* etc */
+> > >   }
+> > >   return -ENOENT;
+> > > }
+> > 
+> > According to meta_btf_id.
+> 
+> In BPF-prog (that gets loaded by libbpf), the BTF_ID_MLX5 and BTF_ID_I40E
+> should be replaced by bpf_core_type_id_kernel() calls.
+> 
+> I have a code example here[1], where I use the triple-underscore to lookup
+> btf_id = bpf_core_type_id_kernel(struct sk_buff___local).
+> 
+> AFAIK (Andrii correctly me if I'm wrong) It is libbpf that does the bpf_id
+> lookup before loading the BPF-prog into the kernel.
+> 
+> For AF_XDP we need to code our own similar lookup of the btf_id. (In that
+> process I imagine that userspace tools could/would read the BTF member
+> offsets and check it against what they expected).
+> 
+> 
+>  [1] https://github.com/xdp-project/bpf-examples/blob/master/ktrace-CO-RE/ktrace01_kern.c#L34-L57
+> 
+Thanks a lot. I tested Your CO-RE example. For defines that are located
+in vmlinux everything works fine (like for sk_buff). When I tried to get
+btf id of structures defined in module (loaded module, structure can be
+find in /sys/kerne/btf/module_name) I always get 0 (not found). Do You
+know if bpf_core_type_id_kernel() should also support modules btf?
 
---2WhikOjJbw4rzvu2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Based on:
+[1] https://lore.kernel.org/bpf/20201110011932.3201430-5-andrii@kernel.org/
+I assume that modules btfs also are marked as in-kernel, but I can't
+make it works with bpf_core_type_id_kernel(). My clang version is
+12.0.1, so changes needed by modules btf should be there
+[2] https://reviews.llvm.org/D91489
 
-> Lorenzo Bianconi wrote:
-> > This series introduce XDP multi-buffer support. The mvneta driver is
-> > the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
-> > please focus on how these new types of xdp_{buff,frame} packets
-> > traverse the different layers and the layout design. It is on purpose
-> > that BPF-helpers are kept simple, as we don't want to expose the
-> > internal layout to allow later changes.
-> >=20
-> > The main idea for the new multi-buffer layout is to reuse the same
-> > structure used for non-linear SKB. This rely on the "skb_shared_info"
-> > struct at the end of the first buffer to link together subsequent
-> > buffers. Keeping the layout compatible with SKBs is also done to ease
-> > and speedup creating a SKB from an xdp_{buff,frame}.
-> > Converting xdp_frame to SKB and deliver it to the network stack is shown
-> > in patch 05/18 (e.g. cpumaps).
-> >=20
-> > A multi-buffer bit (mb) has been introduced in the flags field of xdp_{=
-buff,frame}
-> > structure to notify the bpf/network layer if this is a xdp multi-buffer=
- frame
-> > (mb =3D 1) or not (mb =3D 0).
-> > The mb bit will be set by a xdp multi-buffer capable driver only for
-> > non-linear frames maintaining the capability to receive linear frames
-> > without any extra cost since the skb_shared_info structure at the end
-> > of the first buffer will be initialized only if mb is set.
-> > Moreover the flags field in xdp_{buff,frame} will be reused even for
-> > xdp rx csum offloading in future series.
-> >=20
->=20
-> The series is looking really close to me. Couple small comments/questions
-> inline. Also I think we should call out the potential issues in the cover
-> letter with regards to backwards compatibility. Something like,=20
->=20
-> "
-> A multi-buffer enabled NIC may receive XDP frames with multiple frags.
-> If a BPF program does not understand mb layouts its possible to contrive
-> a BPF program that incorrectly views data_end as the end of data when
-> there is more data in the payload. Note helpers will generally due the
-> correct thing, for example perf_output will consume entire payload. But,
-> it is still possible some programs could do the wrong thing even if in
-> an edge case. Although we expect most BPF programs not to be impacted
-> we can't rule out, you've been warned.
+> > Do You have an idea how driver should fill this field?
+> 
+> (Andrii please correctly me as this is likely wrong:)
+> I imagine that driver will have a pointer to a 'struct btf' object and the
+> btf_id can be read via btf_obj_id() (that just return btf->id).
+> As this also allows driver to take refcnt on the btf-object.
+> Much like Ederson did in [2].
+> 
+> Maybe I misunderstood the use of the 'struct btf' object ?
+> 
+> Maybe it is the wrong approach? As the patchset[2] exports btf_obj_id() and
+> introduced helper functions that can register/unregister btf objects[3],
+> which I sense might not be needed today, as modules can get their own BTF
+> info automatically today.
+> Maybe this (btf->id) is not the ID we are looking for?
+> 
+> [2] https://lore.kernel.org/all/20210803010331.39453-11-ederson.desouza@intel.com/
+> [3]
+> https://lore.kernel.org/all/20210803010331.39453-2-ederson.desouza@intel.com/
+> 
 
-ack, I will add it to the cover letter in v13.
+As 'struct btf' object do You mean one module btf with all definitions
+or specific structure btf object?
 
-Regards,
-Lorenzo
+In case of Your example [1]. If in driver side there will be call to get
+btf id of sk_buff:
+id = btf_find_by_name_kind(vmlinux_btf, "sk_buff", BTF_KIND_STRUCT);
+this id will be the same as id from Your ktrace01 program. I think this
+is id that we are looking for.
 
-> "
->=20
-> I can't think of an elegant way around this and it does require at least
-> some type of opt-in by increasing the MTU limit so I'm OK with it given
-> I think it should impact few (no?) real programs.
->=20
-> > Typical use cases for this series are:
-> > - Jumbo-frames
-> > - Packet header split (please see Google=EF=BF=BD=EF=BF=BD=EF=BF=BDs us=
-e-case @ NetDevConf 0x14, [0])
-> > - TSO/GRO
-> >=20
-> > The two following ebpf helpers (and related selftests) has been introdu=
-ced:
-> > - bpf_xdp_adjust_data:
-> >   Move xdp_md->data and xdp_md->data_end pointers in subsequent fragmen=
-ts
-> >   according to the offset provided by the ebpf program. This helper can=
- be
-> >   used to read/write values in frame payload.
-> > - bpf_xdp_get_buff_len:
-> >   Return the total frame size (linear + paged parts)
-> >=20
-> > bpf_xdp_adjust_tail and bpf_xdp_copy helpers have been modified to take=
- into
-> > account xdp multi-buff frames.
-> >=20
-> > More info about the main idea behind this approach can be found here [1=
-][2].
-> >=20
-> > Changes since v11:
-> > - add missing static to bpf_xdp_get_buff_len_proto structure
-> > - fix bpf_xdp_adjust_data helper when offset is smaller than linear are=
-a length.
-> >=20
-> > Changes since v10:
-> > - move xdp->data to the requested payload offset instead of to the begi=
-nning of
-> >   the fragment in bpf_xdp_adjust_data()
-> >=20
-> > Changes since v9:
-> > - introduce bpf_xdp_adjust_data helper and related selftest
-> > - add xdp_frags_size and xdp_frags_tsize fields in skb_shared_info
-> > - introduce xdp_update_skb_shared_info utility routine in ordere to not=
- reset
-> >   frags array in skb_shared_info converting from a xdp_buff/xdp_frame t=
-o a skb=20
-> > - simplify bpf_xdp_copy routine
-> >=20
-> > Changes since v8:
-> > - add proper dma unmapping if XDP_TX fails on mvneta for a xdp multi-bu=
-ff
-> > - switch back to skb_shared_info implementation from previous xdp_share=
-d_info
-> >   one
-> > - avoid using a bietfield in xdp_buff/xdp_frame since it introduces per=
-formance
-> >   regressions. Tested now on 10G NIC (ixgbe) to verify there are no per=
-formance
-> >   penalties for regular codebase
-> > - add bpf_xdp_get_buff_len helper and remove frame_length field in xdp =
-ctx
-> > - add data_len field in skb_shared_info struct
-> > - introduce XDP_FLAGS_FRAGS_PF_MEMALLOC flag
-> >=20
-> > Changes since v7:
-> > - rebase on top of bpf-next
-> > - fix sparse warnings
-> > - improve comments for frame_length in include/net/xdp.h
-> >=20
-> > Changes since v6:
-> > - the main difference respect to previous versions is the new approach =
-proposed
-> >   by Eelco to pass full length of the packet to eBPF layer in XDP conte=
-xt
-> > - reintroduce multi-buff support to eBPF kself-tests
-> > - reintroduce multi-buff support to bpf_xdp_adjust_tail helper
-> > - introduce multi-buffer support to bpf_xdp_copy helper
-> > - rebase on top of bpf-next
-> >=20
-> > Changes since v5:
-> > - rebase on top of bpf-next
-> > - initialize mb bit in xdp_init_buff() and drop per-driver initializati=
-on
-> > - drop xdp->mb initialization in xdp_convert_zc_to_xdp_frame()
-> > - postpone introduction of frame_length field in XDP ctx to another ser=
-ies
-> > - minor changes
-> >=20
-> > Changes since v4:
-> > - rebase ontop of bpf-next
-> > - introduce xdp_shared_info to build xdp multi-buff instead of using the
-> >   skb_shared_info struct
-> > - introduce frame_length in xdp ctx
-> > - drop previous bpf helpers
-> > - fix bpf_xdp_adjust_tail for xdp multi-buff
-> > - introduce xdp multi-buff self-tests for bpf_xdp_adjust_tail
-> > - fix xdp_return_frame_bulk for xdp multi-buff
-> >=20
-> > Changes since v3:
-> > - rebase ontop of bpf-next
-> > - add patch 10/13 to copy back paged data from a xdp multi-buff frame to
-> >   userspace buffer for xdp multi-buff selftests
-> >=20
-> > Changes since v2:
-> > - add throughput measurements
-> > - drop bpf_xdp_adjust_mb_header bpf helper
-> > - introduce selftest for xdp multibuffer
-> > - addressed comments on bpf_xdp_get_frags_count
-> > - introduce xdp multi-buff support to cpumaps
-> >=20
-> > Changes since v1:
-> > - Fix use-after-free in xdp_return_{buff/frame}
-> > - Introduce bpf helpers
-> > - Introduce xdp_mb sample program
-> > - access skb_shared_info->nr_frags only on the last fragment
-> >=20
-> > Changes since RFC:
-> > - squash multi-buffer bit initialization in a single patch
-> > - add mvneta non-linear XDP buff support for tx side
-> >=20
-> > [0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-m=
-tu-and-rx-zerocopy
-> > [1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/x=
-dp-multi-buffer01-design.org
-> > [2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-=
-to-a-NIC-driver (XDPmulti-buffers section)
-> >=20
-> > Eelco Chaudron (3):
-> >   bpf: add multi-buff support to the bpf_xdp_adjust_tail() API
-> >   bpf: add multi-buffer support to xdp copy helpers
-> >   bpf: update xdp_adjust_tail selftest to include multi-buffer
-> >=20
-> > Lorenzo Bianconi (15):
-> >   net: skbuff: add size metadata to skb_shared_info for xdp
-> >   xdp: introduce flags field in xdp_buff/xdp_frame
-> >   net: mvneta: update mb bit before passing the xdp buffer to eBPF layer
-> >   net: mvneta: simplify mvneta_swbm_add_rx_fragment management
-> >   net: xdp: add xdp_update_skb_shared_info utility routine
-> >   net: marvell: rely on xdp_update_skb_shared_info utility routine
-> >   xdp: add multi-buff support to xdp_return_{buff/frame}
-> >   net: mvneta: add multi buffer support to XDP_TX
-> >   net: mvneta: enable jumbo frames for XDP
-> >   bpf: introduce bpf_xdp_get_buff_len helper
-> >   bpf: move user_size out of bpf_test_init
-> >   bpf: introduce multibuff support to bpf_prog_test_run_xdp()
-> >   bpf: test_run: add xdp_shared_info pointer in bpf_test_finish
-> >     signature
-> >   net: xdp: introduce bpf_xdp_adjust_data helper
-> >   bpf: add bpf_xdp_adjust_data selftest
-> >=20
-> >  drivers/net/ethernet/marvell/mvneta.c         | 204 ++++++++++-------
-> >  include/linux/skbuff.h                        |   6 +-
-> >  include/net/xdp.h                             |  95 +++++++-
-> >  include/uapi/linux/bpf.h                      |  39 ++++
-> >  kernel/trace/bpf_trace.c                      |   3 +
-> >  net/bpf/test_run.c                            | 117 ++++++++--
-> >  net/core/filter.c                             | 213 +++++++++++++++++-
-> >  net/core/xdp.c                                |  76 ++++++-
-> >  tools/include/uapi/linux/bpf.h                |  39 ++++
-> >  .../bpf/prog_tests/xdp_adjust_data.c          |  55 +++++
-> >  .../bpf/prog_tests/xdp_adjust_tail.c          | 118 ++++++++++
-> >  .../selftests/bpf/prog_tests/xdp_bpf2bpf.c    | 151 +++++++++----
-> >  .../bpf/progs/test_xdp_adjust_tail_grow.c     |  10 +-
-> >  .../bpf/progs/test_xdp_adjust_tail_shrink.c   |  32 ++-
-> >  .../selftests/bpf/progs/test_xdp_bpf2bpf.c    |   2 +-
-> >  .../bpf/progs/test_xdp_update_frags.c         |  41 ++++
-> >  16 files changed, 1036 insertions(+), 165 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_adjust_d=
-ata.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_update_f=
-rags.c
-> >=20
-> > --=20
-> > 2.31.1
-> >=20
->=20
->=20
+> > hints->btf_id = btf_id_by_name("struct meta_i40e"); /* fill btf id at
+> > config time */
+> 
+> Yes, at config time the btf_id can change (and maybe we want to cache the
+> btf_obj_id() lookup to avoid a function call).
+> 
+> > btf_id_by_name will get module btf (or vmlinux btf) and search for
+> > correct name for each ids. Does this look correct?
+> >
+> > Is there any way in kernel to get btf id based on name or we have to
+> > write functions for this? I haven't seen code for this case, but maybe I
+> > missed it.
+> 
+> There is a function named: btf_find_by_name_kind()
+>
+Thanks, this is what I needed.
 
---2WhikOjJbw4rzvu2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYTckTAAKCRA6cBh0uS2t
-rNx4AQC9L+G3C5OPyH297WPcctruEMYPy4JlLEau+rWXXShmTwD/dPBwhMyzLzmd
-1VPCh6IiLz6n/kA6TSA54rokvrLU4wQ=
-=iAzu
------END PGP SIGNATURE-----
-
---2WhikOjJbw4rzvu2--
-
+> --Jesper
+> 1
