@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628CB402ACE
-	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 16:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5CA402AEC
+	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 16:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244135AbhIGOcV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Sep 2021 10:32:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41737 "EHLO
+        id S238250AbhIGOka (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Sep 2021 10:40:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53073 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242339AbhIGOcV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 7 Sep 2021 10:32:21 -0400
+        by vger.kernel.org with ESMTP id S231667AbhIGOk3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Sep 2021 10:40:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631025074;
+        s=mimecast20190719; t=1631025563;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uA4pSqrqstQYPVgBB0JtPz/anbOpQPKgzLlTCSlvo7Q=;
-        b=S1cNHnxafVtFRUOMjzuqWynxVmFbf8ighK7XvqbD2+9NeDgzmru8TX/19H50gekzwYkyuC
-        MVPCzdVFMmorsvpkTpp12Mrz9loyj818Ndcu6E2gqMAciokH9xSjxAdjSR1JLDN1VNqKw+
-        yBF/7gBNzLmrNFkgkj/PGrDkf3AKFHo=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-601-dW-WvbY4OKWxaw7YMdk8gQ-1; Tue, 07 Sep 2021 10:31:13 -0400
-X-MC-Unique: dW-WvbY4OKWxaw7YMdk8gQ-1
-Received: by mail-wm1-f70.google.com with SMTP id w25-20020a1cf6190000b0290252505ddd56so3472429wmc.3
-        for <bpf@vger.kernel.org>; Tue, 07 Sep 2021 07:31:13 -0700 (PDT)
+        bh=tWg0sqChxjVCKWuzF+VAVos/r0t2VNxT/zhEmY7OWok=;
+        b=h0QMAyGL80affMI68F/fuch8jFmDYs6i5HS6d1hsg/9WjxY18B1nJoxsnwZT9ExENi9MMD
+        EMRJbiV2Zmh8oLP31tqsg4IJ3joPt+Zs3ZCYVvQiAjddFKPvFkUNugP+phqUs8rpKFb1F1
+        eLh7xiUet1aJ+bpdkNDVvLIVQVLpPbs=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-HJy3SfWKNPuY6ibknf8ZEQ-1; Tue, 07 Sep 2021 10:39:21 -0400
+X-MC-Unique: HJy3SfWKNPuY6ibknf8ZEQ-1
+Received: by mail-wr1-f72.google.com with SMTP id p10-20020adfce0a000000b001572d05c970so2181371wrn.21
+        for <bpf@vger.kernel.org>; Tue, 07 Sep 2021 07:39:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:cc:subject:to:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=uA4pSqrqstQYPVgBB0JtPz/anbOpQPKgzLlTCSlvo7Q=;
-        b=m7K4XB5b9q0EW4qcyH0wL094U5ucu64aPRObVglZ5KA1FjcaE/ANPoxBA5FSFR9Uvd
-         oK+IC1si3pmZUz94i0ag7fYKla4SJoJ36bnDQ1afxLDjgBu1ZY2M/T+5f3cKuRvj+2TJ
-         CNiD2EZMgSfZ/2t+WQsZMF7pgIxolIwIgfXYj80lKwGHZGToodqD/foJkTZLux5Bw5hZ
-         pbzDv6sMWSbIKsjRiLNPF/47nSu7BiwiPti5G3RQZsWtj0br4Jvkxne45m7ypt53Ow/c
-         Sl/82CZ/bQhLSYKbsaFmNYDSlGiVpZQZ92BtA7xS+tjoytF9r9+YU4rX3hn9CEuV1vsM
-         Pm/A==
-X-Gm-Message-State: AOAM533RVpLm1x9Z8A49LQ5OU0L99vnaOxMCQPF2eX8OnnSiJ7rmq+YG
-        AIZRCJ7RaHjxOSytAQ4DgMF4D9ZI7JZog7k7scFsglGNCDUwEfnJ1/HoY5Rkl8KjbIsmhO8H36x
-        oFV5ENJVPgAGT
-X-Received: by 2002:a5d:5263:: with SMTP id l3mr8952924wrc.159.1631025072277;
-        Tue, 07 Sep 2021 07:31:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxOY6IFSr5/7mKBTYk7FmcCsa2+tokcP9hg7YhN4k3eQ3Iyfe+Q4KjwxxkWoD1W090KkDuW4w==
-X-Received: by 2002:a5d:5263:: with SMTP id l3mr8952868wrc.159.1631025072042;
-        Tue, 07 Sep 2021 07:31:12 -0700 (PDT)
+        bh=tWg0sqChxjVCKWuzF+VAVos/r0t2VNxT/zhEmY7OWok=;
+        b=S4FAZqBJgnzBBuzta8VxmAwLqlLbTCDtGWFYtaCoZJyTtuN3DURWuIXJ/hOIHFhVlU
+         jrsY6B0aWsdzoeNB/KeP5QfUH7uHoRRzeHTZ300exw22DsbEqSHy0JAffA0r44SjOXeW
+         tIPp/86UJXVXB1GipXu32uIUdeKymFQw0hJ1N1ZL9RSR/QxfU3ZDno80Zi4Yz6pOqVna
+         cj4wwkoofSAmu0ZKORYwLWZQ954u52WaGuVkLkpifkSHoWgzHPBpLHalX8R93+TvVP74
+         PYtUIM8ThAWN+MXYJwEhumMAcdqz0cLI05i+wTUH4z/3IHNYrGt7Tr9dqs0MctYNT0J7
+         aeAg==
+X-Gm-Message-State: AOAM531qziqL/QiSm0wZaewDonvfYqvPfX+QqdouSzysodG/cePtvWoQ
+        yNqoHLo3cTN97+YnJWx+o8nLhcjt1S2ARwpOwGa4D2lW9Rt3MYRiVxBSroUAL7DuWiLmeqKv56Z
+        GkUrzSbe4PxTl
+X-Received: by 2002:a1c:98d5:: with SMTP id a204mr4491131wme.52.1631025560694;
+        Tue, 07 Sep 2021 07:39:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcwRg64MAs790alfvMBbhipE3LrcecqWOOt1yvyCs7bsrGU1KOjLIdRDzSWgQj8A7fuMKrdg==
+X-Received: by 2002:a1c:98d5:: with SMTP id a204mr4491089wme.52.1631025560389;
+        Tue, 07 Sep 2021 07:39:20 -0700 (PDT)
 Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id d7sm10031844wrf.3.2021.09.07.07.31.10
+        by smtp.gmail.com with ESMTPSA id s12sm11340851wru.41.2021.09.07.07.39.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 07:31:11 -0700 (PDT)
+        Tue, 07 Sep 2021 07:39:19 -0700 (PDT)
 From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
 X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
 Cc:     brouer@redhat.com, lorenzo.bianconi@redhat.com,
@@ -60,18 +60,18 @@ Cc:     brouer@redhat.com, lorenzo.bianconi@redhat.com,
         alexander.duyck@gmail.com, saeed@kernel.org,
         maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
         tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH v13 bpf-next 02/18] xdp: introduce flags field in
- xdp_buff/xdp_frame
+Subject: Re: [PATCH v13 bpf-next 01/18] net: skbuff: add size metadata to
+ skb_shared_info for xdp
 To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
         netdev@vger.kernel.org
 References: <cover.1631007211.git.lorenzo@kernel.org>
- <980ad3161b9a312510c9fff76fa74e675b8f9bf3.1631007211.git.lorenzo@kernel.org>
-Message-ID: <52c78ca8-a053-2128-05a0-3aff6f84abd1@redhat.com>
-Date:   Tue, 7 Sep 2021 16:31:10 +0200
+ <1721d45800a333a46c2cdde0fd25eb6f02f49ecf.1631007211.git.lorenzo@kernel.org>
+Message-ID: <2bfd067e-a5aa-29ad-7b3c-0f8af61422ad@redhat.com>
+Date:   Tue, 7 Sep 2021 16:39:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <980ad3161b9a312510c9fff76fa74e675b8f9bf3.1631007211.git.lorenzo@kernel.org>
+In-Reply-To: <1721d45800a333a46c2cdde0fd25eb6f02f49ecf.1631007211.git.lorenzo@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -79,186 +79,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-(Minor changes requested below)
+
 
 On 07/09/2021 14.35, Lorenzo Bianconi wrote:
-> Introduce flags field in xdp_frame and xdp_buffer data structures
-> to define additional buffer features. At the moment the only
-> supported buffer feature is multi-buffer bit (mb). Multi-buffer bit
-> is used to specify if this is a linear buffer (mb = 0) or a multi-buffer
-> frame (mb = 1). In the latter case the driver is expected to initialize
-> the skb_shared_info structure at the end of the first buffer to link
-> together subsequent buffers belonging to the same frame.
+> Introduce xdp_frags_tsize field in skb_shared_info data structure
+> to store xdp_buff/xdp_frame truesize (xdp_frags_tsize will be used
+> in xdp multi-buff support). In order to not increase skb_shared_info
+> size we will use a hole due to skb_shared_info alignment.
+> Introduce xdp_frags_size field in skb_shared_info data structure
+> reusing gso_type field in order to store xdp_buff/xdp_frame paged size.
+> xdp_frags_size will be used in xdp multi-buff support.
 > 
 > Acked-by: John Fastabend <john.fastabend@gmail.com>
 > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 > ---
->   include/net/xdp.h | 29 +++++++++++++++++++++++++++++
->   1 file changed, 29 insertions(+)
+>   include/linux/skbuff.h | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index ad5b02dcb6f4..ed5ea784fd45 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -66,6 +66,10 @@ struct xdp_txq_info {
->   	struct net_device *dev;
->   };
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 6bdb0db3e825..1abeba7ef82e 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -522,13 +522,17 @@ struct skb_shared_info {
+>   	unsigned short	gso_segs;
+>   	struct sk_buff	*frag_list;
+>   	struct skb_shared_hwtstamps hwtstamps;
+> -	unsigned int	gso_type;
+> +	union {
+> +		unsigned int	gso_type;
+> +		unsigned int	xdp_frags_size;
+> +	};
+>   	u32		tskey;
 >   
-> +enum xdp_buff_flags {
-> +	XDP_FLAGS_MULTI_BUFF	= BIT(0), /* non-linear xdp buff */
-> +};
-> +
->   struct xdp_buff {
->   	void *data;
->   	void *data_end;
-> @@ -74,13 +78,30 @@ struct xdp_buff {
->   	struct xdp_rxq_info *rxq;
->   	struct xdp_txq_info *txq;
->   	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
-> +	u16 flags; /* supported values defined in xdp_flags */
-                                                   ^^^^^^^^^
-Variable/enum is named "xdp_buff_flags", but comment says "xdp_flags".
-
-I think we should change flags to use u32, because xdp_buff already 
-contain 4 byte padding. (pahole output provided as help below)
-
->   };
->   
-> +static __always_inline bool xdp_buff_is_mb(struct xdp_buff *xdp)
-> +{
-> +	return !!(xdp->flags & XDP_FLAGS_MULTI_BUFF);
-> +}
-> +
-> +static __always_inline void xdp_buff_set_mb(struct xdp_buff *xdp)
-> +{
-> +	xdp->flags |= XDP_FLAGS_MULTI_BUFF;
-> +}
-> +
-> +static __always_inline void xdp_buff_clear_mb(struct xdp_buff *xdp)
-> +{
-> +	xdp->flags &= ~XDP_FLAGS_MULTI_BUFF;
-> +}
-> +
->   static __always_inline void
->   xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
->   {
->   	xdp->frame_sz = frame_sz;
->   	xdp->rxq = rxq;
-> +	xdp->flags = 0;
->   }
->   
->   static __always_inline void
-> @@ -122,8 +143,14 @@ struct xdp_frame {
+>   	/*
+>   	 * Warning : all fields before dataref are cleared in __alloc_skb()
 >   	 */
->   	struct xdp_mem_info mem;
->   	struct net_device *dev_rx; /* used by cpumap */
-> +	u16 flags; /* supported values defined in xdp_flags */
-                                                   ^^^^^^^^^
-Variable/enum is named "xdp_buff_flags", but comment says "xdp_flags".
+>   	atomic_t	dataref;
+> +	unsigned int	xdp_frags_tsize;
 
-Here (for xdp_frame) I also think we should change flags to u32, because 
-adding this u16 cause extra padding anyhow. (pahole output provided as 
-help below).
+I wonder if we could call this variable: xdp_frags_truesize.
 
+As while reviewing patches I had to focus my eyes extra hard to tell the 
+variables xdp_frags_size and xdp_frags_tsize from each-other.
 
->   };
->   
-> +static __always_inline bool xdp_frame_is_mb(struct xdp_frame *frame)
-> +{
-> +	return !!(frame->flags & XDP_FLAGS_MULTI_BUFF);
-> +}
-> +
->   #define XDP_BULK_QUEUE_SIZE	16
->   struct xdp_frame_bulk {
->   	int count;
-> @@ -180,6 +207,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
->   	xdp->data_end = frame->data + frame->len;
->   	xdp->data_meta = frame->data - frame->metasize;
->   	xdp->frame_sz = frame->frame_sz;
-> +	xdp->flags = frame->flags;
->   }
->   
->   static inline
-> @@ -206,6 +234,7 @@ int xdp_update_frame_from_buff(struct xdp_buff *xdp,
->   	xdp_frame->headroom = headroom - sizeof(*xdp_frame);
->   	xdp_frame->metasize = metasize;
->   	xdp_frame->frame_sz = xdp->frame_sz;
-> +	xdp_frame->flags = xdp->flags;
->   
->   	return 0;
->   }
-> 
-
-
-
-Details below... no need to read any further
-
-Investigating struct xdp_frame with pahole:
-
-$ pahole -C xdp_frame net/core/xdp.o
-struct xdp_frame {
-	void *                     data;             /*     0     8 */
-	u16                        len;              /*     8     2 */
-	u16                        headroom;         /*    10     2 */
-	u32                        metasize:8;       /*    12: 0  4 */
-	u32                        frame_sz:24;      /*    12: 8  4 */
-	struct xdp_mem_info        mem;              /*    16     8 */
-	struct net_device *        dev_rx;           /*    24     8 */
-
-	/* size: 32, cachelines: 1, members: 7 */
-	/* last cacheline: 32 bytes */
-};
-
-
-  pahole -C xdp_frame net/core/xdp.o
-struct xdp_frame {
-	void *                     data;             /*     0     8 */
-	u16                        len;              /*     8     2 */
-	u16                        headroom;         /*    10     2 */
-	u32                        metasize:8;       /*    12: 0  4 */
-	u32                        frame_sz:24;      /*    12: 8  4 */
-	struct xdp_mem_info        mem;              /*    16     8 */
-	struct net_device *        dev_rx;           /*    24     8 */
-	u16                        flags;            /*    32     2 */
-
-	/* size: 40, cachelines: 1, members: 8 */
-	/* padding: 6 */
-	/* last cacheline: 40 bytes */
-};
-
-
-$ pahole -C xdp_frame net/core/xdp.o
-struct xdp_frame {
-	void *                     data;             /*     0     8 */
-	u16                        len;              /*     8     2 */
-	u16                        headroom;         /*    10     2 */
-	u32                        metasize:8;       /*    12: 0  4 */
-	u32                        frame_sz:24;      /*    12: 8  4 */
-	struct xdp_mem_info        mem;              /*    16     8 */
-	struct net_device *        dev_rx;           /*    24     8 */
-	u32                        flags;            /*    32     4 */
-
-	/* size: 40, cachelines: 1, members: 8 */
-	/* padding: 4 */
-	/* last cacheline: 40 bytes */
-};
-
-
-Details for struct xdp_buff, it already contains 4 bytes padding.
-
-$ pahole -C xdp_buff net/core/xdp.o
-struct xdp_buff {
-	void *                     data;             /*     0     8 */
-	void *                     data_end;         /*     8     8 */
-	void *                     data_meta;        /*    16     8 */
-	void *                     data_hard_start;  /*    24     8 */
-	struct xdp_rxq_info *      rxq;              /*    32     8 */
-	struct xdp_txq_info *      txq;              /*    40     8 */
-	u32                        frame_sz;         /*    48     4 */
-	u16                        flags;            /*    52     2 */
-
-	/* size: 56, cachelines: 1, members: 8 */
-	/* padding: 2 */
-	/* last cacheline: 56 bytes */
-};
+--Jesper
 
