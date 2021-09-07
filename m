@@ -2,293 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8D6402AFE
-	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 16:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E471402BCF
+	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 17:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244071AbhIGOrn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Sep 2021 10:47:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60509 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245346AbhIGOrg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 7 Sep 2021 10:47:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631025989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OsgjKO/xkIXXMqmMySBL4a/OoZlEznCfkycSG4LTdTc=;
-        b=c8XGBeivnSSN6xp4AutPsuzgJ8pG0aAekUzz0x5ureKzWzKYfyIBa/Bxd1anwmkCIli5+T
-        9YU2bRHj/PC3yOr5Y3OK4b4INSdtF92xkL3Iff90NGPn4WC1tD9W0j+nxTpBp31vZ3bubf
-        Y0rsFDIJRpMADpEGNvz/C2LuYD+23mw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-iNE6f0yAMBOEZwtA95Rrtw-1; Tue, 07 Sep 2021 10:46:28 -0400
-X-MC-Unique: iNE6f0yAMBOEZwtA95Rrtw-1
-Received: by mail-ed1-f70.google.com with SMTP id w18-20020aa7cb52000000b003c95870200fso5273907edt.16
-        for <bpf@vger.kernel.org>; Tue, 07 Sep 2021 07:46:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OsgjKO/xkIXXMqmMySBL4a/OoZlEznCfkycSG4LTdTc=;
-        b=Nej76r2opapQMoCrEHGfokL8Xj1t7t4N/eR/52OHN2U7P5JVqoRgvXRy+Gvg8CMCP5
-         i8TrEeCNu9Sw/KTgQ/AhTioXq/UaFmu11cHhpXugjOL6swoYacvw0iGGyh3IKPaxev3a
-         SPP74YbFOC4UDUhPoskA+t0LgKEHd++MFcnYENX28KtDFzGlULXhlXjuksrDAI1sVgSv
-         p+HbPudT9ScqqJe8J13XsnbADpjNDbH1mhzkF1Bm12dGVkdjsdXm/2Yk/95pMIFiKLQj
-         vETAWRy5+YAh+NrH2Pgh/MLY8knpkhqFx+7B0CfrGjwJqanhU3L3K3vwPOrKan6XzCDf
-         F0sg==
-X-Gm-Message-State: AOAM531dKzuILJR4YQQHeoaEKQRr7T65BTO4EmO1U1n2aeEgy3RNrCiE
-        F+Z8Wxep+8+jMIEmiMMmmfdnwaKbsQCqRzRJZgtQj+oaMqVYH6FW8nyEl8WtAIklyhO7SG2gp5j
-        Dov4sZj9KRgI1
-X-Received: by 2002:aa7:ca14:: with SMTP id y20mr18902352eds.2.1631025986664;
-        Tue, 07 Sep 2021 07:46:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy2JEn+iCBdhPVcPYk7lSbYQYXbz3pwdYtBF3M1ixJ5DRzHYg27uLurVhJSzC9j8sS1Znqd/w==
-X-Received: by 2002:aa7:ca14:: with SMTP id y20mr18902339eds.2.1631025986444;
-        Tue, 07 Sep 2021 07:46:26 -0700 (PDT)
-Received: from localhost (net-37-116-49-210.cust.vodafonedsl.it. [37.116.49.210])
-        by smtp.gmail.com with ESMTPSA id q12sm6698885edw.81.2021.09.07.07.46.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 07:46:26 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 16:46:23 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, brouer@redhat.com, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        shayagr@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
-        echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: Re: [PATCH v13 bpf-next 02/18] xdp: introduce flags field in
- xdp_buff/xdp_frame
-Message-ID: <YTd7P/XG/2U8w8/J@lore-desk>
-References: <cover.1631007211.git.lorenzo@kernel.org>
- <980ad3161b9a312510c9fff76fa74e675b8f9bf3.1631007211.git.lorenzo@kernel.org>
- <52c78ca8-a053-2128-05a0-3aff6f84abd1@redhat.com>
+        id S1344908AbhIGPbM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Sep 2021 11:31:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233172AbhIGPbM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:31:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A18B7610D0;
+        Tue,  7 Sep 2021 15:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631028605;
+        bh=mzYm6Lw/6AMufYDWYgeyAyu58bC9n/R+MgibZUETcyA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=o2CxejOoU2W5ejc2fEuPyKVeFk6bPthYORmtfil5S0+0cdZ/cp5nsKmrBXRBza74c
+         qKBGAhu49rDYAd3V7m0D4CjOgNC8uCsyLdrAaJDL4lMVg5xq44LI4KfJ8Ivbzw/k4W
+         eLU/wPZasGJwjVzPzMjpHTsCA1fAHQk1T+3SIARhDGjG4qjJc7sYYFa3ec3dVNLrxT
+         +ou564WJgl3UcGtwqzIrh2/UTsvdwqAcXr73jc24Rx0baQK5+uQn8gPttTlQpkbKXP
+         2KC/lcodFDhuWZg2pWwhNRxoErKN5cX2kTJqzPn4v2gj+4K0CdabyDUY4PVm+cajmf
+         /JaVL53aaLbJQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 939E160A38;
+        Tue,  7 Sep 2021 15:30:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Sdy9MTaWNHDmP6Ag"
-Content-Disposition: inline
-In-Reply-To: <52c78ca8-a053-2128-05a0-3aff6f84abd1@redhat.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix build of task_pt_regs test for
+ arm64
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163102860559.11849.11862203994349641299.git-patchwork-notify@kernel.org>
+Date:   Tue, 07 Sep 2021 15:30:05 +0000
+References: <20210906163635.302307-1-jean-philippe@linaro.org>
+In-Reply-To: <20210906163635.302307-1-jean-philippe@linaro.org>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, dxu@dxuuu.xyz,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, andrii.nakryiko@gmail.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello:
 
---Sdy9MTaWNHDmP6Ag
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-> (Minor changes requested below)
->=20
-> On 07/09/2021 14.35, Lorenzo Bianconi wrote:
-> > Introduce flags field in xdp_frame and xdp_buffer data structures
-> > to define additional buffer features. At the moment the only
-> > supported buffer feature is multi-buffer bit (mb). Multi-buffer bit
-> > is used to specify if this is a linear buffer (mb =3D 0) or a multi-buf=
-fer
-> > frame (mb =3D 1). In the latter case the driver is expected to initiali=
-ze
-> > the skb_shared_info structure at the end of the first buffer to link
-> > together subsequent buffers belonging to the same frame.
-> >=20
-> > Acked-by: John Fastabend <john.fastabend@gmail.com>
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >   include/net/xdp.h | 29 +++++++++++++++++++++++++++++
-> >   1 file changed, 29 insertions(+)
-> >=20
-> > diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > index ad5b02dcb6f4..ed5ea784fd45 100644
-> > --- a/include/net/xdp.h
-> > +++ b/include/net/xdp.h
-> > @@ -66,6 +66,10 @@ struct xdp_txq_info {
-> >   	struct net_device *dev;
-> >   };
-> > +enum xdp_buff_flags {
-> > +	XDP_FLAGS_MULTI_BUFF	=3D BIT(0), /* non-linear xdp buff */
-> > +};
-> > +
-> >   struct xdp_buff {
-> >   	void *data;
-> >   	void *data_end;
-> > @@ -74,13 +78,30 @@ struct xdp_buff {
-> >   	struct xdp_rxq_info *rxq;
-> >   	struct xdp_txq_info *txq;
-> >   	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroo=
-m*/
-> > +	u16 flags; /* supported values defined in xdp_flags */
->                                                   ^^^^^^^^^
-> Variable/enum is named "xdp_buff_flags", but comment says "xdp_flags".
+On Mon,  6 Sep 2021 17:36:38 +0100 you wrote:
+> struct pt_regs is not exported to userspace on all archs. arm64 and s390
+> export "user_pt_regs" instead, which causes build failure at the moment:
+> 
+>   progs/test_task_pt_regs.c:8:16: error: variable has incomplete type 'struct pt_regs'
+>   struct pt_regs current_regs = {};
+> 
+> Instead of using pt_regs from ptrace.h, use the larger kernel struct
+> from vmlinux.h directly. Since the test runner task_pt_regs.c does not
+> have access to the kernel struct definition, copy it into a char array.
+> 
+> [...]
 
-ack, I will fix it in v14
+Here is the summary with links:
+  - [bpf-next,v2] selftests/bpf: Fix build of task_pt_regs test for arm64
+    https://git.kernel.org/bpf/bpf/c/3a029e1f3d6e
 
->=20
-> I think we should change flags to use u32, because xdp_buff already conta=
-in
-> 4 byte padding. (pahole output provided as help below)
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-ack, I will fix it in v14
->=20
-> >   };
-> > +static __always_inline bool xdp_buff_is_mb(struct xdp_buff *xdp)
-> > +{
-> > +	return !!(xdp->flags & XDP_FLAGS_MULTI_BUFF);
-> > +}
-> > +
-> > +static __always_inline void xdp_buff_set_mb(struct xdp_buff *xdp)
-> > +{
-> > +	xdp->flags |=3D XDP_FLAGS_MULTI_BUFF;
-> > +}
-> > +
-> > +static __always_inline void xdp_buff_clear_mb(struct xdp_buff *xdp)
-> > +{
-> > +	xdp->flags &=3D ~XDP_FLAGS_MULTI_BUFF;
-> > +}
-> > +
-> >   static __always_inline void
-> >   xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info=
- *rxq)
-> >   {
-> >   	xdp->frame_sz =3D frame_sz;
-> >   	xdp->rxq =3D rxq;
-> > +	xdp->flags =3D 0;
-> >   }
-> >   static __always_inline void
-> > @@ -122,8 +143,14 @@ struct xdp_frame {
-> >   	 */
-> >   	struct xdp_mem_info mem;
-> >   	struct net_device *dev_rx; /* used by cpumap */
-> > +	u16 flags; /* supported values defined in xdp_flags */
->                                                   ^^^^^^^^^
-> Variable/enum is named "xdp_buff_flags", but comment says "xdp_flags".
->=20
-> Here (for xdp_frame) I also think we should change flags to u32, because
-> adding this u16 cause extra padding anyhow. (pahole output provided as he=
-lp
-> below).
-
-ack, I will fix it in v14
->=20
->=20
-> >   };
-> > +static __always_inline bool xdp_frame_is_mb(struct xdp_frame *frame)
-> > +{
-> > +	return !!(frame->flags & XDP_FLAGS_MULTI_BUFF);
-> > +}
-> > +
-> >   #define XDP_BULK_QUEUE_SIZE	16
-> >   struct xdp_frame_bulk {
-> >   	int count;
-> > @@ -180,6 +207,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame *fr=
-ame, struct xdp_buff *xdp)
-> >   	xdp->data_end =3D frame->data + frame->len;
-> >   	xdp->data_meta =3D frame->data - frame->metasize;
-> >   	xdp->frame_sz =3D frame->frame_sz;
-> > +	xdp->flags =3D frame->flags;
-> >   }
-> >   static inline
-> > @@ -206,6 +234,7 @@ int xdp_update_frame_from_buff(struct xdp_buff *xdp,
-> >   	xdp_frame->headroom =3D headroom - sizeof(*xdp_frame);
-> >   	xdp_frame->metasize =3D metasize;
-> >   	xdp_frame->frame_sz =3D xdp->frame_sz;
-> > +	xdp_frame->flags =3D xdp->flags;
-> >   	return 0;
-> >   }
-> >=20
->=20
->=20
->=20
-> Details below... no need to read any further
->=20
-> Investigating struct xdp_frame with pahole:
->=20
-> $ pahole -C xdp_frame net/core/xdp.o
-> struct xdp_frame {
-> 	void *                     data;             /*     0     8 */
-> 	u16                        len;              /*     8     2 */
-> 	u16                        headroom;         /*    10     2 */
-> 	u32                        metasize:8;       /*    12: 0  4 */
-> 	u32                        frame_sz:24;      /*    12: 8  4 */
-> 	struct xdp_mem_info        mem;              /*    16     8 */
-> 	struct net_device *        dev_rx;           /*    24     8 */
->=20
-> 	/* size: 32, cachelines: 1, members: 7 */
-> 	/* last cacheline: 32 bytes */
-> };
->=20
->=20
->  pahole -C xdp_frame net/core/xdp.o
-> struct xdp_frame {
-> 	void *                     data;             /*     0     8 */
-> 	u16                        len;              /*     8     2 */
-> 	u16                        headroom;         /*    10     2 */
-> 	u32                        metasize:8;       /*    12: 0  4 */
-> 	u32                        frame_sz:24;      /*    12: 8  4 */
-> 	struct xdp_mem_info        mem;              /*    16     8 */
-> 	struct net_device *        dev_rx;           /*    24     8 */
-> 	u16                        flags;            /*    32     2 */
->=20
-> 	/* size: 40, cachelines: 1, members: 8 */
-> 	/* padding: 6 */
-> 	/* last cacheline: 40 bytes */
-> };
->=20
->=20
-> $ pahole -C xdp_frame net/core/xdp.o
-> struct xdp_frame {
-> 	void *                     data;             /*     0     8 */
-> 	u16                        len;              /*     8     2 */
-> 	u16                        headroom;         /*    10     2 */
-> 	u32                        metasize:8;       /*    12: 0  4 */
-> 	u32                        frame_sz:24;      /*    12: 8  4 */
-> 	struct xdp_mem_info        mem;              /*    16     8 */
-> 	struct net_device *        dev_rx;           /*    24     8 */
-> 	u32                        flags;            /*    32     4 */
->=20
-> 	/* size: 40, cachelines: 1, members: 8 */
-> 	/* padding: 4 */
-> 	/* last cacheline: 40 bytes */
-> };
->=20
->=20
-> Details for struct xdp_buff, it already contains 4 bytes padding.
->=20
-> $ pahole -C xdp_buff net/core/xdp.o
-> struct xdp_buff {
-> 	void *                     data;             /*     0     8 */
-> 	void *                     data_end;         /*     8     8 */
-> 	void *                     data_meta;        /*    16     8 */
-> 	void *                     data_hard_start;  /*    24     8 */
-> 	struct xdp_rxq_info *      rxq;              /*    32     8 */
-> 	struct xdp_txq_info *      txq;              /*    40     8 */
-> 	u32                        frame_sz;         /*    48     4 */
-> 	u16                        flags;            /*    52     2 */
->=20
-> 	/* size: 56, cachelines: 1, members: 8 */
-> 	/* padding: 2 */
-> 	/* last cacheline: 56 bytes */
-> };
-
-ack, right.
-
-Regards,
-Lorenzo
-
->=20
-
---Sdy9MTaWNHDmP6Ag
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYTd7PAAKCRA6cBh0uS2t
-rBEBAP9tmgIQxl0vUSLVblsDKeUE8sOcZNKkVPb3FGvI9qIkxgD/eWDgeD9Xw4sX
-nMlox64EfRPyAAPvC11PTOeAOo0B/w8=
-=O3aw
------END PGP SIGNATURE-----
-
---Sdy9MTaWNHDmP6Ag--
 
