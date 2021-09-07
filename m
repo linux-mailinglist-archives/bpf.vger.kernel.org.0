@@ -2,174 +2,239 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864B6402720
-	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 12:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA254027A0
+	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 13:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbhIGK2U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Sep 2021 06:28:20 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28918 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232704AbhIGK2T (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 7 Sep 2021 06:28:19 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 187A3m2L185757;
-        Tue, 7 Sep 2021 06:26:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=hYpyRO2QO5ja5Cllzf8va+62OtNtrJ0wjhk/TKUrqBU=;
- b=lqljPIH9KkHLCT5Gy9MA1vnTJpL77bCWCQMx6vCmsf6B9Zk2GP3CAD2sfsVFVssDJz9M
- fFXgGV2micqcmDP/3sFKttO6SYNQkIDnWmAsBXdOF9RUKeXMf4v7sCKgcEW3IkoU3uW2
- IcI88dFyGHRbBX0jOnxMvryELM2RfSqs1FX9Hvc/Axe3MemXMVm2vg5xoc/i52Uhuiwa
- SgN/CJLnKwG+KyAfwSCs168JlmIbw7dmUai13Zj1+BYDCb94tlkwic0YdhOENeA0aFYW
- uE9hIQ08mBAJs6rpr9CuyuATEN0EUv7yOSjzHrqS8Zpd8BBQIJlzFVO2yG6w4hvpXoWP 3w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ax46mkead-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Sep 2021 06:26:57 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 187AOmS5107878;
-        Tue, 7 Sep 2021 06:26:57 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ax46mke9v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Sep 2021 06:26:57 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 187AEAd8029636;
-        Tue, 7 Sep 2021 10:26:54 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 3av02jcp1u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Sep 2021 10:26:54 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 187AMaxK58458602
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Sep 2021 10:22:36 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 03CBB11C04C;
-        Tue,  7 Sep 2021 10:26:52 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6A7A711C052;
-        Tue,  7 Sep 2021 10:26:51 +0000 (GMT)
-Received: from sig-9-145-45-184.uk.ibm.com (unknown [9.145.45.184])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Sep 2021 10:26:51 +0000 (GMT)
-Message-ID: <bdfabd343bdec7e27ff92bc0145d813011227f8f.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix build of task_pt_regs
- test for arm64
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, dxu@dxuuu.xyz,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 07 Sep 2021 12:26:51 +0200
-In-Reply-To: <20210906163635.302307-1-jean-philippe@linaro.org>
-References: <20210906163635.302307-1-jean-philippe@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: NdwkWpoL10Iv5cFaVpCDIFWyiMRxnxyd
-X-Proofpoint-ORIG-GUID: Xelaojuf83pH6u9f-0x7i0Bnu_kwGOQ0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S245614AbhIGLOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Sep 2021 07:14:55 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19014 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245739AbhIGLOy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Sep 2021 07:14:54 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H3jGK1cJ0zbmB0;
+        Tue,  7 Sep 2021 19:09:45 +0800 (CST)
+Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 7 Sep 2021 19:13:45 +0800
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 7 Sep 2021 19:13:44 +0800
+Subject: Re: [PATCH bpf] bpf: handle return value of BPF_PROG_TYPE_STRUCT_OPS
+ prog
+To:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>, KP Singh <kpsingh@kernel.org>
+References: <20210901085344.3052333-1-houtao1@huawei.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <ff54247f-e1bd-0d8b-51d2-ce0fcfc0731b@huawei.com>
+Date:   Tue, 7 Sep 2021 19:13:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-07_03:2021-09-07,2021-09-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 impostorscore=0 mlxscore=0 bulkscore=0 clxscore=1011
- malwarescore=0 mlxlogscore=999 suspectscore=0 phishscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2108310000 definitions=main-2109070067
+In-Reply-To: <20210901085344.3052333-1-houtao1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2021-09-06 at 17:36 +0100, Jean-Philippe Brucker wrote:
-> struct pt_regs is not exported to userspace on all archs. arm64 and
-> s390
-> export "user_pt_regs" instead, which causes build failure at the
-> moment:
-> 
->   progs/test_task_pt_regs.c:8:16: error: variable has incomplete type
-> 'struct pt_regs'
->   struct pt_regs current_regs = {};
-> 
-> Instead of using pt_regs from ptrace.h, use the larger kernel struct
-> from vmlinux.h directly. Since the test runner task_pt_regs.c does not
-> have access to the kernel struct definition, copy it into a char array.
-> 
-> Fixes: 576d47bb1a92 ("bpf: selftests: Add bpf_task_pt_regs() selftest")
-> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+ping ?
+
++cc netdev
+
+On 9/1/2021 4:53 PM, Hou Tao wrote:
+> Currently if a function ptr in struct_ops has a return value, its
+> caller will get a random return value from it, because the return
+> value of related BPF_PROG_TYPE_STRUCT_OPS prog is just dropped.
+>
+> So adding a new flag BPF_TRAMP_F_RET_FENTRY_RET to tell bpf trampoline
+> to save and return the return value of struct_ops prog if ret_size of
+> the function ptr is greater than 0. Also restricting the flag to be
+> used alone.
+>
+> Fixes: 85d33df357b6 ("bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS")
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 > ---
-> v2: Work on struct pt_regs from vmlinux.h
-> v1:
-> https://lore.kernel.org/bpf/20210902090925.2010528-1-jean-philippe@linaro.org/
-> ---
->  .../selftests/bpf/prog_tests/task_pt_regs.c   |  1 -
->  .../selftests/bpf/progs/test_task_pt_regs.c   | 19 +++++++++++++------
->  2 files changed, 13 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-> b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-> index 53f0e0fa1a53..37c20b5ffa70 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-> @@ -1,7 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #define _GNU_SOURCE
->  #include <test_progs.h>
-> -#include <linux/ptrace.h>
->  #include "test_task_pt_regs.skel.h"
->  
->  void test_task_pt_regs(void)
-> diff --git a/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
-> b/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
-> index 6c059f1cfa1b..e6cb09259408 100644
-> --- a/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
-> +++ b/tools/testing/selftests/bpf/progs/test_task_pt_regs.c
-> @@ -1,12 +1,17 @@
->  // SPDX-License-Identifier: GPL-2.0
->  
-> -#include <linux/ptrace.h>
-> -#include <linux/bpf.h>
-> +#include "vmlinux.h"
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
->  
-> -struct pt_regs current_regs = {};
-> -struct pt_regs ctx_regs = {};
-> +#define PT_REGS_SIZE sizeof(struct pt_regs)
+>  arch/x86/net/bpf_jit_comp.c | 53 ++++++++++++++++++++++++++++---------
+>  include/linux/bpf.h         |  2 ++
+>  kernel/bpf/bpf_struct_ops.c |  7 +++--
+>  3 files changed, 47 insertions(+), 15 deletions(-)
+>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 16d76f814e9b..47780844598a 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1744,7 +1744,7 @@ static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
+>  }
+>  
+>  static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+> -			   struct bpf_prog *p, int stack_size, bool mod_ret)
+> +			   struct bpf_prog *p, int stack_size, bool save_ret)
+>  {
+>  	u8 *prog = *pprog;
+>  	u8 *jmp_insn;
+> @@ -1777,11 +1777,15 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>  	if (emit_call(&prog, p->bpf_func, prog))
+>  		return -EINVAL;
+>  
+> -	/* BPF_TRAMP_MODIFY_RETURN trampolines can modify the return
+> +	/*
+> +	 * BPF_TRAMP_MODIFY_RETURN trampolines can modify the return
+>  	 * of the previous call which is then passed on the stack to
+>  	 * the next BPF program.
+> +	 *
+> +	 * BPF_TRAMP_FENTRY trampoline may need to return the return
+> +	 * value of BPF_PROG_TYPE_STRUCT_OPS prog.
+>  	 */
+> -	if (mod_ret)
+> +	if (save_ret)
+>  		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
+>  
+>  	/* replace 2 nops with JE insn, since jmp target is known */
+> @@ -1828,13 +1832,15 @@ static int emit_cond_near_jump(u8 **pprog, void *func, void *ip, u8 jmp_cond)
+>  }
+>  
+>  static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
+> -		      struct bpf_tramp_progs *tp, int stack_size)
+> +		      struct bpf_tramp_progs *tp, int stack_size,
+> +		      bool save_ret)
+>  {
+>  	int i;
+>  	u8 *prog = *pprog;
+>  
+>  	for (i = 0; i < tp->nr_progs; i++) {
+> -		if (invoke_bpf_prog(m, &prog, tp->progs[i], stack_size, false))
+> +		if (invoke_bpf_prog(m, &prog, tp->progs[i], stack_size,
+> +				    save_ret))
+>  			return -EINVAL;
+>  	}
+>  	*pprog = prog;
+> @@ -1877,6 +1883,23 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
+>  	return 0;
+>  }
+>  
+> +static bool is_valid_bpf_tramp_flags(unsigned int flags)
+> +{
+> +	if ((flags & BPF_TRAMP_F_RESTORE_REGS) &&
+> +	    (flags & BPF_TRAMP_F_SKIP_FRAME))
+> +		return false;
 > +
-> +/*
-> + * The kernel struct pt_regs isn't exported in its entirety to
-> userspace.
-> + * Pass it as an array to task_pt_regs.c
-> + */
-> +char current_regs[PT_REGS_SIZE] = {};
-> +char ctx_regs[PT_REGS_SIZE] = {};
->  int uprobe_res = 0;
->  
->  SEC("uprobe/trigger_func")
-> @@ -17,8 +22,10 @@ int handle_uprobe(struct pt_regs *ctx)
->  
->         current = bpf_get_current_task_btf();
->         regs = (struct pt_regs *) bpf_task_pt_regs(current);
-> -       __builtin_memcpy(&current_regs, regs, sizeof(*regs));
-> -       __builtin_memcpy(&ctx_regs, ctx, sizeof(*ctx));
-> +       if (bpf_probe_read_kernel(current_regs, PT_REGS_SIZE, regs))
-> +               return 0;
-> +       if (bpf_probe_read_kernel(ctx_regs, PT_REGS_SIZE, ctx))
-> +               return 0;
->  
->         /* Prove that uprobe was run */
->         uprobe_res = 1;
-
-I've tested this patch on s390 and it does indeed fix the build issue.
-Thanks!
-
-Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-
+> +	/*
+> +	 * BPF_TRAMP_F_RET_FENTRY_RET is only used by bpf_struct_ops,
+> +	 * and it must be used alone.
+> +	 */
+> +	if ((flags & BPF_TRAMP_F_RET_FENTRY_RET) &&
+> +	    (flags & ~BPF_TRAMP_F_RET_FENTRY_RET))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+>  /* Example:
+>   * __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev);
+>   * its 'struct btf_func_model' will be nr_args=2
+> @@ -1949,17 +1972,19 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>  	struct bpf_tramp_progs *fmod_ret = &tprogs[BPF_TRAMP_MODIFY_RETURN];
+>  	u8 **branches = NULL;
+>  	u8 *prog;
+> +	bool save_ret;
+>  
+>  	/* x86-64 supports up to 6 arguments. 7+ can be added in the future */
+>  	if (nr_args > 6)
+>  		return -ENOTSUPP;
+>  
+> -	if ((flags & BPF_TRAMP_F_RESTORE_REGS) &&
+> -	    (flags & BPF_TRAMP_F_SKIP_FRAME))
+> +	if (!is_valid_bpf_tramp_flags(flags))
+>  		return -EINVAL;
+>  
+> -	if (flags & BPF_TRAMP_F_CALL_ORIG)
+> -		stack_size += 8; /* room for return value of orig_call */
+> +	/* room for return value of orig_call or fentry prog */
+> +	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
+> +	if (save_ret)
+> +		stack_size += 8;
+>  
+>  	if (flags & BPF_TRAMP_F_SKIP_FRAME)
+>  		/* skip patched call instruction and point orig_call to actual
+> @@ -1986,7 +2011,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>  	}
+>  
+>  	if (fentry->nr_progs)
+> -		if (invoke_bpf(m, &prog, fentry, stack_size))
+> +		if (invoke_bpf(m, &prog, fentry, stack_size,
+> +			       flags & BPF_TRAMP_F_RET_FENTRY_RET))
+>  			return -EINVAL;
+>  
+>  	if (fmod_ret->nr_progs) {
+> @@ -2033,7 +2059,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>  	}
+>  
+>  	if (fexit->nr_progs)
+> -		if (invoke_bpf(m, &prog, fexit, stack_size)) {
+> +		if (invoke_bpf(m, &prog, fexit, stack_size, false)) {
+>  			ret = -EINVAL;
+>  			goto cleanup;
+>  		}
+> @@ -2053,9 +2079,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>  			ret = -EINVAL;
+>  			goto cleanup;
+>  		}
+> -		/* restore original return value back into RAX */
+> -		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
+>  	}
+> +	/* restore return value of orig_call or fentry prog back into RAX */
+> +	if (save_ret)
+> +		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
+>  
+>  	EMIT1(0x5B); /* pop rbx */
+>  	EMIT1(0xC9); /* leave */
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index e8e2b0393ca9..85413eb368de 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -553,6 +553,8 @@ struct btf_func_model {
+>   * programs only. Should not be used with normal calls and indirect calls.
+>   */
+>  #define BPF_TRAMP_F_SKIP_FRAME		BIT(2)
+> +/* Return the return value of fentry prog. Only used by bpf_struct_ops. */
+> +#define BPF_TRAMP_F_RET_FENTRY_RET	BIT(3)
+>  
+>  /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
+>   * bytes on x86.  Pick a number to fit into BPF_IMAGE_SIZE / 2
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index 70f6fd4fa305..2ce17447fb76 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -367,6 +367,7 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>  		const struct btf_type *mtype, *ptype;
+>  		struct bpf_prog *prog;
+>  		u32 moff;
+> +		u32 flags;
+>  
+>  		moff = btf_member_bit_offset(t, member) / 8;
+>  		ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
+> @@ -430,10 +431,12 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>  
+>  		tprogs[BPF_TRAMP_FENTRY].progs[0] = prog;
+>  		tprogs[BPF_TRAMP_FENTRY].nr_progs = 1;
+> +		flags = st_ops->func_models[i].ret_size > 0 ?
+> +			BPF_TRAMP_F_RET_FENTRY_RET : 0;
+>  		err = arch_prepare_bpf_trampoline(NULL, image,
+>  						  st_map->image + PAGE_SIZE,
+> -						  &st_ops->func_models[i], 0,
+> -						  tprogs, NULL);
+> +						  &st_ops->func_models[i],
+> +						  flags, tprogs, NULL);
+>  		if (err < 0)
+>  			goto reset_unlock;
+>  
