@@ -2,223 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB43A4029E3
-	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 15:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B713402A04
+	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 15:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344766AbhIGNld (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Sep 2021 09:41:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20704 "EHLO
+        id S1344269AbhIGNqF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Sep 2021 09:46:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34149 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344754AbhIGNlc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 7 Sep 2021 09:41:32 -0400
+        by vger.kernel.org with ESMTP id S1344791AbhIGNp4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Sep 2021 09:45:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631022026;
+        s=mimecast20190719; t=1631022290;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kEyxhXA1nsSl2HrxYLUrYbEDotEGx7xbkdxp8TfXNp4=;
-        b=are75rjXMhIRC8Y5htZW2/+90RCOl76RRc8Dw8YNQ1Pv8JAAZa9DLNXIi6eAwegjhbFGB1
-        qdcjfuUmyq2ERD2/gqle6yQOLlOESExsKMjfkA/zJh/N3sf2q2cYNYFg3Q88Dky85YqC21
-        sL0EUuUq3z5zeG43oYVDL05GSOfQ1MM=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-BCOirhjQOrS0jb-SGkpJ-w-1; Tue, 07 Sep 2021 09:40:25 -0400
-X-MC-Unique: BCOirhjQOrS0jb-SGkpJ-w-1
-Received: by mail-wr1-f71.google.com with SMTP id s13-20020a5d69cd000000b00159d49442cbso507475wrw.13
-        for <bpf@vger.kernel.org>; Tue, 07 Sep 2021 06:40:25 -0700 (PDT)
+        bh=lnk+MQgYpOvpu6ZC3StBomend8wJttqrx2hILwEGg6U=;
+        b=boirB9fAqcjuYnW8nKTnR6cc/TLB7woroMmUGPgfoKLxXzArsJWDDsCBMQEosUzxPIdXE9
+        u7eIGukJlsm4AvIz9UYHOldaoedCO725dGYHsuoLwNypcK0koIwXJZtnNvqL0dM+TWCFDR
+        Jf6qxctZQF1kmLtxOxuIOdi4aoy3NBw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-HMu6z3v8NbWp0VN2JOacdA-1; Tue, 07 Sep 2021 09:44:49 -0400
+X-MC-Unique: HMu6z3v8NbWp0VN2JOacdA-1
+Received: by mail-ed1-f70.google.com with SMTP id w18-20020aa7cb52000000b003c95870200fso5168532edt.16
+        for <bpf@vger.kernel.org>; Tue, 07 Sep 2021 06:44:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kEyxhXA1nsSl2HrxYLUrYbEDotEGx7xbkdxp8TfXNp4=;
-        b=YpWiT6WS5wct2nexErtTBFjCJC9mMBz8Hfua+pjkBrWGeC3xq+n38Gd2ytAQUJ+p4a
-         2JEra+P0mNKZuCubgXcSzWdI8Njko4TFKq9po78V4PwxbTBI8Bt0r8krmwmGd2WC5AeK
-         fbEq/33b04wHD5fcPJjXgCyYwfK7wNfBXobcVMUu7bQp/y40dk0gw1RRbLdAk56aeLOH
-         nTsUGCjPkPXw22DfMz6WhUr42cAhfpWvi4PYG9KHLInMEb0BdPv0BpKLoWinwn5kFCkV
-         32QW/K4d90muXQ/viE0t7VNFAwOo7z5gZfTsMK9WjwcaFBXKCN2CjaURhLgyXQIGyS5+
-         bIRA==
-X-Gm-Message-State: AOAM5330SerI8o0UlOKHqRXGzjhVjMXVpSc3d9htOuH0Gzm13C0/Yic2
-        Vq+LDgRka7bYOEvOaTvwoYsLrebGmc16oP9N8C6sDHPIonqP1mGPQyzGm/U77Z8r+OeF2n3jCit
-        1Wg9f/9b3LHXU
-X-Received: by 2002:adf:9d47:: with SMTP id o7mr19321776wre.50.1631022023944;
-        Tue, 07 Sep 2021 06:40:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypAJsoHicvmpgSyeJ8s5Au9SMTzDbIHPNihwTKs68MFHt48z6xj4j3BJhBVirF1LdYtzA9rg==
-X-Received: by 2002:adf:9d47:: with SMTP id o7mr19321755wre.50.1631022023734;
-        Tue, 07 Sep 2021 06:40:23 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id s13sm2382832wmc.47.2021.09.07.06.40.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 06:40:23 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, lorenzo.bianconi@redhat.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, shayagr@amazon.com, john.fastabend@gmail.com,
-        dsahern@kernel.org, echaudro@redhat.com, jasowang@redhat.com,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lnk+MQgYpOvpu6ZC3StBomend8wJttqrx2hILwEGg6U=;
+        b=L96FLYcqhh/cgkLyeOtTJTSwv6OcqxeYqCvk1rR+ujCgapVS1hxdzj4T07VzMAyW6D
+         Xpcz96chM7BXuLieoPDDHK+FCX7UqRofCsT8AooolQlDj4TVe/Bc1jfeVOEI1wTl3eLL
+         fiLL7hvIVFPZ/lLtPRjEtdkUa3KPJ6CDsHKKjp0EQcOXx9oeG0kVLzEdNUaUny8V5dOC
+         Dl1OB0HjBO1Jm5t2IxUwxGyvDh1dyFt6EgvLPUd/IbI2mxO4wfnqJ6cO3dGJHlLp1HuX
+         o5C7XlPIMhc8n4umhBwdlhd/6s2Rs+EZZciJp17JrJvnoiJ9YOFixWhWUZHNSDYJfylj
+         9xjA==
+X-Gm-Message-State: AOAM530Y1sMFHM6AlVtixmiuUSbEmPWtK4ng7F/GBU8odSyDa848bG4W
+        AndJA/DYQ9+FQTJVxxALdywhv9afyOH8FHjgjHVuUIyGLDN1J9hznphaWewqVfZtTBE//tZ/GfN
+        AH19rsPW4r0n8
+X-Received: by 2002:a17:906:a0da:: with SMTP id bh26mr18289208ejb.505.1631022287819;
+        Tue, 07 Sep 2021 06:44:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyVF/1iqIfSrn6+Si0AdBKy73K2PY5tGqudcMlZdwkLzqypht3xb386lYimlwo97HcwjdtQDA==
+X-Received: by 2002:a17:906:a0da:: with SMTP id bh26mr18289182ejb.505.1631022287623;
+        Tue, 07 Sep 2021 06:44:47 -0700 (PDT)
+Received: from localhost (net-37-116-49-210.cust.vodafonedsl.it. [37.116.49.210])
+        by smtp.gmail.com with ESMTPSA id ly7sm5580034ejb.109.2021.09.07.06.44.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 06:44:47 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 15:44:44 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, brouer@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        shayagr@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
+        echaudro@redhat.com, jasowang@redhat.com,
         alexander.duyck@gmail.com, saeed@kernel.org,
         maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
         tirthendu.sarkar@intel.com, toke@redhat.com
 Subject: Re: [PATCH v13 bpf-next 05/18] net: xdp: add
  xdp_update_skb_shared_info utility routine
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
+Message-ID: <YTdszJFfSUVCacJq@lore-desk>
 References: <cover.1631007211.git.lorenzo@kernel.org>
  <f46a84381037e76ff0e812abd77a0670d0d14767.1631007211.git.lorenzo@kernel.org>
-Message-ID: <29fc47da-f9b3-9698-d58d-a06010945a21@redhat.com>
-Date:   Tue, 7 Sep 2021 15:40:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ <29fc47da-f9b3-9698-d58d-a06010945a21@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <f46a84381037e76ff0e812abd77a0670d0d14767.1631007211.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yBVkDLz2+tzWwFpW"
+Content-Disposition: inline
+In-Reply-To: <29fc47da-f9b3-9698-d58d-a06010945a21@redhat.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-On 07/09/2021 14.35, Lorenzo Bianconi wrote:
-> Introduce xdp_update_skb_shared_info routine to update frags array
-> metadata in skb_shared_info data structure converting to a skb from
-> a xdp_buff or xdp_frame.
-> According to the current skb_shared_info architecture in
-> xdp_frame/xdp_buff and to the xdp multi-buff support, there is
-> no need to run skb_add_rx_frag() and reset frags array converting the buffer
-> to a skb since the frag array will be in the same position for xdp_buff/xdp_frame
-> and for the skb, we just need to update memory metadata.
-> Introduce XDP_FLAGS_PF_MEMALLOC flag in xdp_buff_flags in order to mark
-> the xdp_buff or xdp_frame as under memory-pressure if pages of the frags array
-> are under memory pressure. Doing so we can avoid looping over all fragments in
-> xdp_update_skb_shared_info routine. The driver is expected to set the
-> flag constructing the xdp_buffer using xdp_buff_set_frag_pfmemalloc
-> utility routine.
-> Rely on xdp_update_skb_shared_info in __xdp_build_skb_from_frame routine
-> converting the multi-buff xdp_frame to a skb after performing a XDP_REDIRECT.
-> 
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->   include/net/xdp.h | 33 ++++++++++++++++++++++++++++++++-
->   net/core/xdp.c    | 17 +++++++++++++++++
->   2 files changed, 49 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index ed5ea784fd45..53cccdc9528c 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -67,7 +67,10 @@ struct xdp_txq_info {
->   };
->   
->   enum xdp_buff_flags {
-> -	XDP_FLAGS_MULTI_BUFF	= BIT(0), /* non-linear xdp buff */
-> +	XDP_FLAGS_MULTI_BUFF		= BIT(0), /* non-linear xdp buff */
-> +	XDP_FLAGS_FRAGS_PF_MEMALLOC	= BIT(1), /* xdp multi-buff paged memory
-> +						   * is under pressure
-> +						   */
->   };
->   
->   struct xdp_buff {
-> @@ -96,6 +99,16 @@ static __always_inline void xdp_buff_clear_mb(struct xdp_buff *xdp)
->   	xdp->flags &= ~XDP_FLAGS_MULTI_BUFF;
->   }
->   
-> +static __always_inline bool xdp_buff_is_frag_pfmemalloc(struct xdp_buff *xdp)
-> +{
-> +	return !!(xdp->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
-> +}
-> +
-> +static __always_inline void xdp_buff_set_frag_pfmemalloc(struct xdp_buff *xdp)
-> +{
-> +	xdp->flags |= XDP_FLAGS_FRAGS_PF_MEMALLOC;
-> +}
-> +
->   static __always_inline void
->   xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
->   {
-> @@ -151,6 +164,11 @@ static __always_inline bool xdp_frame_is_mb(struct xdp_frame *frame)
->   	return !!(frame->flags & XDP_FLAGS_MULTI_BUFF);
->   }
->   
-> +static __always_inline bool xdp_frame_is_frag_pfmemalloc(struct xdp_frame *frame)
-> +{
-> +	return !!(frame->flags & XDP_FLAGS_FRAGS_PF_MEMALLOC);
-> +}
-> +
->   #define XDP_BULK_QUEUE_SIZE	16
->   struct xdp_frame_bulk {
->   	int count;
-> @@ -186,6 +204,19 @@ static inline void xdp_scrub_frame(struct xdp_frame *frame)
->   	frame->dev_rx = NULL;
->   }
->   
-> +static inline void
-> +xdp_update_skb_shared_info(struct sk_buff *skb, u8 nr_frags,
-> +			   unsigned int size, unsigned int truesize,
-> +			   bool pfmemalloc)
-> +{
-> +	skb_shinfo(skb)->nr_frags = nr_frags;
-> +
-> +	skb->len += size;
-> +	skb->data_len += size;
-> +	skb->truesize += truesize;
-> +	skb->pfmemalloc |= pfmemalloc;
+--yBVkDLz2+tzWwFpW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Do we need to clear gso_type here as it is shared/union with 
-xdp_frags_size ?
-(see below ... it is already cleared before call)
+[...]
+>=20
+> Do we need to clear gso_type here as it is shared/union with xdp_frags_si=
+ze
+> ?
+> (see below ... it is already cleared before call)
+>=20
+>=20
+> > +}
+> > +
+> >   /* Avoids inlining WARN macro in fast-path */
+> >   void xdp_warn(const char *msg, const char *func, const int line);
+> >   #define XDP_WARN(msg) xdp_warn(msg, __func__, __LINE__)
+> > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > index cc92ccb38432..504be3ce3ca9 100644
+> > --- a/net/core/xdp.c
+> > +++ b/net/core/xdp.c
+> > @@ -531,8 +531,20 @@ struct sk_buff *__xdp_build_skb_from_frame(struct =
+xdp_frame *xdpf,
+> >   					   struct sk_buff *skb,
+> >   					   struct net_device *dev)
+> >   {
+> > +	unsigned int frag_size, frag_tsize;
+> >   	unsigned int headroom, frame_size;
+> >   	void *hard_start;
+> > +	u8 nr_frags;
+> > +
+> > +	/* xdp multi-buff frame */
+> > +	if (unlikely(xdp_frame_is_mb(xdpf))) {
+> > +		struct skb_shared_info *sinfo;
+> > +
+> > +		sinfo =3D xdp_get_shared_info_from_frame(xdpf);
+> > +		frag_tsize =3D sinfo->xdp_frags_tsize;
+> > +		frag_size =3D sinfo->xdp_frags_size;
+> > +		nr_frags =3D sinfo->nr_frags;
+> > +	}
+> >   	/* Part of headroom was reserved to xdpf */
+> >   	headroom =3D sizeof(*xdpf) + xdpf->headroom;
+> > @@ -552,6 +564,11 @@ struct sk_buff *__xdp_build_skb_from_frame(struct =
+xdp_frame *xdpf,
+> >   	if (xdpf->metasize)
+> >   		skb_metadata_set(skb, xdpf->metasize);
+> > +	if (unlikely(xdp_frame_is_mb(xdpf)))
+> > +		xdp_update_skb_shared_info(skb, nr_frags,
+> > +					   frag_size, frag_tsize,
+> > +					   xdp_frame_is_frag_pfmemalloc(xdpf));
+> > +
+>=20
+> There is a build_skb_around() call before this call, which via
+> __build_skb_around() will clear top part of skb_shared_info.
+> (Thus, clearing gso_type not needed ... see above)
 
+yes, this is why I need save sinfo->nr_frags, sinfo->xdp_frags_size, ...
 
-> +}
-> +
->   /* Avoids inlining WARN macro in fast-path */
->   void xdp_warn(const char *msg, const char *func, const int line);
->   #define XDP_WARN(msg) xdp_warn(msg, __func__, __LINE__)
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index cc92ccb38432..504be3ce3ca9 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -531,8 +531,20 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
->   					   struct sk_buff *skb,
->   					   struct net_device *dev)
->   {
-> +	unsigned int frag_size, frag_tsize;
->   	unsigned int headroom, frame_size;
->   	void *hard_start;
-> +	u8 nr_frags;
-> +
-> +	/* xdp multi-buff frame */
-> +	if (unlikely(xdp_frame_is_mb(xdpf))) {
-> +		struct skb_shared_info *sinfo;
-> +
-> +		sinfo = xdp_get_shared_info_from_frame(xdpf);
-> +		frag_tsize = sinfo->xdp_frags_tsize;
-> +		frag_size = sinfo->xdp_frags_size;
-> +		nr_frags = sinfo->nr_frags;
-> +	}
->   
->   	/* Part of headroom was reserved to xdpf */
->   	headroom = sizeof(*xdpf) + xdpf->headroom;
-> @@ -552,6 +564,11 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
->   	if (xdpf->metasize)
->   		skb_metadata_set(skb, xdpf->metasize);
->   
-> +	if (unlikely(xdp_frame_is_mb(xdpf)))
-> +		xdp_update_skb_shared_info(skb, nr_frags,
-> +					   frag_size, frag_tsize,
-> +					   xdp_frame_is_frag_pfmemalloc(xdpf));
-> +
+Regards,
+Lorenzo
 
-There is a build_skb_around() call before this call, which via 
-__build_skb_around() will clear top part of skb_shared_info.
-(Thus, clearing gso_type not needed ... see above)
+>=20
+> >   	/* Essential SKB info: protocol and skb->dev */
+> >   	skb->protocol =3D eth_type_trans(skb, dev);
+>=20
+>=20
+> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+>=20
 
->   	/* Essential SKB info: protocol and skb->dev */
->   	skb->protocol = eth_type_trans(skb, dev);
->   
+--yBVkDLz2+tzWwFpW
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYTdsyQAKCRA6cBh0uS2t
+rP7VAQCodpQzoU+PTk71eMryk6U1HRGFxa639QDaWonfRCbuOAEAzm81W4puZ4b6
+eOxQy90Iz+BYLViTC61rFEyS5nI8HgU=
+=t6rt
+-----END PGP SIGNATURE-----
+
+--yBVkDLz2+tzWwFpW--
 
