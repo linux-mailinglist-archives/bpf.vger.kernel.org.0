@@ -2,239 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA254027A0
-	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 13:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BE34028DC
+	for <lists+bpf@lfdr.de>; Tue,  7 Sep 2021 14:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245614AbhIGLOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Sep 2021 07:14:55 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19014 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245739AbhIGLOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Sep 2021 07:14:54 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H3jGK1cJ0zbmB0;
-        Tue,  7 Sep 2021 19:09:45 +0800 (CST)
-Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 7 Sep 2021 19:13:45 +0800
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 7 Sep 2021 19:13:44 +0800
-Subject: Re: [PATCH bpf] bpf: handle return value of BPF_PROG_TYPE_STRUCT_OPS
- prog
-To:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>
-CC:     Martin KaFai Lau <kafai@fb.com>, KP Singh <kpsingh@kernel.org>
-References: <20210901085344.3052333-1-houtao1@huawei.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <ff54247f-e1bd-0d8b-51d2-ce0fcfc0731b@huawei.com>
-Date:   Tue, 7 Sep 2021 19:13:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1343889AbhIGMgw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Sep 2021 08:36:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343886AbhIGMgw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Sep 2021 08:36:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B91F86105A;
+        Tue,  7 Sep 2021 12:35:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631018145;
+        bh=ptlJekemLbUgW6di/vftwrTn+WLtKtSU4+aQzLLA7UU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jGyFcBY/t2O+BXAhvSKWTXFcf1ixzfvyA74KpgoIVabPXSW/mNv6PPFIJQ0ZU8/yf
+         fpxh+nEuzmJYNvWxyjm3zhSk2tGiJNwtYsQ2Kc5RW3rvJ5oJrpNDXzQm5jGFQX6eKQ
+         XjM0BlAcbNK/aC5c/GzTZjdceqG3D0ZuVqv5mtPvSZ+reZBJPGv785VnRwvbe7NVE9
+         UZHmVnnePR7H1z/+U0lhBX/mPHSk07wxUcdv6LCHGxELu58EtgFJ4Nex/hdJCsBrwM
+         x1DC37nLVCyInp9KqzZ/CGqjElOC+arqZS7/HtoQ9+p8iX+fa/I643o/ZEaWYNcUYg
+         qPNCQIZ9LJDYw==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
+        echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Subject: [PATCH v13 bpf-next 00/18] mvneta: introduce XDP multi-buffer support
+Date:   Tue,  7 Sep 2021 14:35:04 +0200
+Message-Id: <cover.1631007211.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210901085344.3052333-1-houtao1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-ping ?
+This series introduce XDP multi-buffer support. The mvneta driver is
+the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
+please focus on how these new types of xdp_{buff,frame} packets
+traverse the different layers and the layout design. It is on purpose
+that BPF-helpers are kept simple, as we don't want to expose the
+internal layout to allow later changes.
 
-+cc netdev
+The main idea for the new multi-buffer layout is to reuse the same
+structure used for non-linear SKB. This rely on the "skb_shared_info"
+struct at the end of the first buffer to link together subsequent
+buffers. Keeping the layout compatible with SKBs is also done to ease
+and speedup creating a SKB from an xdp_{buff,frame}.
+Converting xdp_frame to SKB and deliver it to the network stack is shown
+in patch 05/18 (e.g. cpumaps).
 
-On 9/1/2021 4:53 PM, Hou Tao wrote:
-> Currently if a function ptr in struct_ops has a return value, its
-> caller will get a random return value from it, because the return
-> value of related BPF_PROG_TYPE_STRUCT_OPS prog is just dropped.
->
-> So adding a new flag BPF_TRAMP_F_RET_FENTRY_RET to tell bpf trampoline
-> to save and return the return value of struct_ops prog if ret_size of
-> the function ptr is greater than 0. Also restricting the flag to be
-> used alone.
->
-> Fixes: 85d33df357b6 ("bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->  arch/x86/net/bpf_jit_comp.c | 53 ++++++++++++++++++++++++++++---------
->  include/linux/bpf.h         |  2 ++
->  kernel/bpf/bpf_struct_ops.c |  7 +++--
->  3 files changed, 47 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 16d76f814e9b..47780844598a 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -1744,7 +1744,7 @@ static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
->  }
->  
->  static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
-> -			   struct bpf_prog *p, int stack_size, bool mod_ret)
-> +			   struct bpf_prog *p, int stack_size, bool save_ret)
->  {
->  	u8 *prog = *pprog;
->  	u8 *jmp_insn;
-> @@ -1777,11 +1777,15 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
->  	if (emit_call(&prog, p->bpf_func, prog))
->  		return -EINVAL;
->  
-> -	/* BPF_TRAMP_MODIFY_RETURN trampolines can modify the return
-> +	/*
-> +	 * BPF_TRAMP_MODIFY_RETURN trampolines can modify the return
->  	 * of the previous call which is then passed on the stack to
->  	 * the next BPF program.
-> +	 *
-> +	 * BPF_TRAMP_FENTRY trampoline may need to return the return
-> +	 * value of BPF_PROG_TYPE_STRUCT_OPS prog.
->  	 */
-> -	if (mod_ret)
-> +	if (save_ret)
->  		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
->  
->  	/* replace 2 nops with JE insn, since jmp target is known */
-> @@ -1828,13 +1832,15 @@ static int emit_cond_near_jump(u8 **pprog, void *func, void *ip, u8 jmp_cond)
->  }
->  
->  static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
-> -		      struct bpf_tramp_progs *tp, int stack_size)
-> +		      struct bpf_tramp_progs *tp, int stack_size,
-> +		      bool save_ret)
->  {
->  	int i;
->  	u8 *prog = *pprog;
->  
->  	for (i = 0; i < tp->nr_progs; i++) {
-> -		if (invoke_bpf_prog(m, &prog, tp->progs[i], stack_size, false))
-> +		if (invoke_bpf_prog(m, &prog, tp->progs[i], stack_size,
-> +				    save_ret))
->  			return -EINVAL;
->  	}
->  	*pprog = prog;
-> @@ -1877,6 +1883,23 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
->  	return 0;
->  }
->  
-> +static bool is_valid_bpf_tramp_flags(unsigned int flags)
-> +{
-> +	if ((flags & BPF_TRAMP_F_RESTORE_REGS) &&
-> +	    (flags & BPF_TRAMP_F_SKIP_FRAME))
-> +		return false;
-> +
-> +	/*
-> +	 * BPF_TRAMP_F_RET_FENTRY_RET is only used by bpf_struct_ops,
-> +	 * and it must be used alone.
-> +	 */
-> +	if ((flags & BPF_TRAMP_F_RET_FENTRY_RET) &&
-> +	    (flags & ~BPF_TRAMP_F_RET_FENTRY_RET))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  /* Example:
->   * __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev);
->   * its 'struct btf_func_model' will be nr_args=2
-> @@ -1949,17 +1972,19 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  	struct bpf_tramp_progs *fmod_ret = &tprogs[BPF_TRAMP_MODIFY_RETURN];
->  	u8 **branches = NULL;
->  	u8 *prog;
-> +	bool save_ret;
->  
->  	/* x86-64 supports up to 6 arguments. 7+ can be added in the future */
->  	if (nr_args > 6)
->  		return -ENOTSUPP;
->  
-> -	if ((flags & BPF_TRAMP_F_RESTORE_REGS) &&
-> -	    (flags & BPF_TRAMP_F_SKIP_FRAME))
-> +	if (!is_valid_bpf_tramp_flags(flags))
->  		return -EINVAL;
->  
-> -	if (flags & BPF_TRAMP_F_CALL_ORIG)
-> -		stack_size += 8; /* room for return value of orig_call */
-> +	/* room for return value of orig_call or fentry prog */
-> +	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
-> +	if (save_ret)
-> +		stack_size += 8;
->  
->  	if (flags & BPF_TRAMP_F_SKIP_FRAME)
->  		/* skip patched call instruction and point orig_call to actual
-> @@ -1986,7 +2011,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  	}
->  
->  	if (fentry->nr_progs)
-> -		if (invoke_bpf(m, &prog, fentry, stack_size))
-> +		if (invoke_bpf(m, &prog, fentry, stack_size,
-> +			       flags & BPF_TRAMP_F_RET_FENTRY_RET))
->  			return -EINVAL;
->  
->  	if (fmod_ret->nr_progs) {
-> @@ -2033,7 +2059,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  	}
->  
->  	if (fexit->nr_progs)
-> -		if (invoke_bpf(m, &prog, fexit, stack_size)) {
-> +		if (invoke_bpf(m, &prog, fexit, stack_size, false)) {
->  			ret = -EINVAL;
->  			goto cleanup;
->  		}
-> @@ -2053,9 +2079,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  			ret = -EINVAL;
->  			goto cleanup;
->  		}
-> -		/* restore original return value back into RAX */
-> -		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
->  	}
-> +	/* restore return value of orig_call or fentry prog back into RAX */
-> +	if (save_ret)
-> +		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
->  
->  	EMIT1(0x5B); /* pop rbx */
->  	EMIT1(0xC9); /* leave */
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index e8e2b0393ca9..85413eb368de 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -553,6 +553,8 @@ struct btf_func_model {
->   * programs only. Should not be used with normal calls and indirect calls.
->   */
->  #define BPF_TRAMP_F_SKIP_FRAME		BIT(2)
-> +/* Return the return value of fentry prog. Only used by bpf_struct_ops. */
-> +#define BPF_TRAMP_F_RET_FENTRY_RET	BIT(3)
->  
->  /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
->   * bytes on x86.  Pick a number to fit into BPF_IMAGE_SIZE / 2
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index 70f6fd4fa305..2ce17447fb76 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -367,6 +367,7 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->  		const struct btf_type *mtype, *ptype;
->  		struct bpf_prog *prog;
->  		u32 moff;
-> +		u32 flags;
->  
->  		moff = btf_member_bit_offset(t, member) / 8;
->  		ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
-> @@ -430,10 +431,12 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->  
->  		tprogs[BPF_TRAMP_FENTRY].progs[0] = prog;
->  		tprogs[BPF_TRAMP_FENTRY].nr_progs = 1;
-> +		flags = st_ops->func_models[i].ret_size > 0 ?
-> +			BPF_TRAMP_F_RET_FENTRY_RET : 0;
->  		err = arch_prepare_bpf_trampoline(NULL, image,
->  						  st_map->image + PAGE_SIZE,
-> -						  &st_ops->func_models[i], 0,
-> -						  tprogs, NULL);
-> +						  &st_ops->func_models[i],
-> +						  flags, tprogs, NULL);
->  		if (err < 0)
->  			goto reset_unlock;
->  
+A multi-buffer bit (mb) has been introduced in the flags field of xdp_{buff,frame}
+structure to notify the bpf/network layer if this is a xdp multi-buffer frame
+(mb = 1) or not (mb = 0).
+The mb bit will be set by a xdp multi-buffer capable driver only for
+non-linear frames maintaining the capability to receive linear frames
+without any extra cost since the skb_shared_info structure at the end
+of the first buffer will be initialized only if mb is set.
+Moreover the flags field in xdp_{buff,frame} will be reused even for
+xdp rx csum offloading in future series.
+
+Typical use cases for this series are:
+- Jumbo-frames
+- Packet header split (please see Google’s use-case @ NetDevConf 0x14, [0])
+- TSO/GRO for XDP_REDIRECT
+
+The two following ebpf helpers (and related selftests) has been introduced:
+- bpf_xdp_adjust_data:
+  Move xdp_md->data and xdp_md->data_end pointers in subsequent fragments
+  according to the offset provided by the ebpf program. This helper can be
+  used to read/write values in frame payload.
+- bpf_xdp_get_buff_len:
+  Return the total frame size (linear + paged parts)
+
+bpf_xdp_adjust_tail and bpf_xdp_copy helpers have been modified to take into
+account xdp multi-buff frames.
+
+A multi-buffer enabled NIC may receive XDP frames with multiple frags. If a BPF
+program does not understand mb layouts its possible to contrive a BPF program
+that incorrectly views data_end as the end of data when there is more data in
+the payload. Note helpers will generally due the correct thing, for example
+perf_output will consume entire payload. But, it is still possible some programs
+could do the wrong thing even if in an edge case. Although we expect most BPF
+programs not to be impacted we can't rule out, you've been warned.
+
+More info about the main idea behind this approach can be found here [1][2].
+
+Changes since v12:
+- fix bpf_xdp_adjust_data helper for single-buffer use case
+- return -EFAULT in bpf_xdp_adjust_{head,tail} in case the data pointers are not
+  properly reset
+- collect ACKs from John
+
+Changes since v11:
+- add missing static to bpf_xdp_get_buff_len_proto structure
+- fix bpf_xdp_adjust_data helper when offset is smaller than linear area length.
+
+Changes since v10:
+- move xdp->data to the requested payload offset instead of to the beginning of
+  the fragment in bpf_xdp_adjust_data()
+
+Changes since v9:
+- introduce bpf_xdp_adjust_data helper and related selftest
+- add xdp_frags_size and xdp_frags_tsize fields in skb_shared_info
+- introduce xdp_update_skb_shared_info utility routine in ordere to not reset
+  frags array in skb_shared_info converting from a xdp_buff/xdp_frame to a skb 
+- simplify bpf_xdp_copy routine
+
+Changes since v8:
+- add proper dma unmapping if XDP_TX fails on mvneta for a xdp multi-buff
+- switch back to skb_shared_info implementation from previous xdp_shared_info
+  one
+- avoid using a bietfield in xdp_buff/xdp_frame since it introduces performance
+  regressions. Tested now on 10G NIC (ixgbe) to verify there are no performance
+  penalties for regular codebase
+- add bpf_xdp_get_buff_len helper and remove frame_length field in xdp ctx
+- add data_len field in skb_shared_info struct
+- introduce XDP_FLAGS_FRAGS_PF_MEMALLOC flag
+
+Changes since v7:
+- rebase on top of bpf-next
+- fix sparse warnings
+- improve comments for frame_length in include/net/xdp.h
+
+Changes since v6:
+- the main difference respect to previous versions is the new approach proposed
+  by Eelco to pass full length of the packet to eBPF layer in XDP context
+- reintroduce multi-buff support to eBPF kself-tests
+- reintroduce multi-buff support to bpf_xdp_adjust_tail helper
+- introduce multi-buffer support to bpf_xdp_copy helper
+- rebase on top of bpf-next
+
+Changes since v5:
+- rebase on top of bpf-next
+- initialize mb bit in xdp_init_buff() and drop per-driver initialization
+- drop xdp->mb initialization in xdp_convert_zc_to_xdp_frame()
+- postpone introduction of frame_length field in XDP ctx to another series
+- minor changes
+
+Changes since v4:
+- rebase ontop of bpf-next
+- introduce xdp_shared_info to build xdp multi-buff instead of using the
+  skb_shared_info struct
+- introduce frame_length in xdp ctx
+- drop previous bpf helpers
+- fix bpf_xdp_adjust_tail for xdp multi-buff
+- introduce xdp multi-buff self-tests for bpf_xdp_adjust_tail
+- fix xdp_return_frame_bulk for xdp multi-buff
+
+Changes since v3:
+- rebase ontop of bpf-next
+- add patch 10/13 to copy back paged data from a xdp multi-buff frame to
+  userspace buffer for xdp multi-buff selftests
+
+Changes since v2:
+- add throughput measurements
+- drop bpf_xdp_adjust_mb_header bpf helper
+- introduce selftest for xdp multibuffer
+- addressed comments on bpf_xdp_get_frags_count
+- introduce xdp multi-buff support to cpumaps
+
+Changes since v1:
+- Fix use-after-free in xdp_return_{buff/frame}
+- Introduce bpf helpers
+- Introduce xdp_mb sample program
+- access skb_shared_info->nr_frags only on the last fragment
+
+Changes since RFC:
+- squash multi-buffer bit initialization in a single patch
+- add mvneta non-linear XDP buff support for tx side
+
+[0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu-and-rx-zerocopy
+[1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
+[2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-to-a-NIC-driver (XDPmulti-buffers section)
+
+Eelco Chaudron (3):
+  bpf: add multi-buff support to the bpf_xdp_adjust_tail() API
+  bpf: add multi-buffer support to xdp copy helpers
+  bpf: update xdp_adjust_tail selftest to include multi-buffer
+
+Lorenzo Bianconi (15):
+  net: skbuff: add size metadata to skb_shared_info for xdp
+  xdp: introduce flags field in xdp_buff/xdp_frame
+  net: mvneta: update mb bit before passing the xdp buffer to eBPF layer
+  net: mvneta: simplify mvneta_swbm_add_rx_fragment management
+  net: xdp: add xdp_update_skb_shared_info utility routine
+  net: marvell: rely on xdp_update_skb_shared_info utility routine
+  xdp: add multi-buff support to xdp_return_{buff/frame}
+  net: mvneta: add multi buffer support to XDP_TX
+  net: mvneta: enable jumbo frames for XDP
+  bpf: introduce bpf_xdp_get_buff_len helper
+  bpf: move user_size out of bpf_test_init
+  bpf: introduce multibuff support to bpf_prog_test_run_xdp()
+  bpf: test_run: add xdp_shared_info pointer in bpf_test_finish
+    signature
+  net: xdp: introduce bpf_xdp_adjust_data helper
+  bpf: add bpf_xdp_adjust_data selftest
+
+ drivers/net/ethernet/marvell/mvneta.c         | 204 ++++++++++-------
+ include/linux/skbuff.h                        |   6 +-
+ include/net/xdp.h                             |  95 +++++++-
+ include/uapi/linux/bpf.h                      |  39 ++++
+ kernel/trace/bpf_trace.c                      |   3 +
+ net/bpf/test_run.c                            | 117 ++++++++--
+ net/core/filter.c                             | 216 +++++++++++++++++-
+ net/core/xdp.c                                |  76 +++++-
+ tools/include/uapi/linux/bpf.h                |  39 ++++
+ .../bpf/prog_tests/xdp_adjust_data.c          |  63 +++++
+ .../bpf/prog_tests/xdp_adjust_tail.c          | 118 ++++++++++
+ .../selftests/bpf/prog_tests/xdp_bpf2bpf.c    | 151 ++++++++----
+ .../bpf/progs/test_xdp_adjust_tail_grow.c     |  10 +-
+ .../bpf/progs/test_xdp_adjust_tail_shrink.c   |  32 ++-
+ .../selftests/bpf/progs/test_xdp_bpf2bpf.c    |   2 +-
+ .../bpf/progs/test_xdp_update_frags.c         |  45 ++++
+ 16 files changed, 1051 insertions(+), 165 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_adjust_data.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
+
+-- 
+2.31.1
+
