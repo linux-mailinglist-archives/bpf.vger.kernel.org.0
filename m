@@ -2,314 +2,321 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6231940349B
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 08:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48024035FF
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 10:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347833AbhIHG5J convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 8 Sep 2021 02:57:09 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45980 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347781AbhIHG5I (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 02:57:08 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1886pBj2006218
-        for <bpf@vger.kernel.org>; Tue, 7 Sep 2021 23:56:01 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3axcqfbqy2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 07 Sep 2021 23:56:00 -0700
-Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 7 Sep 2021 23:56:00 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 02CB53D405AC; Tue,  7 Sep 2021 23:55:45 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <quentin@isovalent.com>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next] libbpf: add LIBBPF_DEPRECATED_SINCE macro for scheduling API deprecations
-Date:   Tue, 7 Sep 2021 23:55:38 -0700
-Message-ID: <20210908065538.1725496-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: UcRfE4xP13vjvqk2Cb9bEXV8xX6NCg3p
-X-Proofpoint-ORIG-GUID: UcRfE4xP13vjvqk2Cb9bEXV8xX6NCg3p
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-08_02:2021-09-07,2021-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- lowpriorityscore=0 mlxscore=0 priorityscore=1501 adultscore=0
- suspectscore=0 clxscore=1015 spamscore=0 phishscore=0 bulkscore=0
- malwarescore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109030001 definitions=main-2109080043
-X-FB-Internal: deliver
+        id S1347908AbhIHIWm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 04:22:42 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:47460 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1347802AbhIHIWm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Sep 2021 04:22:42 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxVOY2cjhh5Y0BAA--.6828S2;
+        Wed, 08 Sep 2021 16:20:08 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        naveen.n.rao@linux.ibm.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, bjorn@kernel.org,
+        davem@davemloft.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org
+Subject: [RFC PATCH bpf-next] bpf: Make actual max tail call count as MAX_TAIL_CALL_CNT
+Date:   Wed,  8 Sep 2021 16:20:06 +0800
+Message-Id: <1631089206-5931-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9CxVOY2cjhh5Y0BAA--.6828S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3JFyUWF4kuFW8Xr18XF47Arb_yoWfXw48pr
+        18JwnakrWvqw15Aa4xJayUWw4UKF4vgFW7KFn8CFWSyanFvr9rWF13Kw15ZFZ0vrW8Jw4r
+        XFZ0kr13C3WkXwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07bwc_fUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Quentin Monnet <quentin@isovalent.com>
+In the current code, the actual max tail call count is 33 which is greater
+than MAX_TAIL_CALL_CNT, this is not consistent with the intended meaning
+in the commit 04fd61ab36ec ("bpf: allow bpf programs to tail-call other
+bpf programs"):
 
-Introduce a macro LIBBPF_DEPRECATED_SINCE(major, minor, message) to prepare
-the deprecation of two API functions. This macro marks functions as deprecated
-when libbpf's version reaches the values passed as an argument.
+"The chain of tail calls can form unpredictable dynamic loops therefore
+tail_call_cnt is used to limit the number of calls and currently is set
+to 32."
 
-As part of this change libbpf_version.h header is added with recorded major
-(LIBBPF_MAJOR_VERSION) and minor (LIBBPF_MINOR_VERSION) libbpf version macros.
-They are now part of libbpf public API and can be relied upon by user code.
-libbpf_version.h is installed system-wide along other libbpf public headers.
+Additionally, after commit 874be05f525e ("bpf, tests: Add tail call test
+suite"), we can see there exists failed testcase.
 
-Due to this new build-time auto-generated header, in-kernel applications
-relying on libbpf (resolve_btfids, bpftool, bpf_preload) are updated to
-include libbpf's output directory as part of a list of include search paths.
-Better fix would be to use libbpf's make_install target to install public API
-headers, but that clean up is left out as a future improvement. The build
-changes were tested by building kernel (with KBUILD_OUTPUT and O= specified
-explicitly), bpftool, libbpf, selftests/bpf, and resolve_btfids builds. No
-problems were detected.
+On all archs when CONFIG_BPF_JIT_ALWAYS_ON is not set:
+ # echo 0 > /proc/sys/net/core/bpf_jit_enable
+ # modprobe test_bpf
+ # dmesg | grep -w FAIL
+ Tail call error path, max count reached jited:0 ret 34 != 33 FAIL
 
-Note that because of the constraints of the C preprocessor we have to write
-a few lines of macro magic for each version used to prepare deprecation (0.6
-for now).
+On some archs:
+ # echo 1 > /proc/sys/net/core/bpf_jit_enable
+ # modprobe test_bpf
+ # dmesg | grep -w FAIL
+ Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
 
-Also, use LIBBPF_DEPRECATED_SINCE() to schedule deprecation of
-btf__get_from_id() and btf__load(), which are replaced by
-btf__load_from_kernel_by_id() and btf__load_into_kernel(), respectively,
-starting from future libbpf v0.6. This is part of libbpf 1.0 effort ([0]).
+with this patch, make the actual max tail call count as MAX_TAIL_CALL_CNT,
+at the same time, the above failed testcase can be fixed.
 
-  [0] Closes: https://github.com/libbpf/libbpf/issues/278
-
-Co-developed-by: Quentin Monnet <quentin@isovalent.com>
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
 
-v1->v2:
-  - fix bpf_preload build by adding dependency for iterators/iterators.o on
-    libbpf.a generation (caught by BPF CI);
+Hi all,
 
- kernel/bpf/preload/Makefile       |  7 +++++--
- tools/bpf/bpftool/Makefile        |  4 ++++
- tools/bpf/resolve_btfids/Makefile |  4 +++-
- tools/lib/bpf/Makefile            | 24 +++++++++++++++++-------
- tools/lib/bpf/btf.h               |  2 ++
- tools/lib/bpf/libbpf_common.h     | 19 +++++++++++++++++++
- 6 files changed, 50 insertions(+), 10 deletions(-)
+This is a RFC patch, if I am wrong or I missed something,
+please let me know, thank you!
 
-diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
-index 1951332dd15f..ac29d4e9a384 100644
---- a/kernel/bpf/preload/Makefile
-+++ b/kernel/bpf/preload/Makefile
-@@ -10,12 +10,15 @@ LIBBPF_OUT = $(abspath $(obj))
- $(LIBBPF_A):
- 	$(Q)$(MAKE) -C $(LIBBPF_SRCS) O=$(LIBBPF_OUT)/ OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+ arch/arm/net/bpf_jit_32.c         | 11 ++++++-----
+ arch/arm64/net/bpf_jit_comp.c     |  7 ++++---
+ arch/mips/net/ebpf_jit.c          |  4 ++--
+ arch/powerpc/net/bpf_jit_comp32.c |  4 ++--
+ arch/powerpc/net/bpf_jit_comp64.c | 12 ++++++------
+ arch/riscv/net/bpf_jit_comp32.c   |  4 ++--
+ arch/riscv/net/bpf_jit_comp64.c   |  4 ++--
+ arch/sparc/net/bpf_jit_comp_64.c  |  8 ++++----
+ kernel/bpf/core.c                 |  4 ++--
+ 9 files changed, 30 insertions(+), 28 deletions(-)
+
+diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+index a951276..39d9ae9 100644
+--- a/arch/arm/net/bpf_jit_32.c
++++ b/arch/arm/net/bpf_jit_32.c
+@@ -1180,18 +1180,19 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
  
--userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
-+userccflags += -I$(LIBBPF_OUT) -I $(srctree)/tools/include/ \
-+	-I $(srctree)/tools/include/uapi \
- 	-I $(srctree)/tools/lib/ -Wno-unused-result
+ 	/* tmp2[0] = array, tmp2[1] = index */
  
- userprogs := bpf_preload_umd
+-	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+-	 *	goto out;
++	/*
+ 	 * tail_call_cnt++;
++	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	 *	goto out;
+ 	 */
++	tc = arm_bpf_get_reg64(tcc, tmp, ctx);
++	emit(ARM_ADDS_I(tc[1], tc[1], 1), ctx);
++	emit(ARM_ADC_I(tc[0], tc[0], 0), ctx);
+ 	lo = (u32)MAX_TAIL_CALL_CNT;
+ 	hi = (u32)((u64)MAX_TAIL_CALL_CNT >> 32);
+-	tc = arm_bpf_get_reg64(tcc, tmp, ctx);
+ 	emit(ARM_CMP_I(tc[0], hi), ctx);
+ 	_emit(ARM_COND_EQ, ARM_CMP_I(tc[1], lo), ctx);
+ 	_emit(ARM_COND_HI, ARM_B(jmp_offset), ctx);
+-	emit(ARM_ADDS_I(tc[1], tc[1], 1), ctx);
+-	emit(ARM_ADC_I(tc[0], tc[0], 0), ctx);
+ 	arm_bpf_put_reg64(tcc, tmp, ctx);
  
--clean-files := $(userprogs) bpf_helper_defs.h FEATURE-DUMP.libbpf staticobjs/ feature/
-+clean-files := $(userprogs) libbpf_version.h bpf_helper_defs.h FEATURE-DUMP.libbpf staticobjs/ feature/
+ 	/* prog = array->ptrs[index]
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 41c23f4..5d6c843 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -286,14 +286,15 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx)
+ 	emit(A64_CMP(0, r3, tmp), ctx);
+ 	emit(A64_B_(A64_COND_CS, jmp_offset), ctx);
+ 
+-	/* if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+-	 *     goto out;
++	/*
+ 	 * tail_call_cnt++;
++	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
++	 *     goto out;
+ 	 */
++	emit(A64_ADD_I(1, tcc, tcc, 1), ctx);
+ 	emit_a64_mov_i64(tmp, MAX_TAIL_CALL_CNT, ctx);
+ 	emit(A64_CMP(1, tcc, tmp), ctx);
+ 	emit(A64_B_(A64_COND_HI, jmp_offset), ctx);
+-	emit(A64_ADD_I(1, tcc, tcc, 1), ctx);
+ 
+ 	/* prog = array->ptrs[index];
+ 	 * if (prog == NULL)
+diff --git a/arch/mips/net/ebpf_jit.c b/arch/mips/net/ebpf_jit.c
+index 3a73e93..029fc34 100644
+--- a/arch/mips/net/ebpf_jit.c
++++ b/arch/mips/net/ebpf_jit.c
+@@ -617,14 +617,14 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx, int this_idx)
+ 	b_off = b_imm(this_idx + 1, ctx);
+ 	emit_instr(ctx, bne, MIPS_R_AT, MIPS_R_ZERO, b_off);
+ 	/*
+-	 * if (TCC-- < 0)
++	 * if (--TCC < 0)
+ 	 *     goto out;
+ 	 */
+ 	/* Delay slot */
+ 	tcc_reg = (ctx->flags & EBPF_TCC_IN_V1) ? MIPS_R_V1 : MIPS_R_S4;
+ 	emit_instr(ctx, daddiu, MIPS_R_T5, tcc_reg, -1);
+ 	b_off = b_imm(this_idx + 1, ctx);
+-	emit_instr(ctx, bltz, tcc_reg, b_off);
++	emit_instr(ctx, bltz, MIPS_R_T5, b_off);
+ 	/*
+ 	 * prog = array->ptrs[index];
+ 	 * if (prog == NULL)
+diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+index beb12cb..b5585ad 100644
+--- a/arch/powerpc/net/bpf_jit_comp32.c
++++ b/arch/powerpc/net/bpf_jit_comp32.c
+@@ -221,12 +221,12 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
+ 	PPC_BCC(COND_GE, out);
+ 
+ 	/*
++	 * tail_call_cnt++;
+ 	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+ 	 *   goto out;
+ 	 */
+-	EMIT(PPC_RAW_CMPLWI(_R0, MAX_TAIL_CALL_CNT));
+-	/* tail_call_cnt++; */
+ 	EMIT(PPC_RAW_ADDIC(_R0, _R0, 1));
++	EMIT(PPC_RAW_CMPLWI(_R0, MAX_TAIL_CALL_CNT));
+ 	PPC_BCC(COND_GT, out);
+ 
+ 	/* prog = array->ptrs[index]; */
+diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+index b87a63d..bb15cc4 100644
+--- a/arch/powerpc/net/bpf_jit_comp64.c
++++ b/arch/powerpc/net/bpf_jit_comp64.c
+@@ -227,6 +227,12 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
+ 	PPC_BCC(COND_GE, out);
+ 
+ 	/*
++	 * tail_call_cnt++;
++	 */
++	EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], b2p[TMP_REG_1], 1));
++	PPC_BPF_STL(b2p[TMP_REG_1], 1, bpf_jit_stack_tailcallcnt(ctx));
 +
-+$(obj)/iterators/iterators.o: $(LIBBPF_A)
++	/*
+ 	 * if (tail_call_cnt > MAX_TAIL_CALL_CNT)
+ 	 *   goto out;
+ 	 */
+@@ -234,12 +240,6 @@ static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32
+ 	EMIT(PPC_RAW_CMPLWI(b2p[TMP_REG_1], MAX_TAIL_CALL_CNT));
+ 	PPC_BCC(COND_GT, out);
  
- bpf_preload_umd-objs := iterators/iterators.o
- bpf_preload_umd-userldlibs := $(LIBBPF_A) -lelf -lz
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index d73232be1e99..06aa1616dabe 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -60,6 +60,7 @@ CFLAGS += -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
- CFLAGS += $(filter-out -Wswitch-enum -Wnested-externs,$(EXTRA_WARNINGS))
- CFLAGS += -DPACKAGE='"bpftool"' -D__EXPORTED_HEADERS__ \
- 	-I$(if $(OUTPUT),$(OUTPUT),.) \
-+	$(if $(LIBBPF_OUTPUT),-I$(LIBBPF_OUTPUT)) \
- 	-I$(srctree)/kernel/bpf/ \
- 	-I$(srctree)/tools/include \
- 	-I$(srctree)/tools/include/uapi \
-@@ -137,7 +138,10 @@ endif
- BPFTOOL_BOOTSTRAP := $(BOOTSTRAP_OUTPUT)bpftool
+-	/*
+-	 * tail_call_cnt++;
+-	 */
+-	EMIT(PPC_RAW_ADDI(b2p[TMP_REG_1], b2p[TMP_REG_1], 1));
+-	PPC_BPF_STL(b2p[TMP_REG_1], 1, bpf_jit_stack_tailcallcnt(ctx));
+-
+ 	/* prog = array->ptrs[index]; */
+ 	EMIT(PPC_RAW_MULI(b2p[TMP_REG_1], b2p_index, 8));
+ 	EMIT(PPC_RAW_ADD(b2p[TMP_REG_1], b2p[TMP_REG_1], b2p_bpf_array));
+diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_comp32.c
+index e649742..1608d94 100644
+--- a/arch/riscv/net/bpf_jit_comp32.c
++++ b/arch/riscv/net/bpf_jit_comp32.c
+@@ -800,12 +800,12 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
  
- BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o xlated_dumper.o btf_dumper.o disasm.o)
-+$(BOOTSTRAP_OBJS): $(LIBBPF_BOOTSTRAP)
+ 	/*
+ 	 * temp_tcc = tcc - 1;
+-	 * if (tcc < 0)
++	 * if (temp_tcc < 0)
+ 	 *   goto out;
+ 	 */
+ 	emit(rv_addi(RV_REG_T1, RV_REG_TCC, -1), ctx);
+ 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+-	emit_bcc(BPF_JSLT, RV_REG_TCC, RV_REG_ZERO, off, ctx);
++	emit_bcc(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
+ 
+ 	/*
+ 	 * prog = array->ptrs[index];
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 3af4131..6e9ba83 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -311,12 +311,12 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
+ 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+ 	emit_branch(BPF_JGE, RV_REG_A2, RV_REG_T1, off, ctx);
+ 
+-	/* if (TCC-- < 0)
++	/* if (--TCC < 0)
+ 	 *     goto out;
+ 	 */
+ 	emit_addi(RV_REG_T1, tcc, -1, ctx);
+ 	off = ninsns_rvoff(tc_ninsn - (ctx->ninsns - start_insn));
+-	emit_branch(BPF_JSLT, tcc, RV_REG_ZERO, off, ctx);
++	emit_branch(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
+ 
+ 	/* prog = array->ptrs[index];
+ 	 * if (!prog)
+diff --git a/arch/sparc/net/bpf_jit_comp_64.c b/arch/sparc/net/bpf_jit_comp_64.c
+index 9a2f20c..50d914c 100644
+--- a/arch/sparc/net/bpf_jit_comp_64.c
++++ b/arch/sparc/net/bpf_jit_comp_64.c
+@@ -863,6 +863,10 @@ static void emit_tail_call(struct jit_ctx *ctx)
+ 	emit_branch(BGEU, ctx->idx, ctx->idx + OFFSET1, ctx);
+ 	emit_nop(ctx);
+ 
++	emit_alu_K(ADD, tmp, 1, ctx);
++	off = BPF_TAILCALL_CNT_SP_OFF;
++	emit(ST32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
 +
- OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
-+$(OBJS): $(LIBBPF)
+ 	off = BPF_TAILCALL_CNT_SP_OFF;
+ 	emit(LD32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
+ 	emit_cmpi(tmp, MAX_TAIL_CALL_CNT, ctx);
+@@ -870,10 +874,6 @@ static void emit_tail_call(struct jit_ctx *ctx)
+ 	emit_branch(BGU, ctx->idx, ctx->idx + OFFSET2, ctx);
+ 	emit_nop(ctx);
  
- VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
- 		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)	\
-diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-index bb9fa8de7e62..d9ef8a959ed8 100644
---- a/tools/bpf/resolve_btfids/Makefile
-+++ b/tools/bpf/resolve_btfids/Makefile
-@@ -26,6 +26,7 @@ LIBBPF_SRC := $(srctree)/tools/lib/bpf/
- SUBCMD_SRC := $(srctree)/tools/lib/subcmd/
+-	emit_alu_K(ADD, tmp, 1, ctx);
+-	off = BPF_TAILCALL_CNT_SP_OFF;
+-	emit(ST32 | IMMED | RS1(SP) | S13(off) | RD(tmp), ctx);
+-
+ 	emit_alu3_K(SLL, bpf_index, 3, tmp, ctx);
+ 	emit_alu(ADD, bpf_array, tmp, ctx);
+ 	off = offsetof(struct bpf_array, ptrs);
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 9f4636d..8edb1c3 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1564,10 +1564,10 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
  
- BPFOBJ     := $(OUTPUT)/libbpf/libbpf.a
-+LIBBPF_OUT := $(abspath $(dir $(BPFOBJ)))/
- SUBCMDOBJ  := $(OUTPUT)/libsubcmd/libsubcmd.a
+ 		if (unlikely(index >= array->map.max_entries))
+ 			goto out;
+-		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
+-			goto out;
  
- BINARY     := $(OUTPUT)/resolve_btfids
-@@ -41,11 +42,12 @@ $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
- 	$(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(abspath $(dir $@))/ $(abspath $@)
+ 		tail_call_cnt++;
++		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
++			goto out;
  
- $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(OUTPUT)/libbpf
--	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)  OUTPUT=$(abspath $(dir $@))/ $(abspath $@)
-+	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)  OUTPUT=$(LIBBPF_OUT) $(abspath $@)
- 
- CFLAGS := -g \
-           -I$(srctree)/tools/include \
-           -I$(srctree)/tools/include/uapi \
-+          -I$(LIBBPF_OUT) \
-           -I$(LIBBPF_SRC) \
-           -I$(SUBCMD_SRC)
- 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 74c3b73a5fbe..dab21e0c7cc2 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -8,7 +8,8 @@ VERSION_SCRIPT := libbpf.map
- LIBBPF_VERSION := $(shell \
- 	grep -oE '^LIBBPF_([0-9.]+)' $(VERSION_SCRIPT) | \
- 	sort -rV | head -n1 | cut -d'_' -f2)
--LIBBPF_MAJOR_VERSION := $(firstword $(subst ., ,$(LIBBPF_VERSION)))
-+LIBBPF_MAJOR_VERSION := $(word 1,$(subst ., ,$(LIBBPF_VERSION)))
-+LIBBPF_MINOR_VERSION := $(word 2,$(subst ., ,$(LIBBPF_VERSION)))
- 
- MAKEFLAGS += --no-print-directory
- 
-@@ -59,7 +60,8 @@ ifndef VERBOSE
-   VERBOSE = 0
- endif
- 
--INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/include/uapi
-+INCLUDES = -I$(if $(OUTPUT),$(OUTPUT),.)				\
-+	   -I$(srctree)/tools/include -I$(srctree)/tools/include/uapi
- 
- export prefix libdir src obj
- 
-@@ -111,7 +113,9 @@ SHARED_OBJDIR	:= $(OUTPUT)sharedobjs/
- STATIC_OBJDIR	:= $(OUTPUT)staticobjs/
- BPF_IN_SHARED	:= $(SHARED_OBJDIR)libbpf-in.o
- BPF_IN_STATIC	:= $(STATIC_OBJDIR)libbpf-in.o
-+VERSION_HDR	:= $(OUTPUT)libbpf_version.h
- BPF_HELPER_DEFS	:= $(OUTPUT)bpf_helper_defs.h
-+BPF_GENERATED	:= $(BPF_HELPER_DEFS) $(VERSION_HDR)
- 
- LIB_TARGET	:= $(addprefix $(OUTPUT),$(LIB_TARGET))
- LIB_FILE	:= $(addprefix $(OUTPUT),$(LIB_FILE))
-@@ -136,7 +140,7 @@ all: fixdep
- 
- all_cmd: $(CMD_TARGETS) check
- 
--$(BPF_IN_SHARED): force $(BPF_HELPER_DEFS)
-+$(BPF_IN_SHARED): force $(BPF_GENERATED)
- 	@(test -f ../../include/uapi/linux/bpf.h -a -f ../../../include/uapi/linux/bpf.h && ( \
- 	(diff -B ../../include/uapi/linux/bpf.h ../../../include/uapi/linux/bpf.h >/dev/null) || \
- 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/bpf.h' differs from latest version at 'include/uapi/linux/bpf.h'" >&2 )) || true
-@@ -154,13 +158,19 @@ $(BPF_IN_SHARED): force $(BPF_HELPER_DEFS)
- 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
- 	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(SHARED_OBJDIR) CFLAGS="$(CFLAGS) $(SHLIB_FLAGS)"
- 
--$(BPF_IN_STATIC): force $(BPF_HELPER_DEFS)
-+$(BPF_IN_STATIC): force $(BPF_GENERATED)
- 	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(STATIC_OBJDIR)
- 
- $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
- 	$(QUIET_GEN)$(srctree)/scripts/bpf_doc.py --header \
- 		--file $(srctree)/tools/include/uapi/linux/bpf.h > $(BPF_HELPER_DEFS)
- 
-+$(VERSION_HDR): force
-+	$(QUIET_GEN)echo "/* This file was auto-generated. */" > $@
-+	@echo "" >> $@
-+	@echo "#define LIBBPF_MAJOR_VERSION $(LIBBPF_MAJOR_VERSION)" >> $@
-+	@echo "#define LIBBPF_MINOR_VERSION $(LIBBPF_MINOR_VERSION)" >> $@
-+
- $(OUTPUT)libbpf.so: $(OUTPUT)libbpf.so.$(LIBBPF_VERSION)
- 
- $(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN_SHARED) $(VERSION_SCRIPT)
-@@ -224,10 +234,10 @@ install_lib: all_cmd
- 		cp -fpR $(LIB_FILE) $(DESTDIR)$(libdir_SQ)
- 
- INSTALL_HEADERS = bpf.h libbpf.h btf.h libbpf_common.h libbpf_legacy.h xsk.h \
--		  bpf_helpers.h $(BPF_HELPER_DEFS) bpf_tracing.h	     \
-+		  bpf_helpers.h $(BPF_GENERATED) bpf_tracing.h	     \
- 		  bpf_endian.h bpf_core_read.h skel_internal.h
- 
--install_headers: $(BPF_HELPER_DEFS)
-+install_headers: $(BPF_GENERATED)
- 	$(call QUIET_INSTALL, headers)					     \
- 		$(foreach hdr,$(INSTALL_HEADERS),			     \
- 			$(call do_install,$(hdr),$(prefix)/include/bpf,644);)
-@@ -240,7 +250,7 @@ install: install_lib install_pkgconfig install_headers
- 
- clean:
- 	$(call QUIET_CLEAN, libbpf) $(RM) -rf $(CMD_TARGETS)		     \
--		*~ .*.d .*.cmd LIBBPF-CFLAGS $(BPF_HELPER_DEFS)		     \
-+		*~ .*.d .*.cmd LIBBPF-CFLAGS $(BPF_GENERATED)		     \
- 		$(SHARED_OBJDIR) $(STATIC_OBJDIR)			     \
- 		$(addprefix $(OUTPUT),					     \
- 			    *.o *.a *.so *.so.$(LIBBPF_MAJOR_VERSION) *.pc)
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index 4a711f990904..f2e2fab950b7 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -50,9 +50,11 @@ LIBBPF_API struct btf *libbpf_find_kernel_btf(void);
- 
- LIBBPF_API struct btf *btf__load_from_kernel_by_id(__u32 id);
- LIBBPF_API struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf);
-+LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__load_from_kernel_by_id instead")
- LIBBPF_API int btf__get_from_id(__u32 id, struct btf **btf);
- 
- LIBBPF_API int btf__finalize_data(struct bpf_object *obj, struct btf *btf);
-+LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__load_into_kernel instead")
- LIBBPF_API int btf__load(struct btf *btf);
- LIBBPF_API int btf__load_into_kernel(struct btf *btf);
- LIBBPF_API __s32 btf__find_by_name(const struct btf *btf,
-diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
-index 947d8bd8a7bb..36ac77f2bea2 100644
---- a/tools/lib/bpf/libbpf_common.h
-+++ b/tools/lib/bpf/libbpf_common.h
-@@ -10,6 +10,7 @@
- #define __LIBBPF_LIBBPF_COMMON_H
- 
- #include <string.h>
-+#include "libbpf_version.h"
- 
- #ifndef LIBBPF_API
- #define LIBBPF_API __attribute__((visibility("default")))
-@@ -17,6 +18,24 @@
- 
- #define LIBBPF_DEPRECATED(msg) __attribute__((deprecated(msg)))
- 
-+/* Mark a symbol as deprecated when libbpf version is >= {major}.{minor} */
-+#define LIBBPF_DEPRECATED_SINCE(major, minor, msg)			    \
-+	__LIBBPF_MARK_DEPRECATED_ ## major ## _ ## minor		    \
-+		(LIBBPF_DEPRECATED("libbpf v" # major "." # minor "+: " msg))
-+
-+#define __LIBBPF_CURRENT_VERSION_GEQ(major, minor)			    \
-+	(LIBBPF_MAJOR_VERSION > (major) ||				    \
-+	 (LIBBPF_MAJOR_VERSION == (major) && LIBBPF_MINOR_VERSION >= (minor)))
-+
-+/* Add checks for other versions below when planning deprecation of API symbols
-+ * with the LIBBPF_DEPRECATED_SINCE macro.
-+ */
-+#if __LIBBPF_CURRENT_VERSION_GEQ(0, 6)
-+#define __LIBBPF_MARK_DEPRECATED_0_6(X) X
-+#else
-+#define __LIBBPF_MARK_DEPRECATED_0_6(X)
-+#endif
-+
- /* Helper macro to declare and initialize libbpf options struct
-  *
-  * This dance with uninitialized declaration, followed by memset to zero,
+ 		prog = READ_ONCE(array->ptrs[index]);
+ 		if (!prog)
 -- 
-2.30.2
+2.1.0
 
