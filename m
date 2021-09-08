@@ -2,93 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50DA403F2F
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 20:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7B9403F34
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 20:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346546AbhIHSpp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 14:45:45 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:22532 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240231AbhIHSpo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 14:45:44 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 188HxM4w028104;
-        Wed, 8 Sep 2021 18:43:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=uzyJNPGE/1N2lbnNUHv1xfa+C5Jfo8jadClNrizie0Y=;
- b=pmrRt8w4bZ7Z5iqtKN/MxFARSBs0vgipT4x95KZOrSAQWQMdnzTJop2G7KxntQENkkUy
- EvaHZr0jjHt3lp5t3RRE+HwKZ/5Y7Aw/kMU7aLDZNDjyZjDOwvaB2cYeUudtTisnSXQI
- YIk5yZ9qIn1CKd81EzHlWjKlYsSLe46k11pG0TzaKgj35bRDf3knWT/2w2ltg+WgrSyF
- YpHM9xxB/q4z6mKVADm2PNDZsO5dJ3mJjhqQPzuzadxbRsA6Ria6RNt/GAa8hZ5CJ+4+
- zruOVo4He3RIzw/qJoZBnQ1vI4kXORpc/7MyGoJFPt8o9a2tStduMaYxoxP1aVH0ErNM +w== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=uzyJNPGE/1N2lbnNUHv1xfa+C5Jfo8jadClNrizie0Y=;
- b=zTQi74RbHVO2hARgumxz7KuARtyvJA/zODttSMw2l/It7FrPtWv9LHwixhvhDmCGXrG8
- G8WU3/ZRV8XS7dgbFUvTzsIGTHq9qu+DvvnuDYD5pRtR+VZ8WqC3AD8eTD3GDEFptNSx
- rfIYkSLVbZUR9Ti0d8rEjFHl49/ksoD/iPqm1jWuILykoLxx583nY4enYceCtlVIUZ1x
- QtriX9lnyJlzFEWhlZw13oNGX0Bkl/vzt2ifBvGI/U65UDvJ3kP7aVyG5LvOiMw7KgkA
- kYbt/950LTCWCLGF72C35nNRSpzG+gF8yryTnAJnw6tJZfDZu+0Szf5yY5KJvOri/jd/ aA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3axd8q3rsa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Sep 2021 18:43:53 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 188IaLpf121470;
-        Wed, 8 Sep 2021 18:43:51 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2176.outbound.protection.outlook.com [104.47.73.176])
-        by aserp3020.oracle.com with ESMTP id 3axcpmn9ry-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Sep 2021 18:43:51 +0000
+        id S235775AbhIHSrS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 14:47:18 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1426 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240231AbhIHSrP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 14:47:15 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 188IhBMO021690;
+        Wed, 8 Sep 2021 11:45:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=RFmN7YFIY4x/DPIoajaOqRFdZF+ErOzzFxAibSCnz6o=;
+ b=ja4wu07sagtuFKMEuYWHAFjf4vEiij0vgkBnxLOeG9k/fLU73Y9mP6YLQl9/4lM0L4Qr
+ aL04hbpfViLR2bvU064qYcs4/JAvg4xbc8FJu8BIQ5hTQhRSxDM3Ug9zwgJOjPtPsu57
+ pDdOfXCqiurX0Q3H5VU7QwKmX6BF0lNv/Go= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3axcpgsdyc-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 08 Sep 2021 11:45:23 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 8 Sep 2021 11:45:22 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K6LFHt0uS6nyIQY2yFkhLBUx12DufDPD0K3ufDIClszKmb3JS07x4yJmtjyuUZunwFcL0F+I3TfSh8jfTD/EOmSKPeKZHsohMATRCaS0cjfDLkEvNH/iQ4wmkQry/ODF0dCfXc85kFkyWxAAWjL1ufxSA6Je756hXsYe04bnoIuttprHjhD2Zpu8bJirxiRHDYcEJBaaBDrzRoiVFuNw1LNrFjkojbZGMjnnF2z0ZQqRAwoOyViDi3zAJqRmRJ2YK0PhkHG5rV6obrCjNkWX08mw52m5IgsNC8V5HTpd2D8yY/panZutznu8gfEMAm5ShpxpZ84qox13o5MZ3cZUXA==
+ b=OMGYGYsQiDsu2nVc94xMfj96dvEkw5fKNlhAdUCL6pCM1wuiJJ0gK2s+kgmVDsHqPtXid8r1DkXprIBAInrXilM/6xEkbsFrC54kX6vWvimLs43jLcIvRTpXqnRSWmrVk3V2LfC09j+9gmBEd08SSg1Aev6YsRRI4GCqV9zp4b2tk+LaL7UhjRwv75jE/JDU6jBj1KTBz/nNR5I4J+xDyOFRpPAgJT/nghFekxo8Zyjgxe6UkPEulhzMTPLKeB6SAiBb3OpTDszog1nU6Hti0SDhzustQ3V3ivbWD0mrh4rEFbRozqhx06Zy++K5NHIKkByvLg1pIccCAXFfVKVxGw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=uzyJNPGE/1N2lbnNUHv1xfa+C5Jfo8jadClNrizie0Y=;
- b=EFtf4pvjTFPFHnjbJGkroIZA68Xtl/LI82Z+ZQNDKLgbcpXjJJmMcgZZb4wIbA2oI4crUP+0KyAS6tHKV9px9IoRKRSeO87A09KMVr7bJiqSU6FSq9kn+ff/eLifq3oUNmbAyDEq5+sl0yVCd5WqyZOcnKKeHvnL2v5x77996sWcfxsa3bc2CfuLiCILhGJGHMH+7FZt87GlBwaDaEGlx9SJmu4htxIohf19VsScdNiBLoiZ4NepUJMrondCNfTuwIQoS+oRNPEIpS/35pjoR+mnCn3+HVc+qiG+LlvM9YknspwYMcUM+4Lez2EC1SX/JAYai4WJOrMX5rN8vVCkxQ==
+ bh=RFmN7YFIY4x/DPIoajaOqRFdZF+ErOzzFxAibSCnz6o=;
+ b=KtUxcbdKzxsx5A5FXXBoSY5tS8hZ4xOiKcpSmB6Urp1A2uYScEzurtqUqg9tlqOxNHn2RWngpAkTzonEysoL43DLevSOKitebNtSz0QB260IPaMM9ukkOVjQksWnQrBfdJv2xJQqFEu/3bxv/N31kaXbtaaUvbZ0ExRXH0amib+oL/vVJohQh3cCFk6vGQTVxc00NlMmdeHOOj3gyy0LYRUz0t4Z3Au+oMea9g8JLCYhNoQ9dp1isAfkTiVDqnbp2BVAtmYs5xuO/aXefbekLmviFNuiaJGr1yeAxc1tsUVIEeobgY80eNXZU/O6J3ANEDyq7JGYpIitt3Cbnl3X6Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uzyJNPGE/1N2lbnNUHv1xfa+C5Jfo8jadClNrizie0Y=;
- b=Mh17SOJAhGrRhssZYijku0bSZmRLIe37zISrcWPyoNK0zR0C0l/ewFCkdSr2oNIflFo50lyBnGA1mhA8l4e+NfOYDn9C1H81dC3Q0/Nc69zxNR4BIxRZ8BSJDR4RQgv28IRCsVBXdD/dC94KZBh7P8sUpvGMHZwg4gZUOEH4COI=
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
- by DS7PR10MB5181.namprd10.prod.outlook.com (2603:10b6:5:3a1::7) with
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
+ by DM6PR15MB2908.namprd15.prod.outlook.com (2603:10b6:5:143::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Wed, 8 Sep
- 2021 18:43:49 +0000
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::f4b1:d890:7745:30a3]) by DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::f4b1:d890:7745:30a3%4]) with mapi id 15.20.4478.026; Wed, 8 Sep 2021
- 18:43:49 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+ 2021 18:45:17 +0000
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::80a7:bdbd:d33b:e03c]) by DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::80a7:bdbd:d33b:e03c%5]) with mapi id 15.20.4500.014; Wed, 8 Sep 2021
+ 18:45:17 +0000
+Subject: Re: [PATCH mm/bpf v2] mm: bpf: add find_vma_no_check() without
+ lockdep_assert on mm->mmap_lock
+To:     Liam Howlett <liam.howlett@oracle.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
 CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Luigi Rizzo <lrizzo@google.com>, Yonghong Song <yhs@fb.com>,
+        Luigi Rizzo <lrizzo@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Michel Lespinasse <walken@google.com>,
         bpf <bpf@vger.kernel.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH mm/bpf v2] mm: bpf: add find_vma_no_check() without
- lockdep_assert on mm->mmap_lock
-Thread-Topic: [PATCH mm/bpf v2] mm: bpf: add find_vma_no_check() without
- lockdep_assert on mm->mmap_lock
-Thread-Index: AQHXpGw9DgXD+GNr6U6ppzcLTIluVquaDuuAgAAaBwCAAAYWgIAAB/aAgAAICwCAABANgIAAEJuAgAADVQCAAAjagIAAAsoAgAALYQA=
-Date:   Wed, 8 Sep 2021 18:43:49 +0000
-Message-ID: <20210908184342.r3bwp7v24a6tnslg@revolver>
-References: <ebcddf07-f329-05fa-8fdc-b2b9d6b0127b@iogearbox.net>
- <20210908135326.GZ1200268@ziepe.ca>
- <YTjFcek5B3ltYtG3@hirez.programming.kicks-ass.net>
+        "kernel-team@fb.com" <kernel-team@fb.com>,
+        "walken@fb.com" <walken@fb.com>
+References: <YTjFcek5B3ltYtG3@hirez.programming.kicks-ass.net>
  <CAMOZA0+FofdYMivrBR14snb6Xo_i6BV7gVX1dGCtJa=ue3VqEQ@mail.gmail.com>
  <20210908151230.m2zyslt4qrufm4bv@revolver>
  <f5328a05-ed3c-a868-9240-1b0852e01406@fb.com>
@@ -96,127 +70,183 @@ References: <ebcddf07-f329-05fa-8fdc-b2b9d6b0127b@iogearbox.net>
  <20210908172118.n2f4w7epm6hh62zf@ast-mbp.dhcp.thefacebook.com>
  <20210908105259.c47dcc4e4371ebb5e147ee6e@linux-foundation.org>
  <20210908180258.yjh62e5oouckar5b@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210908180258.yjh62e5oouckar5b@ast-mbp.dhcp.thefacebook.com>
-Accept-Language: en-US
+ <20210908111527.9a611426e257d55ccbbf46eb@linux-foundation.org>
+ <CAADnVQ+5m0+X1Xvgu-wYii2nWvAtEfk2ffM6mQTaiq2SPM1Z=A@mail.gmail.com>
+ <20210908183032.zoh6dj5xh455z47f@revolver>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <97b17544-b572-30b4-bc2f-6e7b77892a39@fb.com>
+Date:   Wed, 8 Sep 2021 11:45:14 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
+In-Reply-To: <20210908183032.zoh6dj5xh455z47f@revolver>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c9b4e21e-3ea2-4537-ad10-08d972f8993d
-x-ms-traffictypediagnostic: DS7PR10MB5181:
-x-microsoft-antispam-prvs: <DS7PR10MB5181F7FEDCCD3BF09E19C94BFDD49@DS7PR10MB5181.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3044;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lzmhcGr2RPq/oassgfI5J1XQ8wG7tcx3HuyxQHxVIZsr9k4CeEs/jCxf5aZMn3ktur70GRYgjX2PA18gYELDOrn89O/2pWfx87lwH5qKF/roL062DR25a1FfkB69F2/D0fxfZfv6ndvypPssOzSNXARlhHQdOjKm48uAQPRsId9b4MMZaLU8eJX2yZ6yrL4ThcezXMuHTyu7QALLT9M9dGp9qDrWYLELWl56/J7UrL8R/i270lCjU/4EWJ/tOC6PiaqAPndVtRSvSalai5z6CxbxMQGgyATyFKQZtC9fw7W2Od2IVfjnxCjmND0QmY9BrO1Q3Fy2fJ7uCj7VJi2pS+92jy61pccNcS4VAl5pojrQJOT1k945YR5iNMFDyXCL/CQtkB2ZjcCLC7OMBpKtecct96jGjkzYQ8Oq5O9gH4JePmN1IX7jMO+bVQzzche7NwFp/0XXuQliRJZpBnyek877evJ9POpA+3PREbT7IHTAKrDKUgk4dqQkoa3qk0+wthW8mRx7Fuay5XUMFD32j9eRXs5DoI13CYZDXUJ7VH1aHRo9Z814bRaXGIfb5EFLZD83dAsDnkvOT4lKW3m/grJtA0uwzjgv+CNiqu2TbRHDxv1HUMlZe0gQK9SZL0EXqCwwsG7ylSwdXNoLjOf/56PIYPDtXT7+KsBwxfdKisy3K0adk4spyHsc5RiwDBdxH2T2seNaxpw9IX761EcSbw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(366004)(6916009)(44832011)(33716001)(316002)(6506007)(54906003)(122000001)(2906002)(1076003)(38100700002)(4326008)(71200400001)(508600001)(186003)(6486002)(8676002)(9686003)(6512007)(8936002)(66556008)(66446008)(64756008)(66476007)(7416002)(66946007)(86362001)(5660300002)(83380400001)(38070700005)(26005)(76116006)(91956017);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?qMjVZFRXKIFcGMO5vNvb8/SNIWLpKgWnoyWcgtQZtN0iZVV+Hhj19kKGXUH4?=
- =?us-ascii?Q?2aPnrME1vKaq1glO47y3Rzow32yu8Ofx25ul4nSymidOLVoF3PjAvlHN/POm?=
- =?us-ascii?Q?q8sYBiQ0Jdohfi6HkxnYw4FQtwX05inJOMO4S/P6V42zeS90cdXYMVrBMGgJ?=
- =?us-ascii?Q?jMYH3ZQSw3ns6EYvfCs06osa1cqym5bHBhQKHZDDKVYjpr2FNuBIMqLb2Xd2?=
- =?us-ascii?Q?AtgqghE0kjN23rEguYuS1fTLOowgetlVc1Ssku8xoT8rO2j6mhlp6frTzBp7?=
- =?us-ascii?Q?YV40VHma4sHMpniotndrCGkb7IRlsXA7DIAk+IpITtOIakVOWyaj4i9GuxRm?=
- =?us-ascii?Q?u7X06j0KL4QigaTIfGkbGlWogp1ylNLvn27IL5knoVyscO4LP3uawWlIP7OI?=
- =?us-ascii?Q?CmfuyRLygh+KZKFZeQDCxMp94wWN+Zhuw4IKirzykUabsHr6XoJ61kIgcKO/?=
- =?us-ascii?Q?i7N4+c9f6ik2DLTZQQxJFHVaWSrQ4gBPOYC+I+G1EWjMpN1cM7ARi7HJcquD?=
- =?us-ascii?Q?4uLdtsthpo86mGiTedj08AsZhDSSqnhSwtFRCAsNliftsqXlm+r2mEi7q3az?=
- =?us-ascii?Q?3oSdBYk2BeB/OFDhLznME5R2Ae1LRt9VIj7Ef+iTgyeLGAMFxKxfdCQGPCCD?=
- =?us-ascii?Q?0XQyvVgg6d5fIx24YEqS/+jipz3GtzVtNAC7iAoeMxdl2HNtWvEnmc9f7jM8?=
- =?us-ascii?Q?8KniB/1kP15zCQuzjDFWmRnFC/8GhERO9xOM3LjOntLG1TlxUPKp86BYzngY?=
- =?us-ascii?Q?wuocZVRKLMCsMHDufhCVZgaBoi8sV2+23iM0e2vQ76vJYaVy1ryY3VBLH/E3?=
- =?us-ascii?Q?3qN8Dw2ehG5OySRwxAKeYLxFiTCJyZjAUl4Ywg0hjkRAg4yV8EWmXvOT31+e?=
- =?us-ascii?Q?eS0bLny83YmJ+Yr8nGFxZOy2L1AtJAtTNSKqlUiu8RwDJZ0v1Rntb9F2N3NS?=
- =?us-ascii?Q?8WEdrnekZPaqbTJDT6RMQrZmvab2JM9Qfu6jSBrZ5pF2vpV1WTm84wOoeQ+F?=
- =?us-ascii?Q?NBubVQbOnYJBqbJSlDxA5+vcQ8IKwPo8zwzuvgMaqb/F+CZvmjyw1ylUguRh?=
- =?us-ascii?Q?ZrflR9POOzocIEFcHoJLzGKGjYDBHvedEGtuRVbQwlVZCvf+438mfBRnvm6y?=
- =?us-ascii?Q?d24inw8Saacw3QSc9xUH4dY26tSh+W1ef1BO2tnzP41WGDBjXYf91igtQ2aG?=
- =?us-ascii?Q?iN0t/kheDhThskntAaT9MBsfFUrcMoloqUWzODP7v9tvTSLFmLCUw9Rxh/iT?=
- =?us-ascii?Q?ILbmFZr4n/99BdyOdP3gNlRRlMQUIsMdVRjuk6GjoUlzKp6naXrhC4aG9Ixb?=
- =?us-ascii?Q?Nd+UpTlgNEOfc7NDrwyDXHIg?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B962D22A97BE474E80B4A121739AC012@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR07CA0068.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::45) To DM5PR1501MB2055.namprd15.prod.outlook.com
+ (2603:10b6:4:a1::13)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
+Received: from [IPv6:2620:10d:c085:21e8::15db] (2620:10d:c090:400::5:ffd6) by BYAPR07CA0068.namprd07.prod.outlook.com (2603:10b6:a03:60::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.15 via Frontend Transport; Wed, 8 Sep 2021 18:45:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 393b3d16-b7aa-4a91-f066-08d972f8cd42
+X-MS-TrafficTypeDiagnostic: DM6PR15MB2908:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR15MB29088D186E6D67F1EB6A10BED3D49@DM6PR15MB2908.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nkpqkkrkZMZe1NKr6wpIUVSPv6cS6XR1la9bbm8aQwhKgtgxRrAcBBSocIH2jP3fzBJ3SYlHgtLFN3vKAK8Lz32pJ0plXspTZ+5a3R70fCbbpflApvZ4hcvewxUxdf0Y6WoaqpXcRbY62GnqSI1ZIXJ9Lk/OvbuZxQRTgXCCMnQV6om1++9MDSeRQ1mzu4h8MO6SUPFlz8aTRxFyHu87Sqw8a9wdE06BvcDQVfpBUWZAVfk553rU90ICYdZnD381AkGfC2MP+4kiWZlk/CigNseVGVX2V8b/8u6SzRf+5Afprdaf0LnpYzwjFqV+8oZ5LP9Tpj4cgvsTVLn/SR6O5byyW2TA70itQVXfOvTXw1QX/2GsYcrwHP24XmMrq/KjySi6EPOdesJe4P+u/aKAToxVzCPSJx6jYO6OvtZsDTY7aiUViMKtwPCmj7U9kW9i6PSZtgzmpnXXqtrThN1IQaduHkaHYDSZv38iU6Pas95twqHqqdSWLQNkpp/rYkYy7EFUuolVbdKlu5TWXU/O5s8aTyqqgJWqlMO8kEwZvGWfxIuJRYXNXUkpRPX+SKsJu8QZxE1G5RHz5ralcrF5NPq2DWdOtZ6Mn9Sd94qLBAHUucysBoX+z5+p/IwijYh9lrXZomNN4655HW6kCu2sFltTMYbM5784YoyoUXplJbY4zoNTC/I+6NCvdb5Lplfzt1TLzXBP/skrvhFXlG7HgYHxRaT6K73qgbP9xNxF8iY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(2906002)(86362001)(8676002)(5660300002)(31696002)(8936002)(54906003)(508600001)(83380400001)(186003)(66476007)(53546011)(110136005)(66946007)(66556008)(7416002)(36756003)(52116002)(31686004)(2616005)(38100700002)(6486002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a3lvdHQrMTNSNlNaczFJTDhjOXJXWHJiUUQxalJ6eEU2U284WGVBdXV0em1r?=
+ =?utf-8?B?RFNyQTZmeERHdFZoeWtkNjk0U1pMSklsekRDMXd5VnhlMGlRYkp6NG9Gb0F4?=
+ =?utf-8?B?Mlhjci9ldnRsMHFvL044NjFGWmxFWFhPQ25iT0lKVjZHT1BrSEpGZ3F0RHE2?=
+ =?utf-8?B?Vm5HOXVVSENpcHA5RklicFJWSkZ6eTdZWjVhZDRrVWsrM3BGcjRlaU5KZEZY?=
+ =?utf-8?B?MXBsVktvQ1hhWk9iUWdrVzR2ejJWclZ0c2RSMERzbVM3ZWJoQnp0WDNsZWdj?=
+ =?utf-8?B?UUxiUm5IN3pZWG1kOHZPaEpiMFhpZkI3L1pVbElVMnhtWXlVQlVwZHpGRHUw?=
+ =?utf-8?B?U3kvWDhObXcweU12KzVDUFg3UjN3aDdoSkJDVHVyazhqekRNNGFwZ3Z6VlNG?=
+ =?utf-8?B?cGl0ZSs1bFhOelFtWHBURGFRdEZJL211MWZGMEVWc3ZiTUh5cVNKblVLKzc1?=
+ =?utf-8?B?RUNFR3cyb2ZlMTdUbHlGQVMwZmJVUEFJZUhpNE9QLzRCTU9sTlBaaVFFL01q?=
+ =?utf-8?B?cmxWWEU5T3pDaGtJZnZMYTl5Y1JMTFJLQnp4QjNRUGk2N1NabWIyUzZzdlVW?=
+ =?utf-8?B?OUt1b1VaWWczOFhBRjhvOUpSNlNoeFVtVmNhSDl3TVBBbDBaK2F5eks4aSs3?=
+ =?utf-8?B?ZmlyWmhZMmlHSXM3TG9tMzZKSVBoYTNjTTB1ODkrMWl3RjFQdmZmdVhDZkFj?=
+ =?utf-8?B?aUM0N1ZSaGkxaFVpSUJZaHhTK3ltM01GNmRTZE5TcXhDTlUyWHp6WnVwVS93?=
+ =?utf-8?B?OXJyQ1JBbGdVb0FqUWdpSHFJM1JqTmZxQUtsL3J3dFgvTWdFcFVHZ0J1OVJO?=
+ =?utf-8?B?ZjdIR05rYllITlljUERhWGkwRmNBTXBuS0QrSG55a0h5SGJrUVAvb0dScWZa?=
+ =?utf-8?B?bHg2TkFBZFR4RG1HUzVucjN0cGdSZkQ3UDA5NHlneDV4NVVDMmRyQ3htZkht?=
+ =?utf-8?B?UHJFdTJ0clkxaDB0ZVVSdjRCcXkrMFBZNnAvUGRMN3djNU1KbGQ1c3dmaTBw?=
+ =?utf-8?B?bEhNTmUwUnk1ZFBtOG5Vc09JN0MzMFJBYzBNdXZsbGcvNEZsam13dmFWcXV2?=
+ =?utf-8?B?L3R0WDVJSzJOMkw3b3B4V1RpdzAyTVdPN3dRSEdsYXVWcWdMeXFQQUlQWU9O?=
+ =?utf-8?B?NUlCc251TytIZ0M0M200MVhwTi9jRVozeTZiR0xCeEtQeTQvZmh4QUU3TERv?=
+ =?utf-8?B?MUZ0SnpaNmtaTGV3WWdjOVcvYXN1TTBlelFoWjRiUVhqRHZaNG1qaFJLVmJs?=
+ =?utf-8?B?aFhOUUswckxjTzY2b2dvRzNIeno4WWc5bGZFNEJkOEV0VEs5bzdSNzdIeUtr?=
+ =?utf-8?B?ZEQzTzNZVmxwM1dtZU5NOWg3anQrd1lCR0hwUDNjenN6UktpQlZMNDZ1ZkxP?=
+ =?utf-8?B?QzhzdUhtaUNQQlZPVEh4WDhCRE9jNHhibDB2NTlKMTNaRVB0UlBObmU4bVBY?=
+ =?utf-8?B?YzNINERsSmdRczF2Z3orR0J6R1NaWUVMWFNJd0xQKzJlS3RlNjBacUJlV1BJ?=
+ =?utf-8?B?Z2E1Z2tib1U4dlFTT2xJK2oxbnM0UnZUTndCaFVkNlA5UC8wcWJDU0ZyYVpC?=
+ =?utf-8?B?Q2FyTU9NeGVSa1NHTjBvUFJyRVhiWUxiYTM5WVZFUnVrbnlCZUVjVTJUMTVX?=
+ =?utf-8?B?bmVTalN6T0YxUCtLWXVsbktUcklvZ2Q2MnhqdDUvT2hiZFB3bWFPNFB2Mits?=
+ =?utf-8?B?a2x5UkpMMnBaQlNEUS9rK0hKK0JTN3Y1eXVtZmVJTnRmb2ZQc0R4M1ZXQmow?=
+ =?utf-8?B?czhHV2FHMjRwQzR6VFkwUkM4bmNnV1YrKzI2TXM3TnAzZzQySHNnb3YvbzU4?=
+ =?utf-8?B?YUJ1T1Q2SlJpOHdtQkIyUT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 393b3d16-b7aa-4a91-f066-08d972f8cd42
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9b4e21e-3ea2-4537-ad10-08d972f8993d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Sep 2021 18:43:49.7151
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 18:45:17.1767
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RLV0fWRsiWvJIMLucp116YADiOU1vRCtOct4EgNXVa9RGYgOmP7sAL+lgCzIJESEqnEuFh+W1k9n+HgAW+L30Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5181
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10101 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
- malwarescore=0 spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109080116
-X-Proofpoint-GUID: nENr00IZC1b_sxPfXdLmoQuQooaJhv1T
-X-Proofpoint-ORIG-GUID: nENr00IZC1b_sxPfXdLmoQuQooaJhv1T
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: r9eMGhIe5hNBbVQmefuvok6penyfiNud0/Jg4xAsSpfMQamm+7CgAnx11w7aE8nH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2908
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: pE0joGGRzygyjoTIMUq_e3AAIt4TiVqD
+X-Proofpoint-GUID: pE0joGGRzygyjoTIMUq_e3AAIt4TiVqD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-08_06:2021-09-07,2021-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
+ adultscore=0 lowpriorityscore=0 clxscore=1015 phishscore=0 impostorscore=0
+ bulkscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109080117
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-* Alexei Starovoitov <alexei.starovoitov@gmail.com> [210908 14:03]:
-> On Wed, Sep 08, 2021 at 10:52:59AM -0700, Andrew Morton wrote:
-> > On Wed, 8 Sep 2021 10:21:18 -0700 Alexei Starovoitov <alexei.starovoito=
-v@gmail.com> wrote:
-> >=20
-> > > > Again I am ignorant on the details so if you can clarify the follow=
-ing
-> > > > it may help me and others to better understand the problem:
-> > > >=20
-> > > > 1. Peter's patch appears to just take the same "fallback" path
-> > > >    that would be taken if the trylock failed.
-> > > >    Is this really a breakage or just loss of performance ?
-> > > >    I would expect the latter, since it is called "fallback".
-> > >=20
-> > > As Yonghong explained it's a user space breakage.
-> > > User space tooling expects build_id to be available 99.999% of the ti=
-me
-> > > and that's what users observed in practice.
-> > > They've built a bunch of tools on top of this feature.
-> > > The data from these tools goes into various datacenter tables
-> > > and humans analyze it later.
-> > > So Peter's proposal is not acceptable. We don't want to get yelled at=
-.
-> > >=20
-> >=20
-> > I'm not understanding.  Peter said "this patch merely removes a
-> > performance tweak" and you and Yonghong said "it breaks userspace".=20
-> > These assertions are contradictory!
->=20
-> Peter said:
-> "The only sane approach is making the vma tree lockless, but so far the
->  bpf people have resisted doing the right thing because they've been
->  allowed to get away with these atrocities.
-> "
-> which is partially true.
-> bpf folks didn't resist it. There is work ongoing to make it lockless.
-> It just takes an long time. I don't see how bpf folks can speed it up
-> any further.
 
-What work are you doing on a lockless vma tree?  I've been working on
-the maple tree and would like to hear what you've come up with.
 
->=20
-> > Please describe the expected userspace-visible change from Peter's
-> > patch in full detail?
->=20
-> User space expects build_id to be available. Peter patch simply removes
-> that feature.
->=20
-> > And yes, it is far preferable that we resolve this by changing BPF to
-> > be a better interface citizen, please.  Let's put those thinking caps o=
-n?
->=20
-> Just silence a lockdep as Yonghong proposed or some other way,
-> since it's only a lockdep issue. There is no actual breakage.
-> The feature was working and still works as intended.=
+On 9/8/21 11:30 AM, Liam Howlett wrote:
+> * Alexei Starovoitov <alexei.starovoitov@gmail.com> [210908 14:21]:
+>> On Wed, Sep 8, 2021 at 11:15 AM Andrew Morton <akpm@linux-foundation.org> wrote:
+>>>
+>>> On Wed, 8 Sep 2021 11:02:58 -0700 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>>>
+>>>>> Please describe the expected userspace-visible change from Peter's
+>>>>> patch in full detail?
+>>>>
+>>>> User space expects build_id to be available. Peter patch simply removes
+>>>> that feature.
+>>>
+>>> Are you sure?  He ends up with
+>>
+>> More than sure :)
+>> Just look at below.
+>>
+>>> static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+>>>                                            u64 *ips, u32 trace_nr, bool user)
+>>> {
+>>>          int i;
+>>>
+>>>          /* cannot access current->mm, fall back to ips */
+>>>          for (i = 0; i < trace_nr; i++) {
+>>>                  id_offs[i].status = BPF_STACK_BUILD_ID_IP;
+>>>                  id_offs[i].ip = ips[i];
+>>>                  memset(id_offs[i].build_id, 0, BUILD_ID_SIZE_MAX);
+>>>          }
+>>>          return;
+>>> }
+>>>
+>>> and you're saying that userspace won't like this because we didn't set
+>>> BPF_STACK_BUILD_ID_VALID?
+>>
+>> The patch forces the "fallback path" that in production is seen 0.001%
+>> Meaning that user space doesn't see build_id any more. It sees IPs only.
+>> The user space cannot correlate IPs to binaries. That's what build_id enabled.
+> 
+> I was thinking of decomposing the checks in my first response to two
+> functions.
+> 
+> Something like this:
+> --------------
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index dce46105e3df..8afc1d22aa61 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -2293,12 +2293,13 @@ get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
+>   EXPORT_SYMBOL(get_unmapped_area);
+>   
+>   /* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. */
+> -struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+> +struct vm_area_struct *find_vma_non_owner(struct mm_struct *mm,
+> +					 unsigned long addr)
+>   {
+>   	struct rb_node *rb_node;
+>   	struct vm_area_struct *vma;
+>   
+> -	mmap_assert_locked(mm);
+> +	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
+>   	/* Check the cache first. */
+>   	vma = vmacache_find(mm, addr);
+>   	if (likely(vma))
+> @@ -2325,6 +2326,11 @@ struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+>   	return vma;
+>   }
+>   
+> +struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+> +{
+> +	lockdep_assert_held(&mm->mmap_lock);
+> +	return find_vma_non_owner(mm, addr);
+> +}
+>   EXPORT_SYMBOL(find_vma);
+>   
+>   /*
+> 
+> --------------
+> 
+> Although this leaks more into the mm API and was referred to as ugly
+> previously, it does provide a working solution and still maintains the
+> same level of checking.
+> 
+> Would it push the back actors to just switch to non_owner though?
+
+Thanks, Liam. This should work for bpf side as well as we can just call
+find_vma_no_owner(). I will submit v3 soon.
+
+> 
+> 
+> Thanks,
+> Liam
+> 
