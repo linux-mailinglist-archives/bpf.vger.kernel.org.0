@@ -2,164 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC35403C1F
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 17:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1719F403C45
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 17:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351997AbhIHPCk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 11:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351979AbhIHPCW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:02:22 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD95EC061575
-        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 08:01:14 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id v10so4196165ybq.7
-        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 08:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tqWVtRDMSrpacf29ezygbrIswde+PQ6jNoqCJaacPDo=;
-        b=XKYXfTRa8dNY5qYfFmQ4gDy0ZtbzJJ6cyMgr1IKfn9PBW+i2ck5FGDFlLAcHN9k/op
-         sLqevRaZ4/d6gxavL7OtRuXRdkm2nfst343KiyJ/rJMTreYCahyIkqFlQ8nFeQGsRaRb
-         bqbSfwPwxbSFzx944HfaGUZTbI5tRTyfwcBHrLHmvymh+Z3CPGNhBNxaSmniAsxD6nMa
-         oDtL+WZc7vFQv9eib6r+26Sqp6pXOVMMONiQICXSBgDyvECA0S01421gXgFkUHbXsBXR
-         yqPQR4NSHu7lzb8bQOqMjO9qs73od1acl4NQAhtS2oAfHppoCLkLKLMXVLEcDOQuU4P6
-         QkFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tqWVtRDMSrpacf29ezygbrIswde+PQ6jNoqCJaacPDo=;
-        b=HVwIIhFQu+mR4+IeiJ7C5vMLzYQX7M2ByLB2iI8UyJzojW0Rq4M5ipAIp4hfDaG57e
-         mEsQ/QY28pXn3wlPn0QhZ1dGM41FtRG/asAx7G9lxdr+nCjt8+57VKWYa/TRa/Aut5jM
-         6bO1qWHIygAn8nkP04+6wXlo4Xm1vD+z2xI/Z7pHtfvyf3v5kwvCQMKZYBgMhd4rkzxa
-         dJ3khbZAFlxyJyH4WkNCGF2HTvJPYJgdK+B62XZjUVl6m4NYgMfRPI9hME7abHLXPZnQ
-         Rm6/syd7JbkBMMawUPA32cP/4iyeelJ20SGK1wIWUp3G9wRkTSVvqdEkLAAJLPylV13O
-         EVzw==
-X-Gm-Message-State: AOAM530GV0lrii2DePjKOIh6UkOEeziF6DCOyKeFpsNt8RH/tVg87Muc
-        vjHmLyERo0sK6vuOep3KH3L+dVyD0jGQm6hQFc8=
-X-Google-Smtp-Source: ABdhPJzQzC8fgNoCs7G4ZbAIWPturEnXCJkAGkpNsX5tbPQBdrY6zWtI8fpssA3x11XG9z6NwMFbP1uRf9I/7aaXW/k=
-X-Received: by 2002:a25:65c4:: with SMTP id z187mr5975664ybb.113.1631113274018;
- Wed, 08 Sep 2021 08:01:14 -0700 (PDT)
+        id S1349279AbhIHPJy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 11:09:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349248AbhIHPJx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Sep 2021 11:09:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 548E6611C6;
+        Wed,  8 Sep 2021 15:08:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631113725;
+        bh=EcFdlIlPuXpuvXGjbL2rGt+KIE0grzuBurK1IY0GYXE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FYD6C6nflF/20yxECHrnoZBf29DPDeGsA08BuRUaUu4zoq4SOfCTCCObhS79xN04O
+         2lfsy/eWmi8YES3m73WjP50fWo+g5qb6V9xSMuuv/0BBpt/0uD25K4v/3m8FBZFq90
+         Yj7GtcWbEP280yCS1oBb9nGKyPL6s26OtKm0V0flqnG8x4oW2DA/8OTmsyocIi6xkx
+         3shuPnOlles6AsM3pZdgn0gpdv8mZhbrRKFsLtclrBzJTQSd0FgNRgGHxdl9jT0RFl
+         lZkB6myOLN0wFmMx45AzmDE9OHkm1kJMz6eyv02SQCQJj9cdLZElUSFxT345pI/97o
+         oZoseWoFvIdgw==
+Date:   Wed, 8 Sep 2021 08:08:43 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     moyufeng <moyufeng@huawei.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>, <davem@davemloft.net>,
+        <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
+        <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
+        <akpm@linux-foundation.org>, <peterz@infradead.org>,
+        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
+        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
+        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
+        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <chenhao288@hisilicon.com>
+Subject: Re: [PATCH net-next v2 4/4] net: hns3: support skb's frag page
+ recycling based on page pool
+Message-ID: <20210908080843.2051c58d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <2b75d66b-a3bf-2490-2f46-fef5731ed7ad@huawei.com>
+References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
+        <1628217982-53533-5-git-send-email-linyunsheng@huawei.com>
+        <2b75d66b-a3bf-2490-2f46-fef5731ed7ad@huawei.com>
 MIME-Version: 1.0
-References: <20210908065538.1725496-1-andrii@kernel.org> <8ca16967-cba4-6a0c-89e7-6d774d3706b1@iogearbox.net>
-In-Reply-To: <8ca16967-cba4-6a0c-89e7-6d774d3706b1@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Sep 2021 08:01:03 -0700
-Message-ID: <CAEf4BzY=JqtBXUAnUmaVwr0byX62o2eGh19wft4u7R83EtniAg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: add LIBBPF_DEPRECATED_SINCE macro for
- scheduling API deprecations
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 6:01 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 9/8/21 8:55 AM, Andrii Nakryiko wrote:
-> > From: Quentin Monnet <quentin@isovalent.com>
-> >
-> > Introduce a macro LIBBPF_DEPRECATED_SINCE(major, minor, message) to prepare
-> > the deprecation of two API functions. This macro marks functions as deprecated
-> > when libbpf's version reaches the values passed as an argument.
-> >
-> > As part of this change libbpf_version.h header is added with recorded major
-> > (LIBBPF_MAJOR_VERSION) and minor (LIBBPF_MINOR_VERSION) libbpf version macros.
-> > They are now part of libbpf public API and can be relied upon by user code.
-> > libbpf_version.h is installed system-wide along other libbpf public headers.
-> >
-> > Due to this new build-time auto-generated header, in-kernel applications
-> > relying on libbpf (resolve_btfids, bpftool, bpf_preload) are updated to
-> > include libbpf's output directory as part of a list of include search paths.
-> > Better fix would be to use libbpf's make_install target to install public API
-> > headers, but that clean up is left out as a future improvement. The build
-> > changes were tested by building kernel (with KBUILD_OUTPUT and O= specified
-> > explicitly), bpftool, libbpf, selftests/bpf, and resolve_btfids builds. No
-> > problems were detected.
-> >
-> > Note that because of the constraints of the C preprocessor we have to write
-> > a few lines of macro magic for each version used to prepare deprecation (0.6
-> > for now).
-> >
-> > Also, use LIBBPF_DEPRECATED_SINCE() to schedule deprecation of
-> > btf__get_from_id() and btf__load(), which are replaced by
-> > btf__load_from_kernel_by_id() and btf__load_into_kernel(), respectively,
-> > starting from future libbpf v0.6. This is part of libbpf 1.0 effort ([0]).
-> >
-> >    [0] Closes: https://github.com/libbpf/libbpf/issues/278
-> >
-> > Co-developed-by: Quentin Monnet <quentin@isovalent.com>
-> > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >
-> > v1->v2:
-> >    - fix bpf_preload build by adding dependency for iterators/iterators.o on
-> >      libbpf.a generation (caught by BPF CI);
-> [...]
-> > @@ -136,7 +140,7 @@ all: fixdep
-> >
-> >   all_cmd: $(CMD_TARGETS) check
-> >
-> > -$(BPF_IN_SHARED): force $(BPF_HELPER_DEFS)
-> > +$(BPF_IN_SHARED): force $(BPF_GENERATED)
-> >       @(test -f ../../include/uapi/linux/bpf.h -a -f ../../../include/uapi/linux/bpf.h && ( \
-> >       (diff -B ../../include/uapi/linux/bpf.h ../../../include/uapi/linux/bpf.h >/dev/null) || \
-> >       echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/bpf.h' differs from latest version at 'include/uapi/linux/bpf.h'" >&2 )) || true
-> > @@ -154,13 +158,19 @@ $(BPF_IN_SHARED): force $(BPF_HELPER_DEFS)
-> >       echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
-> >       $(Q)$(MAKE) $(build)=libbpf OUTPUT=$(SHARED_OBJDIR) CFLAGS="$(CFLAGS) $(SHLIB_FLAGS)"
-> >
-> > -$(BPF_IN_STATIC): force $(BPF_HELPER_DEFS)
-> > +$(BPF_IN_STATIC): force $(BPF_GENERATED)
-> >       $(Q)$(MAKE) $(build)=libbpf OUTPUT=$(STATIC_OBJDIR)
-> >
-> >   $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
-> >       $(QUIET_GEN)$(srctree)/scripts/bpf_doc.py --header \
-> >               --file $(srctree)/tools/include/uapi/linux/bpf.h > $(BPF_HELPER_DEFS)
-> >
-> > +$(VERSION_HDR): force
-> > +     $(QUIET_GEN)echo "/* This file was auto-generated. */" > $@
-> > +     @echo "" >> $@
-> > +     @echo "#define LIBBPF_MAJOR_VERSION $(LIBBPF_MAJOR_VERSION)" >> $@
-> > +     @echo "#define LIBBPF_MINOR_VERSION $(LIBBPF_MINOR_VERSION)" >> $@
-> > +
->
-> Looks like CI caught a different issue this time with v2 where it cannot find libbpf_version.h:
+On Wed, 8 Sep 2021 16:31:40 +0800 moyufeng wrote:
+>     After adding page pool to hns3 receiving package process,
+> we want to add some debug info. Such as below:
+>=20
+> 1. count of page pool allocate and free page, which is defined
+> for pages_state_hold_cnt and pages_state_release_cnt in page
+> pool framework.
+>=20
+> 2. pool size=E3=80=81order=E3=80=81nid=E3=80=81dev=E3=80=81max_len, which=
+ is setted for
+> each rx ring in hns3 driver.
+>=20
+> In this regard, we consider two ways to show these info=EF=BC=9A
+>=20
+> 1. Add it to queue statistics and query it by ethtool -S.
+>=20
+> 2. Add a file node "page_pool_info" for debugfs, then cat this
+> file node, print as below:
+>=20
+> queue_id  allocate_cnt  free_cnt  pool_size  order  nid  dev  max_len
+> 000		   xxx       xxx        xxx    xxx  xxx  xxx      xxx
+> 001
+> 002
+> .
+> .
+> =09
+> Which one is more acceptable, or would you have some other suggestion?
 
-Yep, I'll keep fixing this. Couldn't repro this locally. But I'm also
-going to add a long sleep in libbpf_version.h generation to force this
-kind of issue more easily. Sorry for the noise.
+Normally I'd say put the stats in ethtool -S and the rest in debugfs
+but I'm not sure if exposing pages_state_hold_cnt and
+pages_state_release_cnt directly. Those are short counters, and will
+very likely wrap. They are primarily meaningful for calculating
+page_pool_inflight(). Given this I think their semantics may be too
+confusing for an average ethtool -S user.
 
->
->    [...]
->      CC       bench_count.o
->      GEN     /home/runner/work/bpf/bpf/tools/testing/selftests/bpf/bpf-helpers.rst
->    In file included from /home/runner/work/bpf/bpf/tools/lib/bpf/bpf.h:31,
->                     from /home/runner/work/bpf/bpf/tools/testing/selftests/bpf/bench.h:8,
->                     from benchs/bench_count.c:3:
->    /home/runner/work/bpf/bpf/tools/lib/bpf/libbpf_common.h:13:10: fatal error: libbpf_version.h: No such file or directory
->       13 | #include "libbpf_version.h"
->          |          ^~~~~~~~~~~~~~~~~~
->    compilation terminated.
->    make: *** [Makefile:517: /home/runner/work/bpf/bpf/tools/testing/selftests/bpf/bench_count.o] Error 1
->    make: *** Waiting for unfinished jobs....
->      GEN     /home/runner/work/bpf/bpf/tools/testing/selftests/bpf/bpf-syscall.rst
->    In file included from /home/runner/work/bpf/bpf/tools/lib/bpf/bpf.h:31,
->                     from bench.h:8,
->                     from bench.c:13:
->    /home/runner/work/bpf/bpf/tools/lib/bpf/libbpf_common.h:13:10: fatal error: libbpf_version.h: No such file or directory
->       13 | #include "libbpf_version.h"
->          |          ^~~~~~~~~~~~~~~~~~
->    compilation terminated.
->    make: *** [Makefile:162: /home/runner/work/bpf/bpf/tools/testing/selftests/bpf/bench.o] Error 1
->
-> Thanks,
-> Daniel
+Putting all the information in debugfs seems like a better idea.
