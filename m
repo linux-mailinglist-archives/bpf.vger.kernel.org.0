@@ -2,234 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766E9403372
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 06:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BD140341C
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 08:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhIHEpn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 00:45:43 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:31878 "EHLO
+        id S235478AbhIHGHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 02:07:46 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:33764 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229744AbhIHEpn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 00:45:43 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1884eEqa023833
-        for <bpf@vger.kernel.org>; Tue, 7 Sep 2021 21:44:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=dov+JAZLjWRR2TY80kV7dliL6Q/QOLyAK1LIt2YpRac=;
- b=H/Gg5jCnVF3CjFSWM587LSEgUB6KdZ3mY2LQpK8Np7tv3mgqdGti5qJLlRSwjNYTxUNa
- XQ+C6YSrBFBWWIai1hcjXQ3+zfK+cBrJ4RkhMSCab4Iv0KQPcBIDuFqcgPEt4pBwyLe6
- KlUmu2/F6GEivsczFF3UziJKAg4b5Mot8zs= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3axcq4uwwa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 07 Sep 2021 21:44:35 -0700
-Received: from intmgw002.06.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+        by vger.kernel.org with ESMTP id S1347682AbhIHGHo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 02:07:44 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18864jYl029454;
+        Tue, 7 Sep 2021 23:06:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=MA0gJcekwxpW1x8L8W0qMaljwYrgkncPbmPFoZLJuwA=;
+ b=VljruyLKnBsz49FM91iQKofTXlvvVUPobpyVhsm3ACR1TzIKe3yAQCtukEtHXwIqsJBf
+ lGIB8iamrWm95jzbzkFO0uCAOxQrMJ4ngeHpIFpShcFhpZN+O6rByXmUAxrIEclYAyic
+ xlmWXIRSYRME7VWBOIqF8iVKbfEHno4f6JQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3axcpgmasm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 07 Sep 2021 23:06:16 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 7 Sep 2021 21:44:34 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 73B896E3B6A4; Tue,  7 Sep 2021 21:44:27 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>, <linux-mm@kvack.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+ 15.1.2308.14; Tue, 7 Sep 2021 23:06:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FAV+F01hZJWiGCXnozMIbmCkWdY2+FO8atBasHPYaKvVc73xT2iZmkwNR68RlEDRBZf/6ZnJGBE60Vj2XuBSnHOwEphuHNx/uZtg0AekwTYG+Z8ppmbStZL6g66zSUMvNOluTszgCdbSZsoYsAQ56o5DQcb4L7xAO7NImHs/1VMpNbIbVQ0Pkd3NvbMuJv2LcvR5tY+9Rx850jObQkJKtm37t6iWC3gU7f6OPhS744Tm859xFLYsdnpLekwZvgYmxkLyzieT1ypqDt79Bn/dgP+m2gjft+w1G6IaF+wXdy0qtcsUkKi8fWf9oleqwz5bM4luCziVCDB18JxHgsWZ8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=MA0gJcekwxpW1x8L8W0qMaljwYrgkncPbmPFoZLJuwA=;
+ b=PcRWbysWgRlwQjaUMQck1cq28lb0PZzBDLUgy5/7XARU9bSb2nctDiqqaZCldWviOyWYZdwFhp1cXHpOSp9CWc+FToJxwIr1ZT7ywmufzXpn//Jk5OdFyPJxMA2g51I1VoOFUImvf2KWBNf8ErI3lAFRMs4MVYKuoTpvWkuCz9DK8MRohAxhEn3y6QNnPAeoLJ6R8EEaBRQy9pz20ktWAw/50sroqPi/H5o5EvgjzfLcE4Mkzv03XCi8f4+DZiZ2pu5SONHfZpAkcgEGKbKf2XOqF3s3gM3SrovqYHcJpkHRhgCN7A/NcjevxYhXPVFA4T3oU/GClfZRpM1zY2fmow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by SN6PR15MB4272.namprd15.prod.outlook.com (2603:10b6:805:eb::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
+ 2021 06:06:14 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::3c1b:1a10:9708:7e36]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::3c1b:1a10:9708:7e36%9]) with mapi id 15.20.4478.026; Wed, 8 Sep 2021
+ 06:06:14 +0000
+Date:   Tue, 7 Sep 2021 23:06:11 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Hou Tao <houtao1@huawei.com>
+CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Luigi Rizzo <lrizzo@google.com>
-Subject: [PATCH mm/bpf v2] mm: bpf: add find_vma_no_check() without lockdep_assert on mm->mmap_lock
-Date:   Tue, 7 Sep 2021 21:44:27 -0700
-Message-ID: <20210908044427.3632119-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
+        KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH bpf] bpf: handle return value of BPF_PROG_TYPE_STRUCT_OPS
+ prog
+Message-ID: <20210908060611.jylpjegug3gs5gys@kafai-mbp.dhcp.thefacebook.com>
+References: <20210901085344.3052333-1-houtao1@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210901085344.3052333-1-houtao1@huawei.com>
+X-ClientProxiedBy: CO2PR07CA0051.namprd07.prod.outlook.com (2603:10b6:100::19)
+ To SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: cnDk9XyLR92-palz5syT3bBYtloogJgB
-X-Proofpoint-ORIG-GUID: cnDk9XyLR92-palz5syT3bBYtloogJgB
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:96ae) by CO2PR07CA0051.namprd07.prod.outlook.com (2603:10b6:100::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 06:06:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e2a97556-c3ee-4554-731d-08d9728ec386
+X-MS-TrafficTypeDiagnostic: SN6PR15MB4272:
+X-Microsoft-Antispam-PRVS: <SN6PR15MB4272FE57DA0291F2118F7DA0D5D49@SN6PR15MB4272.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0dn6ZtyMbyTQdr6CKvBrgaY239cxnMwXsp86RkXFwjs9XNV904B083YfZRYUg+Wv+4TKKZDm6AluffeFcBluLu8Niw3FZq29gJv9c3D/kHbXVQL8jG/9gQjMF99DQI95mHqzEUCyrICjOEyG0ExuIsSbDUWAX6TavoxEFLdxj+ZG/fnGUIZDGWYevB8xHVdcUKOOsTlbsIbP10v69KRZgvq12GGQaca63T6RMIj0He9kh8o44DSDJS2hDN3UQLtcnbbstDne7oEgNtrkB5lOYnMxZJtS0pVRjIF5EAd3/bGMUPhXy3vxptvGET924Qj5JPBbAXJtIWJ0L+0qjX0NAl3MPaMUCpHqfH7JwF6M/oL7oVo8Yqva6nq4ihWX5HQBPnihygVH2lMdkvuFgIBpWQhdtTOgbWkh8wfOQC/i+uv6iPFF9k5R+CH8NT1YBxHGqAEoXNtAT8CuuzDbCNWWBvhjgB8HtGEqR+yti24tUk8hWMoiznbx7T+AsOaSllHx1v2MAasg3aXozch0Jw1nZ8wcoQGFFjo0HyCzhI3jv1VPwiqTGJKDOyxhqAo6JIRUjQg/feUurpg/Tpfj4f8FLyYa24M+ddzv4POmCMzpcyn6ttgZ8u9lSd+hbUfFQ9eobzlD+2ajNLB1l/w6xp9hUA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(366004)(376002)(396003)(86362001)(8676002)(52116002)(2906002)(6916009)(478600001)(316002)(55016002)(4326008)(4744005)(7696005)(9686003)(54906003)(186003)(1076003)(66946007)(66556008)(38100700002)(6506007)(66476007)(8936002)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r8UNa+xx3bWmykGDtC0j4dhaZS7DRi7xNI7IjvpPpK0dVuzNkqes598MJBmk?=
+ =?us-ascii?Q?KUwmmsI5BeQEniFcMIbpbYbW/LkoHSlBSbA6KMVKQwb3S5P9zWR8NAp4MXu8?=
+ =?us-ascii?Q?MBkHasKltmW2bZt8jhdX1fUo9rAsaolE1U/FVF8ZyFf9f6nHllUR1il3QJmm?=
+ =?us-ascii?Q?PcxM6lyrR4UoHt2D5c58/zQc+miZkG6afOZ7B+NCusNtO6FbF0Y10SKMozyj?=
+ =?us-ascii?Q?uvbBz9vQnHrt6zTKOBvB+FiwvTRPrypppJQbgHG9lBuuTDPeSL5iwKnfU5Bo?=
+ =?us-ascii?Q?L0/s0kV4paSQ3wPuWS/6t5+FEUYFOclxhy+Lx0dLKSjRJmoPP5dfaEo8vS7R?=
+ =?us-ascii?Q?ih+0P3Mbp/JsHOQzvGmSDjjdAXB2qZ9Lmy/ZrNauEtXi3hiSVFhXinxFFg3U?=
+ =?us-ascii?Q?zBQ7wLdw4qg5PEm27LDuhKziOCuJcd7dpH+4I8IsYDR8WZaQ77uupUFdEwvk?=
+ =?us-ascii?Q?hURHKRWdZBepu2tr6/dAjOegooB+SViRw75eDXK1dHQxPSEyL7FE9BVesHAs?=
+ =?us-ascii?Q?sU71+fMcyPmoJg/DIuPR09PhQS+gwooUFz2DsKkGJ/yWPze82+gIBKQIMX8N?=
+ =?us-ascii?Q?B++9SwkyRBDBzIzcAutFpidWB4mh01yEDT+NSjtdlYAoKCuu7a4mrMKGi49h?=
+ =?us-ascii?Q?KBIXGpNYP0ugZpH50tuzbvXtt162X4tFjrUjf3LZBg0Fe1nzX8axATiWKw0P?=
+ =?us-ascii?Q?YKGcHyOxkaeRLMBl5nsYsZjzWWiO98KH1KEoX/72jeBzG5iqqbXE6Nx4bPGL?=
+ =?us-ascii?Q?TsdUjntk/2RVKuZ7+e1E7W/vbEUjUtT2Id2tFhZby5nHzg5sVFfGr8+CmilN?=
+ =?us-ascii?Q?jQTw9zTRom4Azk1ZGPdH4kmhvXmc9AjyzofYHptksH7CP3TZjEzUHD/bFXQ1?=
+ =?us-ascii?Q?2tHZp0+IOCREzf/HdVoxctGSDTvSGWUUpzfSvbODO4u5fm6yBbPcQxAS4D1Z?=
+ =?us-ascii?Q?uvxIj/6mzaQ1KwWJEgKlZm6DSpAEJQZ7W5mTFtvbwVAXfBY/fPQjTaySbI21?=
+ =?us-ascii?Q?/94aLnXRBg1kfvrZx67Bh6mHl7pIRGey7ETLGNnkWZ5GrYlFEvIG+m85TNqU?=
+ =?us-ascii?Q?8pV3nLgg+70vgLHUd6W3tFiZbQl3NLtzx8F+Q0V3gJwqEFV+cOias0CN4nWz?=
+ =?us-ascii?Q?laZaEEGz5sArXDOEDlYWUCfnRJ5aqmJ65YXJ4fHnDnjSwwR2QIl4mecPrV/H?=
+ =?us-ascii?Q?dkGAHvO5wzi0r8C56+kSnAbNKPIGGtHpV7V7xevTcaPdZoDnfmB6UqMsbnGL?=
+ =?us-ascii?Q?8SRNIeaaw8rdweX1q4Ndx/1KCUxmF3F2juwjx10zY+/qnARIo1tZtrHofFCb?=
+ =?us-ascii?Q?kecBiemMguf/sMALK4WmV8eOixmmsQYXF4iHxIWuyw0yvw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2a97556-c3ee-4554-731d-08d9728ec386
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 06:06:14.2898
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RJAGhcPVSvnvbTl14r0z2fEn02uehxJRlK/QthWVPnrhy86cDRr3OZfh3OMV5P8L
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB4272
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: 8mHt6tyAGPnh7jKZHn-BdU-K30nYh92P
+X-Proofpoint-GUID: 8mHt6tyAGPnh7jKZHn-BdU-K30nYh92P
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-08_01:2021-09-07,2021-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
- spamscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxscore=0
- impostorscore=0 clxscore=1015 mlxlogscore=999 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109080028
+ definitions=2021-09-08_02:2021-09-07,2021-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
+ adultscore=0 lowpriorityscore=0 clxscore=1011 phishscore=0 impostorscore=0
+ bulkscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109080038
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Current bpf-next bpf selftest "get_stack_raw_tp" triggered the warning:
+On Wed, Sep 01, 2021 at 04:53:44PM +0800, Hou Tao wrote:
+> Currently if a function ptr in struct_ops has a return value, its
+> caller will get a random return value from it, because the return
+> value of related BPF_PROG_TYPE_STRUCT_OPS prog is just dropped.
+> 
+> So adding a new flag BPF_TRAMP_F_RET_FENTRY_RET to tell bpf trampoline
+> to save and return the return value of struct_ops prog if ret_size of
+> the function ptr is greater than 0. Also restricting the flag to be
+> used alone.
+Thanks for the report and fix!  Sorry for the late reply.
 
-  [ 1411.304463] WARNING: CPU: 3 PID: 140 at include/linux/mmap_lock.h:16=
-4 find_vma+0x47/0xa0
-  [ 1411.304469] Modules linked in: bpf_testmod(O) [last unloaded: bpf_te=
-stmod]
-  [ 1411.304476] CPU: 3 PID: 140 Comm: systemd-journal Tainted: G        =
-W  O      5.14.0+ #53
-  [ 1411.304479] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
-IOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-  [ 1411.304481] RIP: 0010:find_vma+0x47/0xa0
-  [ 1411.304484] Code: de 48 89 ef e8 ba f5 fe ff 48 85 c0 74 2e 48 83 c4=
- 08 5b 5d c3 48 8d bf 28 01 00 00 be ff ff ff ff e8 2d 9f d8 00 85 c0 75 =
-d4 <0f> 0b 48 89 de 48 8
-  [ 1411.304487] RSP: 0018:ffffabd440403db8 EFLAGS: 00010246
-  [ 1411.304490] RAX: 0000000000000000 RBX: 00007f00ad80a0e0 RCX: 0000000=
-000000000
-  [ 1411.304492] RDX: 0000000000000001 RSI: ffffffff9776b144 RDI: fffffff=
-f977e1b0e
-  [ 1411.304494] RBP: ffff9cf5c2f50000 R08: ffff9cf5c3eb25d8 R09: 0000000=
-0fffffffe
-  [ 1411.304496] R10: 0000000000000001 R11: 00000000ef974e19 R12: ffff9cf=
-5c39ae0e0
-  [ 1411.304498] R13: 0000000000000000 R14: 0000000000000000 R15: ffff9cf=
-5c39ae0e0
-  [ 1411.304501] FS:  00007f00ae754780(0000) GS:ffff9cf5fba00000(0000) kn=
-lGS:0000000000000000
-  [ 1411.304504] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [ 1411.304506] CR2: 000000003e34343c CR3: 0000000103a98005 CR4: 0000000=
-000370ee0
-  [ 1411.304508] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
-000000000
-  [ 1411.304510] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
-000000400
-  [ 1411.304512] Call Trace:
-  [ 1411.304517]  stack_map_get_build_id_offset+0x17c/0x260
-  [ 1411.304528]  __bpf_get_stack+0x18f/0x230
-  [ 1411.304541]  bpf_get_stack_raw_tp+0x5a/0x70
-  [ 1411.305752] RAX: 0000000000000000 RBX: 5541f689495641d7 RCX: 0000000=
-000000000
-  [ 1411.305756] RDX: 0000000000000001 RSI: ffffffff9776b144 RDI: fffffff=
-f977e1b0e
-  [ 1411.305758] RBP: ffff9cf5c02b2f40 R08: ffff9cf5ca7606c0 R09: ffffcbd=
-43ee02c04
-  [ 1411.306978]  bpf_prog_32007c34f7726d29_bpf_prog1+0xaf/0xd9c
-  [ 1411.307861] R10: 0000000000000001 R11: 0000000000000044 R12: ffff9cf=
-5c2ef60e0
-  [ 1411.307865] R13: 0000000000000005 R14: 0000000000000000 R15: ffff9cf=
-5c2ef6108
-  [ 1411.309074]  bpf_trace_run2+0x8f/0x1a0
-  [ 1411.309891] FS:  00007ff485141700(0000) GS:ffff9cf5fae00000(0000) kn=
-lGS:0000000000000000
-  [ 1411.309896] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [ 1411.311221]  syscall_trace_enter.isra.20+0x161/0x1f0
-  [ 1411.311600] CR2: 00007ff48514d90e CR3: 0000000107114001 CR4: 0000000=
-000370ef0
-  [ 1411.312291]  do_syscall_64+0x15/0x80
-  [ 1411.312941] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
-000000000
-  [ 1411.313803]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-  [ 1411.314223] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
-000000400
-  [ 1411.315082] RIP: 0033:0x7f00ad80a0e0
-  [ 1411.315626] Call Trace:
-  [ 1411.315632]  stack_map_get_build_id_offset+0x17c/0x260
+This bug is missed because the tcp-cc func is not always called.
+A better test needs to be created to force exercising these funcs
+in bpf_test_run(), which can be a follow-up patch in the bpf-next.
+Could you help to create this test as a follow up?
 
-To reproduce, first build `test_progs` binary:
-  make -C tools/testing/selftests/bpf -j60
-and then run the binary at tools/testing/selftests/bpf directory:
-  ./test_progs -t get_stack_raw_tp
-
-The warning is due to commit 5b78ed24e8ec("mm/pagemap: add mmap_assert_lo=
-cked() annotations to find_vma*()")
-which added mmap_assert_locked() in find_vma() function. The mmap_assert_=
-locked() function
-asserts that mm->mmap_lock needs to be held. But this is not the case for
-bpf_get_stack() or bpf_get_stackid() helper (kernel/bpf/stackmap.c), whic=
-h
-uses mmap_read_trylock_non_owner() instead. Since mm->mmap_lock is not he=
-ld
-in bpf_get_stack[id]() use case, the above warning is emitted during test=
- run.
-
-This patch added function find_vma_no_check() which does not have mmap_as=
-sert_locked() call and
-bpf_get_stack[id]() helpers call find_vma_no_check() instead. This resolv=
-ed the above warning.
-
-I didn't use __find_vma() name because it has been used in drivers/gpu/dr=
-m/i915/i915_gpu_error.c:
-    static struct i915_vma_coredump *
-    __find_vma(struct i915_vma_coredump *vma, const char *name) { ... }
-
-Cc: Luigi Rizzo <lrizzo@google.com>
-Fixes: 5b78ed24e8ec("mm/pagemap: add mmap_assert_locked() annotations to =
-find_vma*()")
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- include/linux/mm.h    | 2 ++
- kernel/bpf/stackmap.c | 2 +-
- mm/mmap.c             | 9 +++++++--
- 3 files changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 50e2c2914ac2..ba7a11d900f5 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2669,6 +2669,8 @@ extern int expand_upwards(struct vm_area_struct *vm=
-a, unsigned long address);
- #endif
-=20
- /* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. =
-*/
-+extern struct vm_area_struct * find_vma_no_check(struct mm_struct * mm,
-+						 unsigned long addr);
- extern struct vm_area_struct * find_vma(struct mm_struct * mm, unsigned =
-long addr);
- extern struct vm_area_struct * find_vma_prev(struct mm_struct * mm, unsi=
-gned long addr,
- 					     struct vm_area_struct **pprev);
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index e8eefdf8cf3e..838a2c141497 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -190,7 +190,7 @@ static void stack_map_get_build_id_offset(struct bpf_=
-stack_build_id *id_offs,
- 	}
-=20
- 	for (i =3D 0; i < trace_nr; i++) {
--		vma =3D find_vma(current->mm, ips[i]);
-+		vma =3D find_vma_no_check(current->mm, ips[i]);
- 		if (!vma || build_id_parse(vma, id_offs[i].build_id, NULL)) {
- 			/* per entry fall back to ips */
- 			id_offs[i].status =3D BPF_STACK_BUILD_ID_IP;
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 88dcc5c25225..8d5e340114f8 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2270,12 +2270,11 @@ get_unmapped_area(struct file *file, unsigned lon=
-g addr, unsigned long len,
- EXPORT_SYMBOL(get_unmapped_area);
-=20
- /* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. =
-*/
--struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr=
-)
-+struct vm_area_struct *find_vma_no_check(struct mm_struct *mm, unsigned =
-long addr)
- {
- 	struct rb_node *rb_node;
- 	struct vm_area_struct *vma;
-=20
--	mmap_assert_locked(mm);
- 	/* Check the cache first. */
- 	vma =3D vmacache_find(mm, addr);
- 	if (likely(vma))
-@@ -2302,6 +2301,12 @@ struct vm_area_struct *find_vma(struct mm_struct *=
-mm, unsigned long addr)
- 	return vma;
- }
-=20
-+struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr=
-)
-+{
-+	mmap_assert_locked(mm);
-+	return find_vma_no_check(mm, addr);
-+}
-+
- EXPORT_SYMBOL(find_vma);
-=20
- /*
---=20
-2.30.2
-
+The patch lgtm.  However, it does not apply cleanly on bpf,
+so please rebase and repost.  I applied it manually and
+tested it by hard coding to call the ->ssthresh() and
+observes the return value.
