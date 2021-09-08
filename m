@@ -2,281 +2,272 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D028403F86
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 21:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA63403F7F
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 21:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349427AbhIHTO2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 15:14:28 -0400
-Received: from home.keithp.com ([63.227.221.253]:36018 "EHLO elaine.keithp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230161AbhIHTO1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Sep 2021 15:14:27 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Sep 2021 15:14:26 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by elaine.keithp.com (Postfix) with ESMTP id D07AF3F3088E;
-        Wed,  8 Sep 2021 12:05:52 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at keithp.com
-Received: from elaine.keithp.com ([127.0.0.1])
-        by localhost (elaine.keithp.com [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id V1Qx1SNyqjFn; Wed,  8 Sep 2021 12:05:52 -0700 (PDT)
-Received: from keithp.com (168-103-156-98.tukw.qwest.net [168.103.156.98])
-        by elaine.keithp.com (Postfix) with ESMTPSA id 72B553F3088D;
-        Wed,  8 Sep 2021 12:05:50 -0700 (PDT)
-Received: by keithp.com (Postfix, from userid 1000)
-        id 6A4821E6013D; Wed,  8 Sep 2021 12:06:09 -0700 (PDT)
-From:   Keith Packard <keithpac@amazon.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Abbott Liu <liuwenliang@huawei.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Ben Segall <bsegall@google.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        bpf@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>, devicetree@vger.kernel.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Joe Perches <joe@perches.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Keith Packard <keithpac@amazon.com>,
-        KP Singh <kpsingh@kernel.org>, kvm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, Manivannan Sadhasivam <mani@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>, netdev@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Song Liu <songliubraving@fb.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        virtualization@lists.linux-foundation.org,
-        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>, Yonghong Song <yhs@fb.com>
-Subject: [PATCH v4 7/7] ARM: Move thread_info into task_struct (v7 only)
-Date:   Wed,  8 Sep 2021 12:06:05 -0700
-Message-Id: <20210908190605.419064-8-keithpac@amazon.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210908190605.419064-1-keithpac@amazon.com>
-References: <id:20210907220038.91021-1-keithpac@amazon.com>
- <20210908190605.419064-1-keithpac@amazon.com>
+        id S230161AbhIHTMC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 15:12:02 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57706 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245429AbhIHTMB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 15:12:01 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 188J9ZIt020124;
+        Wed, 8 Sep 2021 12:10:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=d3fJrrWv5ES8KzV3fi+pfXo1bfqhL6Rpt4HJJVn1jwg=;
+ b=j2bKMvzvR5Uc4d4HaF1u45vDelxnnRibGagUiacyUsUd/ZIUMKSj8ZRv8XR5Z+AWFaHm
+ Bz8asgqRozyUSllRGQo8Oay0mj71/jKztCs4zv+KSWciy92Oz4DKabW2QW8evo/VJpY7
+ fZGPEPecw/kpk4pVufiaLlGUH0ubXy7rifc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3axcpj7ygf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 08 Sep 2021 12:10:52 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 8 Sep 2021 12:10:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pext6HiIm2Ac/wjikSCm/jiB2wSlOL+ezFzGFsPpFVTtpn1tXGmN57U7uxR4j28+GjJPPEa0qKJRKzLjUnJh5nVpGk1rNgZNyjHms3tK8ep+T5dMf7TZR+v2qa8EVhrdH1yeXq5nIb4m/+UmLza0tQFgOigoIWo5/NKopI2HuNHufohK8BVMQ3zasxOab+X0Ris4iUPGqrVcoGSjeuEHA0eJTCZ7R8VEIBMzI4IXHl/W6R1Ec7eE1ku6VTt2sbavzZHiyY5nBf3BiCOQLk4npRVZptWKQgSxCMnsv/Chl63j8JD2MUa8GRlAuUYnzLcCqcZLTULRMg2n3Z5X7yxFmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=d3fJrrWv5ES8KzV3fi+pfXo1bfqhL6Rpt4HJJVn1jwg=;
+ b=QrGnC5goSNahakCloonG+NWW3Mys0JKtLEvDlfQ/dqTnAHLZiySLHQPRbismi+IPO/nhhQFGbn0IX/Ao4aSc5Aj/Cl8mg4b9oghYMfTQmChDQQKt++cEPJr7LkHWPLID+mCiXJGp0+Mq0+SC85BYxSJ2i1Hs8STe02vwnpu3YHTd0QpaxYG2Y7+Ph4UhsxKIGFBC3qyaz23D6BA/NJjjqQ3OaxDz3JjJJptSPg5/duqEmGCKC1EmGtvCii43zxaIxRowmVBY/QyOtHv+Ac8kNTLgI6StQLwfG1OSlXGW1bA2rk/1jf6rmJwznG5BwFuZvsBZWQTYttT4xm9s/7mfXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from SA1PR15MB4465.namprd15.prod.outlook.com (2603:10b6:806:194::23)
+ by SA1PR15MB4371.namprd15.prod.outlook.com (2603:10b6:806:192::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Wed, 8 Sep
+ 2021 19:10:50 +0000
+Received: from SA1PR15MB4465.namprd15.prod.outlook.com
+ ([fe80::1d1a:f4fb:840e:c6fe]) by SA1PR15MB4465.namprd15.prod.outlook.com
+ ([fe80::1d1a:f4fb:840e:c6fe%7]) with mapi id 15.20.4500.016; Wed, 8 Sep 2021
+ 19:10:50 +0000
+Message-ID: <62b03218-5791-e561-6428-eca0092b5789@fb.com>
+Date:   Wed, 8 Sep 2021 12:10:47 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.0.3
+Subject: Re: [PATCH bpf-next 1/5] bpf: Add bloom filter map implementation
+Content-Language: en-US
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>
+References: <20210831225005.2762202-1-joannekoong@fb.com>
+ <20210831225005.2762202-2-joannekoong@fb.com>
+ <CAEf4Bza_y6497cWE5H04gDg__RkoMovkFYSqXjo-yFG7XH11ug@mail.gmail.com>
+ <61305cf822fa_439b208a5@john-XPS-13-9370.notmuch>
+ <0c1bb5a6-4ef5-77b4-cd10-aea0060d5349@fb.com>
+ <613259dfb6973_1c226208c1@john-XPS-13-9370.notmuch>
+From:   Joanne Koong <joannekoong@fb.com>
+In-Reply-To: <613259dfb6973_1c226208c1@john-XPS-13-9370.notmuch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR05CA0172.namprd05.prod.outlook.com
+ (2603:10b6:a03:339::27) To SA1PR15MB4465.namprd15.prod.outlook.com
+ (2603:10b6:806:194::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: from [IPV6:2620:10d:c085:21c1::1250] (2620:10d:c090:400::5:92b1) by SJ0PR05CA0172.namprd05.prod.outlook.com (2603:10b6:a03:339::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.7 via Frontend Transport; Wed, 8 Sep 2021 19:10:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3e1f4984-6ce6-471b-6845-08d972fc5f34
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4371:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB437180F8BE448F09584B1A0DD2D49@SA1PR15MB4371.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ToRaUhBUqd5jzukpe4ARnEIOsMxfaxftZkvutGDzIV0iD8gWvK7qyc0GQkN3DMJm7l07mONkLlco03DUUw29U8JYeGTXoV67fDzBLDapHvIEohXZKfisiviKgv1Knrfs7oXf060mOtbtfqDWl5+V45azNVNX5IzmYaWOjE8hHu0O7zrx76u4cqd1A7F5WYpK/rRZF/BPveBWZZMxC2kPGo4eizekFqaiGwMN4wDuXUQXyFjYF35XBZWOzGDqHaimAlExFJAm0usYuxpLcJCA2dUIOplCOvUPE+CkFgSi7CZr09v7pRmHbJJKtVyoUn2EzDWnonvWN3AEu+26Kg9ip4JpEs1mZHKjXN/UN0XjE77m/GMP3yq/tjdZg2E60po9hQfixpCyxaAD5GM95c6laQiKos9fv3qi8Uq+yVU75I4SZRg9f4rV9pARTQcrNnddGacjyn9OgHMWR5m1KsNMg0kwp49vWwrV/bnFiEvaJ7xhxYavGrKtvMb88YhiHDGu/ltYuafJQxA3/o+lrrhA0D6Bbb2W6R5fh/M+B4d8lG4q9DoroBNXHlbiXz8gdBDwQqQv2dNdvwz5fMR01NgspjhpAVYyqSk48BLxMIkdH26CcRbqF1VKGa0Gy7QHK/KpC87ztHR4WJB1wYh8uS+8jjppIc/E/x/T1LaQOBat9dV5n3XijG4kChkua3mhbLnBFo8l+9sqpd41us3KrLkhBXS0Pn3WNkOdHjply2bQPEY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB4465.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(2906002)(186003)(38100700002)(2616005)(66476007)(316002)(31696002)(31686004)(66946007)(4326008)(110136005)(8936002)(5660300002)(86362001)(508600001)(83380400001)(8676002)(36756003)(66556008)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NlZRd1FoK3lhOUtCcEVsQ0hvT1lZWTlzengzNXhZdm01MytyQmVpQnNiOWhJ?=
+ =?utf-8?B?cy9xU2liSndRdHpvNzNkOTViWUg3TS9icUhiQ1o2amtSZExEcTFCZ1hYNEFN?=
+ =?utf-8?B?dnV4eFZUZWtsdmpkaWREM2VLZ3p5amQ5RU51WFVPVnlRT1lXYUhvenVQaVZU?=
+ =?utf-8?B?ZEhBTVA3ZkNiL2pFZW9kSVFRNXowN2tZMHliNSs4MWpCVjR5c1docll6MWFR?=
+ =?utf-8?B?U002ci9DRVlMMStnRkIrUzJJK1dRNnJBRk1URW92WHlDZzg1R3FmaU5uRFl3?=
+ =?utf-8?B?YWYrOGtaeFRHMFhkMGZiN3Vrc09UM1ArZ3ZoeDNpS2N5RWYrUVUyVCtpL2FY?=
+ =?utf-8?B?TXdGQzNaNzlFdkU2aU5DWUdYRDRnNjBISndxekxYMDBIbUVlTFQ1TUdLUUlO?=
+ =?utf-8?B?aUZMckdPNU9MZFdKZmxhc0JiYlRIQ2tML2RYKzl0ZDlXTjc2YlFva0Fyd1VE?=
+ =?utf-8?B?Y0llL3Y5RVpVVU14RlM2aWNESC80SEE3akpMK3pWQkFUdWdwaFVaY0NoaVhv?=
+ =?utf-8?B?TjAreW1CUGYxeVUrM1ppL2NpMVdoWFkvMVV2MGw4VVoxcXFwWktHNDJqbnFn?=
+ =?utf-8?B?OFNFQmFYTXJGQ3BFb3Y2d0R0S0tMenhHSmxiVE1hLzJXWHVlNFFQbkJZUTZN?=
+ =?utf-8?B?RTVKbUJ3TFJzbzY4L3BXczZ3UE55dWkzN0JheXF2Qkl3YndNWUZ4OGtoUTYw?=
+ =?utf-8?B?ZmtJTGZPWWJFVy9ra2JIUkd4MnIweWJSeTJzR2psRVJGVis1YjhvVGNSQ01K?=
+ =?utf-8?B?K21ENzQ5K3gxNFdHNjBJMCsxUUxBL1FmYXdkam1tbVFqWFNuN1pRYXRwMlVU?=
+ =?utf-8?B?QjUyT2VjNjUzdzlRcno3ZElvYmZmZHh2R05NdkRsMVZwL2dPc1dGemtIbjFG?=
+ =?utf-8?B?NWJnVC9Halg1WVFvWDBaZ1Q1SGVvVWVERTJ0bW9aTDRyVnI4QnRJMDFoZUty?=
+ =?utf-8?B?V3ltU2FPWmQ0U2NTRm1WK0x1M0dlQzI5ZGhSSERicVYvYzBjM1gwTERwQ3Bx?=
+ =?utf-8?B?RzU1cTZrMjRSdnJYNEpNc0xZazNTcTM5UVZ4ZWVtNTU0MFFZVC9yNDd1dW9Y?=
+ =?utf-8?B?L3ZoM2JpYnk3K1V4U1hONnlPYzFDSG9GaU9kaTdtUllYaU5PQ0dWNXVsbWNy?=
+ =?utf-8?B?YTd1K3V4bmtkdVNtQ2s5dnlsRGEvUFM3c3NCM1VZdnVFL25rQjdHd3g5VVQ1?=
+ =?utf-8?B?TkU1RVdTcXJwZXZOajhNeGdsRTJtTTkrcWJ1M3BZbzN2Mi85NlFzUnVkVUF0?=
+ =?utf-8?B?YnBGeWQrQ3dzL0J0dVNOQzBacDRabXh3UDJzTUQ4dkdNZXBvQ21BTTUvZGNB?=
+ =?utf-8?B?YkR0TXpPR2tSOHpieE0yTlpOSElneURPMFBreWU5VE55aDcvaTFEbnh5d3ZS?=
+ =?utf-8?B?K3I2cHhDeHI5WE9rQjdPNGcrdG1sS3dmS2xGaThVSzd1d2VZV2R3U0JNUXdi?=
+ =?utf-8?B?MktrdFRlRFdjVEdFUTlnRlFhZFROcWo1SS8zcWlVaFlkNEo5NVQ2eXlzYjNK?=
+ =?utf-8?B?U3FXU2RCUE5xd254b1lSUVpPMll0MXlHVU9wMTJKa2lYVE51dC9Jc29NNkVt?=
+ =?utf-8?B?ZmtUdjU2alJSRGxEMzBXcnI3MmZHMmduUWs0SEdyTE9DdEtPVUpueVZxdGtE?=
+ =?utf-8?B?VVNPbjQ1WC9PZy9RTkJCa2Z2RUZkTjZMRDlUaEpUMGVBb1NvMlhwcnV4K24z?=
+ =?utf-8?B?QlJER0JHcmdOc2dqZXl5NlFkcXcrNS9VSWdCT3BlUlJVaGpQTG13VlIrSkhD?=
+ =?utf-8?B?T0dxMUJRcTdMdDR0TnE5ajhQQzA1OFNXZWhZRnJUd0F5a3MxamFQNUZXZEpp?=
+ =?utf-8?B?djVQODUxbjBoM29MWktJUT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e1f4984-6ce6-471b-6845-08d972fc5f34
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB4465.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 19:10:50.6341
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6cu/+lOxYuf8gWCYoHrje/zlIoxptf0v7hn5xJBpuzIVUneuA5kIV3/iq89HBkTS7+Xl81+soOUOtOgSjnDVsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4371
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: GhZHxNJWAYnu822WP_0XmyysHCS2kpKl
+X-Proofpoint-ORIG-GUID: GhZHxNJWAYnu822WP_0XmyysHCS2kpKl
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-08_06:2021-09-07,2021-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ adultscore=0 mlxscore=0 spamscore=0 clxscore=1015 suspectscore=0
+ mlxlogscore=999 impostorscore=0 priorityscore=1501 phishscore=0
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109080121
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This avoids many stack overflow attacks which modified the thread_info
-structure by moving that into the task_struct as is done is almost all
-other architectures.
+On 9/3/21 10:22 AM, John Fastabend wrote:
 
-This also involved removing the 'cpu' member from the thread_info
-struct and using the one added to the task_struct instead by the
-THREAD_INFO_IN_TASK code.
+> Joanne Koong wrote:
+>> On 9/1/21 10:11 PM, John Fastabend wrote:
+>>
+>>> Andrii Nakryiko wrote:
+>>>> On Tue, Aug 31, 2021 at 3:51 PM Joanne Koong <joannekoong@fb.com> wrote:
+>>>>> Bloom filters are a space-efficient probabilistic data structure
+>>>>> used to quickly test whether an element exists in a set.
+>>>>> In a bloom filter, false positives are possible whereas false
+>>>>> negatives are not.
+>>>>>
+>>>>> This patch adds a bloom filter map for bpf programs.
+>>>>> The bloom filter map supports peek (determining whether an element
+>>>>> is present in the map) and push (adding an element to the map)
+>>>>> operations.These operations are exposed to userspace applications
+>>>>> through the already existing syscalls in the following way:
+>>>>>
+>>>>> BPF_MAP_LOOKUP_ELEM -> peek
+>>>>> BPF_MAP_UPDATE_ELEM -> push
+>>>>>
+>>>>> The bloom filter map does not have keys, only values. In light of
+>>>>> this, the bloom filter map's API matches that of queue stack maps:
+>>>>> user applications use BPF_MAP_LOOKUP_ELEM/BPF_MAP_UPDATE_ELEM
+>>>>> which correspond internally to bpf_map_peek_elem/bpf_map_push_elem,
+>>>>> and bpf programs must use the bpf_map_peek_elem and bpf_map_push_elem
+>>>>> APIs to query or add an element to the bloom filter map. When the
+>>>>> bloom filter map is created, it must be created with a key_size of 0.
+>>>>>
+>>>>> For updates, the user will pass in the element to add to the map
+>>>>> as the value, wih a NULL key. For lookups, the user will pass in the
+>>>>> element to query in the map as the value. In the verifier layer, this
+>>>>> requires us to modify the argument type of a bloom filter's
+>>>>> BPF_FUNC_map_peek_elem call to ARG_PTR_TO_MAP_VALUE; as well, in
+>>>>> the syscall layer, we need to copy over the user value so that in
+>>>>> bpf_map_peek_elem, we know which specific value to query.
+>>>>>
+>>>>> The maximum number of entries in the bloom filter is not enforced; if
+>>>>> the user wishes to insert more entries into the bloom filter than they
+>>>>> specified as the max entries size of the bloom filter, that is permitted
+>>>>> but the performance of their bloom filter will have a higher false
+>>>>> positive rate.
+>>>>>
+>>>>> The number of hashes to use for the bloom filter is configurable from
+>>>>> userspace. The benchmarks later in this patchset can help compare the
+>>>>> performances of different number of hashes on different entry
+>>>>> sizes. In general, using more hashes decreases the speed of a lookup,
+>>>>> but increases the false positive rate of an element being detected in the
+>>>>> bloom filter.
+>>>>>
+>>>>> Signed-off-by: Joanne Koong <joannekoong@fb.com>
+> [...]
+>
+>>>>> +static struct bpf_map *bloom_filter_map_alloc(union bpf_attr *attr)
+>>>>> +{
+>>>>> +       int numa_node = bpf_map_attr_numa_node(attr);
+>>>>> +       u32 nr_bits, bit_array_bytes, bit_array_mask;
+>>>>> +       struct bpf_bloom_filter *bloom_filter;
+>>>>> +
+>>>>> +       if (!bpf_capable())
+>>>>> +               return ERR_PTR(-EPERM);
+>>>>> +
+>>>>> +       if (attr->key_size != 0 || attr->value_size == 0 || attr->max_entries == 0 ||
+>>>>> +           attr->nr_hashes == 0 || attr->map_flags & ~BLOOM_FILTER_CREATE_FLAG_MASK ||
+>>>>> +           !bpf_map_flags_access_ok(attr->map_flags))
+>>>>> +               return ERR_PTR(-EINVAL);
+>>>>> +
+>>>>> +       /* For the bloom filter, the optimal bit array size that minimizes the
+>>>>> +        * false positive probability is n * k / ln(2) where n is the number of
+>>>>> +        * expected entries in the bloom filter and k is the number of hash
+>>>>> +        * functions. We use 7 / 5 to approximate 1 / ln(2).
+>>>>> +        *
+>>>>> +        * We round this up to the nearest power of two to enable more efficient
+>>>>> +        * hashing using bitmasks. The bitmask will be the bit array size - 1.
+>>>>> +        *
+>>>>> +        * If this overflows a u32, the bit array size will have 2^32 (4
+>>>>> +        * GB) bits.
+>>> Would it be better to return E2BIG or EINVAL here? Speculating a bit, but if I was
+>>> a user I might want to know that the number of bits I pushed down is not the actual
+>>> number?
+>> I think if we return E2BIG or EINVAL here, this will fail to create the
+>> bloom filter map
+>> if the max_entries exceeds some limit (~3 billion, according to my math)
+>> whereas
+>> automatically setting the bit array size to 2^32 if the max_entries is
+>> extraordinarily large will still allow the user to create and use a
+>> bloom filter (albeit
+>> one with a higher false positive rate).
+> It doesn't matter much to me, but I think if a user request 3+billion max entries
+> its ok to return E2BIG and then they can use a lower limit and know the
+> false positive rate is going to go up.
+>
+>>> Another thought, would it be simpler to let user do this calculation and just let
+>>> max_elements be number of bits they want? Then we could have examples with the
+>>> above comment. Just a thought...
+>> I like Martin's idea of keeping the max_entries meaning consistent
+>> across all map types.
+>> I think that makes the interface clearer for users.
+> I'm convinced as well, lets keep it consistent. Thanks.
+>
+> [...]
+>
+>>>> Also, I wonder if ditching spinlock in favor of atomic bit set
+>>>> operation would improve performance in typical scenarios. Seems like
+>>>> set_bit() is an atomic operation, so it should be easy to test. Do you
+>>>> mind running benchmarks with spinlock and with set_bit()?
+>>> With the jhash pulled out of lock, I think it might be noticable. Curious
+>>> to see.
+>> Awesome, I will test this out and report back!
+> It looks like the benchmark tests were done with value size of __u64 should
+> we do larger entry? I guess (you tell me?) if this is used from XDP for
+> DDOS you would use a flow tuple and with IPv6 this could be
+> {dstIp, srcIp, sport, dport, proto} with roughly 44B.
 
-This code is currently enabled only for v7 hardware as most other ARM
-architectures do not have the TPIDRPRW register that is used to
-store the current value. It could probably be enabled for v6k
-architectures as well, but I haven't tested that.
+Great suggestion. Alexei mentioned this as well in his earlier reply. I 
+am planning to run benchmarks on
+the v2 version using value sizes of 4, 8, 16, and 40 bytes.
 
-With the TPIDRPRW register, the kernel can identify the current
-cpu. Without that register, there's a circular dependency between the
-current cpu and 'current' — know one and you can find the
-other. Leaving the thread_info in the kernel stack lets you find the
-cpu number independently.
-
-Signed-off-by: Keith Packard <keithpac@amazon.com>
----
- arch/arm/Kconfig                   |  1 +
- arch/arm/include/asm/assembler.h   |  4 ++++
- arch/arm/include/asm/smp.h         |  4 ++++
- arch/arm/include/asm/thread_info.h | 12 +++++++++++-
- arch/arm/kernel/asm-offsets.c      |  4 ++++
- arch/arm/kernel/entry-armv.S       |  4 ++++
- arch/arm/vfp/vfpmodule.c           |  9 +++++++++
- 7 files changed, 37 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 414fe23fd5ac..5846b4f5444b 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -128,6 +128,7 @@ config ARM
- 	select RTC_LIB
- 	select SET_FS
- 	select SYS_SUPPORTS_APM_EMULATION
-+	select THREAD_INFO_IN_TASK if CURRENT_POINTER_IN_TPIDRPRW
- 	# Above selects are sorted alphabetically; please add new ones
- 	# according to that.  Thanks.
- 	help
-diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
-index ea12fe3bb589..b23d2b87184a 100644
---- a/arch/arm/include/asm/assembler.h
-+++ b/arch/arm/include/asm/assembler.h
-@@ -203,10 +203,14 @@
-  * Get current thread_info.
-  */
- 	.macro	get_thread_info, rd
-+#ifdef CONFIG_THREAD_INFO_IN_TASK
-+	mrc	p15, 0, \rd, c13, c0, 4
-+#else
-  ARM(	mov	\rd, sp, lsr #THREAD_SIZE_ORDER + PAGE_SHIFT	)
-  THUMB(	mov	\rd, sp			)
-  THUMB(	lsr	\rd, \rd, #THREAD_SIZE_ORDER + PAGE_SHIFT	)
- 	mov	\rd, \rd, lsl #THREAD_SIZE_ORDER + PAGE_SHIFT
-+#endif
- 	.endm
- 
- /*
-diff --git a/arch/arm/include/asm/smp.h b/arch/arm/include/asm/smp.h
-index d43b64635d77..beb3872645d9 100644
---- a/arch/arm/include/asm/smp.h
-+++ b/arch/arm/include/asm/smp.h
-@@ -15,7 +15,11 @@
- # error "<asm/smp.h> included in non-SMP build"
- #endif
- 
-+#ifdef CONFIG_THREAD_INFO_IN_TASK
-+#define raw_smp_processor_id() (current->cpu)
-+#else
- #define raw_smp_processor_id() (current_thread_info()->cpu)
-+#endif
- 
- struct seq_file;
- 
-diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
-index 70d4cbc49ae1..6b67703ca16a 100644
---- a/arch/arm/include/asm/thread_info.h
-+++ b/arch/arm/include/asm/thread_info.h
-@@ -55,8 +55,10 @@ struct thread_info {
- 	unsigned long		flags;		/* low level flags */
- 	int			preempt_count;	/* 0 => preemptable, <0 => bug */
- 	mm_segment_t		addr_limit;	/* address limit */
-+#ifndef CONFIG_THREAD_INFO_IN_TASK
- 	struct task_struct	*task;		/* main task structure */
- 	__u32			cpu;		/* cpu */
-+#endif
- 	__u32			cpu_domain;	/* cpu domain */
- #ifdef CONFIG_STACKPROTECTOR_PER_TASK
- 	unsigned long		stack_canary;
-@@ -75,14 +77,21 @@ struct thread_info {
- #endif
- };
- 
-+#ifdef CONFIG_THREAD_INFO_IN_TASK
-+#define INIT_THREAD_INFO_TASK(tsk)
-+#else
-+#define INIT_THREAD_INFO_TASK(tsk) .task = &tsk,
-+#endif
-+
- #define INIT_THREAD_INFO(tsk)						\
- {									\
--	.task		= &tsk,						\
-+	INIT_THREAD_INFO_TASK(tsk)					\
- 	.flags		= 0,						\
- 	.preempt_count	= INIT_PREEMPT_COUNT,				\
- 	.addr_limit	= KERNEL_DS,					\
- }
- 
-+#ifndef CONFIG_THREAD_INFO_IN_TASK
- /*
-  * how to get the thread information struct from C
-  */
-@@ -93,6 +102,7 @@ static inline struct thread_info *current_thread_info(void)
- 	return (struct thread_info *)
- 		(current_stack_pointer & ~(THREAD_SIZE - 1));
- }
-+#endif
- 
- #define thread_saved_pc(tsk)	\
- 	((unsigned long)(task_thread_info(tsk)->cpu_context.pc))
-diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-index 70993af22d80..2a6745f7423e 100644
---- a/arch/arm/kernel/asm-offsets.c
-+++ b/arch/arm/kernel/asm-offsets.c
-@@ -44,8 +44,12 @@ int main(void)
-   DEFINE(TI_FLAGS,		offsetof(struct thread_info, flags));
-   DEFINE(TI_PREEMPT,		offsetof(struct thread_info, preempt_count));
-   DEFINE(TI_ADDR_LIMIT,		offsetof(struct thread_info, addr_limit));
-+#ifdef CONFIG_THREAD_INFO_IN_TASK
-+  DEFINE(TI_CPU,		offsetof(struct task_struct, cpu));
-+#else
-   DEFINE(TI_TASK,		offsetof(struct thread_info, task));
-   DEFINE(TI_CPU,		offsetof(struct thread_info, cpu));
-+#endif
-   DEFINE(TI_CPU_DOMAIN,		offsetof(struct thread_info, cpu_domain));
-   DEFINE(TI_CPU_SAVE,		offsetof(struct thread_info, cpu_context));
-   DEFINE(TI_USED_CP,		offsetof(struct thread_info, used_cp));
-diff --git a/arch/arm/kernel/entry-armv.S b/arch/arm/kernel/entry-armv.S
-index db3947ee9c3e..5ae687c8c7b8 100644
---- a/arch/arm/kernel/entry-armv.S
-+++ b/arch/arm/kernel/entry-armv.S
-@@ -762,9 +762,13 @@ ENTRY(__switch_to)
- #endif
- 	switch_tls r1, r4, r5, r3, r7
- #ifdef CONFIG_CURRENT_POINTER_IN_TPIDRPRW
-+#ifdef CONFIG_THREAD_INFO_IN_TASK
-+	set_current r2
-+#else
- 	ldr	r7, [r2, #TI_TASK]
- 	set_current r7
- #endif
-+#endif
- #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_SMP)
- 	ldr	r7, [r2, #TI_TASK]
- 	ldr	r8, =__stack_chk_guard
-diff --git a/arch/arm/vfp/vfpmodule.c b/arch/arm/vfp/vfpmodule.c
-index d7a3818da671..84a691da59fa 100644
---- a/arch/arm/vfp/vfpmodule.c
-+++ b/arch/arm/vfp/vfpmodule.c
-@@ -158,7 +158,12 @@ static void vfp_thread_copy(struct thread_info *thread)
-  */
- static int vfp_notifier(struct notifier_block *self, unsigned long cmd, void *v)
- {
-+#ifdef CONFIG_THREAD_INFO_IN_TASK
-+	struct task_struct *tsk = v;
-+	struct thread_info *thread = &tsk->thread_info;
-+#else
- 	struct thread_info *thread = v;
-+#endif
- 	u32 fpexc;
- #ifdef CONFIG_SMP
- 	unsigned int cpu;
-@@ -169,7 +174,11 @@ static int vfp_notifier(struct notifier_block *self, unsigned long cmd, void *v)
- 		fpexc = fmrx(FPEXC);
- 
- #ifdef CONFIG_SMP
-+#ifdef CONFIG_THREAD_INFO_IN_TASK
-+		cpu = tsk->cpu;
-+#else
- 		cpu = thread->cpu;
-+#endif
- 
- 		/*
- 		 * On SMP, if VFP is enabled, save the old state in
--- 
-2.33.0
-
+>>>>> +       for (i = 0; i < bloom_filter->map.nr_hashes; i++) {
+>>>>> +               hash = jhash(value, map->value_size, bloom_filter->hash_seed + i) &
+>>>>> +                       bloom_filter->bit_array_mask;
+>>>>> +               bitmap_set(bloom_filter->bit_array, hash, 1);
+>>>>> +       }
+>>>>> +
+>>>>> +       spin_unlock_irqrestore(&bloom_filter->spinlock, spinlock_flags);
+>>>>> +
+>>>>> +       return 0;
+>>>>> +}
+>>>>> +
+>>>> [...]
