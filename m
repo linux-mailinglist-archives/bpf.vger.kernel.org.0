@@ -2,132 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD15F403C93
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 17:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC6B403D0F
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 17:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235992AbhIHPhH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 11:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235441AbhIHPhG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Sep 2021 11:37:06 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268BAC061575
-        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 08:35:59 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id w7so2980364pgk.13
-        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 08:35:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5THeVPjlz5mHu6wptsoRq2zUg/vecY8txoTSBglnhfU=;
-        b=EH3WvulbuyG8a2BaItgcUVwF+cQvpmLZfNdTAzAJZ2nq/pmy3mh5BRd+DLJfm9Ngcv
-         3GlH9dqwExSUFLrC6SZlS4OI4ITUX0m9SxBCsfsAVB7dZ8CA48/FWFr2WLvZJH9TgpEv
-         yKhEEvmNuZQrVqZKz9qAcvilr0NH15ePz5q4RzrW7yPNUrP4yxIiFOkrGmG7Y/+eVa0O
-         qcoWp9Ik6tViRdAqbWA4tVX3rI3C1gW9fjdsJi0q/sKvwJTXKDIllyAESh3zenjUeuRV
-         HW2OJsFdvWhDiz71TGiEsR5g67uLVBGAo3u9+Trlouu2bS7gx9nE9cR7B852idY+yK6E
-         8ptg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5THeVPjlz5mHu6wptsoRq2zUg/vecY8txoTSBglnhfU=;
-        b=bwRp0KXKQ347jV5MjKYyA8AdWiDqjA/uW9D6we8EcIuOroL6BUwH/+WH+Dcgo1UXWu
-         0rkz8X1CA62BMCJxQ0HTnFF6yMQJ/dSvbDcsoS/Xmm+W/ryjNxYaFwPCE/+c1JR2k0tb
-         0xiC8uGjs6b6m6PAwHBCo8lt0fvjRFwNhOrqbj1mxLbEHW2As3h7pP1DroSDx3c3Ex8d
-         PJ0puWiJFL9U66V1JYhADUG+y3AeWiWyB+CIVfpJnDZguRueu+xH8gbE+wTlYkeWnsvI
-         /JooXkPM7lRyywds18tHEo2eaEAUerZztho+ltD1HIBNnz0xyrG9qUNed/LVEJsTWoI6
-         PqRA==
-X-Gm-Message-State: AOAM5302YIQnEuGmqqItVpB5kwN3cUgVHBPLjFPusdUmT0pcN0NJr3m5
-        +BKwAJZD/xwGFOLtzMwb31ia5vapDSdLUA==
-X-Google-Smtp-Source: ABdhPJwFVY9/wIRB783leYX0/BKmDkHnRz/HWGoFVfMU4/dfoQZd+ykzzfxXr+ttB5/+1/kEdFYTPw==
-X-Received: by 2002:aa7:8893:0:b0:416:4ed7:e4c4 with SMTP id z19-20020aa78893000000b004164ed7e4c4mr4292801pfe.83.1631115358527;
-        Wed, 08 Sep 2021 08:35:58 -0700 (PDT)
-Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id l23sm2588245pji.45.2021.09.08.08.35.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 08:35:58 -0700 (PDT)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next] libbpf: deprecate bpf_object__unload() API
-Date:   Wed,  8 Sep 2021 23:35:44 +0800
-Message-Id: <20210908153544.749101-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1352162AbhIHP6e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 11:58:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349791AbhIHP6e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Sep 2021 11:58:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE7660EE6;
+        Wed,  8 Sep 2021 15:57:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631116646;
+        bh=ELvutsBWnKljahCvmsUf1lTmYmJcUrk25vI9Qu6RLeU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PPKnDcaUpF7UJAtCrxsg6TaImq+zosSFohM4v+Two1N1RTL0H2O6LjldOSv8+ajsI
+         NPSLzjOfRmv+DcULTsCoJ5/Qow+YUMoZH4wvHKIYmrxuO8WC2HWywg6OPIzfnKKIVz
+         r5gd0praMBEggJVNzQ29xSyYQ9XAVhbqMv7LQqt1smeFME3oK0G3vJYhA/SrYJb3Eo
+         mKAjKg9iEK4Kge0vMJ9Syj7hQ4FxpBYMoCJT8W6B751ZJho+gikM7kQOAb5mV8qNBZ
+         sFeKCTwBaopKA9DyrnlMkaYVawj8tOIxUsiiocQ5hrx5wj8iY+7J9zki+nLs3PAQmm
+         /r1vcY8pBCpBQ==
+Date:   Wed, 8 Sep 2021 08:57:23 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     moyufeng <moyufeng@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        alexander.duyck@gmail.com, linux@armlinux.org.uk, mw@semihalf.com,
+        linuxarm@openeuler.org, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, thomas.petazzoni@bootlin.com,
+        hawk@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, akpm@linux-foundation.org,
+        peterz@infradead.org, will@kernel.org, willy@infradead.org,
+        vbabka@suse.cz, fenghua.yu@intel.com, guro@fb.com,
+        peterx@redhat.com, feng.tang@intel.com, jgg@ziepe.ca,
+        mcroce@microsoft.com, hughd@google.com, jonathan.lemon@gmail.com,
+        alobakin@pm.me, willemb@google.com, wenxu@ucloud.cn,
+        cong.wang@bytedance.com, haokexin@gmail.com, nogikh@google.com,
+        elver@google.com, yhs@fb.com, kpsingh@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, chenhao288@hisilicon.com
+Subject: Re: [PATCH net-next v2 4/4] net: hns3: support skb's frag page
+ recycling based on page pool
+Message-ID: <20210908085723.3c9c2de2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YTjWK1rNsYIcTt4O@apalos.home>
+References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
+        <1628217982-53533-5-git-send-email-linyunsheng@huawei.com>
+        <2b75d66b-a3bf-2490-2f46-fef5731ed7ad@huawei.com>
+        <20210908080843.2051c58d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YTjWK1rNsYIcTt4O@apalos.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF objects are not re-loadable after unload. User are expected to use
-bpf_object__close() to unload and free up resources in one operation.
-No need to expose bpf_object__unload() as a public API, deprecate it.[0]
-Remove bpf_object__unload() inside bpf_object__load_xattr(), it is the
-caller's responsibility to free up resources, otherwise, the following
-code path will cause double-free problem when loading failed:
+On Wed, 8 Sep 2021 18:26:35 +0300 Ilias Apalodimas wrote:
+> > Normally I'd say put the stats in ethtool -S and the rest in debugfs
+> > but I'm not sure if exposing pages_state_hold_cnt and
+> > pages_state_release_cnt directly. Those are short counters, and will
+> > very likely wrap. They are primarily meaningful for calculating
+> > page_pool_inflight(). Given this I think their semantics may be too
+> > confusing for an average ethtool -S user.
+> > 
+> > Putting all the information in debugfs seems like a better idea.  
+> 
+> I can't really disagree on the aforementioned stats being confusing.
+> However at some point we'll want to add more useful page_pool stats (e.g the
+> percentage of the page/page fragments that are hitting the recycling path).
+> Would it still be 'ok' to have info split across ethtool and debugfs?
 
-    bpf_prog_load
-        bpf_prog_load_xattr
-            bpf_object__load
-                bpf_object__load_xattr
+Possibly. We'll also see what Alex L comes up with for XDP stats. Maybe
+we can arrive at a netlink API for standard things (broken record).
 
-Replace bpf_object__unload() inside bpf_object__close() with the necessary
-cleanup operations to avoid compilation error.
-
-  [0] Closes: https://github.com/libbpf/libbpf/issues/290
-
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- tools/lib/bpf/libbpf.c | 8 +++++---
- tools/lib/bpf/libbpf.h | 3 ++-
- 2 files changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8f579c6666b2..c56b466c5461 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -6931,7 +6931,6 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
- 		if (obj->maps[i].pinned && !obj->maps[i].reused)
- 			bpf_map__unpin(&obj->maps[i], NULL);
- 
--	bpf_object__unload(obj);
- 	pr_warn("failed to load object '%s'\n", obj->path);
- 	return libbpf_err(err);
- }
-@@ -7540,12 +7539,15 @@ void bpf_object__close(struct bpf_object *obj)
- 
- 	bpf_gen__free(obj->gen_loader);
- 	bpf_object__elf_finish(obj);
--	bpf_object__unload(obj);
- 	btf__free(obj->btf);
- 	btf_ext__free(obj->btf_ext);
- 
--	for (i = 0; i < obj->nr_maps; i++)
-+	for (i = 0; i < obj->nr_maps; i++) {
-+		zclose(obj->maps[i].fd);
-+		if (obj->maps[i].st_ops)
-+			zfree(&obj->maps[i].st_ops->kern_vdata);
- 		bpf_map__destroy(&obj->maps[i]);
-+	}
- 
- 	zfree(&obj->btf_custom_path);
- 	zfree(&obj->kconfig);
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 2f6f0e15d1e7..748f7dabe4c7 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -147,7 +147,8 @@ struct bpf_object_load_attr {
- /* Load/unload object into/from kernel */
- LIBBPF_API int bpf_object__load(struct bpf_object *obj);
- LIBBPF_API int bpf_object__load_xattr(struct bpf_object_load_attr *attr);
--LIBBPF_API int bpf_object__unload(struct bpf_object *obj);
-+LIBBPF_API LIBBPF_DEPRECATED("bpf_object__unload() is deprecated, use bpf_object__close() instead")
-+int bpf_object__unload(struct bpf_object *obj);
- 
- LIBBPF_API const char *bpf_object__name(const struct bpf_object *obj);
- LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *obj);
--- 
-2.25.1
-
+You said percentage - even tho I personally don't like it - there is a
+small precedent of ethtool -S containing non-counter information (IOW
+not monotonically increasing event counters), e.g. some vendors rammed
+PCI link quality in there. So if all else fails ethtool -S should be
+fine.
