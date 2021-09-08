@@ -2,105 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63034031D4
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 02:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084744031D6
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 02:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhIHA0u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Sep 2021 20:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        id S234620AbhIHAb4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Sep 2021 20:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231983AbhIHA0t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Sep 2021 20:26:49 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048BDC061575
-        for <bpf@vger.kernel.org>; Tue,  7 Sep 2021 17:25:43 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id v10so605759ybm.5
-        for <bpf@vger.kernel.org>; Tue, 07 Sep 2021 17:25:42 -0700 (PDT)
+        with ESMTP id S233133AbhIHAbz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Sep 2021 20:31:55 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CA2C061575;
+        Tue,  7 Sep 2021 17:30:48 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id r4so633756ybp.4;
+        Tue, 07 Sep 2021 17:30:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jOYaCFmHQ3XX6jkW0V8kgW7Sf7G2JHYYEnKwhEE4I0M=;
-        b=Onk/8zexrsf3KQm0mWeFiWxwm8XBj32+aR7dAUxYT+irpu6JRg/HnQQf1SZHZQ9uU7
-         fev8A7Xvojg7ULhcpidwaoesHJBOUaJ0PHv68saGHTLTgENOLW81QRR5AYPlMKqtYhGH
-         D3FsxIIq9gjBJtDQcTCOC9JqFP4zlx4xWZGFHDbhi4W7C517vyVdbGePZgITL4+HYpdg
-         USCdUCVXpPF9NpzunvVPMm4suwe9PfsDq6VTBVdurFOKoYn2bwxHjh7h5yTq6EFrmnLa
-         qeri/E+1Pi7QGZ4jaRt0QV+POWwsXS91kvMizoQ1ZNgbhWYvFMNPcf6GZA3y2lqRMTa2
-         7MvQ==
+         :cc:content-transfer-encoding;
+        bh=NoIsJnCydGtaSbJy2q3NpkAEDY8RVq7kskV7RgG5IQ4=;
+        b=BLdOLHV1VZZlU85uky63HhtYR+8vrbAFAiVumRtUcEDtUAOcu/zBpM/vd/8hnLTZXN
+         +76Kk8UsLAFNF6IF3MqhrKL0dfZs1WnPRr4h33kg+aY7HBkkO/vML0B4WVDQGWYDHy8L
+         ON91ZCgAWuQvG2gHyZNa/ueDTYdifvPuCIY16k5n64nVpMYyUJINNAwCkm6+FevU3dCa
+         c+T0R/xGaX4lMlW8PdKRiShtDmVB5hHYQ5KttxQ4J2aDgvewoMgQkfL3rsRkHn4U22fy
+         5HuU5ruObXIyLPNiP5RD5q4jvQeYPlDD0H60ic4uxkKp57rmd6HOjpqv14RFGZ30Ymm+
+         XrSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jOYaCFmHQ3XX6jkW0V8kgW7Sf7G2JHYYEnKwhEE4I0M=;
-        b=pqWNQ8+copVhtUL+NeeNI/pRymj9kWE/h9L9xkuQLWElV9M3fDRg7oVU2zbIuRjcIU
-         JMac90HCglGzwx1E0wcCv+tV8CZK2FOeh6GNMtfMO2pOvEv36K9F0ExdEaYJ8/h9cHH4
-         OWcASlPIjaYEmE9+9L91OCjyZ5BHncKXKrTUMJ6tsHDBYVyc6ItwDu5GR9ZOeyL4MbJI
-         /ObH6LWnbfsBuOGxZOQlbc50zpC3AFW0CKjhWMQDnywEIrAXj9emLBZxrKybA7HRqrNd
-         mDbWzK+LF5DJZWYJgv8rudn5/eEtlObsePMcHXTZ2Iow1V2hc2Bq5Uw4kcHL5cjPSEJE
-         yJtw==
-X-Gm-Message-State: AOAM531akQNjcNRb4a1zhUz1chp0ds3b3/TgHf6LbVKRzTnFAfaMM6EO
-        jOMp/TkjjranUvEegj1wrPpdFYc6BMp7woCDZIs=
-X-Google-Smtp-Source: ABdhPJxMCCEDFjWiVDox/9ePOSLkUyHWRZ9PI7+MsfsHpyy2GHN/tEDXoGcb/MZ1XsHj7XLCywwRW1LghncKQ2BYFE8=
-X-Received: by 2002:a25:5406:: with SMTP id i6mr1396472ybb.4.1631060742289;
- Tue, 07 Sep 2021 17:25:42 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NoIsJnCydGtaSbJy2q3NpkAEDY8RVq7kskV7RgG5IQ4=;
+        b=jflebgdAnfZgDcmp2ZdXJU9ai7oQlMAf6K/KcOG/nsynifMIK17afmF9WoFGqmrtBd
+         Jf+fQP/RZWY/cnETKCRJKae2J4gKeC9yvGkP8H3UcwwhDHLsIgaZB1GSo1LLdijyj514
+         xc1XaSEjvBS9XDJ6InGt+cxiQR7lVTIS1tb+H97k4PF4srU0aahXW78MZLWY/A+mJOMc
+         ScWvWNB/aeyqAFsBugqY07RjbgIEn32c2RQrw/CpwSXBRt2Ys2YJY0uDfp1XnmQd9xuE
+         SkZ71MOCeVHywa3KRKTZcYAiNl7oLaZJ9vOed+7mQwwGlvSQ+0TokOgUp8/sMy9kF+bA
+         Er3w==
+X-Gm-Message-State: AOAM533rKQKLfUcLUN92kV7PMCCstX7l9qf5aKuKD2OP27SdG4aYKILk
+        We3WNv4gbnpGvqr410Ty2heDXL1enJp1VPGmKPQ=
+X-Google-Smtp-Source: ABdhPJxKbPWHbl90jciDsWF/P/v3sbAEgYeVjFJC6S+UMVT7CVU0/1uzFK802Q0RChxrU0/4Em/2G8R9UMQ+Xq2WtMM=
+X-Received: by 2002:a5b:702:: with SMTP id g2mr1353868ybq.307.1631061048230;
+ Tue, 07 Sep 2021 17:30:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <1630564633-552375-1-git-send-email-jiasheng@iscas.ac.cn> <20210907222443.gygy7eohzybpiq47@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210907222443.gygy7eohzybpiq47@kafai-mbp.dhcp.thefacebook.com>
+References: <20210901114812.204720-1-toke@redhat.com>
+In-Reply-To: <20210901114812.204720-1-toke@redhat.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 7 Sep 2021 17:25:31 -0700
-Message-ID: <CAEf4BzZ1KQfZKyRVn--SpvfFZMsoATrUBw4PyYhLNM97LJkePA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Add env_type_is_resolved() in front of
- env_stack_push() in btf_resolve()
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     jiasheng <jiasheng@iscas.ac.cn>, bpf <bpf@vger.kernel.org>
+Date:   Tue, 7 Sep 2021 17:30:37 -0700
+Message-ID: <CAEf4BzYatQEJzUz5RNvp5kspG=9eU-mL4mXwkGZxjO+KpNcaFw@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] libbpf: don't crash on object files with no symbol tables
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 3:37 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Wed, Sep 1, 2021 at 4:48 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> On Thu, Sep 02, 2021 at 06:37:13AM +0000, jiasheng wrote:
-> > We have found that in the complied files env_stack_push()
-> > appear more than 10 times, and under at least 90% circumstances
-> > that env_type_is_resolved() and env_stack_push() appear in pairs.
-> > For example, they appear together in the btf_modifier_resolve()
-> > of the file complie from 'kernel/bpf/btf.c'.
-> > But we have found that in the btf_resolve(), there is only
-> > env_stack_push() instead of the pair.
-> > Therefore, we consider that the env_type_is_resolved()
-> > might be forgotten.
-> It does not justify a change like this just because
-> one of its usage looks different and then concluded that
-> it _might_ be forgotten.
+> If libbpf encounters an ELF file that has been stripped of its symbol
+> table, it will crash in bpf_object__add_programs() when trying to
+> dereference the obj->efile.symbols pointer.
 >
-> Does it have a bug or not?  If there is, please
-> provide an explanation on how to reproduce it first.
+> Fix this by erroring out of bpf_object__elf_collect() if it is not able
+> able to find the symbol table.
 >
+> v2:
+>   - Move check into bpf_object__elf_collect() and add nice error message
+>
+> Fixes: 6245947c1b3c ("libbpf: Allow gaps in BPF program sections to suppo=
+rt overriden weak functions")
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
 
-Both places that call btf_resolve() check that env_type_is_resolved()
-first, so there is no issue here.
+Applied to bpf-next, thanks.
 
-> >
-> > Signed-off-by: jiasheng <jiasheng@iscas.ac.cn>
-> > ---
-> >  kernel/bpf/btf.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index f982a9f0..454c249 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -4002,7 +4002,8 @@ static int btf_resolve(struct btf_verifier_env *env,
-> >       int err = 0;
-> >
-> >       env->resolve_mode = RESOLVE_TBD;
-> > -     env_stack_push(env, t, type_id);
-> > +     if (env_type_is_resolved(env, type_id))
-> > +             env_stack_push(env, t, type_id);
-> >       while (!err && (v = env_stack_peak(env))) {
-> >               env->log_type_id = v->type_id;
-> >               err = btf_type_ops(v->t)->resolve(env, v);
-> > --
-> > 2.7.4
-> >
+
+>  tools/lib/bpf/libbpf.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 6f5e2757bb3c..997060182cef 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -2990,6 +2990,12 @@ static int bpf_object__elf_collect(struct bpf_obje=
+ct *obj)
+>                 }
+>         }
+>
+> +       if (!obj->efile.symbols) {
+> +               pr_warn("elf: couldn't find symbol table in %s - stripped=
+ object file?\n",
+> +                       obj->path);
+> +               return -ENOENT;
+> +       }
+> +
+>         scn =3D NULL;
+>         while ((scn =3D elf_nextscn(elf, scn)) !=3D NULL) {
+>                 idx++;
+> --
+> 2.33.0
+>
