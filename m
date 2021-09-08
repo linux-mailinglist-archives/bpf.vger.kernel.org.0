@@ -2,147 +2,314 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BD140341C
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 08:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6231940349B
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 08:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235478AbhIHGHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 02:07:46 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:33764 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347682AbhIHGHo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 02:07:44 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18864jYl029454;
-        Tue, 7 Sep 2021 23:06:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=MA0gJcekwxpW1x8L8W0qMaljwYrgkncPbmPFoZLJuwA=;
- b=VljruyLKnBsz49FM91iQKofTXlvvVUPobpyVhsm3ACR1TzIKe3yAQCtukEtHXwIqsJBf
- lGIB8iamrWm95jzbzkFO0uCAOxQrMJ4ngeHpIFpShcFhpZN+O6rByXmUAxrIEclYAyic
- xlmWXIRSYRME7VWBOIqF8iVKbfEHno4f6JQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3axcpgmasm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 07 Sep 2021 23:06:16 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+        id S1347833AbhIHG5J convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 8 Sep 2021 02:57:09 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45980 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347781AbhIHG5I (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 02:57:08 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1886pBj2006218
+        for <bpf@vger.kernel.org>; Tue, 7 Sep 2021 23:56:01 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3axcqfbqy2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 07 Sep 2021 23:56:00 -0700
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 7 Sep 2021 23:06:15 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FAV+F01hZJWiGCXnozMIbmCkWdY2+FO8atBasHPYaKvVc73xT2iZmkwNR68RlEDRBZf/6ZnJGBE60Vj2XuBSnHOwEphuHNx/uZtg0AekwTYG+Z8ppmbStZL6g66zSUMvNOluTszgCdbSZsoYsAQ56o5DQcb4L7xAO7NImHs/1VMpNbIbVQ0Pkd3NvbMuJv2LcvR5tY+9Rx850jObQkJKtm37t6iWC3gU7f6OPhS744Tm859xFLYsdnpLekwZvgYmxkLyzieT1ypqDt79Bn/dgP+m2gjft+w1G6IaF+wXdy0qtcsUkKi8fWf9oleqwz5bM4luCziVCDB18JxHgsWZ8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=MA0gJcekwxpW1x8L8W0qMaljwYrgkncPbmPFoZLJuwA=;
- b=PcRWbysWgRlwQjaUMQck1cq28lb0PZzBDLUgy5/7XARU9bSb2nctDiqqaZCldWviOyWYZdwFhp1cXHpOSp9CWc+FToJxwIr1ZT7ywmufzXpn//Jk5OdFyPJxMA2g51I1VoOFUImvf2KWBNf8ErI3lAFRMs4MVYKuoTpvWkuCz9DK8MRohAxhEn3y6QNnPAeoLJ6R8EEaBRQy9pz20ktWAw/50sroqPi/H5o5EvgjzfLcE4Mkzv03XCi8f4+DZiZ2pu5SONHfZpAkcgEGKbKf2XOqF3s3gM3SrovqYHcJpkHRhgCN7A/NcjevxYhXPVFA4T3oU/GClfZRpM1zY2fmow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by SN6PR15MB4272.namprd15.prod.outlook.com (2603:10b6:805:eb::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
- 2021 06:06:14 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::3c1b:1a10:9708:7e36]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::3c1b:1a10:9708:7e36%9]) with mapi id 15.20.4478.026; Wed, 8 Sep 2021
- 06:06:14 +0000
-Date:   Tue, 7 Sep 2021 23:06:11 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Hou Tao <houtao1@huawei.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH bpf] bpf: handle return value of BPF_PROG_TYPE_STRUCT_OPS
- prog
-Message-ID: <20210908060611.jylpjegug3gs5gys@kafai-mbp.dhcp.thefacebook.com>
-References: <20210901085344.3052333-1-houtao1@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210901085344.3052333-1-houtao1@huawei.com>
-X-ClientProxiedBy: CO2PR07CA0051.namprd07.prod.outlook.com (2603:10b6:100::19)
- To SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ 15.1.2308.14; Tue, 7 Sep 2021 23:56:00 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 02CB53D405AC; Tue,  7 Sep 2021 23:55:45 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <quentin@isovalent.com>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH v2 bpf-next] libbpf: add LIBBPF_DEPRECATED_SINCE macro for scheduling API deprecations
+Date:   Tue, 7 Sep 2021 23:55:38 -0700
+Message-ID: <20210908065538.1725496-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: UcRfE4xP13vjvqk2Cb9bEXV8xX6NCg3p
+X-Proofpoint-ORIG-GUID: UcRfE4xP13vjvqk2Cb9bEXV8xX6NCg3p
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:96ae) by CO2PR07CA0051.namprd07.prod.outlook.com (2603:10b6:100::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 06:06:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e2a97556-c3ee-4554-731d-08d9728ec386
-X-MS-TrafficTypeDiagnostic: SN6PR15MB4272:
-X-Microsoft-Antispam-PRVS: <SN6PR15MB4272FE57DA0291F2118F7DA0D5D49@SN6PR15MB4272.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0dn6ZtyMbyTQdr6CKvBrgaY239cxnMwXsp86RkXFwjs9XNV904B083YfZRYUg+Wv+4TKKZDm6AluffeFcBluLu8Niw3FZq29gJv9c3D/kHbXVQL8jG/9gQjMF99DQI95mHqzEUCyrICjOEyG0ExuIsSbDUWAX6TavoxEFLdxj+ZG/fnGUIZDGWYevB8xHVdcUKOOsTlbsIbP10v69KRZgvq12GGQaca63T6RMIj0He9kh8o44DSDJS2hDN3UQLtcnbbstDne7oEgNtrkB5lOYnMxZJtS0pVRjIF5EAd3/bGMUPhXy3vxptvGET924Qj5JPBbAXJtIWJ0L+0qjX0NAl3MPaMUCpHqfH7JwF6M/oL7oVo8Yqva6nq4ihWX5HQBPnihygVH2lMdkvuFgIBpWQhdtTOgbWkh8wfOQC/i+uv6iPFF9k5R+CH8NT1YBxHGqAEoXNtAT8CuuzDbCNWWBvhjgB8HtGEqR+yti24tUk8hWMoiznbx7T+AsOaSllHx1v2MAasg3aXozch0Jw1nZ8wcoQGFFjo0HyCzhI3jv1VPwiqTGJKDOyxhqAo6JIRUjQg/feUurpg/Tpfj4f8FLyYa24M+ddzv4POmCMzpcyn6ttgZ8u9lSd+hbUfFQ9eobzlD+2ajNLB1l/w6xp9hUA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(366004)(376002)(396003)(86362001)(8676002)(52116002)(2906002)(6916009)(478600001)(316002)(55016002)(4326008)(4744005)(7696005)(9686003)(54906003)(186003)(1076003)(66946007)(66556008)(38100700002)(6506007)(66476007)(8936002)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r8UNa+xx3bWmykGDtC0j4dhaZS7DRi7xNI7IjvpPpK0dVuzNkqes598MJBmk?=
- =?us-ascii?Q?KUwmmsI5BeQEniFcMIbpbYbW/LkoHSlBSbA6KMVKQwb3S5P9zWR8NAp4MXu8?=
- =?us-ascii?Q?MBkHasKltmW2bZt8jhdX1fUo9rAsaolE1U/FVF8ZyFf9f6nHllUR1il3QJmm?=
- =?us-ascii?Q?PcxM6lyrR4UoHt2D5c58/zQc+miZkG6afOZ7B+NCusNtO6FbF0Y10SKMozyj?=
- =?us-ascii?Q?uvbBz9vQnHrt6zTKOBvB+FiwvTRPrypppJQbgHG9lBuuTDPeSL5iwKnfU5Bo?=
- =?us-ascii?Q?L0/s0kV4paSQ3wPuWS/6t5+FEUYFOclxhy+Lx0dLKSjRJmoPP5dfaEo8vS7R?=
- =?us-ascii?Q?ih+0P3Mbp/JsHOQzvGmSDjjdAXB2qZ9Lmy/ZrNauEtXi3hiSVFhXinxFFg3U?=
- =?us-ascii?Q?zBQ7wLdw4qg5PEm27LDuhKziOCuJcd7dpH+4I8IsYDR8WZaQ77uupUFdEwvk?=
- =?us-ascii?Q?hURHKRWdZBepu2tr6/dAjOegooB+SViRw75eDXK1dHQxPSEyL7FE9BVesHAs?=
- =?us-ascii?Q?sU71+fMcyPmoJg/DIuPR09PhQS+gwooUFz2DsKkGJ/yWPze82+gIBKQIMX8N?=
- =?us-ascii?Q?B++9SwkyRBDBzIzcAutFpidWB4mh01yEDT+NSjtdlYAoKCuu7a4mrMKGi49h?=
- =?us-ascii?Q?KBIXGpNYP0ugZpH50tuzbvXtt162X4tFjrUjf3LZBg0Fe1nzX8axATiWKw0P?=
- =?us-ascii?Q?YKGcHyOxkaeRLMBl5nsYsZjzWWiO98KH1KEoX/72jeBzG5iqqbXE6Nx4bPGL?=
- =?us-ascii?Q?TsdUjntk/2RVKuZ7+e1E7W/vbEUjUtT2Id2tFhZby5nHzg5sVFfGr8+CmilN?=
- =?us-ascii?Q?jQTw9zTRom4Azk1ZGPdH4kmhvXmc9AjyzofYHptksH7CP3TZjEzUHD/bFXQ1?=
- =?us-ascii?Q?2tHZp0+IOCREzf/HdVoxctGSDTvSGWUUpzfSvbODO4u5fm6yBbPcQxAS4D1Z?=
- =?us-ascii?Q?uvxIj/6mzaQ1KwWJEgKlZm6DSpAEJQZ7W5mTFtvbwVAXfBY/fPQjTaySbI21?=
- =?us-ascii?Q?/94aLnXRBg1kfvrZx67Bh6mHl7pIRGey7ETLGNnkWZ5GrYlFEvIG+m85TNqU?=
- =?us-ascii?Q?8pV3nLgg+70vgLHUd6W3tFiZbQl3NLtzx8F+Q0V3gJwqEFV+cOias0CN4nWz?=
- =?us-ascii?Q?laZaEEGz5sArXDOEDlYWUCfnRJ5aqmJ65YXJ4fHnDnjSwwR2QIl4mecPrV/H?=
- =?us-ascii?Q?dkGAHvO5wzi0r8C56+kSnAbNKPIGGtHpV7V7xevTcaPdZoDnfmB6UqMsbnGL?=
- =?us-ascii?Q?8SRNIeaaw8rdweX1q4Ndx/1KCUxmF3F2juwjx10zY+/qnARIo1tZtrHofFCb?=
- =?us-ascii?Q?kecBiemMguf/sMALK4WmV8eOixmmsQYXF4iHxIWuyw0yvw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2a97556-c3ee-4554-731d-08d9728ec386
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 06:06:14.2898
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RJAGhcPVSvnvbTl14r0z2fEn02uehxJRlK/QthWVPnrhy86cDRr3OZfh3OMV5P8L
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB4272
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: 8mHt6tyAGPnh7jKZHn-BdU-K30nYh92P
-X-Proofpoint-GUID: 8mHt6tyAGPnh7jKZHn-BdU-K30nYh92P
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-09-08_02:2021-09-07,2021-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
- adultscore=0 lowpriorityscore=0 clxscore=1011 phishscore=0 impostorscore=0
- bulkscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109080038
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 priorityscore=1501 adultscore=0
+ suspectscore=0 clxscore=1015 spamscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109030001 definitions=main-2109080043
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 04:53:44PM +0800, Hou Tao wrote:
-> Currently if a function ptr in struct_ops has a return value, its
-> caller will get a random return value from it, because the return
-> value of related BPF_PROG_TYPE_STRUCT_OPS prog is just dropped.
-> 
-> So adding a new flag BPF_TRAMP_F_RET_FENTRY_RET to tell bpf trampoline
-> to save and return the return value of struct_ops prog if ret_size of
-> the function ptr is greater than 0. Also restricting the flag to be
-> used alone.
-Thanks for the report and fix!  Sorry for the late reply.
+From: Quentin Monnet <quentin@isovalent.com>
 
-This bug is missed because the tcp-cc func is not always called.
-A better test needs to be created to force exercising these funcs
-in bpf_test_run(), which can be a follow-up patch in the bpf-next.
-Could you help to create this test as a follow up?
+Introduce a macro LIBBPF_DEPRECATED_SINCE(major, minor, message) to prepare
+the deprecation of two API functions. This macro marks functions as deprecated
+when libbpf's version reaches the values passed as an argument.
 
-The patch lgtm.  However, it does not apply cleanly on bpf,
-so please rebase and repost.  I applied it manually and
-tested it by hard coding to call the ->ssthresh() and
-observes the return value.
+As part of this change libbpf_version.h header is added with recorded major
+(LIBBPF_MAJOR_VERSION) and minor (LIBBPF_MINOR_VERSION) libbpf version macros.
+They are now part of libbpf public API and can be relied upon by user code.
+libbpf_version.h is installed system-wide along other libbpf public headers.
+
+Due to this new build-time auto-generated header, in-kernel applications
+relying on libbpf (resolve_btfids, bpftool, bpf_preload) are updated to
+include libbpf's output directory as part of a list of include search paths.
+Better fix would be to use libbpf's make_install target to install public API
+headers, but that clean up is left out as a future improvement. The build
+changes were tested by building kernel (with KBUILD_OUTPUT and O= specified
+explicitly), bpftool, libbpf, selftests/bpf, and resolve_btfids builds. No
+problems were detected.
+
+Note that because of the constraints of the C preprocessor we have to write
+a few lines of macro magic for each version used to prepare deprecation (0.6
+for now).
+
+Also, use LIBBPF_DEPRECATED_SINCE() to schedule deprecation of
+btf__get_from_id() and btf__load(), which are replaced by
+btf__load_from_kernel_by_id() and btf__load_into_kernel(), respectively,
+starting from future libbpf v0.6. This is part of libbpf 1.0 effort ([0]).
+
+  [0] Closes: https://github.com/libbpf/libbpf/issues/278
+
+Co-developed-by: Quentin Monnet <quentin@isovalent.com>
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+
+v1->v2:
+  - fix bpf_preload build by adding dependency for iterators/iterators.o on
+    libbpf.a generation (caught by BPF CI);
+
+ kernel/bpf/preload/Makefile       |  7 +++++--
+ tools/bpf/bpftool/Makefile        |  4 ++++
+ tools/bpf/resolve_btfids/Makefile |  4 +++-
+ tools/lib/bpf/Makefile            | 24 +++++++++++++++++-------
+ tools/lib/bpf/btf.h               |  2 ++
+ tools/lib/bpf/libbpf_common.h     | 19 +++++++++++++++++++
+ 6 files changed, 50 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
+index 1951332dd15f..ac29d4e9a384 100644
+--- a/kernel/bpf/preload/Makefile
++++ b/kernel/bpf/preload/Makefile
+@@ -10,12 +10,15 @@ LIBBPF_OUT = $(abspath $(obj))
+ $(LIBBPF_A):
+ 	$(Q)$(MAKE) -C $(LIBBPF_SRCS) O=$(LIBBPF_OUT)/ OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+ 
+-userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
++userccflags += -I$(LIBBPF_OUT) -I $(srctree)/tools/include/ \
++	-I $(srctree)/tools/include/uapi \
+ 	-I $(srctree)/tools/lib/ -Wno-unused-result
+ 
+ userprogs := bpf_preload_umd
+ 
+-clean-files := $(userprogs) bpf_helper_defs.h FEATURE-DUMP.libbpf staticobjs/ feature/
++clean-files := $(userprogs) libbpf_version.h bpf_helper_defs.h FEATURE-DUMP.libbpf staticobjs/ feature/
++
++$(obj)/iterators/iterators.o: $(LIBBPF_A)
+ 
+ bpf_preload_umd-objs := iterators/iterators.o
+ bpf_preload_umd-userldlibs := $(LIBBPF_A) -lelf -lz
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index d73232be1e99..06aa1616dabe 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -60,6 +60,7 @@ CFLAGS += -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
+ CFLAGS += $(filter-out -Wswitch-enum -Wnested-externs,$(EXTRA_WARNINGS))
+ CFLAGS += -DPACKAGE='"bpftool"' -D__EXPORTED_HEADERS__ \
+ 	-I$(if $(OUTPUT),$(OUTPUT),.) \
++	$(if $(LIBBPF_OUTPUT),-I$(LIBBPF_OUTPUT)) \
+ 	-I$(srctree)/kernel/bpf/ \
+ 	-I$(srctree)/tools/include \
+ 	-I$(srctree)/tools/include/uapi \
+@@ -137,7 +138,10 @@ endif
+ BPFTOOL_BOOTSTRAP := $(BOOTSTRAP_OUTPUT)bpftool
+ 
+ BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o xlated_dumper.o btf_dumper.o disasm.o)
++$(BOOTSTRAP_OBJS): $(LIBBPF_BOOTSTRAP)
++
+ OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
++$(OBJS): $(LIBBPF)
+ 
+ VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
+ 		     $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)	\
+diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+index bb9fa8de7e62..d9ef8a959ed8 100644
+--- a/tools/bpf/resolve_btfids/Makefile
++++ b/tools/bpf/resolve_btfids/Makefile
+@@ -26,6 +26,7 @@ LIBBPF_SRC := $(srctree)/tools/lib/bpf/
+ SUBCMD_SRC := $(srctree)/tools/lib/subcmd/
+ 
+ BPFOBJ     := $(OUTPUT)/libbpf/libbpf.a
++LIBBPF_OUT := $(abspath $(dir $(BPFOBJ)))/
+ SUBCMDOBJ  := $(OUTPUT)/libsubcmd/libsubcmd.a
+ 
+ BINARY     := $(OUTPUT)/resolve_btfids
+@@ -41,11 +42,12 @@ $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
+ 	$(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(abspath $(dir $@))/ $(abspath $@)
+ 
+ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(OUTPUT)/libbpf
+-	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)  OUTPUT=$(abspath $(dir $@))/ $(abspath $@)
++	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)  OUTPUT=$(LIBBPF_OUT) $(abspath $@)
+ 
+ CFLAGS := -g \
+           -I$(srctree)/tools/include \
+           -I$(srctree)/tools/include/uapi \
++          -I$(LIBBPF_OUT) \
+           -I$(LIBBPF_SRC) \
+           -I$(SUBCMD_SRC)
+ 
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index 74c3b73a5fbe..dab21e0c7cc2 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -8,7 +8,8 @@ VERSION_SCRIPT := libbpf.map
+ LIBBPF_VERSION := $(shell \
+ 	grep -oE '^LIBBPF_([0-9.]+)' $(VERSION_SCRIPT) | \
+ 	sort -rV | head -n1 | cut -d'_' -f2)
+-LIBBPF_MAJOR_VERSION := $(firstword $(subst ., ,$(LIBBPF_VERSION)))
++LIBBPF_MAJOR_VERSION := $(word 1,$(subst ., ,$(LIBBPF_VERSION)))
++LIBBPF_MINOR_VERSION := $(word 2,$(subst ., ,$(LIBBPF_VERSION)))
+ 
+ MAKEFLAGS += --no-print-directory
+ 
+@@ -59,7 +60,8 @@ ifndef VERBOSE
+   VERBOSE = 0
+ endif
+ 
+-INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/include/uapi
++INCLUDES = -I$(if $(OUTPUT),$(OUTPUT),.)				\
++	   -I$(srctree)/tools/include -I$(srctree)/tools/include/uapi
+ 
+ export prefix libdir src obj
+ 
+@@ -111,7 +113,9 @@ SHARED_OBJDIR	:= $(OUTPUT)sharedobjs/
+ STATIC_OBJDIR	:= $(OUTPUT)staticobjs/
+ BPF_IN_SHARED	:= $(SHARED_OBJDIR)libbpf-in.o
+ BPF_IN_STATIC	:= $(STATIC_OBJDIR)libbpf-in.o
++VERSION_HDR	:= $(OUTPUT)libbpf_version.h
+ BPF_HELPER_DEFS	:= $(OUTPUT)bpf_helper_defs.h
++BPF_GENERATED	:= $(BPF_HELPER_DEFS) $(VERSION_HDR)
+ 
+ LIB_TARGET	:= $(addprefix $(OUTPUT),$(LIB_TARGET))
+ LIB_FILE	:= $(addprefix $(OUTPUT),$(LIB_FILE))
+@@ -136,7 +140,7 @@ all: fixdep
+ 
+ all_cmd: $(CMD_TARGETS) check
+ 
+-$(BPF_IN_SHARED): force $(BPF_HELPER_DEFS)
++$(BPF_IN_SHARED): force $(BPF_GENERATED)
+ 	@(test -f ../../include/uapi/linux/bpf.h -a -f ../../../include/uapi/linux/bpf.h && ( \
+ 	(diff -B ../../include/uapi/linux/bpf.h ../../../include/uapi/linux/bpf.h >/dev/null) || \
+ 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/bpf.h' differs from latest version at 'include/uapi/linux/bpf.h'" >&2 )) || true
+@@ -154,13 +158,19 @@ $(BPF_IN_SHARED): force $(BPF_HELPER_DEFS)
+ 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
+ 	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(SHARED_OBJDIR) CFLAGS="$(CFLAGS) $(SHLIB_FLAGS)"
+ 
+-$(BPF_IN_STATIC): force $(BPF_HELPER_DEFS)
++$(BPF_IN_STATIC): force $(BPF_GENERATED)
+ 	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(STATIC_OBJDIR)
+ 
+ $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
+ 	$(QUIET_GEN)$(srctree)/scripts/bpf_doc.py --header \
+ 		--file $(srctree)/tools/include/uapi/linux/bpf.h > $(BPF_HELPER_DEFS)
+ 
++$(VERSION_HDR): force
++	$(QUIET_GEN)echo "/* This file was auto-generated. */" > $@
++	@echo "" >> $@
++	@echo "#define LIBBPF_MAJOR_VERSION $(LIBBPF_MAJOR_VERSION)" >> $@
++	@echo "#define LIBBPF_MINOR_VERSION $(LIBBPF_MINOR_VERSION)" >> $@
++
+ $(OUTPUT)libbpf.so: $(OUTPUT)libbpf.so.$(LIBBPF_VERSION)
+ 
+ $(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN_SHARED) $(VERSION_SCRIPT)
+@@ -224,10 +234,10 @@ install_lib: all_cmd
+ 		cp -fpR $(LIB_FILE) $(DESTDIR)$(libdir_SQ)
+ 
+ INSTALL_HEADERS = bpf.h libbpf.h btf.h libbpf_common.h libbpf_legacy.h xsk.h \
+-		  bpf_helpers.h $(BPF_HELPER_DEFS) bpf_tracing.h	     \
++		  bpf_helpers.h $(BPF_GENERATED) bpf_tracing.h	     \
+ 		  bpf_endian.h bpf_core_read.h skel_internal.h
+ 
+-install_headers: $(BPF_HELPER_DEFS)
++install_headers: $(BPF_GENERATED)
+ 	$(call QUIET_INSTALL, headers)					     \
+ 		$(foreach hdr,$(INSTALL_HEADERS),			     \
+ 			$(call do_install,$(hdr),$(prefix)/include/bpf,644);)
+@@ -240,7 +250,7 @@ install: install_lib install_pkgconfig install_headers
+ 
+ clean:
+ 	$(call QUIET_CLEAN, libbpf) $(RM) -rf $(CMD_TARGETS)		     \
+-		*~ .*.d .*.cmd LIBBPF-CFLAGS $(BPF_HELPER_DEFS)		     \
++		*~ .*.d .*.cmd LIBBPF-CFLAGS $(BPF_GENERATED)		     \
+ 		$(SHARED_OBJDIR) $(STATIC_OBJDIR)			     \
+ 		$(addprefix $(OUTPUT),					     \
+ 			    *.o *.a *.so *.so.$(LIBBPF_MAJOR_VERSION) *.pc)
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 4a711f990904..f2e2fab950b7 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -50,9 +50,11 @@ LIBBPF_API struct btf *libbpf_find_kernel_btf(void);
+ 
+ LIBBPF_API struct btf *btf__load_from_kernel_by_id(__u32 id);
+ LIBBPF_API struct btf *btf__load_from_kernel_by_id_split(__u32 id, struct btf *base_btf);
++LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__load_from_kernel_by_id instead")
+ LIBBPF_API int btf__get_from_id(__u32 id, struct btf **btf);
+ 
+ LIBBPF_API int btf__finalize_data(struct bpf_object *obj, struct btf *btf);
++LIBBPF_DEPRECATED_SINCE(0, 6, "use btf__load_into_kernel instead")
+ LIBBPF_API int btf__load(struct btf *btf);
+ LIBBPF_API int btf__load_into_kernel(struct btf *btf);
+ LIBBPF_API __s32 btf__find_by_name(const struct btf *btf,
+diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
+index 947d8bd8a7bb..36ac77f2bea2 100644
+--- a/tools/lib/bpf/libbpf_common.h
++++ b/tools/lib/bpf/libbpf_common.h
+@@ -10,6 +10,7 @@
+ #define __LIBBPF_LIBBPF_COMMON_H
+ 
+ #include <string.h>
++#include "libbpf_version.h"
+ 
+ #ifndef LIBBPF_API
+ #define LIBBPF_API __attribute__((visibility("default")))
+@@ -17,6 +18,24 @@
+ 
+ #define LIBBPF_DEPRECATED(msg) __attribute__((deprecated(msg)))
+ 
++/* Mark a symbol as deprecated when libbpf version is >= {major}.{minor} */
++#define LIBBPF_DEPRECATED_SINCE(major, minor, msg)			    \
++	__LIBBPF_MARK_DEPRECATED_ ## major ## _ ## minor		    \
++		(LIBBPF_DEPRECATED("libbpf v" # major "." # minor "+: " msg))
++
++#define __LIBBPF_CURRENT_VERSION_GEQ(major, minor)			    \
++	(LIBBPF_MAJOR_VERSION > (major) ||				    \
++	 (LIBBPF_MAJOR_VERSION == (major) && LIBBPF_MINOR_VERSION >= (minor)))
++
++/* Add checks for other versions below when planning deprecation of API symbols
++ * with the LIBBPF_DEPRECATED_SINCE macro.
++ */
++#if __LIBBPF_CURRENT_VERSION_GEQ(0, 6)
++#define __LIBBPF_MARK_DEPRECATED_0_6(X) X
++#else
++#define __LIBBPF_MARK_DEPRECATED_0_6(X)
++#endif
++
+ /* Helper macro to declare and initialize libbpf options struct
+  *
+  * This dance with uninitialized declaration, followed by memset to zero,
+-- 
+2.30.2
+
