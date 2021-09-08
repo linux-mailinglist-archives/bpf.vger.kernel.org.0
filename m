@@ -2,196 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00D74038EC
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 13:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF9C403919
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 13:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349245AbhIHLiS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 07:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349159AbhIHLiR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Sep 2021 07:38:17 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED170C061575
-        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 04:37:09 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id k65so3522054yba.13
-        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 04:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qx6GQAMSO0U5K2BQS7wUUyyG/8gFYoHictTOXxfB8o4=;
-        b=A0536G+j0jtXOcqV21wJGXr5MugvHCmfMYFaPbbAfqY2cCqPGj1LP9HTci4DIsP59v
-         xc4w9yKVww+P4uzNGaHSfF6JxQXj+GIHlKm1cRtbcWs4voqWNl5G4BYhMBJeVXuz4FzT
-         65CA5HQ6SddZlCIjGC2ZaqSKIyZ4u6BJsx9wE6gnXmZC3jdiEJ4kQQbwDBlN58qDhYR3
-         JMW/PAvJwc6N7V2Pl3XjUs90V5re+pao++Br5lU16ZdSNuYEhqiRKgl1zYxl7Yi+A6o+
-         TAe6Z80FxqJvTM9vAGzATZMLuTyAcX22vAcqQYtPG1s9CCtUXp8WRWWgXsihiVHXs3qX
-         kw8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qx6GQAMSO0U5K2BQS7wUUyyG/8gFYoHictTOXxfB8o4=;
-        b=ljJFVGfr2suy6/xHusyEiXZLBEzFMzD0UuKy1jl2uWl90WhQN34R/6/3e64BYbBYeq
-         uIrxuPaKvLRl0VMDJ/8CYznPAWyflVqcsQ/Pt2mj0SCQ3Gx7oqGXC5TX/FehB9PUrb8P
-         iLy9RmV+Uj2PVBNdPMV5QKmOqkZ8KiCk+qEvr4yLbMb/It99q0CuDYchfKuACq9/swht
-         Ne5BZvct8dyX2T1veRZ/a9qQrgg6uWovNgpDOXy23Bwqc2QK39ufMJ4JOoQO2Iug+P/u
-         E1TYX6PTRzKHHRMS2X0hlw6+CVuMBgyuPIKscDamFwtVhZz+MDHNZHS39qPK2kzy/gz6
-         +Xkw==
-X-Gm-Message-State: AOAM53009HmC8lzOxLWAJn5PLzpZUcPncdOm1h37CUoSvMyAlzORsvds
-        mqa+QncJeJhmHI9Qdt/0L/FBXMX/kNEOnQNdjBFmzA==
-X-Google-Smtp-Source: ABdhPJwPNsP/cmoVneQoRGDpwarZJpktJvAbCd/Xjm1YQ4xhRQIkRrKgikr8DWAh5SUZuN8hQx5+JnlNnXJr6PYJL1s=
-X-Received: by 2002:a25:bb08:: with SMTP id z8mr4576585ybg.306.1631101029164;
- Wed, 08 Sep 2021 04:37:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <1631089206-5931-1-git-send-email-yangtiezhu@loongson.cn>
- <e05e7407-74bb-3ba3-aab7-f62ca16a59ba@iogearbox.net> <9d0ca1ba-b8e1-dc99-17f4-189571f33c97@loongson.cn>
-In-Reply-To: <9d0ca1ba-b8e1-dc99-17f4-189571f33c97@loongson.cn>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Wed, 8 Sep 2021 13:36:58 +0200
-Message-ID: <CAM1=_QR7jEKWCta6krttm9dTdXAa8HpDcp+eV5ufiUMbJ9SivA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next] bpf: Make actual max tail call count as MAX_TAIL_CALL_CNT
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1349284AbhIHLr6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 07:47:58 -0400
+Received: from www62.your-server.de ([213.133.104.62]:53424 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235453AbhIHLr6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Sep 2021 07:47:58 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mNw2N-000G2T-3I; Wed, 08 Sep 2021 13:46:43 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mNw2M-000OMW-RR; Wed, 08 Sep 2021 13:46:42 +0200
+Subject: Re: [PATCH bpf-next v2 13/13] bpf/tests: Add tail call limit test
+ with external function call
+To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        naveen.n.rao@linux.ibm.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, bjorn@kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Paul Chaignon <paul@cilium.io>
-Content-Type: text/plain; charset="UTF-8"
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20210907222339.4130924-1-johan.almbladh@anyfinetworks.com>
+ <20210907222339.4130924-14-johan.almbladh@anyfinetworks.com>
+ <fe04c10b5991a5fb0656fe272c137a73ec7d2472.camel@linux.ibm.com>
+ <CAM1=_QTC077YiaJ_7x=ooq2HyKhYFEPt_C04y1uo4tNEyGioFA@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <b464eff1-4cdf-47f7-07f7-d1343e8dd2f7@iogearbox.net>
+Date:   Wed, 8 Sep 2021 13:46:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAM1=_QTC077YiaJ_7x=ooq2HyKhYFEPt_C04y1uo4tNEyGioFA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26288/Wed Sep  8 10:22:21 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 12:56 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> On 09/08/2021 04:47 PM, Daniel Borkmann wrote:
-> > [ You have a huge Cc list, but forgot to add Paul and Johan who recently
-> >   looked into this. Added here. ]
-> >
-> > On 9/8/21 10:20 AM, Tiezhu Yang wrote:
-> >> In the current code, the actual max tail call count is 33 which is
-> >> greater
-> >> than MAX_TAIL_CALL_CNT, this is not consistent with the intended meaning
-> >> in the commit 04fd61ab36ec ("bpf: allow bpf programs to tail-call other
-> >> bpf programs"):
-> >>
-> >> "The chain of tail calls can form unpredictable dynamic loops therefore
-> >> tail_call_cnt is used to limit the number of calls and currently is set
-> >> to 32."
-> >>
-> >> Additionally, after commit 874be05f525e ("bpf, tests: Add tail call test
-> >> suite"), we can see there exists failed testcase.
-> >>
-> >> On all archs when CONFIG_BPF_JIT_ALWAYS_ON is not set:
-> >>   # echo 0 > /proc/sys/net/core/bpf_jit_enable
-> >>   # modprobe test_bpf
-> >>   # dmesg | grep -w FAIL
-> >>   Tail call error path, max count reached jited:0 ret 34 != 33 FAIL
-> >>
-> >> On some archs:
-> >>   # echo 1 > /proc/sys/net/core/bpf_jit_enable
-> >>   # modprobe test_bpf
-> >>   # dmesg | grep -w FAIL
-> >>   Tail call error path, max count reached jited:1 ret 34 != 33 FAIL
-> >>
-> >> with this patch, make the actual max tail call count as
-> >> MAX_TAIL_CALL_CNT,
-> >> at the same time, the above failed testcase can be fixed.
-> >>
-> >> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> >> ---
-> >>
-> >> Hi all,
-> >>
-> >> This is a RFC patch, if I am wrong or I missed something,
-> >> please let me know, thank you!
-> >
-> > Yes, the original commit from 04fd61ab36ec ("bpf: allow bpf programs
-> > to tail-call
-> > other bpf programs") got the counting wrong, but please also check
-> > f9dabe016b63
-> > ("bpf: Undo off-by-one in interpreter tail call count limit") where we
-> > agreed to
-> > align everything to 33 in order to avoid changing existing behavior,
-> > and if we
-> > intend to ever change the count, then only in terms of increasing but
-> > not decreasing
-> > since that ship has sailed.
->
-> Thank you, understood.
->
-> But I still think there is some confusion about the macro MAX_TAIL_CALL_CNT
-> which is 32 and the actual value 33, I spent some time to understand it
-> at the first glance.
->
-> Is it impossible to keep the actual max tail call count consistent with
-> the value 32 of MAX_TAIL_CALL_CNT now?
+On 9/8/21 12:53 PM, Johan Almbladh wrote:
+> On Wed, Sep 8, 2021 at 12:10 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>> On Wed, 2021-09-08 at 00:23 +0200, Johan Almbladh wrote:
+>>> This patch adds a tail call limit test where the program also emits
+>>> a BPF_CALL to an external function prior to the tail call. Mainly
+>>> testing that JITed programs preserve its internal register state, for
+>>> example tail call count, across such external calls.
+>>>
+>>> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+>>> ---
+>>>   lib/test_bpf.c | 51 +++++++++++++++++++++++++++++++++++++++++++++++---
+>>>   1 file changed, 48 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+>>> index 7475abfd2186..6e45b4da9841 100644
+>>> --- a/lib/test_bpf.c
+>>> +++ b/lib/test_bpf.c
+>>> @@ -12259,6 +12259,20 @@ static struct tail_call_test tail_call_tests[]
+>>> = {
+>>>                  },
+>>>                  .result = MAX_TAIL_CALL_CNT + 1,
+>>>          },
+>>> +       {
+>>> +               "Tail call count preserved across function calls",
+>>> +               .insns = {
+>>> +                       BPF_ALU64_IMM(BPF_ADD, R1, 1),
+>>> +                       BPF_STX_MEM(BPF_DW, R10, R1, -8),
+>>> +                       BPF_CALL_REL(0),
+>>> +                       BPF_LDX_MEM(BPF_DW, R1, R10, -8),
+>>> +                       BPF_ALU32_REG(BPF_MOV, R0, R1),
+>>> +                       TAIL_CALL(0),
+>>> +                       BPF_EXIT_INSN(),
+>>> +               },
+>>> +               .stack_depth = 8,
+>>> +               .result = MAX_TAIL_CALL_CNT + 1,
+>>> +       },
+>>>          {
+>>>                  "Tail call error path, NULL target",
+>>>                  .insns = {
+>>
+>> There seems to be a problem with BPF_CALL_REL(0) on s390, since it
+>> assumes that test_bpf_func and __bpf_call_base are within +-2G of
+>> each other, which is not (yet) the case.
+> 
+> The idea with this test is to mess up a JITed program's internal state
+> if it does not properly save/restore those regs. I would like to keep
+> the test in some form, but I do see the problem here.
+> 
+> Another option could perhaps be to skip this test at runtime if the
+> computed offset is outside +-2G. If the offset is greater than that it
+> does not fit into the 32-bit BPF immediate field, and must therefore
+> be skipped. This would work for other archs too.
 
-Yes. If the limit is 32 or 33 does not really matter, but there has to
-be a limit. Since the actual limit has been 33, we don't want to break
-any user space program relying on this value.
+Sounds reasonable as a work-around/to move forward.
 
-> At least, maybe we need to modify the testcase?
+> Yet another solution would be call one or several bpf helpers instead.
+> As I understand it, they should always be located within this range,
+> otherwise they would not be callable from a BPF program. The reason I
+> did not do this was because I found helpers that don't require any
+> context to be too simple. Ideally one would want to call something
+> that uses pretty much all available caller-saved CPU registers. I
+> figured snprintf would be complex/nasty enough for this purpose.
 
-Before making any changes in the test or the BPF code, we need to
-understand what the current behaviour actually is. Then we can make
-the necessary changes to make everything consistent with 33.
+Potentially bpf_csum_diff() could also be a candidate, and fairly
+straight forward to set up from raw asm.
 
-> > Tiezhu, do you still see any arch that is not on 33
-> > from your testing?
->
-> If the testcase "Tail call error path, max count reached" in test_bpf is
-> right,
-> it seems that the tail call count limit is 32 on x86, because the testcase
-> passed on x86 jited.
+>> I can't think of a good fix, so how about something like this?
+>>
+>> --- a/lib/test_bpf.c
+>> +++ b/lib/test_bpf.c
+>> @@ -12257,6 +12257,7 @@ static struct tail_call_test tail_call_tests[]
+>> = {
+>>                  },
+>>                  .result = MAX_TAIL_CALL_CNT + 1,
+>>          },
+>> +#ifndef __s390__
+>>          {
+>>                  "Tail call count preserved across function calls",
+>>                  .insns = {
+>> @@ -12271,6 +12272,7 @@ static struct tail_call_test tail_call_tests[]
+>> = {
+>>                  .stack_depth = 8,
+>>                  .result = MAX_TAIL_CALL_CNT + 1,
+>>          },
+>> +#endif
+>>          {
+>>                  "Tail call error path, NULL target",
+>>                  .insns = {
+>>
+>> [...]
+>>
 
-When I run the test_bpf.ko suite I get the following limits.
-
-Interpreter: 33
-JIT for arm{32,64}, mips, s390x, powerpc{32,64}, sparc: 33
-JIT for x86-{32,64}: 32
-
-However, there are also tail call tests in the selftests suite.
-According to Paul those tests show that everything is consistent with
-33 now. So, there seem to be a discrepancy between the test_bpf.ko
-tests and the selftests.
-
-I am trying to investigate this matter further, but so far I have only
-been able to run the test_bpf.ko module for various archs in QEMU.
-Link: https://github.com/almbladh/test-linux
-
-I am currently working on getting the selftests to run in QEMU too,
-using Buildroot. If you have a working setup for this, it would be
-great if you could share that.
-
-Thanks,
-Johan
-
->
-> > Last time Paul fixed the remaining ones in 96bc4432f5ad ("bpf,
-> > riscv: Limit to 33 tail calls") and e49e6f6db04e ("bpf, mips: Limit to
-> > 33 tail calls").
-> >
-> > Thanks,
-> > Daniel
->
