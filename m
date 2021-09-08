@@ -2,133 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA63403F7F
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 21:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9D1403F84
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 21:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhIHTMC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 15:12:02 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57706 "EHLO
+        id S1344396AbhIHTNa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 15:13:30 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:6140 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245429AbhIHTMB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 15:12:01 -0400
+        by vger.kernel.org with ESMTP id S230161AbhIHTN3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 15:13:29 -0400
 Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 188J9ZIt020124;
-        Wed, 8 Sep 2021 12:10:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 188J9e4Y020184;
+        Wed, 8 Sep 2021 12:12:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=d3fJrrWv5ES8KzV3fi+pfXo1bfqhL6Rpt4HJJVn1jwg=;
- b=j2bKMvzvR5Uc4d4HaF1u45vDelxnnRibGagUiacyUsUd/ZIUMKSj8ZRv8XR5Z+AWFaHm
- Bz8asgqRozyUSllRGQo8Oay0mj71/jKztCs4zv+KSWciy92Oz4DKabW2QW8evo/VJpY7
- fZGPEPecw/kpk4pVufiaLlGUH0ubXy7rifc= 
+ bh=Ou9w9K1FbPjfo8VnSgmbutnZ0FsGqR7pj8eAhgC1hwI=;
+ b=hQH0HDyHKdeSj4vbYNXKue+ZCKdVcBwC/3el6TRtTJgD36WFJETasD+UwtGSI9HJWKuC
+ BvWEhRl1jNXUxyr5uz2V7eFf4SiUIwG8XNl3NJtz6LI1gWLERUHNjAhgqZKpcH/9Hz3k
+ 2OC6eWI9Zm3Pv0e7j3rDjdd9KMu8DTMpDjc= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3axcpj7ygf-1
+        by mx0a-00082601.pphosted.com with ESMTP id 3axcpj7yr7-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 08 Sep 2021 12:10:52 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+        Wed, 08 Sep 2021 12:12:00 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 8 Sep 2021 12:10:51 -0700
+ 15.1.2308.14; Wed, 8 Sep 2021 12:11:59 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pext6HiIm2Ac/wjikSCm/jiB2wSlOL+ezFzGFsPpFVTtpn1tXGmN57U7uxR4j28+GjJPPEa0qKJRKzLjUnJh5nVpGk1rNgZNyjHms3tK8ep+T5dMf7TZR+v2qa8EVhrdH1yeXq5nIb4m/+UmLza0tQFgOigoIWo5/NKopI2HuNHufohK8BVMQ3zasxOab+X0Ris4iUPGqrVcoGSjeuEHA0eJTCZ7R8VEIBMzI4IXHl/W6R1Ec7eE1ku6VTt2sbavzZHiyY5nBf3BiCOQLk4npRVZptWKQgSxCMnsv/Chl63j8JD2MUa8GRlAuUYnzLcCqcZLTULRMg2n3Z5X7yxFmA==
+ b=fJzeu+95ZDYF9Do8p70k7nvZPORSXj7J3xtVOJk0Ej+WihgUsnUi+6umHumm3WosLd7YxTp7ZyPhxahqdZB5oZ5XUN+MqewLPYo2xBr2j23xMNUIcCJblz4h41gWbxiQq8SN9gTrHJAXhSs1kEQ3Z9cEtoKIfms8tgs4gRGjn+N8ASh1aZTgtjA5R445POZFOuhVD9gn5pRGNFWbV8LBtFPir7qRVjI5fJKE/lLYA9E9L5wn79oIWwLu3DGvVmWuYz1p72XDsDkf5UIZP3Rffn3bLIIq0u2dL7eF2AOBjy0SYDHQnIPzd23VA0rnSQ59MGI0J7/tHJ4yjij4jqKz9Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=d3fJrrWv5ES8KzV3fi+pfXo1bfqhL6Rpt4HJJVn1jwg=;
- b=QrGnC5goSNahakCloonG+NWW3Mys0JKtLEvDlfQ/dqTnAHLZiySLHQPRbismi+IPO/nhhQFGbn0IX/Ao4aSc5Aj/Cl8mg4b9oghYMfTQmChDQQKt++cEPJr7LkHWPLID+mCiXJGp0+Mq0+SC85BYxSJ2i1Hs8STe02vwnpu3YHTd0QpaxYG2Y7+Ph4UhsxKIGFBC3qyaz23D6BA/NJjjqQ3OaxDz3JjJJptSPg5/duqEmGCKC1EmGtvCii43zxaIxRowmVBY/QyOtHv+Ac8kNTLgI6StQLwfG1OSlXGW1bA2rk/1jf6rmJwznG5BwFuZvsBZWQTYttT4xm9s/7mfXA==
+ bh=Ou9w9K1FbPjfo8VnSgmbutnZ0FsGqR7pj8eAhgC1hwI=;
+ b=E+FrqYGMS9INOD6oSGMmqY44f0Qbu0uhBM69aEjDZeE2gGnHXOzDTjM7zXCiVySy6FbEuHB5SFujXPaVDvaRUTOuqyiSUy/BwX0mKnO1k/SOvOWZiCWG7LraNG1T8F1ds44SYwmTnDdXIGo+7vR0F3K2EgxsGnif5ZKGMkfltNUQPt7y5sQApoZSsdOTifiaagSidNz4JrDWtW11ZaBPLNLJ6fcSYWJcjwIn8jNu4l/cPsg7O4qj4OWrxlsLVQcpnmN46b+glazXFW0y9yP2C6b7bhXgfrQjAZpxZ/yD2lnbArs2T8O3fmr2wCoioR1RTyb/tFWYF4xWQ0cZs40/5Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from SA1PR15MB4465.namprd15.prod.outlook.com (2603:10b6:806:194::23)
- by SA1PR15MB4371.namprd15.prod.outlook.com (2603:10b6:806:192::6) with
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
+ by DM6PR15MB3099.namprd15.prod.outlook.com (2603:10b6:5:145::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Wed, 8 Sep
- 2021 19:10:50 +0000
-Received: from SA1PR15MB4465.namprd15.prod.outlook.com
- ([fe80::1d1a:f4fb:840e:c6fe]) by SA1PR15MB4465.namprd15.prod.outlook.com
- ([fe80::1d1a:f4fb:840e:c6fe%7]) with mapi id 15.20.4500.016; Wed, 8 Sep 2021
- 19:10:50 +0000
-Message-ID: <62b03218-5791-e561-6428-eca0092b5789@fb.com>
-Date:   Wed, 8 Sep 2021 12:10:47 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.0.3
-Subject: Re: [PATCH bpf-next 1/5] bpf: Add bloom filter map implementation
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.22; Wed, 8 Sep
+ 2021 19:11:58 +0000
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::80a7:bdbd:d33b:e03c]) by DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::80a7:bdbd:d33b:e03c%5]) with mapi id 15.20.4500.014; Wed, 8 Sep 2021
+ 19:11:58 +0000
+Subject: Re: [PATCH mm/bpf v2] mm: bpf: add find_vma_no_check() without
+ lockdep_assert on mm->mmap_lock
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Liam Howlett <liam.howlett@oracle.com>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Luigi Rizzo <lrizzo@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>,
+        "walken@fb.com" <walken@fb.com>
+References: <CAMOZA0+FofdYMivrBR14snb6Xo_i6BV7gVX1dGCtJa=ue3VqEQ@mail.gmail.com>
+ <20210908151230.m2zyslt4qrufm4bv@revolver>
+ <f5328a05-ed3c-a868-9240-1b0852e01406@fb.com>
+ <CAMOZA0+2KLgYTXDZHGUYFnYezee=_hH6kFVM+-n2ZQuFTfh6yg@mail.gmail.com>
+ <20210908172118.n2f4w7epm6hh62zf@ast-mbp.dhcp.thefacebook.com>
+ <20210908105259.c47dcc4e4371ebb5e147ee6e@linux-foundation.org>
+ <20210908180258.yjh62e5oouckar5b@ast-mbp.dhcp.thefacebook.com>
+ <20210908111527.9a611426e257d55ccbbf46eb@linux-foundation.org>
+ <CAADnVQ+5m0+X1Xvgu-wYii2nWvAtEfk2ffM6mQTaiq2SPM1Z=A@mail.gmail.com>
+ <20210908183032.zoh6dj5xh455z47f@revolver>
+ <20210908184912.GA1200268@ziepe.ca>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <7aece51f-141c-db55-5d4c-8c6658b6a1fc@fb.com>
+Date:   Wed, 8 Sep 2021 12:11:54 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
+In-Reply-To: <20210908184912.GA1200268@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>
-References: <20210831225005.2762202-1-joannekoong@fb.com>
- <20210831225005.2762202-2-joannekoong@fb.com>
- <CAEf4Bza_y6497cWE5H04gDg__RkoMovkFYSqXjo-yFG7XH11ug@mail.gmail.com>
- <61305cf822fa_439b208a5@john-XPS-13-9370.notmuch>
- <0c1bb5a6-4ef5-77b4-cd10-aea0060d5349@fb.com>
- <613259dfb6973_1c226208c1@john-XPS-13-9370.notmuch>
-From:   Joanne Koong <joannekoong@fb.com>
-In-Reply-To: <613259dfb6973_1c226208c1@john-XPS-13-9370.notmuch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0172.namprd05.prod.outlook.com
- (2603:10b6:a03:339::27) To SA1PR15MB4465.namprd15.prod.outlook.com
- (2603:10b6:806:194::23)
+X-ClientProxiedBy: SJ0PR13CA0042.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c2::17) To DM5PR1501MB2055.namprd15.prod.outlook.com
+ (2603:10b6:4:a1::13)
 MIME-Version: 1.0
-Received: from [IPV6:2620:10d:c085:21c1::1250] (2620:10d:c090:400::5:92b1) by SJ0PR05CA0172.namprd05.prod.outlook.com (2603:10b6:a03:339::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.7 via Frontend Transport; Wed, 8 Sep 2021 19:10:49 +0000
+Received: from [IPv6:2620:10d:c085:21e8::15db] (2620:10d:c090:400::5:ffd6) by SJ0PR13CA0042.namprd13.prod.outlook.com (2603:10b6:a03:2c2::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.8 via Frontend Transport; Wed, 8 Sep 2021 19:11:56 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3e1f4984-6ce6-471b-6845-08d972fc5f34
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4371:
-X-Microsoft-Antispam-PRVS: <SA1PR15MB437180F8BE448F09584B1A0DD2D49@SA1PR15MB4371.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 67d2c49c-e220-4f4e-98ad-08d972fc875b
+X-MS-TrafficTypeDiagnostic: DM6PR15MB3099:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR15MB3099DA0459014F95086BC0D6D3D49@DM6PR15MB3099.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ToRaUhBUqd5jzukpe4ARnEIOsMxfaxftZkvutGDzIV0iD8gWvK7qyc0GQkN3DMJm7l07mONkLlco03DUUw29U8JYeGTXoV67fDzBLDapHvIEohXZKfisiviKgv1Knrfs7oXf060mOtbtfqDWl5+V45azNVNX5IzmYaWOjE8hHu0O7zrx76u4cqd1A7F5WYpK/rRZF/BPveBWZZMxC2kPGo4eizekFqaiGwMN4wDuXUQXyFjYF35XBZWOzGDqHaimAlExFJAm0usYuxpLcJCA2dUIOplCOvUPE+CkFgSi7CZr09v7pRmHbJJKtVyoUn2EzDWnonvWN3AEu+26Kg9ip4JpEs1mZHKjXN/UN0XjE77m/GMP3yq/tjdZg2E60po9hQfixpCyxaAD5GM95c6laQiKos9fv3qi8Uq+yVU75I4SZRg9f4rV9pARTQcrNnddGacjyn9OgHMWR5m1KsNMg0kwp49vWwrV/bnFiEvaJ7xhxYavGrKtvMb88YhiHDGu/ltYuafJQxA3/o+lrrhA0D6Bbb2W6R5fh/M+B4d8lG4q9DoroBNXHlbiXz8gdBDwQqQv2dNdvwz5fMR01NgspjhpAVYyqSk48BLxMIkdH26CcRbqF1VKGa0Gy7QHK/KpC87ztHR4WJB1wYh8uS+8jjppIc/E/x/T1LaQOBat9dV5n3XijG4kChkua3mhbLnBFo8l+9sqpd41us3KrLkhBXS0Pn3WNkOdHjply2bQPEY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB4465.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6486002)(2906002)(186003)(38100700002)(2616005)(66476007)(316002)(31696002)(31686004)(66946007)(4326008)(110136005)(8936002)(5660300002)(86362001)(508600001)(83380400001)(8676002)(36756003)(66556008)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: +cbn1t6jHijKEAepupJbZeT+ukS8eZ187yc+8B79b1LJbG5GiqoAMzN715DObEhzZF9AKen25oMpnE2kB0NLcY6S4KQ3R/OGpU5kzwZT5x4feT0VFM/pgLexrlzJ7CSs7eoat9QV0wzI/Jti4uradJ8oxHJmjIThFSqx2sOeDQNRWAxx36dNs/QYChS3EORBVUlCNvA4UyOPjEDSa7tJ+RHKt5ju2FwfH4wYfGm85Yp5W+Bou9aHn5Nkd3nz3Wm+9SrwXrmH293VNzhFUGGALWjmhSxVbHfC6zfmIVBuC0u1u+IV1W9I1RFemOQF5VT9Bw6jvzoSyL4X02m3jjKgR/JD+VPHX5V6f62uM5JcCvE01hR3N6L16cnyAXV2KGQEPGuDdB4qrGLRsuTOiYU5ZySBiX5NQiSjBo2w9eiIKPu2i1p6RAPByM/X6CJ+KO9EsAXm9C8NCSJD9vYc8mEHN8iquxJ5Ac5JKOX3nqgSg5R7F2t913373mIrEQVGTB9Gxm0onJtgmHr9mJu3/C1gnOnozyCbYJap9QQAi1yrn9kX7gJL+DXWgybPnKopLPwdywgIIDXbS9LpyOdfiaxCLH7REwjYWTsUzDqrNzJ2Q1ZwNl1w/TIOrGidgZwU5/zFoJfl5CUmmMWxBIwzvXoG5vJdVrem7gKySpniIEI1nAUdXfADBkmHtX2k5XJHhCXCBkkr8d1dosXsmus6XvBurQ/kHgHJnO48KJp22fwyGD8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(83380400001)(36756003)(7416002)(8676002)(6486002)(31686004)(8936002)(52116002)(54906003)(86362001)(110136005)(508600001)(316002)(2616005)(4326008)(66556008)(186003)(2906002)(38100700002)(66946007)(53546011)(31696002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NlZRd1FoK3lhOUtCcEVsQ0hvT1lZWTlzengzNXhZdm01MytyQmVpQnNiOWhJ?=
- =?utf-8?B?cy9xU2liSndRdHpvNzNkOTViWUg3TS9icUhiQ1o2amtSZExEcTFCZ1hYNEFN?=
- =?utf-8?B?dnV4eFZUZWtsdmpkaWREM2VLZ3p5amQ5RU51WFVPVnlRT1lXYUhvenVQaVZU?=
- =?utf-8?B?ZEhBTVA3ZkNiL2pFZW9kSVFRNXowN2tZMHliNSs4MWpCVjR5c1docll6MWFR?=
- =?utf-8?B?U002ci9DRVlMMStnRkIrUzJJK1dRNnJBRk1URW92WHlDZzg1R3FmaU5uRFl3?=
- =?utf-8?B?YWYrOGtaeFRHMFhkMGZiN3Vrc09UM1ArZ3ZoeDNpS2N5RWYrUVUyVCtpL2FY?=
- =?utf-8?B?TXdGQzNaNzlFdkU2aU5DWUdYRDRnNjBISndxekxYMDBIbUVlTFQ1TUdLUUlO?=
- =?utf-8?B?aUZMckdPNU9MZFdKZmxhc0JiYlRIQ2tML2RYKzl0ZDlXTjc2YlFva0Fyd1VE?=
- =?utf-8?B?Y0llL3Y5RVpVVU14RlM2aWNESC80SEE3akpMK3pWQkFUdWdwaFVaY0NoaVhv?=
- =?utf-8?B?TjAreW1CUGYxeVUrM1ppL2NpMVdoWFkvMVV2MGw4VVoxcXFwWktHNDJqbnFn?=
- =?utf-8?B?OFNFQmFYTXJGQ3BFb3Y2d0R0S0tMenhHSmxiVE1hLzJXWHVlNFFQbkJZUTZN?=
- =?utf-8?B?RTVKbUJ3TFJzbzY4L3BXczZ3UE55dWkzN0JheXF2Qkl3YndNWUZ4OGtoUTYw?=
- =?utf-8?B?ZmtJTGZPWWJFVy9ra2JIUkd4MnIweWJSeTJzR2psRVJGVis1YjhvVGNSQ01K?=
- =?utf-8?B?K21ENzQ5K3gxNFdHNjBJMCsxUUxBL1FmYXdkam1tbVFqWFNuN1pRYXRwMlVU?=
- =?utf-8?B?QjUyT2VjNjUzdzlRcno3ZElvYmZmZHh2R05NdkRsMVZwL2dPc1dGemtIbjFG?=
- =?utf-8?B?NWJnVC9Halg1WVFvWDBaZ1Q1SGVvVWVERTJ0bW9aTDRyVnI4QnRJMDFoZUty?=
- =?utf-8?B?V3ltU2FPWmQ0U2NTRm1WK0x1M0dlQzI5ZGhSSERicVYvYzBjM1gwTERwQ3Bx?=
- =?utf-8?B?RzU1cTZrMjRSdnJYNEpNc0xZazNTcTM5UVZ4ZWVtNTU0MFFZVC9yNDd1dW9Y?=
- =?utf-8?B?L3ZoM2JpYnk3K1V4U1hONnlPYzFDSG9GaU9kaTdtUllYaU5PQ0dWNXVsbWNy?=
- =?utf-8?B?YTd1K3V4bmtkdVNtQ2s5dnlsRGEvUFM3c3NCM1VZdnVFL25rQjdHd3g5VVQ1?=
- =?utf-8?B?TkU1RVdTcXJwZXZOajhNeGdsRTJtTTkrcWJ1M3BZbzN2Mi85NlFzUnVkVUF0?=
- =?utf-8?B?YnBGeWQrQ3dzL0J0dVNOQzBacDRabXh3UDJzTUQ4dkdNZXBvQ21BTTUvZGNB?=
- =?utf-8?B?YkR0TXpPR2tSOHpieE0yTlpOSElneURPMFBreWU5VE55aDcvaTFEbnh5d3ZS?=
- =?utf-8?B?K3I2cHhDeHI5WE9rQjdPNGcrdG1sS3dmS2xGaThVSzd1d2VZV2R3U0JNUXdi?=
- =?utf-8?B?MktrdFRlRFdjVEdFUTlnRlFhZFROcWo1SS8zcWlVaFlkNEo5NVQ2eXlzYjNK?=
- =?utf-8?B?U3FXU2RCUE5xd254b1lSUVpPMll0MXlHVU9wMTJKa2lYVE51dC9Jc29NNkVt?=
- =?utf-8?B?ZmtUdjU2alJSRGxEMzBXcnI3MmZHMmduUWs0SEdyTE9DdEtPVUpueVZxdGtE?=
- =?utf-8?B?VVNPbjQ1WC9PZy9RTkJCa2Z2RUZkTjZMRDlUaEpUMGVBb1NvMlhwcnV4K24z?=
- =?utf-8?B?QlJER0JHcmdOc2dqZXl5NlFkcXcrNS9VSWdCT3BlUlJVaGpQTG13VlIrSkhD?=
- =?utf-8?B?T0dxMUJRcTdMdDR0TnE5ajhQQzA1OFNXZWhZRnJUd0F5a3MxamFQNUZXZEpp?=
- =?utf-8?B?djVQODUxbjBoM29MWktJUT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e1f4984-6ce6-471b-6845-08d972fc5f34
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB4465.namprd15.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bVE4M1BVQUFjTlpDcVhjbVMrQlp1d0FvNWN6L3RNRm1Rd3R4dUdBYURUZCsy?=
+ =?utf-8?B?UlNLamFZVjhJclM4YVV2bDZJbjhRRmNrRzNVZ0N5Ung0YjFvV3ZZWnQvYmQ3?=
+ =?utf-8?B?UUVzaFNLYzRmRUMwZkY5Z0tEdkM1Q0ljOXRGZUsySmRRbzJ2UWtBbEY4N25a?=
+ =?utf-8?B?aFF3c2hGR3piaHkxOTVVREpkcEFSQzZhN0t0OG03RzFTbHd2QjNGbXl2YzhD?=
+ =?utf-8?B?UVorNWFwUnExV1dUazRZWE9GN3lhSU5IZ2U1Wjl3anNBc0NIS2hkT1dTZVpF?=
+ =?utf-8?B?Ulk1TXhieVQvV1VyNzQxMUkwSmVJeGVUODgxNkp3UmwrUDI2dm1DUDFZajlX?=
+ =?utf-8?B?aERTdm1HLzNqUS9GKzAxOFlDdWswNDcyRU8zK1B0UkN1NGJ5d1BZY0Eyay9G?=
+ =?utf-8?B?YVYwZVpxQTZYcHRQRm0xNmdCVnczNEhnTGVveFBYVFVHSHRiQU1mMys1ZU1J?=
+ =?utf-8?B?RmJaeFdkbUxHY0NsdVNyMnR1ZTYrUnpVMC9HVk5zUDlqVndmSGY4REs4Q1k1?=
+ =?utf-8?B?UDhGYVpKWHRkTFFWcE53dkRRMWpvMTRGZldZeTdGczRNWmgxNU5ZbG1iRklM?=
+ =?utf-8?B?TWJFVDF4MkQ0SU5sWjBrbEJRUGI0MmhGQkJHVVFud3VuTGh5UnlHbHNsU2xt?=
+ =?utf-8?B?VitXbnB4RUhCdVZ5QmpjZ2JjeEE0M29lZGNuaUhvN1V1UXR6L3dJdS9KUytt?=
+ =?utf-8?B?ajA4YkdlLzNJYWZnYSthdXlITy9hREZwemNPMmFGMy8zZ2k0dmtKYm91ZXRS?=
+ =?utf-8?B?bEtOaXgyVVU1c2hDWTRwTGE0K0QyTFBTbmFrUGJpSmJFN1NSdFR0YVl0QXhL?=
+ =?utf-8?B?YU01MnRBRmY5WW9KWTVtL1B2bHpvMEtDUVlNSWMyWXRzWTIvMlFaNlc0WUNp?=
+ =?utf-8?B?ZHdjV3E4R0diWm1pMldocFBRSkdyd2JoVmNVY1BBeCt3cmVvT0FDclpzOVgw?=
+ =?utf-8?B?c29rVnJXTlhIcTFsdTdNcFM1TlNJZUwrS2hpTjlaajZFSGs2dzk4QUFIQkJj?=
+ =?utf-8?B?ZmZ4d25yRTJRMFBWNkNUdXdYL0xJZHJHL0VKcWRYTG1SeCt4SXAwSWhueWJK?=
+ =?utf-8?B?N21qR0I1UUtCeWxkWHZBMWZEV1gvaG9iZWxqTFZLTyszRDNhV2wxWjA4OHZ2?=
+ =?utf-8?B?a002WE96U0pEbkdLVXliK1hySmJndkhVYk9XUlhseVJYNUR2TVFWNCtJWU9G?=
+ =?utf-8?B?bWFyUGhPQzgyRjIwa1lJNElFbk1qYS9NYTFtWmtEaFdaUHRydWY1S2ZNUHNw?=
+ =?utf-8?B?U1YzWVNFT0FSRTcyYzBpdUFMRDNMQ29kR09kUkw1YU5LR1VwdXVTOXZTS2Vj?=
+ =?utf-8?B?Q2lFRW5URzFQdGN0dkltUDErc1krUEZUZVFaZFNrU2RPc054eWRFcC9KbFJD?=
+ =?utf-8?B?ZndoVlBUeW5PeVNMUUR6WXZQa2puMGdRYys4LzhBSWVWb21MNWRIREN4RmtW?=
+ =?utf-8?B?U0lVSmEzVkkzRlNjLzhvcW1uU1I5a2FNUEdOdXFkTTQ1NkZxRFNkdk9BTVEy?=
+ =?utf-8?B?b1ZlbFRaV1dKSjZnZVh5R29GV3FwS2dDYm9nTks0Q3lSYm8wSjBvM3NSbDQ3?=
+ =?utf-8?B?WkdXR3FtSzUwSTlhUGN0aTFtWTFSajZ3T1ZaVFlPYnEwM0M3OWNOSWxKTk1G?=
+ =?utf-8?B?TnE4ZCt6U0NwVjA1aFhDU24xdUFkbkpJUU5rZndBNWhCSG81TkNyWDZobnMz?=
+ =?utf-8?B?NzR1UVJIUmVoc3NKK1dyRFhzejFUMm1PNy9ZWFFYM0hVYWlSc0hUQnR4N1VK?=
+ =?utf-8?B?eVF6aTQ5dXZzZTY4VFJqVGgxY1JiN2JPWHJSY0I5VzVuNDlDbVZORVQ3elZ4?=
+ =?utf-8?Q?4z0v6wk/M03Y9vXfx9bCKOuAHSKc9M+ahO7Ns=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67d2c49c-e220-4f4e-98ad-08d972fc875b
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 19:10:50.6341
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 19:11:57.9107
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6cu/+lOxYuf8gWCYoHrje/zlIoxptf0v7hn5xJBpuzIVUneuA5kIV3/iq89HBkTS7+Xl81+soOUOtOgSjnDVsg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4371
+X-MS-Exchange-CrossTenant-UserPrincipalName: +RrD3tCEcKPV5H91Snh101dE+yjDLKejXqLE/ObTFoWQh5Dvsoupg1aiforWTtr3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3099
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: GhZHxNJWAYnu822WP_0XmyysHCS2kpKl
-X-Proofpoint-ORIG-GUID: GhZHxNJWAYnu822WP_0XmyysHCS2kpKl
+X-Proofpoint-GUID: hP8L5PXnp4e6rxOwJJU6f-qzkNbW2OfJ
+X-Proofpoint-ORIG-GUID: hP8L5PXnp4e6rxOwJJU6f-qzkNbW2OfJ
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-09-08_06:2021-09-07,2021-09-08 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
@@ -141,133 +156,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/3/21 10:22 AM, John Fastabend wrote:
 
-> Joanne Koong wrote:
->> On 9/1/21 10:11 PM, John Fastabend wrote:
+
+On 9/8/21 11:49 AM, Jason Gunthorpe wrote:
+> On Wed, Sep 08, 2021 at 06:30:52PM +0000, Liam Howlett wrote:
+> 
+>>   /* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. */
+>> -struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+>> +struct vm_area_struct *find_vma_non_owner(struct mm_struct *mm,
+>> +					 unsigned long addr)
+>>   {
+>>   	struct rb_node *rb_node;
+>>   	struct vm_area_struct *vma;
+>>   
+>> -	mmap_assert_locked(mm);
+>> +	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
+>>   	/* Check the cache first. */
+>>   	vma = vmacache_find(mm, addr);
+>>   	if (likely(vma))
+>> @@ -2325,6 +2326,11 @@ struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+>>   	return vma;
+>>   }
+>>   
+>> +struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+>> +{
+>> +	lockdep_assert_held(&mm->mmap_lock);
+>> +	return find_vma_non_owner(mm, addr);
+>> +}
+>>   EXPORT_SYMBOL(find_vma);
+>>   
+>>   /*
 >>
->>> Andrii Nakryiko wrote:
->>>> On Tue, Aug 31, 2021 at 3:51 PM Joanne Koong <joannekoong@fb.com> wrote:
->>>>> Bloom filters are a space-efficient probabilistic data structure
->>>>> used to quickly test whether an element exists in a set.
->>>>> In a bloom filter, false positives are possible whereas false
->>>>> negatives are not.
->>>>>
->>>>> This patch adds a bloom filter map for bpf programs.
->>>>> The bloom filter map supports peek (determining whether an element
->>>>> is present in the map) and push (adding an element to the map)
->>>>> operations.These operations are exposed to userspace applications
->>>>> through the already existing syscalls in the following way:
->>>>>
->>>>> BPF_MAP_LOOKUP_ELEM -> peek
->>>>> BPF_MAP_UPDATE_ELEM -> push
->>>>>
->>>>> The bloom filter map does not have keys, only values. In light of
->>>>> this, the bloom filter map's API matches that of queue stack maps:
->>>>> user applications use BPF_MAP_LOOKUP_ELEM/BPF_MAP_UPDATE_ELEM
->>>>> which correspond internally to bpf_map_peek_elem/bpf_map_push_elem,
->>>>> and bpf programs must use the bpf_map_peek_elem and bpf_map_push_elem
->>>>> APIs to query or add an element to the bloom filter map. When the
->>>>> bloom filter map is created, it must be created with a key_size of 0.
->>>>>
->>>>> For updates, the user will pass in the element to add to the map
->>>>> as the value, wih a NULL key. For lookups, the user will pass in the
->>>>> element to query in the map as the value. In the verifier layer, this
->>>>> requires us to modify the argument type of a bloom filter's
->>>>> BPF_FUNC_map_peek_elem call to ARG_PTR_TO_MAP_VALUE; as well, in
->>>>> the syscall layer, we need to copy over the user value so that in
->>>>> bpf_map_peek_elem, we know which specific value to query.
->>>>>
->>>>> The maximum number of entries in the bloom filter is not enforced; if
->>>>> the user wishes to insert more entries into the bloom filter than they
->>>>> specified as the max entries size of the bloom filter, that is permitted
->>>>> but the performance of their bloom filter will have a higher false
->>>>> positive rate.
->>>>>
->>>>> The number of hashes to use for the bloom filter is configurable from
->>>>> userspace. The benchmarks later in this patchset can help compare the
->>>>> performances of different number of hashes on different entry
->>>>> sizes. In general, using more hashes decreases the speed of a lookup,
->>>>> but increases the false positive rate of an element being detected in the
->>>>> bloom filter.
->>>>>
->>>>> Signed-off-by: Joanne Koong <joannekoong@fb.com>
-> [...]
->
->>>>> +static struct bpf_map *bloom_filter_map_alloc(union bpf_attr *attr)
->>>>> +{
->>>>> +       int numa_node = bpf_map_attr_numa_node(attr);
->>>>> +       u32 nr_bits, bit_array_bytes, bit_array_mask;
->>>>> +       struct bpf_bloom_filter *bloom_filter;
->>>>> +
->>>>> +       if (!bpf_capable())
->>>>> +               return ERR_PTR(-EPERM);
->>>>> +
->>>>> +       if (attr->key_size != 0 || attr->value_size == 0 || attr->max_entries == 0 ||
->>>>> +           attr->nr_hashes == 0 || attr->map_flags & ~BLOOM_FILTER_CREATE_FLAG_MASK ||
->>>>> +           !bpf_map_flags_access_ok(attr->map_flags))
->>>>> +               return ERR_PTR(-EINVAL);
->>>>> +
->>>>> +       /* For the bloom filter, the optimal bit array size that minimizes the
->>>>> +        * false positive probability is n * k / ln(2) where n is the number of
->>>>> +        * expected entries in the bloom filter and k is the number of hash
->>>>> +        * functions. We use 7 / 5 to approximate 1 / ln(2).
->>>>> +        *
->>>>> +        * We round this up to the nearest power of two to enable more efficient
->>>>> +        * hashing using bitmasks. The bitmask will be the bit array size - 1.
->>>>> +        *
->>>>> +        * If this overflows a u32, the bit array size will have 2^32 (4
->>>>> +        * GB) bits.
->>> Would it be better to return E2BIG or EINVAL here? Speculating a bit, but if I was
->>> a user I might want to know that the number of bits I pushed down is not the actual
->>> number?
->> I think if we return E2BIG or EINVAL here, this will fail to create the
->> bloom filter map
->> if the max_entries exceeds some limit (~3 billion, according to my math)
->> whereas
->> automatically setting the bit array size to 2^32 if the max_entries is
->> extraordinarily large will still allow the user to create and use a
->> bloom filter (albeit
->> one with a higher false positive rate).
-> It doesn't matter much to me, but I think if a user request 3+billion max entries
-> its ok to return E2BIG and then they can use a lower limit and know the
-> false positive rate is going to go up.
->
->>> Another thought, would it be simpler to let user do this calculation and just let
->>> max_elements be number of bits they want? Then we could have examples with the
->>> above comment. Just a thought...
->> I like Martin's idea of keeping the max_entries meaning consistent
->> across all map types.
->> I think that makes the interface clearer for users.
-> I'm convinced as well, lets keep it consistent. Thanks.
->
-> [...]
->
->>>> Also, I wonder if ditching spinlock in favor of atomic bit set
->>>> operation would improve performance in typical scenarios. Seems like
->>>> set_bit() is an atomic operation, so it should be easy to test. Do you
->>>> mind running benchmarks with spinlock and with set_bit()?
->>> With the jhash pulled out of lock, I think it might be noticable. Curious
->>> to see.
->> Awesome, I will test this out and report back!
-> It looks like the benchmark tests were done with value size of __u64 should
-> we do larger entry? I guess (you tell me?) if this is used from XDP for
-> DDOS you would use a flow tuple and with IPv6 this could be
-> {dstIp, srcIp, sport, dport, proto} with roughly 44B.
+>>
+>> Although this leaks more into the mm API and was referred to as ugly
+>> previously, it does provide a working solution and still maintains the
+>> same level of checking.
+> 
+> I think it is no better than before.
+> 
+> The solution must be to not break lockdep in the BPF side. If Peter's
+> reworked algorithm is not OK then BPF should drop/acquire the lockdep
+> when it punts the unlock to the WQ.
 
-Great suggestion. Alexei mentioned this as well in his earlier reply. I 
-am planning to run benchmarks on
-the v2 version using value sizes of 4, 8, 16, and 40 bytes.
+The current warning is triggered by bpf calling find_vma().
+Is it too late even if bpf does drop/acquire the lockdep when it punts
+the unlock to the WQ with irq_work_queue()? Maybe I missed something,
+could you be more specific about your proposed solution?
 
->>>>> +       for (i = 0; i < bloom_filter->map.nr_hashes; i++) {
->>>>> +               hash = jhash(value, map->value_size, bloom_filter->hash_seed + i) &
->>>>> +                       bloom_filter->bit_array_mask;
->>>>> +               bitmap_set(bloom_filter->bit_array, hash, 1);
->>>>> +       }
->>>>> +
->>>>> +       spin_unlock_irqrestore(&bloom_filter->spinlock, spinlock_flags);
->>>>> +
->>>>> +       return 0;
->>>>> +}
->>>>> +
->>>> [...]
+> 
+> 'non-owner' is just a nice way of saying 'the caller is messing with
+> lockdep', it is not a sane way to design APIs
+> 
+> Jason
+> 
