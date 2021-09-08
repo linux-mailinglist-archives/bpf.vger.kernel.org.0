@@ -2,40 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E8D4039A0
-	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 14:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954B4403A2E
+	for <lists+bpf@lfdr.de>; Wed,  8 Sep 2021 15:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbhIHMV2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 08:21:28 -0400
-Received: from www62.your-server.de ([213.133.104.62]:58118 "EHLO
+        id S1344476AbhIHNCg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 09:02:36 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36434 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235195AbhIHMV2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Sep 2021 08:21:28 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
+        with ESMTP id S232097AbhIHNCg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Sep 2021 09:02:36 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mNwYs-0002bD-Bc; Wed, 08 Sep 2021 14:20:18 +0200
+        id 1mNxCh-0005Yd-88; Wed, 08 Sep 2021 15:01:27 +0200
 Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mNwYs-000Faz-4V; Wed, 08 Sep 2021 14:20:18 +0200
-Subject: Re: [PATCH mm/bpf v2] mm: bpf: add find_vma_no_check() without
- lockdep_assert on mm->mmap_lock
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org, linux-mm@kvack.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel-team@fb.com,
-        Luigi Rizzo <lrizzo@google.com>, liam.howlett@oracle.com,
-        akpm@linux-foundation.org
-References: <20210908044427.3632119-1-yhs@fb.com>
+        id 1mNxCh-0002gn-2z; Wed, 08 Sep 2021 15:01:27 +0200
+Subject: Re: [PATCH v2 bpf-next] libbpf: add LIBBPF_DEPRECATED_SINCE macro for
+ scheduling API deprecations
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, quentin@isovalent.com
+Cc:     kernel-team@fb.com
+References: <20210908065538.1725496-1-andrii@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ebcddf07-f329-05fa-8fdc-b2b9d6b0127b@iogearbox.net>
-Date:   Wed, 8 Sep 2021 14:20:17 +0200
+Message-ID: <8ca16967-cba4-6a0c-89e7-6d774d3706b1@iogearbox.net>
+Date:   Wed, 8 Sep 2021 15:01:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210908044427.3632119-1-yhs@fb.com>
+In-Reply-To: <20210908065538.1725496-1-andrii@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -45,140 +43,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/8/21 6:44 AM, Yonghong Song wrote:
-> Current bpf-next bpf selftest "get_stack_raw_tp" triggered the warning:
+On 9/8/21 8:55 AM, Andrii Nakryiko wrote:
+> From: Quentin Monnet <quentin@isovalent.com>
 > 
->    [ 1411.304463] WARNING: CPU: 3 PID: 140 at include/linux/mmap_lock.h:164 find_vma+0x47/0xa0
->    [ 1411.304469] Modules linked in: bpf_testmod(O) [last unloaded: bpf_testmod]
->    [ 1411.304476] CPU: 3 PID: 140 Comm: systemd-journal Tainted: G        W  O      5.14.0+ #53
->    [ 1411.304479] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->    [ 1411.304481] RIP: 0010:find_vma+0x47/0xa0
->    [ 1411.304484] Code: de 48 89 ef e8 ba f5 fe ff 48 85 c0 74 2e 48 83 c4 08 5b 5d c3 48 8d bf 28 01 00 00 be ff ff ff ff e8 2d 9f d8 00 85 c0 75 d4 <0f> 0b 48 89 de 48 8
->    [ 1411.304487] RSP: 0018:ffffabd440403db8 EFLAGS: 00010246
->    [ 1411.304490] RAX: 0000000000000000 RBX: 00007f00ad80a0e0 RCX: 0000000000000000
->    [ 1411.304492] RDX: 0000000000000001 RSI: ffffffff9776b144 RDI: ffffffff977e1b0e
->    [ 1411.304494] RBP: ffff9cf5c2f50000 R08: ffff9cf5c3eb25d8 R09: 00000000fffffffe
->    [ 1411.304496] R10: 0000000000000001 R11: 00000000ef974e19 R12: ffff9cf5c39ae0e0
->    [ 1411.304498] R13: 0000000000000000 R14: 0000000000000000 R15: ffff9cf5c39ae0e0
->    [ 1411.304501] FS:  00007f00ae754780(0000) GS:ffff9cf5fba00000(0000) knlGS:0000000000000000
->    [ 1411.304504] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->    [ 1411.304506] CR2: 000000003e34343c CR3: 0000000103a98005 CR4: 0000000000370ee0
->    [ 1411.304508] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->    [ 1411.304510] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->    [ 1411.304512] Call Trace:
->    [ 1411.304517]  stack_map_get_build_id_offset+0x17c/0x260
->    [ 1411.304528]  __bpf_get_stack+0x18f/0x230
->    [ 1411.304541]  bpf_get_stack_raw_tp+0x5a/0x70
->    [ 1411.305752] RAX: 0000000000000000 RBX: 5541f689495641d7 RCX: 0000000000000000
->    [ 1411.305756] RDX: 0000000000000001 RSI: ffffffff9776b144 RDI: ffffffff977e1b0e
->    [ 1411.305758] RBP: ffff9cf5c02b2f40 R08: ffff9cf5ca7606c0 R09: ffffcbd43ee02c04
->    [ 1411.306978]  bpf_prog_32007c34f7726d29_bpf_prog1+0xaf/0xd9c
->    [ 1411.307861] R10: 0000000000000001 R11: 0000000000000044 R12: ffff9cf5c2ef60e0
->    [ 1411.307865] R13: 0000000000000005 R14: 0000000000000000 R15: ffff9cf5c2ef6108
->    [ 1411.309074]  bpf_trace_run2+0x8f/0x1a0
->    [ 1411.309891] FS:  00007ff485141700(0000) GS:ffff9cf5fae00000(0000) knlGS:0000000000000000
->    [ 1411.309896] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->    [ 1411.311221]  syscall_trace_enter.isra.20+0x161/0x1f0
->    [ 1411.311600] CR2: 00007ff48514d90e CR3: 0000000107114001 CR4: 0000000000370ef0
->    [ 1411.312291]  do_syscall_64+0x15/0x80
->    [ 1411.312941] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->    [ 1411.313803]  entry_SYSCALL_64_after_hwframe+0x44/0xae
->    [ 1411.314223] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->    [ 1411.315082] RIP: 0033:0x7f00ad80a0e0
->    [ 1411.315626] Call Trace:
->    [ 1411.315632]  stack_map_get_build_id_offset+0x17c/0x260
+> Introduce a macro LIBBPF_DEPRECATED_SINCE(major, minor, message) to prepare
+> the deprecation of two API functions. This macro marks functions as deprecated
+> when libbpf's version reaches the values passed as an argument.
 > 
-> To reproduce, first build `test_progs` binary:
->    make -C tools/testing/selftests/bpf -j60
-> and then run the binary at tools/testing/selftests/bpf directory:
->    ./test_progs -t get_stack_raw_tp
+> As part of this change libbpf_version.h header is added with recorded major
+> (LIBBPF_MAJOR_VERSION) and minor (LIBBPF_MINOR_VERSION) libbpf version macros.
+> They are now part of libbpf public API and can be relied upon by user code.
+> libbpf_version.h is installed system-wide along other libbpf public headers.
 > 
-> The warning is due to commit 5b78ed24e8ec("mm/pagemap: add mmap_assert_locked() annotations to find_vma*()")
-> which added mmap_assert_locked() in find_vma() function. The mmap_assert_locked() function
-> asserts that mm->mmap_lock needs to be held. But this is not the case for
-> bpf_get_stack() or bpf_get_stackid() helper (kernel/bpf/stackmap.c), which
-> uses mmap_read_trylock_non_owner() instead. Since mm->mmap_lock is not held
-> in bpf_get_stack[id]() use case, the above warning is emitted during test run.
+> Due to this new build-time auto-generated header, in-kernel applications
+> relying on libbpf (resolve_btfids, bpftool, bpf_preload) are updated to
+> include libbpf's output directory as part of a list of include search paths.
+> Better fix would be to use libbpf's make_install target to install public API
+> headers, but that clean up is left out as a future improvement. The build
+> changes were tested by building kernel (with KBUILD_OUTPUT and O= specified
+> explicitly), bpftool, libbpf, selftests/bpf, and resolve_btfids builds. No
+> problems were detected.
 > 
-> This patch added function find_vma_no_check() which does not have mmap_assert_locked() call and
-> bpf_get_stack[id]() helpers call find_vma_no_check() instead. This resolved the above warning.
+> Note that because of the constraints of the C preprocessor we have to write
+> a few lines of macro magic for each version used to prepare deprecation (0.6
+> for now).
 > 
-> I didn't use __find_vma() name because it has been used in drivers/gpu/drm/i915/i915_gpu_error.c:
->      static struct i915_vma_coredump *
->      __find_vma(struct i915_vma_coredump *vma, const char *name) { ... }
+> Also, use LIBBPF_DEPRECATED_SINCE() to schedule deprecation of
+> btf__get_from_id() and btf__load(), which are replaced by
+> btf__load_from_kernel_by_id() and btf__load_into_kernel(), respectively,
+> starting from future libbpf v0.6. This is part of libbpf 1.0 effort ([0]).
 > 
-> Cc: Luigi Rizzo <lrizzo@google.com>
-> Fixes: 5b78ed24e8ec("mm/pagemap: add mmap_assert_locked() annotations to find_vma*()")
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+>    [0] Closes: https://github.com/libbpf/libbpf/issues/278
+> 
+> Co-developed-by: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+> 
+> v1->v2:
+>    - fix bpf_preload build by adding dependency for iterators/iterators.o on
+>      libbpf.a generation (caught by BPF CI);
+[...]
+> @@ -136,7 +140,7 @@ all: fixdep
+>   
+>   all_cmd: $(CMD_TARGETS) check
+>   
+> -$(BPF_IN_SHARED): force $(BPF_HELPER_DEFS)
+> +$(BPF_IN_SHARED): force $(BPF_GENERATED)
+>   	@(test -f ../../include/uapi/linux/bpf.h -a -f ../../../include/uapi/linux/bpf.h && ( \
+>   	(diff -B ../../include/uapi/linux/bpf.h ../../../include/uapi/linux/bpf.h >/dev/null) || \
+>   	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/bpf.h' differs from latest version at 'include/uapi/linux/bpf.h'" >&2 )) || true
+> @@ -154,13 +158,19 @@ $(BPF_IN_SHARED): force $(BPF_HELPER_DEFS)
+>   	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
+>   	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(SHARED_OBJDIR) CFLAGS="$(CFLAGS) $(SHLIB_FLAGS)"
+>   
+> -$(BPF_IN_STATIC): force $(BPF_HELPER_DEFS)
+> +$(BPF_IN_STATIC): force $(BPF_GENERATED)
+>   	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(STATIC_OBJDIR)
+>   
+>   $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
+>   	$(QUIET_GEN)$(srctree)/scripts/bpf_doc.py --header \
+>   		--file $(srctree)/tools/include/uapi/linux/bpf.h > $(BPF_HELPER_DEFS)
+>   
+> +$(VERSION_HDR): force
+> +	$(QUIET_GEN)echo "/* This file was auto-generated. */" > $@
+> +	@echo "" >> $@
+> +	@echo "#define LIBBPF_MAJOR_VERSION $(LIBBPF_MAJOR_VERSION)" >> $@
+> +	@echo "#define LIBBPF_MINOR_VERSION $(LIBBPF_MINOR_VERSION)" >> $@
+> +
 
-Luigi / Liam / Andrew, if the below looks reasonable to you, any objections to route the
-fix with your ACKs via bpf tree to Linus (or strong preference via -mm fixes)?
+Looks like CI caught a different issue this time with v2 where it cannot find libbpf_version.h:
+
+   [...]
+     CC       bench_count.o
+     GEN     /home/runner/work/bpf/bpf/tools/testing/selftests/bpf/bpf-helpers.rst
+   In file included from /home/runner/work/bpf/bpf/tools/lib/bpf/bpf.h:31,
+                    from /home/runner/work/bpf/bpf/tools/testing/selftests/bpf/bench.h:8,
+                    from benchs/bench_count.c:3:
+   /home/runner/work/bpf/bpf/tools/lib/bpf/libbpf_common.h:13:10: fatal error: libbpf_version.h: No such file or directory
+      13 | #include "libbpf_version.h"
+         |          ^~~~~~~~~~~~~~~~~~
+   compilation terminated.
+   make: *** [Makefile:517: /home/runner/work/bpf/bpf/tools/testing/selftests/bpf/bench_count.o] Error 1
+   make: *** Waiting for unfinished jobs....
+     GEN     /home/runner/work/bpf/bpf/tools/testing/selftests/bpf/bpf-syscall.rst
+   In file included from /home/runner/work/bpf/bpf/tools/lib/bpf/bpf.h:31,
+                    from bench.h:8,
+                    from bench.c:13:
+   /home/runner/work/bpf/bpf/tools/lib/bpf/libbpf_common.h:13:10: fatal error: libbpf_version.h: No such file or directory
+      13 | #include "libbpf_version.h"
+         |          ^~~~~~~~~~~~~~~~~~
+   compilation terminated.
+   make: *** [Makefile:162: /home/runner/work/bpf/bpf/tools/testing/selftests/bpf/bench.o] Error 1
 
 Thanks,
 Daniel
-
-> ---
->   include/linux/mm.h    | 2 ++
->   kernel/bpf/stackmap.c | 2 +-
->   mm/mmap.c             | 9 +++++++--
->   3 files changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 50e2c2914ac2..ba7a11d900f5 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2669,6 +2669,8 @@ extern int expand_upwards(struct vm_area_struct *vma, unsigned long address);
->   #endif
->   
->   /* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. */
-> +extern struct vm_area_struct * find_vma_no_check(struct mm_struct * mm,
-> +						 unsigned long addr);
->   extern struct vm_area_struct * find_vma(struct mm_struct * mm, unsigned long addr);
->   extern struct vm_area_struct * find_vma_prev(struct mm_struct * mm, unsigned long addr,
->   					     struct vm_area_struct **pprev);
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index e8eefdf8cf3e..838a2c141497 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -190,7 +190,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
->   	}
->   
->   	for (i = 0; i < trace_nr; i++) {
-> -		vma = find_vma(current->mm, ips[i]);
-> +		vma = find_vma_no_check(current->mm, ips[i]);
->   		if (!vma || build_id_parse(vma, id_offs[i].build_id, NULL)) {
->   			/* per entry fall back to ips */
->   			id_offs[i].status = BPF_STACK_BUILD_ID_IP;
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 88dcc5c25225..8d5e340114f8 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -2270,12 +2270,11 @@ get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
->   EXPORT_SYMBOL(get_unmapped_area);
->   
->   /* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. */
-> -struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
-> +struct vm_area_struct *find_vma_no_check(struct mm_struct *mm, unsigned long addr)
->   {
->   	struct rb_node *rb_node;
->   	struct vm_area_struct *vma;
->   
-> -	mmap_assert_locked(mm);
->   	/* Check the cache first. */
->   	vma = vmacache_find(mm, addr);
->   	if (likely(vma))
-> @@ -2302,6 +2301,12 @@ struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
->   	return vma;
->   }
->   
-> +struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
-> +{
-> +	mmap_assert_locked(mm);
-> +	return find_vma_no_check(mm, addr);
-> +}
-> +
->   EXPORT_SYMBOL(find_vma);
->   
->   /*
-> 
-
