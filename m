@@ -2,126 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257894041BC
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 01:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265104041D3
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 01:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237358AbhIHXZt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 19:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        id S235099AbhIHXen (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 19:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235903AbhIHXZt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Sep 2021 19:25:49 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A04C061575
-        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 16:24:40 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id q70so7607050ybg.11
-        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 16:24:40 -0700 (PDT)
+        with ESMTP id S233992AbhIHXem (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Sep 2021 19:34:42 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24535C061575
+        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 16:33:34 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id b64so4566592qkg.0
+        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 16:33:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=mwcTJBko8mgmWTViC5+9/og5pc8KnSrFWBWKXCs+Rr0=;
-        b=ayq0K3SaHJiGLfz8eHqsiSMuyK4KkTBn6qrFcvselThay+myi557Tg44PedCZiYa8E
-         w6F5tQZnVGXH+CikOWP7TTLOcSSs/j1d74To/jUssz+KBwT+VvSC1Mp1ezGvp8IFWVfo
-         cMN2/3BgaFPtPOF4atbNDTOnedLkOhklVA/pIym890Xhi2VZF7VxyTslJlBPCmvRXkNs
-         J/eDt05o1/x7eXSiyQi0x9MM5bwphLTjkWC0N9/Ywj/DbBWDgljlivhT+6suiYqfmkEG
-         4LamzBHZrw9guXopqY7pXzzmHydNbQLRZ716N+EVUm3Yt6YnYZU2gmTT3jetyQK6pmxx
-         1uxw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MrFx8f2Sbic52YCjTt/XxUCD8D0mz2UtAejCbMntRqM=;
+        b=Y7otoefmsPF3VMf0m5rBzollI1ZgyX0Tgmchly0g12QfYjznjH4lzQQe11mcXXqYvJ
+         +WssRuUBIHSFxPzQpMZJCht2WaU1h2VWq7yIuXtjkHDlDgQ+c7iI6eYzJAq7HuUKHgIg
+         fjCFIPZvkiDP6zU8HLt40739TRlDYSKRzL/478UEmcplbdmDUiRGjwvdcpIdBh6D9N2r
+         5GhxU5yPUxVCAM54aNCh7hGOLS8a+wreviKplPqFKwVxoj/Pv5cDyDhtH7yoAO3v/ueh
+         SKEjt31f79K1SXgL+0hFrhpqE7GudawpI1u0Rn6fga+z9GifcS8uLqvAjCbok2ZNYU8A
+         d9XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=mwcTJBko8mgmWTViC5+9/og5pc8KnSrFWBWKXCs+Rr0=;
-        b=wULaOKOn8VJXOweRPmLPgOjKmklpAmGmtxKTja95Ou5Dgr5CbGBK3I56b0jC5wEJUr
-         CWbzJycTkjr57yEkMUsypISFRt142YFyDJuV3F/8kpF3x1KcpEPsxOPE9i9x6MM2iLyx
-         Jzb55qZdblJUkNvgA1lJVjg9iECynb2ryz+GtMJNLIN8BkyiInEycke+tRPAFBjXhk3z
-         wRCWiIjRclacfxAWx1svGQ1IUzcyiR2K3c/3p89lgh03w8NtF/nsFXcSLmSPGeEWzt8/
-         8ILmFj3/pJ7nkN8WdZZ0uOTCrUktNkRqYXO6nT3t+LNMU5BCubdgmqpY7YK0fnGh/V1z
-         0siA==
-X-Gm-Message-State: AOAM532/wn6yDdTges/LtdRBESvF0uWriyLxu6ubx+Qq8mLjnaeUddv3
-        6GHyTIok9gFK49gdCfZ/Rh6IiQq8oCGajRrNy2Ni50Ls9Rc=
-X-Google-Smtp-Source: ABdhPJyEI5s1a7yNyBl32JgaR9Wo9lWQXIZz393suQy5jeQSa5rxZLAEPWgNjCEk8kbvT22xWC4td4m0q83CgIR6leY=
-X-Received: by 2002:a25:8c4:: with SMTP id 187mr956560ybi.369.1631143479900;
- Wed, 08 Sep 2021 16:24:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MrFx8f2Sbic52YCjTt/XxUCD8D0mz2UtAejCbMntRqM=;
+        b=1CTyXKbqVMLeNmXt+t2nh1Qd7ySKyQK9a99ZQ4CS6AllyZAsf3qYhrRIbGI7bjnGMk
+         bllM4boZuWPOjrNTaT+AyhbntljkrwTf8IASPW2HhWH/BjR8WJXAnbi+naIG8Nmoqeyi
+         3PipSbBH9PjAFdV3fzPXqFTYmSxhco8YdgNtZ6eU77TqhKOcdp52q1En3BeTttb8JUpl
+         bo61ac2qQghQB4QVdxK9yvhColgFttYrnQG4ub/6nvlThU3JpoPd7DnRa4xfa3uVWBDA
+         TpIeFMbFPfLu9echi1mH8uVG+KFI9R2QVisBY1q3KAZ5/tZ3euQiY/31qT7ogUAS++Cw
+         fQBA==
+X-Gm-Message-State: AOAM533DZmsL/pgq6hydaUudzsVyW0IR6uyKpNjdvDiiGz6vobjy0R9Q
+        GkjC3KEJEQk8T/IKlXaL0KR61A==
+X-Google-Smtp-Source: ABdhPJxQQSxNdwoc1gf8pPeDJefusJYSa7mYD4j+G6VAAQpFQNRMbsDasczgOrbWfUIEJPcBee/tgA==
+X-Received: by 2002:a05:620a:4514:: with SMTP id t20mr176750qkp.114.1631144012886;
+        Wed, 08 Sep 2021 16:33:32 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id k186sm101073qkd.47.2021.09.08.16.33.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Sep 2021 16:33:32 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mO74N-00EsAz-LZ; Wed, 08 Sep 2021 20:33:31 -0300
+Date:   Wed, 8 Sep 2021 20:33:31 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Liam Howlett <liam.howlett@oracle.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Luigi Rizzo <lrizzo@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>,
+        "walken@fb.com" <walken@fb.com>
+Subject: Re: [PATCH mm/bpf v2] mm: bpf: add find_vma_no_check() without
+ lockdep_assert on mm->mmap_lock
+Message-ID: <20210908233331.GA3544071@ziepe.ca>
+References: <f5328a05-ed3c-a868-9240-1b0852e01406@fb.com>
+ <CAMOZA0+2KLgYTXDZHGUYFnYezee=_hH6kFVM+-n2ZQuFTfh6yg@mail.gmail.com>
+ <20210908172118.n2f4w7epm6hh62zf@ast-mbp.dhcp.thefacebook.com>
+ <20210908105259.c47dcc4e4371ebb5e147ee6e@linux-foundation.org>
+ <20210908180258.yjh62e5oouckar5b@ast-mbp.dhcp.thefacebook.com>
+ <20210908111527.9a611426e257d55ccbbf46eb@linux-foundation.org>
+ <CAADnVQ+5m0+X1Xvgu-wYii2nWvAtEfk2ffM6mQTaiq2SPM1Z=A@mail.gmail.com>
+ <20210908183032.zoh6dj5xh455z47f@revolver>
+ <20210908184912.GA1200268@ziepe.ca>
+ <7aece51f-141c-db55-5d4c-8c6658b6a1fc@fb.com>
 MIME-Version: 1.0
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Sep 2021 16:24:28 -0700
-Message-ID: <CAEf4Bza7L2NAXd9TZpmdGa9Xt=YiZmRxGJgoZx3ae9UWFdUD=w@mail.gmail.com>
-Subject: [ANNOUNCEMENT] libbpf v0.5 release
-To:     bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7aece51f-141c-db55-5d4c-8c6658b6a1fc@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-libbpf v0.5 was just released ([0]). There are a lot of exciting new
-features and APIs, so give them a try! And please report any issues
-and bugs we might have missed during preparation of this release.
+On Wed, Sep 08, 2021 at 12:11:54PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 9/8/21 11:49 AM, Jason Gunthorpe wrote:
+> > On Wed, Sep 08, 2021 at 06:30:52PM +0000, Liam Howlett wrote:
+> > 
+> > >   /* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. */
+> > > -struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+> > > +struct vm_area_struct *find_vma_non_owner(struct mm_struct *mm,
+> > > +					 unsigned long addr)
+> > >   {
+> > >   	struct rb_node *rb_node;
+> > >   	struct vm_area_struct *vma;
+> > > -	mmap_assert_locked(mm);
+> > > +	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
+> > >   	/* Check the cache first. */
+> > >   	vma = vmacache_find(mm, addr);
+> > >   	if (likely(vma))
+> > > @@ -2325,6 +2326,11 @@ struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+> > >   	return vma;
+> > >   }
+> > > +struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+> > > +{
+> > > +	lockdep_assert_held(&mm->mmap_lock);
+> > > +	return find_vma_non_owner(mm, addr);
+> > > +}
+> > >   EXPORT_SYMBOL(find_vma);
+> > >   /*
+> > > 
+> > > 
+> > > Although this leaks more into the mm API and was referred to as ugly
+> > > previously, it does provide a working solution and still maintains the
+> > > same level of checking.
+> > 
+> > I think it is no better than before.
+> > 
+> > The solution must be to not break lockdep in the BPF side. If Peter's
+> > reworked algorithm is not OK then BPF should drop/acquire the lockdep
+> > when it punts the unlock to the WQ.
+> 
+> The current warning is triggered by bpf calling find_vma().
 
-This is also the first official release with some of the upcoming
-libbpf 1.0 features, which can be opted in through
-`libbpf_set_strict_mode()` API. Please consider opting in early to
-make sure your BPF applications are ready for libbpf 1.0 release and
-will have a smooth transition.
+Yes, but that is because the lockdep has already been dropped.
 
-Thanks a lot to all the contributors sending fixes and new features
-and all the users asking and answering libbpf and BPF questions,
-adopting and testing libbpf, and overall improving the BPF ecosystem!
+It looks to me like it basically does this:
 
+        mmap_read_trylock_non_owner(current->mm)
 
-## New features and user-space APIs:
-  - `libbpf_set_strict_mode()` allowing to opt-in into backwards
-incompatible libbpf-1.0 changes. See ["Libbpf: the road to
-1.0"](https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0)
-and ["Libbpf 1.0 migration
-guide"](https://github.com/libbpf/libbpf/wiki/Libbpf-1.0-migration-guide)
-for more details.
-  - streamlined error reporting for low-level APIs, high-level
-error-returning APIs, and pointer-returning APIs (as a libbpf-1.0
-opt-in);
-  - "Light" BPF skeleton support;
-  - `BPF_PROG_TYPE_SYSCALL` support;
-  - BPF perf link support for kprobe, uprobe, tracepoint, and
-perf_event BPF programs;
-  - BPF cookie support for kprobe, uprobe, tracepoint, and perf_event
-BPF programs through `bpf_program__attach_[ku]probe_opts()` APIs;
-  - allow to specify `ref_ctr_off` for USDT semaphores through
-`bpf_program__attach_uprobe_opts()` API;
-  - `btf_custom_path` support in `bpf_object_open_opts`, allowing to
-specify custom BTF for CO-RE relocations;
-  - `sk_reuseport/migrate` program type support;
-  - `btf_dump__dump_type_data()` API, allowing to dump binary data
-according to BTF type description;
-  - `btf__load_into_kernel()` and `btf__load_from_kernel_by_id()`, and
-split BTF variants of them;
-  - `btf__load_vmlinux_btf()` and `btf__load_module_btf()` APIs;
-  - `bpf_map__initial_value()` API to get initial value of mmap-ed BPF maps;
-  - `bpf_map_lookup_and_delete_elem_flags()` API.
+        vma = find_vma(current->mm, ips[i]);
 
-
-## BPF-side APIs and features:
-  - support for weak typed `__ksym` externs;
-  - BPF timer helpers: `bpf_timer_init()`, `bpf_timer_set_callback()`,
-`bpf_timer_start()`, `bpf_timer_cancel()`;
-  - `bpf_get_attach_cookie()` helper to get BPF cookie from BPF program side;
-  - `bpf_get_func_ip()` helper;
-  - `bpf_sys_bpf()` helper;
-  - `bpf_task_pt_regs()` helper;
-  - `bpf_btf_find_by_name_kind()` helper;
-  - usability improvements for `bpf_tracing.h` when target
-architecture is missing.
-
-
-## Bug fixes and compatibility improvements:
-  - improve BPF support detection on old Red Hat kernels with
-backported BPF patches;
-  - improvements for LTO builds with GCC 10+;
-  - pass NLM_F_EXCL when creating TC qdisc;
-  - better support of BPF map reuse on old kernels;
-  - fix the bug resulting in sometimes closing FD 0, which wasn't
-created and owned by libbpf itself.
+        if (!work) {
+                mmap_read_unlock_non_owner(current->mm);
+        } else {
+                work->mm = current->mm;
+                irq_work_queue(&work->irq_work);
 
 
-  [0] https://github.com/libbpf/libbpf/releases/tag/v0.5.0
+And the only reason for this lockdep madness is because the
+irq_work_queue() does:
 
--- Andrii
+static void do_up_read(struct irq_work *entry)
+{
+        struct stack_map_irq_work *work;
+
+        if (WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT)))
+                return;
+
+        work = container_of(entry, struct stack_map_irq_work, irq_work);
+        mmap_read_unlock_non_owner(work->mm);
+}
+
+
+This is all about deferring the unlock to outside an IRQ context. The
+lockdep ownership is transfered from the IRQ to the work, which is
+something that we don't usually do or model in lockdep.
+
+Lockdep complains with the straightforward code because exiting an IRQ
+with locks held is illegal.
+
+The saner version is more like:
+
+        mmap_read_trylock(current->mm)
+
+        vma = find_vma(current->mm, ips[i]);
+
+        if (!work) {
+                mmap_read_unlock(current->mm);
+        } else {
+                work->mm = current->mm;
+                <tell lockdep we really do mean to return with
+		 the lock held>
+                rwsem_release(&mm->mmap_lock.dep_map, _RET_IP_);
+                irq_work_queue(&work->irq_work);
+
+
+do_up_read():
+       <tell lockdep the lock was already released from the map>
+       mmap_read_unlock_non_owner(work->mm);
+
+ie properly model in lockdep that ownership moves from the IRQ to the
+work. At least we don't corrupt the core mm code with this insanity.
+
+Jason
