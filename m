@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5787440451C
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 07:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987DD40451D
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 07:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350781AbhIIFkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 01:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
+        id S231579AbhIIFno (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 01:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350756AbhIIFka (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 01:40:30 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E2EC061575
-        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 22:39:21 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id r4so1570701ybp.4
-        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 22:39:21 -0700 (PDT)
+        with ESMTP id S230515AbhIIFnm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 01:43:42 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC52C061575
+        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 22:42:33 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id v17so1549790ybs.9
+        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 22:42:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LGO3OzjWgw10aDwHJASn+6v1Uy0qpSQPYcVa6diVxTo=;
-        b=FD3KsCRFqIv8GHsfceb4PTKwl9Q8Xd73MrbHZfHlLRMe+Y9oKLKzEkUKq+LjOCE4Fj
-         Q/f22e74UOlTe4Y1EkhP9ud7VdCwOLRU+kbB8XHzEIwg6hrtn0YFeYslW9lbPcY6ArMb
-         73W4HeG1p6LXXXc4tDT5n2/IYl/SKVUYxon9Hn/omkVEKVtWCaW193GoMqBo4Lm8gqSY
-         2xmDiCeehZfsfzBErDK4136Mohq4Ewf9rcwGSPfjpkfMgC3OJ1uvh8Qgag0/ZZp6mOs7
-         asjX6c7PyvE0Mk6XaeWxgnnnN7ix+oPvpm46cK4tdN+e5xt2/CTwsGNN9eR/LuuQNjik
-         m55A==
+        bh=Xzomm9x21jUr/6p7Yyw3wbpTbZkbWOtwTJGweV96G44=;
+        b=N42zPS9fwqYlEmu6UnZZN132zvIBPeuAxoccsWgQpXNf2XL8TcJObYq+FM45qJSu2F
+         WsTfVSuQaE2bwoU9H90h319Emr7TnsA6QiU7t0+KykJMmCzOfvArS3pb7VLedkl04CFz
+         1IAFiUl7bMbPhfhnNAGFER+y0CwNqNSF4J3IjUiSykP8LZG+0c3MqJwJrcQaZdbzvJq2
+         aH/b/Z6k6A2DIiXquf5XAeLEHxPdY0b7L96511sPt3AgPkLeLE37yjIUYCan2/dPz8Ab
+         aDBEvWHO6X8FH0NnFVsimWQslTlT8ZFrYqrrZtkWGQ15C3txBCiY9tOcr0hhGvoR43P2
+         7sQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LGO3OzjWgw10aDwHJASn+6v1Uy0qpSQPYcVa6diVxTo=;
-        b=qHNlhbazpB7YiQGV7t237dNRL8uIk+9TKavm8ITgsFOh2KQxKczll98E5wzZWTrx8y
-         eK1AKzH3p7mmM4lzbZ07m8YwWgWa/35Id9GWJipvgx5Grz1vWQprgX8TcOZBnAikTl3W
-         K0VDI0VcOtx1mxNj6u48t6cGY8oTTW8l2j8LCAdq1IsGkt05On1lXSO48Ax22f7GY9Rh
-         bkM6PANiax8vQuecG1qew5ATOKiVxE8Jf/KCZRMslwpI/t2EyusBUa6zmiW2pdIIkwMv
-         jTtvC9NeDX6RmnidzOOfEsfqnp5fSJWX3EFtQjWHkQ7EQhaUDcVVTd0RGwn58Hd8Furb
-         37bQ==
-X-Gm-Message-State: AOAM5334pA8NVPuFVmUOtqWLYCAKnfMYpPqyWTbzQZMDMkV4q2EKyCBv
-        Ymtg6LKgPglz/GjGRfIgq0figER6NlS1Zd1tWvI=
-X-Google-Smtp-Source: ABdhPJyK6bOx6hVvwF1nF18UpC8GQtQeQoICaNJfMR6PXHTdKLco5V+mzU+4SaDBJBOUqM3ZnNt4pgA6ToMbXo09wFM=
-X-Received: by 2002:a05:6902:725:: with SMTP id l5mr1745316ybt.178.1631165961017;
- Wed, 08 Sep 2021 22:39:21 -0700 (PDT)
+        bh=Xzomm9x21jUr/6p7Yyw3wbpTbZkbWOtwTJGweV96G44=;
+        b=A+D9eXT2l7xoDGB8YKzxi3LWefQMwxN7u9mOu6U5ZQSSgukgz6N4Bm+TsLTTqhGDOr
+         VN+6PRtx1S+2tF0DWeVQ8QcmCmdTKPHWfU1xKRN4zFZIp0ZUmGPTjLoMSDAlruRmFfRo
+         60JJumxybGq8nURGdUueCaog1/a2hrYtGfiDA1dKVWwgY6xkegqsW+bzdyzclpTxFDhl
+         5PMuXc08Th2+6RdukNzlbW1ZWOuy6b80E432l9CYzSz5/aPny15Lgsn5aWTxW/p3eeeX
+         dc3df4TuE93aA1+oldrDzh4Ggo4ILTPUvgJiAEbf0QjOG4maNi4opnMYjuychI6V6H0f
+         jtMg==
+X-Gm-Message-State: AOAM5310pfRCHYGgj02Hz40NwWS5Ey4QhJVQ/nEm+8vjgySs4izw1/Ms
+        83kuJX2DBdWWocquwMtVo2cWf6t9sDKKRsrC4Xw=
+X-Google-Smtp-Source: ABdhPJw37ATOu/YiyysntFwYIGAFSwwkRc5HjU/PcjNnVxa7Mw0cQEdIVPzRtse7uTdw905QW0spLt4i0KPIftxPCmA=
+X-Received: by 2002:a25:65c4:: with SMTP id z187mr1720248ybb.113.1631166153041;
+ Wed, 08 Sep 2021 22:42:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907230050.1957493-1-yhs@fb.com> <20210907230132.1960689-1-yhs@fb.com>
-In-Reply-To: <20210907230132.1960689-1-yhs@fb.com>
+References: <20210907230050.1957493-1-yhs@fb.com> <20210907230138.1960995-1-yhs@fb.com>
+In-Reply-To: <20210907230138.1960995-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Sep 2021 22:39:09 -0700
-Message-ID: <CAEf4BzayrFRw8cJD-SV7Xf=NyeCVnDdUwySD1=6eT7zBdWyYbg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 8/9] selftests/bpf: add a test with a bpf program
- with btf_tag attributes
+Date:   Wed, 8 Sep 2021 22:42:22 -0700
+Message-ID: <CAEf4BzYy7_1jUHiNy6VWJ7nw4sUa5gABW1Mosc-1zcd+unvSZw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 9/9] docs/bpf: add documentation for BTF_KIND_TAG
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -63,46 +62,52 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Sep 7, 2021 at 4:01 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Add a bpf program with btf_tag attributes. The program is
-> loaded successfully with the kernel. With the command
->   bpftool btf dump file ./tag.o
-> the following dump shows that tags are properly encoded:
->   [8] STRUCT 'key_t' size=12 vlen=3
->           'a' type_id=2 bits_offset=0
->           'b' type_id=2 bits_offset=32
->           'c' type_id=2 bits_offset=64
->   [9] TAG 'tag1' type_id=8, comp_id=-1
->   [10] TAG 'tag2' type_id=8, comp_id=-1
->   [11] TAG 'tag1' type_id=8, comp_id=1
->   [12] TAG 'tag2' type_id=8, comp_id=1
->   ...
->   [21] FUNC_PROTO '(anon)' ret_type_id=2 vlen=1
->           'x' type_id=2
->   [22] FUNC 'foo' type_id=21 linkage=static
->   [23] TAG 'tag1' type_id=22, comp_id=0
->   [24] TAG 'tag2' type_id=22, comp_id=0
->   [25] TAG 'tag1' type_id=22, comp_id=-1
->   [26] TAG 'tag2' type_id=22, comp_id=-1
->   ...
->   [29] VAR 'total' type_id=27, linkage=global
->   [30] TAG 'tag1' type_id=29, comp_id=-1
->   [31] TAG 'tag2' type_id=29, comp_id=-1
->
-> If an old clang compiler, which does not support btf_tag attribute,
-> is used, these btf_tag attributes will be silently ignored.
+> Add BTF_KIND_TAG documentation in btf.rst.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
-
-LGTM.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  .../selftests/bpf/prog_tests/btf_tag.c        | 14 +++++++
->  tools/testing/selftests/bpf/progs/tag.c       | 39 +++++++++++++++++++
->  2 files changed, 53 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_tag.c
->  create mode 100644 tools/testing/selftests/bpf/progs/tag.c
+>  Documentation/bpf/btf.rst | 30 ++++++++++++++++++++++++++++--
+>  1 file changed, 28 insertions(+), 2 deletions(-)
 >
 
 [...]
+
+> +2.2.17 BTF_KIND_TAG
+> +~~~~~~~~~~~~~~~~~~~
+> +
+> +``struct btf_type`` encoding requirement:
+> + * ``name_off``: offset to a non-empty string
+> + * ``info.kind_flag``: 0 for tagging ``type``, 1 for tagging member/argument of the ``type``
+> + * ``info.kind``: BTF_KIND_TAG
+> + * ``info.vlen``: 0
+> + * ``type``: ``struct``, ``union``, ``func`` or ``var``
+> +
+> +``btf_type`` is followed by ``struct btf_tag``.::
+> +
+> +    struct btf_tag {
+> +        __u32   comp_id;
+> +    };
+> +
+> +The ``name_off`` encodes btf_tag attribute string.
+> +If ``info.kind_flag`` is 1, the attribute is attached to the ``type``.
+
+This contradicts "info.kind_flag" description above
+
+> +If ``info.kind_flag`` is 0, the attribute is attached to either a
+> +``struct``/``union`` member or a ``func`` argument.
+> +Hence the ``type`` should be ``struct``, ``union`` or
+> +``func``, and ``btf_tag.comp_id``, starting from 0,
+> +indicates which member or argument is attached with
+> +the attribute.
+
+Does the kernel validate this restriction for the VAR target type?
+I.e., if we have kind_flag == 0 (member of type), we should disallow
+VAR, right?
+
+> +
+>  3. BTF Kernel API
+>  *****************
+>
+> --
+> 2.30.2
+>
