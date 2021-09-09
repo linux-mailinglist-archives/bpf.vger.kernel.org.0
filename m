@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFDD405D5A
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 21:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552F6405D63
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 21:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237478AbhIITcX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 15:32:23 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43198 "EHLO
+        id S237672AbhIIThA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 15:37:00 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36294 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231422AbhIITcW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Sep 2021 15:32:22 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 189JClEB017614
-        for <bpf@vger.kernel.org>; Thu, 9 Sep 2021 12:31:12 -0700
+        by vger.kernel.org with ESMTP id S233984AbhIIThA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Sep 2021 15:37:00 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 189JUxnO018083
+        for <bpf@vger.kernel.org>; Thu, 9 Sep 2021 12:35:50 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=KYFHNMTj4DLZFUP4E3l5qsITv8K+vGMctY92sGxcjGU=;
- b=SABHA909oov8yzrCCnROeaMYgBDf+jRGYVDshpcLo2giDtrFQhjiizWB9EjjDSJr6jAY
- L0/Op8CqSjpZEdYx9JFUUP4Xji+TZmvWSYfECIPyswJiHNx0ay5xb46MSxZxbtlEHf7X
- kpYCPL9jYxqyPybOGJGDRCiZl/RXe8zl2MY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3ay95w5wgj-2
+ content-type; s=facebook; bh=TWDHySUv9LNwoEsIO3SHzIFWcmTIfDexxI0HYz+MeHs=;
+ b=omvFa0B7hGek4Vg1b9NGmDQANDr3dkoXKxM6dXUFHDBlqfqgpxciabmppdUni27lKaDL
+ hrT9mrlx4AIUolyQmwuZ6sJ8l4Y9cngaXYS9oWaPr274915ry0L/fDAOiftklRDQnb6J
+ n7XEveHeEmr66XIjCzmKD03QvBgruywyRO0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3aydp6mktu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 09 Sep 2021 12:31:12 -0700
-Received: from intmgw002.46.prn1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 09 Sep 2021 12:35:50 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Thu, 9 Sep 2021 12:31:11 -0700
+ 15.1.2308.14; Thu, 9 Sep 2021 12:35:49 -0700
 Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id 979B433FB31A; Thu,  9 Sep 2021 12:31:08 -0700 (PDT)
+        id BE1F033FB9B8; Thu,  9 Sep 2021 12:35:45 -0700 (PDT)
 From:   Yucong Sun <fallentree@fb.com>
 To:     <andrii@kernel.org>
 CC:     <bpf@vger.kernel.org>, Yucong Sun <sunyucong@gmail.com>
-Subject: [PATCH v2 bpf-next] selftests/bpf: Add parallelism to test_progs
-Date:   Thu, 9 Sep 2021 12:31:06 -0700
-Message-ID: <20210909193106.1810956-1-fallentree@fb.com>
+Subject: [PATCH v3 bpf-next] selftests/bpf: Add parallelism to test_progs
+Date:   Thu, 9 Sep 2021 12:35:44 -0700
+Message-ID: <20210909193544.1829238-1-fallentree@fb.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: lqJ1bH-9tY8yGIPzPa3EVIUY2y-xmDN5
-X-Proofpoint-ORIG-GUID: lqJ1bH-9tY8yGIPzPa3EVIUY2y-xmDN5
+X-Proofpoint-ORIG-GUID: y9M5290olTETUsKwdSRl9ZaEq1EjHXdQ
+X-Proofpoint-GUID: y9M5290olTETUsKwdSRl9ZaEq1EjHXdQ
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-09-09_07:2021-09-09,2021-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
- suspectscore=0 bulkscore=0 phishscore=0 adultscore=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109090118
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 malwarescore=0 spamscore=0
+ impostorscore=0 mlxlogscore=999 phishscore=0 suspectscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109090119
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -70,30 +70,37 @@ commanding it to run tests and collect logs. After all tests are finished=
 , a
 summary is printed. main process use multiple competing threads to dispat=
 ch
-work to worker, trying to keep them busy.
+work to worker, trying to keep them all busy.
 
 Example output:
 
-./test_progs -n 15-20 -j
-[    8.584709] bpf_testmod: loading out-of-tree module taints kernel.
-Launching 2 workers.
-[0]: Running test 15.
-[1]: Running test 16.
-[1]: Running test 17.
-[1]: Running test 18.
-[1]: Running test 19.
-[1]: Running test 20.
-[1]: worker exit.
-[0]: worker exit.
-Summary: 6/20 PASSED, 0 SKIPPED, 0 FAILED
+  > ./test_progs -n 15-20 -j
+  [    8.584709] bpf_testmod: loading out-of-tree module taints kernel.
+  Launching 2 workers.
+  [0]: Running test 15.
+  [1]: Running test 16.
+  [1]: Running test 17.
+  [1]: Running test 18.
+  [1]: Running test 19.
+  [1]: Running test 20.
+  [1]: worker exit.
+  [0]: worker exit.
+  #15 btf_dump:OK
+  #16 btf_endian:OK
+  #17 btf_map_in_map:OK
+  #18 btf_module:OK
+  #19 btf_skc_cls_ingress:OK
+  #20 btf_split:OK
+  Summary: 6/20 PASSED, 0 SKIPPED, 0 FAILED
 
 Know issue:
 
-some tests fail when running concurrently, later patch will either
+Some tests fail when running concurrently, later patch will either
 fix the test or pin them to worker 0.
 
 Signed-off-by: Yucong Sun <sunyucong@gmail.com>
 
+V3 -> V2: fix missing outputs in commit messages.
 V2 -> V1: switch to UDS client/server model.
 ---
  tools/testing/selftests/bpf/test_progs.c | 456 ++++++++++++++++++++++-
