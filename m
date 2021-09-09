@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70899404484
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 06:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C098404496
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 06:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbhIIEkG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 00:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53170 "EHLO
+        id S231284AbhIIEqU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 00:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhIIEkG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 00:40:06 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B246DC061575
-        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 21:38:57 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id k65so1283710yba.13
-        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 21:38:57 -0700 (PDT)
+        with ESMTP id S1350440AbhIIEqT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 00:46:19 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0F5C061575
+        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 21:45:10 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id y13so1354179ybi.6
+        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 21:45:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=C+gJbvGpLo3aqOdtP0tHPSQh1WxL2DvJBKBn7KS0HpI=;
-        b=ZLO0QBaMJ6skcc2jMP+hZKgJ2b/WaAxt1SRXzQz5FJhsv9uvqOr1X8WImMzzYjBL8d
-         bd/ZaSQnS+C2PwTE6fB9Mka8Hk9WHpoLgn8JEQKMWLRrhlHr2Bu2g+2Z4Hp6ovHM4B0N
-         x0HunoP+I2X1USK+G0jozr+9knTZ5mu1MLdEmHYIcje0LFsl3FhVmdX5KeYR11DeaPcY
-         3Fd8olFY4E+3jfDgU2Ov2rPKvsAhQGeAgi+gumLa4FtzMgMQ8iDlHR9AfHEmB/j0KK5A
-         gRIEFZIlrKRPx6hBbvZqZW32+gXl5cRCy/WFKFHNseBNtgQr5hxnkSthaPETi10Jemzw
-         0Elw==
+        bh=IuWlqHB+pDlmi14q0GyBjoFXZ/evOu3ozUT5CgobBCc=;
+        b=i2EiDAh3Vx+p1B49/wC9V7+vbq4zamlcN3ZeGYQ63YVlxPgXay5VNp806sXs+ih10Z
+         NhSP9bO6nPfBcdljSecFi8dHtUKAbsEfhZJTXfLgBN+e9CIQSamRd1R3wePsOHhARTuj
+         MTHUvnmul9ElWUWWr7pei+/z3A/m4BnZRtJvO2IylvSfzgCAaXeI02zKKMWpIjl0peV3
+         Q86+Gc4U/IZ2cDkzkoZQueBMcDYO/9+UgNQceBJsQWjQZN5MWfUYLMZtqi1GDp8zAn3X
+         u56TPJirb6xfl1Er28PVM2H6hFBxPSaB/jR/P93gh8psBUDgA4L52LlcBbrffALJaPth
+         HUFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=C+gJbvGpLo3aqOdtP0tHPSQh1WxL2DvJBKBn7KS0HpI=;
-        b=vGKe4NjIpiRnPcHkn1t04b5w7hF43YficbNQOY8Ru9YQUY+HkR3Ogd+uq8aD39LmEy
-         3PGjSe6EVZmc5KySUFHmfMZwHgmXOviUDMvzNEBba3kdPvZ5O7ku0xp805f4dwYFe1sO
-         5DtpAe7UVXaS/Jd80YJ1HePt9i0Wmm7eVYDv8WmMH9bwXVXPGSpe/asR5f71PXlbLLyf
-         aLux7nagQLPcPxx7vcWwZkNMz7abCCm66AqkfU5Hhk6GzJMFcMnT6IJPWe0ME5KdI+dH
-         qpYdDuzFUKaQJwFOHblypyjq6eNBcjDMcxVrvtIujxFp//w7QgA+j4Vel+dszxkJTKiR
-         ThYQ==
-X-Gm-Message-State: AOAM533WIaLo/EglwI0QDpNzQTogQ16TG4JzG3cy0PZAwF44Ee/770S0
-        BgzVBljP/X4kw0tMEzBCh+XIsjHvg3icH8lg7bU=
-X-Google-Smtp-Source: ABdhPJz2RlKpDqivvNwh+sKeg5FiT9LxYVuDHA3mLxjwO5prMpgPg2TnC6v3Ij0/af+2S0dGFHDeRGFpge+lfOJ/ikY=
-X-Received: by 2002:a25:3604:: with SMTP id d4mr1261690yba.4.1631162336689;
- Wed, 08 Sep 2021 21:38:56 -0700 (PDT)
+        bh=IuWlqHB+pDlmi14q0GyBjoFXZ/evOu3ozUT5CgobBCc=;
+        b=FV7IrmY57z56WuWO8z947q2JaOZcj9fIKe72NW0kKJxkRI9A9lJtjhyQ5clHm01vh1
+         R1zkty/R7igv4n7fKuG7NX8U8pdA70H3cBeR94zsm7akXpsUaV4ekeoRwCow+a9spTkq
+         R8qAECucDg3VcvsiG2R5U1InIye6Yu/JldVA7U82OtjxuA93/9CuG1xYJ5CWBbFrNWqC
+         oML0EmyhTWWwGZYIrWpo/KWyuivdmKttk/2mbDQPn+rpN1OwWgziuzxEoXH6x7dEKN09
+         cgE3N38OQen9wsPseI2Tnb1nVPbSqJDyebLGj2IxBIf96/eUZ9YJDkQfexQvdVDwIdct
+         Uf9Q==
+X-Gm-Message-State: AOAM532LaB+S2Razo9LvOCS3I4DlZl4TjP+qDQB9vUws8cYMULkaU0Rf
+        GdfrzZuCjUGHQZEL2TVS6gJ99GuDVUVwNr8/2Q9JlHPSwXk=
+X-Google-Smtp-Source: ABdhPJwCZJriWTcEzMYKP8I5ltg9WaxJArv6KVQsSosRhGEubAtUppKo8kkqu2K4VOnNXFVBBzkHhrBLtI5hZjGfxHE=
+X-Received: by 2002:a05:6902:725:: with SMTP id l5mr1484722ybt.178.1631162709628;
+ Wed, 08 Sep 2021 21:45:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210908153544.749101-1-hengqi.chen@gmail.com>
-In-Reply-To: <20210908153544.749101-1-hengqi.chen@gmail.com>
+References: <20210906165456.325999-1-hengqi.chen@gmail.com>
+In-Reply-To: <20210906165456.325999-1-hengqi.chen@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Sep 2021 21:38:45 -0700
-Message-ID: <CAEf4BzYhYcyVOJ84REys1nyF8eMaDa0JgAinjgwU_EMvMqOo-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: deprecate bpf_object__unload() API
+Date:   Wed, 8 Sep 2021 21:44:58 -0700
+Message-ID: <CAEf4BzbWQudS5bRrrX3XptLLa6y8DTNavS4ZoivVRoEQzNukAg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: Deprecate bpf_{map,program}__{prev,next}
+ APIs
 To:     Hengqi Chen <hengqi.chen@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -61,102 +62,123 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 8:35 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On Mon, Sep 6, 2021 at 9:55 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 >
-> BPF objects are not re-loadable after unload. User are expected to use
-> bpf_object__close() to unload and free up resources in one operation.
-> No need to expose bpf_object__unload() as a public API, deprecate it.[0]
-> Remove bpf_object__unload() inside bpf_object__load_xattr(), it is the
-> caller's responsibility to free up resources, otherwise, the following
-> code path will cause double-free problem when loading failed:
+> Deprecate bpf_{map,program}__{prev,next} APIs. Replace them with
+> a new set of APIs named bpf_object__{prev,next}_{program,map} which
+> follow the libbpf API naming convention. No functionality changes.
 >
->     bpf_prog_load
->         bpf_prog_load_xattr
->             bpf_object__load
->                 bpf_object__load_xattr
->
+> Closes: https://github.com/libbpf/libbpf/issues/296
 
-Did you see this double-free ever happen? I'm looking at the code and
-not seeing it. Seems like bpf_object__unload() is idempotent, so no
-mater how many times we call it, it doesn't do any harm. Look at how
-zclose and zfree are implemented, they zero-out fields and also check
-for non-zero values before doing something. So unless I'm missing
-something, there is no problem.
+I'm hesitant about using Closes: as if it was a proper Linux tag.
+Let's stick to using it in a reference:
+
+   [0] Closes: ...
 
 
-> Replace bpf_object__unload() inside bpf_object__close() with the necessary
-> cleanup operations to avoid compilation error.
->
->   [0] Closes: https://github.com/libbpf/libbpf/issues/290
->
 > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 > ---
->  tools/lib/bpf/libbpf.c | 8 +++++---
->  tools/lib/bpf/libbpf.h | 3 ++-
->  2 files changed, 7 insertions(+), 4 deletions(-)
+>  tools/lib/bpf/libbpf.c   | 24 ++++++++++++++++++------
+>  tools/lib/bpf/libbpf.h   | 30 ++++++++++++++++++++----------
+>  tools/lib/bpf/libbpf.map |  4 ++++
+>  3 files changed, 42 insertions(+), 16 deletions(-)
 >
 > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 8f579c6666b2..c56b466c5461 100644
+> index 88d8825fc6f6..8d82853fb4a0 100644
 > --- a/tools/lib/bpf/libbpf.c
 > +++ b/tools/lib/bpf/libbpf.c
-> @@ -6931,7 +6931,6 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
->                 if (obj->maps[i].pinned && !obj->maps[i].reused)
->                         bpf_map__unpin(&obj->maps[i], NULL);
+> @@ -7347,7 +7347,7 @@ int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
+>         return 0;
 >
-> -       bpf_object__unload(obj);
-
-I think unloading already loaded bpf programs is bpf_object__load()'s
-responsibility, so please don't remove this.
-
->         pr_warn("failed to load object '%s'\n", obj->path);
->         return libbpf_err(err);
+>  err_unpin_maps:
+> -       while ((map = bpf_map__prev(map, obj))) {
+> +       while ((map = bpf_object__prev_map(map, obj))) {
+>                 if (!map->pin_path)
+>                         continue;
+>
+> @@ -7427,7 +7427,7 @@ int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
+>         return 0;
+>
+>  err_unpin_programs:
+> -       while ((prog = bpf_program__prev(prog, obj))) {
+> +       while ((prog = bpf_object__prev_program(prog, obj))) {
+>                 char buf[PATH_MAX];
+>                 int len;
+>
+> @@ -7666,8 +7666,11 @@ __bpf_program__iter(const struct bpf_program *p, const struct bpf_object *obj,
+>         return &obj->programs[idx];
 >  }
-> @@ -7540,12 +7539,15 @@ void bpf_object__close(struct bpf_object *obj)
 >
->         bpf_gen__free(obj->gen_loader);
->         bpf_object__elf_finish(obj);
-> -       bpf_object__unload(obj);
+> +__attribute__((alias("bpf_object__next_program")))
+> +struct bpf_program *bpf_program__next(struct bpf_program *prev, const struct bpf_object *obj);
+> +
+>  struct bpf_program *
+> -bpf_program__next(struct bpf_program *prev, const struct bpf_object *obj)
+> +bpf_object__next_program(struct bpf_program *prev, const struct bpf_object *obj)
 
-same, this is fine, don't remove it
+I think for bpf_object__next_program it makes more sense to have obj
+as the first argument (it's a "method" of bpf_object, after all). So
+you can't have bpf_program__next aliased to bpf_object__next_program,
+you have to add a small wrapper function. Same for other new APIs.
 
->         btf__free(obj->btf);
->         btf_ext__free(obj->btf_ext);
+>  {
+>         struct bpf_program *prog = prev;
 >
-> -       for (i = 0; i < obj->nr_maps; i++)
-> +       for (i = 0; i < obj->nr_maps; i++) {
-> +               zclose(obj->maps[i].fd);
-> +               if (obj->maps[i].st_ops)
-> +                       zfree(&obj->maps[i].st_ops->kern_vdata);
->                 bpf_map__destroy(&obj->maps[i]);
-> +       }
-
-and no changes should be necessary here either
-
+> @@ -7678,8 +7681,11 @@ bpf_program__next(struct bpf_program *prev, const struct bpf_object *obj)
+>         return prog;
+>  }
 >
->         zfree(&obj->btf_custom_path);
->         zfree(&obj->kconfig);
+
+[...]
+
 > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 2f6f0e15d1e7..748f7dabe4c7 100644
+> index f177d897c5f7..e6aab4cd263b 100644
 > --- a/tools/lib/bpf/libbpf.h
 > +++ b/tools/lib/bpf/libbpf.h
-> @@ -147,7 +147,8 @@ struct bpf_object_load_attr {
->  /* Load/unload object into/from kernel */
->  LIBBPF_API int bpf_object__load(struct bpf_object *obj);
->  LIBBPF_API int bpf_object__load_xattr(struct bpf_object_load_attr *attr);
-> -LIBBPF_API int bpf_object__unload(struct bpf_object *obj);
-> +LIBBPF_API LIBBPF_DEPRECATED("bpf_object__unload() is deprecated, use bpf_object__close() instead")
-> +int bpf_object__unload(struct bpf_object *obj);
+> @@ -186,16 +186,22 @@ LIBBPF_API int libbpf_find_vmlinux_btf_id(const char *name,
+>
+>  /* Accessors of bpf_program */
+>  struct bpf_program;
+> -LIBBPF_API struct bpf_program *bpf_program__next(struct bpf_program *prog,
+> +LIBBPF_API LIBBPF_DEPRECATED("bpf_program__next() is deprecated, use bpf_object__next_program() instead")
+
+We shouldn't deprecate API until the replacement API was already
+released as part of an official libbpf release. I suggest to wait
+until the LIBBPF_DEPRECATE_SINCE ([0]) patch lands first, and then
+using that here to deprecate those APIs starting from 0.7 (because we
+are now developing 0.6 libbpf).
+
+  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20210908213226.1871016-1-andrii@kernel.org/
+
+> +struct bpf_program *bpf_program__next(struct bpf_program *prog,
+>                                                  const struct bpf_object *obj);
+> +LIBBPF_API struct bpf_program *bpf_object__next_program(struct bpf_program *prog,
+> +                                                       const struct bpf_object *obj);
 >
 
-This is the right change, but let's also keep original
-bpf_object__unload() logic. I'd recommend renaming
-bpf_object__unload() into bpf_object_unload() (so that's naming is
-more clearly showing it's an internal function) and make it static.
-Then have a small shim of bpf_object__unload() calling into
-bpf_object_unload() until we remove that in libbpf 1.0.
+[...]
 
->  LIBBPF_API const char *bpf_object__name(const struct bpf_object *obj);
->  LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *obj);
+>  /* get/set map FD */
+>  LIBBPF_API int bpf_map__fd(const struct bpf_map *map);
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index bbc53bb25f68..0c6d510e7747 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -378,6 +378,10 @@ LIBBPF_0.5.0 {
+>                 bpf_program__attach_tracepoint_opts;
+>                 bpf_program__attach_uprobe_opts;
+>                 bpf_object__gen_loader;
+> +               bpf_object__next_map;
+> +               bpf_object__next_program;
+> +               bpf_object__prev_map;
+> +               bpf_object__prev_program;
+
+For next revision, please add the LIBBPF_0.6.0 section, libbpf 0.5 was
+just released today, so we are now moving into the v0.6 development
+cycle. Thanks!
+
+>                 btf__load_from_kernel_by_id;
+>                 btf__load_from_kernel_by_id_split;
+>                 btf__load_into_kernel;
 > --
-> 2.25.1
->
+> 2.30.2
