@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381B540597E
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 16:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0900740597F
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 16:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243931AbhIIOqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 10:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
+        id S236890AbhIIOqU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 10:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348042AbhIIOqF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 10:46:05 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC42C05BD34
-        for <bpf@vger.kernel.org>; Thu,  9 Sep 2021 07:33:27 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id h9so4038362ejs.4
-        for <bpf@vger.kernel.org>; Thu, 09 Sep 2021 07:33:27 -0700 (PDT)
+        with ESMTP id S1348160AbhIIOqG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 10:46:06 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911BDC05BD37
+        for <bpf@vger.kernel.org>; Thu,  9 Sep 2021 07:33:28 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id x11so4103741ejv.0
+        for <bpf@vger.kernel.org>; Thu, 09 Sep 2021 07:33:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oagsNrHkckWAjyNMa7DFQkqODS/sdAoBZjxZqIVeja0=;
-        b=Dzz3xdk4vcazJaaj1MscB4wmPgMQtubS2MKKUICGQoVInKRVO+tE5BFRtW1eHfo2pS
-         0kiMAp/7h9PM1cddaoduJgtfJB2TQiKFTf5RYGvciGTmFFROisPaze2BX5H4e1Q+jKpq
-         DKdPRPWJ8A28u0M5oavCxX7vAVVKQuoj0d1U4WXeq/4FuYtOYSvrgTDHi7K4ySbMmgix
-         WzXDP9x7MwWqU6wXUC+fXJ9zcr6y3ExyY6idhmTMGiLSFq0LdtX2Ya9BkCBHcvELpYdN
-         042x3IjYAERjH3OcRFTT66LEQ0egN3RbqCzgClareWKpNmfDg8inMlMARve1x6Y6pASa
-         MmNA==
+        bh=Z6CCIXp3/0lUB8b2ITGekrG0zOghhlWaucDl/1+HzwA=;
+        b=TxqOBXOnSUU7VLEtnIhCMpWO9U66WBrCeKOgZpIwIiUALGE5q4Gpo1fJ++x2X+jKXD
+         8tMR+yaMuhYezMFt/tsoRsqrihaK/PhiUkGx4rpQUifyFVZe1i50/ABdDpmS8umBFiQK
+         0bJgLcWVaQ2EJdhwk3YMNAsLvGwZ/Nd7OGQQONN8mkWQF4NvsIv0cyScp6hNj+MRH9OI
+         hWxD+lsMFuEaxamT985LvQMvnzfrXYqgN+6c8EZth9Fsg6MpJ6S/YzT+DG/UmBVdhOGS
+         SLcFd08qTSKipSxreYQf0nxJyTuwGBvL75XWfYFIexVEdI6fKDj0H5l+IgAmyzOLm9ER
+         6uOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oagsNrHkckWAjyNMa7DFQkqODS/sdAoBZjxZqIVeja0=;
-        b=f/5e2WF6MQVJ7PKkjltptbmLag9o9ohEtjS/JLhZgoPyZ6elN/995du7CB3u3j7I1+
-         mh8vab2nYcWW32Ubgg4NNRzdTMoDVCS5VNJAZyNyC2KZI51aIziktmfTp0tzESEYAXjs
-         AKTep49JkTIyCZphz+Pxze8yux5js2AjNS0ndK1VQ+rGB9+45x6Fi0xW2FN6Rdv0Sy3K
-         cpiJpGSCYE6CWMsIZ9FQxWAdjIVbSJo4cAQGJpoLRco7UpWat1PDnY6CmPNTAso3bV2P
-         4N+y4N5XftazOIFqtXX4lo8QDZp5nL7NAgRBwQlXQu6m85ZhQqvKxSJW25v28goX69L9
-         XN7w==
-X-Gm-Message-State: AOAM531qCfQPoP8FTVCshhxfvPeCC8KAkJ6ySEUNG/DTftRpCKFFoHCQ
-        Xyffzw0VD3hsK81epDT1T8h1OD/qrlnh1tcK
-X-Google-Smtp-Source: ABdhPJwNPbJR5mAe6/xGjqWWD0oVpyx94yvVvHjyimKi3vi/xr97vw+Rh48ubnVp7RPSKPOxyibUDA==
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr3673597ejc.69.1631198006135;
-        Thu, 09 Sep 2021 07:33:26 -0700 (PDT)
+        bh=Z6CCIXp3/0lUB8b2ITGekrG0zOghhlWaucDl/1+HzwA=;
+        b=wapl0jOGuAsVFYCxnIZJ0NVh2kVIFa6mOsNUT6ycONunB8jNxilckPk6Lj3k6XaIyF
+         derGeBlfEJeDgf2CR9K+dtjP7uOlV2Q1aVX5mz2+Zwalid6TibG/6VxxgDHqDsRhNRoS
+         HqzNTsVY5Iijf9HQqsmmqwXEDR+UcQAVPD/hu+YT9WtfJk8oD6Y2rtshxvEWRI/luMt+
+         MQCZN7YG0yMoYvBQVQ0+Sbi13dplQSJNjRY/CuaPXe1BX2lwxjKq2A96U7Dlocwrbu1t
+         Vl/YkSx/eJttNp0b8EWKVyY/xzl5YuK+ir7BeM6Erxni9uWCdx42X/VifE6kJwcP3Mvs
+         61Kg==
+X-Gm-Message-State: AOAM530UBn9WmL54UAg05eSSQzRVsnAFmcsH/BEyBg6TTQnMOAVHpW2C
+        XUyZFW81sBpANfCWsXF0O5A0fQ==
+X-Google-Smtp-Source: ABdhPJzf3Z6vUsyKJf4tpgjFYvONSrqXryJ2ztvhXEeVeWDNciO7iSdOo7jqF7GAOOHCP5IlpLH7/g==
+X-Received: by 2002:a17:906:6148:: with SMTP id p8mr3755267ejl.263.1631198007088;
+        Thu, 09 Sep 2021 07:33:27 -0700 (PDT)
 Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
-        by smtp.gmail.com with ESMTPSA id bj10sm1030909ejb.17.2021.09.09.07.33.25
+        by smtp.gmail.com with ESMTPSA id bj10sm1030909ejb.17.2021.09.09.07.33.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 07:33:25 -0700 (PDT)
+        Thu, 09 Sep 2021 07:33:26 -0700 (PDT)
 From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, iii@linux.ibm.com,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
         Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Subject: [PATCH bpf-next v3 12/13] bpf/tests: Add more BPF_END byte order conversion tests
-Date:   Thu,  9 Sep 2021 16:33:02 +0200
-Message-Id: <20210909143303.811171-13-johan.almbladh@anyfinetworks.com>
+Subject: [PATCH bpf-next v3 13/13] bpf/tests: Add tail call limit test with external function call
+Date:   Thu,  9 Sep 2021 16:33:03 +0200
+Message-Id: <20210909143303.811171-14-johan.almbladh@anyfinetworks.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909143303.811171-1-johan.almbladh@anyfinetworks.com>
 References: <20210909143303.811171-1-johan.almbladh@anyfinetworks.com>
@@ -65,158 +65,139 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds tests of the high 32 bits of 64-bit BPF_END conversions.
-
-It also adds a mirrored set of tests where the source bytes are reversed.
-The MSB of each byte is now set on the high word instead, possibly
-affecting sign-extension during conversion in a different way. Mainly
-for JIT testing.
+This patch adds a tail call limit test where the program also emits
+a BPF_CALL to an external function prior to the tail call. Mainly
+testing that JITed programs preserve its internal register state, for
+example tail call count, across such external calls.
 
 Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 ---
- lib/test_bpf.c | 122 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 122 insertions(+)
+ lib/test_bpf.c | 83 ++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 80 insertions(+), 3 deletions(-)
 
 diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index a515f9b670c9..7475abfd2186 100644
+index 7475abfd2186..152193b4080f 100644
 --- a/lib/test_bpf.c
 +++ b/lib/test_bpf.c
-@@ -6748,6 +6748,67 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, (u32) cpu_to_be64(0x0123456789abcdefLL) } },
+@@ -12202,6 +12202,30 @@ struct tail_call_test {
+ 		     offset, TAIL_CALL_MARKER),	       \
+ 	BPF_JMP_IMM(BPF_TAIL_CALL, 0, 0, 0)
+ 
++/*
++ * A test function to be called from a BPF program, clobbering a lot of
++ * CPU registers in the process. A JITed BPF program calling this function
++ * must save and restore any caller-saved registers it uses for internal
++ * state, for example the current tail call count.
++ */
++BPF_CALL_1(bpf_test_func, u64, arg)
++{
++	char buf[64];
++	long a = 0;
++	long b = 1;
++	long c = 2;
++	long d = 3;
++	long e = 4;
++	long f = 5;
++	long g = 6;
++	long h = 7;
++
++	return snprintf(buf, sizeof(buf),
++			"%ld %lu %lx %ld %lu %lx %ld %lu %x",
++			a, b, c, d, e, f, g, h, (int)arg);
++}
++#define BPF_FUNC_test_func __BPF_FUNC_MAX_ID
++
+ /*
+  * Tail call tests. Each test case may call any other test in the table,
+  * including itself, specified as a relative index offset from the calling
+@@ -12259,6 +12283,25 @@ static struct tail_call_test tail_call_tests[] = {
+ 		},
+ 		.result = MAX_TAIL_CALL_CNT + 1,
  	},
 +	{
-+		"ALU_END_FROM_BE 64: 0x0123456789abcdef >> 32 -> 0x01234567",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0x0123456789abcdefLL),
-+			BPF_ENDIAN(BPF_FROM_BE, R0, 64),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
++		"Tail call count preserved across function calls",
++		.insns = {
++			BPF_ALU64_IMM(BPF_ADD, R1, 1),
++			BPF_STX_MEM(BPF_DW, R10, R1, -8),
++			BPF_CALL_REL(BPF_FUNC_get_numa_node_id),
++			BPF_CALL_REL(BPF_FUNC_ktime_get_ns),
++			BPF_CALL_REL(BPF_FUNC_ktime_get_boot_ns),
++			BPF_CALL_REL(BPF_FUNC_ktime_get_coarse_ns),
++			BPF_CALL_REL(BPF_FUNC_jiffies64),
++			BPF_CALL_REL(BPF_FUNC_test_func),
++			BPF_LDX_MEM(BPF_DW, R1, R10, -8),
++			BPF_ALU32_REG(BPF_MOV, R0, R1),
++			TAIL_CALL(0),
 +			BPF_EXIT_INSN(),
 +		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, (u32) (cpu_to_be64(0x0123456789abcdefLL) >> 32) } },
++		.stack_depth = 8,
++		.result = MAX_TAIL_CALL_CNT + 1,
 +	},
-+	/* BPF_ALU | BPF_END | BPF_FROM_BE, reversed */
-+	{
-+		"ALU_END_FROM_BE 16: 0xfedcba9876543210 -> 0x3210",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_ENDIAN(BPF_FROM_BE, R0, 16),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0,  cpu_to_be16(0x3210) } },
-+	},
-+	{
-+		"ALU_END_FROM_BE 32: 0xfedcba9876543210 -> 0x76543210",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_ENDIAN(BPF_FROM_BE, R0, 32),
-+			BPF_ALU64_REG(BPF_MOV, R1, R0),
-+			BPF_ALU64_IMM(BPF_RSH, R1, 32),
-+			BPF_ALU32_REG(BPF_ADD, R0, R1), /* R1 = 0 */
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, cpu_to_be32(0x76543210) } },
-+	},
-+	{
-+		"ALU_END_FROM_BE 64: 0xfedcba9876543210 -> 0x76543210",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_ENDIAN(BPF_FROM_BE, R0, 64),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, (u32) cpu_to_be64(0xfedcba9876543210ULL) } },
-+	},
-+	{
-+		"ALU_END_FROM_BE 64: 0xfedcba9876543210 >> 32 -> 0xfedcba98",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_ENDIAN(BPF_FROM_BE, R0, 64),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, (u32) (cpu_to_be64(0xfedcba9876543210ULL) >> 32) } },
-+	},
- 	/* BPF_ALU | BPF_END | BPF_FROM_LE */
  	{
- 		"ALU_END_FROM_LE 16: 0x0123456789abcdef -> 0xefcd",
-@@ -6785,6 +6846,67 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, (u32) cpu_to_le64(0x0123456789abcdefLL) } },
- 	},
-+	{
-+		"ALU_END_FROM_LE 64: 0x0123456789abcdef >> 32 -> 0xefcdab89",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0x0123456789abcdefLL),
-+			BPF_ENDIAN(BPF_FROM_LE, R0, 64),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, (u32) (cpu_to_le64(0x0123456789abcdefLL) >> 32) } },
-+	},
-+	/* BPF_ALU | BPF_END | BPF_FROM_LE, reversed */
-+	{
-+		"ALU_END_FROM_LE 16: 0xfedcba9876543210 -> 0x1032",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_ENDIAN(BPF_FROM_LE, R0, 16),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0,  cpu_to_le16(0x3210) } },
-+	},
-+	{
-+		"ALU_END_FROM_LE 32: 0xfedcba9876543210 -> 0x10325476",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_ENDIAN(BPF_FROM_LE, R0, 32),
-+			BPF_ALU64_REG(BPF_MOV, R1, R0),
-+			BPF_ALU64_IMM(BPF_RSH, R1, 32),
-+			BPF_ALU32_REG(BPF_ADD, R0, R1), /* R1 = 0 */
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, cpu_to_le32(0x76543210) } },
-+	},
-+	{
-+		"ALU_END_FROM_LE 64: 0xfedcba9876543210 -> 0x10325476",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_ENDIAN(BPF_FROM_LE, R0, 64),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, (u32) cpu_to_le64(0xfedcba9876543210ULL) } },
-+	},
-+	{
-+		"ALU_END_FROM_LE 64: 0xfedcba9876543210 >> 32 -> 0x98badcfe",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_ENDIAN(BPF_FROM_LE, R0, 64),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, (u32) (cpu_to_le64(0xfedcba9876543210ULL) >> 32) } },
-+	},
- 	/* BPF_ST(X) | BPF_MEM | BPF_B/H/W/DW */
- 	{
- 		"ST_MEM_B: Store/Load byte: max negative",
+ 		"Tail call error path, NULL target",
+ 		.insns = {
+@@ -12333,17 +12376,19 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
+ 		/* Relocate runtime tail call offsets and addresses */
+ 		for (i = 0; i < len; i++) {
+ 			struct bpf_insn *insn = &fp->insnsi[i];
+-
+-			if (insn->imm != TAIL_CALL_MARKER)
+-				continue;
++			long addr = 0;
+ 
+ 			switch (insn->code) {
+ 			case BPF_LD | BPF_DW | BPF_IMM:
++				if (insn->imm != TAIL_CALL_MARKER)
++					break;
+ 				insn[0].imm = (u32)(long)progs;
+ 				insn[1].imm = ((u64)(long)progs) >> 32;
+ 				break;
+ 
+ 			case BPF_ALU | BPF_MOV | BPF_K:
++				if (insn->imm != TAIL_CALL_MARKER)
++					break;
+ 				if (insn->off == TAIL_CALL_NULL)
+ 					insn->imm = ntests;
+ 				else if (insn->off == TAIL_CALL_INVALID)
+@@ -12351,6 +12396,38 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
+ 				else
+ 					insn->imm = which + insn->off;
+ 				insn->off = 0;
++				break;
++
++			case BPF_JMP | BPF_CALL:
++				if (insn->src_reg != BPF_PSEUDO_CALL)
++					break;
++				switch (insn->imm) {
++				case BPF_FUNC_get_numa_node_id:
++					addr = (long)&numa_node_id;
++					break;
++				case BPF_FUNC_ktime_get_ns:
++					addr = (long)&ktime_get_ns;
++					break;
++				case BPF_FUNC_ktime_get_boot_ns:
++					addr = (long)&ktime_get_boot_fast_ns;
++					break;
++				case BPF_FUNC_ktime_get_coarse_ns:
++					addr = (long)&ktime_get_coarse_ns;
++					break;
++				case BPF_FUNC_jiffies64:
++					addr = (long)&get_jiffies_64;
++					break;
++				case BPF_FUNC_test_func:
++					addr = (long)&bpf_test_func;
++					break;
++				default:
++					err = -EFAULT;
++					goto out_err;
++				}
++				*insn = BPF_EMIT_CALL(BPF_CAST_CALL(addr));
++				if ((long)__bpf_call_base + insn->imm != addr)
++					*insn = BPF_JMP_A(0); /* Skip: NOP */
++				break;
+ 			}
+ 		}
+ 
 -- 
 2.30.2
 
