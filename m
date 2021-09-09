@@ -2,36 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDFC4055E3
+	by mail.lfdr.de (Postfix) with ESMTP id DD4604055E5
 	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 15:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346550AbhIINON (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 09:14:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46258 "EHLO mail.kernel.org"
+        id S1356246AbhIINOX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 09:14:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1357658AbhIINDP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 09:03:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E61DC6328B;
-        Thu,  9 Sep 2021 11:59:38 +0000 (UTC)
+        id S1355911AbhIINDp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 09:03:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FB9F6140F;
+        Thu,  9 Sep 2021 11:59:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631188779;
-        bh=H+isFLhv7fXZadAnSAxSil/y1Hb6bZxn8GmeSiUGOhc=;
+        s=k20201202; t=1631188799;
+        bh=dhMsRfuZVwhSZ56t3qLAGsartIx3boKk4d89WZH9zXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i9lxA/pyBd8kAXRPYrXb/kW7V0rs+F5l/l3bKmqoLWXAXCvho4S7RKTCAWTeKgGnn
-         E/gzKyFYYVXD9E5SXw6rPa7zAHTqY1R5moycTiHKmOHkb696PCgSDlNVq0Uqzb9FW3
-         9k5wDkgofrTMF5H4nbwMx1+TEC52TrcZ9653Pw1sWm+qGm1RfAkJmCi03693pMtKdX
-         fo7NDNDI/IzCb6yrzROUwoDwsF+HQdKf8ZxOrgUwVT94dqB4UTwxw64xUzhgPiJdRH
-         mcMJQbrA+yIMro03vhYF9Cd43xvs6fkZoYezwoheIml/9WDKZ16kSC3hP5AJcIqsfV
-         3jeDsSSU3RCmQ==
+        b=VVSFnYlWQ/ucppI5Xs1VEv9Ejd+8fgDTJvqE7EhKO9X6Sueu0kY9jhNN3jQ6ySZtC
+         1a6XgVi/LmlfLMZGxom5h4MPGG6o/jJAeIKqsJJPrUF44R8YU4UiZnQyiD43pnotwX
+         9Vcw5FV2YsatdGG+2DUwSiYqlJxfps3DvweDShZXVoFwhgwEmcPX9jwUgOg8+Mo2GA
+         OoLv/OU+2H3lvkO8wlqEuxqA4UDQqHCICYCUBY71hh6jT8MAAdbLpCAjrB2qtgzmKJ
+         rvU06lbtRlX4QdYso11E3t4k8ByKpMupcO96WtO6GVliGGlfe2d3BBOLqdzNIi8Kyj
+         LSWO+niYMi2kw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 31/59] bpf: Fix off-by-one in tail call count limiting
-Date:   Thu,  9 Sep 2021 07:58:32 -0400
-Message-Id: <20210909115900.149795-31-sashal@kernel.org>
+Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>,
+        kernel test robot <lkp@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 47/59] selftests/bpf: Enlarge select() timeout for test_maps
+Date:   Thu,  9 Sep 2021 07:58:48 -0400
+Message-Id: <20210909115900.149795-47-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909115900.149795-1-sashal@kernel.org>
 References: <20210909115900.149795-1-sashal@kernel.org>
@@ -43,36 +46,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+From: Li Zhijian <lizhijian@cn.fujitsu.com>
 
-[ Upstream commit b61a28cf11d61f512172e673b8f8c4a6c789b425 ]
+[ Upstream commit 2d82d73da35b72b53fe0d96350a2b8d929d07e42 ]
 
-Before, the interpreter allowed up to MAX_TAIL_CALL_CNT + 1 tail calls.
-Now precisely MAX_TAIL_CALL_CNT is allowed, which is in line with the
-behavior of the x86 JITs.
+0Day robot observed that it's easily timeout on a heavy load host.
+-------------------
+ # selftests: bpf: test_maps
+ # Fork 1024 tasks to 'test_update_delete'
+ # Fork 1024 tasks to 'test_update_delete'
+ # Fork 100 tasks to 'test_hashmap'
+ # Fork 100 tasks to 'test_hashmap_percpu'
+ # Fork 100 tasks to 'test_hashmap_sizes'
+ # Fork 100 tasks to 'test_hashmap_walk'
+ # Fork 100 tasks to 'test_arraymap'
+ # Fork 100 tasks to 'test_arraymap_percpu'
+ # Failed sockmap unexpected timeout
+ not ok 3 selftests: bpf: test_maps # exit=1
+ # selftests: bpf: test_lru_map
+ # nr_cpus:8
+-------------------
+Since this test will be scheduled by 0Day to a random host that could have
+only a few cpus(2-8), enlarge the timeout to avoid a false NG report.
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210728164741.350370-1-johan.almbladh@anyfinetworks.com
+In practice, i tried to pin it to only one cpu by 'taskset 0x01 ./test_maps',
+and knew 10S is likely enough, but i still perfer to a larger value 30.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20210820015556.23276-2-lizhijian@cn.fujitsu.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/core.c | 2 +-
+ tools/testing/selftests/bpf/test_maps.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index e7211b0fa27c..1d19f4fa7f44 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1095,7 +1095,7 @@ static unsigned int ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn,
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 96c6238a4a1f..3f503ad37a2b 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -730,7 +730,7 @@ static void test_sockmap(int tasks, void *data)
  
- 		if (unlikely(index >= array->map.max_entries))
- 			goto out;
--		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
-+		if (unlikely(tail_call_cnt >= MAX_TAIL_CALL_CNT))
- 			goto out;
- 
- 		tail_call_cnt++;
+ 		FD_ZERO(&w);
+ 		FD_SET(sfd[3], &w);
+-		to.tv_sec = 1;
++		to.tv_sec = 30;
+ 		to.tv_usec = 0;
+ 		s = select(sfd[3] + 1, &w, NULL, NULL, &to);
+ 		if (s == -1) {
 -- 
 2.30.2
 
