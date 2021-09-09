@@ -2,125 +2,269 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7F64044A3
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 06:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6700E4044B6
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 07:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350437AbhIIE7H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 00:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57666 "EHLO
+        id S1350550AbhIIFKi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 01:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhIIE7G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 00:59:06 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEAFC061575;
-        Wed,  8 Sep 2021 21:57:58 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id k65so1358987yba.13;
-        Wed, 08 Sep 2021 21:57:58 -0700 (PDT)
+        with ESMTP id S229995AbhIIFKh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 01:10:37 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03926C061575
+        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 22:09:29 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id c206so1407982ybb.12
+        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 22:09:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pDztYpdMgz+EivXrgs8mgs/VRszb49SOrCgwxm22Cv8=;
-        b=LML7pCD9Lmu+9xugohKKvI07uWANHAP6eRlisyGc8SmJj7iX+LM/KlxVbe59IeiH/i
-         0MI+q82Zum/ngTDfoL7nV3W9mi/8u6fcXLWHYjGuD+Mblz32xZlvP+PTPVa7XRXqqtXV
-         Na9fwnSHowMJZpAj/iAUMJdi+8h9qzmBC0DqEKRZH3GX5oJZCszW5JSLv/ktByFq1XZW
-         98v8OhY7G7OJydtxV3QnBcNIA+Dl2thSycb/89P7uVU/Ks/bokOpTI0ApbhxM3iadlP+
-         X9tUzHbOKq0bGUO16gf2uFP5bFSx6hzjtiq1KU9dnQNObBU4beOesIoFvMqXpDDUQNxp
-         aaTQ==
+        bh=+JSOv65gEFSbzR13SPjZkVebRYk5cYUh9we/UeKVcGc=;
+        b=eXn6vJb+qkh7OnF9oWX8hlcJW3FKFiVT2hVC0hiotuJeyBQWkZt8Xcw1+FuXfeXk09
+         21ug6hwOjTpQ/q4N2Khgj8VGNr1ZLcVXxxf4yhKx6m6kJCK/+D7HwKKD8Vkl3ooUUmJf
+         iSY8fVZqk0MOK5ntrJtdMa1YC8CMpoOBXmsEnS4y4V2Jh1Zx/wP5vgzX9H7TnPqcs+0u
+         fB4YMJByT0Fa0JRfj4e5mbQTLOabYl/tKy6pL+UeqhnCb4EC42SvXhal13SIUH+fO5/Y
+         ba7kBYXVZvPuJIRJZAny9W3aRc/zEZ3hadp2xIOa093C1lMDsuwL0S9Ay0EEwqRQ9lI7
+         FDTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pDztYpdMgz+EivXrgs8mgs/VRszb49SOrCgwxm22Cv8=;
-        b=U0gcnIuIrWhiMIcUPt4JqSWIc1tKwxpFqVyZS6jpSf0WyqD+bR7FeU3QwTXbqcCmRt
-         Cng5yoU/2/1t0aeC0+zEhzG4GCSl21/+Gpoa2eKnNh4KEeBeAY7g43wOBqfu59yW4IzD
-         dNEBXCW5R2XWwIXzCVVWTXbGQpDGjHO+0/p3P1nBocfYxrvxictGex4rqMsyvsWNNo+B
-         qftZrP22qquJpYDc1M0Ou47jjXuZgtk4TZFzwYmxUkH9Lahd4JBlfBtSNfreTJ7pcZ7+
-         0Pm3ZmCQ38DhjBYpnDyTsgby8Kq0NkZKz1GXM8UTve5ukOsAqkYY2vPqbInoCVIj9kXt
-         VPsg==
-X-Gm-Message-State: AOAM5310F59FfF8CU0+lfgkXY2i0WrXkobl9khRJ/01Fhb2U6HUrIC8E
-        ilR4VchzAScoY96yZegPNaVvYMTIVzjdMwhRfwz1BM2x
-X-Google-Smtp-Source: ABdhPJxMWUDMhDNrAgn9HgXkFBdLwntqSrpPQylsdSx0AouaW+gFSZUXvFY/k9vQ7JYs7UL769LqEKATyFqHptroy4A=
-X-Received: by 2002:a25:ef46:: with SMTP id w6mr1441432ybm.546.1631163477355;
- Wed, 08 Sep 2021 21:57:57 -0700 (PDT)
+        bh=+JSOv65gEFSbzR13SPjZkVebRYk5cYUh9we/UeKVcGc=;
+        b=rnIFZcsSONQPeEOdUVFts8AQdVB0J7yNT7fUbV03MowIbemHyr9n0ID7N7PCtdvpk9
+         7oHKgeWlf3Z7xAaoljMXuppQVGuQew13xCoiEml1FD6JbBqzBV4mCYlZhnqrYp01TkFO
+         J7rzclQivJvxXtkdeFHZgXg0guHihG7Q6gWgn8sfu47T0V3Wu7+5dhLZ7AZj9XOB7vxg
+         oycoqaoIpOyJbGcdzrU62LKg3iFnVg3LN1bWIM70Be+LKbzrTqrCCtsnQlo8YuyJ6kYa
+         UjNqwn0ri5Vc51/Cgc0yanbQ1QLx08cvi+44TK1shM+iXnoT5mc0Bt89ETIh4L3IXgs/
+         rvZw==
+X-Gm-Message-State: AOAM531XlyAK/NuNNegSP0BMNWWU/4Lu1vynP5p5V25yFqdY0PpOMCR3
+        gsLOimlCLpPWdjCDbCSv/Z4bMqWOrX1q/SjJ7vDmDve8
+X-Google-Smtp-Source: ABdhPJz/F39SkSGDYqixxKdZHXgDWmA+19ui/P7tyoPQ9jPHe+KQhMNconBgBLdRD9U8LQb0BDG8LhUmhgnx41Pyv6M=
+X-Received: by 2002:a5b:702:: with SMTP id g2mr1415492ybq.307.1631164168196;
+ Wed, 08 Sep 2021 22:09:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907060040.36222-1-cuibixuan@huawei.com>
-In-Reply-To: <20210907060040.36222-1-cuibixuan@huawei.com>
+References: <20210907230050.1957493-1-yhs@fb.com> <20210907230055.1957809-1-yhs@fb.com>
+In-Reply-To: <20210907230055.1957809-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Sep 2021 21:57:46 -0700
-Message-ID: <CAEf4BzbEOpShbC1+iGo5DafFJc6U1gS9ytB2X_X0rqpWUfjbeg@mail.gmail.com>
-Subject: Re: [PATCH -next] bpf: Add oversize check before call kvcalloc()
-To:     Bixuan Cui <cuibixuan@huawei.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 8 Sep 2021 22:09:17 -0700
+Message-ID: <CAEf4BzYUhFZf_Kt+uQ1k4N1k_H3uJd2A9-FqSF9HbcfvLYUO4Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/9] bpf: support for new btf kind BTF_KIND_TAG
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 11:04 PM Bixuan Cui <cuibixuan@huawei.com> wrote:
+On Tue, Sep 7, 2021 at 4:01 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add the
-> oversize check. When the allocation is larger than what kmalloc() supports,
-> the following warning triggered:
+> LLVM14 added support for a new C attribute ([1])
+>   __attribute__((btf_tag("arbitrary_str")))
+> This attribute will be emitted to dwarf ([2]) and pahole
+> will convert it to BTF. Or for bpf target, this
+> attribute will be emitted to BTF directly ([3]).
+> The attribute is intended to provide additional
+> information for
+>   - struct/union type or struct/union member
+>   - static/global variables
+>   - static/global function or function parameter.
 >
-> WARNING: CPU: 0 PID: 8408 at mm/util.c:597 kvmalloc_node+0x108/0x110 mm/util.c:597
-> Modules linked in:
-> CPU: 0 PID: 8408 Comm: syz-executor221 Not tainted 5.14.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:kvmalloc_node+0x108/0x110 mm/util.c:597
-> Call Trace:
->  kvmalloc include/linux/mm.h:806 [inline]
->  kvmalloc_array include/linux/mm.h:824 [inline]
->  kvcalloc include/linux/mm.h:829 [inline]
->  check_btf_line kernel/bpf/verifier.c:9925 [inline]
->  check_btf_info kernel/bpf/verifier.c:10049 [inline]
->  bpf_check+0xd634/0x150d0 kernel/bpf/verifier.c:13759
->  bpf_prog_load kernel/bpf/syscall.c:2301 [inline]
->  __sys_bpf+0x11181/0x126e0 kernel/bpf/syscall.c:4587
->  __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
->  __x64_sys_bpf+0x78/0x90 kernel/bpf/syscall.c:4689
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> For linux kernel, the btf_tag can be applied
+> in various places to specify user pointer,
+> function pre- or post- condition, function
+> allow/deny in certain context, etc. Such information
+> will be encoded in vmlinux BTF and can be used
+> by verifier.
 >
-> Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> The btf_tag can also be applied to bpf programs
+> to help global verifiable functions, e.g.,
+> specifying preconditions, etc.
+>
+> This patch added basic parsing and checking support
+> in kernel for new BTF_KIND_TAG kind.
+>
+>  [1] https://reviews.llvm.org/D106614
+>  [2] https://reviews.llvm.org/D106621
+>  [3] https://reviews.llvm.org/D106622
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  kernel/bpf/verifier.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  include/uapi/linux/btf.h       |  15 ++++-
+>  kernel/bpf/btf.c               | 115 +++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/btf.h |  15 ++++-
+>  3 files changed, 139 insertions(+), 6 deletions(-)
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 047ac4b4703b..2a3955359156 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -9912,6 +9912,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
->         nr_linfo = attr->line_info_cnt;
->         if (!nr_linfo)
->                 return 0;
-> +       if (nr_linfo * sizeof(struct bpf_line_info) > INT_MAX)
+> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
+> index d27b1708efe9..ca73c4449116 100644
+> --- a/include/uapi/linux/btf.h
+> +++ b/include/uapi/linux/btf.h
+> @@ -36,14 +36,14 @@ struct btf_type {
+>          * bits 24-27: kind (e.g. int, ptr, array...etc)
+>          * bits 28-30: unused
+>          * bit     31: kind_flag, currently used by
+> -        *             struct, union and fwd
+> +        *             struct, union, fwd and tag
+>          */
+>         __u32 info;
+>         /* "size" is used by INT, ENUM, STRUCT, UNION and DATASEC.
+>          * "size" tells the size of the type it is describing.
+>          *
+>          * "type" is used by PTR, TYPEDEF, VOLATILE, CONST, RESTRICT,
+> -        * FUNC, FUNC_PROTO and VAR.
+> +        * FUNC, FUNC_PROTO, VAR and TAG.
+>          * "type" is a type_id referring to another type.
+>          */
+>         union {
+> @@ -73,7 +73,8 @@ struct btf_type {
+>  #define BTF_KIND_VAR           14      /* Variable     */
+>  #define BTF_KIND_DATASEC       15      /* Section      */
+>  #define BTF_KIND_FLOAT         16      /* Floating point       */
+> -#define BTF_KIND_MAX           BTF_KIND_FLOAT
+> +#define BTF_KIND_TAG           17      /* Tag */
+> +#define BTF_KIND_MAX           BTF_KIND_TAG
+>  #define NR_BTF_KINDS           (BTF_KIND_MAX + 1)
+
+offtop, but realized reading this: we should probably turn these into
+enums and capture them in vmlinux BTF and subsequently in vmlinux.h
+
+>
+>  /* For some specific BTF_KIND, "struct btf_type" is immediately
+> @@ -170,4 +171,12 @@ struct btf_var_secinfo {
+>         __u32   size;
+>  };
+>
+> +/* BTF_KIND_TAG is followed by a single "struct btf_tag" to describe
+> + * additional information related to the tag such as which field of
+> + * a struct or union or which argument of a function.
+> + */
+> +struct btf_tag {
+> +       __u32   comp_id;
+
+what does "comp" stand for, component? If yes, it's quite non-obvious,
+I wonder if just as generic "member" would be better (and no
+contractions)? Maybe also not id (because I immediately thought about
+BTF type IDs), but "index". So "member_idx"? "component_idx" would be
+quite obvious as well, just a bit longer.
+
+> +};
+> +
+>  #endif /* _UAPI__LINUX_BTF_H__ */
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index dfe61df4f974..9545290f804b 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -281,6 +281,7 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+>         [BTF_KIND_VAR]          = "VAR",
+>         [BTF_KIND_DATASEC]      = "DATASEC",
+>         [BTF_KIND_FLOAT]        = "FLOAT",
+> +       [BTF_KIND_TAG]          = "TAG",
+>  };
+>
+
+[...]
+
+> +       const struct btf_tag *tag;
+> +       u32 meta_needed = sizeof(*tag);
+> +
+> +       if (meta_left < meta_needed) {
+> +               btf_verifier_log_basic(env, t,
+> +                                      "meta_left:%u meta_needed:%u",
+> +                                      meta_left, meta_needed);
 > +               return -EINVAL;
+> +       }
+> +
+> +       if (!t->name_off) {
+> +               btf_verifier_log_type(env, t, "Invalid name");
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (btf_type_vlen(t)) {
+> +               btf_verifier_log_type(env, t, "vlen != 0");
+> +               return -EINVAL;
+> +       }
+> +
+> +       tag = btf_type_tag(t);
+> +       if (btf_type_kflag(t) && tag->comp_id) {
 
-I might be missing something, but on 64-bit architecture this can't
-overflow (because u32 is multiplied by fixed small sizeof()). And on
-32-bit architecture if it overflows you won't catch it... So did you
-mean to do:
+just realized that we could have reserved comp_id == (u32)-1 as the
+meaning "applies to entire struct/func/etc"? This might be a bit
+cleaner, because if you forget about kflag() semantics, you can treat
+comp_id == 0 as if it applied to first member, but if we put
+0xffffffff, you'll get SIGSEGV with high probability (making the
+problem more obvious)?
 
-if (nr_lifo > INT_MAX / sizeof(struct bpf_line_info))
-    return -EINVAL;
 
-?
+> +               btf_verifier_log_type(env, t, "kflag/comp_id mismatch");
+> +               return -EINVAL;
+> +       }
+> +
+> +       btf_verifier_log_type(env, t, NULL);
+> +
+> +       return meta_needed;
+> +}
+> +
+> +static int btf_tag_resolve(struct btf_verifier_env *env,
+> +                          const struct resolve_vertex *v)
+> +{
+> +       const struct btf_type *next_type;
+> +       const struct btf_type *t = v->t;
+> +       u32 next_type_id = t->type;
+> +       struct btf *btf = env->btf;
+> +       u32 vlen, comp_id;
+> +
+> +       next_type = btf_type_by_id(btf, next_type_id);
+> +       if (!next_type || !btf_type_is_tag_target(next_type)) {
+> +               btf_verifier_log_type(env, v->t, "Invalid type_id");
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (!env_type_is_resolve_sink(env, next_type) &&
+> +           !env_type_is_resolved(env, next_type_id))
+> +               return env_stack_push(env, next_type, next_type_id);
+> +
+> +       if (!btf_type_kflag(t)) {
+> +               if (btf_type_is_struct(next_type)) {
+> +                       vlen = btf_type_vlen(next_type);
+> +               } else if (btf_type_is_func(next_type)) {
+> +                       next_type = btf_type_by_id(btf, next_type->type);
+> +                       vlen = btf_type_vlen(next_type);
+> +               } else {
+> +                       btf_verifier_log_type(env, v->t, "Invalid next_type");
+> +                       return -EINVAL;
+> +               }
+> +
+> +               comp_id = btf_type_tag(t)->comp_id;
+> +               if (comp_id >= vlen) {
+> +                       btf_verifier_log_type(env, v->t, "Invalid comp_id");
+> +                       return -EINVAL;
+> +               }
+> +       }
+> +
+> +       env_stack_pop_resolved(env, next_type_id, 0);
+> +
+> +       return 0;
+> +}
+> +
+> +static void btf_tag_log(struct btf_verifier_env *env, const struct btf_type *t)
+> +{
+> +       btf_verifier_log(env, "type=%u", t->type);
 
->
->         rec_size = attr->line_info_rec_size;
->         if (rec_size < MIN_BPF_LINEINFO_SIZE ||
-> --
-> 2.17.1
->
+comp_id and kflag should be logged as well, they are important part
+
+> +}
+> +
+> +static const struct btf_kind_operations tag_ops = {
+> +       .check_meta = btf_tag_check_meta,
+> +       .resolve = btf_tag_resolve,
+> +       .check_member = btf_df_check_member,
+> +       .check_kflag_member = btf_df_check_kflag_member,
+> +       .log_details = btf_tag_log,
+> +       .show = btf_df_show,
+> +};
+> +
+
+[...]
