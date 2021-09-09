@@ -2,36 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AA440515A
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 14:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6AF40515C
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 14:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352288AbhIIMf4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 08:35:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33458 "EHLO mail.kernel.org"
+        id S1352568AbhIIMf7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 08:35:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353833AbhIIMY5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:24:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 714A861B08;
-        Thu,  9 Sep 2021 11:51:38 +0000 (UTC)
+        id S1350866AbhIIM2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:28:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23B4761B24;
+        Thu,  9 Sep 2021 11:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631188299;
-        bh=37TMLUSfMQCXfG0l7cchb1QLoKsWRbJKjTCLzDqEFk8=;
+        s=k20201202; t=1631188332;
+        bh=VKGrGfaIkIqTCYqf7G2Wl8eaISQKQnce2LFkh/MfEdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tv8zAHkzBq06qsWrrbSqNezTc2CudnUQuhTzQb9dTBP8JDfa+NnJpOR5ko460Ba9d
-         N9dKwXl75whp3Y7NmjDsicarQSKazq1AjLgPj9PiJm+th1zV3i23iTLd2F93RmmGMV
-         n/W/n+KT3/HdTB563iL2IF9XfSHXiOynf7tizn7g/cQjCtOFyl8Wj9rzOMcrn8uVYN
-         fDWl/XVW/9iy1BlZfTo6oC5y8BAwBEekYwfeIMljK0UB7/9PVcx7ZGdsafwAnP6pRU
-         HdQIFYQ9JcTvHBLwvz95UT74MibU2qzm/KLRHLp6mDjNdJ6qfUttKAsRFjO1zXckb7
-         gHyyhwM1/mR7Q==
+        b=Y6vSB/cAg+XtkrvKIjTcKlePjb8U1zlPHF/fIZivMTliaC6QWGJCsHUFJ/RgPWGxx
+         cyd2dseIW32YHTy36JThxnVHJe7RDcDnhbWDfbbrbIfZmGzJgmvHTzJltlqWEAja9q
+         eNbwalm+PM+PfOA+z02hZ6G32bzJHzyWDOFXuKz55SwrVKO4f6lNeQ/X6saARU4g/r
+         c6TDWTo0XEOeOoG+pov1Z2agxrlxISWGYbwj2Z1IdwX79g8BoeGb69iNhjW8QbP9lD
+         XCXUDe5jsPKnpartxW9bhpW28nHiCw0nmUu1tqg1EWG11WnvXgX3TRrSNQGF8ivjOD
+         nw2fnCI4HKAxw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yajun Deng <yajun.deng@linux.dev>, Yonghong Song <yhs@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+Cc:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 016/176] netlink: Deal with ESRCH error in nlmsg_notify()
-Date:   Thu,  9 Sep 2021 07:48:38 -0400
-Message-Id: <20210909115118.146181-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 042/176] bpf/tests: Fix copy-and-paste error in double word test
+Date:   Thu,  9 Sep 2021 07:49:04 -0400
+Message-Id: <20210909115118.146181-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909115118.146181-1-sashal@kernel.org>
 References: <20210909115118.146181-1-sashal@kernel.org>
@@ -43,67 +43,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yajun Deng <yajun.deng@linux.dev>
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
-[ Upstream commit fef773fc8110d8124c73a5e6610f89e52814637d ]
+[ Upstream commit ae7f47041d928b1a2f28717d095b4153c63cbf6a ]
 
-Yonghong Song report:
-The bpf selftest tc_bpf failed with latest bpf-next.
-The following is the command to run and the result:
-$ ./test_progs -n 132
-[   40.947571] bpf_testmod: loading out-of-tree module taints kernel.
-test_tc_bpf:PASS:test_tc_bpf__open_and_load 0 nsec
-test_tc_bpf:PASS:bpf_tc_hook_create(BPF_TC_INGRESS) 0 nsec
-test_tc_bpf:PASS:bpf_tc_hook_create invalid hook.attach_point 0 nsec
-test_tc_bpf_basic:PASS:bpf_obj_get_info_by_fd 0 nsec
-test_tc_bpf_basic:PASS:bpf_tc_attach 0 nsec
-test_tc_bpf_basic:PASS:handle set 0 nsec
-test_tc_bpf_basic:PASS:priority set 0 nsec
-test_tc_bpf_basic:PASS:prog_id set 0 nsec
-test_tc_bpf_basic:PASS:bpf_tc_attach replace mode 0 nsec
-test_tc_bpf_basic:PASS:bpf_tc_query 0 nsec
-test_tc_bpf_basic:PASS:handle set 0 nsec
-test_tc_bpf_basic:PASS:priority set 0 nsec
-test_tc_bpf_basic:PASS:prog_id set 0 nsec
-libbpf: Kernel error message: Failed to send filter delete notification
-test_tc_bpf_basic:FAIL:bpf_tc_detach unexpected error: -3 (errno 3)
-test_tc_bpf:FAIL:test_tc_internal ingress unexpected error: -3 (errno 3)
+This test now operates on DW as stated instead of W, which was
+already covered by another test.
 
-The failure seems due to the commit
-    cfdf0d9ae75b ("rtnetlink: use nlmsg_notify() in rtnetlink_send()")
-
-Deal with ESRCH error in nlmsg_notify() even the report variable is zero.
-
-Reported-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-Link: https://lore.kernel.org/r/20210719051816.11762-1-yajun.deng@linux.dev
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210721104058.3755254-1-johan.almbladh@anyfinetworks.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netlink/af_netlink.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ lib/test_bpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-index e527f5686e2b..8434da3c0487 100644
---- a/net/netlink/af_netlink.c
-+++ b/net/netlink/af_netlink.c
-@@ -2537,13 +2537,15 @@ int nlmsg_notify(struct sock *sk, struct sk_buff *skb, u32 portid,
- 		/* errors reported via destination sk->sk_err, but propagate
- 		 * delivery errors if NETLINK_BROADCAST_ERROR flag is set */
- 		err = nlmsg_multicast(sk, skb, exclude_portid, group, flags);
-+		if (err == -ESRCH)
-+			err = 0;
- 	}
- 
- 	if (report) {
- 		int err2;
- 
- 		err2 = nlmsg_unicast(sk, skb, portid);
--		if (!err || err == -ESRCH)
-+		if (!err)
- 			err = err2;
- 	}
- 
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index ca7d635bccd9..ca8eef2f6442 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -4286,8 +4286,8 @@ static struct bpf_test tests[] = {
+ 		.u.insns_int = {
+ 			BPF_LD_IMM64(R0, 0),
+ 			BPF_LD_IMM64(R1, 0xffffffffffffffffLL),
+-			BPF_STX_MEM(BPF_W, R10, R1, -40),
+-			BPF_LDX_MEM(BPF_W, R0, R10, -40),
++			BPF_STX_MEM(BPF_DW, R10, R1, -40),
++			BPF_LDX_MEM(BPF_DW, R0, R10, -40),
+ 			BPF_EXIT_INSN(),
+ 		},
+ 		INTERNAL,
 -- 
 2.30.2
 
