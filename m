@@ -2,36 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3406404E7F
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 14:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0159F404EAE
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 14:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243314AbhIIMMJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 08:12:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47278 "EHLO mail.kernel.org"
+        id S242059AbhIIMNV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 08:13:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351078AbhIIMJ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:09:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDB9C619E1;
-        Thu,  9 Sep 2021 11:48:08 +0000 (UTC)
+        id S243395AbhIIMLG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:11:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 561C661A05;
+        Thu,  9 Sep 2021 11:48:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631188089;
-        bh=CvrFWuKg5tfdZ+6g/dH1C1LFbOaK3kSoxxTawEvoJiQ=;
+        s=k20201202; t=1631188108;
+        bh=wTkFVaW6fkoU9QG9knrcCG0f55YhqKPa8D5jng3jo6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J/e/DrQZ2H4wwzEsqrzgtb5T82dkUYNOEXzcwPj0zvCPjOl8DxW0n/ysz3MrJtXY6
-         aCkUo9t2d7rcMSSpW3o1tbL983X/NQVryH7TU8vP81PrJCw78CyneJUq63Fkm23s12
-         iCNe3BRslcoD1ptFcT+CkgcMWV18eimfIFnFEmn0+JVwAARoBpzFx5i1xkCkU4nITh
-         q+Sf7StvOKk1NqWZc9BU3OQCPDw8C5UfS59sDarNRBykdbb7f+TTECEZ4EFvtHg8Vq
-         dtqGqxqrOtzUrrdYPQseI0R6o3hlZzwOr9XXkSTgpdHJ697aQHRn+esacV/ddfhlrQ
-         lbsO5v/DyQpCw==
+        b=sFztGKd+yLi9fhFtzKFzOGTOR/GCBVbpUClY0M5ryIyAhAl3k4ihxrds9unUGOfek
+         rMAL+7vIE1xlqtcUNQWbYRvfupZt20sXubE7oq6f+pHasj/CbB7GpzxY8kuxTEtXpQ
+         PdhMAZra/LDfT4TsF1yCM7x5bis1LW82YV5En0LqV4bewPvvryPHeB6zE3zrwtJKTp
+         aVPpv6dFL/2ju+VipfF7o3TX8DkqzyxnDseQqBEuOqrkmqvspqRi9QBe2Xg7OjCIug
+         LIiarFy69/k9DEo2sIsX4QH8JOuImbu19ygzccNtDKlXDiVRHXMmEARyM3ChBGp6pb
+         0R51WwhBskNcA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Martynas Pumputis <m@lambda.lt>,
+Cc:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 073/219] libbpf: Fix race when pinning maps in parallel
-Date:   Thu,  9 Sep 2021 07:44:09 -0400
-Message-Id: <20210909114635.143983-73-sashal@kernel.org>
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 087/219] bpf: Fix off-by-one in tail call count limiting
+Date:   Thu,  9 Sep 2021 07:44:23 -0400
+Message-Id: <20210909114635.143983-87-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909114635.143983-1-sashal@kernel.org>
 References: <20210909114635.143983-1-sashal@kernel.org>
@@ -43,84 +43,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Martynas Pumputis <m@lambda.lt>
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
-[ Upstream commit 043c5bb3c4f43670ab4fea0b847373ab42d25f3e ]
+[ Upstream commit b61a28cf11d61f512172e673b8f8c4a6c789b425 ]
 
-When loading in parallel multiple programs which use the same to-be
-pinned map, it is possible that two instances of the loader will call
-bpf_object__create_maps() at the same time. If the map doesn't exist
-when both instances call bpf_object__reuse_map(), then one of the
-instances will fail with EEXIST when calling bpf_map__pin().
+Before, the interpreter allowed up to MAX_TAIL_CALL_CNT + 1 tail calls.
+Now precisely MAX_TAIL_CALL_CNT is allowed, which is in line with the
+behavior of the x86 JITs.
 
-Fix the race by retrying reusing a map if bpf_map__pin() returns
-EEXIST. The fix is similar to the one in iproute2: e4c4685fd6e4 ("bpf:
-Fix race condition with map pinning").
-
-Before retrying the pinning, we don't do any special cleaning of an
-internal map state. The closer code inspection revealed that it's not
-required:
-
-    - bpf_object__create_map(): map->inner_map is destroyed after a
-      successful call, map->fd is closed if pinning fails.
-    - bpf_object__populate_internal_map(): created map elements is
-      destroyed upon close(map->fd).
-    - init_map_slots(): slots are freed after their initialization.
-
-Signed-off-by: Martynas Pumputis <m@lambda.lt>
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210726152001.34845-1-m@lambda.lt
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210728164741.350370-1-johan.almbladh@anyfinetworks.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ kernel/bpf/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 164ee8b2847b..75fcf8a3b2de 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4572,10 +4572,13 @@ bpf_object__create_maps(struct bpf_object *obj)
- 	char *cp, errmsg[STRERR_BUFSIZE];
- 	unsigned int i, j;
- 	int err;
-+	bool retried;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index b1a5fc04492b..fe807b203a6f 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1562,7 +1562,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
  
- 	for (i = 0; i < obj->nr_maps; i++) {
- 		map = &obj->maps[i];
+ 		if (unlikely(index >= array->map.max_entries))
+ 			goto out;
+-		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
++		if (unlikely(tail_call_cnt >= MAX_TAIL_CALL_CNT))
+ 			goto out;
  
-+		retried = false;
-+retry:
- 		if (map->pin_path) {
- 			err = bpf_object__reuse_map(map);
- 			if (err) {
-@@ -4583,6 +4586,12 @@ bpf_object__create_maps(struct bpf_object *obj)
- 					map->name);
- 				goto err_out;
- 			}
-+			if (retried && map->fd < 0) {
-+				pr_warn("map '%s': cannot find pinned map\n",
-+					map->name);
-+				err = -ENOENT;
-+				goto err_out;
-+			}
- 		}
- 
- 		if (map->fd >= 0) {
-@@ -4616,9 +4625,13 @@ bpf_object__create_maps(struct bpf_object *obj)
- 		if (map->pin_path && !map->pinned) {
- 			err = bpf_map__pin(map, NULL);
- 			if (err) {
-+				zclose(map->fd);
-+				if (!retried && err == -EEXIST) {
-+					retried = true;
-+					goto retry;
-+				}
- 				pr_warn("map '%s': failed to auto-pin at '%s': %d\n",
- 					map->name, map->pin_path, err);
--				zclose(map->fd);
- 				goto err_out;
- 			}
- 		}
+ 		tail_call_cnt++;
 -- 
 2.30.2
 
