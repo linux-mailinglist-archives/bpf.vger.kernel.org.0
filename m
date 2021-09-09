@@ -2,83 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7D34046BE
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 10:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1EA4047B9
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 11:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhIIIHy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 04:07:54 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:15253 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhIIIHx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:07:53 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H4s5B2ktcz1DGgL;
-        Thu,  9 Sep 2021 16:05:50 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 9 Sep 2021 16:06:43 +0800
-Received: from [10.174.177.91] (10.174.177.91) by
- dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 9 Sep 2021 16:06:42 +0800
-Subject: Re: [PATCH -next] bpf: Add oversize check before call kvcalloc()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-References: <20210907060040.36222-1-cuibixuan@huawei.com>
- <CAEf4BzbEOpShbC1+iGo5DafFJc6U1gS9ytB2X_X0rqpWUfjbeg@mail.gmail.com>
-From:   Bixuan Cui <cuibixuan@huawei.com>
-Message-ID: <ecc54464-95dd-372d-a30a-9dac6c553a31@huawei.com>
-Date:   Thu, 9 Sep 2021 16:06:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S232875AbhIIJaO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 05:30:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30813 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232262AbhIIJaN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Sep 2021 05:30:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631179744;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=UJFJy/0BaHlqH2c/JRnf3STy2KHZHL1KbjWxtW7U0ZQ=;
+        b=hjW9UcTbcpUgwlkhfMldglBKv859RBhN4igD6T8Zbl8hVCRZwFF8+9NdvGKRz+i8PyfF63
+        XSny1Do2VkmYSmpde2SITCg1I2ga4qm7HUt20R4LKifk9xS3IQoYRAgI15aAsa9ulrA+of
+        3t5LVXGh9TUT+n1cspqj5ATlDaXN09I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-Oim_kd1VMBiqgQPgoIWmcg-1; Thu, 09 Sep 2021 05:29:03 -0400
+X-MC-Unique: Oim_kd1VMBiqgQPgoIWmcg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8311E1030C23;
+        Thu,  9 Sep 2021 09:29:01 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.151])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CBA87177F1;
+        Thu,  9 Sep 2021 09:28:58 +0000 (UTC)
+From:   =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>
+To:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>
+Subject: [PATCH net 0/2] sfc: fallback for lack of xdp tx queues
+Date:   Thu,  9 Sep 2021 11:28:44 +0200
+Message-Id: <20210909092846.18217-1-ihuguet@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbEOpShbC1+iGo5DafFJc6U1gS9ytB2X_X0rqpWUfjbeg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+If there are not enough hardware resources to allocate one tx queue per
+CPU for XDP, XDP_TX and XDP_REDIRECT actions were unavailable, and using
+them resulted each time with the packet being drop and this message in
+the logs: XDP TX failed (-22)
+
+These patches implement 2 fallback solutions for 2 different situations
+that might happen:
+1. There are not enough free resources for all the tx queues, but there
+   are some free resources available
+2. There are not enough free resources at all for tx queues.
+
+Both solutions are based in sharing tx queues, using __netif_tx_lock for
+synchronization. In the second case, as there are not XDP TX queues to
+share, network stack queues are used instead, but since we're taking
+__netif_tx_lock, concurrent access to the queues is correctly protected.
+
+The solution for this second case might affect performance both of XDP
+traffic and normal traffice due to lock contention if both are used
+intensively. That's why I call it a "last resort" fallback: it's not a
+desirable situation, but at least we have XDP TX working.
+
+Some tests has shown good results and indicate that the non-fallback
+case is not being damaged by this changes. They are also promising for
+the fallback cases. This is the test:
+1. From another machine, send high amount of packets with pktgen, script
+   samples/pktgen/pktgen_sample04_many_flows.sh
+2. In the tested machine, run samples/bpf/xdp_rxq_info with arguments
+   "-a XDP_TX --swapmac" and see the results
+3. In the tested machine, run also pktgen_sample04 to create high TX
+   normal traffic, and see how xdp_rxq_info results vary
+
+Note that this test doesn't check the worst situations for the fallback
+solutions because XDP_TX will only be executed from the same CPUs that
+are processed by sfc, and not from every CPU in the system, so the
+performance drop due to the highest locking contention doesn't happen.
+I'd like to test that, as well, but I don't have access right now to a
+proper environment.
+
+Test results:
+
+Without doing TX:
+Before changes: ~2,900,000 pps
+After changes, 1 queues/core: ~2,900,000 pps
+After changes, 2 queues/core: ~2,900,000 pps
+After changes, 8 queues/core: ~2,900,000 pps
+After changes, borrowing from network stack: ~2,900,000 pps
+
+With multiflow TX at the same time:
+Before changes: ~1,700,000 - 2,900,000 pps
+After changes, 1 queues/core: ~1,700,000 - 2,900,000 pps
+After changes, 2 queues/core: ~1,700,000 pps
+After changes, 8 queues/core: ~1,700,000 pps
+After changes, borrowing from network stack: 1,150,000 pps
+
+Sporadic "XDP TX failed (-5)" warnings are shown when running xdp program
+and pktgen simultaneously. This was expected because XDP doesn't have any
+buffering system if the NIC is under very high pressure. Thousands of
+these warnings are shown in the case of borrowing net stack queues. As I
+said before, this was also expected.
 
 
-On 2021/9/9 12:57, Andrii Nakryiko wrote:
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 047ac4b4703b..2a3955359156 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -9912,6 +9912,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
->>         nr_linfo = attr->line_info_cnt;
->>         if (!nr_linfo)
->>                 return 0;
->> +       if (nr_linfo * sizeof(struct bpf_line_info) > INT_MAX)
->> +               return -EINVAL;
-> I might be missing something, but on 64-bit architecture this can't
-> overflow (because u32 is multiplied by fixed small sizeof()). And on
-> 32-bit architecture if it overflows you won't catch it... So did you
-> mean to do:
-> 
-> if (nr_lifo > INT_MAX / sizeof(struct bpf_line_info))
->     return -EINVAL;
-> 
-> ?
-On 64-bit architecture, the value of INT_MAX may be equal to the 32-bit.
-I get the same question:   https://stackoverflow.com/questions/9257065/int-max-in-32-bit-vs-64-bit-environment
+Íñigo Huguet (2):
+  sfc: fallback for lack of xdp tx queues
+  sfc: last resort fallback for lack of xdp tx queues
 
-And 'if (nr_lifo > INT_MAX / sizeof(struct bpf_line_info))' is correct on 32-bit architecture ;)
+ drivers/net/ethernet/sfc/efx_channels.c | 98 ++++++++++++++++++-------
+ drivers/net/ethernet/sfc/net_driver.h   |  8 ++
+ drivers/net/ethernet/sfc/tx.c           | 29 ++++++--
+ 3 files changed, 99 insertions(+), 36 deletions(-)
 
-Thanks,
-Bixuan Cui
-> 
+-- 
+2.31.1
+
