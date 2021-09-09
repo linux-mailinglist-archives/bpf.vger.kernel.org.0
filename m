@@ -2,40 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784A8405343
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 14:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B748405347
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 14:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244321AbhIIMu4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 08:50:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55854 "EHLO mail.kernel.org"
+        id S1344860AbhIIMu7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 08:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355100AbhIIMlC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:41:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 020C461BF9;
-        Thu,  9 Sep 2021 11:54:55 +0000 (UTC)
+        id S1352998AbhIIMnF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:43:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E70B361BF7;
+        Thu,  9 Sep 2021 11:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631188496;
-        bh=RgyEE/gxv2+PbwT+Twl7+jMwQK+Cn83YUGhdVMiZbVs=;
+        s=k20201202; t=1631188522;
+        bh=6hfSnW2noXrPJGOfMt98vpwbxeZFSVT/APGUoFyhox0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RIV6mbAjy/2HiIsbNfP99F04YOBbm9spod9GJTbRZhuZkQIgO7plBE0Z+D4gYPjaH
-         SnHTSyWM7UU4ABtCliVQA1xJe+VyCVREdTKrW88AjUymZU/BweOj28Tp4bGHApwcml
-         PU2/0JBl1j83zi00dEwWVQQWjzI/ZKeBbMc3FqhmDhA79Zi/DvSJGQJnx3OJCchzkG
-         3er1o6kHskC5y2O6EVa2w3FTg5W9+BEMkaQw/8xeIBigriDBh8XcG1L766m2ZVktG+
-         Xfpyv0UGMTUn5e61nTtoXn68Fm/2odcrUMKOjjoQB6/z0cpHLYx6fhWWg+Pn9CqSPF
-         pCcekQDlV2bgg==
+        b=cJ65AdfTdXYazo9Itm5kYa62e3EMf64pdozFv0bJn/i9RpCt2UMV3D416duDAfC5c
+         EDg/WV0uW8j/SUKxCY42Zth7QIObA/+sDj6VK1z39wgHMQE6dgeuLpFiK39L5BQNBs
+         0UGgvZLYhKBj+RIDsdRs6XLZ3k/Gcxa7fHLPQvSppuhfD8QNtN8RoK5o/eh3N61Gu5
+         J9FrASSAiT1qtFy1jOCVaAVfwSoEkoAsHoQg8z3+mw+UTGgI8zVmLnDi1xG3oC+oGQ
+         KOujpQ7EnCiRB50LEG0ePqGP6evbY8VjvwmEO6fLbDinZfq+SUzaljhCFo1y4sN6lG
+         8YNZ1bEwWKE9Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chengfeng Ye <cyeaa@connect.ust.hk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+Cc:     Yajun Deng <yajun.deng@linux.dev>, Yonghong Song <yhs@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 169/176] selftests/bpf: Fix potential unreleased lock
-Date:   Thu,  9 Sep 2021 07:51:11 -0400
-Message-Id: <20210909115118.146181-169-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 012/109] netlink: Deal with ESRCH error in nlmsg_notify()
+Date:   Thu,  9 Sep 2021 07:53:29 -0400
+Message-Id: <20210909115507.147917-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909115118.146181-1-sashal@kernel.org>
-References: <20210909115118.146181-1-sashal@kernel.org>
+In-Reply-To: <20210909115507.147917-1-sashal@kernel.org>
+References: <20210909115507.147917-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,36 +43,66 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Chengfeng Ye <cyeaa@connect.ust.hk>
+From: Yajun Deng <yajun.deng@linux.dev>
 
-[ Upstream commit 47bb27a20d6ea22cd092c1fc2bb4fcecac374838 ]
+[ Upstream commit fef773fc8110d8124c73a5e6610f89e52814637d ]
 
-This lock is not released if the program
-return at the patched branch.
+Yonghong Song report:
+The bpf selftest tc_bpf failed with latest bpf-next.
+The following is the command to run and the result:
+$ ./test_progs -n 132
+[   40.947571] bpf_testmod: loading out-of-tree module taints kernel.
+test_tc_bpf:PASS:test_tc_bpf__open_and_load 0 nsec
+test_tc_bpf:PASS:bpf_tc_hook_create(BPF_TC_INGRESS) 0 nsec
+test_tc_bpf:PASS:bpf_tc_hook_create invalid hook.attach_point 0 nsec
+test_tc_bpf_basic:PASS:bpf_obj_get_info_by_fd 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_attach 0 nsec
+test_tc_bpf_basic:PASS:handle set 0 nsec
+test_tc_bpf_basic:PASS:priority set 0 nsec
+test_tc_bpf_basic:PASS:prog_id set 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_attach replace mode 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_query 0 nsec
+test_tc_bpf_basic:PASS:handle set 0 nsec
+test_tc_bpf_basic:PASS:priority set 0 nsec
+test_tc_bpf_basic:PASS:prog_id set 0 nsec
+libbpf: Kernel error message: Failed to send filter delete notification
+test_tc_bpf_basic:FAIL:bpf_tc_detach unexpected error: -3 (errno 3)
+test_tc_bpf:FAIL:test_tc_internal ingress unexpected error: -3 (errno 3)
 
-Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20210827074140.118671-1-cyeaa@connect.ust.hk
+The failure seems due to the commit
+    cfdf0d9ae75b ("rtnetlink: use nlmsg_notify() in rtnetlink_send()")
+
+Deal with ESRCH error in nlmsg_notify() even the report variable is zero.
+
+Reported-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Link: https://lore.kernel.org/r/20210719051816.11762-1-yajun.deng@linux.dev
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c | 4 +++-
+ net/netlink/af_netlink.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-index ec281b0363b8..86f97681ad89 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-@@ -195,8 +195,10 @@ static void run_test(int cgroup_fd)
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 9d993b4cf1af..acc76a738cfd 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -2521,13 +2521,15 @@ int nlmsg_notify(struct sock *sk, struct sk_buff *skb, u32 portid,
+ 		/* errors reported via destination sk->sk_err, but propagate
+ 		 * delivery errors if NETLINK_BROADCAST_ERROR flag is set */
+ 		err = nlmsg_multicast(sk, skb, exclude_portid, group, flags);
++		if (err == -ESRCH)
++			err = 0;
+ 	}
  
- 	pthread_mutex_lock(&server_started_mtx);
- 	if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
--				      (void *)&server_fd)))
-+				      (void *)&server_fd))) {
-+		pthread_mutex_unlock(&server_started_mtx);
- 		goto close_server_fd;
-+	}
- 	pthread_cond_wait(&server_started, &server_started_mtx);
- 	pthread_mutex_unlock(&server_started_mtx);
+ 	if (report) {
+ 		int err2;
+ 
+ 		err2 = nlmsg_unicast(sk, skb, portid);
+-		if (!err || err == -ESRCH)
++		if (!err)
+ 			err = err2;
+ 	}
  
 -- 
 2.30.2
