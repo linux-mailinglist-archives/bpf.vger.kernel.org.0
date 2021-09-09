@@ -2,37 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2A140499A
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 13:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DCD4049CE
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 13:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237256AbhIILmy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 07:42:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46060 "EHLO mail.kernel.org"
+        id S237735AbhIILni (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 07:43:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236756AbhIILmj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:42:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABC5E61186;
-        Thu,  9 Sep 2021 11:41:28 +0000 (UTC)
+        id S237282AbhIILmz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:42:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3559861186;
+        Thu,  9 Sep 2021 11:41:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631187689;
-        bh=RUAMjOZ4iyzFD+zmCq7vbst6aJVhbYT3JHlhgRH50ik=;
+        s=k20201202; t=1631187706;
+        bh=JZ9MTYb74+DaVR3kO13l/TOFbMF1Vw4Aj+rV2emckYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gUyBgAyNnXNwBxnPfLm2fH7n5hL+jNEaAiQ7euv1+FLUrVF7ccuWN0FkN0dUdOmbe
-         cwdldzp/sj89uqrrcKsuWzgINDc+t4ibrNLbiCGkAtuf8GpFb9zur21OAmto39TqsT
-         rdgpl9ML1SE19EVIpI+8DZgDChQhvJb6V7jAE69ljl1RCzDtusjvwB+GmgG1MDJTKf
-         EAVGN5JSUYzxRSXCpNENEfN3SPKmUXOEiFyFiGf2iFOIU8DPMnp544vbDQn9DEhb2c
-         /YjWUsoTJNRRsjR2igHFTU6ouW6bQysL4FeOIWqmIN4s2WeEQgJgj07re6urONlrA2
-         jWL8Y351vX9Xg==
+        b=Q50aCEWhJC1s/nzyNm8pIHKo+Zqp8c2ut4SeiUfGCCnJLJHLU5pgb0NSX1Q554JH6
+         JG7V9XBdJg4RJv3NWqWZ9hPEbwLU4+7bSOKxv2poR00tWeLSBwx6Vb7SqGfpHP6XC+
+         coYphUgJtVy7aXOZ5+ZTJ4tbJp6iOs03sjDBd37CNoIdyBeG9IiLEYJg3oQGIhvGes
+         G+MxIJcTgwYu1bvSzu4YRORDbi7WbdGcJMoldsT2g1a2+8xtdwZAxyy9YqciBc+RO+
+         6sYW+84/qFwPPJApzAoQphixZj/MWddVA5bFJZOzN50IiNFcTlpVN2c9CWLLatJ851
+         Iag/pPQ9c3Luw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Martynas Pumputis <m@lambda.lt>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
+Cc:     Yajun Deng <yajun.deng@linux.dev>, Yonghong Song <yhs@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 017/252] libbpf: Fix reuse of pinned map on older kernel
-Date:   Thu,  9 Sep 2021 07:37:11 -0400
-Message-Id: <20210909114106.141462-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.14 030/252] netlink: Deal with ESRCH error in nlmsg_notify()
+Date:   Thu,  9 Sep 2021 07:37:24 -0400
+Message-Id: <20210909114106.141462-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
 References: <20210909114106.141462-1-sashal@kernel.org>
@@ -44,115 +43,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Martynas Pumputis <m@lambda.lt>
+From: Yajun Deng <yajun.deng@linux.dev>
 
-[ Upstream commit 97eb31384af943d6b97eb5947262cee4ef25cb87 ]
+[ Upstream commit fef773fc8110d8124c73a5e6610f89e52814637d ]
 
-When loading a BPF program with a pinned map, the loader checks whether
-the pinned map can be reused, i.e. their properties match. To derive
-such of the pinned map, the loader invokes BPF_OBJ_GET_INFO_BY_FD and
-then does the comparison.
+Yonghong Song report:
+The bpf selftest tc_bpf failed with latest bpf-next.
+The following is the command to run and the result:
+$ ./test_progs -n 132
+[   40.947571] bpf_testmod: loading out-of-tree module taints kernel.
+test_tc_bpf:PASS:test_tc_bpf__open_and_load 0 nsec
+test_tc_bpf:PASS:bpf_tc_hook_create(BPF_TC_INGRESS) 0 nsec
+test_tc_bpf:PASS:bpf_tc_hook_create invalid hook.attach_point 0 nsec
+test_tc_bpf_basic:PASS:bpf_obj_get_info_by_fd 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_attach 0 nsec
+test_tc_bpf_basic:PASS:handle set 0 nsec
+test_tc_bpf_basic:PASS:priority set 0 nsec
+test_tc_bpf_basic:PASS:prog_id set 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_attach replace mode 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_query 0 nsec
+test_tc_bpf_basic:PASS:handle set 0 nsec
+test_tc_bpf_basic:PASS:priority set 0 nsec
+test_tc_bpf_basic:PASS:prog_id set 0 nsec
+libbpf: Kernel error message: Failed to send filter delete notification
+test_tc_bpf_basic:FAIL:bpf_tc_detach unexpected error: -3 (errno 3)
+test_tc_bpf:FAIL:test_tc_internal ingress unexpected error: -3 (errno 3)
 
-Unfortunately, on < 4.12 kernels the BPF_OBJ_GET_INFO_BY_FD is not
-available, so loading the program fails with the following error:
+The failure seems due to the commit
+    cfdf0d9ae75b ("rtnetlink: use nlmsg_notify() in rtnetlink_send()")
 
-	libbpf: failed to get map info for map FD 5: Invalid argument
-	libbpf: couldn't reuse pinned map at
-		'/sys/fs/bpf/tc/globals/cilium_call_policy': parameter
-		mismatch"
-	libbpf: map 'cilium_call_policy': error reusing pinned map
-	libbpf: map 'cilium_call_policy': failed to create:
-		Invalid argument(-22)
-	libbpf: failed to load object 'bpf_overlay.o'
+Deal with ESRCH error in nlmsg_notify() even the report variable is zero.
 
-To fix this, fallback to derivation of the map properties via
-/proc/$PID/fdinfo/$MAP_FD if BPF_OBJ_GET_INFO_BY_FD fails with EINVAL,
-which can be used as an indicator that the kernel doesn't support
-the latter.
-
-Signed-off-by: Martynas Pumputis <m@lambda.lt>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/20210712125552.58705-1-m@lambda.lt
+Reported-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Link: https://lore.kernel.org/r/20210719051816.11762-1-yajun.deng@linux.dev
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 48 +++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 45 insertions(+), 3 deletions(-)
+ net/netlink/af_netlink.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6f5e2757bb3c..4a30a788d7c8 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -3894,6 +3894,42 @@ static int bpf_map_find_btf_info(struct bpf_object *obj, struct bpf_map *map)
- 	return 0;
- }
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 380f95aacdec..24b7cf447bc5 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -2545,13 +2545,15 @@ int nlmsg_notify(struct sock *sk, struct sk_buff *skb, u32 portid,
+ 		/* errors reported via destination sk->sk_err, but propagate
+ 		 * delivery errors if NETLINK_BROADCAST_ERROR flag is set */
+ 		err = nlmsg_multicast(sk, skb, exclude_portid, group, flags);
++		if (err == -ESRCH)
++			err = 0;
+ 	}
  
-+static int bpf_get_map_info_from_fdinfo(int fd, struct bpf_map_info *info)
-+{
-+	char file[PATH_MAX], buff[4096];
-+	FILE *fp;
-+	__u32 val;
-+	int err;
-+
-+	snprintf(file, sizeof(file), "/proc/%d/fdinfo/%d", getpid(), fd);
-+	memset(info, 0, sizeof(*info));
-+
-+	fp = fopen(file, "r");
-+	if (!fp) {
-+		err = -errno;
-+		pr_warn("failed to open %s: %d. No procfs support?\n", file,
-+			err);
-+		return err;
-+	}
-+
-+	while (fgets(buff, sizeof(buff), fp)) {
-+		if (sscanf(buff, "map_type:\t%u", &val) == 1)
-+			info->type = val;
-+		else if (sscanf(buff, "key_size:\t%u", &val) == 1)
-+			info->key_size = val;
-+		else if (sscanf(buff, "value_size:\t%u", &val) == 1)
-+			info->value_size = val;
-+		else if (sscanf(buff, "max_entries:\t%u", &val) == 1)
-+			info->max_entries = val;
-+		else if (sscanf(buff, "map_flags:\t%i", &val) == 1)
-+			info->map_flags = val;
-+	}
-+
-+	fclose(fp);
-+
-+	return 0;
-+}
-+
- int bpf_map__reuse_fd(struct bpf_map *map, int fd)
- {
- 	struct bpf_map_info info = {};
-@@ -3902,6 +3938,8 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
- 	char *new_name;
+ 	if (report) {
+ 		int err2;
  
- 	err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+	if (err && errno == EINVAL)
-+		err = bpf_get_map_info_from_fdinfo(fd, &info);
- 	if (err)
- 		return libbpf_err(err);
- 
-@@ -4381,12 +4419,16 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
- 	struct bpf_map_info map_info = {};
- 	char msg[STRERR_BUFSIZE];
- 	__u32 map_info_len;
-+	int err;
- 
- 	map_info_len = sizeof(map_info);
- 
--	if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
--		pr_warn("failed to get map info for map FD %d: %s\n",
--			map_fd, libbpf_strerror_r(errno, msg, sizeof(msg)));
-+	err = bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len);
-+	if (err && errno == EINVAL)
-+		err = bpf_get_map_info_from_fdinfo(map_fd, &map_info);
-+	if (err) {
-+		pr_warn("failed to get map info for map FD %d: %s\n", map_fd,
-+			libbpf_strerror_r(errno, msg, sizeof(msg)));
- 		return false;
+ 		err2 = nlmsg_unicast(sk, skb, portid);
+-		if (!err || err == -ESRCH)
++		if (!err)
+ 			err = err2;
  	}
  
 -- 
