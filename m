@@ -2,190 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265104041D3
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 01:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A804B404222
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 02:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbhIHXen (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Sep 2021 19:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233992AbhIHXem (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Sep 2021 19:34:42 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24535C061575
-        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 16:33:34 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id b64so4566592qkg.0
-        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 16:33:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MrFx8f2Sbic52YCjTt/XxUCD8D0mz2UtAejCbMntRqM=;
-        b=Y7otoefmsPF3VMf0m5rBzollI1ZgyX0Tgmchly0g12QfYjznjH4lzQQe11mcXXqYvJ
-         +WssRuUBIHSFxPzQpMZJCht2WaU1h2VWq7yIuXtjkHDlDgQ+c7iI6eYzJAq7HuUKHgIg
-         fjCFIPZvkiDP6zU8HLt40739TRlDYSKRzL/478UEmcplbdmDUiRGjwvdcpIdBh6D9N2r
-         5GhxU5yPUxVCAM54aNCh7hGOLS8a+wreviKplPqFKwVxoj/Pv5cDyDhtH7yoAO3v/ueh
-         SKEjt31f79K1SXgL+0hFrhpqE7GudawpI1u0Rn6fga+z9GifcS8uLqvAjCbok2ZNYU8A
-         d9XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MrFx8f2Sbic52YCjTt/XxUCD8D0mz2UtAejCbMntRqM=;
-        b=1CTyXKbqVMLeNmXt+t2nh1Qd7ySKyQK9a99ZQ4CS6AllyZAsf3qYhrRIbGI7bjnGMk
-         bllM4boZuWPOjrNTaT+AyhbntljkrwTf8IASPW2HhWH/BjR8WJXAnbi+naIG8Nmoqeyi
-         3PipSbBH9PjAFdV3fzPXqFTYmSxhco8YdgNtZ6eU77TqhKOcdp52q1En3BeTttb8JUpl
-         bo61ac2qQghQB4QVdxK9yvhColgFttYrnQG4ub/6nvlThU3JpoPd7DnRa4xfa3uVWBDA
-         TpIeFMbFPfLu9echi1mH8uVG+KFI9R2QVisBY1q3KAZ5/tZ3euQiY/31qT7ogUAS++Cw
-         fQBA==
-X-Gm-Message-State: AOAM533DZmsL/pgq6hydaUudzsVyW0IR6uyKpNjdvDiiGz6vobjy0R9Q
-        GkjC3KEJEQk8T/IKlXaL0KR61A==
-X-Google-Smtp-Source: ABdhPJxQQSxNdwoc1gf8pPeDJefusJYSa7mYD4j+G6VAAQpFQNRMbsDasczgOrbWfUIEJPcBee/tgA==
-X-Received: by 2002:a05:620a:4514:: with SMTP id t20mr176750qkp.114.1631144012886;
-        Wed, 08 Sep 2021 16:33:32 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id k186sm101073qkd.47.2021.09.08.16.33.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 16:33:32 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mO74N-00EsAz-LZ; Wed, 08 Sep 2021 20:33:31 -0300
-Date:   Wed, 8 Sep 2021 20:33:31 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Liam Howlett <liam.howlett@oracle.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luigi Rizzo <lrizzo@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>,
-        "walken@fb.com" <walken@fb.com>
-Subject: Re: [PATCH mm/bpf v2] mm: bpf: add find_vma_no_check() without
- lockdep_assert on mm->mmap_lock
-Message-ID: <20210908233331.GA3544071@ziepe.ca>
-References: <f5328a05-ed3c-a868-9240-1b0852e01406@fb.com>
- <CAMOZA0+2KLgYTXDZHGUYFnYezee=_hH6kFVM+-n2ZQuFTfh6yg@mail.gmail.com>
- <20210908172118.n2f4w7epm6hh62zf@ast-mbp.dhcp.thefacebook.com>
- <20210908105259.c47dcc4e4371ebb5e147ee6e@linux-foundation.org>
- <20210908180258.yjh62e5oouckar5b@ast-mbp.dhcp.thefacebook.com>
- <20210908111527.9a611426e257d55ccbbf46eb@linux-foundation.org>
- <CAADnVQ+5m0+X1Xvgu-wYii2nWvAtEfk2ffM6mQTaiq2SPM1Z=A@mail.gmail.com>
- <20210908183032.zoh6dj5xh455z47f@revolver>
- <20210908184912.GA1200268@ziepe.ca>
- <7aece51f-141c-db55-5d4c-8c6658b6a1fc@fb.com>
+        id S244588AbhIIAPt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Sep 2021 20:15:49 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43608 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S241998AbhIIAPt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 8 Sep 2021 20:15:49 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 1890DD81015360
+        for <bpf@vger.kernel.org>; Wed, 8 Sep 2021 17:14:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=w7TRqPAqerFjyTTGg5raUwBZ8EjFkcDn6a7yo46EgWw=;
+ b=j0tdoxIHf9ghsLQ9bklKOLfgN8KSNGsEXo1jZb/Qq0ewEEkTzFxLg5DRYf4vVmEHysPg
+ cHqOaZ0fdP4LbPSRwmsCYzjL81AMUpyNp5V4Lp5YREcCgjJDN2SjlofaDpor5agJuSNu
+ QD6k2ocMcVR1olxltXrmeysi5KTe2MtlWT4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3axcny3s1p-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 17:14:40 -0700
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 8 Sep 2021 17:14:38 -0700
+Received: by devbig577.ftw3.facebook.com (Postfix, from userid 187975)
+        id B11B47EF009E; Wed,  8 Sep 2021 17:14:31 -0700 (PDT)
+From:   Jie Meng <jmeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+CC:     Jie Meng <jmeng@fb.com>
+Subject: [PATCH bpf-next] bpf,x64 Emit IMUL instead of MUL for x86-64
+Date:   Wed, 8 Sep 2021 17:14:21 -0700
+Message-ID: <20210909001421.4002107-1-jmeng@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7aece51f-141c-db55-5d4c-8c6658b6a1fc@fb.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: wvublH9_91Fv8QO9HXUPZmwyivriEtZK
+X-Proofpoint-ORIG-GUID: wvublH9_91Fv8QO9HXUPZmwyivriEtZK
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-08_10:2021-09-07,2021-09-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ phishscore=0 mlxlogscore=960 priorityscore=1501 bulkscore=0 adultscore=0
+ impostorscore=0 lowpriorityscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109090000
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 12:11:54PM -0700, Yonghong Song wrote:
-> 
-> 
-> On 9/8/21 11:49 AM, Jason Gunthorpe wrote:
-> > On Wed, Sep 08, 2021 at 06:30:52PM +0000, Liam Howlett wrote:
-> > 
-> > >   /* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. */
-> > > -struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
-> > > +struct vm_area_struct *find_vma_non_owner(struct mm_struct *mm,
-> > > +					 unsigned long addr)
-> > >   {
-> > >   	struct rb_node *rb_node;
-> > >   	struct vm_area_struct *vma;
-> > > -	mmap_assert_locked(mm);
-> > > +	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-> > >   	/* Check the cache first. */
-> > >   	vma = vmacache_find(mm, addr);
-> > >   	if (likely(vma))
-> > > @@ -2325,6 +2326,11 @@ struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
-> > >   	return vma;
-> > >   }
-> > > +struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
-> > > +{
-> > > +	lockdep_assert_held(&mm->mmap_lock);
-> > > +	return find_vma_non_owner(mm, addr);
-> > > +}
-> > >   EXPORT_SYMBOL(find_vma);
-> > >   /*
-> > > 
-> > > 
-> > > Although this leaks more into the mm API and was referred to as ugly
-> > > previously, it does provide a working solution and still maintains the
-> > > same level of checking.
-> > 
-> > I think it is no better than before.
-> > 
-> > The solution must be to not break lockdep in the BPF side. If Peter's
-> > reworked algorithm is not OK then BPF should drop/acquire the lockdep
-> > when it punts the unlock to the WQ.
-> 
-> The current warning is triggered by bpf calling find_vma().
+IMUL allows for multiple operands and saving and storing rax/rdx is no
+longer needed. Signedness of the operands doesn't matter here because
+the we only keep the lower 32/64 bit of the product for 32/64 bit
+multiplications.
 
-Yes, but that is because the lockdep has already been dropped.
+Signed-off-by: Jie Meng <jmeng@fb.com>
+---
+ arch/x86/net/bpf_jit_comp.c                | 53 ++++++++++------------
+ tools/testing/selftests/bpf/verifier/jit.c | 16 +++++++
+ 2 files changed, 39 insertions(+), 30 deletions(-)
 
-It looks to me like it basically does this:
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 0fe6aacef3db..8580bc8f9b01 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1070,41 +1070,34 @@ static int do_jit(struct bpf_prog *bpf_prog, int =
+*addrs, u8 *image,
+ 			break;
+=20
+ 		case BPF_ALU | BPF_MUL | BPF_K:
+-		case BPF_ALU | BPF_MUL | BPF_X:
+ 		case BPF_ALU64 | BPF_MUL | BPF_K:
+-		case BPF_ALU64 | BPF_MUL | BPF_X:
+-		{
+-			bool is64 =3D BPF_CLASS(insn->code) =3D=3D BPF_ALU64;
++			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
++				EMIT1(add_2mod(0x48, dst_reg, dst_reg));
++			else if (is_ereg(dst_reg))
++				EMIT1(add_2mod(0x40, dst_reg, dst_reg));
+=20
+-			if (dst_reg !=3D BPF_REG_0)
+-				EMIT1(0x50); /* push rax */
+-			if (dst_reg !=3D BPF_REG_3)
+-				EMIT1(0x52); /* push rdx */
++			if (is_imm8(imm32))
++				/* imul dst_reg, dst_reg, imm8 */
++				EMIT3(0x6B, add_2reg(0xC0, dst_reg, dst_reg),
++				      imm32);
++			else
++				/* imul dst_reg, dst_reg, imm32 */
++				EMIT2_off32(0x69,
++					    add_2reg(0xC0, dst_reg, dst_reg),
++					    imm32);
++			break;
+=20
+-			/* mov r11, dst_reg */
+-			EMIT_mov(AUX_REG, dst_reg);
++		case BPF_ALU | BPF_MUL | BPF_X:
++		case BPF_ALU64 | BPF_MUL | BPF_X:
++			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
++				EMIT1(add_2mod(0x48, dst_reg, src_reg));
++			else if (is_ereg(dst_reg) || is_ereg(src_reg))
++				EMIT1(add_2mod(0x40, dst_reg, src_reg));
+=20
+-			if (BPF_SRC(insn->code) =3D=3D BPF_X)
+-				emit_mov_reg(&prog, is64, BPF_REG_0, src_reg);
+-			else
+-				emit_mov_imm32(&prog, is64, BPF_REG_0, imm32);
+-
+-			if (is64)
+-				EMIT1(add_1mod(0x48, AUX_REG));
+-			else if (is_ereg(AUX_REG))
+-				EMIT1(add_1mod(0x40, AUX_REG));
+-			/* mul(q) r11 */
+-			EMIT2(0xF7, add_1reg(0xE0, AUX_REG));
+-
+-			if (dst_reg !=3D BPF_REG_3)
+-				EMIT1(0x5A); /* pop rdx */
+-			if (dst_reg !=3D BPF_REG_0) {
+-				/* mov dst_reg, rax */
+-				EMIT_mov(dst_reg, BPF_REG_0);
+-				EMIT1(0x58); /* pop rax */
+-			}
++			/* imul dst_reg, src_reg */
++			EMIT3(0x0F, 0xAF, add_2reg(0xC0, src_reg, dst_reg));
+ 			break;
+-		}
++
+ 			/* Shifts */
+ 		case BPF_ALU | BPF_LSH | BPF_K:
+ 		case BPF_ALU | BPF_RSH | BPF_K:
+diff --git a/tools/testing/selftests/bpf/verifier/jit.c b/tools/testing/s=
+elftests/bpf/verifier/jit.c
+index df215e004566..641811b955a4 100644
+--- a/tools/testing/selftests/bpf/verifier/jit.c
++++ b/tools/testing/selftests/bpf/verifier/jit.c
+@@ -62,6 +62,11 @@
+ 	BPF_JMP_REG(BPF_JEQ, BPF_REG_3, BPF_REG_2, 2),
+ 	BPF_MOV64_IMM(BPF_REG_0, 1),
+ 	BPF_EXIT_INSN(),
++	BPF_LD_IMM64(BPF_REG_3, 0xfefefeULL),
++	BPF_ALU64_IMM(BPF_MUL, BPF_REG_3, 0xefefef),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_3, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
+ 	BPF_MOV32_REG(BPF_REG_2, BPF_REG_2),
+ 	BPF_LD_IMM64(BPF_REG_0, 0xfefefeULL),
+ 	BPF_ALU32_REG(BPF_MUL, BPF_REG_0, BPF_REG_1),
+@@ -73,6 +78,17 @@
+ 	BPF_JMP_REG(BPF_JEQ, BPF_REG_3, BPF_REG_2, 2),
+ 	BPF_MOV64_IMM(BPF_REG_0, 1),
+ 	BPF_EXIT_INSN(),
++	BPF_LD_IMM64(BPF_REG_3, 0xfefefeULL),
++	BPF_ALU32_IMM(BPF_MUL, BPF_REG_3, 0xefefef),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_3, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
++	BPF_LD_IMM64(BPF_REG_0, 0xfefefeULL),
++	BPF_LD_IMM64(BPF_REG_2, 0x2ad4d4aaULL),
++	BPF_ALU32_IMM(BPF_MUL, BPF_REG_0, 0x2b),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_0, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
+ 	BPF_LD_IMM64(BPF_REG_0, 0x952a7bbcULL),
+ 	BPF_LD_IMM64(BPF_REG_1, 0xfefefeULL),
+ 	BPF_LD_IMM64(BPF_REG_2, 0xeeff0d413122ULL),
+--=20
+2.30.2
 
-        mmap_read_trylock_non_owner(current->mm)
-
-        vma = find_vma(current->mm, ips[i]);
-
-        if (!work) {
-                mmap_read_unlock_non_owner(current->mm);
-        } else {
-                work->mm = current->mm;
-                irq_work_queue(&work->irq_work);
-
-
-And the only reason for this lockdep madness is because the
-irq_work_queue() does:
-
-static void do_up_read(struct irq_work *entry)
-{
-        struct stack_map_irq_work *work;
-
-        if (WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT)))
-                return;
-
-        work = container_of(entry, struct stack_map_irq_work, irq_work);
-        mmap_read_unlock_non_owner(work->mm);
-}
-
-
-This is all about deferring the unlock to outside an IRQ context. The
-lockdep ownership is transfered from the IRQ to the work, which is
-something that we don't usually do or model in lockdep.
-
-Lockdep complains with the straightforward code because exiting an IRQ
-with locks held is illegal.
-
-The saner version is more like:
-
-        mmap_read_trylock(current->mm)
-
-        vma = find_vma(current->mm, ips[i]);
-
-        if (!work) {
-                mmap_read_unlock(current->mm);
-        } else {
-                work->mm = current->mm;
-                <tell lockdep we really do mean to return with
-		 the lock held>
-                rwsem_release(&mm->mmap_lock.dep_map, _RET_IP_);
-                irq_work_queue(&work->irq_work);
-
-
-do_up_read():
-       <tell lockdep the lock was already released from the map>
-       mmap_read_unlock_non_owner(work->mm);
-
-ie properly model in lockdep that ownership moves from the IRQ to the
-work. At least we don't corrupt the core mm code with this insanity.
-
-Jason
