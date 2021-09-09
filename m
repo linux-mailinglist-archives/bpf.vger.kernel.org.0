@@ -2,75 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822E34046BD
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 10:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7D34046BE
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 10:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhIIIG5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 04:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhIIIG5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 04:06:57 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52093C061575
-        for <bpf@vger.kernel.org>; Thu,  9 Sep 2021 01:05:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3qrQB6d8ePB9z+YR7DZ4I3k8HfDrD/7XELuX2rFMGOI=; b=HmnBaS1EnmTSlK05RhgfftlS7K
-        5OYfMBtEm2Whmgf+lIKtnz9u591s1YKoqY6DC+50rVbFumsF2rLIEcAbtugjcHELn52WF4Elhwxqd
-        iGWN8VIKQqC6k/eurIVUZkE+lgumt48EZ36swXJFOmbNpBHpw4SM5yT1SF0t+xQ4nD0HIJZZzKy4w
-        vUdqL9+QHo6T3/1RcnWpfAo45ds+SG7j7UeIQZHARTciMxYrKTKMIlGrnbNJnvSF+uNGR/pLxqdBU
-        iQfg3Yreu/t6kQPWO4hp097Lz6gbvbgOwqdk2ZsnQLpcGmF1H9LmBciPSnfhUyON+fF9LTau50wHH
-        ihT1Y4hw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOF3q-001pJO-6N; Thu, 09 Sep 2021 08:05:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5FC763001C7;
-        Thu,  9 Sep 2021 10:05:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 49CA429DD60A4; Thu,  9 Sep 2021 10:05:29 +0200 (CEST)
-Date:   Thu, 9 Sep 2021 10:05:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luigi Rizzo <lrizzo@google.com>, Yonghong Song <yhs@fb.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        id S230467AbhIIIHy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 04:07:54 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15253 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230071AbhIIIHx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 04:07:53 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H4s5B2ktcz1DGgL;
+        Thu,  9 Sep 2021 16:05:50 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 9 Sep 2021 16:06:43 +0800
+Received: from [10.174.177.91] (10.174.177.91) by
+ dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 9 Sep 2021 16:06:42 +0800
+Subject: Re: [PATCH -next] bpf: Add oversize check before call kvcalloc()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>,
-        "walken@fb.com" <walken@fb.com>
-Subject: Re: [PATCH mm/bpf v2] mm: bpf: add find_vma_no_check() without
- lockdep_assert on mm->mmap_lock
-Message-ID: <YTnASdwzG2DS5lrc@hirez.programming.kicks-ass.net>
-References: <CAMOZA0+FofdYMivrBR14snb6Xo_i6BV7gVX1dGCtJa=ue3VqEQ@mail.gmail.com>
- <20210908151230.m2zyslt4qrufm4bv@revolver>
- <f5328a05-ed3c-a868-9240-1b0852e01406@fb.com>
- <CAMOZA0+2KLgYTXDZHGUYFnYezee=_hH6kFVM+-n2ZQuFTfh6yg@mail.gmail.com>
- <20210908172118.n2f4w7epm6hh62zf@ast-mbp.dhcp.thefacebook.com>
- <20210908105259.c47dcc4e4371ebb5e147ee6e@linux-foundation.org>
- <20210908180258.yjh62e5oouckar5b@ast-mbp.dhcp.thefacebook.com>
- <20210908111527.9a611426e257d55ccbbf46eb@linux-foundation.org>
- <CAADnVQ+5m0+X1Xvgu-wYii2nWvAtEfk2ffM6mQTaiq2SPM1Z=A@mail.gmail.com>
- <20210908183032.zoh6dj5xh455z47f@revolver>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+References: <20210907060040.36222-1-cuibixuan@huawei.com>
+ <CAEf4BzbEOpShbC1+iGo5DafFJc6U1gS9ytB2X_X0rqpWUfjbeg@mail.gmail.com>
+From:   Bixuan Cui <cuibixuan@huawei.com>
+Message-ID: <ecc54464-95dd-372d-a30a-9dac6c553a31@huawei.com>
+Date:   Thu, 9 Sep 2021 16:06:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908183032.zoh6dj5xh455z47f@revolver>
+In-Reply-To: <CAEf4BzbEOpShbC1+iGo5DafFJc6U1gS9ytB2X_X0rqpWUfjbeg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.91]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 06:30:52PM +0000, Liam Howlett wrote:
-> +	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
 
-NAK.. do not ever use the _is_locked() trainwrecks.
+
+On 2021/9/9 12:57, Andrii Nakryiko wrote:
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 047ac4b4703b..2a3955359156 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -9912,6 +9912,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
+>>         nr_linfo = attr->line_info_cnt;
+>>         if (!nr_linfo)
+>>                 return 0;
+>> +       if (nr_linfo * sizeof(struct bpf_line_info) > INT_MAX)
+>> +               return -EINVAL;
+> I might be missing something, but on 64-bit architecture this can't
+> overflow (because u32 is multiplied by fixed small sizeof()). And on
+> 32-bit architecture if it overflows you won't catch it... So did you
+> mean to do:
+> 
+> if (nr_lifo > INT_MAX / sizeof(struct bpf_line_info))
+>     return -EINVAL;
+> 
+> ?
+On 64-bit architecture, the value of INT_MAX may be equal to the 32-bit.
+I get the same question:   https://stackoverflow.com/questions/9257065/int-max-in-32-bit-vs-64-bit-environment
+
+And 'if (nr_lifo > INT_MAX / sizeof(struct bpf_line_info))' is correct on 32-bit architecture ;)
+
+Thanks,
+Bixuan Cui
+> 
