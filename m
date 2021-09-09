@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18391404476
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 06:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3130940447A
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 06:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233878AbhIIE12 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 00:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50400 "EHLO
+        id S1343937AbhIIEbD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 00:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350256AbhIIE1V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 00:27:21 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432F2C061575
-        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 21:26:13 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id v10so1268414ybq.7
-        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 21:26:13 -0700 (PDT)
+        with ESMTP id S229549AbhIIEbC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 00:31:02 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6689BC061575
+        for <bpf@vger.kernel.org>; Wed,  8 Sep 2021 21:29:53 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id r4so1307727ybp.4
+        for <bpf@vger.kernel.org>; Wed, 08 Sep 2021 21:29:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JA2YLD7vWHr9XS7St1jXRPJ6/X3vK8FYHMEIt/xiMZ8=;
-        b=UGtyvd0S6QOInFcYiBPcbk7MJ2iYwPuJFMQnUYTJFKRFvUfEF5vACOUGN60jrCrEiS
-         9Y9yO9rhd3z7TIuoMeZSPbudJ6ZjXyYvbDlwZepxFjhfGkqbYl7H3MZXtMm6gs0ttq+p
-         ZWYOCudEh/ttEL1na1BehGotADUeNbNzQFNJ+ztr7RlQIS6TliQXpuiKjbMagY9XH8bX
-         rcb4BDGM8YLN9gMZUMnw2WfjNlXo4xiYDRWxwXrdYhbaezKbAN+q2nT07luYIpm6qPfL
-         wy+YRKlCSIdgeshjE1s2acwCs3irI4U5ew2xQhTrHckDwbuXsYUOExzjHKh6yooni5Lt
-         7lHw==
+        bh=IRLKt2bZxP/hDB7E9s75aAmLbytnwSkW2Nwnrh7u55s=;
+        b=bAfeqiq2AjO+C1UhP4ai6hQnv3HDocWcrxcc1ZpBkg7IfF0O1PWg05tga6G//g0HB7
+         qkPfpnrWnadCflGXC+hxW7w454ZgNAOXEg3bP3JFyLHkmoqb7BoJoSTHUcfLglbselvu
+         A71NbBGsm5F7PA9coOfTU1eYeBxKbDT4z9E9LR1tlFiRdtU5yeau4o4RRouMilSkxXIB
+         ClDUSTvQhVtpyxLnZDtQW7ZzDXKReodNB5JDH6zFQpNlBUTXetGF2doCLNsr0ucs/8Rk
+         llWT3MinvIVL6oNyAbhsWjd/MuRoEf2WKmsI/vDqjGIfuPSrANJTfd6JBptMVbM/6iaB
+         lRkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JA2YLD7vWHr9XS7St1jXRPJ6/X3vK8FYHMEIt/xiMZ8=;
-        b=DPfysviJvEbpQSGXvZGFQupomfzpuzNQj6d8l2UiJOPsWcgOkq7a1F5gNj4HpQQkVj
-         MZ5VMcrXn4rw9OgPW1RZQ64jDxPOmkF40c5ca1MeSVNUhZgZ0MI3+CLlojmmwQgCDPnF
-         6XVIcjb4T+4nP8ZN1wU59oc09Z4cSq0LANEJz4sbLLOZOfq2DerUgY+D78ucg4hYijIs
-         RmJlWl+SQyX7Xu8pEEdbJAS9nsfRTjbjMwY3IMXC6amKhRoWvNRg2uE38Ak3Rj8DPq0O
-         GWxFSfl/lUnZzh79Y/bvI9ylx1ww+HK7HnFxwGJa51ohQHhvzaExT3Ba08i0hk12KFN9
-         8/jA==
-X-Gm-Message-State: AOAM530fr6uo9ognp5JS1MfFmV1/0WNcL0lhLoWsBcDrcuN/lrMIpo3v
-        83I17HrxKFMQPAVCk8duWgInYCkkgyyDgW+s6+8=
-X-Google-Smtp-Source: ABdhPJwG6XHiH9ig1iunmG2W4aoegMquuTwYvdD4KQUmPaXeB/q1h8a4SXi11o5IeibbKxJWeYyhvCL4b6pHe8LotAk=
-X-Received: by 2002:a5b:702:: with SMTP id g2mr1226455ybq.307.1631161572549;
- Wed, 08 Sep 2021 21:26:12 -0700 (PDT)
+        bh=IRLKt2bZxP/hDB7E9s75aAmLbytnwSkW2Nwnrh7u55s=;
+        b=PagK/J4ZOVp9kXrBMB/EkJMo6TeJD/PuhVcdHuGZAHVmtr3K+bjK3UOAyXpbQ7wpeF
+         BpzaVHKtN4KtTVaUKHxOfiJMDh8s3qatE2SfR6M5DSg9K/fXNQItvo71uqiwxZmdEU+L
+         /SRY8qjgW/TvylkrrSIvpusPrwp8bymfvrlILxexxktI/UBX9SQjWvSG5s1LNgASocs6
+         bjIm0sVehmwcY9lTaCY42tBQDoK9NImnIjkC7rGToEf4tmCT7s4HSV7InnuWhXjetsZJ
+         V889RBhMS3JYBgoL2N0g+gkOV/K8OJ6IdtuzDCor/+t1FsBXWre2Mtx25DxqxmFxXw0g
+         ZZ1w==
+X-Gm-Message-State: AOAM530wsn3VOk24TZzUGRYsJjr7ldhz5Yq+sZXxSXdeRzVEPX9dROvH
+        Z9Cf1vv57vqXUp4JBrbn6msbm1G+DTRkD10/laA=
+X-Google-Smtp-Source: ABdhPJwDRo3yx0oGZ98vW+Em+n/6k+hWhnEPPSzHID+YqEU7jU8ln/NYYURi5m+4bOqnP7FBSROBN/tAde/isnupPes=
+X-Received: by 2002:a25:65c4:: with SMTP id z187mr1377724ybb.113.1631161792659;
+ Wed, 08 Sep 2021 21:29:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210905100914.33007-1-hengqi.chen@gmail.com>
-In-Reply-To: <20210905100914.33007-1-hengqi.chen@gmail.com>
+References: <20210905100914.33007-1-hengqi.chen@gmail.com> <20210905100914.33007-2-hengqi.chen@gmail.com>
+In-Reply-To: <20210905100914.33007-2-hengqi.chen@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Sep 2021 21:26:01 -0700
-Message-ID: <CAEf4BzYfOGi9YLTWWprDtRCHWNpx00kJWHWQ7WbczUaUZi8HRA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: Support uniform BTF-defined
- key/value specification across all BPF maps
+Date:   Wed, 8 Sep 2021 21:29:41 -0700
+Message-ID: <CAEf4BzZnKxVRtkaGUbzCmi0SDsR4_KM=uqdgP+Q6seAygkst7g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Test BPF map creation using
+ BTF-defined key/value
 To:     Hengqi Chen <hengqi.chen@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,96 +64,64 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sun, Sep 5, 2021 at 3:09 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 >
-> A bunch of BPF maps do not support specifying types for key and value.
-
-s/types/BTF types/, it's a bit confusing otherwise
-
-> This is non-uniform and inconvenient[0]. Currently, libbpf uses a retry
-> logic which removes BTF type IDs when BPF map creation failed. Instead
-> of retrying, this commit recognizes those specialized map and removes
-
-s/map/maps/
-
-> BTF type IDs when creating BPF map.
->
->   [0] Closes: https://github.com/libbpf/libbpf/issues/355
+> Test BPF map creation using BTF-defined key/value. The test defines
+> some specialized maps by specifying BTF types for key/value and
+> checks those maps are correctly initialized and loaded.
 >
 > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 > ---
-
-For patch sets consisting of two or more patches, we ask for a cover
-letter, so for the next revision please provide a cover letter with an
-overall description of what the series is about.
-
->  tools/lib/bpf/libbpf.c | 35 ++++++++++++++++++++---------------
->  1 file changed, 20 insertions(+), 15 deletions(-)
+>  .../selftests/bpf/prog_tests/map_create.c     |  87 ++++++++++++++
+>  .../selftests/bpf/progs/test_map_create.c     | 110 ++++++++++++++++++
+>  2 files changed, 197 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/map_create.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_map_create.c
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 88d8825fc6f6..7068c4d07337 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4613,6 +4613,26 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->                         create_attr.inner_map_fd = map->inner_map_fd;
->         }
->
-> +       if (def->type == BPF_MAP_TYPE_PERF_EVENT_ARRAY ||
-> +           def->type == BPF_MAP_TYPE_STACK_TRACE ||
-> +           def->type == BPF_MAP_TYPE_CGROUP_ARRAY ||
-> +           def->type == BPF_MAP_TYPE_ARRAY_OF_MAPS ||
-> +           def->type == BPF_MAP_TYPE_HASH_OF_MAPS ||
-> +           def->type == BPF_MAP_TYPE_DEVMAP ||
-> +           def->type == BPF_MAP_TYPE_SOCKMAP ||
-> +           def->type == BPF_MAP_TYPE_CPUMAP ||
-> +           def->type == BPF_MAP_TYPE_XSKMAP ||
-> +           def->type == BPF_MAP_TYPE_SOCKHASH ||
-> +           def->type == BPF_MAP_TYPE_QUEUE ||
-> +           def->type == BPF_MAP_TYPE_STACK ||
-> +           def->type == BPF_MAP_TYPE_DEVMAP_HASH) {
-> +               create_attr.btf_fd = 0;
-> +               create_attr.btf_key_type_id = 0;
-> +               create_attr.btf_value_type_id = 0;
-> +               map->btf_key_type_id = 0;
-> +               map->btf_value_type_id = 0;
-> +       }
-
-Let's do this as a more succinct switch statement. Consider also
-slightly rearranging entries to keep "related" map types together:
-  - SOCKMAP + SOCKHASH
-  - DEVMAP + DEVMAP_HASH + CPUMAP + XSKMAP
-
-Thanks!
-
-
+> diff --git a/tools/testing/selftests/bpf/prog_tests/map_create.c b/tools/testing/selftests/bpf/prog_tests/map_create.c
+> new file mode 100644
+> index 000000000000..6ca32d0dffd2
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/map_create.c
+> @@ -0,0 +1,87 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright (c) 2021 Hengqi Chen */
 > +
->         if (obj->gen_loader) {
->                 bpf_gen__map_create(obj->gen_loader, &create_attr, is_inner ? -1 : map - obj->maps);
->                 /* Pretend to have valid FD to pass various fd >= 0 checks.
-> @@ -4622,21 +4642,6 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->         } else {
->                 map->fd = bpf_create_map_xattr(&create_attr);
->         }
-> -       if (map->fd < 0 && (create_attr.btf_key_type_id ||
-> -                           create_attr.btf_value_type_id)) {
-> -               char *cp, errmsg[STRERR_BUFSIZE];
-> -
-> -               err = -errno;
-> -               cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
-> -               pr_warn("Error in bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n",
-> -                       map->name, cp, err);
-> -               create_attr.btf_fd = 0;
-> -               create_attr.btf_key_type_id = 0;
-> -               create_attr.btf_value_type_id = 0;
-> -               map->btf_key_type_id = 0;
-> -               map->btf_value_type_id = 0;
-> -               map->fd = bpf_create_map_xattr(&create_attr);
-> -       }
->
+> +#include <test_progs.h>
+> +#include "test_map_create.skel.h"
+> +
+> +void test_map_create(void)
+> +{
+> +       struct test_map_create *skel;
+> +       int err, fd;
+> +
+> +       skel = test_map_create__open();
+> +       if (!ASSERT_OK_PTR(skel, "test_map_create__open failed"))
+> +               return;
+> +
+> +       err = test_map_create__load(skel);
 
-Please don't remove this fallback logic. There are multiple situations
-where libbpf might need to retry map creation without BTF.
+If load() succeeds, all the maps will definitely be created, so all
+the below tests are meaningless.
 
->         err = map->fd < 0 ? -errno : 0;
->
-> --
-> 2.25.1
->
+I think it's better to just change all the existing map definitions
+used throughout selftests to use key/value types, instead of
+key_size/value_size. That will automatically test this feature without
+adding an extra test. Unfortunately to really test that the logic is
+working, we'd need to check that libbpf doesn't emit the warning about
+retrying map creation w/o BTF, but I think one-time manual check
+(please use ./test_progs -v to see libbpf warnings during tests)
+should be sufficient for this.
+
+> +       if (!ASSERT_OK(err, "test_map_create__load failed"))
+> +               goto cleanup;
+> +
+> +       fd = bpf_map__fd(skel->maps.map1);
+> +       if (!ASSERT_GT(fd, 0, "bpf_map__fd failed"))
+> +               goto cleanup;
+> +       close(fd);
+> +
+> +       fd = bpf_map__fd(skel->maps.map2);
+> +       if (!ASSERT_GT(fd, 0, "bpf_map__fd failed"))
+> +               goto cleanup;
+> +       close(fd);
+
+[...]
