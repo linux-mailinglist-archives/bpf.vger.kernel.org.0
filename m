@@ -2,215 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2F7405F9B
-	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 00:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4E3405FB0
+	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 00:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237413AbhIIWdF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 18:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhIIWdF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 18:33:05 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7ADC061574
-        for <bpf@vger.kernel.org>; Thu,  9 Sep 2021 15:31:55 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id z5so7100333ybj.2
-        for <bpf@vger.kernel.org>; Thu, 09 Sep 2021 15:31:55 -0700 (PDT)
+        id S1345835AbhIIWrW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 18:47:22 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:45502 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240862AbhIIWrW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Sep 2021 18:47:22 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 189LpLIh005243;
+        Thu, 9 Sep 2021 22:45:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : references : date : in-reply-to : message-id : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=sItQgDNlaec2CLKaGy8TugvbOJcR8VkGf9jjXdLkLsg=;
+ b=NLPYSCz5ZN1f0RUkUlxpzRDSVIqb7H1qn68LJrjnntpdwrvDeQwfwpyNAwfEDel9umyp
+ yn0O7sIu9H3APQmDbv9KGI4AXXWqCUyDsdGtcFjCqc4Z0s5y3qMQgCdqfZNrCnWyRsap
+ TnA9IzZNPYLEXIVfeb4bU7Iajp9+yvH8oPbOa5dJruNT+tNT68pFbJNRvxRMKbMH218E
+ TkeUNSMOapd8kUqqpPgdjmjsqBvCmA7Yz/7p4Scw3u7E68SNdYi8DxRpEK25u4LbE7LV
+ 1bu7Hhjd76pSzyE+xqoKU3Q2yryot1aIRbNHtJEiDvLNh3f7qt5lKhaenro1nih4YwIx Zw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : references : date : in-reply-to : message-id : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=sItQgDNlaec2CLKaGy8TugvbOJcR8VkGf9jjXdLkLsg=;
+ b=k0NGLYee5/Iua1eeOawvmCAU1L70VHzE8xUYB2+WyeDmTIFQ3pQ1qQU4F7cKb+RktzbR
+ g3ZnDle/VC2HRdNSRn1pUoxodoSjMuIykx0JmesfRJIxXyFIJ4VbfydgaixmNTgrVTjM
+ 9np9HcGEmtqQs8ndcudCRlqAU0CPCbvj+bbcZWOqhxyNWka7/y95OeYAqL9NN2n/kyfw
+ lFb3zG7cA2DicuBvwuH0kOgPMZAtz6Jl7BmWltl/Frk/l1Djoc+oxtyZd7U5EeUJBXhy
+ /XO6o845M+gjJQRC1v+MTYvgwOFPulqd8FBZPHoEHMq91T4+ZxFgnvNhyCzooxE3Mn4r 1A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3aytj5g37j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Sep 2021 22:45:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 189MerRe141664;
+        Thu, 9 Sep 2021 22:45:55 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2044.outbound.protection.outlook.com [104.47.57.44])
+        by userp3030.oracle.com with ESMTP id 3aytft1wh5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Sep 2021 22:45:55 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L5uouqKOll27Dznyn5h5ZmveADtzFGiJ74nsB1JYusx7ib27rqUHyy/LaW8h51DvWgttNcmcTO8SH9jG8av8E6ruYHzFTYgWMtQFXsmlvYTMxYf5FtOcOYBAm8GrXxfpwKazHCRFSVeqrQOkcQv6vwiEFcXq4WIbiDMT71gZqA2w3cAjy98g8h6Rl0DfwkfObDacVLkEhlEo2tDSp8hJ8KkX3xFvX60M87fSY/figloNREgUkbUAeDfSgvKQtxDlyF6Fj56yBcdKvX05mvrXsPEiiYpRSUvnp2nwvjv31GJX7aMpnjdSecjiW2hk2Q33EmNHKYy4qb78N3pnphuYVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=sItQgDNlaec2CLKaGy8TugvbOJcR8VkGf9jjXdLkLsg=;
+ b=h21zxPAFZuDe3PTcjWhOWnclo/VRbLknFGRKi6cepZ8zETIT4KomvzyaO+djQBdXvhGkEuhIwtYQmgaakT88aTWpcZ9lscviiXYhYSGU05hGc/DDgjS1fGopzoZFlEA3Bbx63jSBHEzStKdrvd/RiE4oMPUZZSY/aCtwUxEJYc5J0nE37SQvMfvNAJ5gcLxj1QFDB0ce/zpO0N5YIcKY7Hlwc9cCOgYe5J6h9kxJAu0kZiOBH+F1eWJwVd0is142cX3OtHC3//Hl+CyWmFG2IaGTmCvLU0Po9jkKcIKahsyTiDhYtfEiWngzMyXkhzYM2B4UG6Ru/p3fiwDTl/JKdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8AIUb9ODQ7DY9LJR6OGybHtKIU6ZG/v7rZ+XcGbDxDk=;
-        b=GdPRE3sZKi0Bjj9cqxZG+pkFgmpN+hNI5hY4fMRZ7Xs++7mmNpqp7E0kF79kuLsyEJ
-         xWE7dITm7RC60kk0ziqfyjv0b6PM4fpM0CDRwO1Vj2apy5t0QeVe+Ok4Y+WO5JVBGF7/
-         wA66Z9FgmYsUlO3XcXSPnT9WWY2wbDzFPYBJupXqYOuf6BlPexBrwoZilC0QXW4YcuLQ
-         Ocee3XhuJAEgCL8Kk0eae9cwAdaNZrGSO3NKGo8cYhU0uRSrEWmb0ZjUcE0gdoEsSdeB
-         RMGP9co+gV0SUvUHXPyPf2Xuc5AJVtodEEvDInB68uIFzqh/zM13eNeZ2D4fMuRCZzC7
-         9UKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8AIUb9ODQ7DY9LJR6OGybHtKIU6ZG/v7rZ+XcGbDxDk=;
-        b=RNPuZtgrV0u7ikpq4Do7XZe9Oj2Vzjs1CXZwG8XHTPjzDPcjgNth9ShcPPkI0xQo1T
-         xd/OnTSqkWv1HDHtI/ZlgXbhimNY0XLkQBOUyZ0zgTBVQ1iFia09brSIGeJKUyg+u+rN
-         hbSlm4FcNoMloQguboMC7XqVMZGRL6fBsMDWN2GxiTisc1qdY9cv1Uv6GbUoCMYxBIse
-         OfDWBjKWTmBNTu0Rx1+Hl/eSV7I3247UcE7e2htt6z9svHfhS4TapT8VvLh+rrFE5tdn
-         VBvgJaocK+pSCUzMXiaqLwNp+BH6tzcvTH32sz9TpVPiXT4apTeOc6Y7TZuQj6aORiak
-         HDlA==
-X-Gm-Message-State: AOAM531vba2wUgSme/5TGFGKwu6yTqAMitpjB/5ObL7DDkaNQPLJz9js
-        WlTEMQaHzE/F9Gj0xhwJhVKEWahQU39HkOIza+g=
-X-Google-Smtp-Source: ABdhPJz0TgHjM6wGx0qARkDhQdwfuzMX2uVm4aedSF/a/h/ENrY5rYRwjqdoaIi91ZMV0WYHXuPdHrmF/sQ4nhsBVcQ=
-X-Received: by 2002:a5b:702:: with SMTP id g2mr6803683ybq.307.1631226714345;
- Thu, 09 Sep 2021 15:31:54 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sItQgDNlaec2CLKaGy8TugvbOJcR8VkGf9jjXdLkLsg=;
+ b=JFLz+Tjczot8VU155f7XWCYZl/ZC8KhVtOGwaurH22gDQVLqj8PfsJy6f39aW7f5i9JrqfeInsia6KS3BnDoFv0gpDoSdubI4TMmhg7rZY8+ZFtHhxt7bZ92fFGvJaTGYJ932edlN8F3h5GLJt5DumlvVgaTGU7QE1x7OUQPbJ4=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=oracle.com;
+Received: from DM6PR10MB2890.namprd10.prod.outlook.com (2603:10b6:5:71::31) by
+ DM6PR10MB3050.namprd10.prod.outlook.com (2603:10b6:5:67::31) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4478.24; Thu, 9 Sep 2021 22:45:53 +0000
+Received: from DM6PR10MB2890.namprd10.prod.outlook.com
+ ([fe80::d524:1da9:5a59:9958]) by DM6PR10MB2890.namprd10.prod.outlook.com
+ ([fe80::d524:1da9:5a59:9958%5]) with mapi id 15.20.4500.017; Thu, 9 Sep 2021
+ 22:45:53 +0000
+From:   "Jose E. Marchesi" <jose.marchesi@oracle.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        david.faust@oracle.com
+Subject: Re: [PATCH bpf-next 0/9] bpf: add support for new btf kind
+ BTF_KIND_TAG
+References: <20210907230050.1957493-1-yhs@fb.com>
+Date:   Fri, 10 Sep 2021 00:45:44 +0200
+In-Reply-To: <20210907230050.1957493-1-yhs@fb.com> (Yonghong Song's message of
+        "Tue, 7 Sep 2021 16:00:49 -0700")
+Message-ID: <87a6kl8j1j.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Content-Type: text/plain
+X-ClientProxiedBy: AM3PR05CA0133.eurprd05.prod.outlook.com
+ (2603:10a6:207:3::11) To DM6PR10MB2890.namprd10.prod.outlook.com
+ (2603:10b6:5:71::31)
 MIME-Version: 1.0
-References: <20210908213226.1871016-1-andrii@kernel.org> <af17df18-73ae-ad25-0803-3dc37a4cc02c@iogearbox.net>
- <CAEf4BzZcfy9f2E2ADvaV5PDXRMxsupePGPdu12ZRjE2wh3Hn1w@mail.gmail.com>
- <CAEf4BzZqc7txCoiV-F0_+oMB9GMv4BTapnef5V1XZk8CC=LpHA@mail.gmail.com> <4287e56e-a91a-1f39-5dae-14ecabe537db@iogearbox.net>
-In-Reply-To: <4287e56e-a91a-1f39-5dae-14ecabe537db@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Sep 2021 15:31:43 -0700
-Message-ID: <CAEf4BzaNSG1w_CuYVoK7WSntKsr4mzTr99K6jPVeSm_-2cbwZw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next] libbpf: add LIBBPF_DEPRECATED_SINCE macro for
- scheduling API deprecations
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from termi.oracle.com (141.143.193.79) by AM3PR05CA0133.eurprd05.prod.outlook.com (2603:10a6:207:3::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Thu, 9 Sep 2021 22:45:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 37f33c51-00e7-45be-7f1c-08d973e39434
+X-MS-TrafficTypeDiagnostic: DM6PR10MB3050:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR10MB3050EB7749C156DE9589C07294D59@DM6PR10MB3050.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fIQUeqe6DcYlxpsUDC3oaL6eEaFNgAJfwQlzZCe+cCGAOm62OJazGHpGIOFkgKXmEkj7PjI6n9V6q79May3XS/QNJS7UUkJKsMGCAYlClVMI6GYguq6LESnN6jFQq7j+BwZyyeP0yf3fejyFZaanhU+KKCxemQm+Ds5lzH2NbTMpN27840e71wGDkIBzQDY7yFsACjLVjEHjDteEFuV5juSB5Sz+yo1sRPBEVanfiST+6J5Xo1MA7tuhswPDaw/rSaSAMrjEEjRRbQlRTSTOw+dpHEqjUe3IIKfXJvEfo5ubdXmlwATrHKRUHgnK0nJiXzDQFDvpGlUycukfQeqBUjzCw1dGXXiTh6T8hRi6vd1F761zF5VTqU7Q2v38KZV/R3fZy1uIZr1nd7eh+DclpQ4RJId2IZuNYtF61HvgvG5f2hT9aQqHCAWAb2BNBVso09EpKI522jFSuhHjMZk2NKAYtVbgMTHyyoZEZn+hQOrCmi04vU79PIfUaxNct7E+z2+QwdQGpcw2gRMZrJ9RYPHkde61bwhWAwOTeF+TtybAABcWIevaQ3Bw4ECTu9gDsLHXBg6VLnlkrX/aC8i9I5d5Bjtwrm3/7KzY3keBxEAuHvvo+JnVM4n6P4oHWRFT4xH3Vvcl1mzGHYSaSiWK4pCFosbe52yVCVtht/wfFRWetZeAt0O8ueYLt0CyQKH/BHJS72u9LUgd+OWvIb7pvQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB2890.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(346002)(376002)(39860400002)(396003)(52116002)(7696005)(38100700002)(8936002)(38350700002)(36756003)(26005)(186003)(8676002)(478600001)(2616005)(956004)(66476007)(54906003)(66946007)(6916009)(6666004)(2906002)(83380400001)(4326008)(6486002)(107886003)(316002)(5660300002)(86362001)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?a3Fr3Gv9JFhbUhxTTbTuJV9+Adyqplg+Wg9S/0HJDao7Pduw3I+S8Be8rPQD?=
+ =?us-ascii?Q?TFGouMOYZaBFQth47CNbyhAEfG2ldXBl34+AOFJAjK+eTnRG12hcR0CiBuoH?=
+ =?us-ascii?Q?gqMIsi+PfC9seFqcFBPR1AViqCVAkQeeY3QXKBbuMCpBIdlbKI2SSiHozS07?=
+ =?us-ascii?Q?EKn4TNIM6oNLRelBqpUwmVXJQIECis1sQfXLAcBNLR+TL4BZiU2gyGAAS/vM?=
+ =?us-ascii?Q?q6oGbX6j+wgb/lv8VdAUjHv1dWLCGRsKnAN+Jx0Zt2ZBofPAJpyACoXJ1L6E?=
+ =?us-ascii?Q?iK1uBuImSrahHe+rEa2uvc62taHU+8AuFhwvbXafZyoJ8iEnD/hwmljns31+?=
+ =?us-ascii?Q?SOfIek6f1x9mrBTAkoiCIQmH9VPhhm0XqQhCMC97nvvRJe/7r/xlYsH8/jfT?=
+ =?us-ascii?Q?XhBJgSXGESPHn/jr6sDaSoXwb5kfVrnRgxQzpBkfwhifZn5kRNRl4IhSwPBz?=
+ =?us-ascii?Q?F18MpS5m3JeHpUSmMu+20/MA8KcfPvs8Q5aeAyzZ8WI/Vma/8jQVtYpTIX7l?=
+ =?us-ascii?Q?oSyRvT/orlES8Izger992Jj3rftO9WPyrbAuf8Ova4COIEGrlSAnPO8u2LHJ?=
+ =?us-ascii?Q?psT7/Uqy9DEm7zWMayQq7ODGzzq++wQ6uTAn/PFv8whZBLuA0HWqR4MF5BrI?=
+ =?us-ascii?Q?jR+72PXoXh5cgp30zOHWDsVSZ3U5qRQJjZrzZWpdRqas/3KgwidmEcXOJ+ne?=
+ =?us-ascii?Q?poGCmNqcHT4cxERRXr6ZyLAtDnz4b3Dy0CpHG6TQ8d/301L86qHZw7oa8EB9?=
+ =?us-ascii?Q?LQSuyaw+KyG+Qq2OZeTxgG/cArnYV7SID4DQ39CK0LBtR5zx5D/r0m0k8ysD?=
+ =?us-ascii?Q?sp1IefyurxN7GV+xQAErTtAg5jRpczhLufNH/4VkH7+IWm2qSGGpt5QRtMuz?=
+ =?us-ascii?Q?O3ft6sosD7ts8+26YVESxIOifhGBW3n3ZIIDIRcvzYlQpXoUfKo4RKU1qQ9i?=
+ =?us-ascii?Q?nwfpqcr2gVwGMJXQjAgxw30O3mBWiNdT/mTIrkotEL/eigMAqllITWw2AyNg?=
+ =?us-ascii?Q?xsyYUwhmvEpyomuU/Am6KyRJEEzsWUVSCyP3mRuChZ64WZAyj3319LIhWEcP?=
+ =?us-ascii?Q?/ejSBdo3b6/WpzUCxOBbtM4TBAmNzOZBQT8+UjoWXc3JG2+VX0ADy6QJMp9L?=
+ =?us-ascii?Q?owdWb6dImLRpMkRXVfFpeRnZLTs0YZgyAasWgeJow03fD2FV5/UHj+LayT2n?=
+ =?us-ascii?Q?VSHCQ2DjWRZiQToR3sZZUiQ/TJIN1yIGQQPgfuuq3KNgtBNJtWHt0Jh07R9m?=
+ =?us-ascii?Q?SuhKEBgGKOPNQduTVNYQvvfZbynsoQtW9ly55pg+fIqAvjcJrs8gkHTBI/1Y?=
+ =?us-ascii?Q?e8ounTPiqGZ8kjx/ZgAzCru9?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37f33c51-00e7-45be-7f1c-08d973e39434
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB2890.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2021 22:45:53.3952
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: p5mgnNOFNVJ3WyZwlNL3UjNGx9LwnvGz1OOsSu00tZ/kzRbiqz1CIvyToBrUk7cEatXKTAybW5RAIQro9LTdXXf5hXz/vdvE7kDZzvRRWnM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB3050
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10102 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
+ spamscore=0 malwarescore=0 suspectscore=0 mlxscore=0 mlxlogscore=859
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109090139
+X-Proofpoint-GUID: jwIOoKM_oNJOXJCjDzOZvoswOIApMVhO
+X-Proofpoint-ORIG-GUID: jwIOoKM_oNJOXJCjDzOZvoswOIApMVhO
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 2:43 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 9/9/21 8:08 PM, Andrii Nakryiko wrote:
-> > On Thu, Sep 9, 2021 at 9:37 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >> On Thu, Sep 9, 2021 at 5:58 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >>> On 9/8/21 11:32 PM, Andrii Nakryiko wrote:
-> >>>> From: Quentin Monnet <quentin@isovalent.com>
-> >>>>
-> >>>> Introduce a macro LIBBPF_DEPRECATED_SINCE(major, minor, message) to prepare
-> >>>> the deprecation of two API functions. This macro marks functions as deprecated
-> >>>> when libbpf's version reaches the values passed as an argument.
-> >>>>
-> >>>> As part of this change libbpf_version.h header is added with recorded major
-> >>>> (LIBBPF_MAJOR_VERSION) and minor (LIBBPF_MINOR_VERSION) libbpf version macros.
-> >>>> They are now part of libbpf public API and can be relied upon by user code.
-> >>>> libbpf_version.h is installed system-wide along other libbpf public headers.
-> >>>>
-> >>>> Due to this new build-time auto-generated header, in-kernel applications
-> >>>> relying on libbpf (resolve_btfids, bpftool, bpf_preload) are updated to
-> >>>> include libbpf's output directory as part of a list of include search paths.
-> >>>> Better fix would be to use libbpf's make_install target to install public API
-> >>>> headers, but that clean up is left out as a future improvement. The build
-> >>>> changes were tested by building kernel (with KBUILD_OUTPUT and O= specified
-> >>>> explicitly), bpftool, libbpf, selftests/bpf, and resolve_btfids builds. No
-> >>>> problems were detected.
-> >>>>
-> >>>> Note that because of the constraints of the C preprocessor we have to write
-> >>>> a few lines of macro magic for each version used to prepare deprecation (0.6
-> >>>> for now).
-> >>>>
-> >>>> Also, use LIBBPF_DEPRECATED_SINCE() to schedule deprecation of
-> >>>> btf__get_from_id() and btf__load(), which are replaced by
-> >>>> btf__load_from_kernel_by_id() and btf__load_into_kernel(), respectively,
-> >>>> starting from future libbpf v0.6. This is part of libbpf 1.0 effort ([0]).
-> >>>>
-> >>>>     [0] Closes: https://github.com/libbpf/libbpf/issues/278
-> >>>>
-> >>>> Co-developed-by: Quentin Monnet <quentin@isovalent.com>
-> >>>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> >>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >>>> ---
-> >>>> v2->v3:
-> >>>>     - adding `sleep 10` revealed two more missing dependencies in resolve_btfids
-> >>>>       and selftest/bpf's bench, which were fixed (BPF CI);
-> >>>> v1->v2:
-> >>>>     - fix bpf_preload build by adding dependency for iterators/iterators.o on
-> >>>>       libbpf.a generation (caught by BPF CI);
-> >>>>
-> >>>>    kernel/bpf/preload/Makefile          |  7 +++++--
-> >>>>    tools/bpf/bpftool/Makefile           |  4 ++++
-> >>>>    tools/bpf/resolve_btfids/Makefile    |  6 ++++--
-> >>>>    tools/lib/bpf/Makefile               | 24 +++++++++++++++++-------
-> >>>>    tools/lib/bpf/btf.h                  |  2 ++
-> >>>>    tools/lib/bpf/libbpf_common.h        | 19 +++++++++++++++++++
-> >>>>    tools/testing/selftests/bpf/Makefile |  4 ++--
-> >>>>    7 files changed, 53 insertions(+), 13 deletions(-)
-> >>>>
-> >>>> diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
-> >>>> index 1951332dd15f..ac29d4e9a384 100644
-> >>>> --- a/kernel/bpf/preload/Makefile
-> >>>> +++ b/kernel/bpf/preload/Makefile
-> >>>> @@ -10,12 +10,15 @@ LIBBPF_OUT = $(abspath $(obj))
-> >>>>    $(LIBBPF_A):
-> >>>>        $(Q)$(MAKE) -C $(LIBBPF_SRCS) O=$(LIBBPF_OUT)/ OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
-> >>>>
-> >>>> -userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
-> >>>> +userccflags += -I$(LIBBPF_OUT) -I $(srctree)/tools/include/ \
-> >>>> +     -I $(srctree)/tools/include/uapi \
-> >>>>        -I $(srctree)/tools/lib/ -Wno-unused-result
-> >>>>
-> >>>>    userprogs := bpf_preload_umd
-> >>>>
-> >>>> -clean-files := $(userprogs) bpf_helper_defs.h FEATURE-DUMP.libbpf staticobjs/ feature/
-> >>>> +clean-files := $(userprogs) libbpf_version.h bpf_helper_defs.h FEATURE-DUMP.libbpf staticobjs/ feature/
-> >>>> +
-> >>>> +$(obj)/iterators/iterators.o: $(LIBBPF_A)
-> >>>>
-> >>>>    bpf_preload_umd-objs := iterators/iterators.o
-> >>>>    bpf_preload_umd-userldlibs := $(LIBBPF_A) -lelf -lz
-> >>>
-> >>> One small issue I ran into by accident while testing:
-> >>>
-> >>> [root@linux bpf-next]# make -j8 kernel/bpf/
-> >>>     SYNC    include/config/auto.conf.cmd
-> >>>     DESCEND objtool
-> >>>     CALL    scripts/atomic/check-atomics.sh
-> >>>     CALL    scripts/checksyscalls.sh
-> >>>     CC      kernel/bpf/syscall.o
-> >>>     AR      kernel/bpf/preload/built-in.a
-> >>>     CC [M]  kernel/bpf/preload/bpf_preload_kern.o
-> >>>     CC [U]  kernel/bpf/preload/iterators/iterators.o
-> >>> In file included from ./tools/lib/bpf/libbpf.h:20,
-> >>>                    from kernel/bpf/preload/iterators/iterators.c:10:
-> >>> ./tools/lib/bpf/libbpf_common.h:13:10: fatal error: libbpf_version.h: No such file or directory
-> >>>      13 | #include "libbpf_version.h"
-> >>>         |          ^~~~~~~~~~~~~~~~~~
-> >>> compilation terminated.
-> >>> make[3]: *** [scripts/Makefile.userprogs:43: kernel/bpf/preload/iterators/iterators.o] Error 1
-> >>> make[3]: *** Waiting for unfinished jobs....
-> >>> make[2]: *** [scripts/Makefile.build:540: kernel/bpf/preload] Error 2
-> >>> make[2]: *** Waiting for unfinished jobs....
-> >>> make[1]: *** [scripts/Makefile.build:540: kernel/bpf] Error 2
-> >>> make: *** [Makefile:1872: kernel] Error 2
-> >>>
-> >>> For me it was the case where tools/lib/bpf/ was already built _before_ this patch
-> >>> was applied, then I applied it, and just ran make -j8 kernel/bpf/ where the above
-> >>> can then be reproduced. I'd assume that as-is, this would affect many folks on update.
-> >>
-> >> We had a similar issue even before these changes with resolve_btfids
-> >> build, because Kbuild doesn't record dependency on libbpf build
-> >> properly. I'll see how hard it is to record that in a non-intrusive
-> >> way for both resolve_btfids and preload/iterators, because doing `make
-> >> resolve_btfids_clean` or, worse, `make clean` isn't great.
-> >
-> > Hm... I can't repro this. Both preload/iterators and resolve_btfids
-> > have $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile)
-> > dependency which will trigger libbpf rebuild if any of libbpf source
-> > files changes. I added `sleep 1000` and everything under kernel/bpf is
-> > blocked on this until libbpf build completes. For full kernel build it
-> > also shouldn't happen because we build resolve_btfids first before
-> > proceeding to building other files and resolve_btfids should trigger
-> > libbpf build.
-> >
-> > I assume `make clean kernel/bpf` fixed the issue for you in that case?
->
-> No, fixing on that node was done via re-building libbpf via tools/lib/bpf/.
->
-> > Also, how did you build tools/lib/bpf before running `make -j8 kernel/bpf`?
->
-> Basically just i) cd tools/lib/bpf, ii) make clean, iii) make, then applying
-> the patch, and then running make -j8 kernel/bpf. I just tried on a different
-> build node with newer user space, and there it indeed triggers a rebuild of
-> libbpf. On my laptop where I was running into this it didn't. I would suspect
-> a potential diff in make's behavior (not seen in GNU Make 4.3, seen in GNU
-> Make 4.2.1, fwiw). Anyway, for this niche case, manual rebuild of tools/lib/bpf
-> does it ... given it's neither seen in your case nor on newer uspace, I took
-> it in, lets see how it goes. Thanks!
 
-Yeah, thanks! Please let me know if you do run into this again
-somewhere, though.
+Hi Yonghong.
 
+> LLVM14 added support for a new C attribute ([1])
+>   __attribute__((btf_tag("arbitrary_str")))
+> This attribute will be emitted to dwarf ([2]) and pahole
+> will convert it to BTF. Or for bpf target, this
+> attribute will be emitted to BTF directly ([3]).
+> The attribute is intended to provide additional
+> information for
+>   - struct/union type or struct/union member
+>   - static/global variables
+>   - static/global function or function parameter.
 >
-> > Honestly, hard to tell how this happens without being able to repro
-> > this. So far everything seems to be working for me. I've tried with
-> > and without the KBUILD_OUTPUT envvar set. I also tried O=<path>.
-> >
-> >>>
-> >>> Thanks,
-> >>> Daniel
+> This new attribute can be used to add attributes
+> to kernel codes, e.g., pre- or post- conditions,
+> allow/deny info, or any other info in which only
+> the kernel is interested. Such attributes will
+> be processed by clang frontend and emitted to
+> dwarf, converting to BTF by pahole. Ultimiately
+> the verifier can use these information for
+> verification purpose.
 >
+> The new attribute can also be used for bpf
+> programs, e.g., tagging with __user attributes
+> for function parameters, specifying global
+> function preconditions, etc. Such information
+> may help verifier to detect user program
+> bugs.
+>
+> After this series, pahole dwarf->btf converter
+> will be enhanced to support new llvm tag
+> for btf_tag attribute. With pahole support,
+> we will then try to add a few real use case,
+> e.g., __user/__rcu tagging, allow/deny list,
+> some kernel function precondition, etc,
+> in the kernel.
+
+We are looking into implementing this in the GCC BPF port.
+
+Supporting the new C attribute in BPF programs as a target-specific
+attribute, and the new BTF kind, is straightforward enough.
+
+However, I am afraid it will be difficult to upstream to GCC support for
+a target-independent C attribute called `btf_tag' that emits a
+LLVM-specific DWARF tag.  Even if we proposed to use a GCC-specific
+DWARF tag like DW_TAG_GNU_annotation using the same number, or better a
+compiler neutral tag like DW_TAG_annotation or DW_TAG_BPF_annotation,
+adding such an attribute for all targets would still likely to be much
+controversial...
+
+Would you be open to explore other, more generic, ways to convey these
+annotations to pahole, something that could be easily supported by GCC,
+and potentially other C compilers?
