@@ -2,36 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90426404A5F
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 13:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF18404AC6
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 13:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240851AbhIILqW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 07:46:22 -0400
+        id S240727AbhIILsX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 07:48:23 -0400
 Received: from mail.kernel.org ([198.145.29.99]:46380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240077AbhIILo2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 07:44:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB601600AA;
-        Thu,  9 Sep 2021 11:42:29 +0000 (UTC)
+        id S238112AbhIILqV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:46:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47B7D61214;
+        Thu,  9 Sep 2021 11:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631187750;
-        bh=qg26jiuTtdoiJ3RenuggGw8K55QTJlmz12NTT/iEnWc=;
+        s=k20201202; t=1631187775;
+        bh=h6FqXYCR30wR/rITiby2miwzaK5galCFD9iDPMZKP1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MQVag7DSFgDOVewDnYIpcSg5RDz4wZib9MnpkPggSlFySxmZRS649H/2Bl/LXilAz
-         06ygaiSIhvBCu+WmK7HqKfTIDEQeZgaaTp+M/C1NvYsuzOx/yH7U6N/cfWyML9JdFQ
-         L9TM6jbA2Dm8r0O+sNmstFsHi45iEmUFKb0IWfMP7qpLNS8f3phiOIelopLZGq1pHp
-         4nse6uTVBL7jRIgpP10HYB1WegW06Y4mqmQYHxRNEP9hsZxYPa7UdJDAiYS/uxSIuc
-         PzbcG7cSxAcI3KECi1mHg7Wv3fedejb61ZnIX0+r5ixEfqCBvNmIVDE35ado6owUda
-         FlBo+hNaJ/3mA==
+        b=tdu25mCXm/nq/YbIdoGRsY32W22s/6ejNjewYeopEGxdxKudCe1FkAr13knIc4wac
+         OCkX6SEQxjUWru3ezbvZtCaJMVjSAL/iT0YVmUpVL3betjDTOoRcTVB3PcBGXWeF6A
+         rht7Eb3QvfVLldX+HT+LWspR8WZ7dbbJ+dCdy0SJerQW9fse1OknazCdM/NrMHCuzL
+         i7YOfaRBz1INedw2knOwVQTFy9w4L+DqiTxFP4opJ/RPKdzjbhSSFGrqvxr/6rsheR
+         u+oaD7z8ydPTe6BwqnDrbiJFTe9cp9AmecZhDxRCck3Wfdsz1iu1BNA0uepnnWrGTD
+         Uo81U/LQ3bcwQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+Cc:     Juhee Kang <claudiajkang@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 065/252] bpf/tests: Do not PASS tests without actually testing the result
-Date:   Thu,  9 Sep 2021 07:37:59 -0400
-Message-Id: <20210909114106.141462-65-sashal@kernel.org>
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 085/252] samples: bpf: Fix tracex7 error raised on the missing argument
+Date:   Thu,  9 Sep 2021 07:38:19 -0400
+Message-Id: <20210909114106.141462-85-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
 References: <20210909114106.141462-1-sashal@kernel.org>
@@ -43,53 +43,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+From: Juhee Kang <claudiajkang@gmail.com>
 
-[ Upstream commit 2b7e9f25e590726cca76700ebdb10e92a7a72ca1 ]
+[ Upstream commit 7d07006f05922b95518be403f08ef8437b67aa32 ]
 
-Each test case can have a set of sub-tests, where each sub-test can
-run the cBPF/eBPF test snippet with its own data_size and expected
-result. Before, the end of the sub-test array was indicated by both
-data_size and result being zero. However, most or all of the internal
-eBPF tests has a data_size of zero already. When such a test also had
-an expected value of zero, the test was never run but reported as
-PASS anyway.
+The current behavior of 'tracex7' doesn't consist with other bpf samples
+tracex{1..6}. Other samples do not require any argument to run with, but
+tracex7 should be run with btrfs device argument. (it should be executed
+with test_override_return.sh)
 
-Now the test runner always runs the first sub-test, regardless of the
-data_size and result values. The sub-test array zero-termination only
-applies for any additional sub-tests.
+Currently, tracex7 doesn't have any description about how to run this
+program and raises an unexpected error. And this result might be
+confusing since users might not have a hunch about how to run this
+program.
 
-There are other ways fix it of course, but this solution at least
-removes the surprise of eBPF tests with a zero result always succeeding.
+    // Current behavior
+    # ./tracex7
+    sh: 1: Syntax error: word unexpected (expecting ")")
+    // Fixed behavior
+    # ./tracex7
+    ERROR: Run with the btrfs device argument!
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+In order to fix this error, this commit adds logic to report a message
+and exit when running this program with a missing argument.
+
+Additionally in test_override_return.sh, there is a problem with
+multiple directory(tmpmnt) creation. So in this commit adds a line with
+removing the directory with every execution.
+
+Signed-off-by: Juhee Kang <claudiajkang@gmail.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210721103822.3755111-1-johan.almbladh@anyfinetworks.com
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210727041056.23455-1-claudiajkang@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/test_bpf.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ samples/bpf/test_override_return.sh | 1 +
+ samples/bpf/tracex7_user.c          | 5 +++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index 1c5299cb3f19..f6d5d30d01bf 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -6659,7 +6659,14 @@ static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
- 		u64 duration;
- 		u32 ret;
+diff --git a/samples/bpf/test_override_return.sh b/samples/bpf/test_override_return.sh
+index e68b9ee6814b..35db26f736b9 100755
+--- a/samples/bpf/test_override_return.sh
++++ b/samples/bpf/test_override_return.sh
+@@ -1,5 +1,6 @@
+ #!/bin/bash
  
--		if (test->test[i].data_size == 0 &&
-+		/*
-+		 * NOTE: Several sub-tests may be present, in which case
-+		 * a zero {data_size, result} tuple indicates the end of
-+		 * the sub-test array. The first test is always run,
-+		 * even if both data_size and result happen to be zero.
-+		 */
-+		if (i > 0 &&
-+		    test->test[i].data_size == 0 &&
- 		    test->test[i].result == 0)
- 			break;
++rm -r tmpmnt
+ rm -f testfile.img
+ dd if=/dev/zero of=testfile.img bs=1M seek=1000 count=1
+ DEVICE=$(losetup --show -f testfile.img)
+diff --git a/samples/bpf/tracex7_user.c b/samples/bpf/tracex7_user.c
+index fdcd6580dd73..8be7ce18d3ba 100644
+--- a/samples/bpf/tracex7_user.c
++++ b/samples/bpf/tracex7_user.c
+@@ -14,6 +14,11 @@ int main(int argc, char **argv)
+ 	int ret = 0;
+ 	FILE *f;
  
++	if (!argv[1]) {
++		fprintf(stderr, "ERROR: Run with the btrfs device argument!\n");
++		return 0;
++	}
++
+ 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
+ 	obj = bpf_object__open_file(filename, NULL);
+ 	if (libbpf_get_error(obj)) {
 -- 
 2.30.2
 
