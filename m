@@ -2,36 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8051B40534E
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 14:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34C74057C9
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 15:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346383AbhIIMvN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 08:51:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57492 "EHLO mail.kernel.org"
+        id S1355109AbhIINmK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 09:42:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355440AbhIIMpo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:45:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2994963216;
-        Thu,  9 Sep 2021 11:56:07 +0000 (UTC)
+        id S1352669AbhIIMrH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:47:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 738D26321B;
+        Thu,  9 Sep 2021 11:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631188568;
-        bh=OAGzbe2e/eaDQQiE7p4LbT9rpub3a+hqEGG6iZkevfM=;
+        s=k20201202; t=1631188581;
+        bh=aPWGOzrcJUYBnY4fOgV8kDgDENBwRy9fv9+g8i3ZX9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uSJkUmN+1Owf7GZSwCHSwAekC5LbHpz6yTLmtvW3QumlCtO7DB+tLi/Q601fWyy6/
-         AJEdkGykNfo9eXLGNKMur++SVcxzyNCwwJZ0GqEh2Osbg+OjCrFU5II3MPzQwqRqCL
-         SFtLfe+ivRNzmYQqxYxdmROsAAi4cfhBwO1cfFqBlv567DSO/poayM3x6MwKIrEuo7
-         zYgBzI2XJPu5AolbIVL3XRDjjlOWzIcMsbJ/7AmCLAuP8/PWkJs6qP6tzhIenOL1pw
-         7+TlsAJJ6vQkp+55/RuSPnuIJTdnVU3zChG8kwCp2G01Dxw1A5woPIwqVHXyhYkuch
-         cCfrSRd6/pUGA==
+        b=QGps9I30m1iyGT1yEM5x47hbm745o2DVilx8dCtRQ6Ob4V3QnGZaL3DwRUDBM6qFk
+         5I974nxMzWI0k/ARPxNrQd3ask4YmZW4z5+4jVq0i8JCZKsnWdBa3Blv26MawSbukL
+         oRKZ6XlW/y8PnKwupiitnqBFxGgd9WRBst6gIZfpijP+Fd9812wOyp9r56x5y1OSdR
+         dJeEr5pl4qOfRD0IHMKa+8FkgSNZZLGwrsbQUe82WXgHzKy38svVtKhn8Lvv3XYidt
+         l15uZFpadTpEoiVNTgO56suX0dg8gJNF7FlhDNFN+zzwGD1PLoovXyE9U4j41ghKb/
+         xpnGy8T5kfngg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+Cc:     Jussi Maki <joamaki@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 048/109] bpf: Fix off-by-one in tail call count limiting
-Date:   Thu,  9 Sep 2021 07:54:05 -0400
-Message-Id: <20210909115507.147917-48-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 058/109] selftests/bpf: Fix xdp_tx.c prog section name
+Date:   Thu,  9 Sep 2021 07:54:15 -0400
+Message-Id: <20210909115507.147917-58-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909115507.147917-1-sashal@kernel.org>
 References: <20210909115507.147917-1-sashal@kernel.org>
@@ -43,36 +44,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+From: Jussi Maki <joamaki@gmail.com>
 
-[ Upstream commit b61a28cf11d61f512172e673b8f8c4a6c789b425 ]
+[ Upstream commit 95413846cca37f20000dd095cf6d91f8777129d7 ]
 
-Before, the interpreter allowed up to MAX_TAIL_CALL_CNT + 1 tail calls.
-Now precisely MAX_TAIL_CALL_CNT is allowed, which is in line with the
-behavior of the x86 JITs.
+The program type cannot be deduced from 'tx' which causes an invalid
+argument error when trying to load xdp_tx.o using the skeleton.
+Rename the section name to "xdp" so that libbpf can deduce the type.
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210728164741.350370-1-johan.almbladh@anyfinetworks.com
+Signed-off-by: Jussi Maki <joamaki@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210731055738.16820-7-joamaki@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/progs/xdp_tx.c   | 2 +-
+ tools/testing/selftests/bpf/test_xdp_veth.sh | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 323913ba13b3..dff08ff03278 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1488,7 +1488,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+diff --git a/tools/testing/selftests/bpf/progs/xdp_tx.c b/tools/testing/selftests/bpf/progs/xdp_tx.c
+index 57912e7c94b0..9ed477776eca 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_tx.c
++++ b/tools/testing/selftests/bpf/progs/xdp_tx.c
+@@ -3,7 +3,7 @@
+ #include <linux/bpf.h>
+ #include "bpf_helpers.h"
  
- 		if (unlikely(index >= array->map.max_entries))
- 			goto out;
--		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
-+		if (unlikely(tail_call_cnt >= MAX_TAIL_CALL_CNT))
- 			goto out;
+-SEC("tx")
++SEC("xdp")
+ int xdp_tx(struct xdp_md *xdp)
+ {
+ 	return XDP_TX;
+diff --git a/tools/testing/selftests/bpf/test_xdp_veth.sh b/tools/testing/selftests/bpf/test_xdp_veth.sh
+index ba8ffcdaac30..995278e684b6 100755
+--- a/tools/testing/selftests/bpf/test_xdp_veth.sh
++++ b/tools/testing/selftests/bpf/test_xdp_veth.sh
+@@ -108,7 +108,7 @@ ip link set dev veth2 xdp pinned $BPF_DIR/progs/redirect_map_1
+ ip link set dev veth3 xdp pinned $BPF_DIR/progs/redirect_map_2
  
- 		tail_call_cnt++;
+ ip -n ns1 link set dev veth11 xdp obj xdp_dummy.o sec xdp_dummy
+-ip -n ns2 link set dev veth22 xdp obj xdp_tx.o sec tx
++ip -n ns2 link set dev veth22 xdp obj xdp_tx.o sec xdp
+ ip -n ns3 link set dev veth33 xdp obj xdp_dummy.o sec xdp_dummy
+ 
+ trap cleanup EXIT
 -- 
 2.30.2
 
