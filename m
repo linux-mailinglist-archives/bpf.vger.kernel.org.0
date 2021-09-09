@@ -2,76 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4605D404898
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 12:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2A140499A
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 13:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbhIIKlP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 06:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55798 "EHLO mail.kernel.org"
+        id S237256AbhIILmy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 07:42:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233654AbhIIKlP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 06:41:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1815361051;
-        Thu,  9 Sep 2021 10:40:06 +0000 (UTC)
+        id S236756AbhIILmj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:42:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABC5E61186;
+        Thu,  9 Sep 2021 11:41:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631184006;
-        bh=HtLo+QZon2GmCMDp/1+xD0TFN+fnYB2CvGWRaYOJG2A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=bshU4qwJNO6RRdGU05GqxqvtKaNnUyT4m7xyxkk30j/b5mGKSDSj4pnGJkJQpuXf2
-         o/LJsfF3JZLFnlPDwenhbb3XQ/D33IeSQSXid6cl2a1tbBEEnW3mmETbRhOtsk0lsK
-         x1x++w33zyqX/cE8u0o7qySpob9DWlHWG8CiBpV2GAKfV1KUr7dArV+MZJuta1nXjs
-         g2g5QniIVtH7qTWl6t9Kt1OHRBgef5g6QLNaGO9I8x2NFGixanX/IUGs2/iqrBDPgs
-         N4JKNx8KMiGnKJ2jJxfpd2qpsi21CcmDKS92WS4RTUKzlNG3NX0hJYddOYOhz2zVor
-         qRuOUjguss09g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 093496098C;
-        Thu,  9 Sep 2021 10:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/2] sfc: fallback for lack of xdp tx queues
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163118400603.20005.10629847709385572006.git-patchwork-notify@kernel.org>
-Date:   Thu, 09 Sep 2021 10:40:06 +0000
-References: <20210909092846.18217-1-ihuguet@redhat.com>
-In-Reply-To: <20210909092846.18217-1-ihuguet@redhat.com>
-To:     =?utf-8?b?w43DsWlnbyBIdWd1ZXQgPGlodWd1ZXRAcmVkaGF0LmNvbT4=?=@ci.codeaurora.org
-Cc:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        s=k20201202; t=1631187689;
+        bh=RUAMjOZ4iyzFD+zmCq7vbst6aJVhbYT3JHlhgRH50ik=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gUyBgAyNnXNwBxnPfLm2fH7n5hL+jNEaAiQ7euv1+FLUrVF7ccuWN0FkN0dUdOmbe
+         cwdldzp/sj89uqrrcKsuWzgINDc+t4ibrNLbiCGkAtuf8GpFb9zur21OAmto39TqsT
+         rdgpl9ML1SE19EVIpI+8DZgDChQhvJb6V7jAE69ljl1RCzDtusjvwB+GmgG1MDJTKf
+         EAVGN5JSUYzxRSXCpNENEfN3SPKmUXOEiFyFiGf2iFOIU8DPMnp544vbDQn9DEhb2c
+         /YjWUsoTJNRRsjR2igHFTU6ouW6bQysL4FeOIWqmIN4s2WeEQgJgj07re6urONlrA2
+         jWL8Y351vX9Xg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Martynas Pumputis <m@lambda.lt>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 017/252] libbpf: Fix reuse of pinned map on older kernel
+Date:   Thu,  9 Sep 2021 07:37:11 -0400
+Message-Id: <20210909114106.141462-17-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210909114106.141462-1-sashal@kernel.org>
+References: <20210909114106.141462-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+From: Martynas Pumputis <m@lambda.lt>
 
-This series was applied to netdev/net.git (refs/heads/master):
+[ Upstream commit 97eb31384af943d6b97eb5947262cee4ef25cb87 ]
 
-On Thu,  9 Sep 2021 11:28:44 +0200 you wrote:
-> If there are not enough hardware resources to allocate one tx queue per
-> CPU for XDP, XDP_TX and XDP_REDIRECT actions were unavailable, and using
-> them resulted each time with the packet being drop and this message in
-> the logs: XDP TX failed (-22)
-> 
-> These patches implement 2 fallback solutions for 2 different situations
-> that might happen:
-> 1. There are not enough free resources for all the tx queues, but there
->    are some free resources available
-> 2. There are not enough free resources at all for tx queues.
-> 
-> [...]
+When loading a BPF program with a pinned map, the loader checks whether
+the pinned map can be reused, i.e. their properties match. To derive
+such of the pinned map, the loader invokes BPF_OBJ_GET_INFO_BY_FD and
+then does the comparison.
 
-Here is the summary with links:
-  - [net,1/2] sfc: fallback for lack of xdp tx queues
-    https://git.kernel.org/netdev/net/c/415446185b93
-  - [net,2/2] sfc: last resort fallback for lack of xdp tx queues
-    https://git.kernel.org/netdev/net/c/6215b608a8c4
+Unfortunately, on < 4.12 kernels the BPF_OBJ_GET_INFO_BY_FD is not
+available, so loading the program fails with the following error:
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+	libbpf: failed to get map info for map FD 5: Invalid argument
+	libbpf: couldn't reuse pinned map at
+		'/sys/fs/bpf/tc/globals/cilium_call_policy': parameter
+		mismatch"
+	libbpf: map 'cilium_call_policy': error reusing pinned map
+	libbpf: map 'cilium_call_policy': failed to create:
+		Invalid argument(-22)
+	libbpf: failed to load object 'bpf_overlay.o'
 
+To fix this, fallback to derivation of the map properties via
+/proc/$PID/fdinfo/$MAP_FD if BPF_OBJ_GET_INFO_BY_FD fails with EINVAL,
+which can be used as an indicator that the kernel doesn't support
+the latter.
+
+Signed-off-by: Martynas Pumputis <m@lambda.lt>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/bpf/20210712125552.58705-1-m@lambda.lt
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/lib/bpf/libbpf.c | 48 +++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 45 insertions(+), 3 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6f5e2757bb3c..4a30a788d7c8 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3894,6 +3894,42 @@ static int bpf_map_find_btf_info(struct bpf_object *obj, struct bpf_map *map)
+ 	return 0;
+ }
+ 
++static int bpf_get_map_info_from_fdinfo(int fd, struct bpf_map_info *info)
++{
++	char file[PATH_MAX], buff[4096];
++	FILE *fp;
++	__u32 val;
++	int err;
++
++	snprintf(file, sizeof(file), "/proc/%d/fdinfo/%d", getpid(), fd);
++	memset(info, 0, sizeof(*info));
++
++	fp = fopen(file, "r");
++	if (!fp) {
++		err = -errno;
++		pr_warn("failed to open %s: %d. No procfs support?\n", file,
++			err);
++		return err;
++	}
++
++	while (fgets(buff, sizeof(buff), fp)) {
++		if (sscanf(buff, "map_type:\t%u", &val) == 1)
++			info->type = val;
++		else if (sscanf(buff, "key_size:\t%u", &val) == 1)
++			info->key_size = val;
++		else if (sscanf(buff, "value_size:\t%u", &val) == 1)
++			info->value_size = val;
++		else if (sscanf(buff, "max_entries:\t%u", &val) == 1)
++			info->max_entries = val;
++		else if (sscanf(buff, "map_flags:\t%i", &val) == 1)
++			info->map_flags = val;
++	}
++
++	fclose(fp);
++
++	return 0;
++}
++
+ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
+ {
+ 	struct bpf_map_info info = {};
+@@ -3902,6 +3938,8 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
+ 	char *new_name;
+ 
+ 	err = bpf_obj_get_info_by_fd(fd, &info, &len);
++	if (err && errno == EINVAL)
++		err = bpf_get_map_info_from_fdinfo(fd, &info);
+ 	if (err)
+ 		return libbpf_err(err);
+ 
+@@ -4381,12 +4419,16 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
+ 	struct bpf_map_info map_info = {};
+ 	char msg[STRERR_BUFSIZE];
+ 	__u32 map_info_len;
++	int err;
+ 
+ 	map_info_len = sizeof(map_info);
+ 
+-	if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
+-		pr_warn("failed to get map info for map FD %d: %s\n",
+-			map_fd, libbpf_strerror_r(errno, msg, sizeof(msg)));
++	err = bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len);
++	if (err && errno == EINVAL)
++		err = bpf_get_map_info_from_fdinfo(map_fd, &map_info);
++	if (err) {
++		pr_warn("failed to get map info for map FD %d: %s\n", map_fd,
++			libbpf_strerror_r(errno, msg, sizeof(msg)));
+ 		return false;
+ 	}
+ 
+-- 
+2.30.2
 
