@@ -2,261 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D42404F47
-	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 14:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F52E4054DA
+	for <lists+bpf@lfdr.de>; Thu,  9 Sep 2021 15:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350458AbhIIMSA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 08:18:00 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42144 "EHLO
+        id S1351710AbhIINDv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Sep 2021 09:03:51 -0400
+Received: from www62.your-server.de ([213.133.104.62]:50340 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352293AbhIIMOx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:14:53 -0400
-Received: from 65.47.5.85.dynamic.wline.res.cust.swisscom.ch ([85.5.47.65] helo=localhost)
+        with ESMTP id S1357081AbhIIM7h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:59:37 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1mOIvy-0007Ge-4o; Thu, 09 Sep 2021 14:13:38 +0200
+        id 1mOJdC-000Bd2-VY; Thu, 09 Sep 2021 14:58:19 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mOJdC-000NqE-Pe; Thu, 09 Sep 2021 14:58:18 +0200
+Subject: Re: [PATCH v3 bpf-next] libbpf: add LIBBPF_DEPRECATED_SINCE macro for
+ scheduling API deprecations
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, quentin@isovalent.com
+Cc:     kernel-team@fb.com
+References: <20210908213226.1871016-1-andrii@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, tj@kernel.org, davem@davemloft.net,
-        m@lambda.lt, alexei.starovoitov@gmail.com, andrii@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf 3/3] bpf, selftests: Add test case for mixed cgroup v1/v2
-Date:   Thu,  9 Sep 2021 14:13:27 +0200
-Message-Id: <927d7018430735bf32eda96e66e3ad32ab7636d3.1631189197.git.daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <1e9ee1059ddb0ad7cd2c5f9eeaa26606f9d5fbbf.1631189197.git.daniel@iogearbox.net>
-References: <1e9ee1059ddb0ad7cd2c5f9eeaa26606f9d5fbbf.1631189197.git.daniel@iogearbox.net>
+Message-ID: <af17df18-73ae-ad25-0803-3dc37a4cc02c@iogearbox.net>
+Date:   Thu, 9 Sep 2021 14:58:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210908213226.1871016-1-andrii@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.2/26289/Thu Sep  9 10:20:35 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Minimal selftest which implements a small BPF policy program to the
-connect(2) hook which rejects TCP connection requests to port 60123
-with EPERM. This is being attached to a non-root cgroup v2 path. The
-test asserts that this works under cgroup v2-only and under a mixed
-cgroup v1/v2 environment where net_classid is set in the former case.
+On 9/8/21 11:32 PM, Andrii Nakryiko wrote:
+> From: Quentin Monnet <quentin@isovalent.com>
+> 
+> Introduce a macro LIBBPF_DEPRECATED_SINCE(major, minor, message) to prepare
+> the deprecation of two API functions. This macro marks functions as deprecated
+> when libbpf's version reaches the values passed as an argument.
+> 
+> As part of this change libbpf_version.h header is added with recorded major
+> (LIBBPF_MAJOR_VERSION) and minor (LIBBPF_MINOR_VERSION) libbpf version macros.
+> They are now part of libbpf public API and can be relied upon by user code.
+> libbpf_version.h is installed system-wide along other libbpf public headers.
+> 
+> Due to this new build-time auto-generated header, in-kernel applications
+> relying on libbpf (resolve_btfids, bpftool, bpf_preload) are updated to
+> include libbpf's output directory as part of a list of include search paths.
+> Better fix would be to use libbpf's make_install target to install public API
+> headers, but that clean up is left out as a future improvement. The build
+> changes were tested by building kernel (with KBUILD_OUTPUT and O= specified
+> explicitly), bpftool, libbpf, selftests/bpf, and resolve_btfids builds. No
+> problems were detected.
+> 
+> Note that because of the constraints of the C preprocessor we have to write
+> a few lines of macro magic for each version used to prepare deprecation (0.6
+> for now).
+> 
+> Also, use LIBBPF_DEPRECATED_SINCE() to schedule deprecation of
+> btf__get_from_id() and btf__load(), which are replaced by
+> btf__load_from_kernel_by_id() and btf__load_into_kernel(), respectively,
+> starting from future libbpf v0.6. This is part of libbpf 1.0 effort ([0]).
+> 
+>    [0] Closes: https://github.com/libbpf/libbpf/issues/278
+> 
+> Co-developed-by: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+> v2->v3:
+>    - adding `sleep 10` revealed two more missing dependencies in resolve_btfids
+>      and selftest/bpf's bench, which were fixed (BPF CI);
+> v1->v2:
+>    - fix bpf_preload build by adding dependency for iterators/iterators.o on
+>      libbpf.a generation (caught by BPF CI);
+> 
+>   kernel/bpf/preload/Makefile          |  7 +++++--
+>   tools/bpf/bpftool/Makefile           |  4 ++++
+>   tools/bpf/resolve_btfids/Makefile    |  6 ++++--
+>   tools/lib/bpf/Makefile               | 24 +++++++++++++++++-------
+>   tools/lib/bpf/btf.h                  |  2 ++
+>   tools/lib/bpf/libbpf_common.h        | 19 +++++++++++++++++++
+>   tools/testing/selftests/bpf/Makefile |  4 ++--
+>   7 files changed, 53 insertions(+), 13 deletions(-)
+> 
+> diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
+> index 1951332dd15f..ac29d4e9a384 100644
+> --- a/kernel/bpf/preload/Makefile
+> +++ b/kernel/bpf/preload/Makefile
+> @@ -10,12 +10,15 @@ LIBBPF_OUT = $(abspath $(obj))
+>   $(LIBBPF_A):
+>   	$(Q)$(MAKE) -C $(LIBBPF_SRCS) O=$(LIBBPF_OUT)/ OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+>   
+> -userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
+> +userccflags += -I$(LIBBPF_OUT) -I $(srctree)/tools/include/ \
+> +	-I $(srctree)/tools/include/uapi \
+>   	-I $(srctree)/tools/lib/ -Wno-unused-result
+>   
+>   userprogs := bpf_preload_umd
+>   
+> -clean-files := $(userprogs) bpf_helper_defs.h FEATURE-DUMP.libbpf staticobjs/ feature/
+> +clean-files := $(userprogs) libbpf_version.h bpf_helper_defs.h FEATURE-DUMP.libbpf staticobjs/ feature/
+> +
+> +$(obj)/iterators/iterators.o: $(LIBBPF_A)
+>   
+>   bpf_preload_umd-objs := iterators/iterators.o
+>   bpf_preload_umd-userldlibs := $(LIBBPF_A) -lelf -lz
 
-Before fix:
+One small issue I ran into by accident while testing:
 
-  # ./test_progs -t cgroup_v1v2
-  test_cgroup_v1v2:PASS:server_fd 0 nsec
-  test_cgroup_v1v2:PASS:client_fd 0 nsec
-  test_cgroup_v1v2:PASS:cgroup_fd 0 nsec
-  test_cgroup_v1v2:PASS:server_fd 0 nsec
-  run_test:PASS:skel_open 0 nsec
-  run_test:PASS:prog_attach 0 nsec
-  test_cgroup_v1v2:PASS:cgroup-v2-only 0 nsec
-  run_test:PASS:skel_open 0 nsec
-  run_test:PASS:prog_attach 0 nsec
-  run_test:PASS:join_classid 0 nsec
-  (network_helpers.c:219: errno: None) Unexpected success to connect to server
-  test_cgroup_v1v2:FAIL:cgroup-v1v2 unexpected error: -1 (errno 0)
-  #27 cgroup_v1v2:FAIL
-  Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+[root@linux bpf-next]# make -j8 kernel/bpf/
+   SYNC    include/config/auto.conf.cmd
+   DESCEND objtool
+   CALL    scripts/atomic/check-atomics.sh
+   CALL    scripts/checksyscalls.sh
+   CC      kernel/bpf/syscall.o
+   AR      kernel/bpf/preload/built-in.a
+   CC [M]  kernel/bpf/preload/bpf_preload_kern.o
+   CC [U]  kernel/bpf/preload/iterators/iterators.o
+In file included from ./tools/lib/bpf/libbpf.h:20,
+                  from kernel/bpf/preload/iterators/iterators.c:10:
+./tools/lib/bpf/libbpf_common.h:13:10: fatal error: libbpf_version.h: No such file or directory
+    13 | #include "libbpf_version.h"
+       |          ^~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[3]: *** [scripts/Makefile.userprogs:43: kernel/bpf/preload/iterators/iterators.o] Error 1
+make[3]: *** Waiting for unfinished jobs....
+make[2]: *** [scripts/Makefile.build:540: kernel/bpf/preload] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [scripts/Makefile.build:540: kernel/bpf] Error 2
+make: *** [Makefile:1872: kernel] Error 2
 
-After fix:
+For me it was the case where tools/lib/bpf/ was already built _before_ this patch
+was applied, then I applied it, and just ran make -j8 kernel/bpf/ where the above
+can then be reproduced. I'd assume that as-is, this would affect many folks on update.
 
-  # ./test_progs -t cgroup_v1v2
-  #27 cgroup_v1v2:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- tools/testing/selftests/bpf/network_helpers.c | 27 +++++--
- tools/testing/selftests/bpf/network_helpers.h |  1 +
- .../selftests/bpf/prog_tests/cgroup_v1v2.c    | 79 +++++++++++++++++++
- .../selftests/bpf/progs/connect4_dropper.c    | 26 ++++++
- 4 files changed, 127 insertions(+), 6 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c
- create mode 100644 tools/testing/selftests/bpf/progs/connect4_dropper.c
-
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 7e9f6375757a..6db1af8fdee7 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -208,11 +208,26 @@ int fastopen_connect(int server_fd, const char *data, unsigned int data_len,
- 
- static int connect_fd_to_addr(int fd,
- 			      const struct sockaddr_storage *addr,
--			      socklen_t addrlen)
-+			      socklen_t addrlen, const bool must_fail)
- {
--	if (connect(fd, (const struct sockaddr *)addr, addrlen)) {
--		log_err("Failed to connect to server");
--		return -1;
-+	int ret;
-+
-+	errno = 0;
-+	ret = connect(fd, (const struct sockaddr *)addr, addrlen);
-+	if (must_fail) {
-+		if (!ret) {
-+			log_err("Unexpected success to connect to server");
-+			return -1;
-+		}
-+		if (errno != EPERM) {
-+			log_err("Unexpected error from connect to server");
-+			return -1;
-+		}
-+	} else {
-+		if (ret) {
-+			log_err("Failed to connect to server");
-+			return -1;
-+		}
- 	}
- 
- 	return 0;
-@@ -257,7 +272,7 @@ int connect_to_fd_opts(int server_fd, const struct network_helper_opts *opts)
- 		       strlen(opts->cc) + 1))
- 		goto error_close;
- 
--	if (connect_fd_to_addr(fd, &addr, addrlen))
-+	if (connect_fd_to_addr(fd, &addr, addrlen, opts->must_fail))
- 		goto error_close;
- 
- 	return fd;
-@@ -289,7 +304,7 @@ int connect_fd_to_fd(int client_fd, int server_fd, int timeout_ms)
- 		return -1;
- 	}
- 
--	if (connect_fd_to_addr(client_fd, &addr, len))
-+	if (connect_fd_to_addr(client_fd, &addr, len, false))
- 		return -1;
- 
- 	return 0;
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index da7e132657d5..d198181a5648 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -20,6 +20,7 @@ typedef __u16 __sum16;
- struct network_helper_opts {
- 	const char *cc;
- 	int timeout_ms;
-+	bool must_fail;
- };
- 
- /* ipv4 test vector */
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c b/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c
-new file mode 100644
-index 000000000000..ab3b9bc5e6d1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+
-+#include "connect4_dropper.skel.h"
-+
-+#include "cgroup_helpers.h"
-+#include "network_helpers.h"
-+
-+static int run_test(int cgroup_fd, int server_fd, bool classid)
-+{
-+	struct network_helper_opts opts = {
-+		.must_fail = true,
-+	};
-+	struct connect4_dropper *skel;
-+	int fd, err = 0;
-+
-+	skel = connect4_dropper__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return -1;
-+
-+	skel->links.connect_v4_dropper =
-+		bpf_program__attach_cgroup(skel->progs.connect_v4_dropper,
-+					   cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel->links.connect_v4_dropper, "prog_attach")) {
-+		err = -1;
-+		goto out;
-+	}
-+
-+	if (classid && !ASSERT_OK(join_classid(), "join_classid")) {
-+		err = -1;
-+		goto out;
-+	}
-+
-+	fd = connect_to_fd_opts(server_fd, &opts);
-+	if (fd < 0)
-+		err = -1;
-+	else
-+		close(fd);
-+out:
-+	connect4_dropper__destroy(skel);
-+	return err;
-+}
-+
-+void test_cgroup_v1v2(void)
-+{
-+	struct network_helper_opts opts = {};
-+	int server_fd, client_fd, cgroup_fd;
-+	static const int port = 60123;
-+
-+	/* Step 1: Check base connectivity works without any BPF. */
-+	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, port, 0);
-+	if (!ASSERT_GE(server_fd, 0, "server_fd"))
-+		return;
-+	client_fd = connect_to_fd_opts(server_fd, &opts);
-+	if (!ASSERT_GE(client_fd, 0, "client_fd")) {
-+		close(server_fd);
-+		return;
-+	}
-+	close(client_fd);
-+	close(server_fd);
-+
-+	/* Step 2: Check BPF policy prog attached to cgroups drops connectivity. */
-+	cgroup_fd = test__join_cgroup("/connect_dropper");
-+	if (!ASSERT_GE(cgroup_fd, 0, "cgroup_fd"))
-+		return;
-+	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, port, 0);
-+	if (!ASSERT_GE(server_fd, 0, "server_fd")) {
-+		close(cgroup_fd);
-+		return;
-+	}
-+	ASSERT_OK(run_test(cgroup_fd, server_fd, false), "cgroup-v2-only");
-+	setup_classid_environment();
-+	set_classid(42);
-+	ASSERT_OK(run_test(cgroup_fd, server_fd, true), "cgroup-v1v2");
-+	cleanup_classid_environment();
-+	close(server_fd);
-+	close(cgroup_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/connect4_dropper.c b/tools/testing/selftests/bpf/progs/connect4_dropper.c
-new file mode 100644
-index 000000000000..b565d997810a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/connect4_dropper.c
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <string.h>
-+
-+#include <linux/stddef.h>
-+#include <linux/bpf.h>
-+
-+#include <sys/socket.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+#define VERDICT_REJECT	0
-+#define VERDICT_PROCEED	1
-+
-+SEC("cgroup/connect4")
-+int connect_v4_dropper(struct bpf_sock_addr *ctx)
-+{
-+	if (ctx->type != SOCK_STREAM)
-+		return VERDICT_PROCEED;
-+	if (ctx->user_port == bpf_htons(60123))
-+		return VERDICT_REJECT;
-+	return VERDICT_PROCEED;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.21.0
-
+Thanks,
+Daniel
