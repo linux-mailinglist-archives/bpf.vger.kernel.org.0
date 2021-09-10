@@ -2,254 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44D8406A3B
-	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 12:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21767406A9F
+	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 13:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhIJKn2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Sep 2021 06:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232360AbhIJKn0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Sep 2021 06:43:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4097C061574;
-        Fri, 10 Sep 2021 03:42:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DXrJBxKcsbepOR9WSPVVjIBdjJnJxeIocqbecuTYqnY=; b=sZCILqfSU5B2cA/LvNr+NVQ3b1
-        WXIZhbzbI6+KLNgARqJ2ZGIA7Ng+uwxf21W2m6YUmeIdg4IeK7V1poYVBhcnbG7QBDhQugjNp70HI
-        Qb5tixqfFRSyqlmLOrq4ouQu+IYysbURbekJlNDzb1mmUXCLI5RdAMU28QHLSo+347J0+1g7CN9L/
-        HwHz/sCTZv5gqsXPSazUJUDp6HGN3tHrDngCciW2YAyrt+3RGcdm7uViNDyDcquXDQyDDkwQFBWv+
-        k2xWdX7juqR6QPp7SdHy/SZvFGBoQO8UkqHPr8VnQphwVpcLDpjq7DvMht+7G4seWS2u9ff/RUvFg
-        VHMdQy6A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mOdxk-00AvCi-Mc; Fri, 10 Sep 2021 10:41:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 29435300047;
-        Fri, 10 Sep 2021 12:40:51 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 078BF2BC05F1B; Fri, 10 Sep 2021 12:40:51 +0200 (CEST)
-Date:   Fri, 10 Sep 2021 12:40:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com,
+        id S232665AbhIJLSD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Sep 2021 07:18:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21220 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232662AbhIJLSD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Sep 2021 07:18:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631272611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KhW6lv8OKl3JGjPb0UK3/lNvMXBnjiEjWe2PmfSiYnI=;
+        b=IBABTqVmARxw7YVL1JZmkX37iI/HEXiGvnDEP7eSwOwK5GI0RGa3ZSgBA/tXhRrRsdilwU
+        XZh4CwFCFoLYWc+LyxmnCL8U//25m4jy7Cjd3s7cSDshkna3bTfNk31iN6KikrLIuHpr+S
+        i/uHCN7asr3405rVZk7o0rIh2K9Csx0=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-168-qEw8aawjPvqHc7Mk4etdQQ-1; Fri, 10 Sep 2021 07:16:50 -0400
+X-MC-Unique: qEw8aawjPvqHc7Mk4etdQQ-1
+Received: by mail-lj1-f197.google.com with SMTP id v2-20020a2e2f02000000b001dc7ee2a7b8so719510ljv.20
+        for <bpf@vger.kernel.org>; Fri, 10 Sep 2021 04:16:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KhW6lv8OKl3JGjPb0UK3/lNvMXBnjiEjWe2PmfSiYnI=;
+        b=NHySY/fruvqmVbqWjZwVg0jcMtMigzoBT4VaQbC3lzwLHgwxceMmdvBFkxKusHQynt
+         4sqmYuEgY7C0MJ7VZkh1GxH5noafRSDzKcfVNZvEY6gO2vnTpwLQW+FDFst/sRiA6ZNx
+         n32qeFdU2e42P/5/2VF+/APL+fnDRzN/3Hvt+5hR+S6P6PtDzg8DD+Zxpa+6n/H9LseO
+         Li+AI5HOng+otSboHRvOkTJtJtc4NNd1Y3ZyIjYEf+SMO+zsbDydlTdbGmxgjjEMDitN
+         EtlHwZLFUd8Ardi8eBpdy+SgfUYsbdn9epRXaFPm7Kc6tr0gP9CdC/JGLteQC3bsBQ9z
+         eoYw==
+X-Gm-Message-State: AOAM533GC7a3OTwbFJyUh59k4qJpocxgi5kvSrrbXWQwJivCFqdEOOG1
+        h6absOqELNkByB+vtUTPUFqkM7QsgdXinjDfNYHKL7OqmnIpptzWKXlhluX91XYsSA8m68dv477
+        bZH90S39ED9pL
+X-Received: by 2002:a05:6512:2249:: with SMTP id i9mr3432145lfu.219.1631272609201;
+        Fri, 10 Sep 2021 04:16:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzH59BTrtM3dOTuC2ud0FCBAi8NLgaYur2PMsOqbkfm5Sp/MKqxhOdAgBgLurc1d1SzcgHpYQ==
+X-Received: by 2002:a05:6512:2249:: with SMTP id i9mr3432122lfu.219.1631272608969;
+        Fri, 10 Sep 2021 04:16:48 -0700 (PDT)
+Received: from [192.168.42.238] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
+        by smtp.gmail.com with ESMTPSA id m28sm534168ljc.46.2021.09.10.04.16.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Sep 2021 04:16:48 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v6 bpf-next 1/3] perf: enable branch record for software
- events
-Message-ID: <YTs2MpaI7iofckJI@hirez.programming.kicks-ass.net>
-References: <20210907202802.3675104-1-songliubraving@fb.com>
- <20210907202802.3675104-2-songliubraving@fb.com>
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net,
+        Zaremba Larysa <larysa.zaremba@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>
+Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+References: <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
+ <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <YNGU4GhL8fZ0ErzS@localhost.localdomain> <874kdqqfnm.fsf@toke.dk>
+ <YNLxtsasQSv+YR1w@localhost.localdomain> <87mtrfmoyh.fsf@toke.dk>
+ <YOa4JVEp20JolOp4@localhost.localdomain> <8735snvjp7.fsf@toke.dk>
+ <YTA7x6BIq85UWrYZ@localhost.localdomain>
+ <190d8d21-f11d-bb83-58aa-08e86e0006d9@redhat.com>
+ <YTcGUbRpvWK+633g@localhost.localdomain>
+ <936bfbdf-e194-b676-d28a-acf526120155@redhat.com>
+ <CAEf4BzabVVPgRB9V=DAFjzYSx-q59bmBsQQAupKYWy5eUxqVkw@mail.gmail.com>
+Message-ID: <2ed2a06c-6796-229d-05d4-9a6464330e9e@redhat.com>
+Date:   Fri, 10 Sep 2021 13:16:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210907202802.3675104-2-songliubraving@fb.com>
+In-Reply-To: <CAEf4BzabVVPgRB9V=DAFjzYSx-q59bmBsQQAupKYWy5eUxqVkw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 01:28:00PM -0700, Song Liu wrote:
 
-> +static int
-> +intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
-> +{
-> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-> +	unsigned long flags;
-> +
-> +	local_irq_save(flags);
-> +	intel_pmu_disable_all();
-> +	intel_pmu_lbr_read();
-> +	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
-> +
-> +	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
-> +	intel_pmu_enable_all(0);
-> +	local_irq_restore(flags);
-> +	return cnt;
-> +}
 
-So elsewhere you state:
+On 09/09/2021 20.19, Andrii Nakryiko wrote:
+> Depending on what IDs we are talking about (sorry, I don't follow this
+> thread very closely, so if you are curious about some aspects of BTF
+> or libbpf APIs, it would be good to have a specific questions with
+> some context). BTF as kernel object has it's own ID allocated through
+> idr, so yes, they are unique. so vmlinux BTF object will have it's own
+> ID, while each module's BTF will have it's own.
+> 
+> But if we are talking about BTF type IDs, that's entirely different
+> thing. BTF type IDs start from 1 (0 is reserved for special 'VOID'
+> type) all the way to number of types in vmlinux BTF. Then each module
+> extends vmlinx BTF starting at N + 1 and going to N + M, where N is
+> number of BTF types in vmlinux BTF and M is number of added types in
+> module BTF.
+> 
+> So in that regard each module has BTF type IDs that are overlapping
+> with other modules, which is why for unique fetching of BTF types from
+> modules you also need BTF object FD or ID of a module BTF, and then
+> BTF type ID within that module. But as I said, I didn't follow along
+> closely, so not sure if I'm answering the right question, sorry.
 
-+       /* Given we stop LBR in software, we will waste a few entries.
-+        * But we should try to waste as few as possible entries. We are at
-+        * about 11 on x86_64 systems.
-+        * Add a check for < 15 so that we get heads-up when something
-+        * changes and wastes too many entries.
-+        */
-+       ASSERT_LT(skel->bss->wasted_entries, 15, "check_wasted_entries");
+Thanks for answering.  This N vmlinux IDs + M module IDs was important 
+to know, thanks for correcting my understanding on this, as this does 
+affect our ideas for using BTF for XDP-hints.
 
-Which is atrocious.. so I disassembled the new function to get horrible
-crap. The below seems to cure that.
+This "just" means that the BTF ID will be per driver.  I think we can 
+still make this work, as the AF_XDP userspace program will already need 
+to bind to a device.  Thus, we can still send a simple btf_id in 
+metadata, and AF_XDP prog will just have device-map with expected 
+btf_id's from this device (to validate if it knows howto decode contents).
+It is slightly more annoying for my xdp_frame + cpumap use-case, as it 
+can get XDP_REDIRECT'ed frames from many net_devices, but we do have 
+xdp_frame->dev_rx (net_device) avail, so I can resolve this.
 
----
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2143,19 +2143,19 @@ static __initconst const u64 knl_hw_cach
-  * However, there are some cases which may change PEBS status, e.g. PMI
-  * throttle. The PEBS_ENABLE should be updated where the status changes.
-  */
--static __always_inline void __intel_pmu_disable_all(void)
-+static __always_inline void __intel_pmu_disable_all(bool bts)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 
- 	wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, 0);
- 
--	if (test_bit(INTEL_PMC_IDX_FIXED_BTS, cpuc->active_mask))
-+	if (bts && test_bit(INTEL_PMC_IDX_FIXED_BTS, cpuc->active_mask))
- 		intel_pmu_disable_bts();
- }
- 
- static __always_inline void intel_pmu_disable_all(void)
- {
--	__intel_pmu_disable_all();
-+	__intel_pmu_disable_all(true);
- 	intel_pmu_pebs_disable_all();
- 	intel_pmu_lbr_disable_all();
- }
-@@ -2186,14 +2186,12 @@ static void intel_pmu_enable_all(int add
- 	__intel_pmu_enable_all(added, false);
- }
- 
--static int
--intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
-+static noinline int
-+__intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries,
-+				  unsigned int cnt, unsigned long flags)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
--	unsigned long flags;
- 
--	local_irq_save(flags);
--	intel_pmu_disable_all();
- 	intel_pmu_lbr_read();
- 	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
- 
-@@ -2203,6 +2201,36 @@ intel_pmu_snapshot_branch_stack(struct p
- 	return cnt;
- }
- 
-+static int
-+intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
-+{
-+	unsigned long flags;
-+
-+	/* must not have branches... */
-+	local_irq_save(flags);
-+	__intel_pmu_disable_all(false); /* we don't care about BTS */
-+	__intel_pmu_pebs_disable_all();
-+	__intel_pmu_lbr_disable();
-+	/*            ... until here */
-+
-+	return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
-+}
-+
-+static int
-+intel_pmu_snapshot_arch_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
-+{
-+	unsigned long flags;
-+
-+	/* must not have branches... */
-+	local_irq_save(flags);
-+	__intel_pmu_disable_all(false); /* we don't care about BTS */
-+	__intel_pmu_pebs_disable_all();
-+	__intel_pmu_arch_lbr_disable();
-+	/*            ... until here */
-+
-+	return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
-+}
-+
- /*
-  * Workaround for:
-  *   Intel Errata AAK100 (model 26)
-@@ -2946,7 +2974,7 @@ static int intel_pmu_handle_irq(struct p
- 		apic_write(APIC_LVTPC, APIC_DM_NMI);
- 	intel_bts_disable_local();
- 	cpuc->enabled = 0;
--	__intel_pmu_disable_all();
-+	__intel_pmu_disable_all(true);
- 	handled = intel_pmu_drain_bts_buffer();
- 	handled += intel_bts_interrupt();
- 	status = intel_pmu_get_status();
-@@ -6304,9 +6332,15 @@ __init int intel_pmu_init(void)
- 		pr_cont("%d-deep LBR, ", x86_pmu.lbr_nr);
- 
- 		/* only support branch_stack snapshot for perfmon >= v2 */
--		if (x86_pmu.disable_all == intel_pmu_disable_all)
--			static_call_update(perf_snapshot_branch_stack,
--					   intel_pmu_snapshot_branch_stack);
-+		if (x86_pmu.disable_all == intel_pmu_disable_all) {
-+			if (boot_cpu_has(X86_FEATURE_ARCH_LBR)) {
-+				static_call_update(perf_snapshot_branch_stack,
-+						   intel_pmu_snapshot_arch_branch_stack);
-+			} else {
-+				static_call_update(perf_snapshot_branch_stack,
-+						   intel_pmu_snapshot_branch_stack);
-+			}
-+		}
- 	}
- 
- 	intel_pmu_check_extra_regs(x86_pmu.extra_regs);
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -1296,6 +1296,14 @@ void intel_pmu_pebs_enable_all(void)
- 		wrmsrl(MSR_IA32_PEBS_ENABLE, cpuc->pebs_enabled);
- }
- 
-+void intel_pmu_pebs_disable_all(void)
-+{
-+	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+
-+	if (cpuc->pebs_enabled)
-+		__intel_pmu_pebs_disable_all();
-+}
-+
- static int intel_pmu_pebs_fixup_ip(struct pt_regs *regs)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -1240,12 +1240,23 @@ static inline bool intel_pmu_has_bts(str
- 	return intel_pmu_has_bts_period(event, hwc->sample_period);
- }
- 
--static __always_inline void intel_pmu_pebs_disable_all(void)
-+static __always_inline void __intel_pmu_pebs_disable_all(void)
- {
--	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+	wrmsrl(MSR_IA32_PEBS_ENABLE, 0);
-+}
- 
--	if (cpuc->pebs_enabled)
--		wrmsrl(MSR_IA32_PEBS_ENABLE, 0);
-+static __always_inline void __intel_pmu_arch_lbr_disable(void)
-+{
-+	wrmsrl(MSR_ARCH_LBR_CTL, 0);
-+}
-+
-+static __always_inline void __intel_pmu_lbr_disable(void)
-+{
-+	u64 debugctl;
-+
-+	rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
-+	debugctl &= ~(DEBUGCTLMSR_LBR | DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
-+	wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
- }
- 
- int intel_pmu_save_and_restart(struct perf_event *event);
-@@ -1322,6 +1333,8 @@ void intel_pmu_pebs_disable(struct perf_
- 
- void intel_pmu_pebs_enable_all(void);
- 
-+void intel_pmu_pebs_disable_all(void);
-+
- void intel_pmu_pebs_sched_task(struct perf_event_context *ctx, bool sched_in);
- 
- void intel_pmu_auto_reload_read(struct perf_event *event);
+--Jesper
+
+Finding some random BTF ID in two module and notice they point to 
+different types.
+
+  # bpftool btf dump file /sys/kernel/btf/ixgbe | grep 95905
+  [95905] FUNC 'ixgbe_set_rx_mode' type_id=95829 linkage=static
+
+  # bpftool btf dump file /sys/kernel/btf/igc | grep 95905
+  [95905] FUNC 'igc_ethtool_get_link_ksettings' type_id=95904 linkage=static
+
 
