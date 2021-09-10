@@ -2,242 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668054068FA
-	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 11:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44D8406A3B
+	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 12:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbhIJJUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Sep 2021 05:20:22 -0400
-Received: from www62.your-server.de ([213.133.104.62]:38400 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbhIJJUW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Sep 2021 05:20:22 -0400
-Received: from 65.47.5.85.dynamic.wline.res.cust.swisscom.ch ([85.5.47.65] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mOcgb-0007xU-Em; Fri, 10 Sep 2021 11:19:05 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     bpf@vger.kernel.org
-Cc:     alexei.starovoitov@gmail.com, andrii@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Paul Chaignon <paul@cilium.io>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH bpf-next] bpf, selftests: Replicate tailcall limit test for indirect call case
-Date:   Fri, 10 Sep 2021 11:19:00 +0200
-Message-Id: <20210910091900.16119-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S232392AbhIJKn2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Sep 2021 06:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232360AbhIJKn0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Sep 2021 06:43:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4097C061574;
+        Fri, 10 Sep 2021 03:42:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DXrJBxKcsbepOR9WSPVVjIBdjJnJxeIocqbecuTYqnY=; b=sZCILqfSU5B2cA/LvNr+NVQ3b1
+        WXIZhbzbI6+KLNgARqJ2ZGIA7Ng+uwxf21W2m6YUmeIdg4IeK7V1poYVBhcnbG7QBDhQugjNp70HI
+        Qb5tixqfFRSyqlmLOrq4ouQu+IYysbURbekJlNDzb1mmUXCLI5RdAMU28QHLSo+347J0+1g7CN9L/
+        HwHz/sCTZv5gqsXPSazUJUDp6HGN3tHrDngCciW2YAyrt+3RGcdm7uViNDyDcquXDQyDDkwQFBWv+
+        k2xWdX7juqR6QPp7SdHy/SZvFGBoQO8UkqHPr8VnQphwVpcLDpjq7DvMht+7G4seWS2u9ff/RUvFg
+        VHMdQy6A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mOdxk-00AvCi-Mc; Fri, 10 Sep 2021 10:41:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 29435300047;
+        Fri, 10 Sep 2021 12:40:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 078BF2BC05F1B; Fri, 10 Sep 2021 12:40:51 +0200 (CEST)
+Date:   Fri, 10 Sep 2021 12:40:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v6 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <YTs2MpaI7iofckJI@hirez.programming.kicks-ass.net>
+References: <20210907202802.3675104-1-songliubraving@fb.com>
+ <20210907202802.3675104-2-songliubraving@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26289/Thu Sep  9 10:20:35 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907202802.3675104-2-songliubraving@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The tailcall_3 test program uses bpf_tail_call_static() where the JIT
-would patch a direct jump. Add a new tailcall_6 test program replicating
-exactly the same test just ensuring that bpf_tail_call() uses a map
-index where the verifier cannot make assumptions this time.
+On Tue, Sep 07, 2021 at 01:28:00PM -0700, Song Liu wrote:
 
-In other words, this will now cover both on x86-64 JIT, meaning, JIT
-images with emit_bpf_tail_call_direct() emission as well as JIT images
-with emit_bpf_tail_call_indirect() emission.
+> +static int
+> +intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +	unsigned long flags;
+> +
+> +	local_irq_save(flags);
+> +	intel_pmu_disable_all();
+> +	intel_pmu_lbr_read();
+> +	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
+> +
+> +	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
+> +	intel_pmu_enable_all(0);
+> +	local_irq_restore(flags);
+> +	return cnt;
+> +}
 
-  # echo 1 > /proc/sys/net/core/bpf_jit_enable
-  # ./test_progs -t tailcalls
-  #136/1 tailcalls/tailcall_1:OK
-  #136/2 tailcalls/tailcall_2:OK
-  #136/3 tailcalls/tailcall_3:OK
-  #136/4 tailcalls/tailcall_4:OK
-  #136/5 tailcalls/tailcall_5:OK
-  #136/6 tailcalls/tailcall_6:OK
-  #136/7 tailcalls/tailcall_bpf2bpf_1:OK
-  #136/8 tailcalls/tailcall_bpf2bpf_2:OK
-  #136/9 tailcalls/tailcall_bpf2bpf_3:OK
-  #136/10 tailcalls/tailcall_bpf2bpf_4:OK
-  #136/11 tailcalls/tailcall_bpf2bpf_5:OK
-  #136 tailcalls:OK
-  Summary: 1/11 PASSED, 0 SKIPPED, 0 FAILED
+So elsewhere you state:
 
-  # echo 0 > /proc/sys/net/core/bpf_jit_enable
-  # ./test_progs -t tailcalls
-  #136/1 tailcalls/tailcall_1:OK
-  #136/2 tailcalls/tailcall_2:OK
-  #136/3 tailcalls/tailcall_3:OK
-  #136/4 tailcalls/tailcall_4:OK
-  #136/5 tailcalls/tailcall_5:OK
-  #136/6 tailcalls/tailcall_6:OK
-  [...]
++       /* Given we stop LBR in software, we will waste a few entries.
++        * But we should try to waste as few as possible entries. We are at
++        * about 11 on x86_64 systems.
++        * Add a check for < 15 so that we get heads-up when something
++        * changes and wastes too many entries.
++        */
++       ASSERT_LT(skel->bss->wasted_entries, 15, "check_wasted_entries");
 
-For interpreter, the tailcall_1-6 tests are passing as well. The later
-tailcall_bpf2bpf_* are failing due lack of bpf2bpf + tailcall support
-in interpreter, so this is expected.
+Which is atrocious.. so I disassembled the new function to get horrible
+crap. The below seems to cure that.
 
-Also, manual inspection shows that both loaded programs from tailcall_3
-and tailcall_6 test case emit the expected opcodes:
-
-* tailcall_3 disasm, emit_bpf_tail_call_direct():
-
-  [...]
-   b:   push   %rax
-   c:   push   %rbx
-   d:   push   %r13
-   f:   mov    %rdi,%rbx
-  12:   movabs $0xffff8d3f5afb0200,%r13
-  1c:   mov    %rbx,%rdi
-  1f:   mov    %r13,%rsi
-  22:   xor    %edx,%edx                 _
-  24:   mov    -0x4(%rbp),%eax          |  limit check
-  2a:   cmp    $0x20,%eax               |
-  2d:   ja     0x0000000000000046       |
-  2f:   add    $0x1,%eax                |
-  32:   mov    %eax,-0x4(%rbp)          |_
-  38:   nopl   0x0(%rax,%rax,1)
-  3d:   pop    %r13
-  3f:   pop    %rbx
-  40:   pop    %rax
-  41:   jmpq   0xffffffffffffe377
-  [...]
-
-* tailcall_6 disasm, emit_bpf_tail_call_indirect():
-
-  [...]
-  47:   movabs $0xffff8d3f59143a00,%rsi
-  51:   mov    %edx,%edx
-  53:   cmp    %edx,0x24(%rsi)
-  56:   jbe    0x0000000000000093        _
-  58:   mov    -0x4(%rbp),%eax          |  limit check
-  5e:   cmp    $0x20,%eax               |
-  61:   ja     0x0000000000000093       |
-  63:   add    $0x1,%eax                |
-  66:   mov    %eax,-0x4(%rbp)          |_
-  6c:   mov    0x110(%rsi,%rdx,8),%rcx
-  74:   test   %rcx,%rcx
-  77:   je     0x0000000000000093
-  79:   pop    %rax
-  7a:   mov    0x30(%rcx),%rcx
-  7e:   add    $0xb,%rcx
-  82:   callq  0x000000000000008e
-  87:   pause
-  89:   lfence
-  8c:   jmp    0x0000000000000087
-  8e:   mov    %rcx,(%rsp)
-  92:   retq
-  [...]
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Cc: Paul Chaignon <paul@cilium.io>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-Link: https://lore.kernel.org/bpf/CAM1=_QRyRVCODcXo_Y6qOm1iT163HoiSj8U2pZ8Rj3hzMTT=HQ@mail.gmail.com
 ---
- [ Cooked up proper patch for it after manual inspection as I think
-   it's useful in any case to have the coverage for both JIT code
-   generation cases. ]
-
- .../selftests/bpf/prog_tests/tailcalls.c      | 25 +++++++++++---
- tools/testing/selftests/bpf/progs/tailcall6.c | 34 +++++++++++++++++++
- 2 files changed, 54 insertions(+), 5 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall6.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-index b5940e6ca67c..7bf3a7a97d7b 100644
---- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-@@ -219,10 +219,7 @@ static void test_tailcall_2(void)
- 	bpf_object__close(obj);
- }
- 
--/* test_tailcall_3 checks that the count value of the tail call limit
-- * enforcement matches with expectations.
-- */
--static void test_tailcall_3(void)
-+static void test_tailcall_count(const char *which)
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2143,19 +2143,19 @@ static __initconst const u64 knl_hw_cach
+  * However, there are some cases which may change PEBS status, e.g. PMI
+  * throttle. The PEBS_ENABLE should be updated where the status changes.
+  */
+-static __always_inline void __intel_pmu_disable_all(void)
++static __always_inline void __intel_pmu_disable_all(bool bts)
  {
- 	int err, map_fd, prog_fd, main_fd, data_fd, i, val;
- 	struct bpf_map *prog_array, *data_map;
-@@ -231,7 +228,7 @@ static void test_tailcall_3(void)
- 	__u32 retval, duration;
- 	char buff[128] = {};
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
  
--	err = bpf_prog_load("tailcall3.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
-+	err = bpf_prog_load(which, BPF_PROG_TYPE_SCHED_CLS, &obj,
- 			    &prog_fd);
- 	if (CHECK_FAIL(err))
- 		return;
-@@ -296,6 +293,22 @@ static void test_tailcall_3(void)
- 	bpf_object__close(obj);
+ 	wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, 0);
+ 
+-	if (test_bit(INTEL_PMC_IDX_FIXED_BTS, cpuc->active_mask))
++	if (bts && test_bit(INTEL_PMC_IDX_FIXED_BTS, cpuc->active_mask))
+ 		intel_pmu_disable_bts();
  }
  
-+/* test_tailcall_3 checks that the count value of the tail call limit
-+ * enforcement matches with expectations. JIT uses direct jump.
-+ */
-+static void test_tailcall_3(void)
+ static __always_inline void intel_pmu_disable_all(void)
+ {
+-	__intel_pmu_disable_all();
++	__intel_pmu_disable_all(true);
+ 	intel_pmu_pebs_disable_all();
+ 	intel_pmu_lbr_disable_all();
+ }
+@@ -2186,14 +2186,12 @@ static void intel_pmu_enable_all(int add
+ 	__intel_pmu_enable_all(added, false);
+ }
+ 
+-static int
+-intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
++static noinline int
++__intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries,
++				  unsigned int cnt, unsigned long flags)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+-	unsigned long flags;
+ 
+-	local_irq_save(flags);
+-	intel_pmu_disable_all();
+ 	intel_pmu_lbr_read();
+ 	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
+ 
+@@ -2203,6 +2201,36 @@ intel_pmu_snapshot_branch_stack(struct p
+ 	return cnt;
+ }
+ 
++static int
++intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
 +{
-+	test_tailcall_count("tailcall3.o");
++	unsigned long flags;
++
++	/* must not have branches... */
++	local_irq_save(flags);
++	__intel_pmu_disable_all(false); /* we don't care about BTS */
++	__intel_pmu_pebs_disable_all();
++	__intel_pmu_lbr_disable();
++	/*            ... until here */
++
++	return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
 +}
 +
-+/* test_tailcall_6 checks that the count value of the tail call limit
-+ * enforcement matches with expectations. JIT uses indirect jump.
-+ */
-+static void test_tailcall_6(void)
++static int
++intel_pmu_snapshot_arch_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
 +{
-+	test_tailcall_count("tailcall6.o");
++	unsigned long flags;
++
++	/* must not have branches... */
++	local_irq_save(flags);
++	__intel_pmu_disable_all(false); /* we don't care about BTS */
++	__intel_pmu_pebs_disable_all();
++	__intel_pmu_arch_lbr_disable();
++	/*            ... until here */
++
++	return __intel_pmu_snapshot_branch_stack(entries, cnt, flags);
 +}
 +
- /* test_tailcall_4 checks that the kernel properly selects indirect jump
-  * for the case where the key is not known. Latter is passed via global
-  * data to select different targets we can compare return value of.
-@@ -822,6 +835,8 @@ void test_tailcalls(void)
- 		test_tailcall_4();
- 	if (test__start_subtest("tailcall_5"))
- 		test_tailcall_5();
-+	if (test__start_subtest("tailcall_6"))
-+		test_tailcall_6();
- 	if (test__start_subtest("tailcall_bpf2bpf_1"))
- 		test_tailcall_bpf2bpf_1();
- 	if (test__start_subtest("tailcall_bpf2bpf_2"))
-diff --git a/tools/testing/selftests/bpf/progs/tailcall6.c b/tools/testing/selftests/bpf/progs/tailcall6.c
-new file mode 100644
-index 000000000000..0f4a811cc028
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall6.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} jmp_table SEC(".maps");
-+
-+int count, which;
-+
-+SEC("classifier/0")
-+int bpf_func_0(struct __sk_buff *skb)
+ /*
+  * Workaround for:
+  *   Intel Errata AAK100 (model 26)
+@@ -2946,7 +2974,7 @@ static int intel_pmu_handle_irq(struct p
+ 		apic_write(APIC_LVTPC, APIC_DM_NMI);
+ 	intel_bts_disable_local();
+ 	cpuc->enabled = 0;
+-	__intel_pmu_disable_all();
++	__intel_pmu_disable_all(true);
+ 	handled = intel_pmu_drain_bts_buffer();
+ 	handled += intel_bts_interrupt();
+ 	status = intel_pmu_get_status();
+@@ -6304,9 +6332,15 @@ __init int intel_pmu_init(void)
+ 		pr_cont("%d-deep LBR, ", x86_pmu.lbr_nr);
+ 
+ 		/* only support branch_stack snapshot for perfmon >= v2 */
+-		if (x86_pmu.disable_all == intel_pmu_disable_all)
+-			static_call_update(perf_snapshot_branch_stack,
+-					   intel_pmu_snapshot_branch_stack);
++		if (x86_pmu.disable_all == intel_pmu_disable_all) {
++			if (boot_cpu_has(X86_FEATURE_ARCH_LBR)) {
++				static_call_update(perf_snapshot_branch_stack,
++						   intel_pmu_snapshot_arch_branch_stack);
++			} else {
++				static_call_update(perf_snapshot_branch_stack,
++						   intel_pmu_snapshot_branch_stack);
++			}
++		}
+ 	}
+ 
+ 	intel_pmu_check_extra_regs(x86_pmu.extra_regs);
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -1296,6 +1296,14 @@ void intel_pmu_pebs_enable_all(void)
+ 		wrmsrl(MSR_IA32_PEBS_ENABLE, cpuc->pebs_enabled);
+ }
+ 
++void intel_pmu_pebs_disable_all(void)
 +{
-+	count++;
-+	if (__builtin_constant_p(which))
-+		__bpf_unreachable();
-+	bpf_tail_call(skb, &jmp_table, which);
-+	return 1;
++	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++
++	if (cpuc->pebs_enabled)
++		__intel_pmu_pebs_disable_all();
 +}
 +
-+SEC("classifier")
-+int entry(struct __sk_buff *skb)
+ static int intel_pmu_pebs_fixup_ip(struct pt_regs *regs)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1240,12 +1240,23 @@ static inline bool intel_pmu_has_bts(str
+ 	return intel_pmu_has_bts_period(event, hwc->sample_period);
+ }
+ 
+-static __always_inline void intel_pmu_pebs_disable_all(void)
++static __always_inline void __intel_pmu_pebs_disable_all(void)
+ {
+-	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++	wrmsrl(MSR_IA32_PEBS_ENABLE, 0);
++}
+ 
+-	if (cpuc->pebs_enabled)
+-		wrmsrl(MSR_IA32_PEBS_ENABLE, 0);
++static __always_inline void __intel_pmu_arch_lbr_disable(void)
 +{
-+	if (__builtin_constant_p(which))
-+		__bpf_unreachable();
-+	bpf_tail_call(skb, &jmp_table, which);
-+	return 0;
++	wrmsrl(MSR_ARCH_LBR_CTL, 0);
 +}
 +
-+char __license[] SEC("license") = "GPL";
--- 
-2.27.0
++static __always_inline void __intel_pmu_lbr_disable(void)
++{
++	u64 debugctl;
++
++	rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
++	debugctl &= ~(DEBUGCTLMSR_LBR | DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
++	wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
+ }
+ 
+ int intel_pmu_save_and_restart(struct perf_event *event);
+@@ -1322,6 +1333,8 @@ void intel_pmu_pebs_disable(struct perf_
+ 
+ void intel_pmu_pebs_enable_all(void);
+ 
++void intel_pmu_pebs_disable_all(void);
++
+ void intel_pmu_pebs_sched_task(struct perf_event_context *ctx, bool sched_in);
+ 
+ void intel_pmu_auto_reload_read(struct perf_event *event);
 
