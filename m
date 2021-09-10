@@ -2,280 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77204065A6
-	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 04:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9879740676C
+	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 08:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhIJCVT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Sep 2021 22:21:19 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:49104 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229628AbhIJCVT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 9 Sep 2021 22:21:19 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 189LkJ3K023985;
-        Fri, 10 Sep 2021 02:19:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : references : date : in-reply-to : message-id : content-type :
- mime-version; s=corp-2021-07-09;
- bh=n7jwF4gTUfTU5I26mWyc20Su70nYaYPyiRUvYCN9ugo=;
- b=EQdmgFwIUQkcHxYUzbvQco9wO625kePfHD9GJqS49I2qlO3wab3O7jL7YBDwxg62LaZ7
- 06rYUcazzpM4O7Yng4fRRL/WxIvt9uYd9dD+v6BHe0wdt+96MM7SE4pana1cUgW9tLsK
- yQtvqz6G6fR6O/o9ZYdXgah7CwRxYekGfje/5wwmU7DBc/8whmV9uSzlRKgTV7+8ea6M
- iJdKMmOx9iIqkllFvtHa/hI7C0ZzjFTfIbZs2FXf/DBBvtHOKRKpaJK3GePwIHhMXi0D
- k3+6y5jAAjmn/d/k4Sfw4cylxAkxDRJgf+jUYHzkxZIkRBKvl1wGMIvxLw3hCykyGQtE LA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : references : date : in-reply-to : message-id : content-type :
- mime-version; s=corp-2020-01-29;
- bh=n7jwF4gTUfTU5I26mWyc20Su70nYaYPyiRUvYCN9ugo=;
- b=NWS1z3MamuTGcqlTZe8pmcnHR2hwPVG8ey0OVKNgDqjemlzGUCA3r5bpD12ZXUwY19XW
- evedvy2yvg2S/U478XLsUs30OUmKJHVvNshnOUPx/mt25cwS6uxYxHh4BghuittrDCTA
- gNShhFa0mjtYnEE8syxz4SYsxOgbTTTfEWhxe88DFq9Dnss8wjRroUqS0yGc4u7JFLy0
- Za3UN1I7GrhcrPd5o2oINqsHQ1NdW8++seSiP1NEMOTBKjipNmG3FQ/UkdK0BD7e7pA3
- CLQo6XRR3o1UHsOx1RTt/Y+tyEZ+8AFJ0rocf2FB7TXZiFksk3fqz3vzb1Es3ECf0p/m WQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3aytfk8f5q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Sep 2021 02:19:54 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18A2AsdO004933;
-        Fri, 10 Sep 2021 02:19:53 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
-        by userp3030.oracle.com with ESMTP id 3aytft93s0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Sep 2021 02:19:52 +0000
+        id S231253AbhIJG4y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Sep 2021 02:56:54 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53982 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231223AbhIJG4x (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Sep 2021 02:56:53 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18A6svpK027003;
+        Thu, 9 Sep 2021 23:55:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=4alyeq5y6iX5fmLuzvmqZ1cdbDykScKeFA43YCDHJro=;
+ b=kiolNmJPlnwrp3Rv5faZsISjp76q+W1PjjdWX63zIDxqwo3wcVetCTqlj0Qs+3XEEQd9
+ FRcMdFS0ugoiuHaHLDvjjNYNiqAlyDJ0l1/osjhK+Lkwqs3DEeZjbubV91Cd1GRqQMj3
+ TA5DvG6Vd4JgzCJBVGd+BXofZXfVfJqU8so= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3aytfxu354-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 09 Sep 2021 23:55:40 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 9 Sep 2021 23:55:38 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BDuzLzRplMrsn5To+falaKiNxLf6iwv/7MQQn2cQq2mSjuqfPc58yiJGsrkAlMKKYlCbhv7LiQb2tCoZwgBeHJRjRIXm6vF+FZtssNph7E2Jb9OnVB+1eho55jbUxg/rUzAbBFbPtCuOB0K7e4/GMhsrQbm4Tn1bIRvjg2RfPcvmNuL6KclAhG8t26Q09Qqdu3tDXqn8Ykt4Z0J17j9M2Ecrm6DtNriOvKtZDI98v7wJ88C452aANgfCI7ZKUapNkYJv0WPMVuAZ5ONS1/K5yWRbqZtqSwl+mSveDOKpNUYumwpqe49uZhd7vBDhxHOS0NjMHq+i5CwzYfuSYPNePA==
+ b=W1ScnhWt/t4JOmiFkFGe7x67KUC9lcY/6+5t3GxQMcgH+khRqw29XwYYwk4BK+bybaf59/yhBgF+p6xXHg9cLAxmUghyUixOQSI5ThzbbKw2sxJVhWfOSTZxQnH3XFXRcJ2cQ8sIxZ73r/yuUZo9M+N0ucAwhYO9fX5esZNYXiMxHBJfkqXi7fgfsAI1JjZGpa7Z1VDl10xK3+c+ADU5HmdLUmE+20u5XprcVEc2WMjhf+Hjwl2Gk6uve1yIZ2EpRJJO4c3AhhRWFn5BX0w3z1p3i6FdWrhobcDay+5iQCjH1WcUf/YbJxnNNvR1yzZSHpUfzro3OWfziEJ08/QaoQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=n7jwF4gTUfTU5I26mWyc20Su70nYaYPyiRUvYCN9ugo=;
- b=XQmiPxVfmbkXgM9KFAKmC/CzxK0xywP+E5pmFAkCXvRiTou8U8g6Bqdz98qs4TdVSkMmkrF3vc1NF6xZCMu14oGA56UInZgdTb5KYmwpPquke2Nzz/n/u3aUhae/nMvp7qqfFVlhxUNKptBKrJ+PMj2SA7XPOTiYx/XzHHrDd8G5EELbTwXx1GURtQNTUophJKVbjyghCZx3FDUOVG6b32ObIWloWgE9KwLd+uZSsbmP69I5VFiCKpOl5OVvaSCkPidIRlO6WPMuZ/aZ7C00u4ebLuSWwkVXO5mTDK1oMRvv1mId/zLUbwNONSVjezV7GoFZFiU7d75ujTCsniarZw==
+ bh=+1aYR+EsRzeL1XCV/PU1nfRW0esIvta5cE4NZ/MI4q4=;
+ b=Yqi5i/e4KOP+LzQGjwnwy+XhDlsvCeh7VtodVXg+5l9f/VBDf1Y8EhK0X5+WvDWGapYIPb4+taRAWMZXhjKmwfn+11OQdbNhoFPicS6fG88m+Jp/c7yAEEAHw1kriG7cWIbeBEDktb8BpYVHy31lWPSAEYm1LGMwSkh8PEjqvhyheNbh2Z4wRf5dEdnZva2dqmoA0KBhmf8IoOpbnZuYrziZ0uWIHotJp/cMTFmedDdrW5H5I0TPIbCzUW5uhMhQcgJ0ZVhyezp46NdnlYcmtLGTC0QkYpr7VCQRKBiE6W6E8wxRsANWPMQbKS92DCPIPu8Pv1A/nQVZMFQsjBRgWQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n7jwF4gTUfTU5I26mWyc20Su70nYaYPyiRUvYCN9ugo=;
- b=NwX3lks54iUT5N4MVu2QE1HMpljxRnmfPtQdeP7CgsREhDVQ3hPXJ2UswSL+xwXv4pXkFscO2OsWxWu/b0f0h6vh+gBuOXAr42WaCQexBAGZgAh6WHGxzyejN9HuRwBSwv4Wwh9AFzxjTyACNnCiNGQsVghiw4YbSu8DlJLhTs4=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32)
- by BYAPR10MB2936.namprd10.prod.outlook.com (2603:10b6:a03:84::29) with
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by SA1PR15MB4323.namprd15.prod.outlook.com (2603:10b6:806:1ae::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.22; Fri, 10 Sep
- 2021 02:19:51 +0000
-Received: from BYAPR10MB2888.namprd10.prod.outlook.com
- ([fe80::f89b:d57b:829b:84ca]) by BYAPR10MB2888.namprd10.prod.outlook.com
- ([fe80::f89b:d57b:829b:84ca%7]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
- 02:19:50 +0000
-From:   "Jose E. Marchesi" <jose.marchesi@oracle.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <david.faust@oracle.com>
-Subject: Re: [PATCH bpf-next 0/9] bpf: add support for new btf kind
- BTF_KIND_TAG
-References: <20210907230050.1957493-1-yhs@fb.com> <87a6kl8j1j.fsf@oracle.com>
-        <e79ad277-9f26-1169-6e31-57d0b70d89d2@fb.com>
-Date:   Fri, 10 Sep 2021 04:19:41 +0200
-In-Reply-To: <e79ad277-9f26-1169-6e31-57d0b70d89d2@fb.com> (Yonghong Song's
-        message of "Thu, 9 Sep 2021 16:30:40 -0700")
-Message-ID: <87o8915g02.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
-Content-Type: text/plain
-X-ClientProxiedBy: LO2P265CA0249.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:8a::21) To BYAPR10MB2888.namprd10.prod.outlook.com
- (2603:10b6:a03:88::32)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Fri, 10 Sep
+ 2021 06:55:38 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::3c1b:1a10:9708:7e36]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::3c1b:1a10:9708:7e36%8]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
+ 06:55:38 +0000
+Date:   Thu, 9 Sep 2021 23:55:35 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+CC:     John Fastabend <john.fastabend@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>
+Subject: Re: [RFC Patch net-next] net_sched: introduce eBPF based Qdisc
+Message-ID: <20210910065535.vtwafxy2a7boipqg@kafai-mbp.dhcp.thefacebook.com>
+References: <20210824234700.qlteie6al3cldcu5@kafai-mbp>
+ <CAM_iQpWP_kvE58Z+363n+miTQYPYLn6U4sxMKVaDvuRvjJo_Tg@mail.gmail.com>
+ <612f137f4dc5c_152fe20891@john-XPS-13-9370.notmuch>
+ <871r68vapw.fsf@toke.dk>
+ <20210901174543.xukawl7ylkqzbuax@kafai-mbp.dhcp.thefacebook.com>
+ <871r66ud8y.fsf@toke.dk>
+ <613136d0cf411_2c56f2086@john-XPS-13-9370.notmuch>
+ <87bl5asjdj.fsf@toke.dk>
+ <20210902233510.gnimg2krwwkzv4f2@kafai-mbp.dhcp.thefacebook.com>
+ <87zgstra6j.fsf@toke.dk>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87zgstra6j.fsf@toke.dk>
+X-ClientProxiedBy: MWHPR20CA0012.namprd20.prod.outlook.com
+ (2603:10b6:300:13d::22) To SA1PR15MB5016.namprd15.prod.outlook.com
+ (2603:10b6:806:1db::19)
 MIME-Version: 1.0
-Received: from termi.oracle.com (141.143.193.79) by LO2P265CA0249.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:8a::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Fri, 10 Sep 2021 02:19:49 +0000
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:28fd) by MWHPR20CA0012.namprd20.prod.outlook.com (2603:10b6:300:13d::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Fri, 10 Sep 2021 06:55:37 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 527ff508-201d-42a4-d43d-08d9740177f8
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2936:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB2936C1875B5A5D1039AC06A394D69@BYAPR10MB2936.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: 68f886fc-f7bf-4e83-edb4-08d97427fee2
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4323:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB4323CD759CDE024C1B47AC3FD5D69@SA1PR15MB4323.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gNDfGWD8yBZ55/5ShlW5r/G4RpknQEqf8JJIuZN1v2Hffl6NI4l5x6VSiGzLaetzP0wj1vbx/ydTn3gP0xCy+Y5Ljxy388Tj+26mGAOKHQceP6EGjPd+fxGoHWAZvZwL/Fzt183Olbwz/xDEUrlgy3TkGzIGB244oUAhMgdFDEFnGddguoawKec1+fWfojLWZXM2OCXX0MvNQbCdw582MEHzSXZ0sBjqnXkuT7D6do+f2ClYaik1lJdMp3S7xsNn3drRnNfCMfhBt0fSePDhG894TcGs8wEWF+Edih1brsBf1R15MuBfjge42PLerQyUSw3W6q6yGmw9gxmCtBNt4nVyYIOYXdDoSzuZuVWY9Qww2fhv+y/AsIllPGwuZTX7cEyVg6CM7iVmtABh9heOWV8QS/NAhPYAjf608QbhiJeKox9bOoXtmxSBTu+O0mpMTHoe2a4Qpeel1Nn363xYN7hUvBe7xmk3skcSDqd9noPegIEVcmDqjTjvZKZmnflU8WHsujKwLtdnzxjaLIbXxmssz7ARG1BkDDAItvW3dThQ529OpCE0Q3/E9GmtGp5JZmVFpMdN3qPeA01uLZuqx1Rffy/f/3Z3li1rUrHQRqBkNQAkTT1417e+JbG9PIUFGhlQUJCu5hEPbjO4CTIR1XsZqRXRj+tDph1z1IexYJFWq8o5uEB/7tdYf0NB4RSW+maXYsCJdqTJ1hM7gl2rkWvE/abjcn2ABY5iln7Ta4Cr7DE5JCiF5bMWPbW7JUzXPAhts0cFeGVVoryCGriZS5ATc3zMJP/qwpuRQHI0TY0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2888.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38350700002)(38100700002)(66476007)(54906003)(83380400001)(508600001)(66946007)(2616005)(6486002)(186003)(316002)(5660300002)(966005)(86362001)(8936002)(2906002)(26005)(4326008)(7696005)(52116002)(66556008)(8676002)(6666004)(956004)(6916009)(107886003)(36756003)(53546011);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: pzjTz/oRwSwsDM1pxDzi7YIB/RiIdN346X0ZKZj1k4TujDGFPoRXZQ1MFFpEDbULLShHHWwxhmfQT2w0u1zKBPJKPL+dx7tBguFUBkcFcgwSC4UkaacK8ieAjxvLE5g/Y9FLg9/tMkqX9OdLmhhcGdhsKbIDyjT2MNIWm5Xrfwzq+p4hDaFOdHrFD9W7+PWgLZFNxZHMxrfv6hXufPbTSk3Vs1HjdnZ/lxP+x+auGb/LoP4ti+WUI09QlWOnNFeQ4gFFfgQODUEb0xZcHBPrqrOpoD3GlSV03P8hWAaVfJtl6/b7+UjTr9XvON0dVtH760jyCueSNWeASsKX6zQH+5PB4d5g1ELryRwMJUk03vhRDTtAztOk//KPyUPfmq/wRgd12delkYZmqVTcZSE9UlRMzj9Upjxwkjdrg07t1tBmcfESdw+LDaB48PGgmUNIXtMDvclOuMhTo4kZ7BK05VQuPgNx2pySq/TWYz8FZbg5UG7aSql1eUOA2do5ibC8YJ71jOFz291i2FHQ9avZwRO0nKqGqS/+4JNz/BdJjB+kbNNLDgNFRv8hGOJARjB56SN47SROcSGNBgcpVWKh0IjzCR3HrVdyma2W0lS1ihnk0fc2Cn0EZtD0liW4I4BrAhr//A8Sazs4uf5WK8QXAA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(346002)(396003)(136003)(2906002)(83380400001)(7696005)(66476007)(5660300002)(6506007)(52116002)(8936002)(66556008)(9686003)(6916009)(8676002)(316002)(38100700002)(86362001)(4326008)(55016002)(1076003)(186003)(54906003)(66946007)(478600001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WK4oWqPN3dvgehry9WdpNjLJ07066GHTFf9RsWv22YLhfvcvI1/n3ECpheIn?=
- =?us-ascii?Q?v8Ez9W1oHXtWdooUet25iVy4YQOznVvnoDjw7LnutJk4idbp3yyOmHaPX1BU?=
- =?us-ascii?Q?xz3yz6mWGYfyov5S+MIHybeMOevj4xoN/eEg+RN+i2xSPwoS0JvzE2Yb82yg?=
- =?us-ascii?Q?nuTvwT3OQQwQWKSEsS0Gv1mJNuVySdBUrMnC3y6CADLuauXErBaWSdKfj2PC?=
- =?us-ascii?Q?2uVErRWUySu1OJJaVTu2R1H4d1j2M+4XSCEbT3esxeMRRJGA3si4scIuKI0u?=
- =?us-ascii?Q?h7K90y4ZYOyn1wB3Uqg5MXe/zX6CMUZVs1LeZ4JyFSFajiwo2JXrrKNh8dMX?=
- =?us-ascii?Q?JZFoyB3pBW553nSQ5W9WmEht9PtKNDUEAe2icmJ2ud7bogFYaWMF4pSthcI1?=
- =?us-ascii?Q?xSZtndkZANj0hfH5mja6X3PfnkKhA1WttaIQKX1JuIHxO/Hthf+ykcXe4Yck?=
- =?us-ascii?Q?i31+rI164+iWZBiai0607+kMtQurowfo6pkEus+132zVda6rjP2KXEmlcm7B?=
- =?us-ascii?Q?Tx+Z6QW5WrO2Ro66DoR3kXej1KdBc1xf7Y0S7ik0qdSV4FY6Lp0t3vFJAh5v?=
- =?us-ascii?Q?q1fh4SaKqCei/ifTIed/FHj2BPSNRz+hT4GthG6KkTp84Ur/+4suP+wxqxdk?=
- =?us-ascii?Q?/Xi1d0ks4+3G48VdjuyyQ1Uq8zULUF4CT43d9q5zASxuHQm6wfiOrFk1sPSA?=
- =?us-ascii?Q?AIGPUEGAnw0q3XLkJ9RKyGrmUXTxc32dL/IjZ+C/pLDGv8HprzoE4U5mFcga?=
- =?us-ascii?Q?FrAH9cvIF/iBBksh6oFnCOYy2KhwlCmIRLDBRVtj+ZasUmBZSC8CBv9708jf?=
- =?us-ascii?Q?dU1KwQv9/YynVVwEQzMHbtB7YicJ5r8yX/1fHaDm92Fqt8586l7ZT5Wt50ly?=
- =?us-ascii?Q?NdtVrpUGSLZrPFeUoio1YU6bAN5Hm7w1eskoezsFgF6G/MaxKPtJMwqwnxWX?=
- =?us-ascii?Q?mPe5BdjpCM5a2WXWM0G03+gVddwhVlDZdlJq/541sNIjZEcbzZUjGEcrS/LJ?=
- =?us-ascii?Q?+3Lcq5lLXSDga4JX9crTVP2qIqw7ZDKRzM3TJ3xI8Wc0ucu21zg+Qn/PlLxA?=
- =?us-ascii?Q?gdKo9n0ecivkXaAvXPdUTaDiZqSn/KmIcR2uZ0nf6/vMgcCt+3wR7RJ//fcU?=
- =?us-ascii?Q?TOKZFSouqlxErpnCxsukmd2wGD3wYuFKELQihV3o+ofraFiix8ihr+gGoj4s?=
- =?us-ascii?Q?ZfSKsbXTSw6mtXg1P07hrzuyD8MfROWPRTWjp5BcjbaXsGq6RetlP2u5FQQO?=
- =?us-ascii?Q?Ic4ZzVqiwHt9j44kg8dihkZPKOigMl9GkgPkRVq0MwSgyCN8DezrY7w0H5dA?=
- =?us-ascii?Q?rs9EDzYWoEigW9zwzTpc8FVx?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 527ff508-201d-42a4-d43d-08d9740177f8
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2888.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?LObRl3cDnbjwbkPeK1FsbpnXXyPbpjihzXNhP1Amcmt1ZGU4L6GZUv9FCV?=
+ =?iso-8859-1?Q?9TzIE1dwBEyus19hZ+mz/M2nEiSDLQGpTeE0e60/cQYG5O88OxD3UScu6F?=
+ =?iso-8859-1?Q?5sYmP6Ru9nPWZl1Glc/7y+G7CHQVkp6XpXObla01QvKO/H/G6K7KK+ovF3?=
+ =?iso-8859-1?Q?dr7X0HZkn90NDXTuuMJzSli/6SaFPLdLDIJVtPSKEZauUgEVnndLTRXykY?=
+ =?iso-8859-1?Q?DwuBNmtlkljDfolqUziTHfhJn5r7uTec1l1tKQjPZKRwFq57vvJTPzUZyM?=
+ =?iso-8859-1?Q?LEyql9CNHdnIQsnoive69s5kFSmbGS+FT72OCPjf8WEqzV1PYFQz53PA3F?=
+ =?iso-8859-1?Q?o8a3AEzZ6xMXb6JkTUCXYprL4D4NoAzpMVqN7bYeany8jiRPe/Pd+kWf6b?=
+ =?iso-8859-1?Q?XSecoMY3xpozsixN/JGd1Zpl0LoHNSTwCgr7bbXMUSp2pJatvN89Hs/f8I?=
+ =?iso-8859-1?Q?sPQ/bM57Jc3P9RhYgnlB3tmj94gnoK+qU+NI2+KaMbNzXYCl4KRt6ckBbe?=
+ =?iso-8859-1?Q?v0jYetU88dC1/7iwIEuZBwgmFq5kICyVMNab+GN06gV9IbmG0wWKvPW/fN?=
+ =?iso-8859-1?Q?NpFOf64QGgnB4pYf7dCRN5LBSLPTC49fHYcfDBrT/x13+EqOGkjWpZDKtJ?=
+ =?iso-8859-1?Q?l2lWW+0tbMM1dE/zCsOzVxNwyx0aAaLHAPpTunKCir+EHBDw9irvbw8JUT?=
+ =?iso-8859-1?Q?jBOVU/Po9yobANHKxTHOdGSfi2skasoI8QLF/F99h80wa6Er5AZ/3x4Y6J?=
+ =?iso-8859-1?Q?nSsBHymC9hQdSCB7ROIDetPYfRuOiaJmGgnpKSkd6kwjRy+YqVJMRyu4Y1?=
+ =?iso-8859-1?Q?utTDA6/SAF2CEk1UEV+9ypQxy3icNly7emZfLRKNI4rzj5fhkCJRbuyPhT?=
+ =?iso-8859-1?Q?M58MqfwO2K01dusYqo/N4IBzT9RLr3v5MlRgcbfe8jyDB6lzyPXVYF8sPw?=
+ =?iso-8859-1?Q?/sdkwOEixZ8aXDDXyHjyj7JAsNf6CD1nF8Y/j9axz5wqeTxhD7VEsLawCP?=
+ =?iso-8859-1?Q?NiUPQR2SQ5CEpvWIISCN8SW6Bcj5S5GZGPSX6zZyykOnGfA4DecjspyUNx?=
+ =?iso-8859-1?Q?YQO0mOHtYeZFZw2sdYWjsKGbvn+B/+kBUd55WTB/OuuyoE78iSLTJUZUYY?=
+ =?iso-8859-1?Q?z7WvuZCgAJ7hkguwqX4L9FMXc30sOa+RA9WlE6Acjwrhy68MpsrdQpUnK4?=
+ =?iso-8859-1?Q?ixHDBiyMQRQ4WNtyeGhKn9MIobv42BoDW7iBvkMBEO51Onroyn1u0Q4Fqc?=
+ =?iso-8859-1?Q?z/rgG+IaeGZGarqOksRDBX9mwpUMzexp7wX3J1grJFxZztF9uS0TV5wq2I?=
+ =?iso-8859-1?Q?TWfqNEl8zTIs31CEuPqfhkAjIFDezfpZ3rwhC2Xv78KvAM5EYKSgal8Zs0?=
+ =?iso-8859-1?Q?BwyCsXuBCvrf+vv97TBK4OHdKd5PE2hA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 68f886fc-f7bf-4e83-edb4-08d97427fee2
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 02:19:50.8939
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 06:55:38.0627
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1U7jIroYeLZwGowlLw5t/yrdCkoh5Mt3pGpAg4V/NcUxSGDOyoxGfSMWwY+DBO/kDGNmxuX25bKCcZ8oWz9mXq7QoH/OUH81ohkpvl2pby0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2936
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10102 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
- spamscore=0 malwarescore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109100012
-X-Proofpoint-GUID: ciKzZ_KTNPECr_i_NQVvJK9XdutXXqvp
-X-Proofpoint-ORIG-GUID: ciKzZ_KTNPECr_i_NQVvJK9XdutXXqvp
+X-MS-Exchange-CrossTenant-UserPrincipalName: J8r3nnYxrbuO4NYwhRyarqdHvSEn65wcl9YBmhgyw/wYdGXD+bW1ZKBeErLkLNiF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4323
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: KUu_PvAivm7XzJEz3tGuuIsH_4aQcDnW
+X-Proofpoint-ORIG-GUID: KUu_PvAivm7XzJEz3tGuuIsH_4aQcDnW
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-10_02:2021-09-09,2021-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 clxscore=1015 adultscore=0 impostorscore=0 priorityscore=1501
+ phishscore=0 mlxscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0
+ mlxlogscore=756 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109100042
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Sep 03, 2021 at 04:44:04PM +0200, Toke Høiland-Jørgensen wrote:
+> Martin KaFai Lau <kafai@fb.com> writes:
+> 
+> > On Fri, Sep 03, 2021 at 12:27:52AM +0200, Toke Høiland-Jørgensen wrote:
+> >> >> The question is if it's useful to provide the full struct_ops for
+> >> >> qdiscs? Having it would allow a BPF program to implement that interface
+> >> >> towards userspace (things like statistics, classes etc), but the
+> >> >> question is if anyone is going to bother with that given the wealth of
+> >> >> BPF-specific introspection tools already available?
+> > Instead of bpftool can only introspect bpf qdisc and the existing tc
+> > can only introspect kernel qdisc,  it will be nice to have bpf
+> > qdisc work as other qdisc and showing details together with others
+> > in tc.  e.g. a bpf qdisc export its data/stats with its btf-id
+> > to tc and have tc print it out in a generic way?
+> 
+> I'm not opposed to the idea, certainly. I just wonder if people who go
+> to the trouble of writing a custom qdisc in BPF will feel it's worth it
+> to do the extra work to make this available via a second API. We could
+> certainly encourage it, and some things are easy (drop and pkt counters,
+> etc), but other things (like class stats) will depend on the semantics
+> of the qdisc being implemented, so will require extra work from the BPF
+> qdisc developer...
+Right, different qdisc has different stats, I think it is currently
+stored in qdisc_priv()?  When a qdisc is created, a separate priv is
+created together.
 
-> On 9/9/21 3:45 PM, Jose E. Marchesi wrote:
->> Hi Yonghong.
->> 
->>> LLVM14 added support for a new C attribute ([1])
->>>    __attribute__((btf_tag("arbitrary_str")))
->>> This attribute will be emitted to dwarf ([2]) and pahole
->>> will convert it to BTF. Or for bpf target, this
->>> attribute will be emitted to BTF directly ([3]).
->>> The attribute is intended to provide additional
->>> information for
->>>    - struct/union type or struct/union member
->>>    - static/global variables
->>>    - static/global function or function parameter.
->>>
->>> This new attribute can be used to add attributes
->>> to kernel codes, e.g., pre- or post- conditions,
->>> allow/deny info, or any other info in which only
->>> the kernel is interested. Such attributes will
->>> be processed by clang frontend and emitted to
->>> dwarf, converting to BTF by pahole. Ultimiately
->>> the verifier can use these information for
->>> verification purpose.
->>>
->>> The new attribute can also be used for bpf
->>> programs, e.g., tagging with __user attributes
->>> for function parameters, specifying global
->>> function preconditions, etc. Such information
->>> may help verifier to detect user program
->>> bugs.
->>>
->>> After this series, pahole dwarf->btf converter
->>> will be enhanced to support new llvm tag
->>> for btf_tag attribute. With pahole support,
->>> we will then try to add a few real use case,
->>> e.g., __user/__rcu tagging, allow/deny list,
->>> some kernel function precondition, etc,
->>> in the kernel.
->> We are looking into implementing this in the GCC BPF port.
->
-> Hi, Jose, thanks for your reply. It would be great if the
-> btf_tag can be implemented in gcc.
->
->> Supporting the new C attribute in BPF programs as a target-specific
->> attribute, and the new BTF kind, is straightforward enough.
->> However, I am afraid it will be difficult to upstream to GCC support
->> for
->> a target-independent C attribute called `btf_tag' that emits a
->> LLVM-specific DWARF tag.  Even if we proposed to use a GCC-specific
->
-> Are you concerned with the name? The btf_tag name cames from the
-> discussion in
-> https://lore.kernel.org/bpf/CAADnVQJa=b=hoMGU213wMxyZzycPEKjAPFArKNatbVe4FvzVUA@mail.gmail.com/
-> as llvm guys want this attribute to be explicitly referring to bpf echo
-> system because we didn't implement for C++, and we didn't try to
-> annotate everywhere. Since its main purpose is to eventually encode in 
-> btf (for different architectures), so we settled with btf_tag instead of
-> bpf_tag.
->
-> But if you have suggestion to change to a different name which can
-> be acceptable by both gcc and llvm community, I am okay with that.
+Yes, the bpf qdisc prog can store its stats to a bpf map, but then when the
+same prog attached to different qdiscs, it has to create different stats maps?
 
-I think the name of the attribute is very fine when BTF is generated
-directly, like when compiling BPF programs.  My concern is that the
-connection `btf_tag () -> DWARF -> kernel/pahole -> BTF' may be seen as
-too indirect and application-specific (the kernel) for a general-purpose
-compiler attribute.
+Also, instead of ->enqueue() itself is a bpf prog,
+having an ->enqueue() preparing a bpf ctx (zeroing, assigning...etc) and
+then make another call to a bpf prog will all add some costs.
 
->> DWARF tag like DW_TAG_GNU_annotation using the same number, or better a
->> compiler neutral tag like DW_TAG_annotation or DW_TAG_BPF_annotation,
->> adding such an attribute for all targets would still likely to be much
->> controversial...
->
-> This is okay too. If gcc settles with DW_TAG_GNU_annotation with a
-> different number (not conflict with existing other llvm tag numbers),
-> I think llvm can change to have the same name and number since we are
-> still in the release.
-
-Thanks, that is very nice and appreciated :) I don't think the
-particular number used to encode the tag matters much, provided it
-doesn't collide with any existing one of course...
-
-However, there may be a way to entirely avoid creating a new DWARF
-tag... see below.
-
->> Would you be open to explore other, more generic, ways to convey
->> these
->> annotations to pahole, something that could be easily supported by GCC,
->> and potentially other C compilers?
->
-> Could you share your proposal in detail? I think some kind of difference
-> might be okay if it is handled by pahole and invisible to users,
-> although it would be good if pahole only needs to handle single 
-> interface w.r.t. btf_tag support.
-
-GCC can currently generate BTF for any target, not just BPF.  For
-example, you can compile an object foo.o with both DWARF and BTF with:
-
-$ gcc -c -gdwarf -gbtf foo.c
-
-or with just BTF with:
-
-$ gcc -c -gbtf foo.c
-
-Binutils (ld) also supports full type deduplication for CTF, which is
-very similar to BTF.  We use it to build kernels in-house with CTF
-enabled for dtrace.  It is certainly possible to add support to ld to
-also merge and deduplicate BTF sections... it is similar enough to CTF
-to (hopefully) not require much work, and we were already considering
-doing it anyway for other purposes.
-
-So the proposal would be:
-
-For GCC, we can implement the btf_tag for any target, but impacting only
-the BTF output as the name implies.  No effect in DWARF.  Once ld is
-able to merge and deduplicate BTF, it shall then be possible to build
-the kernel and obtain the BTF for it without the aid of pahole, just
-building it with -gdwarf -gbtf and linking normally. (We know this works
-with CTF.)
-
-For LLVM, nothing would have to be done in the short term: just use the
-DWARF DIE + pahole approach already implemented.  But in the medium term
-LLVM could be made to 1) support emitting BTF for any target (not sure
-how difficult would that be, maybe it already can do that?) and 2) to
-support the -gbtf command-line option.
-
-Then the generation of BTF for the kernel could be done in the same way
-(same build rules) with both compilers, and there would be no need for
-conveying the extra tags (nor any future extensions to aid the verifier
-on the kernel side) to pahole via DWARF.  Pure BTF all the way up (or
-down) without diversion to DWARF :)
-
-Does this make sense? WDYT?
+That said, I still think it needs a bpf skb map that can queue/dequeue
+skb first.  Then it will become possible to prototype different interface
+ideas.
