@@ -2,137 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21767406A9F
-	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 13:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4556406AB8
+	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 13:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbhIJLSD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Sep 2021 07:18:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21220 "EHLO
+        id S232835AbhIJLcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Sep 2021 07:32:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37011 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232662AbhIJLSD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Sep 2021 07:18:03 -0400
+        by vger.kernel.org with ESMTP id S232727AbhIJLcR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Sep 2021 07:32:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631272611;
+        s=mimecast20190719; t=1631273466;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KhW6lv8OKl3JGjPb0UK3/lNvMXBnjiEjWe2PmfSiYnI=;
-        b=IBABTqVmARxw7YVL1JZmkX37iI/HEXiGvnDEP7eSwOwK5GI0RGa3ZSgBA/tXhRrRsdilwU
-        XZh4CwFCFoLYWc+LyxmnCL8U//25m4jy7Cjd3s7cSDshkna3bTfNk31iN6KikrLIuHpr+S
-        i/uHCN7asr3405rVZk7o0rIh2K9Csx0=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-168-qEw8aawjPvqHc7Mk4etdQQ-1; Fri, 10 Sep 2021 07:16:50 -0400
-X-MC-Unique: qEw8aawjPvqHc7Mk4etdQQ-1
-Received: by mail-lj1-f197.google.com with SMTP id v2-20020a2e2f02000000b001dc7ee2a7b8so719510ljv.20
-        for <bpf@vger.kernel.org>; Fri, 10 Sep 2021 04:16:50 -0700 (PDT)
+        bh=MgZpunMwRsx/HKG8133Hqd4YNO163VRr9FdTYPCJcJM=;
+        b=P74E7y1gpL7r4KNKz+KXHMUIVlgwezNdNADktQlf2bVp2DG3D1UoF5BWp2D0An6nCeEiWZ
+        n9Hkw1cKeVsm/L1jq3QTGH4xqXRYS0qhLfE/uOmLmgz4F/Ahxt9qjqReiokaGnadsKgzID
+        qu0BbpkNBXd3agG271MVnU+sPRGrHho=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-405-YJZJ7tXMN-CJ7NnqK_Z7Fg-1; Fri, 10 Sep 2021 07:31:05 -0400
+X-MC-Unique: YJZJ7tXMN-CJ7NnqK_Z7Fg-1
+Received: by mail-ed1-f69.google.com with SMTP id z17-20020a05640240d100b003cac681f4f4so740171edb.21
+        for <bpf@vger.kernel.org>; Fri, 10 Sep 2021 04:31:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KhW6lv8OKl3JGjPb0UK3/lNvMXBnjiEjWe2PmfSiYnI=;
-        b=NHySY/fruvqmVbqWjZwVg0jcMtMigzoBT4VaQbC3lzwLHgwxceMmdvBFkxKusHQynt
-         4sqmYuEgY7C0MJ7VZkh1GxH5noafRSDzKcfVNZvEY6gO2vnTpwLQW+FDFst/sRiA6ZNx
-         n32qeFdU2e42P/5/2VF+/APL+fnDRzN/3Hvt+5hR+S6P6PtDzg8DD+Zxpa+6n/H9LseO
-         Li+AI5HOng+otSboHRvOkTJtJtc4NNd1Y3ZyIjYEf+SMO+zsbDydlTdbGmxgjjEMDitN
-         EtlHwZLFUd8Ardi8eBpdy+SgfUYsbdn9epRXaFPm7Kc6tr0gP9CdC/JGLteQC3bsBQ9z
-         eoYw==
-X-Gm-Message-State: AOAM533GC7a3OTwbFJyUh59k4qJpocxgi5kvSrrbXWQwJivCFqdEOOG1
-        h6absOqELNkByB+vtUTPUFqkM7QsgdXinjDfNYHKL7OqmnIpptzWKXlhluX91XYsSA8m68dv477
-        bZH90S39ED9pL
-X-Received: by 2002:a05:6512:2249:: with SMTP id i9mr3432145lfu.219.1631272609201;
-        Fri, 10 Sep 2021 04:16:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzH59BTrtM3dOTuC2ud0FCBAi8NLgaYur2PMsOqbkfm5Sp/MKqxhOdAgBgLurc1d1SzcgHpYQ==
-X-Received: by 2002:a05:6512:2249:: with SMTP id i9mr3432122lfu.219.1631272608969;
-        Fri, 10 Sep 2021 04:16:48 -0700 (PDT)
-Received: from [192.168.42.238] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
-        by smtp.gmail.com with ESMTPSA id m28sm534168ljc.46.2021.09.10.04.16.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 04:16:48 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net,
-        Zaremba Larysa <larysa.zaremba@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
- <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <YNGU4GhL8fZ0ErzS@localhost.localdomain> <874kdqqfnm.fsf@toke.dk>
- <YNLxtsasQSv+YR1w@localhost.localdomain> <87mtrfmoyh.fsf@toke.dk>
- <YOa4JVEp20JolOp4@localhost.localdomain> <8735snvjp7.fsf@toke.dk>
- <YTA7x6BIq85UWrYZ@localhost.localdomain>
- <190d8d21-f11d-bb83-58aa-08e86e0006d9@redhat.com>
- <YTcGUbRpvWK+633g@localhost.localdomain>
- <936bfbdf-e194-b676-d28a-acf526120155@redhat.com>
- <CAEf4BzabVVPgRB9V=DAFjzYSx-q59bmBsQQAupKYWy5eUxqVkw@mail.gmail.com>
-Message-ID: <2ed2a06c-6796-229d-05d4-9a6464330e9e@redhat.com>
-Date:   Fri, 10 Sep 2021 13:16:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=MgZpunMwRsx/HKG8133Hqd4YNO163VRr9FdTYPCJcJM=;
+        b=cpFN3LYHp/34ye0I+EUcJY3C9ClN9jApfLdK0mSv2TKchnYi2Vz47515WOi8Xed7eT
+         Sgi/TPj4BOmPtlEjtR4MPlAI5QfmxifaihITlZXQh4jX98OW3ktmyRmCfFxheo4GasuJ
+         5ErXcd1vdMyIlRdsclTq8qRCruZCPuEqly0CzG5nowAwV2xE7zra4zvOoHPiVGOLmWSI
+         oWA7X/osWae0KOidBEuTQhjk0s7RD9hvSbeOxPxeE0cV1OO0VMyArBrA/jJkR7vJcVVu
+         UryneSb5CE8dPlEglXWuZE5FS+1fQqJ69xeeT5B6NSm3aKLBOKYA5EZQIaODeO5rBOIV
+         JrRA==
+X-Gm-Message-State: AOAM533jT0FJu4J2TInsvnnW/Is+ECqpwb7jc/oQrEoHtYZGOa0rtYV3
+        GkIaHKmkNhP1wXZIrJ9ItczoFgbQ1MeH9NdbWPdtOJGDagNu71uOzxbIuILL1myOLPOpXeB1sd2
+        P3W3+nAUzevar
+X-Received: by 2002:aa7:c784:: with SMTP id n4mr8537979eds.99.1631273463941;
+        Fri, 10 Sep 2021 04:31:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzI5YrwS+0ERVHYZlZnF2Wl30iULHObEWf4EdeoOej/ES155Q+tOh54L26URfB6ln6yiRzjCg==
+X-Received: by 2002:aa7:c784:: with SMTP id n4mr8537952eds.99.1631273463690;
+        Fri, 10 Sep 2021 04:31:03 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id j14sm2670239edk.7.2021.09.10.04.31.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 04:31:02 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 435371802C6; Fri, 10 Sep 2021 13:31:01 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>
+Subject: Re: [RFC Patch net-next] net_sched: introduce eBPF based Qdisc
+In-Reply-To: <20210910065535.vtwafxy2a7boipqg@kafai-mbp.dhcp.thefacebook.com>
+References: <20210824234700.qlteie6al3cldcu5@kafai-mbp>
+ <CAM_iQpWP_kvE58Z+363n+miTQYPYLn6U4sxMKVaDvuRvjJo_Tg@mail.gmail.com>
+ <612f137f4dc5c_152fe20891@john-XPS-13-9370.notmuch>
+ <871r68vapw.fsf@toke.dk>
+ <20210901174543.xukawl7ylkqzbuax@kafai-mbp.dhcp.thefacebook.com>
+ <871r66ud8y.fsf@toke.dk>
+ <613136d0cf411_2c56f2086@john-XPS-13-9370.notmuch>
+ <87bl5asjdj.fsf@toke.dk>
+ <20210902233510.gnimg2krwwkzv4f2@kafai-mbp.dhcp.thefacebook.com>
+ <87zgstra6j.fsf@toke.dk>
+ <20210910065535.vtwafxy2a7boipqg@kafai-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 10 Sep 2021 13:31:01 +0200
+Message-ID: <87o890mzuy.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzabVVPgRB9V=DAFjzYSx-q59bmBsQQAupKYWy5eUxqVkw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Martin KaFai Lau <kafai@fb.com> writes:
 
+> On Fri, Sep 03, 2021 at 04:44:04PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Martin KaFai Lau <kafai@fb.com> writes:
+>>=20
+>> > On Fri, Sep 03, 2021 at 12:27:52AM +0200, Toke H=C3=B8iland-J=C3=B8rge=
+nsen wrote:
+>> >> >> The question is if it's useful to provide the full struct_ops for
+>> >> >> qdiscs? Having it would allow a BPF program to implement that inte=
+rface
+>> >> >> towards userspace (things like statistics, classes etc), but the
+>> >> >> question is if anyone is going to bother with that given the wealt=
+h of
+>> >> >> BPF-specific introspection tools already available?
+>> > Instead of bpftool can only introspect bpf qdisc and the existing tc
+>> > can only introspect kernel qdisc,  it will be nice to have bpf
+>> > qdisc work as other qdisc and showing details together with others
+>> > in tc.  e.g. a bpf qdisc export its data/stats with its btf-id
+>> > to tc and have tc print it out in a generic way?
+>>=20
+>> I'm not opposed to the idea, certainly. I just wonder if people who go
+>> to the trouble of writing a custom qdisc in BPF will feel it's worth it
+>> to do the extra work to make this available via a second API. We could
+>> certainly encourage it, and some things are easy (drop and pkt counters,
+>> etc), but other things (like class stats) will depend on the semantics
+>> of the qdisc being implemented, so will require extra work from the BPF
+>> qdisc developer...
+> Right, different qdisc has different stats, I think it is currently
+> stored in qdisc_priv()?  When a qdisc is created, a separate priv is
+> created together.
+>
+> Yes, the bpf qdisc prog can store its stats to a bpf map, but then
+> when the same prog attached to different qdiscs, it has to create
+> different stats maps?
 
-On 09/09/2021 20.19, Andrii Nakryiko wrote:
-> Depending on what IDs we are talking about (sorry, I don't follow this
-> thread very closely, so if you are curious about some aspects of BTF
-> or libbpf APIs, it would be good to have a specific questions with
-> some context). BTF as kernel object has it's own ID allocated through
-> idr, so yes, they are unique. so vmlinux BTF object will have it's own
-> ID, while each module's BTF will have it's own.
-> 
-> But if we are talking about BTF type IDs, that's entirely different
-> thing. BTF type IDs start from 1 (0 is reserved for special 'VOID'
-> type) all the way to number of types in vmlinux BTF. Then each module
-> extends vmlinx BTF starting at N + 1 and going to N + M, where N is
-> number of BTF types in vmlinux BTF and M is number of added types in
-> module BTF.
-> 
-> So in that regard each module has BTF type IDs that are overlapping
-> with other modules, which is why for unique fetching of BTF types from
-> modules you also need BTF object FD or ID of a module BTF, and then
-> BTF type ID within that module. But as I said, I didn't follow along
-> closely, so not sure if I'm answering the right question, sorry.
+Hmm, yeah, I guess it would. But if it's storing the packets in a map it
+would need to have separate instances of those as well. I was kinda
+assuming that a separate instance of the BPF program would be loaded
+into the kernel for each qdisc instance, with its own instance of all
+maps etc.
 
-Thanks for answering.  This N vmlinux IDs + M module IDs was important 
-to know, thanks for correcting my understanding on this, as this does 
-affect our ideas for using BTF for XDP-hints.
+> Also, instead of ->enqueue() itself is a bpf prog, having an
+> ->enqueue() preparing a bpf ctx (zeroing, assigning...etc) and then
+> make another call to a bpf prog will all add some costs.
 
-This "just" means that the BTF ID will be per driver.  I think we can 
-still make this work, as the AF_XDP userspace program will already need 
-to bind to a device.  Thus, we can still send a simple btf_id in 
-metadata, and AF_XDP prog will just have device-map with expected 
-btf_id's from this device (to validate if it knows howto decode contents).
-It is slightly more annoying for my xdp_frame + cpumap use-case, as it 
-can get XDP_REDIRECT'ed frames from many net_devices, but we do have 
-xdp_frame->dev_rx (net_device) avail, so I can resolve this.
+Hmm, yeah, I guess, but I kinda doubt we can avoid having *some* kind of
+setup to get the right semantics for the BPF program, which might as
+well be in the qdisc enqueue() func. But let's see, happy to be proved
+wrong on this :)
 
---Jesper
+> That said, I still think it needs a bpf skb map that can queue/dequeue
+> skb first.  Then it will become possible to prototype different interface
+> ideas.
 
-Finding some random BTF ID in two module and notice they point to 
-different types.
+Agreed!
 
-  # bpftool btf dump file /sys/kernel/btf/ixgbe | grep 95905
-  [95905] FUNC 'ixgbe_set_rx_mode' type_id=95829 linkage=static
-
-  # bpftool btf dump file /sys/kernel/btf/igc | grep 95905
-  [95905] FUNC 'igc_ethtool_get_link_ksettings' type_id=95904 linkage=static
-
+-Toke
 
