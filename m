@@ -2,72 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5373F4072F2
-	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 23:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F0A4073CD
+	for <lists+bpf@lfdr.de>; Sat, 11 Sep 2021 01:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234553AbhIJVbS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Sep 2021 17:31:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229669AbhIJVbS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Sep 2021 17:31:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9BAD46120E;
-        Fri, 10 Sep 2021 21:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631309406;
-        bh=he/eiPzoHf/e5ZbbrGfHTOTtJt0Bx2r9OPNv1xvzWqw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PD1JFa81AugRhfttwXA4U5TyYCdfhHmwiTY8Zoe3Rfnxzd4WBS+yYgb7lrvbQqTuW
-         cgVGkcQTKqqVo0U07hTvdPmItJ/zh3GJIPKoSbAaG7m3DnlHZEf4Bj44DmEppWT4Jn
-         B57ncC2KSEQx33iYZ6pQUGNjC5camFPXEY7Lqsc0/yZoG2kJ0uDoEcpBWaAZ7HJm/Y
-         crdIXqcZmvdlsZBlANtgC4qm5Jce9oSO9bkpKlPCBdGZU5sK04jRvZC+wK4VjVqvY1
-         SK3ZGBO5kCWGQogxDQsKy0ZxnzbNgeQdDKVPuLhig6E1aCxNa2Xu5+ohD3rOMlnxH8
-         jexoNy8R6SO4g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8E918609FF;
-        Fri, 10 Sep 2021 21:30:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234833AbhIJXYX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Sep 2021 19:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234809AbhIJXYR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Sep 2021 19:24:17 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2E9C061574;
+        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id j16so3244062pfc.2;
+        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8Nm0hLYksfNthawk6Krwt62VT8XOIlxDrMAJH+VYgps=;
+        b=N5V+KCdsfUx5v0OAtOaJpLOyWhfp2PFnTDIlXSfYl6DhWMWY2OA6H7h6umO2TXxRT/
+         49nXIVUa5GR46TWfet4+KNH+r62lpZFr6wi1DTUSutyLMRJhRyIO5XmALb4y3m/03Skd
+         AeVKKWr82P9ZHprxWBlJ85khqt6elbfpOcVbfDwrwXb+yOBo5Va/o+aKETRjv0nOTlb7
+         36e+hMIx8fd+ZuRK+YWLgOHTTYvvb6CVQoA0BgC+LgJeVfyJ0legT7ZaJPjs5bK19X3P
+         fmVEUftPr2HVZ6h6JwKJSgu6CKlUV6/wA/9N6NSIo3iDrF4pq9gBoMlF0fbzl6MQF6iq
+         b4Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Nm0hLYksfNthawk6Krwt62VT8XOIlxDrMAJH+VYgps=;
+        b=LSouG6jRhr74r7qufuyL8+RN+UyVcG2LUlVQRTc6yLqUtkv+M/Jh9LNDwbAHYXPxWf
+         gzpnNt62QA9YHSvxzHaqeMfWOq5ntu/oXdDo33Uma7SDDsG8QBOnZaOrMGuF/Xn9niB0
+         8h6h1wUY+oqylvViiIN/965F8Ubojjw+OobOgtYL02+W/A3KqQFLc0FnWWuVdT3mq972
+         30XTW2YD7cHBr1yXGM9DdwC+LGXXcbuP+nNiQroBC+N39f7hzJbqeomeoys+cAyK0iMy
+         77UlEsJA0qqhvkZenIqKqvdnw+4MDTmldocUjMmcrfdnoRwjJUJkR/EpKV7lUiTeQFwu
+         PLuA==
+X-Gm-Message-State: AOAM531DHjE94/HolVtqqPByuW5BjhYl5IcSg5Q+W51kAMRxGrZcocry
+        HaaKTqi8Az+chlf+dHiAySM=
+X-Google-Smtp-Source: ABdhPJwrI+P4sIrm36OEQcMJbs9b+blsntJXiPWjIGX17mkNBaW3eacpOKw/O0GDa6tigKfbnfjxew==
+X-Received: by 2002:a63:7e11:: with SMTP id z17mr139932pgc.436.1631316185321;
+        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:5d1f])
+        by smtp.gmail.com with ESMTPSA id f6sm5058pfa.110.2021.09.10.16.23.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
+Date:   Fri, 10 Sep 2021 16:23:03 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Subject: Re: [PATCH] treewide: Remove unnamed static initializations to 0
+Message-ID: <20210910232303.vzwzoo2vvyga6jjs@ast-mbp.dhcp.thefacebook.com>
+References: <20210910225207.3272766-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 0/2] add hwtstamp to __sk_buff
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163130940657.19089.1279931064701174947.git-patchwork-notify@kernel.org>
-Date:   Fri, 10 Sep 2021 21:30:06 +0000
-References: <20210909220409.8804-1-vfedorenko@novek.ru>
-In-Reply-To: <20210909220409.8804-1-vfedorenko@novek.ru>
-To:     Vadim Fedorenko <vfedorenko@novek.ru>
-Cc:     kafai@fb.com, andrii.nakryiko@gmail.com, daniel@iogearbox.net,
-        ast@kernel.org, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kuba@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910225207.3272766-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Fri, 10 Sep 2021 01:04:07 +0300 you wrote:
-> This patch set adds hardware timestamps to __sk_buff. The first patch
-> implements feature, the second one adds a selftest.
+On Fri, Sep 10, 2021 at 03:52:07PM -0700, Kees Cook wrote:
+> GCC 4.9 does not like having struct assignments to 0 when members may be
+> compound types. For example, there are 186 instances of these kinds of
+> errors:
 > 
-> v2 -> v3:
-> * rebase on bpf-next
+> drivers/virtio/virtio_vdpa.c:146:9: error: missing braces around initializer [-Werror=missing-braces ]
+> drivers/cxl/core/regs.c:40:17: error: missing braces around initializer [-Werror=missing-braces]
 > 
-> v1 -> v2:
+> Since "= { 0 }" and "= { }" have the same meaning ("incomplete
+> initializer") they will both initialize the given variable to zero
+> (modulo padding games).
 > 
-> [...]
+> After this change, I can almost build the "allmodconfig" target with
+> GCC 4.9 again.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Here is the summary with links:
-  - [bpf-next,v3,1/2] bpf: add hardware timestamp field to __sk_buff
-    https://git.kernel.org/bpf/bpf-next/c/f64c4acea51f
-  - [bpf-next,v3,2/2] selftests/bpf: test new __sk_buff field hwtstamp
-    https://git.kernel.org/bpf/bpf-next/c/3384c7c7641b
+...
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+>  .../selftests/bpf/prog_tests/perf_branches.c  |   4 +-
+>  .../selftests/bpf/prog_tests/sk_lookup.c      |  12 +-
+>  .../selftests/bpf/prog_tests/sockmap_ktls.c   |   2 +-
+>  .../selftests/bpf/prog_tests/sockmap_listen.c |   4 +-
+>  .../selftests/bpf/progs/test_sk_assign.c      |   6 +-
+>  .../selftests/bpf/progs/test_xdp_vlan.c       |   8 +-
 
-
+Those have nothing to do with GCC. They are compiled with clang with -target bpf.
+Did you check that bpf selftests still pass?
+We've had issues with older clang generating different code with zero and non-zero
+assignments and libbpf was confused.
+It should all work now, but please run the tests.
