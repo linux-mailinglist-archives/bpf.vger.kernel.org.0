@@ -2,136 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868E340721B
-	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 21:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D46407268
+	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 22:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbhIJTsc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Sep 2021 15:48:32 -0400
-Received: from www62.your-server.de ([213.133.104.62]:41444 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbhIJTsb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Sep 2021 15:48:31 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mOmUS-000ARV-NX; Fri, 10 Sep 2021 21:47:12 +0200
-Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mOmUS-000EH9-ET; Fri, 10 Sep 2021 21:47:12 +0200
-Subject: Re: [PATCH bpf-next v3 13/13] bpf/tests: Add tail call limit test
- with external function call
-To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>, ast@kernel.org,
-        andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, iii@linux.ibm.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, paul@cilium.io
-References: <20210909143303.811171-1-johan.almbladh@anyfinetworks.com>
- <20210909143303.811171-14-johan.almbladh@anyfinetworks.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <fc28efd2-53ab-4f48-89fd-6d85078e7ed3@iogearbox.net>
-Date:   Fri, 10 Sep 2021 21:47:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S233658AbhIJUWN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Sep 2021 16:22:13 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:40585 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhIJUWK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Sep 2021 16:22:10 -0400
+Received: by mail-oi1-f179.google.com with SMTP id h133so4602205oib.7;
+        Fri, 10 Sep 2021 13:20:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4IPxaQoHLBsI4TsWZBSz429Jh2IPs4Tsu9wpBitBgng=;
+        b=RHaoRE+qDgYZPicCywIjXi43sTcHVLztXKuRhBqTKG/BC3AcU3T1OrRbsbchDZDH42
+         qQDkjh6NdFxcOPdOkhKUyztQ7LAqL5c4wAeychuNyh7BIphBf6Uh7sdgOi6vp/32XXGb
+         7XiEUztdTPfVfdZxT6e+BGsuwZ4vLBRUsFXtzKfFjnj/xiJK2WdT3QIJq7NSo/Cfn08l
+         B6R0zrZCw+1G3nZRT9RcFkxXwuEsE2qI7pv8dasNw8D+q0EA+xN7BMiCZvTl+0MkdVF0
+         h63WP8ufp5jj/Vvpq5MhXPhWhx3Jqd598XNIr0ufIKJo6hzZugdYA8IS1BwiF2rrSuyx
+         EVDA==
+X-Gm-Message-State: AOAM530MuR9lBAdZ75GkAgdwnu8Cu+xtRwYXoMF3cJWo/boXmyAt4kel
+        nl+98UZs1SecqQhNZwgqsA==
+X-Google-Smtp-Source: ABdhPJz5SQZueBteIwX5jHufIZZ/JozLZUCT7O2iJGriI7vlauYxJk6NPj/twUv+QLH5Q4gVPTAZyQ==
+X-Received: by 2002:a05:6808:aa8:: with SMTP id r8mr5746125oij.171.1631305258063;
+        Fri, 10 Sep 2021 13:20:58 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id s24sm1483439otp.37.2021.09.10.13.20.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Sep 2021 13:20:57 -0700 (PDT)
+Received: (nullmailer pid 3226408 invoked by uid 1000);
+        Fri, 10 Sep 2021 20:20:55 -0000
+Date:   Fri, 10 Sep 2021 15:20:55 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Keith Packard <keithpac@amazon.com>
+Cc:     linux-kernel@vger.kernel.org, Abbott Liu <liuwenliang@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Ben Segall <bsegall@google.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        bpf@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>, devicetree@vger.kernel.org,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Joe Perches <joe@perches.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        KP Singh <kpsingh@kernel.org>, kvm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, Manivannan Sadhasivam <mani@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Song Liu <songliubraving@fb.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        virtualization@lists.linux-foundation.org,
+        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH v4 4/7] Make sure task_struct is available for
+ raw_smp_processor_id
+Message-ID: <YTu+JyNyQH7v+1Yx@robh.at.kernel.org>
+References: <id:20210907220038.91021-1-keithpac@amazon.com>
+ <20210908190605.419064-1-keithpac@amazon.com>
+ <20210908190605.419064-5-keithpac@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20210909143303.811171-14-johan.almbladh@anyfinetworks.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26290/Fri Sep 10 10:21:09 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908190605.419064-5-keithpac@amazon.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/9/21 4:33 PM, Johan Almbladh wrote:
-> This patch adds a tail call limit test where the program also emits
-> a BPF_CALL to an external function prior to the tail call. Mainly
-> testing that JITed programs preserve its internal register state, for
-> example tail call count, across such external calls.
+On Wed, Sep 08, 2021 at 12:06:02PM -0700, Keith Packard wrote:
+> To allow architectures to use the 'cpu' field in task_struct for cpu
+> identification, the task_struct must be visible whereever the
+> raw_smp_processor_id macro is used. It would be simplest to include
+> linux/sched.h from the relevant asm/smp.h file, but that file is
+> included from linux/sched.h, and the recursive include ends up with
+> several declarations in the wrong order.
 > 
-> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> To avoid this, the PowerPC architecture code has this ugly hack:
+> 
+> 	#define raw_smp_processor_id() \
+> 		(*(unsigned int *)((void *)current + _TASK_CPU))
+> 
+> As an alternative, placing includes of linux/sched.h in a few files
+> that are used along with asm/smp.h means we can use the task_struct
+> field directly.
+> 
+> Signed-off-by: Keith Packard <keithpac@amazon.com>
 > ---
->   lib/test_bpf.c | 83 ++++++++++++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 80 insertions(+), 3 deletions(-)
-> 
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index 7475abfd2186..152193b4080f 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -12202,6 +12202,30 @@ struct tail_call_test {
->   		     offset, TAIL_CALL_MARKER),	       \
->   	BPF_JMP_IMM(BPF_TAIL_CALL, 0, 0, 0)
->   
-> +/*
-> + * A test function to be called from a BPF program, clobbering a lot of
-> + * CPU registers in the process. A JITed BPF program calling this function
-> + * must save and restore any caller-saved registers it uses for internal
-> + * state, for example the current tail call count.
-> + */
-> +BPF_CALL_1(bpf_test_func, u64, arg)
-> +{
-> +	char buf[64];
-> +	long a = 0;
-> +	long b = 1;
-> +	long c = 2;
-> +	long d = 3;
-> +	long e = 4;
-> +	long f = 5;
-> +	long g = 6;
-> +	long h = 7;
-> +
-> +	return snprintf(buf, sizeof(buf),
-> +			"%ld %lu %lx %ld %lu %lx %ld %lu %x",
-> +			a, b, c, d, e, f, g, h, (int)arg);
-> +}
-> +#define BPF_FUNC_test_func __BPF_FUNC_MAX_ID
-> +
->   /*
->    * Tail call tests. Each test case may call any other test in the table,
->    * including itself, specified as a relative index offset from the calling
-> @@ -12259,6 +12283,25 @@ static struct tail_call_test tail_call_tests[] = {
->   		},
->   		.result = MAX_TAIL_CALL_CNT + 1,
->   	},
-> +	{
-> +		"Tail call count preserved across function calls",
-> +		.insns = {
-> +			BPF_ALU64_IMM(BPF_ADD, R1, 1),
-> +			BPF_STX_MEM(BPF_DW, R10, R1, -8),
-> +			BPF_CALL_REL(BPF_FUNC_get_numa_node_id),
-> +			BPF_CALL_REL(BPF_FUNC_ktime_get_ns),
-> +			BPF_CALL_REL(BPF_FUNC_ktime_get_boot_ns),
-> +			BPF_CALL_REL(BPF_FUNC_ktime_get_coarse_ns),
-> +			BPF_CALL_REL(BPF_FUNC_jiffies64),
-> +			BPF_CALL_REL(BPF_FUNC_test_func),
-> +			BPF_LDX_MEM(BPF_DW, R1, R10, -8),
-> +			BPF_ALU32_REG(BPF_MOV, R0, R1),
-> +			TAIL_CALL(0),
-> +			BPF_EXIT_INSN(),
+>  arch/arm/mm/proc-v7-bugs.c     | 1 +
+>  drivers/vhost/vhost.c          | 1 +
+>  drivers/vhost/vhost.h          | 1 +
+>  include/asm-generic/irq_regs.h | 1 +
+>  include/linux/of_address.h     | 1 +
 
- From discussion with Johan, there'll be a v4 respin since assumption of R0
-being valid before exit insn would not hold true when going through verifier.
-Fixing it confirmed the 33 limit for x86 JIT as well, so both interpreter and
-JIT is 33-aligned.
+Where does the DT code use raw_smp_processor_id()? The header itself 
+certainly doesn't and the headers should only include what the headers 
+use directly.
 
-> +		},
-> +		.stack_depth = 8,
-> +		.result = MAX_TAIL_CALL_CNT + 1,
-> +	},
->   	{
->   		"Tail call error path, NULL target",
->   		.insns = {
-> @@ -12333,17 +12376,19 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
->   		/* Relocate runtime tail call offsets and addresses */
->   		for (i = 0; i < len; i++) {
->   			struct bpf_insn *insn = &fp->insnsi[i];
-> -
-> -			if (insn->imm != TAIL_CALL_MARKER)
-> -				continue;
-> +			long addr = 0;
->   
->   			switch (insn->code) {
->   			case BPF_LD | BPF_DW | BPF_IMM:
+In general this seems pretty terrible pulling in all of sched.h (and 
+then everything else it includes) for just raw_smp_processor_id().
+
+>  include/linux/random.h         | 1 +
+>  include/linux/topology.h       | 1 +
+>  init/calibrate.c               | 1 +
+>  kernel/bpf/bpf_lru_list.h      | 1 +
+>  kernel/bpf/percpu_freelist.h   | 1 +
+>  kernel/sched/cpuacct.c         | 2 +-
+>  lib/irq_regs.c                 | 1 +
+>  12 files changed, 12 insertions(+), 1 deletion(-)
