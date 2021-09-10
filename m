@@ -2,138 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D0E406E8A
-	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 17:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24392406E9C
+	for <lists+bpf@lfdr.de>; Fri, 10 Sep 2021 18:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234499AbhIJP5O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Sep 2021 11:57:14 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:58024 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232438AbhIJP5O (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Sep 2021 11:57:14 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18AFnqvp008483;
-        Fri, 10 Sep 2021 08:55:49 -0700
+        id S229474AbhIJQGN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Sep 2021 12:06:13 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48870 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229466AbhIJQGM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Sep 2021 12:06:12 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18AFxJ3Z001177;
+        Fri, 10 Sep 2021 09:04:48 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=BhobYlUsezABHo9UCKoYNXYDBFNREUPlEJy8goLl8Y0=;
- b=kikEcyCU9LM6fWeI9O5GCmlB2R4EjHYBtxhk2EAFcY+aOy2S6aB4EVS/FhlTemHYWk4l
- yYdZ8ab8XnQNTzF7eO/lMjDpSVb3GeHFRi+0PRYcDoRUKVCACRjX/se5xaPTnlE5aBqd
- 73kNjxJ6sAdjHu6CoEQuZmlIjlT67tetnsQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aytgcq08s-19
+ bh=Y5z/Qmk10nSFfyVcjr60ul6IEKJ95W4Idle7zVcVjbo=;
+ b=TU8SwuNK8c8SdWaBC26T0+uptshpLEdNYjyjCIEixWTLBThB5JFm4k2lNlDSi5UwrU+i
+ I7jS9vp2ztT+cgxhyq379LWGncyaK3pxVs+K+IxLyhQI4ZNkLj3xOkWI5zmUK809+V8C
+ Ijh246YDXTQyC10Q6F5eudvAMngawuqc+TY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3aytf2wrpd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 10 Sep 2021 08:55:49 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+        Fri, 10 Sep 2021 09:04:48 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 10 Sep 2021 08:55:47 -0700
+ 15.1.2308.14; Fri, 10 Sep 2021 09:04:19 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OITUl5ET06yvgLrSPdKASuXz6irezyXj2dOLoiJt04e8cCr9IHaDUvIl7b/vu9leR8QB7cDYAYLWoSGbXEg7tOtdYsssc68eD4/XggspDPrEwSzHrCQZMTBmNSmmgssXxla78N9fvwQ0RdBiEZyuVvzOzfSyWoYWiJqnov3kiSo3VW+a2eseR1pbYIsbGOP7Isc6iws59dyzcRuWPp3U/A2cYjvVmCc62PleIwSXzr7N3DsOzNtQe236UIIcifonQJgrdXCajg8hIVNtM0k/ZTlNgPTmvPccCPfjq8YQX7e2fvrI88h67EtzesW0x5+eFiPFZwJZ/Vv3IfpCtCU2kQ==
+ b=JhPqGV6uNCJy1BrRX49CPj+wOa6cHXuauHecB+XV+fvoZrB1zYnurEKquG4Kb4uttNiNKize9kHXuJyOOM73LdvLno6fTT+a4AJh1WOG53GActrVz9rxN0y3j2HvwdTTOoXJu7eVSJ689ylGl/N54wXIz9pUWbOtLjidx0SL1tDS47cdoRPXFnnOVTVlbEEJiauMqaQKH/6r+xAx7liPHLuwJo2KxeCWLc5lVdatqGehj0UZzskSF4IMPgBy64YbpCdPRvo0KP7Q8JNnlBIY1WqgV7khz4CVQe9lNBxumcGGWFjp/XKx4hccozyG3fjkNFRQJ+qJT0C1AyuF9znKLQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=IAaCiFCZGiMbjmXbkFeRH3r42Z5ufNUadCrpgWsSUsg=;
- b=BBfRQ6f3sTTf7iMnl40jI0KqM9Wm4F7eUpXBmj5h6AhOsi8L/jtHPk7FGl/yG/7EeOjtzhzoSgITpoy8pJNrNDay8h6YpJvto1AG1SEjqDFaMywDZ6/Fax24pcTQzdZ7/MBoFJbankn9yrRKp69DUizBKaeB6AI9JoRbsck6dGCcdovHgKhqXIbbDftySCyKmzS2IpNfANF/ty5Un3yG5rnpM8e14T9FFfnmAjmtzPOOp8FC/9XgJuWMbEwK8DGWip4b8OSDJ1tGKc/e9c3i22UwR+cHUU3oMyjb0L2SlP9CxLj09KvDOoH9conz2sfIb568mHJedf4tTNELs+WRug==
+ bh=Y5z/Qmk10nSFfyVcjr60ul6IEKJ95W4Idle7zVcVjbo=;
+ b=HSQcrNAE/XKJqJa0qm+UdzOLjKEJhHvA4zLYZziL4d2ggUOuBFG6FUNE8XM+TkV9t1WicwkYUPxRsnD8btzrCo+L7tNCOPtXuuWqW/S6FRZINTQ6fo4+WjqUnqvhhV+0b5CRTuNzkIOfT0oRoYCTj8kgkyDxRMusQzgEHrDgWXwMw45UFCzHuOwaSV0QgOsXJW+RQ1KK1yZRD59yi0lp1+4iv4EqVj0Bhxe6guOZDoOu9Rkz9h8GIfkSYnPFyEAYXmADVBwZ0NNXSvuch0C0GDEtH6vA2gkKujhZ1/132FjfZhnfexIf0xCw/7/tE4fr5c2TeZSxPssa9jjrTtIGdQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR1501MB1967.namprd15.prod.outlook.com (2603:10b6:805:7::14) with
+ by SN6PR15MB2414.namprd15.prod.outlook.com (2603:10b6:805:24::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Fri, 10 Sep
- 2021 15:55:46 +0000
+ 2021 16:04:18 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4500.017; Fri, 10 Sep 2021
- 15:55:46 +0000
-Subject: Re: [PATCH bpf-next 1/9] bpf: support for new btf kind BTF_KIND_TAG
+ 16:04:18 +0000
+Subject: Re: [PATCH bpf-next 3/9] libbpf: add support for BTF_KIND_TAG
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
 References: <20210907230050.1957493-1-yhs@fb.com>
- <20210907230055.1957809-1-yhs@fb.com>
- <CAEf4BzYUhFZf_Kt+uQ1k4N1k_H3uJd2A9-FqSF9HbcfvLYUO4Q@mail.gmail.com>
+ <20210907230105.1958546-1-yhs@fb.com>
+ <CAEf4Bza5azi3mamL8geoCPJm-jxtKYsJ6+-Yv8uEg_pBkachNg@mail.gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <9f58f7d3-e517-81ad-2bc8-07efa8689f32@fb.com>
-Date:   Fri, 10 Sep 2021 08:55:43 -0700
+Message-ID: <d310362c-08b7-7c7b-c8e3-788ec56615b6@fb.com>
+Date:   Fri, 10 Sep 2021 09:04:15 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.13.0
-In-Reply-To: <CAEf4BzYUhFZf_Kt+uQ1k4N1k_H3uJd2A9-FqSF9HbcfvLYUO4Q@mail.gmail.com>
+In-Reply-To: <CAEf4Bza5azi3mamL8geoCPJm-jxtKYsJ6+-Yv8uEg_pBkachNg@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-ClientProxiedBy: BYAPR01CA0013.prod.exchangelabs.com (2603:10b6:a02:80::26)
- To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
-Received: from [IPv6:2620:10d:c085:21e1::1064] (2620:10d:c090:400::5:7b93) by BYAPR01CA0013.prod.exchangelabs.com (2603:10b6:a02:80::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Fri, 10 Sep 2021 15:55:45 +0000
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR17CA0072.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::49) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+MIME-Version: 1.0
+Received: from [IPv6:2620:10d:c085:21e1::1064] (2620:10d:c090:400::5:7b93) by BY5PR17CA0072.namprd17.prod.outlook.com (2603:10b6:a03:167::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Fri, 10 Sep 2021 16:04:17 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7d3d96b8-dccb-4683-85b2-08d97473738c
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB1967:
+X-MS-Office365-Filtering-Correlation-Id: 6e6e37a5-5c81-4a91-1381-08d97474a4b9
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2414:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB19679EF63E875FBBB97B4894D3D69@SN6PR1501MB1967.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SN6PR15MB2414D1E23956770240FA1394D3D69@SN6PR15MB2414.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3VaHA/vP+q6TIS3pl74OpmI9252fpWWXGdd+6s+HciMCPm6WUL+hVK82E/ZzC/K49AkbiNySMxZEXRQJbbAI4DZ1vTprCeal4ZtOGGFiXS6fSjUCwF+hHekk8cmLKA5UEBZsuAh+bE57jPp2PDpFnXuHbyKIoeJMCsvw3c0s+IytjLbKnPwpiSv4xpshlT6twupTTro7k7doIlEqSYN2OFWEbZX9itQTMKM91yRMgYFtKCH8tw7eawVAs+/vKJR9xBZW5MftJr1gfE9ME5sxclXjwoFqUrkgHwFFsYXGexXy6Z0J0yTTbuo/VwWDZPyyHeHio/PP9cnuJ3mEbPAOKcyGFd7AS0t01HICl9V4IVHAHBG+/nAEELrQD3Ic0A+Ixa5fRUMzieeUmDsZhnL+O+69MkcQXFl7zYlORbX4m3p+80tdKi5u1gt6TYgIifbRbR77/aD9cS1S3fBFdZbrmxJ1gMaMG99gQeogE7PWT4P1jUJRzbSrKXrTB+Khb0a1pu+VUrfLAgSogcfknsfW/YMHymozXy+i6LghtoGeQe87xJ/9hRBc9nBeiABPgXNbDYCAbhomdqz1bDQShmip0TnpcUj8SP8NQxA1UWYjuduf3NrKScBgi0jwQS1V6qFNmLukRPK8e6lyVaTDHRoV/9QNu1Eo7LwIr6IOfypSeuhjRKewecx4JiWsOrqQ6FPk4pbCZKE49FDJQowxCNUklcTPd6RjCOna8FDWNHBXGyFtoAe9Sg8ZnFt/mx9DQVSK73RN/03vUiLha66sYkvclEohYY49dWgVMb2u/k2QhwrpkN5gmq98qrluJg7jCrdUer53kDlXJqePNWXIhTNSoQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(39860400002)(346002)(83380400001)(86362001)(66556008)(5660300002)(966005)(54906003)(36756003)(66476007)(478600001)(6486002)(2616005)(316002)(38100700002)(2906002)(6916009)(31686004)(8936002)(186003)(31696002)(8676002)(53546011)(52116002)(66946007)(4326008)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 7l3NM/gsvE4Ao+qqGF+AFyp6GT2nkxC7L0VddtM02jzrcriuU48k13LXDE+w8Rr9Qvl7UQvjypeMeZESN/BpEWnQi5j0/nZ9AtNlO/MwcJPn8LKJF5Ms8ZUkpetybAZa5nokeA40Pud9Yhn/cMkEid2PvPpCxC+EqCZcODxPB9FMJYPIm49gI00cYsYOma3tsUPa3KPbhPTw7tg72LNK0vWXV5mrJEV9HR4Ts49WqtqIfTa/PxZv1mZtWau7H6H3YMF4pu6mpml3epUtK8qDfjyd7HnEe8y3ltBjlZ1Ur60dLCfWSsPhiDeZJZxO1IcmLCEzrG6JDneA3efuhmIlimgEcvFlYvO2TIqB/f+LEIV7eY1SxUW1p3mM11+HOzv7cxQuXxl251gumB8NO9p/8dGgSLWHnfiUlrxrhYVaLg+C2rJ5AZTY1JBI4cxIyL5KZggbQp2dmI1S5/n1aVMJjdfs+SS5EZwjWxqI8fu/jJr1ZhlifP4ee10WBJJ21MtgT3hJMtSw2nNy1uq8ioesxDXxzs9WET4nsVPSLDHCBnxmUbRsX1l92eUu6wT5OPc6Dh0KaGMRxVDO+9Q3fOYq36dIcfQpeNMOfU7q6VU0qrK3iO7t5ZaZFow4UDsWiWoDT9zueBC1xrh8A5wrN9jrrEtw8TcUGS89/T0Wkt8LQRn3Jdc7/P7YAc3qLku/RcOiukAWahTgcJuiAGhCtpULzZ34rnnoMCd4NXV7ZDxrlPi1vkUGCIwqWorO512x0T2v
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(38100700002)(8676002)(66476007)(2616005)(6486002)(2906002)(5660300002)(4326008)(66946007)(31696002)(31686004)(52116002)(36756003)(186003)(54906003)(316002)(8936002)(6916009)(86362001)(478600001)(83380400001)(66556008)(53546011)(21314003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VlE0c1BHZWE4WlhDbG5aeW1wTStyeHliQ1lxYUNSODg0TUh6T0g0eUN5VHVB?=
- =?utf-8?B?L3hpSFRtN1pxc2M3djk1Mjh6ZU0rc0FIejdSV0FpOHVJclNhVUtoOElsZnBN?=
- =?utf-8?B?V0FiMVR2QWpuMlcyZVFBbGtnaVpqU2RQeVJwa2JZMjZsUi9TbklCNUE3anFm?=
- =?utf-8?B?WGE4OXFURmhDRktGcTFtSjZ6akcrYmV3QUFFeklibGtsUytRbm9FU2kxZnJX?=
- =?utf-8?B?cC81SUh5SCs1WkFlOU1IQ1l3d25PU25YZlFLT3RXV1VVZnJLZkhWZ1R4bExl?=
- =?utf-8?B?UXFuVEhOL0ZCMURpQ1pJWVZ1MFpFVnQrVmVFRmJrTUd1M2JVRjRlaEg5VlNL?=
- =?utf-8?B?SFlaWXk5VnJyM0pzUG9nM3FBMkx4ZEdKWkhHSTB2dm1NZnUzdkFEbWVnZEph?=
- =?utf-8?B?eW05V2J2Szl6NjZUdVNlRlhDMHlWMVcvRFBhQlhHb2V1VDROL3hUYWJmMjRH?=
- =?utf-8?B?OERMSnFCbS9McUdrdTFlQWpKTlN4cVFxL281UmN6cDdqNUM3Z2dQejdqRUZy?=
- =?utf-8?B?V1ZKUlVMVGVQbU9KaHlxWVBVM1FHV2hka3NHUXNNUmQ2YWNhZ3BPbzNrNG5K?=
- =?utf-8?B?TFZybDZGQlRIQTI4RmY4aXBRYlo4V3hjbUNKRUxYVUZHT3ZxOHByNGpJMm01?=
- =?utf-8?B?c2xMdXBTMVZTU0NSQ0o0TG9wRmdxcnA0eDNQUHFnbnc3SGpHYytubmVZN1gy?=
- =?utf-8?B?clFvSy90bGVJSVFSU2xxZFBUN2MxaDlWM1YxVVFWRWNObkFmUmNiWFgybThZ?=
- =?utf-8?B?YzFQUld3SVFlbGhXRXFqRTNlZ3JzalBNcEdTZmlVVExOUjNSOGN1bEJBNFli?=
- =?utf-8?B?dSt3U2ljbm5odzdTbUxPSEZWYVp2SzIzSzViVmpSWEJHVk8xSG56ckxWb2dQ?=
- =?utf-8?B?Tmpzc1B6RkF5V3FtcTVMRThEVkRPRndKQVd4QmlkWFRpOXVHV3B5bStlZVlG?=
- =?utf-8?B?bENXUThCRjNlN00xWkdYYm9QRHdSSVNoSVpSZzdwSkhSK0s2Y1NVajg2Ym05?=
- =?utf-8?B?ZVJ1ZmxKdjZuK0hEU2IxQ2F2dnF2RTlwNFlGdnZRNFlTY1BOdElGZU9URXB2?=
- =?utf-8?B?a3NIRlZyLy82eVFONklZeDVnaG10NW1LeGNvVUcxSW1sYXlKM3VhRElWYnNK?=
- =?utf-8?B?V2NpRWVmQTZ3OW5ydG42Ulg1cXpCTWtnUkZiTWY4ako2Vnp4K05mbGVISDJO?=
- =?utf-8?B?N1NWRjY2eVBlZy9qcVdWNVB1K0NHMEczNzdsNGdPSjVuV1lWV2hyd2twbzFh?=
- =?utf-8?B?dFdZSlNpSnB2OXRERllWQndWNktNV2xvZUVaUW5KK0Y3RGd3djJQREFIckpX?=
- =?utf-8?B?ZG1ITFpnUWt1QWZqdDJPN1k3ZkUyR0krZUdKZlJIOUY1bVFhYS9Fb3N5aEE5?=
- =?utf-8?B?emJyMGU2YlFEaDJ4c0lzMmZRZjBLdXBrSUJrZTJid1d6OUQ5SVplRzU5SVgz?=
- =?utf-8?B?aUZUcDVwK2NDNS9nNm54TXBUZjVJWmZHVmQ1ZmR5dWNqb2dwOGxCN3FDOTVY?=
- =?utf-8?B?eGtyZ0FNWklEV0V2VzhEeXdYTUlLT0VFd0Z6eExaQ2RrNU94YitTMVY4c1lt?=
- =?utf-8?B?cTV5YmdXaE02TTR1ekpRdFdWd3lTNWxsL291bWNFN0cyM1E3RG5zRVY3OHgr?=
- =?utf-8?B?RlZFY1p4VUtIcnhvdS9KQndkMXh4SE1kcDJsNXRENllrSVRvTVBwYXlRczZw?=
- =?utf-8?B?WmNrUFNJUlZUWHM5N0FmdTVOSkcrVlIyZThoU2FTR0VBR1dmQ2FVblU4MUxq?=
- =?utf-8?B?RWwyamNMNjJwT2F1REJHT0FqZWJITXV2SmxacXo0cTlHdC91dGU5YXVtVHk5?=
- =?utf-8?B?V1h1c29lcG85WWVDeHVaZz09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d3d96b8-dccb-4683-85b2-08d97473738c
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WS9DejhFRlN4bEpSRnQyV1hCSEZremxtZmNUT3RRQzZsLzM0Nm54QUswWURx?=
+ =?utf-8?B?K2FhNzY3ckZKQTJKUDJLMEw0RVY0Tm9CZlJ0NjNjNlZFREhIZkFQTkhSMmJa?=
+ =?utf-8?B?RlVZTkdFbE1ZT1h3NnhDTVpOMHpSSXdCcXhRZW5yaTZaOGlTZkZ2YzZYUHFz?=
+ =?utf-8?B?TlNGcElDbmoxVHA5UXNQQjVCazZ3K2tvS3JsZTR0bGxCTzNmZ21DWlphaUxL?=
+ =?utf-8?B?dWt0NzMyaVM0aUZBV2ZWcHpkd0lFamlFaTVoWDZRaHc4SUIvSk95YlRqRGV0?=
+ =?utf-8?B?cngxRnp3OHN6SDVya3pEeHp2Q3FjUG1MZE1XTTFHaDhvcU90aGoxSEFVcnAr?=
+ =?utf-8?B?QzBOa2tCM2ZvbWEyRDdGUmpVODg0cDJ0a1ordE03UjNtZXQra2JLeFdtbjYv?=
+ =?utf-8?B?ZDJJdU1WajcxOVJCeHIzSmovTW9KeEExTTR4N3FPdUxEdkJzOVdPamkyNFc4?=
+ =?utf-8?B?ZzFnTVpxK3phekVpVy9jV1dRZXBjbEFqRGo0cGxhampidVZ5eE1Ka05VU2pP?=
+ =?utf-8?B?eHB5Z2U1L2hBL1htWVA1S0M5cDFkVFo1cm0ySHVkeWovZmRxcnExWnVadFpL?=
+ =?utf-8?B?N2xDUWpPVHlETkYxTVdvNVN5NVgxblZkSi96YWEvRkcwdVBaaWw0UzZtSGJE?=
+ =?utf-8?B?VzE5UGR6aklDdzlId1NISUwweEVVZkFvYTJ6L1RManNCUHdSWmRyMjhzS0dX?=
+ =?utf-8?B?STdiVnVmd0Zqcld4bldHT1RWaE1pdnQ3UzB3Q1RuVU9GZFhrNzZCSnRDclVl?=
+ =?utf-8?B?VWplT2I2WXdtMlJrRGFUUXQxMzZVdWhpajVrZkxqdlVsdzdselkvR3ZWa3pR?=
+ =?utf-8?B?MENTdHByN2tsQ2NBZklDSjBQdXh3SytldElCdk9jQzF4RVhIRTBOVTlNdjcx?=
+ =?utf-8?B?QVpjeWUxTkxDMzlSZFdFV1ZZcjNGYmRZemZDdDRGd2dsNkx5UXNnRHhmZ1FP?=
+ =?utf-8?B?VC9nRDUrQnpyUFRTbExZU2FsUmdOUU93dG1zL0c0c2JwaGdzR2tIcTJ3Qk9P?=
+ =?utf-8?B?WkM0Wlp1dGxPWmx3VmtEdWExbERBcVVUbStXc0ZWWStlbFJYTTkyNGlnNTZM?=
+ =?utf-8?B?LzNKQS9taTRkTTUxQmg1QnRWSmh3WXFDWVZHUFVybm1xOVVxcWVJVFR3NktI?=
+ =?utf-8?B?ZENGVDkxbjhNczhJeExJTGI4U2hPT2N5bFZVT2p1WUJmSEhzTWcrK3B6dHdz?=
+ =?utf-8?B?cG14RStsM2FZcDhoaTNGTmVaRTZKcUsxZnpUMldwQkJkQU5rQ1FXTHRoS1d0?=
+ =?utf-8?B?LzE2L0VOSWRsamplbU5Ubk9vdlFVeDZjaWxNV0FYNFc0Zk9oS29LdkcyVXVn?=
+ =?utf-8?B?SkQwRDVTN1NFV1h0L0g2M0xtamJtQWU2L0cyOXN0aUlyRWQ1NzIzSHR4YWov?=
+ =?utf-8?B?V3R5bkd1Q1NNcEJNUTVjclFqRk9YcjZ6blRheXpQM1pGVzJSdEc0dGYrNDdI?=
+ =?utf-8?B?L0I4S3AxR285UE9jT3ZhOWNUMGx6RkE3WnpBcWxubTZ6c2hzL0FPeHBNS0pJ?=
+ =?utf-8?B?ZS9BL2twVTdHdzJDL0UrVGNoYkJKcFlDODRBQWloUjFLOS8xT3FhU290dlEz?=
+ =?utf-8?B?QzlHcy9GVlNFT3hCUVBtM09adEpyNk9ueXowM0JmbVZPSXdmOFh6c2U0K0ls?=
+ =?utf-8?B?Nk5YaE9Mc0VRZEkrcjZuTkh6WHBSTG9TQ1FSeExWcXhuemkrV1hRRnp6Z2lQ?=
+ =?utf-8?B?UzgwQldmWUhRdlQrNXJIRmlma25acnBTZkVyN2VvYzFucjViWjRPNkNOSFgy?=
+ =?utf-8?B?RWh0dXRhNUd0SDZONGZJbUI1dTN5dmkyNytkODlNdEZMUEpCYnZaZVljL2ln?=
+ =?utf-8?B?MXkzRXFzTFZoK3plbEZZZz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e6e37a5-5c81-4a91-1381-08d97474a4b9
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 15:55:46.0204
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2021 16:04:17.9586
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ILY/h5dWcH1P+gBQt9oGrBYdhuI+b5uw4RywtyhJVWjkrjB3yKhRzX1TuftdYYmh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB1967
+X-MS-Exchange-CrossTenant-UserPrincipalName: eeLqMQa7fWphnVxnlayjIibBB8x0jsy/MTYclyZQKmxm3HvOeRrXPpJQmR8MgrK9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2414
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: JQAK_cEkZKSUAE-uW1VdSF_uZGcRvDSq
-X-Proofpoint-ORIG-GUID: JQAK_cEkZKSUAE-uW1VdSF_uZGcRvDSq
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 3 URL's were un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: Q_ZNwyFgSuPv8iGq_CHw9PRyCc4B559G
+X-Proofpoint-GUID: Q_ZNwyFgSuPv8iGq_CHw9PRyCc4B559G
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-09-10_06:2021-09-09,2021-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- malwarescore=0 adultscore=0 lowpriorityscore=0 bulkscore=0 impostorscore=0
- mlxlogscore=999 priorityscore=1501 suspectscore=0 spamscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109100092
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
+ clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109100093
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -141,229 +141,209 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 9/8/21 10:09 PM, Andrii Nakryiko wrote:
+On 9/8/21 10:26 PM, Andrii Nakryiko wrote:
 > On Tue, Sep 7, 2021 at 4:01 PM Yonghong Song <yhs@fb.com> wrote:
 >>
->> LLVM14 added support for a new C attribute ([1])
->>    __attribute__((btf_tag("arbitrary_str")))
->> This attribute will be emitted to dwarf ([2]) and pahole
->> will convert it to BTF. Or for bpf target, this
->> attribute will be emitted to BTF directly ([3]).
->> The attribute is intended to provide additional
->> information for
->>    - struct/union type or struct/union member
->>    - static/global variables
->>    - static/global function or function parameter.
->>
->> For linux kernel, the btf_tag can be applied
->> in various places to specify user pointer,
->> function pre- or post- condition, function
->> allow/deny in certain context, etc. Such information
->> will be encoded in vmlinux BTF and can be used
->> by verifier.
->>
->> The btf_tag can also be applied to bpf programs
->> to help global verifiable functions, e.g.,
->> specifying preconditions, etc.
->>
->> This patch added basic parsing and checking support
->> in kernel for new BTF_KIND_TAG kind.
->>
->>   [1] https://reviews.llvm.org/D106614
->>   [2] https://reviews.llvm.org/D106621
->>   [3] https://reviews.llvm.org/D106622
+>> Add BTF_KIND_TAG support for parsing and dedup.
+>> Also added sanitization for BTF_KIND_TAG. If BTF_KIND_TAG is not
+>> supported in the kernel, sanitize it to INTs.
 >>
 >> Signed-off-by: Yonghong Song <yhs@fb.com>
 >> ---
->>   include/uapi/linux/btf.h       |  15 ++++-
->>   kernel/bpf/btf.c               | 115 +++++++++++++++++++++++++++++++++
->>   tools/include/uapi/linux/btf.h |  15 ++++-
->>   3 files changed, 139 insertions(+), 6 deletions(-)
+>>   tools/lib/bpf/btf.c             | 61 +++++++++++++++++++++++++++++++++
+>>   tools/lib/bpf/btf.h             | 13 +++++++
+>>   tools/lib/bpf/btf_dump.c        |  3 ++
+>>   tools/lib/bpf/libbpf.c          | 31 +++++++++++++++--
+>>   tools/lib/bpf/libbpf.map        |  1 +
+>>   tools/lib/bpf/libbpf_internal.h |  2 ++
+>>   6 files changed, 108 insertions(+), 3 deletions(-)
 >>
->> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
->> index d27b1708efe9..ca73c4449116 100644
->> --- a/include/uapi/linux/btf.h
->> +++ b/include/uapi/linux/btf.h
->> @@ -36,14 +36,14 @@ struct btf_type {
->>           * bits 24-27: kind (e.g. int, ptr, array...etc)
->>           * bits 28-30: unused
->>           * bit     31: kind_flag, currently used by
->> -        *             struct, union and fwd
->> +        *             struct, union, fwd and tag
->>           */
->>          __u32 info;
->>          /* "size" is used by INT, ENUM, STRUCT, UNION and DATASEC.
->>           * "size" tells the size of the type it is describing.
->>           *
->>           * "type" is used by PTR, TYPEDEF, VOLATILE, CONST, RESTRICT,
->> -        * FUNC, FUNC_PROTO and VAR.
->> +        * FUNC, FUNC_PROTO, VAR and TAG.
->>           * "type" is a type_id referring to another type.
->>           */
->>          union {
->> @@ -73,7 +73,8 @@ struct btf_type {
->>   #define BTF_KIND_VAR           14      /* Variable     */
->>   #define BTF_KIND_DATASEC       15      /* Section      */
->>   #define BTF_KIND_FLOAT         16      /* Floating point       */
->> -#define BTF_KIND_MAX           BTF_KIND_FLOAT
->> +#define BTF_KIND_TAG           17      /* Tag */
->> +#define BTF_KIND_MAX           BTF_KIND_TAG
->>   #define NR_BTF_KINDS           (BTF_KIND_MAX + 1)
-> 
-> offtop, but realized reading this: we should probably turn these into
-> enums and capture them in vmlinux BTF and subsequently in vmlinux.h
-
-Sure. Will look into this.
-
-> 
+>> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+>> index 7cb6ebf1be37..ed02b17aad17 100644
+>> --- a/tools/lib/bpf/btf.c
+>> +++ b/tools/lib/bpf/btf.c
+>> @@ -304,6 +304,8 @@ static int btf_type_size(const struct btf_type *t)
+>>                  return base_size + sizeof(struct btf_var);
+>>          case BTF_KIND_DATASEC:
+>>                  return base_size + vlen * sizeof(struct btf_var_secinfo);
+>> +       case BTF_KIND_TAG:
+>> +               return base_size + sizeof(struct btf_tag);
+>>          default:
+>>                  pr_debug("Unsupported BTF_KIND:%u\n", btf_kind(t));
+>>                  return -EINVAL;
+>> @@ -376,6 +378,9 @@ static int btf_bswap_type_rest(struct btf_type *t)
+>>                          v->size = bswap_32(v->size);
+>>                  }
+>>                  return 0;
+>> +       case BTF_KIND_TAG:
+>> +               btf_tag(t)->comp_id = bswap_32(btf_tag(t)->comp_id);
+>> +               return 0;
+>>          default:
+>>                  pr_debug("Unsupported BTF_KIND:%u\n", btf_kind(t));
+>>                  return -EINVAL;
+>> @@ -586,6 +591,7 @@ __s64 btf__resolve_size(const struct btf *btf, __u32 type_id)
+>>                  case BTF_KIND_CONST:
+>>                  case BTF_KIND_RESTRICT:
+>>                  case BTF_KIND_VAR:
+>> +               case BTF_KIND_TAG:
+>>                          type_id = t->type;
+>>                          break;
+>>                  case BTF_KIND_ARRAY:
+>> @@ -2440,6 +2446,41 @@ int btf__add_datasec_var_info(struct btf *btf, int var_type_id, __u32 offset, __
+>>          return 0;
+>>   }
 >>
->>   /* For some specific BTF_KIND, "struct btf_type" is immediately
->> @@ -170,4 +171,12 @@ struct btf_var_secinfo {
->>          __u32   size;
->>   };
->>
->> +/* BTF_KIND_TAG is followed by a single "struct btf_tag" to describe
->> + * additional information related to the tag such as which field of
->> + * a struct or union or which argument of a function.
->> + */
->> +struct btf_tag {
->> +       __u32   comp_id;
+>> +int btf__add_tag(struct btf *btf, const char *name, int comp_id, int ref_type_id)
 > 
-> what does "comp" stand for, component? If yes, it's quite non-obvious,
-> I wonder if just as generic "member" would be better (and no
-> contractions)? Maybe also not id (because I immediately thought about
-> BTF type IDs), but "index". So "member_idx"? "component_idx" would be
-> quite obvious as well, just a bit longer.
+> Curious about the terminology here. The string recorded in bpf_tag, is
+> that a "name" of the tag, or rather a "value" of the tag? We should
+> reflect that in argument names for btf__add_tag.
 
-I will use component_idx as member_idx doesn't align well with function
-parameters.
+We can use "value" as the argument.
 
 > 
->> +};
->> +
->>   #endif /* _UAPI__LINUX_BTF_H__ */
->> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->> index dfe61df4f974..9545290f804b 100644
->> --- a/kernel/bpf/btf.c
->> +++ b/kernel/bpf/btf.c
->> @@ -281,6 +281,7 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
->>          [BTF_KIND_VAR]          = "VAR",
->>          [BTF_KIND_DATASEC]      = "DATASEC",
->>          [BTF_KIND_FLOAT]        = "FLOAT",
->> +       [BTF_KIND_TAG]          = "TAG",
->>   };
->>
-> 
-> [...]
-> 
->> +       const struct btf_tag *tag;
->> +       u32 meta_needed = sizeof(*tag);
->> +
->> +       if (meta_left < meta_needed) {
->> +               btf_verifier_log_basic(env, t,
->> +                                      "meta_left:%u meta_needed:%u",
->> +                                      meta_left, meta_needed);
->> +               return -EINVAL;
->> +       }
->> +
->> +       if (!t->name_off) {
->> +               btf_verifier_log_type(env, t, "Invalid name");
->> +               return -EINVAL;
->> +       }
->> +
->> +       if (btf_type_vlen(t)) {
->> +               btf_verifier_log_type(env, t, "vlen != 0");
->> +               return -EINVAL;
->> +       }
->> +
->> +       tag = btf_type_tag(t);
->> +       if (btf_type_kflag(t) && tag->comp_id) {
-> 
-> just realized that we could have reserved comp_id == (u32)-1 as the
-> meaning "applies to entire struct/func/etc"? This might be a bit
-> cleaner, because if you forget about kflag() semantics, you can treat
-> comp_id == 0 as if it applied to first member, but if we put
-> 0xffffffff, you'll get SIGSEGV with high probability (making the
-> problem more obvious)?
+> I'll also nitpick on order of arguments. ref_type_id is always
+> specified, and it points to the entire type (struct/union/func), while
+> comp_id might, optionally, point inside that type. So I think the
+> order should be ref_type_id followed by comp_id.
 
-Good idea. I will get rid of kflag requirement and only use
-component_idx to indicate where the attribute is attached with
--1 indicate it is attached to the type itself. The llvm has
-been changed with the new ELF format: https://reviews.llvm.org/D109560
+Will switch and then the argument order follows ELF file format order.
 
 > 
+> Please also add a comment describing inputs (especially the -1 comp_id
+> case) and outputs, like all that other btf__add_xxx() APIs.
+
+Will do.
+
 > 
->> +               btf_verifier_log_type(env, t, "kflag/comp_id mismatch");
->> +               return -EINVAL;
->> +       }
->> +
->> +       btf_verifier_log_type(env, t, NULL);
->> +
->> +       return meta_needed;
->> +}
->> +
->> +static int btf_tag_resolve(struct btf_verifier_env *env,
->> +                          const struct resolve_vertex *v)
 >> +{
->> +       const struct btf_type *next_type;
->> +       const struct btf_type *t = v->t;
->> +       u32 next_type_id = t->type;
->> +       struct btf *btf = env->btf;
->> +       u32 vlen, comp_id;
+>> +       bool for_ref_type = false;
+>> +       struct btf_type *t;
+>> +       int sz, name_off;
 >> +
->> +       next_type = btf_type_by_id(btf, next_type_id);
->> +       if (!next_type || !btf_type_is_tag_target(next_type)) {
->> +               btf_verifier_log_type(env, v->t, "Invalid type_id");
->> +               return -EINVAL;
->> +       }
+>> +       if (!name || !name[0] || comp_id < -1)
+>> +               return libbpf_err(-EINVAL);
 >> +
->> +       if (!env_type_is_resolve_sink(env, next_type) &&
->> +           !env_type_is_resolved(env, next_type_id))
->> +               return env_stack_push(env, next_type, next_type_id);
+>> +       if (validate_type_id(ref_type_id))
+>> +               return libbpf_err(-EINVAL);
 >> +
->> +       if (!btf_type_kflag(t)) {
->> +               if (btf_type_is_struct(next_type)) {
->> +                       vlen = btf_type_vlen(next_type);
->> +               } else if (btf_type_is_func(next_type)) {
->> +                       next_type = btf_type_by_id(btf, next_type->type);
->> +                       vlen = btf_type_vlen(next_type);
->> +               } else {
->> +                       btf_verifier_log_type(env, v->t, "Invalid next_type");
->> +                       return -EINVAL;
->> +               }
+>> +       if (btf_ensure_modifiable(btf))
+>> +               return libbpf_err(-ENOMEM);
 >> +
->> +               comp_id = btf_type_tag(t)->comp_id;
->> +               if (comp_id >= vlen) {
->> +                       btf_verifier_log_type(env, v->t, "Invalid comp_id");
->> +                       return -EINVAL;
->> +               }
->> +       }
+>> +       sz = sizeof(struct btf_type) + sizeof(struct btf_tag);
+>> +       t = btf_add_type_mem(btf, sz);
+>> +       if (!t)
+>> +               return libbpf_err(-ENOMEM);
 >> +
->> +       env_stack_pop_resolved(env, next_type_id, 0);
+>> +       name_off = btf__add_str(btf, name);
+>> +       if (name_off < 0)
+>> +               return name_off;
 >> +
->> +       return 0;
->> +}
+>> +       t->name_off = name_off;
+>> +       t->type = ref_type_id;
 >> +
->> +static void btf_tag_log(struct btf_verifier_env *env, const struct btf_type *t)
->> +{
->> +       btf_verifier_log(env, "type=%u", t->type);
+>> +       if (comp_id == -1)
+>> +               for_ref_type = true;
+>> +       t->info = btf_type_info(BTF_KIND_TAG, 0, for_ref_type);
+>> +       ((struct btf_tag *)(t + 1))->comp_id = for_ref_type ? 0 : comp_id;
 > 
-> comp_id and kflag should be logged as well, they are important part
+> As I mentioned in the previous patch, it feels cleaner to just have
+> this -1 special value and not utilize kflag at all. It will match
+> libbpf API as you defined it naturally.
 
-Right, will log component_idx. kflag is not needed per above discussion.
+will do.
 
 > 
->> +}
 >> +
->> +static const struct btf_kind_operations tag_ops = {
->> +       .check_meta = btf_tag_check_meta,
->> +       .resolve = btf_tag_resolve,
->> +       .check_member = btf_df_check_member,
->> +       .check_kflag_member = btf_df_check_kflag_member,
->> +       .log_details = btf_tag_log,
->> +       .show = btf_df_show,
->> +};
+>> +       return btf_commit_type(btf, sz);
+>> +}
 >> +
 > 
 > [...]
 > 
+>>          case BTF_KIND_ARRAY: {
+>> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+>> index 4a711f990904..a78cf8331d49 100644
+>> --- a/tools/lib/bpf/btf.h
+>> +++ b/tools/lib/bpf/btf.h
+>> @@ -141,6 +141,9 @@ LIBBPF_API int btf__add_datasec(struct btf *btf, const char *name, __u32 byte_sz
+>>   LIBBPF_API int btf__add_datasec_var_info(struct btf *btf, int var_type_id,
+>>                                           __u32 offset, __u32 byte_sz);
+>>
+>> +/* tag contruction API */
+> 
+> typo: construction, but I'd put it after btf__add_restrict with no comment
+
+ack.
+
+> 
+>> +LIBBPF_API int btf__add_tag(struct btf *btf, const char *name, int comp_id, int ref_type_id);
+>> +
+>>   struct btf_dedup_opts {
+>>          unsigned int dedup_table_size;
+>>          bool dont_resolve_fwds;
+>> @@ -328,6 +331,11 @@ static inline bool btf_is_float(const struct btf_type *t)
+>>          return btf_kind(t) == BTF_KIND_FLOAT;
+>>   }
+>>
+>> +static inline bool btf_is_tag(const struct btf_type *t)
+>> +{
+>> +       return btf_kind(t) == BTF_KIND_TAG;
+>> +}
+>> +
+>>   static inline __u8 btf_int_encoding(const struct btf_type *t)
+>>   {
+>>          return BTF_INT_ENCODING(*(__u32 *)(t + 1));
+>> @@ -396,6 +404,11 @@ btf_var_secinfos(const struct btf_type *t)
+>>          return (struct btf_var_secinfo *)(t + 1);
+>>   }
+>>
+> 
+> please add `struct btf_tag;` forward reference for those users who are
+> compiling with old UAPI headers.
+
+okay.
+
+> 
+>> +static inline struct btf_tag *btf_tag(const struct btf_type *t)
+>> +{
+>> +       return (struct btf_tag *)(t + 1);
+>> +}
+>> +
+>>   #ifdef __cplusplus
+>>   } /* extern "C" */
+>>   #endif
+> 
+> [...]
+> 
+>>   LIBBPF_0.5.0 {
+>>          global:
+>> +               btf__add_tag;
+>>                  bpf_map__initial_value;
+>>                  bpf_map__pin_path;
+>>                  bpf_map_lookup_and_delete_elem_flags;
+>> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+>> index 533b0211f40a..7deb86d9af51 100644
+>> --- a/tools/lib/bpf/libbpf_internal.h
+>> +++ b/tools/lib/bpf/libbpf_internal.h
+>> @@ -69,6 +69,8 @@
+>>   #define BTF_VAR_SECINFO_ENC(type, offset, size) (type), (offset), (size)
+>>   #define BTF_TYPE_FLOAT_ENC(name, sz) \
+>>          BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_FLOAT, 0, 0), sz)
+>> +#define BTF_TYPE_TAG_KIND_ENC(name, type) \
+> 
+> following other macro names, it should be BTF_TYPE_TAG_ENC, no?
+
+This is to differentiate the case from attr to member/func_argument
+which is implemented in selftest test_btf.h.
+
+But with the new scheme, we just need BTF_TYPE_TAG_ENC. Will change.
+
+> 
+>> +       BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_TAG, 1, 0), type), (0)
+>>
+>>   #ifndef likely
+>>   #define likely(x) __builtin_expect(!!(x), 1)
+>> --
+>> 2.30.2
+>>
