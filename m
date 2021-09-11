@@ -2,96 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F0A4073CD
-	for <lists+bpf@lfdr.de>; Sat, 11 Sep 2021 01:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EE340744C
+	for <lists+bpf@lfdr.de>; Sat, 11 Sep 2021 02:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234833AbhIJXYX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Sep 2021 19:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbhIJXYR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Sep 2021 19:24:17 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2E9C061574;
-        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id j16so3244062pfc.2;
-        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8Nm0hLYksfNthawk6Krwt62VT8XOIlxDrMAJH+VYgps=;
-        b=N5V+KCdsfUx5v0OAtOaJpLOyWhfp2PFnTDIlXSfYl6DhWMWY2OA6H7h6umO2TXxRT/
-         49nXIVUa5GR46TWfet4+KNH+r62lpZFr6wi1DTUSutyLMRJhRyIO5XmALb4y3m/03Skd
-         AeVKKWr82P9ZHprxWBlJ85khqt6elbfpOcVbfDwrwXb+yOBo5Va/o+aKETRjv0nOTlb7
-         36e+hMIx8fd+ZuRK+YWLgOHTTYvvb6CVQoA0BgC+LgJeVfyJ0legT7ZaJPjs5bK19X3P
-         fmVEUftPr2HVZ6h6JwKJSgu6CKlUV6/wA/9N6NSIo3iDrF4pq9gBoMlF0fbzl6MQF6iq
-         b4Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8Nm0hLYksfNthawk6Krwt62VT8XOIlxDrMAJH+VYgps=;
-        b=LSouG6jRhr74r7qufuyL8+RN+UyVcG2LUlVQRTc6yLqUtkv+M/Jh9LNDwbAHYXPxWf
-         gzpnNt62QA9YHSvxzHaqeMfWOq5ntu/oXdDo33Uma7SDDsG8QBOnZaOrMGuF/Xn9niB0
-         8h6h1wUY+oqylvViiIN/965F8Ubojjw+OobOgtYL02+W/A3KqQFLc0FnWWuVdT3mq972
-         30XTW2YD7cHBr1yXGM9DdwC+LGXXcbuP+nNiQroBC+N39f7hzJbqeomeoys+cAyK0iMy
-         77UlEsJA0qqhvkZenIqKqvdnw+4MDTmldocUjMmcrfdnoRwjJUJkR/EpKV7lUiTeQFwu
-         PLuA==
-X-Gm-Message-State: AOAM531DHjE94/HolVtqqPByuW5BjhYl5IcSg5Q+W51kAMRxGrZcocry
-        HaaKTqi8Az+chlf+dHiAySM=
-X-Google-Smtp-Source: ABdhPJwrI+P4sIrm36OEQcMJbs9b+blsntJXiPWjIGX17mkNBaW3eacpOKw/O0GDa6tigKfbnfjxew==
-X-Received: by 2002:a63:7e11:: with SMTP id z17mr139932pgc.436.1631316185321;
-        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:5d1f])
-        by smtp.gmail.com with ESMTPSA id f6sm5058pfa.110.2021.09.10.16.23.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 16:23:05 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 16:23:03 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: [PATCH] treewide: Remove unnamed static initializations to 0
-Message-ID: <20210910232303.vzwzoo2vvyga6jjs@ast-mbp.dhcp.thefacebook.com>
-References: <20210910225207.3272766-1-keescook@chromium.org>
+        id S231723AbhIKBBH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Sep 2021 21:01:07 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:16186 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229493AbhIKBBH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Sep 2021 21:01:07 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H5vWk5BsDz1DGp2;
+        Sat, 11 Sep 2021 08:58:58 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 11 Sep 2021 08:59:53 +0800
+Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 11 Sep
+ 2021 08:59:53 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>
+Subject: [PATCH -next v2] bpf: Add oversize check before call kvcalloc()
+Date:   Sat, 11 Sep 2021 08:55:57 +0800
+Message-ID: <20210911005557.45518-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910225207.3272766-1-keescook@chromium.org>
+Content-Type: text/plain
+X-Originating-IP: [10.174.28.241]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 03:52:07PM -0700, Kees Cook wrote:
-> GCC 4.9 does not like having struct assignments to 0 when members may be
-> compound types. For example, there are 186 instances of these kinds of
-> errors:
-> 
-> drivers/virtio/virtio_vdpa.c:146:9: error: missing braces around initializer [-Werror=missing-braces ]
-> drivers/cxl/core/regs.c:40:17: error: missing braces around initializer [-Werror=missing-braces]
-> 
-> Since "= { 0 }" and "= { }" have the same meaning ("incomplete
-> initializer") they will both initialize the given variable to zero
-> (modulo padding games).
-> 
-> After this change, I can almost build the "allmodconfig" target with
-> GCC 4.9 again.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add the
+oversize check. When the allocation is larger than what kmalloc() supports,
+the following warning triggered:
 
-...
+WARNING: CPU: 0 PID: 8408 at mm/util.c:597 kvmalloc_node+0x108/0x110 mm/util.c:597
+Modules linked in:
+CPU: 0 PID: 8408 Comm: syz-executor221 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvmalloc_node+0x108/0x110 mm/util.c:597
+Call Trace:
+ kvmalloc include/linux/mm.h:806 [inline]
+ kvmalloc_array include/linux/mm.h:824 [inline]
+ kvcalloc include/linux/mm.h:829 [inline]
+ check_btf_line kernel/bpf/verifier.c:9925 [inline]
+ check_btf_info kernel/bpf/verifier.c:10049 [inline]
+ bpf_check+0xd634/0x150d0 kernel/bpf/verifier.c:13759
+ bpf_prog_load kernel/bpf/syscall.c:2301 [inline]
+ __sys_bpf+0x11181/0x126e0 kernel/bpf/syscall.c:4587
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x78/0x90 kernel/bpf/syscall.c:4689
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
->  .../selftests/bpf/prog_tests/perf_branches.c  |   4 +-
->  .../selftests/bpf/prog_tests/sk_lookup.c      |  12 +-
->  .../selftests/bpf/prog_tests/sockmap_ktls.c   |   2 +-
->  .../selftests/bpf/prog_tests/sockmap_listen.c |   4 +-
->  .../selftests/bpf/progs/test_sk_assign.c      |   6 +-
->  .../selftests/bpf/progs/test_xdp_vlan.c       |   8 +-
+Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+---
+Chang in v2:
+* Change 'if (nr_linfo * sizeof(struct bpf_line_info) > INT_MAX)' to
+  'if (nr_lifo > INT_MAX / sizeof(struct bpf_line_info))'.
 
-Those have nothing to do with GCC. They are compiled with clang with -target bpf.
-Did you check that bpf selftests still pass?
-We've had issues with older clang generating different code with zero and non-zero
-assignments and libbpf was confused.
-It should all work now, but please run the tests.
+ kernel/bpf/verifier.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index a0dd972d5b41..de006552be8a 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9912,6 +9912,8 @@ static int check_btf_line(struct bpf_verifier_env *env,
+ 	nr_linfo = attr->line_info_cnt;
+ 	if (!nr_linfo)
+ 		return 0;
++	if (nr_linfo > INT_MAX / sizeof(struct bpf_line_info))
++		return -EINVAL;
+ 
+ 	rec_size = attr->line_info_rec_size;
+ 	if (rec_size < MIN_BPF_LINEINFO_SIZE ||
+-- 
+2.17.1
+
