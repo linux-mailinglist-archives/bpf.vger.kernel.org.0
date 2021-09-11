@@ -2,116 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0821B407491
-	for <lists+bpf@lfdr.de>; Sat, 11 Sep 2021 04:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980BE407499
+	for <lists+bpf@lfdr.de>; Sat, 11 Sep 2021 04:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbhIKCJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Sep 2021 22:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231864AbhIKCJm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Sep 2021 22:09:42 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCAFFC061574
-        for <bpf@vger.kernel.org>; Fri, 10 Sep 2021 19:08:30 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id oc9so2553000pjb.4
-        for <bpf@vger.kernel.org>; Fri, 10 Sep 2021 19:08:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TYEcQmflhYE+hyurBKutm0eJn4sDsVi6RJl7l/U9hR0=;
-        b=oU+vvaU6UXZ454CWHEU8C7Dm51INXTn0lZhCgiimvidERmL5V1RibI7BIro1jijnXW
-         nyrvAHj37fzp0A3jd+JQJA7xjNFscIEO/SATurM0k2VFs1htwZBwzElpTpFozmEMk3r4
-         MMpW2MDlveEL/LrFVkuPh/S6K7wZhF/67T8j0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TYEcQmflhYE+hyurBKutm0eJn4sDsVi6RJl7l/U9hR0=;
-        b=lcyOwPinvXbZuQnjRXMgeVHvTZlxzMZi04hTxM/8kURnqEFL8Z07m9poey03EykQO+
-         d3ZoBaXNlr3goMsIXiybiJuRH03Rj7mUKJOLO80CikmRopfldbq56FpGWiAVIcBaPfo+
-         uSLV1cEeghR5XV7cUN/zatvQuYYyN+Zzbxkgl4gSZ0V1fIqhbkVzbwMrsncCgqHR//D8
-         7EO2re9yN5wkJxOdhvkDZYiHmJCQ/8b9iMHP9dS3dq13BYUxXjtTqIjR/unVbuQ3FbXE
-         5n5Hl1Upd/Smj17+byEuEE47CgXz83iVGG6uEugFT9PRM35Wk3MBcMjXloEd7J++m/Ll
-         a8AA==
-X-Gm-Message-State: AOAM530a2DNlSVmmjMqS/gnMOdQd5nuZmmKbRvw9PNOLzuxGxLtA0JDk
-        5Mgbr13yRBk5Clcwx2nIlpMRCNWD9PqENw==
-X-Google-Smtp-Source: ABdhPJyhfzq9ovFR5pjw2h3Qosze96EEiaBU3gtg2iZDaXaBfS7G8RV3Gu1WBdVCpOzdHhCltxL9+w==
-X-Received: by 2002:a17:902:7e47:b0:137:60bd:c08f with SMTP id a7-20020a1709027e4700b0013760bdc08fmr663909pln.8.1631326110294;
-        Fri, 10 Sep 2021 19:08:30 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s3sm161516pfd.188.2021.09.10.19.08.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 19:08:29 -0700 (PDT)
-Date:   Fri, 10 Sep 2021 19:08:28 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: [PATCH] treewide: Remove unnamed static initializations to 0
-Message-ID: <202109101845.FF22342@keescook>
-References: <20210910225207.3272766-1-keescook@chromium.org>
- <20210910232303.vzwzoo2vvyga6jjs@ast-mbp.dhcp.thefacebook.com>
+        id S234901AbhIKCRp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Sep 2021 22:17:45 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:58700 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231864AbhIKCRo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Sep 2021 22:17:44 -0400
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxNeVnETxhUBEEAA--.12974S3;
+        Sat, 11 Sep 2021 10:16:08 +0800 (CST)
+Subject: Re: [PATCH bpf-next] bpf, selftests: Replicate tailcall limit test
+ for indirect call case
+To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+References: <20210910091900.16119-1-daniel@iogearbox.net>
+Cc:     alexei.starovoitov@gmail.com, andrii@kernel.org,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Paul Chaignon <paul@cilium.io>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <955d6907-7abe-fb3f-5225-8711974818c7@loongson.cn>
+Date:   Sat, 11 Sep 2021 10:16:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910232303.vzwzoo2vvyga6jjs@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210910091900.16119-1-daniel@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxNeVnETxhUBEEAA--.12974S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAryfWrW3JF47JF47tFyxKrg_yoW5ZF48pr
+        9xXw1Y9rWkZ345AF42gw40gF98AFWDAFyDJw1rC3sxAF4kury2gF4jkFy8CFyYkr1Yqa4j
+        qwn7Zr18t3Z5CaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
+        c2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU5DOzDUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 04:23:03PM -0700, Alexei Starovoitov wrote:
-> On Fri, Sep 10, 2021 at 03:52:07PM -0700, Kees Cook wrote:
-> > GCC 4.9 does not like having struct assignments to 0 when members may be
-> > compound types. For example, there are 186 instances of these kinds of
-> > errors:
-> > 
-> > drivers/virtio/virtio_vdpa.c:146:9: error: missing braces around initializer [-Werror=missing-braces ]
-> > drivers/cxl/core/regs.c:40:17: error: missing braces around initializer [-Werror=missing-braces]
-> > 
-> > Since "= { 0 }" and "= { }" have the same meaning ("incomplete
-> > initializer") they will both initialize the given variable to zero
-> > (modulo padding games).
-> > 
-> > After this change, I can almost build the "allmodconfig" target with
-> > GCC 4.9 again.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> ...
-> 
-> >  .../selftests/bpf/prog_tests/perf_branches.c  |   4 +-
-> >  .../selftests/bpf/prog_tests/sk_lookup.c      |  12 +-
-> >  .../selftests/bpf/prog_tests/sockmap_ktls.c   |   2 +-
-> >  .../selftests/bpf/prog_tests/sockmap_listen.c |   4 +-
-> >  .../selftests/bpf/progs/test_sk_assign.c      |   6 +-
-> >  .../selftests/bpf/progs/test_xdp_vlan.c       |   8 +-
-> 
-> Those have nothing to do with GCC. They are compiled with clang with -target bpf.
-> Did you check that bpf selftests still pass?
-> We've had issues with older clang generating different code with zero and non-zero
-> assignments and libbpf was confused.
-> It should all work now, but please run the tests.
+On 09/10/2021 05:19 PM, Daniel Borkmann wrote:
+> The tailcall_3 test program uses bpf_tail_call_static() where the JIT
+> would patch a direct jump. Add a new tailcall_6 test program replicating
+> exactly the same test just ensuring that bpf_tail_call() uses a map
+> index where the verifier cannot make assumptions this time.
+>
+> In other words, this will now cover both on x86-64 JIT, meaning, JIT
+> images with emit_bpf_tail_call_direct() emission as well as JIT images
+> with emit_bpf_tail_call_indirect() emission.
+>
+>    # echo 1 > /proc/sys/net/core/bpf_jit_enable
+>    # ./test_progs -t tailcalls
+>    #136/1 tailcalls/tailcall_1:OK
+>    #136/2 tailcalls/tailcall_2:OK
+>    #136/3 tailcalls/tailcall_3:OK
+>    #136/4 tailcalls/tailcall_4:OK
+>    #136/5 tailcalls/tailcall_5:OK
+>    #136/6 tailcalls/tailcall_6:OK
+>    #136/7 tailcalls/tailcall_bpf2bpf_1:OK
+>    #136/8 tailcalls/tailcall_bpf2bpf_2:OK
+>    #136/9 tailcalls/tailcall_bpf2bpf_3:OK
+>    #136/10 tailcalls/tailcall_bpf2bpf_4:OK
+>    #136/11 tailcalls/tailcall_bpf2bpf_5:OK
+>    #136 tailcalls:OK
+>    Summary: 1/11 PASSED, 0 SKIPPED, 0 FAILED
+>
+>    # echo 0 > /proc/sys/net/core/bpf_jit_enable
+>    # ./test_progs -t tailcalls
+>    #136/1 tailcalls/tailcall_1:OK
+>    #136/2 tailcalls/tailcall_2:OK
+>    #136/3 tailcalls/tailcall_3:OK
+>    #136/4 tailcalls/tailcall_4:OK
+>    #136/5 tailcalls/tailcall_5:OK
+>    #136/6 tailcalls/tailcall_6:OK
+>    [...]
+>
+> For interpreter, the tailcall_1-6 tests are passing as well. The later
+> tailcall_bpf2bpf_* are failing due lack of bpf2bpf + tailcall support
+> in interpreter, so this is expected.
+>
+> Also, manual inspection shows that both loaded programs from tailcall_3
+> and tailcall_6 test case emit the expected opcodes:
+>
+> * tailcall_3 disasm, emit_bpf_tail_call_direct():
+>
+>    [...]
+>     b:   push   %rax
+>     c:   push   %rbx
+>     d:   push   %r13
+>     f:   mov    %rdi,%rbx
+>    12:   movabs $0xffff8d3f5afb0200,%r13
+>    1c:   mov    %rbx,%rdi
+>    1f:   mov    %r13,%rsi
+>    22:   xor    %edx,%edx                 _
+>    24:   mov    -0x4(%rbp),%eax          |  limit check
+>    2a:   cmp    $0x20,%eax               |
+>    2d:   ja     0x0000000000000046       |
+>    2f:   add    $0x1,%eax                |
+>    32:   mov    %eax,-0x4(%rbp)          |_
+>    38:   nopl   0x0(%rax,%rax,1)
+>    3d:   pop    %r13
+>    3f:   pop    %rbx
+>    40:   pop    %rax
+>    41:   jmpq   0xffffffffffffe377
+>    [...]
+>
+> * tailcall_6 disasm, emit_bpf_tail_call_indirect():
+>
+>    [...]
+>    47:   movabs $0xffff8d3f59143a00,%rsi
+>    51:   mov    %edx,%edx
+>    53:   cmp    %edx,0x24(%rsi)
+>    56:   jbe    0x0000000000000093        _
+>    58:   mov    -0x4(%rbp),%eax          |  limit check
+>    5e:   cmp    $0x20,%eax               |
+>    61:   ja     0x0000000000000093       |
+>    63:   add    $0x1,%eax                |
+>    66:   mov    %eax,-0x4(%rbp)          |_
+>    6c:   mov    0x110(%rsi,%rdx,8),%rcx
+>    74:   test   %rcx,%rcx
+>    77:   je     0x0000000000000093
+>    79:   pop    %rax
+>    7a:   mov    0x30(%rcx),%rcx
+>    7e:   add    $0xb,%rcx
+>    82:   callq  0x000000000000008e
+>    87:   pause
+>    89:   lfence
+>    8c:   jmp    0x0000000000000087
+>    8e:   mov    %rcx,(%rsp)
+>    92:   retq
+>    [...]
+>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> Cc: Paul Chaignon <paul@cilium.io>
+> Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Link: https://lore.kernel.org/bpf/CAM1=_QRyRVCODcXo_Y6qOm1iT163HoiSj8U2pZ8Rj3hzMTT=HQ@mail.gmail.com
 
-Sure! I think selftests/bpf/config is missing:
+Tested-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-CONFIG_DEBUG_INFO=y
-CONFIG_DEBUG_INFO_BTF=y
-
-I can't get much further, though:
-
-$ make -C tools/testing/selftests gen_tar TARGETS="bpf" FORMAT=.xz
-make: Entering directory '/srv/code/tools/testing/selftests'
-make --no-builtin-rules ARCH=x86 -C ../../.. headers_install
-make[1]: Entering directory '/srv/code'
-  INSTALL ./usr/include
-make[1]: Leaving directory '/srv/code'
-make: *** [Makefile:162: all] Error 1
-make: Leaving directory '/srv/code/tools/testing/selftests'
-
-I'm not sure what's breaking ...
-
--- 
-Kees Cook
