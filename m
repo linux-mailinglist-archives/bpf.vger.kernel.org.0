@@ -2,65 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EC6408E90
-	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 15:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0DA4096C8
+	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 17:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242323AbhIMNfx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Sep 2021 09:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        id S237213AbhIMPLg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Sep 2021 11:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241725AbhIMNdz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:33:55 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E70C061155
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 06:20:50 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id r8so6148077uap.0
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 06:20:50 -0700 (PDT)
+        with ESMTP id S240926AbhIMPLc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Sep 2021 11:11:32 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA97C0AB616
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 06:55:56 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id x11so21326890ejv.0
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 06:55:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Aof+Ll0VU3CfSuazpXwPscnH3NECndi7GbcUrswdmZU=;
-        b=lE+GmwPuWFia6naPJEjzRAPHB2+dKRx/vSbzowOj35PEZSn+LyzrrmO8CX85vYJEbY
-         Vax37+YveXdOtUyD8lBsTKvn/dFtMLKl4hxmz0ZHxvh4rOEGmLpqaQ5jIg3z94Z2ZciJ
-         g1PzN7Bgn6kc+XXzLp1dvD7WZ0rxGSNjtADVxr4bSHQ0eZ55ced4OROaCG1vLvHW9cFu
-         MrggZGXk3iAXbxDeWXNxJQCcSM5PqmywRtm+erSbpS3NIjT/oDV06O7G0VCZ8M0/Z6wh
-         qVJ81QOOZPWbpVhFek99Xqus2sQF8BVOt/dQ1/RvhUYdGmEcSp9ukxrz3aLosXexfAYC
-         MSQw==
+        bh=t2wX8nR1T8btYLtXUDlZrw3FpgXbl3J4BId+XQlRuso=;
+        b=OEailqfvCTkqngbPim2b/wX0idOfa2sEHuDiJuJpttqmyJhZVwYOpMkb0FDKLEslHo
+         EENRiKWW5QeNgNTt81zEVdkWhIjiHEa5CwaE+A7ueb5tWPruliDywfhPTVPUFP36IlyK
+         otGyQ+fFbxn86VEX8PZbXnkTyN6XVzjisl6jzleI7J6tbBkUT/lBt6HiETDDoDsse5Nd
+         NM6gQRMkOkHQLFur7Tz/BJTTA1akA3OW5PjW5S74r+Vt0zhbK91wUgZg95Ww+DmV3f9a
+         K8adWgRxPVXQn/hDZ7XWVlua7d2BH2ugzMZaa3VpADj6SWyKJaIDVseXJHhuphU1C1t/
+         cM/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:reply-to:from:date:message-id
          :subject:to;
-        bh=Aof+Ll0VU3CfSuazpXwPscnH3NECndi7GbcUrswdmZU=;
-        b=l5OOf099Jhn0qRhkxZlDexmmBtj7xcC0UGto1tJPaAiBd1yCQJ2lnRirXmXvs/fx6D
-         oqVfnGbeRDn26RG+VXZuNB3nUEj9vZVG9/EfsbKCi1IRxs6VJDknXYCTDyTYqZJZNpwd
-         4th8jHS7UCDfum9hFlcKHESCGRLglLQJSTk7IlSflPizl+B/r6VVuXf+I7hUfboR/pRi
-         YID09px/AunHOlvm8Udd+zT51R2z6BH0zvIVEd7zL4BVuijTcJOjqxluU/gkMJwogNDL
-         fbGI2AN4lavcTYV8yYIl2UZn89i+L4iPDhKJmziMo0Ytu7FJJFwy3d2fJ4HYRQWDHiAg
-         cH4Q==
-X-Gm-Message-State: AOAM532N3T+uY6Pda+dX44yMqnce3shfK1YQE1S28cJHeh0eyh4UlmXc
-        Iak319sJ3T4gQANJt0eJuxpYa6ea04/GztYhBVk=
-X-Google-Smtp-Source: ABdhPJynUNanK6y2FPWjHn0S2ceQq4jgyvsabxztzIk6yTrxt2Yh4oOxAM0bGuj4DjKE4xenGqT/FQvEpyjWUSRSBEw=
-X-Received: by 2002:ab0:6847:: with SMTP id a7mr4874926uas.48.1631539249260;
- Mon, 13 Sep 2021 06:20:49 -0700 (PDT)
+        bh=t2wX8nR1T8btYLtXUDlZrw3FpgXbl3J4BId+XQlRuso=;
+        b=HWeiQfHsPANidjCMj+SwEQW6zuWyJaEmdhQVOEm7vBjXILR+e2NEG/OpTOrB6yZ8l8
+         HhDkUdNkGiJlagXQ3e4td127nBKkl+oq5eQ79UPM2O/Q6DcDId47cCLHelWbSmLVm9aS
+         BjdJy6q3pzIAlywQrkaM4ifw/Z//iFtlPcwY/vjgpqEe/lnzyHWg/mfb1/RwF6idN4Xh
+         YeNOpfkWaKvL6vzk8rC65HEp70gTbwsJ0oO7anP32m+LBTEmiZomstNz9ixk7hh1Jd+F
+         CJVk+ytrs8MFmH3+F7We4Hff9Lia10vxGbhu8cCAcFhqGCifjBQXxyWL/zZjG0zBoLjP
+         HzFw==
+X-Gm-Message-State: AOAM531NmMmqgiTXr5g4chs0CLGz/r3hEZ/3HZfpBJlXDtmnicB0MllH
+        o/Amv6aaEQuS+aXVKMxvKRUpzEOp8cvz4y4jNTI=
+X-Google-Smtp-Source: ABdhPJx/Z0lH1nxs+R6iLkRuFz99t5XE9o0VZ9tvSamcXLvsXDOFfisJ+OAYXp2uxVvJyYlQkJDE701gQhL9ZOEGSik=
+X-Received: by 2002:a17:906:b14d:: with SMTP id bt13mr12899266ejb.39.1631541354836;
+ Mon, 13 Sep 2021 06:55:54 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a59:910d:0:b0:22d:44bc:2284 with HTTP; Mon, 13 Sep 2021
- 06:20:48 -0700 (PDT)
-Reply-To: ooisangkuang63@gmail.com
-From:   Mr Ooi Sang Kuang <hassanaisha89@gmail.com>
-Date:   Mon, 13 Sep 2021 09:20:48 -0400
-Message-ID: <CAExVo+VyHXVWK=5L_zj2WtGMmwH-99uWptO+fWZgXY+V66YOjA@mail.gmail.com>
-Subject: Hello
+Received: by 2002:a54:3652:0:0:0:0:0 with HTTP; Mon, 13 Sep 2021 06:55:54
+ -0700 (PDT)
+Reply-To: mrs.sophia_robin.sr@list.ru
+From:   "mrs.sophia_robin" <sandrinejohnpaul30@gmail.com>
+Date:   Mon, 13 Sep 2021 14:55:54 +0100
+Message-ID: <CANWjYXikc-PKuPALGr8N4CkksTwsaSR_qFYdpGPCOPOZNJScxA@mail.gmail.com>
+Subject: Hello My Dearest
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Hello,
+i am Mrs.Sophia Robin, a citizen of the united state of America, I
+work at HSBC Bank in Milan Italy, as Telex Manager charge of wire
+transfer department, I am contacting you personally for investment
+assistance and a long term business relationship in your Country.I am
+contacting you for an important and  urgent business transaction,
+I want the bank to transfer the money left by Dr. Cheng Chao, A
+Chinese  Politician who died, March 17th 2020, without any trace of
+his family members, he used our bank to launder money overseas through
+the help of their Political advisers. And most of the funds which they
+transferred out of the shores of China, were gold and oil money that
+was supposed to have been used to develop the continent.
 
-I want to discuss an important project issue with you.
-Please, let me know if this email is valid.
+Can you invest this money and also help the poor? The amount value at
+$15.5million Dollars  ($US15,500,000), left in his account still
+unclaimed, if you know that you are capable to invest this fund into
+any profitable business in your country kindly send me your details
+information as listed below to enable me draft you an application form
+of claim along with the deposit certificate which you are going to
+fill with your bank account detail necessary and contact the HSBC Bank
+in Italy for immediate transfer of the Amounted sum into your bank
+account direct. Percentage share will be 60,for me/ 40, for you.
 
-Thank you,
-Mr Ooi Sang Kuang
+(1) Your full name..................................................
+(2) Your address....................................................
+(3) Your Nationality.................................................
+(4) Your Age / Sex.....................................................
+(5) Your  Occupation............................................
+(6) Your marital status......................................
+(7) Your direct telephone number..................
+(8) Your photo.......................................
+
+Thanks with my best regards.
+Mrs. Sophia Robin,
+Telex Manager Milan Italy  (H.S.B.C)
