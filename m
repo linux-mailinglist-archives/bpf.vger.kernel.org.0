@@ -2,497 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4854082E1
-	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 04:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EB64082E6
+	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 04:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236880AbhIMCkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 12 Sep 2021 22:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235364AbhIMCkh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 12 Sep 2021 22:40:37 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903F9C061574;
-        Sun, 12 Sep 2021 19:39:22 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id q22so7470039pfu.0;
-        Sun, 12 Sep 2021 19:39:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=GFHCz/WYhWjJ1sEcxMuV5/OqqXBGyppfPAvgnyAN3Eg=;
-        b=De58Cm8gXLXTknhGTbNogM96lO5T9tVsvpIF3wMv91mr1m7bArmD1g/Wx1gpzus7bv
-         Bix1pb4U4mJg6Nevod6eoCko+oPbZOywVRzVa9x95Hj+gy3XLdhL064TMgbANVx5/fvB
-         BFa2ntcTFSDSwy+byBsp2ABB2QqYAAtx9cA9whDhGWxMYL5OBwCzxDYbW2H4gUvGKpKx
-         W4x0IgWDDvXHUtxjeYt8Ljwr/CLgzm+HlchaWPe6o8xz/tvvHOIsF7A4VbPszl8yLlko
-         VP2KcoajTVCTl0dQ1D8WswfJ8TKv02lQALpw+LK7ZaiQwRo8ZyKx78X9Z0HpVyfn5ufk
-         p17g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=GFHCz/WYhWjJ1sEcxMuV5/OqqXBGyppfPAvgnyAN3Eg=;
-        b=mtlDtuFnEIT5gsW3B7CTu4KkQueBPHXQdJHOdccbBBMzdvoWrYQ0T3yvpBtmm4hMd9
-         ZgPMfs8lY9SRXY/PLScwZtxiA7VF0rpVT80WP7YIfJj6FSeSwRNdiM9te1lzUUmmzRhj
-         dGNjIblVdwTHgSQLoVk09ltSUcz8EtHJgo3OO5wmLV0Q+8aBjKyw+OzJ7ym5FFA7Cf+m
-         MRLERMPcU0LOB2fpBojjZwUPcoDjFWupzhmpOQp4D+mMq0GgFVP4/Scic5GClVqoM9M4
-         8/2WTN3TijxXEwtpUamQ8n1uKjc2DAiYqayBbKEkB0efL6NsQT5A8G+Lcfrfi4kK3/WT
-         yIAQ==
-X-Gm-Message-State: AOAM530dXRWp1sYP/6r8NygGsj4rK1wD0e+X+ci8JXvdTruNaEIPPB2N
-        UoZxvfPYY7HP8YqIzJRQelhyxjrbN3JO0NLPBg==
-X-Google-Smtp-Source: ABdhPJykteJK8BxJ+OcH5Y9mfZMR06f2OuXk/IY8vLVvHPbKzqgpwfkt/zLcRaF1rki2FDIjVTxrpIuSBU5ReZseWL4=
-X-Received: by 2002:a65:6389:: with SMTP id h9mr9133374pgv.83.1631500761807;
- Sun, 12 Sep 2021 19:39:21 -0700 (PDT)
+        id S236880AbhIMCok (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 12 Sep 2021 22:44:40 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38718 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235364AbhIMCoj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 12 Sep 2021 22:44:39 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18CKEavA001803;
+        Sun, 12 Sep 2021 19:43:22 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=WrxWxKrOoWqiQLlJbIQ+DTW1Kk+wBVwbOt7N7+xPb5Q=;
+ b=mQKtMWeinZhMpaa4Of5JpmB6/FAY3r6HsK6oB1UZlulxBcEzM29o0NJJwAszhCV2pYUd
+ 731SjyrH222cTMo5Z6iIRrZXAQo95LfifoXO9SaQeCw2xnhXvUO63MFsPnwb81vaNUbi
+ fvxIctiLIld6JnSmvvbK6iM+aGCMMWnSc5Y= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b1k9rj0ub-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 12 Sep 2021 19:43:22 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Sun, 12 Sep 2021 19:43:20 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X9GzWXg20WiaRtP3aCtt1uRufV7S3kBxr/G7uEUhIyCZzXolgGkd8/HvFH7wAyaSH4Xqqf1j19Cme4IAUmBQK2hLD+9RkGsHgnppY/frBJQRJIfg48OVtSLL/cIK+1WsgXj/Q2X68k+WcTAjNylBAFjmV8LXF5uMTs4/bbOMATR1zzQDzVgjZT/l5rGarDREeFQDzswa7u3oqydAvyQdp6DVxg9yJVZ8Na6AAaIA5+CX5Okg/w5Je1W3gGM+whh4dmZZBO5CTsL0nIErNCdPAy/oRSuHpsY5P/riimJgf36JF912VgYc+5NyISfP/Hqaj6fbbKSJ5EJ7kEXucGgaDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=WrxWxKrOoWqiQLlJbIQ+DTW1Kk+wBVwbOt7N7+xPb5Q=;
+ b=XkkzthQ71bNXE6N6OQ6tYjC0X9dRDSriaobFlPjUs5lzPuhiAXLQWeF003WriWbFp5oz9wpQWs7mGADiGUN14HlVARghjjnki+bjfdc6OEbeDFMyuLgdASMgrDv2RFDmzfoNSHZhtEq6L8ArooT2MVwS78SIatl3urWdtyuIEPrDi5InuOl4uXAGqZsZ8BBWCL/a2oefNpO4ml/BH6mcOrwiE10s11XrZJWpL6j3pFeqJay6Mv1epms+8uXRyRiaVPMxCSHIB7HSU1mgTJDBdU3dABE8qridcp/aiCeLk3GQS+NQmxsSE3p/N2HHihRlz4OAgsbFdTS+ROescOPdNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR15MB2287.namprd15.prod.outlook.com (2603:10b6:805:23::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Mon, 13 Sep
+ 2021 02:43:20 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4500.018; Mon, 13 Sep 2021
+ 02:43:19 +0000
+Subject: Re: [PATCH v3 bpf-next] selftests/bpf: Add parallelism to test_progs
+To:     "sunyucong@gmail.com" <sunyucong@gmail.com>
+CC:     Yucong Sun <fallentree@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20210909193544.1829238-1-fallentree@fb.com>
+ <40733168-d1b1-4d9e-63a5-e767bc9dc1ad@fb.com>
+ <CAJygYd3NX3qi7sOHiQOmbiJju8zMy3ip0bmreOmRPtgp=S3YtA@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <97fb8a21-70b5-39e6-6d6a-63cce9c17911@fb.com>
+Date:   Sun, 12 Sep 2021 19:43:16 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+In-Reply-To: <CAJygYd3NX3qi7sOHiQOmbiJju8zMy3ip0bmreOmRPtgp=S3YtA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+X-ClientProxiedBy: CO2PR07CA0063.namprd07.prod.outlook.com (2603:10b6:100::31)
+ To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+Received: from [IPv6:2620:10d:c085:21d6::1021] (2620:10d:c090:400::5:941f) by CO2PR07CA0063.namprd07.prod.outlook.com (2603:10b6:100::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 02:43:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ef550544-7845-4005-64ec-08d976603f25
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2287:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR15MB2287E34FE744D8DF19956CCDD3D99@SN6PR15MB2287.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WIQW0s5QYO1mPwfuogKW4QYXBkMxWFecEQW649o0gK463F3RcZbmL1WLow6PhlSadoA9kg6RNMhuU+NpBphQ+ZZHGYhFNPP7rPtWAKHnuYGVZG6KCrWvUWkYhRqYR6AHtlBpYkptxIXWPs6D9iUtNgbKE6YN8EBgXJien9hN11UxXeT2JtHWTfAAdA/7BA6X4pY8xjSjYsPYJWn2Bi7GXjtkcFtygA3YfttoN7ufV5iub4CLr89w+jjNPyABIc6G3Z9W7sFk4U5SyZKObA2LsXhMA/audt+ZN2Xll5AtdIRSOuNriRQYjOZcWTA2a+Ouaih5NhylNf7V5EHxEEPs+6kNGdONU/LxgmvPN9jpmLOsTKdPLZ55n+ztVBJAEh8HDz47t5TYIOCmY09XdK/knRui0nMmLdKa1lLCSDqIzbObGM1RvqSpg4c4rCdrpwk0RAz/Yqlo7t01kCSXWv2aqNbDSCrx6tQ5S6jR2Ghx6X1sF8zQJVF88SUzmLI+a9lNyROlg6OjsB6Of8wllN4VBvMqnQmPHv+z9ozBGrv24rQX4zfWqkfOBuwZZYyYLhE1+21b1WQGt8rBM4OtEKIWDJvWIaoKHAtlVarLZabLjhljQfUMwMI9r+IgBvN2rMf4zYIKcGosKdAYbg4zuMHZ8hV9+toI9jl+x+lbc95ob3ckQIl8CKWSaM0FtZs0DMHTSNOZ+l2PgyqIZznMWVX6F5HpiPRPBaxQAptr+xnvS7imP2EqMQ/cJZi1tGeh765zIDsxjfNlLm43hnq63OhX87pvwA/2OwOmd5wqbFRmI9mByjtSRmqhfCLLQR88xuqj1z24TbLs8kmj+zgk8vfsmQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(396003)(136003)(8676002)(2906002)(6666004)(4326008)(31696002)(86362001)(5660300002)(186003)(478600001)(66556008)(6486002)(54906003)(31686004)(8936002)(52116002)(66476007)(38100700002)(6916009)(2616005)(966005)(83380400001)(36756003)(66946007)(53546011)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VGgvYU9nTXp4VUE5N1Zaek4wakFkNTl5RkhzRk5pZXVJZFp0ck42dlBmY1dL?=
+ =?utf-8?B?MW9HRUpTMnpaLzJKeWlNVWRsV20yUTBrbmdZMmMrN25YQXNOem1OM0Q5WHZ4?=
+ =?utf-8?B?ODNCUmtGTmc4aTNNQ3hMQ0dQaVQzTU44MWJ1Z01qZ3QrZ1d0QTR2QStoLzZ2?=
+ =?utf-8?B?ZUdicXp5UmxocXZkVXA4OVR6eHhnU2t0SWJTcG9MV3hGOVN4cnU0ejVTRXdC?=
+ =?utf-8?B?WG5yRS9IRGpOVmNIdW0wSk8rdng5OVRSOXJvR3ZVNzZySTVnTE1VKzU4OElC?=
+ =?utf-8?B?NUU2NS9URGpRQi9PcDVaaDRhVkNLMFZEUmpYMkZPY1Z5MVVOaXY3NU1JRzFv?=
+ =?utf-8?B?ZWRKWG94WlllS2FiVjBSY2VzSDUwelRvcnZ6RkJIRmpMbnhlTTc5M0JuSGpI?=
+ =?utf-8?B?U2FQMy9CNnBONUk1RUQ1MWw4aXBjNFpxaXhaMVhvRVNwSjNNdUVuNGVVYUVL?=
+ =?utf-8?B?VFRBOVJCSHQxTE80SEVnT3lhRFVicGh5aGp6V2hlWGwrWmsvd2RRM0w4UUtY?=
+ =?utf-8?B?LzlNclppV3JrRWxMTUtod1hDTTQwTGtDQzh6TlZxNXhVNXdtdzJncERDd2s4?=
+ =?utf-8?B?T25tQWdxUWNGdFV0V2ZDaitzVFdxeWpSTmh2QUcrTXVQZlFKN2VadzRaMzF3?=
+ =?utf-8?B?Z3dSY1dQdFNNSm9SM0g1VVoyWXVFdE04RlZ5MjlYU2xVd09CbktjbjJsSkgx?=
+ =?utf-8?B?ZzQvS0JaTWJ5SERyUWJCVldoS1hkd0dMZmtMb1pKWU5xeEJzdEpFalFod2lV?=
+ =?utf-8?B?OVlKQTgxNW1QR0YybUNsbUR4a08rY3N0SmMvV1JNZ21rUURSOS8rWWcrSldH?=
+ =?utf-8?B?UEp0L1NlVngxekN6R2dlOGhrVkNCYWU2SWdPVWVudGd3VWhUYlowVUlOOGNa?=
+ =?utf-8?B?Wk83ZzhaTnN2aUNXcmdXdktsS2gyQTFuTC9lTmJSN05LSDBZSG94cmd2cU5O?=
+ =?utf-8?B?STlxNEJkMHNmdjBCRjZhUE12S1dxTHlYQ2ZuYWhNQkxiQStlMFNTVk4veVJp?=
+ =?utf-8?B?R0V3NUJjOUF5SVVFa1Fibm53UWt0Q3BLQjFpQVFHOGxxRG1MVlk3ODRESFlo?=
+ =?utf-8?B?dVcrYkJndVhvaWpSbDVqNE1wKzFqb0gyRFEvTEhwbXFIcmN5MjNmUkxoNW5X?=
+ =?utf-8?B?bTJiK2Vxazh4ajRKZU5BcUJhMExrbnByT0RqZ1piMEtsZ0h2b0llbDlxRE12?=
+ =?utf-8?B?ZEpFbGN0aW4ySCtocXZQU29nbTUvTFl4VmthUE1HZGNSWXZRMU1TNFIwSzE2?=
+ =?utf-8?B?dXhQeDBiT2FLZzB6Y0k2SVpGYXFKUmdYb0JDa1N0U3JTbG52cGdEN1ZNSm93?=
+ =?utf-8?B?UFlRaDcrUUp0QW5kTFIveUhzZnB2cStkMGlIOEJ2VXVWVFRqcnd6MHIxSHMw?=
+ =?utf-8?B?eU9ReG9ISVZFWFRyNkh4dTNvUHJ4TGNIUGhQZGhZTjdDQUlqRXFTL29iZHAz?=
+ =?utf-8?B?Ry9SbzhlUzRnWVpnUXlXRVNlYlJ3eFBrVGgxR2RWQ0JjNkJsbURlT28zSXQx?=
+ =?utf-8?B?SUx5bVVJem9JZzBGRVFRL1dXQ0U0NHU1aklrcjlEc1dNV2Y2Yzl1RW9DK2FY?=
+ =?utf-8?B?aTVsZFVRRjZnWXRlRjM0TG5JbTk4eUxOT3RxcHloRUdZMUZiRm9PTis4VHNS?=
+ =?utf-8?B?aWFyS3hrT1Z4UjhsbnZvN1R5OTU1eGJaeVdOQjQ4STFSa0RTTmFENjJSaENX?=
+ =?utf-8?B?MUFIc0pUUkthcGpwS08wTXV0VDdoa3gzRU5PS1VWS3VZeWV3STBieCtjUkRk?=
+ =?utf-8?B?eXR3U0w0citid3FVMnArR0p5bUVLMW9CY0kwaC80VlJLVGkxazZzdzVaVzJP?=
+ =?utf-8?Q?tploJr+QKMC6Wzs+rhEUgQwUfuHqYzOitEB/M=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef550544-7845-4005-64ec-08d976603f25
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 02:43:19.8648
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MK6gkvue5jgZ5YMmyfDMAmSJtZgmgfjJld2ypg3u/Mz6Q0EKTOgcbCK0xQ6XLRUw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2287
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: ANyxXl2DHwROC6EfEISIy1X55WhtgZXu
+X-Proofpoint-ORIG-GUID: ANyxXl2DHwROC6EfEISIy1X55WhtgZXu
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Mon, 13 Sep 2021 10:39:10 +0800
-Message-ID: <CACkBjsYnr4_uucVqvBpfDAgcnQqA6oneD1mHYe-TcLtDxuUs2A@mail.gmail.com>
-Subject: possible deadlock in __perf_event_task_sched_out
-To:     acme@kernel.org, linux-perf-users@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org
-Cc:     alexander.shishkin@linux.intel.com, andrii@kernel.org,
-        ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, jolsa@redhat.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, namhyung@kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-13_02,2021-09-09_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 bulkscore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1015
+ priorityscore=1501 phishscore=0 impostorscore=0 mlxscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109130017
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
-
-HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1Gy99NMo9JxZF6dHPdxnnb91n_jPJUQnA/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1c0u2EeRDhRO-ZCxr9MP2VvAtJd6kfg-p/view?usp=sharing
-
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-
-Call Trace:
- x86_pmu_enable+0x453/0xd50 arch/x86/events/core.c:1346
- perf_pmu_enable kernel/events/core.c:1207 [inline]
- perf_pmu_enable+0xcf/0x120 kernel/events/core.c:1203
- __perf_install_in_context+0x68e/0x9f0 kernel/events/core.c:2817
- remote_function kernel/events/core.c:91 [inline]
- remote_function+0x115/0x1a0 kernel/events/core.c:71
- generic_exec_single kernel/smp.c:518 [inline]
- generic_exec_single+0x1fe/0x300 kernel/smp.c:504
- smp_call_function_single+0x186/0x4b0 kernel/smp.c:755
- task_function_call+0xd9/0x160 kernel/events/core.c:119
- perf_install_in_context+0x2cb/0x550 kernel/events/core.c:2918
- __do_sys_perf_event_open+0x1c7c/0x2de0 kernel/events/core.c:12353
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb5e3f21c58 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: fbffffffffffffff RSI: 0000000000000000 RDI: 0000000020000040
-RBP: 00000000004ebd80 R08: 0000000000000009 R09: 0000000000000000
-R10: ffffffffffffffff R11: 0000000000000246 R12: 000000000059c0a0
-R13: 00007ffcc97e6abf R14: 00007ffcc97e6c60 R15: 00007fb5e3f21dc0
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.14.0+ #1 Not tainted
-------------------------------------------------------
-syz-executor/9146 is trying to acquire lock:
-ffff88801d635420 (&ctx->lock){....}-{2:2}, at:
-perf_event_context_sched_out kernel/events/core.c:3489 [inline]
-ffff88801d635420 (&ctx->lock){....}-{2:2}, at:
-__perf_event_task_sched_out+0x6e8/0x18d0 kernel/events/core.c:3597
-
-but task is already holding lock:
-ffff888063e319d8 (&rq->__lock){-.-.}-{2:2}, at:
-raw_spin_rq_lock_nested+0x1e/0x30 kernel/sched/core.c:474
-
-which lock already depends on the new lock.
 
 
-the existing dependency chain (in reverse order) is:
+On 9/10/21 11:53 AM, sunyucong@gmail.com wrote:
+> On Fri, Sep 10, 2021 at 2:28 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 9/9/21 12:35 PM, Yucong Sun wrote:
+>>> From: Yucong Sun <sunyucong@gmail.com>
+>>>
+>>> This patch adds "-j" mode to test_progs, executing tests in multiple process.
+>>> "-j" mode is optional, and works with all existing test selection mechanism, as
+>>> well as "-v", "-l" etc.
+>>>
+>>> In "-j" mode, main process use UDS/DGRAM to communicate to each forked worker,
+>>> commanding it to run tests and collect logs. After all tests are finished, a
+>>> summary is printed. main process use multiple competing threads to dispatch
+>>> work to worker, trying to keep them all busy.
+>>>
+>>> Example output:
+>>>
+>>>     > ./test_progs -n 15-20 -j
+>>>     [    8.584709] bpf_testmod: loading out-of-tree module taints kernel.
+>>>     Launching 2 workers.
+>>>     [0]: Running test 15.
+>>>     [1]: Running test 16.
+>>>     [1]: Running test 17.
+>>>     [1]: Running test 18.
+>>>     [1]: Running test 19.
+>>>     [1]: Running test 20.
+>>>     [1]: worker exit.
+>>>     [0]: worker exit.
+>>>     #15 btf_dump:OK
+>>>     #16 btf_endian:OK
+>>>     #17 btf_map_in_map:OK
+>>>     #18 btf_module:OK
+>>>     #19 btf_skc_cls_ingress:OK
+>>>     #20 btf_split:OK
+>>>     Summary: 6/20 PASSED, 0 SKIPPED, 0 FAILED
+>>
+>> I tried the patch with latest bpf-next and
+>>
+>> https://lore.kernel.org/bpf/20210909215658.hgqkvxvtjrvdnrve@revolver/T/#u
+>> to avoid kernel warning.
+>>
+>> My commandline is ./test_progs -j
+>> my env is a 4 cpu qemu.
+>> It seems the test is stuck and cannot finish:
+>> ...
+>> Still waiting for thread 0 (test 0).
+>>
+>>
+>> Still waiting for thread 0 (test 0).
+>>
+>>
+>> Still waiting for thread 0 (test 0).
+>>
+>>
+>> Still waiting for thread 0 (test 0).
+>>
+>>
+>> Still waiting for thread 0 (test 0).
+>>
+>>
+>>
+>>
+>>
+>> [1]+  Stopped                 ./test_progs -j
+> 
+> Sorry, It seems I forgot to test without "-n" param,  here is a
+> trivial patch that will make it work.
+> 
+> diff --git a/tools/testing/selftests/bpf/test_progs.c
+> b/tools/testing/selftests/bpf/test_progs.c
+> index 74c6ea45502d..dd7bb2bec4d4 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -780,7 +780,7 @@ void crash_handler(int signum)
+>          backtrace_symbols_fd(bt, sz, STDERR_FILENO);
+>   }
+> 
+> -int current_test_idx = -1;
+> +int current_test_idx = 0;
+>   pthread_mutex_t current_test_lock;
+> 
+>   struct test_result {
 
--> #3 (&rq->__lock){-.-.}-{2:2}:
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x520 kernel/locking/lockdep.c:5590
-       _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:368
-       raw_spin_rq_lock_nested+0x1e/0x30 kernel/sched/core.c:474
-       raw_spin_rq_lock kernel/sched/sched.h:1317 [inline]
-       rq_lock kernel/sched/sched.h:1620 [inline]
-       task_fork_fair+0x76/0x4e0 kernel/sched/fair.c:11091
-       sched_fork+0x406/0x990 kernel/sched/core.c:4393
-       copy_process+0x2002/0x73d0 kernel/fork.c:2165
-       kernel_clone+0xe7/0x10d0 kernel/fork.c:2585
-       kernel_thread+0xb5/0xf0 kernel/fork.c:2637
-       rest_init+0x23/0x3e0 init/main.c:684
-       start_kernel+0x47a/0x49b init/main.c:1125
-       secondary_startup_64_no_verify+0xb0/0xbb
+Indeed. With this change the './test_progs -j' finished
+although I saw some test failures which is also mentioned
+in the patch itself.
 
--> #2 (&p->pi_lock){-.-.}-{2:2}:
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x520 kernel/locking/lockdep.c:5590
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
-       try_to_wake_up+0xab/0x1880 kernel/sched/core.c:3981
-       up+0x92/0xe0 kernel/locking/semaphore.c:190
-       __up_console_sem+0xa4/0xc0 kernel/printk/printk.c:254
-       console_unlock+0x567/0xb40 kernel/printk/printk.c:2726
-       vga_remove_vgacon drivers/gpu/vga/vgaarb.c:211 [inline]
-       vga_remove_vgacon.cold+0x99/0x9e drivers/gpu/vga/vgaarb.c:192
-       drm_aperture_remove_conflicting_pci_framebuffers+0x1e8/0x2c0
-drivers/gpu/drm/drm_aperture.c:350
-       bochs_pci_probe+0x118/0x890 drivers/gpu/drm/tiny/bochs.c:643
-       local_pci_probe+0xdb/0x190 drivers/pci/pci-driver.c:323
-       pci_call_probe drivers/pci/pci-driver.c:380 [inline]
-       __pci_device_probe drivers/pci/pci-driver.c:405 [inline]
-       pci_device_probe+0x3e6/0x6f0 drivers/pci/pci-driver.c:448
-       call_driver_probe drivers/base/dd.c:517 [inline]
-       really_probe drivers/base/dd.c:596 [inline]
-       really_probe+0x245/0xbd0 drivers/base/dd.c:541
-       __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:751
-       driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:781
-       __driver_attach+0x1d6/0x3b0 drivers/base/dd.c:1140
-       bus_for_each_dev+0x147/0x1d0 drivers/base/bus.c:301
-       bus_add_driver+0x41d/0x630 drivers/base/bus.c:618
-       driver_register+0x1c4/0x330 drivers/base/driver.c:171
-       bochs_init+0x78/0x86 drivers/gpu/drm/tiny/bochs.c:720
-       do_one_initcall+0x103/0x650 init/main.c:1287
-       do_initcall_level init/main.c:1360 [inline]
-       do_initcalls init/main.c:1376 [inline]
-       do_basic_setup init/main.c:1396 [inline]
-       kernel_init_freeable+0x6ca/0x753 init/main.c:1598
-       kernel_init+0x1a/0x1d0 init/main.c:1490
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
--> #1 ((console_sem).lock){....}-{2:2}:
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x520 kernel/locking/lockdep.c:5590
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
-       down_trylock+0xe/0x60 kernel/locking/semaphore.c:138
-       __down_trylock_console_sem+0x40/0x120 kernel/printk/printk.c:237
-       console_trylock+0x12/0x90 kernel/printk/printk.c:2541
-       console_trylock_spinning kernel/printk/printk.c:1843 [inline]
-       vprintk_emit+0x141/0x4a0 kernel/printk/printk.c:2243
-       vprintk+0x80/0x90 kernel/printk/printk_safe.c:50
-       _printk+0xba/0xed kernel/printk/printk.c:2265
-       show_trace_log_lvl+0x57/0x2bb arch/x86/kernel/dumpstack.c:195
-       ex_handler_wrmsr_unsafe+0x47/0xc0 arch/x86/mm/extable.c:121
-       fixup_exception+0x9a/0xd0 arch/x86/mm/extable.c:183
-       __exc_general_protection arch/x86/kernel/traps.c:567 [inline]
-       exc_general_protection+0xed/0x2f0 arch/x86/kernel/traps.c:531
-       asm_exc_general_protection+0x1e/0x30 arch/x86/include/asm/idtentry.h:562
-       wrmsrl arch/x86/include/asm/msr.h:281 [inline]
-       __x86_pmu_enable_event arch/x86/events/perf_event.h:1118 [inline]
-       x86_pmu_enable_all+0x16d/0x3f0 arch/x86/events/core.c:741
-       x86_pmu_enable+0x453/0xd50 arch/x86/events/core.c:1346
-       perf_pmu_enable kernel/events/core.c:1207 [inline]
-       perf_pmu_enable+0xcf/0x120 kernel/events/core.c:1203
-       __perf_install_in_context+0x68e/0x9f0 kernel/events/core.c:2817
-       remote_function kernel/events/core.c:91 [inline]
-       remote_function+0x115/0x1a0 kernel/events/core.c:71
-       generic_exec_single kernel/smp.c:518 [inline]
-       generic_exec_single+0x1fe/0x300 kernel/smp.c:504
-       smp_call_function_single+0x186/0x4b0 kernel/smp.c:755
-       task_function_call+0xd9/0x160 kernel/events/core.c:119
-       perf_install_in_context+0x2cb/0x550 kernel/events/core.c:2918
-       __do_sys_perf_event_open+0x1c7c/0x2de0 kernel/events/core.c:12353
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (&ctx->lock){....}-{2:2}:
-       check_prev_add+0x165/0x24f0 kernel/locking/lockdep.c:3051
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2e03/0x57e0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x520 kernel/locking/lockdep.c:5590
-       __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
-       _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:154
-       perf_event_context_sched_out kernel/events/core.c:3489 [inline]
-       __perf_event_task_sched_out+0x6e8/0x18d0 kernel/events/core.c:3597
-       perf_event_task_sched_out include/linux/perf_event.h:1229 [inline]
-       prepare_task_switch kernel/sched/core.c:4744 [inline]
-       context_switch kernel/sched/core.c:4892 [inline]
-       __schedule+0xf77/0x2530 kernel/sched/core.c:6287
-       preempt_schedule_common+0x4a/0xc0 kernel/sched/core.c:6459
-       preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
-       smp_call_function_single+0x41d/0x4b0 kernel/smp.c:760
-       task_function_call+0xd9/0x160 kernel/events/core.c:119
-       perf_install_in_context+0x2cb/0x550 kernel/events/core.c:2918
-       __do_sys_perf_event_open+0x1c7c/0x2de0 kernel/events/core.c:12353
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
-Chain exists of:
-  &ctx->lock --> &p->pi_lock --> &rq->__lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&rq->__lock);
-                               lock(&p->pi_lock);
-                               lock(&rq->__lock);
-  lock(&ctx->lock);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor/9146:
- #0: ffff888017919fd8 (&sig->exec_update_lock){++++}-{3:3}, at:
-__do_sys_perf_event_open+0xf84/0x2de0 kernel/events/core.c:12193
- #1: ffff88801d6354b0 (&ctx->mutex){+.+.}-{3:3}, at:
-__do_sys_perf_event_open+0x17de/0x2de0 kernel/events/core.c:12247
- #2: ffff888063e319d8 (&rq->__lock){-.-.}-{2:2}, at:
-raw_spin_rq_lock_nested+0x1e/0x30 kernel/sched/core.c:474
-
-stack backtrace:
-CPU: 0 PID: 9146 Comm: syz-executor Not tainted 5.14.0+ #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- check_noncircular+0x26b/0x310 kernel/locking/lockdep.c:2131
- check_prev_add+0x165/0x24f0 kernel/locking/lockdep.c:3051
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2e03/0x57e0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x520 kernel/locking/lockdep.c:5590
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:154
- perf_event_context_sched_out kernel/events/core.c:3489 [inline]
- __perf_event_task_sched_out+0x6e8/0x18d0 kernel/events/core.c:3597
- perf_event_task_sched_out include/linux/perf_event.h:1229 [inline]
- prepare_task_switch kernel/sched/core.c:4744 [inline]
- context_switch kernel/sched/core.c:4892 [inline]
- __schedule+0xf77/0x2530 kernel/sched/core.c:6287
- preempt_schedule_common+0x4a/0xc0 kernel/sched/core.c:6459
- preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
- smp_call_function_single+0x41d/0x4b0 kernel/smp.c:760
- task_function_call+0xd9/0x160 kernel/events/core.c:119
- perf_install_in_context+0x2cb/0x550 kernel/events/core.c:2918
- __do_sys_perf_event_open+0x1c7c/0x2de0 kernel/events/core.c:12353
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb5e3f21c58 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: fbffffffffffffff RSI: 0000000000000000 RDI: 0000000020000040
-RBP: 00000000004ebd80 R08: 0000000000000009 R09: 0000000000000000
-R10: ffffffffffffffff R11: 0000000000000246 R12: 000000000059c0a0
-R13: 00007ffcc97e6abf R14: 00007ffcc97e6c60 R15: 00007fb5e3f21dc0
-Call Trace:
- x86_pmu_enable+0x453/0xd50 arch/x86/events/core.c:1346
- perf_pmu_enable kernel/events/core.c:1207 [inline]
- perf_pmu_enable+0xcf/0x120 kernel/events/core.c:1203
- perf_event_context_sched_in kernel/events/core.c:3865 [inline]
- __perf_event_task_sched_in+0x64e/0x900 kernel/events/core.c:3903
- perf_event_task_sched_in include/linux/perf_event.h:1206 [inline]
- finish_task_switch+0x297/0x820 kernel/sched/core.c:4809
- context_switch kernel/sched/core.c:4943 [inline]
- __schedule+0xce1/0x2530 kernel/sched/core.c:6287
- preempt_schedule_common+0x4a/0xc0 kernel/sched/core.c:6459
- preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
- smp_call_function_single+0x41d/0x4b0 kernel/smp.c:760
- task_function_call+0xd9/0x160 kernel/events/core.c:119
- perf_install_in_context+0x2cb/0x550 kernel/events/core.c:2918
- __do_sys_perf_event_open+0x1c7c/0x2de0 kernel/events/core.c:12353
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb5e3f21c58 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: fbffffffffffffff RSI: 0000000000000000 RDI: 0000000020000040
-RBP: 00000000004ebd80 R08: 0000000000000009 R09: 0000000000000000
-R10: ffffffffffffffff R11: 0000000000000246 R12: 000000000059c0a0
-R13: 00007ffcc97e6abf R14: 00007ffcc97e6c60 R15: 00007fb5e3f21dc0
-Call Trace:
- x86_pmu_enable+0x453/0xd50 arch/x86/events/core.c:1346
- perf_pmu_enable kernel/events/core.c:1207 [inline]
- perf_pmu_enable+0xcf/0x120 kernel/events/core.c:1203
- perf_event_context_sched_in kernel/events/core.c:3865 [inline]
- __perf_event_task_sched_in+0x64e/0x900 kernel/events/core.c:3903
- perf_event_task_sched_in include/linux/perf_event.h:1206 [inline]
- finish_task_switch+0x297/0x820 kernel/sched/core.c:4809
- context_switch kernel/sched/core.c:4943 [inline]
- __schedule+0xce1/0x2530 kernel/sched/core.c:6287
- preempt_schedule_common+0x4a/0xc0 kernel/sched/core.c:6459
- preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
- smp_call_function_single+0x41d/0x4b0 kernel/smp.c:760
- task_function_call+0xd9/0x160 kernel/events/core.c:119
- perf_install_in_context+0x2cb/0x550 kernel/events/core.c:2918
- __do_sys_perf_event_open+0x1c7c/0x2de0 kernel/events/core.c:12353
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb5e3f21c58 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: fbffffffffffffff RSI: 0000000000000000 RDI: 0000000020000040
-RBP: 00000000004ebd80 R08: 0000000000000009 R09: 0000000000000000
-R10: ffffffffffffffff R11: 0000000000000246 R12: 000000000059c0a0
-R13: 00007ffcc97e6abf R14: 00007ffcc97e6c60 R15: 00007fb5e3f21dc0
-Call Trace:
- x86_pmu_enable+0x453/0xd50 arch/x86/events/core.c:1346
- perf_pmu_enable kernel/events/core.c:1207 [inline]
- perf_pmu_enable+0xcf/0x120 kernel/events/core.c:1203
- perf_event_context_sched_in kernel/events/core.c:3865 [inline]
- __perf_event_task_sched_in+0x64e/0x900 kernel/events/core.c:3903
- perf_event_task_sched_in include/linux/perf_event.h:1206 [inline]
- finish_task_switch+0x297/0x820 kernel/sched/core.c:4809
- context_switch kernel/sched/core.c:4943 [inline]
- __schedule+0xce1/0x2530 kernel/sched/core.c:6287
- preempt_schedule_common+0x4a/0xc0 kernel/sched/core.c:6459
- preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
- smp_call_function_single+0x41d/0x4b0 kernel/smp.c:760
- task_function_call+0xd9/0x160 kernel/events/core.c:119
- perf_install_in_context+0x2cb/0x550 kernel/events/core.c:2918
- __do_sys_perf_event_open+0x1c7c/0x2de0 kernel/events/core.c:12353
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb5e3f21c58 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: fbffffffffffffff RSI: 0000000000000000 RDI: 0000000020000040
-RBP: 00000000004ebd80 R08: 0000000000000009 R09: 0000000000000000
-R10: ffffffffffffffff R11: 0000000000000246 R12: 000000000059c0a0
-R13: 00007ffcc97e6abf R14: 00007ffcc97e6c60 R15: 00007fb5e3f21dc0
-Call Trace:
- x86_pmu_enable+0x453/0xd50 arch/x86/events/core.c:1346
- perf_pmu_enable kernel/events/core.c:1207 [inline]
- perf_pmu_enable+0xcf/0x120 kernel/events/core.c:1203
- perf_event_context_sched_in kernel/events/core.c:3865 [inline]
- __perf_event_task_sched_in+0x64e/0x900 kernel/events/core.c:3903
- perf_event_task_sched_in include/linux/perf_event.h:1206 [inline]
- finish_task_switch+0x297/0x820 kernel/sched/core.c:4809
- context_switch kernel/sched/core.c:4943 [inline]
- __schedule+0xce1/0x2530 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- freezable_schedule include/linux/freezer.h:172 [inline]
- futex_wait_queue_me+0x25a/0x520 kernel/futex.c:2821
- futex_wait+0x1e3/0x5f0 kernel/futex.c:2922
- do_futex+0x26e/0x18e0 kernel/futex.c:3932
- __do_sys_futex kernel/futex.c:4009 [inline]
- __se_sys_futex kernel/futex.c:3990 [inline]
- __x64_sys_futex+0x1b0/0x4d0 kernel/futex.c:3990
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb5e3f21cd8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000059c0a8
-RBP: 000000000059c0a8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
-R13: 00007ffcc97e6abf R14: 00007ffcc97e6c60 R15: 00007fb5e3f21dc0
-Call Trace:
- x86_pmu_enable+0x453/0xd50 arch/x86/events/core.c:1346
- perf_pmu_enable kernel/events/core.c:1207 [inline]
- perf_pmu_enable+0xcf/0x120 kernel/events/core.c:1203
- perf_event_context_sched_in kernel/events/core.c:3865 [inline]
- __perf_event_task_sched_in+0x64e/0x900 kernel/events/core.c:3903
- perf_event_task_sched_in include/linux/perf_event.h:1206 [inline]
- finish_task_switch+0x297/0x820 kernel/sched/core.c:4809
- context_switch kernel/sched/core.c:4943 [inline]
- __schedule+0xce1/0x2530 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- freezable_schedule include/linux/freezer.h:172 [inline]
- futex_wait_queue_me+0x25a/0x520 kernel/futex.c:2821
- futex_wait+0x1e3/0x5f0 kernel/futex.c:2922
- do_futex+0x26e/0x18e0 kernel/futex.c:3932
- __do_sys_futex kernel/futex.c:4009 [inline]
- __se_sys_futex kernel/futex.c:3990 [inline]
- __x64_sys_futex+0x1b0/0x4d0 kernel/futex.c:3990
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb5e3f21cd8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000059c0a8
-RBP: 000000000059c0a8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
-R13: 00007ffcc97e6abf R14: 00007ffcc97e6c60 R15: 00007fb5e3f21dc0
-Call Trace:
- x86_pmu_enable+0x453/0xd50 arch/x86/events/core.c:1346
- perf_pmu_enable kernel/events/core.c:1207 [inline]
- perf_pmu_enable+0xcf/0x120 kernel/events/core.c:1203
- perf_event_context_sched_in kernel/events/core.c:3865 [inline]
- __perf_event_task_sched_in+0x64e/0x900 kernel/events/core.c:3903
- perf_event_task_sched_in include/linux/perf_event.h:1206 [inline]
- finish_task_switch+0x297/0x820 kernel/sched/core.c:4809
- context_switch kernel/sched/core.c:4943 [inline]
- __schedule+0xce1/0x2530 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- freezable_schedule include/linux/freezer.h:172 [inline]
- futex_wait_queue_me+0x25a/0x520 kernel/futex.c:2821
- futex_wait+0x1e3/0x5f0 kernel/futex.c:2922
- do_futex+0x26e/0x18e0 kernel/futex.c:3932
- __do_sys_futex kernel/futex.c:4009 [inline]
- __se_sys_futex kernel/futex.c:3990 [inline]
- __x64_sys_futex+0x1b0/0x4d0 kernel/futex.c:3990
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb5e3f21cd8 EFLAGS: 00000246
- ORIG_RAX: 00000000000000ca
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000059c0a8
-RBP: 000000000059c0a8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
-R13: 00007ffcc97e6abf R14: 00007ffcc97e6c60 R15: 00007fb5e3f21dc0
-Call Trace:
- x86_pmu_enable+0x453/0xd50 arch/x86/events/core.c:1346
- perf_pmu_enable kernel/events/core.c:1207 [inline]
- perf_pmu_enable+0xcf/0x120 kernel/events/core.c:1203
- perf_event_context_sched_in kernel/events/core.c:3865 [inline]
- __perf_event_task_sched_in+0x64e/0x900 kernel/events/core.c:3903
- perf_event_task_sched_in include/linux/perf_event.h:1206 [inline]
- finish_task_switch+0x297/0x820 kernel/sched/core.c:4809
- context_switch kernel/sched/core.c:4943 [inline]
- __schedule+0xce1/0x2530 kernel/sched/core.c:6287
- schedule+0xd3/0x270 kernel/sched/core.c:6366
- freezable_schedule include/linux/freezer.h:172 [inline]
- futex_wait_queue_me+0x25a/0x520 kernel/futex.c:2821
- futex_wait+0x1e3/0x5f0 kernel/futex.c:2922
- do_futex+0x26e/0x18e0 kernel/futex.c:3932
+> 
+> 
+> Cheers.
+> 
