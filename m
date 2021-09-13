@@ -2,119 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2787B408919
-	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 12:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9154089CF
+	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 13:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238996AbhIMKiH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Sep 2021 06:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
+        id S239542AbhIMLE1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Sep 2021 07:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239136AbhIMKiG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:38:06 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918DBC061574;
-        Mon, 13 Sep 2021 03:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5cZgY+h2VLjKmM5rPcBYeoFqyIYGYh7lJNiFwhwUejg=; b=YxO+yq6Nfw5pNJZd/1y0ZUCWiD
-        k78zpd8bvVZfIfpZ7hJXZybcBf6kxzts0xeKzu+yGsyZMVUMDwziMzmsbw2J3YOKlQWyVqCzDpH4a
-        XSzBo14adAxwPXr9cC8z/6g1AYP7p8HmU6vxwjoWjLUz0Y9W38th8T8MuBI1Tke4ye1ego6CGmdCM
-        O6/w+vxst0O1/35362z/HiWz/JuQxQVdA43OkjvigMb/wvbjmyNeVyiHfPKIqpwkmmkzyAkeOPlrv
-        M0vA0SjNlgsn59ZIGLoArrcRO6d2gVNnohzjGmPABM3teK3os4xLl8GAvajPCehEpENIkabUQ0Q9l
-        Nt4xcP8w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPjKH-002nu6-3p; Mon, 13 Sep 2021 10:36:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 63601300047;
-        Mon, 13 Sep 2021 12:36:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 241292BDAF0DC; Mon, 13 Sep 2021 12:36:36 +0200 (CEST)
-Date:   Mon, 13 Sep 2021 12:36:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S239457AbhIMLEQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Sep 2021 07:04:16 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B0BC061574;
+        Mon, 13 Sep 2021 04:03:01 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id j1so5995674pjv.3;
+        Mon, 13 Sep 2021 04:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8tTQhFrsWRNkUOBaOJA02WxHmquMo9+cmq045OwmYJU=;
+        b=gh9X42uMlMHDFUWjUxSJCtekAQOTdQa+bBZcbZz4ISIUbUhtkSmtlUJK9z07cqJsoL
+         f1vF7f6uaDfHXzgEEshszcSartet1RpGUl3CBwDHHxcdtSi7/HGmmIjlr/kaQDli2KwN
+         U+rBEGlpUUg8X9NQm28/0xcxkRJb9+sfiS3BssvRPl1DgR9zSkvay7X8ltnoqb+wjzN6
+         ynTcntFHIsWsWGFIRLhdrkxrg6RLZbyYHOT6m6tXkV+fXkwBp4pKfZJ1xYdT5x9S2wDo
+         ie9lFUijdRA8UuFqe+0MyjP5AUAITPtSaF7Mxwf8hYuANblmZ98yl2Ieymck4GIMhlTO
+         G4tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8tTQhFrsWRNkUOBaOJA02WxHmquMo9+cmq045OwmYJU=;
+        b=w1FBpvsiNqW86aeRyOrQfpA47d4g1b830QSZLsM2Ety/iZctQMGv5LnLkWiLUNZ10U
+         6sYu87MBv9jOls6EM1X2jPXMquU5URj8jXYCWQXCQ4PS8g/oNWnRzZPB4ZVFp/6ysSJX
+         foFVDRTqV78yn4FjBVoKoZRc/xT16e+bfmC0Rgsrq7UDruphtWl/0OuIb629AZt+5s3C
+         pntjPj9SWtfCF+muJGeirD06Zk/KaJBCumJ4PWf+1hwC8G0qpUD328oHE+Bihq9KnBVT
+         kTRGZddf9bf+gbq02asiOvW5gu1V2xVEnyq4UJL+iLAkzVzdqE5ezDyjFAPeNMR9ECV1
+         MehQ==
+X-Gm-Message-State: AOAM533CBhgAzG3Q926D2jbLfvyxWBYI6VULlzPCAZPMZKqNCg6CRWhX
+        n5ku402f9qadXtSxgrSHcuE=
+X-Google-Smtp-Source: ABdhPJy3i8ua/fVQObcDsf9vLhNLgbuzOgUx8Z4B+IA0ShClO9iHfm+Fa1+5MahosqjqZJ7T7aYD2g==
+X-Received: by 2002:a17:90a:ce84:: with SMTP id g4mr6604700pju.147.1631530980835;
+        Mon, 13 Sep 2021 04:03:00 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.28])
+        by smtp.gmail.com with ESMTPSA id gn11sm6480860pjb.39.2021.09.13.04.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 04:03:00 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH] perf: fix panic by mark recursion inside
- perf_log_throttle
-Message-ID: <YT8ptOoN0age04PQ@hirez.programming.kicks-ass.net>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <20210910153839.GH4323@worktop.programming.kicks-ass.net>
- <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
- <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+        KP Singh <kpsingh@kernel.org>, Willy Tarreau <w@1wt.eu>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf: fix kmalloc bug in bpf_check
+Date:   Mon, 13 Sep 2021 19:02:46 +0800
+Message-Id: <20210913110246.2955737-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 12:24:24PM +0200, Peter Zijlstra wrote:
+Since 7661809d493b ("mm: don't allow oversized kvmalloc() calls
+") does not allow oversized kvmalloc, it triggers a kmalloc bug warning
+at bpf_check.
 
-FWIW:
+Fix it by adding a sanity check in th check_btf_line.
 
-> I'm confused tho; where does the #DF come from? Because taking a #PF
-> from NMI should be perfectly fine.
-> 
-> AFAICT that callchain is something like:
-> 
-> 	NMI
-> 	  perf_event_nmi_handler()
-> 	    (part of the chain is missing here)
-> 	      perf_log_throttle()
-> 	        perf_output_begin() /* events/ring_buffer.c */
-> 		  rcu_read_lock()
-> 		    rcu_lock_acquire()
-> 		      lock_acquire()
-> 		        trace_lock_acquire() --> perf_trace_foo
+Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
+Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ kernel/bpf/verifier.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-This function also calls perf_trace_buf_alloc(), and will have
-incremented the recursion count, such that:
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 047ac4b4703b..3c5a79f78bc5 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9913,6 +9913,9 @@ static int check_btf_line(struct bpf_verifier_env *env,
+ 	if (!nr_linfo)
+ 		return 0;
+ 
++	if (nr_linfo > INT_MAX/sizeof(struct bpf_line_info))
++		return -EINVAL;
++
+ 	rec_size = attr->line_info_rec_size;
+ 	if (rec_size < MIN_BPF_LINEINFO_SIZE ||
+ 	    rec_size > MAX_LINEINFO_REC_SIZE ||
+-- 
+2.25.1
 
-> 
-> 			  ...
-> 			    perf_callchain()
-> 			      perf_callchain_user()
-> 			        #PF (fully expected during a userspace callchain)
-> 				  (some stuff, until the first __fentry)
-> 				    perf_trace_function_call
-> 				      perf_trace_buf_alloc()
-> 				        perf_swevent_get_recursion_context()
-> 					  *BOOM*
-
-this one, if it wouldn't mysteriously explode, would find recursion and
-terminate, except that seems to be going side-ways.
-
-> Now, supposedly we then take another #PF from get_recursion_context() or
-> something, but that doesn't make sense. That should just work...
-> 
-> Can you figure out what's going wrong there? going with the RIP, this
-> almost looks like 'swhash->recursion' goes splat, but again that makes
-> no sense, that's a per-cpu variable.
-> 
-> 
