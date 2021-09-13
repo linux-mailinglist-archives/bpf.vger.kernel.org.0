@@ -2,119 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD2B408A53
-	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 13:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EC6408E90
+	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 15:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239681AbhIMLg0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Sep 2021 07:36:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53858 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239492AbhIMLgZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Sep 2021 07:36:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631532909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=DWjMjXt3tKXT9y7/famTmIP//AvnKcUJfDsY/114QRY=;
-        b=eH5V+8B9JeHkZSPQNjrJQr7/VZbmwQNsmSXjQWVrAmKLg3AcheLP17twze9L68mCxME4nW
-        v9Jwo1MShhAQ6NI7NTH8V8NUOMZnZILBnjONr6FvcpFp2/87e6tCieqksaS0qN+22qf2gE
-        QgPqOtrnOORe6sECkhoO0l+azvq5H1w=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-WDBrVrNdMn2Oj_Xhi1aDeQ-1; Mon, 13 Sep 2021 07:35:08 -0400
-X-MC-Unique: WDBrVrNdMn2Oj_Xhi1aDeQ-1
-Received: by mail-lf1-f72.google.com with SMTP id i40-20020a0565123e2800b003f53da59009so393273lfv.16
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 04:35:08 -0700 (PDT)
+        id S242323AbhIMNfx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Sep 2021 09:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241725AbhIMNdz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:33:55 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E70C061155
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 06:20:50 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id r8so6148077uap.0
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 06:20:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Aof+Ll0VU3CfSuazpXwPscnH3NECndi7GbcUrswdmZU=;
+        b=lE+GmwPuWFia6naPJEjzRAPHB2+dKRx/vSbzowOj35PEZSn+LyzrrmO8CX85vYJEbY
+         Vax37+YveXdOtUyD8lBsTKvn/dFtMLKl4hxmz0ZHxvh4rOEGmLpqaQ5jIg3z94Z2ZciJ
+         g1PzN7Bgn6kc+XXzLp1dvD7WZ0rxGSNjtADVxr4bSHQ0eZ55ced4OROaCG1vLvHW9cFu
+         MrggZGXk3iAXbxDeWXNxJQCcSM5PqmywRtm+erSbpS3NIjT/oDV06O7G0VCZ8M0/Z6wh
+         qVJ81QOOZPWbpVhFek99Xqus2sQF8BVOt/dQ1/RvhUYdGmEcSp9ukxrz3aLosXexfAYC
+         MSQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:cc:to:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=DWjMjXt3tKXT9y7/famTmIP//AvnKcUJfDsY/114QRY=;
-        b=j0RQbOxx0jtwfl0ypLHEvW2eUQqujq8J3BOKQ93o+mEbqWINh3gODOgxQUDvVndtuj
-         3Ilt79p6G94SOXdfa1mOshDpJr3idha9YvdaxOSImhwKzZRaFjSunoW1eIQZAk23CBhy
-         I8TSOYB0nFweCym+iim2AHiqqikXkyGmmCQGHm0vowCRDSWh/xUBoQDE9Ur0gbJlvZFv
-         NX/10x0bO8NQL0LPDU0f+Lvwlc3EECYnyWOZ6v2SGIHq9SY9+sdKP50oyBKPO07uZntn
-         J8xofWCxkx7ExtE3u0xm2ujHUK+QTvN0s8RLSy8jfsU1DkvV6xbqAi6lIuYOhQxVr8p1
-         0ssg==
-X-Gm-Message-State: AOAM531ypY3o+gHeXKr8UaRMvhKZZ6jV9B4vj5TMnCLFPCjfn7pOkWsK
-        xMPz0oUJpdbbrOOan1N6hJaWXMD/58aj08rBGpIQqmVt2/5NftkR2sMGbBTQtVersX/sbggblXO
-        IJHSLVTQEESqX
-X-Received: by 2002:ac2:5ded:: with SMTP id z13mr8793115lfq.428.1631532906906;
-        Mon, 13 Sep 2021 04:35:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyXewiNcd/iT983C4OrQ+1fTOhPFXrpuV3hE6k2dPYw/EE3yDUKBt/f1n56/OZuJVHfFyKbHQ==
-X-Received: by 2002:ac2:5ded:: with SMTP id z13mr8793103lfq.428.1631532906723;
-        Mon, 13 Sep 2021 04:35:06 -0700 (PDT)
-Received: from [192.168.42.238] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
-        by smtp.gmail.com with ESMTPSA id n25sm949531ljj.42.2021.09.13.04.35.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 04:35:06 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Toke Hoiland Jorgensen <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        "Desouza, Ederson" <ederson.desouza@intel.com>,
-        Alexander Lobakin <alobakin@pm.me>
-Subject: XDP-hints as BTF early design discussion phase
-Message-ID: <6850bdde-b660-5ed3-9749-2fc6c1c1d0b7@redhat.com>
-Date:   Mon, 13 Sep 2021 13:35:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Aof+Ll0VU3CfSuazpXwPscnH3NECndi7GbcUrswdmZU=;
+        b=l5OOf099Jhn0qRhkxZlDexmmBtj7xcC0UGto1tJPaAiBd1yCQJ2lnRirXmXvs/fx6D
+         oqVfnGbeRDn26RG+VXZuNB3nUEj9vZVG9/EfsbKCi1IRxs6VJDknXYCTDyTYqZJZNpwd
+         4th8jHS7UCDfum9hFlcKHESCGRLglLQJSTk7IlSflPizl+B/r6VVuXf+I7hUfboR/pRi
+         YID09px/AunHOlvm8Udd+zT51R2z6BH0zvIVEd7zL4BVuijTcJOjqxluU/gkMJwogNDL
+         fbGI2AN4lavcTYV8yYIl2UZn89i+L4iPDhKJmziMo0Ytu7FJJFwy3d2fJ4HYRQWDHiAg
+         cH4Q==
+X-Gm-Message-State: AOAM532N3T+uY6Pda+dX44yMqnce3shfK1YQE1S28cJHeh0eyh4UlmXc
+        Iak319sJ3T4gQANJt0eJuxpYa6ea04/GztYhBVk=
+X-Google-Smtp-Source: ABdhPJynUNanK6y2FPWjHn0S2ceQq4jgyvsabxztzIk6yTrxt2Yh4oOxAM0bGuj4DjKE4xenGqT/FQvEpyjWUSRSBEw=
+X-Received: by 2002:ab0:6847:: with SMTP id a7mr4874926uas.48.1631539249260;
+ Mon, 13 Sep 2021 06:20:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a59:910d:0:b0:22d:44bc:2284 with HTTP; Mon, 13 Sep 2021
+ 06:20:48 -0700 (PDT)
+Reply-To: ooisangkuang63@gmail.com
+From:   Mr Ooi Sang Kuang <hassanaisha89@gmail.com>
+Date:   Mon, 13 Sep 2021 09:20:48 -0400
+Message-ID: <CAExVo+VyHXVWK=5L_zj2WtGMmwH-99uWptO+fWZgXY+V66YOjA@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Trying to get started with XDP-hints again.
+-- 
+Hello,
 
-The fundamental idea is that XDP-hints metadata struct's are defined by 
-the kernel, preferably by the kernel module, and described via BTF. As 
-BTF layout is defined by kernel, this means userspace (AF_XDP) and 
-BPF-progs must adapt to layout (used by running kernel). This imply that 
-kernel is free to change layout.
+I want to discuss an important project issue with you.
+Please, let me know if this email is valid.
 
-The BTF ID is exposed (to BPF-prog and AF_XDP) on per packet basis, to 
-give kernel more freedom to change layout runtime. This push 
-responsibility to userspace/BPF-prog of handling different layouts, 
-which seems natural. For the kernel this solves many issues around 
-concurrency and NIC config changes that affects BTF info available (e.g. 
-when BTF layout is allowed to change).
-
-End-goal is to make it easier for kernel drivers can invent new layouts 
-to suite new hardware features. Thus, we prefer a solution where 
-XDP-hints metadata struct's are defined in the kernel module code.
-
-
-(Idea below ... please let us know what you think, wrong direction?)
-
-Exploring kernel module code defining the XDP-hints metadata struct.
-
-Kernel module BTFs are now[1][2] exposed through sysfs as 
-/sys/kernel/btf/<module-name>. Thus, userspace can use libbpf 
-btf__load_module_btf() and others BTF APIs. Started playing here[3].
-
-Credit to Toke, who had an idea that drivers could "say" what struct's 
-are available, by defining a union with a known name e.g. 
-metadata_hints_avail' and have supported metadata struct's included in 
-that union. Then we don't need new APIs for exporting these BTF-metadata 
-struct's. To find struct names, we BTF walk this union.
-
-
--Jesper
-
-  [1] 
-https://lore.kernel.org/bpf/20201110011932.3201430-5-andrii@kernel.org/
-  [2] 36e68442d1af ("bpf: Load and verify kernel module BTFs") (Author: 
-Andrii Nakryiko)
-  [3] 
-https://github.com/xdp-project/bpf-examples/blob/master/BTF-playground/
-
-
+Thank you,
+Mr Ooi Sang Kuang
