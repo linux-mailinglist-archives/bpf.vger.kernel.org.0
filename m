@@ -2,175 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DA0409ECB
-	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 23:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69655409EF1
+	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 23:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344387AbhIMVGg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Sep 2021 17:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346066AbhIMVGd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:06:33 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286CBC0613CF
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 14:05:17 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id c22so14977440edn.12
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 14:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=373m7inPGNTCDOiEZsbke1WmzoymEFvAttGADuwHDDA=;
-        b=dZApan+/iH4NW1oyIBh56hyWC0xvVWqlTSK28qynQC4TgDjgqY/p3DDGCieGAdnE+I
-         0aAGZTbnqRM5fK3TAuLjdF7NMMeCiV0kCAfGdpzcWIOkp6sGMVlUrfxYCH3SD3gyogJC
-         4YUBZARL2myz4qpAuMZTGYV2rnkRZ9K57xrX/1azGmh55BtgXM4p6fR98t3Lj/TtI5og
-         R/GBhjg5GXvtd+GgOVsER1+uWOFoeaerYmB9DSE925/Yk+BqT4PYFMFnKhDH3tmHZ5eB
-         xUYs9eTg/9uBmvVggoWXp8e0Cnzsirc3guy7n646rKKVwHb6iHMN/jX2KPg7JseQr8+1
-         ToQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=373m7inPGNTCDOiEZsbke1WmzoymEFvAttGADuwHDDA=;
-        b=DGBADm46KG41KObHYjn1MqV9F9HNoCLzOfRKp7tuBqEAAaMt9uxLNgfLU9q6Kvrlzl
-         0JqZB5zkMHn+uJKncvO+b++yNiafCic022uHGrmntMmVvluoSgwe2W/Hn1oicc7uH8kw
-         BqvxgoPgRYOqsOv74pN3WLdBixdoRDiPmyW1nUHQc1S2cCHt7Kd+z2R9sifpeq/cd7Zo
-         sinmmdTu42V5pxepDAYGsix0G1XeCI4wQdqL1Z9DIAzJ5qkaPENiLQU2IqdgTCguC13z
-         soWig02B7KNYioKm5nB1y+s8nkG16WaYWb/ioqkM0AF88L2cuhpAMZZBuoKlGqzRetuK
-         NENQ==
-X-Gm-Message-State: AOAM53398woQu8fCr9jfWa/TxU1eGJM7ZfjZUBtGwm7yifDkJKw5CDKO
-        n23jhJRDWicVBq2uVeKtUyx1/exXtVHO6N4Fe2Qm
-X-Google-Smtp-Source: ABdhPJyhjptYpi0mwh96yMlLzxckfq2tRXqkGTb/ZQJf0dLr8KeUC8PkrIaOITSWhjWsL1Ai+gNDn5oE1rgV2wDOPdI=
-X-Received: by 2002:a05:6402:2810:: with SMTP id h16mr14507917ede.293.1631567115278;
- Mon, 13 Sep 2021 14:05:15 -0700 (PDT)
+        id S1348124AbhIMVPK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Sep 2021 17:15:10 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:49200 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348086AbhIMVPK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Sep 2021 17:15:10 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18DH3mfL021327
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 14:13:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=mGdmDfPIxcle+IFGfILkBwjZ1ZkVki5HC7wyscCJo3s=;
+ b=bo9YXLW2s417n+cO3masYnN+O7+AYGlAsFDVdtBsghlIPyIa+IcQDqnfRzAS6qK4G6j4
+ d3E8Xl1R5j06hHmq2OqcGAHkEEyg59+E+ZTba6HnuBxsOCI8csnqi0slARUelK1i/l5c
+ cGfT60APrbS8t3XQk0sXJPjJ0eqYF88VDaE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b1k9rqqvj-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 14:13:54 -0700
+Received: from intmgw006.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Mon, 13 Sep 2021 14:13:51 -0700
+Received: by devbig577.ftw3.facebook.com (Postfix, from userid 187975)
+        id D5BB78361E54; Mon, 13 Sep 2021 14:13:46 -0700 (PDT)
+From:   Jie Meng <jmeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+CC:     Jie Meng <jmeng@fb.com>
+Subject: [PATCH v2 bpf-next] bpf,x64 Emit IMUL instead of MUL for x86-64
+Date:   Mon, 13 Sep 2021 14:13:37 -0700
+Message-ID: <20210913211337.1564014-1-jmeng@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210913140229.24797-1-omosnace@redhat.com>
-In-Reply-To: <20210913140229.24797-1-omosnace@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 13 Sep 2021 17:05:04 -0400
-Message-ID: <CAHC9VhRw-S+zZUFz5QFFLMBATjo+YbPAiR21jX6p7cT0T+MVLA@mail.gmail.com>
-Subject: Re: [PATCH v4] lockdown,selinux: fix wrong subject in some SELinux
- lockdown checks
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org, linux-acpi@vger.kernel.org,
-        linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: oIgFLkYGBj5R7h8anV3Dd1Jmw5R62IHc
+X-Proofpoint-ORIG-GUID: oIgFLkYGBj5R7h8anV3Dd1Jmw5R62IHc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-13_09,2021-09-09_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 bulkscore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=957 clxscore=1015
+ priorityscore=1501 phishscore=0 impostorscore=0 mlxscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109130127
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 10:02 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
->
-> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> lockdown") added an implementation of the locked_down LSM hook to
-> SELinux, with the aim to restrict which domains are allowed to perform
-> operations that would breach lockdown.
->
-> However, in several places the security_locked_down() hook is called in
-> situations where the current task isn't doing any action that would
-> directly breach lockdown, leading to SELinux checks that are basically
-> bogus.
->
-> To fix this, add an explicit struct cred pointer argument to
-> security_lockdown() and define NULL as a special value to pass instead
-> of current_cred() in such situations. LSMs that take the subject
-> credentials into account can then fall back to some default or ignore
-> such calls altogether. In the SELinux lockdown hook implementation, use
-> SECINITSID_KERNEL in case the cred argument is NULL.
->
-> Most of the callers are updated to pass current_cred() as the cred
-> pointer, thus maintaining the same behavior. The following callers are
-> modified to pass NULL as the cred pointer instead:
-> 1. arch/powerpc/xmon/xmon.c
->      Seems to be some interactive debugging facility. It appears that
->      the lockdown hook is called from interrupt context here, so it
->      should be more appropriate to request a global lockdown decision.
-> 2. fs/tracefs/inode.c:tracefs_create_file()
->      Here the call is used to prevent creating new tracefs entries when
->      the kernel is locked down. Assumes that locking down is one-way -
->      i.e. if the hook returns non-zero once, it will never return zero
->      again, thus no point in creating these files. Also, the hook is
->      often called by a module's init function when it is loaded by
->      userspace, where it doesn't make much sense to do a check against
->      the current task's creds, since the task itself doesn't actually
->      use the tracing functionality (i.e. doesn't breach lockdown), just
->      indirectly makes some new tracepoints available to whoever is
->      authorized to use them.
-> 3. net/xfrm/xfrm_user.c:copy_to_user_*()
->      Here a cryptographic secret is redacted based on the value returned
->      from the hook. There are two possible actions that may lead here:
->      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
->         task context is relevant, since the dumped data is sent back to
->         the current task.
->      b) When adding/deleting/updating an SA via XFRM_MSG_xxxSA, the
->         dumped SA is broadcasted to tasks subscribed to XFRM events -
->         here the current task context is not relevant as it doesn't
->         represent the tasks that could potentially see the secret.
->      It doesn't seem worth it to try to keep using the current task's
->      context in the a) case, since the eventual data leak can be
->      circumvented anyway via b), plus there is no way for the task to
->      indicate that it doesn't care about the actual key value, so the
->      check could generate a lot of "false alert" denials with SELinux.
->      Thus, let's pass NULL instead of current_cred() here faute de
->      mieux.
->
-> Improvements-suggested-by: Casey Schaufler <casey@schaufler-ca.com>
-> Improvements-suggested-by: Paul Moore <paul@paul-moore.com>
-> Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> Acked-by: Dan Williams <dan.j.williams@intel.com>         [cxl]
-> Acked-by: Steffen Klassert <steffen.klassert@secunet.com> [xfrm]
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> ---
->
-> v4:
-> - rebase on top of TODO
-> - fix rebase conflicts:
->   * drivers/cxl/pci.c
->     - trivial: the lockdown reason was corrected in mainline
->   * kernel/bpf/helpers.c, kernel/trace/bpf_trace.c
->     - trivial: LOCKDOWN_BPF_READ was renamed to LOCKDOWN_BPF_READ_KERNEL
->       in mainline
->   * kernel/power/hibernate.c
->     - trivial: !secretmem_active() was added to the condition in
->       hibernation_available()
-> - cover new security_locked_down() call in kernel/bpf/helpers.c
->   (LOCKDOWN_BPF_WRITE_USER in BPF_FUNC_probe_write_user case)
->
-> v3: https://lore.kernel.org/lkml/20210616085118.1141101-1-omosnace@redhat.com/
-> - add the cred argument to security_locked_down() and adapt all callers
-> - keep using current_cred() in BPF, as the hook calls have been shifted
->   to program load time (commit ff40e51043af ("bpf, lockdown, audit: Fix
->   buggy SELinux lockdown permission checks"))
-> - in SELinux, don't ignore hook calls where cred == NULL, but use
->   SECINITSID_KERNEL as the subject instead
-> - update explanations in the commit message
->
-> v2: https://lore.kernel.org/lkml/20210517092006.803332-1-omosnace@redhat.com/
-> - change to a single hook based on suggestions by Casey Schaufler
->
-> v1: https://lore.kernel.org/lkml/20210507114048.138933-1-omosnace@redhat.com/
+IMUL allows for multiple operands and saving and storing rax/rdx is no
+longer needed. Signedness of the operands doesn't matter here because
+the we only keep the lower 32/64 bit of the product for 32/64 bit
+multiplications.
 
-The changes between v3 and v4 all seem sane to me, but I'm going to
-let this sit for a few days in hopes that we can collect a few more
-Reviewed-bys and ACKs.  If I don't see any objections I'll merge it
-mid-week(ish) into selinux/stable-5.15 and plan on sending it to Linus
-after it goes through a build/test cycle.
+Signed-off-by: Jie Meng <jmeng@fb.com>
+---
+ arch/x86/net/bpf_jit_comp.c                | 53 ++++++++++------------
+ tools/testing/selftests/bpf/verifier/jit.c | 22 +++++++--
+ 2 files changed, 42 insertions(+), 33 deletions(-)
 
--- 
-paul moore
-www.paul-moore.com
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 0fe6aacef3db..20d2d6a1f9de 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1070,41 +1070,34 @@ static int do_jit(struct bpf_prog *bpf_prog, int =
+*addrs, u8 *image,
+ 			break;
+=20
+ 		case BPF_ALU | BPF_MUL | BPF_K:
+-		case BPF_ALU | BPF_MUL | BPF_X:
+ 		case BPF_ALU64 | BPF_MUL | BPF_K:
+-		case BPF_ALU64 | BPF_MUL | BPF_X:
+-		{
+-			bool is64 =3D BPF_CLASS(insn->code) =3D=3D BPF_ALU64;
++			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
++				EMIT1(add_2mod(0x48, dst_reg, dst_reg));
++			else if (is_ereg(dst_reg))
++				EMIT1(add_2mod(0x40, dst_reg, dst_reg));
+=20
+-			if (dst_reg !=3D BPF_REG_0)
+-				EMIT1(0x50); /* push rax */
+-			if (dst_reg !=3D BPF_REG_3)
+-				EMIT1(0x52); /* push rdx */
++			if (is_imm8(imm32))
++				/* imul dst_reg, dst_reg, imm8 */
++				EMIT3(0x6B, add_2reg(0xC0, dst_reg, dst_reg),
++				      imm32);
++			else
++				/* imul dst_reg, dst_reg, imm32 */
++				EMIT2_off32(0x69,
++					    add_2reg(0xC0, dst_reg, dst_reg),
++					    imm32);
++			break;
+=20
+-			/* mov r11, dst_reg */
+-			EMIT_mov(AUX_REG, dst_reg);
++		case BPF_ALU | BPF_MUL | BPF_X:
++		case BPF_ALU64 | BPF_MUL | BPF_X:
++			if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64)
++				EMIT1(add_2mod(0x48, src_reg, dst_reg));
++			else if (is_ereg(dst_reg) || is_ereg(src_reg))
++				EMIT1(add_2mod(0x40, src_reg, dst_reg));
+=20
+-			if (BPF_SRC(insn->code) =3D=3D BPF_X)
+-				emit_mov_reg(&prog, is64, BPF_REG_0, src_reg);
+-			else
+-				emit_mov_imm32(&prog, is64, BPF_REG_0, imm32);
+-
+-			if (is64)
+-				EMIT1(add_1mod(0x48, AUX_REG));
+-			else if (is_ereg(AUX_REG))
+-				EMIT1(add_1mod(0x40, AUX_REG));
+-			/* mul(q) r11 */
+-			EMIT2(0xF7, add_1reg(0xE0, AUX_REG));
+-
+-			if (dst_reg !=3D BPF_REG_3)
+-				EMIT1(0x5A); /* pop rdx */
+-			if (dst_reg !=3D BPF_REG_0) {
+-				/* mov dst_reg, rax */
+-				EMIT_mov(dst_reg, BPF_REG_0);
+-				EMIT1(0x58); /* pop rax */
+-			}
++			/* imul dst_reg, src_reg */
++			EMIT3(0x0F, 0xAF, add_2reg(0xC0, src_reg, dst_reg));
+ 			break;
+-		}
++
+ 			/* Shifts */
+ 		case BPF_ALU | BPF_LSH | BPF_K:
+ 		case BPF_ALU | BPF_RSH | BPF_K:
+diff --git a/tools/testing/selftests/bpf/verifier/jit.c b/tools/testing/s=
+elftests/bpf/verifier/jit.c
+index df215e004566..eedcb752bf70 100644
+--- a/tools/testing/selftests/bpf/verifier/jit.c
++++ b/tools/testing/selftests/bpf/verifier/jit.c
+@@ -62,6 +62,11 @@
+ 	BPF_JMP_REG(BPF_JEQ, BPF_REG_3, BPF_REG_2, 2),
+ 	BPF_MOV64_IMM(BPF_REG_0, 1),
+ 	BPF_EXIT_INSN(),
++	BPF_LD_IMM64(BPF_REG_3, 0xfefefeULL),
++	BPF_ALU64_IMM(BPF_MUL, BPF_REG_3, 0xefefef),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_3, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
+ 	BPF_MOV32_REG(BPF_REG_2, BPF_REG_2),
+ 	BPF_LD_IMM64(BPF_REG_0, 0xfefefeULL),
+ 	BPF_ALU32_REG(BPF_MUL, BPF_REG_0, BPF_REG_1),
+@@ -73,11 +78,22 @@
+ 	BPF_JMP_REG(BPF_JEQ, BPF_REG_3, BPF_REG_2, 2),
+ 	BPF_MOV64_IMM(BPF_REG_0, 1),
+ 	BPF_EXIT_INSN(),
++	BPF_LD_IMM64(BPF_REG_3, 0xfefefeULL),
++	BPF_ALU32_IMM(BPF_MUL, BPF_REG_3, 0xefefef),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_3, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
++	BPF_LD_IMM64(BPF_REG_0, 0xfefefeULL),
++	BPF_LD_IMM64(BPF_REG_2, 0x2ad4d4aaULL),
++	BPF_ALU32_IMM(BPF_MUL, BPF_REG_0, 0x2b),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_0, BPF_REG_2, 2),
++	BPF_MOV64_IMM(BPF_REG_0, 1),
++	BPF_EXIT_INSN(),
+ 	BPF_LD_IMM64(BPF_REG_0, 0x952a7bbcULL),
+ 	BPF_LD_IMM64(BPF_REG_1, 0xfefefeULL),
+-	BPF_LD_IMM64(BPF_REG_2, 0xeeff0d413122ULL),
+-	BPF_ALU32_REG(BPF_MUL, BPF_REG_2, BPF_REG_1),
+-	BPF_JMP_REG(BPF_JEQ, BPF_REG_2, BPF_REG_0, 2),
++	BPF_LD_IMM64(BPF_REG_5, 0xeeff0d413122ULL),
++	BPF_ALU32_REG(BPF_MUL, BPF_REG_5, BPF_REG_1),
++	BPF_JMP_REG(BPF_JEQ, BPF_REG_5, BPF_REG_0, 2),
+ 	BPF_MOV64_IMM(BPF_REG_0, 1),
+ 	BPF_EXIT_INSN(),
+ 	BPF_MOV64_IMM(BPF_REG_0, 2),
+--=20
+2.30.2
+
