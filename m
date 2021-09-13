@@ -2,79 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C25F40861F
-	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 10:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D10408803
+	for <lists+bpf@lfdr.de>; Mon, 13 Sep 2021 11:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237857AbhIMIMr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Sep 2021 04:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237869AbhIMIMq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:12:46 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA851C061760;
-        Mon, 13 Sep 2021 01:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Zj9bDVh8bECevuh3HQ4f7aL+kfMosy058ZyQYs/papg=; b=lcO2BiA5Fd8VL1xe9MvMXEHx0w
-        rkHg+B7zS01dliDC40Yb8MlXRuOACJ36VL/2WIDM5863mBT3TcGl3uCANsjvCrk7HRNcRTcGA+XBn
-        v0dWdjYT9r8dc1typAVrUTzDL5PmPHtwjP8rWP3ojKpQvQW40qsI8mLL6ka/d47QChXc/AQORHlqA
-        D1S7byoUL3xy5fUc16UxdWU2I2YUYnXRMOVg7A0Y2CE8fl7z1K/zsOj+mpoXC9GDDIcjFqtNUV/GK
-        kWadPBi0BW8I2cgnAjAIVg4K5KxEIh7dYtdZQ3VBh9FBVEsCQtQMYQiGQi4HHlM19c2rKdBJOVmaP
-        ulVwuDNg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPh3Y-002mSL-PU; Mon, 13 Sep 2021 08:11:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F81530003A;
-        Mon, 13 Sep 2021 10:11:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A02B72BD296B7; Mon, 13 Sep 2021 10:11:10 +0200 (CEST)
-Date:   Mon, 13 Sep 2021 10:11:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     acme@kernel.org, linux-perf-users@vger.kernel.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, namhyung@kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, yhs@fb.com
-Subject: Re: possible deadlock in __perf_event_task_sched_out
-Message-ID: <YT8HngbIcqA4Tfac@hirez.programming.kicks-ass.net>
-References: <CACkBjsYnr4_uucVqvBpfDAgcnQqA6oneD1mHYe-TcLtDxuUs2A@mail.gmail.com>
+        id S238344AbhIMJUO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Sep 2021 05:20:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238489AbhIMJTR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Sep 2021 05:19:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78A1C60F8F;
+        Mon, 13 Sep 2021 09:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631524682;
+        bh=6hj2zaSI1/DOSlfBJTCUJZn6PTQexTSxUTCcLktH3dE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ae4u/sBGEU6imkILotJQ6N/jjzZpUmWPg5gcsm0f7M1JMO68kEsf+k9k04MBU8uzm
+         Nzzhj/GYgGIbBbLYonPedSElBurdZIgQppXHEByz05MD6hLQXq1Yke4kFH6bX//Dvu
+         XKUXT46seoxv64OhbXG3K7HPXLdFA+Y7At36Goxc=
+Date:   Mon, 13 Sep 2021 11:17:59 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ovidiu Panait <ovidiu.panait@windriver.com>
+Cc:     stable@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net
+Subject: Re: [PATCH 5.4 0/4] bpf: backport fixes for
+ CVE-2021-34556/CVE-2021-35477
+Message-ID: <YT8XR5AiS5eu3P6D@kroah.com>
+References: <20210907131701.1910024-1-ovidiu.panait@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACkBjsYnr4_uucVqvBpfDAgcnQqA6oneD1mHYe-TcLtDxuUs2A@mail.gmail.com>
+In-Reply-To: <20210907131701.1910024-1-ovidiu.panait@windriver.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 10:39:10AM +0800, Hao Sun wrote:
-> Hello,
+On Tue, Sep 07, 2021 at 04:16:57PM +0300, Ovidiu Panait wrote:
+> With this patchseries all bpf verifier selftests pass (tested in qemu for x86_64):
+> root@intel-x86-64:~# ./test_verifier
+> ...
+> #1057/p XDP pkt read, pkt_meta' <= pkt_data, bad access 1 OK
+> #1058/p XDP pkt read, pkt_meta' <= pkt_data, bad access 2 OK
+> #1059/p XDP pkt read, pkt_data <= pkt_meta', good access OK
+> #1060/p XDP pkt read, pkt_data <= pkt_meta', bad access 1 OK
+> #1061/p XDP pkt read, pkt_data <= pkt_meta', bad access 2 OK
+> Summary: 1571 PASSED, 0 SKIPPED, 0 FAILED
 > 
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
+> Daniel Borkmann (3):
+>   bpf: Introduce BPF nospec instruction for mitigating Spectre v4
+>   bpf: Fix leakage due to insufficient speculative store bypass
+>     mitigation
+>   bpf: Fix pointer arithmetic mask tightening under state pruning
 > 
-> HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/1Gy99NMo9JxZF6dHPdxnnb91n_jPJUQnA/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/1c0u2EeRDhRO-ZCxr9MP2VvAtJd6kfg-p/view?usp=sharing
-> 
-> Sorry, I don't have a reproducer for this crash, hope the symbolized
-> report can help.
-> If you fix this issue, please add the following tag to the commit:
+> Lorenz Bauer (1):
+>   bpf: verifier: Allocate idmap scratch in verifier env
 
-This reads like a very badly configured VM, in part because the console
-output is partial. That first Call trace: is ex_handler_wrmsr_unsafe,
-but it is truncated, also the pr_warn_once() went missing.
+Thanks for these, now queued up.
 
-Please take more care in configuring your VM before sending out more
-bogus messages like this.
+greg k-h
