@@ -2,360 +2,836 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CE040A523
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 06:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A1040A525
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 06:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhINEKi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 00:10:38 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53412 "EHLO
+        id S229567AbhINEKv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 00:10:51 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:3904 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229567AbhINEKg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 00:10:36 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18E33Fkg006334
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:09:20 -0700
+        by vger.kernel.org with ESMTP id S232253AbhINEKv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 00:10:51 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18E24U6w013468
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:09:34 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=pfl1NBJ3i0oELy/+pdOfpfXBHfMF7ImKLbhsZc81xbY=;
- b=AC8gUGHdWBCwUdRDvDBqGKWnNigACAPFbpd6QeO84YoYg6pY9CNxjRLTGfr/SaQDE1cZ
- RE1EyuAhmH4lQzJOlBr2W/wZo7Dag8G8CeBKt8/Ed7F6unfNjTfvORF1aBkb+dxEjUkn
- rMEW62v6jm/xIIBYZKehYWMk4cz3/p2bcv0= 
+ content-type : content-transfer-encoding; s=facebook;
+ bh=ref6xtbsFLyT07vNAneL8j4oOLWjEl4723kBdYwvEFY=;
+ b=ZsQo4hW08dpE6CsrmpnqCJ3Eywe9EVB3CWeMzYS+ID1pakz63EgS6YjYcfQ+Vc+1DRi0
+ LRlKHz4WHc2LCsM2OwLuL/5Kh3msZwfLuxGTH628zSi1ksE36aAHcVPMkg3Sf30yAF9Q
+ x1tAODNiMp0PDgxGCPRu0YjUx7sfDNUjkbw= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b2kga88yj-3
+        by mx0a-00082601.pphosted.com with ESMTP id 3b2jmm0fuc-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:09:19 -0700
-Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:09:33 -0700
+Received: from intmgw002.25.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 13 Sep 2021 21:09:17 -0700
+ 15.1.2308.14; Mon, 13 Sep 2021 21:09:32 -0700
 Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
-        id 3D3F425C5B73; Mon, 13 Sep 2021 21:09:17 -0700 (PDT)
+        id 8C97825C5B80; Mon, 13 Sep 2021 21:09:21 -0700 (PDT)
 From:   Joanne Koong <joannekoong@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     <Kernel-team@fb.com>, Joanne Koong <joannekoong@fb.com>
-Subject: [PATCH v2 bpf-next 2/4] selftests/bpf: Add bloom filter map test cases
-Date:   Mon, 13 Sep 2021 21:04:31 -0700
-Message-ID: <20210914040433.3184308-3-joannekoong@fb.com>
+Subject: [PATCH v2 bpf-next 3/4] bpf/benchs: Add benchmark test for bloom filter maps
+Date:   Mon, 13 Sep 2021 21:04:32 -0700
+Message-ID: <20210914040433.3184308-4-joannekoong@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210914040433.3184308-1-joannekoong@fb.com>
 References: <20210914040433.3184308-1-joannekoong@fb.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
-Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: Fou9NH9aA2wpY4Yg5eKxat31n3MLiAmg
-X-Proofpoint-GUID: Fou9NH9aA2wpY4Yg5eKxat31n3MLiAmg
+X-Proofpoint-GUID: uHpKUyifPBN49NDh7aMib2u_LVu4Xnx6
+X-Proofpoint-ORIG-GUID: uHpKUyifPBN49NDh7aMib2u_LVu4Xnx6
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
  definitions=2021-09-13_09,2021-09-09_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 bulkscore=0
- mlxscore=0 priorityscore=1501 suspectscore=0 adultscore=0 malwarescore=0
- mlxlogscore=962 lowpriorityscore=0 impostorscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ clxscore=1015 mlxscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 impostorscore=0
+ spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2109030001 definitions=main-2109140024
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds test cases for bpf bloom filter maps. They include tests
-checking against invalid operations by userspace, tests for using the blo=
-om
-filter map as an inner map, and a bpf program that queries the bloom filt=
-er
-map for values added by a userspace program.
+This patch adds benchmark tests for the throughput and false positive
+rate of bloom filter map lookups for a given number of entries and a
+given number of hash functions.
+
+These benchmarks show that as the number of hash functions increases,
+the throughput and the false positive rate of the bloom filter map
+decreases. From the benchmark data, the approximate average
+false-positive rates are roughly as follows:
+
+1 hash function =3D ~30%
+2 hash functions =3D ~15%
+3 hash functions =3D ~5%
+4 hash functions =3D ~2.5%
+5 hash functions =3D ~1%
+6 hash functions =3D ~0.5%
+7 hash functions  =3D ~0.35%
+8 hash functions =3D ~0.15%
+9 hash functions =3D ~0.1%
+10 hash functions =3D ~0%
 
 Signed-off-by: Joanne Koong <joannekoong@fb.com>
 ---
- .../bpf/prog_tests/bloom_filter_map.c         | 177 ++++++++++++++++++
- .../selftests/bpf/progs/bloom_filter_map.c    |  82 ++++++++
- 2 files changed, 259 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bloom_filter_m=
-ap.c
- create mode 100644 tools/testing/selftests/bpf/progs/bloom_filter_map.c
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ tools/testing/selftests/bpf/bench.c           |  35 ++
+ tools/testing/selftests/bpf/bench.h           |   3 +
+ .../bpf/benchs/bench_bloom_filter_map.c       | 354 ++++++++++++++++++
+ .../bpf/benchs/run_bench_bloom_filter_map.sh  |  28 ++
+ .../bpf/benchs/run_bench_ringbufs.sh          |  30 +-
+ .../selftests/bpf/benchs/run_common.sh        |  48 +++
+ .../selftests/bpf/progs/bloom_filter_map.c    |  74 ++++
+ 8 files changed, 547 insertions(+), 29 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_bloom_filter=
+_map.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bloom_fi=
+lter_map.sh
+ create mode 100644 tools/testing/selftests/bpf/benchs/run_common.sh
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c b/=
-tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+index 866531c08e4f..3576fdff117c 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -519,13 +519,15 @@ $(OUTPUT)/bench_rename.o: $(OUTPUT)/test_overhead.s=
+kel.h
+ $(OUTPUT)/bench_trigger.o: $(OUTPUT)/trigger_bench.skel.h
+ $(OUTPUT)/bench_ringbufs.o: $(OUTPUT)/ringbuf_bench.skel.h \
+ 			    $(OUTPUT)/perfbuf_bench.skel.h
++$(OUTPUT)/bench_bloom_filter_map.o: $(OUTPUT)/bloom_filter_map.skel.h
+ $(OUTPUT)/bench.o: bench.h testing_helpers.h
+ $(OUTPUT)/bench: LDLIBS +=3D -lm
+ $(OUTPUT)/bench: $(OUTPUT)/bench.o $(OUTPUT)/testing_helpers.o \
+ 		 $(OUTPUT)/bench_count.o \
+ 		 $(OUTPUT)/bench_rename.o \
+ 		 $(OUTPUT)/bench_trigger.o \
+-		 $(OUTPUT)/bench_ringbufs.o
++		 $(OUTPUT)/bench_ringbufs.o \
++		 $(OUTPUT)/bench_bloom_filter_map.o
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(LDFLAGS) -o $@ $(filter %.a %.o,$^) $(LDLIBS)
+=20
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftest=
+s/bpf/bench.c
+index 6ea15b93a2f8..0bcbdb4405a3 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -51,6 +51,35 @@ void setup_libbpf()
+ 		fprintf(stderr, "failed to increase RLIMIT_MEMLOCK: %d", err);
+ }
+=20
++void false_hits_report_progress(int iter, struct bench_res *res, long de=
+lta_ns)
++{
++	long total =3D res->false_hits  + res->hits + res->drops;
++
++	printf("Iter %3d (%7.3lfus): ",
++	       iter, (delta_ns - 1000000000) / 1000.0);
++
++	printf("%ld false hits of %ld total operations. Percentage =3D %2.2f %%=
+\n",
++	       res->false_hits, total, ((float)res->false_hits / total) * 100);
++}
++
++void false_hits_report_final(struct bench_res res[], int res_cnt)
++{
++	long total_hits =3D 0, total_drops =3D 0, total_false_hits =3D 0, total=
+_ops =3D 0;
++	int i;
++
++	for (i =3D 0; i < res_cnt; i++) {
++		total_hits +=3D res[i].hits;
++		total_false_hits +=3D res[i].false_hits;
++		total_drops +=3D res[i].drops;
++	}
++	total_ops =3D total_hits + total_false_hits + total_drops;
++
++	printf("Summary: %ld false hits of %ld total operations. ",
++	       total_false_hits, total_ops);
++	printf("Percentage =3D  %2.2f %%\n",
++	       ((float)total_false_hits / total_ops) * 100);
++}
++
+ void hits_drops_report_progress(int iter, struct bench_res *res, long de=
+lta_ns)
+ {
+ 	double hits_per_sec, drops_per_sec;
+@@ -132,9 +161,11 @@ static const struct argp_option opts[] =3D {
+ };
+=20
+ extern struct argp bench_ringbufs_argp;
++extern struct argp bench_bloom_filter_map_argp;
+=20
+ static const struct argp_child bench_parsers[] =3D {
+ 	{ &bench_ringbufs_argp, 0, "Ring buffers benchmark", 0 },
++	{ &bench_bloom_filter_map_argp, 0, "Bloom filter map benchmark", 0 },
+ 	{},
+ };
+=20
+@@ -323,6 +354,8 @@ extern const struct bench bench_rb_libbpf;
+ extern const struct bench bench_rb_custom;
+ extern const struct bench bench_pb_libbpf;
+ extern const struct bench bench_pb_custom;
++extern const struct bench bench_bloom_filter_map;
++extern const struct bench bench_bloom_filter_false_positive;
+=20
+ static const struct bench *benchs[] =3D {
+ 	&bench_count_global,
+@@ -344,6 +377,8 @@ static const struct bench *benchs[] =3D {
+ 	&bench_rb_custom,
+ 	&bench_pb_libbpf,
+ 	&bench_pb_custom,
++	&bench_bloom_filter_map,
++	&bench_bloom_filter_false_positive,
+ };
+=20
+ static void setup_benchmark()
+diff --git a/tools/testing/selftests/bpf/bench.h b/tools/testing/selftest=
+s/bpf/bench.h
+index c1f48a473b02..624c6b11501f 100644
+--- a/tools/testing/selftests/bpf/bench.h
++++ b/tools/testing/selftests/bpf/bench.h
+@@ -33,6 +33,7 @@ struct env {
+ struct bench_res {
+ 	long hits;
+ 	long drops;
++	long false_hits;
+ };
+=20
+ struct bench {
+@@ -56,6 +57,8 @@ extern const struct bench *bench;
+ void setup_libbpf();
+ void hits_drops_report_progress(int iter, struct bench_res *res, long de=
+lta_ns);
+ void hits_drops_report_final(struct bench_res res[], int res_cnt);
++void false_hits_report_progress(int iter, struct bench_res *res, long de=
+lta_ns);
++void false_hits_report_final(struct bench_res res[], int res_cnt);
+=20
+ static inline __u64 get_time_ns() {
+ 	struct timespec t;
+diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c =
+b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
 new file mode 100644
-index 000000000000..eb81aab0d7be
+index 000000000000..2cce4f657646
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
-@@ -0,0 +1,177 @@
++++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
+@@ -0,0 +1,354 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2021 Facebook */
 +
-+#include <sys/syscall.h>
-+#include <test_progs.h>
++#include <argp.h>
++#include <linux/log2.h>
++#include <pthread.h>
++#include "bench.h"
 +#include "bloom_filter_map.skel.h"
++#include "bpf_util.h"
 +
-+static void test_bloom_filter_map_fail(void)
++static struct ctx {
++	struct bloom_filter_map *skel;
++	pthread_mutex_t map_done_mtx;
++	pthread_cond_t map_done;
++	bool map_prepare_err;
++	__u32 next_map_idx;
++} ctx =3D {
++	.map_done_mtx =3D PTHREAD_MUTEX_INITIALIZER,
++	.map_done =3D PTHREAD_COND_INITIALIZER,
++};
++
++static struct {
++	__u32 nr_entries;
++	__u8 nr_hashes;
++} args =3D {
++	.nr_entries =3D 1000,
++	.nr_hashes =3D 3,
++};
++
++enum {
++	ARG_NR_ENTRIES =3D 3000,
++	ARG_NR_HASHES =3D 3001,
++};
++
++static const struct argp_option opts[] =3D {
++	{ "nr_entries", ARG_NR_ENTRIES, "NR_ENTRIES", 0,
++		"Set number of entries in the bloom filter map"},
++	{ "nr_hashes", ARG_NR_HASHES, "NR_HASHES", 0,
++		"Set number of hashes in the bloom filter map"},
++	{},
++};
++
++static error_t parse_arg(int key, char *arg, struct argp_state *state)
 +{
-+	struct bpf_create_map_attr xattr =3D {
-+		.name =3D "bloom_filter_map",
-+		.map_type =3D BPF_MAP_TYPE_BLOOM_FILTER,
-+		.max_entries =3D 100,
-+		.value_size =3D sizeof(__u32),
-+		.map_flags =3D BPF_F_BLOOM_FILTER_HASH_BIT_2,
-+	};
-+	__u32 value;
-+	int fd, err;
-+
-+	/* Invalid key size */
-+	xattr.key_size =3D 4;
-+	fd =3D bpf_create_map_xattr(&xattr);
-+	if (!ASSERT_LT(fd, 0, "bpf_create_map bloom filter invalid key size"))
-+		close(fd);
-+	xattr.key_size =3D 0;
-+
-+	/* Invalid value size */
-+	xattr.value_size =3D 0;
-+	fd =3D bpf_create_map_xattr(&xattr);
-+	if (!ASSERT_LT(fd, 0, "bpf_create_map bloom filter invalid value size")=
-)
-+		close(fd);
-+	xattr.value_size =3D sizeof(__u32);
-+
-+	/* Invalid max entries size */
-+	xattr.max_entries =3D 0;
-+	fd =3D bpf_create_map_xattr(&xattr);
-+	if (!ASSERT_LT(fd, 0, "bpf_create_map bloom filter invalid max entries =
-size"))
-+		close(fd);
-+	xattr.max_entries =3D 100;
-+
-+	/* Bloom filter maps do not support BPF_F_NO_PREALLOC */
-+	xattr.map_flags =3D BPF_F_NO_PREALLOC;
-+	fd =3D bpf_create_map_xattr(&xattr);
-+	if (!ASSERT_LT(fd, 0, "bpf_create_map bloom filter invalid flags"))
-+		close(fd);
-+	xattr.map_flags =3D 0;
-+
-+	fd =3D bpf_create_map_xattr(&xattr);
-+	if (!ASSERT_GE(fd, 0, "bpf_create_map bloom filter"))
-+		return;
-+
-+	/* Test invalid flags */
-+	err =3D bpf_map_update_elem(fd, NULL, &value, -1);
-+	ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bloom filter invalid flags=
-");
-+
-+	err =3D bpf_map_update_elem(fd, NULL, &value, BPF_EXIST);
-+	ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bloom filter invalid flags=
-");
-+
-+	err =3D bpf_map_update_elem(fd, NULL, &value, BPF_F_LOCK);
-+	ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bloom filter invalid flags=
-");
-+
-+	err =3D bpf_map_update_elem(fd, NULL, &value, BPF_NOEXIST);
-+	ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bloom filter invalid flags=
-");
-+
-+	err =3D bpf_map_update_elem(fd, NULL, &value, 10000);
-+	ASSERT_EQ(err, -EINVAL, "bpf_map_update_elem bloom filter invalid flags=
-");
-+
-+	close(fd);
-+}
-+
-+static void bloom_filter_map(struct bloom_filter_map *skel)
-+{
-+	const int map_size =3D bpf_map__max_entries(skel->maps.map_random_data)=
-;
-+	int err, map_random_data_fd, map_bloom_filter_fd, i;
-+	__u64 val;
-+	struct bpf_link *link;
-+
-+	map_random_data_fd =3D bpf_map__fd(skel->maps.map_random_data);
-+	map_bloom_filter_fd =3D bpf_map__fd(skel->maps.map_bloom_filter);
-+
-+	/* Generate random values and add them to the maps */
-+	for (i =3D 0; i < map_size; i++) {
-+		val =3D rand();
-+		err =3D bpf_map_update_elem(map_random_data_fd, &i, &val, BPF_ANY);
-+		if (!ASSERT_OK(err, "Add random value to map_random_data"))
-+			continue;
-+
-+		err =3D bpf_map_update_elem(map_bloom_filter_fd, NULL, &val, 0);
-+		if (!ASSERT_OK(err, "Add random value to map_bloom_filter"))
-+			return;
++	switch (key) {
++	case ARG_NR_ENTRIES:
++		args.nr_entries =3D strtol(arg, NULL, 10);
++		if (args.nr_entries =3D=3D 0) {
++			fprintf(stderr, "Invalid nr_entries count.");
++			argp_usage(state);
++		}
++		break;
++	case ARG_NR_HASHES:
++		args.nr_hashes =3D strtol(arg, NULL, 10);
++		if (args.nr_hashes =3D=3D 0) {
++			fprintf(stderr, "Cannot specify a bloom filter map with 0 hashes.");
++			argp_usage(state);
++		} else if (args.nr_hashes > 16) {
++			fprintf(stderr, "Bloom filter maps only support up to 16 hashes.");
++			argp_usage(state);
++		}
++		break;
++	default:
++		return ARGP_ERR_UNKNOWN;
 +	}
 +
-+	link =3D bpf_program__attach(skel->progs.prog_bloom_filter);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	syscall(SYS_getpgid);
-+
-+	ASSERT_EQ(skel->bss->error, 0, "error");
-+
-+	bpf_link__destroy(link);
++	return 0;
 +}
 +
-+static void bloom_filter_inner_map(struct bloom_filter_map *skel)
++/* exported into benchmark runner */
++const struct argp bench_bloom_filter_map_argp =3D {
++	.options =3D opts,
++	.parser =3D parse_arg,
++};
++
++static void validate(void)
 +{
-+	const int map_size =3D bpf_map__max_entries(skel->maps.map_random_data)=
-;
-+	int outer_map_fd, inner_map_fd, map_random_data_fd, err, i, key =3D 0;
-+	struct bpf_create_map_attr xattr =3D {
-+		.name =3D "bloom_filter_inner_map",
-+		.map_type =3D BPF_MAP_TYPE_BLOOM_FILTER,
-+		.max_entries =3D map_size,
-+		.value_size =3D sizeof(__u64),
-+	};
-+	struct bpf_link *link;
-+	__u64 val;
++	if (env.consumer_cnt !=3D 1) {
++		fprintf(stderr, "bloom filter map benchmark doesn't support multi-cons=
+umer!\n");
++		exit(1);
++	}
++}
 +
-+	/* Create a bloom filter map that will be used as the inner map */
-+	inner_map_fd =3D bpf_create_map_xattr(&xattr);
-+	if (!ASSERT_GE(inner_map_fd, 0, "bpf_create_map bloom filter map as inn=
-er map"))
-+		return;
++static inline void trigger_bpf_program(void)
++{
++	syscall(__NR_getpgid);
++}
 +
-+	/* Generate random values and add them to the maps */
-+	map_random_data_fd =3D bpf_map__fd(skel->maps.map_random_data);
-+	for (i =3D 0; i < map_size; i++) {
-+		val =3D rand();
-+		err =3D bpf_map_update_elem(map_random_data_fd, &i, &val, BPF_ANY);
-+		if (!ASSERT_OK(err, "Add random value to map_random_data"))
-+			continue;
++static void *producer(void *input)
++{
++	while (true)
++		trigger_bpf_program();
 +
-+		err =3D bpf_map_update_elem(inner_map_fd, NULL, &val, 0);
-+		if (!ASSERT_OK(err, "Add random value to inner_map_fd"))
-+			goto done;
++	return NULL;
++}
++
++static void *map_prepare_thread(void *arg)
++{
++	int err, random_data_fd, bloom_filter_fd, hashmap_fd;
++	__u64 i, val;
++
++	bloom_filter_fd =3D bpf_map__fd(ctx.skel->maps.map_bloom_filter);
++	random_data_fd =3D bpf_map__fd(ctx.skel->maps.map_random_data);
++	hashmap_fd =3D bpf_map__fd(ctx.skel->maps.hashmap);
++
++	while (true) {
++		i =3D __atomic_add_fetch(&ctx.next_map_idx, 1, __ATOMIC_RELAXED);
++		if (i > args.nr_entries)
++			break;
++again:
++		err =3D syscall(__NR_getrandom, &val, sizeof(val), 0);
++		if (err !=3D sizeof(val)) {
++			ctx.map_prepare_err =3D true;
++			fprintf(stderr, "failed to get random value\n");
++			break;
++		}
++		err =3D bpf_map_update_elem(hashmap_fd, &val, &val, BPF_NOEXIST);
++		if (err) {
++			if (err !=3D -EEXIST) {
++				ctx.map_prepare_err =3D true;
++				fprintf(stderr, "failed to add elem to hashmap: %d\n", -errno);
++				break;
++			}
++			goto again;
++		}
++
++		i--;
++		err =3D bpf_map_update_elem(random_data_fd, &i, &val, 0);
++		if (err) {
++			ctx.map_prepare_err =3D true;
++			fprintf(stderr, "failed to add elem to array: %d\n", -errno);
++			break;
++		}
++
++		err =3D bpf_map_update_elem(bloom_filter_fd, NULL, &val, 0);
++		if (err) {
++			ctx.map_prepare_err =3D true;
++			fprintf(stderr, "failed to add elem to bloom_filter: %d\n", -errno);
++			break;
++		}
 +	}
 +
-+	outer_map_fd =3D bpf_map__fd(skel->maps.outer_map);
-+	/* Add the bloom filter map to the outer map */
-+	err =3D bpf_map_update_elem(outer_map_fd, &key, &inner_map_fd, 0);
-+	if (!ASSERT_OK(err, "Add bloom filter map to outer map"))
-+		goto done;
++	pthread_mutex_lock(&ctx.map_done_mtx);
++	pthread_cond_signal(&ctx.map_done);
++	pthread_mutex_unlock(&ctx.map_done_mtx);
 +
-+	/* Attach the bloom_filter_inner_map prog */
-+	link =3D bpf_program__attach(skel->progs.prog_bloom_filter_inner_map);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		goto delete_inner_map;
-+
-+	syscall(SYS_getpgid);
-+
-+	ASSERT_EQ(skel->bss->error, 0, "error");
-+
-+	bpf_link__destroy(link);
-+
-+delete_inner_map:
-+	/* Ensure the inner bloom filter map can be deleted */
-+	err =3D bpf_map_delete_elem(outer_map_fd, &key);
-+	ASSERT_OK(err, "Delete inner bloom filter map");
-+
-+done:
-+	close(inner_map_fd);
++	return NULL;
 +}
 +
-+void test_bloom_filter_map(void)
++static void populate_maps(void)
++{
++	unsigned int nr_cpus =3D bpf_num_possible_cpus();
++	pthread_t map_thread;
++	int i, err;
++
++	for (i =3D 0; i < nr_cpus; i++) {
++		err =3D pthread_create(&map_thread, NULL, map_prepare_thread,
++				     NULL);
++		if (err) {
++			fprintf(stderr, "failed to create pthread: %d\n", -errno);
++			exit(1);
++		}
++	}
++
++	pthread_mutex_lock(&ctx.map_done_mtx);
++	pthread_cond_wait(&ctx.map_done, &ctx.map_done_mtx);
++	pthread_mutex_unlock(&ctx.map_done_mtx);
++
++	if (ctx.map_prepare_err)
++		exit(1);
++}
++
++static int set_nr_hashes(struct bpf_map *bloom_filter_map, u32 map_flags=
+, u8 nr_hashes)
++{
++	map_flags =3D map_flags | (nr_hashes << ilog2(BPF_F_BLOOM_FILTER_HASH_B=
+IT_1));
++	return bpf_map__set_map_flags(bloom_filter_map, map_flags);
++}
++
++static struct bloom_filter_map *setup_skeleton(void)
 +{
 +	struct bloom_filter_map *skel;
++	int err;
 +
-+	test_bloom_filter_map_fail();
++	setup_libbpf();
 +
-+	skel =3D bloom_filter_map__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bloom_filter_map__open_and_load"))
-+		goto cleanup;
++	skel =3D bloom_filter_map__open();
++	if (!skel) {
++		fprintf(stderr, "failed to open skeleton\n");
++		exit(1);
++	}
 +
-+	bloom_filter_map(skel);
++	err =3D bpf_map__resize(skel->maps.map_random_data, args.nr_entries);
++	if (err) {
++		fprintf(stderr, "failed to resize map_random_data\n");
++		exit(1);
++	}
 +
-+	bloom_filter_inner_map(skel);
++	err =3D bpf_map__resize(skel->maps.hashmap, args.nr_entries);
++	if (err) {
++		fprintf(stderr, "failed to resize hashmap\n");
++		exit(1);
++	}
 +
-+cleanup:
-+	bloom_filter_map__destroy(skel);
++	err =3D bpf_map__resize(skel->maps.map_bloom_filter, args.nr_entries);
++	if (err) {
++		fprintf(stderr, "failed to resize bloom filter\n");
++		exit(1);
++	}
++
++	err =3D set_nr_hashes(skel->maps.map_bloom_filter, 0, args.nr_hashes);
++	if (err) {
++		fprintf(stderr, "failed to set %u hashes\n", args.nr_hashes);
++		exit(1);
++	}
++
++	if (bloom_filter_map__load(skel)) {
++		fprintf(stderr, "failed to load skeleton\n");
++		exit(1);
++	}
++
++	return skel;
++}
++
++static void bloom_filter_map_setup(void)
++{
++	struct bpf_link *link;
++
++	ctx.skel =3D setup_skeleton();
++
++	populate_maps();
++
++	link =3D bpf_program__attach(ctx.skel->progs.prog_bloom_filter);
++	if (!link) {
++		fprintf(stderr, "failed to attach program!\n");
++		exit(1);
++	}
++}
++
++static void hashmap_lookup_setup(void)
++{
++	struct bpf_link *link;
++
++	ctx.skel =3D setup_skeleton();
++
++	populate_maps();
++
++	link =3D bpf_program__attach(ctx.skel->progs.prog_bloom_filter_hashmap_=
+lookup);
++	if (!link) {
++		fprintf(stderr, "failed to attach program!\n");
++		exit(1);
++	}
++}
++
++static void measure(struct bench_res *res)
++{
++	long total_hits =3D 0, total_drops =3D 0, total_false_hits =3D 0;
++	unsigned int nr_cpus =3D bpf_num_possible_cpus();
++	BPF_DECLARE_PERCPU(__u64, zeroed_values);
++	BPF_DECLARE_PERCPU(__u64, false_hits);
++	BPF_DECLARE_PERCPU(__u64, drops);
++	BPF_DECLARE_PERCPU(__u64, hits);
++	int err, i, percpu_array_fd;
++	__u32 key;
++
++	if (ctx.skel->bss->error !=3D 0) {
++		fprintf(stderr, "error (%d) when searching the bloom filter\n",
++			ctx.skel->bss->error);
++		exit(1);
++	}
++
++	key =3D ctx.skel->rodata->hit_key;
++	percpu_array_fd =3D bpf_map__fd(ctx.skel->maps.percpu_array);
++	err =3D bpf_map_lookup_elem(percpu_array_fd, &key, hits);
++	if (err) {
++		fprintf(stderr, "lookup in the percpu array  for 'hits' failed: %d\n",
++			-errno);
++		exit(1);
++	}
++
++	key =3D ctx.skel->rodata->drop_key;
++	err =3D bpf_map_lookup_elem(percpu_array_fd, &key, drops);
++	if (err) {
++		fprintf(stderr, "lookup in the percpu array for 'drops' failed: %d\n",
++			-errno);
++		exit(1);
++	}
++
++	key =3D ctx.skel->rodata->false_hit_key;
++	err =3D bpf_map_lookup_elem(percpu_array_fd, &key, false_hits);
++	if (err) {
++		fprintf(stderr, "lookup in the percpu array for 'false hits' failed: %=
+d\n",
++			-errno);
++		exit(1);
++	}
++
++	for (i =3D 0; i < nr_cpus; i++) {
++		total_hits +=3D bpf_percpu(hits, i);
++		total_drops +=3D bpf_percpu(drops, i);
++		total_false_hits +=3D bpf_percpu(false_hits, i);
++	}
++
++	res->hits =3D total_hits;
++	res->drops =3D total_drops;
++	res->false_hits =3D total_false_hits;
++
++	memset(zeroed_values, 0, sizeof(zeroed_values));
++
++	/* zero out the percpu array */
++	key =3D ctx.skel->rodata->hit_key;
++	err =3D bpf_map_update_elem(percpu_array_fd, &key, zeroed_values, BPF_A=
+NY);
++	if (err) {
++		fprintf(stderr, "zeroing the percpu array failed: %d\n", -errno);
++		exit(1);
++	}
++	key =3D ctx.skel->rodata->drop_key;
++	err =3D bpf_map_update_elem(percpu_array_fd, &key, zeroed_values, BPF_A=
+NY);
++	if (err) {
++		fprintf(stderr, "zeroing the percpu array failed: %d\n", -errno);
++		exit(1);
++	}
++	key =3D ctx.skel->rodata->false_hit_key;
++	err =3D bpf_map_update_elem(percpu_array_fd, &key, zeroed_values, BPF_A=
+NY);
++	if (err) {
++		fprintf(stderr, "zeroing the percpu array failed: %d\n", -errno);
++		exit(1);
++	}
++}
++
++static void *consumer(void *input)
++{
++	return NULL;
++}
++
++const struct bench bench_bloom_filter_map =3D {
++	.name =3D "bloom-filter-map",
++	.validate =3D validate,
++	.setup =3D bloom_filter_map_setup,
++	.producer_thread =3D producer,
++	.consumer_thread =3D consumer,
++	.measure =3D measure,
++	.report_progress =3D hits_drops_report_progress,
++	.report_final =3D hits_drops_report_final,
++};
++
++const struct bench bench_bloom_filter_false_positive =3D {
++	.name =3D "bloom-filter-false-positive",
++	.validate =3D validate,
++	.setup =3D hashmap_lookup_setup,
++	.producer_thread =3D producer,
++	.consumer_thread =3D consumer,
++	.measure =3D measure,
++	.report_progress =3D false_hits_report_progress,
++	.report_final =3D false_hits_report_final,
++};
+diff --git a/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_ma=
+p.sh b/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_map.sh
+new file mode 100755
+index 000000000000..8f2de6e39313
+--- /dev/null
++++ b/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_map.sh
+@@ -0,0 +1,28 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++source ./benchs/run_common.sh
++
++set -eufo pipefail
++
++header "Bloom filter map"
++for t in 1 4 8; do
++for h in {1..10}; do
++subtitle "# threads: $t, # hashes: $h"
++	for e in 10000 50000 75000 100000 250000 500000 750000 1000000 2500000 =
+5000000; do
++		printf "%'d entries -\n" $e
++		printf "\t"
++		summarize "Total operations: " \
++			"$($RUN_BENCH -p $t --nr_hashes $h --nr_entries $e bloom-filter-map)"
++		printf "\t"
++		summarize_percentage "False positive rate: " \
++			"$($RUN_BENCH -p $t --nr_hashes $h --nr_entries $e bloom-filter-false=
+-positive)"
++	done
++	printf "\n"
++done
++done
++
++header "Bloom filter map, multi-producer contention"
++for t in 1 2 3 4 8 12 16 20 24 28 32 36 40 44 48 52; do
++	summarize "$t threads - " "$($RUN_BENCH -p $t bloom-filter-map)"
++done
+diff --git a/tools/testing/selftests/bpf/benchs/run_bench_ringbufs.sh b/t=
+ools/testing/selftests/bpf/benchs/run_bench_ringbufs.sh
+index af4aa04caba6..ada028aa9007 100755
+--- a/tools/testing/selftests/bpf/benchs/run_bench_ringbufs.sh
++++ b/tools/testing/selftests/bpf/benchs/run_bench_ringbufs.sh
+@@ -1,34 +1,8 @@
+ #!/bin/bash
+=20
+-set -eufo pipefail
+-
+-RUN_BENCH=3D"sudo ./bench -w3 -d10 -a"
+-
+-function hits()
+-{
+-	echo "$*" | sed -E "s/.*hits\s+([0-9]+\.[0-9]+ =C2=B1 [0-9]+\.[0-9]+M\/=
+s).*/\1/"
+-}
+-
+-function drops()
+-{
+-	echo "$*" | sed -E "s/.*drops\s+([0-9]+\.[0-9]+ =C2=B1 [0-9]+\.[0-9]+M\=
+/s).*/\1/"
+-}
++source ./benchs/run_common.sh
+=20
+-function header()
+-{
+-	local len=3D${#1}
+-
+-	printf "\n%s\n" "$1"
+-	for i in $(seq 1 $len); do printf '=3D'; done
+-	printf '\n'
+-}
+-
+-function summarize()
+-{
+-	bench=3D"$1"
+-	summary=3D$(echo $2 | tail -n1)
+-	printf "%-20s %s (drops %s)\n" "$bench" "$(hits $summary)" "$(drops $su=
+mmary)"
+-}
++set -eufo pipefail
+=20
+ header "Single-producer, parallel producer"
+ for b in rb-libbpf rb-custom pb-libbpf pb-custom; do
+diff --git a/tools/testing/selftests/bpf/benchs/run_common.sh b/tools/tes=
+ting/selftests/bpf/benchs/run_common.sh
+new file mode 100644
+index 000000000000..670f23b037c4
+--- /dev/null
++++ b/tools/testing/selftests/bpf/benchs/run_common.sh
+@@ -0,0 +1,48 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++RUN_BENCH=3D"sudo ./bench -w3 -d10 -a"
++
++function header()
++{
++	local len=3D${#1}
++
++	printf "\n%s\n" "$1"
++	for i in $(seq 1 $len); do printf '=3D'; done
++	printf '\n'
++}
++
++function subtitle()
++{
++	local len=3D${#1}
++	printf "\t%s\n" "$1"
++}
++
++function hits()
++{
++	echo "$*" | sed -E "s/.*hits\s+([0-9]+\.[0-9]+ =C2=B1 [0-9]+\.[0-9]+M\/=
+s).*/\1/"
++}
++
++function drops()
++{
++	echo "$*" | sed -E "s/.*drops\s+([0-9]+\.[0-9]+ =C2=B1 [0-9]+\.[0-9]+M\=
+/s).*/\1/"
++}
++
++function percentage()
++{
++	echo "$*" | sed -E "s/.*Percentage\s=3D\s+([0-9]+\.[0-9]+).*/\1/"
++}
++
++function summarize()
++{
++	bench=3D"$1"
++	summary=3D$(echo $2 | tail -n1)
++	printf "%-20s %s (drops %s)\n" "$bench" "$(hits $summary)" "$(drops $su=
+mmary)"
++}
++
++function summarize_percentage()
++{
++	bench=3D"$1"
++	summary=3D$(echo $2 | tail -n1)
++	printf "%-20s %s%%\n" "$bench" "$(percentage $summary)"
 +}
 diff --git a/tools/testing/selftests/bpf/progs/bloom_filter_map.c b/tools=
 /testing/selftests/bpf/progs/bloom_filter_map.c
-new file mode 100644
-index 000000000000..8b5bf8d61a40
---- /dev/null
+index 8b5bf8d61a40..d6808a291a42 100644
+--- a/tools/testing/selftests/bpf/progs/bloom_filter_map.c
 +++ b/tools/testing/selftests/bpf/progs/bloom_filter_map.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct bpf_map;
-+
+@@ -1,7 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2021 Facebook */
+=20
++#include <errno.h>
+ #include <linux/bpf.h>
++#include <stdbool.h>
+ #include <bpf/bpf_helpers.h>
+=20
+ char _license[] SEC("license") =3D "GPL";
+@@ -34,8 +36,38 @@ struct callback_ctx {
+ 	struct map_bloom_filter_type *map;
+ };
+=20
++/* Tracks the number of hits, drops, and false hits */
 +struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1000);
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++	__uint(max_entries, 3);
 +	__type(key, __u32);
 +	__type(value, __u64);
-+} map_random_data SEC(".maps");
-+
-+struct map_bloom_filter_type {
-+	__uint(type, BPF_MAP_TYPE_BLOOM_FILTER);
-+	__uint(key_size, 0);
-+	__uint(value_size, sizeof(__u64));
-+	__uint(max_entries, 1000);
-+} map_bloom_filter SEC(".maps");
++} percpu_array SEC(".maps");
 +
 +struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+	__array(values, struct map_bloom_filter_type);
-+} outer_map SEC(".maps");
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1000);
++	__type(key, __u64);
++	__type(value, __u64);
++} hashmap SEC(".maps");
 +
-+struct callback_ctx {
-+	struct map_bloom_filter_type *map;
-+};
++const __u32 hit_key  =3D 0;
++const __u32 drop_key  =3D 1;
++const __u32 false_hit_key =3D 2;
 +
-+int error =3D 0;
++bool hashmap_use_bloom_filter =3D true;
 +
-+static __u64
-+check_elem(struct bpf_map *map, __u32 *key, __u64 *val,
-+	   struct callback_ctx *data)
+ int error =3D 0;
+=20
++static __always_inline void log_result(__u32 key)
 +{
-+	int err;
++	__u64 *count;
 +
-+	err =3D bpf_map_peek_elem(data->map, val);
-+	if (err) {
-+		error |=3D 1;
-+		return 1; /* stop the iteration */
-+	}
-+
-+	return 0;
++	count =3D bpf_map_lookup_elem(&percpu_array, &key);
++	if (count)
++		*count +=3D 1;
 +}
 +
+ static __u64
+ check_elem(struct bpf_map *map, __u32 *key, __u64 *val,
+ 	   struct callback_ctx *data)
+@@ -48,6 +80,8 @@ check_elem(struct bpf_map *map, __u32 *key, __u64 *val,
+ 		return 1; /* stop the iteration */
+ 	}
+=20
++	log_result(hit_key);
++
+ 	return 0;
+ }
+=20
+@@ -80,3 +114,43 @@ int prog_bloom_filter_inner_map(void *ctx)
+=20
+ 	return 0;
+ }
++
 +SEC("fentry/__x64_sys_getpgid")
-+int prog_bloom_filter(void *ctx)
++int prog_bloom_filter_hashmap_lookup(void *ctx)
 +{
-+	struct callback_ctx data;
++	__u64 *result;
++	int i, err;
 +
-+	data.map =3D &map_bloom_filter;
-+	bpf_for_each_map_elem(&map_random_data, check_elem, &data, 0);
++	union {
++		__u64 data64;
++		__u32 data32[2];
++	} val;
 +
-+	return 0;
-+}
++	for (i =3D 0; i < 512; i++) {
++		val.data32[0] =3D bpf_get_prandom_u32();
++		val.data32[1] =3D bpf_get_prandom_u32();
 +
-+SEC("fentry/__x64_sys_getpgid")
-+int prog_bloom_filter_inner_map(void *ctx)
-+{
-+	struct map_bloom_filter_type *inner_map;
-+	struct callback_ctx data;
-+	int key =3D 0;
++		if (hashmap_use_bloom_filter) {
++			err =3D bpf_map_peek_elem(&map_bloom_filter, &val);
++			if (err) {
++				if (err !=3D -ENOENT) {
++					error |=3D 3;
++					return 0;
++				}
++				log_result(drop_key);
++				continue;
++			}
++		}
 +
-+	inner_map =3D bpf_map_lookup_elem(&outer_map, &key);
-+	if (!inner_map) {
-+		error |=3D 2;
-+		return 0;
++		result =3D bpf_map_lookup_elem(&hashmap, &val);
++		if (result) {
++			log_result(hit_key);
++		} else {
++			if (hashmap_use_bloom_filter)
++				log_result(false_hit_key);
++			log_result(drop_key);
++		}
 +	}
-+
-+	data.map =3D inner_map;
-+	bpf_for_each_map_elem(&map_random_data, check_elem, &data, 0);
 +
 +	return 0;
 +}
