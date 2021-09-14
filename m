@@ -2,199 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8774B40A5BD
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 07:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F4940A5C0
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 07:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234125AbhINFKA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 01:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbhINFJ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 01:09:59 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A00C061574
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 22:08:42 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id s16so25607304ybe.0
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 22:08:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CT8IRrRPaNg0iRHLJoE0P/wdj4awG/TMXdRZ2giAjV4=;
-        b=LAXFD3P4sX/TZuui9iZs1L2f5rWQPQnfCVGrWl7yeX0mKBtW1mvGlJOGMW70WLTF4h
-         ET9uzMnLn35iII0HbIgGWYkSZoX6tUQS4PM1oGnWIa/A8nwQJ6sw9MPnNwXzHEOMjsPb
-         XRaEunJnJY8s2ZT5lK5kxew0zHrsxD1qUoOdQcP7PZrlO2l2uiTwcxK9UHI0Qgyx9hXw
-         hbcx2ZfVnF9FwBXrNyPCPzuqzjgEhDtRSWZakviikHAhvix8paKWAPwEYNfZ5N2ZePUY
-         Wb7NkQ0xOL8OSOvPFUjnXp+kYekqA8m+zogFdXOuT8JJ6nxOhRqI2CGZyrQ061vj6Qhj
-         0QQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CT8IRrRPaNg0iRHLJoE0P/wdj4awG/TMXdRZ2giAjV4=;
-        b=Rz3fwDmS2tgXwY1OfFO2GoG31Co6KhsXuJ4Wi0OnJNEyzu5ak60U7aOvR3rClhs9Yg
-         NS8W1it95VJzVMELuAwApiYKdKi8r80jZYBYHV6Y8F31KYnGsunCIdani5m0GuAfHbQ6
-         sM8CY1SvySz9KgE67LqprGwqAE9o/bFcPOgG3a+YpqvvoKASZxH5qAw6wR8Xbwwir3F8
-         IxmCl/T2DMk/VW1x3uMHOFzJyDhLHOmQFo0tWhD1OUDKaYs66DwDMQj5wcFWNuumZaID
-         ZZa6tC4W2xrXoBP4lr6gPTIKE9OIyea6YOkZvaDasDnIxQtYJsO8Gu+z0WbG0fLqsREM
-         t0zQ==
-X-Gm-Message-State: AOAM531nZWsssVOgfpd8YPR1SxgkXA1Mp6d9LKedQnlh2KMW7IeNymy0
-        O2pnjePcV0/cpcq0JAfWmHw64qKKXH8dmqrfHO0=
-X-Google-Smtp-Source: ABdhPJyq1jjQLI23NpzgW2Yg7R31Lg7ECJsZbL/TloOqrxeZ31ETXhwmt5jJKp+0rD4dxM+cOTVFVqmMMFHtGckBmdc=
-X-Received: by 2002:a5b:408:: with SMTP id m8mr20457562ybp.2.1631596122206;
- Mon, 13 Sep 2021 22:08:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210913155122.3722704-1-yhs@fb.com> <20210913155133.3723769-1-yhs@fb.com>
-In-Reply-To: <20210913155133.3723769-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 13 Sep 2021 22:08:31 -0700
-Message-ID: <CAEf4Bza69r-Sp4nFZqd4i1xhD+Dy5u+Xb=FB7TNNSfHzNNvosg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 02/11] bpf: support for new btf kind BTF_KIND_TAG
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S239258AbhINFL5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 01:11:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232829AbhINFL5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 01:11:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DF3660240;
+        Tue, 14 Sep 2021 05:10:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631596240;
+        bh=1rNDJKT6Q08D44xEDh300LA65HUsoLpag/iXmnn1AOo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MEu2czBG5kAs6wK9G3z6ExHEeJ9R7IE7TZB15yLXa5FV/XKMpj1h1yQ9zCU4rhycz
+         xVOhd16A9IR70MY6cZuGjmW8UGgmNWowj2sqwQgbAh+itO+cG18gA6un89S3Rjib0F
+         FpEoa0XGv2ydnWA5VgDQ1zq93qIW9aluSGIdT/kXoSuaqbcIIQdtS5JXgUStl1Ego2
+         fey/F9cVML3QsYdWktfMJpJV1WZoYrm8TpzV6m+kogan3cFkmK+7DTymGfN4iRO44n
+         +GzTQO7w1xzeWoqx/5mBIwJ+9t11aeegZH2KBhrQq3aL2kJwKtLrnt/NhEOsTy3cIv
+         RWx57aDhzkdsw==
+Date:   Tue, 14 Sep 2021 14:10:36 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH -tip v10 00/16] kprobes: Fix stacktrace with kretprobes
+ on x86
+Message-Id: <20210914141036.e14c7aebe36e0d3260f7a9a9@kernel.org>
+In-Reply-To: <CAEf4BzY31icdEy-WPw5m+MFkSSQWBDXrZ3NA=sgJ3tLZ1F394A@mail.gmail.com>
+References: <162756755600.301564.4957591913842010341.stgit@devnote2>
+        <20210730083549.4e36df1cba88e408dc60b031@kernel.org>
+        <CAEf4Bzb2i4Z9kUWU+L-HF3k+XQ0V3hLH1Er7U2_oCdv1BTvaBw@mail.gmail.com>
+        <20210824143242.a0558b6632eef0407282364e@kernel.org>
+        <CAEf4BzZjyt7dD4GGGyJVG0jL6iBZX1Y3CH5393JojdkCOmjCuA@mail.gmail.com>
+        <20210914093852.9ed9c70cbc414c0aa3ae5304@kernel.org>
+        <CAEf4BzY31icdEy-WPw5m+MFkSSQWBDXrZ3NA=sgJ3tLZ1F394A@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 8:51 AM Yonghong Song <yhs@fb.com> wrote:
->
-> LLVM14 added support for a new C attribute ([1])
->   __attribute__((btf_tag("arbitrary_str")))
-> This attribute will be emitted to dwarf ([2]) and pahole
-> will convert it to BTF. Or for bpf target, this
-> attribute will be emitted to BTF directly ([3], [4]).
-> The attribute is intended to provide additional
-> information for
->   - struct/union type or struct/union member
->   - static/global variables
->   - static/global function or function parameter.
->
-> For linux kernel, the btf_tag can be applied
-> in various places to specify user pointer,
-> function pre- or post- condition, function
-> allow/deny in certain context, etc. Such information
-> will be encoded in vmlinux BTF and can be used
-> by verifier.
->
-> The btf_tag can also be applied to bpf programs
-> to help global verifiable functions, e.g.,
-> specifying preconditions, etc.
->
-> This patch added basic parsing and checking support
-> in kernel for new BTF_KIND_TAG kind.
->
->  [1] https://reviews.llvm.org/D106614
->  [2] https://reviews.llvm.org/D106621
->  [3] https://reviews.llvm.org/D106622
->  [4] https://reviews.llvm.org/D109560
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  include/uapi/linux/btf.h       |  16 ++++-
->  kernel/bpf/btf.c               | 120 +++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/btf.h |  16 ++++-
->  3 files changed, 148 insertions(+), 4 deletions(-)
->
+On Mon, 13 Sep 2021 18:36:10 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-[...]
+> On Mon, Sep 13, 2021 at 5:38 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Mon, 13 Sep 2021 10:14:55 -0700
+> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > > On Mon, Aug 23, 2021 at 10:32 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > >
+> > > > On Mon, 23 Aug 2021 22:12:06 -0700
+> > > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > > On Thu, Jul 29, 2021 at 4:35 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > > > >
+> > > > > > On Thu, 29 Jul 2021 23:05:56 +0900
+> > > > > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > > > >
+> > > > > > > Hello,
+> > > > > > >
+> > > > > > > This is the 10th version of the series to fix the stacktrace with kretprobe on x86.
+> > > > > > >
+> > > > > > > The previous version is here;
+> > > > > > >
+> > > > > > >  https://lore.kernel.org/bpf/162601048053.1318837.1550594515476777588.stgit@devnote2/
+> > > > > > >
+> > > > > > > This version is rebased on top of new kprobes cleanup series(*1) and merging
+> > > > > > > Josh's objtool update series (*2)(*3) as [6/16] and [7/16].
+> > > > > > >
+> > > > > > > (*1) https://lore.kernel.org/bpf/162748615977.59465.13262421617578791515.stgit@devnote2/
+> > > > > > > (*2) https://lore.kernel.org/bpf/20210710192433.x5cgjsq2ksvaqnss@treble/
+> > > > > > > (*3) https://lore.kernel.org/bpf/20210710192514.ghvksi3ozhez4lvb@treble/
+> > > > > > >
+> > > > > > > Changes from v9:
+> > > > > > >  - Add Josh's objtool update patches with a build error fix as [6/16] and [7/16].
+> > > > > > >  - Add a API document for kretprobe_find_ret_addr() and check cur != NULL in [5/16].
+> > > > > > >
+> > > > > > > With this series, unwinder can unwind stack correctly from ftrace as below;
+> > > > > > >
+> > > > > > >   # cd /sys/kernel/debug/tracing
+> > > > > > >   # echo > trace
+> > > > > > >   # echo 1 > options/sym-offset
+> > > > > > >   # echo r vfs_read >> kprobe_events
+> > > > > > >   # echo r full_proxy_read >> kprobe_events
+> > > > > > >   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+> > > > > > >   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+> > > > > > >   # echo 1 > events/kprobes/enable
+> > > > > > >   # cat /sys/kernel/debug/kprobes/list
+> > > > > > > ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+> > > > > > > ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+> > > > > > >   # echo 0 > events/kprobes/enable
+> > > > > > >   # cat trace
+> > > > > > > # tracer: nop
+> > > > > > > #
+> > > > > > > # entries-in-buffer/entries-written: 3/3   #P:8
+> > > > > > > #
+> > > > > > > #                                _-----=> irqs-off
+> > > > > > > #                               / _----=> need-resched
+> > > > > > > #                              | / _---=> hardirq/softirq
+> > > > > > > #                              || / _--=> preempt-depth
+> > > > > > > #                              ||| /     delay
+> > > > > > > #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> > > > > > > #              | |         |   ||||      |         |
+> > > > > > >            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
+> > > > > > >            <...>-134     [007] ...1    16.185901: <stack trace>
+> > > > > > >  => kretprobe_trace_func+0x209/0x300
+> > > > > > >  => kretprobe_dispatcher+0x4a/0x70
+> > > > > > >  => __kretprobe_trampoline_handler+0xd4/0x170
+> > > > > > >  => trampoline_handler+0x43/0x60
+> > > > > > >  => kretprobe_trampoline+0x2a/0x50
+> > > > > > >  => vfs_read+0x98/0x180
+> > > > > > >  => ksys_read+0x5f/0xe0
+> > > > > > >  => do_syscall_64+0x37/0x90
+> > > > > > >  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > > > > >            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
+> > > > > > >
+> > > > > > > This shows the double return probes (vfs_read() and full_proxy_read()) on the stack
+> > > > > > > correctly unwinded. (vfs_read() returns to 'ksys_read+0x5f' and full_proxy_read()
+> > > > > > > returns to 'vfs_read+0x98')
+> > > > > > >
+> > > > > > > This also changes the kretprobe behavisor a bit, now the instraction pointer in
+> > > > > > > the 'pt_regs' passed to kretprobe user handler is correctly set the real return
+> > > > > > > address. So user handlers can get it via instruction_pointer() API, and can use
+> > > > > > > stack_trace_save_regs().
+> > > > > > >
+> > > > > > > You can also get this series from
+> > > > > > >  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v9
+> > > > > >
+> > > > > > Oops, this is of course 'kprobes/kretprobe-stackfix-v10'. And this branch includes above (*1) series.
+> > > > >
+> > > > > Hi Masami,
+> > > > >
+> > > > > Was this ever merged/applied? This is a very important functionality
+> > > > > for BPF kretprobes, so I hope this won't slip through the cracks.
+> > > >
+> > > > No, not yet as far as I know.
+> > > > I'm waiting for any comment on this series. Since this is basically
+> > > > x86 ORC unwinder improvement, this series should be merged to -tip tree.
+> > > >
+> > >
+> > > Hey Masami,
+> > >
+> > > It's been a while since you posted v10. It seems like this series
+> > > doesn't apply cleanly anymore. Do you mind rebasing and resubmitting
+> > > it again to refresh the series and make it easier for folks to review
+> > > and test it?
+> >
+> > Yes, I'm planning to do that this week soon.
+> > Thank you for ping me :)
+> 
+> Sounds good, thank you.
+> 
+> >
+> > >
+> > > Also, do I understand correctly that [0] is a dependency of this
+> > > series? If yes, please rebase and resubmit that one as well. Not sure
+> > > on the status of Josh's patches you have dependency on as well. Can
+> > > you please coordinate with him and maybe incorporate them into your
+> > > series?
+> >
+> > Sorry I can not see [0], could you tell me another URL or title?
+> 
+> Make sure that you have `state=*` when you are copy/pasting that URL,
+> it is just a normal Patchworks URL, should be visible to anyone. But
+> it's just your "kprobes: treewide: Clean up kprobe code" series (v3).
 
->
-> +static s32 btf_tag_check_meta(struct btf_verifier_env *env,
-> +                             const struct btf_type *t,
-> +                             u32 meta_left)
-> +{
-> +       const struct btf_tag *tag;
-> +       u32 meta_needed = sizeof(*tag);
-> +       const char *value;
-> +
-> +       if (meta_left < meta_needed) {
-> +               btf_verifier_log_basic(env, t,
-> +                                      "meta_left:%u meta_needed:%u",
-> +                                      meta_left, meta_needed);
-> +               return -EINVAL;
-> +       }
-> +
-> +       value = btf_name_by_offset(env->btf, t->name_off);
-> +       if (!value || !value[0]) {
-> +               btf_verifier_log_type(env, t, "Invalid value");
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (btf_type_vlen(t)) {
-> +               btf_verifier_log_type(env, t, "vlen != 0");
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (btf_type_kflag(t)) {
-> +               btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
-> +               return -EINVAL;
-> +       }
-> +
+Ah, OK. Of course, I will include it :)
 
-probably need to enforce that component_idx is >= -1? -2 is not a
-valid supported value right now.
+Thank you!
 
-> +       btf_verifier_log_type(env, t, NULL);
-> +
-> +       return meta_needed;
-> +}
-> +
-> +static int btf_tag_resolve(struct btf_verifier_env *env,
-> +                          const struct resolve_vertex *v)
-> +{
-> +       const struct btf_type *next_type;
-> +       const struct btf_type *t = v->t;
-> +       u32 next_type_id = t->type;
-> +       struct btf *btf = env->btf;
-> +       s32 component_idx;
-> +       u32 vlen;
-> +
-> +       next_type = btf_type_by_id(btf, next_type_id);
-> +       if (!next_type || !btf_type_is_tag_target(next_type)) {
-> +               btf_verifier_log_type(env, v->t, "Invalid type_id");
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (!env_type_is_resolve_sink(env, next_type) &&
-> +           !env_type_is_resolved(env, next_type_id))
-> +               return env_stack_push(env, next_type, next_type_id);
-> +
-> +       component_idx = btf_type_tag(t)->component_idx;
-> +       if (component_idx != -1) {
+> 
+> > Or is that Kees's patch [1]?
+> >
+> > [1] https://lore.kernel.org/all/20210903021326.206548-1-keescook@chromium.org/T/#u
+> >
+> >
+> > >
+> > > Please also cc Paul McKenney <paulmck@kernel.org> for the future
+> > > revisions so he can follow along as well? Thanks!
+> >
+> > OK!
+> >
+> > >
+> > >
+> > >   [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=522757&state=*
+> > >
+> > >
+> > >
+> > > > Ingo and Josh,
+> > > >
+> > > > Could you give me any comment, please?
+> > > >
+> > > > Thank you,
+> > > >
+> > > >
+> > > > > Thanks!
+> > > > >
+> > > > > >
+> > > > > > Thank you,
+> > > > > >
+> > > > > > --
+> > > > > > Masami Hiramatsu <mhiramat@kernel.org>
+> > > >
+> > > >
+> > > > --
+> > > > Masami Hiramatsu <mhiramat@kernel.org>
+> >
+> >
+> > --
+> > Masami Hiramatsu <mhiramat@kernel.org>
 
-so here, if it's -2, that should be an error, but currently will be
-ignored, right?
 
-> +               if (btf_type_is_var(next_type) || component_idx < 0) {
-
-if is_var(next_type) then component_idx should only be -1, nothing
-else. Or am I missing some convention?
-
-> +                       btf_verifier_log_type(env, v->t, "Invalid component_idx");
-> +                       return -EINVAL;
-> +               }
-> +
-> +               if (btf_type_is_struct(next_type)) {
-> +                       vlen = btf_type_vlen(next_type);
-> +               } else {
-> +                       next_type = btf_type_by_id(btf, next_type->type);
-> +                       vlen = btf_type_vlen(next_type);
-> +               }
-> +
-> +               if ((u32)component_idx >= vlen) {
-> +                       btf_verifier_log_type(env, v->t, "Invalid component_idx");
-> +                       return -EINVAL;
-> +               }
-> +       }
-> +
-> +       env_stack_pop_resolved(env, next_type_id, 0);
-> +
-> +       return 0;
-> +}
-> +
-
-[...]
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
