@@ -2,74 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC6B40B86E
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 21:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB0940B8D7
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 22:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhINT6x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 15:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
+        id S232990AbhINUSi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 16:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbhINT6w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:58:52 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5798C061574
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 12:57:34 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id i23so155890wrb.2
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 12:57:34 -0700 (PDT)
+        with ESMTP id S232545AbhINUSi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 16:18:38 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD61C061574
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 13:17:20 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id u21so193453qtw.8
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 13:17:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=6Fx++o0Q6rCQcdGze+0HD+3Di+Z+7GkzCIU9XL5M5uo=;
-        b=WGWHTz9yIFUl0S2/WTxcDVu5I5u0F+XlxR+SxYBzBJmjZ7esExQ+KvGWLmzdavS7AX
-         iBEzpBQIUNJgw3KsFLWddmmXim+ZygyzH8ccFLmRhsE3LAQqdtGECC6SkbVZ5xcWznO3
-         ofSmos5Cc8lw7jmrqmzwyU2wuEKJ2Jldia/iWmiN5tcKWNpDZATZm7BsZ79huk6FdpIl
-         ZFg9gGEW4wxR0bfGKe7uV56bftf5IlTnh3dGClbBADI3oHtIyfu7X0IsmDkw2cXrjfzL
-         DsWOejkCcC8A8nPoydpSzCOYOlCh6UTXQjLT75GDrBgNRWPsWDOkcyB+hfdPORh93hc0
-         F1kA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kQFQy/KvGd2y0WYUINio473PFDIyYZyeyVoFb6izMr0=;
+        b=jpcNq4pNyJP/N3IDIyRCb+v35s8NmMrFyXETzPAx939U+izFslEGpk+4O68JRyiOQ6
+         i4E0Uw0nFQ/SjijFbQgBQ52elxSZiB3WaqV9sQwYr7hsTSAAIT1nxsTneEmd2CFssYAr
+         BsPOVR7jFNpRWYqzh0w60tm4JHXaD6gQN+c46phWySFAqEbbWmmsgshaQo8jN+KhjBid
+         szjLr0fqevKHujYrR0JjKBeVYnmKkdrWUvnwYgUc7WcfRZDw9pSnzDRfzF0h+Wg/N60D
+         FkgWVz0XTBuwZszjJzyYvAmsYmuA2Yg9/b4X7FVf1TpUZ164JzvM1Veh1+OOSmBGDHxK
+         JDtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=6Fx++o0Q6rCQcdGze+0HD+3Di+Z+7GkzCIU9XL5M5uo=;
-        b=O3/BW9K4bplcFtCnQBdXiHD2Y/NgLkl97jgp0ROUlKvn2jd2/YdtZKf7tOiHi53XrE
-         dPaAeM4KQp1Xzp+hFk4VJvDbg/FrRXjGf/Fo4aEerwunH34F1O+rJnucoMgbndgrllqp
-         mXsHFIVhI74a0ptxyV/9r3DH2JdakSJiPTIbHQA8KNvBhjLm12Hh4+3w19AUM+w/Et0/
-         pw7LAmOKiHsJCPvfwBVxoY45dPVCcSeeEPVujyUjWBE0DHk3RQ9GlWHyVhg3IrqONiVT
-         zDEMUcrXYnwv6kGhtzSNL5UdiZy7uJRvvcrjkBzZXdT5RHLbkYXjjBVvu2DS7wgFr7Gj
-         hNzg==
-X-Gm-Message-State: AOAM533+qCFySNUDesCZHhdMfMSiigF4Zt0KBCSdrGLsk7hO6ZbnYwjq
-        Bly5oY2UR8yTnnLPqycZ5YsQkxR4kFsgs2OIJA==
-X-Google-Smtp-Source: ABdhPJxJ4KhZMYpe8njC76/5XQqRFyy0Ww+Bb7KfPKOk3X5V/FD7YgUVXZv0Xd5iyVE3EJHdzVjUH+R7HRtTvokq6fk=
-X-Received: by 2002:a5d:6a81:: with SMTP id s1mr968437wru.274.1631649453436;
- Tue, 14 Sep 2021 12:57:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kQFQy/KvGd2y0WYUINio473PFDIyYZyeyVoFb6izMr0=;
+        b=Z/LgXZW7DLBmwJrEml+BXlpYEv4sJMtKeaPuLMMXk+yp1E36h6sxofKkTr6utgLtJm
+         RcTAOc4j42VsfsbSy4VflKqD+ngVU1Bs7E3k5TFJ6g7L+Kc4WOy7AcTrQ4zD8ofEnP2Q
+         THn2kgg8z/i34+UyyiZf/ktBNs9F9tKnewn8pxI9j1jdngGtSPKh7qXxU2SwbaIETjnY
+         hhdwQxYW33wP8PDpqa5iYhwxWlsYfcDU7cT2J1jkgYgQ1kXE6qP2X+7KhW8CK1LyK/Mb
+         ELddtnTceHUWjWQnA+z1JBsHrJY0OnzfFDuEHWc+R5n9IPXuV+kHMx2ojlsIhAa87jum
+         eq5A==
+X-Gm-Message-State: AOAM531b7Uff5EMDCxFkL64m88mlrO880vc5ftLsqpL0c6hKMI2FUqua
+        IMqUHG5XUTO2vFcnwuZQUE4=
+X-Google-Smtp-Source: ABdhPJxo2TWLwh7dzv8lmE4XiUX2DF/aVQ5pwFkCvfiRzLr0XeEHayc3J7LgThrBNLMtU3wX16d3Zg==
+X-Received: by 2002:ac8:6e88:: with SMTP id c8mr6710885qtv.241.1631650639581;
+        Tue, 14 Sep 2021 13:17:19 -0700 (PDT)
+Received: from localhost.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
+        by smtp.gmail.com with ESMTPSA id g1sm8357311qkd.89.2021.09.14.13.17.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 13:17:19 -0700 (PDT)
+From:   grantseltzer <grantseltzer@gmail.com>
+To:     andrii@kernel.org
+Cc:     bpf@vger.kernel.org, grantseltzer@gmail.com
+Subject: [PATCH bpf-next v2] Add sphinx code documentation comments
+Date:   Tue, 14 Sep 2021 16:16:43 -0400
+Message-Id: <20210914201642.98734-1-grantseltzer@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Sender: mrabubakarmohamed@gmail.com
-Received: by 2002:a7b:cf28:0:0:0:0:0 with HTTP; Tue, 14 Sep 2021 12:57:33
- -0700 (PDT)
-From:   "Mrs. Aisha Gaddafi" <mrsaishaalqaddafi40@gmail.com>
-Date:   Tue, 14 Sep 2021 21:57:33 +0200
-X-Google-Sender-Auth: yhuqfkCADR7yRXEycsAqH9oqIN4
-Message-ID: <CANSvQWaoDDC7=NBTYOZOdvgX7qq+ymZcoAm4i2UQDC-V053Gxg@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Grant Seltzer <grantseltzer@gmail.com>
+
+This adds comments above five functions in btf.h which document
+their uses. These comments are of a format that doxygen and sphinx
+can pick up and render. These are rendered by libbpf.readthedocs.org
+
+Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+---
+ tools/lib/bpf/btf.h | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 4a711f990904..05e06f0136e3 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+ /* Copyright (c) 2018 Facebook */
++/*! \file */
+ 
+ #ifndef __LIBBPF_BTF_H
+ #define __LIBBPF_BTF_H
+@@ -30,11 +31,47 @@ enum btf_endianness {
+ 	BTF_BIG_ENDIAN = 1,
+ };
+ 
++/**
++ * @brief **btf__free()** frees all data of a BTF object.
++ * @param btf BTF object to free
++ * @return void
++ */
+ LIBBPF_API void btf__free(struct btf *btf);
+ 
++/**
++ * @brief **btf__new()** creates a new instance of a BTF object.
++ * from the raw bytes of an ELF's BTF section
++ * @param data raw bytes
++ * @param size length of raw bytes
++ * @return new instance of BTF object which has to be eventually freed 
++ * with **btf__free()**
++ */
+ LIBBPF_API struct btf *btf__new(const void *data, __u32 size);
++
++/**
++ * @brief **btf__new_split()** create a new instance of a BTF object from 
++ * the provided raw data bytes. It takes another BTF instance, **base_btf**, 
++ * which serves as a base BTF, which is extended by types in a newly created
++ * BTF instance.
++ * @param data raw bytes
++ * @param size length of raw bytes
++ * @param base_btf the base btf object
++ * @return struct btf *
++ */
+ LIBBPF_API struct btf *btf__new_split(const void *data, __u32 size, struct btf *base_btf);
++
++/**
++ * @brief **btf__new_empty()** creates an unpopulated BTF object.
++ * @return struct btf *
++ */
+ LIBBPF_API struct btf *btf__new_empty(void);
++
++/**
++ * @brief **btf__new_empty_split()** creates an unpopulated
++ * BTF object from an ELF BTF section except with a base BTF
++ * on top of which split BTF should be based.
++ * @return struct btf *
++ */
+ LIBBPF_API struct btf *btf__new_empty_split(struct btf *base_btf);
+ 
+ LIBBPF_API struct btf *btf__parse(const char *path, struct btf_ext **btf_ext);
 -- 
-Dear Friend,
+2.31.1
 
-I came across your e-mail contact prior to a private search while in need
-of your assistance. My name is Aisha Gaddafi, a single Mother and a Widow
-with three Children. I am the only biological Daughter of the late Libyan
-President (Late Colonel Muammar Gaddafi).
-
-I have investment funds worth Twenty Seven Million Five Hundred Thousand
-United State Dollar ($27.500.000.00 ) and I need a trusted investment
-Manager/Partner because of my current refugee status, however, I am
-interested in you for investment project assistance in your country, may be
-from there, we can build business relationship in the nearest future.
-
-Best Regards
-Mrs Aisha Gaddafi
