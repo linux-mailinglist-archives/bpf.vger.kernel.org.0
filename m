@@ -2,157 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EAE40BB68
+	by mail.lfdr.de (Postfix) with ESMTP id BBA0C40BB69
 	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 00:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235326AbhINWbe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 18:31:34 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60492 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235303AbhINWbd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 18:31:33 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18EG1vET032006
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 15:30:14 -0700
+        id S235303AbhINWbf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 18:31:35 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50566 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235137AbhINWbc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 18:31:32 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.0.43) with SMTP id 18EG1egS002012
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 15:30:13 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=MQwOndGRH9dXBrJGf+VEPmnDCLO3FXu9r1OFbzexUzQ=;
- b=Wcz4cTKlqmoMj7FucRu7/N0wAWBMo2uZ9s0P6VAaK6nse+bt92eiT0MhD6t1N9XaGBog
- TdrPzA5xfHWzoZdUwoeHCzT7jS+iadQhPef+z7g7HtQkyIR657BKwvw7FppnWXmODpAN
- 30+OQT2OG7Rog2lKwSU2Guyn2cs8cnQLZhw= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=oFyevuAO8L1hWOkrz6oEpJZnC0FsLBRUdJV51YIM3uA=;
+ b=aDgsPnLI9x0IOJemlkMWe4UhlBX+JwxP9ymgdkADFEx34R4SJYiCccaW6EFY0PZePDCa
+ LjYIdi37rT51vC9JEMfZnrgF8XWsevzGZCZhuq4o7qmG6rKnFq1lFfDarCvPyXjBjD7U
+ qLKVYC26EjOH3L2x5eX1jyNnQT53FBTdkjo= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b2kgae5yb-12
+        by m0001303.ppops.net with ESMTP id 3b2uq0ks12-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 15:30:14 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 15:30:13 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 14 Sep 2021 15:30:09 -0700
+ 15.1.2308.14; Tue, 14 Sep 2021 15:30:12 -0700
 Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 7D42C738213D; Tue, 14 Sep 2021 15:30:04 -0700 (PDT)
+        id CE4DA738217A; Tue, 14 Sep 2021 15:30:09 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v3 00/11] bpf: add support for new btf kind BTF_KIND_TAG
-Date:   Tue, 14 Sep 2021 15:30:04 -0700
-Message-ID: <20210914223004.244411-1-yhs@fb.com>
+Subject: [PATCH bpf-next v3 01/11] btf: change BTF_KIND_* macros to enums
+Date:   Tue, 14 Sep 2021 15:30:09 -0700
+Message-ID: <20210914223009.245307-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210914223004.244411-1-yhs@fb.com>
+References: <20210914223004.244411-1-yhs@fb.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: TXrx3Lvcv3WGTGryHW8cp9BIJMalnkTR
-X-Proofpoint-GUID: TXrx3Lvcv3WGTGryHW8cp9BIJMalnkTR
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: yUraQCzHV2NfwB8ZbRsZFPav8gfP8Md5
+X-Proofpoint-GUID: yUraQCzHV2NfwB8ZbRsZFPav8gfP8Md5
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
  definitions=2021-09-14_08,2021-09-14_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 bulkscore=0
- mlxscore=0 priorityscore=1501 suspectscore=0 adultscore=0 malwarescore=0
- mlxlogscore=949 lowpriorityscore=0 impostorscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109140129
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=799
+ clxscore=1015 bulkscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
+ mlxscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109030001 definitions=main-2109140129
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-LLVM14 added support for a new C attribute ([1])
-  __attribute__((btf_tag("arbitrary_str")))
-This attribute will be emitted to dwarf ([2]) and pahole
-will convert it to BTF. Or for bpf target, this
-attribute will be emitted to BTF directly ([3], [4]).
-The attribute is intended to provide additional
-information for
-  - struct/union type or struct/union member
-  - static/global variables
-  - static/global function or function parameter.
+Change BTF_KIND_* macros to enums so they are encoded in dwarf and
+appear in vmlinux.h. This will make it easier for bpf programs
+to use these constants without macro definitions.
 
-This new attribute can be used to add attributes
-to kernel codes, e.g., pre- or post- conditions,
-allow/deny info, or any other info in which only
-the kernel is interested. Such attributes will
-be processed by clang frontend and emitted to
-dwarf, converting to BTF by pahole. Ultimiately
-the verifier can use these information for
-verification purpose.
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ include/uapi/linux/btf.h       | 41 ++++++++++++++++++----------------
+ tools/include/uapi/linux/btf.h | 41 ++++++++++++++++++----------------
+ 2 files changed, 44 insertions(+), 38 deletions(-)
 
-The new attribute can also be used for bpf
-programs, e.g., tagging with __user attributes
-for function parameters, specifying global
-function preconditions, etc. Such information
-may help verifier to detect user program
-bugs.
-
-After this series, pahole dwarf->btf converter
-will be enhanced to support new llvm tag
-for btf_tag attribute. With pahole support,
-we will then try to add a few real use case,
-e.g., __user/__rcu tagging, allow/deny list,
-some kernel function precondition, etc,
-in the kernel.
-
-In the rest of the series, Patches 1-2 had
-kernel support. Patches 3-4 added
-libbpf support. Patch 5 added bpftool
-support. Patches 6-10 added various selftests.
-Patch 11 added documentation for the new kind.
-
-  [1] https://reviews.llvm.org/D106614
-  [2] https://reviews.llvm.org/D106621
-  [3] https://reviews.llvm.org/D106622
-  [4] https://reviews.llvm.org/D109560
-
-Changelog:
-  v2 -> v3:
-    - put NR_BTF_KINDS and BTF_KIND_MAX into enum as well
-    - check component_idx earlier (check_meta stage) in kernel
-    - add more tests
-    - fix misc nits
-  v1 -> v2:
-    - BTF ELF format changed in llvm ([4] above),
-      so cross-board change to use the new format.
-    - Clarified in commit message that BTF_KIND_TAG
-      is not emitted by bpftool btf dump format c.
-    - Fix various comments from Andrii.
-
-Yonghong Song (11):
-  btf: change BTF_KIND_* macros to enums
-  bpf: support for new btf kind BTF_KIND_TAG
-  libbpf: rename btf_{hash,equal}_int to btf_{hash,equal}_int_tag
-  libbpf: add support for BTF_KIND_TAG
-  bpftool: add support for BTF_KIND_TAG
-  selftests/bpf: test libbpf API function btf__add_tag()
-  selftests/bpf: change NAME_NTH/IS_NAME_NTH for BTF_KIND_TAG format
-  selftests/bpf: add BTF_KIND_TAG unit tests
-  selftests/bpf: test BTF_KIND_TAG for deduplication
-  selftests/bpf: add a test with a bpf program with btf_tag attributes
-  docs/bpf: add documentation for BTF_KIND_TAG
-
- Documentation/bpf/btf.rst                     |  29 +-
- include/uapi/linux/btf.h                      |  55 ++-
- kernel/bpf/btf.c                              | 128 +++++
- tools/bpf/bpftool/btf.c                       |  12 +
- tools/include/uapi/linux/btf.h                |  55 ++-
- tools/lib/bpf/btf.c                           |  84 +++-
- tools/lib/bpf/btf.h                           |  15 +
- tools/lib/bpf/btf_dump.c                      |   3 +
- tools/lib/bpf/libbpf.c                        |  31 +-
- tools/lib/bpf/libbpf.map                      |   2 +
- tools/lib/bpf/libbpf_internal.h               |   2 +
- tools/testing/selftests/bpf/btf_helpers.c     |   7 +-
- tools/testing/selftests/bpf/prog_tests/btf.c  | 441 +++++++++++++++++-
- .../selftests/bpf/prog_tests/btf_tag.c        |  14 +
- .../selftests/bpf/prog_tests/btf_write.c      |  21 +
- tools/testing/selftests/bpf/progs/tag.c       |  39 ++
- tools/testing/selftests/bpf/test_btf.h        |   3 +
- 17 files changed, 869 insertions(+), 72 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_tag.c
- create mode 100644 tools/testing/selftests/bpf/progs/tag.c
-
+diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
+index d27b1708efe9..10e401073dd1 100644
+--- a/include/uapi/linux/btf.h
++++ b/include/uapi/linux/btf.h
+@@ -56,25 +56,28 @@ struct btf_type {
+ #define BTF_INFO_VLEN(info)	((info) & 0xffff)
+ #define BTF_INFO_KFLAG(info)	((info) >> 31)
+=20
+-#define BTF_KIND_UNKN		0	/* Unknown	*/
+-#define BTF_KIND_INT		1	/* Integer	*/
+-#define BTF_KIND_PTR		2	/* Pointer	*/
+-#define BTF_KIND_ARRAY		3	/* Array	*/
+-#define BTF_KIND_STRUCT		4	/* Struct	*/
+-#define BTF_KIND_UNION		5	/* Union	*/
+-#define BTF_KIND_ENUM		6	/* Enumeration	*/
+-#define BTF_KIND_FWD		7	/* Forward	*/
+-#define BTF_KIND_TYPEDEF	8	/* Typedef	*/
+-#define BTF_KIND_VOLATILE	9	/* Volatile	*/
+-#define BTF_KIND_CONST		10	/* Const	*/
+-#define BTF_KIND_RESTRICT	11	/* Restrict	*/
+-#define BTF_KIND_FUNC		12	/* Function	*/
+-#define BTF_KIND_FUNC_PROTO	13	/* Function Proto	*/
+-#define BTF_KIND_VAR		14	/* Variable	*/
+-#define BTF_KIND_DATASEC	15	/* Section	*/
+-#define BTF_KIND_FLOAT		16	/* Floating point	*/
+-#define BTF_KIND_MAX		BTF_KIND_FLOAT
+-#define NR_BTF_KINDS		(BTF_KIND_MAX + 1)
++enum {
++	BTF_KIND_UNKN		=3D 0,	/* Unknown	*/
++	BTF_KIND_INT		=3D 1,	/* Integer	*/
++	BTF_KIND_PTR		=3D 2,	/* Pointer	*/
++	BTF_KIND_ARRAY		=3D 3,	/* Array	*/
++	BTF_KIND_STRUCT		=3D 4,	/* Struct	*/
++	BTF_KIND_UNION		=3D 5,	/* Union	*/
++	BTF_KIND_ENUM		=3D 6,	/* Enumeration	*/
++	BTF_KIND_FWD		=3D 7,	/* Forward	*/
++	BTF_KIND_TYPEDEF	=3D 8,	/* Typedef	*/
++	BTF_KIND_VOLATILE	=3D 9,	/* Volatile	*/
++	BTF_KIND_CONST		=3D 10,	/* Const	*/
++	BTF_KIND_RESTRICT	=3D 11,	/* Restrict	*/
++	BTF_KIND_FUNC		=3D 12,	/* Function	*/
++	BTF_KIND_FUNC_PROTO	=3D 13,	/* Function Proto	*/
++	BTF_KIND_VAR		=3D 14,	/* Variable	*/
++	BTF_KIND_DATASEC	=3D 15,	/* Section	*/
++	BTF_KIND_FLOAT		=3D 16,	/* Floating point	*/
++
++	NR_BTF_KINDS,
++	BTF_KIND_MAX		=3D NR_BTF_KINDS - 1,
++};
+=20
+ /* For some specific BTF_KIND, "struct btf_type" is immediately
+  * followed by extra data.
+diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux/bt=
+f.h
+index d27b1708efe9..10e401073dd1 100644
+--- a/tools/include/uapi/linux/btf.h
++++ b/tools/include/uapi/linux/btf.h
+@@ -56,25 +56,28 @@ struct btf_type {
+ #define BTF_INFO_VLEN(info)	((info) & 0xffff)
+ #define BTF_INFO_KFLAG(info)	((info) >> 31)
+=20
+-#define BTF_KIND_UNKN		0	/* Unknown	*/
+-#define BTF_KIND_INT		1	/* Integer	*/
+-#define BTF_KIND_PTR		2	/* Pointer	*/
+-#define BTF_KIND_ARRAY		3	/* Array	*/
+-#define BTF_KIND_STRUCT		4	/* Struct	*/
+-#define BTF_KIND_UNION		5	/* Union	*/
+-#define BTF_KIND_ENUM		6	/* Enumeration	*/
+-#define BTF_KIND_FWD		7	/* Forward	*/
+-#define BTF_KIND_TYPEDEF	8	/* Typedef	*/
+-#define BTF_KIND_VOLATILE	9	/* Volatile	*/
+-#define BTF_KIND_CONST		10	/* Const	*/
+-#define BTF_KIND_RESTRICT	11	/* Restrict	*/
+-#define BTF_KIND_FUNC		12	/* Function	*/
+-#define BTF_KIND_FUNC_PROTO	13	/* Function Proto	*/
+-#define BTF_KIND_VAR		14	/* Variable	*/
+-#define BTF_KIND_DATASEC	15	/* Section	*/
+-#define BTF_KIND_FLOAT		16	/* Floating point	*/
+-#define BTF_KIND_MAX		BTF_KIND_FLOAT
+-#define NR_BTF_KINDS		(BTF_KIND_MAX + 1)
++enum {
++	BTF_KIND_UNKN		=3D 0,	/* Unknown	*/
++	BTF_KIND_INT		=3D 1,	/* Integer	*/
++	BTF_KIND_PTR		=3D 2,	/* Pointer	*/
++	BTF_KIND_ARRAY		=3D 3,	/* Array	*/
++	BTF_KIND_STRUCT		=3D 4,	/* Struct	*/
++	BTF_KIND_UNION		=3D 5,	/* Union	*/
++	BTF_KIND_ENUM		=3D 6,	/* Enumeration	*/
++	BTF_KIND_FWD		=3D 7,	/* Forward	*/
++	BTF_KIND_TYPEDEF	=3D 8,	/* Typedef	*/
++	BTF_KIND_VOLATILE	=3D 9,	/* Volatile	*/
++	BTF_KIND_CONST		=3D 10,	/* Const	*/
++	BTF_KIND_RESTRICT	=3D 11,	/* Restrict	*/
++	BTF_KIND_FUNC		=3D 12,	/* Function	*/
++	BTF_KIND_FUNC_PROTO	=3D 13,	/* Function Proto	*/
++	BTF_KIND_VAR		=3D 14,	/* Variable	*/
++	BTF_KIND_DATASEC	=3D 15,	/* Section	*/
++	BTF_KIND_FLOAT		=3D 16,	/* Floating point	*/
++
++	NR_BTF_KINDS,
++	BTF_KIND_MAX		=3D NR_BTF_KINDS - 1,
++};
+=20
+ /* For some specific BTF_KIND, "struct btf_type" is immediately
+  * followed by extra data.
 --=20
 2.30.2
 
