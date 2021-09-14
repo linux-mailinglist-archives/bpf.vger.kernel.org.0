@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818C140AA90
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 11:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE3840AA91
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 11:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhINJUX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 05:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50116 "EHLO
+        id S230288AbhINJUZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 05:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhINJUX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:20:23 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2533CC061574
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 02:19:06 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id v24so12594756eda.3
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 02:19:06 -0700 (PDT)
+        with ESMTP id S230151AbhINJUY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 05:20:24 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3763DC061764
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 02:19:07 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id i6so18805674edu.1
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 02:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0lLX1fHB6jaPieI1cPC3xc4QwmyAR0d5okYwLH3KQR4=;
-        b=IOtyXgrMiTJfRYo85ReSyTUxldt5LjhcLWmtxvyXiq/lbNceySnHAed0D47Ca5KpEE
-         xuOx0sXzNrXJUe1PaYIqGx+xLSnmbWqVzIMnUXjmyGV4pyRLasTFuBWsbhV2JyY62KBm
-         BtIyAGdqjwU60tX1QGKIDpAOVcfX9Kt+xb+49ahudnAbPy5cz0QlCXG8eDVFAyaLpKcb
-         VrKA8+Cf4PmJ0DgMJX0rY7AOKyrzXzmdGdqciqJHv1QvSrKqqizn3ImA97PWazgyvuAV
-         8KoUIPJ00kMiGxSTZ3aLaN16SK4hNTWiEY6CJ6+Ii3IJ5hdYJkW0d+QGN/bmYG6Au4/0
-         coBw==
+        bh=X4qbj284OAUgjH/eZ0IYkKuS/yppytDEtIfwDnByJNQ=;
+        b=u8jW1CQtx0/VlAZDXuxKkszJofHPh7T8+jarucuyySMNLsph8MBESF4HKn0Gu8vqej
+         5hfzmuJqJ7rmSUPbTI3eZoywtwRqCYiMRaBm/fR/eLNVmjvnniu0ltQWCSpQB9gji8Dt
+         TAX2eaCilrgDhBM8sru33CkOyuQsW9554X5BnDXvxEnvn/x28LuzgL4vW3hr7NYQzwxx
+         tylULjeVeMt4WrYGEl1dCCO7474zbgFZ5SQMJobZ1usaXv6fOhtqkSepXwAhs7TMtXJ1
+         hxmPocEA8icdsLpDnP6kbHVogATgVfYwhpX22TFLNWdU5h23l43I2qvd1t+6X6cLrS/S
+         yncw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0lLX1fHB6jaPieI1cPC3xc4QwmyAR0d5okYwLH3KQR4=;
-        b=F/X1tamGfY7jU3YgaDzEGByF++d9892Ar3FdmDgJTXNXRzn7nF8weuagRYnqhebdkF
-         qNrGhAIFomVhPZz2hEy5fD4JgFd2q11KWYTmWD/ESrIVLS85jI2EsFpXy1aKqzu8Sgbn
-         +MWLfIyXaw2sYyUm9x7hvewVVoKjzUyJ08LonUcQMmMTk3HFXciDCHw72rM75jIupQR9
-         J119iq/eGpyyuVZwbVDz5wV2VNUMUN8jybJB0aKSLyzmJxuEAVKt0vx2/AT7EVmetIQV
-         1FXB2Wo/3L9vUr5R7bdszy+AH6I2e0LuU+F2JR9guheuQ2UjeR1Scctt6zrEIUq9M09A
-         ll9g==
-X-Gm-Message-State: AOAM530aBWq6Zx5DFU3snhVvgfSLXIQOTFd3b/xbZ9Erpp7LTONbC3O/
-        VYJ5TIDncwmAIHlYkOY9nm0ZuN8YmyiGFlQb
-X-Google-Smtp-Source: ABdhPJwIASC1PWDPaUUl945yOTo5rurpNt479RGus3BqJ0SrwWoUpv1Yehg+e0fANjDUSA+3zPys6Q==
-X-Received: by 2002:a05:6402:1c87:: with SMTP id cy7mr6898098edb.311.1631611144789;
-        Tue, 14 Sep 2021 02:19:04 -0700 (PDT)
+        bh=X4qbj284OAUgjH/eZ0IYkKuS/yppytDEtIfwDnByJNQ=;
+        b=M50OTEqEqrPRbtV74F8aEDNAPuNOCNiJdLfDuYQrMbGN56S1Tr/E7XHew0W1SD7PHa
+         BWt0QK0AHvYXO42YT1Ul7XpWf6PRrY8PlJZS96TwKtty3C2LadsTauLaXGTyBQqgUI5q
+         k14s86Crx9rnWlGvdTQHj0EiOA8bObWNmbyK6lp1Qrv41Li7WfWQ6SOhLi7QfjBFciAt
+         NcrNIopoe0sBVao6ntCcggOa9YW6laaYLnYYAbPCc+gQkFfczX/JfPRI5I13mthWz4SW
+         2PT/HYlsosYgPFU/rGdQN2SFsUdLAmSSYqwyl4ZkJDA+gIoiin/+SeL+v8h4HgyZFB3q
+         QYCg==
+X-Gm-Message-State: AOAM531szxxL8M60iQIb3oBdBITfsov0Yn8vwpe2HmF/c3ipmi4H63xq
+        DrRxO3LV0UF0GTlK+VMJ4IFN0g==
+X-Google-Smtp-Source: ABdhPJwxJJaU0E29oVvIS2eH4VWw0gm38nkoDk3NDoz7pOSRX9E4viTBmR3SMnWAEOgIqQ8+WIBkvQ==
+X-Received: by 2002:a50:8e06:: with SMTP id 6mr17832031edw.107.1631611145827;
+        Tue, 14 Sep 2021 02:19:05 -0700 (PDT)
 Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
-        by smtp.gmail.com with ESMTPSA id h10sm4615915ede.28.2021.09.14.02.19.03
+        by smtp.gmail.com with ESMTPSA id h10sm4615915ede.28.2021.09.14.02.19.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 02:19:04 -0700 (PDT)
+        Tue, 14 Sep 2021 02:19:05 -0700 (PDT)
 From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -54,9 +54,9 @@ Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         paul@cilium.io, yangtiezhu@loongson.cn, netdev@vger.kernel.org,
         bpf@vger.kernel.org,
         Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Subject: [PATCH bpf v4 01/14] bpf/tests: Allow different number of runs per test case
-Date:   Tue, 14 Sep 2021 11:18:29 +0200
-Message-Id: <20210914091842.4186267-2-johan.almbladh@anyfinetworks.com>
+Subject: [PATCH bpf v4 02/14] bpf/tests: Reduce memory footprint of test suite
+Date:   Tue, 14 Sep 2021 11:18:30 +0200
+Message-Id: <20210914091842.4186267-3-johan.almbladh@anyfinetworks.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210914091842.4186267-1-johan.almbladh@anyfinetworks.com>
 References: <20210914091842.4186267-1-johan.almbladh@anyfinetworks.com>
@@ -66,41 +66,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch allows a test cast to specify the number of runs to use. For
-compatibility with existing test case definitions, the default value 0
-is interpreted as MAX_TESTRUNS.
-
-A reduced number of runs is useful for complex test programs where 1000
-runs may take a very long time. Instead of reducing what is tested, one
-can instead reduce the number of times the test is run.
+The test suite used to call any fill_helper callbacks to generate eBPF
+program data for all test cases at once. This caused ballooning memory
+requirements as more extensive test cases were added. Now the each
+fill_helper is called before the test is run and the allocated memory
+released afterwards, before the next test case is processed.
 
 Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 ---
- lib/test_bpf.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ lib/test_bpf.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
 diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index 830a18ecffc8..c8bd3e9ab10a 100644
+index c8bd3e9ab10a..f0651dc6450b 100644
 --- a/lib/test_bpf.c
 +++ b/lib/test_bpf.c
-@@ -80,6 +80,7 @@ struct bpf_test {
- 	int expected_errcode; /* used when FLAG_EXPECTED_FAIL is set in the aux */
- 	__u8 frag_data[MAX_DATA];
- 	int stack_depth; /* for eBPF only, since tests don't call verifier */
-+	int nr_testruns; /* Custom run count, defaults to MAX_TESTRUNS if 0 */
- };
+@@ -8694,8 +8694,6 @@ static __init int find_test_index(const char *test_name)
  
- /* Large test cases need separate allocation and fill handler. */
-@@ -8631,6 +8632,9 @@ static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
+ static __init int prepare_bpf_tests(void)
  {
- 	int err_cnt = 0, i, runs = MAX_TESTRUNS;
+-	int i;
+-
+ 	if (test_id >= 0) {
+ 		/*
+ 		 * if a test_id was specified, use test_range to
+@@ -8739,23 +8737,11 @@ static __init int prepare_bpf_tests(void)
+ 		}
+ 	}
  
-+	if (test->nr_testruns)
-+		runs = min(test->nr_testruns, MAX_TESTRUNS);
+-	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+-		if (tests[i].fill_helper &&
+-		    tests[i].fill_helper(&tests[i]) < 0)
+-			return -ENOMEM;
+-	}
+-
+ 	return 0;
+ }
+ 
+ static __init void destroy_bpf_tests(void)
+ {
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+-		if (tests[i].fill_helper)
+-			kfree(tests[i].u.ptr.insns);
+-	}
+ }
+ 
+ static bool exclude_test(int test_id)
+@@ -8959,7 +8945,19 @@ static __init int test_bpf(void)
+ 
+ 		pr_info("#%d %s ", i, tests[i].descr);
+ 
++		if (tests[i].fill_helper &&
++		    tests[i].fill_helper(&tests[i]) < 0) {
++			pr_cont("FAIL to prog_fill\n");
++			continue;
++		}
 +
- 	for (i = 0; i < MAX_SUBTESTS; i++) {
- 		void *data;
- 		u64 duration;
+ 		fp = generate_filter(i, &err);
++
++		if (tests[i].fill_helper) {
++			kfree(tests[i].u.ptr.insns);
++			tests[i].u.ptr.insns = NULL;
++		}
++
+ 		if (fp == NULL) {
+ 			if (err == 0) {
+ 				pass_cnt++;
 -- 
 2.30.2
 
