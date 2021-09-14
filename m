@@ -2,151 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9633B40BA7F
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 23:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEC440BAB5
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 23:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbhINVm7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 17:42:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232891AbhINVm7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:42:59 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD86F60F46;
-        Tue, 14 Sep 2021 21:41:40 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 17:41:34 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 7/8] ftrace: Add multi direct modify interface
-Message-ID: <20210914174134.1d8fd944@oasis.local.home>
-In-Reply-To: <20210831095017.412311-8-jolsa@kernel.org>
-References: <20210831095017.412311-1-jolsa@kernel.org>
-        <20210831095017.412311-8-jolsa@kernel.org>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234686AbhINVtz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 17:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234786AbhINVtu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:49:50 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD6EC061766
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 14:48:32 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id y13so1241285ybi.6
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 14:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YXWogIdh/txnNWc6oERhuIkhZVVMkjfmrjd10bME58M=;
+        b=bVuod73QLbjlZj9AEBbg3SPpRDmMYC3g5HYrWMNCmlA+yr/s5V576FJ0RUJ/QR9htg
+         uqv0oC1hVcSa7pzSfwveHiA5IQ5oRBjSH6ZIE/HS84pmNhO8KLkfCO43LvbCpEsd0yHN
+         hYxi3DeVVTkQz8tP3Cm1dAYUg4fP6gcoEuGvn16IxFq5JjayGtTwO3KWRWQWLm6dWYFQ
+         wKQx/Wg2+Mu+6ybBjogdPeGn5qW3vl80hfFJz5jhXrgurxr0NZxu+Ik90Zz9KLAvyOhv
+         AOJ7ACREDEVAshFr14C4WqNGcF170Aw1vvPiiQEz5WylxvxLh31KR6Prl+1xIfyaWr0j
+         l3Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YXWogIdh/txnNWc6oERhuIkhZVVMkjfmrjd10bME58M=;
+        b=5IkASBzkZ2dqrRfPTqb82XE/cPM1BidoYYmLX+S6P1ZLRFb8Auz8KGC4nyImlzYqJZ
+         TiflBCvtvpxUKo41q8SJSkGvrfASPnZpi4X8cnMGQdN5rCGKRNMQi1S2zEj0AhWpGF2H
+         b/zA1MfLlZiwkMOKB5RwbG+SoikBhJh58ufBcvHejqJRCBZtcdQYPdX4ywK4DDoXKgiI
+         ldxFaRCn7GBKG9Aq8u0YSBzqVgjQRyzzaXJWLAujkkQWwUZL4a+hqqHXz3lhee+Ynkhz
+         LFQUR2euesJva3upjvEkg8CtTKZRDY25T0RFYRTRWSFQLRibAjWyrCepFFSVTPdjPE8i
+         4OcA==
+X-Gm-Message-State: AOAM532m64hYG84kt9aAeBVEXUbrEZc6zBinTjbQc6SAFx2KG27npO+U
+        v9q1Q3OtG43sOEMAg8TOB/vDyCcZlSgLbschm1y/I90Z
+X-Google-Smtp-Source: ABdhPJyy+U6q/u9655xBBJarNtR3daMqHmX+4ZNuC6SG6+geQvTiviXw87EA/OswjxGhvtOTqEMOkDED04ezLurR2yA=
+X-Received: by 2002:a25:47c4:: with SMTP id u187mr1888713yba.225.1631656111997;
+ Tue, 14 Sep 2021 14:48:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <7500F71C-79CF-449C-819E-7734B6B62EA5@gmail.com>
+ <20210914213554.2338381-1-rafaeldtinoco@gmail.com> <4B1531CC-63FE-4D22-8645-9EDB666F2707@gmail.com>
+In-Reply-To: <4B1531CC-63FE-4D22-8645-9EDB666F2707@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 14 Sep 2021 14:48:21 -0700
+Message-ID: <CAEf4BzZW5L7bfwBwzoQpx8=LygaHepYDh9Ou8TmPhZJa_HZvPw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: fix build error introduced by legacy
+ kprobe feature
+To:     Rafael David Tinoco <rafaeldtinoco@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Yucong Sun <sunyucong@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 31 Aug 2021 11:50:16 +0200
-Jiri Olsa <jolsa@redhat.com> wrote:
+On Tue, Sep 14, 2021 at 2:39 PM Rafael David Tinoco
+<rafaeldtinoco@gmail.com> wrote:
+>
+>
+> > -     char cmd[192], probename[128], probefunc[128];
+> > +     char cmd[288] =3D "\0", probename[128] =3D "\0", probefunc[128] =
+=3D "\0";
+> >       const char *file =3D "/sys/kernel/debug/tracing/kprobe_events";
+>
+> I had gcc-10 with:
+>
+> libbpf.c: In function =E2=80=98poke_kprobe_events=E2=80=99:
+> libbpf.c:9012:37: error: =E2=80=98%s=E2=80=99 directive output may be tru=
+ncated writing up to 127 bytes into a region of size between 62 and 189 [-W=
+error=3Dformat-truncation=3D]
+>  9012 |   snprintf(cmd, sizeof(cmd), "%c:%s %s",
+>       |                                     ^~
+> In file included from /usr/include/stdio.h:866,
+>                  from libbpf.c:17:
+> /usr/include/x86_64-linux-gnu/bits/stdio2.h:71:10: note: =E2=80=98__built=
+in___snprintf_chk=E2=80=99 output between 4 and 258 bytes into a destinatio=
+n of size 192
+>    71 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL =
+- 1,
+>       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~
+>    72 |        __glibc_objsize (__s), __fmt,
+>       |        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    73 |        __va_arg_pack ());
+>       |        ~~~~~~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+>
+> locally AND it fixed the issue for me but Alexei reported:
+>
+> https://github.com/kernel-patches/bpf/runs/3603448190
+>
+> with a truncation of max 258 bytes. I raised cmd size to 288.
 
-> Adding interface to modify registered direct function
-> for ftrace_ops. Adding following function:
-> 
->    modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-> 
-> The function changes the currently registered direct
-> function for all attached functions.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/linux/ftrace.h |  6 ++++++
->  kernel/trace/ftrace.c  | 43 ++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 49 insertions(+)
-> 
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index e40b5201c16e..f3ba6366f7af 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -318,6 +318,8 @@ int ftrace_modify_direct_caller(struct ftrace_func_entry *entry,
->  unsigned long ftrace_find_rec_direct(unsigned long ip);
->  int register_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr);
->  int unregister_ftrace_direct_multi(struct ftrace_ops *ops);
-> +int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr);
-> +
->  #else
->  struct ftrace_ops;
->  # define ftrace_direct_func_count 0
-> @@ -357,6 +359,10 @@ static inline int unregister_ftrace_direct_multi(struct ftrace_ops *ops)
->  {
->  	return -ENODEV;
->  }
-> +static inline int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-> +{
-> +	return -ENODEV;
-> +}
->  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
->  
->  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 7243769493c9..59940a6a907c 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -5518,6 +5518,49 @@ int unregister_ftrace_direct_multi(struct ftrace_ops *ops)
->  	return err;
->  }
->  EXPORT_SYMBOL_GPL(unregister_ftrace_direct_multi);
-> +
+Right, if offset !=3D 0 GCC is able to deduce that sizeof(probename) +
+sizeof(probefunc) add up to 256 (plus few more characters in format
+string) and that will be truncated in cmd. It completely ignores such
+possibility when offset =3D=3D 0 and we use name as is. Either way, I
+bumped the cmd size to 256 and force-pushed. It should build fine now.
+Sorry for delay.
 
-Needs kernel doc comments.
-
-> +int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
-> +{
-> +	struct ftrace_hash *hash = ops->func_hash->filter_hash;
-> +	struct ftrace_func_entry *entry, *iter;
-> +	int i, size;
-> +	int err;
-> +
-> +	if (check_direct_multi(ops))
-> +		return -EINVAL;
-> +	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&direct_mutex);
-> +	mutex_lock(&ftrace_lock);
-> +
-> +	/*
-> +	 * Shutdown the ops, change 'direct' pointer for each
-> +	 * ops entry in direct_functions hash and startup the
-> +	 * ops back again.
-> +	 */
-> +	err = ftrace_shutdown(ops, 0);
-
-This needs to be commented that there's going to be a rather large time
-frame that there will be no callbacks happening while this update occurs.
-
-A better solution, that prevents having to do this, is to first change
-the function fentry's to call the ftrace list loop function, that calls
-the ftrace_ops list, and will call the direct call via the ops in the
-loop. Have the ops->func call the new direct function (all will be
-immediately affected). Update the entries, and then switch from the
-loop back to the direct caller.
-
--- Steve
-
-
-
-> +	if (err)
-> +		goto out_unlock;
-> +
-> +	size = 1 << hash->size_bits;
-> +	for (i = 0; i < size; i++) {
-> +		hlist_for_each_entry(iter, &hash->buckets[i], hlist) {
-> +			entry = __ftrace_lookup_ip(direct_functions, iter->ip);
-> +			if (!entry)
-> +				continue;
-> +			entry->direct = addr;
-> +		}
-> +	}
-> +
-> +	err = ftrace_startup(ops, 0);
-> +
-> + out_unlock:
-> +	mutex_unlock(&ftrace_lock);
-> +	mutex_unlock(&direct_mutex);
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(modify_ftrace_direct_multi);
->  #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
->  
->  /**
-
+>
+> Let's see if that fixes the issue.
+>
