@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A0840B111
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 16:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C899240B117
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 16:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbhINOjw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 10:39:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60766 "EHLO mail.kernel.org"
+        id S233687AbhINOj7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 10:39:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233614AbhINOjt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:39:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 532B4610A2;
-        Tue, 14 Sep 2021 14:38:29 +0000 (UTC)
+        id S233614AbhINOj6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:39:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CAC1610CE;
+        Tue, 14 Sep 2021 14:38:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631630311;
-        bh=EpQx0AFCWtfog6vDxcjh3WPnP32jeyKkYz6djXemcis=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HbVaAu2kBM4x4fFhYv1Tkup0Uv6AZZ812iw9eU7KLlGatJGb7xerf1Z5qHBtWUAhF
-         zthQGCi/1H+IeHCKD4gjGrOzl6xIv9yk4+WjkEF/GUppqdy0+rsPBy0dDgLHrPt8f/
-         j5XXKawvCN12c2QqeEaAHlcDQtQZGqOZjySDDXV7GQO55KMNjgGYZKz79xPwaF71kw
-         iByw1MsxSd3rClzsqswRZs7ArDLwGVKfAB1gw4HcdCrOy+r5lXb4fvbk6F+ing8hYh
-         mNdcZ182w9TDusX5cSKqDZZGpTKWTqOuMf4DrHHa4cuaO1Ymrdeu2NUpgZ20s+GzG3
-         jsCf8TqKzVO8w==
+        s=k20201202; t=1631630321;
+        bh=4xQiQDDV7nXJL8Xan+15i4FwcNOTqTiYzYCdCLjItZQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=N5F7dsm3oC3uWyspwozTKIHTqoDUSpeWzd2cFIzjDhYfwuHRmblgxYcBS5r4Q0hms
+         fV6v7crr6GMxQwrgBCCrY8zspDHYWnYlynmfEFDiFfSdHSuYNpSfYCIPmyUL6uVj6C
+         v6g9TBqpQQk24LXe4gWje5oEYx9+og5T5QUDYso7jq/CcYRb1pWEWy6YMhY1nlj83x
+         pbsBqG8FU5CXWkJjtxzRvRL5FT2Eem287aIg7Tz9NYhMLpoWEd8NjMBExtzw0PW4tf
+         9jbYizbkmoOzNSXoB+A1KHa+ItddVhB5fNLXLaNScI8Vjydfb90NMdcNPaLrRPNzxF
+         O6FpkVf8diEJQ==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -37,10 +37,12 @@ Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
         Abhishek Sagar <sagar.abhishek@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Paul McKenney <paulmck@kernel.org>
-Subject: [PATCH -tip v11 00/27] kprobes: Fix stacktrace with kretprobes on x86
-Date:   Tue, 14 Sep 2021 23:38:27 +0900
-Message-Id: <163163030719.489837.2236069935502195491.stgit@devnote2>
+Subject: [PATCH -tip v11 01/27] kprobes: Do not use local variable when creating debugfs file
+Date:   Tue, 14 Sep 2021 23:38:37 +0900
+Message-Id: <163163031686.489837.4476867635937014973.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <163163030719.489837.2236069935502195491.stgit@devnote2>
+References: <163163030719.489837.2236069935502195491.stgit@devnote2>
 User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -49,159 +51,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+From: Punit Agrawal <punitagrawal@gmail.com>
 
-This is the 11th version of the series to fix the stacktrace with kretprobe on x86.
+debugfs_create_file() takes a pointer argument that can be used during
+file operation callbacks (accessible via i_private in the inode
+structure). An obvious requirement is for the pointer to refer to
+valid memory when used.
 
-The previous version is here;
+When creating the debugfs file to dynamically enable / disable
+kprobes, a pointer to local variable is passed to
+debugfs_create_file(); which will go out of scope when the init
+function returns. The reason this hasn't triggered random memory
+corruption is because the pointer is not accessed during the debugfs
+file callbacks.
 
- https://lore.kernel.org/all/162756755600.301564.4957591913842010341.stgit@devnote2/
+Since the enabled state is managed by the kprobes_all_disabled global
+variable, the local variable is not needed. Fix the incorrect (and
+unnecessary) usage of local variable during debugfs_file_create() by
+passing NULL instead.
 
-This version is rebased on the latest tip/master branch and includes the kprobe cleanup
-series[1][2]. No code change.
-
-[1] https://lore.kernel.org/bpf/162748615977.59465.13262421617578791515.stgit@devnote2/
-[2] https://lore.kernel.org/linux-csky/20210727133426.2919710-1-punitagrawal@gmail.com/
-
-
-With this series, unwinder can unwind stack correctly from ftrace as below;
-
-  # cd /sys/kernel/debug/tracing
-  # echo > trace
-  # echo 1 > options/sym-offset
-  # echo r vfs_read >> kprobe_events
-  # echo r full_proxy_read >> kprobe_events
-  # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
-  # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
-  # echo 1 > events/kprobes/enable
-  # cat /sys/kernel/debug/kprobes/list
-ffffffff813bedf0  r  full_proxy_read+0x0    [FTRACE]
-ffffffff812c13e0  r  vfs_read+0x0    [FTRACE]
-  # echo 0 > events/kprobes/enable
-  # cat trace
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 3/3   #P:8
-#
-#                                _-----=> irqs-off
-#                               / _----=> need-resched
-#                              | / _---=> hardirq/softirq
-#                              || / _--=> preempt-depth
-#                              ||| / _-=> migrate-disable
-#                              |||| /     delay
-#           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-#              | |         |   |||||     |         |
-             cat-136     [000] ...1.    14.474966: r_full_proxy_read_0: (vfs_read+0x99/0x190 <- full_proxy_read)
-             cat-136     [000] ...1.    14.474970: <stack trace>
- => kretprobe_trace_func+0x209/0x300
- => kretprobe_dispatcher+0x9d/0xb0
- => __kretprobe_trampoline_handler+0xd4/0x1b0
- => trampoline_handler+0x43/0x60
- => __kretprobe_trampoline+0x2a/0x50
- => vfs_read+0x99/0x190
- => ksys_read+0x68/0xe0
- => do_syscall_64+0x3b/0x90
- => entry_SYSCALL_64_after_hwframe+0x44/0xae
-             cat-136     [000] ...1.    14.474971: r_vfs_read_0: (ksys_read+0x68/0xe0 <- vfs_read)
-
-This shows the double return probes (vfs_read() and full_proxy_read()) on the stack
-correctly unwinded. (vfs_read() returns to 'ksys_read+0x68' and full_proxy_read()
-returns to 'vfs_read+0x99')
-
-This also changes the kretprobe behavisor a bit, now the instraction pointer in
-the 'pt_regs' passed to kretprobe user handler is correctly set the real return
-address. So user handlers can get it via instruction_pointer() API, and can use
-stack_trace_save_regs().
-
-You can also get this series from 
- git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v11
-
-
-Thank you,
-
+Fixes: bf8f6e5b3e51 ("Kprobes: The ON/OFF knob thru debugfs")
+Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+ kernel/kprobes.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Josh Poimboeuf (3):
-      objtool: Add frame-pointer-specific function ignore
-      objtool: Ignore unwind hints for ignored functions
-      x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline()
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 790a573bbe00..1cf8bca1ea86 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2809,13 +2809,12 @@ static const struct file_operations fops_kp = {
+ static int __init debugfs_kprobe_init(void)
+ {
+ 	struct dentry *dir;
+-	unsigned int value = 1;
+ 
+ 	dir = debugfs_create_dir("kprobes", NULL);
+ 
+ 	debugfs_create_file("list", 0400, dir, NULL, &kprobes_fops);
+ 
+-	debugfs_create_file("enabled", 0600, dir, &value, &fops_kp);
++	debugfs_create_file("enabled", 0600, dir, NULL, &fops_kp);
+ 
+ 	debugfs_create_file("blacklist", 0400, dir, NULL,
+ 			    &kprobe_blacklist_fops);
 
-Masami Hiramatsu (19):
-      kprobes: treewide: Cleanup the error messages for kprobes
-      kprobes: Fix coding style issues
-      kprobes: Use IS_ENABLED() instead of kprobes_built_in()
-      kprobes: Add assertions for required lock
-      kprobes: treewide: Use 'kprobe_opcode_t *' for the code address in get_optimized_kprobe()
-      kprobes: Use bool type for functions which returns boolean value
-      ia64: kprobes: Fix to pass correct trampoline address to the handler
-      kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
-      kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
-      kprobes: treewide: Make it harder to refer kretprobe_trampoline directly
-      kprobes: Add kretprobe_find_ret_addr() for searching return address
-      ARC: Add instruction_pointer_set() API
-      ia64: Add instruction_pointer_set() API
-      arm: kprobes: Make space for instruction pointer on stack
-      kprobes: Enable stacktrace from pt_regs in kretprobe handler
-      x86/kprobes: Push a fake return address at kretprobe_trampoline
-      x86/unwind: Recover kretprobe trampoline entry
-      tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
-      x86/kprobes: Fixup return address in generic trampoline handler
-
-Punit Agrawal (5):
-      kprobes: Do not use local variable when creating debugfs file
-      kprobes: Use helper to parse boolean input from userspace
-      kprobe: Simplify prepare_kprobe() by dropping redundant version
-      csky: ftrace: Drop duplicate implementation of arch_check_ftrace_location()
-      kprobes: Make arch_check_ftrace_location static
-
-
- arch/arc/include/asm/kprobes.h                |    2 
- arch/arc/include/asm/ptrace.h                 |    5 
- arch/arc/kernel/kprobes.c                     |   13 -
- arch/arm/probes/kprobes/core.c                |   15 -
- arch/arm/probes/kprobes/opt-arm.c             |    7 
- arch/arm64/include/asm/kprobes.h              |    2 
- arch/arm64/kernel/probes/kprobes.c            |   10 
- arch/arm64/kernel/probes/kprobes_trampoline.S |    4 
- arch/csky/include/asm/kprobes.h               |    2 
- arch/csky/kernel/probes/ftrace.c              |    7 
- arch/csky/kernel/probes/kprobes.c             |   14 -
- arch/csky/kernel/probes/kprobes_trampoline.S  |    4 
- arch/ia64/include/asm/ptrace.h                |    5 
- arch/ia64/kernel/kprobes.c                    |   15 -
- arch/mips/kernel/kprobes.c                    |   26 +
- arch/parisc/kernel/kprobes.c                  |    6 
- arch/powerpc/include/asm/kprobes.h            |    2 
- arch/powerpc/kernel/kprobes.c                 |   29 -
- arch/powerpc/kernel/optprobes.c               |    8 
- arch/powerpc/kernel/stacktrace.c              |    2 
- arch/riscv/include/asm/kprobes.h              |    2 
- arch/riscv/kernel/probes/kprobes.c            |   15 -
- arch/riscv/kernel/probes/kprobes_trampoline.S |    4 
- arch/s390/include/asm/kprobes.h               |    2 
- arch/s390/kernel/kprobes.c                    |   16 -
- arch/s390/kernel/stacktrace.c                 |    2 
- arch/sh/include/asm/kprobes.h                 |    2 
- arch/sh/kernel/kprobes.c                      |   12 -
- arch/sparc/include/asm/kprobes.h              |    2 
- arch/sparc/kernel/kprobes.c                   |   12 -
- arch/x86/include/asm/kprobes.h                |    1 
- arch/x86/include/asm/unwind.h                 |   23 +
- arch/x86/include/asm/unwind_hints.h           |    5 
- arch/x86/kernel/kprobes/core.c                |   71 +++-
- arch/x86/kernel/kprobes/opt.c                 |    6 
- arch/x86/kernel/unwind_frame.c                |    3 
- arch/x86/kernel/unwind_guess.c                |    3 
- arch/x86/kernel/unwind_orc.c                  |   21 +
- include/linux/kprobes.h                       |  113 ++++--
- include/linux/objtool.h                       |   12 +
- kernel/kprobes.c                              |  502 ++++++++++++++-----------
- kernel/trace/trace_kprobe.c                   |    2 
- kernel/trace/trace_output.c                   |   17 -
- lib/error-inject.c                            |    3 
- tools/include/linux/objtool.h                 |   12 +
- tools/objtool/check.c                         |    2 
- 46 files changed, 607 insertions(+), 436 deletions(-)
-
---
-Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
