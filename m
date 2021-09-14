@@ -2,126 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179C140AE4D
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 14:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A740340AE98
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 15:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbhINM4d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 08:56:33 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:46926 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232664AbhINM4c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:56:32 -0400
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxNOakm0BhApwGAA--.20312S3;
-        Tue, 14 Sep 2021 20:55:02 +0800 (CST)
-Subject: Re: [PATCH bpf v4 13/14] bpf/tests: Fix error in tail call limit
- tests
-To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
+        id S233119AbhINNKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 09:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232964AbhINNKQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 09:10:16 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB46C061760
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 06:08:59 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id y13so28070110ybi.6
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 06:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dKlB37N2KMMJit33FGP+ZlCjNPWqIrGvOPTgPZDHlNg=;
+        b=iNqIzeQV1tPkTBPGklET5Z47SH2m/WNxeeT4GBnPneSpiIkZnlNkgNNGdgvNhiCbL2
+         VnR9UVEdqn7JERsoYLIV3ezW7u2/Z/6Bu5BL1r35Eg1oSv8K4yGvxt2DIa0sM8p8Cs8A
+         g/EFhZFZOTayzao7duLIw2l0cER6aNF+MOudGVWNLSh111fKgyiW27KD3+KNLu/Ufy1H
+         xrHGsE8Ige+wYqxa5xqHhjh0wIhMH8B/X/jXZJ16ELoNeBFeSJzytBYGAohZEywCU75M
+         GPAEGq22MvVWxfnNParKnTcpH88iIgE7QkW5vNqnWiaZxTcbrFNmoiFE6bdYtWEFn+C6
+         v0FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dKlB37N2KMMJit33FGP+ZlCjNPWqIrGvOPTgPZDHlNg=;
+        b=BvCjhpHU3Ib3KK864tAT2bTFH2MFnu4ZwfUjED6VZIUkzyR5aoGazVHdGTDsotDG5r
+         dz1IUzwdefjxrWfXmc7PtNVEo41DCJJklBTBpxQyl8aGLD+XTF1QJ/5VJpS8Q+KQqj50
+         Kcr0rNxIKtjTKnlSxd6zoZaovPTRCXsL1tENW6e86GlYtrIOMe3TDgKZBtDWddsUt6Eh
+         3eoP3dMg/Fntp5yrti5FUTZOLgvklNyURLRsev9WHwBBOkgmB8NCshstHwFO7WwC5hmR
+         N92hV6jRASBfhicu10H5ReLbOs0qt2oE1XQ0KZr14IquBJheYd+/YGdbG4jwP3VOPDj8
+         Z2tg==
+X-Gm-Message-State: AOAM531m7Tit+3bBIxkUjCfK3BdmByqXmNUG5rDAyE/5+T27oGxFUDEG
+        VPFAwuhVQAxCL4+udhchY6tfJ95Gu/424gcaTBd5fw==
+X-Google-Smtp-Source: ABdhPJw0RryR/nSt2nhcU/z2Qmco6Rgra43/dA//9Ve5TZ8kWwlygk3LkuYFL/+kUdrx2E08NQsj1pnNkp1DPK051gM=
+X-Received: by 2002:a25:d054:: with SMTP id h81mr21527380ybg.411.1631624936952;
+ Tue, 14 Sep 2021 06:08:56 -0700 (PDT)
+MIME-Version: 1.0
 References: <20210914091842.4186267-1-johan.almbladh@anyfinetworks.com>
  <20210914091842.4186267-14-johan.almbladh@anyfinetworks.com>
- <4b9db215-edcd-6089-6ecd-6fe9b20dcbbb@loongson.cn>
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, iii@linux.ibm.com,
-        paul@cilium.io, netdev@vger.kernel.org, bpf@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <8e2404d6-f226-3749-2e35-5519b2c90754@loongson.cn>
-Date:   Tue, 14 Sep 2021 20:55:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <4b9db215-edcd-6089-6ecd-6fe9b20dcbbb@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9CxNOakm0BhApwGAA--.20312S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFW5ury3CFykuryktrWDJwb_yoW8KF4xpa
-        4xJ3ZxKFW8JFySqanIgFW0gw1furZYyryUCr4ayryayFs5Aw1kGFy8Kr18uryav3yF9F4I
-        vrsYywn8C3WkJrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9lb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        c7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I
-        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
-        GVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI
-        0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0
-        rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
-        4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUgX_TUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+ <4b9db215-edcd-6089-6ecd-6fe9b20dcbbb@loongson.cn> <8e2404d6-f226-3749-2e35-5519b2c90754@loongson.cn>
+In-Reply-To: <8e2404d6-f226-3749-2e35-5519b2c90754@loongson.cn>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Tue, 14 Sep 2021 15:09:58 +0200
+Message-ID: <CAM1=_QRzTXZ=WRrN4WFezPSLpm1yh3V0gX8HHP0f8yBYEYs2_A@mail.gmail.com>
+Subject: Re: [PATCH bpf v4 13/14] bpf/tests: Fix error in tail call limit tests
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Paul Chaignon <paul@cilium.io>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09/14/2021 08:41 PM, Tiezhu Yang wrote:
-> On 09/14/2021 05:18 PM, Johan Almbladh wrote:
->> This patch fixes an error in the tail call limit test that caused the
->> test to fail on for x86-64 JIT. Previously, the register R0 was used to
->> report the total number of tail calls made. However, after a tail call
->> fall-through, the value of the R0 register is undefined. Now, all tail
->> call error path tests instead use context state to store the count.
->>
->> Fixes: 874be05f525e ("bpf, tests: Add tail call test suite")
->> Reported-by: Paul Chaignon <paul@cilium.io>
->> Reported-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
->> ---
->>   lib/test_bpf.c | 37 +++++++++++++++++++++++++++----------
->>   1 file changed, 27 insertions(+), 10 deletions(-)
->>
->> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
->> index 7475abfd2186..ddb9a8089d2e 100644
->> --- a/lib/test_bpf.c
->> +++ b/lib/test_bpf.c
->> @@ -12179,10 +12179,15 @@ static __init int test_bpf(void)
->>   struct tail_call_test {
->>       const char *descr;
->>       struct bpf_insn insns[MAX_INSNS];
->> +    int flags;
->>       int result;
->>       int stack_depth;
->>   };
->>   +/* Flags that can be passed to tail call test cases */
->> +#define FLAG_NEED_STATE        BIT(0)
->> +#define FLAG_RESULT_IN_STATE    BIT(1)
->> +
->>   /*
->>    * Magic marker used in test snippets for tail calls below.
->>    * BPF_LD/MOV to R2 and R2 with this immediate value is replaced
->> @@ -12252,32 +12257,38 @@ static struct tail_call_test 
->> tail_call_tests[] = {
->>       {
->>           "Tail call error path, max count reached",
->>           .insns = {
->> -            BPF_ALU64_IMM(BPF_ADD, R1, 1),
->> -            BPF_ALU64_REG(BPF_MOV, R0, R1),
->> +            BPF_LDX_MEM(BPF_W, R2, R1, 0),
->> +            BPF_ALU64_IMM(BPF_ADD, R2, 1),
->> +            BPF_STX_MEM(BPF_W, R1, R2, 0),
->>               TAIL_CALL(0),
->>               BPF_EXIT_INSN(),
->>           },
->> -        .result = MAX_TAIL_CALL_CNT + 1,
->> +        .flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
->> +        .result = (MAX_TAIL_CALL_CNT + 1 + 1) * MAX_TESTRUNS,
+On Tue, Sep 14, 2021 at 2:55 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> Hi Johan,
+> On 09/14/2021 08:41 PM, Tiezhu Yang wrote:
+> > On 09/14/2021 05:18 PM, Johan Almbladh wrote:
+> >> This patch fixes an error in the tail call limit test that caused the
+> >> test to fail on for x86-64 JIT. Previously, the register R0 was used to
+> >> report the total number of tail calls made. However, after a tail call
+> >> fall-through, the value of the R0 register is undefined. Now, all tail
+> >> call error path tests instead use context state to store the count.
+> >>
+> >> Fixes: 874be05f525e ("bpf, tests: Add tail call test suite")
+> >> Reported-by: Paul Chaignon <paul@cilium.io>
+> >> Reported-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> >> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> >> ---
+> >>   lib/test_bpf.c | 37 +++++++++++++++++++++++++++----------
+> >>   1 file changed, 27 insertions(+), 10 deletions(-)
+> >>
+> >> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+> >> index 7475abfd2186..ddb9a8089d2e 100644
+> >> --- a/lib/test_bpf.c
+> >> +++ b/lib/test_bpf.c
+> >> @@ -12179,10 +12179,15 @@ static __init int test_bpf(void)
+> >>   struct tail_call_test {
+> >>       const char *descr;
+> >>       struct bpf_insn insns[MAX_INSNS];
+> >> +    int flags;
+> >>       int result;
+> >>       int stack_depth;
+> >>   };
+> >>   +/* Flags that can be passed to tail call test cases */
+> >> +#define FLAG_NEED_STATE        BIT(0)
+> >> +#define FLAG_RESULT_IN_STATE    BIT(1)
+> >> +
+> >>   /*
+> >>    * Magic marker used in test snippets for tail calls below.
+> >>    * BPF_LD/MOV to R2 and R2 with this immediate value is replaced
+> >> @@ -12252,32 +12257,38 @@ static struct tail_call_test
+> >> tail_call_tests[] = {
+> >>       {
+> >>           "Tail call error path, max count reached",
+> >>           .insns = {
+> >> -            BPF_ALU64_IMM(BPF_ADD, R1, 1),
+> >> -            BPF_ALU64_REG(BPF_MOV, R0, R1),
+> >> +            BPF_LDX_MEM(BPF_W, R2, R1, 0),
+> >> +            BPF_ALU64_IMM(BPF_ADD, R2, 1),
+> >> +            BPF_STX_MEM(BPF_W, R1, R2, 0),
+> >>               TAIL_CALL(0),
+> >>               BPF_EXIT_INSN(),
+> >>           },
+> >> -        .result = MAX_TAIL_CALL_CNT + 1,
+> >> +        .flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
+> >> +        .result = (MAX_TAIL_CALL_CNT + 1 + 1) * MAX_TESTRUNS,
+> >
+> > Hi Johan,
+> >
+> > I have tested this patch,
+> > It should be "MAX_TAIL_CALL_CNT + 1" instead of "MAX_TAIL_CALL_CNT + 1
+> > + 1"?
 >
-> I have tested this patch,
-> It should be "MAX_TAIL_CALL_CNT + 1" instead of "MAX_TAIL_CALL_CNT + 1 
-> + 1"?
+> Oh, sorry, it is right when MAX_TAIL_CALL_CNT is 32,
+> I have tested it based on MAX_TAIL_CALL_CNT is 33,
+> so I need to modify here if MAX_TAIL_CALL_CNT is 33 in my v3 patch.
 
-Oh, sorry, it is right when MAX_TAIL_CALL_CNT is 32,
-I have tested it based on MAX_TAIL_CALL_CNT is 33,
-so I need to modify here if MAX_TAIL_CALL_CNT is 33 in my v3 patch.
-
-Tested-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+No worries! I wrote it that way to indicate that there are two +1s.
+The first is from the behaviour that actual count (33) = configured
+count (32) + 1. The second is for the initial BPF program call, which
+increments the counter but is not in itself a tail call.
 
 >
-> [...]
->
-> Thanks,
-> Tiezhu
+> Tested-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 
+Thanks!
+Johan
+
+>
+> >
+> > [...]
+> >
+> > Thanks,
+> > Tiezhu
+>
