@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C05640B1B0
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 16:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9630C40B1B3
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 16:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbhINOoF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 10:44:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37424 "EHLO mail.kernel.org"
+        id S233713AbhINOom (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 10:44:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234353AbhINOnY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:43:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C74D610E6;
-        Tue, 14 Sep 2021 14:42:04 +0000 (UTC)
+        id S234718AbhINOne (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:43:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CC9260698;
+        Tue, 14 Sep 2021 14:42:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631630527;
-        bh=jM/E5qbkTRhtXvBgC/DCoql0xzq9kLErr23TZymhaCo=;
+        s=k20201202; t=1631630536;
+        bh=3BqLLykrOHv7GrNy26CHO6BhcUQk9jcyV1ViRuIHq5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jlCaPgcJhWUO+i9/EysWC59P/e3Mf+EtfSanbyZejo32D+FMKaBZnJSHVZ6hKfABp
-         WEgh66BhjEFoshS/x9skRs8MxeczHQ9dTxInEG1kbVEIMr+QCUb6XcvTEIYNW6dIGC
-         qmbRAo7UKGEAQQbmdREJQjcykU0qVe8s+/cjJ9zcpsaY5lViLl+E6+JJAsWuTl8l8l
-         GW8J53lrRtxgpoKVQZCYRd7DbOYLfmVap7kfXSZVXNvq+qouDHc7CgkFvmIvIO8TAI
-         eLKG80VAOUyugEdxYtbQCn8kzgFXVrBzFVgMNIqHJIT0hqiqJvY+UCedT2HcifvWJV
-         KKdOjXNl29AvA==
+        b=gqIHQ0Gt2EqUIueVcGydp3rBk92Jdp1Pe3e5fWRbDSm2kyzTdJvKEpyqGHpEIrANP
+         OyawhObNC4MAXVJhvwuAF+DA53+bAXuF5x4eUnyIttUXMkEmc3W9oKJ7G9NPmZeOIk
+         SYOInDQ1VAHSxPOQQyxHI+TxrtRP6ALShyNQVLXPdNN9Zr45COpRSFOICRPbJmo/V1
+         /qziE1BEjbDAmjCEyhJ8K676C0F5hhuh4GPDTb1g011ivk3HBXIKfmvmpX5Q5NUuVc
+         q9SC5o476A9aVXCVHz9jLnq6x78vlj/l9NTSH130E4IcmqIVUCj+RpVhv6W7TDA55m
+         V2DzkOor2RwIQ==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -37,9 +37,9 @@ Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
         Abhishek Sagar <sagar.abhishek@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Paul McKenney <paulmck@kernel.org>
-Subject: [PATCH -tip v11 22/27] arm: kprobes: Make space for instruction pointer on stack
-Date:   Tue, 14 Sep 2021 23:42:02 +0900
-Message-Id: <163163052262.489837.10327621053231461255.stgit@devnote2>
+Subject: [PATCH -tip v11 23/27] kprobes: Enable stacktrace from pt_regs in kretprobe handler
+Date:   Tue, 14 Sep 2021 23:42:12 +0900
+Message-Id: <163163053237.489837.4272653874525136832.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <163163030719.489837.2236069935502195491.stgit@devnote2>
 References: <163163030719.489837.2236069935502195491.stgit@devnote2>
@@ -51,38 +51,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since arm's __kretprobe_trampoline() saves partial 'pt_regs' on the
-stack, 'regs->ARM_pc' (instruction pointer) is not accessible from
-the kretprobe handler. This means if instruction_pointer_set() is
-used from kretprobe handler, it will break the data on the stack.
+Since the ORC unwinder from pt_regs requires setting up regs->ip
+correctly, set the correct return address to the regs->ip before
+calling user kretprobe handler.
 
-Make space for instruction pointer (ARM_pc) on the stack in the
-__kretprobe_trampoline() for fixing this problem.
+This allows the kretrprobe handler to trace stack from the
+kretprobe's pt_regs by stack_trace_save_regs() (eBPF will do
+this), instead of stack tracing from the handler context by
+stack_trace_save() (ftrace will do this).
 
+Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
  Changes in v9:
-  - Update changelog.
+  - Update comment to explain specifically why this is necessary.
+ Changes in v8:
+  - Update comment to clarify why this is needed.
+ Changes in v3:
+  - Cast the correct_ret_addr to unsigned long.
 ---
- arch/arm/probes/kprobes/core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ kernel/kprobes.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
-index 67ce7eb8f285..95f23b47ba27 100644
---- a/arch/arm/probes/kprobes/core.c
-+++ b/arch/arm/probes/kprobes/core.c
-@@ -376,11 +376,13 @@ int __kprobes kprobe_exceptions_notify(struct notifier_block *self,
- void __naked __kprobes __kretprobe_trampoline(void)
- {
- 	__asm__ __volatile__ (
-+		"sub	sp, sp, #16		\n\t"
- 		"stmdb	sp!, {r0 - r11}		\n\t"
- 		"mov	r0, sp			\n\t"
- 		"bl	trampoline_handler	\n\t"
- 		"mov	lr, r0			\n\t"
- 		"ldmia	sp!, {r0 - r11}		\n\t"
-+		"add	sp, sp, #16		\n\t"
- #ifdef CONFIG_THUMB2_KERNEL
- 		"bx	lr			\n\t"
- #else
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 833f07f33115..ebc587b9a346 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1937,6 +1937,13 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+ 		BUG_ON(1);
+ 	}
+ 
++	/*
++	 * Set the return address as the instruction pointer, because if the
++	 * user handler calls stack_trace_save_regs() with this 'regs',
++	 * the stack trace will start from the instruction pointer.
++	 */
++	instruction_pointer_set(regs, (unsigned long)correct_ret_addr);
++
+ 	/* Run the user handler of the nodes. */
+ 	first = current->kretprobe_instances.first;
+ 	while (first) {
 
