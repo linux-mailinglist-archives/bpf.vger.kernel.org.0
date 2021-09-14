@@ -2,300 +2,264 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD01540B402
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 17:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E6C40B47B
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 18:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235111AbhINQBE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 12:01:04 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20726 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235231AbhINQBB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 12:01:01 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18EFQpw5019889;
-        Tue, 14 Sep 2021 08:59:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=X36mzk0IBwO0LNKaeiBOilvd6U4dqa0Gwrsaih9stsk=;
- b=TWTa7ejmnjVZ10oSi7DXjmk13qFnIVJgIYZYxVQov/Qwnq8P9+Kg2BXB/P7pG4scGHfF
- hGQcnlXM2wVNvNZplXVz+LFOye2mhI2aSTp1tjM5Xk6jDACswa9OOof+ugMfKbhoZ+Hw
- AJlyYjFPmtzTY2pzRWgR2VB7iSwpzABtbp8= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b2kh03xww-10
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 14 Sep 2021 08:59:28 -0700
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 14 Sep 2021 08:59:24 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NeR65otQjtg1Z4rg+7wZsB/NOhZ46qFmZwD584voV7XsalJhzx2oMYF63wnQXEshF5+sFDTayWwGcfGekFaWR8+WT/RTsUkWm+ewtpat2xJLG7dulTnpFEkrE0gMrX4a0oR4kdYuF3Od18P8lKKFm93aYLJciI7WL7jY2rv7qZGzekeGDkToFRGrNB0TEmPkanOTWwX/5B4+I78JRWdzchVnSdvfOpJYmQisbUBMCcR9gN6faejPrlzFFlxze1XQ4gDbjwSlq/fn+xZP4ygl1/UgZVqic3eVDAzMw3qvK7p2N+e40ZA37Js1gWQ9ulr5kOYewfPWQeJY3l0x9tgT+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=YC4Otmeplz77OeMqji0AJvZcCjxnfc4r3KOcyeF33DQ=;
- b=BMP0TGdyTstOkIPHOtVQgNAuOhI3p4d60rNooROkGlwLGr8RTLNvRGlXNJCkFrW4ZPckKh5NvWHczqHRfjUJx+yk9qnu3JZREqjNAZ/XK0yHsAQMUUmSo11hg4j+ki8qr/kbU8ym3/S8WBTpcP63LZYhzubUprcyCXcNe7RtbHeTlBiJ56JTHoepr3ZXOrrgvQFFWQmaBB7V0YXciXlhWpFW4ikkuWMAVDmbMG8CC2TJDeeVEA98XfIxz41OFLEgricQ1NMzDjbIgSSc489Hz/lsPlhGA9nlfcXliMX6mdsVNnxV8Eh1IBGs50bCkTDge6aMDAyUjputpalSaV5E4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4386.namprd15.prod.outlook.com (2603:10b6:806:191::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 14 Sep
- 2021 15:59:22 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
- 15:59:22 +0000
-Subject: Re: [PATCH bpf-next v2 02/11] bpf: support for new btf kind
- BTF_KIND_TAG
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-References: <20210913155122.3722704-1-yhs@fb.com>
- <20210913155133.3723769-1-yhs@fb.com>
- <CAEf4Bza69r-Sp4nFZqd4i1xhD+Dy5u+Xb=FB7TNNSfHzNNvosg@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <5a079457-88f9-5ed5-83bf-b0a456186323@fb.com>
-Date:   Tue, 14 Sep 2021 08:59:20 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-In-Reply-To: <CAEf4Bza69r-Sp4nFZqd4i1xhD+Dy5u+Xb=FB7TNNSfHzNNvosg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-X-ClientProxiedBy: BYAPR01CA0004.prod.exchangelabs.com (2603:10b6:a02:80::17)
- To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
-Received: from [IPv6:2620:10d:c085:21cf::1169] (2620:10d:c090:400::5:6de5) by BYAPR01CA0004.prod.exchangelabs.com (2603:10b6:a02:80::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Tue, 14 Sep 2021 15:59:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b21d9508-7dec-4e28-9545-08d977989e4d
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4386:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA1PR15MB4386F906DB2C088FBF0368DDD3DA9@SA1PR15MB4386.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gGiLN3XO6n3whGmBQvwL42C0APrYwoyb+cH0vZdMtSE2d1TkxaEM0XsSqPNJYY50iOADs317Ihg6kN5nQbeVzZxUIW86UKrtAU4cCJu1ViMaw6PT94zF+knRCjyDV+Fy96zCO2NY+vf8PViyj7MQ6YWBDv//HAm2z5ZcP0l9dLXmPN6Clt4UC4FwK0NblH1FTx4UmIqnfPjFHJiIGJfW/qzdbGJJegDrhsthJAyo/vMzTtDs6KlicukJg+wDaphafZL5mxHASZwieGV9SP8Hf/xfSuMuELb0pFrsv9+1HRHrB6hKbZlj/xhsYB6UFqFjZ33QGc4rIzFRsqlnddK9wGwdcWZXrKoWKQL1tSCOer1/4ir4xkB0l0BkhAspHQJNr2KGG8RBmPzsZCEJV7EL/oafOdHcET2dI1eJ2ohybNtBVoETYHDQ8Dd2DKQX/2bbl8fSmDVZEVmxerGj214zxMNjejUYWnyxELSEWQfiLGC6NVfzo1IHMWyGxQM7w4XErFWqElLXsIJBlpOkiJsNXENy+IXkqoUI0HfT0xRF1ziCQnthYSy+5rbdQoRJPfozIyqpWWFPS8NDxn0txY83pT8KJxDLjYpT7H/G37Fvz9wGo3aHQsOoODH8sNho7wM8CZMrdBLnNa++qQekPc03ngnUqT0e58jcImJ1/yqTD7VrmzDWMCj+HhXMovVuck9lf/koKMSr18UnRpwTXzQW47bGUHRqOyG9rdgABmcannsCNJTLgsR2JecJiAfvzmdSSg+JluW1svZ2c+/90BM/jL1qUpkHnzGilCoiQ/MmaEdJkx7pPd1dj+X3wS8FS47SHrR4th1+i3FGebJOZEGw/g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(396003)(366004)(31686004)(6916009)(31696002)(53546011)(38100700002)(6486002)(36756003)(186003)(8936002)(478600001)(2906002)(8676002)(4326008)(5660300002)(83380400001)(86362001)(966005)(2616005)(316002)(54906003)(66556008)(66946007)(66476007)(52116002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R1I2Y3NybS9XQS80cmlZNTJEbkttTitHQnYvdVUwM3RNQTk4TEZLWXlTbjV1?=
- =?utf-8?B?MUVSckhJUGYvUG1rbGFpRm4yUXFpMjBNdUtsV01iNUdHSUN2MDlNRExhNkVC?=
- =?utf-8?B?dkVkdXROblBOOEZsY3Zwa2pJNzB1MDFYazdVTi9qc3FzVGVRTWJOOUlZS0FX?=
- =?utf-8?B?NXhNNmhoUW1HQkFDM1FpT1VLdEZtVXR2bTRxbUhNRy9kVmFTSU0zMERLMU1X?=
- =?utf-8?B?R3B3Zm01UVEwZDFURW1NL3pxVTg4SnkyL2lObU1FKzBXOWxJMDB3Vm52Mnl5?=
- =?utf-8?B?VmlBdDJRSGhDU3FaUm10QWlNV04wRHBlTHRna2ZIc3ZYczZRd2V5eDZvVDJm?=
- =?utf-8?B?QS82eWU5bWpKOXdWelNTVW9YUXpuclcrZURncFczVEF2T2NsM0NnMjc5Q3dM?=
- =?utf-8?B?Skx5UjdpZXZ0VlhGZ1RpTFNSQkVuYW96OElYNUt2WUFqSmhBc1hhOEJXV3dI?=
- =?utf-8?B?SElUR1U4V01oOGQvb1ZMRDAySFZuekxXeGZiZ1ptbFJST0I1dFFqcWJPbENy?=
- =?utf-8?B?RHY0akE5ZXF6ajg0VVBzZ3JjNnVYSzRUK1BKeWpQK0wxazZXdkRsemNIV3FF?=
- =?utf-8?B?T2hDUHF2akRCY2x3TWd5VCtXUTM3d2VTMmR3Zk1xSXVxU3pub0VIV0o0Y1BC?=
- =?utf-8?B?dStGN2tEWEFyUlc4dDVkRDgvSkJKbk51OGIwa2VlSnIwRWNSRzhxTk1ZN3Ba?=
- =?utf-8?B?RWVTZE92b2pqWjdMMXMycmNJSjhHOFVrVHJCbUQwWkxxNGdQV1dYdUlDZGFF?=
- =?utf-8?B?SFdKVDN5UlJtNGpCMGxHOWtRUnpKMkhaU2MwVUZsbExKZjgyWjBmelgwanQw?=
- =?utf-8?B?bVFVYUFDREJIR1FWd2lJQVNxQkoxdXBiQ1NWR25KQ2FORHNlbjR1aWpSTExJ?=
- =?utf-8?B?S1VOd21YMmI0TkpMUmhEa3NRUEFpZjJSL2l3cktuYlQ3cFBsR2EreGh1Und5?=
- =?utf-8?B?NVZBUzFLcEIxcDlyOUNsOXM1ZUlSRGl2VElJR1gyK0VCMkJHRUFnZTdPYmZw?=
- =?utf-8?B?Ykl3N1pVOW5ScFlJY0Viakd3Um12ckI3eFRMN01tZ1dXMHpTSzEvSyszaXl0?=
- =?utf-8?B?bDV4UjhES3RDU08yMlNMN05TbW1ybVFBRSs5TkpKK0kvMEdYc0JIbFA1Skh4?=
- =?utf-8?B?cmlQeCtSYXI2R2IvWHQ4MmhRMkxhcFFCR3p5OGRXUGVGZGY5ZHh3TjFuSzhQ?=
- =?utf-8?B?d09PRldjSk8xc0FPOHlQZUZrVi80cXo5Vm51WW00M1c1bjFiQkNrRFMrSmxa?=
- =?utf-8?B?SVBObmE5R3dBSGUxY0hTY3BCWXdQaitFc1EzaVc4ZVZPa0pJbXNMWWd5MHBP?=
- =?utf-8?B?RzlObGZ3Tkk2WDVtMGZPVjZWbzlpQy9QamRoQmh1VEVUWnRBcmdHZ0FrdUtE?=
- =?utf-8?B?TGdQc3RPUnFhZE5lMHdQdXV3Nk1MWWJlT3NLMnpaV3N1Zmp1d1d1Y3FyZE9I?=
- =?utf-8?B?d1RjRFUvclB5WmdkZkM3ZDB2MlJRVmNPdkd5UGVkNEZXamw5TlhsOUE3L2ds?=
- =?utf-8?B?RHlSL1NmSzJ4djN4d05NMCtiakNGR3RuejMxaDkyUXdaTUxoTVBsYlhmN0lU?=
- =?utf-8?B?V1ZES0VFNVM1Y1djNXVnTWwzS2w5b0xPcWlqRXlITVFMazN5VktDZHhKbWVI?=
- =?utf-8?B?cGZhQ284a05pR2VsOFV0V01FMG5HREhBSHhIY1crZXZJd1FlajUreldmdkcy?=
- =?utf-8?B?Q3FGWDVHRFhTa0U1aHhHMXJaQm9mMUplUkErNTduRXdkam5KbVpvK1FVOUxW?=
- =?utf-8?B?YVR4Si94RVVqNU55Rm9VZlBNYXdiUi9Kam4vcjQ0MUFKQjBNZmVYSlNHS1FV?=
- =?utf-8?B?SEtLSXhTOWxjM3haQytTZz09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b21d9508-7dec-4e28-9545-08d977989e4d
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 15:59:22.5184
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wB9d7rKRMxZg3oCGZccMbFWCDGUeZY+D4qOhillRTT0gYc5vUXLwOAt0OpKrOX3H
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4386
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: FHgNjfbA0QDuz6P_nvQjMziHZbP3kWCu
-X-Proofpoint-GUID: FHgNjfbA0QDuz6P_nvQjMziHZbP3kWCu
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 4 URL's were un-rewritten
+        id S229379AbhINQY1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 12:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhINQY0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:24:26 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1A0C061574;
+        Tue, 14 Sep 2021 09:23:09 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 140so6372592wma.0;
+        Tue, 14 Sep 2021 09:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dhx8g9kLOJs9n8EqeC7ifNDTlWzgstpbrOAPnHikRV8=;
+        b=TT2pODTxBeTwhbEEONAk4mx5FHGa6tfKd9025d270oWwU0q7zWavSpelWh0GJr3oQ8
+         2ZMon7AQ8nC0OFc3USPVdp5+xK6cFDK0/lpbh8hhmYcMe+iX1OWJ6ZaulIzyU3yxBgu2
+         WMsTkH8l4AX+09L4XCyAr+84Mcqo/OzJgTju16QbOOBbTKBo1kqZF0TfAiqyPuRhD+tl
+         fRj/7QXhBXCR6vhEHxRYC9npKr35/OV567Oa4qKWfXzpCFRJcASBFg1nYTkwm6TmIHDY
+         gs6il4FLiKAYEcXe3Rz17Zh+O9Cutt+a4za08ynH63Xb5rFRF2On1VSpG0gM8YLFbYJn
+         hQUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dhx8g9kLOJs9n8EqeC7ifNDTlWzgstpbrOAPnHikRV8=;
+        b=AtuptIkdjeZq74gReOy5s/P25sCzexesPhijeajhrcmEzYWDCpRdCcirYAwSHK+0r1
+         wINsfGvuQoQAMlgMhSOYoznToTqXSQUlaIwFmTfbqNBbH+9yHkj/PKFQpSQvFN/YREyK
+         NuvR/9qbXxldLuVDUZDeKqEgPYAA9KqC0f1RmggjU10R6XiIgv3sgMZGasgLcVb2SXGm
+         m8EO019FidqYLlpQCuj6IBFuZHdvJzGhDkwvAdC3A6Bn56WARuFObLBePlOsMhKeNobF
+         9CXs+Cy3/5JzcTPcJJKNUWmw/r9DAYsBR6z8OV9GstHaTYX9zehn1iTKSCIeUxkaCrfN
+         z35w==
+X-Gm-Message-State: AOAM531MHd6HbwIm7kPBoq4fF/rGHyvXQFYpjNCBduvanoIqd9QF4QV9
+        bZWsiMk2PKRfI1QJTARlElkdlwaCtkE=
+X-Google-Smtp-Source: ABdhPJw9GEbvKHFxI7zX+82ufukLLirF/bx8Ih1222P1GO+NNfSFgkEZH2rgmSipH+2fhXUG6HXyeg==
+X-Received: by 2002:a1c:f607:: with SMTP id w7mr3214422wmc.65.1631636587445;
+        Tue, 14 Sep 2021 09:23:07 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f08:4500:c813:4da2:f58a:a1e2? (p200300ea8f084500c8134da2f58aa1e2.dip0.t-ipconnect.de. [2003:ea:8f08:4500:c813:4da2:f58a:a1e2])
+        by smtp.googlemail.com with ESMTPSA id q201sm1829986wme.2.2021.09.14.09.23.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 09:23:07 -0700 (PDT)
+To:     Guilin Tang <tangguilin@uniontech.com>, nic_swsd@realtek.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     ast@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <cover.1631610501.git.tangguilin@uniontech.com>
+ <f20689a084c44b311c05880d2c049e70eb6cef77.1631610502.git.tangguilin@uniontech.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH 1/2] r8169: Add XDP support for pass and drop actions
+Message-ID: <40e45859-8b80-6942-a73a-23978a96568b@gmail.com>
+Date:   Tue, 14 Sep 2021 18:05:16 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-14_06,2021-09-14_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- lowpriorityscore=0 spamscore=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 phishscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109030001 definitions=main-2109140094
-X-FB-Internal: deliver
+In-Reply-To: <f20689a084c44b311c05880d2c049e70eb6cef77.1631610502.git.tangguilin@uniontech.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 9/13/21 10:08 PM, Andrii Nakryiko wrote:
-> On Mon, Sep 13, 2021 at 8:51 AM Yonghong Song <yhs@fb.com> wrote:
->>
->> LLVM14 added support for a new C attribute ([1])
->>    __attribute__((btf_tag("arbitrary_str")))
->> This attribute will be emitted to dwarf ([2]) and pahole
->> will convert it to BTF. Or for bpf target, this
->> attribute will be emitted to BTF directly ([3], [4]).
->> The attribute is intended to provide additional
->> information for
->>    - struct/union type or struct/union member
->>    - static/global variables
->>    - static/global function or function parameter.
->>
->> For linux kernel, the btf_tag can be applied
->> in various places to specify user pointer,
->> function pre- or post- condition, function
->> allow/deny in certain context, etc. Such information
->> will be encoded in vmlinux BTF and can be used
->> by verifier.
->>
->> The btf_tag can also be applied to bpf programs
->> to help global verifiable functions, e.g.,
->> specifying preconditions, etc.
->>
->> This patch added basic parsing and checking support
->> in kernel for new BTF_KIND_TAG kind.
->>
->>   [1] https://reviews.llvm.org/D106614
->>   [2] https://reviews.llvm.org/D106621
->>   [3] https://reviews.llvm.org/D106622
->>   [4] https://reviews.llvm.org/D109560
->>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
->> ---
->>   include/uapi/linux/btf.h       |  16 ++++-
->>   kernel/bpf/btf.c               | 120 +++++++++++++++++++++++++++++++++
->>   tools/include/uapi/linux/btf.h |  16 ++++-
->>   3 files changed, 148 insertions(+), 4 deletions(-)
->>
+On 14.09.2021 11:31, Guilin Tang wrote:
+> This commi implements simple xdp drop and pass in the r8169 driver
 > 
-> [...]
+> Signed-off-by: Guilin Tang <tangguilin@uniontech.com>
+> ---
+>  drivers/net/ethernet/realtek/r8169_main.c | 99 +++++++++++++++++++++--
+>  1 file changed, 94 insertions(+), 5 deletions(-)
 > 
->>
->> +static s32 btf_tag_check_meta(struct btf_verifier_env *env,
->> +                             const struct btf_type *t,
->> +                             u32 meta_left)
->> +{
->> +       const struct btf_tag *tag;
->> +       u32 meta_needed = sizeof(*tag);
->> +       const char *value;
->> +
->> +       if (meta_left < meta_needed) {
->> +               btf_verifier_log_basic(env, t,
->> +                                      "meta_left:%u meta_needed:%u",
->> +                                      meta_left, meta_needed);
->> +               return -EINVAL;
->> +       }
->> +
->> +       value = btf_name_by_offset(env->btf, t->name_off);
->> +       if (!value || !value[0]) {
->> +               btf_verifier_log_type(env, t, "Invalid value");
->> +               return -EINVAL;
->> +       }
->> +
->> +       if (btf_type_vlen(t)) {
->> +               btf_verifier_log_type(env, t, "vlen != 0");
->> +               return -EINVAL;
->> +       }
->> +
->> +       if (btf_type_kflag(t)) {
->> +               btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
->> +               return -EINVAL;
->> +       }
->> +
-> 
-> probably need to enforce that component_idx is >= -1? -2 is not a
-> valid supported value right now.
+> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> index d927211f8d2c..69bc3c68e73d 100644
+> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> @@ -30,6 +30,9 @@
+>  #include <linux/ipv6.h>
+>  #include <asm/unaligned.h>
+>  #include <net/ip6_checksum.h>
+> +#include <net/xdp.h>
+> +#include <linux/bpf.h>
+> +#include <linux/bpf_trace.h>
+>  
+>  #include "r8169.h"
+>  #include "r8169_firmware.h"
+> @@ -543,6 +546,12 @@ enum rtl_rx_desc_bit {
+>  #define RTL_GSO_MAX_SIZE_V2	64000
+>  #define RTL_GSO_MAX_SEGS_V2	64
+>  
+> +/* XDP */
+> +#define R8169_XDP_PASS		0
+> +#define R8169_XDP_DROP		BIT(0)
+> +#define R8169_XDP_TX		BIT(1)
+> +#define R8169_XDP_REDIR		BIT(2)
+> +
+>  struct TxDesc {
+>  	__le32 opts1;
+>  	__le32 opts2;
+> @@ -634,6 +643,8 @@ struct rtl8169_private {
+>  	struct rtl_fw *rtl_fw;
+>  
+>  	u32 ocp_base;
+> +	/*xdp bpf*/
+> +	struct bpf_prog *rtl_xdp;
+>  };
+>  
+>  typedef void (*rtl_generic_fct)(struct rtl8169_private *tp);
+> @@ -3896,6 +3907,7 @@ static void rtl8169_rx_clear(struct rtl8169_private *tp)
+>  		tp->RxDescArray[i].addr = 0;
+>  		tp->RxDescArray[i].opts1 = 0;
+>  	}
+> +	tp->rtl_xdp = NULL;
+>  }
+>  
+>  static int rtl8169_rx_fill(struct rtl8169_private *tp)
+> @@ -4501,10 +4513,44 @@ static inline void rtl8169_rx_csum(struct sk_buff *skb, u32 opts1)
+>  		skb_checksum_none_assert(skb);
+>  }
+>  
+> +static struct sk_buff *rtl8619_run_xdp(struct rtl8169_private *tp, struct bpf_prog *xdp_prog,
+> +				void *rx_buf, unsigned int pkt_size)
+> +{
 
-I tested below. But I can test here for kernel practice, testing error
-case earlier.
+Why return type struct sk_buff * and not a normal int / errno ?
 
-> 
->> +       btf_verifier_log_type(env, t, NULL);
->> +
->> +       return meta_needed;
->> +}
->> +
->> +static int btf_tag_resolve(struct btf_verifier_env *env,
->> +                          const struct resolve_vertex *v)
->> +{
->> +       const struct btf_type *next_type;
->> +       const struct btf_type *t = v->t;
->> +       u32 next_type_id = t->type;
->> +       struct btf *btf = env->btf;
->> +       s32 component_idx;
->> +       u32 vlen;
->> +
->> +       next_type = btf_type_by_id(btf, next_type_id);
->> +       if (!next_type || !btf_type_is_tag_target(next_type)) {
->> +               btf_verifier_log_type(env, v->t, "Invalid type_id");
->> +               return -EINVAL;
->> +       }
->> +
->> +       if (!env_type_is_resolve_sink(env, next_type) &&
->> +           !env_type_is_resolved(env, next_type_id))
->> +               return env_stack_push(env, next_type, next_type_id);
->> +
->> +       component_idx = btf_type_tag(t)->component_idx;
->> +       if (component_idx != -1) {
-> 
-> so here, if it's -2, that should be an error, but currently will be
-> ignored, right?
+> +	int result = R8169_XDP_PASS;
+> +	struct xdp_buff xdp;
+> +	u32 act;
+> +
+> +	xdp.data = rx_buf;
+> +	xdp.data_end = xdp.data + pkt_size;
+> +	xdp_set_data_meta_invalid(&xdp);
+> +
+> +	act = bpf_prog_run_xdp(xdp_prog, &xdp);
+> +	switch (act) {
+> +	case XDP_PASS:
+> +		break;
+> +	case XDP_TX:
+> +	case XDP_REDIRECT:
+> +		goto out_failure;
+> +	default:
+> +		bpf_warn_invalid_xdp_action(act);
+> +		fallthrough;
+> +	case XDP_ABORTED:
+> +out_failure:
+> +		trace_xdp_exception(tp->dev, xdp_prog, act);
+> +		fallthrough;
+> +	case XDP_DROP:
+> +		result = R8169_XDP_DROP;
+> +		break;
+> +	}
+> +
+> +	return ERR_PTR(-result);
 
-It is not. See below. At this point, component_idx could be -2 or 0 or 1 ...
+Overriding errno's with own values isn't nice. If you need an errno,
+use an errno.
 
-> 
->> +               if (btf_type_is_var(next_type) || component_idx < 0) {
-> 
-> if is_var(next_type) then component_idx should only be -1, nothing
-> else. Or am I missing some convention?
+> +}
+> +
+>  static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, int budget)
+>  {
+>  	struct device *d = tp_to_dev(tp);
+>  	int count;
+> +	struct bpf_prog *xdp_prog;
+>  
+>  	for (count = 0; count < budget; count++, tp->cur_rx++) {
+>  		unsigned int pkt_size, entry = tp->cur_rx % NUM_RX_DESC;
+> @@ -4553,17 +4599,27 @@ static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, int budget
+>  			goto release_descriptor;
+>  		}
+>  
+> +		addr = le64_to_cpu(desc->addr);
+> +		rx_buf = page_address(tp->Rx_databuff[entry]);
+> +
+> +		dma_sync_single_for_cpu(d, addr, pkt_size, DMA_FROM_DEVICE);
+> +		prefetch(rx_buf);
+> +		//Determine whether to execute xdp
+> +		xdp_prog = READ_ONCE(tp->rtl_xdp);
+> +		if (xdp_prog) {
+> +			skb = rtl8619_run_xdp(tp, xdp_prog, (void *)rx_buf, pkt_size);
 
-So if it is a variable, the error will return.
+Why do you hijack the skb variable? In case of no error it's overwritten
+a few lines later.
 
-If it is not a variable and component_idx < 0 (-2 in this case), return 
-error. So we do test -2 here.
+> +			if (IS_ERR(skb)) {
+> +				dev->stats.rx_dropped++;
+> +				goto release_descriptor;
+> +			}
+> +		}
+> +
+>  		skb = napi_alloc_skb(&tp->napi, pkt_size);
+>  		if (unlikely(!skb)) {
+>  			dev->stats.rx_dropped++;
+>  			goto release_descriptor;
+>  		}
+>  
+> -		addr = le64_to_cpu(desc->addr);
+> -		rx_buf = page_address(tp->Rx_databuff[entry]);
+> -
+> -		dma_sync_single_for_cpu(d, addr, pkt_size, DMA_FROM_DEVICE);
+> -		prefetch(rx_buf);
+>  		skb_copy_to_linear_data(skb, rx_buf, pkt_size);
+>  		skb->tail += pkt_size;
+>  		skb->len = pkt_size;
+> @@ -4999,6 +5055,38 @@ static void rtl_remove_one(struct pci_dev *pdev)
+>  	rtl_rar_set(tp, tp->dev->perm_addr);
+>  }
+>  
+> +static int r8169_xdp_set(struct net_device *netdev, struct netdev_bpf *bpf)
+> +{
+> +	struct rtl8169_private *tp = netdev_priv(netdev);
+> +	struct bpf_prog *prog = bpf->prog, *old_prog;
+> +	bool running = netif_running(netdev);
+> +	bool need_reset;
+> +
+> +	need_reset = !!tp->rtl_xdp != !!prog;
+> +
 
-I will restructure the code to test < -1 earlier, so we won't have
-confusion here.
+An explanation would be helpful why a reset is needed and what you
+mean with reset. Using these functions outside their usual context
+is at least risky.
 
+> +	if (need_reset && running)
+> +		rtl8169_close(netdev);
+> +
+> +	old_prog = xchg(&tp->rtl_xdp, prog);
+> +	if (old_prog)
+> +		bpf_prog_put(old_prog);
+> +
+> +	if (need_reset && running)
+> +		rtl_open(netdev);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rtl8169_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+> +{
+> +	switch (xdp->command) {
+> +	case XDP_SETUP_PROG:
+> +		return r8169_xdp_set(dev, xdp);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+>  static const struct net_device_ops rtl_netdev_ops = {
+>  	.ndo_open		= rtl_open,
+>  	.ndo_stop		= rtl8169_close,
+> @@ -5013,6 +5101,7 @@ static const struct net_device_ops rtl_netdev_ops = {
+>  	.ndo_set_mac_address	= rtl_set_mac_address,
+>  	.ndo_eth_ioctl		= phy_do_ioctl_running,
+>  	.ndo_set_rx_mode	= rtl_set_rx_mode,
+> +	.ndo_bpf			= rtl8169_xdp,
+>  #ifdef CONFIG_NET_POLL_CONTROLLER
+>  	.ndo_poll_controller	= rtl8169_netpoll,
+>  #endif
 > 
->> +                       btf_verifier_log_type(env, v->t, "Invalid component_idx");
->> +                       return -EINVAL;
->> +               }
->> +
->> +               if (btf_type_is_struct(next_type)) {
->> +                       vlen = btf_type_vlen(next_type);
->> +               } else {
->> +                       next_type = btf_type_by_id(btf, next_type->type);
->> +                       vlen = btf_type_vlen(next_type);
->> +               }
->> +
->> +               if ((u32)component_idx >= vlen) {
->> +                       btf_verifier_log_type(env, v->t, "Invalid component_idx");
->> +                       return -EINVAL;
->> +               }
->> +       }
->> +
->> +       env_stack_pop_resolved(env, next_type_id, 0);
->> +
->> +       return 0;
->> +}
->> +
-> 
-> [...]
-> 
+
