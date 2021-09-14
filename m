@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA0540B173
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 16:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90E940B178
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 16:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhINOlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 10:41:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34430 "EHLO mail.kernel.org"
+        id S235029AbhINOlT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 10:41:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234270AbhINOkh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:40:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C509610F9;
-        Tue, 14 Sep 2021 14:39:18 +0000 (UTC)
+        id S234776AbhINOkq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:40:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BEBC610CE;
+        Tue, 14 Sep 2021 14:39:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631630360;
-        bh=dLEXA0c32zAO/OxwC4RSb6MzIoMznRgqiTxAuTIvdtQ=;
+        s=k20201202; t=1631630369;
+        bh=KU2JYPK+cMCaLmePVFC3LxfPd7UfHdLIC2wSTH94K2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gfkbkcMR3qNFA4rPdoe/b8gxTIGdhxqSVs7mSOQoJzgRUOmrQZEE5Jr/eni3Fls4x
-         Vv0yR7HubTr2XXVEJg99txCC+YcVsXh/ZoeHN3XkdGusyGi1ImCffbeM3DIMX2bPiq
-         PN6LWj7MYUdvNpi0Ykv0dYAt3Bsk7VUlTgXQlIn0IYfqp1dX+1O9ykIdG64jUhRgEc
-         EUdraEGUBQOfy5/vqPPROQWcNLaH4RxFwLlmHp+ggRdPLtMjuUiapP4TbNs+hJm87S
-         r2Umb6AIlnynwwWy8O3qVjtmvtBKuD8piZYfT1xLX/hvow3RNz+bAuvJC7Rc+zd8MC
-         S69Mw5g1mluSA==
+        b=WL+GJmeNuknhbjQYKUboc103WqrwBQCtlBUIU9faYeyGYo6bVz7U/8ltPnhorwJ2D
+         6SuMhix51aUXrmU139H4v+P48XSTJu/3m34+GQbhbtQsHpDF8n51eVRIty51RbX7+q
+         momoaC9+xfmgbc2KT8F/xZkqvHnBMZFTCK3vDJhWMlRQUnImya8zU+868ELVIM0v8u
+         12Xd7BbApJ/7CZjY7He551rcmPseik1aw+cFrQQ/iYBOYDVJ1p2/HF8ILYN3U7uzf0
+         bWyCquOYRa3VcnS/64ON6ONw2ql2EOTD3JEqRiGN8RVujpp0mPK8BlAuhXJZ0MzsJF
+         Z2F7WnBcp90Ew==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -37,9 +37,9 @@ Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
         Abhishek Sagar <sagar.abhishek@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Paul McKenney <paulmck@kernel.org>
-Subject: [PATCH -tip v11 05/27] kprobes: Make arch_check_ftrace_location static
-Date:   Tue, 14 Sep 2021 23:39:16 +0900
-Message-Id: <163163035673.489837.2367816318195254104.stgit@devnote2>
+Subject: [PATCH -tip v11 06/27] kprobes: treewide: Cleanup the error messages for kprobes
+Date:   Tue, 14 Sep 2021 23:39:25 +0900
+Message-Id: <163163036568.489837.14085396178727185469.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <163163030719.489837.2236069935502195491.stgit@devnote2>
 References: <163163030719.489837.2236069935502195491.stgit@devnote2>
@@ -51,62 +51,343 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Punit Agrawal <punitagrawal@gmail.com>
+This clean up the error/notification messages in kprobes related code.
+Basically this defines 'pr_fmt()' macros for each files and update
+the messages which describes
 
-arch_check_ftrace_location() was introduced as a weak function in
-commit f7f242ff004499 ("kprobes: introduce weak
-arch_check_ftrace_location() helper function") to allow architectures
-to handle kprobes call site on their own.
+ - what happened,
+ - what is the kernel going to do or not do,
+ - is the kernel fine,
+ - what can the user do about it.
 
-Recently, the only architecture (csky) to implement
-arch_check_ftrace_location() was migrated to using the common
-version.
+Also, if the message is not needed (e.g. the function returns unique
+error code, or other error message is already shown.) remove it,
+and replace the message with WARN_*() macros if suitable.
 
-As a result, further cleanup the code to drop the weak attribute and
-rename the function to remove the architecture specific
-implementation.
-
-Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- include/linux/kprobes.h |    2 --
- kernel/kprobes.c        |    4 ++--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ arch/arm/probes/kprobes/core.c     |    4 +++-
+ arch/arm64/kernel/probes/kprobes.c |    5 ++++-
+ arch/csky/kernel/probes/kprobes.c  |   10 +++++-----
+ arch/mips/kernel/kprobes.c         |   11 +++++------
+ arch/riscv/kernel/probes/kprobes.c |   11 +++++------
+ arch/s390/kernel/kprobes.c         |    4 +++-
+ kernel/kprobes.c                   |   36 ++++++++++++++++--------------------
+ 7 files changed, 41 insertions(+), 40 deletions(-)
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 0b75549b2815..8a9412bb0d5e 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -361,8 +361,6 @@ static inline int arch_prepare_kprobe_ftrace(struct kprobe *p)
+diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
+index 27e0af78e88b..a59e38de4a03 100644
+--- a/arch/arm/probes/kprobes/core.c
++++ b/arch/arm/probes/kprobes/core.c
+@@ -11,6 +11,8 @@
+  * Copyright (C) 2007 Marvell Ltd.
+  */
+ 
++#define pr_fmt(fmt) "kprobes: " fmt
++
+ #include <linux/kernel.h>
+ #include <linux/kprobes.h>
+ #include <linux/module.h>
+@@ -278,7 +280,7 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
+ 				break;
+ 			case KPROBE_REENTER:
+ 				/* A nested probe was hit in FIQ, it is a BUG */
+-				pr_warn("Unrecoverable kprobe detected.\n");
++				pr_warn("Failed to recover from reentered kprobes.\n");
+ 				dump_kprobe(p);
+ 				fallthrough;
+ 			default:
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index 6dbcc89f6662..ce429cbacd35 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -7,6 +7,9 @@
+  * Copyright (C) 2013 Linaro Limited.
+  * Author: Sandeepa Prabhu <sandeepa.prabhu@linaro.org>
+  */
++
++#define pr_fmt(fmt) "kprobes: " fmt
++
+ #include <linux/extable.h>
+ #include <linux/kasan.h>
+ #include <linux/kernel.h>
+@@ -218,7 +221,7 @@ static int __kprobes reenter_kprobe(struct kprobe *p,
+ 		break;
+ 	case KPROBE_HIT_SS:
+ 	case KPROBE_REENTER:
+-		pr_warn("Unrecoverable kprobe detected.\n");
++		pr_warn("Failed to recover from reentered kprobes.\n");
+ 		dump_kprobe(p);
+ 		BUG();
+ 		break;
+diff --git a/arch/csky/kernel/probes/kprobes.c b/arch/csky/kernel/probes/kprobes.c
+index 8fffa34d4e1c..632407bf45d5 100644
+--- a/arch/csky/kernel/probes/kprobes.c
++++ b/arch/csky/kernel/probes/kprobes.c
+@@ -1,5 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ 
++#define pr_fmt(fmt) "kprobes: " fmt
++
+ #include <linux/kprobes.h>
+ #include <linux/extable.h>
+ #include <linux/slab.h>
+@@ -77,10 +79,8 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+ {
+ 	unsigned long probe_addr = (unsigned long)p->addr;
+ 
+-	if (probe_addr & 0x1) {
+-		pr_warn("Address not aligned.\n");
+-		return -EINVAL;
+-	}
++	if (probe_addr & 0x1)
++		return -EILSEQ;
+ 
+ 	/* copy instruction */
+ 	p->opcode = le32_to_cpu(*p->addr);
+@@ -225,7 +225,7 @@ static int __kprobes reenter_kprobe(struct kprobe *p,
+ 		break;
+ 	case KPROBE_HIT_SS:
+ 	case KPROBE_REENTER:
+-		pr_warn("Unrecoverable kprobe detected.\n");
++		pr_warn("Failed to recover from reentered kprobes.\n");
+ 		dump_kprobe(p);
+ 		BUG();
+ 		break;
+diff --git a/arch/mips/kernel/kprobes.c b/arch/mips/kernel/kprobes.c
+index 75bff0f77319..b0934a0d7aed 100644
+--- a/arch/mips/kernel/kprobes.c
++++ b/arch/mips/kernel/kprobes.c
+@@ -11,6 +11,8 @@
+  *   Copyright (C) IBM Corporation, 2002, 2004
+  */
+ 
++#define pr_fmt(fmt) "kprobes: " fmt
++
+ #include <linux/kprobes.h>
+ #include <linux/preempt.h>
+ #include <linux/uaccess.h>
+@@ -80,8 +82,7 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+ 	insn = p->addr[0];
+ 
+ 	if (insn_has_ll_or_sc(insn)) {
+-		pr_notice("Kprobes for ll and sc instructions are not"
+-			  "supported\n");
++		pr_notice("Kprobes for ll and sc instructions are not supported\n");
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+@@ -219,7 +220,7 @@ static int evaluate_branch_instruction(struct kprobe *p, struct pt_regs *regs,
+ 	return 0;
+ 
+ unaligned:
+-	pr_notice("%s: unaligned epc - sending SIGBUS.\n", current->comm);
++	pr_notice("Failed to emulate branch instruction because of unaligned epc - sending SIGBUS to %s.\n", current->comm);
+ 	force_sig(SIGBUS);
+ 	return -EFAULT;
+ 
+@@ -238,10 +239,8 @@ static void prepare_singlestep(struct kprobe *p, struct pt_regs *regs,
+ 		regs->cp0_epc = (unsigned long)p->addr;
+ 	else if (insn_has_delayslot(p->opcode)) {
+ 		ret = evaluate_branch_instruction(p, regs, kcb);
+-		if (ret < 0) {
+-			pr_notice("Kprobes: Error in evaluating branch\n");
++		if (ret < 0)
+ 			return;
+-		}
+ 	}
+ 	regs->cp0_epc = (unsigned long)&p->ainsn.insn[0];
  }
- #endif
+diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+index 00088dc6da4b..cab6f874358e 100644
+--- a/arch/riscv/kernel/probes/kprobes.c
++++ b/arch/riscv/kernel/probes/kprobes.c
+@@ -1,5 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0+
  
--int arch_check_ftrace_location(struct kprobe *p);
++#define pr_fmt(fmt) "kprobes: " fmt
++
+ #include <linux/kprobes.h>
+ #include <linux/extable.h>
+ #include <linux/slab.h>
+@@ -50,11 +52,8 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+ {
+ 	unsigned long probe_addr = (unsigned long)p->addr;
+ 
+-	if (probe_addr & 0x1) {
+-		pr_warn("Address not aligned.\n");
 -
- /* Get the kprobe at this addr (if any) - called with preemption disabled */
- struct kprobe *get_kprobe(void *addr);
+-		return -EINVAL;
+-	}
++	if (probe_addr & 0x1)
++		return -EILSEQ;
  
+ 	/* copy instruction */
+ 	p->opcode = *p->addr;
+@@ -191,7 +190,7 @@ static int __kprobes reenter_kprobe(struct kprobe *p,
+ 		break;
+ 	case KPROBE_HIT_SS:
+ 	case KPROBE_REENTER:
+-		pr_warn("Unrecoverable kprobe detected.\n");
++		pr_warn("Failed to recover from reentered kprobes.\n");
+ 		dump_kprobe(p);
+ 		BUG();
+ 		break;
+diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
+index 52d056a5f89f..952d44b0610b 100644
+--- a/arch/s390/kernel/kprobes.c
++++ b/arch/s390/kernel/kprobes.c
+@@ -7,6 +7,8 @@
+  * s390 port, used ppc64 as template. Mike Grundy <grundym@us.ibm.com>
+  */
+ 
++#define pr_fmt(fmt) "kprobes: " fmt
++
+ #include <linux/moduleloader.h>
+ #include <linux/kprobes.h>
+ #include <linux/ptrace.h>
+@@ -259,7 +261,7 @@ static void kprobe_reenter_check(struct kprobe_ctlblk *kcb, struct kprobe *p)
+ 		 * is a BUG. The code path resides in the .kprobes.text
+ 		 * section and is executed with interrupts disabled.
+ 		 */
+-		pr_err("Invalid kprobe detected.\n");
++		pr_err("Failed to recover from reentered kprobes.\n");
+ 		dump_kprobe(p);
+ 		BUG();
+ 	}
 diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index cfa9d3c263eb..30199bfcc74a 100644
+index 30199bfcc74a..7663c8a51889 100644
 --- a/kernel/kprobes.c
 +++ b/kernel/kprobes.c
-@@ -1524,7 +1524,7 @@ static inline int warn_kprobe_rereg(struct kprobe *p)
- 	return ret;
+@@ -18,6 +18,9 @@
+  *		<jkenisto@us.ibm.com> and Prasanna S Panchamukhi
+  *		<prasanna@in.ibm.com> added function-return probes.
+  */
++
++#define pr_fmt(fmt) "kprobes: " fmt
++
+ #include <linux/kprobes.h>
+ #include <linux/hash.h>
+ #include <linux/init.h>
+@@ -892,7 +895,7 @@ static void optimize_all_kprobes(void)
+ 				optimize_kprobe(p);
+ 	}
+ 	cpus_read_unlock();
+-	printk(KERN_INFO "Kprobes globally optimized\n");
++	pr_info("kprobe jump-optimization is enabled. All kprobes are optimized if possible.\n");
+ out:
+ 	mutex_unlock(&kprobe_mutex);
+ }
+@@ -925,7 +928,7 @@ static void unoptimize_all_kprobes(void)
+ 
+ 	/* Wait for unoptimizing completion */
+ 	wait_for_kprobe_optimizer();
+-	printk(KERN_INFO "Kprobes globally unoptimized\n");
++	pr_info("kprobe jump-optimization is disabled. All kprobes are based on software breakpoint.\n");
  }
  
--int __weak arch_check_ftrace_location(struct kprobe *p)
-+static int check_ftrace_location(struct kprobe *p)
- {
- 	unsigned long ftrace_addr;
+ static DEFINE_MUTEX(kprobe_sysctl_mutex);
+@@ -1003,7 +1006,7 @@ static int reuse_unused_kprobe(struct kprobe *ap)
+ 	 * unregistered.
+ 	 * Thus there should be no chance to reuse unused kprobe.
+ 	 */
+-	printk(KERN_ERR "Error: There should be no unused kprobe here.\n");
++	WARN_ON_ONCE(1);
+ 	return -EINVAL;
+ }
  
-@@ -1547,7 +1547,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
- {
- 	int ret;
+@@ -1040,18 +1043,13 @@ static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
+ 	int ret = 0;
  
--	ret = arch_check_ftrace_location(p);
-+	ret = check_ftrace_location(p);
- 	if (ret)
+ 	ret = ftrace_set_filter_ip(ops, (unsigned long)p->addr, 0, 0);
+-	if (ret) {
+-		pr_debug("Failed to arm kprobe-ftrace at %pS (%d)\n",
+-			 p->addr, ret);
++	if (WARN_ONCE(ret < 0, "Failed to arm kprobe-ftrace at %pS (error %d)\n", p->addr, ret))
  		return ret;
- 	jump_label_lock();
+-	}
+ 
+ 	if (*cnt == 0) {
+ 		ret = register_ftrace_function(ops);
+-		if (ret) {
+-			pr_debug("Failed to init kprobe-ftrace (%d)\n", ret);
++		if (WARN(ret < 0, "Failed to register kprobe-ftrace (error %d)\n", ret))
+ 			goto err_ftrace;
+-		}
+ 	}
+ 
+ 	(*cnt)++;
+@@ -1083,14 +1081,14 @@ static int __disarm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
+ 
+ 	if (*cnt == 1) {
+ 		ret = unregister_ftrace_function(ops);
+-		if (WARN(ret < 0, "Failed to unregister kprobe-ftrace (%d)\n", ret))
++		if (WARN(ret < 0, "Failed to unregister kprobe-ftrace (error %d)\n", ret))
+ 			return ret;
+ 	}
+ 
+ 	(*cnt)--;
+ 
+ 	ret = ftrace_set_filter_ip(ops, (unsigned long)p->addr, 1, 0);
+-	WARN_ONCE(ret < 0, "Failed to disarm kprobe-ftrace at %pS (%d)\n",
++	WARN_ONCE(ret < 0, "Failed to disarm kprobe-ftrace at %pS (error %d)\n",
+ 		  p->addr, ret);
+ 	return ret;
+ }
+@@ -1880,7 +1878,7 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+ 
+ 		node = node->next;
+ 	}
+-	pr_err("Oops! Kretprobe fails to find correct return address.\n");
++	pr_err("kretprobe: Return address not found, not execute handler. Maybe there is a bug in the kernel.\n");
+ 	BUG_ON(1);
+ 
+ found:
+@@ -2209,8 +2207,7 @@ EXPORT_SYMBOL_GPL(enable_kprobe);
+ /* Caller must NOT call this in usual path. This is only for critical case */
+ void dump_kprobe(struct kprobe *kp)
+ {
+-	pr_err("Dumping kprobe:\n");
+-	pr_err("Name: %s\nOffset: %x\nAddress: %pS\n",
++	pr_err("Dump kprobe:\n.symbol_name = %s, .offset = %x, .addr = %pS\n",
+ 	       kp->symbol_name, kp->offset, kp->addr);
+ }
+ NOKPROBE_SYMBOL(dump_kprobe);
+@@ -2473,8 +2470,7 @@ static int __init init_kprobes(void)
+ 	err = populate_kprobe_blacklist(__start_kprobe_blacklist,
+ 					__stop_kprobe_blacklist);
+ 	if (err) {
+-		pr_err("kprobes: failed to populate blacklist: %d\n", err);
+-		pr_err("Please take care of using kprobes.\n");
++		pr_err("Failed to populate blacklist (error %d), kprobes not restricted, be careful using them!\n", err);
+ 	}
+ 
+ 	if (kretprobe_blacklist_size) {
+@@ -2483,7 +2479,7 @@ static int __init init_kprobes(void)
+ 			kretprobe_blacklist[i].addr =
+ 				kprobe_lookup_name(kretprobe_blacklist[i].name, 0);
+ 			if (!kretprobe_blacklist[i].addr)
+-				printk("kretprobe: lookup failed: %s\n",
++				pr_err("Failed to lookup symbol '%s' for kretprobe blacklist. Maybe the target function is removed or renamed.\n",
+ 				       kretprobe_blacklist[i].name);
+ 		}
+ 	}
+@@ -2687,7 +2683,7 @@ static int arm_all_kprobes(void)
+ 	}
+ 
+ 	if (errors)
+-		pr_warn("Kprobes globally enabled, but failed to arm %d out of %d probes\n",
++		pr_warn("Kprobes globally enabled, but failed to enable %d out of %d probes. Please check which kprobes are kept disabled via debugfs.\n",
+ 			errors, total);
+ 	else
+ 		pr_info("Kprobes globally enabled\n");
+@@ -2730,7 +2726,7 @@ static int disarm_all_kprobes(void)
+ 	}
+ 
+ 	if (errors)
+-		pr_warn("Kprobes globally disabled, but failed to disarm %d out of %d probes\n",
++		pr_warn("Kprobes globally disabled, but failed to disable %d out of %d probes. Please check which kprobes are kept enabled via debugfs.\n",
+ 			errors, total);
+ 	else
+ 		pr_info("Kprobes globally disabled\n");
 
