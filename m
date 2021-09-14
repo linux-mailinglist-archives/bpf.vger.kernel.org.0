@@ -2,206 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C8240AAA6
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 11:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B3C40ABAE
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 12:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhINJUx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 05:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
+        id S231614AbhINKaQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 06:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbhINJUi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:20:38 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B756AC0613D8
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 02:19:20 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id o20so16722048ejd.7
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 02:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wuSu4wyeQe544QYrvabdyuLRDzOBYBuIdaBFG7YY+kM=;
-        b=nSMM0JwGDd1OMdMdAzUtzmgNs6tnzkFC0D8Qpt7vGmebsAETRQgOzuYwb7T4oip1AT
-         XIR/dKntRBIjIjvBrTGk6Zicpr/12JHIeUtpIaIkP1IoPjL56mvJh0dw+O41ZtOOcXTx
-         I3Iallzij8EFydCDrNWUA+iQAChGiUjfX7OaYv8LklqeRO1mL1q6V2x3Y8cUvTLrAXYM
-         VzxuRhMEM0vQk2sUJOkpuzSl0w0B2JMGHyzRYSc7Lla7sWpf0HB9HB29oNpzMCyKrPvL
-         uSFOAGayBJfYEONws0XdL9FilwjhYMG7krdj6vbiJWLknJy/cJVU+mtI529jyXNqHJ0U
-         oQ0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wuSu4wyeQe544QYrvabdyuLRDzOBYBuIdaBFG7YY+kM=;
-        b=b/UBhR67c3IwDDQexdRlM0YXRLi7ra/NfWLhbLi2srpApo+tkJQo1jgC4F2tr9bXx+
-         b2c525xyIzIXabNnKKMzPgeYMZAxqVv7yR1GXMJwa2eNLnr1FRm1P9gT9jOhty1ZYNAQ
-         IlLe4l0/6oURrKQbvg6P87XREHjNrFELaMmaYztN4uwt7iHeatguwHf1OPmdM423lhQq
-         3he7C0hpCKZAKwNFiOeXal/6hfkqWUFceZpuNad1bpYEcsosMVIzFd7a8KXkZ18WQ/sn
-         yhwFuS4v4WoqtsTAZHS+b1gS34jNuBPZLG8xZEic5be1/PcKVOeYPwxL0HTY6DYe/w0z
-         TbXQ==
-X-Gm-Message-State: AOAM533xVMuKPprjRbbCI38MdgYbqsIFmi/UmYU1AeM/0S6X4Uir0d9U
-        lkTwbxo5lBh8VRRzjtafTrUr1IKC1AmAfCY+
-X-Google-Smtp-Source: ABdhPJwnxnO4rtzZQcp0bxDzK5ItJcRigcy3k/hTReYfP1lUVoqUp9JGjOiKTsWEICVNLqONWL6CUg==
-X-Received: by 2002:a17:906:2ed1:: with SMTP id s17mr18489299eji.261.1631611159370;
-        Tue, 14 Sep 2021 02:19:19 -0700 (PDT)
-Received: from anpc2.lan (static-213-115-136-2.sme.telenor.se. [213.115.136.2])
-        by smtp.gmail.com with ESMTPSA id h10sm4615915ede.28.2021.09.14.02.19.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 02:19:18 -0700 (PDT)
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, iii@linux.ibm.com,
-        paul@cilium.io, yangtiezhu@loongson.cn, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Subject: [PATCH bpf v4 14/14] bpf/tests: Add tail call limit test with external function call
-Date:   Tue, 14 Sep 2021 11:18:42 +0200
-Message-Id: <20210914091842.4186267-15-johan.almbladh@anyfinetworks.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210914091842.4186267-1-johan.almbladh@anyfinetworks.com>
-References: <20210914091842.4186267-1-johan.almbladh@anyfinetworks.com>
+        with ESMTP id S229591AbhINKaP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 06:30:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7647FC061760;
+        Tue, 14 Sep 2021 03:28:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=AkAmP+XwbC3u2EnOmWg1+d8TikSHpIOHKHRYg4gt8m4=; b=foLIYWAOURNP6S9e3efY4E2F63
+        /ox7MO547cQ0+xsln+MJfQULrWJ3p8DKN6l1dYf0D2gYrzNijDm0oJupoPwgLFjDKxNHJx82oZ8ea
+        Vx2NaDdVnJ+mGD/aME4xaVWc+g/zGrJyh7t0UXvIvzkaRH8aTb1ut08L+/jQ2YS9fCQ3WP8gAZV71
+        JNB5NeMRR3ImOff6K1MWJTb2mpaxLMaEC0Cc4fxlz3YKggS9uuHjzeOkVbRsJZyPzTLA10doxV47p
+        7LCBYC3gln9qFgg0U7JKAnlgz9zo6Jkqx7tZcPnbIZO4bUSeMrJbUvl74P3qckqsjcdymZEPcJeBu
+        4Gut303g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQ5g7-0037U7-35; Tue, 14 Sep 2021 10:28:39 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6F2E2300255;
+        Tue, 14 Sep 2021 12:28:37 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 579792D0615D5; Tue, 14 Sep 2021 12:28:37 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 12:28:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH] perf: fix panic by mark recursion inside
+ perf_log_throttle
+Message-ID: <YUB5VchM3a/MiZpX@hirez.programming.kicks-ass.net>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <20210910153839.GH4323@worktop.programming.kicks-ass.net>
+ <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
+ <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+ <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds a tail call limit test where the program also emits
-a BPF_CALL to an external function prior to the tail call. Mainly
-testing that JITed programs preserve its internal register state, for
-example tail call count, across such external calls.
+On Tue, Sep 14, 2021 at 09:58:44AM +0800, 王贇 wrote:
+> On 2021/9/13 下午6:24, Peter Zijlstra wrote:
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
----
- lib/test_bpf.c | 86 ++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 83 insertions(+), 3 deletions(-)
+> > I'm confused tho; where does the #DF come from? Because taking a #PF
+> > from NMI should be perfectly fine.
+> > 
+> > AFAICT that callchain is something like:
+> > 
+> > 	NMI
+> > 	  perf_event_nmi_handler()
+> > 	    (part of the chain is missing here)
+> > 	      perf_log_throttle()
+> > 	        perf_output_begin() /* events/ring_buffer.c */
+> > 		  rcu_read_lock()
+> > 		    rcu_lock_acquire()
+> > 		      lock_acquire()
+> > 		        trace_lock_acquire() --> perf_trace_foo
+> > 
+> > 			  ...
+> > 			    perf_callchain()
+> > 			      perf_callchain_user()
+> > 			        #PF (fully expected during a userspace callchain)
+> > 				  (some stuff, until the first __fentry)
+> > 				    perf_trace_function_call
+> > 				      perf_trace_buf_alloc()
+> > 				        perf_swevent_get_recursion_context()
+> > 					  *BOOM*
+> > 
+> > Now, supposedly we then take another #PF from get_recursion_context() or
+> > something, but that doesn't make sense. That should just work...
+> > 
+> > Can you figure out what's going wrong there? going with the RIP, this
+> > almost looks like 'swhash->recursion' goes splat, but again that makes
+> > no sense, that's a per-cpu variable.
+> 
+> That's true, I actually have tried several approach to avoid the issue, but
+> it trigger panic as long as we access 'swhash->recursion', the array should
+> be accessible but somehow broken, that's why I consider this a suspected
+> stack overflow, since nmi repeated and trace seems very long, but just a
+> suspect...
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index ddb9a8089d2e..99783088dcd0 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -12207,6 +12207,30 @@ struct tail_call_test {
- 		     offset, TAIL_CALL_MARKER),	       \
- 	BPF_JMP_IMM(BPF_TAIL_CALL, 0, 0, 0)
+You can simply increase the exception stack size to test this:
+
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index a8d4ad856568..e9e2c3ba5923 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -15,7 +15,7 @@
+ #define THREAD_SIZE_ORDER	(2 + KASAN_STACK_ORDER)
+ #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
  
-+/*
-+ * A test function to be called from a BPF program, clobbering a lot of
-+ * CPU registers in the process. A JITed BPF program calling this function
-+ * must save and restore any caller-saved registers it uses for internal
-+ * state, for example the current tail call count.
-+ */
-+BPF_CALL_1(bpf_test_func, u64, arg)
+-#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
++#define EXCEPTION_STACK_ORDER (1 + KASAN_STACK_ORDER)
+ #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
+ 
+ #define IRQ_STACK_ORDER (2 + KASAN_STACK_ORDER)
+
+
+
+Also, something like this might be useful:
+
+
+diff --git a/arch/x86/include/asm/stacktrace.h b/arch/x86/include/asm/stacktrace.h
+index f248eb2ac2d4..4dfdbb9395eb 100644
+--- a/arch/x86/include/asm/stacktrace.h
++++ b/arch/x86/include/asm/stacktrace.h
+@@ -33,6 +33,8 @@ bool in_task_stack(unsigned long *stack, struct task_struct *task,
+ 
+ bool in_entry_stack(unsigned long *stack, struct stack_info *info);
+ 
++bool in_exception_stack_guard(unsigned long *stack);
++
+ int get_stack_info(unsigned long *stack, struct task_struct *task,
+ 		   struct stack_info *info, unsigned long *visit_mask);
+ bool get_stack_info_noinstr(unsigned long *stack, struct task_struct *task,
+diff --git a/arch/x86/kernel/dumpstack_64.c b/arch/x86/kernel/dumpstack_64.c
+index 5601b95944fa..056cf4f31599 100644
+--- a/arch/x86/kernel/dumpstack_64.c
++++ b/arch/x86/kernel/dumpstack_64.c
+@@ -126,6 +126,39 @@ static __always_inline bool in_exception_stack(unsigned long *stack, struct stac
+ 	return true;
+ }
+ 
++noinstr bool in_exception_stack_guard(unsigned long *stack)
 +{
-+	char buf[64];
-+	long a = 0;
-+	long b = 1;
-+	long c = 2;
-+	long d = 3;
-+	long e = 4;
-+	long f = 5;
-+	long g = 6;
-+	long h = 7;
++	unsigned long begin, end, stk = (unsigned long)stack;
++	const struct estack_pages *ep;
++	unsigned int k;
 +
-+	return snprintf(buf, sizeof(buf),
-+			"%ld %lu %lx %ld %lu %lx %ld %lu %x",
-+			a, b, c, d, e, f, g, h, (int)arg);
++	BUILD_BUG_ON(N_EXCEPTION_STACKS != 6);
++
++	begin = (unsigned long)__this_cpu_read(cea_exception_stacks);
++	/*
++	 * Handle the case where stack trace is collected _before_
++	 * cea_exception_stacks had been initialized.
++	 */
++	if (!begin)
++		return false;
++
++	end = begin + sizeof(struct cea_exception_stacks);
++	/* Bail if @stack is outside the exception stack area. */
++	if (stk < begin || stk >= end)
++		return false;
++
++	/* Calc page offset from start of exception stacks */
++	k = (stk - begin) >> PAGE_SHIFT;
++	/* Lookup the page descriptor */
++	ep = &estack_pages[k];
++	/* Guard page? */
++	if (!ep->size)
++		return true;
++
++	return false;
 +}
-+#define BPF_FUNC_test_func __BPF_FUNC_MAX_ID
 +
- /*
-  * Tail call tests. Each test case may call any other test in the table,
-  * including itself, specified as a relative index offset from the calling
-@@ -12266,6 +12290,28 @@ static struct tail_call_test tail_call_tests[] = {
- 		.flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
- 		.result = (MAX_TAIL_CALL_CNT + 1 + 1) * MAX_TESTRUNS,
- 	},
-+	{
-+		"Tail call count preserved across function calls",
-+		.insns = {
-+			BPF_LDX_MEM(BPF_W, R2, R1, 0),
-+			BPF_ALU64_IMM(BPF_ADD, R2, 1),
-+			BPF_STX_MEM(BPF_W, R1, R2, 0),
-+			BPF_STX_MEM(BPF_DW, R10, R1, -8),
-+			BPF_CALL_REL(BPF_FUNC_get_numa_node_id),
-+			BPF_CALL_REL(BPF_FUNC_ktime_get_ns),
-+			BPF_CALL_REL(BPF_FUNC_ktime_get_boot_ns),
-+			BPF_CALL_REL(BPF_FUNC_ktime_get_coarse_ns),
-+			BPF_CALL_REL(BPF_FUNC_jiffies64),
-+			BPF_CALL_REL(BPF_FUNC_test_func),
-+			BPF_LDX_MEM(BPF_DW, R1, R10, -8),
-+			BPF_ALU32_REG(BPF_MOV, R0, R1),
-+			TAIL_CALL(0),
-+			BPF_EXIT_INSN(),
-+		},
-+		.stack_depth = 8,
-+		.flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
-+		.result = (MAX_TAIL_CALL_CNT + 1 + 1) * MAX_TESTRUNS,
-+	},
- 	{
- 		"Tail call error path, NULL target",
- 		.insns = {
-@@ -12344,17 +12390,19 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
- 		/* Relocate runtime tail call offsets and addresses */
- 		for (i = 0; i < len; i++) {
- 			struct bpf_insn *insn = &fp->insnsi[i];
--
--			if (insn->imm != TAIL_CALL_MARKER)
--				continue;
-+			long addr = 0;
- 
- 			switch (insn->code) {
- 			case BPF_LD | BPF_DW | BPF_IMM:
-+				if (insn->imm != TAIL_CALL_MARKER)
-+					break;
- 				insn[0].imm = (u32)(long)progs;
- 				insn[1].imm = ((u64)(long)progs) >> 32;
- 				break;
- 
- 			case BPF_ALU | BPF_MOV | BPF_K:
-+				if (insn->imm != TAIL_CALL_MARKER)
-+					break;
- 				if (insn->off == TAIL_CALL_NULL)
- 					insn->imm = ntests;
- 				else if (insn->off == TAIL_CALL_INVALID)
-@@ -12362,6 +12410,38 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
- 				else
- 					insn->imm = which + insn->off;
- 				insn->off = 0;
-+				break;
 +
-+			case BPF_JMP | BPF_CALL:
-+				if (insn->src_reg != BPF_PSEUDO_CALL)
-+					break;
-+				switch (insn->imm) {
-+				case BPF_FUNC_get_numa_node_id:
-+					addr = (long)&numa_node_id;
-+					break;
-+				case BPF_FUNC_ktime_get_ns:
-+					addr = (long)&ktime_get_ns;
-+					break;
-+				case BPF_FUNC_ktime_get_boot_ns:
-+					addr = (long)&ktime_get_boot_fast_ns;
-+					break;
-+				case BPF_FUNC_ktime_get_coarse_ns:
-+					addr = (long)&ktime_get_coarse_ns;
-+					break;
-+				case BPF_FUNC_jiffies64:
-+					addr = (long)&get_jiffies_64;
-+					break;
-+				case BPF_FUNC_test_func:
-+					addr = (long)&bpf_test_func;
-+					break;
-+				default:
-+					err = -EFAULT;
-+					goto out_err;
-+				}
-+				*insn = BPF_EMIT_CALL(BPF_CAST_CALL(addr));
-+				if ((long)__bpf_call_base + insn->imm != addr)
-+					*insn = BPF_JMP_A(0); /* Skip: NOP */
-+				break;
- 			}
- 		}
+ static __always_inline bool in_irq_stack(unsigned long *stack, struct stack_info *info)
+ {
+ 	unsigned long *end = (unsigned long *)this_cpu_read(hardirq_stack_ptr);
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index a58800973aed..8b043ed02c0d 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -459,6 +459,9 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+ 		handle_stack_overflow("kernel stack overflow (double-fault)",
+ 				      regs, address);
+ 	}
++
++	if (in_exception_stack_guard((void *)address))
++		pr_emerg("PANIC: exception stack guard: 0x%lx\n", address);
+ #endif
  
--- 
-2.30.2
-
+ 	pr_emerg("PANIC: double fault, error_code: 0x%lx\n", error_code);
