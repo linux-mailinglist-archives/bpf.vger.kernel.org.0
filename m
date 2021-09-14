@@ -2,128 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302D140B451
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 18:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C8E40B47A
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 18:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbhINQSO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 12:18:14 -0400
-Received: from mga02.intel.com ([134.134.136.20]:41775 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhINQSO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:18:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209282641"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="209282641"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 09:16:56 -0700
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="544161710"
-Received: from ldraghi-mobl1.amr.corp.intel.com (HELO [10.209.28.176]) ([10.209.28.176])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 09:16:55 -0700
-Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
-To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
- <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
- <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
- <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
- <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
-Date:   Tue, 14 Sep 2021 09:16:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229729AbhINQX7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 14 Sep 2021 12:23:59 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63870 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229720AbhINQX6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 12:23:58 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.0.43) with SMTP id 18EG2wFY026788
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 09:22:41 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 3b2k1rm2mx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 09:22:40 -0700
+Received: from intmgw001.05.prn6.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Tue, 14 Sep 2021 09:22:39 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 7D13440693FF; Tue, 14 Sep 2021 09:22:29 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix .gitignore to not ignore test_progs.c
+Date:   Tue, 14 Sep 2021 09:22:28 -0700
+Message-ID: <20210914162228.3995740-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: rt4YJBcC5J_QqPNRpJYkWWxpjHCR97CW
+X-Proofpoint-ORIG-GUID: rt4YJBcC5J_QqPNRpJYkWWxpjHCR97CW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-14_06,2021-09-14_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 impostorscore=0 mlxscore=0 phishscore=0
+ bulkscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109140096
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/14/21 12:23 AM, 王贇 wrote:
-> 
-> On 2021/9/14 上午11:02, 王贇 wrote:
-> [snip]
->> [   44.133509][    C0] traps: PANIC: double fault, error_code: 0x0
->> [   44.133519][    C0] double fault: 0000 [#1] SMP PTI
->> [   44.133526][    C0] CPU: 0 PID: 743 Comm: a.out Not tainted 5.14.0-next-20210913 #469
->> [   44.133532][    C0] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
->> [   44.133536][    C0] RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
->> [   44.133549][    C0] Code: 48 03 43 28 48 8b 0c 24 bb 01 00 00 00 4c 29 f0 48 39 c8 48 0f 47 c1 49 89 45 08 e9 48 ff ff ff 66 2e 0f 1f 84 00 00 00 00 00 <55> 53 e8 09 20 f2 ff 48 c7 c2 20 4d 03 00 65 48 03 15 5a 3b d2 7e
->> [   44.133556][    C0] RSP: 0018:fffffe000000b000 EFLAGS: 00010046
-> Another information is that I have printed '__this_cpu_ist_bottom_va(NMI)'
-> on cpu0, which is just the RSP fffffe000000b000, does this imply
-> we got an overflowed NMI stack?
+List all possible test_progs flavors explicitly to avoid accidentally
+ignoring valid source code files. In this case, test_progs.c was still
+ignored after recent 809ed84de8b3 ("selftests/bpf: Whitelist test_progs.h
+from .gitignore") fix that added exception only for test_progs.h.
 
-Yep.  I have the feeling some of your sanitizer and other debugging is
-eating the stack:
+Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and test_maps w/ general rule"
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/testing/selftests/bpf/.gitignore | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
-> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index 433f8bef261e..1dad8d617da8 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -9,8 +9,9 @@ test_tag
+ FEATURE-DUMP.libbpf
+ fixdep
+ test_dev_cgroup
+-/test_progs*
+-!test_progs.h
++/test_progs
++/test_progs-no_alu32
++/test_progs-bpf_gcc
+ test_verifier_log
+ feature
+ test_sock
+-- 
+2.30.2
 
-Just turning off tracing for the page fault handler is papering over the
-problem.  It'll just come back later with a slightly different form.
