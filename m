@@ -2,311 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C60A40A524
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 06:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D19A40A51E
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 06:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhINEKt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 00:10:49 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:7532 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229567AbhINEKs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 00:10:48 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18DM9ae6010564
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:09:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=facebook;
- bh=vC4EXokNnMDfcOObGgja97bhrhSkMNRaosmpkCXC6RE=;
- b=ZFQ9stl39PKQRfcRUq9yOcc24WjQavalo+9SaxANQ58h4T6dp3a4ZoRFOfs16bc4SuqB
- VJa6MU4MVMaFfLtIb0gTSdnRLCvA5k4BjjY4mMSCmGDGB+TJtrX1R7qMIFJT207QrUvB
- tIwbE5H+cQ4oA8cv1BQLkClnoqGT9pAzy8E= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b1wgtfsws-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:09:31 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Mon, 13 Sep 2021 21:09:30 -0700
-Received: by devbig612.frc2.facebook.com (Postfix, from userid 115148)
-        id 3932E25C5B89; Mon, 13 Sep 2021 21:09:23 -0700 (PDT)
-From:   Joanne Koong <joannekoong@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <Kernel-team@fb.com>, Joanne Koong <joannekoong@fb.com>
-Subject: [PATCH v2 bpf-next 4/4] bpf/benchs: Add benchmarks for comparing hashmap lookups with vs. without bloom filter
-Date:   Mon, 13 Sep 2021 21:04:33 -0700
-Message-ID: <20210914040433.3184308-5-joannekoong@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210914040433.3184308-1-joannekoong@fb.com>
-References: <20210914040433.3184308-1-joannekoong@fb.com>
+        id S231570AbhINEK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 00:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229807AbhINEK0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 00:10:26 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5AAC061762
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:09:09 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id s11so25092692yba.11
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6dUT5DvFbbYMaoEPiPLDAN+5dOCe4J7gs07f/JQLEu4=;
+        b=J/wx5v2jZ0Heo5oVWltVNHdeOQREYdrh2D95/smvODoPomwE/csFmxg4onKdso9qR9
+         EfFBXL2wHjX1fBOUF67wimCgII2bIWFK8xZZw9tKLsWuQKwo8wrM8VqjTjWQ6Akf5uLH
+         nakQ4kSYuhEzwfLHPkW07LWmQ+sFlPMRzk+e4VzdoyRoEfRHoKSn82FIfkehZ1DAZ8u6
+         ClhYEb4jsK8xm8n1xVWO8yKChQslWMK0fcZuyPY9s0t69ybkZiGM6UZNDz0dD5Pj7D+I
+         Tk8Gh2p99gRTr9qH6v+wxLr8R92WMubX4N3Vn0y579w9XX2sQnkWRqgvTxb0WEk8CuW5
+         BwBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6dUT5DvFbbYMaoEPiPLDAN+5dOCe4J7gs07f/JQLEu4=;
+        b=3e5zJivHxs7ex3n7YZZwHzQFqv00QNd6wyv55/KTRql4IjWYwFj4Ii9AVsnQSOsYRL
+         JzJ7/5P2fr2o28rzpQXWBu4+OXGZpvfnpSstBJgDQfym3Gc7gyk8oYxhv8C1CGBaqFNd
+         JCxPd/d6g2XmO1FjUtiT1dEXTuAuEAC2DoPCdtXvotmmGJMkEsSCIknzoXzS/doKGx3q
+         Wn072TiFNRlYCLqHi8Sk1FpuxSpLM9Yi4ND7xuR0llwmIJhZ6/W+4g0HQLgttBYetd75
+         QogErLcCmSll9gtfkhXPFGwIhTwooAp0HyVQ16jrNcXXWq/FgKgJprzSqg6EHHynZazN
+         Q1Gw==
+X-Gm-Message-State: AOAM533E5eu+YvxDulZ91zCbgn1sU6LTo3c7NUGq6p9y53KD05leMN8n
+        +Dvd0LF5+F1oepno1Y8Pzt/a/1S8SBgsZdFegr0ARA==
+X-Google-Smtp-Source: ABdhPJwCJhxawTUBec5yEZ7/qBFch1DFW9upEUAhpY7/jiLL7TbDR3W7kx6NFnU6+YjlrxyJbW4uxU2Pvw4nyFWW368=
+X-Received: by 2002:a25:b904:: with SMTP id x4mr18387519ybj.48.1631592548588;
+ Mon, 13 Sep 2021 21:09:08 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210909114106.141462-1-sashal@kernel.org> <20210909114106.141462-101-sashal@kernel.org>
+In-Reply-To: <20210909114106.141462-101-sashal@kernel.org>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Tue, 14 Sep 2021 06:08:57 +0200
+Message-ID: <CAM1=_QQUi2diFeB+CnMx1-1zdtp4uUMLCO7f5adcMB29UjD1pQ@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.14 101/252] bpf: Fix off-by-one in tail call
+ count limiting
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-X-FB-Source: Intern
-X-Proofpoint-GUID: 30FCeGZl2I37mQ8EE2E7THfpdQDowIrE
-X-Proofpoint-ORIG-GUID: 30FCeGZl2I37mQ8EE2E7THfpdQDowIrE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-13_09,2021-09-09_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
- impostorscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 adultscore=0
- clxscore=1015 malwarescore=0 priorityscore=1501 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109140024
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds benchmark tests for comparing the performance of hashmap
-lookups without the bloom filter vs. hashmap lookups with the bloom filte=
-r.
+Sasha,
 
-Checking the bloom filter first for whether the element exists should
-overall enable a higher throughput for hashmap lookups, since if the
-element does not exist in the bloom filter, we can avoid a costly lookup =
-in
-the hashmap.
+This patch should not be applied to any of the stable kernels. It was
+reverted in f9dabe016b63 ("bpf: Undo off-by-one in interpreter tail
+call count limit").
 
-On average, using 5 hash functions in the bloom filter tended to perform
-the best across the widest range of different entry sizes. The benchmark
-results using 5 hash functions (running on 8 threads on a machine with on=
-e
-numa node, and taking the average of 3 runs) were roughly as follows:
+I don't think it will pass the CI selftests so maybe it wouldn't be
+applied anyway, but nevertheless I want to inform you about it.
 
-value_size =3D 4 bytes -
-	10k entries: 30% faster
-	50k entries: 50% faster
-	100k entries: 55% faster
-	500k entres: 80% faster
-	1 million entries: 120% faster
-	5 million entries: 135% faster
+Johan
 
-value_size =3D 8 bytes -
-	10k entries: 35% faster
-	50k entries: 55% faster
-	100k entries: 70% faster
-	500k entres: 110% faster
-	1 million entries: 215% faster
-	5 million entries: 215% faster
-
-value_size =3D 16 bytes -
-	10k entries: 5% slower
-	50k entries: 25% faster
-	100k entries: 35% faster
-	500k entres: 105% faster
-	1 million entries: 130% faster
-	5 million entries: 105% faster
-
-value_size =3D 40 bytes -
-	10k entries: 5% slower
-	50k entries: 10% faster
-	100k entries: 20% faster
-	500k entres: 45% faster
-	1 million entries: 60% faster
-	5 million entries: 75% faster
-
-Signed-off-by: Joanne Koong <joannekoong@fb.com>
----
- tools/testing/selftests/bpf/bench.c           | 22 ++++++++---
- .../bpf/benchs/bench_bloom_filter_map.c       | 39 +++++++++++++++++++
- .../bpf/benchs/run_bench_bloom_filter_map.sh  | 15 +++++++
- .../selftests/bpf/benchs/run_common.sh        | 12 ++++++
- 4 files changed, 83 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftest=
-s/bpf/bench.c
-index 0bcbdb4405a3..7da1589a9fe0 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -92,20 +92,21 @@ void hits_drops_report_progress(int iter, struct benc=
-h_res *res, long delta_ns)
- 	printf("Iter %3d (%7.3lfus): ",
- 	       iter, (delta_ns - 1000000000) / 1000.0);
-=20
--	printf("hits %8.3lfM/s (%7.3lfM/prod), drops %8.3lfM/s\n",
--	       hits_per_sec, hits_per_prod, drops_per_sec);
-+	printf("hits %8.3lfM/s (%7.3lfM/prod), drops %8.3lfM/s, total operation=
-s %8.3lfM/s\n",
-+	       hits_per_sec, hits_per_prod, drops_per_sec, hits_per_sec + drops=
-_per_sec);
- }
-=20
- void hits_drops_report_final(struct bench_res res[], int res_cnt)
- {
- 	int i;
--	double hits_mean =3D 0.0, drops_mean =3D 0.0;
--	double hits_stddev =3D 0.0, drops_stddev =3D 0.0;
-+	double hits_mean =3D 0.0, drops_mean =3D 0.0, total_ops_mean =3D 0.0;
-+	double hits_stddev =3D 0.0, drops_stddev =3D 0.0, total_ops_stddev =3D =
-0.0;
-=20
- 	for (i =3D 0; i < res_cnt; i++) {
- 		hits_mean +=3D res[i].hits / 1000000.0 / (0.0 + res_cnt);
- 		drops_mean +=3D res[i].drops / 1000000.0 / (0.0 + res_cnt);
- 	}
-+	total_ops_mean =3D hits_mean + drops_mean;
-=20
- 	if (res_cnt > 1)  {
- 		for (i =3D 0; i < res_cnt; i++) {
-@@ -115,14 +116,21 @@ void hits_drops_report_final(struct bench_res res[]=
-, int res_cnt)
- 			drops_stddev +=3D (drops_mean - res[i].drops / 1000000.0) *
- 					(drops_mean - res[i].drops / 1000000.0) /
- 					(res_cnt - 1.0);
-+			total_ops_stddev +=3D (total_ops_mean -
-+					(res[i].hits + res[i].drops) / 1000000.0) *
-+					(total_ops_mean - (res[i].hits + res[i].drops) / 1000000.0)
-+					/ (res_cnt - 1.0);
- 		}
- 		hits_stddev =3D sqrt(hits_stddev);
- 		drops_stddev =3D sqrt(drops_stddev);
-+		total_ops_stddev =3D sqrt(total_ops_stddev);
- 	}
- 	printf("Summary: hits %8.3lf \u00B1 %5.3lfM/s (%7.3lfM/prod), ",
- 	       hits_mean, hits_stddev, hits_mean / env.producer_cnt);
--	printf("drops %8.3lf \u00B1 %5.3lfM/s\n",
-+	printf("drops %8.3lf \u00B1 %5.3lfM/s, ",
- 	       drops_mean, drops_stddev);
-+	printf("total operations %8.3lf \u00B1 %5.3lfM/s\n",
-+	       total_ops_mean, total_ops_stddev);
- }
-=20
- const char *argp_program_version =3D "benchmark";
-@@ -356,6 +364,8 @@ extern const struct bench bench_pb_libbpf;
- extern const struct bench bench_pb_custom;
- extern const struct bench bench_bloom_filter_map;
- extern const struct bench bench_bloom_filter_false_positive;
-+extern const struct bench bench_hashmap_without_bloom_filter;
-+extern const struct bench bench_hashmap_with_bloom_filter;
-=20
- static const struct bench *benchs[] =3D {
- 	&bench_count_global,
-@@ -379,6 +389,8 @@ static const struct bench *benchs[] =3D {
- 	&bench_pb_custom,
- 	&bench_bloom_filter_map,
- 	&bench_bloom_filter_false_positive,
-+	&bench_hashmap_without_bloom_filter,
-+	&bench_hashmap_with_bloom_filter,
- };
-=20
- static void setup_benchmark()
-diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c =
-b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-index 2cce4f657646..6fee88320c3d 100644
---- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-@@ -251,6 +251,23 @@ static void hashmap_lookup_setup(void)
- 	}
- }
-=20
-+static void hashmap_no_bloom_filter_setup(void)
-+{
-+	struct bpf_link *link;
-+
-+	ctx.skel =3D setup_skeleton();
-+
-+	ctx.skel->data->hashmap_use_bloom_filter =3D false;
-+
-+	populate_maps();
-+
-+	link =3D bpf_program__attach(ctx.skel->progs.prog_bloom_filter_hashmap_=
-lookup);
-+	if (!link) {
-+		fprintf(stderr, "failed to attach program!\n");
-+		exit(1);
-+	}
-+}
-+
- static void measure(struct bench_res *res)
- {
- 	long total_hits =3D 0, total_drops =3D 0, total_false_hits =3D 0;
-@@ -352,3 +369,25 @@ const struct bench bench_bloom_filter_false_positive=
- =3D {
- 	.report_progress =3D false_hits_report_progress,
- 	.report_final =3D false_hits_report_final,
- };
-+
-+const struct bench bench_hashmap_without_bloom_filter =3D {
-+	.name =3D "hashmap-without-bloom-filter",
-+	.validate =3D validate,
-+	.setup =3D hashmap_no_bloom_filter_setup,
-+	.producer_thread =3D producer,
-+	.consumer_thread =3D consumer,
-+	.measure =3D measure,
-+	.report_progress =3D hits_drops_report_progress,
-+	.report_final =3D hits_drops_report_final,
-+};
-+
-+const struct bench bench_hashmap_with_bloom_filter =3D {
-+	.name =3D "hashmap-with-bloom-filter",
-+	.validate =3D validate,
-+	.setup =3D hashmap_lookup_setup,
-+	.producer_thread =3D producer,
-+	.consumer_thread =3D consumer,
-+	.measure =3D measure,
-+	.report_progress =3D hits_drops_report_progress,
-+	.report_final =3D hits_drops_report_final,
-+};
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_ma=
-p.sh b/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_map.sh
-index 8f2de6e39313..53c14da00a3b 100755
---- a/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_map.sh
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_bloom_filter_map.sh
-@@ -26,3 +26,18 @@ header "Bloom filter map, multi-producer contention"
- for t in 1 2 3 4 8 12 16 20 24 28 32 36 40 44 48 52; do
- 	summarize "$t threads - " "$($RUN_BENCH -p $t bloom-filter-map)"
- done
-+
-+header "Hashmap without bloom filter vs. hashmap with bloom filter (thro=
-ughput, 8 threads)"
-+for h in {1..10}; do
-+subtitle "# hashes: $h"
-+	for e in 10000 50000 75000 100000 250000 500000 750000 1000000 2500000 =
-5000000; do
-+		printf "%'d entries -\n" $e
-+		printf "\t"
-+		summarize_total "Hashmap without bloom filter: " \
-+			"$($RUN_BENCH --nr_hashes $h --nr_entries $e -p 8 hashmap-without-blo=
-om-filter)"
-+		printf "\t"
-+		summarize_total "Hashmap with bloom filter: " \
-+			"$($RUN_BENCH --nr_hashes $h --nr_entries $e -p 8 hashmap-with-bloom-=
-filter)"
-+	done
-+	printf "\n"
-+done
-diff --git a/tools/testing/selftests/bpf/benchs/run_common.sh b/tools/tes=
-ting/selftests/bpf/benchs/run_common.sh
-index 670f23b037c4..9a16be78b180 100644
---- a/tools/testing/selftests/bpf/benchs/run_common.sh
-+++ b/tools/testing/selftests/bpf/benchs/run_common.sh
-@@ -33,6 +33,11 @@ function percentage()
- 	echo "$*" | sed -E "s/.*Percentage\s=3D\s+([0-9]+\.[0-9]+).*/\1/"
- }
-=20
-+function total()
-+{
-+	echo "$*" | sed -E "s/.*total operations\s+([0-9]+\.[0-9]+ =C2=B1 [0-9]=
-+\.[0-9]+M\/s).*/\1/"
-+}
-+
- function summarize()
- {
- 	bench=3D"$1"
-@@ -46,3 +51,10 @@ function summarize_percentage()
- 	summary=3D$(echo $2 | tail -n1)
- 	printf "%-20s %s%%\n" "$bench" "$(percentage $summary)"
- }
-+
-+function summarize_total()
-+{
-+	bench=3D"$1"
-+	summary=3D$(echo $2 | tail -n1)
-+	printf "%-20s %s\n" "$bench" "$(total $summary)"
-+}
---=20
-2.30.2
-
+On Thu, Sep 9, 2021 at 1:43 PM Sasha Levin <sashal@kernel.org> wrote:
+>
+> From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+>
+> [ Upstream commit b61a28cf11d61f512172e673b8f8c4a6c789b425 ]
+>
+> Before, the interpreter allowed up to MAX_TAIL_CALL_CNT + 1 tail calls.
+> Now precisely MAX_TAIL_CALL_CNT is allowed, which is in line with the
+> behavior of the x86 JITs.
+>
+> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> Acked-by: Yonghong Song <yhs@fb.com>
+> Link: https://lore.kernel.org/bpf/20210728164741.350370-1-johan.almbladh@anyfinetworks.com
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  kernel/bpf/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 0a28a8095d3e..82af6279992d 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1564,7 +1564,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+>
+>                 if (unlikely(index >= array->map.max_entries))
+>                         goto out;
+> -               if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
+> +               if (unlikely(tail_call_cnt >= MAX_TAIL_CALL_CNT))
+>                         goto out;
+>
+>                 tail_call_cnt++;
+> --
+> 2.30.2
+>
