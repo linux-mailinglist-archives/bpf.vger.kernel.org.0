@@ -2,43 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1095540BB6D
-	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 00:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0843E40BB6E
+	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 00:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235486AbhINWbv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 18:31:51 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10676 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235429AbhINWbu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 18:31:50 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18EG1gm3016116
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 15:30:32 -0700
+        id S235506AbhINWbw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 18:31:52 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62624 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235429AbhINWbw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 18:31:52 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.0.43) with SMTP id 18EG31OI026919
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 15:30:34 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=h8Pl6y5wxP28ayxiOySxkFnHp7auy0UY1LNLu71IFw4=;
- b=Nqw5deEyvydXoS4vuq7Q3AVqwWFTA+w9pBu6zblDz6CdllQJI+GlBRNxSV4TW457JlL0
- pHrsj+szaV6uUb8sU37PS79b9G/thmlTj+7GNIVY1n5gyW6EIuwr8D0AAILi2ZT/PFCn
- 9EctnSEE1PCh4O3Pg+bYYoSWV4QVZ0v5Hi0= 
+ bh=u67k1aJZ5CCtvemXNPWvkAGXCnUmWXRfcEr178n/ot8=;
+ b=C1XK2j+lG7C2AHwJaE5D4bXceq4aLB9J7w7SjemCdkohwLIx6mxWpj0s4I+4WljYCcWF
+ NKXWtM5zxTgI4ODJABN7HXMB4VgwYk9rwfglXzARC0IumwyAshvQIXU1Nj0kK1kw0TpR
+ T24/how+f1MRIBYuMNwvbokqI7Kit0CrZ4s= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b2s334m0x-9
+        by m0089730.ppops.net with ESMTP id 3b2k1rp8gw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 15:30:32 -0700
-Received: from intmgw006.03.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 15:30:34 -0700
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 14 Sep 2021 15:30:27 -0700
+ 15.1.2308.14; Tue, 14 Sep 2021 15:30:32 -0700
 Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 07C5B7382219; Tue, 14 Sep 2021 15:30:25 -0700 (PDT)
+        id 63BCF7382234; Tue, 14 Sep 2021 15:30:31 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v3 04/11] libbpf: add support for BTF_KIND_TAG
-Date:   Tue, 14 Sep 2021 15:30:25 -0700
-Message-ID: <20210914223025.246687-1-yhs@fb.com>
+Subject: [PATCH bpf-next v3 05/11] bpftool: add support for BTF_KIND_TAG
+Date:   Tue, 14 Sep 2021 15:30:31 -0700
+Message-ID: <20210914223031.246951-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210914223004.244411-1-yhs@fb.com>
 References: <20210914223004.244411-1-yhs@fb.com>
@@ -47,359 +47,74 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: EaeZpLFptGiSiMGjsi7w2nLrB-H6j5pD
-X-Proofpoint-ORIG-GUID: EaeZpLFptGiSiMGjsi7w2nLrB-H6j5pD
+X-Proofpoint-GUID: Bgum0DIei3gPHeXNX5gy9DTBpfk4UxyM
+X-Proofpoint-ORIG-GUID: Bgum0DIei3gPHeXNX5gy9DTBpfk4UxyM
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
  definitions=2021-09-14_08,2021-09-14_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- priorityscore=1501 adultscore=0 clxscore=1015 lowpriorityscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 impostorscore=0 mlxscore=0 phishscore=0
+ bulkscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2109030001 definitions=main-2109140129
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add BTF_KIND_TAG support for parsing and dedup.
-Also added sanitization for BTF_KIND_TAG. If BTF_KIND_TAG is not
-supported in the kernel, sanitize it to INTs.
+Added bpftool support to dump BTF_KIND_TAG information.
+The new bpftool will be used in later patches to dump
+btf in the test bpf program object file.
 
+Currently, the tags are not emitted with
+  bpftool btf dump file <path> format c
+and they are silently ignored.  The tag information is
+mostly used in the kernel for verification purpose and the kernel
+uses its own btf to check. With adding these tags
+to vmlinux.h, tags will be encoded in program's btf but
+they will not be used by the kernel, at least for now.
+So let us delay adding these tags to format C header files
+until there is a real need.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- tools/lib/bpf/btf.c             | 68 +++++++++++++++++++++++++++++++++
- tools/lib/bpf/btf.h             | 15 ++++++++
- tools/lib/bpf/btf_dump.c        |  3 ++
- tools/lib/bpf/libbpf.c          | 31 +++++++++++++--
- tools/lib/bpf/libbpf.map        |  2 +
- tools/lib/bpf/libbpf_internal.h |  2 +
- 6 files changed, 118 insertions(+), 3 deletions(-)
+ tools/bpf/bpftool/btf.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 7cb6ebf1be37..6ad63e4d418a 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -304,6 +304,8 @@ static int btf_type_size(const struct btf_type *t)
- 		return base_size + sizeof(struct btf_var);
- 	case BTF_KIND_DATASEC:
- 		return base_size + vlen * sizeof(struct btf_var_secinfo);
-+	case BTF_KIND_TAG:
-+		return base_size + sizeof(struct btf_tag);
- 	default:
- 		pr_debug("Unsupported BTF_KIND:%u\n", btf_kind(t));
- 		return -EINVAL;
-@@ -376,6 +378,9 @@ static int btf_bswap_type_rest(struct btf_type *t)
- 			v->size =3D bswap_32(v->size);
- 		}
- 		return 0;
-+	case BTF_KIND_TAG:
-+		btf_tag(t)->component_idx =3D bswap_32(btf_tag(t)->component_idx);
-+		return 0;
- 	default:
- 		pr_debug("Unsupported BTF_KIND:%u\n", btf_kind(t));
- 		return -EINVAL;
-@@ -586,6 +591,7 @@ __s64 btf__resolve_size(const struct btf *btf, __u32 =
-type_id)
- 		case BTF_KIND_CONST:
- 		case BTF_KIND_RESTRICT:
- 		case BTF_KIND_VAR:
-+		case BTF_KIND_TAG:
- 			type_id =3D t->type;
- 			break;
- 		case BTF_KIND_ARRAY:
-@@ -2440,6 +2446,48 @@ int btf__add_datasec_var_info(struct btf *btf, int=
- var_type_id, __u32 offset, __
- 	return 0;
- }
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index f7e5ff3586c9..49743ad96851 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -37,6 +37,7 @@ static const char * const btf_kind_str[NR_BTF_KINDS] =3D=
+ {
+ 	[BTF_KIND_VAR]		=3D "VAR",
+ 	[BTF_KIND_DATASEC]	=3D "DATASEC",
+ 	[BTF_KIND_FLOAT]	=3D "FLOAT",
++	[BTF_KIND_TAG]		=3D "TAG",
+ };
 =20
-+/*
-+ * Append new BTF_KIND_TAG type with:
-+ *   - *value* - non-empty/non-NULL string;
-+ *   - *ref_type_id* - referenced type ID, it might not exist yet;
-+ *   - *component_idx* - -1 for tagging reference type, otherwise struct=
-/union
-+ *     member or function argument index;
-+ * Returns:
-+ *   - >0, type ID of newly added BTF type;
-+ *   - <0, on error.
-+ */
-+int btf__add_tag(struct btf *btf, const char *value, int ref_type_id,
-+		 int component_idx)
-+{
-+	struct btf_type *t;
-+	int sz, value_off;
-+
-+	if (!value || !value[0] || component_idx < -1)
-+		return libbpf_err(-EINVAL);
-+
-+	if (validate_type_id(ref_type_id))
-+		return libbpf_err(-EINVAL);
-+
-+	if (btf_ensure_modifiable(btf))
-+		return libbpf_err(-ENOMEM);
-+
-+	sz =3D sizeof(struct btf_type) + sizeof(struct btf_tag);
-+	t =3D btf_add_type_mem(btf, sz);
-+	if (!t)
-+		return libbpf_err(-ENOMEM);
-+
-+	value_off =3D btf__add_str(btf, value);
-+	if (value_off < 0)
-+		return value_off;
-+
-+	t->name_off =3D value_off;
-+	t->info =3D btf_type_info(BTF_KIND_TAG, 0, false);
-+	t->type =3D ref_type_id;
-+	btf_tag(t)->component_idx =3D component_idx;
-+
-+	return btf_commit_type(btf, sz);
-+}
-+
- struct btf_ext_sec_setup_param {
- 	__u32 off;
- 	__u32 len;
-@@ -3535,6 +3583,7 @@ static int btf_dedup_prep(struct btf_dedup *d)
- 			h =3D btf_hash_common(t);
- 			break;
- 		case BTF_KIND_INT:
-+		case BTF_KIND_TAG:
- 			h =3D btf_hash_int_tag(t);
- 			break;
- 		case BTF_KIND_ENUM:
-@@ -3590,6 +3639,7 @@ static int btf_dedup_prim_type(struct btf_dedup *d,=
- __u32 type_id)
- 	case BTF_KIND_FUNC_PROTO:
- 	case BTF_KIND_VAR:
- 	case BTF_KIND_DATASEC:
-+	case BTF_KIND_TAG:
- 		return 0;
-=20
- 	case BTF_KIND_INT:
-@@ -4210,6 +4260,23 @@ static int btf_dedup_ref_type(struct btf_dedup *d,=
- __u32 type_id)
- 		}
+ struct btf_attach_table {
+@@ -347,6 +348,17 @@ static int dump_btf_type(const struct btf *btf, __u3=
+2 id,
+ 			printf(" size=3D%u", t->size);
  		break;
-=20
-+	case BTF_KIND_TAG:
-+		ref_type_id =3D btf_dedup_ref_type(d, t->type);
-+		if (ref_type_id < 0)
-+			return ref_type_id;
-+		t->type =3D ref_type_id;
+ 	}
++	case BTF_KIND_TAG: {
++		const struct btf_tag *tag =3D (const void *)(t + 1);
 +
-+		h =3D btf_hash_int_tag(t);
-+		for_each_dedup_cand(d, hash_entry, h) {
-+			cand_id =3D (__u32)(long)hash_entry->value;
-+			cand =3D btf_type_by_id(d->btf, cand_id);
-+			if (btf_equal_int_tag(t, cand)) {
-+				new_id =3D cand_id;
-+				break;
-+			}
++		if (json_output) {
++			jsonw_uint_field(w, "type_id", t->type);
++			jsonw_int_field(w, "component_idx", tag->component_idx);
++		} else {
++			printf(" type_id=3D%u component_idx=3D%d", t->type, tag->component_id=
+x);
 +		}
 +		break;
-+
- 	case BTF_KIND_ARRAY: {
- 		struct btf_array *info =3D btf_array(t);
-=20
-@@ -4482,6 +4549,7 @@ int btf_type_visit_type_ids(struct btf_type *t, typ=
-e_id_visit_fn visit, void *ct
- 	case BTF_KIND_TYPEDEF:
- 	case BTF_KIND_FUNC:
- 	case BTF_KIND_VAR:
-+	case BTF_KIND_TAG:
- 		return visit(&t->type, ctx);
-=20
- 	case BTF_KIND_ARRAY: {
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index f2e2fab950b7..659ea8a2769b 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -143,6 +143,10 @@ LIBBPF_API int btf__add_datasec(struct btf *btf, con=
-st char *name, __u32 byte_sz
- LIBBPF_API int btf__add_datasec_var_info(struct btf *btf, int var_type_i=
-d,
- 					 __u32 offset, __u32 byte_sz);
-=20
-+/* tag construction API */
-+LIBBPF_API int btf__add_tag(struct btf *btf, const char *value, int ref_=
-type_id,
-+			    int component_idx);
-+
- struct btf_dedup_opts {
- 	unsigned int dedup_table_size;
- 	bool dont_resolve_fwds;
-@@ -330,6 +334,11 @@ static inline bool btf_is_float(const struct btf_typ=
-e *t)
- 	return btf_kind(t) =3D=3D BTF_KIND_FLOAT;
- }
-=20
-+static inline bool btf_is_tag(const struct btf_type *t)
-+{
-+	return btf_kind(t) =3D=3D BTF_KIND_TAG;
-+}
-+
- static inline __u8 btf_int_encoding(const struct btf_type *t)
- {
- 	return BTF_INT_ENCODING(*(__u32 *)(t + 1));
-@@ -398,6 +407,12 @@ btf_var_secinfos(const struct btf_type *t)
- 	return (struct btf_var_secinfo *)(t + 1);
- }
-=20
-+struct btf_tag;
-+static inline struct btf_tag *btf_tag(const struct btf_type *t)
-+{
-+	return (struct btf_tag *)(t + 1);
-+}
-+
- #ifdef __cplusplus
- } /* extern "C" */
- #endif
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index e4b483f15fb9..ad6df97295ae 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -316,6 +316,7 @@ static int btf_dump_mark_referenced(struct btf_dump *=
-d)
- 		case BTF_KIND_TYPEDEF:
- 		case BTF_KIND_FUNC:
- 		case BTF_KIND_VAR:
-+		case BTF_KIND_TAG:
- 			d->type_states[t->type].referenced =3D 1;
- 			break;
-=20
-@@ -583,6 +584,7 @@ static int btf_dump_order_type(struct btf_dump *d, __=
-u32 id, bool through_ptr)
- 	case BTF_KIND_FUNC:
- 	case BTF_KIND_VAR:
- 	case BTF_KIND_DATASEC:
-+	case BTF_KIND_TAG:
- 		d->type_states[id].order_state =3D ORDERED;
- 		return 0;
-=20
-@@ -2215,6 +2217,7 @@ static int btf_dump_dump_type_data(struct btf_dump =
-*d,
- 	case BTF_KIND_FWD:
- 	case BTF_KIND_FUNC:
- 	case BTF_KIND_FUNC_PROTO:
-+	case BTF_KIND_TAG:
- 		err =3D btf_dump_unsupported_data(d, t, id);
++	}
+ 	default:
  		break;
- 	case BTF_KIND_INT:
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6ecfdc1fa7ba..b159f9b51b7f 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -195,6 +195,8 @@ enum kern_feature_id {
- 	FEAT_BTF_FLOAT,
- 	/* BPF perf link support */
- 	FEAT_PERF_LINK,
-+	/* BTF_KIND_TAG support */
-+	FEAT_BTF_TAG,
- 	__FEAT_CNT,
- };
-=20
-@@ -1987,6 +1989,7 @@ static const char *__btf_kind_str(__u16 kind)
- 	case BTF_KIND_VAR: return "var";
- 	case BTF_KIND_DATASEC: return "datasec";
- 	case BTF_KIND_FLOAT: return "float";
-+	case BTF_KIND_TAG: return "tag";
- 	default: return "unknown";
  	}
- }
-@@ -2486,8 +2489,9 @@ static bool btf_needs_sanitization(struct bpf_objec=
-t *obj)
- 	bool has_datasec =3D kernel_supports(obj, FEAT_BTF_DATASEC);
- 	bool has_float =3D kernel_supports(obj, FEAT_BTF_FLOAT);
- 	bool has_func =3D kernel_supports(obj, FEAT_BTF_FUNC);
-+	bool has_tag =3D kernel_supports(obj, FEAT_BTF_TAG);
-=20
--	return !has_func || !has_datasec || !has_func_global || !has_float;
-+	return !has_func || !has_datasec || !has_func_global || !has_float || !=
-has_tag;
- }
-=20
- static void bpf_object__sanitize_btf(struct bpf_object *obj, struct btf =
-*btf)
-@@ -2496,14 +2500,15 @@ static void bpf_object__sanitize_btf(struct bpf_o=
-bject *obj, struct btf *btf)
- 	bool has_datasec =3D kernel_supports(obj, FEAT_BTF_DATASEC);
- 	bool has_float =3D kernel_supports(obj, FEAT_BTF_FLOAT);
- 	bool has_func =3D kernel_supports(obj, FEAT_BTF_FUNC);
-+	bool has_tag =3D kernel_supports(obj, FEAT_BTF_TAG);
- 	struct btf_type *t;
- 	int i, j, vlen;
-=20
- 	for (i =3D 1; i <=3D btf__get_nr_types(btf); i++) {
- 		t =3D (struct btf_type *)btf__type_by_id(btf, i);
-=20
--		if (!has_datasec && btf_is_var(t)) {
--			/* replace VAR with INT */
-+		if ((!has_datasec && btf_is_var(t)) || (!has_tag && btf_is_tag(t))) {
-+			/* replace VAR/TAG with INT */
- 			t->info =3D BTF_INFO_ENC(BTF_KIND_INT, 0, 0);
- 			/*
- 			 * using size =3D 1 is the safest choice, 4 will be too
-@@ -4213,6 +4218,23 @@ static int probe_kern_btf_float(void)
- 					     strs, sizeof(strs)));
- }
-=20
-+static int probe_kern_btf_tag(void)
-+{
-+	static const char strs[] =3D "\0tag";
-+	__u32 types[] =3D {
-+		/* int */
-+		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /* [1] */
-+		/* VAR x */                                     /* [2] */
-+		BTF_TYPE_ENC(1, BTF_INFO_ENC(BTF_KIND_VAR, 0, 0), 1),
-+		BTF_VAR_STATIC,
-+		/* attr */
-+		BTF_TYPE_TAG_ENC(1, 2, -1),
-+	};
-+
-+	return probe_fd(libbpf__load_raw_btf((char *)types, sizeof(types),
-+					     strs, sizeof(strs)));
-+}
-+
- static int probe_kern_array_mmap(void)
- {
- 	struct bpf_create_map_attr attr =3D {
-@@ -4429,6 +4451,9 @@ static struct kern_feature_desc {
- 	[FEAT_PERF_LINK] =3D {
- 		"BPF perf link support", probe_perf_link,
- 	},
-+	[FEAT_BTF_TAG] =3D {
-+		"BTF_KIND_TAG support", probe_kern_btf_tag,
-+	},
- };
-=20
- static bool kernel_supports(const struct bpf_object *obj, enum kern_feat=
-ure_id feat_id)
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 78ea62c9346f..9e649cf9e771 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -388,4 +388,6 @@ LIBBPF_0.5.0 {
- } LIBBPF_0.4.0;
-=20
- LIBBPF_0.6.0 {
-+	global:
-+		btf__add_tag;
- } LIBBPF_0.5.0;
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
-nal.h
-index 4f6ff5c23695..ceb0c98979bc 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -69,6 +69,8 @@
- #define BTF_VAR_SECINFO_ENC(type, offset, size) (type), (offset), (size)
- #define BTF_TYPE_FLOAT_ENC(name, sz) \
- 	BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_FLOAT, 0, 0), sz)
-+#define BTF_TYPE_TAG_ENC(value, type, component_idx) \
-+	BTF_TYPE_ENC(value, BTF_INFO_ENC(BTF_KIND_TAG, 0, 0), type), (component=
-_idx)
-=20
- #ifndef likely
- #define likely(x) __builtin_expect(!!(x), 1)
 --=20
 2.30.2
 
