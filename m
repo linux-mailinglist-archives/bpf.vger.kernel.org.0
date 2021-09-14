@@ -2,82 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C8E40B47A
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 18:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDDA40B47E
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 18:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhINQX7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 14 Sep 2021 12:23:59 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63870 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229720AbhINQX6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 12:23:58 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.0.43) with SMTP id 18EG2wFY026788
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 09:22:41 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3b2k1rm2mx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 09:22:40 -0700
-Received: from intmgw001.05.prn6.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 14 Sep 2021 09:22:39 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 7D13440693FF; Tue, 14 Sep 2021 09:22:29 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix .gitignore to not ignore test_progs.c
-Date:   Tue, 14 Sep 2021 09:22:28 -0700
-Message-ID: <20210914162228.3995740-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S229482AbhINQY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 12:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229552AbhINQY3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:24:29 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67437C061574;
+        Tue, 14 Sep 2021 09:23:11 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id t8so16140574wrq.4;
+        Tue, 14 Sep 2021 09:23:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3rpCFgurfCcMTA5Y1AV5A9LWR6I8thChoVoEzloTJLg=;
+        b=bNO28cBIJ+CjPUn/HMTo3D7sYxP8usoazjqIOy2TJM9dvkBkGl+m6PdI5mESRCfRud
+         Npz+qjBf01gVq63Fjje0FA8SiOWmwd58xZKSuqHKCjXwv2C1dpbOtBoQWnuDA5wmDNvV
+         G8WSTBpE4OrRdJ+XV+xrY1ePBKfEjkO+2zXeUVWYe+toBURAWOMLHOrsXYvlJuD0+ybC
+         khAecquh0XpJaYHnlWnH7fV8OwD7C7R6H1A1TD/CDYDgbFJdJj+JyBjqZqZRC4LZLcnu
+         Fpdg/1yYbaUyiAAl2Rhu6R+Bp5Uij5RlE/D65da0GDNSPht497ne7lLnnRVkwEYBzElm
+         VoUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3rpCFgurfCcMTA5Y1AV5A9LWR6I8thChoVoEzloTJLg=;
+        b=5icPigHdvgW4k854ieA/cZEUERHYuCNtEbvLKoUldYTPVZS+SahFmTMFY0d5n+kdIM
+         mfqJn3KPj8GwA6/WHRyB+QDjGvivCq3dOcuLXtQUkP1ia2LV8WF1xCIzpsS1UUR/TLtw
+         fKeTKP/lISOvsGjZ97ehtD9+QdopnCsh6yRihQ30E9FTsZo4lyL12aqdUAYRgGv0ovo4
+         JGn5kyb9QPjJE3aYm+P6WQvHPm6aEvXRw+zkeXW93Ar8iUBM5dwPUsL3864zgzTwDNu7
+         7lGzDnUjQkRVf1On4OsNzo1c8XXq8domTohrjvBs/TqE8mr6Dwh2AtAXZWPd9ZQRXePP
+         hodQ==
+X-Gm-Message-State: AOAM533EHoTFLcKjDUGNcJY4Vnyq56KVVKNpcUDCANC2uA5Di1w9oWVu
+        fl5F+K0HHLSaCcgG2/hLTZYSc9sJ9f0=
+X-Google-Smtp-Source: ABdhPJx0JoKZAwWg25DXyLowAawPw732sYa5rC4edTWA41aib5b9a9k1QBe7nfCleKkZwc0XJ8ijNA==
+X-Received: by 2002:adf:c144:: with SMTP id w4mr20229627wre.398.1631636589684;
+        Tue, 14 Sep 2021 09:23:09 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f08:4500:c813:4da2:f58a:a1e2? (p200300ea8f084500c8134da2f58aa1e2.dip0.t-ipconnect.de. [2003:ea:8f08:4500:c813:4da2:f58a:a1e2])
+        by smtp.googlemail.com with ESMTPSA id u6sm12976270wrp.0.2021.09.14.09.23.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 09:23:09 -0700 (PDT)
+To:     Guilin Tang <tangguilin@uniontech.com>, nic_swsd@realtek.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     ast@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <cover.1631610501.git.tangguilin@uniontech.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH 0/2] Implement XDP in r8169
+Message-ID: <7b36b2ac-223f-a34a-4f86-7f4f0b027898@gmail.com>
+Date:   Tue, 14 Sep 2021 18:22:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: rt4YJBcC5J_QqPNRpJYkWWxpjHCR97CW
-X-Proofpoint-ORIG-GUID: rt4YJBcC5J_QqPNRpJYkWWxpjHCR97CW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-14_06,2021-09-14_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- lowpriorityscore=0 suspectscore=0 impostorscore=0 mlxscore=0 phishscore=0
- bulkscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109140096
-X-FB-Internal: deliver
+In-Reply-To: <cover.1631610501.git.tangguilin@uniontech.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-List all possible test_progs flavors explicitly to avoid accidentally
-ignoring valid source code files. In this case, test_progs.c was still
-ignored after recent 809ed84de8b3 ("selftests/bpf: Whitelist test_progs.h
-from .gitignore") fix that added exception only for test_progs.h.
+On 14.09.2021 11:31, Guilin Tang wrote:
+> I implemented XDP on the r8169 driver so that people in need can use it.
+> 
+> Guilin Tang (2):
+>   r8169:Add XDP support for pass and drop actions
+>   r8169: ADD XDP support for redirect action
+> 
+>  drivers/net/ethernet/realtek/r8169_main.c | 161 ++++++++++++++++++++--
+>  1 file changed, 151 insertions(+), 10 deletions(-)
+> 
 
-Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and test_maps w/ general rule"
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/.gitignore | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+I don't know XDP, therefore my review comments don't cover the
+functionality. As prerequisite for merging this series somebody
+knowing XDP would have to review the functional part.
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index 433f8bef261e..1dad8d617da8 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -9,8 +9,9 @@ test_tag
- FEATURE-DUMP.libbpf
- fixdep
- test_dev_cgroup
--/test_progs*
--!test_progs.h
-+/test_progs
-+/test_progs-no_alu32
-+/test_progs-bpf_gcc
- test_verifier_log
- feature
- test_sock
--- 
-2.30.2
+Some comments would be helpful on which platforms and with which 
+chip versions you tested.
 
+Last but not least: I can't support the XDP extension. Therefore I'd ask you
+to provide the needed support (incl. monitoring bugzilla.kernel.org) in case
+of any problem reports, even if not directly related to XDP.
+The XDP changes may brake other stuff.
