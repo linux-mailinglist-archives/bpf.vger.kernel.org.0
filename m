@@ -2,151 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A740340AE98
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 15:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A5E40B087
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 16:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbhINNKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 09:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbhINNKQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:10:16 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB46C061760
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 06:08:59 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id y13so28070110ybi.6
-        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 06:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dKlB37N2KMMJit33FGP+ZlCjNPWqIrGvOPTgPZDHlNg=;
-        b=iNqIzeQV1tPkTBPGklET5Z47SH2m/WNxeeT4GBnPneSpiIkZnlNkgNNGdgvNhiCbL2
-         VnR9UVEdqn7JERsoYLIV3ezW7u2/Z/6Bu5BL1r35Eg1oSv8K4yGvxt2DIa0sM8p8Cs8A
-         g/EFhZFZOTayzao7duLIw2l0cER6aNF+MOudGVWNLSh111fKgyiW27KD3+KNLu/Ufy1H
-         xrHGsE8Ige+wYqxa5xqHhjh0wIhMH8B/X/jXZJ16ELoNeBFeSJzytBYGAohZEywCU75M
-         GPAEGq22MvVWxfnNParKnTcpH88iIgE7QkW5vNqnWiaZxTcbrFNmoiFE6bdYtWEFn+C6
-         v0FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dKlB37N2KMMJit33FGP+ZlCjNPWqIrGvOPTgPZDHlNg=;
-        b=BvCjhpHU3Ib3KK864tAT2bTFH2MFnu4ZwfUjED6VZIUkzyR5aoGazVHdGTDsotDG5r
-         dz1IUzwdefjxrWfXmc7PtNVEo41DCJJklBTBpxQyl8aGLD+XTF1QJ/5VJpS8Q+KQqj50
-         Kcr0rNxIKtjTKnlSxd6zoZaovPTRCXsL1tENW6e86GlYtrIOMe3TDgKZBtDWddsUt6Eh
-         3eoP3dMg/Fntp5yrti5FUTZOLgvklNyURLRsev9WHwBBOkgmB8NCshstHwFO7WwC5hmR
-         N92hV6jRASBfhicu10H5ReLbOs0qt2oE1XQ0KZr14IquBJheYd+/YGdbG4jwP3VOPDj8
-         Z2tg==
-X-Gm-Message-State: AOAM531m7Tit+3bBIxkUjCfK3BdmByqXmNUG5rDAyE/5+T27oGxFUDEG
-        VPFAwuhVQAxCL4+udhchY6tfJ95Gu/424gcaTBd5fw==
-X-Google-Smtp-Source: ABdhPJw0RryR/nSt2nhcU/z2Qmco6Rgra43/dA//9Ve5TZ8kWwlygk3LkuYFL/+kUdrx2E08NQsj1pnNkp1DPK051gM=
-X-Received: by 2002:a25:d054:: with SMTP id h81mr21527380ybg.411.1631624936952;
- Tue, 14 Sep 2021 06:08:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210914091842.4186267-1-johan.almbladh@anyfinetworks.com>
- <20210914091842.4186267-14-johan.almbladh@anyfinetworks.com>
- <4b9db215-edcd-6089-6ecd-6fe9b20dcbbb@loongson.cn> <8e2404d6-f226-3749-2e35-5519b2c90754@loongson.cn>
-In-Reply-To: <8e2404d6-f226-3749-2e35-5519b2c90754@loongson.cn>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Tue, 14 Sep 2021 15:09:58 +0200
-Message-ID: <CAM1=_QRzTXZ=WRrN4WFezPSLpm1yh3V0gX8HHP0f8yBYEYs2_A@mail.gmail.com>
-Subject: Re: [PATCH bpf v4 13/14] bpf/tests: Fix error in tail call limit tests
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        id S233451AbhINOZf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 10:25:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233437AbhINOZf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:25:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BED0E60EFF;
+        Tue, 14 Sep 2021 14:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631629457;
+        bh=ICIH7KIpkdBO4VMxLxo32ZU28uu9Bch7RY2U4rQOErk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cVol9SmVMg6mvsb7u/IvVv1Eh8NERn0k4VZmSJLfCXcd8frhf5Hh0yloOI/eI1deZ
+         d56kT7BPfvDTXa472KGsuv90IhCbBCXir70dW0jD+CbHp6RVzy0UeMlfxVLqkw3Ema
+         L03jD+s1sQEbIamAH03/HTLVn0lJH7V2Gordt8u5n5J8tZ4tJay3DNvQG3D7Nzn3Wl
+         yhi8WdiCV2BbooWkqcv7WWkTR/s4yY4x8yxVgX06bETX23HfEHy0A6v3lFCzldUhqt
+         7MIjq1p+fiXrThFfedfJkIl4Oz5X+dE6HXQIyoWs0Zlj57ake0ZDMHQaZUksph1kfJ
+         nbe+bI1tFbGUA==
+Date:   Tue, 14 Sep 2021 16:24:12 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Paul Chaignon <paul@cilium.io>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 0/9] get_abi.pl: Check for missing symbols at the ABI
+ specs
+Message-ID: <20210914162412.0b642091@coco.lan>
+In-Reply-To: <YToRRMhYfdnzFyMB@kroah.com>
+References: <cover.1631112725.git.mchehab+huawei@kernel.org>
+        <YToRRMhYfdnzFyMB@kroah.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 2:55 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> On 09/14/2021 08:41 PM, Tiezhu Yang wrote:
-> > On 09/14/2021 05:18 PM, Johan Almbladh wrote:
-> >> This patch fixes an error in the tail call limit test that caused the
-> >> test to fail on for x86-64 JIT. Previously, the register R0 was used to
-> >> report the total number of tail calls made. However, after a tail call
-> >> fall-through, the value of the R0 register is undefined. Now, all tail
-> >> call error path tests instead use context state to store the count.
-> >>
-> >> Fixes: 874be05f525e ("bpf, tests: Add tail call test suite")
-> >> Reported-by: Paul Chaignon <paul@cilium.io>
-> >> Reported-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> >> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-> >> ---
-> >>   lib/test_bpf.c | 37 +++++++++++++++++++++++++++----------
-> >>   1 file changed, 27 insertions(+), 10 deletions(-)
-> >>
-> >> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> >> index 7475abfd2186..ddb9a8089d2e 100644
-> >> --- a/lib/test_bpf.c
-> >> +++ b/lib/test_bpf.c
-> >> @@ -12179,10 +12179,15 @@ static __init int test_bpf(void)
-> >>   struct tail_call_test {
-> >>       const char *descr;
-> >>       struct bpf_insn insns[MAX_INSNS];
-> >> +    int flags;
-> >>       int result;
-> >>       int stack_depth;
-> >>   };
-> >>   +/* Flags that can be passed to tail call test cases */
-> >> +#define FLAG_NEED_STATE        BIT(0)
-> >> +#define FLAG_RESULT_IN_STATE    BIT(1)
-> >> +
-> >>   /*
-> >>    * Magic marker used in test snippets for tail calls below.
-> >>    * BPF_LD/MOV to R2 and R2 with this immediate value is replaced
-> >> @@ -12252,32 +12257,38 @@ static struct tail_call_test
-> >> tail_call_tests[] = {
-> >>       {
-> >>           "Tail call error path, max count reached",
-> >>           .insns = {
-> >> -            BPF_ALU64_IMM(BPF_ADD, R1, 1),
-> >> -            BPF_ALU64_REG(BPF_MOV, R0, R1),
-> >> +            BPF_LDX_MEM(BPF_W, R2, R1, 0),
-> >> +            BPF_ALU64_IMM(BPF_ADD, R2, 1),
-> >> +            BPF_STX_MEM(BPF_W, R1, R2, 0),
-> >>               TAIL_CALL(0),
-> >>               BPF_EXIT_INSN(),
-> >>           },
-> >> -        .result = MAX_TAIL_CALL_CNT + 1,
-> >> +        .flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
-> >> +        .result = (MAX_TAIL_CALL_CNT + 1 + 1) * MAX_TESTRUNS,
-> >
-> > Hi Johan,
-> >
-> > I have tested this patch,
-> > It should be "MAX_TAIL_CALL_CNT + 1" instead of "MAX_TAIL_CALL_CNT + 1
-> > + 1"?
->
-> Oh, sorry, it is right when MAX_TAIL_CALL_CNT is 32,
-> I have tested it based on MAX_TAIL_CALL_CNT is 33,
-> so I need to modify here if MAX_TAIL_CALL_CNT is 33 in my v3 patch.
+Em Thu, 9 Sep 2021 15:51:00 +0200
+Greg KH <gregkh@linuxfoundation.org> escreveu:
 
-No worries! I wrote it that way to indicate that there are two +1s.
-The first is from the behaviour that actual count (33) = configured
-count (32) + 1. The second is for the initial BPF program call, which
-increments the counter but is not in itself a tail call.
+> On Wed, Sep 08, 2021 at 04:58:47PM +0200, Mauro Carvalho Chehab wrote:
+> > Hi Greg,
+> > 
+> > Sometime ago, I discussed with Jonathan Cameron about providing 
+> > a way check that the ABI documentation is incomplete.
+> > 
+> > While it would be doable to validate the ABI by searching __ATTR and 
+> > similar macros around the driver, this would probably be very complex
+> > and would take a while to parse.
+> > 
+> > So, I ended by implementing a new feature at scripts/get_abi.pl
+> > which does a check on the sysfs contents of a running system:
+> > it reads everything under /sys and reads the entire ABI from
+> > Documentation/ABI. It then warns for symbols that weren't found,
+> > optionally showing possible candidates that might be misdefined.
+> > 
+> > I opted to place it on 3 patches:
+> > 
+> > The first patch adds the basic logic. It runs really quicky (up to 2
+> > seconds), but it doesn't use sysfs softlinks.
+> > 
+> > Patch 2 adds support for also parsing softlinks. It slows the logic,
+> > with now takes ~40 seconds to run on my desktop (and ~23
+> > seconds on a HiKey970 ARM board). There are space there for
+> > performance improvements, by using a more sophisticated
+> > algorithm, at the expense of making the code harder to
+> > understand. I ended opting to use a simple implementation
+> > for now, as ~40 seconds sounds acceptable on my eyes.
+> > 
+> > Patch 3 adds an optional parameter to allow filtering the results
+> > using a regex given by the user.
+> > 
+> > One of the problems with the current ABI definitions is that several
+> > symbols define wildcards, on non-standard ways. The more commonly
+> > wildcards used there are:
+> > 
+> > 	<foo>
+> > 	{foo}
+> > 	[foo]
+> > 	X
+> > 	Y
+> > 	Z
+> > 	/.../
+> > 
+> > The script converts the above wildcards into (somewhat relaxed)
+> > regexes.
+> > 
+> > There's one place using  "(some description)". This one is harder to
+> > parse, as parenthesis are used by the parsing regexes. As this happens
+> > only on one file, patch 4 addresses such case.
+> > 
+> > Patch 5 to 9 fix some other ABI troubles I identified.
+> > 
+> > In long term, perhaps the better would be to just use regex on What:
+> > fields, as this would avoid extra heuristics at get_abi.pl, but this is
+> > OOT from this patch, and would mean a large number of changes.  
+> 
+> This is cool stuff, thanks for doing this!
+> 
+> I'll look at it more once 5.15-rc1 is out, thanks.
 
->
-> Tested-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+FYI, there's a new version at:
 
-Thanks!
-Johan
+	https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/log/?h=get_undefined
 
->
-> >
-> > [...]
-> >
-> > Thanks,
-> > Tiezhu
->
+In order for get_abi.pl to convert What: into regex, changes are needed on
+existing ABI files. One alternative would be to convert everything into
+regex, but that would probably mean that most ABI files would require work.
+
+In order to avoid a huge number of patches/changes, I opted to touch only
+the ones that aren't following the de-facto wildcard standards already 
+found on most of the ABI files. So, I added support at get_abi.pl to
+consider those patterns as wildcards:
+
+	/.../
+	*
+	<foo>
+	X
+	Y
+	Z
+	[0-9] (and variants)
+
+The files that use something else meaning a wildcard need changes, in order
+to avoid ambiguity when the script decides if a character is either a 
+wildcard or not. 
+
+One of the issues there is with "N". several files use it as a wildcard, 
+but USB sysfs parameters have several ABI nodes with an uppercase "N"
+letter (like bNumInterfaces and such). So, this one had to be converted
+too (and represents the vast majority of patches).
+
+Anyway, as the number of such patches is high, I'll submit the work 
+on three separate series:
+
+	- What: changes needed for regex conversion;
+	- get_abi.pl updates;
+	- Some additions for missing symbols found on my
+	  desktop.
+
+Thanks,
+Mauro
