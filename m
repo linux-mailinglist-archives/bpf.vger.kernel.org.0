@@ -2,118 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72ADF40ACDE
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 13:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C2040ADDE
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 14:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhINL6A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 07:58:00 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52286 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232386AbhINL6A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:58:00 -0400
-Received: from 65.47.5.85.dynamic.wline.res.cust.swisscom.ch ([85.5.47.65] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mQ73I-0008Yp-0I; Tue, 14 Sep 2021 13:56:40 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: pull-request: bpf 2021-09-14
-Date:   Tue, 14 Sep 2021 13:56:39 +0200
-Message-Id: <20210914115639.20251-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S232622AbhINMia (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 08:38:30 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42754 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232524AbhINMia (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 08:38:30 -0400
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn2tEl0BhhZgGAA--.14513S3;
+        Tue, 14 Sep 2021 20:36:22 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH bpf-next v2] bpf: Change value of MAX_TAIL_CALL_CNT from
+ 32 to 33
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        naveen.n.rao@linux.ibm.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, bjorn@kernel.org,
+        davem@davemloft.net,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Paul Chaignon <paul@cilium.io>
+References: <1631325361-9851-1-git-send-email-yangtiezhu@loongson.cn>
+ <0fb8d16f-67e7-7197-fce2-a4c17f1e5987@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org
+Message-ID: <9ad382ca-a254-f897-9ec6-c9b1920a6174@loongson.cn>
+Date:   Tue, 14 Sep 2021 20:36:20 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26294/Tue Sep 14 10:22:55 2021)
+In-Reply-To: <0fb8d16f-67e7-7197-fce2-a4c17f1e5987@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dxn2tEl0BhhZgGAA--.14513S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxurW7Gw1DJw1UGw4xGFW3KFg_yoW5Ar43pr
+        WUJanakr4kXFyrC3ZrKa1xZay0vFZ8tryUGrWrK342yFn8Zrn5WF4xK3yFgF1UAryrta4F
+        9ayFkr95C3WkZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Gb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+        c7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I
+        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
+        GVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
+        j40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
+        W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5lsj5UUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+On 09/14/2021 03:30 PM, Daniel Borkmann wrote:
+> On 9/11/21 3:56 AM, Tiezhu Yang wrote:
+>>
+[...]
+>> With this patch, it does not change the current limit 33, 
+>> MAX_TAIL_CALL_CNT
+>> can reflect the actual max tail call count, the tailcall selftests 
+>> can work
+>> well, and also the above failed testcase in test_bpf can be fixed for 
+>> the
+>> interpreter (all archs) and the JIT (all archs except for x86).
+>>
+>>   # uname -m
+>>   x86_64
+>>   # echo 1 > /proc/sys/net/core/bpf_jit_enable
+>>   # modprobe test_bpf
+>>   # dmesg | grep -w FAIL
+>>   Tail call error path, max count reached jited:1 ret 33 != 34 FAIL
+>
+> Could you also state in here which archs you have tested with this 
+> change? I
+> presume /every/ arch which has a JIT?
 
-The following pull-request contains BPF updates for your *net* tree.
+OK, will do it in v3.
+I have tested on x86 and mips.
 
-We've added 7 non-merge commits during the last 13 day(s) which contain
-a total of 18 files changed, 334 insertions(+), 193 deletions(-).
+>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>
+>> v2:
+>>    -- fix the typos in the commit message and update the commit message.
+>>    -- fix the failed tailcall selftests for x86 jit.
+>>       I am not quite sure the change on x86 is proper, with this change,
+>>       tailcall selftests passed, but tailcall limit test in test_bpf.ko
+>>       failed, I do not know the reason now, I think this is another 
+>> issue,
+>>       maybe someone more versed in x86 jit could take a look.
+>
+> There should be a series from Johan coming today with regards to 
+> test_bpf.ko
+> that will fix the "tail call error path, max count reached" test which 
+> had an
+> assumption in that R0 would always be valid for the fall-through and 
+> could be
+> passed to the bpf_exit insn whereas it is not guaranteed and verifier, 
+> for
+> example, forbids a subsequent access to R0 w/o reinit. For your 
+> testing, I
+> would suggested to recheck once this series is out.
 
-The main changes are:
+I will test the following patch on x86 and mips:
 
-1) Fix mmap_lock lockdep splat in BPF stack map's build_id lookup, from Yonghong Song.
+[PATCH bpf v4 13/14] bpf/tests: Fix error in tail call limit tests
 
-2) Fix BPF cgroup v2 program bypass upon net_cls/prio activation, from Daniel Borkmann.
+[...]
 
-3) Fix kvcalloc() BTF line info splat on oversized allocation attempts, from Bixuan Cui.
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index 0fe6aac..74a9e61 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -402,7 +402,7 @@ static int get_pop_bytes(bool *callee_regs_used)
+>>    * ... bpf_tail_call(void *ctx, struct bpf_array *array, u64 index) 
+>> ...
+>>    *   if (index >= array->map.max_entries)
+>>    *     goto out;
+>> - *   if (++tail_call_cnt > MAX_TAIL_CALL_CNT)
+>> + *   if (tail_call_cnt++ == MAX_TAIL_CALL_CNT)
+>
+> Why such inconsistency to e.g. above with arm64 case but also compared to
+> x86 32 bit which uses JAE? If so, we should cleanly follow the reference
+> implementation (== interpreter) _everywhere_ and _not_ introduce 
+> additional
+> variants/implementations across JITs.
 
-4) Fix BPF selftest build of task_pt_regs test for arm64/s390, from Jean-Philippe Brucker.
+In order tokeep consistencyand make as few changes as possible,
+<javascript:void(0);>I will modify the check condition as follows:
 
-5) Fix BPF's disasm.{c,h} to dual-license so that it is aligned with bpftool given the former
-   is a build dependency for the latter, from Daniel Borkmann with ACKs from contributors.
+#define MAX_TAIL_CALL_CNT 33
+(1) for x86, arm64, ... (0 ~ 32)
+tcc = 0;
+if (tcc == MAX_TAIL_CALL_CNT)
+     goto out;
+tcc++;
 
-Please consider pulling these changes from:
+(2) for mips, riscv (33 ~ 1)
+tcc = MAX_TAIL_CALL_CNT;
+if (tcc == 0)
+     goto out;
+tcc--;
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+[...]
 
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Andrii Nakryiko, Brendan Jackman, Edward Cree, Ilya 
-Leoshkevich, Jakub Kicinski, Jiri Olsa, Liam R. Howlett, Martin KaFai 
-Lau, Simon Horman, Stanislav Fomichev, Tejun Heo, Thomas Graf, Xu 
-Kuohai, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit 9e9fb7655ed585da8f468e29221f0ba194a5f613:
-
-  Merge tag 'net-next-5.15' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next (2021-08-31 16:43:06 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 43d2b88c29f2d120b4dc22f27b3483eb14bd9815:
-
-  bpf, selftests: Add test case for mixed cgroup v1/v2 (2021-09-13 16:35:58 -0700)
-
-----------------------------------------------------------------
-Bixuan Cui (1):
-      bpf: Add oversize check before call kvcalloc()
-
-Daniel Borkmann (4):
-      bpf: Relicense disassembler as GPL-2.0-only OR BSD-2-Clause
-      bpf, cgroups: Fix cgroup v2 fallback on v1/v2 mixed mode
-      bpf, selftests: Add cgroup v1 net_cls classid helpers
-      bpf, selftests: Add test case for mixed cgroup v1/v2
-
-Jean-Philippe Brucker (1):
-      selftests/bpf: Fix build of task_pt_regs test for arm64
-
-Yonghong Song (1):
-      bpf, mm: Fix lockdep warning triggered by stack_map_get_build_id_offset()
-
- include/linux/cgroup-defs.h                        | 107 ++++------------
- include/linux/cgroup.h                             |  22 +---
- include/linux/mmap_lock.h                          |   9 --
- kernel/bpf/disasm.c                                |   2 +-
- kernel/bpf/disasm.h                                |   2 +-
- kernel/bpf/stackmap.c                              |  10 +-
- kernel/bpf/verifier.c                              |   2 +
- kernel/cgroup/cgroup.c                             |  50 ++------
- net/core/netclassid_cgroup.c                       |   7 +-
- net/core/netprio_cgroup.c                          |  10 +-
- tools/testing/selftests/bpf/cgroup_helpers.c       | 137 +++++++++++++++++++--
- tools/testing/selftests/bpf/cgroup_helpers.h       |  16 ++-
- tools/testing/selftests/bpf/network_helpers.c      |  27 +++-
- tools/testing/selftests/bpf/network_helpers.h      |   1 +
- .../testing/selftests/bpf/prog_tests/cgroup_v1v2.c |  79 ++++++++++++
- .../selftests/bpf/prog_tests/task_pt_regs.c        |   1 -
- .../testing/selftests/bpf/progs/connect4_dropper.c |  26 ++++
- .../selftests/bpf/progs/test_task_pt_regs.c        |  19 ++-
- 18 files changed, 334 insertions(+), 193 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_v1v2.c
- create mode 100644 tools/testing/selftests/bpf/progs/connect4_dropper.c
