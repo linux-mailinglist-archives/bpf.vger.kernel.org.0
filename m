@@ -2,109 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D19A40A51E
-	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 06:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D183640A532
+	for <lists+bpf@lfdr.de>; Tue, 14 Sep 2021 06:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhINEK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 00:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
+        id S232269AbhINE0A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 00:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbhINEK0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 00:10:26 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5AAC061762
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:09:09 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id s11so25092692yba.11
-        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:09:09 -0700 (PDT)
+        with ESMTP id S231393AbhINEZ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 00:25:59 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2F5C061574
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:24:43 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id r2so11490945pgl.10
+        for <bpf@vger.kernel.org>; Mon, 13 Sep 2021 21:24:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6dUT5DvFbbYMaoEPiPLDAN+5dOCe4J7gs07f/JQLEu4=;
-        b=J/wx5v2jZ0Heo5oVWltVNHdeOQREYdrh2D95/smvODoPomwE/csFmxg4onKdso9qR9
-         EfFBXL2wHjX1fBOUF67wimCgII2bIWFK8xZZw9tKLsWuQKwo8wrM8VqjTjWQ6Akf5uLH
-         nakQ4kSYuhEzwfLHPkW07LWmQ+sFlPMRzk+e4VzdoyRoEfRHoKSn82FIfkehZ1DAZ8u6
-         ClhYEb4jsK8xm8n1xVWO8yKChQslWMK0fcZuyPY9s0t69ybkZiGM6UZNDz0dD5Pj7D+I
-         Tk8Gh2p99gRTr9qH6v+wxLr8R92WMubX4N3Vn0y579w9XX2sQnkWRqgvTxb0WEk8CuW5
-         BwBw==
+        bh=AOKVL7NkgbI57/y6mwF6HrclDqcF0DiZ3Q5BxCHPQ70=;
+        b=SFFSUMv7oOoBUTQ/AmwZhAU+YyjX1Xv84P3S9Gfb+q4CLjDV8V9ecSl5+nWnlG/gox
+         l4OPqCDr8JZLPhwi2e2vggVS5y+AWEelp5oABzTajSiEA2SI3YPM76ROyxYIwQdC98RV
+         D17o772g+HuFV7JUfMNt5Ho14ETrqsfIjYg/SU9cPTdq6Ytojpr5i5B/mPCqGJhZ8NeD
+         kfHibXaVFJ/8Y3lw4gZ1dF5BYQ3QC8tmmkHmoFmVkYSWUVB4+tIdTcXYeJ9vF5S0mj+d
+         oVe1Cc2ti1bgMKRpx2ygSGRd43/hP7RqWC+4zHvAHE3wGUpie79GEzDTFITsnIfbp7GU
+         Dpgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6dUT5DvFbbYMaoEPiPLDAN+5dOCe4J7gs07f/JQLEu4=;
-        b=3e5zJivHxs7ex3n7YZZwHzQFqv00QNd6wyv55/KTRql4IjWYwFj4Ii9AVsnQSOsYRL
-         JzJ7/5P2fr2o28rzpQXWBu4+OXGZpvfnpSstBJgDQfym3Gc7gyk8oYxhv8C1CGBaqFNd
-         JCxPd/d6g2XmO1FjUtiT1dEXTuAuEAC2DoPCdtXvotmmGJMkEsSCIknzoXzS/doKGx3q
-         Wn072TiFNRlYCLqHi8Sk1FpuxSpLM9Yi4ND7xuR0llwmIJhZ6/W+4g0HQLgttBYetd75
-         QogErLcCmSll9gtfkhXPFGwIhTwooAp0HyVQ16jrNcXXWq/FgKgJprzSqg6EHHynZazN
-         Q1Gw==
-X-Gm-Message-State: AOAM533E5eu+YvxDulZ91zCbgn1sU6LTo3c7NUGq6p9y53KD05leMN8n
-        +Dvd0LF5+F1oepno1Y8Pzt/a/1S8SBgsZdFegr0ARA==
-X-Google-Smtp-Source: ABdhPJwCJhxawTUBec5yEZ7/qBFch1DFW9upEUAhpY7/jiLL7TbDR3W7kx6NFnU6+YjlrxyJbW4uxU2Pvw4nyFWW368=
-X-Received: by 2002:a25:b904:: with SMTP id x4mr18387519ybj.48.1631592548588;
- Mon, 13 Sep 2021 21:09:08 -0700 (PDT)
+        bh=AOKVL7NkgbI57/y6mwF6HrclDqcF0DiZ3Q5BxCHPQ70=;
+        b=m3+YYS2eEarzrhAXzUxJvRSV5o5g97PZldQCQNI8ryD3YNKhT8dWniQVIjB4pQITQh
+         V+JE3ARapw4VTmmurhtdbchK/ceJx1KqqFC2YXYU6CNwqol9cG8+Y90xuch2EQgC5C6J
+         x5363LCMA1XZlfCvb2EiwJ5ZR/Pijb+dgf9NCQHNbWJaC1t0vA4NWa9tHPlShGu3LIH5
+         SMGEUsjBwlA4XeqChC4vjN2YCjh6Yygyapg68AN5k+jLELRzvy6W0/Bu789Du3ztYIUs
+         YshzGXNoao9gYV2V3f2IH/YDMoE8FD0AKkCx4S1S+Ab9tvMYdkJNiaI4FVMlUgWHC0Me
+         rohA==
+X-Gm-Message-State: AOAM532x2+rdgbZ2DGSejeO8I90JT2ow76VAcasPtMqhDyyLB7DEDvkN
+        Qn5tCyzqHOeU4N7xgJYKWgtoprUot3KVU4xxO5U=
+X-Google-Smtp-Source: ABdhPJy+RT9OifhWpt093Aw6WzOb56XWsheqKKyR2opQGFsfACoLRclKfVE0WWBpVgyFQ5y3WcJPQpbW9r43EHLfMG8=
+X-Received: by 2002:a62:b515:0:b0:438:42ab:2742 with SMTP id
+ y21-20020a62b515000000b0043842ab2742mr2754082pfe.77.1631593482435; Mon, 13
+ Sep 2021 21:24:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210909114106.141462-1-sashal@kernel.org> <20210909114106.141462-101-sashal@kernel.org>
-In-Reply-To: <20210909114106.141462-101-sashal@kernel.org>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Tue, 14 Sep 2021 06:08:57 +0200
-Message-ID: <CAM1=_QQUi2diFeB+CnMx1-1zdtp4uUMLCO7f5adcMB29UjD1pQ@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.14 101/252] bpf: Fix off-by-one in tail call
- count limiting
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+References: <CAGnuNNuenDT4Y_UHsny6BK_b1+g2joePAdapdn7aLCi99Rh3bg@mail.gmail.com>
+ <CAEf4BzZokm=_5vdf3sCccTf2Enf0-kwij7dusykcgtWPkM=95g@mail.gmail.com>
+In-Reply-To: <CAEf4BzZokm=_5vdf3sCccTf2Enf0-kwij7dusykcgtWPkM=95g@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 13 Sep 2021 21:24:31 -0700
+Message-ID: <CAADnVQKN9uZ6KA97r1HzkWA63usdWatxXvV5+i=v=So1nirbVA@mail.gmail.com>
+Subject: Re: Read process VM from kernel
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Gabriele <phoenix1987@gmail.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sasha,
+On Mon, Sep 13, 2021 at 8:48 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sat, Sep 11, 2021 at 2:05 AM Gabriele <phoenix1987@gmail.com> wrote:
+> >
+> > Hi there
+> >
+> > I recently started playing around with libbpf and I was wondering if
+> > it is possible to read a process' VM from the kernel side. In
+> > user-space one could use process_vm_read, but I haven't been able to
+> > find an equivalent BPF API for that.
+>
+> Currently only current process's memory (in which BPF program is
+> running) can be read with bpf_probe_read_user(). I don't think there
+> is anything that allows reading some other process' data like
+> process_vm_read allows.
 
-This patch should not be applied to any of the stable kernels. It was
-reverted in f9dabe016b63 ("bpf: Undo off-by-one in interpreter tail
-call count limit").
-
-I don't think it will pass the CI selftests so maybe it wouldn't be
-applied anyway, but nevertheless I want to inform you about it.
-
-Johan
-
-On Thu, Sep 9, 2021 at 1:43 PM Sasha Levin <sashal@kernel.org> wrote:
->
-> From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
->
-> [ Upstream commit b61a28cf11d61f512172e673b8f8c4a6c789b425 ]
->
-> Before, the interpreter allowed up to MAX_TAIL_CALL_CNT + 1 tail calls.
-> Now precisely MAX_TAIL_CALL_CNT is allowed, which is in line with the
-> behavior of the x86 JITs.
->
-> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> Link: https://lore.kernel.org/bpf/20210728164741.350370-1-johan.almbladh@anyfinetworks.com
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  kernel/bpf/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 0a28a8095d3e..82af6279992d 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1564,7 +1564,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
->
->                 if (unlikely(index >= array->map.max_entries))
->                         goto out;
-> -               if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
-> +               if (unlikely(tail_call_cnt >= MAX_TAIL_CALL_CNT))
->                         goto out;
->
->                 tail_call_cnt++;
-> --
-> 2.30.2
->
+Indeed. Currently it's not possible, but this feature request
+came up in the past and we couldn't do it until sleepable programs
+came into existence.
+Now ptrace_access_vm/process_vm_read could be added
+as a bpf helper for sleepable programs.
+Gab,
+Please send a patch with a test case.
