@@ -2,206 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9829A40C707
-	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 16:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6403040C72C
+	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 16:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237739AbhIOOHP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Sep 2021 10:07:15 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9878 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233698AbhIOOHO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:07:14 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H8hhj5gh4z8yLV;
-        Wed, 15 Sep 2021 22:01:25 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 22:05:52 +0800
-Received: from huawei.com (10.175.101.6) by dggema772-chm.china.huawei.com
- (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 15
- Sep 2021 22:05:51 +0800
-From:   Liu Jian <liujian56@huawei.com>
-To:     <john.fastabend@gmail.com>, <daniel@iogearbox.net>,
-        <jakub@cloudflare.com>, <lmb@cloudflare.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <liujian56@huawei.com>
-Subject: [PATCH] skmsg: lose offset info in sk_psock_skb_ingress
-Date:   Wed, 15 Sep 2021 22:06:29 +0800
-Message-ID: <20210915140629.18558-1-liujian56@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S233782AbhIOOPq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Sep 2021 10:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236606AbhIOOPn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Sep 2021 10:15:43 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5530FC061574
+        for <bpf@vger.kernel.org>; Wed, 15 Sep 2021 07:14:23 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id bq5so6335726lfb.9
+        for <bpf@vger.kernel.org>; Wed, 15 Sep 2021 07:14:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fZZVRkAFkj/fWY1PgjO3Ba5nWvOEjUGewQ8VLp8hNK8=;
+        b=UaOgEatDivmfJAoEz+JgGNG0dgC5Y+GayX04BUVdN9JUTj1/YiTcizMcT1kfuEhYw+
+         Wv6aoNGyPjD/z5VHbbUHjYHcS6L/dExxe9ijicgu5zVbJaeU2dE/GMFSeDyAI3appiq4
+         mPOMEh6k4l9NcZ52dXIwUaQ10b1XS6aLO/wszIF0cSQYraTPt+OerAochDoMuUDbY5Jb
+         d6wYrezKnLxB986SQsekxM+P0d120F6T8YookZJv0bFvGG8/FESvehGvd69oTzfufoiN
+         MGfQZh91JRoVGYk0uB04NNci/qGYDK+yU3peAeuO7F5b7mrUNN79/NvlyZmdaLiI85dm
+         TMdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fZZVRkAFkj/fWY1PgjO3Ba5nWvOEjUGewQ8VLp8hNK8=;
+        b=TflE6G9yXCcc2Gji8hDEVMzlujkRGcZGvyFGVDCBOtRrkLhtbhSE62WtK3tjZkC1EB
+         8SadJMU+lKcgBKq8Jbco2upT7y9PT7TO9fUYmZce3cz9HlqExoaGwiDuPRj99iwQ7w4h
+         KTDriuH4qgW2WgYesrfbcvSDjpV/YcwWd4+ubXuFkKMSjvojePFAD+CAcaasRvDyV1am
+         5E4JNvaP8/OHChqpUlklPR2poi9rjGes2yvV2E34vKutvoDdevlAHRthGZXPqW+MAdlS
+         KTdSZJN9vVly5mbEUSGEjPz46WWNscCKnCfKt3kxg9grRiSbADyeyRv8vEw20LtAkpwH
+         z8CA==
+X-Gm-Message-State: AOAM532mKIKB+pbqVkmGYnMjXcCsY5lBRcN3cooiGIhevbxHfkfLyRml
+        cnfzk6MI4J7f4G4k3/WSnWgF075Qp5If6mtQkNk=
+X-Google-Smtp-Source: ABdhPJwt7w7/p2ard+npT+kWaZFHVTzZa8rVpkFBVzvk7Z9BJlU50F3lwKwp/oAkggk0GOCbSfhuzcN8HBN5KzHZCa8=
+X-Received: by 2002:ac2:4297:: with SMTP id m23mr88002lfh.487.1631715261490;
+ Wed, 15 Sep 2021 07:14:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+References: <20210825184745.2680830-1-fallentree@fb.com> <CAADnVQJz8LUTsm_azd4JE0n5Q4Me0Lze6hmsqNYfAKMeA44_fQ@mail.gmail.com>
+ <CAJygYd24KySBLCL2rRofGqdPkQzonxBfihRxLQ=O8Xg=AWAowA@mail.gmail.com>
+ <CAJygYd3M1E3N9C02WCmPD6_i9miXaCe=OP-M32QTnOXOajBPZA@mail.gmail.com>
+ <CAADnVQJB3GKKr1hMWHNKYhoo8CzrDQ83LEnO8c+ntOBtEkjApA@mail.gmail.com>
+ <CAM_iQpVw-5dG8Na9e851bQy2_BcpZQ5QK+r554NZsP0_dbzwNw@mail.gmail.com>
+ <CAM_iQpUG30QL03Uh9D_ACy_29TLWG+YfDO9_GvcqzW2f0TbpYw@mail.gmail.com>
+ <CAJygYd2f8S5Oq_B8724p-3rQvXaJKMBGgBKLS_0R7fxTew2oeA@mail.gmail.com>
+ <CAM_iQpWt8F18_B5b9cYyT7Ri3sua2T2B5ztEGg2h3v9u2-i+Fg@mail.gmail.com> <CAJygYd2uJNEvX4MWruAZ2a3uJ2HJbnoCmMkuS2fFY59S6x=Sww@mail.gmail.com>
+In-Reply-To: <CAJygYd2uJNEvX4MWruAZ2a3uJ2HJbnoCmMkuS2fFY59S6x=Sww@mail.gmail.com>
+From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
+Date:   Wed, 15 Sep 2021 10:13:55 -0400
+Message-ID: <CAJygYd0vk-Caef1yvghz7qj7X42gkHvMtLcd1dZaoOypeMgnmA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: reduce more flakyness in sockmap_listen
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Yucong Sun <fallentree@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If sockmap enable strparser, there are lose offset info in
-sk_psock_skb_ingress. If the length determined by parse_msg function
-is not skb->len, the skb will be converted to sk_msg multiple times,
-and userspace app will get the data multiple times.
+Hi Cong,
 
-Fix this by get the offset and length from strp_msg.
+want to make sure this doesn't fall through, any thoughts on this?
 
-Signed-off-by: Liu Jian <liujian56@huawei.com>
----
- net/core/skmsg.c | 49 ++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 39 insertions(+), 10 deletions(-)
-
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 2d6249b28928..83f76e568fad 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -9,6 +9,8 @@
- #include <net/tcp.h>
- #include <net/tls.h>
- 
-+static void sk_psock_strp_data_ready(struct sock *sk);
-+
- static bool sk_msg_try_coalesce_ok(struct sk_msg *msg, int elem_first_coalesce)
- {
- 	if (msg->sg.end > msg->sg.start &&
-@@ -494,6 +496,7 @@ static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
- }
- 
- static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
-+					u32 off, u32 len,
- 					struct sk_psock *psock,
- 					struct sock *sk,
- 					struct sk_msg *msg)
-@@ -507,11 +510,11 @@ static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
- 	 */
- 	if (skb_linearize(skb))
- 		return -EAGAIN;
--	num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
-+	num_sge = skb_to_sgvec(skb, msg->sg.data, off, len);
- 	if (unlikely(num_sge < 0))
- 		return num_sge;
- 
--	copied = skb->len;
-+	copied = len;
- 	msg->sg.start = 0;
- 	msg->sg.size = copied;
- 	msg->sg.end = num_sge;
-@@ -522,9 +525,11 @@ static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
- 	return copied;
- }
- 
--static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb);
-+static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb,
-+				     u32 off, u32 len);
- 
--static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
-+static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb,
-+				u32 off, u32 len)
- {
- 	struct sock *sk = psock->sk;
- 	struct sk_msg *msg;
-@@ -535,7 +540,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
- 	 * correctly.
- 	 */
- 	if (unlikely(skb->sk == sk))
--		return sk_psock_skb_ingress_self(psock, skb);
-+		return sk_psock_skb_ingress_self(psock, skb, off, len);
- 	msg = sk_psock_create_ingress_msg(sk, skb);
- 	if (!msg)
- 		return -EAGAIN;
-@@ -547,7 +552,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
- 	 * into user buffers.
- 	 */
- 	skb_set_owner_r(skb, sk);
--	err = sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
-+	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg);
- 	if (err < 0)
- 		kfree(msg);
- 	return err;
-@@ -557,7 +562,8 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
-  * skb. In this case we do not need to check memory limits or skb_set_owner_r
-  * because the skb is already accounted for here.
-  */
--static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb)
-+static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb,
-+				     u32 off, u32 len)
- {
- 	struct sk_msg *msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_ATOMIC);
- 	struct sock *sk = psock->sk;
-@@ -567,7 +573,7 @@ static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb
- 		return -EAGAIN;
- 	sk_msg_init(msg);
- 	skb_set_owner_r(skb, sk);
--	err = sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
-+	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg);
- 	if (err < 0)
- 		kfree(msg);
- 	return err;
-@@ -581,7 +587,7 @@ static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
- 			return -EAGAIN;
- 		return skb_send_sock(psock->sk, skb, off, len);
- 	}
--	return sk_psock_skb_ingress(psock, skb);
-+	return sk_psock_skb_ingress(psock, skb, off, len);
- }
- 
- static void sk_psock_skb_state(struct sk_psock *psock,
-@@ -604,6 +610,9 @@ static void sk_psock_backlog(struct work_struct *work)
- {
- 	struct sk_psock *psock = container_of(work, struct sk_psock, work);
- 	struct sk_psock_work_state *state = &psock->work_state;
-+#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-+	struct strp_msg *stm = NULL;
-+#endif
- 	struct sk_buff *skb = NULL;
- 	bool ingress;
- 	u32 len, off;
-@@ -624,6 +633,13 @@ static void sk_psock_backlog(struct work_struct *work)
- 	while ((skb = skb_dequeue(&psock->ingress_skb))) {
- 		len = skb->len;
- 		off = 0;
-+#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-+		if (psock->sk->sk_data_ready == sk_psock_strp_data_ready) {
-+			stm = strp_msg(skb);
-+			off = stm->offset;
-+			len = stm->full_len;
-+		}
-+#endif
- start:
- 		ingress = skb_bpf_ingress(skb);
- 		skb_bpf_redirect_clear(skb);
-@@ -930,6 +946,10 @@ static int sk_psock_verdict_apply(struct sk_psock *psock, struct sk_buff *skb,
- {
- 	struct sock *sk_other;
- 	int err = 0;
-+#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-+	struct strp_msg *stm = NULL;
-+	u32 len, off;
-+#endif
- 
- 	switch (verdict) {
- 	case __SK_PASS:
-@@ -949,7 +969,16 @@ static int sk_psock_verdict_apply(struct sk_psock *psock, struct sk_buff *skb,
- 		 * retrying later from workqueue.
- 		 */
- 		if (skb_queue_empty(&psock->ingress_skb)) {
--			err = sk_psock_skb_ingress_self(psock, skb);
-+			len = skb->len;
-+			off = 0;
-+#if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
-+			if (psock->sk->sk_data_ready == sk_psock_strp_data_ready) {
-+				stm = strp_msg(skb);
-+				off = stm->offset;
-+				len = stm->full_len;
-+			}
-+#endif
-+			err = sk_psock_skb_ingress_self(psock, skb, off, len);
- 		}
- 		if (err < 0) {
- 			spin_lock_bh(&psock->ingress_lock);
--- 
-2.17.1
-
+Cheers.
