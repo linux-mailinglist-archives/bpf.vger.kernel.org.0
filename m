@@ -2,95 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD5D40BD74
-	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 03:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5543340BD79
+	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 03:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbhIOB55 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 21:57:57 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:59184 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229498AbhIOB54 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Sep 2021 21:57:56 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UoQf.V6_1631670993;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoQf.V6_1631670993)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 15 Sep 2021 09:56:34 +0800
-Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
- <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
- <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
- <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
- <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
- <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <4cba7088-f7c8-edcf-02cd-396eb2a56b46@linux.alibaba.com>
-Date:   Wed, 15 Sep 2021 09:56:33 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S231320AbhIOCAf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 22:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229489AbhIOCAe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 22:00:34 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A08C061574
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 18:59:16 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id k10so1227086vsp.12
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 18:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4BprZnpSeHeFo0+SJVzrq5fQiBrWljkOqlIt1I1jZYM=;
+        b=n2Hk2W9jjG4BqP18PFQCvyuMx4lxbxRugoO45g4D8gfgy8P05Q/qXAM96kmLwcu6Re
+         HPKuabnAMHfNmopw92nYNV+82+KaGc4LyTBHt4FDDAF4qoU6yoWR49ti3AWDaT6iYf8n
+         YHty6e8vrd1mY23RuW1LW0g90Ec7xSUT8UunQ096QdHChsRqO7N0eK481S8rFqg3Hvog
+         1O5d5JtoxNfgk6cLcT27E/WfVGQMalT1WRSRKT3MFdZY1JXIy4RnJOc19Chlfjc6YA9t
+         6eQJ+i7eqhttW7lDreB9NZLb5r0dJUBESSkX067AraQdEWL1LtOm4V9bCqSSdvpFuDQc
+         Ix9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4BprZnpSeHeFo0+SJVzrq5fQiBrWljkOqlIt1I1jZYM=;
+        b=ooqi1879LmF0dV77e51fm/ZwYRFETIOPeTyM0YXWyqKKhGllGjq5X40JdxiWIfdB6B
+         NLUNb3J0V5x12/862S4wGt2Q0NJdj7+WqUsc+zMmlMqc2FAPQqm6iD9QS+AWjcTircDM
+         y0Ydnxzi1pZUmiXHm2sCV61ABLXXmmkY5413V9epeQCKst4GeEVJyvutKJ7DpJ1uXC9x
+         tSK5JGxp5N+QJMjRL8KyVOeWe6f4Z0w9NYSH94smNMC6FKlqbTJKuyPvfa6xCC73GJAc
+         oEAFnoqW95m2QT7irrm4zcfcfoOXVuuDirIybtoFQt8IeeWGFfKgUna+mmykUM6vxIdl
+         w0nQ==
+X-Gm-Message-State: AOAM530aMPwC3FKziF5wFUx10b33J6U3XPbjrH/GP8+lL59sq3s9VfqT
+        6dXcsxz/MYOo66DJtVam/6Ftn8VpnJh488vyZaw=
+X-Google-Smtp-Source: ABdhPJwGZGZC7SiX21iFDIzhlYmJ0s7nyvopfGpO6Dnfe2tRTglu+z1zd6WWFkZJ4QuMZB2h8MgyunC/FZeww3EEfoU=
+X-Received: by 2002:a05:6102:2256:: with SMTP id e22mr1714320vsb.47.1631671155738;
+ Tue, 14 Sep 2021 18:59:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210909204312.197814-1-grantseltzer@gmail.com>
+ <CAEf4BzZQi9QTRaZgvn7ip=DcoCL2qgeQBAjOTptnZ+3_kOPxHg@mail.gmail.com>
+ <CAO658oVTaLstBBm3th8kUwOH8D=0mAGo6A-B87yChBrhzD1ehw@mail.gmail.com> <CAEf4BzZnAQvTBvLi9z_fWZbsPoZEM=OEz3gTV3369RwW2cXx=A@mail.gmail.com>
+In-Reply-To: <CAEf4BzZnAQvTBvLi9z_fWZbsPoZEM=OEz3gTV3369RwW2cXx=A@mail.gmail.com>
+From:   Grant Seltzer Richman <grantseltzer@gmail.com>
+Date:   Tue, 14 Sep 2021 21:59:04 -0400
+Message-ID: <CAO658oWssvXuuxpc6Q1651v1ZDPvRzJssdb6LqEdzx8R4YPdVA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Add sphinx code documentation comments
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Sep 14, 2021 at 7:36 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Sep 14, 2021 at 12:52 PM Grant Seltzer Richman
+> <grantseltzer@gmail.com> wrote:
+> >
+> > On Mon, Sep 13, 2021 at 11:46 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Thu, Sep 9, 2021 at 1:43 PM grantseltzer <grantseltzer@gmail.com> wrote:
+> > > >
+> > > > From: Grant Seltzer <grantseltzer@gmail.com>
+> > > >
+> > > > This adds comments above five functions in btf.h which document
+> > > > their uses. These comments are of a format that doxygen and sphinx
+> > > > can pick up and render. These are rendered by libbpf.readthedocs.org
+> > > >
+> > > > Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+> > > > ---
+> > > >  tools/lib/bpf/btf.h | 36 ++++++++++++++++++++++++++++++++++++
+> > > >  1 file changed, 36 insertions(+)
+> > > >
+> > >
+> > > It's nice that you provided a test instance of readthedocs.io site, it
+> > > made it much easier to look at how all this is rendered. Thanks!
+> > >
+> > > I'm no technical writer, but left some thoughts below. It would be
+> > > great to get more help documenting all the APIs and important libbpf
+> > > objects from people that are good at succinctly explaining concepts.
+> >
+> > For sure! Once we have these doc comments we can point to them as
+> > examples. I'm going to write a blog post and advertise to people to
+> > see how they can contribute.
+> >
+> > > This is a great start!
+> > >
+> > > > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> > > > index 4a711f990904..f928e57c238c 100644
+> > > > --- a/tools/lib/bpf/btf.h
+> > > > +++ b/tools/lib/bpf/btf.h
+> > > > @@ -30,11 +30,47 @@ enum btf_endianness {
+> > > >         BTF_BIG_ENDIAN = 1,
+> > > >  };
+> > > >
+> > > > +/**
+> > > > + * @brief **btf__free** frees all data of the BTF representation
+> > >
+> > > I'd like to propose that we add () for all functions, I've been
+> > > roughly following this convention throughout commit messages and
+> > > comments in the code, I think it's makes it a bit clearer that we are
+> > > talking about functions
+> > >
+> > > > + * @param btf
+> > >
+> > > seems like the format is "<arg_name> <description of the argument>" so
+> > > in this case it should be something like
+> > >
+> > > @param btf BTF object to free
+> > >
+> > > > + * @return void
+> > >
+> > > do we need @return if the function is returning void? What if we just
+> > > omit @return for such cases?
+> > >
+> > > > + */
+> > > >  LIBBPF_API void btf__free(struct btf *btf);
+> > > >
+> > > > +/**
+> > > > + * @brief **btf__new** creates a representation of a BTF section
+> > > > + * (struct btf) from the raw bytes of that section
+> > >
+> > > is there some way to cross reference to other types/functions? E.g.,
+> > > how do we make `struct btf` a link to its description?
+> >
+> > Yes we can cross reference against other members that are in the
+> > generated documentation (my v2 patch will have this), but not ones
+> > that aren't present. `struct btf` is not because it's in btf.c and not
+>
+> I see. If it's impossible to jump to forward reference declaration,
+> that's fine, I suppose. We don't have to get this perfect from the
+> first try.
 
+There must be a way to do this, I will continue to experiment/research.
 
-On 2021/9/15 上午12:16, Dave Hansen wrote:
-> On 9/14/21 12:23 AM, 王贇 wrote:
->>
->> On 2021/9/14 上午11:02, 王贇 wrote:
->> [snip]
->>> [   44.133509][    C0] traps: PANIC: double fault, error_code: 0x0
->>> [   44.133519][    C0] double fault: 0000 [#1] SMP PTI
->>> [   44.133526][    C0] CPU: 0 PID: 743 Comm: a.out Not tainted 5.14.0-next-20210913 #469
->>> [   44.133532][    C0] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
->>> [   44.133536][    C0] RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
->>> [   44.133549][    C0] Code: 48 03 43 28 48 8b 0c 24 bb 01 00 00 00 4c 29 f0 48 39 c8 48 0f 47 c1 49 89 45 08 e9 48 ff ff ff 66 2e 0f 1f 84 00 00 00 00 00 <55> 53 e8 09 20 f2 ff 48 c7 c2 20 4d 03 00 65 48 03 15 5a 3b d2 7e
->>> [   44.133556][    C0] RSP: 0018:fffffe000000b000 EFLAGS: 00010046
->> Another information is that I have printed '__this_cpu_ist_bottom_va(NMI)'
->> on cpu0, which is just the RSP fffffe000000b000, does this imply
->> we got an overflowed NMI stack?
-> 
-> Yep.  I have the feeling some of your sanitizer and other debugging is
-> eating the stack:
-
-Could be, in another thread we have confirmed the exception stack was
-overflowed.
-
-> 
->> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
->> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
-> 
-> Just turning off tracing for the page fault handler is papering over the
-> problem.  It'll just come back later with a slightly different form.
-> 
-
-Cool~ please let me know when you have the proper approach.
-
-Regards,
-Michael Wang
-
+>
+> > btf.h. It's a little messy to have documentation from both as it leads
+> > to some generation of non-API functions and duplication. One way of
+> > getting around that mess is to explicitly name
+> > functions/variables/defines/types that we want to have in
+> > documentation but that's not automatically maintained.
+> >
+> > For this example, is there a reason that `struct btf` is defined in
+>
+> yes, struct btf internals (actual fields and their layout) is internal
+> libbpf implementation detail and not part of its API. So public
+> headers only define forward references. If possible, it's good to add
+> brief comments to such forward references (similarly we have
+> bpf_program, bpf_map, bpf_object, btf_dump, etc), specifying what is
+> their purpose. But if not, we can have a separate page going over main
+> "objects" that libbpf API defines (bpf_object, bpf_map, bpf_program,
+> bpf_link, btf, btf_ext, btf_dump, probably some more I'm forgetting).
+> All those have hidden internals, but they are themselves very visible
+> in the API.
+>
+> > btf.c and not btf.h? Would it be possible to have all struct
+> > definitions in header files?
+> >
+> > >
+> > > > + * @param data raw bytes
+> > > > + * @param size length of raw bytes
+> > > > + * @return struct btf*
+> > >
+> > >
+> > > @return new instance of BTF object which has to be eventually freed
+> > > with **btf__free()**?
+> > >
+> > > > + */
+> > > >  LIBBPF_API struct btf *btf__new(const void *data, __u32 size);
+> > > > +
+> > > > +/**
+> > > > + * @brief **btf__new_split** creates a representation of a BTF section
+> > >
+> > > "representation of a BTF section" seems a bit mouthful. And it's not a
+> > > representation, it's a BTF object that allows to perform a lot of
+> > > stuff with BTF type information. So maybe let's describe it as
+> > >
+> > > **btf__new_split()** create a new instance of BTF object from provided
+> > > raw data bytes. It takes another BTF instance, **base_btf**, which
+> > > serves as a base BTF, which is extended by types in a newly created
+> > > BTF instance.
+> > >
+> > > > + * (struct btf) from a combination of raw bytes and a btf struct
+> > > > + * where the btf struct provides a basic set of types and strings,
+> > > > + * while the raw data adds its own new types and strings
+> > > > + * @param data raw bytes
+> > > > + * @param size length of raw bytes
+> > > > + * @param base_btf the base btf representation
+> > >
+> > > same here, "representation" sounds kind of weird and wrong here
+> > >
+> > > > + * @return struct btf*
+> > > > + */
+> > > >  LIBBPF_API struct btf *btf__new_split(const void *data, __u32 size, struct btf *base_btf);
+> > > > +
+> > > > +/**
+> > > > + * @brief **btf__new_empty** creates an unpopulated representation of
+> > > > + * a BTF section
+> > > > + * @return struct btf*
+> > > > + */
+> > > >  LIBBPF_API struct btf *btf__new_empty(void);
+> > > > +
+> > > > +/**
+> > > > + * @brief **btf__new_empty_split** creates an unpopulated
+> > > > + * representation of a BTF section except with a base BTF
+> > > > + * ontop of which split BTF should be based
+> > >
+> > > typo: on top
+> > >
+> > > > + * @return struct btf*q
+> > > > + */
+> > > >  LIBBPF_API struct btf *btf__new_empty_split(struct btf *base_btf);
+> > > >
+> > > >  LIBBPF_API struct btf *btf__parse(const char *path, struct btf_ext **btf_ext);
+> > > > --
+> > > > 2.31.1
+> > > >
