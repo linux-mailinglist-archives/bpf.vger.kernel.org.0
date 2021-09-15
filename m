@@ -2,189 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8309340C011
-	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 09:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983E040C066
+	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 09:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236544AbhIOHGP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Sep 2021 03:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236541AbhIOHGM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:06:12 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFB4C061764
-        for <bpf@vger.kernel.org>; Wed, 15 Sep 2021 00:04:53 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id b7so1772875pfo.11
-        for <bpf@vger.kernel.org>; Wed, 15 Sep 2021 00:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2BWdhdicOR1qL0nUDLFCT++AnjlBgHiscLfuhjIbVtc=;
-        b=teTMxolm7LhP6awEeeU3sKPcpdQ8IwvuUlEY5G3V2dVsLf3l0kXtAHDDZfnhB/xBLs
-         0tQ5wfNt/7bqAjz3QK6dHICopSLvOQTTgxAP4fWp48NLNhTts8Ec9dgM1wOVDnQ3SwCL
-         62nlkf+DqGQ86/PEijrh9mFZNyhiPzxJyIrzxJ5rHZKR2TBIyKl+Alwo5hiGPJPEiB5J
-         g7TrC93KdA1xPeYBWF36wwLhc/CY7DE7w9qCJlkVuT7r+dN8jEGTWuC+r58pKlS6yLNO
-         v518QxpJ8MoYVYOFTmlsyIvJYeuqS3iw0zk1h1ZtmLEsOEv6mA+yWCl41Bc7QY8rT/qK
-         +2lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2BWdhdicOR1qL0nUDLFCT++AnjlBgHiscLfuhjIbVtc=;
-        b=cL9h4YMvn7JWSGS0XgNijwqELh2myCqSYRY8SLNNKFy8cEwRM/BZhC19MVMYno+AiU
-         FIPkX4bVNFTgaJyU/FCOeuItp0F/Qdta7yYJoNpAzmC9TfZCEJ783WjEPQZjPW7ketgt
-         stqtIJEukicOyedYEUBgHTvKWpIUPhn+oYJguSiPjMeBaRQAmRuyKHxZHrbn7fU7NzF6
-         D02UM9YT0byDU9ToNx+0n+GZfseBVe/4aDgRLZiAN0JYHunX97MSxKCqv5Hm3xY1I2wR
-         Voew5DVc4Vx0Qw1c+j4W7aI9ck4jkjtIAn3Cbmg3In+NVuD/6FsGQHypzqt3Yhn+QJ2O
-         N0wA==
-X-Gm-Message-State: AOAM530uDm4rO4MbzveaRHj/HHFMN1ceefKWn2vNSrA0W5OOH3WluTau
-        2aPm2ooW87mZJTDuftuCB2RfrA==
-X-Google-Smtp-Source: ABdhPJxP5vXMShjKBRCkNc71Ozvp3iP6RY6OfumaxCx0NalgMg5dpxxYkJchi6kulDztfPbyucxGfw==
-X-Received: by 2002:a63:4610:: with SMTP id t16mr19179215pga.176.1631689493251;
-        Wed, 15 Sep 2021 00:04:53 -0700 (PDT)
-Received: from C02F52LSML85.bytedance.net ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id s192sm14079655pgc.23.2021.09.15.00.04.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Sep 2021 00:04:52 -0700 (PDT)
-From:   Feng zhou <zhoufeng.zf@bytedance.com>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        jeffrey.t.kirsher@intel.com, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        duanxiongchun@bytedance.com, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
-        zhengqi.arch@bytedance.com, wangdongdong.6@bytedance.com,
-        zhoufeng.zf@bytedance.com
-Subject: [PATCH v3] ixgbe: Fix NULL pointer dereference in ixgbe_xdp_setup
-Date:   Wed, 15 Sep 2021 15:04:40 +0800
-Message-Id: <20210915070440.6540-1-zhoufeng.zf@bytedance.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        id S236627AbhIOHX7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Sep 2021 03:23:59 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:49856 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236490AbhIOHX6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Sep 2021 03:23:58 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UoSeiPZ_1631690555;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoSeiPZ_1631690555)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 15 Sep 2021 15:22:36 +0800
+Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
+ <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
+ <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
+ <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
+ <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
+ <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
+ <4cba7088-f7c8-edcf-02cd-396eb2a56b46@linux.alibaba.com>
+ <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
+Date:   Wed, 15 Sep 2021 15:22:35 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-The ixgbe driver currently generates a NULL pointer dereference with
-some machine (online cpus < 63). This is due to the fact that the
-maximum value of num_xdp_queues is nr_cpu_ids. Code is in
-"ixgbe_set_rss_queues"".
 
-Here's how the problem repeats itself:
-Some machine (online cpus < 63), And user set num_queues to 63 through
-ethtool. Code is in the "ixgbe_set_channels",
-	adapter->ring_feature[RING_F_FDIR].limit = count;
+On 2021/9/15 上午11:27, Dave Hansen wrote:
+> On 9/14/21 6:56 PM, 王贇 wrote:
+>>>> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
+>>>> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
+>>> Just turning off tracing for the page fault handler is papering over the
+>>> problem.  It'll just come back later with a slightly different form.
+>>>
+>> Cool~ please let me know when you have the proper approach.
+> 
+> It's an entertaining issue, but I wasn't planning on fixing it myself.
+> 
 
-It becomes 63.
+Do you have any suggestion on how should we fix the problem?
 
-When user use xdp, "ixgbe_set_rss_queues" will set queues num.
-	adapter->num_rx_queues = rss_i;
-	adapter->num_tx_queues = rss_i;
-	adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
+I'd like to help fix it, but sounds like all the known working approach
+are not acceptable...
 
-And rss_i's value is from
-	f = &adapter->ring_feature[RING_F_FDIR];
-	rss_i = f->indices = f->limit;
-
-So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
-	for (i = 0; i < adapter->num_rx_queues; i++)
-		if (adapter->xdp_ring[i]->xsk_umem)
-
-It leads to panic.
-
-Call trace:
-[exception RIP: ixgbe_xdp+368]
-RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
-RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
-RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
-RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
-R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
-R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
-ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
- 7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
- 8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
- 9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
-10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
-11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
-12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
-13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
-14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
-15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
-16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
-17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
-18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
-19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
-
-So I fix ixgbe_max_channels so that it will not allow a setting of queues 
-to be higher than the num_online_cpus(). And when run to ixgbe_xdp_setup, 
-take the smaller value of num_rx_queues and num_xdp_queues.
-
-Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
-AF_XDP")
-Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
----
-v1:
-- Fix "ixgbe_max_channels" callback so that it will not allow a setting of 
-queues to be higher than the num_online_cpus().
-v2:
-- Modify commit message
-more details can be seen from here:
-https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20210817075407.11961-1-zhoufeng.zf@bytedance.com/
-https://lore.kernel.org/netdev/20210903064013.9842-1-zhoufeng.zf@bytedance.com/
-Thanks to Maciej Fijalkowski and Paul Menzel for yours advice.
-
- drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 2 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c    | 8 ++++++--
- 2 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-index 4ceaca0f6ce3..21321d164708 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-@@ -3204,7 +3204,7 @@ static unsigned int ixgbe_max_channels(struct ixgbe_adapter *adapter)
- 		max_combined = ixgbe_max_rss_indices(adapter);
- 	}
- 
--	return max_combined;
-+	return min_t(int, max_combined, num_online_cpus());
- }
- 
- static void ixgbe_get_channels(struct net_device *dev,
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 14aea40da50f..5db496cc5070 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
- 	struct ixgbe_adapter *adapter = netdev_priv(dev);
- 	struct bpf_prog *old_prog;
- 	bool need_reset;
-+	int num_queues;
- 
- 	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
- 		return -EINVAL;
-@@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
- 	/* Kick start the NAPI context if there is an AF_XDP socket open
- 	 * on that queue id. This so that receiving will start.
- 	 */
--	if (need_reset && prog)
--		for (i = 0; i < adapter->num_rx_queues; i++)
-+	if (need_reset && prog) {
-+		num_queues = min_t(int, adapter->num_rx_queues,
-+			adapter->num_xdp_queues);
-+		for (i = 0; i < num_queues; i++)
- 			if (adapter->xdp_ring[i]->xsk_pool)
- 				(void)ixgbe_xsk_wakeup(adapter->netdev, i,
- 						       XDP_WAKEUP_RX);
-+	}
- 
- 	return 0;
- }
--- 
-2.11.0
-
+Regards,
+Michael Wang
