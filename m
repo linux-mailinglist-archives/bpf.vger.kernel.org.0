@@ -2,20 +2,21 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983E040C066
-	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 09:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627FF40C096
+	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 09:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236627AbhIOHX7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Sep 2021 03:23:59 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:49856 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236490AbhIOHX6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Sep 2021 03:23:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UoSeiPZ_1631690555;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoSeiPZ_1631690555)
+        id S231326AbhIOHfo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Sep 2021 03:35:44 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:54171 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231228AbhIOHfn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Sep 2021 03:35:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UoSuf-e_1631691260;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoSuf-e_1631691260)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 15 Sep 2021 15:22:36 +0800
+          Wed, 15 Sep 2021 15:34:21 +0800
 Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
 To:     Dave Hansen <dave.hansen@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Andy Lutomirski <luto@kernel.org>,
@@ -45,13 +46,13 @@ References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
  <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
  <4cba7088-f7c8-edcf-02cd-396eb2a56b46@linux.alibaba.com>
  <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
-Date:   Wed, 15 Sep 2021 15:22:35 +0800
+ <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
+Message-ID: <09d0190b-f2cc-9e64-4d3a-4eb0def22b7b@linux.alibaba.com>
+Date:   Wed, 15 Sep 2021 15:34:20 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
  Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
+In-Reply-To: <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -61,22 +62,62 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 2021/9/15 上午11:27, Dave Hansen wrote:
-> On 9/14/21 6:56 PM, 王贇 wrote:
->>>> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
->>>> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
->>> Just turning off tracing for the page fault handler is papering over the
->>> problem.  It'll just come back later with a slightly different form.
->>>
->> Cool~ please let me know when you have the proper approach.
+On 2021/9/15 下午3:22, 王贇 wrote:
 > 
-> It's an entertaining issue, but I wasn't planning on fixing it myself.
 > 
+> On 2021/9/15 上午11:27, Dave Hansen wrote:
+>> On 9/14/21 6:56 PM, 王贇 wrote:
+>>>>> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
+>>>>> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
+>>>> Just turning off tracing for the page fault handler is papering over the
+>>>> problem.  It'll just come back later with a slightly different form.
+>>>>
+>>> Cool~ please let me know when you have the proper approach.
+>>
+>> It's an entertaining issue, but I wasn't planning on fixing it myself.
+>>
+> 
+> Do you have any suggestion on how should we fix the problem?
+> 
+> I'd like to help fix it, but sounds like all the known working approach
+> are not acceptable...
 
-Do you have any suggestion on how should we fix the problem?
+Hi, Dave, Peter
 
-I'd like to help fix it, but sounds like all the known working approach
-are not acceptable...
+What if we just increase the stack size when ftrace enabled?
+
+Maybe like:
+
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index a8d4ad85..bc2e0c1 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -12,10 +12,16 @@
+ #define KASAN_STACK_ORDER 0
+ #endif
+
++#ifdef CONFIG_FUNCTION_TRACER
++#define FTRACE_STACK_ORDER 1
++#else
++#define FTRACE_STACK_ORDER 0
++#endif
++
+ #define THREAD_SIZE_ORDER      (2 + KASAN_STACK_ORDER)
+ #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+
+-#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
++#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER + FTRACE_STACK_ORDER)
+ #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
+
+ #define IRQ_STACK_ORDER (2 + KASAN_STACK_ORDER)
+
+Just like kasan we give more stack space for ftrace, is this looks
+acceptable to you?
 
 Regards,
 Michael Wang
+
+> 
+> Regards,
+> Michael Wang
+> 
