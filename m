@@ -2,122 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627FF40C096
-	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 09:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9835E40C405
+	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 12:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhIOHfo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Sep 2021 03:35:44 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:54171 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231228AbhIOHfn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Sep 2021 03:35:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UoSuf-e_1631691260;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoSuf-e_1631691260)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 15 Sep 2021 15:34:21 +0800
-Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S232439AbhIOK4X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Sep 2021 06:56:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55580 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232313AbhIOK4X (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Sep 2021 06:56:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631703304;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k6aRK0JmCvGFVEbgpz/kyUiWETl6aFzhRXtN8PVxUb8=;
+        b=GO7C4To77CVdLvHWxAvdFMfWSMxSPCPvwrXyEsr73BfzsqaL9XffR6s4VPl+MXE4peLQ1Y
+        WAwydLZyjjjsQ9nwY8EYpe/8dGivYclWIbyUsF3iK78d9tfkIAnZGVX5oVaBCw8BmSuWqy
+        AiKqop3y31eNQJKHF9q8j6zagBgAvf0=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-MGZhEXWPNqi9nzLVz5SAwA-1; Wed, 15 Sep 2021 06:55:03 -0400
+X-MC-Unique: MGZhEXWPNqi9nzLVz5SAwA-1
+Received: by mail-ej1-f69.google.com with SMTP id bi9-20020a170906a24900b005c74b30ff24so1311800ejb.5
+        for <bpf@vger.kernel.org>; Wed, 15 Sep 2021 03:55:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=k6aRK0JmCvGFVEbgpz/kyUiWETl6aFzhRXtN8PVxUb8=;
+        b=kysq/GE+7fmixQqxHJjpLm+spOLOl81okQdL2VSn38YiajlJx9zMMwjc0xluigk67i
+         u+m4C2SjpTCwhAuzp6YAyCg0jiXmWSnjizR25XxFPD0yypWh5nSP3DOS7jA/wA3ovthG
+         5M3YstjcmgAVSB+0NQu758h9NU5xXfb6iXxrjrbYxJ1mVAh4mHdlyTSd2XTCHzvIZuED
+         0GWTm1vLgeUu6/TSZpOHqkM7lx+qXn+TFLeF6BDP21Jac7sjneefTawoNYHGgAKO1f+J
+         A1fkOlqujUPvbmnE/q+TzDnYCEyMlJ1hzUck6jwzASn0bK50NdHSPYn2bimBJZnCu+VT
+         CvEg==
+X-Gm-Message-State: AOAM533M4pEDgrgFv0Fpn26lCWz5hqh9FfM67elZk5k+TlGeKCgseZQd
+        lqrm3ZhiF/M7ahvELzLf3LRIeTTN8jphoJqj3Q6ttUcxCt46RNjfS+6JJdhlqD10KLJspxDzMG/
+        ou++PNL4WHjtq
+X-Received: by 2002:aa7:cad0:: with SMTP id l16mr17582601edt.16.1631703301958;
+        Wed, 15 Sep 2021 03:55:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz4t55aAkeNk6nM18qjvbS2OL7h+fFzS0jLz2fm5kg2tg67M4vRbbrMKMgG904mzqZi6lW0Xg==
+X-Received: by 2002:aa7:cad0:: with SMTP id l16mr17582585edt.16.1631703301655;
+        Wed, 15 Sep 2021 03:55:01 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id r16sm6963174edt.15.2021.09.15.03.55.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 03:55:00 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 38B8618033D; Wed, 15 Sep 2021 12:55:00 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
- <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
- <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
- <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
- <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
- <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
- <4cba7088-f7c8-edcf-02cd-396eb2a56b46@linux.alibaba.com>
- <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
- <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
-Message-ID: <09d0190b-f2cc-9e64-4d3a-4eb0def22b7b@linux.alibaba.com>
-Date:   Wed, 15 Sep 2021 15:34:20 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH perf] perf: ignore deprecation warning when using
+ libbpf's btf__get_from_id()
+In-Reply-To: <CAEf4BzYzCQ4yuNKi3OCNqTXGXJQXt1XXNuhCT5oVF=khx85bXQ@mail.gmail.com>
+References: <20210914170004.4185659-1-andrii@kernel.org>
+ <YUDoNX0eUndsPCu+@krava>
+ <CAEf4BzbU8Ok-7Fsp1uGZ4F6b5GPb58fk1YKgnGwx9+sUBq71tA@mail.gmail.com>
+ <YUDxqnJhjnpdl6vv@kernel.org>
+ <CAEf4BzYzCQ4yuNKi3OCNqTXGXJQXt1XXNuhCT5oVF=khx85bXQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 15 Sep 2021 12:55:00 +0200
+Message-ID: <87y27y5csb.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-
-On 2021/9/15 下午3:22, 王贇 wrote:
-> 
-> 
-> On 2021/9/15 上午11:27, Dave Hansen wrote:
->> On 9/14/21 6:56 PM, 王贇 wrote:
->>>>> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
->>>>> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
->>>> Just turning off tracing for the page fault handler is papering over the
->>>> problem.  It'll just come back later with a slightly different form.
->>>>
->>> Cool~ please let me know when you have the proper approach.
+> On Tue, Sep 14, 2021 at 12:02 PM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
 >>
->> It's an entertaining issue, but I wasn't planning on fixing it myself.
+>> Em Tue, Sep 14, 2021 at 11:28:28AM -0700, Andrii Nakryiko escreveu:
+>> > On Tue, Sep 14, 2021 at 11:21 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>> > >
+>> > > On Tue, Sep 14, 2021 at 10:00:04AM -0700, Andrii Nakryiko wrote:
+>> > > > Perf code re-implements libbpf's btf__load_from_kernel_by_id() API=
+ as
+>> > > > a weak function, presumably to dynamically link against old versio=
+n of
+>> > > > libbpf shared library. Unfortunately this causes compilation warni=
+ng
+>> > > > when perf is compiled against libbpf v0.6+.
+>> > > >
+>> > > > For now, just ignore deprecation warning, but there might be a bet=
+ter
+>> > > > solution, depending on perf's needs.
+>> > >
+>> > > HI,
+>> > > the problem we tried to solve is when perf is using symbols
+>> > > which are not yet available in released libbpf.. but it all
+>> > > linkes in default perf build because it's linked statically
+>> > > libbpf.a in the tree
+>> > >
+>> >
+>> > If you are always statically linking libbpf into perf, there is no
+>> > need to implement this __weak shim. Libbpf is never going to deprecate
+>> > an API if a new/replacement API hasn't been at least in a previous
+>> > released version. So in this case btf__load_from_kernel_by_id() was
+>> > added in libbpf 0.5, and btf__get_from_id() was marked deprecated in
+>> > libbpf 0.6 (not yet released, of course). So with that, do you still
+>> > think we need this __weak re-implementation?
+>> >
+>> > I was wondering if this was done to make latest perf code compile
+>> > against some old libbpf source code or dynamically linked against old
+>> > libbpf. But if that's not the case, the fix should be a removal of
+>> > __weak btf__load_from_kernel_by_id().
 >>
-> 
-> Do you have any suggestion on how should we fix the problem?
-> 
-> I'd like to help fix it, but sounds like all the known working approach
-> are not acceptable...
+>> It was made to build against the libbpf that comes with fedora 34, the
+>> distro I'm using, which is:
+>>
+>> =E2=AC=A2[acme@toolbox perf]$ sudo dnf install libbpf-devel
+>> Package libbpf-devel-2:0.4.0-1.fc34.x86_64 is already installed.
+>> Dependencies resolved.
+>> Nothing to do.
+>> Complete!
+>> =E2=AC=A2[acme@toolbox perf]$ cat /etc/redhat-release
+>> Fedora release 34 (Thirty Four)
+>>
+>> And we have 'make -C tools/perf build-test' that has one entry to build
+>> with LIBBPF_EXTERNAL=3D1, i.e. using whatever libbpf-devel package is
+>> installed in the distro, in addtion to statically linking with the
+>> libbpf in the kernel sources.
+>>
+>> That is done because several distros are linking perf with the libbpf
+>> they ship.
+>>
+>> When I merged the latest upstream this test failed, and I realized that
+>> some files in tools/perf/ had changed to make use of a new function and
+>> that was the reason for the build test failure.
+>>
+>> So I tried to provide a transition help for these cases, initially as a
+>> feature test that would look if that new function was available and if
+>> not, provide the fallback, but then ended up following Jiri's suggestion
+>> for a __weak function, as that involved less coding.
+>>
+>
+> Ok, that's cool, then my "fix" should be fine for now. Can you please
+> land it in perf/core to unblock Stephen's (cc'ed) build failure when
+> merging perf and bpf-next trees?
+>
+> Also it's good to keep in mind that libbpf is now providing
+> LIBBPF_MAJOR_VERSION and LIBBPF_MINOR_VERSION macro, so when
+> statically linking you should be able to use that to detect libbpf
+> version. For shared library cases we should probably also add runtime
+> APIs (e.g., int libbpf_major_version(void), int
+> libbpf_minor_version(void), const char *libbpf_version(void)) so that
+> you can do more detection based on libbpf version at runtime. Let me
+> know if it's something that would be helpful.
 
-Hi, Dave, Peter
+Yes, please! We're currently using this horror to be able to print the
+libbpf version being used by xdp-tools:
 
-What if we just increase the stack size when ftrace enabled?
+https://github.com/xdp-project/xdp-tools/blob/master/lib/util/util.c#L100
 
-Maybe like:
+Would be awesome to have an API function we could just call instead :)
 
-diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
-index a8d4ad85..bc2e0c1 100644
---- a/arch/x86/include/asm/page_64_types.h
-+++ b/arch/x86/include/asm/page_64_types.h
-@@ -12,10 +12,16 @@
- #define KASAN_STACK_ORDER 0
- #endif
+-Toke
 
-+#ifdef CONFIG_FUNCTION_TRACER
-+#define FTRACE_STACK_ORDER 1
-+#else
-+#define FTRACE_STACK_ORDER 0
-+#endif
-+
- #define THREAD_SIZE_ORDER      (2 + KASAN_STACK_ORDER)
- #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
-
--#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
-+#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER + FTRACE_STACK_ORDER)
- #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
-
- #define IRQ_STACK_ORDER (2 + KASAN_STACK_ORDER)
-
-Just like kasan we give more stack space for ftrace, is this looks
-acceptable to you?
-
-Regards,
-Michael Wang
-
-> 
-> Regards,
-> Michael Wang
-> 
