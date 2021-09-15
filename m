@@ -2,92 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCD840BD7C
-	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 04:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC5740BDAB
+	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 04:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhIOCB1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Sep 2021 22:01:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232749AbhIOCB0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Sep 2021 22:01:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AD51C61247;
-        Wed, 15 Sep 2021 02:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631671208;
-        bh=yJDo5QHPK3Gh422st+6KYvGv86eSZJOMPep4D6tt/yU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=n18BW/oSRBYGYGLueRLkET4e6M5JWg9w6tiQVwzifQoMPdRW3DatmP9EQgp5fozIr
-         qq22waIQ6Xc2ukdmTfL9UFw7q25lgXKjOBrsxu1PdLiEU5cUfDM+yZMCbcPff+XKGJ
-         STEKTAFp0OdgYc0r027VNWToOovMStWVpfe6JJWiARtxe2hGPq8bVLr0h5a3LkEDqH
-         obxfurblKhqNEeLFkaZfz/8C4MUEQV8BP4t7MqMMV21P1e1E8KGoudUjnYJl/IZ8Q/
-         frsK8rokEHJzmQwRknX5Ll4Z9a324UjpTILi7qu4gHxjncLWDgP4qq89tcubeHExjC
-         79d29Et+bQGDA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9AB9960970;
-        Wed, 15 Sep 2021 02:00:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229652AbhIOCTW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Sep 2021 22:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229595AbhIOCTW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Sep 2021 22:19:22 -0400
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE21DC061574
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 19:18:03 -0700 (PDT)
+Received: by mail-vk1-xa36.google.com with SMTP id d10so438006vke.10
+        for <bpf@vger.kernel.org>; Tue, 14 Sep 2021 19:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=awHlA3biOFIdC3pl/hV6/Q4L2rePJtQpGF3wUead+/4=;
+        b=MLQin915E3wTWOQpFxSNRySH7LxYp9quDi8bOBS+PikgUpiRpJQ27Zu/BsLEenoanR
+         oV1uhlPUfoMZkJaFfJailZXymr/Nvmpt9SzqCd9ifQJnmlZ7yfJjDlr0KPRGk4//dKc0
+         vY2abCVZc4WTWKXHVerMwoJYgQfCVxG+Ga9fTcYEke2aU+S1PX9+ZoZOJm60ftYpt590
+         hBzZSFDex9ODvhpqn5hA8wnee3E+XPNY+WHvXkIiPGyhuzcNPhYErDc27nQ+KfGegMPM
+         NgQndB0A3t9bZjDKBz6EnfWVFBgmBDqYcrxlXGoSOum0DMJJpA1crVv3pZRhn3QNiGfj
+         zuDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=awHlA3biOFIdC3pl/hV6/Q4L2rePJtQpGF3wUead+/4=;
+        b=eXm1BesWxi505BBrWJX8OB2u4dYdE9ozdkozkca1knkeOX8PZkUtkvZnF87DleX1/D
+         bph5SXMcB/3xlj+vrjwM1zeyDYRLvIuWwHMUGyDWvpa8MU7J+PO1uZBCvd5Q6jC6X+y6
+         a94Sqr9nCtLwAqo7n/tvLqim8iZrQngdLik7uDdeIheeHHpMRVuD+6mDeNFe7XaxVit4
+         PTyMM4cZsonu1mqFLUup9C34ahQHc/Al2Da3eXO9r8cypg/dZFcQtCmQSJ+JTAG6cJz6
+         oKOuJSGBmeybbsh8vSc7QcTtd1g4PPLVOuITxOtuG6WL1Rdm4Ls3yK7GenCXzkczNBDC
+         4lkg==
+X-Gm-Message-State: AOAM533FYFL1gdBVR1d3P/1yPHMgnMWaWIZN8JW0T6E7kQRW3rgjEsln
+        oy1vtdwNwRDKK7EYTJGFrpHDicmqm9/tjQp+5bA=
+X-Google-Smtp-Source: ABdhPJxipl0tP2z1tb92WWR0dmiwbMVl+60RTs3y4N5K7zcD6FN1q7epzG2mmMpDrApMt6d3WOkmEGU1sPkGeLJhL84=
+X-Received: by 2002:a1f:23d0:: with SMTP id j199mr1685027vkj.21.1631672281322;
+ Tue, 14 Sep 2021 19:18:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 00/11] bpf: add support for new btf kind
- BTF_KIND_TAG
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163167120862.9701.11912673154780736226.git-patchwork-notify@kernel.org>
-Date:   Wed, 15 Sep 2021 02:00:08 +0000
-References: <20210914223004.244411-1-yhs@fb.com>
-In-Reply-To: <20210914223004.244411-1-yhs@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
+References: <20210914201642.98734-1-grantseltzer@gmail.com> <CAEf4BzYO-C1eK1m3ii=SBqG7YPpX=GdYJLbo96nK+Vgx-hp-+g@mail.gmail.com>
+In-Reply-To: <CAEf4BzYO-C1eK1m3ii=SBqG7YPpX=GdYJLbo96nK+Vgx-hp-+g@mail.gmail.com>
+From:   Grant Seltzer Richman <grantseltzer@gmail.com>
+Date:   Tue, 14 Sep 2021 22:17:50 -0400
+Message-ID: <CAO658oVvt9ii=J=zySnHm_LdHCrsFTTG2=yv5R4apRgJNDHM9A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] Add sphinx code documentation comments
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Sep 14, 2021 at 8:12 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Sep 14, 2021 at 1:17 PM grantseltzer <grantseltzer@gmail.com> wrote:
+> >
+> > From: Grant Seltzer <grantseltzer@gmail.com>
+> >
+> > This adds comments above five functions in btf.h which document
+> > their uses. These comments are of a format that doxygen and sphinx
+> > can pick up and render. These are rendered by libbpf.readthedocs.org
+> >
+> > Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+> > ---
+> >  tools/lib/bpf/btf.h | 37 +++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 37 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> > index 4a711f990904..05e06f0136e3 100644
+> > --- a/tools/lib/bpf/btf.h
+> > +++ b/tools/lib/bpf/btf.h
+> > @@ -1,5 +1,6 @@
+> >  /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+> >  /* Copyright (c) 2018 Facebook */
+> > +/*! \file */
+>
+> What's the purpose of this? Is it some sort of description for the entire file?
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
+Correct, we need to explicitly add the file to be tracked by doxygen
+in order for function links to work.
 
-On Tue, 14 Sep 2021 15:30:04 -0700 you wrote:
-> LLVM14 added support for a new C attribute ([1])
->   __attribute__((btf_tag("arbitrary_str")))
-> This attribute will be emitted to dwarf ([2]) and pahole
-> will convert it to BTF. Or for bpf target, this
-> attribute will be emitted to BTF directly ([3], [4]).
-> The attribute is intended to provide additional
-> information for
->   - struct/union type or struct/union member
->   - static/global variables
->   - static/global function or function parameter.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v3,01/11] btf: change BTF_KIND_* macros to enums
-    https://git.kernel.org/bpf/bpf-next/c/41ced4cd8802
-  - [bpf-next,v3,02/11] bpf: support for new btf kind BTF_KIND_TAG
-    https://git.kernel.org/bpf/bpf-next/c/b5ea834dde6b
-  - [bpf-next,v3,03/11] libbpf: rename btf_{hash,equal}_int to btf_{hash,equal}_int_tag
-    https://git.kernel.org/bpf/bpf-next/c/30025e8bd80f
-  - [bpf-next,v3,04/11] libbpf: add support for BTF_KIND_TAG
-    https://git.kernel.org/bpf/bpf-next/c/5b84bd10363e
-  - [bpf-next,v3,05/11] bpftool: add support for BTF_KIND_TAG
-    https://git.kernel.org/bpf/bpf-next/c/5c07f2fec003
-  - [bpf-next,v3,06/11] selftests/bpf: test libbpf API function btf__add_tag()
-    https://git.kernel.org/bpf/bpf-next/c/71d29c2d47d1
-  - [bpf-next,v3,07/11] selftests/bpf: change NAME_NTH/IS_NAME_NTH for BTF_KIND_TAG format
-    https://git.kernel.org/bpf/bpf-next/c/3df3bd68d481
-  - [bpf-next,v3,08/11] selftests/bpf: add BTF_KIND_TAG unit tests
-    https://git.kernel.org/bpf/bpf-next/c/35baba7a832f
-  - [bpf-next,v3,09/11] selftests/bpf: test BTF_KIND_TAG for deduplication
-    https://git.kernel.org/bpf/bpf-next/c/ad526474aec1
-  - [bpf-next,v3,10/11] selftests/bpf: add a test with a bpf program with btf_tag attributes
-    https://git.kernel.org/bpf/bpf-next/c/c240ba287890
-  - [bpf-next,v3,11/11] docs/bpf: add documentation for BTF_KIND_TAG
-    https://git.kernel.org/bpf/bpf-next/c/48f5a6c41627
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> >
+> >  #ifndef __LIBBPF_BTF_H
+> >  #define __LIBBPF_BTF_H
+> > @@ -30,11 +31,47 @@ enum btf_endianness {
+> >         BTF_BIG_ENDIAN = 1,
+> >  };
+> >
+> > +/**
+> > + * @brief **btf__free()** frees all data of a BTF object.
+> > + * @param btf BTF object to free
+> > + * @return void
+>
+> agreed to drop this one
+>
+> > + */
+> >  LIBBPF_API void btf__free(struct btf *btf);
+> >
+> > +/**
+> > + * @brief **btf__new()** creates a new instance of a BTF object.
+> > + * from the raw bytes of an ELF's BTF section
+> > + * @param data raw bytes
+> > + * @param size length of raw bytes
+>
+> reads a bit weird, bytes don't have "length". "Number of bytes passed
+> in `data`"?
+>
+> > + * @return new instance of BTF object which has to be eventually freed
+> > + * with **btf__free()**
+> > + */
+> >  LIBBPF_API struct btf *btf__new(const void *data, __u32 size);
+> > +
+> > +/**
+> > + * @brief **btf__new_split()** create a new instance of a BTF object from
+> > + * the provided raw data bytes. It takes another BTF instance, **base_btf**,
+> > + * which serves as a base BTF, which is extended by types in a newly created
+> > + * BTF instance.
+> > + * @param data raw bytes
+> > + * @param size length of raw bytes
+> > + * @param base_btf the base btf object
+> > + * @return struct btf *
+>
+> I didn't think I had to leave a suggestion under every such empty @return...
+>
+> BTW, return documentation is finally a good place where we should
+> document quirky libbpf error returning behavior. Something like this:
+>
+> ```
+> On error, error-code-encoded-as-pointer is returned, not a NULL. To
+> extract error code from such a pointer `libbpf_get_error()` should be
+> used. If `libbpf_set_strict_mode(LIBBPF_STRICT_CLEAN_PTRS)` is
+> enabled, NULL is returned on error instead. In both cases thread-local
+> `errno` variable is always set to error code as well.
+> ```
+>
+> We should have this remark under every pointer-returning API which has
+> this error-code-as-ptr logic (not all APIs do).
+>
+>
+> > + */
+> >  LIBBPF_API struct btf *btf__new_split(const void *data, __u32 size, struct btf *base_btf);
+> > +
+> > +/**
+> > + * @brief **btf__new_empty()** creates an unpopulated BTF object.
+>
+> We can add "Use `btf__add_*()` to populate such BTF object.
+>
+> > + * @return struct btf *
+>
+> another not described @return
+>
+> > + */
+> >  LIBBPF_API struct btf *btf__new_empty(void);
+> > +
+> > +/**
+> > + * @brief **btf__new_empty_split()** creates an unpopulated
+> > + * BTF object from an ELF BTF section except with a base BTF
+> > + * on top of which split BTF should be based.
+>
+> If *base_btf* is NULL, `btf__new_empty_split()` is equivalent to
+> `btf__new_empty()` and creates non-split BTF.
+>
+> > + * @return struct btf *
+>
+> and one more
+>
+> > + */
+> >  LIBBPF_API struct btf *btf__new_empty_split(struct btf *base_btf);
+> >
+> >  LIBBPF_API struct btf *btf__parse(const char *path, struct btf_ext **btf_ext);
+> > --
+> > 2.31.1
+> >
