@@ -2,172 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9835E40C405
-	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 12:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0022340C569
+	for <lists+bpf@lfdr.de>; Wed, 15 Sep 2021 14:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhIOK4X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Sep 2021 06:56:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55580 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232313AbhIOK4X (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Sep 2021 06:56:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631703304;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k6aRK0JmCvGFVEbgpz/kyUiWETl6aFzhRXtN8PVxUb8=;
-        b=GO7C4To77CVdLvHWxAvdFMfWSMxSPCPvwrXyEsr73BfzsqaL9XffR6s4VPl+MXE4peLQ1Y
-        WAwydLZyjjjsQ9nwY8EYpe/8dGivYclWIbyUsF3iK78d9tfkIAnZGVX5oVaBCw8BmSuWqy
-        AiKqop3y31eNQJKHF9q8j6zagBgAvf0=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-MGZhEXWPNqi9nzLVz5SAwA-1; Wed, 15 Sep 2021 06:55:03 -0400
-X-MC-Unique: MGZhEXWPNqi9nzLVz5SAwA-1
-Received: by mail-ej1-f69.google.com with SMTP id bi9-20020a170906a24900b005c74b30ff24so1311800ejb.5
-        for <bpf@vger.kernel.org>; Wed, 15 Sep 2021 03:55:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=k6aRK0JmCvGFVEbgpz/kyUiWETl6aFzhRXtN8PVxUb8=;
-        b=kysq/GE+7fmixQqxHJjpLm+spOLOl81okQdL2VSn38YiajlJx9zMMwjc0xluigk67i
-         u+m4C2SjpTCwhAuzp6YAyCg0jiXmWSnjizR25XxFPD0yypWh5nSP3DOS7jA/wA3ovthG
-         5M3YstjcmgAVSB+0NQu758h9NU5xXfb6iXxrjrbYxJ1mVAh4mHdlyTSd2XTCHzvIZuED
-         0GWTm1vLgeUu6/TSZpOHqkM7lx+qXn+TFLeF6BDP21Jac7sjneefTawoNYHGgAKO1f+J
-         A1fkOlqujUPvbmnE/q+TzDnYCEyMlJ1hzUck6jwzASn0bK50NdHSPYn2bimBJZnCu+VT
-         CvEg==
-X-Gm-Message-State: AOAM533M4pEDgrgFv0Fpn26lCWz5hqh9FfM67elZk5k+TlGeKCgseZQd
-        lqrm3ZhiF/M7ahvELzLf3LRIeTTN8jphoJqj3Q6ttUcxCt46RNjfS+6JJdhlqD10KLJspxDzMG/
-        ou++PNL4WHjtq
-X-Received: by 2002:aa7:cad0:: with SMTP id l16mr17582601edt.16.1631703301958;
-        Wed, 15 Sep 2021 03:55:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4t55aAkeNk6nM18qjvbS2OL7h+fFzS0jLz2fm5kg2tg67M4vRbbrMKMgG904mzqZi6lW0Xg==
-X-Received: by 2002:aa7:cad0:: with SMTP id l16mr17582585edt.16.1631703301655;
-        Wed, 15 Sep 2021 03:55:01 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id r16sm6963174edt.15.2021.09.15.03.55.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 03:55:00 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 38B8618033D; Wed, 15 Sep 2021 12:55:00 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH perf] perf: ignore deprecation warning when using
- libbpf's btf__get_from_id()
-In-Reply-To: <CAEf4BzYzCQ4yuNKi3OCNqTXGXJQXt1XXNuhCT5oVF=khx85bXQ@mail.gmail.com>
-References: <20210914170004.4185659-1-andrii@kernel.org>
- <YUDoNX0eUndsPCu+@krava>
- <CAEf4BzbU8Ok-7Fsp1uGZ4F6b5GPb58fk1YKgnGwx9+sUBq71tA@mail.gmail.com>
- <YUDxqnJhjnpdl6vv@kernel.org>
- <CAEf4BzYzCQ4yuNKi3OCNqTXGXJQXt1XXNuhCT5oVF=khx85bXQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 15 Sep 2021 12:55:00 +0200
-Message-ID: <87y27y5csb.fsf@toke.dk>
+        id S237103AbhIOMlD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Sep 2021 08:41:03 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:35611 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234331AbhIOMlD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Sep 2021 08:41:03 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 55CF932009C4;
+        Wed, 15 Sep 2021 08:39:43 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 15 Sep 2021 08:39:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=anq4my38VxpmhyCZ2E2/QGU2BQg
+        88QWfeXmMzvtQi0w=; b=lrOVr4VyUjl2hLICKAt8tfrN7QMcMRJyy+VK3390gFl
+        7TqHP2M0MRliQJSlQm+37JBN7SbB3nq/JLX1M5B1MLQloh6m+TeBrg3j0Kpghqvl
+        M5O+ybLbCmJK5Bu6bDJfCQ1BWuoVYfmpgimQoV9unS03N4sMnV/qdcKEEUb6mMx6
+        aE9Nakn+ea3psvOnOfyTUwO2x8yHEZpJY+33w4Qd28wVCOuWZ376LP1hHg3vpHpx
+        Hd5zCKfXoeMNxFMM0veSlJOiv2wvPIgbH1Xqxvb6JxiUqfWtRD7CkgFmG0hEYBcI
+        B122QHqK6ydUAVlMWukAIRxotwV7sW3cSSazl4bwHRA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=anq4my
+        38VxpmhyCZ2E2/QGU2BQg88QWfeXmMzvtQi0w=; b=tooSXNCS134k861NLa+b2y
+        A904iUWGOrHkd3VM9a/mszoR71VYSMWJCpVHXl9/krqc1p4zYQGZKrDZVBfrR7ml
+        8Yl/BwgfTr9Qk1frWvU9LBAnZOc7I2+ssp3gDKqax+jTKhY3gvvNfrxOfHaEh3IY
+        NXZI67j32pOwXHlnhUyji+2oJwq+8X/877pIBiEemuNAqXU9JcmxpsCulkk1QCm6
+        5nxtQT/RqP8se0svaq4y5/kDSAqJkyTIERnrpv9iQX0a4XLcf4ca8QZovui5UA8d
+        vCGy3CQZ0GwdC/+ryeDlp7tn1igvmkzVLGR9MaiG1LmBXW9Hs3t+fG7gHdiyL1Vg
+        ==
+X-ME-Sender: <xms:julBYcbxZJG_9qnxBIygLn_XJ6T-ipIaNmuVFdaoqcOTCg9vnGXy4w>
+    <xme:julBYXbxsHfe-dxoB7BkVjc82fpbdWrl0j9C_eFc3_qgB40MrmfA3-Oe8yp385oRY
+    UnXigRDU6ZW6Q>
+X-ME-Received: <xmr:julBYW8rb9M7jVcZoLe3qhUClZSjlJRPE5BbS8cRclwCSy-JkgbogyAysdRT85k1Qrm4lKh68WUTBoAveXWsvb3NkSGC8gGv>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehuddgheduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:julBYWqkknjA1N2kokRYVPObO_MJSpizbiWTc7T3VLzjVYYc2GSHvA>
+    <xmx:julBYXoBI9CoY1vSwH3MvQUyMgRza_kG4PPlBbjNGQwpphBdJMbWZw>
+    <xmx:julBYUTZmbs3oNtkNVmbl3rDYj2B8Q20KLgcf9WakyZcecRhvnLK_w>
+    <xmx:julBYYdUqi1Wm1EGTfIbVcbbNxoJp8wNvR650Pjn6GRkb48o2IT-xA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 15 Sep 2021 08:39:42 -0400 (EDT)
+Date:   Wed, 15 Sep 2021 14:39:39 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Ovidiu Panait <ovidiu.panait@windriver.com>
+Cc:     stable@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net
+Subject: Re: [PATCH 4.19 00/13] bpf: backport fixes for
+ CVE-2021-34556/CVE-2021-35477
+Message-ID: <YUHpi57yv6DX/AtN@kroah.com>
+References: <20210913153537.2162465-1-ovidiu.panait@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913153537.2162465-1-ovidiu.panait@windriver.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Mon, Sep 13, 2021 at 06:35:24PM +0300, Ovidiu Panait wrote:
+> Backport summary
+> ----------------
+> 679c782de14b ("bpf/verifier: per-register parent pointers")
+> 	* Context patch for 2039f26f3aca5 ("bpf: Fix leakage due to
+> 	  insufficient speculative store bypass mitigation").
+> 	* Context adjustments because of the code added by post-4.19 commit:
+> 	  f92a819b4cbef ("bpf: prevent out of bounds speculation on pointer
+> 	  arithmetic").
+> 
+> 0bae2d4d62d5 ("bpf: correct slot_type marking logic to allow more stack slot sharing")
+> 	* Context patch for 2039f26f3aca5 ("bpf: Fix leakage due to
+> 	  insufficient speculative store bypass mitigation").
+> 	* Minor context adjustement in selftest.
+> 
+> 2011fccfb61b ("bpf: Support variable offset stack access from helpers")
+> 	* Context patch for 2039f26f3aca5 ("bpf: Fix leakage due to
+> 	  insufficient speculative store bypass mitigation").
+> 	* 4.19 does not have the reg_state(env, regno) helper defined, so
+> 	  replace the call with "cur_regs(env) + regno".
+> 
+> f2bcd05ec7b8 ("bpf: Reject indirect var_off stack access in raw mode")
+> 	* Follow-up fix for 2011fccfb61bb ("bpf: Support variable offset stack
+> 	  access from helpers").
+> 	* Clean cherry-pick.
+> 
+> 088ec26d9c2d ("bpf: Reject indirect var_off stack access in unpriv")
+> 	* Follow-up fix for 2011fccfb61bb ("bpf: Support variable offset stack
+> 	  access from helpers").
+> 	* Drop comment in retrieve_ptr_limit(), as it was made obsolete by
+> 	  post-4.19 commit 45bfdd767e235 ("bpf: Tighten speculative pointer
+> 	  arithmetic mask").
+> 
+> 107c26a70ca8 ("bpf: Sanity check max value for var_off stack access")
+> 	* Follow-up fix for 2011fccfb61bb ("bpf: Support variable offset stack
+> 	  access from helpers").
+> 	* Clean cherry-pick.
+> 
+> 8ff80e96e3cc ("selftests/bpf: Test variable offset stack access")
+> 	* Selftest follow-up for 2011fccfb61bb ("bpf: Support variable offset
+> 	  stack access from helpers").
+> 	* Post-4.19, the verifier tests were split into different
+> 	  files, in 4.19 they are still all in test_verifier.c, so apply the
+> 	  changes manually.
+> 
+> f7cf25b2026d ("bpf: track spill/fill of constants")
+> 	* Context patch for 2039f26f3aca5 ("bpf: Fix leakage due to
+> 	  insufficient speculative store bypass mitigation").
+> 	* Drop verbose_linfo() calls, as the function is not implemented in 4.19.
+> 	* Adjust mark_reg_read() calls to match the prototype in 4.19.
+> 	  (mark_reg_read() was changed to take 4 parameters in post-4.19 commit
+> 	  5327ed3d44b75("bpf: verifier: mark verified-insn with sub-register
+> 	  zext flag"), but backporting it is out of scope for this patchseries).
+> 
+> fc559a70d57c ("selftests/bpf: fix tests due to const spill/fill")
+> 	* Selftest follow-up for f7cf25b2026d ("bpf: track spill/fill of constants").
+> 	* Post-4.19, the verifier tests were split into different
+> 	  files, in 4.19 they are still all in test_verifier.c, so apply the
+> 	  changes manually.
+> 
+> f5e81d111750 ("bpf: Introduce BPF nospec instruction for mitigating Spectre v4")
+> 	* Contextual adjustments.
+> 	* Drop arch/powerpc/net/bpf_jit_comp32.c changes, as the file is not
+> 	  present in 4.19
+> 	* Drop riscv changes, as arch/riscv/net/bpf_jit_comp.c file is not
+> 	  present in 4.19
+> 
+> 2039f26f3aca ("bpf: Fix leakage due to insufficient speculative store bypass mitigation")
+> 	* Contextual adjustments.
+> 	* Apply check_stack_write_fixed_off() changes in check_stack_write().
+> 	* Replace env->bypass_spec_v4 -> env->allow_ptr_leaks.
+> 
+> c9e73e3d2b1e ("bpf: verifier: Allocate idmap scratch in verifier env")
+> e042aa532c84 ("bpf: Fix pointer arithmetic mask tightening under state")
+> 	* Contextual adjustments.
+> 
+> With this patchseries all bpf verifier selftests pass (tested in qemu for x86_64):
+> root@intel-x86-64:~# ./test_verifier
+> ...
+> #663/p pass modified ctx pointer to helper, 3 OK
+> #664/p mov64 src == dst OK
+> #665/p mov64 src != dst OK
+> #666/u calls: ctx read at start of subprog OK
+> #666/p calls: ctx read at start of subprog OK
+> Summary: 932 PASSED, 0 SKIPPED, 0 FAILED
+> 
 
-> On Tue, Sep 14, 2021 at 12:02 PM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
->>
->> Em Tue, Sep 14, 2021 at 11:28:28AM -0700, Andrii Nakryiko escreveu:
->> > On Tue, Sep 14, 2021 at 11:21 AM Jiri Olsa <jolsa@redhat.com> wrote:
->> > >
->> > > On Tue, Sep 14, 2021 at 10:00:04AM -0700, Andrii Nakryiko wrote:
->> > > > Perf code re-implements libbpf's btf__load_from_kernel_by_id() API=
- as
->> > > > a weak function, presumably to dynamically link against old versio=
-n of
->> > > > libbpf shared library. Unfortunately this causes compilation warni=
-ng
->> > > > when perf is compiled against libbpf v0.6+.
->> > > >
->> > > > For now, just ignore deprecation warning, but there might be a bet=
-ter
->> > > > solution, depending on perf's needs.
->> > >
->> > > HI,
->> > > the problem we tried to solve is when perf is using symbols
->> > > which are not yet available in released libbpf.. but it all
->> > > linkes in default perf build because it's linked statically
->> > > libbpf.a in the tree
->> > >
->> >
->> > If you are always statically linking libbpf into perf, there is no
->> > need to implement this __weak shim. Libbpf is never going to deprecate
->> > an API if a new/replacement API hasn't been at least in a previous
->> > released version. So in this case btf__load_from_kernel_by_id() was
->> > added in libbpf 0.5, and btf__get_from_id() was marked deprecated in
->> > libbpf 0.6 (not yet released, of course). So with that, do you still
->> > think we need this __weak re-implementation?
->> >
->> > I was wondering if this was done to make latest perf code compile
->> > against some old libbpf source code or dynamically linked against old
->> > libbpf. But if that's not the case, the fix should be a removal of
->> > __weak btf__load_from_kernel_by_id().
->>
->> It was made to build against the libbpf that comes with fedora 34, the
->> distro I'm using, which is:
->>
->> =E2=AC=A2[acme@toolbox perf]$ sudo dnf install libbpf-devel
->> Package libbpf-devel-2:0.4.0-1.fc34.x86_64 is already installed.
->> Dependencies resolved.
->> Nothing to do.
->> Complete!
->> =E2=AC=A2[acme@toolbox perf]$ cat /etc/redhat-release
->> Fedora release 34 (Thirty Four)
->>
->> And we have 'make -C tools/perf build-test' that has one entry to build
->> with LIBBPF_EXTERNAL=3D1, i.e. using whatever libbpf-devel package is
->> installed in the distro, in addtion to statically linking with the
->> libbpf in the kernel sources.
->>
->> That is done because several distros are linking perf with the libbpf
->> they ship.
->>
->> When I merged the latest upstream this test failed, and I realized that
->> some files in tools/perf/ had changed to make use of a new function and
->> that was the reason for the build test failure.
->>
->> So I tried to provide a transition help for these cases, initially as a
->> feature test that would look if that new function was available and if
->> not, provide the fallback, but then ended up following Jiri's suggestion
->> for a __weak function, as that involved less coding.
->>
->
-> Ok, that's cool, then my "fix" should be fine for now. Can you please
-> land it in perf/core to unblock Stephen's (cc'ed) build failure when
-> merging perf and bpf-next trees?
->
-> Also it's good to keep in mind that libbpf is now providing
-> LIBBPF_MAJOR_VERSION and LIBBPF_MINOR_VERSION macro, so when
-> statically linking you should be able to use that to detect libbpf
-> version. For shared library cases we should probably also add runtime
-> APIs (e.g., int libbpf_major_version(void), int
-> libbpf_minor_version(void), const char *libbpf_version(void)) so that
-> you can do more detection based on libbpf version at runtime. Let me
-> know if it's something that would be helpful.
+All now queued up, thanks for the backports!
 
-Yes, please! We're currently using this horror to be able to print the
-libbpf version being used by xdp-tools:
-
-https://github.com/xdp-project/xdp-tools/blob/master/lib/util/util.c#L100
-
-Would be awesome to have an API function we could just call instead :)
-
--Toke
-
+greg k-h
