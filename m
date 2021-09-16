@@ -2,182 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D64B40D88A
-	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 13:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE79240D8E8
+	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 13:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237698AbhIPLcD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Sep 2021 07:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236506AbhIPLcD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Sep 2021 07:32:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 161C061351;
-        Thu, 16 Sep 2021 11:30:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631791842;
-        bh=JomLulPT/VCa+Ld8PCnrA61X+KN3aqBET6nR8VSiCbM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=k1M+1/F/Hux3jkf4B1W11De6kD+bQcAiJRC79Lj20yajPs9mGiBCduaxXvwvJ4XhA
-         dz+xAbstwBu4vi6QwIV/1347BkfeEB0wREiMQw2yXelvXXoeIvClKJV4KOiz2OyZVn
-         G1X8lr0807q4YeIKiVdeVkBVjmq97q7KSQmJ6kLHslXeqUodbT6QXU3W3Vht4VuI1i
-         ZWiKHS1pFRZ03ggixwAFQBUeKJ3WiLCZs/wfbcbowQqkibVOHxa3f39JEN88EzPThd
-         wUzW65zAYR/d28PKzqn5MLFVWqJzhv5umIFSbzQA9Yay51lRWo4FcOcebUS/V3MrwW
-         o6yVi5yAZV82A==
-Date:   Thu, 16 Sep 2021 13:30:36 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S234769AbhIPLhs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Sep 2021 07:37:48 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45364 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237498AbhIPLhs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Sep 2021 07:37:48 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mQpgo-000BFV-6M; Thu, 16 Sep 2021 13:36:26 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mQpgn-000FX7-Tu; Thu, 16 Sep 2021 13:36:25 +0200
+Subject: Re: Patch "bpf: Fix off-by-one in tail call count limiting" has been
+ added to the 5.14-stable tree
+To:     Sasha Levin <sashal@kernel.org>, stable-commits@vger.kernel.org,
+        johan.almbladh@anyfinetworks.com
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Beckett <david.beckett@netronome.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 08/24] tools: bpftool: update bpftool-prog.rst reference
-Message-ID: <20210916133036.37c50383@coco.lan>
-In-Reply-To: <33d66a49-2fc0-57a1-c1e5-34e932bcc237@isovalent.com>
-References: <cover.1631783482.git.mchehab+huawei@kernel.org>
-        <dc4bae7a14518fbfff20a0f539df06a5c19b09de.1631783482.git.mchehab+huawei@kernel.org>
-        <eb80e8f5-b9d7-5031-8ebb-4595bb295dbf@isovalent.com>
-        <20210916124930.7ae3b722@coco.lan>
-        <33d66a49-2fc0-57a1-c1e5-34e932bcc237@isovalent.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
+References: <20210916113154.692945-1-sashal@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ad8a98b3-29fc-fb43-9a0f-d1ead5af6c81@iogearbox.net>
+Date:   Thu, 16 Sep 2021 13:36:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210916113154.692945-1-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26296/Thu Sep 16 10:23:58 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, 16 Sep 2021 11:57:51 +0100
-Quentin Monnet <quentin@isovalent.com> escreveu:
+Hi Sasha,
 
-> 2021-09-16 12:49 UTC+0200 ~ Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org>
-> > Hi Quentin,
-> > 
-> > Em Thu, 16 Sep 2021 10:43:45 +0100
-> > Quentin Monnet <quentin@isovalent.com> escreveu:
-> >   
-> >> 2021-09-16 11:14 UTC+0200 ~ Mauro Carvalho Chehab
-> >> <mchehab+huawei@kernel.org>  
-> >>> The file name: Documentation/bpftool-prog.rst
-> >>> should be, instead: tools/bpf/bpftool/Documentation/bpftool-prog.rst.
-> >>>
-> >>> Update its cross-reference accordingly.
-> >>>
-> >>> Fixes: a2b5944fb4e0 ("selftests/bpf: Check consistency between bpftool source, doc, completion")
-> >>> Fixes: ff69c21a85a4 ("tools: bpftool: add documentation")    
-> >>
-> >> Hi,
-> >> How is this a fix for the commit that added the documentation in bpftool?
-> >>  
-> >>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> >>> ---
-> >>>  tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> >>> index be54b7335a76..27a2c369a798 100755
-> >>> --- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> >>> +++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> >>> @@ -374,7 +374,7 @@ class ManProgExtractor(ManPageExtractor):
-> >>>      """
-> >>>      An extractor for bpftool-prog.rst.
-> >>>      """
-> >>> -    filename = os.path.join(BPFTOOL_DIR, 'Documentation/bpftool-prog.rst')
-> >>> +    filename = os.path.join(BPFTOOL_DIR, 'tools/bpf/bpftool/Documentation/bpftool-prog.rst')
-> >>>  
-> >>>      def get_attach_types(self):
-> >>>          return self.get_rst_list('ATTACH_TYPE')
-> >>>     
-> >>
-> >> No I don't believe it should. BPFTOOL_DIR already contains
-> >> 'tools/bpf/bpftool' and the os.path.join() concatenates the two path
-> >> fragments.
-> >>
-> >> Where is this suggestion coming from? Did you face an issue with the script?  
-> > 
-> > No, I didn't face any issues with this script.
-> > 
-> > The suggestion cames from the script at:
-> > 
-> > 	./scripts/documentation-file-ref-check
-> > 
-> > which is meant to discover broken doc references. 
-> > 
-> > Such script has already a rule to handle stuff under tools/:
-> > 
-> > 		# Accept relative Documentation patches for tools/
-> > 		if ($f =~ m/tools/) {
-> > 			my $path = $f;
-> > 			$path =~ s,(.*)/.*,$1,;
-> > 			next if (grep -e, glob("$path/$ref $path/../$ref $path/$fulref"));
-> > 		}
-> > 
-> > but it seems it needs a fixup in order for it to stop reporting issues
-> > at test_bpftool_synctypes.py:
-> > 
-> > 	$ ./scripts/documentation-file-ref-check 
-> > 	...
-> > 	tools/testing/selftests/bpf/test_bpftool_synctypes.py: Documentation/bpftool-prog.rst
-> > 	tools/testing/selftests/bpf/test_bpftool_synctypes.py: Documentation/bpftool-map.rst
-> > 	tools/testing/selftests/bpf/test_bpftool_synctypes.py: Documentation/bpftool-cgroup.rst  
+On 9/16/21 1:31 PM, Sasha Levin wrote:
+> This is a note to let you know that I've just added the patch titled
 > 
-> Oh, I see, thanks for explaining. I didn't know this script would catch
-> the paths in bpftool's test file.
+>      bpf: Fix off-by-one in tail call count limiting
 > 
-> > 
-> > I'll drop the patches touching it for a next version, probably
-> > adding a fix for such script.
-> > 
-> > Thanks,
-> > Mauro
-> >   
+> to the 5.14-stable tree which can be found at:
+>      http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 > 
-> Sounds good to me, thanks a lot!
+> The filename of the patch is:
+>       bpf-fix-off-by-one-in-tail-call-count-limiting.patch
+> and it can be found in the queue-5.14 subdirectory.
+> 
+> If you, or anyone else, feels it should not be added to the stable tree,
+> please let <stable@vger.kernel.org> know about it.
+> 
+> commit 0af0fa0371eb376731a350bfdd8687e7ec206bb9
+> Author: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> Date:   Wed Jul 28 18:47:41 2021 +0200
+> 
+>      bpf: Fix off-by-one in tail call count limiting
+>      
+>      [ Upstream commit b61a28cf11d61f512172e673b8f8c4a6c789b425 ]
 
-The enclosed patch should do the trick.
+Please either drop this commit from stable queues, or also queue its revert as
+well (in case you don't have a filter in place, and there's a chance this could
+get re-queued again in future by accident):
 
-> Quentin
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f9dabe016b63c9629e152bf876c126c29de223cb
+
+>      Before, the interpreter allowed up to MAX_TAIL_CALL_CNT + 1 tail calls.
+>      Now precisely MAX_TAIL_CALL_CNT is allowed, which is in line with the
+>      behavior of the x86 JITs.
+>      
+>      Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+>      Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>      Acked-by: Yonghong Song <yhs@fb.com>
+>      Link: https://lore.kernel.org/bpf/20210728164741.350370-1-johan.almbladh@anyfinetworks.com
+>      Signed-off-by: Sasha Levin <sashal@kernel.org>
+> 
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 0a28a8095d3e..82af6279992d 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1564,7 +1564,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+>   
+>   		if (unlikely(index >= array->map.max_entries))
+>   			goto out;
+> -		if (unlikely(tail_call_cnt > MAX_TAIL_CALL_CNT))
+> +		if (unlikely(tail_call_cnt >= MAX_TAIL_CALL_CNT))
+>   			goto out;
+>   
+>   		tail_call_cnt++;
+> 
 
 Thanks,
-Mauro
-
-[PATCH] scripts: documentation-file-ref-check: fix bpf selftests path
-
-tools/testing/selftests/bpf/test_bpftool_synctypes.py use
-relative patches on the top of BPFTOOL_DIR:
-
-	BPFTOOL_DIR = os.path.join(LINUX_ROOT, 'tools/bpf/bpftool')
-
-Change the script to automatically convert:
-
-	testing/selftests/bpf -> bpf/bpftool
-
-In order to properly check the files used by such script.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-diff --git a/scripts/documentation-file-ref-check b/scripts/documentation-file-ref-check
-index 7187ea5e5149..2d91cfe11cd2 100755
---- a/scripts/documentation-file-ref-check
-+++ b/scripts/documentation-file-ref-check
-@@ -144,6 +144,7 @@ while (<IN>) {
- 		if ($f =~ m/tools/) {
- 			my $path = $f;
- 			$path =~ s,(.*)/.*,$1,;
-+			$path =~ s,testing/selftests/bpf,bpf/bpftool,;
- 			next if (grep -e, glob("$path/$ref $path/../$ref $path/$fulref"));
- 		}
- 
-
-
-
+Daniel
