@@ -2,97 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BF540D410
-	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 09:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E15340D433
+	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 10:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbhIPHup (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Sep 2021 03:50:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54469 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229908AbhIPHug (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 16 Sep 2021 03:50:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631778555;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UWyWiu8lmLKSnwT/n684r2szfzzyT+xXhGueBd2kHG8=;
-        b=L1p0EBFgwlfL3BFW4G+BEz8esi4JIjKSdjgrA8lqSXaazbks8Ec8yGQFChKk0S4EICNOvV
-        vVTgDEkJEwYwA/7xUtIyQHt5Cd/KeAHMHLdktI1ZpcMjHZGxBF8jNDiV8BwOKqQeIdvmKO
-        fFZOs9WVsYGPR8HHw81XY0EAdhtLs7k=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-j4PoB_4SMoyy34yAhHAcUA-1; Thu, 16 Sep 2021 03:49:14 -0400
-X-MC-Unique: j4PoB_4SMoyy34yAhHAcUA-1
-Received: by mail-lf1-f71.google.com with SMTP id a28-20020a056512021c00b003f5883dcd4bso3149705lfo.1
-        for <bpf@vger.kernel.org>; Thu, 16 Sep 2021 00:49:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=UWyWiu8lmLKSnwT/n684r2szfzzyT+xXhGueBd2kHG8=;
-        b=Wg79XYCexBrjAook9bYovui5AQjLdlt6GTy105ACRunfCe6c8v+3a3IuGwKNDvzAU8
-         sE0hldBdqub9PunT8mDGcw5+F4TIR6eEVn6lvxpLerdeIls8xS+S9yoQBZ385g5gMU+8
-         Q8YGuGGRvxgOdYWd/HUxABQ6HKZvWHQ5grykCeg44xcahVo1HajVecvQB29DyrOM0yW7
-         mSmwbywOCv69jvx7pACYMoZfc/UxkwZCL0KqT2ZvZW5FZOY/GvJ7icSlQ4SkbZ28s0HQ
-         a4VSRQxINktU091zZ7kFkuf93Zw5mnI9HlNfn6mXWxVG3K8lRpnh9y3r+ZLSuH63ft6D
-         +s4A==
-X-Gm-Message-State: AOAM533+nR5f0QY/8LA0DpmqQCgp20kdBlKKWqLbvyex3KXkArdnxrBW
-        kkgCpR4bRy2ns88GOeJRg/jR9vm/sENgsUPdPF35LgXx98wpeiY43V/J29sNwZ0rfkfzd3CE4YS
-        pq0gJUB061jXb
-X-Received: by 2002:a2e:81c3:: with SMTP id s3mr3905654ljg.181.1631778552971;
-        Thu, 16 Sep 2021 00:49:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDeXtKHmd9q3QVtiFXQb9vFArgWBjssBwLZCdGeI3Fk+2GVhuxaxjEVzS7LvgE8/e5kwGs6w==
-X-Received: by 2002:a2e:81c3:: with SMTP id s3mr3905632ljg.181.1631778552733;
-        Thu, 16 Sep 2021 00:49:12 -0700 (PDT)
-Received: from [192.168.42.238] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
-        by smtp.gmail.com with ESMTPSA id l2sm190193lfe.1.2021.09.16.00.49.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Sep 2021 00:49:12 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, daniel@iogearbox.net, kuba@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH bpf-next] bpf: Document BPF licensing.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-References: <20210916032104.35822-1-alexei.starovoitov@gmail.com>
-Message-ID: <0d82359a-067b-b590-ae19-d360ccc7c0dd@redhat.com>
-Date:   Thu, 16 Sep 2021 09:49:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234938AbhIPIB6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Sep 2021 04:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234882AbhIPIB5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Sep 2021 04:01:57 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B0BC061574;
+        Thu, 16 Sep 2021 01:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=/QXwV71Kp89im184T0V/ymrJou00nyhzJ+R4oD+1+9E=; b=IkOcVzKq4+f8IOOQbzP3FeT1dy
+        G1WF51P7rzx3jxur49KY7W50vga9kSNq3gDNzq5+LEEVlP6/9A2H8BWfO9vE9O3WwiZSXCKqj+cXg
+        JIKU1QHpzZrloTIieHyQxKEd2th7ofkEa6bXEY63k5vDhpEwxvwHy8BvwQNMVo5unSgFZOESHDWdu
+        vhbUn20zbcRXG+dbat4OfdKSVfEEMtSISJKA3CRVWlhuU83d5iir6IVupT1Pe3lKJawvXgvSGzU64
+        f/NQpxQ4zzZ3UG4Dx3D1JRXhMn+90EGUHCmDeFm6PdMFmsRgPkZyKVI5XsRhFhnKLA3DvqkqokmHv
+        /vuzOSGA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQmJd-003bfD-7X; Thu, 16 Sep 2021 08:00:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EFCD83000A3;
+        Thu, 16 Sep 2021 10:00:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A17002CD48C2B; Thu, 16 Sep 2021 10:00:15 +0200 (CEST)
+Date:   Thu, 16 Sep 2021 10:00:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, jroedel@suse.de, x86@kernel.org
+Subject: Re: [PATCH] x86/dumpstack/64: Add guard pages to stack_info
+Message-ID: <YUL5j/lY0mtx4NMq@hirez.programming.kicks-ass.net>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <20210910153839.GH4323@worktop.programming.kicks-ass.net>
+ <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
+ <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+ <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
+ <YUB5VchM3a/MiZpX@hirez.programming.kicks-ass.net>
+ <3f26f7a2-0a09-056a-3a7a-4795b6723b60@linux.alibaba.com>
+ <YUIOgmOfnOqPrE+z@hirez.programming.kicks-ass.net>
+ <76de02b7-4d87-4a3a-e4d4-048829749887@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20210916032104.35822-1-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <76de02b7-4d87-4a3a-e4d4-048829749887@linux.alibaba.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Sep 16, 2021 at 11:47:49AM +0800, 王贇 wrote:
 
-On 16/09/2021 05.21, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov<ast@kernel.org>
->
-> Document and clarify BPF licensing.
->
-> Signed-off-by: Alexei Starovoitov<ast@kernel.org>
-> Acked-by: Toke Høiland-Jørgensen<toke@redhat.com>
-> Acked-by: Daniel Borkmann<daniel@iogearbox.net>
-> Acked-by: Joe Stringer<joe@cilium.io>
-> Acked-by: Lorenz Bauer<lmb@cloudflare.com>
-> Acked-by: Dave Thaler<dthaler@microsoft.com>
-> ---
->   Documentation/bpf/bpf_licensing.rst | 91 +++++++++++++++++++++++++++++
->   1 file changed, 91 insertions(+)
->   create mode 100644 Documentation/bpf/bpf_licensing.rst
+> I did some debug and found the issue, we are missing:
+> 
+> @@ -122,7 +137,10 @@ static __always_inline bool in_exception_stack(unsigned long *stack, struct stac
+>         info->type      = ep->type;
+>         info->begin     = (unsigned long *)begin;
+>         info->end       = (unsigned long *)end;
+> -       info->next_sp   = (unsigned long *)regs->sp;
+> +
+> +       if (!(ep->type & STACK_TYPE_GUARD))
+> +               info->next_sp   = (unsigned long *)regs->sp;
+> +
+>         return true;
+>  }
+> 
+> as the guard page are not working as real stack I guess?
 
+Correct, but I thought I put if (type & GUARD) terminators in all paths
+that ended up caring about ->next_sp. Clearly I seem to have missed one
+:/
 
-Thanks for working on this, it is good this gets clarified.
+Let me try and figure out where that happens.
 
+> With that one things going on correctly, and some trivials below.
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> >  enum stack_type {
+> > -	STACK_TYPE_UNKNOWN,
+> > +	STACK_TYPE_UNKNOWN = 0,
+> 
+> Is this necessary?
 
+No, but it makes it more explicit we care about the value.
+
+> >  	STACK_TYPE_TASK,
+> >  	STACK_TYPE_IRQ,
+> >  	STACK_TYPE_SOFTIRQ,
+> >  	STACK_TYPE_ENTRY,
+> >  	STACK_TYPE_EXCEPTION,
+> >  	STACK_TYPE_EXCEPTION_LAST = STACK_TYPE_EXCEPTION + N_EXCEPTION_STACKS-1,
+> > +	STACK_TYPE_GUARD = 0x80,
+
+Note that this is a flag.
+
+> >  };
+> >  
+> >  struct stack_info {
+> > --- a/arch/x86/kernel/dumpstack_64.c
+> > +++ b/arch/x86/kernel/dumpstack_64.c
+> > @@ -32,9 +32,15 @@ const char *stack_type_name(enum stack_t
+> >  {
+> >  	BUILD_BUG_ON(N_EXCEPTION_STACKS != 6);
+> >  
+> > +	if (type == STACK_TYPE_TASK)
+> > +		return "TASK";
+> > +
+> >  	if (type == STACK_TYPE_IRQ)
+> >  		return "IRQ";
+> >  
+> > +	if (type == STACK_TYPE_SOFTIRQ)
+> > +		return "SOFTIRQ";
+> > +
+> 
+> Do we need one for GUARD too?
+
+No, GUARD is not a single type but a flag. The caller can trivially do
+something like:
+
+	"%s %s", stack_type_name(type & ~GUARD),
+	         (type & GUARD) ?  "GUARD" : ""
+
+> >  	if (type == STACK_TYPE_ENTRY) {
+> >  		/*
+> >  		 * On 64-bit, we have a generic entry stack that we
+
+> > @@ -111,10 +122,11 @@ static __always_inline bool in_exception
+> >  	k = (stk - begin) >> PAGE_SHIFT;
+> >  	/* Lookup the page descriptor */
+> >  	ep = &estack_pages[k];
+> > -	/* Guard page? */
+> > +	/* unknown entry */
+> >  	if (!ep->size)
+> >  		return false;
+> >  
+> > +
+> 
+> Extra line?
+
+Gone now, thanks!
