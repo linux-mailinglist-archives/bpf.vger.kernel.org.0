@@ -2,126 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C66040D6CC
-	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 11:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D72140D6A9
+	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 11:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237169AbhIPJ5g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Sep 2021 05:57:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58044 "EHLO mail.kernel.org"
+        id S236296AbhIPJ4u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Sep 2021 05:56:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236073AbhIPJ4s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Sep 2021 05:56:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D6596120F;
+        id S235798AbhIPJ4q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Sep 2021 05:56:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 310CA61207;
         Thu, 16 Sep 2021 09:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631786126;
-        bh=75WrKbSFBKg3yzGt07IbXwPNTFQ0wIIFH/Or+OVz1tk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uF5yJPv/qiKbXXEFvin6OmfsjMRrph3HNOgVM4VP8l98VyCCn6ZiDH4Vz9ThIa3nO
-         /R3BLqZrexnLqAhaLqqje35cJvGT4N3rzjw+tJcda+Ho3iJSy3WwY5wVLASpoPMaG0
-         BdVfOxuhSoKonDNgYiYNAV5b+jhnTDG3G0iRsZjuDNsSqouJPu1+uSll78aJKox5Ns
-         KwHB376rUBOCM9pslwyGU8l8WVSDWBaAmSdRQHZs7Vn9W0IUzd/0QWauFDPCMtQEHo
-         PeyD1wssHY2MBiz2gKKjgNgw/LEq0+KlatdR8BlJsvdBjXO7hPlAu8a1uYbkmb9sPv
-         1LdRPeVp9uZAg==
+        bh=83vkFWOnmUdHmvdZYCb71ZYm+RoKY7l/VWT0C4zUsJ4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fquf9bYIq5SlSufpDS1BDsZ19/XUMK5RAlO+U5fsudwHtCD+/l5NdxtjD8AEi+eKQ
+         qjngZ4Aoi453AdyK88FH6Hk4mHN/dvzNMEur4FL44Pp2K3dQaZVYpQRSsQaJuSqIOM
+         jjfU6me+8hAcPtevDwJb2c8O7mfrZwTc3lNCL+VnEq9uSrRwe+9kw0U3N5Gjn9JAlX
+         +whcAbbHkZSkRWsD6LoO0m+C2sdRCLSBeJk7qC5tGoGxhj1z+DNThl+kmh85DqAef/
+         0ixJ0ZDm84i3tPrj1p+RexpxrVCFgDepYcMHOOtLmZBkUpffpOZ2RScdBSajSplp/2
+         8abhky0XkdPMA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mQo72-001vTH-32; Thu, 16 Sep 2021 11:55:24 +0200
+        id 1mQo72-001vTf-BQ; Thu, 16 Sep 2021 11:55:24 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Grant Seltzer <grantseltzer@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-mmc@vger.kernel.org,
-        linux-omap@vger.kernel.org, netdev@vger.kernel.org,
-        sparmaintainer@unisys.com
-Subject: [PATCH v2 00/23] Fix some issues at documentation
-Date:   Thu, 16 Sep 2021 11:54:59 +0200
-Message-Id: <cover.1631785820.git.mchehab+huawei@kernel.org>
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v2 06/23] libbpf: update index.rst reference
+Date:   Thu, 16 Sep 2021 11:55:05 +0200
+Message-Id: <854e410df660c62e4e4c8f22c4ae9c6f6594f4a1.1631785820.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1631785820.git.mchehab+huawei@kernel.org>
+References: <cover.1631785820.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi John,
+Changeset d20b41115ad5 ("libbpf: Rename libbpf documentation index file")
+renamed: Documentation/bpf/libbpf/libbpf.rst
+to: Documentation/bpf/libbpf/index.rst.
 
-Please ignore the previous series I sent today [1].  I forgot that I had
-already submitted a first version of this series.
+Update its cross-reference accordingly.
 
-[1]  https://lore.kernel.org/all/cover.1631783482.git.mchehab+huawei@kernel.org/
-
-
-The first patch in this series fix a bad character used instead of
-a "(c)" UTF-8 symbol.
-
-The remaining ones fix several broken references to files
-under Documentation/, several due to DT schema conversions
-from .txt to .yaml.
-
+Fixes: d20b41115ad5 ("libbpf: Rename libbpf documentation index file")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
+ Documentation/bpf/index.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v2:
-   - Added a couple of extra fixes;
-   - merged two patches touching mtd-physmap.yaml;
-   - added missing tags (acked-by/reviewed-by) received after v1.
-v1: https://lore.kernel.org/all/cover.1626947923.git.mchehab+huawei@kernel.org/
-
-
-
-Mauro Carvalho Chehab (23):
-  visorbus: fix a copyright symbol that was bad encoded
-  dt-bindings: net: dsa: sja1105: update nxp,sja1105.yaml reference
-  dt-bindings: arm: mediatek: mmsys: update mediatek,mmsys.yaml
-    reference
-  dt-bindings: w1: update w1-gpio.yaml reference
-  dt-bindings: mmc: update mmc-card.yaml reference
-  libbpf: update index.rst reference
-  docs: accounting: update delay-accounting.rst reference
-  tools: bpftool: update bpftool-prog.rst reference
-  tools: bpftool: update bpftool-map.rst reference
-  bpftool: update bpftool-cgroup.rst reference
-  MAINTAINERS: update arm,vic.yaml reference
-  MAINTAINERS: update aspeed,i2c.yaml reference
-  MAINTAINERS: update faraday,ftrtc010.yaml reference
-  MAINTAINERS: update fsl,fec.yaml reference
-  MAINTAINERS: update ti,sci.yaml reference
-  MAINTAINERS: update intel,ixp46x-rng.yaml reference
-  MAINTAINERS: update nxp,imx8-jpeg.yaml reference
-  MAINTAINERS: update gemini.yaml reference
-  MAINTAINERS: update brcm,unimac-mdio.yaml reference
-  MAINTAINERS: update chipone,icn8318.yaml reference
-  MAINTAINERS: update silergy,sy8106a.yaml reference
-  MAINTAINERS: update mtd-physmap.yaml reference
-  MAINTAINERS: update ti,am654-hbmc.yaml reference
-
- Documentation/admin-guide/sysctl/kernel.rst   |  2 +-
- Documentation/bpf/index.rst                   |  2 +-
- .../display/mediatek/mediatek,disp.txt        |  2 +-
- Documentation/networking/dsa/sja1105.rst      |  2 +-
- Documentation/w1/masters/w1-gpio.rst          |  2 +-
- MAINTAINERS                                   | 28 +++++++++----------
- drivers/mmc/host/omap_hsmmc.c                 |  2 +-
- drivers/visorbus/visorbus_main.c              |  2 +-
- .../selftests/bpf/test_bpftool_synctypes.py   |  6 ++--
- 9 files changed, 24 insertions(+), 24 deletions(-)
-
+diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+index 1ceb5d704a97..817a201a1282 100644
+--- a/Documentation/bpf/index.rst
++++ b/Documentation/bpf/index.rst
+@@ -15,7 +15,7 @@ that goes into great technical depth about the BPF Architecture.
+ libbpf
+ ======
+ 
+-Documentation/bpf/libbpf/libbpf.rst is a userspace library for loading and interacting with bpf programs.
++Documentation/bpf/libbpf/index.rst is a userspace library for loading and interacting with bpf programs.
+ 
+ BPF Type Format (BTF)
+ =====================
 -- 
 2.31.1
-
 
