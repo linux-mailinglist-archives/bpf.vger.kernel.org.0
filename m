@@ -2,381 +2,285 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E8440D206
-	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 05:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB57B40D20C
+	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 05:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234163AbhIPD2L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Sep 2021 23:28:11 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36114 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234141AbhIPD2K (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Sep 2021 23:28:10 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18FM3xcu008470
-        for <bpf@vger.kernel.org>; Wed, 15 Sep 2021 20:26:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=TrKswyabFGPYNZBn76sPJSHWYELV/bI2weYucbHYYRE=;
- b=CQTVOxDvRZ6jwZknCj4LN64GryCrIknmC1SUPFlJ0ncHm64P2Odj8HvWqGGvuKC4hyL1
- eCRmxJ9ZREybT2WpS03+R8aStiiEyKfl/7ZoJBGOrZ8CPDfvsEWlOwyoRYcNWM6Pcjyo
- okpyFFGQzmNAm0R0KEOCt8CqbGM0XlQSnAI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3b3dkwejnr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 15 Sep 2021 20:26:51 -0700
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 15 Sep 2021 20:26:49 -0700
-Received: by devvm2661.vll0.facebook.com (Postfix, from userid 200310)
-        id D40453A34B04; Wed, 15 Sep 2021 20:26:42 -0700 (PDT)
-From:   Yucong Sun <fallentree@fb.com>
-To:     <andrii@kernel.org>
-CC:     <bpf@vger.kernel.org>, Yucong Sun <sunyucong@gmail.com>
-Subject: [PATCH v5 bpf-next 3/3] selftests/bpf: pin some tests to worker 0
-Date:   Wed, 15 Sep 2021 20:26:41 -0700
-Message-ID: <20210916032641.1413293-4-fallentree@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210916032641.1413293-1-fallentree@fb.com>
-References: <20210916032641.1413293-1-fallentree@fb.com>
+        id S234171AbhIPDgJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Sep 2021 23:36:09 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:53282 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233856AbhIPDgI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Sep 2021 23:36:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UoY1VFK_1631763283;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoY1VFK_1631763283)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 16 Sep 2021 11:34:44 +0800
+Subject: Re: [PATCH] x86/dumpstack/64: Add guard pages to stack_info
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, jroedel@suse.de, x86@kernel.org
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <20210910153839.GH4323@worktop.programming.kicks-ass.net>
+ <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
+ <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+ <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
+ <YUB5VchM3a/MiZpX@hirez.programming.kicks-ass.net>
+ <3f26f7a2-0a09-056a-3a7a-4795b6723b60@linux.alibaba.com>
+ <YUIOgmOfnOqPrE+z@hirez.programming.kicks-ass.net>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <8322f202-a2e9-8cc2-78c7-f6c98f360afb@linux.alibaba.com>
+Date:   Thu, 16 Sep 2021 11:34:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-GUID: y2Pcl6Db2YqKdeTrJJEM_efdV9sefG0E
-X-Proofpoint-ORIG-GUID: y2Pcl6Db2YqKdeTrJJEM_efdV9sefG0E
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-16_01,2021-09-15_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- clxscore=1015 suspectscore=0 mlxlogscore=787 impostorscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109160020
-X-FB-Internal: deliver
+In-Reply-To: <YUIOgmOfnOqPrE+z@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yucong Sun <sunyucong@gmail.com>
 
-This patch modify some tests to provide serial_test_name() instead of
-test_name() to indicate it must run on worker 0. On encountering these te=
-sts,
-all other threads will wait on a conditional variable, which worker 0 wil=
-l
-signal once the tests has finished running.
 
-Additionally, before running the test, thread 0 also check and wait until=
- all
-other threads has finished their current work, to make sure the pinned te=
-st
-really are the only test running in the system.
+On 2021/9/15 下午11:17, Peter Zijlstra wrote:
+> On Wed, Sep 15, 2021 at 09:51:57AM +0800, 王贇 wrote:
+> 
+>>> +
+>>> +	if (in_exception_stack_guard((void *)address))
+>>> +		pr_emerg("PANIC: exception stack guard: 0x%lx\n", address);
+>>>  #endif
+>>>  
+>>>  	pr_emerg("PANIC: double fault, error_code: 0x%lx\n", error_code);
+>>>
+>>
+>> The panic triggered as below after the stack size recovered, I found this info
+>> could be helpful, maybe we should keep it?
+> 
+> Could you please test this?
 
-After this change, all tests should pass in '-j' mode.
+It seems like not working properly, we get very long trace ending as below:
 
-Signed-off-by: Yucong Sun <sunyucong@gmail.com>
----
- .../selftests/bpf/prog_tests/bpf_obj_id.c     |   2 +-
- .../bpf/prog_tests/select_reuseport.c         |   2 +-
- .../testing/selftests/bpf/prog_tests/timer.c  |   2 +-
- .../selftests/bpf/prog_tests/xdp_bonding.c    |   2 +-
- .../selftests/bpf/prog_tests/xdp_link.c       |   2 +-
- tools/testing/selftests/bpf/test_progs.c      | 112 ++++++++++++++----
- 6 files changed, 95 insertions(+), 27 deletions(-)
+Regards,
+Michael Wang
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c b/tools/=
-testing/selftests/bpf/prog_tests/bpf_obj_id.c
-index 284d5921c345..eb8eeebe6935 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-@@ -3,7 +3,7 @@
-=20
- #define nr_iters 2
-=20
--void test_bpf_obj_id(void)
-+void serial_test_bpf_obj_id(void)
- {
- 	const __u64 array_magic_value =3D 0xfaceb00c;
- 	const __u32 array_key =3D 0;
-diff --git a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c b/=
-tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-index 4efd337d6a3c..b5a0b7ed4310 100644
---- a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-+++ b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-@@ -858,7 +858,7 @@ void test_map_type(enum bpf_map_type mt)
- 	cleanup();
- }
-=20
--void test_select_reuseport(void)
-+void serial_test_select_reuseport(void)
- {
- 	saved_tcp_fo =3D read_int_sysctl(TCP_FO_SYSCTL);
- 	if (saved_tcp_fo < 0)
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testi=
-ng/selftests/bpf/prog_tests/timer.c
-index 25f40e1b9967..bbd074d407fb 100644
---- a/tools/testing/selftests/bpf/prog_tests/timer.c
-+++ b/tools/testing/selftests/bpf/prog_tests/timer.c
-@@ -39,7 +39,7 @@ static int timer(struct timer *timer_skel)
- 	return 0;
- }
-=20
--void test_timer(void)
-+void serial_test_timer(void)
- {
- 	struct timer *timer_skel =3D NULL;
- 	int err;
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c b/tools=
-/testing/selftests/bpf/prog_tests/xdp_bonding.c
-index 370d220288a6..bb6e0d0c5f79 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
-@@ -468,7 +468,7 @@ static struct bond_test_case bond_test_cases[] =3D {
- 	{ "xdp_bonding_xor_layer34", BOND_MODE_XOR, BOND_XMIT_POLICY_LAYER34, }=
-,
- };
-=20
--void test_xdp_bonding(void)
-+void serial_test_xdp_bonding(void)
- {
- 	libbpf_print_fn_t old_print_fn;
- 	struct skeletons skeletons =3D {};
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_link.c b/tools/te=
-sting/selftests/bpf/prog_tests/xdp_link.c
-index 46eed0a33c23..983ab0b47d30 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_link.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_link.c
-@@ -6,7 +6,7 @@
-=20
- #define IFINDEX_LO 1
-=20
--void test_xdp_link(void)
-+void serial_test_xdp_link(void)
- {
- 	__u32 duration =3D 0, id1, id2, id0 =3D 0, prog_fd1, prog_fd2, err;
- 	DECLARE_LIBBPF_OPTS(bpf_xdp_set_link_opts, opts, .old_fd =3D -1);
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/sel=
-ftests/bpf/test_progs.c
-index 77ed9204cc4a..c980ed766947 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -50,6 +50,7 @@ struct prog_test_def {
- 	const char *test_name;
- 	int test_num;
- 	void (*run_test)(void);
-+	void (*run_serial_test)(void);
- 	bool force_log;
- 	int error_cnt;
- 	int skip_cnt;
-@@ -457,14 +458,17 @@ static int load_bpf_testmod(void)
- }
-=20
- /* extern declarations for test funcs */
--#define DEFINE_TEST(name) extern void test_##name(void);
-+#define DEFINE_TEST(name)				\
-+	extern void test_##name(void) __weak;		\
-+	extern void serial_test_##name(void) __weak;
- #include <prog_tests/tests.h>
- #undef DEFINE_TEST
-=20
- static struct prog_test_def prog_test_defs[] =3D {
--#define DEFINE_TEST(name) {		\
--	.test_name =3D #name,		\
--	.run_test =3D &test_##name,	\
-+#define DEFINE_TEST(name) {			\
-+	.test_name =3D #name,			\
-+	.run_test =3D &test_##name,		\
-+	.run_serial_test =3D &serial_test_##name,	\
- },
- #include <prog_tests/tests.h>
- #undef DEFINE_TEST
-@@ -835,6 +839,7 @@ void sigint_handler(int signum) {
- static int current_test_idx =3D 0;
- static pthread_mutex_t current_test_lock;
- static pthread_mutex_t stdout_output_lock;
-+static pthread_cond_t wait_for_worker0 =3D PTHREAD_COND_INITIALIZER;
-=20
- struct test_result {
- 	int error_cnt;
-@@ -901,7 +906,10 @@ static void run_one_test(int test_num) {
-=20
- 	env.test =3D test;
-=20
--	test->run_test();
-+	if (test->run_test)
-+		test->run_test();
-+	else if (test->run_serial_test)
-+		test->run_serial_test();
-=20
- 	/* ensure last sub-test is finalized properly */
- 	if (test->subtest_name)
-@@ -925,6 +933,11 @@ static const char *get_test_name(int idx)
- 	return test->test_name;
- }
-=20
-+static inline bool is_serial_test(int idx)
-+{
-+	return prog_test_defs[idx].run_serial_test !=3D NULL;
-+}
-+
- struct dispatch_data {
- 	int worker_id;
- 	int sock_fd;
-@@ -943,6 +956,8 @@ void *dispatch_thread(void *ctx)
- 		struct prog_test_def *test;
- 		struct test_result *result;
-=20
-+		env.worker_current_test[data->worker_id] =3D -1;
-+
- 		/* grab a test */
- 		{
- 			pthread_mutex_lock(&current_test_lock);
-@@ -954,15 +969,42 @@ void *dispatch_thread(void *ctx)
-=20
- 			test =3D &prog_test_defs[current_test_idx];
- 			test_to_run =3D current_test_idx;
--			current_test_idx++;
-=20
--			pthread_mutex_unlock(&current_test_lock);
--		}
-+			test =3D &prog_test_defs[test_to_run];
-=20
--		if (!test->should_run) {
--			continue;
--		}
-+			if (!test->should_run) {
-+				current_test_idx++;
-+				pthread_mutex_unlock(&current_test_lock);
-+				goto next;
-+			}
-+
-+			if (is_serial_test(current_test_idx)) {
-+				if (data->worker_id !=3D 0) {
-+					if (env.debug)
-+						fprintf(stderr, "[%d]: Waiting for thread 0 to finish serialized t=
-est: %d.\n",
-+							data->worker_id, current_test_idx + 1);
-+					/* wait for worker 0 to pick this job up and finish */
-+					pthread_cond_wait(&wait_for_worker0, &current_test_lock);
-+					pthread_mutex_unlock(&current_test_lock);
-+					goto next;
-+				} else {
-+					/* wait until all other worker has parked */
-+					for (int i =3D 1; i < env.workers; i++) {
-+						if (env.worker_current_test[i] !=3D -1) {
-+							if (env.debug)
-+								fprintf(stderr, "[%d]: Waiting for other threads to finish curre=
-nt test...\n", data->worker_id);
-+							pthread_mutex_unlock(&current_test_lock);
-+							usleep(1 * 1000 * 1000);
-+							goto next;
-+						}
-+					}
-+				}
-+			} else {
-+				current_test_idx++;
-+			}
-=20
-+			pthread_mutex_unlock(&current_test_lock);
-+		}
-=20
- 		/* run test through worker */
- 		{
-@@ -1035,6 +1077,14 @@ void *dispatch_thread(void *ctx)
- 			}
-=20
- 		} /* wait for test done */
-+
-+		/* unblock all other dispatcher threads */
-+		if (is_serial_test(test_to_run) && data->worker_id =3D=3D 0) {
-+			current_test_idx++;
-+			pthread_cond_broadcast(&wait_for_worker0);
-+		}
-+next:
-+	continue;
- 	} /* while (true) */
- error:
- 	if (env.debug)
-@@ -1060,16 +1110,19 @@ static int server_main(void)
- {
- 	pthread_t *dispatcher_threads;
- 	struct dispatch_data *data;
-+	int all_finished =3D false;
-=20
- 	dispatcher_threads =3D calloc(sizeof(pthread_t), env.workers);
- 	data =3D calloc(sizeof(struct dispatch_data), env.workers);
-=20
- 	env.worker_current_test =3D calloc(sizeof(int), env.workers);
-+
- 	for (int i =3D 0; i < env.workers; i++) {
- 		int rc;
-=20
- 		data[i].worker_id =3D i;
- 		data[i].sock_fd =3D env.worker_socks[i];
-+		env.worker_current_test[i] =3D -1;
- 		rc =3D pthread_create(&dispatcher_threads[i], NULL, dispatch_thread, &=
-data[i]);
- 		if (rc < 0) {
- 			perror("Failed to launch dispatcher thread");
-@@ -1078,19 +1131,28 @@ static int server_main(void)
- 	}
-=20
- 	/* wait for all dispatcher to finish */
--	for (int i =3D 0; i < env.workers; i++) {
--		while (true) {
--			struct timespec timeout =3D {
--				.tv_sec =3D time(NULL) + 5,
--				.tv_nsec =3D 0
--			};
--			if (pthread_timedjoin_np(dispatcher_threads[i], NULL, &timeout) !=3D =
-ETIMEDOUT)
--				break;
--			if (env.debug)
--				fprintf(stderr, "Still waiting for thread %d (test %d).\n",
--					i,  env.worker_current_test[i] + 1);
-+	while (!all_finished) {
-+		all_finished =3D true;
-+		for (int i =3D 0; i < env.workers; i++) {
-+			if (!dispatcher_threads[i])
-+				continue;
-+
-+			if (pthread_tryjoin_np(dispatcher_threads[i], NULL) =3D=3D EBUSY) {
-+				all_finished =3D false;
-+				if (!env.debug) continue;
-+				if (env.worker_current_test[i] =3D=3D -1)
-+					fprintf(stderr, "Still waiting for thread %d (blocked by thread 0).=
-\n", i);
-+				else
-+					fprintf(stderr, "Still waiting for thread %d (test #%d:%s).\n",
-+						i, env.worker_current_test[i] + 1,
-+						get_test_name(env.worker_current_test[i]));
-+			} else {
-+				dispatcher_threads[i] =3D 0;
-+			}
- 		}
-+		usleep(10 * 1000 * 1000);
- 	}
-+
- 	free(dispatcher_threads);
- 	free(env.worker_current_test);
- 	free(data);
-@@ -1326,6 +1388,12 @@ int main(int argc, char **argv)
- 			test->should_run =3D true;
- 		else
- 			test->should_run =3D false;
-+
-+		if (test->run_test =3D=3D NULL && test->run_serial_test =3D=3D NULL) {
-+			fprintf(stderr, "Test %d:%s must have either test_%s() or serial_test=
-_%sl() defined.\n",
-+				test->test_num, test->test_name, test->test_name, test->test_name);
-+			exit(EXIT_ERR_SETUP_INFRA);
-+		}
- 	}
-=20
- 	/* ignore workers if we are just listing */
---=20
-2.30.2
+[   34.662432][    C0] BUG: unable to handle page fault for address: fffffe0000008ff0
+[   34.662435][    C0] #PF: supervisor read access in kernel mode
+[   34.662438][    C0] #PF: error_code(0x0000) - not-present page
+[   34.662442][    C0] PGD 13ffef067 P4D 13ffef067 PUD 13ffed067 PMD 13ffec067 PTE 0
+[   34.662455][    C0] Oops: 0000 [#11] SMP PTI
+[   34.662459][    C0] CPU: 0 PID: 713 Comm: a.out Not tainted 5.14.0-next-20210913+ #530
+[   34.662465][    C0] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
+[   34.662468][    C0] RIP: 0010:get_stack_info_noinstr+0x8d/0xf0
+[   34.662474][    C0] Code: 40 82 66 85 c9 74 33 8b 34 d5 40 6d 40 82 0f b7 14 d5 46 6d 40 82 48 01 f0 41 89 14 24 48 01 c1 49 89 44 24 08 49 89 4c 24 10 <48> 8b 41 f0 49 89 44 24 18 b8 01 00 00 00 eb 87 65 48 8b 05 43 c5
+[   34.662485][    C0] RSP: 0018:fffffe0000009bb0 EFLAGS: 00010086
+[   34.662490][    C0] RAX: fffffe0000008000 RBX: ffff888107422180 RCX: fffffe0000009000
+[   34.662494][    C0] RDX: 0000000000000085 RSI: 0000000000000000 RDI: fffffe0000008f30
+[   34.662498][    C0] RBP: fffffe0000008f30 R08: ffffffff82754eff R09: fffffe0000009b78
+[   34.662502][    C0] R10: 0000000000000000 R11: 0000000000000006 R12: fffffe0000009c28
+[   34.662506][    C0] R13: 0000000000000000 R14: ffff888107422180 R15: fffffe0000009c48
+[   34.662510][    C0] FS:  00007f5298fe2740(0000) GS:ffff88813bc00000(0000) knlGS:0000000000000000
+[   34.662516][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   34.662520][    C0] CR2: fffffe0000008ff0 CR3: 0000000109b5a005 CR4: 00000000003606f0
+[   34.662524][    C0] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   34.662528][    C0] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   34.662532][    C0] Call Trace:
+[   34.662534][    C0]  <#DF>
+[   34.662542][    C0]  get_stack_info+0x30/0xb0
+[   34.662556][    C0]  show_trace_log_lvl+0xf9/0x410
+[   34.662571][    C0]  ? sprint_symbol_build_id+0x30/0x30
+[   34.662605][    C0]  ? 0xffffffffa0106083
+[   34.662628][    C0]  __die_body+0x1a/0x60
+[   34.662641][    C0]  page_fault_oops+0xe8/0x560
+[   34.662671][    C0]  kernelmode_fixup_or_oops+0x107/0x120
+[   34.662687][    C0]  __bad_area_nosemaphore+0x1b8/0x280
+[   34.662707][    C0]  do_kern_addr_fault+0x57/0xc0
+[   34.662719][    C0]  exc_page_fault+0x1c1/0x300
+[   34.662735][    C0]  asm_exc_page_fault+0x1e/0x30
+[   34.662742][    C0] RIP: 0010:get_stack_info_noinstr+0x8d/0xf0
+[   34.662749][    C0] Code: 40 82 66 85 c9 74 33 8b 34 d5 40 6d 40 82 0f b7 14 d5 46 6d 40 82 48 01 f0 41 89 14 24 48 01 c1 49 89 44 24 08 49 89 4c 24 10 <48> 8b 41 f0 49 89 44 24 18 b8 01 00 00 00 eb 87 65 48 8b 05 43 c5
+[   34.662754][    C0] RSP: 0018:fffffe0000009ee8 EFLAGS: 00010086
+[   34.662759][    C0] RAX: fffffe0000008000 RBX: ffff888107422180 RCX: fffffe0000009000
+[   34.662763][    C0] RDX: 0000000000000085 RSI: 0000000000000000 RDI: fffffe0000008f28
+[   34.662767][    C0] RBP: fffffe0000008f28 R08: 0000000000000000 R09: 0000000000000000
+[   34.662771][    C0] R10: 0000000000000000 R11: 0000000000000000 R12: fffffe0000009f08
+[   34.662775][    C0] R13: fffffe0000008f28 R14: 0000000109b5a005 R15: 0000000000000000
+[   34.662816][    C0]  ? get_stack_info_noinstr+0x12/0xf0
+[   34.662828][    C0]  exc_double_fault+0x138/0x1a0
+[   34.662851][    C0]  asm_exc_double_fault+0x1e/0x30
+[   34.662858][    C0] RIP: 0010:perf_ftrace_function_call+0x26/0x2e0
+[   34.662866][    C0] Code: 5b 5d c3 90 55 48 89 e5 41 57 41 56 41 55 41 54 49 89 f5 53 49 89 fc 48 89 d3 48 81 ec d0 00 00 00 65 48 8b 04 25 28 00 00 00 <48> 89 45 d0 31 c0 e8 9f 69 fa ff e8 2a 4a f1 ff 84 c0 74 14 e8 91
+[   34.662872][    C0] RSP: 0018:fffffe0000008f30 EFLAGS: 00010086
+[   34.662877][    C0] RAX: 0c14fdf027d1e500 RBX: ffff8881002f99f0 RCX: fffffe0000009038
+[   34.662881][    C0] RDX: ffff8881002f99f0 RSI: ffffffff817cd61f RDI: ffffffff811cc7b0
+[   34.662884][    C0] RBP: fffffe0000009028 R08: ffffffff82754ed9 R09: fffffe00000095d0
+[   34.662888][    C0] R10: fffffe00000095e8 R11: 0000000020455450 R12: ffffffff811cc7b0
+[   34.662892][    C0] R13: ffffffff817cd61f R14: ffff0a00ffffff05 R15: ffffffff81edac2d
+[   34.662896][    C0]  ? get_stack_info_noinstr+0x8d/0xf0
+[   34.662904][    C0]  ? symbol_string+0xbf/0x160
+[   34.662911][    C0]  ? sprint_symbol_build_id+0x30/0x30
+[   34.662935][    C0]  ? symbol_string+0xbf/0x160
+[   34.662942][    C0]  ? sprint_symbol_build_id+0x30/0x30
+[   34.662959][    C0]  </#DF>
+[   34.662964][    C0] BUG: unable to handle page fault for address: fffffe0000008ff0
+[   34.662966][    C0] #PF: supervisor read access in kernel mode
+[   34.662970][    C0] #PF: error_code(0x0000) - not-present page
+[   34.662973][    C0] PGD 13ffef067 P4D 13ffef067 PUD 13ffed067 PMD 13ffec067 PTE 0
+[   34.662986][    C0] Oops: 0000 [#12] SMP PTI
+[   34.662991][    C0] CPU: 0 PID: 713 Comm: a.out Not tainted 5.14.0-next-20210913+ #530
+[   34.662996][    C0] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
 
+
+> 
+> ---
+> Subject: x86/dumpstack/64: Add guard pages to stack_info
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Wed Sep 15 17:12:59 CEST 2021
+> 
+> Explicitly add the exception stack guard pages to stack_info and
+> report on them from #DF.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/include/asm/cpu_entry_area.h |    3 +++
+>  arch/x86/include/asm/stacktrace.h     |    3 ++-
+>  arch/x86/kernel/dumpstack_64.c        |   17 ++++++++++++++++-
+>  arch/x86/kernel/traps.c               |   17 ++++++++++++++++-
+>  4 files changed, 37 insertions(+), 3 deletions(-)
+> 
+> --- a/arch/x86/include/asm/cpu_entry_area.h
+> +++ b/arch/x86/include/asm/cpu_entry_area.h
+> @@ -61,6 +61,9 @@ enum exception_stack_ordering {
+>  #define CEA_ESTACK_OFFS(st)					\
+>  	offsetof(struct cea_exception_stacks, st## _stack)
+>  
+> +#define CEA_EGUARD_OFFS(st)					\
+> +	offsetof(struct cea_exception_stacks, st## _stack_guard)
+> +
+>  #define CEA_ESTACK_PAGES					\
+>  	(sizeof(struct cea_exception_stacks) / PAGE_SIZE)
+>  
+> --- a/arch/x86/include/asm/stacktrace.h
+> +++ b/arch/x86/include/asm/stacktrace.h
+> @@ -14,13 +14,14 @@
+>  #include <asm/switch_to.h>
+>  
+>  enum stack_type {
+> -	STACK_TYPE_UNKNOWN,
+> +	STACK_TYPE_UNKNOWN = 0,
+>  	STACK_TYPE_TASK,
+>  	STACK_TYPE_IRQ,
+>  	STACK_TYPE_SOFTIRQ,
+>  	STACK_TYPE_ENTRY,
+>  	STACK_TYPE_EXCEPTION,
+>  	STACK_TYPE_EXCEPTION_LAST = STACK_TYPE_EXCEPTION + N_EXCEPTION_STACKS-1,
+> +	STACK_TYPE_GUARD = 0x80,
+>  };
+>  
+>  struct stack_info {
+> --- a/arch/x86/kernel/dumpstack_64.c
+> +++ b/arch/x86/kernel/dumpstack_64.c
+> @@ -32,9 +32,15 @@ const char *stack_type_name(enum stack_t
+>  {
+>  	BUILD_BUG_ON(N_EXCEPTION_STACKS != 6);
+>  
+> +	if (type == STACK_TYPE_TASK)
+> +		return "TASK";
+> +
+>  	if (type == STACK_TYPE_IRQ)
+>  		return "IRQ";
+>  
+> +	if (type == STACK_TYPE_SOFTIRQ)
+> +		return "SOFTIRQ";
+> +
+>  	if (type == STACK_TYPE_ENTRY) {
+>  		/*
+>  		 * On 64-bit, we have a generic entry stack that we
+> @@ -63,6 +69,11 @@ struct estack_pages {
+>  };
+>  
+>  #define EPAGERANGE(st)							\
+> +	[PFN_DOWN(CEA_EGUARD_OFFS(st))] = {				\
+> +		.offs	= CEA_EGUARD_OFFS(st),				\
+> +		.size	= PAGE_SIZE,					\
+> +		.type	= STACK_TYPE_GUARD +				\
+> +			  STACK_TYPE_EXCEPTION + ESTACK_ ##st, },	\
+>  	[PFN_DOWN(CEA_ESTACK_OFFS(st)) ...				\
+>  	 PFN_DOWN(CEA_ESTACK_OFFS(st) + CEA_ESTACK_SIZE(st) - 1)] = {	\
+>  		.offs	= CEA_ESTACK_OFFS(st),				\
+> @@ -111,10 +122,11 @@ static __always_inline bool in_exception
+>  	k = (stk - begin) >> PAGE_SHIFT;
+>  	/* Lookup the page descriptor */
+>  	ep = &estack_pages[k];
+> -	/* Guard page? */
+> +	/* unknown entry */
+>  	if (!ep->size)
+>  		return false;
+>  
+> +
+>  	begin += (unsigned long)ep->offs;
+>  	end = begin + (unsigned long)ep->size;
+>  	regs = (struct pt_regs *)end - 1;
+> @@ -193,6 +205,9 @@ int get_stack_info(unsigned long *stack,
+>  	if (!get_stack_info_noinstr(stack, task, info))
+>  		goto unknown;
+>  
+> +	if (info->type & STACK_TYPE_GUARD)
+> +		goto unknown;
+> +
+>  	/*
+>  	 * Make sure we don't iterate through any given stack more than once.
+>  	 * If it comes up a second time then there's something wrong going on:
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -461,6 +461,19 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+>  	}
+>  #endif
+>  
+> +#ifdef CONFIG_X86_64
+> +	{
+> +		struct stack_info info;
+> +
+> +		if (get_stack_info_noinstr((void *)address, current, &info) &&
+> +		    info.type & STACK_TYPE_GUARD) {
+> +			const char *name = stack_type_name(info.type & ~STACK_TYPE_GUARD);
+> +			pr_emerg("BUG: %s stack guard hit at %p (stack is %p..%p)\n",
+> +				 name, (void *)address, info.begin, info.end);
+> +		}
+> +	}
+> +#endif
+> +
+>  	pr_emerg("PANIC: double fault, error_code: 0x%lx\n", error_code);
+>  	die("double fault", regs, error_code);
+>  	panic("Machine halted.");
+> @@ -708,7 +721,9 @@ asmlinkage __visible noinstr struct pt_r
+>  	sp    = regs->sp;
+>  	stack = (unsigned long *)sp;
+>  
+> -	if (!get_stack_info_noinstr(stack, current, &info) || info.type == STACK_TYPE_ENTRY ||
+> +	if (!get_stack_info_noinstr(stack, current, &info) ||
+> +	    info.type & STACK_TYPE_GUARD ||
+> +	    info.type == STACK_TYPE_ENTRY ||
+>  	    info.type >= STACK_TYPE_EXCEPTION_LAST)
+>  		sp = __this_cpu_ist_top_va(VC2);
+>  
+> 
