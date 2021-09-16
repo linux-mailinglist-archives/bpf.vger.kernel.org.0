@@ -2,108 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D3940D43B
-	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 10:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C53940D5A8
+	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 11:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234970AbhIPIFQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Sep 2021 04:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234982AbhIPIFF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:05:05 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D206EC061764;
-        Thu, 16 Sep 2021 01:03:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=fpa9ttX7CF1WZpIhVuTpbNvQaQpZawGIXndIWrx5+jI=; b=da246jrz6odDZwWz+BVZfJ4yVr
-        kc2G1ZX29712svPo5vvsUWoJLZigW9CJuhX7+ms5NojlbOnq5+ioReV+ThkFGQoEUiN8dZYakN3vq
-        ZuVIm6a4pv0BeeUNgMThsJE09igsaVqzNbXmskExLG2bsRAkirGVP1oF6sJvmjGjvKpGIb5fjIfhI
-        HaJSE0EjAA7uNnvtbzAGlwnzOrZe+OSSytjVBZ3a5tXmk0HWZtLSfWQ4v582RlMKNMghoht4bUQW7
-        0zj9WYRHhfc/6QWWSkx4HGKz4qVGhI5WpcmoaiV4S/vaoxJMyd2z8D+p8/LLITI15kT2+WfIfO0i7
-        WEQgbzqQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQmMZ-003bgn-QM; Thu, 16 Sep 2021 08:03:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C822300093;
-        Thu, 16 Sep 2021 10:03:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4348E2CD48C44; Thu, 16 Sep 2021 10:03:19 +0200 (CEST)
-Date:   Thu, 16 Sep 2021 10:03:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        id S235243AbhIPJPn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Sep 2021 05:15:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235418AbhIPJPm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Sep 2021 05:15:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E1A0611CA;
+        Thu, 16 Sep 2021 09:14:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631783661;
+        bh=HpXVplz89oKyc+hivBPzxb/s0fvvid7dqIkLDoV0E8s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lRyC+Gl6hpA65PTmNoIvzIyVlFwS1vvgpOXA4IShHvXBxni2jYB5SiQUoU+fAPpe7
+         MhnOfSEDpi0f8ZqYssR8CnOyMA/WbCzxSWt1mOakOCY8TqwNRCL3kQrQCKrB2zWRIB
+         5G0n7Tz6Uoky9NsNn5NDTtSzpSpYgyGclzrBZA3Gs8NpLY4HEgX3PjaPn8FmThtKR2
+         aBhvThsya5NVQoLmW1gxaxwHQwFF6ykyqS6fssrJvf8d7OLU9EwLMDYNfhy/Dw6CY7
+         InDJMP3HNKwr3VvEbl2g/5QXYa9v7CBmkpGyauf133KiKGoSP98tRVlSt1Mjgaucod
+         b9jsm+2PWf6gQ==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mQnTH-001sKa-8R; Thu, 16 Sep 2021 11:14:19 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, jroedel@suse.de, x86@kernel.org
-Subject: Re: [PATCH] x86/dumpstack/64: Add guard pages to stack_info
-Message-ID: <YUL6R5AH6WNxu5sH@hirez.programming.kicks-ass.net>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <20210910153839.GH4323@worktop.programming.kicks-ass.net>
- <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
- <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
- <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
- <YUB5VchM3a/MiZpX@hirez.programming.kicks-ass.net>
- <3f26f7a2-0a09-056a-3a7a-4795b6723b60@linux.alibaba.com>
- <YUIOgmOfnOqPrE+z@hirez.programming.kicks-ass.net>
- <76de02b7-4d87-4a3a-e4d4-048829749887@linux.alibaba.com>
- <YUL5j/lY0mtx4NMq@hirez.programming.kicks-ass.net>
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-mmc@vger.kernel.org,
+        linux-omap@vger.kernel.org, netdev@vger.kernel.org,
+        sparmaintainer@unisys.com
+Subject: [PATCH 00/24] Fix some issues at documentation
+Date:   Thu, 16 Sep 2021 11:13:53 +0200
+Message-Id: <cover.1631783482.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YUL5j/lY0mtx4NMq@hirez.programming.kicks-ass.net>
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 10:00:15AM +0200, Peter Zijlstra wrote:
-> On Thu, Sep 16, 2021 at 11:47:49AM +0800, 王贇 wrote:
-> 
-> > I did some debug and found the issue, we are missing:
-> > 
-> > @@ -122,7 +137,10 @@ static __always_inline bool in_exception_stack(unsigned long *stack, struct stac
-> >         info->type      = ep->type;
-> >         info->begin     = (unsigned long *)begin;
-> >         info->end       = (unsigned long *)end;
-> > -       info->next_sp   = (unsigned long *)regs->sp;
-> > +
-> > +       if (!(ep->type & STACK_TYPE_GUARD))
-> > +               info->next_sp   = (unsigned long *)regs->sp;
-> > +
-> >         return true;
-> >  }
-> > 
-> > as the guard page are not working as real stack I guess?
-> 
-> Correct, but I thought I put if (type & GUARD) terminators in all paths
-> that ended up caring about ->next_sp. Clearly I seem to have missed one
-> :/
-> 
-> Let me try and figure out where that happens.
+Hi John,
 
-Oh, I'm an idiot... yes it tries to read regs the stack, but clearly
-that won't work for the guard page.
+The first patch in this series fix a bad character used instead of
+a "(c)" UTF-8 symbol.
+
+The remaining ones fix several broken references to files
+under Documentation/, several due to DT schema conversions
+from .txt to .yaml.
+
+Mauro Carvalho Chehab (24):
+  visorbus: fix a copyright symbol that was bad encoded
+  dt-bindings: net: dsa: sja1105: update nxp,sja1105.yaml reference
+  dt-bindings: arm: mediatek: mmsys: update mediatek,mmsys.yaml
+    reference
+  dt-bindings: w1: update w1-gpio.yaml reference
+  dt-bindings: mmc: update mmc-card.yaml reference
+  libbpf: update index.rst reference
+  docs: accounting: update delay-accounting.rst reference
+  tools: bpftool: update bpftool-prog.rst reference
+  tools: bpftool: update bpftool-map.rst reference
+  bpftool: update bpftool-cgroup.rst reference
+  MAINTAINERS: update mtd-physmap.yaml reference
+  MAINTAINERS: update arm,vic.yaml reference
+  MAINTAINERS: update aspeed,i2c.yaml reference
+  MAINTAINERS: update faraday,ftrtc010.yaml reference
+  MAINTAINERS: update fsl,fec.yaml reference
+  MAINTAINERS: update mtd-physmap.yaml reference
+  MAINTAINERS: update ti,am654-hbmc.yaml reference
+  MAINTAINERS: update ti,sci.yaml reference
+  MAINTAINERS: update intel,ixp46x-rng.yaml reference
+  MAINTAINERS: update nxp,imx8-jpeg.yaml reference
+  MAINTAINERS: update gemini.yaml reference
+  MAINTAINERS: update brcm,unimac-mdio.yaml reference
+  MAINTAINERS: update chipone,icn8318.yaml reference
+  MAINTAINERS: update silergy,sy8106a.yaml reference
+
+ Documentation/admin-guide/sysctl/kernel.rst   |  2 +-
+ Documentation/bpf/index.rst                   |  2 +-
+ .../display/mediatek/mediatek,disp.txt        |  2 +-
+ Documentation/networking/dsa/sja1105.rst      |  2 +-
+ Documentation/w1/masters/w1-gpio.rst          |  2 +-
+ MAINTAINERS                                   | 28 +++++++++----------
+ drivers/mmc/host/omap_hsmmc.c                 |  2 +-
+ drivers/visorbus/visorbus_main.c              |  2 +-
+ .../selftests/bpf/test_bpftool_synctypes.py   |  6 ++--
+ 9 files changed, 24 insertions(+), 24 deletions(-)
+
+-- 
+2.31.1
+
+
