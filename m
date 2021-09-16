@@ -2,43 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6630540E139
-	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 18:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C51740E141
+	for <lists+bpf@lfdr.de>; Thu, 16 Sep 2021 18:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242509AbhIPQ2d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Sep 2021 12:28:33 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:65282 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232660AbhIPQ01 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 16 Sep 2021 12:26:27 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 18GFgtm3027960
-        for <bpf@vger.kernel.org>; Thu, 16 Sep 2021 09:25:06 -0700
+        id S242113AbhIPQ2v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Sep 2021 12:28:51 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11886 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241243AbhIPQ0y (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Sep 2021 12:26:54 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18GFgwhA000568
+        for <bpf@vger.kernel.org>; Thu, 16 Sep 2021 09:25:33 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=FvkZsdRnuDFdsFs6RIuDJK0lxpqem6zpUwmYQiIpIG4=;
- b=A+pK/+rZLVyk3N245w0cDN5aG0VOxd+gBaLAQqwoiLk7nrCCQsqw9vd12Lc3/zjUlkfb
- OnpuSAqHGioIdNO65LTJY/iG2rj8AbBNj3NvrJfRdzRUqpRfQVq14RqyxPFhW1LOKPXw
- BHU+uKzXLBbs76Xsp1h3kv4NL0b2YxbrDfU= 
+ bh=iau4hHOFchq8z6EJX9Kwz613Q1mY9uyx7wtHal15ZB0=;
+ b=iy5pGpvpSJlSThE8pIndCuEzZrunpurp2puh669JaVbQvyqSSP8rMSjm7W7B5dYEHI5Z
+ tzX4uOj9S2EBUym+HBHQe9eIwoW2bzqFvyc1yigXDfvHeWTTVt+oGf3hZ0WWQwf80cGu
+ 8KybFGsOYAWnB0F/7k5mcPLrC+3wi04XaJs= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 3b42vxttgy-1
+        by mx0a-00082601.pphosted.com with ESMTP id 3b40fb3fes-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 16 Sep 2021 09:25:05 -0700
-Received: from intmgw002.46.prn1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 16 Sep 2021 09:25:33 -0700
+Received: from intmgw002.46.prn1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.14; Thu, 16 Sep 2021 09:25:04 -0700
 Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 36BF6BE68AAE; Thu, 16 Sep 2021 09:25:02 -0700 (PDT)
+        id 3CC76BE68AB2; Thu, 16 Sep 2021 09:25:02 -0700 (PDT)
 From:   Roman Gushchin <guro@fb.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>
 CC:     Mel Gorman <mgorman@techsingularity.net>, <bpf@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
-Subject: [PATCH rfc 3/6] bpf: sched: introduce bpf_sched_enable()
-Date:   Thu, 16 Sep 2021 09:24:48 -0700
-Message-ID: <20210916162451.709260-4-guro@fb.com>
+Subject: [PATCH rfc 4/6] sched: cfs: add bpf hooks to control wakeup and tick preemption
+Date:   Thu, 16 Sep 2021 09:24:49 -0700
+Message-ID: <20210916162451.709260-5-guro@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210916162451.709260-1-guro@fb.com>
 References: <20210915213550.3696532-1-guro@fb.com>
@@ -48,132 +48,148 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: N4OWnV7FrtyBrAEYYACzcI_dk7gikiGB
-X-Proofpoint-ORIG-GUID: N4OWnV7FrtyBrAEYYACzcI_dk7gikiGB
+X-Proofpoint-GUID: -XznsGAKI8nZxTxgB_2aureNOrMCkajs
+X-Proofpoint-ORIG-GUID: -XznsGAKI8nZxTxgB_2aureNOrMCkajs
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
  definitions=2021-09-16_04,2021-09-16_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- suspectscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0
- malwarescore=0 clxscore=1015 phishscore=0 bulkscore=0 lowpriorityscore=0
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 adultscore=0 mlxlogscore=999
+ malwarescore=0 suspectscore=0 impostorscore=0 spamscore=0 phishscore=0
+ mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2109030001 definitions=main-2109160098
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce a dedicated static key and the bpf_sched_enabled() wrapper
-to guard all invocations of bpf programs in the scheduler code.
+This patch adds 3 hooks to control wakeup and tick preemption:
+  cfs_check_preempt_tick
+  cfs_check_preempt_wakeup
+  cfs_wakeup_preempt_entity
 
-It will help to avoid any potential performance regression in a case
-when no scheduler bpf programs are attached.
+The first one allows to force or suppress a preemption from a tick
+context. An obvious usage example is to minimize the number of
+non-voluntary context switches and decrease an associated latency
+penalty by (conditionally) providing tasks or task groups an extended
+execution slice. It can be used instead of tweaking
+sysctl_sched_min_granularity.
+
+The second one is called from the wakeup preemption code and allows
+to redefine whether a newly woken task should preempt the execution
+of the current task. This is useful to minimize a number of
+preemptions of latency sensitive tasks. To some extent it's a more
+flexible analog of a sysctl_sched_wakeup_granularity.
+
+The third one is similar, but it tweaks the wakeup_preempt_entity()
+function, which is called not only from a wakeup context, but also
+from pick_next_task(), which allows to influence the decision on which
+task will be running next.
+
+It's a place for a discussion whether we need both these hooks or only
+one of them: the second is more powerful, but depends more on the
+current implementation. In any case, bpf hooks are not an ABI, so it's
+not a deal breaker.
+
+The idea of the wakeup_preempt_entity hook belongs to Rik van Riel. He
+also contributed a lot to the whole patchset by proving his ideas,
+recommendations and a feedback for earlier (non-public) versions.
 
 Signed-off-by: Roman Gushchin <guro@fb.com>
 ---
- include/linux/bpf_sched.h | 24 ++++++++++++++++++++++++
- kernel/bpf/syscall.c      |  7 +++++++
- kernel/sched/bpf_sched.c  |  2 ++
- 3 files changed, 33 insertions(+)
+ include/linux/bpf_sched.h       |  1 +
+ include/linux/sched_hook_defs.h |  4 +++-
+ kernel/sched/fair.c             | 27 +++++++++++++++++++++++++++
+ 3 files changed, 31 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/bpf_sched.h b/include/linux/bpf_sched.h
-index 0f8d3dae53df..6e773aecdff7 100644
+index 6e773aecdff7..5c238aeb853c 100644
 --- a/include/linux/bpf_sched.h
 +++ b/include/linux/bpf_sched.h
-@@ -6,6 +6,8 @@
-=20
- #ifdef CONFIG_BPF_SYSCALL
-=20
-+#include <linux/jump_label.h>
-+
- #define BPF_SCHED_HOOK(RET, DEFAULT, NAME, ...) \
- 	RET bpf_sched_##NAME(__VA_ARGS__);
- #include <linux/sched_hook_defs.h>
-@@ -14,6 +16,23 @@
- int bpf_sched_verify_prog(struct bpf_verifier_log *vlog,
- 			  const struct bpf_prog *prog);
-=20
-+DECLARE_STATIC_KEY_FALSE(bpf_sched_enabled_key);
-+
-+static inline bool bpf_sched_enabled(void)
-+{
-+	return static_branch_unlikely(&bpf_sched_enabled_key);
-+}
-+
-+static inline void bpf_sched_inc(void)
-+{
-+	static_branch_inc(&bpf_sched_enabled_key);
-+}
-+
-+static inline void bpf_sched_dec(void)
-+{
-+	static_branch_dec(&bpf_sched_enabled_key);
-+}
-+
- #else /* CONFIG_BPF_SYSCALL */
-=20
- #define BPF_SCHED_HOOK(RET, DEFAULT, NAME, ...)	\
-@@ -23,6 +42,11 @@ static inline RET bpf_sched_##NAME(__VA_ARGS__)	\
+@@ -40,6 +40,7 @@ static inline RET bpf_sched_##NAME(__VA_ARGS__)	\
+ {						\
+ 	return DEFAULT;				\
  }
++#include <linux/sched_hook_defs.h>
  #undef BPF_SCHED_HOOK
 =20
-+static inline bool bpf_sched_enabled(void)
-+{
-+	return false;
-+}
-+
- #endif /* CONFIG_BPF_SYSCALL */
-=20
- #endif /* _BPF_CGROUP_H */
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 67e062376f22..aa5565110498 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -31,6 +31,7 @@
- #include <linux/bpf-netns.h>
- #include <linux/rcupdate_trace.h>
- #include <linux/memcontrol.h>
+ static inline bool bpf_sched_enabled(void)
+diff --git a/include/linux/sched_hook_defs.h b/include/linux/sched_hook_d=
+efs.h
+index 14344004e335..f075b32698cd 100644
+--- a/include/linux/sched_hook_defs.h
++++ b/include/linux/sched_hook_defs.h
+@@ -1,2 +1,4 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-BPF_SCHED_HOOK(int, 0, dummy, void)
++BPF_SCHED_HOOK(int, 0, cfs_check_preempt_tick, struct sched_entity *curr=
+, unsigned long delta_exec)
++BPF_SCHED_HOOK(int, 0, cfs_check_preempt_wakeup, struct task_struct *cur=
+r, struct task_struct *p)
++BPF_SCHED_HOOK(int, 0, cfs_wakeup_preempt_entity, struct sched_entity *c=
+urr, struct sched_entity *se)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index ff69f245b939..35ea8911b25c 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -21,6 +21,7 @@
+  *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
+  */
+ #include "sched.h"
 +#include <linux/bpf_sched.h>
 =20
- #define IS_FD_ARRAY(map) ((map)->map_type =3D=3D BPF_MAP_TYPE_PERF_EVENT=
-_ARRAY || \
- 			  (map)->map_type =3D=3D BPF_MAP_TYPE_CGROUP_ARRAY || \
-@@ -2602,6 +2603,9 @@ static void bpf_tracing_link_release(struct bpf_lin=
-k *link)
- 	struct bpf_tracing_link *tr_link =3D
- 		container_of(link, struct bpf_tracing_link, link);
-=20
-+	if (link->prog->type =3D=3D BPF_PROG_TYPE_SCHED)
-+		bpf_sched_dec();
-+
- 	WARN_ON_ONCE(bpf_trampoline_unlink_prog(link->prog,
- 						tr_link->trampoline));
-=20
-@@ -2804,6 +2808,9 @@ static int bpf_tracing_prog_attach(struct bpf_prog =
-*prog,
- 		goto out_unlock;
- 	}
-=20
-+	if (prog->type =3D=3D BPF_PROG_TYPE_SCHED)
-+		bpf_sched_inc();
-+
- 	link->tgt_prog =3D tgt_prog;
- 	link->trampoline =3D tr;
-=20
-diff --git a/kernel/sched/bpf_sched.c b/kernel/sched/bpf_sched.c
-index ead691dc6e85..bf92cfb5ecf4 100644
---- a/kernel/sched/bpf_sched.c
-+++ b/kernel/sched/bpf_sched.c
-@@ -6,6 +6,8 @@
- #include <linux/btf_ids.h>
- #include "sched.h"
-=20
-+DEFINE_STATIC_KEY_FALSE(bpf_sched_enabled_key);
-+
  /*
-  * For every hook declare a nop function where a BPF program can be atta=
-ched.
-  */
+  * Targeted preemption latency for CPU-bound tasks:
+@@ -4447,6 +4448,16 @@ check_preempt_tick(struct cfs_rq *cfs_rq, struct s=
+ched_entity *curr)
+=20
+ 	ideal_runtime =3D sched_slice(cfs_rq, curr);
+ 	delta_exec =3D curr->sum_exec_runtime - curr->prev_sum_exec_runtime;
++
++	if (bpf_sched_enabled()) {
++		int ret =3D bpf_sched_cfs_check_preempt_tick(curr, delta_exec);
++
++		if (ret < 0)
++			return;
++		else if (ret > 0)
++			resched_curr(rq_of(cfs_rq));
++	}
++
+ 	if (delta_exec > ideal_runtime) {
+ 		resched_curr(rq_of(cfs_rq));
+ 		/*
+@@ -7083,6 +7094,13 @@ wakeup_preempt_entity(struct sched_entity *curr, s=
+truct sched_entity *se)
+ {
+ 	s64 gran, vdiff =3D curr->vruntime - se->vruntime;
+=20
++	if (bpf_sched_enabled()) {
++		int ret =3D bpf_sched_cfs_wakeup_preempt_entity(curr, se);
++
++		if (ret)
++			return ret;
++	}
++
+ 	if (vdiff <=3D 0)
+ 		return -1;
+=20
+@@ -7168,6 +7186,15 @@ static void check_preempt_wakeup(struct rq *rq, st=
+ruct task_struct *p, int wake_
+ 	    likely(!task_has_idle_policy(p)))
+ 		goto preempt;
+=20
++	if (bpf_sched_enabled()) {
++		int ret =3D bpf_sched_cfs_check_preempt_wakeup(current, p);
++
++		if (ret < 0)
++			return;
++		else if (ret > 0)
++			goto preempt;
++	}
++
+ 	/*
+ 	 * Batch and idle tasks do not preempt non-idle tasks (their preemption
+ 	 * is driven by the tick):
 --=20
 2.31.1
 
